@@ -1009,13 +1009,14 @@ public:
 // an instruction block { .... }
 class CBotBlock : public CBotInstr
 {
-private:
-
 public:
     static
     CBotInstr*    Compile(CBotToken* &p, CBotCStack* pStack, bool bLocal = true);
     static
     CBotInstr*    CompileBlkOrInst(CBotToken* &p, CBotCStack* pStack, bool bLocal = false);
+private:
+    CBotBlock();
+    CBotBlock(const CBotBlock &);
 };
 
 

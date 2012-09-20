@@ -81,7 +81,7 @@ bool CMotionMother::Create(Math::Vector pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_VEHICULE);  // this is a moving object
     m_object->SetObjectRank(0, rank);
 
-    pModFile->ReadModel("objects\\mother1.mod");
+    pModFile->ReadModel("data/models/mother1.mod");
     pModFile->CreateEngineObject(rank);
 
     m_object->SetPosition(0, pos);
@@ -97,7 +97,7 @@ bool CMotionMother::Create(Math::Vector pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(1, rank);
     m_object->SetObjectParent(1, 0);
-    pModFile->ReadModel("objects\\mother2.mod");
+    pModFile->ReadModel("data/models/mother2.mod");
     pModFile->CreateEngineObject(rank);
     m_object->SetPosition(1, Math::Vector(16.0f, 3.0f, 0.0f));
 
@@ -106,7 +106,7 @@ bool CMotionMother::Create(Math::Vector pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(2, rank);
     m_object->SetObjectParent(2, 0);
-    pModFile->ReadModel("objects\\mother3.mod");
+    pModFile->ReadModel("data/models/mother3.mod");
     pModFile->CreateEngineObject(rank);
     m_object->SetPosition(2, Math::Vector(-5.0f, -1.0f, -12.0f));
 
@@ -115,7 +115,7 @@ bool CMotionMother::Create(Math::Vector pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(3, rank);
     m_object->SetObjectParent(3, 2);
-    pModFile->ReadModel("objects\\mother4.mod");
+    pModFile->ReadModel("data/models/mother4.mod");
     pModFile->CreateEngineObject(rank);
     m_object->SetPosition(3, Math::Vector(0.0f, 0.0f, -8.5f));
 
@@ -124,7 +124,7 @@ bool CMotionMother::Create(Math::Vector pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(4, rank);
     m_object->SetObjectParent(4, 0);
-    pModFile->ReadModel("objects\\mother3.mod");
+    pModFile->ReadModel("data/models/mother3.mod");
     pModFile->CreateEngineObject(rank);
     m_object->SetPosition(4, Math::Vector(3.5f, -1.0f, -12.0f));
 
@@ -133,7 +133,7 @@ bool CMotionMother::Create(Math::Vector pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(5, rank);
     m_object->SetObjectParent(5, 4);
-    pModFile->ReadModel("objects\\mother4.mod");
+    pModFile->ReadModel("data/models/mother4.mod");
     pModFile->CreateEngineObject(rank);
     m_object->SetPosition(5, Math::Vector(0.0f, 0.0f, -8.5f));
 
@@ -142,7 +142,7 @@ bool CMotionMother::Create(Math::Vector pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(6, rank);
     m_object->SetObjectParent(6, 0);
-    pModFile->ReadModel("objects\\mother3.mod");
+    pModFile->ReadModel("data/models/mother3.mod");
     pModFile->CreateEngineObject(rank);
     m_object->SetPosition(6, Math::Vector(10.0f, -1.0f, -10.0f));
 
@@ -151,7 +151,7 @@ bool CMotionMother::Create(Math::Vector pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(7, rank);
     m_object->SetObjectParent(7, 6);
-    pModFile->ReadModel("objects\\mother4.mod");
+    pModFile->ReadModel("data/models/mother4.mod");
     pModFile->CreateEngineObject(rank);
     m_object->SetPosition(7, Math::Vector(0.0f, 0.0f, -8.5f));
 
@@ -160,7 +160,7 @@ bool CMotionMother::Create(Math::Vector pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(8, rank);
     m_object->SetObjectParent(8, 0);
-    pModFile->ReadModel("objects\\mother3.mod");
+    pModFile->ReadModel("data/models/mother3.mod");
     pModFile->CreateEngineObject(rank);
     m_object->SetPosition(8, Math::Vector(-5.0f, -1.0f, 12.0f));
     m_object->SetAngleY(8, Math::PI);
@@ -170,7 +170,7 @@ bool CMotionMother::Create(Math::Vector pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(9, rank);
     m_object->SetObjectParent(9, 8);
-    pModFile->ReadModel("objects\\mother4.mod");
+    pModFile->ReadModel("data/models/mother4.mod");
     pModFile->CreateEngineObject(rank);
     m_object->SetPosition(9, Math::Vector(0.0f, 0.0f, -8.5f));
 
@@ -179,7 +179,7 @@ bool CMotionMother::Create(Math::Vector pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(10, rank);
     m_object->SetObjectParent(10, 0);
-    pModFile->ReadModel("objects\\mother3.mod");
+    pModFile->ReadModel("data/models/mother3.mod");
     pModFile->CreateEngineObject(rank);
     m_object->SetPosition(10, Math::Vector(3.5f, -1.0f, 12.0f));
     m_object->SetAngleY(10, Math::PI);
@@ -189,7 +189,7 @@ bool CMotionMother::Create(Math::Vector pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(11, rank);
     m_object->SetObjectParent(11, 10);
-    pModFile->ReadModel("objects\\mother4.mod");
+    pModFile->ReadModel("data/models/mother4.mod");
     pModFile->CreateEngineObject(rank);
     m_object->SetPosition(11, Math::Vector(0.0f, 0.0f, -8.5f));
 
@@ -198,7 +198,7 @@ bool CMotionMother::Create(Math::Vector pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(12, rank);
     m_object->SetObjectParent(12, 0);
-    pModFile->ReadModel("objects\\mother3.mod");
+    pModFile->ReadModel("data/models/mother3.mod");
     pModFile->CreateEngineObject(rank);
     m_object->SetPosition(12, Math::Vector(10.0f, -1.0f, 10.0f));
     m_object->SetAngleY(12, Math::PI);
@@ -208,7 +208,7 @@ bool CMotionMother::Create(Math::Vector pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(13, rank);
     m_object->SetObjectParent(13, 12);
-    pModFile->ReadModel("objects\\mother4.mod");
+    pModFile->ReadModel("data/models/mother4.mod");
     pModFile->CreateEngineObject(rank);
     m_object->SetPosition(13, Math::Vector(0.0f, 0.0f, -8.5f));
 
@@ -217,7 +217,7 @@ bool CMotionMother::Create(Math::Vector pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(14, rank);
     m_object->SetObjectParent(14, 1);
-    pModFile->ReadModel("objects\\mother5.mod");
+    pModFile->ReadModel("data/models/mother5.mod");
     pModFile->CreateEngineObject(rank);
     m_object->SetPosition(14, Math::Vector(6.0f, 1.0f, -2.5f));
 
@@ -225,7 +225,7 @@ bool CMotionMother::Create(Math::Vector pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(15, rank);
     m_object->SetObjectParent(15, 14);
-    pModFile->ReadModel("objects\\mother6.mod");
+    pModFile->ReadModel("data/models/mother6.mod");
     pModFile->CreateEngineObject(rank);
     m_object->SetPosition(15, Math::Vector(8.0f, 0.0f, 0.0f));
 
@@ -234,7 +234,7 @@ bool CMotionMother::Create(Math::Vector pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(16, rank);
     m_object->SetObjectParent(16, 1);
-    pModFile->ReadModel("objects\\mother5.mod");
+    pModFile->ReadModel("data/models/mother5.mod");
     pModFile->CreateEngineObject(rank);
     m_object->SetPosition(16, Math::Vector(6.0f, 1.0f, 2.5f));
 
@@ -242,7 +242,7 @@ bool CMotionMother::Create(Math::Vector pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(17, rank);
     m_object->SetObjectParent(17, 16);
-    pModFile->ReadModel("objects\\mother6.mod");
+    pModFile->ReadModel("data/models/mother6.mod");
     pModFile->CreateEngineObject(rank);
     m_object->SetPosition(17, Math::Vector(8.0f, 0.0f, 0.0f));
 
@@ -251,7 +251,7 @@ bool CMotionMother::Create(Math::Vector pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(18, rank);
     m_object->SetObjectParent(18, 1);
-    pModFile->ReadModel("objects\\mother7.mod");
+    pModFile->ReadModel("data/models/mother7.mod");
     pModFile->CreateEngineObject(rank);
     m_object->SetPosition(18, Math::Vector(-4.0f, -3.5f, -8.0f));
     m_object->SetZoomX(18, 1.2f);
@@ -261,7 +261,7 @@ bool CMotionMother::Create(Math::Vector pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(19, rank);
     m_object->SetObjectParent(19, 1);
-    pModFile->ReadModel("objects\\mother7.mod");
+    pModFile->ReadModel("data/models/mother7.mod");
     pModFile->Mirror();
     pModFile->CreateEngineObject(rank);
     m_object->SetPosition(19, Math::Vector(-4.0f, -3.5f, 8.0f));

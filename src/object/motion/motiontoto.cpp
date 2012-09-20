@@ -91,7 +91,7 @@ bool CMotionToto::Create(Math::Vector pos, float angle, ObjectType type,
     rank = m_engine->CreateObject();
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_VEHICULE);  // this is a moving object
     m_object->SetObjectRank(0, rank);
-    pModFile->ReadModel("objects\\toto1.mod");
+    pModFile->ReadModel("data/models/toto1.mod");
     pModFile->CreateEngineObject(rank);
     m_object->SetPosition(0, pos);
     m_object->SetAngleY(0, angle);
@@ -101,7 +101,7 @@ bool CMotionToto::Create(Math::Vector pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(1, rank);
     m_object->SetObjectParent(1, 0);
-    pModFile->ReadModel("objects\\toto2.mod");
+    pModFile->ReadModel("data/models/toto2.mod");
     pModFile->CreateEngineObject(rank);
     m_object->SetPosition(1, Math::Vector(1.00f, 0.17f, 0.00f));
 
@@ -110,7 +110,7 @@ bool CMotionToto::Create(Math::Vector pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(2, rank);
     m_object->SetObjectParent(2, 0);
-    pModFile->ReadModel("objects\\toto3.mod");
+    pModFile->ReadModel("data/models/toto3.mod");
     pModFile->Mirror();
     pModFile->CreateEngineObject(rank);
     m_object->SetPosition(2, Math::Vector(0.85f, 1.04f, 0.25f));
@@ -121,7 +121,7 @@ bool CMotionToto::Create(Math::Vector pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(3, rank);
     m_object->SetObjectParent(3, 0);
-    pModFile->ReadModel("objects\\toto3.mod");
+    pModFile->ReadModel("data/models/toto3.mod");
     pModFile->CreateEngineObject(rank);
     m_object->SetPosition(3, Math::Vector(0.85f, 1.04f, -0.25f));
     m_object->SetAngleY(3, 20.0f*Math::PI/180.0f);
@@ -131,7 +131,7 @@ bool CMotionToto::Create(Math::Vector pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(4, rank);
     m_object->SetObjectParent(4, 0);
-    pModFile->ReadModel("objects\\toto4.mod");
+    pModFile->ReadModel("data/models/toto4.mod");
     pModFile->CreateEngineObject(rank);
     m_object->SetPosition(4, Math::Vector(0.0f, 1.9f, 0.3f));
     m_object->SetAngleX(4, 30.0f*Math::PI/180.0f);
@@ -140,7 +140,7 @@ bool CMotionToto::Create(Math::Vector pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(5, rank);
     m_object->SetObjectParent(5, 4);
-    pModFile->ReadModel("objects\\toto4.mod");
+    pModFile->ReadModel("data/models/toto4.mod");
     pModFile->CreateEngineObject(rank);
     m_object->SetPosition(5, Math::Vector(0.0f, 0.67f, 0.0f));
     m_object->SetAngleX(5, 30.0f*Math::PI/180.0f);
@@ -149,7 +149,7 @@ bool CMotionToto::Create(Math::Vector pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(6, rank);
     m_object->SetObjectParent(6, 5);
-    pModFile->ReadModel("objects\\toto5.mod");
+    pModFile->ReadModel("data/models/toto5.mod");
     pModFile->CreateEngineObject(rank);
     m_object->SetPosition(6, Math::Vector(0.0f, 0.70f, 0.0f));
     m_object->SetAngleX(6, 30.0f*Math::PI/180.0f);
@@ -159,7 +159,7 @@ bool CMotionToto::Create(Math::Vector pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(7, rank);
     m_object->SetObjectParent(7, 0);
-    pModFile->ReadModel("objects\\toto4.mod");
+    pModFile->ReadModel("data/models/toto4.mod");
     pModFile->CreateEngineObject(rank);
     m_object->SetPosition(7, Math::Vector(0.0f, 1.9f, -0.3f));
     m_object->SetAngleX(7, -30.0f*Math::PI/180.0f);
@@ -168,7 +168,7 @@ bool CMotionToto::Create(Math::Vector pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(8, rank);
     m_object->SetObjectParent(8, 7);
-    pModFile->ReadModel("objects\\toto4.mod");
+    pModFile->ReadModel("data/models/toto4.mod");
     pModFile->CreateEngineObject(rank);
     m_object->SetPosition(8, Math::Vector(0.0f, 0.67f, 0.0f));
     m_object->SetAngleX(8, -30.0f*Math::PI/180.0f);
@@ -177,7 +177,7 @@ bool CMotionToto::Create(Math::Vector pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(9, rank);
     m_object->SetObjectParent(9, 8);
-    pModFile->ReadModel("objects\\toto5.mod");
+    pModFile->ReadModel("data/models/toto5.mod");
     pModFile->CreateEngineObject(rank);
     m_object->SetPosition(9, Math::Vector(0.0f, 0.70f, 0.0f));
     m_object->SetAngleX(9, -30.0f*Math::PI/180.0f);

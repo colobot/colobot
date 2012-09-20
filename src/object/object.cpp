@@ -2372,7 +2372,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
 
     if ( m_type == OBJECT_PORTICO )
     {
-        pModFile->ReadModel("objects\\portico1.mod");
+        pModFile->ReadModel("data/models/portico1.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(0, pos);
         SetAngleY(0, angle);
@@ -2382,7 +2382,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         SetObjectRank(1, rank);
         SetObjectParent(1, 0);
-        pModFile->ReadModel("objects\\portico2.mod");
+        pModFile->ReadModel("data/models/portico2.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(1, Math::Vector(0.0f, 67.0f, 0.0f));
 
@@ -2390,7 +2390,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         SetObjectRank(2, rank);
         SetObjectParent(2, 1);
-        pModFile->ReadModel("objects\\portico3.mod");
+        pModFile->ReadModel("data/models/portico3.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(2, Math::Vector(0.0f, 0.0f, -33.0f));
         SetAngleY(2, 45.0f*Math::PI/180.0f);
@@ -2399,7 +2399,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         SetObjectRank(3, rank);
         SetObjectParent(3, 2);
-        pModFile->ReadModel("objects\\portico4.mod");
+        pModFile->ReadModel("data/models/portico4.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(3, Math::Vector(50.0f, 0.0f, 0.0f));
         SetAngleY(3, -60.0f*Math::PI/180.0f);
@@ -2408,7 +2408,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         SetObjectRank(4, rank);
         SetObjectParent(4, 3);
-        pModFile->ReadModel("objects\\portico5.mod");
+        pModFile->ReadModel("data/models/portico5.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(4, Math::Vector(35.0f, 0.0f, 0.0f));
         SetAngleY(4, -55.0f*Math::PI/180.0f);
@@ -2417,7 +2417,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         SetObjectRank(5, rank);
         SetObjectParent(5, 1);
-        pModFile->ReadModel("objects\\portico3.mod");
+        pModFile->ReadModel("data/models/portico3.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(5, Math::Vector(0.0f, 0.0f, 33.0f));
         SetAngleY(5, -45.0f*Math::PI/180.0f);
@@ -2426,7 +2426,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         SetObjectRank(6, rank);
         SetObjectParent(6, 5);
-        pModFile->ReadModel("objects\\portico4.mod");
+        pModFile->ReadModel("data/models/portico4.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(6, Math::Vector(50.0f, 0.0f, 0.0f));
         SetAngleY(6, 60.0f*Math::PI/180.0f);
@@ -2435,7 +2435,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         SetObjectRank(7, rank);
         SetObjectParent(7, 6);
-        pModFile->ReadModel("objects\\portico5.mod");
+        pModFile->ReadModel("data/models/portico5.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(7, Math::Vector(35.0f, 0.0f, 0.0f));
         SetAngleY(7, 55.0f*Math::PI/180.0f);
@@ -2444,7 +2444,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         SetObjectRank(8, rank);
         SetObjectParent(8, 0);
-        pModFile->ReadModel("objects\\portico6.mod");
+        pModFile->ReadModel("data/models/portico6.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(8, Math::Vector(-35.0f, 50.0f, -35.0f));
         SetAngleY(8, -Math::PI/2.0f);
@@ -2454,7 +2454,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         SetObjectRank(9, rank);
         SetObjectParent(9, 8);
-        pModFile->ReadModel("objects\\portico7.mod");
+        pModFile->ReadModel("data/models/portico7.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(9, Math::Vector(0.0f, 4.5f, 1.9f));
 
@@ -2462,7 +2462,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         SetObjectRank(10, rank);
         SetObjectParent(10, 0);
-        pModFile->ReadModel("objects\\portico6.mod");
+        pModFile->ReadModel("data/models/portico6.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(10, Math::Vector(-35.0f, 50.0f, 35.0f));
         SetAngleY(10, -Math::PI/2.0f);
@@ -2472,7 +2472,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         SetObjectRank(11, rank);
         SetObjectParent(11, 10);
-        pModFile->ReadModel("objects\\portico7.mod");
+        pModFile->ReadModel("data/models/portico7.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(11, Math::Vector(0.0f, 4.5f, 1.9f));
 
@@ -2494,7 +2494,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
 
     if ( m_type == OBJECT_BASE )
     {
-        pModFile->ReadModel("objects\\base1.mod");
+        pModFile->ReadModel("data/models/base1.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(0, pos);
         SetAngleY(0, angle);
@@ -2506,7 +2506,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
             m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
             SetObjectRank(1+i, rank);
             SetObjectParent(1+i, 0);
-            pModFile->ReadModel("objects\\base2.mod");
+            pModFile->ReadModel("data/models/base2.mod");
             pModFile->CreateEngineObject(rank);
             p = Math::RotatePoint(-Math::PI/4.0f*i, 27.8f);
             SetPosition(1+i, Math::Vector(p.x, 30.0f, p.y));
@@ -2517,7 +2517,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
             m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
             SetObjectRank(10+i, rank);
             SetObjectParent(10+i, 1+i);
-            pModFile->ReadModel("objects\\base4.mod");
+            pModFile->ReadModel("data/models/base4.mod");
             pModFile->CreateEngineObject(rank);
             SetPosition(10+i, Math::Vector(23.5f, 0.0f, 7.0f));
 
@@ -2525,7 +2525,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
             m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
             SetObjectRank(18+i, rank);
             SetObjectParent(18+i, 1+i);
-            pModFile->ReadModel("objects\\base4.mod");
+            pModFile->ReadModel("data/models/base4.mod");
             pModFile->Mirror();
             pModFile->CreateEngineObject(rank);
             SetPosition(18+i, Math::Vector(23.5f, 0.0f, -7.0f));
@@ -2535,7 +2535,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         SetObjectRank(9, rank);
         SetObjectParent(9, 0);
-        pModFile->ReadModel("objects\\base3.mod");  // central pillar
+        pModFile->ReadModel("data/models/base3.mod");  // central pillar
         pModFile->CreateEngineObject(rank);
 
         CreateCrashSphere(Math::Vector(  0.0f, 33.0f,   0.0f),  2.5f, SOUND_BOUMm, 0.45f);
@@ -2566,7 +2566,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
 
     if ( m_type == OBJECT_DERRICK )
     {
-        pModFile->ReadModel("objects\\derrick1.mod");
+        pModFile->ReadModel("data/models/derrick1.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(0, pos);
         SetAngleY(0, angle);
@@ -2576,7 +2576,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         SetObjectRank(1, rank);
         SetObjectParent(1, 0);
-        pModFile->ReadModel("objects\\derrick2.mod");
+        pModFile->ReadModel("data/models/derrick2.mod");
         pModFile->CreateEngineObject(rank);
 
         CreateCrashSphere(Math::Vector(0.0f,  0.0f, 0.0f), 6.0f, SOUND_BOUMm, 0.45f);
@@ -2591,7 +2591,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
 
     if ( m_type == OBJECT_RESEARCH )
     {
-        pModFile->ReadModel("objects\\search1.mod");
+        pModFile->ReadModel("data/models/search1.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(0, pos);
         SetAngleY(0, angle);
@@ -2601,7 +2601,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         SetObjectRank(1, rank);
         SetObjectParent(1, 0);
-        pModFile->ReadModel("objects\\search2.mod");
+        pModFile->ReadModel("data/models/search2.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(1, Math::Vector(0.0f, 13.0f, 0.0f));
 
@@ -2609,7 +2609,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         SetObjectRank(2, rank);
         SetObjectParent(2, 1);
-        pModFile->ReadModel("objects\\search3.mod");
+        pModFile->ReadModel("data/models/search3.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(2, Math::Vector(0.0f, 4.0f, 0.0f));
         SetAngleZ(2, 35.0f*Math::PI/180.0f);
@@ -2626,7 +2626,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
 
     if ( m_type == OBJECT_RADAR )
     {
-        pModFile->ReadModel("objects\\radar1.mod");
+        pModFile->ReadModel("data/models/radar1.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(0, pos);
         SetAngleY(0, angle);
@@ -2636,7 +2636,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         SetObjectRank(1, rank);
         SetObjectParent(1, 0);
-        pModFile->ReadModel("objects\\radar2.mod");
+        pModFile->ReadModel("data/models/radar2.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(1, Math::Vector(0.0f, 5.0f, 0.0f));
 
@@ -2644,7 +2644,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         SetObjectRank(2, rank);
         SetObjectParent(2, 0);
-        pModFile->ReadModel("objects\\radar3.mod");
+        pModFile->ReadModel("data/models/radar3.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(2, Math::Vector(0.0f, 11.0f, 0.0f));
         SetAngleY(2, -Math::PI/2.0f);
@@ -2653,7 +2653,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         SetObjectRank(3, rank);
         SetObjectParent(3, 2);
-        pModFile->ReadModel("objects\\radar4.mod");
+        pModFile->ReadModel("data/models/radar4.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(3, Math::Vector(0.0f, 4.5f, 1.9f));
 
@@ -2666,7 +2666,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
 
     if ( m_type == OBJECT_INFO )
     {
-        pModFile->ReadModel("objects\\info1.mod");
+        pModFile->ReadModel("data/models/info1.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(0, pos);
         SetAngleY(0, angle);
@@ -2676,7 +2676,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         SetObjectRank(1, rank);
         SetObjectParent(1, 0);
-        pModFile->ReadModel("objects\\info2.mod");
+        pModFile->ReadModel("data/models/info2.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(1, Math::Vector(0.0f, 5.0f, 0.0f));
 
@@ -2686,7 +2686,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
             m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
             SetObjectRank(2+i*2, rank);
             SetObjectParent(2+i*2, 1);
-            pModFile->ReadModel("objects\\info3.mod");
+            pModFile->ReadModel("data/models/info3.mod");
             pModFile->CreateEngineObject(rank);
             SetPosition(2+i*2, Math::Vector(0.0f, 4.5f, 0.0f));
 
@@ -2694,7 +2694,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
             m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
             SetObjectRank(3+i*2, rank);
             SetObjectParent(3+i*2, 2+i*2);
-            pModFile->ReadModel("objects\\radar4.mod");
+            pModFile->ReadModel("data/models/radar4.mod");
             pModFile->CreateEngineObject(rank);
             SetPosition(3+i*2, Math::Vector(0.0f, 0.0f, -4.0f));
 
@@ -2710,7 +2710,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
 
     if ( m_type == OBJECT_ENERGY )
     {
-        pModFile->ReadModel("objects\\energy.mod");
+        pModFile->ReadModel("data/models/energy.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(0, pos);
         SetAngleY(0, angle);
@@ -2729,7 +2729,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
 
     if ( m_type == OBJECT_LABO )
     {
-        pModFile->ReadModel("objects\\labo1.mod");
+        pModFile->ReadModel("data/models/labo1.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(0, pos);
         SetAngleY(0, angle);
@@ -2739,7 +2739,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         SetObjectRank(1, rank);
         SetObjectParent(1, 0);
-        pModFile->ReadModel("objects\\labo2.mod");
+        pModFile->ReadModel("data/models/labo2.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(1, Math::Vector(-9.0f, 3.0f, 0.0f));
         SetAngleZ(1, Math::PI/2.0f);
@@ -2748,7 +2748,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         SetObjectRank(2, rank);
         SetObjectParent(2, 1);
-        pModFile->ReadModel("objects\\labo3.mod");
+        pModFile->ReadModel("data/models/labo3.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(2, Math::Vector(9.0f, -1.0f, 0.0f));
 
@@ -2756,7 +2756,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         SetObjectRank(3, rank);
         SetObjectParent(3, 2);
-        pModFile->ReadModel("objects\\labo4.mod");
+        pModFile->ReadModel("data/models/labo4.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(3, Math::Vector(0.0f, 0.0f, 0.0f));
         SetAngleZ(3, 80.0f*Math::PI/180.0f);
@@ -2765,7 +2765,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         SetObjectRank(4, rank);
         SetObjectParent(4, 2);
-        pModFile->ReadModel("objects\\labo4.mod");
+        pModFile->ReadModel("data/models/labo4.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(4, Math::Vector(0.0f, 0.0f, 0.0f));
         SetAngleZ(4, 80.0f*Math::PI/180.0f);
@@ -2775,7 +2775,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         SetObjectRank(5, rank);
         SetObjectParent(5, 2);
-        pModFile->ReadModel("objects\\labo4.mod");
+        pModFile->ReadModel("data/models/labo4.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(5, Math::Vector(0.0f, 0.0f, 0.0f));
         SetAngleZ(5, 80.0f*Math::PI/180.0f);
@@ -2795,7 +2795,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
 
     if ( m_type == OBJECT_FACTORY )
     {
-        pModFile->ReadModel("objects\\factory1.mod");
+        pModFile->ReadModel("data/models/factory1.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(0, pos);
         SetAngleY(0, angle);
@@ -2807,7 +2807,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
             m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
             SetObjectRank(1+i, rank);
             SetObjectParent(1+i, 0);
-            pModFile->ReadModel("objects\\factory2.mod");
+            pModFile->ReadModel("data/models/factory2.mod");
             pModFile->CreateEngineObject(rank);
             SetPosition(1+i, Math::Vector(10.0f, 2.0f*i, 10.0f));
             SetAngleZ(1+i, Math::PI/2.0f);
@@ -2817,7 +2817,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
             m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
             SetObjectRank(10+i, rank);
             SetObjectParent(10+i, 0);
-            pModFile->ReadModel("objects\\factory2.mod");
+            pModFile->ReadModel("data/models/factory2.mod");
             pModFile->CreateEngineObject(rank);
             SetPosition(10+i, Math::Vector(10.0f, 2.0f*i, -10.0f));
             SetAngleZ(10+i, -Math::PI/2.0f);
@@ -2855,7 +2855,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
 
     if ( m_type == OBJECT_REPAIR )
     {
-        pModFile->ReadModel("objects\\repair1.mod");
+        pModFile->ReadModel("data/models/repair1.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(0, pos);
         SetAngleY(0, angle);
@@ -2865,7 +2865,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         SetObjectRank(1, rank);
         SetObjectParent(1, 0);
-        pModFile->ReadModel("objects\\repair2.mod");
+        pModFile->ReadModel("data/models/repair2.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(1, Math::Vector(-11.0f, 13.5f, 0.0f));
         SetAngleZ(1, Math::PI/2.0f);
@@ -2881,7 +2881,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
 
     if ( m_type == OBJECT_DESTROYER )
     {
-        pModFile->ReadModel("objects\\destroy1.mod");
+        pModFile->ReadModel("data/models/destroy1.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(0, pos);
         SetAngleY(0, angle);
@@ -2891,7 +2891,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         SetObjectRank(1, rank);
         SetObjectParent(1, 0);
-        pModFile->ReadModel("objects\\destroy2.mod");
+        pModFile->ReadModel("data/models/destroy2.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(1, Math::Vector(0.0f, 0.0f, 0.0f));
 
@@ -2907,7 +2907,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
 
     if ( m_type == OBJECT_STATION )
     {
-        pModFile->ReadModel("objects\\station.mod");
+        pModFile->ReadModel("data/models/station.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(0, pos);
         SetAngleY(0, angle);
@@ -2924,7 +2924,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
 
     if ( m_type == OBJECT_CONVERT )
     {
-        pModFile->ReadModel("objects\\convert1.mod");
+        pModFile->ReadModel("data/models/convert1.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(0, pos);
         SetAngleY(0, angle);
@@ -2934,7 +2934,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         SetObjectRank(1, rank);
         SetObjectParent(1, 0);
-        pModFile->ReadModel("objects\\convert2.mod");
+        pModFile->ReadModel("data/models/convert2.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(1, Math::Vector(0.0f, 14.0f, 0.0f));
 
@@ -2942,7 +2942,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         SetObjectRank(2, rank);
         SetObjectParent(2, 0);
-        pModFile->ReadModel("objects\\convert3.mod");
+        pModFile->ReadModel("data/models/convert3.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(2, Math::Vector(0.0f, 11.5f, 0.0f));
         SetAngleX(2, -Math::PI*0.35f);
@@ -2951,7 +2951,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         SetObjectRank(3, rank);
         SetObjectParent(3, 0);
-        pModFile->ReadModel("objects\\convert3.mod");
+        pModFile->ReadModel("data/models/convert3.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(3, Math::Vector(0.0f, 11.5f, 0.0f));
         SetAngleY(3, Math::PI);
@@ -2968,7 +2968,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
 
     if ( m_type == OBJECT_TOWER )
     {
-        pModFile->ReadModel("objects\\tower.mod");
+        pModFile->ReadModel("data/models/tower.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(0, pos);
         SetAngleY(0, angle);
@@ -2978,7 +2978,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         SetObjectRank(1, rank);
         SetObjectParent(1, 0);
-        pModFile->ReadModel("objects\\roller2c.mod");
+        pModFile->ReadModel("data/models/roller2c.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(1, Math::Vector(0.0f, 20.0f, 0.0f));
         SetAngleZ(1, Math::PI/2.0f);
@@ -2987,7 +2987,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         SetObjectRank(2, rank);
         SetObjectParent(2, 1);
-        pModFile->ReadModel("objects\\roller3c.mod");
+        pModFile->ReadModel("data/models/roller3c.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(2, Math::Vector(4.5f, 0.0f, 0.0f));
         SetAngleZ(2, 0.0f);
@@ -3006,7 +3006,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
 
     if ( m_type == OBJECT_NUCLEAR )
     {
-        pModFile->ReadModel("objects\\nuclear1.mod");
+        pModFile->ReadModel("data/models/nuclear1.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(0, pos);
         SetAngleY(0, angle);
@@ -3016,7 +3016,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         SetObjectRank(1, rank);
         SetObjectParent(1, 0);
-        pModFile->ReadModel("objects\\nuclear2.mod");
+        pModFile->ReadModel("data/models/nuclear2.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(1, Math::Vector(20.0f, 10.0f, 0.0f));
         SetAngleZ(1, 135.0f*Math::PI/180.0f);
@@ -3033,7 +3033,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
 
     if ( m_type == OBJECT_PARA )
     {
-        pModFile->ReadModel("objects\\para.mod");
+        pModFile->ReadModel("data/models/para.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(0, pos);
         SetAngleY(0, angle);
@@ -3059,7 +3059,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
 
     if ( m_type == OBJECT_SAFE )
     {
-        pModFile->ReadModel("objects\\safe1.mod");
+        pModFile->ReadModel("data/models/safe1.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(0, pos);
         SetAngleY(0, angle);
@@ -3069,7 +3069,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         SetObjectRank(1, rank);
         SetObjectParent(1, 0);
-        pModFile->ReadModel("objects\\safe2.mod");
+        pModFile->ReadModel("data/models/safe2.mod");
         pModFile->CreateEngineObject(rank);
         SetZoom(1, 1.05f);
 
@@ -3077,7 +3077,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         SetObjectRank(2, rank);
         SetObjectParent(2, 0);
-        pModFile->ReadModel("objects\\safe3.mod");
+        pModFile->ReadModel("data/models/safe3.mod");
         pModFile->CreateEngineObject(rank);
         SetZoom(2, 1.05f);
 
@@ -3091,7 +3091,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
 
     if ( m_type == OBJECT_HUSTON )
     {
-        pModFile->ReadModel("objects\\huston1.mod");
+        pModFile->ReadModel("data/models/huston1.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(0, pos);
         SetAngleY(0, angle);
@@ -3101,7 +3101,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         SetObjectRank(1, rank);
         SetObjectParent(1, 0);
-        pModFile->ReadModel("objects\\huston2.mod");
+        pModFile->ReadModel("data/models/huston2.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(1, Math::Vector(0.0f, 39.0f, 30.0f));
         SetAngleY(1, -Math::PI/2.0f);
@@ -3111,7 +3111,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         SetObjectRank(2, rank);
         SetObjectParent(2, 1);
-        pModFile->ReadModel("objects\\huston3.mod");
+        pModFile->ReadModel("data/models/huston3.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(2, Math::Vector(0.0f, 4.5f, 1.9f));
 
@@ -3135,7 +3135,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
 
     if ( m_type == OBJECT_TARGET1 )
     {
-        pModFile->ReadModel("objects\\target1.mod");
+        pModFile->ReadModel("data/models/target1.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(0, pos);
         SetAngleY(0, angle);
@@ -3165,7 +3165,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
 
     if ( m_type == OBJECT_TARGET2 )
     {
-        pModFile->ReadModel("objects\\target2.mod");
+        pModFile->ReadModel("data/models/target2.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(0, pos);
         SetAngleY(0, angle);
@@ -3176,7 +3176,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
 
     if ( m_type == OBJECT_NEST )
     {
-        pModFile->ReadModel("objects\\nest.mod");
+        pModFile->ReadModel("data/models/nest.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(0, pos);
         SetAngleY(0, angle);
@@ -3189,7 +3189,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
 
     if ( m_type == OBJECT_START )
     {
-        pModFile->ReadModel("objects\\start.mod");
+        pModFile->ReadModel("data/models/start.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(0, pos);
         SetAngleY(0, angle);
@@ -3200,7 +3200,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
 
     if ( m_type == OBJECT_END )
     {
-        pModFile->ReadModel("objects\\end.mod");
+        pModFile->ReadModel("data/models/end.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(0, pos);
         SetAngleY(0, angle);
@@ -3221,8 +3221,8 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         pPower->SetObjectRank(0, rank);
 
-        if ( power <= 1.0f )  pModFile->ReadModel("objects\\power.mod");
-        else                  pModFile->ReadModel("objects\\atomic.mod");
+        if ( power <= 1.0f )  pModFile->ReadModel("data/models/power.mod");
+        else                  pModFile->ReadModel("data/models/atomic.mod");
         pModFile->CreateEngineObject(rank);
 
         pPower->SetPosition(0, GetCharacter()->posPower);
@@ -3268,36 +3268,36 @@ bool CObject::CreateResource(Math::Vector pos, float angle, ObjectType type,
     SetEnergy(power);
 
     name[0] = 0;
-    if ( type == OBJECT_STONE       )  strcpy(name, "objects\\stone.mod");
-    if ( type == OBJECT_URANIUM     )  strcpy(name, "objects\\uranium.mod");
-    if ( type == OBJECT_METAL       )  strcpy(name, "objects\\metal.mod");
-    if ( type == OBJECT_POWER       )  strcpy(name, "objects\\power.mod");
-    if ( type == OBJECT_ATOMIC      )  strcpy(name, "objects\\atomic.mod");
-    if ( type == OBJECT_BULLET      )  strcpy(name, "objects\\bullet.mod");
-    if ( type == OBJECT_BBOX        )  strcpy(name, "objects\\bbox.mod");
-    if ( type == OBJECT_KEYa        )  strcpy(name, "objects\\keya.mod");
-    if ( type == OBJECT_KEYb        )  strcpy(name, "objects\\keyb.mod");
-    if ( type == OBJECT_KEYc        )  strcpy(name, "objects\\keyc.mod");
-    if ( type == OBJECT_KEYd        )  strcpy(name, "objects\\keyd.mod");
-    if ( type == OBJECT_TNT         )  strcpy(name, "objects\\tnt.mod");
-    if ( type == OBJECT_SCRAP1      )  strcpy(name, "objects\\scrap1.mod");
-    if ( type == OBJECT_SCRAP2      )  strcpy(name, "objects\\scrap2.mod");
-    if ( type == OBJECT_SCRAP3      )  strcpy(name, "objects\\scrap3.mod");
-    if ( type == OBJECT_SCRAP4      )  strcpy(name, "objects\\scrap4.mod");
-    if ( type == OBJECT_SCRAP5      )  strcpy(name, "objects\\scrap5.mod");
-    if ( type == OBJECT_BOMB        )  strcpy(name, "objects\\bomb.mod");
-    if ( type == OBJECT_WAYPOINT    )  strcpy(name, "objects\\waypoint.mod");
-    if ( type == OBJECT_SHOW        )  strcpy(name, "objects\\show.mod");
-    if ( type == OBJECT_WINFIRE     )  strcpy(name, "objects\\winfire.mod");
-    if ( type == OBJECT_BAG         )  strcpy(name, "objects\\bag.mod");
-    if ( type == OBJECT_MARKSTONE   )  strcpy(name, "objects\\cross1.mod");
-    if ( type == OBJECT_MARKURANIUM )  strcpy(name, "objects\\cross3.mod");
-    if ( type == OBJECT_MARKPOWER   )  strcpy(name, "objects\\cross2.mod");
-    if ( type == OBJECT_MARKKEYa    )  strcpy(name, "objects\\crossa.mod");
-    if ( type == OBJECT_MARKKEYb    )  strcpy(name, "objects\\crossb.mod");
-    if ( type == OBJECT_MARKKEYc    )  strcpy(name, "objects\\crossc.mod");
-    if ( type == OBJECT_MARKKEYd    )  strcpy(name, "objects\\crossd.mod");
-    if ( type == OBJECT_EGG         )  strcpy(name, "objects\\egg.mod");
+    if ( type == OBJECT_STONE       )  strcpy(name, "data/models/stone.mod");
+    if ( type == OBJECT_URANIUM     )  strcpy(name, "data/models/uranium.mod");
+    if ( type == OBJECT_METAL       )  strcpy(name, "data/models/metal.mod");
+    if ( type == OBJECT_POWER       )  strcpy(name, "data/models/power.mod");
+    if ( type == OBJECT_ATOMIC      )  strcpy(name, "data/models/atomic.mod");
+    if ( type == OBJECT_BULLET      )  strcpy(name, "data/models/bullet.mod");
+    if ( type == OBJECT_BBOX        )  strcpy(name, "data/models/bbox.mod");
+    if ( type == OBJECT_KEYa        )  strcpy(name, "data/models/keya.mod");
+    if ( type == OBJECT_KEYb        )  strcpy(name, "data/models/keyb.mod");
+    if ( type == OBJECT_KEYc        )  strcpy(name, "data/models/keyc.mod");
+    if ( type == OBJECT_KEYd        )  strcpy(name, "data/models/keyd.mod");
+    if ( type == OBJECT_TNT         )  strcpy(name, "data/models/tnt.mod");
+    if ( type == OBJECT_SCRAP1      )  strcpy(name, "data/models/scrap1.mod");
+    if ( type == OBJECT_SCRAP2      )  strcpy(name, "data/models/scrap2.mod");
+    if ( type == OBJECT_SCRAP3      )  strcpy(name, "data/models/scrap3.mod");
+    if ( type == OBJECT_SCRAP4      )  strcpy(name, "data/models/scrap4.mod");
+    if ( type == OBJECT_SCRAP5      )  strcpy(name, "data/models/scrap5.mod");
+    if ( type == OBJECT_BOMB        )  strcpy(name, "data/models/bomb.mod");
+    if ( type == OBJECT_WAYPOINT    )  strcpy(name, "data/models/waypoint.mod");
+    if ( type == OBJECT_SHOW        )  strcpy(name, "data/models/show.mod");
+    if ( type == OBJECT_WINFIRE     )  strcpy(name, "data/models/winfire.mod");
+    if ( type == OBJECT_BAG         )  strcpy(name, "data/models/bag.mod");
+    if ( type == OBJECT_MARKSTONE   )  strcpy(name, "data/models/cross1.mod");
+    if ( type == OBJECT_MARKURANIUM )  strcpy(name, "data/models/cross3.mod");
+    if ( type == OBJECT_MARKPOWER   )  strcpy(name, "data/models/cross2.mod");
+    if ( type == OBJECT_MARKKEYa    )  strcpy(name, "data/models/crossa.mod");
+    if ( type == OBJECT_MARKKEYb    )  strcpy(name, "data/models/crossb.mod");
+    if ( type == OBJECT_MARKKEYc    )  strcpy(name, "data/models/crossc.mod");
+    if ( type == OBJECT_MARKKEYd    )  strcpy(name, "data/models/crossd.mod");
+    if ( type == OBJECT_EGG         )  strcpy(name, "data/models/egg.mod");
 
     pModFile->ReadModel(name);
     pModFile->CreateEngineObject(rank);
@@ -3377,11 +3377,11 @@ bool CObject::CreateFlag(Math::Vector pos, float angle, ObjectType type)
     SetType(type);
 
     name[0] = 0;
-    if ( type == OBJECT_FLAGb )  strcpy(name, "objects\\flag1b.mod");
-    if ( type == OBJECT_FLAGr )  strcpy(name, "objects\\flag1r.mod");
-    if ( type == OBJECT_FLAGg )  strcpy(name, "objects\\flag1g.mod");
-    if ( type == OBJECT_FLAGy )  strcpy(name, "objects\\flag1y.mod");
-    if ( type == OBJECT_FLAGv )  strcpy(name, "objects\\flag1v.mod");
+    if ( type == OBJECT_FLAGb )  strcpy(name, "data/models/flag1b.mod");
+    if ( type == OBJECT_FLAGr )  strcpy(name, "data/models/flag1r.mod");
+    if ( type == OBJECT_FLAGg )  strcpy(name, "data/models/flag1g.mod");
+    if ( type == OBJECT_FLAGy )  strcpy(name, "data/models/flag1y.mod");
+    if ( type == OBJECT_FLAGv )  strcpy(name, "data/models/flag1v.mod");
 
     rank = m_engine->CreateObject();
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);  // it is a stationary object
@@ -3392,11 +3392,11 @@ bool CObject::CreateFlag(Math::Vector pos, float angle, ObjectType type)
     SetAngleY(0, angle);
 
     name[0] = 0;
-    if ( type == OBJECT_FLAGb )  strcpy(name, "objects\\flag2b.mod");
-    if ( type == OBJECT_FLAGr )  strcpy(name, "objects\\flag2r.mod");
-    if ( type == OBJECT_FLAGg )  strcpy(name, "objects\\flag2g.mod");
-    if ( type == OBJECT_FLAGy )  strcpy(name, "objects\\flag2y.mod");
-    if ( type == OBJECT_FLAGv )  strcpy(name, "objects\\flag2v.mod");
+    if ( type == OBJECT_FLAGb )  strcpy(name, "data/models/flag2b.mod");
+    if ( type == OBJECT_FLAGr )  strcpy(name, "data/models/flag2r.mod");
+    if ( type == OBJECT_FLAGg )  strcpy(name, "data/models/flag2g.mod");
+    if ( type == OBJECT_FLAGy )  strcpy(name, "data/models/flag2y.mod");
+    if ( type == OBJECT_FLAGv )  strcpy(name, "data/models/flag2v.mod");
 
     for ( i=0 ; i<4 ; i++ )
     {
@@ -3442,7 +3442,7 @@ bool CObject::CreateBarrier(Math::Vector pos, float angle, float height,
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
-        pModFile->ReadModel("objects\\barrier0.mod");
+        pModFile->ReadModel("data/models/barrier0.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(0, pos);
         SetAngleY(0, angle);
@@ -3459,7 +3459,7 @@ bool CObject::CreateBarrier(Math::Vector pos, float angle, float height,
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
-        pModFile->ReadModel("objects\\barrier1.mod");
+        pModFile->ReadModel("data/models/barrier1.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(0, pos);
         SetAngleY(0, angle);
@@ -3478,7 +3478,7 @@ bool CObject::CreateBarrier(Math::Vector pos, float angle, float height,
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
-        pModFile->ReadModel("objects\\barrier2.mod");
+        pModFile->ReadModel("data/models/barrier2.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(0, pos);
         SetAngleY(0, angle);
@@ -3497,7 +3497,7 @@ bool CObject::CreateBarrier(Math::Vector pos, float angle, float height,
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
-        pModFile->ReadModel("objects\\barrier3.mod");
+        pModFile->ReadModel("data/models/barrier3.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(0, pos);
         SetAngleY(0, angle);
@@ -3547,11 +3547,11 @@ bool CObject::CreatePlant(Math::Vector pos, float angle, float height,
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
-        if ( type == OBJECT_PLANT0 )  pModFile->ReadModel("objects\\plant0.mod");
-        if ( type == OBJECT_PLANT1 )  pModFile->ReadModel("objects\\plant1.mod");
-        if ( type == OBJECT_PLANT2 )  pModFile->ReadModel("objects\\plant2.mod");
-        if ( type == OBJECT_PLANT3 )  pModFile->ReadModel("objects\\plant3.mod");
-        if ( type == OBJECT_PLANT4 )  pModFile->ReadModel("objects\\plant4.mod");
+        if ( type == OBJECT_PLANT0 )  pModFile->ReadModel("data/models/plant0.mod");
+        if ( type == OBJECT_PLANT1 )  pModFile->ReadModel("data/models/plant1.mod");
+        if ( type == OBJECT_PLANT2 )  pModFile->ReadModel("data/models/plant2.mod");
+        if ( type == OBJECT_PLANT3 )  pModFile->ReadModel("data/models/plant3.mod");
+        if ( type == OBJECT_PLANT4 )  pModFile->ReadModel("data/models/plant4.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(0, pos);
         SetAngleY(0, angle);
@@ -3572,9 +3572,9 @@ bool CObject::CreatePlant(Math::Vector pos, float angle, float height,
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
-        if ( type == OBJECT_PLANT5 )  pModFile->ReadModel("objects\\plant5.mod");
-        if ( type == OBJECT_PLANT6 )  pModFile->ReadModel("objects\\plant6.mod");
-        if ( type == OBJECT_PLANT7 )  pModFile->ReadModel("objects\\plant7.mod");
+        if ( type == OBJECT_PLANT5 )  pModFile->ReadModel("data/models/plant5.mod");
+        if ( type == OBJECT_PLANT6 )  pModFile->ReadModel("data/models/plant6.mod");
+        if ( type == OBJECT_PLANT7 )  pModFile->ReadModel("data/models/plant7.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(0, pos);
         SetAngleY(0, angle);
@@ -3591,8 +3591,8 @@ bool CObject::CreatePlant(Math::Vector pos, float angle, float height,
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
-        if ( type == OBJECT_PLANT8 )  pModFile->ReadModel("objects\\plant8.mod");
-        if ( type == OBJECT_PLANT9 )  pModFile->ReadModel("objects\\plant9.mod");
+        if ( type == OBJECT_PLANT8 )  pModFile->ReadModel("data/models/plant8.mod");
+        if ( type == OBJECT_PLANT9 )  pModFile->ReadModel("data/models/plant9.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(0, pos);
         SetAngleY(0, angle);
@@ -3612,11 +3612,11 @@ bool CObject::CreatePlant(Math::Vector pos, float angle, float height,
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
-        if ( type == OBJECT_PLANT10 )  pModFile->ReadModel("objects\\plant10.mod");
-        if ( type == OBJECT_PLANT11 )  pModFile->ReadModel("objects\\plant11.mod");
-        if ( type == OBJECT_PLANT12 )  pModFile->ReadModel("objects\\plant12.mod");
-        if ( type == OBJECT_PLANT13 )  pModFile->ReadModel("objects\\plant13.mod");
-        if ( type == OBJECT_PLANT14 )  pModFile->ReadModel("objects\\plant14.mod");
+        if ( type == OBJECT_PLANT10 )  pModFile->ReadModel("data/models/plant10.mod");
+        if ( type == OBJECT_PLANT11 )  pModFile->ReadModel("data/models/plant11.mod");
+        if ( type == OBJECT_PLANT12 )  pModFile->ReadModel("data/models/plant12.mod");
+        if ( type == OBJECT_PLANT13 )  pModFile->ReadModel("data/models/plant13.mod");
+        if ( type == OBJECT_PLANT14 )  pModFile->ReadModel("data/models/plant14.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(0, pos);
         SetAngleY(0, angle);
@@ -3637,11 +3637,11 @@ bool CObject::CreatePlant(Math::Vector pos, float angle, float height,
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
-        if ( type == OBJECT_PLANT15 )  pModFile->ReadModel("objects\\plant15.mod");
-        if ( type == OBJECT_PLANT16 )  pModFile->ReadModel("objects\\plant16.mod");
-        if ( type == OBJECT_PLANT17 )  pModFile->ReadModel("objects\\plant17.mod");
-        if ( type == OBJECT_PLANT18 )  pModFile->ReadModel("objects\\plant18.mod");
-        if ( type == OBJECT_PLANT19 )  pModFile->ReadModel("objects\\plant19.mod");
+        if ( type == OBJECT_PLANT15 )  pModFile->ReadModel("data/models/plant15.mod");
+        if ( type == OBJECT_PLANT16 )  pModFile->ReadModel("data/models/plant16.mod");
+        if ( type == OBJECT_PLANT17 )  pModFile->ReadModel("data/models/plant17.mod");
+        if ( type == OBJECT_PLANT18 )  pModFile->ReadModel("data/models/plant18.mod");
+        if ( type == OBJECT_PLANT19 )  pModFile->ReadModel("data/models/plant19.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(0, pos);
         SetAngleY(0, angle);
@@ -3661,7 +3661,7 @@ bool CObject::CreatePlant(Math::Vector pos, float angle, float height,
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
-        pModFile->ReadModel("objects\\tree0.mod");
+        pModFile->ReadModel("data/models/tree0.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(0, pos);
         SetAngleY(0, angle);
@@ -3679,7 +3679,7 @@ bool CObject::CreatePlant(Math::Vector pos, float angle, float height,
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
-        pModFile->ReadModel("objects\\tree1.mod");
+        pModFile->ReadModel("data/models/tree1.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(0, pos);
         SetAngleY(0, angle);
@@ -3698,7 +3698,7 @@ bool CObject::CreatePlant(Math::Vector pos, float angle, float height,
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
-        pModFile->ReadModel("objects\\tree2.mod");
+        pModFile->ReadModel("data/models/tree2.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(0, pos);
         SetAngleY(0, angle);
@@ -3717,7 +3717,7 @@ bool CObject::CreatePlant(Math::Vector pos, float angle, float height,
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
-        pModFile->ReadModel("objects\\tree3.mod");
+        pModFile->ReadModel("data/models/tree3.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(0, pos);
         SetAngleY(0, angle);
@@ -3735,7 +3735,7 @@ bool CObject::CreatePlant(Math::Vector pos, float angle, float height,
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
-        pModFile->ReadModel("objects\\tree4.mod");
+        pModFile->ReadModel("data/models/tree4.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(0, pos);
         SetAngleY(0, angle);
@@ -3752,7 +3752,7 @@ bool CObject::CreatePlant(Math::Vector pos, float angle, float height,
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
-        pModFile->ReadModel("objects\\tree5.mod");
+        pModFile->ReadModel("data/models/tree5.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(0, pos);
         SetAngleY(0, angle);
@@ -3795,7 +3795,7 @@ bool CObject::CreateMushroom(Math::Vector pos, float angle, float height,
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
-        pModFile->ReadModel("objects\\mush1.mod");
+        pModFile->ReadModel("data/models/mush1.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(0, pos);
         SetAngleY(0, angle);
@@ -3812,7 +3812,7 @@ bool CObject::CreateMushroom(Math::Vector pos, float angle, float height,
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
-        pModFile->ReadModel("objects\\mush2.mod");
+        pModFile->ReadModel("data/models/mush2.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(0, pos);
         SetAngleY(0, angle);
@@ -3861,7 +3861,7 @@ bool CObject::CreateTeen(Math::Vector pos, float angle, float zoom, float height
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
-        pModFile->ReadModel("objects\\teen0.mod");
+        pModFile->ReadModel("data/models/teen0.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(0, pos);
         SetAngleY(0, angle);
@@ -3881,7 +3881,7 @@ bool CObject::CreateTeen(Math::Vector pos, float angle, float zoom, float height
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
-        pModFile->ReadModel("objects\\teen1.mod");
+        pModFile->ReadModel("data/models/teen1.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(0, pos);
         SetAngleY(0, angle);
@@ -3903,7 +3903,7 @@ bool CObject::CreateTeen(Math::Vector pos, float angle, float zoom, float height
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
-        pModFile->ReadModel("objects\\teen2.mod");
+        pModFile->ReadModel("data/models/teen2.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(0, pos);
         SetAngleY(0, angle);
@@ -3926,7 +3926,7 @@ bool CObject::CreateTeen(Math::Vector pos, float angle, float zoom, float height
 //?     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_METAL);
         SetObjectRank(0, rank);
-        pModFile->ReadModel("objects\\teen3.mod");
+        pModFile->ReadModel("data/models/teen3.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(0, pos);
         SetAngleY(0, angle);
@@ -3942,7 +3942,7 @@ bool CObject::CreateTeen(Math::Vector pos, float angle, float zoom, float height
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
-        pModFile->ReadModel("objects\\teen4.mod");
+        pModFile->ReadModel("data/models/teen4.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(0, pos);
         SetAngleY(0, angle);
@@ -3964,7 +3964,7 @@ bool CObject::CreateTeen(Math::Vector pos, float angle, float zoom, float height
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
-        pModFile->ReadModel("objects\\teen5.mod");
+        pModFile->ReadModel("data/models/teen5.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(0, pos);
         SetAngleY(0, angle);
@@ -3981,7 +3981,7 @@ bool CObject::CreateTeen(Math::Vector pos, float angle, float zoom, float height
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
-        pModFile->ReadModel("objects\\teen6.mod");
+        pModFile->ReadModel("data/models/teen6.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(0, pos);
         SetAngleY(0, angle);
@@ -4002,7 +4002,7 @@ bool CObject::CreateTeen(Math::Vector pos, float angle, float zoom, float height
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
-        pModFile->ReadModel("objects\\teen7.mod");
+        pModFile->ReadModel("data/models/teen7.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(0, pos);
         SetAngleY(0, angle);
@@ -4023,7 +4023,7 @@ bool CObject::CreateTeen(Math::Vector pos, float angle, float zoom, float height
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
-        pModFile->ReadModel("objects\\teen8.mod");
+        pModFile->ReadModel("data/models/teen8.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(0, pos);
         SetAngleY(0, angle);
@@ -4045,7 +4045,7 @@ bool CObject::CreateTeen(Math::Vector pos, float angle, float zoom, float height
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
-        pModFile->ReadModel("objects\\teen9.mod");
+        pModFile->ReadModel("data/models/teen9.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(0, pos);
         SetAngleY(0, angle);
@@ -4067,7 +4067,7 @@ bool CObject::CreateTeen(Math::Vector pos, float angle, float zoom, float height
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
-        pModFile->ReadModel("objects\\teen10.mod");
+        pModFile->ReadModel("data/models/teen10.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(0, pos);
         SetAngleY(0, angle);
@@ -4093,7 +4093,7 @@ bool CObject::CreateTeen(Math::Vector pos, float angle, float zoom, float height
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
-        pModFile->ReadModel("objects\\teen11.mod");
+        pModFile->ReadModel("data/models/teen11.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(0, pos);
         SetAngleY(0, angle);
@@ -4118,7 +4118,7 @@ bool CObject::CreateTeen(Math::Vector pos, float angle, float zoom, float height
 //?     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_METAL);
         SetObjectRank(0, rank);
-        pModFile->ReadModel("objects\\teen12.mod");
+        pModFile->ReadModel("data/models/teen12.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(0, pos);
         SetAngleY(0, angle);
@@ -4134,7 +4134,7 @@ bool CObject::CreateTeen(Math::Vector pos, float angle, float zoom, float height
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
-        pModFile->ReadModel("objects\\teen13.mod");
+        pModFile->ReadModel("data/models/teen13.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(0, pos);
         SetAngleY(0, angle);
@@ -4159,7 +4159,7 @@ bool CObject::CreateTeen(Math::Vector pos, float angle, float zoom, float height
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
-        pModFile->ReadModel("objects\\teen14.mod");
+        pModFile->ReadModel("data/models/teen14.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(0, pos);
         SetAngleY(0, angle);
@@ -4184,7 +4184,7 @@ bool CObject::CreateTeen(Math::Vector pos, float angle, float zoom, float height
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
-        pModFile->ReadModel("objects\\teen15.mod");
+        pModFile->ReadModel("data/models/teen15.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(0, pos);
         SetAngleY(0, angle);
@@ -4209,7 +4209,7 @@ bool CObject::CreateTeen(Math::Vector pos, float angle, float zoom, float height
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
-        pModFile->ReadModel("objects\\teen16.mod");
+        pModFile->ReadModel("data/models/teen16.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(0, pos);
         SetAngleY(0, angle);
@@ -4227,7 +4227,7 @@ bool CObject::CreateTeen(Math::Vector pos, float angle, float zoom, float height
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
-        pModFile->ReadModel("objects\\teen17.mod");
+        pModFile->ReadModel("data/models/teen17.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(0, pos);
         SetAngleY(0, angle);
@@ -4243,7 +4243,7 @@ bool CObject::CreateTeen(Math::Vector pos, float angle, float zoom, float height
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
-        pModFile->ReadModel("objects\\teen18.mod");
+        pModFile->ReadModel("data/models/teen18.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(0, pos);
         SetAngleY(0, angle);
@@ -4259,7 +4259,7 @@ bool CObject::CreateTeen(Math::Vector pos, float angle, float zoom, float height
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
-        pModFile->ReadModel("objects\\teen19.mod");
+        pModFile->ReadModel("data/models/teen19.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(0, pos);
         SetAngleY(0, angle);
@@ -4275,7 +4275,7 @@ bool CObject::CreateTeen(Math::Vector pos, float angle, float zoom, float height
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
-        pModFile->ReadModel("objects\\teen20.mod");
+        pModFile->ReadModel("data/models/teen20.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(0, pos);
         SetAngleY(0, angle);
@@ -4296,7 +4296,7 @@ bool CObject::CreateTeen(Math::Vector pos, float angle, float zoom, float height
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
-        pModFile->ReadModel("objects\\teen21.mod");
+        pModFile->ReadModel("data/models/teen21.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(0, pos);
         SetAngleY(0, angle);
@@ -4308,7 +4308,7 @@ bool CObject::CreateTeen(Math::Vector pos, float angle, float zoom, float height
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
-        pModFile->ReadModel("objects\\teen22.mod");
+        pModFile->ReadModel("data/models/teen22.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(0, pos);
         SetAngleY(0, angle);
@@ -4325,7 +4325,7 @@ bool CObject::CreateTeen(Math::Vector pos, float angle, float zoom, float height
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
-        pModFile->ReadModel("objects\\teen23.mod");
+        pModFile->ReadModel("data/models/teen23.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(0, pos);
         SetAngleY(0, angle);
@@ -4352,7 +4352,7 @@ bool CObject::CreateTeen(Math::Vector pos, float angle, float zoom, float height
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
-        pModFile->ReadModel("objects\\teen24.mod");
+        pModFile->ReadModel("data/models/teen24.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(0, pos);
         SetAngleY(0, angle);
@@ -4368,7 +4368,7 @@ bool CObject::CreateTeen(Math::Vector pos, float angle, float zoom, float height
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
-        pModFile->ReadModel("objects\\teen25.mod");
+        pModFile->ReadModel("data/models/teen25.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(0, pos);
         SetAngleY(0, angle);
@@ -4384,7 +4384,7 @@ bool CObject::CreateTeen(Math::Vector pos, float angle, float zoom, float height
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
-        pModFile->ReadModel("objects\\teen26.mod");
+        pModFile->ReadModel("data/models/teen26.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(0, pos);
         SetAngleY(0, angle);
@@ -4408,7 +4408,7 @@ bool CObject::CreateTeen(Math::Vector pos, float angle, float zoom, float height
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
-        pModFile->ReadModel("objects\\teen27.mod");
+        pModFile->ReadModel("data/models/teen27.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(0, pos);
         SetAngleY(0, angle);
@@ -4424,7 +4424,7 @@ bool CObject::CreateTeen(Math::Vector pos, float angle, float zoom, float height
 //?     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_METAL);
         SetObjectRank(0, rank);
-        pModFile->ReadModel("objects\\teen28.mod");
+        pModFile->ReadModel("data/models/teen28.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(0, pos);
         SetAngleY(0, angle);
@@ -4439,7 +4439,7 @@ bool CObject::CreateTeen(Math::Vector pos, float angle, float zoom, float height
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
-        pModFile->ReadModel("objects\\teen29.mod");
+        pModFile->ReadModel("data/models/teen29.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(0, pos);
         SetAngleY(0, angle);
@@ -4452,7 +4452,7 @@ bool CObject::CreateTeen(Math::Vector pos, float angle, float zoom, float height
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
-        pModFile->ReadModel("objects\\teen30.mod");
+        pModFile->ReadModel("data/models/teen30.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(0, pos);
         SetAngleY(0, angle);
@@ -4468,7 +4468,7 @@ bool CObject::CreateTeen(Math::Vector pos, float angle, float zoom, float height
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
-        pModFile->ReadModel("objects\\teen31.mod");
+        pModFile->ReadModel("data/models/teen31.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(0, pos);
         SetAngleY(0, angle);
@@ -4487,7 +4487,7 @@ bool CObject::CreateTeen(Math::Vector pos, float angle, float zoom, float height
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
-        pModFile->ReadModel("objects\\teen32.mod");
+        pModFile->ReadModel("data/models/teen32.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(0, pos);
         SetAngleY(0, angle);
@@ -4506,7 +4506,7 @@ bool CObject::CreateTeen(Math::Vector pos, float angle, float zoom, float height
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
-        pModFile->ReadModel("objects\\teen33.mod");
+        pModFile->ReadModel("data/models/teen33.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(0, pos);
         SetAngleY(0, angle);
@@ -4521,7 +4521,7 @@ bool CObject::CreateTeen(Math::Vector pos, float angle, float zoom, float height
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
-        pModFile->ReadModel("objects\\teen34.mod");
+        pModFile->ReadModel("data/models/teen34.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(0, pos);
         SetAngleY(0, angle);
@@ -4536,7 +4536,7 @@ bool CObject::CreateTeen(Math::Vector pos, float angle, float zoom, float height
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
-        pModFile->ReadModel("objects\\teen35.mod");
+        pModFile->ReadModel("data/models/teen35.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(0, pos);
         SetAngleY(0, angle);
@@ -4555,7 +4555,7 @@ bool CObject::CreateTeen(Math::Vector pos, float angle, float zoom, float height
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
-        pModFile->ReadModel("objects\\teen36.mod");
+        pModFile->ReadModel("data/models/teen36.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(0, pos);
         SetAngleY(0, angle);
@@ -4568,7 +4568,7 @@ bool CObject::CreateTeen(Math::Vector pos, float angle, float zoom, float height
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
-        pModFile->ReadModel("objects\\teen37.mod");
+        pModFile->ReadModel("data/models/teen37.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(0, pos);
         SetAngleY(0, angle);
@@ -4581,7 +4581,7 @@ bool CObject::CreateTeen(Math::Vector pos, float angle, float zoom, float height
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
-        pModFile->ReadModel("objects\\teen38a.mod");
+        pModFile->ReadModel("data/models/teen38a.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(0, pos);
         SetAngleY(0, angle);
@@ -4591,7 +4591,7 @@ bool CObject::CreateTeen(Math::Vector pos, float angle, float zoom, float height
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         SetObjectRank(1, rank);
         SetObjectParent(1, 0);
-        pModFile->ReadModel("objects\\teen38b.mod");  // engine
+        pModFile->ReadModel("data/models/teen38b.mod");  // engine
         pModFile->CreateEngineObject(rank);
         SetPosition(1, Math::Vector(0.0f, 30.0f, 0.0f));
 
@@ -4599,7 +4599,7 @@ bool CObject::CreateTeen(Math::Vector pos, float angle, float zoom, float height
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         SetObjectRank(2, rank);
         SetObjectParent(2, 1);
-        pModFile->ReadModel("objects\\teen38c.mod");  // propeller
+        pModFile->ReadModel("data/models/teen38c.mod");  // propeller
         pModFile->CreateEngineObject(rank);
         SetPosition(2, Math::Vector(0.0f, 0.0f, 0.0f));
 
@@ -4613,7 +4613,7 @@ bool CObject::CreateTeen(Math::Vector pos, float angle, float zoom, float height
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
-        pModFile->ReadModel("objects\\teen39.mod");
+        pModFile->ReadModel("data/models/teen39.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(0, pos);
         SetAngleY(0, angle);
@@ -4629,7 +4629,7 @@ bool CObject::CreateTeen(Math::Vector pos, float angle, float zoom, float height
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
-        pModFile->ReadModel("objects\\teen40.mod");
+        pModFile->ReadModel("data/models/teen40.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(0, pos);
         SetAngleY(0, angle);
@@ -4645,7 +4645,7 @@ bool CObject::CreateTeen(Math::Vector pos, float angle, float zoom, float height
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
-        pModFile->ReadModel("objects\\teen41.mod");
+        pModFile->ReadModel("data/models/teen41.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(0, pos);
         SetAngleY(0, angle);
@@ -4657,7 +4657,7 @@ bool CObject::CreateTeen(Math::Vector pos, float angle, float zoom, float height
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
-        pModFile->ReadModel("objects\\teen42.mod");
+        pModFile->ReadModel("data/models/teen42.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(0, pos);
         SetAngleY(0, angle);
@@ -4672,7 +4672,7 @@ bool CObject::CreateTeen(Math::Vector pos, float angle, float zoom, float height
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
-        pModFile->ReadModel("objects\\teen43.mod");
+        pModFile->ReadModel("data/models/teen43.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(0, pos);
         SetAngleY(0, angle);
@@ -4687,7 +4687,7 @@ bool CObject::CreateTeen(Math::Vector pos, float angle, float zoom, float height
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
-        pModFile->ReadModel("objects\\teen44.mod");
+        pModFile->ReadModel("data/models/teen44.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(0, pos);
         SetAngleY(0, angle);
@@ -4735,7 +4735,7 @@ bool CObject::CreateQuartz(Math::Vector pos, float angle, float height,
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_QUARTZ);
         SetObjectRank(0, rank);
-        pModFile->ReadModel("objects\\quartz0.mod");
+        pModFile->ReadModel("data/models/quartz0.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(0, pos);
         SetAngleY(0, angle);
@@ -4750,7 +4750,7 @@ bool CObject::CreateQuartz(Math::Vector pos, float angle, float height,
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_QUARTZ);
         SetObjectRank(0, rank);
-        pModFile->ReadModel("objects\\quartz1.mod");
+        pModFile->ReadModel("data/models/quartz1.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(0, pos);
         SetAngleY(0, angle);
@@ -4765,7 +4765,7 @@ bool CObject::CreateQuartz(Math::Vector pos, float angle, float height,
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_QUARTZ);
         SetObjectRank(0, rank);
-        pModFile->ReadModel("objects\\quartz2.mod");
+        pModFile->ReadModel("data/models/quartz2.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(0, pos);
         SetAngleY(0, angle);
@@ -4780,7 +4780,7 @@ bool CObject::CreateQuartz(Math::Vector pos, float angle, float height,
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_QUARTZ);
         SetObjectRank(0, rank);
-        pModFile->ReadModel("objects\\quartz3.mod");
+        pModFile->ReadModel("data/models/quartz3.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(0, pos);
         SetAngleY(0, angle);
@@ -4845,7 +4845,7 @@ bool CObject::CreateRoot(Math::Vector pos, float angle, float height,
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
-        pModFile->ReadModel("objects\\root0.mod");
+        pModFile->ReadModel("data/models/root0.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(0, pos);
         SetAngleY(0, angle);
@@ -4867,7 +4867,7 @@ bool CObject::CreateRoot(Math::Vector pos, float angle, float height,
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
-        pModFile->ReadModel("objects\\root1.mod");
+        pModFile->ReadModel("data/models/root1.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(0, pos);
         SetAngleY(0, angle);
@@ -4889,7 +4889,7 @@ bool CObject::CreateRoot(Math::Vector pos, float angle, float height,
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
-        pModFile->ReadModel("objects\\root2.mod");
+        pModFile->ReadModel("data/models/root2.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(0, pos);
         SetAngleY(0, angle);
@@ -4910,7 +4910,7 @@ bool CObject::CreateRoot(Math::Vector pos, float angle, float height,
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
-        pModFile->ReadModel("objects\\root3.mod");
+        pModFile->ReadModel("data/models/root3.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(0, pos);
         SetAngleY(0, angle);
@@ -4933,7 +4933,7 @@ bool CObject::CreateRoot(Math::Vector pos, float angle, float height,
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
-        pModFile->ReadModel("objects\\root4.mod");
+        pModFile->ReadModel("data/models/root4.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(0, pos);
         SetAngleY(0, angle);
@@ -4958,7 +4958,7 @@ bool CObject::CreateRoot(Math::Vector pos, float angle, float height,
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
-        pModFile->ReadModel("objects\\root4.mod");
+        pModFile->ReadModel("data/models/root4.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(0, pos);
         SetAngleY(0, angle);
@@ -4968,7 +4968,7 @@ bool CObject::CreateRoot(Math::Vector pos, float angle, float height,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         SetObjectRank(1, rank);
         SetObjectParent(1, 0);
-        pModFile->ReadModel("objects\\root5.mod");
+        pModFile->ReadModel("data/models/root5.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(1, Math::Vector(-5.0f, 28.0f, -4.0f));
         SetAngleX(1, -30.0f*Math::PI/180.0f);
@@ -5020,7 +5020,7 @@ bool CObject::CreateHome(Math::Vector pos, float angle, float height,
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
-        pModFile->ReadModel("objects\\home1.mod");
+        pModFile->ReadModel("data/models/home1.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(0, pos);
         SetAngleY(0, angle);
@@ -5063,19 +5063,19 @@ bool CObject::CreateRuin(Math::Vector pos, float angle, float height,
     SetObjectRank(0, rank);
 
     name[0] = 0;
-    if ( type == OBJECT_RUINmobilew1 )  strcpy(name, "objects\\ruin1.mod");
-    if ( type == OBJECT_RUINmobilew2 )  strcpy(name, "objects\\ruin1.mod");
-    if ( type == OBJECT_RUINmobilet1 )  strcpy(name, "objects\\ruin2.mod");
-    if ( type == OBJECT_RUINmobilet2 )  strcpy(name, "objects\\ruin2.mod");
-    if ( type == OBJECT_RUINmobiler1 )  strcpy(name, "objects\\ruin3.mod");
-    if ( type == OBJECT_RUINmobiler2 )  strcpy(name, "objects\\ruin3.mod");
-    if ( type == OBJECT_RUINfactory  )  strcpy(name, "objects\\ruin4.mod");
-    if ( type == OBJECT_RUINdoor     )  strcpy(name, "objects\\ruin5.mod");
-    if ( type == OBJECT_RUINsupport  )  strcpy(name, "objects\\ruin6.mod");
-    if ( type == OBJECT_RUINradar    )  strcpy(name, "objects\\ruin7.mod");
-    if ( type == OBJECT_RUINconvert  )  strcpy(name, "objects\\ruin8.mod");
-    if ( type == OBJECT_RUINbase     )  strcpy(name, "objects\\ruin9.mod");
-    if ( type == OBJECT_RUINhead     )  strcpy(name, "objects\\ruin10.mod");
+    if ( type == OBJECT_RUINmobilew1 )  strcpy(name, "data/models/ruin1.mod");
+    if ( type == OBJECT_RUINmobilew2 )  strcpy(name, "data/models/ruin1.mod");
+    if ( type == OBJECT_RUINmobilet1 )  strcpy(name, "data/models/ruin2.mod");
+    if ( type == OBJECT_RUINmobilet2 )  strcpy(name, "data/models/ruin2.mod");
+    if ( type == OBJECT_RUINmobiler1 )  strcpy(name, "data/models/ruin3.mod");
+    if ( type == OBJECT_RUINmobiler2 )  strcpy(name, "data/models/ruin3.mod");
+    if ( type == OBJECT_RUINfactory  )  strcpy(name, "data/models/ruin4.mod");
+    if ( type == OBJECT_RUINdoor     )  strcpy(name, "data/models/ruin5.mod");
+    if ( type == OBJECT_RUINsupport  )  strcpy(name, "data/models/ruin6.mod");
+    if ( type == OBJECT_RUINradar    )  strcpy(name, "data/models/ruin7.mod");
+    if ( type == OBJECT_RUINconvert  )  strcpy(name, "data/models/ruin8.mod");
+    if ( type == OBJECT_RUINbase     )  strcpy(name, "data/models/ruin9.mod");
+    if ( type == OBJECT_RUINhead     )  strcpy(name, "data/models/ruin10.mod");
 
     pModFile->ReadModel(name);
     pModFile->CreateEngineObject(rank);
@@ -5091,7 +5091,7 @@ bool CObject::CreateRuin(Math::Vector pos, float angle, float height,
         SetObjectRank(6, rank);
         SetObjectParent(6, 0);
 
-        pModFile->ReadModel("objects\\ruin1w.mod");
+        pModFile->ReadModel("data/models/ruin1w.mod");
         pModFile->CreateEngineObject(rank);
 
         SetPosition(6, Math::Vector(-3.0f, 1.8f, -4.0f));
@@ -5103,7 +5103,7 @@ bool CObject::CreateRuin(Math::Vector pos, float angle, float height,
         SetObjectRank(7, rank);
         SetObjectParent(7, 0);
 
-        pModFile->ReadModel("objects\\ruin1w.mod");
+        pModFile->ReadModel("data/models/ruin1w.mod");
         pModFile->CreateEngineObject(rank);
 
         SetPosition(7, Math::Vector(-3.0f, 1.0f, 3.0f));
@@ -5116,7 +5116,7 @@ bool CObject::CreateRuin(Math::Vector pos, float angle, float height,
         SetObjectRank(8, rank);
         SetObjectParent(8, 0);
 
-        pModFile->ReadModel("objects\\ruin1w.mod");
+        pModFile->ReadModel("data/models/ruin1w.mod");
         pModFile->CreateEngineObject(rank);
 
         SetPosition(8, Math::Vector(2.0f, 1.6f, -3.0f));
@@ -5128,7 +5128,7 @@ bool CObject::CreateRuin(Math::Vector pos, float angle, float height,
         SetObjectRank(9, rank);
         SetObjectParent(9, 0);
 
-        pModFile->ReadModel("objects\\ruin1w.mod");
+        pModFile->ReadModel("data/models/ruin1w.mod");
         pModFile->CreateEngineObject(rank);
 
         SetPosition(9, Math::Vector(2.0f, 1.0f, 3.0f));
@@ -5149,7 +5149,7 @@ bool CObject::CreateRuin(Math::Vector pos, float angle, float height,
         SetObjectRank(7, rank);
         SetObjectParent(7, 0);
 
-        pModFile->ReadModel("objects\\ruin1w.mod");
+        pModFile->ReadModel("data/models/ruin1w.mod");
         pModFile->CreateEngineObject(rank);
 
         SetPosition(7, Math::Vector(-3.0f, 1.0f, 3.0f));
@@ -5162,7 +5162,7 @@ bool CObject::CreateRuin(Math::Vector pos, float angle, float height,
         SetObjectRank(9, rank);
         SetObjectParent(9, 0);
 
-        pModFile->ReadModel("objects\\ruin1w.mod");
+        pModFile->ReadModel("data/models/ruin1w.mod");
         pModFile->CreateEngineObject(rank);
 
         SetPosition(9, Math::Vector(2.0f, 1.0f, 3.0f));
@@ -5183,7 +5183,7 @@ bool CObject::CreateRuin(Math::Vector pos, float angle, float height,
         SetObjectRank(1, rank);
         SetObjectParent(1, 0);
 
-        pModFile->ReadModel("objects\\ruin2c.mod");
+        pModFile->ReadModel("data/models/ruin2c.mod");
         pModFile->CreateEngineObject(rank);
 
         SetPosition(1, Math::Vector(3.0f, 5.0f, -2.5f));
@@ -5486,7 +5486,7 @@ bool CObject::CreateApollo(Math::Vector pos, float angle, ObjectType type)
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);  // it is a stationary object
         SetObjectRank(0, rank);
-        pModFile->ReadModel("objects\\apollol1.mod");
+        pModFile->ReadModel("data/models/apollol1.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(0, pos);
         SetAngleY(0, angle);
@@ -5499,7 +5499,7 @@ bool CObject::CreateApollo(Math::Vector pos, float angle, ObjectType type)
             m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
             SetObjectRank(i+1, rank);
             SetObjectParent(i+1, 0);
-            pModFile->ReadModel("objects\\apollol2.mod");
+            pModFile->ReadModel("data/models/apollol2.mod");
             pModFile->CreateEngineObject(rank);
             SetAngleY(i+1, Math::PI/2.0f*i);
         }
@@ -5508,7 +5508,7 @@ bool CObject::CreateApollo(Math::Vector pos, float angle, ObjectType type)
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         SetObjectRank(5, rank);
         SetObjectParent(5, 0);
-        pModFile->ReadModel("objects\\apollol3.mod");  // ladder
+        pModFile->ReadModel("data/models/apollol3.mod");  // ladder
         pModFile->CreateEngineObject(rank);
 
 //?     m_terrain->AddBuildingLevel(pos, 10.0f, 13.0f, 12.0f, 0.0f);
@@ -5529,7 +5529,7 @@ bool CObject::CreateApollo(Math::Vector pos, float angle, ObjectType type)
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);  //it is a stationary object
         SetObjectRank(0, rank);
-        pModFile->ReadModel("objects\\apolloj1.mod");
+        pModFile->ReadModel("data/models/apolloj1.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(0, pos);
         SetAngleY(0, angle);
@@ -5540,7 +5540,7 @@ bool CObject::CreateApollo(Math::Vector pos, float angle, ObjectType type)
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         SetObjectRank(1, rank);
         SetObjectParent(1, 0);
-        pModFile->ReadModel("objects\\apolloj4.mod");  // wheel
+        pModFile->ReadModel("data/models/apolloj4.mod");  // wheel
         pModFile->CreateEngineObject(rank);
         SetPosition(1, Math::Vector(-5.75f, 1.65f, -5.0f));
 
@@ -5548,7 +5548,7 @@ bool CObject::CreateApollo(Math::Vector pos, float angle, ObjectType type)
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         SetObjectRank(2, rank);
         SetObjectParent(2, 0);
-        pModFile->ReadModel("objects\\apolloj4.mod");  // wheel
+        pModFile->ReadModel("data/models/apolloj4.mod");  // wheel
         pModFile->CreateEngineObject(rank);
         SetPosition(2, Math::Vector(-5.75f, 1.65f, 5.0f));
 
@@ -5556,7 +5556,7 @@ bool CObject::CreateApollo(Math::Vector pos, float angle, ObjectType type)
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         SetObjectRank(3, rank);
         SetObjectParent(3, 0);
-        pModFile->ReadModel("objects\\apolloj4.mod");  // wheel
+        pModFile->ReadModel("data/models/apolloj4.mod");  // wheel
         pModFile->CreateEngineObject(rank);
         SetPosition(3, Math::Vector(5.75f, 1.65f, -5.0f));
 
@@ -5564,7 +5564,7 @@ bool CObject::CreateApollo(Math::Vector pos, float angle, ObjectType type)
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         SetObjectRank(4, rank);
         SetObjectParent(4, 0);
-        pModFile->ReadModel("objects\\apolloj4.mod");  // wheel
+        pModFile->ReadModel("data/models/apolloj4.mod");  // wheel
         pModFile->CreateEngineObject(rank);
         SetPosition(4, Math::Vector(5.75f, 1.65f, 5.0f));
 
@@ -5573,7 +5573,7 @@ bool CObject::CreateApollo(Math::Vector pos, float angle, ObjectType type)
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         SetObjectRank(5, rank);
         SetObjectParent(5, 0);
-        pModFile->ReadModel("objects\\apolloj2.mod");  // antenna
+        pModFile->ReadModel("data/models/apolloj2.mod");  // antenna
         pModFile->CreateEngineObject(rank);
         SetPosition(5, Math::Vector(5.5f, 8.8f, 2.0f));
         SetAngleY(5, -120.0f*Math::PI/180.0f);
@@ -5583,7 +5583,7 @@ bool CObject::CreateApollo(Math::Vector pos, float angle, ObjectType type)
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         SetObjectRank(6, rank);
         SetObjectParent(6, 0);
-        pModFile->ReadModel("objects\\apolloj3.mod");  // camera
+        pModFile->ReadModel("data/models/apolloj3.mod");  // camera
         pModFile->CreateEngineObject(rank);
         SetPosition(6, Math::Vector(5.5f, 2.8f, -2.0f));
         SetAngleY(6, 30.0f*Math::PI/180.0f);
@@ -5602,7 +5602,7 @@ bool CObject::CreateApollo(Math::Vector pos, float angle, ObjectType type)
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);  // it is a stationary object
         SetObjectRank(0, rank);
-        pModFile->ReadModel("objects\\apollof.mod");
+        pModFile->ReadModel("data/models/apollof.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(0, pos);
         SetAngleY(0, angle);
@@ -5617,7 +5617,7 @@ bool CObject::CreateApollo(Math::Vector pos, float angle, ObjectType type)
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);  // it is a stationary object
         SetObjectRank(0, rank);
-        pModFile->ReadModel("objects\\apollom.mod");
+        pModFile->ReadModel("data/models/apollom.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(0, pos);
         SetAngleY(0, angle);
@@ -5634,7 +5634,7 @@ bool CObject::CreateApollo(Math::Vector pos, float angle, ObjectType type)
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);  // it is a stationary object
         SetObjectRank(0, rank);
-        pModFile->ReadModel("objects\\apolloa.mod");
+        pModFile->ReadModel("data/models/apolloa.mod");
         pModFile->CreateEngineObject(rank);
         SetPosition(0, pos);
         SetAngleY(0, angle);
@@ -5644,7 +5644,7 @@ bool CObject::CreateApollo(Math::Vector pos, float angle, ObjectType type)
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         SetObjectRank(1, rank);
         SetObjectParent(1, 0);
-        pModFile->ReadModel("objects\\apolloj2.mod");  // antenna
+        pModFile->ReadModel("data/models/apolloj2.mod");  // antenna
         pModFile->CreateEngineObject(rank);
         SetPosition(1, Math::Vector(0.0f, 5.0f, 0.0f));
         SetAngleY(1, -120.0f*Math::PI/180.0f);

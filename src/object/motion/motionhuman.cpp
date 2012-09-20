@@ -110,7 +110,7 @@ bool CMotionHuman::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_VEHICULE);  // this is a moving object
         m_object->SetObjectRank(0, rank);
         face = m_main->GetGamerFace();
-        sprintf(filename, "objects\\human2h%d.mod", face+1);
+        sprintf(filename, "data/models/human2h%d.mod", face+1);
         pModFile->ReadModel(filename);
         pModFile->CreateEngineObject(rank);
 
@@ -121,7 +121,7 @@ bool CMotionHuman::Create(Math::Vector pos, float angle, ObjectType type,
             m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
             m_object->SetObjectRank(1, rank);
             m_object->SetObjectParent(1, 0);
-            sprintf(filename, "objects\\human2g%d.mod", glasses);
+            sprintf(filename, "data/models/human2g%d.mod", glasses);
             pModFile->ReadModel(filename);
             pModFile->CreateEngineObject(rank);
         }
@@ -142,15 +142,15 @@ bool CMotionHuman::Create(Math::Vector pos, float angle, ObjectType type,
 
     if ( option == 0 )  // head in helmet?
     {
-        pModFile->ReadModel("objects\\human1c.mod");
+        pModFile->ReadModel("data/models/human1c.mod");
     }
     if ( option == 1 )  // head without helmet?
     {
-        pModFile->ReadModel("objects\\human1h.mod");
+        pModFile->ReadModel("data/models/human1h.mod");
     }
     if ( option == 2 )  // without a backpack?
     {
-        pModFile->ReadModel("objects\\human1v.mod");
+        pModFile->ReadModel("data/models/human1v.mod");
     }
     pModFile->CreateEngineObject(rank);
 
@@ -172,20 +172,20 @@ bool CMotionHuman::Create(Math::Vector pos, float angle, ObjectType type,
         if ( option == 0 )  // head in helmet?
         {
             face = m_main->GetGamerFace();
-            sprintf(filename, "objects\\human2c%d.mod", face+1);
+            sprintf(filename, "data/models/human2c%d.mod", face+1);
             pModFile->ReadModel(filename);
         }
         if ( option == 1 ||  // head without helmet?
              option == 2 )   // without a backpack?
         {
             face = m_main->GetGamerFace();
-            sprintf(filename, "objects\\human2h%d.mod", face+1);
+            sprintf(filename, "data/models/human2h%d.mod", face+1);
             pModFile->ReadModel(filename);
         }
     }
     if ( type == OBJECT_TECH )
     {
-        pModFile->ReadModel("objects\\human2t.mod");
+        pModFile->ReadModel("data/models/human2t.mod");
     }
     pModFile->CreateEngineObject(rank);
     m_object->SetPosition(1, Math::Vector(0.0f, 2.7f, 0.0f));
@@ -203,7 +203,7 @@ bool CMotionHuman::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(15, rank);
         m_object->SetObjectParent(15, 1);
-        sprintf(filename, "objects\\human2g%d.mod", glasses);
+        sprintf(filename, "data/models/human2g%d.mod", glasses);
         pModFile->ReadModel(filename);
         pModFile->CreateEngineObject(rank);
     }
@@ -213,7 +213,7 @@ bool CMotionHuman::Create(Math::Vector pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(2, rank);
     m_object->SetObjectParent(2, 0);
-    pModFile->ReadModel("objects\\human3.mod");
+    pModFile->ReadModel("data/models/human3.mod");
     pModFile->CreateEngineObject(rank);
     m_object->SetPosition(2, Math::Vector(0.0f, 2.3f, -1.2f));
     m_object->SetAngle(2, Math::Vector(90.0f*Math::PI/180.0f, 90.0f*Math::PI/180.0f, -50.0f*Math::PI/180.0f));
@@ -223,7 +223,7 @@ bool CMotionHuman::Create(Math::Vector pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(3, rank);
     m_object->SetObjectParent(3, 2);
-    pModFile->ReadModel("objects\\human4r.mod");
+    pModFile->ReadModel("data/models/human4r.mod");
     pModFile->CreateEngineObject(rank);
     m_object->SetPosition(3, Math::Vector(1.3f, 0.0f, 0.0f));
     m_object->SetAngle(3, Math::Vector(0.0f*Math::PI/180.0f, -20.0f*Math::PI/180.0f, 0.0f*Math::PI/180.0f));
@@ -233,7 +233,7 @@ bool CMotionHuman::Create(Math::Vector pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(4, rank);
     m_object->SetObjectParent(4, 3);
-    pModFile->ReadModel("objects\\human5.mod");
+    pModFile->ReadModel("data/models/human5.mod");
     pModFile->CreateEngineObject(rank);
     m_object->SetPosition(4, Math::Vector(1.2f, 0.0f, 0.0f));
 
@@ -242,7 +242,7 @@ bool CMotionHuman::Create(Math::Vector pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(5, rank);
     m_object->SetObjectParent(5, 0);
-    pModFile->ReadModel("objects\\human6.mod");
+    pModFile->ReadModel("data/models/human6.mod");
     pModFile->CreateEngineObject(rank);
     m_object->SetPosition(5, Math::Vector(0.0f, 0.0f, -0.7f));
     m_object->SetAngle(5, Math::Vector(10.0f*Math::PI/180.0f, 0.0f*Math::PI/180.0f, 5.0f*Math::PI/180.0f));
@@ -252,7 +252,7 @@ bool CMotionHuman::Create(Math::Vector pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(6, rank);
     m_object->SetObjectParent(6, 5);
-    pModFile->ReadModel("objects\\human7.mod");
+    pModFile->ReadModel("data/models/human7.mod");
     pModFile->CreateEngineObject(rank);
     m_object->SetPosition(6, Math::Vector(0.0f, -1.5f, 0.0f));
     m_object->SetAngle(6, Math::Vector(0.0f*Math::PI/180.0f, 0.0f*Math::PI/180.0f, -10.0f*Math::PI/180.0f));
@@ -262,7 +262,7 @@ bool CMotionHuman::Create(Math::Vector pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(7, rank);
     m_object->SetObjectParent(7, 6);
-    pModFile->ReadModel("objects\\human8.mod");
+    pModFile->ReadModel("data/models/human8.mod");
     pModFile->CreateEngineObject(rank);
     m_object->SetPosition(7, Math::Vector(0.0f, -1.5f, 0.0f));
     m_object->SetAngle(7, Math::Vector(-10.0f*Math::PI/180.0f, 5.0f*Math::PI/180.0f, 5.0f*Math::PI/180.0f));
@@ -272,7 +272,7 @@ bool CMotionHuman::Create(Math::Vector pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(8, rank);
     m_object->SetObjectParent(8, 0);
-    pModFile->ReadModel("objects\\human3.mod");
+    pModFile->ReadModel("data/models/human3.mod");
     pModFile->Mirror();
     pModFile->CreateEngineObject(rank);
     m_object->SetPosition(8, Math::Vector(0.0f, 2.3f, 1.2f));
@@ -283,7 +283,7 @@ bool CMotionHuman::Create(Math::Vector pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(9, rank);
     m_object->SetObjectParent(9, 8);
-    pModFile->ReadModel("objects\\human4l.mod");
+    pModFile->ReadModel("data/models/human4l.mod");
     pModFile->Mirror();
     pModFile->CreateEngineObject(rank);
     m_object->SetPosition(9, Math::Vector(1.3f, 0.0f, 0.0f));
@@ -294,7 +294,7 @@ bool CMotionHuman::Create(Math::Vector pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(10, rank);
     m_object->SetObjectParent(10, 9);
-    pModFile->ReadModel("objects\\human5.mod");
+    pModFile->ReadModel("data/models/human5.mod");
     pModFile->Mirror();
     pModFile->CreateEngineObject(rank);
     m_object->SetPosition(10, Math::Vector(1.2f, 0.0f, 0.0f));
@@ -304,7 +304,7 @@ bool CMotionHuman::Create(Math::Vector pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(11, rank);
     m_object->SetObjectParent(11, 0);
-    pModFile->ReadModel("objects\\human6.mod");
+    pModFile->ReadModel("data/models/human6.mod");
     pModFile->Mirror();
     pModFile->CreateEngineObject(rank);
     m_object->SetPosition(11, Math::Vector(0.0f, 0.0f, 0.7f));
@@ -315,7 +315,7 @@ bool CMotionHuman::Create(Math::Vector pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(12, rank);
     m_object->SetObjectParent(12, 11);
-    pModFile->ReadModel("objects\\human7.mod");
+    pModFile->ReadModel("data/models/human7.mod");
     pModFile->Mirror();
     pModFile->CreateEngineObject(rank);
     m_object->SetPosition(12, Math::Vector(0.0f, -1.5f, 0.0f));
@@ -326,7 +326,7 @@ bool CMotionHuman::Create(Math::Vector pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(13, rank);
     m_object->SetObjectParent(13, 12);
-    pModFile->ReadModel("objects\\human8.mod");
+    pModFile->ReadModel("data/models/human8.mod");
     pModFile->Mirror();
     pModFile->CreateEngineObject(rank);
     m_object->SetPosition(13, Math::Vector(0.0f, -1.5f, 0.0f));
@@ -339,7 +339,7 @@ bool CMotionHuman::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(14, rank);
         m_object->SetObjectParent(14, 0);
-        pModFile->ReadModel("objects\\human9.mod");
+        pModFile->ReadModel("data/models/human9.mod");
         pModFile->CreateEngineObject(rank);
         m_object->SetPosition(14, Math::Vector(-1.5f, 0.3f, -1.35f));
         m_object->SetAngleZ(14, Math::PI);

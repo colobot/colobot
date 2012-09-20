@@ -111,14 +111,14 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
          type == OBJECT_MOBILEfi ||
          type == OBJECT_MOBILEfs )
     {
-        pModFile->ReadModel("objects\\lem1f.mod");
+        pModFile->ReadModel("data/models/lem1f.mod");
     }
     if ( type == OBJECT_MOBILEta ||
          type == OBJECT_MOBILEtc ||
          type == OBJECT_MOBILEti ||
          type == OBJECT_MOBILEts )
     {
-        pModFile->ReadModel("objects\\lem1t.mod");
+        pModFile->ReadModel("data/models/lem1t.mod");
     }
     if ( type == OBJECT_MOBILEwa ||
          type == OBJECT_MOBILEwc ||
@@ -127,11 +127,11 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
     {
         if ( m_object->GetTrainer() )
         {
-            pModFile->ReadModel("objects\\lem1wt.mod");
+            pModFile->ReadModel("data/models/lem1wt.mod");
         }
         else
         {
-            pModFile->ReadModel("objects\\lem1w.mod");
+            pModFile->ReadModel("data/models/lem1w.mod");
         }
     }
     if ( type == OBJECT_MOBILEia ||
@@ -139,46 +139,46 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
          type == OBJECT_MOBILEii ||
          type == OBJECT_MOBILEis )
     {
-        pModFile->ReadModel("objects\\lem1i.mod");
+        pModFile->ReadModel("data/models/lem1i.mod");
     }
     if ( type == OBJECT_MOBILErt ||
          type == OBJECT_MOBILErc ||
          type == OBJECT_MOBILErr ||
          type == OBJECT_MOBILErs )
     {
-        pModFile->ReadModel("objects\\roller1.mod");
+        pModFile->ReadModel("data/models/roller1.mod");
     }
     if ( type == OBJECT_MOBILEsa )
     {
-        pModFile->ReadModel("objects\\subm1.mod");
+        pModFile->ReadModel("data/models/subm1.mod");
     }
     if ( type == OBJECT_MOBILEtg )
     {
-        pModFile->ReadModel("objects\\target.mod");
+        pModFile->ReadModel("data/models/target.mod");
     }
     if ( type == OBJECT_MOBILEwt )
     {
-        pModFile->ReadModel("objects\\trainerw.mod");
+        pModFile->ReadModel("data/models/trainerw.mod");
     }
     if ( type == OBJECT_MOBILEft )
     {
-        pModFile->ReadModel("objects\\trainerf.mod");
+        pModFile->ReadModel("data/models/trainerf.mod");
     }
     if ( type == OBJECT_MOBILEtt )
     {
-        pModFile->ReadModel("objects\\trainert.mod");
+        pModFile->ReadModel("data/models/trainert.mod");
     }
     if ( type == OBJECT_MOBILEit )
     {
-        pModFile->ReadModel("objects\\traineri.mod");
+        pModFile->ReadModel("data/models/traineri.mod");
     }
     if ( type == OBJECT_MOBILEdr )
     {
-        pModFile->ReadModel("objects\\drawer1.mod");
+        pModFile->ReadModel("data/models/drawer1.mod");
     }
     if ( type == OBJECT_APOLLO2 )
     {
-        pModFile->ReadModel("objects\\apolloj1.mod");
+        pModFile->ReadModel("data/models/apolloj1.mod");
     }
     pModFile->CreateEngineObject(rank);
 
@@ -225,7 +225,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(1, rank);
         m_object->SetObjectParent(1, 0);
-        pModFile->ReadModel("objects\\lem2.mod");
+        pModFile->ReadModel("data/models/lem2.mod");
         pModFile->CreateEngineObject(rank);
         m_object->SetPosition(1, Math::Vector(0.0f, 5.3f, 0.0f));
         m_object->SetAngleZ(1, ARM_NEUTRAL_ANGLE1);
@@ -235,7 +235,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(2, rank);
         m_object->SetObjectParent(2, 1);
-        pModFile->ReadModel("objects\\lem3.mod");
+        pModFile->ReadModel("data/models/lem3.mod");
         pModFile->CreateEngineObject(rank);
         m_object->SetPosition(2, Math::Vector(5.0f, 0.0f, 0.0f));
         m_object->SetAngleZ(2, ARM_NEUTRAL_ANGLE2);
@@ -245,7 +245,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(3, rank);
         m_object->SetObjectParent(3, 2);
-        pModFile->ReadModel("objects\\lem4.mod");
+        pModFile->ReadModel("data/models/lem4.mod");
         pModFile->CreateEngineObject(rank);
         m_object->SetPosition(3, Math::Vector(3.5f, 0.0f, 0.0f));
         m_object->SetAngleZ(3, ARM_NEUTRAL_ANGLE3);
@@ -256,7 +256,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(4, rank);
         m_object->SetObjectParent(4, 3);
-        pModFile->ReadModel("objects\\lem5.mod");
+        pModFile->ReadModel("data/models/lem5.mod");
         pModFile->CreateEngineObject(rank);
         m_object->SetPosition(4, Math::Vector(1.5f, 0.0f, 0.0f));
         m_object->SetAngleZ(4, -Math::PI*0.10f);
@@ -266,7 +266,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(5, rank);
         m_object->SetObjectParent(5, 3);
-        pModFile->ReadModel("objects\\lem6.mod");
+        pModFile->ReadModel("data/models/lem6.mod");
         pModFile->CreateEngineObject(rank);
         m_object->SetPosition(5, Math::Vector(1.5f, 0.0f, 0.0f));
         m_object->SetAngleZ(5, Math::PI*0.10f);
@@ -282,7 +282,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(1, rank);
         m_object->SetObjectParent(1, 0);
-        pModFile->ReadModel("objects\\lem2.mod");
+        pModFile->ReadModel("data/models/lem2.mod");
         pModFile->CreateEngineObject(rank);
         m_object->SetPosition(1, Math::Vector(0.0f, 5.3f, 0.0f));
         m_object->SetAngleZ(1, 110.0f*Math::PI/180.0f);
@@ -292,7 +292,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(2, rank);
         m_object->SetObjectParent(2, 1);
-        pModFile->ReadModel("objects\\lem3.mod");
+        pModFile->ReadModel("data/models/lem3.mod");
         pModFile->CreateEngineObject(rank);
         m_object->SetPosition(2, Math::Vector(5.0f, 0.0f, 0.0f));
         m_object->SetAngleZ(2, -110.0f*Math::PI/180.0f);
@@ -302,7 +302,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(3, rank);
         m_object->SetObjectParent(3, 2);
-        pModFile->ReadModel("objects\\lem4s.mod");
+        pModFile->ReadModel("data/models/lem4s.mod");
         pModFile->CreateEngineObject(rank);
         m_object->SetPosition(3, Math::Vector(3.5f, 0.0f, 0.0f));
         m_object->SetAngleZ(3, -65.0f*Math::PI/180.0f);
@@ -318,7 +318,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(1, rank);
         m_object->SetObjectParent(1, 0);
-        pModFile->ReadModel("objects\\canon.mod");
+        pModFile->ReadModel("data/models/canon.mod");
         pModFile->CreateEngineObject(rank);
 //?     m_object->SetPosition(1, Math::Vector(0.0f, 5.3f, 0.0f));
         m_object->SetPosition(1, Math::Vector(0.0f, 5.3f, 0.0f));
@@ -335,7 +335,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(1, rank);
         m_object->SetObjectParent(1, 0);
-        pModFile->ReadModel("objects\\canoni1.mod");
+        pModFile->ReadModel("data/models/canoni1.mod");
         pModFile->CreateEngineObject(rank);
         m_object->SetPosition(1, Math::Vector(0.0f, 5.3f, 0.0f));
         m_object->SetAngleZ(1, 0.0f);
@@ -344,7 +344,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(2, rank);
         m_object->SetObjectParent(2, 1);
-        pModFile->ReadModel("objects\\canoni2.mod");
+        pModFile->ReadModel("data/models/canoni2.mod");
         pModFile->CreateEngineObject(rank);
         m_object->SetPosition(2, Math::Vector(0.0f, 2.5f, 0.0f));
         m_object->SetAngleZ(2, 0.0f);
@@ -361,7 +361,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(6, rank);
         m_object->SetObjectParent(6, 0);
-        pModFile->ReadModel("objects\\lem2w.mod");
+        pModFile->ReadModel("data/models/lem2w.mod");
         pModFile->CreateEngineObject(rank);
         m_object->SetPosition(6, Math::Vector(-3.0f, 1.0f, -3.0f));
 
@@ -370,7 +370,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(7, rank);
         m_object->SetObjectParent(7, 0);
-        pModFile->ReadModel("objects\\lem2w.mod");
+        pModFile->ReadModel("data/models/lem2w.mod");
         pModFile->CreateEngineObject(rank);
         m_object->SetPosition(7, Math::Vector(-3.0f, 1.0f, 3.0f));
         m_object->SetAngleY(7, Math::PI);
@@ -380,7 +380,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(8, rank);
         m_object->SetObjectParent(8, 0);
-        pModFile->ReadModel("objects\\lem2w.mod");
+        pModFile->ReadModel("data/models/lem2w.mod");
         pModFile->CreateEngineObject(rank);
         m_object->SetPosition(8, Math::Vector(2.0f, 1.0f, -3.0f));
 
@@ -389,7 +389,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(9, rank);
         m_object->SetObjectParent(9, 0);
-        pModFile->ReadModel("objects\\lem2w.mod");
+        pModFile->ReadModel("data/models/lem2w.mod");
         pModFile->CreateEngineObject(rank);
         m_object->SetPosition(9, Math::Vector(2.0f, 1.0f, 3.0f));
         m_object->SetAngleY(9, Math::PI);
@@ -402,7 +402,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(6, rank);
         m_object->SetObjectParent(6, 0);
-        pModFile->ReadModel("objects\\lem2w.mod");
+        pModFile->ReadModel("data/models/lem2w.mod");
         pModFile->CreateEngineObject(rank);
         m_object->SetPosition(6, Math::Vector(-2.0f, 1.0f, -3.0f));
 
@@ -411,7 +411,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(7, rank);
         m_object->SetObjectParent(7, 0);
-        pModFile->ReadModel("objects\\lem2w.mod");
+        pModFile->ReadModel("data/models/lem2w.mod");
         pModFile->CreateEngineObject(rank);
         m_object->SetPosition(7, Math::Vector(-2.0f, 1.0f, 3.0f));
         m_object->SetAngleY(7, Math::PI);
@@ -421,7 +421,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(8, rank);
         m_object->SetObjectParent(8, 0);
-        pModFile->ReadModel("objects\\lem2w.mod");
+        pModFile->ReadModel("data/models/lem2w.mod");
         pModFile->CreateEngineObject(rank);
         m_object->SetPosition(8, Math::Vector(3.0f, 1.0f, -3.0f));
 
@@ -430,7 +430,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(9, rank);
         m_object->SetObjectParent(9, 0);
-        pModFile->ReadModel("objects\\lem2w.mod");
+        pModFile->ReadModel("data/models/lem2w.mod");
         pModFile->CreateEngineObject(rank);
         m_object->SetPosition(9, Math::Vector(3.0f, 1.0f, 3.0f));
         m_object->SetAngleY(9, Math::PI);
@@ -446,7 +446,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(6, rank);
         m_object->SetObjectParent(6, 0);
-        pModFile->ReadModel("objects\\lem2t.mod");
+        pModFile->ReadModel("data/models/lem2t.mod");
         pModFile->CreateEngineObject(rank);
         m_object->SetPosition(6, Math::Vector(0.0f, 2.0f, -3.0f));
 
@@ -455,7 +455,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(7, rank);
         m_object->SetObjectParent(7, 0);
-        pModFile->ReadModel("objects\\lem3t.mod");
+        pModFile->ReadModel("data/models/lem3t.mod");
         pModFile->CreateEngineObject(rank);
         m_object->SetPosition(7, Math::Vector(0.0f, 2.0f, 3.0f));
     }
@@ -470,7 +470,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(6, rank);
         m_object->SetObjectParent(6, 0);
-        pModFile->ReadModel("objects\\roller2.mod");
+        pModFile->ReadModel("data/models/roller2.mod");
         pModFile->CreateEngineObject(rank);
         m_object->SetPosition(6, Math::Vector(0.0f, 2.0f, -3.0f));
 
@@ -479,7 +479,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(7, rank);
         m_object->SetObjectParent(7, 0);
-        pModFile->ReadModel("objects\\roller3.mod");
+        pModFile->ReadModel("data/models/roller3.mod");
         pModFile->CreateEngineObject(rank);
         m_object->SetPosition(7, Math::Vector(0.0f, 2.0f, 3.0f));
     }
@@ -491,7 +491,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(6, rank);
         m_object->SetObjectParent(6, 0);
-        pModFile->ReadModel("objects\\subm4.mod");
+        pModFile->ReadModel("data/models/subm4.mod");
         pModFile->CreateEngineObject(rank);
         m_object->SetPosition(6, Math::Vector(0.0f, 1.0f, -3.0f));
 
@@ -500,7 +500,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(7, rank);
         m_object->SetObjectParent(7, 0);
-        pModFile->ReadModel("objects\\subm5.mod");
+        pModFile->ReadModel("data/models/subm5.mod");
         pModFile->CreateEngineObject(rank);
         m_object->SetPosition(7, Math::Vector(0.0f, 1.0f, 3.0f));
     }
@@ -512,7 +512,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(6, rank);
         m_object->SetObjectParent(6, 0);
-        pModFile->ReadModel("objects\\drawer2.mod");
+        pModFile->ReadModel("data/models/drawer2.mod");
         pModFile->CreateEngineObject(rank);
         m_object->SetPosition(6, Math::Vector(0.0f, 1.0f, -3.0f));
 
@@ -521,7 +521,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(7, rank);
         m_object->SetObjectParent(7, 0);
-        pModFile->ReadModel("objects\\drawer3.mod");
+        pModFile->ReadModel("data/models/drawer3.mod");
         pModFile->CreateEngineObject(rank);
         m_object->SetPosition(7, Math::Vector(0.0f, 1.0f, 3.0f));
     }
@@ -537,7 +537,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(6, rank);
         m_object->SetObjectParent(6, 0);
-        pModFile->ReadModel("objects\\lem2f.mod");
+        pModFile->ReadModel("data/models/lem2f.mod");
         pModFile->CreateEngineObject(rank);
         m_object->SetPosition(6, Math::Vector(1.7f, 3.0f, 0.0f));
 
@@ -546,7 +546,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(7, rank);
         m_object->SetObjectParent(7, 0);
-        pModFile->ReadModel("objects\\lem2f.mod");
+        pModFile->ReadModel("data/models/lem2f.mod");
         pModFile->CreateEngineObject(rank);
         m_object->SetPosition(7, Math::Vector(-1.8f, 3.0f, -1.5f));
         m_object->SetAngleY(7, 120.0f*Math::PI/180.0f);
@@ -556,7 +556,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(8, rank);
         m_object->SetObjectParent(8, 0);
-        pModFile->ReadModel("objects\\lem2f.mod");
+        pModFile->ReadModel("data/models/lem2f.mod");
         pModFile->CreateEngineObject(rank);
         m_object->SetPosition(8, Math::Vector(-1.8f, 3.0f, 1.5f));
         m_object->SetAngleY(8, -120.0f*Math::PI/180.0f);
@@ -587,7 +587,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         {
             for ( j=0 ; j<3 ; j++ )
             {
-                sprintf(name, "objects\\ant%d.mod", j+4);  // 4..6
+                sprintf(name, "data/models/ant%d.mod", j+4);  // 4..6
 
                 // Creates the right leg.
                 rank = m_engine->CreateObject();
@@ -628,7 +628,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(1, rank);
         m_object->SetObjectParent(1, 0);
-        pModFile->ReadModel("objects\\roller2t.mod");
+        pModFile->ReadModel("data/models/roller2t.mod");
         pModFile->CreateEngineObject(rank);
         m_object->SetPosition(1, Math::Vector(0.0f, 0.0f, 0.0f));
         m_object->SetAngleZ(1, 0.0f);
@@ -638,7 +638,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(2, rank);
         m_object->SetObjectParent(2, 0);
-        pModFile->ReadModel("objects\\roller3t.mod");
+        pModFile->ReadModel("data/models/roller3t.mod");
         pModFile->CreateEngineObject(rank);
         m_object->SetPosition(2, Math::Vector(9.0f, 4.0f, 0.0f));
         m_object->SetAngleZ(2, 0.0f);
@@ -651,7 +651,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(1, rank);
         m_object->SetObjectParent(1, 0);
-        pModFile->ReadModel("objects\\roller2c.mod");
+        pModFile->ReadModel("data/models/roller2c.mod");
         pModFile->CreateEngineObject(rank);
         m_object->SetPosition(1, Math::Vector(3.0f, 4.6f, 0.0f));
         m_object->SetAngleZ(1, Math::PI/8.0f);
@@ -661,7 +661,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(2, rank);
         m_object->SetObjectParent(2, 0);
-        pModFile->ReadModel("objects\\roller3p.mod");
+        pModFile->ReadModel("data/models/roller3p.mod");
         pModFile->CreateEngineObject(rank);
         m_object->SetPosition(2, Math::Vector(7.0f, 6.5f, 0.0f));
         m_object->SetAngleZ(2, 0.0f);
@@ -674,7 +674,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(1, rank);
         m_object->SetObjectParent(1, 0);
-        pModFile->ReadModel("objects\\recover1.mod");
+        pModFile->ReadModel("data/models/recover1.mod");
         pModFile->CreateEngineObject(rank);
         m_object->SetPosition(1, Math::Vector(2.0f, 5.0f, 0.0f));
 
@@ -683,7 +683,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(2, rank);
         m_object->SetObjectParent(2, 1);
-        pModFile->ReadModel("objects\\recover2.mod");
+        pModFile->ReadModel("data/models/recover2.mod");
         pModFile->CreateEngineObject(rank);
         m_object->SetPosition(2, Math::Vector(0.1f, 0.0f, -5.0f));
         m_object->SetAngleZ(2, 126.0f*Math::PI/180.0f);
@@ -693,7 +693,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(3, rank);
         m_object->SetObjectParent(3, 2);
-        pModFile->ReadModel("objects\\recover3.mod");
+        pModFile->ReadModel("data/models/recover3.mod");
         pModFile->CreateEngineObject(rank);
         m_object->SetPosition(3, Math::Vector(5.0f, 0.0f, -0.5f));
         m_object->SetAngleZ(3, -144.0f*Math::PI/180.0f);
@@ -703,7 +703,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(4, rank);
         m_object->SetObjectParent(4, 1);
-        pModFile->ReadModel("objects\\recover2.mod");
+        pModFile->ReadModel("data/models/recover2.mod");
         pModFile->Mirror();
         pModFile->CreateEngineObject(rank);
         m_object->SetPosition(4, Math::Vector(0.1f, 0.0f, 5.0f));
@@ -714,7 +714,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(5, rank);
         m_object->SetObjectParent(5, 4);
-        pModFile->ReadModel("objects\\recover3.mod");
+        pModFile->ReadModel("data/models/recover3.mod");
         pModFile->Mirror();
         pModFile->CreateEngineObject(rank);
         m_object->SetPosition(5, Math::Vector(5.0f, 0.0f, 0.5f));
@@ -728,7 +728,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(1, rank);
         m_object->SetObjectParent(1, 0);
-        pModFile->ReadModel("objects\\roller2s.mod");
+        pModFile->ReadModel("data/models/roller2s.mod");
         pModFile->CreateEngineObject(rank);
         m_object->SetPosition(1, Math::Vector(0.0f, 0.0f, 0.0f));
         m_object->SetAngleZ(1, 0.0f);
@@ -738,7 +738,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(2, rank);
         m_object->SetObjectParent(2, 1);
-        pModFile->ReadModel("objects\\roller3s.mod");
+        pModFile->ReadModel("data/models/roller3s.mod");
         pModFile->CreateEngineObject(rank);
         m_object->SetPosition(2, Math::Vector(7.0f, 4.5f, 0.0f));
         m_object->SetAngleZ(2, 0.0f);
@@ -748,7 +748,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(3, rank);
         m_object->SetObjectParent(3, 2);
-        pModFile->ReadModel("objects\\roller4s.mod");
+        pModFile->ReadModel("data/models/roller4s.mod");
         pModFile->CreateEngineObject(rank);
         m_object->SetPosition(3, Math::Vector(0.0f, 1.0f, 0.0f));
         m_object->SetAngleZ(3, 0.0f);
@@ -761,7 +761,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(1, rank);
         m_object->SetObjectParent(1, 0);
-        pModFile->ReadModel("objects\\subm2.mod");
+        pModFile->ReadModel("data/models/subm2.mod");
         pModFile->CreateEngineObject(rank);
         m_object->SetPosition(1, Math::Vector(4.2f, 3.0f, 0.0f));
 
@@ -770,7 +770,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(2, rank);
         m_object->SetObjectParent(2, 1);
-        pModFile->ReadModel("objects\\subm3.mod");
+        pModFile->ReadModel("data/models/subm3.mod");
         pModFile->CreateEngineObject(rank);
         m_object->SetPosition(2, Math::Vector(0.5f, 0.0f, -1.5f));
 
@@ -779,7 +779,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(3, rank);
         m_object->SetObjectParent(3, 1);
-        pModFile->ReadModel("objects\\subm3.mod");
+        pModFile->ReadModel("data/models/subm3.mod");
         pModFile->Mirror();
         pModFile->CreateEngineObject(rank);
         m_object->SetPosition(3, Math::Vector(0.5f, 0.0f, 1.5f));
@@ -792,7 +792,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(1, rank);
         m_object->SetObjectParent(1, 0);
-        pModFile->ReadModel("objects\\drawer4.mod");
+        pModFile->ReadModel("data/models/drawer4.mod");
         pModFile->CreateEngineObject(rank);
         m_object->SetPosition(1, Math::Vector(-3.0f, 3.0f, 0.0f));
 
@@ -803,7 +803,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
             m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
             m_object->SetObjectRank(2, rank);
             m_object->SetObjectParent(2, 0);
-            pModFile->ReadModel("objects\\drawer5.mod");
+            pModFile->ReadModel("data/models/drawer5.mod");
             pModFile->CreateEngineObject(rank);
             m_posKey = Math::Vector(3.0f, 5.7f, 0.0f);
             m_object->SetPosition(2, m_posKey);
@@ -817,7 +817,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
             m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
             m_object->SetObjectRank(10+i, rank);
             m_object->SetObjectParent(10+i, 1);
-            sprintf(name, "objects\\drawer%d.mod", 10+i);
+            sprintf(name, "data/models/drawer%d.mod", 10+i);
             pModFile->ReadModel(name);
             pModFile->CreateEngineObject(rank);
             m_object->SetPosition(10+i, Math::Vector(0.0f, 0.0f, 0.0f));
@@ -834,7 +834,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
             m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
             m_object->SetObjectRank(2, rank);
             m_object->SetObjectParent(2, 0);
-            pModFile->ReadModel("objects\\drawer5.mod");
+            pModFile->ReadModel("data/models/drawer5.mod");
             pModFile->CreateEngineObject(rank);
             m_posKey = Math::Vector(0.2f, 4.1f, 0.0f);
             m_object->SetPosition(2, m_posKey);
@@ -849,7 +849,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(1, rank);
         m_object->SetObjectParent(1, 0);
-        pModFile->ReadModel("objects\\apolloj2.mod");  // antenna
+        pModFile->ReadModel("data/models/apolloj2.mod");  // antenna
         pModFile->CreateEngineObject(rank);
         m_object->SetPosition(1, Math::Vector(5.5f, 8.8f, 2.0f));
         m_object->SetAngleY(1, -120.0f*Math::PI/180.0f);
@@ -859,7 +859,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(2, rank);
         m_object->SetObjectParent(2, 0);
-        pModFile->ReadModel("objects\\apolloj3.mod");  // camera
+        pModFile->ReadModel("data/models/apolloj3.mod");  // camera
         pModFile->CreateEngineObject(rank);
         m_object->SetPosition(2, Math::Vector(5.5f, 2.8f, -2.0f));
         m_object->SetAngleY(2, 30.0f*Math::PI/180.0f);
@@ -869,7 +869,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(6, rank);
         m_object->SetObjectParent(6, 0);
-        pModFile->ReadModel("objects\\apolloj4.mod");  // wheel
+        pModFile->ReadModel("data/models/apolloj4.mod");  // wheel
         pModFile->CreateEngineObject(rank);
         m_object->SetPosition(6, Math::Vector(-5.75f, 1.65f, -5.0f));
 
@@ -877,7 +877,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(7, rank);
         m_object->SetObjectParent(7, 0);
-        pModFile->ReadModel("objects\\apolloj4.mod");  // wheel
+        pModFile->ReadModel("data/models/apolloj4.mod");  // wheel
         pModFile->CreateEngineObject(rank);
         m_object->SetPosition(7, Math::Vector(-5.75f, 1.65f, 5.0f));
 
@@ -885,7 +885,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(8, rank);
         m_object->SetObjectParent(8, 0);
-        pModFile->ReadModel("objects\\apolloj4.mod");  // wheel
+        pModFile->ReadModel("data/models/apolloj4.mod");  // wheel
         pModFile->CreateEngineObject(rank);
         m_object->SetPosition(8, Math::Vector(5.75f, 1.65f, -5.0f));
 
@@ -893,7 +893,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(9, rank);
         m_object->SetObjectParent(9, 0);
-        pModFile->ReadModel("objects\\apolloj4.mod");  // wheel
+        pModFile->ReadModel("data/models/apolloj4.mod");  // wheel
         pModFile->CreateEngineObject(rank);
         m_object->SetPosition(9, Math::Vector(5.75f, 1.65f, 5.00f));
 
@@ -902,7 +902,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(10, rank);
         m_object->SetObjectParent(10, 0);
-        pModFile->ReadModel("objects\\apolloj6.mod");  // wheel
+        pModFile->ReadModel("data/models/apolloj6.mod");  // wheel
         pModFile->CreateEngineObject(rank);
         m_object->SetPosition(10, Math::Vector(-5.75f, 1.65f, -5.0f));
 
@@ -910,7 +910,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(11, rank);
         m_object->SetObjectParent(11, 0);
-        pModFile->ReadModel("objects\\apolloj6.mod");  // wheel
+        pModFile->ReadModel("data/models/apolloj6.mod");  // wheel
         pModFile->CreateEngineObject(rank);
         m_object->SetPosition(11, Math::Vector(-5.75f, 1.65f, 5.0f));
 
@@ -918,7 +918,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(12, rank);
         m_object->SetObjectParent(12, 0);
-        pModFile->ReadModel("objects\\apolloj5.mod");  // wheel
+        pModFile->ReadModel("data/models/apolloj5.mod");  // wheel
         pModFile->CreateEngineObject(rank);
         m_object->SetPosition(12, Math::Vector(5.75f, 1.65f, -5.0f));
 
@@ -926,7 +926,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(13, rank);
         m_object->SetObjectParent(13, 0);
-        pModFile->ReadModel("objects\\apolloj5.mod");  // wheel
+        pModFile->ReadModel("data/models/apolloj5.mod");  // wheel
         pModFile->CreateEngineObject(rank);
         m_object->SetPosition(13, Math::Vector(5.75f, 1.65f, 5.00f));
     }
@@ -1038,8 +1038,8 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         pPower->SetObjectRank(0, rank);
 
-        if ( power <= 1.0f )  pModFile->ReadModel("objects\\power.mod");
-        else                  pModFile->ReadModel("objects\\atomic.mod");
+        if ( power <= 1.0f )  pModFile->ReadModel("data/models/power.mod");
+        else                  pModFile->ReadModel("data/models/atomic.mod");
         pModFile->CreateEngineObject(rank);
 
         pPower->SetPosition(0, m_object->GetCharacter()->posPower);

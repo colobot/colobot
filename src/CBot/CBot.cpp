@@ -341,7 +341,7 @@ bool CBotInstr::CompCase(CBotStack* &pj, int val)
 // compiles a statement block " { i ; i ; } "
 
 // this class have no constructor because there is never an instance of this
-// class (TODO what about default constructor?)
+// class
 // the object returned by Compile is usually of type CBotListInstr
 
 
@@ -3082,8 +3082,6 @@ CBotInstr* CBotExprVar::Compile(CBotToken* &p, CBotCStack* pStack, int privat)
 
                 // This is an element of the current class
                 // ads the equivalent of this. before
-                /// \TODO need to be fixed revised and fixed after adding unit
-                ///tests
                 CBotToken token("this");
                 inst->SetToken(&token);
                 (static_cast<CBotExprVar*>(inst))->m_nIdent = -2;    // identificator for this

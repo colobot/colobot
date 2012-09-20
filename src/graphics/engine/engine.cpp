@@ -2790,9 +2790,9 @@ void Gfx::CEngine::Draw3DScene()
     m_device->SetRenderState(Gfx::RENDER_STATE_DEPTH_TEST, true);
     m_device->SetRenderState(Gfx::RENDER_STATE_LIGHTING, true);
     m_device->SetRenderState(Gfx::RENDER_STATE_FOG, true);
-
-    float fogStart = m_deepView[m_rankView]*m_fogStart[m_rankView];
-    float fogEnd = m_deepView[m_rankView];
+// 
+//     float fogStart = m_deepView[m_rankView]*m_fogStart[m_rankView];
+//     float fogEnd = m_deepView[m_rankView];
     m_device->SetFogParams(Gfx::FOG_LINEAR, m_fogColor[m_rankView], fogStart, fogEnd, 1.0f);
 
     m_device->SetTransform(Gfx::TRANSFORM_PROJECTION, m_matProj);

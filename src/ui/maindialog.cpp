@@ -24,6 +24,7 @@
 #include "common/profile.h"
 #include "common/iman.h"
 #include "common/restext.h"
+#include "common/logger.h"
 #include "object/robotmain.h"
 #include "script/cmdtoken.h"
 #include "sound/sound.h"
@@ -44,6 +45,7 @@
 
 #include <stdio.h>
 #include <string.h>
+// #include <boost/filesystem.hpp>
 
 
 namespace Ui
@@ -203,7 +205,7 @@ CMainDialog::CMainDialog(CInstanceManager* iMan)
         m_partiTime[i]  = 0.0f;
     }
 
-    strcpy(m_sceneDir,    "scene");
+    strcpy(m_sceneDir,    "data/levels");
     strcpy(m_savegameDir, "savegame");
     strcpy(m_publicDir,   "program");
     strcpy(m_userDir,     "user");
@@ -3670,35 +3672,46 @@ void CMainDialog::ReadNameList()
     pl->Flush();
 
     nbFilenames = 0;
-    /* TODO: list dir
-    sprintf(dir, "%s\\*", m_savegameDir);
-    hFile = _findfirst(dir, &fBuffer);
-    if ( hFile != -1 )
-    {
-        do
-        {
-            if ( (fBuffer.attrib & _A_SUBDIR) && fBuffer.name[0] != '.' )
-            {
-                strcpy(filenames[nbFilenames++], fBuffer.name);
-            }
-        }
-        while ( _findnext(hFile, &fBuffer) == 0 && nbFilenames < 100 );
-    }
-    do  // sorts all names:
-    {
-        bDo = false;
-        for ( i=0 ; i<nbFilenames-1 ; i++ )
-        {
-            if ( strcmp(filenames[i], filenames[i+1]) > 0 )
-            {
-                strcpy(temp, filenames[i]);
-                strcpy(filenames[i], filenames[i+1]);
-                strcpy(filenames[i+1], temp);
-                bDo = true;
-            }
-        }
-    }
-    while ( bDo );*/
+
+    sprintf(dir, ".\\%s", m_savegameDir);
+
+    // if (! boost::filesystem::exists(dir))
+    // {
+    //     GetLogger()->Error("Savegame dir does not exist %s\n",dir);
+    // }
+    // else
+    // {
+    //     GetLogger()->Info("Opening file");
+    // }
+    //TODO list files
+
+    // hFile = _findfirst(dir, &fBuffer);
+    // if ( hFile != -1 )
+    // {
+    //     do
+    //     {
+    //         if ( (fBuffer.attrib & _A_SUBDIR) && fBuffer.name[0] != '.' )
+    //         {
+    //             strcpy(filenames[nbFilenames++], fBuffer.name);
+    //         }
+    //     }
+    //     while ( _findnext(hFile, &fBuffer) == 0 && nbFilenames < 100 );
+    // }
+    // do  // sorts all names:
+    // {
+    //     bDo = false;
+    //     for ( i=0 ; i<nbFilenames-1 ; i++ )
+    //     {
+    //         if ( strcmp(filenames[i], filenames[i+1]) > 0 )
+    //         {
+    //             strcpy(temp, filenames[i]);
+    //             strcpy(filenames[i], filenames[i+1]);
+    //             strcpy(filenames[i+1], temp);
+    //             bDo = true;
+    //         }
+    //     }
+    // }
+    // while ( bDo );
 
     strcpy(filenames[nbFilenames++], "Test");
 
