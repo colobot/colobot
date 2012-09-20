@@ -53,6 +53,7 @@ class CSoundInterface;
 // Graphics module namespace
 namespace Gfx {
 
+
 class CDevice;
 class CLightManager;
 class CText;
@@ -143,11 +144,11 @@ struct EngineTriangle
     //! Material
     Material       material;
     //! Render state
-    int                 state;
+    int            state;
     //! 1st texture
-    std::string         tex1Name;
+    std::string    tex1Name;
     //! 2nd texture
-    std::string         tex2Name;
+    std::string    tex2Name;
 
     EngineTriangle()
     {
@@ -245,10 +246,10 @@ struct EngineObjLevel4;
  */
 struct EngineObjLevel4
 {
-    bool                         used;
+    bool                    used;
     EngineTriangleType      type;
     Material                material;
-    int                          state;
+    int                     state;
     std::vector<VertexTex2> vertices;
 
     EngineObjLevel4(bool used = false,
@@ -263,9 +264,9 @@ struct EngineObjLevel4
  */
 struct EngineObjLevel3
 {
-    bool                               used;
-    float                              min;
-    float                              max;
+    bool                          used;
+    float                         min;
+    float                         max;
     std::vector<EngineObjLevel4>  next;
 
     EngineObjLevel3(bool used = false, float min = 0.0f, float max = 0.0f);
@@ -277,8 +278,8 @@ struct EngineObjLevel3
  */
 struct EngineObjLevel2
 {
-    bool                               used;
-    int                                objRank;
+    bool                          used;
+    int                           objRank;
     std::vector<EngineObjLevel3>  next;
 
     EngineObjLevel2(bool used = false, int objRank = -1);
@@ -290,10 +291,10 @@ struct EngineObjLevel2
  */
 struct EngineObjLevel1
 {
-    bool                               used;
-    std::string                        tex1Name;
+    bool                          used;
+    std::string                   tex1Name;
     Texture                       tex1;
-    std::string                        tex2Name;
+    std::string                   tex2Name;
     Texture                       tex2;
     std::vector<EngineObjLevel2>  next;
 
@@ -1123,20 +1124,8 @@ public:
     //@}
 
     //@{
-    //! Management of mouse cursor visibility
-    void                 SetMouseVisible(bool show);
-    bool                 GetMouseVisible();
-    //@}
-
-    //@{
-    //! Management of mouse cursor position
-    void                 SetMousePos(Math::Point pos);
-    Math::Point          GetMousePos();
-    //@}
-
-    //@{
     //! Management of mouse cursor type
-    void                 SetMouseType(EngineMouseType type);
+    void            SetMouseType(EngineMouseType type);
     EngineMouseType GetMouseType();
     //@}
 
@@ -1188,6 +1177,8 @@ protected:
     void        DrawMouse();
     //! Draw part of mouse cursor sprite
     void        DrawMouseSprite(Math::Point pos, Math::Point dim, int icon);
+    //! Draw statistic texts
+    void        DrawStats();
 
     //! Creates new tier 1 object
     EngineObjLevel1& AddLevel1(const std::string& tex1Name, const std::string& tex2Name);
@@ -1225,27 +1216,31 @@ protected:
     void        UpdateGeometry();
 
 protected:
-    CInstanceManager*   m_iMan;
-    CApplication*       m_app;
-    CSoundInterface*    m_sound;
-    CDevice*       m_device;
-    CText*         m_text;
-    CLightManager* m_lightMan;
-    CParticle*     m_particle;
-    CWater*        m_water;
-    CCloud*        m_cloud;
-    CLightning*    m_lightning;
-    CPlanet*       m_planet;
-    CTerrain*      m_terrain;
+    CInstanceManager* m_iMan;
+    CApplication*     m_app;
+    CSoundInterface*  m_sound;
+    CDevice*          m_device;
+    CText*            m_text;
+    CLightManager*    m_lightMan;
+    CParticle*        m_particle;
+    CWater*           m_water;
+    CCloud*           m_cloud;
+    CLightning*       m_lightning;
+    CPlanet*          m_planet;
+    CTerrain*         m_terrain;
 
     //! Last encountered error
     std::string     m_error;
 
+    SystemTimeStamp* m_lastFrameTime;
+    SystemTimeStamp* m_currentFrameTime;
+    int             m_fpsCounter;
+    float           m_fps;
+
     //! Whether to show stats (FPS, etc)
     bool            m_showStats;
+    std::string     m_fpsText;
 
-    //! Speed of animation
-    float           m_speed;
     //! Pause mode
     bool            m_pause;
     //! Rendering enabled?
@@ -1290,12 +1285,12 @@ protected:
     float           m_eyeDirH;
     float           m_eyeDirV;
     int             m_rankView;
-    Color      m_ambientColor[2];
-    Color      m_backColor[2];
-    Color      m_fogColor[2];
+    Color           m_ambientColor[2];
+    Color           m_backColor[2];
+    Color           m_fogColor[2];
     float           m_deepView[2];
     float           m_fogStart[2];
-    Color      m_waterAddColor;
+    Color           m_waterAddColor;
     int             m_statisticTriangle;
     bool            m_updateGeometry;
     int             m_alphaMode;
@@ -1310,16 +1305,16 @@ protected:
     bool            m_backgroundFull;
     Math::Point     m_backgroundScale;
     std::string     m_backgroundName;
-    Texture    m_backgroundTex;
-    Color      m_backgroundColorUp;
-    Color      m_backgroundColorDown;
-    Color      m_backgroundCloudUp;
-    Color      m_backgroundCloudDown;
+    Texture         m_backgroundTex;
+    Color           m_backgroundColorUp;
+    Color           m_backgroundColorDown;
+    Color           m_backgroundCloudUp;
+    Color           m_backgroundCloudDown;
     bool            m_overFront;
-    Color      m_overColor;
+    Color           m_overColor;
     int             m_overMode;
     std::string     m_foregroundName;
-    Texture    m_foregroundTex;
+    Texture         m_foregroundTex;
     bool            m_drawWorld;
     bool            m_drawFront;
     float           m_limitLOD[2];
@@ -1373,22 +1368,18 @@ protected:
     //! Texture with mouse cursors
     Texture         m_miceTexture;
     //! Size of mouse cursor
-    Math::Point          m_mouseSize;
+    Math::Point     m_mouseSize;
     //! Type of mouse cursor
     EngineMouseType m_mouseType;
-    //! Position of mouse in interface coords
-    Math::Point          m_mousePos;
-    //! Is mouse visible?
-    bool                 m_mouseVisible;
 
     //! Last engine render state (-1 at the beginning of frame)
     int             m_lastState;
     //! Last color set with render state
-    Color      m_lastColor;
+    Color           m_lastColor;
     //! Last texture names for 2 used texture stages
     std::string     m_lastTexture[2];
     //! Last material
-    Material   m_lastMaterial;
+    Material        m_lastMaterial;
 };
 
 

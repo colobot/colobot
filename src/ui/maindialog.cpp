@@ -20,6 +20,7 @@
 
 #include "common/global.h"
 #include "common/event.h"
+#include "common/logger.h"
 #include "common/misc.h"
 #include "common/profile.h"
 #include "common/iman.h"
@@ -2035,7 +2036,7 @@ void CMainDialog::ChangePhase(Phase phase)
 
 
 // Processing an event.
-// Geturns false if the event has been processed completely.
+// Returns false if the event has been processed completely.
 
 bool CMainDialog::EventProcess(const Event &event)
 {
@@ -2207,7 +2208,7 @@ bool CMainDialog::EventProcess(const Event &event)
         return false;
     }
 
-    if ( /*TODO: m_engine->GetMouseVisible() &&*/
+    if ( /* m_engine->GetMouseVisible() && TODO: WTF ?! */
          !m_interface->EventProcess(event) )
     {
         return false;
@@ -2784,8 +2785,11 @@ bool CMainDialog::EventProcess(const Event &event)
                 break;
 
             case EVENT_INTERFACE_MOUSE:
-                m_engine->SetMouseVisible(!m_engine->GetMouseVisible());
-                // TODO: system mouse visible
+                if (m_app->GetMouseMode() == MOUSE_ENGINE)
+                    m_app->SetMouseMode(MOUSE_SYSTEM);
+                else if (m_app->GetMouseMode() == MOUSE_SYSTEM)
+                    m_app->SetMouseMode(MOUSE_ENGINE);
+
                 ChangeSetupButtons();
                 UpdateSetupButtons();
                 break;
@@ -3241,7 +3245,7 @@ void CMainDialog::GlintMove()
 }
 
 
-// Geturns the position for a sound.
+// Returns the position for a sound.
 
 Math::Vector SoundPos(Math::Point pos)
 {
@@ -3254,7 +3258,7 @@ Math::Vector SoundPos(Math::Point pos)
     return s;
 }
 
-// Geturns a random position for a sound.
+// Returns a random position for a sound.
 
 Math::Vector SoundRand()
 {
@@ -3641,7 +3645,7 @@ void CMainDialog::BuildResumeName(char *filename, char *base, int rank)
     sprintf(filename, "Scene %s %d", base, rank);
 }
 
-// Geturns the name of the file or save the files.
+// Returns the name of the file or save the files.
 
 char* CMainDialog::GetFilesDir()
 {
@@ -4666,7 +4670,7 @@ bool CMainDialog::IOReadScene()
 }
 
 
-// Geturns the number of accessible chapters.
+// Returns the number of accessible chapters.
 
 int CMainDialog::GetChapPassed()
 {
@@ -6578,7 +6582,7 @@ void CMainDialog::SetSceneRead(const char* name)
     strcpy(m_sceneRead, name);
 }
 
-// Geturns the name of the scene to read.
+// Returns the name of the scene to read.
 
 char* CMainDialog::GetSceneRead()
 {
@@ -6592,7 +6596,7 @@ void CMainDialog::SetStackRead(const char* name)
     strcpy(m_stackRead, name);
 }
 
-// Geturns the name of the scene to read.
+// Returns the name of the scene to read.
 
 char* CMainDialog::GetStackRead()
 {
@@ -6606,7 +6610,7 @@ void CMainDialog::SetSceneName(const char* name)
     strcpy(m_sceneName, name);
 }
 
-// Geturns the name of the chosen to play scene.
+// Returns the name of the chosen to play scene.
 
 char* CMainDialog::GetSceneName()
 {
@@ -6620,14 +6624,14 @@ void CMainDialog::SetSceneRank(int rank)
     m_sceneRank = rank;
 }
 
-// Geturns the rank of the chosen to play scene.
+// Returns the rank of the chosen to play scene.
 
 int CMainDialog::GetSceneRank()
 {
     return m_sceneRank;
 }
 
-// Geturns folder name of the scene that user selected to play.
+// Returns folder name of the scene that user selected to play.
 
 char* CMainDialog::GetSceneDir()
 {
@@ -6646,14 +6650,14 @@ bool CMainDialog::GetSceneSoluce()
     return m_bSceneSoluce;
 }
 
-// Geturns the name of the folder to save.
+// Returns the name of the folder to save.
 
 char* CMainDialog::GetSavegameDir()
 {
     return m_savegameDir;
 }
 
-// Geturns the name of public folder.
+// Returns the name of public folder.
 
 char* CMainDialog::GetPublicDir()
 {

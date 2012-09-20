@@ -116,6 +116,8 @@ CEngine::CEngine(CInstanceManager *iMan, CApplication *app)
     m_sound      = nullptr;
     m_terrain    = nullptr;
 
+    m_showStats = false;
+
     m_focus = 0.75f;
 
     m_rankView = 0;
@@ -137,7 +139,6 @@ CEngine::CEngine(CInstanceManager *iMan, CApplication *app)
     m_groundSpotVisible = true;
     m_dirty             = true;
     m_fog               = true;
-    m_speed             = 1.0f;
     m_secondTexNum      = 0;
     m_eyeDirH           = 0.0f;
     m_eyeDirV           = 0.0f;
@@ -171,7 +172,7 @@ CEngine::CEngine(CInstanceManager *iMan, CApplication *app)
     m_lensMode = true;
     m_waterMode = true;
     m_skyMode = true;
-    m_backForce = false; // TODO: change to true?
+    m_backForce = true;
     m_planetMode = true;
     m_lightMode = true;
     m_editIndentMode = true;
@@ -203,9 +204,11 @@ CEngine::CEngine(CInstanceManager *iMan, CApplication *app)
     m_mice[ENG_MOUSE_SCROLLD] = EngineMouse(30, 31, 46, ENG_RSTATE_TTEXTURE_BLACK, ENG_RSTATE_TTEXTURE_WHITE, Math::Point( 9.0f, 17.0f));
 
     m_mouseSize    = Math::Point(0.04f, 0.04f * (800.0f / 600.0f));
-    m_mousePos     = Math::Point(0.5f, 0.5f);
     m_mouseType    = ENG_MOUSE_NORM;
-    m_mouseVisible = false;
+
+    m_fpsCounter = 0;
+    m_lastFrameTime = CreateTimeStamp();
+    m_currentFrameTime = CreateTimeStamp();
 
     m_texPath = "textures/";
     m_defaultTexParams.format = TEX_IMG_AUTO;
@@ -226,6 +229,11 @@ CEngine::~CEngine()
     m_device  = nullptr;
     m_sound   = nullptr;
     m_terrain = nullptr;
+
+    DestroyTimeStamp(m_lastFrameTime);
+    m_lastFrameTime = nullptr;
+    DestroyTimeStamp(m_currentFrameTime);
+    m_currentFrameTime = nullptr;
 }
 
 void CEngine::SetDevice(CDevice *device)
@@ -288,6 +296,9 @@ bool CEngine::Create()
     params.mipmap = false;
     m_miceTexture = LoadTexture("mouse.png", params);
 
+    GetCurrentTimeStamp(m_currentFrameTime);
+    GetCurrentTimeStamp(m_lastFrameTime);
+
     return true;
 }
 
@@ -326,18 +337,8 @@ bool CEngine::ProcessEvent(const Event &event)
 {
     if (event.type == EVENT_KEY_DOWN)
     {
-        // !! Debug, to be removed later !!
-
-        if (event.key.key == KEY(F1))
-        {
-            m_mouseVisible = !m_mouseVisible;
-            m_app->SetSystemMouseVisible(! m_app->GetSystemMouseVisibile());
-        }
-        else if (event.key.key == KEY(F2))
-        {
-            int index = static_cast<int>(m_mouseType);
-            m_mouseType = static_cast<EngineMouseType>( (index + 1) % ENG_MOUSE_COUNT );
-        }
+        if (event.key.key == KEY(F12))
+            m_showStats = !m_showStats;
     }
 
     // By default, pass on all events
@@ -346,6 +347,27 @@ bool CEngine::ProcessEvent(const Event &event)
 
 void CEngine::FrameUpdate()
 {
+    m_fpsCounter++;
+
+    GetCurrentTimeStamp(m_currentFrameTime);
+    float diff = TimeStampDiff(m_lastFrameTime, m_currentFrameTime, STU_SEC);
+    if (diff > 1.0f)
+    {
+        CopyTimeStamp(m_lastFrameTime, m_currentFrameTime);
+
+        m_fps = m_fpsCounter / diff;
+
+        if (m_showStats)
+        {
+            std::stringstream str;
+            str << "FPS: ";
+            str.precision(2);
+            str.setf(std::ios_base::fixed);
+            str << m_fps;
+            m_fpsText = str.str();
+        }
+    }
+
     float rTime = m_app->GetRelTime();
 
     m_lightMan->UpdateProgression(rTime);
@@ -2664,26 +2686,6 @@ float CEngine::GetTracePrecision()
     return m_tracePrecision;
 }
 
-void CEngine::SetMouseVisible(bool visible)
-{
-    m_mouseVisible = visible;
-}
-
-bool CEngine::GetMouseVisible()
-{
-    return m_mouseVisible;
-}
-
-void CEngine::SetMousePos(Math::Point pos)
-{
-    m_mousePos = pos;
-}
-
-Math::Point CEngine::GetMousePos()
-{
-    return m_mousePos;
-}
-
 void CEngine::SetMouseType(EngineMouseType type)
 {
     m_mouseType = type;
@@ -3167,9 +3169,10 @@ void CEngine::DrawInterface()
     if (m_overFront)
         DrawOverColor();
 
-    // Mouse & highlight at the end
+    // At the end to not overlap
     DrawMouse();
     DrawHighlight();
+    DrawStats();
 }
 
 void CEngine::UpdateGroundSpotTextures()
@@ -3668,10 +3671,8 @@ void CEngine::DrawHighlight()
 // Status: TESTED, VERIFIED
 void CEngine::DrawMouse()
 {
-    if (! m_mouseVisible)
-        return;
-
-    if (m_app->GetSystemMouseVisibile())
+    MouseMode mode = m_app->GetMouseMode();
+    if (mode != MOUSE_ENGINE && mode != MOUSE_BOTH)
         return;
 
     Material material;
@@ -3683,9 +3684,9 @@ void CEngine::DrawMouse()
 
     int index = static_cast<int>(m_mouseType);
 
-    Math::Point pos = m_mousePos;
-    pos.x = m_mousePos.x - (m_mice[index].hotPoint.x * m_mouseSize.x) / 32.0f;
-    pos.y = m_mousePos.y - ((32.0f - m_mice[index].hotPoint.y) * m_mouseSize.y) / 32.0f;
+    Math::Point pos = m_app->GetMousePos();
+    pos.x = pos.x - (m_mice[index].hotPoint.x * m_mouseSize.x) / 32.0f;
+    pos.y = pos.y - ((32.0f - m_mice[index].hotPoint.y) * m_mouseSize.y) / 32.0f;
 
     Math::Point shadowPos;
     shadowPos.x = pos.x + (4.0f/800.0f);
@@ -3731,10 +3732,46 @@ void CEngine::DrawMouseSprite(Math::Point pos, Math::Point size, int icon)
         Vertex(Math::Vector(p2.x, p2.y, 0.0f), normal, Math::Point(u2, v1))
     };
 
-    m_device->SetRenderState(RENDER_STATE_DEPTH_TEST, false);
-    m_device->SetRenderState(RENDER_STATE_DEPTH_WRITE, false);
     m_device->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, vertex, 4);
     AddStatisticTriangle(2);
+}
+
+void CEngine::DrawStats()
+{
+    if (!m_showStats)
+        return;
+
+    std::stringstream str;
+    str << "Triangles: ";
+    str << m_statisticTriangle;
+    std::string triangleText = str.str();
+
+    float height = m_text->GetAscent(FONT_COLOBOT, 12.0f);
+    float width = 0.15f;
+
+    Math::Point pos(0.04f, 0.04f + height);
+
+    SetState(ENG_RSTATE_OPAQUE_COLOR);
+
+    Gfx::Color black(0.0f, 0.0f, 0.0f, 0.0f);
+
+    VertexCol vertex[4] =
+    {
+        VertexCol(Math::Vector(pos.x        , pos.y - height, 0.0f), black),
+        VertexCol(Math::Vector(pos.x        , pos.y + height, 0.0f), black),
+        VertexCol(Math::Vector(pos.x + width, pos.y - height, 0.0f), black),
+        VertexCol(Math::Vector(pos.x + width, pos.y + height, 0.0f), black)
+    };
+
+    m_device->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, vertex, 4);
+
+    SetState(ENG_RSTATE_TEXT);
+
+    m_text->DrawText(triangleText, FONT_COLOBOT, 12.0f, pos, 1.0f, TEXT_ALIGN_LEFT, 0);
+
+    pos.y -= height;
+
+    m_text->DrawText(m_fpsText, FONT_COLOBOT, 12.0f, pos, 1.0f, TEXT_ALIGN_LEFT, 0);
 }
 
 

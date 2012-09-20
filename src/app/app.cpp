@@ -15,16 +15,18 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// app.cpp
 
 #include "app/app.h"
 
 #include "app/system.h"
+
 #include "common/logger.h"
 #include "common/iman.h"
 #include "common/image.h"
 #include "common/key.h"
+
 #include "graphics/opengl/gldevice.h"
+
 #include "object/robotmain.h"
 
 
@@ -35,6 +37,7 @@
 
 #include <stdlib.h>
 #include <libintl.h>
+#include <unistd.h>
 
 
 template<> CApplication* CSingleton<CApplication>::mInstance = nullptr;
@@ -116,6 +119,8 @@ CApplication::CApplication()
 
     m_joystickEnabled = false;
 
+    m_mouseMode = MOUSE_SYSTEM;
+
     m_kmodState = 0;
     m_mouseButtonsState = 0;
     m_trackedKeys = 0;
@@ -123,6 +128,8 @@ CApplication::CApplication()
     m_dataPath = "./data";
 
     m_language = LANG_ENGLISH;
+
+    m_lowCPU = true;
 }
 
 CApplication::~CApplication()
@@ -649,8 +656,7 @@ void CApplication::UpdateMouse()
 {
     Math::IntPoint pos;
     SDL_GetMouseState(&pos.x, &pos.y);
-    m_systemMousePos = m_engine->WindowToInterfaceCoords(pos);
-    m_engine->SetMousePos(m_systemMousePos);
+    m_mousePos = m_engine->WindowToInterfaceCoords(pos);
 }
 
 int CApplication::Run()
@@ -660,6 +666,8 @@ int CApplication::Run()
     GetCurrentTimeStamp(m_baseTimeStamp);
     GetCurrentTimeStamp(m_lastTimeStamp);
     GetCurrentTimeStamp(m_curTimeStamp);
+
+    MoveMouse(Math::Point(0.5f, 0.5f)); // center mouse on start
 
     while (true)
     {
@@ -752,6 +760,11 @@ int CApplication::Run()
 
             // Update simulation state
             StepSimulation();
+
+            if (m_lowCPU)
+            {
+                usleep(20000); // should still give plenty of fps
+            }
         }
     }
 
@@ -889,25 +902,12 @@ bool CApplication::ProcessEvent(Event &event)
     CLogger *l = GetLogger();
 
     event.trackedKeys = m_trackedKeys;
-    if (GetSystemMouseVisibile())
-        event.mousePos = m_systemMousePos;
-    else
-        event.mousePos = m_engine->GetMousePos();
+    event.mousePos = m_mousePos;
 
     if (event.type == EVENT_ACTIVE)
     {
         if (m_debugMode)
             l->Info("Focus change: active = %s\n", event.active.gain ? "true" : "false");
-
-        /*if (m_active != event.active.gain)
-        {
-            m_active = event.active.gain;
-
-            if (m_active)
-                ResumeSimulation();
-            else
-                SuspendSimulation();
-        }*/
     }
     else if (event.type == EVENT_KEY_DOWN)
     {
@@ -1268,27 +1268,31 @@ bool CApplication::GetGrabInput()
     return result == SDL_GRAB_ON;
 }
 
-void CApplication::SetSystemMouseVisible(bool visible)
+void CApplication::SetMouseMode(MouseMode mode)
 {
-    SDL_ShowCursor(visible ? SDL_ENABLE : SDL_DISABLE);
+    m_mouseMode = mode;
+    if ((m_mouseMode == MOUSE_SYSTEM) || (m_mouseMode == MOUSE_BOTH))
+        SDL_ShowCursor(SDL_ENABLE);
+    else
+        SDL_ShowCursor(SDL_DISABLE);
 }
 
-bool CApplication::GetSystemMouseVisibile()
+MouseMode CApplication::GetMouseMode()
 {
-    int result = SDL_ShowCursor(SDL_QUERY);
-    return result == SDL_ENABLE;
+    return m_mouseMode;
 }
 
-void CApplication::SetSystemMousePos(Math::Point pos)
+Math::Point CApplication::GetMousePos()
 {
+    return m_mousePos;
+}
+
+void CApplication::MoveMouse(Math::Point pos)
+{
+    m_mousePos = pos;
+
     Math::IntPoint windowPos = m_engine->InterfaceToWindowCoords(pos);
     SDL_WarpMouse(windowPos.x, windowPos.y);
-    m_systemMousePos = pos;
-}
-
-Math::Point CApplication::GetSystemMousePos()
-{
-    return m_systemMousePos;
 }
 
 std::vector<JoystickDevice> CApplication::GetJoystickList()
@@ -1348,4 +1352,14 @@ Language CApplication::GetLanguage()
 void CApplication::SetLanguage(Language language)
 {
     m_language = language;
+}
+
+void CApplication::SetLowCPU(bool low)
+{
+    m_lowCPU = low;
+}
+
+bool CApplication::GetLowCPU()
+{
+    return m_lowCPU;
 }
