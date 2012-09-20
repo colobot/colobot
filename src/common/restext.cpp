@@ -19,6 +19,7 @@
 #include "common/global.h"
 #include "common/event.h"
 #include "common/logger.h"
+#include "common/stringutils.h"
 #include "CBot/resource.h"
 #include "object/object.h"
 #include "object/robotmain.h"
@@ -136,41 +137,66 @@ static const char* GetResourceBase(ResType type, int num)
 
     switch (type)
     {
-    case RES_TEXT:
-    assert(num < strings_text_len);
-    str = strings_text[num];
-    break;
-    case RES_EVENT:
-    // assert(num < strings_event_len);
-    if (num >= strings_event_len)
-    {
-        GetLogger()->Warn("GetResource invalid event num: %d\n", num);
-        return "";
+        case RES_TEXT:
+            assert(num < strings_text_len);
+            str = strings_text[num];
+            break;
+
+            case RES_EVENT:
+            // assert(num < strings_event_len);
+            if (num >= strings_event_len)
+            {
+                GetLogger()->Trace("GetResource event num out of range: %d\n", num); // TODO: fix later
+                return "";
+            }
+            str = strings_event[num];
+            break;
+
+        case RES_OBJECT:
+            assert(num < strings_object_len);
+            if (num == OBJECT_HUMAN)
+                return g_gamerName;
+
+            str = strings_object[num];
+            break;
+
+        case RES_ERR:
+            assert(num < strings_err_len);
+            str = strings_err[num];
+            break;
+
+        case RES_CBOT:
+            assert(num < strings_cbot_len);
+            str = strings_cbot[num];
+            break;
+
+        case RES_KEY:
+
+            if (num == VIRTUAL_KMOD_CTRL)
+                return "Ctrl";
+            else if (num == VIRTUAL_KMOD_SHIFT)
+                return "Shift";
+            else if (num == VIRTUAL_KMOD_ALT)
+                return "Alt";
+            else if (num == VIRTUAL_KMOD_META)
+                return "Win";
+            else if (num > VIRTUAL_JOY(0))
+            {
+                // TODO: temporary fix
+                static std::string sstr;
+                sstr = gettext("Button %1");
+                StrUtils::Replace(sstr, "%1", StrUtils::ToString<int>(1 + num - VIRTUAL_JOY(0)));
+                return sstr.c_str();
+            }
+            else
+                str = SDL_GetKeyName(static_cast<SDLKey>(num));
+
+            break;
+
+        default:
+            assert(false);
     }
-    str = strings_event[num];
-    break;
-    case RES_OBJECT:
-    assert(num < strings_object_len);
-    if (num == OBJECT_HUMAN)
-        return g_gamerName;
-    str = strings_object[num];
-    break;
-    case RES_ERR:
-    assert(num < strings_err_len);
-    str = strings_err[num];
-    break;
-    case RES_CBOT:
-    assert(num < strings_cbot_len);
-    str = strings_cbot[num];
-    break;
-    case RES_KEY:
-    assert(num < SDLK_LAST);
-    // TODO: virtual keys
-    str = SDL_GetKeyName(static_cast<SDLKey>(num));
-    break;
-    default:
-    assert(false);
-    }
+
     return gettext(str);
 }
 

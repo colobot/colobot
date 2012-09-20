@@ -3747,6 +3747,11 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
     char dir[100];
     char op[100];
 
+    memset(line, 0, 500);
+    memset(name, 0, 200);
+    memset(dir, 0, 100);
+    memset(op, 0, 100);
+
     m_dialog->BuildSceneName(line, base, rank);
     FILE* file = fopen(line, "r");
     if (file == NULL) return;

@@ -1831,7 +1831,7 @@ void CMainDialog::ChangePhase(Phase phase)
         pe->SetHiliteCap(false);
         pe->SetFontType(Gfx::FONT_COURIER);
         pe->SetFontSize(8.0f);
-        pe->ReadText("help\\authors.txt");
+        pe->ReadText("help/authors.txt");
 
         pos.x  =  80.0f/640.0f;
         pos.y  = 140.0f/480.0f;
@@ -1843,7 +1843,7 @@ void CMainDialog::ChangePhase(Phase phase)
         pe->SetHiliteCap(false);
         pe->SetFontType(Gfx::FONT_COURIER);
         pe->SetFontSize(6.5f);
-        pe->ReadText("help\\licences.txt");
+        pe->ReadText("help/licences.txt");
 // #endif
 /* TODO: #if _SCHOOL
 #if _CEEBOTDEMO
@@ -1863,7 +1863,7 @@ void CMainDialog::ChangePhase(Phase phase)
         pe->SetHiliteCap(false);
         pe->SetFontType(Gfx::FONT_COURIER);
         pe->SetFontSize(8.0f);
-        pe->ReadText("help\\authors.txt");
+        pe->ReadText("help/authors.txt");
 
 /* #if _DEMO
 //?     pos.x  =  80.0f/640.0f;
@@ -1876,7 +1876,7 @@ void CMainDialog::ChangePhase(Phase phase)
 //?     pe->SetHiliteCap(false);
 //?     pe->SetFontType(Gfx::FONT_COURIER);
 //?     pe->SetFontSize(8.0f);
-//?     pe->ReadText("help\\demo.txt");
+//?     pe->ReadText("help/demo.txt");
 
 //?     pos.x  =  80.0f/640.0f;
 //?     pos.y  = 140.0f/480.0f;
@@ -1888,7 +1888,7 @@ void CMainDialog::ChangePhase(Phase phase)
 //?     pe->SetHiliteCap(false);
 //?     pe->SetFontType(Gfx::FONT_COURIER);
 //?     pe->SetFontSize(8.0f);
-//?     pe->ReadText("help\\authors.txt");
+//?     pe->ReadText("help/authors.txt");
 #endif */
 
 // TODO: #if !_DEMO
@@ -2097,7 +2097,7 @@ bool CMainDialog::EventProcess(const Event &event)
     if ( event.type == EVENT_MOUSE_MOVE )
     {
         m_glintMouse = event.pos;
-        NiceParticle(event.pos, event.keyState&KS_MLEFT);
+        NiceParticle(event.pos, event.trackedKeys & TRKEY_NUM_LEFT);
     }
 
     if ( m_bDialog )  // this dialogue?
@@ -3573,7 +3573,7 @@ void CMainDialog::SetUserDir(char *base, int rank)
 
     if ( strcmp(base, "user") == 0 && rank >= 100 )
     {
-        sprintf(dir, "%s\\%s", m_userDir, m_userList[rank/100-1]);
+        sprintf(dir, "%s/%s", m_userDir, m_userList[rank/100-1]);
         UserDir(true, dir);
     }
     else
@@ -3588,11 +3588,11 @@ void CMainDialog::BuildSceneName(char *filename, char *base, int rank)
 {
     if ( strcmp(base, "user") == 0 )
     {
-        sprintf(filename, "%s\\%s\\scene%.2d.txt", m_userDir, m_userList[rank/100-1], rank%100);
+        sprintf(filename, "%s/%s/scene%.2d.txt", m_userDir, m_userList[rank/100-1], rank%100);
     }
     else
     {
-        sprintf(filename, "%s\\%s%.3d.txt", m_sceneDir, base, rank);
+        sprintf(filename, "%s/%s%.3d.txt", m_sceneDir, base, rank);
     }
 }
 
@@ -3633,7 +3633,7 @@ void CMainDialog::ReadNameList()
 
     nbFilenames = 0;
 
-    sprintf(dir, ".\\%s", m_savegameDir);
+    sprintf(dir, "./%s", m_savegameDir);
 
     // if (! boost::filesystem::exists(dir))
     // {
@@ -3902,7 +3902,7 @@ void CMainDialog::NameCreate()
 
     // TODO: _mkdir(m_savegameDir);  // if does not exist yet!
 
-    sprintf(dir, "%s\\%s", m_savegameDir, name);
+    sprintf(dir, "%s/%s", m_savegameDir, name);
     // TODO: if ( _mkdir(dir) != 0 )
     {
         m_sound->Play(SOUND_TZOING);
@@ -3927,7 +3927,7 @@ bool RemoveDir(char *dirname)
     struct _finddata_t  fBuffer;
     char                filename[100];
 
-    sprintf(filename, "%s\\*", dirname);
+    sprintf(filename, "%s/*", dirname);
     hFile = _findfirst(filename, &fBuffer);
     if ( hFile != -1 )
     {
@@ -3937,12 +3937,12 @@ bool RemoveDir(char *dirname)
             {
                 if ( fBuffer.attrib & _A_SUBDIR )
                 {
-                    sprintf(filename, "%s\\%s", dirname, fBuffer.name);
+                    sprintf(filename, "%s/%s", dirname, fBuffer.name);
                     RemoveDir(filename);
                 }
                 else
                 {
-                    sprintf(filename, "%s\\%s", dirname, fBuffer.name);
+                    sprintf(filename, "%s/%s", dirname, fBuffer.name);
                     remove(filename);
                 }
             }
@@ -3981,7 +3981,7 @@ void CMainDialog::NameDelete()
     gamer = pl->GetName(sel);
 
     // Deletes all the contents of the file.
-    sprintf(dir, "%s\\%s", m_savegameDir, gamer);
+    sprintf(dir, "%s/%s", m_savegameDir, gamer);
     if ( !RemoveDir(dir) )
     {
         m_sound->Play(SOUND_TZOING);
@@ -4295,7 +4295,7 @@ bool CMainDialog::IsIOReadScene()
     FILE*   file;
     char    filename[100];
 
-    sprintf(filename, "%s\\%s\\save%c%.3d\\data.sav", m_savegameDir, m_main->GetGamerName(), m_sceneName[0], 0);
+    sprintf(filename, "%s/%s/save%c%.3d/data.sav", m_savegameDir, m_main->GetGamerName(), m_sceneName[0], 0);
     file = fopen(filename, "r");
     if ( file == NULL )  return false;
     fclose(file);
@@ -4379,7 +4379,7 @@ void CMainDialog::IOReadList()
 
     for ( j=0 ; j<999 ; j++ )
     {
-        sprintf(filename, "%s\\%s\\save%c%.3d\\data.sav", m_savegameDir, m_main->GetGamerName(), m_sceneName[0], j);
+        sprintf(filename, "%s/%s/save%c%.3d/data.sav", m_savegameDir, m_main->GetGamerName(), m_sceneName[0], j);
         file = fopen(filename, "r");
         if ( file == NULL )  break;
 
@@ -4440,7 +4440,7 @@ void CMainDialog::IOUpdateList()
     sel = pl->GetSelect();
     max = pl->GetTotal();
 
-    sprintf(filename, "%s\\%s\\save%c%.3d\\screen.png", m_savegameDir, m_main->GetGamerName(), m_sceneName[0], sel);
+    sprintf(filename, "%s/%s/save%c%.3d/screen.png", m_savegameDir, m_main->GetGamerName(), m_sceneName[0], sel);
 
     if ( m_phase == PHASE_WRITE  ||
          m_phase == PHASE_WRITEs )
@@ -4492,7 +4492,7 @@ void CMainDialog::IODeleteScene()
 
     /* TODO: remove files
     // Deletes all the contents of the file.
-    sprintf(dir, "%s\\%s\\save%c%.3d\\*", m_savegameDir, m_main->GetGamerName(), m_sceneName[0], sel);
+    sprintf(dir, "%s/%s/save%c%.3d/*", m_savegameDir, m_main->GetGamerName(), m_sceneName[0], sel);
     hFile = _findfirst(dir, &fBuffer);
     if ( hFile != -1 )
     {
@@ -4500,14 +4500,14 @@ void CMainDialog::IODeleteScene()
         {
             if ( fBuffer.name[0] != '.' )
             {
-                sprintf(dir, "%s\\%s\\save%c%.3d\\%s", m_savegameDir, m_main->GetGamerName(), m_sceneName[0], sel, fBuffer.name);
+                sprintf(dir, "%s/%s/save%c%.3d/%s", m_savegameDir, m_main->GetGamerName(), m_sceneName[0], sel, fBuffer.name);
                 remove(dir);
             }
         }
         while ( _findnext(hFile, &fBuffer) == 0 );
     }
 
-    sprintf(dir, "%s\\%s\\save%c%.3d", m_savegameDir, m_main->GetGamerName(), m_sceneName[0], sel);
+    sprintf(dir, "%s/%s/save%c%.3d", m_savegameDir, m_main->GetGamerName(), m_sceneName[0], sel);
     if ( _rmdir(dir) != 0 )
     {
         m_sound->Play(SOUND_TZOING);
@@ -4518,8 +4518,8 @@ void CMainDialog::IODeleteScene()
     max = pl->GetTotal();
     for ( i=sel+1 ; i<max ; i++ )
     {
-        sprintf(old, "%s\\%s\\save%c%.3d", m_savegameDir, m_main->GetGamerName(), m_sceneName[0], i);
-        sprintf(dir, "%s\\%s\\save%c%.3d", m_savegameDir, m_main->GetGamerName(), m_sceneName[0], i-1);
+        sprintf(old, "%s/%s/save%c%.3d", m_savegameDir, m_main->GetGamerName(), m_sceneName[0], i);
+        sprintf(dir, "%s/%s/save%c%.3d", m_savegameDir, m_main->GetGamerName(), m_sceneName[0], i-1);
         rename(old, dir);
     }*/
     IOReadList();
@@ -4548,18 +4548,18 @@ bool CMainDialog::IOWriteScene()
     if ( sel == -1 )  return false;
 
     // TODO: _mkdir("Savegame");  // if doesn't exist yet!
-    sprintf(filename, "%s\\%s", m_savegameDir, m_main->GetGamerName());
+    sprintf(filename, "%s/%s", m_savegameDir, m_main->GetGamerName());
     // TODO: _mkdir(filename);
-    sprintf(filename, "%s\\%s\\save%c%.3d", m_savegameDir, m_main->GetGamerName(), m_sceneName[0], sel);
+    sprintf(filename, "%s/%s/save%c%.3d", m_savegameDir, m_main->GetGamerName(), m_sceneName[0], sel);
     // TODO: _mkdir(filename);
 
-    sprintf(filename, "%s\\%s\\save%c%.3d\\data.sav", m_savegameDir, m_main->GetGamerName(), m_sceneName[0], sel);
-    sprintf(filecbot, "%s\\%s\\save%c%.3d\\cbot.run", m_savegameDir, m_main->GetGamerName(), m_sceneName[0], sel);
+    sprintf(filename, "%s/%s/save%c%.3d/data.sav", m_savegameDir, m_main->GetGamerName(), m_sceneName[0], sel);
+    sprintf(filecbot, "%s/%s/save%c%.3d/cbot.run", m_savegameDir, m_main->GetGamerName(), m_sceneName[0], sel);
     pe->GetText(info, 100);
     m_main->IOWriteScene(filename, filecbot, info);
 
     m_shotDelay = 3;
-    sprintf(m_shotName, "%s\\%s\\save%c%.3d\\screen.png", m_savegameDir, m_main->GetGamerName(), m_sceneName[0], sel);
+    sprintf(m_shotName, "%s/%s/save%c%.3d/screen.png", m_savegameDir, m_main->GetGamerName(), m_sceneName[0], sel);
 
     return true;
 }
@@ -4585,8 +4585,8 @@ bool CMainDialog::IOReadScene()
     sel = pl->GetSelect();
     if ( sel == -1 )  return false;
 
-    sprintf(filename, "%s\\%s\\save%c%.3d\\data.sav", m_savegameDir, m_main->GetGamerName(), m_sceneName[0], sel);
-    sprintf(filecbot, "%s\\%s\\save%c%.3d\\cbot.run", m_savegameDir, m_main->GetGamerName(), m_sceneName[0], sel);
+    sprintf(filename, "%s/%s/save%c%.3d/data.sav", m_savegameDir, m_main->GetGamerName(), m_sceneName[0], sel);
+    sprintf(filecbot, "%s/%s/save%c%.3d/cbot.run", m_savegameDir, m_main->GetGamerName(), m_sceneName[0], sel);
 
     file = fopen(filename, "r");
     if ( file == NULL )  return false;
@@ -4690,6 +4690,10 @@ void CMainDialog::UpdateSceneChap(int &chap)
     int         i, j;
     bool        bPassed, bDo;
 
+    memset(op, 0, 100);
+    memset(line, 0, 500);
+    memset(name, 0, 100);
+
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
     if ( pw == 0 )  return;
     pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_CHAP));
@@ -4701,7 +4705,7 @@ void CMainDialog::UpdateSceneChap(int &chap)
     {
         j = 0;
         /* TODO: list files
-        hFile = _findfirst("user\\*", &fileBuffer);
+        hFile = _findfirst("user/*", &fileBuffer);
         if ( hFile != -1 )
         {
             do
@@ -4859,6 +4863,10 @@ void CMainDialog::UpdateSceneList(int chap, int &sel)
     char        name[100];
     int         i, j;
     bool        bPassed;
+
+    memset(op, 0, 100);
+    memset(line, 0, 500);
+    memset(name, 0, 100);
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
     if ( pw == 0 )  return;
@@ -6643,7 +6651,7 @@ void CMainDialog::WriteGamerPerso(char *gamer)
     char    filename[100];
     char    line[100];
 
-    sprintf(filename, "%s\\%s\\face.gam", m_savegameDir, gamer);
+    sprintf(filename, "%s/%s/face.gam", m_savegameDir, gamer);
     file = fopen(filename, "w");
     if ( file == NULL )  return;
 
@@ -6672,7 +6680,7 @@ void CMainDialog::ReadGamerPerso(char *gamer)
     m_perso.face = 0;
     DefPerso();
 
-    sprintf(filename, "%s\\%s\\face.gam", m_savegameDir, gamer);
+    sprintf(filename, "%s/%s/face.gam", m_savegameDir, gamer);
     file = fopen(filename, "r");
     if ( file == NULL )  return;
 
@@ -6777,7 +6785,7 @@ bool CMainDialog::ReadGamerInfo()
         m_sceneInfo[i].bPassed = false;
     }
 
-    sprintf(line, "%s\\%s\\%s.gam", m_savegameDir, m_main->GetGamerName(), m_sceneName);
+    sprintf(line, "%s/%s/%s.gam", m_savegameDir, m_main->GetGamerName(), m_sceneName);
     file = fopen(line, "r");
     if ( file == NULL )  return false;
 
@@ -6813,7 +6821,7 @@ bool CMainDialog::WriteGamerInfo()
     char    line[100];
     int     i;
 
-    sprintf(line, "%s\\%s\\%s.gam", m_savegameDir, m_main->GetGamerName(), m_sceneName);
+    sprintf(line, "%s/%s/%s.gam", m_savegameDir, m_main->GetGamerName(), m_sceneName);
     file = fopen(line, "w");
     if ( file == NULL )  return false;
 
