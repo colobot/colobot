@@ -52,9 +52,6 @@ namespace Ui
 
 const int KEY_VISIBLE = 6;      // number of visible keys redefinable
 
-/*TODO: #if _SCHOOL & _TEEN
-const int KEY_TOTAL = 13;       // total number of keys redefinable
-#else*/
 const int KEY_TOTAL = 21;       // total number of keys redefinable
 
 const float WELCOME_LENGTH = 2.0f;
@@ -99,36 +96,6 @@ static int perso_color[3*10*3] =
 };
 
 
-/* TODO: ? #if _NET
-// Check if the key "school" is present in the registry.
-
-bool SchoolCheck()
-{
-    HKEY    key;
-    char    buffer[100];
-    LONG    i;
-    DWORD   type, len;
-
-    i = RegOpenKeyEx(HKEY_LOCAL_MACHINE,
-#if _NEWLOOK
-                     "Software\\Epsitec\\CeeBot\\Setup",
-#else
-                     "Software\\Epsitec\\Colobot\\Setup",
-#endif
-                     0, KEY_READ, &key);
-    if ( i != ERROR_SUCCESS )  return false;
-
-    type = REG_SZ;
-    len  = sizeof(buffer);
-    i = RegQueryValueEx(key, "School", NULL, &type, (LPBYTE)buffer, &len);
-    if ( i != ERROR_SUCCESS || type != REG_SZ )  return false;
-
-    if ( strcmp(buffer, "ToBoLoC") != 0 )  return false;
-
-    return true;
-}
-#endif
-*/
 
 // Constructor of robot application.
 
@@ -156,11 +123,7 @@ CMainDialog::CMainDialog(CInstanceManager* iMan)
     m_sceneRank    = 0;
     m_bSceneSoluce = false;
     m_bSimulSetup  = false;
-/* TODO: ? #if _NET
-    m_accessEnable = SchoolCheck();
-    m_accessMission= false;
-    m_accessUser   = false;
-#else*/
+
     m_accessEnable = true;
     m_accessMission= true;
     m_accessUser   = true;
@@ -204,7 +167,7 @@ CMainDialog::CMainDialog(CInstanceManager* iMan)
         m_partiTime[i]  = 0.0f;
     }
 
-    strcpy(m_sceneDir,    "scene");
+    strcpy(m_sceneDir,    "levels");
     strcpy(m_savegameDir, "savegame");
     strcpy(m_publicDir,   "program");
     strcpy(m_userDir,     "user");
@@ -362,14 +325,9 @@ void CMainDialog::ChangePhase(Phase phase)
         pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_DEFI);
         pb->SetState(STATE_SHADOW);
 
-
-        /* TODO: setup mode?
-        if ( m_engine->GetSetupMode() )
-        {
-            pos.y = oy+sy*5.1f;
-            pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_SETUP);
-            pb->SetState(STATE_SHADOW);
-        } */
+        pos.y = oy+sy*5.1f;
+        pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_SETUP);
+        pb->SetState(STATE_SHADOW);
 
         pos.y = oy+sy*4.0f;
         pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_NAME);
@@ -498,14 +456,12 @@ void CMainDialog::ChangePhase(Phase phase)
         pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_NOK);
         pb->SetState(STATE_SHADOW);
 
-/* TODO: #if !_TEEN
         pos.x = 380.0f/640.0f;
         pos.y = 250.0f/480.0f;
         ddim.x =100.0f/640.0f;
         ddim.y = 52.0f/480.0f;
         pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_PERSO);
         pb->SetState(STATE_SHADOW);
-#endif*/
 
         pos.x = 200.0f/640.0f;
         pos.y = 150.0f/480.0f;
@@ -5959,21 +5915,6 @@ void CMainDialog::ChangeSetupQuality(int quality)
 
 static int key_table[KEY_TOTAL] =
 {
-/* TODO: #if _SCHOOL & _TEEN
-    INPUT_SLOT_LEFT,
-    INPUT_SLOT_RIGHT,
-    INPUT_SLOT_UP,
-    INPUT_SLOT_DOWN,
-    INPUT_SLOT_CAMERA,
-    INPUT_SLOT_NEAR,
-    INPUT_SLOT_AWAY,
-    INPUT_SLOT_HELP,
-    INPUT_SLOT_PROG,
-    INPUT_SLOT_SPEED10,
-    INPUT_SLOT_SPEED15,
-    INPUT_SLOT_SPEED20,
-    INPUT_SLOT_QUIT,
-#else */
     INPUT_SLOT_LEFT,
     INPUT_SLOT_RIGHT,
     INPUT_SLOT_UP,
@@ -5995,26 +5936,10 @@ static int key_table[KEY_TOTAL] =
     INPUT_SLOT_SPEED15,
     INPUT_SLOT_SPEED20,
     INPUT_SLOT_QUIT,
-// #endif
 };
 
 static EventType key_event[KEY_TOTAL] =
 {
-/* TODO: #if _SCHOOL & _TEEN
-    EVENT_INTERFACE_KLEFT,
-    EVENT_INTERFACE_KRIGHT,
-    EVENT_INTERFACE_KUP,
-    EVENT_INTERFACE_KDOWN,
-    EVENT_INTERFACE_KCAMERA,
-    EVENT_INTERFACE_KNEAR,
-    EVENT_INTERFACE_KAWAY,
-    EVENT_INTERFACE_KHELP,
-    EVENT_INTERFACE_KPROG,
-    EVENT_INTERFACE_KSPEED10,
-    EVENT_INTERFACE_KSPEED15,
-    EVENT_INTERFACE_KSPEED20,
-    EVENT_INTERFACE_KQUIT,
-#else */
     EVENT_INTERFACE_KLEFT,
     EVENT_INTERFACE_KRIGHT,
     EVENT_INTERFACE_KUP,
@@ -6036,7 +5961,6 @@ static EventType key_event[KEY_TOTAL] =
     EVENT_INTERFACE_KSPEED15,
     EVENT_INTERFACE_KSPEED20,
     EVENT_INTERFACE_KQUIT,
-//#endif
 };
 
 // Updates the list of keys.
@@ -6170,13 +6094,9 @@ void CMainDialog::StartAbort()
         pb->SetState(STATE_WARNING);
     }
 
-    /* TODO: setup mode?
-    if ( m_engine->GetSetupMode() )
-    {
-        pos.y = 0.39f;
-        pb = pw->CreateButton(pos, dim, -1, EVENT_INTERFACE_SETUP);
-        pb->SetState(STATE_SHADOW);
-    }*/
+    pos.y = 0.39f;
+    pb = pw->CreateButton(pos, dim, -1, EVENT_INTERFACE_SETUP);
+    pb->SetState(STATE_SHADOW);
 
     pos.y = 0.25f;
     pb = pw->CreateButton(pos, dim, -1, EVENT_INTERFACE_AGAIN);
@@ -6956,6 +6876,7 @@ bool CMainDialog::NextMission()
 
     return true;
 }
+
 
 } // namespace Ui
 
