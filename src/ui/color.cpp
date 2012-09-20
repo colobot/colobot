@@ -105,7 +105,7 @@ bool CColor::EventProcess(const Event &event)
     }
 
     if ( event.type == EVENT_MOUSE_BUTTON_DOWN &&
-    		event.mouseButton.button == 1 &&
+            event.mouseButton.button == 1 &&
          (m_state & STATE_VISIBLE)        &&
          (m_state & STATE_ENABLE)         )
     {
