@@ -756,7 +756,7 @@ after_tex_color:
         glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_ALPHA, GL_TEXTURE);
         goto after_tex_operations;
     }
-    else if (params.colorOperation == TEX_MIX_OPER_REPLACE)
+    else if (params.alphaOperation == TEX_MIX_OPER_REPLACE)
         glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_ALPHA, GL_REPLACE);
     else if (params.alphaOperation == TEX_MIX_OPER_MODULATE)
         glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_ALPHA, GL_MODULATE);
