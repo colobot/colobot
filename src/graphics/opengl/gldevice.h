@@ -16,7 +16,7 @@
 
 /**
  * \file graphics/opengl/gldevice.h
- * \brief OpenGL implementation - Gfx::CGLDevice class
+ * \brief OpenGL implementation - CGLDevice class
  */
 
 #pragma once
@@ -29,6 +29,7 @@
 #include <set>
 
 
+// Graphics module namespace
 namespace Gfx {
 
 /**
@@ -70,10 +71,10 @@ struct GLDevicePrivate;
   Because of that, CGLDeviceConfig is outside the CDevice class and must be set
   in CApplication.
 */
-class CGLDevice : public Gfx::CDevice
+class CGLDevice : public CDevice
 {
 public:
-    CGLDevice(const Gfx::GLDeviceConfig &config);
+    CGLDevice(const GLDeviceConfig &config);
     virtual ~CGLDevice();
 
     virtual void DebugHook();
@@ -81,82 +82,82 @@ public:
     virtual bool Create();
     virtual void Destroy();
 
-    void ConfigChanged(const Gfx::GLDeviceConfig &newConfig);
+    void ConfigChanged(const GLDeviceConfig &newConfig);
 
     virtual void BeginScene();
     virtual void EndScene();
 
     virtual void Clear();
 
-    virtual void SetTransform(Gfx::TransformType type, const Math::Matrix &matrix);
-    virtual const Math::Matrix& GetTransform(Gfx::TransformType type);
-    virtual void MultiplyTransform(Gfx::TransformType type, const Math::Matrix &matrix);
+    virtual void SetTransform(TransformType type, const Math::Matrix &matrix);
+    virtual const Math::Matrix& GetTransform(TransformType type);
+    virtual void MultiplyTransform(TransformType type, const Math::Matrix &matrix);
 
-    virtual void SetMaterial(const Gfx::Material &material);
-    virtual const Gfx::Material& GetMaterial();
+    virtual void SetMaterial(const Material &material);
+    virtual const Material& GetMaterial();
 
     virtual int GetMaxLightCount();
-    virtual void SetLight(int index, const Gfx::Light &light);
-    virtual const Gfx::Light& GetLight(int index);
+    virtual void SetLight(int index, const Light &light);
+    virtual const Light& GetLight(int index);
     virtual void SetLightEnabled(int index, bool enabled);
     virtual bool GetLightEnabled(int index);
 
-    virtual Gfx::Texture CreateTexture(CImage *image, const Gfx::TextureCreateParams &params);
-    virtual Gfx::Texture CreateTexture(ImageData *data, const Gfx::TextureCreateParams &params);
-    virtual void DestroyTexture(const Gfx::Texture &texture);
+    virtual Texture CreateTexture(CImage *image, const TextureCreateParams &params);
+    virtual Texture CreateTexture(ImageData *data, const TextureCreateParams &params);
+    virtual void DestroyTexture(const Texture &texture);
     virtual void DestroyAllTextures();
 
     virtual int GetMaxTextureCount();
-    virtual void SetTexture(int index, const Gfx::Texture &texture);
+    virtual void SetTexture(int index, const Texture &texture);
     virtual void SetTexture(int index, unsigned int textureId);
-    virtual Gfx::Texture GetTexture(int index);
+    virtual Texture GetTexture(int index);
     virtual void SetTextureEnabled(int index, bool enabled);
     virtual bool GetTextureEnabled(int index);
 
-    virtual void SetTextureStageParams(int index, const Gfx::TextureStageParams &params);
-    virtual Gfx::TextureStageParams GetTextureStageParams(int index);
+    virtual void SetTextureStageParams(int index, const TextureStageParams &params);
+    virtual TextureStageParams GetTextureStageParams(int index);
 
-    virtual void SetTextureFactor(const Gfx::Color &color);
-    virtual Gfx::Color GetTextureFactor();
+    virtual void SetTextureFactor(const Color &color);
+    virtual Color GetTextureFactor();
 
-    virtual void DrawPrimitive(Gfx::PrimitiveType type, const Gfx::Vertex     *vertices, int vertexCount);
-    virtual void DrawPrimitive(Gfx::PrimitiveType type, const Gfx::VertexCol  *vertices, int vertexCount);
-    virtual void DrawPrimitive(Gfx::PrimitiveType type, const Gfx::VertexTex2 *vertices, int vertexCount);
+    virtual void DrawPrimitive(PrimitiveType type, const Vertex     *vertices, int vertexCount);
+    virtual void DrawPrimitive(PrimitiveType type, const VertexCol  *vertices, int vertexCount);
+    virtual void DrawPrimitive(PrimitiveType type, const VertexTex2 *vertices, int vertexCount);
 
     virtual int ComputeSphereVisibility(const Math::Vector &center, float radius);
 
-    virtual void SetRenderState(Gfx::RenderState state, bool enabled);
-    virtual bool GetRenderState(Gfx::RenderState state);
+    virtual void SetRenderState(RenderState state, bool enabled);
+    virtual bool GetRenderState(RenderState state);
 
-    virtual void SetDepthTestFunc(Gfx::CompFunc func);
-    virtual Gfx::CompFunc GetDepthTestFunc();
+    virtual void SetDepthTestFunc(CompFunc func);
+    virtual CompFunc GetDepthTestFunc();
 
     virtual void SetDepthBias(float factor);
     virtual float GetDepthBias();
 
-    virtual void SetAlphaTestFunc(Gfx::CompFunc func, float refValue);
-    virtual void GetAlphaTestFunc(Gfx::CompFunc &func, float &refValue);
+    virtual void SetAlphaTestFunc(CompFunc func, float refValue);
+    virtual void GetAlphaTestFunc(CompFunc &func, float &refValue);
 
-    virtual void SetBlendFunc(Gfx::BlendFunc srcBlend, Gfx::BlendFunc dstBlend);
-    virtual void GetBlendFunc(Gfx::BlendFunc &srcBlend, Gfx::BlendFunc &dstBlend);
+    virtual void SetBlendFunc(BlendFunc srcBlend, BlendFunc dstBlend);
+    virtual void GetBlendFunc(BlendFunc &srcBlend, BlendFunc &dstBlend);
 
-    virtual void SetClearColor(const Gfx::Color &color);
-    virtual Gfx::Color GetClearColor();
+    virtual void SetClearColor(const Color &color);
+    virtual Color GetClearColor();
 
-    virtual void SetGlobalAmbient(const Gfx::Color &color);
-    virtual Gfx::Color GetGlobalAmbient();
+    virtual void SetGlobalAmbient(const Color &color);
+    virtual Color GetGlobalAmbient();
 
-    virtual void SetFogParams(Gfx::FogMode mode, const Gfx::Color &color, float start, float end, float density);
-    virtual void GetFogParams(Gfx::FogMode &mode, Gfx::Color &color, float &start, float &end, float &density);
+    virtual void SetFogParams(FogMode mode, const Color &color, float start, float end, float density);
+    virtual void GetFogParams(FogMode &mode, Color &color, float &start, float &end, float &density);
 
-    virtual void SetCullMode(Gfx::CullMode mode);
-    virtual Gfx::CullMode GetCullMode();
+    virtual void SetCullMode(CullMode mode);
+    virtual CullMode GetCullMode();
 
-    virtual void SetShadeModel(Gfx::ShadeModel model);
-    virtual Gfx::ShadeModel GetShadeModel();
+    virtual void SetShadeModel(ShadeModel model);
+    virtual ShadeModel GetShadeModel();
 
-    virtual void SetFillMode(Gfx::FillMode mode) ;
-    virtual Gfx::FillMode GetFillMode();
+    virtual void SetFillMode(FillMode mode) ;
+    virtual FillMode GetFillMode();
 
 private:
     //! Updates internal modelview matrix
@@ -166,7 +167,7 @@ private:
 
 private:
     //! Current config
-    Gfx::GLDeviceConfig m_config;
+    GLDeviceConfig m_config;
 
     //! Current world matrix
     Math::Matrix m_worldMat;
@@ -178,26 +179,27 @@ private:
     Math::Matrix m_projectionMat;
 
     //! The current material
-    Gfx::Material m_material;
+    Material m_material;
 
     //! Whether lighting is enabled
     bool m_lighting;
     //! Current lights
-    std::vector<Gfx::Light> m_lights;
+    std::vector<Light> m_lights;
     //! Current lights enable status
     std::vector<bool> m_lightsEnabled;
 
     //! Whether texturing is enabled in general
     bool m_texturing;
     //! Current textures; \c NULL value means unassigned
-    std::vector<Gfx::Texture> m_currentTextures;
+    std::vector<Texture> m_currentTextures;
     //! Current texture stages enable status
     std::vector<bool> m_texturesEnabled;
     //! Current texture params
-    std::vector<Gfx::TextureStageParams> m_textureStageParams;
+    std::vector<TextureStageParams> m_textureStageParams;
 
     //! Set of all created textures
-    std::set<Gfx::Texture> m_allTextures;
+    std::set<Texture> m_allTextures;
 };
 
-}; // namespace Gfx
+
+} // namespace Gfx

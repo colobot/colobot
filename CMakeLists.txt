@@ -11,6 +11,14 @@ find_package(SDL_image 1.2 REQUIRED)
 find_package(SDL_ttf 2.0 REQUIRED)
 find_package(PNG 1.2 REQUIRED)
 
+set(Boost_USE_STATIC_LIBS        ON)
+set(Boost_USE_MULTITHREADED      ON)
+set(Boost_USE_STATIC_RUNTIME    OFF)
+
+set(Boost_ADDITIONALVERSION "1.51" "1.51.0")
+find_package(Boost COMPONENTS system filesystem REQUIRED)
+
+
 # GLEW requirement depends on platform
 # By default it is auto detected
 # This setting may be used to override

@@ -21,16 +21,18 @@
 
 #pragma once
 
-#include "const.h"
-#include "func.h"
+
+#include "math/const.h"
+#include "math/func.h"
+
 
 #include <cmath>
 #include <sstream>
 
 
 // Math module namespace
-namespace Math
-{
+namespace Math {
+
 
 /**
  * \struct Vector
@@ -277,4 +279,5 @@ inline Vector Clamp(const Vector &vec, const Vector &min, const Vector &max)
     return clamped;
 }
 
-}; // namespace Math
+
+} // namespace Math

@@ -21,17 +21,18 @@
 
 #pragma once
 
-#include "const.h"
-#include "func.h"
-#include "vector.h"
+
+#include "math/const.h"
+#include "math/func.h"
+#include "math/vector.h"
+
 
 #include <cmath>
 #include <cassert>
 
 
 // Math module namespace
-namespace Math
-{
+namespace Math {
 
 /**
  * \struct Matrix math/matrix.h
@@ -459,4 +460,5 @@ inline Math::Vector MatrixVectorMultiply(const Math::Matrix &m, const Math::Vect
     return Math::Vector(x, y, z);
 }
 
-}; // namespace Math
+
+} // namespace Math

@@ -15,7 +15,6 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// terrain.cpp
 
 #include "graphics/engine/terrain.h"
 
@@ -31,18 +30,22 @@
 
 #include <SDL/SDL.h>
 
+
+// Graphics module namespace
+namespace Gfx {
+
 const int LEVEL_MAT_PREALLOCATE_COUNT = 101;
 const int FLYING_LIMIT_PREALLOCATE_COUNT = 10;
 const int BUILDING_LEVEL_PREALLOCATE_COUNT = 101;
 
 
-Gfx::CTerrain::CTerrain(CInstanceManager* iMan)
+CTerrain::CTerrain(CInstanceManager* iMan)
 {
     m_iMan = iMan;
     m_iMan->AddInstance(CLASS_TERRAIN, this);
 
-    m_engine = static_cast<Gfx::CEngine*>( m_iMan->SearchInstance(CLASS_ENGINE) );
-    m_water  = static_cast<Gfx::CWater*>( m_iMan->SearchInstance(CLASS_WATER) );
+    m_engine = static_cast<CEngine*>( m_iMan->SearchInstance(CLASS_ENGINE) );
+    m_water  = static_cast<CWater*>( m_iMan->SearchInstance(CLASS_WATER) );
 
     m_mosaicCount     = 20;
     m_brickCount      = 1 << 4;
@@ -66,11 +69,11 @@ Gfx::CTerrain::CTerrain(CInstanceManager* iMan)
     FlushMaterials();
 }
 
-Gfx::CTerrain::~CTerrain()
+CTerrain::~CTerrain()
 {
 }
 
-bool Gfx::CTerrain::Generate(int mosaicCount, int brickCountPow2, float brickSize,
+bool CTerrain::Generate(int mosaicCount, int brickCountPow2, float brickSize,
                              float vision, int depth, float hardness)
 {
     m_mosaicCount   = mosaicCount;
@@ -102,27 +105,27 @@ bool Gfx::CTerrain::Generate(int mosaicCount, int brickCountPow2, float brickSiz
 }
 
 
-int Gfx::CTerrain::GetMosaicCount()
+int CTerrain::GetMosaicCount()
 {
     return m_mosaicCount;
 }
 
-int Gfx::CTerrain::GetBrickCount()
+int CTerrain::GetBrickCount()
 {
     return m_brickCount;
 }
 
-float Gfx::CTerrain::GetBrickSize()
+float CTerrain::GetBrickSize()
 {
     return m_brickSize;
 }
 
-float Gfx::CTerrain::GetReliefScale()
+float CTerrain::GetReliefScale()
 {
     return m_scaleRelief;
 }
 
-bool Gfx::CTerrain::InitTextures(const std::string& baseName, int* table, int dx, int dy)
+bool CTerrain::InitTextures(const std::string& baseName, int* table, int dx, int dy)
 {
     m_useMaterials = false;
 
@@ -149,7 +152,7 @@ bool Gfx::CTerrain::InitTextures(const std::string& baseName, int* table, int dx
 }
 
 
-void Gfx::CTerrain::FlushMaterials()
+void CTerrain::FlushMaterials()
 {
     m_materials.clear();
     m_maxMaterialID = 0;
@@ -157,7 +160,7 @@ void Gfx::CTerrain::FlushMaterials()
     FlushMaterialPoints();
 }
 
-void Gfx::CTerrain::AddMaterial(int id, const std::string& texName, const Math::Point &uv,
+void CTerrain::AddMaterial(int id, const std::string& texName, const Math::Point &uv,
                                 int up, int right, int down, int left,
                                 float hardness)
 {
@@ -166,7 +169,7 @@ void Gfx::CTerrain::AddMaterial(int id, const std::string& texName, const Math::
     if (id == 0)
         id = m_materialAutoID++;
 
-    Gfx::TerrainMaterial tm;
+    TerrainMaterial tm;
     tm.texName  = texName;
     tm.id       = id;
     tm.uv       = uv;
@@ -191,7 +194,7 @@ void Gfx::CTerrain::AddMaterial(int id, const std::string& texName, const Math::
 /**
  * The image must be 24 bits/pixel and grayscale and dx x dy in size
  * with dx = dy = (mosaic*brick)+1 */
-bool Gfx::CTerrain::LoadResources(const std::string& fileName)
+bool CTerrain::LoadResources(const std::string& fileName)
 {
     CImage img;
     if (! img.Load(CApplication::GetInstance().GetDataFilePath(m_engine->GetTextureDir(), fileName)))
@@ -220,17 +223,17 @@ bool Gfx::CTerrain::LoadResources(const std::string& fileName)
     return true;
 }
 
-Gfx::TerrainRes Gfx::CTerrain::GetResource(const Math::Vector &p)
+TerrainRes CTerrain::GetResource(const Math::Vector &p)
 {
     if (m_resources.empty())
-        return Gfx::TR_NULL;
+        return TR_NULL;
 
     int x = static_cast<int>((p.x + (m_mosaicCount*m_brickCount*m_brickSize)/2.0f)/m_brickSize);
     int y = static_cast<int>((p.z + (m_mosaicCount*m_brickCount*m_brickSize)/2.0f)/m_brickSize);
 
     if ( x < 0 || x > m_mosaicCount*m_brickCount ||
          y < 0 || y > m_mosaicCount*m_brickCount )
-        return Gfx::TR_NULL;
+        return TR_NULL;
 
     int size  = (m_mosaicCount*m_brickCount)+1;
 
@@ -238,20 +241,20 @@ Gfx::TerrainRes Gfx::CTerrain::GetResource(const Math::Vector &p)
     int resG = m_resources[3*x+3*size*(size-y-1)+1];
     int resB = m_resources[3*x+3*size*(size-y-1)+2];
 
-    if (resR == 255 && resG ==   0 && resB == 0) return Gfx::TR_STONE;
-    if (resR == 255 && resG == 255 && resB == 0) return Gfx::TR_URANIUM;
-    if (resR ==   0 && resG == 255 && resB == 0) return Gfx::TR_POWER;
+    if (resR == 255 && resG ==   0 && resB == 0) return TR_STONE;
+    if (resR == 255 && resG == 255 && resB == 0) return TR_URANIUM;
+    if (resR ==   0 && resG == 255 && resB == 0) return TR_POWER;
 
     // TODO key res values
-    //if (ress == 24) return Gfx::TR_KEY_A;     // ~green?
-    //if (ress == 25) return Gfx::TR_KEY_B;     // ~green?
-    //if (ress == 26) return Gfx::TR_KEY_C;     // ~green?
-    //if (ress == 27) return Gfx::TR_KEY_D;     // ~green?
+    //if (ress == 24) return TR_KEY_A;     // ~green?
+    //if (ress == 25) return TR_KEY_B;     // ~green?
+    //if (ress == 26) return TR_KEY_C;     // ~green?
+    //if (ress == 27) return TR_KEY_D;     // ~green?
 
     return TR_NULL;
 }
 
-void Gfx::CTerrain::FlushRelief()
+void CTerrain::FlushRelief()
 {
     m_relief.clear();
 }
@@ -259,7 +262,7 @@ void Gfx::CTerrain::FlushRelief()
 /**
  * The image must be 24 bits/pixel and dx x dy in size
  * with dx = dy = (mosaic*brick)+1 */
-bool Gfx::CTerrain::LoadRelief(const std::string &fileName, float scaleRelief,
+bool CTerrain::LoadRelief(const std::string &fileName, float scaleRelief,
                                bool adjustBorder)
 {
     m_scaleRelief = scaleRelief;
@@ -304,7 +307,7 @@ bool Gfx::CTerrain::LoadRelief(const std::string &fileName, float scaleRelief,
     return true;
 }
 
-bool Gfx::CTerrain::AddReliefPoint(Math::Vector pos, float scaleRelief)
+bool CTerrain::AddReliefPoint(Math::Vector pos, float scaleRelief)
 {
     float dim = (m_mosaicCount*m_brickCount*m_brickSize)/2.0f;
     int size = (m_mosaicCount*m_brickCount)+1;
@@ -324,7 +327,7 @@ bool Gfx::CTerrain::AddReliefPoint(Math::Vector pos, float scaleRelief)
     return true;
 }
 
-void Gfx::CTerrain::AdjustRelief()
+void CTerrain::AdjustRelief()
 {
     if (m_depth == 1) return;
 
@@ -383,7 +386,7 @@ void Gfx::CTerrain::AdjustRelief()
     }
 }
 
-Math::Vector Gfx::CTerrain::GetVector(int x, int y)
+Math::Vector CTerrain::GetVector(int x, int y)
 {
     Math::Vector p;
     p.x = x*m_brickSize - (m_mosaicCount*m_brickCount*m_brickSize) / 2.0;
@@ -416,9 +419,9 @@ Math::Vector Gfx::CTerrain::GetVector(int x, int y)
   |  \|  \|
   +---f---e--> x
 \endverbatim */
-Gfx::VertexTex2 Gfx::CTerrain::GetVertex(int x, int y, int step)
+VertexTex2 CTerrain::GetVertex(int x, int y, int step)
 {
-    Gfx::VertexTex2 v;
+    VertexTex2 v;
 
     Math::Vector o = GetVector(x, y);
     v.coord = o;
@@ -473,8 +476,8 @@ Gfx::VertexTex2 Gfx::CTerrain::GetVertex(int x, int y, int step)
   |
   +-------------------> x
 \endverbatim */
-bool Gfx::CTerrain::CreateMosaic(int ox, int oy, int step, int objRank,
-                                 const Gfx::Material &mat,
+bool CTerrain::CreateMosaic(int ox, int oy, int step, int objRank,
+                                 const Material &mat,
                                  float min, float max)
 {
     std::string texName1;
@@ -494,7 +497,7 @@ bool Gfx::CTerrain::CreateMosaic(int ox, int oy, int step, int objRank,
 
     int brick = m_brickCount/m_textureSubdivCount;
 
-    Gfx::VertexTex2 o = GetVertex(ox*m_brickCount+m_brickCount/2, oy*m_brickCount+m_brickCount/2, step);
+    VertexTex2 o = GetVertex(ox*m_brickCount+m_brickCount/2, oy*m_brickCount+m_brickCount/2, step);
     int total = ((brick/step)+1)*2;
 
     float pixel = 1.0f/256.0f;  // 1 pixel cover (*)
@@ -526,22 +529,22 @@ bool Gfx::CTerrain::CreateMosaic(int ox, int oy, int step, int objRank,
 
             for (int y = 0; y < brick; y += step)
             {
-                Gfx::EngineObjLevel4 buffer;
+                EngineObjLevel4 buffer;
                 buffer.vertices.reserve(total);
 
-                buffer.type = Gfx::ENG_TRIANGLE_TYPE_SURFACE;
+                buffer.type = ENG_TRIANGLE_TYPE_SURFACE;
                 buffer.material = mat;
 
-                buffer.state = Gfx::ENG_RSTATE_WRAP;
+                buffer.state = ENG_RSTATE_WRAP;
 
-                buffer.state |= Gfx::ENG_RSTATE_SECOND;
+                buffer.state |= ENG_RSTATE_SECOND;
                 if (step == 1)
-                    buffer.state |= Gfx::ENG_RSTATE_DUAL_BLACK;
+                    buffer.state |= ENG_RSTATE_DUAL_BLACK;
 
                 for (int x = 0; x <= brick; x += step)
                 {
-                    Gfx::VertexTex2 p1 = GetVertex(ox*m_brickCount+mx*brick+x, oy*m_brickCount+my*brick+y+0   , step);
-                    Gfx::VertexTex2 p2 = GetVertex(ox*m_brickCount+mx*brick+x, oy*m_brickCount+my*brick+y+step, step);
+                    VertexTex2 p1 = GetVertex(ox*m_brickCount+mx*brick+x, oy*m_brickCount+my*brick+y+0   , step);
+                    VertexTex2 p2 = GetVertex(ox*m_brickCount+mx*brick+x, oy*m_brickCount+my*brick+y+step, step);
                     p1.coord.x -= o.coord.x;  p1.coord.z -= o.coord.z;
                     p2.coord.x -= o.coord.x;  p2.coord.z -= o.coord.z;
 
@@ -633,7 +636,7 @@ bool Gfx::CTerrain::CreateMosaic(int ox, int oy, int step, int objRank,
     return true;
 }
 
-Gfx::TerrainMaterial* Gfx::CTerrain::FindMaterial(int id)
+TerrainMaterial* CTerrain::FindMaterial(int id)
 {
     for (int i = 0; i < static_cast<int>( m_materials.size() ); i++)
     {
@@ -644,7 +647,7 @@ Gfx::TerrainMaterial* Gfx::CTerrain::FindMaterial(int id)
     return nullptr;
 }
 
-void Gfx::CTerrain::GetTexture(int x, int y, std::string& name, Math::Point &uv)
+void CTerrain::GetTexture(int x, int y, std::string& name, Math::Point &uv)
 {
     x /= m_brickCount/m_textureSubdivCount;
     y /= m_brickCount/m_textureSubdivCount;
@@ -662,7 +665,7 @@ void Gfx::CTerrain::GetTexture(int x, int y, std::string& name, Math::Point &uv)
     }
 }
 
-float Gfx::CTerrain::GetHeight(int x, int y)
+float CTerrain::GetHeight(int x, int y)
 {
     int size = (m_mosaicCount*m_brickCount+1);
 
@@ -674,7 +677,7 @@ float Gfx::CTerrain::GetHeight(int x, int y)
     return m_relief[x+y*size];
 }
 
-bool Gfx::CTerrain::CheckMaterialPoint(int x, int y, float min, float max, float slope)
+bool CTerrain::CheckMaterialPoint(int x, int y, float min, float max, float slope)
 {
     float hc = GetHeight(x, y);
     float h[4] =
@@ -714,7 +717,7 @@ bool Gfx::CTerrain::CheckMaterialPoint(int x, int y, float min, float max, float
     return false;
 }
 
-int Gfx::CTerrain::FindMaterialByNeighbors(char *mat)
+int CTerrain::FindMaterialByNeighbors(char *mat)
 {
     for (int i = 0; i < static_cast<int>( m_materials.size() ); i++)
     {
@@ -727,7 +730,7 @@ int Gfx::CTerrain::FindMaterialByNeighbors(char *mat)
     return -1;
 }
 
-void Gfx::CTerrain::SetMaterialPoint(int x, int y, int id, char *mat)
+void CTerrain::SetMaterialPoint(int x, int y, int id, char *mat)
 {
     TerrainMaterial* tm = FindMaterial(id);
     if (tm == nullptr)  return;
@@ -806,7 +809,7 @@ void Gfx::CTerrain::SetMaterialPoint(int x, int y, int id, char *mat)
     }
 }
 
-bool Gfx::CTerrain::CondChangeMaterialPoint(int x, int y, int id, char *mat)
+bool CTerrain::CondChangeMaterialPoint(int x, int y, int id, char *mat)
 {
     char test[4];
 
@@ -862,7 +865,7 @@ bool Gfx::CTerrain::CondChangeMaterialPoint(int x, int y, int id, char *mat)
     return true;
 }
 
-bool Gfx::CTerrain::ChangeMaterialPoint(int x, int y, int id)
+bool CTerrain::ChangeMaterialPoint(int x, int y, int id)
 {
     char mat[4];
 
@@ -1022,7 +1025,7 @@ bool Gfx::CTerrain::ChangeMaterialPoint(int x, int y, int id)
     return false;
 }
 
-bool Gfx::CTerrain::InitMaterials(int id)
+bool CTerrain::InitMaterials(int id)
 {
     TerrainMaterial* tm = FindMaterial(id);
     if (tm == nullptr) return false;
@@ -1038,7 +1041,7 @@ bool Gfx::CTerrain::InitMaterials(int id)
     return true;
 }
 
-bool Gfx::CTerrain::GenerateMaterials(int *id, float min, float max,
+bool CTerrain::GenerateMaterials(int *id, float min, float max,
                                       float slope, float freq,
                                       Math::Vector center, float radius)
 {
@@ -1118,13 +1121,13 @@ bool Gfx::CTerrain::GenerateMaterials(int *id, float min, float max,
     return true;
 }
 
-void Gfx::CTerrain::InitMaterialPoints()
+void CTerrain::InitMaterialPoints()
 {
     if (! m_useMaterials) return;
     if (! m_materialPoints.empty()) return; // already allocated
 
     m_materialPointCount = (m_mosaicCount*m_brickCount)/(m_brickCount/m_textureSubdivCount)+1;
-    std::vector<Gfx::TerrainMaterialPoint>(m_materialPointCount*m_materialPointCount).swap(m_materialPoints);
+    std::vector<TerrainMaterialPoint>(m_materialPointCount*m_materialPointCount).swap(m_materialPoints);
 
     for (int i = 0; i < m_materialPointCount * m_materialPointCount; i++)
     {
@@ -1133,19 +1136,19 @@ void Gfx::CTerrain::InitMaterialPoints()
     }
 }
 
-void Gfx::CTerrain::FlushMaterialPoints()
+void CTerrain::FlushMaterialPoints()
 {
     m_materialPoints.clear();
 }
 
-bool Gfx::CTerrain::CreateSquare(int x, int y)
+bool CTerrain::CreateSquare(int x, int y)
 {
-    Gfx::Material mat;
-    mat.diffuse = Gfx::Color(1.0f, 1.0f, 1.0f);
-    mat.ambient = Gfx::Color(0.0f, 0.0f, 0.0f);
+    Material mat;
+    mat.diffuse = Color(1.0f, 1.0f, 1.0f);
+    mat.ambient = Color(0.0f, 0.0f, 0.0f);
 
     int objRank = m_engine->CreateObject();
-    m_engine->SetObjectType(objRank, Gfx::ENG_OBJTYPE_TERRAIN);
+    m_engine->SetObjectType(objRank, ENG_OBJTYPE_TERRAIN);
 
     m_objRanks[x+y*m_mosaicCount] = objRank;
 
@@ -1163,7 +1166,7 @@ bool Gfx::CTerrain::CreateSquare(int x, int y)
     return true;
 }
 
-bool Gfx::CTerrain::CreateObjects()
+bool CTerrain::CreateObjects()
 {
     AdjustRelief();
 
@@ -1177,7 +1180,7 @@ bool Gfx::CTerrain::CreateObjects()
 }
 
 /** ATTENTION: ok only with m_depth = 2! */
-bool Gfx::CTerrain::Terraform(const Math::Vector &p1, const Math::Vector &p2, float height)
+bool CTerrain::Terraform(const Math::Vector &p1, const Math::Vector &p2, float height)
 {
     float dim = (m_mosaicCount*m_brickCount*m_brickSize)/2.0f;
 
@@ -1262,24 +1265,24 @@ bool Gfx::CTerrain::Terraform(const Math::Vector &p1, const Math::Vector &p2, fl
     return true;
 }
 
-void Gfx::CTerrain::SetWind(Math::Vector speed)
+void CTerrain::SetWind(Math::Vector speed)
 {
     m_wind = speed;
 }
 
-Math::Vector Gfx::CTerrain::GetWind()
+Math::Vector CTerrain::GetWind()
 {
     return m_wind;
 }
 
-float Gfx::CTerrain::GetFineSlope(const Math::Vector &pos)
+float CTerrain::GetFineSlope(const Math::Vector &pos)
 {
     Math::Vector n;
     if (! GetNormal(n, pos)) return 0.0f;
     return fabs(Math::RotateAngle(Math::Point(n.x, n.z).Length(), n.y) - Math::PI/2.0f);
 }
 
-float Gfx::CTerrain::GetCoarseSlope(const Math::Vector &pos)
+float CTerrain::GetCoarseSlope(const Math::Vector &pos)
 {
     if (m_relief.empty()) return 0.0f;
 
@@ -1305,7 +1308,7 @@ float Gfx::CTerrain::GetCoarseSlope(const Math::Vector &pos)
     return atanf((max-min)/m_brickSize);
 }
 
-bool Gfx::CTerrain::GetNormal(Math::Vector &n, const Math::Vector &p)
+bool CTerrain::GetNormal(Math::Vector &n, const Math::Vector &p)
 {
     float dim = (m_mosaicCount*m_brickCount*m_brickSize)/2.0f;
 
@@ -1328,7 +1331,7 @@ bool Gfx::CTerrain::GetNormal(Math::Vector &n, const Math::Vector &p)
     return true;
 }
 
-float Gfx::CTerrain::GetFloorLevel(const Math::Vector &pos, bool brut, bool water)
+float CTerrain::GetFloorLevel(const Math::Vector &pos, bool brut, bool water)
 {
     float dim = (m_mosaicCount*m_brickCount*m_brickSize)/2.0f;
 
@@ -1364,7 +1367,7 @@ float Gfx::CTerrain::GetFloorLevel(const Math::Vector &pos, bool brut, bool wate
     return ps.y;
 }
 
-float Gfx::CTerrain::GetHeightToFloor(const Math::Vector &pos, bool brut, bool water)
+float CTerrain::GetHeightToFloor(const Math::Vector &pos, bool brut, bool water)
 {
     float dim = (m_mosaicCount*m_brickCount*m_brickSize)/2.0f;
 
@@ -1400,7 +1403,7 @@ float Gfx::CTerrain::GetHeightToFloor(const Math::Vector &pos, bool brut, bool w
     return pos.y-ps.y;
 }
 
-bool Gfx::CTerrain::AdjustToFloor(Math::Vector &pos, bool brut, bool water)
+bool CTerrain::AdjustToFloor(Math::Vector &pos, bool brut, bool water)
 {
     float dim = (m_mosaicCount*m_brickCount*m_brickSize)/2.0f;
 
@@ -1438,7 +1441,7 @@ bool Gfx::CTerrain::AdjustToFloor(Math::Vector &pos, bool brut, bool water)
 /**
  * @returns \c false if the initial coordinate was outside terrain area; \c true otherwise
  */
-bool Gfx::CTerrain::AdjustToStandardBounds(Math::Vector& pos)
+bool CTerrain::AdjustToStandardBounds(Math::Vector& pos)
 {
     bool ok = true;
 
@@ -1476,7 +1479,7 @@ bool Gfx::CTerrain::AdjustToStandardBounds(Math::Vector& pos)
  * @param margin margin to the terrain border
  * @returns \c false if the initial coordinate was outside terrain area; \c true otherwise
  */
-bool Gfx::CTerrain::AdjustToBounds(Math::Vector& pos, float margin)
+bool CTerrain::AdjustToBounds(Math::Vector& pos, float margin)
 {
     bool ok = true;
     float limit = m_mosaicCount*m_brickCount*m_brickSize/2.0f - margin;
@@ -1508,12 +1511,12 @@ bool Gfx::CTerrain::AdjustToBounds(Math::Vector& pos, float margin)
     return ok;
 }
 
-void Gfx::CTerrain::FlushBuildingLevel()
+void CTerrain::FlushBuildingLevel()
 {
     m_buildingLevels.clear();
 }
 
-bool Gfx::CTerrain::AddBuildingLevel(Math::Vector center, float min, float max,
+bool CTerrain::AddBuildingLevel(Math::Vector center, float min, float max,
                                      float height, float factor)
 {
     int i = 0;
@@ -1527,7 +1530,7 @@ bool Gfx::CTerrain::AddBuildingLevel(Math::Vector center, float min, float max,
     }
 
     if (i == static_cast<int>( m_buildingLevels.size() ))
-        m_buildingLevels.push_back(Gfx::BuildingLevel());
+        m_buildingLevels.push_back(BuildingLevel());
 
     m_buildingLevels[i].center   = center;
     m_buildingLevels[i].min      = min;
@@ -1543,7 +1546,7 @@ bool Gfx::CTerrain::AddBuildingLevel(Math::Vector center, float min, float max,
     return true;
 }
 
-bool Gfx::CTerrain::UpdateBuildingLevel(Math::Vector center)
+bool CTerrain::UpdateBuildingLevel(Math::Vector center)
 {
     for (int i = 0; i < static_cast<int>( m_buildingLevels.size() ); i++)
     {
@@ -1558,7 +1561,7 @@ bool Gfx::CTerrain::UpdateBuildingLevel(Math::Vector center)
     return false;
 }
 
-bool Gfx::CTerrain::DeleteBuildingLevel(Math::Vector center)
+bool CTerrain::DeleteBuildingLevel(Math::Vector center)
 {
     for (int i = 0; i < static_cast<int>( m_buildingLevels.size() ); i++)
     {
@@ -1575,7 +1578,7 @@ bool Gfx::CTerrain::DeleteBuildingLevel(Math::Vector center)
     return false;
 }
 
-float Gfx::CTerrain::GetBuildingFactor(const Math::Vector &p)
+float CTerrain::GetBuildingFactor(const Math::Vector &p)
 {
     for (int i = 0; i < static_cast<int>( m_buildingLevels.size() ); i++)
     {
@@ -1592,7 +1595,7 @@ float Gfx::CTerrain::GetBuildingFactor(const Math::Vector &p)
     return 1.0f;  // it is normal on the ground
 }
 
-void Gfx::CTerrain::AdjustBuildingLevel(Math::Vector &p)
+void CTerrain::AdjustBuildingLevel(Math::Vector &p)
 {
     for (int i = 0; i < static_cast<int>( m_buildingLevels.size() ); i++)
     {
@@ -1628,7 +1631,7 @@ void Gfx::CTerrain::AdjustBuildingLevel(Math::Vector &p)
     }
 }
 
-float Gfx::CTerrain::GetHardness(const Math::Vector &p)
+float CTerrain::GetHardness(const Math::Vector &p)
 {
     float factor = GetBuildingFactor(p);
     if (factor != 1.0f) return 1.0f;  // on building level
@@ -1658,7 +1661,7 @@ float Gfx::CTerrain::GetHardness(const Math::Vector &p)
     return tm->hardness;
 }
 
-void Gfx::CTerrain::ShowFlatGround(Math::Vector pos)
+void CTerrain::ShowFlatGround(Math::Vector pos)
 {
     static char table[41*41] = { 1 };
 
@@ -1681,7 +1684,7 @@ void Gfx::CTerrain::ShowFlatGround(Math::Vector pos)
 
             float angle = GetFineSlope(pos+p);
 
-            if (angle < Gfx::TERRAIN_FLATLIMIT)
+            if (angle < TERRAIN_FLATLIMIT)
                 table[i] = 1;
             else
                 table[i] = 2;
@@ -1691,10 +1694,10 @@ void Gfx::CTerrain::ShowFlatGround(Math::Vector pos)
     m_engine->CreateGroundMark(pos, 40.0f, 0.001f, 15.0f, 0.001f, 41, 41, table);
 }
 
-float Gfx::CTerrain::GetFlatZoneRadius(Math::Vector center, float max)
+float CTerrain::GetFlatZoneRadius(Math::Vector center, float max)
 {
     float angle = GetFineSlope(center);
-    if (angle >= Gfx::TERRAIN_FLATLIMIT)
+    if (angle >= TERRAIN_FLATLIMIT)
         return 0.0f;
 
     float ref = GetFloorLevel(center, true);
@@ -1724,27 +1727,27 @@ float Gfx::CTerrain::GetFlatZoneRadius(Math::Vector center, float max)
     return max;
 }
 
-void Gfx::CTerrain::SetFlyingMaxHeight(float height)
+void CTerrain::SetFlyingMaxHeight(float height)
 {
     m_flyingMaxHeight = height;
 }
 
-float Gfx::CTerrain::GetFlyingMaxHeight()
+float CTerrain::GetFlyingMaxHeight()
 {
     return m_flyingMaxHeight;
 }
 
-void Gfx::CTerrain::FlushFlyingLimit()
+void CTerrain::FlushFlyingLimit()
 {
     m_flyingMaxHeight = 280.0f;
     m_flyingLimits.clear();
 }
 
-void Gfx::CTerrain::AddFlyingLimit(Math::Vector center,
+void CTerrain::AddFlyingLimit(Math::Vector center,
                                    float extRadius, float intRadius,
                                    float maxHeight)
 {
-    Gfx::FlyingLimit fl;
+    FlyingLimit fl;
     fl.center    = center;
     fl.extRadius = extRadius;
     fl.intRadius = intRadius;
@@ -1752,7 +1755,7 @@ void Gfx::CTerrain::AddFlyingLimit(Math::Vector center,
     m_flyingLimits.push_back(fl);
 }
 
-float Gfx::CTerrain::GetFlyingLimit(Math::Vector pos, bool noLimit)
+float CTerrain::GetFlyingLimit(Math::Vector pos, bool noLimit)
 {
     if (noLimit)
         return 280.0f;
@@ -1780,3 +1783,6 @@ float Gfx::CTerrain::GetFlyingLimit(Math::Vector pos, bool noLimit)
 
     return m_flyingMaxHeight;
 }
+
+
+} // namespace Gfx

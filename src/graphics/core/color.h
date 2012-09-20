@@ -21,14 +21,17 @@
 
 #pragma once
 
+
 #include <sstream>
 
 
+// Graphics module namespace
 namespace Gfx {
 
 /**
-  \struct Color
-  \brief RGBA color */
+ * \struct Color
+ * \brief RGBA color
+ */
 struct Color
 {
     //! Red, green, blue and alpha components
@@ -38,9 +41,9 @@ struct Color
     explicit Color(float aR = 0.0f, float aG = 0.0f, float aB = 0.0f, float aA = 0.0f)
      : r(aR), g(aG), b(aB), a(aA) {}
 
-    inline Gfx::Color Inverse() const
+    inline Color Inverse() const
     {
-        return Gfx::Color(1.0f - r, 1.0f - g, 1.0f - b, 1.0f - a);
+        return Color(1.0f - r, 1.0f - g, 1.0f - b, 1.0f - a);
     }
 
     //! Returns the struct cast to \c float* array; use with care!
@@ -64,20 +67,21 @@ struct Color
         return s.str();
     }
 
-    inline bool operator==(const Gfx::Color &other) const
+    inline bool operator==(const Color &other) const
     {
         return r == other.r && g == other.g && b == other.b && a == other.a;
     }
 
-    inline bool operator!=(const Gfx::Color &other) const
+    inline bool operator!=(const Color &other) const
     {
         return ! this->operator==(other);
     }
 };
 
 /**
-  \struct ColorHSV
-  \brief HSV color */
+ * \struct ColorHSV
+ * \brief HSV color
+ */
 struct ColorHSV
 {
     float h, s, v;
@@ -96,10 +100,10 @@ struct ColorHSV
 };
 
 //! Converts a RGB color to HSV color
-Gfx::ColorHSV RGB2HSV(Gfx::Color color);
+ColorHSV RGB2HSV(Color color);
 
 //! Converts a HSV color to RGB color
-Gfx::Color HSV2RGB(Gfx::ColorHSV color);
+Color HSV2RGB(ColorHSV color);
 
-}; // namespace Gfx
 
+} // namespace Gfx

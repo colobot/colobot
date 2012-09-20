@@ -15,7 +15,6 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// text.cpp
 
 #include "graphics/engine/text.h"
 
@@ -30,25 +29,27 @@
 #include <SDL/SDL_ttf.h>
 
 
-namespace Gfx
-{
+// Graphics module namespace
+namespace Gfx {
+
 
 /**
-  \struct CachedFont
-  \brief Base TTF font with UTF-8 char cache */
+ * \struct CachedFont
+ * \brief Base TTF font with UTF-8 char cache
+ */
 struct CachedFont
 {
     TTF_Font* font;
-    std::map<Gfx::UTF8Char, Gfx::CharTexture> cache;
+    std::map<UTF8Char, CharTexture> cache;
 
     CachedFont() : font(nullptr) {}
 };
 
-};
 
 
 
-Gfx::CText::CText(CInstanceManager *iMan, Gfx::CEngine* engine)
+
+CText::CText(CInstanceManager *iMan, CEngine* engine)
 {
     m_iMan = iMan;
     m_iMan->AddInstance(CLASS_TEXT, this);
@@ -59,12 +60,12 @@ Gfx::CText::CText(CInstanceManager *iMan, Gfx::CEngine* engine)
     m_defaultSize = 12.0f;
     m_fontPath = "fonts";
 
-    m_lastFontType = Gfx::FONT_COLOBOT;
+    m_lastFontType = FONT_COLOBOT;
     m_lastFontSize = 0;
     m_lastCachedFont = nullptr;
 }
 
-Gfx::CText::~CText()
+CText::~CText()
 {
     m_iMan->DeleteInstance(CLASS_TEXT, this);
 
@@ -73,7 +74,7 @@ Gfx::CText::~CText()
     m_engine = nullptr;
 }
 
-bool Gfx::CText::Create()
+bool CText::Create()
 {
     if (TTF_Init() != 0)
     {
@@ -81,16 +82,16 @@ bool Gfx::CText::Create()
         return false;
     }
 
-    m_fonts[Gfx::FONT_COLOBOT]        = new MultisizeFont("dvu_sans.ttf");
-    m_fonts[Gfx::FONT_COLOBOT_BOLD]   = new MultisizeFont("dvu_sans_bold.ttf");
-    m_fonts[Gfx::FONT_COLOBOT_ITALIC] = new MultisizeFont("dvu_sans_italic.ttf");
+    m_fonts[FONT_COLOBOT]        = new MultisizeFont("dvu_sans.ttf");
+    m_fonts[FONT_COLOBOT_BOLD]   = new MultisizeFont("dvu_sans_bold.ttf");
+    m_fonts[FONT_COLOBOT_ITALIC] = new MultisizeFont("dvu_sans_italic.ttf");
 
-    m_fonts[Gfx::FONT_COURIER]        = new MultisizeFont("dvu_sans_mono.ttf");
-    m_fonts[Gfx::FONT_COURIER_BOLD]   = new MultisizeFont("dvu_sans_mono_bold.ttf");
+    m_fonts[FONT_COURIER]        = new MultisizeFont("dvu_sans_mono.ttf");
+    m_fonts[FONT_COURIER_BOLD]   = new MultisizeFont("dvu_sans_mono_bold.ttf");
 
     for (auto it = m_fonts.begin(); it != m_fonts.end(); ++it)
     {
-        Gfx::FontType type = (*it).first;
+        FontType type = (*it).first;
         CachedFont* cf = GetOrOpenFont(type, m_defaultSize);
         if (cf == nullptr || cf->font == nullptr)
             return false;
@@ -99,7 +100,7 @@ bool Gfx::CText::Create()
     return true;
 }
 
-void Gfx::CText::Destroy()
+void CText::Destroy()
 {
     for (auto it = m_fonts.begin(); it != m_fonts.end(); ++it)
     {
@@ -126,17 +127,17 @@ void Gfx::CText::Destroy()
     TTF_Quit();
 }
 
-void Gfx::CText::SetDevice(Gfx::CDevice* device)
+void CText::SetDevice(CDevice* device)
 {
     m_device = device;
 }
 
-std::string Gfx::CText::GetError()
+std::string CText::GetError()
 {
     return m_error;
 }
 
-void Gfx::CText::FlushCache()
+void CText::FlushCache()
 {
     for (auto it = m_fonts.begin(); it != m_fonts.end(); ++it)
     {
@@ -149,19 +150,19 @@ void Gfx::CText::FlushCache()
     }
 }
 
-void Gfx::CText::DrawText(const std::string &text, const std::vector<FontMetaChar> &format,
-                          float size, Math::Point pos, float width, Gfx::TextAlign align,
+void CText::DrawText(const std::string &text, const std::vector<FontMetaChar> &format,
+                          float size, Math::Point pos, float width, TextAlign align,
                           int eol)
 {
     float sw = 0.0f;
 
-    if (align == Gfx::TEXT_ALIGN_CENTER)
+    if (align == TEXT_ALIGN_CENTER)
     {
         sw = GetStringWidth(text, format, size);
         if (sw > width) sw = width;
         pos.x -= sw / 2.0f;
     }
-    else if (align == Gfx::TEXT_ALIGN_RIGHT)
+    else if (align == TEXT_ALIGN_RIGHT)
     {
         sw = GetStringWidth(text, format, size);
         if (sw > width) sw = width;
@@ -171,19 +172,19 @@ void Gfx::CText::DrawText(const std::string &text, const std::vector<FontMetaCha
     DrawString(text, format, size, pos, width, eol);
 }
 
-void Gfx::CText::DrawText(const std::string &text, Gfx::FontType font,
-                          float size, Math::Point pos, float width, Gfx::TextAlign align,
+void CText::DrawText(const std::string &text, FontType font,
+                          float size, Math::Point pos, float width, TextAlign align,
                           int eol)
 {
     float sw = 0.0f;
 
-    if (align == Gfx::TEXT_ALIGN_CENTER)
+    if (align == TEXT_ALIGN_CENTER)
     {
         sw = GetStringWidth(text, font, size);
         if (sw > width) sw = width;
         pos.x -= sw / 2.0f;
     }
-    else if (align == Gfx::TEXT_ALIGN_RIGHT)
+    else if (align == TEXT_ALIGN_RIGHT)
     {
         sw = GetStringWidth(text, font, size);
         if (sw > width) sw = width;
@@ -193,43 +194,43 @@ void Gfx::CText::DrawText(const std::string &text, Gfx::FontType font,
     DrawString(text, font, size, pos, width, eol);
 }
 
-void Gfx::CText::SizeText(const std::string &text, const std::vector<FontMetaChar> &format,
-                          float size, Math::Point pos, Gfx::TextAlign align,
+void CText::SizeText(const std::string &text, const std::vector<FontMetaChar> &format,
+                          float size, Math::Point pos, TextAlign align,
                           Math::Point &start, Math::Point &end)
 {
     start = end = pos;
 
     float sw = GetStringWidth(text, format, size);
     end.x += sw;
-    if (align == Gfx::TEXT_ALIGN_CENTER)
+    if (align == TEXT_ALIGN_CENTER)
     {
         start.x -= sw/2.0f;
         end.x   -= sw/2.0f;
     }
-    else if (align == Gfx::TEXT_ALIGN_RIGHT)
+    else if (align == TEXT_ALIGN_RIGHT)
     {
         start.x -= sw;
         end.x   -= sw;
     }
 
-    start.y -= GetDescent(Gfx::FONT_COLOBOT, size);
-    end.y   += GetAscent(Gfx::FONT_COLOBOT, size);
+    start.y -= GetDescent(FONT_COLOBOT, size);
+    end.y   += GetAscent(FONT_COLOBOT, size);
 }
 
-void Gfx::CText::SizeText(const std::string &text, Gfx::FontType font,
-                          float size, Math::Point pos, Gfx::TextAlign align,
+void CText::SizeText(const std::string &text, FontType font,
+                          float size, Math::Point pos, TextAlign align,
                           Math::Point &start, Math::Point &end)
 {
     start = end = pos;
 
     float sw = GetStringWidth(text, font, size);
     end.x += sw;
-    if (align == Gfx::TEXT_ALIGN_CENTER)
+    if (align == TEXT_ALIGN_CENTER)
     {
         start.x -= sw/2.0f;
         end.x   -= sw/2.0f;
     }
-    else if (align == Gfx::TEXT_ALIGN_RIGHT)
+    else if (align == TEXT_ALIGN_RIGHT)
     {
         start.x -= sw;
         end.x   -= sw;
@@ -239,11 +240,11 @@ void Gfx::CText::SizeText(const std::string &text, Gfx::FontType font,
     end.y   += GetAscent(font, size);
 }
 
-float Gfx::CText::GetAscent(Gfx::FontType font, float size)
+float CText::GetAscent(FontType font, float size)
 {
-    assert(font != Gfx::FONT_BUTTON);
+    assert(font != FONT_BUTTON);
 
-    Gfx::CachedFont* cf = GetOrOpenFont(font, size);
+    CachedFont* cf = GetOrOpenFont(font, size);
     assert(cf != nullptr);
     Math::IntPoint wndSize;
     wndSize.y = TTF_FontAscent(cf->font);
@@ -251,11 +252,11 @@ float Gfx::CText::GetAscent(Gfx::FontType font, float size)
     return ifSize.y;
 }
 
-float Gfx::CText::GetDescent(Gfx::FontType font, float size)
+float CText::GetDescent(FontType font, float size)
 {
-    assert(font != Gfx::FONT_BUTTON);
+    assert(font != FONT_BUTTON);
 
-    Gfx::CachedFont* cf = GetOrOpenFont(font, size);
+    CachedFont* cf = GetOrOpenFont(font, size);
     assert(cf != nullptr);
     Math::IntPoint wndSize;
     wndSize.y = TTF_FontDescent(cf->font);
@@ -263,11 +264,11 @@ float Gfx::CText::GetDescent(Gfx::FontType font, float size)
     return ifSize.y;
 }
 
-float Gfx::CText::GetHeight(Gfx::FontType font, float size)
+float CText::GetHeight(FontType font, float size)
 {
-    assert(font != Gfx::FONT_BUTTON);
+    assert(font != FONT_BUTTON);
 
-    Gfx::CachedFont* cf = GetOrOpenFont(font, size);
+    CachedFont* cf = GetOrOpenFont(font, size);
     assert(cf != nullptr);
     Math::IntPoint wndSize;
     wndSize.y = TTF_FontHeight(cf->font);
@@ -276,7 +277,7 @@ float Gfx::CText::GetHeight(Gfx::FontType font, float size)
 }
 
 
-float Gfx::CText::GetStringWidth(const std::string &text,
+float CText::GetStringWidth(const std::string &text,
                                  const std::vector<FontMetaChar> &format, float size)
 {
     assert(StrUtils::Utf8StringLength(text) == format.size());
@@ -286,9 +287,9 @@ float Gfx::CText::GetStringWidth(const std::string &text,
     unsigned int fmtIndex = 0;
     while (index < text.length())
     {
-        Gfx::FontType font = static_cast<Gfx::FontType>(format[fmtIndex] & Gfx::FONT_MASK_FONT);
+        FontType font = static_cast<FontType>(format[fmtIndex] & FONT_MASK_FONT);
 
-        Gfx::UTF8Char ch;
+        UTF8Char ch;
 
         int len = StrUtils::Utf8CharSizeAt(text, index);
         if (len >= 1)
@@ -307,13 +308,13 @@ float Gfx::CText::GetStringWidth(const std::string &text,
     return width;
 }
 
-float Gfx::CText::GetStringWidth(const std::string &text, Gfx::FontType font, float size)
+float CText::GetStringWidth(const std::string &text, FontType font, float size)
 {
-    assert(font != Gfx::FONT_BUTTON);
+    assert(font != FONT_BUTTON);
 
     // TODO: special chars?
 
-    Gfx::CachedFont* cf = GetOrOpenFont(font, size);
+    CachedFont* cf = GetOrOpenFont(font, size);
     assert(cf != nullptr);
     Math::IntPoint wndSize;
     TTF_SizeUTF8(cf->font, text.c_str(), &wndSize.x, &wndSize.y);
@@ -321,18 +322,18 @@ float Gfx::CText::GetStringWidth(const std::string &text, Gfx::FontType font, fl
     return ifSize.x;
 }
 
-float Gfx::CText::GetCharWidth(Gfx::UTF8Char ch, Gfx::FontType font, float size, float offset)
+float CText::GetCharWidth(UTF8Char ch, FontType font, float size, float offset)
 {
-    // TODO: if (font == Gfx::FONT_BUTTON)
-    if (font == Gfx::FONT_BUTTON) return 0.0f;
+    // TODO: if (font == FONT_BUTTON)
+    if (font == FONT_BUTTON) return 0.0f;
 
     // TODO: special chars?
     // TODO: tab sizing
 
-    Gfx::CachedFont* cf = GetOrOpenFont(font, size);
+    CachedFont* cf = GetOrOpenFont(font, size);
     assert(cf != nullptr);
 
-    Gfx::CharTexture tex;
+    CharTexture tex;
     auto it = cf->cache.find(ch);
     if (it != cf->cache.end())
         tex = (*it).second;
@@ -343,7 +344,7 @@ float Gfx::CText::GetCharWidth(Gfx::UTF8Char ch, Gfx::FontType font, float size,
 }
 
 
-int Gfx::CText::Justify(const std::string &text, const std::vector<FontMetaChar> &format,
+int CText::Justify(const std::string &text, const std::vector<FontMetaChar> &format,
                         float size, float width)
 {
     assert(StrUtils::Utf8StringLength(text) == format.size());
@@ -354,9 +355,9 @@ int Gfx::CText::Justify(const std::string &text, const std::vector<FontMetaChar>
     unsigned int fmtIndex = 0;
     while (index < text.length())
     {
-        Gfx::FontType font = static_cast<Gfx::FontType>(format[fmtIndex] & Gfx::FONT_MASK_FONT);
+        FontType font = static_cast<FontType>(format[fmtIndex] & FONT_MASK_FONT);
 
-        Gfx::UTF8Char ch;
+        UTF8Char ch;
 
         int len = StrUtils::Utf8CharSizeAt(text, index);
         if (len >= 1)
@@ -366,7 +367,7 @@ int Gfx::CText::Justify(const std::string &text, const std::vector<FontMetaChar>
         if (len >= 3)
             ch.c3 = text[index+2];
 
-        if (font != Gfx::FONT_BUTTON)
+        if (font != FONT_BUTTON)
         {
             if (ch.c1 == '\n')
                 return index+1;
@@ -388,16 +389,16 @@ int Gfx::CText::Justify(const std::string &text, const std::vector<FontMetaChar>
     return index;
 }
 
-int Gfx::CText::Justify(const std::string &text, Gfx::FontType font, float size, float width)
+int CText::Justify(const std::string &text, FontType font, float size, float width)
 {
-    assert(font != Gfx::FONT_BUTTON);
+    assert(font != FONT_BUTTON);
 
     float pos = 0.0f;
     int cut = 0;
     unsigned int index = 0;
     while (index < text.length())
     {
-        Gfx::UTF8Char ch;
+        UTF8Char ch;
 
         int len = StrUtils::Utf8CharSizeAt(text, index);
         if (len >= 1)
@@ -426,7 +427,7 @@ int Gfx::CText::Justify(const std::string &text, Gfx::FontType font, float size,
     return index;
 }
 
-int Gfx::CText::Detect(const std::string &text, const std::vector<FontMetaChar> &format,
+int CText::Detect(const std::string &text, const std::vector<FontMetaChar> &format,
                        float size, float offset)
 {
     assert(StrUtils::Utf8StringLength(text) == format.size());
@@ -436,12 +437,12 @@ int Gfx::CText::Detect(const std::string &text, const std::vector<FontMetaChar> 
     unsigned int fmtIndex = 0;
     while (index < text.length())
     {
-        Gfx::FontType font = static_cast<Gfx::FontType>(format[fmtIndex] & Gfx::FONT_MASK_FONT);
+        FontType font = static_cast<FontType>(format[fmtIndex] & FONT_MASK_FONT);
 
-        // TODO: if (font == Gfx::FONT_BUTTON)
-        if (font == Gfx::FONT_BUTTON) continue;
+        // TODO: if (font == FONT_BUTTON)
+        if (font == FONT_BUTTON) continue;
 
-        Gfx::UTF8Char ch;
+        UTF8Char ch;
 
         int len = StrUtils::Utf8CharSizeAt(text, index);
         if (len >= 1)
@@ -466,15 +467,15 @@ int Gfx::CText::Detect(const std::string &text, const std::vector<FontMetaChar> 
     return index;
 }
 
-int Gfx::CText::Detect(const std::string &text, Gfx::FontType font, float size, float offset)
+int CText::Detect(const std::string &text, FontType font, float size, float offset)
 {
-    assert(font != Gfx::FONT_BUTTON);
+    assert(font != FONT_BUTTON);
 
     float pos = 0.0f;
     unsigned int index = 0;
     while (index < text.length())
     {
-        Gfx::UTF8Char ch;
+        UTF8Char ch;
 
         int len = StrUtils::Utf8CharSizeAt(text, index);
         if (len >= 1)
@@ -499,26 +500,26 @@ int Gfx::CText::Detect(const std::string &text, Gfx::FontType font, float size, 
     return index;
 }
 
-void Gfx::CText::DrawString(const std::string &text, const std::vector<FontMetaChar> &format,
+void CText::DrawString(const std::string &text, const std::vector<FontMetaChar> &format,
                            float size, Math::Point pos, float width, int eol)
 {
     assert(StrUtils::Utf8StringLength(text) == format.size());
 
-    m_engine->SetState(Gfx::ENG_RSTATE_TEXT);
+    m_engine->SetState(ENG_RSTATE_TEXT);
 
-    Gfx::FontType font = Gfx::FONT_COLOBOT;
+    FontType font = FONT_COLOBOT;
     float start = pos.x;
 
     unsigned int index = 0;
     unsigned int fmtIndex = 0;
     while (index < text.length())
     {
-        font = static_cast<Gfx::FontType>(format[fmtIndex] & Gfx::FONT_MASK_FONT);
+        font = static_cast<FontType>(format[fmtIndex] & FONT_MASK_FONT);
 
-        // TODO: if (font == Gfx::FONT_BUTTON)
-        if (font == Gfx::FONT_BUTTON) continue;
+        // TODO: if (font == FONT_BUTTON)
+        if (font == FONT_BUTTON) continue;
 
-        Gfx::UTF8Char ch;
+        UTF8Char ch;
 
         int len = StrUtils::Utf8CharSizeAt(text, index);
         if (len >= 1)
@@ -536,8 +537,8 @@ void Gfx::CText::DrawString(const std::string &text, const std::vector<FontMetaC
             break;
         }
 
-        Gfx::FontHighlight hl = static_cast<Gfx::FontHighlight>(format[fmtIndex] & Gfx::FONT_MASK_HIGHLIGHT);
-        if (hl != Gfx::FONT_HIGHLIGHT_NONE)
+        FontHighlight hl = static_cast<FontHighlight>(format[fmtIndex] & FONT_MASK_HIGHLIGHT);
+        if (hl != FONT_HIGHLIGHT_NONE)
         {
             Math::Point charSize;
             charSize.x = GetCharWidth(ch, font, size, offset);
@@ -554,17 +555,17 @@ void Gfx::CText::DrawString(const std::string &text, const std::vector<FontMetaC
     // TODO: eol
 }
 
-void Gfx::CText::DrawString(const std::string &text, Gfx::FontType font,
+void CText::DrawString(const std::string &text, FontType font,
                             float size, Math::Point pos, float width, int eol)
 {
-    assert(font != Gfx::FONT_BUTTON);
+    assert(font != FONT_BUTTON);
 
-    m_engine->SetState(Gfx::ENG_RSTATE_TEXT);
+    m_engine->SetState(ENG_RSTATE_TEXT);
 
     unsigned int index = 0;
     while (index < text.length())
     {
-        Gfx::UTF8Char ch;
+        UTF8Char ch;
 
         int len = StrUtils::Utf8CharSizeAt(text, index);
         if (len >= 1)
@@ -580,42 +581,42 @@ void Gfx::CText::DrawString(const std::string &text, Gfx::FontType font,
     }
 }
 
-void Gfx::CText::DrawHighlight(Gfx::FontHighlight hl, Math::Point pos, Math::Point size)
+void CText::DrawHighlight(FontHighlight hl, Math::Point pos, Math::Point size)
 {
     // Gradient colors
-    Gfx::Color grad[4];
+    Color grad[4];
 
     // TODO: switch to alpha factors
 
     switch (hl)
     {
-        case Gfx::FONT_HIGHLIGHT_LINK:
-            grad[0] = grad[1] = grad[2] = grad[3] = Gfx::Color(0.0f, 0.0f, 1.0f, 0.5f);
+        case FONT_HIGHLIGHT_LINK:
+            grad[0] = grad[1] = grad[2] = grad[3] = Color(0.0f, 0.0f, 1.0f, 0.5f);
             break;
 
-        case Gfx::FONT_HIGHLIGHT_TOKEN:
-            grad[0] = grad[1] = Gfx::Color(248.0f / 256.0f, 248.0f / 256.0f, 248.0f / 256.0f, 0.5f);
-            grad[2] = grad[3] = Gfx::Color(248.0f / 256.0f, 220.0f / 256.0f, 188.0f / 256.0f, 0.5f);
+        case FONT_HIGHLIGHT_TOKEN:
+            grad[0] = grad[1] = Color(248.0f / 256.0f, 248.0f / 256.0f, 248.0f / 256.0f, 0.5f);
+            grad[2] = grad[3] = Color(248.0f / 256.0f, 220.0f / 256.0f, 188.0f / 256.0f, 0.5f);
             break;
 
-        case Gfx::FONT_HIGHLIGHT_TYPE:
-            grad[0] = grad[1] = Gfx::Color(248.0f / 256.0f, 248.0f / 256.0f, 248.0f / 256.0f, 0.5f);
-            grad[2] = grad[3] = Gfx::Color(169.0f / 256.0f, 234.0f / 256.0f, 169.0f / 256.0f, 0.5f);
+        case FONT_HIGHLIGHT_TYPE:
+            grad[0] = grad[1] = Color(248.0f / 256.0f, 248.0f / 256.0f, 248.0f / 256.0f, 0.5f);
+            grad[2] = grad[3] = Color(169.0f / 256.0f, 234.0f / 256.0f, 169.0f / 256.0f, 0.5f);
             break;
 
-        case Gfx::FONT_HIGHLIGHT_CONST:
-            grad[0] = grad[1] = Gfx::Color(248.0f / 256.0f, 248.0f / 256.0f, 248.0f / 256.0f, 0.5f);
-            grad[2] = grad[3] = Gfx::Color(248.0f / 256.0f, 176.0f / 256.0f, 169.0f / 256.0f, 0.5f);
+        case FONT_HIGHLIGHT_CONST:
+            grad[0] = grad[1] = Color(248.0f / 256.0f, 248.0f / 256.0f, 248.0f / 256.0f, 0.5f);
+            grad[2] = grad[3] = Color(248.0f / 256.0f, 176.0f / 256.0f, 169.0f / 256.0f, 0.5f);
             break;
 
-        case Gfx::FONT_HIGHLIGHT_REM:
-            grad[0] = grad[1] = Gfx::Color(248.0f / 256.0f, 248.0f / 256.0f, 248.0f / 256.0f, 0.5f);
-            grad[2] = grad[3] = Gfx::Color(248.0f / 256.0f, 169.0f / 256.0f, 248.0f / 256.0f, 0.5f);
+        case FONT_HIGHLIGHT_REM:
+            grad[0] = grad[1] = Color(248.0f / 256.0f, 248.0f / 256.0f, 248.0f / 256.0f, 0.5f);
+            grad[2] = grad[3] = Color(248.0f / 256.0f, 169.0f / 256.0f, 248.0f / 256.0f, 0.5f);
             break;
 
-        case Gfx::FONT_HIGHLIGHT_KEY:
+        case FONT_HIGHLIGHT_KEY:
             grad[0] = grad[1] = grad[2] = grad[3] =
-                Gfx::Color(192.0f / 256.0f, 192.0f / 256.0f, 192.0f / 256.0f, 0.5f);
+                Color(192.0f / 256.0f, 192.0f / 256.0f, 192.0f / 256.0f, 0.5f);
             break;
 
         default:
@@ -633,7 +634,7 @@ void Gfx::CText::DrawHighlight(Gfx::FontHighlight hl, Math::Point pos, Math::Poi
     p1.x = pos.x;
     p2.x = pos.x + size.x;
 
-    if (hl == Gfx::FONT_HIGHLIGHT_LINK)
+    if (hl == FONT_HIGHLIGHT_LINK)
     {
         p1.y = pos.y;
         p2.y = pos.y + h;  // just emphasized
@@ -644,26 +645,26 @@ void Gfx::CText::DrawHighlight(Gfx::FontHighlight hl, Math::Point pos, Math::Poi
         p2.y = pos.y + size.y;
     }
 
-    m_device->SetRenderState(Gfx::RENDER_STATE_TEXTURING, false);
+    m_device->SetRenderState(RENDER_STATE_TEXTURING, false);
 
-    Gfx::VertexCol quad[] =
+    VertexCol quad[] =
     {
-        Gfx::VertexCol(Math::Vector(p1.x, p1.y, 0.0f), grad[3]),
-        Gfx::VertexCol(Math::Vector(p1.x, p2.y, 0.0f), grad[0]),
-        Gfx::VertexCol(Math::Vector(p2.x, p1.y, 0.0f), grad[2]),
-        Gfx::VertexCol(Math::Vector(p2.x, p2.y, 0.0f), grad[1])
+        VertexCol(Math::Vector(p1.x, p1.y, 0.0f), grad[3]),
+        VertexCol(Math::Vector(p1.x, p2.y, 0.0f), grad[0]),
+        VertexCol(Math::Vector(p2.x, p1.y, 0.0f), grad[2]),
+        VertexCol(Math::Vector(p2.x, p2.y, 0.0f), grad[1])
     };
 
-    m_device->DrawPrimitive(Gfx::PRIMITIVE_TRIANGLE_STRIP, quad, 4);
+    m_device->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, quad, 4);
     m_engine->AddStatisticTriangle(2);
 
-    m_device->SetRenderState(Gfx::RENDER_STATE_TEXTURING, true);
+    m_device->SetRenderState(RENDER_STATE_TEXTURING, true);
 }
 
-void Gfx::CText::DrawChar(Gfx::UTF8Char ch, Gfx::FontType font, float size, Math::Point &pos)
+void CText::DrawChar(UTF8Char ch, FontType font, float size, Math::Point &pos)
 {
-    // TODO: if (font == Gfx::FONT_BUTTON)
-    if (font == Gfx::FONT_BUTTON) return;
+    // TODO: if (font == FONT_BUTTON)
+    if (font == FONT_BUTTON) return;
 
     // TODO: special chars?
 
@@ -693,22 +694,22 @@ void Gfx::CText::DrawChar(Gfx::UTF8Char ch, Gfx::FontType font, float size, Math
 
     Math::Vector n(0.0f, 0.0f, -1.0f);  // normal
 
-    Gfx::Vertex quad[4] =
+    Vertex quad[4] =
     {
-        Gfx::Vertex(Math::Vector(p1.x, p1.y, 0.0f), n, Math::Point(0.0f, 1.0f)),
-        Gfx::Vertex(Math::Vector(p1.x, p2.y, 0.0f), n, Math::Point(0.0f, 0.0f)),
-        Gfx::Vertex(Math::Vector(p2.x, p1.y, 0.0f), n, Math::Point(1.0f, 1.0f)),
-        Gfx::Vertex(Math::Vector(p2.x, p2.y, 0.0f), n, Math::Point(1.0f, 0.0f))
+        Vertex(Math::Vector(p1.x, p1.y, 0.0f), n, Math::Point(0.0f, 1.0f)),
+        Vertex(Math::Vector(p1.x, p2.y, 0.0f), n, Math::Point(0.0f, 0.0f)),
+        Vertex(Math::Vector(p2.x, p1.y, 0.0f), n, Math::Point(1.0f, 1.0f)),
+        Vertex(Math::Vector(p2.x, p2.y, 0.0f), n, Math::Point(1.0f, 0.0f))
     };
 
     m_device->SetTexture(0, tex.id);
-    m_device->DrawPrimitive(Gfx::PRIMITIVE_TRIANGLE_STRIP, quad, 4);
+    m_device->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, quad, 4);
     m_engine->AddStatisticTriangle(2);
 
     pos.x += tex.charSize.x;
 }
 
-Gfx::CachedFont* Gfx::CText::GetOrOpenFont(Gfx::FontType font, float size)
+CachedFont* CText::GetOrOpenFont(FontType font, float size)
 {
     // TODO: sizing
     int pointSize = static_cast<int>(size);
@@ -749,7 +750,7 @@ Gfx::CachedFont* Gfx::CText::GetOrOpenFont(Gfx::FontType font, float size)
     return m_lastCachedFont;
 }
 
-Gfx::CharTexture Gfx::CText::CreateCharTexture(Gfx::UTF8Char ch, Gfx::CachedFont* font)
+CharTexture CText::CreateCharTexture(UTF8Char ch, CachedFont* font)
 {
     CharTexture texture;
 
@@ -775,13 +776,13 @@ Gfx::CharTexture Gfx::CText::CreateCharTexture(Gfx::UTF8Char ch, Gfx::CachedFont
     ImageData data;
     data.surface = textureSurface;
 
-    Gfx::TextureCreateParams createParams;
-    createParams.format = Gfx::TEX_IMG_RGBA;
-    createParams.minFilter = Gfx::TEX_MIN_FILTER_NEAREST;
-    createParams.magFilter = Gfx::TEX_MAG_FILTER_NEAREST;
+    TextureCreateParams createParams;
+    createParams.format = TEX_IMG_RGBA;
+    createParams.minFilter = TEX_MIN_FILTER_NEAREST;
+    createParams.magFilter = TEX_MAG_FILTER_NEAREST;
     createParams.mipmap = false;
 
-    Gfx::Texture tex = m_device->CreateTexture(&data, createParams);
+    Texture tex = m_device->CreateTexture(&data, createParams);
 
     data.surface = nullptr;
 
@@ -802,3 +803,6 @@ Gfx::CharTexture Gfx::CText::CreateCharTexture(Gfx::UTF8Char ch, Gfx::CachedFont
 
     return texture;
 }
+
+
+} // namespace Gfx

@@ -22,11 +22,14 @@
 
 #pragma once
 
+
 #include "common/global.h"
 #include "common/singleton.h"
+
 #include "graphics/core/device.h"
 #include "graphics/engine/engine.h"
 #include "graphics/opengl/gldevice.h"
+
 
 #include <string>
 #include <vector>
@@ -96,6 +99,18 @@ enum ParseArgsStatus
     PARSE_ARGS_OK   = 1, //! < all ok
     PARSE_ARGS_FAIL = 2, //! < invalid syntax
     PARSE_ARGS_HELP = 3  //! < -help requested
+};
+
+/**
+ * \enum MouseMode
+ * \brief Mode of mouse cursor
+ */
+enum MouseMode
+{
+    MOUSE_SYSTEM, //! < system cursor visible; in-game cursor hidden
+    MOUSE_ENGINE, //! < in-game cursor visible; system cursor hidden
+    MOUSE_BOTH,   //! < both cursors visible (only for debug)
+    MOUSE_NONE,   //! < no cursor visible
 };
 
 struct ApplicationPrivate;
@@ -250,17 +265,17 @@ public:
     bool        GetGrabInput();
     //@}
 
-    //! Management of the visiblity of system mouse cursor
+    //! Management of mouse mode
     //@{
-    void        SetSystemMouseVisible(bool visible);
-    bool        GetSystemMouseVisibile();
+    void        SetMouseMode(MouseMode mode);
+    MouseMode   GetMouseMode();
     //@}
 
-    //! Management of the position of system mouse cursor (in interface coords)
-    //@{
-    void        SetSystemMousePos(Math::Point pos);
-    Math::Point GetSystemMousePos();
-    //@}
+    //! Returns the position of mouse cursor (in interface coords)
+    Math::Point GetMousePos();
+
+    //! Moves (warps) the mouse cursor to the specified position (in interface coords)
+    void        MoveMouse(Math::Point pos);
 
     //! Management of debug mode (prints more info in logger)
     //@{
@@ -275,6 +290,12 @@ public:
     //@{
     Language    GetLanguage();
     void        SetLanguage(Language language);
+    //@}
+
+    //! Management of sleep in main loop (lowers CPU usage)
+    //@{
+    void        SetLowCPU(bool low);
+    bool        GetLowCPU();
     //@}
 
 protected:
@@ -357,8 +378,10 @@ protected:
     //! Current state of mouse buttons (mask of button indexes)
     unsigned int    m_mouseButtonsState;
 
-    //! Current system mouse position
-    Math::Point     m_systemMousePos;
+    //! Current mode of mouse
+    MouseMode       m_mouseMode;
+    //! Current position of mouse cursor
+    Math::Point     m_mousePos;
 
     //! Info about current joystick device
     JoystickDevice  m_joystick;
@@ -374,5 +397,8 @@ protected:
 
     //! Application language
     Language        m_language;
+
+    //! Low cpu mode
+    bool            m_lowCPU;
 };
 

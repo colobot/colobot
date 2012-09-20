@@ -22,15 +22,17 @@
 
 #pragma once
 
-#include "const.h"
+
+#include "math/const.h"
+
 
 #include <cmath>
 #include <cstdlib>
 
 
 // Math module namespace
-namespace Math
-{
+namespace Math {
+
 
 //! Compares \a a and \a b within \a tolerance
 inline bool IsEqual(float a, float b, float tolerance = Math::TOLERANCE)
@@ -253,4 +255,5 @@ inline float Bounce(float progress, float middle = 0.3f, float bounce = 0.4f)
     }
 }
 
-}; // namespace Math
+
+} // namespace Math

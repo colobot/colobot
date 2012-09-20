@@ -15,19 +15,23 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// planet.cpp
 
 #include "graphics/engine/planet.h"
 
 #include "common/iman.h"
+
 #include "graphics/core/device.h"
 #include "graphics/engine/engine.h"
+
+
+// Graphics module namespace
+namespace Gfx {
 
 
 const int PLANET_PREALLOCATE_COUNT = 10;
 
 
-Gfx::CPlanet::CPlanet(CInstanceManager* iMan, Gfx::CEngine* engine)
+CPlanet::CPlanet(CInstanceManager* iMan, CEngine* engine)
 {
     m_iMan = iMan;
     m_iMan->AddInstance(CLASS_PLANET, this);
@@ -40,12 +44,12 @@ Gfx::CPlanet::CPlanet(CInstanceManager* iMan, Gfx::CEngine* engine)
 
 }
 
-Gfx::CPlanet::~CPlanet()
+CPlanet::~CPlanet()
 {
     m_iMan = nullptr;
 }
 
-void Gfx::CPlanet::Flush()
+void CPlanet::Flush()
 {
     for (int j = 0; j < 2; j++)
         m_planet[j].clear();
@@ -55,7 +59,7 @@ void Gfx::CPlanet::Flush()
     m_time = 0.0f;
 }
 
-bool Gfx::CPlanet::EventProcess(const Event &event)
+bool CPlanet::EventProcess(const Event &event)
 {
     if (event.type == EVENT_FRAME)
         return EventFrame(event);
@@ -63,7 +67,7 @@ bool Gfx::CPlanet::EventProcess(const Event &event)
     return true;
 }
 
-bool Gfx::CPlanet::EventFrame(const Event &event)
+bool CPlanet::EventFrame(const Event &event)
 {
     if (m_engine->GetPause()) return true;
 
@@ -82,7 +86,7 @@ bool Gfx::CPlanet::EventFrame(const Event &event)
     return true;
 }
 
-void Gfx::CPlanet::LoadTexture()
+void CPlanet::LoadTexture()
 {
     for (int j = 0; j < 2; j++)
     {
@@ -93,9 +97,9 @@ void Gfx::CPlanet::LoadTexture()
     }
 }
 
-void Gfx::CPlanet::Draw()
+void CPlanet::Draw()
 {
-    Gfx::CDevice* device = m_engine->GetDevice();
+    CDevice* device = m_engine->GetDevice();
     float eyeDirH = m_engine->GetEyeDirH();
     float eyeDirV = m_engine->GetEyeDirV();
 
@@ -107,9 +111,9 @@ void Gfx::CPlanet::Draw()
         m_engine->SetTexture(m_planet[m_mode][i].name);
 
         if (m_planet[m_mode][i].transparent)
-            m_engine->SetState(Gfx::ENG_RSTATE_WRAP | Gfx::ENG_RSTATE_ALPHA);
+            m_engine->SetState(ENG_RSTATE_WRAP | ENG_RSTATE_ALPHA);
         else
-            m_engine->SetState(Gfx::ENG_RSTATE_WRAP | Gfx::ENG_RSTATE_TTEXTURE_BLACK);
+            m_engine->SetState(ENG_RSTATE_WRAP | ENG_RSTATE_TTEXTURE_BLACK);
 
         Math::Point p1, p2;
 
@@ -129,26 +133,26 @@ void Gfx::CPlanet::Draw()
         float u2 = m_planet[m_mode][i].uv2.x - dp;
         float v2 = m_planet[m_mode][i].uv2.y - dp;
 
-        Gfx::Vertex quad[4] =
+        Vertex quad[4] =
         {
-            Gfx::Vertex(Math::Vector(p1.x, p1.y, 0.0f), n, Math::Point(u1, v2)),
-            Gfx::Vertex(Math::Vector(p1.x, p2.y, 0.0f), n, Math::Point(u1, v1)),
-            Gfx::Vertex(Math::Vector(p2.x, p1.y, 0.0f), n, Math::Point(u2, v2)),
-            Gfx::Vertex(Math::Vector(p2.x, p2.y, 0.0f), n, Math::Point(u2, v1))
+            Vertex(Math::Vector(p1.x, p1.y, 0.0f), n, Math::Point(u1, v2)),
+            Vertex(Math::Vector(p1.x, p2.y, 0.0f), n, Math::Point(u1, v1)),
+            Vertex(Math::Vector(p2.x, p1.y, 0.0f), n, Math::Point(u2, v2)),
+            Vertex(Math::Vector(p2.x, p2.y, 0.0f), n, Math::Point(u2, v1))
         };
 
-        device->DrawPrimitive(Gfx::PRIMITIVE_TRIANGLE_STRIP, quad, 4);
+        device->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, quad, 4);
         m_engine->AddStatisticTriangle(2);
     }
 }
 
-void Gfx::CPlanet::Create(int mode, Math::Point start, float dim, float speed,
+void CPlanet::Create(int mode, Math::Point start, float dim, float speed,
                           float dir, const std::string& name, Math::Point uv1, Math::Point uv2)
 {
     if (mode < 0) mode = 0;
     if (mode > 1) mode = 1;
 
-    Gfx::Planet planet;
+    Planet planet;
 
     planet.start = start;
     planet.angle = start;
@@ -167,19 +171,22 @@ void Gfx::CPlanet::Create(int mode, Math::Point start, float dim, float speed,
     m_planetExist = true;
 }
 
-bool Gfx::CPlanet::PlanetExist()
+bool CPlanet::PlanetExist()
 {
     return m_planetExist;
 }
 
-void Gfx::CPlanet::SetMode(int mode)
+void CPlanet::SetMode(int mode)
 {
     if (mode < 0) mode = 0;
     if (mode > 1) mode = 1;
     m_mode = mode;
 }
 
-int Gfx::CPlanet::GetMode()
+int CPlanet::GetMode()
 {
     return m_mode;
 }
+
+
+} // namespace Gfx

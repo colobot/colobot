@@ -14,16 +14,19 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// color.cpp
 
 #include "graphics/core/color.h"
 
 #include "math/func.h"
 
 
-Gfx::ColorHSV Gfx::RGB2HSV(Gfx::Color color)
+// Graphics module namespace
+namespace Gfx {
+
+
+ColorHSV RGB2HSV(Color color)
 {
-    Gfx::ColorHSV result;
+    ColorHSV result;
 
     float min = Math::Min(color.r, color.g, color.b);
     float max = Math::Max(color.r, color.g, color.b);
@@ -61,9 +64,9 @@ Gfx::ColorHSV Gfx::RGB2HSV(Gfx::Color color)
     return result;
 }
 
-Gfx::Color Gfx::HSV2RGB(Gfx::ColorHSV color)
+Color HSV2RGB(ColorHSV color)
 {
-    Gfx::Color result;
+    Color result;
 
     color.h = Math::Norm(color.h)*360.0f;
     color.s = Math::Norm(color.s);
@@ -101,3 +104,5 @@ Gfx::Color Gfx::HSV2RGB(Gfx::ColorHSV color)
     return result;
 }
 
+
+} // namespace Gfx

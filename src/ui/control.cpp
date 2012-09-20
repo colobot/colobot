@@ -199,13 +199,13 @@ std::string CControl::GetName()
 
 void CControl::SetTextAlign(Gfx::TextAlign mode)
 {
-	m_textAlign = mode;
+    m_textAlign = mode;
 //    m_justif = mode;
 }
 
 int CControl::GetTextAlign()
 {
-	return m_textAlign;
+    return m_textAlign;
 //    return m_justif;
 }
 

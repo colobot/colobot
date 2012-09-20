@@ -15,18 +15,26 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// camera.cpp
 
 #include "graphics/engine/camera.h"
 
 #include "common/iman.h"
+
 #include "graphics/engine/engine.h"
 #include "graphics/engine/terrain.h"
 #include "graphics/engine/water.h"
+
 #include "math/const.h"
 #include "math/geometry.h"
+
 #include "object/object.h"
+
 #include "physics/physics.h"
+
+
+// Graphics module namespace
+namespace Gfx {
+
 
 //! Changes the level of transparency of an object and objects transported (battery & cargo)
 void SetTransparency(CObject* obj, float value)
@@ -44,17 +52,17 @@ void SetTransparency(CObject* obj, float value)
 
 
 
-Gfx::CCamera::CCamera(CInstanceManager* iMan)
+CCamera::CCamera(CInstanceManager* iMan)
 {
     m_iMan = iMan;
     m_iMan->AddInstance(CLASS_CAMERA, this);
 
-    m_engine  = static_cast<Gfx::CEngine*> ( m_iMan->SearchInstance(CLASS_ENGINE) );
-    m_terrain = static_cast<Gfx::CTerrain*>( m_iMan->SearchInstance(CLASS_TERRAIN) );
-    m_water   = static_cast<Gfx::CWater*>  ( m_iMan->SearchInstance(CLASS_WATER) );
+    m_engine  = static_cast<CEngine*> ( m_iMan->SearchInstance(CLASS_ENGINE) );
+    m_terrain = static_cast<CTerrain*>( m_iMan->SearchInstance(CLASS_TERRAIN) );
+    m_water   = static_cast<CWater*>  ( m_iMan->SearchInstance(CLASS_WATER) );
 
-    m_type      = Gfx::CAM_TYPE_FREE;
-    m_smooth    = Gfx::CAM_SMOOTH_NORM;
+    m_type      = CAM_TYPE_FREE;
+    m_smooth    = CAM_SMOOTH_NORM;
     m_cameraObj = 0;
 
     m_eyeDistance = 10.0f;
@@ -93,7 +101,7 @@ Gfx::CCamera::CCamera(CInstanceManager* iMan)
     m_visitGoal       = Math::Vector(0.0f, 0.0f, 0.0f);
     m_visitDist       = 0.0f;
     m_visitTime       = 0.0f;
-    m_visitType       = Gfx::CAM_TYPE_NULL;
+    m_visitType       = CAM_TYPE_NULL;
     m_visitDirectionH = 0.0f;
     m_visitDirectionV = 0.0f;
 
@@ -108,7 +116,7 @@ Gfx::CCamera::CCamera(CInstanceManager* iMan)
 
     m_motorTurn = 0.0f;
 
-    m_centeringPhase    = Gfx::CAM_PHASE_NULL;
+    m_centeringPhase    = CAM_PHASE_NULL;
     m_centeringAngleH   = 0.0f;
     m_centeringAngleV   = 0.0f;
     m_centeringDist     = 0.0f;
@@ -117,7 +125,7 @@ Gfx::CCamera::CCamera(CInstanceManager* iMan)
     m_centeringTime     = 0.0f;
     m_centeringProgress = 0.0f;
 
-    m_effectType     = Gfx::CAM_EFFECT_NULL;
+    m_effectType     = CAM_EFFECT_NULL;
     m_effectPos      = Math::Vector(0.0f, 0.0f, 0.0f);
     m_effectForce    = 0.0f;
     m_effectProgress = 0.0f;
@@ -132,45 +140,45 @@ Gfx::CCamera::CCamera(CInstanceManager* iMan)
     m_cameraInvertY = false;
 }
 
-Gfx::CCamera::~CCamera()
+CCamera::~CCamera()
 {
 }
 
-void Gfx::CCamera::SetEffect(bool enable)
+void CCamera::SetEffect(bool enable)
 {
     m_effect = enable;
 }
 
-void Gfx::CCamera::SetCameraScroll(bool scroll)
+void CCamera::SetCameraScroll(bool scroll)
 {
     m_cameraScroll = scroll;
 }
 
-void Gfx::CCamera::SetCameraInvertX(bool invert)
+void CCamera::SetCameraInvertX(bool invert)
 {
     m_cameraInvertX = invert;
 }
 
-void Gfx::CCamera::SetCameraInvertY(bool invert)
+void CCamera::SetCameraInvertY(bool invert)
 {
     m_cameraInvertY = invert;
 }
 
-float Gfx::CCamera::GetMotorTurn()
+float CCamera::GetMotorTurn()
 {
-    if (m_type == Gfx::CAM_TYPE_BACK)
+    if (m_type == CAM_TYPE_BACK)
         return m_motorTurn;
     return 0.0f;
 }
 
-void Gfx::CCamera::Init(Math::Vector eye, Math::Vector lookat, float delay)
+void CCamera::Init(Math::Vector eye, Math::Vector lookat, float delay)
 {
     m_initDelay = delay;
 
     eye.y    += m_terrain->GetFloorLevel(eye,    true);
     lookat.y += m_terrain->GetFloorLevel(lookat, true);
 
-    m_type = Gfx::CAM_TYPE_FREE;
+    m_type = CAM_TYPE_FREE;
     m_eyePt = eye;
 
     m_directionH = Math::RotateAngle(eye.x - lookat.x, eye.z - lookat.z) + Math::PI / 2.0f;
@@ -185,7 +193,7 @@ void Gfx::CCamera::Init(Math::Vector eye, Math::Vector lookat, float delay)
     m_fixDist = 50.0f;
     m_fixDirectionH = Math::PI*0.25f;
     m_fixDirectionV = -Math::PI*0.10f;
-    m_centeringPhase = Gfx::CAM_PHASE_NULL;
+    m_centeringPhase = CAM_PHASE_NULL;
     m_actualEye = m_eyePt;
     m_actualLookat = Math::LookatPoint(m_eyePt, m_directionH, m_directionV, 50.0f);
     m_finalEye = m_actualEye;
@@ -198,26 +206,26 @@ void Gfx::CCamera::Init(Math::Vector eye, Math::Vector lookat, float delay)
 
     FlushEffect();
     FlushOver();
-    SetType(Gfx::CAM_TYPE_FREE);
+    SetType(CAM_TYPE_FREE);
 }
 
 
-void Gfx::CCamera::SetControllingObject(CObject* object)
+void CCamera::SetControllingObject(CObject* object)
 {
     m_cameraObj = object;
 }
 
-CObject* Gfx::CCamera::GetControllingObject()
+CObject* CCamera::GetControllingObject()
 {
     return m_cameraObj;
 }
 
-void Gfx::CCamera::SetType(CameraType type)
+void CCamera::SetType(CameraType type)
 {
     m_remotePan  = 0.0f;
     m_remoteZoom = 0.0f;
 
-    if ( (m_type == Gfx::CAM_TYPE_BACK) && m_transparency )
+    if ( (m_type == CAM_TYPE_BACK) && m_transparency )
     {
         for (int i = 0; i < 1000000; i++)
         {
@@ -233,8 +241,8 @@ void Gfx::CCamera::SetType(CameraType type)
     }
     m_transparency = false;
 
-    if (type == Gfx::CAM_TYPE_INFO  ||
-        type == Gfx::CAM_TYPE_VISIT)  // xx -> info ?
+    if (type == CAM_TYPE_INFO  ||
+        type == CAM_TYPE_VISIT)  // xx -> info ?
     {
         m_normEye    = m_engine->GetEyePt();
         m_normLookat = m_engine->GetLookatPt();
@@ -244,8 +252,8 @@ void Gfx::CCamera::SetType(CameraType type)
         return;
     }
 
-    if (m_type == Gfx::CAM_TYPE_INFO  ||
-        m_type == Gfx::CAM_TYPE_VISIT)  // info -> xx ?
+    if (m_type == CAM_TYPE_INFO  ||
+        m_type == CAM_TYPE_VISIT)  // info -> xx ?
     {
         m_engine->SetFocus(m_focus);  // gives initial focus
         m_type = type;
@@ -255,33 +263,33 @@ void Gfx::CCamera::SetType(CameraType type)
         return;
     }
 
-    if ( m_type == Gfx::CAM_TYPE_BACK && type == Gfx::CAM_TYPE_FREE )  // back -> free ?
+    if ( m_type == CAM_TYPE_BACK && type == CAM_TYPE_FREE )  // back -> free ?
         m_eyePt = Math::LookatPoint(m_eyePt, m_directionH, m_directionV, -50.0f);
 
-    if ( m_type == Gfx::CAM_TYPE_BACK && type == Gfx::CAM_TYPE_EDIT )  // back -> edit ?
+    if ( m_type == CAM_TYPE_BACK && type == CAM_TYPE_EDIT )  // back -> edit ?
         m_eyePt = Math::LookatPoint(m_eyePt, m_directionH, m_directionV, -1.0f);
 
-    if ( m_type == Gfx::CAM_TYPE_ONBOARD && type == Gfx::CAM_TYPE_FREE )  // onboard -> free ?
+    if ( m_type == CAM_TYPE_ONBOARD && type == CAM_TYPE_FREE )  // onboard -> free ?
         m_eyePt = Math::LookatPoint(m_eyePt, m_directionH, m_directionV, -30.0f);
 
-    if ( m_type == Gfx::CAM_TYPE_ONBOARD && type == Gfx::CAM_TYPE_EDIT )  // onboard -> edit ?
+    if ( m_type == CAM_TYPE_ONBOARD && type == CAM_TYPE_EDIT )  // onboard -> edit ?
         m_eyePt = Math::LookatPoint(m_eyePt, m_directionH, m_directionV, -30.0f);
 
-    if ( m_type == Gfx::CAM_TYPE_ONBOARD && type == Gfx::CAM_TYPE_EXPLO )  // onboard -> explo ?
+    if ( m_type == CAM_TYPE_ONBOARD && type == CAM_TYPE_EXPLO )  // onboard -> explo ?
         m_eyePt = Math::LookatPoint(m_eyePt, m_directionH, m_directionV, -50.0f);
 
-    if ( m_type == Gfx::CAM_TYPE_BACK && type == Gfx::CAM_TYPE_EXPLO )  // back -> explo ?
+    if ( m_type == CAM_TYPE_BACK && type == CAM_TYPE_EXPLO )  // back -> explo ?
         m_eyePt = Math::LookatPoint(m_eyePt, m_directionH, m_directionV, -20.0f);
 
-    if ( type == Gfx::CAM_TYPE_FIX   ||
-         type == Gfx::CAM_TYPE_PLANE )
+    if ( type == CAM_TYPE_FIX   ||
+         type == CAM_TYPE_PLANE )
         AbortCentering();  // Special stops framing
 
     m_fixDist = 50.0f;
-    if ( type == Gfx::CAM_TYPE_PLANE )
+    if ( type == CAM_TYPE_PLANE )
         m_fixDist = 60.0f;
 
-    if ( type == Gfx::CAM_TYPE_BACK )
+    if ( type == CAM_TYPE_BACK )
     {
         AbortCentering();  // Special stops framing
         m_addDirectionH = 0.0f;
@@ -317,10 +325,10 @@ void Gfx::CCamera::SetType(CameraType type)
         if ( oType == OBJECT_HUSTON   )  m_backMin =  80.0f;
     }
 
-    if ( type != Gfx::CAM_TYPE_ONBOARD && m_cameraObj != 0 )
+    if ( type != CAM_TYPE_ONBOARD && m_cameraObj != 0 )
         m_cameraObj->SetGunGoalH(0.0f);  // puts the cannon right
 
-    if ( type == Gfx::CAM_TYPE_ONBOARD )
+    if ( type == CAM_TYPE_ONBOARD )
         m_focus = 1.50f;  // Wide
     else
         m_focus = 1.00f;  // normal
@@ -328,82 +336,82 @@ void Gfx::CCamera::SetType(CameraType type)
 
     m_type = type;
 
-    SetSmooth(Gfx::CAM_SMOOTH_NORM);
+    SetSmooth(CAM_SMOOTH_NORM);
 }
 
-Gfx::CameraType Gfx::CCamera::GetType()
+CameraType CCamera::GetType()
 {
     return m_type;
 }
 
-void Gfx::CCamera::SetSmooth(CameraSmooth type)
+void CCamera::SetSmooth(CameraSmooth type)
 {
     m_smooth = type;
 }
 
-Gfx::CameraSmooth Gfx::CCamera::GetSmoth()
+CameraSmooth CCamera::GetSmoth()
 {
     return m_smooth;
 }
 
-void Gfx::CCamera::SetDist(float dist)
+void CCamera::SetDist(float dist)
 {
     m_fixDist = dist;
 }
 
-float Gfx::CCamera::GetDist()
+float CCamera::GetDist()
 {
     return m_fixDist;
 }
 
-void Gfx::CCamera::SetFixDirection(float angle)
+void CCamera::SetFixDirection(float angle)
 {
     m_fixDirectionH = angle;
 }
 
-float Gfx::CCamera::GetFixDirection()
+float CCamera::GetFixDirection()
 {
     return m_fixDirectionH;
 }
 
-void Gfx::CCamera::SetRemotePan(float value)
+void CCamera::SetRemotePan(float value)
 {
     m_remotePan = value;
 }
 
-float Gfx::CCamera::GetRemotePan()
+float CCamera::GetRemotePan()
 {
     return m_remotePan;
 }
 
-void Gfx::CCamera::SetRemoteZoom(float value)
+void CCamera::SetRemoteZoom(float value)
 {
     value = Math::Norm(value);
 
-    if ( m_type == Gfx::CAM_TYPE_BACK )
+    if ( m_type == CAM_TYPE_BACK )
         m_backDist = m_backMin + (200.0f - m_backMin) * value;
 
-    if ( m_type == Gfx::CAM_TYPE_FIX   ||
-         m_type == Gfx::CAM_TYPE_PLANE )
+    if ( m_type == CAM_TYPE_FIX   ||
+         m_type == CAM_TYPE_PLANE )
         m_fixDist = 10.0f + (200.0f - 10.0f) * value;
 }
 
-float Gfx::CCamera::GetRemoteZoom()
+float CCamera::GetRemoteZoom()
 {
-    if ( m_type == Gfx::CAM_TYPE_BACK )
+    if ( m_type == CAM_TYPE_BACK )
         return (m_backDist - m_backMin) / (200.0f - m_backMin);
 
-    if ( m_type == Gfx::CAM_TYPE_FIX   ||
-         m_type == Gfx::CAM_TYPE_PLANE )
+    if ( m_type == CAM_TYPE_FIX   ||
+         m_type == CAM_TYPE_PLANE )
         return (m_fixDist - 10.0f) / (200.0f - 10.0f);
 
     return 0.0f;
 }
 
-void Gfx::CCamera::StartVisit(Math::Vector goal, float dist)
+void CCamera::StartVisit(Math::Vector goal, float dist)
 {
     m_visitType = m_type;
-    SetType(Gfx::CAM_TYPE_VISIT);
+    SetType(CAM_TYPE_VISIT);
     m_visitGoal = goal;
     m_visitDist = dist;
     m_visitTime = 0.0f;
@@ -411,32 +419,32 @@ void Gfx::CCamera::StartVisit(Math::Vector goal, float dist)
     m_visitDirectionV = -Math::PI*0.10f;
 }
 
-void Gfx::CCamera::StopVisit()
+void CCamera::StopVisit()
 {
     SetType(m_visitType);  // presents the initial type
 }
 
-void Gfx::CCamera::GetCamera(Math::Vector &eye, Math::Vector &lookat)
+void CCamera::GetCamera(Math::Vector &eye, Math::Vector &lookat)
 {
     eye = m_eyePt;
     lookat = Math::LookatPoint(m_eyePt, m_directionH, m_directionV, 50.0f);
 }
 
-bool Gfx::CCamera::StartCentering(CObject *object, float angleH, float angleV,
+bool CCamera::StartCentering(CObject *object, float angleH, float angleV,
                              float dist, float time)
 {
-    if (m_type != Gfx::CAM_TYPE_BACK)
+    if (m_type != CAM_TYPE_BACK)
         return false;
     if (object != m_cameraObj)
         return false;
 
-    if (m_centeringPhase != Gfx::CAM_PHASE_NULL)
+    if (m_centeringPhase != CAM_PHASE_NULL)
         return false;
 
     if (m_addDirectionH > Math::PI)
         angleH = Math::PI * 2.0f - angleH;
 
-    m_centeringPhase    = Gfx::CAM_PHASE_START;
+    m_centeringPhase    = CAM_PHASE_START;
     m_centeringAngleH   = angleH;
     m_centeringAngleV   = angleV;
     m_centeringDist     = dist;
@@ -448,18 +456,18 @@ bool Gfx::CCamera::StartCentering(CObject *object, float angleH, float angleV,
     return true;
 }
 
-bool Gfx::CCamera::StopCentering(CObject *object, float time)
+bool CCamera::StopCentering(CObject *object, float time)
 {
-    if (m_type != Gfx::CAM_TYPE_BACK)
+    if (m_type != CAM_TYPE_BACK)
         return false;
     if (object != m_cameraObj)
         return false;
 
-    if (m_centeringPhase != Gfx::CAM_PHASE_START &&
-        m_centeringPhase != Gfx::CAM_PHASE_WAIT)
+    if (m_centeringPhase != CAM_PHASE_START &&
+        m_centeringPhase != CAM_PHASE_WAIT)
         return false;
 
-    m_centeringPhase = Gfx::CAM_PHASE_STOP;
+    m_centeringPhase = CAM_PHASE_STOP;
 
     if (m_centeringAngleH != 99.9f)
         m_centeringAngleH = m_centeringCurrentH;
@@ -473,16 +481,16 @@ bool Gfx::CCamera::StopCentering(CObject *object, float time)
     return true;
 }
 
-void Gfx::CCamera::AbortCentering()
+void CCamera::AbortCentering()
 {
-    if (m_type == Gfx::CAM_TYPE_INFO  ||
-        m_type == Gfx::CAM_TYPE_VISIT )
+    if (m_type == CAM_TYPE_INFO  ||
+        m_type == CAM_TYPE_VISIT )
         return;
 
-    if (m_centeringPhase == Gfx::CAM_PHASE_NULL)
+    if (m_centeringPhase == CAM_PHASE_NULL)
         return;
 
-    m_centeringPhase = Gfx::CAM_PHASE_NULL;
+    m_centeringPhase = CAM_PHASE_NULL;
 
     if ( m_centeringAngleH != 99.9f )
         m_addDirectionH = m_centeringCurrentH;
@@ -491,15 +499,15 @@ void Gfx::CCamera::AbortCentering()
         m_addDirectionV = m_centeringCurrentV;
 }
 
-void Gfx::CCamera::FlushEffect()
+void CCamera::FlushEffect()
 {
-    m_effectType     = Gfx::CAM_EFFECT_NULL;
+    m_effectType     = CAM_EFFECT_NULL;
     m_effectForce    = 0.0f;
     m_effectProgress = 0.0f;
     m_effectOffset   = Math::Vector(0.0f, 0.0f, 0.0f);
 }
 
-void Gfx::CCamera::StartEffect(CameraEffect effect, Math::Vector pos, float force)
+void CCamera::StartEffect(CameraEffect effect, Math::Vector pos, float force)
 {
     if ( !m_effect )  return;
 
@@ -509,20 +517,20 @@ void Gfx::CCamera::StartEffect(CameraEffect effect, Math::Vector pos, float forc
     m_effectProgress = 0.0f;
 }
 
-void Gfx::CCamera::EffectFrame(const Event &event)
+void CCamera::EffectFrame(const Event &event)
 {
-    if (m_type == Gfx::CAM_TYPE_INFO  ||
-        m_type == Gfx::CAM_TYPE_VISIT)
+    if (m_type == CAM_TYPE_INFO  ||
+        m_type == CAM_TYPE_VISIT)
         return;
 
-    if (m_effectType == Gfx::CAM_EFFECT_NULL)
+    if (m_effectType == CAM_EFFECT_NULL)
         return;
 
     m_effectOffset = Math::Vector(0.0f, 0.0f, 0.0f);
 
     float force = m_effectForce;
 
-    if ( m_effectType == Gfx::CAM_EFFECT_TERRAFORM )
+    if ( m_effectType == CAM_EFFECT_TERRAFORM )
     {
         m_effectProgress += event.rTime * 0.7f;
         m_effectOffset.x = (Math::Rand() - 0.5f) * 10.0f;
@@ -532,7 +540,7 @@ void Gfx::CCamera::EffectFrame(const Event &event)
         force *= 1.0f-m_effectProgress;
     }
 
-    if ( m_effectType == Gfx::CAM_EFFECT_EXPLO )
+    if ( m_effectType == CAM_EFFECT_EXPLO )
     {
         m_effectProgress += event.rTime * 1.0f;
         m_effectOffset.x = (Math::Rand() - 0.5f)  *5.0f;
@@ -542,7 +550,7 @@ void Gfx::CCamera::EffectFrame(const Event &event)
         force *= 1.0f-m_effectProgress;
     }
 
-    if ( m_effectType == Gfx::CAM_EFFECT_SHOT )
+    if ( m_effectType == CAM_EFFECT_SHOT )
     {
         m_effectProgress += event.rTime * 1.0f;
         m_effectOffset.x = (Math::Rand() - 0.5f) * 2.0f;
@@ -552,7 +560,7 @@ void Gfx::CCamera::EffectFrame(const Event &event)
         force *= 1.0f-m_effectProgress;
     }
 
-    if ( m_effectType == Gfx::CAM_EFFECT_CRASH )
+    if ( m_effectType == CAM_EFFECT_CRASH )
     {
         m_effectProgress += event.rTime * 5.0f;
         m_effectOffset.y = sinf(m_effectProgress * Math::PI) * 1.5f;
@@ -560,7 +568,7 @@ void Gfx::CCamera::EffectFrame(const Event &event)
         m_effectOffset.z = (Math::Rand() - 0.5f) * 1.0f * (1.0f - m_effectProgress);
     }
 
-    if ( m_effectType == Gfx::CAM_EFFECT_VIBRATION )
+    if ( m_effectType == CAM_EFFECT_VIBRATION )
     {
         m_effectProgress += event.rTime * 0.1f;
         m_effectOffset.y = (Math::Rand() - 0.5f) * 1.0f * (1.0f - m_effectProgress);
@@ -568,7 +576,7 @@ void Gfx::CCamera::EffectFrame(const Event &event)
         m_effectOffset.z = (Math::Rand() - 0.5f) * 1.0f * (1.0f - m_effectProgress);
     }
 
-    if ( m_effectType == Gfx::CAM_EFFECT_PET )
+    if ( m_effectType == CAM_EFFECT_PET )
     {
         m_effectProgress += event.rTime  *5.0f;
         m_effectOffset.x = (Math::Rand() - 0.5f) * 0.2f;
@@ -589,25 +597,25 @@ void Gfx::CCamera::EffectFrame(const Event &event)
         FlushEffect();
 }
 
-void Gfx::CCamera::FlushOver()
+void CCamera::FlushOver()
 {
-    m_overType = Gfx::CAM_OVER_EFFECT_NULL;
-    m_overColorBase = Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f);  // black
+    m_overType = CAM_OVER_EFFECT_NULL;
+    m_overColorBase = Color(0.0f, 0.0f, 0.0f, 0.0f);  // black
     m_engine->SetOverColor();  // nothing
 }
 
-void Gfx::CCamera::SetOverBaseColor(Gfx::Color color)
+void CCamera::SetOverBaseColor(Color color)
 {
     m_overColorBase = color;
 }
 
-void Gfx::CCamera::StartOver(Gfx::CameraOverEffect effect, Math::Vector pos, float force)
+void CCamera::StartOver(CameraOverEffect effect, Math::Vector pos, float force)
 {
     m_overType = effect;
     m_overTime = 0.0f;
 
     float decay;
-    if (m_overType == Gfx::CAM_OVER_EFFECT_LIGHTNING)
+    if (m_overType == CAM_OVER_EFFECT_LIGHTNING)
         decay = 400.0f;
     else
         decay = 100.0f;
@@ -619,70 +627,70 @@ void Gfx::CCamera::StartOver(Gfx::CameraOverEffect effect, Math::Vector pos, flo
 
     m_overForce = force * (1.0f - dist);
 
-    if (m_overType == Gfx::CAM_OVER_EFFECT_BLOOD)
+    if (m_overType == CAM_OVER_EFFECT_BLOOD)
     {
-        m_overColor   = Gfx::Color(0.8f, 0.1f, 0.1f); // red
-        m_overMode    = Gfx::ENG_RSTATE_TCOLOR_BLACK;
+        m_overColor   = Color(0.8f, 0.1f, 0.1f); // red
+        m_overMode    = ENG_RSTATE_TCOLOR_BLACK;
 
         m_overFadeIn  = 0.4f;
         m_overFadeOut = 0.8f;
         m_overForce   = 1.0f;
     }
 
-    if ( m_overType == Gfx::CAM_OVER_EFFECT_FADEIN_WHITE )
+    if ( m_overType == CAM_OVER_EFFECT_FADEIN_WHITE )
     {
-        m_overColor   = Gfx::Color(1.0f, 1.0f, 1.0f); // white
-        m_overMode    = Gfx::ENG_RSTATE_TCOLOR_BLACK;
+        m_overColor   = Color(1.0f, 1.0f, 1.0f); // white
+        m_overMode    = ENG_RSTATE_TCOLOR_BLACK;
 
         m_overFadeIn  = 0.0f;
         m_overFadeOut = 20.0f;
         m_overForce   = 1.0f;
     }
 
-    if ( m_overType == Gfx::CAM_OVER_EFFECT_FADEOUT_WHITE )
+    if ( m_overType == CAM_OVER_EFFECT_FADEOUT_WHITE )
     {
-        m_overColor   = Gfx::Color(1.0f, 1.0f, 1.0f); // white
-        m_overMode    = Gfx::ENG_RSTATE_TCOLOR_BLACK;
+        m_overColor   = Color(1.0f, 1.0f, 1.0f); // white
+        m_overMode    = ENG_RSTATE_TCOLOR_BLACK;
 
         m_overFadeIn  = 6.0f;
         m_overFadeOut = 100000.0f;
         m_overForce   = 1.0f;
     }
 
-    if ( m_overType == Gfx::CAM_OVER_EFFECT_FADEOUT_BLACK )
+    if ( m_overType == CAM_OVER_EFFECT_FADEOUT_BLACK )
     {
         m_overColor   = m_engine->GetFogColor(1); // fog color underwater
-        m_overMode    = Gfx::ENG_RSTATE_TTEXTURE_WHITE;
+        m_overMode    = ENG_RSTATE_TTEXTURE_WHITE;
 
         m_overFadeIn  = 4.0f;
         m_overFadeOut = 100000.0f;
         m_overForce   = 1.0f;
     }
 
-    if ( m_overType == Gfx::CAM_OVER_EFFECT_LIGHTNING )
+    if ( m_overType == CAM_OVER_EFFECT_LIGHTNING )
     {
-        m_overColor   = Gfx::Color(0.9f, 1.0f, 1.0f);  // white-cyan
-        m_overMode    = Gfx::ENG_RSTATE_TCOLOR_BLACK;
+        m_overColor   = Color(0.9f, 1.0f, 1.0f);  // white-cyan
+        m_overMode    = ENG_RSTATE_TCOLOR_BLACK;
 
         m_overFadeIn  = 0.0f;
         m_overFadeOut = 1.0f;
     }
 }
 
-void Gfx::CCamera::OverFrame(const Event &event)
+void CCamera::OverFrame(const Event &event)
 {
-    if (m_type == Gfx::CAM_TYPE_INFO ||
-        m_type == Gfx::CAM_TYPE_VISIT)
+    if (m_type == CAM_TYPE_INFO ||
+        m_type == CAM_TYPE_VISIT)
         return;
 
-    if (m_overType == Gfx::CAM_OVER_EFFECT_NULL)
+    if (m_overType == CAM_OVER_EFFECT_NULL)
         return;
 
     m_overTime += event.rTime;
 
-    if (m_overType == Gfx::CAM_OVER_EFFECT_LIGHTNING)
+    if (m_overType == CAM_OVER_EFFECT_LIGHTNING)
     {
-        Gfx::Color color;
+        Color color;
         if (rand() % 2 == 0)
         {
             color.r = m_overColor.r * m_overForce;
@@ -691,7 +699,7 @@ void Gfx::CCamera::OverFrame(const Event &event)
         }
         else
         {
-            color = Gfx::Color(0.0f, 0.0f, 0.0f);
+            color = Color(0.0f, 0.0f, 0.0f);
         }
         color.a = 0.0f;
         m_engine->SetOverColor(color, m_overMode);
@@ -703,8 +711,8 @@ void Gfx::CCamera::OverFrame(const Event &event)
             float intensity = m_overTime / m_overFadeIn;
             intensity *= m_overForce;
 
-            Gfx::Color color;
-            if (m_overMode == Gfx::ENG_RSTATE_TCOLOR_WHITE)
+            Color color;
+            if (m_overMode == ENG_RSTATE_TCOLOR_WHITE)
             {
                 color.r = 1.0f - (1.0f - m_overColor.r) * intensity;
                 color.g = 1.0f - (1.0f - m_overColor.g) * intensity;
@@ -728,8 +736,8 @@ void Gfx::CCamera::OverFrame(const Event &event)
             float intensity = 1.0f - (m_overTime - m_overFadeIn) / m_overFadeOut;
             intensity *= m_overForce;
 
-            Gfx::Color color;
-            if (m_overMode == Gfx::ENG_RSTATE_TCOLOR_WHITE)
+            Color color;
+            if (m_overMode == ENG_RSTATE_TCOLOR_WHITE)
             {
                 color.r = 1.0f-(1.0f-m_overColor.r) * intensity;
                 color.g = 1.0f-(1.0f-m_overColor.g) * intensity;
@@ -757,7 +765,7 @@ void Gfx::CCamera::OverFrame(const Event &event)
     }
 }
 
-void Gfx::CCamera::FixCamera()
+void CCamera::FixCamera()
 {
     m_initDelay = 0.0f;
     m_actualEye    = m_finalEye    = m_scriptEye;
@@ -765,13 +773,13 @@ void Gfx::CCamera::FixCamera()
     SetViewTime(m_scriptEye, m_scriptLookat, 0.0f);
 }
 
-void Gfx::CCamera::SetViewTime(const Math::Vector &eyePt,
+void CCamera::SetViewTime(const Math::Vector &eyePt,
                                const Math::Vector &lookatPt,
                                float rTime)
 {
     Math::Vector eye, lookat;
 
-    if (m_type == Gfx::CAM_TYPE_INFO)
+    if (m_type == CAM_TYPE_INFO)
     {
         eye    = eyePt;
         lookat = lookatPt;
@@ -797,10 +805,10 @@ void Gfx::CCamera::SetViewTime(const Math::Vector &eyePt,
         float prog = 0.0f;
         float dist = Math::Distance(m_finalEye, m_actualEye);
 
-        if (m_smooth == Gfx::CAM_SMOOTH_NONE) prog = dist;
-        if (m_smooth == Gfx::CAM_SMOOTH_NORM) prog = powf(dist, 1.5f) * rTime * 0.5f;
-        if (m_smooth == Gfx::CAM_SMOOTH_HARD) prog = powf(dist, 1.0f) * rTime * 4.0f;
-        if (m_smooth == Gfx::CAM_SMOOTH_SPEC) prog = powf(dist, 1.0f) * rTime * 0.05f;
+        if (m_smooth == CAM_SMOOTH_NONE) prog = dist;
+        if (m_smooth == CAM_SMOOTH_NORM) prog = powf(dist, 1.5f) * rTime * 0.5f;
+        if (m_smooth == CAM_SMOOTH_HARD) prog = powf(dist, 1.0f) * rTime * 4.0f;
+        if (m_smooth == CAM_SMOOTH_SPEC) prog = powf(dist, 1.0f) * rTime * 0.05f;
         if (dist == 0.0f)
         {
             m_actualEye = m_finalEye;
@@ -813,10 +821,10 @@ void Gfx::CCamera::SetViewTime(const Math::Vector &eyePt,
         }
 
         dist = Math::Distance(m_finalLookat, m_actualLookat);
-        if ( m_smooth == Gfx::CAM_SMOOTH_NONE ) prog = dist;
-        if ( m_smooth == Gfx::CAM_SMOOTH_NORM ) prog = powf(dist, 1.5f) * rTime * 2.0f;
-        if ( m_smooth == Gfx::CAM_SMOOTH_HARD ) prog = powf(dist, 1.0f) * rTime * 4.0f;
-        if ( m_smooth == Gfx::CAM_SMOOTH_SPEC ) prog = powf(dist, 1.0f) * rTime * 4.0f;
+        if ( m_smooth == CAM_SMOOTH_NONE ) prog = dist;
+        if ( m_smooth == CAM_SMOOTH_NORM ) prog = powf(dist, 1.5f) * rTime * 2.0f;
+        if ( m_smooth == CAM_SMOOTH_HARD ) prog = powf(dist, 1.0f) * rTime * 4.0f;
+        if ( m_smooth == CAM_SMOOTH_SPEC ) prog = powf(dist, 1.0f) * rTime * 4.0f;
         if ( dist == 0.0f )
         {
             m_actualLookat = m_finalLookat;
@@ -842,15 +850,15 @@ void Gfx::CCamera::SetViewTime(const Math::Vector &eyePt,
     SetViewParams(eye, lookat, upVec);
 }
 
-bool Gfx::CCamera::IsCollision(Math::Vector &eye, Math::Vector lookat)
+bool CCamera::IsCollision(Math::Vector &eye, Math::Vector lookat)
 {
-    if (m_type == Gfx::CAM_TYPE_BACK )  return IsCollisionBack(eye, lookat);
-    if (m_type == Gfx::CAM_TYPE_FIX  )  return IsCollisionFix (eye, lookat);
-    if (m_type == Gfx::CAM_TYPE_PLANE)  return IsCollisionFix (eye, lookat);
+    if (m_type == CAM_TYPE_BACK )  return IsCollisionBack(eye, lookat);
+    if (m_type == CAM_TYPE_FIX  )  return IsCollisionFix (eye, lookat);
+    if (m_type == CAM_TYPE_PLANE)  return IsCollisionFix (eye, lookat);
     return false;
 }
 
-bool Gfx::CCamera::IsCollisionBack(Math::Vector &eye, Math::Vector lookat)
+bool CCamera::IsCollisionBack(Math::Vector &eye, Math::Vector lookat)
 {
     ObjectType iType;
     if (m_cameraObj == NULL)
@@ -945,7 +953,7 @@ bool Gfx::CCamera::IsCollisionBack(Math::Vector &eye, Math::Vector lookat)
     return false;
 }
 
-bool Gfx::CCamera::IsCollisionFix(Math::Vector &eye, Math::Vector lookat)
+bool CCamera::IsCollisionFix(Math::Vector &eye, Math::Vector lookat)
 {
     for (int i = 0; i < 1000000; i++)
     {
@@ -990,7 +998,7 @@ bool Gfx::CCamera::IsCollisionFix(Math::Vector &eye, Math::Vector lookat)
     return false;
 }
 
-bool Gfx::CCamera::EventProcess(const Event &event)
+bool CCamera::EventProcess(const Event &event)
 {
     switch (event.type)
     {
@@ -1012,15 +1020,15 @@ bool Gfx::CCamera::EventProcess(const Event &event)
     return true;
 }
 
-bool Gfx::CCamera::EventMouseMove(const Event &event)
+bool CCamera::EventMouseMove(const Event &event)
 {
     m_mousePos = event.pos;
     return true;
 }
 
-void Gfx::CCamera::EventMouseWheel(WheelDirection dir)
+void CCamera::EventMouseWheel(WheelDirection dir)
 {
-    if (m_type == Gfx::CAM_TYPE_BACK)
+    if (m_type == CAM_TYPE_BACK)
     {
         if (dir == WHEEL_UP)
         {
@@ -1036,8 +1044,8 @@ void Gfx::CCamera::EventMouseWheel(WheelDirection dir)
         }
     }
 
-    if ( m_type == Gfx::CAM_TYPE_FIX   ||
-         m_type == Gfx::CAM_TYPE_PLANE )
+    if ( m_type == CAM_TYPE_FIX   ||
+         m_type == CAM_TYPE_PLANE )
     {
         if (dir == WHEEL_UP)
         {
@@ -1053,7 +1061,7 @@ void Gfx::CCamera::EventMouseWheel(WheelDirection dir)
         }
     }
 
-    if ( m_type == Gfx::CAM_TYPE_VISIT )
+    if ( m_type == CAM_TYPE_VISIT )
     {
         if (dir == WHEEL_UP)
         {
@@ -1070,58 +1078,58 @@ void Gfx::CCamera::EventMouseWheel(WheelDirection dir)
     }
 }
 
-bool Gfx::CCamera::EventFrame(const Event &event)
+bool CCamera::EventFrame(const Event &event)
 {
     EffectFrame(event);
     OverFrame(event);
 
-    if (m_type == Gfx::CAM_TYPE_FREE)
+    if (m_type == CAM_TYPE_FREE)
         return EventFrameFree(event);
 
-    if (m_type == Gfx::CAM_TYPE_EDIT)
+    if (m_type == CAM_TYPE_EDIT)
         return EventFrameEdit(event);
 
-    if (m_type == Gfx::CAM_TYPE_DIALOG)
+    if (m_type == CAM_TYPE_DIALOG)
         return EventFrameDialog(event);
 
-    if (m_type == Gfx::CAM_TYPE_BACK)
+    if (m_type == CAM_TYPE_BACK)
         return EventFrameBack(event);
 
-    if (m_type == Gfx::CAM_TYPE_FIX   ||
-        m_type == Gfx::CAM_TYPE_PLANE)
+    if (m_type == CAM_TYPE_FIX   ||
+        m_type == CAM_TYPE_PLANE)
         return EventFrameFix(event);
 
-    if (m_type == Gfx::CAM_TYPE_EXPLO)
+    if (m_type == CAM_TYPE_EXPLO)
         return EventFrameExplo(event);
 
-    if (m_type == Gfx::CAM_TYPE_ONBOARD)
+    if (m_type == CAM_TYPE_ONBOARD)
         return EventFrameOnBoard(event);
 
-    if (m_type == Gfx::CAM_TYPE_SCRIPT)
+    if (m_type == CAM_TYPE_SCRIPT)
         return EventFrameScript(event);
 
-    if (m_type == Gfx::CAM_TYPE_INFO)
+    if (m_type == CAM_TYPE_INFO)
         return EventFrameInfo(event);
 
-    if (m_type == Gfx::CAM_TYPE_VISIT)
+    if (m_type == CAM_TYPE_VISIT)
         return EventFrameVisit(event);
 
     return true;
 }
 
-Gfx::EngineMouseType Gfx::CCamera::GetMouseDef(Math::Point pos)
+EngineMouseType CCamera::GetMouseDef(Math::Point pos)
 {
-    Gfx::EngineMouseType type = Gfx::ENG_MOUSE_NORM;
+    EngineMouseType type = ENG_MOUSE_NORM;
     m_mousePos = pos;
 
-    if (m_type == Gfx::CAM_TYPE_INFO)
+    if (m_type == CAM_TYPE_INFO)
         return type;
 
     if (m_rightDown)  // the right button pressed?
     {
         m_rightPosMove.x = pos.x - m_rightPosCenter.x;
         m_rightPosMove.y = pos.y - m_rightPosCenter.y;
-        type = Gfx::ENG_MOUSE_MOVE;
+        type = ENG_MOUSE_MOVE;
     }
     else
     {
@@ -1143,26 +1151,26 @@ Gfx::EngineMouseType Gfx::CCamera::GetMouseDef(Math::Point pos)
         if (pos.y > 1.0f-m_mouseMarging)
             m_mouseDirV = 1.0f - (1.0f - pos.y) / m_mouseMarging;
 
-        if ( m_type == Gfx::CAM_TYPE_FREE  ||
-             m_type == Gfx::CAM_TYPE_EDIT  ||
-             m_type == Gfx::CAM_TYPE_BACK  ||
-             m_type == Gfx::CAM_TYPE_FIX   ||
-             m_type == Gfx::CAM_TYPE_PLANE ||
-             m_type == Gfx::CAM_TYPE_EXPLO )
+        if ( m_type == CAM_TYPE_FREE  ||
+             m_type == CAM_TYPE_EDIT  ||
+             m_type == CAM_TYPE_BACK  ||
+             m_type == CAM_TYPE_FIX   ||
+             m_type == CAM_TYPE_PLANE ||
+             m_type == CAM_TYPE_EXPLO )
         {
             if (m_mouseDirH > 0.0f)
-                type = Gfx::ENG_MOUSE_SCROLLR;
+                type = ENG_MOUSE_SCROLLR;
             if (m_mouseDirH < 0.0f)
-                type = Gfx::ENG_MOUSE_SCROLLL;
+                type = ENG_MOUSE_SCROLLL;
         }
 
-        if ( m_type == Gfx::CAM_TYPE_FREE ||
-             m_type == Gfx::CAM_TYPE_EDIT )
+        if ( m_type == CAM_TYPE_FREE ||
+             m_type == CAM_TYPE_EDIT )
         {
             if (m_mouseDirV > 0.0f)
-                type = Gfx::ENG_MOUSE_SCROLLU;
+                type = ENG_MOUSE_SCROLLU;
             if (m_mouseDirV < 0.0f)
-                type = Gfx::ENG_MOUSE_SCROLLD;
+                type = ENG_MOUSE_SCROLLD;
         }
 
         if (m_cameraInvertX)
@@ -1172,7 +1180,7 @@ Gfx::EngineMouseType Gfx::CCamera::GetMouseDef(Math::Point pos)
     return type;
 }
 
-bool Gfx::CCamera::EventFrameFree(const Event &event)
+bool CCamera::EventFrameFree(const Event &event)
 {
     float factor = m_heightEye * 0.5f + 30.0f;
 
@@ -1235,7 +1243,7 @@ bool Gfx::CCamera::EventFrameFree(const Event &event)
     return true;
 }
 
-bool Gfx::CCamera::EventFrameEdit(const Event &event)
+bool CCamera::EventFrameEdit(const Event &event)
 {
     float factor = m_editHeight * 0.5f + 30.0f;
 
@@ -1277,12 +1285,12 @@ bool Gfx::CCamera::EventFrameEdit(const Event &event)
     return true;
 }
 
-bool Gfx::CCamera::EventFrameDialog(const Event &event)
+bool CCamera::EventFrameDialog(const Event &event)
 {
     return true;
 }
 
-bool Gfx::CCamera::EventFrameBack(const Event &event)
+bool CCamera::EventFrameBack(const Event &event)
 {
     ObjectType type;
     if (m_cameraObj == NULL)
@@ -1327,7 +1335,7 @@ bool Gfx::CCamera::EventFrameBack(const Event &event)
     float centeringV = 0.0f;
     float centeringD = 0.0f;
 
-    if (m_centeringPhase == Gfx::CAM_PHASE_START)
+    if (m_centeringPhase == CAM_PHASE_START)
     {
         m_centeringProgress += event.rTime / m_centeringTime;
         if (m_centeringProgress > 1.0f) m_centeringProgress = 1.0f;
@@ -1335,17 +1343,17 @@ bool Gfx::CCamera::EventFrameBack(const Event &event)
         centeringV = m_centeringProgress;
         centeringD = m_centeringProgress;
         if (m_centeringProgress >= 1.0f)
-            m_centeringPhase = Gfx::CAM_PHASE_WAIT;
+            m_centeringPhase = CAM_PHASE_WAIT;
     }
 
-    if (m_centeringPhase == Gfx::CAM_PHASE_WAIT)
+    if (m_centeringPhase == CAM_PHASE_WAIT)
     {
         centeringH = 1.0f;
         centeringV = 1.0f;
         centeringD = 1.0f;
     }
 
-    if (m_centeringPhase == Gfx::CAM_PHASE_STOP)
+    if (m_centeringPhase == CAM_PHASE_STOP)
     {
         m_centeringProgress += event.rTime / m_centeringTime;
         if (m_centeringProgress > 1.0f) m_centeringProgress = 1.0f;
@@ -1353,7 +1361,7 @@ bool Gfx::CCamera::EventFrameBack(const Event &event)
         centeringV = 1.0f-m_centeringProgress;
         centeringD = 1.0f-m_centeringProgress;
         if (m_centeringProgress >= 1.0f)
-            m_centeringPhase = Gfx::CAM_PHASE_NULL;
+            m_centeringPhase = CAM_PHASE_NULL;
     }
 
     if (m_centeringAngleH == 99.9f) centeringH = 0.0f;
@@ -1437,7 +1445,7 @@ bool Gfx::CCamera::EventFrameBack(const Event &event)
     return true;
 }
 
-bool Gfx::CCamera::EventFrameFix(const Event &event)
+bool CCamera::EventFrameFix(const Event &event)
 {
     // +/-.
     if (event.keyState & KS_NUMPLUS)
@@ -1470,7 +1478,7 @@ bool Gfx::CCamera::EventFrameFix(const Event &event)
 
         float d = m_fixDist;
         m_eyePt = RotateView(lookatPt, h, v, d);
-        if (m_type == Gfx::CAM_TYPE_PLANE) m_eyePt.y += m_fixDist / 2.0f;
+        if (m_type == CAM_TYPE_PLANE) m_eyePt.y += m_fixDist / 2.0f;
         m_eyePt = ExcludeTerrain(m_eyePt, lookatPt, h, v);
         m_eyePt = ExcludeObject(m_eyePt, lookatPt, h, v);
 
@@ -1483,7 +1491,7 @@ bool Gfx::CCamera::EventFrameFix(const Event &event)
     return true;
 }
 
-bool Gfx::CCamera::EventFrameExplo(const Event &event)
+bool CCamera::EventFrameExplo(const Event &event)
 {
     if (m_mouseDirH != 0.0f)
         m_directionH -= m_mouseDirH * event.rTime * 0.7f * m_speed;
@@ -1514,7 +1522,7 @@ bool Gfx::CCamera::EventFrameExplo(const Event &event)
     return true;
 }
 
-bool Gfx::CCamera::EventFrameOnBoard(const Event &event)
+bool CCamera::EventFrameOnBoard(const Event &event)
 {
     if (m_cameraObj != NULL)
     {
@@ -1531,7 +1539,7 @@ bool Gfx::CCamera::EventFrameOnBoard(const Event &event)
     return true;
 }
 
-bool Gfx::CCamera::EventFrameInfo(const Event &event)
+bool CCamera::EventFrameInfo(const Event &event)
 {
     SetViewTime(Math::Vector(0.0f, 0.0f, 0.0f),
                 Math::Vector(0.0f, 0.0f, 1.0f),
@@ -1539,7 +1547,7 @@ bool Gfx::CCamera::EventFrameInfo(const Event &event)
     return true;
 }
 
-bool Gfx::CCamera::EventFrameVisit(const Event &event)
+bool CCamera::EventFrameVisit(const Event &event)
 {
     m_visitTime += event.rTime;
 
@@ -1584,36 +1592,36 @@ bool Gfx::CCamera::EventFrameVisit(const Event &event)
     return true;
 }
 
-bool Gfx::CCamera::EventFrameScript(const Event &event)
+bool CCamera::EventFrameScript(const Event &event)
 {
     SetViewTime(m_scriptEye + m_effectOffset,
                 m_scriptLookat + m_effectOffset, event.rTime);
     return true;
 }
 
-void Gfx::CCamera::SetScriptEye(Math::Vector eye)
+void CCamera::SetScriptEye(Math::Vector eye)
 {
     m_scriptEye = eye;
 }
 
-void Gfx::CCamera::SetScriptLookat(Math::Vector lookat)
+void CCamera::SetScriptLookat(Math::Vector lookat)
 {
     m_scriptLookat = lookat;
 }
 
-void Gfx::CCamera::SetViewParams(const Math::Vector &eye, const Math::Vector &lookat,
+void CCamera::SetViewParams(const Math::Vector &eye, const Math::Vector &lookat,
                             const Math::Vector &up)
 {
     m_engine->SetViewParams(eye, lookat, up, m_eyeDistance);
 
     bool under = (eye.y < m_water->GetLevel());  // Is it underwater?
-    if (m_type == Gfx::CAM_TYPE_INFO)
+    if (m_type == CAM_TYPE_INFO)
         under = false;
 
     m_engine->SetRankView(under ? 1 : 0);
 }
 
-Math::Vector Gfx::CCamera::ExcludeTerrain(Math::Vector eye, Math::Vector lookat,
+Math::Vector CCamera::ExcludeTerrain(Math::Vector eye, Math::Vector lookat,
                                           float &angleH, float &angleV)
 {
     Math::Vector pos = eye;
@@ -1630,7 +1638,7 @@ Math::Vector Gfx::CCamera::ExcludeTerrain(Math::Vector eye, Math::Vector lookat,
     return eye;
 }
 
-Math::Vector Gfx::CCamera::ExcludeObject(Math::Vector eye, Math::Vector lookat,
+Math::Vector CCamera::ExcludeObject(Math::Vector eye, Math::Vector lookat,
                                          float &angleH, float &angleV)
 {
     return eye;
@@ -1657,3 +1665,5 @@ Math::Vector Gfx::CCamera::ExcludeObject(Math::Vector eye, Math::Vector lookat,
     return eye;*/
 }
 
+
+}

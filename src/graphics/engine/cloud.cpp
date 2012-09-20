@@ -15,15 +15,20 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// cloud.cpp
 
 #include "graphics/engine/cloud.h"
 
 #include "common/iman.h"
+
 #include "graphics/core/device.h"
 #include "graphics/engine/engine.h"
 #include "graphics/engine/terrain.h"
+
 #include "math/geometry.h"
+
+
+// Graphics module namespace
+namespace Gfx {
 
 
 const int CLOUD_LINE_PREALLOCATE_COUNT = 100;
@@ -32,7 +37,7 @@ const int CLOUD_LINE_PREALLOCATE_COUNT = 100;
 const int CLOUD_SIZE_EXPAND = 4;
 
 
-Gfx::CCloud::CCloud(CInstanceManager* iMan, Gfx::CEngine* engine)
+CCloud::CCloud(CInstanceManager* iMan, CEngine* engine)
 {
     m_iMan = iMan;
     m_iMan->AddInstance(CLASS_CLOUD, this);
@@ -48,14 +53,14 @@ Gfx::CCloud::CCloud(CInstanceManager* iMan, Gfx::CEngine* engine)
     m_lines.reserve(CLOUD_LINE_PREALLOCATE_COUNT);
 }
 
-Gfx::CCloud::~CCloud()
+CCloud::~CCloud()
 {
     m_iMan = nullptr;
     m_engine = nullptr;
     m_terrain = nullptr;
 }
 
-bool Gfx::CCloud::EventProcess(const Event &event)
+bool CCloud::EventProcess(const Event &event)
 {
     if ( event.type == EVENT_FRAME )
         return EventFrame(event);
@@ -63,7 +68,7 @@ bool Gfx::CCloud::EventProcess(const Event &event)
     return true;
 }
 
-bool Gfx::CCloud::EventFrame(const Event &event)
+bool CCloud::EventFrame(const Event &event)
 {
     if (m_engine->GetPause()) return true;
 
@@ -78,7 +83,7 @@ bool Gfx::CCloud::EventFrame(const Event &event)
     return true;
 }
 
-void Gfx::CCloud::AdjustLevel(Math::Vector& pos, Math::Vector& eye, float deep,
+void CCloud::AdjustLevel(Math::Vector& pos, Math::Vector& eye, float deep,
                               Math::Point& uv1, Math::Point& uv2)
 {
     uv1.x = (pos.x+20000.0f)/1280.0f;
@@ -94,13 +99,13 @@ void Gfx::CCloud::AdjustLevel(Math::Vector& pos, Math::Vector& eye, float deep,
     pos.y -= m_level*factor*10.0f;
 }
 
-void Gfx::CCloud::Draw()
+void CCloud::Draw()
 {
     if (! m_enabled) return;
     if (m_level == 0.0f) return;
     if (m_lines.empty()) return;
 
-    std::vector<Gfx::VertexTex2> vertices((m_brickCount+2)*2, Gfx::VertexTex2());
+    std::vector<VertexTex2> vertices((m_brickCount+2)*2, VertexTex2());
 
     float iDeep = m_engine->GetDeepView();
     float deep = (m_brickCount*m_brickSize)/2.0f;
@@ -111,15 +116,15 @@ void Gfx::CCloud::Draw()
     float fogStart = deep*0.15f;
     float fogEnd   = deep*0.24f;
 
-    Gfx::CDevice* device = m_engine->GetDevice();
+    CDevice* device = m_engine->GetDevice();
 
     // TODO: do this better?
-    device->SetFogParams(Gfx::FOG_LINEAR, m_engine->GetFogColor( m_engine->GetRankView() ),
+    device->SetFogParams(FOG_LINEAR, m_engine->GetFogColor( m_engine->GetRankView() ),
                         fogStart, fogEnd, 1.0f);
 
-    device->SetTransform(Gfx::TRANSFORM_VIEW, m_engine->GetMatView());
+    device->SetTransform(TRANSFORM_VIEW, m_engine->GetMatView());
 
-    Gfx::Material material;
+    Material material;
     material.diffuse = m_diffuse;
     material.ambient = m_ambient;
     m_engine->SetMaterial(material);
@@ -127,11 +132,11 @@ void Gfx::CCloud::Draw()
     m_engine->SetTexture(m_fileName, 0);
     m_engine->SetTexture(m_fileName, 1);
 
-    m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_BLACK | Gfx::ENG_RSTATE_FOG | Gfx::ENG_RSTATE_WRAP);
+    m_engine->SetState(ENG_RSTATE_TTEXTURE_BLACK | ENG_RSTATE_FOG | ENG_RSTATE_WRAP);
 
     Math::Matrix matrix;
     matrix.LoadIdentity();
-    device->SetTransform(Gfx::TRANSFORM_WORLD, matrix);
+    device->SetTransform(TRANSFORM_WORLD, matrix);
 
     float size = m_brickSize/2.0f;
     Math::Vector eye = m_engine->GetEyePt();
@@ -154,13 +159,13 @@ void Gfx::CCloud::Draw()
         p.z = pos.z+size;
         p.y = pos.y;
         AdjustLevel(p, eye, deep, uv1, uv2);
-        vertices[vertexIndex++] = Gfx::VertexTex2(p, n, uv1, uv2);
+        vertices[vertexIndex++] = VertexTex2(p, n, uv1, uv2);
 
         p.x = pos.x-size;
         p.z = pos.z-size;
         p.y = pos.y;
         AdjustLevel(p, eye, deep, uv1, uv2);
-        vertices[vertexIndex++] = Gfx::VertexTex2(p, n, uv1, uv2);
+        vertices[vertexIndex++] = VertexTex2(p, n, uv1, uv2);
 
         for (int j = 0; j < m_lines[i].len; j++)
         {
@@ -168,18 +173,18 @@ void Gfx::CCloud::Draw()
             p.z = pos.z+size;
             p.y = pos.y;
             AdjustLevel(p, eye, deep, uv1, uv2);
-            vertices[vertexIndex++] = Gfx::VertexTex2(p, n, uv1, uv2);
+            vertices[vertexIndex++] = VertexTex2(p, n, uv1, uv2);
 
             p.x = pos.x+size;
             p.z = pos.z-size;
             p.y = pos.y;
             AdjustLevel(p, eye, deep, uv1, uv2);
-            vertices[vertexIndex++] = Gfx::VertexTex2(p, n, uv1, uv2);
+            vertices[vertexIndex++] = VertexTex2(p, n, uv1, uv2);
 
             pos.x += size*2.0f;
         }
 
-        device->DrawPrimitive(Gfx::PRIMITIVE_TRIANGLE_STRIP, &vertices[0], vertexIndex);
+        device->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, &vertices[0], vertexIndex);
         m_engine->AddStatisticTriangle(vertexIndex - 2);
     }
 
@@ -188,9 +193,9 @@ void Gfx::CCloud::Draw()
     m_engine->UpdateMatProj();  // gives depth to initial
 }
 
-void Gfx::CCloud::CreateLine(int x, int y, int len)
+void CCloud::CreateLine(int x, int y, int len)
 {
-    Gfx::CloudLine line;
+    CloudLine line;
 
     line.x   = x;
     line.y   = y;
@@ -205,8 +210,8 @@ void Gfx::CCloud::CreateLine(int x, int y, int len)
     m_lines.push_back(line);
 }
 
-void Gfx::CCloud::Create(const std::string& fileName,
-                         const Gfx::Color& diffuse, const Gfx::Color& ambient,
+void CCloud::Create(const std::string& fileName,
+                         const Color& diffuse, const Color& ambient,
                          float level)
 {
     m_diffuse  = diffuse;
@@ -240,30 +245,33 @@ void Gfx::CCloud::Create(const std::string& fileName,
     return;
 }
 
-void Gfx::CCloud::Flush()
+void CCloud::Flush()
 {
     m_level = 0.0f;
 }
 
 
-void Gfx::CCloud::SetLevel(float level)
+void CCloud::SetLevel(float level)
 {
     m_level = level;
 
     Create(m_fileName, m_diffuse, m_ambient, m_level);
 }
 
-float Gfx::CCloud::GetLevel()
+float CCloud::GetLevel()
 {
     return m_level;
 }
 
-void Gfx::CCloud::SetEnabled(bool enabled)
+void CCloud::SetEnabled(bool enabled)
 {
     m_enabled = enabled;
 }
 
-bool Gfx::CCloud::GetEnabled()
+bool CCloud::GetEnabled()
 {
     return m_enabled;
 }
+
+
+} // namespace Gfx

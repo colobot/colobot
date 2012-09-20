@@ -17,18 +17,22 @@
 
 /**
  * \file graphics/engine/camera.h
- * \brief Camera handling - Gfx::CCamera class
+ * \brief Camera handling - CCamera class
  */
 
 #pragma once
 
-#include "engine.h"
+
 #include "common/event.h"
+
+#include "graphics/engine/engine.h"
 
 
 class CInstanceManager;
 class CObject;
 
+
+// Graphics module namespace
 namespace Gfx {
 
 
@@ -140,18 +144,18 @@ class CCamera {
     CObject*    GetControllingObject();
 
     //! Change the type of camera
-    void            SetType(Gfx::CameraType type);
-    Gfx::CameraType GetType();
+    void            SetType(CameraType type);
+    CameraType GetType();
 
     //! Management of the smoothing mode
     void              SetSmooth(CameraSmooth type);
-    Gfx::CameraSmooth GetSmoth();
+    CameraSmooth GetSmoth();
 
     //! Management of the setback distance
     void        SetDist(float dist);
     float       GetDist();
 
-    //! Manage angle mode Gfx::CAM_TYPE_FIX
+    //! Manage angle mode CAM_TYPE_FIX
     void        SetFixDirection(float angle);
     float       GetFixDirection();
 
@@ -181,13 +185,13 @@ class CCamera {
     //! Removes the special effect with the camera
     void        FlushEffect();
     //! Starts a special effect with the camera
-    void        StartEffect(Gfx::CameraEffect effect, Math::Vector pos, float force);
+    void        StartEffect(CameraEffect effect, Math::Vector pos, float force);
 
     //! Removes the effect of superposition in the foreground
     void        FlushOver();
     //! Specifies the base color
-    void        SetOverBaseColor(Gfx::Color color);
-    void        StartOver(Gfx::CameraOverEffect effect, Math::Vector pos, float force);
+    void        SetOverBaseColor(Color color);
+    void        StartOver(CameraOverEffect effect, Math::Vector pos, float force);
 
     //! Sets the soft movement of the camera
     void        FixCamera();
@@ -202,7 +206,7 @@ class CCamera {
     //! Returns an additional force to turn
     float       GetMotorTurn();
     //! Returns the default sprite to use for the mouse
-    Gfx::EngineMouseType GetMouseDef(Math::Point pos);
+    EngineMouseType GetMouseDef(Math::Point pos);
 
 protected:
     //! Changes the camera according to the mouse moved
@@ -255,14 +259,14 @@ protected:
 
 protected:
     CInstanceManager* m_iMan;
-    Gfx::CEngine*     m_engine;
-    Gfx::CTerrain*    m_terrain;
-    Gfx::CWater*      m_water;
+    CEngine*     m_engine;
+    CTerrain*    m_terrain;
+    CWater*      m_water;
 
     //! The type of camera
-    Gfx::CameraType   m_type;
+    CameraType   m_type;
     //! Type of smoothing
-    Gfx::CameraSmooth m_smooth;
+    CameraSmooth m_smooth;
     //! Object linked to the camera
     CObject*          m_cameraObj;
 
@@ -328,7 +332,7 @@ protected:
     //! CAM_TYPE_VISIT: relative time
     float        m_visitTime;
     //! CAM_TYPE_VISIT: initial type
-    Gfx::CameraType   m_visitType;
+    CameraType   m_visitType;
     //! CAM_TYPE_VISIT: direction
     float        m_visitDirectionH;
     //! CAM_TYPE_VISIT: direction
@@ -347,7 +351,7 @@ protected:
 
     float        m_motorTurn;
 
-    Gfx::CenteringPhase m_centeringPhase;
+    CenteringPhase m_centeringPhase;
     float       m_centeringAngleH;
     float       m_centeringAngleV;
     float       m_centeringDist;
@@ -356,17 +360,17 @@ protected:
     float       m_centeringTime;
     float       m_centeringProgress;
 
-    Gfx::CameraEffect m_effectType;
+    CameraEffect m_effectType;
     Math::Vector m_effectPos;
     float        m_effectForce;
     float        m_effectProgress;
     Math::Vector m_effectOffset;
 
-    Gfx::CameraOverEffect  m_overType;
+    CameraOverEffect  m_overType;
     float       m_overForce;
     float       m_overTime;
-    Gfx::Color  m_overColorBase;
-    Gfx::Color  m_overColor;
+    Color  m_overColorBase;
+    Color  m_overColor;
     int         m_overMode;
     float       m_overFadeIn;
     float       m_overFadeOut;
@@ -386,4 +390,4 @@ protected:
 };
 
 
-}; // namespace Gfx
+} // namespace Gfx

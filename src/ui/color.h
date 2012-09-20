@@ -52,7 +52,7 @@ namespace Ui {
     protected:
         bool           m_bRepeat;
         float          m_repeat;
-        Gfx::Color	   m_color;
+        Gfx::Color     m_color;
     };
 
 

@@ -14,13 +14,13 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// gldevice.cpp
 
 #include "graphics/opengl/gldevice.h"
 
 #include "common/config.h"
 #include "common/image.h"
 #include "common/logger.h"
+
 #include "math/geometry.h"
 
 
@@ -45,10 +45,13 @@
 #include <cassert>
 
 
+// Graphics module namespace
+namespace Gfx {
 
-void Gfx::GLDeviceConfig::LoadDefault()
+
+void GLDeviceConfig::LoadDefault()
 {
-    Gfx::DeviceConfig::LoadDefault();
+    DeviceConfig::LoadDefault();
 
     hardwareAccel = true;
 
@@ -62,7 +65,7 @@ void Gfx::GLDeviceConfig::LoadDefault()
 
 
 
-Gfx::CGLDevice::CGLDevice(const Gfx::GLDeviceConfig &config)
+CGLDevice::CGLDevice(const GLDeviceConfig &config)
 {
     m_config = config;
     m_lighting = false;
@@ -70,18 +73,18 @@ Gfx::CGLDevice::CGLDevice(const Gfx::GLDeviceConfig &config)
 }
 
 
-Gfx::CGLDevice::~CGLDevice()
+CGLDevice::~CGLDevice()
 {
 }
 
-void Gfx::CGLDevice::DebugHook()
+void CGLDevice::DebugHook()
 {
     /* This function is only called here, so it can be used
      * as a breakpoint when debugging using gDEBugger */
     glColor3i(0, 0, 0);
 }
 
-bool Gfx::CGLDevice::Create()
+bool CGLDevice::Create()
 {
     GetLogger()->Info("Creating CDevice\n");
 
@@ -132,22 +135,22 @@ bool Gfx::CGLDevice::Create()
     int numLights = 0;
     glGetIntegerv(GL_MAX_LIGHTS, &numLights);
 
-    m_lights        = std::vector<Gfx::Light>(numLights, Gfx::Light());
+    m_lights        = std::vector<Light>(numLights, Light());
     m_lightsEnabled = std::vector<bool>      (numLights, false);
 
     int maxTextures = 0;
     glGetIntegerv(GL_MAX_TEXTURE_UNITS, &maxTextures);
 
-    m_currentTextures    = std::vector<Gfx::Texture>           (maxTextures, Gfx::Texture());
+    m_currentTextures    = std::vector<Texture>           (maxTextures, Texture());
     m_texturesEnabled    = std::vector<bool>                   (maxTextures, false);
-    m_textureStageParams = std::vector<Gfx::TextureStageParams>(maxTextures, Gfx::TextureStageParams());
+    m_textureStageParams = std::vector<TextureStageParams>(maxTextures, TextureStageParams());
 
     GetLogger()->Info("CDevice created successfully\n");
 
     return true;
 }
 
-void Gfx::CGLDevice::Destroy()
+void CGLDevice::Destroy()
 {
     // Delete the remaining textures
     // Should not be strictly necessary, but just in case
@@ -161,7 +164,7 @@ void Gfx::CGLDevice::Destroy()
     m_textureStageParams.clear();
 }
 
-void Gfx::CGLDevice::ConfigChanged(const Gfx::GLDeviceConfig& newConfig)
+void CGLDevice::ConfigChanged(const GLDeviceConfig& newConfig)
 {
     m_config = newConfig;
 
@@ -172,7 +175,7 @@ void Gfx::CGLDevice::ConfigChanged(const Gfx::GLDeviceConfig& newConfig)
     Create();
 }
 
-void Gfx::CGLDevice::BeginScene()
+void CGLDevice::BeginScene()
 {
     Clear();
 
@@ -182,29 +185,29 @@ void Gfx::CGLDevice::BeginScene()
     UpdateModelviewMatrix();
 }
 
-void Gfx::CGLDevice::EndScene()
+void CGLDevice::EndScene()
 {
 }
 
-void Gfx::CGLDevice::Clear()
+void CGLDevice::Clear()
 {
     glDepthMask(GL_TRUE);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-void Gfx::CGLDevice::SetTransform(Gfx::TransformType type, const Math::Matrix &matrix)
+void CGLDevice::SetTransform(TransformType type, const Math::Matrix &matrix)
 {
-    if      (type == Gfx::TRANSFORM_WORLD)
+    if      (type == TRANSFORM_WORLD)
     {
         m_worldMat = matrix;
         UpdateModelviewMatrix();
     }
-    else if (type == Gfx::TRANSFORM_VIEW)
+    else if (type == TRANSFORM_VIEW)
     {
         m_viewMat = matrix;
         UpdateModelviewMatrix();
     }
-    else if (type == Gfx::TRANSFORM_PROJECTION)
+    else if (type == TRANSFORM_PROJECTION)
     {
         m_projectionMat = matrix;
         glMatrixMode(GL_PROJECTION);
@@ -216,13 +219,13 @@ void Gfx::CGLDevice::SetTransform(Gfx::TransformType type, const Math::Matrix &m
     }
 }
 
-const Math::Matrix& Gfx::CGLDevice::GetTransform(Gfx::TransformType type)
+const Math::Matrix& CGLDevice::GetTransform(TransformType type)
 {
-    if      (type == Gfx::TRANSFORM_WORLD)
+    if      (type == TRANSFORM_WORLD)
         return m_worldMat;
-    else if (type == Gfx::TRANSFORM_VIEW)
+    else if (type == TRANSFORM_VIEW)
         return m_viewMat;
-    else if (type == Gfx::TRANSFORM_PROJECTION)
+    else if (type == TRANSFORM_PROJECTION)
         return m_projectionMat;
     else
         assert(false);
@@ -230,19 +233,19 @@ const Math::Matrix& Gfx::CGLDevice::GetTransform(Gfx::TransformType type)
     return m_worldMat; // to avoid warning
 }
 
-void Gfx::CGLDevice::MultiplyTransform(Gfx::TransformType type, const Math::Matrix &matrix)
+void CGLDevice::MultiplyTransform(TransformType type, const Math::Matrix &matrix)
 {
-    if      (type == Gfx::TRANSFORM_WORLD)
+    if      (type == TRANSFORM_WORLD)
     {
         m_worldMat = Math::MultiplyMatrices(m_worldMat, matrix);
         UpdateModelviewMatrix();
     }
-    else if (type == Gfx::TRANSFORM_VIEW)
+    else if (type == TRANSFORM_VIEW)
     {
         m_viewMat = Math::MultiplyMatrices(m_viewMat, matrix);
         UpdateModelviewMatrix();
     }
-    else if (type == Gfx::TRANSFORM_PROJECTION)
+    else if (type == TRANSFORM_PROJECTION)
     {
         m_projectionMat = Math::MultiplyMatrices(m_projectionMat, matrix);
         glMatrixMode(GL_PROJECTION);
@@ -254,7 +257,7 @@ void Gfx::CGLDevice::MultiplyTransform(Gfx::TransformType type, const Math::Matr
     }
 }
 
-void Gfx::CGLDevice::UpdateModelviewMatrix()
+void CGLDevice::UpdateModelviewMatrix()
 {
     m_modelviewMat = Math::MultiplyMatrices(m_viewMat, m_worldMat);
 
@@ -270,7 +273,7 @@ void Gfx::CGLDevice::UpdateModelviewMatrix()
     }
 }
 
-void Gfx::CGLDevice::SetMaterial(const Gfx::Material &material)
+void CGLDevice::SetMaterial(const Material &material)
 {
     m_material = material;
 
@@ -279,17 +282,17 @@ void Gfx::CGLDevice::SetMaterial(const Gfx::Material &material)
     glMaterialfv(GL_FRONT, GL_SPECULAR, m_material.specular.Array());
 }
 
-const Gfx::Material& Gfx::CGLDevice::GetMaterial()
+const Material& CGLDevice::GetMaterial()
 {
     return m_material;
 }
 
-int Gfx::CGLDevice::GetMaxLightCount()
+int CGLDevice::GetMaxLightCount()
 {
     return m_lights.size();
 }
 
-void Gfx::CGLDevice::SetLight(int index, const Gfx::Light &light)
+void CGLDevice::SetLight(int index, const Light &light)
 {
     assert(index >= 0);
     assert(index < static_cast<int>( m_lights.size() ));
@@ -305,7 +308,7 @@ void Gfx::CGLDevice::SetLight(int index, const Gfx::Light &light)
     glLightf(GL_LIGHT0 + index, GL_LINEAR_ATTENUATION,    light.attenuation1);
     glLightf(GL_LIGHT0 + index, GL_QUADRATIC_ATTENUATION, light.attenuation2);
 
-    if (light.type == Gfx::LIGHT_SPOT)
+    if (light.type == LIGHT_SPOT)
     {
         glLightf(GL_LIGHT0 + index, GL_SPOT_CUTOFF, light.spotAngle);
         glLightf(GL_LIGHT0 + index, GL_SPOT_EXPONENT, light.spotIntensity);
@@ -318,7 +321,7 @@ void Gfx::CGLDevice::SetLight(int index, const Gfx::Light &light)
     UpdateLightPosition(index);
 }
 
-void Gfx::CGLDevice::UpdateLightPosition(int index)
+void CGLDevice::UpdateLightPosition(int index)
 {
     assert(index >= 0);
     assert(index < static_cast<int>( m_lights.size() ));
@@ -344,7 +347,7 @@ void Gfx::CGLDevice::UpdateLightPosition(int index)
         glLightfv(GL_LIGHT0 + index, GL_POSITION, position);
     }
 
-    if (m_lights[index].type == Gfx::LIGHT_SPOT)
+    if (m_lights[index].type == LIGHT_SPOT)
     {
         GLfloat direction[4] = { m_lights[index].direction.x, m_lights[index].direction.y, m_lights[index].direction.z, 0.0f };
         glLightfv(GL_LIGHT0 + index, GL_SPOT_DIRECTION, direction);
@@ -353,7 +356,7 @@ void Gfx::CGLDevice::UpdateLightPosition(int index)
     glPopMatrix();
 }
 
-const Gfx::Light& Gfx::CGLDevice::GetLight(int index)
+const Light& CGLDevice::GetLight(int index)
 {
     assert(index >= 0);
     assert(index < static_cast<int>( m_lights.size() ));
@@ -361,7 +364,7 @@ const Gfx::Light& Gfx::CGLDevice::GetLight(int index)
     return m_lights[index];
 }
 
-void Gfx::CGLDevice::SetLightEnabled(int index, bool enabled)
+void CGLDevice::SetLightEnabled(int index, bool enabled)
 {
     assert(index >= 0);
     assert(index < static_cast<int>( m_lights.size() ));
@@ -371,7 +374,7 @@ void Gfx::CGLDevice::SetLightEnabled(int index, bool enabled)
     glEnable(GL_LIGHT0 + index);
 }
 
-bool Gfx::CGLDevice::GetLightEnabled(int index)
+bool CGLDevice::GetLightEnabled(int index)
 {
     assert(index >= 0);
     assert(index < static_cast<int>( m_lights.size() ));
@@ -380,23 +383,23 @@ bool Gfx::CGLDevice::GetLightEnabled(int index)
 }
 
 /** If image is invalid, returns invalid texture.
-    Otherwise, returns pointer to new Gfx::Texture struct.
+    Otherwise, returns pointer to new Texture struct.
     This struct must not be deleted in other way than through DeleteTexture() */
-Gfx::Texture Gfx::CGLDevice::CreateTexture(CImage *image, const Gfx::TextureCreateParams &params)
+Texture CGLDevice::CreateTexture(CImage *image, const TextureCreateParams &params)
 {
     ImageData *data = image->GetData();
     if (data == NULL)
     {
         GetLogger()->Error("Invalid texture data\n");
-        return Gfx::Texture(); // invalid texture
+        return Texture(); // invalid texture
     }
 
     return CreateTexture(data, params);
 }
 
-Gfx::Texture Gfx::CGLDevice::CreateTexture(ImageData *data, const Gfx::TextureCreateParams &params)
+Texture CGLDevice::CreateTexture(ImageData *data, const TextureCreateParams &params)
 {
-    Gfx::Texture result;
+    Texture result;
 
     result.size.x = data->surface->w;
     result.size.y = data->surface->h;
@@ -413,19 +416,19 @@ Gfx::Texture Gfx::CGLDevice::CreateTexture(ImageData *data, const Gfx::TextureCr
     // Set params
 
     GLint minF = 0;
-    if      (params.minFilter == Gfx::TEX_MIN_FILTER_NEAREST)                minF = GL_NEAREST;
-    else if (params.minFilter == Gfx::TEX_MIN_FILTER_LINEAR)                 minF = GL_LINEAR;
-    else if (params.minFilter == Gfx::TEX_MIN_FILTER_NEAREST_MIPMAP_NEAREST) minF = GL_NEAREST_MIPMAP_NEAREST;
-    else if (params.minFilter == Gfx::TEX_MIN_FILTER_LINEAR_MIPMAP_NEAREST)  minF = GL_LINEAR_MIPMAP_NEAREST;
-    else if (params.minFilter == Gfx::TEX_MIN_FILTER_NEAREST_MIPMAP_LINEAR)  minF = GL_NEAREST_MIPMAP_LINEAR;
-    else if (params.minFilter == Gfx::TEX_MIN_FILTER_LINEAR_MIPMAP_LINEAR)   minF = GL_LINEAR_MIPMAP_LINEAR;
+    if      (params.minFilter == TEX_MIN_FILTER_NEAREST)                minF = GL_NEAREST;
+    else if (params.minFilter == TEX_MIN_FILTER_LINEAR)                 minF = GL_LINEAR;
+    else if (params.minFilter == TEX_MIN_FILTER_NEAREST_MIPMAP_NEAREST) minF = GL_NEAREST_MIPMAP_NEAREST;
+    else if (params.minFilter == TEX_MIN_FILTER_LINEAR_MIPMAP_NEAREST)  minF = GL_LINEAR_MIPMAP_NEAREST;
+    else if (params.minFilter == TEX_MIN_FILTER_NEAREST_MIPMAP_LINEAR)  minF = GL_NEAREST_MIPMAP_LINEAR;
+    else if (params.minFilter == TEX_MIN_FILTER_LINEAR_MIPMAP_LINEAR)   minF = GL_LINEAR_MIPMAP_LINEAR;
     else  assert(false);
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, minF);
 
     GLint magF = 0;
-    if      (params.magFilter == Gfx::TEX_MAG_FILTER_NEAREST) magF = GL_NEAREST;
-    else if (params.magFilter == Gfx::TEX_MAG_FILTER_LINEAR)  magF = GL_LINEAR;
+    if      (params.magFilter == TEX_MAG_FILTER_NEAREST) magF = GL_NEAREST;
+    else if (params.magFilter == TEX_MAG_FILTER_LINEAR)  magF = GL_LINEAR;
     else  assert(false);
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, magF);
@@ -439,27 +442,27 @@ Gfx::Texture Gfx::CGLDevice::CreateTexture(ImageData *data, const Gfx::TextureCr
     bool convert = false;
     GLenum sourceFormat = 0;
 
-    if (params.format == Gfx::TEX_IMG_RGB)
+    if (params.format == TEX_IMG_RGB)
     {
         sourceFormat = GL_RGB;
         result.alpha = false;
     }
-    else if (params.format == Gfx::TEX_IMG_BGR)
+    else if (params.format == TEX_IMG_BGR)
     {
         sourceFormat = GL_BGR;
         result.alpha = false;
     }
-    else if (params.format == Gfx::TEX_IMG_RGBA)
+    else if (params.format == TEX_IMG_RGBA)
     {
         sourceFormat = GL_RGBA;
         result.alpha = true;
     }
-    else if (params.format == Gfx::TEX_IMG_BGRA)
+    else if (params.format == TEX_IMG_BGRA)
     {
         sourceFormat = GL_BGRA;
         result.alpha = true;
     }
-    else if (params.format == Gfx::TEX_IMG_AUTO)
+    else if (params.format == TEX_IMG_AUTO)
     {
         if (data->surface->format->Amask != 0)
         {
@@ -554,9 +557,9 @@ Gfx::Texture Gfx::CGLDevice::CreateTexture(ImageData *data, const Gfx::TextureCr
     return result;
 }
 
-void Gfx::CGLDevice::DestroyTexture(const Gfx::Texture &texture)
+void CGLDevice::DestroyTexture(const Texture &texture)
 {
-    std::set<Gfx::Texture>::iterator it = m_allTextures.find(texture);
+    std::set<Texture>::iterator it = m_allTextures.find(texture);
     if (it != m_allTextures.end())
         m_allTextures.erase(it);
 
@@ -564,21 +567,21 @@ void Gfx::CGLDevice::DestroyTexture(const Gfx::Texture &texture)
     for (int index = 0; index < static_cast<int>( m_currentTextures.size() ); ++index)
     {
         if (m_currentTextures[index] == texture)
-            SetTexture(index, Gfx::Texture()); // set to invalid texture
+            SetTexture(index, Texture()); // set to invalid texture
     }
 
     glDeleteTextures(1, &texture.id);
 }
 
-void Gfx::CGLDevice::DestroyAllTextures()
+void CGLDevice::DestroyAllTextures()
 {
-    std::set<Gfx::Texture> allCopy = m_allTextures;
-    std::set<Gfx::Texture>::iterator it;
+    std::set<Texture> allCopy = m_allTextures;
+    std::set<Texture>::iterator it;
     for (it = allCopy.begin(); it != allCopy.end(); ++it)
         DestroyTexture(*it);
 }
 
-int Gfx::CGLDevice::GetMaxTextureCount()
+int CGLDevice::GetMaxTextureCount()
 {
     return m_currentTextures.size();
 }
@@ -587,7 +590,7 @@ int Gfx::CGLDevice::GetMaxTextureCount()
   If \a texture is invalid, unbinds the given texture.
   If valid, binds the texture and enables the given texture stage.
   The setting is remembered, even if texturing is disabled at the moment. */
-void Gfx::CGLDevice::SetTexture(int index, const Gfx::Texture &texture)
+void CGLDevice::SetTexture(int index, const Texture &texture)
 {
     assert(index >= 0);
     assert(index < static_cast<int>( m_currentTextures.size() ));
@@ -613,7 +616,7 @@ void Gfx::CGLDevice::SetTexture(int index, const Gfx::Texture &texture)
         glDisable(GL_TEXTURE_2D);
 }
 
-void Gfx::CGLDevice::SetTexture(int index, unsigned int textureId)
+void CGLDevice::SetTexture(int index, unsigned int textureId)
 {
     assert(index >= 0);
     assert(index < static_cast<int>( m_currentTextures.size() ));
@@ -633,7 +636,7 @@ void Gfx::CGLDevice::SetTexture(int index, unsigned int textureId)
 
 /**
   Returns the previously assigned texture or invalid texture if the given stage is not enabled. */
-Gfx::Texture Gfx::CGLDevice::GetTexture(int index)
+Texture CGLDevice::GetTexture(int index)
 {
     assert(index >= 0);
     assert(index < static_cast<int>( m_currentTextures.size() ));
@@ -641,7 +644,7 @@ Gfx::Texture Gfx::CGLDevice::GetTexture(int index)
     return m_currentTextures[index];
 }
 
-void Gfx::CGLDevice::SetTextureEnabled(int index, bool enabled)
+void CGLDevice::SetTextureEnabled(int index, bool enabled)
 {
     assert(index >= 0);
     assert(index < static_cast<int>( m_currentTextures.size() ));
@@ -655,7 +658,7 @@ void Gfx::CGLDevice::SetTextureEnabled(int index, bool enabled)
         glDisable(GL_TEXTURE_2D);
 }
 
-bool Gfx::CGLDevice::GetTextureEnabled(int index)
+bool CGLDevice::GetTextureEnabled(int index)
 {
     assert(index >= 0);
     assert(index < static_cast<int>( m_currentTextures.size() ));
@@ -667,7 +670,7 @@ bool Gfx::CGLDevice::GetTextureEnabled(int index)
   Sets the texture parameters for the given texture stage.
   If the given texture was not set (bound) yet, nothing happens.
   The settings are remembered, even if texturing is disabled at the moment. */
-void Gfx::CGLDevice::SetTextureStageParams(int index, const Gfx::TextureStageParams &params)
+void CGLDevice::SetTextureStageParams(int index, const TextureStageParams &params)
 {
     assert(index >= 0);
     assert(index < static_cast<int>( m_currentTextures.size() ));
@@ -686,8 +689,8 @@ void Gfx::CGLDevice::SetTextureStageParams(int index, const Gfx::TextureStagePar
     glBindTexture(GL_TEXTURE_2D, m_currentTextures[index].id);
 
     // To save some trouble
-    if ( (params.colorOperation == Gfx::TEX_MIX_OPER_DEFAULT) &&
-         (params.alphaOperation == Gfx::TEX_MIX_OPER_DEFAULT) )
+    if ( (params.colorOperation == TEX_MIX_OPER_DEFAULT) &&
+         (params.alphaOperation == TEX_MIX_OPER_DEFAULT) )
     {
         glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
         goto after_tex_operations;
@@ -703,42 +706,42 @@ void Gfx::CGLDevice::SetTextureStageParams(int index, const Gfx::TextureStagePar
 
     // Color operation
 
-    if (params.colorOperation == Gfx::TEX_MIX_OPER_DEFAULT)
+    if (params.colorOperation == TEX_MIX_OPER_DEFAULT)
     {
         glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_MODULATE);
         glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_RGB, GL_PREVIOUS);
         glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_RGB, GL_TEXTURE);
         goto after_tex_color;
     }
-    else if (params.colorOperation == Gfx::TEX_MIX_OPER_REPLACE)
+    else if (params.colorOperation == TEX_MIX_OPER_REPLACE)
         glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_REPLACE);
-    else if (params.colorOperation == Gfx::TEX_MIX_OPER_MODULATE)
+    else if (params.colorOperation == TEX_MIX_OPER_MODULATE)
         glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_MODULATE);
-    else if (params.colorOperation == Gfx::TEX_MIX_OPER_ADD)
+    else if (params.colorOperation == TEX_MIX_OPER_ADD)
         glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_ADD);
-    else if (params.colorOperation == Gfx::TEX_MIX_OPER_SUBTRACT)
+    else if (params.colorOperation == TEX_MIX_OPER_SUBTRACT)
         glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_SUBTRACT);
     else  assert(false);
 
     // Color arg1
-    if (params.colorArg1 == Gfx::TEX_MIX_ARG_TEXTURE)
+    if (params.colorArg1 == TEX_MIX_ARG_TEXTURE)
         glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_RGB, GL_TEXTURE);
-    else if (params.colorArg1 == Gfx::TEX_MIX_ARG_COMPUTED_COLOR)
+    else if (params.colorArg1 == TEX_MIX_ARG_COMPUTED_COLOR)
         glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_RGB, GL_PREVIOUS);
-    else if (params.colorArg1 == Gfx::TEX_MIX_ARG_SRC_COLOR)
+    else if (params.colorArg1 == TEX_MIX_ARG_SRC_COLOR)
         glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_RGB, GL_PRIMARY_COLOR);
-    else if (params.colorArg1 == Gfx::TEX_MIX_ARG_FACTOR)
+    else if (params.colorArg1 == TEX_MIX_ARG_FACTOR)
         glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_RGB, GL_CONSTANT);
     else  assert(false);
 
     // Color arg2
-    if (params.colorArg2 == Gfx::TEX_MIX_ARG_TEXTURE)
+    if (params.colorArg2 == TEX_MIX_ARG_TEXTURE)
         glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_RGB, GL_TEXTURE);
-    else if (params.colorArg2 == Gfx::TEX_MIX_ARG_COMPUTED_COLOR)
+    else if (params.colorArg2 == TEX_MIX_ARG_COMPUTED_COLOR)
         glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_RGB, GL_PREVIOUS);
-    else if (params.colorArg2 == Gfx::TEX_MIX_ARG_SRC_COLOR)
+    else if (params.colorArg2 == TEX_MIX_ARG_SRC_COLOR)
         glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_RGB, GL_PRIMARY_COLOR);
-    else if (params.colorArg2 == Gfx::TEX_MIX_ARG_FACTOR)
+    else if (params.colorArg2 == TEX_MIX_ARG_FACTOR)
         glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_RGB, GL_CONSTANT);
     else  assert(false);
 
@@ -746,57 +749,57 @@ void Gfx::CGLDevice::SetTextureStageParams(int index, const Gfx::TextureStagePar
 after_tex_color:
 
     // Alpha operation
-    if (params.alphaOperation == Gfx::TEX_MIX_OPER_DEFAULT)
+    if (params.alphaOperation == TEX_MIX_OPER_DEFAULT)
     {
         glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_ALPHA, GL_MODULATE);
         glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_ALPHA, GL_PREVIOUS);
         glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_ALPHA, GL_TEXTURE);
         goto after_tex_operations;
     }
-    else if (params.colorOperation == Gfx::TEX_MIX_OPER_REPLACE)
+    else if (params.colorOperation == TEX_MIX_OPER_REPLACE)
         glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_ALPHA, GL_REPLACE);
-    else if (params.alphaOperation == Gfx::TEX_MIX_OPER_MODULATE)
+    else if (params.alphaOperation == TEX_MIX_OPER_MODULATE)
         glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_ALPHA, GL_MODULATE);
-    else if (params.alphaOperation == Gfx::TEX_MIX_OPER_ADD)
+    else if (params.alphaOperation == TEX_MIX_OPER_ADD)
         glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_ALPHA, GL_ADD);
-    else if (params.alphaOperation == Gfx::TEX_MIX_OPER_SUBTRACT)
+    else if (params.alphaOperation == TEX_MIX_OPER_SUBTRACT)
         glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_ALPHA, GL_SUBTRACT);
     else  assert(false);
 
     // Alpha arg1
-    if (params.alphaArg1 == Gfx::TEX_MIX_ARG_TEXTURE)
+    if (params.alphaArg1 == TEX_MIX_ARG_TEXTURE)
         glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_ALPHA, GL_TEXTURE);
-    else if (params.alphaArg1 == Gfx::TEX_MIX_ARG_COMPUTED_COLOR)
+    else if (params.alphaArg1 == TEX_MIX_ARG_COMPUTED_COLOR)
         glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_ALPHA, GL_PREVIOUS);
-    else if (params.alphaArg1 == Gfx::TEX_MIX_ARG_SRC_COLOR)
+    else if (params.alphaArg1 == TEX_MIX_ARG_SRC_COLOR)
         glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_ALPHA, GL_PRIMARY_COLOR);
-    else if (params.alphaArg1 == Gfx::TEX_MIX_ARG_FACTOR)
+    else if (params.alphaArg1 == TEX_MIX_ARG_FACTOR)
         glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_ALPHA, GL_CONSTANT);
     else  assert(false);
 
     // Alpha arg2
-    if (params.alphaArg2 == Gfx::TEX_MIX_ARG_TEXTURE)
+    if (params.alphaArg2 == TEX_MIX_ARG_TEXTURE)
         glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_ALPHA, GL_TEXTURE);
-    else if (params.alphaArg2 == Gfx::TEX_MIX_ARG_COMPUTED_COLOR)
+    else if (params.alphaArg2 == TEX_MIX_ARG_COMPUTED_COLOR)
         glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_ALPHA, GL_PREVIOUS);
-    else if (params.alphaArg2 == Gfx::TEX_MIX_ARG_SRC_COLOR)
+    else if (params.alphaArg2 == TEX_MIX_ARG_SRC_COLOR)
         glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_ALPHA, GL_PRIMARY_COLOR);
-    else if (params.alphaArg2 == Gfx::TEX_MIX_ARG_FACTOR)
+    else if (params.alphaArg2 == TEX_MIX_ARG_FACTOR)
         glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_ALPHA, GL_CONSTANT);
     else  assert(false);
 
 
 after_tex_operations:
 
-    if      (params.wrapS == Gfx::TEX_WRAP_CLAMP)
+    if      (params.wrapS == TEX_WRAP_CLAMP)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-    else if (params.wrapS == Gfx::TEX_WRAP_REPEAT)
+    else if (params.wrapS == TEX_WRAP_REPEAT)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     else  assert(false);
 
-    if      (params.wrapT == Gfx::TEX_WRAP_CLAMP)
+    if      (params.wrapT == TEX_WRAP_CLAMP)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
-    else if (params.wrapT == Gfx::TEX_WRAP_REPEAT)
+    else if (params.wrapT == TEX_WRAP_REPEAT)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     else  assert(false);
 
@@ -805,7 +808,7 @@ after_tex_operations:
         glDisable(GL_TEXTURE_2D);
 }
 
-Gfx::TextureStageParams Gfx::CGLDevice::GetTextureStageParams(int index)
+TextureStageParams CGLDevice::GetTextureStageParams(int index)
 {
     assert(index >= 0);
     assert(index < static_cast<int>( m_currentTextures.size() ));
@@ -813,7 +816,7 @@ Gfx::TextureStageParams Gfx::CGLDevice::GetTextureStageParams(int index)
     return m_textureStageParams[index];
 }
 
-void Gfx::CGLDevice::SetTextureFactor(const Gfx::Color &color)
+void CGLDevice::SetTextureFactor(const Color &color)
 {
     // Needs to be set for all texture stages
     for (int index = 0; index < static_cast<int>( m_currentTextures.size() ); ++index)
@@ -830,7 +833,7 @@ void Gfx::CGLDevice::SetTextureFactor(const Gfx::Color &color)
     }
 }
 
-Gfx::Color Gfx::CGLDevice::GetTextureFactor()
+Color CGLDevice::GetTextureFactor()
 {
     // Get from 1st stage (should be the same for all stages)
     glActiveTexture(GL_TEXTURE0);
@@ -843,25 +846,25 @@ Gfx::Color Gfx::CGLDevice::GetTextureFactor()
     if ( (! m_texturing) || (! m_texturesEnabled[0]) )
         glDisable(GL_TEXTURE_2D);
 
-    return Gfx::Color(color[0], color[1], color[2], color[3]);
+    return Color(color[0], color[1], color[2], color[3]);
 }
 
-GLenum TranslateGfxPrimitive(Gfx::PrimitiveType type)
+GLenum TranslateGfxPrimitive(PrimitiveType type)
 {
     GLenum flag = 0;
     switch (type)
     {
-        case Gfx::PRIMITIVE_POINTS:         flag = GL_POINTS; break;
-        case Gfx::PRIMITIVE_LINES:          flag = GL_LINES; break;
-        case Gfx::PRIMITIVE_LINE_STRIP:     flag = GL_LINE_STRIP; break;
-        case Gfx::PRIMITIVE_TRIANGLES:      flag = GL_TRIANGLES; break;
-        case Gfx::PRIMITIVE_TRIANGLE_STRIP: flag = GL_TRIANGLE_STRIP; break;
+        case PRIMITIVE_POINTS:         flag = GL_POINTS; break;
+        case PRIMITIVE_LINES:          flag = GL_LINES; break;
+        case PRIMITIVE_LINE_STRIP:     flag = GL_LINE_STRIP; break;
+        case PRIMITIVE_TRIANGLES:      flag = GL_TRIANGLES; break;
+        case PRIMITIVE_TRIANGLE_STRIP: flag = GL_TRIANGLE_STRIP; break;
         default: assert(false); break;
     }
     return flag;
 }
 
-void Gfx::CGLDevice::DrawPrimitive(Gfx::PrimitiveType type, const Vertex *vertices, int vertexCount)
+void CGLDevice::DrawPrimitive(PrimitiveType type, const Vertex *vertices, int vertexCount)
 {
     glBegin(TranslateGfxPrimitive(type));
 
@@ -877,7 +880,7 @@ void Gfx::CGLDevice::DrawPrimitive(Gfx::PrimitiveType type, const Vertex *vertic
     glEnd();
 }
 
-void Gfx::CGLDevice::DrawPrimitive(Gfx::PrimitiveType type, const Gfx::VertexCol *vertices, int vertexCount)
+void CGLDevice::DrawPrimitive(PrimitiveType type, const VertexCol *vertices, int vertexCount)
 {
     glBegin(TranslateGfxPrimitive(type));
 
@@ -892,7 +895,7 @@ void Gfx::CGLDevice::DrawPrimitive(Gfx::PrimitiveType type, const Gfx::VertexCol
     glEnd();
 }
 
-void Gfx::CGLDevice::DrawPrimitive(Gfx::PrimitiveType type, const VertexTex2 *vertices, int vertexCount)
+void CGLDevice::DrawPrimitive(PrimitiveType type, const VertexTex2 *vertices, int vertexCount)
 {
     glBegin(TranslateGfxPrimitive(type));
 
@@ -925,7 +928,7 @@ bool InPlane(Math::Vector normal, float originPlane, Math::Vector center, float 
  */
 
 // TODO: testing
-int Gfx::CGLDevice::ComputeSphereVisibility(const Math::Vector &center, float radius)
+int CGLDevice::ComputeSphereVisibility(const Math::Vector &center, float radius)
 {
     Math::Matrix m;
     m.LoadIdentity();
@@ -975,29 +978,29 @@ int Gfx::CGLDevice::ComputeSphereVisibility(const Math::Vector &center, float ra
     int result = 0;
 
     if (InPlane(vec[0], originPlane[0], center, radius))
-        result |= Gfx::INTERSECT_PLANE_LEFT;
+        result |= INTERSECT_PLANE_LEFT;
     if (InPlane(vec[1], originPlane[1], center, radius))
-        result |= Gfx::INTERSECT_PLANE_RIGHT;
+        result |= INTERSECT_PLANE_RIGHT;
     if (InPlane(vec[2], originPlane[2], center, radius))
-        result |= Gfx::INTERSECT_PLANE_TOP;
+        result |= INTERSECT_PLANE_TOP;
     if (InPlane(vec[3], originPlane[3], center, radius))
-        result |= Gfx::INTERSECT_PLANE_BOTTOM;
+        result |= INTERSECT_PLANE_BOTTOM;
     if (InPlane(vec[4], originPlane[4], center, radius))
-        result |= Gfx::INTERSECT_PLANE_FRONT;
+        result |= INTERSECT_PLANE_FRONT;
     if (InPlane(vec[5], originPlane[5], center, radius))
-        result |= Gfx::INTERSECT_PLANE_BACK;
+        result |= INTERSECT_PLANE_BACK;
 
     return result;
 }
 
-void Gfx::CGLDevice::SetRenderState(Gfx::RenderState state, bool enabled)
+void CGLDevice::SetRenderState(RenderState state, bool enabled)
 {
-    if (state == Gfx::RENDER_STATE_DEPTH_WRITE)
+    if (state == RENDER_STATE_DEPTH_WRITE)
     {
         glDepthMask(enabled ? GL_TRUE : GL_FALSE);
         return;
     }
-    else if (state == Gfx::RENDER_STATE_LIGHTING)
+    else if (state == RENDER_STATE_LIGHTING)
     {
         m_lighting = enabled;
 
@@ -1014,7 +1017,7 @@ void Gfx::CGLDevice::SetRenderState(Gfx::RenderState state, bool enabled)
 
         return;
     }
-    else if (state == Gfx::RENDER_STATE_TEXTURING)
+    else if (state == RENDER_STATE_TEXTURING)
     {
         m_texturing = enabled;
 
@@ -1035,12 +1038,12 @@ void Gfx::CGLDevice::SetRenderState(Gfx::RenderState state, bool enabled)
 
     switch (state)
     {
-        case Gfx::RENDER_STATE_BLENDING:    flag = GL_BLEND; break;
-        case Gfx::RENDER_STATE_FOG:         flag = GL_FOG; break;
-        case Gfx::RENDER_STATE_DEPTH_TEST:  flag = GL_DEPTH_TEST; break;
-        case Gfx::RENDER_STATE_ALPHA_TEST:  flag = GL_ALPHA_TEST; break;
-        case Gfx::RENDER_STATE_CULLING:     flag = GL_CULL_FACE; break;
-        case Gfx::RENDER_STATE_DITHERING:   flag = GL_DITHER; break;
+        case RENDER_STATE_BLENDING:    flag = GL_BLEND; break;
+        case RENDER_STATE_FOG:         flag = GL_FOG; break;
+        case RENDER_STATE_DEPTH_TEST:  flag = GL_DEPTH_TEST; break;
+        case RENDER_STATE_ALPHA_TEST:  flag = GL_ALPHA_TEST; break;
+        case RENDER_STATE_CULLING:     flag = GL_CULL_FACE; break;
+        case RENDER_STATE_DITHERING:   flag = GL_DITHER; break;
         default: assert(false); break;
     }
 
@@ -1050,25 +1053,25 @@ void Gfx::CGLDevice::SetRenderState(Gfx::RenderState state, bool enabled)
         glDisable(flag);
 }
 
-bool Gfx::CGLDevice::GetRenderState(Gfx::RenderState state)
+bool CGLDevice::GetRenderState(RenderState state)
 {
-    if (state == Gfx::RENDER_STATE_LIGHTING)
+    if (state == RENDER_STATE_LIGHTING)
         return m_lighting;
 
-    if (state == Gfx::RENDER_STATE_TEXTURING)
+    if (state == RENDER_STATE_TEXTURING)
         return m_texturing;
 
     GLenum flag = 0;
 
     switch (state)
     {
-        case Gfx::RENDER_STATE_DEPTH_WRITE: flag = GL_DEPTH_WRITEMASK; break;
-        case Gfx::RENDER_STATE_BLENDING:    flag = GL_BLEND; break;
-        case Gfx::RENDER_STATE_FOG:         flag = GL_FOG; break;
-        case Gfx::RENDER_STATE_DEPTH_TEST:  flag = GL_DEPTH_TEST; break;
-        case Gfx::RENDER_STATE_ALPHA_TEST:  flag = GL_ALPHA_TEST; break;
-        case Gfx::RENDER_STATE_CULLING:     flag = GL_CULL_FACE; break;
-        case Gfx::RENDER_STATE_DITHERING:   flag = GL_DITHER; break;
+        case RENDER_STATE_DEPTH_WRITE: flag = GL_DEPTH_WRITEMASK; break;
+        case RENDER_STATE_BLENDING:    flag = GL_BLEND; break;
+        case RENDER_STATE_FOG:         flag = GL_FOG; break;
+        case RENDER_STATE_DEPTH_TEST:  flag = GL_DEPTH_TEST; break;
+        case RENDER_STATE_ALPHA_TEST:  flag = GL_ALPHA_TEST; break;
+        case RENDER_STATE_CULLING:     flag = GL_CULL_FACE; break;
+        case RENDER_STATE_DITHERING:   flag = GL_DITHER; break;
         default: assert(false); break;
     }
 
@@ -1078,70 +1081,70 @@ bool Gfx::CGLDevice::GetRenderState(Gfx::RenderState state)
     return result == GL_TRUE;
 }
 
-Gfx::CompFunc TranslateGLCompFunc(GLenum flag)
+CompFunc TranslateGLCompFunc(GLenum flag)
 {
     switch (flag)
     {
-        case GL_NEVER:    return Gfx::COMP_FUNC_NEVER;
-        case GL_LESS:     return Gfx::COMP_FUNC_LESS;
-        case GL_EQUAL:    return Gfx::COMP_FUNC_EQUAL;
-        case GL_NOTEQUAL: return Gfx::COMP_FUNC_NOTEQUAL;
-        case GL_LEQUAL:   return Gfx::COMP_FUNC_LEQUAL;
-        case GL_GREATER:  return Gfx::COMP_FUNC_GREATER;
-        case GL_GEQUAL:   return Gfx::COMP_FUNC_GEQUAL;
-        case GL_ALWAYS:   return Gfx::COMP_FUNC_ALWAYS;
+        case GL_NEVER:    return COMP_FUNC_NEVER;
+        case GL_LESS:     return COMP_FUNC_LESS;
+        case GL_EQUAL:    return COMP_FUNC_EQUAL;
+        case GL_NOTEQUAL: return COMP_FUNC_NOTEQUAL;
+        case GL_LEQUAL:   return COMP_FUNC_LEQUAL;
+        case GL_GREATER:  return COMP_FUNC_GREATER;
+        case GL_GEQUAL:   return COMP_FUNC_GEQUAL;
+        case GL_ALWAYS:   return COMP_FUNC_ALWAYS;
         default: assert(false); break;
     }
-    return Gfx::COMP_FUNC_NEVER;
+    return COMP_FUNC_NEVER;
 }
 
-GLenum TranslateGfxCompFunc(Gfx::CompFunc func)
+GLenum TranslateGfxCompFunc(CompFunc func)
 {
     switch (func)
     {
-        case Gfx::COMP_FUNC_NEVER:    return GL_NEVER;
-        case Gfx::COMP_FUNC_LESS:     return GL_LESS;
-        case Gfx::COMP_FUNC_EQUAL:    return GL_EQUAL;
-        case Gfx::COMP_FUNC_NOTEQUAL: return GL_NOTEQUAL;
-        case Gfx::COMP_FUNC_LEQUAL:   return GL_LEQUAL;
-        case Gfx::COMP_FUNC_GREATER:  return GL_GREATER;
-        case Gfx::COMP_FUNC_GEQUAL:   return GL_GEQUAL;
-        case Gfx::COMP_FUNC_ALWAYS:   return GL_ALWAYS;
+        case COMP_FUNC_NEVER:    return GL_NEVER;
+        case COMP_FUNC_LESS:     return GL_LESS;
+        case COMP_FUNC_EQUAL:    return GL_EQUAL;
+        case COMP_FUNC_NOTEQUAL: return GL_NOTEQUAL;
+        case COMP_FUNC_LEQUAL:   return GL_LEQUAL;
+        case COMP_FUNC_GREATER:  return GL_GREATER;
+        case COMP_FUNC_GEQUAL:   return GL_GEQUAL;
+        case COMP_FUNC_ALWAYS:   return GL_ALWAYS;
         default: assert(false); break;
     }
     return 0;
 }
 
-void Gfx::CGLDevice::SetDepthTestFunc(Gfx::CompFunc func)
+void CGLDevice::SetDepthTestFunc(CompFunc func)
 {
     glDepthFunc(TranslateGfxCompFunc(func));
 }
 
-Gfx::CompFunc Gfx::CGLDevice::GetDepthTestFunc()
+CompFunc CGLDevice::GetDepthTestFunc()
 {
     GLint flag = 0;
     glGetIntegerv(GL_DEPTH_FUNC, &flag);
     return TranslateGLCompFunc(static_cast<GLenum>(flag));
 }
 
-void Gfx::CGLDevice::SetDepthBias(float factor)
+void CGLDevice::SetDepthBias(float factor)
 {
     glPolygonOffset(factor, 0.0f);
 }
 
-float Gfx::CGLDevice::GetDepthBias()
+float CGLDevice::GetDepthBias()
 {
     GLfloat result = 0.0f;
     glGetFloatv(GL_POLYGON_OFFSET_FACTOR, &result);
     return result;
 }
 
-void Gfx::CGLDevice::SetAlphaTestFunc(Gfx::CompFunc func, float refValue)
+void CGLDevice::SetAlphaTestFunc(CompFunc func, float refValue)
 {
     glAlphaFunc(TranslateGfxCompFunc(func), refValue);
 }
 
-void Gfx::CGLDevice::GetAlphaTestFunc(Gfx::CompFunc &func, float &refValue)
+void CGLDevice::GetAlphaTestFunc(CompFunc &func, float &refValue)
 {
     GLint flag = 0;
     glGetIntegerv(GL_ALPHA_TEST_FUNC, &flag);
@@ -1150,53 +1153,53 @@ void Gfx::CGLDevice::GetAlphaTestFunc(Gfx::CompFunc &func, float &refValue)
     glGetFloatv(GL_ALPHA_TEST_REF, static_cast<GLfloat*>(&refValue));
 }
 
-Gfx::BlendFunc TranslateGLBlendFunc(GLenum flag)
+BlendFunc TranslateGLBlendFunc(GLenum flag)
 {
     switch (flag)
     {
-        case GL_ZERO:                return Gfx::BLEND_ZERO;
-        case GL_ONE:                 return Gfx::BLEND_ONE;
-        case GL_SRC_COLOR:           return Gfx::BLEND_SRC_COLOR;
-        case GL_ONE_MINUS_SRC_COLOR: return Gfx::BLEND_INV_SRC_COLOR;
-        case GL_DST_COLOR:           return Gfx::BLEND_DST_COLOR;
-        case GL_ONE_MINUS_DST_COLOR: return Gfx::BLEND_INV_DST_COLOR;
-        case GL_SRC_ALPHA:           return Gfx::BLEND_SRC_ALPHA;
-        case GL_ONE_MINUS_SRC_ALPHA: return Gfx::BLEND_INV_SRC_ALPHA;
-        case GL_DST_ALPHA:           return Gfx::BLEND_DST_ALPHA;
-        case GL_ONE_MINUS_DST_ALPHA: return Gfx::BLEND_INV_DST_ALPHA;
-        case GL_SRC_ALPHA_SATURATE:  return Gfx::BLEND_SRC_ALPHA_SATURATE;
+        case GL_ZERO:                return BLEND_ZERO;
+        case GL_ONE:                 return BLEND_ONE;
+        case GL_SRC_COLOR:           return BLEND_SRC_COLOR;
+        case GL_ONE_MINUS_SRC_COLOR: return BLEND_INV_SRC_COLOR;
+        case GL_DST_COLOR:           return BLEND_DST_COLOR;
+        case GL_ONE_MINUS_DST_COLOR: return BLEND_INV_DST_COLOR;
+        case GL_SRC_ALPHA:           return BLEND_SRC_ALPHA;
+        case GL_ONE_MINUS_SRC_ALPHA: return BLEND_INV_SRC_ALPHA;
+        case GL_DST_ALPHA:           return BLEND_DST_ALPHA;
+        case GL_ONE_MINUS_DST_ALPHA: return BLEND_INV_DST_ALPHA;
+        case GL_SRC_ALPHA_SATURATE:  return BLEND_SRC_ALPHA_SATURATE;
         default: assert(false); break;
     }
 
-    return Gfx::BLEND_ZERO;
+    return BLEND_ZERO;
 }
 
-GLenum TranslateGfxBlendFunc(Gfx::BlendFunc func)
+GLenum TranslateGfxBlendFunc(BlendFunc func)
 {
     switch (func)
     {
-        case Gfx::BLEND_ZERO:               return GL_ZERO;
-        case Gfx::BLEND_ONE:                return GL_ONE;
-        case Gfx::BLEND_SRC_COLOR:          return GL_SRC_COLOR;
-        case Gfx::BLEND_INV_SRC_COLOR:      return GL_ONE_MINUS_SRC_COLOR;
-        case Gfx::BLEND_DST_COLOR:          return GL_DST_COLOR;
-        case Gfx::BLEND_INV_DST_COLOR:      return GL_ONE_MINUS_DST_COLOR;
-        case Gfx::BLEND_SRC_ALPHA:          return GL_SRC_ALPHA;
-        case Gfx::BLEND_INV_SRC_ALPHA:      return GL_ONE_MINUS_SRC_ALPHA;
-        case Gfx::BLEND_DST_ALPHA:          return GL_DST_ALPHA;
-        case Gfx::BLEND_INV_DST_ALPHA:      return GL_ONE_MINUS_DST_ALPHA;
-        case Gfx::BLEND_SRC_ALPHA_SATURATE: return GL_SRC_ALPHA_SATURATE;
+        case BLEND_ZERO:               return GL_ZERO;
+        case BLEND_ONE:                return GL_ONE;
+        case BLEND_SRC_COLOR:          return GL_SRC_COLOR;
+        case BLEND_INV_SRC_COLOR:      return GL_ONE_MINUS_SRC_COLOR;
+        case BLEND_DST_COLOR:          return GL_DST_COLOR;
+        case BLEND_INV_DST_COLOR:      return GL_ONE_MINUS_DST_COLOR;
+        case BLEND_SRC_ALPHA:          return GL_SRC_ALPHA;
+        case BLEND_INV_SRC_ALPHA:      return GL_ONE_MINUS_SRC_ALPHA;
+        case BLEND_DST_ALPHA:          return GL_DST_ALPHA;
+        case BLEND_INV_DST_ALPHA:      return GL_ONE_MINUS_DST_ALPHA;
+        case BLEND_SRC_ALPHA_SATURATE: return GL_SRC_ALPHA_SATURATE;
         default: assert(false); break;
     }
     return 0;
 }
 
-void Gfx::CGLDevice::SetBlendFunc(Gfx::BlendFunc srcBlend, Gfx::BlendFunc dstBlend)
+void CGLDevice::SetBlendFunc(BlendFunc srcBlend, BlendFunc dstBlend)
 {
     glBlendFunc(TranslateGfxBlendFunc(srcBlend), TranslateGfxBlendFunc(dstBlend));
 }
 
-void Gfx::CGLDevice::GetBlendFunc(Gfx::BlendFunc &srcBlend, Gfx::BlendFunc &dstBlend)
+void CGLDevice::GetBlendFunc(BlendFunc &srcBlend, BlendFunc &dstBlend)
 {
     GLint srcFlag = 0;
     glGetIntegerv(GL_ALPHA_TEST_FUNC, &srcFlag);
@@ -1207,35 +1210,35 @@ void Gfx::CGLDevice::GetBlendFunc(Gfx::BlendFunc &srcBlend, Gfx::BlendFunc &dstB
     dstBlend = TranslateGLBlendFunc(static_cast<GLenum>(dstFlag));
 }
 
-void Gfx::CGLDevice::SetClearColor(const Gfx::Color &color)
+void CGLDevice::SetClearColor(const Color &color)
 {
     glClearColor(color.r, color.g, color.b, color.a);
 }
 
-Gfx::Color Gfx::CGLDevice::GetClearColor()
+Color CGLDevice::GetClearColor()
 {
     GLfloat color[4] = { 0.0f };
     glGetFloatv(GL_COLOR_CLEAR_VALUE, color);
-    return Gfx::Color(color[0], color[1], color[2], color[3]);
+    return Color(color[0], color[1], color[2], color[3]);
 }
 
-void Gfx::CGLDevice::SetGlobalAmbient(const Gfx::Color &color)
+void CGLDevice::SetGlobalAmbient(const Color &color)
 {
     glLightModelfv(GL_LIGHT_MODEL_AMBIENT, color.Array());
 }
 
-Gfx::Color Gfx::CGLDevice::GetGlobalAmbient()
+Color CGLDevice::GetGlobalAmbient()
 {
     GLfloat color[4] = { 0.0f };
     glGetFloatv(GL_LIGHT_MODEL_AMBIENT, color);
-    return Gfx::Color(color[0], color[1], color[2], color[3]);
+    return Color(color[0], color[1], color[2], color[3]);
 }
 
-void Gfx::CGLDevice::SetFogParams(Gfx::FogMode mode, const Gfx::Color &color, float start, float end, float density)
+void CGLDevice::SetFogParams(FogMode mode, const Color &color, float start, float end, float density)
 {
-    if      (mode == Gfx::FOG_LINEAR) glFogi(GL_FOG_MODE, GL_LINEAR);
-    else if (mode == Gfx::FOG_EXP)    glFogi(GL_FOG_MODE, GL_EXP);
-    else if (mode == Gfx::FOG_EXP2)   glFogi(GL_FOG_MODE, GL_EXP2);
+    if      (mode == FOG_LINEAR) glFogi(GL_FOG_MODE, GL_LINEAR);
+    else if (mode == FOG_EXP)    glFogi(GL_FOG_MODE, GL_EXP);
+    else if (mode == FOG_EXP2)   glFogi(GL_FOG_MODE, GL_EXP2);
     else assert(false);
 
     glFogf(GL_FOG_START,   start);
@@ -1243,13 +1246,13 @@ void Gfx::CGLDevice::SetFogParams(Gfx::FogMode mode, const Gfx::Color &color, fl
     glFogf(GL_FOG_DENSITY, density);
 }
 
-void Gfx::CGLDevice::GetFogParams(Gfx::FogMode &mode, Gfx::Color &color, float &start, float &end, float &density)
+void CGLDevice::GetFogParams(FogMode &mode, Color &color, float &start, float &end, float &density)
 {
     GLint flag = 0;
     glGetIntegerv(GL_FOG_MODE, &flag);
-    if      (flag == GL_LINEAR) mode = Gfx::FOG_LINEAR;
-    else if (flag == GL_EXP)    mode = Gfx::FOG_EXP;
-    else if (flag == GL_EXP2)   mode = Gfx::FOG_EXP2;
+    if      (flag == GL_LINEAR) mode = FOG_LINEAR;
+    else if (flag == GL_EXP)    mode = FOG_EXP;
+    else if (flag == GL_EXP2)   mode = FOG_EXP2;
     else assert(false);
 
     glGetFloatv(GL_FOG_START,   static_cast<GLfloat*>(&start));
@@ -1257,57 +1260,60 @@ void Gfx::CGLDevice::GetFogParams(Gfx::FogMode &mode, Gfx::Color &color, float &
     glGetFloatv(GL_FOG_DENSITY, static_cast<GLfloat*>(&density));
 }
 
-void Gfx::CGLDevice::SetCullMode(Gfx::CullMode mode)
+void CGLDevice::SetCullMode(CullMode mode)
 {
     // Cull clockwise back faces, so front face is the opposite
     // (assuming GL_CULL_FACE is GL_BACK)
-    if      (mode == Gfx::CULL_CW ) glFrontFace(GL_CCW);
-    else if (mode == Gfx::CULL_CCW) glFrontFace(GL_CW);
+    if      (mode == CULL_CW ) glFrontFace(GL_CCW);
+    else if (mode == CULL_CCW) glFrontFace(GL_CW);
     else assert(false);
 }
 
-Gfx::CullMode Gfx::CGLDevice::GetCullMode()
+CullMode CGLDevice::GetCullMode()
 {
     GLint flag = 0;
     glGetIntegerv(GL_FRONT_FACE, &flag);
-    if      (flag == GL_CW)  return Gfx::CULL_CCW;
-    else if (flag == GL_CCW) return Gfx::CULL_CW;
+    if      (flag == GL_CW)  return CULL_CCW;
+    else if (flag == GL_CCW) return CULL_CW;
     else assert(false);
-    return Gfx::CULL_CW;
+    return CULL_CW;
 }
 
-void Gfx::CGLDevice::SetShadeModel(Gfx::ShadeModel model)
+void CGLDevice::SetShadeModel(ShadeModel model)
 {
-    if      (model == Gfx::SHADE_FLAT)   glShadeModel(GL_FLAT);
-    else if (model == Gfx::SHADE_SMOOTH) glShadeModel(GL_SMOOTH);
+    if      (model == SHADE_FLAT)   glShadeModel(GL_FLAT);
+    else if (model == SHADE_SMOOTH) glShadeModel(GL_SMOOTH);
     else  assert(false);
 }
 
-Gfx::ShadeModel Gfx::CGLDevice::GetShadeModel()
+ShadeModel CGLDevice::GetShadeModel()
 {
     GLint flag = 0;
     glGetIntegerv(GL_SHADE_MODEL, &flag);
-    if      (flag == GL_FLAT)    return Gfx::SHADE_FLAT;
-    else if (flag == GL_SMOOTH)  return Gfx::SHADE_SMOOTH;
+    if      (flag == GL_FLAT)    return SHADE_FLAT;
+    else if (flag == GL_SMOOTH)  return SHADE_SMOOTH;
     else  assert(false);
-    return Gfx::SHADE_FLAT;
+    return SHADE_FLAT;
 }
 
-void Gfx::CGLDevice::SetFillMode(Gfx::FillMode mode)
+void CGLDevice::SetFillMode(FillMode mode)
 {
-    if      (mode == Gfx::FILL_POINT) glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
-    else if (mode == Gfx::FILL_LINES) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    else if (mode == Gfx::FILL_FILL)  glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    if      (mode == FILL_POINT) glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
+    else if (mode == FILL_LINES) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    else if (mode == FILL_POLY)  glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     else assert(false);
 }
 
-Gfx::FillMode Gfx::CGLDevice::GetFillMode()
+FillMode CGLDevice::GetFillMode()
 {
     GLint flag = 0;
     glGetIntegerv(GL_POLYGON_MODE, &flag);
-    if      (flag == GL_POINT) return Gfx::FILL_POINT;
-    else if (flag == GL_LINE)  return Gfx::FILL_LINES;
-    else if (flag == GL_FILL)  return Gfx::FILL_FILL;
+    if      (flag == GL_POINT) return FILL_POINT;
+    else if (flag == GL_LINE)  return FILL_LINES;
+    else if (flag == GL_FILL)  return FILL_POLY;
     else  assert(false);
-    return Gfx::FILL_POINT;
+    return FILL_POINT;
 }
+
+
+} // namespace Gfx

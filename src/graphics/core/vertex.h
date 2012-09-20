@@ -23,11 +23,14 @@
 
 
 #include "graphics/core/color.h"
+
 #include "math/vector.h"
 #include "math/point.h"
 
 #include <sstream>
 
+
+// Graphics module namespace
 namespace Gfx {
 
 /**
@@ -72,20 +75,20 @@ struct Vertex
  *
  * It contains:
  *  - vertex coordinates (x,y,z) as Math::Vector,
- *  - RGBA color as Gfx::Color,
- *  - RGBA specular color as Gfx::Color,
+ *  - RGBA color as Color,
+ *  - RGBA specular color as Color,
  *  - texture coordinates (u,v) as Math::Point.
  */
 struct VertexCol
 {
     Math::Vector coord;
-    Gfx::Color color;
-    Gfx::Color specular;
+    Color color;
+    Color specular;
     Math::Point texCoord;
 
     explicit VertexCol(Math::Vector aCoord = Math::Vector(),
-                       Gfx::Color aColor = Gfx::Color(),
-                       Gfx::Color aSpecular = Gfx::Color(),
+                       Color aColor = Color(),
+                       Color aSpecular = Color(),
                        Math::Point aTexCoord = Math::Point())
         : coord(aCoord), color(aColor), specular(aSpecular), texCoord(aTexCoord) {}
 
@@ -105,7 +108,7 @@ struct VertexCol
  * \struct VertexTex2
  * \brief Vertex with secondary texture coordinates
  *
- * In addition to fields from Gfx::Vector, it contains
+ * In addition to fields from Vector, it contains
  * secondary texture coordinates (u2, v2) as Math::Point
  */
 struct VertexTex2
@@ -121,8 +124,8 @@ struct VertexTex2
                         Math::Point aTexCoord2 = Math::Point())
         : coord(aCoord), normal(aNormal), texCoord(aTexCoord), texCoord2(aTexCoord2) {}
 
-    //! Sets the fields from Gfx::Vertex with texCoord2 = (0,0)
-    void FromVertex(const Gfx::Vertex &v)
+    //! Sets the fields from Vertex with texCoord2 = (0,0)
+    void FromVertex(const Vertex &v)
     {
         coord = v.coord;
         normal = v.normal;
@@ -141,4 +144,5 @@ struct VertexTex2
     }
 };
 
-}; // namespace Gfx
+
+} // namespace Gfx

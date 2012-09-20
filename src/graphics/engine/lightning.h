@@ -17,12 +17,14 @@
 
 /**
  * \file graphics/engine/lightning.h
- * \brief Lightning rendering - Gfx::CLightning class (aka blitz)
+ * \brief Lightning rendering - CLightning class (aka blitz)
  */
 
 #pragma once
 
+
 #include "common/event.h"
+
 #include "math/vector.h"
 
 
@@ -31,6 +33,7 @@ class CObject;
 class CSound;
 
 
+// Graphics module namespace
 namespace Gfx {
 
 class CEngine;
@@ -81,7 +84,7 @@ protected:
     float           m_sleep;
     float           m_delay;
     float           m_magnetic;
-    Gfx::BlitzPhase m_phase;
+    BlitzPhase m_phase;
     float           m_time;
     float           m_speed;
     float           m_progress;
@@ -90,4 +93,5 @@ protected:
     float           m_width[BLITZMAX];
 };
 
-}; // namespace Gfx
+
+} // namespace Gfx

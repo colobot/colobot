@@ -15,15 +15,16 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// engine.cpp
 
 #include "graphics/engine/engine.h"
 
 #include "app/app.h"
+
 #include "common/iman.h"
 #include "common/image.h"
 #include "common/key.h"
 #include "common/logger.h"
+
 #include "graphics/core/device.h"
 #include "graphics/engine/camera.h"
 #include "graphics/engine/cloud.h"
@@ -35,9 +36,16 @@
 #include "graphics/engine/terrain.h"
 #include "graphics/engine/text.h"
 #include "graphics/engine/water.h"
+
 #include "math/geometry.h"
+
 #include "sound/sound.h"
+
 #include "ui/interface.h"
+
+
+// Graphics module namespace
+namespace Gfx {
 
 
 // Initial size of various vectors
@@ -52,7 +60,7 @@ const int LEVEL4_PREALLOCATE_COUNT        = 100;
 const int LEVEL4_VERTEX_PREALLOCATE_COUNT = 200;
 
 
-Gfx::EngineObjLevel1::EngineObjLevel1(bool used, const std::string& tex1Name, const std::string& tex2Name)
+EngineObjLevel1::EngineObjLevel1(bool used, const std::string& tex1Name, const std::string& tex2Name)
 {
     this->used = used;
     this->tex1Name = tex1Name;
@@ -61,7 +69,7 @@ Gfx::EngineObjLevel1::EngineObjLevel1(bool used, const std::string& tex1Name, co
     next.reserve(LEVEL2_PREALLOCATE_COUNT);
 }
 
-Gfx::EngineObjLevel2::EngineObjLevel2(bool used, int objRank)
+EngineObjLevel2::EngineObjLevel2(bool used, int objRank)
 {
     this->used = used;
     this->objRank = objRank;
@@ -69,7 +77,7 @@ Gfx::EngineObjLevel2::EngineObjLevel2(bool used, int objRank)
     next.reserve(LEVEL3_PREALLOCATE_COUNT);
 }
 
-Gfx::EngineObjLevel3::EngineObjLevel3(bool used, float min, float max)
+EngineObjLevel3::EngineObjLevel3(bool used, float min, float max)
 {
     this->used = used;
     this->min = min;
@@ -78,7 +86,7 @@ Gfx::EngineObjLevel3::EngineObjLevel3(bool used, float min, float max)
     next.reserve(LEVEL4_PREALLOCATE_COUNT);
 }
 
-Gfx::EngineObjLevel4::EngineObjLevel4(bool used, Gfx::EngineTriangleType type, const Gfx::Material& material, int state)
+EngineObjLevel4::EngineObjLevel4(bool used, EngineTriangleType type, const Material& material, int state)
 {
     this->used = used;
     this->type = type;
@@ -88,7 +96,7 @@ Gfx::EngineObjLevel4::EngineObjLevel4(bool used, Gfx::EngineTriangleType type, c
     vertices.reserve(LEVEL4_VERTEX_PREALLOCATE_COUNT);
 }
 
-Gfx::CEngine::CEngine(CInstanceManager *iMan, CApplication *app)
+CEngine::CEngine(CInstanceManager *iMan, CApplication *app)
 {
     m_iMan   = iMan;
     m_app    = app;
@@ -108,19 +116,21 @@ Gfx::CEngine::CEngine(CInstanceManager *iMan, CApplication *app)
     m_sound      = nullptr;
     m_terrain    = nullptr;
 
+    m_showStats = false;
+
     m_focus = 0.75f;
 
     m_rankView = 0;
 
-    m_ambientColor[0] = Gfx::Color(0.5f, 0.5f, 0.5f, 0.5f);
-    m_ambientColor[1] = Gfx::Color(0.5f, 0.5f, 0.5f, 0.5f);
-    m_fogColor[0]     = Gfx::Color(1.0f, 1.0f, 1.0f, 1.0f);
-    m_fogColor[1]     = Gfx::Color(1.0f, 1.0f, 1.0f, 1.0f);
+    m_ambientColor[0] = Color(0.5f, 0.5f, 0.5f, 0.5f);
+    m_ambientColor[1] = Color(0.5f, 0.5f, 0.5f, 0.5f);
+    m_fogColor[0]     = Color(1.0f, 1.0f, 1.0f, 1.0f);
+    m_fogColor[1]     = Color(1.0f, 1.0f, 1.0f, 1.0f);
     m_deepView[0]     = 1000.0f;
     m_deepView[1]     = 1000.0f;
     m_fogStart[0]     = 0.75f;
     m_fogStart[1]     = 0.75f;
-    m_waterAddColor   = Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f);
+    m_waterAddColor   = Color(0.0f, 0.0f, 0.0f, 0.0f);
 
     m_pause             = false;
     m_render            = true;
@@ -129,19 +139,18 @@ Gfx::CEngine::CEngine(CInstanceManager *iMan, CApplication *app)
     m_groundSpotVisible = true;
     m_dirty             = true;
     m_fog               = true;
-    m_speed             = 1.0f;
     m_secondTexNum      = 0;
     m_eyeDirH           = 0.0f;
     m_eyeDirV           = 0.0f;
     m_backgroundName    = "";  // no background image
-    m_backgroundColorUp   = Gfx::Color();
-    m_backgroundColorDown = Gfx::Color();
-    m_backgroundCloudUp   = Gfx::Color();
-    m_backgroundCloudDown = Gfx::Color();
+    m_backgroundColorUp   = Color();
+    m_backgroundColorDown = Color();
+    m_backgroundCloudUp   = Color();
+    m_backgroundCloudDown = Color();
     m_backgroundFull = false;
     m_backgroundScale = Math::Point(1.0f, 1.0f);
     m_overFront = true;
-    m_overColor = Gfx::Color();
+    m_overColor = Color();
     m_overMode  = ENG_RSTATE_TCOLOR_BLACK;
     m_highlightRank[0] = -1;  // empty list
     m_highlightTime = 0.0f;
@@ -163,7 +172,7 @@ Gfx::CEngine::CEngine(CInstanceManager *iMan, CApplication *app)
     m_lensMode = true;
     m_waterMode = true;
     m_skyMode = true;
-    m_backForce = false; // TODO: change to true?
+    m_backForce = true;
     m_planetMode = true;
     m_lightMode = true;
     m_editIndentMode = true;
@@ -177,33 +186,35 @@ Gfx::CEngine::CEngine(CInstanceManager *iMan, CApplication *app)
 
     m_updateGeometry = false;
 
-    m_mice[Gfx::ENG_MOUSE_NORM]    = Gfx::EngineMouse( 0,  1, 32, Gfx::ENG_RSTATE_TTEXTURE_WHITE, Gfx::ENG_RSTATE_TTEXTURE_BLACK, Math::Point( 1.0f,  1.0f));
-    m_mice[Gfx::ENG_MOUSE_WAIT]    = Gfx::EngineMouse( 2,  3, 33, Gfx::ENG_RSTATE_TTEXTURE_WHITE, Gfx::ENG_RSTATE_TTEXTURE_BLACK, Math::Point( 8.0f, 12.0f));
-    m_mice[Gfx::ENG_MOUSE_HAND]    = Gfx::EngineMouse( 4,  5, 34, Gfx::ENG_RSTATE_TTEXTURE_WHITE, Gfx::ENG_RSTATE_TTEXTURE_BLACK, Math::Point( 7.0f,  2.0f));
-    m_mice[Gfx::ENG_MOUSE_NO]      = Gfx::EngineMouse( 6,  7, 35, Gfx::ENG_RSTATE_TTEXTURE_WHITE, Gfx::ENG_RSTATE_TTEXTURE_BLACK, Math::Point(10.0f, 10.0f));
-    m_mice[Gfx::ENG_MOUSE_EDIT]    = Gfx::EngineMouse( 8,  9, -1, Gfx::ENG_RSTATE_TTEXTURE_BLACK, Gfx::ENG_RSTATE_TTEXTURE_WHITE, Math::Point( 6.0f, 10.0f));
-    m_mice[Gfx::ENG_MOUSE_CROSS]   = Gfx::EngineMouse(10, 11, -1, Gfx::ENG_RSTATE_TTEXTURE_BLACK, Gfx::ENG_RSTATE_TTEXTURE_WHITE, Math::Point(10.0f, 10.0f));
-    m_mice[Gfx::ENG_MOUSE_MOVEV]   = Gfx::EngineMouse(12, 13, -1, Gfx::ENG_RSTATE_TTEXTURE_BLACK, Gfx::ENG_RSTATE_TTEXTURE_WHITE, Math::Point( 5.0f, 11.0f));
-    m_mice[Gfx::ENG_MOUSE_MOVEH]   = Gfx::EngineMouse(14, 15, -1, Gfx::ENG_RSTATE_TTEXTURE_BLACK, Gfx::ENG_RSTATE_TTEXTURE_WHITE, Math::Point(11.0f,  5.0f));
-    m_mice[Gfx::ENG_MOUSE_MOVED]   = Gfx::EngineMouse(16, 17, -1, Gfx::ENG_RSTATE_TTEXTURE_BLACK, Gfx::ENG_RSTATE_TTEXTURE_WHITE, Math::Point( 9.0f,  9.0f));
-    m_mice[Gfx::ENG_MOUSE_MOVEI]   = Gfx::EngineMouse(18, 19, -1, Gfx::ENG_RSTATE_TTEXTURE_BLACK, Gfx::ENG_RSTATE_TTEXTURE_WHITE, Math::Point( 9.0f,  9.0f));
-    m_mice[Gfx::ENG_MOUSE_MOVE]    = Gfx::EngineMouse(20, 21, -1, Gfx::ENG_RSTATE_TTEXTURE_BLACK, Gfx::ENG_RSTATE_TTEXTURE_WHITE, Math::Point(11.0f, 11.0f));
-    m_mice[Gfx::ENG_MOUSE_TARGET]  = Gfx::EngineMouse(22, 23, -1, Gfx::ENG_RSTATE_TTEXTURE_BLACK, Gfx::ENG_RSTATE_TTEXTURE_WHITE, Math::Point(15.0f, 15.0f));
-    m_mice[Gfx::ENG_MOUSE_SCROLLL] = Gfx::EngineMouse(24, 25, 43, Gfx::ENG_RSTATE_TTEXTURE_BLACK, Gfx::ENG_RSTATE_TTEXTURE_WHITE, Math::Point( 2.0f,  9.0f));
-    m_mice[Gfx::ENG_MOUSE_SCROLLR] = Gfx::EngineMouse(26, 27, 44, Gfx::ENG_RSTATE_TTEXTURE_BLACK, Gfx::ENG_RSTATE_TTEXTURE_WHITE, Math::Point(17.0f,  9.0f));
-    m_mice[Gfx::ENG_MOUSE_SCROLLU] = Gfx::EngineMouse(28, 29, 45, Gfx::ENG_RSTATE_TTEXTURE_BLACK, Gfx::ENG_RSTATE_TTEXTURE_WHITE, Math::Point( 9.0f,  2.0f));
-    m_mice[Gfx::ENG_MOUSE_SCROLLD] = Gfx::EngineMouse(30, 31, 46, Gfx::ENG_RSTATE_TTEXTURE_BLACK, Gfx::ENG_RSTATE_TTEXTURE_WHITE, Math::Point( 9.0f, 17.0f));
+    m_mice[ENG_MOUSE_NORM]    = EngineMouse( 0,  1, 32, ENG_RSTATE_TTEXTURE_WHITE, ENG_RSTATE_TTEXTURE_BLACK, Math::Point( 1.0f,  1.0f));
+    m_mice[ENG_MOUSE_WAIT]    = EngineMouse( 2,  3, 33, ENG_RSTATE_TTEXTURE_WHITE, ENG_RSTATE_TTEXTURE_BLACK, Math::Point( 8.0f, 12.0f));
+    m_mice[ENG_MOUSE_HAND]    = EngineMouse( 4,  5, 34, ENG_RSTATE_TTEXTURE_WHITE, ENG_RSTATE_TTEXTURE_BLACK, Math::Point( 7.0f,  2.0f));
+    m_mice[ENG_MOUSE_NO]      = EngineMouse( 6,  7, 35, ENG_RSTATE_TTEXTURE_WHITE, ENG_RSTATE_TTEXTURE_BLACK, Math::Point(10.0f, 10.0f));
+    m_mice[ENG_MOUSE_EDIT]    = EngineMouse( 8,  9, -1, ENG_RSTATE_TTEXTURE_BLACK, ENG_RSTATE_TTEXTURE_WHITE, Math::Point( 6.0f, 10.0f));
+    m_mice[ENG_MOUSE_CROSS]   = EngineMouse(10, 11, -1, ENG_RSTATE_TTEXTURE_BLACK, ENG_RSTATE_TTEXTURE_WHITE, Math::Point(10.0f, 10.0f));
+    m_mice[ENG_MOUSE_MOVEV]   = EngineMouse(12, 13, -1, ENG_RSTATE_TTEXTURE_BLACK, ENG_RSTATE_TTEXTURE_WHITE, Math::Point( 5.0f, 11.0f));
+    m_mice[ENG_MOUSE_MOVEH]   = EngineMouse(14, 15, -1, ENG_RSTATE_TTEXTURE_BLACK, ENG_RSTATE_TTEXTURE_WHITE, Math::Point(11.0f,  5.0f));
+    m_mice[ENG_MOUSE_MOVED]   = EngineMouse(16, 17, -1, ENG_RSTATE_TTEXTURE_BLACK, ENG_RSTATE_TTEXTURE_WHITE, Math::Point( 9.0f,  9.0f));
+    m_mice[ENG_MOUSE_MOVEI]   = EngineMouse(18, 19, -1, ENG_RSTATE_TTEXTURE_BLACK, ENG_RSTATE_TTEXTURE_WHITE, Math::Point( 9.0f,  9.0f));
+    m_mice[ENG_MOUSE_MOVE]    = EngineMouse(20, 21, -1, ENG_RSTATE_TTEXTURE_BLACK, ENG_RSTATE_TTEXTURE_WHITE, Math::Point(11.0f, 11.0f));
+    m_mice[ENG_MOUSE_TARGET]  = EngineMouse(22, 23, -1, ENG_RSTATE_TTEXTURE_BLACK, ENG_RSTATE_TTEXTURE_WHITE, Math::Point(15.0f, 15.0f));
+    m_mice[ENG_MOUSE_SCROLLL] = EngineMouse(24, 25, 43, ENG_RSTATE_TTEXTURE_BLACK, ENG_RSTATE_TTEXTURE_WHITE, Math::Point( 2.0f,  9.0f));
+    m_mice[ENG_MOUSE_SCROLLR] = EngineMouse(26, 27, 44, ENG_RSTATE_TTEXTURE_BLACK, ENG_RSTATE_TTEXTURE_WHITE, Math::Point(17.0f,  9.0f));
+    m_mice[ENG_MOUSE_SCROLLU] = EngineMouse(28, 29, 45, ENG_RSTATE_TTEXTURE_BLACK, ENG_RSTATE_TTEXTURE_WHITE, Math::Point( 9.0f,  2.0f));
+    m_mice[ENG_MOUSE_SCROLLD] = EngineMouse(30, 31, 46, ENG_RSTATE_TTEXTURE_BLACK, ENG_RSTATE_TTEXTURE_WHITE, Math::Point( 9.0f, 17.0f));
 
     m_mouseSize    = Math::Point(0.04f, 0.04f * (800.0f / 600.0f));
-    m_mousePos     = Math::Point(0.5f, 0.5f);
-    m_mouseType    = Gfx::ENG_MOUSE_NORM;
-    m_mouseVisible = false;
+    m_mouseType    = ENG_MOUSE_NORM;
+
+    m_fpsCounter = 0;
+    m_lastFrameTime = CreateTimeStamp();
+    m_currentFrameTime = CreateTimeStamp();
 
     m_texPath = "textures/";
-    m_defaultTexParams.format = Gfx::TEX_IMG_AUTO;
+    m_defaultTexParams.format = TEX_IMG_AUTO;
     m_defaultTexParams.mipmap = true;
-    m_defaultTexParams.minFilter = Gfx::TEX_MIN_FILTER_LINEAR_MIPMAP_LINEAR;
-    m_defaultTexParams.magFilter = Gfx::TEX_MAG_FILTER_LINEAR;
+    m_defaultTexParams.minFilter = TEX_MIN_FILTER_LINEAR_MIPMAP_LINEAR;
+    m_defaultTexParams.magFilter = TEX_MAG_FILTER_LINEAR;
 
     m_objectTree.reserve(LEVEL1_PREALLOCATE_COUNT);
     m_objects.reserve(OBJECT_PREALLOCATE_COUNT);
@@ -211,46 +222,51 @@ Gfx::CEngine::CEngine(CInstanceManager *iMan, CApplication *app)
     m_groundSpots.reserve(GROUNDSPOT_PREALLOCATE_COUNT);
 }
 
-Gfx::CEngine::~CEngine()
+CEngine::~CEngine()
 {
     m_iMan    = nullptr;
     m_app     = nullptr;
     m_device  = nullptr;
     m_sound   = nullptr;
     m_terrain = nullptr;
+
+    DestroyTimeStamp(m_lastFrameTime);
+    m_lastFrameTime = nullptr;
+    DestroyTimeStamp(m_currentFrameTime);
+    m_currentFrameTime = nullptr;
 }
 
-void Gfx::CEngine::SetDevice(Gfx::CDevice *device)
+void CEngine::SetDevice(CDevice *device)
 {
     m_device = device;
 }
 
-Gfx::CDevice* Gfx::CEngine::GetDevice()
+CDevice* CEngine::GetDevice()
 {
     return m_device;
 }
 
-void Gfx::CEngine::SetTerrain(Gfx::CTerrain* terrain)
+void CEngine::SetTerrain(CTerrain* terrain)
 {
     m_terrain = terrain;
 }
 
-Gfx::CText* Gfx::CEngine::GetText()
+CText* CEngine::GetText()
 {
     return m_text;
 }
 
-bool Gfx::CEngine::Create()
+bool CEngine::Create()
 {
     m_size = m_lastSize = m_app->GetVideoConfig().size;
 
-    m_lightMan   = new Gfx::CLightManager(m_iMan, this);
-    m_text       = new Gfx::CText(m_iMan, this);
-    m_particle   = new Gfx::CParticle(m_iMan, this);
-    m_water      = new Gfx::CWater(m_iMan, this);
-    m_cloud      = new Gfx::CCloud(m_iMan, this);
-    m_lightning  = new Gfx::CLightning(m_iMan, this);
-    m_planet     = new Gfx::CPlanet(m_iMan, this);
+    m_lightMan   = new CLightManager(m_iMan, this);
+    m_text       = new CText(m_iMan, this);
+    m_particle   = new CParticle(m_iMan, this);
+    m_water      = new CWater(m_iMan, this);
+    m_cloud      = new CCloud(m_iMan, this);
+    m_lightning  = new CLightning(m_iMan, this);
+    m_planet     = new CPlanet(m_iMan, this);
 
     m_lightMan->SetDevice(m_device);
 
@@ -262,9 +278,9 @@ bool Gfx::CEngine::Create()
         return false;
     }
 
-    m_device->SetClearColor(Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f));
-    m_device->SetShadeModel(Gfx::SHADE_SMOOTH);
-    m_device->SetFillMode(Gfx::FILL_FILL);
+    m_device->SetClearColor(Color(0.0f, 0.0f, 0.0f, 0.0f));
+    m_device->SetShadeModel(SHADE_SMOOTH);
+    m_device->SetFillMode(FILL_POLY);
 
     SetFocus(m_focus);
 
@@ -273,17 +289,20 @@ bool Gfx::CEngine::Create()
 
     Math::LoadOrthoProjectionMatrix(m_matProjInterface, 0.0f, 1.0f, 0.0f, 1.0f, -1.0f, 1.0f);
 
-    Gfx::TextureCreateParams params;
-    params.format = Gfx::TEX_IMG_RGB;
-    params.minFilter = Gfx::TEX_MIN_FILTER_NEAREST;
-    params.magFilter = Gfx::TEX_MAG_FILTER_NEAREST;
+    TextureCreateParams params;
+    params.format = TEX_IMG_RGB;
+    params.minFilter = TEX_MIN_FILTER_NEAREST;
+    params.magFilter = TEX_MAG_FILTER_NEAREST;
     params.mipmap = false;
     m_miceTexture = LoadTexture("mouse.png", params);
+
+    GetCurrentTimeStamp(m_currentFrameTime);
+    GetCurrentTimeStamp(m_lastFrameTime);
 
     return true;
 }
 
-void Gfx::CEngine::Destroy()
+void CEngine::Destroy()
 {
     m_text->Destroy();
 
@@ -309,35 +328,46 @@ void Gfx::CEngine::Destroy()
     m_planet = nullptr;
 }
 
-void Gfx::CEngine::ResetAfterDeviceChanged()
+void CEngine::ResetAfterDeviceChanged()
 {
     // TODO reload textures, reset device state, etc.
 }
 
-bool Gfx::CEngine::ProcessEvent(const Event &event)
+bool CEngine::ProcessEvent(const Event &event)
 {
     if (event.type == EVENT_KEY_DOWN)
     {
-        // !! Debug, to be removed later !!
-
-        if (event.key.key == KEY(F1))
-        {
-            m_mouseVisible = !m_mouseVisible;
-            m_app->SetSystemMouseVisible(! m_app->GetSystemMouseVisibile());
-        }
-        else if (event.key.key == KEY(F2))
-        {
-            int index = static_cast<int>(m_mouseType);
-            m_mouseType = static_cast<Gfx::EngineMouseType>( (index + 1) % Gfx::ENG_MOUSE_COUNT );
-        }
+        if (event.key.key == KEY(F12))
+            m_showStats = !m_showStats;
     }
 
     // By default, pass on all events
     return true;
 }
 
-void Gfx::CEngine::FrameUpdate()
+void CEngine::FrameUpdate()
 {
+    m_fpsCounter++;
+
+    GetCurrentTimeStamp(m_currentFrameTime);
+    float diff = TimeStampDiff(m_lastFrameTime, m_currentFrameTime, STU_SEC);
+    if (diff > 1.0f)
+    {
+        CopyTimeStamp(m_lastFrameTime, m_currentFrameTime);
+
+        m_fps = m_fpsCounter / diff;
+
+        if (m_showStats)
+        {
+            std::stringstream str;
+            str << "FPS: ";
+            str.precision(2);
+            str.setf(std::ios_base::fixed);
+            str << m_fps;
+            m_fpsText = str.str();
+        }
+    }
+
     float rTime = m_app->GetRelTime();
 
     m_lightMan->UpdateProgression(rTime);
@@ -349,134 +379,134 @@ void Gfx::CEngine::FrameUpdate()
 
     if (m_groundMark.draw)
     {
-        if (m_groundMark.phase == Gfx::ENG_GR_MARK_PHASE_INC)  // growing?
+        if (m_groundMark.phase == ENG_GR_MARK_PHASE_INC)  // growing?
         {
             m_groundMark.intensity += rTime*(1.0f/m_groundMark.delay[0]);
             if (m_groundMark.intensity >= 1.0f)
             {
                 m_groundMark.intensity = 1.0f;
                 m_groundMark.fix = 0.0f;
-                m_groundMark.phase = Gfx::ENG_GR_MARK_PHASE_FIX;
+                m_groundMark.phase = ENG_GR_MARK_PHASE_FIX;
             }
         }
-        else if (m_groundMark.phase == Gfx::ENG_GR_MARK_PHASE_FIX)  // fixed?
+        else if (m_groundMark.phase == ENG_GR_MARK_PHASE_FIX)  // fixed?
         {
             m_groundMark.fix += rTime*(1.0f/m_groundMark.delay[1]);
             if (m_groundMark.fix >= 1.0f)
-                m_groundMark.phase = Gfx::ENG_GR_MARK_PHASE_DEC;
+                m_groundMark.phase = ENG_GR_MARK_PHASE_DEC;
         }
-        else if (m_groundMark.phase == Gfx::ENG_GR_MARK_PHASE_DEC)  // decay?
+        else if (m_groundMark.phase == ENG_GR_MARK_PHASE_DEC)  // decay?
         {
             m_groundMark.intensity -= rTime*(1.0f/m_groundMark.delay[2]);
             if (m_groundMark.intensity < 0.0f)
             {
                 m_groundMark.intensity = 0.0f;
-                m_groundMark.phase     = Gfx::ENG_GR_MARK_PHASE_NULL;
+                m_groundMark.phase     = ENG_GR_MARK_PHASE_NULL;
                 m_groundMark.draw     = false;
             }
         }
     }
 }
 
-bool Gfx::CEngine::WriteScreenShot(const std::string& fileName, int width, int height)
+bool CEngine::WriteScreenShot(const std::string& fileName, int width, int height)
 {
     // TODO write screenshot: not very important for now
     GetLogger()->Trace("CEngine::WriteSceenShot(): stub!\n");
     return true;
 }
 
-bool Gfx::CEngine::ReadSettings()
+bool CEngine::ReadSettings()
 {
     // TODO: when INI reading is completed
     return true;
 }
 
-bool Gfx::CEngine::WriteSettings()
+bool CEngine::WriteSettings()
 {
     // TODO: when INI writing is completed
     return true;
 }
 
-void Gfx::CEngine::SetPause(bool pause)
+void CEngine::SetPause(bool pause)
 {
     m_pause = pause;
 }
 
-bool Gfx::CEngine::GetPause()
+bool CEngine::GetPause()
 {
     return m_pause;
 }
 
-void Gfx::CEngine::SetMovieLock(bool lock)
+void CEngine::SetMovieLock(bool lock)
 {
     m_movieLock = lock;
 }
 
-bool Gfx::CEngine::GetMovieLock()
+bool CEngine::GetMovieLock()
 {
     return m_movieLock;
 }
 
-void Gfx::CEngine::SetShowStats(bool show)
+void CEngine::SetShowStats(bool show)
 {
     m_showStats = show;
 }
 
-bool Gfx::CEngine::GetShowStats()
+bool CEngine::GetShowStats()
 {
     return m_showStats;
 }
 
-void Gfx::CEngine::SetRenderEnable(bool enable)
+void CEngine::SetRenderEnable(bool enable)
 {
     m_render = enable;
 }
 
-Math::IntPoint Gfx::CEngine::GetWindowSize()
+Math::IntPoint CEngine::GetWindowSize()
 {
     return m_size;
 }
 
-Math::IntPoint Gfx::CEngine::GetLastWindowSize()
+Math::IntPoint CEngine::GetLastWindowSize()
 {
     return m_lastSize;
 }
 
-Math::Point Gfx::CEngine::WindowToInterfaceCoords(Math::IntPoint pos)
+Math::Point CEngine::WindowToInterfaceCoords(Math::IntPoint pos)
 {
     return Math::Point(        static_cast<float>(pos.x) / static_cast<float>(m_size.x),
                         1.0f - static_cast<float>(pos.y) / static_cast<float>(m_size.y)  );
 }
 
-Math::IntPoint Gfx::CEngine::InterfaceToWindowCoords(Math::Point pos)
+Math::IntPoint CEngine::InterfaceToWindowCoords(Math::Point pos)
 {
     return Math::IntPoint(static_cast<int>(pos.x * m_size.x),
                           static_cast<int>((1.0f - pos.y) * m_size.y));
 }
 
-Math::Point Gfx::CEngine::WindowToInterfaceSize(Math::IntPoint size)
+Math::Point CEngine::WindowToInterfaceSize(Math::IntPoint size)
 {
     return Math::Point(static_cast<float>(size.x) / static_cast<float>(m_size.x),
                        static_cast<float>(size.y) / static_cast<float>(m_size.y));
 }
 
-Math::IntPoint Gfx::CEngine::InterfaceToWindowSize(Math::Point size)
+Math::IntPoint CEngine::InterfaceToWindowSize(Math::Point size)
 {
     return Math::IntPoint(static_cast<int>(size.x * m_size.x),
                          static_cast<int>(size.y * m_size.y));
 }
 
-std::string Gfx::CEngine::GetTextureDir()
+std::string CEngine::GetTextureDir()
 {
     return m_texPath;
 }
 
-void Gfx::CEngine::AddStatisticTriangle(int count)
+void CEngine::AddStatisticTriangle(int count)
 {
     m_statisticTriangle += count;
 }
 
-int Gfx::CEngine::GetStatisticTriangle()
+int CEngine::GetStatisticTriangle()
 {
     return m_statisticTriangle;
 }
@@ -489,7 +519,7 @@ int Gfx::CEngine::GetStatisticTriangle()
 
 
 
-int Gfx::CEngine::CreateObject()
+int CEngine::CreateObject()
 {
     int i = 0;
     for ( ; i < static_cast<int>( m_objects.size() ); i++)
@@ -502,7 +532,7 @@ int Gfx::CEngine::CreateObject()
     }
 
     if (i == static_cast<int>( m_objects.size() ))
-        m_objects.push_back(Gfx::EngineObject());
+        m_objects.push_back(EngineObject());
 
 
     m_objects[i].used = true;
@@ -520,7 +550,7 @@ int Gfx::CEngine::CreateObject()
     return i;
 }
 
-void Gfx::CEngine::FlushObject()
+void CEngine::FlushObject()
 {
     m_objectTree.clear();
     m_objects.clear();
@@ -530,7 +560,7 @@ void Gfx::CEngine::FlushObject()
     FlushGroundSpot();
 }
 
-bool Gfx::CEngine::DeleteObject(int objRank)
+bool CEngine::DeleteObject(int objRank)
 {
     if ( objRank < 0 || objRank >= static_cast<int>( m_objects.size() ) )
         return false;
@@ -538,12 +568,12 @@ bool Gfx::CEngine::DeleteObject(int objRank)
     // Delete object's triangles
     for (int l1 = 0; l1 < static_cast<int>( m_objectTree.size() ); l1++)
     {
-        Gfx::EngineObjLevel1& p1 = m_objectTree[l1];
+        EngineObjLevel1& p1 = m_objectTree[l1];
         if (! p1.used) continue;
 
         for (int l2 = 0; l2 < static_cast<int>( p1.next.size() ); l2++)
         {
-            Gfx::EngineObjLevel2& p2 = p1.next[l2];
+            EngineObjLevel2& p2 = p1.next[l2];
             if (! p2.used) continue;
 
             if (p2.objRank == objRank)
@@ -563,7 +593,7 @@ bool Gfx::CEngine::DeleteObject(int objRank)
     return true;
 }
 
-bool Gfx::CEngine::SetObjectType(int objRank, Gfx::EngineObjectType type)
+bool CEngine::SetObjectType(int objRank, EngineObjectType type)
 {
     if ( objRank < 0 || objRank >= static_cast<int>( m_objects.size() ) )
         return false;
@@ -572,16 +602,16 @@ bool Gfx::CEngine::SetObjectType(int objRank, Gfx::EngineObjectType type)
     return true;
 }
 
-Gfx::EngineObjectType Gfx::CEngine::GetObjectType(int objRank)
+EngineObjectType CEngine::GetObjectType(int objRank)
 {
     if ( objRank < 0 || objRank >= static_cast<int>( m_objects.size() ) )
-        return Gfx::ENG_OBJTYPE_NULL;
+        return ENG_OBJTYPE_NULL;
 
     return m_objects[objRank].type;
 }
 
 
-bool Gfx::CEngine::SetObjectTransform(int objRank, const Math::Matrix& transform)
+bool CEngine::SetObjectTransform(int objRank, const Math::Matrix& transform)
 {
     if ( objRank < 0 || objRank >= static_cast<int>( m_objects.size() ) )
         return false;
@@ -590,7 +620,7 @@ bool Gfx::CEngine::SetObjectTransform(int objRank, const Math::Matrix& transform
     return true;
 }
 
-bool Gfx::CEngine::GetObjectTransform(int objRank, Math::Matrix& transform)
+bool CEngine::GetObjectTransform(int objRank, Math::Matrix& transform)
 {
     if ( objRank < 0 || objRank >= static_cast<int>( m_objects.size() ) )
         return false;
@@ -599,7 +629,7 @@ bool Gfx::CEngine::GetObjectTransform(int objRank, Math::Matrix& transform)
     return true;
 }
 
-bool Gfx::CEngine::SetObjectDrawWorld(int objRank, bool draw)
+bool CEngine::SetObjectDrawWorld(int objRank, bool draw)
 {
     if ( objRank < 0 || objRank >= static_cast<int>( m_objects.size() ) )
         return false;
@@ -608,7 +638,7 @@ bool Gfx::CEngine::SetObjectDrawWorld(int objRank, bool draw)
     return true;
 }
 
-bool Gfx::CEngine::SetObjectDrawFront(int objRank, bool draw)
+bool CEngine::SetObjectDrawFront(int objRank, bool draw)
 {
     if ( objRank < 0 || objRank >= static_cast<int>( m_objects.size() ) )
         return false;
@@ -617,7 +647,7 @@ bool Gfx::CEngine::SetObjectDrawFront(int objRank, bool draw)
     return true;
 }
 
-bool Gfx::CEngine::SetObjectTransparency(int objRank, float value)
+bool CEngine::SetObjectTransparency(int objRank, float value)
 {
     if ( objRank < 0 || objRank >= static_cast<int>( m_objects.size() ) )
         return false;
@@ -626,7 +656,7 @@ bool Gfx::CEngine::SetObjectTransparency(int objRank, float value)
     return true;
 }
 
-bool Gfx::CEngine::GetObjectBBox(int objRank, Math::Vector& min, Math::Vector& max)
+bool CEngine::GetObjectBBox(int objRank, Math::Vector& min, Math::Vector& max)
 {
     if ( objRank < 0 || objRank >= static_cast<int>( m_objects.size() ) )
         return 0;
@@ -637,7 +667,7 @@ bool Gfx::CEngine::GetObjectBBox(int objRank, Math::Vector& min, Math::Vector& m
 }
 
 
-int Gfx::CEngine::GetObjectTotalTriangles(int objRank)
+int CEngine::GetObjectTotalTriangles(int objRank)
 {
     if ( objRank < 0 || objRank >= static_cast<int>( m_objects.size() ) )
         return 0;
@@ -646,7 +676,7 @@ int Gfx::CEngine::GetObjectTotalTriangles(int objRank)
 }
 
 
-Gfx::EngineObjLevel1& Gfx::CEngine::AddLevel1(const std::string& tex1Name, const std::string& tex2Name)
+EngineObjLevel1& CEngine::AddLevel1(const std::string& tex1Name, const std::string& tex2Name)
 {
     bool unusedPresent = false;
     for (int i = 0; i < static_cast<int>( m_objectTree.size() ); i++)
@@ -675,11 +705,11 @@ Gfx::EngineObjLevel1& Gfx::CEngine::AddLevel1(const std::string& tex1Name, const
         }
     }
 
-    m_objectTree.push_back(Gfx::EngineObjLevel1(true, tex1Name, tex2Name));
+    m_objectTree.push_back(EngineObjLevel1(true, tex1Name, tex2Name));
     return m_objectTree.back();
 }
 
-Gfx::EngineObjLevel2& Gfx::CEngine::AddLevel2(Gfx::EngineObjLevel1& p1, int objRank)
+EngineObjLevel2& CEngine::AddLevel2(EngineObjLevel1& p1, int objRank)
 {
     bool unusedPresent = false;
     for (int i = 0; i < static_cast<int>( p1.next.size() ); i++)
@@ -707,11 +737,11 @@ Gfx::EngineObjLevel2& Gfx::CEngine::AddLevel2(Gfx::EngineObjLevel1& p1, int objR
         }
     }
 
-    p1.next.push_back(Gfx::EngineObjLevel2(true, objRank));
+    p1.next.push_back(EngineObjLevel2(true, objRank));
     return p1.next.back();
 }
 
-Gfx::EngineObjLevel3& Gfx::CEngine::AddLevel3(Gfx::EngineObjLevel2& p2, float min, float max)
+EngineObjLevel3& CEngine::AddLevel3(EngineObjLevel2& p2, float min, float max)
 {
     bool unusedPresent = false;
     for (int i = 0; i < static_cast<int>( p2.next.size() ); i++)
@@ -740,12 +770,12 @@ Gfx::EngineObjLevel3& Gfx::CEngine::AddLevel3(Gfx::EngineObjLevel2& p2, float mi
         }
     }
 
-    p2.next.push_back(Gfx::EngineObjLevel3(true, min, max));
+    p2.next.push_back(EngineObjLevel3(true, min, max));
     return p2.next.back();
 }
 
-Gfx::EngineObjLevel4& Gfx::CEngine::AddLevel4(Gfx::EngineObjLevel3& p3, Gfx::EngineTriangleType type,
-                                              const Gfx::Material& material, int state)
+EngineObjLevel4& CEngine::AddLevel4(EngineObjLevel3& p3, EngineTriangleType type,
+                                              const Material& material, int state)
 {
     bool unusedPresent = false;
     for (int i = 0; i < static_cast<int>( p3.next.size() ); i++)
@@ -775,12 +805,12 @@ Gfx::EngineObjLevel4& Gfx::CEngine::AddLevel4(Gfx::EngineObjLevel3& p3, Gfx::Eng
         }
     }
 
-    p3.next.push_back(Gfx::EngineObjLevel4(true, type, material, state));
+    p3.next.push_back(EngineObjLevel4(true, type, material, state));
     return p3.next.back();
 }
 
-bool Gfx::CEngine::AddTriangles(int objRank, const std::vector<Gfx::VertexTex2>& vertices,
-                                const Gfx::Material& material, int state,
+bool CEngine::AddTriangles(int objRank, const std::vector<VertexTex2>& vertices,
+                                const Material& material, int state,
                                 std::string tex1Name, std::string tex2Name,
                                 float min, float max, bool globalUpdate)
 {
@@ -794,10 +824,10 @@ bool Gfx::CEngine::AddTriangles(int objRank, const std::vector<Gfx::VertexTex2>&
     m_lastObjectDetail = m_objectDetail;
     m_lastClippingDistance = m_clippingDistance;
 
-    Gfx::EngineObjLevel1& p1 = AddLevel1(tex1Name, tex2Name);
-    Gfx::EngineObjLevel2& p2 = AddLevel2(p1, objRank);
-    Gfx::EngineObjLevel3& p3 = AddLevel3(p2, min, max);
-    Gfx::EngineObjLevel4& p4 = AddLevel4(p3, Gfx::ENG_TRIANGLE_TYPE_TRIANGLES, material, state);
+    EngineObjLevel1& p1 = AddLevel1(tex1Name, tex2Name);
+    EngineObjLevel2& p2 = AddLevel2(p1, objRank);
+    EngineObjLevel3& p3 = AddLevel3(p2, min, max);
+    EngineObjLevel4& p4 = AddLevel4(p3, ENG_TRIANGLE_TYPE_TRIANGLES, material, state);
 
     p4.vertices.insert(p4.vertices.end(), vertices.begin(), vertices.end());
 
@@ -826,8 +856,8 @@ bool Gfx::CEngine::AddTriangles(int objRank, const std::vector<Gfx::VertexTex2>&
     return true;
 }
 
-bool Gfx::CEngine::AddSurface(int objRank, const std::vector<Gfx::VertexTex2>& vertices,
-                              const Gfx::Material& material, int state,
+bool CEngine::AddSurface(int objRank, const std::vector<VertexTex2>& vertices,
+                              const Material& material, int state,
                               std::string tex1Name, std::string tex2Name,
                               float min, float max, bool globalUpdate)
 {
@@ -841,10 +871,10 @@ bool Gfx::CEngine::AddSurface(int objRank, const std::vector<Gfx::VertexTex2>& v
     m_lastObjectDetail = m_objectDetail;
     m_lastClippingDistance = m_clippingDistance;
 
-    Gfx::EngineObjLevel1& p1 = AddLevel1(tex1Name, tex2Name);
-    Gfx::EngineObjLevel2& p2 = AddLevel2(p1, objRank);
-    Gfx::EngineObjLevel3& p3 = AddLevel3(p2, min, max);
-    Gfx::EngineObjLevel4& p4 = AddLevel4(p3, Gfx::ENG_TRIANGLE_TYPE_SURFACE, material, state);
+    EngineObjLevel1& p1 = AddLevel1(tex1Name, tex2Name);
+    EngineObjLevel2& p2 = AddLevel2(p1, objRank);
+    EngineObjLevel3& p3 = AddLevel3(p2, min, max);
+    EngineObjLevel4& p4 = AddLevel4(p3, ENG_TRIANGLE_TYPE_SURFACE, material, state);
 
     p4.vertices.insert(p4.vertices.end(), vertices.begin(), vertices.end());
 
@@ -873,7 +903,7 @@ bool Gfx::CEngine::AddSurface(int objRank, const std::vector<Gfx::VertexTex2>& v
     return true;
 }
 
-bool Gfx::CEngine::AddQuick(int objRank, const Gfx::EngineObjLevel4& buffer,
+bool CEngine::AddQuick(int objRank, const EngineObjLevel4& buffer,
                             std::string tex1Name, std::string tex2Name,
                             float min, float max, bool globalUpdate)
 {
@@ -883,9 +913,9 @@ bool Gfx::CEngine::AddQuick(int objRank, const Gfx::EngineObjLevel4& buffer,
         return false;
     }
 
-    Gfx::EngineObjLevel1& p1 = AddLevel1(tex1Name, tex2Name);
-    Gfx::EngineObjLevel2& p2 = AddLevel2(p1, objRank);
-    Gfx::EngineObjLevel3& p3 = AddLevel3(p2, min, max);
+    EngineObjLevel1& p1 = AddLevel1(tex1Name, tex2Name);
+    EngineObjLevel2& p2 = AddLevel2(p1, objRank);
+    EngineObjLevel3& p3 = AddLevel3(p2, min, max);
 
     p3.next.push_back(buffer);
     p3.next.back().used = true; // ensure that it is used
@@ -910,15 +940,15 @@ bool Gfx::CEngine::AddQuick(int objRank, const Gfx::EngineObjLevel4& buffer,
                                               m_objects[objRank].bboxMax.Length());
     }
 
-    if (buffer.type == Gfx::ENG_TRIANGLE_TYPE_TRIANGLES)
+    if (buffer.type == ENG_TRIANGLE_TYPE_TRIANGLES)
         m_objects[objRank].totalTriangles += buffer.vertices.size() / 3;
-    else if (buffer.type == Gfx::ENG_TRIANGLE_TYPE_SURFACE)
+    else if (buffer.type == ENG_TRIANGLE_TYPE_SURFACE)
         m_objects[objRank].totalTriangles += buffer.vertices.size() - 2;
 
     return true;
 }
 
-Gfx::EngineObjLevel4* Gfx::CEngine::FindTriangles(int objRank, const Gfx::Material& material,
+EngineObjLevel4* CEngine::FindTriangles(int objRank, const Material& material,
                                                   int state, std::string tex1Name,
                                                   std::string tex2Name, float min, float max)
 {
@@ -930,7 +960,7 @@ Gfx::EngineObjLevel4* Gfx::CEngine::FindTriangles(int objRank, const Gfx::Materi
 
     for (int l1 = 0; l1 < static_cast<int>( m_objectTree.size() ); l1++)
     {
-        Gfx::EngineObjLevel1& p1 = m_objectTree[l1];
+        EngineObjLevel1& p1 = m_objectTree[l1];
         if (! p1.used) continue;
 
         if (p1.tex1Name != tex1Name) continue;
@@ -938,24 +968,24 @@ Gfx::EngineObjLevel4* Gfx::CEngine::FindTriangles(int objRank, const Gfx::Materi
 
         for (int l2 = 0; l2 < static_cast<int>( p1.next.size() ); l2++)
         {
-            Gfx::EngineObjLevel2& p2 = p1.next[l2];
+            EngineObjLevel2& p2 = p1.next[l2];
             if (! p2.used) continue;
 
             if (p2.objRank != objRank) continue;
 
             for (int l3 = 0; l3 < static_cast<int>( p2.next.size() ); l3++)
             {
-                Gfx::EngineObjLevel3& p3 = p2.next[l3];
+                EngineObjLevel3& p3 = p2.next[l3];
                 if (! p3.used) continue;
 
                 if (p3.min != min || p3.max != max) continue;
 
                 for (int l4 = 0; l4 < static_cast<int>( p3.next.size() ); l4++)
                 {
-                    Gfx::EngineObjLevel4& p4 = p3.next[l4];
+                    EngineObjLevel4& p4 = p3.next[l4];
                     if (! p4.used) continue;
 
-                    if ( (p4.state & (~(Gfx::ENG_RSTATE_DUAL_BLACK|Gfx::ENG_RSTATE_DUAL_WHITE))) != state ||
+                    if ( (p4.state & (~(ENG_RSTATE_DUAL_BLACK|ENG_RSTATE_DUAL_WHITE))) != state ||
                          p4.material != material )
                         continue;
 
@@ -968,8 +998,8 @@ Gfx::EngineObjLevel4* Gfx::CEngine::FindTriangles(int objRank, const Gfx::Materi
     return nullptr;
 }
 
-int Gfx::CEngine::GetPartialTriangles(int objRank, float min, float max, float percent, int maxCount,
-                                      std::vector<Gfx::EngineTriangle>& triangles)
+int CEngine::GetPartialTriangles(int objRank, float min, float max, float percent, int maxCount,
+                                      std::vector<EngineTriangle>& triangles)
 {
     if ( objRank < 0 || objRank >= static_cast<int>( m_objects.size() ) )
     {
@@ -985,29 +1015,29 @@ int Gfx::CEngine::GetPartialTriangles(int objRank, float min, float max, float p
 
     for (int l1 = 0; l1 < static_cast<int>( m_objectTree.size() ); l1++)
     {
-        Gfx::EngineObjLevel1& p1 = m_objectTree[l1];
+        EngineObjLevel1& p1 = m_objectTree[l1];
         if (! p1.used) continue;
 
         for (int l2 = 0; l2 < static_cast<int>( p1.next.size() ); l2++)
         {
-            Gfx::EngineObjLevel2& p2 = p1.next[l2];
+            EngineObjLevel2& p2 = p1.next[l2];
             if (! p2.used) continue;
 
             if (p2.objRank != objRank) continue;
 
             for (int l3 = 0; l3 < static_cast<int>( p2.next.size() ); l3++)
             {
-                Gfx::EngineObjLevel3& p3 = p2.next[l3];
+                EngineObjLevel3& p3 = p2.next[l3];
                 if (! p3.used) continue;
 
                 if (p3.min != min || p3.max != max) continue;
 
                 for (int l4 = 0; l4 < static_cast<int>( p3.next.size() ); l4++)
                 {
-                    Gfx::EngineObjLevel4& p4 = p3.next[l4];
+                    EngineObjLevel4& p4 = p3.next[l4];
                     if (! p4.used) continue;
 
-                    if (p4.type == Gfx::ENG_TRIANGLE_TYPE_TRIANGLES)
+                    if (p4.type == ENG_TRIANGLE_TYPE_TRIANGLES)
                     {
                         for (int i = 0; i < static_cast<int>( p4.vertices.size() ); i += 3)
                         {
@@ -1017,7 +1047,7 @@ int Gfx::CEngine::GetPartialTriangles(int objRank, float min, float max, float p
                             if (actualCount >= maxCount)
                                 break;
 
-                            Gfx::EngineTriangle t;
+                            EngineTriangle t;
                             t.triangle[0] = p4.vertices[i];
                             t.triangle[1] = p4.vertices[i+1];
                             t.triangle[2] = p4.vertices[i+2];
@@ -1031,7 +1061,7 @@ int Gfx::CEngine::GetPartialTriangles(int objRank, float min, float max, float p
                             ++actualCount;
                         }
                     }
-                    else if (p4.type == Gfx::ENG_TRIANGLE_TYPE_SURFACE)
+                    else if (p4.type == ENG_TRIANGLE_TYPE_SURFACE)
                     {
                         for (int i = 0; i < static_cast<int>( p4.vertices.size() ); i += 1)
                         {
@@ -1041,7 +1071,7 @@ int Gfx::CEngine::GetPartialTriangles(int objRank, float min, float max, float p
                             if (actualCount >= maxCount)
                                 break;
 
-                            Gfx::EngineTriangle t;
+                            EngineTriangle t;
                             t.triangle[0] = p4.vertices[i];
                             t.triangle[1] = p4.vertices[i+1];
                             t.triangle[2] = p4.vertices[i+2];
@@ -1063,7 +1093,7 @@ int Gfx::CEngine::GetPartialTriangles(int objRank, float min, float max, float p
     return actualCount;
 }
 
-void Gfx::CEngine::ChangeLOD()
+void CEngine::ChangeLOD()
 {
     float oldLimit[2] =
     {
@@ -1082,17 +1112,17 @@ void Gfx::CEngine::ChangeLOD()
 
     for (int l1 = 0; l1 < static_cast<int>( m_objectTree.size() ); l1++)
     {
-        Gfx::EngineObjLevel1& p1 = m_objectTree[l1];
+        EngineObjLevel1& p1 = m_objectTree[l1];
         if (! p1.used) continue;
 
         for (int l2 = 0; l2 < static_cast<int>( p1.next.size() ); l2++)
         {
-            Gfx::EngineObjLevel2& p2 = p1.next[l2];
+            EngineObjLevel2& p2 = p1.next[l2];
             if (! p2.used) continue;
 
             for (int l3 = 0; l3 < static_cast<int>( p2.next.size() ); l3++)
             {
-                Gfx::EngineObjLevel3& p3 = p2.next[l3];
+                EngineObjLevel3& p3 = p2.next[l3];
                 if (! p3.used) continue;
 
                 if ( Math::IsEqual(p3.min, 0.0f       ) &&
@@ -1125,27 +1155,27 @@ void Gfx::CEngine::ChangeLOD()
     m_lastClippingDistance = m_clippingDistance;
 }
 
-bool Gfx::CEngine::ChangeSecondTexture(int objRank, const std::string& tex2Name)
+bool CEngine::ChangeSecondTexture(int objRank, const std::string& tex2Name)
 {
     for (int l1 = 0; l1 < static_cast<int>( m_objectTree.size() ); l1++)
     {
-        Gfx::EngineObjLevel1& p1 = m_objectTree[l1];
+        EngineObjLevel1& p1 = m_objectTree[l1];
         if (! p1.used) continue;
 
         if (p1.tex2Name == tex2Name) continue;  // already new
 
         for (int l2 = 0; l2 < static_cast<int>( p1.next.size() ); l2++)
         {
-            Gfx::EngineObjLevel2& p2 = p1.next[l2];
+            EngineObjLevel2& p2 = p1.next[l2];
             if (! p2.used) continue;
 
             if (p2.objRank != objRank) continue;
 
-            Gfx::EngineObjLevel1& newP1 = AddLevel1(p1.tex1Name, tex2Name);
+            EngineObjLevel1& newP1 = AddLevel1(p1.tex1Name, tex2Name);
 
-            newP1.next.push_back(Gfx::EngineObjLevel2(true, objRank));
+            newP1.next.push_back(EngineObjLevel2(true, objRank));
 
-            Gfx::EngineObjLevel2& newP2 = newP1.next.back();
+            EngineObjLevel2& newP2 = newP1.next.back();
             newP2.next.swap(p2.next);
 
             p2.used = false;
@@ -1154,18 +1184,18 @@ bool Gfx::CEngine::ChangeSecondTexture(int objRank, const std::string& tex2Name)
     return true;
 }
 
-bool Gfx::CEngine::ChangeTextureMapping(int objRank, const Gfx::Material& mat, int state,
+bool CEngine::ChangeTextureMapping(int objRank, const Material& mat, int state,
                                          const std::string& tex1Name, const std::string& tex2Name,
-                                         float min, float max, Gfx::EngineTextureMapping mode,
+                                         float min, float max, EngineTextureMapping mode,
                                          float au, float bu, float av, float bv)
 {
-    Gfx::EngineObjLevel4* p4 = FindTriangles(objRank, mat, state, tex1Name, tex2Name, min, max);
+    EngineObjLevel4* p4 = FindTriangles(objRank, mat, state, tex1Name, tex2Name, min, max);
     if (p4 == nullptr)
         return false;
 
     int nb = p4->vertices.size();
 
-    if (mode == Gfx::ENG_TEX_MAPPING_X)
+    if (mode == ENG_TEX_MAPPING_X)
     {
         for (int i = 0; i < nb; i++)
         {
@@ -1173,7 +1203,7 @@ bool Gfx::CEngine::ChangeTextureMapping(int objRank, const Gfx::Material& mat, i
             p4->vertices[i].texCoord.y = p4->vertices[i].coord.y * av + bv;
         }
     }
-    else if (mode == Gfx::ENG_TEX_MAPPING_Y)
+    else if (mode == ENG_TEX_MAPPING_Y)
     {
         for (int i = 0; i < nb; i++)
         {
@@ -1181,7 +1211,7 @@ bool Gfx::CEngine::ChangeTextureMapping(int objRank, const Gfx::Material& mat, i
             p4->vertices[i].texCoord.y = p4->vertices[i].coord.z * av + bv;
         }
     }
-    else if (mode == Gfx::ENG_TEX_MAPPING_Z)
+    else if (mode == ENG_TEX_MAPPING_Z)
     {
         for (int i = 0; i < nb; i++)
         {
@@ -1189,21 +1219,21 @@ bool Gfx::CEngine::ChangeTextureMapping(int objRank, const Gfx::Material& mat, i
             p4->vertices[i].texCoord.y = p4->vertices[i].coord.y * av + bv;
         }
     }
-    else if (mode == Gfx::ENG_TEX_MAPPING_1X)
+    else if (mode == ENG_TEX_MAPPING_1X)
     {
         for (int i = 0; i < nb; i++)
         {
             p4->vertices[i].texCoord.x = p4->vertices[i].coord.x * au + bu;
         }
     }
-    else if (mode == Gfx::ENG_TEX_MAPPING_1Y)
+    else if (mode == ENG_TEX_MAPPING_1Y)
     {
         for (int i = 0; i < nb; i++)
         {
             p4->vertices[i].texCoord.y = p4->vertices[i].coord.y * au + bu;
         }
     }
-    else if (mode == Gfx::ENG_TEX_MAPPING_1Z)
+    else if (mode == ENG_TEX_MAPPING_1Z)
     {
         for (int i = 0; i < nb; i++)
         {
@@ -1214,9 +1244,9 @@ bool Gfx::CEngine::ChangeTextureMapping(int objRank, const Gfx::Material& mat, i
     return true;
 }
 
-bool Gfx::CEngine::TrackTextureMapping(int objRank, const Gfx::Material& mat, int state,
+bool CEngine::TrackTextureMapping(int objRank, const Material& mat, int state,
                                         const std::string& tex1Name, const std::string& tex2Name,
-                                        float min, float max, Gfx::EngineTextureMapping mode,
+                                        float min, float max, EngineTextureMapping mode,
                                         float pos, float factor, float tl, float ts, float tt)
 {
     // TODO track texture mapping: pretty complex code, so leaving it for now
@@ -1225,7 +1255,7 @@ bool Gfx::CEngine::TrackTextureMapping(int objRank, const Gfx::Material& mat, in
 }
 
 
-bool Gfx::CEngine::CreateShadow(int objRank)
+bool CEngine::CreateShadow(int objRank)
 {
     if ( objRank < 0 || objRank >= static_cast<int>( m_objects.size() ) )
         return false;
@@ -1243,7 +1273,7 @@ bool Gfx::CEngine::CreateShadow(int objRank)
         }
     }
 
-    m_shadows.push_back(Gfx::EngineShadow());
+    m_shadows.push_back(EngineShadow());
 
     m_shadows[index].used = true;
     m_shadows[index].objRank = objRank;
@@ -1254,7 +1284,7 @@ bool Gfx::CEngine::CreateShadow(int objRank)
     return true;
 }
 
-void Gfx::CEngine::DeleteShadow(int objRank)
+void CEngine::DeleteShadow(int objRank)
 {
     if ( objRank < 0 || objRank >= static_cast<int>( m_objects.size() ) )
         return;
@@ -1269,7 +1299,7 @@ void Gfx::CEngine::DeleteShadow(int objRank)
     m_objects[objRank].shadowRank = -1;
 }
 
-bool Gfx::CEngine::SetObjectShadowHide(int objRank, bool hide)
+bool CEngine::SetObjectShadowHide(int objRank, bool hide)
 {
     if ( objRank < 0 || objRank >= static_cast<int>( m_objects.size() ) )
         return false;
@@ -1282,7 +1312,7 @@ bool Gfx::CEngine::SetObjectShadowHide(int objRank, bool hide)
     return true;
 }
 
-bool Gfx::CEngine::SetObjectShadowType(int objRank, Gfx::EngineShadowType type)
+bool CEngine::SetObjectShadowType(int objRank, EngineShadowType type)
 {
     if ( objRank < 0 || objRank >= static_cast<int>( m_objects.size() ) )
         return false;
@@ -1295,7 +1325,7 @@ bool Gfx::CEngine::SetObjectShadowType(int objRank, Gfx::EngineShadowType type)
     return true;
 }
 
-bool Gfx::CEngine::SetObjectShadowPos(int objRank, const Math::Vector& pos)
+bool CEngine::SetObjectShadowPos(int objRank, const Math::Vector& pos)
 {
     if ( objRank < 0 || objRank >= static_cast<int>( m_objects.size() ) )
         return false;
@@ -1308,7 +1338,7 @@ bool Gfx::CEngine::SetObjectShadowPos(int objRank, const Math::Vector& pos)
     return true;
 }
 
-bool Gfx::CEngine::SetObjectShadowNormal(int objRank, const Math::Vector& normal)
+bool CEngine::SetObjectShadowNormal(int objRank, const Math::Vector& normal)
 {
     if ( objRank < 0 || objRank >= static_cast<int>( m_objects.size() ) )
         return false;
@@ -1321,7 +1351,7 @@ bool Gfx::CEngine::SetObjectShadowNormal(int objRank, const Math::Vector& normal
     return true;
 }
 
-bool Gfx::CEngine::SetObjectShadowAngle(int objRank, float angle)
+bool CEngine::SetObjectShadowAngle(int objRank, float angle)
 {
     if ( objRank < 0 || objRank >= static_cast<int>( m_objects.size() ) )
         return false;
@@ -1334,7 +1364,7 @@ bool Gfx::CEngine::SetObjectShadowAngle(int objRank, float angle)
     return true;
 }
 
-bool Gfx::CEngine::SetObjectShadowRadius(int objRank, float radius)
+bool CEngine::SetObjectShadowRadius(int objRank, float radius)
 {
     if ( objRank < 0 || objRank >= static_cast<int>( m_objects.size() ) )
         return false;
@@ -1347,7 +1377,7 @@ bool Gfx::CEngine::SetObjectShadowRadius(int objRank, float radius)
     return true;
 }
 
-bool Gfx::CEngine::SetObjectShadowIntensity(int objRank, float intensity)
+bool CEngine::SetObjectShadowIntensity(int objRank, float intensity)
 {
     if ( objRank < 0 || objRank >= static_cast<int>( m_objects.size() ) )
         return false;
@@ -1360,7 +1390,7 @@ bool Gfx::CEngine::SetObjectShadowIntensity(int objRank, float intensity)
     return true;
 }
 
-bool Gfx::CEngine::SetObjectShadowHeight(int objRank, float height)
+bool CEngine::SetObjectShadowHeight(int objRank, float height)
 {
     if ( objRank < 0 || objRank >= static_cast<int>( m_objects.size() ) )
         return false;
@@ -1373,7 +1403,7 @@ bool Gfx::CEngine::SetObjectShadowHeight(int objRank, float height)
     return true;
 }
 
-float Gfx::CEngine::GetObjectShadowRadius(int objRank)
+float CEngine::GetObjectShadowRadius(int objRank)
 {
     if ( objRank < 0 || objRank >= static_cast<int>( m_objects.size() ) )
         return 0.0f;
@@ -1385,14 +1415,14 @@ float Gfx::CEngine::GetObjectShadowRadius(int objRank)
     return m_shadows[i].radius;
 }
 
-bool Gfx::CEngine::GetHighlight(Math::Point &p1, Math::Point &p2)
+bool CEngine::GetHighlight(Math::Point &p1, Math::Point &p2)
 {
     p1 = m_highlightP1;
     p2 = m_highlightP2;
     return m_highlight;
 }
 
-void Gfx::CEngine::SetHighlightRank(int *rankList)
+void CEngine::SetHighlightRank(int *rankList)
 {
     int i = 0;
     while ( *rankList != -1 )
@@ -1402,7 +1432,7 @@ void Gfx::CEngine::SetHighlightRank(int *rankList)
     m_highlightRank[i] = -1;  // terminator
 }
 
-bool Gfx::CEngine::GetBBox2D(int objRank, Math::Point &min, Math::Point &max)
+bool CEngine::GetBBox2D(int objRank, Math::Point &min, Math::Point &max)
 {
     min.x =  1000000.0f;
     min.y =  1000000.0f;
@@ -1438,7 +1468,7 @@ bool Gfx::CEngine::GetBBox2D(int objRank, Math::Point &min, Math::Point &max)
     return true;
 }
 
-void Gfx::CEngine::FlushGroundSpot()
+void CEngine::FlushGroundSpot()
 {
     m_groundSpots.clear();
     m_firstGroundSpot = true;
@@ -1446,7 +1476,7 @@ void Gfx::CEngine::FlushGroundSpot()
     // TODO: blank all shadow textures
 }
 
-int Gfx::CEngine::CreateGroundSpot()
+int CEngine::CreateGroundSpot()
 {
     int index = 0;
     for ( ; index < static_cast<int>( m_groundSpots.size() ); index++)
@@ -1458,7 +1488,7 @@ int Gfx::CEngine::CreateGroundSpot()
         }
     }
 
-    m_groundSpots.push_back(Gfx::EngineGroundSpot());
+    m_groundSpots.push_back(EngineGroundSpot());
 
     m_groundSpots[index].used = true;
     m_groundSpots[index].smooth = 1.0f;
@@ -1466,13 +1496,13 @@ int Gfx::CEngine::CreateGroundSpot()
     return index;
 }
 
-void Gfx::CEngine::DeleteGroundSpot(int rank)
+void CEngine::DeleteGroundSpot(int rank)
 {
     m_groundSpots[rank].used = false;
     m_groundSpots[rank].pos = Math::Vector(0.0f, 0.0f, 0.0f);
 }
 
-bool Gfx::CEngine::SetObjectGroundSpotPos(int rank, const Math::Vector& pos)
+bool CEngine::SetObjectGroundSpotPos(int rank, const Math::Vector& pos)
 {
     if ( rank < 0 || rank >= static_cast<int>( m_groundSpots.size() ) )
         return 0.0f;
@@ -1481,7 +1511,7 @@ bool Gfx::CEngine::SetObjectGroundSpotPos(int rank, const Math::Vector& pos)
     return true;
 }
 
-bool Gfx::CEngine::SetObjectGroundSpotRadius(int rank, float radius)
+bool CEngine::SetObjectGroundSpotRadius(int rank, float radius)
 {
     if ( rank < 0 || rank >= static_cast<int>( m_groundSpots.size() ) )
         return 0.0f;
@@ -1490,7 +1520,7 @@ bool Gfx::CEngine::SetObjectGroundSpotRadius(int rank, float radius)
     return true;
 }
 
-bool Gfx::CEngine::SetObjectGroundSpotColor(int rank, const Gfx::Color& color)
+bool CEngine::SetObjectGroundSpotColor(int rank, const Color& color)
 {
     if ( rank < 0 || rank >= static_cast<int>( m_groundSpots.size() ) )
         return 0.0f;
@@ -1499,7 +1529,7 @@ bool Gfx::CEngine::SetObjectGroundSpotColor(int rank, const Gfx::Color& color)
     return true;
 }
 
-bool Gfx::CEngine::SetObjectGroundSpotMinMax(int rank, float min, float max)
+bool CEngine::SetObjectGroundSpotMinMax(int rank, float min, float max)
 {
     if ( rank < 0 || rank >= static_cast<int>( m_groundSpots.size() ) )
         return 0.0f;
@@ -1509,7 +1539,7 @@ bool Gfx::CEngine::SetObjectGroundSpotMinMax(int rank, float min, float max)
     return true;
 }
 
-bool Gfx::CEngine::SetObjectGroundSpotSmooth(int rank, float smooth)
+bool CEngine::SetObjectGroundSpotSmooth(int rank, float smooth)
 {
     if ( rank < 0 || rank >= static_cast<int>( m_groundSpots.size() ) )
         return 0.0f;
@@ -1518,13 +1548,13 @@ bool Gfx::CEngine::SetObjectGroundSpotSmooth(int rank, float smooth)
     return true;
 }
 
-void Gfx::CEngine::CreateGroundMark(Math::Vector pos, float radius,
+void CEngine::CreateGroundMark(Math::Vector pos, float radius,
                                    float delay1, float delay2, float delay3,
                                    int dx, int dy, char* table)
 {
     m_groundMark.LoadDefault();
 
-    m_groundMark.phase     = Gfx::ENG_GR_MARK_PHASE_INC;
+    m_groundMark.phase     = ENG_GR_MARK_PHASE_INC;
     m_groundMark.delay[0]  = delay1;
     m_groundMark.delay[1]  = delay2;
     m_groundMark.delay[2]  = delay3;
@@ -1536,12 +1566,12 @@ void Gfx::CEngine::CreateGroundMark(Math::Vector pos, float radius,
     m_groundMark.table     = table;
 }
 
-void Gfx::CEngine::DeleteGroundMark(int rank)
+void CEngine::DeleteGroundMark(int rank)
 {
     m_groundMark.LoadDefault();
 }
 
-void Gfx::CEngine::ComputeDistance()
+void CEngine::ComputeDistance()
 {
     // TODO: s_resol???
 
@@ -1558,7 +1588,7 @@ void Gfx::CEngine::ComputeDistance()
     }
 }
 
-void Gfx::CEngine::UpdateGeometry()
+void CEngine::UpdateGeometry()
 {
     if (! m_updateGeometry)
         return;
@@ -1576,22 +1606,22 @@ void Gfx::CEngine::UpdateGeometry()
 
     for (int l1 = 0; l1 < static_cast<int>( m_objectTree.size() ); l1++)
     {
-        Gfx::EngineObjLevel1& p1 = m_objectTree[l1];
+        EngineObjLevel1& p1 = m_objectTree[l1];
         if (! p1.used) continue;
 
         for (int l2 = 0; l2 < static_cast<int>( p1.next.size() ); l2++)
         {
-            Gfx::EngineObjLevel2& p2 = p1.next[l2];
+            EngineObjLevel2& p2 = p1.next[l2];
             if (! p2.used) continue;
 
             for (int l3 = 0; l3 < static_cast<int>( p2.next.size() ); l3++)
             {
-                Gfx::EngineObjLevel3& p3 = p2.next[l3];
+                EngineObjLevel3& p3 = p2.next[l3];
                 if (! p3.used) continue;
 
                 for (int l4 = 0; l4 < static_cast<int>( p3.next.size() ); l4++)
                 {
-                    Gfx::EngineObjLevel4& p4 = p3.next[l4];
+                    EngineObjLevel4& p4 = p3.next[l4];
                     if (! p4.used) continue;
 
                     int objRank = p2.objRank;
@@ -1616,13 +1646,13 @@ void Gfx::CEngine::UpdateGeometry()
     m_updateGeometry = false;
 }
 
-void Gfx::CEngine::Update()
+void CEngine::Update()
 {
     ComputeDistance();
     UpdateGeometry();
 }
 
-bool Gfx::CEngine::DetectBBox(int objRank, Math::Point mouse)
+bool CEngine::DetectBBox(int objRank, Math::Point mouse)
 {
     Math::Point min, max;
     min.x =  1000000.0f;
@@ -1657,38 +1687,38 @@ bool Gfx::CEngine::DetectBBox(int objRank, Math::Point mouse)
              mouse.y <= max.y );
 }
 
-int Gfx::CEngine::DetectObject(Math::Point mouse)
+int CEngine::DetectObject(Math::Point mouse)
 {
     float min = 1000000.0f;
     int nearest = -1;
 
     for (int l1 = 0; l1 < static_cast<int>( m_objectTree.size() ); l1++)
     {
-        Gfx::EngineObjLevel1& p1 = m_objectTree[l1];
+        EngineObjLevel1& p1 = m_objectTree[l1];
         if (! p1.used) continue;
 
         for (int l2 = 0; l2 < static_cast<int>( p1.next.size() ); l2++)
         {
-            Gfx::EngineObjLevel2& p2 = p1.next[l2];
+            EngineObjLevel2& p2 = p1.next[l2];
             if (! p2.used) continue;
 
-            if (m_objects[p2.objRank].type == Gfx::ENG_OBJTYPE_TERRAIN) continue;
+            if (m_objects[p2.objRank].type == ENG_OBJTYPE_TERRAIN) continue;
 
             if (! DetectBBox(p2.objRank, mouse)) continue;
 
             for (int l3 = 0; l3 < static_cast<int>( p2.next.size() ); l3++)
             {
-                Gfx::EngineObjLevel3& p3 = p2.next[l3];
+                EngineObjLevel3& p3 = p2.next[l3];
                 if (! p3.used) continue;
 
                 if (p3.min != 0.0f) continue;  // LOD B or C?
 
                 for (int l4 = 0; l4 < static_cast<int>( p3.next.size() ); l4++)
                 {
-                    Gfx::EngineObjLevel4& p4 = p3.next[l4];
+                    EngineObjLevel4& p4 = p3.next[l4];
                     if (! p4.used) continue;
 
-                    if (p4.type == Gfx::ENG_TRIANGLE_TYPE_TRIANGLES)
+                    if (p4.type == ENG_TRIANGLE_TYPE_TRIANGLES)
                     {
                         for (int i = 0; i < static_cast<int>( p4.vertices.size() ); i += 3)
                         {
@@ -1700,7 +1730,7 @@ int Gfx::CEngine::DetectObject(Math::Point mouse)
                             }
                         }
                     }
-                    else if (p4.type == Gfx::ENG_TRIANGLE_TYPE_SURFACE)
+                    else if (p4.type == ENG_TRIANGLE_TYPE_SURFACE)
                     {
                         for (int i = 0; i < static_cast<int>( p4.vertices.size() ) - 2; i += 1)
                         {
@@ -1720,7 +1750,7 @@ int Gfx::CEngine::DetectObject(Math::Point mouse)
     return nearest;
 }
 
-bool Gfx::CEngine::DetectTriangle(Math::Point mouse, Gfx::VertexTex2* triangle, int objRank, float& dist)
+bool CEngine::DetectTriangle(Math::Point mouse, VertexTex2* triangle, int objRank, float& dist)
 {
     Math::Vector p2D[3], p3D;
 
@@ -1762,13 +1792,13 @@ bool Gfx::CEngine::DetectTriangle(Math::Point mouse, Gfx::VertexTex2* triangle, 
     return true;
 }
 
-bool Gfx::CEngine::IsVisible(int objRank)
+bool CEngine::IsVisible(int objRank)
 {
     // TODO: use ComputeSphereVisiblity() after tested OK
     return true;
 }
 
-bool Gfx::CEngine::TransformPoint(Math::Vector& p2D, int objRank, Math::Vector p3D)
+bool CEngine::TransformPoint(Math::Vector& p2D, int objRank, Math::Vector p3D)
 {
     p3D = Math::Transform(m_objects[objRank].transform, p3D);
     p3D = Math::Transform(m_matView, p3D);
@@ -1793,7 +1823,7 @@ bool Gfx::CEngine::TransformPoint(Math::Vector& p2D, int objRank, Math::Vector p
 
 
 
-void Gfx::CEngine::SetState(int state, const Gfx::Color& color)
+void CEngine::SetState(int state, const Color& color)
 {
     if (state == m_lastState && color == m_lastColor)
         return;
@@ -1801,204 +1831,204 @@ void Gfx::CEngine::SetState(int state, const Gfx::Color& color)
     m_lastState = state;
     m_lastColor = color;
 
-    if (m_alphaMode != 1 && (state & Gfx::ENG_RSTATE_ALPHA))
+    if (m_alphaMode != 1 && (state & ENG_RSTATE_ALPHA))
     {
-        state &= ~Gfx::ENG_RSTATE_ALPHA;
+        state &= ~ENG_RSTATE_ALPHA;
 
         if (m_alphaMode == 2)
-            state |= Gfx::ENG_RSTATE_TTEXTURE_BLACK;
+            state |= ENG_RSTATE_TTEXTURE_BLACK;
     }
 
 
-    if (state & Gfx::ENG_RSTATE_TTEXTURE_BLACK)  // transparent black texture?
+    if (state & ENG_RSTATE_TTEXTURE_BLACK)  // transparent black texture?
     {
-        m_device->SetRenderState(Gfx::RENDER_STATE_FOG,         false);
-        m_device->SetRenderState(Gfx::RENDER_STATE_DEPTH_WRITE, false);
-        m_device->SetRenderState(Gfx::RENDER_STATE_ALPHA_TEST,  false);
+        m_device->SetRenderState(RENDER_STATE_FOG,         false);
+        m_device->SetRenderState(RENDER_STATE_DEPTH_WRITE, false);
+        m_device->SetRenderState(RENDER_STATE_ALPHA_TEST,  false);
 
-        m_device->SetRenderState(Gfx::RENDER_STATE_BLENDING,    true);
-        m_device->SetBlendFunc(Gfx::BLEND_ONE, Gfx::BLEND_INV_SRC_COLOR);
+        m_device->SetRenderState(RENDER_STATE_BLENDING,    true);
+        m_device->SetBlendFunc(BLEND_ONE, BLEND_INV_SRC_COLOR);
 
-        m_device->SetRenderState(Gfx::RENDER_STATE_TEXTURING,   true);
+        m_device->SetRenderState(RENDER_STATE_TEXTURING,   true);
 
         m_device->SetTextureFactor(color);
 
-        Gfx::TextureStageParams params;
-        params.colorOperation = Gfx::TEX_MIX_OPER_MODULATE;
-        params.colorArg1 = Gfx::TEX_MIX_ARG_TEXTURE;
-        params.colorArg2 = Gfx::TEX_MIX_ARG_FACTOR;
-        params.alphaOperation = Gfx::TEX_MIX_OPER_DEFAULT; // TODO: replace with src color ?
+        TextureStageParams params;
+        params.colorOperation = TEX_MIX_OPER_MODULATE;
+        params.colorArg1 = TEX_MIX_ARG_TEXTURE;
+        params.colorArg2 = TEX_MIX_ARG_FACTOR;
+        params.alphaOperation = TEX_MIX_OPER_DEFAULT; // TODO: replace with src color ?
 
         m_device->SetTextureEnabled(0, true);
         m_device->SetTextureStageParams(0, params);
     }
-    else if (state & Gfx::ENG_RSTATE_TTEXTURE_WHITE)  // transparent white texture?
+    else if (state & ENG_RSTATE_TTEXTURE_WHITE)  // transparent white texture?
     {
-        m_device->SetRenderState(Gfx::RENDER_STATE_FOG,         false);
-        m_device->SetRenderState(Gfx::RENDER_STATE_DEPTH_WRITE, false);
-        m_device->SetRenderState(Gfx::RENDER_STATE_ALPHA_TEST,  false);
+        m_device->SetRenderState(RENDER_STATE_FOG,         false);
+        m_device->SetRenderState(RENDER_STATE_DEPTH_WRITE, false);
+        m_device->SetRenderState(RENDER_STATE_ALPHA_TEST,  false);
 
-        m_device->SetRenderState(Gfx::RENDER_STATE_BLENDING,    true);
-        m_device->SetBlendFunc(Gfx::BLEND_DST_COLOR, Gfx::BLEND_ZERO);
+        m_device->SetRenderState(RENDER_STATE_BLENDING,    true);
+        m_device->SetBlendFunc(BLEND_DST_COLOR, BLEND_ZERO);
 
-        m_device->SetRenderState(Gfx::RENDER_STATE_TEXTURING,   true);
+        m_device->SetRenderState(RENDER_STATE_TEXTURING,   true);
 
         m_device->SetTextureFactor(color.Inverse());
 
-        Gfx::TextureStageParams params;
-        params.colorOperation = Gfx::TEX_MIX_OPER_ADD;
-        params.colorArg1 = Gfx::TEX_MIX_ARG_TEXTURE;
-        params.colorArg2 = Gfx::TEX_MIX_ARG_FACTOR;
-        params.alphaOperation = Gfx::TEX_MIX_OPER_DEFAULT; // TODO: replace with src color ?
+        TextureStageParams params;
+        params.colorOperation = TEX_MIX_OPER_ADD;
+        params.colorArg1 = TEX_MIX_ARG_TEXTURE;
+        params.colorArg2 = TEX_MIX_ARG_FACTOR;
+        params.alphaOperation = TEX_MIX_OPER_DEFAULT; // TODO: replace with src color ?
 
         m_device->SetTextureEnabled(0, true);
         m_device->SetTextureStageParams(0, params);
     }
-    else if (state & Gfx::ENG_RSTATE_TCOLOR_BLACK)  // transparent black color?
+    else if (state & ENG_RSTATE_TCOLOR_BLACK)  // transparent black color?
     {
-        m_device->SetRenderState(Gfx::RENDER_STATE_FOG,         false);
-        m_device->SetRenderState(Gfx::RENDER_STATE_DEPTH_WRITE, false);
-        m_device->SetRenderState(Gfx::RENDER_STATE_ALPHA_TEST,  false);
-        m_device->SetRenderState(Gfx::RENDER_STATE_TEXTURING,   false);
+        m_device->SetRenderState(RENDER_STATE_FOG,         false);
+        m_device->SetRenderState(RENDER_STATE_DEPTH_WRITE, false);
+        m_device->SetRenderState(RENDER_STATE_ALPHA_TEST,  false);
+        m_device->SetRenderState(RENDER_STATE_TEXTURING,   false);
 
-        m_device->SetRenderState(Gfx::RENDER_STATE_BLENDING,    true);
-        m_device->SetBlendFunc(Gfx::BLEND_ONE, Gfx::BLEND_INV_SRC_COLOR);
+        m_device->SetRenderState(RENDER_STATE_BLENDING,    true);
+        m_device->SetBlendFunc(BLEND_ONE, BLEND_INV_SRC_COLOR);
     }
-    else if (state & Gfx::ENG_RSTATE_TCOLOR_WHITE)  // transparent white color?
+    else if (state & ENG_RSTATE_TCOLOR_WHITE)  // transparent white color?
     {
-        m_device->SetRenderState(Gfx::RENDER_STATE_FOG,         false);
-        m_device->SetRenderState(Gfx::RENDER_STATE_DEPTH_WRITE, false);
-        m_device->SetRenderState(Gfx::RENDER_STATE_ALPHA_TEST,  false);
-        m_device->SetRenderState(Gfx::RENDER_STATE_TEXTURING,   false);
+        m_device->SetRenderState(RENDER_STATE_FOG,         false);
+        m_device->SetRenderState(RENDER_STATE_DEPTH_WRITE, false);
+        m_device->SetRenderState(RENDER_STATE_ALPHA_TEST,  false);
+        m_device->SetRenderState(RENDER_STATE_TEXTURING,   false);
 
-        m_device->SetRenderState(Gfx::RENDER_STATE_BLENDING,    true);
-        m_device->SetBlendFunc(Gfx::BLEND_DST_COLOR, Gfx::BLEND_ZERO);
+        m_device->SetRenderState(RENDER_STATE_BLENDING,    true);
+        m_device->SetBlendFunc(BLEND_DST_COLOR, BLEND_ZERO);
     }
-    else if (state & Gfx::ENG_RSTATE_TDIFFUSE)  // diffuse color as transparent?
+    else if (state & ENG_RSTATE_TDIFFUSE)  // diffuse color as transparent?
     {
-        m_device->SetRenderState(Gfx::RENDER_STATE_FOG,         false);
-        m_device->SetRenderState(Gfx::RENDER_STATE_DEPTH_WRITE, false);
-        m_device->SetRenderState(Gfx::RENDER_STATE_ALPHA_TEST,  false);
+        m_device->SetRenderState(RENDER_STATE_FOG,         false);
+        m_device->SetRenderState(RENDER_STATE_DEPTH_WRITE, false);
+        m_device->SetRenderState(RENDER_STATE_ALPHA_TEST,  false);
 
-        m_device->SetRenderState(Gfx::RENDER_STATE_BLENDING,    true);
-        m_device->SetBlendFunc(Gfx::BLEND_SRC_ALPHA, Gfx::BLEND_DST_ALPHA);
+        m_device->SetRenderState(RENDER_STATE_BLENDING,    true);
+        m_device->SetBlendFunc(BLEND_SRC_ALPHA, BLEND_DST_ALPHA);
 
-        m_device->SetRenderState(Gfx::RENDER_STATE_TEXTURING,   true);
+        m_device->SetRenderState(RENDER_STATE_TEXTURING,   true);
 
-        Gfx::TextureStageParams params;
-        params.colorOperation = Gfx::TEX_MIX_OPER_REPLACE;
-        params.colorArg1 = Gfx::TEX_MIX_ARG_TEXTURE;
-        params.alphaOperation = Gfx::TEX_MIX_OPER_DEFAULT; // TODO: replace with src color ?
+        TextureStageParams params;
+        params.colorOperation = TEX_MIX_OPER_REPLACE;
+        params.colorArg1 = TEX_MIX_ARG_TEXTURE;
+        params.alphaOperation = TEX_MIX_OPER_DEFAULT; // TODO: replace with src color ?
 
         m_device->SetTextureEnabled(0, true);
         m_device->SetTextureStageParams(0, params);
     }
-    else if (state & Gfx::ENG_RSTATE_OPAQUE_TEXTURE) // opaque texture ?
+    else if (state & ENG_RSTATE_OPAQUE_TEXTURE) // opaque texture ?
     {
-        m_device->SetRenderState(Gfx::RENDER_STATE_FOG,         false);
-        m_device->SetRenderState(Gfx::RENDER_STATE_DEPTH_WRITE, false);
-        m_device->SetRenderState(Gfx::RENDER_STATE_ALPHA_TEST,  false);
-        m_device->SetRenderState(Gfx::RENDER_STATE_BLENDING,    false);
+        m_device->SetRenderState(RENDER_STATE_FOG,         false);
+        m_device->SetRenderState(RENDER_STATE_DEPTH_WRITE, false);
+        m_device->SetRenderState(RENDER_STATE_ALPHA_TEST,  false);
+        m_device->SetRenderState(RENDER_STATE_BLENDING,    false);
 
-        m_device->SetRenderState(Gfx::RENDER_STATE_TEXTURING,   true);
+        m_device->SetRenderState(RENDER_STATE_TEXTURING,   true);
         m_device->SetTextureEnabled(0, true);
-        m_device->SetTextureStageParams(0, Gfx::TextureStageParams()); // default operation
+        m_device->SetTextureStageParams(0, TextureStageParams()); // default operation
     }
-    else if (state & Gfx::ENG_RSTATE_OPAQUE_COLOR) // opaque color ?
+    else if (state & ENG_RSTATE_OPAQUE_COLOR) // opaque color ?
     {
-        m_device->SetRenderState(Gfx::RENDER_STATE_FOG,         false);
-        m_device->SetRenderState(Gfx::RENDER_STATE_DEPTH_WRITE, false);
-        m_device->SetRenderState(Gfx::RENDER_STATE_ALPHA_TEST,  false);
-        m_device->SetRenderState(Gfx::RENDER_STATE_BLENDING,    false);
-        m_device->SetRenderState(Gfx::RENDER_STATE_TEXTURING,   false);
+        m_device->SetRenderState(RENDER_STATE_FOG,         false);
+        m_device->SetRenderState(RENDER_STATE_DEPTH_WRITE, false);
+        m_device->SetRenderState(RENDER_STATE_ALPHA_TEST,  false);
+        m_device->SetRenderState(RENDER_STATE_BLENDING,    false);
+        m_device->SetRenderState(RENDER_STATE_TEXTURING,   false);
     }
-    else if (state & Gfx::ENG_RSTATE_TEXT)  // font rendering?
+    else if (state & ENG_RSTATE_TEXT)  // font rendering?
     {
-        m_device->SetRenderState(Gfx::RENDER_STATE_FOG,         false);
-        m_device->SetRenderState(Gfx::RENDER_STATE_DEPTH_WRITE, false);
-        m_device->SetRenderState(Gfx::RENDER_STATE_ALPHA_TEST,  false);
+        m_device->SetRenderState(RENDER_STATE_FOG,         false);
+        m_device->SetRenderState(RENDER_STATE_DEPTH_WRITE, false);
+        m_device->SetRenderState(RENDER_STATE_ALPHA_TEST,  false);
 
-        m_device->SetRenderState(Gfx::RENDER_STATE_BLENDING,    true);
-        m_device->SetBlendFunc(Gfx::BLEND_SRC_ALPHA, Gfx::BLEND_INV_SRC_ALPHA);
+        m_device->SetRenderState(RENDER_STATE_BLENDING,    true);
+        m_device->SetBlendFunc(BLEND_SRC_ALPHA, BLEND_INV_SRC_ALPHA);
 
-        m_device->SetRenderState(Gfx::RENDER_STATE_TEXTURING,   true);
+        m_device->SetRenderState(RENDER_STATE_TEXTURING,   true);
 
-        Gfx::TextureStageParams params;
-        params.colorOperation = Gfx::TEX_MIX_OPER_DEFAULT; // default modulate operation
-        params.alphaOperation = Gfx::TEX_MIX_OPER_DEFAULT; // default modulate operation
+        TextureStageParams params;
+        params.colorOperation = TEX_MIX_OPER_DEFAULT; // default modulate operation
+        params.alphaOperation = TEX_MIX_OPER_DEFAULT; // default modulate operation
 
         m_device->SetTextureEnabled(0, true);
         m_device->SetTextureStageParams(0, params);
     }
-    else if (state & Gfx::ENG_RSTATE_ALPHA)  // image with alpha channel?
+    else if (state & ENG_RSTATE_ALPHA)  // image with alpha channel?
     {
-        m_device->SetRenderState(Gfx::RENDER_STATE_BLENDING,    false);
+        m_device->SetRenderState(RENDER_STATE_BLENDING,    false);
 
-        m_device->SetRenderState(Gfx::RENDER_STATE_FOG,         true);
-        m_device->SetRenderState(Gfx::RENDER_STATE_DEPTH_WRITE, true);
+        m_device->SetRenderState(RENDER_STATE_FOG,         true);
+        m_device->SetRenderState(RENDER_STATE_DEPTH_WRITE, true);
 
-        m_device->SetRenderState(Gfx::RENDER_STATE_ALPHA_TEST,  true);
+        m_device->SetRenderState(RENDER_STATE_ALPHA_TEST,  true);
 
-        m_device->SetAlphaTestFunc(Gfx::COMP_FUNC_GREATER, 0.5f);
+        m_device->SetAlphaTestFunc(COMP_FUNC_GREATER, 0.5f);
 
-        m_device->SetRenderState(Gfx::RENDER_STATE_TEXTURING,   true);
+        m_device->SetRenderState(RENDER_STATE_TEXTURING,   true);
 
         m_device->SetTextureFactor(color);
 
-        Gfx::TextureStageParams params;
-        params.colorOperation = Gfx::TEX_MIX_OPER_MODULATE;
-        params.colorArg1 = Gfx::TEX_MIX_ARG_TEXTURE;
-        params.colorArg2 = Gfx::TEX_MIX_ARG_SRC_COLOR;
-        params.alphaOperation = Gfx::TEX_MIX_OPER_REPLACE;
-        params.alphaArg1 = Gfx::TEX_MIX_ARG_TEXTURE;
+        TextureStageParams params;
+        params.colorOperation = TEX_MIX_OPER_MODULATE;
+        params.colorArg1 = TEX_MIX_ARG_TEXTURE;
+        params.colorArg2 = TEX_MIX_ARG_SRC_COLOR;
+        params.alphaOperation = TEX_MIX_OPER_REPLACE;
+        params.alphaArg1 = TEX_MIX_ARG_TEXTURE;
 
         m_device->SetTextureEnabled(0, true);
         m_device->SetTextureStageParams(0, params);
     }
     else    // normal ?
     {
-        m_device->SetRenderState(Gfx::RENDER_STATE_ALPHA_TEST,  false);
-        m_device->SetRenderState(Gfx::RENDER_STATE_BLENDING,    false);
+        m_device->SetRenderState(RENDER_STATE_ALPHA_TEST,  false);
+        m_device->SetRenderState(RENDER_STATE_BLENDING,    false);
 
-        m_device->SetRenderState(Gfx::RENDER_STATE_DEPTH_WRITE, true);
-        m_device->SetRenderState(Gfx::RENDER_STATE_FOG,         true);
+        m_device->SetRenderState(RENDER_STATE_DEPTH_WRITE, true);
+        m_device->SetRenderState(RENDER_STATE_FOG,         true);
 
-        m_device->SetRenderState(Gfx::RENDER_STATE_TEXTURING, true);
+        m_device->SetRenderState(RENDER_STATE_TEXTURING, true);
 
-        Gfx::TextureStageParams params;
-        params.colorOperation = Gfx::TEX_MIX_OPER_DEFAULT; // default modulate
-        params.alphaOperation = Gfx::TEX_MIX_OPER_DEFAULT; // TODO: replace with src color ?
+        TextureStageParams params;
+        params.colorOperation = TEX_MIX_OPER_DEFAULT; // default modulate
+        params.alphaOperation = TEX_MIX_OPER_DEFAULT; // TODO: replace with src color ?
 
         m_device->SetTextureEnabled(0, true);
         m_device->SetTextureStageParams(0, params);
     }
 
-    if (state & Gfx::ENG_RSTATE_FOG)
-        m_device->SetRenderState(Gfx::RENDER_STATE_FOG, true);
+    if (state & ENG_RSTATE_FOG)
+        m_device->SetRenderState(RENDER_STATE_FOG, true);
 
 
     bool second = m_groundSpotVisible || m_dirty;
 
-    if ( !m_groundSpotVisible && (state & Gfx::ENG_RSTATE_SECOND) != 0 ) second = false;
-    if ( !m_dirty             && (state & Gfx::ENG_RSTATE_SECOND) == 0 ) second = false;
+    if ( !m_groundSpotVisible && (state & ENG_RSTATE_SECOND) != 0 ) second = false;
+    if ( !m_dirty             && (state & ENG_RSTATE_SECOND) == 0 ) second = false;
 
     if ((state & ENG_RSTATE_DUAL_BLACK) && second)
     {
-        Gfx::TextureStageParams params;
-        params.colorOperation = Gfx::TEX_MIX_OPER_MODULATE;
-        params.colorArg1 = Gfx::TEX_MIX_ARG_TEXTURE;
-        params.colorArg2 = Gfx::TEX_MIX_ARG_COMPUTED_COLOR;
-        params.alphaOperation = Gfx::TEX_MIX_OPER_DEFAULT; // TODO: ???
+        TextureStageParams params;
+        params.colorOperation = TEX_MIX_OPER_MODULATE;
+        params.colorArg1 = TEX_MIX_ARG_TEXTURE;
+        params.colorArg2 = TEX_MIX_ARG_COMPUTED_COLOR;
+        params.alphaOperation = TEX_MIX_OPER_DEFAULT; // TODO: ???
         m_device->SetTextureEnabled(0, true);
         m_device->SetTextureStageParams(1, params);
     }
     else if ((state & ENG_RSTATE_DUAL_WHITE) && second)
     {
-        Gfx::TextureStageParams params;
-        params.colorOperation = Gfx::TEX_MIX_OPER_ADD;
-        params.colorArg1 = Gfx::TEX_MIX_ARG_TEXTURE;
-        params.colorArg2 = Gfx::TEX_MIX_ARG_COMPUTED_COLOR;
-        params.alphaOperation = Gfx::TEX_MIX_OPER_DEFAULT; // TODO: ???
+        TextureStageParams params;
+        params.colorOperation = TEX_MIX_OPER_ADD;
+        params.colorArg1 = TEX_MIX_ARG_TEXTURE;
+        params.colorArg2 = TEX_MIX_ARG_COMPUTED_COLOR;
+        params.alphaOperation = TEX_MIX_OPER_DEFAULT; // TODO: ???
         m_device->SetTextureEnabled(0, true);
         m_device->SetTextureStageParams(1, params);
     }
@@ -2007,52 +2037,52 @@ void Gfx::CEngine::SetState(int state, const Gfx::Color& color)
         m_device->SetTextureEnabled(1, false);
     }
 
-    if (state & Gfx::ENG_RSTATE_WRAP)
+    if (state & ENG_RSTATE_WRAP)
     {
         // TODO: separate function for setting wrap mode?
 
-        Gfx::TextureStageParams p1 = m_device->GetTextureStageParams(0);
-        p1.wrapS = p1.wrapT = Gfx::TEX_WRAP_REPEAT;
+        TextureStageParams p1 = m_device->GetTextureStageParams(0);
+        p1.wrapS = p1.wrapT = TEX_WRAP_REPEAT;
         m_device->SetTextureStageParams(0, p1);
 
-        Gfx::TextureStageParams p2 = m_device->GetTextureStageParams(1);
-        p2.wrapS = p2.wrapT = Gfx::TEX_WRAP_REPEAT;
+        TextureStageParams p2 = m_device->GetTextureStageParams(1);
+        p2.wrapS = p2.wrapT = TEX_WRAP_REPEAT;
         m_device->SetTextureStageParams(1, p2);
     }
-    else // if (state & Gfx::ENG_RSTATE_CLAMP) or otherwise
+    else // if (state & ENG_RSTATE_CLAMP) or otherwise
     {
-        Gfx::TextureStageParams p1 = m_device->GetTextureStageParams(0);
-        p1.wrapS = p1.wrapT = Gfx::TEX_WRAP_CLAMP;
+        TextureStageParams p1 = m_device->GetTextureStageParams(0);
+        p1.wrapS = p1.wrapT = TEX_WRAP_CLAMP;
         m_device->SetTextureStageParams(0, p1);
 
-        Gfx::TextureStageParams p2 = m_device->GetTextureStageParams(1);
-        p2.wrapS = p2.wrapT = Gfx::TEX_WRAP_CLAMP;
+        TextureStageParams p2 = m_device->GetTextureStageParams(1);
+        p2.wrapS = p2.wrapT = TEX_WRAP_CLAMP;
         m_device->SetTextureStageParams(1, p2);
     }
 
-    if (state & Gfx::ENG_RSTATE_2FACE)
+    if (state & ENG_RSTATE_2FACE)
     {
-        m_device->SetRenderState(Gfx::RENDER_STATE_CULLING, false);
+        m_device->SetRenderState(RENDER_STATE_CULLING, false);
     }
     else
     {
-        m_device->SetRenderState(Gfx::RENDER_STATE_CULLING, true);
-        m_device->SetCullMode(Gfx::CULL_CCW);
+        m_device->SetRenderState(RENDER_STATE_CULLING, true);
+        m_device->SetCullMode(CULL_CCW);
     }
 
-    if (state & Gfx::ENG_RSTATE_LIGHT)
-        m_device->SetGlobalAmbient(Gfx::Color(1.0f, 1.0f, 1.0f, 1.0f));
+    if (state & ENG_RSTATE_LIGHT)
+        m_device->SetGlobalAmbient(Color(1.0f, 1.0f, 1.0f, 1.0f));
     else
         m_device->SetGlobalAmbient(m_ambientColor[m_rankView]);
 }
 
-void Gfx::CEngine::SetMaterial(const Gfx::Material& mat)
+void CEngine::SetMaterial(const Material& mat)
 {
     m_lastMaterial = mat;
     m_device->SetMaterial(mat);
 }
 
-void Gfx::CEngine::SetViewParams(const Math::Vector& eyePt, const Math::Vector& lookatPt,
+void CEngine::SetViewParams(const Math::Vector& eyePt, const Math::Vector& lookatPt,
                                  const Math::Vector& upVec, float eyeDistance)
 {
     m_eyePt = eyePt;
@@ -2069,10 +2099,10 @@ void Gfx::CEngine::SetViewParams(const Math::Vector& eyePt, const Math::Vector& 
         m_sound->SetListener(eyePt, lookatPt);
 }
 
-Gfx::Texture Gfx::CEngine::CreateTexture(const std::string& texName, const Gfx::TextureCreateParams& params)
+Texture CEngine::CreateTexture(const std::string& texName, const TextureCreateParams& params)
 {
     if (m_texBlacklist.find(texName) != m_texBlacklist.end())
-        return Gfx::Texture(); // invalid texture
+        return Texture(); // invalid texture
 
     // TODO: detect alpha channel?
 
@@ -2082,10 +2112,10 @@ Gfx::Texture Gfx::CEngine::CreateTexture(const std::string& texName, const Gfx::
         std::string error = img.GetError();
         GetLogger()->Error("Couldn't load texture '%s': %s, blacklisting\n", texName.c_str(), error.c_str());
         m_texBlacklist.insert(texName);
-        return Gfx::Texture(); // invalid texture
+        return Texture(); // invalid texture
     }
 
-    Gfx::Texture tex = m_device->CreateTexture(&img, params);
+    Texture tex = m_device->CreateTexture(&img, params);
 
     if (! tex.Valid())
     {
@@ -2100,25 +2130,25 @@ Gfx::Texture Gfx::CEngine::CreateTexture(const std::string& texName, const Gfx::
     return tex;
 }
 
-Gfx::Texture Gfx::CEngine::LoadTexture(const std::string& name)
+Texture CEngine::LoadTexture(const std::string& name)
 {
     return LoadTexture(name, m_defaultTexParams);
 }
 
-Gfx::Texture Gfx::CEngine::LoadTexture(const std::string& name, const Gfx::TextureCreateParams& params)
+Texture CEngine::LoadTexture(const std::string& name, const TextureCreateParams& params)
 {
     if (m_texBlacklist.find(name) != m_texBlacklist.end())
-        return Gfx::Texture();
+        return Texture();
 
-    std::map<std::string, Gfx::Texture>::iterator it = m_texNameMap.find(name);
+    std::map<std::string, Texture>::iterator it = m_texNameMap.find(name);
     if (it != m_texNameMap.end())
         return (*it).second;
 
-    Gfx::Texture tex = CreateTexture(name, params);
+    Texture tex = CreateTexture(name, params);
     return tex;
 }
 
-bool Gfx::CEngine::LoadAllTextures()
+bool CEngine::LoadAllTextures()
 {
     LoadTexture("text.png");
     m_miceTexture = LoadTexture("mouse.png");
@@ -2146,7 +2176,7 @@ bool Gfx::CEngine::LoadAllTextures()
 
     for (int l1 = 0; l1 < static_cast<int>( m_objectTree.size() ); l1++)
     {
-        Gfx::EngineObjLevel1& p1 = m_objectTree[l1];
+        EngineObjLevel1& p1 = m_objectTree[l1];
         if (! p1.used) continue;
 
         if (! p1.tex1Name.empty())
@@ -2167,7 +2197,7 @@ bool Gfx::CEngine::LoadAllTextures()
     return ok;
 }
 
-void Gfx::CEngine::DeleteTexture(const std::string& texName)
+void CEngine::DeleteTexture(const std::string& texName)
 {
     auto it = m_texNameMap.find(texName);
     if (it == m_texNameMap.end())
@@ -2181,7 +2211,7 @@ void Gfx::CEngine::DeleteTexture(const std::string& texName)
     m_texNameMap.erase(it);
 }
 
-void Gfx::CEngine::DeleteTexture(const Gfx::Texture& tex)
+void CEngine::DeleteTexture(const Texture& tex)
 {
     if (! tex.Valid())
         return;
@@ -2198,7 +2228,7 @@ void Gfx::CEngine::DeleteTexture(const Gfx::Texture& tex)
     m_texNameMap.erase(it);
 }
 
-bool Gfx::CEngine::SetTexture(const std::string& name, int stage)
+bool CEngine::SetTexture(const std::string& name, int stage)
 {
     auto it = m_texNameMap.find(name);
     if (it != m_texNameMap.end())
@@ -2224,17 +2254,17 @@ bool Gfx::CEngine::SetTexture(const std::string& name, int stage)
     return false; // should not happen normally
 }
 
-void Gfx::CEngine::SetTexture(const Gfx::Texture& tex, int stage)
+void CEngine::SetTexture(const Texture& tex, int stage)
 {
     m_device->SetTexture(stage, tex);
 }
 
-void Gfx::CEngine::SetLimitLOD(int rank, float limit)
+void CEngine::SetLimitLOD(int rank, float limit)
 {
     m_limitLOD[rank] = limit;
 }
 
-float Gfx::CEngine::GetLimitLOD(int rank, bool last)
+float CEngine::GetLimitLOD(int rank, bool last)
 {
     float limit = 0.0f;
 
@@ -2256,12 +2286,12 @@ float Gfx::CEngine::GetLimitLOD(int rank, bool last)
     return limit;
 }
 
-void Gfx::CEngine::SetTerrainVision(float vision)
+void CEngine::SetTerrainVision(float vision)
 {
     m_terrainVision = vision;
 }
 
-void Gfx::CEngine::SetFocus(float focus)
+void CEngine::SetFocus(float focus)
 {
     m_focus = focus;
     m_size = m_app->GetVideoConfig().size;
@@ -2270,67 +2300,67 @@ void Gfx::CEngine::SetFocus(float focus)
     Math::LoadProjectionMatrix(m_matProj, m_focus, aspect, 0.5f, m_deepView[0]);
 }
 
-float Gfx::CEngine::GetFocus()
+float CEngine::GetFocus()
 {
     return m_focus;
 }
 
-void Gfx::CEngine::SetGroundSpot(bool mode)
+void CEngine::SetGroundSpot(bool mode)
 {
     m_groundSpotVisible = mode;
 }
 
-bool Gfx::CEngine::GetGroundSpot()
+bool CEngine::GetGroundSpot()
 {
     return m_groundSpotVisible;
 }
 
-void Gfx::CEngine::SetShadow(bool mode)
+void CEngine::SetShadow(bool mode)
 {
     m_shadowVisible = mode;
 }
 
-bool Gfx::CEngine::GetShadow()
+bool CEngine::GetShadow()
 {
     return m_shadowVisible;
 }
 
-void Gfx::CEngine::SetDirty(bool mode)
+void CEngine::SetDirty(bool mode)
 {
     m_dirty = mode;
 }
 
-bool Gfx::CEngine::GetDirty()
+bool CEngine::GetDirty()
 {
     return m_dirty;
 }
 
-void Gfx::CEngine::SetFog(bool mode)
+void CEngine::SetFog(bool mode)
 {
     m_fog = mode;
 }
 
-bool Gfx::CEngine::GetFog()
+bool CEngine::GetFog()
 {
     return m_fog;
 }
 
-bool Gfx::CEngine::GetStateColor()
+bool CEngine::GetStateColor()
 {
     return m_stateColor;
 }
 
-void Gfx::CEngine::SetSecondTexture(int texNum)
+void CEngine::SetSecondTexture(int texNum)
 {
     m_secondTexNum = texNum;
 }
 
-int Gfx::CEngine::GetSecondTexture()
+int CEngine::GetSecondTexture()
 {
     return m_secondTexNum;
 }
 
-void Gfx::CEngine::SetRankView(int rank)
+void CEngine::SetRankView(int rank)
 {
     if (rank < 0) rank = 0;
     if (rank > 1) rank = 1;
@@ -2344,52 +2374,52 @@ void Gfx::CEngine::SetRankView(int rank)
     m_rankView = rank;
 }
 
-int Gfx::CEngine::GetRankView()
+int CEngine::GetRankView()
 {
     return m_rankView;
 }
 
-void Gfx::CEngine::SetDrawWorld(bool draw)
+void CEngine::SetDrawWorld(bool draw)
 {
     m_drawWorld = draw;
 }
 
-void Gfx::CEngine::SetDrawFront(bool draw)
+void CEngine::SetDrawFront(bool draw)
 {
     m_drawFront = draw;
 }
 
-void Gfx::CEngine::SetAmbientColor(const Gfx::Color& color, int rank)
+void CEngine::SetAmbientColor(const Color& color, int rank)
 {
     m_ambientColor[rank] = color;
 }
 
-Gfx::Color Gfx::CEngine::GetAmbientColor(int rank)
+Color CEngine::GetAmbientColor(int rank)
 {
     return m_ambientColor[rank];
 }
 
-void Gfx::CEngine::SetWaterAddColor(const Gfx::Color& color)
+void CEngine::SetWaterAddColor(const Color& color)
 {
     m_waterAddColor = color;
 }
 
-Gfx::Color Gfx::CEngine::GetWaterAddColor()
+Color CEngine::GetWaterAddColor()
 {
     return m_waterAddColor;
 }
 
-void Gfx::CEngine::SetFogColor(const Gfx::Color& color, int rank)
+void CEngine::SetFogColor(const Color& color, int rank)
 {
     m_fogColor[rank] = color;
 }
 
-Gfx::Color Gfx::CEngine::GetFogColor(int rank)
+Color CEngine::GetFogColor(int rank)
 {
     return m_fogColor[rank];
 }
 
-void Gfx::CEngine::SetDeepView(float length, int rank, bool ref)
+void CEngine::SetDeepView(float length, int rank, bool ref)
 {
     if (ref)
         length *= m_clippingDistance;
@@ -2397,23 +2427,23 @@ void Gfx::CEngine::SetDeepView(float length, int rank, bool ref)
     m_deepView[rank] = length;
 }
 
-float Gfx::CEngine::GetDeepView(int rank)
+float CEngine::GetDeepView(int rank)
 {
     return m_deepView[rank];
 }
 
-void Gfx::CEngine::SetFogStart(float start, int rank)
+void CEngine::SetFogStart(float start, int rank)
 {
     m_fogStart[rank] = start;
 }
 
-float Gfx::CEngine::GetFogStart(int rank)
+float CEngine::GetFogStart(int rank)
 {
     return m_fogStart[rank];
 }
 
-void Gfx::CEngine::SetBackground(const std::string& name, Gfx::Color up, Gfx::Color down,
-                                 Gfx::Color cloudUp, Gfx::Color cloudDown,
+void CEngine::SetBackground(const std::string& name, Color up, Color down,
+                                 Color cloudUp, Color cloudDown,
                                  bool full, Math::Point scale)
 {
     if (m_backgroundTex.Valid())
@@ -2434,8 +2464,8 @@ void Gfx::CEngine::SetBackground(const std::string& name, Gfx::Color up, Gfx::Co
         m_backgroundTex = LoadTexture(m_backgroundName);
 }
 
-void Gfx::CEngine::GetBackground(std::string& name, Gfx::Color& up, Gfx::Color& down,
-                                 Gfx::Color& cloudUp, Gfx::Color& cloudDown,
+void CEngine::GetBackground(std::string& name, Color& up, Color& down,
+                                 Color& cloudUp, Color& cloudDown,
                                  bool &full, Math::Point& scale)
 {
     name      = m_backgroundName;
@@ -2447,7 +2477,7 @@ void Gfx::CEngine::GetBackground(std::string& name, Gfx::Color& up, Gfx::Color& 
     scale     = m_backgroundScale;
 }
 
-void Gfx::CEngine::SetForegroundName(const std::string& name)
+void CEngine::SetForegroundName(const std::string& name)
 {
     if (m_foregroundTex.Valid())
     {
@@ -2461,30 +2491,30 @@ void Gfx::CEngine::SetForegroundName(const std::string& name)
         m_foregroundTex = LoadTexture(m_foregroundName);
 }
 
-void Gfx::CEngine::SetOverFront(bool front)
+void CEngine::SetOverFront(bool front)
 {
     m_overFront = front;
 }
 
-void Gfx::CEngine::SetOverColor(const Gfx::Color& color, int mode)
+void CEngine::SetOverColor(const Color& color, int mode)
 {
     m_overColor = color;
     m_overMode  = mode;
 }
 
-void Gfx::CEngine::SetParticleDensity(float value)
+void CEngine::SetParticleDensity(float value)
 {
     if (value < 0.0f) value = 0.0f;
     if (value > 2.0f) value = 2.0f;
     m_particleDensity = value;
 }
 
-float Gfx::CEngine::GetParticleDensity()
+float CEngine::GetParticleDensity()
 {
     return m_particleDensity;
 }
 
-float Gfx::CEngine::ParticleAdapt(float factor)
+float CEngine::ParticleAdapt(float factor)
 {
     if (m_particleDensity == 0.0f)
         return 1000000.0f;
@@ -2492,31 +2522,31 @@ float Gfx::CEngine::ParticleAdapt(float factor)
     return factor / m_particleDensity;
 }
 
-void Gfx::CEngine::SetClippingDistance(float value)
+void CEngine::SetClippingDistance(float value)
 {
     if (value < 0.5f) value = 0.5f;
     if (value > 2.0f) value = 2.0f;
     m_clippingDistance = value;
 }
 
-float Gfx::CEngine::GetClippingDistance()
+float CEngine::GetClippingDistance()
 {
     return m_clippingDistance;
 }
 
-void Gfx::CEngine::SetObjectDetail(float value)
+void CEngine::SetObjectDetail(float value)
 {
     if ( value < 0.0f )  value = 0.0f;
     if ( value > 2.0f )  value = 2.0f;
     m_objectDetail = value;
 }
 
-float Gfx::CEngine::GetObjectDetail()
+float CEngine::GetObjectDetail()
 {
     return m_objectDetail;
 }
 
-void Gfx::CEngine::SetGadgetQuantity(float value)
+void CEngine::SetGadgetQuantity(float value)
 {
     if (value < 0.0f) value = 0.0f;
     if (value > 1.0f) value = 1.0f;
@@ -2524,12 +2554,12 @@ void Gfx::CEngine::SetGadgetQuantity(float value)
     m_gadgetQuantity = value;
 }
 
-float Gfx::CEngine::GetGadgetQuantity()
+float CEngine::GetGadgetQuantity()
 {
     return m_gadgetQuantity;
 }
 
-void Gfx::CEngine::SetTextureQuality(int value)
+void CEngine::SetTextureQuality(int value)
 {
     if (value < 0) value = 0;
     if (value > 2) value = 2;
@@ -2541,187 +2571,167 @@ void Gfx::CEngine::SetTextureQuality(int value)
     }
 }
 
-int Gfx::CEngine::GetTextureQuality()
+int CEngine::GetTextureQuality()
 {
     return m_textureQuality;
 }
 
-void Gfx::CEngine::SetTotoMode(bool present)
+void CEngine::SetTotoMode(bool present)
 {
     m_totoMode = present;
 }
 
-bool Gfx::CEngine::GetTotoMode()
+bool CEngine::GetTotoMode()
 {
     return m_totoMode;
 }
 
-void Gfx::CEngine::SetLensMode(bool present)
+void CEngine::SetLensMode(bool present)
 {
     m_lensMode = present;
 }
 
-bool Gfx::CEngine::GetLensMode()
+bool CEngine::GetLensMode()
 {
     return m_lensMode;
 }
 
-void Gfx::CEngine::SetWaterMode(bool present)
+void CEngine::SetWaterMode(bool present)
 {
     m_waterMode = present;
 }
 
-bool Gfx::CEngine::GetWaterMode()
+bool CEngine::GetWaterMode()
 {
     return m_waterMode;
 }
 
-void Gfx::CEngine::SetLightingMode(bool present)
+void CEngine::SetLightingMode(bool present)
 {
     m_lightMode = present;
 }
 
-bool Gfx::CEngine::GetLightingMode()
+bool CEngine::GetLightingMode()
 {
     return m_lightMode;
 }
 
-void Gfx::CEngine::SetSkyMode(bool present)
+void CEngine::SetSkyMode(bool present)
 {
     m_skyMode = present;
 }
 
-bool Gfx::CEngine::GetSkyMode()
+bool CEngine::GetSkyMode()
 {
     return m_skyMode;
 }
 
-void Gfx::CEngine::SetBackForce(bool present)
+void CEngine::SetBackForce(bool present)
 {
     m_backForce = present;
 }
 
-bool Gfx::CEngine::GetBackForce()
+bool CEngine::GetBackForce()
 {
     return m_backForce;
 }
 
-void Gfx::CEngine::SetPlanetMode(bool present)
+void CEngine::SetPlanetMode(bool present)
 {
     m_planetMode = present;
 }
 
-bool Gfx::CEngine::GetPlanetMode()
+bool CEngine::GetPlanetMode()
 {
     return m_planetMode;
 }
 
-void Gfx::CEngine::SetLightMode(bool present)
+void CEngine::SetLightMode(bool present)
 {
     m_lightMode = present;
 }
 
-bool Gfx::CEngine::GetLightMode()
+bool CEngine::GetLightMode()
 {
     return m_lightMode;
 }
 
-void Gfx::CEngine::SetEditIndentMode(bool autoIndent)
+void CEngine::SetEditIndentMode(bool autoIndent)
 {
     m_editIndentMode = autoIndent;
 }
 
-bool Gfx::CEngine::GetEditIndentMode()
+bool CEngine::GetEditIndentMode()
 {
     return m_editIndentMode;
 }
 
-void Gfx::CEngine::SetEditIndentValue(int value)
+void CEngine::SetEditIndentValue(int value)
 {
     m_editIndentValue = value;
 }
 
-int Gfx::CEngine::GetEditIndentValue()
+int CEngine::GetEditIndentValue()
 {
     return m_editIndentValue;
 }
 
-void Gfx::CEngine::SetTracePrecision(float factor)
+void CEngine::SetTracePrecision(float factor)
 {
     m_tracePrecision = factor;
 }
 
-float Gfx::CEngine::GetTracePrecision()
+float CEngine::GetTracePrecision()
 {
     return m_tracePrecision;
 }
 
-void Gfx::CEngine::SetMouseVisible(bool visible)
-{
-    m_mouseVisible = visible;
-}
-
-bool Gfx::CEngine::GetMouseVisible()
-{
-    return m_mouseVisible;
-}
-
-void Gfx::CEngine::SetMousePos(Math::Point pos)
-{
-    m_mousePos = pos;
-}
-
-Math::Point Gfx::CEngine::GetMousePos()
-{
-    return m_mousePos;
-}
-
-void Gfx::CEngine::SetMouseType(Gfx::EngineMouseType type)
+void CEngine::SetMouseType(EngineMouseType type)
 {
     m_mouseType = type;
 }
 
-Gfx::EngineMouseType Gfx::CEngine::GetMouseType()
+EngineMouseType CEngine::GetMouseType()
 {
     return m_mouseType;
 }
 
-const Math::Matrix& Gfx::CEngine::GetMatView()
+const Math::Matrix& CEngine::GetMatView()
 {
     return m_matView;
 }
 
-Math::Vector Gfx::CEngine::GetEyePt()
+Math::Vector CEngine::GetEyePt()
 {
     return m_eyePt;
 }
 
-Math::Vector Gfx::CEngine::GetLookatPt()
+Math::Vector CEngine::GetLookatPt()
 {
     return m_lookatPt;
 }
 
-float Gfx::CEngine::GetEyeDirH()
+float CEngine::GetEyeDirH()
 {
     return m_eyeDirH;
 }
 
-float Gfx::CEngine::GetEyeDirV()
+float CEngine::GetEyeDirV()
 {
     return m_eyeDirV;
 }
 
-bool Gfx::CEngine::IsVisiblePoint(const Math::Vector &pos)
+bool CEngine::IsVisiblePoint(const Math::Vector &pos)
 {
     return Math::Distance(m_eyePt, pos) <= m_deepView[0];
 }
 
-void Gfx::CEngine::UpdateMatProj()
+void CEngine::UpdateMatProj()
 {
-    m_device->SetTransform(Gfx::TRANSFORM_PROJECTION, m_matProj);
+    m_device->SetTransform(TRANSFORM_PROJECTION, m_matProj);
 }
 
-void Gfx::CEngine::ApplyChange()
+void CEngine::ApplyChange()
 {
     m_deepView[0] /= m_lastClippingDistance;
     m_deepView[1] /= m_lastClippingDistance;
@@ -2744,18 +2754,18 @@ void Gfx::CEngine::ApplyChange()
 /**
   This function sets up render states, clears the
   viewport, and renders the scene. */
-void Gfx::CEngine::Render()
+void CEngine::Render()
 {
     if (! m_render) return;
 
     m_statisticTriangle = 0;
     m_lastState = -1;
-    m_lastColor = Gfx::Color(-1.0f);
-    m_lastMaterial = Gfx::Material();
+    m_lastColor = Color(-1.0f);
+    m_lastMaterial = Material();
 
     m_lightMan->UpdateLights();
 
-    Gfx::Color color;
+    Color color;
     if (m_skyMode && m_cloud->GetLevel() != 0.0f)  // clouds?
         color = m_backgroundCloudDown;
     else
@@ -2775,7 +2785,7 @@ void Gfx::CEngine::Render()
     m_device->EndScene();
 }
 
-void Gfx::CEngine::Draw3DScene()
+void CEngine::Draw3DScene()
 {
     if (m_groundSpotVisible)
         UpdateGroundSpotTextures();
@@ -2787,28 +2797,28 @@ void Gfx::CEngine::Draw3DScene()
 
     // Display the objects
 
-    m_device->SetRenderState(Gfx::RENDER_STATE_DEPTH_TEST, true);
-    m_device->SetRenderState(Gfx::RENDER_STATE_LIGHTING, true);
-    m_device->SetRenderState(Gfx::RENDER_STATE_FOG, true);
-// 
-//     float fogStart = m_deepView[m_rankView]*m_fogStart[m_rankView];
-//     float fogEnd = m_deepView[m_rankView];
-    m_device->SetFogParams(Gfx::FOG_LINEAR, m_fogColor[m_rankView], fogStart, fogEnd, 1.0f);
+    m_device->SetRenderState(RENDER_STATE_DEPTH_TEST, true);
+    m_device->SetRenderState(RENDER_STATE_LIGHTING, true);
+    m_device->SetRenderState(RENDER_STATE_FOG, true);
 
-    m_device->SetTransform(Gfx::TRANSFORM_PROJECTION, m_matProj);
-    m_device->SetTransform(Gfx::TRANSFORM_VIEW, m_matView);
+    float fogStart = m_deepView[m_rankView]*m_fogStart[m_rankView];
+    float fogEnd = m_deepView[m_rankView];
+    m_device->SetFogParams(FOG_LINEAR, m_fogColor[m_rankView], fogStart, fogEnd, 1.0f);
+
+    m_device->SetTransform(TRANSFORM_PROJECTION, m_matProj);
+    m_device->SetTransform(TRANSFORM_VIEW, m_matView);
 
     if (m_waterMode) m_water->DrawBack();  // draws water background
 
     if (m_shadowVisible)
     {
-        m_lightMan->UpdateLightsEnableState(Gfx::ENG_OBJTYPE_TERRAIN);
+        m_lightMan->UpdateLightsEnableState(ENG_OBJTYPE_TERRAIN);
 
         // Draw the terrain
 
         for (int l1 = 0; l1 < static_cast<int>( m_objectTree.size() ); l1++)
         {
-            Gfx::EngineObjLevel1& p1 = m_objectTree[l1];
+            EngineObjLevel1& p1 = m_objectTree[l1];
             if (! p1.used) continue;
 
             // Should be loaded by now
@@ -2817,23 +2827,23 @@ void Gfx::CEngine::Draw3DScene()
 
             for (int l2 = 0; l2 < static_cast<int>( p1.next.size() ); l2++)
             {
-                Gfx::EngineObjLevel2& p2 = p1.next[l2];
+                EngineObjLevel2& p2 = p1.next[l2];
                 if (! p2.used) continue;
 
                 int objRank = p2.objRank;
-                if (m_objects[objRank].type != Gfx::ENG_OBJTYPE_TERRAIN)
+                if (m_objects[objRank].type != ENG_OBJTYPE_TERRAIN)
                     continue;
                 if (! m_objects[objRank].drawWorld)
                     continue;
 
-                m_device->SetTransform(Gfx::TRANSFORM_WORLD, m_objects[objRank].transform);
+                m_device->SetTransform(TRANSFORM_WORLD, m_objects[objRank].transform);
 
                 if (! IsVisible(objRank))
                     continue;
 
                 for (int l3 = 0; l3 < static_cast<int>( p2.next.size() ); l3++)
                 {
-                    Gfx::EngineObjLevel3& p3 = p2.next[l3];
+                    EngineObjLevel3& p3 = p2.next[l3];
                     if (! p3.used) continue;
 
                     if ( m_objects[objRank].distance <  p3.min ||
@@ -2842,22 +2852,22 @@ void Gfx::CEngine::Draw3DScene()
 
                     for (int l4 = 0; l4 < static_cast<int>( p3.next.size() ); l4++)
                     {
-                        Gfx::EngineObjLevel4& p4 = p3.next[l4];
+                        EngineObjLevel4& p4 = p3.next[l4];
                         if (! p4.used) continue;
 
                         SetMaterial(p4.material);
                         SetState(p4.state);
 
-                        if (p4.type == Gfx::ENG_TRIANGLE_TYPE_TRIANGLES)
+                        if (p4.type == ENG_TRIANGLE_TYPE_TRIANGLES)
                         {
-                            m_device->DrawPrimitive( Gfx::PRIMITIVE_TRIANGLES,
+                            m_device->DrawPrimitive( PRIMITIVE_TRIANGLES,
                                                      &p4.vertices[0],
                                                      p4.vertices.size() );
                             m_statisticTriangle += p4.vertices.size() / 3;
                         }
-                        if (p4.type == Gfx::ENG_TRIANGLE_TYPE_SURFACE)
+                        if (p4.type == ENG_TRIANGLE_TYPE_SURFACE)
                         {
-                            m_device->DrawPrimitive( Gfx::PRIMITIVE_TRIANGLE_STRIP,
+                            m_device->DrawPrimitive( PRIMITIVE_TRIANGLE_STRIP,
                                                      &p4.vertices[0],
                                                      p4.vertices.size() );
                             m_statisticTriangle += p4.vertices.size() - 2;
@@ -2877,7 +2887,7 @@ void Gfx::CEngine::Draw3DScene()
 
     for (int l1 = 0; l1 < static_cast<int>( m_objectTree.size() ); l1++)
     {
-        Gfx::EngineObjLevel1& p1 = m_objectTree[l1];
+        EngineObjLevel1& p1 = m_objectTree[l1];
         if (! p1.used) continue;
 
         // Should be loaded by now
@@ -2886,18 +2896,18 @@ void Gfx::CEngine::Draw3DScene()
 
         for (int l2 = 0; l2 < static_cast<int>( p1.next.size() ); l2++)
         {
-            Gfx::EngineObjLevel2& p2 = p1.next[l2];
+            EngineObjLevel2& p2 = p1.next[l2];
             if (! p2.used) continue;
 
             int objRank = p2.objRank;
 
-            if (m_shadowVisible && m_objects[objRank].type == Gfx::ENG_OBJTYPE_TERRAIN)
+            if (m_shadowVisible && m_objects[objRank].type == ENG_OBJTYPE_TERRAIN)
                 continue;
 
             if (! m_objects[objRank].drawWorld)
                 continue;
 
-            m_device->SetTransform(Gfx::TRANSFORM_WORLD, m_objects[objRank].transform);
+            m_device->SetTransform(TRANSFORM_WORLD, m_objects[objRank].transform);
 
             if (! IsVisible(objRank))
                 continue;
@@ -2906,7 +2916,7 @@ void Gfx::CEngine::Draw3DScene()
 
             for (int l3 = 0; l3 < static_cast<int>( p2.next.size() ); l3++)
             {
-                Gfx::EngineObjLevel3& p3 = p2.next[l3];
+                EngineObjLevel3& p3 = p2.next[l3];
                 if (! p3.used) continue;
 
                 if ( m_objects[objRank].distance <  p3.min ||
@@ -2914,7 +2924,7 @@ void Gfx::CEngine::Draw3DScene()
 
                 for (int l4 = 0; l4 < static_cast<int>( p3.next.size() ); l4++)
                 {
-                    Gfx::EngineObjLevel4& p4 = p3.next[l4];
+                    EngineObjLevel4& p4 = p3.next[l4];
                     if (! p4.used) continue;
 
                     if (m_objects[objRank].transparency != 0.0f)  // transparent ?
@@ -2926,17 +2936,17 @@ void Gfx::CEngine::Draw3DScene()
                     SetMaterial(p4.material);
                     SetState(p4.state);
 
-                    if (p4.type == Gfx::ENG_TRIANGLE_TYPE_TRIANGLES)
+                    if (p4.type == ENG_TRIANGLE_TYPE_TRIANGLES)
                     {
-                        m_device->DrawPrimitive( Gfx::PRIMITIVE_TRIANGLES,
+                        m_device->DrawPrimitive( PRIMITIVE_TRIANGLES,
                                                  &p4.vertices[0],
                                                  p4.vertices.size() );
 
                         m_statisticTriangle += p4.vertices.size() / 3;
                     }
-                    else if (p4.type == Gfx::ENG_TRIANGLE_TYPE_SURFACE)
+                    else if (p4.type == ENG_TRIANGLE_TYPE_SURFACE)
                     {
-                        m_device->DrawPrimitive( Gfx::PRIMITIVE_TRIANGLE_STRIP,
+                        m_device->DrawPrimitive( PRIMITIVE_TRIANGLE_STRIP,
                                                  &p4.vertices[0],
                                                  p4.vertices.size() );
 
@@ -2952,21 +2962,21 @@ void Gfx::CEngine::Draw3DScene()
     if (transparent)
     {
         int tState = 0;
-        Gfx::Color tColor;
+        Color tColor;
         if (m_stateColor)
         {
-            tState = Gfx::ENG_RSTATE_TTEXTURE_BLACK | Gfx::ENG_RSTATE_2FACE;
-            tColor = Gfx::Color(68.0f / 255.0f, 68.0f / 255.0f, 68.0f / 255.0f, 68.0f / 255.0f);
+            tState = ENG_RSTATE_TTEXTURE_BLACK | ENG_RSTATE_2FACE;
+            tColor = Color(68.0f / 255.0f, 68.0f / 255.0f, 68.0f / 255.0f, 68.0f / 255.0f);
         }
         else
         {
-            tState = Gfx::ENG_RSTATE_TCOLOR_BLACK;
-            tColor = Gfx::Color(136.0f / 255.0f, 136.0f / 255.0f, 136.0f / 255.0f, 136.0f / 255.0f);
+            tState = ENG_RSTATE_TCOLOR_BLACK;
+            tColor = Color(136.0f / 255.0f, 136.0f / 255.0f, 136.0f / 255.0f, 136.0f / 255.0f);
         }
 
         for (int l1 = 0; l1 < static_cast<int>( m_objectTree.size() ); l1++)
         {
-            Gfx::EngineObjLevel1& p1 = m_objectTree[l1];
+            EngineObjLevel1& p1 = m_objectTree[l1];
             if (! p1.used) continue;
 
             // Should be loaded by now
@@ -2975,18 +2985,18 @@ void Gfx::CEngine::Draw3DScene()
 
             for (int l2 = 0; l2 < static_cast<int>( p1.next.size() ); l2++)
             {
-                Gfx::EngineObjLevel2& p2 = p1.next[l2];
+                EngineObjLevel2& p2 = p1.next[l2];
                 if (! p2.used) continue;
 
                 int objRank = p2.objRank;
 
-                if (m_shadowVisible && m_objects[objRank].type == Gfx::ENG_OBJTYPE_TERRAIN)
+                if (m_shadowVisible && m_objects[objRank].type == ENG_OBJTYPE_TERRAIN)
                     continue;
 
                 if (! m_objects[objRank].drawWorld)
                     continue;
 
-                m_device->SetTransform(Gfx::TRANSFORM_WORLD, m_objects[objRank].transform);
+                m_device->SetTransform(TRANSFORM_WORLD, m_objects[objRank].transform);
 
                 if (! IsVisible(objRank))
                     continue;
@@ -2995,7 +3005,7 @@ void Gfx::CEngine::Draw3DScene()
 
                 for (int l3 = 0; l3 < static_cast<int>( p2.next.size() ); l3++)
                 {
-                    Gfx::EngineObjLevel3& p3 = p2.next[l3];
+                    EngineObjLevel3& p3 = p2.next[l3];
                     if (! p3.used) continue;
 
                     if ( m_objects[objRank].distance <  p3.min ||
@@ -3003,7 +3013,7 @@ void Gfx::CEngine::Draw3DScene()
 
                     for (int l4 = 0; l4 < static_cast<int>( p3.next.size() ); l4++)
                     {
-                        Gfx::EngineObjLevel4& p4 = p3.next[l4];
+                        EngineObjLevel4& p4 = p3.next[l4];
                         if (! p4.used) continue;
 
                         if (m_objects[objRank].transparency == 0.0f)
@@ -3012,17 +3022,17 @@ void Gfx::CEngine::Draw3DScene()
                         SetMaterial(p4.material);
                         SetState(tState, tColor);
 
-                        if (p4.type == Gfx::ENG_TRIANGLE_TYPE_TRIANGLES)
+                        if (p4.type == ENG_TRIANGLE_TYPE_TRIANGLES)
                         {
-                            m_device->DrawPrimitive( Gfx::PRIMITIVE_TRIANGLES,
+                            m_device->DrawPrimitive( PRIMITIVE_TRIANGLES,
                                                      &p4.vertices[0],
                                                      p4.vertices.size() );
 
                             m_statisticTriangle += p4.vertices.size() / 3;
                         }
-                        else if (p4.type == Gfx::ENG_TRIANGLE_TYPE_SURFACE)
+                        else if (p4.type == ENG_TRIANGLE_TYPE_SURFACE)
                         {
-                            m_device->DrawPrimitive( Gfx::PRIMITIVE_TRIANGLE_STRIP,
+                            m_device->DrawPrimitive( PRIMITIVE_TRIANGLE_STRIP,
                                                      &p4.vertices[0],
                                                      p4.vertices.size() );
                             m_statisticTriangle += p4.vertices.size() - 2;
@@ -3033,55 +3043,55 @@ void Gfx::CEngine::Draw3DScene()
         }
     }
 
-    m_lightMan->UpdateLightsEnableState(Gfx::ENG_OBJTYPE_TERRAIN);
+    m_lightMan->UpdateLightsEnableState(ENG_OBJTYPE_TERRAIN);
 
     if (m_waterMode) m_water->DrawSurf();    // draws water surface
 
-    m_particle->DrawParticle(Gfx::SH_WORLD); // draws the particles of the 3D world
+    m_particle->DrawParticle(SH_WORLD); // draws the particles of the 3D world
     m_lightning->Draw();                     // draws lightning
     if (m_lensMode) DrawForegroundImage();   // draws the foreground
     if (! m_overFront) DrawOverColor();      // draws the foreground color
 }
 
-void Gfx::CEngine::DrawInterface()
+void CEngine::DrawInterface()
 {
-    m_device->SetRenderState(Gfx::RENDER_STATE_DEPTH_TEST, false);
-    m_device->SetRenderState(Gfx::RENDER_STATE_LIGHTING, false);
-    m_device->SetRenderState(Gfx::RENDER_STATE_FOG, false);
+    m_device->SetRenderState(RENDER_STATE_DEPTH_TEST, false);
+    m_device->SetRenderState(RENDER_STATE_LIGHTING, false);
+    m_device->SetRenderState(RENDER_STATE_FOG, false);
 
-    m_device->SetTransform(Gfx::TRANSFORM_VIEW,       m_matViewInterface);
-    m_device->SetTransform(Gfx::TRANSFORM_PROJECTION, m_matProjInterface);
-    m_device->SetTransform(Gfx::TRANSFORM_WORLD,      m_matWorldInterface);
+    m_device->SetTransform(TRANSFORM_VIEW,       m_matViewInterface);
+    m_device->SetTransform(TRANSFORM_PROJECTION, m_matProjInterface);
+    m_device->SetTransform(TRANSFORM_WORLD,      m_matWorldInterface);
 
     // Draw the entire interface
     Ui::CInterface* interface = static_cast<Ui::CInterface*>( m_iMan->SearchInstance(CLASS_INTERFACE) );
     if (interface != nullptr)
         interface->Draw();
 
-    m_particle->DrawParticle(Gfx::SH_INTERFACE);  // draws the particles of the interface
+    m_particle->DrawParticle(SH_INTERFACE);  // draws the particles of the interface
 
     // 3D objects drawn in front of interface
     if (m_drawFront)
     {
         // Display the objects
-        m_device->SetRenderState(Gfx::RENDER_STATE_DEPTH_TEST, true);
+        m_device->SetRenderState(RENDER_STATE_DEPTH_TEST, true);
 
-        m_device->SetTransform(Gfx::TRANSFORM_PROJECTION, m_matProj);
+        m_device->SetTransform(TRANSFORM_PROJECTION, m_matProj);
 
         m_device->SetGlobalAmbient(m_ambientColor[m_rankView]);
-        m_device->SetRenderState(Gfx::RENDER_STATE_LIGHTING, true);
+        m_device->SetRenderState(RENDER_STATE_LIGHTING, true);
 
-        m_device->SetRenderState(Gfx::RENDER_STATE_FOG, true);
+        m_device->SetRenderState(RENDER_STATE_FOG, true);
 
         float fogStart = m_deepView[m_rankView]*m_fogStart[m_rankView];
         float fogEnd = m_deepView[m_rankView];
-        m_device->SetFogParams(Gfx::FOG_LINEAR, m_fogColor[m_rankView], fogStart, fogEnd, 1.0f);
+        m_device->SetFogParams(FOG_LINEAR, m_fogColor[m_rankView], fogStart, fogEnd, 1.0f);
 
-        m_device->SetTransform(Gfx::TRANSFORM_VIEW, m_matView);
+        m_device->SetTransform(TRANSFORM_VIEW, m_matView);
 
         for (int l1 = 0; l1 < static_cast<int>( m_objectTree.size() ); l1++)
         {
-            Gfx::EngineObjLevel1& p1 = m_objectTree[l1];
+            EngineObjLevel1& p1 = m_objectTree[l1];
             if (! p1.used) continue;
 
             // Should be loaded by now
@@ -3090,18 +3100,18 @@ void Gfx::CEngine::DrawInterface()
 
             for (int l2 = 0; l2 < static_cast<int>( p1.next.size() ); l2++)
             {
-                Gfx::EngineObjLevel2& p2 = p1.next[l2];
+                EngineObjLevel2& p2 = p1.next[l2];
                 if (! p2.used) continue;
 
                 int objRank = p2.objRank;
 
-                if (m_shadowVisible && m_objects[objRank].type == Gfx::ENG_OBJTYPE_TERRAIN)
+                if (m_shadowVisible && m_objects[objRank].type == ENG_OBJTYPE_TERRAIN)
                     continue;
 
                 if (! m_objects[objRank].drawFront)
                     continue;
 
-                m_device->SetTransform(Gfx::TRANSFORM_WORLD, m_objects[objRank].transform);
+                m_device->SetTransform(TRANSFORM_WORLD, m_objects[objRank].transform);
 
                 if (! IsVisible(objRank))
                     continue;
@@ -3110,7 +3120,7 @@ void Gfx::CEngine::DrawInterface()
 
                 for (int l3 = 0; l3 < static_cast<int>( p2.next.size() ); l3++)
                 {
-                    Gfx::EngineObjLevel3& p3 = p2.next[l3];
+                    EngineObjLevel3& p3 = p2.next[l3];
                     if (! p3.used) continue;
 
                     if ( m_objects[objRank].distance <  p3.min ||
@@ -3118,23 +3128,23 @@ void Gfx::CEngine::DrawInterface()
 
                     for (int l4 = 0; l4 < static_cast<int>( p3.next.size() ); l4++)
                     {
-                        Gfx::EngineObjLevel4& p4 = p3.next[l4];
+                        EngineObjLevel4& p4 = p3.next[l4];
                         if (! p4.used) continue;
 
                         SetMaterial(p4.material);
                         SetState(p4.state);
 
-                        if (p4.type == Gfx::ENG_TRIANGLE_TYPE_TRIANGLES)
+                        if (p4.type == ENG_TRIANGLE_TYPE_TRIANGLES)
                         {
-                            m_device->DrawPrimitive( Gfx::PRIMITIVE_TRIANGLES,
+                            m_device->DrawPrimitive( PRIMITIVE_TRIANGLES,
                                                      &p4.vertices[0],
                                                      p4.vertices.size() );
 
                             m_statisticTriangle += p4.vertices.size() / 3;
                         }
-                        else if (p4.type == Gfx::ENG_TRIANGLE_TYPE_SURFACE)
+                        else if (p4.type == ENG_TRIANGLE_TYPE_SURFACE)
                         {
-                            m_device->DrawPrimitive( Gfx::PRIMITIVE_TRIANGLE_STRIP,
+                            m_device->DrawPrimitive( PRIMITIVE_TRIANGLE_STRIP,
                                                      &p4.vertices[0],
                                                      p4.vertices.size() );
                             m_statisticTriangle += p4.vertices.size() - 2;
@@ -3144,45 +3154,46 @@ void Gfx::CEngine::DrawInterface()
             }
         }
 
-        m_particle->DrawParticle(Gfx::SH_FRONT);  // draws the particles of the 3D world
+        m_particle->DrawParticle(SH_FRONT);  // draws the particles of the 3D world
 
-        m_device->SetRenderState(Gfx::RENDER_STATE_DEPTH_TEST, false);
-        m_device->SetRenderState(Gfx::RENDER_STATE_LIGHTING, false);
-        m_device->SetRenderState(Gfx::RENDER_STATE_FOG, false);
+        m_device->SetRenderState(RENDER_STATE_DEPTH_TEST, false);
+        m_device->SetRenderState(RENDER_STATE_LIGHTING, false);
+        m_device->SetRenderState(RENDER_STATE_FOG, false);
 
-        m_device->SetTransform(Gfx::TRANSFORM_VIEW,       m_matViewInterface);
-        m_device->SetTransform(Gfx::TRANSFORM_PROJECTION, m_matProjInterface);
-        m_device->SetTransform(Gfx::TRANSFORM_WORLD,      m_matWorldInterface);
+        m_device->SetTransform(TRANSFORM_VIEW,       m_matViewInterface);
+        m_device->SetTransform(TRANSFORM_PROJECTION, m_matProjInterface);
+        m_device->SetTransform(TRANSFORM_WORLD,      m_matWorldInterface);
     }
 
     // Draw foreground color
     if (m_overFront)
         DrawOverColor();
 
-    // Mouse & highlight at the end
+    // At the end to not overlap
     DrawMouse();
     DrawHighlight();
+    DrawStats();
 }
 
-void Gfx::CEngine::UpdateGroundSpotTextures()
+void CEngine::UpdateGroundSpotTextures()
 {
     // TODO the original code modifying the textures is very complex, so stub for now
     GetLogger()->Trace("CEngine::UpdateGroundSpotTextures(): stub!\n");
 }
 
-void Gfx::CEngine::DrawShadow()
+void CEngine::DrawShadow()
 {
-    m_device->SetRenderState(Gfx::RENDER_STATE_DEPTH_WRITE, false);
-    m_device->SetRenderState(Gfx::RENDER_STATE_LIGHTING, false);
+    m_device->SetRenderState(RENDER_STATE_DEPTH_WRITE, false);
+    m_device->SetRenderState(RENDER_STATE_LIGHTING, false);
 
     Math::Matrix matrix;
     matrix.LoadIdentity();
-    m_device->SetTransform(Gfx::TRANSFORM_WORLD, matrix);
+    m_device->SetTransform(TRANSFORM_WORLD, matrix);
 
 
-    Gfx::Material material;
-    material.diffuse = Gfx::Color(1.0f, 1.0f, 1.0f);
-    material.ambient = Gfx::Color(0.5f, 0.5f, 0.5f);
+    Material material;
+    material.diffuse = Color(1.0f, 1.0f, 1.0f);
+    material.ambient = Color(0.5f, 0.5f, 0.5f);
     SetMaterial(material);
 
     // TODO: create a separate texture
@@ -3263,7 +3274,7 @@ void Gfx::CEngine::DrawShadow()
 
         Math::Vector corner[4];
 
-        if (m_shadows[i].type == Gfx::ENG_SHADOW_NORM)
+        if (m_shadows[i].type == ENG_SHADOW_NORM)
         {
             corner[0].x = +radius;
             corner[0].z = +radius;
@@ -3308,7 +3319,7 @@ void Gfx::CEngine::DrawShadow()
             corner[3].z = rot.y;
             corner[3].y = 0.0f;
 
-            if (m_shadows[i].type == Gfx::ENG_SHADOW_WORM)
+            if (m_shadows[i].type == ENG_SHADOW_WORM)
             {
                 ts.x =  96.0f/256.0f;
                 ti.x = 128.0f/256.0f;
@@ -3333,12 +3344,12 @@ void Gfx::CEngine::DrawShadow()
         ts.x += dp;
         ti.x -= dp;
 
-        Gfx::Vertex vertex[4] =
+        Vertex vertex[4] =
         {
-            Gfx::Vertex(corner[1], n, Math::Point(ts.x, ts.y)),
-            Gfx::Vertex(corner[0], n, Math::Point(ti.x, ts.y)),
-            Gfx::Vertex(corner[3], n, Math::Point(ts.x, ti.y)),
-            Gfx::Vertex(corner[2], n, Math::Point(ti.x, ti.y))
+            Vertex(corner[1], n, Math::Point(ts.x, ts.y)),
+            Vertex(corner[0], n, Math::Point(ti.x, ts.y)),
+            Vertex(corner[3], n, Math::Point(ts.x, ti.y)),
+            Vertex(corner[2], n, Math::Point(ti.x, ti.y))
         };
 
         float intensity = (0.5f+m_shadows[i].intensity*0.5f)*hFactor;
@@ -3353,19 +3364,19 @@ void Gfx::CEngine::DrawShadow()
         if (lastIntensity != intensity)  // intensity changed?
         {
             lastIntensity = intensity;
-            SetState(Gfx::ENG_RSTATE_TTEXTURE_WHITE, Gfx::Color(intensity, intensity, intensity, intensity));
+            SetState(ENG_RSTATE_TTEXTURE_WHITE, Color(intensity, intensity, intensity, intensity));
         }
 
-        m_device->DrawPrimitive(Gfx::PRIMITIVE_TRIANGLE_STRIP, vertex, 4);
+        m_device->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, vertex, 4);
         AddStatisticTriangle(2);
     }
 
-    m_device->SetRenderState(Gfx::RENDER_STATE_DEPTH_WRITE, true);
-    m_device->SetRenderState(Gfx::RENDER_STATE_LIGHTING, true);
+    m_device->SetRenderState(RENDER_STATE_DEPTH_WRITE, true);
+    m_device->SetRenderState(RENDER_STATE_LIGHTING, true);
 }
 
 // STATUS: TESTED, VERIFIED
-void Gfx::CEngine::DrawBackground()
+void CEngine::DrawBackground()
 {
     if (m_skyMode && m_cloud->GetLevel() != 0.0f)  // clouds ?
     {
@@ -3385,38 +3396,38 @@ void Gfx::CEngine::DrawBackground()
 }
 
 // STATUS: TESTED
-void Gfx::CEngine::DrawBackgroundGradient(const Gfx::Color& up, const Gfx::Color& down)
+void CEngine::DrawBackgroundGradient(const Color& up, const Color& down)
 {
     Math::Point p1(0.0f, 0.5f);
     Math::Point p2(1.0f, 1.0f);
 
-    Gfx::Color color[3] =
+    Color color[3] =
     {
         up,
         down,
-        Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f)
+        Color(0.0f, 0.0f, 0.0f, 0.0f)
     };
 
-    SetState(Gfx::ENG_RSTATE_OPAQUE_COLOR);
+    SetState(ENG_RSTATE_OPAQUE_COLOR);
 
-    m_device->SetTransform(Gfx::TRANSFORM_VIEW, m_matViewInterface);
-    m_device->SetTransform(Gfx::TRANSFORM_PROJECTION, m_matProjInterface);
-    m_device->SetTransform(Gfx::TRANSFORM_WORLD, m_matWorldInterface);
+    m_device->SetTransform(TRANSFORM_VIEW, m_matViewInterface);
+    m_device->SetTransform(TRANSFORM_PROJECTION, m_matProjInterface);
+    m_device->SetTransform(TRANSFORM_WORLD, m_matWorldInterface);
 
-    Gfx::VertexCol vertex[4] =
+    VertexCol vertex[4] =
     {
-        Gfx::VertexCol(Math::Vector(p1.x, p1.y, 0.0f), color[1], color[2]),
-        Gfx::VertexCol(Math::Vector(p1.x, p2.y, 0.0f), color[0], color[2]),
-        Gfx::VertexCol(Math::Vector(p2.x, p1.y, 0.0f), color[1], color[2]),
-        Gfx::VertexCol(Math::Vector(p2.x, p2.y, 0.0f), color[0], color[2])
+        VertexCol(Math::Vector(p1.x, p1.y, 0.0f), color[1], color[2]),
+        VertexCol(Math::Vector(p1.x, p2.y, 0.0f), color[0], color[2]),
+        VertexCol(Math::Vector(p2.x, p1.y, 0.0f), color[1], color[2]),
+        VertexCol(Math::Vector(p2.x, p2.y, 0.0f), color[0], color[2])
     };
 
-    m_device->DrawPrimitive(Gfx::PRIMITIVE_TRIANGLE_STRIP, vertex, 4);
+    m_device->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, vertex, 4);
     AddStatisticTriangle(2);
 }
 
 // Status: TESTED, VERIFIED
-void Gfx::CEngine::DrawBackgroundImage()
+void CEngine::DrawBackgroundImage()
 {
     Math::Point p1, p2;
     p1.x = 0.0f;
@@ -3453,41 +3464,41 @@ Math::Vector n = Math::Vector(0.0f, 0.0f, -1.0f);  // normal
     v2 *= m_backgroundScale.y;
 
     SetTexture(m_backgroundTex);
-    SetState(Gfx::ENG_RSTATE_OPAQUE_TEXTURE | Gfx::ENG_RSTATE_WRAP);
+    SetState(ENG_RSTATE_OPAQUE_TEXTURE | ENG_RSTATE_WRAP);
 
-    m_device->SetTransform(Gfx::TRANSFORM_VIEW, m_matViewInterface);
-    m_device->SetTransform(Gfx::TRANSFORM_PROJECTION, m_matProjInterface);
-    m_device->SetTransform(Gfx::TRANSFORM_WORLD, m_matWorldInterface);
+    m_device->SetTransform(TRANSFORM_VIEW, m_matViewInterface);
+    m_device->SetTransform(TRANSFORM_PROJECTION, m_matProjInterface);
+    m_device->SetTransform(TRANSFORM_WORLD, m_matWorldInterface);
 
-    Gfx::Vertex vertex[4] =
+    Vertex vertex[4] =
     {
-        Gfx::Vertex(Math::Vector(p1.x, p1.y, 0.0f), n, Math::Point(u1, v2)),
-        Gfx::Vertex(Math::Vector(p1.x, p2.y, 0.0f), n, Math::Point(u1, v1)),
-        Gfx::Vertex(Math::Vector(p2.x, p1.y, 0.0f), n, Math::Point(u2, v2)),
-        Gfx::Vertex(Math::Vector(p2.x, p2.y, 0.0f), n, Math::Point(u2, v1))
+        Vertex(Math::Vector(p1.x, p1.y, 0.0f), n, Math::Point(u1, v2)),
+        Vertex(Math::Vector(p1.x, p2.y, 0.0f), n, Math::Point(u1, v1)),
+        Vertex(Math::Vector(p2.x, p1.y, 0.0f), n, Math::Point(u2, v2)),
+        Vertex(Math::Vector(p2.x, p2.y, 0.0f), n, Math::Point(u2, v1))
     };
 
-    m_device->DrawPrimitive(Gfx::PRIMITIVE_TRIANGLE_STRIP, vertex, 4);
+    m_device->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, vertex, 4);
     AddStatisticTriangle(2);
 }
 
-void Gfx::CEngine::DrawPlanet()
+void CEngine::DrawPlanet()
 {
     if (! m_planet->PlanetExist()) return;
 
-    m_device->SetRenderState(Gfx::RENDER_STATE_DEPTH_WRITE, false);
-    m_device->SetRenderState(Gfx::RENDER_STATE_LIGHTING, false);
-    m_device->SetRenderState(Gfx::RENDER_STATE_FOG, false);
+    m_device->SetRenderState(RENDER_STATE_DEPTH_WRITE, false);
+    m_device->SetRenderState(RENDER_STATE_LIGHTING, false);
+    m_device->SetRenderState(RENDER_STATE_FOG, false);
 
-    m_device->SetTransform(Gfx::TRANSFORM_VIEW, m_matViewInterface);
-    m_device->SetTransform(Gfx::TRANSFORM_PROJECTION, m_matProjInterface);
-    m_device->SetTransform(Gfx::TRANSFORM_WORLD, m_matWorldInterface);
+    m_device->SetTransform(TRANSFORM_VIEW, m_matViewInterface);
+    m_device->SetTransform(TRANSFORM_PROJECTION, m_matProjInterface);
+    m_device->SetTransform(TRANSFORM_WORLD, m_matWorldInterface);
 
     m_planet->Draw();  // draws the planets
 }
 
 // Status: PART_TESTED
-void Gfx::CEngine::DrawForegroundImage()
+void CEngine::DrawForegroundImage()
 {
     if (m_foregroundName.empty()) return;
 
@@ -3503,70 +3514,70 @@ void Gfx::CEngine::DrawForegroundImage()
     float v2 = 1.0f;
 
 
-    Gfx::Vertex vertex[4] =
+    Vertex vertex[4] =
     {
-        Gfx::Vertex(Math::Vector(p1.x, p1.y, 0.0f), n, Math::Point(u1, v2)),
-        Gfx::Vertex(Math::Vector(p1.x, p2.y, 0.0f), n, Math::Point(u1, v1)),
-        Gfx::Vertex(Math::Vector(p2.x, p1.y, 0.0f), n, Math::Point(u2, v2)),
-        Gfx::Vertex(Math::Vector(p2.x, p2.y, 0.0f), n, Math::Point(u2, v1))
+        Vertex(Math::Vector(p1.x, p1.y, 0.0f), n, Math::Point(u1, v2)),
+        Vertex(Math::Vector(p1.x, p2.y, 0.0f), n, Math::Point(u1, v1)),
+        Vertex(Math::Vector(p2.x, p1.y, 0.0f), n, Math::Point(u2, v2)),
+        Vertex(Math::Vector(p2.x, p2.y, 0.0f), n, Math::Point(u2, v1))
     };
 
     SetTexture(m_foregroundTex);
-    SetState(Gfx::ENG_RSTATE_CLAMP | Gfx::ENG_RSTATE_TTEXTURE_BLACK);
+    SetState(ENG_RSTATE_CLAMP | ENG_RSTATE_TTEXTURE_BLACK);
 
-    m_device->SetTransform(Gfx::TRANSFORM_VIEW, m_matViewInterface);
-    m_device->SetTransform(Gfx::TRANSFORM_PROJECTION, m_matProjInterface);
-    m_device->SetTransform(Gfx::TRANSFORM_WORLD, m_matWorldInterface);
+    m_device->SetTransform(TRANSFORM_VIEW, m_matViewInterface);
+    m_device->SetTransform(TRANSFORM_PROJECTION, m_matProjInterface);
+    m_device->SetTransform(TRANSFORM_WORLD, m_matWorldInterface);
 
-    m_device->DrawPrimitive(Gfx::PRIMITIVE_TRIANGLE_STRIP, vertex, 4);
+    m_device->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, vertex, 4);
     AddStatisticTriangle(2);
 }
 
 // Status: PART_TESTED
-void Gfx::CEngine::DrawOverColor()
+void CEngine::DrawOverColor()
 {
     if (! m_stateColor) return;
 
     // TODO: fuzzy compare?
-    if ( (m_overColor == Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f) && m_overMode == Gfx::ENG_RSTATE_TCOLOR_BLACK) ||
-         (m_overColor == Gfx::Color(1.0f, 1.0f, 1.0f, 1.0f) && m_overMode == Gfx::ENG_RSTATE_TCOLOR_WHITE) )  return;
+    if ( (m_overColor == Color(0.0f, 0.0f, 0.0f, 0.0f) && m_overMode == ENG_RSTATE_TCOLOR_BLACK) ||
+         (m_overColor == Color(1.0f, 1.0f, 1.0f, 1.0f) && m_overMode == ENG_RSTATE_TCOLOR_WHITE) )  return;
 
     Math::Point p1(0.0f, 0.0f);
     Math::Point p2(1.0f, 1.0f);
 
-    Gfx::Color color[3] =
+    Color color[3] =
     {
         m_overColor,
         m_overColor,
-        Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f)
+        Color(0.0f, 0.0f, 0.0f, 0.0f)
     };
 
     SetState(m_overMode);
 
     // TODO: set also with m_overMode ?
-    m_device->SetRenderState(Gfx::RENDER_STATE_DEPTH_WRITE, false);
-    m_device->SetRenderState(Gfx::RENDER_STATE_LIGHTING, false);
-    m_device->SetRenderState(Gfx::RENDER_STATE_FOG, false);
-    m_device->SetRenderState(Gfx::RENDER_STATE_TEXTURING, false);
+    m_device->SetRenderState(RENDER_STATE_DEPTH_WRITE, false);
+    m_device->SetRenderState(RENDER_STATE_LIGHTING, false);
+    m_device->SetRenderState(RENDER_STATE_FOG, false);
+    m_device->SetRenderState(RENDER_STATE_TEXTURING, false);
 
-    m_device->SetTransform(Gfx::TRANSFORM_VIEW, m_matViewInterface);
-    m_device->SetTransform(Gfx::TRANSFORM_PROJECTION, m_matProjInterface);
-    m_device->SetTransform(Gfx::TRANSFORM_WORLD, m_matWorldInterface);
+    m_device->SetTransform(TRANSFORM_VIEW, m_matViewInterface);
+    m_device->SetTransform(TRANSFORM_PROJECTION, m_matProjInterface);
+    m_device->SetTransform(TRANSFORM_WORLD, m_matWorldInterface);
 
-    Gfx::VertexCol vertex[4] =
+    VertexCol vertex[4] =
     {
-        Gfx::VertexCol(Math::Vector(p1.x, p1.y, 0.0f), color[1], color[2]),
-        Gfx::VertexCol(Math::Vector(p1.x, p2.y, 0.0f), color[0], color[2]),
-        Gfx::VertexCol(Math::Vector(p2.x, p1.y, 0.0f), color[1], color[2]),
-        Gfx::VertexCol(Math::Vector(p2.x, p2.y, 0.0f), color[0], color[2])
+        VertexCol(Math::Vector(p1.x, p1.y, 0.0f), color[1], color[2]),
+        VertexCol(Math::Vector(p1.x, p2.y, 0.0f), color[0], color[2]),
+        VertexCol(Math::Vector(p2.x, p1.y, 0.0f), color[1], color[2]),
+        VertexCol(Math::Vector(p2.x, p2.y, 0.0f), color[0], color[2])
     };
 
-    m_device->DrawPrimitive(Gfx::PRIMITIVE_TRIANGLE_STRIP, vertex, 4);
+    m_device->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, vertex, 4);
     AddStatisticTriangle(2);
 }
 
 // Status: TESTED, VERIFIED
-void Gfx::CEngine::DrawHighlight()
+void CEngine::DrawHighlight()
 {
     Math::Point min, max;
     min.x =  1000000.0f;
@@ -3615,7 +3626,7 @@ void Gfx::CEngine::DrawHighlight()
     if (nbOut > 2)
         return;
 
-    SetState(Gfx::ENG_RSTATE_OPAQUE_COLOR);
+    SetState(ENG_RSTATE_OPAQUE_COLOR);
 
     float d = 0.5f+sinf(m_highlightTime*6.0f)*0.5f;
     d *= (p2.x-p1.x)*0.1f;
@@ -3624,13 +3635,13 @@ void Gfx::CEngine::DrawHighlight()
     p2.x -= d;
     p2.y -= d;
 
-    Gfx::Color color(1.0f, 1.0f, 0.0f);  // yellow
+    Color color(1.0f, 1.0f, 0.0f);  // yellow
 
-    Gfx::VertexCol line[3] =
+    VertexCol line[3] =
     {
-        Gfx::VertexCol(Math::Vector(), color),
-        Gfx::VertexCol(Math::Vector(), color),
-        Gfx::VertexCol(Math::Vector(), color)
+        VertexCol(Math::Vector(), color),
+        VertexCol(Math::Vector(), color),
+        VertexCol(Math::Vector(), color)
     };
 
     float dx = (p2.x - p1.x) / 5.0f;
@@ -3639,51 +3650,49 @@ void Gfx::CEngine::DrawHighlight()
     line[0].coord = Math::Vector(p1.x, p1.y + dy, 0.0f);
     line[1].coord = Math::Vector(p1.x, p1.y, 0.0f);
     line[2].coord = Math::Vector(p1.x + dx, p1.y, 0.0f);
-    m_device->DrawPrimitive(Gfx::PRIMITIVE_LINE_STRIP, line, 3);
+    m_device->DrawPrimitive(PRIMITIVE_LINE_STRIP, line, 3);
 
     line[0].coord = Math::Vector(p2.x - dx, p1.y, 0.0f);
     line[1].coord = Math::Vector(p2.x, p1.y, 0.0f);
     line[2].coord = Math::Vector(p2.x, p1.y + dy, 0.0f);
-    m_device->DrawPrimitive(Gfx::PRIMITIVE_LINE_STRIP, line, 3);
+    m_device->DrawPrimitive(PRIMITIVE_LINE_STRIP, line, 3);
 
     line[0].coord = Math::Vector(p2.x, p2.y - dy, 0.0f);
     line[1].coord = Math::Vector(p2.x, p2.y, 0.0f);
     line[2].coord = Math::Vector(p2.x - dx, p2.y, 0.0f);
-    m_device->DrawPrimitive(Gfx::PRIMITIVE_LINE_STRIP, line, 3);
+    m_device->DrawPrimitive(PRIMITIVE_LINE_STRIP, line, 3);
 
     line[0].coord = Math::Vector(p1.x + dx, p2.y, 0.0f);
     line[1].coord = Math::Vector(p1.x, p2.y, 0.0f);
     line[2].coord = Math::Vector(p1.x, p2.y - dy, 0.0f);
-    m_device->DrawPrimitive(Gfx::PRIMITIVE_LINE_STRIP, line, 3);
+    m_device->DrawPrimitive(PRIMITIVE_LINE_STRIP, line, 3);
 }
 
 // Status: TESTED, VERIFIED
-void Gfx::CEngine::DrawMouse()
+void CEngine::DrawMouse()
 {
-    if (! m_mouseVisible)
+    MouseMode mode = m_app->GetMouseMode();
+    if (mode != MOUSE_ENGINE && mode != MOUSE_BOTH)
         return;
 
-    if (m_app->GetSystemMouseVisibile())
-        return;
-
-    Gfx::Material material;
-    material.diffuse = Gfx::Color(1.0f, 1.0f, 1.0f);
-    material.ambient = Gfx::Color(0.5f, 0.5f, 0.5f);
+    Material material;
+    material.diffuse = Color(1.0f, 1.0f, 1.0f);
+    material.ambient = Color(0.5f, 0.5f, 0.5f);
 
     m_device->SetMaterial(material);
     m_device->SetTexture(0, m_miceTexture);
 
     int index = static_cast<int>(m_mouseType);
 
-    Math::Point pos = m_mousePos;
-    pos.x = m_mousePos.x - (m_mice[index].hotPoint.x * m_mouseSize.x) / 32.0f;
-    pos.y = m_mousePos.y - ((32.0f - m_mice[index].hotPoint.y) * m_mouseSize.y) / 32.0f;
+    Math::Point pos = m_app->GetMousePos();
+    pos.x = pos.x - (m_mice[index].hotPoint.x * m_mouseSize.x) / 32.0f;
+    pos.y = pos.y - ((32.0f - m_mice[index].hotPoint.y) * m_mouseSize.y) / 32.0f;
 
     Math::Point shadowPos;
     shadowPos.x = pos.x + (4.0f/800.0f);
     shadowPos.y = pos.y - (3.0f/600.0f);
 
-    SetState(Gfx::ENG_RSTATE_TCOLOR_WHITE);
+    SetState(ENG_RSTATE_TCOLOR_WHITE);
     DrawMouseSprite(shadowPos, m_mouseSize, m_mice[index].iconShadow);
 
     SetState(m_mice[index].mode1);
@@ -3694,7 +3703,7 @@ void Gfx::CEngine::DrawMouse()
 }
 
 // Status: TESTED, VERIFIED
-void Gfx::CEngine::DrawMouseSprite(Math::Point pos, Math::Point size, int icon)
+void CEngine::DrawMouseSprite(Math::Point pos, Math::Point size, int icon)
 {
     if (icon == -1)
         return;
@@ -3715,16 +3724,55 @@ void Gfx::CEngine::DrawMouseSprite(Math::Point pos, Math::Point size, int icon)
 
     Math::Vector normal(0.0f, 0.0f, -1.0f);
 
-    Gfx::Vertex vertex[4] =
+    Vertex vertex[4] =
     {
-        Gfx::Vertex(Math::Vector(p1.x, p1.y, 0.0f), normal, Math::Point(u1, v2)),
-        Gfx::Vertex(Math::Vector(p1.x, p2.y, 0.0f), normal, Math::Point(u1, v1)),
-        Gfx::Vertex(Math::Vector(p2.x, p1.y, 0.0f), normal, Math::Point(u2, v2)),
-        Gfx::Vertex(Math::Vector(p2.x, p2.y, 0.0f), normal, Math::Point(u2, v1))
+        Vertex(Math::Vector(p1.x, p1.y, 0.0f), normal, Math::Point(u1, v2)),
+        Vertex(Math::Vector(p1.x, p2.y, 0.0f), normal, Math::Point(u1, v1)),
+        Vertex(Math::Vector(p2.x, p1.y, 0.0f), normal, Math::Point(u2, v2)),
+        Vertex(Math::Vector(p2.x, p2.y, 0.0f), normal, Math::Point(u2, v1))
     };
 
-    m_device->SetRenderState(Gfx::RENDER_STATE_DEPTH_TEST, false);
-    m_device->SetRenderState(Gfx::RENDER_STATE_DEPTH_WRITE, false);
-    m_device->DrawPrimitive(Gfx::PRIMITIVE_TRIANGLE_STRIP, vertex, 4);
+    m_device->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, vertex, 4);
     AddStatisticTriangle(2);
 }
+
+void CEngine::DrawStats()
+{
+    if (!m_showStats)
+        return;
+
+    std::stringstream str;
+    str << "Triangles: ";
+    str << m_statisticTriangle;
+    std::string triangleText = str.str();
+
+    float height = m_text->GetAscent(FONT_COLOBOT, 12.0f);
+    float width = 0.15f;
+
+    Math::Point pos(0.04f, 0.04f + height);
+
+    SetState(ENG_RSTATE_OPAQUE_COLOR);
+
+    Gfx::Color black(0.0f, 0.0f, 0.0f, 0.0f);
+
+    VertexCol vertex[4] =
+    {
+        VertexCol(Math::Vector(pos.x        , pos.y - height, 0.0f), black),
+        VertexCol(Math::Vector(pos.x        , pos.y + height, 0.0f), black),
+        VertexCol(Math::Vector(pos.x + width, pos.y - height, 0.0f), black),
+        VertexCol(Math::Vector(pos.x + width, pos.y + height, 0.0f), black)
+    };
+
+    m_device->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, vertex, 4);
+
+    SetState(ENG_RSTATE_TEXT);
+
+    m_text->DrawText(triangleText, FONT_COLOBOT, 12.0f, pos, 1.0f, TEXT_ALIGN_LEFT, 0);
+
+    pos.y -= height;
+
+    m_text->DrawText(m_fpsText, FONT_COLOBOT, 12.0f, pos, 1.0f, TEXT_ALIGN_LEFT, 0);
+}
+
+
+} // namespace Gfx

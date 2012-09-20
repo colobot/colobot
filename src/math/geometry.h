@@ -22,19 +22,21 @@
 
 #pragma once
 
-#include "const.h"
-#include "func.h"
-#include "point.h"
-#include "vector.h"
-#include "matrix.h"
+
+#include "math/const.h"
+#include "math/func.h"
+#include "math/point.h"
+#include "math/matrix.h"
+#include "math/vector.h"
+
 
 #include <cmath>
 #include <cstdlib>
 
 
 // Math module namespace
-namespace Math
-{
+namespace Math {
+
 
 //! Returns py up on the line \a a - \a b
 inline float MidPoint(const Math::Point &a, const Math::Point &b, float px)
@@ -617,4 +619,5 @@ inline Math::Vector RotateView(Math::Vector center, float angleH, float angleV, 
     return eye+center;
 }
 
-}; // namespace Math
+
+} // namespace Math

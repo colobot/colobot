@@ -17,12 +17,14 @@
 
 /**
  * \file graphics/engine/water.h
- * \brief Water rendering - Gfx::CWater class
+ * \brief Water rendering - CWater class
  */
 
 #pragma once
 
+
 #include "common/event.h"
+
 #include "graphics/engine/particle.h"
 
 
@@ -30,7 +32,9 @@ class CInstanceManager;
 class CSoundInterface;
 
 
+// Graphics module namespace
 namespace Gfx {
+
 
 class CEngine;
 class CTerrain;
@@ -65,7 +69,7 @@ struct WaterLine
 struct WaterVapor
 {
     bool              used;
-    Gfx::ParticleType type;
+    ParticleType type;
     Math::Vector      pos;
     float             delay;
     float             time;
@@ -74,7 +78,7 @@ struct WaterVapor
     WaterVapor()
     {
         used = false;
-        type = Gfx::PARTIWATER;
+        type = PARTIWATER;
         delay = time = last = 0.0f;
     }
 };
@@ -113,16 +117,16 @@ enum WaterType
 class CWater
 {
 public:
-    CWater(CInstanceManager* iMan, Gfx::CEngine* engine);
+    CWater(CInstanceManager* iMan, CEngine* engine);
     ~CWater();
 
-    void        SetDevice(Gfx::CDevice* device);
+    void        SetDevice(CDevice* device);
     bool        EventProcess(const Event &event);
     //! Removes all the water
     void        Flush();
     //! Creates all expanses of water
     void        Create(WaterType type1, WaterType type2, const std::string& fileName,
-                       Gfx::Color diffuse, Gfx::Color ambient, float level, float glint, Math::Vector eddy);
+                       Color diffuse, Color ambient, float level, float glint, Math::Vector eddy);
     //! Draw the back surface of the water
     void        DrawBack();
     //! Draws the flat surface of the water
@@ -165,10 +169,10 @@ protected:
 
 protected:
     CInstanceManager* m_iMan;
-    Gfx::CEngine*     m_engine;
-    Gfx::CDevice*     m_device;
-    Gfx::CTerrain*    m_terrain;
-    Gfx::CParticle*   m_particule;
+    CEngine*     m_engine;
+    CDevice*     m_device;
+    CTerrain*    m_terrain;
+    CParticle*   m_particule;
     CSoundInterface*  m_sound;
 
     WaterType       m_type[2];
@@ -180,9 +184,9 @@ protected:
     //! Amplitude of swirls
     Math::Vector    m_eddy;
     //! Diffuse color
-    Gfx::Color      m_diffuse;
+    Color      m_diffuse;
     //! Ambient color
-    Gfx::Color      m_ambient;
+    Color      m_ambient;
     float           m_time;
     float           m_lastLava;
     int             m_subdiv;
@@ -197,7 +201,8 @@ protected:
 
     bool            m_draw;
     bool            m_lava;
-    Gfx::Color      m_color;
+    Color      m_color;
 };
 
-}; // namespace Gfx
+
+} // namespace Gfx

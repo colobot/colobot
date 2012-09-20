@@ -22,12 +22,14 @@
 #include "CBot/CBotDll.h"
 
 #include "app/app.h"
+
 #include "common/event.h"
 #include "common/global.h"
 #include "common/iman.h"
 #include "common/misc.h"
 #include "common/profile.h"
 #include "common/restext.h"
+
 #include "graphics/engine/camera.h"
 #include "graphics/engine/cloud.h"
 #include "graphics/engine/engine.h"
@@ -40,8 +42,10 @@
 #include "graphics/engine/terrain.h"
 #include "graphics/engine/text.h"
 #include "graphics/engine/water.h"
+
 #include "math/const.h"
 #include "math/geometry.h"
+
 #include "object/auto/auto.h"
 #include "object/auto/autobase.h"
 #include "object/brain.h"
@@ -53,11 +57,15 @@
 #include "object/task/task.h"
 #include "object/task/taskbuild.h"
 #include "object/task/taskmanip.h"
+
 #include "physics/physics.h"
+
 #include "script/cbottoken.h"
 #include "script/cmdtoken.h"
 #include "script/script.h"
+
 #include "sound/sound.h"
+
 #include "ui/button.h"
 #include "ui/displayinfo.h"
 #include "ui/displaytext.h"
@@ -983,6 +991,8 @@ void CRobotMain::ChangePhase(Phase phase)
         m_dialog->WriteGamerInfo();
     }
 
+    m_app->SetLowCPU(true); // doesn't use much CPU in interface phases
+
     DeleteAllObjects();  // removes all the current 3D Scene
 
     m_phase        = phase;
@@ -1078,19 +1088,14 @@ void CRobotMain::ChangePhase(Phase phase)
 
     if (m_phase == PHASE_INIT)
     {
-        // TODO: replace with new textures once done
-        m_engine->DeleteTexture("generna.png");
-        m_engine->DeleteTexture("genernb.png");
-        m_engine->DeleteTexture("genernc.png");
-        m_engine->DeleteTexture("genernd.png");
+        m_engine->DeleteTexture("generic.png");
     }
 
     if (m_phase == PHASE_SIMUL)
     {
-        m_engine->DeleteTexture("inter01a.png");
-        m_engine->DeleteTexture("inter01b.png");
-        m_engine->DeleteTexture("inter01c.png");
-        m_engine->DeleteTexture("inter01d.png");
+        m_engine->DeleteTexture("interface.png");
+
+        m_app->SetLowCPU(false); // high CPU for simulation
 
         char* read = m_dialog->GetSceneRead();
         bool loading = (read[0] != 0);
@@ -1193,9 +1198,9 @@ void CRobotMain::ChangePhase(Phase phase)
     }
 
     if (m_phase == PHASE_LOADING)
-        m_engine->SetMouseVisible(false);
+        m_app->SetMouseMode(MOUSE_NONE);
     else
-        m_engine->SetMouseVisible(true);
+        m_app->SetMouseMode(MOUSE_ENGINE);
 
     m_engine->LoadAllTextures();
 }
@@ -2862,7 +2867,7 @@ void CRobotMain::HiliteObject(Math::Point pos)
     if (m_fixScene && m_phase != PHASE_PERSO) return;
     if (m_movieLock) return;
     if (m_movie->IsExist()) return;
-    if (!m_engine->GetMouseVisible()) return;
+    if (m_app->GetMouseMode() == MOUSE_NONE) return;
 
     ClearInterface();  // removes setting evidence and tooltip
 
@@ -3171,7 +3176,7 @@ void CRobotMain::AbortMovie()
             automat->Abort();
     }
 
-    m_engine->SetMouseVisible(true);
+    m_app->SetMouseMode(MOUSE_ENGINE);
 }
 
 
@@ -6623,7 +6628,11 @@ void CRobotMain::SetMovieLock(bool lock)
     CreateShortcuts();
     m_map->ShowMap(!m_movieLock && m_mapShow);
     if (m_movieLock) HiliteClear();
-    m_engine->SetMouseVisible(! m_movieLock);
+
+    if (m_movieLock)
+        m_app->SetMouseMode(MOUSE_NONE);
+    else
+        m_app->SetMouseMode(MOUSE_ENGINE);
 }
 
 bool CRobotMain::GetMovieLock()

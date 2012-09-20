@@ -21,14 +21,17 @@
 
 #pragma once
 
+
 #include "math/intpoint.h"
 
 
+// Graphics module namespace
 namespace Gfx {
 
 /**
-  \enum TexImgFormat
-  \brief Format of image data */
+ * \enum TexImgFormat
+ * \brief Format of image data
+ */
 enum TexImgFormat
 {
     //! Try to determine automatically (may not work)
@@ -44,10 +47,11 @@ enum TexImgFormat
 };
 
 /**
-  \enum TexMinFilter
-  \brief Texture minification filter
-
-  Corresponds to OpenGL modes but should translate to DirectX too. */
+ * \enum TexMinFilter
+ * \brief Texture minification filter
+ *
+ * Corresponds to OpenGL modes but should translate to DirectX too.
+ */
 enum TexMinFilter
 {
     TEX_MIN_FILTER_NEAREST,
@@ -59,8 +63,9 @@ enum TexMinFilter
 };
 
 /**
-  \enum TexMagFilter
-  \brief Texture magnification filter */
+ * \enum TexMagFilter
+ * \brief Texture magnification filter
+ */
 enum TexMagFilter
 {
     TEX_MAG_FILTER_NEAREST,
@@ -68,8 +73,9 @@ enum TexMagFilter
 };
 
 /**
-  \enum TexWrapMode
-  \brief Wrapping mode for texture coords */
+ * \enum TexWrapMode
+ * \brief Wrapping mode for texture coords
+ */
 enum TexWrapMode
 {
     TEX_WRAP_CLAMP,
@@ -77,8 +83,9 @@ enum TexWrapMode
 };
 
 /**
-  \enum TexMixOperation
-  \brief Multitexture mixing operation */
+ * \enum TexMixOperation
+ * \brief Multitexture mixing operation
+ */
 enum TexMixOperation
 {
     //! Default operation on default params (modulate on computed & texture)
@@ -94,8 +101,9 @@ enum TexMixOperation
 };
 
 /**
-  \enum TexMixArgument
-  \brief Multitexture mixing argument */
+ * \enum TexMixArgument
+ * \brief Multitexture mixing argument
+ */
 enum TexMixArgument
 {
     //! Color from current texture
@@ -119,11 +127,11 @@ struct TextureCreateParams
     //! Whether to generate mipmaps
     bool mipmap;
     //! Format of source image data
-    Gfx::TexImgFormat format;
+    TexImgFormat format;
     //! Minification filter
-    Gfx::TexMinFilter minFilter;
+    TexMinFilter minFilter;
     //! Magnification filter
-    Gfx::TexMagFilter magFilter;
+    TexMagFilter magFilter;
 
     //! Constructor; calls LoadDefault()
     TextureCreateParams()
@@ -132,11 +140,11 @@ struct TextureCreateParams
     //! Loads the default values
     inline void LoadDefault()
     {
-        format = Gfx::TEX_IMG_RGB;
+        format = TEX_IMG_RGB;
         mipmap = false;
 
-        minFilter = Gfx::TEX_MIN_FILTER_NEAREST;
-        magFilter = Gfx::TEX_MAG_FILTER_NEAREST;
+        minFilter = TEX_MIN_FILTER_NEAREST;
+        magFilter = TEX_MAG_FILTER_NEAREST;
     }
 };
 
@@ -149,21 +157,21 @@ struct TextureCreateParams
 struct TextureStageParams
 {
     //! Mixing operation done on color values
-    Gfx::TexMixOperation colorOperation;
+    TexMixOperation colorOperation;
     //! 1st argument of color operations
-    Gfx::TexMixArgument colorArg1;
+    TexMixArgument colorArg1;
     //! 2nd argument of color operations
-    Gfx::TexMixArgument colorArg2;
+    TexMixArgument colorArg2;
     //! Mixing operation done on alpha values
-    Gfx::TexMixOperation alphaOperation;
+    TexMixOperation alphaOperation;
     //! 1st argument of alpha operations
-    Gfx::TexMixArgument alphaArg1;
+    TexMixArgument alphaArg1;
     //! 2nd argument of alpha operations
-    Gfx::TexMixArgument alphaArg2;
+    TexMixArgument alphaArg2;
     //! Wrap mode for 1st tex coord
-    Gfx::TexWrapMode    wrapS;
+    TexWrapMode    wrapS;
     //! Wrap mode for 2nd tex coord
-    Gfx::TexWrapMode    wrapT;
+    TexWrapMode    wrapT;
 
     //! Constructor; calls LoadDefault()
     TextureStageParams()
@@ -172,15 +180,15 @@ struct TextureStageParams
     //! Loads the default values
     inline void LoadDefault()
     {
-        colorOperation = Gfx::TEX_MIX_OPER_DEFAULT;
-        colorArg1 = Gfx::TEX_MIX_ARG_COMPUTED_COLOR;
-        colorArg2 = Gfx::TEX_MIX_ARG_TEXTURE;
+        colorOperation = TEX_MIX_OPER_DEFAULT;
+        colorArg1 = TEX_MIX_ARG_COMPUTED_COLOR;
+        colorArg2 = TEX_MIX_ARG_TEXTURE;
 
-        alphaOperation = Gfx::TEX_MIX_OPER_DEFAULT;
-        alphaArg1 = Gfx::TEX_MIX_ARG_COMPUTED_COLOR;
-        alphaArg2 = Gfx::TEX_MIX_ARG_TEXTURE;
+        alphaOperation = TEX_MIX_OPER_DEFAULT;
+        alphaArg1 = TEX_MIX_ARG_COMPUTED_COLOR;
+        alphaArg2 = TEX_MIX_ARG_TEXTURE;
 
-        wrapS = wrapT = Gfx::TEX_WRAP_REPEAT;
+        wrapS = wrapT = TEX_WRAP_REPEAT;
     }
 };
 
@@ -218,7 +226,7 @@ struct Texture
     }
 
     //! Comparator for use in texture maps and sets
-    inline bool operator<(const Gfx::Texture &other) const
+    inline bool operator<(const Texture &other) const
     {
         // Invalid textures are always "less than" every other texture
 
@@ -235,7 +243,7 @@ struct Texture
     }
 
     //! Comparator
-    inline bool operator==(const Gfx::Texture &other) const
+    inline bool operator==(const Texture &other) const
     {
         if (Valid() != other.Valid())
             return false;
@@ -246,4 +254,5 @@ struct Texture
     }
 };
 
-}; // namespace Gfx
+
+} // namespace Gfx
