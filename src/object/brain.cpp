@@ -578,7 +578,7 @@ bool CBrain::EventProcess(const Event &event)
         }
         if ( action == EVENT_OBJECT_TARGET && !m_object->GetTrainer() )
         {
-            err = StartTaskGunGoal((event.pos.y-0.50f)*1.3f, (event.pos.x-0.50f)*2.0f);
+            err = StartTaskGunGoal((event.mousePos.y-0.50f)*1.3f, (event.mousePos.x-0.50f)*2.0f);
         }
 
         if ( action == EVENT_OBJECT_FIREANT )

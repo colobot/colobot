@@ -242,7 +242,7 @@ bool CStudio::EventProcess(const Event &event)
     if ( event.type == EVENT_KEY_DOWN )
     {
         if (  event.key.key == m_main->GetInputBinding(INPUT_SLOT_CBOT).key ||
-              event.param == m_main->GetInputBinding(INPUT_SLOT_CBOT).joy )
+              event.key.key == m_main->GetInputBinding(INPUT_SLOT_CBOT).joy )
         {
             if ( m_helpFilename.length() > 0 )
             {
@@ -1355,7 +1355,7 @@ bool CStudio::EventDialog(const Event &event)
     }
 
     if ( event.type == EVENT_DIALOG_OK ||
-         (event.type == EVENT_KEY_DOWN && event.param == KEY(RETURN)) )
+         (event.type == EVENT_KEY_DOWN && event.key.key == KEY(RETURN)) )
     {
         if ( m_dialog == SD_OPEN )
         {
@@ -1371,7 +1371,7 @@ bool CStudio::EventDialog(const Event &event)
     }
 
     if ( event.type == EVENT_DIALOG_CANCEL ||
-         (event.type == EVENT_KEY_DOWN && event.param == KEY(ESCAPE)) ||
+         (event.type == EVENT_KEY_DOWN && event.key.key == KEY(ESCAPE)) ||
          event.type == pw->GetEventTypeClose() )
     {
         StopDialog();

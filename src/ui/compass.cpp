@@ -60,9 +60,9 @@ bool CCompass::EventProcess(const Event &event)
     CControl::EventProcess(event);
 
     if ( event.type == EVENT_MOUSE_BUTTON_DOWN &&
-            event.mouseButton.button == 1)
+         event.mouseButton.button == MOUSE_BUTTON_LEFT)
     {
-        if ( CControl::Detect(event.mouseButton.pos) )
+        if ( CControl::Detect(event.mousePos) )
         {
             Event newEvent = event;
             newEvent.type = m_eventType;

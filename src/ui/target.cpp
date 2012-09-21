@@ -59,7 +59,7 @@ bool CTarget::EventProcess(const Event &event)
 
     if ( event.type == EVENT_MOUSE_MOVE )
     {
-        if ( CControl::Detect(event.pos) )
+        if ( CControl::Detect(event.mousePos) )
         {
             m_engine->SetMouseType(Gfx::ENG_MOUSE_TARGET);
             Event newEvent = event;
@@ -70,11 +70,11 @@ bool CTarget::EventProcess(const Event &event)
     }
 
     if ( event.type == EVENT_MOUSE_BUTTON_DOWN &&
-            event.mouseButton.button == 1 &&
+            event.mouseButton.button == MOUSE_BUTTON_LEFT &&
          (m_state & STATE_VISIBLE)        &&
          (m_state & STATE_ENABLE)         )
     {
-        if ( CControl::Detect(event.pos) )
+        if ( CControl::Detect(event.mousePos) )
         {
             Event newEvent = event;
             newEvent.type = EVENT_OBJECT_FIRE;
@@ -96,9 +96,9 @@ bool CTarget::EventProcess(const Event &event)
     {
         m_main->SetFriendAim(false);
 
-        if ( CControl::Detect(event.mouseMove.pos) )
+        if ( CControl::Detect(event.mousePos) )
         {
-            pObj = DetectFriendObject(event.mouseMove.pos);
+            pObj = DetectFriendObject(event.mousePos);
             if ( pObj == 0 )
             {
                 m_engine->SetMouseType(Gfx::ENG_MOUSE_TARGET);
@@ -117,11 +117,11 @@ bool CTarget::EventProcess(const Event &event)
     }
 
     if ( event.type == EVENT_MOUSE_BUTTON_DOWN &&
-          event.mouseButton.button == 1   &&
+          event.mouseButton.button == MOUSE_BUTTON_LEFT   &&
          (m_state & STATE_VISIBLE)        &&
          (m_state & STATE_ENABLE)         )
     {
-        if ( CControl::Detect(event.mouseButton.pos) )
+        if ( CControl::Detect(event.mousePos) )
         {
             if ( !m_main->GetFriendAim() )
             {

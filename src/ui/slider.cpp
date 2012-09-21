@@ -284,24 +284,24 @@ bool CSlider::EventProcess(const Event &event)
     }
 
     if ( event.type == EVENT_MOUSE_BUTTON_DOWN &&
-         (event.mouseButton.button == 1 )      &&
+         (event.mouseButton.button == MOUSE_BUTTON_LEFT ) &&
          (m_state & STATE_VISIBLE)             &&
          (m_state & STATE_ENABLE)         )
     {
-        if ( CControl::Detect(event.mouseButton.pos) )
+        if ( CControl::Detect(event.mousePos) )
         {
             if ( m_bHoriz )
             {
                 pos.x = m_pos.x+m_marginButton;
                 dim.x = m_dim.x-m_marginButton*2.0f;
-                value = (event.mouseButton.pos.x-pos.x-CURSOR_WIDTH/2.0f);
+                value = (event.mousePos.x-pos.x-CURSOR_WIDTH/2.0f);
                 value /= (dim.x-CURSOR_WIDTH);
             }
             else
             {
                 pos.y = m_pos.y+m_marginButton;
                 dim.y = m_dim.y-m_marginButton*2.0f;
-                value = (event.mouseButton.pos.y-pos.y-CURSOR_WIDTH/2.0f);
+                value = (event.mousePos.y-pos.y-CURSOR_WIDTH/2.0f);
                 value /= (dim.y-CURSOR_WIDTH);
             }
             if ( value < 0.0f )  value = 0.0f;
@@ -314,7 +314,7 @@ bool CSlider::EventProcess(const Event &event)
             m_event->AddEvent(newEvent);
 
             m_bCapture = true;
-            m_pressPos = event.mouseButton.pos;
+            m_pressPos = event.mousePos;
             m_pressValue = m_visibleValue;
         }
     }
@@ -325,14 +325,14 @@ bool CSlider::EventProcess(const Event &event)
         {
             pos.x = m_pos.x+m_marginButton;
             dim.x = m_dim.x-m_marginButton*2.0f;
-            value = (event.mouseMove.pos.x-pos.x-CURSOR_WIDTH/2.0f);
+            value = (event.mousePos.x-pos.x-CURSOR_WIDTH/2.0f);
             value /= (dim.x-CURSOR_WIDTH);
         }
         else
         {
             pos.y = m_pos.y+m_marginButton;
             dim.y = m_dim.y-m_marginButton*2.0f;
-            value = (event.mouseMove.pos.y-pos.y-CURSOR_WIDTH/2.0f);
+            value = (event.mousePos.y-pos.y-CURSOR_WIDTH/2.0f);
             value /= (dim.y-CURSOR_WIDTH);
         }
         if ( value < 0.0f )  value = 0.0f;
@@ -350,7 +350,7 @@ bool CSlider::EventProcess(const Event &event)
     }
 
     if ( ( event.type == EVENT_MOUSE_BUTTON_UP ) &&
-           ( event.mouseButton.button == 1 )     &&
+           ( event.mouseButton.button == MOUSE_BUTTON_LEFT )     &&
             m_bCapture )
     {
         m_bCapture = false;
@@ -358,7 +358,7 @@ bool CSlider::EventProcess(const Event &event)
 
     if (event.type == EVENT_MOUSE_WHEEL &&
         event.mouseWheel.dir == WHEEL_UP &&
-        Detect(event.mouseWheel.pos) &&
+        Detect(event.mousePos) &&
         m_buttonLeft != 0)
     {
         Event newEvent = event;
@@ -367,8 +367,8 @@ bool CSlider::EventProcess(const Event &event)
     }
 
     if (event.type == EVENT_MOUSE_WHEEL &&
-        event.mouseButton.button == WHEEL_DOWN &&
-        Detect(event.mouseWheel.pos) &&
+        event.mouseWheel.dir == WHEEL_DOWN &&
+        Detect(event.mousePos) &&
         m_buttonRight != 0)
     {
         Event newEvent = event;

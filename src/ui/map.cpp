@@ -187,15 +187,15 @@ bool CMap::EventProcess(const Event &event)
     if ( event.type == EVENT_FRAME )
         m_time += event.rTime;
 
-    if ( event.type == EVENT_MOUSE_MOVE && Detect(event.pos) )  {
+    if ( event.type == EVENT_MOUSE_MOVE && Detect(event.mousePos) )  {
         m_engine->SetMouseType(Gfx::ENG_MOUSE_NORM);
-        if ( DetectObject(event.mouseMove.pos, bInMap) != 0 )
+        if ( DetectObject(event.mousePos, bInMap) != 0 )
             m_engine->SetMouseType(Gfx::ENG_MOUSE_HAND);
     }
 
-    if ( event.type == EVENT_MOUSE_BUTTON_DOWN && event.mouseButton.button == 1 )  {
-        if ( CControl::Detect(event.mouseButton.pos) ) {
-            SelectObject(event.mouseButton.pos);
+    if ( event.type == EVENT_MOUSE_BUTTON_DOWN && event.mouseButton.button == MOUSE_BUTTON_LEFT )  {
+        if ( CControl::Detect(event.mousePos) ) {
+            SelectObject(event.mousePos);
             return false;
         }
     }

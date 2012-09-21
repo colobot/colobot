@@ -191,7 +191,7 @@ bool CEditValue::EventProcess(const Event &event)
 
     if (event.type == EVENT_MOUSE_WHEEL &&
         event.mouseWheel.dir == WHEEL_UP &&
-        Detect(event.mouseWheel.pos))
+        Detect(event.mousePos))
     {
         value = GetValue()+m_stepValue;
         if ( value > m_maxValue )  value = m_maxValue;
@@ -200,7 +200,7 @@ bool CEditValue::EventProcess(const Event &event)
     }
     if ( event.type == EVENT_KEY_DOWN &&
          event.mouseWheel.dir == WHEEL_DOWN &&
-         Detect(event.mouseWheel.pos))
+         Detect(event.mousePos))
     {
         value = GetValue()-m_stepValue;
         if ( value < m_minValue )  value = m_minValue;
@@ -230,9 +230,8 @@ void CEditValue::HiliteValue(const Event &event)
     m_edit->SetFocus(true);
 
     Event newEvent = event;
-    newEvent.type = EVENT_ACTIVE;
-    newEvent.active.gain = true; // TODO not much pretty sure about it
-    newEvent.param = m_edit->GetEventType();
+    newEvent.type = EVENT_FOCUS;
+    newEvent.customParam = m_edit->GetEventType();
     m_event->AddEvent(newEvent);  // defocus the other objects
 }
 

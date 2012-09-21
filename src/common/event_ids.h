@@ -60,9 +60,15 @@ enum EventType
     //! Event sent after releasing a joystick button
     EVENT_JOY_BUTTON_UP     = 14,
 
+
+    /* Events sent/received in game and user interface */
+
     EVENT_UPDINTERFACE      = 20,
     EVENT_WIN               = 30,
     EVENT_LOST              = 31,
+
+    //! CEdit focus
+    EVENT_FOCUS             = 35,
 
     EVENT_BUTTON_OK         = 40,
     EVENT_BUTTON_CANCEL     = 41,

@@ -82,8 +82,8 @@ bool CKey::EventProcess(const Event &event)
     CControl::EventProcess(event);
 
     if (event.type == EVENT_MOUSE_BUTTON_DOWN) {
-        if (event.mouseButton.button == 1) // left
-            m_bCatch = Detect(event.mouseButton.pos);
+        if (event.mouseButton.button == MOUSE_BUTTON_LEFT) // left
+            m_bCatch = Detect(event.mousePos);
     }
 
     if (event.type == EVENT_KEY_DOWN && m_bCatch) {
@@ -92,12 +92,13 @@ bool CKey::EventProcess(const Event &event)
         if ( TestKey(event.key.key) ) { // impossible ?
             m_sound->Play(SOUND_TZOING);
         } else {
+            // TODO: test for virtual, joystick, etc.
             if ( event.key.key == m_key[0] || event.key.key == m_key[1] ) {
                 m_key[0] = event.key.key;
                 m_key[1] = 0;
             } else {
                 m_key[1] = m_key[0];
-                m_key[0] = event.param;
+                m_key[0] = event.key.key;
             }
             m_sound->Play(SOUND_CLICK);
 

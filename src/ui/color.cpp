@@ -105,11 +105,11 @@ bool CColor::EventProcess(const Event &event)
     }
 
     if ( event.type == EVENT_MOUSE_BUTTON_DOWN &&
-            event.mouseButton.button == 1 &&
+         event.mouseButton.button == MOUSE_BUTTON_LEFT &&
          (m_state & STATE_VISIBLE)        &&
          (m_state & STATE_ENABLE)         )
     {
-        if ( CControl::Detect(event.mouseButton.pos) )
+        if ( CControl::Detect(event.mousePos) )
         {
             m_repeat = DELAY1;
 
@@ -120,7 +120,7 @@ bool CColor::EventProcess(const Event &event)
         }
     }
 
-    if ( event.type == EVENT_MOUSE_BUTTON_UP && event.mouseButton.button == 1)
+    if ( event.type == EVENT_MOUSE_BUTTON_UP && event.mouseButton.button == MOUSE_BUTTON_LEFT)
     {
         m_repeat = 0.0f;
     }

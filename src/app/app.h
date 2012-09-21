@@ -76,20 +76,18 @@ enum VideoQueryResult
 
 /**
  * \enum TrackedKeys
- * \brief Keys (or kmods) whose state (pressed/released) is tracked by CApplication
+ * \brief Additional keys whose state (pressed/released) is tracked by CApplication
  */
 enum TrackedKey
 {
-    TRKEY_SHIFT     = (1<<0),
-    TRKEY_CONTROL   = (1<<1),
-    TRKEY_NUM_UP    = (1<<2),
-    TRKEY_NUM_DOWN  = (1<<3),
-    TRKEY_NUM_LEFT  = (1<<4),
-    TRKEY_NUM_RIGHT = (1<<5),
-    TRKEY_NUM_PLUS  = (1<<6),
-    TRKEY_NUM_MINUS = (1<<7),
-    TRKEY_PAGE_UP   = (1<<8),
-    TRKEY_PAGE_DOWN = (1<<9)
+    TRKEY_NUM_UP    = (1<<0),
+    TRKEY_NUM_DOWN  = (1<<1),
+    TRKEY_NUM_LEFT  = (1<<2),
+    TRKEY_NUM_RIGHT = (1<<3),
+    TRKEY_NUM_PLUS  = (1<<4),
+    TRKEY_NUM_MINUS = (1<<5),
+    TRKEY_PAGE_UP   = (1<<6),
+    TRKEY_PAGE_DOWN = (1<<7)
 };
 
 /**
@@ -305,11 +303,11 @@ protected:
     bool CreateVideoSurface();
 
     //! Processes the captured SDL event to Event struct
-    Event       ParseEvent();
+    Event       ProcessSystemEvent();
     //! If applicable, creates a virtual event to match the changed state as of new event
     Event       CreateVirtualEvent(const Event& sourceEvent);
     //! Handles some incoming events
-    bool        ProcessEvent(Event &event);
+    bool        ProcessEvent(const Event& event);
     //! Renders the image in window
     void        Render();
 
@@ -375,17 +373,17 @@ protected:
     bool            m_simulationSuspended;
     //@}
 
-    //! Current state of key modifiers (mask of SDLMod)
+    //! Current state of key modifiers (bitmask of SDLMod)
     unsigned int    m_kmodState;
-    //! Current state of some tracked keys (mask of TrackedKey)
+    //! Current state of some tracked keys (bitmask of TrackedKey enum values)
     unsigned int    m_trackedKeys;
-    //! Current state of mouse buttons (mask of button indexes)
-    unsigned int    m_mouseButtonsState;
 
     //! Current mode of mouse
     MouseMode       m_mouseMode;
     //! Current position of mouse cursor
     Math::Point     m_mousePos;
+    //! Current state of mouse buttons (bitmask of MouseButton enum values)
+    unsigned int    m_mouseButtonsState;
 
     //! Info about current joystick device
     JoystickDevice  m_joystick;

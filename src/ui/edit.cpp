@@ -240,14 +240,14 @@ bool CEdit::EventProcess(const Event &event)
 
     if (event.type == EVENT_MOUSE_WHEEL &&
         event.mouseWheel.dir == WHEEL_UP &&
-         Detect(event.pos)            )
+         Detect(event.mousePos)            )
     {
         Scroll(m_lineFirst-3, true);
         return true;
     }
     if (event.type == EVENT_KEY_DOWN  &&
         event.mouseWheel.dir == WHEEL_DOWN  &&
-        Detect(event.mouseWheel.pos)            )
+        Detect(event.mousePos)            )
     {
         Scroll(m_lineFirst+3, true);
         return true;
@@ -263,8 +263,8 @@ bool CEdit::EventProcess(const Event &event)
 
     if ( event.type == EVENT_MOUSE_MOVE )
     {
-        if ( Detect(event.mouseMove.pos) &&
-             event.mouseMove.pos.x < m_pos.x+m_dim.x-(m_bMulti?MARGX+SCROLL_WIDTH:0.0f) )
+        if ( Detect(event.mousePos) &&
+             event.mousePos.x < m_pos.x+m_dim.x-(m_bMulti?MARGX+SCROLL_WIDTH:0.0f) )
         {
             if ( m_bEdit )
             {
@@ -272,7 +272,7 @@ bool CEdit::EventProcess(const Event &event)
             }
             else
             {
-                if ( IsLinkPos(event.mouseMove.pos) )
+                if ( IsLinkPos(event.mousePos) )
                 {
                     m_engine->SetMouseType(Gfx::ENG_MOUSE_HAND);
                 }
@@ -297,23 +297,23 @@ bool CEdit::EventProcess(const Event &event)
 
     if ( event.type == EVENT_KEY_DOWN && m_bFocus )
     {
-        bShift   = ( (event.trackedKeys & TRKEY_SHIFT) != 0 );
-        bControl = ( (event.trackedKeys & TRKEY_CONTROL) != 0);
+        bShift   = ( (event.kmodState & KEY_MOD(SHIFT) ) != 0 );
+        bControl = ( (event.kmodState & KEY_MOD(CTRL) ) != 0);
 
         if ( (event.key.unicode == 'X'       && !bShift &&  bControl) ||
-             (event.key.key   == KEY(DELETE) &&  bShift && !bControl) )
+             ((event.kmodState & KEY_MOD(CTRL)) != 0 &&  bShift && !bControl) )
         {
             Cut();
             return true;
         }
         if ( (event.key.unicode == 'C'       && !bShift &&  bControl) ||
-             (event.key.key == KEY(INSERT) && !bShift &&  bControl) )
+             ((event.kmodState & KEY_MOD(CTRL)) != 0 && !bShift &&  bControl) )
         {
             Copy();
             return true;
         }
         if ( (event.key.unicode == 'V'       && !bShift &&  bControl) ||
-             (event.param == KEY(INSERT) &&  bShift && !bControl) )
+             ((event.kmodState & KEY_MOD(CTRL)) != 0 &&  bShift && !bControl) )
         {
             Paste();
             return true;
@@ -471,9 +471,9 @@ bool CEdit::EventProcess(const Event &event)
         }
     }
 
-    if ( event.type == EVENT_ACTIVE )
+    if ( event.type == EVENT_FOCUS )
     {
-        if ( event.param == m_eventType )
+        if ( event.customParam == m_eventType )
         {
             m_bFocus = true;
         }
@@ -484,15 +484,15 @@ bool CEdit::EventProcess(const Event &event)
     }
 
     if ( event.type == EVENT_MOUSE_BUTTON_DOWN &&
-            event.mouseButton.button == 1)
+            event.mouseButton.button == MOUSE_BUTTON_LEFT)
     {
-        m_mouseFirstPos = event.pos;
-        m_mouseLastPos  = event.pos;
-        if ( Detect(event.pos) )
+        m_mouseFirstPos = event.mousePos;
+        m_mouseLastPos  = event.mousePos;
+        if ( Detect(event.mousePos) )
         {
-            if ( event.pos.x < m_pos.x+m_dim.x-(m_bMulti?MARGX+SCROLL_WIDTH:0.0f) )
+            if ( event.mousePos.x < m_pos.x+m_dim.x-(m_bMulti?MARGX+SCROLL_WIDTH:0.0f) )
             {
-                MouseClick(event.pos);
+                MouseClick(event.mousePos);
                 if ( m_bEdit || m_bHilite )  m_bCapture = true;
             }
             m_bFocus = true;
@@ -505,8 +505,8 @@ bool CEdit::EventProcess(const Event &event)
 
     if ( event.type == EVENT_MOUSE_MOVE && m_bCapture )
     {
-        m_mouseLastPos = event.pos;
-        MouseMove(event.pos);
+        m_mouseLastPos = event.mousePos;
+        MouseMove(event.mousePos);
     }
 
     if ( event.type == EVENT_FRAME && m_bCapture )
@@ -515,11 +515,11 @@ bool CEdit::EventProcess(const Event &event)
     }
 
     if ( event.type == EVENT_MOUSE_BUTTON_UP &&
-            event.mouseButton.button == 1)
+            event.mouseButton.button == MOUSE_BUTTON_LEFT)
     {
-        if ( Detect(event.pos) )
+        if ( Detect(event.mousePos) )
         {
-            if ( event.pos.x < m_pos.x+m_dim.x-(m_bMulti?MARGX+SCROLL_WIDTH:0.0f) )
+            if ( event.mousePos.x < m_pos.x+m_dim.x-(m_bMulti?MARGX+SCROLL_WIDTH:0.0f) )
             {
                 MouseRelease(m_mouseFirstPos);
             }
@@ -528,7 +528,7 @@ bool CEdit::EventProcess(const Event &event)
         {
             if ( m_timeLastClick+DELAY_DBCLICK > m_time )  // double-click ?
             {
-                MouseDoubleClick(event.pos);
+                MouseDoubleClick(event.mousePos);
             }
             m_timeLastClick = m_time;
             m_bCapture = false;

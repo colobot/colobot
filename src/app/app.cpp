@@ -725,7 +725,7 @@ int CApplication::Run()
             {
                 haveEvent = true;
 
-                Event event = ParseEvent();
+                Event event = ProcessSystemEvent();
 
                 if (event.type == EVENT_QUIT)
                     goto end; // exit the loop
@@ -812,21 +812,11 @@ const std::string& CApplication::GetErrorMessage()
     return m_errorMessage;
 }
 
-//! Translates SDL press state to PressState
-PressState TranslatePressState(unsigned char state)
-{
-    if (state == SDL_PRESSED)
-        return STATE_PRESSED;
-    else
-        return STATE_RELEASED;
-}
-
 /** The SDL event parsed is stored internally.
     If event is not available or is not understood, returned event is of type EVENT_NULL. */
-Event CApplication::ParseEvent()
+Event CApplication::ProcessSystemEvent()
 {
     Event event;
-
     event.systemEvent = true;
 
     if (m_private->currentEvent.type == SDL_QUIT)
@@ -843,9 +833,10 @@ Event CApplication::ParseEvent()
 
         event.key.virt = false;
         event.key.key = m_private->currentEvent.key.keysym.sym;
-        event.key.mod = m_private->currentEvent.key.keysym.mod;
-        event.key.state = TranslatePressState(m_private->currentEvent.key.state);
         event.key.unicode = m_private->currentEvent.key.keysym.unicode;
+
+        // Use the occasion to update kmods
+        m_kmodState = m_private->currentEvent.key.keysym.mod;
     }
     else if ( (m_private->currentEvent.type == SDL_MOUSEBUTTONDOWN) ||
          (m_private->currentEvent.type == SDL_MOUSEBUTTONUP) )
@@ -860,8 +851,6 @@ Event CApplication::ParseEvent()
                     event.mouseWheel.dir = WHEEL_DOWN;
                 else
                     event.mouseWheel.dir = WHEEL_UP;
-                event.mouseWheel.pos = m_engine->WindowToInterfaceCoords(
-                Math::IntPoint(m_private->currentEvent.button.x, m_private->currentEvent.button.y));
             }
         }
         else
@@ -871,18 +860,24 @@ Event CApplication::ParseEvent()
             else
                 event.type = EVENT_MOUSE_BUTTON_UP;
 
-            event.mouseButton.button = m_private->currentEvent.button.button;
-            event.mouseButton.state = TranslatePressState(m_private->currentEvent.button.state);
-            event.mouseButton.pos = m_engine->WindowToInterfaceCoords(
-                Math::IntPoint(m_private->currentEvent.button.x, m_private->currentEvent.button.y));
+            event.mouseButton.button = static_cast<MouseButton>(1 << m_private->currentEvent.button.button);
+
+            // Use the occasion to update mouse button state
+            if (m_private->currentEvent.type == SDL_MOUSEBUTTONDOWN)
+                m_mouseButtonsState |= event.mouseButton.button;
+            else
+                m_mouseButtonsState &= ~event.mouseButton.button;
         }
+
+        // Use the occasion to update mouse pos
+        m_mousePos = m_engine->WindowToInterfaceCoords(
+            Math::IntPoint(m_private->currentEvent.button.x, m_private->currentEvent.button.y));
     }
     else if (m_private->currentEvent.type == SDL_MOUSEMOTION)
     {
         event.type = EVENT_MOUSE_MOVE;
 
-        event.mouseMove.state = TranslatePressState(m_private->currentEvent.button.state);
-        event.mouseMove.pos = m_engine->WindowToInterfaceCoords(
+        m_mousePos = m_engine->WindowToInterfaceCoords(
             Math::IntPoint(m_private->currentEvent.button.x, m_private->currentEvent.button.y));
     }
     else if (m_private->currentEvent.type == SDL_JOYAXISMOTION)
@@ -901,7 +896,6 @@ Event CApplication::ParseEvent()
             event.type = EVENT_JOY_BUTTON_UP;
 
         event.joyButton.button = m_private->currentEvent.jbutton.button;
-        event.joyButton.state = TranslatePressState(m_private->currentEvent.jbutton.state);
     }
     else if (m_private->currentEvent.type == SDL_ACTIVEEVENT)
     {
@@ -917,35 +911,10 @@ Event CApplication::ParseEvent()
         event.active.gain = m_private->currentEvent.active.gain == 1;
     }
 
-    return event;
-}
 
-/**
- * Processes incoming events. It is the first function called after an event is captured.
- * Event is modified, updating its tracked keys state and mouse position to current values.
- * Function returns \c true if the event is to be passed on to other processing functions
- * or \c false if not. */
-bool CApplication::ProcessEvent(Event &event)
-{
-    CLogger *l = GetLogger();
-
-    event.trackedKeys = m_trackedKeys;
-    event.mousePos = m_mousePos;
-
-    if (event.type == EVENT_ACTIVE)
+    if (event.type == EVENT_KEY_DOWN)
     {
-        if (m_debugMode)
-            l->Info("Focus change: active = %s\n", event.active.gain ? "true" : "false");
-    }
-    else if (event.type == EVENT_KEY_DOWN)
-    {
-        m_kmodState = event.key.mod;
-
-        if ((m_kmodState & KEY_MOD(SHIFT)) != 0)
-            m_trackedKeys |= TRKEY_SHIFT;
-        else if ((m_kmodState & KEY_MOD(CTRL)) != 0)
-            m_trackedKeys |= TRKEY_CONTROL;
-        else if (event.key.key == KEY(KP8))
+        if      (event.key.key == KEY(KP8))
             m_trackedKeys |= TRKEY_NUM_UP;
         else if (event.key.key == KEY(KP2))
             m_trackedKeys |= TRKEY_NUM_DOWN;
@@ -964,13 +933,7 @@ bool CApplication::ProcessEvent(Event &event)
     }
     else if (event.type == EVENT_KEY_UP)
     {
-        m_kmodState = event.key.mod;
-
-        if ((m_kmodState & KEY_MOD(SHIFT)) != 0)
-            m_trackedKeys &= ~TRKEY_SHIFT;
-        else if ((m_kmodState & KEY_MOD(CTRL)) != 0)
-            m_trackedKeys &= ~TRKEY_CONTROL;
-        else if (event.key.key == KEY(KP8))
+        if      (event.key.key == KEY(KP8))
             m_trackedKeys &= ~TRKEY_NUM_UP;
         else if (event.key.key == KEY(KP2))
             m_trackedKeys &= ~TRKEY_NUM_DOWN;
@@ -987,14 +950,23 @@ bool CApplication::ProcessEvent(Event &event)
         else if (event.key.key == KEY(PAGEDOWN))
             m_trackedKeys &= ~TRKEY_PAGE_DOWN;
     }
-    else if (event.type == EVENT_MOUSE_BUTTON_DOWN)
-    {
-        m_mouseButtonsState |= 1 << event.mouseButton.button;
-    }
-    else if (event.type == EVENT_MOUSE_BUTTON_UP)
-    {
-        m_mouseButtonsState &= ~(1 << event.mouseButton.button);
-    }
+
+    event.trackedKeysState = m_trackedKeys;
+    event.kmodState = m_kmodState;
+    event.mousePos = m_mousePos;
+    event.mouseButtonsState = m_mouseButtonsState;
+
+    return event;
+}
+
+/**
+ * Processes incoming events. It is the first function called after an event is captured.
+ * Event is modified, updating its tracked keys state and mouse position to current values.
+ * Function returns \c true if the event is to be passed on to other processing functions
+ * or \c false if not. */
+bool CApplication::ProcessEvent(const Event &event)
+{
+    CLogger *l = GetLogger();
 
     // Print the events in debug mode to test the code
     if (m_debugMode)
@@ -1005,28 +977,21 @@ bool CApplication::ProcessEvent(Event &event)
             case EVENT_KEY_UP:
                 l->Info("EVENT_KEY_%s:\n", (event.type == EVENT_KEY_DOWN) ? "DOWN" : "UP");
                 l->Info(" virt    = %s\n", (event.key.virt) ? "true" : "false");
-                l->Info(" key     = %4x\n", event.key.key);
-                l->Info(" state   = %s\n", (event.key.state == STATE_PRESSED) ? "STATE_PRESSED" : "STATE_RELEASED");
-                l->Info(" mod     = %4x\n", event.key.mod);
-                l->Info(" unicode = %4x\n", event.key.unicode);
+                l->Info(" key     = %d\n", event.key.key);
+                l->Info(" unicode = 0x%04x\n", event.key.unicode);
                 break;
             case EVENT_MOUSE_MOVE:
                 l->Info("EVENT_MOUSE_MOVE:\n");
-                l->Info(" state  = %s\n", (event.mouseMove.state == STATE_PRESSED) ? "STATE_PRESSED" : "STATE_RELEASED");
-                l->Info(" pos    = (%f, %f)\n", event.mouseMove.pos.x, event.mouseMove.pos.y);
                 break;
             case EVENT_MOUSE_BUTTON_DOWN:
             case EVENT_MOUSE_BUTTON_UP:
                 l->Info("EVENT_MOUSE_BUTTON_%s:\n", (event.type == EVENT_MOUSE_BUTTON_DOWN) ? "DOWN" : "UP");
                 l->Info(" button = %d\n", event.mouseButton.button);
-                l->Info(" state  = %s\n", (event.mouseButton.state == STATE_PRESSED) ? "STATE_PRESSED" : "STATE_RELEASED");
-                l->Info(" pos    = (%f, %f)\n", event.mouseButton.pos.x, event.mouseButton.pos.y);
                 break;
             case EVENT_MOUSE_WHEEL:
                 l->Info("EVENT_MOUSE_WHEEL:\n");
                 l->Info(" dir = %s\n", (event.mouseWheel.dir == WHEEL_DOWN) ? "WHEEL_DOWN" : "WHEEL_UP");
-                l->Info(" pos = (%f, %f)\n", event.mouseWheel.pos.x, event.mouseWheel.pos.y);
-                break;
+               break;
             case EVENT_JOY_AXIS:
                 l->Info("EVENT_JOY_AXIS:\n");
                 l->Info(" axis  = %d\n", event.joyAxis.axis);
@@ -1036,7 +1001,6 @@ bool CApplication::ProcessEvent(Event &event)
             case EVENT_JOY_BUTTON_UP:
                 l->Info("EVENT_JOY_BUTTON_%s:\n", (event.type == EVENT_JOY_BUTTON_DOWN) ? "DOWN" : "UP");
                 l->Info(" button = %d\n", event.joyButton.button);
-                l->Info(" state  = %s\n", (event.joyButton.state == STATE_PRESSED) ? "STATE_PRESSED" : "STATE_RELEASED");
                 break;
             case EVENT_ACTIVE:
                 l->Info("EVENT_ACTIVE:\n");
@@ -1044,8 +1008,16 @@ bool CApplication::ProcessEvent(Event &event)
                 l->Info(" gain  = %s\n", event.active.gain ? "true" : "false");
                 break;
             default:
+                l->Info("Event type = %d:\n", static_cast<int>(event.type));
                 break;
         }
+
+        l->Info(" systemEvent = %s\n", event.systemEvent ? "true" : "false");
+        l->Info(" rTime = %f\n", event.rTime);
+        l->Info(" kmodState = %04x\n", event.kmodState);
+        l->Info(" trackedKeysState = %04x\n", event.trackedKeysState);
+        l->Info(" mousePos = %f, %f\n", event.mousePos.x, event.mousePos.y);
+        l->Info(" mouseButtonsState = %02x\n", event.mouseButtonsState);
     }
 
     // By default, pass on all events
@@ -1081,9 +1053,9 @@ Event CApplication::CreateVirtualEvent(const Event& sourceEvent)
             virtualEvent.type = EVENT_KEY_DOWN;
         else
             virtualEvent.type = EVENT_KEY_UP;
+
         virtualEvent.key.virt = true;
         virtualEvent.key.key = VIRTUAL_JOY(sourceEvent.joyButton.button);
-        virtualEvent.key.mod = 0;
         virtualEvent.key.unicode = 0;
     }
     else
@@ -1161,6 +1133,11 @@ void CApplication::StepSimulation()
 
 
     Event frameEvent(EVENT_FRAME);
+    frameEvent.systemEvent = true;
+    frameEvent.trackedKeysState = m_trackedKeys;
+    frameEvent.kmodState = m_kmodState;
+    frameEvent.mousePos = m_mousePos;
+    frameEvent.mouseButtonsState = m_mouseButtonsState;
     frameEvent.rTime = m_relTime;
     m_eventQueue->AddEvent(frameEvent);
 }
@@ -1280,6 +1257,7 @@ bool CApplication::GetMouseButtonState(int index)
 
 void CApplication::ResetKeyStates()
 {
+    GetLogger()->Info("Reset key states\n");
     m_trackedKeys = 0;
     m_kmodState = 0;
     m_robotMain->ResetKeyStates();

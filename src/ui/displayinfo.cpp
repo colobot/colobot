@@ -103,7 +103,7 @@ bool CDisplayInfo::EventProcess(const Event &event)
             toto = static_cast<CMotionToto*>(m_toto->GetMotion());
             if ( toto != 0 )
             {
-                toto->SetMousePos(event.mouseMove.pos);
+                toto->SetMousePos(event.mousePos);
             }
         }
     }
@@ -201,8 +201,8 @@ bool CDisplayInfo::EventProcess(const Event &event)
             }
         }
 
-        if ( ( event.type == EVENT_MOUSE_BUTTON_DOWN && event.mouseButton.button == 1 )||
-             ( event.type == EVENT_MOUSE_BUTTON_UP && event.mouseButton.button == 1 ))
+        if ( ( event.type == EVENT_MOUSE_BUTTON_DOWN && event.mouseButton.button == MOUSE_BUTTON_LEFT )||
+             ( event.type == EVENT_MOUSE_BUTTON_UP && event.mouseButton.button == MOUSE_BUTTON_LEFT ))
         {
             UpdateCopyButton();
         }

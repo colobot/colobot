@@ -18,6 +18,8 @@
 
 #include "graphics/engine/camera.h"
 
+#include "app/app.h"
+
 #include "common/iman.h"
 
 #include "graphics/engine/engine.h"
@@ -1022,7 +1024,7 @@ bool CCamera::EventProcess(const Event &event)
 
 bool CCamera::EventMouseMove(const Event &event)
 {
-    m_mousePos = event.pos;
+    m_mousePos = event.mousePos;
     return true;
 }
 
@@ -1193,7 +1195,7 @@ bool CCamera::EventFrameFree(const Event &event)
     m_eyePt = Math::LookatPoint(m_eyePt, m_directionH, m_directionV, event.motionInput.y * event.rTime * factor * m_speed);
 
     // Left/Right
-    if ( event.keyState & KS_CONTROL )
+    if ( event.kmodState & KEY_MOD(CTRL) )
     {
         if ( event.motionInput.x < 0.0f )
             m_eyePt = Math::LookatPoint(m_eyePt, m_directionH + Math::PI / 2.0f, m_directionV, -event.motionInput.x * event.rTime * factor * m_speed);
@@ -1206,12 +1208,12 @@ bool CCamera::EventFrameFree(const Event &event)
     }
 
     // PageUp/PageDown
-    if ( event.keyState & KS_NUMMINUS )
+    if ( event.trackedKeysState & TRKEY_NUM_MINUS )
     {
         if (m_heightEye < 500.0f)
             m_heightEye += event.rTime * factor * m_speed;
     }
-    if ( event.keyState & KS_NUMPLUS )
+    if ( event.trackedKeysState & TRKEY_NUM_PLUS )
     {
         if (m_heightEye > -2.0f)
             m_heightEye -= event.rTime * factor * m_speed;
@@ -1299,12 +1301,12 @@ bool CCamera::EventFrameBack(const Event &event)
         type = m_cameraObj->GetType();
 
     // +/-.
-    if (event.keyState & KS_NUMPLUS)
+    if (event.trackedKeysState & TRKEY_NUM_PLUS)
     {
         m_backDist -= event.rTime * 30.0f * m_speed;
         if (m_backDist < m_backMin) m_backDist = m_backMin;
     }
-    if (event.keyState & KS_NUMMINUS)
+    if (event.trackedKeysState & TRKEY_NUM_MINUS)
     {
         m_backDist += event.rTime * 30.0f * m_speed;
         if (m_backDist > 200.0f) m_backDist = 200.0f;
@@ -1448,12 +1450,12 @@ bool CCamera::EventFrameBack(const Event &event)
 bool CCamera::EventFrameFix(const Event &event)
 {
     // +/-.
-    if (event.keyState & KS_NUMPLUS)
+    if (event.trackedKeysState & TRKEY_NUM_PLUS)
     {
         m_fixDist -= event.rTime * 30.0f * m_speed;
         if (m_fixDist < 10.0f) m_fixDist = 10.0f;
     }
-    if (event.keyState & KS_NUMMINUS)
+    if (event.trackedKeysState & TRKEY_NUM_MINUS)
     {
         m_fixDist += event.rTime * 30.0f * m_speed;
         if (m_fixDist > 200.0f) m_fixDist = 200.0f;
@@ -1552,24 +1554,24 @@ bool CCamera::EventFrameVisit(const Event &event)
     m_visitTime += event.rTime;
 
     // +/-.
-    if (event.keyState & KS_NUMPLUS)
+    if (event.trackedKeysState & TRKEY_NUM_PLUS)
     {
         m_visitDist -= event.rTime * 50.0f * m_speed;
         if (m_visitDist < 20.0f) m_visitDist = 20.0f;
     }
-    if (event.keyState & KS_NUMMINUS)
+    if (event.trackedKeysState & TRKEY_NUM_MINUS)
     {
         m_visitDist += event.rTime * 50.0f * m_speed;
         if (m_visitDist > 200.0f) m_visitDist = 200.0f;
     }
 
     // PageUp/Down.
-    if (event.keyState & KS_PAGEUP)
+    if (event.trackedKeysState & TRKEY_PAGE_UP)
     {
         m_visitDirectionV -= event.rTime * 1.0f * m_speed;
         if (m_visitDirectionV < -Math::PI * 0.40f) m_visitDirectionV = -Math::PI * 0.40f;
     }
-    if (event.keyState & KS_PAGEDOWN)
+    if (event.trackedKeysState & TRKEY_PAGE_DOWN)
     {
         m_visitDirectionV += event.rTime * 1.0f * m_speed;
         if (m_visitDirectionV > 0.0f ) m_visitDirectionV = 0.0f;

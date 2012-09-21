@@ -356,6 +356,7 @@ void CEngine::FrameUpdate()
         CopyTimeStamp(m_lastFrameTime, m_currentFrameTime);
 
         m_fps = m_fpsCounter / diff;
+        m_fpsCounter = 0;
 
         if (m_showStats)
         {

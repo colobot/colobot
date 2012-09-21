@@ -2096,8 +2096,8 @@ bool CMainDialog::EventProcess(const Event &event)
 
     if ( event.type == EVENT_MOUSE_MOVE )
     {
-        m_glintMouse = event.pos;
-        NiceParticle(event.pos, event.trackedKeys & TRKEY_NUM_LEFT);
+        m_glintMouse = event.mousePos;
+        NiceParticle(event.mousePos, event.mouseButtonsState & MOUSE_BUTTON_LEFT);
     }
 
     if ( m_bDialog )  // this dialogue?
@@ -2105,7 +2105,7 @@ bool CMainDialog::EventProcess(const Event &event)
         m_interface->EventProcess(event);
 
         if ( event.type == EVENT_DIALOG_OK ||
-             (event.type == EVENT_KEY_DOWN && event.param == KEY(RETURN) ) )
+             (event.type == EVENT_KEY_DOWN && event.key.key == KEY(RETURN) ) )
         {
             StopDialog();
             if ( m_phase == PHASE_NAME )
@@ -2131,7 +2131,7 @@ bool CMainDialog::EventProcess(const Event &event)
             }
         }
         if ( event.type == EVENT_DIALOG_CANCEL ||
-             (event.type == EVENT_KEY_DOWN && event.param == KEY(ESCAPE) ) )
+             (event.type == EVENT_KEY_DOWN && event.key.key == KEY(ESCAPE) ) )
         {
             StopDialog();
         }
@@ -2177,7 +2177,7 @@ bool CMainDialog::EventProcess(const Event &event)
         switch( event.type )
         {
             case EVENT_KEY_DOWN:
-                if ( event.param == KEY(ESCAPE) )
+                if ( event.key.key == KEY(ESCAPE) )
                 {
 //?                 StartQuit();  // would you leave?
                     m_sound->Play(SOUND_TZOING);
@@ -2238,11 +2238,11 @@ bool CMainDialog::EventProcess(const Event &event)
         switch( event.type )
         {
             case EVENT_KEY_DOWN:
-                if ( event.param == KEY(RETURN) )
+                if ( event.key.key == KEY(RETURN) )
                 {
                     NameSelect();
                 }
-                if ( event.param == KEY(ESCAPE) )
+                if ( event.key.key == KEY(ESCAPE) )
                 {
                     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
                     if ( pw == 0 )  break;
@@ -2295,11 +2295,11 @@ bool CMainDialog::EventProcess(const Event &event)
         switch( event.type )
         {
             case EVENT_KEY_DOWN:
-                if ( event.param == KEY(RETURN) )
+                if ( event.key.key == KEY(RETURN) )
                 {
                     m_main->ChangePhase(PHASE_INIT);
                 }
-                if ( event.param == KEY(ESCAPE) )
+                if ( event.key.key == KEY(ESCAPE) )
                 {
                     m_main->ChangePhase(PHASE_NAME);
                 }
@@ -2430,7 +2430,7 @@ bool CMainDialog::EventProcess(const Event &event)
 
         if ( event.type == pw->GetEventTypeClose() ||
              event.type == EVENT_INTERFACE_BACK   ||
-            (event.type == EVENT_KEY_DOWN && event.param == KEY(ESCAPE)) )
+            (event.type == EVENT_KEY_DOWN && event.key.key == KEY(ESCAPE)) )
         {
             m_main->ChangePhase(PHASE_INIT);
             return false;
@@ -2502,7 +2502,7 @@ bool CMainDialog::EventProcess(const Event &event)
 
         if ( event.type == pw->GetEventTypeClose() ||
              event.type == EVENT_INTERFACE_BACK   ||
-            (event.type == EVENT_KEY_DOWN && event.param == KEY(ESCAPE)) )
+            (event.type == EVENT_KEY_DOWN && event.key.key == KEY(ESCAPE)) )
         {
             SetupMemorize();
             m_engine->ApplyChange();
@@ -2548,7 +2548,7 @@ bool CMainDialog::EventProcess(const Event &event)
 
         if ( event.type == pw->GetEventTypeClose() ||
              event.type == EVENT_INTERFACE_BACK   ||
-            (event.type == EVENT_KEY_DOWN && event.param == KEY(ESCAPE)) )
+            (event.type == EVENT_KEY_DOWN && event.key.key == KEY(ESCAPE)) )
         {
             SetupMemorize();
             m_engine->ApplyChange();
@@ -2920,7 +2920,7 @@ bool CMainDialog::EventProcess(const Event &event)
 
         if ( event.type == pw->GetEventTypeClose() ||
              event.type == EVENT_INTERFACE_BACK   ||
-            (event.type == EVENT_KEY_DOWN && event.param == KEY(ESCAPE)) )
+            (event.type == EVENT_KEY_DOWN && event.key.key == KEY(ESCAPE)) )
         {
             ChangePhase(m_phaseTerm);
         }
@@ -2953,7 +2953,7 @@ bool CMainDialog::EventProcess(const Event &event)
 
         if ( event.type == pw->GetEventTypeClose() ||
              event.type == EVENT_INTERFACE_BACK   ||
-            (event.type == EVENT_KEY_DOWN && event.param == KEY(ESCAPE)) )
+            (event.type == EVENT_KEY_DOWN && event.key.key == KEY(ESCAPE)) )
         {
             m_interface->DeleteControl(EVENT_WINDOW5);
             ChangePhase(PHASE_SIMUL);
@@ -3027,7 +3027,7 @@ bool CMainDialog::EventProcess(const Event &event)
 
         if ( event.type == EVENT_KEY_DOWN )
         {
-            if ( event.param == KEY(ESCAPE) )
+            if ( event.key.key == KEY(ESCAPE) )
             {
                 ChangePhase(PHASE_INIT);
             }
@@ -4821,6 +4821,8 @@ void CMainDialog::UpdateSceneChap(int &chap)
             pl->SetName(j, line);
             pl->SetCheck(j, bPassed);
             pl->SetEnable(j, true);
+
+            continue;
 
             if ( m_phase == PHASE_MISSION && !m_main->GetShowAll() && !bPassed )
             {

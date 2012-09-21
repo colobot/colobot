@@ -257,7 +257,7 @@ bool CList::EventProcess(const Event &event)
     if ((m_state & STATE_ENABLE) == 0)
         return true;
 
-    if (event.type == EVENT_MOUSE_WHEEL && event.mouseWheel.dir == WHEEL_UP && Detect(event.mouseWheel.pos)) {
+    if (event.type == EVENT_MOUSE_WHEEL && event.mouseWheel.dir == WHEEL_UP && Detect(event.mousePos)) {
         if (m_firstLine > 0)
             m_firstLine--;
         UpdateScroll();
@@ -265,7 +265,7 @@ bool CList::EventProcess(const Event &event)
         return true;
     }
 
-    if (event.type == EVENT_MOUSE_WHEEL && event.mouseWheel.dir == WHEEL_DOWN && Detect(event.mouseWheel.pos)) {
+    if (event.type == EVENT_MOUSE_WHEEL && event.mouseWheel.dir == WHEEL_DOWN && Detect(event.mousePos)) {
         if (m_firstLine < m_totalLine - m_displayLine)
             m_firstLine++;
         UpdateScroll();
@@ -275,7 +275,7 @@ bool CList::EventProcess(const Event &event)
 
     CControl::EventProcess(event);
 
-    if (event.type == EVENT_MOUSE_MOVE && Detect(event.mouseMove.pos)) {
+    if (event.type == EVENT_MOUSE_MOVE && Detect(event.mousePos)) {
         m_engine->SetMouseType(Gfx::ENG_MOUSE_NORM);
         for (i = 0; i < m_displayLine; i++) {
             if (i + m_firstLine >= m_totalLine)

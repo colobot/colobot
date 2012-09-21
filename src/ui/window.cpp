@@ -949,9 +949,9 @@ bool CWindow::EventProcess(const Event &event)
             m_pressMouse = Gfx::ENG_MOUSE_NORM;
 
             if ( m_name.length() > 0 && m_bMovable &&  // title bar?
-                 Detect(event.pos) )
+                 Detect(event.mousePos) )
             {
-                flags = BorderDetect(event.pos);
+                flags = BorderDetect(event.mousePos);
                 if ( flags == -1 )
                 {
                     m_pressMouse = Gfx::ENG_MOUSE_MOVE;  // +
@@ -1011,17 +1011,17 @@ bool CWindow::EventProcess(const Event &event)
     }
 
     if ( m_bTrashEvent && event.type == EVENT_MOUSE_BUTTON_DOWN  &&
-            event.mouseButton.button == 1)
+            event.mouseButton.button == MOUSE_BUTTON_LEFT)
     {
-        if ( Detect(event.pos) )
+        if ( Detect(event.mousePos) )
         {
             if ( m_name.length() > 0 && m_bMovable )  // title bar?
             {
-                m_pressFlags = BorderDetect(event.pos);
+                m_pressFlags = BorderDetect(event.mousePos);
                 if ( m_pressFlags != 0 )
                 {
                     m_bCapture = true;
-                    m_pressPos = event.pos;
+                    m_pressPos = event.mousePos;
                 }
             }
             return false;
@@ -1030,7 +1030,7 @@ bool CWindow::EventProcess(const Event &event)
 
     if ( event.type == EVENT_MOUSE_MOVE && m_bCapture )
     {
-        pos = event.pos;
+        pos = event.mousePos;
         if ( m_pressFlags == -1 )  // all moves?
         {
             m_pos.x += pos.x-m_pressPos.x;
@@ -1081,7 +1081,7 @@ bool CWindow::EventProcess(const Event &event)
         m_event->AddEvent(newEvent);
     }
 
-    if ( event.type == EVENT_MOUSE_BUTTON_UP && event.mouseButton.button == 1 && m_bCapture )
+    if ( event.type == EVENT_MOUSE_BUTTON_UP && event.mouseButton.button == MOUSE_BUTTON_LEFT && m_bCapture )
     {
         m_bCapture = false;
     }

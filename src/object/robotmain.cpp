@@ -1333,8 +1333,8 @@ bool CRobotMain::EventProcess(Event &event)
     {
         if (event.type == EVENT_MOUSE_MOVE)
         {
-            m_lastMousePos = event.pos;
-            HiliteObject(event.pos);
+            m_lastMousePos = event.mousePos;
+            HiliteObject(event.mousePos);
         }
         return false;
     }
@@ -1344,8 +1344,8 @@ bool CRobotMain::EventProcess(Event &event)
 
     if (event.type == EVENT_MOUSE_MOVE)
     {
-        m_lastMousePos = event.pos;
-        HiliteObject(event.pos);
+        m_lastMousePos = event.mousePos;
+        HiliteObject(event.mousePos);
     }
 
     if (m_displayInfo != nullptr)  // current info?
@@ -1514,7 +1514,7 @@ bool CRobotMain::EventProcess(Event &event)
                 if (event.mouseButton.button != 1) // only left mouse button
                     break;
 
-                obj = DetectObject(event.pos);
+                obj = DetectObject(event.mousePos);
                 if (!m_shortCut) obj = nullptr;
                 if (obj != nullptr && obj->GetType() == OBJECT_TOTO)
                 {

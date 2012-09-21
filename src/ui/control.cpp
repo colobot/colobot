@@ -304,9 +304,9 @@ bool CControl::EventProcess(const Event &event)
 
     if ( event.type == EVENT_MOUSE_MOVE )
     {
-        m_glintMouse = event.mouseMove.pos;
+        m_glintMouse = event.mousePos;
 
-        if ( Detect(event.mouseMove.pos) )
+        if ( Detect(event.mousePos) )
         {
             if ( (m_state & STATE_VISIBLE) &&
                  (m_state & STATE_ENABLE ) )
@@ -321,9 +321,9 @@ bool CControl::EventProcess(const Event &event)
         }
     }
 
-    if ( event.type == EVENT_MOUSE_BUTTON_DOWN && event.mouseButton.button == 1)
+    if ( event.type == EVENT_MOUSE_BUTTON_DOWN && event.mouseButton.button == MOUSE_BUTTON_LEFT)
     {
-        if ( Detect(event.mouseButton.pos) )
+        if ( Detect(event.mousePos) )
         {
             m_bCapture = true;
             SetState(STATE_PRESS);
@@ -332,7 +332,7 @@ bool CControl::EventProcess(const Event &event)
 
     if ( event.type == EVENT_MOUSE_MOVE && m_bCapture )
     {
-        if ( Detect(event.mouseMove.pos) )
+        if ( Detect(event.mousePos) )
         {
             SetState(STATE_PRESS);
         }
@@ -342,7 +342,7 @@ bool CControl::EventProcess(const Event &event)
         }
     }
 
-    if ( event.type == EVENT_MOUSE_BUTTON_UP && m_bCapture && event.mouseButton.button == 1)
+    if ( event.type == EVENT_MOUSE_BUTTON_UP && m_bCapture && event.mouseButton.button == MOUSE_BUTTON_LEFT)
     {
         m_bCapture = false;
         ClearState(STATE_PRESS);
