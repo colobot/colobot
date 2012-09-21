@@ -30,6 +30,8 @@
 #include "graphics/engine/engine.h"
 #include "graphics/opengl/gldevice.h"
 
+#include "plugins/pluginmanager.h"
+
 
 #include <string>
 #include <vector>
@@ -331,6 +333,8 @@ protected:
     CSoundInterface*        m_sound;
     //! Main class of the proper game engine
     CRobotMain*             m_robotMain;
+    CPluginManager*         m_pluginManager;
+    CProfile*               m_profile;
 
     //! Code to return at exit
     int             m_exitCode;

@@ -179,20 +179,6 @@ bool ALSound::Cache(Sound sound, std::string filename)
 }
 
 
-void ALSound::CacheAll()
-{
-    char filename[100];
-    for ( int i = 1; i < 69; i++ )
-    {
-        sprintf(filename, "high/sound%.3d.wav", i);
-        if ( !Cache((Sound) i, std::string(filename)) )
-        {
-            fprintf(stderr, "Unable to load audio: %s\n", filename);
-        }
-    }
-}
-
-
 int ALSound::RetPriority(Sound sound)
 {
     if ( sound == SOUND_FLYh   ||
@@ -276,23 +262,25 @@ bool ALSound::SearchFreeBuffer(Sound sound, int &channel, bool &bAlreadyLoaded)
     }
 
     // Seeks a channel completely free.
-    auto it = mChannels.end();
-    it--;
-    int i = (*it).first;
-    while (++i)
-    {
-        if (mChannels.find(i) == mChannels.end()) {
-            Channel *chn = new Channel();
-            // check if we channel ready to play music, if not destroy it and seek free one
-            if (chn->IsReady()) {
-                chn->SetPriority(priority);
-                mChannels[1] = chn;
-                channel = 1;
-                bAlreadyLoaded = false;
-                return true;
+    if (mChannels.size() < 64) {
+        auto it = mChannels.end();
+        it--;
+        int i = (*it).first;
+        while (++i)
+        {
+            if (mChannels.find(i) == mChannels.end()) {
+                Channel *chn = new Channel();
+                // check if channel is ready to play music, if not destroy it and seek free one
+                if (chn->IsReady()) {
+                    chn->SetPriority(priority);
+                    mChannels[++i] = chn;
+                    channel = i;
+                    bAlreadyLoaded = false;
+                    return true;
+                }
+                delete chn;
+                GetLogger()->Warn("Could not open additional channel to play sound!");
             }
-            delete chn;
-            GetLogger()->Warn("Could not open additional channel to play sound!");
         }
     }
 
@@ -513,7 +501,6 @@ void ALSound::FrameMove(float delta)
 
 void ALSound::SetListener(Math::Vector eye, Math::Vector lookat)
 {
-    GetLogger()->Info("Setting listener position.\n");
     float orientation[] = {lookat.x, lookat.y, lookat.z, 0.f, 1.f, 0.f};
     alListener3f(AL_POSITION, eye.x, eye.y, eye.z);
     alListenerfv(AL_ORIENTATION, orientation);

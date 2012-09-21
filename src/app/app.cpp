@@ -83,9 +83,11 @@ struct ApplicationPrivate
 
 CApplication::CApplication()
 {
-    m_private    = new ApplicationPrivate();
-    m_iMan       = new CInstanceManager();
-    m_eventQueue = new CEventQueue(m_iMan);
+    m_private       = new ApplicationPrivate();
+    m_iMan          = new CInstanceManager();
+    m_eventQueue    = new CEventQueue(m_iMan);
+    m_pluginManager = new CPluginManager();
+    m_profile       = new CProfile();
 
     m_engine    = nullptr;
     m_device    = nullptr;
@@ -139,6 +141,12 @@ CApplication::~CApplication()
 
     delete m_eventQueue;
     m_eventQueue = nullptr;
+
+    delete m_pluginManager;
+    m_pluginManager = nullptr;
+
+    delete m_profile;
+    m_profile = nullptr;
 
     delete m_iMan;
     m_iMan = nullptr;
@@ -302,8 +310,28 @@ bool CApplication::Create()
     m_deviceConfig.fullScreen = false;
 
     // Create the sound instance.
-    m_sound = new CSoundInterface();
+    if (!GetProfile()->InitCurrentDirectory()) {
+        GetLogger()->Warn("Config not found. Default values will be used!\n");
+        m_sound = new CSoundInterface();
+    } else {
+        std::string path;
+        if (GetProfile()->GetLocalProfileString("Resources", "Data", path))
+            m_dataPath = path;
 
+        m_pluginManager->LoadFromProfile();
+        m_sound = static_cast<CSoundInterface*>(CInstanceManager::GetInstancePointer()->SearchInstance(CLASS_SOUND));
+
+        if (!m_sound) {
+            GetLogger()->Error("Sound not loaded!\n");
+            return false;
+        }
+
+        m_sound->Create(true);
+        if (GetProfile()->GetLocalProfileString("Resources", "Sound", path))
+            m_sound->CacheAll(path);
+        else
+            m_sound->CacheAll(m_dataPath);
+    }
 
     std::string standardInfoMessage =
       "\nPlease see the console output or log file\n"

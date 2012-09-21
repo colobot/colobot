@@ -57,7 +57,7 @@ bool CProfile::SetLocalProfileString(std::string section, std::string key, std::
 bool CProfile::GetLocalProfileString(std::string section, std::string key, std::string &buffer)
 {
     const char* value = m_ini->GetValue(section.c_str(), key.c_str(), nullptr);
-    if (strlen(value) > 0) {
+    if (value != nullptr && strlen(value) > 0) {
         buffer = std::string(value);
         return true;
     }

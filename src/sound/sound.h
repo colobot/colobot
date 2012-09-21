@@ -26,9 +26,15 @@
 
 #include <math/vector.h>
 
+#include <common/iman.h>
+#include <common/logger.h>
+
 #include <plugins/plugininterface.h>
 
 #include <string>
+#include <iostream>
+#include <iomanip>
+#include <sstream>
 
 
 /*!
@@ -152,20 +158,27 @@ class CSoundInterface : public CPluginInterface
 {
   public:
     inline CSoundInterface() {
-      //CInstanceManager::getInstance().AddInstance(CLASS_SOUND, this);
+      CInstanceManager::GetInstance().AddInstance(CLASS_SOUND, this);
       //m_iMan->AddInstance(CLASS_SOUND, this);
     };
-    inline ~CSoundInterface() {};
+    inline virtual ~CSoundInterface() {};
 
     /** Function to initialize sound device
      *  @param bool b3D - enable support for 3D sound
      */
-    inline bool Create(bool b3D) { return true; };
+    inline virtual bool Create(bool b3D) { return true; };
 
     /** Function called to cache all sound effect files.
      *  Function calls \link CSoundInterface::Cache() \endlink for each file
      */
-    inline void CacheAll() {};
+    inline void CacheAll(std::string path) {
+        for ( int i = 1; i < 69; i++ ) {
+            std::stringstream filename;
+            filename << path << "/sound" << std::setfill('0') << std::setw(3) << i << ".wav";
+            if ( !Cache(static_cast<Sound>(i), filename.str()) )
+                GetLogger()->Warn("Unable to load audio: %s\n", filename.str().c_str());
+        }
+    };
 
     /** Function called to cache sound effect file.
      *  This function is called by plugin interface for each file.
@@ -173,58 +186,58 @@ class CSoundInterface : public CPluginInterface
      * @param std::string bFile - file to load
      * @return return true on success
      */
-    inline bool Cache(Sound bSound, std::string bFile) { return true; };
+    inline virtual bool Cache(Sound bSound, std::string bFile) { return true; };
 
     /** Geturn if plugin is enabled
      *  @return return true if plugin is enabled
      */
-    inline bool GetEnable() {return true;};
+    inline virtual bool GetEnable() {return true;};
 
     /** Change sound mode to 2D/3D
      * @param bool bMode - true to enable 3D sound
      */
-    inline void SetSound3D(bool bMode) {};
+    inline virtual void SetSound3D(bool bMode) {};
 
     /** Geturn if we use 3D sound
      * @return true if we have 3D sound enabled
      */
-    inline bool GetSound3D() {return true;};
+    inline virtual bool GetSound3D() {return true;};
 
     /** Geturn if we have 3D sound capable card
      * @return true for 3D sound support
      */
-    inline bool GetSound3DCap() {return true;};
+    inline virtual bool GetSound3DCap() {return true;};
 
     /** Change global sound volume
      * @param int volume - range from 0 to MAXVOLUME
      */
-    inline void SetAudioVolume(int volume) {};
+    inline virtual void SetAudioVolume(int volume) {};
 
     /** Geturn global sound volume
      * @return global volume as int in range from 0 to MAXVOLUME
      */
-    inline int GetAudioVolume() {return 0;};
+    inline virtual int GetAudioVolume() {return 0;};
 
     /** Set music volume
      * @param int volume - range from 0 to MAXVOLUME
      */
-    inline void SetMusicVolume(int volume) {};
+    inline virtual void SetMusicVolume(int volume) {};
 
     /** Geturn music volume
      * @return music volume as int in range from 0 to MAXVOLUME
      */
-    inline int GetMusicVolume() {return 0;};
+    inline virtual int GetMusicVolume() {return 0;};
 
     /** Set listener position
      * @param Math::Vector eye - position of listener
      * @param Math::Vector lookat - direction listener is looking at
      */
-    inline void SetListener(Math::Vector eye, Math::Vector lookat) {};
+    inline virtual void SetListener(Math::Vector eye, Math::Vector lookat) {};
 
     /** Update data each frame
      * @param float rTime - time since last update
      */
-    inline void FrameMove(float rTime) {};
+    inline virtual void FrameMove(float rTime) {};
 
     /** Play specific sound
      * @param Sound sound - sound to play
@@ -233,7 +246,7 @@ class CSoundInterface : public CPluginInterface
      * @param bool bLoop - loop sound
      * @return identifier of channel that sound will be played on
      */
-    inline int Play(Sound sound, float amplitude=1.0f, float frequency=1.0f, bool bLoop = false) {return 0;};
+    inline virtual int Play(Sound sound, float amplitude=1.0f, float frequency=1.0f, bool bLoop = false) {return 0;};
 
     /** Play specific sound
      * @param Sound sound - sound to play
@@ -243,13 +256,13 @@ class CSoundInterface : public CPluginInterface
      * @param bool bLoop - loop sound
      * @return identifier of channel that sound will be played on
      */
-    inline int Play(Sound sound, Math::Vector pos, float amplitude=1.0f, float frequency=1.0f, bool bLoop = false) {return 0;};
+    inline virtual int Play(Sound sound, Math::Vector pos, float amplitude=1.0f, float frequency=1.0f, bool bLoop = false) {return 0;};
 
     /** Remove all operations that would be made on sound in channel.
      * @param int channel - channel to work on
      * @return return true on success
      */
-    inline bool FlushEnvelope(int channel) {return true;};
+    inline virtual bool FlushEnvelope(int channel) {return true;};
 
     /** Add envelope to sound. Envelope is a operatino that will be performend on sound in future like changing frequency
      * @param int channel - channel to work on
@@ -259,64 +272,64 @@ class CSoundInterface : public CPluginInterface
      * @param SoundNext oper - operation to perform
      * @return return true on success
      */
-    inline bool AddEnvelope(int channel, float amplitude, float frequency, float time, SoundNext oper) {return true;};
+    inline virtual bool AddEnvelope(int channel, float amplitude, float frequency, float time, SoundNext oper) {return true;};
 
     /** Set sound position in space
      * @param int channel - channel to work on
      * @param Math::Vector pos - new positino of a sound
      * @return return true on success
      */
-    inline bool Position(int channel, Math::Vector pos) {return true;};
+    inline virtual bool Position(int channel, Math::Vector pos) {return true;};
 
     /** Set sound frequency
      * @param int channel - channel to work on
      * @param float frequency - change sound frequency
      * @return return true on success
      */
-    inline bool Frequency(int channel, float frequency) {return true;};
+    inline virtual bool Frequency(int channel, float frequency) {return true;};
 
     /** Stop playing sound
      * @param int channel - channel to work on
      * @return return true on success
      */
-    inline bool Stop(int channel) {return true;};
+    inline virtual bool Stop(int channel) {return true;};
 
     /** Stop playing all sounds
      * @return return true on success
      */
-    inline bool StopAll() {return true;};
+    inline virtual bool StopAll() {return true;};
 
     /** Mute/unmute all sounds
      * @param bool bMute
      * @return return true on success
      */
-    inline bool MuteAll(bool bMute) {return true;};
+    inline virtual bool MuteAll(bool bMute) {return true;};
 
     /** Start playing music
      * @param int rank - track number
      * @param bool bRepeat - repeat playing
      * @return return true on success
      */
-    inline bool PlayMusic(int rank, bool bRepeat) {return true;};
+    inline virtual bool PlayMusic(int rank, bool bRepeat) {return true;};
 
     /** Restart music
      * @return return true on success
      */
-    inline bool RestartMusic() {return true;};
+    inline virtual bool RestartMusic() {return true;};
 
     /** Susspend paying music
      * @return return true on success
      */
-    inline void SuspendMusic() {};
+    inline virtual void SuspendMusic() {};
 
     /** Stop playing music
      * @return return true on success
      */
-    inline void StopMusic() {};
+    inline virtual void StopMusic() {};
 
     /** Check if music if playing
      * @return return true if music is playing
      */
-    inline bool IsPlayingMusic() {return true;};
+    inline virtual bool IsPlayingMusic() {return true;};
 };
 

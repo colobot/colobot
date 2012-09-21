@@ -40,7 +40,6 @@ class ALSound : public CSoundInterface
         ~ALSound();
 
         bool Create(bool b3D);
-        void CacheAll();
         bool Cache(Sound, std::string);
 
         bool RetEnable();
