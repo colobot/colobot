@@ -188,7 +188,7 @@ CBotString CBotString::Right(int nCount) const
     if ( i < 0 ) i = 0;
 
     int j;
-    for (int j = 0 ; i < m_lg && i < 1999; ++i)
+    for (j = 0 ; i < m_lg && i < 1999; ++i)
     {
         chain[j++] = m_ptr[i];
     }

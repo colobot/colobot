@@ -50,7 +50,7 @@ class CKey : public CControl
     protected:
         bool    TestKey(int key);
 
-        int     m_key[2];
+        unsigned int m_key[2];
         bool    m_bCatch;
 
         CApplication *m_app;
