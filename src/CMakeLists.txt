@@ -68,7 +68,6 @@ common/event.cpp
 common/image.cpp
 common/iman.cpp
 common/logger.cpp
-common/metafile.cpp
 common/misc.cpp
 common/profile.cpp
 common/restext.cpp

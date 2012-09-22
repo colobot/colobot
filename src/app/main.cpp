@@ -65,7 +65,6 @@ The current layout is the following:
  - src/sound - sound and music engine written using fmod library
  - src/physics - physics engine
  - src/script - link with the CBot library
- - src/metafile - separate program for packing data files to .dat format
 */
 
 
