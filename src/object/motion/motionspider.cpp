@@ -14,16 +14,17 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// motionspider.cpp
-
-
-#include <stdio.h>
 
 #include "object/motion/motionspider.h"
 
+#include "app/app.h"
+
 #include "graphics/engine/modelfile.h"
 #include "graphics/engine/particle.h"
+
 #include "physics/physics.h"
+
+#include <stdio.h>
 
 
 
@@ -72,6 +73,8 @@ bool CMotionSpider::Create(Math::Vector pos, float angle, ObjectType type,
     int         rank, i, j, parent;
     char        name[50];
 
+    std::string baseName;
+
     float           table[] =
     {
     //    x       y       z
@@ -106,7 +109,7 @@ bool CMotionSpider::Create(Math::Vector pos, float angle, ObjectType type,
     rank = m_engine->CreateObject();
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_VEHICULE);  // this is a moving object
     m_object->SetObjectRank(0, rank);
-    pModFile->ReadModel("data/models/spider0.mod");  // doesn't exist
+    pModFile->ReadModel(m_app->GetDataFilePath(DIR_MODEL, "spider0.mod"));  // doesn't exist
     pModFile->CreateEngineObject(rank);
     m_object->SetPosition(0, pos);
     m_object->SetAngleY(0, angle);
@@ -121,7 +124,7 @@ bool CMotionSpider::Create(Math::Vector pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(1, rank);
     m_object->SetObjectParent(1, 0);
-    pModFile->ReadModel("data/models/spider1.mod");
+    pModFile->ReadModel(m_app->GetDataFilePath(DIR_MODEL, "spider1.mod"));
     pModFile->CreateEngineObject(rank);
     m_object->SetPosition(1, Math::Vector(1.0f, 0.0f, 0.0f));
 
@@ -130,7 +133,7 @@ bool CMotionSpider::Create(Math::Vector pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(2, rank);
     m_object->SetObjectParent(2, 0);
-    pModFile->ReadModel("data/models/spider2.mod");
+    pModFile->ReadModel(m_app->GetDataFilePath(DIR_MODEL, "spider2.mod"));
     pModFile->CreateEngineObject(rank);
     m_object->SetPosition(2, Math::Vector(1.0f, 0.0f, 0.0f));
 
@@ -139,7 +142,8 @@ bool CMotionSpider::Create(Math::Vector pos, float angle, ObjectType type,
     {
         for ( j=0 ; j<4 ; j++ )
         {
-            sprintf(name, "data/models/spider%d.mod", j+3);  // 3..6
+            baseName = m_app->GetDataFilePath(DIR_MODEL, "spider%d.mod");
+            sprintf(name, baseName.c_str(), j+3);  // 3..6
 
             // Creates the right leg.
             rank = m_engine->CreateObject();
@@ -177,7 +181,7 @@ bool CMotionSpider::Create(Math::Vector pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(35, rank);
     m_object->SetObjectParent(35, 1);
-    pModFile->ReadModel("data/models/spider7.mod");
+    pModFile->ReadModel(m_app->GetDataFilePath(DIR_MODEL, "spider7.mod"));
     pModFile->CreateEngineObject(rank);
     m_object->SetPosition(35, Math::Vector(0.0f, 0.0f, -0.3f));
 
@@ -186,7 +190,7 @@ bool CMotionSpider::Create(Math::Vector pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(36, rank);
     m_object->SetObjectParent(36, 1);
-    pModFile->ReadModel("data/models/spider7.mod");
+    pModFile->ReadModel(m_app->GetDataFilePath(DIR_MODEL, "spider7.mod"));
     pModFile->Mirror();
     pModFile->CreateEngineObject(rank);
     m_object->SetPosition(36, Math::Vector(0.0f, 0.0f, 0.3f));

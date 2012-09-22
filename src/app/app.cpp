@@ -132,6 +132,20 @@ CApplication::CApplication()
     m_language = LANG_ENGLISH;
 
     m_lowCPU = true;
+
+    for (int i = 0; i < DIR_MAX; ++i)
+        m_dataDirs[i] = nullptr;
+
+    m_dataDirs[DIR_AI]       = "ai";
+    m_dataDirs[DIR_FONT]     = "fonts";
+    m_dataDirs[DIR_HELP]     = "help";
+    m_dataDirs[DIR_I18N]     = "i18n";
+    m_dataDirs[DIR_ICON]     = "icons";
+    m_dataDirs[DIR_LEVEL]    = "levels";
+    m_dataDirs[DIR_MODEL]    = "models";
+    m_dataDirs[DIR_MUSIC]    = "music";
+    m_dataDirs[DIR_SOUND]    = "sounds";
+    m_dataDirs[DIR_TEXTURE]  = "textures";
 }
 
 CApplication::~CApplication()
@@ -299,7 +313,7 @@ bool CApplication::Create()
     putenv(S_LANGUAGE);
     setlocale(LC_ALL, locale.c_str());
 
-    std::string trPath = m_dataPath + std::string("/i18n");
+    std::string trPath = m_dataPath + "/" + m_dataDirs[DIR_I18N];
     bindtextdomain("colobot", trPath.c_str());
     bind_textdomain_codeset("colobot", "UTF-8");
     textdomain("colobot");
@@ -1345,9 +1359,31 @@ bool CApplication::GetJoystickEnabled()
     return m_joystickEnabled;
 }
 
-std::string CApplication::GetDataFilePath(const std::string& dirName, const std::string& fileName)
+std::string CApplication::GetDataDirPath()
 {
-    return m_dataPath + "/" + dirName + "/" + fileName;
+    return m_dataPath;
+}
+
+std::string CApplication::GetDataFilePath(DataDir dataDir, const std::string& subpath)
+{
+    int index = static_cast<int>(dataDir);
+    assert(index >= 0 && index < DIR_MAX);
+    std::stringstream str;
+    str << m_dataPath;
+    str << "/";
+    str << m_dataDirs[index];
+    str << "/";
+    str << subpath;
+    return str.str();
+}
+
+std::string CApplication::GetDataFilePath(const std::string& subpath)
+{
+    std::stringstream str;
+    str << m_dataPath;
+    str << "/";
+    str << subpath;
+    return str.str();
 }
 
 Language CApplication::GetLanguage()

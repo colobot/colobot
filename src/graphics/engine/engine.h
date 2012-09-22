@@ -738,9 +738,6 @@ public:
     Math::IntPoint   InterfaceToWindowSize(Math::Point size);
     //@}
 
-    //! Returns the name of directory with textures
-    std::string     GetTextureDir();
-
     //! Increments the triangle counter for the current frame
     void            AddStatisticTriangle(int nb);
     //! Returns the number of triangles in current frame
@@ -1349,8 +1346,6 @@ protected:
     Math::Point     m_highlightP2;
     //@}
 
-    //! Texture directory name
-    std::string     m_texPath;
     //! Default texture create params
     TextureCreateParams m_defaultTexParams;
 

@@ -14,17 +14,18 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// motionant.cpp
-
-
-#include <stdio.h>
 
 #include "object/motion/motionant.h"
 
+#include "app/app.h"
+
 #include "graphics/engine/modelfile.h"
 #include "graphics/engine/particle.h"
+
 #include "physics/physics.h"
 
+
+#include <stdio.h>
 
 
 #define ADJUST_ANGLE        false       // true -> adjusts the angles of the members
@@ -82,7 +83,7 @@ bool CMotionAnt::Create(Math::Vector pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_VEHICULE);  // this is a moving object
     m_object->SetObjectRank(0, rank);
 
-    pModFile->ReadModel("data/models/ant1.mod");
+    pModFile->ReadModel(m_app->GetDataFilePath(DIR_MODEL, "ant1.mod"));
     pModFile->CreateEngineObject(rank);
 
     m_object->SetPosition(0, pos);
@@ -98,7 +99,7 @@ bool CMotionAnt::Create(Math::Vector pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank,Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(1, rank);
     m_object->SetObjectParent(1, 0);
-    pModFile->ReadModel("data/models/ant2.mod");
+    pModFile->ReadModel(m_app->GetDataFilePath(DIR_MODEL, "ant2.mod"));
     pModFile->CreateEngineObject(rank);
     m_object->SetPosition(1, Math::Vector(2.0f, 0.0f, 0.0f));
 
@@ -107,7 +108,7 @@ bool CMotionAnt::Create(Math::Vector pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank,Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(2, rank);
     m_object->SetObjectParent(2, 0);
-    pModFile->ReadModel("data/models/ant3.mod");
+    pModFile->ReadModel(m_app->GetDataFilePath(DIR_MODEL, "ant3.mod"));
     pModFile->CreateEngineObject(rank);
     m_object->SetPosition(2, Math::Vector(-1.0f, 0.0f, 0.0f));
 
@@ -116,7 +117,7 @@ bool CMotionAnt::Create(Math::Vector pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank,Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(3, rank);
     m_object->SetObjectParent(3, 0);
-    pModFile->ReadModel("data/models/ant4.mod");
+    pModFile->ReadModel(m_app->GetDataFilePath(DIR_MODEL, "ant4.mod"));
     pModFile->CreateEngineObject(rank);
     m_object->SetPosition(3, Math::Vector(-0.4f, -0.1f, -0.3f));
 
@@ -125,7 +126,7 @@ bool CMotionAnt::Create(Math::Vector pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank,Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(4, rank);
     m_object->SetObjectParent(4, 3);
-    pModFile->ReadModel("data/models/ant5.mod");
+    pModFile->ReadModel(m_app->GetDataFilePath(DIR_MODEL, "ant5.mod"));
     pModFile->CreateEngineObject(rank);
     m_object->SetPosition(4, Math::Vector(0.0f, 0.0f, -1.0f));
 
@@ -134,7 +135,7 @@ bool CMotionAnt::Create(Math::Vector pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank,Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(5, rank);
     m_object->SetObjectParent(5, 4);
-    pModFile->ReadModel("data/models/ant6.mod");
+    pModFile->ReadModel(m_app->GetDataFilePath(DIR_MODEL, "ant6.mod"));
     pModFile->CreateEngineObject(rank);
     m_object->SetPosition(5, Math::Vector(0.0f, 0.0f, -2.0f));
 
@@ -143,7 +144,7 @@ bool CMotionAnt::Create(Math::Vector pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank,Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(6, rank);
     m_object->SetObjectParent(6, 0);
-    pModFile->ReadModel("data/models/ant4.mod");
+    pModFile->ReadModel(m_app->GetDataFilePath(DIR_MODEL, "ant4.mod"));
     pModFile->CreateEngineObject(rank);
     m_object->SetPosition(6, Math::Vector(0.1f, -0.1f, -0.4f));
 
@@ -152,7 +153,7 @@ bool CMotionAnt::Create(Math::Vector pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank,Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(7, rank);
     m_object->SetObjectParent(7, 6);
-    pModFile->ReadModel("data/models/ant5.mod");
+    pModFile->ReadModel(m_app->GetDataFilePath(DIR_MODEL, "ant5.mod"));
     pModFile->CreateEngineObject(rank);
     m_object->SetPosition(7, Math::Vector(0.0f, 0.0f, -1.0f));
 
@@ -161,7 +162,7 @@ bool CMotionAnt::Create(Math::Vector pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank,Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(8, rank);
     m_object->SetObjectParent(8, 7);
-    pModFile->ReadModel("data/models/ant6.mod");
+    pModFile->ReadModel(m_app->GetDataFilePath(DIR_MODEL, "ant6.mod"));
     pModFile->CreateEngineObject(rank);
     m_object->SetPosition(8, Math::Vector(0.0f, 0.0f, -2.0f));
 
@@ -170,7 +171,7 @@ bool CMotionAnt::Create(Math::Vector pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank,Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(9, rank);
     m_object->SetObjectParent(9, 0);
-    pModFile->ReadModel("data/models/ant4.mod");
+    pModFile->ReadModel(m_app->GetDataFilePath(DIR_MODEL, "ant4.mod"));
     pModFile->CreateEngineObject(rank);
     m_object->SetPosition(9, Math::Vector(1.4f, -0.1f, -0.6f));
 
@@ -179,7 +180,7 @@ bool CMotionAnt::Create(Math::Vector pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank,Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(10, rank);
     m_object->SetObjectParent(10, 9);
-    pModFile->ReadModel("data/models/ant5.mod");
+    pModFile->ReadModel(m_app->GetDataFilePath(DIR_MODEL, "ant5.mod"));
     pModFile->CreateEngineObject(rank);
     m_object->SetPosition(10, Math::Vector(0.0f, 0.0f, -1.0f));
 
@@ -188,7 +189,7 @@ bool CMotionAnt::Create(Math::Vector pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank,Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(11, rank);
     m_object->SetObjectParent(11, 10);
-    pModFile->ReadModel("data/models/ant6.mod");
+    pModFile->ReadModel(m_app->GetDataFilePath(DIR_MODEL, "ant6.mod"));
     pModFile->CreateEngineObject(rank);
     m_object->SetPosition(11, Math::Vector(0.0f, 0.0f, -2.0f));
 
@@ -197,7 +198,7 @@ bool CMotionAnt::Create(Math::Vector pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank,Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(12, rank);
     m_object->SetObjectParent(12, 0);
-    pModFile->ReadModel("data/models/ant4.mod");
+    pModFile->ReadModel(m_app->GetDataFilePath(DIR_MODEL, "ant4.mod"));
     pModFile->Mirror();
     pModFile->CreateEngineObject(rank);
     m_object->SetPosition(12, Math::Vector(-0.4f, -0.1f, 0.3f));
@@ -207,7 +208,7 @@ bool CMotionAnt::Create(Math::Vector pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank,Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(13, rank);
     m_object->SetObjectParent(13, 12);
-    pModFile->ReadModel("data/models/ant5.mod");
+    pModFile->ReadModel(m_app->GetDataFilePath(DIR_MODEL, "ant5.mod"));
     pModFile->Mirror();
     pModFile->CreateEngineObject(rank);
     m_object->SetPosition(13, Math::Vector(0.0f, 0.0f, 1.0f));
@@ -217,7 +218,7 @@ bool CMotionAnt::Create(Math::Vector pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank,Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(14, rank);
     m_object->SetObjectParent(14, 13);
-    pModFile->ReadModel("data/models/ant6.mod");
+    pModFile->ReadModel(m_app->GetDataFilePath(DIR_MODEL, "ant6.mod"));
     pModFile->Mirror();
     pModFile->CreateEngineObject(rank);
     m_object->SetPosition(14, Math::Vector(0.0f, 0.0f, 2.0f));
@@ -227,7 +228,7 @@ bool CMotionAnt::Create(Math::Vector pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank,Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(15, rank);
     m_object->SetObjectParent(15, 0);
-    pModFile->ReadModel("data/models/ant4.mod");
+    pModFile->ReadModel(m_app->GetDataFilePath(DIR_MODEL, "ant4.mod"));
     pModFile->Mirror();
     pModFile->CreateEngineObject(rank);
     m_object->SetPosition(15, Math::Vector(0.1f, -0.1f, 0.4f));
@@ -237,7 +238,7 @@ bool CMotionAnt::Create(Math::Vector pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank,Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(16, rank);
     m_object->SetObjectParent(16, 15);
-    pModFile->ReadModel("data/models/ant5.mod");
+    pModFile->ReadModel(m_app->GetDataFilePath(DIR_MODEL, "ant5.mod"));
     pModFile->Mirror();
     pModFile->CreateEngineObject(rank);
     m_object->SetPosition(16, Math::Vector(0.0f, 0.0f, 1.0f));
@@ -247,7 +248,7 @@ bool CMotionAnt::Create(Math::Vector pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank,Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(17, rank);
     m_object->SetObjectParent(17, 16);
-    pModFile->ReadModel("data/models/ant6.mod");
+    pModFile->ReadModel(m_app->GetDataFilePath(DIR_MODEL, "ant6.mod"));
     pModFile->Mirror();
     pModFile->CreateEngineObject(rank);
     m_object->SetPosition(17, Math::Vector(0.0f, 0.0f, 2.0f));
@@ -257,7 +258,7 @@ bool CMotionAnt::Create(Math::Vector pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank,Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(18, rank);
     m_object->SetObjectParent(18, 0);
-    pModFile->ReadModel("data/models/ant4.mod");
+    pModFile->ReadModel(m_app->GetDataFilePath(DIR_MODEL, "ant4.mod"));
     pModFile->Mirror();
     pModFile->CreateEngineObject(rank);
     m_object->SetPosition(18, Math::Vector(1.4f, -0.1f, 0.6f));
@@ -267,7 +268,7 @@ bool CMotionAnt::Create(Math::Vector pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank,Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(19, rank);
     m_object->SetObjectParent(19, 18);
-    pModFile->ReadModel("data/models/ant5.mod");
+    pModFile->ReadModel(m_app->GetDataFilePath(DIR_MODEL, "ant5.mod"));
     pModFile->Mirror();
     pModFile->CreateEngineObject(rank);
     m_object->SetPosition(19, Math::Vector(0.0f, 0.0f, 1.0f));
@@ -277,7 +278,7 @@ bool CMotionAnt::Create(Math::Vector pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank,Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(20, rank);
     m_object->SetObjectParent(20, 19);
-    pModFile->ReadModel("data/models/ant6.mod");
+    pModFile->ReadModel(m_app->GetDataFilePath(DIR_MODEL, "ant6.mod"));
     pModFile->Mirror();
     pModFile->CreateEngineObject(rank);
     m_object->SetPosition(20, Math::Vector(0.0f, 0.0f, 2.0f));

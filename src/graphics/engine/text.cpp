@@ -58,7 +58,6 @@ CText::CText(CInstanceManager *iMan, CEngine* engine)
     m_engine = engine;
 
     m_defaultSize = 12.0f;
-    m_fontPath = "fonts";
 
     m_lastFontType = FONT_COLOBOT;
     m_lastFontSize = 0;
@@ -738,7 +737,7 @@ CachedFont* CText::GetOrOpenFont(FontType font, float size)
         return m_lastCachedFont;
     }
 
-    std::string path = CApplication::GetInstance().GetDataFilePath(m_fontPath, mf->fileName);
+    std::string path = CApplication::GetInstance().GetDataFilePath(DIR_FONT, mf->fileName);
 
     m_lastCachedFont = new CachedFont();
     m_lastCachedFont->font = TTF_OpenFont(path.c_str(), pointSize);

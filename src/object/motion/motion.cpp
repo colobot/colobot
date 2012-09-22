@@ -14,13 +14,15 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// motion.cpp
-
 
 #include "object/motion/motion.h"
 
+#include "app/app.h"
+
 #include "common/iman.h"
+
 #include "script/cmdtoken.h"
+
 
 #include <stdio.h>
 #include <string.h>
@@ -33,9 +35,10 @@ CMotion::CMotion(CInstanceManager* iMan, CObject* object)
     m_iMan = iMan;
     m_iMan->AddInstance(CLASS_MOTION, this, 100);
 
+    m_app       = CApplication::GetInstancePointer();
     m_engine    = static_cast< Gfx::CEngine* >(m_iMan->SearchInstance(CLASS_ENGINE));
     m_light     = static_cast< Gfx::CLight* >(m_iMan->SearchInstance(CLASS_LIGHT));
-    m_particle = static_cast< Gfx::CParticle* >(m_iMan->SearchInstance(CLASS_PARTICULE));
+    m_particle  = static_cast< Gfx::CParticle* >(m_iMan->SearchInstance(CLASS_PARTICULE));
     m_terrain   = static_cast< Gfx::CTerrain* >(m_iMan->SearchInstance(CLASS_TERRAIN));
     m_water     = static_cast< Gfx::CWater* >(m_iMan->SearchInstance(CLASS_WATER));
     m_camera    = static_cast< Gfx::CCamera* >(m_iMan->SearchInstance(CLASS_CAMERA));

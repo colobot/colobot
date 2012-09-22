@@ -21,11 +21,14 @@
 
 #include "graphics/engine/engine.h"
 #include "graphics/engine/camera.h"
-#include "sound/sound.h"
+
 #include "object/object_ids.h"
+
+#include "sound/sound.h"
 
 
 class CInstanceManager;
+class CApplication;
 class CPhysics;
 class CBrain;
 class CMotion;
@@ -407,6 +410,8 @@ public:
     float       GetTraceWidth();
     void        SetTraceWidth(float width);
 
+    std::string GetModelDirName();
+
 protected:
     bool        EventFrame(const Event &event);
     void        VirusFrame(float rTime);
@@ -422,6 +427,7 @@ protected:
 
 protected:
     CInstanceManager*   m_iMan;
+    CApplication*       m_app;
     Gfx::CEngine*       m_engine;
     Gfx::CLightManager* m_lightMan;
     Gfx::CTerrain*      m_terrain;

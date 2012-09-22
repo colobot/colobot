@@ -117,7 +117,7 @@ static char*        m_filesDir;
 
 void PrepareFilename(CBotString &filename)
 {
-    int pos = filename.ReverseFind('\\');
+    int pos = filename.ReverseFind('/');
     if ( pos > 0 )
     {
         filename = filename.Mid(pos+1);  // Remove files with
@@ -135,7 +135,7 @@ void PrepareFilename(CBotString &filename)
         filename = filename.Mid(pos+1);  // also removes the drive letter C:
     }
 
-    filename = CBotString(m_filesDir) + CBotString("\\") + filename;
+    filename = CBotString(m_filesDir) + CBotString("/") + filename;
 }
 
 
@@ -1153,7 +1153,7 @@ void CRobotMain::ChangePhase(Phase phase)
                 pe->SetFontType(FONT_COLOBOT);
                 pe->SetEditCap(false);
                 pe->SetHiliteCap(false);
-                pe->ReadText("help\\teenw.txt");
+                pe->ReadText("help/teenw.txt");
 #else*/
 
                 pos.x = ox+sx*3;  pos.y = oy+sy*0.2f;
@@ -1163,7 +1163,7 @@ void CRobotMain::ChangePhase(Phase phase)
                 pe->SetFontType(Gfx::FONT_COLOBOT);
                 pe->SetEditCap(false);
                 pe->SetHiliteCap(false);
-                pe->ReadText("help\\win.txt");
+                pe->ReadText("help/win.txt");
             }
             else
             {
@@ -1387,7 +1387,7 @@ bool CRobotMain::EventProcess(Event &event)
                 HiliteClear();
                 if (event.key.key == KEY(F11))
                 {
-                    m_particle->WriteWheelTrace("Savegame\\t.png", 256, 256, Math::Vector(16.0f, 0.0f, -368.0f), Math::Vector(140.0f, 0.0f, -248.0f));
+                    m_particle->WriteWheelTrace("Savegame/t.png", 256, 256, Math::Vector(16.0f, 0.0f, -368.0f), Math::Vector(140.0f, 0.0f, -248.0f));
                     return false;
                 }
                 if (m_editLock)  // current edition?
@@ -1961,7 +1961,7 @@ void CRobotMain::FlushDisplayInfo()
         m_infoFilename[i][0] = 0;
         m_infoPos[i] = 0;
     }
-    strcpy(m_infoFilename[SATCOM_OBJECT], "help\\objects.txt");
+    strcpy(m_infoFilename[SATCOM_OBJECT], "help/objects.txt");
     m_infoIndex = 0;
 }
 
@@ -5391,7 +5391,7 @@ char* SearchLastDir(char *filename)
 
     while (p != filename)
     {
-        if (*(--p) == '\\') return p;
+        if (*(--p) == '/') return p;
     }
     return 0;
 }
@@ -5493,7 +5493,7 @@ void CRobotMain::LoadOneScript(CObject *obj, int &nbError)
         if (brain->GetCompile(i)) continue;
 
         char filename[MAX_FNAME];
-        sprintf(filename, "%s\\%s\\%c%.3d%.3d%.1d.txt",
+        sprintf(filename, "%s/%s/%c%.3d%.3d%.1d.txt",
                     GetSavegameDir(), m_gamerName, name[0], rank, objRank, i);
         brain->ReadProgram(i, filename);
         if (!brain->GetCompile(i)) nbError++;
@@ -5522,7 +5522,7 @@ void CRobotMain::LoadFileScript(CObject *obj, char* filename, int objRank,
     {
         if (brain->GetCompile(i)) continue;
 
-        sprintf(ldir, "\\prog%.3d%.1d.txt", objRank, i);
+        sprintf(ldir, "/prog%.3d%.1d.txt", objRank, i);
         brain->ReadProgram(i, fn);
         if (!brain->GetCompile(i)) nbError++;
     }
@@ -5561,7 +5561,7 @@ void CRobotMain::SaveOneScript(CObject *obj)
     for (int i = 0; i < BRAINMAXSCRIPT; i++)
     {
         char filename[MAX_FNAME];
-        sprintf(filename, "%s\\%s\\%c%.3d%.3d%.1d.txt",
+        sprintf(filename, "%s/%s/%c%.3d%.3d%.1d.txt",
                     GetSavegameDir(), m_gamerName, name[0], rank, objRank, i);
         brain->WriteProgram(i, filename);
     }
@@ -5586,7 +5586,7 @@ void CRobotMain::SaveFileScript(CObject *obj, char* filename, int objRank)
 
     for (int i = 0; i < BRAINMAXSCRIPT; i++)
     {
-        sprintf(ldir, "\\prog%.3d%.1d.txt", objRank, i);
+        sprintf(ldir, "/prog%.3d%.1d.txt", objRank, i);
         brain->WriteProgram(i, fn);
     }
 }
@@ -6093,7 +6093,7 @@ void CRobotMain::WriteFreeParam()
     if (m_gamerName[0] == 0) return;
 
     char filename[MAX_FNAME];
-    sprintf(filename, "%s\\%s\\research.gam", GetSavegameDir(), m_gamerName);
+    sprintf(filename, "%s/%s/research.gam", GetSavegameDir(), m_gamerName);
     FILE* file = fopen(filename, "w");
     if (file == NULL) return;
 
@@ -6112,7 +6112,7 @@ void CRobotMain::ReadFreeParam()
     if (m_gamerName[0] == 0) return;
 
     char filename[MAX_FNAME];
-    sprintf(filename, "%s\\%s\\research.gam", GetSavegameDir(), m_gamerName);
+    sprintf(filename, "%s/%s/research.gam", GetSavegameDir(), m_gamerName);
     FILE* file = fopen(filename, "r");
     if (file == NULL)  return;
 

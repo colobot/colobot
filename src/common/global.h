@@ -36,6 +36,26 @@ enum Language
 };
 
 /**
+ * \enum DataDir
+ * \brief Directories in data directory
+ */
+enum DataDir
+{
+    DIR_AI,       //! < ai scripts
+    DIR_FONT,     //! < fonts
+    DIR_HELP,     //! < help files
+    DIR_I18N,     //! < translations
+    DIR_ICON,     //! < icons & images
+    DIR_LEVEL,    //! < levels
+    DIR_MODEL,    //! < models
+    DIR_MUSIC,    //! < music
+    DIR_SOUND,    //! < sounds
+    DIR_TEXTURE,  //! < textures
+
+    DIR_MAX       //! < number of dirs
+};
+
+/**
  * \enum BuildType
  * \brief Construction actions (buildings, etc.) available to user
  *

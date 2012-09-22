@@ -301,7 +301,6 @@ protected:
 
     std::string  m_error;
     float        m_defaultSize;
-    std::string  m_fontPath;
 
     std::map<FontType, MultisizeFont*> m_fonts;
 

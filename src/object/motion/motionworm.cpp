@@ -14,18 +14,21 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// motionworm.cpp
-
-
-#include <stdio.h>
 
 #include "object/motion/motionworm.h"
+
+#include "app/app.h"
 
 #include "graphics/engine/modelfile.h"
 #include "graphics/engine/particle.h"
 #include "graphics/engine/terrain.h"
+
 #include "math/geometry.h"
+
 #include "physics/physics.h"
+
+
+#include <stdio.h>
 
 
 
@@ -92,7 +95,7 @@ bool CMotionWorm::Create(Math::Vector pos, float angle, ObjectType type,
     rank = m_engine->CreateObject();
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_VEHICULE);  // this is a moving object
     m_object->SetObjectRank(0, rank);
-    pModFile->ReadModel("data/models/worm0.mod");  // there is no purpose!
+    pModFile->ReadModel(m_app->GetDataFilePath(DIR_MODEL, "worm0.mod"));  // there is no purpose!
     pModFile->CreateEngineObject(rank);
     m_object->SetPosition(0, pos);
     m_object->SetAngleY(0, angle);
@@ -108,7 +111,7 @@ bool CMotionWorm::Create(Math::Vector pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(1, rank);
     m_object->SetObjectParent(1, 0);
-    pModFile->ReadModel("data/models/worm1.mod");
+    pModFile->ReadModel(m_app->GetDataFilePath(DIR_MODEL, "worm1.mod"));
     pModFile->CreateEngineObject(rank);
     m_object->SetPosition(1, Math::Vector(px, 0.0f, 0.0f));
     px -= 1.0f;
@@ -120,7 +123,7 @@ bool CMotionWorm::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(2+i, rank);
         m_object->SetObjectParent(2+i, 0);
-        pModFile->ReadModel("data/models/worm2.mod");
+        pModFile->ReadModel(m_app->GetDataFilePath(DIR_MODEL, "worm2.mod"));
         pModFile->CreateEngineObject(rank);
         m_object->SetPosition(2+i, Math::Vector(px, 0.0f, 0.0f));
         px -= 1.0f;
@@ -131,7 +134,7 @@ bool CMotionWorm::Create(Math::Vector pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(2+WORM_PART, rank);
     m_object->SetObjectParent(2+WORM_PART, 0);
-    pModFile->ReadModel("data/models/worm3.mod");
+    pModFile->ReadModel(m_app->GetDataFilePath(DIR_MODEL, "worm3.mod"));
     pModFile->CreateEngineObject(rank);
     m_object->SetPosition(2+WORM_PART, Math::Vector(px, 0.0f, 0.0f));
 

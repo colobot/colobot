@@ -169,7 +169,7 @@ CMainDialog::CMainDialog(CInstanceManager* iMan)
         m_partiTime[i]  = 0.0f;
     }
 
-    strcpy(m_sceneDir,    "data/levels");
+    strcpy(m_sceneDir,    "levels");
     strcpy(m_savegameDir, "savegame");
     strcpy(m_publicDir,   "program");
     strcpy(m_userDir,     "user");
@@ -3586,13 +3586,15 @@ void CMainDialog::SetUserDir(char *base, int rank)
 
 void CMainDialog::BuildSceneName(char *filename, char *base, int rank)
 {
+    std::string dataDir = m_app->GetDataDirPath();
+
     if ( strcmp(base, "user") == 0 )
     {
-        sprintf(filename, "%s/%s/scene%.2d.txt", m_userDir, m_userList[rank/100-1], rank%100);
+        sprintf(filename, "%s/%s/%s/scene%.2d.txt", dataDir.c_str(), m_userDir, m_userList[rank/100-1], rank%100);
     }
     else
     {
-        sprintf(filename, "%s/%s%.3d.txt", m_sceneDir, base, rank);
+        sprintf(filename, "%s/%s/%s%.3d.txt", dataDir.c_str(), m_sceneDir, base, rank);
     }
 }
 

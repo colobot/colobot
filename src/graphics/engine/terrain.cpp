@@ -197,7 +197,7 @@ void CTerrain::AddMaterial(int id, const std::string& texName, const Math::Point
 bool CTerrain::LoadResources(const std::string& fileName)
 {
     CImage img;
-    if (! img.Load(CApplication::GetInstance().GetDataFilePath(m_engine->GetTextureDir(), fileName)))
+    if (! img.Load(CApplication::GetInstance().GetDataFilePath(DIR_TEXTURE, fileName)))
         return false;
 
     ImageData *data = img.GetData();
@@ -268,7 +268,7 @@ bool CTerrain::LoadRelief(const std::string &fileName, float scaleRelief,
     m_scaleRelief = scaleRelief;
 
     CImage img;
-    if (! img.Load(CApplication::GetInstance().GetDataFilePath(m_engine->GetTextureDir(), fileName)))
+    if (! img.Load(CApplication::GetInstance().GetDataFilePath(DIR_TEXTURE, fileName)))
         return false;
 
     ImageData *data = img.GetData();

@@ -283,8 +283,14 @@ public:
     bool        GetDebugMode();
     //@}
 
-    //! Returns the full path to a file in data directory
-    std::string GetDataFilePath(const std::string &dirName, const std::string &fileName);
+    //! Returns the full path to data directory
+    std::string GetDataDirPath();
+
+    //! Returns the full path to a file in data directory given standard dir and subpath
+    std::string GetDataFilePath(DataDir dir, const std::string &subpath);
+
+    //! Returns the full path to a file in data directory given custom subpath in data dir
+    std::string GetDataFilePath(const std::string &subpath);
 
     //! Management of language
     //@{
@@ -396,6 +402,8 @@ protected:
 
     //! Path to directory with data files
     std::string     m_dataPath;
+
+    const char*     m_dataDirs[DIR_MAX];
 
     //! Application language
     Language        m_language;

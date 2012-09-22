@@ -210,7 +210,6 @@ CEngine::CEngine(CInstanceManager *iMan, CApplication *app)
     m_lastFrameTime = CreateTimeStamp();
     m_currentFrameTime = CreateTimeStamp();
 
-    m_texPath = "textures/";
     m_defaultTexParams.format = TEX_IMG_AUTO;
     m_defaultTexParams.mipmap = true;
     m_defaultTexParams.minFilter = TEX_MIN_FILTER_LINEAR_MIPMAP_LINEAR;
@@ -495,11 +494,6 @@ Math::IntPoint CEngine::InterfaceToWindowSize(Math::Point size)
 {
     return Math::IntPoint(static_cast<int>(size.x * m_size.x),
                          static_cast<int>(size.y * m_size.y));
-}
-
-std::string CEngine::GetTextureDir()
-{
-    return m_texPath;
 }
 
 void CEngine::AddStatisticTriangle(int count)
@@ -2108,7 +2102,7 @@ Texture CEngine::CreateTexture(const std::string& texName, const TextureCreatePa
     // TODO: detect alpha channel?
 
     CImage img;
-    if (! img.Load(m_app->GetDataFilePath(m_texPath, texName)))
+    if (! img.Load(m_app->GetDataFilePath(DIR_TEXTURE, texName)))
     {
         std::string error = img.GetError();
         GetLogger()->Error("Couldn't load texture '%s': %s, blacklisting\n", texName.c_str(), error.c_str());

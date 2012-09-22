@@ -21,10 +21,9 @@
 
 #include "common/event.h"
 #include "common/global.h"
+
 #include "object/object.h"
 
-
-class CInstanceManager;
 
 namespace Gfx {
 class CEngine;
@@ -35,6 +34,8 @@ class CWater;
 class CCamera;
 }
 
+class CInstanceManager;
+class CApplication;
 class CBrain;
 class CPhysics;
 class CObject;
@@ -74,6 +75,7 @@ protected:
 
 protected:
     CInstanceManager*   m_iMan;
+    CApplication*       m_app;
     Gfx::CEngine*       m_engine;
     Gfx::CLight*        m_light;
     Gfx::CParticle*     m_particle;
