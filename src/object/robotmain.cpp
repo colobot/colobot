@@ -664,7 +664,7 @@ CRobotMain::CRobotMain(CInstanceManager* iMan, CApplication* app)
     m_showPos      = false;
     m_selectInsect = false;
     m_showSoluce   = false;
-    m_showAll      = false;
+    m_showAll      = true; // for development
     m_cheatRadar   = false;
     m_fixScene     = false;
     m_trainerPilot = false;
@@ -3682,6 +3682,11 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
     char* stack = m_dialog->GetStackRead();
     m_dialog->SetUserDir(base, rank);
 
+    /*
+     * TODO: original code relying on UserDir() was removed.
+     * A new way of providing custom data file paths will need to be devised.
+     */
+
     m_fixScene = fixScene;
 
     g_id = 0;
@@ -3791,7 +3796,8 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
         if (Cmd(line, "Instructions") && !resetObject)
         {
             OpString(line, "name", name);
-            UserDir(m_infoFilename[SATCOM_HUSTON], name, "help");
+            std::string path = m_app->GetDataFilePath(DIR_HELP, name);
+            strcpy(m_infoFilename[SATCOM_HUSTON], path.c_str());
 
             m_immediatSatCom = OpInt(line, "immediat", 0);
         }
@@ -3799,24 +3805,28 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
         if (Cmd(line, "Satellite") && !resetObject)
         {
             OpString(line, "name", name);
-            UserDir(m_infoFilename[SATCOM_SAT], name, "help");
+            std::string path = m_app->GetDataFilePath(DIR_HELP, name);
+            strcpy(m_infoFilename[SATCOM_SAT], path.c_str());
         }
 
         if (Cmd(line, "Loading") && !resetObject)
         {
             OpString(line, "name", name);
-            UserDir(m_infoFilename[SATCOM_LOADING], name, "help");
+            std::string path = m_app->GetDataFilePath(DIR_HELP, name);
+            strcpy(m_infoFilename[SATCOM_LOADING], path.c_str());
         }
 
         if (Cmd(line, "HelpFile") && !resetObject)
         {
             OpString(line, "name", name);
-            UserDir(m_infoFilename[SATCOM_PROG], name, "help");
+            std::string path = m_app->GetDataFilePath(DIR_HELP, name);
+            strcpy(m_infoFilename[SATCOM_PROG], path.c_str());
         }
         if (Cmd(line, "SoluceFile") && !resetObject)
         {
             OpString(line, "name", name);
-            UserDir(m_infoFilename[SATCOM_SOLUCE], name, "help");
+            std::string path = m_app->GetDataFilePath(DIR_HELP, name);
+            strcpy(m_infoFilename[SATCOM_SOLUCE], path.c_str());
         }
 
         if (Cmd(line, "EndingFile") && !resetObject)
@@ -3875,8 +3885,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
         if (Cmd(line, "Background") && !resetObject)
         {
             OpString(line, "image", name);
-            UserDir(dir, name, "");
-            m_engine->SetBackground(dir,
+            m_engine->SetBackground(name,
                                     OpColor(line, "up",        Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f)),
                                     OpColor(line, "down",      Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f)),
                                     OpColor(line, "cloudUp",   Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f)),
@@ -3892,13 +3901,12 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             uv1   = OpPos(line, "uv1");
             uv2   = OpPos(line, "uv2");
             OpString(line, "image", name);
-            UserDir(dir, name, "");
             m_planet->Create(OpInt(line, "mode", 0),
                              Math::Point(ppos.x, ppos.z),
                              OpFloat(line, "dim", 0.2f),
                              OpFloat(line, "speed", 0.0f),
                              OpFloat(line, "dir", 0.0f),
-                             dir,
+                             name,
                              Math::Point(uv1.x, uv1.z),
                              Math::Point(uv2.x, uv2.z));
         }
@@ -3906,8 +3914,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
         if (Cmd(line, "FrontsizeName") && !resetObject)
         {
             OpString(line, "image", name);
-            UserDir(dir, name, "");
-            m_engine->SetForegroundName(dir);
+            m_engine->SetForegroundName(name);
         }
 
         if (Cmd(line, "Global") && !resetObject)
@@ -3933,28 +3940,25 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
         if (Cmd(line, "TerrainRelief") && !resetObject)
         {
             OpString(line, "image", name);
-            UserDir(dir, name, "textures");
-            m_terrain->LoadRelief(dir, OpFloat(line, "factor", 1.0f), OpInt(line, "border", 1));
+            m_terrain->LoadRelief(name, OpFloat(line, "factor", 1.0f), OpInt(line, "border", 1));
         }
 
         if (Cmd(line, "TerrainResource") && !resetObject)
         {
             OpString(line, "image", name);
-            UserDir(dir, name, "textures");
-            m_terrain->LoadResources(dir);
+            m_terrain->LoadResources(name);
         }
 
         if (Cmd(line, "TerrainWater") && !resetObject)
         {
             OpString(line, "image", name);
-            UserDir(dir, name, "");
             Math::Vector pos;
             pos.x = OpFloat(line, "moveX", 0.0f);
             pos.y = OpFloat(line, "moveY", 0.0f);
             pos.z = pos.x;
             m_water->Create(OpTypeWater(line, "air",   Gfx::WATER_TT),
                             OpTypeWater(line, "water", Gfx::WATER_TT),
-                            dir,
+                            name,
                             OpColor(line, "diffuse", Gfx::Color(1.0f, 1.0f, 1.0f, 1.0f)),
                             OpColor(line, "ambiant", Gfx::Color(1.0f, 1.0f, 1.0f, 1.0f)),
                             OpFloat(line, "level", 100.0f)*UNIT,
@@ -3970,8 +3974,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
         if (Cmd(line, "TerrainCloud") && !resetObject)
         {
             OpString(line, "image", name);
-            UserDir(dir, name, "");
-            m_cloud->Create(dir,
+            m_cloud->Create(name,
                             OpColor(line, "diffuse", Gfx::Color(1.0f, 1.0f, 1.0f, 1.0f)),
                             OpColor(line, "ambiant", Gfx::Color(1.0f, 1.0f, 1.0f, 1.0f)),
                             OpFloat(line, "level", 500.0f) * UNIT);

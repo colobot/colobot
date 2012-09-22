@@ -162,7 +162,7 @@ CEngine::CEngine(CInstanceManager *iMan, CApplication *app)
     m_limitLOD[1] = 200.0f;
     m_particleDensity = 1.0f;
     m_clippingDistance = 1.0f;
-    m_lastClippingDistance = m_clippingDistance;
+    m_lastClippingDistance = m_clippingDistance = 1.0f;
     m_objectDetail = 1.0f;
     m_lastObjectDetail = m_objectDetail;
     m_terrainVision = 1000.0f;
@@ -2096,6 +2096,9 @@ void CEngine::SetViewParams(const Math::Vector& eyePt, const Math::Vector& looka
 
 Texture CEngine::CreateTexture(const std::string& texName, const TextureCreateParams& params)
 {
+    if (texName.empty())
+        return Texture(); // invalid texture
+
     if (m_texBlacklist.find(texName) != m_texBlacklist.end())
         return Texture(); // invalid texture
 

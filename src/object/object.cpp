@@ -7528,49 +7528,73 @@ void CObject::DeleteDeselList(CObject* pObj)
 
 bool CObject::GetTraceDown()
 {
-    CMotionVehicle* mv;
-    if ( m_motion == 0 )  return false;
-    mv = dynamic_cast<CMotionVehicle*>(m_motion);
+    if (m_motion == nullptr) return false;
+    CMotionVehicle* mv = dynamic_cast<CMotionVehicle*>(m_motion);
+    if (mv == nullptr)
+    {
+        GetLogger()->Warn("GetTraceDown() invalid m_motion class!\n");
+        return false;
+    }
     return mv->GetTraceDown();
 }
 
 void CObject::SetTraceDown(bool bDown)
 {
-    CMotionVehicle* mv;
-    if ( m_motion == 0 )  return;
-    mv = dynamic_cast<CMotionVehicle*>(m_motion);
+    if (m_motion == nullptr) return;
+    CMotionVehicle* mv = dynamic_cast<CMotionVehicle*>(m_motion);
+    if (mv == nullptr)
+    {
+        GetLogger()->Warn("SetTraceDown() invalid m_motion class!\n");
+        return;
+    }
     mv->SetTraceDown(bDown);
 }
 
 int CObject::GetTraceColor()
 {
-    CMotionVehicle* mv;
-    if ( m_motion == 0 )  return 0;
-    mv = dynamic_cast<CMotionVehicle*>(m_motion);
+    if (m_motion == nullptr) return 0;
+    CMotionVehicle* mv = dynamic_cast<CMotionVehicle*>(m_motion);
+    if (mv == nullptr)
+    {
+        GetLogger()->Warn("GetTraceColor() invalid m_motion class!\n");
+        return 0;
+    }
     return mv->GetTraceColor();
 }
 
 void CObject::SetTraceColor(int color)
 {
-    CMotionVehicle* mv;
-    if ( m_motion == 0 )  return;
-    mv = dynamic_cast<CMotionVehicle*>(m_motion);
+    if (m_motion == nullptr) return;
+    CMotionVehicle* mv = dynamic_cast<CMotionVehicle*>(m_motion);
+    if (mv == nullptr)
+    {
+        GetLogger()->Warn("SetTraceColor() invalid m_motion class!\n");
+        return;
+    }
     mv->SetTraceColor(color);
 }
 
 float CObject::GetTraceWidth()
 {
-    CMotionVehicle* mv;
-    if ( m_motion == 0 )  return 0.0f;
-    mv = dynamic_cast<CMotionVehicle*>(m_motion);
+    if (m_motion == nullptr) return 0.0f;
+    CMotionVehicle* mv = dynamic_cast<CMotionVehicle*>(m_motion);
+    if (mv == nullptr)
+    {
+        GetLogger()->Warn("GetTraceWidth() invalid m_motion class!\n");
+        return 0.0f;
+    }
     return mv->GetTraceWidth();
 }
 
 void CObject::SetTraceWidth(float width)
 {
-    CMotionVehicle* mv;
-    if ( m_motion == 0 )  return;
-    mv = dynamic_cast<CMotionVehicle*>(m_motion);
+    if (m_motion == nullptr) return;
+    CMotionVehicle* mv = dynamic_cast<CMotionVehicle*>(m_motion);
+    if (mv == nullptr)
+    {
+        GetLogger()->Warn("SetTraceWidth() invalid m_motion class!\n");
+        return;
+    }
     mv->SetTraceWidth(width);
 }
 

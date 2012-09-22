@@ -131,14 +131,15 @@ bool CTerrain::InitTextures(const std::string& baseName, int* table, int dx, int
 
     m_texBaseName = baseName;
     size_t pos = baseName.find('.');
-    if (pos == baseName.npos)
+
+    if (pos == std::string::npos)
     {
         m_texBaseExt = ".png";
     }
     else
     {
-        m_texBaseName = m_texBaseName.substr(0, pos);
         m_texBaseExt = m_texBaseName.substr(pos);
+        m_texBaseName = m_texBaseName.substr(0, pos);
     }
 
     for (int y = 0; y < m_mosaicCount*m_textureSubdivCount; y++)
@@ -197,8 +198,12 @@ void CTerrain::AddMaterial(int id, const std::string& texName, const Math::Point
 bool CTerrain::LoadResources(const std::string& fileName)
 {
     CImage img;
-    if (! img.Load(CApplication::GetInstance().GetDataFilePath(DIR_TEXTURE, fileName)))
+    std::string path = CApplication::GetInstance().GetDataFilePath(DIR_TEXTURE, fileName);
+    if (! img.Load(path))
+    {
+        GetLogger()->Error("Cannot load resource file: '%s'\n", path.c_str());
         return false;
+    }
 
     ImageData *data = img.GetData();
 
@@ -210,7 +215,10 @@ bool CTerrain::LoadResources(const std::string& fileName)
 
     if ( (data->surface->w != size) || (data->surface->h != size) ||
          (data->surface->format->BytesPerPixel != 3) )
+    {
+        GetLogger()->Error("Invalid resource file\n");
         return false;
+    }
 
     unsigned char* pixels = static_cast<unsigned char*>(data->surface->pixels);
     int pitch = data->surface->pitch;
@@ -263,13 +271,17 @@ void CTerrain::FlushRelief()
  * The image must be 24 bits/pixel and dx x dy in size
  * with dx = dy = (mosaic*brick)+1 */
 bool CTerrain::LoadRelief(const std::string &fileName, float scaleRelief,
-                               bool adjustBorder)
+                          bool adjustBorder)
 {
     m_scaleRelief = scaleRelief;
 
     CImage img;
-    if (! img.Load(CApplication::GetInstance().GetDataFilePath(DIR_TEXTURE, fileName)))
+    std::string path = CApplication::GetInstance().GetDataFilePath(DIR_TEXTURE, fileName);
+    if (! img.Load(path))
+    {
+        GetLogger()->Error("Could not load relief file: '%s'!\n", path.c_str());
         return false;
+    }
 
     ImageData *data = img.GetData();
 
@@ -277,7 +289,10 @@ bool CTerrain::LoadRelief(const std::string &fileName, float scaleRelief,
 
     if ( (data->surface->w != size) || (data->surface->h != size) ||
          (data->surface->format->BytesPerPixel != 3) )
+    {
+        GetLogger()->Error("Invalid relief file!\n");
         return false;
+    }
 
     unsigned char* pixels = static_cast<unsigned char*>(data->surface->pixels);
     int pitch = data->surface->pitch;
@@ -655,7 +670,7 @@ void CTerrain::GetTexture(int x, int y, std::string& name, Math::Point &uv)
     TerrainMaterial* tm = FindMaterial(m_materialPoints[x+y*m_materialPointCount].id);
     if (tm == nullptr)
     {
-        name = "xxx.png";
+        name = "";
         uv = Math::Point(0.0f, 0.0f);
     }
     else

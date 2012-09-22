@@ -14,10 +14,10 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// event.cpp
 
 #include "common/event.h"
 #include "common/iman.h"
+#include "common/logger.h"
 
 static EventType g_uniqueEventType = EVENT_USER;
 
@@ -54,7 +54,11 @@ void CEventQueue::Flush()
     Else, adds the event to the queue and returns \c true. */
 bool CEventQueue::AddEvent(const Event &event)
 {
-    if ( m_total >= MAX_EVENT_QUEUE )  return false;
+    if ( m_total >= MAX_EVENT_QUEUE )
+    {
+        GetLogger()->Warn("Event queue flood!\n");
+        return false;
+    }
 
     m_fifo[m_head++] = event;
     if ( m_head >= MAX_EVENT_QUEUE )  m_head = 0;

@@ -65,6 +65,8 @@ struct ApplicationPrivate
     SDL_Surface *surface;
     //! Currently handled event
     SDL_Event currentEvent;
+    //! Mouse motion event to be handled
+    SDL_Event lastMouseMotionEvent;
     //! Joystick
     SDL_Joystick *joystick;
     //! Id of joystick timer
@@ -73,6 +75,7 @@ struct ApplicationPrivate
     ApplicationPrivate()
     {
         memset(&currentEvent, 0, sizeof(SDL_Event));
+        memset(&lastMouseMotionEvent, 0, sizeof(SDL_Event));
         surface = nullptr;
         joystick = nullptr;
         joystickTimer = 0;
@@ -721,6 +724,8 @@ int CApplication::Run()
         if (m_active)
             SDL_PumpEvents();
 
+        m_private->lastMouseMotionEvent.type = SDL_NOEVENT;
+
         bool haveEvent = true;
         while (haveEvent)
         {
@@ -738,6 +743,13 @@ int CApplication::Run()
             if (count > 0)
             {
                 haveEvent = true;
+
+                // Skip mouse motion events, for now
+                if (m_private->currentEvent.type == SDL_MOUSEMOTION)
+                {
+                    m_private->lastMouseMotionEvent = m_private->currentEvent;
+                    continue;
+                }
 
                 Event event = ProcessSystemEvent();
 
@@ -766,6 +778,28 @@ int CApplication::Run()
                     if (passOn)
                         m_eventQueue->AddEvent(virtualEvent);
                 }
+            }
+        }
+
+        // Now, process the last received mouse motion
+        if (m_private->lastMouseMotionEvent.type != SDL_NOEVENT)
+        {
+            m_private->currentEvent = m_private->lastMouseMotionEvent;
+
+            Event event = ProcessSystemEvent();
+
+            if (event.type == EVENT_QUIT)
+                goto end; // exit the loop
+
+            if (event.type != EVENT_NULL)
+            {
+                bool passOn = ProcessEvent(event);
+
+                if (m_engine != nullptr && passOn)
+                    passOn = m_engine->ProcessEvent(event);
+
+                if (passOn)
+                    m_eventQueue->AddEvent(event);
             }
         }
 

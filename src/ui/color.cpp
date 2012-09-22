@@ -153,7 +153,7 @@ void CColor::Draw()
 //    color = GetColor(m_color);
     color = GetColor();
 
-    m_engine->SetTexture("xxx.png");  // no texture
+    m_engine->SetTexture("");  // no texture
     m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
 
     device = m_engine->GetDevice();
@@ -187,7 +187,7 @@ void CColor::Draw()
 
     color = GetColor();
 
-    m_engine->SetTexture("xxx.png");  // no texture
+    m_engine->SetTexture("");  // no texture
     m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
 
     vertex[0] = Gfx::VertexCol(Math::Vector(p1.x, p1.y, 0.0f), color, Gfx::Color(), Math::Point(0.0f, 0.0f));

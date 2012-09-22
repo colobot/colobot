@@ -4824,8 +4824,6 @@ void CMainDialog::UpdateSceneChap(int &chap)
             pl->SetCheck(j, bPassed);
             pl->SetEnable(j, true);
 
-            continue;
-
             if ( m_phase == PHASE_MISSION && !m_main->GetShowAll() && !bPassed )
             {
                 j ++;
