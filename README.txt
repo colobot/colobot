@@ -10,7 +10,7 @@ The source code contained here was released by Epsitec -- the original creator o
 
 More information for developers can be found at developer wiki at: http://colobot.info/wiki. However, the freshest source of information is our IRC channel #colobot at pirc.pl.
 
-This repository contains only the source code of the project. The game requires also data files which are available in separate packages, currently from http://colobot.info/files. The packages are named colobot-data-RRRR-MM-DD.zip. Make sure you have the latest package before compiling and running the code in repository.
+This repository contains only the source code of the project. The game requires also data files which are available in separate packages, currently from http://colobot.info/files. The packages are named colobot-data-YYYY-MM-DD.zip. Make sure you have the latest package before compiling and running the code in repository.
 
 
 Status
