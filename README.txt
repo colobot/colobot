@@ -2,7 +2,7 @@ EN
 
 Welcome to Colobot project repository
 
-NOTE: this is the new repository which was moved here from https://github.com/adiblol/colobot. The new repository has been purged of binary files cluttering the history, so all commits have been overwritten. See that you checkout the clean version of the repository.
+NOTE: this is the new repository which was moved here from https://github.com/adiblol/colobot. The new repository has been purged of binary files cluttering the history, so all commits have been overwritten. If you have been using the old repository, you have to clone from scratch the new one.
 
 This is official repository for the open-source Colobot project developed by Polish Portal of Colobot (PPC; Polish: Polski Portal Colobota) with the official site at: http://colobot.cba.pl/.
 
@@ -36,13 +36,18 @@ Compiling and running the game
 
 For these instructions see HOWTO.txt file.
 
+
 Contact
 
 If you want to help in the project, please contact us on our IRC channel #colobot at pirc.pl or the forum on our website: http://colobot.cba.pl/forum (there is also an English board). We're in the process of moving to a new site and forum so not all information on our old site is up-to-date, but we're be done soon.
 
+
+
 PL
 
 Witamy w repozytorium projektu Colobot
+
+UWAGA: to jest nowe repozytorium, które zostało przeniesione tu z https://github.com/adiblol/colobot. Nowe repozytorium zostało wyczyszczone z plików binarnych, które zostały w historii, więc wszystkie commity zostały nadpisane. Jeżeli korzystałeś/aś ze starego repozytorium, musisz sklonować od zera te nowe.
 
 To jest oficjalne repozytorium z kodem projektu open-source Colobot rozwijanego przez Polski Portal Colobota (PPC; angielski: Polish Portal of Colobot) z oficjalną stroną: http://colobot.cba.pl/.
 
@@ -71,9 +76,11 @@ Krok 3 - Colobot 2
 
 To będzie nowa część z cyklu gier Colobot. Mamy wiele pomysłów na nową grę i nadal dyskutujemy nad nimi. Ogólnie, rozwój tej wersji zacznie się po skończeniu wersji Colobot Gold (prawdopodobnie będzie hostowane w osobnym repozytorium, sforkowanym z kodu Colobot Gold).
 
+
 Kompilacja i uruchomienie gry
 
 Instrukcje te znajdują się w pliku HOWTO.txt.
+
 
 Kontakt
 
