@@ -509,24 +509,17 @@ void CText::DrawString(const std::string &text, const std::vector<FontMetaChar> 
     FontType font = FONT_COLOBOT;
     float start = pos.x;
 
-    unsigned int index = 0;
     unsigned int fmtIndex = 0;
-    while (index < text.length())
-    {
+
+    std::vector<UTF8Char> chars = StringToUTFCharList(text);
+    for(auto it=chars.begin(); it != chars.end(); ++it){
+
         font = static_cast<FontType>(format[fmtIndex] & FONT_MASK_FONT);
 
         // TODO: if (font == FONT_BUTTON)
         if (font == FONT_BUTTON) continue;
 
-        UTF8Char ch;
-
-        int len = StrUtils::Utf8CharSizeAt(text, index);
-        if (len >= 1)
-            ch.c1 = text[index];
-        if (len >= 2)
-            ch.c2 = text[index+1];
-        if (len >= 3)
-            ch.c3 = text[index+2];
+        UTF8Char ch = *it;
 
         float offset = pos.x - start;
         float cw = GetCharWidth(ch, font, size, offset);
@@ -545,13 +538,34 @@ void CText::DrawString(const std::string &text, const std::vector<FontMetaChar> 
             DrawHighlight(hl, pos, charSize);
         }
 
-        DrawChar(ch, font, size, pos);
+        DrawCharAndAdjustPos(ch, font, size, pos);
 
-        index += len;
         fmtIndex++;
     }
 
     // TODO: eol
+}
+
+std::vector<UTF8Char> CText::StringToUTFCharList(const std::string &text) {
+  std::vector<UTF8Char> v;
+  unsigned int index = 0;
+  while (index < text.length())
+  {
+    UTF8Char ch;
+
+    int len = StrUtils::Utf8CharSizeAt(text, index);
+    if (len >= 1)
+      ch.c1 = text[index];
+    if (len >= 2)
+      ch.c2 = text[index+1];
+    if (len >= 3)
+      ch.c3 = text[index+2];
+
+    index += len;
+
+    v.push_back(ch);
+  }
+  return v;
 }
 
 void CText::DrawString(const std::string &text, FontType font,
@@ -561,22 +575,9 @@ void CText::DrawString(const std::string &text, FontType font,
 
     m_engine->SetState(ENG_RSTATE_TEXT);
 
-    unsigned int index = 0;
-    while (index < text.length())
-    {
-        UTF8Char ch;
-
-        int len = StrUtils::Utf8CharSizeAt(text, index);
-        if (len >= 1)
-            ch.c1 = text[index];
-        if (len >= 2)
-            ch.c2 = text[index+1];
-        if (len >= 3)
-            ch.c3 = text[index+2];
-
-        index += len;
-
-        DrawChar(ch, font, size, pos);
+    std::vector<UTF8Char> chars = StringToUTFCharList(text);
+    for(auto it=chars.begin(); it != chars.end(); ++it){
+        DrawCharAndAdjustPos(*it, font, size, pos);
     }
 }
 
@@ -660,7 +661,7 @@ void CText::DrawHighlight(FontHighlight hl, Math::Point pos, Math::Point size)
     m_device->SetRenderState(RENDER_STATE_TEXTURING, true);
 }
 
-void CText::DrawChar(UTF8Char ch, FontType font, float size, Math::Point &pos)
+void CText::DrawCharAndAdjustPos(UTF8Char ch, FontType font, float size, Math::Point &pos)
 {
     // TODO: if (font == FONT_BUTTON)
     if (font == FONT_BUTTON) return;
