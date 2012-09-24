@@ -292,7 +292,9 @@ protected:
     void        DrawString(const std::string &text, FontType font,
                            float size, Math::Point pos, float width, int eol);
     void        DrawHighlight(FontHighlight hl, Math::Point pos, Math::Point size);
-    void        DrawChar(UTF8Char ch, FontType font, float size, Math::Point &pos);
+    void        DrawCharAndAdjustPos(UTF8Char ch, FontType font, float size, Math::Point &pos);
+    std::vector<UTF8Char>
+      StringToUTFCharList(const std::string &text);
 
 protected:
     CInstanceManager*   m_iMan;
