@@ -37,7 +37,7 @@ class CWater;
 
 
 //! Limit of slope considered a flat piece of land
-const short TERRAIN_FLATLIMIT = (5.0f*Math::PI/180.0f);
+const float TERRAIN_FLATLIMIT = (5.0f*Math::PI/180.0f);
 
 
 /**

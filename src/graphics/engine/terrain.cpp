@@ -1716,22 +1716,22 @@ float CTerrain::GetFlatZoneRadius(Math::Vector center, float max)
         return 0.0f;
 
     float ref = GetFloorLevel(center, true);
-
+    Math::Point c(center.x, center.z);
     float radius = 1.0f;
+    
     while (radius <= max)
     {
         angle = 0.0f;
         int nb = static_cast<int>(2.0f*Math::PI*radius);
         if (nb < 8) nb = 8;
 
+	Math::Point p (center.x+radius, center.z);
         for (int i = 0; i < nb; i++)
         {
-            Math::Point c(center.x, center.z);
-            Math::Point p (center.x+radius, center.z);
-            p = Math::RotatePoint(c, angle, p);
+            Math::Point result = Math::RotatePoint(c, angle, p);
             Math::Vector pos;
-            pos.x = p.x;
-            pos.z = p.y;
+            pos.x = result.x;
+            pos.z = result.y;
             float h = GetFloorLevel(pos, true);
             if ( fabs(h-ref) > 1.0f )  return radius;
 
