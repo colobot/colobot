@@ -461,11 +461,11 @@ bool CEdit::EventProcess(const Event &event)
         }
     }
 
-    if ( event.type == EVENT_ACTIVE && m_bFocus )
+    if ( event.type == EVENT_KEY_DOWN && m_bFocus )
     {
-        if ( event.key.key >= ' ' && event.key.key <= 255 )
+        if (event.key.unicode >= ' ')
         {
-            Insert(static_cast<char>(event.key.key));
+            Insert(static_cast<char>(event.key.unicode)); // TODO: insert utf-8 char
             SendModifEvent();
             return true;
         }
@@ -1030,16 +1030,16 @@ void CEdit::Draw()
 
             if ( m_format.size() == 0 )
             {
-                start.x = ppos.x+m_engine->GetText()->GetStringWidth(std::string(m_text+beg), m_fontType, size);
-                end.x   = m_engine->GetText()->GetStringWidth(std::string(m_text+o1), m_fontType, size);
+                start.x = ppos.x+m_engine->GetText()->GetStringWidth(std::string(m_text+beg).substr(0, o1-beg), m_fontType, size);
+                end.x   = m_engine->GetText()->GetStringWidth(std::string(m_text+o1).substr(0, o2-o1), m_fontType, size);
             }
             else
             {
-                start.x = ppos.x+m_engine->GetText()->GetStringWidth(std::string(m_text+beg),
-                                                                     std::vector<Gfx::FontMetaChar>(m_format.begin()+beg, m_format.end()),
+                start.x = ppos.x+m_engine->GetText()->GetStringWidth(std::string(m_text+beg).substr(0, o1-beg),
+                                                                     std::vector<Gfx::FontMetaChar>(m_format.begin()+beg, m_format.begin()+o1),
                                                                      size);
-                end.x   = m_engine->GetText()->GetStringWidth(std::string(m_text+o1),
-                                                              std::vector<Gfx::FontMetaChar>(m_format.begin()+o1, m_format.end()),
+                end.x   = m_engine->GetText()->GetStringWidth(std::string(m_text+o1).substr(0, o2-o1),
+                                                              std::vector<Gfx::FontMetaChar>(m_format.begin()+o1, m_format.begin()+o2),
                                                               size);
             }
 
@@ -1062,12 +1062,12 @@ void CEdit::Draw()
         if ( !m_bMulti || !m_bDisplaySpec )  eol = 0;
         if ( m_format.size() == 0 )
         {
-            m_engine->GetText()->DrawText(std::string(m_text+beg), m_fontType, size, ppos, m_dim.x, Gfx::TEXT_ALIGN_LEFT, eol);
+            m_engine->GetText()->DrawText(std::string(m_text+beg).substr(0, len), m_fontType, size, ppos, m_dim.x, Gfx::TEXT_ALIGN_LEFT, eol);
         }
         else
         {
-            m_engine->GetText()->DrawText(std::string(m_text+beg),
-                                          std::vector<Gfx::FontMetaChar>(m_format.begin()+beg, m_format.end()),
+            m_engine->GetText()->DrawText(std::string(m_text+beg).substr(0, len),
+                                          std::vector<Gfx::FontMetaChar>(m_format.begin()+beg, m_format.begin()+len),
                                           size,
                                           ppos,
                                           m_dim.x,
