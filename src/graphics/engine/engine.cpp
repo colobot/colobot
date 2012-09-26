@@ -3417,10 +3417,10 @@ void CEngine::DrawBackgroundGradient(const Color& up, const Color& down)
 
     VertexCol vertex[4] =
     {
-        VertexCol(Math::Vector(p1.x, p1.y, 0.0f), color[1], color[2]),
-        VertexCol(Math::Vector(p1.x, p2.y, 0.0f), color[0], color[2]),
-        VertexCol(Math::Vector(p2.x, p1.y, 0.0f), color[1], color[2]),
-        VertexCol(Math::Vector(p2.x, p2.y, 0.0f), color[0], color[2])
+        VertexCol(Math::Vector(p1.x, p1.y, 0.0f), color[1]),
+        VertexCol(Math::Vector(p1.x, p2.y, 0.0f), color[0]),
+        VertexCol(Math::Vector(p2.x, p1.y, 0.0f), color[1]),
+        VertexCol(Math::Vector(p2.x, p2.y, 0.0f), color[0])
     };
 
     m_device->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, vertex, 4);
@@ -3567,10 +3567,10 @@ void CEngine::DrawOverColor()
 
     VertexCol vertex[4] =
     {
-        VertexCol(Math::Vector(p1.x, p1.y, 0.0f), color[1], color[2]),
-        VertexCol(Math::Vector(p1.x, p2.y, 0.0f), color[0], color[2]),
-        VertexCol(Math::Vector(p2.x, p1.y, 0.0f), color[1], color[2]),
-        VertexCol(Math::Vector(p2.x, p2.y, 0.0f), color[0], color[2])
+        VertexCol(Math::Vector(p1.x, p1.y, 0.0f), color[1]),
+        VertexCol(Math::Vector(p1.x, p2.y, 0.0f), color[0]),
+        VertexCol(Math::Vector(p2.x, p1.y, 0.0f), color[1]),
+        VertexCol(Math::Vector(p2.x, p2.y, 0.0f), color[0])
     };
 
     m_device->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, vertex, 4);
