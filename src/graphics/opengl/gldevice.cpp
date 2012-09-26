@@ -117,9 +117,6 @@ bool CGLDevice::Create()
     // So turn it on permanently
     glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 
-    // To use separate specular color in drawing primitives
-    glLightModeli(GL_LIGHT_MODEL_COLOR_CONTROL, GL_SEPARATE_SPECULAR_COLOR);
-
     // To avoid problems with scaling & lighting
     glEnable(GL_RESCALE_NORMAL);
 
@@ -136,13 +133,13 @@ bool CGLDevice::Create()
     glGetIntegerv(GL_MAX_LIGHTS, &numLights);
 
     m_lights        = std::vector<Light>(numLights, Light());
-    m_lightsEnabled = std::vector<bool>      (numLights, false);
+    m_lightsEnabled = std::vector<bool> (numLights, false);
 
     int maxTextures = 0;
     glGetIntegerv(GL_MAX_TEXTURE_UNITS, &maxTextures);
 
     m_currentTextures    = std::vector<Texture>           (maxTextures, Texture());
-    m_texturesEnabled    = std::vector<bool>                   (maxTextures, false);
+    m_texturesEnabled    = std::vector<bool>              (maxTextures, false);
     m_textureStageParams = std::vector<TextureStageParams>(maxTextures, TextureStageParams());
 
     GetLogger()->Info("CDevice created successfully\n");
@@ -310,8 +307,9 @@ void CGLDevice::SetLight(int index, const Light &light)
 
     if (light.type == LIGHT_SPOT)
     {
-        glLightf(GL_LIGHT0 + index, GL_SPOT_CUTOFF, light.spotAngle);
-        glLightf(GL_LIGHT0 + index, GL_SPOT_EXPONENT, light.spotIntensity);
+        // TODO: fix spotlight problems
+        //glLightf(GL_LIGHT0 + index, GL_SPOT_CUTOFF, light.spotAngle);
+        //glLightf(GL_LIGHT0 + index, GL_SPOT_EXPONENT, light.spotIntensity);
     }
     else
     {
@@ -326,10 +324,8 @@ void CGLDevice::UpdateLightPosition(int index)
     assert(index >= 0);
     assert(index < static_cast<int>( m_lights.size() ));
 
-    if ((! m_lighting) || (! m_lightsEnabled[index]))
-        return;
-
     glMatrixMode(GL_MODELVIEW);
+
     glPushMatrix();
 
     glLoadIdentity();

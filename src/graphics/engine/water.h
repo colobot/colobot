@@ -169,10 +169,10 @@ protected:
 
 protected:
     CInstanceManager* m_iMan;
-    CEngine*     m_engine;
-    CDevice*     m_device;
-    CTerrain*    m_terrain;
-    CParticle*   m_particule;
+    CEngine*          m_engine;
+    CDevice*          m_device;
+    CTerrain*         m_terrain;
+    CParticle*        m_particule;
     CSoundInterface*  m_sound;
 
     WaterType       m_type[2];
@@ -184,9 +184,9 @@ protected:
     //! Amplitude of swirls
     Math::Vector    m_eddy;
     //! Diffuse color
-    Color      m_diffuse;
+    Color           m_diffuse;
     //! Ambient color
-    Color      m_ambient;
+    Color           m_ambient;
     float           m_time;
     float           m_lastLava;
     int             m_subdiv;
@@ -201,7 +201,7 @@ protected:
 
     bool            m_draw;
     bool            m_lava;
-    Color      m_color;
+    Color           m_color;
 };
 
 

@@ -2810,7 +2810,7 @@ void CEngine::Draw3DScene()
 
     if (m_shadowVisible)
     {
-        m_lightMan->UpdateLightsEnableState(ENG_OBJTYPE_TERRAIN);
+        m_lightMan->UpdateDeviceLights(ENG_OBJTYPE_TERRAIN);
 
         // Draw the terrain
 
@@ -2910,7 +2910,7 @@ void CEngine::Draw3DScene()
             if (! IsVisible(objRank))
                 continue;
 
-            m_lightMan->UpdateLightsEnableState(m_objects[objRank].type);
+            m_lightMan->UpdateDeviceLights(m_objects[objRank].type);
 
             for (int l3 = 0; l3 < static_cast<int>( p2.next.size() ); l3++)
             {
@@ -2999,7 +2999,7 @@ void CEngine::Draw3DScene()
                 if (! IsVisible(objRank))
                     continue;
 
-                m_lightMan->UpdateLightsEnableState(m_objects[objRank].type);
+                m_lightMan->UpdateDeviceLights(m_objects[objRank].type);
 
                 for (int l3 = 0; l3 < static_cast<int>( p2.next.size() ); l3++)
                 {
@@ -3041,7 +3041,7 @@ void CEngine::Draw3DScene()
         }
     }
 
-    m_lightMan->UpdateLightsEnableState(ENG_OBJTYPE_TERRAIN);
+    m_lightMan->UpdateDeviceLights(ENG_OBJTYPE_NULL);
 
     if (m_waterMode) m_water->DrawSurf();    // draws water surface
 
@@ -3117,7 +3117,7 @@ void CEngine::DrawInterface()
                 if (! IsVisible(objRank))
                     continue;
 
-                m_lightMan->UpdateLightsEnableState(m_objects[objRank].type);
+                m_lightMan->UpdateDeviceLights(m_objects[objRank].type);
 
                 for (int l3 = 0; l3 < static_cast<int>( p2.next.size() ); l3++)
                 {

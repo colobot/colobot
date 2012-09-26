@@ -3908,7 +3908,9 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                              OpFloat(line, "dir", 0.0f),
                              name,
                              Math::Point(uv1.x, uv1.z),
-                             Math::Point(uv2.x, uv2.z));
+                             Math::Point(uv2.x, uv2.z),
+                             strstr(name, "planet") != nullptr // TODO: add transparent op or modify textures
+                            );
         }
 
         if (Cmd(line, "FrontsizeName") && !resetObject)
@@ -4843,7 +4845,7 @@ int CRobotMain::CreateLight(Math::Vector direction, Gfx::Color color)
     light.type = Gfx::LIGHT_DIRECTIONAL;
     light.diffuse = color;
     light.direction  = direction;
-    int obj = m_lightMan->CreateLight();
+    int obj = m_lightMan->CreateLight(Gfx::LIGHT_PRI_HIGH);
     m_lightMan->SetLight(obj, light);
 
     return obj;
@@ -4866,7 +4868,7 @@ int CRobotMain::CreateSpot(Math::Vector pos, Gfx::Color color)
     light.attenuation0  = 2.0f;
     light.attenuation1  = 0.0f;
     light.attenuation2  = 0.0f;
-    int obj = m_lightMan->CreateLight();
+    int obj = m_lightMan->CreateLight(Gfx::LIGHT_PRI_HIGH);
     m_lightMan->SetLight(obj, light);
 
     return obj;

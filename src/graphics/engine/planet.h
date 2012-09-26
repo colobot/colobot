@@ -91,7 +91,8 @@ public:
     bool        EventProcess(const Event &event);
     //! Creates a new planet
     void        Create(int mode, Math::Point start, float dim, float speed, float dir,
-                       const std::string& name, Math::Point uv1, Math::Point uv2);
+                       const std::string& name, Math::Point uv1, Math::Point uv2,
+                       bool transparent);
     //! Indicates if there is at least one planet
     bool        PlanetExist();
     //! Load all the textures for the planets

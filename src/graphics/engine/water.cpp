@@ -279,11 +279,9 @@ void CWater::DrawBack()
     material.ambient = m_ambient;
     m_engine->SetMaterial(material);
 
-    m_engine->SetTexture("", 0); // TODO: disable texturing
-
     CDevice* device = m_engine->GetDevice();
 
-    m_engine->SetState(ENG_RSTATE_NORMAL);
+    m_engine->SetState(Gfx::ENG_RSTATE_OPAQUE_COLOR);
 
     float deep = m_engine->GetDeepView(0);
     m_engine->SetDeepView(deep*2.0f, 0);
@@ -310,17 +308,14 @@ void CWater::DrawBack()
     p1.y = -50.0f;
     p2.y = m_level;
 
-    Math::Vector n;
-    n.x = (lookat.x-eye.x)/dist;
-    n.z = (lookat.z-eye.z)/dist;
-    n.y = 0.0f;
+    Gfx::Color white = Gfx::Color(1.0f, 1.0f, 1.0f, 0.0f);
 
-    Vertex vertices[4] =
+    VertexCol vertices[4] =
     {
-        Vertex(Math::Vector(p1.x, p2.y, p1.z), n),
-        Vertex(Math::Vector(p1.x, p1.y, p1.z), n),
-        Vertex(Math::Vector(p2.x, p2.y, p2.z), n),
-        Vertex(Math::Vector(p2.x, p1.y, p2.z), n)
+        VertexCol(Math::Vector(p1.x, p2.y, p1.z), white),
+        VertexCol(Math::Vector(p1.x, p1.y, p1.z), white),
+        VertexCol(Math::Vector(p2.x, p2.y, p2.z), white),
+        VertexCol(Math::Vector(p2.x, p1.y, p2.z), white)
     };
 
     device->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, vertices, 4);
@@ -480,8 +475,8 @@ void CWater::CreateLine(int x, int y, int len)
 }
 
 void CWater::Create(WaterType type1, WaterType type2, const std::string& fileName,
-                         Color diffuse, Color ambient,
-                         float level, float glint, Math::Vector eddy)
+                    Color diffuse, Color ambient,
+                    float level, float glint, Math::Vector eddy)
 {
     m_type[0]  = type1;
     m_type[1]  = type2;

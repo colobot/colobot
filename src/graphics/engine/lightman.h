@@ -65,6 +65,16 @@ struct LightProgression
 };
 
 /**
+ * \enum LightPriority
+ * \brief Priority in light assignment
+ */
+enum LightPriority
+{
+    LIGHT_PRI_HIGH,
+    LIGHT_PRI_LOW
+};
+
+/**
   \struct DynamicLight
   \brief Dynamic light in 3D scene
 
@@ -76,6 +86,9 @@ struct DynamicLight
     bool used;
     //! Whether the light is turned on
     bool enabled;
+
+    //! Priority in assignment
+    LightPriority priority;
 
     //! Configuration of the light
     Light light;
@@ -123,7 +136,7 @@ public:
     //! Clears and disables all lights
     void            FlushLights();
     //! Creates a new dynamic light and returns its index (lightRank)
-    int             CreateLight();
+    int             CreateLight(LightPriority priority = LIGHT_PRI_LOW);
     //! Deletes and disables the given dynamic light
     bool            DeleteLight(int lightRank);
     //! Sets the light parameters for dynamic light
@@ -161,7 +174,7 @@ public:
     //! Sets the destination color for dynamic light's color progression
     bool            SetLightColor(int lightRank, const Color &color);
     //! Returns current light color
-    Color      GetLightColor(int lightRank);
+    Color           GetLightColor(int lightRank);
     //! Sets the rate of change for dynamic light colors (RGB)
     bool            SetLightColorSpeed(int lightRank, float speed);
 
@@ -170,7 +183,7 @@ public:
     //! Updates (recalculates) all dynamic lights
     void            UpdateLights();
     //! Enables or disables dynamic lights affecting the given object type
-    void            UpdateLightsEnableState(EngineObjectType type);
+    void            UpdateDeviceLights(EngineObjectType type);
 
 protected:
     CInstanceManager* m_iMan;
@@ -181,6 +194,8 @@ protected:
     float             m_time;
     //! List of dynamic lights
     std::vector<DynamicLight> m_dynLights;
+    //! Map of current light allotment: graphics light -> dynamic light
+    std::vector<int>  m_lightMap;
 };
 
 }; // namespace Gfx
