@@ -190,10 +190,10 @@ void CColor::Draw()
     m_engine->SetTexture("");  // no texture
     m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
 
-    vertex[0] = Gfx::VertexCol(Math::Vector(p1.x, p1.y, 0.0f), color, Gfx::Color(), Math::Point(0.0f, 0.0f));
-    vertex[1] = Gfx::VertexCol(Math::Vector(p1.x, p2.y, 0.0f), color, Gfx::Color(), Math::Point(0.0f, 0.0f));
-    vertex[2] = Gfx::VertexCol(Math::Vector(p2.x, p1.y, 0.0f), color, Gfx::Color(), Math::Point(0.0f, 0.0f));
-    vertex[3] = Gfx::VertexCol(Math::Vector(p2.x, p2.y, 0.0f), color, Gfx::Color(), Math::Point(0.0f, 0.0f));
+    vertex[0] = Gfx::VertexCol(Math::Vector(p1.x, p1.y, 0.0f), color);
+    vertex[1] = Gfx::VertexCol(Math::Vector(p1.x, p2.y, 0.0f), color);
+    vertex[2] = Gfx::VertexCol(Math::Vector(p2.x, p1.y, 0.0f), color);
+    vertex[3] = Gfx::VertexCol(Math::Vector(p2.x, p2.y, 0.0f), color);
 
     device = m_engine->GetDevice();
     device->DrawPrimitive(Gfx::PRIMITIVE_TRIANGLE_STRIP, vertex, 4);

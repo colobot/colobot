@@ -150,8 +150,8 @@ void CText::FlushCache()
 }
 
 void CText::DrawText(const std::string &text, const std::vector<FontMetaChar> &format,
-                          float size, Math::Point pos, float width, TextAlign align,
-                          int eol)
+                     float size, Math::Point pos, float width, TextAlign align,
+                     int eol)
 {
     float sw = 0.0f;
 
@@ -172,8 +172,8 @@ void CText::DrawText(const std::string &text, const std::vector<FontMetaChar> &f
 }
 
 void CText::DrawText(const std::string &text, FontType font,
-                          float size, Math::Point pos, float width, TextAlign align,
-                          int eol)
+                     float size, Math::Point pos, float width, TextAlign align,
+                     int eol)
 {
     float sw = 0.0f;
 
@@ -194,8 +194,8 @@ void CText::DrawText(const std::string &text, FontType font,
 }
 
 void CText::SizeText(const std::string &text, const std::vector<FontMetaChar> &format,
-                          float size, Math::Point pos, TextAlign align,
-                          Math::Point &start, Math::Point &end)
+                     float size, Math::Point pos, TextAlign align,
+                     Math::Point &start, Math::Point &end)
 {
     start = end = pos;
 
@@ -217,8 +217,8 @@ void CText::SizeText(const std::string &text, const std::vector<FontMetaChar> &f
 }
 
 void CText::SizeText(const std::string &text, FontType font,
-                          float size, Math::Point pos, TextAlign align,
-                          Math::Point &start, Math::Point &end)
+                     float size, Math::Point pos, TextAlign align,
+                     Math::Point &start, Math::Point &end)
 {
     start = end = pos;
 
@@ -277,7 +277,7 @@ float CText::GetHeight(FontType font, float size)
 
 
 float CText::GetStringWidth(const std::string &text,
-                                 const std::vector<FontMetaChar> &format, float size)
+                            const std::vector<FontMetaChar> &format, float size)
 {
     assert(StrUtils::Utf8StringLength(text) == format.size());
 
@@ -344,7 +344,7 @@ float CText::GetCharWidth(UTF8Char ch, FontType font, float size, float offset)
 
 
 int CText::Justify(const std::string &text, const std::vector<FontMetaChar> &format,
-                        float size, float width)
+                   float size, float width)
 {
     assert(StrUtils::Utf8StringLength(text) == format.size());
 
@@ -427,7 +427,7 @@ int CText::Justify(const std::string &text, FontType font, float size, float wid
 }
 
 int CText::Detect(const std::string &text, const std::vector<FontMetaChar> &format,
-                       float size, float offset)
+                  float size, float offset)
 {
     assert(StrUtils::Utf8StringLength(text) == format.size());
 
@@ -500,7 +500,7 @@ int CText::Detect(const std::string &text, FontType font, float size, float offs
 }
 
 void CText::DrawString(const std::string &text, const std::vector<FontMetaChar> &format,
-                           float size, Math::Point pos, float width, int eol)
+                       float size, Math::Point pos, float width, int eol)
 {
     assert(StrUtils::Utf8StringLength(text) == format.size());
 
@@ -511,9 +511,10 @@ void CText::DrawString(const std::string &text, const std::vector<FontMetaChar> 
 
     unsigned int fmtIndex = 0;
 
-    std::vector<UTF8Char> chars = StringToUTFCharList(text);
-    for(auto it=chars.begin(); it != chars.end(); ++it){
-
+    std::vector<UTF8Char> chars;
+    StringToUTFCharList(text, chars);
+    for (auto it = chars.begin(); it != chars.end(); ++it)
+    {
         font = static_cast<FontType>(format[fmtIndex] & FONT_MASK_FONT);
 
         // TODO: if (font == FONT_BUTTON)
@@ -546,37 +547,38 @@ void CText::DrawString(const std::string &text, const std::vector<FontMetaChar> 
     // TODO: eol
 }
 
-std::vector<UTF8Char> CText::StringToUTFCharList(const std::string &text) {
-  std::vector<UTF8Char> v;
-  unsigned int index = 0;
-  while (index < text.length())
-  {
-    UTF8Char ch;
+void CText::StringToUTFCharList(const std::string &text, std::vector<UTF8Char> &chars)
+{
+    unsigned int index = 0;
+    while (index < text.length())
+    {
+        UTF8Char ch;
 
-    int len = StrUtils::Utf8CharSizeAt(text, index);
-    if (len >= 1)
-      ch.c1 = text[index];
-    if (len >= 2)
-      ch.c2 = text[index+1];
-    if (len >= 3)
-      ch.c3 = text[index+2];
+        int len = StrUtils::Utf8CharSizeAt(text, index);
+        if (len >= 1)
+        ch.c1 = text[index];
+        if (len >= 2)
+        ch.c2 = text[index+1];
+        if (len >= 3)
+        ch.c3 = text[index+2];
 
-    index += len;
+        index += len;
 
-    v.push_back(ch);
-  }
-  return v;
+        chars.push_back(ch);
+    }
 }
 
 void CText::DrawString(const std::string &text, FontType font,
-                            float size, Math::Point pos, float width, int eol)
+                       float size, Math::Point pos, float width, int eol)
 {
     assert(font != FONT_BUTTON);
 
     m_engine->SetState(ENG_RSTATE_TEXT);
 
-    std::vector<UTF8Char> chars = StringToUTFCharList(text);
-    for(auto it=chars.begin(); it != chars.end(); ++it){
+    std::vector<UTF8Char> chars;
+    StringToUTFCharList(text, chars);
+    for (auto it = chars.begin(); it != chars.end(); ++it)
+    {
         DrawCharAndAdjustPos(*it, font, size, pos);
     }
 }

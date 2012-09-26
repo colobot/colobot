@@ -293,11 +293,10 @@ protected:
                            float size, Math::Point pos, float width, int eol);
     void        DrawHighlight(FontHighlight hl, Math::Point pos, Math::Point size);
     void        DrawCharAndAdjustPos(UTF8Char ch, FontType font, float size, Math::Point &pos);
-    std::vector<UTF8Char>
-      StringToUTFCharList(const std::string &text);
+    void        StringToUTFCharList(const std::string &text, std::vector<UTF8Char> &chars);
 
 protected:
-    CInstanceManager*   m_iMan;
+    CInstanceManager* m_iMan;
     CEngine*       m_engine;
     CDevice*       m_device;
 
@@ -307,7 +306,7 @@ protected:
     std::map<FontType, MultisizeFont*> m_fonts;
 
     FontType     m_lastFontType;
-    int               m_lastFontSize;
+    int          m_lastFontSize;
     CachedFont*  m_lastCachedFont;
 };
 

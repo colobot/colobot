@@ -69,36 +69,28 @@ struct Vertex
 
 /**
  * \struct VertexCol
- * \brief Vertex with color information
- *
- * This structure was created as analog to DirectX's D3DLVERTEX.
+ * \brief Colored vertex
  *
  * It contains:
  *  - vertex coordinates (x,y,z) as Math::Vector,
- *  - RGBA color as Color,
- *  - RGBA specular color as Color,
- *  - texture coordinates (u,v) as Math::Point.
+ *  - RGBA color as Color
  */
 struct VertexCol
 {
     Math::Vector coord;
     Color color;
-    Color specular;
-    Math::Point texCoord;
 
     explicit VertexCol(Math::Vector aCoord = Math::Vector(),
                        Color aColor = Color(),
-                       Color aSpecular = Color(),
                        Math::Point aTexCoord = Math::Point())
-        : coord(aCoord), color(aColor), specular(aSpecular), texCoord(aTexCoord) {}
+        : coord(aCoord), color(aColor) {}
 
-    //! Returns a string "(c: [...], col: [...], sp: [...], tc: [...])"
+    //! Returns a string "(c: [...], col: [...])"
     inline std::string ToString() const
     {
         std::stringstream s;
         s.precision(3);
-        s << "(c: " << coord.ToString() << ", col: " << color.ToString() << ", sp: "
-          << specular.ToString() << ", tc: " << texCoord.ToString() << ")";
+        s << "(c: " << coord.ToString() << ", col: " << color.ToString() << ")";
         return s.str();
     }
 };

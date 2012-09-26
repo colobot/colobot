@@ -101,7 +101,7 @@ bool CGLDevice::Create()
             return false;
         }
 
-        if ( (! GLEW_ARB_multitexture) || (! GLEW_EXT_texture_env_combine) || (! GLEW_EXT_secondary_color) )
+        if ( (! GLEW_ARB_multitexture) || (! GLEW_EXT_texture_env_combine) )
         {
             GetLogger()->Error("GLEW reports required extensions not supported\n");
             return false;
@@ -887,8 +887,6 @@ void CGLDevice::DrawPrimitive(PrimitiveType type, const VertexCol *vertices, int
     for (int i = 0; i < vertexCount; ++i)
     {
         glColor4fv(const_cast<GLfloat*>(vertices[i].color.Array()));
-        glSecondaryColor3fv(const_cast<GLfloat*>(vertices[i].specular.Array()));
-        glMultiTexCoord2fv(GL_TEXTURE0, const_cast<GLfloat*>(vertices[i].texCoord.Array()));
         glVertex3fv(const_cast<GLfloat*>(vertices[i].coord.Array()));
     }
 
@@ -1244,6 +1242,7 @@ void CGLDevice::SetFogParams(FogMode mode, const Color &color, float start, floa
     glFogf(GL_FOG_START,   start);
     glFogf(GL_FOG_END,     end);
     glFogf(GL_FOG_DENSITY, density);
+    glFogfv(GL_FOG_COLOR,  color.Array());
 }
 
 void CGLDevice::GetFogParams(FogMode &mode, Color &color, float &start, float &end, float &density)
@@ -1258,6 +1257,9 @@ void CGLDevice::GetFogParams(FogMode &mode, Color &color, float &start, float &e
     glGetFloatv(GL_FOG_START,   static_cast<GLfloat*>(&start));
     glGetFloatv(GL_FOG_END,     static_cast<GLfloat*>(&end));
     glGetFloatv(GL_FOG_DENSITY, static_cast<GLfloat*>(&density));
+    GLfloat col[4] = { 0.0f };
+    glGetFloatv(GL_FOG_COLOR,  col);
+    color = Color(col[0], col[1], col[2], col[3]);
 }
 
 void CGLDevice::SetCullMode(CullMode mode)
