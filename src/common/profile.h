@@ -102,9 +102,8 @@ class CProfile : public CSingleton<CProfile>
         std::vector< std::string > GetLocalProfileSection(std::string section, std::string key);
 
     private:
-        // bpt::ptree m_pt;
         boost::property_tree::ptree m_propertyTree;
-        // CSimpleIniA *m_ini;
+        bool m_profileNeedSave;
 };
 
 //! Global function to get profile instance

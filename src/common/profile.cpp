@@ -23,24 +23,32 @@
 #include <utility>
 #include <cstring>
 #include <boost/property_tree/ini_parser.hpp>
+#include <boost/regex.hpp>
 
 
 template<> CProfile* CSingleton<CProfile>::mInstance = nullptr;
 
 namespace bp = boost::property_tree;
 
-CProfile::CProfile()
+CProfile::CProfile() :
+    m_profileNeedSave(false)
 {
-    // m_ini = new CSimpleIniA();
-    // m_ini->SetUnicode();
-    // m_ini->SetMultiKey();
 }
 
 
 CProfile::~CProfile()
 {
-    // m_ini->Reset();
-    // delete m_ini;
+    if (m_profileNeedSave)
+    {
+        try
+        {
+            bp::ini_parser::write_ini("colobot.ini", m_propertyTree);
+        }
+        catch (std::exception & e)
+        {
+            GetLogger()->Info("Error on storing profile: %s\n", e.what());
+        }
+    }
 }
 
 
@@ -53,10 +61,11 @@ bool CProfile::InitCurrentDirectory()
     catch (std::exception & e)
     {
         GetLogger()->Info("Error on parsing profile: %s\n", e.what());
+        return false;
     }
-    // return result;
     return true;
 }
+
 
 
 bool CProfile::SetLocalProfileString(std::string section, std::string key, std::string value)
@@ -64,12 +73,13 @@ bool CProfile::SetLocalProfileString(std::string section, std::string key, std::
     try
     {
         m_propertyTree.put(section + "." + key, value);
+        m_profileNeedSave = true;
     }
     catch (std::exception & e)
     {
         GetLogger()->Info("Error on parsing profile: %s\n", e.what());
+        return false;
     }
-    // return (m_ini->SetValue(section.c_str(), key.c_str(), value.c_str()) == SI_OK);
     return true;
 }
 
@@ -83,6 +93,7 @@ bool CProfile::GetLocalProfileString(std::string section, std::string key, std::
     catch (std::exception & e)
     {
         GetLogger()->Info("Error on parsing profile: %s\n", e.what());
+        return false;
     }
     return true;
 }
@@ -97,8 +108,8 @@ bool CProfile::SetLocalProfileInt(std::string section, std::string key, int valu
     catch (std::exception & e)
     {
         GetLogger()->Info("Error on parsing profile: %s\n", e.what());
+        return false;
     }
-    // return (m_ini->SetLongValue(section.c_str(), key.c_str(), value) == SI_OK);
     return true;
 }
 
@@ -112,8 +123,8 @@ bool CProfile::GetLocalProfileInt(std::string section, std::string key, int &val
     catch (std::exception & e)
     {
         GetLogger()->Info("Error on parsing profile: %s\n", e.what());
+        return false;
     }
-    // value = m_ini->GetLongValue(section.c_str(), key.c_str(), 0L);
     return true;
 }
 
@@ -127,8 +138,8 @@ bool CProfile::SetLocalProfileFloat(std::string section, std::string key, float 
     catch (std::exception & e)
     {
         GetLogger()->Info("Error on parsing profile: %s\n", e.what());
+        return false;
     }
-    // return (m_ini->SetDoubleValue(section.c_str(), key.c_str(), value) == SI_OK);
     return true;
 }
 
@@ -142,8 +153,8 @@ bool CProfile::GetLocalProfileFloat(std::string section, std::string key, float 
     catch (std::exception & e)
     {
         GetLogger()->Info("Error on parsing profile: %s\n", e.what());
+        return false;
     }
-    // value = m_ini->GetDoubleValue(section.c_str(), key.c_str(), 0.0d);
     return true;
 }
 
@@ -151,12 +162,13 @@ bool CProfile::GetLocalProfileFloat(std::string section, std::string key, float 
 std::vector< std::string > CProfile::GetLocalProfileSection(std::string section, std::string key)
 {
     std::vector< std::string > ret_list;
+    boost::regex re(key + "[0-9]*"); //we want to match all key followed my any number
 
     try
     {
         for(bp::ptree::value_type const & v : m_propertyTree.get_child(section))
         {
-            if (v.first == key)
+            if (boost::regex_search(v.first, re))
             {
                 ret_list.push_back(v.second.get_value<std::string>());
             }
@@ -166,13 +178,6 @@ std::vector< std::string > CProfile::GetLocalProfileSection(std::string section,
     {
         GetLogger()->Info("Error on parsing profile: %s\n", e.what());
     }
-    // CSimpleIniA::TNamesDepend values;
-    // m_ini->GetAllValues(section.c_str(), key.c_str(), values);
-    // values.sort(CSimpleIniA::Entry::LoadOrder());
-
-    // for (auto item : values) {
-    //     ret_list.push_back(item.pItem);
-    // }
 
     return ret_list;
 }

@@ -4,7 +4,6 @@ set(SOURCES
     alsound.cpp
     buffer.cpp
     channel.cpp
-    logger.cpp
 )
 
 SET (CMAKE_CXX_FLAGS "-Wall  -g -std=c++0x -fPIC")
