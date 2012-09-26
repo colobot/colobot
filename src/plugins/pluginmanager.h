@@ -27,10 +27,10 @@
 #include <set>
 #include <vector>
 
-#include <common/logger.h>
-#include <common/profile.h>
+#include "common/logger.h"
+#include "common/profile.h"
 
-#include <common/singleton.h>
+#include "common/singleton.h"
 
 #include "pluginloader.h"
 

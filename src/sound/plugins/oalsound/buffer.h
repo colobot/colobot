@@ -22,8 +22,8 @@
 
 #include <AL/alut.h>
 
-#include <sound/sound.h>
-#include <common/logger.h>
+#include "sound/sound.h"
+#include "common/logger.h"
 
 #include "check.h"
 

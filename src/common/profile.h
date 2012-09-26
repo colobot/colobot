@@ -21,7 +21,7 @@
 
 #pragma once
 
-#include "lib/simpleini/SimpleIni.h"
+#include <boost/property_tree/ptree.hpp>
 
 #include "common/singleton.h"
 
@@ -102,7 +102,9 @@ class CProfile : public CSingleton<CProfile>
         std::vector< std::string > GetLocalProfileSection(std::string section, std::string key);
 
     private:
-        CSimpleIniA *m_ini;
+        // bpt::ptree m_pt;
+        boost::property_tree::ptree m_propertyTree;
+        // CSimpleIniA *m_ini;
 };
 
 //! Global function to get profile instance

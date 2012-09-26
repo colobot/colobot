@@ -18,6 +18,7 @@
 
 #include "ui/maindialog.h"
 
+#include "app/app.h"
 #include "common/global.h"
 #include "common/event.h"
 #include "common/logger.h"
@@ -46,8 +47,11 @@
 
 #include <stdio.h>
 #include <string.h>
-// #include <boost/filesystem.hpp>
+#include <sstream>
+#include <iomanip>
+#include <boost/filesystem.hpp>
 
+//TODO Get rid of all sprintf's
 
 namespace Ui
 {
@@ -58,7 +62,7 @@ const int KEY_TOTAL = 21;       // total number of keys redefinable
 
 const float WELCOME_LENGTH = 2.0f;
 
-
+const int MAX_FNAME = 255; // TODO: remove after rewrite to std::string
 
 static int perso_color[3*10*3] =
 {
@@ -97,7 +101,7 @@ static int perso_color[3*10*3] =
       0,   0,   0,  //
 };
 
-
+namespace fs = boost::filesystem;
 
 // Constructor of robot application.
 
@@ -169,11 +173,12 @@ CMainDialog::CMainDialog(CInstanceManager* iMan)
         m_partiTime[i]  = 0.0f;
     }
 
-    strcpy(m_sceneDir,    "levels");
-    strcpy(m_savegameDir, "savegame");
-    strcpy(m_publicDir,   "program");
-    strcpy(m_userDir,     "user");
-    strcpy(m_filesDir,    "files");
+
+    m_sceneDir = "levels";
+    m_savegameDir = "savegame";
+    m_publicDir = "program";
+    m_userDir = "user";
+    m_filesDir = "files";
 
     m_bDialog = false;
 }
@@ -3573,7 +3578,7 @@ void CMainDialog::SetUserDir(char *base, int rank)
 
     if ( strcmp(base, "user") == 0 && rank >= 100 )
     {
-        sprintf(dir, "%s/%s", m_userDir, m_userList[rank/100-1]);
+        sprintf(dir, "%s/%s", m_userDir.c_str(), m_userList[rank/100-1]);
         UserDir(true, dir);
     }
     else
@@ -3584,17 +3589,22 @@ void CMainDialog::SetUserDir(char *base, int rank)
 
 // Builds the file name of a mission.
 
-void CMainDialog::BuildSceneName(char *filename, char *base, int rank)
+void CMainDialog::BuildSceneName(std::string &filename, char *base, int rank)
 {
-    std::string dataDir = m_app->GetDataDirPath();
-
+    std::ostringstream rankStream;
     if ( strcmp(base, "user") == 0 )
     {
-        sprintf(filename, "%s/%s/%s/scene%.2d.txt", dataDir.c_str(), m_userDir, m_userList[rank/100-1], rank%100);
+        //TODO: Change this to point user dir acocrding to operating system
+        rankStream << std::setfill('0') << std::setw(2) << rank%100;
+        filename = m_userDir + "/" + m_userList[rank/100-1] + "/" + rankStream.str() + ".txt";
+        // sprintf(filename, "%s\\%s\\scene%.2d.txt", m_userDir.c_str(), m_userList[rank/100-1], rank%100);
     }
     else
     {
-        sprintf(filename, "%s/%s/%s%.3d.txt", dataDir.c_str(), m_sceneDir, base, rank);
+        rankStream << std::setfill('0') << std::setw(3) << rank;
+        filename = base + rankStream.str() + ".txt";
+        filename = CApplication::GetInstance().GetDataFilePath(DIR_LEVEL, filename);
+        // sprintf(filename, "%s\\%s%.3d.txt", m_sceneDir, base, rank);
     }
 }
 
@@ -3607,7 +3617,7 @@ void CMainDialog::BuildResumeName(char *filename, char *base, int rank)
 
 // Returns the name of the file or save the files.
 
-char* CMainDialog::GetFilesDir()
+std::string & CMainDialog::GetFilesDir()
 {
     return m_filesDir;
 }
@@ -3635,9 +3645,10 @@ void CMainDialog::ReadNameList()
 
     nbFilenames = 0;
 
-    sprintf(dir, "./%s", m_savegameDir);
+    //TODO list files
+    // sprintf(dir, ".\\%s", m_savegameDir);
 
-    // if (! boost::filesystem::exists(dir))
+    // if (! fs::exists(dir))
     // {
     //     GetLogger()->Error("Savegame dir does not exist %s\n",dir);
     // }
@@ -3645,7 +3656,6 @@ void CMainDialog::ReadNameList()
     // {
     //     GetLogger()->Info("Opening file");
     // }
-    //TODO list files
 
     // hFile = _findfirst(dir, &fBuffer);
     // if ( hFile != -1 )
@@ -3852,7 +3862,7 @@ void CMainDialog::NameSelect()
 
     GetGamerFace(m_main->GetGamerName());
 
-    // TODO: SetLocalProfileString("Gamer", "LastName", m_main->GetGamerName());
+    GetProfile()->SetLocalProfileString("Gamer", "LastName", m_main->GetGamerName());
 }
 
 // Creates a new player.
@@ -3866,6 +3876,7 @@ void CMainDialog::NameCreate()
     char        c;
     int         len, i, j;
 
+    GetLogger()->Debug("Creating new player\n");
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
     if ( pw == 0 )  return;
     pe = static_cast<CEdit*>(pw->SearchControl(EVENT_INTERFACE_NEDIT));
@@ -3904,7 +3915,7 @@ void CMainDialog::NameCreate()
 
     // TODO: _mkdir(m_savegameDir);  // if does not exist yet!
 
-    sprintf(dir, "%s/%s", m_savegameDir, name);
+    sprintf(dir, "%s/%s", m_savegameDir.c_str(), name);
     // TODO: if ( _mkdir(dir) != 0 )
     {
         m_sound->Play(SOUND_TZOING);
@@ -3983,7 +3994,7 @@ void CMainDialog::NameDelete()
     gamer = pl->GetName(sel);
 
     // Deletes all the contents of the file.
-    sprintf(dir, "%s/%s", m_savegameDir, gamer);
+    sprintf(dir, "%s/%s", m_savegameDir.c_str(), gamer);
     if ( !RemoveDir(dir) )
     {
         m_sound->Play(SOUND_TZOING);
@@ -4295,10 +4306,13 @@ void CMainDialog::DefPerso()
 bool CMainDialog::IsIOReadScene()
 {
     FILE*   file;
-    char    filename[100];
+    // char    filename[100];
+    std::string filename;
 
-    sprintf(filename, "%s/%s/save%c%.3d/data.sav", m_savegameDir, m_main->GetGamerName(), m_sceneName[0], 0);
-    file = fopen(filename, "r");
+    //TODO: Change this to point user dir acocrding to operating system
+    filename = m_savegameDir + "/" + m_main->GetGamerName() + "/" + "save" + m_sceneName[0] + "000/data.sav";
+    // sprintf(filename, "%s\\%s\\save%c%.3d\\data.sav", m_savegameDir, m_main->GetGamerName(), m_sceneName[0], 0);
+    file = fopen(filename.c_str(), "r");
     if ( file == NULL )  return false;
     fclose(file);
     return true;
@@ -4311,7 +4325,7 @@ void CMainDialog::IOReadName()
     FILE*       file;
     CWindow*    pw;
     CEdit*      pe;
-    char        filename[MAX_FNAME];
+    std::string filename;
     char        op[100];
     char        line[500];
     char        resume[100];
@@ -4326,7 +4340,7 @@ void CMainDialog::IOReadName()
 
     sprintf(resume, "%s %d", m_sceneName, m_chap[m_index]+1);
     BuildSceneName(filename, m_sceneName, (m_chap[m_index]+1)*100);
-    file = fopen(filename, "r");
+    file = fopen(filename.c_str(), "r");
     if ( file != NULL )
     {
         while ( fgets(line, 500, file) != NULL )
@@ -4367,7 +4381,6 @@ void CMainDialog::IOReadList()
     FILE*       file = NULL;
     CWindow*    pw;
     CList*      pl;
-    char        filename[100];
     char        line[500];
     char        name[100];
     int         i, j;
@@ -4381,8 +4394,13 @@ void CMainDialog::IOReadList()
 
     for ( j=0 ; j<999 ; j++ )
     {
-        sprintf(filename, "%s/%s/save%c%.3d/data.sav", m_savegameDir, m_main->GetGamerName(), m_sceneName[0], j);
-        file = fopen(filename, "r");
+        std::string filename;
+        std::ostringstream rankStream;
+        rankStream << std::setfill('0') << std::setw(3) << j;
+        filename = m_savegameDir + "/" + m_main->GetGamerName() + "/save" + m_sceneName[0] + rankStream.str()+ "/data.sav";
+
+        // sprintf(filename, "%s\\%s\\save%c%.3d\\data.sav", m_savegameDir, m_main->GetGamerName(), m_sceneName[0], j);
+        file = fopen(filename.c_str(), "r");
         if ( file == NULL )  break;
 
         while ( fgets(line, 500, file) != NULL )
@@ -4429,7 +4447,6 @@ void CMainDialog::IOUpdateList()
     CList*      pl;
     CButton*    pb;
     CImage*     pi;
-    char        filename[100];
     int         sel, max;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
@@ -4442,14 +4459,18 @@ void CMainDialog::IOUpdateList()
     sel = pl->GetSelect();
     max = pl->GetTotal();
 
-    sprintf(filename, "%s/%s/save%c%.3d/screen.png", m_savegameDir, m_main->GetGamerName(), m_sceneName[0], sel);
+    std::string filename;
+    std::ostringstream rankStream;
+    rankStream << std::setfill('0') << std::setw(3) << sel;
+    filename = m_savegameDir + "/" + m_main->GetGamerName() + "/save" + m_sceneName[0] + rankStream.str()+ "/screen.png";
+    // sprintf(filename, "%s\\%s\\save%c%.3d\\screen.png", m_savegameDir, m_main->GetGamerName(), m_sceneName[0], sel);
 
     if ( m_phase == PHASE_WRITE  ||
          m_phase == PHASE_WRITEs )
     {
         if ( sel < max-1 )
         {
-            pi->SetFilenameImage(filename);
+            pi->SetFilenameImage(filename.c_str());
         }
         else
         {
@@ -4464,7 +4485,7 @@ void CMainDialog::IOUpdateList()
     }
     else
     {
-        pi->SetFilenameImage(filename);
+        pi->SetFilenameImage(filename.c_str());
     }
 }
 
@@ -4534,8 +4555,6 @@ bool CMainDialog::IOWriteScene()
     CWindow*    pw;
     CList*      pl;
     CEdit*      pe;
-    char        filename[100];
-    char        filecbot[100];
     char        info[100];
     int         sel;
 
@@ -4549,19 +4568,28 @@ bool CMainDialog::IOWriteScene()
     sel = pl->GetSelect();
     if ( sel == -1 )  return false;
 
-    // TODO: _mkdir("Savegame");  // if doesn't exist yet!
-    sprintf(filename, "%s/%s", m_savegameDir, m_main->GetGamerName());
-    // TODO: _mkdir(filename);
-    sprintf(filename, "%s/%s/save%c%.3d", m_savegameDir, m_main->GetGamerName(), m_sceneName[0], sel);
-    // TODO: _mkdir(filename);
+    std::string directoryName;
+    std::string fileName;
+    std::string fileCBot;
+    std::ostringstream selectStream;
 
-    sprintf(filename, "%s/%s/save%c%.3d/data.sav", m_savegameDir, m_main->GetGamerName(), m_sceneName[0], sel);
-    sprintf(filecbot, "%s/%s/save%c%.3d/cbot.run", m_savegameDir, m_main->GetGamerName(), m_sceneName[0], sel);
+    //TODO: Change this to point user dir according to operating system
+    // sprintf(filename, "%s\\%s\\save%c%.3d", m_savegameDir, m_main->GetGamerName(), m_sceneName[0], sel);
+    GetLogger()->Info("Creating save directory\n");
+    selectStream << std::setfill('0') << std::setw(3) << sel;
+    directoryName =  m_savegameDir + "/" + m_main->GetGamerName() + "/" + "save" + m_sceneName[0] + selectStream.str();
+    if (!fs::exists(directoryName))
+    {
+        fs::create_directories(directoryName);
+    }
+
+    fileName = directoryName + "/data.sav";
+    fileCBot = directoryName + "/cbot.run";
     pe->GetText(info, 100);
-    m_main->IOWriteScene(filename, filecbot, info);
+    m_main->IOWriteScene(fileName.c_str(), fileCBot.c_str(), info);
 
     m_shotDelay = 3;
-    sprintf(m_shotName, "%s/%s/save%c%.3d/screen.png", m_savegameDir, m_main->GetGamerName(), m_sceneName[0], sel);
+    m_shotName = directoryName + "/screen.png";
 
     return true;
 }
@@ -4573,8 +4601,6 @@ bool CMainDialog::IOReadScene()
     FILE*       file;
     CWindow*    pw;
     CList*      pl;
-    char        filename[100];
-    char        filecbot[100];
     char        line[500];
     char        dir[100];
     int         sel, i;
@@ -4587,10 +4613,19 @@ bool CMainDialog::IOReadScene()
     sel = pl->GetSelect();
     if ( sel == -1 )  return false;
 
-    sprintf(filename, "%s/%s/save%c%.3d/data.sav", m_savegameDir, m_main->GetGamerName(), m_sceneName[0], sel);
-    sprintf(filecbot, "%s/%s/save%c%.3d/cbot.run", m_savegameDir, m_main->GetGamerName(), m_sceneName[0], sel);
+    //TODO: Change this to point user dir according to operating system
+    // sprintf(filename, "%s\\%s\\save%c%.3d", m_savegameDir, m_main->GetGamerName(), m_sceneName[0], sel);
+    std::string fileName;
+    std::string fileCbot;
+    std::string directoryName;
+    std::ostringstream selectStream;
+    selectStream << std::setfill('0') << std::setw(3) << sel;
+    directoryName = m_savegameDir + "/" + m_main->GetGamerName() + "/" + "save" + m_sceneName[0] + selectStream.str();
 
-    file = fopen(filename, "r");
+    fileName = directoryName + "/data.sav";
+    fileCbot = directoryName + "/cbot.run";
+
+    file = fopen(fileName.c_str(), "r");
     if ( file == NULL )  return false;
 
     while ( fgets(line, 500, file) != NULL )
@@ -4635,8 +4670,8 @@ bool CMainDialog::IOReadScene()
     m_chap[m_index] = (m_sceneRank/100)-1;
     m_sel[m_index]  = (m_sceneRank%100)-1;
 
-    strcpy(m_sceneRead, filename);
-    strcpy(m_stackRead, filecbot);
+    m_sceneRead = fileName;
+    m_stackRead = fileCbot;
     return true;
 }
 
@@ -4685,7 +4720,7 @@ void CMainDialog::UpdateSceneChap(int &chap)
     CList*      pl;
     long        hFile;
     //struct _finddata_t fileBuffer;
-    char        filename[MAX_FNAME];
+    std::string fileName;
     char        op[100];
     char        line[500];
     char        name[100];
@@ -4740,8 +4775,8 @@ void CMainDialog::UpdateSceneChap(int &chap)
 
         for ( j=0 ; j<m_userTotal ; j++ )
         {
-            BuildSceneName(filename, m_sceneName, (j+1)*100);
-            file = fopen(filename, "r");
+            BuildSceneName(fileName, m_sceneName, (j+1)*100);
+            file = fopen(fileName.c_str(), "r");
             if ( file == NULL )
             {
                 strcpy(name, m_userList[j]);
@@ -4791,8 +4826,8 @@ void CMainDialog::UpdateSceneChap(int &chap)
             if ( m_phase == PHASE_MISSION && j >= 4 )  break;
             if ( m_phase == PHASE_TRAINER && j >= 1 )  break;
 #endif */
-            BuildSceneName(filename, m_sceneName, (j+1)*100);
-            file = fopen(filename, "r");
+            BuildSceneName(fileName, m_sceneName, (j+1)*100);
+            file = fopen(fileName.c_str(), "r");
             if ( file == NULL )  break;
 
             BuildResumeName(name, m_sceneName, j+1);  // default name
@@ -4859,7 +4894,7 @@ void CMainDialog::UpdateSceneList(int chap, int &sel)
     FILE*       file = NULL;
     CWindow*    pw;
     CList*      pl;
-    char        filename[MAX_FNAME];
+    std::string fileName;
     char        op[100];
     char        line[500];
     char        name[100];
@@ -4894,8 +4929,8 @@ void CMainDialog::UpdateSceneList(int chap, int &sel)
         if ( m_phase == PHASE_MISSION && j >= 3 )  break;
         if ( m_phase == PHASE_TRAINER && j >= 5 )  break;
 #endif */
-        BuildSceneName(filename, m_sceneName, (chap+1)*100+(j+1));
-        file = fopen(filename, "r");
+        BuildSceneName(fileName, m_sceneName, (chap+1)*100+(j+1));
+        file = fopen(fileName.c_str(), "r");
         if ( file == NULL )  break;
 
         BuildResumeName(name, m_sceneName, j+1);  // default name
@@ -4942,8 +4977,8 @@ void CMainDialog::UpdateSceneList(int chap, int &sel)
 #endif*/
     }
 
-    BuildSceneName(filename, m_sceneName, (chap+1)*100+(j+1));
-    file = fopen(filename, "r");
+    BuildSceneName(fileName, m_sceneName, (chap+1)*100+(j+1));
+    file = fopen(fileName.c_str(), "r");
     if ( file == NULL )
     {
         m_maxList = j;
@@ -5008,7 +5043,7 @@ void CMainDialog::UpdateSceneResume(int rank)
     CWindow*    pw;
     CEdit*      pe;
     CCheck*     pc;
-    char        filename[MAX_FNAME];
+    std::string fileName;
     char        op[100];
     char        line[500];
     char        name[500];
@@ -5039,8 +5074,8 @@ void CMainDialog::UpdateSceneResume(int rank)
         }
     }
 
-    BuildSceneName(filename, m_sceneName, rank);
-    file = fopen(filename, "r");
+    BuildSceneName(fileName, m_sceneName, rank);
+    file = fopen(fileName.c_str(), "r");
     if ( file == NULL )  return;
 
     name[0] = 0;
@@ -6522,12 +6557,12 @@ bool CMainDialog::IsDialog()
 
 void CMainDialog::SetSceneRead(const char* name)
 {
-    strcpy(m_sceneRead, name);
+    m_sceneRead = name;
 }
 
 // Returns the name of the scene to read.
 
-char* CMainDialog::GetSceneRead()
+std::string & CMainDialog::GetSceneRead()
 {
     return m_sceneRead;
 }
@@ -6536,12 +6571,12 @@ char* CMainDialog::GetSceneRead()
 
 void CMainDialog::SetStackRead(const char* name)
 {
-    strcpy(m_stackRead, name);
+    m_stackRead = name;
 }
 
 // Returns the name of the scene to read.
 
-char* CMainDialog::GetStackRead()
+std::string & CMainDialog::GetStackRead()
 {
     return m_stackRead;
 }
@@ -6595,14 +6630,14 @@ bool CMainDialog::GetSceneSoluce()
 
 // Returns the name of the folder to save.
 
-char* CMainDialog::GetSavegameDir()
+std::string & CMainDialog::GetSavegameDir()
 {
     return m_savegameDir;
 }
 
 // Returns the name of public folder.
 
-char* CMainDialog::GetPublicDir()
+std::string & CMainDialog::GetPublicDir()
 {
     return m_publicDir;
 }
@@ -6653,7 +6688,7 @@ void CMainDialog::WriteGamerPerso(char *gamer)
     char    filename[100];
     char    line[100];
 
-    sprintf(filename, "%s/%s/face.gam", m_savegameDir, gamer);
+    sprintf(filename, "%s/%s/face.gam", m_savegameDir.c_str(), gamer);
     file = fopen(filename, "w");
     if ( file == NULL )  return;
 
@@ -6682,7 +6717,7 @@ void CMainDialog::ReadGamerPerso(char *gamer)
     m_perso.face = 0;
     DefPerso();
 
-    sprintf(filename, "%s/%s/face.gam", m_savegameDir, gamer);
+    sprintf(filename, "%s/%s/face.gam", m_savegameDir.c_str(), gamer);
     file = fopen(filename, "r");
     if ( file == NULL )  return;
 
@@ -6787,7 +6822,7 @@ bool CMainDialog::ReadGamerInfo()
         m_sceneInfo[i].bPassed = false;
     }
 
-    sprintf(line, "%s/%s/%s.gam", m_savegameDir, m_main->GetGamerName(), m_sceneName);
+    sprintf(line, "%s/%s/%s.gam", m_savegameDir.c_str(), m_main->GetGamerName(), m_sceneName);
     file = fopen(line, "r");
     if ( file == NULL )  return false;
 
@@ -6823,7 +6858,7 @@ bool CMainDialog::WriteGamerInfo()
     char    line[100];
     int     i;
 
-    sprintf(line, "%s/%s/%s.gam", m_savegameDir, m_main->GetGamerName(), m_sceneName);
+    sprintf(line, "%s/%s/%s.gam", m_savegameDir.c_str(), m_main->GetGamerName(), m_sceneName);
     file = fopen(line, "w");
     if ( file == NULL )  return false;
 

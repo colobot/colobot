@@ -43,7 +43,6 @@ class CControl;
 const int USERLISTMAX = 100;
 const int MAXSCENE = 1000;
 
-const int MAX_FNAME = 255; // TODO: remove after rewrite to std::string
 
 struct SceneInfo
 {
@@ -71,18 +70,18 @@ public:
     bool    EventProcess(const Event &event);
     void    ChangePhase(Phase phase);
 
-    void    SetSceneRead(const char* name);
-    void    SetStackRead(const char* name);
-    void    SetSceneName(const char* name);
-    void    SetSceneRank(int rank);
-    char*   GetSceneRead();
-    char*   GetStackRead();
-    char*   GetSceneName();
-    int     GetSceneRank();
-    char*   GetSceneDir();
-    bool    GetSceneSoluce();
-    char*   GetSavegameDir();
-    char*   GetPublicDir();
+    void          SetSceneRead(const char* name);
+    void          SetStackRead(const char* name);
+    void          SetSceneName(const char* name);
+    void          SetSceneRank(int rank);
+    std::string & GetSceneRead();
+    std::string & GetStackRead();
+    char*         GetSceneName();
+    int           GetSceneRank();
+    char*         GetSceneDir();
+    bool          GetSceneSoluce();
+    std::string & GetSavegameDir();
+    std::string & GetPublicDir();
 
     bool    GetTooltip();
     bool    GetGlint();
@@ -91,10 +90,10 @@ public:
     bool    GetNiceReset();
     bool    GetHimselfDamage();
 
-    void    SetUserDir(char *base, int rank);
-    void    BuildSceneName(char *filename, char *base, int rank);
-    void    BuildResumeName(char *filename, char *base, int rank);
-    char*   GetFilesDir();
+    void          SetUserDir(char *base, int rank);
+    void          BuildSceneName(std::string &filename, char *base, int rank);
+    void          BuildResumeName(char *filename, char *base, int rank);
+    std::string & GetFilesDir();
 
     void    StartAbort();
     void    StartDeleteObject();
@@ -193,19 +192,19 @@ protected:
     int         m_persoTab;         // perso: tab selected
     float           m_persoAngle;           // perso: angle of presentation
 
-    char            m_sceneDir[MAX_FNAME];     // scene folder
-    char            m_savegameDir[MAX_FNAME];  // savegame folder
-    char            m_publicDir[MAX_FNAME];    // program folder
-    char            m_userDir[MAX_FNAME];      // user folder
-    char            m_filesDir[MAX_FNAME];     // case files
+    std::string     m_sceneDir;     // scene folder
+    std::string     m_savegameDir;  // savegame folder
+    std::string     m_publicDir;    // program folder
+    std::string     m_userDir;      // user folder
+    std::string     m_filesDir;     // case files
 
     int             m_index;        // 0..4
     int             m_chap[10];     // selected chapter (0..8)
     int             m_sel[10];      // chosen mission (0..98)
     int             m_maxList;
     int             m_accessChap;
-    char            m_sceneRead[100];       // name of the scene to read
-    char            m_stackRead[100];       // name of the scene to read
+    std::string     m_sceneRead;       // name of the scene to read
+    std::string     m_stackRead;       // name of the scene to read
     char            m_sceneName[20];        // name of the scene to play
     int             m_sceneRank;        // rank of the scene to play
     bool            m_bSceneSoluce;         // shows the solution
@@ -219,7 +218,7 @@ protected:
     char            m_userList[USERLISTMAX][100];
 
     int             m_shotDelay;        // number of frames before copy
-    char            m_shotName[100];        // generate a file name
+    std::string     m_shotName;        // generate a file name
 
     int             m_setupSelDevice;
     int             m_setupSelMode;
