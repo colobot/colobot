@@ -2244,14 +2244,12 @@ bool CObject::CreateInsect(Math::Vector pos, float angle, ObjectType type)
 
 bool CObject::CreateShadowLight(float height, Gfx::Color color)
 {
-    Gfx::Light   light;
-    Math::Vector    pos;
-
     if ( !m_engine->GetLightMode() )  return true;
 
-    pos = GetPosition(0);
+    Math::Vector pos = GetPosition(0);
     m_shadowHeight = height;
 
+    Gfx::Light light;
     light.type          = Gfx::LIGHT_SPOT;
     light.diffuse.r     = color.r;
     light.diffuse.g     = color.g;
@@ -2262,12 +2260,10 @@ bool CObject::CreateShadowLight(float height, Gfx::Color color)
     light.direction.x   =  0.0f;
     light.direction.y   = -1.0f;  // against the bottom
     light.direction.z   =  0.0f;
-    //TODO Is this value correct
     light.spotIntensity = 128;
     light.attenuation0  = 1.0f;
     light.attenuation1  = 0.0f;
     light.attenuation2  = 0.0f;
-    //TODO Is this value correct
     light.spotAngle = 90;
 
     m_shadowLight = m_lightMan->CreateLight();
@@ -2292,13 +2288,11 @@ int CObject::GetShadowLight()
 
 bool CObject::CreateEffectLight(float height, Gfx::Color color)
 {
-    Gfx::Light   light;
-
     if ( !m_engine->GetLightMode() )  return true;
 
     m_effectHeight = height;
 
-    memset( &light, 0, sizeof(light) );
+    Gfx::Light light;
     light.type       = Gfx::LIGHT_SPOT;
     light.diffuse.r  = color.r;
     light.diffuse.g  = color.g;
@@ -2309,12 +2303,10 @@ bool CObject::CreateEffectLight(float height, Gfx::Color color)
     light.direction.x =  0.0f;
     light.direction.y = -1.0f;  // against the bottom
     light.direction.z =  0.0f;
-    //TODO Is this value correct
-    light.spotIntensity = 1.0f;
+    light.spotIntensity = 0.0f;
     light.attenuation0 = 1.0f;
     light.attenuation1 = 0.0f;
     light.attenuation2 = 0.0f;
-    //TODO Is this value correct
     light.spotAngle = 90;
 
     m_effectLight = m_lightMan->CreateLight();

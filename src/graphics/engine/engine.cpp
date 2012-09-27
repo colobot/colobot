@@ -186,6 +186,8 @@ CEngine::CEngine(CInstanceManager *iMan, CApplication *app)
 
     m_updateGeometry = false;
 
+    m_interfaceMode = false;
+
     m_mice[ENG_MOUSE_NORM]    = EngineMouse( 0,  1, 32, ENG_RSTATE_TTEXTURE_WHITE, ENG_RSTATE_TTEXTURE_BLACK, Math::Point( 1.0f,  1.0f));
     m_mice[ENG_MOUSE_WAIT]    = EngineMouse( 2,  3, 33, ENG_RSTATE_TTEXTURE_WHITE, ENG_RSTATE_TTEXTURE_BLACK, Math::Point( 8.0f, 12.0f));
     m_mice[ENG_MOUSE_HAND]    = EngineMouse( 4,  5, 34, ENG_RSTATE_TTEXTURE_WHITE, ENG_RSTATE_TTEXTURE_BLACK, Math::Point( 7.0f,  2.0f));
@@ -1852,7 +1854,8 @@ void CEngine::SetState(int state, const Color& color)
         params.colorOperation = TEX_MIX_OPER_MODULATE;
         params.colorArg1 = TEX_MIX_ARG_TEXTURE;
         params.colorArg2 = TEX_MIX_ARG_FACTOR;
-        params.alphaOperation = TEX_MIX_OPER_DEFAULT; // TODO: replace with src color ?
+        params.alphaOperation = TEX_MIX_OPER_DEFAULT;
+        params.alphaOperation = TEX_MIX_OPER_REPLACE; // TODO: replace with src color ?
 
         m_device->SetTextureEnabled(0, true);
         m_device->SetTextureStageParams(0, params);
@@ -1947,13 +1950,8 @@ void CEngine::SetState(int state, const Color& color)
         m_device->SetBlendFunc(BLEND_SRC_ALPHA, BLEND_INV_SRC_ALPHA);
 
         m_device->SetRenderState(RENDER_STATE_TEXTURING,   true);
-
-        TextureStageParams params;
-        params.colorOperation = TEX_MIX_OPER_DEFAULT; // default modulate operation
-        params.alphaOperation = TEX_MIX_OPER_DEFAULT; // default modulate operation
-
         m_device->SetTextureEnabled(0, true);
-        m_device->SetTextureStageParams(0, params);
+        m_device->SetTextureStageParams(0, TextureStageParams()); // default operation
     }
     else if (state & ENG_RSTATE_ALPHA)  // image with alpha channel?
     {
@@ -2069,6 +2067,13 @@ void CEngine::SetState(int state, const Color& color)
         m_device->SetGlobalAmbient(Color(1.0f, 1.0f, 1.0f, 1.0f));
     else
         m_device->SetGlobalAmbient(m_ambientColor[m_rankView]);
+
+
+    // In interface mode, disable lighting
+    if (m_interfaceMode)
+    {
+        m_device->SetRenderState(RENDER_STATE_LIGHTING, false);
+    }
 }
 
 void CEngine::SetMaterial(const Material& mat)
@@ -2810,6 +2815,7 @@ void CEngine::Draw3DScene()
 
     if (m_shadowVisible)
     {
+        m_device->DebugHook();
         m_lightMan->UpdateDeviceLights(ENG_OBJTYPE_TERRAIN);
 
         // Draw the terrain
@@ -3041,7 +3047,7 @@ void CEngine::Draw3DScene()
         }
     }
 
-    m_lightMan->UpdateDeviceLights(ENG_OBJTYPE_NULL);
+    m_lightMan->UpdateDeviceLights(ENG_OBJTYPE_TERRAIN);
 
     if (m_waterMode) m_water->DrawSurf();    // draws water surface
 
@@ -3064,10 +3070,19 @@ void CEngine::DrawInterface()
     m_device->SetTransform(TRANSFORM_PROJECTION, m_matProjInterface);
     m_device->SetTransform(TRANSFORM_WORLD,      m_matWorldInterface);
 
+    // Force new state to disable lighting
+    m_interfaceMode = true;
+    m_lastState = -1;
+    SetState(Gfx::ENG_RSTATE_NORMAL);
+
     // Draw the entire interface
     Ui::CInterface* interface = static_cast<Ui::CInterface*>( m_iMan->SearchInstance(CLASS_INTERFACE) );
     if (interface != nullptr)
         interface->Draw();
+
+    m_interfaceMode = false;
+    m_lastState = -1;
+    SetState(Gfx::ENG_RSTATE_NORMAL);
 
     m_particle->DrawParticle(SH_INTERFACE);  // draws the particles of the interface
 

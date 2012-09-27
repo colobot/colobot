@@ -307,9 +307,8 @@ void CGLDevice::SetLight(int index, const Light &light)
 
     if (light.type == LIGHT_SPOT)
     {
-        // TODO: fix spotlight problems
-        //glLightf(GL_LIGHT0 + index, GL_SPOT_CUTOFF, light.spotAngle);
-        //glLightf(GL_LIGHT0 + index, GL_SPOT_EXPONENT, light.spotIntensity);
+        glLightf(GL_LIGHT0 + index, GL_SPOT_CUTOFF, light.spotAngle);
+        glLightf(GL_LIGHT0 + index, GL_SPOT_EXPONENT, light.spotIntensity);
     }
     else
     {
@@ -330,23 +329,31 @@ void CGLDevice::UpdateLightPosition(int index)
 
     glLoadIdentity();
     glScalef(1.0f, 1.0f, -1.0f);
-    glMultMatrixf(m_viewMat.Array());
+    Math::Matrix mat = m_viewMat;
+    mat.Set(1, 4, 0.0f);
+    mat.Set(2, 4, 0.0f);
+    mat.Set(3, 4, 0.0f);
+    glMultMatrixf(mat.Array());
+
+    if (m_lights[index].type == LIGHT_SPOT)
+    {
+        GLfloat direction[4] = { -m_lights[index].direction.x, -m_lights[index].direction.y, -m_lights[index].direction.z, 1.0f };
+        glLightfv(GL_LIGHT0 + index, GL_SPOT_DIRECTION, direction);
+    }
 
     if (m_lights[index].type == LIGHT_DIRECTIONAL)
     {
-        GLfloat position[4] = { m_lights[index].direction.x, m_lights[index].direction.y, m_lights[index].direction.z, 0.0f };
+        GLfloat position[4] = { -m_lights[index].direction.x, -m_lights[index].direction.y, -m_lights[index].direction.z, 0.0f };
         glLightfv(GL_LIGHT0 + index, GL_POSITION, position);
     }
     else
     {
+        glLoadIdentity();
+        glScalef(1.0f, 1.0f, -1.0f);
+        glMultMatrixf(m_viewMat.Array());
+
         GLfloat position[4] = { m_lights[index].position.x, m_lights[index].position.y, m_lights[index].position.z, 1.0f };
         glLightfv(GL_LIGHT0 + index, GL_POSITION, position);
-    }
-
-    if (m_lights[index].type == LIGHT_SPOT)
-    {
-        GLfloat direction[4] = { m_lights[index].direction.x, m_lights[index].direction.y, m_lights[index].direction.z, 0.0f };
-        glLightfv(GL_LIGHT0 + index, GL_SPOT_DIRECTION, direction);
     }
 
     glPopMatrix();
@@ -367,7 +374,10 @@ void CGLDevice::SetLightEnabled(int index, bool enabled)
 
     m_lightsEnabled[index] = enabled;
 
-    glEnable(GL_LIGHT0 + index);
+    if (enabled)
+        glEnable(GL_LIGHT0 + index);
+    else
+        glDisable(GL_LIGHT0 + index);
 }
 
 bool CGLDevice::GetLightEnabled(int index)

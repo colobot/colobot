@@ -1375,6 +1375,9 @@ protected:
     std::string     m_lastTexture[2];
     //! Last material
     Material        m_lastMaterial;
+
+    //! True when drawing 2D UI
+    bool            m_interfaceMode;
 };
 
 
