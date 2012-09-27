@@ -75,7 +75,7 @@ enum VideoQueryResult
 
 
 /**
- * \enum TrackedKeys
+ * \enum TrackedKey
  * \brief Additional keys whose state (pressed/released) is tracked by CApplication
  */
 enum TrackedKey

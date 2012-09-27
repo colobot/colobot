@@ -1455,7 +1455,8 @@ bool CTerrain::AdjustToFloor(Math::Vector &pos, bool brut, bool water)
 }
 
 /**
- * @returns \c false if the initial coordinate was outside terrain area; \c true otherwise
+ * \param pos position to adjust
+ * \returns \c false if the initial coordinate was outside terrain area; \c true otherwise
  */
 bool CTerrain::AdjustToStandardBounds(Math::Vector& pos)
 {
@@ -1492,8 +1493,9 @@ bool CTerrain::AdjustToStandardBounds(Math::Vector& pos)
 }
 
 /**
- * @param margin margin to the terrain border
- * @returns \c false if the initial coordinate was outside terrain area; \c true otherwise
+ * \param pos position to adjust
+ * \param margin margin to the terrain border
+ * \returns \c false if the initial coordinate was outside terrain area; \c true otherwise
  */
 bool CTerrain::AdjustToBounds(Math::Vector& pos, float margin)
 {

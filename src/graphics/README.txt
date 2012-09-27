@@ -1,5 +1,5 @@
 /**
- * \dir graphics
+ * \dir src/graphics
  * \brief Graphics engine
  */
 
