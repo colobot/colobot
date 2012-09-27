@@ -253,7 +253,7 @@ Error CTaskFlag::CreateFlag(int rank)
         delete pNew;
         return ERR_TOOMANY;
     }
-    pNew->SetZoom(0, 0.0f);
+    //pNew->SetZoom(0, 0.0f);
 
     m_sound->Play(SOUND_WAYPOINT, pos);
     pyro = new Gfx::CPyro(m_iMan);
