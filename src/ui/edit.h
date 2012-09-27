@@ -35,7 +35,7 @@
 #include "common/iman.h"
 #include "common/restext.h"
 
-#include <vector>
+#include <set>
 
 
 
@@ -240,7 +240,7 @@ protected:
 
     int     m_maxChar;          // max length of the buffer m_text
     char*       m_text;             // text (without zero terminator)
-    std::vector<Gfx::FontMetaChar> m_format;           // format characters
+    std::map<unsigned int, Gfx::FontMetaChar> m_format;           // format characters
     int     m_len;              // length used in m_text
     int     m_cursor1;          // offset cursor
     int     m_cursor2;          // offset cursor

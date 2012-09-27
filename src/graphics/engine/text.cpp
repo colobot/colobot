@@ -149,7 +149,7 @@ void CText::FlushCache()
     }
 }
 
-void CText::DrawText(const std::string &text, const std::vector<FontMetaChar> &format,
+void CText::DrawText(const std::string &text, std::map<unsigned int, FontMetaChar> &format,
                      float size, Math::Point pos, float width, TextAlign align,
                      int eol)
 {
@@ -193,7 +193,7 @@ void CText::DrawText(const std::string &text, FontType font,
     DrawString(text, font, size, pos, width, eol);
 }
 
-void CText::SizeText(const std::string &text, const std::vector<FontMetaChar> &format,
+void CText::SizeText(const std::string &text, std::map<unsigned int, FontMetaChar> &format,
                      float size, Math::Point pos, TextAlign align,
                      Math::Point &start, Math::Point &end)
 {
@@ -277,16 +277,20 @@ float CText::GetHeight(FontType font, float size)
 
 
 float CText::GetStringWidth(const std::string &text,
-                            const std::vector<FontMetaChar> &format, float size)
+                            std::map<unsigned int, FontMetaChar> &format, float size)
 {
-    assert(StrUtils::Utf8StringLength(text) == format.size());
+    // TODO assert was commented as new code uses map not vector and if's size doesn't have to match text length
+    // this has to be tested if it's correct
+    //assert(StrUtils::Utf8StringLength(text) == format.size());
 
     float width = 0.0f;
     unsigned int index = 0;
     unsigned int fmtIndex = 0;
     while (index < text.length())
     {
-        FontType font = static_cast<FontType>(format[fmtIndex] & FONT_MASK_FONT);
+        FontType font = FONT_COLOBOT;
+	if (format.count(fmtIndex)) 
+	    font = static_cast<FontType>(format[fmtIndex] & FONT_MASK_FONT);
 
         UTF8Char ch;
 
@@ -343,10 +347,12 @@ float CText::GetCharWidth(UTF8Char ch, FontType font, float size, float offset)
 }
 
 
-int CText::Justify(const std::string &text, const std::vector<FontMetaChar> &format,
+int CText::Justify(const std::string &text, std::map<unsigned int, FontMetaChar> &format,
                    float size, float width)
 {
-    assert(StrUtils::Utf8StringLength(text) == format.size());
+    // TODO assert was commented as new code uses map not vector and if's size doesn't have to match text length
+    // this has to be tested if it's correct
+    //assert(StrUtils::Utf8StringLength(text) == format.size());
 
     float pos = 0.0f;
     int cut = 0;
@@ -354,7 +360,9 @@ int CText::Justify(const std::string &text, const std::vector<FontMetaChar> &for
     unsigned int fmtIndex = 0;
     while (index < text.length())
     {
-        FontType font = static_cast<FontType>(format[fmtIndex] & FONT_MASK_FONT);
+        FontType font = FONT_COLOBOT;
+	if (format.count(fmtIndex)) 
+	    font = static_cast<FontType>(format[fmtIndex] & FONT_MASK_FONT);
 
         UTF8Char ch;
 
@@ -426,17 +434,21 @@ int CText::Justify(const std::string &text, FontType font, float size, float wid
     return index;
 }
 
-int CText::Detect(const std::string &text, const std::vector<FontMetaChar> &format,
+int CText::Detect(const std::string &text, std::map<unsigned int, FontMetaChar> &format,
                   float size, float offset)
 {
-    assert(StrUtils::Utf8StringLength(text) == format.size());
+    // TODO assert was commented as new code uses map not vector and if's size doesn't have to match text length
+    // this has to be tested if it's correct
+    //assert(StrUtils::Utf8StringLength(text) == format.size());
 
     float pos = 0.0f;
     unsigned int index = 0;
     unsigned int fmtIndex = 0;
     while (index < text.length())
     {
-        FontType font = static_cast<FontType>(format[fmtIndex] & FONT_MASK_FONT);
+        FontType font = FONT_COLOBOT;
+	if (format.count(fmtIndex)) 
+	    font = static_cast<FontType>(format[fmtIndex] & FONT_MASK_FONT);
 
         // TODO: if (font == FONT_BUTTON)
         if (font == FONT_BUTTON) continue;
@@ -499,10 +511,12 @@ int CText::Detect(const std::string &text, FontType font, float size, float offs
     return index;
 }
 
-void CText::DrawString(const std::string &text, const std::vector<FontMetaChar> &format,
+void CText::DrawString(const std::string &text, std::map<unsigned int, FontMetaChar> &format,
                        float size, Math::Point pos, float width, int eol)
 {
-    assert(StrUtils::Utf8StringLength(text) == format.size());
+    // TODO assert was commented as new code uses map not vector and if's size doesn't have to match text length
+    // this has to be tested if it's correct
+    //assert(StrUtils::Utf8StringLength(text) == format.size());
 
     m_engine->SetState(ENG_RSTATE_TEXT);
 
@@ -515,7 +529,9 @@ void CText::DrawString(const std::string &text, const std::vector<FontMetaChar> 
     StringToUTFCharList(text, chars);
     for (auto it = chars.begin(); it != chars.end(); ++it)
     {
-        font = static_cast<FontType>(format[fmtIndex] & FONT_MASK_FONT);
+        FontType font = FONT_COLOBOT;
+	if (format.count(fmtIndex)) 
+	    font = static_cast<FontType>(format[fmtIndex] & FONT_MASK_FONT);
 
         // TODO: if (font == FONT_BUTTON)
         if (font == FONT_BUTTON) continue;
@@ -674,6 +690,15 @@ void CText::DrawCharAndAdjustPos(UTF8Char ch, FontType font, float size, Math::P
 
     if (cf == nullptr)
         return;
+    
+    int width = 1;
+    if (ch.c1 < 32) { // FIXME add support for chars with code 9 10 23
+	ch.c1 = ' ';
+	ch.c2 = 0;
+	ch.c3 = 0;
+	if (ch.c1 == '\t')
+	    width = 4;
+    }
 
     auto it = cf->cache.find(ch);
     CharTexture tex;
@@ -692,7 +717,7 @@ void CText::DrawCharAndAdjustPos(UTF8Char ch, FontType font, float size, Math::P
     }
 
     Math::Point p1(pos.x, pos.y + tex.charSize.y - tex.texSize.y);
-    Math::Point p2(pos.x + tex.texSize.x, pos.y + tex.charSize.y);
+    Math::Point p2(pos.x + tex.texSize.x * width, pos.y + tex.charSize.y);
 
     Math::Vector n(0.0f, 0.0f, -1.0f);  // normal
 
@@ -708,7 +733,7 @@ void CText::DrawCharAndAdjustPos(UTF8Char ch, FontType font, float size, Math::P
     m_device->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, quad, 4);
     m_engine->AddStatisticTriangle(2);
 
-    pos.x += tex.charSize.x;
+    pos.x += tex.charSize.x * width;
 }
 
 CachedFont* CText::GetOrOpenFont(FontType font, float size)
