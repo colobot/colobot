@@ -365,7 +365,7 @@ void CLightManager::UpdateLights()
 
         bool enabled = m_dynLights[i].enabled;
 
-        if (m_dynLights[i].intensity.current == 0.0f)
+        if (Math::IsZero(m_dynLights[i].intensity.current))
             enabled = false;
 
         if (enabled)
@@ -400,7 +400,7 @@ void CLightManager::UpdateDeviceLights(EngineObjectType type)
             continue;
         if (! m_dynLights[i].enabled)
             continue;
-        if (m_dynLights[i].intensity.current == 0.0f)
+        if (Math::IsZero(m_dynLights[i].intensity.current))
             continue;
         if (m_dynLights[i].priority == LIGHT_PRI_LOW)
             continue;
@@ -457,12 +457,9 @@ void CLightManager::UpdateDeviceLights(EngineObjectType type)
         }
     }
 
-    GetLogger()->Trace("Light allotment:\n");
-
     for (int i = 0; i < static_cast<int>( m_lightMap.size() ); ++i)
     {
         int rank = m_lightMap[i];
-        GetLogger()->Trace("[%d] -> %d\n", i, rank);
         if (rank != -1)
         {
             m_device->SetLight(i, m_dynLights[rank].light);

@@ -3913,7 +3913,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                             );
         }
 
-        if (Cmd(line, "FrontsizeName") && !resetObject)
+        if (Cmd(line, "ForegroundName") && !resetObject)
         {
             OpString(line, "image", name);
             m_engine->SetForegroundName(name);
@@ -3962,7 +3962,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                             OpTypeWater(line, "water", Gfx::WATER_TT),
                             name,
                             OpColor(line, "diffuse", Gfx::Color(1.0f, 1.0f, 1.0f, 1.0f)),
-                            OpColor(line, "ambiant", Gfx::Color(1.0f, 1.0f, 1.0f, 1.0f)),
+                            OpColor(line, "ambient", Gfx::Color(1.0f, 1.0f, 1.0f, 1.0f)),
                             OpFloat(line, "level", 100.0f)*UNIT,
                             OpFloat(line, "glint", 1.0f),
                             pos);
@@ -3978,7 +3978,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             OpString(line, "image", name);
             m_cloud->Create(name,
                             OpColor(line, "diffuse", Gfx::Color(1.0f, 1.0f, 1.0f, 1.0f)),
-                            OpColor(line, "ambiant", Gfx::Color(1.0f, 1.0f, 1.0f, 1.0f)),
+                            OpColor(line, "ambient", Gfx::Color(1.0f, 1.0f, 1.0f, 1.0f)),
                             OpFloat(line, "level", 500.0f) * UNIT);
         }
 

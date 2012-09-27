@@ -3016,7 +3016,12 @@ void CPhysics::FrameParticle(float aTime, float rTime)
     effectLight = m_object->GetEffectLight();
     if ( effectLight != -1 )
     {
-        if ( bFlash )
+        /*
+         * TODO: this is supposed to flash lights of robot without power,
+         * but doesn't work correctly (e.g. beginning of scene201).
+         * Commenting out for the time being.
+         */
+        /*if ( bFlash )
         {
             intensity = 0.0f;
             if ( Math::Rand() < 0.5f )  intensity = 1.0f;
@@ -3024,9 +3029,9 @@ void CPhysics::FrameParticle(float aTime, float rTime)
             m_lightMan->SetLightIntensitySpeed(effectLight, 10000.0f);
         }
         else
-        {
+        {*/
             m_lightMan->SetLightIntensity(effectLight, 0.0f);
-        }
+        /*}*/
     }
 }
 
