@@ -295,9 +295,9 @@ public:
     bool        GetSceneSoluce();
     bool        GetShowAll();
     bool        GetCheatRadar();
-    char*       GetSavegameDir();
-    char*       GetPublicDir();
-    char*       GetFilesDir();
+    const char* GetSavegameDir();
+    const char* GetPublicDir();
+    const char* GetFilesDir();
 
     void        SetGamerName(const char *name);
     char*       GetGamerName();
@@ -324,10 +324,10 @@ public:
 
     void        CompileScript(bool soluce);
     void        LoadOneScript(CObject *pObj, int &nerror);
-    void        LoadFileScript(CObject *pObj, char* filename, int objRank, int &nerror);
+    void        LoadFileScript(CObject *pObj, const char* filename, int objRank, int &nerror);
     void        SaveAllScript();
     void        SaveOneScript(CObject *pObj);
-    void        SaveFileScript(CObject *pObj, char* filename, int objRank);
+    void        SaveFileScript(CObject *pObj, const char* filename, int objRank);
     bool        SaveFileStack(CObject *pObj, FILE *file, int objRank);
     bool        ReadFileStack(CObject *pObj, FILE *file, int objRank);
 
@@ -339,10 +339,10 @@ public:
     void        ReadFreeParam();
 
     bool        IsBusy();
-    bool        IOWriteScene(char *filename, char *filecbot, char *info);
-    CObject*    IOReadScene(char *filename, char *filecbot);
+    bool        IOWriteScene(const char *filename, const char *filecbot, char *info);
+    CObject*    IOReadScene(const char *filename, const char *filecbot);
     void        IOWriteObject(FILE *file, CObject* pObj, const char *cmd);
-    CObject*    IOReadObject(char *line, char* filename, int objRank);
+    CObject*    IOReadObject(char *line, const char* filename, int objRank);
 
     int         CreateSpot(Math::Vector pos, Gfx::Color color);
 

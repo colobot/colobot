@@ -109,7 +109,7 @@ float   g_unit;             // conversion factor
 static CBotClass*   m_pClassFILE;
 static CBotProgram* m_pFuncFile;
 static int          m_CompteurFileOpen = 0;
-static char*        m_filesDir;
+static std::string  m_filesDir;
 
 
 
@@ -135,7 +135,7 @@ void PrepareFilename(CBotString &filename)
         filename = filename.Mid(pos+1);  // also removes the drive letter C:
     }
 
-    filename = CBotString(m_filesDir) + CBotString("/") + filename;
+    filename = CBotString(m_filesDir.c_str()) + CBotString("/") + filename;
 }
 
 
@@ -1097,8 +1097,7 @@ void CRobotMain::ChangePhase(Phase phase)
 
         m_app->SetLowCPU(false); // high CPU for simulation
 
-        char* read = m_dialog->GetSceneRead();
-        bool loading = (read[0] != 0);
+        bool loading = (m_dialog->GetSceneRead()[0] != 0);
 
         m_map->CreateMap();
         CreateScene(m_dialog->GetSceneSoluce(), false, false);  // interactive scene
@@ -3457,9 +3456,12 @@ void CRobotMain::Convert()
     char* base = m_dialog->GetSceneName();
     int rank = m_dialog->GetSceneRank();
 
+    //TODO change line to string
     char line[500];
+    std::string tempLine;
 
-    m_dialog->BuildSceneName(line, base, rank);
+    m_dialog->BuildSceneName(tempLine, base, rank);
+    strcpy(line, tempLine.c_str());
     FILE* file = fopen(line, "r");
     if (file == NULL) return;
 
@@ -3676,10 +3678,10 @@ void CRobotMain::ScenePerso()
 //! Creates the whole scene
 void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 {
-    char* base  = m_dialog->GetSceneName();
-    int   rank  = m_dialog->GetSceneRank();
-    char* read  = m_dialog->GetSceneRead();
-    char* stack = m_dialog->GetStackRead();
+    char*       base  = m_dialog->GetSceneName();
+    int         rank  = m_dialog->GetSceneRank();
+    const char* read  = m_dialog->GetSceneRead().c_str();
+    const char* stack = m_dialog->GetStackRead().c_str();
     m_dialog->SetUserDir(base, rank);
 
     /*
@@ -3756,8 +3758,9 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
     memset(name, 0, 200);
     memset(dir, 0, 100);
     memset(op, 0, 100);
-
-    m_dialog->BuildSceneName(line, base, rank);
+    std::string tempLine;
+    m_dialog->BuildSceneName(tempLine, base, rank);
+    strcpy(line, tempLine.c_str());
     FILE* file = fopen(line, "r");
     if (file == NULL) return;
 
@@ -5504,7 +5507,7 @@ void CRobotMain::LoadOneScript(CObject *obj, int &nbError)
 }
 
 //! Load all programs of the robot
-void CRobotMain::LoadFileScript(CObject *obj, char* filename, int objRank,
+void CRobotMain::LoadFileScript(CObject *obj, const char* filename, int objRank,
                                 int &nbError)
 {
     if (objRank == -1) return;
@@ -5572,7 +5575,7 @@ void CRobotMain::SaveOneScript(CObject *obj)
 
 //! Saves all programs of the robot.
 //! If a program does not exist, the corresponding file is destroyed.
-void CRobotMain::SaveFileScript(CObject *obj, char* filename, int objRank)
+void CRobotMain::SaveFileScript(CObject *obj, const char* filename, int objRank)
 {
     if (objRank == -1) return;
 
@@ -5779,7 +5782,7 @@ void CRobotMain::IOWriteObject(FILE *file, CObject* obj, const char *cmd)
 }
 
 //! Saves the current game
-bool CRobotMain::IOWriteScene(char *filename, char *filecbot, char *info)
+bool CRobotMain::IOWriteScene(const char *filename, const char *filecbot, char *info)
 {
     FILE* file = fopen(filename, "w");
     if (file == NULL)  return false;
@@ -5877,7 +5880,7 @@ bool CRobotMain::IOWriteScene(char *filename, char *filecbot, char *info)
 }
 
 //! Resumes the game
-CObject* CRobotMain::IOReadObject(char *line, char* filename, int objRank)
+CObject* CRobotMain::IOReadObject(char *line, const char* filename, int objRank)
 {
     Math::Vector pos  = OpDir(line, "pos")*g_unit;
     Math::Vector dir  = OpDir(line, "angle")*(Math::PI/180.0f);
@@ -5957,7 +5960,7 @@ CObject* CRobotMain::IOReadObject(char *line, char* filename, int objRank)
 }
 
 //! Resumes some part of the game
-CObject* CRobotMain::IOReadScene(char *filename, char *filecbot)
+CObject* CRobotMain::IOReadScene(const char *filename, const char *filecbot)
 {
     m_base = false;
 
@@ -6510,19 +6513,19 @@ bool CRobotMain::GetCheatRadar()
     return m_cheatRadar;
 }
 
-char* CRobotMain::GetSavegameDir()
+const char* CRobotMain::GetSavegameDir()
 {
-    return m_dialog->GetSavegameDir();
+    return m_dialog->GetSavegameDir().c_str();
 }
 
-char* CRobotMain::GetPublicDir()
+const char* CRobotMain::GetPublicDir()
 {
-    return m_dialog->GetPublicDir();
+    return m_dialog->GetPublicDir().c_str();
 }
 
-char* CRobotMain::GetFilesDir()
+const char* CRobotMain::GetFilesDir()
 {
-    return m_dialog->GetFilesDir();
+    return m_dialog->GetFilesDir().c_str();
 }
 
 

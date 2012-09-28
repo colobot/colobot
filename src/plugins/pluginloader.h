@@ -26,7 +26,7 @@
 #include <ltdl.h>
 #include <string>
 
-#include <common/logger.h>
+#include "common/logger.h"
 
 #include "plugininterface.h"
 

@@ -17,7 +17,6 @@ set(OPENAL_LIBRARIES
     alut
 )
 
-
 include_directories(../../..)
 include_directories(.)
 add_library(openalsound SHARED ${SOURCES})

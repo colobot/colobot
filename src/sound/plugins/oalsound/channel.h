@@ -25,7 +25,7 @@
 #include <AL/al.h>
 #include <AL/alc.h>
 
-#include <sound/sound.h>
+#include "sound/sound.h"
 
 #include "buffer.h"
 #include "check.h"
