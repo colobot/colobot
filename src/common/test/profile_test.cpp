@@ -1,43 +1,44 @@
 #include "../profile.h"
+#include "../logger.h"
 
 #include <iostream>
 #include <string>
 #include <vector>
+#include <gtest/gtest.h>
 
-using namespace std;
 
-int main()
+class CProfileTest : public testing::Test
 {
-    CProfile profile;
-    profile.InitCurrentDirectory(); // load colobot.ini file
+protected:
+    CLogger m_logger;
+    CProfile m_profile;
 
-    string result;
-    profile.GetLocalProfileString("test_string", "string_value", result);
-    if (result != "Hello world") {
-        cout << "GetLocalProfileString failed!" << endl;
-        return 1;
-    }
+};
+
+TEST_F(CProfileTest, ReadTest)
+{
+    ASSERT_TRUE(m_profile.InitCurrentDirectory()); // load colobot.ini file
+
+    std::string result;
+    ASSERT_TRUE(m_profile.GetLocalProfileString("test_string", "string_value", result));
+    ASSERT_STREQ("Hello world", result.c_str());
 
     int int_value;
-    profile.GetLocalProfileInt("test_int", "int_value", int_value);
-    if (int_value != 42) {
-        cout << "GetLocalProfileInt failed!" << endl;
-        return 1;
-    }
+    ASSERT_TRUE(m_profile.GetLocalProfileInt("test_int", "int_value", int_value));
+    ASSERT_EQ(42, int_value);
 
     float float_value;
-    profile.GetLocalProfileFloat("test_float", "float_value", float_value);
-    if (float_value != 1.5) {
-        cout << "GetLocalProfileFloat failed!" << endl;
-        return 1;
-    }
+    ASSERT_TRUE(m_profile.GetLocalProfileFloat("test_float", "float_value", float_value));
+    ASSERT_FLOAT_EQ(1.5, float_value);
 
-    vector<string> list;
-    list = profile.GetLocalProfileSection("test_multi", "entry");
-    if (list.size() != 5) {
-        cout << "GetLocalProfileSection failed!" << endl;
-        return 1;
-    }
-
-    return 0;
+    std::vector<std::string> list;
+    list = m_profile.GetLocalProfileSection("test_multi", "entry");
+    ASSERT_EQ(5u, list.size());
 }
+
+int main(int argc, char *argv[])
+{
+    ::testing::InitGoogleTest(&argc, argv);
+    return RUN_ALL_TESTS();
+}
+

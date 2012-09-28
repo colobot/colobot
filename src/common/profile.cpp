@@ -104,6 +104,7 @@ bool CProfile::SetLocalProfileInt(std::string section, std::string key, int valu
     try
     {
         m_propertyTree.put(section + "." + key, value);
+        m_profileNeedSave = true;
     }
     catch (std::exception & e)
     {
@@ -134,6 +135,7 @@ bool CProfile::SetLocalProfileFloat(std::string section, std::string key, float 
     try
     {
         m_propertyTree.put(section + "." + key, value);
+        m_profileNeedSave = true;
     }
     catch (std::exception & e)
     {
