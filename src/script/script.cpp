@@ -2668,6 +2668,8 @@ CScript::CScript(CInstanceManager* iMan, CObject* object, CTaskManager** seconda
     m_primaryTask   = 0;
     m_secondaryTask = secondaryTask;
 
+    m_interface = static_cast<Ui::CInterface*>(m_iMan->SearchInstance(CLASS_INTERFACE));
+
     m_ipf = CBOT_IPF;
     m_errMode = ERM_STOP;
     m_len = 0;
@@ -3522,7 +3524,6 @@ void CScript::New(Ui::CEdit* edit, const char* name)
     FILE    *file = NULL;
     char    res[100];
     char    text[100];
-    char    filename[100];
     char    script[500];
     char    buffer[500];
     char    *sf;
@@ -3561,9 +3562,8 @@ void CScript::New(Ui::CEdit* edit, const char* name)
     sf = m_main->GetScriptFile();
     if ( sf[0] != 0 )  // Load an empty program specific?
     {
-        strcpy(filename, "script\\");
-        strcat(filename, sf);
-        file = fopen(filename, "rb");
+        std::string filename = CApplication::GetInstancePointer()->GetDataFilePath(DIR_AI, sf);
+        file = fopen(filename.c_str(), "rb");
         if ( file != NULL )
         {
             fseek(file, 0, SEEK_END);
@@ -3645,9 +3645,11 @@ bool CScript::ReadScript(const char* filename)
 {
     FILE*       file;
     Ui::CEdit*  edit;
-    char        name[100];
 
-    if ( strchr(filename, '\\') == 0 )
+    // TODO: local user dir
+    std::string name = CApplication::GetInstancePointer()->GetDataFilePath(DIR_AI, filename);
+
+    /*if ( strchr(filename, '\\') == 0 )
     {
         strcpy(name, "script\\");
         strcat(name, filename);
@@ -3656,9 +3658,9 @@ bool CScript::ReadScript(const char* filename)
     {
 //?     strcpy(name, filename);
         UserDir(name, filename, "");
-    }
+    }*/
 
-    file = fopen(name, "rb");
+    file = fopen(name.c_str(), "rb");
     if ( file == NULL )  return false;
     fclose(file);
 
@@ -3668,7 +3670,7 @@ bool CScript::ReadScript(const char* filename)
     edit = m_interface->CreateEdit(Math::Point(0.0f, 0.0f), Math::Point(0.0f, 0.0f), 0, EVENT_EDIT9);
     edit->SetMaxChar(Ui::EDITSTUDIOMAX);
     edit->SetAutoIndent(m_engine->GetEditIndentMode());
-    edit->ReadText(name);
+    edit->ReadText(name.c_str());
     GetScript(edit);
     m_interface->DeleteControl(EVENT_EDIT9);
     return true;
@@ -3679,9 +3681,10 @@ bool CScript::ReadScript(const char* filename)
 bool CScript::WriteScript(const char* filename)
 {
     Ui::CEdit*  edit;
-    char        name[100];
 
-    if ( strchr(filename, '\\') == 0 )
+    std::string name = CApplication::GetInstancePointer()->GetDataFilePath(DIR_AI, filename);
+    // TODO: local user dir
+    /*if ( strchr(filename, '\\') == 0 )
     {
         strcpy(name, "script\\");
         strcat(name, filename);
@@ -3689,11 +3692,11 @@ bool CScript::WriteScript(const char* filename)
     else
     {
         strcpy(name, filename);
-    }
+    }*/
 
     if ( m_script == 0 )
     {
-        remove(filename);
+        // TODO: ? remove(filename);
         return false;
     }
 
@@ -3701,7 +3704,7 @@ bool CScript::WriteScript(const char* filename)
     edit->SetMaxChar(Ui::EDITSTUDIOMAX);
     edit->SetAutoIndent(m_engine->GetEditIndentMode());
     edit->SetText(m_script);
-    edit->WriteText(name);
+    edit->WriteText(name.c_str());
     m_interface->DeleteControl(EVENT_EDIT9);
     return true;
 }
