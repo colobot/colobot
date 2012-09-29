@@ -6,6 +6,9 @@ How to...
 
  1.1 Windows:
 
+  CROSS-COMPILING: see the instructions in HOWTO-MXE.txt on how to cross-compile the project
+                   with MXE (http://mxe.cc/).
+
   NOTE: currently, there are some issues when compiling on Windows, connected mostly with
         clashing macros defined in windows headers. Most probably, a special development package
         will be provided, which will include MinGW, CMake and all necessary libraries.
@@ -62,6 +65,9 @@ Jak...
 1. Skompilować grę.
 
  1.1 Windows:
+
+  CROSS-KOMPILACJA: zobacz plik HOWTO-MXE.txt z instrukcjami jak cross-skompilować projekt używając
+                    MXE (http://mxe.cc/).
 
   UWAGA: obecnie występują problemy z kompilacją na Windowsie, głównie ze względu na konflikt w makrach,
          jakie definiują nagłówki windowsowe. Najprawdopodobniej, zostanie wydana specjalna paczka

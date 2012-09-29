@@ -1,10 +1,42 @@
-# CMake project file for compiling with GCC/MinGW
+##
+# Main CMake project file
+# Contains global options and definitions
+##
 
 cmake_minimum_required(VERSION 2.8)
 
 project(colobot C CXX)
 
+# Include cmake directory with some additional scripts
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${colobot_SOURCE_DIR}/cmake")
+
+
+##
+# Build options
+##
+
+# Global build type
+set(CMAKE_BUILD_TYPE debug)
+
+# Global compile flags
+# These are specific to GCC/MinGW; for other compilers, change as necessary
+set(CMAKE_CXX_FLAGS_RELEASE "-O2 -Wall -Wold-style-cast -std=gnu++0x")
+set(CMAKE_CXX_FLAGS_DEBUG "-g -O0 -Wall -Wold-style-cast -std=gnu++0x")
+
+# Asserts can be enabled/disabled regardless of build type
+option(ASSERTS "Enable assert()s" ON)
+
+# Building tests can be enabled/disabled
+option(TESTS "Enable tests" ON)
+
+# CBot can also be a static library
+option(CBOT_STATIC "Build CBot as static libary" OFF)
+
+
+##
 # Required packages
+##
+
 find_package(OpenGL 1.4 REQUIRED)
 find_package(SDL 1.2.10 REQUIRED)
 find_package(SDL_image 1.2 REQUIRED)
@@ -18,7 +50,6 @@ set(Boost_USE_STATIC_RUNTIME    OFF)
 set(Boost_ADDITIONALVERSION "1.51" "1.51.0")
 find_package(Boost COMPONENTS system filesystem regex REQUIRED)
 
-
 # GLEW requirement depends on platform
 # By default it is auto detected
 # This setting may be used to override
@@ -27,22 +58,76 @@ find_package(Boost COMPONENTS system filesystem regex REQUIRED)
 # - 1 -> always enable
 # - 0 -> always disable
 set(USE_GLEW auto)
+# This is useful on Windows, if linking against standard GLEW dll fails
+option(GLEW_STATIC "Link statically with GLEW" OFF)
 
-# Build with debugging symbols
-set(CMAKE_BUILD_TYPE debug)
 
-# Global compile flags
-set(CMAKE_CXX_FLAGS_RELEASE "-O2 -Wall -Wold-style-cast -std=gnu++0x")
-set(CMAKE_CXX_FLAGS_DEBUG "-g -O0 -Wall -Wold-style-cast -std=gnu++0x")
+##
+# Additional settings to use when cross-compiling with MXE (http://mxe.cc/)
+##
 
-# Include cmake directory
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${colobot_SOURCE_DIR}/cmake")
+include("${colobot_SOURCE_DIR}/cmake/mxe.cmake")
 
-enable_testing()
 
-# Google Test library
-set(GTEST_DIR "${colobot_SOURCE_DIR}/lib/gtest")
-add_subdirectory(lib/gtest bin/test)
+##
+# Platform detection and some related checks
+##
+
+if (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+    message(STATUS "Windows system detected")
+    set(PLATFORM_WINDOWS 1)
+    set(PLATFORM_LINUX   0)
+    set(PLATFORM_OTHER   0)
+
+    # On Windows, GLEW is required
+    if (${USE_GLEW} MATCHES "auto")
+        set(USE_GLEW 1)
+    endif()
+elseif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+    message(STATUS "Linux system detected")
+    set(PLATFORM_WINDOWS 0)
+    set(PLATFORM_LINUX   1)
+    set(PLATFORM_OTHER   0)
+
+    # On Linux, we should be fine without GLEW
+    if (${USE_GLEW} MATCHES "auto")
+        set(USE_GLEW 0)
+    endif()
+else()
+    message(STATUS "Other system detected")
+    set(PLATFORM_WINDOWS 0)
+    set(PLATFORM_LINUX   0)
+    set(PLATFORM_OTHER   1)
+
+    # Use GLEW to be safe
+    if (${USE_GLEW} MATCHES "auto")
+        set(USE_GLEW 1)
+    endif()
+endif()
+
+
+if(${USE_GLEW})
+    find_package(GLEW REQUIRED)
+endif()
+
+if(NOT ${ASSERTS})
+    add_definitions(-DNDEBUG)
+endif()
+
+if(${TESTS})
+    enable_testing()
+endif()
+
+
+##
+# Targets
+##
+
+if(${TESTS})
+    # Google Test library
+    set(GTEST_DIR "${colobot_SOURCE_DIR}/lib/gtest")
+    add_subdirectory(lib/gtest bin/test)
+endif()
 
 # Subdirectory with sources
 add_subdirectory(src bin)
