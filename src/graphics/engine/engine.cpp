@@ -181,9 +181,6 @@ CEngine::CEngine(CInstanceManager *iMan, CApplication *app)
 
     m_alphaMode = 1;
 
-    m_forceStateColor = true;
-    m_stateColor = false;
-
     m_updateGeometry = false;
 
     m_interfaceMode = false;
@@ -1851,13 +1848,12 @@ void CEngine::SetState(int state, const Color& color)
         m_device->SetRenderState(RENDER_STATE_BLENDING,    true);
         m_device->SetBlendFunc(BLEND_ONE, BLEND_INV_SRC_COLOR);
 
-        m_device->SetTextureFactor(color);
-
         TextureStageParams params;
         params.colorOperation = TEX_MIX_OPER_MODULATE;
         params.colorArg1 = TEX_MIX_ARG_TEXTURE;
         params.colorArg2 = TEX_MIX_ARG_FACTOR;
         params.alphaOperation = TEX_MIX_OPER_DEFAULT; // TODO: replace with src color ?
+        params.factor = color;
 
         m_device->SetTextureEnabled(0, true);
         m_device->SetTextureStageParams(0, params);
@@ -1871,13 +1867,12 @@ void CEngine::SetState(int state, const Color& color)
         m_device->SetRenderState(RENDER_STATE_BLENDING,    true);
         m_device->SetBlendFunc(BLEND_DST_COLOR, BLEND_ZERO);
 
-        m_device->SetTextureFactor(color.Inverse());
-
         TextureStageParams params;
         params.colorOperation = TEX_MIX_OPER_ADD;
         params.colorArg1 = TEX_MIX_ARG_TEXTURE;
         params.colorArg2 = TEX_MIX_ARG_FACTOR;
         params.alphaOperation = TEX_MIX_OPER_DEFAULT; // TODO: replace with src color ?
+        params.factor = color.Inverse();
 
         m_device->SetTextureEnabled(0, true);
         m_device->SetTextureStageParams(0, params);
@@ -1963,14 +1958,13 @@ void CEngine::SetState(int state, const Color& color)
 
         m_device->SetAlphaTestFunc(COMP_FUNC_GREATER, 0.5f);
 
-        m_device->SetTextureFactor(color);
-
         TextureStageParams params;
         params.colorOperation = TEX_MIX_OPER_MODULATE;
         params.colorArg1 = TEX_MIX_ARG_TEXTURE;
         params.colorArg2 = TEX_MIX_ARG_SRC_COLOR;
         params.alphaOperation = TEX_MIX_OPER_REPLACE;
         params.alphaArg1 = TEX_MIX_ARG_TEXTURE;
+        params.factor = color;
 
         m_device->SetTextureEnabled(0, true);
         m_device->SetTextureStageParams(0, params);
@@ -2346,11 +2340,6 @@ void CEngine::SetFog(bool mode)
 bool CEngine::GetFog()
 {
     return m_fog;
-}
-
-bool CEngine::GetStateColor()
-{
-    return m_stateColor;
 }
 
 void CEngine::SetSecondTexture(int texNum)
@@ -2964,18 +2953,8 @@ void CEngine::Draw3DScene()
 
     if (transparent)
     {
-        int tState = 0;
-        Color tColor;
-        if (m_stateColor)
-        {
-            tState = ENG_RSTATE_TTEXTURE_BLACK | ENG_RSTATE_2FACE;
-            tColor = Color(68.0f / 255.0f, 68.0f / 255.0f, 68.0f / 255.0f, 68.0f / 255.0f);
-        }
-        else
-        {
-            tState = ENG_RSTATE_TCOLOR_BLACK;
-            tColor = Color(136.0f / 255.0f, 136.0f / 255.0f, 136.0f / 255.0f, 136.0f / 255.0f);
-        }
+        int tState = ENG_RSTATE_TTEXTURE_BLACK | ENG_RSTATE_2FACE;
+        Color tColor = Color(68.0f / 255.0f, 68.0f / 255.0f, 68.0f / 255.0f, 68.0f / 255.0f);
 
         for (int l1 = 0; l1 < static_cast<int>( m_objectTree.size() ); l1++)
         {
@@ -3551,8 +3530,6 @@ void CEngine::DrawForegroundImage()
 // Status: PART_TESTED
 void CEngine::DrawOverColor()
 {
-    if (! m_stateColor) return;
-
     // TODO: fuzzy compare?
     if ( (m_overColor == Color(0.0f, 0.0f, 0.0f, 0.0f) && m_overMode == ENG_RSTATE_TCOLOR_BLACK) ||
          (m_overColor == Color(1.0f, 1.0f, 1.0f, 1.0f) && m_overMode == ENG_RSTATE_TCOLOR_WHITE) )  return;

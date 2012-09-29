@@ -1291,8 +1291,6 @@ protected:
     int             m_statisticTriangle;
     bool            m_updateGeometry;
     int             m_alphaMode;
-    bool            m_stateColor;
-    bool            m_forceStateColor;
     bool            m_groundSpotVisible;
     bool            m_shadowVisible;
     bool            m_dirty;

@@ -307,11 +307,6 @@ public:
     //! Sets only the texture wrap modes (for faster than thru stage params)
     virtual void SetTextureStageWrap(int index, TexWrapMode wrapS, TexWrapMode wrapT) = 0;
 
-    //! Sets the texture factor to the given color value
-    virtual void SetTextureFactor(const Color &color) = 0;
-    //! Returns the current texture factor
-    virtual Color GetTextureFactor() = 0;
-
     //! Renders primitive composed of vertices with single texture
     virtual void DrawPrimitive(PrimitiveType type, const Vertex *vertices    , int vertexCount) = 0;
     //! Renders primitive composed of vertices with color information and single texture

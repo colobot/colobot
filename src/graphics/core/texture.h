@@ -22,6 +22,8 @@
 #pragma once
 
 
+#include "graphics/core/color.h"
+
 #include "math/intpoint.h"
 
 
@@ -175,6 +177,8 @@ struct TextureStageParams
     TexWrapMode    wrapS;
     //! Wrap mode for 2nd tex coord
     TexWrapMode    wrapT;
+    //! Constant color factor (for TEX_MIX_ARG_FACTOR)
+    Color          factor;
 
     //! Constructor; calls LoadDefault()
     TextureStageParams()
