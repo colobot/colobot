@@ -1483,7 +1483,7 @@ bool CEdit::ReadText(const char *filename, int addSize)
     FreeImage();
 
     if (m_text != nullptr)
-        delete m_text;
+        delete[] m_text;
 
     m_text = new char[m_maxChar+1];
     memset(m_text, 0, m_maxChar+1);
@@ -1516,7 +1516,7 @@ bool CEdit::ReadText(const char *filename, int addSize)
                 {
                     m_text[j] = buffer[i];
                     //if ( m_format.size() > 0 )
-		    m_format[j] = font;
+                    m_format[j] = font;
                     j ++;
                 }
                 i ++;
@@ -1857,7 +1857,7 @@ bool CEdit::ReadText(const char *filename, int addSize)
             {
                 m_text[j] = buffer[i];
                 //if ( m_format.size() > 0 )
-		 m_format[j] = font;
+                m_format[j] = font;
                 j ++;
             }
             i ++;
@@ -1873,7 +1873,7 @@ bool CEdit::ReadText(const char *filename, int addSize)
     m_len = j;
     m_imageTotal = iIndex;
 
-    delete buffer;
+    delete[] buffer;
 
     Justif();
     ColumnFix();
@@ -3320,8 +3320,8 @@ bool CEdit::SetFormat(int cursor1, int cursor2, int format)
 
     for ( i=cursor1 ; i<cursor2 ; i++ )
     {
-	if (m_format.count(i))
-	    m_format[i] |= format;
+        if (m_format.count(i))
+            m_format[i] |= format;
     }
 
     return true;
