@@ -725,7 +725,7 @@ int CEdit::MouseDetect(Math::Point mouse)
 //                c = m_engine->GetText()->Detect(m_text+m_lineOffset[i],
 //                                                len, offset, m_fontSize,
 //                                                m_fontStretch, m_fontType);
-                c = m_engine->GetText()->Detect(std::string(m_text+m_lineOffset[i]), m_fontType, m_fontSize, offset); // TODO check if good
+                c = m_engine->GetText()->Detect(std::string(m_text+m_lineOffset[i]).substr(0, len), m_fontType, m_fontSize, offset); // TODO check if good
             }
             else
             {
@@ -736,7 +736,7 @@ int CEdit::MouseDetect(Math::Point mouse)
 //                                                m_format+m_lineOffset[i],
 //                                                len, offset, size,
 //                                                m_fontStretch);
-                c = m_engine->GetText()->Detect(std::string(m_text+m_lineOffset[i]),
+                c = m_engine->GetText()->Detect(std::string(m_text+m_lineOffset[i]).substr(0, len),
                                                 m_format,
                                                 size,
                                                 offset); // TODO check if good
@@ -1102,16 +1102,16 @@ void CEdit::Draw()
 
                 if ( m_format.size() == 0 )
                 {
-                    m_engine->GetText()->SizeText(std::string(m_text+m_lineOffset[i]), m_fontType,
-                                                 size, pos, Gfx::TEXT_ALIGN_LEFT,
-                                                 start, end);
+                    m_engine->GetText()->SizeText(std::string(m_text+m_lineOffset[i]).substr(0, len), m_fontType,
+                                                  size, pos, Gfx::TEXT_ALIGN_LEFT,
+                                                  start, end);
                 }
                 else
                 {
-                    m_engine->GetText()->SizeText(std::string(m_text+m_lineOffset[i]),
+                    m_engine->GetText()->SizeText(std::string(m_text+m_lineOffset[i]).substr(0, len),
                                                   m_format,
-                                                 size, pos, Gfx::TEXT_ALIGN_LEFT,
-                                                 start, end);
+                                                  size, pos, Gfx::TEXT_ALIGN_LEFT,
+                                                  start, end);
                 }
 
                 pos.x = end.x;
