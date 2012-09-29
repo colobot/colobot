@@ -149,9 +149,12 @@ enum FontMask
 struct UTF8Char
 {
     char c1, c2, c3;
+    // Padding for 4-byte alignment
+    // It also seems to fix some problems reported by valgrind
+    char pad;
 
     explicit UTF8Char(char ch1 = '\0', char ch2 = '\0', char ch3 = '\0')
-        : c1(ch1), c2(ch2), c3(ch3) {}
+        : c1(ch1), c2(ch2), c3(ch3), pad('\0') {}
 
     inline bool operator<(const UTF8Char &other) const
     {

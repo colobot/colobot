@@ -1510,7 +1510,7 @@ bool CRobotMain::EventProcess(Event &event)
                 break;
 
             case EVENT_MOUSE_BUTTON_DOWN:
-                if (event.mouseButton.button != 1) // only left mouse button
+                if (event.mouseButton.button != MOUSE_BUTTON_LEFT) // only left mouse button
                     break;
 
                 obj = DetectObject(event.mousePos);
@@ -1532,7 +1532,7 @@ bool CRobotMain::EventProcess(Event &event)
                 break;
 
             case EVENT_MOUSE_BUTTON_UP:
-                if (event.mouseButton.button != 1) // only left mouse button
+                if (event.mouseButton.button != MOUSE_BUTTON_LEFT) // only left mouse button
                     break;
 
                 m_cameraPan  = 0.0f;
@@ -3911,10 +3911,12 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                              OpFloat(line, "dir", 0.0f),
                              name,
                              Math::Point(uv1.x, uv1.z),
-                             Math::Point(uv2.x, uv2.z));
+                             Math::Point(uv2.x, uv2.z),
+                             strstr(name, "planet") != nullptr // TODO: add transparent op or modify textures
+                            );
         }
 
-        if (Cmd(line, "FrontsizeName") && !resetObject)
+        if (Cmd(line, "ForegroundName") && !resetObject)
         {
             OpString(line, "image", name);
             m_engine->SetForegroundName(name);
@@ -3963,7 +3965,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                             OpTypeWater(line, "water", Gfx::WATER_TT),
                             name,
                             OpColor(line, "diffuse", Gfx::Color(1.0f, 1.0f, 1.0f, 1.0f)),
-                            OpColor(line, "ambiant", Gfx::Color(1.0f, 1.0f, 1.0f, 1.0f)),
+                            OpColor(line, "ambient", Gfx::Color(1.0f, 1.0f, 1.0f, 1.0f)),
                             OpFloat(line, "level", 100.0f)*UNIT,
                             OpFloat(line, "glint", 1.0f),
                             pos);
@@ -3979,7 +3981,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             OpString(line, "image", name);
             m_cloud->Create(name,
                             OpColor(line, "diffuse", Gfx::Color(1.0f, 1.0f, 1.0f, 1.0f)),
-                            OpColor(line, "ambiant", Gfx::Color(1.0f, 1.0f, 1.0f, 1.0f)),
+                            OpColor(line, "ambient", Gfx::Color(1.0f, 1.0f, 1.0f, 1.0f)),
                             OpFloat(line, "level", 500.0f) * UNIT);
         }
 
@@ -4846,7 +4848,7 @@ int CRobotMain::CreateLight(Math::Vector direction, Gfx::Color color)
     light.type = Gfx::LIGHT_DIRECTIONAL;
     light.diffuse = color;
     light.direction  = direction;
-    int obj = m_lightMan->CreateLight();
+    int obj = m_lightMan->CreateLight(Gfx::LIGHT_PRI_HIGH);
     m_lightMan->SetLight(obj, light);
 
     return obj;
@@ -4869,7 +4871,7 @@ int CRobotMain::CreateSpot(Math::Vector pos, Gfx::Color color)
     light.attenuation0  = 2.0f;
     light.attenuation1  = 0.0f;
     light.attenuation2  = 0.0f;
-    int obj = m_lightMan->CreateLight();
+    int obj = m_lightMan->CreateLight(Gfx::LIGHT_PRI_HIGH);
     m_lightMan->SetLight(obj, light);
 
     return obj;

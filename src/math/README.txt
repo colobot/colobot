@@ -1,5 +1,5 @@
 /**
- * \dir math
+ * \dir src/math
  * \brief Common mathematical structures and functions
  */
 

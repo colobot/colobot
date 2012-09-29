@@ -147,7 +147,8 @@ void CPlanet::Draw()
 }
 
 void CPlanet::Create(int mode, Math::Point start, float dim, float speed,
-                          float dir, const std::string& name, Math::Point uv1, Math::Point uv2)
+                     float dir, const std::string& name, Math::Point uv1, Math::Point uv2,
+                     bool transparent)
 {
     if (mode < 0) mode = 0;
     if (mode > 1) mode = 1;
@@ -164,7 +165,7 @@ void CPlanet::Create(int mode, Math::Point start, float dim, float speed,
     planet.uv1   = uv1;
     planet.uv2   = uv2;
 
-    planet.transparent = planet.name.find("planet") != std::string::npos;
+    planet.transparent = transparent;
 
     m_planet[mode].push_back(planet);
 

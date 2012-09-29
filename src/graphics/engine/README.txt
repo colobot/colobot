@@ -1,5 +1,5 @@
 /**
- * \dir graphics/engine
+ * \dir src/graphics/engine
  * \brief Graphics engine
  *
  * CEngine class and various other classes implementing the main features

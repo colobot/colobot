@@ -117,6 +117,8 @@ public:
     virtual void SetTextureStageParams(int index, const TextureStageParams &params);
     virtual TextureStageParams GetTextureStageParams(int index);
 
+    virtual void SetTextureStageWrap(int index, Gfx::TexWrapMode wrapS, Gfx::TexWrapMode wrapT);
+
     virtual void SetTextureFactor(const Color &color);
     virtual Color GetTextureFactor();
 
@@ -188,8 +190,6 @@ private:
     //! Current lights enable status
     std::vector<bool> m_lightsEnabled;
 
-    //! Whether texturing is enabled in general
-    bool m_texturing;
     //! Current textures; \c NULL value means unassigned
     std::vector<Texture> m_currentTextures;
     //! Current texture stages enable status

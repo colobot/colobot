@@ -725,7 +725,7 @@ int CEdit::MouseDetect(Math::Point mouse)
 //                c = m_engine->GetText()->Detect(m_text+m_lineOffset[i],
 //                                                len, offset, m_fontSize,
 //                                                m_fontStretch, m_fontType);
-                c = m_engine->GetText()->Detect(std::string(m_text+m_lineOffset[i]), m_fontType, m_fontSize, offset); // TODO check if good
+                c = m_engine->GetText()->Detect(std::string(m_text+m_lineOffset[i]).substr(0, len), m_fontType, m_fontSize, offset); // TODO check if good
             }
             else
             {
@@ -736,7 +736,7 @@ int CEdit::MouseDetect(Math::Point mouse)
 //                                                m_format+m_lineOffset[i],
 //                                                len, offset, size,
 //                                                m_fontStretch);
-                c = m_engine->GetText()->Detect(std::string(m_text+m_lineOffset[i]),
+                c = m_engine->GetText()->Detect(std::string(m_text+m_lineOffset[i]).substr(0, len),
                                                 m_format,
                                                 size,
                                                 offset); // TODO check if good
@@ -1102,16 +1102,16 @@ void CEdit::Draw()
 
                 if ( m_format.size() == 0 )
                 {
-                    m_engine->GetText()->SizeText(std::string(m_text+m_lineOffset[i]), m_fontType,
-                                                 size, pos, Gfx::TEXT_ALIGN_LEFT,
-                                                 start, end);
+                    m_engine->GetText()->SizeText(std::string(m_text+m_lineOffset[i]).substr(0, len), m_fontType,
+                                                  size, pos, Gfx::TEXT_ALIGN_LEFT,
+                                                  start, end);
                 }
                 else
                 {
-                    m_engine->GetText()->SizeText(std::string(m_text+m_lineOffset[i]),
+                    m_engine->GetText()->SizeText(std::string(m_text+m_lineOffset[i]).substr(0, len),
                                                   m_format,
-                                                 size, pos, Gfx::TEXT_ALIGN_LEFT,
-                                                 start, end);
+                                                  size, pos, Gfx::TEXT_ALIGN_LEFT,
+                                                  start, end);
                 }
 
                 pos.x = end.x;
@@ -1483,7 +1483,7 @@ bool CEdit::ReadText(const char *filename, int addSize)
     FreeImage();
 
     if (m_text != nullptr)
-        delete m_text;
+        delete[] m_text;
 
     m_text = new char[m_maxChar+1];
     memset(m_text, 0, m_maxChar+1);
@@ -1516,7 +1516,7 @@ bool CEdit::ReadText(const char *filename, int addSize)
                 {
                     m_text[j] = buffer[i];
                     //if ( m_format.size() > 0 )
-		    m_format[j] = font;
+                    m_format[j] = font;
                     j ++;
                 }
                 i ++;
@@ -1857,7 +1857,7 @@ bool CEdit::ReadText(const char *filename, int addSize)
             {
                 m_text[j] = buffer[i];
                 //if ( m_format.size() > 0 )
-		 m_format[j] = font;
+                m_format[j] = font;
                 j ++;
             }
             i ++;
@@ -1873,7 +1873,7 @@ bool CEdit::ReadText(const char *filename, int addSize)
     m_len = j;
     m_imageTotal = iIndex;
 
-    delete buffer;
+    delete[] buffer;
 
     Justif();
     ColumnFix();
@@ -3320,8 +3320,8 @@ bool CEdit::SetFormat(int cursor1, int cursor2, int format)
 
     for ( i=cursor1 ; i<cursor2 ; i++ )
     {
-	if (m_format.count(i))
-	    m_format[i] |= format;
+        if (m_format.count(i))
+            m_format[i] |= format;
     }
 
     return true;

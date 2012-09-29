@@ -12,4 +12,8 @@ CBotVar.cpp
 CBotWhile.cpp
 )
 
-add_library(CBot SHARED ${SOURCES})
+if(${CBOT_STATIC})
+    add_library(CBot STATIC ${SOURCES})
+else()
+    add_library(CBot SHARED ${SOURCES})
+endif()

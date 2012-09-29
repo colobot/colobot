@@ -18,6 +18,7 @@
 
 #include "graphics/engine/lightman.h"
 
+#include "common/logger.h"
 #include "common/iman.h"
 
 #include "graphics/core/device.h"
@@ -28,6 +29,7 @@
 #include <cmath>
 
 
+// Graphics module namespace
 namespace Gfx {
 
 
@@ -70,6 +72,7 @@ void LightProgression::SetTarget(float value)
 DynamicLight::DynamicLight()
 {
     used = enabled = false;
+    priority = LIGHT_PRI_LOW;
     includeType = excludeType = ENG_OBJTYPE_NULL;
 }
 
@@ -80,7 +83,7 @@ CLightManager::CLightManager(CInstanceManager* iMan, CEngine* engine)
     m_iMan = iMan;
     m_iMan->AddInstance(CLASS_LIGHT, this);
 
-    m_device = NULL;
+    m_device = nullptr;
     m_engine = engine;
 
     m_time = 0.0f;
@@ -90,56 +93,54 @@ CLightManager::~CLightManager()
 {
     m_iMan->DeleteInstance(CLASS_LIGHT, this);
 
-    m_iMan = NULL;
-    m_device = NULL;
-    m_engine = NULL;
+    m_iMan = nullptr;
+    m_device = nullptr;
+    m_engine = nullptr;
 }
 
 void CLightManager::SetDevice(CDevice* device)
 {
     m_device = device;
-
-    m_dynLights = std::vector<DynamicLight>(m_device->GetMaxLightCount(), DynamicLight());
+    m_lightMap = std::vector<int>(m_device->GetMaxLightCount(), -1);
 }
 
 void CLightManager::FlushLights()
 {
-    for (int i = 0; i < static_cast<int>( m_dynLights.size() ); i++)
-    {
-        m_dynLights[i].used = false;
-        m_device->SetLightEnabled(i, false);
-    }
+    m_dynLights.clear();
 }
 
-/** Returns the index of light created or -1 if all lights are used. */
-int CLightManager::CreateLight()
+/** Returns the index of light created. */
+int CLightManager::CreateLight(LightPriority priority)
 {
-    for (int i = 0; i < static_cast<int>( m_dynLights.size() ); i++)
+    int index = 0;
+    for (; index < static_cast<int>( m_dynLights.size() ); index++)
     {
-        if (m_dynLights[i].used) continue;
-
-        m_dynLights[i] = DynamicLight();
-
-        m_dynLights[i].used    = true;
-        m_dynLights[i].enabled = true;
-
-        m_dynLights[i].includeType = ENG_OBJTYPE_NULL;
-        m_dynLights[i].excludeType = ENG_OBJTYPE_NULL;
-
-        m_dynLights[i].light.type      = LIGHT_DIRECTIONAL;
-        m_dynLights[i].light.diffuse   = Color(0.5f, 0.5f, 0.5f);
-        m_dynLights[i].light.position  = Math::Vector(-100.0f,  100.0f, -100.0f);
-        m_dynLights[i].light.direction = Math::Vector( 1.0f, -1.0f,  1.0f);
-
-        m_dynLights[i].intensity.Init(1.0f);  // maximum
-        m_dynLights[i].colorRed.Init(0.5f);
-        m_dynLights[i].colorGreen.Init(0.5f);
-        m_dynLights[i].colorBlue.Init(0.5f);  // gray
-
-        return i;
+        if (! m_dynLights[index].used)
+            break;
     }
 
-    return -1;
+    if (index == static_cast<int>(m_dynLights.size()))
+        m_dynLights.push_back(DynamicLight());
+
+    m_dynLights[index] = DynamicLight();
+    m_dynLights[index].used     = true;
+    m_dynLights[index].enabled  = true;
+    m_dynLights[index].priority = priority;
+
+    m_dynLights[index].includeType = ENG_OBJTYPE_NULL;
+    m_dynLights[index].excludeType = ENG_OBJTYPE_NULL;
+
+    m_dynLights[index].light.type      = LIGHT_DIRECTIONAL;
+    m_dynLights[index].light.diffuse   = Color(0.5f, 0.5f, 0.5f);
+    m_dynLights[index].light.position  = Math::Vector(-100.0f,  100.0f, -100.0f);
+    m_dynLights[index].light.direction = Math::Vector( 1.0f, -1.0f,  1.0f);
+
+    m_dynLights[index].intensity.Init(1.0f);  // maximum
+    m_dynLights[index].colorRed.Init(0.5f);
+    m_dynLights[index].colorGreen.Init(0.5f);
+    m_dynLights[index].colorBlue.Init(0.5f);  // gray
+
+    return index;
 }
 
 bool CLightManager::DeleteLight(int lightRank)
@@ -148,8 +149,6 @@ bool CLightManager::DeleteLight(int lightRank)
         return false;
 
     m_dynLights[lightRank].used = false;
-    m_device->SetLightEnabled(lightRank, false);
-
     return true;
 }
 
@@ -357,7 +356,6 @@ void CLightManager::UpdateProgression(float rTime)
     }
 }
 
-
 void CLightManager::UpdateLights()
 {
     for (int i = 0; i < static_cast<int>( m_dynLights.size() ); i++)
@@ -366,7 +364,8 @@ void CLightManager::UpdateLights()
             continue;
 
         bool enabled = m_dynLights[i].enabled;
-        if (m_dynLights[i].intensity.current == 0.0f)
+
+        if (Math::IsZero(m_dynLights[i].intensity.current))
             enabled = false;
 
         if (enabled)
@@ -379,23 +378,54 @@ void CLightManager::UpdateLights()
 
             value = m_dynLights[i].colorBlue.current * m_dynLights[i].intensity.current;
             m_dynLights[i].light.diffuse.b = value;
-
-            m_device->SetLight(i, m_dynLights[i].light);
-            m_device->SetLightEnabled(i, enabled);
         }
         else
         {
             m_dynLights[i].light.diffuse.r = 0.0f;
             m_dynLights[i].light.diffuse.g = 0.0f;
             m_dynLights[i].light.diffuse.b = 0.0f;
-
-            m_device->SetLightEnabled(i, enabled);
         }
     }
 }
 
-void CLightManager::UpdateLightsEnableState(EngineObjectType type)
+void CLightManager::UpdateDeviceLights(EngineObjectType type)
 {
+    for (int i = 0; i < static_cast<int>( m_lightMap.size() ); ++i)
+        m_lightMap[i] = -1;
+
+    // High priority
+    for (int i = 0; i < static_cast<int>( m_dynLights.size() ); i++)
+    {
+        if (! m_dynLights[i].used)
+            continue;
+        if (! m_dynLights[i].enabled)
+            continue;
+        if (Math::IsZero(m_dynLights[i].intensity.current))
+            continue;
+        if (m_dynLights[i].priority == LIGHT_PRI_LOW)
+            continue;
+
+        bool enabled = true;
+        if (m_dynLights[i].includeType != ENG_OBJTYPE_NULL)
+            enabled = (m_dynLights[i].includeType == type);
+
+        if (m_dynLights[i].excludeType != ENG_OBJTYPE_NULL)
+            enabled = (m_dynLights[i].excludeType != type);
+
+        if (enabled)
+        {
+            for (int j = 0; j < static_cast<int>( m_lightMap.size() ); ++j)
+            {
+                if (m_lightMap[j] == -1)
+                {
+                    m_lightMap[j] = i;
+                    break;
+                }
+            }
+        }
+    }
+
+    // Low priority
     for (int i = 0; i < static_cast<int>( m_dynLights.size() ); i++)
     {
         if (! m_dynLights[i].used)
@@ -404,17 +434,40 @@ void CLightManager::UpdateLightsEnableState(EngineObjectType type)
             continue;
         if (m_dynLights[i].intensity.current == 0.0f)
             continue;
+        if (m_dynLights[i].priority == LIGHT_PRI_HIGH)
+            continue;
 
+        bool enabled = true;
         if (m_dynLights[i].includeType != ENG_OBJTYPE_NULL)
-        {
-            bool enabled = (m_dynLights[i].includeType == type);
-            m_device->SetLightEnabled(i, enabled);
-        }
+            enabled = (m_dynLights[i].includeType == type);
 
         if (m_dynLights[i].excludeType != ENG_OBJTYPE_NULL)
+            enabled = (m_dynLights[i].excludeType != type);
+
+        if (enabled)
         {
-            bool enabled = (m_dynLights[i].excludeType != type);
-            m_device->SetLightEnabled(i, enabled);
+            for (int j = 0; j < static_cast<int>( m_lightMap.size() ); ++j)
+            {
+                if (m_lightMap[j] == -1)
+                {
+                    m_lightMap[j] = i;
+                    break;
+                }
+            }
+        }
+    }
+
+    for (int i = 0; i < static_cast<int>( m_lightMap.size() ); ++i)
+    {
+        int rank = m_lightMap[i];
+        if (rank != -1)
+        {
+            m_device->SetLight(i, m_dynLights[rank].light);
+            m_device->SetLightEnabled(i, true);
+        }
+        else
+        {
+            m_device->SetLightEnabled(i, false);
         }
     }
 }

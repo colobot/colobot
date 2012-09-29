@@ -186,6 +186,8 @@ CEngine::CEngine(CInstanceManager *iMan, CApplication *app)
 
     m_updateGeometry = false;
 
+    m_interfaceMode = false;
+
     m_mice[ENG_MOUSE_NORM]    = EngineMouse( 0,  1, 32, ENG_RSTATE_TTEXTURE_WHITE, ENG_RSTATE_TTEXTURE_BLACK, Math::Point( 1.0f,  1.0f));
     m_mice[ENG_MOUSE_WAIT]    = EngineMouse( 2,  3, 33, ENG_RSTATE_TTEXTURE_WHITE, ENG_RSTATE_TTEXTURE_BLACK, Math::Point( 8.0f, 12.0f));
     m_mice[ENG_MOUSE_HAND]    = EngineMouse( 4,  5, 34, ENG_RSTATE_TTEXTURE_WHITE, ENG_RSTATE_TTEXTURE_BLACK, Math::Point( 7.0f,  2.0f));
@@ -214,6 +216,11 @@ CEngine::CEngine(CInstanceManager *iMan, CApplication *app)
     m_defaultTexParams.mipmap = true;
     m_defaultTexParams.minFilter = TEX_MIN_FILTER_LINEAR_MIPMAP_LINEAR;
     m_defaultTexParams.magFilter = TEX_MAG_FILTER_LINEAR;
+
+    m_terrainTexParams.format = TEX_IMG_AUTO;
+    m_terrainTexParams.mipmap = false;
+    m_terrainTexParams.minFilter = TEX_MIN_FILTER_LINEAR;
+    m_terrainTexParams.magFilter = TEX_MAG_FILTER_LINEAR;
 
     m_objectTree.reserve(LEVEL1_PREALLOCATE_COUNT);
     m_objects.reserve(OBJECT_PREALLOCATE_COUNT);
@@ -1844,8 +1851,6 @@ void CEngine::SetState(int state, const Color& color)
         m_device->SetRenderState(RENDER_STATE_BLENDING,    true);
         m_device->SetBlendFunc(BLEND_ONE, BLEND_INV_SRC_COLOR);
 
-        m_device->SetRenderState(RENDER_STATE_TEXTURING,   true);
-
         m_device->SetTextureFactor(color);
 
         TextureStageParams params;
@@ -1866,8 +1871,6 @@ void CEngine::SetState(int state, const Color& color)
         m_device->SetRenderState(RENDER_STATE_BLENDING,    true);
         m_device->SetBlendFunc(BLEND_DST_COLOR, BLEND_ZERO);
 
-        m_device->SetRenderState(RENDER_STATE_TEXTURING,   true);
-
         m_device->SetTextureFactor(color.Inverse());
 
         TextureStageParams params;
@@ -1884,20 +1887,22 @@ void CEngine::SetState(int state, const Color& color)
         m_device->SetRenderState(RENDER_STATE_FOG,         false);
         m_device->SetRenderState(RENDER_STATE_DEPTH_WRITE, false);
         m_device->SetRenderState(RENDER_STATE_ALPHA_TEST,  false);
-        m_device->SetRenderState(RENDER_STATE_TEXTURING,   false);
 
         m_device->SetRenderState(RENDER_STATE_BLENDING,    true);
         m_device->SetBlendFunc(BLEND_ONE, BLEND_INV_SRC_COLOR);
+
+        m_device->SetTextureEnabled(0, false);
     }
     else if (state & ENG_RSTATE_TCOLOR_WHITE)  // transparent white color?
     {
         m_device->SetRenderState(RENDER_STATE_FOG,         false);
         m_device->SetRenderState(RENDER_STATE_DEPTH_WRITE, false);
         m_device->SetRenderState(RENDER_STATE_ALPHA_TEST,  false);
-        m_device->SetRenderState(RENDER_STATE_TEXTURING,   false);
 
         m_device->SetRenderState(RENDER_STATE_BLENDING,    true);
         m_device->SetBlendFunc(BLEND_DST_COLOR, BLEND_ZERO);
+
+        m_device->SetTextureEnabled(0, false);
     }
     else if (state & ENG_RSTATE_TDIFFUSE)  // diffuse color as transparent?
     {
@@ -1907,8 +1912,6 @@ void CEngine::SetState(int state, const Color& color)
 
         m_device->SetRenderState(RENDER_STATE_BLENDING,    true);
         m_device->SetBlendFunc(BLEND_SRC_ALPHA, BLEND_DST_ALPHA);
-
-        m_device->SetRenderState(RENDER_STATE_TEXTURING,   true);
 
         TextureStageParams params;
         params.colorOperation = TEX_MIX_OPER_REPLACE;
@@ -1925,7 +1928,6 @@ void CEngine::SetState(int state, const Color& color)
         m_device->SetRenderState(RENDER_STATE_ALPHA_TEST,  false);
         m_device->SetRenderState(RENDER_STATE_BLENDING,    false);
 
-        m_device->SetRenderState(RENDER_STATE_TEXTURING,   true);
         m_device->SetTextureEnabled(0, true);
         m_device->SetTextureStageParams(0, TextureStageParams()); // default operation
     }
@@ -1935,7 +1937,8 @@ void CEngine::SetState(int state, const Color& color)
         m_device->SetRenderState(RENDER_STATE_DEPTH_WRITE, false);
         m_device->SetRenderState(RENDER_STATE_ALPHA_TEST,  false);
         m_device->SetRenderState(RENDER_STATE_BLENDING,    false);
-        m_device->SetRenderState(RENDER_STATE_TEXTURING,   false);
+
+        m_device->SetTextureEnabled(0, false);
     }
     else if (state & ENG_RSTATE_TEXT)  // font rendering?
     {
@@ -1946,14 +1949,8 @@ void CEngine::SetState(int state, const Color& color)
         m_device->SetRenderState(RENDER_STATE_BLENDING,    true);
         m_device->SetBlendFunc(BLEND_SRC_ALPHA, BLEND_INV_SRC_ALPHA);
 
-        m_device->SetRenderState(RENDER_STATE_TEXTURING,   true);
-
-        TextureStageParams params;
-        params.colorOperation = TEX_MIX_OPER_DEFAULT; // default modulate operation
-        params.alphaOperation = TEX_MIX_OPER_DEFAULT; // default modulate operation
-
         m_device->SetTextureEnabled(0, true);
-        m_device->SetTextureStageParams(0, params);
+        m_device->SetTextureStageParams(0, TextureStageParams()); // default operation
     }
     else if (state & ENG_RSTATE_ALPHA)  // image with alpha channel?
     {
@@ -1965,8 +1962,6 @@ void CEngine::SetState(int state, const Color& color)
         m_device->SetRenderState(RENDER_STATE_ALPHA_TEST,  true);
 
         m_device->SetAlphaTestFunc(COMP_FUNC_GREATER, 0.5f);
-
-        m_device->SetRenderState(RENDER_STATE_TEXTURING,   true);
 
         m_device->SetTextureFactor(color);
 
@@ -1987,8 +1982,6 @@ void CEngine::SetState(int state, const Color& color)
 
         m_device->SetRenderState(RENDER_STATE_DEPTH_WRITE, true);
         m_device->SetRenderState(RENDER_STATE_FOG,         true);
-
-        m_device->SetRenderState(RENDER_STATE_TEXTURING, true);
 
         TextureStageParams params;
         params.colorOperation = TEX_MIX_OPER_DEFAULT; // default modulate
@@ -2014,7 +2007,7 @@ void CEngine::SetState(int state, const Color& color)
         params.colorArg1 = TEX_MIX_ARG_TEXTURE;
         params.colorArg2 = TEX_MIX_ARG_COMPUTED_COLOR;
         params.alphaOperation = TEX_MIX_OPER_DEFAULT; // TODO: ???
-        m_device->SetTextureEnabled(0, true);
+        m_device->SetTextureEnabled(1, true);
         m_device->SetTextureStageParams(1, params);
     }
     else if ((state & ENG_RSTATE_DUAL_WHITE) && second)
@@ -2024,7 +2017,7 @@ void CEngine::SetState(int state, const Color& color)
         params.colorArg1 = TEX_MIX_ARG_TEXTURE;
         params.colorArg2 = TEX_MIX_ARG_COMPUTED_COLOR;
         params.alphaOperation = TEX_MIX_OPER_DEFAULT; // TODO: ???
-        m_device->SetTextureEnabled(0, true);
+        m_device->SetTextureEnabled(1, true);
         m_device->SetTextureStageParams(1, params);
     }
     else
@@ -2034,25 +2027,13 @@ void CEngine::SetState(int state, const Color& color)
 
     if (state & ENG_RSTATE_WRAP)
     {
-        // TODO: separate function for setting wrap mode?
-
-        TextureStageParams p1 = m_device->GetTextureStageParams(0);
-        p1.wrapS = p1.wrapT = TEX_WRAP_REPEAT;
-        m_device->SetTextureStageParams(0, p1);
-
-        TextureStageParams p2 = m_device->GetTextureStageParams(1);
-        p2.wrapS = p2.wrapT = TEX_WRAP_REPEAT;
-        m_device->SetTextureStageParams(1, p2);
+        m_device->SetTextureStageWrap(0, TEX_WRAP_REPEAT, TEX_WRAP_REPEAT);
+        m_device->SetTextureStageWrap(1, TEX_WRAP_REPEAT, TEX_WRAP_REPEAT);
     }
     else // if (state & ENG_RSTATE_CLAMP) or otherwise
     {
-        TextureStageParams p1 = m_device->GetTextureStageParams(0);
-        p1.wrapS = p1.wrapT = TEX_WRAP_CLAMP;
-        m_device->SetTextureStageParams(0, p1);
-
-        TextureStageParams p2 = m_device->GetTextureStageParams(1);
-        p2.wrapS = p2.wrapT = TEX_WRAP_CLAMP;
-        m_device->SetTextureStageParams(1, p2);
+        m_device->SetTextureStageWrap(0, TEX_WRAP_CLAMP, TEX_WRAP_CLAMP);
+        m_device->SetTextureStageWrap(1, TEX_WRAP_CLAMP, TEX_WRAP_CLAMP);
     }
 
     if (state & ENG_RSTATE_2FACE)
@@ -2069,6 +2050,11 @@ void CEngine::SetState(int state, const Color& color)
         m_device->SetGlobalAmbient(Color(1.0f, 1.0f, 1.0f, 1.0f));
     else
         m_device->SetGlobalAmbient(m_ambientColor[m_rankView]);
+
+
+    // In interface mode, disable lighting
+    if (m_interfaceMode)
+        m_device->SetRenderState(RENDER_STATE_LIGHTING, false);
 }
 
 void CEngine::SetMaterial(const Material& mat)
@@ -2177,16 +2163,35 @@ bool CEngine::LoadAllTextures()
         EngineObjLevel1& p1 = m_objectTree[l1];
         if (! p1.used) continue;
 
+        bool terrain = false;
+
+        for (int l2 = 0; l2 < static_cast<int>( p1.next.size() ); l2++)
+        {
+            EngineObjLevel2& p2 = p1.next[l2];
+            if (! p2.used) continue;
+
+            if (m_objects[p2.objRank].type == ENG_OBJTYPE_TERRAIN)
+                terrain = true;
+        }
+
         if (! p1.tex1Name.empty())
         {
-            p1.tex1 = LoadTexture(p1.tex1Name);
+            if (terrain)
+                p1.tex1 = LoadTexture(p1.tex1Name, m_terrainTexParams);
+            else
+                p1.tex1 = LoadTexture(p1.tex1Name);
+
             if (! p1.tex1.Valid())
                 ok = false;
         }
 
         if (! p1.tex2Name.empty())
         {
-            p1.tex2 = LoadTexture(p1.tex2Name);
+            if (terrain)
+                p1.tex2 = LoadTexture(p1.tex2Name, m_terrainTexParams);
+            else
+                p1.tex2 = LoadTexture(p1.tex2Name);
+
             if (! p1.tex2.Valid())
                 ok = false;
         }
@@ -2810,7 +2815,7 @@ void CEngine::Draw3DScene()
 
     if (m_shadowVisible)
     {
-        m_lightMan->UpdateLightsEnableState(ENG_OBJTYPE_TERRAIN);
+        m_lightMan->UpdateDeviceLights(ENG_OBJTYPE_TERRAIN);
 
         // Draw the terrain
 
@@ -2910,7 +2915,7 @@ void CEngine::Draw3DScene()
             if (! IsVisible(objRank))
                 continue;
 
-            m_lightMan->UpdateLightsEnableState(m_objects[objRank].type);
+            m_lightMan->UpdateDeviceLights(m_objects[objRank].type);
 
             for (int l3 = 0; l3 < static_cast<int>( p2.next.size() ); l3++)
             {
@@ -2999,7 +3004,7 @@ void CEngine::Draw3DScene()
                 if (! IsVisible(objRank))
                     continue;
 
-                m_lightMan->UpdateLightsEnableState(m_objects[objRank].type);
+                m_lightMan->UpdateDeviceLights(m_objects[objRank].type);
 
                 for (int l3 = 0; l3 < static_cast<int>( p2.next.size() ); l3++)
                 {
@@ -3041,7 +3046,7 @@ void CEngine::Draw3DScene()
         }
     }
 
-    m_lightMan->UpdateLightsEnableState(ENG_OBJTYPE_TERRAIN);
+    m_lightMan->UpdateDeviceLights(ENG_OBJTYPE_TERRAIN);
 
     if (m_waterMode) m_water->DrawSurf();    // draws water surface
 
@@ -3064,10 +3069,19 @@ void CEngine::DrawInterface()
     m_device->SetTransform(TRANSFORM_PROJECTION, m_matProjInterface);
     m_device->SetTransform(TRANSFORM_WORLD,      m_matWorldInterface);
 
+    // Force new state to disable lighting
+    m_interfaceMode = true;
+    m_lastState = -1;
+    SetState(Gfx::ENG_RSTATE_NORMAL);
+
     // Draw the entire interface
     Ui::CInterface* interface = static_cast<Ui::CInterface*>( m_iMan->SearchInstance(CLASS_INTERFACE) );
     if (interface != nullptr)
         interface->Draw();
+
+    m_interfaceMode = false;
+    m_lastState = -1;
+    SetState(Gfx::ENG_RSTATE_NORMAL);
 
     m_particle->DrawParticle(SH_INTERFACE);  // draws the particles of the interface
 
@@ -3117,7 +3131,7 @@ void CEngine::DrawInterface()
                 if (! IsVisible(objRank))
                     continue;
 
-                m_lightMan->UpdateLightsEnableState(m_objects[objRank].type);
+                m_lightMan->UpdateDeviceLights(m_objects[objRank].type);
 
                 for (int l3 = 0; l3 < static_cast<int>( p2.next.size() ); l3++)
                 {
@@ -3559,7 +3573,6 @@ void CEngine::DrawOverColor()
     m_device->SetRenderState(RENDER_STATE_DEPTH_WRITE, false);
     m_device->SetRenderState(RENDER_STATE_LIGHTING, false);
     m_device->SetRenderState(RENDER_STATE_FOG, false);
-    m_device->SetRenderState(RENDER_STATE_TEXTURING, false);
 
     m_device->SetTransform(TRANSFORM_VIEW, m_matViewInterface);
     m_device->SetTransform(TRANSFORM_PROJECTION, m_matProjInterface);

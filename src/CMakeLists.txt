@@ -1,56 +1,38 @@
-# CBot shared library is built separately
+# CBot library is built separately
 add_subdirectory(CBot)
 
 # Tools directory is built separately
 add_subdirectory(tools)
 
 # Tests
-add_subdirectory(common/test)
-add_subdirectory(graphics/engine/test)
-add_subdirectory(math/test)
-
-
-# Configure options
-option(DEBUG "Enable debug output" ON)
-
-set(PLATFORM_LIBS "")
-
-if (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
-  set(PLATFORM_WINDOWS 1)
-  set(PLATFORM_LINUX   0)
-  set(PLATFORM_OTHER   0)
-  set(PLATFORM_LIBS "-lintl")
-  # On Windows, GLEW is required
-  if (${USE_GLEW} MATCHES "auto")
-    set(USE_GLEW 1)
-  endif()
-elseif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-  set(PLATFORM_WINDOWS 0)
-  set(PLATFORM_LINUX   1)
-  set(PLATFORM_OTHER   0)
-  # On Linux, we should be fine without GLEW
-  if (${USE_GLEW} MATCHES "auto")
-    set(USE_GLEW 0)
-  endif()
-  # for clock_gettime
-  set(PLATFORM_LIBS "-lrt")
-else()
-  set(PLATFORM_WINDOWS 0)
-  set(PLATFORM_LINUX   0)
-  set(PLATFORM_OTHER   1)
-  # Use GLEW to be safe
-  if (${USE_GLEW} MATCHES "auto")
-    set(USE_GLEW 1)
-  endif()
+if(${TESTS})
+    add_subdirectory(common/test)
+    add_subdirectory(graphics/engine/test)
+    add_subdirectory(math/test)
 endif()
 
+
+# Optional libraries
 set(OPTIONAL_LIBS "")
 set(OPTIONAL_INCLUDE_DIRS "")
 
-if(${USE_GLEW} EQUAL 1)
-  find_package(GLEW REQUIRED)
-  set(OPTIONAL_LIBS ${OPTIONAL_LIBS} ${GLEW_LIBRARY})
-  set(OPTIONAL_INCLUDE_DIRS ${OPTIONAL_INCLUDE_DIRS} ${GLEW_INCLUDE_PATH})
+if(${USE_GLEW} AND NOT ${MXE})
+    set(OPTIONAL_LIBS ${OPTIONAL_LIBS} ${GLEW_LIBRARY})
+    set(OPTIONAL_INCLUDE_DIRS ${OPTIONAL_INCLUDE_DIRS} ${GLEW_INCLUDE_PATH})
+endif()
+
+
+# Additional libraries per platform
+set(PLATFORM_LIBS "")
+
+if (${MXE}) # MXE requires special treatment
+    set(PLATFORM_LIBS ${MXE_LIBS})
+elseif (${PLATFORM_WINDOWS})
+    # because it isn't included in standard linking libraries
+    set(PLATFORM_LIBS "-lintl")
+elseif(${PLATFORM_LINUX})
+    # for clock_gettime
+    set(PLATFORM_LIBS "-lrt")
 endif()
 
 
@@ -59,8 +41,6 @@ configure_file(common/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/common/config.h
 
 
 # Source files
-# Commented out files are still dependent on DirectX or WinAPI
-
 set(SOURCES
 app/app.cpp
 app/main.cpp
@@ -191,8 +171,8 @@ ${PNG_LIBRARIES}
 ${OPTIONAL_LIBS}
 ${PLATFORM_LIBS}
 ${Boost_LIBRARIES}
-CBot
 ltdl
+CBot
 )
 
 include_directories(
@@ -200,7 +180,7 @@ include_directories(
 ..
 ${CMAKE_CURRENT_BINARY_DIR}
 ${SDL_INCLUDE_DIR}
-${SDL_IMAGE_INCLUDE_DIR}
+${SDLIMAGE_INCLUDE_DIR}
 ${SDLTTF_INCLUDE_DIR}
 ${PNG_INCLUDE_DIRS}
 ${OPTIONAL_INCLUDE_DIRS}

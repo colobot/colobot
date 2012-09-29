@@ -99,7 +99,6 @@ enum TransformType
 enum RenderState
 {
     RENDER_STATE_LIGHTING,
-    RENDER_STATE_TEXTURING,
     RENDER_STATE_BLENDING,
     RENDER_STATE_FOG,
     RENDER_STATE_DEPTH_TEST,
@@ -304,6 +303,9 @@ public:
     virtual void SetTextureStageParams(int index, const TextureStageParams &params) = 0;
     //! Returns the current params of texture stage with given index
     virtual TextureStageParams GetTextureStageParams(int index) = 0;
+
+    //! Sets only the texture wrap modes (for faster than thru stage params)
+    virtual void SetTextureStageWrap(int index, TexWrapMode wrapS, TexWrapMode wrapT) = 0;
 
     //! Sets the texture factor to the given color value
     virtual void SetTextureFactor(const Color &color) = 0;

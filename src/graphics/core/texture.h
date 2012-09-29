@@ -28,6 +28,7 @@
 // Graphics module namespace
 namespace Gfx {
 
+
 /**
  * \enum TexImgFormat
  * \brief Format of image data
@@ -117,11 +118,12 @@ enum TexMixArgument
 };
 
 /**
-  \struct TextureCreateParams
-  \brief Parameters for texture creation
-
-  These params define how particular texture is created and later displayed.
-  They must be specified at texture creation time and cannot be changed later. */
+ * \struct TextureCreateParams
+ * \brief Parameters for texture creation
+ *
+ * These params define how particular texture is created and later displayed.
+ * They must be specified at texture creation time and cannot be changed later.
+ */
 struct TextureCreateParams
 {
     //! Whether to generate mipmaps
@@ -149,11 +151,12 @@ struct TextureCreateParams
 };
 
 /**
-  \struct TextureStageParams
-  \brief Parameters for a texture unit
-
-  These params define the behavior of texturing units (stages).
-  They can be changed freely and are feature of graphics engine, not any particular texture. */
+ * \struct TextureStageParams
+ * \brief Parameters for a texture unit
+ *
+ * These params define the behavior of texturing units (stages).
+ * They can be changed freely and are features of graphics engine, not any particular texture.
+ */
 struct TextureStageParams
 {
     //! Mixing operation done on color values
@@ -193,11 +196,12 @@ struct TextureStageParams
 };
 
 /**
-  \struct Texture
-  \brief Info about a texture
-
-  Identifies (through id) a texture created in graphics engine.
-  Also contains some additional data. */
+ * \struct Texture
+ * \brief Info about a texture
+ *
+ * Identifies (through id) a texture created in graphics engine.
+ * Also contains some additional data.
+ */
 struct Texture
 {
     //! ID of the texture in graphics engine; 0 = invalid texture

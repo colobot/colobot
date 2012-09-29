@@ -1,4 +1,4 @@
 /**
- * \dir physics
+ * \dir src/physics
  * \brief Physics engine
  */

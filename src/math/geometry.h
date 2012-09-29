@@ -237,6 +237,7 @@ inline float RotateAngle(const Math::Point &center, const Math::Point &p1, const
 
 //! Loads view matrix from the given vectors
 /**
+ * \param mat      result matrix
  * \param from     origin
  * \param at       view direction
  * \param worldUp  up vector
@@ -304,6 +305,7 @@ inline void LoadViewMatrix(Math::Matrix &mat, const Math::Vector &from,
 
 //! Loads a perspective projection matrix
 /**
+ * \param mat        result matrix
  * \param fov        field of view in radians
  * \param aspect     aspect ratio (width / height)
  * \param nearPlane  distance to near cut plane
@@ -328,6 +330,7 @@ inline void LoadProjectionMatrix(Math::Matrix &mat, float fov = Math::PI / 2.0f,
 
 //! Loads an othogonal projection matrix
 /**
+ * \param mat         result matrix
  * \param left,right  coordinates for left and right vertical clipping planes
  * \param bottom,top  coordinates for bottom and top horizontal clipping planes
  * \param zNear,zFar  distance to nearer and farther depth clipping planes
@@ -590,7 +593,7 @@ inline Math::Vector Transform(const Math::Matrix &m, const Math::Vector &p)
 
 //! Calculates the projection of the point \a p on a straight line \a a to \a b
 /**
- * \param point  to project
+ * \param p      point to project
  * \param a,b    two ends of the line
  */
 inline Math::Vector Projection(const Math::Vector &a, const Math::Vector &b, const Math::Vector &p)

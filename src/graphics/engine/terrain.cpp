@@ -74,7 +74,7 @@ CTerrain::~CTerrain()
 }
 
 bool CTerrain::Generate(int mosaicCount, int brickCountPow2, float brickSize,
-                             float vision, int depth, float hardness)
+                        float vision, int depth, float hardness)
 {
     m_mosaicCount   = mosaicCount;
     m_brickCount    = 1 << brickCountPow2;
@@ -162,8 +162,8 @@ void CTerrain::FlushMaterials()
 }
 
 void CTerrain::AddMaterial(int id, const std::string& texName, const Math::Point &uv,
-                                int up, int right, int down, int left,
-                                float hardness)
+                           int up, int right, int down, int left,
+                           float hardness)
 {
     InitMaterialPoints();
 
@@ -207,25 +207,41 @@ bool CTerrain::LoadResources(const std::string& fileName)
 
     ImageData *data = img.GetData();
 
-    int size  = (m_mosaicCount*m_brickCount)+1;
+    int size = (m_mosaicCount*m_brickCount)+1;
 
-    m_resources.clear();
+    std::vector<unsigned char>(size*size).swap(m_resources);
 
-    std::vector<unsigned char>(3*size*size).swap(m_resources);
-
-    if ( (data->surface->w != size) || (data->surface->h != size) ||
-         (data->surface->format->BytesPerPixel != 3) )
+    if ( (data->surface->w != size) || (data->surface->h != size) )
     {
         GetLogger()->Error("Invalid resource file\n");
         return false;
     }
 
-    unsigned char* pixels = static_cast<unsigned char*>(data->surface->pixels);
-    int pitch = data->surface->pitch;
-
-    for (int y = 0; y < size; y++)
+    for (int x = 0; x < size; ++x)
     {
-        memcpy(&m_resources[3*size*y], &pixels[pitch*y], 3*size);
+        for (int y = 0; y < size; ++y)
+        {
+            Gfx::IntColor pixel = img.GetPixelInt(Math::IntPoint(x, size - y - 1));
+            TerrainRes res = TR_NULL;
+
+            // values from original bitmap palette
+            if      (pixel.r == 255 && pixel.g ==   0 && pixel.b == 0)
+                res = TR_STONE;
+            else if (pixel.r == 255 && pixel.g == 255 && pixel.b == 0)
+                res = TR_URANIUM;
+            else if (pixel.r ==   0 && pixel.g == 255 && pixel.b == 0)
+                res = TR_POWER;
+            else if (pixel.r ==   0 && pixel.g == 204 && pixel.b == 0)
+                res = TR_KEY_A;
+            else if (pixel.r ==  51 && pixel.g == 204 && pixel.b == 0)
+                res = TR_KEY_B;
+            else if (pixel.r == 102 && pixel.g == 204 && pixel.b == 0)
+                res = TR_KEY_C;
+            else if (pixel.r == 153 && pixel.g == 204 && pixel.b == 0)
+                res = TR_KEY_D;
+
+            m_resources[x+size*y] = static_cast<unsigned char>(res);
+        }
     }
 
     return true;
@@ -243,23 +259,9 @@ TerrainRes CTerrain::GetResource(const Math::Vector &p)
          y < 0 || y > m_mosaicCount*m_brickCount )
         return TR_NULL;
 
-    int size  = (m_mosaicCount*m_brickCount)+1;
+    int size = (m_mosaicCount*m_brickCount)+1;
 
-    int resR = m_resources[3*x+3*size*(size-y-1)];
-    int resG = m_resources[3*x+3*size*(size-y-1)+1];
-    int resB = m_resources[3*x+3*size*(size-y-1)+2];
-
-    if (resR == 255 && resG ==   0 && resB == 0) return TR_STONE;
-    if (resR == 255 && resG == 255 && resB == 0) return TR_URANIUM;
-    if (resR ==   0 && resG == 255 && resB == 0) return TR_POWER;
-
-    // TODO key res values
-    //if (ress == 24) return TR_KEY_A;     // ~green?
-    //if (ress == 25) return TR_KEY_B;     // ~green?
-    //if (ress == 26) return TR_KEY_C;     // ~green?
-    //if (ress == 27) return TR_KEY_D;     // ~green?
-
-    return TR_NULL;
+    return static_cast<TerrainRes>( m_resources[x+size*y] );
 }
 
 void CTerrain::FlushRelief()
@@ -287,22 +289,21 @@ bool CTerrain::LoadRelief(const std::string &fileName, float scaleRelief,
 
     int size = (m_mosaicCount*m_brickCount)+1;
 
-    if ( (data->surface->w != size) || (data->surface->h != size) ||
-         (data->surface->format->BytesPerPixel != 3) )
+    if ( (data->surface->w != size) || (data->surface->h != size) )
     {
         GetLogger()->Error("Invalid relief file!\n");
         return false;
     }
-
-    unsigned char* pixels = static_cast<unsigned char*>(data->surface->pixels);
-    int pitch = data->surface->pitch;
 
     float limit = 0.9f;
     for (int y = 0; y < size; y++)
     {
         for (int x = 0; x < size; x++)
         {
-            float level = (255 - pixels[3*x+pitch*(size-y-1)]) * scaleRelief;
+            Gfx::IntColor color = img.GetPixelInt(Math::IntPoint(x, size - y - 1));
+
+            float avg = (color.r + color.g + color.b) / 3.0f; // to be sure it is grayscale
+            float level = (255.0f - avg) * scaleRelief;
 
             float dist = Math::Max(fabs(static_cast<float>(x-size/2)),
                                    fabs(static_cast<float>(y-size/2)));
@@ -492,8 +493,8 @@ VertexTex2 CTerrain::GetVertex(int x, int y, int step)
   +-------------------> x
 \endverbatim */
 bool CTerrain::CreateMosaic(int ox, int oy, int step, int objRank,
-                                 const Material &mat,
-                                 float min, float max)
+                            const Material &mat,
+                            float min, float max)
 {
     std::string texName1;
     std::string texName2;
@@ -1057,8 +1058,8 @@ bool CTerrain::InitMaterials(int id)
 }
 
 bool CTerrain::GenerateMaterials(int *id, float min, float max,
-                                      float slope, float freq,
-                                      Math::Vector center, float radius)
+                                 float slope, float freq,
+                                 Math::Vector center, float radius)
 {
     static char random[100] =
     {
@@ -1454,13 +1455,14 @@ bool CTerrain::AdjustToFloor(Math::Vector &pos, bool brut, bool water)
 }
 
 /**
- * @returns \c false if the initial coordinate was outside terrain area; \c true otherwise
+ * \param pos position to adjust
+ * \returns \c false if the initial coordinate was outside terrain area; \c true otherwise
  */
 bool CTerrain::AdjustToStandardBounds(Math::Vector& pos)
 {
     bool ok = true;
 
-    // TODO: _TEEN  ... * 0.98f;
+    // In _TEEN there used to be a limit of 0.98f
     float limit = (m_mosaicCount*m_brickCount*m_brickSize)/2.0f*0.92f;
 
     if (pos.x < -limit)
@@ -1491,8 +1493,9 @@ bool CTerrain::AdjustToStandardBounds(Math::Vector& pos)
 }
 
 /**
- * @param margin margin to the terrain border
- * @returns \c false if the initial coordinate was outside terrain area; \c true otherwise
+ * \param pos position to adjust
+ * \param margin margin to the terrain border
+ * \returns \c false if the initial coordinate was outside terrain area; \c true otherwise
  */
 bool CTerrain::AdjustToBounds(Math::Vector& pos, float margin)
 {
@@ -1718,14 +1721,14 @@ float CTerrain::GetFlatZoneRadius(Math::Vector center, float max)
     float ref = GetFloorLevel(center, true);
     Math::Point c(center.x, center.z);
     float radius = 1.0f;
-    
+
     while (radius <= max)
     {
         angle = 0.0f;
         int nb = static_cast<int>(2.0f*Math::PI*radius);
         if (nb < 8) nb = 8;
 
-	Math::Point p (center.x+radius, center.z);
+        Math::Point p (center.x+radius, center.z);
         for (int i = 0; i < nb; i++)
         {
             Math::Point result = Math::RotatePoint(c, angle, p);

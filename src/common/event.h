@@ -81,7 +81,7 @@ enum WheelDirection
 };
 
 /**
- * \enum MouseWheelEventData
+ * \struct MouseWheelEventData
  * \brief Additional data for mouse wheel event.
  */
 struct MouseWheelEventData

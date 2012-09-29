@@ -69,7 +69,6 @@ CGLDevice::CGLDevice(const GLDeviceConfig &config)
 {
     m_config = config;
     m_lighting = false;
-    m_texturing = false;
 }
 
 
@@ -117,9 +116,6 @@ bool CGLDevice::Create()
     // So turn it on permanently
     glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 
-    // To use separate specular color in drawing primitives
-    glLightModeli(GL_LIGHT_MODEL_COLOR_CONTROL, GL_SEPARATE_SPECULAR_COLOR);
-
     // To avoid problems with scaling & lighting
     glEnable(GL_RESCALE_NORMAL);
 
@@ -136,13 +132,13 @@ bool CGLDevice::Create()
     glGetIntegerv(GL_MAX_LIGHTS, &numLights);
 
     m_lights        = std::vector<Light>(numLights, Light());
-    m_lightsEnabled = std::vector<bool>      (numLights, false);
+    m_lightsEnabled = std::vector<bool> (numLights, false);
 
     int maxTextures = 0;
     glGetIntegerv(GL_MAX_TEXTURE_UNITS, &maxTextures);
 
     m_currentTextures    = std::vector<Texture>           (maxTextures, Texture());
-    m_texturesEnabled    = std::vector<bool>                   (maxTextures, false);
+    m_texturesEnabled    = std::vector<bool>              (maxTextures, false);
     m_textureStageParams = std::vector<TextureStageParams>(maxTextures, TextureStageParams());
 
     GetLogger()->Info("CDevice created successfully\n");
@@ -170,7 +166,6 @@ void CGLDevice::ConfigChanged(const GLDeviceConfig& newConfig)
 
     // Reset state
     m_lighting = false;
-    m_texturing = false;
     Destroy();
     Create();
 }
@@ -326,31 +321,37 @@ void CGLDevice::UpdateLightPosition(int index)
     assert(index >= 0);
     assert(index < static_cast<int>( m_lights.size() ));
 
-    if ((! m_lighting) || (! m_lightsEnabled[index]))
-        return;
-
     glMatrixMode(GL_MODELVIEW);
+
     glPushMatrix();
 
     glLoadIdentity();
     glScalef(1.0f, 1.0f, -1.0f);
-    glMultMatrixf(m_viewMat.Array());
+    Math::Matrix mat = m_viewMat;
+    mat.Set(1, 4, 0.0f);
+    mat.Set(2, 4, 0.0f);
+    mat.Set(3, 4, 0.0f);
+    glMultMatrixf(mat.Array());
+
+    if (m_lights[index].type == LIGHT_SPOT)
+    {
+        GLfloat direction[4] = { -m_lights[index].direction.x, -m_lights[index].direction.y, -m_lights[index].direction.z, 1.0f };
+        glLightfv(GL_LIGHT0 + index, GL_SPOT_DIRECTION, direction);
+    }
 
     if (m_lights[index].type == LIGHT_DIRECTIONAL)
     {
-        GLfloat position[4] = { m_lights[index].direction.x, m_lights[index].direction.y, m_lights[index].direction.z, 0.0f };
+        GLfloat position[4] = { -m_lights[index].direction.x, -m_lights[index].direction.y, -m_lights[index].direction.z, 0.0f };
         glLightfv(GL_LIGHT0 + index, GL_POSITION, position);
     }
     else
     {
+        glLoadIdentity();
+        glScalef(1.0f, 1.0f, -1.0f);
+        glMultMatrixf(m_viewMat.Array());
+
         GLfloat position[4] = { m_lights[index].position.x, m_lights[index].position.y, m_lights[index].position.z, 1.0f };
         glLightfv(GL_LIGHT0 + index, GL_POSITION, position);
-    }
-
-    if (m_lights[index].type == LIGHT_SPOT)
-    {
-        GLfloat direction[4] = { m_lights[index].direction.x, m_lights[index].direction.y, m_lights[index].direction.z, 0.0f };
-        glLightfv(GL_LIGHT0 + index, GL_SPOT_DIRECTION, direction);
     }
 
     glPopMatrix();
@@ -371,7 +372,10 @@ void CGLDevice::SetLightEnabled(int index, bool enabled)
 
     m_lightsEnabled[index] = enabled;
 
-    glEnable(GL_LIGHT0 + index);
+    if (enabled)
+        glEnable(GL_LIGHT0 + index);
+    else
+        glDisable(GL_LIGHT0 + index);
 }
 
 bool CGLDevice::GetLightEnabled(int index)
@@ -407,8 +411,6 @@ Texture CGLDevice::CreateTexture(ImageData *data, const TextureCreateParams &par
     // Use & enable 1st texture stage
     glActiveTexture(GL_TEXTURE0);
     glEnable(GL_TEXTURE_2D);
-
-    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
     glGenTextures(1, &result.id);
     glBindTexture(GL_TEXTURE_2D, result.id);
@@ -546,12 +548,9 @@ Texture CGLDevice::CreateTexture(ImageData *data, const TextureCreateParams &par
 
 
     // Restore the previous state of 1st stage
-    if (m_currentTextures[0].Valid())
-        glBindTexture(GL_TEXTURE_2D, m_currentTextures[0].id);
-    else
-        glBindTexture(GL_TEXTURE_2D, 0);
+    glBindTexture(GL_TEXTURE_2D, m_currentTextures[0].id);
 
-    if ( (! m_texturing) || (! m_texturesEnabled[0]) )
+    if (! m_texturesEnabled[0])
         glDisable(GL_TEXTURE_2D);
 
     return result;
@@ -559,10 +558,6 @@ Texture CGLDevice::CreateTexture(ImageData *data, const TextureCreateParams &par
 
 void CGLDevice::DestroyTexture(const Texture &texture)
 {
-    std::set<Texture>::iterator it = m_allTextures.find(texture);
-    if (it != m_allTextures.end())
-        m_allTextures.erase(it);
-
     // Unbind the texture if in use anywhere
     for (int index = 0; index < static_cast<int>( m_currentTextures.size() ); ++index)
     {
@@ -571,14 +566,22 @@ void CGLDevice::DestroyTexture(const Texture &texture)
     }
 
     glDeleteTextures(1, &texture.id);
+
+    auto it = m_allTextures.find(texture);
+    if (it != m_allTextures.end())
+        m_allTextures.erase(it);
 }
 
 void CGLDevice::DestroyAllTextures()
 {
-    std::set<Texture> allCopy = m_allTextures;
-    std::set<Texture>::iterator it;
-    for (it = allCopy.begin(); it != allCopy.end(); ++it)
-        DestroyTexture(*it);
+    // Unbind all texture stages
+    for (int index = 0; index < static_cast<int>( m_currentTextures.size() ); ++index)
+        SetTexture(index, Texture());
+
+    for (auto it = m_allTextures.begin(); it != m_allTextures.end(); ++it)
+        glDeleteTextures(1, &(*it).id);
+
+    m_allTextures.clear();
 }
 
 int CGLDevice::GetMaxTextureCount()
@@ -595,25 +598,18 @@ void CGLDevice::SetTexture(int index, const Texture &texture)
     assert(index >= 0);
     assert(index < static_cast<int>( m_currentTextures.size() ));
 
-    // Enable the given texture stage
+    bool same = m_currentTextures[index].id == texture.id;
+
+    m_currentTextures[index] = texture; // remember the new value
+
+    if (same)
+        return; // nothing to do
+
     glActiveTexture(GL_TEXTURE0 + index);
-    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, texture.id);
 
-    m_currentTextures[index] = texture; // remember the change
-
-    if (! texture.Valid())
-    {
-        glBindTexture(GL_TEXTURE_2D, 0); // unbind texture
-    }
-    else
-    {
-        glBindTexture(GL_TEXTURE_2D, texture.id);                  // bind the texture
-        SetTextureStageParams(index, m_textureStageParams[index]); // texture stage params need to be re-set for the new texture
-    }
-
-    // Disable the stage if it is set so
-    if ( (! m_texturing) || (! m_texturesEnabled[index]) )
-        glDisable(GL_TEXTURE_2D);
+    // Params need to be updated for the new bound texture
+    SetTextureStageParams(index, m_textureStageParams[index]);
 }
 
 void CGLDevice::SetTexture(int index, unsigned int textureId)
@@ -621,17 +617,16 @@ void CGLDevice::SetTexture(int index, unsigned int textureId)
     assert(index >= 0);
     assert(index < static_cast<int>( m_currentTextures.size() ));
 
-    // Enable the given texture stage
-    glActiveTexture(GL_TEXTURE0 + index);
-    glEnable(GL_TEXTURE_2D);
+    if (m_currentTextures[index].id == textureId)
+        return; // nothing to do
 
     m_currentTextures[index].id = textureId;
 
+    glActiveTexture(GL_TEXTURE0 + index);
     glBindTexture(GL_TEXTURE_2D, textureId);
 
-    // Disable the stage if it is set so
-    if ( (! m_texturing) || (! m_texturesEnabled[index]) )
-        glDisable(GL_TEXTURE_2D);
+    // Params need to be updated for the new bound texture
+    SetTextureStageParams(index, m_textureStageParams[index]);
 }
 
 /**
@@ -649,7 +644,12 @@ void CGLDevice::SetTextureEnabled(int index, bool enabled)
     assert(index >= 0);
     assert(index < static_cast<int>( m_currentTextures.size() ));
 
+    bool same = m_texturesEnabled[index] == enabled;
+
     m_texturesEnabled[index] = enabled;
+
+    if (same)
+        return; // nothing to do
 
     glActiveTexture(GL_TEXTURE0 + index);
     if (enabled)
@@ -682,11 +682,7 @@ void CGLDevice::SetTextureStageParams(int index, const TextureStageParams &param
     if (! m_currentTextures[index].Valid())
         return;
 
-    // Enable the given stage
     glActiveTexture(GL_TEXTURE0 + index);
-    glEnable(GL_TEXTURE_2D);
-
-    glBindTexture(GL_TEXTURE_2D, m_currentTextures[index].id);
 
     // To save some trouble
     if ( (params.colorOperation == TEX_MIX_OPER_DEFAULT) &&
@@ -802,10 +798,34 @@ after_tex_operations:
     else if (params.wrapT == TEX_WRAP_REPEAT)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     else  assert(false);
+}
 
-    // Disable the stage if it is set so
-    if ( (! m_texturing) || (! m_texturesEnabled[index]) )
-        glDisable(GL_TEXTURE_2D);
+void CGLDevice::SetTextureStageWrap(int index, TexWrapMode wrapS, TexWrapMode wrapT)
+{
+    assert(index >= 0);
+    assert(index < static_cast<int>( m_currentTextures.size() ));
+
+    // Remember the settings
+    m_textureStageParams[index].wrapS = wrapS;
+    m_textureStageParams[index].wrapT = wrapT;
+
+    // Don't actually do anything if texture not set
+    if (! m_currentTextures[index].Valid())
+        return;
+
+    glActiveTexture(GL_TEXTURE0 + index);
+
+    if      (wrapS == TEX_WRAP_CLAMP)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+    else if (wrapS == TEX_WRAP_REPEAT)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    else  assert(false);
+
+    if      (wrapT == TEX_WRAP_CLAMP)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+    else if (wrapT == TEX_WRAP_REPEAT)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    else  assert(false);
 }
 
 TextureStageParams CGLDevice::GetTextureStageParams(int index)
@@ -821,15 +841,8 @@ void CGLDevice::SetTextureFactor(const Color &color)
     // Needs to be set for all texture stages
     for (int index = 0; index < static_cast<int>( m_currentTextures.size() ); ++index)
     {
-        // Activate stage
         glActiveTexture(GL_TEXTURE0 + index);
-        glEnable(GL_TEXTURE_2D);
-
         glTexEnvfv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_COLOR, color.Array());
-
-        // Disable the stage if it is set so
-        if ( (! m_texturing) || (! m_texturesEnabled[index]) )
-            glDisable(GL_TEXTURE_2D);
     }
 }
 
@@ -837,14 +850,9 @@ Color CGLDevice::GetTextureFactor()
 {
     // Get from 1st stage (should be the same for all stages)
     glActiveTexture(GL_TEXTURE0);
-    glEnable(GL_TEXTURE_2D);
 
     GLfloat color[4] = { 0.0f };
     glGetTexEnvfv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_COLOR, color);
-
-    // Disable the 1st stage if it is set so
-    if ( (! m_texturing) || (! m_texturesEnabled[0]) )
-        glDisable(GL_TEXTURE_2D);
 
     return Color(color[0], color[1], color[2], color[3]);
 }
@@ -866,48 +874,70 @@ GLenum TranslateGfxPrimitive(PrimitiveType type)
 
 void CGLDevice::DrawPrimitive(PrimitiveType type, const Vertex *vertices, int vertexCount)
 {
-    glBegin(TranslateGfxPrimitive(type));
+    Vertex* vs = const_cast<Vertex*>(vertices);
+
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glVertexPointer(3, GL_FLOAT, sizeof(Vertex), reinterpret_cast<GLfloat*>(&vs[0].coord));
+
+    glEnableClientState(GL_NORMAL_ARRAY);
+    glNormalPointer(GL_FLOAT, sizeof(Vertex), reinterpret_cast<GLfloat*>(&vs[0].normal));
+
+    glClientActiveTexture(GL_TEXTURE0);
+    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+    glTexCoordPointer(2, GL_FLOAT, sizeof(Vertex), reinterpret_cast<GLfloat*>(&vs[0].texCoord));
 
     glColor3f(1.0f, 1.0f, 1.0f);
 
-    for (int i = 0; i < vertexCount; ++i)
-    {
-        glNormal3fv(const_cast<GLfloat*>(vertices[i].normal.Array()));
-        glMultiTexCoord2fv(GL_TEXTURE0, const_cast<GLfloat*>(vertices[i].texCoord.Array()));
-        glVertex3fv(const_cast<GLfloat*>(vertices[i].coord.Array()));
-    }
+    glDrawArrays(TranslateGfxPrimitive(type), 0, vertexCount);
 
-    glEnd();
+    glDisableClientState(GL_VERTEX_ARRAY);
+    glDisableClientState(GL_NORMAL_ARRAY);
+    glDisableClientState(GL_TEXTURE_COORD_ARRAY); // GL_TEXTURE0
 }
 
 void CGLDevice::DrawPrimitive(PrimitiveType type, const VertexCol *vertices, int vertexCount)
 {
-    glBegin(TranslateGfxPrimitive(type));
+    VertexCol* vs = const_cast<VertexCol*>(vertices);
 
-    for (int i = 0; i < vertexCount; ++i)
-    {
-        glColor4fv(const_cast<GLfloat*>(vertices[i].color.Array()));
-        glVertex3fv(const_cast<GLfloat*>(vertices[i].coord.Array()));
-    }
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glVertexPointer(3, GL_FLOAT, sizeof(VertexCol), reinterpret_cast<GLfloat*>(&vs[0].coord));
 
-    glEnd();
+    glEnableClientState(GL_COLOR_ARRAY);
+    glColorPointer(4, GL_FLOAT, sizeof(VertexCol), reinterpret_cast<GLfloat*>(&vs[0].color));
+
+    glDrawArrays(TranslateGfxPrimitive(type), 0, vertexCount);
+
+    glDisableClientState(GL_VERTEX_ARRAY);
+    glDisableClientState(GL_COLOR_ARRAY);
 }
 
 void CGLDevice::DrawPrimitive(PrimitiveType type, const VertexTex2 *vertices, int vertexCount)
 {
-    glBegin(TranslateGfxPrimitive(type));
+    VertexTex2* vs = const_cast<VertexTex2*>(vertices);
+
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glVertexPointer(3, GL_FLOAT, sizeof(VertexTex2), reinterpret_cast<GLfloat*>(&vs[0].coord));
+
+    glEnableClientState(GL_NORMAL_ARRAY);
+    glNormalPointer(GL_FLOAT, sizeof(VertexTex2), reinterpret_cast<GLfloat*>(&vs[0].normal));
+
+    glClientActiveTexture(GL_TEXTURE0);
+    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+    glTexCoordPointer(2, GL_FLOAT, sizeof(VertexTex2), reinterpret_cast<GLfloat*>(&vs[0].texCoord));
+
+    glClientActiveTexture(GL_TEXTURE1);
+    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+    glTexCoordPointer(2, GL_FLOAT, sizeof(VertexTex2), reinterpret_cast<GLfloat*>(&vs[0].texCoord2));
 
     glColor3f(1.0f, 1.0f, 1.0f);
 
-    for (int i = 0; i < vertexCount; ++i)
-    {
-        glNormal3fv(const_cast<GLfloat*>(vertices[i].normal.Array()));
-        glMultiTexCoord2fv(GL_TEXTURE0, const_cast<GLfloat*>(vertices[i].texCoord.Array()));
-        glMultiTexCoord2fv(GL_TEXTURE1, const_cast<GLfloat*>(vertices[i].texCoord.Array()));
-        glVertex3fv(const_cast<GLfloat*>(vertices[i].coord.Array()));
-    }
+    glDrawArrays(TranslateGfxPrimitive(type), 0, vertexCount);
 
-    glEnd();
+    glDisableClientState(GL_VERTEX_ARRAY);
+    glDisableClientState(GL_NORMAL_ARRAY);
+    glDisableClientState(GL_TEXTURE_COORD_ARRAY); // GL_TEXTURE1
+    glClientActiveTexture(GL_TEXTURE0);
+    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 }
 
 bool InPlane(Math::Vector normal, float originPlane, Math::Vector center, float radius)
@@ -1015,22 +1045,6 @@ void CGLDevice::SetRenderState(RenderState state, bool enabled)
 
         return;
     }
-    else if (state == RENDER_STATE_TEXTURING)
-    {
-        m_texturing = enabled;
-
-        // Enable/disable stages with new setting
-        for (int index = 0; index < static_cast<int>( m_currentTextures.size() ); ++index)
-        {
-            glActiveTexture(GL_TEXTURE0 + index);
-            if (m_texturing && m_texturesEnabled[index])
-                glEnable(GL_TEXTURE_2D);
-            else
-                glDisable(GL_TEXTURE_2D);
-        }
-
-        return;
-    }
 
     GLenum flag = 0;
 
@@ -1055,9 +1069,6 @@ bool CGLDevice::GetRenderState(RenderState state)
 {
     if (state == RENDER_STATE_LIGHTING)
         return m_lighting;
-
-    if (state == RENDER_STATE_TEXTURING)
-        return m_texturing;
 
     GLenum flag = 0;
 

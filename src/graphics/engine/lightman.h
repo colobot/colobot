@@ -34,8 +34,9 @@
 namespace Gfx {
 
 /**
-  \struct LightProgression
-  \brief Describes the progression of light parameters change */
+ * \struct LightProgression
+ * \brief Describes the progression of light parameters change
+ */
 struct LightProgression
 {
     //! Starting value
@@ -65,17 +66,31 @@ struct LightProgression
 };
 
 /**
-  \struct DynamicLight
-  \brief Dynamic light in 3D scene
+ * \enum LightPriority
+ * \brief Priority in light assignment
+ */
+enum LightPriority
+{
+    LIGHT_PRI_HIGH,
+    LIGHT_PRI_LOW
+};
 
-  It is an extension over standard light properties. Added are dynamic progressions for light
-  colors and intensity and types of objects included/excluded in lighting. */
+/**
+ * \struct DynamicLight
+ * \brief Dynamic light in 3D scene
+ *
+ * It is an extension over standard light properties. Added are dynamic progressions for light
+ * colors and intensity and types of objects included/excluded in lighting.
+ */
 struct DynamicLight
 {
     //! Whether the light is used
     bool used;
     //! Whether the light is turned on
     bool enabled;
+
+    //! Priority in assignment
+    LightPriority priority;
 
     //! Configuration of the light
     Light light;
@@ -98,17 +113,18 @@ struct DynamicLight
 };
 
 /**
-  \class CLightManager
-  \brief Manager for dynamic lights in 3D scene
-
-  (Old CLight class)
-
-  The class is responsible for managing dynamic lights (struct DynamicLight) used in 3D scene.
-  The dynamic lights are created, updated and deleted through the class' interface.
-
-  Number of available lights depends on graphics device used. Class allocates vector
-  for the total number of lights, but only some are used.
-  */
+ * \class CLightManager
+ * \brief Manager for dynamic lights in 3D scene
+ *
+ * The class is responsible for managing dynamic lights (struct DynamicLight) used in 3D scene.
+ * The dynamic lights are created, updated and deleted through the class' interface.
+ *
+ * Since there is a limit on total number of lights available in OpenGL (usually up to 8), the dynamic lights
+ * must be emulated by displaying only some of them. All functions normally operate only on DynamicLight structs,
+ * updating the models with new values, while only one function, UpdateDeviceLights(), performs the actual
+ * synchronization to the device. It allocates device's light slots as necessary, with two priority levels
+ * for lights.
+ */
 class CLightManager
 {
 public:
@@ -123,7 +139,7 @@ public:
     //! Clears and disables all lights
     void            FlushLights();
     //! Creates a new dynamic light and returns its index (lightRank)
-    int             CreateLight();
+    int             CreateLight(LightPriority priority = LIGHT_PRI_LOW);
     //! Deletes and disables the given dynamic light
     bool            DeleteLight(int lightRank);
     //! Sets the light parameters for dynamic light
@@ -161,7 +177,7 @@ public:
     //! Sets the destination color for dynamic light's color progression
     bool            SetLightColor(int lightRank, const Color &color);
     //! Returns current light color
-    Color      GetLightColor(int lightRank);
+    Color           GetLightColor(int lightRank);
     //! Sets the rate of change for dynamic light colors (RGB)
     bool            SetLightColorSpeed(int lightRank, float speed);
 
@@ -170,7 +186,7 @@ public:
     //! Updates (recalculates) all dynamic lights
     void            UpdateLights();
     //! Enables or disables dynamic lights affecting the given object type
-    void            UpdateLightsEnableState(EngineObjectType type);
+    void            UpdateDeviceLights(EngineObjectType type);
 
 protected:
     CInstanceManager* m_iMan;
@@ -181,6 +197,8 @@ protected:
     float             m_time;
     //! List of dynamic lights
     std::vector<DynamicLight> m_dynLights;
+    //! Map of current light allotment: graphics light -> dynamic light
+    std::vector<int>  m_lightMap;
 };
 
 }; // namespace Gfx

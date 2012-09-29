@@ -357,7 +357,7 @@ bool CApplication::Create()
     /* SDL initialization sequence */
 
 
-    Uint32 initFlags = SDL_INIT_VIDEO | SDL_INIT_JOYSTICK | SDL_INIT_TIMER;
+    Uint32 initFlags = SDL_INIT_VIDEO | SDL_INIT_TIMER;
 
     if (SDL_Init(initFlags) < 0)
     {
@@ -366,6 +366,12 @@ bool CApplication::Create()
         GetLogger()->Error(m_errorMessage.c_str());
         m_exitCode = 2;
         return false;
+    }
+
+    // This is non-fatal and besides seems to fix some memory leaks
+    if (SDL_InitSubSystem(SDL_INIT_JOYSTICK) < 0)
+    {
+        GetLogger()->Warn("Joystick subsystem init failed\nJoystick(s) will not be available\n");
     }
 
     if ((IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG) == 0)
@@ -396,10 +402,6 @@ bool CApplication::Create()
 
     // Don't generate joystick events
     SDL_JoystickEventState(SDL_IGNORE);
-
-
-    // For now, enable joystick for testing
-    SetJoystickEnabled(true);
 
 
     // The video is ready, we can create and initalize the graphics device

@@ -190,7 +190,7 @@ Math::IntPoint CImage::GetSize() const
  * \param pixel pixel coords (range x: 0..width-1 y: 0..height-1)
  * \returns color
  */
-Gfx::Color CImage::GetPixel(Math::IntPoint pixel)
+Gfx::IntColor CImage::GetPixelInt(Math::IntPoint pixel)
 {
     assert(m_data != nullptr);
     assert(pixel.x >= 0 || pixel.x <= m_data->surface->w);
@@ -229,8 +229,20 @@ Gfx::Color CImage::GetPixel(Math::IntPoint pixel)
     Uint8 r = 0, g = 0, b = 0, a = 0;
     SDL_GetRGBA(u, m_data->surface->format, &r, &g, &b, &a);
 
-    return Gfx::Color(r / 255.0f, g / 255.0f, b / 255.0f, a / 255.0f);
+    return Gfx::IntColor(r, g, b, a);
 }
+
+/**
+ * Image must be valid and pixel coords in valid range.
+ *
+ * \param pixel pixel coords (range x: 0..width-1 y: 0..height-1)
+ * \returns color
+ */
+Gfx::Color CImage::GetPixel(Math::IntPoint pixel)
+{
+    return Gfx::IntColorToColor(GetPixelInt(pixel));
+}
+
 
 /**
  * Image must be valid and pixel coords in valid range.
@@ -238,7 +250,7 @@ Gfx::Color CImage::GetPixel(Math::IntPoint pixel)
  * \param pixel pixel coords (range x: 0..width-1 y: 0..height-1)
  * \param color color
  */
-void CImage::SetPixel(Math::IntPoint pixel, Gfx::Color color)
+void CImage::SetPixelInt(Math::IntPoint pixel, Gfx::IntColor color)
 {
     assert(m_data != nullptr);
     assert(pixel.x >= 0 || pixel.x <= m_data->surface->w);
@@ -248,11 +260,7 @@ void CImage::SetPixel(Math::IntPoint pixel, Gfx::Color color)
     int index = pixel.y * m_data->surface->pitch + pixel.x * bpp;
     Uint8* p = &static_cast<Uint8*>(m_data->surface->pixels)[index];
 
-    Uint8 r = static_cast<Uint8>(color.r * 255.0f);
-    Uint8 g = static_cast<Uint8>(color.g * 255.0f);
-    Uint8 b = static_cast<Uint8>(color.b * 255.0f);
-    Uint8 a = static_cast<Uint8>(color.a * 255.0f);
-    Uint32 u = SDL_MapRGBA(m_data->surface->format, r, g, b, a);
+    Uint32 u = SDL_MapRGBA(m_data->surface->format, color.r, color.g, color.b, color.a);
 
     switch(bpp)
     {
@@ -286,6 +294,17 @@ void CImage::SetPixel(Math::IntPoint pixel, Gfx::Color color)
         default:
             assert(false);
     }
+}
+
+/**
+ * Image must be valid and pixel coords in valid range.
+ *
+ * \param pixel pixel coords (range x: 0..width-1 y: 0..height-1)
+ * \param color color
+ */
+void CImage::SetPixel(Math::IntPoint pixel, Gfx::Color color)
+{
+    SetPixelInt(pixel, Gfx::ColorToIntColor(color));
 }
 
 std::string CImage::GetError()

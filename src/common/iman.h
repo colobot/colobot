@@ -95,7 +95,7 @@ enum ManagedClassType
 
 
 /**
- * \enum ManagedClassInstances
+ * \struct ManagedClassInstances
  * \brief Instances of class managed by CInstanceManager
  */
 struct ManagedClassInstances

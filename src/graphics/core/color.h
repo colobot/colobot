@@ -79,6 +79,35 @@ struct Color
 };
 
 /**
+ * \struct IntColor
+ * \brief Color with integer values
+ *
+ * May be used for precise pixel manipulations.
+ */
+struct IntColor
+{
+    //! Red, green, blue and alpha components
+    unsigned char r, g, b, a;
+
+    //! Constructor; default values are (0,0,0,0) = black
+    explicit IntColor(unsigned char aR = 0, unsigned char aG = 0, unsigned char aB = 0, unsigned char aA = 0)
+        : r(aR), g(aG), b(aB), a(aA) {}
+};
+
+inline Color IntColorToColor(IntColor color)
+{
+    return Color(color.r / 255.0f, color.g / 255.0f, color.b / 255.0f, color.a / 255.0f);
+}
+
+inline IntColor ColorToIntColor(Color color)
+{
+    return IntColor(static_cast<unsigned char>(color.r * 255.0f),
+                    static_cast<unsigned char>(color.g * 255.0f),
+                    static_cast<unsigned char>(color.b * 255.0f),
+                    static_cast<unsigned char>(color.a * 255.0f));
+}
+
+/**
  * \struct ColorHSV
  * \brief HSV color
  */

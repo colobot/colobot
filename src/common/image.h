@@ -78,8 +78,14 @@ public:
     //! Sets the color at given pixel
     void SetPixel(Math::IntPoint pixel, Gfx::Color color);
 
+    //! Sets the precise color at given pixel
+    void SetPixelInt(Math::IntPoint pixel, Gfx::IntColor color);
+
     //! Returns the color at given pixel
     Gfx::Color GetPixel(Math::IntPoint pixel);
+
+    //! Returns the precise color at given pixel
+    Gfx::IntColor GetPixelInt(Math::IntPoint pixel);
 
     //! Loads an image from the specified file
     bool Load(const std::string &fileName);

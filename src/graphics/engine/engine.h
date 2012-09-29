@@ -568,7 +568,7 @@ struct EngineMouse
  *
  * It uses a lower-level CDevice object which is implementation-independent core engine.
  *
- * \section 3DScene 3D Scene
+ * \section Scene 3D Scene
  *
  * The 3D scene is drawn with view coordinates set from camera position in 3D space and
  * a perspective projection matrix. The world matrix depends on the object drawn.
@@ -588,7 +588,7 @@ struct EngineMouse
  *  - mouse cursor
  *  - animated highlight box of the selected object(s)
  *
- * \section 2DInterface 2D Interface
+ * \section Interface 2D Interface
  *
  * The 2D interface is drawn in fixed XY coordinates, independent from window size.
  * Lower-left corner of the screen is (0,0) and upper-right corner is (1,1).
@@ -601,7 +601,7 @@ struct EngineMouse
  * are instances of CControl class. The source code for these classes is in
  * src/ui directory.
  *
- * \section Objecs Engine Objects
+ * \section Objects Engine Objects
  *
  * The 3D scene is composed of objects which are basically collections of triangles forming
  * a surface or simply independent triangles in space.
@@ -1348,6 +1348,8 @@ protected:
 
     //! Default texture create params
     TextureCreateParams m_defaultTexParams;
+    //! Create params for terrain textures
+    TextureCreateParams m_terrainTexParams;
 
     //! Map of loaded textures (by name)
     std::map<std::string, Texture> m_texNameMap;
@@ -1375,6 +1377,9 @@ protected:
     std::string     m_lastTexture[2];
     //! Last material
     Material        m_lastMaterial;
+
+    //! True when drawing 2D UI
+    bool            m_interfaceMode;
 };
 
 
