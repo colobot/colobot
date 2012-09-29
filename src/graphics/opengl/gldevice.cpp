@@ -684,6 +684,8 @@ void CGLDevice::SetTextureStageParams(int index, const TextureStageParams &param
 
     glActiveTexture(GL_TEXTURE0 + index);
 
+    glTexEnvfv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_COLOR, params.factor.Array());
+
     // To save some trouble
     if ( (params.colorOperation == TEX_MIX_OPER_DEFAULT) &&
          (params.alphaOperation == TEX_MIX_OPER_DEFAULT) )
@@ -834,27 +836,6 @@ TextureStageParams CGLDevice::GetTextureStageParams(int index)
     assert(index < static_cast<int>( m_currentTextures.size() ));
 
     return m_textureStageParams[index];
-}
-
-void CGLDevice::SetTextureFactor(const Color &color)
-{
-    // Needs to be set for all texture stages
-    for (int index = 0; index < static_cast<int>( m_currentTextures.size() ); ++index)
-    {
-        glActiveTexture(GL_TEXTURE0 + index);
-        glTexEnvfv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_COLOR, color.Array());
-    }
-}
-
-Color CGLDevice::GetTextureFactor()
-{
-    // Get from 1st stage (should be the same for all stages)
-    glActiveTexture(GL_TEXTURE0);
-
-    GLfloat color[4] = { 0.0f };
-    glGetTexEnvfv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_COLOR, color);
-
-    return Color(color[0], color[1], color[2], color[3]);
 }
 
 GLenum TranslateGfxPrimitive(PrimitiveType type)

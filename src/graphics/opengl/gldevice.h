@@ -119,9 +119,6 @@ public:
 
     virtual void SetTextureStageWrap(int index, Gfx::TexWrapMode wrapS, Gfx::TexWrapMode wrapT);
 
-    virtual void SetTextureFactor(const Color &color);
-    virtual Color GetTextureFactor();
-
     virtual void DrawPrimitive(PrimitiveType type, const Vertex     *vertices, int vertexCount);
     virtual void DrawPrimitive(PrimitiveType type, const VertexCol  *vertices, int vertexCount);
     virtual void DrawPrimitive(PrimitiveType type, const VertexTex2 *vertices, int vertexCount);
