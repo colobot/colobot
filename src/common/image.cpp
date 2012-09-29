@@ -147,6 +147,13 @@ CImage::CImage()
     m_data = nullptr;
 }
 
+CImage::CImage(Math::IntPoint size)
+{
+    m_data = new ImageData();
+    m_data->surface = SDL_CreateRGBSurface(0, size.x, size.y, 32,
+                                           0x00FF0000, 0x0000FF00, 0x000000FF, 0xFF000000);
+}
+
 CImage::~CImage()
 {
     Free();

@@ -2074,7 +2074,7 @@ void CEngine::SetViewParams(const Math::Vector& eyePt, const Math::Vector& looka
         m_sound->SetListener(eyePt, lookatPt);
 }
 
-Texture CEngine::CreateTexture(const std::string& texName, const TextureCreateParams& params)
+Texture CEngine::CreateTexture(const std::string& texName, const TextureCreateParams& params, CImage* image)
 {
     if (texName.empty())
         return Texture(); // invalid texture
@@ -2082,16 +2082,25 @@ Texture CEngine::CreateTexture(const std::string& texName, const TextureCreatePa
     if (m_texBlacklist.find(texName) != m_texBlacklist.end())
         return Texture(); // invalid texture
 
-    CImage img;
-    if (! img.Load(m_app->GetDataFilePath(DIR_TEXTURE, texName)))
-    {
-        std::string error = img.GetError();
-        GetLogger()->Error("Couldn't load texture '%s': %s, blacklisting\n", texName.c_str(), error.c_str());
-        m_texBlacklist.insert(texName);
-        return Texture(); // invalid texture
-    }
+    Texture tex;
 
-    Texture tex = m_device->CreateTexture(&img, params);
+    if (image == nullptr)
+    {
+        CImage img;
+        if (! img.Load(m_app->GetDataFilePath(DIR_TEXTURE, texName)))
+        {
+            std::string error = img.GetError();
+            GetLogger()->Error("Couldn't load texture '%s': %s, blacklisting\n", texName.c_str(), error.c_str());
+            m_texBlacklist.insert(texName);
+            return Texture(); // invalid texture
+        }
+
+        tex = m_device->CreateTexture(&img, params);
+    }
+    else
+    {
+        tex = m_device->CreateTexture(image, params);
+    }
 
     if (! tex.Valid())
     {
@@ -2109,6 +2118,12 @@ Texture CEngine::CreateTexture(const std::string& texName, const TextureCreatePa
 Texture CEngine::LoadTexture(const std::string& name)
 {
     return LoadTexture(name, m_defaultTexParams);
+}
+
+Texture CEngine::LoadTexture(const std::string& name, CImage* image)
+{
+    Texture tex = CreateTexture(name, m_defaultTexParams, image);
+    return tex;
 }
 
 Texture CEngine::LoadTexture(const std::string& name, const TextureCreateParams& params)

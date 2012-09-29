@@ -20,6 +20,8 @@
 
 #include "ui/map.h"
 
+#include "common/image.h"
+
 #include <string.h>
 
 
@@ -986,63 +988,60 @@ void CMap::DrawVertex(Math::Point uv1, Math::Point uv2, float zoom)
 
 void CMap::UpdateTerrain()
 {
-    Gfx::Color   color;
-    Math::Vector        pos;
-    float           scale, water, level, intensity;
-    int             x, y;
+    if (m_fixImage[0] != 0) return;  // still image?
 
-    if ( m_fixImage[0] != 0  )  return;  // still image?
+    CImage img(Math::IntPoint(256, 256));
 
-    // TODO: map texture manipulation
-    return;
+    float scale = m_terrain->GetReliefScale();
+    float water = m_water->GetLevel();
 
-    // if ( !m_engine->OpenImage("map.png") )  return;
-
-    scale = m_terrain->GetReliefScale();
-    water = m_water->GetLevel();
+    Gfx::Color color;
     color.a = 0.0f;
 
-    for ( y=0 ; y<256 ; y++ )
+    for (int y = 0; y < 256; y++)
     {
-        for ( x=0 ; x<256 ; x++ )
+        for (int x = 0; x < 256; x++)
         {
-            pos.x =  (static_cast<float>(x)-128.0f)*m_half/128.0f;
-            pos.z = -(static_cast<float>(y)-128.0f)*m_half/128.0f;
+            Math::Vector pos;
+            pos.x =  (static_cast<float>(x) - 128.0f) * m_half / 128.0f;
+            pos.z = -(static_cast<float>(y) - 128.0f) * m_half / 128.0f;
             pos.y = 0.0f;
+
+            float level;
 
             if ( pos.x >= -m_half && pos.x <= m_half &&
                  pos.z >= -m_half && pos.z <= m_half )
             {
-                level = m_terrain->GetFloorLevel(pos, true)/scale;
+                level = m_terrain->GetFloorLevel(pos, true) / scale;
             }
             else
             {
                 level = 1000.0f;
             }
 
-            intensity = level/256.0f;
-            if ( intensity < 0.0f )  intensity = 0.0f;
-            if ( intensity > 1.0f )  intensity = 1.0f;
+            float intensity = level / 256.0f;
+            if (intensity < 0.0f) intensity = 0.0f;
+            if (intensity > 1.0f) intensity = 1.0f;
 
-            if ( level >= water )  // on water?
+            if (level >= water)  // on water?
             {
-                color.r = m_floorColor.r + (intensity-0.5f);
-                color.g = m_floorColor.g + (intensity-0.5f);
-                color.b = m_floorColor.b + (intensity-0.5f);
+                color.r = Math::Norm(m_floorColor.r + (intensity - 0.5f));
+                color.g = Math::Norm(m_floorColor.g + (intensity - 0.5f));
+                color.b = Math::Norm(m_floorColor.b + (intensity - 0.5f));
             }
             else    // underwater?
             {
-                color.r = m_waterColor.r + (intensity-0.5f);
-                color.g = m_waterColor.g + (intensity-0.5f);
-                color.b = m_waterColor.b + (intensity-0.5f);
+                color.r = Math::Norm(m_waterColor.r + (intensity - 0.5f));
+                color.g = Math::Norm(m_waterColor.g + (intensity - 0.5f));
+                color.b = Math::Norm(m_waterColor.b + (intensity - 0.5f));
             }
 
-            //m_engine->SetDot(x, y, color);
+            img.SetPixel(Math::IntPoint(x, y), color);
         }
     }
 
-    //m_engine->CopyImage();  // copy the ground drawing
-    //m_engine->CloseImage();
+    m_engine->DeleteTexture("map.png");
+    m_engine->LoadTexture("map.png", &img);
 }
 
 // Updates the field in the map.

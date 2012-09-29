@@ -60,6 +60,8 @@ private:
 public:
     //! Constructs empty image (with NULL data)
     CImage();
+    //! Constructs a RGBA image of given size
+    CImage(Math::IntPoint size);
     //! Destroys image, calling Free()
     virtual ~CImage();
 

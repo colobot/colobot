@@ -48,6 +48,7 @@ class CApplication;
 class CInstanceManager;
 class CObject;
 class CSoundInterface;
+class CImage;
 
 
 // Graphics module namespace
@@ -891,11 +892,14 @@ public:
 
     //! Loads texture, creating it if not already present
     Texture         LoadTexture(const std::string& name);
+    //! Loads texture from existing image
+    Texture         LoadTexture(const std::string& name, CImage* image);
     //! Loads texture, creating it with given params if not already present
     Texture         LoadTexture(const std::string& name, const TextureCreateParams& params);
     //! Loads all necessary textures
     bool            LoadAllTextures();
 
+    //! Changes colors in a texture
     bool            ChangeTextureColor(const std::string& texName,
                                        Color colorRef1, Color colorNew1,
                                        Color colorRef2, Color colorNew2,
@@ -1196,7 +1200,7 @@ protected:
                                     const Material& mat, int state);
 
     //! Create texture and add it to cache
-    Texture CreateTexture(const std::string &texName, const TextureCreateParams &params);
+    Texture CreateTexture(const std::string &texName, const TextureCreateParams &params, CImage* image = nullptr);
 
     //! Tests whether the given object is visible
     bool        IsVisible(int objRank);
