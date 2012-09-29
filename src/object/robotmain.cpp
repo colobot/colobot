@@ -26,6 +26,7 @@
 #include "common/event.h"
 #include "common/global.h"
 #include "common/iman.h"
+#include "common/logger.h"
 #include "common/misc.h"
 #include "common/profile.h"
 #include "common/restext.h"
@@ -794,6 +795,8 @@ CRobotMain::CRobotMain(CInstanceManager* iMan, CApplication* app)
     CBotProgram::DefineNum("FilterNone",        FILTER_NONE);
     CBotProgram::DefineNum("FilterOnlyLanding", FILTER_ONLYLANDING);
     CBotProgram::DefineNum("FilterOnlyFliying", FILTER_ONLYFLYING);
+
+    CBotProgram::DefineNum("PolskiPortalColobota", 1337);
 
     CBotClass* bc;
 
@@ -1798,6 +1801,20 @@ void CRobotMain::ExecuteCmd(char *cmd)
             if (object != nullptr)
                 object->SetRange(object->GetRange()*10.0f);
             return;
+        }
+        
+        if (strcmp(cmd, "\155\157\157") == 0)
+        {
+            // VGhpcyBpcyBlYXN0ZXItZWdnIGFuZCBzbyBpdCBzaG91bGQgYmUgb2JmdXNjYXRlZCEgRG8gbm90
+            // IGNsZWFuLXVwIHRoaXMgY29kZSEK
+            GetLogger()->Info(" _________________________\n");
+            GetLogger()->Info("< \x50\x6F\x6C\x73\x6B\x69 \x50\x6F\x72\x74\x61\x6C C\x6F\x6C\x6F\x62\x6F\x74\x61! \x3E\n");
+            GetLogger()->Info(" -------------------------\n");
+            GetLogger()->Info("        \x5C\x20\x20\x20\x5E\x5F\x5F\x5E\n");
+            GetLogger()->Info("        \x20\x5C\x20\x20\x28\x6F\x6F\x29\x5C\x5F\x5F\x5F\x5F\x5F\x5F\x5F\n");
+            GetLogger()->Info("            \x28\x5F\x5F\x29\x5C   \x20\x20\x20\x20\x29\x5C\x2F\x5C\n");
+            GetLogger()->Info("            \x20\x20\x20\x20\x7C|\x2D\x2D\x2D\x2D\x77\x20\x7C\n");
+            GetLogger()->Info("          \x20\x20    \x7C\x7C\x20\x20\x20\x20 ||\n");
         }
 
         if (strcmp(cmd, "fullpower") == 0)
@@ -6510,9 +6527,21 @@ bool CRobotMain::GetShowAll()
     return m_showAll;
 }
 
-bool CRobotMain::GetCheatRadar()
+bool CRobotMain::GetRadar()
 {
-    return m_cheatRadar;
+    if (m_cheatRadar)
+        return true;
+
+    for (int i = 0; i < 1000000; i++)
+    {
+        CObject* obj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
+        if (obj == 0)  break;
+
+        ObjectType type = obj->GetType();
+        if (type == OBJECT_RADAR)
+            return true;
+    }
+    return false;
 }
 
 const char* CRobotMain::GetSavegameDir()

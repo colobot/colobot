@@ -7524,7 +7524,7 @@ bool CObject::GetTraceDown()
     CMotionVehicle* mv = dynamic_cast<CMotionVehicle*>(m_motion);
     if (mv == nullptr)
     {
-        GetLogger()->Warn("GetTraceDown() invalid m_motion class!\n");
+        GetLogger()->Debug("GetTraceDown() invalid m_motion class!\n");
         return false;
     }
     return mv->GetTraceDown();
@@ -7536,7 +7536,7 @@ void CObject::SetTraceDown(bool bDown)
     CMotionVehicle* mv = dynamic_cast<CMotionVehicle*>(m_motion);
     if (mv == nullptr)
     {
-        GetLogger()->Warn("SetTraceDown() invalid m_motion class!\n");
+        GetLogger()->Debug("SetTraceDown() invalid m_motion class!\n");
         return;
     }
     mv->SetTraceDown(bDown);
@@ -7548,7 +7548,7 @@ int CObject::GetTraceColor()
     CMotionVehicle* mv = dynamic_cast<CMotionVehicle*>(m_motion);
     if (mv == nullptr)
     {
-        GetLogger()->Warn("GetTraceColor() invalid m_motion class!\n");
+        GetLogger()->Debug("GetTraceColor() invalid m_motion class!\n");
         return 0;
     }
     return mv->GetTraceColor();
@@ -7560,7 +7560,7 @@ void CObject::SetTraceColor(int color)
     CMotionVehicle* mv = dynamic_cast<CMotionVehicle*>(m_motion);
     if (mv == nullptr)
     {
-        GetLogger()->Warn("SetTraceColor() invalid m_motion class!\n");
+        GetLogger()->Debug("SetTraceColor() invalid m_motion class!\n");
         return;
     }
     mv->SetTraceColor(color);
@@ -7572,7 +7572,7 @@ float CObject::GetTraceWidth()
     CMotionVehicle* mv = dynamic_cast<CMotionVehicle*>(m_motion);
     if (mv == nullptr)
     {
-        GetLogger()->Warn("GetTraceWidth() invalid m_motion class!\n");
+        GetLogger()->Debug("GetTraceWidth() invalid m_motion class!\n");
         return 0.0f;
     }
     return mv->GetTraceWidth();
@@ -7584,7 +7584,7 @@ void CObject::SetTraceWidth(float width)
     CMotionVehicle* mv = dynamic_cast<CMotionVehicle*>(m_motion);
     if (mv == nullptr)
     {
-        GetLogger()->Warn("SetTraceWidth() invalid m_motion class!\n");
+        GetLogger()->Debug("SetTraceWidth() invalid m_motion class!\n");
         return;
     }
     mv->SetTraceWidth(width);

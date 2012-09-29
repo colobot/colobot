@@ -1117,7 +1117,7 @@ void CMap::FlushObject()
 
     m_totalFix  = 0;  // object index fixed
     m_totalMove = MAPMAXOBJECT-2;  // moving vehicles index
-    //m_bRadar = m_main->GetCheatRadar();  // no radar
+    m_bRadar = m_main->GetRadar();
 
     for ( i=0 ; i<MAPMAXOBJECT ; i++ )
     {
@@ -1154,12 +1154,7 @@ void CMap::UpdateObject(CObject* pObj)
         pos.z = ppos.y;
         dir += m_angle;
     }
-
-    if ( type == OBJECT_RADAR )
-    {
-        m_bRadar = true;  // radar exists
-    }
-
+    
     color = MAPCOLOR_NULL;
     if ( type == OBJECT_BASE )
     {

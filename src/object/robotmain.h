@@ -294,7 +294,7 @@ public:
     bool        GetShowSoluce();
     bool        GetSceneSoluce();
     bool        GetShowAll();
-    bool        GetCheatRadar();
+    bool        GetRadar();
     const char* GetSavegameDir();
     const char* GetPublicDir();
     const char* GetFilesDir();
