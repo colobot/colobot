@@ -279,18 +279,14 @@ float CText::GetHeight(FontType font, float size)
 float CText::GetStringWidth(const std::string &text,
                             std::map<unsigned int, FontMetaChar> &format, float size)
 {
-    // TODO assert was commented as new code uses map not vector and if's size doesn't have to match text length
-    // this has to be tested if it's correct
-    //assert(StrUtils::Utf8StringLength(text) == format.size());
-
     float width = 0.0f;
     unsigned int index = 0;
     unsigned int fmtIndex = 0;
     while (index < text.length())
     {
         FontType font = FONT_COLOBOT;
-	if (format.count(fmtIndex)) 
-	    font = static_cast<FontType>(format[fmtIndex] & FONT_MASK_FONT);
+        if (format.count(fmtIndex))
+            font = static_cast<FontType>(format[fmtIndex] & FONT_MASK_FONT);
 
         UTF8Char ch;
 
@@ -350,10 +346,6 @@ float CText::GetCharWidth(UTF8Char ch, FontType font, float size, float offset)
 int CText::Justify(const std::string &text, std::map<unsigned int, FontMetaChar> &format,
                    float size, float width)
 {
-    // TODO assert was commented as new code uses map not vector and if's size doesn't have to match text length
-    // this has to be tested if it's correct
-    //assert(StrUtils::Utf8StringLength(text) == format.size());
-
     float pos = 0.0f;
     int cut = 0;
     unsigned int index = 0;
@@ -361,8 +353,8 @@ int CText::Justify(const std::string &text, std::map<unsigned int, FontMetaChar>
     while (index < text.length())
     {
         FontType font = FONT_COLOBOT;
-	if (format.count(fmtIndex)) 
-	    font = static_cast<FontType>(format[fmtIndex] & FONT_MASK_FONT);
+        if (format.count(fmtIndex))
+            font = static_cast<FontType>(format[fmtIndex] & FONT_MASK_FONT);
 
         UTF8Char ch;
 
@@ -437,18 +429,14 @@ int CText::Justify(const std::string &text, FontType font, float size, float wid
 int CText::Detect(const std::string &text, std::map<unsigned int, FontMetaChar> &format,
                   float size, float offset)
 {
-    // TODO assert was commented as new code uses map not vector and if's size doesn't have to match text length
-    // this has to be tested if it's correct
-    //assert(StrUtils::Utf8StringLength(text) == format.size());
-
     float pos = 0.0f;
     unsigned int index = 0;
     unsigned int fmtIndex = 0;
     while (index < text.length())
     {
         FontType font = FONT_COLOBOT;
-	if (format.count(fmtIndex)) 
-	    font = static_cast<FontType>(format[fmtIndex] & FONT_MASK_FONT);
+        if (format.count(fmtIndex))
+            font = static_cast<FontType>(format[fmtIndex] & FONT_MASK_FONT);
 
         // TODO: if (font == FONT_BUTTON)
         if (font == FONT_BUTTON) continue;
@@ -514,13 +502,8 @@ int CText::Detect(const std::string &text, FontType font, float size, float offs
 void CText::DrawString(const std::string &text, std::map<unsigned int, FontMetaChar> &format,
                        float size, Math::Point pos, float width, int eol)
 {
-    // TODO assert was commented as new code uses map not vector and if's size doesn't have to match text length
-    // this has to be tested if it's correct
-    //assert(StrUtils::Utf8StringLength(text) == format.size());
-
     m_engine->SetState(ENG_RSTATE_TEXT);
 
-    FontType font = FONT_COLOBOT;
     float start = pos.x;
 
     unsigned int fmtIndex = 0;
@@ -530,8 +513,8 @@ void CText::DrawString(const std::string &text, std::map<unsigned int, FontMetaC
     for (auto it = chars.begin(); it != chars.end(); ++it)
     {
         FontType font = FONT_COLOBOT;
-	if (format.count(fmtIndex)) 
-	    font = static_cast<FontType>(format[fmtIndex] & FONT_MASK_FONT);
+        if (format.count(fmtIndex))
+            font = static_cast<FontType>(format[fmtIndex] & FONT_MASK_FONT);
 
         // TODO: if (font == FONT_BUTTON)
         if (font == FONT_BUTTON) continue;
@@ -566,17 +549,18 @@ void CText::DrawString(const std::string &text, std::map<unsigned int, FontMetaC
 void CText::StringToUTFCharList(const std::string &text, std::vector<UTF8Char> &chars)
 {
     unsigned int index = 0;
-    while (index < text.length())
+    unsigned int totalLength = text.length();
+    while (index < totalLength)
     {
         UTF8Char ch;
 
         int len = StrUtils::Utf8CharSizeAt(text, index);
         if (len >= 1)
-        ch.c1 = text[index];
+            ch.c1 = text[index];
         if (len >= 2)
-        ch.c2 = text[index+1];
+            ch.c2 = text[index+1];
         if (len >= 3)
-        ch.c3 = text[index+2];
+            ch.c3 = text[index+2];
 
         index += len;
 

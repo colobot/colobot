@@ -217,6 +217,11 @@ CEngine::CEngine(CInstanceManager *iMan, CApplication *app)
     m_defaultTexParams.minFilter = TEX_MIN_FILTER_LINEAR_MIPMAP_LINEAR;
     m_defaultTexParams.magFilter = TEX_MAG_FILTER_LINEAR;
 
+    m_terrainTexParams.format = TEX_IMG_AUTO;
+    m_terrainTexParams.mipmap = false;
+    m_terrainTexParams.minFilter = TEX_MIN_FILTER_LINEAR;
+    m_terrainTexParams.magFilter = TEX_MAG_FILTER_LINEAR;
+
     m_objectTree.reserve(LEVEL1_PREALLOCATE_COUNT);
     m_objects.reserve(OBJECT_PREALLOCATE_COUNT);
     m_shadows.reserve(SHADOW_PREALLOCATE_COUNT);
@@ -1854,8 +1859,7 @@ void CEngine::SetState(int state, const Color& color)
         params.colorOperation = TEX_MIX_OPER_MODULATE;
         params.colorArg1 = TEX_MIX_ARG_TEXTURE;
         params.colorArg2 = TEX_MIX_ARG_FACTOR;
-        params.alphaOperation = TEX_MIX_OPER_DEFAULT;
-        params.alphaOperation = TEX_MIX_OPER_REPLACE; // TODO: replace with src color ?
+        params.alphaOperation = TEX_MIX_OPER_DEFAULT; // TODO: replace with src color ?
 
         m_device->SetTextureEnabled(0, true);
         m_device->SetTextureStageParams(0, params);
@@ -2012,7 +2016,7 @@ void CEngine::SetState(int state, const Color& color)
         params.colorArg1 = TEX_MIX_ARG_TEXTURE;
         params.colorArg2 = TEX_MIX_ARG_COMPUTED_COLOR;
         params.alphaOperation = TEX_MIX_OPER_DEFAULT; // TODO: ???
-        m_device->SetTextureEnabled(0, true);
+        m_device->SetTextureEnabled(1, true);
         m_device->SetTextureStageParams(1, params);
     }
     else if ((state & ENG_RSTATE_DUAL_WHITE) && second)
@@ -2022,7 +2026,7 @@ void CEngine::SetState(int state, const Color& color)
         params.colorArg1 = TEX_MIX_ARG_TEXTURE;
         params.colorArg2 = TEX_MIX_ARG_COMPUTED_COLOR;
         params.alphaOperation = TEX_MIX_OPER_DEFAULT; // TODO: ???
-        m_device->SetTextureEnabled(0, true);
+        m_device->SetTextureEnabled(1, true);
         m_device->SetTextureStageParams(1, params);
     }
     else
@@ -2032,25 +2036,13 @@ void CEngine::SetState(int state, const Color& color)
 
     if (state & ENG_RSTATE_WRAP)
     {
-        // TODO: separate function for setting wrap mode?
-
-        TextureStageParams p1 = m_device->GetTextureStageParams(0);
-        p1.wrapS = p1.wrapT = TEX_WRAP_REPEAT;
-        m_device->SetTextureStageParams(0, p1);
-
-        TextureStageParams p2 = m_device->GetTextureStageParams(1);
-        p2.wrapS = p2.wrapT = TEX_WRAP_REPEAT;
-        m_device->SetTextureStageParams(1, p2);
+        m_device->SetTextureStageWrap(0, TEX_WRAP_REPEAT, TEX_WRAP_REPEAT);
+        m_device->SetTextureStageWrap(1, TEX_WRAP_REPEAT, TEX_WRAP_REPEAT);
     }
     else // if (state & ENG_RSTATE_CLAMP) or otherwise
     {
-        TextureStageParams p1 = m_device->GetTextureStageParams(0);
-        p1.wrapS = p1.wrapT = TEX_WRAP_CLAMP;
-        m_device->SetTextureStageParams(0, p1);
-
-        TextureStageParams p2 = m_device->GetTextureStageParams(1);
-        p2.wrapS = p2.wrapT = TEX_WRAP_CLAMP;
-        m_device->SetTextureStageParams(1, p2);
+        m_device->SetTextureStageWrap(0, TEX_WRAP_CLAMP, TEX_WRAP_CLAMP);
+        m_device->SetTextureStageWrap(1, TEX_WRAP_CLAMP, TEX_WRAP_CLAMP);
     }
 
     if (state & ENG_RSTATE_2FACE)
@@ -2182,16 +2174,35 @@ bool CEngine::LoadAllTextures()
         EngineObjLevel1& p1 = m_objectTree[l1];
         if (! p1.used) continue;
 
+        bool terrain = false;
+
+        for (int l2 = 0; l2 < static_cast<int>( p1.next.size() ); l2++)
+        {
+            EngineObjLevel2& p2 = p1.next[l2];
+            if (! p2.used) continue;
+
+            if (m_objects[p2.objRank].type == ENG_OBJTYPE_TERRAIN)
+                terrain = true;
+        }
+
         if (! p1.tex1Name.empty())
         {
-            p1.tex1 = LoadTexture(p1.tex1Name);
+            if (terrain)
+                p1.tex1 = LoadTexture(p1.tex1Name, m_terrainTexParams);
+            else
+                p1.tex1 = LoadTexture(p1.tex1Name);
+
             if (! p1.tex1.Valid())
                 ok = false;
         }
 
         if (! p1.tex2Name.empty())
         {
-            p1.tex2 = LoadTexture(p1.tex2Name);
+            if (terrain)
+                p1.tex2 = LoadTexture(p1.tex2Name, m_terrainTexParams);
+            else
+                p1.tex2 = LoadTexture(p1.tex2Name);
+
             if (! p1.tex2.Valid())
                 ok = false;
         }
@@ -2815,7 +2826,6 @@ void CEngine::Draw3DScene()
 
     if (m_shadowVisible)
     {
-        m_device->DebugHook();
         m_lightMan->UpdateDeviceLights(ENG_OBJTYPE_TERRAIN);
 
         // Draw the terrain

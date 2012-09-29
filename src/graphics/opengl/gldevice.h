@@ -117,6 +117,8 @@ public:
     virtual void SetTextureStageParams(int index, const TextureStageParams &params);
     virtual TextureStageParams GetTextureStageParams(int index);
 
+    virtual void SetTextureStageWrap(int index, Gfx::TexWrapMode wrapS, Gfx::TexWrapMode wrapT);
+
     virtual void SetTextureFactor(const Color &color);
     virtual Color GetTextureFactor();
 

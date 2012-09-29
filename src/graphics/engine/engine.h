@@ -1348,6 +1348,8 @@ protected:
 
     //! Default texture create params
     TextureCreateParams m_defaultTexParams;
+    //! Create params for terrain textures
+    TextureCreateParams m_terrainTexParams;
 
     //! Map of loaded textures (by name)
     std::map<std::string, Texture> m_texNameMap;

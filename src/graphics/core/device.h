@@ -305,6 +305,9 @@ public:
     //! Returns the current params of texture stage with given index
     virtual TextureStageParams GetTextureStageParams(int index) = 0;
 
+    //! Sets only the texture wrap modes (for faster than thru stage params)
+    virtual void SetTextureStageWrap(int index, TexWrapMode wrapS, TexWrapMode wrapT) = 0;
+
     //! Sets the texture factor to the given color value
     virtual void SetTextureFactor(const Color &color) = 0;
     //! Returns the current texture factor

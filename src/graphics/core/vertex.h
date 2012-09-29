@@ -33,6 +33,7 @@
 // Graphics module namespace
 namespace Gfx {
 
+
 /**
  * \struct Vertex
  * \brief Vertex of a primitive
@@ -43,17 +44,23 @@ namespace Gfx {
  *  - vertex coordinates (x,y,z) as Math::Vector,
  *  - normal coordinates (nx,ny,nz) as Math::Vector
  *  - texture coordinates (u,v) as Math::Point.
+ *
+ * Additional padding is provided to align to even multiplies of 4 floats for faster access.
  */
 struct Vertex
 {
     Math::Vector coord;
+    float pad1;
     Math::Vector normal;
+    float pad2;
     Math::Point texCoord;
+    float pad3, pad4;
 
     explicit Vertex(Math::Vector aCoord = Math::Vector(),
                     Math::Vector aNormal = Math::Vector(),
                     Math::Point aTexCoord = Math::Point())
-        : coord(aCoord), normal(aNormal), texCoord(aTexCoord) {}
+        : coord(aCoord), pad1(0.0f), normal(aNormal),
+          pad2(0.0f),texCoord(aTexCoord), pad3(0.0f), pad4(0.0f) {}
 
 
     //! Returns a string "(c: [...], n: [...], tc: [...])"
@@ -74,16 +81,19 @@ struct Vertex
  * It contains:
  *  - vertex coordinates (x,y,z) as Math::Vector,
  *  - RGBA color as Color
+ *
+ * Additional padding is provided to align to even multiplies of 4 floats for faster access.
  */
 struct VertexCol
 {
     Math::Vector coord;
+    float pad;
     Color color;
 
     explicit VertexCol(Math::Vector aCoord = Math::Vector(),
                        Color aColor = Color(),
                        Math::Point aTexCoord = Math::Point())
-        : coord(aCoord), color(aColor) {}
+        : coord(aCoord), pad(0.0f), color(aColor) {}
 
     //! Returns a string "(c: [...], col: [...])"
     inline std::string ToString() const
@@ -102,11 +112,15 @@ struct VertexCol
  *
  * In addition to fields from Vector, it contains
  * secondary texture coordinates (u2, v2) as Math::Point
+ *
+ * Additional padding is provided to align to even multiplies of 4 floats for faster access.
  */
 struct VertexTex2
 {
     Math::Vector coord;
+    float pad1;
     Math::Vector normal;
+    float pad2;
     Math::Point texCoord;
     Math::Point texCoord2;
 
@@ -114,7 +128,8 @@ struct VertexTex2
                         Math::Vector aNormal = Math::Vector(),
                         Math::Point aTexCoord = Math::Point(),
                         Math::Point aTexCoord2 = Math::Point())
-        : coord(aCoord), normal(aNormal), texCoord(aTexCoord), texCoord2(aTexCoord2) {}
+        : coord(aCoord), pad1(0.0f), normal(aNormal), pad2(0.0f),
+          texCoord(aTexCoord), texCoord2(aTexCoord2) {}
 
     //! Sets the fields from Vertex with texCoord2 = (0,0)
     void FromVertex(const Vertex &v)
