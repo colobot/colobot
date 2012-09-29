@@ -50,6 +50,7 @@
 #include <sstream>
 #include <iomanip>
 #include <boost/filesystem.hpp>
+#include <boost/foreach.hpp>
 
 //TODO Get rid of all sprintf's
 
@@ -236,8 +237,8 @@ void CMainDialog::ChangePhase(Phase phase)
         pos.y  = 0.10f;
         ddim.x = 0.30f;
         ddim.y = 0.80f;
-/* TODO: #if _TEEN
-        pw = m_interface->CreateWindows(pos, ddim, 12, EVENT_WINDOW5);
+        /* TODO: #if _TEEN
+           pw = m_interface->CreateWindows(pos, ddim, 12, EVENT_WINDOW5);
 #else*/
         pw = m_interface->CreateWindows(pos, ddim, 10, EVENT_WINDOW5);
 
@@ -255,20 +256,20 @@ void CMainDialog::ChangePhase(Phase phase)
         ddim.y = 0.30f;
         pw->CreateGroup(pos, ddim, 4, EVENT_INTERFACE_GLINTr);  // blue corner
 
-/* TODO: #if _SCHOOL
-        ddim.x = 0.20f;
-        ddim.y = dim.y*2.4f;
-        pos.x = 0.40f;
-        pos.y = oy+sy*7.9f;
-        pg = pw->CreateGroup(pos, ddim, 24, EVENT_LABEL1);  // orange
-        pg->SetState(STATE_SHADOW);
-        pos.y = oy+sy*3.9f;
-        pg = pw->CreateGroup(pos, ddim, 25, EVENT_LABEL1);  // orange
-        pg->SetState(STATE_SHADOW);
-        ddim.y = dim.y*1.2f;
-        pos.y = oy+sy*1.9f;
-        pg = pw->CreateGroup(pos, ddim, 26, EVENT_LABEL1);  // red
-        pg->SetState(STATE_SHADOW);
+        /* TODO: #if _SCHOOL
+           ddim.x = 0.20f;
+           ddim.y = dim.y*2.4f;
+           pos.x = 0.40f;
+           pos.y = oy+sy*7.9f;
+           pg = pw->CreateGroup(pos, ddim, 24, EVENT_LABEL1);  // orange
+           pg->SetState(STATE_SHADOW);
+           pos.y = oy+sy*3.9f;
+           pg = pw->CreateGroup(pos, ddim, 25, EVENT_LABEL1);  // orange
+           pg->SetState(STATE_SHADOW);
+           ddim.y = dim.y*1.2f;
+           pos.y = oy+sy*1.9f;
+           pg = pw->CreateGroup(pos, ddim, 26, EVENT_LABEL1);  // red
+           pg->SetState(STATE_SHADOW);
 #else */
         ddim.x = 0.20f;
         ddim.y = dim.y*2.4f;
@@ -290,24 +291,24 @@ void CMainDialog::ChangePhase(Phase phase)
         pg = pw->CreateGroup(pos, ddim, 26, EVENT_LABEL1);  // red
         pg->SetState(STATE_SHADOW);
 
-/* TODO: #if _SCHOOL
-        ddim.x = 0.18f;
-        ddim.y = dim.y*1;
-        pos.x = 0.41f;
-        pos.y = oy+sy*9.1f;
-        pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_TRAINER);
-        pb->SetState(STATE_SHADOW);
+        /* TODO: #if _SCHOOL
+           ddim.x = 0.18f;
+           ddim.y = dim.y*1;
+           pos.x = 0.41f;
+           pos.y = oy+sy*9.1f;
+           pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_TRAINER);
+           pb->SetState(STATE_SHADOW);
 
-        pos.y = oy+sy*8.0f;
+           pos.y = oy+sy*8.0f;
 #if _TEEN
-        pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_TEEN);
+pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_TEEN);
 #else
-        pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_DEFI);
+pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_DEFI);
 #endif
 #if _CEEBOTDEMO
-        pb->ClearState(STATE_ENABLE);
+pb->ClearState(STATE_ENABLE);
 #endif
-        pb->SetState(STATE_SHADOW);
+pb->SetState(STATE_SHADOW);
 #else */
         ddim.x = 0.18f;
         ddim.y = dim.y*1;
@@ -344,20 +345,20 @@ void CMainDialog::ChangePhase(Phase phase)
         pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_QUIT);
         pb->SetState(STATE_SHADOW);
 
-// TODO: #if !_DEMO & !_SCHOOL
+        // TODO: #if !_DEMO & !_SCHOOL
         if ( m_accessEnable && m_accessUser )
         {
             pos.x  = 447.0f/640.0f;
             pos.y  = 313.0f/480.0f;
             ddim.x = 0.09f;
-/*#if _POLISH
-            pos.x  -=  5.0f/640.0f;
-            ddim.x += 10.0f/640.0f;
+            /*#if _POLISH
+              pos.x  -=  5.0f/640.0f;
+              ddim.x += 10.0f/640.0f;
 #endif*/
             pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_USER);
             pb->SetState(STATE_SHADOW);
         }
-// #endif
+        // #endif
 
         if ( m_app->GetDebugMode() )
         {
@@ -380,11 +381,11 @@ void CMainDialog::ChangePhase(Phase phase)
         pl->SetFontSize(8.0f);
 
         m_engine->SetBackground("interface.png",
-                                Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
-                                Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
-                                Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
-                                Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
-                                true, Math::Point(1.0f, 768.0f / 1024.0f));
+                Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
+                Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
+                Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
+                Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
+                true, Math::Point(1.0f, 768.0f / 1024.0f));
         m_engine->SetBackForce(true);
     }
 
@@ -398,17 +399,17 @@ void CMainDialog::ChangePhase(Phase phase)
         GetResource(RES_TEXT, RT_TITLE_NAME, name);
         pw->SetName(name);
 
-/* TODO: #if _NEWLOOK
-        pos.x  =  80.0f/640.0f;
-        pos.y  =  93.0f/480.0f;
-        ddim.x = 285.0f/640.0f;
-        ddim.y = 266.0f/480.0f;
-        pg = pw->CreateGroup(pos, ddim, 23, EVENT_LABEL1);  // blue
-        pg->SetState(STATE_SHADOW);
-        pos.x  = 372.0f/640.0f;
-        ddim.x = 188.0f/640.0f;
-        pg = pw->CreateGroup(pos, ddim, 26, EVENT_LABEL1);  // violet
-        pg->SetState(STATE_SHADOW);
+        /* TODO: #if _NEWLOOK
+           pos.x  =  80.0f/640.0f;
+           pos.y  =  93.0f/480.0f;
+           ddim.x = 285.0f/640.0f;
+           ddim.y = 266.0f/480.0f;
+           pg = pw->CreateGroup(pos, ddim, 23, EVENT_LABEL1);  // blue
+           pg->SetState(STATE_SHADOW);
+           pos.x  = 372.0f/640.0f;
+           ddim.x = 188.0f/640.0f;
+           pg = pw->CreateGroup(pos, ddim, 26, EVENT_LABEL1);  // violet
+           pg->SetState(STATE_SHADOW);
 #endif*/
 
         pos.x  = 0.10f;
@@ -500,11 +501,11 @@ void CMainDialog::ChangePhase(Phase phase)
         UpdateNameFace();
 
         m_engine->SetBackground("interface.png",
-                                Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
-                                Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
-                                Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
-                                Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
-                                true, Math::Point(1.0f, 768.0f / 1024.0f));
+                Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
+                Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
+                Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
+                Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
+                true, Math::Point(1.0f, 768.0f / 1024.0f));
         m_engine->SetBackForce(true);
     }
 
@@ -518,13 +519,13 @@ void CMainDialog::ChangePhase(Phase phase)
         GetResource(RES_TEXT, RT_TITLE_PERSO, name);
         pw->SetName(name);
 
-/* TODO: #if _NEWLOOK
-        pos.x  =  95.0f/640.0f;
-        pos.y  =  66.0f/480.0f;
-        ddim.x = 443.0f/640.0f;
-        ddim.y =  42.0f/480.0f;
-        pg = pw->CreateGroup(pos, ddim, 26, EVENT_LABEL1);  // violet
-        pg->SetState(STATE_SHADOW);
+        /* TODO: #if _NEWLOOK
+           pos.x  =  95.0f/640.0f;
+           pos.y  =  66.0f/480.0f;
+           ddim.x = 443.0f/640.0f;
+           ddim.y =  42.0f/480.0f;
+           pg = pw->CreateGroup(pos, ddim, 26, EVENT_LABEL1);  // violet
+           pg->SetState(STATE_SHADOW);
 #endif*/
 
         pos.x  = 0.10f;
@@ -740,12 +741,12 @@ void CMainDialog::ChangePhase(Phase phase)
     }
 
     if ( m_phase == PHASE_TRAINER ||
-         m_phase == PHASE_DEFI    ||
-         m_phase == PHASE_MISSION ||
-         m_phase == PHASE_FREE    ||
-         m_phase == PHASE_TEEN    ||
-         m_phase == PHASE_USER    ||
-         m_phase == PHASE_PROTO   )
+            m_phase == PHASE_DEFI    ||
+            m_phase == PHASE_MISSION ||
+            m_phase == PHASE_FREE    ||
+            m_phase == PHASE_TEEN    ||
+            m_phase == PHASE_USER    ||
+            m_phase == PHASE_PROTO   )
     {
         if ( m_phase == PHASE_TRAINER )  m_index = 0;
         if ( m_phase == PHASE_DEFI    )  m_index = 1;
@@ -788,27 +789,27 @@ void CMainDialog::ChangePhase(Phase phase)
         GetResource(RES_TEXT, res, name);
         pw->SetName(name);
 
-/* TODO: #if _NEWLOOK
-        pos.x  = 100.0f/640.0f;
-        pos.y  = 226.0f/480.0f;
-        ddim.x = 216.0f/640.0f;
-        ddim.y = 160.0f/480.0f;
-        pg = pw->CreateGroup(pos, ddim, 23, EVENT_LABEL1);  // blue
-        pg->SetState(STATE_SHADOW);
-        pos.x  = 322.0f/640.0f;
-        pg = pw->CreateGroup(pos, ddim, 24, EVENT_LABEL1);  // cyan
-        pg->SetState(STATE_SHADOW);
+        /* TODO: #if _NEWLOOK
+           pos.x  = 100.0f/640.0f;
+           pos.y  = 226.0f/480.0f;
+           ddim.x = 216.0f/640.0f;
+           ddim.y = 160.0f/480.0f;
+           pg = pw->CreateGroup(pos, ddim, 23, EVENT_LABEL1);  // blue
+           pg->SetState(STATE_SHADOW);
+           pos.x  = 322.0f/640.0f;
+           pg = pw->CreateGroup(pos, ddim, 24, EVENT_LABEL1);  // cyan
+           pg->SetState(STATE_SHADOW);
 
-        pos.x  = 100.0f/640.0f;
-        pos.y  = 122.0f/480.0f;
-        ddim.x = 438.0f/640.0f;
-        ddim.y =  98.0f/480.0f;
-        pg = pw->CreateGroup(pos, ddim, 25, EVENT_LABEL1);  // green
-        pg->SetState(STATE_SHADOW);
-        pos.y  =  66.0f/480.0f;
-        ddim.y =  42.0f/480.0f;
-        pg = pw->CreateGroup(pos, ddim, 26, EVENT_LABEL1);  // violet
-        pg->SetState(STATE_SHADOW);
+           pos.x  = 100.0f/640.0f;
+           pos.y  = 122.0f/480.0f;
+           ddim.x = 438.0f/640.0f;
+           ddim.y =  98.0f/480.0f;
+           pg = pw->CreateGroup(pos, ddim, 25, EVENT_LABEL1);  // green
+           pg->SetState(STATE_SHADOW);
+           pos.y  =  66.0f/480.0f;
+           ddim.y =  42.0f/480.0f;
+           pg = pw->CreateGroup(pos, ddim, 26, EVENT_LABEL1);  // violet
+           pg->SetState(STATE_SHADOW);
 #endif */
 
         pos.x  = 0.10f;
@@ -893,8 +894,8 @@ void CMainDialog::ChangePhase(Phase phase)
 
         // Button displays the "soluce":
         if ( m_phase != PHASE_TRAINER &&
-             m_phase != PHASE_FREE    &&
-             m_phase != PHASE_TEEN    )
+                m_phase != PHASE_FREE    &&
+                m_phase != PHASE_TEEN    )
         {
             pos.x = ox+sx*9.5f;
             pos.y = oy+sy*5.8f;
@@ -909,8 +910,8 @@ void CMainDialog::ChangePhase(Phase phase)
         UpdateSceneResume((m_chap[m_index]+1)*100+(m_sel[m_index]+1));
 
         if ( m_phase == PHASE_MISSION ||
-             m_phase == PHASE_FREE    ||
-             m_phase == PHASE_USER    )
+                m_phase == PHASE_FREE    ||
+                m_phase == PHASE_USER    )
         {
             pos.x = ox+sx*9.5f;
             pos.y = oy+sy*2;
@@ -952,24 +953,24 @@ void CMainDialog::ChangePhase(Phase phase)
         pb->SetState(STATE_SHADOW);
 
         m_engine->SetBackground("interface.png",
-                                Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
-                                Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
-                                Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
-                                Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
-                                true, Math::Point(1.0f, 768.0f / 1024.0f));
+                Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
+                Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
+                Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
+                Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
+                true, Math::Point(1.0f, 768.0f / 1024.0f));
         m_engine->SetBackForce(true);
     }
 
     if ( m_phase == PHASE_SETUPd  ||
-         m_phase == PHASE_SETUPg  ||
-         m_phase == PHASE_SETUPp  ||
-         m_phase == PHASE_SETUPc  ||
-         m_phase == PHASE_SETUPs  ||
-         m_phase == PHASE_SETUPds ||
-         m_phase == PHASE_SETUPgs ||
-         m_phase == PHASE_SETUPps ||
-         m_phase == PHASE_SETUPcs ||
-         m_phase == PHASE_SETUPss )
+            m_phase == PHASE_SETUPg  ||
+            m_phase == PHASE_SETUPp  ||
+            m_phase == PHASE_SETUPc  ||
+            m_phase == PHASE_SETUPs  ||
+            m_phase == PHASE_SETUPds ||
+            m_phase == PHASE_SETUPgs ||
+            m_phase == PHASE_SETUPps ||
+            m_phase == PHASE_SETUPcs ||
+            m_phase == PHASE_SETUPss )
     {
         if ( m_phase == PHASE_SETUPds )
         {
@@ -1023,77 +1024,77 @@ void CMainDialog::ChangePhase(Phase phase)
         ddim.y = 0.05f;
         pw->CreateGroup(pos, ddim, 3, EVENT_NULL);  // transparent -> gray
 
-/* TODO: #if _NEWLOOK
-        if ( m_phase == PHASE_SETUPd  || // setup/display ?
-             m_phase == PHASE_SETUPds )
-        {
-            pos.x  = 100.0f/640.0f;
-            pos.y  = 130.0f/480.0f;
-            ddim.x = 216.0f/640.0f;
-            ddim.y = 212.0f/480.0f;
-            pg = pw->CreateGroup(pos, ddim, 23, EVENT_LABEL1);  // blue
-            pg->SetState(STATE_SHADOW);
-            pos.x  = 324.0f/640.0f;
-            pg = pw->CreateGroup(pos, ddim, 24, EVENT_LABEL1);  // cyan
-            pg->SetState(STATE_SHADOW);
-        }
-        if ( m_phase == PHASE_SETUPg  || // setup/graphic ?
-             m_phase == PHASE_SETUPgs )
-        {
-            pos.x  = 100.0f/640.0f;
-            pos.y  = 130.0f/480.0f;
-            ddim.x = 174.0f/640.0f;
-            ddim.y = 212.0f/480.0f;
-            pg = pw->CreateGroup(pos, ddim, 23, EVENT_LABEL1);  // blue
-            pg->SetState(STATE_SHADOW);
-            pos.x  = 282.0f/640.0f;
-            ddim.x = 258.0f/640.0f;
-            pg = pw->CreateGroup(pos, ddim, 24, EVENT_LABEL1);  // cyan
-            pg->SetState(STATE_SHADOW);
-        }
-        if ( m_phase == PHASE_SETUPp  || // setup/game ?
-             m_phase == PHASE_SETUPps )
-        {
-            pos.x  = 100.0f/640.0f;
-            pos.y  = 130.0f/480.0f;
-            ddim.x = 226.0f/640.0f;
-            ddim.y = 212.0f/480.0f;
-            pg = pw->CreateGroup(pos, ddim, 23, EVENT_LABEL1);  // blue
-            pg->SetState(STATE_SHADOW);
-            pos.x  = 334.0f/640.0f;
-            ddim.x = 206.0f/640.0f;
-            pg = pw->CreateGroup(pos, ddim, 24, EVENT_LABEL1);  // cyan
-            pg->SetState(STATE_SHADOW);
-        }
-        if ( m_phase == PHASE_SETUPc  || // setup/command ?
-             m_phase == PHASE_SETUPcs )
-        {
-            pos.x  = 100.0f/640.0f;
-            pos.y  = 125.0f/480.0f;
-            ddim.x = 440.0f/640.0f;
-            ddim.y = 222.0f/480.0f;
-            pg = pw->CreateGroup(pos, ddim, 23, EVENT_LABEL1);  // blue
-            pg->SetState(STATE_SHADOW);
-        }
-        if ( m_phase == PHASE_SETUPs  || // setup/sound ?
-             m_phase == PHASE_SETUPss )
-        {
-            pos.x  = 100.0f/640.0f;
-            pos.y  = 130.0f/480.0f;
-            ddim.x = 216.0f/640.0f;
-            ddim.y = 212.0f/480.0f;
-            pg = pw->CreateGroup(pos, ddim, 23, EVENT_LABEL1);  // blue
-            pg->SetState(STATE_SHADOW);
-            pos.x  = 324.0f/640.0f;
-            pg = pw->CreateGroup(pos, ddim, 24, EVENT_LABEL1);  // cyan
-            pg->SetState(STATE_SHADOW);
-        }
+        /* TODO: #if _NEWLOOK
+           if ( m_phase == PHASE_SETUPd  || // setup/display ?
+           m_phase == PHASE_SETUPds )
+           {
+           pos.x  = 100.0f/640.0f;
+           pos.y  = 130.0f/480.0f;
+           ddim.x = 216.0f/640.0f;
+           ddim.y = 212.0f/480.0f;
+           pg = pw->CreateGroup(pos, ddim, 23, EVENT_LABEL1);  // blue
+           pg->SetState(STATE_SHADOW);
+           pos.x  = 324.0f/640.0f;
+           pg = pw->CreateGroup(pos, ddim, 24, EVENT_LABEL1);  // cyan
+           pg->SetState(STATE_SHADOW);
+           }
+           if ( m_phase == PHASE_SETUPg  || // setup/graphic ?
+           m_phase == PHASE_SETUPgs )
+           {
+           pos.x  = 100.0f/640.0f;
+           pos.y  = 130.0f/480.0f;
+           ddim.x = 174.0f/640.0f;
+           ddim.y = 212.0f/480.0f;
+           pg = pw->CreateGroup(pos, ddim, 23, EVENT_LABEL1);  // blue
+           pg->SetState(STATE_SHADOW);
+           pos.x  = 282.0f/640.0f;
+           ddim.x = 258.0f/640.0f;
+           pg = pw->CreateGroup(pos, ddim, 24, EVENT_LABEL1);  // cyan
+           pg->SetState(STATE_SHADOW);
+           }
+           if ( m_phase == PHASE_SETUPp  || // setup/game ?
+           m_phase == PHASE_SETUPps )
+           {
+           pos.x  = 100.0f/640.0f;
+           pos.y  = 130.0f/480.0f;
+           ddim.x = 226.0f/640.0f;
+           ddim.y = 212.0f/480.0f;
+           pg = pw->CreateGroup(pos, ddim, 23, EVENT_LABEL1);  // blue
+           pg->SetState(STATE_SHADOW);
+           pos.x  = 334.0f/640.0f;
+           ddim.x = 206.0f/640.0f;
+           pg = pw->CreateGroup(pos, ddim, 24, EVENT_LABEL1);  // cyan
+           pg->SetState(STATE_SHADOW);
+           }
+           if ( m_phase == PHASE_SETUPc  || // setup/command ?
+           m_phase == PHASE_SETUPcs )
+           {
+           pos.x  = 100.0f/640.0f;
+           pos.y  = 125.0f/480.0f;
+           ddim.x = 440.0f/640.0f;
+           ddim.y = 222.0f/480.0f;
+           pg = pw->CreateGroup(pos, ddim, 23, EVENT_LABEL1);  // blue
+           pg->SetState(STATE_SHADOW);
+           }
+           if ( m_phase == PHASE_SETUPs  || // setup/sound ?
+           m_phase == PHASE_SETUPss )
+           {
+           pos.x  = 100.0f/640.0f;
+           pos.y  = 130.0f/480.0f;
+           ddim.x = 216.0f/640.0f;
+           ddim.y = 212.0f/480.0f;
+           pg = pw->CreateGroup(pos, ddim, 23, EVENT_LABEL1);  // blue
+           pg->SetState(STATE_SHADOW);
+           pos.x  = 324.0f/640.0f;
+           pg = pw->CreateGroup(pos, ddim, 24, EVENT_LABEL1);  // cyan
+           pg->SetState(STATE_SHADOW);
+           }
 
-        pos.x  = 100.0f/640.0f;
-        pos.y  =  66.0f/480.0f;
-        ddim.x = 440.0f/640.0f;
-        ddim.y =  42.0f/480.0f;
-        pg = pw->CreateGroup(pos, ddim, 26, EVENT_LABEL1);  // violet
+           pos.x  = 100.0f/640.0f;
+           pos.y  =  66.0f/480.0f;
+           ddim.x = 440.0f/640.0f;
+           ddim.y =  42.0f/480.0f;
+           pg = pw->CreateGroup(pos, ddim, 26, EVENT_LABEL1);  // violet
         pg->SetState(STATE_SHADOW);
 #endif */
 
@@ -1151,17 +1152,17 @@ void CMainDialog::ChangePhase(Phase phase)
         if ( !m_bSimulSetup )
         {
             m_engine->SetBackground("interface.png",
-                                    Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
-                                    Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
-                                    Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
-                                    Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
-                                    true, Math::Point(1.0f, 768.0f / 1024.0f));
+                    Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
+                    Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
+                    Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
+                    Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
+                    true, Math::Point(1.0f, 768.0f / 1024.0f));
             m_engine->SetBackForce(true);
         }
     }
 
     if ( m_phase == PHASE_SETUPd  || // setup/display ?
-         m_phase == PHASE_SETUPds )
+            m_phase == PHASE_SETUPds )
     {
         pos.x = ox+sx*3;
         pos.y = oy+sy*9;
@@ -1215,7 +1216,7 @@ void CMainDialog::ChangePhase(Phase phase)
     }
 
     if ( m_phase == PHASE_SETUPg  ||  // setup/graphic ?
-         m_phase == PHASE_SETUPgs )
+            m_phase == PHASE_SETUPgs )
     {
         ddim.x = dim.x*6;
         ddim.y = dim.y*0.5f;
@@ -1344,9 +1345,9 @@ void CMainDialog::ChangePhase(Phase phase)
         ddim.y = dim.y*1;
         pos.x = ox+sx*10;
         pos.y = oy+sy*2;
-/* TODO: #if _POLISH
-        ddim.x += 20.0f/640.0f;
-        pos.x -= 20.0f/640.0f*3.0f;
+        /* TODO: #if _POLISH
+           ddim.x += 20.0f/640.0f;
+           pos.x -= 20.0f/640.0f*3.0f;
 #endif*/
         pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_MIN);
         pb->SetState(STATE_SHADOW);
@@ -1361,26 +1362,26 @@ void CMainDialog::ChangePhase(Phase phase)
     }
 
     if ( m_phase == PHASE_SETUPp  ||  // setup/game ?
-         m_phase == PHASE_SETUPps )
+            m_phase == PHASE_SETUPps )
     {
         ddim.x = dim.x*6;
         ddim.y = dim.y*0.5f;
         pos.x = ox+sx*3;
         pos.y = 0.65f;
-//?     pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_TOTO);
-//?     pc->SetState(STATE_SHADOW);
-//?     pos.y -= 0.048f;
-/*TODO: #if _SCHOOL
- #if _EDU
-        pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_SOLUCE4);
-        pc->SetState(STATE_SHADOW);
-        pos.y -= 0.048f;
- #endif
+        //?     pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_TOTO);
+        //?     pc->SetState(STATE_SHADOW);
+        //?     pos.y -= 0.048f;
+        /*TODO: #if _SCHOOL
+#if _EDU
+pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_SOLUCE4);
+pc->SetState(STATE_SHADOW);
+pos.y -= 0.048f;
+#endif
 #else*/
         pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_MOVIES);
         pc->SetState(STATE_SHADOW);
         pos.y -= 0.048f;
-//#endif
+        //#endif
         pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_SCROLL);
         pc->SetState(STATE_SHADOW);
         pos.y -= 0.048f;
@@ -1392,12 +1393,12 @@ void CMainDialog::ChangePhase(Phase phase)
         pos.y -= 0.048f;
         pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_EFFECT);
         pc->SetState(STATE_SHADOW);
-//?     pos.y -= 0.048f;
-//?     pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_NICERST);
-//?     pc->SetState(STATE_SHADOW);
-//?     pos.y -= 0.048f;
-//?     pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_HIMSELF);
-//?     pc->SetState(STATE_SHADOW);
+        //?     pos.y -= 0.048f;
+        //?     pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_NICERST);
+        //?     pc->SetState(STATE_SHADOW);
+        //?     pos.y -= 0.048f;
+        //?     pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_HIMSELF);
+        //?     pc->SetState(STATE_SHADOW);
 
         ddim.x = dim.x*6;
         ddim.y = dim.y*0.5f;
@@ -1429,7 +1430,7 @@ void CMainDialog::ChangePhase(Phase phase)
     }
 
     if ( m_phase == PHASE_SETUPc  ||  // setup/commands ?
-         m_phase == PHASE_SETUPcs )
+            m_phase == PHASE_SETUPcs )
     {
         pos.x = ox+sx*3;
         pos.y = 320.0f/480.0f;
@@ -1483,7 +1484,7 @@ void CMainDialog::ChangePhase(Phase phase)
     }
 
     if ( m_phase == PHASE_SETUPs  ||  // setup/sound ?
-         m_phase == PHASE_SETUPss )
+            m_phase == PHASE_SETUPss )
     {
         pos.x = ox+sx*3;
         pos.y = 0.55f;
@@ -1498,7 +1499,7 @@ void CMainDialog::ChangePhase(Phase phase)
         pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL1, name);
         pl->SetTextAlign(Gfx::TEXT_ALIGN_LEFT);
 
-// TODO: #if (_FULL | _NET) & _SOUNDTRACKS
+        // TODO: #if (_FULL | _NET) & _SOUNDTRACKS
         pos.x = ox+sx*3;
         pos.y = 0.40f;
         ddim.x = dim.x*4.0f;
@@ -1511,7 +1512,7 @@ void CMainDialog::ChangePhase(Phase phase)
         GetResource(RES_EVENT, EVENT_INTERFACE_VOLMUSIC, name);
         pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL2, name);
         pl->SetTextAlign(Gfx::TEXT_ALIGN_LEFT);
-// #endif
+        // #endif
 
         ddim.x = dim.x*6;
         ddim.y = dim.y*0.5f;
@@ -1534,7 +1535,7 @@ void CMainDialog::ChangePhase(Phase phase)
     }
 
     if ( m_phase == PHASE_WRITE  ||
-         m_phase == PHASE_WRITEs )
+            m_phase == PHASE_WRITEs )
     {
         pos.x = 0.10f;
         pos.y = 0.10f;
@@ -1556,13 +1557,13 @@ void CMainDialog::ChangePhase(Phase phase)
         ddim.y = 0.50f;
         pw->CreateGroup(pos, ddim, 4, EVENT_INTERFACE_GLINTr);  // blue corner
 
-/* TODO: #if _NEWLOOK
-        pos.x  = 100.0f/640.0f;
-        pos.y  =  66.0f/480.0f;
-        ddim.x = 438.0f/640.0f;
-        ddim.y =  42.0f/480.0f;
-        pg = pw->CreateGroup(pos, ddim, 26, EVENT_LABEL1);  // violet
-        pg->SetState(STATE_SHADOW);
+        /* TODO: #if _NEWLOOK
+           pos.x  = 100.0f/640.0f;
+           pos.y  =  66.0f/480.0f;
+           ddim.x = 438.0f/640.0f;
+           ddim.y =  42.0f/480.0f;
+           pg = pw->CreateGroup(pos, ddim, 26, EVENT_LABEL1);  // violet
+           pg->SetState(STATE_SHADOW);
 #endif */
 
         pos.x  = 290.0f/640.0f;
@@ -1618,7 +1619,7 @@ void CMainDialog::ChangePhase(Phase phase)
     }
 
     if ( m_phase == PHASE_READ  ||
-         m_phase == PHASE_READs )
+            m_phase == PHASE_READs )
     {
         pos.x = 0.10f;
         pos.y = 0.10f;
@@ -1640,13 +1641,13 @@ void CMainDialog::ChangePhase(Phase phase)
         ddim.y = 0.50f;
         pw->CreateGroup(pos, ddim, 4, EVENT_INTERFACE_GLINTr);  // blue corner
 
-/* TODO: #if _NEWLOOK
-        pos.x  = 100.0f/640.0f;
-        pos.y  =  66.0f/480.0f;
-        ddim.x = 438.0f/640.0f;
-        ddim.y =  42.0f/480.0f;
-        pg = pw->CreateGroup(pos, ddim, 26, EVENT_LABEL1);  // violet
-        pg->SetState(STATE_SHADOW);
+        /* TODO: #if _NEWLOOK
+           pos.x  = 100.0f/640.0f;
+           pos.y  =  66.0f/480.0f;
+           ddim.x = 438.0f/640.0f;
+           ddim.y =  42.0f/480.0f;
+           pg = pw->CreateGroup(pos, ddim, 26, EVENT_LABEL1);  // violet
+           pg->SetState(STATE_SHADOW);
 #endif*/
 
         pos.x  = 290.0f/640.0f;
@@ -1693,11 +1694,11 @@ void CMainDialog::ChangePhase(Phase phase)
         if ( m_phase == PHASE_READ )
         {
             m_engine->SetBackground("interface.png",
-                                    Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
-                                    Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
-                                    Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
-                                    Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
-                                    true, Math::Point(1.0f, 768.0f / 1024.0f));
+                    Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
+                    Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
+                    Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
+                    Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
+                    true, Math::Point(1.0f, 768.0f / 1024.0f));
             m_engine->SetBackForce(true);
         }
     }
@@ -1708,8 +1709,8 @@ void CMainDialog::ChangePhase(Phase phase)
         pos.y  = 0.10f;
         ddim.x = 0.30f;
         ddim.y = 0.80f;
-/*TODO: #if _TEEN
-        pw = m_interface->CreateWindows(pos, ddim, 12, EVENT_WINDOW5);
+        /*TODO: #if _TEEN
+          pw = m_interface->CreateWindows(pos, ddim, 12, EVENT_WINDOW5);
 #else*/
         pw = m_interface->CreateWindows(pos, ddim, 10, EVENT_WINDOW5);
 
@@ -1743,11 +1744,11 @@ void CMainDialog::ChangePhase(Phase phase)
         pl->SetTextAlign(Gfx::TEXT_ALIGN_CENTER);
 
         m_engine->SetBackground("interface.png",
-                                Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
-                                Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
-                                Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
-                                Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
-                                true, Math::Point(1.0f, 768.0f / 1024.0f));
+                Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
+                Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
+                Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
+                Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
+                true, Math::Point(1.0f, 768.0f / 1024.0f));
         m_engine->SetBackForce(true);
 
         m_loadingCounter = 1;  // enough time to display!
@@ -1768,11 +1769,11 @@ void CMainDialog::ChangePhase(Phase phase)
         m_engine->SetOverFront(true);
 
         m_engine->SetBackground("ppc.png",
-                                Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
-                                Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
-                                Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
-                                Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
-                                true, Math::Point(861.0f / 1024.0f, 646.0f / 1024.0f));
+                Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
+                Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
+                Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
+                Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
+                true, Math::Point(861.0f / 1024.0f, 646.0f / 1024.0f));
         m_engine->SetBackForce(true);
     }
     if ( m_phase == PHASE_WELCOME2 )
@@ -1790,11 +1791,11 @@ void CMainDialog::ChangePhase(Phase phase)
         m_engine->SetOverFront(true);
 
         m_engine->SetBackground("colobot.png",
-                                Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
-                                Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
-                                Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
-                                Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
-                                true, Math::Point(640.0f / 1024.0f, 480.0f / 512.0f));
+                Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
+                Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
+                Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
+                Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
+                true, Math::Point(640.0f / 1024.0f, 480.0f / 512.0f));
         m_engine->SetBackForce(true);
     }
     if ( m_phase == PHASE_WELCOME3 )
@@ -1809,11 +1810,11 @@ void CMainDialog::ChangePhase(Phase phase)
         m_engine->SetOverFront(true);
 
         m_engine->SetBackground("epsitec.png",
-                                Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
-                                Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
-                                Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
-                                Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
-                                true, Math::Point(640.0f / 1024.0f, 480.0f / 512.0f));
+                Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
+                Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
+                Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
+                Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
+                true, Math::Point(640.0f / 1024.0f, 480.0f / 512.0f));
         m_engine->SetBackForce(true);
     }
 
@@ -1825,7 +1826,7 @@ void CMainDialog::ChangePhase(Phase phase)
         ddim.y = 0.0f;
         pw = m_interface->CreateWindows(pos, ddim, -1, EVENT_WINDOW5);
 
-// TODO: #if _FULL | _NET
+        // TODO: #if _FULL | _NET
         pos.x  =  80.0f/640.0f;
         pos.y  = 240.0f/480.0f;
         ddim.x = 490.0f/640.0f;
@@ -1849,18 +1850,18 @@ void CMainDialog::ChangePhase(Phase phase)
         pe->SetFontType(Gfx::FONT_COURIER);
         pe->SetFontSize(6.5f);
         pe->ReadText("help/licences.txt");
-// #endif
-/* TODO: #if _SCHOOL
+        // #endif
+        /* TODO: #if _SCHOOL
 #if _CEEBOTDEMO
-        pos.x  =  80.0f/640.0f;
-        pos.y  = 210.0f/480.0f;
-        ddim.x = 490.0f/640.0f;
-        ddim.y = 150.0f/480.0f;
+pos.x  =  80.0f/640.0f;
+pos.y  = 210.0f/480.0f;
+ddim.x = 490.0f/640.0f;
+ddim.y = 150.0f/480.0f;
 #else
-        pos.x  =  80.0f/640.0f;
-        pos.y  = 200.0f/480.0f;
-        ddim.x = 490.0f/640.0f;
-        ddim.y = 150.0f/480.0f;
+pos.x  =  80.0f/640.0f;
+pos.y  = 200.0f/480.0f;
+ddim.x = 490.0f/640.0f;
+ddim.y = 150.0f/480.0f;
 #endif*/
         pe = pw->CreateEdit(pos, ddim, 0, EVENT_EDIT1);
         pe->SetGenericMode(true);
@@ -1870,33 +1871,33 @@ void CMainDialog::ChangePhase(Phase phase)
         pe->SetFontSize(8.0f);
         pe->ReadText("help/authors.txt");
 
-/* #if _DEMO
-//?     pos.x  =  80.0f/640.0f;
-//?     pos.y  = 240.0f/480.0f;
-//?     ddim.x = 490.0f/640.0f;
-//?     ddim.y = 110.0f/480.0f;
-//?     pe = pw->CreateEdit(pos, ddim, 0, EVENT_EDIT1);
-//?     pe->SetGenericMode(true);
-//?     pe->SetEditCap(false);
-//?     pe->SetHiliteCap(false);
-//?     pe->SetFontType(Gfx::FONT_COURIER);
-//?     pe->SetFontSize(8.0f);
-//?     pe->ReadText("help/demo.txt");
+        /* #if _DEMO
+        //?     pos.x  =  80.0f/640.0f;
+        //?     pos.y  = 240.0f/480.0f;
+        //?     ddim.x = 490.0f/640.0f;
+        //?     ddim.y = 110.0f/480.0f;
+        //?     pe = pw->CreateEdit(pos, ddim, 0, EVENT_EDIT1);
+        //?     pe->SetGenericMode(true);
+        //?     pe->SetEditCap(false);
+        //?     pe->SetHiliteCap(false);
+        //?     pe->SetFontType(Gfx::FONT_COURIER);
+        //?     pe->SetFontSize(8.0f);
+        //?     pe->ReadText("help/demo.txt");
 
-//?     pos.x  =  80.0f/640.0f;
-//?     pos.y  = 140.0f/480.0f;
-//?     ddim.x = 490.0f/640.0f;
-//?     ddim.y = 100.0f/480.0f;
-//?     pe = pw->CreateEdit(pos, ddim, 0, EVENT_EDIT2);
-//?     pe->SetGenericMode(true);
-//?     pe->SetEditCap(false);
-//?     pe->SetHiliteCap(false);
-//?     pe->SetFontType(Gfx::FONT_COURIER);
-//?     pe->SetFontSize(8.0f);
-//?     pe->ReadText("help/authors.txt");
+        //?     pos.x  =  80.0f/640.0f;
+        //?     pos.y  = 140.0f/480.0f;
+        //?     ddim.x = 490.0f/640.0f;
+        //?     ddim.y = 100.0f/480.0f;
+        //?     pe = pw->CreateEdit(pos, ddim, 0, EVENT_EDIT2);
+        //?     pe->SetGenericMode(true);
+        //?     pe->SetEditCap(false);
+        //?     pe->SetHiliteCap(false);
+        //?     pe->SetFontType(Gfx::FONT_COURIER);
+        //?     pe->SetFontSize(8.0f);
+        //?     pe->ReadText("help/authors.txt");
 #endif */
 
-// TODO: #if !_DEMO
+        // TODO: #if !_DEMO
         pos.x  =  40.0f/640.0f;
         pos.y  =  83.0f/480.0f;
         ddim.x = 246.0f/640.0f;
@@ -1926,15 +1927,15 @@ void CMainDialog::ChangePhase(Phase phase)
         pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL4, name);
         pl->SetFontType(Gfx::FONT_COURIER);
         pl->SetFontSize(8.0f);
-// #endif
+        // #endif
 
-/* TODO: #if _DEMO
-        pos.x  = 481.0f/640.0f;
-        pos.y  =  51.0f/480.0f;
-        ddim.x =  30.0f/640.0f;
-        ddim.y =  30.0f/480.0f;
-        pb = pw->CreateButton(pos, ddim, 49, EVENT_INTERFACE_ABORT);
-        pb->SetState(STATE_SHADOW);
+        /* TODO: #if _DEMO
+           pos.x  = 481.0f/640.0f;
+           pos.y  =  51.0f/480.0f;
+           ddim.x =  30.0f/640.0f;
+           ddim.y =  30.0f/480.0f;
+           pb = pw->CreateButton(pos, ddim, 49, EVENT_INTERFACE_ABORT);
+           pb->SetState(STATE_SHADOW);
 #else */
         pos.x  = 306.0f/640.0f;
         pos.y  =  17.0f/480.0f;
@@ -1942,52 +1943,52 @@ void CMainDialog::ChangePhase(Phase phase)
         ddim.y =  30.0f/480.0f;
         pb = pw->CreateButton(pos, ddim, 49, EVENT_INTERFACE_ABORT);
         pb->SetState(STATE_SHADOW);
-// #endif
+        // #endif
 
         m_engine->SetBackground("generic.png",
-                                Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
-                                Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
-                                Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
-                                Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
-                                true, Math::Point(1.0f, 768.0f / 1024.0f));
+                Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
+                Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
+                Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
+                Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
+                true, Math::Point(1.0f, 768.0f / 1024.0f));
         m_engine->SetBackForce(true);
     }
 
     if ( m_phase == PHASE_INIT    ||
-         m_phase == PHASE_NAME    ||
-         m_phase == PHASE_TRAINER ||
-         m_phase == PHASE_DEFI    ||
-         m_phase == PHASE_MISSION ||
-         m_phase == PHASE_FREE    ||
-         m_phase == PHASE_TEEN    ||
-         m_phase == PHASE_USER    ||
-         m_phase == PHASE_PROTO   ||
-         m_phase == PHASE_SETUPd  ||
-         m_phase == PHASE_SETUPg  ||
-         m_phase == PHASE_SETUPp  ||
-         m_phase == PHASE_SETUPc  ||
-         m_phase == PHASE_SETUPs  ||
-         m_phase == PHASE_READ    ||
-         m_phase == PHASE_LOADING )
+            m_phase == PHASE_NAME    ||
+            m_phase == PHASE_TRAINER ||
+            m_phase == PHASE_DEFI    ||
+            m_phase == PHASE_MISSION ||
+            m_phase == PHASE_FREE    ||
+            m_phase == PHASE_TEEN    ||
+            m_phase == PHASE_USER    ||
+            m_phase == PHASE_PROTO   ||
+            m_phase == PHASE_SETUPd  ||
+            m_phase == PHASE_SETUPg  ||
+            m_phase == PHASE_SETUPp  ||
+            m_phase == PHASE_SETUPc  ||
+            m_phase == PHASE_SETUPs  ||
+            m_phase == PHASE_READ    ||
+            m_phase == PHASE_LOADING )
     {
-/*TODO: #if _SCHOOL
+        /*TODO: #if _SCHOOL
 #if _TEEN
-        pos.x  =  50.0f/640.0f;
-        pos.y  = 430.0f/480.0f;
-        ddim.x = 200.0f/640.0f;
-        ddim.y =  10.0f/480.0f;
+pos.x  =  50.0f/640.0f;
+pos.y  = 430.0f/480.0f;
+ddim.x = 200.0f/640.0f;
+ddim.y =  10.0f/480.0f;
 #else
-        pos.x  = 450.0f/640.0f;
-        pos.y  =   0.0f/480.0f;
-        ddim.x = 170.0f/640.0f;
-        ddim.y =   9.0f/480.0f;
+pos.x  = 450.0f/640.0f;
+pos.y  =   0.0f/480.0f;
+ddim.x = 170.0f/640.0f;
+ddim.y =   9.0f/480.0f;
 #endif
 #else */
         pos.x  = 540.0f/640.0f;
         pos.y  =   9.0f/480.0f;
         ddim.x =  90.0f/640.0f;
         ddim.y =  10.0f/480.0f;
-//#endif
+        //#endif
         GetResource(RES_TEXT, RT_VERSION_ID, name);
         pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL1, name);
         pl->SetFontType(Gfx::FONT_COURIER);
@@ -2014,13 +2015,13 @@ bool CMainDialog::EventProcess(const Event &event)
     {
         m_phaseTime += event.rTime;
 
-//?     if ( m_phase == PHASE_WELCOME1 )  welcomeLength = WELCOME_LENGTH+2.0f;
-//?     else                              welcomeLength = WELCOME_LENGTH;
+        //?     if ( m_phase == PHASE_WELCOME1 )  welcomeLength = WELCOME_LENGTH+2.0f;
+        //?     else                              welcomeLength = WELCOME_LENGTH;
         welcomeLength = WELCOME_LENGTH;
 
         if ( m_phase == PHASE_WELCOME1 ||
-             m_phase == PHASE_WELCOME2 ||
-             m_phase == PHASE_WELCOME3 )
+                m_phase == PHASE_WELCOME2 ||
+                m_phase == PHASE_WELCOME3 )
         {
             float   intensity;
             int     mode = Gfx::ENG_RSTATE_TCOLOR_BLACK;
@@ -2041,7 +2042,7 @@ bool CMainDialog::EventProcess(const Event &event)
             if ( intensity > 1.0f )  intensity = 1.0f;
 
             if ( (m_phase == PHASE_WELCOME2 && m_phaseTime > welcomeLength/2.0f) ||
-                 m_phase == PHASE_WELCOME3 )
+                    m_phase == PHASE_WELCOME3 )
             {
                 intensity = 1.0f-intensity;
                 mode = Gfx::ENG_RSTATE_TCOLOR_WHITE;
@@ -2072,7 +2073,7 @@ bool CMainDialog::EventProcess(const Event &event)
             if ( m_shotDelay == 0 )
             {
                 m_engine->WriteScreenShot(m_shotName, 320, 240);
-//?             m_engine->WriteScreenShot(m_shotName, 160, 120);
+                //?             m_engine->WriteScreenShot(m_shotName, 160, 120);
             }
         }
 
@@ -2110,7 +2111,7 @@ bool CMainDialog::EventProcess(const Event &event)
         m_interface->EventProcess(event);
 
         if ( event.type == EVENT_DIALOG_OK ||
-             (event.type == EVENT_KEY_DOWN && event.key.key == KEY(RETURN) ) )
+                (event.type == EVENT_KEY_DOWN && event.key.key == KEY(RETURN) ) )
         {
             StopDialog();
             if ( m_phase == PHASE_NAME )
@@ -2119,8 +2120,8 @@ bool CMainDialog::EventProcess(const Event &event)
             }
             if ( m_phase == PHASE_INIT )
             {
-//?             m_eventQueue->MakeEvent(newEvent, EVENT_QUIT);
-//?             m_eventQueue->AddEvent(newEvent);
+                //?             m_eventQueue->MakeEvent(newEvent, EVENT_QUIT);
+                //?             m_eventQueue->AddEvent(newEvent);
                 m_main->ChangePhase(PHASE_GENERIC);
             }
             if ( m_phase == PHASE_SIMUL )
@@ -2136,7 +2137,7 @@ bool CMainDialog::EventProcess(const Event &event)
             }
         }
         if ( event.type == EVENT_DIALOG_CANCEL ||
-             (event.type == EVENT_KEY_DOWN && event.key.key == KEY(ESCAPE) ) )
+                (event.type == EVENT_KEY_DOWN && event.key.key == KEY(ESCAPE) ) )
         {
             StopDialog();
         }
@@ -2172,7 +2173,7 @@ bool CMainDialog::EventProcess(const Event &event)
     }
 
     if ( /* m_engine->GetMouseVisible() && TODO: WTF ?! */
-         !m_interface->EventProcess(event) )
+            !m_interface->EventProcess(event) )
     {
         return false;
     }
@@ -2184,14 +2185,14 @@ bool CMainDialog::EventProcess(const Event &event)
             case EVENT_KEY_DOWN:
                 if ( event.key.key == KEY(ESCAPE) )
                 {
-//?                 StartQuit();  // would you leave?
+                    //?                 StartQuit();  // would you leave?
                     m_sound->Play(SOUND_TZOING);
                     m_main->ChangePhase(PHASE_GENERIC);
                 }
                 break;
 
             case EVENT_INTERFACE_QUIT:
-//?             StartQuit();  // would you leave?
+                //?             StartQuit();  // would you leave?
                 m_sound->Play(SOUND_TZOING);
                 m_main->ChangePhase(PHASE_GENERIC);
                 break;
@@ -2423,19 +2424,19 @@ bool CMainDialog::EventProcess(const Event &event)
     }
 
     if ( m_phase == PHASE_TRAINER ||
-         m_phase == PHASE_DEFI    ||
-         m_phase == PHASE_MISSION ||
-         m_phase == PHASE_FREE    ||
-         m_phase == PHASE_TEEN    ||
-         m_phase == PHASE_USER    ||
-         m_phase == PHASE_PROTO   )
+            m_phase == PHASE_DEFI    ||
+            m_phase == PHASE_MISSION ||
+            m_phase == PHASE_FREE    ||
+            m_phase == PHASE_TEEN    ||
+            m_phase == PHASE_USER    ||
+            m_phase == PHASE_PROTO   )
     {
         pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
         if ( pw == 0 )  return false;
 
         if ( event.type == pw->GetEventTypeClose() ||
-             event.type == EVENT_INTERFACE_BACK   ||
-            (event.type == EVENT_KEY_DOWN && event.key.key == KEY(ESCAPE)) )
+                event.type == EVENT_INTERFACE_BACK   ||
+                (event.type == EVENT_KEY_DOWN && event.key.key == KEY(ESCAPE)) )
         {
             m_main->ChangePhase(PHASE_INIT);
             return false;
@@ -2443,12 +2444,12 @@ bool CMainDialog::EventProcess(const Event &event)
     }
 
     if ( m_phase == PHASE_TRAINER ||
-         m_phase == PHASE_DEFI    ||
-         m_phase == PHASE_MISSION ||
-         m_phase == PHASE_FREE    ||
-         m_phase == PHASE_TEEN    ||
-         m_phase == PHASE_USER    ||
-         m_phase == PHASE_PROTO   )
+            m_phase == PHASE_DEFI    ||
+            m_phase == PHASE_MISSION ||
+            m_phase == PHASE_FREE    ||
+            m_phase == PHASE_TEEN    ||
+            m_phase == PHASE_USER    ||
+            m_phase == PHASE_PROTO   )
     {
         switch( event.type )
         {
@@ -2497,17 +2498,17 @@ bool CMainDialog::EventProcess(const Event &event)
     }
 
     if ( m_phase == PHASE_SETUPd ||
-         m_phase == PHASE_SETUPg ||
-         m_phase == PHASE_SETUPp ||
-         m_phase == PHASE_SETUPc ||
-         m_phase == PHASE_SETUPs )
+            m_phase == PHASE_SETUPg ||
+            m_phase == PHASE_SETUPp ||
+            m_phase == PHASE_SETUPc ||
+            m_phase == PHASE_SETUPs )
     {
         pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
         if ( pw == 0 )  return false;
 
         if ( event.type == pw->GetEventTypeClose() ||
-             event.type == EVENT_INTERFACE_BACK   ||
-            (event.type == EVENT_KEY_DOWN && event.key.key == KEY(ESCAPE)) )
+                event.type == EVENT_INTERFACE_BACK   ||
+                (event.type == EVENT_KEY_DOWN && event.key.key == KEY(ESCAPE)) )
         {
             SetupMemorize();
             m_engine->ApplyChange();
@@ -2543,17 +2544,17 @@ bool CMainDialog::EventProcess(const Event &event)
     }
 
     if ( m_phase == PHASE_SETUPds ||
-         m_phase == PHASE_SETUPgs ||
-         m_phase == PHASE_SETUPps ||
-         m_phase == PHASE_SETUPcs ||
-         m_phase == PHASE_SETUPss )
+            m_phase == PHASE_SETUPgs ||
+            m_phase == PHASE_SETUPps ||
+            m_phase == PHASE_SETUPcs ||
+            m_phase == PHASE_SETUPss )
     {
         pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
         if ( pw == 0 )  return false;
 
         if ( event.type == pw->GetEventTypeClose() ||
-             event.type == EVENT_INTERFACE_BACK   ||
-            (event.type == EVENT_KEY_DOWN && event.key.key == KEY(ESCAPE)) )
+                event.type == EVENT_INTERFACE_BACK   ||
+                (event.type == EVENT_KEY_DOWN && event.key.key == KEY(ESCAPE)) )
         {
             SetupMemorize();
             m_engine->ApplyChange();
@@ -2591,7 +2592,7 @@ bool CMainDialog::EventProcess(const Event &event)
     }
 
     if ( m_phase == PHASE_SETUPd  ||  // setup/display ?
-         m_phase == PHASE_SETUPds )
+            m_phase == PHASE_SETUPds )
     {
         switch( event.type )
         {
@@ -2638,7 +2639,7 @@ bool CMainDialog::EventProcess(const Event &event)
     }
 
     if ( m_phase == PHASE_SETUPg  ||  // setup/graphic ?
-         m_phase == PHASE_SETUPgs )
+            m_phase == PHASE_SETUPgs )
     {
         switch( event.type )
         {
@@ -2719,7 +2720,7 @@ bool CMainDialog::EventProcess(const Event &event)
     }
 
     if ( m_phase == PHASE_SETUPp  ||  // setup/game ?
-         m_phase == PHASE_SETUPps )
+            m_phase == PHASE_SETUPps )
     {
         switch( event.type )
         {
@@ -2835,7 +2836,7 @@ bool CMainDialog::EventProcess(const Event &event)
     }
 
     if ( m_phase == PHASE_SETUPc  ||  // setup/commands ?
-         m_phase == PHASE_SETUPcs )
+            m_phase == PHASE_SETUPcs )
     {
         switch( event.type )
         {
@@ -2886,7 +2887,7 @@ bool CMainDialog::EventProcess(const Event &event)
     }
 
     if ( m_phase == PHASE_SETUPs  ||  // setup/sound ?
-         m_phase == PHASE_SETUPss )
+            m_phase == PHASE_SETUPss )
     {
         switch( event.type )
         {
@@ -2924,8 +2925,8 @@ bool CMainDialog::EventProcess(const Event &event)
         if ( pw == 0 )  return false;
 
         if ( event.type == pw->GetEventTypeClose() ||
-             event.type == EVENT_INTERFACE_BACK   ||
-            (event.type == EVENT_KEY_DOWN && event.key.key == KEY(ESCAPE)) )
+                event.type == EVENT_INTERFACE_BACK   ||
+                (event.type == EVENT_KEY_DOWN && event.key.key == KEY(ESCAPE)) )
         {
             ChangePhase(m_phaseTerm);
         }
@@ -2951,14 +2952,14 @@ bool CMainDialog::EventProcess(const Event &event)
     }
 
     if ( m_phase == PHASE_WRITEs ||
-         m_phase == PHASE_READs  )
+            m_phase == PHASE_READs  )
     {
         pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
         if ( pw == 0 )  return false;
 
         if ( event.type == pw->GetEventTypeClose() ||
-             event.type == EVENT_INTERFACE_BACK   ||
-            (event.type == EVENT_KEY_DOWN && event.key.key == KEY(ESCAPE)) )
+                event.type == EVENT_INTERFACE_BACK   ||
+                (event.type == EVENT_KEY_DOWN && event.key.key == KEY(ESCAPE)) )
         {
             m_interface->DeleteControl(EVENT_WINDOW5);
             ChangePhase(PHASE_SIMUL);
@@ -2998,7 +2999,7 @@ bool CMainDialog::EventProcess(const Event &event)
     if ( m_phase == PHASE_WELCOME1 )
     {
         if ( event.type == EVENT_KEY_DOWN     ||
-             event.type == EVENT_MOUSE_BUTTON_DOWN )
+                event.type == EVENT_MOUSE_BUTTON_DOWN )
         {
             ChangePhase(PHASE_WELCOME2);
             return true;
@@ -3007,7 +3008,7 @@ bool CMainDialog::EventProcess(const Event &event)
     if ( m_phase == PHASE_WELCOME2 )
     {
         if ( event.type == EVENT_KEY_DOWN     ||
-             event.type == EVENT_MOUSE_BUTTON_DOWN )
+                event.type == EVENT_MOUSE_BUTTON_DOWN )
         {
             ChangePhase(PHASE_WELCOME3);
             return true;
@@ -3016,7 +3017,7 @@ bool CMainDialog::EventProcess(const Event &event)
     if ( m_phase == PHASE_WELCOME3 )
     {
         if ( event.type == EVENT_KEY_DOWN     ||
-             event.type == EVENT_MOUSE_BUTTON_DOWN )
+                event.type == EVENT_MOUSE_BUTTON_DOWN )
         {
             ChangePhase(PHASE_NAME);
             return true;
@@ -3097,12 +3098,12 @@ void CMainDialog::GlintMove()
     }
 
     if ( m_phase == PHASE_NAME    ||
-         m_phase == PHASE_TRAINER ||
-         m_phase == PHASE_MISSION ||
-         m_phase == PHASE_FREE    ||
-         m_phase == PHASE_TEEN    ||
-         m_phase == PHASE_USER    ||
-         m_phase == PHASE_PROTO   )
+            m_phase == PHASE_TRAINER ||
+            m_phase == PHASE_MISSION ||
+            m_phase == PHASE_FREE    ||
+            m_phase == PHASE_TEEN    ||
+            m_phase == PHASE_USER    ||
+            m_phase == PHASE_PROTO   )
     {
         pg = static_cast<CGroup*>(pw->SearchControl(EVENT_INTERFACE_GLINTl));
         if ( pg != 0 )
@@ -3134,15 +3135,15 @@ void CMainDialog::GlintMove()
     }
 
     if ( m_phase == PHASE_SETUPd  ||
-         m_phase == PHASE_SETUPg  ||
-         m_phase == PHASE_SETUPp  ||
-         m_phase == PHASE_SETUPc  ||
-         m_phase == PHASE_SETUPs  ||
-         m_phase == PHASE_SETUPds ||
-         m_phase == PHASE_SETUPgs ||
-         m_phase == PHASE_SETUPps ||
-         m_phase == PHASE_SETUPcs ||
-         m_phase == PHASE_SETUPss )
+            m_phase == PHASE_SETUPg  ||
+            m_phase == PHASE_SETUPp  ||
+            m_phase == PHASE_SETUPc  ||
+            m_phase == PHASE_SETUPs  ||
+            m_phase == PHASE_SETUPds ||
+            m_phase == PHASE_SETUPgs ||
+            m_phase == PHASE_SETUPps ||
+            m_phase == PHASE_SETUPcs ||
+            m_phase == PHASE_SETUPss )
     {
         pg = static_cast<CGroup*>(pw->SearchControl(EVENT_INTERFACE_GLINTu));
         if ( pg != 0 )
@@ -3173,9 +3174,9 @@ void CMainDialog::GlintMove()
     }
 
     if ( m_phase == PHASE_WRITE  ||
-         m_phase == PHASE_READ   ||
-         m_phase == PHASE_WRITEs ||
-         m_phase == PHASE_READs  )
+            m_phase == PHASE_READ   ||
+            m_phase == PHASE_WRITEs ||
+            m_phase == PHASE_READs  )
     {
         pg = static_cast<CGroup*>(pw->SearchControl(EVENT_INTERFACE_GLINTl));
         if ( pg != 0 )
@@ -3238,7 +3239,7 @@ Math::Vector SoundRand()
 
 void CMainDialog::FrameParticle(float rTime)
 {
-/* TODO: #if _NEWLOOK
+    /* TODO: #if _NEWLOOK
 #else */
     Math::Vector    pos, speed;
     Math::Point     dim;
@@ -3248,16 +3249,16 @@ void CMainDialog::FrameParticle(float rTime)
 
     static float partiPosInit[1+5*12] =
     { //  x       x      t2    t2   type
-         12.0f,
+        12.0f,
         607.0f, 164.0f, 0.2f, 0.8f, 1.0f,  // upper cable
         604.0f, 205.0f, 0.1f, 0.3f, 1.0f,  // middle cable
         603.0f, 247.0f, 0.1f, 0.3f, 1.0f,  // lower cable
         119.0f, 155.0f, 0.2f, 0.4f, 2.0f,  // left pipe
         366.0f,  23.0f, 0.5f, 1.5f, 4.0f,  // upper pipe
         560.0f, 414.0f, 0.1f, 0.1f, 1.0f,  // button lower/right
-         20.0f, 413.0f, 0.1f, 0.1f, 2.0f,  // button lower/left
-         39.0f,  78.0f, 0.1f, 0.2f, 1.0f,  // left pot
-         39.0f,  78.0f, 0.5f, 0.9f, 1.0f,  // left pot
+        20.0f, 413.0f, 0.1f, 0.1f, 2.0f,  // button lower/left
+        39.0f,  78.0f, 0.1f, 0.2f, 1.0f,  // left pot
+        39.0f,  78.0f, 0.5f, 0.9f, 1.0f,  // left pot
         170.0f, 229.0f, 0.5f, 0.5f, 3.0f,  // left smoke
         170.0f, 229.0f, 0.5f, 0.5f, 3.0f,  // left smoke
         474.0f, 229.0f, 0.5f, 0.5f, 3.0f,  // right smoke
@@ -3265,53 +3266,53 @@ void CMainDialog::FrameParticle(float rTime)
 
     static float glintPosInit[1+2*14] =
     {
-         14.0f,
-         15.0f, 407.0f,
-         68.0f, 417.0f,
+        14.0f,
+        15.0f, 407.0f,
+        68.0f, 417.0f,
         548.0f,  36.0f,
         611.0f,  37.0f,
         611.0f, 100.0f,
         611.0f, 395.0f,
-         36.0f,  35.0f,
+        36.0f,  35.0f,
         166.0f,  55.0f,
         166.0f,  94.0f,
         477.0f,  56.0f,
-         31.0f, 190.0f,
-         32.0f, 220.0f,
-         65.0f, 221.0f,
-         65.0f, 250.0f,
+        31.0f, 190.0f,
+        32.0f, 220.0f,
+        65.0f, 221.0f,
+        65.0f, 250.0f,
     };
 
     static float partiPosBig[1+5*12] =
     { //  x       x      t2    t2   type
-         12.0f,
+        12.0f,
         607.0f, 164.0f, 0.2f, 0.8f, 1.0f,  // upper cable
         604.0f, 205.0f, 0.1f, 0.3f, 1.0f,  // middle cable
         603.0f, 247.0f, 0.1f, 0.3f, 1.0f,  // lower cable
-         64.0f, 444.0f, 0.2f, 0.8f, 1.0f,  // down the left cable
+        64.0f, 444.0f, 0.2f, 0.8f, 1.0f,  // down the left cable
         113.0f, 449.0f, 0.1f, 0.3f, 1.0f,  // down the left cable
         340.0f, 463.0f, 0.2f, 0.8f, 1.0f,  // down the middle cable
-         36.0f, 155.0f, 0.2f, 0.4f, 2.0f,  // left pipe
+        36.0f, 155.0f, 0.2f, 0.4f, 2.0f,  // left pipe
         366.0f,  23.0f, 0.5f, 1.5f, 4.0f,  // upper pipe
         612.0f, 414.0f, 0.1f, 0.1f, 1.0f,  // button lower/right
-         20.0f, 413.0f, 0.1f, 0.1f, 2.0f,  // button lower/left
-         39.0f,  78.0f, 0.1f, 0.2f, 1.0f,  // left pot
-         39.0f,  78.0f, 0.5f, 0.9f, 1.0f,  // left pot
+        20.0f, 413.0f, 0.1f, 0.1f, 2.0f,  // button lower/left
+        39.0f,  78.0f, 0.1f, 0.2f, 1.0f,  // left pot
+        39.0f,  78.0f, 0.5f, 0.9f, 1.0f,  // left pot
     };
 
     static float glintPosBig[1+2*12] =
     {
-         12.0f,
-         15.0f, 407.0f,
-         48.0f, 399.0f,
+        12.0f,
+        15.0f, 407.0f,
+        48.0f, 399.0f,
         611.0f,  37.0f,
         611.0f, 100.0f,
         611.0f, 395.0f,
-         36.0f,  35.0f,
-         31.0f, 190.0f,
-         32.0f, 220.0f,
-         31.0f, 221.0f,
-         31.0f, 189.0f,
+        36.0f,  35.0f,
+        31.0f, 190.0f,
+        32.0f, 220.0f,
+        31.0f, 221.0f,
+        31.0f, 189.0f,
         255.0f,  18.0f,
         279.0f,  18.0f,
     };
@@ -3324,20 +3325,20 @@ void CMainDialog::FrameParticle(float rTime)
         pGlint = glintPosInit;
     }
     else if ( m_phase == PHASE_NAME    ||
-              m_phase == PHASE_TRAINER ||
-              m_phase == PHASE_DEFI    ||
-              m_phase == PHASE_MISSION ||
-              m_phase == PHASE_FREE    ||
-              m_phase == PHASE_TEEN    ||
-              m_phase == PHASE_USER    ||
-              m_phase == PHASE_PROTO   ||
-              m_phase == PHASE_SETUPd  ||
-              m_phase == PHASE_SETUPg  ||
-              m_phase == PHASE_SETUPp  ||
-              m_phase == PHASE_SETUPc  ||
-              m_phase == PHASE_SETUPs  ||
-              m_phase == PHASE_WRITE   ||
-              m_phase == PHASE_READ    )
+            m_phase == PHASE_TRAINER ||
+            m_phase == PHASE_DEFI    ||
+            m_phase == PHASE_MISSION ||
+            m_phase == PHASE_FREE    ||
+            m_phase == PHASE_TEEN    ||
+            m_phase == PHASE_USER    ||
+            m_phase == PHASE_PROTO   ||
+            m_phase == PHASE_SETUPd  ||
+            m_phase == PHASE_SETUPg  ||
+            m_phase == PHASE_SETUPp  ||
+            m_phase == PHASE_SETUPc  ||
+            m_phase == PHASE_SETUPs  ||
+            m_phase == PHASE_WRITE   ||
+            m_phase == PHASE_READ    )
     {
         pParti = partiPosBig;
         pGlint = glintPosBig;
@@ -3388,9 +3389,9 @@ void CMainDialog::FrameParticle(float rTime)
                     dim.x = 0.04f+Math::Rand()*0.04f;
                     dim.y = dim.x/0.75f;
                     m_particle->CreateParticle(pos, speed, dim,
-                                                 rand()%2?Gfx::PARTIGLINT:Gfx::PARTICONTROL,
-                                                 Math::Rand()*0.4f+0.4f, 0.0f, 0.0f,
-                                                 Gfx::SH_INTERFACE);
+                            rand()%2?Gfx::PARTIGLINT:Gfx::PARTICONTROL,
+                            Math::Rand()*0.4f+0.4f, 0.0f, 0.0f,
+                            Gfx::SH_INTERFACE);
                     m_partiTime[i] = 0.5f+Math::Rand()*0.5f;
                 }
 
@@ -3454,8 +3455,8 @@ void CMainDialog::FrameParticle(float rTime)
                     dim.x = 0.005f+Math::Rand()*0.005f;
                     dim.y = dim.x/0.75f;
                     m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIBLITZ,
-                                                 Math::Rand()*0.2f+0.2f, 0.0f, 0.0f,
-                                                 Gfx::SH_INTERFACE);
+                            Math::Rand()*0.2f+0.2f, 0.0f, 0.0f,
+                            Gfx::SH_INTERFACE);
                     pos.x = m_partiPos[i].x;
                     pos.y = m_partiPos[i].y;
                     pos.z = 0.0f;
@@ -3465,9 +3466,9 @@ void CMainDialog::FrameParticle(float rTime)
                     dim.x = 0.01f+Math::Rand()*0.01f;
                     dim.y = dim.x/0.75f;
                     m_particle->CreateParticle(pos, speed, dim,
-                                                 static_cast<Gfx::ParticleType>(Gfx::PARTILENS1+rand()%3),
-                                                 Math::Rand()*0.5f+0.5f, 2.0f, 0.0f,
-                                                 Gfx::SH_INTERFACE);
+                            static_cast<Gfx::ParticleType>(Gfx::PARTILENS1+rand()%3),
+                            Math::Rand()*0.5f+0.5f, 2.0f, 0.0f,
+                            Gfx::SH_INTERFACE);
                 }
                 if ( m_partiPhase[i] == 2 )  // sparks?
                 {
@@ -3482,8 +3483,8 @@ void CMainDialog::FrameParticle(float rTime)
                     dim.x = 0.005f+Math::Rand()*0.005f;
                     dim.y = dim.x/0.75f;
                     m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIBLITZ,
-                                                 Math::Rand()*0.2f+0.2f, 0.0f, 0.0f,
-                                                 Gfx::SH_INTERFACE);
+                            Math::Rand()*0.2f+0.2f, 0.0f, 0.0f,
+                            Gfx::SH_INTERFACE);
                     pos.x = m_partiPos[i].x;
                     pos.y = m_partiPos[i].y;
                     pos.z = 0.0f;
@@ -3493,8 +3494,8 @@ void CMainDialog::FrameParticle(float rTime)
                     dim.x = 0.005f+Math::Rand()*0.005f;
                     dim.y = dim.x/0.75f;
                     m_particle->CreateParticle(pos, speed, dim, Gfx::PARTISCRAPS,
-                                                 Math::Rand()*0.5f+0.5f, 2.0f, 0.0f,
-                                                 Gfx::SH_INTERFACE);
+                            Math::Rand()*0.5f+0.5f, 2.0f, 0.0f,
+                            Gfx::SH_INTERFACE);
                 }
                 if ( m_partiPhase[i] == 3 )  // smoke?
                 {
@@ -3509,8 +3510,8 @@ void CMainDialog::FrameParticle(float rTime)
                     dim.x = 0.03f+Math::Rand()*0.07f;
                     dim.y = dim.x/0.75f;
                     m_particle->CreateParticle(pos, speed, dim, Gfx::PARTICRASH,
-                                                 Math::Rand()*0.4f+0.4f, 0.0f, 0.0f,
-                                                 Gfx::SH_INTERFACE);
+                            Math::Rand()*0.4f+0.4f, 0.0f, 0.0f,
+                            Gfx::SH_INTERFACE);
                 }
             }
             else
@@ -3520,7 +3521,7 @@ void CMainDialog::FrameParticle(float rTime)
             }
         }
     }
-// #endif
+    // #endif
 }
 
 // Some nice particles following the mouse.
@@ -3532,10 +3533,10 @@ void CMainDialog::NiceParticle(Math::Point mouse, bool bPress)
 
     if ( !m_bRain )  return;
     if ( (m_phase == PHASE_SIMUL ||
-          m_phase == PHASE_WIN   ||
-          m_phase == PHASE_LOST  ||
-          m_phase == PHASE_MODEL ) &&
-         !m_bDialog             )  return;
+                m_phase == PHASE_WIN   ||
+                m_phase == PHASE_LOST  ||
+                m_phase == PHASE_MODEL ) &&
+            !m_bDialog             )  return;
 
     if ( bPress )
     {
@@ -3548,8 +3549,8 @@ void CMainDialog::NiceParticle(Math::Point mouse, bool bPress)
         dim.x = 0.005f+Math::Rand()*0.005f;
         dim.y = dim.x/0.75f;
         m_particle->CreateParticle(pos, speed, dim, Gfx::PARTISCRAPS,
-                                     Math::Rand()*0.5f+0.5f, 2.0f, 0.0f,
-                                     Gfx::SH_INTERFACE);
+                Math::Rand()*0.5f+0.5f, 2.0f, 0.0f,
+                Gfx::SH_INTERFACE);
     }
     else
     {
@@ -3562,9 +3563,9 @@ void CMainDialog::NiceParticle(Math::Point mouse, bool bPress)
         dim.x = 0.01f+Math::Rand()*0.01f;
         dim.y = dim.x/0.75f;
         m_particle->CreateParticle(pos, speed, dim,
-                                     static_cast<Gfx::ParticleType>(Gfx::PARTILENS1+rand()%3),
-                                     Math::Rand()*0.5f+0.5f, 2.0f, 0.0f,
-                                     Gfx::SH_INTERFACE);
+                static_cast<Gfx::ParticleType>(Gfx::PARTILENS1+rand()%3),
+                Math::Rand()*0.5f+0.5f, 2.0f, 0.0f,
+                Gfx::SH_INTERFACE);
     }
 }
 
@@ -3594,17 +3595,15 @@ void CMainDialog::BuildSceneName(std::string &filename, char *base, int rank)
     std::ostringstream rankStream;
     if ( strcmp(base, "user") == 0 )
     {
-        //TODO: Change this to point user dir acocrding to operating system
+        //TODO: Change this to point user dir according to operating system
         rankStream << std::setfill('0') << std::setw(2) << rank%100;
         filename = m_userDir + "/" + m_userList[rank/100-1] + "/" + rankStream.str() + ".txt";
-        // sprintf(filename, "%s\\%s\\scene%.2d.txt", m_userDir.c_str(), m_userList[rank/100-1], rank%100);
     }
     else
     {
         rankStream << std::setfill('0') << std::setw(3) << rank;
         filename = base + rankStream.str() + ".txt";
         filename = CApplication::GetInstance().GetDataFilePath(DIR_LEVEL, filename);
-        // sprintf(filename, "%s\\%s%.3d.txt", m_sceneDir, base, rank);
     }
 }
 
@@ -3634,7 +3633,8 @@ void CMainDialog::ReadNameList()
     bool                bDo;
     char                dir[MAX_FNAME];
     char                temp[MAX_FNAME];
-    char                filenames[MAX_FNAME][100];
+    // char                filenames[MAX_FNAME][100];
+    std::vector<std::string> fileNames;
     int                 nbFilenames, i;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
@@ -3645,51 +3645,36 @@ void CMainDialog::ReadNameList()
 
     nbFilenames = 0;
 
-    //TODO list files
-    // sprintf(dir, ".\\%s", m_savegameDir);
-
-    // if (! fs::exists(dir))
-    // {
-    //     GetLogger()->Error("Savegame dir does not exist %s\n",dir);
-    // }
-    // else
-    // {
-    //     GetLogger()->Info("Opening file");
-    // }
-
-    // hFile = _findfirst(dir, &fBuffer);
-    // if ( hFile != -1 )
-    // {
-    //     do
-    //     {
-    //         if ( (fBuffer.attrib & _A_SUBDIR) && fBuffer.name[0] != '.' )
-    //         {
-    //             strcpy(filenames[nbFilenames++], fBuffer.name);
-    //         }
-    //     }
-    //     while ( _findnext(hFile, &fBuffer) == 0 && nbFilenames < 100 );
-    // }
-    // do  // sorts all names:
-    // {
-    //     bDo = false;
-    //     for ( i=0 ; i<nbFilenames-1 ; i++ )
-    //     {
-    //         if ( strcmp(filenames[i], filenames[i+1]) > 0 )
-    //         {
-    //             strcpy(temp, filenames[i]);
-    //             strcpy(filenames[i], filenames[i+1]);
-    //             strcpy(filenames[i+1], temp);
-    //             bDo = true;
-    //         }
-    //     }
-    // }
-    // while ( bDo );
-
-    strcpy(filenames[nbFilenames++], "Test");
-
-    for ( i=0 ; i<nbFilenames ; i++ )
+    try
     {
-        pl->SetName(i, filenames[i]);
+        if (! fs::exists(m_savegameDir) && fs::is_directory(m_savegameDir))
+        {
+            GetLogger()->Error("Savegame dir does not exist %s\n",dir);
+        }
+        else
+        {
+            fs::directory_iterator dirIt(m_savegameDir), dirEndIt;
+
+            BOOST_FOREACH (const fs::path & p, std::make_pair(dirIt, dirEndIt))
+            {
+                if (fs::is_directory(p))
+                {
+                    fileNames.push_back(p.leaf().string());
+                }
+            }
+        }
+    }
+    catch (std::exception & e)
+    {
+        GetLogger()->Error("Error on listing savegame directory : %s\n", e.what());
+        return;
+    }
+
+
+    fileNames.push_back("Test");
+    for ( i=0 ; i<fileNames.size() ; ++i )
+    {
+        pl->SetName(i, fileNames.at(i).c_str());
     }
 }
 
@@ -3872,7 +3857,7 @@ void CMainDialog::NameCreate()
     CWindow*    pw;
     CEdit*      pe;
     char        name[100];
-    char        dir[100];
+    std::string dir;
     char        c;
     int         len, i, j;
 
@@ -3915,8 +3900,13 @@ void CMainDialog::NameCreate()
 
     // TODO: _mkdir(m_savegameDir);  // if does not exist yet!
 
-    sprintf(dir, "%s/%s", m_savegameDir.c_str(), name);
-    // TODO: if ( _mkdir(dir) != 0 )
+
+    dir = m_savegameDir + "/" + name;
+    if (!fs::exists(dir))
+    {
+        fs::create_directories(dir);
+    }
+    else
     {
         m_sound->Play(SOUND_TZOING);
         pe->SetText(name);
@@ -3933,40 +3923,27 @@ void CMainDialog::NameCreate()
 
 // Deletes a folder and all its offspring.
 
-bool RemoveDir(char *dirname)
+bool RemoveDir(char *dirName)
 {
-    /* TODO: remove dir
-    long                hFile;
-    struct _finddata_t  fBuffer;
-    char                filename[100];
-
-    sprintf(filename, "%s/*", dirname);
-    hFile = _findfirst(filename, &fBuffer);
-    if ( hFile != -1 )
+    try
     {
-        do
+
+        if (!fs::exists(dirName) && fs::is_directory(dirName))
         {
-            if ( fBuffer.name[0] != '.' )
-            {
-                if ( fBuffer.attrib & _A_SUBDIR )
-                {
-                    sprintf(filename, "%s/%s", dirname, fBuffer.name);
-                    RemoveDir(filename);
-                }
-                else
-                {
-                    sprintf(filename, "%s/%s", dirname, fBuffer.name);
-                    remove(filename);
-                }
-            }
+            GetLogger()->Error("Directory does not exist %s\n",dirName);
+            return false;
         }
-        while ( _findnext(hFile, &fBuffer) == 0 );
-    }
+        else
+        {
+            fs::remove_all(dirName);
+        }
 
-    if ( _rmdir(dirname) != 0 )
+    }
+    catch (std::exception & e)
     {
+        GetLogger()->Error("Error on removing directory %s : %s\n", dirName, e.what());
         return false;
-    }*/
+    }
     return true;
 }
 
@@ -4513,6 +4490,22 @@ void CMainDialog::IODeleteScene()
         return;
     }
 
+
+    std::ostringstream rankStream;
+    std::string fileName;
+    rankStream << std::setfill('0') << std::setw(3) << sel;
+    fileName = m_savegameDir + "/" + m_main->GetGamerName() + "/save" + m_sceneName[0] + rankStream.str();
+    try
+    {
+        if (fs::exists(fileName) && fs::is_directory(fileName))
+        {
+            fs::remove_all(fileName);
+        }
+    }
+    catch (std::exception & e)
+    {
+        GetLogger()->Error("Error on removing directory %s : %s\n", e.what());
+    }
     /* TODO: remove files
     // Deletes all the contents of the file.
     sprintf(dir, "%s/%s/save%c%.3d/*", m_savegameDir, m_main->GetGamerName(), m_sceneName[0], sel);
@@ -4575,7 +4568,7 @@ bool CMainDialog::IOWriteScene()
 
     //TODO: Change this to point user dir according to operating system
     // sprintf(filename, "%s\\%s\\save%c%.3d", m_savegameDir, m_main->GetGamerName(), m_sceneName[0], sel);
-    GetLogger()->Info("Creating save directory\n");
+    GetLogger()->Debug("Creating save directory\n");
     selectStream << std::setfill('0') << std::setw(3) << sel;
     directoryName =  m_savegameDir + "/" + m_main->GetGamerName() + "/" + "save" + m_sceneName[0] + selectStream.str();
     if (!fs::exists(directoryName))
