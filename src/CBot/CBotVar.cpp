@@ -590,7 +590,7 @@ void CBotVar::AddNext(CBotVar* pVar)
 
 void CBotVar::SetVal(CBotVar* var)
 {
-    switch (/*var->*/GetType())
+    switch (var->GetType())
     {
     case CBotTypBoolean:
         SetValInt(var->GetValInt());
