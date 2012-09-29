@@ -1,14 +1,20 @@
 cmake_minimum_required(VERSION 2.8)
 
 set(CMAKE_BUILD_TYPE debug)
-set(CMAKE_CXX_FLAGS_DEBUG "-Wall -g -O0 -std=c++11")
+set(CMAKE_CXX_FLAGS_DEBUG "-g -O0 -Wall -Wold-style-cast -std=gnu++0x")
 
-include_directories("../../")
-include_directories("../../../")
+include_directories(
+.
+../..
+../../..
+${GTEST_DIR}/include
+)
+
 
 add_executable(image_test ../image.cpp image_test.cpp)
-target_link_libraries(image_test -lpng -lSDL -lSDL_image)
+target_link_libraries(image_test ${SDL_LIBRARY} ${SDLIMAGE_LIBRARY} ${PNG_LIBRARIES})
 
-add_executable(profile_test ../profile.cpp profile_test.cpp)
+add_executable(profile_test ../profile.cpp ../logger.cpp profile_test.cpp)
+target_link_libraries(profile_test gtest ${Boost_LIBRARIES})
 
 add_test(profile_test ./profile_test)

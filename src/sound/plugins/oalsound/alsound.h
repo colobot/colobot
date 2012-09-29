@@ -24,9 +24,9 @@
 
 #include <AL/alut.h>
 
-#include <common/iman.h>
-#include <common/logger.h>
-#include <sound/sound.h>
+#include "common/iman.h"
+#include "common/logger.h"
+#include "sound/sound.h"
 
 #include "buffer.h"
 #include "channel.h"

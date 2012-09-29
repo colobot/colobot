@@ -5,6 +5,7 @@ add_subdirectory(CBot)
 add_subdirectory(tools)
 
 # Tests
+add_subdirectory(common/test)
 add_subdirectory(graphics/engine/test)
 add_subdirectory(math/test)
 

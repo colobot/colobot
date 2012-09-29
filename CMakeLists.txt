@@ -16,7 +16,7 @@ set(Boost_USE_MULTITHREADED      ON)
 set(Boost_USE_STATIC_RUNTIME    OFF)
 
 set(Boost_ADDITIONALVERSION "1.51" "1.51.0")
-find_package(Boost COMPONENTS system filesystem REQUIRED)
+find_package(Boost COMPONENTS system filesystem regex REQUIRED)
 
 
 # GLEW requirement depends on platform

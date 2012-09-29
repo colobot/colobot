@@ -2415,7 +2415,7 @@ bool CScript::rAbsTime(CBotVar* var, CBotVar* result, int& exception, void* user
 
 // Prepares a file name.
 
-void PrepareFilename(CBotString &filename, char *dir)
+void PrepareFilename(CBotString &filename, const char *dir)
 {
     int         pos;
 
@@ -2447,7 +2447,7 @@ bool CScript::rDeleteFile(CBotVar* var, CBotVar* result, int& exception, void* u
     CScript*    script = (static_cast<CObject *>(user))->GetRunScript();
     CBotString  cbs;
     const char* filename;
-    char*       dir;
+    const char* dir;
 
     cbs = var->GetValString();
     dir = script->m_main->GetFilesDir();

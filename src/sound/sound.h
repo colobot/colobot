@@ -24,12 +24,12 @@
 
 #pragma once
 
-#include <math/vector.h>
+#include "math/vector.h"
 
-#include <common/iman.h>
-#include <common/logger.h>
+#include "common/iman.h"
+#include "common/logger.h"
 
-#include <plugins/plugininterface.h>
+#include "plugins/plugininterface.h"
 
 #include <string>
 #include <iostream>

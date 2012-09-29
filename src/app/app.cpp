@@ -132,7 +132,7 @@ CApplication::CApplication()
 
     m_dataPath = "./data";
 
-    m_language = LANG_ENGLISH;
+    m_language = LANGUAGE_ENGLISH;
 
     m_lowCPU = true;
 
@@ -215,13 +215,13 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
         {
             waitLanguage = false;
             if (arg == "en")
-                m_language = LANG_ENGLISH;
+                m_language = LANGUAGE_ENGLISH;
             else if (arg == "de")
-                m_language = LANG_GERMAN;
+                m_language = LANGUAGE_GERMAN;
             else if (arg == "fr")
-                m_language = LANG_FRENCH;
+                m_language = LANGUAGE_FRENCH;
             else if (arg == "pl")
-                m_language = LANG_POLISH;
+                m_language = LANGUAGE_POLISH;
             else
                 return PARSE_ARGS_FAIL;
             continue;
@@ -293,19 +293,19 @@ bool CApplication::Create()
     std::string locale = "C";
     switch (m_language)
     {
-        case LANG_ENGLISH:
+        case LANGUAGE_ENGLISH:
             locale = "en_US.utf8";
             break;
 
-        case LANG_GERMAN:
+        case LANGUAGE_GERMAN:
             locale = "de_DE.utf8";
             break;
 
-        case LANG_FRENCH:
+        case LANGUAGE_FRENCH:
             locale = "fr_FR.utf8";
             break;
 
-        case LANG_POLISH:
+        case LANGUAGE_POLISH:
             locale = "pl_PL.utf8";
             break;
     }
@@ -326,7 +326,7 @@ bool CApplication::Create()
     // Temporarily -- only in windowed mode
     m_deviceConfig.fullScreen = false;
 
-    // Create the sound instance.
+    //Create the sound instance.
     if (!GetProfile()->InitCurrentDirectory()) {
         GetLogger()->Warn("Config not found. Default values will be used!\n");
         m_sound = new CSoundInterface();

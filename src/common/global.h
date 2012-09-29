@@ -29,10 +29,10 @@
  */
 enum Language
 {
-    LANG_ENGLISH = 0,
-    LANG_FRENCH = 1,
-    LANG_GERMAN = 2,
-    LANG_POLISH = 3
+    LANGUAGE_ENGLISH = 0,
+    LANGUAGE_FRENCH = 1,
+    LANGUAGE_GERMAN = 2,
+    LANGUAGE_POLISH = 3
 };
 
 /**

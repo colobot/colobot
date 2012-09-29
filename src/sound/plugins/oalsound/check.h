@@ -21,7 +21,7 @@
 #include <AL/al.h>
 #include <AL/alc.h>
 
-#include <common/logger.h>
+#include "common/logger.h"
 
 static ALenum CODE = AL_NO_ERROR;
 

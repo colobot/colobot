@@ -18,76 +18,145 @@
 
 
 #include "common/profile.h"
+#include "common/logger.h"
 
 #include <utility>
 #include <cstring>
+#include <boost/property_tree/ini_parser.hpp>
+#include <boost/regex.hpp>
 
 
 template<> CProfile* CSingleton<CProfile>::mInstance = nullptr;
 
+namespace bp = boost::property_tree;
 
-CProfile::CProfile()
+CProfile::CProfile() :
+    m_profileNeedSave(false)
 {
-    m_ini = new CSimpleIniA();
-    m_ini->SetUnicode();
-    m_ini->SetMultiKey();
 }
 
 
 CProfile::~CProfile()
 {
-    m_ini->Reset();
-    delete m_ini;
+    if (m_profileNeedSave)
+    {
+        try
+        {
+            bp::ini_parser::write_ini("colobot.ini", m_propertyTree);
+        }
+        catch (std::exception & e)
+        {
+            GetLogger()->Info("Error on storing profile: %s\n", e.what());
+        }
+    }
 }
 
 
 bool CProfile::InitCurrentDirectory()
 {
-    bool result = m_ini->LoadFile("colobot.ini") == SI_OK;
-    return result;
+    try
+    {
+        bp::ini_parser::read_ini("colobot.ini", m_propertyTree);
+    }
+    catch (std::exception & e)
+    {
+        GetLogger()->Info("Error on parsing profile: %s\n", e.what());
+        return false;
+    }
+    return true;
 }
+
 
 
 bool CProfile::SetLocalProfileString(std::string section, std::string key, std::string value)
 {
-    return (m_ini->SetValue(section.c_str(), key.c_str(), value.c_str()) == SI_OK);
+    try
+    {
+        m_propertyTree.put(section + "." + key, value);
+        m_profileNeedSave = true;
+    }
+    catch (std::exception & e)
+    {
+        GetLogger()->Info("Error on parsing profile: %s\n", e.what());
+        return false;
+    }
+    return true;
 }
 
 
 bool CProfile::GetLocalProfileString(std::string section, std::string key, std::string &buffer)
 {
-    const char* value = m_ini->GetValue(section.c_str(), key.c_str(), nullptr);
-    if (value != nullptr && strlen(value) > 0) {
-        buffer = std::string(value);
-        return true;
+    try
+    {
+        buffer = m_propertyTree.get<std::string>(section + "." + key);
     }
-
-    return false;
+    catch (std::exception & e)
+    {
+        GetLogger()->Info("Error on parsing profile: %s\n", e.what());
+        return false;
+    }
+    return true;
 }
 
 
 bool CProfile::SetLocalProfileInt(std::string section, std::string key, int value)
 {
-    return (m_ini->SetLongValue(section.c_str(), key.c_str(), value) == SI_OK);
+    try
+    {
+        m_propertyTree.put(section + "." + key, value);
+        m_profileNeedSave = true;
+    }
+    catch (std::exception & e)
+    {
+        GetLogger()->Info("Error on parsing profile: %s\n", e.what());
+        return false;
+    }
+    return true;
 }
 
 
 bool CProfile::GetLocalProfileInt(std::string section, std::string key, int &value)
 {
-    value = m_ini->GetLongValue(section.c_str(), key.c_str(), 0L);
+    try
+    {
+        value = m_propertyTree.get<int>(section + "." + key);
+    }
+    catch (std::exception & e)
+    {
+        GetLogger()->Info("Error on parsing profile: %s\n", e.what());
+        return false;
+    }
     return true;
 }
 
 
 bool CProfile::SetLocalProfileFloat(std::string section, std::string key, float value)
 {
-    return (m_ini->SetDoubleValue(section.c_str(), key.c_str(), value) == SI_OK);
+    try
+    {
+        m_propertyTree.put(section + "." + key, value);
+        m_profileNeedSave = true;
+    }
+    catch (std::exception & e)
+    {
+        GetLogger()->Info("Error on parsing profile: %s\n", e.what());
+        return false;
+    }
+    return true;
 }
 
 
 bool CProfile::GetLocalProfileFloat(std::string section, std::string key, float &value)
 {
-    value = m_ini->GetDoubleValue(section.c_str(), key.c_str(), 0.0d);
+    try
+    {
+        value = m_propertyTree.get<float>(section + "." + key);
+    }
+    catch (std::exception & e)
+    {
+        GetLogger()->Info("Error on parsing profile: %s\n", e.what());
+        return false;
+    }
     return true;
 }
 
@@ -95,13 +164,21 @@ bool CProfile::GetLocalProfileFloat(std::string section, std::string key, float 
 std::vector< std::string > CProfile::GetLocalProfileSection(std::string section, std::string key)
 {
     std::vector< std::string > ret_list;
+    boost::regex re(key + "[0-9]*"); //we want to match all key followed my any number
 
-    CSimpleIniA::TNamesDepend values;
-    m_ini->GetAllValues(section.c_str(), key.c_str(), values);
-    values.sort(CSimpleIniA::Entry::LoadOrder());
-
-    for (auto item : values) {
-        ret_list.push_back(item.pItem);
+    try
+    {
+        for(bp::ptree::value_type const & v : m_propertyTree.get_child(section))
+        {
+            if (boost::regex_search(v.first, re))
+            {
+                ret_list.push_back(v.second.get_value<std::string>());
+            }
+        }
+    }
+    catch (std::exception & e)
+    {
+        GetLogger()->Info("Error on parsing profile: %s\n", e.what());
     }
 
     return ret_list;
