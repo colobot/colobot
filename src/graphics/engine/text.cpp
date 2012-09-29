@@ -647,7 +647,7 @@ void CText::DrawHighlight(FontHighlight hl, Math::Point pos, Math::Point size)
         p2.y = pos.y + size.y;
     }
 
-    m_device->SetRenderState(RENDER_STATE_TEXTURING, false);
+    m_device->SetTextureEnabled(0, false);
 
     VertexCol quad[] =
     {
@@ -660,7 +660,7 @@ void CText::DrawHighlight(FontHighlight hl, Math::Point pos, Math::Point size)
     m_device->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, quad, 4);
     m_engine->AddStatisticTriangle(2);
 
-    m_device->SetRenderState(RENDER_STATE_TEXTURING, true);
+    m_device->SetTextureEnabled(0, true);
 }
 
 void CText::DrawCharAndAdjustPos(UTF8Char ch, FontType font, float size, Math::Point &pos)

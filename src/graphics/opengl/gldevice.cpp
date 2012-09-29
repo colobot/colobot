@@ -69,7 +69,6 @@ CGLDevice::CGLDevice(const GLDeviceConfig &config)
 {
     m_config = config;
     m_lighting = false;
-    m_texturing = false;
 }
 
 
@@ -167,7 +166,6 @@ void CGLDevice::ConfigChanged(const GLDeviceConfig& newConfig)
 
     // Reset state
     m_lighting = false;
-    m_texturing = false;
     Destroy();
     Create();
 }
@@ -552,7 +550,7 @@ Texture CGLDevice::CreateTexture(ImageData *data, const TextureCreateParams &par
     // Restore the previous state of 1st stage
     glBindTexture(GL_TEXTURE_2D, m_currentTextures[0].id);
 
-    if ( (! m_texturing) || (! m_texturesEnabled[0]) )
+    if (! m_texturesEnabled[0])
         glDisable(GL_TEXTURE_2D);
 
     return result;
@@ -560,10 +558,6 @@ Texture CGLDevice::CreateTexture(ImageData *data, const TextureCreateParams &par
 
 void CGLDevice::DestroyTexture(const Texture &texture)
 {
-    auto it = m_allTextures.find(texture);
-    if (it != m_allTextures.end())
-        m_allTextures.erase(it);
-
     // Unbind the texture if in use anywhere
     for (int index = 0; index < static_cast<int>( m_currentTextures.size() ); ++index)
     {
@@ -572,16 +566,22 @@ void CGLDevice::DestroyTexture(const Texture &texture)
     }
 
     glDeleteTextures(1, &texture.id);
+
+    auto it = m_allTextures.find(texture);
+    if (it != m_allTextures.end())
+        m_allTextures.erase(it);
 }
 
 void CGLDevice::DestroyAllTextures()
 {
-    for (auto it = m_allTextures.begin(); it != m_allTextures.end(); ++it)
-        glDeleteTextures(1, &(*it).id);
-
     // Unbind all texture stages
     for (int index = 0; index < static_cast<int>( m_currentTextures.size() ); ++index)
         SetTexture(index, Texture());
+
+    for (auto it = m_allTextures.begin(); it != m_allTextures.end(); ++it)
+        glDeleteTextures(1, &(*it).id);
+
+    m_allTextures.clear();
 }
 
 int CGLDevice::GetMaxTextureCount()
@@ -605,7 +605,6 @@ void CGLDevice::SetTexture(int index, const Texture &texture)
     if (same)
         return; // nothing to do
 
-    glEnable(GL_TEXTURE_2D);
     glActiveTexture(GL_TEXTURE0 + index);
     glBindTexture(GL_TEXTURE_2D, texture.id);
 
@@ -623,7 +622,6 @@ void CGLDevice::SetTexture(int index, unsigned int textureId)
 
     m_currentTextures[index].id = textureId;
 
-    glEnable(GL_TEXTURE_2D);
     glActiveTexture(GL_TEXTURE0 + index);
     glBindTexture(GL_TEXTURE_2D, textureId);
 
@@ -684,8 +682,6 @@ void CGLDevice::SetTextureStageParams(int index, const TextureStageParams &param
     if (! m_currentTextures[index].Valid())
         return;
 
-    // Enable the given stage
-    glEnable(GL_TEXTURE_2D);
     glActiveTexture(GL_TEXTURE0 + index);
 
     // To save some trouble
@@ -802,10 +798,6 @@ after_tex_operations:
     else if (params.wrapT == TEX_WRAP_REPEAT)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     else  assert(false);
-
-    // Disable the stage if it is set so
-    if ( (! m_texturing) || (! m_texturesEnabled[0]) )
-        glDisable(GL_TEXTURE_2D);
 }
 
 void CGLDevice::SetTextureStageWrap(int index, TexWrapMode wrapS, TexWrapMode wrapT)
@@ -821,8 +813,6 @@ void CGLDevice::SetTextureStageWrap(int index, TexWrapMode wrapS, TexWrapMode wr
     if (! m_currentTextures[index].Valid())
         return;
 
-    // Enable the given stage
-    glEnable(GL_TEXTURE_2D);
     glActiveTexture(GL_TEXTURE0 + index);
 
     if      (wrapS == TEX_WRAP_CLAMP)
@@ -836,10 +826,6 @@ void CGLDevice::SetTextureStageWrap(int index, TexWrapMode wrapS, TexWrapMode wr
     else if (wrapT == TEX_WRAP_REPEAT)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     else  assert(false);
-
-    // Disable the stage if it is set so
-    if ( (! m_texturing) || (! m_texturesEnabled[0]) )
-        glDisable(GL_TEXTURE_2D);
 }
 
 TextureStageParams CGLDevice::GetTextureStageParams(int index)
@@ -855,15 +841,8 @@ void CGLDevice::SetTextureFactor(const Color &color)
     // Needs to be set for all texture stages
     for (int index = 0; index < static_cast<int>( m_currentTextures.size() ); ++index)
     {
-        // Activate stage
         glActiveTexture(GL_TEXTURE0 + index);
-        glEnable(GL_TEXTURE_2D);
-
         glTexEnvfv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_COLOR, color.Array());
-
-        // Disable the stage if it is set so
-        if ( (! m_texturing) || (! m_texturesEnabled[index]) )
-            glDisable(GL_TEXTURE_2D);
     }
 }
 
@@ -871,14 +850,9 @@ Color CGLDevice::GetTextureFactor()
 {
     // Get from 1st stage (should be the same for all stages)
     glActiveTexture(GL_TEXTURE0);
-    glEnable(GL_TEXTURE_2D);
 
     GLfloat color[4] = { 0.0f };
     glGetTexEnvfv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_COLOR, color);
-
-    // Disable the 1st stage if it is set so
-    if ( (! m_texturing) || (! m_texturesEnabled[0]) )
-        glDisable(GL_TEXTURE_2D);
 
     return Color(color[0], color[1], color[2], color[3]);
 }
@@ -954,6 +928,8 @@ void CGLDevice::DrawPrimitive(PrimitiveType type, const VertexTex2 *vertices, in
     glClientActiveTexture(GL_TEXTURE1);
     glEnableClientState(GL_TEXTURE_COORD_ARRAY);
     glTexCoordPointer(2, GL_FLOAT, sizeof(VertexTex2), reinterpret_cast<GLfloat*>(&vs[0].texCoord2));
+
+    glColor3f(1.0f, 1.0f, 1.0f);
 
     glDrawArrays(TranslateGfxPrimitive(type), 0, vertexCount);
 
@@ -1069,22 +1045,6 @@ void CGLDevice::SetRenderState(RenderState state, bool enabled)
 
         return;
     }
-    else if (state == RENDER_STATE_TEXTURING)
-    {
-        m_texturing = enabled;
-
-        // Enable/disable stages with new setting
-        for (int index = 0; index < static_cast<int>( m_currentTextures.size() ); ++index)
-        {
-            glActiveTexture(GL_TEXTURE0 + index);
-            if (m_texturing && m_texturesEnabled[index])
-                glEnable(GL_TEXTURE_2D);
-            else
-                glDisable(GL_TEXTURE_2D);
-        }
-
-        return;
-    }
 
     GLenum flag = 0;
 
@@ -1109,9 +1069,6 @@ bool CGLDevice::GetRenderState(RenderState state)
 {
     if (state == RENDER_STATE_LIGHTING)
         return m_lighting;
-
-    if (state == RENDER_STATE_TEXTURING)
-        return m_texturing;
 
     GLenum flag = 0;
 

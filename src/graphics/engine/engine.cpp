@@ -1851,8 +1851,6 @@ void CEngine::SetState(int state, const Color& color)
         m_device->SetRenderState(RENDER_STATE_BLENDING,    true);
         m_device->SetBlendFunc(BLEND_ONE, BLEND_INV_SRC_COLOR);
 
-        m_device->SetRenderState(RENDER_STATE_TEXTURING,   true);
-
         m_device->SetTextureFactor(color);
 
         TextureStageParams params;
@@ -1873,8 +1871,6 @@ void CEngine::SetState(int state, const Color& color)
         m_device->SetRenderState(RENDER_STATE_BLENDING,    true);
         m_device->SetBlendFunc(BLEND_DST_COLOR, BLEND_ZERO);
 
-        m_device->SetRenderState(RENDER_STATE_TEXTURING,   true);
-
         m_device->SetTextureFactor(color.Inverse());
 
         TextureStageParams params;
@@ -1891,20 +1887,22 @@ void CEngine::SetState(int state, const Color& color)
         m_device->SetRenderState(RENDER_STATE_FOG,         false);
         m_device->SetRenderState(RENDER_STATE_DEPTH_WRITE, false);
         m_device->SetRenderState(RENDER_STATE_ALPHA_TEST,  false);
-        m_device->SetRenderState(RENDER_STATE_TEXTURING,   false);
 
         m_device->SetRenderState(RENDER_STATE_BLENDING,    true);
         m_device->SetBlendFunc(BLEND_ONE, BLEND_INV_SRC_COLOR);
+
+        m_device->SetTextureEnabled(0, false);
     }
     else if (state & ENG_RSTATE_TCOLOR_WHITE)  // transparent white color?
     {
         m_device->SetRenderState(RENDER_STATE_FOG,         false);
         m_device->SetRenderState(RENDER_STATE_DEPTH_WRITE, false);
         m_device->SetRenderState(RENDER_STATE_ALPHA_TEST,  false);
-        m_device->SetRenderState(RENDER_STATE_TEXTURING,   false);
 
         m_device->SetRenderState(RENDER_STATE_BLENDING,    true);
         m_device->SetBlendFunc(BLEND_DST_COLOR, BLEND_ZERO);
+
+        m_device->SetTextureEnabled(0, false);
     }
     else if (state & ENG_RSTATE_TDIFFUSE)  // diffuse color as transparent?
     {
@@ -1914,8 +1912,6 @@ void CEngine::SetState(int state, const Color& color)
 
         m_device->SetRenderState(RENDER_STATE_BLENDING,    true);
         m_device->SetBlendFunc(BLEND_SRC_ALPHA, BLEND_DST_ALPHA);
-
-        m_device->SetRenderState(RENDER_STATE_TEXTURING,   true);
 
         TextureStageParams params;
         params.colorOperation = TEX_MIX_OPER_REPLACE;
@@ -1932,7 +1928,6 @@ void CEngine::SetState(int state, const Color& color)
         m_device->SetRenderState(RENDER_STATE_ALPHA_TEST,  false);
         m_device->SetRenderState(RENDER_STATE_BLENDING,    false);
 
-        m_device->SetRenderState(RENDER_STATE_TEXTURING,   true);
         m_device->SetTextureEnabled(0, true);
         m_device->SetTextureStageParams(0, TextureStageParams()); // default operation
     }
@@ -1942,7 +1937,8 @@ void CEngine::SetState(int state, const Color& color)
         m_device->SetRenderState(RENDER_STATE_DEPTH_WRITE, false);
         m_device->SetRenderState(RENDER_STATE_ALPHA_TEST,  false);
         m_device->SetRenderState(RENDER_STATE_BLENDING,    false);
-        m_device->SetRenderState(RENDER_STATE_TEXTURING,   false);
+
+        m_device->SetTextureEnabled(0, false);
     }
     else if (state & ENG_RSTATE_TEXT)  // font rendering?
     {
@@ -1953,7 +1949,6 @@ void CEngine::SetState(int state, const Color& color)
         m_device->SetRenderState(RENDER_STATE_BLENDING,    true);
         m_device->SetBlendFunc(BLEND_SRC_ALPHA, BLEND_INV_SRC_ALPHA);
 
-        m_device->SetRenderState(RENDER_STATE_TEXTURING,   true);
         m_device->SetTextureEnabled(0, true);
         m_device->SetTextureStageParams(0, TextureStageParams()); // default operation
     }
@@ -1967,8 +1962,6 @@ void CEngine::SetState(int state, const Color& color)
         m_device->SetRenderState(RENDER_STATE_ALPHA_TEST,  true);
 
         m_device->SetAlphaTestFunc(COMP_FUNC_GREATER, 0.5f);
-
-        m_device->SetRenderState(RENDER_STATE_TEXTURING,   true);
 
         m_device->SetTextureFactor(color);
 
@@ -1989,8 +1982,6 @@ void CEngine::SetState(int state, const Color& color)
 
         m_device->SetRenderState(RENDER_STATE_DEPTH_WRITE, true);
         m_device->SetRenderState(RENDER_STATE_FOG,         true);
-
-        m_device->SetRenderState(RENDER_STATE_TEXTURING, true);
 
         TextureStageParams params;
         params.colorOperation = TEX_MIX_OPER_DEFAULT; // default modulate
@@ -2063,9 +2054,7 @@ void CEngine::SetState(int state, const Color& color)
 
     // In interface mode, disable lighting
     if (m_interfaceMode)
-    {
         m_device->SetRenderState(RENDER_STATE_LIGHTING, false);
-    }
 }
 
 void CEngine::SetMaterial(const Material& mat)
@@ -3584,7 +3573,6 @@ void CEngine::DrawOverColor()
     m_device->SetRenderState(RENDER_STATE_DEPTH_WRITE, false);
     m_device->SetRenderState(RENDER_STATE_LIGHTING, false);
     m_device->SetRenderState(RENDER_STATE_FOG, false);
-    m_device->SetRenderState(RENDER_STATE_TEXTURING, false);
 
     m_device->SetTransform(TRANSFORM_VIEW, m_matViewInterface);
     m_device->SetTransform(TRANSFORM_PROJECTION, m_matProjInterface);

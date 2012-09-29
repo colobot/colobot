@@ -190,8 +190,6 @@ private:
     //! Current lights enable status
     std::vector<bool> m_lightsEnabled;
 
-    //! Whether texturing is enabled in general
-    bool m_texturing;
     //! Current textures; \c NULL value means unassigned
     std::vector<Texture> m_currentTextures;
     //! Current texture stages enable status

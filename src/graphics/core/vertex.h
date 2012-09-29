@@ -91,8 +91,7 @@ struct VertexCol
     Color color;
 
     explicit VertexCol(Math::Vector aCoord = Math::Vector(),
-                       Color aColor = Color(),
-                       Math::Point aTexCoord = Math::Point())
+                       Color aColor = Color())
         : coord(aCoord), pad(0.0f), color(aColor) {}
 
     //! Returns a string "(c: [...], col: [...])"
