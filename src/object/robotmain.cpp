@@ -1510,7 +1510,7 @@ bool CRobotMain::EventProcess(Event &event)
                 break;
 
             case EVENT_MOUSE_BUTTON_DOWN:
-                if (event.mouseButton.button != 1) // only left mouse button
+                if (event.mouseButton.button != MOUSE_BUTTON_LEFT) // only left mouse button
                     break;
 
                 obj = DetectObject(event.mousePos);
@@ -1532,7 +1532,7 @@ bool CRobotMain::EventProcess(Event &event)
                 break;
 
             case EVENT_MOUSE_BUTTON_UP:
-                if (event.mouseButton.button != 1) // only left mouse button
+                if (event.mouseButton.button != MOUSE_BUTTON_LEFT) // only left mouse button
                     break;
 
                 m_cameraPan  = 0.0f;
