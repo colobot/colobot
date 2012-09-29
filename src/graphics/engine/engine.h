@@ -890,11 +890,19 @@ public:
                                   const Math::Vector& upVec, float eyeDistance);
 
     //! Loads texture, creating it if not already present
-    Texture    LoadTexture(const std::string& name);
+    Texture         LoadTexture(const std::string& name);
     //! Loads texture, creating it with given params if not already present
-    Texture    LoadTexture(const std::string& name, const TextureCreateParams& params);
+    Texture         LoadTexture(const std::string& name, const TextureCreateParams& params);
     //! Loads all necessary textures
     bool            LoadAllTextures();
+
+    bool            ChangeTextureColor(const std::string& texName,
+                                       Color colorRef1, Color colorNew1,
+                                       Color colorRef2, Color colorNew2,
+                                       float tolerance1, float tolerance2,
+                                       Math::Point ts, Math::Point ti,
+                                       Math::Point *exclude = nullptr,
+                                       float shift = 0.0f, bool hsv = false);
 
     //! Sets texture for given stage; if not present in cache, the texture is loaded
     /** If loading fails, returns false. */
@@ -973,19 +981,19 @@ public:
     //@{
     //! Ambient color management
     void            SetAmbientColor(const Color& color, int rank = 0);
-    Color      GetAmbientColor(int rank = 0);
+    Color           GetAmbientColor(int rank = 0);
     //@}
 
     //@{
     //! Color management under water
     void            SetWaterAddColor(const Color& color);
-    Color      GetWaterAddColor();
+    Color           GetWaterAddColor();
     //@}
 
     //@{
     //! Management of the fog color
     void            SetFogColor(const Color& color, int rank = 0);
-    Color      GetFogColor(int rank = 0);
+    Color           GetFogColor(int rank = 0);
     //@}
 
     //@{

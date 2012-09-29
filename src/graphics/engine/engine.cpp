@@ -2082,8 +2082,6 @@ Texture CEngine::CreateTexture(const std::string& texName, const TextureCreatePa
     if (m_texBlacklist.find(texName) != m_texBlacklist.end())
         return Texture(); // invalid texture
 
-    // TODO: detect alpha channel?
-
     CImage img;
     if (! img.Load(m_app->GetDataFilePath(DIR_TEXTURE, texName)))
     {
@@ -2192,6 +2190,146 @@ bool CEngine::LoadAllTextures()
     }
 
     return ok;
+}
+
+bool IsExcludeColor(Math::Point *exclude, int x, int y)
+{
+    int i = 0;
+    while ( exclude[i+0].x != 0.0f || exclude[i+0].y != 0.0f ||
+            exclude[i+1].y != 0.0f || exclude[i+1].y != 0.0f )
+    {
+        if ( x >= static_cast<int>(exclude[i+0].x*256.0f) &&
+             x <  static_cast<int>(exclude[i+1].x*256.0f) &&
+             y >= static_cast<int>(exclude[i+0].y*256.0f) &&
+             y <  static_cast<int>(exclude[i+1].y*256.0f) )  return true;  // exclude
+
+        i += 2;
+    }
+
+    return false;  // point to include
+}
+
+
+bool CEngine::ChangeTextureColor(const std::string& texName,
+                                 Color colorRef1, Color colorNew1,
+                                 Color colorRef2, Color colorNew2,
+                                 float tolerance1, float tolerance2,
+                                 Math::Point ts, Math::Point ti,
+                                 Math::Point *exclude, float shift, bool hsv)
+{
+    if ( colorRef1.r == colorNew1.r &&
+         colorRef1.g == colorNew1.g &&
+         colorRef1.b == colorNew1.b &&
+         colorRef2.r == colorNew2.r &&
+         colorRef2.g == colorNew2.g &&
+         colorRef2.b == colorNew2.b )  return true;
+
+
+    DeleteTexture(texName);
+
+
+    CImage img;
+    if (! img.Load(m_app->GetDataFilePath(DIR_TEXTURE, texName)))
+    {
+        std::string error = img.GetError();
+        GetLogger()->Error("Couldn't load texture '%s': %s, blacklisting\n", texName.c_str(), error.c_str());
+        m_texBlacklist.insert(texName);
+        return false;
+    }
+
+
+    int dx = img.GetSize().x;
+    int dy = img.GetSize().x;
+
+    int sx = static_cast<int>(ts.x*dx);
+    int sy = static_cast<int>(ts.y*dy);
+
+    int ex = static_cast<int>(ti.x*dx);
+    int ey = static_cast<int>(ti.y*dy);
+
+    ColorHSV cr1 = RGB2HSV(colorRef1);
+    ColorHSV cn1 = RGB2HSV(colorNew1);
+    ColorHSV cr2 = RGB2HSV(colorRef2);
+    ColorHSV cn2 = RGB2HSV(colorNew2);
+
+    for (int y = sy; y < ey; y++)
+    {
+        for (int x = sx; x < ex; x++)
+        {
+            if (exclude != nullptr && IsExcludeColor(exclude, x,y) )  continue;
+
+            Color color = img.GetPixel(Math::IntPoint(x, y));
+
+            if (hsv)
+            {
+                ColorHSV c = RGB2HSV(color);
+                if (c.s > 0.01f && fabs(c.h - cr1.h) < tolerance1)
+                {
+                    c.h += cn1.h - cr1.h;
+                    c.s += cn1.s - cr1.s;
+                    c.v += cn1.v - cr1.v;
+                    if (c.h < 0.0f) c.h -= 1.0f;
+                    if (c.h > 1.0f) c.h += 1.0f;
+                    color = HSV2RGB(c);
+                    color.r += shift;
+                    color.g += shift;
+                    color.b += shift;
+                    img.SetPixel(Math::IntPoint(x, y), color);
+                }
+                else if (tolerance2 != -1.0f &&
+                         c.s > 0.01f && fabs(c.h - cr2.h) < tolerance2)
+                {
+                    c.h += cn2.h - cr2.h;
+                    c.s += cn2.s - cr2.s;
+                    c.v += cn2.v - cr2.v;
+                    if (c.h < 0.0f) c.h -= 1.0f;
+                    if (c.h > 1.0f) c.h += 1.0f;
+                    color = HSV2RGB(c);
+                    color.r += shift;
+                    color.g += shift;
+                    color.b += shift;
+                    img.SetPixel(Math::IntPoint(x, y), color);
+                }
+            }
+            else
+            {
+                if ( fabs(color.r - colorRef1.r) +
+                     fabs(color.g - colorRef1.g) +
+                     fabs(color.b - colorRef1.b) < tolerance1 * 3.0f)
+                {
+                    color.r = colorNew1.r + color.r - colorRef1.r + shift;
+                    color.g = colorNew1.g + color.g - colorRef1.g + shift;
+                    color.b = colorNew1.b + color.b - colorRef1.b + shift;
+                    img.SetPixel(Math::IntPoint(x, y), color);
+                }
+                else if (tolerance2 != -1 &&
+                         fabs(color.r - colorRef2.r) +
+                         fabs(color.g - colorRef2.g) +
+                         fabs(color.b - colorRef2.b) < tolerance2 * 3.0f)
+                {
+                    color.r = colorNew2.r + color.r - colorRef2.r + shift;
+                    color.g = colorNew2.g + color.g - colorRef2.g + shift;
+                    color.b = colorNew2.b + color.b - colorRef2.b + shift;
+                    img.SetPixel(Math::IntPoint(x, y), color);
+                }
+            }
+        }
+    }
+
+
+    Texture tex = m_device->CreateTexture(&img, m_defaultTexParams);
+
+    if (! tex.Valid())
+    {
+        GetLogger()->Error("Couldn't load texture '%s', blacklisting\n", texName.c_str());
+        m_texBlacklist.insert(texName);
+        return false;
+    }
+
+    m_texNameMap[texName] = tex;
+    m_revTexNameMap[tex] = texName;
+
+    return true;
 }
 
 void CEngine::DeleteTexture(const std::string& texName)
