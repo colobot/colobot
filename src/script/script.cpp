@@ -2669,6 +2669,7 @@ CScript::CScript(CInstanceManager* iMan, CObject* object, CTaskManager** seconda
     m_secondaryTask = secondaryTask;
 
     m_interface = static_cast<Ui::CInterface*>(m_iMan->SearchInstance(CLASS_INTERFACE));
+    m_displayText = static_cast<Ui::CDisplayText*>(m_iMan->SearchInstance(CLASS_DISPLAYTEXT));
 
     m_ipf = CBOT_IPF;
     m_errMode = ERM_STOP;
