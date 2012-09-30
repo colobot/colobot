@@ -357,9 +357,9 @@ const CBotString& CBotString::operator+(const CBotString& stringSrc)
 {
     char* p = static_cast<char*>(malloc(m_lg+stringSrc.m_lg+1));
 
-    strcpy(p, m_ptr);
+    if (m_ptr!=NULL) strcpy(p, m_ptr);
     char* pp = p + m_lg;
-    strcpy(pp, stringSrc.m_ptr);
+    if (stringSrc.m_ptr!=NULL) strcpy(pp, stringSrc.m_ptr);
 
     free(m_ptr);
     m_ptr = p;
