@@ -86,6 +86,7 @@ public:
 
     virtual void BeginScene();
     virtual void EndScene();
+    virtual void ResizeViewport(const unsigned int width, const unsigned int height);
 
     virtual void Clear();
 

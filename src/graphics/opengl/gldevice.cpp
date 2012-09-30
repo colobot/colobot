@@ -170,6 +170,13 @@ void CGLDevice::ConfigChanged(const GLDeviceConfig& newConfig)
     Create();
 }
 
+void CGLDevice::ResizeViewport(const unsigned int width, const unsigned int height)
+{
+    m_config.size.x = width;
+    m_config.size.y = height;
+    glViewport(0, 0, m_config.size.x, m_config.size.y);
+}
+
 void CGLDevice::BeginScene()
 {
     Clear();

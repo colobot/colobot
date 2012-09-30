@@ -1163,6 +1163,10 @@ void CMainDialog::ChangePhase(Phase phase)
     if ( m_phase == PHASE_SETUPd  || // setup/display ?
          m_phase == PHASE_SETUPds )
     {
+
+// TODO: device settings
+#if 0
+
         pos.x = ox+sx*3;
         pos.y = oy+sy*9;
         ddim.x = dim.x*6;
@@ -1204,6 +1208,7 @@ void CMainDialog::ChangePhase(Phase phase)
         pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_FULL);
         pc->SetState(STATE_SHADOW);
         pc->SetState(STATE_CHECK, m_setupFull);
+#endif
 
         ddim.x = dim.x*6;
         ddim.y = dim.y*1;

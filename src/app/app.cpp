@@ -873,6 +873,13 @@ Event CApplication::ProcessSystemEvent()
     {
         event.type = EVENT_QUIT;
     }
+    else if ( m_private->currentEvent.type == SDL_VIDEORESIZE ) {
+        m_deviceConfig.size.x = m_private->currentEvent.resize.w;
+        m_deviceConfig.size.y = m_private->currentEvent.resize.h;
+        CreateVideoSurface();
+        // FIXME: dirty hack, will fail with device other than OpenGL
+        dynamic_cast<Gfx::CGLDevice*>(m_device)->ResizeViewport(m_deviceConfig.size.x, m_deviceConfig.size.y);
+    }
     else if ( (m_private->currentEvent.type == SDL_KEYDOWN) ||
               (m_private->currentEvent.type == SDL_KEYUP) )
     {
