@@ -200,8 +200,8 @@ Math::IntPoint CImage::GetSize() const
 Gfx::IntColor CImage::GetPixelInt(Math::IntPoint pixel)
 {
     assert(m_data != nullptr);
-    assert(pixel.x >= 0 || pixel.x <= m_data->surface->w);
-    assert(pixel.y >= 0 || pixel.y <= m_data->surface->h);
+    assert(pixel.x >= 0 && pixel.x < m_data->surface->w);
+    assert(pixel.y >= 0 && pixel.y < m_data->surface->h);
 
     int bpp = m_data->surface->format->BytesPerPixel;
     int index = pixel.y * m_data->surface->pitch + pixel.x * bpp;
@@ -260,8 +260,8 @@ Gfx::Color CImage::GetPixel(Math::IntPoint pixel)
 void CImage::SetPixelInt(Math::IntPoint pixel, Gfx::IntColor color)
 {
     assert(m_data != nullptr);
-    assert(pixel.x >= 0 || pixel.x <= m_data->surface->w);
-    assert(pixel.y >= 0 || pixel.y <= m_data->surface->h);
+    assert(pixel.x >= 0 && pixel.x < m_data->surface->w);
+    assert(pixel.y >= 0 && pixel.y < m_data->surface->h);
 
     int bpp = m_data->surface->format->BytesPerPixel;
     int index = pixel.y * m_data->surface->pitch + pixel.x * bpp;

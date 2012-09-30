@@ -2256,13 +2256,14 @@ bool CEngine::ChangeTextureColor(const std::string& texName,
 
 
     int dx = img.GetSize().x;
-    int dy = img.GetSize().x;
+    int dy = img.GetSize().y;
 
-    int sx = static_cast<int>(ts.x*dx);
-    int sy = static_cast<int>(ts.y*dy);
+    int sx = static_cast<int>(Math::Max(ts.x*dx, 0));
+    int sy = static_cast<int>(Math::Max(ts.y*dy, 0));
 
-    int ex = static_cast<int>(ti.x*dx);
-    int ey = static_cast<int>(ti.y*dy);
+    int ex = static_cast<int>(Math::Min(ti.x*dx, dx));
+    int ey = static_cast<int>(Math::Min(ti.y*dy, dy));
+
 
     ColorHSV cr1 = RGB2HSV(colorRef1);
     ColorHSV cn1 = RGB2HSV(colorNew1);
@@ -2288,9 +2289,9 @@ bool CEngine::ChangeTextureColor(const std::string& texName,
                     if (c.h < 0.0f) c.h -= 1.0f;
                     if (c.h > 1.0f) c.h += 1.0f;
                     color = HSV2RGB(c);
-                    color.r += shift;
-                    color.g += shift;
-                    color.b += shift;
+                    color.r = Math::Norm(color.r + shift);
+                    color.g = Math::Norm(color.g + shift);
+                    color.b = Math::Norm(color.b + shift);
                     img.SetPixel(Math::IntPoint(x, y), color);
                 }
                 else if (tolerance2 != -1.0f &&
@@ -2302,9 +2303,9 @@ bool CEngine::ChangeTextureColor(const std::string& texName,
                     if (c.h < 0.0f) c.h -= 1.0f;
                     if (c.h > 1.0f) c.h += 1.0f;
                     color = HSV2RGB(c);
-                    color.r += shift;
-                    color.g += shift;
-                    color.b += shift;
+                    color.r = Math::Norm(color.r + shift);
+                    color.g = Math::Norm(color.g + shift);
+                    color.b = Math::Norm(color.b + shift);
                     img.SetPixel(Math::IntPoint(x, y), color);
                 }
             }
@@ -2314,9 +2315,9 @@ bool CEngine::ChangeTextureColor(const std::string& texName,
                      fabs(color.g - colorRef1.g) +
                      fabs(color.b - colorRef1.b) < tolerance1 * 3.0f)
                 {
-                    color.r = colorNew1.r + color.r - colorRef1.r + shift;
-                    color.g = colorNew1.g + color.g - colorRef1.g + shift;
-                    color.b = colorNew1.b + color.b - colorRef1.b + shift;
+                    color.r = Math::Norm(colorNew1.r + color.r - colorRef1.r + shift);
+                    color.g = Math::Norm(colorNew1.g + color.g - colorRef1.g + shift);
+                    color.b = Math::Norm(colorNew1.b + color.b - colorRef1.b + shift);
                     img.SetPixel(Math::IntPoint(x, y), color);
                 }
                 else if (tolerance2 != -1 &&
@@ -2324,9 +2325,9 @@ bool CEngine::ChangeTextureColor(const std::string& texName,
                          fabs(color.g - colorRef2.g) +
                          fabs(color.b - colorRef2.b) < tolerance2 * 3.0f)
                 {
-                    color.r = colorNew2.r + color.r - colorRef2.r + shift;
-                    color.g = colorNew2.g + color.g - colorRef2.g + shift;
-                    color.b = colorNew2.b + color.b - colorRef2.b + shift;
+                    color.r = Math::Norm(colorNew2.r + color.r - colorRef2.r + shift);
+                    color.g = Math::Norm(colorNew2.g + color.g - colorRef2.g + shift);
+                    color.b = Math::Norm(colorNew2.b + color.b - colorRef2.b + shift);
                     img.SetPixel(Math::IntPoint(x, y), color);
                 }
             }
