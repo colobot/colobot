@@ -23,6 +23,8 @@
 #pragma once
 
 
+#include "graphics/core/color.h"
+
 #include "math/point.h"
 
 #include <vector>
@@ -39,9 +41,9 @@ class CEngine;
 class CDevice;
 
 //! Standard small font size
-const float FONT_SIZE_SMALL = 10.0f;
+const float FONT_SIZE_SMALL = 12.0f;
 //! Standard big font size
-const float FONT_SIZE_BIG = 15.0f;
+const float FONT_SIZE_BIG = 18.0f;
 
 /**
  * \enum TextAlign
@@ -244,11 +246,11 @@ public:
     //! Draws text (multi-format)
     void        DrawText(const std::string &text, std::map<unsigned int, FontMetaChar> &format,
                          float size, Math::Point pos, float width, TextAlign align,
-                         int eol);
+                         int eol, Color color = Color(0.0f, 0.0f, 0.0f, 1.0f));
     //! Draws text (one font)
     void        DrawText(const std::string &text, FontType font,
                          float size, Math::Point pos, float width, TextAlign align,
-                         int eol);
+                         int eol, Color color = Color(0.0f, 0.0f, 0.0f, 1.0f));
 
     //! Calculates dimensions for text (multi-format)
     void        SizeText(const std::string &text, std::map<unsigned int, FontMetaChar> &format,
@@ -291,11 +293,11 @@ protected:
     CharTexture CreateCharTexture(UTF8Char ch, CachedFont* font);
 
     void        DrawString(const std::string &text, std::map<unsigned int, FontMetaChar> &format,
-                           float size, Math::Point pos, float width, int eol);
+                           float size, Math::Point pos, float width, int eol, Color color);
     void        DrawString(const std::string &text, FontType font,
-                           float size, Math::Point pos, float width, int eol);
+                           float size, Math::Point pos, float width, int eol, Color color);
     void        DrawHighlight(FontHighlight hl, Math::Point pos, Math::Point size);
-    void        DrawCharAndAdjustPos(UTF8Char ch, FontType font, float size, Math::Point &pos);
+    void        DrawCharAndAdjustPos(UTF8Char ch, FontType font, float size, Math::Point &pos, Color color);
     void        StringToUTFCharList(const std::string &text, std::vector<UTF8Char> &chars);
 
 protected:

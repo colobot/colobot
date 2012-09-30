@@ -86,7 +86,6 @@ public:
 
     virtual void BeginScene();
     virtual void EndScene();
-    virtual void ResizeViewport(const unsigned int width, const unsigned int height);
 
     virtual void Clear();
 
@@ -120,9 +119,13 @@ public:
 
     virtual void SetTextureStageWrap(int index, Gfx::TexWrapMode wrapS, Gfx::TexWrapMode wrapT);
 
-    virtual void DrawPrimitive(PrimitiveType type, const Vertex     *vertices, int vertexCount);
-    virtual void DrawPrimitive(PrimitiveType type, const VertexCol  *vertices, int vertexCount);
-    virtual void DrawPrimitive(PrimitiveType type, const VertexTex2 *vertices, int vertexCount);
+    //! Renders primitive composed of vertices with single texture
+    virtual void DrawPrimitive(PrimitiveType type, const Vertex *vertices    , int vertexCount,
+                               Color color = Color(1.0f, 1.0f, 1.0f, 1.0f));
+    //! Renders primitive composed of vertices with multitexturing (2 textures)
+    virtual void DrawPrimitive(PrimitiveType type, const VertexTex2 *vertices, int vertexCount,
+                               Color color = Color(1.0f, 1.0f, 1.0f, 1.0f));
+    virtual void DrawPrimitive(PrimitiveType type, const VertexCol *vertices , int vertexCount);
 
     virtual int ComputeSphereVisibility(const Math::Vector &center, float radius);
 

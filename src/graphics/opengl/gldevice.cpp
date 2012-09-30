@@ -170,13 +170,6 @@ void CGLDevice::ConfigChanged(const GLDeviceConfig& newConfig)
     Create();
 }
 
-void CGLDevice::ResizeViewport(const unsigned int width, const unsigned int height)
-{
-    m_config.size.x = width;
-    m_config.size.y = height;
-    glViewport(0, 0, m_config.size.x, m_config.size.y);
-}
-
 void CGLDevice::BeginScene()
 {
     Clear();
@@ -860,7 +853,8 @@ GLenum TranslateGfxPrimitive(PrimitiveType type)
     return flag;
 }
 
-void CGLDevice::DrawPrimitive(PrimitiveType type, const Vertex *vertices, int vertexCount)
+void CGLDevice::DrawPrimitive(PrimitiveType type, const Vertex *vertices, int vertexCount,
+                              Color color)
 {
     Vertex* vs = const_cast<Vertex*>(vertices);
 
@@ -874,7 +868,7 @@ void CGLDevice::DrawPrimitive(PrimitiveType type, const Vertex *vertices, int ve
     glEnableClientState(GL_TEXTURE_COORD_ARRAY);
     glTexCoordPointer(2, GL_FLOAT, sizeof(Vertex), reinterpret_cast<GLfloat*>(&vs[0].texCoord));
 
-    glColor3f(1.0f, 1.0f, 1.0f);
+    glColor4fv(color.Array());
 
     glDrawArrays(TranslateGfxPrimitive(type), 0, vertexCount);
 
@@ -883,23 +877,8 @@ void CGLDevice::DrawPrimitive(PrimitiveType type, const Vertex *vertices, int ve
     glDisableClientState(GL_TEXTURE_COORD_ARRAY); // GL_TEXTURE0
 }
 
-void CGLDevice::DrawPrimitive(PrimitiveType type, const VertexCol *vertices, int vertexCount)
-{
-    VertexCol* vs = const_cast<VertexCol*>(vertices);
-
-    glEnableClientState(GL_VERTEX_ARRAY);
-    glVertexPointer(3, GL_FLOAT, sizeof(VertexCol), reinterpret_cast<GLfloat*>(&vs[0].coord));
-
-    glEnableClientState(GL_COLOR_ARRAY);
-    glColorPointer(4, GL_FLOAT, sizeof(VertexCol), reinterpret_cast<GLfloat*>(&vs[0].color));
-
-    glDrawArrays(TranslateGfxPrimitive(type), 0, vertexCount);
-
-    glDisableClientState(GL_VERTEX_ARRAY);
-    glDisableClientState(GL_COLOR_ARRAY);
-}
-
-void CGLDevice::DrawPrimitive(PrimitiveType type, const VertexTex2 *vertices, int vertexCount)
+void CGLDevice::DrawPrimitive(PrimitiveType type, const VertexTex2 *vertices, int vertexCount,
+                              Color color)
 {
     VertexTex2* vs = const_cast<VertexTex2*>(vertices);
 
@@ -917,7 +896,7 @@ void CGLDevice::DrawPrimitive(PrimitiveType type, const VertexTex2 *vertices, in
     glEnableClientState(GL_TEXTURE_COORD_ARRAY);
     glTexCoordPointer(2, GL_FLOAT, sizeof(VertexTex2), reinterpret_cast<GLfloat*>(&vs[0].texCoord2));
 
-    glColor3f(1.0f, 1.0f, 1.0f);
+    glColor4fv(color.Array());
 
     glDrawArrays(TranslateGfxPrimitive(type), 0, vertexCount);
 
@@ -926,6 +905,22 @@ void CGLDevice::DrawPrimitive(PrimitiveType type, const VertexTex2 *vertices, in
     glDisableClientState(GL_TEXTURE_COORD_ARRAY); // GL_TEXTURE1
     glClientActiveTexture(GL_TEXTURE0);
     glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+}
+
+void CGLDevice::DrawPrimitive(PrimitiveType type, const VertexCol *vertices, int vertexCount)
+{
+    VertexCol* vs = const_cast<VertexCol*>(vertices);
+
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glVertexPointer(3, GL_FLOAT, sizeof(VertexCol), reinterpret_cast<GLfloat*>(&vs[0].coord));
+
+    glEnableClientState(GL_COLOR_ARRAY);
+    glColorPointer(4, GL_FLOAT, sizeof(VertexCol), reinterpret_cast<GLfloat*>(&vs[0].color));
+
+    glDrawArrays(TranslateGfxPrimitive(type), 0, vertexCount);
+
+    glDisableClientState(GL_VERTEX_ARRAY);
+    glDisableClientState(GL_COLOR_ARRAY);
 }
 
 bool InPlane(Math::Vector normal, float originPlane, Math::Vector center, float radius)

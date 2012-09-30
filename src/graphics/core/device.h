@@ -308,11 +308,13 @@ public:
     virtual void SetTextureStageWrap(int index, TexWrapMode wrapS, TexWrapMode wrapT) = 0;
 
     //! Renders primitive composed of vertices with single texture
-    virtual void DrawPrimitive(PrimitiveType type, const Vertex *vertices    , int vertexCount) = 0;
-    //! Renders primitive composed of vertices with color information and single texture
-    virtual void DrawPrimitive(PrimitiveType type, const VertexCol *vertices , int vertexCount) = 0;
+    virtual void DrawPrimitive(PrimitiveType type, const Vertex *vertices    , int vertexCount,
+                               Color color = Color(1.0f, 1.0f, 1.0f, 1.0f)) = 0;
     //! Renders primitive composed of vertices with multitexturing (2 textures)
-    virtual void DrawPrimitive(PrimitiveType type, const VertexTex2 *vertices, int vertexCount) = 0;
+    virtual void DrawPrimitive(PrimitiveType type, const VertexTex2 *vertices, int vertexCount,
+                               Color color = Color(1.0f, 1.0f, 1.0f, 1.0f)) = 0;
+    //! Renders primitive composed of vertices with color information
+    virtual void DrawPrimitive(PrimitiveType type, const VertexCol *vertices , int vertexCount) = 0;
 
     //! Tests whether a sphere intersects the 6 clipping planes of projection volume
     virtual int ComputeSphereVisibility(const Math::Vector &center, float radius) = 0;

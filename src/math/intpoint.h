@@ -39,6 +39,16 @@ struct IntPoint
     int y;
 
     IntPoint(int aX = 0, int aY = 0) : x(aX), y(aY) {}
+
+    inline bool operator==(const IntPoint& p) const
+    {
+        return x == p.x && y == p.y;
+    }
+
+    inline bool operator!=(const IntPoint& p) const
+    {
+        return !operator==(p);
+    }
 };
 
 

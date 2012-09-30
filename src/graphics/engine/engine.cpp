@@ -333,6 +333,8 @@ void CEngine::Destroy()
 
 void CEngine::ResetAfterDeviceChanged()
 {
+    m_text->FlushCache();
+
     // TODO reload textures, reset device state, etc.
 }
 
@@ -3891,7 +3893,7 @@ void CEngine::DrawStats()
     std::string triangleText = str.str();
 
     float height = m_text->GetAscent(FONT_COLOBOT, 12.0f);
-    float width = 0.15f;
+    float width = 0.2f;
 
     Math::Point pos(0.04f, 0.04f + height);
 
@@ -3911,11 +3913,11 @@ void CEngine::DrawStats()
 
     SetState(ENG_RSTATE_TEXT);
 
-    m_text->DrawText(triangleText, FONT_COLOBOT, 12.0f, pos, 1.0f, TEXT_ALIGN_LEFT, 0);
+    m_text->DrawText(triangleText, FONT_COLOBOT, 12.0f, pos, 1.0f, TEXT_ALIGN_LEFT, 0, Color(1.0f, 1.0f, 1.0f, 1.0f));
 
     pos.y -= height;
 
-    m_text->DrawText(m_fpsText, FONT_COLOBOT, 12.0f, pos, 1.0f, TEXT_ALIGN_LEFT, 0);
+    m_text->DrawText(m_fpsText, FONT_COLOBOT, 12.0f, pos, 1.0f, TEXT_ALIGN_LEFT, 0, Color(1.0f, 1.0f, 1.0f, 1.0f));
 }
 
 

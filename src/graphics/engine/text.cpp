@@ -151,7 +151,7 @@ void CText::FlushCache()
 
 void CText::DrawText(const std::string &text, std::map<unsigned int, FontMetaChar> &format,
                      float size, Math::Point pos, float width, TextAlign align,
-                     int eol)
+                     int eol, Color color)
 {
     float sw = 0.0f;
 
@@ -168,12 +168,12 @@ void CText::DrawText(const std::string &text, std::map<unsigned int, FontMetaCha
         pos.x -= sw;
     }
 
-    DrawString(text, format, size, pos, width, eol);
+    DrawString(text, format, size, pos, width, eol, color);
 }
 
 void CText::DrawText(const std::string &text, FontType font,
                      float size, Math::Point pos, float width, TextAlign align,
-                     int eol)
+                     int eol, Color color)
 {
     float sw = 0.0f;
 
@@ -190,7 +190,7 @@ void CText::DrawText(const std::string &text, FontType font,
         pos.x -= sw;
     }
 
-    DrawString(text, font, size, pos, width, eol);
+    DrawString(text, font, size, pos, width, eol, color);
 }
 
 void CText::SizeText(const std::string &text, std::map<unsigned int, FontMetaChar> &format,
@@ -500,7 +500,7 @@ int CText::Detect(const std::string &text, FontType font, float size, float offs
 }
 
 void CText::DrawString(const std::string &text, std::map<unsigned int, FontMetaChar> &format,
-                       float size, Math::Point pos, float width, int eol)
+                       float size, Math::Point pos, float width, int eol, Color color)
 {
     m_engine->SetState(ENG_RSTATE_TEXT);
 
@@ -538,7 +538,7 @@ void CText::DrawString(const std::string &text, std::map<unsigned int, FontMetaC
             DrawHighlight(hl, pos, charSize);
         }
 
-        DrawCharAndAdjustPos(ch, font, size, pos);
+        DrawCharAndAdjustPos(ch, font, size, pos, color);
 
         fmtIndex++;
     }
@@ -569,7 +569,7 @@ void CText::StringToUTFCharList(const std::string &text, std::vector<UTF8Char> &
 }
 
 void CText::DrawString(const std::string &text, FontType font,
-                       float size, Math::Point pos, float width, int eol)
+                       float size, Math::Point pos, float width, int eol, Color color)
 {
     assert(font != FONT_BUTTON);
 
@@ -579,7 +579,7 @@ void CText::DrawString(const std::string &text, FontType font,
     StringToUTFCharList(text, chars);
     for (auto it = chars.begin(); it != chars.end(); ++it)
     {
-        DrawCharAndAdjustPos(*it, font, size, pos);
+        DrawCharAndAdjustPos(*it, font, size, pos, color);
     }
 }
 
@@ -663,7 +663,7 @@ void CText::DrawHighlight(FontHighlight hl, Math::Point pos, Math::Point size)
     m_device->SetTextureEnabled(0, true);
 }
 
-void CText::DrawCharAndAdjustPos(UTF8Char ch, FontType font, float size, Math::Point &pos)
+void CText::DrawCharAndAdjustPos(UTF8Char ch, FontType font, float size, Math::Point &pos, Color color)
 {
     // TODO: if (font == FONT_BUTTON)
     if (font == FONT_BUTTON) return;
@@ -674,14 +674,14 @@ void CText::DrawCharAndAdjustPos(UTF8Char ch, FontType font, float size, Math::P
 
     if (cf == nullptr)
         return;
-    
+
     int width = 1;
     if (ch.c1 < 32) { // FIXME add support for chars with code 9 10 23
-	ch.c1 = ' ';
-	ch.c2 = 0;
-	ch.c3 = 0;
-	if (ch.c1 == '\t')
-	    width = 4;
+        ch.c1 = ' ';
+        ch.c2 = 0;
+        ch.c3 = 0;
+        if (ch.c1 == '\t')
+            width = 4;
     }
 
     auto it = cf->cache.find(ch);
@@ -714,7 +714,7 @@ void CText::DrawCharAndAdjustPos(UTF8Char ch, FontType font, float size, Math::P
     };
 
     m_device->SetTexture(0, tex.id);
-    m_device->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, quad, 4);
+    m_device->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, quad, 4, color);
     m_engine->AddStatisticTriangle(2);
 
     pos.x += tex.charSize.x * width;
