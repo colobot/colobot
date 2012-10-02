@@ -40,8 +40,8 @@ CPluginManager::~CPluginManager()
 void CPluginManager::LoadFromProfile()
 {
     GetLogger()->Info("Trying to load from profile...\n");
-    std::vector< std::string > dirs = GetProfile()->GetLocalProfileSection("Plugins", "Path");
-    std::vector< std::string > plugins = GetProfile()->GetLocalProfileSection("Plugins", "File");
+    std::vector< std::string > dirs = GetProfile().GetLocalProfileSection("Plugins", "Path");
+    std::vector< std::string > plugins = GetProfile().GetLocalProfileSection("Plugins", "File");
 
     GetLogger()->Info("Path %d, files %d\n", dirs.size(), plugins.size());
     for (std::string dir : dirs)

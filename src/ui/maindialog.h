@@ -78,7 +78,7 @@ public:
     std::string & GetStackRead();
     char*         GetSceneName();
     int           GetSceneRank();
-    char*         GetSceneDir();
+    const char*   GetSceneDir();
     bool          GetSceneSoluce();
     std::string & GetSavegameDir();
     std::string & GetPublicDir();
@@ -215,7 +215,8 @@ protected:
     bool            m_bDeleteGamer;
 
     int             m_userTotal;
-    char            m_userList[USERLISTMAX][100];
+
+    std::vector<std::string> m_userList;
 
     int             m_shotDelay;        // number of frames before copy
     std::string     m_shotName;        // generate a file name
