@@ -3575,12 +3575,12 @@ void CMainDialog::NiceParticle(Math::Point mouse, bool bPress)
 
 void CMainDialog::SetUserDir(char *base, int rank)
 {
-    char    dir[100];
+    std::string dir;
 
     if ( strcmp(base, "user") == 0 && rank >= 100 )
     {
-        sprintf(dir, "%s/%s", m_userDir.c_str(), m_userList[rank/100-1]);
-        UserDir(true, dir);
+        dir = m_userDir + "/" + m_userList.at(rank/100-1);
+        UserDir(true, dir.c_str());
     }
     else
     {
@@ -3628,14 +3628,10 @@ void CMainDialog::ReadNameList()
 {
     CWindow*            pw;
     CList*              pl;
-    long                hFile;
     //struct _finddata_t  fBuffer;
-    bool                bDo;
     char                dir[MAX_FNAME];
-    char                temp[MAX_FNAME];
     // char                filenames[MAX_FNAME][100];
     std::vector<std::string> fileNames;
-    int                 nbFilenames, i;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
     if ( pw == 0 )  return;
@@ -3643,7 +3639,6 @@ void CMainDialog::ReadNameList()
     if ( pl == 0 )  return;
     pl->Flush();
 
-    nbFilenames = 0;
 
     try
     {
@@ -3671,8 +3666,7 @@ void CMainDialog::ReadNameList()
     }
 
 
-    fileNames.push_back("Test");
-    for ( i=0 ; i<fileNames.size() ; ++i )
+    for (size_t i=0 ; i<fileNames.size() ; ++i )
     {
         pl->SetName(i, fileNames.at(i).c_str());
     }
@@ -3847,7 +3841,7 @@ void CMainDialog::NameSelect()
 
     GetGamerFace(m_main->GetGamerName());
 
-    GetProfile()->SetLocalProfileString("Gamer", "LastName", m_main->GetGamerName());
+    GetProfile().SetLocalProfileString("Gamer", "LastName", m_main->GetGamerName());
 }
 
 // Creates a new player.
@@ -4283,12 +4277,10 @@ void CMainDialog::DefPerso()
 bool CMainDialog::IsIOReadScene()
 {
     FILE*   file;
-    // char    filename[100];
     std::string filename;
 
     //TODO: Change this to point user dir acocrding to operating system
     filename = m_savegameDir + "/" + m_main->GetGamerName() + "/" + "save" + m_sceneName[0] + "000/data.sav";
-    // sprintf(filename, "%s\\%s\\save%c%.3d\\data.sav", m_savegameDir, m_main->GetGamerName(), m_sceneName[0], 0);
     file = fopen(filename.c_str(), "r");
     if ( file == NULL )  return false;
     fclose(file);
@@ -4419,7 +4411,6 @@ void CMainDialog::IOReadList()
 
 void CMainDialog::IOUpdateList()
 {
-    FILE*       file = NULL;
     CWindow*    pw;
     CList*      pl;
     CButton*    pb;
@@ -4440,7 +4431,6 @@ void CMainDialog::IOUpdateList()
     std::ostringstream rankStream;
     rankStream << std::setfill('0') << std::setw(3) << sel;
     filename = m_savegameDir + "/" + m_main->GetGamerName() + "/save" + m_sceneName[0] + rankStream.str()+ "/screen.png";
-    // sprintf(filename, "%s\\%s\\save%c%.3d\\screen.png", m_savegameDir, m_main->GetGamerName(), m_sceneName[0], sel);
 
     if ( m_phase == PHASE_WRITE  ||
          m_phase == PHASE_WRITEs )
@@ -4470,13 +4460,9 @@ void CMainDialog::IOUpdateList()
 
 void CMainDialog::IODeleteScene()
 {
-    CWindow*            pw;
-    CList*              pl;
-    char                dir[100];
-    char                old[100];
-    long                hFile;
-    //struct _finddata_t  fBuffer;
-    int                 sel, max, i;
+    CWindow* pw;
+    CList*   pl;
+    int      sel;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
     if ( pw == 0 )  return;
@@ -4506,38 +4492,7 @@ void CMainDialog::IODeleteScene()
     {
         GetLogger()->Error("Error on removing directory %s : %s\n", e.what());
     }
-    /* TODO: remove files
-    // Deletes all the contents of the file.
-    sprintf(dir, "%s/%s/save%c%.3d/*", m_savegameDir, m_main->GetGamerName(), m_sceneName[0], sel);
-    hFile = _findfirst(dir, &fBuffer);
-    if ( hFile != -1 )
-    {
-        do
-        {
-            if ( fBuffer.name[0] != '.' )
-            {
-                sprintf(dir, "%s/%s/save%c%.3d/%s", m_savegameDir, m_main->GetGamerName(), m_sceneName[0], sel, fBuffer.name);
-                remove(dir);
-            }
-        }
-        while ( _findnext(hFile, &fBuffer) == 0 );
-    }
 
-    sprintf(dir, "%s/%s/save%c%.3d", m_savegameDir, m_main->GetGamerName(), m_sceneName[0], sel);
-    if ( _rmdir(dir) != 0 )
-    {
-        m_sound->Play(SOUND_TZOING);
-        return;
-    }*/
-
-    /* TODO: rename
-    max = pl->GetTotal();
-    for ( i=sel+1 ; i<max ; i++ )
-    {
-        sprintf(old, "%s/%s/save%c%.3d", m_savegameDir, m_main->GetGamerName(), m_sceneName[0], i);
-        sprintf(dir, "%s/%s/save%c%.3d", m_savegameDir, m_main->GetGamerName(), m_sceneName[0], i-1);
-        rename(old, dir);
-    }*/
     IOReadList();
 }
 
@@ -4567,7 +4522,6 @@ bool CMainDialog::IOWriteScene()
     std::ostringstream selectStream;
 
     //TODO: Change this to point user dir according to operating system
-    // sprintf(filename, "%s\\%s\\save%c%.3d", m_savegameDir, m_main->GetGamerName(), m_sceneName[0], sel);
     GetLogger()->Debug("Creating save directory\n");
     selectStream << std::setfill('0') << std::setw(3) << sel;
     directoryName =  m_savegameDir + "/" + m_main->GetGamerName() + "/" + "save" + m_sceneName[0] + selectStream.str();
@@ -4607,7 +4561,6 @@ bool CMainDialog::IOReadScene()
     if ( sel == -1 )  return false;
 
     //TODO: Change this to point user dir according to operating system
-    // sprintf(filename, "%s\\%s\\save%c%.3d", m_savegameDir, m_main->GetGamerName(), m_sceneName[0], sel);
     std::string fileName;
     std::string fileCbot;
     std::string directoryName;
@@ -4644,7 +4597,7 @@ bool CMainDialog::IOReadScene()
                 OpString(line, "dir", dir);
                 for ( i=0 ; i<m_userTotal ; i++ )
                 {
-                    if ( strcmp(m_userList[i], dir) == 0 )
+                    if ( strcmp(m_userList[i].c_str(), dir) == 0 )
                     {
                         m_sceneRank += (i+1)*100;
                         break;
@@ -4711,14 +4664,13 @@ void CMainDialog::UpdateSceneChap(int &chap)
     FILE*       file = NULL;
     CWindow*    pw;
     CList*      pl;
-    long        hFile;
     //struct _finddata_t fileBuffer;
     std::string fileName;
     char        op[100];
     char        line[500];
     char        name[100];
     int         i, j;
-    bool        bPassed, bDo;
+    bool        bPassed;
 
     memset(op, 0, 100);
     memset(line, 0, 500);
@@ -4734,37 +4686,16 @@ void CMainDialog::UpdateSceneChap(int &chap)
     if ( m_phase == PHASE_USER )
     {
         j = 0;
-        /* TODO: list files
-        hFile = _findfirst("user/*", &fileBuffer);
-        if ( hFile != -1 )
-        {
-            do
-            {
-                if ( (fileBuffer.attrib & _A_SUBDIR) != 0 &&
-                     fileBuffer.name[0] != '.' )
-                {
-                    strcpy(m_userList[j++], fileBuffer.name);
-                }
-            }
-            while ( _findnext(hFile, &fileBuffer) == 0 && j < 100 );
-        }*/
-        m_userTotal = j;
+        fs::directory_iterator dirIt(m_savegameDir), dirEndIt;
 
-        do  // sorts all names:
+        BOOST_FOREACH (const fs::path & p, std::make_pair(dirIt, dirEndIt))
         {
-            bDo = false;
-            for ( i=0 ; i<m_userTotal-1 ; i++ )
+            if (fs::is_directory(p))
             {
-                if ( strcmp(m_userList[i], m_userList[i+1]) > 0 )
-                {
-                    strcpy(name, m_userList[i]);
-                    strcpy(m_userList[i], m_userList[i+1]);
-                    strcpy(m_userList[i+1], name);
-                    bDo = true;
-                }
+                m_userList.push_back(p.leaf().string());
             }
         }
-        while ( bDo );
+        m_userTotal = m_userList.size();
 
         for ( j=0 ; j<m_userTotal ; j++ )
         {
@@ -4772,7 +4703,7 @@ void CMainDialog::UpdateSceneChap(int &chap)
             file = fopen(fileName.c_str(), "r");
             if ( file == NULL )
             {
-                strcpy(name, m_userList[j]);
+                strcpy(name, m_userList[j].c_str());
             }
             else
             {
@@ -5543,123 +5474,62 @@ void CMainDialog::SetupMemorize()
     char    key[500];
     char    num[10];
 
-    /* TODO: profile
-    SetLocalProfileString("Directory", "scene",    m_sceneDir);
-    SetLocalProfileString("Directory", "savegame", m_savegameDir);
-    SetLocalProfileString("Directory", "public",   m_publicDir);
-    SetLocalProfileString("Directory", "user",     m_userDir);
-    SetLocalProfileString("Directory", "files",    m_filesDir);
+    GetProfile().SetLocalProfileString("Directory", "scene",    m_sceneDir);
+    GetProfile().SetLocalProfileString("Directory", "savegame", m_savegameDir);
+    GetProfile().SetLocalProfileString("Directory", "public",   m_publicDir);
+    GetProfile().SetLocalProfileString("Directory", "user",     m_userDir);
+    GetProfile().SetLocalProfileString("Directory", "files",    m_filesDir);
+    GetProfile().SetLocalProfileInt("Setup", "Tooltips", m_bTooltip);
+    GetProfile().SetLocalProfileInt("Setup", "InterfaceGlint", m_bGlint);
+    GetProfile().SetLocalProfileInt("Setup", "InterfaceGlint", m_bRain);
+    GetProfile().SetLocalProfileInt("Setup", "Soluce4", m_bSoluce4);
+    GetProfile().SetLocalProfileInt("Setup", "Movies", m_bMovies);
+    GetProfile().SetLocalProfileInt("Setup", "NiceReset", m_bNiceReset);
+    GetProfile().SetLocalProfileInt("Setup", "HimselfDamage", m_bHimselfDamage);
+    GetProfile().SetLocalProfileInt("Setup", "CameraScroll", m_bCameraScroll);
+    GetProfile().SetLocalProfileInt("Setup", "CameraInvertX", m_bCameraInvertX);
+    GetProfile().SetLocalProfileInt("Setup", "InterfaceEffect", m_bEffect);
+    GetProfile().SetLocalProfileInt("Setup", "GroundShadow", m_engine->GetShadow());
+    GetProfile().SetLocalProfileInt("Setup", "GroundSpot", m_engine->GetGroundSpot());
+    GetProfile().SetLocalProfileInt("Setup", "ObjectDirty", m_engine->GetDirty());
+    GetProfile().SetLocalProfileInt("Setup", "FogMode", m_engine->GetFog());
+    GetProfile().SetLocalProfileInt("Setup", "LensMode", m_engine->GetLensMode());
+    GetProfile().SetLocalProfileInt("Setup", "SkyMode", m_engine->GetSkyMode());
+    GetProfile().SetLocalProfileInt("Setup", "PlanetMode", m_engine->GetPlanetMode());
+    GetProfile().SetLocalProfileInt("Setup", "LightMode", m_engine->GetLightMode());
+    GetProfile().SetLocalProfileFloat("Setup", "ParticleDensity", m_engine->GetParticleDensity());
+    GetProfile().SetLocalProfileFloat("Setup", "ClippingDistance", m_engine->GetClippingDistance());
+    GetProfile().SetLocalProfileFloat("Setup", "ObjectDetail", m_engine->GetObjectDetail());
+    GetProfile().SetLocalProfileFloat("Setup", "GadgetQuantity", m_engine->GetGadgetQuantity());
+    GetProfile().SetLocalProfileInt("Setup", "TextureQuality", m_engine->GetTextureQuality());
+    GetProfile().SetLocalProfileInt("Setup", "TotoMode", m_engine->GetTotoMode());
+    GetProfile().SetLocalProfileInt("Setup", "AudioVolume", m_sound->GetAudioVolume());
+    GetProfile().SetLocalProfileInt("Setup", "Sound3D", m_sound->GetSound3D());
+    GetProfile().SetLocalProfileInt("Setup", "EditIndentMode", m_engine->GetEditIndentMode());
+    GetProfile().SetLocalProfileInt("Setup", "EditIndentValue", m_engine->GetEditIndentValue());
 
-    iValue = m_engine->GetTotoMode();
-    SetLocalProfileInt("Setup", "TotoMode", iValue);
 
-    iValue = m_bTooltip;
-    SetLocalProfileInt("Setup", "Tooltips", iValue);
+    // GetProfile()->SetLocalProfileInt("Setup", "NiceMouse", m_engine->GetNiceMouse());
+    // GetProfile()->SetLocalProfileInt("Setup", "UseJoystick", m_engine->GetJoystick());
+    // GetProfile()->SetLocalProfileInt("Setup", "MidiVolume", m_sound->GetMidiVolume());
 
-    iValue = m_bGlint;
-    SetLocalProfileInt("Setup", "InterfaceGlint", iValue);
+    // key[0] = 0;
+    // for ( i=0 ; i<100 ; i++ )
+    // {
+    //     if ( m_engine->GetKey(i, 0) == 0 )  break;
 
-    iValue = m_bRain;
-    SetLocalProfileInt("Setup", "InterfaceGlint", iValue);
-
-    iValue = m_engine->GetNiceMouse();
-    SetLocalProfileInt("Setup", "NiceMouse", iValue);
-
-    iValue = m_bSoluce4;
-    SetLocalProfileInt("Setup", "Soluce4", iValue);
-
-    iValue = m_bMovies;
-    SetLocalProfileInt("Setup", "Movies", iValue);
-
-    iValue = m_bNiceReset;
-    SetLocalProfileInt("Setup", "NiceReset", iValue);
-
-    iValue = m_bHimselfDamage;
-    SetLocalProfileInt("Setup", "HimselfDamage", iValue);
-
-    iValue = m_bCameraScroll;
-    SetLocalProfileInt("Setup", "CameraScroll", iValue);
-
-    iValue = m_bCameraInvertX;
-    SetLocalProfileInt("Setup", "CameraInvertX", iValue);
-
-    iValue = m_bEffect;
-    SetLocalProfileInt("Setup", "InterfaceEffect", iValue);
-
-    iValue = m_engine->GetShadow();
-    SetLocalProfileInt("Setup", "GroundShadow", iValue);
-
-    iValue = m_engine->GetGroundSpot();
-    SetLocalProfileInt("Setup", "GroundSpot", iValue);
-
-    iValue = m_engine->GetDirty();
-    SetLocalProfileInt("Setup", "ObjectDirty", iValue);
-
-    iValue = m_engine->GetFog();
-    SetLocalProfileInt("Setup", "FogMode", iValue);
-
-    iValue = m_engine->GetLensMode();
-    SetLocalProfileInt("Setup", "LensMode", iValue);
-
-    iValue = m_engine->GetSkyMode();
-    SetLocalProfileInt("Setup", "SkyMode", iValue);
-
-    iValue = m_engine->GetPlanetMode();
-    SetLocalProfileInt("Setup", "PlanetMode", iValue);
-
-    iValue = m_engine->GetLightMode();
-    SetLocalProfileInt("Setup", "LightMode", iValue);
-
-    iValue = m_engine->GetJoystick();
-    SetLocalProfileInt("Setup", "UseJoystick", iValue);
-
-    fValue = m_engine->GetParticleDensity();
-    SetLocalProfileFloat("Setup", "ParticleDensity", fValue);
-
-    fValue = m_engine->GetClippingDistance();
-    SetLocalProfileFloat("Setup", "ClippingDistance", fValue);
-
-    fValue = m_engine->GetObjectDetail();
-    SetLocalProfileFloat("Setup", "ObjectDetail", fValue);
-
-    fValue = m_engine->GetGadgetQuantity();
-    SetLocalProfileFloat("Setup", "GadgetQuantity", fValue);
-
-    iValue = m_engine->GetTextureQuality();
-    SetLocalProfileInt("Setup", "TextureQuality", iValue);
-
-    iValue = m_sound->GetAudioVolume();
-    SetLocalProfileInt("Setup", "AudioVolume", iValue);
-
-    iValue = m_sound->GetMidiVolume();
-    SetLocalProfileInt("Setup", "MidiVolume", iValue);
-
-    iValue = m_sound->GetSound3D();
-    SetLocalProfileInt("Setup", "Sound3D", iValue);
-
-    iValue = m_engine->GetEditIndentMode();
-    SetLocalProfileInt("Setup", "EditIndentMode", iValue);
-
-    iValue = m_engine->GetEditIndentValue();
-    SetLocalProfileInt("Setup", "EditIndentValue", iValue);*/
-
-    /* key[0] = 0;
-    for ( i=0 ; i<100 ; i++ )
-    {
-        if ( m_engine->GetKey(i, 0) == 0 )  break;
-
-        for ( j=0 ; j<2 ; j++ )
-        {
-            iValue = m_engine->GetKey(i, j);
-            sprintf(num, "%d%c", iValue, j==0?'+':' ');
-            strcat(key, num);
-        }
-    }*/
+    //     for ( j=0 ; j<2 ; j++ )
+    //     {
+    //         iValue = m_engine->GetKey(i, j);
+    //         sprintf(num, "%d%c", iValue, j==0?'+':' ');
+    //         strcat(key, num);
+    //     }
+    // }
 
     /* TODO: profile
     SetLocalProfileString("Setup", "KeyMap", key); */
 
-/* TODO: #if _NET
+#if _NET
     if ( m_accessEnable )
     {
         iValue = m_accessMission;
@@ -5668,13 +5538,11 @@ void CMainDialog::SetupMemorize()
         iValue = m_accessUser;
         SetLocalProfileInt("Setup", "AccessUser", iValue);
     }
-#endif */
+#endif
 
-    /* TODO: profile
-    iValue = m_bDeleteGamer;
-    SetLocalProfileInt("Setup", "DeleteGamer", iValue); */
+    GetProfile().SetLocalProfileInt("Setup", "DeleteGamer", m_bDeleteGamer);
 
-    // TODO: write profile
+    // TODO: write graphic engine profile
     //m_engine->WriteProfile();
 }
 
@@ -5682,234 +5550,234 @@ void CMainDialog::SetupMemorize()
 
 void CMainDialog::SetupRecall()
 {
-    float   fValue;
-    int     iValue, i, j;
-    char    key[500];
-    char*   p;
+    float       fValue;
+    int         iValue, i, j;
+    std::string key;
+    char*       p;
 
-    /* TODO: profile
-    if ( GetLocalProfileString("Directory", "scene", key, MAX_FNAME) )
+    if ( GetProfile().GetLocalProfileString("Directory", "scene", key) )
     {
-        strcpy(m_sceneDir, key);
+        m_sceneDir = key;
     }
 
-    if ( GetLocalProfileString("Directory", "savegame", key, MAX_FNAME) )
+    if ( GetProfile().GetLocalProfileString("Directory", "savegame", key) )
     {
-        strcpy(m_savegameDir, key);
+        m_savegameDir = key;
     }
 
-    if ( GetLocalProfileString("Directory", "public", key, MAX_FNAME) )
+    if ( GetProfile().GetLocalProfileString("Directory", "public", key) )
     {
-        strcpy(m_publicDir, key);
+        m_publicDir = key;
     }
 
-    if ( GetLocalProfileString("Directory", "user", key, MAX_FNAME) )
+    if ( GetProfile().GetLocalProfileString("Directory", "user", key) )
     {
-        strcpy(m_userDir, key);
+        m_userDir = key;
     }
 
-    if ( GetLocalProfileString("Directory", "files", key, MAX_FNAME) )
+    if ( GetProfile().GetLocalProfileString("Directory", "files", key) )
     {
-        strcpy(m_filesDir, key);
+        m_filesDir = key;
     }
 
 
-    if ( GetLocalProfileInt("Setup", "TotoMode", iValue) )
+    if ( GetProfile().GetLocalProfileInt("Setup", "TotoMode", iValue) )
     {
         m_engine->SetTotoMode(iValue);
     }
 
-    if ( GetLocalProfileInt("Setup", "Tooltips", iValue) )
+    if ( GetProfile().GetLocalProfileInt("Setup", "Tooltips", iValue) )
     {
         m_bTooltip = iValue;
     }
 
-    if ( GetLocalProfileInt("Setup", "InterfaceGlint", iValue) )
+    if ( GetProfile().GetLocalProfileInt("Setup", "InterfaceGlint", iValue) )
     {
         m_bGlint = iValue;
     }
 
-    if ( GetLocalProfileInt("Setup", "InterfaceGlint", iValue) )
+    if ( GetProfile().GetLocalProfileInt("Setup", "InterfaceGlint", iValue) )
     {
         m_bRain = iValue;
     }
 
-    if ( GetLocalProfileInt("Setup", "NiceMouse", iValue) )
-    {
-        m_engine->SetNiceMouse(iValue);
-    }
+    // TODO
+    // if ( GetProfile().GetLocalProfileInt("Setup", "NiceMouse", iValue) )
+    // {
+    //     m_engine->SetNiceMouse(iValue);
+    // }
 
-    if ( GetLocalProfileInt("Setup", "Soluce4", iValue) )
+    if ( GetProfile().GetLocalProfileInt("Setup", "Soluce4", iValue) )
     {
         m_bSoluce4 = iValue;
     }
 
-    if ( GetLocalProfileInt("Setup", "Movies", iValue) )
+    if ( GetProfile().GetLocalProfileInt("Setup", "Movies", iValue) )
     {
         m_bMovies = iValue;
     }
 
-    if ( GetLocalProfileInt("Setup", "NiceReset", iValue) )
+    if ( GetProfile().GetLocalProfileInt("Setup", "NiceReset", iValue) )
     {
         m_bNiceReset = iValue;
     }
 
-    if ( GetLocalProfileInt("Setup", "HimselfDamage", iValue) )
+    if ( GetProfile().GetLocalProfileInt("Setup", "HimselfDamage", iValue) )
     {
         m_bHimselfDamage = iValue;
     }
 
-    if ( GetLocalProfileInt("Setup", "CameraScroll", iValue) )
+    if ( GetProfile().GetLocalProfileInt("Setup", "CameraScroll", iValue) )
     {
         m_bCameraScroll = iValue;
         m_camera->SetCameraScroll(m_bCameraScroll);
     }
 
-    if ( GetLocalProfileInt("Setup", "CameraInvertX", iValue) )
+    if ( GetProfile().GetLocalProfileInt("Setup", "CameraInvertX", iValue) )
     {
         m_bCameraInvertX = iValue;
         m_camera->SetCameraInvertX(m_bCameraInvertX);
     }
 
-    if ( GetLocalProfileInt("Setup", "CameraInvertY", iValue) )
+    if ( GetProfile().GetLocalProfileInt("Setup", "CameraInvertY", iValue) )
     {
         m_bCameraInvertY = iValue;
         m_camera->SetCameraInvertY(m_bCameraInvertY);
     }
 
-    if ( GetLocalProfileInt("Setup", "InterfaceEffect", iValue) )
+    if ( GetProfile().GetLocalProfileInt("Setup", "InterfaceEffect", iValue) )
     {
         m_bEffect = iValue;
     }
 
-    if ( GetLocalProfileInt("Setup", "GroundShadow", iValue) )
+    if ( GetProfile().GetLocalProfileInt("Setup", "GroundShadow", iValue) )
     {
         m_engine->SetShadow(iValue);
     }
 
-    if ( GetLocalProfileInt("Setup", "GroundSpot", iValue) )
+    if ( GetProfile().GetLocalProfileInt("Setup", "GroundSpot", iValue) )
     {
         m_engine->SetGroundSpot(iValue);
     }
 
-    if ( GetLocalProfileInt("Setup", "ObjectDirty", iValue) )
+    if ( GetProfile().GetLocalProfileInt("Setup", "ObjectDirty", iValue) )
     {
         m_engine->SetDirty(iValue);
     }
 
-    if ( GetLocalProfileInt("Setup", "FogMode", iValue) )
+    if ( GetProfile().GetLocalProfileInt("Setup", "FogMode", iValue) )
     {
         m_engine->SetFog(iValue);
-        m_camera->SetOverBaseColor(Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f))); // TODO: color ok?
+        m_camera->SetOverBaseColor(Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f)); // TODO: color ok?
     }
 
-    if ( GetLocalProfileInt("Setup", "LensMode", iValue) )
+    if ( GetProfile().GetLocalProfileInt("Setup", "LensMode", iValue) )
     {
         m_engine->SetLensMode(iValue);
     }
 
-    if ( GetLocalProfileInt("Setup", "SkyMode", iValue) )
+    if ( GetProfile().GetLocalProfileInt("Setup", "SkyMode", iValue) )
     {
         m_engine->SetSkyMode(iValue);
     }
 
-    if ( GetLocalProfileInt("Setup", "PlanetMode", iValue) )
+    if ( GetProfile().GetLocalProfileInt("Setup", "PlanetMode", iValue) )
     {
         m_engine->SetPlanetMode(iValue);
     }
 
-    if ( GetLocalProfileInt("Setup", "LightMode", iValue) )
+    if ( GetProfile().GetLocalProfileInt("Setup", "LightMode", iValue) )
     {
         m_engine->SetLightMode(iValue);
     }
+    // TODO
+    // if ( GetProfile().GetLocalProfileInt("Setup", "UseJoystick", iValue) )
+    // {
+    //     m_engine->SetJoystick(iValue);
+    // }
 
-    if ( GetLocalProfileInt("Setup", "UseJoystick", iValue) )
-    {
-        m_engine->SetJoystick(iValue);
-    }
-
-    if ( GetLocalProfileFloat("Setup", "ParticleDensity", fValue) )
+    if ( GetProfile().GetLocalProfileFloat("Setup", "ParticleDensity", fValue) )
     {
         m_engine->SetParticleDensity(fValue);
     }
 
-    if ( GetLocalProfileFloat("Setup", "ClippingDistance", fValue) )
+    if ( GetProfile().GetLocalProfileFloat("Setup", "ClippingDistance", fValue) )
     {
         m_engine->SetClippingDistance(fValue);
     }
 
-    if ( GetLocalProfileFloat("Setup", "ObjectDetail", fValue) )
+    if ( GetProfile().GetLocalProfileFloat("Setup", "ObjectDetail", fValue) )
     {
         m_engine->SetObjectDetail(fValue);
     }
 
-    if ( GetLocalProfileFloat("Setup", "GadgetQuantity", fValue) )
+    if ( GetProfile().GetLocalProfileFloat("Setup", "GadgetQuantity", fValue) )
     {
         m_engine->SetGadgetQuantity(fValue);
     }
 
-    if ( GetLocalProfileInt("Setup", "TextureQuality", iValue) )
+    if ( GetProfile().GetLocalProfileInt("Setup", "TextureQuality", iValue) )
     {
         m_engine->SetTextureQuality(iValue);
     }
 
-    if ( GetLocalProfileInt("Setup", "AudioVolume", iValue) )
+    if ( GetProfile().GetLocalProfileInt("Setup", "AudioVolume", iValue) )
     {
         m_sound->SetAudioVolume(iValue);
     }
 
-    if ( GetLocalProfileInt("Setup", "MidiVolume", iValue) )
-    {
-        m_sound->SetMidiVolume(iValue);
-    }
+    // TODO
+    // if ( GetLocalProfileInt("Setup", "MidiVolume", iValue) )
+    // {
+    //     m_sound->SetMidiVolume(iValue);
+    // }
 
-    if ( GetLocalProfileInt("Setup", "EditIndentMode", iValue) )
+    if ( GetProfile().GetLocalProfileInt("Setup", "EditIndentMode", iValue) )
     {
         m_engine->SetEditIndentMode(iValue);
     }
 
-    if ( GetLocalProfileInt("Setup", "EditIndentValue", iValue) )
+    if ( GetProfile().GetLocalProfileInt("Setup", "EditIndentValue", iValue) )
     {
         m_engine->SetEditIndentValue(iValue);
     }
 
-    if ( GetLocalProfileString("Setup", "KeyMap", key, 500) )
-    {
-        p = key;
-        for ( i=0 ; i<100 ; i++ )
-        {
-            if ( p[0] == 0 )  break;
+    // if ( GetLocalProfileString("Setup", "KeyMap", key, 500) )
+    // {
+    //     p = key;
+    //     for ( i=0 ; i<100 ; i++ )
+    //     {
+    //         if ( p[0] == 0 )  break;
 
-            for ( j=0 ; j<2 ; j++ )
-            {
-                sscanf(p, "%d", &iValue);
-                m_engine->SetKey(i, j, iValue);
-                while ( *p >= '0' && *p <= '9' )  p++;
-                while ( *p == ' ' || *p == '+' )  p++;
-            }
-        }
-    } */
+    //         for ( j=0 ; j<2 ; j++ )
+    //         {
+    //             sscanf(p, "%d", &iValue);
+    //             m_engine->SetKey(i, j, iValue);
+    //             while ( *p >= '0' && *p <= '9' )  p++;
+    //             while ( *p == ' ' || *p == '+' )  p++;
+    //         }
+    //     }
+    // }
 
-/* TODO: #if _NET
+#if _NET
     if ( m_accessEnable )
     {
-        if ( GetLocalProfileInt("Setup", "AccessMission", iValue) )
+        if ( GetProfile().GetLocalProfileInt("Setup", "AccessMission", iValue) )
         {
             m_accessMission = iValue;
         }
 
-        if ( GetLocalProfileInt("Setup", "AccessUser", iValue) )
+        if ( GetProfile().GetLocalProfileInt("Setup", "AccessUser", iValue) )
         {
             m_accessUser = iValue;
         }
     }
-#endif */
+#endif
 
-    /* TODO: profile
-    if ( GetLocalProfileInt("Setup", "DeleteGamer", iValue) )
+    if ( GetProfile().GetLocalProfileInt("Setup", "DeleteGamer", iValue) )
     {
         m_bDeleteGamer = iValue;
-    } */
+    }
 }
 
 
@@ -6604,14 +6472,14 @@ int CMainDialog::GetSceneRank()
 
 // Returns folder name of the scene that user selected to play.
 
-char* CMainDialog::GetSceneDir()
+const char* CMainDialog::GetSceneDir()
 {
     int     i;
 
     i = (m_sceneRank/100)-1;
 
     if ( i < 0 || i >= m_userTotal )  return 0;
-    return m_userList[i];
+    return m_userList[i].c_str();
 }
 
 // Whether to show the solution.

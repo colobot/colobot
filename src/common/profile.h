@@ -107,6 +107,6 @@ class CProfile : public CSingleton<CProfile>
 };
 
 //! Global function to get profile instance
-inline CProfile* GetProfile() {
-    return CProfile::GetInstancePointer();
+inline CProfile & GetProfile() {
+    return *CProfile::GetInstancePointer();
 }

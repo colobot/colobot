@@ -327,24 +327,24 @@ bool CApplication::Create()
     m_deviceConfig.fullScreen = false;
 
     //Create the sound instance.
-    if (!GetProfile()->InitCurrentDirectory()) {
+    if (!GetProfile().InitCurrentDirectory()) {
         GetLogger()->Warn("Config not found. Default values will be used!\n");
         m_sound = new CSoundInterface();
     } else {
         std::string path;
-        if (GetProfile()->GetLocalProfileString("Resources", "Data", path))
+        if (GetProfile().GetLocalProfileString("Resources", "Data", path))
             m_dataPath = path;
 
         m_pluginManager->LoadFromProfile();
         m_sound = static_cast<CSoundInterface*>(CInstanceManager::GetInstancePointer()->SearchInstance(CLASS_SOUND));
 
         if (!m_sound) {
-            GetLogger()->Error("Sound not loaded!\n");
-            return false;
+            GetLogger()->Error("Sound not loaded, falling back to fake sound!\n");
+            m_sound = new CSoundInterface();
         }
 
         m_sound->Create(true);
-        if (GetProfile()->GetLocalProfileString("Resources", "Sound", path))
+        if (GetProfile().GetLocalProfileString("Resources", "Sound", path))
             m_sound->CacheAll(path);
         else
             m_sound->CacheAll(m_dataPath);
