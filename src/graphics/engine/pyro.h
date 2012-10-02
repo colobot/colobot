@@ -33,9 +33,12 @@
 
 class CInstanceManager;
 class CObject;
-class CDisplayText;
 class CRobotMain;
 class CSoundInterface;
+
+namespace Ui {
+class CDisplayText;
+}
 
 
 // Graphics module namespace
@@ -48,33 +51,37 @@ class CParticle;
 class CLight;
 
 
+/**
+ * \enum PyroType
+ * \brief Type of pyro effect
+ */
 enum PyroType
 {
     PT_NULL     = 0,
-    PT_FRAGT    = 1,        // fragmentation of technical object
-    PT_FRAGO    = 2,        // fragmentation of organic object
-    PT_FRAGW    = 4,        // fragmentation of object under water
-    PT_EXPLOT   = 5,        // explosion of technical object
-    PT_EXPLOO   = 6,        // explosion of organic object
-    PT_EXPLOW   = 8,        // explosion of object under water
-    PT_SHOTT    = 9,        // hit technical object
-    PT_SHOTH    = 10,       // hit human
-    PT_SHOTM    = 11,       // hit queen
-    PT_SHOTW    = 12,       // hit under water
-    PT_EGG      = 13,       // break the egg
-    PT_BURNT    = 14,       // burning of technical object
-    PT_BURNO    = 15,       // burning of organic object
-    PT_SPIDER   = 16,       // spider explosion
-    PT_FALL     = 17,       // cargo falling
-    PT_WPCHECK  = 18,       // indicator reaches
-    PT_FLCREATE = 19,       // flag create
-    PT_FLDELETE = 20,       // flag destroy
-    PT_RESET    = 21,       // reset position of the object
-    PT_WIN      = 22,       // fireworks
-    PT_LOST     = 23,       // black smoke
-    PT_DEADG    = 24,       // shooting death
-    PT_DEADW    = 25,       // drowning death
-    PT_FINDING  = 26,       // object discovered
+    PT_FRAGT    = 1,        //! < fragmentation of technical object
+    PT_FRAGO    = 2,        //! < fragmentation of organic object
+    PT_FRAGW    = 4,        //! < fragmentation of object under water
+    PT_EXPLOT   = 5,        //! < explosion of technical object
+    PT_EXPLOO   = 6,        //! < explosion of organic object
+    PT_EXPLOW   = 8,        //! < explosion of object under water
+    PT_SHOTT    = 9,        //! < hit technical object
+    PT_SHOTH    = 10,       //! < hit human
+    PT_SHOTM    = 11,       //! < hit queen
+    PT_SHOTW    = 12,       //! < hit under water
+    PT_EGG      = 13,       //! < break the egg
+    PT_BURNT    = 14,       //! < burning of technical object
+    PT_BURNO    = 15,       //! < burning of organic object
+    PT_SPIDER   = 16,       //! < spider explosion
+    PT_FALL     = 17,       //! < cargo falling
+    PT_WPCHECK  = 18,       //! < indicator reaches
+    PT_FLCREATE = 19,       //! < flag create
+    PT_FLDELETE = 20,       //! < flag destroy
+    PT_RESET    = 21,       //! < reset position of the object
+    PT_WIN      = 22,       //! < fireworks
+    PT_LOST     = 23,       //! < black smoke
+    PT_DEADG    = 24,       //! < shooting death
+    PT_DEADW    = 25,       //! < drowning death
+    PT_FINDING  = 26,       //! < object discovered
 };
 
 
@@ -89,8 +96,8 @@ struct PyroBurnPart
 
 struct PyroLightOper
 {
-    float           progress;
-    float           intensity;
+    float      progress;
+    float      intensity;
     Color      color;
 };
 
@@ -107,18 +114,18 @@ public:
     CPyro(CInstanceManager* iMan);
     ~CPyro();
 
-    void        DeleteObject(bool all=false);
-    bool        Create(PyroType type, CObject* pObj, float force=1.0f);
-    bool        EventProcess(const Event &event);
+    void        DeleteObject();
+    bool        Create(PyroType type, CObject* obj, float force=1.0f);
+    bool        EventProcess(const Event& event);
     Error       IsEnded();
-    void        CutObjectLink(CObject* pObj);
+    void        CutObjectLink(CObject* obj);
 
 protected:
-    void        DisplayError(PyroType type, CObject* pObj);
-    bool        CreateLight(Math::Vector pos, float height);
+    void        DisplayError(PyroType type, CObject* obj);
+    void        CreateLight(Math::Vector pos, float height);
     void        DeleteObject(bool primary, bool secondary);
 
-    void        CreateTriangle(CObject* pObj, ObjectType oType, int part);
+    void        CreateTriangle(CObject* obj, ObjectType type, int part);
 
     void        ExploStart();
     void        ExploTerminate();
@@ -139,38 +146,38 @@ protected:
     void        LightOperFrame(float rTime);
 
 protected:
-    CInstanceManager*    m_iMan;
-    CEngine*        m_engine;
-    CTerrain*       m_terrain;
-    CCamera*        m_camera;
-    CParticle*      m_particule;
-    CLightManager*  m_lightMan;
-    CObject*             m_object;
-    CDisplayText*        m_displayText;
-    CRobotMain*          m_main;
-    CSoundInterface*     m_sound;
+    CInstanceManager* m_iMan;
+    CEngine*          m_engine;
+    CTerrain*         m_terrain;
+    CCamera*          m_camera;
+    CParticle*        m_particle;
+    CLightManager*    m_lightMan;
+    CObject*          m_object;
+    Ui::CDisplayText* m_displayText;
+    CRobotMain*       m_main;
+    CSoundInterface*  m_sound;
 
     Math::Vector    m_pos;          // center of the effect
     Math::Vector    m_posPower;     // center of the battery
     bool            m_power;       // battery exists?
-    PyroType   m_type;
+    PyroType        m_type;
     float           m_force;
     float           m_size;
     float           m_progress;
     float           m_speed;
     float           m_time;
-    float           m_lastParticule;
-    float           m_lastParticuleSmoke;
+    float           m_lastParticle;
+    float           m_lastParticleSmoke;
     int             m_soundChannel;
 
     int             m_lightRank;
     int             m_lightOperTotal;
-    PyroLightOper m_lightOper[10];
+    PyroLightOper   m_lightOper[10];
     float           m_lightHeight;
 
     ObjectType      m_burnType;
     int             m_burnPartTotal;
-    PyroBurnPart m_burnPart[10];
+    PyroBurnPart    m_burnPart[10];
     int             m_burnKeepPart[10];
     float           m_burnFall;
 
