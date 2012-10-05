@@ -1,9 +1,19 @@
 # Ignore the documentation folder
 /doc
 
-# Ignore the CMake build files
-/CMakeFiles
-/CMakeCache.txt
-/cmake_install.cmake
-/Makefile
+# We don't want anyone to checkin /data folder
+/data
 
+# Ignore local data
+/colobot.ini
+/savegame
+
+# Ignore the CMake build files
+CMakeFiles
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+/install_manifest.txt
+/Testing
+/CTestTestfile.cmake
+/src/CBot/tests/CBot_console/bin/
