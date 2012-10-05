@@ -106,7 +106,7 @@ struct PyroLightOper
  * \class CPyro
  * \brief Fire effect renderer
  *
- * Functions are only stubs for now.
+ * TODO: documentation
  */
 class CPyro
 {
@@ -114,35 +114,63 @@ public:
     CPyro(CInstanceManager* iMan);
     ~CPyro();
 
-    void        DeleteObject();
+    //! Creates pyrotechnic effect
     bool        Create(PyroType type, CObject* obj, float force=1.0f);
-    bool        EventProcess(const Event& event);
+    //! Destroys the object
+    void        DeleteObject();
+
+    //! Indicates whether the pyrotechnic effect is complete
     Error       IsEnded();
+
+    //! Indicates that the object binds to the effect no longer exists, without deleting it
     void        CutObjectLink(CObject* obj);
 
+    //! Management of an event
+    bool        EventProcess(const Event& event);
+
 protected:
+    //! Displays the error or eventual information
+    //! Information can be linked to the destruction of an insect, a vehicle or building
     void        DisplayError(PyroType type, CObject* obj);
+
+    //! Creates light to accompany a pyrotechnic effect
     void        CreateLight(Math::Vector pos, float height);
+    //! Removes the binding to a pyrotechnic effect
     void        DeleteObject(bool primary, bool secondary);
 
+    //! Creates an explosion with triangular form of particles
     void        CreateTriangle(CObject* obj, ObjectType type, int part);
 
+    //! Starts the explosion of a vehicle
     void        ExploStart();
+    //! Ends the explosion of a vehicle
     void        ExploTerminate();
 
+    //! Starts a vehicle fire
     void        BurnStart();
+    //! Adds a part move
     void        BurnAddPart(int part, Math::Vector pos, Math::Vector angle);
+    //! Advances of a vehicle fire
     void        BurnProgress();
+    //! Indicates whether a part should be retained
     bool        BurnIsKeepPart(int part);
+    //! Ends the fire of an insect or a vehicle
     void        BurnTerminate();
 
+    //! Start of an object freight falling
     void        FallStart();
+    //! Seeks an object to explode by the falling ball of bees
     CObject*    FallSearchBeeExplo();
+    //! Fall of an object's freight
     void        FallProgress(float rTime);
+    //! Indicates whether the fall is over
     Error       FallIsEnded();
 
+    //! Empty the table of operations of animation of light
     void        LightOperFlush();
+    //! Adds an animation operation of the light
     void        LightOperAdd(float progress, float intensity, float r, float g, float b);
+    //! Updates the associated light
     void        LightOperFrame(float rTime);
 
 protected:
