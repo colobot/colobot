@@ -30,7 +30,7 @@
 
 class CInstanceManager;
 class CObject;
-class CSound;
+class CSoundInterface;
 
 
 // Graphics module namespace
@@ -40,21 +40,15 @@ class CEngine;
 class CTerrain;
 class CCamera;
 
+//! Radius of lightning protection
+const float LTNG_PROTECTION_RADIUS = 200.0f;
 
-const float BLITZPARA = 200.0f;     // radius of lightning protection
-const short BLITZMAX = 50;
-
-enum BlitzPhase
-{
-    BPH_WAIT,
-    BPH_BLITZ,
-};
 
 /**
  * \class CLightning
  * \brief Lightning effect renderer
  *
- * Functions are only stubs for now.
+ * TODO: documentation
  */
 class CLightning
 {
@@ -62,35 +56,55 @@ public:
     CLightning(CInstanceManager* iMan, CEngine* engine);
     ~CLightning();
 
-    void        Flush();
-    bool        EventProcess(const Event &event);
+    //! Triggers lightning
     bool        Create(float sleep, float delay, float magnetic);
+
+    //! Removes lightning
+    void        Flush();
+
+    //! Gives the status of lightning
     bool        GetStatus(float &sleep, float &delay, float &magnetic, float &progress);
+    //! Specifies the status of lightning
     bool        SetStatus(float sleep, float delay, float magnetic, float progress);
+
+    //! Management of an event
+    bool        EventProcess(const Event &event);
+
+    //! Draws lightning
     void        Draw();
 
 protected:
+    //! Updates lightning
     bool        EventFrame(const Event &event);
+    //! Seeks for the object closest to the lightning
     CObject*    SearchObject(Math::Vector pos);
 
 protected:
-    CInstanceManager*   m_iMan;
-    CEngine*            m_engine;
-    CTerrain*           m_terrain;
-    CCamera*            m_camera;
-    CSound*             m_sound;
+    CInstanceManager* m_iMan;
+    CEngine*          m_engine;
+    CTerrain*         m_terrain;
+    CCamera*          m_camera;
+    CSoundInterface*  m_sound;
 
-    bool            m_bBlitzExist;
+    bool            m_lightningExists;
     float           m_sleep;
     float           m_delay;
     float           m_magnetic;
-    BlitzPhase m_phase;
-    float           m_time;
+
     float           m_speed;
     float           m_progress;
     Math::Vector    m_pos;
-    Math::Point     m_shift[BLITZMAX];
-    float           m_width[BLITZMAX];
+
+    enum LightningPhase
+    {
+        LP_WAIT,
+        LP_FLASH,
+    };
+    LightningPhase  m_phase;
+
+    static const short FLASH_SEGMENTS = 50;
+    Math::Point     m_shift[FLASH_SEGMENTS];
+    float           m_width[FLASH_SEGMENTS];
 };
 
 
