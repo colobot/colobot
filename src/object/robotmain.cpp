@@ -730,7 +730,7 @@ CRobotMain::CRobotMain(CInstanceManager* iMan, CApplication* app)
     g_build = 0;
     g_researchDone = 0;  // no research done
     g_researchEnable = 0;
-    g_unit = 4.0f;
+    g_unit = UNIT;
 
     m_gamerName[0] = 0;
     /* TODO: profile
@@ -3889,8 +3889,8 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
         if (Cmd(line, "DeepView") && !resetObject)
         {
-            m_engine->SetDeepView(OpFloat(line, "air",   500.0f)*UNIT, 0, true);
-            m_engine->SetDeepView(OpFloat(line, "water", 100.0f)*UNIT, 1, true);
+            m_engine->SetDeepView(OpFloat(line, "air",   500.0f)*g_unit, 0, true);
+            m_engine->SetDeepView(OpFloat(line, "water", 100.0f)*g_unit, 1, true);
         }
 
         if (Cmd(line, "FogStart") && !resetObject)
@@ -3951,7 +3951,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             m_terrain->Generate(OpInt(line, "mosaic", 20),
                                 OpInt(line, "brick", 3),
                                 OpFloat(line, "size", 20.0f),
-                                OpFloat(line, "vision", 500.0f)*UNIT,
+                                OpFloat(line, "vision", 500.0f)*g_unit,
                                 OpInt(line, "depth", 2),
                                 OpFloat(line, "hard", 0.5f));
         }
@@ -3983,7 +3983,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                             name,
                             OpColor(line, "diffuse", Gfx::Color(1.0f, 1.0f, 1.0f, 1.0f)),
                             OpColor(line, "ambient", Gfx::Color(1.0f, 1.0f, 1.0f, 1.0f)),
-                            OpFloat(line, "level", 100.0f)*UNIT,
+                            OpFloat(line, "level", 100.0f)*g_unit,
                             OpFloat(line, "glint", 1.0f),
                             pos);
             m_colorNewWater = OpColor(line, "color", m_colorRefWater);
@@ -3999,14 +3999,14 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             m_cloud->Create(name,
                             OpColor(line, "diffuse", Gfx::Color(1.0f, 1.0f, 1.0f, 1.0f)),
                             OpColor(line, "ambient", Gfx::Color(1.0f, 1.0f, 1.0f, 1.0f)),
-                            OpFloat(line, "level", 500.0f) * UNIT);
+                            OpFloat(line, "level", 500.0f) * g_unit);
         }
 
         if (Cmd(line, "TerrainBlitz") && !resetObject)
         {
             m_lightning->Create(OpFloat(line, "sleep", 0.0f),
                             OpFloat(line, "delay", 3.0f),
-                            OpFloat(line, "magnetic", 50.0f) * UNIT);
+                            OpFloat(line, "magnetic", 50.0f) * g_unit);
         }
 
         if (Cmd(line, "TerrainInitTextures") && !resetObject)
@@ -4059,8 +4059,8 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             }
 
             m_terrain->GenerateMaterials(id,
-                                         OpFloat(line, "min", 0.0f)*UNIT,
-                                         OpFloat(line, "max", 100.0f)*UNIT,
+                                         OpFloat(line, "min", 0.0f)*g_unit,
+                                         OpFloat(line, "max", 100.0f)*g_unit,
                                          OpFloat(line, "slope", 5.0f),
                                          OpFloat(line, "freq", 100.0f),
                                          OpPos(line, "center")*g_unit,
