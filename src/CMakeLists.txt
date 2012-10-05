@@ -192,3 +192,5 @@ link_directories(${CMAKE_CURRENT_SOURCE_DIR}/CBot)
 add_executable(colobot ${SOURCES})
 
 target_link_libraries(colobot ${LIBS})
+
+INSTALL_TARGETS(/games colobot)

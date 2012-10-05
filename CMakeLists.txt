@@ -131,3 +131,5 @@ endif()
 
 # Subdirectory with sources
 add_subdirectory(src bin)
+
+INSTALL_FILES(/share/games/colobot ../data)
