@@ -2995,7 +2995,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
         m_character.posPower = Math::Vector(5.0f, 3.0f, 0.0f);
 
         CreateShadowCircle(6.0f, 1.0f);
-        m_showLimitRadius = Gfx::BLITZPARA;
+        m_showLimitRadius = Gfx::LTNG_PROTECTION_RADIUS;
     }
 
     if ( m_type == OBJECT_NUCLEAR )
@@ -3048,7 +3048,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
         SetGlobalSphere(Math::Vector(0.0f, 10.0f, 0.0f), 20.0f);
 
         CreateShadowCircle(21.0f, 1.0f);
-        m_showLimitRadius = Gfx::BLITZPARA;
+        m_showLimitRadius = Gfx::LTNG_PROTECTION_RADIUS;
     }
 
     if ( m_type == OBJECT_SAFE )
