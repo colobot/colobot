@@ -272,6 +272,7 @@ bool CEngine::Create()
     m_planet     = new CPlanet(m_iMan, this);
 
     m_lightMan->SetDevice(m_device);
+    m_particle->SetDevice(m_device);
 
     m_text->SetDevice(m_device);
     if (! m_text->Create())
