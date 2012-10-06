@@ -30,7 +30,7 @@ CMainShort::CMainShort()
     m_iMan->AddInstance(CLASS_SHORT, this);
 
     m_interface = static_cast<CInterface*>(m_iMan->SearchInstance(CLASS_INTERFACE));
-    m_event     = static_cast<CEvent*>(m_iMan->SearchInstance(CLASS_EVENT));
+    m_event     = static_cast<CEventQueue*>(m_iMan->SearchInstance(CLASS_EVENT));
     m_engine    = static_cast<Gfx::CEngine*>(m_iMan->SearchInstance(CLASS_ENGINE));
     m_main      = static_cast<CRobotMain*>(m_iMan->SearchInstance(CLASS_MAIN));
 

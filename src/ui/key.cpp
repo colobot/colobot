@@ -15,64 +15,47 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// key.cpp
-
-
 #include "ui/key.h"
 
-#include <string.h>
+#include "common/global.h"
+
+#include <cstring>
 
 namespace Ui {
 
-void GetKeyName(char *name, int key)
+
+void GetKeyName(char* name, unsigned int key)
 {
-    if ( !GetResource(RES_KEY, key, name) ) {
-        if (isalnum(key)) {
-            name[0] = key;
-            name[1] = 0;
-        }
-        else {
-            sprintf(name, "Code %d", key);
-        }
-    }
+    if (!GetResource(RES_KEY, key, name))
+        sprintf(name, "Code %d", key);
 }
 
-
-// Object's constructor.
 
 CKey::CKey() : CControl()
 {
-    m_key[0] = 0;
-    m_key[1] = 0;
-    m_bCatch = false;
+    m_catch = false;
 
-    m_app = CApplication::GetInstancePointer();
+    m_robotMain = CRobotMain::GetInstancePointer();
 }
-
-// Object's destructor.
 
 CKey::~CKey()
 {
+    m_robotMain = nullptr;
 }
-
-
-// Creates a new button.
 
 bool CKey::Create(Math::Point pos, Math::Point dim, int icon, EventType eventMsg)
 {
-    char name[100];
     if (eventMsg == EVENT_NULL)
         eventMsg = GetUniqueEventType();
 
     CControl::Create(pos, dim, icon, eventMsg);
+
+    char name[100];
     GetResource(RES_EVENT, eventMsg, name);
     SetName(std::string(name));
 
     return true;
 }
-
-
-// Management of an event.
 
 bool CKey::EventProcess(const Event &event)
 {
@@ -81,24 +64,31 @@ bool CKey::EventProcess(const Event &event)
 
     CControl::EventProcess(event);
 
-    if (event.type == EVENT_MOUSE_BUTTON_DOWN) {
+    if (event.type == EVENT_MOUSE_BUTTON_DOWN)
+    {
         if (event.mouseButton.button == MOUSE_BUTTON_LEFT) // left
-            m_bCatch = Detect(event.mousePos);
+            m_catch = Detect(event.mousePos);
     }
 
-    if (event.type == EVENT_KEY_DOWN && m_bCatch) {
-        m_bCatch = false;
+    if (event.type == EVENT_KEY_DOWN && m_catch)
+    {
+        m_catch = false;
 
-        if ( TestKey(event.key.key) ) { // impossible ?
+        if (TestKey(event.key.key)) // impossible ?
+        {
             m_sound->Play(SOUND_TZOING);
-        } else {
-            // TODO: test for virtual, joystick, etc.
-            if ( event.key.key == m_key[0] || event.key.key == m_key[1] ) {
-                m_key[0] = event.key.key;
-                m_key[1] = 0;
-            } else {
-                m_key[1] = m_key[0];
-                m_key[0] = event.key.key;
+        }
+        else
+        {
+            if (event.key.key == m_binding.primary || event.key.key == m_binding.secondary)
+            {
+                m_binding.secondary = KEY_INVALID;
+                m_binding.primary = event.key.key;
+            }
+            else
+            {
+                m_binding.secondary = m_binding.primary;
+                m_binding.primary = event.key.key;
             }
             m_sound->Play(SOUND_CLICK);
 
@@ -112,96 +102,88 @@ bool CKey::EventProcess(const Event &event)
     return true;
 }
 
-
-// Seeks when a key is already used.
-
-bool CKey::TestKey(int key)
+bool CKey::TestKey(unsigned int key)
 {
-    if ( key == KEY(PAUSE) || key == KEY(PRINT) )  return true;  // blocked key
+    if (key == KEY(PAUSE) || key == KEY(PRINT)) return true;  // blocked key
 
-    /* TODO: input bindings 
-    for (int i = 0; i < 20; i++) {
-        for (int j = 0; j < 2; j++) {
-            if (key == m_app->GetKey(i, j) )  // key used?
-                m_app->SetKey(i, j, 0);  // nothing!
-        }
+    for (int i = 0; i < INPUT_SLOT_MAX; i++)
+    {
+        InputSlot slot = static_cast<InputSlot>(i);
+        InputBinding b = m_robotMain->GetInputBinding(slot);
+        if (key == b.primary || key == b.secondary)
+            m_robotMain->SetInputBinding(slot, InputBinding());  // nothing!
 
-        if ( m_app->GetKey(i, 0) == 0 ) { // first free option?
-            m_app->SetKey(i, 0, m_app->GetKey(i, 1));  // shift
-            m_app->SetKey(i, 1, 0);
-        }
-    } */
+        if (b.primary == KEY_INVALID) // first free option?
+            m_robotMain->SetInputBinding(slot, InputBinding(b.secondary, b.primary));  // shift
+    }
 
     return false;  // not used
 }
 
-
-// Draws button.
-
 void CKey::Draw()
 {
-    Math::Point iDim, pos;
-    float zoomExt, zoomInt, h;
-    int icon;
-    char text[100];
-
-    if ( (m_state & STATE_VISIBLE) == 0 )
+    if ((m_state & STATE_VISIBLE) == 0)
         return;
 
-    iDim = m_dim;
+    Math::Point iDim = m_dim;
     m_dim.x = 200.0f/640.0f;
 
-    if ( m_state & STATE_SHADOW )
+    if (m_state & STATE_SHADOW)
         DrawShadow(m_pos, m_dim);
 
 
     m_engine->SetTexture("button1.png");
     m_engine->SetState(Gfx::ENG_RSTATE_NORMAL); // was D3DSTATENORMAL
 
-    zoomExt = 1.00f;
-    zoomInt = 0.95f;
+    float zoomExt = 1.00f;
+    float zoomInt = 0.95f;
 
-    icon = 2;
-    if ( m_key[0] == 0 && m_key[1] == 0 )  // no shortcut?
+    int icon = 2;
+    if (m_binding.primary == KEY_INVALID && m_binding.secondary == KEY_INVALID)  // no shortcut?
         icon = 3;
 
-    if ( m_state & STATE_DEFAULT ) {
+    if (m_state & STATE_DEFAULT)
+    {
         DrawPart(23, 1.3f, 0.0f);
 
         zoomExt *= 1.15f;
         zoomInt *= 1.15f;
     }
 
-    if ( m_state & STATE_HILIGHT )
+    if (m_state & STATE_HILIGHT)
         icon = 1;
 
-    if ( m_state & STATE_CHECK )
+    if (m_state & STATE_CHECK)
         icon = 0;
 
-    if ( m_state & STATE_PRESS ) {
+    if (m_state & STATE_PRESS)
+    {
         icon = 3;
         zoomInt *= 0.9f;
     }
 
-    if ( (m_state & STATE_ENABLE) == 0 )
+    if ((m_state & STATE_ENABLE) == 0)
         icon = 7;
 
-    if ( m_state & STATE_DEAD )
+    if (m_state & STATE_DEAD)
         icon = 17;
 
-    if ( m_bCatch )
+    if (m_catch)
         icon = 23;
 
     DrawPart(icon, zoomExt, 8.0f / 256.0f);  // draws the button
 
-    h = m_engine->GetText()->GetHeight(m_fontType, m_fontSize) / 2.0f;
+    float h = m_engine->GetText()->GetHeight(m_fontType, m_fontSize) / 2.0f;
 
-    GetKeyName(text, m_key[0]);
-    if ( m_key[1] != 0 ) {
+    char text[100];
+    GetKeyName(text, m_binding.primary);
+    if (m_binding.secondary != KEY_INVALID)
+    {
         GetResource(RES_TEXT, RT_KEY_OR, text+strlen(text));
-        GetKeyName(text+strlen(text), m_key[1]);
+        GetKeyName(text+strlen(text), m_binding.secondary);
     }
 
+    Math::Point pos;
     pos.x = m_pos.x + m_dim.x * 0.5f;
     pos.y = m_pos.y + m_dim.y * 0.5f;
     pos.y -= h;
@@ -209,7 +191,7 @@ void CKey::Draw()
 
     m_dim = iDim;
 
-    if ( m_state & STATE_DEAD )
+    if (m_state & STATE_DEAD)
         return;
 
     // Draws the name.
@@ -219,20 +201,15 @@ void CKey::Draw()
     m_engine->GetText()->DrawText(std::string(m_name), m_fontType, m_fontSize, pos, m_dim.x, Gfx::TEXT_ALIGN_LEFT, 0);
 }
 
-
-
-void CKey::SetKey(int option, int key)
+void CKey::SetBinding(InputBinding b)
 {
-    if ( option < 0 || option > 1 )  return;
-
-    m_key[option] = key;
+    m_binding = b;
 }
 
-int CKey::GetKey(int option)
+InputBinding CKey::GetBinding()
 {
-    if ( option < 0 || option > 1 )  return 0;
-
-    return m_key[option];
+    return m_binding;
 }
 
-}
+
+} // namespace Ui

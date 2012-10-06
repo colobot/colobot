@@ -105,7 +105,7 @@ static void PutKeyName(char* dst, const char* src)
         {
             if ( SearchKey(src+s+5, key) )
             {
-                res = CRobotMain::GetInstancePointer()->GetInputBinding(key).key;
+                res = CRobotMain::GetInstancePointer()->GetInputBinding(key).primary;
                 if (res != KEY_INVALID)
                 {
                     if ( GetResource(RES_KEY, res, name) )
@@ -172,7 +172,9 @@ static const char* GetResourceBase(ResType type, int num)
 
         case RES_KEY:
 
-            if (num == VIRTUAL_KMOD_CTRL)
+            if (num == KEY_INVALID)
+                return "";
+            else if (num == VIRTUAL_KMOD_CTRL)
                 return "Ctrl";
             else if (num == VIRTUAL_KMOD_SHIFT)
                 return "Shift";

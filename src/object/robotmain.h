@@ -148,12 +148,12 @@ const int SATCOM_MAX        = 6;
  */
 struct InputBinding
 {
-    //! Keyboard binding code (can be regular or virtual)
-    unsigned int key;
-    //! Joystick binding code (virtual)
-    unsigned int joy;
+    //! Primary and secondary bindings
+    //! Can be regular key, virtual key or virtual joystick button
+    unsigned int primary, secondary;
 
-    InputBinding() : key(KEY_INVALID), joy(KEY_INVALID) {}
+    InputBinding(unsigned int p = KEY_INVALID, unsigned int s = KEY_INVALID)
+        : primary(p), secondary(s) {}
 };
 
 /**

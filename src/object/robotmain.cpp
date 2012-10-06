@@ -878,7 +878,7 @@ void CRobotMain::SetDefaultInputBindings()
 {
     for (int i = 0; i < INPUT_SLOT_MAX; i++)
     {
-        m_inputBindings[i].key = m_inputBindings[i].joy = KEY_INVALID;
+        m_inputBindings[i].primary = m_inputBindings[i].secondary = KEY_INVALID;
     }
 
     for (int i = 0; i < JOY_AXIS_SLOT_MAX; i++)
@@ -887,34 +887,34 @@ void CRobotMain::SetDefaultInputBindings()
         m_joyAxisBindings[i].invert = false;
     }
 
-    m_inputBindings[INPUT_SLOT_LEFT   ].key  = KEY(LEFT);
-    m_inputBindings[INPUT_SLOT_RIGHT  ].key  = KEY(RIGHT);
-    m_inputBindings[INPUT_SLOT_UP     ].key  = KEY(UP);
-    m_inputBindings[INPUT_SLOT_DOWN   ].key  = KEY(DOWN);
-    m_inputBindings[INPUT_SLOT_GUP    ].key  = VIRTUAL_KMOD(SHIFT);
-    m_inputBindings[INPUT_SLOT_GDOWN  ].key  = VIRTUAL_KMOD(CTRL);
-    m_inputBindings[INPUT_SLOT_CAMERA ].key  = KEY(SPACE);
-    m_inputBindings[INPUT_SLOT_CAMERA ].joy  = VIRTUAL_JOY(2);
-    m_inputBindings[INPUT_SLOT_DESEL  ].key  = KEY(KP0);
-    m_inputBindings[INPUT_SLOT_DESEL  ].joy  = VIRTUAL_JOY(6);
-    m_inputBindings[INPUT_SLOT_ACTION ].key  = KEY(RETURN);
-    m_inputBindings[INPUT_SLOT_ACTION ].joy  = VIRTUAL_JOY(1);
-    m_inputBindings[INPUT_SLOT_NEAR   ].key  = KEY(KP_PLUS);
-    m_inputBindings[INPUT_SLOT_NEAR   ].joy  = VIRTUAL_JOY(5);
-    m_inputBindings[INPUT_SLOT_AWAY   ].key  = KEY(KP_MINUS);
-    m_inputBindings[INPUT_SLOT_AWAY   ].joy  = VIRTUAL_JOY(4);
-    m_inputBindings[INPUT_SLOT_NEXT   ].key  = KEY(TAB);
-    m_inputBindings[INPUT_SLOT_NEXT   ].joy  = VIRTUAL_JOY(3);
-    m_inputBindings[INPUT_SLOT_HUMAN  ].key  = KEY(HOME);
-    m_inputBindings[INPUT_SLOT_HUMAN  ].joy  = VIRTUAL_JOY(7);
-    m_inputBindings[INPUT_SLOT_QUIT   ].key  = KEY(ESCAPE);
-    m_inputBindings[INPUT_SLOT_HELP   ].key  = KEY(F1);
-    m_inputBindings[INPUT_SLOT_PROG   ].key  = KEY(F2);
-    m_inputBindings[INPUT_SLOT_CBOT   ].key  = KEY(F3);
-    m_inputBindings[INPUT_SLOT_VISIT  ].key  = KEY(KP_PERIOD);
-    m_inputBindings[INPUT_SLOT_SPEED10].key  = KEY(F4);
-    m_inputBindings[INPUT_SLOT_SPEED15].key  = KEY(F5);
-    m_inputBindings[INPUT_SLOT_SPEED20].key  = KEY(F6);
+    m_inputBindings[INPUT_SLOT_LEFT   ].primary   = KEY(LEFT);
+    m_inputBindings[INPUT_SLOT_RIGHT  ].primary   = KEY(RIGHT);
+    m_inputBindings[INPUT_SLOT_UP     ].primary   = KEY(UP);
+    m_inputBindings[INPUT_SLOT_DOWN   ].primary   = KEY(DOWN);
+    m_inputBindings[INPUT_SLOT_GUP    ].primary   = VIRTUAL_KMOD(SHIFT);
+    m_inputBindings[INPUT_SLOT_GDOWN  ].primary   = VIRTUAL_KMOD(CTRL);
+    m_inputBindings[INPUT_SLOT_CAMERA ].primary   = KEY(SPACE);
+    m_inputBindings[INPUT_SLOT_CAMERA ].secondary = VIRTUAL_JOY(2);
+    m_inputBindings[INPUT_SLOT_DESEL  ].primary   = KEY(KP0);
+    m_inputBindings[INPUT_SLOT_DESEL  ].secondary = VIRTUAL_JOY(6);
+    m_inputBindings[INPUT_SLOT_ACTION ].primary   = KEY(RETURN);
+    m_inputBindings[INPUT_SLOT_ACTION ].secondary = VIRTUAL_JOY(1);
+    m_inputBindings[INPUT_SLOT_NEAR   ].primary   = KEY(KP_PLUS);
+    m_inputBindings[INPUT_SLOT_NEAR   ].secondary = VIRTUAL_JOY(5);
+    m_inputBindings[INPUT_SLOT_AWAY   ].primary   = KEY(KP_MINUS);
+    m_inputBindings[INPUT_SLOT_AWAY   ].secondary = VIRTUAL_JOY(4);
+    m_inputBindings[INPUT_SLOT_NEXT   ].primary   = KEY(TAB);
+    m_inputBindings[INPUT_SLOT_NEXT   ].secondary = VIRTUAL_JOY(3);
+    m_inputBindings[INPUT_SLOT_HUMAN  ].primary   = KEY(HOME);
+    m_inputBindings[INPUT_SLOT_HUMAN  ].secondary = VIRTUAL_JOY(7);
+    m_inputBindings[INPUT_SLOT_QUIT   ].primary   = KEY(ESCAPE);
+    m_inputBindings[INPUT_SLOT_HELP   ].primary   = KEY(F1);
+    m_inputBindings[INPUT_SLOT_PROG   ].primary   = KEY(F2);
+    m_inputBindings[INPUT_SLOT_CBOT   ].primary   = KEY(F3);
+    m_inputBindings[INPUT_SLOT_VISIT  ].primary   = KEY(KP_PERIOD);
+    m_inputBindings[INPUT_SLOT_SPEED10].primary   = KEY(F4);
+    m_inputBindings[INPUT_SLOT_SPEED15].primary   = KEY(F5);
+    m_inputBindings[INPUT_SLOT_SPEED20].primary   = KEY(F6);
 
     m_joyAxisBindings[JOY_AXIS_SLOT_X].axis = 0;
     m_joyAxisBindings[JOY_AXIS_SLOT_Y].axis = 1;
@@ -1214,33 +1214,33 @@ bool CRobotMain::EventProcess(Event &event)
 
     if (event.type == EVENT_KEY_DOWN)
     {
-        if (event.key.key == GetInputBinding(INPUT_SLOT_UP   ).key)  m_keyMotion.y =  1.0f;
-        if (event.key.key == GetInputBinding(INPUT_SLOT_UP   ).joy)  m_keyMotion.y =  1.0f;
-        if (event.key.key == GetInputBinding(INPUT_SLOT_DOWN ).key)  m_keyMotion.y = -1.0f;
-        if (event.key.key == GetInputBinding(INPUT_SLOT_DOWN ).joy)  m_keyMotion.y = -1.0f;
-        if (event.key.key == GetInputBinding(INPUT_SLOT_LEFT ).key)  m_keyMotion.x = -1.0f;
-        if (event.key.key == GetInputBinding(INPUT_SLOT_LEFT ).joy)  m_keyMotion.x = -1.0f;
-        if (event.key.key == GetInputBinding(INPUT_SLOT_RIGHT).key)  m_keyMotion.x =  1.0f;
-        if (event.key.key == GetInputBinding(INPUT_SLOT_RIGHT).joy)  m_keyMotion.x =  1.0f;
-        if (event.key.key == GetInputBinding(INPUT_SLOT_GUP  ).key)  m_keyMotion.z =  1.0f;
-        if (event.key.key == GetInputBinding(INPUT_SLOT_GUP  ).joy)  m_keyMotion.z =  1.0f;
-        if (event.key.key == GetInputBinding(INPUT_SLOT_GDOWN).key)  m_keyMotion.z = -1.0f;
-        if (event.key.key == GetInputBinding(INPUT_SLOT_GDOWN).joy)  m_keyMotion.z = -1.0f;
+        if (event.key.key == GetInputBinding(INPUT_SLOT_UP   ).primary)    m_keyMotion.y =  1.0f;
+        if (event.key.key == GetInputBinding(INPUT_SLOT_UP   ).secondary)  m_keyMotion.y =  1.0f;
+        if (event.key.key == GetInputBinding(INPUT_SLOT_DOWN ).primary)    m_keyMotion.y = -1.0f;
+        if (event.key.key == GetInputBinding(INPUT_SLOT_DOWN ).secondary)  m_keyMotion.y = -1.0f;
+        if (event.key.key == GetInputBinding(INPUT_SLOT_LEFT ).primary)    m_keyMotion.x = -1.0f;
+        if (event.key.key == GetInputBinding(INPUT_SLOT_LEFT ).secondary)  m_keyMotion.x = -1.0f;
+        if (event.key.key == GetInputBinding(INPUT_SLOT_RIGHT).primary)    m_keyMotion.x =  1.0f;
+        if (event.key.key == GetInputBinding(INPUT_SLOT_RIGHT).secondary)  m_keyMotion.x =  1.0f;
+        if (event.key.key == GetInputBinding(INPUT_SLOT_GUP  ).primary)    m_keyMotion.z =  1.0f;
+        if (event.key.key == GetInputBinding(INPUT_SLOT_GUP  ).secondary)  m_keyMotion.z =  1.0f;
+        if (event.key.key == GetInputBinding(INPUT_SLOT_GDOWN).primary)    m_keyMotion.z = -1.0f;
+        if (event.key.key == GetInputBinding(INPUT_SLOT_GDOWN).secondary)  m_keyMotion.z = -1.0f;
     }
     else if (event.type == EVENT_KEY_UP)
     {
-        if (event.key.key == GetInputBinding(INPUT_SLOT_UP   ).key)  m_keyMotion.y =  0.0f;
-        if (event.key.key == GetInputBinding(INPUT_SLOT_UP   ).joy)  m_keyMotion.y =  0.0f;
-        if (event.key.key == GetInputBinding(INPUT_SLOT_DOWN ).key)  m_keyMotion.y =  0.0f;
-        if (event.key.key == GetInputBinding(INPUT_SLOT_DOWN ).joy)  m_keyMotion.y =  0.0f;
-        if (event.key.key == GetInputBinding(INPUT_SLOT_LEFT ).key)  m_keyMotion.x =  0.0f;
-        if (event.key.key == GetInputBinding(INPUT_SLOT_LEFT ).joy)  m_keyMotion.x =  0.0f;
-        if (event.key.key == GetInputBinding(INPUT_SLOT_RIGHT).key)  m_keyMotion.x =  0.0f;
-        if (event.key.key == GetInputBinding(INPUT_SLOT_RIGHT).joy)  m_keyMotion.x =  0.0f;
-        if (event.key.key == GetInputBinding(INPUT_SLOT_GUP  ).key)  m_keyMotion.z =  0.0f;
-        if (event.key.key == GetInputBinding(INPUT_SLOT_GUP  ).joy)  m_keyMotion.z =  0.0f;
-        if (event.key.key == GetInputBinding(INPUT_SLOT_GDOWN).key)  m_keyMotion.z =  0.0f;
-        if (event.key.key == GetInputBinding(INPUT_SLOT_GDOWN).joy)  m_keyMotion.z =  0.0f;
+        if (event.key.key == GetInputBinding(INPUT_SLOT_UP   ).primary)    m_keyMotion.y =  0.0f;
+        if (event.key.key == GetInputBinding(INPUT_SLOT_UP   ).secondary)  m_keyMotion.y =  0.0f;
+        if (event.key.key == GetInputBinding(INPUT_SLOT_DOWN ).primary)    m_keyMotion.y =  0.0f;
+        if (event.key.key == GetInputBinding(INPUT_SLOT_DOWN ).secondary)  m_keyMotion.y =  0.0f;
+        if (event.key.key == GetInputBinding(INPUT_SLOT_LEFT ).primary)    m_keyMotion.x =  0.0f;
+        if (event.key.key == GetInputBinding(INPUT_SLOT_LEFT ).secondary)  m_keyMotion.x =  0.0f;
+        if (event.key.key == GetInputBinding(INPUT_SLOT_RIGHT).primary)    m_keyMotion.x =  0.0f;
+        if (event.key.key == GetInputBinding(INPUT_SLOT_RIGHT).secondary)  m_keyMotion.x =  0.0f;
+        if (event.key.key == GetInputBinding(INPUT_SLOT_GUP  ).primary)    m_keyMotion.z =  0.0f;
+        if (event.key.key == GetInputBinding(INPUT_SLOT_GUP  ).secondary)  m_keyMotion.z =  0.0f;
+        if (event.key.key == GetInputBinding(INPUT_SLOT_GDOWN).primary)    m_keyMotion.z =  0.0f;
+        if (event.key.key == GetInputBinding(INPUT_SLOT_GDOWN).secondary)  m_keyMotion.z =  0.0f;
     }
     else if (event.type == EVENT_JOY_AXIS)
     {
@@ -1356,10 +1356,10 @@ bool CRobotMain::EventProcess(Event &event)
 
         if (event.type == EVENT_KEY_DOWN)
         {
-            if (event.key.key == GetInputBinding(INPUT_SLOT_HELP).key ||
-                event.key.key == GetInputBinding(INPUT_SLOT_HELP).joy ||
-                event.key.key == GetInputBinding(INPUT_SLOT_PROG).key ||
-                event.key.key == GetInputBinding(INPUT_SLOT_PROG).joy ||
+            if (event.key.key == GetInputBinding(INPUT_SLOT_HELP).primary ||
+                event.key.key == GetInputBinding(INPUT_SLOT_HELP).secondary ||
+                event.key.key == GetInputBinding(INPUT_SLOT_PROG).primary ||
+                event.key.key == GetInputBinding(INPUT_SLOT_PROG).secondary ||
                 event.key.key == KEY(ESCAPE))
             {
                 StopDisplayInfo();
@@ -1394,14 +1394,14 @@ bool CRobotMain::EventProcess(Event &event)
                 }
                 if (m_editLock)  // current edition?
                 {
-                    if (event.key.key == GetInputBinding(INPUT_SLOT_HELP).key ||
-                        event.key.key == GetInputBinding(INPUT_SLOT_HELP).joy)
+                    if (event.key.key == GetInputBinding(INPUT_SLOT_HELP).primary ||
+                        event.key.key == GetInputBinding(INPUT_SLOT_HELP).secondary)
                     {
                         StartDisplayInfo(SATCOM_HUSTON, false);
                         return false;
                     }
-                    if (event.key.key == GetInputBinding(INPUT_SLOT_PROG).key ||
-                        event.key.key == GetInputBinding(INPUT_SLOT_PROG).joy)
+                    if (event.key.key == GetInputBinding(INPUT_SLOT_PROG).primary ||
+                        event.key.key == GetInputBinding(INPUT_SLOT_PROG).secondary)
                     {
                         StartDisplayInfo(SATCOM_PROG, false);
                         return false;
@@ -1410,8 +1410,8 @@ bool CRobotMain::EventProcess(Event &event)
                 }
                 if (m_movieLock)  // current movie?
                 {
-                    if (event.key.key == GetInputBinding(INPUT_SLOT_QUIT).key ||
-                        event.key.key == GetInputBinding(INPUT_SLOT_QUIT).joy ||
+                    if (event.key.key == GetInputBinding(INPUT_SLOT_QUIT).primary ||
+                        event.key.key == GetInputBinding(INPUT_SLOT_QUIT).secondary ||
                         event.key.key == KEY(ESCAPE))
                     {
                         AbortMovie();
@@ -1420,21 +1420,21 @@ bool CRobotMain::EventProcess(Event &event)
                 }
                 if (m_camera->GetType() == Gfx::CAM_TYPE_VISIT)
                 {
-                    if (event.key.key == GetInputBinding(INPUT_SLOT_VISIT).key ||
-                        event.key.key == GetInputBinding(INPUT_SLOT_VISIT).joy)
+                    if (event.key.key == GetInputBinding(INPUT_SLOT_VISIT).primary ||
+                        event.key.key == GetInputBinding(INPUT_SLOT_VISIT).secondary)
                     {
                         StartDisplayVisit(EVENT_NULL);
                     }
-                    if (event.key.key == GetInputBinding(INPUT_SLOT_QUIT).key ||
-                        event.key.key == GetInputBinding(INPUT_SLOT_QUIT).joy ||
+                    if (event.key.key == GetInputBinding(INPUT_SLOT_QUIT).primary ||
+                        event.key.key == GetInputBinding(INPUT_SLOT_QUIT).secondary ||
                         event.key.key == KEY(ESCAPE))
                     {
                         StopDisplayVisit();
                     }
                     return false;
                 }
-                if (event.key.key == GetInputBinding(INPUT_SLOT_QUIT).key ||
-                    event.key.key == GetInputBinding(INPUT_SLOT_QUIT).joy)
+                if (event.key.key == GetInputBinding(INPUT_SLOT_QUIT).primary ||
+                    event.key.key == GetInputBinding(INPUT_SLOT_QUIT).secondary)
                 {
                     if (m_movie->IsExist())
                         StartDisplayInfo(SATCOM_HUSTON, false);
@@ -1454,55 +1454,55 @@ bool CRobotMain::EventProcess(Event &event)
                         ChangePause(!m_engine->GetPause());
                     }
                 }
-                if (event.key.key == GetInputBinding(INPUT_SLOT_CAMERA).key ||
-                    event.key.key == GetInputBinding(INPUT_SLOT_CAMERA).joy)
+                if (event.key.key == GetInputBinding(INPUT_SLOT_CAMERA).primary ||
+                    event.key.key == GetInputBinding(INPUT_SLOT_CAMERA).secondary)
                 {
                     ChangeCamera();
                 }
-                if (event.key.key == GetInputBinding(INPUT_SLOT_DESEL).key ||
-                    event.key.key == GetInputBinding(INPUT_SLOT_DESEL).joy)
+                if (event.key.key == GetInputBinding(INPUT_SLOT_DESEL).primary ||
+                    event.key.key == GetInputBinding(INPUT_SLOT_DESEL).secondary)
                 {
                     if (m_shortCut)
                         DeselectObject();
                 }
-                if (event.key.key == GetInputBinding(INPUT_SLOT_HUMAN).key ||
-                    event.key.key == GetInputBinding(INPUT_SLOT_HUMAN).joy)
+                if (event.key.key == GetInputBinding(INPUT_SLOT_HUMAN).primary ||
+                    event.key.key == GetInputBinding(INPUT_SLOT_HUMAN).secondary)
                 {
                     SelectHuman();
                 }
-                if (event.key.key == GetInputBinding(INPUT_SLOT_NEXT).key ||
-                    event.key.key == GetInputBinding(INPUT_SLOT_NEXT).joy)
+                if (event.key.key == GetInputBinding(INPUT_SLOT_NEXT).primary ||
+                    event.key.key == GetInputBinding(INPUT_SLOT_NEXT).secondary)
                 {
                     if (m_shortCut)
                         m_short->SelectNext();
                 }
-                if (event.key.key == GetInputBinding(INPUT_SLOT_HELP).key ||
-                    event.key.key == GetInputBinding(INPUT_SLOT_HELP).joy)
+                if (event.key.key == GetInputBinding(INPUT_SLOT_HELP).primary ||
+                    event.key.key == GetInputBinding(INPUT_SLOT_HELP).secondary)
                 {
                     StartDisplayInfo(SATCOM_HUSTON, true);
                 }
-                if (event.key.key == GetInputBinding(INPUT_SLOT_PROG).key ||
-                    event.key.key == GetInputBinding(INPUT_SLOT_PROG).joy)
+                if (event.key.key == GetInputBinding(INPUT_SLOT_PROG).primary ||
+                    event.key.key == GetInputBinding(INPUT_SLOT_PROG).secondary)
                 {
                     StartDisplayInfo(SATCOM_PROG, true);
                 }
-                if (event.key.key == GetInputBinding(INPUT_SLOT_VISIT).key ||
-                    event.key.key == GetInputBinding(INPUT_SLOT_VISIT).joy)
+                if (event.key.key == GetInputBinding(INPUT_SLOT_VISIT).primary ||
+                    event.key.key == GetInputBinding(INPUT_SLOT_VISIT).secondary)
                 {
                     StartDisplayVisit(EVENT_NULL);
                 }
-                if (event.key.key == GetInputBinding(INPUT_SLOT_SPEED10).key ||
-                    event.key.key == GetInputBinding(INPUT_SLOT_SPEED10).joy)
+                if (event.key.key == GetInputBinding(INPUT_SLOT_SPEED10).primary ||
+                    event.key.key == GetInputBinding(INPUT_SLOT_SPEED10).secondary)
                 {
                     SetSpeed(1.0f);
                 }
-                if (event.key.key == GetInputBinding(INPUT_SLOT_SPEED15).key ||
-                    event.key.key == GetInputBinding(INPUT_SLOT_SPEED15).joy)
+                if (event.key.key == GetInputBinding(INPUT_SLOT_SPEED15).primary ||
+                    event.key.key == GetInputBinding(INPUT_SLOT_SPEED15).secondary)
                 {
                     SetSpeed(1.5f);
                 }
-                if (event.key.key == GetInputBinding(INPUT_SLOT_SPEED20).key ||
-                    event.key.key == GetInputBinding(INPUT_SLOT_SPEED20).joy)
+                if (event.key.key == GetInputBinding(INPUT_SLOT_SPEED20).primary ||
+                    event.key.key == GetInputBinding(INPUT_SLOT_SPEED20).secondary)
                 {
                     SetSpeed(2.0f);
                 }
@@ -3109,26 +3109,26 @@ void CRobotMain::KeyCamera(EventType type, unsigned int key)
 
     if (type == EVENT_KEY_UP)
     {
-        if (key == GetInputBinding(INPUT_SLOT_LEFT).key ||
-            key == GetInputBinding(INPUT_SLOT_LEFT).joy)
+        if (key == GetInputBinding(INPUT_SLOT_LEFT).primary ||
+            key == GetInputBinding(INPUT_SLOT_LEFT).secondary)
         {
             m_cameraPan = 0.0f;
         }
 
-        if (key == GetInputBinding(INPUT_SLOT_RIGHT).key ||
-            key == GetInputBinding(INPUT_SLOT_RIGHT).joy)
+        if (key == GetInputBinding(INPUT_SLOT_RIGHT).primary ||
+            key == GetInputBinding(INPUT_SLOT_RIGHT).secondary)
         {
             m_cameraPan = 0.0f;
         }
 
-        if (key == GetInputBinding(INPUT_SLOT_UP).key ||
-            key == GetInputBinding(INPUT_SLOT_UP).joy)
+        if (key == GetInputBinding(INPUT_SLOT_UP).primary ||
+            key == GetInputBinding(INPUT_SLOT_UP).secondary)
         {
             m_cameraZoom = 0.0f;
         }
 
-        if (key == GetInputBinding(INPUT_SLOT_DOWN).key ||
-            key == GetInputBinding(INPUT_SLOT_DOWN).joy)
+        if (key == GetInputBinding(INPUT_SLOT_DOWN).primary ||
+            key == GetInputBinding(INPUT_SLOT_DOWN).secondary)
         {
             m_cameraZoom = 0.0f;
         }
@@ -3144,26 +3144,26 @@ void CRobotMain::KeyCamera(EventType type, unsigned int key)
 
     if (type == EVENT_KEY_DOWN)
     {
-        if (key == GetInputBinding(INPUT_SLOT_LEFT).key ||
-            key == GetInputBinding(INPUT_SLOT_LEFT).joy)
+        if (key == GetInputBinding(INPUT_SLOT_LEFT).primary ||
+            key == GetInputBinding(INPUT_SLOT_LEFT).secondary)
         {
             m_cameraPan = -1.0f;
         }
 
-        if (key == GetInputBinding(INPUT_SLOT_RIGHT).key ||
-            key == GetInputBinding(INPUT_SLOT_RIGHT).joy)
+        if (key == GetInputBinding(INPUT_SLOT_RIGHT).primary ||
+            key == GetInputBinding(INPUT_SLOT_RIGHT).secondary)
         {
             m_cameraPan = 1.0f;
         }
 
-        if (key == GetInputBinding(INPUT_SLOT_UP).key ||
-            key == GetInputBinding(INPUT_SLOT_UP).joy)
+        if (key == GetInputBinding(INPUT_SLOT_UP).primary ||
+            key == GetInputBinding(INPUT_SLOT_UP).secondary)
         {
             m_cameraZoom = -1.0f;
         }
 
-        if (key == GetInputBinding(INPUT_SLOT_DOWN).key ||
-            key == GetInputBinding(INPUT_SLOT_DOWN).joy)
+        if (key == GetInputBinding(INPUT_SLOT_DOWN).primary ||
+            key == GetInputBinding(INPUT_SLOT_DOWN).secondary)
         {
             m_cameraZoom = 1.0f;
         }

@@ -1796,7 +1796,7 @@ bool CEdit::ReadText(const char *filename, int addSize)
                 if ( SearchKey(buffer+i+5, slot) )
                 {
                     CRobotMain* main = CRobotMain::GetInstancePointer();
-                    res = main->GetInputBinding(slot).key;
+                    res = main->GetInputBinding(slot).primary;
                     if ( res != 0 )
                     {
                         if ( GetResource(RES_KEY, res, iName) )
@@ -1815,7 +1815,7 @@ bool CEdit::ReadText(const char *filename, int addSize)
                             m_format[j] = font;
                             j ++;
 
-                            res = main->GetInputBinding(slot).joy;
+                            res = main->GetInputBinding(slot).secondary;
                             if ( res != 0 )
                             {
                                 if ( GetResource(RES_KEY, res, iName) )

@@ -38,7 +38,7 @@
 
 
 class CInstanceManager;
-class CEvent;
+class CEventQueue;
 class CRobotMain;
 class CSoundInterface;
 
