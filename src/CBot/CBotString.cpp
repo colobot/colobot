@@ -100,7 +100,7 @@ const std::map<EID,const char *> CBotString::s_keywordString =
     {ID_DEC,        "--"},
     {ID_LO,         "<"},
     {ID_HI,         ">"},
-    {ID_LS,         "<<"},
+    {ID_LS,         "<="},
     {ID_HS,         ">="},
     {ID_EQ,         "=="},
     {ID_NE,         "!="},
