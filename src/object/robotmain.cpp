@@ -1956,6 +1956,17 @@ void CRobotMain::ExecuteCmd(char *cmd)
         return;
     }
 
+    if (strcmp(cmd, "speed4") == 0) {
+        SetSpeed(4.0f);
+        UpdateSpeedLabel();
+	return;
+    }
+    if (strcmp(cmd, "speed8") == 0) {
+        SetSpeed(8.0f);
+        UpdateSpeedLabel();
+	return;
+    }
+
     if (m_phase == PHASE_SIMUL)
         m_displayText->DisplayError(ERR_CMD, Math::Vector(0.0f,0.0f,0.0f));
 }
@@ -6615,9 +6626,20 @@ void CRobotMain::ChangePause(bool pause)
 //! Changes game speed
 void CRobotMain::SetSpeed(float speed)
 {
-    // TODO: m_app->SetSimulationSpeed(speed);
+    m_app->SetSimulationSpeed(speed);
+    UpdateSpeedLabel();
+}
 
+float CRobotMain::GetSpeed()
+{
+    return m_app->GetSimulationSpeed();
+}
+
+void CRobotMain::UpdateSpeedLabel()
+{
     Ui::CButton* pb = dynamic_cast<Ui::CButton*>(m_interface->SearchControl(EVENT_SPEED));
+    float speed = m_app->GetSimulationSpeed();
+    
     if (pb != nullptr)
     {
         if (speed == 1.0f)
@@ -6632,11 +6654,7 @@ void CRobotMain::SetSpeed(float speed)
             pb->SetState(Ui::STATE_VISIBLE);
         }
     }
-}
 
-float CRobotMain::GetSpeed()
-{
-    return m_app->GetSimulationSpeed();
 }
 
 

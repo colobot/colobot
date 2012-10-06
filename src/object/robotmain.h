@@ -383,6 +383,7 @@ protected:
     void        StopDisplayVisit();
     void        ExecuteCmd(char *cmd);
     bool        TestGadgetQuantity(int rank);
+    void        UpdateSpeedLabel();
 
 protected:
     CInstanceManager*   m_iMan;
