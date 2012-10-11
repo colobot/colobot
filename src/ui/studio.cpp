@@ -241,8 +241,8 @@ bool CStudio::EventProcess(const Event &event)
 
     if ( event.type == EVENT_KEY_DOWN )
     {
-        if (  event.key.key == m_main->GetInputBinding(INPUT_SLOT_CBOT).key ||
-              event.key.key == m_main->GetInputBinding(INPUT_SLOT_CBOT).joy )
+        if (  event.key.key == m_main->GetInputBinding(INPUT_SLOT_CBOT).primary ||
+              event.key.key == m_main->GetInputBinding(INPUT_SLOT_CBOT).secondary )
         {
             if ( m_helpFilename.length() > 0 )
             {

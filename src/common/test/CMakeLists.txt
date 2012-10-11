@@ -14,7 +14,7 @@ ${GTEST_DIR}/include
 add_executable(image_test ../image.cpp image_test.cpp)
 target_link_libraries(image_test ${SDL_LIBRARY} ${SDLIMAGE_LIBRARY} ${PNG_LIBRARIES})
 
-add_executable(profile_test ../profile.cpp ../logger.cpp profile_test.cpp)
-target_link_libraries(profile_test gtest ${Boost_LIBRARIES})
+#add_executable(profile_test ../profile.cpp ../logger.cpp profile_test.cpp)
+#target_link_libraries(profile_test gtest ${Boost_LIBRARIES})
 
-add_test(profile_test ./profile_test)
+#add_test(profile_test ./profile_test)

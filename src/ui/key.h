@@ -15,12 +15,12 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// key.h
+/**
+ * \file ui/key.h
+ * \brief Key slot control
+ */
 
 #pragma once
-
-#include <cctype>
-#include <string>
 
 #include "ui/control.h"
 
@@ -29,33 +29,40 @@
 #include "common/restext.h"
 #include "common/key.h"
 
-#include "app/app.h"
 
 namespace Ui {
 
 class CKey : public CControl
 {
-    public:
-        CKey();
-        virtual ~CKey();
+public:
+    CKey();
+    virtual ~CKey();
 
-        bool    Create(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
-        bool    EventProcess(const Event &event);
+    //! Creates a new key slot button
+    bool    Create(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
+    //! Management of an event
+    bool    EventProcess(const Event &event);
 
-        void    Draw();
+    //! Draws button
+    void    Draw();
 
-        void    SetKey(int option, int key);
-        int     GetKey(int option);
+    //! Management of binding
+    //@{
+    void    SetBinding(InputBinding b);
+    InputBinding GetBinding();
+    //@}
 
-    protected:
-        bool    TestKey(int key);
+protected:
+    //! Checks if a key is already used
+    bool    TestKey(unsigned int key);
 
-        unsigned int m_key[2];
-        bool    m_bCatch;
+protected:
+    CRobotMain* m_robotMain;
 
-        CApplication *m_app;
+    InputBinding m_binding;
+    bool         m_catch;
 };
 
 
-}
+} // namespace Ui
 

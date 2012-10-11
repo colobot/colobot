@@ -47,7 +47,7 @@ class CMainShort
 
     protected:
         CInstanceManager* m_iMan;
-        CEvent*         m_event;
+        CEventQueue*      m_event;
         Gfx::CEngine*     m_engine;
         CInterface*     m_interface;
         CRobotMain*     m_main;

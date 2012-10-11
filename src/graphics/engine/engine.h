@@ -961,9 +961,6 @@ public:
     bool            GetFog();
     //@}
 
-    //! Indicates whether it is possible to give a color SetState
-    bool            GetStateColor();
-
     //@{
     //! Management of the global mode of secondary texturing
     void            SetSecondTexture(int texNum);

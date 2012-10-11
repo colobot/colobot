@@ -68,7 +68,7 @@ struct Light
     float           attenuation1;
     //! Quadratic attenuation factor
     float           attenuation2;
-    //! Angle of spotlight cone (0-90 degrees)
+    //! Angle of spotlight cone (0-PI/2 radians)
     float           spotAngle;
 
     //! Intensity of spotlight (0 = uniform; 128 = most intense)
@@ -91,7 +91,7 @@ struct Light
         direction = Math::Vector(0.0f, 0.0f, 1.0f);
         attenuation0 = 1.0f;
         attenuation1 = attenuation2 = 0.0f;
-        spotAngle = 90.0f;
+        spotAngle = Math::PI/2.0f;
         spotIntensity = 0.0f;
     }
 };

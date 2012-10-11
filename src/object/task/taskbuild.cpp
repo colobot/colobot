@@ -153,8 +153,7 @@ void CTaskBuild::CreateLight()
         light.attenuation0 = 1.0f;
         light.attenuation1 = 0.0f;
         light.attenuation2 = 0.0f;
-        //TODO Is this value correct
-        light.spotAngle = 90;
+        light.spotAngle = 90.0f*Math::PI/180.0f;
         m_lightMan->SetLight(m_lightRank[i], light);
 
         color.r = -1.0f;

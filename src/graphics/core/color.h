@@ -107,6 +107,14 @@ inline IntColor ColorToIntColor(Color color)
                     static_cast<unsigned char>(color.a * 255.0f));
 }
 
+inline Color IntensityToColor(float intensity)
+{
+    if (intensity <= 0.0f) return Color(0.0f, 0.0f, 0.0f, 0.0f);
+    if (intensity >= 1.0f) return Color(1.0f, 1.0f, 1.0f, 1.0f);
+
+    return Color(intensity, intensity, intensity, intensity);
+}
+
 /**
  * \struct ColorHSV
  * \brief HSV color

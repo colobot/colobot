@@ -19,6 +19,7 @@
 
 #include "script/script.h"
 
+#include "app/app.h"
 #include "common/global.h"
 #include "common/iman.h"
 #include "common/restext.h"

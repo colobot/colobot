@@ -17,3 +17,5 @@ if(${CBOT_STATIC})
 else()
     add_library(CBot SHARED ${SOURCES})
 endif()
+
+INSTALL_TARGETS(/lib CBot)

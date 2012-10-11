@@ -309,7 +309,7 @@ void CGLDevice::SetLight(int index, const Light &light)
 
     if (light.type == LIGHT_SPOT)
     {
-        glLightf(GL_LIGHT0 + index, GL_SPOT_CUTOFF, light.spotAngle);
+        glLightf(GL_LIGHT0 + index, GL_SPOT_CUTOFF, light.spotAngle * Math::RAD_TO_DEG);
         glLightf(GL_LIGHT0 + index, GL_SPOT_EXPONENT, light.spotIntensity);
     }
     else

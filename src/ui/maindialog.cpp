@@ -8,7 +8,7 @@
 // *
 // * This program is distributed in the hope that it will be useful,
 // * but WITHOUT ANY WARRANTY; without even the implied warranty of
-// * MERCHANTABILITY or FITNESS FOR A Gfx::PARTICULAR PURPOSE. See the
+// * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
@@ -5476,7 +5476,6 @@ void CMainDialog::SetupMemorize()
 {
     float   fValue;
     int     iValue, i, j;
-    char    key[500];
     char    num[10];
 
     GetProfile().SetLocalProfileString("Directory", "scene",    m_sceneDir);
@@ -5518,21 +5517,16 @@ void CMainDialog::SetupMemorize()
     // GetProfile()->SetLocalProfileInt("Setup", "UseJoystick", m_engine->GetJoystick());
     // GetProfile()->SetLocalProfileInt("Setup", "MidiVolume", m_sound->GetMidiVolume());
 
-    // key[0] = 0;
-    // for ( i=0 ; i<100 ; i++ )
-    // {
-    //     if ( m_engine->GetKey(i, 0) == 0 )  break;
+    std::stringstream key;
+    for (int i = 0; i < INPUT_SLOT_MAX; i++)
+    {
+        InputBinding b = m_main->GetInputBinding(static_cast<InputSlot>(i));
 
-    //     for ( j=0 ; j<2 ; j++ )
-    //     {
-    //         iValue = m_engine->GetKey(i, j);
-    //         sprintf(num, "%d%c", iValue, j==0?'+':' ');
-    //         strcat(key, num);
-    //     }
-    // }
+        key << b.primary << " ";
+        key << b.secondary << "  ";
+    }
 
-    /* TODO: profile
-    SetLocalProfileString("Setup", "KeyMap", key); */
+    GetProfile().SetLocalProfileString("Setup", "KeyMap", key.str());
 
 #if _NET
     if ( m_accessEnable )
@@ -5556,9 +5550,8 @@ void CMainDialog::SetupMemorize()
 void CMainDialog::SetupRecall()
 {
     float       fValue;
-    int         iValue, i, j;
+    int         iValue;
     std::string key;
-    char*       p;
 
     if ( GetProfile().GetLocalProfileString("Directory", "scene", key) )
     {
@@ -5747,22 +5740,18 @@ void CMainDialog::SetupRecall()
         m_engine->SetEditIndentValue(iValue);
     }
 
-    // if ( GetLocalProfileString("Setup", "KeyMap", key, 500) )
-    // {
-    //     p = key;
-    //     for ( i=0 ; i<100 ; i++ )
-    //     {
-    //         if ( p[0] == 0 )  break;
-
-    //         for ( j=0 ; j<2 ; j++ )
-    //         {
-    //             sscanf(p, "%d", &iValue);
-    //             m_engine->SetKey(i, j, iValue);
-    //             while ( *p >= '0' && *p <= '9' )  p++;
-    //             while ( *p == ' ' || *p == '+' )  p++;
-    //         }
-    //     }
-    // }
+    if (GetProfile().GetLocalProfileString("Setup", "KeyMap", key))
+    {
+        std::stringstream skey;
+        skey.str(key);
+        for (int i = 0; i < INPUT_SLOT_MAX; i++)
+        {
+            InputBinding b;
+            skey >> b.primary;
+            skey >> b.secondary;
+            m_main->SetInputBinding(static_cast<InputSlot>(i), b);
+         }
+    }
 
 #if _NET
     if ( m_accessEnable )
@@ -5837,7 +5826,7 @@ void CMainDialog::ChangeSetupQuality(int quality)
 
 // Redefinable keys:
 
-static int key_table[KEY_TOTAL] =
+static InputSlot key_table[KEY_TOTAL] =
 {
     INPUT_SLOT_LEFT,
     INPUT_SLOT_RIGHT,
@@ -5891,37 +5880,30 @@ static EventType key_event[KEY_TOTAL] =
 
 void CMainDialog::UpdateKey()
 {
-    CWindow*    pw;
-    CScroll*    ps;
-    CKey*       pk;
-    Math::Point     pos, dim;
-    int         first, i;
+    CWindow* pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
+    if (pw == nullptr) return;
 
-    pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
-    if ( pw == 0 )  return;
+    CScroll* ps = static_cast<CScroll*>(pw->SearchControl(EVENT_INTERFACE_KSCROLL));
+    if (ps == nullptr) return;
 
-    ps = static_cast<CScroll*>(pw->SearchControl(EVENT_INTERFACE_KSCROLL));
-    if ( ps == 0 )  return;
+    int first = static_cast<int>(ps->GetVisibleValue()*(KEY_TOTAL-KEY_VISIBLE));
 
-    first = static_cast<int>(ps->GetVisibleValue()*(KEY_TOTAL-KEY_VISIBLE));
-
-    for ( i=0 ; i<KEY_TOTAL ; i++ )
-    {
+    for (int i = 0; i < KEY_TOTAL; i++)
         pw->DeleteControl(key_event[i]);
-    }
 
+    Math::Point dim;
     dim.x = 400.0f/640.0f;
     dim.y =  20.0f/480.0f;
+    Math::Point pos;
     pos.x = 110.0f/640.0f;
     pos.y = 168.0f/480.0f + dim.y*(KEY_VISIBLE-1);
-    for ( i=0 ; i<KEY_VISIBLE ; i++ )
+    for (int i = 0; i < KEY_VISIBLE; i++)
     {
         pw->CreateKey(pos, dim, -1, key_event[first+i]);
-        pk = static_cast<CKey*>(pw->SearchControl(key_event[first+i]));
-        if ( pk == 0 )  break;
-        /* TODO: set input bindings
-        pk->SetKey(0, m_engine->GetKey(key_table[first+i], 0));
-        pk->SetKey(1, m_engine->GetKey(key_table[first+i], 1)); */
+        CKey* pk = static_cast<CKey*>(pw->SearchControl(key_event[first+i]));
+        if (pk == nullptr) break;
+
+        pk->SetBinding(m_main->GetInputBinding(key_table[first+i]));
         pos.y -= dim.y;
     }
 }
@@ -5930,26 +5912,20 @@ void CMainDialog::UpdateKey()
 
 void CMainDialog::ChangeKey(EventType event)
 {
-    CWindow*    pw;
-    CScroll*    ps;
-    CKey*       pk;
-    int         i;
+    CWindow* pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
+    if (pw == nullptr) return;
 
-    pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
-    if ( pw == 0 )  return;
+    CScroll* ps = static_cast<CScroll*>(pw->SearchControl(EVENT_INTERFACE_KSCROLL));
+    if (ps == nullptr) return;
 
-    ps = static_cast<CScroll*>(pw->SearchControl(EVENT_INTERFACE_KSCROLL));
-    if ( ps == 0 )  return;
-
-    for ( i=0 ; i<KEY_TOTAL ; i++ )
+    for (int i = 0; i < KEY_TOTAL; i++)
     {
         if ( key_event[i] == event )
         {
-            pk = static_cast<CKey*>(pw->SearchControl(key_event[i]));
-            if ( pk == 0 )  break;
-            /* TODO: set key binding
-            m_engine->SetKey(key_table[i], 0, pk->GetKey(0));
-            m_engine->SetKey(key_table[i], 1, pk->GetKey(1)); */
+            CKey* pk = static_cast<CKey*>(pw->SearchControl(key_event[i]));
+            if (pk == nullptr) break;
+
+            m_main->SetInputBinding(key_table[i], pk->GetBinding());
         }
     }
 }
@@ -6803,4 +6779,3 @@ bool CMainDialog::NextMission()
 
 
 } // namespace Ui
-
