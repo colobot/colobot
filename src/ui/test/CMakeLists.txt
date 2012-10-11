@@ -17,7 +17,6 @@ add_executable(edit_test
     ../../common/misc.cpp
     ../../common/iman.cpp
     ../../common/stringutils.cpp
-    ../../graphics/engine/particle.cpp
     ../../graphics/engine/text.cpp
     ../button.cpp
     ../control.cpp
@@ -25,6 +24,7 @@ add_executable(edit_test
     ../scroll.cpp
     stubs/app_stub.cpp
     stubs/engine_stub.cpp
+    stubs/particle_stub.cpp
     stubs/restext_stub.cpp
     stubs/robotmain_stub.cpp
     edit_test.cpp)
