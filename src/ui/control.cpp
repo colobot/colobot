@@ -21,7 +21,6 @@
 
 namespace Ui {
 // Object's constructor.
-
 CControl::CControl()
 {
     m_iMan = CInstanceManager::GetInstancePointer();

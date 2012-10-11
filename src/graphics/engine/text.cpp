@@ -407,10 +407,10 @@ int CText::Justify(const std::string &text, FontType font, float size, float wid
         if (len >= 3)
             ch.c3 = text[index+2];
 
-        index += len;
-
         if (ch.c1 == '\n')
+        {
             return index+1;
+        }
 
         if (ch.c1 == ' ' )
             cut = index+1;
@@ -421,6 +421,7 @@ int CText::Justify(const std::string &text, FontType font, float size, float wid
             if (cut == 0) return index;
             else          return cut;
         }
+        index += len;
     }
 
     return index;

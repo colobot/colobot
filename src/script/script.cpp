@@ -3646,20 +3646,18 @@ bool CScript::ReadScript(const char* filename)
 {
     FILE*       file;
     Ui::CEdit*  edit;
+    std::string name;
 
-    // TODO: local user dir
-    std::string name = CApplication::GetInstancePointer()->GetDataFilePath(DIR_AI, filename);
-
-    /*if ( strchr(filename, '\\') == 0 )
+    if ( strchr(filename, '/') == 0 ) //we're reading non user script
     {
-        strcpy(name, "script\\");
-        strcat(name, filename);
+        name = CApplication::GetInstancePointer()->GetDataFilePath(DIR_AI, filename);
     }
     else
     {
-//?     strcpy(name, filename);
-        UserDir(name, filename, "");
-    }*/
+        name = filename;
+        //TODO: is this needed?
+        // UserDir(name, filename, "");
+    }
 
     file = fopen(name.c_str(), "rb");
     if ( file == NULL )  return false;
@@ -3682,22 +3680,20 @@ bool CScript::ReadScript(const char* filename)
 bool CScript::WriteScript(const char* filename)
 {
     Ui::CEdit*  edit;
+    std::string name;
 
-    std::string name = CApplication::GetInstancePointer()->GetDataFilePath(DIR_AI, filename);
-    // TODO: local user dir
-    /*if ( strchr(filename, '\\') == 0 )
+    if ( strchr(filename, '/') == 0 ) //we're writing non user script
     {
-        strcpy(name, "script\\");
-        strcat(name, filename);
+        name = CApplication::GetInstancePointer()->GetDataFilePath(DIR_AI, filename);
     }
     else
     {
-        strcpy(name, filename);
-    }*/
+        name = filename;
+    }
 
     if ( m_script == 0 )
     {
-        // TODO: ? remove(filename);
+        remove(filename);
         return false;
     }
 

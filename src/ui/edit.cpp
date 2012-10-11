@@ -71,8 +71,6 @@ bool IsSep(int character)
 
 
 //! Object's constructor.
-
-//CEdit::CEdit(CInstanceManager* iMan) : CControl(iMan)
 CEdit::CEdit () : CControl ()
 {
     Math::Point pos;
@@ -3081,7 +3079,7 @@ void CEdit::Justif()
         if ( m_format.size() == 0 )
         {
             // TODO check if good
-            
+
             i += m_engine->GetText()->Justify(m_text+i, m_fontType,
                                               m_fontSize, width);
         }
@@ -3137,6 +3135,7 @@ void CEdit::Justif()
         }
         if ( m_lineTotal >= EDITLINEMAX-2 )  break;
     }
+
     if ( m_len > 0 && m_text[m_len-1] == '\n' )
     {
         m_lineOffset[m_lineTotal] = m_len;

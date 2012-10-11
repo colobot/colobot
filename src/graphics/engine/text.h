@@ -227,7 +227,7 @@ class CText
 {
 public:
     CText(CInstanceManager *iMan, CEngine* engine);
-    ~CText();
+    virtual ~CText();
 
     //! Sets the device to be used
     void        SetDevice(CDevice *device);
@@ -269,12 +269,12 @@ public:
     float       GetHeight(FontType font, float size);
 
     //! Returns width of string (multi-format)
-    float       GetStringWidth(const std::string &text,
+    TEST_VIRTUAL float GetStringWidth(const std::string &text,
                                std::map<unsigned int, FontMetaChar> &format, float size);
     //! Returns width of string (single font)
-    float       GetStringWidth(const std::string &text, FontType font, float size);
+    TEST_VIRTUAL float GetStringWidth(const std::string &text, FontType font, float size);
     //! Returns width of single character
-    float       GetCharWidth(UTF8Char ch, FontType font, float size, float offset);
+    TEST_VIRTUAL float GetCharWidth(UTF8Char ch, FontType font, float size, float offset);
 
     //! Justifies a line of text (multi-format)
     int         Justify(const std::string &text, std::map<unsigned int, FontMetaChar> &format,

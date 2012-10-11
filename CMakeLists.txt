@@ -115,7 +115,10 @@ if(NOT ${ASSERTS})
 endif()
 
 if(${TESTS})
+    add_definitions(-DTEST_VIRTUAL=virtual)
     enable_testing()
+else()
+    add_definitions(-DTEST_VIRTUAL)
 endif()
 
 

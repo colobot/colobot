@@ -48,6 +48,10 @@
 // Graphics module namespace
 namespace Gfx {
 
+GLDeviceConfig::GLDeviceConfig()
+{
+    LoadDefault();
+}
 
 void GLDeviceConfig::LoadDefault()
 {

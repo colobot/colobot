@@ -1,4 +1,4 @@
-// * This file is part of the COLOBOT source code
+// * This file is part of the COLOBOT source code;
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
 // * Copyright (C) 2012 Polish Portal of Colobot (PPC)
 // *
@@ -65,8 +65,7 @@ namespace Ui {
     class CControl
     {
     public:
-    //    CControl(CInstanceManager* iMan);
-        CControl ();
+        CControl();
         virtual ~CControl();
 
         virtual bool          Create(Math::Point pos, Math::Point dim, int icon, EventType eventType);
@@ -117,9 +116,9 @@ namespace Ui {
     protected:
         CInstanceManager* m_iMan;
         Gfx::CEngine*     m_engine;
+        Gfx::CParticle*   m_particle;
         CEventQueue*      m_event;
         CRobotMain*       m_main;
-        Gfx::CParticle*   m_particle;
         CSoundInterface*  m_sound;
 
         Math::Point       m_pos;          // corner upper / left

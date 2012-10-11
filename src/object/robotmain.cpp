@@ -5406,7 +5406,7 @@ void CRobotMain::FrameShowLimit(float rTime)
 
 
 
-//! Returns a pointer to the last backslash in a filename.
+//! Returns a pointer to the last slash in a filename.
 char* SearchLastDir(char *filename)
 {
     char* p = filename;

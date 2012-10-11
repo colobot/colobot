@@ -52,7 +52,7 @@ struct GLDeviceConfig : public DeviceConfig
     bool hardwareAccel;
 
     //! Constructor calls LoadDefaults()
-    GLDeviceConfig() { LoadDefault(); }
+    GLDeviceConfig();
 
     //! Loads the default values
     void LoadDefault();

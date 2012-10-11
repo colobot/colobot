@@ -124,8 +124,8 @@ struct HyperHistory
 class CEdit : public CControl
 {
 public:
-//    CEdit(CInstanceManager* iMan);
     CEdit ();
+
     virtual ~CEdit();
 
     bool        Create(Math::Point pos, Math::Point dim, int icon, EventType eventType);

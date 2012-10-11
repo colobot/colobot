@@ -8,6 +8,7 @@ add_subdirectory(tools)
 if(${TESTS})
     add_subdirectory(common/test)
     add_subdirectory(graphics/engine/test)
+    add_subdirectory(ui/test)
     add_subdirectory(math/test)
 endif()
 
