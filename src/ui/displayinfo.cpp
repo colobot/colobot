@@ -232,7 +232,7 @@ bool CDisplayInfo::EventProcess(const Event &event)
                 m_bInfoMaximized = false;
             }
 //?         m_main->SetEditFull(m_bInfoMaximized);
-            pw = dynamic_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW4));
+            pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW4));
             if ( pw != 0 )
             {
                 pw->SetMaximized(m_bInfoMaximized);
@@ -834,7 +834,7 @@ void CDisplayInfo::StopDisplayInfo()
 
     if ( m_bEditLock )  // editing running program?
     {
-        pw = dynamic_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW3));
+        pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW3));
         if ( pw != 0 )
         {
             pw->SetState(STATE_ENABLE);  // CStudio operating

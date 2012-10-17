@@ -14,8 +14,6 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// robotmain.cpp
-
 
 #include "object/robotmain.h"
 
@@ -1051,7 +1049,7 @@ void CRobotMain::ChangePhase(Phase phase)
     dim.y =  18.0f/480.0f;
     pos.x =  50.0f/640.0f;
     pos.y = 452.0f/480.0f;
-    Ui::CEdit* pe = dynamic_cast<Ui::CEdit*>(m_interface->CreateEdit(pos, dim, 0, EVENT_CMD));
+    Ui::CEdit* pe = static_cast<Ui::CEdit*>(m_interface->CreateEdit(pos, dim, 0, EVENT_CMD));
     if (pe == nullptr) return;
     pe->ClearState(Ui::STATE_VISIBLE);
     m_cmdEdit = false;  // hidden for now
@@ -1304,7 +1302,7 @@ bool CRobotMain::EventProcess(Event &event)
         event.type == EVENT_KEY_DOWN &&
         event.key.key == KEY(PAUSE))  // Pause ?
     {
-        Ui::CEdit* pe = dynamic_cast<Ui::CEdit*>(m_interface->SearchControl(EVENT_CMD));
+        Ui::CEdit* pe = static_cast<Ui::CEdit*>(m_interface->SearchControl(EVENT_CMD));
         if (pe == nullptr) return false;
         pe->SetState(Ui::STATE_VISIBLE);
         pe->SetFocus(true);
@@ -1316,7 +1314,7 @@ bool CRobotMain::EventProcess(Event &event)
         event.key.key == KEY(RETURN) && m_cmdEdit)
     {
         char cmd[50];
-        Ui::CEdit* pe = dynamic_cast<Ui::CEdit*>(m_interface->SearchControl(EVENT_CMD));
+        Ui::CEdit* pe = static_cast<Ui::CEdit*>(m_interface->SearchControl(EVENT_CMD));
         if (pe == nullptr) return false;
         pe->GetText(cmd, 50);
         pe->SetText("");
@@ -2041,7 +2039,7 @@ void CRobotMain::StartDisplayInfo(const char *filename, int index)
         m_sound->MuteAll(true);
     }
 
-    Ui::CButton* pb = dynamic_cast<Ui::CButton*>(m_interface->SearchControl(EVENT_BUTTON_QUIT));
+    Ui::CButton* pb = static_cast<Ui::CButton*>(m_interface->SearchControl(EVENT_BUTTON_QUIT));
     if (pb != nullptr)
     {
         pb->ClearState(Ui::STATE_VISIBLE);
@@ -2073,7 +2071,7 @@ void CRobotMain::StopDisplayInfo()
 
     if (!m_editLock)
     {
-        Ui::CButton* pb = dynamic_cast<Ui::CButton*>(m_interface->SearchControl(EVENT_BUTTON_QUIT));
+        Ui::CButton* pb = static_cast<Ui::CButton*>(m_interface->SearchControl(EVENT_BUTTON_QUIT));
         if (pb != nullptr)
             pb->SetState(Ui::STATE_VISIBLE);
 
@@ -2114,7 +2112,7 @@ void CRobotMain::StartSuspend()
     m_infoObject = DeselectAll();  // removes the control buttons
     m_displayText->HideText(true);
 
-    Ui::CButton* pb = dynamic_cast<Ui::CButton*>(m_interface->SearchControl(EVENT_BUTTON_QUIT));
+    Ui::CButton* pb = static_cast<Ui::CButton*>(m_interface->SearchControl(EVENT_BUTTON_QUIT));
     if (pb != nullptr)
         pb->ClearState(Ui::STATE_VISIBLE);
 
@@ -2124,7 +2122,7 @@ void CRobotMain::StartSuspend()
 //! End of dialogue during the game
 void CRobotMain::StopSuspend()
 {
-    Ui::CButton* pb = dynamic_cast<Ui::CButton*>(m_interface->SearchControl(EVENT_BUTTON_QUIT));
+    Ui::CButton* pb = static_cast<Ui::CButton*>(m_interface->SearchControl(EVENT_BUTTON_QUIT));
     if (pb != nullptr)
         pb->SetState(Ui::STATE_VISIBLE);
 
@@ -2231,7 +2229,7 @@ void CRobotMain::StartDisplayVisit(EventType event)
 {
     if (m_editLock) return;
 
-    Ui::CWindow* pw = dynamic_cast<Ui::CWindow*>(m_interface->SearchControl(EVENT_WINDOW2));
+    Ui::CWindow* pw = static_cast<Ui::CWindow*>(m_interface->SearchControl(EVENT_WINDOW2));
     if (pw == nullptr) return;
 
     if (event == EVENT_NULL)  // visit by keyboard shortcut?
@@ -2248,10 +2246,10 @@ void CRobotMain::StartDisplayVisit(EventType event)
             i --;
             if (i < 0) i = Ui::MAXDTLINE-1;
 
-            Ui::CButton* button = dynamic_cast<Ui::CButton*>(pw->SearchControl(static_cast<EventType>(EVENT_DT_VISIT0+i)));
+            Ui::CButton* button = static_cast<Ui::CButton*>(pw->SearchControl(static_cast<EventType>(EVENT_DT_VISIT0+i)));
             if (button == nullptr || !button->TestState(Ui::STATE_ENABLE)) continue;
 
-            Ui::CGroup* group = dynamic_cast<Ui::CGroup*>(pw->SearchControl(static_cast<EventType>(EVENT_DT_GROUP0+i)));
+            Ui::CGroup* group = static_cast<Ui::CGroup*>(pw->SearchControl(static_cast<EventType>(EVENT_DT_GROUP0+i)));
             if (group != nullptr)
             {
                 event = static_cast<EventType>(EVENT_DT_VISIT0+i);
@@ -2453,7 +2451,7 @@ void CRobotMain::SelectOneObject(CObject* obj, bool displayError)
     CObject* toto = SearchToto();
     if (toto != nullptr)
     {
-        CMotionToto* mt = dynamic_cast<CMotionToto*>(toto->GetMotion());
+        CMotionToto* mt = static_cast<CMotionToto*>(toto->GetMotion());
         if (mt != nullptr)
             mt->SetLinkType(type);
     }
@@ -3003,7 +3001,7 @@ void CRobotMain::CreateTooltip(Math::Point pos, const char* text)
 
     m_interface->CreateWindows(pos, dim, 1, EVENT_TOOLTIP);
 
-    Ui::CWindow* pw = dynamic_cast<Ui::CWindow*>(m_interface->SearchControl(EVENT_TOOLTIP));
+    Ui::CWindow* pw = static_cast<Ui::CWindow*>(m_interface->SearchControl(EVENT_TOOLTIP));
     if (pw != nullptr)
     {
         pw->SetState(Ui::STATE_SHADOW);
@@ -3252,14 +3250,14 @@ bool CRobotMain::EventFrame(const Event &event)
     m_planet->EventProcess(event);
 
     Ui::CMap* pm = nullptr;
-    Ui::CWindow* pw = dynamic_cast<Ui::CWindow*>(m_interface->SearchControl(EVENT_WINDOW1));
+    Ui::CWindow* pw = static_cast<Ui::CWindow*>(m_interface->SearchControl(EVENT_WINDOW1));
     if (pw == nullptr)
     {
         pm = nullptr;
     }
     else
     {
-        pm = dynamic_cast<Ui::CMap*>(pw->SearchControl(EVENT_OBJECT_MAP));
+        pm = static_cast<Ui::CMap*>(pw->SearchControl(EVENT_OBJECT_MAP));
         if (pm != nullptr) pm->FlushObject();
     }
 
@@ -6637,9 +6635,9 @@ float CRobotMain::GetSpeed()
 
 void CRobotMain::UpdateSpeedLabel()
 {
-    Ui::CButton* pb = dynamic_cast<Ui::CButton*>(m_interface->SearchControl(EVENT_SPEED));
+    Ui::CButton* pb = static_cast<Ui::CButton*>(m_interface->SearchControl(EVENT_SPEED));
     float speed = m_app->GetSimulationSpeed();
-    
+
     if (pb != nullptr)
     {
         if (speed == 1.0f)

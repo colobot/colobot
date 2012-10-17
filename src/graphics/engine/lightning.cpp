@@ -108,7 +108,7 @@ bool CLightning::EventFrame(const Event &event)
                 }
                 else if (type == OBJECT_PARA)
                 {
-                    CAutoPara* automat = dynamic_cast<CAutoPara*>(obj->GetAuto());
+                    CAutoPara* automat = static_cast<CAutoPara*>(obj->GetAuto());
                     if (automat != nullptr)
                         automat->StartLightning();
 
