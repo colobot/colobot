@@ -15,8 +15,7 @@
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
 #pragma once
-#ifndef _RESOURCE_H_
-#define _RESOURCE_H_
+
 
 enum EID
 {
@@ -114,6 +113,9 @@ enum EID
     TX_NAN,
     ID_SUPER = 6000
 };
+
+// TODO: refactor & change to enum!
+
 #define TX_OPENPAR                      5000
 #define TX_CLOSEPAR                     5001
 #define TX_NOTBOOL                      5002
@@ -174,4 +176,4 @@ enum EID
 #define TX_ERRREAD                      6014
 #define TX_ERRWRITE                     6015
 
-#endif //_RESOURCE_H_
+#define TX_MAX                          6016

@@ -74,6 +74,8 @@ int main(int argc, char *argv[])
 {
     CLogger logger; // Create the logger
 
+    InitializeRestext(); // Initialize translation strings
+
     logger.Info("Colobot starting\n");
 
     CApplication app; // single instance of the application

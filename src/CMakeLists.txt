@@ -53,7 +53,6 @@ common/logger.cpp
 common/misc.cpp
 common/profile.cpp
 common/restext.cpp
-common/restext_strings.c
 common/stringutils.cpp
 graphics/core/color.cpp
 graphics/engine/camera.cpp
