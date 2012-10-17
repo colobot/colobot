@@ -14,25 +14,30 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// script.cpp
-
 
 #include "script/script.h"
 
 #include "app/app.h"
+
 #include "common/global.h"
 #include "common/iman.h"
 #include "common/restext.h"
+
 #include "graphics/engine/terrain.h"
 #include "graphics/engine/water.h"
 #include "graphics/engine/text.h"
+
 #include "math/geometry.h"
 #include "math/vector.h"
+
 #include "object/object.h"
 #include "object/robotmain.h"
 #include "object/task/taskmanager.h"
+
 #include "physics/physics.h"
+
 #include "script/cbottoken.h"
+
 #include "ui/interface.h"
 #include "ui/edit.h"
 #include "ui/list.h"

@@ -150,7 +150,7 @@ Error CMotion::SetAction(int action, float time)
     return ERR_OK;
 }
 
-// Geturns the current action.
+// Returns the current action.
 
 int CMotion::GetAction()
 {

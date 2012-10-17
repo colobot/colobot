@@ -14,7 +14,10 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// cbottoken.h
+/**
+ * \file script/cbottoken.h
+ * \brief Functions to parse some CBot-related tokens
+ */
 
 #pragma once
 

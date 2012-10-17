@@ -14,9 +14,13 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// cmdtoken.h
+/**
+ * \file script/cmdtoken.h
+ * \brief Functions to parse commands from level files
+ */
 
 #pragma once
+
 
 #include "graphics/engine/water.h"
 #include "graphics/engine/engine.h"

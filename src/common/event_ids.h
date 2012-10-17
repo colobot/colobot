@@ -19,6 +19,7 @@
 
 #pragma once
 
+
 /**
   \enum EventType
   \brief Type of event message

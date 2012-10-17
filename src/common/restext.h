@@ -21,6 +21,7 @@
 
 #pragma once
 
+
 #include "common/global.h"
 #include "common/restext_ids.h"
 

@@ -17,7 +17,6 @@
 
 #include "object/object.h"
 
-
 #include "CBot/CBotDll.h"
 
 #include "app/app.h"
@@ -830,7 +829,7 @@ void CObject::InitPart(int part)
 }
 
 // Creates a new part, and returns its number.
-// Geturns -1 on error.
+// Returns -1 on error.
 
 int CObject::CreatePart()
 {
@@ -891,7 +890,7 @@ void CObject::SetObjectRank(int part, int objRank)
     m_objectPart[part].object = objRank;
 }
 
-// Geturns the number of part.
+// Returns the number of part.
 
 int CObject::GetObjectRank(int part)
 {
@@ -1164,7 +1163,7 @@ bool CObject::Write(char *line)
     return true;
 }
 
-// Geturns all parameters of the object.
+// Returns all parameters of the object.
 
 bool CObject::Read(char *line)
 {
@@ -1299,14 +1298,14 @@ int CObject::CreateCrashSphere(Math::Vector pos, float radius, Sound sound,
     return m_crashSphereUsed++;
 }
 
-// Geturns the number of spheres.
+// Returns the number of spheres.
 
 int CObject::GetCrashSphereTotal()
 {
     return m_crashSphereUsed;
 }
 
-// Geturns a sphere for collisions.
+// Returns a sphere for collisions.
 // The position is absolute in the world.
 
 bool CObject::GetCrashSphere(int rank, Math::Vector &pos, float &radius)
@@ -1318,7 +1317,7 @@ bool CObject::GetCrashSphere(int rank, Math::Vector &pos, float &radius)
         return false;
     }
 
-    // Geturns to the sphere collisions,
+    // Returns to the sphere collisions,
     // which ignores the inclination of the vehicle.
     // This is necessary to collisions with vehicles,
     // so as not to reflect SetInclinaison, for example.
@@ -1342,14 +1341,14 @@ bool CObject::GetCrashSphere(int rank, Math::Vector &pos, float &radius)
     return true;
 }
 
-// Geturns the hardness of a sphere.
+// Returns the hardness of a sphere.
 
 Sound CObject::GetCrashSphereSound(int rank)
 {
     return m_crashSphereSound[rank];
 }
 
-// Geturns the hardness of a sphere.
+// Returns the hardness of a sphere.
 
 float CObject::GetCrashSphereHardness(int rank)
 {
@@ -1383,7 +1382,7 @@ void CObject::SetGlobalSphere(Math::Vector pos, float radius)
     m_globalSphereRadius = radius*zoom;
 }
 
-// Geturns the global sphere, in the world.
+// Returns the global sphere, in the world.
 
 void CObject::GetGlobalSphere(Math::Vector &pos, float &radius)
 {
@@ -1416,7 +1415,7 @@ void CObject::SetShieldRadius(float radius)
     m_shieldRadius = radius;
 }
 
-// Geturns the radius of the shield.
+// Returns the radius of the shield.
 
 float CObject::GetShieldRadius()
 {
@@ -1787,7 +1786,7 @@ float CObject::GetZoomZ(int part)
 }
 
 
-// Geturns the water level.
+// Returns the water level.
 
 float CObject::GetWaterLevel()
 {
@@ -2023,7 +2022,7 @@ float CObject::GetCmdLine(int rank)
 }
 
 
-// Geturns matrices of an object portion.
+// Returns matrices of an object portion.
 
 Math::Matrix* CObject::GetRotateMatrix(int part)
 {
@@ -2277,7 +2276,7 @@ bool CObject::CreateShadowLight(float height, Gfx::Color color)
     return true;
 }
 
-// Geturns the number of negative light shade.
+// Returns the number of negative light shade.
 
 int CObject::GetShadowLight()
 {
@@ -2318,7 +2317,7 @@ bool CObject::CreateEffectLight(float height, Gfx::Color color)
     return true;
 }
 
-// Geturns the number of light effects.
+// Returns the number of light effects.
 
 int CObject::GetEffectLight()
 {
@@ -5808,7 +5807,7 @@ bool CObject::RunProgram(int rank)
 
 
 // Calculates the matrix for transforming the object.
-// Geturns true if the matrix has changed.
+// Returns true if the matrix has changed.
 // The rotations occur in the order Y, Z and X.
 
 bool CObject::UpdateTransformObject(int part, bool bForceUpdate)
@@ -6452,7 +6451,7 @@ Character* CObject::GetCharacter()
 }
 
 
-// Geturns the absolute time.
+// Returns the absolute time.
 
 float CObject::GetAbsTime()
 {
@@ -7406,35 +7405,35 @@ CScript* CObject::GetRunScript()
     return m_runScript;
 }
 
-// Geturns the variables of "this" for CBOT.
+// Returns the variables of "this" for CBOT.
 
 CBotVar* CObject::GetBotVar()
 {
     return m_botVar;
 }
 
-// Geturns the physics associated to the object.
+// Returns the physics associated to the object.
 
 CPhysics* CObject::GetPhysics()
 {
     return m_physics;
 }
 
-// Geturns the brain associated to the object.
+// Returns the brain associated to the object.
 
 CBrain* CObject::GetBrain()
 {
     return m_brain;
 }
 
-// Geturns the movement associated to the object.
+// Returns the movement associated to the object.
 
 CMotion* CObject::GetMotion()
 {
     return m_motion;
 }
 
-// Geturns the controller associated to the object.
+// Returns the controller associated to the object.
 
 CAuto* CObject::GetAuto()
 {

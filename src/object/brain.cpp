@@ -19,14 +19,20 @@
 
 #include "common/misc.h"
 #include "common/iman.h"
+
 #include "graphics/core/color.h"
 #include "graphics/engine/terrain.h"
+
 #include "object/motion/motion.h"
 #include "object/task/taskmanager.h"
+
 #include "physics/physics.h"
+
 #include "script/cmdtoken.h"
 #include "script/script.h"
+
 #include "sound/sound.h"
+
 #include "ui/displaytext.h"
 #include "ui/interface.h"
 #include "ui/slider.h"
@@ -803,7 +809,7 @@ void CBrain::StopTask()
 
 
 // Introduces a virus into a program.
-// Geturns true if it was inserted.
+// Returns true if it was inserted.
 
 bool CBrain::IntroduceVirus()
 {
@@ -2450,7 +2456,7 @@ void CBrain::UpdateScript(Ui::CWindow *pw)
     pl->ShowSelect(true);
 }
 
-// Geturns the rank of selected script.
+// Returns the rank of selected script.
 
 int CBrain::GetSelScript()
 {
@@ -2590,7 +2596,7 @@ void CBrain::RunProgram(int rank)
     }
 }
 
-// Geturns the first free program.
+// Returns the first free program.
 
 int CBrain::FreeProgram()
 {
@@ -2604,7 +2610,7 @@ int CBrain::FreeProgram()
 }
 
 
-// Geturns the current program.
+// Returns the current program.
 
 int CBrain::GetProgram()
 {

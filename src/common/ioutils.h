@@ -15,7 +15,7 @@
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
 /**
- * \file ioutils.h
+ * \file common/ioutils.h
  * \brief Functions for binary I/O
  */
 

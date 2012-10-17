@@ -14,15 +14,19 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// script.h
+/**
+ * \file script/script.h
+ * \brief CBot script runner
+ */
 
 #pragma once
 
 
-#include <stdio.h>
-
 #include "common/event.h"
+
 #include "CBot/CBotDll.h"
+
+#include <stdio.h>
 
 
 class CInstanceManager;

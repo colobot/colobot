@@ -15,17 +15,18 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-#pragma once
-
 /**
  * \file physics/physics.h
  * \brief Responsible for physics "and more" in game
  */
 
+#pragma once
 
 
 #include "common/global.h"
+
 #include "object/object.h"
+
 #include "math/vector.h"
 
 

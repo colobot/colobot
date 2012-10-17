@@ -14,9 +14,13 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// brain.h
+/**
+ * \file object/brain.h
+ * \brief CBrain - dispatches commands to objects
+ */
 
 #pragma once
+
 
 #include "common/event.h"
 #include "common/misc.h"

@@ -14,9 +14,13 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// robotmain.h
+/**
+ * \file object/robotmain.h
+ * \brief CRobotMain - main class of Colobot game engine
+ */
 
 #pragma once
+
 
 #include "common/global.h"
 #include "common/singleton.h"

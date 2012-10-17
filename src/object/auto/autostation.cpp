@@ -288,7 +288,7 @@ CObject* CAutoStation::SearchVehicle()
 }
 
 
-// Geturns an error due the state of the automation.
+// Returns an error due the state of the automation.
 
 Error CAutoStation::GetError()
 {

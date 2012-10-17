@@ -21,18 +21,19 @@
 
 #pragma once
 
-#include <boost/property_tree/ptree.hpp>
 
 #include "common/singleton.h"
+
+#include <boost/property_tree/ptree.hpp>
 
 #include <string>
 #include <vector>
 
 
 /**
-* @class CProfile
+* \class CProfile
 *
-* @brief Class for loading profile (currently for loading ini config file)
+* \brief Class for loading profile (currently for loading ini config file)
 *
 */
 class CProfile : public CSingleton<CProfile>
@@ -42,62 +43,62 @@ class CProfile : public CSingleton<CProfile>
         ~CProfile();
 
         /** Loads colobot.ini from current directory
-         * @return return true on success
+         * \return return true on success
          */
         bool InitCurrentDirectory();
 
         /** Sets string value in section under specified key
-         * @param std::string section
-         * @param std::string key
-         * @param std::string value
-         * @return return true on success
+         * \param section
+         * \param key
+         * \param value
+         * \return return true on success
          */
         bool SetLocalProfileString(std::string section, std::string key, std::string value);
 
         /** Gets string value in section under specified key
-         * @param std::string section
-         * @param std::string key
-         * @param std::string& buffer
-         * @return return true on success
+         * \param section
+         * \param key
+         * \param buffer
+         * \return return true on success
          */
         bool GetLocalProfileString(std::string section, std::string key, std::string& buffer);
 
         /** Sets int value in section under specified key
-         * @param std::string section
-         * @param std::string key
-         * @param int value
-         * @return return true on success
+         * \param section
+         * \param key
+         * \param value
+         * \return return true on success
          */
         bool SetLocalProfileInt(std::string section, std::string key, int value);
 
         /** Gets int value in section under specified key
-         * @param std::string section
-         * @param std::string key
-         * @param int& value
-         * @return return true on success
+         * \param section
+         * \param key
+         * \param value
+         * \return return true on success
          */
         bool GetLocalProfileInt(std::string section, std::string key, int &value);
 
         /** Sets float value in section under specified key
-         * @param std::string section
-         * @param std::string key
-         * @param float value
-         * @return return true on success
+         * \param section
+         * \param key
+         * \param value
+         * \return return true on success
          */
         bool SetLocalProfileFloat(std::string section, std::string key, float value);
 
         /** Gets float value in section under specified key
-         * @param std::string section
-         * @param std::string key
-         * @param float& value
-         * @return return true on success
+         * \param section
+         * \param key
+         * \param value
+         * \return return true on success
          */
         bool GetLocalProfileFloat(std::string section, std::string key, float &value);
 
         /** Gets all values in section under specified key
-         * @param std::string section
-         * @param std::string key
-         * @return vector of values
+         * \param section
+         * \param key
+         * \return vector of values
          */
         std::vector< std::string > GetLocalProfileSection(std::string section, std::string key);
 

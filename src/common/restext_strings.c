@@ -14,11 +14,16 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-#include "common/restext_ids.h"
-#include "common/event_ids.h"
-#include "object/object_ids.h"
+
 #include "common/error_ids.h"
+#include "common/event_ids.h"
+#include "common/restext_ids.h"
+
 #include "CBot/resource.h"
+
+#include "object/object_ids.h"
+
+
 
 const char * const strings_text[] =
 {

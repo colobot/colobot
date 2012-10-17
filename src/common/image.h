@@ -21,7 +21,9 @@
 
 #pragma once
 
+
 #include "graphics/core/color.h"
+
 #include "math/intpoint.h"
 
 #include <stddef.h>

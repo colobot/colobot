@@ -14,7 +14,10 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// object.h
+/**
+ * \file object/object.h
+ * \brief CObject - base class for all game objects
+ */
 
 #pragma once
 

@@ -16,6 +16,7 @@
 
 #pragma once
 
+
 enum ObjectType
 {
     OBJECT_NULL     = 0,    // object destroyed

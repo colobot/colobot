@@ -286,7 +286,7 @@ bool CAutoHuston::CreateInterface(bool bSelect)
 }
 
 
-// Geturns an error due to state of the automation.
+// Returns an error due to state of the automation.
 
 Error CAutoHuston::GetError()
 {

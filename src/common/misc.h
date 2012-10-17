@@ -14,27 +14,12 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// misc.h
 
 #pragma once
 
 
 #include <time.h>
 
-
-// TODO: to be removed (replaced by TrackedKey enum and mouse states in app.h)
-const int KS_PAGEUP         = (1<<4);
-const int KS_PAGEDOWN       = (1<<5);
-const int KS_SHIFT          = (1<<6);
-const int KS_CONTROL        = (1<<7);
-const int KS_MLEFT          = (1<<8);
-const int KS_MRIGHT         = (1<<9);
-const int KS_NUMUP          = (1<<10);
-const int KS_NUMDOWN        = (1<<11);
-const int KS_NUMLEFT        = (1<<12);
-const int KS_NUMRIGHT       = (1<<13);
-const int KS_NUMPLUS        = (1<<14);
-const int KS_NUMMINUS       = (1<<15);
 
 // TODO: rewrite/refactor or remove
 

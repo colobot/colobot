@@ -14,16 +14,16 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// plugininterface.h
-
 /**
- *  @file plugin/plugininterface.h
- *  @brief Generic plugin interface
+ *  \file plugins/plugininterface.h
+ *  \brief Generic plugin interface
  */
 
 #pragma once
 
+
 #include <string>
+
 
 #define PLUGIN_INTERFACE(class_type) \
     static class_type* Plugin##class_type; \
@@ -37,29 +37,29 @@
 
 
 /**
-* @class CPluginInterface
-*
-* @brief Generic plugin interface. All plugins that will be managed by plugin manager have to derive from this class.
-*
-*/
+ * \class CPluginInterface
+ *
+ * \brief Generic plugin interface. All plugins that will be managed by plugin manager have to derive from this class.
+ *
+ */
 class CPluginInterface {
     public:
         /** Function to get plugin name or description
-         *  @return returns plugin name
+         *  \return returns plugin name
          */
-        inline virtual std::string PluginName() { return "abc"; };
+        inline virtual std::string PluginName() { return "abc"; }
 
         /** Function to get plugin version. 1 means version 0.01, 2 means 0.02 etc.
-         *  @return number indicating plugin version
+         *  \return number indicating plugin version
          */
-        inline virtual int PluginVersion() { return 0; };
+        inline virtual int PluginVersion() { return 0; }
 
         /** Function to initialize plugin
          */
-        inline virtual void InstallPlugin() {};
+        inline virtual void InstallPlugin() {}
 
         /** Function called before removing plugin
          */
-        inline virtual bool UninstallPlugin(std::string &) { return true; };
+        inline virtual bool UninstallPlugin(std::string &) { return true; }
 };
 

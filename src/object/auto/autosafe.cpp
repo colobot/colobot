@@ -334,7 +334,7 @@ bool CAutoSafe::CreateInterface(bool bSelect)
 }
 
 
-// Geturns an error due the state of the automation.
+// Returns an error due the state of the automation.
 
 Error CAutoSafe::GetError()
 {

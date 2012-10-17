@@ -14,7 +14,10 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// mainmovie.h
+/**
+ * \file object/mainmovie.h
+ * \brief CMainMovie - control over movie sequences
+ */
 
 #pragma once
 

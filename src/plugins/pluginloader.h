@@ -14,68 +14,67 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// pluginloader.h
-
 /**
- *  @file plugin/pluginloader.h
- *  @brief Plugin loader interface
+ * \file plugins/pluginloader.h
+ * \brief Plugin loader interface
  */
 
 #pragma once
 
-#include <ltdl.h>
-#include <string>
 
 #include "common/logger.h"
 
-#include "plugininterface.h"
+#include "plugins/plugininterface.h"
+
+#include <ltdl.h>
+#include <string>
 
 
 /**
-* @class CPluginLoader
-*
-* @brief Plugin loader interface. Plugin manager uses this class to load plugins.
-*
-*/
+ * \class CPluginLoader
+ *
+ * \brief Plugin loader interface. Plugin manager uses this class to load plugins.
+ *
+ */
 class CPluginLoader {
     public:
         /** Class contructor
-         *  @param std::string plugin filename
+         *  \param filename plugin filename
          */
-        CPluginLoader(std::string);
+        CPluginLoader(std::string filename);
 
         /** Function to get plugin name or description
-         *  @return returns plugin name
+         *  \return returns plugin name
          */
         std::string GetName();
 
         /** Function to get plugin version
-         *  @return returns plugin version
+         *  \return returns plugin version
          */
         int GetVersion();
 
         /** Function to unload plugin
-         *  @return returns true on success
+         *  \return returns true on success
          */
         bool UnloadPlugin();
 
         /** Function to load plugin
-         *  @return returns true on success
+         *  \return returns true on success
          */
         bool LoadPlugin();
 
         /** Function to check if plugin is loaded
-         *  @return returns true if plugin is loaded
+         *  \return returns true if plugin is loaded
          */
         bool IsLoaded();
 
         /** Function to set plugin filename
-         *  @return returns true on success. Action can fail if plugin was loaded and cannot be unloaded
+         *  \return returns true on success. Action can fail if plugin was loaded and cannot be unloaded
          */
         bool SetFilename(std::string);
 
         /** Function to get plugin filename
-         *  @return returns plugin filename
+         *  \return returns plugin filename
          */
         std::string GetFilename();
 

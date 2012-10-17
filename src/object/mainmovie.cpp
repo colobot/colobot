@@ -14,20 +14,18 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// mainmovie.cpp
-
-
-#include <stdio.h>
-
 
 #include "object/mainmovie.h"
 
-#include "math/geometry.h"
 #include "common/iman.h"
+
+#include "math/geometry.h"
+
 #include "object/motion/motionhuman.h"
 #include "object/robotmain.h"
 
 
+#include <stdio.h>
 
 
 // Constructor of the application card.
@@ -219,14 +217,14 @@ bool CMainMovie::EventProcess(const Event &event)
 }
 
 
-// Geturns the type of the current movie.
+// Returns the type of the current movie.
 
 MainMovieType CMainMovie::GetType()
 {
     return m_type;
 }
 
-// Geturns the type of movie stop.
+// Returns the type of movie stop.
 
 MainMovieType CMainMovie::GetStopType()
 {

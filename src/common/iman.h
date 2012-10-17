@@ -15,14 +15,14 @@
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
 /**
- * \file iman.h
+ * \file common/iman.h
  * \brief Instance manager for managed classes
  */
 
 #pragma once
 
-#include <common/singleton.h>
-#include <common/misc.h>
+
+#include "common/singleton.h"
 
 
 /**

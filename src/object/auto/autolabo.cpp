@@ -423,7 +423,7 @@ bool CAutoLabo::EventProcess(const Event &event)
 }
 
 
-// Geturns an error due the state of the automation.
+// Returns an error due the state of the automation.
 
 Error CAutoLabo::GetError()
 {

@@ -14,10 +14,8 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// pluginmanager.cpp
 
-
-#include "pluginmanager.h"
+#include "plugins/pluginmanager.h"
 
 
 template<> CPluginManager* CSingleton<CPluginManager>::mInstance = nullptr;

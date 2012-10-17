@@ -14,33 +14,32 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// pluginmanager.h
-
 /**
- *  @file plugin/pluginmanager.h
- *  @brief Plugin manager class.
+ * \file plugins/pluginmanager.h
+ * \brief Plugin manager class.
  */
 
 #pragma once
 
-#include <string>
-#include <set>
-#include <vector>
 
 #include "common/logger.h"
 #include "common/profile.h"
 
 #include "common/singleton.h"
 
-#include "pluginloader.h"
+#include "plugins/pluginloader.h"
+
+#include <string>
+#include <set>
+#include <vector>
 
 
 /**
-* @class CPluginManager
-*
-* @brief Plugin manager class. Plugin manager can load plugins from colobot.ini or manually specified files.
-*
-*/
+ * \class CPluginManager
+ *
+ * \brief Plugin manager class. Plugin manager can load plugins from colobot.ini or manually specified files.
+ *
+ */
 class CPluginManager : public CSingleton<CPluginManager> {
     public:
         CPluginManager();
@@ -51,31 +50,31 @@ class CPluginManager : public CSingleton<CPluginManager> {
         void LoadFromProfile();
 
         /** Function loads specified plugin
-         * @param std::string plugin filename
-         * @return returns true on success
+         * \param filename plugin filename
+         * \return returns true on success
          */
-        bool LoadPlugin(std::string);
+        bool LoadPlugin(std::string filename);
 
         /** Function unloads specified plugin
-         * @param std::string plugin filename
-         * @return returns true on success
+         * \param filename plugin filename
+         * \return returns true on success
          */
-        bool UnloadPlugin(std::string);
+        bool UnloadPlugin(std::string filename);
 
         /** Function adds path to be checked when searching for plugin file. If path was already added it will be ignored
-         * @param std::string plugin search path
-         * @return returns true on success
+         * \param dir plugin search path
+         * \return returns true on success
          */
-        bool AddSearchDirectory(std::string);
+        bool AddSearchDirectory(std::string dir);
 
         /** Function removes path from list
-         * @param std::string plugin search path
-         * @return returns true on success
+         * \param dir plugin search path
+         * \return returns true on success
          */
-        bool RemoveSearchDirectory(std::string);
+        bool RemoveSearchDirectory(std::string dir);
 
         /** Function tries to unload all plugins
-         * @return returns true on success
+         * \return returns true on success
          */
         bool UnloadAllPlugins();
 

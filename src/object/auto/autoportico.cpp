@@ -385,7 +385,7 @@ bool CAutoPortico::Abort()
 }
 
 
-// Geturns an error due the state of the automation.
+// Returns an error due the state of the automation.
 
 Error CAutoPortico::GetError()
 {

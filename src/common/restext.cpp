@@ -12,7 +12,8 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// restext.cpp
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
 
 #include "common/restext.h"
 
@@ -20,7 +21,9 @@
 #include "common/event.h"
 #include "common/logger.h"
 #include "common/stringutils.h"
+
 #include "CBot/resource.h"
+
 #include "object/object.h"
 #include "object/robotmain.h"
 

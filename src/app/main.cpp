@@ -22,6 +22,7 @@
 
 #include "app/app.h"
 #include "app/system.h"
+
 #include "common/logger.h"
 #include "common/misc.h"
 #include "common/restext.h"

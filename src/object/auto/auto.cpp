@@ -352,7 +352,7 @@ void CAuto::UpdateInterface(float rTime)
 }
 
 
-// Geturns an error due the state of the automation.
+// Returns an error due the state of the automation.
 
 Error CAuto::GetError()
 {
@@ -421,7 +421,7 @@ bool CAuto::Write(char *line)
     return false;
 }
 
-// Geturn all settings to the controller.
+// Return all settings to the controller.
 
 bool CAuto::Read(char *line)
 {

@@ -313,7 +313,7 @@ CObject* CAutoTower::SearchTarget(Math::Vector &impact)
 }
 
 
-// Geturns an error due the state of the automation.
+// Returns an error due the state of the automation.
 
 Error CAutoTower::GetError()
 {

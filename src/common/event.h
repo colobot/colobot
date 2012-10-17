@@ -24,6 +24,7 @@
 
 #include "common/key.h"
 #include "common/event_ids.h"
+
 #include "math/point.h"
 #include "math/vector.h"
 

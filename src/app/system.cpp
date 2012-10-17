@@ -15,7 +15,6 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// system.cpp
 
 #include "app/system.h"
 
@@ -23,13 +22,13 @@
 
 
 #if defined(PLATFORM_WINDOWS)
-#include "system_windows.h"
+#include "app/system_windows.h"
 
 #elif defined(PLATFORM_LINUX)
-#include "system_linux.h"
+#include "app/system_linux.h"
 
 #else
-#include "system_other.h"
+#include "app/system_other.h"
 
 #endif
 

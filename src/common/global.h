@@ -21,7 +21,8 @@
 
 #pragma once
 
-#include "error_ids.h"
+
+#include "common/error_ids.h"
 
 /**
  * \enum Language

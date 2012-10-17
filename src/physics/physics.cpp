@@ -14,28 +14,31 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// physics.cpp
 
+#include "physics/physics.h"
 
-#include <cstring>
-#include <cstdio>
-
-#include "math/geometry.h"
-#include "graphics/engine/engine.h"
-#include "common/global.h"
 #include "common/event.h"
+#include "common/global.h"
 #include "common/iman.h"
+
+#include "graphics/engine/camera.h"
+#include "graphics/engine/engine.h"
 #include "graphics/engine/lightman.h"
+#include "graphics/engine/pyro.h"
 #include "graphics/engine/terrain.h"
 #include "graphics/engine/water.h"
-#include "graphics/engine/camera.h"
-#include "graphics/engine/pyro.h"
-#include "script/cmdtoken.h"
-#include "physics/physics.h"
+
+#include "math/geometry.h"
+
 #include "object/brain.h"
 #include "object/motion/motion.h"
 #include "object/motion/motionhuman.h"
 #include "object/task/task.h"
+
+#include "script/cmdtoken.h"
+
+#include <cstring>
+#include <cstdio>
 
 
 

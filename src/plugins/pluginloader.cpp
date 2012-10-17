@@ -14,10 +14,8 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// pluginloader.cpp
 
-
-#include "pluginloader.h"
+#include "plugins/pluginloader.h"
 
 
 CPluginLoader::CPluginLoader(std::string filename)
@@ -57,7 +55,7 @@ bool CPluginLoader::UnloadPlugin()
         return true;
     }
 
-    bool (*uninstall)(std::string &) = (bool (*)(std::string &)) lt_dlsym(mHandle, "UninstallPluginEntry");
+    bool (*uninstall)(std::string &) = reinterpret_cast<bool (*)(std::string &)>( lt_dlsym(mHandle, "UninstallPluginEntry") );
     if (!uninstall) {
         GetLogger()->Error("Error getting UninstallPluginEntry for plugin %s: %s\n", mFilename.c_str(), lt_dlerror());
         return false;
@@ -88,13 +86,13 @@ bool CPluginLoader::LoadPlugin()
         return false;
     }
 
-    void (*install)() = (void (*)()) lt_dlsym(mHandle, "InstallPluginEntry");
+    void (*install)() = reinterpret_cast<void (*)()>( lt_dlsym(mHandle, "InstallPluginEntry") );
     if (!install) {
         GetLogger()->Error("Error getting InstallPluginEntry for plugin %s: %s\n", mFilename.c_str(), lt_dlerror());
         return false;
     }
 
-    CPluginInterface* (*getInterface)()  = (CPluginInterface* (*)()) lt_dlsym(mHandle, "GetPluginInterfaceEntry");
+    CPluginInterface* (*getInterface)()  = reinterpret_cast<CPluginInterface* (*)()>( lt_dlsym(mHandle, "GetPluginInterfaceEntry") );
 
     if (!getInterface) {
         GetLogger()->Error("Error getting GetPluginInterfaceEntry for plugin %s: %s\n", mFilename.c_str(), lt_dlerror());

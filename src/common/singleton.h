@@ -19,7 +19,6 @@
  * \brief CSingleton base class for singletons
  */
 
-
 #pragma once
 
 #include <cassert>

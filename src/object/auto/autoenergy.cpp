@@ -508,7 +508,7 @@ CObject* CAutoEnergy::SearchPower()
 }
 
 
-// Geturns an error due the state of the automation.
+// Returns an error due the state of the automation.
 
 Error CAutoEnergy::GetError()
 {

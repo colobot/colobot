@@ -19,8 +19,8 @@
  *  \brief Class for logging information to file or console
  */
 
-
 #pragma once
+
 
 #include "common/singleton.h"
 
@@ -58,48 +58,48 @@ class CLogger : public CSingleton<CLogger>
         ~CLogger();
 
         /** Write message to console or file
-         * @param str - message to write
-         * @param ... - additional arguments
+         * \param str - message to write
+         * \param ... - additional arguments
          */
         void Message(const char *str, ...);
 
         /** Write message to console or file with LOG_TRACE level
-         * @param str - message to write
-         * @param ... - additional arguments
+         * \param str - message to write
+         * \param ... - additional arguments
          */
         void Trace(const char *str, ...);
 
         /** Write message to console or file with LOG_DEBUG level
-         * @param str - message to write
-         * @param ... - additional arguments
+         * \param str - message to write
+         * \param ... - additional arguments
          */
         void Debug(const char *str, ...);
 
         /** Write message to console or file with LOG_INFO level
-         * @param str - message to write
-         * @param ... - additional arguments
+         * \param str - message to write
+         * \param ... - additional arguments
          */
         void Info(const char *str, ...);
 
         /** Write message to console or file with LOG_WARN level
-         * @param str - message to write
-         * @param ... - additional arguments
+         * \param str - message to write
+         * \param ... - additional arguments
          */
         void Warn(const char *str, ...);
 
         /** Write message to console or file with LOG_ERROR level
-         * @param str - message to write
-         * @param ... - additional arguments
+         * \param str - message to write
+         * \param ... - additional arguments
          */
         void Error(const char *str, ...);
 
         /** Set output file to write logs to
-         * @param filename - output file to write to
+         * \param filename - output file to write to
          */
         void SetOutputFile(std::string filename);
 
         /** Set log level. Logs with level below will not be shown
-         * @param level - minimum log level to write
+         * \param level - minimum log level to write
          */
         void SetLogLevel(LogType level);
 
