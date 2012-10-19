@@ -3271,8 +3271,7 @@ void CEngine::Draw3DScene()
     m_particle->DrawParticle(SH_WORLD); // draws the particles of the 3D world
     m_lightning->Draw();                     // draws lightning
 
-    // TODO: fix white screen error; commenting out temporarily
-    // if (m_lensMode) DrawForegroundImage();   // draws the foreground
+    if (m_lensMode) DrawForegroundImage();   // draws the foreground
 
     if (! m_overFront) DrawOverColor();      // draws the foreground color
 }
