@@ -3214,7 +3214,7 @@ void CParticle::DrawParticleSphere(int i)
         angle.z = m_particle[i].angle*0.7f;
         Math::Matrix rot;
         Math::LoadRotationZXYMatrix(rot, angle);
-        mat = Math::MultiplyMatrices(rot, mat);
+        mat = Math::MultiplyMatrices(mat, rot);
     }
 
     m_device->SetTransform(TRANSFORM_WORLD, mat);

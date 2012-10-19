@@ -1260,10 +1260,7 @@ bool CEngine::TrackTextureMapping(int objRank, const Material& mat, int state,
     std::vector<Gfx::VertexTex2>& vs = triangles->vertices;
 
     while (pos < 0.0f)
-        pos += 1000000.0f;  // never negative!
-
-    // TODO: might still be buggy as track animation seems to be choppy
-    // but the code should work exactly as in original
+        pos += 1.0f;  // never negative!
 
     Math::Vector current;
 
@@ -1310,12 +1307,14 @@ bool CEngine::TrackTextureMapping(int objRank, const Material& mat, int state,
 
             float pps = ps + pos;
             float ppe = pe + pos;
-            float offset = static_cast<float>( static_cast<int>(pps) );
+            int offset = static_cast<int>(pps);
             ppe -= offset;
+            pps -= offset;
 
             for (int i = 0; i < 3; i++)
             {
-                vs[tBase + is[i]].texCoord.x = ((ppe * tl) + ts) / tt;
+                vs[tBase + is[i]].texCoord.x = ((pps * tl) + ts) / tt;
+                vs[tBase + ie[i]].texCoord.x = ((ppe * tl) + ts) / tt;
             }
         }
 
