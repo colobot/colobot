@@ -812,9 +812,9 @@ EngineObjLevel4& CEngine::AddLevel4(EngineObjLevel3& p3, EngineTriangleType type
 }
 
 bool CEngine::AddTriangles(int objRank, const std::vector<VertexTex2>& vertices,
-                                const Material& material, int state,
-                                std::string tex1Name, std::string tex2Name,
-                                float min, float max, bool globalUpdate)
+                           const Material& material, int state,
+                           std::string tex1Name, std::string tex2Name,
+                           float min, float max, bool globalUpdate)
 {
     if ( objRank < 0 || objRank >= static_cast<int>( m_objects.size() ) )
     {
@@ -1247,12 +1247,95 @@ bool CEngine::ChangeTextureMapping(int objRank, const Material& mat, int state,
 }
 
 bool CEngine::TrackTextureMapping(int objRank, const Material& mat, int state,
-                                        const std::string& tex1Name, const std::string& tex2Name,
-                                        float min, float max, EngineTextureMapping mode,
-                                        float pos, float factor, float tl, float ts, float tt)
+                                  const std::string& tex1Name, const std::string& tex2Name,
+                                  float min, float max, EngineTextureMapping mode,
+                                  float pos, float factor, float tl, float ts, float tt)
 {
-    // TODO track texture mapping: pretty complex code, so leaving it for now
-    GetLogger()->Trace("CEngine::TrackTextureMapping(): stub!\n");
+    EngineObjLevel4* triangles = FindTriangles(objRank, mat, state, tex1Name, tex2Name, min, max);
+    if (triangles == nullptr) return false;
+
+    int tNum = triangles->vertices.size();
+    if (tNum < 12 || tNum % 6 != 0) return false;
+
+    std::vector<Gfx::VertexTex2>& vs = triangles->vertices;
+
+    while (pos < 0.0f)
+        pos += 1000000.0f;  // never negative!
+
+    // TODO: might still be buggy as track animation seems to be choppy
+    // but the code should work exactly as in original
+
+    Math::Vector current;
+
+    for (int i = 0; i < 6; i++)
+    {
+        for (int j = 0; j < 6; j++)
+        {
+            if (Math::IsEqual(vs[i].coord.x, vs[j+6].coord.x) &&
+                Math::IsEqual(vs[i].coord.y, vs[j+6].coord.y))
+            {
+                current.x = vs[i].coord.x;  // position end link
+                current.y = vs[i].coord.y;
+                break;
+            }
+        }
+    }
+
+    float ps = 0.0f;  // start position on the periphery
+    float pe = 0.0f;
+    int is[6] = { 0 }, ie[6] = { 0 };
+
+    int tBase = 0;
+    for (int ti = 0; ti < tNum / 6; ti++)
+    {
+        int s = 0;
+        int e = 0;
+
+        for (int i = 0; i < 6; i++)
+        {
+            if (Math::IsEqual(vs[tBase + i].coord.x, current.x, 0.0001f) &&
+                Math::IsEqual(vs[tBase + i].coord.y, current.y, 0.0001f))
+            {
+                ie[e++] = i;
+            }
+            else
+            {
+                is[s++] = i;
+            }
+        }
+        if (s == 3 && e == 3)
+        {
+            pe = ps + Math::Point(vs[tBase + is[0]].coord.x - vs[tBase + ie[0]].coord.x,
+                                  vs[tBase + is[0]].coord.y - vs[tBase + ie[0]].coord.y).Length() / factor;  // end position on the periphery
+
+            float pps = ps + pos;
+            float ppe = pe + pos;
+            float offset = static_cast<float>( static_cast<int>(pps) );
+            ppe -= offset;
+
+            for (int i = 0; i < 3; i++)
+            {
+                vs[tBase + is[i]].texCoord.x = ((ppe * tl) + ts) / tt;
+            }
+        }
+
+        if (ti >= (tNum / 6) - 1)
+            break;
+
+        for (int i = 0; i < 6; i++)
+        {
+            if (!Math::IsEqual(vs[tBase + i+6].coord.x, current.x, 0.0001f) ||
+                !Math::IsEqual(vs[tBase + i+6].coord.y, current.y, 0.0001f))
+            {
+                current.x = vs[tBase + i+6].coord.x;  // end next link
+                current.y = vs[tBase + i+6].coord.y;
+                break;
+            }
+        }
+        ps = pe;  // following start position on the periphery
+        tBase += 6;
+    }
+
     return true;
 }
 
@@ -3586,7 +3669,7 @@ void CEngine::DrawBackgroundImage()
     p2.x = 1.0f;
     p2.y = 1.0f;
 
-Math::Vector n = Math::Vector(0.0f, 0.0f, -1.0f);  // normal
+    Math::Vector n = Math::Vector(0.0f, 0.0f, -1.0f);  // normal
 
     float u1, u2, v1, v2;
     if (m_backgroundFull)
