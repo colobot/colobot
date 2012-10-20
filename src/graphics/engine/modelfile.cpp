@@ -608,9 +608,6 @@ bool CModelFile::ReadModel(std::istream& stream)
             triangle.state = t.state;
             triangle.variableTex2 = t.texNum2 == 1;
 
-            if (triangle.tex1Name == "plant.png")
-                triangle.state |= ENG_RSTATE_ALPHA;
-
             if (!triangle.variableTex2 && t.texNum2 != 0)
             {
                 if (t.texNum2 >= 1 && t.texNum2 <= 10)
@@ -636,6 +633,10 @@ bool CModelFile::ReadModel(std::istream& stream)
 
         m_triangles[i].tex2Name = StrUtils::Replace(m_triangles[i].tex2Name, "bmp", "png");
         m_triangles[i].tex2Name = StrUtils::Replace(m_triangles[i].tex2Name, "tga", "png");
+
+        // TODO: fix this in model files
+        if (m_triangles[i].tex1Name == "plant.png")
+            m_triangles[i].state |= ENG_RSTATE_ALPHA;
 
         GetLogger()->Trace("ModelTriangle %d\n", i+1);
         std::string s1 = m_triangles[i].p1.ToString();
