@@ -1638,6 +1638,7 @@ void CEngine::CreateGroundMark(Math::Vector pos, float radius,
 {
     m_groundMark.LoadDefault();
 
+    m_groundMark.draw      = true;
     m_groundMark.phase     = ENG_GR_MARK_PHASE_INC;
     m_groundMark.delay[0]  = delay1;
     m_groundMark.delay[1]  = delay2;
@@ -3409,8 +3410,262 @@ void CEngine::DrawInterface()
 
 void CEngine::UpdateGroundSpotTextures()
 {
-    // TODO the original code modifying the textures is very complex, so stub for now
-    GetLogger()->Trace("CEngine::UpdateGroundSpotTextures(): stub!\n");
+    if (!m_firstGroundSpot                                   &&
+        m_groundMark.drawPos.x     == m_groundMark.pos.x     &&
+        m_groundMark.drawPos.z     == m_groundMark.pos.z     &&
+        m_groundMark.drawRadius    == m_groundMark.radius    &&
+        m_groundMark.drawIntensity == m_groundMark.intensity) return;
+
+    for (int s = 0; s < 16; s++)
+    {
+        Math::Point min, max;
+        min.x = (s%4) * 254.0f - 1.0f;  // 1 pixel cover
+        min.y = (s/4) * 254.0f - 1.0f;
+        max.x = min.x + 254.0f + 2.0f;
+        max.y = min.y + 254.0f + 2.0f;
+
+        bool clear = false;
+        bool set   = false;
+
+        // Calculate the area to be erased.
+        int dot = static_cast<int>(m_groundMark.drawRadius/2.0f);
+
+        float tu, tv;
+        float cx, cy;
+
+        tu = (m_groundMark.drawPos.x+1600.0f)/3200.0f;
+        tv = (m_groundMark.drawPos.z+1600.0f)/3200.0f;  // 0..1
+
+        cx = (tu*254.0f*4.0f)-0.5f;
+        cy = (tv*254.0f*4.0f)-0.5f;
+
+        if (dot == 0)
+        {
+            cx += 0.5f;
+            cy += 0.5f;
+        }
+
+        float px = cx-Math::Mod(cx, 1.0f);
+        float py = cy-Math::Mod(cy, 1.0f);  // multiple of 1
+
+        if (m_firstGroundSpot ||
+            (m_groundMark.drawRadius != 0.0f    &&
+             px+dot >= min.x && py+dot >= min.y &&
+             px-dot <= max.x && py-dot <= max.y))
+        {
+            clear = true;
+        }
+
+        // Calculate the area to draw.
+        dot = static_cast<int>(m_groundMark.radius/2.0f);
+
+        tu = (m_groundMark.pos.x+1600.0f)/3200.0f;
+        tv = (m_groundMark.pos.z+1600.0f)/3200.0f;  // 0..1
+
+        cx = (tu*254.0f*4.0f)-0.5f;
+        cy = (tv*254.0f*4.0f)-0.5f;
+
+        if ( dot == 0 )
+        {
+            cx += 0.5f;
+            cy += 0.5f;
+        }
+
+        px = cx - Math::Mod(cx, 1.0f);
+        py = cy - Math::Mod(cy, 1.0f);  // multiple of 1
+
+        if (m_groundMark.draw &&
+            px+dot >= min.x && py+dot >= min.y &&
+            px-dot <= max.x && py-dot <= max.y)
+        {
+            set = true;
+        }
+
+        if (clear || set)
+        {
+            CImage shadowImg(Math::IntPoint(256, 256));
+            shadowImg.Fill(Gfx::IntColor(255, 255, 255, 255));
+
+            // Draw the new shadows.
+            for (int i = 0; i < static_cast<int>( m_groundSpots.size() ); i++)
+            {
+                if ( m_groundSpots[i].used == false ||
+                     m_groundSpots[i].radius == 0.0f )  continue;
+
+                if ( m_groundSpots[i].min == 0.0f &&
+                     m_groundSpots[i].max == 0.0f )
+                {
+                    dot = static_cast<int>(m_groundSpots[i].radius/2.0f);
+
+                    tu = (m_groundSpots[i].pos.x+1600.0f)/3200.0f;
+                    tv = (m_groundSpots[i].pos.z+1600.0f)/3200.0f;  // 0..1
+
+                    cx = (tu*254.0f*4.0f) - 0.5f;
+                    cy = (tv*254.0f*4.0f) - 0.5f;
+
+                    if (dot == 0)
+                    {
+                        cx += 0.5f;
+                        cy += 0.5f;
+                    }
+
+                    px = cx-Math::Mod(cx, 1.0f);
+                    py = cy-Math::Mod(cy, 1.0f);  // multiple of 1
+
+                    if ( px+dot < min.x || py+dot < min.y ||
+                         px-dot > max.x || py-dot > max.y )  continue;
+
+                    for (int iy = -dot; iy <= dot; iy++)
+                    {
+                        for (int ix =- dot; ix <= dot; ix++)
+                        {
+                            float ppx = px+ix;
+                            float ppy = py+iy;
+
+                            if ( ppx <  min.x || ppy <  min.y ||
+                                 ppx >= max.x || ppy >= max.y )  continue;
+
+                            float intensity;
+                            if (dot == 0)
+                                intensity = 0.0f;
+                            else
+                                intensity = Math::Point(ppx-cx, ppy-cy).Length()/dot;
+
+                            Gfx::Color color;
+                            color.r = Math::Norm(m_groundSpots[i].color.r+intensity);
+                            color.g = Math::Norm(m_groundSpots[i].color.g+intensity);
+                            color.b = Math::Norm(m_groundSpots[i].color.b+intensity);
+
+                            ppx -= min.x;  // on the texture
+                            ppy -= min.y;
+
+                            shadowImg.SetPixel(Math::IntPoint(ppx, ppy), color);
+                        }
+                    }
+                }
+                else
+                {
+                    for (int iy = 0; iy < 256; iy++)
+                    {
+                        for (int ix = 0; ix < 256; ix++)
+                        {
+                            Math::Vector pos;
+                            pos.x = (256.0f * (s%4) + ix) * 3200.0f/1024.0f - 1600.0f;
+                            pos.z = (256.0f * (s/4) + iy) * 3200.0f/1024.0f - 1600.0f;
+                            pos.y = 0.0f;
+
+                            float level = m_terrain->GetFloorLevel(pos, true);
+                            if ( level < m_groundSpots[i].min ||
+                                 level > m_groundSpots[i].max )  continue;
+
+                            float intensity;
+                            if (level > (m_groundSpots[i].max+m_groundSpots[i].min)/2.0f)
+                                intensity = 1.0f - (m_groundSpots[i].max-level) / m_groundSpots[i].smooth;
+                            else
+                                intensity = 1.0f - (level-m_groundSpots[i].min) / m_groundSpots[i].smooth;
+
+                            if (intensity < 0.0f) intensity = 0.0f;
+
+                            Gfx::Color color;
+                            color.r = Math::Norm(m_groundSpots[i].color.r+intensity);
+                            color.g = Math::Norm(m_groundSpots[i].color.g+intensity);
+                            color.b = Math::Norm(m_groundSpots[i].color.b+intensity);
+
+                            shadowImg.SetPixel(Math::IntPoint(ix, iy), color);
+                        }
+                    }
+                }
+            }
+
+            if (set)
+            {
+                dot = static_cast<int>(m_groundMark.radius/2.0f);
+
+                tu = (m_groundMark.pos.x + 1600.0f) / 3200.0f;
+                tv = (m_groundMark.pos.z + 1600.0f) / 3200.0f;  // 0..1
+
+                cx = (tu*254.0f*4.0f)-0.5f;
+                cy = (tv*254.0f*4.0f)-0.5f;
+
+                if (dot == 0)
+                {
+                    cx += 0.5f;
+                    cy += 0.5f;
+                }
+
+                px = cx-Math::Mod(cx, 1.0f);
+                py = cy-Math::Mod(cy, 1.0f);  // multiple of 1
+
+                for (int iy = -dot; iy <= dot; iy++)
+                {
+                    for (int ix = -dot; ix <= dot; ix++)
+                    {
+                        float ppx = px+ix;
+                        float ppy = py+iy;
+
+                        if (ppx <  min.x || ppy <  min.y ||
+                            ppx >= max.x || ppy >= max.y)  continue;
+
+                        ppx -= min.x;  // on the texture
+                        ppy -= min.y;
+
+                        float intensity = 1.0f - Math::Point(ix, iy).Length() / dot;
+                        if (intensity <= 0.0f) continue;
+                        intensity *= m_groundMark.intensity;
+
+                        int j = (ix+dot) + (iy+dot) * m_groundMark.dx;
+                        if (m_groundMark.table[j] == 1)  // green ?
+                        {
+                            Gfx::Color color;
+                            color.r = Math::Norm(1.0f-intensity);
+                            color.g = 1.0f;
+                            color.b = Math::Norm(1.0f-intensity);
+                            shadowImg.SetPixel(Math::IntPoint(ppx, ppy), color);
+                        }
+                        if (m_groundMark.table[j] == 2)  // red ?
+                        {
+                            Gfx::Color color;
+                            color.r = 1.0f;
+                            color.g = Math::Norm(1.0f-intensity);
+                            color.b = Math::Norm(1.0f-intensity);
+                            shadowImg.SetPixel(Math::IntPoint(ppx, ppy), color);
+                        }
+                    }
+                }
+            }
+
+            std::stringstream str;
+            str << "shadow" << std::setfill('0') << std::setw(2) << s << ".png";
+            std::string texName = str.str();
+
+            DeleteTexture(texName);
+
+            Gfx::Texture tex = m_device->CreateTexture(&shadowImg, m_defaultTexParams);
+
+            m_texNameMap[texName] = tex;
+            m_revTexNameMap[tex] = texName;
+        }
+    }
+
+    for (int i = 0; i < static_cast<int>( m_groundSpots.size() ); i++)
+    {
+        if (m_groundSpots[i].used == false ||
+            m_groundSpots[i].radius == 0.0f)
+        {
+            m_groundSpots[i].drawRadius = 0.0f;
+        }
+        else
+        {
+            m_groundSpots[i].drawPos    = m_groundSpots[i].pos;
+            m_groundSpots[i].drawRadius = m_groundSpots[i].radius;
+        }
+    }
+
+    m_groundMark.drawPos       = m_groundMark.pos;
+    m_groundMark.drawRadius    = m_groundMark.radius;
+    m_groundMark.drawIntensity = m_groundMark.intensity;
+
+    m_firstGroundSpot = false;
 }
 
 void CEngine::DrawShadow()
@@ -3607,7 +3862,6 @@ void CEngine::DrawShadow()
     m_device->SetRenderState(RENDER_STATE_LIGHTING, true);
 }
 
-// STATUS: TESTED, VERIFIED
 void CEngine::DrawBackground()
 {
     if (m_skyMode && m_cloud->GetLevel() != 0.0f)  // clouds ?
@@ -3627,7 +3881,6 @@ void CEngine::DrawBackground()
     }
 }
 
-// STATUS: TESTED
 void CEngine::DrawBackgroundGradient(const Color& up, const Color& down)
 {
     Math::Point p1(0.0f, 0.5f);
@@ -3658,7 +3911,6 @@ void CEngine::DrawBackgroundGradient(const Color& up, const Color& down)
     AddStatisticTriangle(2);
 }
 
-// Status: TESTED, VERIFIED
 void CEngine::DrawBackgroundImage()
 {
     Math::Point p1, p2;
@@ -3729,7 +3981,6 @@ void CEngine::DrawPlanet()
     m_planet->Draw();  // draws the planets
 }
 
-// Status: PART_TESTED
 void CEngine::DrawForegroundImage()
 {
     if (m_foregroundName.empty()) return;
@@ -3765,10 +4016,8 @@ void CEngine::DrawForegroundImage()
     AddStatisticTriangle(2);
 }
 
-// Status: PART_TESTED
 void CEngine::DrawOverColor()
 {
-    // TODO: fuzzy compare?
     if ( (m_overColor == Color(0.0f, 0.0f, 0.0f, 0.0f) && m_overMode == ENG_RSTATE_TCOLOR_BLACK) ||
          (m_overColor == Color(1.0f, 1.0f, 1.0f, 1.0f) && m_overMode == ENG_RSTATE_TCOLOR_WHITE) )  return;
 
@@ -3805,7 +4054,6 @@ void CEngine::DrawOverColor()
     AddStatisticTriangle(2);
 }
 
-// Status: TESTED, VERIFIED
 void CEngine::DrawHighlight()
 {
     Math::Point min, max;
@@ -3897,7 +4145,6 @@ void CEngine::DrawHighlight()
     m_device->DrawPrimitive(PRIMITIVE_LINE_STRIP, line, 3);
 }
 
-// Status: TESTED, VERIFIED
 void CEngine::DrawMouse()
 {
     MouseMode mode = m_app->GetMouseMode();
@@ -3931,7 +4178,6 @@ void CEngine::DrawMouse()
     DrawMouseSprite(pos, m_mouseSize, m_mice[index].icon2);
 }
 
-// Status: TESTED, VERIFIED
 void CEngine::DrawMouseSprite(Math::Point pos, Math::Point size, int icon)
 {
     if (icon == -1)
