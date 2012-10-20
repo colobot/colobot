@@ -422,18 +422,6 @@ bool CEngine::WriteScreenShot(const std::string& fileName, int width, int height
     return true;
 }
 
-bool CEngine::ReadSettings()
-{
-    // TODO: when INI reading is completed
-    return true;
-}
-
-bool CEngine::WriteSettings()
-{
-    // TODO: when INI writing is completed
-    return true;
-}
-
 void CEngine::SetPause(bool pause)
 {
     m_pause = pause;
@@ -966,7 +954,6 @@ EngineObjLevel4* CEngine::FindTriangles(int objRank, const Material& material,
         if (! p1.used) continue;
 
         if (p1.tex1Name != tex1Name) continue;
-        // TODO: tex2Name compare?
 
         for (int l2 = 0; l2 < static_cast<int>( p1.next.size() ); l2++)
         {
@@ -1557,7 +1544,22 @@ void CEngine::FlushGroundSpot()
     m_groundSpots.clear();
     m_firstGroundSpot = true;
 
-    // TODO: blank all shadow textures
+    for (int s = 0; s < 16; s++)
+    {
+        CImage shadowImg(Math::IntPoint(256, 256));
+        shadowImg.Fill(Gfx::IntColor(255, 255, 255, 255));
+
+        std::stringstream str;
+        str << "shadow" << std::setfill('0') << std::setw(2) << s << ".png";
+        std::string texName = str.str();
+
+        DeleteTexture(texName);
+
+        Gfx::Texture tex = m_device->CreateTexture(&shadowImg, m_defaultTexParams);
+
+        m_texNameMap[texName] = tex;
+        m_revTexNameMap[tex] = texName;
+    }
 }
 
 int CEngine::CreateGroundSpot()
@@ -1658,8 +1660,6 @@ void CEngine::DeleteGroundMark(int rank)
 
 void CEngine::ComputeDistance()
 {
-    // TODO: s_resol???
-
     for (int i = 0; i < static_cast<int>( m_objects.size() ); i++)
     {
         if (! m_objects[i].used)
@@ -1877,9 +1877,18 @@ bool CEngine::DetectTriangle(Math::Point mouse, VertexTex2* triangle, int objRan
     return true;
 }
 
+//! Use only after world transform already set
 bool CEngine::IsVisible(int objRank)
 {
-    // TODO: use ComputeSphereVisiblity() after tested OK
+    float radius = m_objects[objRank].radius;
+    Math::Vector center(0.0f, 0.0f, 0.0f);
+    if (m_device->ComputeSphereVisibility(center, radius) == Gfx::FRUSTUM_PLANE_ALL)
+    {
+        m_objects[objRank].visible = true;
+        return true;
+    }
+
+    m_objects[objRank].visible = false;
     return true;
 }
 
@@ -1938,7 +1947,7 @@ void CEngine::SetState(int state, const Color& color)
         params.colorOperation = TEX_MIX_OPER_MODULATE;
         params.colorArg1 = TEX_MIX_ARG_TEXTURE;
         params.colorArg2 = TEX_MIX_ARG_FACTOR;
-        params.alphaOperation = TEX_MIX_OPER_DEFAULT; // TODO: replace with src color ?
+        params.alphaOperation = TEX_MIX_OPER_DEFAULT;
         params.factor = color;
 
         m_device->SetTextureEnabled(0, true);
@@ -1957,7 +1966,7 @@ void CEngine::SetState(int state, const Color& color)
         params.colorOperation = TEX_MIX_OPER_ADD;
         params.colorArg1 = TEX_MIX_ARG_TEXTURE;
         params.colorArg2 = TEX_MIX_ARG_FACTOR;
-        params.alphaOperation = TEX_MIX_OPER_DEFAULT; // TODO: replace with src color ?
+        params.alphaOperation = TEX_MIX_OPER_DEFAULT;
         params.factor = color.Inverse();
 
         m_device->SetTextureEnabled(0, true);
@@ -1997,7 +2006,7 @@ void CEngine::SetState(int state, const Color& color)
         TextureStageParams params;
         params.colorOperation = TEX_MIX_OPER_REPLACE;
         params.colorArg1 = TEX_MIX_ARG_TEXTURE;
-        params.alphaOperation = TEX_MIX_OPER_DEFAULT; // TODO: replace with src color ?
+        params.alphaOperation = TEX_MIX_OPER_DEFAULT;
 
         m_device->SetTextureEnabled(0, true);
         m_device->SetTextureStageParams(0, params);
@@ -2065,7 +2074,7 @@ void CEngine::SetState(int state, const Color& color)
 
         TextureStageParams params;
         params.colorOperation = TEX_MIX_OPER_DEFAULT; // default modulate
-        params.alphaOperation = TEX_MIX_OPER_DEFAULT; // TODO: replace with src color ?
+        params.alphaOperation = TEX_MIX_OPER_DEFAULT;
 
         m_device->SetTextureEnabled(0, true);
         m_device->SetTextureStageParams(0, params);
@@ -2086,7 +2095,7 @@ void CEngine::SetState(int state, const Color& color)
         params.colorOperation = TEX_MIX_OPER_MODULATE;
         params.colorArg1 = TEX_MIX_ARG_TEXTURE;
         params.colorArg2 = TEX_MIX_ARG_COMPUTED_COLOR;
-        params.alphaOperation = TEX_MIX_OPER_DEFAULT; // TODO: ???
+        params.alphaOperation = TEX_MIX_OPER_DEFAULT;
         m_device->SetTextureEnabled(1, true);
         m_device->SetTextureStageParams(1, params);
     }
@@ -2096,7 +2105,7 @@ void CEngine::SetState(int state, const Color& color)
         params.colorOperation = TEX_MIX_OPER_ADD;
         params.colorArg1 = TEX_MIX_ARG_TEXTURE;
         params.colorArg2 = TEX_MIX_ARG_COMPUTED_COLOR;
-        params.alphaOperation = TEX_MIX_OPER_DEFAULT; // TODO: ???
+        params.alphaOperation = TEX_MIX_OPER_DEFAULT;
         m_device->SetTextureEnabled(1, true);
         m_device->SetTextureStageParams(1, params);
     }
@@ -4032,11 +4041,6 @@ void CEngine::DrawOverColor()
     };
 
     SetState(m_overMode);
-
-    // TODO: set also with m_overMode ?
-    m_device->SetRenderState(RENDER_STATE_DEPTH_WRITE, false);
-    m_device->SetRenderState(RENDER_STATE_LIGHTING, false);
-    m_device->SetRenderState(RENDER_STATE_FOG, false);
 
     m_device->SetTransform(TRANSFORM_VIEW, m_matViewInterface);
     m_device->SetTransform(TRANSFORM_PROJECTION, m_matProjInterface);

@@ -204,22 +204,22 @@ enum PrimitiveType
 };
 
 /**
- * \enum IntersectPlane
- * \brief Intersection plane of projection volume
+ * \enum FrustumPlane
+ * \brief Planes of frustum space
  *
- * These flags can be OR'd together.
+ * Bitset of flags - can be OR'd together.
  */
-enum IntersectPlane
+enum FrustumPlane
 {
-    INTERSECT_PLANE_LEFT   = 0x01,
-    INTERSECT_PLANE_RIGHT  = 0x02,
-    INTERSECT_PLANE_TOP    = 0x04,
-    INTERSECT_PLANE_BOTTOM = 0x08,
-    INTERSECT_PLANE_FRONT  = 0x10,
-    INTERSECT_PLANE_BACK   = 0x20,
-    INTERSECT_PLANE_ALL = INTERSECT_PLANE_LEFT   | INTERSECT_PLANE_RIGHT  |
-                          INTERSECT_PLANE_TOP    | INTERSECT_PLANE_BOTTOM |
-                          INTERSECT_PLANE_FRONT  | INTERSECT_PLANE_BACK
+    FRUSTUM_PLANE_LEFT   = 0x01,
+    FRUSTUM_PLANE_RIGHT  = 0x02,
+    FRUSTUM_PLANE_TOP    = 0x04,
+    FRUSTUM_PLANE_BOTTOM = 0x08,
+    FRUSTUM_PLANE_FRONT  = 0x10,
+    FRUSTUM_PLANE_BACK   = 0x20,
+    FRUSTUM_PLANE_ALL = FRUSTUM_PLANE_LEFT   | FRUSTUM_PLANE_RIGHT  |
+                        FRUSTUM_PLANE_TOP    | FRUSTUM_PLANE_BOTTOM |
+                        FRUSTUM_PLANE_FRONT  | FRUSTUM_PLANE_BACK
 };
 
 /**
@@ -316,7 +316,8 @@ public:
     //! Renders primitive composed of vertices with color information
     virtual void DrawPrimitive(PrimitiveType type, const VertexCol *vertices , int vertexCount) = 0;
 
-    //! Tests whether a sphere intersects the 6 clipping planes of projection volume
+    //! Tests whether a sphere is (partially) within the frustum volume
+    //! Returns a mask of frustum planes for which the test is positive
     virtual int ComputeSphereVisibility(const Math::Vector &center, float radius) = 0;
 
     //! Enables/disables the given render state

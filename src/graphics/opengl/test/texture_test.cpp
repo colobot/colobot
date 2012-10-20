@@ -13,7 +13,6 @@ void Init(Gfx::CGLDevice *device)
     device->SetShadeModel(Gfx::SHADE_SMOOTH);
 
     device->SetRenderState(Gfx::RENDER_STATE_DEPTH_TEST, false);
-    device->SetRenderState(Gfx::RENDER_STATE_TEXTURING, true);
 
     device->SetTextureEnabled(0, true);
     device->SetTextureEnabled(1, true);

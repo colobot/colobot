@@ -692,12 +692,6 @@ public:
     //! Writes a screenshot containing the current frame
     bool            WriteScreenShot(const std::string& fileName, int width, int height);
 
-
-    //! Reads settings from INI
-    bool            ReadSettings();
-    //! Writes settings to INI
-    bool            WriteSettings();
-
     //@{
     //! Management of game pause mode
     void            SetPause(bool pause);

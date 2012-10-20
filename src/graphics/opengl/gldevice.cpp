@@ -929,27 +929,25 @@ void CGLDevice::DrawPrimitive(PrimitiveType type, const VertexCol *vertices, int
 
 bool InPlane(Math::Vector normal, float originPlane, Math::Vector center, float radius)
 {
-    float distance = (originPlane + Math::DotProduct(normal, center)) / normal.Length();
+    float distance = originPlane + Math::DotProduct(normal, center);
 
     if (distance < -radius)
-        return true;
+        return false;
 
-    return false;
+    return true;
 }
 
-/*
-   The implementation of ComputeSphereVisibility is taken from libwine's device.c
-   Copyright of the WINE team, licensed under GNU LGPL v 2.1
- */
+/* Based on libwine's implementation */
 
-// TODO: testing
 int CGLDevice::ComputeSphereVisibility(const Math::Vector &center, float radius)
 {
     Math::Matrix m;
-    m.LoadIdentity();
-    m = Math::MultiplyMatrices(m, m_worldMat);
-    m = Math::MultiplyMatrices(m, m_viewMat);
-    m = Math::MultiplyMatrices(m, m_projectionMat);
+    m = Math::MultiplyMatrices(m_worldMat, m);
+    m = Math::MultiplyMatrices(m_viewMat, m);
+    Math::Matrix sc;
+    Math::LoadScaleMatrix(sc, Math::Vector(1.0f, 1.0f, -1.0f));
+    m = Math::MultiplyMatrices(sc, m);
+    m = Math::MultiplyMatrices(m_projectionMat, m);
 
     Math::Vector vec[6];
     float originPlane[6];
@@ -958,52 +956,64 @@ int CGLDevice::ComputeSphereVisibility(const Math::Vector &center, float radius)
     vec[0].x = m.Get(4, 1) + m.Get(1, 1);
     vec[0].y = m.Get(4, 2) + m.Get(1, 2);
     vec[0].z = m.Get(4, 3) + m.Get(1, 3);
-    originPlane[0] = m.Get(4, 4) + m.Get(1, 4);
+    float l1 = vec[0].Length();
+    vec[0].Normalize();
+    originPlane[0] = (m.Get(4, 4) + m.Get(1, 4)) / l1;
 
     // Right plane
     vec[1].x = m.Get(4, 1) - m.Get(1, 1);
     vec[1].y = m.Get(4, 2) - m.Get(1, 2);
     vec[1].z = m.Get(4, 3) - m.Get(1, 3);
-    originPlane[1] = m.Get(4, 4) - m.Get(1, 4);
-
-    // Top plane
-    vec[2].x = m.Get(4, 1) - m.Get(2, 1);
-    vec[2].y = m.Get(4, 2) - m.Get(2, 2);
-    vec[2].z = m.Get(4, 3) - m.Get(2, 3);
-    originPlane[2] = m.Get(4, 4) - m.Get(2, 4);
+    float l2 = vec[1].Length();
+    vec[1].Normalize();
+    originPlane[1] = (m.Get(4, 4) - m.Get(1, 4)) / l2;
 
     // Bottom plane
-    vec[3].x = m.Get(4, 1) + m.Get(2, 1);
-    vec[3].y = m.Get(4, 2) + m.Get(2, 2);
-    vec[3].z = m.Get(4, 3) + m.Get(2, 3);
-    originPlane[3] = m.Get(4, 4) + m.Get(2, 4);
+    vec[2].x = m.Get(4, 1) + m.Get(2, 1);
+    vec[2].y = m.Get(4, 2) + m.Get(2, 2);
+    vec[2].z = m.Get(4, 3) + m.Get(2, 3);
+    float l3 = vec[2].Length();
+    vec[2].Normalize();
+    originPlane[2] = (m.Get(4, 4) + m.Get(2, 4)) / l3;
+
+    // Top plane
+    vec[3].x = m.Get(4, 1) - m.Get(2, 1);
+    vec[3].y = m.Get(4, 2) - m.Get(2, 2);
+    vec[3].z = m.Get(4, 3) - m.Get(2, 3);
+    float l4 = vec[3].Length();
+    vec[3].Normalize();
+    originPlane[3] = (m.Get(4, 4) - m.Get(2, 4)) / l4;
 
     // Front plane
-    vec[4].x = m.Get(3, 1);
-    vec[4].y = m.Get(3, 2);
-    vec[4].z = m.Get(3, 3);
-    originPlane[4] = m.Get(3, 4);
+    vec[4].x = m.Get(4, 1) + m.Get(3, 1);
+    vec[4].y = m.Get(4, 2) + m.Get(3, 2);
+    vec[4].z = m.Get(4, 3) + m.Get(3, 3);
+    float l5 = vec[4].Length();
+    vec[4].Normalize();
+    originPlane[4] = (m.Get(4, 4) + m.Get(3, 4)) / l5;
 
     // Back plane
     vec[5].x = m.Get(4, 1) - m.Get(3, 1);
     vec[5].y = m.Get(4, 2) - m.Get(3, 2);
     vec[5].z = m.Get(4, 3) - m.Get(3, 3);
-    originPlane[5] = m.Get(4, 4) - m.Get(3, 4);
+    float l6 = vec[5].Length();
+    vec[5].Normalize();
+    originPlane[5] = (m.Get(4, 4) - m.Get(3, 4)) / l6;
 
     int result = 0;
 
     if (InPlane(vec[0], originPlane[0], center, radius))
-        result |= INTERSECT_PLANE_LEFT;
+        result |= FRUSTUM_PLANE_LEFT;
     if (InPlane(vec[1], originPlane[1], center, radius))
-        result |= INTERSECT_PLANE_RIGHT;
+        result |= FRUSTUM_PLANE_RIGHT;
     if (InPlane(vec[2], originPlane[2], center, radius))
-        result |= INTERSECT_PLANE_TOP;
+        result |= FRUSTUM_PLANE_BOTTOM;
     if (InPlane(vec[3], originPlane[3], center, radius))
-        result |= INTERSECT_PLANE_BOTTOM;
+        result |= FRUSTUM_PLANE_TOP;
     if (InPlane(vec[4], originPlane[4], center, radius))
-        result |= INTERSECT_PLANE_FRONT;
+        result |= FRUSTUM_PLANE_FRONT;
     if (InPlane(vec[5], originPlane[5], center, radius))
-        result |= INTERSECT_PLANE_BACK;
+        result |= FRUSTUM_PLANE_BACK;
 
     return result;
 }

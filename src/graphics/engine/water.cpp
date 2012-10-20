@@ -386,9 +386,11 @@ void CWater::DrawSurf()
         Math::Vector p = pos;
         p.x += size*(m_lines[i].len-1);
         float radius = sqrtf(powf(size, 2.0f)+powf(size*m_lines[i].len, 2.0f));
-        if ( Math::Distance(p, eye) > deep+radius )  continue;
+        if (Math::Distance(p, eye) > deep + radius)
+            continue;
 
-        // TODO: ComputeSphereVisibility
+        if (device->ComputeSphereVisibility(p, radius) != Gfx::FRUSTUM_PLANE_ALL)
+            continue;
 
         int vertexIndex = 0;
 

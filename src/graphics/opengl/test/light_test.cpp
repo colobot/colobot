@@ -51,7 +51,7 @@ void Render(Gfx::CGLDevice *device)
     device->SetRenderState(Gfx::RENDER_STATE_CULLING, false); // Double-sided drawing
 
     Math::Matrix persp;
-    Math::LoadProjectionMatrix(persp, Math::PI / 4.0f, (800.0f) / (600.0f), 0.1f, 100.0f);
+    Math::LoadProjectionMatrix(persp, Math::PI / 4.0f, (800.0f) / (600.0f), 0.1f, 50.0f);
     device->SetTransform(Gfx::TRANSFORM_PROJECTION, persp);
 
 
@@ -120,6 +120,31 @@ void Render(Gfx::CGLDevice *device)
 
     Math::LoadTranslationMatrix(worldMat, Math::Vector(-40.0f, 2.0f, -40.0f));
     device->SetTransform(Gfx::TRANSFORM_WORLD, worldMat);
+
+    int planes = device->ComputeSphereVisibility(Math::Vector(0.0f, 0.0f, 0.0f), 1.0f);
+    printf("Planes:");
+    if (planes == 0)
+        printf(" (none)");
+
+    if (planes & Gfx::FRUSTUM_PLANE_LEFT)
+        printf(" LEFT");
+
+    if (planes & Gfx::FRUSTUM_PLANE_RIGHT)
+        printf(" RIGHT");
+
+    if (planes & Gfx::FRUSTUM_PLANE_BOTTOM)
+        printf(" BOTTOM");
+
+    if (planes & Gfx::FRUSTUM_PLANE_TOP)
+        printf(" TOP");
+
+    if (planes & Gfx::FRUSTUM_PLANE_FRONT)
+        printf(" FRONT");
+
+    if (planes & Gfx::FRUSTUM_PLANE_BACK)
+        printf(" BACK");
+
+    printf("\n");
 
     device->DrawPrimitive(Gfx::PRIMITIVE_TRIANGLE_STRIP, quad, 4);
 
