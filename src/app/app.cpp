@@ -122,6 +122,12 @@ CApplication::CApplication()
     m_curTimeStamp = CreateTimeStamp();
     m_lastTimeStamp = CreateTimeStamp();
 
+    for (int i = 0; i < PCNT_MAX; ++i)
+    {
+        m_performanceCounters[i][0] = CreateTimeStamp();
+        m_performanceCounters[i][1] = CreateTimeStamp();
+    }
+
     m_joystickEnabled = false;
 
     m_mouseMode = MOUSE_SYSTEM;
@@ -171,6 +177,12 @@ CApplication::~CApplication()
     DestroyTimeStamp(m_baseTimeStamp);
     DestroyTimeStamp(m_curTimeStamp);
     DestroyTimeStamp(m_lastTimeStamp);
+
+    for (int i = 0; i < PCNT_MAX; ++i)
+    {
+        DestroyTimeStamp(m_performanceCounters[i][0]);
+        DestroyTimeStamp(m_performanceCounters[i][1]);
+    }
 }
 
 ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
@@ -718,6 +730,14 @@ int CApplication::Run()
 
     while (true)
     {
+        ResetPerformanceCounters();
+
+        if (m_active)
+        {
+            StartPerformanceCounter(PCNT_ALL);
+            StartPerformanceCounter(PCNT_EVENT_PROCESSING);
+        }
+
         // To be sure no old event remains
         m_private->currentEvent.type = SDL_NOEVENT;
 
@@ -829,21 +849,38 @@ int CApplication::Run()
                     m_robotMain->EventProcess(event);
             }
 
+            StopPerformanceCounter(PCNT_EVENT_PROCESSING);
+
+            StartPerformanceCounter(PCNT_UPDATE_ALL);
+
             // Prepare and process step simulation event
             event = CreateUpdateEvent();
             if (event.type != EVENT_NULL && m_robotMain != nullptr)
             {
+                StartPerformanceCounter(PCNT_UPDATE_ENGINE);
                 m_engine->FrameUpdate();
+                StopPerformanceCounter(PCNT_UPDATE_ENGINE);
+
                 m_sound->FrameMove(m_relTime);
 
+                StartPerformanceCounter(PCNT_UPDATE_GAME);
                 m_robotMain->EventProcess(event);
+                StopPerformanceCounter(PCNT_UPDATE_GAME);
             }
+
+            StopPerformanceCounter(PCNT_UPDATE_ALL);
 
             /* Update mouse position explicitly right before rendering
              * because mouse events are usually way behind */
             UpdateMouse();
 
+            StartPerformanceCounter(PCNT_RENDER_ALL);
             Render();
+            StopPerformanceCounter(PCNT_RENDER_ALL);
+
+            StopPerformanceCounter(PCNT_ALL);
+
+            UpdatePerformanceCountersData();
 
             if (m_lowCPU)
             {
@@ -1451,3 +1488,43 @@ bool CApplication::GetLowCPU()
 {
     return m_lowCPU;
 }
+
+void CApplication::StartPerformanceCounter(PerformanceCounter counter)
+{
+    GetCurrentTimeStamp(m_performanceCounters[counter][0]);
+}
+
+void CApplication::StopPerformanceCounter(PerformanceCounter counter)
+{
+    GetCurrentTimeStamp(m_performanceCounters[counter][1]);
+}
+
+float CApplication::GetPerformanceCounterData(PerformanceCounter counter)
+{
+    return m_performanceCountersData[counter];
+}
+
+void CApplication::ResetPerformanceCounters()
+{
+    for (int i = 0; i < PCNT_MAX; ++i)
+    {
+        StartPerformanceCounter(static_cast<PerformanceCounter>(i));
+        StopPerformanceCounter(static_cast<PerformanceCounter>(i));
+    }
+}
+
+void CApplication::UpdatePerformanceCountersData()
+{
+    long long sum = TimeStampExactDiff(m_performanceCounters[PCNT_ALL][0],
+                                       m_performanceCounters[PCNT_ALL][1]);
+
+    for (int i = 0; i < PCNT_MAX; ++i)
+    {
+        long long diff = TimeStampExactDiff(m_performanceCounters[i][0],
+                                            m_performanceCounters[i][1]);
+
+        m_performanceCountersData[static_cast<PerformanceCounter>(i)] =
+            static_cast<float>(diff) / static_cast<float>(sum);
+    }
+}
+

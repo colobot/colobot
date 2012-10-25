@@ -378,7 +378,11 @@ void CEngine::FrameUpdate()
     float rTime = m_app->GetRelTime();
 
     m_lightMan->UpdateProgression(rTime);
+
+    m_app->StartPerformanceCounter(PCNT_UPDATE_PARTICLE);
     m_particle->FrameParticle(rTime);
+    m_app->StopPerformanceCounter(PCNT_UPDATE_PARTICLE);
+
     ComputeDistance();
     UpdateGeometry();
 
@@ -409,7 +413,7 @@ void CEngine::FrameUpdate()
             {
                 m_groundMark.intensity = 0.0f;
                 m_groundMark.phase     = ENG_GR_MARK_PHASE_NULL;
-                m_groundMark.draw     = false;
+                m_groundMark.draw      = false;
             }
         }
     }
@@ -3020,7 +3024,9 @@ void CEngine::Render()
     if (m_drawWorld)
         Draw3DScene();
 
+    m_app->StartPerformanceCounter(PCNT_RENDER_INTERFACE);
     DrawInterface();
+    m_app->StopPerformanceCounter(PCNT_RENDER_INTERFACE);
 
     // End the scene
     m_device->EndScene();
@@ -3051,11 +3057,12 @@ void CEngine::Draw3DScene()
 
     if (m_waterMode) m_water->DrawBack();  // draws water background
 
+    m_app->StartPerformanceCounter(PCNT_RENDER_TERRAIN);
+
+    // Draw terrain with shadows, if shadows enabled
     if (m_shadowVisible)
     {
         m_lightMan->UpdateDeviceLights(ENG_OBJTYPE_TERRAIN);
-
-        // Draw the terrain
 
         for (int l1 = 0; l1 < static_cast<int>( m_objectTree.size() ); l1++)
         {
@@ -3122,7 +3129,11 @@ void CEngine::Draw3DScene()
         DrawShadow();
     }
 
-    // Draw objects (non-terrain)
+    m_app->StopPerformanceCounter(PCNT_RENDER_TERRAIN);
+
+    // Draw other objects (and if shadows disabled, also terrain)
+
+    m_app->StartPerformanceCounter(PCNT_RENDER_OBJECTS);
 
     bool transparent = false;
 
@@ -3274,11 +3285,21 @@ void CEngine::Draw3DScene()
         }
     }
 
+    m_app->StopPerformanceCounter(PCNT_RENDER_OBJECTS);
+
     m_lightMan->UpdateDeviceLights(ENG_OBJTYPE_TERRAIN);
 
-    if (m_waterMode) m_water->DrawSurf();    // draws water surface
+    if (m_waterMode)
+    {
+        m_app->StartPerformanceCounter(PCNT_RENDER_WATER);
+        m_water->DrawSurf(); // draws water surface
+        m_app->StopPerformanceCounter(PCNT_RENDER_WATER);
+    }
 
+    m_app->StartPerformanceCounter(PCNT_RENDER_PARTICLE);
     m_particle->DrawParticle(SH_WORLD); // draws the particles of the 3D world
+    m_app->StopPerformanceCounter(PCNT_RENDER_PARTICLE);
+
     m_lightning->Draw();                     // draws lightning
 
     if (m_lensMode) DrawForegroundImage();   // draws the foreground
@@ -4220,15 +4241,10 @@ void CEngine::DrawStats()
     if (!m_showStats)
         return;
 
-    std::stringstream str;
-    str << "Triangles: ";
-    str << m_statisticTriangle;
-    std::string triangleText = str.str();
-
     float height = m_text->GetAscent(FONT_COLOBOT, 12.0f);
     float width = 0.2f;
 
-    Math::Point pos(0.04f, 0.04f + height);
+    Math::Point pos(0.04f, 0.04f + 17 * height);
 
     SetState(ENG_RSTATE_OPAQUE_COLOR);
 
@@ -4236,9 +4252,9 @@ void CEngine::DrawStats()
 
     VertexCol vertex[4] =
     {
-        VertexCol(Math::Vector(pos.x        , pos.y - height, 0.0f), black),
+        VertexCol(Math::Vector(pos.x        , pos.y - 17 * height, 0.0f), black),
         VertexCol(Math::Vector(pos.x        , pos.y + height, 0.0f), black),
-        VertexCol(Math::Vector(pos.x + width, pos.y - height, 0.0f), black),
+        VertexCol(Math::Vector(pos.x + width, pos.y - 17 * height, 0.0f), black),
         VertexCol(Math::Vector(pos.x + width, pos.y + height, 0.0f), black)
     };
 
@@ -4246,7 +4262,107 @@ void CEngine::DrawStats()
 
     SetState(ENG_RSTATE_TEXT);
 
-    m_text->DrawText(triangleText, FONT_COLOBOT, 12.0f, pos, 1.0f, TEXT_ALIGN_LEFT, 0, Color(1.0f, 1.0f, 1.0f, 1.0f));
+    std::stringstream str;
+
+    str.str("");
+    str << "Event processing: " << std::fixed << std::setprecision(2) << m_app->GetPerformanceCounterData(PCNT_EVENT_PROCESSING);
+    m_text->DrawText(str.str(), FONT_COLOBOT, 12.0f, pos, 1.0f, TEXT_ALIGN_LEFT, 0, Color(1.0f, 1.0f, 1.0f, 1.0f));
+
+    pos.y -= height;
+    pos.y -= height;
+
+
+    str.str("");
+    str << "Frame update: " << std::fixed << std::setprecision(2) << m_app->GetPerformanceCounterData(PCNT_UPDATE_ALL);
+    m_text->DrawText(str.str(), FONT_COLOBOT, 12.0f, pos, 1.0f, TEXT_ALIGN_LEFT, 0, Color(1.0f, 1.0f, 1.0f, 1.0f));
+
+    pos.y -= height;
+
+    str.str("");
+    str << "Engine update: " << std::fixed << std::setprecision(2) << m_app->GetPerformanceCounterData(PCNT_UPDATE_ENGINE);
+    m_text->DrawText(str.str(), FONT_COLOBOT, 12.0f, pos, 1.0f, TEXT_ALIGN_LEFT, 0, Color(1.0f, 1.0f, 1.0f, 1.0f));
+
+    pos.y -= height;
+
+    str.str("");
+    str << "Particle update: " << std::fixed << std::setprecision(2) << m_app->GetPerformanceCounterData(PCNT_UPDATE_PARTICLE);
+    m_text->DrawText(str.str(), FONT_COLOBOT, 12.0f, pos, 1.0f, TEXT_ALIGN_LEFT, 0, Color(1.0f, 1.0f, 1.0f, 1.0f));
+
+    pos.y -= height;
+
+    str.str("");
+    str << "Game update: " << std::fixed << std::setprecision(2) << m_app->GetPerformanceCounterData(PCNT_UPDATE_GAME);
+    m_text->DrawText(str.str(), FONT_COLOBOT, 12.0f, pos, 1.0f, TEXT_ALIGN_LEFT, 0, Color(1.0f, 1.0f, 1.0f, 1.0f));
+
+    pos.y -= height;
+
+    float otherUpdate = Math::Max(0.0f, m_app->GetPerformanceCounterData(PCNT_UPDATE_ALL) -
+                                       m_app->GetPerformanceCounterData(PCNT_UPDATE_ENGINE) -
+                                       m_app->GetPerformanceCounterData(PCNT_UPDATE_PARTICLE) -
+                                       m_app->GetPerformanceCounterData(PCNT_UPDATE_GAME));
+
+    str.str("");
+    str << "Other update: " << std::fixed << std::setprecision(2) << otherUpdate;
+    m_text->DrawText(str.str(), FONT_COLOBOT, 12.0f, pos, 1.0f, TEXT_ALIGN_LEFT, 0, Color(1.0f, 1.0f, 1.0f, 1.0f));
+
+    pos.y -= height;
+    pos.y -= height;
+
+
+    str.str("");
+    str << "Frame render: " << std::fixed << std::setprecision(2) << m_app->GetPerformanceCounterData(PCNT_RENDER_ALL);
+    m_text->DrawText(str.str(), FONT_COLOBOT, 12.0f, pos, 1.0f, TEXT_ALIGN_LEFT, 0, Color(1.0f, 1.0f, 1.0f, 1.0f));
+
+    pos.y -= height;
+
+    str.str("");
+    str << "Particle render: " << std::fixed << std::setprecision(2) << m_app->GetPerformanceCounterData(PCNT_RENDER_PARTICLE);
+    m_text->DrawText(str.str(), FONT_COLOBOT, 12.0f, pos, 1.0f, TEXT_ALIGN_LEFT, 0, Color(1.0f, 1.0f, 1.0f, 1.0f));
+
+    pos.y -= height;
+
+    str.str("");
+    str << "Water render: " << std::fixed << std::setprecision(2) << m_app->GetPerformanceCounterData(PCNT_RENDER_WATER);
+    m_text->DrawText(str.str(), FONT_COLOBOT, 12.0f, pos, 1.0f, TEXT_ALIGN_LEFT, 0, Color(1.0f, 1.0f, 1.0f, 1.0f));
+
+    pos.y -= height;
+
+    str.str("");
+    str << "Terrain render: " << std::fixed << std::setprecision(2) << m_app->GetPerformanceCounterData(PCNT_RENDER_TERRAIN);
+    m_text->DrawText(str.str(), FONT_COLOBOT, 12.0f, pos, 1.0f, TEXT_ALIGN_LEFT, 0, Color(1.0f, 1.0f, 1.0f, 1.0f));
+
+    pos.y -= height;
+
+    str.str("");
+    str << "Objects render: " << std::fixed << std::setprecision(2) << m_app->GetPerformanceCounterData(PCNT_RENDER_OBJECTS);
+    m_text->DrawText(str.str(), FONT_COLOBOT, 12.0f, pos, 1.0f, TEXT_ALIGN_LEFT, 0, Color(1.0f, 1.0f, 1.0f, 1.0f));
+
+    pos.y -= height;
+
+    str.str("");
+    str << "UI render: " << std::fixed << std::setprecision(2) << m_app->GetPerformanceCounterData(PCNT_RENDER_INTERFACE);
+    m_text->DrawText(str.str(), FONT_COLOBOT, 12.0f, pos, 1.0f, TEXT_ALIGN_LEFT, 0, Color(1.0f, 1.0f, 1.0f, 1.0f));
+
+    pos.y -= height;
+
+    float otherRender = m_app->GetPerformanceCounterData(PCNT_RENDER_ALL) -
+                        m_app->GetPerformanceCounterData(PCNT_RENDER_PARTICLE) -
+                        m_app->GetPerformanceCounterData(PCNT_RENDER_WATER) -
+                        m_app->GetPerformanceCounterData(PCNT_RENDER_TERRAIN) -
+                        m_app->GetPerformanceCounterData(PCNT_RENDER_OBJECTS) -
+                        m_app->GetPerformanceCounterData(PCNT_RENDER_INTERFACE);
+
+    str.str("");
+    str << "Other render: " << std::fixed << std::setprecision(2) << otherRender;
+    m_text->DrawText(str.str(), FONT_COLOBOT, 12.0f, pos, 1.0f, TEXT_ALIGN_LEFT, 0, Color(1.0f, 1.0f, 1.0f, 1.0f));
+
+    pos.y -= height;
+    pos.y -= height;
+
+
+    str.str("");
+    str << "Triangles: " << m_statisticTriangle;
+    m_text->DrawText(str.str(), FONT_COLOBOT, 12.0f, pos, 1.0f, TEXT_ALIGN_LEFT, 0, Color(1.0f, 1.0f, 1.0f, 1.0f));
 
     pos.y -= height;
 
