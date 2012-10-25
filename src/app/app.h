@@ -199,9 +199,6 @@ public:
     //! Returns whether simulation is suspended
     bool        GetSimulationSuspended();
 
-    //! Updates the simulation state
-    void        StepSimulation();
-
     //@{
     //! Management of simulation speed
     void            SetSimulationSpeed(float speed);
@@ -312,6 +309,8 @@ protected:
     Event       ProcessSystemEvent();
     //! If applicable, creates a virtual event to match the changed state as of new event
     Event       CreateVirtualEvent(const Event& sourceEvent);
+    //! Prepares a simulation update event
+    Event       CreateUpdateEvent();
     //! Handles some incoming events
     bool        ProcessEvent(const Event& event);
     //! Renders the image in window

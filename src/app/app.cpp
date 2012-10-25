@@ -829,15 +829,21 @@ int CApplication::Run()
                     m_robotMain->EventProcess(event);
             }
 
+            // Prepare and process step simulation event
+            event = CreateUpdateEvent();
+            if (event.type != EVENT_NULL && m_robotMain != nullptr)
+            {
+                m_engine->FrameUpdate();
+                m_sound->FrameMove(m_relTime);
+
+                m_robotMain->EventProcess(event);
+            }
+
             /* Update mouse position explicitly right before rendering
              * because mouse events are usually way behind */
             UpdateMouse();
 
-            // Update game and render a frame during idle time (no messages are waiting)
             Render();
-
-            // Update simulation state
-            StepSimulation();
 
             if (m_lowCPU)
             {
@@ -1167,10 +1173,10 @@ void CApplication::SetSimulationSpeed(float speed)
     GetLogger()->Info("Simulation speed = %.2f\n", speed);
 }
 
-void CApplication::StepSimulation()
+Event CApplication::CreateUpdateEvent()
 {
     if (m_simulationSuspended)
-        return;
+        return Event(EVENT_NULL);
 
     CopyTimeStamp(m_lastTimeStamp, m_curTimeStamp);
     GetCurrentTimeStamp(m_curTimeStamp);
@@ -1185,11 +1191,6 @@ void CApplication::StepSimulation()
     m_exactRelTime = m_simulationSpeed * m_realRelTime;
     m_relTime = (m_simulationSpeed * m_realRelTime) / 1e9f;
 
-
-    m_engine->FrameUpdate();
-    m_sound->FrameMove(m_relTime);
-
-
     Event frameEvent(EVENT_FRAME);
     frameEvent.systemEvent = true;
     frameEvent.trackedKeysState = m_trackedKeys;
@@ -1197,7 +1198,8 @@ void CApplication::StepSimulation()
     frameEvent.mousePos = m_mousePos;
     frameEvent.mouseButtonsState = m_mouseButtonsState;
     frameEvent.rTime = m_relTime;
-    m_eventQueue->AddEvent(frameEvent);
+
+    return frameEvent;
 }
 
 float CApplication::GetSimulationSpeed()
