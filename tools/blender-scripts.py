@@ -38,10 +38,7 @@ class ColobotVertex:
         return 1
 
     def __eq__(self, other):
-        return fuzzy_equal_v(self.coord, other.coord) and
-               fuzzy_equal_v(self.normal, other.normal) and
-               fuzzy_equal_v(self.t1, other.t1) and
-               fuzzy_equal_v(self.t2, other.t2)
+        return fuzzy_equal_v(self.coord, other.coord) and fuzzy_equal_v(self.normal, other.normal) and fuzzy_equal_v(self.t1, other.t1) and fuzzy_equal_v(self.t2, other.t2)
 
 class ColobotMaterial:
     """Material as saved in Colobot model file"""
@@ -56,11 +53,7 @@ class ColobotMaterial:
         return 1
 
     def __eq__(self, other):
-        return fuzzy_equal_v(self.diffuse, other.diffuse) and
-               fuzzy_equal_v(self.ambient, other.ambient) and
-               fuzzy_equal_v(self.specular, other.specular) and
-               self.tex1 == other.tex1 and
-               self.tex2 == other.tex2
+        return fuzzy_equal_v(self.diffuse, other.diffuse) and fuzzy_equal_v(self.ambient, other.ambient) and fuzzy_equal_v(self.specular, other.specular) and self.tex1 == other.tex1 and self.tex2 == other.tex2
 
 class ColobotTriangle:
     """Triangle as saved in Colobot model file"""
