@@ -4,13 +4,13 @@ Welcome to Colobot project repository
 
 NOTE: this is the new repository which was moved here from https://github.com/adiblol/colobot. The new repository has been purged of binary files cluttering the history, so all commits have been overwritten. If you have been using the old repository, you have to clone from scratch the new one.
 
-This is official repository for the open-source Colobot project developed by Polish Portal of Colobot (PPC; Polish: Polski Portal Colobota) with the official site at: http://colobot.cba.pl/.
+This is official repository for the open-source Colobot project developed by Polish Portal of Colobot (PPC; in Polish: Polski Portal Colobota) with the official site at: http://colobot.info/.
 
 The source code contained here was released by Epsitec -- the original creator of the game -- on open source (GPLv3) license. The code was given and the rights granted specifically to PPC community in March 2012. Since then, we have been modifying the code and working on our goals, which are briefly summed up below.
 
-More information for developers can be found at developer wiki at: http://colobot.info/wiki. However, the freshest source of information is our IRC channel #colobot at pirc.pl.
+More information for developers (in English) can be found at developer wiki at: https://colobot.info/wiki/Dev:Main_Page. However, the freshest source of information is our IRC channel #colobot at pirc.pl.
 
-This repository contains only the source code of the project. The game requires also data files which are available in separate packages, currently from http://colobot.info/files. The packages are named colobot-data-YYYY-MM-DD.zip. Make sure you have the latest package before compiling and running the code in repository.
+This repository contains only the source code of the project. The game requires also data files which are available in separate packages, currently at http://colobot.info/files/. The packages are named colobot-data-YYYY-MM-DD.zip. Make sure you have the latest package before compiling and running the code in repository.
 
 
 Status
@@ -19,7 +19,7 @@ Our main goals can be summed up in three milestones:
 
 Milestone 1 - Colobot Classic
 
-This is the original version of the game, as released to us by Epsitec with only minor changes and bugfixes. It is available as a tag named colobot-original in the repository. This version will not be developed further. The compiled version and data packs needed to run the game (split by language version) can be found at: http://colobot.info/files.
+This is the original version of the game, as released to us by Epsitec with only minor changes and bugfixes. It is available as a tag named colobot-original in the repository. This version will not be developed further. The compiled version and data packs needed to run the game (split by language version) can also be found at http://colobot.info/files/.
 
 Milestone 2 - Colobot Gold
 
@@ -39,7 +39,7 @@ For these instructions see HOWTO.txt file.
 
 Contact
 
-If you want to help in the project, please contact us on our IRC channel #colobot at pirc.pl or the forum on our website: http://colobot.cba.pl/forum (there is also an English board). We're in the process of moving to a new site and forum so not all information on our old site is up-to-date, but we're be done soon.
+If you want to help in the project, please contact us on our IRC channel #colobot at pirc.pl (Polish or English) or the forum on our website: http://colobot.info/forum (Polish only). We're in the process of moving to a new site and forum so not all information on our old site is up-to-date, but we're be done soon.
 
 
 
@@ -49,11 +49,11 @@ Witamy w repozytorium projektu Colobot
 
 UWAGA: to jest nowe repozytorium, które zostało przeniesione tu z https://github.com/adiblol/colobot. Nowe repozytorium zostało wyczyszczone z plików binarnych, które zostały w historii, więc wszystkie commity zostały nadpisane. Jeżeli korzystałeś/aś ze starego repozytorium, musisz sklonować od zera te nowe.
 
-To jest oficjalne repozytorium z kodem projektu open-source Colobot rozwijanego przez Polski Portal Colobota (PPC; angielski: Polish Portal of Colobot) z oficjalną stroną: http://colobot.cba.pl/.
+To jest oficjalne repozytorium z kodem projektu open-source Colobot rozwijanego przez Polski Portal Colobota (PPC; po angielsku: Polish Portal of Colobot) z oficjalną stroną: http://colobot.info/.
 
 Kod źródłowy zawarty tutaj został wydany przez Epsitec -- oryginalnego twórcę gry -- na otwartej licencji (GPLv3). Kod został wydany i prawa nadane specjalnie dla społeczności PPC w marcu 2012. Od tamtej pory, zajmujemy się modyfikowaniem kodu i pracowaniem nad naszymi celami, które są krótko podsumowane poniżej.
 
-Więcej informacji dla developerów projektu można znaleźć na wiki dla developerów: http://colobot.info/wiki. Jednak źródłem najświeższych informacji jest nasz kanał IRC #colobot na pirc.pl.
+Więcej informacji dla developerów projektu (po angielsku) można znaleźć na wiki dla developerów: http://colobot.info/wiki/Dev:Main_Page. Jednak źródłem najświeższych informacji jest nasz kanał IRC #colobot na pirc.pl.
 
 To repozytorium zawiera jedynie kod źródłowy projektu. Gra wymaga jeszcze plików danych, które są dostępne w osobnych paczkach, obecnie na stronie http://colobot.info/files. Paczki są nazwane colobot-data-RRRR-MM-DD.zip. Upewnij się, że masz najnowszą wersję paczki zanim skompilujesz i uruchomisz kod z repozytorium.
 
@@ -84,4 +84,4 @@ Instrukcje te znajdują się w pliku HOWTO.txt.
 
 Kontakt
 
-Jeżeli chcesz pomóc w projekcie, prosimy o kontakt na naszym kanale IRC: #colobot na pirc.pl albo na forum na naszej stronie: http://colobot.cba.pl/forum. Jesteśmy teraz w trakcie przenoszenia strony i forum w nowe miejsce i nie wszystkie informacje na starej stronie są aktualne, ale już niedługo skończymy przenosiny.
+Jeżeli chcesz pomóc w projekcie, prosimy o kontakt na naszym kanale IRC: #colobot na pirc.pl (po polsku i angielsku) albo na forum na naszej stronie: http://colobot.info/forum (jedynie polski). Jesteśmy teraz w trakcie przenoszenia strony i forum w nowe miejsce i nie wszystkie informacje na starej stronie są aktualne, ale już niedługo skończymy przenosiny.
