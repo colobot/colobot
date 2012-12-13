@@ -7,95 +7,23 @@ msgstr ""
 "X-Language: de_DE\n"
 "X-Source-Language: en_US\n"
 
-msgid "Colobot rules!"
-msgstr "Colobot ist wunderbar!"
-
-msgid "Colobot Gold"
-msgstr "Colobot Gold"
-
-msgid "SatCom"
-msgstr "SatCom"
-
-msgid "Maximize"
-msgstr "Großes Fenster"
-
-msgid "Minimize"
-msgstr "Reduzieren"
-
-msgid "Normal size"
-msgstr "Normale Größe"
-
-msgid "Close"
-msgstr "Schließen"
-
-msgid "Program editor"
-msgstr "Programmeditor"
-
-msgid "New"
-msgstr "Neu"
-
-msgid "Player"
-msgstr "Spieler"
-
-msgid "New ..."
-msgstr "Neu ..."
-
-msgid " or "
-msgstr " oder "
-
-msgid "COLOBOT"
-msgstr "COLOBOT"
-
-msgid "Programming exercises"
-msgstr "Programmieren"
-
-msgid "Challenges"
-msgstr "Challenges"
-
-msgid "Missions"
-msgstr "Missionen"
-
-msgid "Free game"
-msgstr "Freestyle"
-
-msgid "User levels"
-msgstr "Userlevels"
-
-msgid "Prototypes"
-msgstr "Prototypen"
-
-msgid "Options"
-msgstr "Einstellungen"
-
-msgid "Player's name"
-msgstr "Name "
-
-msgid "Customize your appearance"
-msgstr "Aussehen einstellen"
-
-msgid "Save the current mission"
-msgstr "Aktuelle Mission speichern"
-
-msgid "Load a saved mission"
-msgstr "Gespeicherte Mission laden"
-
-msgid " Chapters:"
-msgstr " Liste der Kapitel:"
-
-msgid " Planets:"
-msgstr " Liste der Planeten:"
-
-msgid " User levels:"
-msgstr " Userlevels:"
-
-msgid " Exercises in the chapter:"
-msgstr " Liste der Übungen des Kapitels:"
+msgid " "
+msgstr " "
 
 msgid " Challenges in the chapter:"
 msgstr " Liste der Challenges des Kapitels:"
 
-msgid " Missions on this planet:"
-msgstr " Liste der Missionen des Planeten:"
+msgid " Chapters:"
+msgstr " Liste der Kapitel:"
+
+msgid " Drivers:"
+msgstr " Driver:"
+
+msgid " Exercises in the chapter:"
+msgstr " Liste der Übungen des Kapitels:"
+
+msgid " Free game on this chapter:"
+msgstr " Liste der freien Levels des Kapitel:"
 
 msgid " Free game on this planet:"
 msgstr " Liste der freien Levels des Planeten:"
@@ -103,20 +31,44 @@ msgstr " Liste der freien Levels des Planeten:"
 msgid " Missions on this level:"
 msgstr " Missionen des Userlevels:"
 
+msgid " Missions on this planet:"
+msgstr " Liste der Missionen des Planeten:"
+
+msgid " Planets:"
+msgstr " Liste der Planeten:"
+
 msgid " Prototypes on this planet:"
 msgstr " Liste der Prototypen des Planeten:"
 
-msgid " Free game on this chapter:"
-msgstr " Liste der freien Levels des Kapitel:"
+msgid " Resolution:"
+msgstr " Auflösung:"
 
 msgid " Summary:"
 msgstr " Zusammenfassung:"
 
-msgid " Drivers:"
-msgstr " Driver:"
+msgid " User levels:"
+msgstr " Userlevels:"
 
-msgid " Resolution:"
-msgstr " Auflösung:"
+msgid " or "
+msgstr " oder "
+
+msgid "\" [ \" expected"
+msgstr "Es fehlt eine offene eckige Klammer \" [ \""
+
+msgid "\" ] \" missing"
+msgstr "Es fehlt eine geschlossene eckige Klammer \" ] \""
+
+msgid "\"%s\" missing in this exercise"
+msgstr "Es fehlt \"%s\" in Ihrem Programm"
+
+msgid "..behind"
+msgstr "..hinten"
+
+msgid "..in front"
+msgstr "..vorne"
+
+msgid "..power cell"
+msgstr "..Batterie"
 
 msgid "1) First click on the key you want to redefine."
 msgstr "1) Klicken Sie auf die neu zu definierende Taste."
@@ -124,1624 +76,87 @@ msgstr "1) Klicken Sie auf die neu zu definierende Taste."
 msgid "2) Then press the key you want to use instead."
 msgstr "2) Drücken Sie auf die neue Taste."
 
-msgid "Face type:"
-msgstr "Kopf:"
+msgid "3D sound\\3D positioning of the sound"
+msgstr "3D-Geräusche\\Orten der Geräusche im Raum"
 
-msgid "Eyeglasses:"
-msgstr "Brille:"
+msgid "< none >"
+msgstr "< keine >"
 
-msgid "Hair color:"
-msgstr "Haarfarbe:"
-
-msgid "Suit color:"
-msgstr "Farbe des Anzugs:"
-
-msgid "Strip color:"
-msgstr "Farbe der Streifen:"
-
-msgid "Do you want to quit COLOBOT ?"
-msgstr "Wollen Sie COLOBOT schließen ?"
-
-msgid "Quit\\Quit COLOBOT"
-msgstr "Schließen\\COLOBOT schließen"
-
-msgid "Quit the mission?"
-msgstr "Mission abbrechen ?"
-
-msgid "Abort\\Abort the current mission"
-msgstr "Abbrechen\\Mission abbrechen"
-
-msgid "Continue\\Continue the current mission"
-msgstr "Weitermachen\\Mission weitermachen"
-
-msgid "Continue\\Continue the game"
-msgstr "Weitermachen\\Weitermachen"
-
-msgid "Do you really want to destroy the selected building?"
-msgstr "Wollen Sie das angewählte Gebäude wirklich zerstören ?"
-
-msgid "Do you want to delete %s's saved games? "
-msgstr "Wollen Sie die gespeicherten Missionen von %s löschen ?"
-
-msgid "Delete"
-msgstr "Zerstören"
-
-msgid "Cancel"
-msgstr "Abbrechen"
-
-msgid "LOADING"
-msgstr "Laden"
-
-msgid "Keyword help(\\key cbot;)"
-msgstr "Hilfe über den Begriff (\\key cbot;)"
-
-msgid "Compilation ok (0 errors)"
-msgstr "Kompilieren OK (0 Fehler)"
-
-msgid "Program finished"
-msgstr "Programm beendet"
-
-msgid "\\b;List of objects\n"
-msgstr "\\b;Liste der Objekte\n"
-
-msgid "\\b;Robots\n"
-msgstr "\\b;Liste der Roboter\n"
-
-msgid "\\b;Buildings\n"
-msgstr "\\b;Listes der Gebäude\n"
-
-msgid "\\b;Moveable objects\n"
-msgstr "\\b;Listes der tragbaren Gegenstände\n"
-
-msgid "\\b;Aliens\n"
-msgstr "\\b;Listes der Feinde\n"
-
-msgid "\\c; (none)\\n;\n"
-msgstr "\\c; (keine)\\n;\n"
-
-msgid "\\b;Error\n"
-msgstr "\\b;Fehler\n"
-
-msgid ""
-"The list is only available if a \\l;radar station\\u object\\radar; is "
-"working.\n"
-msgstr "Die Liste ist ohne \\l;Radar\\u object\\radar; nicht verfügbar.\n"
-
-msgid "Open"
-msgstr "Öffnen"
-
-msgid "Save"
-msgstr "Speichern"
-
-msgid "Folder: %s"
-msgstr "Ordner: %s"
-
-msgid "Name:"
-msgstr "Name:"
-
-msgid "Folder:"
-msgstr "In:"
-
-msgid "Private\\Private folder"
-msgstr "Privat\\Privater Ordner"
-
-msgid "Public\\Common folder"
-msgstr "Öffentlich\\Gemeinsamer Ordner für alle Spieler"
-
-msgid "Developed by :"
-msgstr "Entwickelt von:"
-
-msgid "www.epsitec.com"
-msgstr "www.epsitec.com"
-
-msgid " "
-msgstr " "
-
-msgid "Recorder"
-msgstr "Recorder"
-
-msgid "OK"
-msgstr "OK"
-
-msgid "Next"
-msgstr "Nächster"
-
-msgid "Previous"
-msgstr "Vorherg"
-
-msgid "Menu (\\key quit;)"
-msgstr "Menü (\\key quit;)"
-
-msgid "Exercises\\Programming exercises"
-msgstr "Programmieren\\Programmierübungen"
-
-msgid "Challenges\\Programming challenges"
-msgstr "Challenges\\Herausforderungen"
-
-msgid "Missions\\Select mission"
-msgstr "Missionen\\Aufbruch ins Weltall"
-
-msgid "Free game\\Free game without a specific goal"
-msgstr "Freestyle\\Freies Spielen ohne vorgegebenes Ziel"
-
-msgid "User\\User levels"
-msgstr "User\\Userlevels"
-
-msgid "Proto\\Prototypes under development"
-msgstr "Proto\\In Entwicklung befindliche Prototypen"
-
-msgid "New player\\Choose player's name"
-msgstr "Anderer Spieler\\Spielername ändern"
-
-msgid "Options\\Preferences"
-msgstr "Einstellungen\\Einstellungen"
-
-msgid "Restart\\Restart the mission from the beginning"
-msgstr "Neu anfangen\\Die Mission von vorne anfangen"
-
-msgid "Save\\Save the current mission "
-msgstr "Speichern\\Aktuelle Mission speichern"
-
-msgid "Load\\Load a saved mission"
-msgstr "Laden\\Eine gespeicherte Mission öffnen"
-
-msgid "\\Return to COLOBOT"
-msgstr "\\Zurück zu COLOBOT"
+msgid "<--"
+msgstr "<--"
 
 msgid "<<  Back  \\Back to the previous screen"
 msgstr "<<  Zurück  \\Zurück zum Hauptmenü"
 
-msgid "Play\\Start mission!"
-msgstr "Spielen ...\\Los geht's!"
-
-msgid "Device\\Driver and resolution settings"
-msgstr "Bildschirm\\Driver und Bildschirmauflösung"
-
-msgid "Graphics\\Graphics settings"
-msgstr "Grafik\\Grafische Einstellungen"
-
-msgid "Game\\Game settings"
-msgstr "Spiel\\Gameplay Einstellungen"
-
-msgid "Controls\\Keyboard, joystick and mouse settings"
-msgstr "Steuerung\\Auswahl der Tasten"
-
-msgid "Sound\\Music and game sound volume"
-msgstr "Geräusche\\Lautstärke Geräusche und Musik"
-
-msgid "Unit"
-msgstr "Einheit"
-
-msgid "Resolution"
-msgstr "Auflösung"
-
-msgid "Full screen\\Full screen or window mode"
-msgstr "Vollbildschirm\\Vollbildschirm oder Fenster"
-
-msgid "Apply changes\\Activates the changed settings"
-msgstr "Änderungen ausführen\\Getätigte Einstellungen ausführen"
-
-msgid "Robbie\\Your assistant"
-msgstr "Robby\\Ihr Assistent"
-
-msgid "Shadows\\Shadows on the ground"
-msgstr "Schatten\\Schlagschatten auf dem Boden"
-
-msgid "Marks on the ground\\Marks on the ground"
-msgstr "Markierungen\\Markierungen auf dem Boden"
-
-msgid "Dust\\Dust and dirt on bots and buildings"
-msgstr "Schmutz\\Schmutz auf Robotern und Bauten"
-
-msgid "Fog\\Fog"
-msgstr "Nebel\\Nebelschwaden"
-
-msgid "Sunbeams\\Sunbeams in the sky"
-msgstr "Sonnenstrahlen\\Sonnenstrahlen"
-
-msgid "Sky\\Clouds and nebulae"
-msgstr "Himmel\\Himmel und Wolken"
-
-msgid "Planets and stars\\Astronomical objects in the sky"
-msgstr "Planeten und Sterne\\Kreisende Planeten und Sterne"
-
-msgid "Dynamic lighting\\Mobile light sources"
-msgstr "Dynamische Beleuchtung\\Dynamische Beleuchtung"
-
-msgid "Number of particles\\Explosions, dust, reflections, etc."
-msgstr "Anzahl Partikel\\Explosionen, Staub, usw."
-
-msgid "Depth of field\\Maximum visibility"
-msgstr "Sichtweite\\Maximale Sichtweite"
-
-msgid "Details\\Visual quality of 3D objects"
-msgstr "Details\\Detailliertheit der Objekte in 3D"
-
-msgid "Textures\\Quality of textures "
-msgstr "Qualität der Texturen\\Qualität der Anzeige"
-
-msgid "Num of decorative objects\\Number of purely ornamental objects"
-msgstr "Anzahl Ziergegenstände\\Anzahl Gegenstände ohne Funktion"
-
-msgid "Particles in the interface\\Steam clouds and sparks in the interface"
-msgstr "Partikel in den Menüs\\Funken und Sterne in den Menüs"
-
-msgid "Reflections on the buttons \\Shiny buttons"
-msgstr "Glänzende Tasten\\Glänzende Tasten in den Menüs"
-
-msgid "Help balloons\\Explain the function of the buttons"
-msgstr "Hilfsblasen\\Hilfsblasen"
-
-msgid "Film sequences\\Films before and after the missions"
-msgstr "Filme\\Filme vor und nach den Missionen"
-
-msgid "Exit film\\Film at the exit of exercises"
-msgstr "Zurücksetzen \\Kleine Show beim Zurücksetzen in den Übungen"
-
-msgid "Friendly fire\\Your shooting can damage your own objects "
-msgstr "Eigenbeschuss\\Ihre Einheiten werden von Ihren Waffen beschädigt"
-
-msgid "Scrolling\\Scrolling when the mouse touches right or left border"
-msgstr ""
-"Kameradrehung mit der Maus\\Die Kamera dreht wenn die Maus den Rand erreicht"
-
-msgid "Mouse inversion X\\Inversion of the scrolling direction on the X axis"
-msgstr "Umkehr X\\Umkehr der Kameradrehung X-Achse"
-
-msgid "Mouse inversion Y\\Inversion of the scrolling direction on the Y axis"
-msgstr "Umkehr Y\\Umkehr der Kameradrehung Y-Achse"
-
-msgid "Quake at explosions\\The screen shakes at explosions"
-msgstr "Beben bei Explosionen\\Die Kamera bebt bei Explosionen"
-
-msgid "Mouse shadow\\Gives the mouse a shadow"
-msgstr "Schatten unter der Maus\\Ein Schatten erscheint unter der Maus"
-
-msgid "Automatic indent\\When program editing"
-msgstr "Automatisches Einrücken\\Beim Bearbeiten der Programme"
-
-msgid "Big indent\\Indent 2 or 4 spaces per level defined by braces"
-msgstr "Einrücken mit 4 Leerstellen\\Einrücken mit 2 oder 4 Leerstellen"
-
-msgid "Access to solutions\\Show program \"4: Solution\" in the exercises"
-msgstr ""
-"Lösung zugänglich\\Die Lösung ist im Programmslot \"4: Lösung\" zugänglich"
-
-msgid "Standard controls\\Standard key functions"
-msgstr "Alles zurücksetzen\\Standarddefinition aller Tasten"
-
-msgid "Turn left\\turns the bot to the left"
-msgstr "Drehung nach links\\Steuer links"
-
-msgid "Turn right\\turns the bot to the right"
-msgstr "Drehung nach rechts\\Steuer rechts"
-
-msgid "Forward\\Moves forward"
-msgstr "Vorwärts\\Bewegung nach vorne"
-
-msgid "Backward\\Moves backward"
-msgstr "Rückwärts\\Bewegung nach hinten"
-
-msgid "Climb\\Increases the power of the jet"
-msgstr "Steigen\\Leistung des Triebwerks steigern"
-
-msgid "Descend\\Reduces the power of the jet"
-msgstr "Sinken\\Leistung des Triebwerks drosseln"
-
-msgid "Change camera\\Switches between onboard camera and following camera"
-msgstr "Andere Kamera\\Sichtpunkt einstellen"
-
-msgid "Previous object\\Selects the previous object"
-msgstr "Vorherg. Auswahl\\Das vorhergehende Objekt auswählen"
-
-msgid ""
-"Standard action\\Standard action of the bot (take/grab, shoot, sniff, etc)"
-msgstr "Standardhandlung\\Führt die Standardhandlung des Roboters aus"
-
-msgid "Camera closer\\Moves the camera forward"
-msgstr "Kamera näher\\Bewegung der Kamera vorwärts"
-
-msgid "Camera back\\Moves the camera backward"
-msgstr "Kamera weiter\\Bewegung der Kamera rückwärts"
-
-msgid "Next object\\Selects the next object"
-msgstr "Nächstes auswählen\\Nächstes Objekt auswählen"
-
-msgid "Select the astronaut\\Selects the astronaut"
-msgstr "Astronauten auswählen\\Astronauten auswählen"
-
-msgid "Quit\\Quit the current mission or exercise"
-msgstr "Mission verlassen\\Eine Mission oder Übung verlassen"
-
-msgid "Instructions\\Shows the instructions for the current mission"
-msgstr "Anweisungen\\Anweisungen für die Mission oder Übung"
-
-msgid "Programming help\\Gives more detailed help with programming"
-msgstr "Hilfe CBOT-Sprache\\Hilfe über die Programmiersprache CBOT"
-
-msgid "Key word help\\More detailed help about key words"
-msgstr "Hilfe über Begriff\\Hilfe über einen Begriff"
-
-msgid "Origin of last message\\Shows where the last message was sent from"
-msgstr "Ort der Meldung\\Zeigt den Ort, von dem die letzte Meldung stammt"
-
-msgid "Speed 1.0x\\Normal speed"
-msgstr "Geschwindigkeit 1.0x\\Normale Spielgeschwindigkeit"
-
-msgid "Speed 1.5x\\1.5 times faster"
-msgstr "Geschwindigkeit 1.5x\\Spielgeschwindigkeit anderthalb Mal schneller"
-
-msgid "Speed 2.0x\\Double speed"
-msgstr "Geschwindigkeit 2.0x\\Spielgeschwindigkeit doppelt so schnell"
-
-msgid "Speed 3.0x\\Three times faster"
-msgstr "Geschwindigkeit 3.0x\\Spielgeschwindigkeit drei Mal schneller"
-
-msgid "Sound effects:\\Volume of engines, voice, shooting, etc."
-msgstr "Geräusche:\\Lautstärke Motoren, Stimmen, usw."
-
-msgid "Background sound :\\Volume of audio tracks on the CD"
-msgstr "Geräuschkulisse:\\Lautstärke der Soundtracks der CD"
-
-msgid "3D sound\\3D positioning of the sound"
-msgstr "3D-Geräusche\\Orten der Geräusche im Raum"
-
-msgid "Lowest\\Minimum graphic quality (highest frame rate)"
-msgstr "Min.\\Minimale Qualität (großes Framerate)"
-
-msgid "Normal\\Normal graphic quality"
-msgstr "Normal\\Standardqualität"
-
-msgid "Highest\\Highest graphic quality (lowest frame rate)"
-msgstr "Max.\\Beste Qualität (niedriges Framerate)"
-
-msgid "Mute\\No sound"
-msgstr "Kein Ton\\Keine Geräusche und Geräuschkulisse"
-
-msgid "Normal\\Normal sound volume"
-msgstr "Normal\\Normale Lautstärke"
-
-msgid "Use a joystick\\Joystick or keyboard"
-msgstr "Joystick\\Joystick oder Tastatur"
-
-msgid ""
-"Access to solution\\Shows the solution (detailed instructions for missions)"
-msgstr "Zeigt die Lösung\\Zeigt nach 3mal Scheitern die Lösung"
-
-msgid "\\New player name"
-msgstr "\\Name des Spielers"
-
-msgid "OK\\Choose the selected player"
-msgstr "OK\\Spieler auswählen"
-
-msgid "Cancel\\Keep current player name"
-msgstr "Abbrechen\\Behält den bisherigen Spieler bei"
-
-msgid "Delete player\\Deletes the player from the list"
-msgstr "Spieler löschen\\Löscht den Spieler aus der Liste"
-
-msgid "Player name"
-msgstr "Name "
-
-msgid "Save\\Saves the current mission"
-msgstr "Speichern\\Speichert die Mission"
-
-msgid "Load\\Loads the selected mission"
-msgstr "Laden\\Öffnet eine gespeicherte Mission"
-
-msgid "List of saved missions"
-msgstr "Liste der gespeicherten Missionen"
-
-msgid "Filename:"
-msgstr "Dateiname:"
-
-msgid "Mission name"
-msgstr "Name der Mission"
-
-msgid "Photography"
-msgstr "Ansicht der Mission"
-
-msgid "Delete\\Deletes the selected file"
-msgstr "Löschen\\Löscht die gespeicherte Mission"
-
-msgid "Appearance\\Choose your appearance"
-msgstr "Aussehen\\Erscheinungsbild des Astronauten einstellen"
-
-msgid "Standard\\Standard appearance settings"
-msgstr "Standard\\Standardfarben einsetzen"
-
-msgid "Head\\Face and hair"
-msgstr "Kopf\\Gesicht und Haare"
-
-msgid "Suit\\Astronaut suit"
-msgstr "Anzug\\Raumfahrtanzug"
-
-msgid "\\Turn left"
-msgstr "\\Drehung links"
-
-msgid "\\Turn right"
-msgstr "\\Drehung rechts"
-
-msgid "Red"
-msgstr "Rot"
-
-msgid "Green"
-msgstr "Grün"
-
-msgid "Blue"
-msgstr "Blau"
-
-msgid "\\Face 1"
-msgstr "\\Kopf 1"
-
-msgid "\\Face 4"
-msgstr "\\Kopf 4"
-
-msgid "\\Face 3"
-msgstr "\\Kopf 3"
-
-msgid "\\Face 2"
-msgstr "\\Kopf 2"
-
-msgid "\\No eyeglasses"
-msgstr "\\Keine Brille"
-
-msgid "\\Eyeglasses 1"
-msgstr "\\Brille 1"
-
-msgid "\\Eyeglasses 2"
-msgstr "\\Brille 2"
-
-msgid "\\Eyeglasses 3"
-msgstr "\\Brille 3"
-
-msgid "\\Eyeglasses 4"
-msgstr "\\Brille 4"
-
-msgid "\\Eyeglasses 5"
-msgstr "\\Brille 5"
-
-msgid "Previous selection (\\key desel;)"
-msgstr "Vorherg. Auwahl (\\key desel;)"
-
-msgid "Turn left (\\key left;)"
-msgstr "Drehung links (\\key left;)"
-
-msgid "Turn right (\\key right;)"
-msgstr "Drehung rechts (\\key right;)"
-
-msgid "Forward (\\key up;)"
-msgstr "Vorwärts (\\key up;)"
-
-msgid "Backward (\\key down;)"
-msgstr "Rückwärts (\\key down;)"
-
-msgid "Up (\\key gup;)"
-msgstr "Steigt (\\key gup;)"
-
-msgid "Down (\\key gdown;)"
-msgstr "Sinkt (\\key gdown;)"
-
-msgid "Grab or drop (\\key action;)"
-msgstr "Nehmen oder hinlegen  (\\key action;)"
-
-msgid "..in front"
-msgstr "..vorne"
-
-msgid "..behind"
-msgstr "..hinten"
-
-msgid "..power cell"
-msgstr "..Batterie"
-
-msgid "Instructions for the mission (\\key help;)"
-msgstr "Anweisungen über die Mission(\\key help;)"
-
-msgid "Take off to finish the mission"
-msgstr "Abheben nach vollbrachter Mission"
-
-msgid "Build a derrick"
-msgstr "Baut einen Bohrturm"
-
-msgid "Build a power station"
-msgstr "Baut ein Kraftwerk"
-
-msgid "Build a bot factory"
-msgstr "Baut eine Roboterfabrik"
-
-msgid "Build a repair center"
-msgstr "Baut ein Reparaturzentrum"
-
-msgid "Build a converter"
-msgstr "Baut einen Konverter"
-
-msgid "Build a defense tower"
-msgstr "Baut einen Geschützturm"
-
-msgid "Build a research center"
-msgstr "Baut ein Forschungszentrum"
-
-msgid "Build a radar station"
-msgstr "Baut ein Radar"
-
-msgid "Build a power cell factory"
-msgstr "Baut eine Batteriefabrik"
-
-msgid "Build an autolab"
-msgstr "Baut ein automatisches Labor"
-
-msgid "Build a nuclear power plant"
-msgstr "Baut eine Brennstoffzellenfabrik"
-
-msgid "Build a lightning conductor"
-msgstr "Baut einen Blitzableiter"
-
-msgid "Build a exchange post"
-msgstr "Baut einen Infoserver"
-
-msgid "Show if the ground is flat"
-msgstr "Zeigt ob der Boden eben ist"
-
-msgid "Plant a flag"
-msgstr "Setzt eine Fahne"
-
-msgid "Remove a flag"
-msgstr "Sammelt die Fahne ein"
-
-msgid "\\Blue flags"
-msgstr "\\Blaue Fahne"
-
-msgid "\\Red flags"
-msgstr "\\Rote Fahne"
-
-msgid "\\Green flags"
-msgstr "\\Grüne Fahne"
-
-msgid "\\Yellow flags"
-msgstr "\\Gelbe Fahne"
-
-msgid "\\Violet flags"
-msgstr "\\Violette Fahne"
-
-msgid "Build a winged grabber"
-msgstr "Baut einen Jettransporter"
-
-msgid "Build a tracked grabber"
-msgstr "Baut einen Kettentransporter"
-
-msgid "Build a wheeled grabber"
-msgstr "Baut einen Radtransporter"
-
-msgid "Build a legged grabber"
-msgstr "Baut einen Krabbeltransporter"
-
-msgid "Build a winged shooter"
-msgstr "Baut einen Jetshooter"
-
-msgid "Build a tracked shooter"
-msgstr "Baut einen Kettenshooter"
-
-msgid "Build a wheeled shooter"
-msgstr "Baut einen Radshooter"
-
-msgid "Build a legged shooter"
-msgstr "Baut einen Krabbelshooter"
-
-msgid "Build a winged orga shooter"
-msgstr "Baut einen Jetorgashooter"
-
-msgid "Build a tracked orga shooter"
-msgstr "Baut einen Kettenorgashooter"
-
-msgid "Build a wheeled orga shooter"
-msgstr "Baut einen Radorgashooter"
-
-msgid "Build a legged orga shooter"
-msgstr "Baut einen Krabbelorgashooter"
-
-msgid "Build a winged sniffer"
-msgstr "Baut einen Jetschnüffler"
-
-msgid "Build a tracked sniffer"
-msgstr "Baut einen Kettenschnüffler"
-
-msgid "Build a wheeled sniffer"
-msgstr "Baut einen Radschnüffler"
-
-msgid "Build a legged sniffer"
-msgstr "Baut einen Krabbelschnüffler"
-
-msgid "Build a thumper"
-msgstr "Baut einen Stampfer"
-
-msgid "Build a phazer shooter"
-msgstr "Baut einen Phazershooter"
-
-msgid "Build a recycler"
-msgstr "Baut einen Recycler"
-
-msgid "Build a shielder"
-msgstr "Baut einen Schutzschild"
-
-msgid "Build a subber"
-msgstr "Baut einen Kettentaucher"
-
-msgid "Run research program for tracked bots"
-msgstr "Forschungsprogramm Kettenantrieb"
-
-msgid "Run research program for winged bots"
-msgstr "Forschungsprogramm Jetantrieb"
-
-msgid "Run research program for thumper"
-msgstr "Forschungsprogramm Stampfer"
-
-msgid "Run research program for shooter"
-msgstr "Forschungsprogramm Shooterkanone"
-
-msgid "Run research program for defense tower"
-msgstr "Forschungsprogramm Geschützturm"
-
-msgid "Run research program for phazer shooter"
-msgstr "Forschungsprogramm Phazerkanone"
-
-msgid "Run research program for shielder"
-msgstr "Forschungsprogramm Schutzschild"
-
-msgid "Run research program for nuclear power"
-msgstr "Forschungsprogramm Brennstoffzelle"
-
-msgid "Run research program for legged bots"
-msgstr "Forschungsprogramm Krabbelantrieb"
-
-msgid "Run research program for orga shooter"
-msgstr "Forschungsprogramm Orgashooterkanone"
-
-msgid "Return to start"
-msgstr "Alles zurücksetzen"
-
-msgid "Sniff (\\key action;)"
-msgstr "Schnüffeln (\\key action;)"
-
-msgid "Thump (\\key action;)"
-msgstr "Stampfen (\\key action;)"
-
-msgid "Shoot (\\key action;)"
-msgstr "Feuer (\\key action;)"
-
-msgid "Recycle (\\key action;)"
-msgstr "Recyceln (\\key action;)"
-
-msgid "Extend shield (\\key action;)"
-msgstr "Schutzschild ausfahren (\\key action;)"
-
-msgid "Withdraw shield (\\key action;)"
-msgstr "Schutzschild einholen (\\key action;)"
-
-msgid "Shield radius"
-msgstr "Reichweite Schutzschild"
-
-msgid "Execute the selected program"
-msgstr "Gewähltes Programm ausführen"
-
-msgid "Edit the selected program"
-msgstr "Gewähltes Programm bearbeiten"
-
-msgid "\\SatCom on standby"
-msgstr "\\SatCom in Standby"
-
-msgid "Destroy the building"
-msgstr "Gebäude sprengen"
-
-msgid "Energy level"
-msgstr "Energievorrat"
-
-msgid "Shield level"
-msgstr "Schäden"
-
-msgid "Jet temperature"
-msgstr "Triebwerktemperatur"
-
-msgid "Still working ..."
-msgstr "Prozess im Gang ..."
-
-msgid "Number of insects detected"
-msgstr "Anzahl erfasster Insekten"
-
-msgid "Transmitted information"
-msgstr "Gesendete Informationen"
-
-msgid "Compass"
-msgstr "Kompass"
-
-msgid "Mini-map"
-msgstr "Minikarte"
-
-msgid "Zoom mini-map"
-msgstr "Zoom Minikarte"
-
-msgid "Camera (\\key camera;)"
-msgstr "Kamera (\\key camera;)"
-
-msgid "Camera to left"
-msgstr "Kamera links"
-
-msgid "Camera to right"
-msgstr "Kamera rechts"
-
-msgid "Camera nearest"
-msgstr "Kamera näher"
-
-msgid "Camera awayest"
-msgstr "Kamera weiter weg"
-
-msgid "Help about selected object"
-msgstr "Anweisungen über das ausgewählte Objekt"
-
-msgid "Show the solution"
-msgstr "Zeigt die Lösung"
-
-msgid "Switch bots <-> buildings"
-msgstr "Anzeige Roboter <-> Bauten"
-
-msgid "Show the range"
-msgstr "Zeigt die Reichweite"
-
-msgid "\\Raise the pencil"
-msgstr "\\Bleistift abheben"
-
-msgid "\\Use the black pencil"
-msgstr "\\Schwarzen Bleistift hinunterlassen"
-
-msgid "\\Use the yellow pencil"
-msgstr "\\Gelben Bleistift hinunterlassen"
-
-msgid "\\Use the orange pencil"
-msgstr "\\Orangefarbenen Bleistift hinunterlassen"
-
-msgid "\\Use the red pencil"
-msgstr "\\Roten Bleistift hinunterlassen"
-
-msgid "\\Use the purple pencil"
-msgstr "\\Violetten Bleistift hinunterlassen"
-
-msgid "\\Use the blue pencil"
-msgstr "\\Blauen Bleistift hinunterlassen"
-
-msgid "\\Use the green pencil"
-msgstr "\\Grünen Bleistift hinunterlassen"
-
-msgid "\\Use the brown pencil"
-msgstr "\\Braunen Bleistift hinunterlassen"
-
-msgid "\\Start recording"
-msgstr "\\Aufnahme starten"
-
-msgid "\\Stop recording"
-msgstr "\\Aufnahme stoppen"
-
-msgid "Show the place"
-msgstr "Zeigt den Ort"
-
-msgid "Continue"
-msgstr "Weitermachen"
-
-msgid "Command line"
-msgstr "Befehleingabe"
-
-msgid "Game speed"
-msgstr "Spielgeschwindigkeit"
-
-msgid "Back"
-msgstr "Vorherg. Seite"
-
-msgid "Forward"
-msgstr "Nächste Seite"
-
-msgid "Home"
-msgstr "Home"
-
-msgid "Copy"
-msgstr "Kopieren"
-
-msgid "Size 1"
-msgstr "Größe 1"
-
-msgid "Size 2"
-msgstr "Größe 2"
-
-msgid "Size 3"
-msgstr "Größe 3"
-
-msgid "Size 4"
-msgstr "Größe 4"
-
-msgid "Size 5"
-msgstr "Größe 5"
-
-msgid "Instructions from Houston"
-msgstr "Anweisungen von Houston"
-
-msgid "Dictionnary"
-msgstr "Wörterbuch Englisch-Deutsch"
-
-msgid "Satellite report"
-msgstr "Satellitenbericht"
-
-msgid "Programs dispatched by Houston"
-msgstr "Von Houston übermittelte Programme"
-
-msgid "List of objects"
-msgstr "Liste der Objekte"
-
-msgid "Programming help"
-msgstr "Hilfe über Programmieren"
-
-msgid "Solution"
-msgstr "Lösung"
-
-msgid "OK\\Close program editor and return to game"
-msgstr "OK\\Programm kompilieren"
-
-msgid "Cancel\\Cancel all changes"
-msgstr "Abbrechen\\Editor schließen"
-
-msgid "Open (Ctrl+o)"
-msgstr "Öffnen (Ctrl+o)"
-
-msgid "Save (Ctrl+s)"
-msgstr "Speichern (Ctrl+s)"
-
-msgid "Undo (Ctrl+z)"
-msgstr "Widerrufen (Ctrl+z)"
-
-msgid "Cut (Ctrl+x)"
-msgstr "Ausschneiden (Ctrl+x)"
-
-msgid "Copy (Ctrl+c)"
-msgstr "Kopieren (Ctrl+c)"
-
-msgid "Paste (Ctrl+v)"
-msgstr "Einfügen (Ctrl+v)"
-
-msgid "Font size"
-msgstr "Zeichengröße"
-
-msgid "Instructions (\\key help;)"
-msgstr "Anweisungen (\\key help;)"
-
-msgid "Programming help  (\\key prog;)"
-msgstr "Hilfe über Programmieren (\\key prog;)"
-
-msgid "Compile"
-msgstr "Kompilieren"
-
-msgid "Execute/stop"
-msgstr "Start/Stop"
-
-msgid "Pause/continue"
-msgstr "Pause/Weitermachen"
-
-msgid "One step"
-msgstr "Ein Schritt"
-
-msgid "Gantry crane"
-msgstr "Träger"
-
-msgid "Spaceship"
-msgstr "Raumschiff"
-
-msgid "Derrick"
-msgstr "Bohrturm"
-
-msgid "Bot factory"
-msgstr "Roboterfabrik"
-
-msgid "Repair center"
-msgstr "Reparaturzentrum"
-
-msgid "Destroyer"
-msgstr "Einstampfer"
-
-msgid "Power station"
-msgstr "Kraftwerk"
-
-msgid "Converts ore to titanium"
-msgstr "Konverter Erz-Titan"
-
-msgid "Defense tower"
-msgstr "Geschützturm"
-
-msgid "Nest"
-msgstr "Orgastoffquelle"
-
-msgid "Research center"
-msgstr "Forschungszentrum"
-
-msgid "Radar station"
-msgstr "Radar"
-
-msgid "Information exchange post"
-msgstr "Infoserver"
-
-msgid "Disintegrator"
-msgstr "Auflöser"
-
-msgid "Power cell factory"
-msgstr "Batteriefabrik"
-
-msgid "Autolab"
-msgstr "Automatisches Labor"
-
-msgid "Nuclear power station"
-msgstr "Brennstoffzellenfabrik"
-
-msgid "Lightning conductor"
-msgstr "Blitzableiter"
-
-msgid "Vault"
-msgstr "Bunker"
-
-msgid "Houston Mission Control"
-msgstr "Kontrollzentrum"
-
-msgid "Target"
-msgstr "Zielscheibe"
-
-msgid "Start"
-msgstr "Startfläche"
-
-msgid "Finish"
-msgstr "Zielfläche"
-
-msgid "Titanium ore"
-msgstr "Titanerz"
-
-msgid "Uranium ore"
-msgstr "Platinerz"
-
-msgid "Organic matter"
-msgstr "Orgastoff"
-
-msgid "Titanium"
-msgstr "Titan"
-
-msgid "Power cell"
-msgstr "Elektrolytische Batterie"
-
-msgid "Nuclear power cell"
-msgstr "Brennstoffzelle"
-
-msgid "Black box"
-msgstr "Flugschreiber"
-
-msgid "Key A"
-msgstr "Schlüssel A"
-
-msgid "Key B"
-msgstr "Schlüssel B"
-
-msgid "Key C"
-msgstr "Schlüssel C"
-
-msgid "Key D"
-msgstr "Schlüssel D"
-
-msgid "Explosive"
-msgstr "Sprengstoff"
-
-msgid "Fixed mine"
-msgstr "Landmine"
-
-msgid "Survival kit"
-msgstr "Überlebenskit"
-
-msgid "Checkpoint"
-msgstr "Checkpoint"
-
-msgid "Blue flag"
-msgstr "Blaue Fahne"
-
-msgid "Red flag"
-msgstr "Rote Fahne"
-
-msgid "Green flag"
-msgstr "Grüne Fahne"
-
-msgid "Yellow flag"
-msgstr "Gelbe Fahne"
-
-msgid "Violet flag"
-msgstr "Violette Fahne"
-
-msgid "Energy deposit (site for power station)"
-msgstr "Markierung für unterirdische Energiequelle"
-
-msgid "Uranium deposit (site for derrick)"
-msgstr "Markierung für unterirdisches Platinvorkommen"
-
-msgid "Found key A (site for derrick)"
-msgstr "Markierung für vergrabenen Schlüssel A"
-
-msgid "Found key B (site for derrick)"
-msgstr "Markierung für vergrabenen Schlüssel B"
-
-msgid "Found key C (site for derrick)"
-msgstr "Markierung für vergrabenen Schlüssel C"
-
-msgid "Found key D (site for derrick)"
-msgstr "Markierung für vergrabenen Schlüssel D"
-
-msgid "Titanium deposit (site for derrick)"
-msgstr "Markierung für unterirdisches Titanvorkommen"
-
-msgid "Practice bot"
-msgstr "Übungsroboter"
-
-msgid "Winged grabber"
-msgstr "Transporter"
-
-msgid "Tracked grabber"
-msgstr "Transporter"
-
-msgid "Wheeled grabber"
-msgstr "Transporter"
-
-msgid "Legged grabber"
-msgstr "Transporter"
-
-msgid "Winged shooter"
-msgstr "Shooter"
-
-msgid "Tracked shooter"
-msgstr "Shooter"
-
-msgid "Wheeled shooter"
-msgstr "Shooter"
-
-msgid "Legged shooter"
-msgstr "Shooter"
-
-msgid "Winged orga shooter"
-msgstr "OrgaShooter"
-
-msgid "Tracked orga shooter"
-msgstr "OrgaShooter"
-
-msgid "Wheeled orga shooter"
-msgstr "OrgaShooter"
-
-msgid "Legged orga shooter"
-msgstr "OrgaShooter"
-
-msgid "Winged sniffer"
-msgstr "Schnüffler"
-
-msgid "Tracked sniffer"
-msgstr "Schnüffler"
-
-msgid "Wheeled sniffer"
-msgstr "Schnüffler"
-
-msgid "Legged sniffer"
-msgstr "Schnüffler"
-
-msgid "Thumper"
-msgstr "Stampfer"
-
-msgid "Phazer shooter"
-msgstr "Phazershooter"
-
-msgid "Recycler"
-msgstr "Recycler"
-
-msgid "Shielder"
-msgstr "Schutzschild"
-
-msgid "Subber"
-msgstr "Kettentaucher"
-
-msgid "Target bot"
-msgstr "Mobile Zielscheibe"
-
-msgid "Drawer bot"
-msgstr "Zeichner"
-
-msgid "Engineer"
-msgstr "Techniker"
-
-msgid "Robbie"
-msgstr "Robby"
-
-msgid "Alien Queen"
-msgstr "Insektenkönigin"
-
-msgid "Ant"
-msgstr "Ameise"
-
-msgid "Spider"
-msgstr "Spinne"
-
-msgid "Wasp"
-msgstr "Wespe"
-
-msgid "Worm"
-msgstr "Wurm"
-
-msgid "Egg"
-msgstr "Ei"
-
-msgid "Wreckage"
-msgstr "Roboterwrack"
-
-msgid "Ruin"
-msgstr "Gebäuderuine"
-
-msgid "Waste"
-msgstr "Abfall"
-
-msgid "Spaceship ruin"
-msgstr "Raumschiffruine"
-
-msgid "Remains of Apollo mission"
-msgstr "Überreste einer Apollo-Mission"
-
-msgid "Lunar Roving Vehicle"
-msgstr "Lunar Roving Vehicle"
-
-msgid "Error"
-msgstr "Fehler"
-
-msgid "Unknown command"
-msgstr "Befehl unbekannt"
-
-msgid "Inappropriate bot"
-msgstr "Roboter ungeeignet"
-
-msgid "Impossible when flying"
-msgstr "Im Flug unmöglich"
-
-msgid "Already carrying something"
-msgstr "Trägt schon etwas"
-
-msgid "Nothing to grab"
-msgstr "Nichts zu ergreifen"
-
-msgid "Impossible when moving"
-msgstr "In Fahrt unmöglich"
-
-msgid "Place occupied"
-msgstr "Stelle schon besetzt"
-
-msgid "No other robot"
-msgstr "Kein anderer Roboter"
-
-msgid "You can not carry a radioactive object"
-msgstr "Sie können keinen radioaktiven Gegenstand tragen"
-
-msgid "You can not carry an object under water"
-msgstr "Sie können unter Wasser nichts tragen"
-
-msgid "Nothing to drop"
-msgstr "Nichts abzulegen"
-
-msgid "Impossible under water"
-msgstr "Unter Wasser unmöglich"
-
-msgid "Not enough energy"
-msgstr "Nicht genug Energie"
-
-msgid "Titanium too far away"
-msgstr "Titan zu weit weg"
-
-msgid "Titanium too close"
-msgstr "Titan zu nahe"
-
-msgid "No titanium around"
-msgstr "Kein Titan vorhanden"
-
-msgid "Ground not flat enough"
-msgstr "Boden nicht eben genug"
-
-msgid "Flat ground not large enough"
-msgstr "Ebener Boden nicht groß genug"
-
-msgid "Too close to space ship"
-msgstr "Zu nahe am Raumschiff"
-
-msgid "Too close to a building"
-msgstr "Zu nahe an einem Gebäude"
-
-msgid "Ground inappropriate"
-msgstr "Boden ungeeignet"
-
-msgid "Building too close"
-msgstr "Gebäude zu nahe"
-
-msgid "Object too close"
-msgstr "Gegenstand zu nahe"
-
-msgid "Nothing to recycle"
-msgstr "Nichts zu recyceln"
-
-msgid "No more energy"
-msgstr "Keine Energie mehr"
-
-msgid "Error in instruction move"
-msgstr "Ziel kann nicht erreicht werden"
-
-msgid "Object not found"
-msgstr "Das Objekt existiert nicht"
-
-msgid "Goto: inaccessible destination"
-msgstr "Ziel kann nicht erreicht werden"
-
-msgid "Goto: destination occupied"
-msgstr "Ziel ist schon besetzt"
-
-msgid "No titanium ore to convert"
-msgstr "Kein konvertierbares Titanerz vorhanden"
-
-msgid "No ore in the subsoil"
-msgstr "Keine unterirdische Erzlagerstätte"
-
-msgid "No energy in the subsoil"
-msgstr "Kein unterirdisches Energievorkommen"
-
-msgid "No power cell"
-msgstr "Keine Batterie"
-
-msgid "Inappropriate cell type"
-msgstr "Falscher Batterietyp"
-
-msgid "Research program already performed"
-msgstr "Forschungsprogramm schon ausgeführt"
-
-msgid "Not enough energy yet"
-msgstr "Noch nicht genug Energie"
-
-msgid "No titanium to transform"
-msgstr "Kein konvertierbares Titanerz vorhanden"
-
-msgid "Transforms only titanium"
-msgstr "Wandelt nur Titanerz um"
-
-msgid "Doors blocked by a robot or another object "
-msgstr "Die Türen werden von einem Gegenstand blockiert"
-
-msgid "You must get on the spaceship to take off "
-msgstr "Gehen Sie an Bord, bevor Sie abheben"
-
-msgid "Nothing to analyze"
-msgstr "Nichts zu analysieren"
-
-msgid "Analyzes only organic matter"
-msgstr "Analysiert nur Orgastoff"
-
-msgid "Analysis already performed"
-msgstr "Analyse schon durchgeführt"
-
-msgid "Not yet enough energy"
-msgstr "Noch nicht genug Energie"
-
-msgid "No uranium to transform"
-msgstr "Kein konvertierbares Platin"
-
-msgid "Transforms only uranium"
-msgstr "Wandelt nur Platin um"
-
-msgid "No titanium"
-msgstr "Kein Titan vorhanden"
-
-msgid "No information exchange post within range"
-msgstr "Kein Infoserver in Reichweite"
-
-msgid "Program infected by a virus"
-msgstr "Ein Programm wurde von einem Virus infiziert"
-
-msgid "Infected by a virus, temporarily out of order"
-msgstr "Von Virus infiziert, zeitweise außer Betrieb"
-
-msgid "Impossible when swimming"
-msgstr "Im Wasser unmöglich"
-
-msgid "Impossible when carrying an object"
-msgstr "Unmöglich wenn Sie etwas tragen"
-
-msgid "Too many flags of this color (maximum 5)"
-msgstr "Zu viele Fahnen dieser Farbe (Maximum 5)"
-
-msgid "Too close to an existing flag"
-msgstr "Zu nahe an einer anderen Fahne"
-
-msgid "No flag nearby"
-msgstr "Keine Fahne in Reichweite"
-
-msgid ""
-"The mission is not accomplished yet (press \\key help; for more details)"
-msgstr ""
-"Mission noch nicht beendet (Drücken Sie auf \\key help; für weitere "
-"Informationen)"
-
-msgid "Bot destroyed"
-msgstr "Roboter zerstört"
-
-msgid "Building destroyed"
-msgstr "Gebäude zerstört"
-
-msgid "Can not create this, there are too many objects"
-msgstr "Kein neues Objekt kann erstellt werden (zu viele vorhanden)"
-
-msgid "\"%s\" missing in this exercise"
-msgstr "Es fehlt \"%s\" in Ihrem Programm"
-
-msgid "Do not use in this exercise"
-msgstr "In dieser Übung verboten"
-
-msgid "Building completed"
-msgstr "Gebäude fertiggestellt"
-
-msgid "Titanium available"
-msgstr "Titan verfügbar"
-
-msgid "Research program completed"
-msgstr "Forschungsprogramm abgeschlossen"
-
-msgid "Plans for tracked robots available "
-msgstr "Herstellung eines Roboters mit Kettenantrieb möglich"
-
-msgid "You can fly with the keys (\\key gup;) and (\\key gdown;)"
-msgstr "Sie können jetzt mit den Tasten \\key gup; und \\key gdown; fliegen"
-
-msgid "Plans for thumper available"
-msgstr "Herstellung eines Stampfers möglich"
-
-msgid "Plans for shooter available"
-msgstr "Herstellung eines Shooters möglich"
-
-msgid "Plans for defense tower available"
-msgstr "Errichtung eines Geschützturms möglich"
-
-msgid "Plans for phazer shooter available"
-msgstr "Herstellung eines Phazershooters möglich"
-
-msgid "Plans for shielder available"
-msgstr "Herstellung eines Schutzschildes möglich"
-
-msgid "Plans for nuclear power plant available"
-msgstr "Errichtung einer Brennstoffzellenfabrik möglich"
-
-msgid "New bot available"
-msgstr "Neuer Roboter verfügbar"
-
-msgid "Analysis performed"
-msgstr "Analyse vollendet"
-
-msgid "Power cell available"
-msgstr "Batterie verfügbar"
-
-msgid "Nuclear power cell available"
-msgstr "Brennstoffzelle verfügbar"
-
-msgid "You found a usable object"
-msgstr "Sie haben ein brauchbares Objekt gefunden"
-
-msgid "Found a site for power station"
-msgstr "Geeignete Stelle für Kraftwerk gefunden"
-
-msgid "Found a site for a derrick"
-msgstr "Geeignete Stelle für Bohrturm gefunden"
-
-msgid "<<< Well done, mission accomplished >>>"
-msgstr "<<< Bravo, Mission vollendet >>>"
-
 msgid "<<< Sorry, mission failed >>>"
 msgstr "<<< Mission gescheitert >>>"
 
-msgid "Current mission saved"
-msgstr "Mission gespeichert"
-
-msgid "Checkpoint crossed"
-msgstr "Checkpoint erreicht"
-
-msgid "Alien Queen killed"
-msgstr "Insektenkönigin tödlich verwundet"
-
-msgid "Ant fatally wounded"
-msgstr "Ameise tödlich verwundet"
-
-msgid "Wasp fatally wounded"
-msgstr "Wespe tödlich verwundet"
-
-msgid "Worm fatally wounded"
-msgstr "Wurm tödlich verwundet"
-
-msgid "Spider fatally wounded"
-msgstr "Spinne tödlich verwundet"
-
-msgid "Press \\key help; to read instructions on your SatCom"
-msgstr "Beziehen Sie sich auf Ihren SatCom, indem Sie auf \\key help; drücken"
-
-msgid "Opening bracket missing"
-msgstr "Es fehlt eine offene Klammer \"(\""
-
-msgid "Closing bracket missing "
-msgstr "Es fehlt eine geschlossene Klammer \")\""
-
-msgid "The expression must return a boolean value"
-msgstr "Der Ausdruck muss einen boolschen Wert ergeben"
-
-msgid "Variable not declared"
-msgstr "Variable nicht deklariert"
-
-msgid "Assignment impossible"
-msgstr "Zuweisung unmöglich"
-
-msgid "Semicolon terminator missing"
-msgstr "Es fehlt ein Strichpunkt \";\" am Ende der Anweisung"
-
-msgid "Instruction \"case\" outside a block \"switch\""
-msgstr "Anweisung \"case\" ohne vorhergehende Anweisung \"switch\""
-
-msgid "Instructions after the final closing brace"
-msgstr "Hier ist eine Anweisung nach dem Ende des Programms"
-
-msgid "End of block missing"
-msgstr "Es fehlt eine geschlossene geschweifte Klammer \"}\" (Ende des Blocks)"
-
-msgid "Instruction \"else\" without corresponding \"if\" "
-msgstr "Anweisung \"else\" ohne vorhergehende Anweisung \"if\""
-
-msgid "Opening brace missing "
-msgstr "Es fehlt eine offene geschweifte Klammer\"{\""
-
-msgid "Wrong type for the assignment"
-msgstr "Der Ausdruck ergibt einen falschen Typ für die Zuweisung"
-
-msgid "A variable can not be declared twice"
-msgstr "Eine Variable wird zum zweiten Mal deklariert"
-
-msgid "The types of the two operands are incompatible "
-msgstr "Die zwei Operanden sind nicht kompatibel"
-
-msgid "Unknown function"
-msgstr "Unbekannte Funktion"
-
-msgid "Sign \" : \" missing"
-msgstr "Es fehlt ein Doppelpunkt \" : \""
-
-msgid "Keyword \"while\" missing"
-msgstr "Es fehlt das Wort \"while\""
-
-msgid "Instruction \"break\" outside a loop"
-msgstr "Anweisung \"break\" außerhalb einer Schleife"
+msgid "<<< Well done, mission accomplished >>>"
+msgstr "<<< Bravo, Mission vollendet >>>"
 
 msgid "A label must be followed by \"for\", \"while\", \"do\" or \"switch\""
 msgstr ""
 "Ein Label kann nur vor den Anweisungen \"for\", \"while\", \"do\" oder "
 "\"switch\" vorkommen"
 
-msgid "This label does not exist"
-msgstr "Dieses Label existiert nicht"
+msgid "A variable can not be declared twice"
+msgstr "Eine Variable wird zum zweiten Mal deklariert"
 
-msgid "Instruction \"case\" missing"
-msgstr "Es fehlt eine Anweisung \"case\""
-
-msgid "Number missing"
-msgstr "Es fehlt eine Zahl"
-
-msgid "Void parameter"
-msgstr "Parameter void"
-
-msgid "Type declaration missing"
-msgstr "Hier muss ein Variablentyp stehen"
-
-msgid "Variable name missing"
-msgstr "Es fehlt der Name einer Variable"
-
-msgid "Function name missing"
-msgstr "Hier muss der Name der Funktion stehen"
-
-msgid "Too many parameters"
-msgstr "Zu viele Parameter"
-
-msgid "Function already exists"
-msgstr "Diese Funktion gibt es schon"
-
-msgid "Parameters missing "
-msgstr "Nicht genug Parameter"
-
-msgid "No function with this name accepts this kind of parameter"
-msgstr "Keine Funktion mit diesem Namen verträgt Parameter diesen Typs"
-
-msgid "No function with this name accepts this number of parameters"
-msgstr "Keine Funktion mit diesem Namen verträgt diese Anzahl Parameter"
-
-msgid "This is not a member of this class"
-msgstr "Dieses Element gibt es nicht in dieser Klasse"
-
-msgid "This object is not a member of a class"
-msgstr "Das Objekt ist nicht eine Instanz einer Klasse"
-
-msgid "Appropriate constructor missing"
-msgstr "Es gibt keinen geeigneten Konstruktor"
-
-msgid "This class already exists"
-msgstr "Diese Klasse gibt es schon"
-
-msgid "\" ] \" missing"
-msgstr "Es fehlt eine geschlossene eckige Klammer \" ] \""
-
-msgid "Reserved keyword of CBOT language"
-msgstr "Dieses Wort ist reserviert"
-
-msgid "Bad argument for \"new\""
-msgstr "Falsche Argumente für \"new\""
-
-msgid "\" [ \" expected"
-msgstr "Es fehlt eine offene eckige Klammer \" [ \""
-
-msgid "String missing"
-msgstr "Hier wird eine Zeichenkette erwartet"
-
-msgid "Incorrect index type"
-msgstr "Falscher Typ für einen Index"
-
-msgid "Private element"
-msgstr "Geschütztes Element (private)"
-
-msgid "Public required"
-msgstr "Hier muss das Wort \"public\" stehen"
-
-msgid "Dividing by zero"
-msgstr "Teilung durch Null"
-
-msgid "Variable not initialized"
-msgstr "Der Wert dieser Variable wurde nicht definiert"
-
-msgid "Negative value rejected by \"throw\""
-msgstr "Negativer Wert ungeeignet für Anweisung \"throw\""
-
-msgid "The function returned no value "
-msgstr "Die Funktion hat kein Ergebnis zurückgegeben"
-
-msgid "No function running"
-msgstr "Keine Funktion wird ausgeführt"
-
-msgid "Calling an unknown function"
-msgstr "Die aufgerufene Funktion existiert nicht"
-
-msgid "This class does not exist"
-msgstr "Diese Klasse existiert nicht"
-
-msgid "Unknown Object"
-msgstr "Das Objekt existiert nicht"
-
-msgid "Operation impossible with value \"nan\""
-msgstr "Operation mit dem Wert \"nan\""
+msgid "Abort\\Abort the current mission"
+msgstr "Abbrechen\\Mission abbrechen"
 
 msgid "Access beyond array limit"
 msgstr "Zugriff im Array außerhalb der Grenzen"
 
-msgid "Stack overflow"
-msgstr "Stack overflow"
+msgid ""
+"Access to solution\\Shows the solution (detailed instructions for missions)"
+msgstr "Zeigt die Lösung\\Zeigt nach 3mal Scheitern die Lösung"
 
-msgid "Illegal object"
-msgstr "Objekt nicht verfügbar"
+msgid "Access to solutions\\Show program \"4: Solution\" in the exercises"
+msgstr ""
+"Lösung zugänglich\\Die Lösung ist im Programmslot \"4: Lösung\" zugänglich"
 
-msgid "Can't open file"
-msgstr "Die Datei kann nicht geöffnet werden"
+msgid "Alien Queen"
+msgstr "Insektenkönigin"
 
-msgid "File not open"
-msgstr "Die Datei wurde nicht geöffnet"
+msgid "Alien Queen killed"
+msgstr "Insektenkönigin tödlich verwundet"
 
-msgid "Read error"
-msgstr "Fehler beim Lesezugriff"
+msgid "Already carrying something"
+msgstr "Trägt schon etwas"
 
-msgid "Write error"
-msgstr "Fehler beim Schreibzugriff"
+msgid "Alt"
+msgstr "Alt"
 
-msgid "< none >"
-msgstr "< keine >"
+msgid "Analysis already performed"
+msgstr "Analyse schon durchgeführt"
+
+msgid "Analysis performed"
+msgstr "Analyse vollendet"
+
+msgid "Analyzes only organic matter"
+msgstr "Analysiert nur Orgastoff"
+
+msgid "Ant"
+msgstr "Ameise"
+
+msgid "Ant fatally wounded"
+msgstr "Ameise tödlich verwundet"
+
+msgid "Appearance\\Choose your appearance"
+msgstr "Aussehen\\Erscheinungsbild des Astronauten einstellen"
+
+msgid "Application key"
+msgstr "Application key"
+
+msgid "Apply changes\\Activates the changed settings"
+msgstr "Änderungen ausführen\\Getätigte Einstellungen ausführen"
+
+msgid "Appropriate constructor missing"
+msgstr "Es gibt keinen geeigneten Konstruktor"
+
+msgid "Arrow down"
+msgstr "Pfeil nach unten"
 
 msgid "Arrow left"
 msgstr "Pfeiltaste links"
@@ -1752,158 +167,434 @@ msgstr "Pfeiltaste rechts"
 msgid "Arrow up"
 msgstr "Pfeil nach oben"
 
-msgid "Arrow down"
-msgstr "Pfeil nach unten"
+msgid "Assignment impossible"
+msgstr "Zuweisung unmöglich"
 
-msgid "Control-break"
-msgstr "Ctrl-Break"
+msgid "Attn"
+msgstr "Attn"
 
-msgid "<--"
-msgstr "<--"
+msgid "Autolab"
+msgstr "Automatisches Labor"
 
-msgid "Tab"
-msgstr "Tab"
+msgid "Automatic indent\\When program editing"
+msgstr "Automatisches Einrücken\\Beim Bearbeiten der Programme"
 
-msgid "Clear"
-msgstr "Clear"
+msgid "Back"
+msgstr "Vorherg. Seite"
 
-msgid "Enter"
-msgstr "Eingabe"
+msgid "Background sound :\\Volume of audio tracks on the CD"
+msgstr "Geräuschkulisse:\\Lautstärke der Soundtracks der CD"
 
-msgid "Shift"
-msgstr "Shift"
+msgid "Backward (\\key down;)"
+msgstr "Rückwärts (\\key down;)"
 
-msgid "Ctrl"
-msgstr "Ctrl"
+msgid "Backward\\Moves backward"
+msgstr "Rückwärts\\Bewegung nach hinten"
 
-msgid "Alt"
-msgstr "Alt"
+msgid "Bad argument for \"new\""
+msgstr "Falsche Argumente für \"new\""
 
-msgid "Pause"
-msgstr "Pause"
+msgid "Big indent\\Indent 2 or 4 spaces per level defined by braces"
+msgstr "Einrücken mit 4 Leerstellen\\Einrücken mit 2 oder 4 Leerstellen"
+
+msgid "Black box"
+msgstr "Flugschreiber"
+
+msgid "Blue"
+msgstr "Blau"
+
+msgid "Blue flag"
+msgstr "Blaue Fahne"
+
+msgid "Bot destroyed"
+msgstr "Roboter zerstört"
+
+msgid "Bot factory"
+msgstr "Roboterfabrik"
+
+msgid "Build a bot factory"
+msgstr "Baut eine Roboterfabrik"
+
+msgid "Build a converter"
+msgstr "Baut einen Konverter"
+
+msgid "Build a defense tower"
+msgstr "Baut einen Geschützturm"
+
+msgid "Build a derrick"
+msgstr "Baut einen Bohrturm"
+
+msgid "Build a exchange post"
+msgstr "Baut einen Infoserver"
+
+msgid "Build a legged grabber"
+msgstr "Baut einen Krabbeltransporter"
+
+msgid "Build a legged orga shooter"
+msgstr "Baut einen Krabbelorgashooter"
+
+msgid "Build a legged shooter"
+msgstr "Baut einen Krabbelshooter"
+
+msgid "Build a legged sniffer"
+msgstr "Baut einen Krabbelschnüffler"
+
+msgid "Build a lightning conductor"
+msgstr "Baut einen Blitzableiter"
+
+msgid "Build a nuclear power plant"
+msgstr "Baut eine Brennstoffzellenfabrik"
+
+msgid "Build a phazer shooter"
+msgstr "Baut einen Phazershooter"
+
+msgid "Build a power cell factory"
+msgstr "Baut eine Batteriefabrik"
+
+msgid "Build a power station"
+msgstr "Baut ein Kraftwerk"
+
+msgid "Build a radar station"
+msgstr "Baut ein Radar"
+
+msgid "Build a recycler"
+msgstr "Baut einen Recycler"
+
+msgid "Build a repair center"
+msgstr "Baut ein Reparaturzentrum"
+
+msgid "Build a research center"
+msgstr "Baut ein Forschungszentrum"
+
+msgid "Build a shielder"
+msgstr "Baut einen Schutzschild"
+
+msgid "Build a subber"
+msgstr "Baut einen Kettentaucher"
+
+msgid "Build a thumper"
+msgstr "Baut einen Stampfer"
+
+msgid "Build a tracked grabber"
+msgstr "Baut einen Kettentransporter"
+
+msgid "Build a tracked orga shooter"
+msgstr "Baut einen Kettenorgashooter"
+
+msgid "Build a tracked shooter"
+msgstr "Baut einen Kettenshooter"
+
+msgid "Build a tracked sniffer"
+msgstr "Baut einen Kettenschnüffler"
+
+msgid "Build a wheeled grabber"
+msgstr "Baut einen Radtransporter"
+
+msgid "Build a wheeled orga shooter"
+msgstr "Baut einen Radorgashooter"
+
+msgid "Build a wheeled shooter"
+msgstr "Baut einen Radshooter"
+
+msgid "Build a wheeled sniffer"
+msgstr "Baut einen Radschnüffler"
+
+msgid "Build a winged grabber"
+msgstr "Baut einen Jettransporter"
+
+msgid "Build a winged orga shooter"
+msgstr "Baut einen Jetorgashooter"
+
+msgid "Build a winged shooter"
+msgstr "Baut einen Jetshooter"
+
+msgid "Build a winged sniffer"
+msgstr "Baut einen Jetschnüffler"
+
+msgid "Build an autolab"
+msgstr "Baut ein automatisches Labor"
+
+msgid "Building completed"
+msgstr "Gebäude fertiggestellt"
+
+msgid "Building destroyed"
+msgstr "Gebäude zerstört"
+
+msgid "Building too close"
+msgstr "Gebäude zu nahe"
+
+msgid "Button %1"
+msgstr "Knopf %1"
+
+msgid "COLOBOT"
+msgstr "COLOBOT"
+
+msgid "Calling an unknown function"
+msgstr "Die aufgerufene Funktion existiert nicht"
+
+msgid "Camera (\\key camera;)"
+msgstr "Kamera (\\key camera;)"
+
+msgid "Camera awayest"
+msgstr "Kamera weiter weg"
+
+msgid "Camera back\\Moves the camera backward"
+msgstr "Kamera weiter\\Bewegung der Kamera rückwärts"
+
+msgid "Camera closer\\Moves the camera forward"
+msgstr "Kamera näher\\Bewegung der Kamera vorwärts"
+
+msgid "Camera nearest"
+msgstr "Kamera näher"
+
+msgid "Camera to left"
+msgstr "Kamera links"
+
+msgid "Camera to right"
+msgstr "Kamera rechts"
+
+msgid "Can not create this, there are too many objects"
+msgstr "Kein neues Objekt kann erstellt werden (zu viele vorhanden)"
+
+msgid "Can't open file"
+msgstr "Die Datei kann nicht geöffnet werden"
+
+msgid "Cancel"
+msgstr "Abbrechen"
+
+msgid "Cancel\\Cancel all changes"
+msgstr "Abbrechen\\Editor schließen"
+
+msgid "Cancel\\Keep current player name"
+msgstr "Abbrechen\\Behält den bisherigen Spieler bei"
 
 msgid "Caps Lock"
 msgstr "Caps Lock"
 
-msgid "Esc"
-msgstr "Esc"
+msgid "Challenges"
+msgstr "Challenges"
 
-msgid "Space"
-msgstr "Leertaste"
+msgid "Challenges\\Programming challenges"
+msgstr "Challenges\\Herausforderungen"
 
-msgid "Page Up"
-msgstr "Page Up"
+msgid "Change camera\\Switches between onboard camera and following camera"
+msgstr "Andere Kamera\\Sichtpunkt einstellen"
 
-msgid "Page Down"
-msgstr "Page Down"
+msgid "Checkpoint"
+msgstr "Checkpoint"
 
-msgid "End"
-msgstr "End"
+msgid "Checkpoint crossed"
+msgstr "Checkpoint erreicht"
 
-msgid "Home Key"
-msgstr "Home"
+msgid "Clear"
+msgstr "Clear"
 
-msgid "Select"
-msgstr "Select"
+msgid "Climb\\Increases the power of the jet"
+msgstr "Steigen\\Leistung des Triebwerks steigern"
 
-msgid "Execute"
-msgstr "Execute"
+msgid "Close"
+msgstr "Schließen"
 
-msgid "Print Scrn"
-msgstr "Print Scrn"
+msgid "Closing bracket missing "
+msgstr "Es fehlt eine geschlossene Klammer \")\""
 
-msgid "Insert"
-msgstr "Insert"
+msgid "Colobot Gold"
+msgstr "Colobot Gold"
+
+msgid "Colobot rules!"
+msgstr "Colobot ist wunderbar!"
+
+msgid "Command line"
+msgstr "Befehleingabe"
+
+msgid "Compass"
+msgstr "Kompass"
+
+msgid "Compilation ok (0 errors)"
+msgstr "Kompilieren OK (0 Fehler)"
+
+msgid "Compile"
+msgstr "Kompilieren"
+
+msgid "Continue"
+msgstr "Weitermachen"
+
+msgid "Continue\\Continue the current mission"
+msgstr "Weitermachen\\Mission weitermachen"
+
+msgid "Continue\\Continue the game"
+msgstr "Weitermachen\\Weitermachen"
+
+msgid "Control-break"
+msgstr "Ctrl-Break"
+
+msgid "Controls\\Keyboard, joystick and mouse settings"
+msgstr "Steuerung\\Auswahl der Tasten"
+
+msgid "Converts ore to titanium"
+msgstr "Konverter Erz-Titan"
+
+msgid "Copy"
+msgstr "Kopieren"
+
+msgid "Copy (Ctrl+c)"
+msgstr "Kopieren (Ctrl+c)"
+
+msgid "CrSel"
+msgstr "CrSel"
+
+msgid "Ctrl"
+msgstr "Ctrl"
+
+msgid "Current mission saved"
+msgstr "Mission gespeichert"
+
+msgid "Customize your appearance"
+msgstr "Aussehen einstellen"
+
+msgid "Cut (Ctrl+x)"
+msgstr "Ausschneiden (Ctrl+x)"
+
+msgid "Defense tower"
+msgstr "Geschützturm"
+
+msgid "Delete"
+msgstr "Zerstören"
 
 msgid "Delete Key"
 msgstr "Delete"
 
-msgid "Help"
-msgstr "Help"
+msgid "Delete player\\Deletes the player from the list"
+msgstr "Spieler löschen\\Löscht den Spieler aus der Liste"
 
-msgid "Left Windows"
-msgstr "Left Windows"
+msgid "Delete\\Deletes the selected file"
+msgstr "Löschen\\Löscht die gespeicherte Mission"
 
-msgid "Right Windows"
-msgstr "Right Windows"
+msgid "Depth of field\\Maximum visibility"
+msgstr "Sichtweite\\Maximale Sichtweite"
 
-msgid "Application key"
-msgstr "Application key"
+msgid "Derrick"
+msgstr "Bohrturm"
 
-msgid "NumPad 0"
-msgstr "NumPad 0"
+msgid "Descend\\Reduces the power of the jet"
+msgstr "Sinken\\Leistung des Triebwerks drosseln"
 
-msgid "NumPad 1"
-msgstr "NumPad 1"
+msgid "Destroy the building"
+msgstr "Gebäude sprengen"
 
-msgid "NumPad 2"
-msgstr "NumPad 2"
+msgid "Destroyer"
+msgstr "Einstampfer"
 
-msgid "NumPad 3"
-msgstr "NumPad 3"
+msgid "Details\\Visual quality of 3D objects"
+msgstr "Details\\Detailliertheit der Objekte in 3D"
 
-msgid "NumPad 4"
-msgstr "NumPad 4"
+msgid "Developed by :"
+msgstr "Entwickelt von:"
 
-msgid "NumPad 5"
-msgstr "NumPad 5"
+msgid "Device\\Driver and resolution settings"
+msgstr "Bildschirm\\Driver und Bildschirmauflösung"
 
-msgid "NumPad 6"
-msgstr "NumPad 6"
+msgid "Dictionnary"
+msgstr "Wörterbuch Englisch-Deutsch"
 
-msgid "NumPad 7"
-msgstr "NumPad 7"
+msgid "Disintegrator"
+msgstr "Auflöser"
 
-msgid "NumPad 8"
-msgstr "NumPad 8"
+msgid "Dividing by zero"
+msgstr "Teilung durch Null"
 
-msgid "NumPad 9"
-msgstr "NumPad 9"
+msgid "Do not use in this exercise"
+msgstr "In dieser Übung verboten"
 
-msgid "NumPad *"
-msgstr "NumPad *"
+msgid "Do you really want to destroy the selected building?"
+msgstr "Wollen Sie das angewählte Gebäude wirklich zerstören ?"
 
-msgid "NumPad +"
-msgstr "NumPad +"
+msgid "Do you want to delete %s's saved games? "
+msgstr "Wollen Sie die gespeicherten Missionen von %s löschen ?"
 
-msgid "NumPad sep"
-msgstr "NumPad sep"
+msgid "Do you want to quit COLOBOT ?"
+msgstr "Wollen Sie COLOBOT schließen ?"
 
-msgid "NumPad -"
-msgstr "NumPad -"
+msgid "Doors blocked by a robot or another object "
+msgstr "Die Türen werden von einem Gegenstand blockiert"
 
-msgid "NumPad ."
-msgstr "NumPad ."
+msgid "Down (\\key gdown;)"
+msgstr "Sinkt (\\key gdown;)"
 
-msgid "NumPad /"
-msgstr "NumPad /"
+msgid "Drawer bot"
+msgstr "Zeichner"
+
+msgid "Dust\\Dust and dirt on bots and buildings"
+msgstr "Schmutz\\Schmutz auf Robotern und Bauten"
+
+msgid "Dynamic lighting\\Mobile light sources"
+msgstr "Dynamische Beleuchtung\\Dynamische Beleuchtung"
+
+msgid "Edit the selected program"
+msgstr "Gewähltes Programm bearbeiten"
+
+msgid "Egg"
+msgstr "Ei"
+
+msgid "End"
+msgstr "End"
+
+msgid "End of block missing"
+msgstr "Es fehlt eine geschlossene geschweifte Klammer \"}\" (Ende des Blocks)"
+
+msgid "Energy deposit (site for power station)"
+msgstr "Markierung für unterirdische Energiequelle"
+
+msgid "Energy level"
+msgstr "Energievorrat"
+
+msgid "Engineer"
+msgstr "Techniker"
+
+msgid "Enter"
+msgstr "Eingabe"
+
+msgid "Erase EOF"
+msgstr "Erase EOF"
+
+msgid "Error"
+msgstr "Fehler"
+
+msgid "Error in instruction move"
+msgstr "Ziel kann nicht erreicht werden"
+
+msgid "Esc"
+msgstr "Esc"
+
+msgid "ExSel"
+msgstr "ExSel"
+
+msgid "Execute"
+msgstr "Execute"
+
+msgid "Execute the selected program"
+msgstr "Gewähltes Programm ausführen"
+
+msgid "Execute/stop"
+msgstr "Start/Stop"
+
+msgid "Exercises\\Programming exercises"
+msgstr "Programmieren\\Programmierübungen"
+
+msgid "Exit film\\Film at the exit of exercises"
+msgstr "Zurücksetzen \\Kleine Show beim Zurücksetzen in den Übungen"
+
+msgid "Explosive"
+msgstr "Sprengstoff"
+
+msgid "Extend shield (\\key action;)"
+msgstr "Schutzschild ausfahren (\\key action;)"
+
+msgid "Eyeglasses:"
+msgstr "Brille:"
 
 msgid "F1"
 msgstr "F1"
-
-msgid "F2"
-msgstr "F2"
-
-msgid "F3"
-msgstr "F3"
-
-msgid "F4"
-msgstr "F4"
-
-msgid "F5"
-msgstr "F5"
-
-msgid "F6"
-msgstr "F6"
-
-msgid "F7"
-msgstr "F7"
-
-msgid "F8"
-msgstr "F8"
-
-msgid "F9"
-msgstr "F9"
 
 msgid "F10"
 msgstr "F10"
@@ -1935,41 +626,1350 @@ msgstr "F18"
 msgid "F19"
 msgstr "F19"
 
+msgid "F2"
+msgstr "F2"
+
 msgid "F20"
 msgstr "F20"
+
+msgid "F3"
+msgstr "F3"
+
+msgid "F4"
+msgstr "F4"
+
+msgid "F5"
+msgstr "F5"
+
+msgid "F6"
+msgstr "F6"
+
+msgid "F7"
+msgstr "F7"
+
+msgid "F8"
+msgstr "F8"
+
+msgid "F9"
+msgstr "F9"
+
+msgid "Face type:"
+msgstr "Kopf:"
+
+msgid "File not open"
+msgstr "Die Datei wurde nicht geöffnet"
+
+msgid "Filename:"
+msgstr "Dateiname:"
+
+msgid "Film sequences\\Films before and after the missions"
+msgstr "Filme\\Filme vor und nach den Missionen"
+
+msgid "Finish"
+msgstr "Zielfläche"
+
+msgid "Fixed mine"
+msgstr "Landmine"
+
+msgid "Flat ground not large enough"
+msgstr "Ebener Boden nicht groß genug"
+
+msgid "Fog\\Fog"
+msgstr "Nebel\\Nebelschwaden"
+
+msgid "Folder:"
+msgstr "In:"
+
+msgid "Folder: %s"
+msgstr "Ordner: %s"
+
+msgid "Font size"
+msgstr "Zeichengröße"
+
+msgid "Forward"
+msgstr "Nächste Seite"
+
+msgid "Forward (\\key up;)"
+msgstr "Vorwärts (\\key up;)"
+
+msgid "Forward\\Moves forward"
+msgstr "Vorwärts\\Bewegung nach vorne"
+
+msgid "Found a site for a derrick"
+msgstr "Geeignete Stelle für Bohrturm gefunden"
+
+msgid "Found a site for power station"
+msgstr "Geeignete Stelle für Kraftwerk gefunden"
+
+msgid "Found key A (site for derrick)"
+msgstr "Markierung für vergrabenen Schlüssel A"
+
+msgid "Found key B (site for derrick)"
+msgstr "Markierung für vergrabenen Schlüssel B"
+
+msgid "Found key C (site for derrick)"
+msgstr "Markierung für vergrabenen Schlüssel C"
+
+msgid "Found key D (site for derrick)"
+msgstr "Markierung für vergrabenen Schlüssel D"
+
+msgid "Free game"
+msgstr "Freestyle"
+
+msgid "Free game\\Free game without a specific goal"
+msgstr "Freestyle\\Freies Spielen ohne vorgegebenes Ziel"
+
+msgid "Friendly fire\\Your shooting can damage your own objects "
+msgstr "Eigenbeschuss\\Ihre Einheiten werden von Ihren Waffen beschädigt"
+
+msgid "Full screen\\Full screen or window mode"
+msgstr "Vollbildschirm\\Vollbildschirm oder Fenster"
+
+msgid "Function already exists"
+msgstr "Diese Funktion gibt es schon"
+
+msgid "Function name missing"
+msgstr "Hier muss der Name der Funktion stehen"
+
+msgid "Game speed"
+msgstr "Spielgeschwindigkeit"
+
+msgid "Game\\Game settings"
+msgstr "Spiel\\Gameplay Einstellungen"
+
+msgid "Gantry crane"
+msgstr "Träger"
+
+msgid "Goto: destination occupied"
+msgstr "Ziel ist schon besetzt"
+
+msgid "Goto: inaccessible destination"
+msgstr "Ziel kann nicht erreicht werden"
+
+msgid "Grab or drop (\\key action;)"
+msgstr "Nehmen oder hinlegen  (\\key action;)"
+
+msgid "Graphics\\Graphics settings"
+msgstr "Grafik\\Grafische Einstellungen"
+
+msgid "Green"
+msgstr "Grün"
+
+msgid "Green flag"
+msgstr "Grüne Fahne"
+
+msgid "Ground inappropriate"
+msgstr "Boden ungeeignet"
+
+msgid "Ground not flat enough"
+msgstr "Boden nicht eben genug"
+
+msgid "Hair color:"
+msgstr "Haarfarbe:"
+
+msgid "Head\\Face and hair"
+msgstr "Kopf\\Gesicht und Haare"
+
+msgid "Help"
+msgstr "Help"
+
+msgid "Help about selected object"
+msgstr "Anweisungen über das ausgewählte Objekt"
+
+msgid "Help balloons\\Explain the function of the buttons"
+msgstr "Hilfsblasen\\Hilfsblasen"
+
+msgid "Highest\\Highest graphic quality (lowest frame rate)"
+msgstr "Max.\\Beste Qualität (niedriges Framerate)"
+
+msgid "Home"
+msgstr "Home"
+
+msgid "Home Key"
+msgstr "Home"
+
+msgid "Houston Mission Control"
+msgstr "Kontrollzentrum"
+
+msgid "Illegal object"
+msgstr "Objekt nicht verfügbar"
+
+msgid "Impossible under water"
+msgstr "Unter Wasser unmöglich"
+
+msgid "Impossible when carrying an object"
+msgstr "Unmöglich wenn Sie etwas tragen"
+
+msgid "Impossible when flying"
+msgstr "Im Flug unmöglich"
+
+msgid "Impossible when moving"
+msgstr "In Fahrt unmöglich"
+
+msgid "Impossible when swimming"
+msgstr "Im Wasser unmöglich"
+
+msgid "Inappropriate bot"
+msgstr "Roboter ungeeignet"
+
+msgid "Inappropriate cell type"
+msgstr "Falscher Batterietyp"
+
+msgid "Incorrect index type"
+msgstr "Falscher Typ für einen Index"
+
+msgid "Infected by a virus, temporarily out of order"
+msgstr "Von Virus infiziert, zeitweise außer Betrieb"
+
+msgid "Information exchange post"
+msgstr "Infoserver"
+
+msgid "Insert"
+msgstr "Insert"
+
+msgid "Instruction \"break\" outside a loop"
+msgstr "Anweisung \"break\" außerhalb einer Schleife"
+
+msgid "Instruction \"case\" missing"
+msgstr "Es fehlt eine Anweisung \"case\""
+
+msgid "Instruction \"case\" outside a block \"switch\""
+msgstr "Anweisung \"case\" ohne vorhergehende Anweisung \"switch\""
+
+msgid "Instruction \"else\" without corresponding \"if\" "
+msgstr "Anweisung \"else\" ohne vorhergehende Anweisung \"if\""
+
+msgid "Instructions (\\key help;)"
+msgstr "Anweisungen (\\key help;)"
+
+msgid "Instructions after the final closing brace"
+msgstr "Hier ist eine Anweisung nach dem Ende des Programms"
+
+msgid "Instructions for the mission (\\key help;)"
+msgstr "Anweisungen über die Mission(\\key help;)"
+
+msgid "Instructions from Houston"
+msgstr "Anweisungen von Houston"
+
+msgid "Instructions\\Shows the instructions for the current mission"
+msgstr "Anweisungen\\Anweisungen für die Mission oder Übung"
+
+msgid "Jet temperature"
+msgstr "Triebwerktemperatur"
+
+msgid "Key A"
+msgstr "Schlüssel A"
+
+msgid "Key B"
+msgstr "Schlüssel B"
+
+msgid "Key C"
+msgstr "Schlüssel C"
+
+msgid "Key D"
+msgstr "Schlüssel D"
+
+msgid "Key word help\\More detailed help about key words"
+msgstr "Hilfe über Begriff\\Hilfe über einen Begriff"
+
+msgid "Keyword \"while\" missing"
+msgstr "Es fehlt das Wort \"while\""
+
+msgid "Keyword help(\\key cbot;)"
+msgstr "Hilfe über den Begriff (\\key cbot;)"
+
+msgid "LOADING"
+msgstr "Laden"
+
+msgid "Left Windows"
+msgstr "Left Windows"
+
+msgid "Legged grabber"
+msgstr "Transporter"
+
+msgid "Legged orga shooter"
+msgstr "OrgaShooter"
+
+msgid "Legged shooter"
+msgstr "Shooter"
+
+msgid "Legged sniffer"
+msgstr "Schnüffler"
+
+msgid "Lightning conductor"
+msgstr "Blitzableiter"
+
+msgid "List of objects"
+msgstr "Liste der Objekte"
+
+msgid "List of saved missions"
+msgstr "Liste der gespeicherten Missionen"
+
+msgid "Load a saved mission"
+msgstr "Gespeicherte Mission laden"
+
+msgid "Load\\Load a saved mission"
+msgstr "Laden\\Eine gespeicherte Mission öffnen"
+
+msgid "Load\\Loads the selected mission"
+msgstr "Laden\\Öffnet eine gespeicherte Mission"
+
+msgid "Lowest\\Minimum graphic quality (highest frame rate)"
+msgstr "Min.\\Minimale Qualität (großes Framerate)"
+
+msgid "Lunar Roving Vehicle"
+msgstr "Lunar Roving Vehicle"
+
+msgid "Marks on the ground\\Marks on the ground"
+msgstr "Markierungen\\Markierungen auf dem Boden"
+
+msgid "Maximize"
+msgstr "Großes Fenster"
+
+msgid "Menu (\\key quit;)"
+msgstr "Menü (\\key quit;)"
+
+msgid "Mini-map"
+msgstr "Minikarte"
+
+msgid "Minimize"
+msgstr "Reduzieren"
+
+msgid "Mission name"
+msgstr "Name der Mission"
+
+msgid "Missions"
+msgstr "Missionen"
+
+msgid "Missions\\Select mission"
+msgstr "Missionen\\Aufbruch ins Weltall"
+
+msgid "Mouse inversion X\\Inversion of the scrolling direction on the X axis"
+msgstr "Umkehr X\\Umkehr der Kameradrehung X-Achse"
+
+msgid "Mouse inversion Y\\Inversion of the scrolling direction on the Y axis"
+msgstr "Umkehr Y\\Umkehr der Kameradrehung Y-Achse"
+
+msgid "Mouse shadow\\Gives the mouse a shadow"
+msgstr "Schatten unter der Maus\\Ein Schatten erscheint unter der Maus"
+
+msgid "Mute\\No sound"
+msgstr "Kein Ton\\Keine Geräusche und Geräuschkulisse"
+
+msgid "Name:"
+msgstr "Name:"
+
+msgid "Negative value rejected by \"throw\""
+msgstr "Negativer Wert ungeeignet für Anweisung \"throw\""
+
+msgid "Nest"
+msgstr "Orgastoffquelle"
+
+msgid "New"
+msgstr "Neu"
+
+msgid "New ..."
+msgstr "Neu ..."
+
+msgid "New bot available"
+msgstr "Neuer Roboter verfügbar"
+
+msgid "New player\\Choose player's name"
+msgstr "Anderer Spieler\\Spielername ändern"
+
+msgid "Next"
+msgstr "Nächster"
+
+msgid "Next object\\Selects the next object"
+msgstr "Nächstes auswählen\\Nächstes Objekt auswählen"
+
+msgid "No energy in the subsoil"
+msgstr "Kein unterirdisches Energievorkommen"
+
+msgid "No flag nearby"
+msgstr "Keine Fahne in Reichweite"
+
+msgid "No function running"
+msgstr "Keine Funktion wird ausgeführt"
+
+msgid "No function with this name accepts this kind of parameter"
+msgstr "Keine Funktion mit diesem Namen verträgt Parameter diesen Typs"
+
+msgid "No function with this name accepts this number of parameters"
+msgstr "Keine Funktion mit diesem Namen verträgt diese Anzahl Parameter"
+
+msgid "No information exchange post within range"
+msgstr "Kein Infoserver in Reichweite"
+
+msgid "No more energy"
+msgstr "Keine Energie mehr"
+
+msgid "No ore in the subsoil"
+msgstr "Keine unterirdische Erzlagerstätte"
+
+msgid "No other robot"
+msgstr "Kein anderer Roboter"
+
+msgid "No power cell"
+msgstr "Keine Batterie"
+
+msgid "No titanium"
+msgstr "Kein Titan vorhanden"
+
+msgid "No titanium around"
+msgstr "Kein Titan vorhanden"
+
+msgid "No titanium ore to convert"
+msgstr "Kein konvertierbares Titanerz vorhanden"
+
+msgid "No titanium to transform"
+msgstr "Kein konvertierbares Titanerz vorhanden"
+
+msgid "No uranium to transform"
+msgstr "Kein konvertierbares Platin"
+
+msgid "Normal size"
+msgstr "Normale Größe"
+
+msgid "Normal\\Normal graphic quality"
+msgstr "Normal\\Standardqualität"
+
+msgid "Normal\\Normal sound volume"
+msgstr "Normal\\Normale Lautstärke"
+
+msgid "Not enough energy"
+msgstr "Nicht genug Energie"
+
+msgid "Not enough energy yet"
+msgstr "Noch nicht genug Energie"
+
+msgid "Not yet enough energy"
+msgstr "Noch nicht genug Energie"
+
+msgid "Nothing to analyze"
+msgstr "Nichts zu analysieren"
+
+msgid "Nothing to drop"
+msgstr "Nichts abzulegen"
+
+msgid "Nothing to grab"
+msgstr "Nichts zu ergreifen"
+
+msgid "Nothing to recycle"
+msgstr "Nichts zu recyceln"
+
+msgid "Nuclear power cell"
+msgstr "Brennstoffzelle"
+
+msgid "Nuclear power cell available"
+msgstr "Brennstoffzelle verfügbar"
+
+msgid "Nuclear power station"
+msgstr "Brennstoffzellenfabrik"
 
 msgid "Num Lock"
 msgstr "Num Lock"
 
-msgid "Scroll"
-msgstr "Scroll"
+msgid "Num of decorative objects\\Number of purely ornamental objects"
+msgstr "Anzahl Ziergegenstände\\Anzahl Gegenstände ohne Funktion"
 
-msgid "Attn"
-msgstr "Attn"
+msgid "NumPad *"
+msgstr "NumPad *"
 
-msgid "CrSel"
-msgstr "CrSel"
+msgid "NumPad +"
+msgstr "NumPad +"
 
-msgid "ExSel"
-msgstr "ExSel"
+msgid "NumPad -"
+msgstr "NumPad -"
 
-msgid "Erase EOF"
-msgstr "Erase EOF"
+msgid "NumPad ."
+msgstr "NumPad ."
 
-msgid "Play"
-msgstr "Play"
+msgid "NumPad /"
+msgstr "NumPad /"
 
-msgid "Zoom"
-msgstr "Zoom"
+msgid "NumPad 0"
+msgstr "NumPad 0"
+
+msgid "NumPad 1"
+msgstr "NumPad 1"
+
+msgid "NumPad 2"
+msgstr "NumPad 2"
+
+msgid "NumPad 3"
+msgstr "NumPad 3"
+
+msgid "NumPad 4"
+msgstr "NumPad 4"
+
+msgid "NumPad 5"
+msgstr "NumPad 5"
+
+msgid "NumPad 6"
+msgstr "NumPad 6"
+
+msgid "NumPad 7"
+msgstr "NumPad 7"
+
+msgid "NumPad 8"
+msgstr "NumPad 8"
+
+msgid "NumPad 9"
+msgstr "NumPad 9"
+
+msgid "NumPad sep"
+msgstr "NumPad sep"
+
+msgid "Number missing"
+msgstr "Es fehlt eine Zahl"
+
+msgid "Number of insects detected"
+msgstr "Anzahl erfasster Insekten"
+
+msgid "Number of particles\\Explosions, dust, reflections, etc."
+msgstr "Anzahl Partikel\\Explosionen, Staub, usw."
+
+msgid "OK"
+msgstr "OK"
+
+msgid "OK\\Choose the selected player"
+msgstr "OK\\Spieler auswählen"
+
+msgid "OK\\Close program editor and return to game"
+msgstr "OK\\Programm kompilieren"
+
+msgid "Object not found"
+msgstr "Das Objekt existiert nicht"
+
+msgid "Object too close"
+msgstr "Gegenstand zu nahe"
+
+msgid "One step"
+msgstr "Ein Schritt"
+
+msgid "Open"
+msgstr "Öffnen"
+
+msgid "Open (Ctrl+o)"
+msgstr "Öffnen (Ctrl+o)"
+
+msgid "Opening brace missing "
+msgstr "Es fehlt eine offene geschweifte Klammer\"{\""
+
+msgid "Opening bracket missing"
+msgstr "Es fehlt eine offene Klammer \"(\""
+
+msgid "Operation impossible with value \"nan\""
+msgstr "Operation mit dem Wert \"nan\""
+
+msgid "Options"
+msgstr "Einstellungen"
+
+msgid "Options\\Preferences"
+msgstr "Einstellungen\\Einstellungen"
+
+msgid "Organic matter"
+msgstr "Orgastoff"
+
+msgid "Origin of last message\\Shows where the last message was sent from"
+msgstr "Ort der Meldung\\Zeigt den Ort, von dem die letzte Meldung stammt"
 
 msgid "PA1"
 msgstr "PA1"
 
-msgid "Button %1"
-msgstr "Knopf %1"
+msgid "Page Down"
+msgstr "Page Down"
+
+msgid "Page Up"
+msgstr "Page Up"
+
+msgid "Parameters missing "
+msgstr "Nicht genug Parameter"
+
+msgid "Particles in the interface\\Steam clouds and sparks in the interface"
+msgstr "Partikel in den Menüs\\Funken und Sterne in den Menüs"
+
+msgid "Paste (Ctrl+v)"
+msgstr "Einfügen (Ctrl+v)"
+
+msgid "Pause"
+msgstr "Pause"
+
+msgid "Pause/continue"
+msgstr "Pause/Weitermachen"
+
+msgid "Phazer shooter"
+msgstr "Phazershooter"
+
+msgid "Photography"
+msgstr "Ansicht der Mission"
+
+msgid "Place occupied"
+msgstr "Stelle schon besetzt"
+
+msgid "Planets and stars\\Astronomical objects in the sky"
+msgstr "Planeten und Sterne\\Kreisende Planeten und Sterne"
+
+msgid "Plans for defense tower available"
+msgstr "Errichtung eines Geschützturms möglich"
+
+msgid "Plans for nuclear power plant available"
+msgstr "Errichtung einer Brennstoffzellenfabrik möglich"
+
+msgid "Plans for phazer shooter available"
+msgstr "Herstellung eines Phazershooters möglich"
+
+msgid "Plans for shielder available"
+msgstr "Herstellung eines Schutzschildes möglich"
+
+msgid "Plans for shooter available"
+msgstr "Herstellung eines Shooters möglich"
+
+msgid "Plans for thumper available"
+msgstr "Herstellung eines Stampfers möglich"
+
+msgid "Plans for tracked robots available "
+msgstr "Herstellung eines Roboters mit Kettenantrieb möglich"
+
+msgid "Plant a flag"
+msgstr "Setzt eine Fahne"
+
+msgid "Play"
+msgstr "Play"
+
+msgid "Play\\Start mission!"
+msgstr "Spielen ...\\Los geht's!"
+
+msgid "Player"
+msgstr "Spieler"
+
+msgid "Player name"
+msgstr "Name "
+
+msgid "Player's name"
+msgstr "Name "
+
+msgid "Power cell"
+msgstr "Elektrolytische Batterie"
+
+msgid "Power cell available"
+msgstr "Batterie verfügbar"
+
+msgid "Power cell factory"
+msgstr "Batteriefabrik"
+
+msgid "Power station"
+msgstr "Kraftwerk"
+
+msgid "Practice bot"
+msgstr "Übungsroboter"
+
+msgid "Press \\key help; to read instructions on your SatCom"
+msgstr "Beziehen Sie sich auf Ihren SatCom, indem Sie auf \\key help; drücken"
+
+msgid "Previous"
+msgstr "Vorherg"
+
+msgid "Previous object\\Selects the previous object"
+msgstr "Vorherg. Auswahl\\Das vorhergehende Objekt auswählen"
+
+msgid "Previous selection (\\key desel;)"
+msgstr "Vorherg. Auwahl (\\key desel;)"
+
+msgid "Print Scrn"
+msgstr "Print Scrn"
+
+msgid "Private element"
+msgstr "Geschütztes Element (private)"
+
+msgid "Private\\Private folder"
+msgstr "Privat\\Privater Ordner"
+
+msgid "Program editor"
+msgstr "Programmeditor"
+
+msgid "Program finished"
+msgstr "Programm beendet"
+
+msgid "Program infected by a virus"
+msgstr "Ein Programm wurde von einem Virus infiziert"
+
+msgid "Programming exercises"
+msgstr "Programmieren"
+
+msgid "Programming help"
+msgstr "Hilfe über Programmieren"
+
+msgid "Programming help  (\\key prog;)"
+msgstr "Hilfe über Programmieren (\\key prog;)"
+
+msgid "Programming help\\Gives more detailed help with programming"
+msgstr "Hilfe CBOT-Sprache\\Hilfe über die Programmiersprache CBOT"
+
+msgid "Programs dispatched by Houston"
+msgstr "Von Houston übermittelte Programme"
+
+msgid "Proto\\Prototypes under development"
+msgstr "Proto\\In Entwicklung befindliche Prototypen"
+
+msgid "Prototypes"
+msgstr "Prototypen"
+
+msgid "Public required"
+msgstr "Hier muss das Wort \"public\" stehen"
+
+msgid "Public\\Common folder"
+msgstr "Öffentlich\\Gemeinsamer Ordner für alle Spieler"
+
+msgid "Quake at explosions\\The screen shakes at explosions"
+msgstr "Beben bei Explosionen\\Die Kamera bebt bei Explosionen"
+
+msgid "Quit the mission?"
+msgstr "Mission abbrechen ?"
+
+msgid "Quit\\Quit COLOBOT"
+msgstr "Schließen\\COLOBOT schließen"
+
+msgid "Quit\\Quit the current mission or exercise"
+msgstr "Mission verlassen\\Eine Mission oder Übung verlassen"
+
+msgid "Radar station"
+msgstr "Radar"
+
+msgid "Read error"
+msgstr "Fehler beim Lesezugriff"
+
+msgid "Recorder"
+msgstr "Recorder"
+
+msgid "Recycle (\\key action;)"
+msgstr "Recyceln (\\key action;)"
+
+msgid "Recycler"
+msgstr "Recycler"
+
+msgid "Red"
+msgstr "Rot"
+
+msgid "Red flag"
+msgstr "Rote Fahne"
+
+msgid "Reflections on the buttons \\Shiny buttons"
+msgstr "Glänzende Tasten\\Glänzende Tasten in den Menüs"
+
+msgid "Remains of Apollo mission"
+msgstr "Überreste einer Apollo-Mission"
+
+msgid "Remove a flag"
+msgstr "Sammelt die Fahne ein"
+
+msgid "Repair center"
+msgstr "Reparaturzentrum"
+
+msgid "Research center"
+msgstr "Forschungszentrum"
+
+msgid "Research program already performed"
+msgstr "Forschungsprogramm schon ausgeführt"
+
+msgid "Research program completed"
+msgstr "Forschungsprogramm abgeschlossen"
+
+msgid "Reserved keyword of CBOT language"
+msgstr "Dieses Wort ist reserviert"
+
+msgid "Resolution"
+msgstr "Auflösung"
+
+msgid "Restart\\Restart the mission from the beginning"
+msgstr "Neu anfangen\\Die Mission von vorne anfangen"
+
+msgid "Return to start"
+msgstr "Alles zurücksetzen"
+
+msgid "Right Windows"
+msgstr "Right Windows"
+
+msgid "Robbie"
+msgstr "Robby"
+
+msgid "Robbie\\Your assistant"
+msgstr "Robby\\Ihr Assistent"
+
+msgid "Ruin"
+msgstr "Gebäuderuine"
+
+msgid "Run research program for defense tower"
+msgstr "Forschungsprogramm Geschützturm"
+
+msgid "Run research program for legged bots"
+msgstr "Forschungsprogramm Krabbelantrieb"
+
+msgid "Run research program for nuclear power"
+msgstr "Forschungsprogramm Brennstoffzelle"
+
+msgid "Run research program for orga shooter"
+msgstr "Forschungsprogramm Orgashooterkanone"
+
+msgid "Run research program for phazer shooter"
+msgstr "Forschungsprogramm Phazerkanone"
+
+msgid "Run research program for shielder"
+msgstr "Forschungsprogramm Schutzschild"
+
+msgid "Run research program for shooter"
+msgstr "Forschungsprogramm Shooterkanone"
+
+msgid "Run research program for thumper"
+msgstr "Forschungsprogramm Stampfer"
+
+msgid "Run research program for tracked bots"
+msgstr "Forschungsprogramm Kettenantrieb"
+
+msgid "Run research program for winged bots"
+msgstr "Forschungsprogramm Jetantrieb"
+
+msgid "SatCom"
+msgstr "SatCom"
+
+msgid "Satellite report"
+msgstr "Satellitenbericht"
+
+msgid "Save"
+msgstr "Speichern"
+
+msgid "Save (Ctrl+s)"
+msgstr "Speichern (Ctrl+s)"
+
+msgid "Save the current mission"
+msgstr "Aktuelle Mission speichern"
+
+msgid "Save\\Save the current mission "
+msgstr "Speichern\\Aktuelle Mission speichern"
+
+msgid "Save\\Saves the current mission"
+msgstr "Speichern\\Speichert die Mission"
+
+msgid "Scroll"
+msgstr "Scroll"
+
+msgid "Scrolling\\Scrolling when the mouse touches right or left border"
+msgstr ""
+"Kameradrehung mit der Maus\\Die Kamera dreht wenn die Maus den Rand erreicht"
+
+msgid "Select"
+msgstr "Select"
+
+msgid "Select the astronaut\\Selects the astronaut"
+msgstr "Astronauten auswählen\\Astronauten auswählen"
+
+msgid "Semicolon terminator missing"
+msgstr "Es fehlt ein Strichpunkt \";\" am Ende der Anweisung"
+
+msgid "Shadows\\Shadows on the ground"
+msgstr "Schatten\\Schlagschatten auf dem Boden"
+
+msgid "Shield level"
+msgstr "Schäden"
+
+msgid "Shield radius"
+msgstr "Reichweite Schutzschild"
+
+msgid "Shielder"
+msgstr "Schutzschild"
+
+msgid "Shift"
+msgstr "Shift"
+
+msgid "Shoot (\\key action;)"
+msgstr "Feuer (\\key action;)"
+
+msgid "Show if the ground is flat"
+msgstr "Zeigt ob der Boden eben ist"
+
+msgid "Show the place"
+msgstr "Zeigt den Ort"
+
+msgid "Show the range"
+msgstr "Zeigt die Reichweite"
+
+msgid "Show the solution"
+msgstr "Zeigt die Lösung"
+
+msgid "Sign \" : \" missing"
+msgstr "Es fehlt ein Doppelpunkt \" : \""
+
+msgid "Size 1"
+msgstr "Größe 1"
+
+msgid "Size 2"
+msgstr "Größe 2"
+
+msgid "Size 3"
+msgstr "Größe 3"
+
+msgid "Size 4"
+msgstr "Größe 4"
+
+msgid "Size 5"
+msgstr "Größe 5"
+
+msgid "Sky\\Clouds and nebulae"
+msgstr "Himmel\\Himmel und Wolken"
+
+msgid "Sniff (\\key action;)"
+msgstr "Schnüffeln (\\key action;)"
+
+msgid "Solution"
+msgstr "Lösung"
+
+msgid "Sound effects:\\Volume of engines, voice, shooting, etc."
+msgstr "Geräusche:\\Lautstärke Motoren, Stimmen, usw."
+
+msgid "Sound\\Music and game sound volume"
+msgstr "Geräusche\\Lautstärke Geräusche und Musik"
+
+msgid "Space"
+msgstr "Leertaste"
+
+msgid "Spaceship"
+msgstr "Raumschiff"
+
+msgid "Spaceship ruin"
+msgstr "Raumschiffruine"
+
+msgid "Speed 1.0x\\Normal speed"
+msgstr "Geschwindigkeit 1.0x\\Normale Spielgeschwindigkeit"
+
+msgid "Speed 1.5x\\1.5 times faster"
+msgstr "Geschwindigkeit 1.5x\\Spielgeschwindigkeit anderthalb Mal schneller"
+
+msgid "Speed 2.0x\\Double speed"
+msgstr "Geschwindigkeit 2.0x\\Spielgeschwindigkeit doppelt so schnell"
+
+msgid "Speed 3.0x\\Three times faster"
+msgstr "Geschwindigkeit 3.0x\\Spielgeschwindigkeit drei Mal schneller"
+
+msgid "Spider"
+msgstr "Spinne"
+
+msgid "Spider fatally wounded"
+msgstr "Spinne tödlich verwundet"
+
+msgid "Stack overflow"
+msgstr "Stack overflow"
+
+msgid ""
+"Standard action\\Standard action of the bot (take/grab, shoot, sniff, etc)"
+msgstr "Standardhandlung\\Führt die Standardhandlung des Roboters aus"
+
+msgid "Standard controls\\Standard key functions"
+msgstr "Alles zurücksetzen\\Standarddefinition aller Tasten"
+
+msgid "Standard\\Standard appearance settings"
+msgstr "Standard\\Standardfarben einsetzen"
+
+msgid "Start"
+msgstr "Startfläche"
+
+msgid "Still working ..."
+msgstr "Prozess im Gang ..."
+
+msgid "String missing"
+msgstr "Hier wird eine Zeichenkette erwartet"
+
+msgid "Strip color:"
+msgstr "Farbe der Streifen:"
+
+msgid "Subber"
+msgstr "Kettentaucher"
+
+msgid "Suit color:"
+msgstr "Farbe des Anzugs:"
+
+msgid "Suit\\Astronaut suit"
+msgstr "Anzug\\Raumfahrtanzug"
+
+msgid "Sunbeams\\Sunbeams in the sky"
+msgstr "Sonnenstrahlen\\Sonnenstrahlen"
+
+msgid "Survival kit"
+msgstr "Überlebenskit"
+
+msgid "Switch bots <-> buildings"
+msgstr "Anzeige Roboter <-> Bauten"
+
+msgid "Tab"
+msgstr "Tab"
+
+msgid "Take off to finish the mission"
+msgstr "Abheben nach vollbrachter Mission"
+
+msgid "Target"
+msgstr "Zielscheibe"
+
+msgid "Target bot"
+msgstr "Mobile Zielscheibe"
+
+msgid "Textures\\Quality of textures "
+msgstr "Qualität der Texturen\\Qualität der Anzeige"
+
+msgid "The expression must return a boolean value"
+msgstr "Der Ausdruck muss einen boolschen Wert ergeben"
+
+msgid "The function returned no value "
+msgstr "Die Funktion hat kein Ergebnis zurückgegeben"
+
+msgid ""
+"The list is only available if a \\l;radar station\\u object\\radar; is "
+"working.\n"
+msgstr "Die Liste ist ohne \\l;Radar\\u object\\radar; nicht verfügbar.\n"
+
+msgid ""
+"The mission is not accomplished yet (press \\key help; for more details)"
+msgstr ""
+"Mission noch nicht beendet (Drücken Sie auf \\key help; für weitere "
+"Informationen)"
+
+msgid "The types of the two operands are incompatible "
+msgstr "Die zwei Operanden sind nicht kompatibel"
+
+msgid "This class already exists"
+msgstr "Diese Klasse gibt es schon"
+
+msgid "This class does not exist"
+msgstr "Diese Klasse existiert nicht"
+
+msgid "This is not a member of this class"
+msgstr "Dieses Element gibt es nicht in dieser Klasse"
+
+msgid "This label does not exist"
+msgstr "Dieses Label existiert nicht"
+
+msgid "This object is not a member of a class"
+msgstr "Das Objekt ist nicht eine Instanz einer Klasse"
+
+msgid "Thump (\\key action;)"
+msgstr "Stampfen (\\key action;)"
+
+msgid "Thumper"
+msgstr "Stampfer"
+
+msgid "Titanium"
+msgstr "Titan"
+
+msgid "Titanium available"
+msgstr "Titan verfügbar"
+
+msgid "Titanium deposit (site for derrick)"
+msgstr "Markierung für unterirdisches Titanvorkommen"
+
+msgid "Titanium ore"
+msgstr "Titanerz"
+
+msgid "Titanium too close"
+msgstr "Titan zu nahe"
+
+msgid "Titanium too far away"
+msgstr "Titan zu weit weg"
+
+msgid "Too close to a building"
+msgstr "Zu nahe an einem Gebäude"
+
+msgid "Too close to an existing flag"
+msgstr "Zu nahe an einer anderen Fahne"
+
+msgid "Too close to space ship"
+msgstr "Zu nahe am Raumschiff"
+
+msgid "Too many flags of this color (maximum 5)"
+msgstr "Zu viele Fahnen dieser Farbe (Maximum 5)"
+
+msgid "Too many parameters"
+msgstr "Zu viele Parameter"
+
+msgid "Tracked grabber"
+msgstr "Transporter"
+
+msgid "Tracked orga shooter"
+msgstr "OrgaShooter"
+
+msgid "Tracked shooter"
+msgstr "Shooter"
+
+msgid "Tracked sniffer"
+msgstr "Schnüffler"
+
+msgid "Transforms only titanium"
+msgstr "Wandelt nur Titanerz um"
+
+msgid "Transforms only uranium"
+msgstr "Wandelt nur Platin um"
+
+msgid "Transmitted information"
+msgstr "Gesendete Informationen"
+
+msgid "Turn left (\\key left;)"
+msgstr "Drehung links (\\key left;)"
+
+msgid "Turn left\\turns the bot to the left"
+msgstr "Drehung nach links\\Steuer links"
+
+msgid "Turn right (\\key right;)"
+msgstr "Drehung rechts (\\key right;)"
+
+msgid "Turn right\\turns the bot to the right"
+msgstr "Drehung nach rechts\\Steuer rechts"
+
+msgid "Type declaration missing"
+msgstr "Hier muss ein Variablentyp stehen"
+
+msgid "Undo (Ctrl+z)"
+msgstr "Widerrufen (Ctrl+z)"
+
+msgid "Unit"
+msgstr "Einheit"
+
+msgid "Unknown Object"
+msgstr "Das Objekt existiert nicht"
+
+msgid "Unknown command"
+msgstr "Befehl unbekannt"
+
+msgid "Unknown function"
+msgstr "Unbekannte Funktion"
+
+msgid "Up (\\key gup;)"
+msgstr "Steigt (\\key gup;)"
+
+msgid "Uranium deposit (site for derrick)"
+msgstr "Markierung für unterirdisches Platinvorkommen"
+
+msgid "Uranium ore"
+msgstr "Platinerz"
+
+msgid "Use a joystick\\Joystick or keyboard"
+msgstr "Joystick\\Joystick oder Tastatur"
+
+msgid "User levels"
+msgstr "Userlevels"
+
+msgid "User\\User levels"
+msgstr "User\\Userlevels"
+
+msgid "Variable name missing"
+msgstr "Es fehlt der Name einer Variable"
+
+msgid "Variable not declared"
+msgstr "Variable nicht deklariert"
+
+msgid "Variable not initialized"
+msgstr "Der Wert dieser Variable wurde nicht definiert"
+
+msgid "Vault"
+msgstr "Bunker"
+
+msgid "Violet flag"
+msgstr "Violette Fahne"
+
+msgid "Void parameter"
+msgstr "Parameter void"
+
+msgid "Wasp"
+msgstr "Wespe"
+
+msgid "Wasp fatally wounded"
+msgstr "Wespe tödlich verwundet"
+
+msgid "Waste"
+msgstr "Abfall"
+
+msgid "Wheel down"
+msgstr "Mausrad zurück"
 
 msgid "Wheel up"
 msgstr "Mausrad nach vorne"
 
-msgid "Wheel down"
-msgstr "Mausrad zurück"
+msgid "Wheeled grabber"
+msgstr "Transporter"
+
+msgid "Wheeled orga shooter"
+msgstr "OrgaShooter"
+
+msgid "Wheeled shooter"
+msgstr "Shooter"
+
+msgid "Wheeled sniffer"
+msgstr "Schnüffler"
+
+msgid "Winged grabber"
+msgstr "Transporter"
+
+msgid "Winged orga shooter"
+msgstr "OrgaShooter"
+
+msgid "Winged shooter"
+msgstr "Shooter"
+
+msgid "Winged sniffer"
+msgstr "Schnüffler"
+
+msgid "Withdraw shield (\\key action;)"
+msgstr "Schutzschild einholen (\\key action;)"
+
+msgid "Worm"
+msgstr "Wurm"
+
+msgid "Worm fatally wounded"
+msgstr "Wurm tödlich verwundet"
+
+msgid "Wreckage"
+msgstr "Roboterwrack"
+
+msgid "Write error"
+msgstr "Fehler beim Schreibzugriff"
+
+msgid "Wrong type for the assignment"
+msgstr "Der Ausdruck ergibt einen falschen Typ für die Zuweisung"
+
+msgid "Yellow flag"
+msgstr "Gelbe Fahne"
+
+msgid "You can fly with the keys (\\key gup;) and (\\key gdown;)"
+msgstr "Sie können jetzt mit den Tasten \\key gup; und \\key gdown; fliegen"
+
+msgid "You can not carry a radioactive object"
+msgstr "Sie können keinen radioaktiven Gegenstand tragen"
+
+msgid "You can not carry an object under water"
+msgstr "Sie können unter Wasser nichts tragen"
+
+msgid "You found a usable object"
+msgstr "Sie haben ein brauchbares Objekt gefunden"
+
+msgid "You must get on the spaceship to take off "
+msgstr "Gehen Sie an Bord, bevor Sie abheben"
+
+msgid "Zoom"
+msgstr "Zoom"
+
+msgid "Zoom mini-map"
+msgstr "Zoom Minikarte"
+
+msgid "\\Blue flags"
+msgstr "\\Blaue Fahne"
+
+msgid "\\Eyeglasses 1"
+msgstr "\\Brille 1"
+
+msgid "\\Eyeglasses 2"
+msgstr "\\Brille 2"
+
+msgid "\\Eyeglasses 3"
+msgstr "\\Brille 3"
+
+msgid "\\Eyeglasses 4"
+msgstr "\\Brille 4"
+
+msgid "\\Eyeglasses 5"
+msgstr "\\Brille 5"
+
+msgid "\\Face 1"
+msgstr "\\Kopf 1"
+
+msgid "\\Face 2"
+msgstr "\\Kopf 2"
+
+msgid "\\Face 3"
+msgstr "\\Kopf 3"
+
+msgid "\\Face 4"
+msgstr "\\Kopf 4"
+
+msgid "\\Green flags"
+msgstr "\\Grüne Fahne"
+
+msgid "\\New player name"
+msgstr "\\Name des Spielers"
+
+msgid "\\No eyeglasses"
+msgstr "\\Keine Brille"
+
+msgid "\\Raise the pencil"
+msgstr "\\Bleistift abheben"
+
+msgid "\\Red flags"
+msgstr "\\Rote Fahne"
+
+msgid "\\Return to COLOBOT"
+msgstr "\\Zurück zu COLOBOT"
+
+msgid "\\SatCom on standby"
+msgstr "\\SatCom in Standby"
+
+msgid "\\Start recording"
+msgstr "\\Aufnahme starten"
+
+msgid "\\Stop recording"
+msgstr "\\Aufnahme stoppen"
+
+msgid "\\Turn left"
+msgstr "\\Drehung links"
+
+msgid "\\Turn right"
+msgstr "\\Drehung rechts"
+
+msgid "\\Use the black pencil"
+msgstr "\\Schwarzen Bleistift hinunterlassen"
+
+msgid "\\Use the blue pencil"
+msgstr "\\Blauen Bleistift hinunterlassen"
+
+msgid "\\Use the brown pencil"
+msgstr "\\Braunen Bleistift hinunterlassen"
+
+msgid "\\Use the green pencil"
+msgstr "\\Grünen Bleistift hinunterlassen"
+
+msgid "\\Use the orange pencil"
+msgstr "\\Orangefarbenen Bleistift hinunterlassen"
+
+msgid "\\Use the purple pencil"
+msgstr "\\Violetten Bleistift hinunterlassen"
+
+msgid "\\Use the red pencil"
+msgstr "\\Roten Bleistift hinunterlassen"
+
+msgid "\\Use the yellow pencil"
+msgstr "\\Gelben Bleistift hinunterlassen"
+
+msgid "\\Violet flags"
+msgstr "\\Violette Fahne"
+
+msgid "\\Yellow flags"
+msgstr "\\Gelbe Fahne"
+
+msgid "\\b;Aliens\n"
+msgstr "\\b;Listes der Feinde\n"
+
+msgid "\\b;Buildings\n"
+msgstr "\\b;Listes der Gebäude\n"
+
+msgid "\\b;Error\n"
+msgstr "\\b;Fehler\n"
+
+msgid "\\b;List of objects\n"
+msgstr "\\b;Liste der Objekte\n"
+
+msgid "\\b;Moveable objects\n"
+msgstr "\\b;Listes der tragbaren Gegenstände\n"
+
+msgid "\\b;Robots\n"
+msgstr "\\b;Liste der Roboter\n"
+
+msgid "\\c; (none)\\n;\n"
+msgstr "\\c; (keine)\\n;\n"
+
+msgid "www.epsitec.com"
+msgstr "www.epsitec.com"
