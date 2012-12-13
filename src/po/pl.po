@@ -1,5 +1,7 @@
 msgid ""
 msgstr ""
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-12-13 21:46+0100\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -59,6 +61,7 @@ msgstr "Oczekiwane \" [ \""
 msgid "\" ] \" missing"
 msgstr "Brak \" ] \""
 
+#, c-format
 msgid "\"%s\" missing in this exercise"
 msgstr "It misses \"%s\" in this exercise"
 
@@ -79,12 +82,6 @@ msgstr "2) Następnie naciśnij klawisz, którego chcesz używać."
 
 msgid "3D sound\\3D positioning of the sound"
 msgstr "Dźwięk 3D\\Przestrzenne pozycjonowanie dźwięków"
-
-msgid "< none >"
-msgstr "< brak >"
-
-msgid "<--"
-msgstr "<--"
 
 msgid "<<  Back  \\Back to the previous screen"
 msgstr "<<  Wstecz  \\Wraca do poprzedniego ekranu"
@@ -125,9 +122,6 @@ msgstr "Królowa Obcych została zabita"
 msgid "Already carrying something"
 msgstr "Nie można nieść więcej przedmiotów"
 
-msgid "Alt"
-msgstr "Alt"
-
 msgid "Analysis already performed"
 msgstr "Analiza została już wykonana"
 
@@ -146,32 +140,14 @@ msgstr "Mrówka śmiertelnie raniona"
 msgid "Appearance\\Choose your appearance"
 msgstr "Wygląd\\Wybierz swoją postać"
 
-msgid "Application key"
-msgstr "Klawisz menu kontekstowego"
-
 msgid "Apply changes\\Activates the changed settings"
 msgstr "Zastosuj zmiany\\Aktywuje zmienione ustawienia"
 
 msgid "Appropriate constructor missing"
 msgstr "Brak odpowiedniego konstruktora"
 
-msgid "Arrow down"
-msgstr "Strzałka w dół"
-
-msgid "Arrow left"
-msgstr "Strzałka w lewo"
-
-msgid "Arrow right"
-msgstr "Strzałka w prawo"
-
-msgid "Arrow up"
-msgstr "Strzałka w górę"
-
 msgid "Assignment impossible"
 msgstr "Przypisanie niemożliwe"
-
-msgid "Attn"
-msgstr "Attn"
 
 msgid "Autolab"
 msgstr "Laboratorium"
@@ -325,9 +301,6 @@ msgstr "Budynek zniszczony"
 msgid "Building too close"
 msgstr "Budynek za blisko"
 
-msgid "Button %1"
-msgstr "Przycisk %1"
-
 msgid "COLOBOT"
 msgstr "COLOBOT"
 
@@ -370,9 +343,6 @@ msgstr "Anuluj\\Pomija wszystkie zmiany"
 msgid "Cancel\\Keep current player name"
 msgstr "Anuluj\\Zachowuje bieżące imię gracza"
 
-msgid "Caps Lock"
-msgstr "Caps Lock"
-
 msgid "Challenges"
 msgstr "Wyzwania"
 
@@ -387,9 +357,6 @@ msgstr "Punkt kontrolny"
 
 msgid "Checkpoint crossed"
 msgstr "Przekroczono punkt kontrolny"
-
-msgid "Clear"
-msgstr "Delete"
 
 msgid "Climb\\Increases the power of the jet"
 msgstr "W górę\\Zwiększa moc silnika"
@@ -427,9 +394,6 @@ msgstr "Kontynuuj\\Kontynuuje bieżącą misję"
 msgid "Continue\\Continue the game"
 msgstr "Kontynuuj\\Kontynuuje grę"
 
-msgid "Control-break"
-msgstr "Ctrl-break"
-
 msgid "Controls\\Keyboard, joystick and mouse settings"
 msgstr "Sterowanie\\Ustawienia klawiatury, joysticka i myszy"
 
@@ -441,12 +405,6 @@ msgstr "Kopiuj"
 
 msgid "Copy (Ctrl+c)"
 msgstr "Kopiuj (Ctrl+C)"
-
-msgid "CrSel"
-msgstr "CrSel"
-
-msgid "Ctrl"
-msgstr "Ctrl"
 
 msgid "Current mission saved"
 msgstr "Bieżąca misja zapisana"
@@ -462,9 +420,6 @@ msgstr "Wieża obronna"
 
 msgid "Delete"
 msgstr "Usuń"
-
-msgid "Delete Key"
-msgstr "Delete"
 
 msgid "Delete player\\Deletes the player from the list"
 msgstr "Usuń gracza\\Usuwa gracza z listy"
@@ -496,12 +451,6 @@ msgstr "Twórcy:"
 msgid "Device\\Driver and resolution settings"
 msgstr "Urządzenie\\Ustawienia sterownika i rozdzielczości"
 
-msgid "Dictionnary"
-msgstr "Raport z satelity"
-
-msgid "Disintegrator"
-msgstr "Fabryka ogniw elektrycznych"
-
 msgid "Dividing by zero"
 msgstr "Dzielenie przez zero"
 
@@ -511,6 +460,7 @@ msgstr "Do not use in this exercise"
 msgid "Do you really want to destroy the selected building?"
 msgstr "Czy na pewno chcesz zniszczyć zaznaczony budynek?"
 
+#, c-format
 msgid "Do you want to delete %s's saved games? "
 msgstr "Czy na pewno chcesz skasować zapisane gry gracza %s? "
 
@@ -538,9 +488,6 @@ msgstr "Edytuj zaznaczony program"
 msgid "Egg"
 msgstr "Jajo"
 
-msgid "End"
-msgstr "End"
-
 msgid "End of block missing"
 msgstr "Brak końca bloku"
 
@@ -553,26 +500,8 @@ msgstr "Poziom energii"
 msgid "Engineer"
 msgstr "Inżynier"
 
-msgid "Enter"
-msgstr "Enter"
-
-msgid "Erase EOF"
-msgstr "Erase EOF"
-
-msgid "Error"
-msgstr "Błąd"
-
 msgid "Error in instruction move"
 msgstr "Błąd w poleceniu ruchu"
-
-msgid "Esc"
-msgstr "Esc"
-
-msgid "ExSel"
-msgstr "ExSel"
-
-msgid "Execute"
-msgstr "Wykonaj"
 
 msgid "Execute the selected program"
 msgstr "Wykonaj zaznaczony program"
@@ -594,66 +523,6 @@ msgstr "Rozszerz osłonę (\\key action;)"
 
 msgid "Eyeglasses:"
 msgstr "Okulary:"
-
-msgid "F1"
-msgstr "F1"
-
-msgid "F10"
-msgstr "F10"
-
-msgid "F11"
-msgstr "F11"
-
-msgid "F12"
-msgstr "F12"
-
-msgid "F13"
-msgstr "F13"
-
-msgid "F14"
-msgstr "F14"
-
-msgid "F15"
-msgstr "F15"
-
-msgid "F16"
-msgstr "F16"
-
-msgid "F17"
-msgstr "F17"
-
-msgid "F18"
-msgstr "F18"
-
-msgid "F19"
-msgstr "F19"
-
-msgid "F2"
-msgstr "F2"
-
-msgid "F20"
-msgstr "F20"
-
-msgid "F3"
-msgstr "F3"
-
-msgid "F4"
-msgstr "F4"
-
-msgid "F5"
-msgstr "F5"
-
-msgid "F6"
-msgstr "F6"
-
-msgid "F7"
-msgstr "F7"
-
-msgid "F8"
-msgstr "F8"
-
-msgid "F9"
-msgstr "F9"
 
 msgid "Face type:"
 msgstr "Rodzaj twarzy:"
@@ -682,6 +551,7 @@ msgstr "Mgła\\Mgła"
 msgid "Folder:"
 msgstr "Folder:"
 
+#, c-format
 msgid "Folder: %s"
 msgstr "Folder: %s"
 
@@ -772,9 +642,6 @@ msgstr "Kolor włosów:"
 msgid "Head\\Face and hair"
 msgstr "Głowa\\Twarz i włosy"
 
-msgid "Help"
-msgstr "Pomoc"
-
 msgid "Help about selected object"
 msgstr "Pomoc na temat zaznaczonego obiektu"
 
@@ -787,9 +654,6 @@ msgstr ""
 
 msgid "Home"
 msgstr "Początek"
-
-msgid "Home Key"
-msgstr "Home"
 
 msgid "Houston Mission Control"
 msgstr "Centrum Kontroli Misji w Houston"
@@ -826,9 +690,6 @@ msgstr "Zainfekowane wirusem, chwilowo niesprawne"
 
 msgid "Information exchange post"
 msgstr "Stacja przekaźnikowa informacji"
-
-msgid "Insert"
-msgstr "Insert"
 
 msgid "Instruction \"break\" outside a loop"
 msgstr "Polecenie \"break\" na zewnątrz pętli"
@@ -885,9 +746,6 @@ msgstr "Skróty klawiszowe (\\key cbot;)"
 msgid "LOADING"
 msgstr "WCZYTYWANIE"
 
-msgid "Left Windows"
-msgstr "Lewy klawisz Windows"
-
 msgid "Legged grabber"
 msgstr "Transporter na nogach"
 
@@ -933,9 +791,6 @@ msgstr "Powiększ"
 
 msgid "Menu (\\key quit;)"
 msgstr "Menu (\\key quit;)"
-
-msgid "Mini-map"
-msgstr "Mapka"
 
 msgid "Minimize"
 msgstr "Pomniejsz"
@@ -1072,59 +927,8 @@ msgstr "Wytworzono atomowe ogniwo elektryczne"
 msgid "Nuclear power station"
 msgstr "Elektrownia atomowa"
 
-msgid "Num Lock"
-msgstr "Num Lock"
-
 msgid "Num of decorative objects\\Number of purely ornamental objects"
 msgstr "Ilość elementów dekoracyjnych \\Ilość elementów czysto dekoracyjnych"
-
-msgid "NumPad *"
-msgstr "Klaw. Num. *"
-
-msgid "NumPad +"
-msgstr "Klaw. Num. +"
-
-msgid "NumPad -"
-msgstr "Klaw. Num. -"
-
-msgid "NumPad ."
-msgstr "Klaw. Num. ."
-
-msgid "NumPad /"
-msgstr "Klaw. Num. /"
-
-msgid "NumPad 0"
-msgstr "Klaw. Num. 0"
-
-msgid "NumPad 1"
-msgstr "Klaw. Num. 1"
-
-msgid "NumPad 2"
-msgstr "Klaw. Num. 2"
-
-msgid "NumPad 3"
-msgstr "Klaw. Num. 3"
-
-msgid "NumPad 4"
-msgstr "Klaw. Num. 4"
-
-msgid "NumPad 5"
-msgstr "Klaw. Num. 5"
-
-msgid "NumPad 6"
-msgstr "Klaw. Num. 6"
-
-msgid "NumPad 7"
-msgstr "Klaw. Num. 7"
-
-msgid "NumPad 8"
-msgstr "Klaw. Num. 8"
-
-msgid "NumPad 9"
-msgstr "Klaw. Num. 9"
-
-msgid "NumPad sep"
-msgstr "Klaw. Num. separator"
 
 msgid "Number missing"
 msgstr "Brak liczby"
@@ -1181,15 +985,6 @@ msgid "Origin of last message\\Shows where the last message was sent from"
 msgstr ""
 "Miejsce nadania wiadomości\\Pokazuje skąd została wysłana ostatnia wiadomość"
 
-msgid "PA1"
-msgstr "PA1"
-
-msgid "Page Down"
-msgstr "Page Down"
-
-msgid "Page Up"
-msgstr "Page Up"
-
 msgid "Parameters missing "
 msgstr "Brak wymaganego parametru"
 
@@ -1198,9 +993,6 @@ msgstr "Cząstki w interfejsie\\Para i iskry z silników w interfejsie"
 
 msgid "Paste (Ctrl+v)"
 msgstr "Wklej (Ctrl+V)"
-
-msgid "Pause"
-msgstr "Pause"
 
 msgid "Pause/continue"
 msgstr "Pauza/Kontynuuj"
@@ -1241,9 +1033,6 @@ msgstr "Dostępne plany tranporterów na gąsienicach"
 msgid "Plant a flag"
 msgstr "Postaw flagę"
 
-msgid "Play"
-msgstr "Graj"
-
 msgid "Play\\Start mission!"
 msgstr "Graj\\Rozpoczyna misję!"
 
@@ -1283,9 +1072,6 @@ msgstr "Poprzedni obiekt\\Zaznacz poprzedni obiekt"
 
 msgid "Previous selection (\\key desel;)"
 msgstr "Poprzednie zaznaczenie (\\key desel;)"
-
-msgid "Print Scrn"
-msgstr "Print Scrn"
 
 msgid "Private element"
 msgstr "Element prywatny"
@@ -1395,9 +1181,6 @@ msgstr "Uruchom ponownie\\Uruchamia ponownie misję od początku"
 msgid "Return to start"
 msgstr "Powrót do początku"
 
-msgid "Right Windows"
-msgstr "Prawy klawisz Windows"
-
 msgid "Robbie"
 msgstr "Robbie"
 
@@ -1458,16 +1241,10 @@ msgstr "Zapisz\\Zapisuje bieżącą misję"
 msgid "Save\\Saves the current mission"
 msgstr "Zapisz\\Zapisuje bieżącą misję"
 
-msgid "Scroll"
-msgstr "Scroll Lock"
-
 msgid "Scrolling\\Scrolling when the mouse touches right or left border"
 msgstr ""
 "Przewijanie\\Ekran jest przewijany gdy mysz dotknie prawej lub lewej jego "
 "krawędzi"
-
-msgid "Select"
-msgstr "Zaznacz"
 
 msgid "Select the astronaut\\Selects the astronaut"
 msgstr "Zaznacz astronautę\\Zaznacza astronautę"
@@ -1486,9 +1263,6 @@ msgstr "Zasięg osłony"
 
 msgid "Shielder"
 msgstr "Osłaniacz"
-
-msgid "Shift"
-msgstr "Shift"
 
 msgid "Shoot (\\key action;)"
 msgstr "Strzelaj (\\key action;)"
@@ -1537,9 +1311,6 @@ msgstr "Efekty dźwiękowe:\\Głośność silników, głosów, strzałów, itp."
 
 msgid "Sound\\Music and game sound volume"
 msgstr "Dźwięk\\Głośność muzyki i dźwięków gry"
-
-msgid "Space"
-msgstr "Spacja"
 
 msgid "Spaceship"
 msgstr "Statek kosmiczny"
@@ -1609,9 +1380,6 @@ msgstr "Zestaw przetrwania"
 
 msgid "Switch bots <-> buildings"
 msgstr "Przełącz roboty <-> budynki"
-
-msgid "Tab"
-msgstr "Tab"
 
 msgid "Take off to finish the mission"
 msgstr "Odleć, aby zakończyć misję"
@@ -1795,12 +1563,6 @@ msgstr "Osa śmiertelnie raniona"
 msgid "Waste"
 msgstr "Odpady"
 
-msgid "Wheel down"
-msgstr "Kółko w dół"
-
-msgid "Wheel up"
-msgstr "Kółko w górę"
-
 msgid "Wheeled grabber"
 msgstr "Transporter na kołach"
 
@@ -1860,9 +1622,6 @@ msgstr "Znaleziono użyteczny przedmiot"
 
 msgid "You must get on the spaceship to take off "
 msgstr "Musisz być na statku kosmicznym aby nim odlecieć"
-
-msgid "Zoom"
-msgstr "Powiększenie"
 
 msgid "Zoom mini-map"
 msgstr "Powiększenie mapki"
@@ -1983,3 +1742,249 @@ msgstr "\\c; (brak)\\n;\n"
 
 msgid "www.epsitec.com"
 msgstr "www.epsitec.com"
+
+#~ msgid "< none >"
+#~ msgstr "< brak >"
+
+#~ msgid "<--"
+#~ msgstr "<--"
+
+#~ msgid "Alt"
+#~ msgstr "Alt"
+
+#~ msgid "Application key"
+#~ msgstr "Klawisz menu kontekstowego"
+
+#~ msgid "Arrow down"
+#~ msgstr "Strzałka w dół"
+
+#~ msgid "Arrow left"
+#~ msgstr "Strzałka w lewo"
+
+#~ msgid "Arrow right"
+#~ msgstr "Strzałka w prawo"
+
+#~ msgid "Arrow up"
+#~ msgstr "Strzałka w górę"
+
+#~ msgid "Attn"
+#~ msgstr "Attn"
+
+#~ msgid "Button %1"
+#~ msgstr "Przycisk %1"
+
+#~ msgid "Caps Lock"
+#~ msgstr "Caps Lock"
+
+#~ msgid "Clear"
+#~ msgstr "Delete"
+
+#~ msgid "Control-break"
+#~ msgstr "Ctrl-break"
+
+#~ msgid "CrSel"
+#~ msgstr "CrSel"
+
+#~ msgid "Ctrl"
+#~ msgstr "Ctrl"
+
+#~ msgid "Delete Key"
+#~ msgstr "Delete"
+
+#~ msgid "Dictionnary"
+#~ msgstr "Raport z satelity"
+
+#~ msgid "Disintegrator"
+#~ msgstr "Fabryka ogniw elektrycznych"
+
+#~ msgid "End"
+#~ msgstr "End"
+
+#~ msgid "Enter"
+#~ msgstr "Enter"
+
+#~ msgid "Erase EOF"
+#~ msgstr "Erase EOF"
+
+#~ msgid "Error"
+#~ msgstr "Błąd"
+
+#~ msgid "Esc"
+#~ msgstr "Esc"
+
+#~ msgid "ExSel"
+#~ msgstr "ExSel"
+
+#~ msgid "Execute"
+#~ msgstr "Wykonaj"
+
+#~ msgid "F1"
+#~ msgstr "F1"
+
+#~ msgid "F10"
+#~ msgstr "F10"
+
+#~ msgid "F11"
+#~ msgstr "F11"
+
+#~ msgid "F12"
+#~ msgstr "F12"
+
+#~ msgid "F13"
+#~ msgstr "F13"
+
+#~ msgid "F14"
+#~ msgstr "F14"
+
+#~ msgid "F15"
+#~ msgstr "F15"
+
+#~ msgid "F16"
+#~ msgstr "F16"
+
+#~ msgid "F17"
+#~ msgstr "F17"
+
+#~ msgid "F18"
+#~ msgstr "F18"
+
+#~ msgid "F19"
+#~ msgstr "F19"
+
+#~ msgid "F2"
+#~ msgstr "F2"
+
+#~ msgid "F20"
+#~ msgstr "F20"
+
+#~ msgid "F3"
+#~ msgstr "F3"
+
+#~ msgid "F4"
+#~ msgstr "F4"
+
+#~ msgid "F5"
+#~ msgstr "F5"
+
+#~ msgid "F6"
+#~ msgstr "F6"
+
+#~ msgid "F7"
+#~ msgstr "F7"
+
+#~ msgid "F8"
+#~ msgstr "F8"
+
+#~ msgid "F9"
+#~ msgstr "F9"
+
+#~ msgid "Help"
+#~ msgstr "Pomoc"
+
+#~ msgid "Home Key"
+#~ msgstr "Home"
+
+#~ msgid "Insert"
+#~ msgstr "Insert"
+
+#~ msgid "Left Windows"
+#~ msgstr "Lewy klawisz Windows"
+
+#~ msgid "Mini-map"
+#~ msgstr "Mapka"
+
+#~ msgid "Num Lock"
+#~ msgstr "Num Lock"
+
+#~ msgid "NumPad *"
+#~ msgstr "Klaw. Num. *"
+
+#~ msgid "NumPad +"
+#~ msgstr "Klaw. Num. +"
+
+#~ msgid "NumPad -"
+#~ msgstr "Klaw. Num. -"
+
+#~ msgid "NumPad ."
+#~ msgstr "Klaw. Num. ."
+
+#~ msgid "NumPad /"
+#~ msgstr "Klaw. Num. /"
+
+#~ msgid "NumPad 0"
+#~ msgstr "Klaw. Num. 0"
+
+#~ msgid "NumPad 1"
+#~ msgstr "Klaw. Num. 1"
+
+#~ msgid "NumPad 2"
+#~ msgstr "Klaw. Num. 2"
+
+#~ msgid "NumPad 3"
+#~ msgstr "Klaw. Num. 3"
+
+#~ msgid "NumPad 4"
+#~ msgstr "Klaw. Num. 4"
+
+#~ msgid "NumPad 5"
+#~ msgstr "Klaw. Num. 5"
+
+#~ msgid "NumPad 6"
+#~ msgstr "Klaw. Num. 6"
+
+#~ msgid "NumPad 7"
+#~ msgstr "Klaw. Num. 7"
+
+#~ msgid "NumPad 8"
+#~ msgstr "Klaw. Num. 8"
+
+#~ msgid "NumPad 9"
+#~ msgstr "Klaw. Num. 9"
+
+#~ msgid "NumPad sep"
+#~ msgstr "Klaw. Num. separator"
+
+#~ msgid "PA1"
+#~ msgstr "PA1"
+
+#~ msgid "Page Down"
+#~ msgstr "Page Down"
+
+#~ msgid "Page Up"
+#~ msgstr "Page Up"
+
+#~ msgid "Pause"
+#~ msgstr "Pause"
+
+#~ msgid "Play"
+#~ msgstr "Graj"
+
+#~ msgid "Print Scrn"
+#~ msgstr "Print Scrn"
+
+#~ msgid "Right Windows"
+#~ msgstr "Prawy klawisz Windows"
+
+#~ msgid "Scroll"
+#~ msgstr "Scroll Lock"
+
+#~ msgid "Select"
+#~ msgstr "Zaznacz"
+
+#~ msgid "Shift"
+#~ msgstr "Shift"
+
+#~ msgid "Space"
+#~ msgstr "Spacja"
+
+#~ msgid "Tab"
+#~ msgstr "Tab"
+
+#~ msgid "Wheel down"
+#~ msgstr "Kółko w dół"
+
+#~ msgid "Wheel up"
+#~ msgstr "Kółko w górę"
+
+#~ msgid "Zoom"
+#~ msgstr "Powiększenie"
