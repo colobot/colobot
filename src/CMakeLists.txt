@@ -4,6 +4,8 @@ add_subdirectory(CBot)
 # Tools directory is built separately
 add_subdirectory(tools)
 
+add_subdirectory(po)
+
 # Tests
 if(${TESTS})
     add_subdirectory(common/test)
