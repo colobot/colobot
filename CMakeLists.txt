@@ -126,12 +126,12 @@ endif()
 
 if(${TESTS})
     # Google Test library
-    find_path(GTEST_SRC_DIR src/gtest.cc PATHS /usr/src/ PATH_SUFFIXES gtest)
+    find_path(GTEST_SRC_DIR NAMES src/gtest.cc src/gtest-all.cc PATHS /usr/src/ PATH_SUFFIXES gtest)
     if(GTEST_SRC_DIR)
         add_subdirectory(${GTEST_SRC_DIR} bin/test)
-    else(GTEST_SRC_DIR)
+    else()
         add_subdirectory(lib/gtest bin/test)
-    endif(GTEST_SRC_DIR)
+    endif()
 endif()
 
 # Subdirectory with sources
