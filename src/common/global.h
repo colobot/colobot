@@ -29,6 +29,7 @@
  */
 enum Language
 {
+    LANGUAGE_ENV = -1,
     LANGUAGE_ENGLISH = 0,
     LANGUAGE_FRENCH = 1,
     LANGUAGE_GERMAN = 2,
