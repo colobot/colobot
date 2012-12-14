@@ -132,7 +132,7 @@ CApplication::CApplication()
 
     m_dataPath = "./data";
 
-    m_language = LANGUAGE_ENGLISH;
+    m_language = LANGUAGE_ENV;
 
     m_lowCPU = true;
 
@@ -290,9 +290,14 @@ bool CApplication::Create()
 
     /* Gettext initialization */
 
-    std::string locale = "C";
+    std::string locale = "";
     switch (m_language)
     {
+        default:
+        case LANGUAGE_ENV:
+            locale = "";
+            break;
+
         case LANGUAGE_ENGLISH:
             locale = "en_US.utf8";
             break;
@@ -314,7 +319,8 @@ bool CApplication::Create()
     langStr += locale;
     strcpy(S_LANGUAGE, langStr.c_str());
     putenv(S_LANGUAGE);
-    setlocale(LC_ALL, locale.c_str());
+    setlocale(LC_ALL, "");
+    GetLogger()->Debug("Set locale to '%s'\n", locale.c_str());
 
     std::string trPath = m_dataPath + "/" + m_dataDirs[DIR_I18N];
     bindtextdomain("colobot", trPath.c_str());
