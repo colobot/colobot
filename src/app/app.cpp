@@ -142,6 +142,8 @@ CApplication::CApplication()
 
     m_lowCPU = true;
 
+    m_useVbo = false;
+
     for (int i = 0; i < DIR_MAX; ++i)
         m_dataDirs[i] = nullptr;
 
@@ -243,6 +245,10 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
         {
             SetDebugMode(true);
         }
+        else if (arg == "-vbo")
+        {
+            m_useVbo = true;
+        }
         else if (arg == "-loglevel")
         {
             waitLogLevel = true;
@@ -262,6 +268,7 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
             GetLogger()->Message("\n");
             GetLogger()->Message("List of available options:\n");
             GetLogger()->Message("  -help            this help\n");
+            GetLogger()->Message("  -vbo             enable OpenGL VBOs\n");
             GetLogger()->Message("  -datadir path    set custom data directory path\n");
             GetLogger()->Message("  -debug           enable debug mode (more info printed in logs)\n");
             GetLogger()->Message("  -loglevel level  set log level to level (one of: trace, debug, info, warn, error, none)\n");
@@ -424,6 +431,8 @@ bool CApplication::Create()
         m_exitCode = 5;
         return false;
     }
+
+    static_cast<Gfx::CGLDevice*>(m_device)->SetUseVbo(m_useVbo);
 
     // Create the 3D engine
     m_engine = new Gfx::CEngine(m_iMan, this);

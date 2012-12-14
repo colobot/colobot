@@ -195,7 +195,9 @@ struct EngineObject
     //! Number of triangles
     int                    totalTriangles;
     //! Type of object
-    EngineObjectType  type;
+    EngineObjectType       type;
+    //! Whether the object is stored and rendered as static buffer
+    bool                   staticBuffer;
     //! Transformation matrix
     Math::Matrix           transform;
     //! Distance to object from eye point
@@ -225,6 +227,7 @@ struct EngineObject
         drawWorld = false;
         drawFront = false;
         totalTriangles = 0;
+        staticBuffer = false;
         type = ENG_OBJTYPE_NULL;
         transform.LoadIdentity();
         bboxMax.LoadZero();
@@ -252,6 +255,7 @@ struct EngineObjLevel4
     Material                material;
     int                     state;
     std::vector<VertexTex2> vertices;
+    unsigned int            staticBufferId;
 
     EngineObjLevel4(bool used = false,
                     EngineTriangleType type = ENG_TRIANGLE_TYPE_TRIANGLES,
@@ -760,6 +764,12 @@ public:
     bool            GetObjectTransform(int objRank, Math::Matrix& transform);
     //@}
 
+    //@{
+    //! Management of object static drawing flag
+    void            SetObjectStatic(int objRank, bool staticBuffer);
+    bool            GetObjectStatic(int objRank);
+    //@}
+
     //! Sets drawWorld for given object
     bool            SetObjectDrawWorld(int objRank, bool draw);
     //! Sets drawFront for given object
@@ -1151,6 +1161,8 @@ public:
 protected:
     //! Prepares the interface for 3D scene
     void        Draw3DScene();
+    //! Draw 3D object
+    void        DrawObject(const EngineObjLevel4& obj, bool staticBuffer);
     //! Draws the user interface over the scene
     void        DrawInterface();
 
@@ -1214,6 +1226,9 @@ protected:
 
     //! Updates geometric parameters of objects (bounding box and radius)
     void        UpdateGeometry();
+
+    //! Updates static buffers of changed objects
+    void        UpdateStaticObjects();
 
 protected:
     CInstanceManager* m_iMan;
@@ -1293,6 +1308,7 @@ protected:
     Color           m_waterAddColor;
     int             m_statisticTriangle;
     bool            m_updateGeometry;
+    bool            m_updateStaticObjects;
     int             m_alphaMode;
     bool            m_groundSpotVisible;
     bool            m_shadowVisible;

@@ -27,6 +27,7 @@
 #include <string>
 #include <vector>
 #include <set>
+#include <map>
 
 
 // Graphics module namespace
@@ -84,6 +85,9 @@ public:
 
     void ConfigChanged(const GLDeviceConfig &newConfig);
 
+    void SetUseVbo(bool useVbo);
+    bool GetUseVbo();
+
     virtual void BeginScene();
     virtual void EndScene();
 
@@ -119,13 +123,17 @@ public:
 
     virtual void SetTextureStageWrap(int index, Gfx::TexWrapMode wrapS, Gfx::TexWrapMode wrapT);
 
-    //! Renders primitive composed of vertices with single texture
     virtual void DrawPrimitive(PrimitiveType type, const Vertex *vertices    , int vertexCount,
                                Color color = Color(1.0f, 1.0f, 1.0f, 1.0f));
-    //! Renders primitive composed of vertices with multitexturing (2 textures)
     virtual void DrawPrimitive(PrimitiveType type, const VertexTex2 *vertices, int vertexCount,
                                Color color = Color(1.0f, 1.0f, 1.0f, 1.0f));
     virtual void DrawPrimitive(PrimitiveType type, const VertexCol *vertices , int vertexCount);
+
+    virtual unsigned int CreateStaticObject(PrimitiveType primitiveType, const Vertex* vertices, int vertexCount);
+    virtual unsigned int CreateStaticObject(PrimitiveType primitiveType, const VertexTex2* vertices, int vertexCount);
+    virtual unsigned int CreateStaticObject(PrimitiveType primitiveType, const VertexCol* vertices, int vertexCount);
+    virtual void DrawStaticObject(unsigned int objectId);
+    virtual void DestroyStaticObject(unsigned int objectId);
 
     virtual int ComputeSphereVisibility(const Math::Vector &center, float radius);
 
@@ -200,6 +208,30 @@ private:
 
     //! Set of all created textures
     std::set<Texture> m_allTextures;
+
+    //! Type of vertex structure
+    enum VertexType
+    {
+        VERTEX_TYPE_NORMAL,
+        VERTEX_TYPE_TEX2,
+        VERTEX_TYPE_COL,
+    };
+
+    //! Info about static VBO buffers
+    struct VboObjectInfo
+    {
+        PrimitiveType primitiveType;
+        unsigned int bufferId;
+        VertexType vertexType;
+        int vertexCount;
+    };
+
+    //! Whether to use VBOs or display lists
+    bool m_useVbo;
+    //! Map of saved VBO objects
+    std::map<unsigned int, VboObjectInfo> m_vboObjects;
+    //! Last ID of VBO object
+    unsigned int m_lastVboId;
 };
 
 

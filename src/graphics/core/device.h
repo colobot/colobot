@@ -313,8 +313,23 @@ public:
     //! Renders primitive composed of vertices with multitexturing (2 textures)
     virtual void DrawPrimitive(PrimitiveType type, const VertexTex2 *vertices, int vertexCount,
                                Color color = Color(1.0f, 1.0f, 1.0f, 1.0f)) = 0;
-    //! Renders primitive composed of vertices with color information
+    //! Renders primitive composed of vertices with solid color
     virtual void DrawPrimitive(PrimitiveType type, const VertexCol *vertices , int vertexCount) = 0;
+
+    //! Creates a static buffer composed of given primitives with single texture vertices
+    virtual unsigned int CreateStaticObject(PrimitiveType primitiveType, const Vertex* vertices, int vertexCount) = 0;
+
+    //! Creates a static buffer composed of given primitives with multitexturing (2 textures)
+    virtual unsigned int CreateStaticObject(PrimitiveType primitiveType, const VertexTex2* vertices, int vertexCount) = 0;
+
+    //! Creates a static buffer composed of given primitives with solid color
+    virtual unsigned int CreateStaticObject(PrimitiveType primitiveType, const VertexCol* vertices, int vertexCount) = 0;
+
+    //! Draws a static buffer
+    virtual void DrawStaticObject(unsigned int objectId) = 0;
+
+    //! Deletes a static buffer
+    virtual void DestroyStaticObject(unsigned int objectId) = 0;
 
     //! Tests whether a sphere is (partially) within the frustum volume
     //! Returns a mask of frustum planes for which the test is positive

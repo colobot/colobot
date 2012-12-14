@@ -92,6 +92,7 @@ EngineObjLevel4::EngineObjLevel4(bool used, EngineTriangleType type, const Mater
     this->type = type;
     this->material = material;
     this->state = state;
+    this->staticBufferId = 0;
 
     vertices.reserve(LEVEL4_VERTEX_PREALLOCATE_COUNT);
 }
@@ -182,6 +183,7 @@ CEngine::CEngine(CInstanceManager *iMan, CApplication *app)
     m_alphaMode = 1;
 
     m_updateGeometry = false;
+    m_updateStaticObjects = false;
 
     m_interfaceMode = false;
 
@@ -385,6 +387,7 @@ void CEngine::FrameUpdate()
 
     ComputeDistance();
     UpdateGeometry();
+    UpdateStaticObjects();
 
     m_highlightTime = m_app->GetAbsTime();
 
@@ -570,11 +573,27 @@ bool CEngine::DeleteObject(int objRank)
             EngineObjLevel2& p2 = p1.next[l2];
             if (! p2.used) continue;
 
-            if (p2.objRank == objRank)
+            if (p2.objRank != objRank) continue;
+
+            if (m_objects[objRank].staticBuffer)
             {
-                p2.used = false;
-                p2.next.clear();
+                for (int l3 = 0; l3 < static_cast<int>( p2.next.size() ); l3++)
+                {
+                    EngineObjLevel3& p3 = p2.next[l3];
+                    if (! p3.used) continue;
+
+                    for (int l4 = 0; l4 < static_cast<int>( p3.next.size() ); l4++)
+                    {
+                        EngineObjLevel4& p4 = p3.next[l4];
+
+                        m_device->DestroyStaticObject(p4.staticBufferId);
+                    }
+                }
             }
+
+
+            p2.used = false;
+            p2.next.clear();
         }
     }
 
@@ -621,6 +640,22 @@ bool CEngine::GetObjectTransform(int objRank, Math::Matrix& transform)
 
     transform = m_objects[objRank].transform;
     return true;
+}
+
+void CEngine::SetObjectStatic(int objRank, bool staticBuffer)
+{
+    if ( objRank < 0 || objRank >= static_cast<int>( m_objects.size() ) )
+        return;
+
+    m_objects[objRank].staticBuffer = staticBuffer;
+}
+
+bool CEngine::GetObjectStatic(int objRank)
+{
+    if ( objRank < 0 || objRank >= static_cast<int>( m_objects.size() ) )
+        return false;
+
+    return m_objects[objRank].staticBuffer;
 }
 
 bool CEngine::SetObjectDrawWorld(int objRank, bool draw)
@@ -825,6 +860,17 @@ bool CEngine::AddTriangles(int objRank, const std::vector<VertexTex2>& vertices,
 
     p4.vertices.insert(p4.vertices.end(), vertices.begin(), vertices.end());
 
+    if (m_objects[objRank].staticBuffer)
+    {
+        if (p4.staticBufferId != 0)
+        {
+            m_device->DestroyStaticObject(p4.staticBufferId);
+            p4.staticBufferId = 0;
+        }
+
+        m_updateStaticObjects = true;
+    }
+
     if (globalUpdate)
     {
         m_updateGeometry = true;
@@ -872,6 +918,17 @@ bool CEngine::AddSurface(int objRank, const std::vector<VertexTex2>& vertices,
 
     p4.vertices.insert(p4.vertices.end(), vertices.begin(), vertices.end());
 
+    if (m_objects[objRank].staticBuffer)
+    {
+        if (p4.staticBufferId != 0)
+        {
+            m_device->DestroyStaticObject(p4.staticBufferId);
+            p4.staticBufferId = 0;
+        }
+
+        m_updateStaticObjects = true;
+    }
+
     if (globalUpdate)
     {
         m_updateGeometry = true;
@@ -898,8 +955,8 @@ bool CEngine::AddSurface(int objRank, const std::vector<VertexTex2>& vertices,
 }
 
 bool CEngine::AddQuick(int objRank, const EngineObjLevel4& buffer,
-                            std::string tex1Name, std::string tex2Name,
-                            float min, float max, bool globalUpdate)
+                       std::string tex1Name, std::string tex2Name,
+                       float min, float max, bool globalUpdate)
 {
     if ( objRank < 0 || objRank >= static_cast<int>( m_objects.size() ) )
     {
@@ -912,7 +969,26 @@ bool CEngine::AddQuick(int objRank, const EngineObjLevel4& buffer,
     EngineObjLevel3& p3 = AddLevel3(p2, min, max);
 
     p3.next.push_back(buffer);
-    p3.next.back().used = true; // ensure that it is used
+
+    EngineObjLevel4& p4 = p3.next.back();
+    p4.used = true; // ensure that it is used
+
+    if (m_objects[objRank].staticBuffer)
+    {
+        if (p4.staticBufferId != 0)
+        {
+            m_device->DestroyStaticObject(p4.staticBufferId);
+            p4.staticBufferId = 0;
+        }
+
+        PrimitiveType type;
+        if (p4.type == ENG_TRIANGLE_TYPE_TRIANGLES)
+            type = PRIMITIVE_TRIANGLES;
+        else
+            type = PRIMITIVE_TRIANGLE_STRIP;
+
+        p4.staticBufferId = m_device->CreateStaticObject(type, &p4.vertices[0], p4.vertices.size());
+    }
 
     if (globalUpdate)
     {
@@ -920,24 +996,24 @@ bool CEngine::AddQuick(int objRank, const EngineObjLevel4& buffer,
     }
     else
     {
-        for (int i = 0; i < static_cast<int>( buffer.vertices.size() ); i++)
+        for (int i = 0; i < static_cast<int>( p4.vertices.size() ); i++)
         {
-            m_objects[objRank].bboxMin.x = Math::Min(buffer.vertices[i].coord.x, m_objects[objRank].bboxMin.x);
-            m_objects[objRank].bboxMin.y = Math::Min(buffer.vertices[i].coord.y, m_objects[objRank].bboxMin.y);
-            m_objects[objRank].bboxMin.z = Math::Min(buffer.vertices[i].coord.z, m_objects[objRank].bboxMin.z);
-            m_objects[objRank].bboxMax.x = Math::Max(buffer.vertices[i].coord.x, m_objects[objRank].bboxMax.x);
-            m_objects[objRank].bboxMax.y = Math::Max(buffer.vertices[i].coord.y, m_objects[objRank].bboxMax.y);
-            m_objects[objRank].bboxMax.z = Math::Max(buffer.vertices[i].coord.z, m_objects[objRank].bboxMax.z);
+            m_objects[objRank].bboxMin.x = Math::Min(p4.vertices[i].coord.x, m_objects[objRank].bboxMin.x);
+            m_objects[objRank].bboxMin.y = Math::Min(p4.vertices[i].coord.y, m_objects[objRank].bboxMin.y);
+            m_objects[objRank].bboxMin.z = Math::Min(p4.vertices[i].coord.z, m_objects[objRank].bboxMin.z);
+            m_objects[objRank].bboxMax.x = Math::Max(p4.vertices[i].coord.x, m_objects[objRank].bboxMax.x);
+            m_objects[objRank].bboxMax.y = Math::Max(p4.vertices[i].coord.y, m_objects[objRank].bboxMax.y);
+            m_objects[objRank].bboxMax.z = Math::Max(p4.vertices[i].coord.z, m_objects[objRank].bboxMax.z);
         }
 
         m_objects[objRank].radius = Math::Max(m_objects[objRank].bboxMin.Length(),
                                               m_objects[objRank].bboxMax.Length());
     }
 
-    if (buffer.type == ENG_TRIANGLE_TYPE_TRIANGLES)
-        m_objects[objRank].totalTriangles += buffer.vertices.size() / 3;
-    else if (buffer.type == ENG_TRIANGLE_TYPE_SURFACE)
-        m_objects[objRank].totalTriangles += buffer.vertices.size() - 2;
+    if (p4.type == ENG_TRIANGLE_TYPE_TRIANGLES)
+        m_objects[objRank].totalTriangles += p4.vertices.size() / 3;
+    else if (p4.type == ENG_TRIANGLE_TYPE_SURFACE)
+        m_objects[objRank].totalTriangles += p4.vertices.size() - 2;
 
     return true;
 }
@@ -1735,10 +1811,57 @@ void CEngine::UpdateGeometry()
     m_updateGeometry = false;
 }
 
+void CEngine::UpdateStaticObjects()
+{
+    if (!m_updateStaticObjects)
+        return;
+
+    for (int l1 = 0; l1 < static_cast<int>( m_objectTree.size() ); l1++)
+    {
+        EngineObjLevel1& p1 = m_objectTree[l1];
+        if (! p1.used) continue;
+
+        for (int l2 = 0; l2 < static_cast<int>( p1.next.size() ); l2++)
+        {
+            EngineObjLevel2& p2 = p1.next[l2];
+            if (! p2.used) continue;
+
+            int objRank = p2.objRank;
+
+            if (!m_objects[objRank].staticBuffer)
+                continue;
+
+            for (int l3 = 0; l3 < static_cast<int>( p2.next.size() ); l3++)
+            {
+                EngineObjLevel3& p3 = p2.next[l3];
+                if (! p3.used) continue;
+
+                for (int l4 = 0; l4 < static_cast<int>( p3.next.size() ); l4++)
+                {
+                    EngineObjLevel4& p4 = p3.next[l4];
+                    if (! p4.used) continue;
+
+                    if (p4.staticBufferId != 0)
+                        continue;
+
+                    PrimitiveType type;
+                    if (p4.type == ENG_TRIANGLE_TYPE_TRIANGLES)
+                        type = PRIMITIVE_TRIANGLES;
+                    else
+                        type = PRIMITIVE_TRIANGLE_STRIP;
+
+                    p4.staticBufferId = m_device->CreateStaticObject(type, &p4.vertices[0], p4.vertices.size());
+                }
+            }
+        }
+    }
+}
+
 void CEngine::Update()
 {
     ComputeDistance();
     UpdateGeometry();
+    UpdateStaticObjects();
 }
 
 bool CEngine::DetectBBox(int objRank, Math::Point mouse)
@@ -3106,20 +3229,7 @@ void CEngine::Draw3DScene()
                         SetMaterial(p4.material);
                         SetState(p4.state);
 
-                        if (p4.type == ENG_TRIANGLE_TYPE_TRIANGLES)
-                        {
-                            m_device->DrawPrimitive( PRIMITIVE_TRIANGLES,
-                                                     &p4.vertices[0],
-                                                     p4.vertices.size() );
-                            m_statisticTriangle += p4.vertices.size() / 3;
-                        }
-                        if (p4.type == ENG_TRIANGLE_TYPE_SURFACE)
-                        {
-                            m_device->DrawPrimitive( PRIMITIVE_TRIANGLE_STRIP,
-                                                     &p4.vertices[0],
-                                                     p4.vertices.size() );
-                            m_statisticTriangle += p4.vertices.size() - 2;
-                        }
+                        DrawObject(p4, m_objects[objRank].staticBuffer);
                     }
                 }
             }
@@ -3188,22 +3298,7 @@ void CEngine::Draw3DScene()
                     SetMaterial(p4.material);
                     SetState(p4.state);
 
-                    if (p4.type == ENG_TRIANGLE_TYPE_TRIANGLES)
-                    {
-                        m_device->DrawPrimitive( PRIMITIVE_TRIANGLES,
-                                                 &p4.vertices[0],
-                                                 p4.vertices.size() );
-
-                        m_statisticTriangle += p4.vertices.size() / 3;
-                    }
-                    else if (p4.type == ENG_TRIANGLE_TYPE_SURFACE)
-                    {
-                        m_device->DrawPrimitive( PRIMITIVE_TRIANGLE_STRIP,
-                                                 &p4.vertices[0],
-                                                 p4.vertices.size() );
-
-                        m_statisticTriangle += p4.vertices.size() - 2;
-                    }
+                    DrawObject(p4, m_objects[objRank].staticBuffer);
                 }
             }
         }
@@ -3264,21 +3359,7 @@ void CEngine::Draw3DScene()
                         SetMaterial(p4.material);
                         SetState(tState, tColor);
 
-                        if (p4.type == ENG_TRIANGLE_TYPE_TRIANGLES)
-                        {
-                            m_device->DrawPrimitive( PRIMITIVE_TRIANGLES,
-                                                     &p4.vertices[0],
-                                                     p4.vertices.size() );
-
-                            m_statisticTriangle += p4.vertices.size() / 3;
-                        }
-                        else if (p4.type == ENG_TRIANGLE_TYPE_SURFACE)
-                        {
-                            m_device->DrawPrimitive( PRIMITIVE_TRIANGLE_STRIP,
-                                                     &p4.vertices[0],
-                                                     p4.vertices.size() );
-                            m_statisticTriangle += p4.vertices.size() - 2;
-                        }
+                        DrawObject(p4, m_objects[objRank].staticBuffer);
                     }
                 }
             }
@@ -3305,6 +3386,32 @@ void CEngine::Draw3DScene()
     if (m_lensMode) DrawForegroundImage();   // draws the foreground
 
     if (! m_overFront) DrawOverColor();      // draws the foreground color
+}
+
+void CEngine::DrawObject(const EngineObjLevel4& obj, bool staticBuffer)
+{
+    if (staticBuffer)
+    {
+        m_device->DrawStaticObject(obj.staticBufferId);
+
+        if (obj.type == ENG_TRIANGLE_TYPE_TRIANGLES)
+            m_statisticTriangle += obj.vertices.size() / 3;
+        else
+            m_statisticTriangle += obj.vertices.size() - 2;
+    }
+    else
+    {
+        if (obj.type == ENG_TRIANGLE_TYPE_TRIANGLES)
+        {
+            m_device->DrawPrimitive(PRIMITIVE_TRIANGLES, &obj.vertices[0], obj.vertices.size());
+            m_statisticTriangle += obj.vertices.size() / 3;
+        }
+        else
+        {
+            m_device->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, &obj.vertices[0], obj.vertices.size() );
+            m_statisticTriangle += obj.vertices.size() - 2;
+        }
+    }
 }
 
 void CEngine::DrawInterface()
@@ -3397,21 +3504,7 @@ void CEngine::DrawInterface()
                         SetMaterial(p4.material);
                         SetState(p4.state);
 
-                        if (p4.type == ENG_TRIANGLE_TYPE_TRIANGLES)
-                        {
-                            m_device->DrawPrimitive( PRIMITIVE_TRIANGLES,
-                                                     &p4.vertices[0],
-                                                     p4.vertices.size() );
-
-                            m_statisticTriangle += p4.vertices.size() / 3;
-                        }
-                        else if (p4.type == ENG_TRIANGLE_TYPE_SURFACE)
-                        {
-                            m_device->DrawPrimitive( PRIMITIVE_TRIANGLE_STRIP,
-                                                     &p4.vertices[0],
-                                                     p4.vertices.size() );
-                            m_statisticTriangle += p4.vertices.size() - 2;
-                        }
+                        DrawObject(p4, m_objects[objRank].staticBuffer);
                     }
                 }
             }

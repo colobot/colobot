@@ -449,5 +449,7 @@ protected:
 
     //! Low cpu mode
     bool            m_lowCPU;
+
+    int             m_useVbo; // TODO: temporary
 };
 

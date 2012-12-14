@@ -73,6 +73,8 @@ CGLDevice::CGLDevice(const GLDeviceConfig &config)
 {
     m_config = config;
     m_lighting = false;
+    m_lastVboId = 0;
+    m_useVbo = false;
 }
 
 
@@ -108,6 +110,16 @@ bool CGLDevice::Create()
         {
             GetLogger()->Error("GLEW reports required extensions not supported\n");
             return false;
+        }
+
+        if (GLEW_ARB_vertex_buffer_object)
+        {
+            GetLogger()->Info("Detected ARB_vertex_buffer_object extension - using VBOs\n");
+            m_useVbo = true;
+        }
+        else
+        {
+            GetLogger()->Info("No ARB_vertex_buffer_object extension present - using display lists\n");
         }
     }
 #endif
@@ -172,6 +184,16 @@ void CGLDevice::ConfigChanged(const GLDeviceConfig& newConfig)
     m_lighting = false;
     Destroy();
     Create();
+}
+
+void CGLDevice::SetUseVbo(bool useVbo)
+{
+    m_useVbo = useVbo;
+}
+
+bool CGLDevice::GetUseVbo()
+{
+    return m_useVbo;
 }
 
 void CGLDevice::BeginScene()
@@ -925,6 +947,206 @@ void CGLDevice::DrawPrimitive(PrimitiveType type, const VertexCol *vertices, int
 
     glDisableClientState(GL_VERTEX_ARRAY);
     glDisableClientState(GL_COLOR_ARRAY);
+}
+
+unsigned int CGLDevice::CreateStaticObject(PrimitiveType primitiveType, const Vertex* vertices, int vertexCount)
+{
+    unsigned int id = 0;
+    if (m_useVbo)
+    {
+        id = ++m_lastVboId;
+
+        VboObjectInfo info;
+        info.primitiveType = primitiveType;
+        info.vertexType = VERTEX_TYPE_NORMAL;
+        info.vertexCount = vertexCount;
+        info.bufferId = 0;
+
+        glGenBuffers(1, &info.bufferId);
+        glBindBuffer(GL_ARRAY_BUFFER, info.bufferId);
+        glBufferData(GL_ARRAY_BUFFER, vertexCount * sizeof(Vertex), vertices, GL_STATIC_DRAW);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+        m_vboObjects[id] = info;
+    }
+    else
+    {
+        id = glGenLists(1);
+
+        glNewList(id, GL_COMPILE);
+
+        DrawPrimitive(primitiveType, vertices, vertexCount);
+
+        glEndList();
+    }
+
+    return id;
+}
+
+unsigned int CGLDevice::CreateStaticObject(PrimitiveType primitiveType, const VertexTex2* vertices, int vertexCount)
+{
+    unsigned int id = 0;
+    if (m_useVbo)
+    {
+        id = ++m_lastVboId;
+
+        VboObjectInfo info;
+        info.primitiveType = primitiveType;
+        info.vertexType = VERTEX_TYPE_TEX2;
+        info.vertexCount = vertexCount;
+        info.bufferId = 0;
+
+        glGenBuffers(1, &info.bufferId);
+        glBindBuffer(GL_ARRAY_BUFFER, info.bufferId);
+        glBufferData(GL_ARRAY_BUFFER, vertexCount * sizeof(VertexTex2), vertices, GL_STATIC_DRAW);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+        m_vboObjects[id] = info;
+    }
+    else
+    {
+        id = glGenLists(1);
+
+        glNewList(id, GL_COMPILE);
+
+        DrawPrimitive(primitiveType, vertices, vertexCount);
+
+        glEndList();
+    }
+
+    return id;
+}
+
+unsigned int CGLDevice::CreateStaticObject(PrimitiveType primitiveType, const VertexCol* vertices, int vertexCount)
+{
+    unsigned int id = 0;
+    if (m_useVbo)
+    {
+        id = ++m_lastVboId;
+
+        VboObjectInfo info;
+        info.primitiveType = primitiveType;
+        info.vertexType = VERTEX_TYPE_COL;
+        info.vertexCount = vertexCount;
+        info.bufferId = 0;
+
+        glGenBuffers(1, &info.bufferId);
+        glBindBuffer(GL_ARRAY_BUFFER, info.bufferId);
+        glBufferData(GL_ARRAY_BUFFER, vertexCount * sizeof(VertexCol), vertices, GL_STATIC_DRAW);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+        m_vboObjects[id] = info;
+    }
+    else
+    {
+        id = glGenLists(1);
+
+        glNewList(id, GL_COMPILE);
+
+        DrawPrimitive(primitiveType, vertices, vertexCount);
+
+        glEndList();
+    }
+
+    return id;
+}
+
+void CGLDevice::DrawStaticObject(unsigned int objectId)
+{
+    if (m_useVbo)
+    {
+        auto it = m_vboObjects.find(objectId);
+        if (it == m_vboObjects.end())
+            return;
+
+        glEnable(GL_VERTEX_ARRAY);
+        glBindBuffer(GL_ARRAY_BUFFER, (*it).second.bufferId);
+
+        if ((*it).second.vertexType == VERTEX_TYPE_NORMAL)
+        {
+            glEnableClientState(GL_VERTEX_ARRAY);
+            glVertexPointer(3, GL_FLOAT, sizeof(Vertex), static_cast<char*>(nullptr) + offsetof(Vertex, coord));
+
+            glEnableClientState(GL_NORMAL_ARRAY);
+            glNormalPointer(GL_FLOAT, sizeof(Vertex), static_cast<char*>(nullptr) + offsetof(Vertex, normal));
+
+            glActiveTexture(GL_TEXTURE0);
+            glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+            glTexCoordPointer(2, GL_FLOAT, sizeof(Vertex), static_cast<char*>(nullptr) + offsetof(Vertex, texCoord));
+        }
+        else if ((*it).second.vertexType == VERTEX_TYPE_TEX2)
+        {
+            glEnableClientState(GL_VERTEX_ARRAY);
+            glVertexPointer(3, GL_FLOAT, sizeof(VertexTex2), static_cast<char*>(nullptr) + offsetof(VertexTex2, coord));
+
+            glEnableClientState(GL_NORMAL_ARRAY);
+            glNormalPointer(GL_FLOAT, sizeof(VertexTex2), static_cast<char*>(nullptr) + offsetof(VertexTex2, normal));
+
+            glClientActiveTexture(GL_TEXTURE0);
+            glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+            glTexCoordPointer(2, GL_FLOAT, sizeof(VertexTex2), static_cast<char*>(nullptr) + offsetof(VertexTex2, texCoord));
+
+            glClientActiveTexture(GL_TEXTURE1);
+            glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+            glTexCoordPointer(2, GL_FLOAT, sizeof(VertexTex2), static_cast<char*>(nullptr) + offsetof(VertexTex2, texCoord2));
+        }
+        else if ((*it).second.vertexType == VERTEX_TYPE_COL)
+        {
+            glEnableClientState(GL_VERTEX_ARRAY);
+            glVertexPointer(3, GL_FLOAT, sizeof(VertexCol), static_cast<char*>(nullptr) + offsetof(VertexCol, coord));
+
+            glEnableClientState(GL_COLOR_ARRAY);
+            glColorPointer(4, GL_FLOAT, sizeof(VertexCol), static_cast<char*>(nullptr) + offsetof(VertexCol, color));
+        }
+
+        GLenum mode = TranslateGfxPrimitive((*it).second.primitiveType);
+        glDrawArrays(GL_TRIANGLES, 0, (*it).second.vertexCount);
+
+        if ((*it).second.vertexType == VERTEX_TYPE_NORMAL)
+        {
+            glDisableClientState(GL_VERTEX_ARRAY);
+            glDisableClientState(GL_NORMAL_ARRAY);
+            glDisableClientState(GL_TEXTURE_COORD_ARRAY); // GL_TEXTURE0
+        }
+        else if ((*it).second.vertexType == VERTEX_TYPE_TEX2)
+        {
+            glDisableClientState(GL_VERTEX_ARRAY);
+            glDisableClientState(GL_NORMAL_ARRAY);
+            glDisableClientState(GL_TEXTURE_COORD_ARRAY); // GL_TEXTURE1
+            glClientActiveTexture(GL_TEXTURE0);
+            glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+        }
+        else if ((*it).second.vertexType == VERTEX_TYPE_COL)
+        {
+            glDisableClientState(GL_VERTEX_ARRAY);
+            glDisableClientState(GL_COLOR_ARRAY);
+        }
+
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glDisable(GL_VERTEX_ARRAY);
+    }
+    else
+    {
+        glCallList(objectId);
+    }
+}
+
+void CGLDevice::DestroyStaticObject(unsigned int objectId)
+{
+    if (m_useVbo)
+    {
+        auto it = m_vboObjects.find(objectId);
+        if (it == m_vboObjects.end())
+            return;
+
+        glDeleteBuffers(1, &(*it).second.bufferId);
+
+        m_vboObjects.erase(it);
+    }
+    else
+    {
+        glDeleteLists(objectId, 1);
+    }
 }
 
 bool InPlane(Math::Vector normal, float originPlane, Math::Vector center, float radius)

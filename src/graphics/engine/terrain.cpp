@@ -478,6 +478,8 @@ VertexTex2 CTerrain::GetVertex(int x, int y, int step)
     v.texCoord.x =        (o.x-oo.x)*m_textureScale*m_textureSubdivCount;
     v.texCoord.y = 1.0f - (o.z-oo.z)*m_textureScale*m_textureSubdivCount;
 
+    v.texCoord2 = v.texCoord;
+
     return v;
 }
 
@@ -1165,6 +1167,10 @@ bool CTerrain::CreateSquare(int x, int y)
 
     int objRank = m_engine->CreateObject();
     m_engine->SetObjectType(objRank, ENG_OBJTYPE_TERRAIN);
+
+    // TODO: create a static object, but not split into squares, but a single object for all terrain
+    //       Squares should be sub-objects accessing parts of triangle list
+    // m_engine->SetObjectStatic(objRank, true);
 
     m_objRanks[x+y*m_mosaicCount] = objRank;
 

@@ -1157,9 +1157,17 @@ bool CModelFile::WriteBinaryModel(std::ostream& stream)
 
 #ifndef MODELFILE_NO_ENGINE
 
+
+/**
+ * TODO: move the function to CEngine or new class (CModelManager?)
+ * and make models shared static objects.
+ */
+
 bool CModelFile::CreateEngineObject(int objRank)
 {
     std::vector<VertexTex2> vs(3, VertexTex2());
+
+    m_engine->SetObjectStatic(objRank, true); // TODO: make optional in the future
 
     float limit[2];
     limit[0] = m_engine->GetLimitLOD(0);  // frontier AB as config
@@ -1167,8 +1175,6 @@ bool CModelFile::CreateEngineObject(int objRank)
 
     for (int i = 0; i < static_cast<int>( m_triangles.size() ); i++)
     {
-        // TODO move this to CEngine
-
         float min = m_triangles[i].min;
         float max = m_triangles[i].max;
 
