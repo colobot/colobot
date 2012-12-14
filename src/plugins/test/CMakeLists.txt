@@ -9,4 +9,4 @@ include_directories(".")
 include_directories("../../")
 include_directories("../../../")
 
-target_link_libraries(manager_test ltdl)
+target_link_libraries(manager_test ${LTDL_LIBRARY})
