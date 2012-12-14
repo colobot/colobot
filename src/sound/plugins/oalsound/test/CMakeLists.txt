@@ -8,4 +8,4 @@ add_executable(plugin_test plugin_test.cpp ../../../../common/iman.cpp ../../../
 include_directories(".")
 include_directories("../../../../")
 
-target_link_libraries(plugin_test ltdl)
+target_link_libraries(plugin_test ${LTDL_LIBRARY})
