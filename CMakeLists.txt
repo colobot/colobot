@@ -42,6 +42,7 @@ find_package(SDL 1.2.10 REQUIRED)
 find_package(SDL_image 1.2 REQUIRED)
 find_package(SDL_ttf 2.0 REQUIRED)
 find_package(PNG 1.2 REQUIRED)
+find_package(LTDL 2.4.2 REQUIRED)
 
 set(Boost_USE_STATIC_LIBS        ON)
 set(Boost_USE_MULTITHREADED      ON)
@@ -128,8 +129,12 @@ endif()
 
 if(${TESTS})
     # Google Test library
-    set(GTEST_DIR "${colobot_SOURCE_DIR}/lib/gtest")
-    add_subdirectory(lib/gtest bin/test)
+    find_path(GTEST_SRC_DIR NAMES src/gtest.cc src/gtest-all.cc PATHS /usr/src/ PATH_SUFFIXES gtest)
+    if(GTEST_SRC_DIR)
+        add_subdirectory(${GTEST_SRC_DIR} bin/test)
+    else()
+        add_subdirectory(lib/gtest bin/test)
+    endif()
 endif()
 
 # Subdirectory with sources

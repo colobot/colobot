@@ -4,6 +4,8 @@ add_subdirectory(CBot)
 # Tools directory is built separately
 add_subdirectory(tools)
 
+add_subdirectory(po)
+
 # Tests
 if(${TESTS})
     add_subdirectory(common/test)
@@ -171,7 +173,7 @@ ${PNG_LIBRARIES}
 ${OPTIONAL_LIBS}
 ${PLATFORM_LIBS}
 ${Boost_LIBRARIES}
-ltdl
+${LTDL_LIBRARY}
 CBot
 )
 
