@@ -195,4 +195,4 @@ add_executable(colobot ${SOURCES})
 
 target_link_libraries(colobot ${LIBS})
 
-INSTALL_TARGETS(/games colobot)
+install_targets(/games colobot)

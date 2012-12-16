@@ -7,7 +7,7 @@ include_directories(
 .
 ../..
 ../../..
-${GTEST_DIR}/include
+${GTEST_INCLUDE_DIR}
 )
 
 add_executable(matrix_test matrix_test.cpp)

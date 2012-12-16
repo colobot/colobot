@@ -16,7 +16,7 @@ add_definitions(-DMODELFILE_NO_ENGINE)
 include_directories(
 .
 ../../..
-${GTEST_DIR}/include
+${GTEST_INCLUDE_DIR}
 )
 
 add_executable(modelfile_test ${MODELFILE_TEST_SOURCES})

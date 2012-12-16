@@ -7,7 +7,8 @@ include_directories(
 .
 ../..
 ../../..
-${GTEST_DIR}/include
+${GTEST_INCLUDE_DIR}
+${GMOCK_INCLUDE_DIR}
 )
 
 

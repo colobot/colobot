@@ -129,15 +129,34 @@ endif()
 
 if(${TESTS})
     # Google Test library
-    find_path(GTEST_SRC_DIR NAMES src/gtest.cc src/gtest-all.cc PATHS /usr/src/ PATH_SUFFIXES gtest)
-    if(GTEST_SRC_DIR)
-        add_subdirectory(${GTEST_SRC_DIR} bin/test)
+    find_path(GTEST_SRC_DIR NAMES src/gtest.cc src/gtest-all.cc PATHS /usr/src PATH_SUFFIXES gtest)
+    find_path(GTEST_INCLUDE_DIR gtest/gtest.h PATHS /usr/include)
+    if(GTEST_SRC_DIR AND GTEST_INCLUDE_DIR)
+        message(STATUS "Using system gtest library in ${GTEST_SRC_DIR}")
     else()
-        add_subdirectory(lib/gtest bin/test)
+        message(STATUS "Using bundled gtest library")
+        set(GTEST_SRC_DIR ${colobot_SOURCE_DIR}/lib/gtest)
+        set(GTEST_INCLUDE_DIR ${colobot_SOURCE_DIR}/lib/gtest/include)
     endif()
+
+    add_subdirectory(${GTEST_SRC_DIR} bin/gtest)
+
+    # Google Mock library
+    find_path(GMOCK_SRC_DIR NAMES src/gmock.cc src/gmock-all.cc PATHS /usr/src PATH_SUFFIXES gmock)
+    find_path(GMOCK_INCLUDE_DIR gmock/gmock.h PATHS /usr/include)
+    if(GMOCK_SRC_DIR AND GMOCK_INCLUDE_DIR)
+        message(STATUS "Using system gmock library in ${GMOCK_SRC_DIR}")
+    else()
+        message(STATUS "Using bundled gmock library")
+        set(GMOCK_SRC_DIR ${colobot_SOURCE_DIR}/lib/gmock)
+        set(GMOCK_INCLUDE_DIR ${colobot_SOURCE_DIR}/lib/gmock/include)
+    endif()
+
+    add_subdirectory(${GMOCK_SRC_DIR} bin/gmock)
 endif()
 
 # Subdirectory with sources
 add_subdirectory(src bin)
 
-INSTALL_FILES(/share/games/colobot ../data)
+# TODO: provide data files as git submodule and setup correct data path
+install_files(/share/games/colobot ../data)
