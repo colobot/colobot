@@ -127,25 +127,9 @@ endif()
 ##
 
 if(${TESTS})
-    # Google Mock
-    find_path(GMOCK_INCLUDE_DIR NAMES gmock.h PATH_SUFFIXES gmock)
-    find_path(GMOCK_SRC_DIR NAMES src/gmock-all.cc PATHS /usr/src/ PATH_SUFFIXES gmock)
     # Google Test library
-    find_path(GTEST_SRC_DIR NAMES src/gtest.cc src/gtest-all.cc PATHS /usr/src/ PATH_SUFFIXES gtest)
-    if(GTEST_SRC_DIR AND GMOCK_INCLUDE_DIR AND GMOCK_SRC_DIR)
-        include_directories(${GMOCK_SRC_DIR})
-    else(GTEST_SRC_DIR AND GMOCK_INCLUDE_DIR AND GMOCK_SRC_DIR)
-        set(GTEST_SRC_DIR lib/gtest)
-        set(GMOCK_SRC_DIR ${GTEST_SRC_DIR})
-        set(GMOCK_INCLUDE_DIR ${GTEST_SRC_DIR}/include/gmock)
-        include_directories(${GTEST_SRC_DIR} ${GTEST_SRC_DIR}/include/)
-    endif(GTEST_SRC_DIR AND GMOCK_INCLUDE_DIR AND GMOCK_SRC_DIR)
-
-    add_library(gmock STATIC ${GMOCK_SRC_DIR}/src/gmock-all.cc)
-    add_subdirectory(${GTEST_SRC_DIR} bin/test)
-
-    message(STATUS "Use Google Mock from ${GMOCK_SRC_DIR}")
-    message(STATUS "Use Google Test from ${GTEST_SRC_DIR}")
+    set(GTEST_DIR "${colobot_SOURCE_DIR}/lib/gtest")
+    add_subdirectory(lib/gtest bin/test)
 endif()
 
 # Subdirectory with sources
