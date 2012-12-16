@@ -142,7 +142,6 @@ CApplication::CApplication()
     m_dataDirs[DIR_AI]       = "ai";
     m_dataDirs[DIR_FONT]     = "fonts";
     m_dataDirs[DIR_HELP]     = "help";
-    m_dataDirs[DIR_I18N]     = "i18n";
     m_dataDirs[DIR_ICON]     = "icons";
     m_dataDirs[DIR_LEVEL]    = "levels";
     m_dataDirs[DIR_MODEL]    = "models";
@@ -322,8 +321,7 @@ bool CApplication::Create()
     setlocale(LC_ALL, "");
     GetLogger()->Debug("Set locale to '%s'\n", locale.c_str());
 
-    std::string trPath = m_dataPath + "/" + m_dataDirs[DIR_I18N];
-    bindtextdomain("colobot", trPath.c_str());
+    bindtextdomain("colobot", CBOT_I18N_DIR);
     bind_textdomain_codeset("colobot", "UTF-8");
     textdomain("colobot");
 
