@@ -128,8 +128,12 @@ endif()
 
 if(${TESTS})
     # Google Test library
-    set(GTEST_DIR "${colobot_SOURCE_DIR}/lib/gtest")
-    add_subdirectory(lib/gtest bin/test)
+    find_path(GTEST_SRC_DIR NAMES src/gtest.cc src/gtest-all.cc PATHS /usr/src/ PATH_SUFFIXES gtest)
+    if(NOT GTEST_SRC_DIR)
+        set(GTEST_SRC_DIR lib/gtest)
+    endif(NOT GTEST_SRC_DIR)
+    message(STATUS "Use Google Test from ${GTEST_SRC_DIR}")
+    add_subdirectory(${GTEST_SRC_DIR} bin/test)
 endif()
 
 # Subdirectory with sources
