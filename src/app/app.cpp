@@ -15,6 +15,7 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
+#include "common/config.h"
 
 #include "app/app.h"
 
@@ -130,7 +131,7 @@ CApplication::CApplication()
     m_mouseButtonsState = 0;
     m_trackedKeys = 0;
 
-    m_dataPath = "./data";
+    m_dataPath = CBOT_DEFAULT_DATADIR;
 
     m_language = LANGUAGE_ENV;
 

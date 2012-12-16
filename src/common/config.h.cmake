@@ -8,4 +8,5 @@
 #cmakedefine USE_GLEW @USE_GLEW@
 #cmakedefine GLEW_STATIC
 
+#define CBOT_DEFAULT_DATADIR "@COLOBOT_DATA_DIR@"
 #define CBOT_I18N_DIR "@CMAKE_INSTALL_PREFIX@/share/locale/"
