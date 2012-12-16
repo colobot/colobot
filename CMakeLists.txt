@@ -162,5 +162,6 @@ endif()
 # Subdirectory with sources
 add_subdirectory(src bin)
 
-# TODO: provide data files as git submodule and setup correct data path
-install_files(/share/games/colobot ../data)
+# TODO: provide data files as git submodule
+set(COLOBOT_DATA_DIR ${CMAKE_INSTALL_PREFIX}/share/games/colobot CACHE PATH "Colobot shared data directory")
+install(DIRECTORY ../data DESTINATION ${COLOBOT_DATA_DIR})
