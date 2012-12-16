@@ -146,13 +146,17 @@ if(${TESTS})
     find_path(GMOCK_INCLUDE_DIR gmock/gmock.h PATHS /usr/include)
     if(GMOCK_SRC_DIR AND GMOCK_INCLUDE_DIR)
         message(STATUS "Using system gmock library in ${GMOCK_SRC_DIR}")
+
+        include_directories(${GMOCK_SRC_DIR})
+        # gmock-all.cc includes all other sources
+        add_library(gmock STATIC ${GMOCK_SRC_DIR}/src/gmock-all.cc)
     else()
         message(STATUS "Using bundled gmock library")
         set(GMOCK_SRC_DIR ${colobot_SOURCE_DIR}/lib/gmock)
         set(GMOCK_INCLUDE_DIR ${colobot_SOURCE_DIR}/lib/gmock/include)
+        add_subdirectory(${GMOCK_SRC_DIR} bin/gmock)
     endif()
 
-    add_subdirectory(${GMOCK_SRC_DIR} bin/gmock)
 endif()
 
 # Subdirectory with sources
