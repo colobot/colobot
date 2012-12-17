@@ -18,4 +18,4 @@ else()
     add_library(CBot SHARED ${SOURCES})
 endif()
 
-INSTALL_TARGETS(/lib CBot)
+install(TARGETS CBot LIBRARY DESTINATION "${COLOBOT_LIB_DIR}")
