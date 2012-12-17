@@ -167,3 +167,16 @@ set(COLOBOT_LIB_DIR ${CMAKE_INSTALL_PREFIX}/lib/colobot CACHE PATH "Colobot libr
 add_subdirectory(src bin)
 
 install(DIRECTORY ../data DESTINATION ${COLOBOT_DATA_DIR})
+
+# Build and install documentation
+set(COLOBOT_DOC_DIR ${CMAKE_INSTALL_PREFIX}/share/doc/colobot CACHE PATH "Colobot documentation directory")
+
+find_package(Doxygen)
+if(DOXYGEN_FOUND AND DOXYGEN_DOT_FOUND)
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile @ONLY)
+    add_custom_target(doc
+                      ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
+                      WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+                      COMMENT "Generating API documentation with Doxygen" VERBATIM )
+    install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/doc/ DESTINATION ${COLOBOT_DOC_DIR} OPTIONAL)
+endif(DOXYGEN_FOUND AND DOXYGEN_DOT_FOUND)
