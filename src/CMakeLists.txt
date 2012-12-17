@@ -195,4 +195,5 @@ add_executable(colobot ${SOURCES})
 
 target_link_libraries(colobot ${LIBS})
 
-install_targets(/games colobot)
+install(TARGETS colobot RUNTIME DESTINATION games/)
+set_target_properties(colobot PROPERTIES INSTALL_RPATH ${COLOBOT_LIB_DIR})

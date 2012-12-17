@@ -159,9 +159,11 @@ if(${TESTS})
 
 endif()
 
+# TODO: provide data files as git submodule
+set(COLOBOT_DATA_DIR ${CMAKE_INSTALL_PREFIX}/share/games/colobot CACHE PATH "Colobot shared data directory")
+set(COLOBOT_LIB_DIR ${CMAKE_INSTALL_PREFIX}/lib/colobot CACHE PATH "Colobot libraries directory")
+
 # Subdirectory with sources
 add_subdirectory(src bin)
 
-# TODO: provide data files as git submodule
-set(COLOBOT_DATA_DIR ${CMAKE_INSTALL_PREFIX}/share/games/colobot CACHE PATH "Colobot shared data directory")
 install(DIRECTORY ../data DESTINATION ${COLOBOT_DATA_DIR})
