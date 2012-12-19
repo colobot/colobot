@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 2.8)
 
-set(CMAKE_BUILD_TYPE debug)
+if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE debug)
+endif(NOT CMAKE_BUILD_TYPE)
 set(CMAKE_CXX_FLAGS_DEBUG "-g -O0 -Wall -Wold-style-cast -std=gnu++0x")
 
 include_directories(

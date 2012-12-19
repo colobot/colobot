@@ -5,7 +5,9 @@ find_package(SDL REQUIRED)
 find_package(SDL_image REQUIRED)
 find_package(PNG REQUIRED)
 
-set(CMAKE_BUILD_TYPE debug)
+if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE debug)
+endif(NOT CMAKE_BUILD_TYPE)
 set(CMAKE_CXX_FLAGS_DEBUG "-Wall -g -O0 -Wold-style-cast -std=gnu++0x")
 
 set(ADD_LIBS "")

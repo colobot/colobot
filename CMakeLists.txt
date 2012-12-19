@@ -16,7 +16,9 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${colobot_SOURCE_DIR}/cmake")
 ##
 
 # Global build type
-set(CMAKE_BUILD_TYPE debug)
+if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE debug)
+endif(NOT CMAKE_BUILD_TYPE)
 
 # Global compile flags
 # These are specific to GCC/MinGW; for other compilers, change as necessary
