@@ -6,7 +6,8 @@ set(SOURCES
     channel.cpp
 )
 
-SET (CMAKE_CXX_FLAGS "-Wall  -g -std=c++0x -fPIC")
+SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=c++0x -fPIC")
+SET (CMAKE_CXX_FLAGS_DEBUG "-g")
 
 include(FindPkgConfig)
 include(FindOpenAL)
