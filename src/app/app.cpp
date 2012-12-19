@@ -30,11 +30,10 @@
 
 #include "object/robotmain.h"
 
+#include <boost/filesystem.hpp>
 
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
-
-#include <fstream>
 
 #include <stdlib.h>
 #include <libintl.h>
@@ -131,7 +130,7 @@ CApplication::CApplication()
     m_mouseButtonsState = 0;
     m_trackedKeys = 0;
 
-    m_dataPath = CBOT_DEFAULT_DATADIR;
+    m_dataPath = COLOBOT_DEFAULT_DATADIR;
 
     m_language = LANGUAGE_ENV;
 
@@ -274,13 +273,10 @@ bool CApplication::Create()
 {
     GetLogger()->Info("Creating CApplication\n");
 
-    // I know, a primitive way to check for dir, but works
-    std::string readmePath = m_dataPath + "/README.txt";
-    std::ifstream testReadme;
-    testReadme.open(readmePath.c_str(), std::ios_base::in);
-    if (!testReadme.good())
+    boost::filesystem::path dataPath(m_dataPath);
+    if (! (boost::filesystem::exists(dataPath) && boost::filesystem::is_directory(dataPath)) )
     {
-        GetLogger()->Error("Could not open test file in data dir: '%s'\n", readmePath.c_str());
+        GetLogger()->Error("Data directory '%s' doesn't exist or is not a directory\n", m_dataPath.c_str());
         m_errorMessage = std::string("Could not read from data directory:\n") +
                          std::string("'") + m_dataPath + std::string("'\n") +
                          std::string("Please check your installation, or supply a valid data directory by -datadir option.");
@@ -322,7 +318,7 @@ bool CApplication::Create()
     setlocale(LC_ALL, "");
     GetLogger()->Debug("Set locale to '%s'\n", locale.c_str());
 
-    bindtextdomain("colobot", CBOT_I18N_DIR);
+    bindtextdomain("colobot", COLOBOT_I18N_DIR);
     bind_textdomain_codeset("colobot", "UTF-8");
     textdomain("colobot");
 

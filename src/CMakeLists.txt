@@ -195,5 +195,5 @@ add_executable(colobot ${SOURCES})
 
 target_link_libraries(colobot ${LIBS})
 
-install(TARGETS colobot RUNTIME DESTINATION games/)
-set_target_properties(colobot PROPERTIES INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/${COLOBOT_LIB_DIR}")
+install(TARGETS colobot RUNTIME DESTINATION ${COLOBOT_INSTALL_BIN_DIR})
+set_target_properties(colobot PROPERTIES INSTALL_RPATH ${COLOBOT_INSTALL_LIB_DIR})

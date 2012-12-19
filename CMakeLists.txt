@@ -18,7 +18,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${colobot_SOURCE_DIR}/cmake")
 # Global build type
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE debug)
-endif(NOT CMAKE_BUILD_TYPE)
+endif()
 
 # Global compile flags
 # These are specific to GCC/MinGW; for other compilers, change as necessary
@@ -35,6 +35,9 @@ option(TESTS "Enable tests" ON)
 # CBot can also be a static library
 option(CBOT_STATIC "Build CBot as static libary" OFF)
 
+# Doxygen docs are optional for installation
+option(INSTALL_DOCS "Install Doxygen-generated documentation" OFF)
+
 
 ##
 # Required packages
@@ -46,6 +49,7 @@ find_package(SDL_image 1.2 REQUIRED)
 find_package(SDL_ttf 2.0 REQUIRED)
 find_package(PNG 1.2 REQUIRED)
 find_package(LTDL 2.4.2 REQUIRED)
+find_package(Gettext REQUIRED)
 
 set(Boost_USE_STATIC_LIBS        ON)
 set(Boost_USE_MULTITHREADED      ON)
@@ -127,6 +131,21 @@ endif()
 
 
 ##
+# Doxygen docs
+##
+
+find_package(Doxygen)
+
+if(DOXYGEN_FOUND AND DOXYGEN_DOT_FOUND)
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile @ONLY)
+    add_custom_target(doc
+                      ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
+                      WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+                      COMMENT "Generating API documentation with Doxygen" VERBATIM)
+endif()
+
+
+##
 # Targets
 ##
 
@@ -162,24 +181,27 @@ if(${TESTS})
 
 endif()
 
-# TODO: provide data files as git submodule
-set(COLOBOT_DATA_DIR share/games/colobot CACHE PATH "Colobot shared data directory")
-set(COLOBOT_LIB_DIR lib/colobot CACHE PATH "Colobot libraries directory")
+# Installation paths defined before compiling sources
+set(COLOBOT_INSTALL_BIN_DIR ${CMAKE_INSTALL_PREFIX}/games CACHE PATH "Colobot binary directory")
+set(COLOBOT_INSTALL_DATA_DIR ${CMAKE_INSTALL_PREFIX}/share/games/colobot CACHE PATH "Colobot shared data directory")
+set(COLOBOT_INSTALL_LIB_DIR ${CMAKE_INSTALL_PREFIX}/lib/colobot CACHE PATH "Colobot libraries directory")
+set(COLOBOT_INSTALL_DOC_DIR ${CMAKE_INSTALL_PREFIX}/share/doc/colobot CACHE PATH "Colobot documentation directory")
+set(COLOBOT_INSTALL_I18N_DIR ${CMAKE_INSTALL_PREFIX}/share/locale CACHE PATH "Colobot translations directory")
 
 # Subdirectory with sources
 add_subdirectory(src bin)
 
-install(DIRECTORY ../data DESTINATION ${COLOBOT_DATA_DIR})
 
-# Build and install documentation
-set(COLOBOT_DOC_DIR ${CMAKE_INSTALL_PREFIX}/share/doc/colobot CACHE PATH "Colobot documentation directory")
+##
+# Installation
+##
 
-find_package(Doxygen)
-if(DOXYGEN_FOUND AND DOXYGEN_DOT_FOUND)
-    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile @ONLY)
-    add_custom_target(doc
-                      ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
-                      WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-                      COMMENT "Generating API documentation with Doxygen" VERBATIM )
-    install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/doc/ DESTINATION ${COLOBOT_DOC_DIR} OPTIONAL)
-endif(DOXYGEN_FOUND AND DOXYGEN_DOT_FOUND)
+file(GLOB DATA_FILES "data/*")
+
+# Data
+install(DIRECTORY data/ DESTINATION ${COLOBOT_INSTALL_DATA_DIR})
+
+# Documentation
+if(INSTALL_DOCS AND DOXYGEN_FOUND AND DOXYGEN_DOT_FOUND)
+    install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/doc/ DESTINATION ${COLOBOT_INSTALL_DOC_DIR} OPTIONAL)
+endif()
