@@ -89,7 +89,6 @@ CApplication::CApplication()
     m_private       = new ApplicationPrivate();
     m_iMan          = new CInstanceManager();
     m_eventQueue    = new CEventQueue(m_iMan);
-    m_pluginManager = new CPluginManager();
     m_profile       = new CProfile();
 
     m_engine    = nullptr;
@@ -157,9 +156,6 @@ CApplication::~CApplication()
 
     delete m_eventQueue;
     m_eventQueue = nullptr;
-
-    delete m_pluginManager;
-    m_pluginManager = nullptr;
 
     delete m_profile;
     m_profile = nullptr;
@@ -336,8 +332,7 @@ bool CApplication::Create()
         if (GetProfile().GetLocalProfileString("Resources", "Data", path))
             m_dataPath = path;
 
-        m_pluginManager->LoadFromProfile();
-        m_sound = static_cast<CSoundInterface*>(CInstanceManager::GetInstancePointer()->SearchInstance(CLASS_SOUND));
+         m_sound = static_cast<CSoundInterface*>(CInstanceManager::GetInstancePointer()->SearchInstance(CLASS_SOUND));
 
         if (!m_sound) {
             GetLogger()->Error("Sound not loaded, falling back to fake sound!\n");

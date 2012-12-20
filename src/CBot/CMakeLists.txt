@@ -16,6 +16,5 @@ if(${CBOT_STATIC})
     add_library(CBot STATIC ${SOURCES})
 else()
     add_library(CBot SHARED ${SOURCES})
+    install(TARGETS CBot LIBRARY DESTINATION ${COLOBOT_INSTALL_LIB_DIR})
 endif()
-
-install(TARGETS CBot LIBRARY DESTINATION ${COLOBOT_INSTALL_LIB_DIR})

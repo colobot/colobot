@@ -38,6 +38,8 @@ option(CBOT_STATIC "Build CBot as static libary" OFF)
 # Doxygen docs are optional for installation
 option(INSTALL_DOCS "Install Doxygen-generated documentation" OFF)
 
+# Build openal sound support
+option(OPENAL_SOUND "Build openal sound support" OFF)
 
 ##
 # Required packages

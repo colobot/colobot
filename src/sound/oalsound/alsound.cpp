@@ -23,51 +23,23 @@
 
 #define MIN(a, b) (a > b ? b : a)
 
-
-PLUGIN_INTERFACE(ALSound)
-
-
-std::string ALSound::PluginName()
-{
-    return "Sound plugin using OpenAL library to play sounds.";
-}
-
-
-int ALSound::PluginVersion()
-{
-    return 2;
-}
-
-
-void ALSound::InstallPlugin()
-{
-    auto pointer = CInstanceManager::GetInstancePointer();
-    if (pointer != nullptr)
-        CInstanceManager::GetInstancePointer()->AddInstance(CLASS_SOUND, this);
-}
-
-
-bool ALSound::UninstallPlugin(std::string &reason)
-{
-    auto pointer = CInstanceManager::GetInstancePointer();
-    if (pointer != nullptr)
-        CInstanceManager::GetInstancePointer()->DeleteInstance(CLASS_SOUND, this);
-    CleanUp();
-    return true;
-}
-
-
 ALSound::ALSound()
 {
     mEnabled = false;
     m3D = false;
     mAudioVolume = MAXVOLUME;
     mMute = false;
+    auto pointer = CInstanceManager::GetInstancePointer();
+    if (pointer != nullptr)
+        CInstanceManager::GetInstancePointer()->AddInstance(CLASS_SOUND, this);
 }
 
 
 ALSound::~ALSound()
 {
+    auto pointer = CInstanceManager::GetInstancePointer();
+    if (pointer != nullptr)
+        CInstanceManager::GetInstancePointer()->DeleteInstance(CLASS_SOUND, this);
     CleanUp();
 }
 

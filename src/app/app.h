@@ -25,12 +25,11 @@
 
 #include "common/global.h"
 #include "common/singleton.h"
+#include "common/profile.h"
 
 #include "graphics/core/device.h"
 #include "graphics/engine/engine.h"
 #include "graphics/opengl/gldevice.h"
-
-#include "plugins/pluginmanager.h"
 
 
 #include <string>
@@ -337,7 +336,6 @@ protected:
     CSoundInterface*        m_sound;
     //! Main class of the proper game engine
     CRobotMain*             m_robotMain;
-    CPluginManager*         m_pluginManager;
     CProfile*               m_profile;
 
     //! Code to return at exit

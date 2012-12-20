@@ -27,9 +27,24 @@ endif()
 
 # Additional libraries per platform
 set(PLATFORM_LIBS "")
+set(OPENAL_LIBS "")
+
+if (${OPENAL_SOUND})
+    if (${MXE})
+	set(OPENAL_LIBS
+	    ${CMAKE_FIND_ROOT_PATH}/lib/libOpenAL32.a
+	    ${CMAKE_FIND_ROOT_PATH}/lib/libalut.a
+	)
+    else()
+	set(OPENAL_LIBS
+	    openal
+	    alut
+	)
+    endif()
+endif()
 
 if (${MXE}) # MXE requires special treatment
-    set(PLATFORM_LIBS ${MXE_LIBS})
+    set(PLATFORM_LIBS ${MXE_LIBS})  
 elseif (${PLATFORM_WINDOWS})
     # because it isn't included in standard linking libraries
     set(PLATFORM_LIBS "-lintl")
@@ -42,6 +57,15 @@ endif()
 # Configure file
 configure_file(common/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/common/config.h)
 
+set(OPENAL_SRC "")
+
+if (${OPENAL_SOUND})
+    set(OPENAL_SRC
+	sound/oalsound/alsound.cpp
+	sound/oalsound/buffer.cpp
+	sound/oalsound/channel.cpp
+    )
+endif()
 
 # Source files
 set(SOURCES
@@ -160,7 +184,9 @@ ui/slider.cpp
 ui/studio.cpp
 ui/target.cpp
 ui/window.cpp
+${OPENAL_SRC}
 )
+
 
 set(LIBS
 ${SDL_LIBRARY}
@@ -172,6 +198,7 @@ ${OPTIONAL_LIBS}
 ${PLATFORM_LIBS}
 ${Boost_LIBRARIES}
 CBot
+${OPENAL_LIBS}
 )
 
 include_directories(
