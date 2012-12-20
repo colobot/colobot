@@ -160,8 +160,6 @@ ui/slider.cpp
 ui/studio.cpp
 ui/target.cpp
 ui/window.cpp
-plugins/pluginmanager.cpp
-plugins/pluginloader.cpp
 )
 
 set(LIBS
@@ -173,7 +171,6 @@ ${PNG_LIBRARIES}
 ${OPTIONAL_LIBS}
 ${PLATFORM_LIBS}
 ${Boost_LIBRARIES}
-${LTDL_LIBRARY}
 CBot
 )
 
