@@ -18,7 +18,6 @@ if((${CMAKE_CROSSCOMPILING}) AND (DEFINED MSYS))
       ${CMAKE_FIND_ROOT_PATH}/lib/libiconv.a
       ${CMAKE_FIND_ROOT_PATH}/lib/libglew32s.a
       ${CMAKE_FIND_ROOT_PATH}/lib/libfreetype.a
-      ${CMAKE_FIND_ROOT_PATH}/lib/libltdl.a
       ${CMAKE_FIND_ROOT_PATH}/lib/libopengl32.a
       ${CMAKE_FIND_ROOT_PATH}/lib/libjpeg.a
       ${CMAKE_FIND_ROOT_PATH}/lib/libwinmm.a

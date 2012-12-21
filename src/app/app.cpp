@@ -40,6 +40,11 @@
 #include <unistd.h>
 
 
+#ifdef OPENAL_SOUND
+    #include "sound/oalsound/alsound.h"
+#endif
+
+
 template<> CApplication* CSingleton<CApplication>::mInstance = nullptr;
 
 //! Static buffer for putenv locale
@@ -332,12 +337,12 @@ bool CApplication::Create()
         if (GetProfile().GetLocalProfileString("Resources", "Data", path))
             m_dataPath = path;
 
-         m_sound = static_cast<CSoundInterface*>(CInstanceManager::GetInstancePointer()->SearchInstance(CLASS_SOUND));
-
-        if (!m_sound) {
-            GetLogger()->Error("Sound not loaded, falling back to fake sound!\n");
-            m_sound = new CSoundInterface();
-        }
+	#ifdef OPENAL_SOUND
+	    m_sound = static_cast<CSoundInterface *>(new ALSound());
+	#else
+	    GetLogger()->Info("No sound support.\n");
+	    m_sound = new CSoundInterface();
+	#endif
 
         m_sound->Create(true);
         if (GetProfile().GetLocalProfileString("Resources", "Sound", path))
