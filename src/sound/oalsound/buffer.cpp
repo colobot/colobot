@@ -36,7 +36,7 @@ Buffer::~Buffer() {
 bool Buffer::LoadFromFile(std::string filename, Sound sound) {
     mSound = sound;
 
-    GetLogger()->Info("Loading audio file: %s\n", filename.c_str());
+    GetLogger()->Debug("Loading audio file: %s\n", filename.c_str());
     mBuffer = alutCreateBufferFromFile(filename.c_str());
 
     ALenum error = alutGetError();
@@ -53,7 +53,7 @@ bool Buffer::LoadFromFile(std::string filename, Sound sound) {
     alGetBufferi(mBuffer, AL_CHANNELS, &channels);
     alGetBufferi(mBuffer, AL_FREQUENCY, &freq);
 
-    mDuration =  (ALfloat)size / channels / bits / 8 / (ALfloat)freq;
+    mDuration =  static_cast<ALfloat>(size) / channels / bits / 8 / static_cast<ALfloat>(freq);
 
     mLoaded = true;
     return true;

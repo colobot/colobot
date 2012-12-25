@@ -259,7 +259,7 @@ bool ALSound::SearchFreeBuffer(Sound sound, int &channel, bool &bAlreadyLoaded)
     int lowerOrEqual = -1;
     for (auto it : mChannels) {
         if (it.second->GetPriority() < priority) {
-            GetLogger()->Info("Sound channel with lower priority will be reused.");
+            GetLogger()->Debug("Sound channel with lower priority will be reused.");
             channel = it.first;
             return true;
         }
@@ -269,7 +269,7 @@ bool ALSound::SearchFreeBuffer(Sound sound, int &channel, bool &bAlreadyLoaded)
 
     if (lowerOrEqual != -1) {
         channel = lowerOrEqual;
-        GetLogger()->Info("Sound channel with lower or equal priority will be reused.");
+        GetLogger()->Debug("Sound channel with lower or equal priority will be reused.");
         return true;
     }
 
@@ -457,11 +457,11 @@ void ALSound::FrameMove(float delta)
         if (it.second->GetEnvelope().totalTime <= it.second->GetCurrentTime()) {
 
             if (oper.nextOper == SOPER_LOOP) {
-                GetLogger()->Info("Replay.\n");
+                GetLogger()->Trace("Sound oper: replay.\n");
                 it.second->SetCurrentTime(0.0f);
                 it.second->Play();
             } else {
-                GetLogger()->Info("Next.\n");
+                GetLogger()->Trace("Sound oper: next.\n");
                 it.second->SetStartAmplitude(oper.finalAmplitude);
                 it.second->SetStartFrequency(oper.finalFrequency);
                 it.second->PopEnvelope();

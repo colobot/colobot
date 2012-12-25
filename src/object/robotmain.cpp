@@ -3793,6 +3793,8 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
     int rankObj = 0;
     int rankGadget = 0;
     CObject* sel = 0;
+    char *locale = setlocale(LC_NUMERIC, nullptr);
+    setlocale(LC_NUMERIC, "C");
 
     while (fgets(line, 500, file) != NULL)
     {
@@ -4526,6 +4528,8 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
     }
     m_dialog->SetSceneRead("");
     m_dialog->SetStackRead("");
+    
+    setlocale(LC_NUMERIC, locale);
 }
 
 //! Creates an object of decoration mobile or stationary

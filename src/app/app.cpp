@@ -316,7 +316,7 @@ bool CApplication::Create()
     langStr += locale;
     strcpy(S_LANGUAGE, langStr.c_str());
     putenv(S_LANGUAGE);
-    setlocale(LC_ALL, "");
+    setlocale(LC_ALL, locale.c_str());
     GetLogger()->Debug("Set locale to '%s'\n", locale.c_str());
 
     bindtextdomain("colobot", COLOBOT_I18N_DIR);
