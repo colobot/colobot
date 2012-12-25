@@ -86,14 +86,14 @@ void ALSound::SetSound3D(bool bMode)
 }
 
 
-bool ALSound::RetSound3D()
+bool ALSound::GetSound3D()
 {
     // TODO stub! need to be implemented
     return true;
 }
 
 
-bool ALSound::RetSound3DCap()
+bool ALSound::GetSound3DCap()
 {
     // TODO stub! need to be implemented
     return true;
@@ -113,7 +113,7 @@ void ALSound::SetAudioVolume(int volume)
 }
 
 
-int ALSound::RetAudioVolume()
+int ALSound::GetAudioVolume()
 {
     float volume;
     if ( !mEnabled )
@@ -130,7 +130,7 @@ void ALSound::SetMusicVolume(int volume)
 }
 
 
-int ALSound::RetMusicVolume()
+int ALSound::GetMusicVolume()
 {
     // TODO stub! Add music support
     if ( !mEnabled )
@@ -151,7 +151,7 @@ bool ALSound::Cache(Sound sound, std::string filename)
 }
 
 
-int ALSound::RetPriority(Sound sound)
+int ALSound::GetPriority(Sound sound)
 {
     if ( sound == SOUND_FLYh   ||
         sound == SOUND_FLY    ||
@@ -202,7 +202,7 @@ int ALSound::RetPriority(Sound sound)
 
 bool ALSound::SearchFreeBuffer(Sound sound, int &channel, bool &bAlreadyLoaded)
 {
-    int priority = RetPriority(sound);
+    int priority = GetPriority(sound);
 
     // Seeks a channel used which sound is stopped.
     for (auto it : mChannels) {

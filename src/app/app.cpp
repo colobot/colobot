@@ -325,9 +325,6 @@ bool CApplication::Create()
 
     GetLogger()->Debug("Testing gettext translation: '%s'\n", gettext("Colobot rules!"));
 
-    // Temporarily -- only in windowed mode
-    m_deviceConfig.fullScreen = false;
-
     //Create the sound instance.
     if (!GetProfile().InitCurrentDirectory()) {
         GetLogger()->Warn("Config not found. Default values will be used!\n");
@@ -383,7 +380,20 @@ bool CApplication::Create()
         m_exitCode = 3;
         return false;
     }
-
+ 
+    // load settings from profile
+    int iValue;
+    if ( GetProfile().GetLocalProfileInt("Setup", "Resolution", iValue) ) {
+	std::vector<Math::IntPoint> modes;
+	GetVideoResolutionList(modes, true, true);
+	if (static_cast<unsigned int>(iValue) < modes.size())
+	    m_deviceConfig.size = modes.at(iValue);
+    }
+    
+    if ( GetProfile().GetLocalProfileInt("Setup", "Fullscreen", iValue) ) {
+	m_deviceConfig.fullScreen = (iValue == 1);
+    }
+    
     if (! CreateVideoSurface())
         return false; // dialog is in function
 
@@ -403,8 +413,7 @@ bool CApplication::Create()
 
     // Don't generate joystick events
     SDL_JoystickEventState(SDL_IGNORE);
-
-
+    
     // The video is ready, we can create and initalize the graphics device
     m_device = new Gfx::CGLDevice(m_deviceConfig);
     if (! m_device->Create() )
