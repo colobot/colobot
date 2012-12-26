@@ -949,7 +949,7 @@ void CGLDevice::DrawPrimitive(PrimitiveType type, const VertexCol *vertices, int
     glDisableClientState(GL_COLOR_ARRAY);
 }
 
-unsigned int CGLDevice::CreateStaticObject(PrimitiveType primitiveType, const Vertex* vertices, int vertexCount)
+unsigned int CGLDevice::CreateStaticBuffer(PrimitiveType primitiveType, const Vertex* vertices, int vertexCount)
 {
     unsigned int id = 0;
     if (m_useVbo)
@@ -983,7 +983,7 @@ unsigned int CGLDevice::CreateStaticObject(PrimitiveType primitiveType, const Ve
     return id;
 }
 
-unsigned int CGLDevice::CreateStaticObject(PrimitiveType primitiveType, const VertexTex2* vertices, int vertexCount)
+unsigned int CGLDevice::CreateStaticBuffer(PrimitiveType primitiveType, const VertexTex2* vertices, int vertexCount)
 {
     unsigned int id = 0;
     if (m_useVbo)
@@ -1017,7 +1017,7 @@ unsigned int CGLDevice::CreateStaticObject(PrimitiveType primitiveType, const Ve
     return id;
 }
 
-unsigned int CGLDevice::CreateStaticObject(PrimitiveType primitiveType, const VertexCol* vertices, int vertexCount)
+unsigned int CGLDevice::CreateStaticBuffer(PrimitiveType primitiveType, const VertexCol* vertices, int vertexCount)
 {
     unsigned int id = 0;
     if (m_useVbo)
@@ -1051,11 +1051,92 @@ unsigned int CGLDevice::CreateStaticObject(PrimitiveType primitiveType, const Ve
     return id;
 }
 
-void CGLDevice::DrawStaticObject(unsigned int objectId)
+void CGLDevice::UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primitiveType, const Vertex* vertices, int vertexCount)
 {
     if (m_useVbo)
     {
-        auto it = m_vboObjects.find(objectId);
+        auto it = m_vboObjects.find(bufferId);
+        if (it == m_vboObjects.end())
+            return;
+
+        VboObjectInfo& info = (*it).second;
+        info.primitiveType = primitiveType;
+        info.vertexType = VERTEX_TYPE_NORMAL;
+        info.vertexCount = vertexCount;
+
+        glBindBuffer(GL_ARRAY_BUFFER, info.bufferId);
+        glBufferData(GL_ARRAY_BUFFER, vertexCount * sizeof(Vertex), vertices, GL_STATIC_DRAW);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+    }
+    else
+    {
+        glNewList(bufferId, GL_COMPILE);
+
+        DrawPrimitive(primitiveType, vertices, vertexCount);
+
+        glEndList();
+    }
+}
+
+void CGLDevice::UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primitiveType, const VertexTex2* vertices, int vertexCount)
+{
+    if (m_useVbo)
+    {
+        auto it = m_vboObjects.find(bufferId);
+        if (it == m_vboObjects.end())
+            return;
+
+        VboObjectInfo& info = (*it).second;
+        info.primitiveType = primitiveType;
+        info.vertexType = VERTEX_TYPE_TEX2;
+        info.vertexCount = vertexCount;
+
+        glBindBuffer(GL_ARRAY_BUFFER, info.bufferId);
+        glBufferData(GL_ARRAY_BUFFER, vertexCount * sizeof(VertexTex2), vertices, GL_STATIC_DRAW);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+    }
+    else
+    {
+        glNewList(bufferId, GL_COMPILE);
+
+        DrawPrimitive(primitiveType, vertices, vertexCount);
+
+        glEndList();
+    }
+}
+
+void CGLDevice::UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primitiveType, const VertexCol* vertices, int vertexCount)
+{
+    if (m_useVbo)
+    {
+        auto it = m_vboObjects.find(bufferId);
+        if (it == m_vboObjects.end())
+            return;
+
+        VboObjectInfo& info = (*it).second;
+        info.primitiveType = primitiveType;
+        info.vertexType = VERTEX_TYPE_COL;
+        info.vertexCount = vertexCount;
+
+        glBindBuffer(GL_ARRAY_BUFFER, info.bufferId);
+        glBufferData(GL_ARRAY_BUFFER, vertexCount * sizeof(VertexCol), vertices, GL_STATIC_DRAW);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+    }
+    else
+    {
+        glNewList(bufferId, GL_COMPILE);
+
+        DrawPrimitive(primitiveType, vertices, vertexCount);
+
+        glEndList();
+    }
+}
+
+void CGLDevice::DrawStaticBuffer(unsigned int bufferId)
+{
+    if (m_useVbo)
+    {
+        auto it = m_vboObjects.find(bufferId);
         if (it == m_vboObjects.end())
             return;
 
@@ -1127,15 +1208,15 @@ void CGLDevice::DrawStaticObject(unsigned int objectId)
     }
     else
     {
-        glCallList(objectId);
+        glCallList(bufferId);
     }
 }
 
-void CGLDevice::DestroyStaticObject(unsigned int objectId)
+void CGLDevice::DestroyStaticBuffer(unsigned int bufferId)
 {
     if (m_useVbo)
     {
-        auto it = m_vboObjects.find(objectId);
+        auto it = m_vboObjects.find(bufferId);
         if (it == m_vboObjects.end())
             return;
 
@@ -1145,7 +1226,7 @@ void CGLDevice::DestroyStaticObject(unsigned int objectId)
     }
     else
     {
-        glDeleteLists(objectId, 1);
+        glDeleteLists(bufferId, 1);
     }
 }
 

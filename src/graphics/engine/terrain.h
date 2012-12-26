@@ -328,7 +328,7 @@ protected:
     //! Calculates a vector of the terrain
     Math::Vector GetVector(int x, int y);
     //! Calculates a vertex of the terrain
-    VertexTex2 GetVertex(int x, int y, int step);
+    VertexTex2  GetVertex(int x, int y, int step);
     //! Creates all objects of a mosaic
     bool        CreateMosaic(int ox, int oy, int step, int objRank, const Material& mat, float min, float max);
     //! Creates all objects in a mesh square ground

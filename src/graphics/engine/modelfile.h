@@ -33,13 +33,9 @@
 #include <iostream>
 
 
-class CInstanceManager;
-
 
 // Graphics module namespace
 namespace Gfx {
-
-class CEngine;
 
 
 /**
@@ -79,14 +75,15 @@ struct ModelTriangle
 
 
 /**
-  \class CModelFile
-  \brief Model file reader/writer
-
-  Allows reading and writing model objects. Models are collections of ModelTriangle structs. */
+ * \class CModelFile
+ * \brief Model file reader/writer
+ *
+ * Allows reading and writing model objects. Models are collections of ModelTriangle structs.
+ */
 class CModelFile
 {
 public:
-    CModelFile(CInstanceManager* iMan);
+    CModelFile();
     ~CModelFile();
 
     //! Reads a model in text format from file
@@ -128,23 +125,11 @@ public:
     //! Returns the triangle vector
     const std::vector<ModelTriangle>& GetTriangles();
 
-    //! Returns the height of model -- closest point to X and Z coords of \a pos
-    float                GetHeight(Math::Vector pos);
-
-    //! Mirrors the model along the Z axis
-    void                 Mirror();
-
-    //! Creates an object in the graphics engine from the model
-    bool                 CreateEngineObject(int objRank);
-
 protected:
     //! Adds a triangle to the list
     void                 CreateTriangle(Math::Vector p1, Math::Vector p2, Math::Vector p3, float min, float max);
 
 protected:
-    CInstanceManager*    m_iMan;
-    CEngine*        m_engine;
-
     //! Model triangles
     std::vector<ModelTriangle> m_triangles;
 };

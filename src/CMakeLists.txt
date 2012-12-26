@@ -61,6 +61,7 @@ graphics/engine/engine.cpp
 graphics/engine/lightman.cpp
 graphics/engine/lightning.cpp
 graphics/engine/modelfile.cpp
+graphics/engine/modelmanager.cpp
 graphics/engine/particle.cpp
 graphics/engine/planet.cpp
 graphics/engine/pyro.cpp

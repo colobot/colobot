@@ -2669,9 +2669,9 @@ CScript::CScript(CInstanceManager* iMan, CObject* object, CTaskManager** seconda
     m_main          = static_cast<CRobotMain*>(m_iMan->SearchInstance(CLASS_MAIN));
     m_terrain       = static_cast<Gfx::CTerrain*>(m_iMan->SearchInstance(CLASS_TERRAIN));
     m_water         = static_cast<Gfx::CWater*>(m_iMan->SearchInstance(CLASS_WATER));
-    m_botProg       = 0;
+    m_botProg       = nullptr;
     m_object        = object;
-    m_primaryTask   = 0;
+    m_primaryTask   = nullptr;
     m_secondaryTask = secondaryTask;
 
     m_interface = static_cast<Ui::CInterface*>(m_iMan->SearchInstance(CLASS_INTERFACE));
@@ -2680,7 +2680,7 @@ CScript::CScript(CInstanceManager* iMan, CObject* object, CTaskManager** seconda
     m_ipf = CBOT_IPF;
     m_errMode = ERM_STOP;
     m_len = 0;
-    m_script = 0;
+    m_script = nullptr;
     m_bRun = false;
     m_bStepMode = false;
     m_bCompile = false;
@@ -2752,10 +2752,22 @@ void CScript::InitFonctions()
 
 CScript::~CScript()
 {
-    delete m_botProg;
-    delete m_primaryTask;
-    delete m_script;
-    m_script = 0;
+    if (m_botProg != nullptr)
+    {
+        delete m_botProg;
+        m_botProg = nullptr;
+    }
+    if (m_primaryTask != nullptr)
+    {
+        delete m_primaryTask;
+        m_primaryTask = nullptr;
+    }
+    if (m_script != nullptr)
+    {
+        delete m_script;
+        m_script = nullptr;
+    }
+
     m_len = 0;
 
     m_iMan->DeleteInstance(CLASS_SCRIPT, this);

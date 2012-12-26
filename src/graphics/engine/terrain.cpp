@@ -34,10 +34,6 @@
 // Graphics module namespace
 namespace Gfx {
 
-const int LEVEL_MAT_PREALLOCATE_COUNT = 101;
-const int FLYING_LIMIT_PREALLOCATE_COUNT = 10;
-const int BUILDING_LEVEL_PREALLOCATE_COUNT = 101;
-
 
 CTerrain::CTerrain(CInstanceManager* iMan)
 {
@@ -59,10 +55,6 @@ CTerrain::CTerrain(CInstanceManager* iMan)
     m_wind            = Math::Vector(0.0f, 0.0f, 0.0f);
     m_defaultHardness = 0.5f;
     m_useMaterials    = false;
-
-    m_materials.reserve(LEVEL_MAT_PREALLOCATE_COUNT);
-    m_flyingLimits.reserve(FLYING_LIMIT_PREALLOCATE_COUNT);
-    m_buildingLevels.reserve(BUILDING_LEVEL_PREALLOCATE_COUNT);
 
     FlushBuildingLevel();
     FlushFlyingLimit();
@@ -498,6 +490,13 @@ bool CTerrain::CreateMosaic(int ox, int oy, int step, int objRank,
                             const Material &mat,
                             float min, float max)
 {
+    int baseObjRank = m_engine->GetObjectBaseRank(objRank);
+    if (baseObjRank == -1)
+    {
+        baseObjRank = m_engine->CreateBaseObject();
+        m_engine->SetObjectBaseRank(objRank, baseObjRank);
+    }
+
     std::string texName1;
     std::string texName2;
 
@@ -547,7 +546,7 @@ bool CTerrain::CreateMosaic(int ox, int oy, int step, int objRank,
 
             for (int y = 0; y < brick; y += step)
             {
-                EngineObjLevel4 buffer;
+                EngineBaseObjDataTier buffer;
                 buffer.vertices.reserve(total);
 
                 buffer.type = ENG_TRIANGLE_TYPE_SURFACE;
@@ -640,7 +639,8 @@ bool CTerrain::CreateMosaic(int ox, int oy, int step, int objRank,
                     buffer.vertices.push_back(p1);
                     buffer.vertices.push_back(p2);
                 }
-                m_engine->AddQuick(objRank, buffer, texName1, texName2, min, max, true);
+
+                m_engine->AddBaseObjQuick(baseObjRank, buffer, texName1, texName2, min, max, true);
             }
         }
     }
@@ -1168,10 +1168,6 @@ bool CTerrain::CreateSquare(int x, int y)
     int objRank = m_engine->CreateObject();
     m_engine->SetObjectType(objRank, ENG_OBJTYPE_TERRAIN);
 
-    // TODO: create a static object, but not split into squares, but a single object for all terrain
-    //       Squares should be sub-objects accessing parts of triangle list
-    // m_engine->SetObjectStatic(objRank, true);
-
     m_objRanks[x+y*m_mosaicCount] = objRank;
 
     float min = 0.0f;
@@ -1278,7 +1274,10 @@ bool CTerrain::Terraform(const Math::Vector &p1, const Math::Vector &p2, float h
     {
         for (int x = pp1.x; x <= pp2.x; x++)
         {
-            m_engine->DeleteObject(m_objRanks[x+y*m_mosaicCount]);
+            int objRank = m_objRanks[x+y*m_mosaicCount];
+            int baseObjRank = m_engine->GetObjectBaseRank(objRank);
+            m_engine->DeleteBaseObject(baseObjRank);
+            m_engine->DeleteObject(objRank);
             CreateSquare(x, y);  // recreates the square
         }
     }

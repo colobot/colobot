@@ -42,6 +42,10 @@ class CEventQueue;
 class CRobotMain;
 class CSoundInterface;
 
+namespace Gfx {
+class CModelManager;
+}
+
 /**
  * \struct JoystickDevice
  * \brief Information about a joystick device
@@ -369,11 +373,15 @@ protected:
     Gfx::CEngine*           m_engine;
     //! Graphics device
     Gfx::CDevice*           m_device;
+    //! 3D models manager
+    Gfx::CModelManager*     m_modelManager;
     //! Sound subsystem
     CSoundInterface*        m_sound;
     //! Main class of the proper game engine
     CRobotMain*             m_robotMain;
+    //! Plugin manager
     CPluginManager*         m_pluginManager;
+    //! Profile (INI) reader/writer
     CProfile*               m_profile;
 
     //! Code to return at exit
@@ -449,7 +457,5 @@ protected:
 
     //! Low cpu mode
     bool            m_lowCPU;
-
-    int             m_useVbo; // TODO: temporary
 };
 

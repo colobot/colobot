@@ -34,20 +34,8 @@
 #include <sstream>
 
 
-/*
- * NOTE: #ifndef checking for MODELFILE_NO_ENGINE
- * is provided in this module to conditionally
- * disable dependence on CEngine.
- */
-
-
 // Graphics module namespace
 namespace Gfx {
-
-
-//! How big the triangle vector is by default
-const int TRIANGLE_PREALLOCATE_COUNT = 2000;
-
 
 
 bool ReadBinaryVertex(std::istream& stream, Vertex& vertex)
@@ -322,15 +310,8 @@ bool ReadLineString(std::istream& stream, const std::string& prefix, std::string
 }
 
 
-CModelFile::CModelFile(CInstanceManager* iMan)
+CModelFile::CModelFile()
 {
-    m_iMan = iMan;
-
-#ifndef MODELFILE_NO_ENGINE
-    m_engine = static_cast<CEngine*>(m_iMan->SearchInstance(CLASS_ENGINE));
-#endif
-
-    m_triangles.reserve(TRIANGLE_PREALLOCATE_COUNT);
 }
 
 CModelFile::~CModelFile()
@@ -1155,99 +1136,6 @@ bool CModelFile::WriteBinaryModel(std::ostream& stream)
                       Other stuff
  *******************************************************/
 
-#ifndef MODELFILE_NO_ENGINE
-
-
-/**
- * TODO: move the function to CEngine or new class (CModelManager?)
- * and make models shared static objects.
- */
-
-bool CModelFile::CreateEngineObject(int objRank)
-{
-    std::vector<VertexTex2> vs(3, VertexTex2());
-
-    m_engine->SetObjectStatic(objRank, true); // TODO: make optional in the future
-
-    float limit[2];
-    limit[0] = m_engine->GetLimitLOD(0);  // frontier AB as config
-    limit[1] = m_engine->GetLimitLOD(1);  // frontier BC as config
-
-    for (int i = 0; i < static_cast<int>( m_triangles.size() ); i++)
-    {
-        float min = m_triangles[i].min;
-        float max = m_triangles[i].max;
-
-        // Standard frontiers -> config
-        if (min == 0.0f && max == 100.0f)  // resolution A ?
-        {
-            max = limit[0];
-        }
-        else if (min == 100.0f && max == 200.0f)  // resolution B ?
-        {
-            min = limit[0];
-            max = limit[1];
-        }
-        else if (min == 200.0f && max == 1000000.0f)  // resolution C ?
-        {
-            min = limit[1];
-        }
-
-        int state = m_triangles[i].state;
-        std::string tex2Name = m_triangles[i].tex2Name;
-
-        if (m_triangles[i].variableTex2)
-        {
-            int texNum = m_engine->GetSecondTexture();
-
-            if (texNum >= 1 && texNum <= 10)
-                state |= ENG_RSTATE_DUAL_BLACK;
-
-            if (texNum >= 11 && texNum <= 20)
-                state |= ENG_RSTATE_DUAL_WHITE;
-
-            char name[20] = { 0 };
-            sprintf(name, "dirty%.2d.png", texNum);
-            tex2Name = name;
-        }
-
-        vs[0] = m_triangles[i].p1;
-        vs[1] = m_triangles[i].p2;
-        vs[2] = m_triangles[i].p3;
-
-        bool ok = m_engine->AddTriangles(objRank, vs,
-                                         m_triangles[i].material,
-                                         state,
-                                         m_triangles[i].tex1Name,
-                                         tex2Name,
-                                         min, max, false);
-        if (!ok)
-            return false;
-    }
-
-    return true;
-}
-
-#endif
-
-void CModelFile::Mirror()
-{
-    for (int i = 0; i < static_cast<int>( m_triangles.size() ); i++)
-    {
-        VertexTex2  t = m_triangles[i].p1;
-        m_triangles[i].p1 = m_triangles[i].p2;
-        m_triangles[i].p2 = t;
-
-        m_triangles[i].p1.coord.z = -m_triangles[i].p1.coord.z;
-        m_triangles[i].p2.coord.z = -m_triangles[i].p2.coord.z;
-        m_triangles[i].p3.coord.z = -m_triangles[i].p3.coord.z;
-
-        m_triangles[i].p1.normal.z = -m_triangles[i].p1.normal.z;
-        m_triangles[i].p2.normal.z = -m_triangles[i].p2.normal.z;
-        m_triangles[i].p3.normal.z = -m_triangles[i].p3.normal.z;
-    }
-}
-
 const std::vector<ModelTriangle>& CModelFile::GetTriangles()
 {
     return m_triangles;
@@ -1256,28 +1144,6 @@ const std::vector<ModelTriangle>& CModelFile::GetTriangles()
 int CModelFile::GetTriangleCount()
 {
     return m_triangles.size();
-}
-
-float CModelFile::GetHeight(Math::Vector pos)
-{
-    float limit = 5.0f;
-
-    for (int i = 0; i < static_cast<int>( m_triangles.size() ); i++)
-    {
-        if ( fabs(pos.x - m_triangles[i].p1.coord.x) < limit &&
-             fabs(pos.z - m_triangles[i].p1.coord.z) < limit )
-            return m_triangles[i].p1.coord.y;
-
-        if ( fabs(pos.x - m_triangles[i].p2.coord.x) < limit &&
-             fabs(pos.z - m_triangles[i].p2.coord.z) < limit )
-            return m_triangles[i].p2.coord.y;
-
-        if ( fabs(pos.x - m_triangles[i].p3.coord.x) < limit &&
-             fabs(pos.z - m_triangles[i].p3.coord.z) < limit )
-            return m_triangles[i].p3.coord.y;
-    }
-
-    return 0.0f;
 }
 
 void CModelFile::CreateTriangle(Math::Vector p1, Math::Vector p2, Math::Vector p3, float min, float max)

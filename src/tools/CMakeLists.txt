@@ -1,5 +1,4 @@
 set(CONVERT_MODEL_SOURCES
-../common/iman.cpp
 ../common/logger.cpp
 ../common/stringutils.cpp
 ../graphics/engine/modelfile.cpp

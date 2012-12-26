@@ -151,7 +151,7 @@ struct EngineTriangle
     //! 2nd texture
     std::string    tex2Name;
 
-    EngineTriangle()
+    inline EngineTriangle()
     {
         state = ENG_RSTATE_NORMAL;
     }
@@ -178,6 +178,97 @@ enum EngineObjectType
     ENG_OBJTYPE_METAL       = 6
 };
 
+
+/**
+ * \struct EngineBaseObjDataTier
+ * \brief Tier 4 of object tree (data)
+ */
+struct EngineBaseObjDataTier
+{
+    bool                    used;
+    EngineTriangleType      type;
+    Material                material;
+    int                     state;
+    std::vector<VertexTex2> vertices;
+    unsigned int            staticBufferId;
+    bool                    updateStaticBuffer;
+
+    inline EngineBaseObjDataTier(bool used = false,
+                                 EngineTriangleType type = ENG_TRIANGLE_TYPE_TRIANGLES,
+                                 const Material& material = Material(),
+                                 int state = ENG_RSTATE_NORMAL)
+        : used(used), type(type), material(material), state(state), staticBufferId(0), updateStaticBuffer(false) {}
+};
+
+/**
+ * \struct EngineBaseObjLODTier
+ * \brief Tier 3 of base object tree (LOD)
+ */
+struct EngineBaseObjLODTier
+{
+    bool                                used;
+    float                               min;
+    float                               max;
+    std::vector<EngineBaseObjDataTier>  next;
+
+    inline EngineBaseObjLODTier(bool used = false, float min = 0.0f, float max = 0.0f)
+        : used(used), min(min), max(max) {}
+};
+
+/**
+ * \struct EngineBaseObjTexTier
+ * \brief Tier 2 of base object tree (textures)
+ */
+struct EngineBaseObjTexTier
+{
+    bool                               used;
+    std::string                        tex1Name;
+    Texture                            tex1;
+    std::string                        tex2Name;
+    Texture                            tex2;
+    std::vector<EngineBaseObjLODTier>  next;
+
+    inline EngineBaseObjTexTier(bool used = false, const std::string& tex1Name = "",
+                         const std::string& tex2Name = "")
+        : used(used), tex1Name(tex1Name), tex2Name(tex2Name) {}
+};
+
+/**
+ * \struct BaseEngineObject
+ * \brief Base (template) object - geometry for engine objects
+ *
+ * This is also the tier 1 of base object tree.
+ */
+struct EngineBaseObject
+{
+    //! If true, base object is valid in objects vector
+    bool used;
+    //! Number of triangles
+    int                    totalTriangles;
+    //! Bounding box min (origin 0,0,0 always included)
+    Math::Vector           bboxMin;
+    //! bounding box max (origin 0,0,0 always included)
+    Math::Vector           bboxMax;
+    //! Radius of the sphere at the origin
+    float                  radius;
+    //! Next tier (LOD)
+    std::vector<EngineBaseObjTexTier> next;
+
+    inline EngineBaseObject()
+    {
+        LoadDefault();
+    }
+
+    inline void LoadDefault()
+    {
+        used = false;
+        totalTriangles = 0;
+        bboxMax.LoadZero();
+        bboxMin.LoadZero();
+        radius = 0.0f;
+    }
+};
+
 /**
  * \struct EngineObject
  * \brief Object drawn by the graphics engine
@@ -186,35 +277,27 @@ struct EngineObject
 {
     //! If true, object is valid in objects vector
     bool                   used;
+    //! Rank of associated base engine object
+    int                    baseObjRank;
     //! If true, the object is drawn
     bool                   visible;
     //! If true, object is behind the 2D interface
     bool                   drawWorld;
     //! If true, the shape is before the 2D interface
     bool                   drawFront;
-    //! Number of triangles
-    int                    totalTriangles;
     //! Type of object
     EngineObjectType       type;
-    //! Whether the object is stored and rendered as static buffer
-    bool                   staticBuffer;
     //! Transformation matrix
     Math::Matrix           transform;
     //! Distance to object from eye point
     float                  distance;
-    //! Bounding box min (origin 0,0,0 always included)
-    Math::Vector           bboxMin;
-    //! bounding box max (origin 0,0,0 always included)
-    Math::Vector           bboxMax;
-    //! Radius of the sphere at the origin
-    float                  radius;
     //! Rank of the associated shadow
     int                    shadowRank;
     //! Transparency of the object [0, 1]
     float                  transparency;
 
     //! Calls LoadDefault()
-    EngineObject()
+    inline EngineObject()
     {
         LoadDefault();
     }
@@ -223,88 +306,16 @@ struct EngineObject
     inline void LoadDefault()
     {
         used = false;
+        baseObjRank = -1;
         visible = false;
         drawWorld = false;
         drawFront = false;
-        totalTriangles = 0;
-        staticBuffer = false;
         type = ENG_OBJTYPE_NULL;
         transform.LoadIdentity();
-        bboxMax.LoadZero();
-        bboxMin.LoadZero();
         distance = 0.0f;
-        radius = 0.0f;
         shadowRank = -1;
         transparency = 0.0f;
     }
-};
-
-struct EngineObjLevel1;
-struct EngineObjLevel2;
-struct EngineObjLevel3;
-struct EngineObjLevel4;
-
-/**
- * \struct EngineObjLevel4
- * \brief Tier 4 of object tree
- */
-struct EngineObjLevel4
-{
-    bool                    used;
-    EngineTriangleType      type;
-    Material                material;
-    int                     state;
-    std::vector<VertexTex2> vertices;
-    unsigned int            staticBufferId;
-
-    EngineObjLevel4(bool used = false,
-                    EngineTriangleType type = ENG_TRIANGLE_TYPE_TRIANGLES,
-                    const Material& material = Material(),
-                    int state = ENG_RSTATE_NORMAL);
-};
-
-/**
- * \struct EngineObjLevel3
- * \brief Tier 3 of object tree
- */
-struct EngineObjLevel3
-{
-    bool                          used;
-    float                         min;
-    float                         max;
-    std::vector<EngineObjLevel4>  next;
-
-    EngineObjLevel3(bool used = false, float min = 0.0f, float max = 0.0f);
-};
-
-/**
- * \struct EngineObjLevel2
- * \brief Tier 2 of object tree
- */
-struct EngineObjLevel2
-{
-    bool                          used;
-    int                           objRank;
-    std::vector<EngineObjLevel3>  next;
-
-    EngineObjLevel2(bool used = false, int objRank = -1);
-};
-
-/**
- * \struct EngineObjLevel1
- * \brief Tier 1 of object tree
- */
-struct EngineObjLevel1
-{
-    bool                          used;
-    std::string                   tex1Name;
-    Texture                       tex1;
-    std::string                   tex2Name;
-    Texture                       tex2;
-    std::vector<EngineObjLevel2>  next;
-
-    EngineObjLevel1(bool used = false, const std::string& tex1Name = "",
-                    const std::string& tex2Name = "");
 };
 
 /**
@@ -346,12 +357,12 @@ struct EngineShadow
     //! Height from the ground
     float               height;
 
-    EngineShadow()
+    inline EngineShadow()
     {
         LoadDefault();
     }
 
-    void LoadDefault()
+    inline void LoadDefault()
     {
         used = false;
         hide = false;
@@ -388,12 +399,12 @@ struct EngineGroundSpot
     //! Radius of the shadow drawn
     float           drawRadius;
 
-    EngineGroundSpot()
+    inline EngineGroundSpot()
     {
         LoadDefault();
     }
 
-    void LoadDefault()
+    inline void LoadDefault()
     {
         used = false;
         color = Color();
@@ -452,12 +463,12 @@ struct EngineGroundMark
     //! Pointer to the table
     char*                       table;
 
-    EngineGroundMark()
+    inline EngineGroundMark()
     {
         LoadDefault();
     }
 
-    void LoadDefault()
+    inline void LoadDefault()
     {
         draw = false;
         phase = ENG_GR_MARK_PHASE_NULL;
@@ -549,10 +560,10 @@ struct EngineMouse
     //! Hot point
     Math::Point hotPoint;
 
-    EngineMouse(int icon1 = -1, int icon2 = -1, int iconShadow = -1,
-                EngineRenderState mode1 = ENG_RSTATE_NORMAL,
-                EngineRenderState mode2 = ENG_RSTATE_NORMAL,
-                Math::Point hotPoint = Math::Point())
+    inline EngineMouse(int icon1 = -1, int icon2 = -1, int iconShadow = -1,
+                       EngineRenderState mode1 = ENG_RSTATE_NORMAL,
+                       EngineRenderState mode2 = ENG_RSTATE_NORMAL,
+                       Math::Point hotPoint = Math::Point())
     {
         this->icon1      = icon1;
         this->icon2      = icon2;
@@ -745,64 +756,73 @@ public:
 
     /* *************** Object management *************** */
 
+    // Base objects
+
+    //! Creates a base object and returns its rank
+    int             CreateBaseObject();
+    //! Deletes a base object
+    void            DeleteBaseObject(int baseObjRank);
+    //! Deletes all base objects
+    void            DeleteAllBaseObjects();
+
+    //! Copies geometry between two base objects
+    void            CopyBaseObject(int sourceBaseObjRank, int destBaseObjRank);
+
+    //! Adds triangles to given object with the specified params
+    void            AddBaseObjTriangles(int baseObjRank, const std::vector<VertexTex2>& vertices,
+                                        EngineTriangleType triangleType,
+                                        const Material& material, int state,
+                                        std::string tex1Name, std::string tex2Name,
+                                        float min, float max, bool globalUpdate);
+
+    //! Adds a tier 4 engine object directly
+    void            AddBaseObjQuick(int baseObjRank, const EngineBaseObjDataTier& buffer,
+                                    std::string tex1Name, std::string tex2Name,
+                                    float min, float max, bool globalUpdate);
+
+    // Objects
+
     //! Creates a new object and returns its rank
     int             CreateObject();
     //! Deletes all objects, shadows and ground spots
-    void            FlushObject();
+    void            DeleteAllObjects();
     //! Deletes the given object
-    bool            DeleteObject(int objRank);
+    void            DeleteObject(int objRank);
+
+    //@{
+    //! Management of the base object rank for engine object
+    void            SetObjectBaseRank(int objRank, int baseObjRank);
+    int             GetObjectBaseRank(int objRank);
+    //@}
 
     //@{
     //! Management of engine object type
-    bool            SetObjectType(int objRank, EngineObjectType type);
+    void            SetObjectType(int objRank, EngineObjectType type);
     EngineObjectType GetObjectType(int objRank);
     //@}
 
     //@{
     //! Management of object transform
-    bool            SetObjectTransform(int objRank, const Math::Matrix& transform);
-    bool            GetObjectTransform(int objRank, Math::Matrix& transform);
-    //@}
-
-    //@{
-    //! Management of object static drawing flag
-    void            SetObjectStatic(int objRank, bool staticBuffer);
-    bool            GetObjectStatic(int objRank);
+    void            SetObjectTransform(int objRank, const Math::Matrix& transform);
+    void            GetObjectTransform(int objRank, Math::Matrix& transform);
     //@}
 
     //! Sets drawWorld for given object
-    bool            SetObjectDrawWorld(int objRank, bool draw);
+    void            SetObjectDrawWorld(int objRank, bool draw);
     //! Sets drawFront for given object
-    bool            SetObjectDrawFront(int objRank, bool draw);
+    void            SetObjectDrawFront(int objRank, bool draw);
 
     //! Sets the transparency level for given object
-    bool            SetObjectTransparency(int objRank, float value);
+    void            SetObjectTransparency(int objRank, float value);
 
     //! Returns the bounding box for an object
-    bool            GetObjectBBox(int objRank, Math::Vector& min, Math::Vector& max);
+    void            GetObjectBBox(int objRank, Math::Vector& min, Math::Vector& max);
 
     //! Returns the total number of triangles of given object
     int             GetObjectTotalTriangles(int objRank);
 
-    //! Adds triangles to given object with the specified params
-    bool            AddTriangles(int objRank, const std::vector<VertexTex2>& vertices,
-                                 const Material& material, int state,
-                                 std::string tex1Name, std::string tex2Name,
-                                 float min, float max, bool globalUpdate);
-
-    //! Adds a surface to given object with the specified params
-    bool            AddSurface(int objRank, const std::vector<VertexTex2>& vertices,
-                               const Material& material, int state,
-                               std::string tex1Name, std::string tex2Name,
-                               float min, float max, bool globalUpdate);
-
-    //! Adds a tier 4 engine object directly
-    bool            AddQuick(int objRank, const EngineObjLevel4& buffer,
-                             std::string tex1Name, std::string tex2Name,
-                             float min, float max, bool globalUpdate);
-
     //! Returns the first found tier 4 engine object for the given params or nullptr if not found
-    EngineObjLevel4* FindTriangles(int objRank, const Material& material,
+    EngineBaseObjDataTier* FindTriangles(int objRank, const Material& material,
                                         int state, std::string tex1Name, std::string tex2Name,
                                         float min, float max);
 
@@ -814,16 +834,16 @@ public:
     void            ChangeLOD();
 
     //! Changes the 2nd texure for given object
-    bool            ChangeSecondTexture(int objRank, const std::string& tex2Name);
+    void            ChangeSecondTexture(int objRank, const std::string& tex2Name);
 
     //! Changes (recalculates) texture mapping for given object
-    bool            ChangeTextureMapping(int objRank, const Material& mat, int state,
+    void            ChangeTextureMapping(int objRank, const Material& mat, int state,
                                          const std::string& tex1Name, const std::string& tex2Name,
                                          float min, float max, EngineTextureMapping mode,
                                          float au, float bu, float av, float bv);
 
     //! Changes texture mapping for robot tracks
-    bool            TrackTextureMapping(int objRank, const Material& mat, int state,
+    void            TrackTextureMapping(int objRank, const Material& mat, int state,
                                         const std::string& tex1Name, const std::string& tex2Name,
                                         float min, float max, EngineTextureMapping mode,
                                         float pos, float factor, float tl, float ts, float tt);
@@ -833,20 +853,20 @@ public:
     int             DetectObject(Math::Point mouse);
 
     //! Creates a shadow for the given object
-    bool            CreateShadow(int objRank);
+    void            CreateShadow(int objRank);
     //! Deletes the shadow for given object
     void            DeleteShadow(int objRank);
 
     //@{
     //! Management of different shadow params
-    bool            SetObjectShadowHide(int objRank, bool hide);
-    bool            SetObjectShadowType(int objRank, EngineShadowType type);
-    bool            SetObjectShadowPos(int objRank, const Math::Vector& pos);
-    bool            SetObjectShadowNormal(int objRank, const Math::Vector& normal);
-    bool            SetObjectShadowAngle(int objRank, float angle);
-    bool            SetObjectShadowRadius(int objRank, float radius);
-    bool            SetObjectShadowIntensity(int objRank, float intensity);
-    bool            SetObjectShadowHeight(int objRank, float height);
+    void            SetObjectShadowHide(int objRank, bool hide);
+    void            SetObjectShadowType(int objRank, EngineShadowType type);
+    void            SetObjectShadowPos(int objRank, const Math::Vector& pos);
+    void            SetObjectShadowNormal(int objRank, const Math::Vector& normal);
+    void            SetObjectShadowAngle(int objRank, float angle);
+    void            SetObjectShadowRadius(int objRank, float radius);
+    void            SetObjectShadowIntensity(int objRank, float intensity);
+    void            SetObjectShadowHeight(int objRank, float height);
     float           GetObjectShadowRadius(int objRank);
     //@}
 
@@ -856,7 +876,7 @@ public:
     bool            GetHighlight(Math::Point& p1, Math::Point& p2);
 
     //! Deletes all ground spots
-    void            FlushGroundSpot();
+    void            DeleteAllGroundSpots();
     //! Creates a new ground spot and returns its rank
     int             CreateGroundSpot();
     //! Deletes the given ground spot
@@ -864,11 +884,11 @@ public:
 
     //@{
     //! Management of different ground spot params
-    bool            SetObjectGroundSpotPos(int rank, const Math::Vector& pos);
-    bool            SetObjectGroundSpotRadius(int rank, float radius);
-    bool            SetObjectGroundSpotColor(int rank, const Color& color);
-    bool            SetObjectGroundSpotMinMax(int rank, float min, float max);
-    bool            SetObjectGroundSpotSmooth(int rank, float smooth);
+    void            SetObjectGroundSpotPos(int rank, const Math::Vector& pos);
+    void            SetObjectGroundSpotRadius(int rank, float radius);
+    void            SetObjectGroundSpotColor(int rank, const Color& color);
+    void            SetObjectGroundSpotMinMax(int rank, float min, float max);
+    void            SetObjectGroundSpotSmooth(int rank, float smooth);
     //@}
 
     //! Creates the ground mark with the given params
@@ -1162,7 +1182,7 @@ protected:
     //! Prepares the interface for 3D scene
     void        Draw3DScene();
     //! Draw 3D object
-    void        DrawObject(const EngineObjLevel4& obj, bool staticBuffer);
+    void        DrawObject(const EngineBaseObjDataTier& p4);
     //! Draws the user interface over the scene
     void        DrawInterface();
 
@@ -1192,15 +1212,13 @@ protected:
     //! Draw statistic texts
     void        DrawStats();
 
-    //! Creates new tier 1 object
-    EngineObjLevel1& AddLevel1(const std::string& tex1Name, const std::string& tex2Name);
-    //! Creates a new tier 2 object
-    EngineObjLevel2& AddLevel2(EngineObjLevel1 &p1, int objRank);
-    //! Creates a new tier 3 object
-    EngineObjLevel3& AddLevel3(EngineObjLevel2 &p2, float min, float max);
-    //! Creates a new tier 4 object
-    EngineObjLevel4& AddLevel4(EngineObjLevel3 &p3, EngineTriangleType type,
-                                    const Material& mat, int state);
+    //! Creates a new tier 2 object (texture)
+    EngineBaseObjTexTier&  AddLevel2(int baseObjRank, const std::string& tex1Name, const std::string& tex2Name);
+    //! Creates a new tier 3 object (LOD)
+    EngineBaseObjLODTier&  AddLevel3(EngineBaseObjTexTier &p2, float min, float max);
+    //! Creates a new tier 4 object (data)
+    EngineBaseObjDataTier& AddLevel4(EngineBaseObjLODTier &p3, EngineTriangleType type,
+                                     const Material& mat, int state);
 
     //! Create texture and add it to cache
     Texture CreateTexture(const std::string &texName, const TextureCreateParams &params, CImage* image = nullptr);
@@ -1227,8 +1245,11 @@ protected:
     //! Updates geometric parameters of objects (bounding box and radius)
     void        UpdateGeometry();
 
+    //! Updates a given static buffer
+    void        UpdateStaticBuffer(EngineBaseObjDataTier& p4);
+
     //! Updates static buffers of changed objects
-    void        UpdateStaticObjects();
+    void        UpdateStaticBuffers();
 
 protected:
     CInstanceManager* m_iMan;
@@ -1282,8 +1303,8 @@ protected:
     //! Previous size of viewport window
     Math::IntPoint   m_lastSize;
 
-    //! Root of tree object structure (level 1 list)
-    std::vector<EngineObjLevel1>  m_objectTree;
+    //! Base objects (also level 1 tier list)
+    std::vector<EngineBaseObject> m_baseObjects;
     //! Object parameters
     std::vector<EngineObject>     m_objects;
     //! Shadow list
@@ -1308,7 +1329,7 @@ protected:
     Color           m_waterAddColor;
     int             m_statisticTriangle;
     bool            m_updateGeometry;
-    bool            m_updateStaticObjects;
+    bool            m_updateStaticBuffers;
     int             m_alphaMode;
     bool            m_groundSpotVisible;
     bool            m_shadowVisible;

@@ -129,11 +129,14 @@ public:
                                Color color = Color(1.0f, 1.0f, 1.0f, 1.0f));
     virtual void DrawPrimitive(PrimitiveType type, const VertexCol *vertices , int vertexCount);
 
-    virtual unsigned int CreateStaticObject(PrimitiveType primitiveType, const Vertex* vertices, int vertexCount);
-    virtual unsigned int CreateStaticObject(PrimitiveType primitiveType, const VertexTex2* vertices, int vertexCount);
-    virtual unsigned int CreateStaticObject(PrimitiveType primitiveType, const VertexCol* vertices, int vertexCount);
-    virtual void DrawStaticObject(unsigned int objectId);
-    virtual void DestroyStaticObject(unsigned int objectId);
+    virtual unsigned int CreateStaticBuffer(PrimitiveType primitiveType, const Vertex* vertices, int vertexCount);
+    virtual unsigned int CreateStaticBuffer(PrimitiveType primitiveType, const VertexTex2* vertices, int vertexCount);
+    virtual unsigned int CreateStaticBuffer(PrimitiveType primitiveType, const VertexCol* vertices, int vertexCount);
+    virtual void UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primitiveType, const Vertex* vertices, int vertexCount);
+    virtual void UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primitiveType, const VertexTex2* vertices, int vertexCount);
+    virtual void UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primitiveType, const VertexCol* vertices, int vertexCount);
+    virtual void DrawStaticBuffer(unsigned int bufferId);
+    virtual void DestroyStaticBuffer(unsigned int bufferId);
 
     virtual int ComputeSphereVisibility(const Math::Vector &center, float radius);
 

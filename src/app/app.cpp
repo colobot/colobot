@@ -25,6 +25,7 @@
 #include "common/image.h"
 #include "common/key.h"
 
+#include "graphics/engine/modelmanager.h"
 #include "graphics/opengl/gldevice.h"
 
 #include "object/robotmain.h"
@@ -94,6 +95,7 @@ CApplication::CApplication()
 
     m_engine    = nullptr;
     m_device    = nullptr;
+    m_modelManager = nullptr;
     m_robotMain = nullptr;
     m_sound     = nullptr;
 
@@ -141,8 +143,6 @@ CApplication::CApplication()
     m_language = LANGUAGE_ENGLISH;
 
     m_lowCPU = true;
-
-    m_useVbo = false;
 
     for (int i = 0; i < DIR_MAX; ++i)
         m_dataDirs[i] = nullptr;
@@ -244,10 +244,6 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
         if (arg == "-debug")
         {
             SetDebugMode(true);
-        }
-        else if (arg == "-vbo")
-        {
-            m_useVbo = true;
         }
         else if (arg == "-loglevel")
         {
@@ -432,8 +428,6 @@ bool CApplication::Create()
         return false;
     }
 
-    static_cast<Gfx::CGLDevice*>(m_device)->SetUseVbo(m_useVbo);
-
     // Create the 3D engine
     m_engine = new Gfx::CEngine(m_iMan, this);
 
@@ -445,6 +439,9 @@ bool CApplication::Create()
         m_exitCode = 6;
         return false;
     }
+
+    // Create model manager
+    m_modelManager = new Gfx::CModelManager(m_engine);
 
     // Create the robot application.
     m_robotMain = new CRobotMain(m_iMan, this);
@@ -523,6 +520,12 @@ void CApplication::Destroy()
     {
         delete m_sound;
         m_sound = nullptr;
+    }
+
+    if (m_modelManager != nullptr)
+    {
+        delete m_modelManager;
+        m_modelManager = nullptr;
     }
 
     if (m_engine != nullptr)

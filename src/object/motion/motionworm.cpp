@@ -19,7 +19,7 @@
 
 #include "app/app.h"
 
-#include "graphics/engine/modelfile.h"
+#include "graphics/engine/modelmanager.h"
 #include "graphics/engine/particle.h"
 #include "graphics/engine/terrain.h"
 
@@ -81,13 +81,10 @@ void CMotionWorm::DeleteObject(bool bAll)
 bool CMotionWorm::Create(Math::Vector pos, float angle, ObjectType type,
                          float power)
 {
-    Gfx::CModelFile*   pModFile;
     int         rank, i;
     float       px;
 
-//    if ( m_engine->GetRestCreate() < 2+WORM_PART+1 )  return false;
-
-    pModFile = new Gfx::CModelFile(m_iMan);
+    Gfx::CModelManager* modelManager = Gfx::CModelManager::GetInstancePointer();
 
     m_object->SetType(type);
 
@@ -95,8 +92,7 @@ bool CMotionWorm::Create(Math::Vector pos, float angle, ObjectType type,
     rank = m_engine->CreateObject();
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_VEHICULE);  // this is a moving object
     m_object->SetObjectRank(0, rank);
-    pModFile->ReadModel(m_app->GetDataFilePath(DIR_MODEL, "worm0.mod"));  // there is no purpose!
-    pModFile->CreateEngineObject(rank);
+    modelManager->AddModelReference("worm0.mod", false, rank); // there is no purpose!
     m_object->SetPosition(0, pos);
     m_object->SetAngleY(0, angle);
 
@@ -111,8 +107,7 @@ bool CMotionWorm::Create(Math::Vector pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(1, rank);
     m_object->SetObjectParent(1, 0);
-    pModFile->ReadModel(m_app->GetDataFilePath(DIR_MODEL, "worm1.mod"));
-    pModFile->CreateEngineObject(rank);
+    modelManager->AddModelReference("worm1.mod", false, rank);
     m_object->SetPosition(1, Math::Vector(px, 0.0f, 0.0f));
     px -= 1.0f;
 
@@ -123,8 +118,7 @@ bool CMotionWorm::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(2+i, rank);
         m_object->SetObjectParent(2+i, 0);
-        pModFile->ReadModel(m_app->GetDataFilePath(DIR_MODEL, "worm2.mod"));
-        pModFile->CreateEngineObject(rank);
+        modelManager->AddModelReference("worm2.mod", false, rank);
         m_object->SetPosition(2+i, Math::Vector(px, 0.0f, 0.0f));
         px -= 1.0f;
     }
@@ -134,8 +128,7 @@ bool CMotionWorm::Create(Math::Vector pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(2+WORM_PART, rank);
     m_object->SetObjectParent(2+WORM_PART, 0);
-    pModFile->ReadModel(m_app->GetDataFilePath(DIR_MODEL, "worm3.mod"));
-    pModFile->CreateEngineObject(rank);
+    modelManager->AddModelReference("worm3.mod", false, rank);
     m_object->SetPosition(2+WORM_PART, Math::Vector(px, 0.0f, 0.0f));
 
     m_object->CreateShadowCircle(0.0f, 1.0f, Gfx::ENG_SHADOW_WORM);
@@ -148,7 +141,6 @@ bool CMotionWorm::Create(Math::Vector pos, float angle, ObjectType type,
 
     m_engine->LoadAllTextures();
 
-    delete pModFile;
     return true;
 }
 

@@ -15,12 +15,11 @@
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
 
-#include "common/iman.h"
 #include "common/logger.h"
 #include "graphics/engine/modelfile.h"
 #include "math/func.h"
 
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 
 #include <cassert>
 #include <sstream>
@@ -190,8 +189,7 @@ TEST(ModelFileTest, RWTxtModel)
     std::stringstream str;
     str.str(TEXT_MODEL);
 
-    CInstanceManager iMan;
-    Gfx::CModelFile modelFile(&iMan);
+    Gfx::CModelFile modelFile;
 
     EXPECT_TRUE(modelFile.ReadTextModel(str));
 
@@ -216,8 +214,7 @@ TEST(ModelFileTest, RWBinModel)
     std::stringstream str;
     str.str(TEXT_MODEL);
 
-    CInstanceManager iMan;
-    Gfx::CModelFile modelFile(&iMan);
+    Gfx::CModelFile modelFile;
 
     EXPECT_TRUE(modelFile.ReadTextModel(str));
 
@@ -242,8 +239,7 @@ TEST(ModelFileTest, RWOldModel)
     std::stringstream str;
     str.str(TEXT_MODEL);
 
-    CInstanceManager iMan;
-    Gfx::CModelFile modelFile(&iMan);
+    Gfx::CModelFile modelFile;
 
     EXPECT_TRUE(modelFile.ReadTextModel(str));
 

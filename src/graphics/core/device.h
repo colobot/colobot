@@ -317,19 +317,28 @@ public:
     virtual void DrawPrimitive(PrimitiveType type, const VertexCol *vertices , int vertexCount) = 0;
 
     //! Creates a static buffer composed of given primitives with single texture vertices
-    virtual unsigned int CreateStaticObject(PrimitiveType primitiveType, const Vertex* vertices, int vertexCount) = 0;
+    virtual unsigned int CreateStaticBuffer(PrimitiveType primitiveType, const Vertex* vertices, int vertexCount) = 0;
 
-    //! Creates a static buffer composed of given primitives with multitexturing (2 textures)
-    virtual unsigned int CreateStaticObject(PrimitiveType primitiveType, const VertexTex2* vertices, int vertexCount) = 0;
+    //! Creates a static buffer composed of given primitives with multitexturing
+    virtual unsigned int CreateStaticBuffer(PrimitiveType primitiveType, const VertexTex2* vertices, int vertexCount) = 0;
 
     //! Creates a static buffer composed of given primitives with solid color
-    virtual unsigned int CreateStaticObject(PrimitiveType primitiveType, const VertexCol* vertices, int vertexCount) = 0;
+    virtual unsigned int CreateStaticBuffer(PrimitiveType primitiveType, const VertexCol* vertices, int vertexCount) = 0;
+
+    //! Updates the static buffer composed of given primitives with single texture vertices
+    virtual void UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primitiveType, const Vertex* vertices, int vertexCount) = 0;
+
+    //! Updates the static buffer composed of given primitives with multitexturing
+    virtual void UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primitiveType, const VertexTex2* vertices, int vertexCount) = 0;
+
+    //! Updates the static buffer composed of given primitives with solid color
+    virtual void UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primitiveType, const VertexCol* vertices, int vertexCount) = 0;
 
     //! Draws a static buffer
-    virtual void DrawStaticObject(unsigned int objectId) = 0;
+    virtual void DrawStaticBuffer(unsigned int bufferId) = 0;
 
     //! Deletes a static buffer
-    virtual void DestroyStaticObject(unsigned int objectId) = 0;
+    virtual void DestroyStaticBuffer(unsigned int bufferId) = 0;
 
     //! Tests whether a sphere is (partially) within the frustum volume
     //! Returns a mask of frustum planes for which the test is positive

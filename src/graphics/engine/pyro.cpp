@@ -363,7 +363,6 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
          m_type == PT_EXPLOW )
     {
         CreateTriangle(obj, oType, 0);
-        m_engine->SetObjectStatic(m_object->GetObjectRank(0), false);
         m_engine->DeleteShadow(m_object->GetObjectRank(0));
         ExploStart();
     }
@@ -1397,8 +1396,6 @@ void CPyro::CreateTriangle(CObject* obj, ObjectType oType, int part)
 {
     int objRank = obj->GetObjectRank(part);
     if (objRank == -1) return;
-
-    m_engine->SetObjectStatic(objRank, false);
 
     float min = 0.0f;
     float max = m_engine->GetLimitLOD(0);

@@ -1,4 +1,3 @@
-#include "common/iman.h"
 #include "common/logger.h"
 #include "graphics/engine/modelfile.h"
 
@@ -8,11 +7,10 @@
 
 bool EndsWith(std::string const &fullString, std::string const &ending)
 {
-    if (fullString.length() >= ending.length()) {
+    if (fullString.length() >= ending.length())
         return (0 == fullString.compare (fullString.length() - ending.length(), ending.length(), ending));
-    } else {
+    else
         return false;
-    }
 }
 
 
@@ -20,7 +18,6 @@ struct Args
 {
     bool usage;
     bool dumpInfo;
-    bool mirror;
     std::string inputFile;
     std::string outputFile;
     std::string inputFormat;
@@ -30,7 +27,6 @@ struct Args
     {
         usage = false;
         dumpInfo = false;
-        mirror = false;
     }
 };
 
@@ -43,8 +39,7 @@ void PrintUsage(const std::string& program)
     std::cerr << "Usage:" << std::endl;
     std::cerr << std::endl;
     std::cerr << " Convert files:" << std::endl;
-    std::cerr << "   " << program << " -i input_file -if input_format -o output_file -of output_format [-m]" << std::endl;
-    std::cerr << " -m => mirror" << std::endl;
+    std::cerr << "   " << program << " -i input_file -if input_format -o output_file -of output_format" << std::endl;
     std::cerr << std::endl;
     std::cerr << " Dump info:" << std::endl;
     std::cerr << "   " << program << " -d -i input_file -if input_format" << std::endl;
@@ -117,10 +112,6 @@ bool ParseArgs(int argc, char *argv[])
         {
             ARGS.dumpInfo = true;
         }
-        else if (arg == "-m")
-        {
-            ARGS.mirror = true;
-        }
         else
         {
             return false;
@@ -165,8 +156,7 @@ int main(int argc, char *argv[])
     if (ARGS.usage)
         return 0;
 
-    CInstanceManager iMan;
-    Gfx::CModelFile model(&iMan);
+    Gfx::CModelFile model;
 
     bool ok = true;
 
@@ -254,9 +244,6 @@ int main(int argc, char *argv[])
 
         return 0;
     }
-
-    if (ARGS.mirror)
-        model.Mirror();
 
     if (ARGS.outputFormat == "old")
     {

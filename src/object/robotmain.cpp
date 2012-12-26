@@ -1010,7 +1010,7 @@ void CRobotMain::ChangePhase(Phase phase)
     ChangePause(false);
     FlushDisplayInfo();
     m_engine->SetRankView(0);
-    m_engine->FlushObject();
+    m_engine->DeleteAllObjects();
     m_engine->SetWaterAddColor(Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f));
     m_engine->SetBackground("");
     m_engine->SetBackForce(false);
@@ -3673,7 +3673,7 @@ void CRobotMain::Convert()
 void CRobotMain::ScenePerso()
 {
     DeleteAllObjects();  // removes all the current 3D Scene
-    m_engine->FlushObject();
+    m_engine->DeleteAllObjects();
     m_terrain->FlushRelief();  // all flat
     m_terrain->FlushBuildingLevel();
     m_terrain->FlushFlyingLimit();

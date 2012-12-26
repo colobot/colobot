@@ -47,56 +47,6 @@
 // Graphics module namespace
 namespace Gfx {
 
-
-// Initial size of various vectors
-const int OBJECT_PREALLOCATE_COUNT       = 1200;
-const int SHADOW_PREALLOCATE_COUNT       = 500;
-const int GROUNDSPOT_PREALLOCATE_COUNT   = 100;
-
-const int LEVEL1_PREALLOCATE_COUNT        = 50;
-const int LEVEL2_PREALLOCATE_COUNT        = 100;
-const int LEVEL3_PREALLOCATE_COUNT        = 5;
-const int LEVEL4_PREALLOCATE_COUNT        = 100;
-const int LEVEL4_VERTEX_PREALLOCATE_COUNT = 200;
-
-
-EngineObjLevel1::EngineObjLevel1(bool used, const std::string& tex1Name, const std::string& tex2Name)
-{
-    this->used = used;
-    this->tex1Name = tex1Name;
-    this->tex2Name = tex2Name;
-
-    next.reserve(LEVEL2_PREALLOCATE_COUNT);
-}
-
-EngineObjLevel2::EngineObjLevel2(bool used, int objRank)
-{
-    this->used = used;
-    this->objRank = objRank;
-
-    next.reserve(LEVEL3_PREALLOCATE_COUNT);
-}
-
-EngineObjLevel3::EngineObjLevel3(bool used, float min, float max)
-{
-    this->used = used;
-    this->min = min;
-    this->max = max;
-
-    next.reserve(LEVEL4_PREALLOCATE_COUNT);
-}
-
-EngineObjLevel4::EngineObjLevel4(bool used, EngineTriangleType type, const Material& material, int state)
-{
-    this->used = used;
-    this->type = type;
-    this->material = material;
-    this->state = state;
-    this->staticBufferId = 0;
-
-    vertices.reserve(LEVEL4_VERTEX_PREALLOCATE_COUNT);
-}
-
 CEngine::CEngine(CInstanceManager *iMan, CApplication *app)
 {
     m_iMan   = iMan;
@@ -183,7 +133,7 @@ CEngine::CEngine(CInstanceManager *iMan, CApplication *app)
     m_alphaMode = 1;
 
     m_updateGeometry = false;
-    m_updateStaticObjects = false;
+    m_updateStaticBuffers = false;
 
     m_interfaceMode = false;
 
@@ -220,11 +170,6 @@ CEngine::CEngine(CInstanceManager *iMan, CApplication *app)
     m_terrainTexParams.mipmap = false;
     m_terrainTexParams.minFilter = TEX_MIN_FILTER_LINEAR;
     m_terrainTexParams.magFilter = TEX_MAG_FILTER_LINEAR;
-
-    m_objectTree.reserve(LEVEL1_PREALLOCATE_COUNT);
-    m_objects.reserve(OBJECT_PREALLOCATE_COUNT);
-    m_shadows.reserve(SHADOW_PREALLOCATE_COUNT);
-    m_groundSpots.reserve(GROUNDSPOT_PREALLOCATE_COUNT);
 }
 
 CEngine::~CEngine()
@@ -387,7 +332,7 @@ void CEngine::FrameUpdate()
 
     ComputeDistance();
     UpdateGeometry();
-    UpdateStaticObjects();
+    UpdateStaticBuffers();
 
     m_highlightTime = m_app->GetAbsTime();
 
@@ -495,7 +440,7 @@ Math::Point CEngine::WindowToInterfaceSize(Math::IntPoint size)
 Math::IntPoint CEngine::InterfaceToWindowSize(Math::Point size)
 {
     return Math::IntPoint(static_cast<int>(size.x * m_size.x),
-                         static_cast<int>(size.y * m_size.y));
+                          static_cast<int>(size.y * m_size.y));
 }
 
 void CEngine::AddStatisticTriangle(int count)
@@ -514,263 +459,40 @@ int CEngine::GetStatisticTriangle()
                    Object management
  *******************************************************/
 
-
-
-int CEngine::CreateObject()
-{
-    int i = 0;
-    for ( ; i < static_cast<int>( m_objects.size() ); i++)
-    {
-        if (! m_objects[i].used)
-        {
-            m_objects[i].LoadDefault();
-            break;
-        }
-    }
-
-    if (i == static_cast<int>( m_objects.size() ))
-        m_objects.push_back(EngineObject());
-
-
-    m_objects[i].used = true;
-
-    Math::Matrix mat;
-    mat.LoadIdentity();
-    SetObjectTransform(i, mat);
-
-    m_objects[i].drawWorld = true;
-    m_objects[i].distance = 0.0f;
-    m_objects[i].bboxMin = Math::Vector(0.0f, 0.0f, 0.0f);
-    m_objects[i].bboxMax = Math::Vector(0.0f, 0.0f, 0.0f);
-    m_objects[i].shadowRank = -1;
-
-    return i;
-}
-
-void CEngine::FlushObject()
-{
-    m_objectTree.clear();
-    m_objects.clear();
-
-    m_shadows.clear();
-
-    FlushGroundSpot();
-}
-
-bool CEngine::DeleteObject(int objRank)
-{
-    if ( objRank < 0 || objRank >= static_cast<int>( m_objects.size() ) )
-        return false;
-
-    // Delete object's triangles
-    for (int l1 = 0; l1 < static_cast<int>( m_objectTree.size() ); l1++)
-    {
-        EngineObjLevel1& p1 = m_objectTree[l1];
-        if (! p1.used) continue;
-
-        for (int l2 = 0; l2 < static_cast<int>( p1.next.size() ); l2++)
-        {
-            EngineObjLevel2& p2 = p1.next[l2];
-            if (! p2.used) continue;
-
-            if (p2.objRank != objRank) continue;
-
-            if (m_objects[objRank].staticBuffer)
-            {
-                for (int l3 = 0; l3 < static_cast<int>( p2.next.size() ); l3++)
-                {
-                    EngineObjLevel3& p3 = p2.next[l3];
-                    if (! p3.used) continue;
-
-                    for (int l4 = 0; l4 < static_cast<int>( p3.next.size() ); l4++)
-                    {
-                        EngineObjLevel4& p4 = p3.next[l4];
-
-                        m_device->DestroyStaticObject(p4.staticBufferId);
-                    }
-                }
-            }
-
-
-            p2.used = false;
-            p2.next.clear();
-        }
-    }
-
-    // Mark object as deleted
-    m_objects[objRank].used = false;
-
-    // Delete associated shadows
-    DeleteShadow(objRank);
-
-    return true;
-}
-
-bool CEngine::SetObjectType(int objRank, EngineObjectType type)
-{
-    if ( objRank < 0 || objRank >= static_cast<int>( m_objects.size() ) )
-        return false;
-
-    m_objects[objRank].type = type;
-    return true;
-}
-
-EngineObjectType CEngine::GetObjectType(int objRank)
-{
-    if ( objRank < 0 || objRank >= static_cast<int>( m_objects.size() ) )
-        return ENG_OBJTYPE_NULL;
-
-    return m_objects[objRank].type;
-}
-
-
-bool CEngine::SetObjectTransform(int objRank, const Math::Matrix& transform)
-{
-    if ( objRank < 0 || objRank >= static_cast<int>( m_objects.size() ) )
-        return false;
-
-    m_objects[objRank].transform = transform;
-    return true;
-}
-
-bool CEngine::GetObjectTransform(int objRank, Math::Matrix& transform)
-{
-    if ( objRank < 0 || objRank >= static_cast<int>( m_objects.size() ) )
-        return false;
-
-    transform = m_objects[objRank].transform;
-    return true;
-}
-
-void CEngine::SetObjectStatic(int objRank, bool staticBuffer)
-{
-    if ( objRank < 0 || objRank >= static_cast<int>( m_objects.size() ) )
-        return;
-
-    m_objects[objRank].staticBuffer = staticBuffer;
-}
-
-bool CEngine::GetObjectStatic(int objRank)
-{
-    if ( objRank < 0 || objRank >= static_cast<int>( m_objects.size() ) )
-        return false;
-
-    return m_objects[objRank].staticBuffer;
-}
-
-bool CEngine::SetObjectDrawWorld(int objRank, bool draw)
-{
-    if ( objRank < 0 || objRank >= static_cast<int>( m_objects.size() ) )
-        return false;
-
-    m_objects[objRank].drawWorld = draw;
-    return true;
-}
-
-bool CEngine::SetObjectDrawFront(int objRank, bool draw)
-{
-    if ( objRank < 0 || objRank >= static_cast<int>( m_objects.size() ) )
-        return false;
-
-    m_objects[objRank].drawFront = draw;
-    return true;
-}
-
-bool CEngine::SetObjectTransparency(int objRank, float value)
-{
-    if ( objRank < 0 || objRank >= static_cast<int>( m_objects.size() ) )
-        return false;
-
-    m_objects[objRank].transparency = value;
-    return true;
-}
-
-bool CEngine::GetObjectBBox(int objRank, Math::Vector& min, Math::Vector& max)
-{
-    if ( objRank < 0 || objRank >= static_cast<int>( m_objects.size() ) )
-        return 0;
-
-    min = m_objects[objRank].bboxMin;
-    max = m_objects[objRank].bboxMax;
-    return true;
-}
-
-
-int CEngine::GetObjectTotalTriangles(int objRank)
-{
-    if ( objRank < 0 || objRank >= static_cast<int>( m_objects.size() ) )
-        return 0;
-
-    return m_objects[objRank].totalTriangles;
-}
-
-
-EngineObjLevel1& CEngine::AddLevel1(const std::string& tex1Name, const std::string& tex2Name)
+EngineBaseObjTexTier& CEngine::AddLevel2(int baseObjRank, const std::string& tex1Name, const std::string& tex2Name)
 {
     bool unusedPresent = false;
-    for (int i = 0; i < static_cast<int>( m_objectTree.size() ); i++)
+    for (int i = 0; i < static_cast<int>( m_baseObjects[baseObjRank].next.size() ); i++)
     {
-        if (! m_objectTree[i].used)
+        if (! m_baseObjects[baseObjRank].next[i].used)
         {
             unusedPresent = true;
             continue;
         }
 
-        if (m_objectTree[i].tex1Name == tex1Name && m_objectTree[i].tex2Name == tex2Name)
-            return m_objectTree[i];
+        if (m_baseObjects[baseObjRank].next[i].tex1Name == tex1Name && m_baseObjects[baseObjRank].next[i].tex2Name == tex2Name)
+            return m_baseObjects[baseObjRank].next[i];
     }
 
     if (unusedPresent)
     {
-        for (int i = 0; i < static_cast<int>( m_objectTree.size() ); i++)
+        for (int i = 0; i < static_cast<int>( m_baseObjects[baseObjRank].next.size() ); i++)
         {
-            if (! m_objectTree[i].used)
+            if (! m_baseObjects[baseObjRank].next[i].used)
             {
-                m_objectTree[i].used = true;
-                m_objectTree[i].tex1Name = tex1Name;
-                m_objectTree[i].tex2Name = tex2Name;
-                return m_objectTree[i];
+                m_baseObjects[baseObjRank].next[i].used = true;
+                m_baseObjects[baseObjRank].next[i].tex1Name = tex1Name;
+                m_baseObjects[baseObjRank].next[i].tex2Name = tex2Name;
+                return m_baseObjects[baseObjRank].next[i];
             }
         }
     }
 
-    m_objectTree.push_back(EngineObjLevel1(true, tex1Name, tex2Name));
-    return m_objectTree.back();
+    m_baseObjects[baseObjRank].next.push_back(EngineBaseObjTexTier(true, tex1Name, tex2Name));
+    return m_baseObjects[baseObjRank].next.back();
 }
 
-EngineObjLevel2& CEngine::AddLevel2(EngineObjLevel1& p1, int objRank)
-{
-    bool unusedPresent = false;
-    for (int i = 0; i < static_cast<int>( p1.next.size() ); i++)
-    {
-        if (! p1.next[i].used)
-        {
-            unusedPresent = true;
-            continue;
-        }
-
-        if (p1.next[i].objRank == objRank)
-            return p1.next[i];
-    }
-
-    if (unusedPresent)
-    {
-        for (int i = 0; i < static_cast<int>( p1.next.size() ); i++)
-        {
-            if (! p1.next[i].used)
-            {
-                p1.next[i].used = true;
-                p1.next[i].objRank = objRank;
-                return p1.next[i];
-            }
-        }
-    }
-
-    p1.next.push_back(EngineObjLevel2(true, objRank));
-    return p1.next.back();
-}
-
-EngineObjLevel3& CEngine::AddLevel3(EngineObjLevel2& p2, float min, float max)
+EngineBaseObjLODTier& CEngine::AddLevel3(EngineBaseObjTexTier& p2, float min, float max)
 {
     bool unusedPresent = false;
     for (int i = 0; i < static_cast<int>( p2.next.size() ); i++)
@@ -799,12 +521,12 @@ EngineObjLevel3& CEngine::AddLevel3(EngineObjLevel2& p2, float min, float max)
         }
     }
 
-    p2.next.push_back(EngineObjLevel3(true, min, max));
+    p2.next.push_back(EngineBaseObjLODTier(true, min, max));
     return p2.next.back();
 }
 
-EngineObjLevel4& CEngine::AddLevel4(EngineObjLevel3& p3, EngineTriangleType type,
-                                              const Material& material, int state)
+EngineBaseObjDataTier& CEngine::AddLevel4(EngineBaseObjLODTier& p3, EngineTriangleType type,
+                                          const Material& material, int state)
 {
     bool unusedPresent = false;
     for (int i = 0; i < static_cast<int>( p3.next.size() ); i++)
@@ -834,42 +556,96 @@ EngineObjLevel4& CEngine::AddLevel4(EngineObjLevel3& p3, EngineTriangleType type
         }
     }
 
-    p3.next.push_back(EngineObjLevel4(true, type, material, state));
+    p3.next.push_back(EngineBaseObjDataTier(true, type, material, state));
     return p3.next.back();
 }
 
-bool CEngine::AddTriangles(int objRank, const std::vector<VertexTex2>& vertices,
-                           const Material& material, int state,
-                           std::string tex1Name, std::string tex2Name,
-                           float min, float max, bool globalUpdate)
+int CEngine::CreateBaseObject()
 {
-    if ( objRank < 0 || objRank >= static_cast<int>( m_objects.size() ) )
+    int i = 0;
+    for ( ; i < static_cast<int>( m_baseObjects.size() ); i++)
     {
-        GetLogger()->Error("AddTriangle(): invalid object rank %d\n", objRank);
-        return false;
+        if (! m_baseObjects[i].used)
+        {
+            m_baseObjects[i].LoadDefault();
+            break;
+        }
     }
+
+    if (i == static_cast<int>( m_baseObjects.size() ))
+        m_baseObjects.push_back(EngineBaseObject());
+    else
+        m_baseObjects[i].LoadDefault();
+
+
+    m_baseObjects[i].used = true;
+
+    return i;
+}
+
+void CEngine::DeleteBaseObject(int baseObjRank)
+{
+    assert(baseObjRank < -1 || baseObjRank >= static_cast<int>( m_baseObjects.size() ));
+
+    for (int l2 = 0; l2 < static_cast<int>( m_baseObjects[baseObjRank].next.size() ); l2++)
+    {
+        EngineBaseObjTexTier& p2 = m_baseObjects[baseObjRank].next[l2];
+        if (! p2.used)
+            continue;
+
+        for (int l3 = 0; l3 < static_cast<int>( p2.next.size() ); l3++)
+        {
+            EngineBaseObjLODTier& p3 = p2.next[l3];
+            if (! p3.used)
+                continue;
+
+            for (int l4 = 0; l4 < static_cast<int>( p3.next.size() ); l4++)
+            {
+                EngineBaseObjDataTier& p4 = p3.next[l4];
+
+                m_device->DestroyStaticBuffer(p4.staticBufferId);
+                p4.staticBufferId = 0;
+            }
+        }
+
+        p2.used = false;
+        p2.next.clear();
+    }
+}
+
+void CEngine::DeleteAllBaseObjects()
+{
+    m_baseObjects.clear();
+}
+
+void CEngine::CopyBaseObject(int sourceBaseObjRank, int destBaseObjRank)
+{
+    assert(sourceBaseObjRank >= 0 && sourceBaseObjRank < static_cast<int>( m_baseObjects.size() ));
+    assert(destBaseObjRank >= 0 && destBaseObjRank < static_cast<int>( m_baseObjects.size() ));
+
+    m_baseObjects[destBaseObjRank] = m_baseObjects[sourceBaseObjRank];
+}
+
+void CEngine::AddBaseObjTriangles(int baseObjRank, const std::vector<VertexTex2>& vertices,
+                                  EngineTriangleType triangleType,
+                                  const Material& material, int state,
+                                  std::string tex1Name, std::string tex2Name,
+                                  float min, float max, bool globalUpdate)
+{
+    assert(baseObjRank >= 0 && baseObjRank < static_cast<int>( m_baseObjects.size() ));
 
     m_lastSize = m_size;
     m_lastObjectDetail = m_objectDetail;
     m_lastClippingDistance = m_clippingDistance;
 
-    EngineObjLevel1& p1 = AddLevel1(tex1Name, tex2Name);
-    EngineObjLevel2& p2 = AddLevel2(p1, objRank);
-    EngineObjLevel3& p3 = AddLevel3(p2, min, max);
-    EngineObjLevel4& p4 = AddLevel4(p3, ENG_TRIANGLE_TYPE_TRIANGLES, material, state);
+    EngineBaseObjTexTier&  p2 = AddLevel2(baseObjRank, tex1Name, tex2Name);
+    EngineBaseObjLODTier&  p3 = AddLevel3(p2, min, max);
+    EngineBaseObjDataTier& p4 = AddLevel4(p3, triangleType, material, state);
 
     p4.vertices.insert(p4.vertices.end(), vertices.begin(), vertices.end());
 
-    if (m_objects[objRank].staticBuffer)
-    {
-        if (p4.staticBufferId != 0)
-        {
-            m_device->DestroyStaticObject(p4.staticBufferId);
-            p4.staticBufferId = 0;
-        }
-
-        m_updateStaticObjects = true;
-    }
+    p4.updateStaticBuffer = true;
+    m_updateStaticBuffers = true;
 
     if (globalUpdate)
     {
@@ -879,116 +655,41 @@ bool CEngine::AddTriangles(int objRank, const std::vector<VertexTex2>& vertices,
     {
         for (int i = 0; i < static_cast<int>( vertices.size() ); i++)
         {
-            m_objects[objRank].bboxMin.x = Math::Min(vertices[i].coord.x, m_objects[objRank].bboxMin.x);
-            m_objects[objRank].bboxMin.y = Math::Min(vertices[i].coord.y, m_objects[objRank].bboxMin.y);
-            m_objects[objRank].bboxMin.z = Math::Min(vertices[i].coord.z, m_objects[objRank].bboxMin.z);
-            m_objects[objRank].bboxMax.x = Math::Max(vertices[i].coord.x, m_objects[objRank].bboxMax.x);
-            m_objects[objRank].bboxMax.y = Math::Max(vertices[i].coord.y, m_objects[objRank].bboxMax.y);
-            m_objects[objRank].bboxMax.z = Math::Max(vertices[i].coord.z, m_objects[objRank].bboxMax.z);
+            m_baseObjects[baseObjRank].bboxMin.x = Math::Min(vertices[i].coord.x, m_baseObjects[baseObjRank].bboxMin.x);
+            m_baseObjects[baseObjRank].bboxMin.y = Math::Min(vertices[i].coord.y, m_baseObjects[baseObjRank].bboxMin.y);
+            m_baseObjects[baseObjRank].bboxMin.z = Math::Min(vertices[i].coord.z, m_baseObjects[baseObjRank].bboxMin.z);
+            m_baseObjects[baseObjRank].bboxMax.x = Math::Max(vertices[i].coord.x, m_baseObjects[baseObjRank].bboxMax.x);
+            m_baseObjects[baseObjRank].bboxMax.y = Math::Max(vertices[i].coord.y, m_baseObjects[baseObjRank].bboxMax.y);
+            m_baseObjects[baseObjRank].bboxMax.z = Math::Max(vertices[i].coord.z, m_baseObjects[baseObjRank].bboxMax.z);
         }
 
-        m_objects[objRank].radius = Math::Max(m_objects[objRank].bboxMin.Length(),
-                                              m_objects[objRank].bboxMax.Length());
+        m_baseObjects[baseObjRank].radius = Math::Max(m_baseObjects[baseObjRank].bboxMin.Length(),
+                                                      m_baseObjects[baseObjRank].bboxMax.Length());
     }
 
-    m_objects[objRank].totalTriangles += vertices.size() / 3;
-
-    return true;
+    if (triangleType == ENG_TRIANGLE_TYPE_TRIANGLES)
+        m_baseObjects[baseObjRank].totalTriangles += vertices.size() / 3;
+    else
+        m_baseObjects[baseObjRank].totalTriangles += vertices.size() - 2;
 }
 
-bool CEngine::AddSurface(int objRank, const std::vector<VertexTex2>& vertices,
-                              const Material& material, int state,
+void CEngine::AddBaseObjQuick(int baseObjRank, const EngineBaseObjDataTier& buffer,
                               std::string tex1Name, std::string tex2Name,
                               float min, float max, bool globalUpdate)
 {
-    if ( objRank < 0 || objRank >= static_cast<int>( m_objects.size() ) )
-    {
-        GetLogger()->Error("AddSurface(): invalid object rank %d\n", objRank);
-        return false;
-    }
+    assert(baseObjRank >= 0 && baseObjRank < static_cast<int>( m_baseObjects.size() ));
 
-    m_lastSize = m_size;
-    m_lastObjectDetail = m_objectDetail;
-    m_lastClippingDistance = m_clippingDistance;
-
-    EngineObjLevel1& p1 = AddLevel1(tex1Name, tex2Name);
-    EngineObjLevel2& p2 = AddLevel2(p1, objRank);
-    EngineObjLevel3& p3 = AddLevel3(p2, min, max);
-    EngineObjLevel4& p4 = AddLevel4(p3, ENG_TRIANGLE_TYPE_SURFACE, material, state);
-
-    p4.vertices.insert(p4.vertices.end(), vertices.begin(), vertices.end());
-
-    if (m_objects[objRank].staticBuffer)
-    {
-        if (p4.staticBufferId != 0)
-        {
-            m_device->DestroyStaticObject(p4.staticBufferId);
-            p4.staticBufferId = 0;
-        }
-
-        m_updateStaticObjects = true;
-    }
-
-    if (globalUpdate)
-    {
-        m_updateGeometry = true;
-    }
-    else
-    {
-        for (int i = 0; i < static_cast<int>( vertices.size() ); i++)
-        {
-            m_objects[objRank].bboxMin.x = Math::Min(vertices[i].coord.x, m_objects[objRank].bboxMin.x);
-            m_objects[objRank].bboxMin.y = Math::Min(vertices[i].coord.y, m_objects[objRank].bboxMin.y);
-            m_objects[objRank].bboxMin.z = Math::Min(vertices[i].coord.z, m_objects[objRank].bboxMin.z);
-            m_objects[objRank].bboxMax.x = Math::Max(vertices[i].coord.x, m_objects[objRank].bboxMax.x);
-            m_objects[objRank].bboxMax.y = Math::Max(vertices[i].coord.y, m_objects[objRank].bboxMax.y);
-            m_objects[objRank].bboxMax.z = Math::Max(vertices[i].coord.z, m_objects[objRank].bboxMax.z);
-        }
-
-        m_objects[objRank].radius = Math::Max(m_objects[objRank].bboxMin.Length(),
-                                              m_objects[objRank].bboxMax.Length());
-    }
-
-    m_objects[objRank].totalTriangles += vertices.size() - 2;
-
-    return true;
-}
-
-bool CEngine::AddQuick(int objRank, const EngineObjLevel4& buffer,
-                       std::string tex1Name, std::string tex2Name,
-                       float min, float max, bool globalUpdate)
-{
-    if ( objRank < 0 || objRank >= static_cast<int>( m_objects.size() ) )
-    {
-        GetLogger()->Error("AddQuick(): invalid object rank %d\n", objRank);
-        return false;
-    }
-
-    EngineObjLevel1& p1 = AddLevel1(tex1Name, tex2Name);
-    EngineObjLevel2& p2 = AddLevel2(p1, objRank);
-    EngineObjLevel3& p3 = AddLevel3(p2, min, max);
+    EngineBaseObjTexTier&  p2 = AddLevel2(baseObjRank, tex1Name, tex2Name);
+    EngineBaseObjLODTier&  p3 = AddLevel3(p2, min, max);
 
     p3.next.push_back(buffer);
 
-    EngineObjLevel4& p4 = p3.next.back();
-    p4.used = true; // ensure that it is used
+    EngineBaseObjDataTier& p4 = p3.next.back();
 
-    if (m_objects[objRank].staticBuffer)
-    {
-        if (p4.staticBufferId != 0)
-        {
-            m_device->DestroyStaticObject(p4.staticBufferId);
-            p4.staticBufferId = 0;
-        }
+    p4.used = true;
 
-        PrimitiveType type;
-        if (p4.type == ENG_TRIANGLE_TYPE_TRIANGLES)
-            type = PRIMITIVE_TRIANGLES;
-        else
-            type = PRIMITIVE_TRIANGLE_STRIP;
-
-        p4.staticBufferId = m_device->CreateStaticObject(type, &p4.vertices[0], p4.vertices.size());
-    }
+    p4.updateStaticBuffer = true;
+    m_updateStaticBuffers = true;
 
     if (globalUpdate)
     {
@@ -998,68 +699,197 @@ bool CEngine::AddQuick(int objRank, const EngineObjLevel4& buffer,
     {
         for (int i = 0; i < static_cast<int>( p4.vertices.size() ); i++)
         {
-            m_objects[objRank].bboxMin.x = Math::Min(p4.vertices[i].coord.x, m_objects[objRank].bboxMin.x);
-            m_objects[objRank].bboxMin.y = Math::Min(p4.vertices[i].coord.y, m_objects[objRank].bboxMin.y);
-            m_objects[objRank].bboxMin.z = Math::Min(p4.vertices[i].coord.z, m_objects[objRank].bboxMin.z);
-            m_objects[objRank].bboxMax.x = Math::Max(p4.vertices[i].coord.x, m_objects[objRank].bboxMax.x);
-            m_objects[objRank].bboxMax.y = Math::Max(p4.vertices[i].coord.y, m_objects[objRank].bboxMax.y);
-            m_objects[objRank].bboxMax.z = Math::Max(p4.vertices[i].coord.z, m_objects[objRank].bboxMax.z);
+            m_baseObjects[baseObjRank].bboxMin.x = Math::Min(p4.vertices[i].coord.x, m_baseObjects[baseObjRank].bboxMin.x);
+            m_baseObjects[baseObjRank].bboxMin.y = Math::Min(p4.vertices[i].coord.y, m_baseObjects[baseObjRank].bboxMin.y);
+            m_baseObjects[baseObjRank].bboxMin.z = Math::Min(p4.vertices[i].coord.z, m_baseObjects[baseObjRank].bboxMin.z);
+            m_baseObjects[baseObjRank].bboxMax.x = Math::Max(p4.vertices[i].coord.x, m_baseObjects[baseObjRank].bboxMax.x);
+            m_baseObjects[baseObjRank].bboxMax.y = Math::Max(p4.vertices[i].coord.y, m_baseObjects[baseObjRank].bboxMax.y);
+            m_baseObjects[baseObjRank].bboxMax.z = Math::Max(p4.vertices[i].coord.z, m_baseObjects[baseObjRank].bboxMax.z);
         }
 
-        m_objects[objRank].radius = Math::Max(m_objects[objRank].bboxMin.Length(),
-                                              m_objects[objRank].bboxMax.Length());
+        m_baseObjects[baseObjRank].radius = Math::Max(m_baseObjects[baseObjRank].bboxMin.Length(),
+                                                      m_baseObjects[baseObjRank].bboxMax.Length());
     }
 
     if (p4.type == ENG_TRIANGLE_TYPE_TRIANGLES)
-        m_objects[objRank].totalTriangles += p4.vertices.size() / 3;
+        m_baseObjects[baseObjRank].totalTriangles += p4.vertices.size() / 3;
     else if (p4.type == ENG_TRIANGLE_TYPE_SURFACE)
-        m_objects[objRank].totalTriangles += p4.vertices.size() - 2;
-
-    return true;
+        m_baseObjects[baseObjRank].totalTriangles += p4.vertices.size() - 2;
 }
 
-EngineObjLevel4* CEngine::FindTriangles(int objRank, const Material& material,
-                                                  int state, std::string tex1Name,
-                                                  std::string tex2Name, float min, float max)
+
+int CEngine::CreateObject()
 {
-    if ( objRank < 0 || objRank >= static_cast<int>( m_objects.size() ) )
+    int i = 0;
+    for ( ; i < static_cast<int>( m_objects.size() ); i++)
     {
-        GetLogger()->Error("FindTriangles(): invalid object rank %d\n", objRank);
-        return nullptr;
+        if (! m_objects[i].used)
+        {
+            m_objects[i].LoadDefault();
+            break;
+        }
     }
 
-    for (int l1 = 0; l1 < static_cast<int>( m_objectTree.size() ); l1++)
+    if (i == static_cast<int>( m_objects.size() ))
+        m_objects.push_back(EngineObject());
+
+
+    m_objects[i].used = true;
+
+    Math::Matrix mat;
+    mat.LoadIdentity();
+    SetObjectTransform(i, mat);
+
+    m_objects[i].drawWorld = true;
+    m_objects[i].distance = 0.0f;
+    m_objects[i].shadowRank = -1;
+
+    return i;
+}
+
+void CEngine::DeleteAllObjects()
+{
+    m_objects.clear();
+    m_shadows.clear();
+
+    DeleteAllGroundSpots();
+}
+
+void CEngine::DeleteObject(int objRank)
+{
+    assert(objRank >= 0 && objRank < static_cast<int>( m_objects.size() ));
+
+    // Mark object as deleted
+    m_objects[objRank].used = false;
+
+    // Delete associated shadows
+    DeleteShadow(objRank);
+}
+
+void CEngine::SetObjectBaseRank(int objRank, int baseObjRank)
+{
+    assert(objRank >= 0 && objRank < static_cast<int>( m_objects.size() ));
+
+    m_objects[objRank].baseObjRank = baseObjRank;
+}
+
+int CEngine::GetObjectBaseRank(int objRank)
+{
+    assert(objRank >= 0 && objRank < static_cast<int>( m_objects.size() ));
+
+    return m_objects[objRank].baseObjRank;
+}
+
+void CEngine::SetObjectType(int objRank, EngineObjectType type)
+{
+    assert(objRank >= 0 && objRank < static_cast<int>( m_objects.size() ));
+
+    m_objects[objRank].type = type;
+}
+
+EngineObjectType CEngine::GetObjectType(int objRank)
+{
+    assert(objRank >= 0 && objRank < static_cast<int>( m_objects.size() ));
+
+    return m_objects[objRank].type;
+}
+
+
+void CEngine::SetObjectTransform(int objRank, const Math::Matrix& transform)
+{
+    assert(objRank >= 0 && objRank < static_cast<int>( m_objects.size() ));
+
+    m_objects[objRank].transform = transform;
+}
+
+void CEngine::GetObjectTransform(int objRank, Math::Matrix& transform)
+{
+    assert(objRank >= 0 && objRank < static_cast<int>( m_objects.size() ));
+
+    transform = m_objects[objRank].transform;
+}
+
+void CEngine::SetObjectDrawWorld(int objRank, bool draw)
+{
+    assert(objRank >= 0 && objRank < static_cast<int>( m_objects.size() ));
+
+    m_objects[objRank].drawWorld = draw;
+}
+
+void CEngine::SetObjectDrawFront(int objRank, bool draw)
+{
+    assert(objRank >= 0 && objRank < static_cast<int>( m_objects.size() ));
+
+    m_objects[objRank].drawFront = draw;
+}
+
+void CEngine::SetObjectTransparency(int objRank, float value)
+{
+    assert(objRank >= 0 && objRank < static_cast<int>( m_objects.size() ));
+
+    m_objects[objRank].transparency = value;
+}
+
+void CEngine::GetObjectBBox(int objRank, Math::Vector& min, Math::Vector& max)
+{
+    assert(objRank >= 0 && objRank < static_cast<int>( m_objects.size() ));
+
+    int baseObjRank = m_objects[objRank].baseObjRank;
+    assert(baseObjRank >= 0 && baseObjRank < static_cast<int>(m_baseObjects.size()));
+
+    min = m_baseObjects[baseObjRank].bboxMin;
+    max = m_baseObjects[baseObjRank].bboxMax;
+}
+
+
+int CEngine::GetObjectTotalTriangles(int objRank)
+{
+    assert(objRank >= 0 && objRank < static_cast<int>( m_objects.size() ));
+
+    int baseObjRank = m_objects[objRank].baseObjRank;
+    assert(baseObjRank >= 0 && baseObjRank < static_cast<int>( m_baseObjects.size() ));
+
+    return m_baseObjects[baseObjRank].totalTriangles;
+}
+
+EngineBaseObjDataTier* CEngine::FindTriangles(int objRank, const Material& material,
+                                              int state, std::string tex1Name,
+                                              std::string tex2Name, float min, float max)
+{
+    assert(objRank >= 0 && objRank < static_cast<int>( m_objects.size() ));
+
+    int baseObjRank = m_objects[objRank].baseObjRank;
+    assert(baseObjRank >= 0 && baseObjRank < static_cast<int>( m_baseObjects.size() ));
+
+    for (int l2 = 0; l2 < static_cast<int>( m_baseObjects[baseObjRank].next.size() ); l2++)
     {
-        EngineObjLevel1& p1 = m_objectTree[l1];
-        if (! p1.used) continue;
+        EngineBaseObjTexTier& p2 = m_baseObjects[baseObjRank].next[l2];
+        if (! p2.used)
+            continue;
 
-        if (p1.tex1Name != tex1Name) continue;
+        if (p2.tex1Name != tex1Name)
+            continue;
 
-        for (int l2 = 0; l2 < static_cast<int>( p1.next.size() ); l2++)
+        for (int l3 = 0; l3 < static_cast<int>( p2.next.size() ); l3++)
         {
-            EngineObjLevel2& p2 = p1.next[l2];
-            if (! p2.used) continue;
+            EngineBaseObjLODTier& p3 = p2.next[l3];
+            if (! p3.used)
+                continue;
 
-            if (p2.objRank != objRank) continue;
+            if (p3.min != min || p3.max != max)
+                continue;
 
-            for (int l3 = 0; l3 < static_cast<int>( p2.next.size() ); l3++)
+            for (int l4 = 0; l4 < static_cast<int>( p3.next.size() ); l4++)
             {
-                EngineObjLevel3& p3 = p2.next[l3];
-                if (! p3.used) continue;
+                EngineBaseObjDataTier& p4 = p3.next[l4];
+                if (! p4.used)
+                    continue;
 
-                if (p3.min != min || p3.max != max) continue;
+                if ( (p4.state & (~(ENG_RSTATE_DUAL_BLACK|ENG_RSTATE_DUAL_WHITE))) != state ||
+                      p4.material != material )
+                    continue;
 
-                for (int l4 = 0; l4 < static_cast<int>( p3.next.size() ); l4++)
-                {
-                    EngineObjLevel4& p4 = p3.next[l4];
-                    if (! p4.used) continue;
-
-                    if ( (p4.state & (~(ENG_RSTATE_DUAL_BLACK|ENG_RSTATE_DUAL_WHITE))) != state ||
-                         p4.material != material )
-                        continue;
-
-                    return &p4;
-                }
+                return &p4;
             }
         }
     }
@@ -1068,91 +898,86 @@ EngineObjLevel4* CEngine::FindTriangles(int objRank, const Material& material,
 }
 
 int CEngine::GetPartialTriangles(int objRank, float min, float max, float percent, int maxCount,
-                                      std::vector<EngineTriangle>& triangles)
+                                 std::vector<EngineTriangle>& triangles)
 {
-    if ( objRank < 0 || objRank >= static_cast<int>( m_objects.size() ) )
-    {
-        GetLogger()->Error("GetPartialTriangles(): invalid object rank %d\n", objRank);
-        return 0;
-    }
+    assert(objRank >= 0 && objRank < static_cast<int>( m_objects.size() ));
 
-    int total = m_objects[objRank].totalTriangles;
+    int baseObjRank = m_objects[objRank].baseObjRank;
+    assert(baseObjRank >= 0 && baseObjRank < static_cast<int>( m_baseObjects.size() ));
+
+    int total = m_baseObjects[baseObjRank].totalTriangles;
     int expectedCount = static_cast<int>(percent * total);
     triangles.reserve(Math::Min(maxCount, expectedCount));
 
     int actualCount = 0;
 
-    for (int l1 = 0; l1 < static_cast<int>( m_objectTree.size() ); l1++)
+    for (int l2 = 0; l2 < static_cast<int>( m_baseObjects[baseObjRank].next.size() ); l2++)
     {
-        EngineObjLevel1& p1 = m_objectTree[l1];
-        if (! p1.used) continue;
+        EngineBaseObjTexTier& p2 = m_baseObjects[baseObjRank].next[l2];
+        if (! p2.used)
+            continue;
 
-        for (int l2 = 0; l2 < static_cast<int>( p1.next.size() ); l2++)
+        for (int l3 = 0; l3 < static_cast<int>( p2.next.size() ); l3++)
         {
-            EngineObjLevel2& p2 = p1.next[l2];
-            if (! p2.used) continue;
+            EngineBaseObjLODTier& p3 = p2.next[l3];
+            if (! p3.used)
+                continue;
 
-            if (p2.objRank != objRank) continue;
+            if (p3.min != min || p3.max != max)
+                continue;
 
-            for (int l3 = 0; l3 < static_cast<int>( p2.next.size() ); l3++)
+            for (int l4 = 0; l4 < static_cast<int>( p3.next.size() ); l4++)
             {
-                EngineObjLevel3& p3 = p2.next[l3];
-                if (! p3.used) continue;
+                EngineBaseObjDataTier& p4 = p3.next[l4];
+                if (! p4.used)
+                    continue;
 
-                if (p3.min != min || p3.max != max) continue;
-
-                for (int l4 = 0; l4 < static_cast<int>( p3.next.size() ); l4++)
+                if (p4.type == ENG_TRIANGLE_TYPE_TRIANGLES)
                 {
-                    EngineObjLevel4& p4 = p3.next[l4];
-                    if (! p4.used) continue;
-
-                    if (p4.type == ENG_TRIANGLE_TYPE_TRIANGLES)
+                    for (int i = 0; i < static_cast<int>( p4.vertices.size() ); i += 3)
                     {
-                        for (int i = 0; i < static_cast<int>( p4.vertices.size() ); i += 3)
-                        {
-                            if (static_cast<float>(actualCount) / total >= percent)
-                                break;
+                        if (static_cast<float>(actualCount) / total >= percent)
+                            break;
 
-                            if (actualCount >= maxCount)
-                                break;
+                        if (actualCount >= maxCount)
+                            break;
 
-                            EngineTriangle t;
-                            t.triangle[0] = p4.vertices[i];
-                            t.triangle[1] = p4.vertices[i+1];
-                            t.triangle[2] = p4.vertices[i+2];
-                            t.material = p4.material;
-                            t.state = p4.state;
-                            t.tex1Name = p1.tex1Name;
-                            t.tex2Name = p1.tex2Name;
+                        EngineTriangle t;
+                        t.triangle[0] = p4.vertices[i];
+                        t.triangle[1] = p4.vertices[i+1];
+                        t.triangle[2] = p4.vertices[i+2];
+                        t.material = p4.material;
+                        t.state = p4.state;
+                        t.tex1Name = p2.tex1Name;
+                        t.tex2Name = p2.tex2Name;
 
-                            triangles.push_back(t);
+                        triangles.push_back(t);
 
-                            ++actualCount;
-                        }
+                        ++actualCount;
                     }
-                    else if (p4.type == ENG_TRIANGLE_TYPE_SURFACE)
+                }
+                else if (p4.type == ENG_TRIANGLE_TYPE_SURFACE)
+                {
+                    for (int i = 0; i < static_cast<int>( p4.vertices.size() ); i += 1)
                     {
-                        for (int i = 0; i < static_cast<int>( p4.vertices.size() ); i += 1)
-                        {
-                            if (static_cast<float>(actualCount) / total >= percent)
-                                break;
+                        if (static_cast<float>(actualCount) / total >= percent)
+                            break;
 
-                            if (actualCount >= maxCount)
-                                break;
+                        if (actualCount >= maxCount)
+                            break;
 
-                            EngineTriangle t;
-                            t.triangle[0] = p4.vertices[i];
-                            t.triangle[1] = p4.vertices[i+1];
-                            t.triangle[2] = p4.vertices[i+2];
-                            t.material = p4.material;
-                            t.state = p4.state;
-                            t.tex1Name = p1.tex1Name;
-                            t.tex2Name = p1.tex2Name;
+                        EngineTriangle t;
+                        t.triangle[0] = p4.vertices[i];
+                        t.triangle[1] = p4.vertices[i+1];
+                        t.triangle[2] = p4.vertices[i+2];
+                        t.material = p4.material;
+                        t.state = p4.state;
+                        t.tex1Name = p2.tex1Name;
+                        t.tex2Name = p2.tex2Name;
 
-                            triangles.push_back(t);
+                        triangles.push_back(t);
 
-                            ++actualCount;
-                        }
+                        ++actualCount;
                     }
                 }
             }
@@ -1179,20 +1004,22 @@ void CEngine::ChangeLOD()
     float oldTerrain = m_terrainVision * m_lastClippingDistance;
     float newTerrain = m_terrainVision * m_clippingDistance;
 
-    for (int l1 = 0; l1 < static_cast<int>( m_objectTree.size() ); l1++)
+    for (int baseObjRank = 0; baseObjRank < static_cast<int>( m_baseObjects.size() ); baseObjRank++)
     {
-        EngineObjLevel1& p1 = m_objectTree[l1];
-        if (! p1.used) continue;
+        if (! m_baseObjects[baseObjRank].used)
+            continue;
 
-        for (int l2 = 0; l2 < static_cast<int>( p1.next.size() ); l2++)
+        for (int l2 = 0; l2 < static_cast<int>( m_baseObjects[baseObjRank].next.size() ); l2++)
         {
-            EngineObjLevel2& p2 = p1.next[l2];
-            if (! p2.used) continue;
+            EngineBaseObjTexTier& p2 = m_baseObjects[baseObjRank].next[l2];
+            if (! p2.used)
+                continue;
 
             for (int l3 = 0; l3 < static_cast<int>( p2.next.size() ); l3++)
             {
-                EngineObjLevel3& p3 = p2.next[l3];
-                if (! p3.used) continue;
+                EngineBaseObjLODTier& p3 = p2.next[l3];
+                if (! p3.used)
+                    continue;
 
                 if ( Math::IsEqual(p3.min, 0.0f       ) &&
                      Math::IsEqual(p3.max, oldLimit[0]) )
@@ -1224,43 +1051,40 @@ void CEngine::ChangeLOD()
     m_lastClippingDistance = m_clippingDistance;
 }
 
-bool CEngine::ChangeSecondTexture(int objRank, const std::string& tex2Name)
+void CEngine::ChangeSecondTexture(int objRank, const std::string& tex2Name)
 {
-    for (int l1 = 0; l1 < static_cast<int>( m_objectTree.size() ); l1++)
+    assert(objRank >= 0 && objRank < static_cast<int>( m_objects.size() ));
+
+    int baseObjRank = m_objects[objRank].baseObjRank;
+    assert(baseObjRank >= 0 && baseObjRank < static_cast<int>( m_baseObjects.size() ));
+    
+    EngineBaseObject& p1 = m_baseObjects[baseObjRank];
+
+    for (int l2 = 0; l2 < static_cast<int>( p1.next.size() ); l2++)
     {
-        EngineObjLevel1& p1 = m_objectTree[l1];
-        if (! p1.used) continue;
+        EngineBaseObjTexTier& p2 = p1.next[l2];
+        if (! p2.used)
+            continue;
 
-        if (p1.tex2Name == tex2Name) continue;  // already new
+        if (p2.tex2Name == tex2Name)
+            continue;  // already new
 
-        for (int l2 = 0; l2 < static_cast<int>( p1.next.size() ); l2++)
-        {
-            EngineObjLevel2& p2 = p1.next[l2];
-            if (! p2.used) continue;
-
-            if (p2.objRank != objRank) continue;
-
-            EngineObjLevel1& newP1 = AddLevel1(p1.tex1Name, tex2Name);
-
-            newP1.next.push_back(EngineObjLevel2(true, objRank));
-
-            EngineObjLevel2& newP2 = newP1.next.back();
-            newP2.next.swap(p2.next);
-
-            p2.used = false;
-        }
+        EngineBaseObjTexTier& newP2 = AddLevel2(baseObjRank, p2.tex1Name, tex2Name);
+        newP2.next.swap(p2.next);
+        p2.used = false;
     }
-    return true;
 }
 
-bool CEngine::ChangeTextureMapping(int objRank, const Material& mat, int state,
-                                         const std::string& tex1Name, const std::string& tex2Name,
-                                         float min, float max, EngineTextureMapping mode,
-                                         float au, float bu, float av, float bv)
+void CEngine::ChangeTextureMapping(int objRank, const Material& mat, int state,
+                                   const std::string& tex1Name, const std::string& tex2Name,
+                                   float min, float max, EngineTextureMapping mode,
+                                   float au, float bu, float av, float bv)
 {
-    EngineObjLevel4* p4 = FindTriangles(objRank, mat, state, tex1Name, tex2Name, min, max);
+    assert(objRank >= 0 && objRank < static_cast<int>( m_objects.size() ));
+
+    EngineBaseObjDataTier* p4 = FindTriangles(objRank, mat, state, tex1Name, tex2Name, min, max);
     if (p4 == nullptr)
-        return false;
+        return;
 
     int nb = p4->vertices.size();
 
@@ -1310,21 +1134,25 @@ bool CEngine::ChangeTextureMapping(int objRank, const Material& mat, int state,
         }
     }
 
-    return true;
+    UpdateStaticBuffer(*p4);
 }
 
-bool CEngine::TrackTextureMapping(int objRank, const Material& mat, int state,
+void CEngine::TrackTextureMapping(int objRank, const Material& mat, int state,
                                   const std::string& tex1Name, const std::string& tex2Name,
                                   float min, float max, EngineTextureMapping mode,
                                   float pos, float factor, float tl, float ts, float tt)
 {
-    EngineObjLevel4* triangles = FindTriangles(objRank, mat, state, tex1Name, tex2Name, min, max);
-    if (triangles == nullptr) return false;
+    assert(objRank >= 0 && objRank < static_cast<int>( m_objects.size() ));
+    
+    EngineBaseObjDataTier* p4 = FindTriangles(objRank, mat, state, tex1Name, tex2Name, min, max);
+    if (p4 == nullptr)
+        return;
 
-    int tNum = triangles->vertices.size();
-    if (tNum < 12 || tNum % 6 != 0) return false;
+    int tNum = p4->vertices.size();
+    if (tNum < 12 || tNum % 6 != 0)
+        return;
 
-    std::vector<Gfx::VertexTex2>& vs = triangles->vertices;
+    std::vector<Gfx::VertexTex2>& vs = p4->vertices;
 
     while (pos < 0.0f)
         pos += 1.0f;  // never negative!
@@ -1402,17 +1230,17 @@ bool CEngine::TrackTextureMapping(int objRank, const Material& mat, int state,
         tBase += 6;
     }
 
-    return true;
+    UpdateStaticBuffer(*p4);
 }
 
 
-bool CEngine::CreateShadow(int objRank)
+void CEngine::CreateShadow(int objRank)
 {
-    if ( objRank < 0 || objRank >= static_cast<int>( m_objects.size() ) )
-        return false;
+    assert(objRank >= 0 && objRank < static_cast<int>( m_objects.size() ));
 
     // Already allocated?
-    if (m_objects[objRank].shadowRank != -1) return true;
+    if (m_objects[objRank].shadowRank != -1)
+        return;
 
     int index = 0;
     for ( ; index < static_cast<int>( m_shadows.size() ); index++)
@@ -1424,146 +1252,147 @@ bool CEngine::CreateShadow(int objRank)
         }
     }
 
-    m_shadows.push_back(EngineShadow());
+    if (index == static_cast<int>( m_shadows.size() ))
+        m_shadows.push_back(EngineShadow());
 
     m_shadows[index].used = true;
     m_shadows[index].objRank = objRank;
     m_shadows[index].height = 0.0f;
 
     m_objects[objRank].shadowRank = index;
-
-    return true;
 }
 
 void CEngine::DeleteShadow(int objRank)
 {
-    if ( objRank < 0 || objRank >= static_cast<int>( m_objects.size() ) )
+    assert(objRank >= 0 && objRank < static_cast<int>( m_objects.size() ));
+
+    int shadowRank = m_objects[objRank].shadowRank;
+    if (shadowRank == -1)
         return;
 
-    int i = m_objects[objRank].shadowRank;
-    if (i == -1)
-        return;
+    assert(shadowRank >= 0 && shadowRank < static_cast<int>( m_shadows.size() ));
 
-    m_shadows[i].used = false;
-    m_shadows[i].objRank = -1;
+    m_shadows[shadowRank].used = false;
+    m_shadows[shadowRank].objRank = -1;
 
     m_objects[objRank].shadowRank = -1;
 }
 
-bool CEngine::SetObjectShadowHide(int objRank, bool hide)
+void CEngine::SetObjectShadowHide(int objRank, bool hide)
 {
-    if ( objRank < 0 || objRank >= static_cast<int>( m_objects.size() ) )
-        return false;
+    assert(objRank >= 0 && objRank < static_cast<int>( m_objects.size() ));
 
-    int i = m_objects[objRank].shadowRank;
-    if (i == -1)
-        return false;
+    int shadowRank = m_objects[objRank].shadowRank;
+    if (shadowRank == -1)
+        return;
 
-    m_shadows[i].hide = hide;
-    return true;
+    assert(shadowRank >= 0 && shadowRank < static_cast<int>( m_shadows.size() ));
+
+    m_shadows[shadowRank].hide = hide;
 }
 
-bool CEngine::SetObjectShadowType(int objRank, EngineShadowType type)
+void CEngine::SetObjectShadowType(int objRank, EngineShadowType type)
 {
-    if ( objRank < 0 || objRank >= static_cast<int>( m_objects.size() ) )
-        return false;
+    assert(objRank >= 0 && objRank < static_cast<int>( m_objects.size() ));
 
-    int i = m_objects[objRank].shadowRank;
-    if (i == -1)
-        return false;
+    int shadowRank = m_objects[objRank].shadowRank;
+    if (shadowRank == -1)
+        return;
 
-    m_shadows[i].type = type;
-    return true;
+    assert(shadowRank >= 0 && shadowRank < static_cast<int>( m_shadows.size() ));
+
+    m_shadows[shadowRank].type = type;
 }
 
-bool CEngine::SetObjectShadowPos(int objRank, const Math::Vector& pos)
+void CEngine::SetObjectShadowPos(int objRank, const Math::Vector& pos)
 {
-    if ( objRank < 0 || objRank >= static_cast<int>( m_objects.size() ) )
-        return false;
+    assert(objRank >= 0 && objRank < static_cast<int>( m_objects.size() ));
 
-    int i = m_objects[objRank].shadowRank;
-    if (i == -1)
-        return false;
+    int shadowRank = m_objects[objRank].shadowRank;
+    if (shadowRank == -1)
+        return;
 
-    m_shadows[i].pos = pos;
-    return true;
+    assert(shadowRank >= 0 && shadowRank < static_cast<int>( m_shadows.size() ));
+
+    m_shadows[shadowRank].pos = pos;
 }
 
-bool CEngine::SetObjectShadowNormal(int objRank, const Math::Vector& normal)
+void CEngine::SetObjectShadowNormal(int objRank, const Math::Vector& normal)
 {
-    if ( objRank < 0 || objRank >= static_cast<int>( m_objects.size() ) )
-        return false;
+    assert(objRank >= 0 && objRank < static_cast<int>( m_objects.size() ));
 
-    int i = m_objects[objRank].shadowRank;
-    if (i == -1)
-        return false;
+    int shadowRank = m_objects[objRank].shadowRank;
+    if (shadowRank == -1)
+        return;
 
-    m_shadows[i].normal = normal;
-    return true;
+    assert(shadowRank >= 0 && shadowRank < static_cast<int>( m_shadows.size() ));
+
+    m_shadows[shadowRank].normal = normal;
 }
 
-bool CEngine::SetObjectShadowAngle(int objRank, float angle)
+void CEngine::SetObjectShadowAngle(int objRank, float angle)
 {
-    if ( objRank < 0 || objRank >= static_cast<int>( m_objects.size() ) )
-        return false;
+    assert(objRank >= 0 && objRank < static_cast<int>( m_objects.size() ));
 
-    int i = m_objects[objRank].shadowRank;
-    if (i == -1)
-        return false;
+    int shadowRank = m_objects[objRank].shadowRank;
+    if (shadowRank == -1)
+        return;
 
-    m_shadows[i].angle = angle;
-    return true;
+    assert(shadowRank >= 0 && shadowRank < static_cast<int>( m_shadows.size() ));
+
+    m_shadows[shadowRank].angle = angle;
 }
 
-bool CEngine::SetObjectShadowRadius(int objRank, float radius)
+void CEngine::SetObjectShadowRadius(int objRank, float radius)
 {
-    if ( objRank < 0 || objRank >= static_cast<int>( m_objects.size() ) )
-        return false;
+    assert(objRank >= 0 && objRank < static_cast<int>( m_objects.size() ));
 
-    int i = m_objects[objRank].shadowRank;
-    if (i == -1)
-        return false;
+    int shadowRank = m_objects[objRank].shadowRank;
+    if (shadowRank == -1)
+        return;
 
-    m_shadows[i].radius = radius;
-    return true;
+    assert(shadowRank >= 0 && shadowRank < static_cast<int>( m_shadows.size() ));
+
+    m_shadows[shadowRank].radius = radius;
 }
 
-bool CEngine::SetObjectShadowIntensity(int objRank, float intensity)
+void CEngine::SetObjectShadowIntensity(int objRank, float intensity)
 {
-    if ( objRank < 0 || objRank >= static_cast<int>( m_objects.size() ) )
-        return false;
+    assert(objRank >= 0 && objRank < static_cast<int>( m_objects.size() ));
 
-    int i = m_objects[objRank].shadowRank;
-    if (i == -1)
-        return false;
+    int shadowRank = m_objects[objRank].shadowRank;
+    if (shadowRank == -1)
+        return;
 
-    m_shadows[i].intensity = intensity;
-    return true;
+    assert(shadowRank >= 0 && shadowRank < static_cast<int>( m_shadows.size() ));
+
+    m_shadows[shadowRank].intensity = intensity;
 }
 
-bool CEngine::SetObjectShadowHeight(int objRank, float height)
+void CEngine::SetObjectShadowHeight(int objRank, float height)
 {
-    if ( objRank < 0 || objRank >= static_cast<int>( m_objects.size() ) )
-        return false;
+    assert(objRank >= 0 && objRank < static_cast<int>( m_objects.size() ));
 
-    int i = m_objects[objRank].shadowRank;
-    if (i == -1)
-        return false;
+    int shadowRank = m_objects[objRank].shadowRank;
+    if (shadowRank == -1)
+        return;
 
-    m_shadows[i].height = height;
-    return true;
+    assert(shadowRank >= 0 && shadowRank < static_cast<int>( m_shadows.size() ));
+
+    m_shadows[shadowRank].height = height;
 }
 
 float CEngine::GetObjectShadowRadius(int objRank)
 {
-    if ( objRank < 0 || objRank >= static_cast<int>( m_objects.size() ) )
+    assert(objRank >= 0 && objRank < static_cast<int>( m_objects.size() ));
+
+    int shadowRank = m_objects[objRank].shadowRank;
+    if (shadowRank == -1)
         return 0.0f;
 
-    int i = m_objects[objRank].shadowRank;
-    if (i == -1)
-        return 0.0f;
+    assert(shadowRank >= 0 && shadowRank < static_cast<int>( m_shadows.size() ));
 
-    return m_shadows[i].radius;
+    return m_shadows[shadowRank].radius;
 }
 
 bool CEngine::GetHighlight(Math::Point &p1, Math::Point &p2)
@@ -1585,21 +1414,26 @@ void CEngine::SetHighlightRank(int *rankList)
 
 bool CEngine::GetBBox2D(int objRank, Math::Point &min, Math::Point &max)
 {
+    assert(objRank >= 0 && objRank < static_cast<int>( m_objects.size() ));
+
     min.x =  1000000.0f;
     min.y =  1000000.0f;
     max.x = -1000000.0f;
     max.y = -1000000.0f;
 
+    int baseObjRank = m_objects[objRank].baseObjRank;
+    assert(baseObjRank >= 0 && baseObjRank < static_cast<int>( m_baseObjects.size() ));
+
     for (int i = 0; i < 8; i++)
     {
         Math::Vector p;
 
-        if ( i & (1<<0) )  p.x = m_objects[objRank].bboxMin.x;
-        else               p.x = m_objects[objRank].bboxMax.x;
-        if ( i & (1<<1) )  p.y = m_objects[objRank].bboxMin.y;
-        else               p.y = m_objects[objRank].bboxMax.y;
-        if ( i & (1<<2) )  p.z = m_objects[objRank].bboxMin.z;
-        else               p.z = m_objects[objRank].bboxMax.z;
+        if ( i & (1<<0) )  p.x = m_baseObjects[baseObjRank].bboxMin.x;
+        else               p.x = m_baseObjects[baseObjRank].bboxMax.x;
+        if ( i & (1<<1) )  p.y = m_baseObjects[baseObjRank].bboxMin.y;
+        else               p.y = m_baseObjects[baseObjRank].bboxMax.y;
+        if ( i & (1<<2) )  p.z = m_baseObjects[baseObjRank].bboxMin.z;
+        else               p.z = m_baseObjects[baseObjRank].bboxMax.z;
 
         Math::Vector pp;
         if (TransformPoint(pp, objRank, p))
@@ -1611,15 +1445,16 @@ bool CEngine::GetBBox2D(int objRank, Math::Point &min, Math::Point &max)
         }
     }
 
-    if ( min.x ==  1000000.0f ||
-         min.y ==  1000000.0f ||
-         max.x == -1000000.0f ||
-         max.y == -1000000.0f )  return false;
+    if (min.x ==  1000000.0f ||
+        min.y ==  1000000.0f ||
+        max.x == -1000000.0f ||
+        max.y == -1000000.0f)
+        return false;
 
     return true;
 }
 
-void CEngine::FlushGroundSpot()
+void CEngine::DeleteAllGroundSpots()
 {
     m_groundSpots.clear();
     m_firstGroundSpot = true;
@@ -1664,54 +1499,46 @@ int CEngine::CreateGroundSpot()
 
 void CEngine::DeleteGroundSpot(int rank)
 {
+    assert(rank >= 0 && rank < static_cast<int>( m_groundSpots.size() ));
+
     m_groundSpots[rank].used = false;
     m_groundSpots[rank].pos = Math::Vector(0.0f, 0.0f, 0.0f);
 }
 
-bool CEngine::SetObjectGroundSpotPos(int rank, const Math::Vector& pos)
+void CEngine::SetObjectGroundSpotPos(int rank, const Math::Vector& pos)
 {
-    if ( rank < 0 || rank >= static_cast<int>( m_groundSpots.size() ) )
-        return 0.0f;
+    assert(rank >= 0 && rank < static_cast<int>( m_groundSpots.size() ));
 
     m_groundSpots[rank].pos = pos;
-    return true;
 }
 
-bool CEngine::SetObjectGroundSpotRadius(int rank, float radius)
+void CEngine::SetObjectGroundSpotRadius(int rank, float radius)
 {
-    if ( rank < 0 || rank >= static_cast<int>( m_groundSpots.size() ) )
-        return 0.0f;
+    assert(rank >= 0 && rank < static_cast<int>( m_groundSpots.size() ));
 
     m_groundSpots[rank].radius = radius;
-    return true;
 }
 
-bool CEngine::SetObjectGroundSpotColor(int rank, const Color& color)
+void CEngine::SetObjectGroundSpotColor(int rank, const Color& color)
 {
-    if ( rank < 0 || rank >= static_cast<int>( m_groundSpots.size() ) )
-        return 0.0f;
+    assert(rank >= 0 && rank < static_cast<int>( m_groundSpots.size() ));
 
     m_groundSpots[rank].color = color;
-    return true;
 }
 
-bool CEngine::SetObjectGroundSpotMinMax(int rank, float min, float max)
+void CEngine::SetObjectGroundSpotMinMax(int rank, float min, float max)
 {
-    if ( rank < 0 || rank >= static_cast<int>( m_groundSpots.size() ) )
-        return 0.0f;
+    assert(rank >= 0 && rank < static_cast<int>( m_groundSpots.size() ));
 
     m_groundSpots[rank].min = min;
     m_groundSpots[rank].max = max;
-    return true;
 }
 
-bool CEngine::SetObjectGroundSpotSmooth(int rank, float smooth)
+void CEngine::SetObjectGroundSpotSmooth(int rank, float smooth)
 {
-    if ( rank < 0 || rank >= static_cast<int>( m_groundSpots.size() ) )
-        return 0.0f;
+    assert(rank >= 0 && rank < static_cast<int>( m_groundSpots.size() ));
 
     m_groundSpots[rank].smooth = smooth;
-    return true;
 }
 
 void CEngine::CreateGroundMark(Math::Vector pos, float radius,
@@ -1758,51 +1585,45 @@ void CEngine::UpdateGeometry()
     if (! m_updateGeometry)
         return;
 
-    for (int i = 0; i < static_cast<int>( m_objects.size() ); i++)
+    for (int baseObjRank = 0; baseObjRank < static_cast<int>( m_baseObjects.size() ); baseObjRank++)
     {
-        m_objects[i].bboxMin.x = 0;
-        m_objects[i].bboxMin.y = 0;
-        m_objects[i].bboxMin.z = 0;
-        m_objects[i].bboxMax.x = 0;
-        m_objects[i].bboxMax.y = 0;
-        m_objects[i].bboxMax.z = 0;
-        m_objects[i].radius = 0;
-    }
+        EngineBaseObject &p1 = m_baseObjects[baseObjRank];
+        if (! p1.used)
+            continue;
 
-    for (int l1 = 0; l1 < static_cast<int>( m_objectTree.size() ); l1++)
-    {
-        EngineObjLevel1& p1 = m_objectTree[l1];
-        if (! p1.used) continue;
+        p1.bboxMin.LoadZero();
+        p1.bboxMax.LoadZero();
+        p1.radius = 0;
 
         for (int l2 = 0; l2 < static_cast<int>( p1.next.size() ); l2++)
         {
-            EngineObjLevel2& p2 = p1.next[l2];
-            if (! p2.used) continue;
+            EngineBaseObjTexTier& p2 = p1.next[l2];
+            if (! p2.used)
+                continue;
 
             for (int l3 = 0; l3 < static_cast<int>( p2.next.size() ); l3++)
             {
-                EngineObjLevel3& p3 = p2.next[l3];
-                if (! p3.used) continue;
+                EngineBaseObjLODTier& p3 = p2.next[l3];
+                if (! p3.used)
+                    continue;
 
                 for (int l4 = 0; l4 < static_cast<int>( p3.next.size() ); l4++)
                 {
-                    EngineObjLevel4& p4 = p3.next[l4];
-                    if (! p4.used) continue;
-
-                    int objRank = p2.objRank;
+                    EngineBaseObjDataTier& p4 = p3.next[l4];
+                    if (! p4.used)
+                        continue;
 
                     for (int i = 0; i < static_cast<int>( p4.vertices.size() ); i++)
                     {
-                            m_objects[objRank].bboxMin.x = Math::Min(p4.vertices[i].coord.x, m_objects[objRank].bboxMin.x);
-                            m_objects[objRank].bboxMin.y = Math::Min(p4.vertices[i].coord.y, m_objects[objRank].bboxMin.y);
-                            m_objects[objRank].bboxMin.z = Math::Min(p4.vertices[i].coord.z, m_objects[objRank].bboxMin.z);
-                            m_objects[objRank].bboxMax.x = Math::Max(p4.vertices[i].coord.x, m_objects[objRank].bboxMax.x);
-                            m_objects[objRank].bboxMax.y = Math::Max(p4.vertices[i].coord.y, m_objects[objRank].bboxMax.y);
-                            m_objects[objRank].bboxMax.z = Math::Max(p4.vertices[i].coord.z, m_objects[objRank].bboxMax.z);
+                            p1.bboxMin.x = Math::Min(p4.vertices[i].coord.x, p1.bboxMin.x);
+                            p1.bboxMin.y = Math::Min(p4.vertices[i].coord.y, p1.bboxMin.y);
+                            p1.bboxMin.z = Math::Min(p4.vertices[i].coord.z, p1.bboxMin.z);
+                            p1.bboxMax.x = Math::Max(p4.vertices[i].coord.x, p1.bboxMax.x);
+                            p1.bboxMax.y = Math::Max(p4.vertices[i].coord.y, p1.bboxMax.y);
+                            p1.bboxMax.z = Math::Max(p4.vertices[i].coord.z, p1.bboxMax.z);
                     }
 
-                    m_objects[objRank].radius = Math::Max(m_objects[objRank].bboxMin.Length(),
-                                                          m_objects[objRank].bboxMax.Length());
+                    p1.radius = Math::Max(p1.bboxMin.Length(), p1.bboxMax.Length());
                 }
             }
         }
@@ -1811,46 +1632,57 @@ void CEngine::UpdateGeometry()
     m_updateGeometry = false;
 }
 
-void CEngine::UpdateStaticObjects()
+void CEngine::UpdateStaticBuffer(EngineBaseObjDataTier& p4)
 {
-    if (!m_updateStaticObjects)
+    PrimitiveType type;
+    if (p4.type == ENG_TRIANGLE_TYPE_TRIANGLES)
+        type = PRIMITIVE_TRIANGLES;
+    else
+        type = PRIMITIVE_TRIANGLE_STRIP;
+
+    if (p4.staticBufferId == 0)
+        p4.staticBufferId = m_device->CreateStaticBuffer(type, &p4.vertices[0], p4.vertices.size());
+    else
+        m_device->UpdateStaticBuffer(p4.staticBufferId, type, &p4.vertices[0], p4.vertices.size());
+
+    p4.updateStaticBuffer = false;
+}
+
+void CEngine::UpdateStaticBuffers()
+{
+    if (!m_updateStaticBuffers)
         return;
 
-    for (int l1 = 0; l1 < static_cast<int>( m_objectTree.size() ); l1++)
+    m_updateStaticBuffers = false;
+
+    for (int baseObjRank = 0; baseObjRank < static_cast<int>( m_baseObjects.size() ); baseObjRank++)
     {
-        EngineObjLevel1& p1 = m_objectTree[l1];
-        if (! p1.used) continue;
+        EngineBaseObject& p1 = m_baseObjects[baseObjRank];
+        if (! p1.used)
+            continue;
 
         for (int l2 = 0; l2 < static_cast<int>( p1.next.size() ); l2++)
         {
-            EngineObjLevel2& p2 = p1.next[l2];
-            if (! p2.used) continue;
-
-            int objRank = p2.objRank;
-
-            if (!m_objects[objRank].staticBuffer)
+            EngineBaseObjTexTier& p2 = p1.next[l2];
+            if (! p2.used)
                 continue;
 
             for (int l3 = 0; l3 < static_cast<int>( p2.next.size() ); l3++)
             {
-                EngineObjLevel3& p3 = p2.next[l3];
-                if (! p3.used) continue;
+                EngineBaseObjLODTier& p3 = p2.next[l3];
+                if (! p3.used)
+                    continue;
 
                 for (int l4 = 0; l4 < static_cast<int>( p3.next.size() ); l4++)
                 {
-                    EngineObjLevel4& p4 = p3.next[l4];
-                    if (! p4.used) continue;
-
-                    if (p4.staticBufferId != 0)
+                    EngineBaseObjDataTier& p4 = p3.next[l4];
+                    if (! p4.used)
                         continue;
 
-                    PrimitiveType type;
-                    if (p4.type == ENG_TRIANGLE_TYPE_TRIANGLES)
-                        type = PRIMITIVE_TRIANGLES;
-                    else
-                        type = PRIMITIVE_TRIANGLE_STRIP;
+                    if (! p4.updateStaticBuffer)
+                        continue;
 
-                    p4.staticBufferId = m_device->CreateStaticObject(type, &p4.vertices[0], p4.vertices.size());
+                    UpdateStaticBuffer(p4);
                 }
             }
         }
@@ -1861,11 +1693,16 @@ void CEngine::Update()
 {
     ComputeDistance();
     UpdateGeometry();
-    UpdateStaticObjects();
+    UpdateStaticBuffers();
 }
 
 bool CEngine::DetectBBox(int objRank, Math::Point mouse)
 {
+    assert(objRank >= 0 && objRank < static_cast<int>(m_objects.size()));
+
+    int baseObjRank = m_objects[objRank].baseObjRank;
+    assert(baseObjRank >= 0 && baseObjRank < static_cast<int>(m_baseObjects.size()));
+
     Math::Point min, max;
     min.x =  1000000.0f;
     min.y =  1000000.0f;
@@ -1876,12 +1713,12 @@ bool CEngine::DetectBBox(int objRank, Math::Point mouse)
     {
         Math::Vector p;
 
-        if ( i & (1<<0) )  p.x = m_objects[objRank].bboxMin.x;
-        else               p.x = m_objects[objRank].bboxMax.x;
-        if ( i & (1<<1) )  p.y = m_objects[objRank].bboxMin.y;
-        else               p.y = m_objects[objRank].bboxMax.y;
-        if ( i & (1<<2) )  p.z = m_objects[objRank].bboxMin.z;
-        else               p.z = m_objects[objRank].bboxMax.z;
+        if ( i & (1<<0) )  p.x = m_baseObjects[baseObjRank].bboxMin.x;
+        else               p.x = m_baseObjects[baseObjRank].bboxMax.x;
+        if ( i & (1<<1) )  p.y = m_baseObjects[baseObjRank].bboxMin.y;
+        else               p.y = m_baseObjects[baseObjRank].bboxMax.y;
+        if ( i & (1<<2) )  p.z = m_baseObjects[baseObjRank].bboxMin.z;
+        else               p.z = m_baseObjects[baseObjRank].bboxMax.z;
 
         Math::Vector pp;
         if ( TransformPoint(pp, objRank, p) )
@@ -1904,41 +1741,54 @@ int CEngine::DetectObject(Math::Point mouse)
     float min = 1000000.0f;
     int nearest = -1;
 
-    for (int l1 = 0; l1 < static_cast<int>( m_objectTree.size() ); l1++)
+    for (int objRank = 0; objRank < static_cast<int>( m_objects.size() ); objRank++)
     {
-        EngineObjLevel1& p1 = m_objectTree[l1];
-        if (! p1.used) continue;
+        if (! m_objects[objRank].used)
+            continue;
+
+        if (m_objects[objRank].type == ENG_OBJTYPE_TERRAIN)
+            continue;
+
+        if (! DetectBBox(objRank, mouse))
+            continue;
+
+        int baseObjRank = m_objects[objRank].baseObjRank;
+        assert(baseObjRank >= 0 && baseObjRank < static_cast<int>(m_baseObjects.size()));
+
+        EngineBaseObject& p1 = m_baseObjects[baseObjRank];
+        if (! p1.used)
+            continue;
 
         for (int l2 = 0; l2 < static_cast<int>( p1.next.size() ); l2++)
         {
-            EngineObjLevel2& p2 = p1.next[l2];
-            if (! p2.used) continue;
-
-            if (m_objects[p2.objRank].type == ENG_OBJTYPE_TERRAIN) continue;
-
-            if (! DetectBBox(p2.objRank, mouse)) continue;
+            EngineBaseObjTexTier& p2 = p1.next[l2];
+            if (! p2.used)
+                continue;
 
             for (int l3 = 0; l3 < static_cast<int>( p2.next.size() ); l3++)
             {
-                EngineObjLevel3& p3 = p2.next[l3];
-                if (! p3.used) continue;
+                EngineBaseObjLODTier& p3 = p2.next[l3];
+                if (! p3.used)
+                    continue;
 
-                if (p3.min != 0.0f) continue;  // LOD B or C?
+                if (p3.min != 0.0f)
+                    continue;  // LOD B or C?
 
                 for (int l4 = 0; l4 < static_cast<int>( p3.next.size() ); l4++)
                 {
-                    EngineObjLevel4& p4 = p3.next[l4];
-                    if (! p4.used) continue;
+                    EngineBaseObjDataTier& p4 = p3.next[l4];
+                    if (! p4.used)
+                        continue;
 
                     if (p4.type == ENG_TRIANGLE_TYPE_TRIANGLES)
                     {
                         for (int i = 0; i < static_cast<int>( p4.vertices.size() ); i += 3)
                         {
                             float dist = 0.0f;
-                            if (DetectTriangle(mouse, &p4.vertices[i], p2.objRank, dist) && dist < min)
+                            if (DetectTriangle(mouse, &p4.vertices[i], objRank, dist) && dist < min)
                             {
                                 min = dist;
-                                nearest = p2.objRank;
+                                nearest = objRank;
                             }
                         }
                     }
@@ -1947,10 +1797,10 @@ int CEngine::DetectObject(Math::Point mouse)
                         for (int i = 0; i < static_cast<int>( p4.vertices.size() ) - 2; i += 1)
                         {
                             float dist = 0.0f;
-                            if (DetectTriangle(mouse, &p4.vertices[i], p2.objRank, dist) && dist < min)
+                            if (DetectTriangle(mouse, &p4.vertices[i], objRank, dist) && dist < min)
                             {
                                 min = dist;
-                                nearest = p2.objRank;
+                                nearest = objRank;
                             }
                         }
                     }
@@ -1964,6 +1814,8 @@ int CEngine::DetectObject(Math::Point mouse)
 
 bool CEngine::DetectTriangle(Math::Point mouse, VertexTex2* triangle, int objRank, float& dist)
 {
+    assert(objRank >= 0 && objRank < static_cast<int>(m_objects.size()));
+
     Math::Vector p2D[3], p3D;
 
     for (int i = 0; i < 3; i++)
@@ -1976,18 +1828,25 @@ bool CEngine::DetectTriangle(Math::Point mouse, VertexTex2* triangle, int objRan
             return false;
     }
 
-    if ( mouse.x < p2D[0].x &&
-         mouse.x < p2D[1].x &&
-         mouse.x < p2D[2].x )  return false;
-    if ( mouse.x > p2D[0].x &&
-         mouse.x > p2D[1].x &&
-         mouse.x > p2D[2].x )  return false;
-    if ( mouse.y < p2D[0].y &&
-         mouse.y < p2D[1].y &&
-         mouse.y < p2D[2].y )  return false;
-    if ( mouse.y > p2D[0].y &&
-         mouse.y > p2D[1].y &&
-         mouse.y > p2D[2].y )  return false;
+    if (mouse.x < p2D[0].x &&
+        mouse.x < p2D[1].x &&
+        mouse.x < p2D[2].x)
+        return false;
+
+    if (mouse.x > p2D[0].x &&
+        mouse.x > p2D[1].x &&
+        mouse.x > p2D[2].x)
+        return false;
+
+    if (mouse.y < p2D[0].y &&
+        mouse.y < p2D[1].y &&
+        mouse.y < p2D[2].y)
+        return false;
+
+    if (mouse.y > p2D[0].y &&
+        mouse.y > p2D[1].y &&
+        mouse.y > p2D[2].y)
+        return false;
 
     Math::Point a, b, c;
     a.x = p2D[0].x;
@@ -2007,7 +1866,12 @@ bool CEngine::DetectTriangle(Math::Point mouse, VertexTex2* triangle, int objRan
 //! Use only after world transform already set
 bool CEngine::IsVisible(int objRank)
 {
-    float radius = m_objects[objRank].radius;
+    assert(objRank >= 0 && objRank < static_cast<int>(m_objects.size()));
+
+    int baseObjRank = m_objects[objRank].baseObjRank;
+    assert(baseObjRank >= 0 && baseObjRank < static_cast<int>(m_baseObjects.size()));
+
+    float radius = m_baseObjects[baseObjRank].radius;
     Math::Vector center(0.0f, 0.0f, 0.0f);
     if (m_device->ComputeSphereVisibility(center, radius) == Gfx::FRUSTUM_PLANE_ALL)
     {
@@ -2016,15 +1880,18 @@ bool CEngine::IsVisible(int objRank)
     }
 
     m_objects[objRank].visible = false;
-    return true;
+    return false;
 }
 
 bool CEngine::TransformPoint(Math::Vector& p2D, int objRank, Math::Vector p3D)
 {
+    assert(objRank >= 0 && objRank < static_cast<int>(m_objects.size()));
+
     p3D = Math::Transform(m_objects[objRank].transform, p3D);
     p3D = Math::Transform(m_matView, p3D);
 
-    if (p3D.z < 2.0f)  return false;  // behind?
+    if (p3D.z < 2.0f)
+        return false;  // behind?
 
     p2D.x = (p3D.x/p3D.z)*m_matProj.Get(1,1);
     p2D.y = (p3D.y/p3D.z)*m_matProj.Get(2,2);
@@ -2387,42 +2254,49 @@ bool CEngine::LoadAllTextures()
 
     bool ok = true;
 
-    for (int l1 = 0; l1 < static_cast<int>( m_objectTree.size() ); l1++)
+    for (int objRank = 0; objRank < static_cast<int>( m_objects.size() ); objRank++)
     {
-        EngineObjLevel1& p1 = m_objectTree[l1];
-        if (! p1.used) continue;
+        if (! m_objects[objRank].used)
+            continue;
 
         bool terrain = false;
+        if (m_objects[objRank].type == ENG_OBJTYPE_TERRAIN)
+            terrain = true;
+
+        int baseObjRank = m_objects[objRank].baseObjRank;
+        assert(baseObjRank >= 0 && baseObjRank < static_cast<int>( m_baseObjects.size() ));
+
+        EngineBaseObject& p1 = m_baseObjects[baseObjRank];
+        if (! p1.used)
+            continue;
 
         for (int l2 = 0; l2 < static_cast<int>( p1.next.size() ); l2++)
         {
-            EngineObjLevel2& p2 = p1.next[l2];
-            if (! p2.used) continue;
+            EngineBaseObjTexTier& p2 = p1.next[l2];
+            if (! p2.used)
+                continue;
 
-            if (m_objects[p2.objRank].type == ENG_OBJTYPE_TERRAIN)
-                terrain = true;
-        }
+            if (! p2.tex1Name.empty())
+            {
+                if (terrain)
+                    p2.tex1 = LoadTexture(p2.tex1Name, m_terrainTexParams);
+                else
+                    p2.tex1 = LoadTexture(p2.tex1Name);
 
-        if (! p1.tex1Name.empty())
-        {
-            if (terrain)
-                p1.tex1 = LoadTexture(p1.tex1Name, m_terrainTexParams);
-            else
-                p1.tex1 = LoadTexture(p1.tex1Name);
+                if (! p2.tex1.Valid())
+                    ok = false;
+            }
 
-            if (! p1.tex1.Valid())
-                ok = false;
-        }
+            if (! p2.tex2Name.empty())
+            {
+                if (terrain)
+                    p2.tex2 = LoadTexture(p2.tex2Name, m_terrainTexParams);
+                else
+                    p2.tex2 = LoadTexture(p2.tex2Name);
 
-        if (! p1.tex2Name.empty())
-        {
-            if (terrain)
-                p1.tex2 = LoadTexture(p1.tex2Name, m_terrainTexParams);
-            else
-                p1.tex2 = LoadTexture(p1.tex2Name);
-
-            if (! p1.tex2.Valid())
-                ok = false;
+                if (! p2.tex2.Valid())
+                    ok = false;
+            }
         }
     }
 
@@ -2438,7 +2312,8 @@ bool IsExcludeColor(Math::Point *exclude, int x, int y)
         if ( x >= static_cast<int>(exclude[i+0].x*256.0f) &&
              x <  static_cast<int>(exclude[i+1].x*256.0f) &&
              y >= static_cast<int>(exclude[i+0].y*256.0f) &&
-             y <  static_cast<int>(exclude[i+1].y*256.0f) )  return true;  // exclude
+             y <  static_cast<int>(exclude[i+1].y*256.0f) )
+            return true;  // exclude
 
         i += 2;
     }
@@ -2454,12 +2329,13 @@ bool CEngine::ChangeTextureColor(const std::string& texName,
                                  Math::Point ts, Math::Point ti,
                                  Math::Point *exclude, float shift, bool hsv)
 {
-    if ( colorRef1.r == colorNew1.r &&
-         colorRef1.g == colorNew1.g &&
-         colorRef1.b == colorNew1.b &&
-         colorRef2.r == colorNew2.r &&
-         colorRef2.g == colorNew2.g &&
-         colorRef2.b == colorNew2.b )  return true;
+    if (colorRef1.r == colorNew1.r &&
+        colorRef1.g == colorNew1.g &&
+        colorRef1.b == colorNew1.b &&
+        colorRef2.r == colorNew2.r &&
+        colorRef2.g == colorNew2.g &&
+        colorRef2.b == colorNew2.b)
+        return true;
 
 
     DeleteTexture(texName);
@@ -2494,7 +2370,8 @@ bool CEngine::ChangeTextureColor(const std::string& texName,
     {
         for (int x = sx; x < ex; x++)
         {
-            if (exclude != nullptr && IsExcludeColor(exclude, x,y) )  continue;
+            if (exclude != nullptr && IsExcludeColor(exclude, x,y) )
+                continue;
 
             Color color = img.GetPixel(Math::IntPoint(x, y));
 
@@ -3124,7 +3001,8 @@ void CEngine::ApplyChange()
   viewport, and renders the scene. */
 void CEngine::Render()
 {
-    if (! m_render) return;
+    if (! m_render)
+        return;
 
     m_statisticTriangle = 0;
     m_lastState = -1;
@@ -3187,35 +3065,44 @@ void CEngine::Draw3DScene()
     {
         m_lightMan->UpdateDeviceLights(ENG_OBJTYPE_TERRAIN);
 
-        for (int l1 = 0; l1 < static_cast<int>( m_objectTree.size() ); l1++)
+        for (int objRank = 0; objRank < static_cast<int>(m_objects.size()); objRank++)
         {
-            EngineObjLevel1& p1 = m_objectTree[l1];
-            if (! p1.used) continue;
+            if (! m_objects[objRank].used)
+                continue;
 
-            // Should be loaded by now
-            SetTexture(p1.tex1, 0);
-            SetTexture(p1.tex2, 1);
+            if (m_objects[objRank].type != ENG_OBJTYPE_TERRAIN)
+                continue;
+
+            if (! m_objects[objRank].drawWorld)
+                continue;
+
+            m_device->SetTransform(TRANSFORM_WORLD, m_objects[objRank].transform);
+
+            if (! IsVisible(objRank))
+                continue;
+
+            int baseObjRank = m_objects[objRank].baseObjRank;
+            assert(baseObjRank >= 0 && baseObjRank < static_cast<int>( m_baseObjects.size() ));
+            
+            EngineBaseObject& p1 = m_baseObjects[baseObjRank];
+            if (! p1.used)
+                continue;
 
             for (int l2 = 0; l2 < static_cast<int>( p1.next.size() ); l2++)
             {
-                EngineObjLevel2& p2 = p1.next[l2];
-                if (! p2.used) continue;
-
-                int objRank = p2.objRank;
-                if (m_objects[objRank].type != ENG_OBJTYPE_TERRAIN)
-                    continue;
-                if (! m_objects[objRank].drawWorld)
+                EngineBaseObjTexTier& p2 = p1.next[l2];
+                if (! p2.used)
                     continue;
 
-                m_device->SetTransform(TRANSFORM_WORLD, m_objects[objRank].transform);
-
-                if (! IsVisible(objRank))
-                    continue;
+                // Should be loaded by now
+                SetTexture(p2.tex1, 0);
+                SetTexture(p2.tex2, 1);
 
                 for (int l3 = 0; l3 < static_cast<int>( p2.next.size() ); l3++)
                 {
-                    EngineObjLevel3& p3 = p2.next[l3];
-                    if (! p3.used) continue;
+                    EngineBaseObjLODTier& p3 = p2.next[l3];
+                    if (! p3.used)
+                        continue;
 
                     if ( m_objects[objRank].distance <  p3.min ||
                          m_objects[objRank].distance >= p3.max )
@@ -3223,13 +3110,14 @@ void CEngine::Draw3DScene()
 
                     for (int l4 = 0; l4 < static_cast<int>( p3.next.size() ); l4++)
                     {
-                        EngineObjLevel4& p4 = p3.next[l4];
-                        if (! p4.used) continue;
+                        EngineBaseObjDataTier& p4 = p3.next[l4];
+                        if (! p4.used)
+                            continue;
 
                         SetMaterial(p4.material);
                         SetState(p4.state);
 
-                        DrawObject(p4, m_objects[objRank].staticBuffer);
+                        DrawObject(p4);
                     }
                 }
             }
@@ -3247,47 +3135,56 @@ void CEngine::Draw3DScene()
 
     bool transparent = false;
 
-    for (int l1 = 0; l1 < static_cast<int>( m_objectTree.size() ); l1++)
+    for (int objRank = 0; objRank < static_cast<int>(m_objects.size()); objRank++)
     {
-        EngineObjLevel1& p1 = m_objectTree[l1];
-        if (! p1.used) continue;
+        if (! m_objects[objRank].used)
+            continue;
 
-        // Should be loaded by now
-        SetTexture(p1.tex1, 0);
-        SetTexture(p1.tex2, 1);
+        if (m_objects[objRank].type == ENG_OBJTYPE_TERRAIN)
+            continue;
+
+        if (! m_objects[objRank].drawWorld)
+            continue;
+
+        m_device->SetTransform(TRANSFORM_WORLD, m_objects[objRank].transform);
+
+        if (! IsVisible(objRank))
+            continue;
+
+        int baseObjRank = m_objects[objRank].baseObjRank;
+        assert(baseObjRank >= 0 && baseObjRank < static_cast<int>( m_baseObjects.size() ));
+
+        EngineBaseObject& p1 = m_baseObjects[baseObjRank];
+        if (! p1.used)
+            continue;
+
+        m_lightMan->UpdateDeviceLights(m_objects[objRank].type);
 
         for (int l2 = 0; l2 < static_cast<int>( p1.next.size() ); l2++)
         {
-            EngineObjLevel2& p2 = p1.next[l2];
-            if (! p2.used) continue;
-
-            int objRank = p2.objRank;
-
-            if (m_shadowVisible && m_objects[objRank].type == ENG_OBJTYPE_TERRAIN)
+            EngineBaseObjTexTier& p2 = p1.next[l2];
+            if (! p2.used)
                 continue;
 
-            if (! m_objects[objRank].drawWorld)
-                continue;
-
-            m_device->SetTransform(TRANSFORM_WORLD, m_objects[objRank].transform);
-
-            if (! IsVisible(objRank))
-                continue;
-
-            m_lightMan->UpdateDeviceLights(m_objects[objRank].type);
+            // Should be loaded by now
+            SetTexture(p2.tex1, 0);
+            SetTexture(p2.tex2, 1);
 
             for (int l3 = 0; l3 < static_cast<int>( p2.next.size() ); l3++)
             {
-                EngineObjLevel3& p3 = p2.next[l3];
-                if (! p3.used) continue;
+                EngineBaseObjLODTier& p3 = p2.next[l3];
+                if (! p3.used)
+                    continue;
 
                 if ( m_objects[objRank].distance <  p3.min ||
-                     m_objects[objRank].distance >= p3.max )  continue;
+                     m_objects[objRank].distance >= p3.max )
+                    continue;
 
                 for (int l4 = 0; l4 < static_cast<int>( p3.next.size() ); l4++)
                 {
-                    EngineObjLevel4& p4 = p3.next[l4];
-                    if (! p4.used) continue;
+                    EngineBaseObjDataTier& p4 = p3.next[l4];
+                    if (! p4.used)
+                        continue;
 
                     if (m_objects[objRank].transparency != 0.0f)  // transparent ?
                     {
@@ -3298,7 +3195,7 @@ void CEngine::Draw3DScene()
                     SetMaterial(p4.material);
                     SetState(p4.state);
 
-                    DrawObject(p4, m_objects[objRank].staticBuffer);
+                    DrawObject(p4);
                 }
             }
         }
@@ -3311,47 +3208,56 @@ void CEngine::Draw3DScene()
         int tState = ENG_RSTATE_TTEXTURE_BLACK | ENG_RSTATE_2FACE;
         Color tColor = Color(68.0f / 255.0f, 68.0f / 255.0f, 68.0f / 255.0f, 68.0f / 255.0f);
 
-        for (int l1 = 0; l1 < static_cast<int>( m_objectTree.size() ); l1++)
+        for (int objRank = 0; objRank < static_cast<int>(m_objects.size()); objRank++)
         {
-            EngineObjLevel1& p1 = m_objectTree[l1];
-            if (! p1.used) continue;
+            if (! m_objects[objRank].used)
+                continue;
 
-            // Should be loaded by now
-            SetTexture(p1.tex1, 0);
-            SetTexture(p1.tex2, 1);
+            if (m_objects[objRank].type == ENG_OBJTYPE_TERRAIN)
+                continue;
+
+            if (! m_objects[objRank].drawWorld)
+                continue;
+
+            m_device->SetTransform(TRANSFORM_WORLD, m_objects[objRank].transform);
+
+            if (! IsVisible(objRank))
+                continue;
+
+            int baseObjRank = m_objects[objRank].baseObjRank;
+            assert(baseObjRank >= 0 && baseObjRank < static_cast<int>( m_baseObjects.size() ));
+
+            EngineBaseObject& p1 = m_baseObjects[baseObjRank];
+            if (! p1.used)
+                continue;
+
+            m_lightMan->UpdateDeviceLights(m_objects[objRank].type);
 
             for (int l2 = 0; l2 < static_cast<int>( p1.next.size() ); l2++)
             {
-                EngineObjLevel2& p2 = p1.next[l2];
-                if (! p2.used) continue;
-
-                int objRank = p2.objRank;
-
-                if (m_shadowVisible && m_objects[objRank].type == ENG_OBJTYPE_TERRAIN)
+                EngineBaseObjTexTier& p2 = p1.next[l2];
+                if (! p2.used)
                     continue;
 
-                if (! m_objects[objRank].drawWorld)
-                    continue;
-
-                m_device->SetTransform(TRANSFORM_WORLD, m_objects[objRank].transform);
-
-                if (! IsVisible(objRank))
-                    continue;
-
-                m_lightMan->UpdateDeviceLights(m_objects[objRank].type);
+                // Should be loaded by now
+                SetTexture(p2.tex1, 0);
+                SetTexture(p2.tex2, 1);
 
                 for (int l3 = 0; l3 < static_cast<int>( p2.next.size() ); l3++)
                 {
-                    EngineObjLevel3& p3 = p2.next[l3];
-                    if (! p3.used) continue;
+                    EngineBaseObjLODTier& p3 = p2.next[l3];
+                    if (! p3.used)
+                        continue;
 
-                    if ( m_objects[objRank].distance <  p3.min ||
-                        m_objects[objRank].distance >= p3.max )  continue;
+                    if (m_objects[objRank].distance <  p3.min ||
+                        m_objects[objRank].distance >= p3.max)
+                        continue;
 
                     for (int l4 = 0; l4 < static_cast<int>( p3.next.size() ); l4++)
                     {
-                        EngineObjLevel4& p4 = p3.next[l4];
-                        if (! p4.used) continue;
+                        EngineBaseObjDataTier& p4 = p3.next[l4];
+                        if (! p4.used)
+                            continue;
 
                         if (m_objects[objRank].transparency == 0.0f)
                             continue;
@@ -3359,7 +3265,7 @@ void CEngine::Draw3DScene()
                         SetMaterial(p4.material);
                         SetState(tState, tColor);
 
-                        DrawObject(p4, m_objects[objRank].staticBuffer);
+                        DrawObject(p4);
                     }
                 }
             }
@@ -3388,28 +3294,28 @@ void CEngine::Draw3DScene()
     if (! m_overFront) DrawOverColor();      // draws the foreground color
 }
 
-void CEngine::DrawObject(const EngineObjLevel4& obj, bool staticBuffer)
+void CEngine::DrawObject(const EngineBaseObjDataTier& p4)
 {
-    if (staticBuffer)
+    if (p4.staticBufferId != 0)
     {
-        m_device->DrawStaticObject(obj.staticBufferId);
+        m_device->DrawStaticBuffer(p4.staticBufferId);
 
-        if (obj.type == ENG_TRIANGLE_TYPE_TRIANGLES)
-            m_statisticTriangle += obj.vertices.size() / 3;
+        if (p4.type == ENG_TRIANGLE_TYPE_TRIANGLES)
+            m_statisticTriangle += p4.vertices.size() / 3;
         else
-            m_statisticTriangle += obj.vertices.size() - 2;
+            m_statisticTriangle += p4.vertices.size() - 2;
     }
     else
     {
-        if (obj.type == ENG_TRIANGLE_TYPE_TRIANGLES)
+        if (p4.type == ENG_TRIANGLE_TYPE_TRIANGLES)
         {
-            m_device->DrawPrimitive(PRIMITIVE_TRIANGLES, &obj.vertices[0], obj.vertices.size());
-            m_statisticTriangle += obj.vertices.size() / 3;
+            m_device->DrawPrimitive(PRIMITIVE_TRIANGLES, &p4.vertices[0], p4.vertices.size());
+            m_statisticTriangle += p4.vertices.size() / 3;
         }
         else
         {
-            m_device->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, &obj.vertices[0], obj.vertices.size() );
-            m_statisticTriangle += obj.vertices.size() - 2;
+            m_device->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, &p4.vertices[0], p4.vertices.size() );
+            m_statisticTriangle += p4.vertices.size() - 2;
         }
     }
 }
@@ -3459,52 +3365,60 @@ void CEngine::DrawInterface()
 
         m_device->SetTransform(TRANSFORM_VIEW, m_matView);
 
-        for (int l1 = 0; l1 < static_cast<int>( m_objectTree.size() ); l1++)
+        for (int objRank = 0; objRank < static_cast<int>(m_objects.size()); objRank++)
         {
-            EngineObjLevel1& p1 = m_objectTree[l1];
-            if (! p1.used) continue;
+            if (! m_objects[objRank].used)
+                continue;
 
-            // Should be loaded by now
-            SetTexture(p1.tex1, 0);
-            SetTexture(p1.tex2, 1);
+            if (m_shadowVisible && m_objects[objRank].type == ENG_OBJTYPE_TERRAIN)
+                continue;
+
+            if (! m_objects[objRank].drawFront)
+                continue;
+
+            m_device->SetTransform(TRANSFORM_WORLD, m_objects[objRank].transform);
+
+            if (! IsVisible(objRank))
+                continue;
+
+            int baseObjRank = m_objects[objRank].baseObjRank;
+            assert(baseObjRank >= 0 && baseObjRank < static_cast<int>( m_baseObjects.size() ));
+
+            EngineBaseObject& p1 = m_baseObjects[baseObjRank];
+            if (! p1.used)
+                continue;
+
+            m_lightMan->UpdateDeviceLights(m_objects[objRank].type);
 
             for (int l2 = 0; l2 < static_cast<int>( p1.next.size() ); l2++)
             {
-                EngineObjLevel2& p2 = p1.next[l2];
-                if (! p2.used) continue;
-
-                int objRank = p2.objRank;
-
-                if (m_shadowVisible && m_objects[objRank].type == ENG_OBJTYPE_TERRAIN)
+                EngineBaseObjTexTier& p2 = p1.next[l2];
+                if (! p2.used)
                     continue;
 
-                if (! m_objects[objRank].drawFront)
-                    continue;
-
-                m_device->SetTransform(TRANSFORM_WORLD, m_objects[objRank].transform);
-
-                if (! IsVisible(objRank))
-                    continue;
-
-                m_lightMan->UpdateDeviceLights(m_objects[objRank].type);
+                SetTexture(p2.tex1, 0);
+                SetTexture(p2.tex2, 1);
 
                 for (int l3 = 0; l3 < static_cast<int>( p2.next.size() ); l3++)
                 {
-                    EngineObjLevel3& p3 = p2.next[l3];
-                    if (! p3.used) continue;
+                    EngineBaseObjLODTier& p3 = p2.next[l3];
+                    if (! p3.used)
+                        continue;
 
-                    if ( m_objects[objRank].distance <  p3.min ||
-                         m_objects[objRank].distance >= p3.max )  continue;
+                    if (m_objects[objRank].distance <  p3.min ||
+                        m_objects[objRank].distance >= p3.max)
+                        continue;
 
                     for (int l4 = 0; l4 < static_cast<int>( p3.next.size() ); l4++)
                     {
-                        EngineObjLevel4& p4 = p3.next[l4];
-                        if (! p4.used) continue;
+                        EngineBaseObjDataTier& p4 = p3.next[l4];
+                        if (! p4.used)
+                            continue;
 
                         SetMaterial(p4.material);
                         SetState(p4.state);
 
-                        DrawObject(p4, m_objects[objRank].staticBuffer);
+                        DrawObject(p4);
                     }
                 }
             }
@@ -3537,7 +3451,8 @@ void CEngine::UpdateGroundSpotTextures()
         m_groundMark.drawPos.x     == m_groundMark.pos.x     &&
         m_groundMark.drawPos.z     == m_groundMark.pos.z     &&
         m_groundMark.drawRadius    == m_groundMark.radius    &&
-        m_groundMark.drawIntensity == m_groundMark.intensity) return;
+        m_groundMark.drawIntensity == m_groundMark.intensity)
+        return;
 
     for (int s = 0; s < 16; s++)
     {
@@ -3612,11 +3527,12 @@ void CEngine::UpdateGroundSpotTextures()
             // Draw the new shadows.
             for (int i = 0; i < static_cast<int>( m_groundSpots.size() ); i++)
             {
-                if ( m_groundSpots[i].used == false ||
-                     m_groundSpots[i].radius == 0.0f )  continue;
+                if (m_groundSpots[i].used == false ||
+                    m_groundSpots[i].radius == 0.0f)
+                    continue;
 
-                if ( m_groundSpots[i].min == 0.0f &&
-                     m_groundSpots[i].max == 0.0f )
+                if (m_groundSpots[i].min == 0.0f &&
+                    m_groundSpots[i].max == 0.0f)
                 {
                     dot = static_cast<int>(m_groundSpots[i].radius/2.0f);
 
@@ -3635,8 +3551,9 @@ void CEngine::UpdateGroundSpotTextures()
                     px = cx-Math::Mod(cx, 1.0f);
                     py = cy-Math::Mod(cy, 1.0f);  // multiple of 1
 
-                    if ( px+dot < min.x || py+dot < min.y ||
-                         px-dot > max.x || py-dot > max.y )  continue;
+                    if (px+dot < min.x || py+dot < min.y ||
+                        px-dot > max.x || py-dot > max.y)
+                        continue;
 
                     for (int iy = -dot; iy <= dot; iy++)
                     {
@@ -3645,8 +3562,9 @@ void CEngine::UpdateGroundSpotTextures()
                             float ppx = px+ix;
                             float ppy = py+iy;
 
-                            if ( ppx <  min.x || ppy <  min.y ||
-                                 ppx >= max.x || ppy >= max.y )  continue;
+                            if (ppx <  min.x || ppy <  min.y ||
+                                ppx >= max.x || ppy >= max.y)
+                                continue;
 
                             float intensity;
                             if (dot == 0)
@@ -3678,8 +3596,9 @@ void CEngine::UpdateGroundSpotTextures()
                             pos.y = 0.0f;
 
                             float level = m_terrain->GetFloorLevel(pos, true);
-                            if ( level < m_groundSpots[i].min ||
-                                 level > m_groundSpots[i].max )  continue;
+                            if (level < m_groundSpots[i].min ||
+                                level > m_groundSpots[i].max)
+                                continue;
 
                             float intensity;
                             if (level > (m_groundSpots[i].max+m_groundSpots[i].min)/2.0f)
@@ -3727,13 +3646,16 @@ void CEngine::UpdateGroundSpotTextures()
                         float ppy = py+iy;
 
                         if (ppx <  min.x || ppy <  min.y ||
-                            ppx >= max.x || ppy >= max.y)  continue;
+                            ppx >= max.x || ppy >= max.y)
+                            continue;
 
                         ppx -= min.x;  // on the texture
                         ppy -= min.y;
 
                         float intensity = 1.0f - Math::Point(ix, iy).Length() / dot;
-                        if (intensity <= 0.0f) continue;
+                        if (intensity <= 0.0f)
+                            continue;
+
                         intensity *= m_groundMark.intensity;
 
                         int j = (ix+dot) + (iy+dot) * m_groundMark.dx;
@@ -3825,11 +3747,13 @@ void CEngine::DrawShadow()
     float lastIntensity = -1.0f;
     for (int i = 0; i < static_cast<int>( m_shadows.size() ); i++)
     {
-        if (m_shadows[i].hide) continue;
+        if (m_shadows[i].hide)
+            continue;
 
         Math::Vector pos = m_shadows[i].pos;  // pos = center of the shadow on the ground
 
-        if (m_eyePt.y == pos.y)  continue;  // camera at the same level?
+        if (m_eyePt.y == pos.y)
+            continue;  // camera at the same level?
 
         float d = 0.0f;
         float D = 0.0f;
@@ -3845,7 +3769,9 @@ void CEngine::DrawShadow()
             if ( h > 4.0f )  h = 4.0f;
 
             D = Math::Distance(m_eyePt, pos);
-            if ( D >= endDeepView )  continue;
+            if (D >= endDeepView)
+                continue;
+
             d = D*h/height;
 
             pos.x += (m_eyePt.x-pos.x)*d/D;
@@ -3861,7 +3787,9 @@ void CEngine::DrawShadow()
             if ( h > 4.0f )  h = 4.0f;
 
             D = Math::Distance(m_eyePt, pos);
-            if ( D >= endDeepView )  continue;
+            if (D >= endDeepView)
+                continue;
+
             d = D*h/height;
 
             pos.x += (m_eyePt.x-pos.x)*d/D;
@@ -3969,7 +3897,8 @@ void CEngine::DrawShadow()
         if ( D > startDeepView )
             intensity *= 1.0f-(D-startDeepView)/(endDeepView-startDeepView);
 
-        if (intensity == 0.0f)  continue;
+        if (intensity == 0.0f)
+            continue;
 
         if (lastIntensity != intensity)  // intensity changed?
         {
@@ -4091,7 +4020,8 @@ void CEngine::DrawBackgroundImage()
 
 void CEngine::DrawPlanet()
 {
-    if (! m_planet->PlanetExist()) return;
+    if (! m_planet->PlanetExist())
+        return;
 
     m_device->SetRenderState(RENDER_STATE_DEPTH_WRITE, false);
     m_device->SetRenderState(RENDER_STATE_LIGHTING, false);
@@ -4106,7 +4036,8 @@ void CEngine::DrawPlanet()
 
 void CEngine::DrawForegroundImage()
 {
-    if (m_foregroundName.empty()) return;
+    if (m_foregroundName.empty())
+        return;
 
     Math::Vector n = Math::Vector(0.0f, 0.0f, -1.0f);  // normal
 
@@ -4141,8 +4072,9 @@ void CEngine::DrawForegroundImage()
 
 void CEngine::DrawOverColor()
 {
-    if ( (m_overColor == Color(0.0f, 0.0f, 0.0f, 0.0f) && m_overMode == ENG_RSTATE_TCOLOR_BLACK) ||
-         (m_overColor == Color(1.0f, 1.0f, 1.0f, 1.0f) && m_overMode == ENG_RSTATE_TCOLOR_WHITE) )  return;
+    if ((m_overColor == Color(0.0f, 0.0f, 0.0f, 0.0f) && m_overMode == ENG_RSTATE_TCOLOR_BLACK) ||
+        (m_overColor == Color(1.0f, 1.0f, 1.0f, 1.0f) && m_overMode == ENG_RSTATE_TCOLOR_WHITE))
+        return;
 
     Math::Point p1(0.0f, 0.0f);
     Math::Point p2(1.0f, 1.0f);
