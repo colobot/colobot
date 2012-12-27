@@ -1,13 +1,18 @@
+# Didier Raboud <odyx@debian.org>, 2012.
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-12-13 21:46+0100\n"
+"POT-Creation-Date: 2012-12-27 13:53+0100\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Language: fr_FR\n"
 "X-Source-Language: en_US\n"
+"Last-Translator: Didier Raboud <odyx@debian.org>\n"
+"PO-Revision-Date: 2012-12-27 14:07+0100\n"
+"Language: fr\n"
+"X-Generator: Lokalize 1.4\n"
 
 msgid " "
 msgstr " "
@@ -37,7 +42,7 @@ msgid " Missions on this planet:"
 msgstr " Liste des missions du chapitre :"
 
 msgid " Planets:"
-msgstr " Liste des plančtes :"
+msgstr " Liste des planètes :"
 
 msgid " Prototypes on this planet:"
 msgstr " Liste des prototypes du chapitre :"
@@ -64,8 +69,11 @@ msgstr "\" ] \" attendu"
 msgid "\"%s\" missing in this exercise"
 msgstr "Il manque \"%s\" dans le programme"
 
+msgid "%1"
+msgstr "%1"
+
 msgid "..behind"
-msgstr "..derričre"
+msgstr "..derrière"
 
 msgid "..in front"
 msgstr "..devant"
@@ -74,7 +82,7 @@ msgid "..power cell"
 msgstr "..pile"
 
 msgid "1) First click on the key you want to redefine."
-msgstr "1) Cliquez d'abord sur la touche ŕ redéfinir."
+msgstr "1) Cliquez d'abord sur la touche à redéfinir."
 
 msgid "2) Then press the key you want to use instead."
 msgstr "2) Appuyez ensuite sur la nouvelle touche souhaitée."
@@ -85,15 +93,15 @@ msgstr "Bruitages 3D\\Positionnement sonore dans l'espace"
 msgid "<<  Back  \\Back to the previous screen"
 msgstr "<<  Retour  \\Retour au niveau précédent"
 
-msgid "<<< Sorry, mission failed >>>"
-msgstr "<<< Désolé, mission échouée >>>"
+msgid "<<< Sorry; mission failed >>>"
+msgstr "<<< Désolé; mission échouée >>>"
 
-msgid "<<< Well done, mission accomplished >>>"
-msgstr "<<< Bravo, mission terminée >>>"
+msgid "<<< Well done; mission accomplished >>>"
+msgstr "<<< Bravo; mission terminée >>>"
 
-msgid "A label must be followed by \"for\", \"while\", \"do\" or \"switch\""
+msgid "A label must be followed by \"for\"; \"while\"; \"do\" or \"switch\""
 msgstr ""
-"Un label ne peut se placer que devant un \"for\", un \"while\", un \"do\" ou "
+"Un label ne peut se placer que devant un \"for\"; un \"while\"; un \"do\" ou "
 "un \"switch\""
 
 msgid "A variable can not be declared twice"
@@ -103,14 +111,14 @@ msgid "Abort\\Abort the current mission"
 msgstr "Abandonner\\Abandonner la mission en cours"
 
 msgid "Access beyond array limit"
-msgstr "Accčs hors du tableau"
+msgstr "Accès hors du tableau"
 
 msgid ""
 "Access to solution\\Shows the solution (detailed instructions for missions)"
-msgstr "Accčs ŕ la solution\\Donne la solution"
+msgstr "Accès à la solution\\Donne la solution"
 
 msgid "Access to solutions\\Show program \"4: Solution\" in the exercises"
-msgstr "Accčs aux solutions\\Programme \"4: Solution\" dans les exercices"
+msgstr "Accès aux solutions\\Programme \"4: Solution\" dans les exercices"
 
 msgid "Alien Queen"
 msgstr "Pondeuse"
@@ -119,16 +127,19 @@ msgid "Alien Queen killed"
 msgstr "Pondeuse mortellement touchée"
 
 msgid "Already carrying something"
-msgstr "Porte déjŕ quelque chose"
+msgstr "Porte déjà quelque chose"
+
+msgid "Alt"
+msgstr "Alt"
 
 msgid "Analysis already performed"
-msgstr "Analyse déjŕ effectuée"
+msgstr "Analyse déjà effectuée"
 
 msgid "Analysis performed"
 msgstr "Analyse terminée"
 
 msgid "Analyzes only organic matter"
-msgstr "N'analyse que la matičre organique"
+msgstr "N'analyse que la matière organique"
 
 msgid "Ant"
 msgstr "Fourmi"
@@ -149,7 +160,7 @@ msgid "Assignment impossible"
 msgstr "Assignation impossible"
 
 msgid "Autolab"
-msgstr "Laboratoire de matičres organiques"
+msgstr "Laboratoire de matières organiques"
 
 msgid "Automatic indent\\When program editing"
 msgstr "Indentation automatique\\Pendant l'édition d'un programme"
@@ -164,7 +175,7 @@ msgid "Backward (\\key down;)"
 msgstr "Recule (\\key down;)"
 
 msgid "Backward\\Moves backward"
-msgstr "Reculer\\Moteur en arričre"
+msgstr "Reculer\\Moteur en arrière"
 
 msgid "Bad argument for \"new\""
 msgstr "Mauvais argument pour \"new\""
@@ -203,16 +214,16 @@ msgid "Build a exchange post"
 msgstr "Construit une borne d'information"
 
 msgid "Build a legged grabber"
-msgstr "Fabrique un déménageur ŕ pattes"
+msgstr "Fabrique un déménageur à pattes"
 
 msgid "Build a legged orga shooter"
-msgstr "Fabrique un orgaShooter ŕ pattes"
+msgstr "Fabrique un orgaShooter à pattes"
 
 msgid "Build a legged shooter"
-msgstr "Fabrique un shooter ŕ pattes"
+msgstr "Fabrique un shooter à pattes"
 
 msgid "Build a legged sniffer"
-msgstr "Fabrique un renifleur ŕ pattes"
+msgstr "Fabrique un renifleur à pattes"
 
 msgid "Build a lightning conductor"
 msgstr "Construit un paratonnerre"
@@ -251,28 +262,28 @@ msgid "Build a thumper"
 msgstr "Fabrique un robot secoueur"
 
 msgid "Build a tracked grabber"
-msgstr "Fabrique un déménageur ŕ chenilles"
+msgstr "Fabrique un déménageur à chenilles"
 
 msgid "Build a tracked orga shooter"
-msgstr "Fabrique un orgaShooter ŕ chenilles"
+msgstr "Fabrique un orgaShooter à chenilles"
 
 msgid "Build a tracked shooter"
-msgstr "Fabrique un shooter ŕ chenilles"
+msgstr "Fabrique un shooter à chenilles"
 
 msgid "Build a tracked sniffer"
-msgstr "Fabrique un renifleur ŕ chenilles"
+msgstr "Fabrique un renifleur à chenilles"
 
 msgid "Build a wheeled grabber"
-msgstr "Fabrique un déménageur ŕ roues"
+msgstr "Fabrique un déménageur à roues"
 
 msgid "Build a wheeled orga shooter"
-msgstr "Fabrique un orgaShooter ŕ roues"
+msgstr "Fabrique un orgaShooter à roues"
 
 msgid "Build a wheeled shooter"
-msgstr "Fabrique un shooter ŕ roues"
+msgstr "Fabrique un shooter à roues"
 
 msgid "Build a wheeled sniffer"
-msgstr "Fabrique un renifleur ŕ roues"
+msgstr "Fabrique un renifleur à roues"
 
 msgid "Build a winged grabber"
 msgstr "Fabrique un déménageur volant"
@@ -298,6 +309,9 @@ msgstr "Bâtiment détruit"
 msgid "Building too close"
 msgstr "Bâtiment trop proche"
 
+msgid "Button %1"
+msgstr "Bouton %1"
+
 msgid "COLOBOT"
 msgstr "COLOBOT"
 
@@ -320,13 +334,13 @@ msgid "Camera nearest"
 msgstr "Caméra plus proche"
 
 msgid "Camera to left"
-msgstr "Caméra ŕ gauche"
+msgstr "Caméra à gauche"
 
 msgid "Camera to right"
-msgstr "Caméra ŕ droite"
+msgstr "Caméra à droite"
 
-msgid "Can not create this, there are too many objects"
-msgstr "Création impossible, il y a trop d'objets"
+msgid "Can not create this; there are too many objects"
+msgstr "Création impossible; il y a trop d'objets"
 
 msgid "Can't open file"
 msgstr "Ouverture du fichier impossible"
@@ -362,7 +376,7 @@ msgid "Close"
 msgstr "Fermer"
 
 msgid "Closing bracket missing "
-msgstr "Il manque une parenthčse fermante"
+msgstr "Il manque une parenthèse fermante"
 
 msgid "Colobot Gold"
 msgstr "Colobot Gold"
@@ -402,6 +416,9 @@ msgstr "Copier"
 
 msgid "Copy (Ctrl+c)"
 msgstr "Copier (Ctrl+c)"
+
+msgid "Ctrl"
+msgstr "Ctrl"
 
 msgid "Current mission saved"
 msgstr "Enregistrement effectué"
@@ -477,10 +494,10 @@ msgid "Dust\\Dust and dirt on bots and buildings"
 msgstr "Salissures\\Salissures des robots et bâtiments"
 
 msgid "Dynamic lighting\\Mobile light sources"
-msgstr "Lumičres dynamiques\\Eclairages mobiles"
+msgstr "Lumières dynamiques\\Éclairages mobiles"
 
 msgid "Edit the selected program"
-msgstr "Edite le programme sélectionné"
+msgstr "Édite le programme sélectionné"
 
 msgid "Egg"
 msgstr "Oeuf"
@@ -531,7 +548,7 @@ msgid "Filename:"
 msgstr "Nom du fichier :"
 
 msgid "Film sequences\\Films before and after the missions"
-msgstr "Séquences cinématiques\\Films avant ou aprčs une mission"
+msgstr "Séquences cinématiques\\Films avant ou après une mission"
 
 msgid "Finish"
 msgstr "But"
@@ -553,7 +570,7 @@ msgid "Folder: %s"
 msgstr "Dossier: %s"
 
 msgid "Font size"
-msgstr "Taille des caractčres"
+msgstr "Taille des caractères"
 
 msgid "Forward"
 msgstr "Page suivante"
@@ -589,13 +606,13 @@ msgid "Free game\\Free game without a specific goal"
 msgstr "Jeu libre\\Jeu libre sans but précis"
 
 msgid "Friendly fire\\Your shooting can damage your own objects "
-msgstr "Dégâts ŕ soi-męme\\Vos tirs infligent des dommages ŕ vos unités"
+msgstr "Dégâts à soi-même\\Vos tirs infligent des dommages à vos unités"
 
 msgid "Full screen\\Full screen or window mode"
-msgstr "Plein écran\\Plein écran ou fenętré"
+msgstr "Plein écran\\Plein écran ou fenêtré"
 
 msgid "Function already exists"
-msgstr "Cette fonction existe déjŕ"
+msgstr "Cette fonction existe déjà"
 
 msgid "Function name missing"
 msgstr "Nom de la fonction attendu"
@@ -609,8 +626,12 @@ msgstr "Jeu\\Options de jouabilité"
 msgid "Gantry crane"
 msgstr "Portique"
 
+#, c-format
+msgid "GetResource event num out of range: %d\n"
+msgstr ""
+
 msgid "Goto: destination occupied"
-msgstr "Destination occupée"
+msgstr "Goto: Destination occupée"
 
 msgid "Goto: inaccessible destination"
 msgstr "Chemin introuvable"
@@ -637,7 +658,7 @@ msgid "Hair color:"
 msgstr "Couleur des cheveux :"
 
 msgid "Head\\Face and hair"
-msgstr "Tęte\\Visage et cheveux"
+msgstr "Tête\\Visage et cheveux"
 
 msgid "Help about selected object"
 msgstr "Instructions sur la sélection"
@@ -681,8 +702,8 @@ msgstr "Pas le bon type de pile"
 msgid "Incorrect index type"
 msgstr "Mauvais type d'index"
 
-msgid "Infected by a virus, temporarily out of order"
-msgstr "Infecté par un virus, ne fonctionne plus temporairement"
+msgid "Infected by a virus; temporarily out of order"
+msgstr "Infecté par un virus; ne fonctionne plus temporairement"
 
 msgid "Information exchange post"
 msgstr "Borne d'information"
@@ -703,7 +724,7 @@ msgid "Instructions (\\key help;)"
 msgstr "Instructions (\\key help;)"
 
 msgid "Instructions after the final closing brace"
-msgstr "Instructions aprčs la fin"
+msgstr "Instructions après la fin"
 
 msgid "Instructions for the mission (\\key help;)"
 msgstr "Instructions sur la mission (\\key help;)"
@@ -712,7 +733,7 @@ msgid "Instructions from Houston"
 msgstr "Instructions de Houston"
 
 msgid "Instructions\\Shows the instructions for the current mission"
-msgstr "Instructions mission\\Marche ŕ suivre"
+msgstr "Instructions mission\\Marche à suivre"
 
 msgid "Jet temperature"
 msgstr "Température du réacteur"
@@ -843,16 +864,16 @@ msgid "No energy in the subsoil"
 msgstr "Pas d'énergie en sous-sol"
 
 msgid "No flag nearby"
-msgstr "Aucun drapeau ŕ proximité"
+msgstr "Aucun drapeau à proximité"
 
 msgid "No function running"
 msgstr "Pas de fonction en exécution"
 
 msgid "No function with this name accepts this kind of parameter"
-msgstr "Aucune fonction de ce nom n'accepte ce(s) type(s) de paramčtre(s)"
+msgstr "Aucune fonction de ce nom n'accepte ce(s) type(s) de paramètre(s)"
 
 msgid "No function with this name accepts this number of parameters"
-msgstr "Aucune fonction de ce nom n'accepte ce nombre de paramčtres"
+msgstr "Aucune fonction de ce nom n'accepte ce nombre de paramètres"
 
 msgid "No information exchange post within range"
 msgstr "Pas trouvé de borne d'information"
@@ -876,13 +897,13 @@ msgid "No titanium around"
 msgstr "Titanium inexistant"
 
 msgid "No titanium ore to convert"
-msgstr "Pas de minerai de titanium ŕ convertir"
+msgstr "Pas de minerai de titanium à convertir"
 
 msgid "No titanium to transform"
-msgstr "Pas de titanium ŕ transformer"
+msgstr "Pas de titanium à transformer"
 
 msgid "No uranium to transform"
-msgstr "Pas d'uranium ŕ transformer"
+msgstr "Pas d'uranium à transformer"
 
 msgid "Normal size"
 msgstr "Taille normale"
@@ -903,16 +924,16 @@ msgid "Not yet enough energy"
 msgstr "Pas encore assez d'énergie"
 
 msgid "Nothing to analyze"
-msgstr "Rien ŕ analyser"
+msgstr "Rien à analyser"
 
 msgid "Nothing to drop"
-msgstr "Rien ŕ déposer"
+msgstr "Rien à déposer"
 
 msgid "Nothing to grab"
-msgstr "Rien ŕ prendre"
+msgstr "Rien à prendre"
 
 msgid "Nothing to recycle"
-msgstr "Rien ŕ recycler"
+msgstr "Rien à recycler"
 
 msgid "Nuclear power cell"
 msgstr "Pile nucléaire"
@@ -933,7 +954,7 @@ msgid "Number of insects detected"
 msgstr "Nombre d'insectes détectés"
 
 msgid "Number of particles\\Explosions, dust, reflections, etc."
-msgstr "Quantité de particules\\Explosions, poussičres, reflets, etc."
+msgstr "Quantité de particules\\Explosions, poussières, reflets, etc."
 
 msgid "OK"
 msgstr "D'accord"
@@ -963,7 +984,7 @@ msgid "Opening brace missing "
 msgstr "Début d'un bloc attendu"
 
 msgid "Opening bracket missing"
-msgstr "Il manque une parenthčse ouvrante"
+msgstr "Il manque une parenthèse ouvrante"
 
 msgid "Operation impossible with value \"nan\""
 msgstr "Opération sur un \"nan\""
@@ -975,13 +996,13 @@ msgid "Options\\Preferences"
 msgstr "Options\\Réglages"
 
 msgid "Organic matter"
-msgstr "Matičre organique"
+msgstr "Matière organique"
 
 msgid "Origin of last message\\Shows where the last message was sent from"
 msgstr "Montrer le lieu d'un message\\Montrer le lieu du dernier message"
 
 msgid "Parameters missing "
-msgstr "Pas assez de paramčtres"
+msgstr "Pas assez de paramètres"
 
 msgid "Particles in the interface\\Steam clouds and sparks in the interface"
 msgstr "Particules dans l'interface\\Pluie de particules"
@@ -1002,7 +1023,7 @@ msgid "Place occupied"
 msgstr "Emplacement occupé"
 
 msgid "Planets and stars\\Astronomical objects in the sky"
-msgstr "Plančtes et étoiles\\Motifs mobiles dans le ciel"
+msgstr "Planètes et étoiles\\Motifs mobiles dans le ciel"
 
 msgid "Plans for defense tower available"
 msgstr "Construction d'une tour de défense possible"
@@ -1023,7 +1044,7 @@ msgid "Plans for thumper available"
 msgstr "Fabrication d'un robot secoueur possible"
 
 msgid "Plans for tracked robots available "
-msgstr "Fabrication d'un robot ŕ chenilles possible"
+msgstr "Fabrication d'un robot à chenilles possible"
 
 msgid "Plant a flag"
 msgstr "Pose un drapeau de couleur"
@@ -1086,10 +1107,10 @@ msgid "Programming exercises"
 msgstr "Programmation"
 
 msgid "Programming help"
-msgstr "Aide ŕ la programmation"
+msgstr "Aide à la programmation"
 
 msgid "Programming help  (\\key prog;)"
-msgstr "Aide ŕ la programmation (\\key prog;)"
+msgstr "Aide à la programmation (\\key prog;)"
 
 msgid "Programming help\\Gives more detailed help with programming"
 msgstr "Instructions programmation\\Explication sur la programmation"
@@ -1107,7 +1128,7 @@ msgid "Public required"
 msgstr "Public requis"
 
 msgid "Public\\Common folder"
-msgstr "Public\\Dossier commun ŕ tous les joueurs"
+msgstr "Public\\Dossier commun à tous les joueurs"
 
 msgid "Quake at explosions\\The screen shakes at explosions"
 msgstr "Secousses lors d'explosions\\L'écran vibre lors d'une explosion"
@@ -1125,7 +1146,7 @@ msgid "Radar station"
 msgstr "Radar"
 
 msgid "Read error"
-msgstr "Erreur ŕ la lecture"
+msgstr "Erreur à la lecture"
 
 msgid "Recorder"
 msgstr "Enregistreur"
@@ -1149,7 +1170,7 @@ msgid "Remains of Apollo mission"
 msgstr "Vestige d'une mission Apollo"
 
 msgid "Remove a flag"
-msgstr "Enlčve un drapeau"
+msgstr "Enlève un drapeau"
 
 msgid "Repair center"
 msgstr "Centre de réparation"
@@ -1158,7 +1179,7 @@ msgid "Research center"
 msgstr "Centre de recherches"
 
 msgid "Research program already performed"
-msgstr "Recherche déjŕ effectuée"
+msgstr "Recherche déjà effectuée"
 
 msgid "Research program completed"
 msgstr "Recherche terminée"
@@ -1258,6 +1279,9 @@ msgstr "Rayon du bouclier"
 msgid "Shielder"
 msgstr "Robot bouclier"
 
+msgid "Shift"
+msgstr "Shift"
+
 msgid "Shoot (\\key action;)"
 msgstr "Tir (\\key action;)"
 
@@ -1350,7 +1374,7 @@ msgid "Still working ..."
 msgstr "Travail en cours ..."
 
 msgid "String missing"
-msgstr "Une chaîne de caractčre est attendue"
+msgstr "Une chaîne de caractère est attendue"
 
 msgid "Strip color:"
 msgstr "Couleur des bandes :"
@@ -1405,7 +1429,7 @@ msgid "The types of the two operands are incompatible "
 msgstr "Les deux opérandes ne sont pas de types compatibles"
 
 msgid "This class already exists"
-msgstr "Cette classe existe déjŕ"
+msgstr "Cette classe existe déjà"
 
 msgid "This class does not exist"
 msgstr "Cette classe n'existe pas"
@@ -1456,7 +1480,7 @@ msgid "Too many flags of this color (maximum 5)"
 msgstr "Trop de drapeaux de cette couleur (maximum 5)"
 
 msgid "Too many parameters"
-msgstr "Trop de paramčtres"
+msgstr "Trop de paramètres"
 
 msgid "Tracked grabber"
 msgstr "Robot déménageur"
@@ -1480,16 +1504,16 @@ msgid "Transmitted information"
 msgstr "Informations diffusées"
 
 msgid "Turn left (\\key left;)"
-msgstr "Tourne ŕ gauche (\\key left;)"
+msgstr "Tourne à gauche (\\key left;)"
 
 msgid "Turn left\\turns the bot to the left"
-msgstr "Tourner ŕ gauche\\Moteur ŕ gauche"
+msgstr "Tourner à gauche\\Moteur à gauche"
 
 msgid "Turn right (\\key right;)"
-msgstr "Tourne ŕ droite (\\key right;)"
+msgstr "Tourne à droite (\\key right;)"
 
 msgid "Turn right\\turns the bot to the right"
-msgstr "Tourner ŕ droite\\Moteur ŕ droite"
+msgstr "Tourner à droite\\Moteur à droite"
 
 msgid "Type declaration missing"
 msgstr "Déclaration de type attendu"
@@ -1543,7 +1567,7 @@ msgid "Violet flag"
 msgstr "Drapeau violet"
 
 msgid "Void parameter"
-msgstr "Paramčtre void"
+msgstr "Paramètre void"
 
 msgid "Wasp"
 msgstr "Guępe"
@@ -1565,6 +1589,9 @@ msgstr "Robot shooter"
 
 msgid "Wheeled sniffer"
 msgstr "Robot renifleur"
+
+msgid "Win"
+msgstr "Gagné"
 
 msgid "Winged grabber"
 msgstr "Robot déménageur"
@@ -1591,7 +1618,7 @@ msgid "Wreckage"
 msgstr "Epave de robot"
 
 msgid "Write error"
-msgstr "Erreur ŕ l'écriture"
+msgstr "Erreur à l'écriture"
 
 msgid "Wrong type for the assignment"
 msgstr "Mauvais type de résultat pour l'assignation"
@@ -1652,13 +1679,13 @@ msgid "\\Green flags"
 msgstr "\\Drapeaux verts"
 
 msgid "\\New player name"
-msgstr "\\Nom du joueur ŕ créer"
+msgstr "\\Nom du joueur à créer"
 
 msgid "\\No eyeglasses"
 msgstr "\\Pas de lunettes"
 
 msgid "\\Raise the pencil"
-msgstr "\\Relčve le crayon"
+msgstr "\\Relève le crayon"
 
 msgid "\\Red flags"
 msgstr "\\Drapeaux rouges"
@@ -1676,10 +1703,10 @@ msgid "\\Stop recording"
 msgstr "\\Stoppe l'enregistrement"
 
 msgid "\\Turn left"
-msgstr "\\Rotation ŕ gauche"
+msgstr "\\Rotation à gauche"
 
 msgid "\\Turn right"
-msgstr "\\Rotation ŕ droite"
+msgstr "\\Rotation à droite"
 
 msgid "\\Use the black pencil"
 msgstr "\\Abaisse le crayon noir"
@@ -1732,6 +1759,69 @@ msgstr "\\b;Listes des robots\n"
 msgid "\\c; (none)\\n;\n"
 msgstr "\\c; (aucun)\\n;\n"
 
+msgid "action;"
+msgstr ""
+
+msgid "away;"
+msgstr ""
+
+msgid "camera;"
+msgstr ""
+
+msgid "cbot;"
+msgstr ""
+
+msgid "desel;"
+msgstr ""
+
+msgid "down;"
+msgstr ""
+
+msgid "gdown;"
+msgstr ""
+
+msgid "gup;"
+msgstr ""
+
+msgid "help;"
+msgstr ""
+
+msgid "human;"
+msgstr ""
+
+msgid "left;"
+msgstr ""
+
+msgid "near;"
+msgstr ""
+
+msgid "next;"
+msgstr ""
+
+msgid "prog;"
+msgstr ""
+
+msgid "quit;"
+msgstr ""
+
+msgid "right;"
+msgstr ""
+
+msgid "speed10;"
+msgstr ""
+
+msgid "speed15;"
+msgstr ""
+
+msgid "speed20;"
+msgstr ""
+
+msgid "up;"
+msgstr ""
+
+msgid "visit;"
+msgstr ""
+
 msgid "www.epsitec.com"
 msgstr "www.epsitec.com"
 
@@ -1741,29 +1831,23 @@ msgstr "www.epsitec.com"
 #~ msgid "<--"
 #~ msgstr "<--"
 
-#~ msgid "Alt"
-#~ msgstr "Alt"
-
 #~ msgid "Application key"
 #~ msgstr "Application key"
 
 #~ msgid "Arrow down"
-#~ msgstr "Flčche Bas"
+#~ msgstr "Flèche Bas"
 
 #~ msgid "Arrow left"
-#~ msgstr "Flčche Gauche"
+#~ msgstr "Flèche Gauche"
 
 #~ msgid "Arrow right"
-#~ msgstr "Flčche Droite"
+#~ msgstr "Flèche Droite"
 
 #~ msgid "Arrow up"
-#~ msgstr "Flčche Haut"
+#~ msgstr "Flèche Haut"
 
 #~ msgid "Attn"
 #~ msgstr "Attn"
-
-#~ msgid "Button %1"
-#~ msgstr "Bouton %1"
 
 #~ msgid "Caps Lock"
 #~ msgstr "Caps Lock"
@@ -1776,9 +1860,6 @@ msgstr "www.epsitec.com"
 
 #~ msgid "CrSel"
 #~ msgstr "CrSel"
-
-#~ msgid "Ctrl"
-#~ msgstr "Ctrl"
 
 #~ msgid "Delete Key"
 #~ msgstr "Delete"
@@ -1962,9 +2043,6 @@ msgstr "www.epsitec.com"
 
 #~ msgid "Select"
 #~ msgstr "Select"
-
-#~ msgid "Shift"
-#~ msgstr "Shift"
 
 #~ msgid "Space"
 #~ msgstr "Espace"
