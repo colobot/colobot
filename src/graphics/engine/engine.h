@@ -185,7 +185,6 @@ enum EngineObjectType
  */
 struct EngineBaseObjDataTier
 {
-    bool                    used;
     EngineTriangleType      type;
     Material                material;
     int                     state;
@@ -193,11 +192,10 @@ struct EngineBaseObjDataTier
     unsigned int            staticBufferId;
     bool                    updateStaticBuffer;
 
-    inline EngineBaseObjDataTier(bool used = false,
-                                 EngineTriangleType type = ENG_TRIANGLE_TYPE_TRIANGLES,
+    inline EngineBaseObjDataTier(EngineTriangleType type = ENG_TRIANGLE_TYPE_TRIANGLES,
                                  const Material& material = Material(),
                                  int state = ENG_RSTATE_NORMAL)
-        : used(used), type(type), material(material), state(state), staticBufferId(0), updateStaticBuffer(false) {}
+        : type(type), material(material), state(state), staticBufferId(0), updateStaticBuffer(false) {}
 };
 
 /**
@@ -206,13 +204,12 @@ struct EngineBaseObjDataTier
  */
 struct EngineBaseObjLODTier
 {
-    bool                                used;
     float                               min;
     float                               max;
     std::vector<EngineBaseObjDataTier>  next;
 
-    inline EngineBaseObjLODTier(bool used = false, float min = 0.0f, float max = 0.0f)
-        : used(used), min(min), max(max) {}
+    inline EngineBaseObjLODTier(float min = 0.0f, float max = 0.0f)
+        : min(min), max(max) {}
 };
 
 /**
@@ -221,16 +218,14 @@ struct EngineBaseObjLODTier
  */
 struct EngineBaseObjTexTier
 {
-    bool                               used;
     std::string                        tex1Name;
     Texture                            tex1;
     std::string                        tex2Name;
     Texture                            tex2;
     std::vector<EngineBaseObjLODTier>  next;
 
-    inline EngineBaseObjTexTier(bool used = false, const std::string& tex1Name = "",
-                         const std::string& tex2Name = "")
-        : used(used), tex1Name(tex1Name), tex2Name(tex2Name) {}
+    inline EngineBaseObjTexTier(const std::string& tex1Name = "", const std::string& tex2Name = "")
+        : tex1Name(tex1Name), tex2Name(tex2Name) {}
 };
 
 /**
@@ -624,27 +619,36 @@ struct EngineMouse
  *
  * Objects are uniquely identified by object rank obtained at object creation. Creating an
  * object equals to allocating space for EngineObject structure which holds object parameters.
- * Object's geometric data is stored in a separate structure - a 4-tier tree which splits
- * the information of each geometric triangle.
+ *
+ * Object's geometric data is stored as a separate object -- base engine object. Each object
+ * must reference a valid base engine object. This many-to-one association allows to share
+ * same geometric data (e.g. from same model) across objects. Base engine objects are identified
+ * by unique rank obtained upon their creation.
+ *
+ * Base engine object data is stored in a 4-tier tree which splits the data describing triangles.
  *
  * The 4 tiers contain the following information:
- *  - level 1 (EngineObjLevel1) - two textures (names and structs) applied to triangles,
- *  - level 2 (EngineObjLevel2) - object rank
- *  - level 3 (EngineObjLevel3) - minumum and maximum LOD (=level of detail)
- *  - level 4 (EngineObjLevel4) - type of object*, material, render state and the actual triangle data
+ *  - level 1 (EngineBaseObject) - geometric statistics
+ *  - level 2 (EngineBaseObjTexTier) - two textures (names and structs) applied to triangles,
+ *  - level 3 (EngineBaseObjLODTier) - minumum and maximum LOD (=level of detail)
+ *  - level 4 (EngineBaseObjDataTier) - type of object*, material, render state and the actual vertex data
  *
- *  NOTE: type of object in this context means only the internal type in 3D engine. It is not related
+ *  *NOTE: type of object in this context means only the internal type in 3D engine. It is not related
  *  to CObject types.
  *
+ * Last tier containing vertex data contains also an ID of static buffer holding the data.
+ * The static buffer is created and updated with new data as needed.
+ *
  * Such tiered structure complicates loops over all object data, but saves a lot of memory and
- * optimizes the rendering process (for instance, switching of textures is an expensive operation).
+ * optimizes the rendering process.
  *
  * \section Shadows Shadows
  *
  * Each engine object can be associated with a shadow (EngineShadow). Like objects, shadows are
  * identified by their rank obtained upon creation.
  *
- * ...
+ * Shadows are drawn as circular spots on the ground, except for shadows for worms, which have
+ * special mode for them.
  *
  * \section RenderStates Render States
  *
@@ -1213,7 +1217,7 @@ protected:
     void        DrawStats();
 
     //! Creates a new tier 2 object (texture)
-    EngineBaseObjTexTier&  AddLevel2(int baseObjRank, const std::string& tex1Name, const std::string& tex2Name);
+    EngineBaseObjTexTier&  AddLevel2(EngineBaseObject& p1, const std::string& tex1Name, const std::string& tex2Name);
     //! Creates a new tier 3 object (LOD)
     EngineBaseObjLODTier&  AddLevel3(EngineBaseObjTexTier &p2, float min, float max);
     //! Creates a new tier 4 object (data)
