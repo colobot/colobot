@@ -312,11 +312,14 @@ bool CApplication::Create()
             break;
     }
 
-    std::string langStr = "LANGUAGE=";
-    langStr += locale;
-    strcpy(S_LANGUAGE, langStr.c_str());
-    putenv(S_LANGUAGE);
-    setlocale(LC_ALL, locale.c_str());
+    if (!locale.empty())
+    {
+        std::string langStr = "LANG=";
+        langStr += locale;
+        strcpy(S_LANGUAGE, langStr.c_str());
+        putenv(S_LANGUAGE);
+    }
+    setlocale(LC_ALL, "");
     GetLogger()->Debug("Set locale to '%s'\n", locale.c_str());
 
     bindtextdomain("colobot", COLOBOT_I18N_DIR);
