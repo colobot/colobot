@@ -6,6 +6,8 @@ add_subdirectory(tools)
 
 add_subdirectory(po)
 
+add_subdirectory(desktop)
+
 # Tests
 if(${TESTS})
     add_subdirectory(common/test)
