@@ -181,7 +181,6 @@ enum DataDir
     DIR_AI,       //! < ai scripts
     DIR_FONT,     //! < fonts
     DIR_HELP,     //! < help files
-    DIR_I18N,     //! < translations
     DIR_ICON,     //! < icons & images
     DIR_LEVEL,    //! < levels
     DIR_MODEL,    //! < models

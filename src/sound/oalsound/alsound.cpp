@@ -23,51 +23,23 @@
 
 #define MIN(a, b) (a > b ? b : a)
 
-
-PLUGIN_INTERFACE(ALSound)
-
-
-std::string ALSound::PluginName()
-{
-    return "Sound plugin using OpenAL library to play sounds.";
-}
-
-
-int ALSound::PluginVersion()
-{
-    return 2;
-}
-
-
-void ALSound::InstallPlugin()
-{
-    auto pointer = CInstanceManager::GetInstancePointer();
-    if (pointer != nullptr)
-        CInstanceManager::GetInstancePointer()->AddInstance(CLASS_SOUND, this);
-}
-
-
-bool ALSound::UninstallPlugin(std::string &reason)
-{
-    auto pointer = CInstanceManager::GetInstancePointer();
-    if (pointer != nullptr)
-        CInstanceManager::GetInstancePointer()->DeleteInstance(CLASS_SOUND, this);
-    CleanUp();
-    return true;
-}
-
-
 ALSound::ALSound()
 {
     mEnabled = false;
     m3D = false;
     mAudioVolume = MAXVOLUME;
     mMute = false;
+    auto pointer = CInstanceManager::GetInstancePointer();
+    if (pointer != nullptr)
+        CInstanceManager::GetInstancePointer()->AddInstance(CLASS_SOUND, this);
 }
 
 
 ALSound::~ALSound()
 {
+    auto pointer = CInstanceManager::GetInstancePointer();
+    if (pointer != nullptr)
+        CInstanceManager::GetInstancePointer()->DeleteInstance(CLASS_SOUND, this);
     CleanUp();
 }
 
@@ -114,14 +86,14 @@ void ALSound::SetSound3D(bool bMode)
 }
 
 
-bool ALSound::RetSound3D()
+bool ALSound::GetSound3D()
 {
     // TODO stub! need to be implemented
     return true;
 }
 
 
-bool ALSound::RetSound3DCap()
+bool ALSound::GetSound3DCap()
 {
     // TODO stub! need to be implemented
     return true;
@@ -141,7 +113,7 @@ void ALSound::SetAudioVolume(int volume)
 }
 
 
-int ALSound::RetAudioVolume()
+int ALSound::GetAudioVolume()
 {
     float volume;
     if ( !mEnabled )
@@ -158,7 +130,7 @@ void ALSound::SetMusicVolume(int volume)
 }
 
 
-int ALSound::RetMusicVolume()
+int ALSound::GetMusicVolume()
 {
     // TODO stub! Add music support
     if ( !mEnabled )
@@ -179,7 +151,7 @@ bool ALSound::Cache(Sound sound, std::string filename)
 }
 
 
-int ALSound::RetPriority(Sound sound)
+int ALSound::GetPriority(Sound sound)
 {
     if ( sound == SOUND_FLYh   ||
         sound == SOUND_FLY    ||
@@ -230,7 +202,7 @@ int ALSound::RetPriority(Sound sound)
 
 bool ALSound::SearchFreeBuffer(Sound sound, int &channel, bool &bAlreadyLoaded)
 {
-    int priority = RetPriority(sound);
+    int priority = GetPriority(sound);
 
     // Seeks a channel used which sound is stopped.
     for (auto it : mChannels) {
@@ -287,7 +259,7 @@ bool ALSound::SearchFreeBuffer(Sound sound, int &channel, bool &bAlreadyLoaded)
     int lowerOrEqual = -1;
     for (auto it : mChannels) {
         if (it.second->GetPriority() < priority) {
-            GetLogger()->Info("Sound channel with lower priority will be reused.");
+            GetLogger()->Debug("Sound channel with lower priority will be reused.");
             channel = it.first;
             return true;
         }
@@ -297,7 +269,7 @@ bool ALSound::SearchFreeBuffer(Sound sound, int &channel, bool &bAlreadyLoaded)
 
     if (lowerOrEqual != -1) {
         channel = lowerOrEqual;
-        GetLogger()->Info("Sound channel with lower or equal priority will be reused.");
+        GetLogger()->Debug("Sound channel with lower or equal priority will be reused.");
         return true;
     }
 
@@ -485,11 +457,11 @@ void ALSound::FrameMove(float delta)
         if (it.second->GetEnvelope().totalTime <= it.second->GetCurrentTime()) {
 
             if (oper.nextOper == SOPER_LOOP) {
-                GetLogger()->Info("Replay.\n");
+                GetLogger()->Trace("Sound oper: replay.\n");
                 it.second->SetCurrentTime(0.0f);
                 it.second->Play();
             } else {
-                GetLogger()->Info("Next.\n");
+                GetLogger()->Trace("Sound oper: next.\n");
                 it.second->SetStartAmplitude(oper.finalAmplitude);
                 it.second->SetStartFrequency(oper.finalFrequency);
                 it.second->PopEnvelope();

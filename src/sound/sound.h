@@ -28,8 +28,6 @@
 #include "common/iman.h"
 #include "common/logger.h"
 
-#include "plugins/plugininterface.h"
-
 #include <string>
 #include <iostream>
 #include <iomanip>
@@ -152,7 +150,7 @@ enum SoundNext
 * \brief Sound plugin interface
 *
 */
-class CSoundInterface : public CPluginInterface
+class CSoundInterface
 {
   public:
     inline CSoundInterface() {

@@ -227,7 +227,7 @@ void Channel::AdjustFrequency(float freq) {
 
 
 void Channel::AdjustVolume(float volume) {
-    SetVolume(mStartAmplitude * (float) volume);
+    SetVolume(mStartAmplitude * volume);
 }
 
 

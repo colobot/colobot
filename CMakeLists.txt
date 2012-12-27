@@ -16,12 +16,15 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${colobot_SOURCE_DIR}/cmake")
 ##
 
 # Global build type
-set(CMAKE_BUILD_TYPE debug)
+if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE debug)
+endif()
 
 # Global compile flags
 # These are specific to GCC/MinGW; for other compilers, change as necessary
-set(CMAKE_CXX_FLAGS_RELEASE "-O2 -Wall -Wold-style-cast -std=gnu++0x")
-set(CMAKE_CXX_FLAGS_DEBUG "-g -O0 -Wall -Wold-style-cast -std=gnu++0x")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wold-style-cast -std=gnu++0x")
+set(CMAKE_CXX_FLAGS_RELEASE "-O2")
+set(CMAKE_CXX_FLAGS_DEBUG "-g -O0")
 
 # Asserts can be enabled/disabled regardless of build type
 option(ASSERTS "Enable assert()s" ON)
@@ -32,6 +35,11 @@ option(TESTS "Enable tests" ON)
 # CBot can also be a static library
 option(CBOT_STATIC "Build CBot as static libary" OFF)
 
+# Doxygen docs are optional for installation
+option(INSTALL_DOCS "Install Doxygen-generated documentation" OFF)
+
+# Build openal sound support
+option(OPENAL_SOUND "Build openal sound support" OFF)
 
 ##
 # Required packages
@@ -42,7 +50,7 @@ find_package(SDL 1.2.10 REQUIRED)
 find_package(SDL_image 1.2 REQUIRED)
 find_package(SDL_ttf 2.0 REQUIRED)
 find_package(PNG 1.2 REQUIRED)
-find_package(LTDL 2.4.2 REQUIRED)
+find_package(Gettext REQUIRED)
 
 set(Boost_USE_STATIC_LIBS        ON)
 set(Boost_USE_MULTITHREADED      ON)
@@ -124,6 +132,21 @@ endif()
 
 
 ##
+# Doxygen docs
+##
+
+find_package(Doxygen)
+
+if(DOXYGEN_FOUND AND DOXYGEN_DOT_FOUND)
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile @ONLY)
+    add_custom_target(doc
+                      ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
+                      WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+                      COMMENT "Generating API documentation with Doxygen" VERBATIM)
+endif()
+
+
+##
 # Targets
 ##
 
@@ -159,8 +182,27 @@ if(${TESTS})
 
 endif()
 
+# Installation paths defined before compiling sources
+set(COLOBOT_INSTALL_BIN_DIR ${CMAKE_INSTALL_PREFIX}/games CACHE PATH "Colobot binary directory")
+set(COLOBOT_INSTALL_DATA_DIR ${CMAKE_INSTALL_PREFIX}/share/games/colobot CACHE PATH "Colobot shared data directory")
+set(COLOBOT_INSTALL_LIB_DIR ${CMAKE_INSTALL_PREFIX}/lib/colobot CACHE PATH "Colobot libraries directory")
+set(COLOBOT_INSTALL_DOC_DIR ${CMAKE_INSTALL_PREFIX}/share/doc/colobot CACHE PATH "Colobot documentation directory")
+set(COLOBOT_INSTALL_I18N_DIR ${CMAKE_INSTALL_PREFIX}/share/locale CACHE PATH "Colobot translations directory")
+
 # Subdirectory with sources
 add_subdirectory(src bin)
 
-# TODO: provide data files as git submodule and setup correct data path
-install_files(/share/games/colobot ../data)
+
+##
+# Installation
+##
+
+file(GLOB DATA_FILES "data/*")
+
+# Data
+install(DIRECTORY data/ DESTINATION ${COLOBOT_INSTALL_DATA_DIR})
+
+# Documentation
+if(INSTALL_DOCS AND DOXYGEN_FOUND AND DOXYGEN_DOT_FOUND)
+    install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/doc/ DESTINATION ${COLOBOT_INSTALL_DOC_DIR} OPTIONAL)
+endif()

@@ -1164,27 +1164,7 @@ pb->SetState(STATE_SHADOW);
     if ( m_phase == PHASE_SETUPd  || // setup/display ?
             m_phase == PHASE_SETUPds )
     {
-
-// TODO: device settings
-#if 0
-
         pos.x = ox+sx*3;
-        pos.y = oy+sy*9;
-        ddim.x = dim.x*6;
-        ddim.y = dim.y*1;
-        GetResource(RES_TEXT, RT_SETUP_DEVICE, name);
-        pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL1, name);
-        pl->SetTextAlign(Gfx::TEXT_ALIGN_LEFT);
-
-        pos.x = ox+sx*3;
-        pos.y = oy+sy*5.2f;
-        ddim.x = dim.x*6;
-        ddim.y = dim.y*4.5f;
-        pli = pw->CreateList(pos, ddim, 0, EVENT_LIST1);
-        pli->SetState(STATE_SHADOW);
-        UpdateDisplayDevice();
-
-        pos.x = ox+sx*10;
         pos.y = oy+sy*9;
         ddim.x = dim.x*6;
         ddim.y = dim.y*1;
@@ -1193,14 +1173,13 @@ pb->SetState(STATE_SHADOW);
         pl->SetTextAlign(Gfx::TEXT_ALIGN_LEFT);
 
         m_setupFull = m_app->GetVideoConfig().fullScreen;
-        pos.x = ox+sx*10;
+        pos.x = ox+sx*3;
         pos.y = oy+sy*5.2f;
         ddim.x = dim.x*6;
         ddim.y = dim.y*4.5f;
         pli = pw->CreateList(pos, ddim, 0, EVENT_LIST2);
         pli->SetState(STATE_SHADOW);
         UpdateDisplayMode();
-        pli->SetState(STATE_ENABLE, m_setupFull);
 
         ddim.x = dim.x*4;
         ddim.y = dim.y*0.5f;
@@ -1209,7 +1188,6 @@ pb->SetState(STATE_SHADOW);
         pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_FULL);
         pc->SetState(STATE_SHADOW);
         pc->SetState(STATE_CHECK, m_setupFull);
-#endif
 
         ddim.x = dim.x*6;
         ddim.y = dim.y*1;
@@ -2610,19 +2588,16 @@ bool CMainDialog::EventProcess(const Event &event)
                 pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
                 if ( pw == 0 )  break;
                 pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_FULL));
-                if ( pc == 0 )  break;
-                pl = static_cast<CList*>(pw->SearchControl(EVENT_LIST2));
-                if ( pl == 0 )  break;
-                if ( pc->TestState(STATE_CHECK) )
-                {
-                    pc->ClearState(STATE_CHECK);  // window
-                    pl->ClearState(STATE_ENABLE);
-                }
-                else
-                {
-                    pc->SetState(STATE_CHECK);  // fullscreen
-                    pl->SetState(STATE_ENABLE);
-                }
+		if ( pc == 0 )  break;
+		
+		if ( pc->TestState(STATE_CHECK) ) {
+		    m_setupFull = false;
+		    pc->ClearState(STATE_CHECK);
+		} else {
+		    m_setupFull = true;
+		    pc->SetState(STATE_CHECK);
+		}
+
                 UpdateApply();
                 break;
 
@@ -2633,7 +2608,8 @@ bool CMainDialog::EventProcess(const Event &event)
                 if ( pb == 0 )  break;
                 pb->ClearState(STATE_PRESS);
                 pb->ClearState(STATE_HILIGHT);
-                ChangeDisplay();
+		// TODO: uncomment when changing display is implemented
+                //ChangeDisplay();
                 UpdateApply();
                 break;
 
@@ -2909,12 +2885,12 @@ bool CMainDialog::EventProcess(const Event &event)
 
             case EVENT_INTERFACE_SILENT:
                 m_sound->SetAudioVolume(0);
-                //TODO: m_sound->SetMidiVolume(0);
+                m_sound->SetMusicVolume(0);
                 UpdateSetupButtons();
                 break;
             case EVENT_INTERFACE_NOISY:
                 m_sound->SetAudioVolume(MAXVOLUME);
-                //TODO: m_sound->SetMidiVolume(MAXVOLUME*3/4);
+                m_sound->SetMusicVolume(MAXVOLUME*3/4);
                 UpdateSetupButtons();
                 break;
 
@@ -5076,9 +5052,6 @@ void CMainDialog::UpdateDisplayMode()
 {
     CWindow*    pw;
     CList*      pl;
-    char        bufDevices[1000];
-    char        bufModes[5000];
-    int         i, j, totalDevices, selectDevices, totalModes, selectModes;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
     if ( pw == 0 )  return;
@@ -5086,25 +5059,18 @@ void CMainDialog::UpdateDisplayMode()
     if ( pl == 0 )  return;
     pl->Flush();
 
-    bufModes[0] = 0;
-    /* TODO: remove device choice
-    m_engine->EnumDevices(bufDevices, 1000,
-                          bufModes,   5000,
-                          totalDevices, selectDevices,
-                          totalModes,   selectModes);*/
-
-    i = 0;
-    j = 0;
-    while ( bufModes[i] != 0 )
-    {
-        pl->SetName(j++, bufModes+i);
-        while ( bufModes[i++] != 0 );
+    std::vector<Math::IntPoint> modes;
+    m_app->GetVideoResolutionList(modes, true, true);
+    int i = 0;
+    std::stringstream mode_text;
+    for (Math::IntPoint mode : modes) {
+	mode_text.str("");
+	mode_text << mode.x << "x" << mode.y;
+	pl->SetName(i++, mode_text.str().c_str());
     }
 
-    pl->SetSelect(selectModes);
+    pl->SetSelect(m_setupSelMode);
     pl->ShowSelect(false);
-
-    m_setupSelMode = selectModes;
 }
 
 // Change the graphics mode.
@@ -5392,9 +5358,8 @@ void CMainDialog::UpdateSetupButtons()
     ps = static_cast<CSlider*>(pw->SearchControl(EVENT_INTERFACE_VOLMUSIC));
     if ( ps != 0 )
     {
-        /* TODO: midi volume
-        value = (float)m_sound->GetMidiVolume();
-        ps->SetVisibleValue(value);*/
+        value = static_cast<float>(m_sound->GetMusicVolume());
+        ps->SetVisibleValue(value);
     }
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_SOUND3D));
@@ -5474,10 +5439,6 @@ void CMainDialog::ChangeSetupButtons()
 
 void CMainDialog::SetupMemorize()
 {
-    float   fValue;
-    int     iValue, i, j;
-    char    num[10];
-
     GetProfile().SetLocalProfileString("Directory", "scene",    m_sceneDir);
     GetProfile().SetLocalProfileString("Directory", "savegame", m_savegameDir);
     GetProfile().SetLocalProfileString("Directory", "public",   m_publicDir);
@@ -5508,15 +5469,27 @@ void CMainDialog::SetupMemorize()
     GetProfile().SetLocalProfileInt("Setup", "TextureQuality", m_engine->GetTextureQuality());
     GetProfile().SetLocalProfileInt("Setup", "TotoMode", m_engine->GetTotoMode());
     GetProfile().SetLocalProfileInt("Setup", "AudioVolume", m_sound->GetAudioVolume());
+    GetProfile().SetLocalProfileInt("Setup", "MusicVolume", m_sound->GetMusicVolume());
     GetProfile().SetLocalProfileInt("Setup", "Sound3D", m_sound->GetSound3D());
     GetProfile().SetLocalProfileInt("Setup", "EditIndentMode", m_engine->GetEditIndentMode());
     GetProfile().SetLocalProfileInt("Setup", "EditIndentValue", m_engine->GetEditIndentValue());
-
-
-    // GetProfile()->SetLocalProfileInt("Setup", "NiceMouse", m_engine->GetNiceMouse());
-    // GetProfile()->SetLocalProfileInt("Setup", "UseJoystick", m_engine->GetJoystick());
-    // GetProfile()->SetLocalProfileInt("Setup", "MidiVolume", m_sound->GetMidiVolume());
-
+    
+    /* screen setup */
+    if (m_setupFull)
+	GetProfile().SetLocalProfileInt("Setup", "Fullscreen", 1);
+    else
+	GetProfile().SetLocalProfileInt("Setup", "Fullscreen", 0);
+    
+    CList *pl;
+    CWindow *pw;
+    pw = static_cast<CWindow *>(m_interface->SearchControl(EVENT_WINDOW5));
+    if ( pw != 0 ) {
+	pl = static_cast<CList *>(pw->SearchControl(EVENT_LIST2));
+	if ( pl != 0 ) {
+	    GetProfile().SetLocalProfileInt("Setup", "Resolution", pl->GetSelect());
+	}
+    }
+    
     std::stringstream key;
     for (int i = 0; i < INPUT_SLOT_MAX; i++)
     {
@@ -5724,11 +5697,10 @@ void CMainDialog::SetupRecall()
         m_sound->SetAudioVolume(iValue);
     }
 
-    // TODO
-    // if ( GetLocalProfileInt("Setup", "MidiVolume", iValue) )
-    // {
-    //     m_sound->SetMidiVolume(iValue);
-    // }
+    if ( GetProfile().GetLocalProfileInt("Setup", "MusicVolume", iValue) )
+    {
+        m_sound->SetMusicVolume(iValue);
+    }
 
     if ( GetProfile().GetLocalProfileInt("Setup", "EditIndentMode", iValue) )
     {
@@ -5771,6 +5743,14 @@ void CMainDialog::SetupRecall()
     if ( GetProfile().GetLocalProfileInt("Setup", "DeleteGamer", iValue) )
     {
         m_bDeleteGamer = iValue;
+    }
+    
+    if ( GetProfile().GetLocalProfileInt("Setup", "Resolution", iValue) ) {
+	m_setupSelMode = iValue;
+    }
+    
+    if ( GetProfile().GetLocalProfileInt("Setup", "Fullscreen", iValue) ) {
+	m_setupFull = (iValue == 1);
     }
 }
 
