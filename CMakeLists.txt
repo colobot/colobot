@@ -183,11 +183,11 @@ if(${TESTS})
 endif()
 
 # Installation paths defined before compiling sources
-set(COLOBOT_INSTALL_BIN_DIR ${CMAKE_INSTALL_PREFIX}/games CACHE PATH "Colobot binary directory")
-set(COLOBOT_INSTALL_DATA_DIR ${CMAKE_INSTALL_PREFIX}/share/games/colobot CACHE PATH "Colobot shared data directory")
-set(COLOBOT_INSTALL_LIB_DIR ${CMAKE_INSTALL_PREFIX}/lib/colobot CACHE PATH "Colobot libraries directory")
-set(COLOBOT_INSTALL_DOC_DIR ${CMAKE_INSTALL_PREFIX}/share/doc/colobot CACHE PATH "Colobot documentation directory")
-set(COLOBOT_INSTALL_I18N_DIR ${CMAKE_INSTALL_PREFIX}/share/locale CACHE PATH "Colobot translations directory")
+set(COLOBOT_INSTALL_BIN_DIR games CACHE PATH "Colobot binary directory")
+set(COLOBOT_INSTALL_DATA_DIR share/games/colobot CACHE PATH "Colobot shared data directory")
+set(COLOBOT_INSTALL_LIB_DIR lib/colobot CACHE PATH "Colobot libraries directory")
+set(COLOBOT_INSTALL_DOC_DIR share/doc/colobot CACHE PATH "Colobot documentation directory")
+set(COLOBOT_INSTALL_I18N_DIR share/locale CACHE PATH "Colobot translations directory")
 
 # Subdirectory with sources
 add_subdirectory(src bin)
