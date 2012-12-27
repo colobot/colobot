@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-12-13 21:46+0100\n"
+"POT-Creation-Date: 2012-12-27 13:53+0100\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -65,6 +65,9 @@ msgstr "Brak \" ] \""
 msgid "\"%s\" missing in this exercise"
 msgstr "It misses \"%s\" in this exercise"
 
+msgid "%1"
+msgstr ""
+
 msgid "..behind"
 msgstr "..za"
 
@@ -86,13 +89,16 @@ msgstr "Dźwięk 3D\\Przestrzenne pozycjonowanie dźwięków"
 msgid "<<  Back  \\Back to the previous screen"
 msgstr "<<  Wstecz  \\Wraca do poprzedniego ekranu"
 
-msgid "<<< Sorry, mission failed >>>"
+#, fuzzy
+msgid "<<< Sorry; mission failed >>>"
 msgstr "<<< Niestety, misja nie powiodła się >>>"
 
-msgid "<<< Well done, mission accomplished >>>"
+#, fuzzy
+msgid "<<< Well done; mission accomplished >>>"
 msgstr "<<< Dobra robota, misja wypełniona >>>"
 
-msgid "A label must be followed by \"for\", \"while\", \"do\" or \"switch\""
+#, fuzzy
+msgid "A label must be followed by \"for\"; \"while\"; \"do\" or \"switch\""
 msgstr "Po etykiecie musi wystąpić \"for\", \"while\", \"do\" lub \"switch\""
 
 msgid "A variable can not be declared twice"
@@ -121,6 +127,9 @@ msgstr "Królowa Obcych została zabita"
 
 msgid "Already carrying something"
 msgstr "Nie można nieść więcej przedmiotów"
+
+msgid "Alt"
+msgstr "Alt"
 
 msgid "Analysis already performed"
 msgstr "Analiza została już wykonana"
@@ -301,6 +310,9 @@ msgstr "Budynek zniszczony"
 msgid "Building too close"
 msgstr "Budynek za blisko"
 
+msgid "Button %1"
+msgstr "Przycisk %1"
+
 msgid "COLOBOT"
 msgstr "COLOBOT"
 
@@ -328,7 +340,8 @@ msgstr "Camera to left"
 msgid "Camera to right"
 msgstr "Camera to right"
 
-msgid "Can not create this, there are too many objects"
+#, fuzzy
+msgid "Can not create this; there are too many objects"
 msgstr "Nie można tego utworzyć, za dużo obiektów"
 
 msgid "Can't open file"
@@ -405,6 +418,9 @@ msgstr "Kopiuj"
 
 msgid "Copy (Ctrl+c)"
 msgstr "Kopiuj (Ctrl+C)"
+
+msgid "Ctrl"
+msgstr "Ctrl"
 
 msgid "Current mission saved"
 msgstr "Bieżąca misja zapisana"
@@ -612,6 +628,10 @@ msgstr "Gra\\Ustawienia gry"
 msgid "Gantry crane"
 msgstr "Żuraw przesuwalny"
 
+#, c-format
+msgid "GetResource event num out of range: %d\n"
+msgstr ""
+
 msgid "Goto: destination occupied"
 msgstr "Goto: miejsce docelowe zajęte"
 
@@ -685,7 +705,8 @@ msgstr "Nieodpowiedni rodzaj ogniw"
 msgid "Incorrect index type"
 msgstr "Nieprawidłowy typ indeksu"
 
-msgid "Infected by a virus, temporarily out of order"
+#, fuzzy
+msgid "Infected by a virus; temporarily out of order"
 msgstr "Zainfekowane wirusem, chwilowo niesprawne"
 
 msgid "Information exchange post"
@@ -1264,6 +1285,9 @@ msgstr "Zasięg osłony"
 msgid "Shielder"
 msgstr "Osłaniacz"
 
+msgid "Shift"
+msgstr "Shift"
+
 msgid "Shoot (\\key action;)"
 msgstr "Strzelaj (\\key action;)"
 
@@ -1575,6 +1599,9 @@ msgstr "Działo na kołach"
 msgid "Wheeled sniffer"
 msgstr "Szperacz na kołach"
 
+msgid "Win"
+msgstr ""
+
 msgid "Winged grabber"
 msgstr "Transporter latający"
 
@@ -1740,6 +1767,69 @@ msgstr "\\b;Roboty\n"
 msgid "\\c; (none)\\n;\n"
 msgstr "\\c; (brak)\\n;\n"
 
+msgid "action;"
+msgstr ""
+
+msgid "away;"
+msgstr ""
+
+msgid "camera;"
+msgstr ""
+
+msgid "cbot;"
+msgstr ""
+
+msgid "desel;"
+msgstr ""
+
+msgid "down;"
+msgstr ""
+
+msgid "gdown;"
+msgstr ""
+
+msgid "gup;"
+msgstr ""
+
+msgid "help;"
+msgstr ""
+
+msgid "human;"
+msgstr ""
+
+msgid "left;"
+msgstr ""
+
+msgid "near;"
+msgstr ""
+
+msgid "next;"
+msgstr ""
+
+msgid "prog;"
+msgstr ""
+
+msgid "quit;"
+msgstr ""
+
+msgid "right;"
+msgstr ""
+
+msgid "speed10;"
+msgstr ""
+
+msgid "speed15;"
+msgstr ""
+
+msgid "speed20;"
+msgstr ""
+
+msgid "up;"
+msgstr ""
+
+msgid "visit;"
+msgstr ""
+
 msgid "www.epsitec.com"
 msgstr "www.epsitec.com"
 
@@ -1748,9 +1838,6 @@ msgstr "www.epsitec.com"
 
 #~ msgid "<--"
 #~ msgstr "<--"
-
-#~ msgid "Alt"
-#~ msgstr "Alt"
 
 #~ msgid "Application key"
 #~ msgstr "Klawisz menu kontekstowego"
@@ -1770,9 +1857,6 @@ msgstr "www.epsitec.com"
 #~ msgid "Attn"
 #~ msgstr "Attn"
 
-#~ msgid "Button %1"
-#~ msgstr "Przycisk %1"
-
 #~ msgid "Caps Lock"
 #~ msgstr "Caps Lock"
 
@@ -1784,9 +1868,6 @@ msgstr "www.epsitec.com"
 
 #~ msgid "CrSel"
 #~ msgstr "CrSel"
-
-#~ msgid "Ctrl"
-#~ msgstr "Ctrl"
 
 #~ msgid "Delete Key"
 #~ msgstr "Delete"
@@ -1970,9 +2051,6 @@ msgstr "www.epsitec.com"
 
 #~ msgid "Select"
 #~ msgstr "Zaznacz"
-
-#~ msgid "Shift"
-#~ msgstr "Shift"
 
 #~ msgid "Space"
 #~ msgstr "Spacja"

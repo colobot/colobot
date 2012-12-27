@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-12-13 21:46+0100\n"
+"POT-Creation-Date: 2012-12-27 13:53+0100\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -64,6 +64,9 @@ msgstr "Es fehlt eine geschlossene eckige Klammer \" ] \""
 msgid "\"%s\" missing in this exercise"
 msgstr "Es fehlt \"%s\" in Ihrem Programm"
 
+msgid "%1"
+msgstr ""
+
 msgid "..behind"
 msgstr "..hinten"
 
@@ -85,13 +88,16 @@ msgstr "3D-Geräusche\\Orten der Geräusche im Raum"
 msgid "<<  Back  \\Back to the previous screen"
 msgstr "<<  Zurück  \\Zurück zum Hauptmenü"
 
-msgid "<<< Sorry, mission failed >>>"
+#, fuzzy
+msgid "<<< Sorry; mission failed >>>"
 msgstr "<<< Mission gescheitert >>>"
 
-msgid "<<< Well done, mission accomplished >>>"
+#, fuzzy
+msgid "<<< Well done; mission accomplished >>>"
 msgstr "<<< Bravo, Mission vollendet >>>"
 
-msgid "A label must be followed by \"for\", \"while\", \"do\" or \"switch\""
+#, fuzzy
+msgid "A label must be followed by \"for\"; \"while\"; \"do\" or \"switch\""
 msgstr ""
 "Ein Label kann nur vor den Anweisungen \"for\", \"while\", \"do\" oder "
 "\"switch\" vorkommen"
@@ -121,6 +127,9 @@ msgstr "Insektenkönigin tödlich verwundet"
 
 msgid "Already carrying something"
 msgstr "Trägt schon etwas"
+
+msgid "Alt"
+msgstr "Alt"
 
 msgid "Analysis already performed"
 msgstr "Analyse schon durchgeführt"
@@ -299,6 +308,9 @@ msgstr "Gebäude zerstört"
 msgid "Building too close"
 msgstr "Gebäude zu nahe"
 
+msgid "Button %1"
+msgstr "Knopf %1"
+
 msgid "COLOBOT"
 msgstr "COLOBOT"
 
@@ -326,7 +338,8 @@ msgstr "Kamera links"
 msgid "Camera to right"
 msgstr "Kamera rechts"
 
-msgid "Can not create this, there are too many objects"
+#, fuzzy
+msgid "Can not create this; there are too many objects"
 msgstr "Kein neues Objekt kann erstellt werden (zu viele vorhanden)"
 
 msgid "Can't open file"
@@ -403,6 +416,9 @@ msgstr "Kopieren"
 
 msgid "Copy (Ctrl+c)"
 msgstr "Kopieren (Ctrl+c)"
+
+msgid "Ctrl"
+msgstr "Ctrl"
 
 msgid "Current mission saved"
 msgstr "Mission gespeichert"
@@ -610,6 +626,10 @@ msgstr "Spiel\\Gameplay Einstellungen"
 msgid "Gantry crane"
 msgstr "Träger"
 
+#, c-format
+msgid "GetResource event num out of range: %d\n"
+msgstr ""
+
 msgid "Goto: destination occupied"
 msgstr "Ziel ist schon besetzt"
 
@@ -682,7 +702,8 @@ msgstr "Falscher Batterietyp"
 msgid "Incorrect index type"
 msgstr "Falscher Typ für einen Index"
 
-msgid "Infected by a virus, temporarily out of order"
+#, fuzzy
+msgid "Infected by a virus; temporarily out of order"
 msgstr "Von Virus infiziert, zeitweise außer Betrieb"
 
 msgid "Information exchange post"
@@ -1256,6 +1277,9 @@ msgstr "Reichweite Schutzschild"
 msgid "Shielder"
 msgstr "Schutzschild"
 
+msgid "Shift"
+msgstr "Shift"
+
 msgid "Shoot (\\key action;)"
 msgstr "Feuer (\\key action;)"
 
@@ -1565,6 +1589,9 @@ msgstr "Shooter"
 msgid "Wheeled sniffer"
 msgstr "Schnüffler"
 
+msgid "Win"
+msgstr ""
+
 msgid "Winged grabber"
 msgstr "Transporter"
 
@@ -1730,6 +1757,69 @@ msgstr "\\b;Liste der Roboter\n"
 msgid "\\c; (none)\\n;\n"
 msgstr "\\c; (keine)\\n;\n"
 
+msgid "action;"
+msgstr ""
+
+msgid "away;"
+msgstr ""
+
+msgid "camera;"
+msgstr ""
+
+msgid "cbot;"
+msgstr ""
+
+msgid "desel;"
+msgstr ""
+
+msgid "down;"
+msgstr ""
+
+msgid "gdown;"
+msgstr ""
+
+msgid "gup;"
+msgstr ""
+
+msgid "help;"
+msgstr ""
+
+msgid "human;"
+msgstr ""
+
+msgid "left;"
+msgstr ""
+
+msgid "near;"
+msgstr ""
+
+msgid "next;"
+msgstr ""
+
+msgid "prog;"
+msgstr ""
+
+msgid "quit;"
+msgstr ""
+
+msgid "right;"
+msgstr ""
+
+msgid "speed10;"
+msgstr ""
+
+msgid "speed15;"
+msgstr ""
+
+msgid "speed20;"
+msgstr ""
+
+msgid "up;"
+msgstr ""
+
+msgid "visit;"
+msgstr ""
+
 msgid "www.epsitec.com"
 msgstr "www.epsitec.com"
 
@@ -1738,9 +1828,6 @@ msgstr "www.epsitec.com"
 
 #~ msgid "<--"
 #~ msgstr "<--"
-
-#~ msgid "Alt"
-#~ msgstr "Alt"
 
 #~ msgid "Application key"
 #~ msgstr "Application key"
@@ -1760,9 +1847,6 @@ msgstr "www.epsitec.com"
 #~ msgid "Attn"
 #~ msgstr "Attn"
 
-#~ msgid "Button %1"
-#~ msgstr "Knopf %1"
-
 #~ msgid "Caps Lock"
 #~ msgstr "Caps Lock"
 
@@ -1774,9 +1858,6 @@ msgstr "www.epsitec.com"
 
 #~ msgid "CrSel"
 #~ msgstr "CrSel"
-
-#~ msgid "Ctrl"
-#~ msgstr "Ctrl"
 
 #~ msgid "Delete Key"
 #~ msgstr "Delete"
@@ -1960,9 +2041,6 @@ msgstr "www.epsitec.com"
 
 #~ msgid "Select"
 #~ msgstr "Select"
-
-#~ msgid "Shift"
-#~ msgstr "Shift"
 
 #~ msgid "Space"
 #~ msgstr "Leertaste"
