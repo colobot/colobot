@@ -246,7 +246,7 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
         else if (arg == "-help")
         {
             GetLogger()->Message("\n");
-            GetLogger()->Message("COLOBOT GOLD pre-alpha\n");
+            GetLogger()->Message("Colobot %s (%s)\n",COLOBOT_CODENAME,COLOBOT_VERSION);
             GetLogger()->Message("\n");
             GetLogger()->Message("List of available options:\n");
             GetLogger()->Message("  -help            this help\n");

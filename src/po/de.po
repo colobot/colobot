@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-12-27 13:53+0100\n"
+"POT-Creation-Date: 2012-12-27 17:09+0100\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -377,9 +377,6 @@ msgstr "Schließen"
 
 msgid "Closing bracket missing "
 msgstr "Es fehlt eine geschlossene Klammer \")\""
-
-msgid "Colobot Gold"
-msgstr "Colobot Gold"
 
 msgid "Colobot rules!"
 msgstr "Colobot ist wunderbar!"
