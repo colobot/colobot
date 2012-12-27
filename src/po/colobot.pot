@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-12-13 21:46+0100\n"
+"POT-Creation-Date: 2012-12-27 13:53+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1436,7 +1436,7 @@ msgstr ""
 msgid "Program infected by a virus"
 msgstr ""
 
-msgid "Infected by a virus, temporarily out of order"
+msgid "Infected by a virus; temporarily out of order"
 msgstr ""
 
 msgid "Impossible when swimming"
@@ -1464,7 +1464,7 @@ msgstr ""
 msgid "Building destroyed"
 msgstr ""
 
-msgid "Can not create this, there are too many objects"
+msgid "Can not create this; there are too many objects"
 msgstr ""
 
 #, c-format
@@ -1528,10 +1528,10 @@ msgstr ""
 msgid "Found a site for a derrick"
 msgstr ""
 
-msgid "<<< Well done, mission accomplished >>>"
+msgid "<<< Well done; mission accomplished >>>"
 msgstr ""
 
-msgid "<<< Sorry, mission failed >>>"
+msgid "<<< Sorry; mission failed >>>"
 msgstr ""
 
 msgid "Current mission saved"
@@ -1612,7 +1612,7 @@ msgstr ""
 msgid "Instruction \"break\" outside a loop"
 msgstr ""
 
-msgid "A label must be followed by \"for\", \"while\", \"do\" or \"switch\""
+msgid "A label must be followed by \"for\"; \"while\"; \"do\" or \"switch\""
 msgstr ""
 
 msgid "This label does not exist"
@@ -1733,4 +1733,89 @@ msgid "Read error"
 msgstr ""
 
 msgid "Write error"
+msgstr ""
+
+msgid "left;"
+msgstr ""
+
+msgid "right;"
+msgstr ""
+
+msgid "up;"
+msgstr ""
+
+msgid "down;"
+msgstr ""
+
+msgid "gup;"
+msgstr ""
+
+msgid "gdown;"
+msgstr ""
+
+msgid "camera;"
+msgstr ""
+
+msgid "desel;"
+msgstr ""
+
+msgid "action;"
+msgstr ""
+
+msgid "near;"
+msgstr ""
+
+msgid "away;"
+msgstr ""
+
+msgid "next;"
+msgstr ""
+
+msgid "human;"
+msgstr ""
+
+msgid "quit;"
+msgstr ""
+
+msgid "help;"
+msgstr ""
+
+msgid "prog;"
+msgstr ""
+
+msgid "cbot;"
+msgstr ""
+
+msgid "visit;"
+msgstr ""
+
+msgid "speed10;"
+msgstr ""
+
+msgid "speed15;"
+msgstr ""
+
+msgid "speed20;"
+msgstr ""
+
+#, c-format
+msgid "GetResource event num out of range: %d\n"
+msgstr ""
+
+msgid "Ctrl"
+msgstr ""
+
+msgid "Shift"
+msgstr ""
+
+msgid "Alt"
+msgstr ""
+
+msgid "Win"
+msgstr ""
+
+msgid "Button %1"
+msgstr ""
+
+msgid "%1"
 msgstr ""
