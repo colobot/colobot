@@ -4305,8 +4305,8 @@ void CMainDialog::IOReadName()
                 }
             }
 
-            // TODO: language letters
-            sprintf(op, "Title.%c", 'E' /*MAX_FNAME()*/ );
+            // TODO: Fallback to an non-localized entry
+            sprintf(op, "Title.%c", m_app->GetLanguageChar() );
             if ( Cmd(line, op) )
             {
                 OpString(line, "resume", resume);
@@ -4701,8 +4701,8 @@ void CMainDialog::UpdateSceneChap(int &chap)
                         }
                     }
 
-                    /* TODO: language letters */
-                    sprintf(op, "Title.%c", 'E' /*GetLanguageLetter()*/);
+                    // TODO: Fallback to an non-localized entry
+                    sprintf(op, "Title.%c", m_app->GetLanguageChar());
                     if ( Cmd(line, op) )
                     {
                         OpString(line, "text", name);
@@ -4748,8 +4748,8 @@ void CMainDialog::UpdateSceneChap(int &chap)
                     }
                 }
 
-                // TODO: language letters
-                sprintf(op, "Title.%c", 'E'/*GetLanguageLetter()*/);
+                // TODO: Fallback to an non-localized entry
+                sprintf(op, "Title.%c", m_app->GetLanguageChar());
                 if ( Cmd(line, op) )
                 {
                     OpString(line, "text", name);
@@ -4851,8 +4851,8 @@ void CMainDialog::UpdateSceneList(int chap, int &sel)
                 }
             }
 
-            // TODO: language letters
-            sprintf(op, "Title.%c", 'E' /*MAX_FNAME()*/);
+            // TODO: Fallback to an non-localized entry
+            sprintf(op, "Title.%c", m_app->GetLanguageChar());
             if ( Cmd(line, op) )
             {
                 OpString(line, "text", name);
@@ -4996,8 +4996,8 @@ void CMainDialog::UpdateSceneResume(int rank)
             }
         }
 
-        // TODO: language letters
-        sprintf(op, "Resume.%c", 'E' /*MAX_FNAME()*/);
+        // TODO: Fallback to an non-localized entry
+        sprintf(op, "Resume.%c", m_app->GetLanguageChar());
         if ( Cmd(line, op) )
         {
             OpString(line, "text", name);
