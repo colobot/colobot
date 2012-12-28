@@ -329,26 +329,29 @@ bool CApplication::Create()
     GetLogger()->Debug("Testing gettext translation: '%s'\n", gettext("Colobot rules!"));
 
     //Create the sound instance.
-    if (!GetProfile().InitCurrentDirectory()) {
+    if (!GetProfile().InitCurrentDirectory())
+    {
         GetLogger()->Warn("Config not found. Default values will be used!\n");
         m_sound = new CSoundInterface();
-    } else {
+    }
+    else
+    {
         std::string path;
         if (GetProfile().GetLocalProfileString("Resources", "Data", path))
             m_dataPath = path;
 
-	#ifdef OPENAL_SOUND
-	    m_sound = static_cast<CSoundInterface *>(new ALSound());
-	#else
-	    GetLogger()->Info("No sound support.\n");
-	    m_sound = new CSoundInterface();
-	#endif
+        #ifdef OPENAL_SOUND
+        m_sound = static_cast<CSoundInterface *>(new ALSound());
+        #else
+        GetLogger()->Info("No sound support.\n");
+        m_sound = new CSoundInterface();
+        #endif
 
         m_sound->Create(true);
         if (GetProfile().GetLocalProfileString("Resources", "Sound", path))
             m_sound->CacheAll(path);
         else
-            m_sound->CacheAll(m_dataPath);
+            m_sound->CacheAll(GetDataSubdirPath(DIR_SOUND));
     }
 
     std::string standardInfoMessage =
@@ -1421,23 +1424,25 @@ std::string CApplication::GetDataDirPath()
     return m_dataPath;
 }
 
-std::string CApplication::GetDataFilePath(DataDir dataDir, const std::string& subpath)
+std::string CApplication::GetDataSubdirPath(DataDir stdDir)
 {
-    int index = static_cast<int>(dataDir);
+    int index = static_cast<int>(stdDir);
     assert(index >= 0 && index < DIR_MAX);
     std::stringstream str;
     str << m_dataPath;
     str << "/";
     str << m_dataDirs[index];
-    str << "/";
-    str << subpath;
     return str.str();
 }
 
-std::string CApplication::GetDataFilePath(const std::string& subpath)
+std::string CApplication::GetDataFilePath(DataDir stdDir, const std::string& subpath)
 {
+    int index = static_cast<int>(stdDir);
+    assert(index >= 0 && index < DIR_MAX);
     std::stringstream str;
     str << m_dataPath;
+    str << "/";
+    str << m_dataDirs[index];
     str << "/";
     str << subpath;
     return str.str();
