@@ -127,7 +127,8 @@ CBotString::CBotString()
 
 CBotString::~CBotString()
 {
-    free(m_ptr);            //we can call free on null pointer as it's save
+    delete[] m_ptr;
+    m_ptr = nullptr;
 }
 
 
@@ -138,7 +139,7 @@ CBotString::CBotString(const char* p)
     m_ptr = NULL;
     if (m_lg>0)
     {
-        m_ptr = static_cast<char*>(malloc(m_lg+1));
+        m_ptr = new char[m_lg+1];
         strcpy(m_ptr, p);
     }
 }
@@ -150,7 +151,7 @@ CBotString::CBotString(const CBotString& srcString)
     m_ptr = NULL;
     if (m_lg>0)
     {
-        m_ptr = static_cast<char*>(malloc(m_lg+1));
+        m_ptr = new char[m_lg+1];
         strcpy(m_ptr, srcString.m_ptr);
     }
 }
@@ -285,12 +286,12 @@ CBotString CBotString::Mid(int start, int lg)
 
     if ( lg < 0 ) lg = m_lg - start;
 
-    char* p = static_cast<char*>(malloc(m_lg+1));
+    char* p = new char[m_lg+1];
     strcpy(p, m_ptr+start);
     p[lg] = 0;
 
     res = p;
-    free(p);
+    delete[] p;
     return res;
 }
 
@@ -314,15 +315,16 @@ void CBotString::MakeLower()
 
 bool CBotString::LoadString(unsigned int id)
 {
-    const char * str = NULL;
+    const char * str = nullptr;
     str = MapIdToString(static_cast<EID>(id));
-    if (m_ptr != NULL) free(m_ptr);
+    if (m_ptr != nullptr)
+        delete[] m_ptr;
 
     m_lg = strlen(str);
     m_ptr = NULL;
     if (m_lg > 0)
     {
-        m_ptr = static_cast<char*>(malloc(m_lg+1));
+        m_ptr = new char[m_lg+1];
         strcpy(m_ptr, str);
         return true;
     }
@@ -332,14 +334,14 @@ bool CBotString::LoadString(unsigned int id)
 
 const CBotString& CBotString::operator=(const CBotString& stringSrc)
 {
-    free(m_ptr);
-    m_ptr = NULL;
+    delete[] m_ptr;
+    m_ptr = nullptr;
 
     m_lg = stringSrc.m_lg; 
 
     if (m_lg > 0)
     {
-        m_ptr = static_cast<char*>(malloc(m_lg+1));
+        m_ptr = new char[m_lg+1];
         strcpy(m_ptr, stringSrc.m_ptr);
     }
 
@@ -355,13 +357,13 @@ CBotString operator+(const CBotString& string, const char * lpsz)
 
 const CBotString& CBotString::operator+(const CBotString& stringSrc)
 {
-    char* p = static_cast<char*>(malloc(m_lg+stringSrc.m_lg+1));
+    char* p = new char[m_lg+stringSrc.m_lg+1];
 
     if (m_ptr!=NULL) strcpy(p, m_ptr);
     char* pp = p + m_lg;
     if (stringSrc.m_ptr!=NULL) strcpy(pp, stringSrc.m_ptr);
 
-    free(m_ptr);
+    delete[] m_ptr;
     m_ptr = p;
     m_lg += stringSrc.m_lg;
 
@@ -370,11 +372,11 @@ const CBotString& CBotString::operator+(const CBotString& stringSrc)
 
 const CBotString& CBotString::operator=(const char ch)
 {
-    free(m_ptr);
+    delete[] m_ptr;
 
     m_lg = 1; 
 
-    m_ptr = static_cast<char*>(malloc(2));
+    m_ptr = new char[2];
     m_ptr[0] = ch;
     m_ptr[1] = 0;
 
@@ -383,16 +385,16 @@ const CBotString& CBotString::operator=(const char ch)
 
 const CBotString& CBotString::operator=(const char* pString)
 {
-    free(m_ptr);
-    m_ptr = NULL;
+    delete[] m_ptr;
+    m_ptr = nullptr;
 
-    if (pString != NULL)
+    if (pString != nullptr)
     {
         m_lg = strlen(pString); 
 
         if (m_lg != 0)
         {
-            m_ptr = static_cast<char*>(malloc(m_lg+1));
+            m_ptr = new char[m_lg+1];
             strcpy(m_ptr, pString);
         }
     }
@@ -403,13 +405,13 @@ const CBotString& CBotString::operator=(const char* pString)
 
 const CBotString& CBotString::operator+=(const char ch)
 {
-    char* p = static_cast<char*>(malloc(m_lg+2));
+    char* p = new char[m_lg+2];
 
-    if (m_ptr!=NULL) strcpy(p, m_ptr);
+    if (m_ptr != nullptr) strcpy(p, m_ptr);
     p[m_lg++] = ch;
     p[m_lg]   = 0;
 
-    free(m_ptr);
+    delete[] m_ptr;
 
     m_ptr = p;
 
@@ -418,7 +420,7 @@ const CBotString& CBotString::operator+=(const char ch)
 
 const CBotString& CBotString::operator+=(const CBotString& str)
 {
-    char* p = static_cast<char*>(malloc(m_lg+str.m_lg+1));
+    char* p = new char[m_lg+str.m_lg+1];
 
     strcpy(p, m_ptr);
     char* pp = p + m_lg;
@@ -426,7 +428,7 @@ const CBotString& CBotString::operator+=(const CBotString& str)
 
     m_lg = m_lg + str.m_lg;
 
-    free(m_ptr);
+    delete[] m_ptr;
 
     m_ptr = p;
 
@@ -500,8 +502,8 @@ bool CBotString::IsEmpty() const
 
 void CBotString::Empty()
 {
-    free(m_ptr);
-    m_ptr = NULL;
+    delete[] m_ptr;
+    m_ptr = nullptr;
     m_lg = 0;
 }
 

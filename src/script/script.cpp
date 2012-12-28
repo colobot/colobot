@@ -1571,7 +1571,7 @@ bool CScript::rGrab(CBotVar* var, CBotVar* result, int& exception, void* user)
     if ( script->m_primaryTask == 0 )  // no task in progress?
     {
         script->m_primaryTask = new CTaskManager(script->m_iMan, script->m_object);
-        if ( var == 0 )  
+        if ( var == 0 )
         {
             type = TMA_FFRONT;
         }
@@ -2753,9 +2753,14 @@ void CScript::InitFonctions()
 CScript::~CScript()
 {
     delete m_botProg;
+    m_botProg = nullptr;
+
     delete m_primaryTask;
-    delete m_script;
-    m_script = 0;
+    m_primaryTask = nullptr;
+
+    delete[] m_script;
+    m_script = nullptr;
+
     m_len = 0;
 
     m_iMan->DeleteInstance(CLASS_SCRIPT, this);
@@ -2766,7 +2771,7 @@ CScript::~CScript()
 
 void CScript::PutScript(Ui::CEdit* edit, const char* name)
 {
-    if ( m_script == 0 )
+    if ( m_script == nullptr )
     {
         New(edit, name);
     }
@@ -2785,11 +2790,11 @@ bool CScript::GetScript(Ui::CEdit* edit)
 {
     int     len;
 
-    delete m_script;
-    m_script = 0;
+    delete[] m_script;
+    m_script = nullptr;
 
     len = edit->GetTextLength();
-    m_script = static_cast<char*>(malloc(sizeof(char)*(len+1)));
+    m_script = new char[len+1];
 
     edit->GetText(m_script, len+1);
     edit->GetCursor(m_cursor2, m_cursor1);
@@ -2997,7 +3002,7 @@ void CScript::SetStepMode(bool bStep)
 bool CScript::Run()
 {
     if( m_botProg == 0 )  return false;
-    if ( m_script == 0 || m_len == 0 )  return false;
+    if ( m_script == nullptr || m_len == 0 )  return false;
 
     if ( !m_botProg->Start(m_title) )  return false;
 
@@ -3475,9 +3480,9 @@ bool CScript::IntroduceVirus()
     start = found[i+1];
     i     = found[i+0];
 
-    newScript = static_cast<char*>(malloc(sizeof(char)*(m_len+strlen(names[i+1])+1)));
+    newScript = new char[m_len+strlen(names[i+1])+1];
     strcpy(newScript, m_script);
-    delete m_script;
+    delete[] m_script;
     m_script = newScript;
 
     DeleteToken(m_script, start, strlen(names[i]));
@@ -3638,7 +3643,7 @@ void CScript::New(Ui::CEdit* edit, const char* name)
 bool CScript::SendScript(char* text)
 {
     m_len = strlen(text);
-    m_script = static_cast<char*>(malloc(sizeof(char)*(m_len+1)));
+    m_script = new char[m_len+1];
     strcpy(m_script, text);
     if ( !CheckToken() )  return false;
     if ( !Compile() )  return false;
@@ -3669,8 +3674,8 @@ bool CScript::ReadScript(const char* filename)
     if ( file == NULL )  return false;
     fclose(file);
 
-    delete m_script;
-    m_script = 0;
+    delete[] m_script;
+    m_script = nullptr;
 
     edit = m_interface->CreateEdit(Math::Point(0.0f, 0.0f), Math::Point(0.0f, 0.0f), 0, EVENT_EDIT9);
     edit->SetMaxChar(Ui::EDITSTUDIOMAX);
@@ -3697,7 +3702,7 @@ bool CScript::WriteScript(const char* filename)
         name = filename;
     }
 
-    if ( m_script == 0 )
+    if ( m_script == nullptr )
     {
         remove(filename);
         return false;
