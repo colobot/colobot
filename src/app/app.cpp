@@ -285,48 +285,7 @@ bool CApplication::Create()
         return false;
     }
 
-    /* Gettext initialization */
-
-    std::string locale = "";
-    switch (m_language)
-    {
-        default:
-        case LANGUAGE_ENV:
-            locale = "";
-            break;
-
-        case LANGUAGE_ENGLISH:
-            locale = "en_US.utf8";
-            break;
-
-        case LANGUAGE_GERMAN:
-            locale = "de_DE.utf8";
-            break;
-
-        case LANGUAGE_FRENCH:
-            locale = "fr_FR.utf8";
-            break;
-
-        case LANGUAGE_POLISH:
-            locale = "pl_PL.utf8";
-            break;
-    }
-
-    if (!locale.empty())
-    {
-        std::string langStr = "LANG=";
-        langStr += locale;
-        strcpy(S_LANGUAGE, langStr.c_str());
-        putenv(S_LANGUAGE);
-    }
-    setlocale(LC_ALL, "");
-    GetLogger()->Debug("Set locale to '%s'\n", locale.c_str());
-
-    bindtextdomain("colobot", COLOBOT_I18N_DIR);
-    bind_textdomain_codeset("colobot", "UTF-8");
-    textdomain("colobot");
-
-    GetLogger()->Debug("Testing gettext translation: '%s'\n", gettext("Colobot rules!"));
+    SetLanguage(m_language);
 
     //Create the sound instance.
     if (!GetProfile().InitCurrentDirectory())
@@ -1456,6 +1415,53 @@ Language CApplication::GetLanguage()
 void CApplication::SetLanguage(Language language)
 {
     m_language = language;
+
+    /* Gettext initialization */
+
+    std::string locale = "";
+    switch (m_language)
+    {
+        default:
+        case LANGUAGE_ENV:
+            locale = "";
+            break;
+
+        case LANGUAGE_ENGLISH:
+            locale = "en_US.utf8";
+            break;
+
+        case LANGUAGE_GERMAN:
+            locale = "de_DE.utf8";
+            break;
+
+        case LANGUAGE_FRENCH:
+            locale = "fr_FR.utf8";
+            break;
+
+        case LANGUAGE_POLISH:
+            locale = "pl_PL.utf8";
+            break;
+    }
+
+    if (locale.empty())
+    {
+        GetLogger()->Trace("SetLanguage: Inherit LANGUAGE=%s from environment\n", getenv("LANGUAGE"));
+    }
+    else
+    {
+        std::string langStr = "LANGUAGE=";
+        langStr += locale;
+        strcpy(S_LANGUAGE, langStr.c_str());
+        putenv(S_LANGUAGE);
+        GetLogger()->Trace("SetLanguage: Set LANGUAGE=%s in environment\n", locale.c_str());
+    }
+    setlocale(LC_ALL, "");
+
+    bindtextdomain("colobot", COLOBOT_I18N_DIR);
+    bind_textdomain_codeset("colobot", "UTF-8");
+    textdomain("colobot");
+
+    GetLogger()->Debug("SetLanguage: Test gettext translation: '%s'\n", gettext("Colobot rules!"));
 }
 
 void CApplication::SetLowCPU(bool low)
