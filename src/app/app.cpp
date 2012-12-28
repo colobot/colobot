@@ -1412,6 +1412,32 @@ Language CApplication::GetLanguage()
     return m_language;
 }
 
+char CApplication::GetLanguageChar()
+{
+    char langChar = 'E';
+    switch (m_language)
+    {
+        default:
+        case LANGUAGE_ENV:
+        case LANGUAGE_ENGLISH:
+            langChar = 'E';
+            break;
+
+        case LANGUAGE_GERMAN:
+            langChar = 'D';
+            break;
+
+        case LANGUAGE_FRENCH:
+            langChar = 'F';
+            break;
+
+        case LANGUAGE_POLISH:
+            langChar = 'P';
+            break;
+    }
+    return langChar;
+}
+
 void CApplication::SetLanguage(Language language)
 {
     m_language = language;
@@ -1445,7 +1471,24 @@ void CApplication::SetLanguage(Language language)
 
     if (locale.empty())
     {
-        GetLogger()->Trace("SetLanguage: Inherit LANGUAGE=%s from environment\n", getenv("LANGUAGE"));
+        char *envLang = getenv("LANGUAGE");
+        if (strncmp(envLang,"en",2) == 0)
+        {
+           m_language = LANGUAGE_ENGLISH;
+        }
+        else if (strncmp(envLang,"de",2) == 0)
+        {
+           m_language = LANGUAGE_GERMAN;
+        }
+        else if (strncmp(envLang,"fr",2) == 0)
+        {
+           m_language = LANGUAGE_FRENCH;
+        }
+        else if (strncmp(envLang,"po",2) == 0)
+        {
+           m_language = LANGUAGE_POLISH;
+        }
+        GetLogger()->Trace("SetLanguage: Inherit LANGUAGE=%s from environment\n", envLang);
     }
     else
     {
