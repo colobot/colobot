@@ -703,7 +703,7 @@ void CEngine::DeleteObject(int objRank)
 
 void CEngine::SetObjectBaseRank(int objRank, int baseObjRank)
 {
-    assert(objRank >= 0 && objRank < static_cast<int>( m_objects.size() ));
+    assert(objRank == -1 || (objRank >= 0 && objRank < static_cast<int>( m_objects.size() )));
 
     m_objects[objRank].baseObjRank = baseObjRank;
 }
@@ -770,6 +770,9 @@ void CEngine::GetObjectBBox(int objRank, Math::Vector& min, Math::Vector& max)
     assert(objRank >= 0 && objRank < static_cast<int>( m_objects.size() ));
 
     int baseObjRank = m_objects[objRank].baseObjRank;
+    if (baseObjRank == -1)
+        return;
+
     assert(baseObjRank >= 0 && baseObjRank < static_cast<int>(m_baseObjects.size()));
 
     min = m_baseObjects[baseObjRank].bboxMin;
@@ -782,6 +785,9 @@ int CEngine::GetObjectTotalTriangles(int objRank)
     assert(objRank >= 0 && objRank < static_cast<int>( m_objects.size() ));
 
     int baseObjRank = m_objects[objRank].baseObjRank;
+    if (baseObjRank == -1)
+        return 0;
+
     assert(baseObjRank >= 0 && baseObjRank < static_cast<int>( m_baseObjects.size() ));
 
     return m_baseObjects[baseObjRank].totalTriangles;
@@ -794,6 +800,9 @@ EngineBaseObjDataTier* CEngine::FindTriangles(int objRank, const Material& mater
     assert(objRank >= 0 && objRank < static_cast<int>( m_objects.size() ));
 
     int baseObjRank = m_objects[objRank].baseObjRank;
+    if (baseObjRank == -1)
+        return nullptr;
+
     assert(baseObjRank >= 0 && baseObjRank < static_cast<int>( m_baseObjects.size() ));
 
     EngineBaseObject& p1 = m_baseObjects[baseObjRank];
@@ -834,6 +843,9 @@ int CEngine::GetPartialTriangles(int objRank, float min, float max, float percen
     assert(objRank >= 0 && objRank < static_cast<int>( m_objects.size() ));
 
     int baseObjRank = m_objects[objRank].baseObjRank;
+    if (baseObjRank == -1)
+        return 0;
+
     assert(baseObjRank >= 0 && baseObjRank < static_cast<int>( m_baseObjects.size() ));
 
     EngineBaseObject& p1 = m_baseObjects[baseObjRank];
@@ -981,6 +993,9 @@ void CEngine::ChangeSecondTexture(int objRank, const std::string& tex2Name)
     assert(objRank >= 0 && objRank < static_cast<int>( m_objects.size() ));
 
     int baseObjRank = m_objects[objRank].baseObjRank;
+    if (baseObjRank == -1)
+        return;
+
     assert(baseObjRank >= 0 && baseObjRank < static_cast<int>( m_baseObjects.size() ));
 
     EngineBaseObject& p1 = m_baseObjects[baseObjRank];
@@ -1344,6 +1359,9 @@ bool CEngine::GetBBox2D(int objRank, Math::Point &min, Math::Point &max)
     max.y = -1000000.0f;
 
     int baseObjRank = m_objects[objRank].baseObjRank;
+    if (baseObjRank == -1)
+        return false;
+
     assert(baseObjRank >= 0 && baseObjRank < static_cast<int>( m_baseObjects.size() ));
 
     EngineBaseObject& p1 = m_baseObjects[baseObjRank];
@@ -1613,6 +1631,9 @@ bool CEngine::DetectBBox(int objRank, Math::Point mouse)
     assert(objRank >= 0 && objRank < static_cast<int>(m_objects.size()));
 
     int baseObjRank = m_objects[objRank].baseObjRank;
+    if (baseObjRank == -1)
+        return false;
+
     assert(baseObjRank >= 0 && baseObjRank < static_cast<int>(m_baseObjects.size()));
 
     EngineBaseObject& p1 = m_baseObjects[baseObjRank];
@@ -1667,6 +1688,9 @@ int CEngine::DetectObject(Math::Point mouse)
             continue;
 
         int baseObjRank = m_objects[objRank].baseObjRank;
+        if (baseObjRank == -1)
+            continue;
+
         assert(baseObjRank >= 0 && baseObjRank < static_cast<int>(m_baseObjects.size()));
 
         EngineBaseObject& p1 = m_baseObjects[baseObjRank];
@@ -1777,6 +1801,9 @@ bool CEngine::IsVisible(int objRank)
     assert(objRank >= 0 && objRank < static_cast<int>(m_objects.size()));
 
     int baseObjRank = m_objects[objRank].baseObjRank;
+    if (baseObjRank == -1)
+        return false;
+
     assert(baseObjRank >= 0 && baseObjRank < static_cast<int>(m_baseObjects.size()));
 
     float radius = m_baseObjects[baseObjRank].radius;
@@ -2172,6 +2199,9 @@ bool CEngine::LoadAllTextures()
             terrain = true;
 
         int baseObjRank = m_objects[objRank].baseObjRank;
+        if (baseObjRank == -1)
+            continue;
+
         assert(baseObjRank >= 0 && baseObjRank < static_cast<int>( m_baseObjects.size() ));
 
         EngineBaseObject& p1 = m_baseObjects[baseObjRank];
@@ -2988,6 +3018,9 @@ void CEngine::Draw3DScene()
                 continue;
 
             int baseObjRank = m_objects[objRank].baseObjRank;
+            if (baseObjRank == -1)
+                continue;
+
             assert(baseObjRank >= 0 && baseObjRank < static_cast<int>( m_baseObjects.size() ));
 
             EngineBaseObject& p1 = m_baseObjects[baseObjRank];
@@ -3051,6 +3084,9 @@ void CEngine::Draw3DScene()
             continue;
 
         int baseObjRank = m_objects[objRank].baseObjRank;
+        if (baseObjRank == -1)
+            continue;
+
         assert(baseObjRank >= 0 && baseObjRank < static_cast<int>( m_baseObjects.size() ));
 
         EngineBaseObject& p1 = m_baseObjects[baseObjRank];
@@ -3117,6 +3153,9 @@ void CEngine::Draw3DScene()
                 continue;
 
             int baseObjRank = m_objects[objRank].baseObjRank;
+            if (baseObjRank == -1)
+                continue;
+
             assert(baseObjRank >= 0 && baseObjRank < static_cast<int>( m_baseObjects.size() ));
 
             EngineBaseObject& p1 = m_baseObjects[baseObjRank];
@@ -3267,6 +3306,9 @@ void CEngine::DrawInterface()
                 continue;
 
             int baseObjRank = m_objects[objRank].baseObjRank;
+            if (baseObjRank == -1)
+                continue;
+
             assert(baseObjRank >= 0 && baseObjRank < static_cast<int>( m_baseObjects.size() ));
 
             EngineBaseObject& p1 = m_baseObjects[baseObjRank];

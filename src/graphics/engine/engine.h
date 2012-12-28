@@ -621,9 +621,9 @@ struct EngineMouse
  * object equals to allocating space for EngineObject structure which holds object parameters.
  *
  * Object's geometric data is stored as a separate object -- base engine object. Each object
- * must reference a valid base engine object. This many-to-one association allows to share
- * same geometric data (e.g. from same model) across objects. Base engine objects are identified
- * by unique rank obtained upon their creation.
+ * must reference a valid base engine object or an empty base engine object (with rank = -1).
+ * This many-to-one association allows to share same geometric data (e.g. from same model)
+ * across objects.
  *
  * Base engine object data is stored in a 4-tier tree which splits the data describing triangles.
  *
