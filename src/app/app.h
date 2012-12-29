@@ -294,6 +294,7 @@ public:
     //! Management of language
     //@{
     Language    GetLanguage();
+    char        GetLanguageChar();
     void        SetLanguage(Language language);
     //@}
 
