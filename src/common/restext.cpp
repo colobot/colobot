@@ -17,6 +17,8 @@
 
 #include "common/restext.h"
 
+#include "common/config.h"
+
 #include "common/global.h"
 #include "common/event.h"
 #include "common/logger.h"
@@ -39,7 +41,7 @@ const char* stringsCbot[TX_MAX]         = { nullptr };
 
 void InitializeRestext()
 {
-    stringsText[RT_VERSION_ID]       = "Colobot Gold";
+    stringsText[RT_VERSION_ID]       = COLOBOT_FULLNAME;
 
     stringsText[RT_DISINFO_TITLE]    = "SatCom";
     stringsText[RT_WINDOW_MAXIMIZED] = "Maximize";

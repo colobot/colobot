@@ -7,6 +7,32 @@ cmake_minimum_required(VERSION 2.8)
 
 project(colobot C CXX)
 
+##
+# Project version
+##
+set(COLOBOT_VERSION_CODENAME "Gold")
+set(COLOBOT_VERSION_MAJOR    0)
+set(COLOBOT_VERSION_MINOR    1)
+set(COLOBOT_VERSION_REVISION 0)
+
+# Comment out when releasing
+set(COLOBOT_VERSION_UNRELEASED "~pre-alpha")
+
+# Append git characteristics to version
+if(DEFINED COLOBOT_VERSION_UNRELEASED AND EXISTS "${CMAKE_SOURCE_DIR}/.git")
+	find_package(Git)
+	execute_process(COMMAND ${GIT_EXECUTABLE} rev-parse --abbrev-ref HEAD
+			OUTPUT_VARIABLE GIT_BRANCH
+			OUTPUT_STRIP_TRAILING_WHITESPACE)
+	execute_process(COMMAND ${GIT_EXECUTABLE} rev-parse --short HEAD
+			OUTPUT_VARIABLE GIT_REVISION
+			OUTPUT_STRIP_TRAILING_WHITESPACE)
+	set(COLOBOT_VERSION_UNRELEASED "${COLOBOT_VERSION_UNRELEASED}-git-${GIT_BRANCH}~r${GIT_REVISION}")
+endif()
+
+set(COLOBOT_VERSION_FULL "${COLOBOT_VERSION_MAJOR}.${COLOBOT_VERSION_MINOR}.${COLOBOT_VERSION_REVISION}${COLOBOT_VERSION_UNRELEASED}")
+message(STATUS "Building Colobot \"${COLOBOT_VERSION_CODENAME}\" (${COLOBOT_VERSION_FULL})")
+
 # Include cmake directory with some additional scripts
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${colobot_SOURCE_DIR}/cmake")
 
