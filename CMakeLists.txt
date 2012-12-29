@@ -153,7 +153,7 @@ if(${TESTS})
     add_definitions(-DTEST_VIRTUAL=virtual)
     enable_testing()
 else()
-    add_definitions(-DTEST_VIRTUAL)
+    add_definitions(-DTEST_VIRTUAL=)
 endif()
 
 
