@@ -39,7 +39,7 @@ Channel::~Channel() {
         alSourcei(mSource, AL_BUFFER, 0);
         alDeleteSources(1, &mSource);
         if (alCheck())
-            GetLogger()->Warn("Failed to delete sound source. Code: %s\n", alGetCode());
+            GetLogger()->Warn("Failed to delete sound source. Code: %d\n", alGetCode());
     }
 }
 
@@ -50,7 +50,7 @@ bool Channel::Play() {
     
     alSourcePlay(mSource);
     if (alCheck())
-        GetLogger()->Warn("Could not play audio sound source. Code: %s\n", alGetCode());
+        GetLogger()->Warn("Could not play audio sound source. Code: %d\n", alGetCode());
     return true;
 }
 
@@ -61,7 +61,7 @@ bool Channel::SetPosition(Math::Vector pos) {
     
     alSource3f(mSource, AL_POSITION, pos.x, pos.y, pos.z);
     if (alCheck()) {
-        GetLogger()->Warn("Could not set sound position. Code: %s\n", alGetCode());
+        GetLogger()->Warn("Could not set sound position. Code: %d\n", alGetCode());
         return false;
     }
     return true;
@@ -75,7 +75,7 @@ bool Channel::SetFrequency(float freq)
 
     alSourcef(mSource, AL_PITCH, freq);
     if (alCheck()) {
-        GetLogger()->Warn("Could not set sound pitch. Code: %s\n", alGetCode());
+        GetLogger()->Warn("Could not set sound pitch to '%f'. Code: %d\n", freq, alGetCode());
         return false;
     }
     return true;
@@ -90,7 +90,7 @@ float Channel::GetFrequency()
     
     alGetSourcef(mSource, AL_PITCH, &freq);
     if (alCheck()) {
-        GetLogger()->Warn("Could not get sound pitch. Code: %s\n", alGetCode());
+        GetLogger()->Warn("Could not get sound pitch. Code: %d\n", alGetCode());
         return 0;
     }
 
@@ -105,7 +105,7 @@ bool Channel::SetVolume(float vol)
     
     alSourcef(mSource, AL_GAIN, vol / MAXVOLUME);
     if (alCheck()) {
-        GetLogger()->Warn("Could not set sound volume. Code: %s\n", alGetCode());
+        GetLogger()->Warn("Could not set sound volume to '%f'. Code: %d\n", vol, alGetCode());
         return false;
     }
     return true;
@@ -120,7 +120,7 @@ float Channel::GetVolume()
     
     alGetSourcef(mSource, AL_GAIN, &vol);
     if (alCheck()) {
-        GetLogger()->Warn("Could not get sound volume. Code: %s\n", alGetCode());
+        GetLogger()->Warn("Could not get sound volume. Code: %d\n", alGetCode());
         return 0;
     }
 
@@ -213,7 +213,7 @@ bool Channel::SetBuffer(Buffer *buffer) {
     mBuffer = buffer;
     alSourcei(mSource, AL_BUFFER, buffer->GetBuffer());
     if (alCheck()) {
-        GetLogger()->Warn("Could not set sound buffer. Code: %s\n", alGetCode());
+        GetLogger()->Warn("Could not set sound buffer. Code: %d\n", alGetCode());
         return false;
     }
     mInitFrequency = GetFrequency();
@@ -237,7 +237,7 @@ bool Channel::IsPlaying() {
     
     alGetSourcei(mSource, AL_SOURCE_STATE, &status);
     if (alCheck()) {
-        GetLogger()->Warn("Could not get sound status. Code: %s\n", alGetCode());
+        GetLogger()->Warn("Could not get sound status. Code: %d\n", alGetCode());
         return false;
     }
 
@@ -253,7 +253,7 @@ bool Channel::IsReady() {
 bool Channel::Stop() {
     alSourceStop(mSource);
     if (alCheck()) {
-        GetLogger()->Warn("Could not stop sound. Code: %s\n", alGetCode());
+        GetLogger()->Warn("Could not stop sound. Code: %d\n", alGetCode());
         return false;
     }
     return true;
@@ -265,7 +265,7 @@ float Channel::GetCurrentTime()
     ALfloat current;
     alGetSourcef(mSource, AL_SEC_OFFSET, &current);
     if (alCheck()) {
-        GetLogger()->Warn("Could not get source current play time. Code: %s\n", alGetCode());
+        GetLogger()->Warn("Could not get source current play time. Code: %d\n", alGetCode());
         return 0.0f;
     }
     return current;
@@ -276,7 +276,7 @@ void Channel::SetCurrentTime(float current)
 {
     alSourcef(mSource, AL_SEC_OFFSET, current);
     if (alCheck())
-        GetLogger()->Warn("Could not get source current play time. Code: %s\n", alGetCode());
+        GetLogger()->Warn("Could not get source current play time. Code: %d\n", alGetCode());
 }
 
 

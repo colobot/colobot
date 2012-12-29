@@ -285,15 +285,16 @@ public:
     //! Returns the full path to data directory
     std::string GetDataDirPath();
 
-    //! Returns the full path to a file in data directory given standard dir and subpath
-    std::string GetDataFilePath(DataDir dir, const std::string &subpath);
+    //! Returns the full path to a standard dir in data directory
+    std::string GetDataSubdirPath(DataDir stdDir);
 
-    //! Returns the full path to a file in data directory given custom subpath in data dir
-    std::string GetDataFilePath(const std::string &subpath);
+    //! Returns the full path to a file in data directory given standard dir and subpath
+    std::string GetDataFilePath(DataDir stdDir, const std::string &subpath);
 
     //! Management of language
     //@{
     Language    GetLanguage();
+    char        GetLanguageChar();
     void        SetLanguage(Language language);
     //@}
 

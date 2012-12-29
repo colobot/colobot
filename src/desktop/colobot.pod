@@ -1,0 +1,47 @@
+=encoding utf8
+
+=head1 COLOBOT
+
+colobot - educational programming strategy game
+
+=head1 SYNOPSIS
+
+B<colobot> [B<-datadir> I<path>] [B<-debug>] [B<-loglevel> I<level>] [B<-language> I<lang>]
+
+=head1 DESCRIPTION
+
+Colobot (Colonize with Bots) is an educational game aiming to teach
+programming through entertainment. You are playing as an astronaut on a
+journey with robot helpers to find a planet for colonization. It features 3D
+real-time graphics and a C++ and Java-like, object-oriented language, CBOT,
+which can be used to program the robots available in the game.
+
+=head1 OPTIONS
+
+=over 8
+
+=item B<-help>
+
+Display a short help text
+
+=item B<-datadir> F</path/to/data/>
+
+Set custom data directory path
+
+=item B<-debug>
+
+Enable debug mode (more info printed in logs)
+
+=item B<-loglevel> I<level>
+
+Set log level. Possible choices are: trace, debug, info, warn, error, none.
+
+=item B<-language> I<lang>
+
+Set language. Note that you can also fill the B<LANG> environment variable.
+
+=back
+
+=head1 AUTHOR
+
+This manpage was written by Didier Raboud <S<odyx@debian.org>>.
