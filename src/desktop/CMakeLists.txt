@@ -53,6 +53,7 @@ if(POD2MAN)
                    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${PM_PODFILE}
                    COMMAND ${POD2MAN} ARGS --section=${COLOBOT_MANPAGE_SECTION}
                                       --center="Colobot" --stderr --utf8
+                                      --release="${COLOBOT_VERSION_FULL}"
                                       ${CMAKE_CURRENT_SOURCE_DIR}/${PM_PODFILE}
                                       ${CMAKE_CURRENT_BINARY_DIR}${SLASHLOCALE}/colobot.${COLOBOT_MANPAGE_SECTION}
 		   COMMENT "Create ${SLASHLOCALE}/colobot.${COLOBOT_MANPAGE_SECTION} manpage"
