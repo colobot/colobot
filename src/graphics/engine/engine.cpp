@@ -459,145 +459,82 @@ int CEngine::GetStatisticTriangle()
                    Object management
  *******************************************************/
 
-EngineBaseObjTexTier& CEngine::AddLevel2(int baseObjRank, const std::string& tex1Name, const std::string& tex2Name)
+EngineBaseObjTexTier& CEngine::AddLevel2(EngineBaseObject& p1, const std::string& tex1Name, const std::string& tex2Name)
 {
-    bool unusedPresent = false;
-    for (int i = 0; i < static_cast<int>( m_baseObjects[baseObjRank].next.size() ); i++)
+    for (int i = 0; i < static_cast<int>( p1.next.size() ); i++)
     {
-        if (! m_baseObjects[baseObjRank].next[i].used)
-        {
-            unusedPresent = true;
-            continue;
-        }
-
-        if (m_baseObjects[baseObjRank].next[i].tex1Name == tex1Name && m_baseObjects[baseObjRank].next[i].tex2Name == tex2Name)
-            return m_baseObjects[baseObjRank].next[i];
+        if (p1.next[i].tex1Name == tex1Name && p1.next[i].tex2Name == tex2Name)
+            return p1.next[i];
     }
 
-    if (unusedPresent)
-    {
-        for (int i = 0; i < static_cast<int>( m_baseObjects[baseObjRank].next.size() ); i++)
-        {
-            if (! m_baseObjects[baseObjRank].next[i].used)
-            {
-                m_baseObjects[baseObjRank].next[i].used = true;
-                m_baseObjects[baseObjRank].next[i].tex1Name = tex1Name;
-                m_baseObjects[baseObjRank].next[i].tex2Name = tex2Name;
-                return m_baseObjects[baseObjRank].next[i];
-            }
-        }
-    }
-
-    m_baseObjects[baseObjRank].next.push_back(EngineBaseObjTexTier(true, tex1Name, tex2Name));
-    return m_baseObjects[baseObjRank].next.back();
+    p1.next.push_back(EngineBaseObjTexTier(tex1Name, tex2Name));
+    return p1.next.back();
 }
 
 EngineBaseObjLODTier& CEngine::AddLevel3(EngineBaseObjTexTier& p2, float min, float max)
 {
-    bool unusedPresent = false;
     for (int i = 0; i < static_cast<int>( p2.next.size() ); i++)
     {
-        if (! p2.next[i].used)
-        {
-            unusedPresent = true;
-            continue;
-        }
-
         if ( (p2.next[i].min == min) && (p2.next[i].max == max) )
             return p2.next[i];
     }
 
-    if (unusedPresent)
-    {
-        for (int i = 0; i < static_cast<int>( p2.next.size() ); i++)
-        {
-            if (! p2.next[i].used)
-            {
-                p2.next[i].used = true;
-                p2.next[i].min = min;
-                p2.next[i].max = max;
-                return p2.next[i];
-            }
-        }
-    }
-
-    p2.next.push_back(EngineBaseObjLODTier(true, min, max));
+    p2.next.push_back(EngineBaseObjLODTier(min, max));
     return p2.next.back();
 }
 
 EngineBaseObjDataTier& CEngine::AddLevel4(EngineBaseObjLODTier& p3, EngineTriangleType type,
                                           const Material& material, int state)
 {
-    bool unusedPresent = false;
     for (int i = 0; i < static_cast<int>( p3.next.size() ); i++)
     {
-        if (! p3.next[i].used)
-        {
-            unusedPresent = true;
-            continue;
-        }
-
         if ( (p3.next[i].type == type) && (p3.next[i].material == material) && (p3.next[i].state == state) )
             return p3.next[i];
     }
 
-    if (unusedPresent)
-    {
-        for (int i = 0; i < static_cast<int>( p3.next.size() ); i++)
-        {
-            if (! p3.next[i].used)
-            {
-                p3.next[i].used = true;
-                p3.next[i].type = type;
-                p3.next[i].material = material;
-                p3.next[i].state = state;
-                return p3.next[i];
-            }
-        }
-    }
-
-    p3.next.push_back(EngineBaseObjDataTier(true, type, material, state));
+    p3.next.push_back(EngineBaseObjDataTier(type, material, state));
     return p3.next.back();
 }
 
 int CEngine::CreateBaseObject()
 {
-    int i = 0;
-    for ( ; i < static_cast<int>( m_baseObjects.size() ); i++)
+    int baseObjRank = 0;
+    for ( ; baseObjRank < static_cast<int>( m_baseObjects.size() ); baseObjRank++)
     {
-        if (! m_baseObjects[i].used)
+        if (! m_baseObjects[baseObjRank].used)
         {
-            m_baseObjects[i].LoadDefault();
+            m_baseObjects[baseObjRank].LoadDefault();
             break;
         }
     }
 
-    if (i == static_cast<int>( m_baseObjects.size() ))
+    if (baseObjRank == static_cast<int>( m_baseObjects.size() ))
         m_baseObjects.push_back(EngineBaseObject());
     else
-        m_baseObjects[i].LoadDefault();
+        m_baseObjects[baseObjRank].LoadDefault();
 
 
-    m_baseObjects[i].used = true;
+    m_baseObjects[baseObjRank].used = true;
 
-    return i;
+    return baseObjRank;
 }
 
 void CEngine::DeleteBaseObject(int baseObjRank)
 {
-    assert(baseObjRank < -1 || baseObjRank >= static_cast<int>( m_baseObjects.size() ));
+    assert(baseObjRank >= 0 && baseObjRank < static_cast<int>( m_baseObjects.size() ));
 
-    for (int l2 = 0; l2 < static_cast<int>( m_baseObjects[baseObjRank].next.size() ); l2++)
+    EngineBaseObject& p1 = m_baseObjects[baseObjRank];
+
+    if (! p1.used)
+        return;
+
+    for (int l2 = 0; l2 < static_cast<int>( p1.next.size() ); l2++)
     {
-        EngineBaseObjTexTier& p2 = m_baseObjects[baseObjRank].next[l2];
-        if (! p2.used)
-            continue;
+        EngineBaseObjTexTier& p2 = p1.next[l2];
 
         for (int l3 = 0; l3 < static_cast<int>( p2.next.size() ); l3++)
         {
             EngineBaseObjLODTier& p3 = p2.next[l3];
-            if (! p3.used)
-                continue;
 
             for (int l4 = 0; l4 < static_cast<int>( p3.next.size() ); l4++)
             {
@@ -607,10 +544,11 @@ void CEngine::DeleteBaseObject(int baseObjRank)
                 p4.staticBufferId = 0;
             }
         }
-
-        p2.used = false;
-        p2.next.clear();
     }
+
+    p1.next.clear();
+
+    p1.used = false;
 }
 
 void CEngine::DeleteAllBaseObjects()
@@ -638,7 +576,8 @@ void CEngine::AddBaseObjTriangles(int baseObjRank, const std::vector<VertexTex2>
     m_lastObjectDetail = m_objectDetail;
     m_lastClippingDistance = m_clippingDistance;
 
-    EngineBaseObjTexTier&  p2 = AddLevel2(baseObjRank, tex1Name, tex2Name);
+    EngineBaseObject&      p1 = m_baseObjects[baseObjRank];
+    EngineBaseObjTexTier&  p2 = AddLevel2(p1, tex1Name, tex2Name);
     EngineBaseObjLODTier&  p3 = AddLevel3(p2, min, max);
     EngineBaseObjDataTier& p4 = AddLevel4(p3, triangleType, material, state);
 
@@ -655,22 +594,21 @@ void CEngine::AddBaseObjTriangles(int baseObjRank, const std::vector<VertexTex2>
     {
         for (int i = 0; i < static_cast<int>( vertices.size() ); i++)
         {
-            m_baseObjects[baseObjRank].bboxMin.x = Math::Min(vertices[i].coord.x, m_baseObjects[baseObjRank].bboxMin.x);
-            m_baseObjects[baseObjRank].bboxMin.y = Math::Min(vertices[i].coord.y, m_baseObjects[baseObjRank].bboxMin.y);
-            m_baseObjects[baseObjRank].bboxMin.z = Math::Min(vertices[i].coord.z, m_baseObjects[baseObjRank].bboxMin.z);
-            m_baseObjects[baseObjRank].bboxMax.x = Math::Max(vertices[i].coord.x, m_baseObjects[baseObjRank].bboxMax.x);
-            m_baseObjects[baseObjRank].bboxMax.y = Math::Max(vertices[i].coord.y, m_baseObjects[baseObjRank].bboxMax.y);
-            m_baseObjects[baseObjRank].bboxMax.z = Math::Max(vertices[i].coord.z, m_baseObjects[baseObjRank].bboxMax.z);
+            p1.bboxMin.x = Math::Min(vertices[i].coord.x, p1.bboxMin.x);
+            p1.bboxMin.y = Math::Min(vertices[i].coord.y, p1.bboxMin.y);
+            p1.bboxMin.z = Math::Min(vertices[i].coord.z, p1.bboxMin.z);
+            p1.bboxMax.x = Math::Max(vertices[i].coord.x, p1.bboxMax.x);
+            p1.bboxMax.y = Math::Max(vertices[i].coord.y, p1.bboxMax.y);
+            p1.bboxMax.z = Math::Max(vertices[i].coord.z, p1.bboxMax.z);
         }
 
-        m_baseObjects[baseObjRank].radius = Math::Max(m_baseObjects[baseObjRank].bboxMin.Length(),
-                                                      m_baseObjects[baseObjRank].bboxMax.Length());
+        p1.radius = Math::Max(p1.bboxMin.Length(), p1.bboxMax.Length());
     }
 
     if (triangleType == ENG_TRIANGLE_TYPE_TRIANGLES)
-        m_baseObjects[baseObjRank].totalTriangles += vertices.size() / 3;
+        p1.totalTriangles += vertices.size() / 3;
     else
-        m_baseObjects[baseObjRank].totalTriangles += vertices.size() - 2;
+        p1.totalTriangles += vertices.size() - 2;
 }
 
 void CEngine::AddBaseObjQuick(int baseObjRank, const EngineBaseObjDataTier& buffer,
@@ -679,17 +617,15 @@ void CEngine::AddBaseObjQuick(int baseObjRank, const EngineBaseObjDataTier& buff
 {
     assert(baseObjRank >= 0 && baseObjRank < static_cast<int>( m_baseObjects.size() ));
 
-    EngineBaseObjTexTier&  p2 = AddLevel2(baseObjRank, tex1Name, tex2Name);
+    EngineBaseObject&      p1 = m_baseObjects[baseObjRank];
+    EngineBaseObjTexTier&  p2 = AddLevel2(p1, tex1Name, tex2Name);
     EngineBaseObjLODTier&  p3 = AddLevel3(p2, min, max);
 
     p3.next.push_back(buffer);
 
     EngineBaseObjDataTier& p4 = p3.next.back();
 
-    p4.used = true;
-
-    p4.updateStaticBuffer = true;
-    m_updateStaticBuffers = true;
+    UpdateStaticBuffer(p4);
 
     if (globalUpdate)
     {
@@ -699,52 +635,51 @@ void CEngine::AddBaseObjQuick(int baseObjRank, const EngineBaseObjDataTier& buff
     {
         for (int i = 0; i < static_cast<int>( p4.vertices.size() ); i++)
         {
-            m_baseObjects[baseObjRank].bboxMin.x = Math::Min(p4.vertices[i].coord.x, m_baseObjects[baseObjRank].bboxMin.x);
-            m_baseObjects[baseObjRank].bboxMin.y = Math::Min(p4.vertices[i].coord.y, m_baseObjects[baseObjRank].bboxMin.y);
-            m_baseObjects[baseObjRank].bboxMin.z = Math::Min(p4.vertices[i].coord.z, m_baseObjects[baseObjRank].bboxMin.z);
-            m_baseObjects[baseObjRank].bboxMax.x = Math::Max(p4.vertices[i].coord.x, m_baseObjects[baseObjRank].bboxMax.x);
-            m_baseObjects[baseObjRank].bboxMax.y = Math::Max(p4.vertices[i].coord.y, m_baseObjects[baseObjRank].bboxMax.y);
-            m_baseObjects[baseObjRank].bboxMax.z = Math::Max(p4.vertices[i].coord.z, m_baseObjects[baseObjRank].bboxMax.z);
+            p1.bboxMin.x = Math::Min(p4.vertices[i].coord.x, p1.bboxMin.x);
+            p1.bboxMin.y = Math::Min(p4.vertices[i].coord.y, p1.bboxMin.y);
+            p1.bboxMin.z = Math::Min(p4.vertices[i].coord.z, p1.bboxMin.z);
+            p1.bboxMax.x = Math::Max(p4.vertices[i].coord.x, p1.bboxMax.x);
+            p1.bboxMax.y = Math::Max(p4.vertices[i].coord.y, p1.bboxMax.y);
+            p1.bboxMax.z = Math::Max(p4.vertices[i].coord.z, p1.bboxMax.z);
         }
 
-        m_baseObjects[baseObjRank].radius = Math::Max(m_baseObjects[baseObjRank].bboxMin.Length(),
-                                                      m_baseObjects[baseObjRank].bboxMax.Length());
+        p1.radius = Math::Max(p1.bboxMin.Length(), p1.bboxMax.Length());
     }
 
     if (p4.type == ENG_TRIANGLE_TYPE_TRIANGLES)
-        m_baseObjects[baseObjRank].totalTriangles += p4.vertices.size() / 3;
+        p1.totalTriangles += p4.vertices.size() / 3;
     else if (p4.type == ENG_TRIANGLE_TYPE_SURFACE)
-        m_baseObjects[baseObjRank].totalTriangles += p4.vertices.size() - 2;
+        p1.totalTriangles += p4.vertices.size() - 2;
 }
 
 
 int CEngine::CreateObject()
 {
-    int i = 0;
-    for ( ; i < static_cast<int>( m_objects.size() ); i++)
+    int objRank = 0;
+    for ( ; objRank < static_cast<int>( m_objects.size() ); objRank++)
     {
-        if (! m_objects[i].used)
+        if (! m_objects[objRank].used)
         {
-            m_objects[i].LoadDefault();
+            m_objects[objRank].LoadDefault();
             break;
         }
     }
 
-    if (i == static_cast<int>( m_objects.size() ))
+    if (objRank == static_cast<int>( m_objects.size() ))
         m_objects.push_back(EngineObject());
 
 
-    m_objects[i].used = true;
+    m_objects[objRank].used = true;
 
     Math::Matrix mat;
     mat.LoadIdentity();
-    SetObjectTransform(i, mat);
+    SetObjectTransform(objRank, mat);
 
-    m_objects[i].drawWorld = true;
-    m_objects[i].distance = 0.0f;
-    m_objects[i].shadowRank = -1;
+    m_objects[objRank].drawWorld = true;
+    m_objects[objRank].distance = 0.0f;
+    m_objects[objRank].shadowRank = -1;
 
-    return i;
+    return objRank;
 }
 
 void CEngine::DeleteAllObjects()
@@ -768,7 +703,7 @@ void CEngine::DeleteObject(int objRank)
 
 void CEngine::SetObjectBaseRank(int objRank, int baseObjRank)
 {
-    assert(objRank >= 0 && objRank < static_cast<int>( m_objects.size() ));
+    assert(objRank == -1 || (objRank >= 0 && objRank < static_cast<int>( m_objects.size() )));
 
     m_objects[objRank].baseObjRank = baseObjRank;
 }
@@ -835,6 +770,9 @@ void CEngine::GetObjectBBox(int objRank, Math::Vector& min, Math::Vector& max)
     assert(objRank >= 0 && objRank < static_cast<int>( m_objects.size() ));
 
     int baseObjRank = m_objects[objRank].baseObjRank;
+    if (baseObjRank == -1)
+        return;
+
     assert(baseObjRank >= 0 && baseObjRank < static_cast<int>(m_baseObjects.size()));
 
     min = m_baseObjects[baseObjRank].bboxMin;
@@ -847,6 +785,9 @@ int CEngine::GetObjectTotalTriangles(int objRank)
     assert(objRank >= 0 && objRank < static_cast<int>( m_objects.size() ));
 
     int baseObjRank = m_objects[objRank].baseObjRank;
+    if (baseObjRank == -1)
+        return 0;
+
     assert(baseObjRank >= 0 && baseObjRank < static_cast<int>( m_baseObjects.size() ));
 
     return m_baseObjects[baseObjRank].totalTriangles;
@@ -859,13 +800,16 @@ EngineBaseObjDataTier* CEngine::FindTriangles(int objRank, const Material& mater
     assert(objRank >= 0 && objRank < static_cast<int>( m_objects.size() ));
 
     int baseObjRank = m_objects[objRank].baseObjRank;
+    if (baseObjRank == -1)
+        return nullptr;
+
     assert(baseObjRank >= 0 && baseObjRank < static_cast<int>( m_baseObjects.size() ));
 
-    for (int l2 = 0; l2 < static_cast<int>( m_baseObjects[baseObjRank].next.size() ); l2++)
+    EngineBaseObject& p1 = m_baseObjects[baseObjRank];
+
+    for (int l2 = 0; l2 < static_cast<int>( p1.next.size() ); l2++)
     {
-        EngineBaseObjTexTier& p2 = m_baseObjects[baseObjRank].next[l2];
-        if (! p2.used)
-            continue;
+        EngineBaseObjTexTier& p2 = p1.next[l2];
 
         if (p2.tex1Name != tex1Name)
             continue;
@@ -873,8 +817,6 @@ EngineBaseObjDataTier* CEngine::FindTriangles(int objRank, const Material& mater
         for (int l3 = 0; l3 < static_cast<int>( p2.next.size() ); l3++)
         {
             EngineBaseObjLODTier& p3 = p2.next[l3];
-            if (! p3.used)
-                continue;
 
             if (p3.min != min || p3.max != max)
                 continue;
@@ -882,8 +824,6 @@ EngineBaseObjDataTier* CEngine::FindTriangles(int objRank, const Material& mater
             for (int l4 = 0; l4 < static_cast<int>( p3.next.size() ); l4++)
             {
                 EngineBaseObjDataTier& p4 = p3.next[l4];
-                if (! p4.used)
-                    continue;
 
                 if ( (p4.state & (~(ENG_RSTATE_DUAL_BLACK|ENG_RSTATE_DUAL_WHITE))) != state ||
                       p4.material != material )
@@ -903,25 +843,26 @@ int CEngine::GetPartialTriangles(int objRank, float min, float max, float percen
     assert(objRank >= 0 && objRank < static_cast<int>( m_objects.size() ));
 
     int baseObjRank = m_objects[objRank].baseObjRank;
+    if (baseObjRank == -1)
+        return 0;
+
     assert(baseObjRank >= 0 && baseObjRank < static_cast<int>( m_baseObjects.size() ));
 
-    int total = m_baseObjects[baseObjRank].totalTriangles;
+    EngineBaseObject& p1 = m_baseObjects[baseObjRank];
+
+    int total = p1.totalTriangles;
     int expectedCount = static_cast<int>(percent * total);
     triangles.reserve(Math::Min(maxCount, expectedCount));
 
     int actualCount = 0;
 
-    for (int l2 = 0; l2 < static_cast<int>( m_baseObjects[baseObjRank].next.size() ); l2++)
+    for (int l2 = 0; l2 < static_cast<int>( p1.next.size() ); l2++)
     {
-        EngineBaseObjTexTier& p2 = m_baseObjects[baseObjRank].next[l2];
-        if (! p2.used)
-            continue;
+        EngineBaseObjTexTier& p2 = p1.next[l2];
 
         for (int l3 = 0; l3 < static_cast<int>( p2.next.size() ); l3++)
         {
             EngineBaseObjLODTier& p3 = p2.next[l3];
-            if (! p3.used)
-                continue;
 
             if (p3.min != min || p3.max != max)
                 continue;
@@ -929,8 +870,6 @@ int CEngine::GetPartialTriangles(int objRank, float min, float max, float percen
             for (int l4 = 0; l4 < static_cast<int>( p3.next.size() ); l4++)
             {
                 EngineBaseObjDataTier& p4 = p3.next[l4];
-                if (! p4.used)
-                    continue;
 
                 if (p4.type == ENG_TRIANGLE_TYPE_TRIANGLES)
                 {
@@ -1006,20 +945,18 @@ void CEngine::ChangeLOD()
 
     for (int baseObjRank = 0; baseObjRank < static_cast<int>( m_baseObjects.size() ); baseObjRank++)
     {
-        if (! m_baseObjects[baseObjRank].used)
+        EngineBaseObject& p1 = m_baseObjects[baseObjRank];
+
+        if (! p1.used)
             continue;
 
-        for (int l2 = 0; l2 < static_cast<int>( m_baseObjects[baseObjRank].next.size() ); l2++)
+        for (int l2 = 0; l2 < static_cast<int>( p1.next.size() ); l2++)
         {
-            EngineBaseObjTexTier& p2 = m_baseObjects[baseObjRank].next[l2];
-            if (! p2.used)
-                continue;
+            EngineBaseObjTexTier& p2 = p1.next[l2];
 
             for (int l3 = 0; l3 < static_cast<int>( p2.next.size() ); l3++)
             {
                 EngineBaseObjLODTier& p3 = p2.next[l3];
-                if (! p3.used)
-                    continue;
 
                 if ( Math::IsEqual(p3.min, 0.0f       ) &&
                      Math::IsEqual(p3.max, oldLimit[0]) )
@@ -1056,22 +993,22 @@ void CEngine::ChangeSecondTexture(int objRank, const std::string& tex2Name)
     assert(objRank >= 0 && objRank < static_cast<int>( m_objects.size() ));
 
     int baseObjRank = m_objects[objRank].baseObjRank;
+    if (baseObjRank == -1)
+        return;
+
     assert(baseObjRank >= 0 && baseObjRank < static_cast<int>( m_baseObjects.size() ));
-    
+
     EngineBaseObject& p1 = m_baseObjects[baseObjRank];
 
     for (int l2 = 0; l2 < static_cast<int>( p1.next.size() ); l2++)
     {
         EngineBaseObjTexTier& p2 = p1.next[l2];
-        if (! p2.used)
-            continue;
 
         if (p2.tex2Name == tex2Name)
             continue;  // already new
 
-        EngineBaseObjTexTier& newP2 = AddLevel2(baseObjRank, p2.tex1Name, tex2Name);
+        EngineBaseObjTexTier& newP2 = AddLevel2(p1, p2.tex1Name, tex2Name);
         newP2.next.swap(p2.next);
-        p2.used = false;
     }
 }
 
@@ -1143,7 +1080,7 @@ void CEngine::TrackTextureMapping(int objRank, const Material& mat, int state,
                                   float pos, float factor, float tl, float ts, float tt)
 {
     assert(objRank >= 0 && objRank < static_cast<int>( m_objects.size() ));
-    
+
     EngineBaseObjDataTier* p4 = FindTriangles(objRank, mat, state, tex1Name, tex2Name, min, max);
     if (p4 == nullptr)
         return;
@@ -1422,18 +1359,23 @@ bool CEngine::GetBBox2D(int objRank, Math::Point &min, Math::Point &max)
     max.y = -1000000.0f;
 
     int baseObjRank = m_objects[objRank].baseObjRank;
+    if (baseObjRank == -1)
+        return false;
+
     assert(baseObjRank >= 0 && baseObjRank < static_cast<int>( m_baseObjects.size() ));
+
+    EngineBaseObject& p1 = m_baseObjects[baseObjRank];
 
     for (int i = 0; i < 8; i++)
     {
         Math::Vector p;
 
-        if ( i & (1<<0) )  p.x = m_baseObjects[baseObjRank].bboxMin.x;
-        else               p.x = m_baseObjects[baseObjRank].bboxMax.x;
-        if ( i & (1<<1) )  p.y = m_baseObjects[baseObjRank].bboxMin.y;
-        else               p.y = m_baseObjects[baseObjRank].bboxMax.y;
-        if ( i & (1<<2) )  p.z = m_baseObjects[baseObjRank].bboxMin.z;
-        else               p.z = m_baseObjects[baseObjRank].bboxMax.z;
+        if ( i & (1<<0) )  p.x = p1.bboxMin.x;
+        else               p.x = p1.bboxMax.x;
+        if ( i & (1<<1) )  p.y = p1.bboxMin.y;
+        else               p.y = p1.bboxMax.y;
+        if ( i & (1<<2) )  p.z = p1.bboxMin.z;
+        else               p.z = p1.bboxMax.z;
 
         Math::Vector pp;
         if (TransformPoint(pp, objRank, p))
@@ -1598,20 +1540,14 @@ void CEngine::UpdateGeometry()
         for (int l2 = 0; l2 < static_cast<int>( p1.next.size() ); l2++)
         {
             EngineBaseObjTexTier& p2 = p1.next[l2];
-            if (! p2.used)
-                continue;
 
             for (int l3 = 0; l3 < static_cast<int>( p2.next.size() ); l3++)
             {
                 EngineBaseObjLODTier& p3 = p2.next[l3];
-                if (! p3.used)
-                    continue;
 
                 for (int l4 = 0; l4 < static_cast<int>( p3.next.size() ); l4++)
                 {
                     EngineBaseObjDataTier& p4 = p3.next[l4];
-                    if (! p4.used)
-                        continue;
 
                     for (int i = 0; i < static_cast<int>( p4.vertices.size() ); i++)
                     {
@@ -1664,20 +1600,14 @@ void CEngine::UpdateStaticBuffers()
         for (int l2 = 0; l2 < static_cast<int>( p1.next.size() ); l2++)
         {
             EngineBaseObjTexTier& p2 = p1.next[l2];
-            if (! p2.used)
-                continue;
 
             for (int l3 = 0; l3 < static_cast<int>( p2.next.size() ); l3++)
             {
                 EngineBaseObjLODTier& p3 = p2.next[l3];
-                if (! p3.used)
-                    continue;
 
                 for (int l4 = 0; l4 < static_cast<int>( p3.next.size() ); l4++)
                 {
                     EngineBaseObjDataTier& p4 = p3.next[l4];
-                    if (! p4.used)
-                        continue;
 
                     if (! p4.updateStaticBuffer)
                         continue;
@@ -1701,7 +1631,12 @@ bool CEngine::DetectBBox(int objRank, Math::Point mouse)
     assert(objRank >= 0 && objRank < static_cast<int>(m_objects.size()));
 
     int baseObjRank = m_objects[objRank].baseObjRank;
+    if (baseObjRank == -1)
+        return false;
+
     assert(baseObjRank >= 0 && baseObjRank < static_cast<int>(m_baseObjects.size()));
+
+    EngineBaseObject& p1 = m_baseObjects[baseObjRank];
 
     Math::Point min, max;
     min.x =  1000000.0f;
@@ -1713,12 +1648,12 @@ bool CEngine::DetectBBox(int objRank, Math::Point mouse)
     {
         Math::Vector p;
 
-        if ( i & (1<<0) )  p.x = m_baseObjects[baseObjRank].bboxMin.x;
-        else               p.x = m_baseObjects[baseObjRank].bboxMax.x;
-        if ( i & (1<<1) )  p.y = m_baseObjects[baseObjRank].bboxMin.y;
-        else               p.y = m_baseObjects[baseObjRank].bboxMax.y;
-        if ( i & (1<<2) )  p.z = m_baseObjects[baseObjRank].bboxMin.z;
-        else               p.z = m_baseObjects[baseObjRank].bboxMax.z;
+        if ( i & (1<<0) )  p.x = p1.bboxMin.x;
+        else               p.x = p1.bboxMax.x;
+        if ( i & (1<<1) )  p.y = p1.bboxMin.y;
+        else               p.y = p1.bboxMax.y;
+        if ( i & (1<<2) )  p.z = p1.bboxMin.z;
+        else               p.z = p1.bboxMax.z;
 
         Math::Vector pp;
         if ( TransformPoint(pp, objRank, p) )
@@ -1753,6 +1688,9 @@ int CEngine::DetectObject(Math::Point mouse)
             continue;
 
         int baseObjRank = m_objects[objRank].baseObjRank;
+        if (baseObjRank == -1)
+            continue;
+
         assert(baseObjRank >= 0 && baseObjRank < static_cast<int>(m_baseObjects.size()));
 
         EngineBaseObject& p1 = m_baseObjects[baseObjRank];
@@ -1762,14 +1700,10 @@ int CEngine::DetectObject(Math::Point mouse)
         for (int l2 = 0; l2 < static_cast<int>( p1.next.size() ); l2++)
         {
             EngineBaseObjTexTier& p2 = p1.next[l2];
-            if (! p2.used)
-                continue;
 
             for (int l3 = 0; l3 < static_cast<int>( p2.next.size() ); l3++)
             {
                 EngineBaseObjLODTier& p3 = p2.next[l3];
-                if (! p3.used)
-                    continue;
 
                 if (p3.min != 0.0f)
                     continue;  // LOD B or C?
@@ -1777,8 +1711,6 @@ int CEngine::DetectObject(Math::Point mouse)
                 for (int l4 = 0; l4 < static_cast<int>( p3.next.size() ); l4++)
                 {
                     EngineBaseObjDataTier& p4 = p3.next[l4];
-                    if (! p4.used)
-                        continue;
 
                     if (p4.type == ENG_TRIANGLE_TYPE_TRIANGLES)
                     {
@@ -1869,6 +1801,9 @@ bool CEngine::IsVisible(int objRank)
     assert(objRank >= 0 && objRank < static_cast<int>(m_objects.size()));
 
     int baseObjRank = m_objects[objRank].baseObjRank;
+    if (baseObjRank == -1)
+        return false;
+
     assert(baseObjRank >= 0 && baseObjRank < static_cast<int>(m_baseObjects.size()));
 
     float radius = m_baseObjects[baseObjRank].radius;
@@ -2264,6 +2199,9 @@ bool CEngine::LoadAllTextures()
             terrain = true;
 
         int baseObjRank = m_objects[objRank].baseObjRank;
+        if (baseObjRank == -1)
+            continue;
+
         assert(baseObjRank >= 0 && baseObjRank < static_cast<int>( m_baseObjects.size() ));
 
         EngineBaseObject& p1 = m_baseObjects[baseObjRank];
@@ -2273,8 +2211,6 @@ bool CEngine::LoadAllTextures()
         for (int l2 = 0; l2 < static_cast<int>( p1.next.size() ); l2++)
         {
             EngineBaseObjTexTier& p2 = p1.next[l2];
-            if (! p2.used)
-                continue;
 
             if (! p2.tex1Name.empty())
             {
@@ -3082,8 +3018,11 @@ void CEngine::Draw3DScene()
                 continue;
 
             int baseObjRank = m_objects[objRank].baseObjRank;
+            if (baseObjRank == -1)
+                continue;
+
             assert(baseObjRank >= 0 && baseObjRank < static_cast<int>( m_baseObjects.size() ));
-            
+
             EngineBaseObject& p1 = m_baseObjects[baseObjRank];
             if (! p1.used)
                 continue;
@@ -3091,18 +3030,13 @@ void CEngine::Draw3DScene()
             for (int l2 = 0; l2 < static_cast<int>( p1.next.size() ); l2++)
             {
                 EngineBaseObjTexTier& p2 = p1.next[l2];
-                if (! p2.used)
-                    continue;
 
-                // Should be loaded by now
                 SetTexture(p2.tex1, 0);
                 SetTexture(p2.tex2, 1);
 
                 for (int l3 = 0; l3 < static_cast<int>( p2.next.size() ); l3++)
                 {
                     EngineBaseObjLODTier& p3 = p2.next[l3];
-                    if (! p3.used)
-                        continue;
 
                     if ( m_objects[objRank].distance <  p3.min ||
                          m_objects[objRank].distance >= p3.max )
@@ -3111,8 +3045,6 @@ void CEngine::Draw3DScene()
                     for (int l4 = 0; l4 < static_cast<int>( p3.next.size() ); l4++)
                     {
                         EngineBaseObjDataTier& p4 = p3.next[l4];
-                        if (! p4.used)
-                            continue;
 
                         SetMaterial(p4.material);
                         SetState(p4.state);
@@ -3152,6 +3084,9 @@ void CEngine::Draw3DScene()
             continue;
 
         int baseObjRank = m_objects[objRank].baseObjRank;
+        if (baseObjRank == -1)
+            continue;
+
         assert(baseObjRank >= 0 && baseObjRank < static_cast<int>( m_baseObjects.size() ));
 
         EngineBaseObject& p1 = m_baseObjects[baseObjRank];
@@ -3163,18 +3098,13 @@ void CEngine::Draw3DScene()
         for (int l2 = 0; l2 < static_cast<int>( p1.next.size() ); l2++)
         {
             EngineBaseObjTexTier& p2 = p1.next[l2];
-            if (! p2.used)
-                continue;
 
-            // Should be loaded by now
             SetTexture(p2.tex1, 0);
             SetTexture(p2.tex2, 1);
 
             for (int l3 = 0; l3 < static_cast<int>( p2.next.size() ); l3++)
             {
                 EngineBaseObjLODTier& p3 = p2.next[l3];
-                if (! p3.used)
-                    continue;
 
                 if ( m_objects[objRank].distance <  p3.min ||
                      m_objects[objRank].distance >= p3.max )
@@ -3183,8 +3113,6 @@ void CEngine::Draw3DScene()
                 for (int l4 = 0; l4 < static_cast<int>( p3.next.size() ); l4++)
                 {
                     EngineBaseObjDataTier& p4 = p3.next[l4];
-                    if (! p4.used)
-                        continue;
 
                     if (m_objects[objRank].transparency != 0.0f)  // transparent ?
                     {
@@ -3225,6 +3153,9 @@ void CEngine::Draw3DScene()
                 continue;
 
             int baseObjRank = m_objects[objRank].baseObjRank;
+            if (baseObjRank == -1)
+                continue;
+
             assert(baseObjRank >= 0 && baseObjRank < static_cast<int>( m_baseObjects.size() ));
 
             EngineBaseObject& p1 = m_baseObjects[baseObjRank];
@@ -3236,18 +3167,13 @@ void CEngine::Draw3DScene()
             for (int l2 = 0; l2 < static_cast<int>( p1.next.size() ); l2++)
             {
                 EngineBaseObjTexTier& p2 = p1.next[l2];
-                if (! p2.used)
-                    continue;
 
-                // Should be loaded by now
                 SetTexture(p2.tex1, 0);
                 SetTexture(p2.tex2, 1);
 
                 for (int l3 = 0; l3 < static_cast<int>( p2.next.size() ); l3++)
                 {
                     EngineBaseObjLODTier& p3 = p2.next[l3];
-                    if (! p3.used)
-                        continue;
 
                     if (m_objects[objRank].distance <  p3.min ||
                         m_objects[objRank].distance >= p3.max)
@@ -3256,8 +3182,6 @@ void CEngine::Draw3DScene()
                     for (int l4 = 0; l4 < static_cast<int>( p3.next.size() ); l4++)
                     {
                         EngineBaseObjDataTier& p4 = p3.next[l4];
-                        if (! p4.used)
-                            continue;
 
                         if (m_objects[objRank].transparency == 0.0f)
                             continue;
@@ -3382,6 +3306,9 @@ void CEngine::DrawInterface()
                 continue;
 
             int baseObjRank = m_objects[objRank].baseObjRank;
+            if (baseObjRank == -1)
+                continue;
+
             assert(baseObjRank >= 0 && baseObjRank < static_cast<int>( m_baseObjects.size() ));
 
             EngineBaseObject& p1 = m_baseObjects[baseObjRank];
@@ -3393,8 +3320,6 @@ void CEngine::DrawInterface()
             for (int l2 = 0; l2 < static_cast<int>( p1.next.size() ); l2++)
             {
                 EngineBaseObjTexTier& p2 = p1.next[l2];
-                if (! p2.used)
-                    continue;
 
                 SetTexture(p2.tex1, 0);
                 SetTexture(p2.tex2, 1);
@@ -3402,8 +3327,6 @@ void CEngine::DrawInterface()
                 for (int l3 = 0; l3 < static_cast<int>( p2.next.size() ); l3++)
                 {
                     EngineBaseObjLODTier& p3 = p2.next[l3];
-                    if (! p3.used)
-                        continue;
 
                     if (m_objects[objRank].distance <  p3.min ||
                         m_objects[objRank].distance >= p3.max)
@@ -3412,8 +3335,6 @@ void CEngine::DrawInterface()
                     for (int l4 = 0; l4 < static_cast<int>( p3.next.size() ); l4++)
                     {
                         EngineBaseObjDataTier& p4 = p3.next[l4];
-                        if (! p4.used)
-                            continue;
 
                         SetMaterial(p4.material);
                         SetState(p4.state);

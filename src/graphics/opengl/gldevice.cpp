@@ -1151,7 +1151,7 @@ void CGLDevice::DrawStaticBuffer(unsigned int bufferId)
             glEnableClientState(GL_NORMAL_ARRAY);
             glNormalPointer(GL_FLOAT, sizeof(Vertex), static_cast<char*>(nullptr) + offsetof(Vertex, normal));
 
-            glActiveTexture(GL_TEXTURE0);
+            glClientActiveTexture(GL_TEXTURE0);
             glEnableClientState(GL_TEXTURE_COORD_ARRAY);
             glTexCoordPointer(2, GL_FLOAT, sizeof(Vertex), static_cast<char*>(nullptr) + offsetof(Vertex, texCoord));
         }
