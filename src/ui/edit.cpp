@@ -21,6 +21,10 @@
 #include "ui/edit.h"
 
 #include <string.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <sys/wait.h>
+#include <unistd.h>
 
 namespace Ui {
 
@@ -380,6 +384,12 @@ bool CEdit::EventProcess(const Event &event)
             if ( event.key.key == KEY(DOWN) )
             {
                 MoveLine(1, bControl, bShift);
+                return true;
+            }
+
+            if ( event.key.key == KEY(F11) )
+            {
+                RunExternalEditor();
                 return true;
             }
 
@@ -1493,7 +1503,7 @@ bool CEdit::ReadText(const char *filename, int addSize)
 
     if ( m_format.size() > 0 )
         m_format.clear();
-    
+
     fclose(file);
 
     bInSoluce = false;
@@ -3295,6 +3305,65 @@ bool CEdit::UndoRecall()
     return true;
 }
 
+
+// Run external editor for editing control content. Suspend game execution until editor returns.
+
+void CEdit::RunExternalEditor() {
+    char* editor = getenv("COLOBOT_EDITOR");
+    if(!editor || std::strlen(editor) == 0) {
+        GetLogger()->Error("Environment variable COLOBOT_EDITOR not set.\n");
+        return;
+    }
+    GetLogger()->Info("Opening external editor.\n");
+    char buffer[EDITSTUDIOMAX + 1];
+    GetText(buffer, EDITSTUDIOMAX);
+    char* nameTemplate = strdup("/tmp/colobot_edit_XXXXXX");
+    // warning: may not work on windows
+    int fd = mkstemp(nameTemplate);
+    if(fd == -1) {
+        perror("mkstemp");
+        return;
+    }
+    if(write(fd, buffer, strlen(buffer)) == -1) {
+        perror("write");
+        return;
+    }
+    if(close(fd) == -1) {
+        perror("close");
+        return;
+    }
+
+    int pid = fork();
+    if(pid == -1) {
+        perror("fork");
+        return;
+    }
+
+    if(pid == 0) {
+        execlp(editor, editor, nameTemplate, NULL);
+    } else {
+        waitpid(pid, NULL, 0);
+    }
+
+    FILE* file = fopen(nameTemplate, "r");
+    if(file == NULL) {
+        perror("fopen");
+        return;
+    }
+    int readCount = fread(buffer, 1, EDITSTUDIOMAX, file);
+    if(readCount < 0) {
+        perror("fread");
+        return;
+    }
+    fclose(file);
+    buffer[readCount] = '\0';
+    SetText(buffer, false);
+
+    if(unlink(nameTemplate) == -1) {
+        perror("unlink");
+    }
+    free(nameTemplate);
+}
 
 // Clears the format of all characters.
 

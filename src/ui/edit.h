@@ -235,6 +235,8 @@ protected:
     void        UndoMemorize(OperUndo oper);
     bool        UndoRecall();
 
+    void        RunExternalEditor();
+
 protected:
     CScroll*    m_scroll;           // vertical scrollbar on the right
 
