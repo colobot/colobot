@@ -223,10 +223,13 @@ add_subdirectory(src bin)
 # Installation
 ##
 
-file(GLOB DATA_FILES "data/*")
-
-# Data
-install(DIRECTORY data/ DESTINATION ${COLOBOT_INSTALL_DATA_DIR})
+# Data: check if the submodule handles its own installation
+if(EXISTS "${CMAKE_SOURCE_DIR}/data/CMakeLists.txt")
+	message(STATUS "Data directory will install itself.")
+	add_subdirectory(data)
+else()
+	message(WARNING "Data directory is not available; make sure colobot-data is installed in ${COLOBOT_INSTALL_DATA_DIR}.")
+endif()
 
 # Documentation
 if(INSTALL_DOCS AND DOXYGEN_FOUND AND DOXYGEN_DOT_FOUND)
