@@ -23,8 +23,12 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include <sys/wait.h>
+
+// there seems to be no platform-independent way of spawning a process
 #include <unistd.h>
+#ifdef _POSIX_VERSION
+#include <sys/wait.h>
+#endif
 
 namespace Ui {
 
@@ -3309,6 +3313,7 @@ bool CEdit::UndoRecall()
 // Run external editor for editing control content. Suspend game execution until editor returns.
 
 void CEdit::RunExternalEditor() {
+#ifdef _POSIX_VERSION
     char* editor = getenv("COLOBOT_EDITOR");
     if(!editor || std::strlen(editor) == 0) {
         GetLogger()->Error("Environment variable COLOBOT_EDITOR not set.\n");
@@ -3363,6 +3368,9 @@ void CEdit::RunExternalEditor() {
         perror("unlink");
     }
     free(nameTemplate);
+#else
+    GetLogger()->Error("Launching external editor not supported on non-POSIX systems.\n");
+#endif
 }
 
 // Clears the format of all characters.
