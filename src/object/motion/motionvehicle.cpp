@@ -933,8 +933,8 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         pPower->SetObjectRank(0, rank);
 
-        if ( power <= 1.0f )  modelManager->AddModelReference("power.mod", false, rank);
-        else                  modelManager->AddModelReference("atomic.mod", false, rank);
+        if ( power <= 1.0f )  modelManager->AddModelCopy("power.mod", false, rank);
+        else                  modelManager->AddModelCopy("atomic.mod", false, rank);
 
         pPower->SetPosition(0, m_object->GetCharacter()->posPower);
         pPower->CreateCrashSphere(Math::Vector(0.0f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f);
