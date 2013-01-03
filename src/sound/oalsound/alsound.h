@@ -45,13 +45,13 @@ class ALSound : public CSoundInterface
         bool RetEnable();
 
         void SetSound3D(bool bMode);
-        bool RetSound3D();
-        bool RetSound3DCap();
+        bool GetSound3D();
+        bool GetSound3DCap();
 
         void SetAudioVolume(int volume);
-        int RetAudioVolume();
+        int GetAudioVolume();
         void SetMusicVolume(int volume);
-        int RetMusicVolume();
+        int GetMusicVolume();
 
         void SetListener(Math::Vector eye, Math::Vector lookat);
         void FrameMove(float rTime);
@@ -80,7 +80,7 @@ class ALSound : public CSoundInterface
 
     private:
         void CleanUp();
-        int RetPriority(Sound);
+        int GetPriority(Sound);
         bool SearchFreeBuffer(Sound sound, int &channel, bool &bAlreadyLoaded);
 
         bool mEnabled;

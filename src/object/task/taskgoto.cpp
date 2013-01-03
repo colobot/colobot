@@ -2119,7 +2119,7 @@ bool CTaskGoto::BitmapOpen()
     BitmapClose();
 
     m_bmSize = static_cast<int>(3200.0f/BM_DIM_STEP);
-    m_bmArray = static_cast<unsigned char*>(malloc(m_bmSize*m_bmSize/8*2));
+    m_bmArray = new unsigned char[m_bmSize*m_bmSize/8*2];
     memset(m_bmArray, 0, m_bmSize*m_bmSize/8*2);
 
     m_bmOffset = m_bmSize/2;
@@ -2137,7 +2137,7 @@ bool CTaskGoto::BitmapOpen()
 
 bool CTaskGoto::BitmapClose()
 {
-    free(m_bmArray);
+    delete[] m_bmArray;
     m_bmArray = 0;
     return true;
 }

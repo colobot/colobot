@@ -15,6 +15,7 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
+#include "common/config.h"
 
 #include "app/app.h"
 
@@ -30,15 +31,19 @@
 
 #include "object/robotmain.h"
 
+#include <boost/filesystem.hpp>
 
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
 
-#include <fstream>
-
 #include <stdlib.h>
 #include <libintl.h>
 #include <unistd.h>
+
+
+#ifdef OPENAL_SOUND
+    #include "sound/oalsound/alsound.h"
+#endif
 
 
 template<> CApplication* CSingleton<CApplication>::mInstance = nullptr;
@@ -90,7 +95,6 @@ CApplication::CApplication()
     m_private       = new ApplicationPrivate();
     m_iMan          = new CInstanceManager();
     m_eventQueue    = new CEventQueue(m_iMan);
-    m_pluginManager = new CPluginManager();
     m_profile       = new CProfile();
 
     m_engine    = nullptr;
@@ -138,9 +142,9 @@ CApplication::CApplication()
     m_mouseButtonsState = 0;
     m_trackedKeys = 0;
 
-    m_dataPath = "./data";
+    m_dataPath = COLOBOT_DEFAULT_DATADIR;
 
-    m_language = LANGUAGE_ENGLISH;
+    m_language = LANGUAGE_ENV;
 
     m_lowCPU = true;
 
@@ -150,7 +154,6 @@ CApplication::CApplication()
     m_dataDirs[DIR_AI]       = "ai";
     m_dataDirs[DIR_FONT]     = "fonts";
     m_dataDirs[DIR_HELP]     = "help";
-    m_dataDirs[DIR_I18N]     = "i18n";
     m_dataDirs[DIR_ICON]     = "icons";
     m_dataDirs[DIR_LEVEL]    = "levels";
     m_dataDirs[DIR_MODEL]    = "models";
@@ -166,9 +169,6 @@ CApplication::~CApplication()
 
     delete m_eventQueue;
     m_eventQueue = nullptr;
-
-    delete m_pluginManager;
-    m_pluginManager = nullptr;
 
     delete m_profile;
     m_profile = nullptr;
@@ -260,7 +260,7 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
         else if (arg == "-help")
         {
             GetLogger()->Message("\n");
-            GetLogger()->Message("COLOBOT GOLD pre-alpha\n");
+            GetLogger()->Message("Colobot %s (%s)\n",COLOBOT_CODENAME,COLOBOT_VERSION);
             GetLogger()->Message("\n");
             GetLogger()->Message("List of available options:\n");
             GetLogger()->Message("  -help            this help\n");
@@ -289,13 +289,10 @@ bool CApplication::Create()
 {
     GetLogger()->Info("Creating CApplication\n");
 
-    // I know, a primitive way to check for dir, but works
-    std::string readmePath = m_dataPath + "/README.txt";
-    std::ifstream testReadme;
-    testReadme.open(readmePath.c_str(), std::ios_base::in);
-    if (!testReadme.good())
+    boost::filesystem::path dataPath(m_dataPath);
+    if (! (boost::filesystem::exists(dataPath) && boost::filesystem::is_directory(dataPath)) )
     {
-        GetLogger()->Error("Could not open test file in data dir: '%s'\n", readmePath.c_str());
+        GetLogger()->Error("Data directory '%s' doesn't exist or is not a directory\n", m_dataPath.c_str());
         m_errorMessage = std::string("Could not read from data directory:\n") +
                          std::string("'") + m_dataPath + std::string("'\n") +
                          std::string("Please check your installation, or supply a valid data directory by -datadir option.");
@@ -303,66 +300,32 @@ bool CApplication::Create()
         return false;
     }
 
-    /* Gettext initialization */
-
-    std::string locale = "C";
-    switch (m_language)
-    {
-        case LANGUAGE_ENGLISH:
-            locale = "en_US.utf8";
-            break;
-
-        case LANGUAGE_GERMAN:
-            locale = "de_DE.utf8";
-            break;
-
-        case LANGUAGE_FRENCH:
-            locale = "fr_FR.utf8";
-            break;
-
-        case LANGUAGE_POLISH:
-            locale = "pl_PL.utf8";
-            break;
-    }
-
-    std::string langStr = "LANGUAGE=";
-    langStr += locale;
-    strcpy(S_LANGUAGE, langStr.c_str());
-    putenv(S_LANGUAGE);
-    setlocale(LC_ALL, locale.c_str());
-
-    std::string trPath = m_dataPath + "/" + m_dataDirs[DIR_I18N];
-    bindtextdomain("colobot", trPath.c_str());
-    bind_textdomain_codeset("colobot", "UTF-8");
-    textdomain("colobot");
-
-    GetLogger()->Debug("Testing gettext translation: '%s'\n", gettext("Colobot rules!"));
-
-    // Temporarily -- only in windowed mode
-    m_deviceConfig.fullScreen = false;
+    SetLanguage(m_language);
 
     //Create the sound instance.
-    if (!GetProfile().InitCurrentDirectory()) {
+    if (!GetProfile().InitCurrentDirectory())
+    {
         GetLogger()->Warn("Config not found. Default values will be used!\n");
         m_sound = new CSoundInterface();
-    } else {
+    }
+    else
+    {
         std::string path;
         if (GetProfile().GetLocalProfileString("Resources", "Data", path))
             m_dataPath = path;
 
-        m_pluginManager->LoadFromProfile();
-        m_sound = static_cast<CSoundInterface*>(CInstanceManager::GetInstancePointer()->SearchInstance(CLASS_SOUND));
-
-        if (!m_sound) {
-            GetLogger()->Error("Sound not loaded, falling back to fake sound!\n");
-            m_sound = new CSoundInterface();
-        }
+        #ifdef OPENAL_SOUND
+        m_sound = static_cast<CSoundInterface *>(new ALSound());
+        #else
+        GetLogger()->Info("No sound support.\n");
+        m_sound = new CSoundInterface();
+        #endif
 
         m_sound->Create(true);
         if (GetProfile().GetLocalProfileString("Resources", "Sound", path))
             m_sound->CacheAll(path);
         else
-            m_sound->CacheAll(m_dataPath);
+            m_sound->CacheAll(GetDataSubdirPath(DIR_SOUND));
     }
 
     std::string standardInfoMessage =
@@ -397,7 +360,20 @@ bool CApplication::Create()
         m_exitCode = 3;
         return false;
     }
-
+ 
+    // load settings from profile
+    int iValue;
+    if ( GetProfile().GetLocalProfileInt("Setup", "Resolution", iValue) ) {
+	std::vector<Math::IntPoint> modes;
+	GetVideoResolutionList(modes, true, true);
+	if (static_cast<unsigned int>(iValue) < modes.size())
+	    m_deviceConfig.size = modes.at(iValue);
+    }
+    
+    if ( GetProfile().GetLocalProfileInt("Setup", "Fullscreen", iValue) ) {
+	m_deviceConfig.fullScreen = (iValue == 1);
+    }
+    
     if (! CreateVideoSurface())
         return false; // dialog is in function
 
@@ -417,8 +393,7 @@ bool CApplication::Create()
 
     // Don't generate joystick events
     SDL_JoystickEventState(SDL_IGNORE);
-
-
+    
     // The video is ready, we can create and initalize the graphics device
     m_device = new Gfx::CGLDevice(m_deviceConfig);
     if (! m_device->Create() )
@@ -1459,9 +1434,20 @@ std::string CApplication::GetDataDirPath()
     return m_dataPath;
 }
 
-std::string CApplication::GetDataFilePath(DataDir dataDir, const std::string& subpath)
+std::string CApplication::GetDataSubdirPath(DataDir stdDir)
 {
-    int index = static_cast<int>(dataDir);
+    int index = static_cast<int>(stdDir);
+    assert(index >= 0 && index < DIR_MAX);
+    std::stringstream str;
+    str << m_dataPath;
+    str << "/";
+    str << m_dataDirs[index];
+    return str.str();
+}
+
+std::string CApplication::GetDataFilePath(DataDir stdDir, const std::string& subpath)
+{
+    int index = static_cast<int>(stdDir);
     assert(index >= 0 && index < DIR_MAX);
     std::stringstream str;
     str << m_dataPath;
@@ -1472,23 +1458,104 @@ std::string CApplication::GetDataFilePath(DataDir dataDir, const std::string& su
     return str.str();
 }
 
-std::string CApplication::GetDataFilePath(const std::string& subpath)
-{
-    std::stringstream str;
-    str << m_dataPath;
-    str << "/";
-    str << subpath;
-    return str.str();
-}
-
 Language CApplication::GetLanguage()
 {
     return m_language;
 }
 
+char CApplication::GetLanguageChar()
+{
+    char langChar = 'E';
+    switch (m_language)
+    {
+        default:
+        case LANGUAGE_ENV:
+        case LANGUAGE_ENGLISH:
+            langChar = 'E';
+            break;
+
+        case LANGUAGE_GERMAN:
+            langChar = 'D';
+            break;
+
+        case LANGUAGE_FRENCH:
+            langChar = 'F';
+            break;
+
+        case LANGUAGE_POLISH:
+            langChar = 'P';
+            break;
+    }
+    return langChar;
+}
+
 void CApplication::SetLanguage(Language language)
 {
     m_language = language;
+
+    /* Gettext initialization */
+
+    std::string locale = "";
+    switch (m_language)
+    {
+        default:
+        case LANGUAGE_ENV:
+            locale = "";
+            break;
+
+        case LANGUAGE_ENGLISH:
+            locale = "en_US.utf8";
+            break;
+
+        case LANGUAGE_GERMAN:
+            locale = "de_DE.utf8";
+            break;
+
+        case LANGUAGE_FRENCH:
+            locale = "fr_FR.utf8";
+            break;
+
+        case LANGUAGE_POLISH:
+            locale = "pl_PL.utf8";
+            break;
+    }
+
+    if (locale.empty())
+    {
+        char *envLang = getenv("LANGUAGE");
+        if (strncmp(envLang,"en",2) == 0)
+        {
+           m_language = LANGUAGE_ENGLISH;
+        }
+        else if (strncmp(envLang,"de",2) == 0)
+        {
+           m_language = LANGUAGE_GERMAN;
+        }
+        else if (strncmp(envLang,"fr",2) == 0)
+        {
+           m_language = LANGUAGE_FRENCH;
+        }
+        else if (strncmp(envLang,"po",2) == 0)
+        {
+           m_language = LANGUAGE_POLISH;
+        }
+        GetLogger()->Trace("SetLanguage: Inherit LANGUAGE=%s from environment\n", envLang);
+    }
+    else
+    {
+        std::string langStr = "LANGUAGE=";
+        langStr += locale;
+        strcpy(S_LANGUAGE, langStr.c_str());
+        putenv(S_LANGUAGE);
+        GetLogger()->Trace("SetLanguage: Set LANGUAGE=%s in environment\n", locale.c_str());
+    }
+    setlocale(LC_ALL, "");
+
+    bindtextdomain("colobot", COLOBOT_I18N_DIR);
+    bind_textdomain_codeset("colobot", "UTF-8");
+    textdomain("colobot");
+
+    GetLogger()->Debug("SetLanguage: Test gettext translation: '%s'\n", gettext("Colobot rules!"));
 }
 
 void CApplication::SetLowCPU(bool low)

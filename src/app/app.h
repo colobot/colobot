@@ -25,12 +25,11 @@
 
 #include "common/global.h"
 #include "common/singleton.h"
+#include "common/profile.h"
 
 #include "graphics/core/device.h"
 #include "graphics/engine/engine.h"
 #include "graphics/opengl/gldevice.h"
-
-#include "plugins/pluginmanager.h"
 
 
 #include <string>
@@ -312,15 +311,16 @@ public:
     //! Returns the full path to data directory
     std::string GetDataDirPath();
 
-    //! Returns the full path to a file in data directory given standard dir and subpath
-    std::string GetDataFilePath(DataDir dir, const std::string &subpath);
+    //! Returns the full path to a standard dir in data directory
+    std::string GetDataSubdirPath(DataDir stdDir);
 
-    //! Returns the full path to a file in data directory given custom subpath in data dir
-    std::string GetDataFilePath(const std::string &subpath);
+    //! Returns the full path to a file in data directory given standard dir and subpath
+    std::string GetDataFilePath(DataDir stdDir, const std::string &subpath);
 
     //! Management of language
     //@{
     Language    GetLanguage();
+    char        GetLanguageChar();
     void        SetLanguage(Language language);
     //@}
 
@@ -379,8 +379,6 @@ protected:
     CSoundInterface*        m_sound;
     //! Main class of the proper game engine
     CRobotMain*             m_robotMain;
-    //! Plugin manager
-    CPluginManager*         m_pluginManager;
     //! Profile (INI) reader/writer
     CProfile*               m_profile;
 

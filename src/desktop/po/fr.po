@@ -1,0 +1,153 @@
+# French translations for PACKAGE package
+# Copyright (C) 2012 Free Software Foundation, Inc.
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Didier Raboud <odyx@debian.org>, 2012.
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2012-12-27 10:55+0100\n"
+"PO-Revision-Date: 2012-12-27 11:00+0100\n"
+"Last-Translator: Didier Raboud <odyx@debian.org>\n"
+"Language-Team: none\n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: colobot.ini:1
+#, no-wrap
+msgid "Colobot"
+msgstr "Colobot"
+
+#: colobot.ini:2
+#, no-wrap
+msgid "Game to learn programming"
+msgstr "Apprentissage de la programmation par le jeu"
+
+#: colobot.ini:3
+#, no-wrap
+msgid "Colonize with bots"
+msgstr "Colonise avec des roBots"
+
+#. type: =head1
+#: colobot.pod:3
+msgid "COLOBOT"
+msgstr "COLOBOT"
+
+#. type: textblock
+#: colobot.pod:5
+msgid "colobot - educational programming strategy game"
+msgstr "colobot - Jeu éducatif de stratégie et de programmation"
+
+#. type: =head1
+#: colobot.pod:7
+msgid "SYNOPSIS"
+msgstr "RÉSUMÉ"
+
+#. type: textblock
+#: colobot.pod:9
+msgid ""
+"B<colobot> [B<-datadir> I<path>] [B<-debug>] [B<-loglevel> I<level>] [B<-"
+"language> I<lang>]"
+msgstr ""
+"B<colobot> [B<-datadir> I<chemin>] [B<-debug>] [B<-loglevel> I<niveau>] [B<-"
+"language> I<code-de-langue>]"
+
+#. type: =head1
+#: colobot.pod:11
+msgid "DESCRIPTION"
+msgstr "DESCRIPTION"
+
+#. type: textblock
+#: colobot.pod:13
+msgid ""
+"Colobot (Colonize with Bots) is an educational game aiming to teach "
+"programming through entertainment. You are playing as an astronaut on a "
+"journey with robot helpers to find a planet for colonization. It features 3D "
+"real-time graphics and a C++ and Java-like, object-oriented language, CBOT, "
+"which can be used to program the robots available in the game."
+msgstr ""
+"Colobot (Colonise avec des roBots) est un jeu éducatif visant à "
+"l'enseignement de la programmation par le jeu. Vous jouez un astronaute en "
+"voyage avec des robots à la recherche d'une planète à coloniser. Son "
+"interface est en trois-dimensions et en temps réel; le language utilisé "
+"(CBOT) ressemble au C++ et à Java et peut être utilisé pour programmer les "
+"robots disponibles dans le jeu."
+
+#. type: =head1
+#: colobot.pod:19
+msgid "OPTIONS"
+msgstr "OPTIONS"
+
+#. type: =item
+#: colobot.pod:23
+msgid "B<-help>"
+msgstr "B<-help>"
+
+#. type: textblock
+#: colobot.pod:25
+msgid "Display a short help text"
+msgstr "Affiche un court texte d'aide"
+
+#. type: =item
+#: colobot.pod:27
+msgid "B<-datadir> F</path/to/data/>"
+msgstr "B<-datadir> F</chemin/vers/les/donnes/>"
+
+#. type: textblock
+#: colobot.pod:29
+msgid "Set custom data directory path"
+msgstr "Définit le chemin vers un répertoire de données spécifique"
+
+#. type: =item
+#: colobot.pod:31
+msgid "B<-debug>"
+msgstr "B<-debug>"
+
+#. type: textblock
+#: colobot.pod:33
+msgid "Enable debug mode (more info printed in logs)"
+msgstr ""
+"Active le mode de déboguage (plus d'informations sont affichées dans le "
+"journal)"
+
+#. type: =item
+#: colobot.pod:35
+msgid "B<-loglevel> I<level>"
+msgstr "B<-loglevel> I<niveau>"
+
+#. type: textblock
+#: colobot.pod:37
+msgid ""
+"Set log level. Possible choices are: trace, debug, info, warn, error, none."
+msgstr ""
+"Définit le niveau de journalisation parmi: trace, debug, info, warn, error, "
+"none."
+
+#. type: =item
+#: colobot.pod:39
+msgid "B<-language> I<lang>"
+msgstr "B<-language> I<langue>"
+
+#. type: textblock
+#: colobot.pod:41
+msgid ""
+"Set language. Note that you can also fill the B<LANG> environment variable."
+msgstr ""
+"Définit la langue. Il est aussi possible d'utiliser la variable "
+"d'environnement B<LANG>."
+
+#. type: =head1
+#: colobot.pod:45
+msgid "AUTHOR"
+msgstr "Auteur"
+
+#. type: textblock
+#: colobot.pod:47
+msgid "This manpage was written by Didier Raboud <S<odyx@debian.org>>."
+msgstr ""
+"Cette page de manuel a été écrite et traduite par Didier Raboud "
+"<S<odyx@debian.org>>."
+

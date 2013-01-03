@@ -28,8 +28,6 @@
 #include "common/iman.h"
 #include "common/logger.h"
 
-#include "plugins/plugininterface.h"
-
 #include <string>
 #include <iostream>
 #include <iomanip>
@@ -152,7 +150,7 @@ enum SoundNext
 * \brief Sound plugin interface
 *
 */
-class CSoundInterface : public CPluginInterface
+class CSoundInterface
 {
   public:
     inline CSoundInterface() {
@@ -170,7 +168,7 @@ class CSoundInterface : public CPluginInterface
      *  Function calls \link CSoundInterface::Cache() \endlink for each file
      */
     inline void CacheAll(std::string path) {
-        for ( int i = 1; i < 69; i++ ) {
+        for ( int i = 1; i <= 81; i++ ) {
             std::stringstream filename;
             filename << path << "/sound" << std::setfill('0') << std::setw(3) << i << ".wav";
             if ( !Cache(static_cast<Sound>(i), filename.str()) )

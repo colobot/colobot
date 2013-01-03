@@ -234,6 +234,8 @@ protected:
     void        UndoFlush();
     void        UndoMemorize(OperUndo oper);
     bool        UndoRecall();
+    
+    void        UpdateScroll();
 
 protected:
     CScroll*    m_scroll;           // vertical scrollbar on the right

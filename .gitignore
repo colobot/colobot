@@ -1,9 +1,6 @@
 # Ignore the documentation folder
 /doc
 
-# We don't want anyone to checkin /data folder
-/data
-
 # Ignore local data
 /colobot.ini
 /savegame

@@ -243,7 +243,7 @@ bool CEdit::EventProcess(const Event &event)
         Scroll(m_lineFirst-3, true);
         return true;
     }
-    if (event.type == EVENT_KEY_DOWN  &&
+    if (event.type == EVENT_MOUSE_WHEEL  &&
         event.mouseWheel.dir == WHEEL_DOWN  &&
         Detect(event.mousePos)            )
     {
@@ -282,7 +282,7 @@ bool CEdit::EventProcess(const Event &event)
         }
     }
 
-    if ( m_scroll != 0 && !m_bGeneric )
+    if ( m_scroll != nullptr && !m_bGeneric )
     {
         m_scroll->EventProcess(event);
 
@@ -1248,7 +1248,7 @@ void CEdit::SetText(const char *text, bool bNew)
 {
     int     i, j, font;
     bool    bBOL;
-
+    
     if ( !bNew )  UndoMemorize(OPERUNDO_SPEC);
 
     m_len = strlen(text);
@@ -2172,11 +2172,11 @@ void CEdit::Scroll()
 {
     float   value;
 
-    if ( m_scroll != 0 )
+    if ( m_scroll != nullptr )
     {
         value = m_scroll->GetVisibleValue();
-        value *= m_lineTotal-m_lineVisible;
-        Scroll(static_cast<int>(value+0.5f), true);
+        value *= m_lineTotal - m_lineVisible;
+        Scroll(static_cast<int>(value + 0.5f), true);
     }
 }
 
@@ -3048,7 +3048,7 @@ bool CEdit::MinMaj(bool bMaj)
 
 void CEdit::Justif()
 {
-    float   width, value, size, indentLength;
+    float   width, size, indentLength;
     int     i, j, line, indent;
     bool    bDual, bString, bRem;
 
@@ -3176,26 +3176,7 @@ void CEdit::Justif()
         m_lineFirst = 0;
     }
 
-    if ( m_scroll != 0 )
-    {
-        if ( m_lineTotal <= m_lineVisible )
-        {
-            m_scroll->SetVisibleRatio(1.0f);
-            m_scroll->SetVisibleValue(0.0f);
-            m_scroll->SetArrowStep(0.0f);
-        }
-        else
-        {
-            value = static_cast<float>(m_lineVisible/m_lineTotal);
-            m_scroll->SetVisibleRatio(value);
-
-            value = static_cast<float>(m_lineFirst/(m_lineTotal-m_lineVisible));
-            m_scroll->SetVisibleValue(value);
-
-            value = static_cast<float>(1.0f/(m_lineTotal-m_lineVisible));
-            m_scroll->SetArrowStep(value);
-        }
-    }
+    UpdateScroll();
 
     m_timeBlink = 0.0f;  // lights the cursor immediately
 }
@@ -3326,5 +3307,30 @@ bool CEdit::SetFormat(int cursor1, int cursor2, int format)
     return true;
 }
 
+void CEdit::UpdateScroll()
+{
+    float value;
+    
+    if ( m_scroll != nullptr )
+    {
+        if ( m_lineTotal <= m_lineVisible )
+        {
+            m_scroll->SetVisibleRatio(1.0f);
+            m_scroll->SetVisibleValue(0.0f);
+            m_scroll->SetArrowStep(0.0f);
+        }
+        else
+        {
+            value = static_cast<float>(m_lineVisible) / m_lineTotal;
+            m_scroll->SetVisibleRatio(value);
+
+            value = static_cast<float>(m_lineFirst) / (m_lineTotal - m_lineVisible);
+            m_scroll->SetVisibleValue(value);
+
+            value = 1.0f / (m_lineTotal - m_lineVisible);
+            m_scroll->SetArrowStep(value);
+        }
+    }
+}
 
 }

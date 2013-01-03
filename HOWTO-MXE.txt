@@ -13,7 +13,7 @@ libraries and tools.
    so moving that directory can be tricky.
 
 3. `cd' to the MXE root directory.
-   It already contains a univeral Makefile for everything.
+   It already contains a universal Makefile for everything.
    Usage is simply `make [name_of_package]'.
    It will automatically check for dependencies, etc.
    The packages will be installed in the MXE directory in usr/.
@@ -61,4 +61,4 @@ libraries and tools.
    The exe is linked against all libraries *statically*, so there are no dependencies
    on external dlls. However, the resulting binary will be huge with all these libraries,
    so you should `strip bin/colobot.exe'.
-   
+

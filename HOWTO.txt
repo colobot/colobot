@@ -20,7 +20,7 @@ How to...
       http://www.cmake.org/cmake/resources/software.html (the Windows zip file)
      Unpack the contents of the archive to where MinGW is installed (files from bin/ should go into bin/, etc.)
   3. Download the following libraries, installing them in your MinGW directory like with CMake:
-     SDL >=1.2.10, SDL_imgage >= 1.2, SDL_ttf >= 2.0, libpng >= 1.2, GLEW >= 1.8.0, Boost >= 1.51 (with filesystem)
+     SDL >=1.2.10, SDL_image >= 1.2, SDL_ttf >= 2.0, libpng >= 1.2, GLEW >= 1.8.0, Boost >= 1.51 (with filesystem)
      Note #1: For most libraries, you can download binary packages with compiled files.
               However, you must ensure that they work with MinGW as some are built with MSVC
               and may be incompatible. If that is the case, you should compile the libraries from sources
@@ -37,7 +37,7 @@ How to...
 
   Since you're running Linux, you probably know how to do this anyway ;)
   But just in case, here's what you need:
-    gcc compiler (with gcc-g++), cmake, libraries with header files: SDL, SDL_image, SDL_ttf, libpng
+    gcc compiler (with gcc-g++), cmake, libraries with header files: SDL, SDL_image, SDL_ttf, libpng, boost
   Instructions are the same:
     $ cmake .
     $ make
@@ -66,7 +66,7 @@ Jak...
 
  1.1 Windows:
 
-  CROSS-KOMPILACJA: zobacz plik HOWTO-MXE.txt z instrukcjami jak cross-skompilować projekt używając
+  CROSS-KOMPILACJA: zobacz plik HOWTO-MXE.txt z instrukcjami (po angielsku) jak cross-skompilować projekt używając
                     MXE (http://mxe.cc/).
 
   UWAGA: obecnie występują problemy z kompilacją na Windowsie, głównie ze względu na konflikt w makrach,
@@ -79,14 +79,13 @@ Jak...
   2. Ściągamy i instalujemy CMake:
      http://www.cmake.org/cmake/resources/software.html (plik zip dla Windowsa)
      Zip rozpakowujemy do katalogu, gdzie zainstalowany jest MinGW (pliki z bin/ mają trafić do bin/ itd.).
-  3. Ścągamy następujące biblioteki i instalujemy je tam, gdzie MinGW, podobnie jak z CMake:
+  3. Ściągamy następujące biblioteki i instalujemy je tam, gdzie MinGW, podobnie jak z CMake:
      SDL >= 1.2.10, SDL_image >= 1.2, SDL_ttf >= 2.0, libpng >= 1.2, Boost >= 1.51 (wraz z filesystem)
      Uwaga #1: W większości wymienionych bibliotek można ściągnąć paczki binarne ze skompilowanymi plikami.
                Jednak musisz się upewnić, że pliki te będą współpracowały z MinGW, bo część z nich
                jest kompilowana MSVC i może być niezgodna. W takim wypadku, musisz skompilować bibliotekę
                ze źródeł pod MinGW.
-
-     Uwaga #2: W przypadku GLEW, musisz skompilować bibiotekę ze źródeł pod MinGW. Ponieważ nie ma skryptu
+     Uwaga #2: W przypadku GLEW, musisz skompilować bibliotekę ze źródeł pod MinGW. Ponieważ nie ma skryptu
                make do tego, użyj poleceń opisanych tutaj: http://stackoverflow.com/questions/6005076/
   4. Uruchamiamy MinGW console ze skrótu w menu start.
   5. Przechodzimy do katalogu, gdzie są źródła wpisując "cd /c/tam/gdzie/sa/zrodla"
@@ -96,9 +95,9 @@ Jak...
 
  1.2 Linux:
 
-  Skoro już masz Linuksa, to prawdpobodobnie wiesz co robić ;)
+  Skoro już masz Linuksa, to prawdopodobnie wiesz co robić ;)
   Ale na wszelki wypadek, potrzebujesz tego:
-    kompilator gcc (razem z gcc-g++), cmake, biblioteki wraz z nagłówkami: SDL, SDL_image, SDL_ttf, libpng
+    kompilator gcc (razem z gcc-g++), cmake, biblioteki wraz z nagłówkami: SDL, SDL_image, SDL_ttf, libpng, boost
   Polecenia są takie same:
     $ cmake .
     $ make

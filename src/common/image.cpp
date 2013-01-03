@@ -124,14 +124,14 @@ bool PNGSaveSurface(const char *filename, SDL_Surface *surf)
     png_write_info(png_ptr, info_ptr);
     png_set_packing(png_ptr);
 
-    row_pointers = static_cast<png_bytep*>( malloc(sizeof(png_bytep)*surf->h) );
+    row_pointers = new png_bytep[surf->h];
     for (i = 0; i < surf->h; i++)
         row_pointers[i] = static_cast<png_bytep>( static_cast<Uint8 *>(surf->pixels) ) + i*surf->pitch;
     png_write_image(png_ptr, row_pointers);
     png_write_end(png_ptr, info_ptr);
 
     /* Cleaning out... */
-    free(row_pointers);
+    delete[] row_pointers;
     png_destroy_write_struct(&png_ptr, &info_ptr);
     fclose(fp);
 

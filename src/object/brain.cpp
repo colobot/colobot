@@ -99,7 +99,7 @@ CBrain::CBrain(CInstanceManager* iMan, CObject* object)
     m_selScript = 0;
 
     m_bTraceRecord = false;
-    m_traceRecordBuffer = 0;
+    m_traceRecordBuffer = nullptr;
 }
 
 // Object's destructor.
@@ -111,12 +111,21 @@ CBrain::~CBrain()
     for ( i=0 ; i<BRAINMAXSCRIPT ; i++ )
     {
         delete m_script[i];
+        m_script[i] = nullptr;
     }
 
     delete m_primaryTask;
+    m_primaryTask = nullptr;
+
     delete m_secondaryTask;
+    m_secondaryTask = nullptr;
+
     delete m_studio;
-    delete m_traceRecordBuffer;
+    m_studio = nullptr;
+
+    delete[] m_traceRecordBuffer;
+    m_traceRecordBuffer = nullptr;
+
     m_iMan->DeleteInstance(CLASS_BRAIN, this);
 }
 
@@ -2791,8 +2800,8 @@ void CBrain::TraceRecordStart()
         m_traceColor = -1;
     }
 
-    delete m_traceRecordBuffer;
-    m_traceRecordBuffer = static_cast<TraceRecord*>(malloc(sizeof(TraceRecord)*MAXTRACERECORD));
+    delete[] m_traceRecordBuffer;
+    m_traceRecordBuffer = new TraceRecord[MAXTRACERECORD];
     m_traceRecordIndex = 0;
 }
 
@@ -2858,10 +2867,10 @@ void CBrain::TraceRecordStop()
     int         max, i;
     char*       buffer;
 
-    if ( m_traceRecordBuffer == 0 )  return;
+    if ( m_traceRecordBuffer == nullptr )  return;
 
     max = 10000;
-    buffer = static_cast<char*>(malloc(max));
+    buffer = new char[max];
     *buffer = 0;
     strncat(buffer, "extern void object::AutoDraw()\n{\n", max-1);
 
@@ -2892,8 +2901,8 @@ void CBrain::TraceRecordStop()
     }
     TraceRecordPut(buffer, max, lastOper, lastParam);
 
-    delete m_traceRecordBuffer;
-    m_traceRecordBuffer = 0;
+    delete[] m_traceRecordBuffer;
+    m_traceRecordBuffer = nullptr;
 
     strncat(buffer, "}\n", max-1);
     buffer[max-1] = 0;
@@ -2904,7 +2913,7 @@ void CBrain::TraceRecordStop()
         m_script[i] = new CScript(m_iMan, m_object, &m_secondaryTask);
     }
     m_script[i]->SendScript(buffer);
-    delete buffer;
+    delete[] buffer;
 }
 
 // Saves an instruction CBOT.

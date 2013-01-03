@@ -165,6 +165,7 @@ enum Error
  */
 enum Language
 {
+    LANGUAGE_ENV = -1,
     LANGUAGE_ENGLISH = 0,
     LANGUAGE_FRENCH = 1,
     LANGUAGE_GERMAN = 2,
@@ -180,7 +181,6 @@ enum DataDir
     DIR_AI,       //! < ai scripts
     DIR_FONT,     //! < fonts
     DIR_HELP,     //! < help files
-    DIR_I18N,     //! < translations
     DIR_ICON,     //! < icons & images
     DIR_LEVEL,    //! < levels
     DIR_MODEL,    //! < models

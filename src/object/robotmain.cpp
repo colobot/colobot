@@ -3793,6 +3793,8 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
     int rankObj = 0;
     int rankGadget = 0;
     CObject* sel = 0;
+    char *locale = setlocale(LC_NUMERIC, nullptr);
+    setlocale(LC_NUMERIC, "C");
 
     while (fgets(line, 500, file) != NULL)
     {
@@ -3806,16 +3808,16 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             }
         }
 
-        // TODO: language letters
-        sprintf(op, "Title.%c", 'E' /*GetLanguageLetter()*/);
+        // TODO: Fallback to an non-localized entry
+        sprintf(op, "Title.%c", m_app->GetLanguageChar());
         if (Cmd(line, op) && !resetObject)
             OpString(line, "text", m_title);
 
-        sprintf(op, "Resume.%c", 'E' /*GetLanguageLetter()*/);
+        sprintf(op, "Resume.%c", m_app->GetLanguageChar());
         if (Cmd(line, op) && !resetObject)
             OpString(line, "text", m_resume);
 
-        sprintf(op, "ScriptName.%c", 'E' /*GetLanguageLetter()*/);
+        sprintf(op, "ScriptName.%c", m_app->GetLanguageChar());
         if (Cmd(line, op) && !resetObject)
             OpString(line, "text", m_scriptName);
 
@@ -4526,6 +4528,8 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
     }
     m_dialog->SetSceneRead("");
     m_dialog->SetStackRead("");
+    
+    setlocale(LC_NUMERIC, locale);
 }
 
 //! Creates an object of decoration mobile or stationary
