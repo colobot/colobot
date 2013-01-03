@@ -1181,7 +1181,7 @@ void CGLDevice::DrawStaticBuffer(unsigned int bufferId)
         }
 
         GLenum mode = TranslateGfxPrimitive((*it).second.primitiveType);
-        glDrawArrays(GL_TRIANGLES, 0, (*it).second.vertexCount);
+        glDrawArrays(mode, 0, (*it).second.vertexCount);
 
         if ((*it).second.vertexType == VERTEX_TYPE_NORMAL)
         {
