@@ -46,7 +46,7 @@ struct CachedFont
 };
 
 
-
+const Math::IntPoint REFERENCE_SIZE(800, 600);
 
 
 CText::CText(CInstanceManager *iMan, CEngine* engine)
@@ -147,6 +147,10 @@ void CText::FlushCache()
             f->cache.clear();
         }
     }
+
+    m_lastFontType = FONT_COLOBOT;
+    m_lastFontSize = 0;
+    m_lastCachedFont = nullptr;
 }
 
 void CText::DrawText(const std::string &text, std::map<unsigned int, FontMetaChar> &format,
@@ -723,8 +727,8 @@ void CText::DrawCharAndAdjustPos(UTF8Char ch, FontType font, float size, Math::P
 
 CachedFont* CText::GetOrOpenFont(FontType font, float size)
 {
-    // TODO: sizing
-    int pointSize = static_cast<int>(size);
+    Math::IntPoint windowSize = m_engine->GetWindowSize();
+    int pointSize = static_cast<int>(size * (windowSize.Length() / REFERENCE_SIZE.Length()));
 
     if (m_lastCachedFont != nullptr)
     {

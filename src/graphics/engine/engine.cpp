@@ -281,6 +281,8 @@ void CEngine::Destroy()
 
 void CEngine::ResetAfterDeviceChanged()
 {
+    m_size = m_app->GetVideoConfig().size;;
+
     m_text->FlushCache();
 
     // TODO reload textures, reset device state, etc.
