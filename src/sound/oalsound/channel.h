@@ -60,6 +60,7 @@ class Channel
         float GetVolume();
         bool IsPlaying();
         bool IsReady();
+	bool IsLoaded();
 
         bool SetBuffer(Buffer *);
         bool HasEnvelope();
