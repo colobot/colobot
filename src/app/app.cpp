@@ -1472,7 +1472,16 @@ void CApplication::SetLanguage(Language language)
     if (locale.empty())
     {
         char *envLang = getenv("LANGUAGE");
-        if (strncmp(envLang,"en",2) == 0)
+        if (envLang == NULL)
+        {
+            envLang = getenv("LANG");
+        }
+        if (envLang == NULL)
+        {
+            GetLogger()->Error("Failed to get language from environment, setting default language");
+            m_language = LANGUAGE_ENGLISH;
+        }
+        else if (strncmp(envLang,"en",2) == 0)
         {
            m_language = LANGUAGE_ENGLISH;
         }
@@ -1484,7 +1493,7 @@ void CApplication::SetLanguage(Language language)
         {
            m_language = LANGUAGE_FRENCH;
         }
-        else if (strncmp(envLang,"po",2) == 0)
+        else if (strncmp(envLang,"pl",2) == 0)
         {
            m_language = LANGUAGE_POLISH;
         }

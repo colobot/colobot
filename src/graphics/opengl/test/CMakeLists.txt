@@ -8,7 +8,6 @@ find_package(PNG REQUIRED)
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE debug)
 endif(NOT CMAKE_BUILD_TYPE)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wold-style-cast -std=gnu++0x")
 set(CMAKE_CXX_FLAGS_DEBUG "-g -O0")
 
 set(ADD_LIBS "")
