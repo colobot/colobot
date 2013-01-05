@@ -264,7 +264,6 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
             GetLogger()->Message("\n");
             GetLogger()->Message("List of available options:\n");
             GetLogger()->Message("  -help            this help\n");
-            GetLogger()->Message("  -vbo             enable OpenGL VBOs\n");
             GetLogger()->Message("  -datadir path    set custom data directory path\n");
             GetLogger()->Message("  -debug           enable debug mode (more info printed in logs)\n");
             GetLogger()->Message("  -loglevel level  set log level to level (one of: trace, debug, info, warn, error, none)\n");

@@ -24,21 +24,8 @@
 #include "math/geometry.h"
 
 
-#if defined(USE_GLEW)
-
-// When using GLEW, only glew.h is needed
+// Using GLEW so only glew.h is needed
 #include <GL/glew.h>
-
-#else
-
-// Should define prototypes of used extensions as OpenGL functions
-#define GL_GLEXT_PROTOTYPES
-
-#include <GL/gl.h>
-#include <GL/glu.h>
-#include <GL/glext.h>
-
-#endif // if defined(GLEW)
 
 #include <SDL/SDL.h>
 
@@ -74,7 +61,8 @@ CGLDevice::CGLDevice(const GLDeviceConfig &config)
     m_config = config;
     m_lighting = false;
     m_lastVboId = 0;
-    m_useVbo = false;
+    m_multitextureAvailable = false;
+    m_vboAvailable = false;
 }
 
 
@@ -93,7 +81,6 @@ bool CGLDevice::Create()
 {
     GetLogger()->Info("Creating CDevice\n");
 
-#if defined(USE_GLEW)
     static bool glewInited = false;
 
     if (!glewInited)
@@ -106,26 +93,16 @@ bool CGLDevice::Create()
             return false;
         }
 
-        if ( (! GLEW_ARB_multitexture) || (! GLEW_EXT_texture_env_combine) )
-        {
-            GetLogger()->Error("GLEW reports required extensions not supported\n");
-            return false;
-        }
+        m_multitextureAvailable = glewIsSupported("GL_ARB_multitexture GL_ARB_texture_env_combine");
+        if (!m_multitextureAvailable)
+            GetLogger()->Error("GLEW reports multitexturing not supported - graphics quality will be degraded!\n");
 
-        if (GLEW_ARB_vertex_buffer_object)
-        {
+        m_vboAvailable = glewIsSupported("GL_ARB_vertex_buffer_object");
+        if (m_vboAvailable)
             GetLogger()->Info("Detected ARB_vertex_buffer_object extension - using VBOs\n");
-            m_useVbo = true;
-        }
         else
-        {
             GetLogger()->Info("No ARB_vertex_buffer_object extension present - using display lists\n");
-        }
     }
-#endif
-
-    /* NOTE: when not using GLEW, extension testing is not performed, as it is assumed that
-             glext.h is up-to-date and the OpenGL shared library has the required functions present. */
 
     // This is mostly done in all modern hardware by default
     // DirectX doesn't even allow the option to turn off perspective correction anymore
@@ -134,6 +111,9 @@ bool CGLDevice::Create()
 
     // To avoid problems with scaling & lighting
     glEnable(GL_RESCALE_NORMAL);
+
+    // Minimal depth bias to avoid Z-fighting
+    SetDepthBias(0.001f);
 
     // Set just to be sure
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
@@ -186,14 +166,14 @@ void CGLDevice::ConfigChanged(const GLDeviceConfig& newConfig)
     Create();
 }
 
-void CGLDevice::SetUseVbo(bool useVbo)
+void CGLDevice::SetUseVbo(bool vboAvailable)
 {
-    m_useVbo = useVbo;
+    m_vboAvailable = vboAvailable;
 }
 
 bool CGLDevice::GetUseVbo()
 {
-    return m_useVbo;
+    return m_vboAvailable;
 }
 
 void CGLDevice::BeginScene()
@@ -610,7 +590,7 @@ void CGLDevice::DestroyAllTextures()
     m_allTextures.clear();
 }
 
-int CGLDevice::GetMaxTextureCount()
+int CGLDevice::GetMaxTextureStageCount()
 {
     return m_currentTextures.size();
 }
@@ -621,17 +601,21 @@ int CGLDevice::GetMaxTextureCount()
   The setting is remembered, even if texturing is disabled at the moment. */
 void CGLDevice::SetTexture(int index, const Texture &texture)
 {
-    assert(index >= 0);
-    assert(index < static_cast<int>( m_currentTextures.size() ));
+    assert(index >= 0 && index < static_cast<int>( m_currentTextures.size() ));
 
     bool same = m_currentTextures[index].id == texture.id;
 
     m_currentTextures[index] = texture; // remember the new value
 
+    if (!m_multitextureAvailable && index != 0)
+        return;
+
     if (same)
         return; // nothing to do
 
-    glActiveTexture(GL_TEXTURE0 + index);
+    if (m_multitextureAvailable)
+        glActiveTexture(GL_TEXTURE0 + index);
+
     glBindTexture(GL_TEXTURE_2D, texture.id);
 
     // Params need to be updated for the new bound texture
@@ -640,15 +624,19 @@ void CGLDevice::SetTexture(int index, const Texture &texture)
 
 void CGLDevice::SetTexture(int index, unsigned int textureId)
 {
-    assert(index >= 0);
-    assert(index < static_cast<int>( m_currentTextures.size() ));
+    assert(index >= 0 && index < static_cast<int>( m_currentTextures.size() ));
 
     if (m_currentTextures[index].id == textureId)
         return; // nothing to do
 
     m_currentTextures[index].id = textureId;
 
-    glActiveTexture(GL_TEXTURE0 + index);
+    if (!m_multitextureAvailable && index != 0)
+        return;
+
+    if (m_multitextureAvailable)
+        glActiveTexture(GL_TEXTURE0 + index);
+
     glBindTexture(GL_TEXTURE_2D, textureId);
 
     // Params need to be updated for the new bound texture
@@ -659,16 +647,14 @@ void CGLDevice::SetTexture(int index, unsigned int textureId)
   Returns the previously assigned texture or invalid texture if the given stage is not enabled. */
 Texture CGLDevice::GetTexture(int index)
 {
-    assert(index >= 0);
-    assert(index < static_cast<int>( m_currentTextures.size() ));
+    assert(index >= 0 && index < static_cast<int>( m_currentTextures.size() ));
 
     return m_currentTextures[index];
 }
 
 void CGLDevice::SetTextureEnabled(int index, bool enabled)
 {
-    assert(index >= 0);
-    assert(index < static_cast<int>( m_currentTextures.size() ));
+    assert(index >= 0 && index < static_cast<int>( m_currentTextures.size() ));
 
     bool same = m_texturesEnabled[index] == enabled;
 
@@ -677,7 +663,12 @@ void CGLDevice::SetTextureEnabled(int index, bool enabled)
     if (same)
         return; // nothing to do
 
-    glActiveTexture(GL_TEXTURE0 + index);
+    if (!m_multitextureAvailable && index != 0)
+        return;
+
+    if (m_multitextureAvailable)
+        glActiveTexture(GL_TEXTURE0 + index);
+
     if (enabled)
         glEnable(GL_TEXTURE_2D);
     else
@@ -686,8 +677,7 @@ void CGLDevice::SetTextureEnabled(int index, bool enabled)
 
 bool CGLDevice::GetTextureEnabled(int index)
 {
-    assert(index >= 0);
-    assert(index < static_cast<int>( m_currentTextures.size() ));
+    assert(index >= 0 && index < static_cast<int>( m_currentTextures.size() ));
 
     return m_texturesEnabled[index];
 }
@@ -698,17 +688,36 @@ bool CGLDevice::GetTextureEnabled(int index)
   The settings are remembered, even if texturing is disabled at the moment. */
 void CGLDevice::SetTextureStageParams(int index, const TextureStageParams &params)
 {
-    assert(index >= 0);
-    assert(index < static_cast<int>( m_currentTextures.size() ));
+    assert(index >= 0 && index < static_cast<int>( m_currentTextures.size() ));
 
     // Remember the settings
     m_textureStageParams[index] = params;
+
+    if (!m_multitextureAvailable && index != 0)
+        return;
 
     // Don't actually do anything if texture not set
     if (! m_currentTextures[index].Valid())
         return;
 
-    glActiveTexture(GL_TEXTURE0 + index);
+    if (m_multitextureAvailable)
+        glActiveTexture(GL_TEXTURE0 + index);
+
+    if      (params.wrapS == TEX_WRAP_CLAMP)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+    else if (params.wrapS == TEX_WRAP_REPEAT)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    else  assert(false);
+
+    if      (params.wrapT == TEX_WRAP_CLAMP)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+    else if (params.wrapT == TEX_WRAP_REPEAT)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    else  assert(false);
+
+    // Texture env setting is silly without multitexturing
+    if (!m_multitextureAvailable)
+        return;
 
     glTexEnvfv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_COLOR, params.factor.Array());
 
@@ -812,26 +821,12 @@ after_tex_color:
         glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_ALPHA, GL_CONSTANT);
     else  assert(false);
 
-
-after_tex_operations:
-
-    if      (params.wrapS == TEX_WRAP_CLAMP)
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-    else if (params.wrapS == TEX_WRAP_REPEAT)
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    else  assert(false);
-
-    if      (params.wrapT == TEX_WRAP_CLAMP)
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
-    else if (params.wrapT == TEX_WRAP_REPEAT)
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    else  assert(false);
+after_tex_operations: ;
 }
 
 void CGLDevice::SetTextureStageWrap(int index, TexWrapMode wrapS, TexWrapMode wrapT)
 {
-    assert(index >= 0);
-    assert(index < static_cast<int>( m_currentTextures.size() ));
+    assert(index >= 0 && index < static_cast<int>( m_currentTextures.size() ));
 
     // Remember the settings
     m_textureStageParams[index].wrapS = wrapS;
@@ -841,7 +836,11 @@ void CGLDevice::SetTextureStageWrap(int index, TexWrapMode wrapS, TexWrapMode wr
     if (! m_currentTextures[index].Valid())
         return;
 
-    glActiveTexture(GL_TEXTURE0 + index);
+    if (!m_multitextureAvailable && index != 0)
+        return;
+
+    if (m_multitextureAvailable)
+        glActiveTexture(GL_TEXTURE0 + index);
 
     if      (wrapS == TEX_WRAP_CLAMP)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
@@ -858,8 +857,7 @@ void CGLDevice::SetTextureStageWrap(int index, TexWrapMode wrapS, TexWrapMode wr
 
 TextureStageParams CGLDevice::GetTextureStageParams(int index)
 {
-    assert(index >= 0);
-    assert(index < static_cast<int>( m_currentTextures.size() ));
+    assert(index >= 0 && index < static_cast<int>( m_currentTextures.size() ));
 
     return m_textureStageParams[index];
 }
@@ -890,7 +888,9 @@ void CGLDevice::DrawPrimitive(PrimitiveType type, const Vertex *vertices, int ve
     glEnableClientState(GL_NORMAL_ARRAY);
     glNormalPointer(GL_FLOAT, sizeof(Vertex), reinterpret_cast<GLfloat*>(&vs[0].normal));
 
-    glClientActiveTexture(GL_TEXTURE0);
+    if (m_multitextureAvailable)
+        glClientActiveTexture(GL_TEXTURE0);
+
     glEnableClientState(GL_TEXTURE_COORD_ARRAY);
     glTexCoordPointer(2, GL_FLOAT, sizeof(Vertex), reinterpret_cast<GLfloat*>(&vs[0].texCoord));
 
@@ -914,13 +914,18 @@ void CGLDevice::DrawPrimitive(PrimitiveType type, const VertexTex2 *vertices, in
     glEnableClientState(GL_NORMAL_ARRAY);
     glNormalPointer(GL_FLOAT, sizeof(VertexTex2), reinterpret_cast<GLfloat*>(&vs[0].normal));
 
-    glClientActiveTexture(GL_TEXTURE0);
+    if (m_multitextureAvailable)
+        glClientActiveTexture(GL_TEXTURE0);
+
     glEnableClientState(GL_TEXTURE_COORD_ARRAY);
     glTexCoordPointer(2, GL_FLOAT, sizeof(VertexTex2), reinterpret_cast<GLfloat*>(&vs[0].texCoord));
 
-    glClientActiveTexture(GL_TEXTURE1);
-    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-    glTexCoordPointer(2, GL_FLOAT, sizeof(VertexTex2), reinterpret_cast<GLfloat*>(&vs[0].texCoord2));
+    if (m_multitextureAvailable)
+    {
+        glClientActiveTexture(GL_TEXTURE1);
+        glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+        glTexCoordPointer(2, GL_FLOAT, sizeof(VertexTex2), reinterpret_cast<GLfloat*>(&vs[0].texCoord2));
+    }
 
     glColor4fv(color.Array());
 
@@ -929,8 +934,11 @@ void CGLDevice::DrawPrimitive(PrimitiveType type, const VertexTex2 *vertices, in
     glDisableClientState(GL_VERTEX_ARRAY);
     glDisableClientState(GL_NORMAL_ARRAY);
     glDisableClientState(GL_TEXTURE_COORD_ARRAY); // GL_TEXTURE1
-    glClientActiveTexture(GL_TEXTURE0);
-    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+    if (m_multitextureAvailable)
+    {
+        glClientActiveTexture(GL_TEXTURE0);
+        glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+    }
 }
 
 void CGLDevice::DrawPrimitive(PrimitiveType type, const VertexCol *vertices, int vertexCount)
@@ -952,7 +960,7 @@ void CGLDevice::DrawPrimitive(PrimitiveType type, const VertexCol *vertices, int
 unsigned int CGLDevice::CreateStaticBuffer(PrimitiveType primitiveType, const Vertex* vertices, int vertexCount)
 {
     unsigned int id = 0;
-    if (m_useVbo)
+    if (m_vboAvailable)
     {
         id = ++m_lastVboId;
 
@@ -986,7 +994,7 @@ unsigned int CGLDevice::CreateStaticBuffer(PrimitiveType primitiveType, const Ve
 unsigned int CGLDevice::CreateStaticBuffer(PrimitiveType primitiveType, const VertexTex2* vertices, int vertexCount)
 {
     unsigned int id = 0;
-    if (m_useVbo)
+    if (m_vboAvailable)
     {
         id = ++m_lastVboId;
 
@@ -1020,7 +1028,7 @@ unsigned int CGLDevice::CreateStaticBuffer(PrimitiveType primitiveType, const Ve
 unsigned int CGLDevice::CreateStaticBuffer(PrimitiveType primitiveType, const VertexCol* vertices, int vertexCount)
 {
     unsigned int id = 0;
-    if (m_useVbo)
+    if (m_vboAvailable)
     {
         id = ++m_lastVboId;
 
@@ -1053,7 +1061,7 @@ unsigned int CGLDevice::CreateStaticBuffer(PrimitiveType primitiveType, const Ve
 
 void CGLDevice::UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primitiveType, const Vertex* vertices, int vertexCount)
 {
-    if (m_useVbo)
+    if (m_vboAvailable)
     {
         auto it = m_vboObjects.find(bufferId);
         if (it == m_vboObjects.end())
@@ -1080,7 +1088,7 @@ void CGLDevice::UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primitiv
 
 void CGLDevice::UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primitiveType, const VertexTex2* vertices, int vertexCount)
 {
-    if (m_useVbo)
+    if (m_vboAvailable)
     {
         auto it = m_vboObjects.find(bufferId);
         if (it == m_vboObjects.end())
@@ -1107,7 +1115,7 @@ void CGLDevice::UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primitiv
 
 void CGLDevice::UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primitiveType, const VertexCol* vertices, int vertexCount)
 {
-    if (m_useVbo)
+    if (m_vboAvailable)
     {
         auto it = m_vboObjects.find(bufferId);
         if (it == m_vboObjects.end())
@@ -1134,7 +1142,7 @@ void CGLDevice::UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primitiv
 
 void CGLDevice::DrawStaticBuffer(unsigned int bufferId)
 {
-    if (m_useVbo)
+    if (m_vboAvailable)
     {
         auto it = m_vboObjects.find(bufferId);
         if (it == m_vboObjects.end())
@@ -1151,7 +1159,9 @@ void CGLDevice::DrawStaticBuffer(unsigned int bufferId)
             glEnableClientState(GL_NORMAL_ARRAY);
             glNormalPointer(GL_FLOAT, sizeof(Vertex), static_cast<char*>(nullptr) + offsetof(Vertex, normal));
 
-            glClientActiveTexture(GL_TEXTURE0);
+            if (m_multitextureAvailable)
+                glClientActiveTexture(GL_TEXTURE0);
+
             glEnableClientState(GL_TEXTURE_COORD_ARRAY);
             glTexCoordPointer(2, GL_FLOAT, sizeof(Vertex), static_cast<char*>(nullptr) + offsetof(Vertex, texCoord));
         }
@@ -1163,13 +1173,18 @@ void CGLDevice::DrawStaticBuffer(unsigned int bufferId)
             glEnableClientState(GL_NORMAL_ARRAY);
             glNormalPointer(GL_FLOAT, sizeof(VertexTex2), static_cast<char*>(nullptr) + offsetof(VertexTex2, normal));
 
-            glClientActiveTexture(GL_TEXTURE0);
+            if (m_multitextureAvailable)
+                glClientActiveTexture(GL_TEXTURE0);
+
             glEnableClientState(GL_TEXTURE_COORD_ARRAY);
             glTexCoordPointer(2, GL_FLOAT, sizeof(VertexTex2), static_cast<char*>(nullptr) + offsetof(VertexTex2, texCoord));
 
-            glClientActiveTexture(GL_TEXTURE1);
-            glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-            glTexCoordPointer(2, GL_FLOAT, sizeof(VertexTex2), static_cast<char*>(nullptr) + offsetof(VertexTex2, texCoord2));
+            if (m_multitextureAvailable)
+            {
+                glClientActiveTexture(GL_TEXTURE1);
+                glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+                glTexCoordPointer(2, GL_FLOAT, sizeof(VertexTex2), static_cast<char*>(nullptr) + offsetof(VertexTex2, texCoord2));
+            }
         }
         else if ((*it).second.vertexType == VERTEX_TYPE_COL)
         {
@@ -1194,8 +1209,11 @@ void CGLDevice::DrawStaticBuffer(unsigned int bufferId)
             glDisableClientState(GL_VERTEX_ARRAY);
             glDisableClientState(GL_NORMAL_ARRAY);
             glDisableClientState(GL_TEXTURE_COORD_ARRAY); // GL_TEXTURE1
-            glClientActiveTexture(GL_TEXTURE0);
-            glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+            if (m_multitextureAvailable)
+            {
+                glClientActiveTexture(GL_TEXTURE0);
+                glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+            }
         }
         else if ((*it).second.vertexType == VERTEX_TYPE_COL)
         {
@@ -1214,7 +1232,7 @@ void CGLDevice::DrawStaticBuffer(unsigned int bufferId)
 
 void CGLDevice::DestroyStaticBuffer(unsigned int bufferId)
 {
-    if (m_useVbo)
+    if (m_vboAvailable)
     {
         auto it = m_vboObjects.find(bufferId);
         if (it == m_vboObjects.end())
@@ -1355,7 +1373,6 @@ void CGLDevice::SetRenderState(RenderState state, bool enabled)
         case RENDER_STATE_DEPTH_TEST:  flag = GL_DEPTH_TEST; break;
         case RENDER_STATE_ALPHA_TEST:  flag = GL_ALPHA_TEST; break;
         case RENDER_STATE_CULLING:     flag = GL_CULL_FACE; break;
-        case RENDER_STATE_DITHERING:   flag = GL_DITHER; break;
         default: assert(false); break;
     }
 
@@ -1380,7 +1397,6 @@ bool CGLDevice::GetRenderState(RenderState state)
         case RENDER_STATE_DEPTH_TEST:  flag = GL_DEPTH_TEST; break;
         case RENDER_STATE_ALPHA_TEST:  flag = GL_ALPHA_TEST; break;
         case RENDER_STATE_CULLING:     flag = GL_CULL_FACE; break;
-        case RENDER_STATE_DITHERING:   flag = GL_DITHER; break;
         default: assert(false); break;
     }
 

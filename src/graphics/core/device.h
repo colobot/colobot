@@ -104,8 +104,7 @@ enum RenderState
     RENDER_STATE_DEPTH_TEST,
     RENDER_STATE_DEPTH_WRITE,
     RENDER_STATE_ALPHA_TEST,
-    RENDER_STATE_CULLING,
-    RENDER_STATE_DITHERING
+    RENDER_STATE_CULLING
 };
 
 /**
@@ -287,7 +286,7 @@ public:
     virtual void DestroyAllTextures() = 0;
 
     //! Returns the maximum number of multitexture stages
-    virtual int GetMaxTextureCount() = 0;
+    virtual int GetMaxTextureStageCount() = 0;
     //! Sets the texture at given texture stage
     virtual void SetTexture(int index, const Texture &texture) = 0;
     //! Sets the texture image by ID at given texture stage

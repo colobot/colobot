@@ -111,7 +111,7 @@ public:
     virtual void DestroyTexture(const Texture &texture);
     virtual void DestroyAllTextures();
 
-    virtual int GetMaxTextureCount();
+    virtual int GetMaxTextureStageCount();
     virtual void SetTexture(int index, const Texture &texture);
     virtual void SetTexture(int index, unsigned int textureId);
     virtual Texture GetTexture(int index);
@@ -229,8 +229,10 @@ private:
         int vertexCount;
     };
 
+    //! Whether to use multitexturing
+    bool m_multitextureAvailable;
     //! Whether to use VBOs or display lists
-    bool m_useVbo;
+    bool m_vboAvailable;
     //! Map of saved VBO objects
     std::map<unsigned int, VboObjectInfo> m_vboObjects;
     //! Last ID of VBO object

@@ -19,31 +19,23 @@ endif()
 
 # Optional libraries
 set(OPTIONAL_LIBS "")
-set(OPTIONAL_INCLUDE_DIRS "")
-
-if(${USE_GLEW} AND NOT ${MXE})
-    set(OPTIONAL_LIBS ${OPTIONAL_LIBS} ${GLEW_LIBRARY})
-    set(OPTIONAL_INCLUDE_DIRS ${OPTIONAL_INCLUDE_DIRS} ${GLEW_INCLUDE_PATH})
-endif()
-
-
-# Additional libraries per platform
-set(PLATFORM_LIBS "")
-set(OPENAL_LIBS "")
 
 if (${OPENAL_SOUND})
     if (${MXE})
-	set(OPENAL_LIBS
-	    ${CMAKE_FIND_ROOT_PATH}/lib/libOpenAL32.a
-	    ${CMAKE_FIND_ROOT_PATH}/lib/libalut.a
-	)
+        set(OPTIONAL_LIBS
+            ${CMAKE_FIND_ROOT_PATH}/lib/libOpenAL32.a
+            ${CMAKE_FIND_ROOT_PATH}/lib/libalut.a
+        )
     else()
-	set(OPENAL_LIBS
-	    openal
-	    alut
-	)
+        set(OPTIONAL_LIBS
+            openal
+            alut
+        )
     endif()
 endif()
+
+# Additional libraries per platform
+set(PLATFORM_LIBS "")
 
 if (${MXE}) # MXE requires special treatment
     set(PLATFORM_LIBS ${MXE_LIBS})  
@@ -63,9 +55,9 @@ set(OPENAL_SRC "")
 
 if (${OPENAL_SOUND})
     set(OPENAL_SRC
-	sound/oalsound/alsound.cpp
-	sound/oalsound/buffer.cpp
-	sound/oalsound/channel.cpp
+        sound/oalsound/alsound.cpp
+        sound/oalsound/buffer.cpp
+        sound/oalsound/channel.cpp
     )
 endif()
 
@@ -192,16 +184,16 @@ ${OPENAL_SRC}
 
 
 set(LIBS
+CBot
 ${SDL_LIBRARY}
 ${SDLIMAGE_LIBRARY}
 ${SDLTTF_LIBRARY}
 ${OPENGL_LIBRARY}
 ${PNG_LIBRARIES}
+${GLEW_LIBRARY}
+${Boost_LIBRARIES}
 ${OPTIONAL_LIBS}
 ${PLATFORM_LIBS}
-${Boost_LIBRARIES}
-CBot
-${OPENAL_LIBS}
 )
 
 include_directories(
@@ -212,8 +204,9 @@ ${SDL_INCLUDE_DIR}
 ${SDLIMAGE_INCLUDE_DIR}
 ${SDLTTF_INCLUDE_DIR}
 ${PNG_INCLUDE_DIRS}
-${OPTIONAL_INCLUDE_DIRS}
+${GLEW_INCLUDE_PATH}
 ${Boost_INCLUDE_DIRS}
+${OPTIONAL_INCLUDE_DIRS}
 )
 
 link_directories(${CMAKE_CURRENT_SOURCE_DIR}/CBot)

@@ -20,14 +20,14 @@ set(COLOBOT_VERSION_UNRELEASED "~pre-alpha")
 
 # Append git characteristics to version
 if(DEFINED COLOBOT_VERSION_UNRELEASED AND EXISTS "${CMAKE_SOURCE_DIR}/.git")
-	find_package(Git)
-	execute_process(COMMAND ${GIT_EXECUTABLE} rev-parse --abbrev-ref HEAD
-			OUTPUT_VARIABLE GIT_BRANCH
-			OUTPUT_STRIP_TRAILING_WHITESPACE)
-	execute_process(COMMAND ${GIT_EXECUTABLE} rev-parse --short HEAD
-			OUTPUT_VARIABLE GIT_REVISION
-			OUTPUT_STRIP_TRAILING_WHITESPACE)
-	set(COLOBOT_VERSION_UNRELEASED "${COLOBOT_VERSION_UNRELEASED}-git-${GIT_BRANCH}~r${GIT_REVISION}")
+    find_package(Git)
+    execute_process(COMMAND ${GIT_EXECUTABLE} rev-parse --abbrev-ref HEAD
+                    OUTPUT_VARIABLE GIT_BRANCH
+                    OUTPUT_STRIP_TRAILING_WHITESPACE)
+    execute_process(COMMAND ${GIT_EXECUTABLE} rev-parse --short HEAD
+                    OUTPUT_VARIABLE GIT_REVISION
+                    OUTPUT_STRIP_TRAILING_WHITESPACE)
+    set(COLOBOT_VERSION_UNRELEASED "${COLOBOT_VERSION_UNRELEASED}-git-${GIT_BRANCH}~r${GIT_REVISION}")
 endif()
 
 set(COLOBOT_VERSION_FULL "${COLOBOT_VERSION_MAJOR}.${COLOBOT_VERSION_MINOR}.${COLOBOT_VERSION_REVISION}${COLOBOT_VERSION_UNRELEASED}")
@@ -67,6 +67,7 @@ option(INSTALL_DOCS "Install Doxygen-generated documentation" OFF)
 # Build openal sound support
 option(OPENAL_SOUND "Build openal sound support" OFF)
 
+
 ##
 # Required packages
 ##
@@ -85,16 +86,10 @@ set(Boost_USE_STATIC_RUNTIME    OFF)
 set(Boost_ADDITIONALVERSION "1.51" "1.51.0")
 find_package(Boost COMPONENTS system filesystem regex REQUIRED)
 
-# GLEW requirement depends on platform
-# By default it is auto detected
-# This setting may be used to override
-# Possible values:
-# - auto -> determine automatically
-# - 1 -> always enable
-# - 0 -> always disable
-set(USE_GLEW auto)
 # This is useful on Windows, if linking against standard GLEW dll fails
 option(GLEW_STATIC "Link statically with GLEW" OFF)
+
+find_package(GLEW REQUIRED)
 
 
 ##
@@ -113,37 +108,18 @@ if (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
     set(PLATFORM_WINDOWS 1)
     set(PLATFORM_LINUX   0)
     set(PLATFORM_OTHER   0)
-
-    # On Windows, GLEW is required
-    if (${USE_GLEW} MATCHES "auto")
-        set(USE_GLEW 1)
-    endif()
 elseif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
     message(STATUS "Linux system detected")
     set(PLATFORM_WINDOWS 0)
     set(PLATFORM_LINUX   1)
     set(PLATFORM_OTHER   0)
-
-    # On Linux, we should be fine without GLEW
-    if (${USE_GLEW} MATCHES "auto")
-        set(USE_GLEW 0)
-    endif()
 else()
     message(STATUS "Other system detected")
     set(PLATFORM_WINDOWS 0)
     set(PLATFORM_LINUX   0)
     set(PLATFORM_OTHER   1)
-
-    # Use GLEW to be safe
-    if (${USE_GLEW} MATCHES "auto")
-        set(USE_GLEW 1)
-    endif()
 endif()
 
-
-if(${USE_GLEW})
-    find_package(GLEW REQUIRED)
-endif()
 
 if(NOT ${ASSERTS})
     add_definitions(-DNDEBUG)
