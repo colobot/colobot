@@ -87,6 +87,8 @@ bool CGLDevice::Create()
     {
         glewInited = true;
 
+        glewExperimental = GL_TRUE;
+
         if (glewInit() != GLEW_OK)
         {
             GetLogger()->Error("GLEW initialization failed\n");
@@ -95,7 +97,7 @@ bool CGLDevice::Create()
 
         m_multitextureAvailable = glewIsSupported("GL_ARB_multitexture GL_ARB_texture_env_combine");
         if (!m_multitextureAvailable)
-            GetLogger()->Error("GLEW reports multitexturing not supported - graphics quality will be degraded!\n");
+            GetLogger()->Warn("GLEW reports multitexturing not supported - graphics quality will be degraded!\n");
 
         m_vboAvailable = glewIsSupported("GL_ARB_vertex_buffer_object");
         if (m_vboAvailable)
@@ -415,7 +417,9 @@ Texture CGLDevice::CreateTexture(ImageData *data, const TextureCreateParams &par
     result.size.y = data->surface->h;
 
     // Use & enable 1st texture stage
-    glActiveTexture(GL_TEXTURE0);
+    if (m_multitextureAvailable)
+        glActiveTexture(GL_TEXTURE0);
+
     glEnable(GL_TEXTURE_2D);
 
     glGenTextures(1, &result.id);

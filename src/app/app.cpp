@@ -444,8 +444,6 @@ bool CApplication::CreateVideoSurface()
     // Use hardware surface if available
     if (videoInfo->hw_available)
         videoFlags |= SDL_HWSURFACE;
-    else
-        videoFlags |= SDL_SWSURFACE;
 
     // Enable hardware blit if available
     if (videoInfo->blit_hw)
