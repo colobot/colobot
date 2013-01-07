@@ -47,6 +47,7 @@
 **/
 enum Sound
 {
+  SOUND_NONE = -1,  
   SOUND_CLICK = 0,
   SOUND_BOUM  = 1,
   SOUND_EXPLO  = 2,
