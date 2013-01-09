@@ -1,7 +1,13 @@
-# CBot library is built separately
+# Compile flags as defined in global CMakeLists
+set(CMAKE_CXX_FLAGS ${COLOBOT_CXX_FLAGS})
+set(CMAKE_CXX_FLAGS_RELEASE ${COLOBOT_CXX_FLAGS_RELEASE})
+set(CMAKE_CXX_FLAGS_DEBUG ${COLOBOT_CXX_FLAGS_DEBUG})
+
+
+# Subdirectories
+
 add_subdirectory(CBot)
 
-# Tools directory is built separately
 add_subdirectory(tools)
 
 add_subdirectory(po)
@@ -196,10 +202,16 @@ ${OPTIONAL_LIBS}
 ${PLATFORM_LIBS}
 )
 
+# Local
 include_directories(
 .
 ..
 ${CMAKE_CURRENT_BINARY_DIR}
+)
+
+# System
+include_directories(
+SYSTEM
 ${SDL_INCLUDE_DIR}
 ${SDLIMAGE_INCLUDE_DIR}
 ${SDLTTF_INCLUDE_DIR}

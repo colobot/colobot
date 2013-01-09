@@ -4277,6 +4277,7 @@ void CMainDialog::IOReadName()
     CEdit*      pe;
     std::string filename;
     char        op[100];
+    char        op_i18n[100];
     char        line[500];
     char        resume[100];
     char        name[100];
@@ -4290,6 +4291,9 @@ void CMainDialog::IOReadName()
 
     sprintf(resume, "%s %d", m_sceneName, m_chap[m_index]+1);
     BuildSceneName(filename, m_sceneName, (m_chap[m_index]+1)*100);
+    sprintf(op, "Title.E");
+    sprintf(op_i18n, "Title.%c", m_app->GetLanguageChar() );
+
     file = fopen(filename.c_str(), "r");
     if ( file != NULL )
     {
@@ -4305,9 +4309,11 @@ void CMainDialog::IOReadName()
                 }
             }
 
-            // TODO: Fallback to an non-localized entry
-            sprintf(op, "Title.%c", m_app->GetLanguageChar() );
             if ( Cmd(line, op) )
+            {
+                OpString(line, "resume", resume);
+            }
+            if ( Cmd(line, op_i18n) )
             {
                 OpString(line, "resume", resume);
                 break;
@@ -4648,12 +4654,14 @@ void CMainDialog::UpdateSceneChap(int &chap)
     //struct _finddata_t fileBuffer;
     std::string fileName;
     char        op[100];
+    char        op_i18n[100];
     char        line[500];
     char        name[100];
     int         i, j;
     bool        bPassed;
 
     memset(op, 0, 100);
+    memset(op_i18n, 0, 100);
     memset(line, 0, 500);
     memset(name, 0, 100);
 
@@ -4689,6 +4697,9 @@ void CMainDialog::UpdateSceneChap(int &chap)
             else
             {
                 BuildResumeName(name, m_sceneName, j+1);  // default name
+                sprintf(op, "Title.E");
+                sprintf(op_i18n, "Title.%c", m_app->GetLanguageChar());
+
                 while ( fgets(line, 500, file) != NULL )
                 {
                     for ( i=0 ; i<500 ; i++ )
@@ -4701,9 +4712,11 @@ void CMainDialog::UpdateSceneChap(int &chap)
                         }
                     }
 
-                    // TODO: Fallback to an non-localized entry
-                    sprintf(op, "Title.%c", m_app->GetLanguageChar());
                     if ( Cmd(line, op) )
+                    {
+                        OpString(line, "text", name);
+                    }
+                    if ( Cmd(line, op_i18n) )
                     {
                         OpString(line, "text", name);
                         break;
@@ -4736,6 +4749,9 @@ void CMainDialog::UpdateSceneChap(int &chap)
             if ( file == NULL )  break;
 
             BuildResumeName(name, m_sceneName, j+1);  // default name
+            sprintf(op, "Title.E");
+            sprintf(op_i18n, "Title.%c", m_app->GetLanguageChar());
+
             while ( fgets(line, 500, file) != NULL )
             {
                 for ( i=0 ; i<500 ; i++ )
@@ -4748,9 +4764,11 @@ void CMainDialog::UpdateSceneChap(int &chap)
                     }
                 }
 
-                // TODO: Fallback to an non-localized entry
-                sprintf(op, "Title.%c", m_app->GetLanguageChar());
                 if ( Cmd(line, op) )
+                {
+                    OpString(line, "text", name);
+                }
+                if ( Cmd(line, op_i18n) )
                 {
                     OpString(line, "text", name);
                     break;
@@ -4801,12 +4819,14 @@ void CMainDialog::UpdateSceneList(int chap, int &sel)
     CList*      pl;
     std::string fileName;
     char        op[100];
+    char        op_i18n[100];
     char        line[500];
     char        name[100];
     int         i, j;
     bool        bPassed;
 
     memset(op, 0, 100);
+    memset(op_i18n, 0, 100);
     memset(line, 0, 500);
     memset(name, 0, 100);
 
@@ -4839,6 +4859,9 @@ void CMainDialog::UpdateSceneList(int chap, int &sel)
         if ( file == NULL )  break;
 
         BuildResumeName(name, m_sceneName, j+1);  // default name
+        sprintf(op, "Title.E");
+        sprintf(op_i18n, "Title.%c", m_app->GetLanguageChar());
+
         while ( fgets(line, 500, file) != NULL )
         {
             for ( i=0 ; i<500 ; i++ )
@@ -4851,9 +4874,11 @@ void CMainDialog::UpdateSceneList(int chap, int &sel)
                 }
             }
 
-            // TODO: Fallback to an non-localized entry
-            sprintf(op, "Title.%c", m_app->GetLanguageChar());
             if ( Cmd(line, op) )
+            {
+                OpString(line, "text", name);
+            }
+            if ( Cmd(line, op_i18n) )
             {
                 OpString(line, "text", name);
                 break;
@@ -4950,6 +4975,7 @@ void CMainDialog::UpdateSceneResume(int rank)
     CCheck*     pc;
     std::string fileName;
     char        op[100];
+    char        op_i18n[100];
     char        line[500];
     char        name[500];
     int         i, numTry;
@@ -4980,6 +5006,9 @@ void CMainDialog::UpdateSceneResume(int rank)
     }
 
     BuildSceneName(fileName, m_sceneName, rank);
+    sprintf(op, "Resume.E");
+    sprintf(op_i18n, "Resume.%c", m_app->GetLanguageChar());
+
     file = fopen(fileName.c_str(), "r");
     if ( file == NULL )  return;
 
@@ -4996,9 +5025,11 @@ void CMainDialog::UpdateSceneResume(int rank)
             }
         }
 
-        // TODO: Fallback to an non-localized entry
-        sprintf(op, "Resume.%c", m_app->GetLanguageChar());
         if ( Cmd(line, op) )
+        {
+            OpString(line, "text", name);
+        }
+        if ( Cmd(line, op_i18n) )
         {
             OpString(line, "text", name);
             break;

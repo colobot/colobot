@@ -47,10 +47,27 @@ if(NOT CMAKE_BUILD_TYPE)
 endif()
 
 # Global compile flags
-# These are specific to GCC/MinGW; for other compilers, change as necessary
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wold-style-cast -std=c++11")
-set(CMAKE_CXX_FLAGS_RELEASE "-O2")
-set(CMAKE_CXX_FLAGS_DEBUG "-g -O0")
+# These are specific to GCC/MinGW/clang; for other compilers, change as necessary
+# The flags are used throughout src/ subdir
+set(COLOBOT_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wold-style-cast -std=c++11")
+set(COLOBOT_CXX_FLAGS_RELEASE "-O2")
+set(COLOBOT_CXX_FLAGS_DEBUG "-g -O0")
+
+# Compiler detection
+if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU")
+    execute_process(
+        COMMAND ${CMAKE_CXX_COMPILER} -dumpversion OUTPUT_VARIABLE GCC_VERSION)
+    if (NOT (GCC_VERSION VERSION_GREATER 4.6 OR GCC_VERSION VERSION_EQUAL 4.6))
+        message(FATAL_ERROR "${PROJECT_NAME} requires GCC 4.6 or greater.")
+    else()
+        message(STATUS "Detected GCC version 4.6+")
+    endif()
+elseif("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
+    message(STATUS "Detected Clang compiler")
+else()
+    message(FATAL_ERROR "Your C++ compiler doesn't seem to support C++11.\n"
+                        "Supported compilers at this time are GCC 4.6+ and clang.")
+endif()
 
 # Asserts can be enabled/disabled regardless of build type
 option(ASSERTS "Enable assert()s" ON)
@@ -185,11 +202,11 @@ if(${TESTS})
 endif()
 
 # Installation paths defined before compiling sources
-set(COLOBOT_INSTALL_BIN_DIR games CACHE PATH "Colobot binary directory")
-set(COLOBOT_INSTALL_DATA_DIR share/games/colobot CACHE PATH "Colobot shared data directory")
-set(COLOBOT_INSTALL_LIB_DIR lib/colobot CACHE PATH "Colobot libraries directory")
-set(COLOBOT_INSTALL_DOC_DIR share/doc/colobot CACHE PATH "Colobot documentation directory")
-set(COLOBOT_INSTALL_I18N_DIR share/locale CACHE PATH "Colobot translations directory")
+set(COLOBOT_INSTALL_BIN_DIR ${CMAKE_INSTALL_PREFIX}/games CACHE PATH "Colobot binary directory")
+set(COLOBOT_INSTALL_DATA_DIR ${CMAKE_INSTALL_PREFIX}/share/games/colobot CACHE PATH "Colobot shared data directory")
+set(COLOBOT_INSTALL_LIB_DIR ${CMAKE_INSTALL_PREFIX}/lib/colobot CACHE PATH "Colobot libraries directory")
+set(COLOBOT_INSTALL_DOC_DIR ${CMAKE_INSTALL_PREFIX}/share/doc/colobot CACHE PATH "Colobot documentation directory")
+set(COLOBOT_INSTALL_I18N_DIR ${CMAKE_INSTALL_PREFIX}/share/locale CACHE PATH "Colobot translations directory")
 
 # Subdirectory with sources
 add_subdirectory(src bin)
@@ -199,10 +216,13 @@ add_subdirectory(src bin)
 # Installation
 ##
 
-file(GLOB DATA_FILES "data/*")
-
-# Data
-install(DIRECTORY data/ DESTINATION ${COLOBOT_INSTALL_DATA_DIR})
+# Data: check if the submodule handles its own installation
+if(EXISTS "${CMAKE_SOURCE_DIR}/data/CMakeLists.txt")
+	message(STATUS "Data directory will install itself.")
+	add_subdirectory(data)
+else()
+	message(WARNING "Data directory is not available; make sure colobot-data is installed in ${COLOBOT_INSTALL_DATA_DIR}.")
+endif()
 
 # Documentation
 if(INSTALL_DOCS AND DOXYGEN_FOUND AND DOXYGEN_DOT_FOUND)

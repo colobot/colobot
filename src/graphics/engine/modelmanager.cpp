@@ -8,9 +8,9 @@
 
 #include <cstdio>
 
-namespace Gfx {
+template<> Gfx::CModelManager* CSingleton<Gfx::CModelManager>::mInstance = nullptr;
 
-template<> CModelManager* CSingleton<CModelManager>::mInstance = nullptr;
+namespace Gfx {
 
 CModelManager::CModelManager(CEngine* engine)
 {
