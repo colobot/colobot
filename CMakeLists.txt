@@ -202,11 +202,11 @@ if(${TESTS})
 endif()
 
 # Installation paths defined before compiling sources
-set(COLOBOT_INSTALL_BIN_DIR games CACHE PATH "Colobot binary directory")
-set(COLOBOT_INSTALL_DATA_DIR share/games/colobot CACHE PATH "Colobot shared data directory")
-set(COLOBOT_INSTALL_LIB_DIR lib/colobot CACHE PATH "Colobot libraries directory")
-set(COLOBOT_INSTALL_DOC_DIR share/doc/colobot CACHE PATH "Colobot documentation directory")
-set(COLOBOT_INSTALL_I18N_DIR share/locale CACHE PATH "Colobot translations directory")
+set(COLOBOT_INSTALL_BIN_DIR ${CMAKE_INSTALL_PREFIX}/games CACHE PATH "Colobot binary directory")
+set(COLOBOT_INSTALL_DATA_DIR ${CMAKE_INSTALL_PREFIX}/share/games/colobot CACHE PATH "Colobot shared data directory")
+set(COLOBOT_INSTALL_LIB_DIR ${CMAKE_INSTALL_PREFIX}/lib/colobot CACHE PATH "Colobot libraries directory")
+set(COLOBOT_INSTALL_DOC_DIR ${CMAKE_INSTALL_PREFIX}/share/doc/colobot CACHE PATH "Colobot documentation directory")
+set(COLOBOT_INSTALL_I18N_DIR ${CMAKE_INSTALL_PREFIX}/share/locale CACHE PATH "Colobot translations directory")
 
 # Subdirectory with sources
 add_subdirectory(src bin)
@@ -216,10 +216,13 @@ add_subdirectory(src bin)
 # Installation
 ##
 
-file(GLOB DATA_FILES "data/*")
-
-# Data
-install(DIRECTORY data/ DESTINATION ${COLOBOT_INSTALL_DATA_DIR})
+# Data: check if the submodule handles its own installation
+if(EXISTS "${CMAKE_SOURCE_DIR}/data/CMakeLists.txt")
+	message(STATUS "Data directory will install itself.")
+	add_subdirectory(data)
+else()
+	message(WARNING "Data directory is not available; make sure colobot-data is installed in ${COLOBOT_INSTALL_DATA_DIR}.")
+endif()
 
 # Documentation
 if(INSTALL_DOCS AND DOXYGEN_FOUND AND DOXYGEN_DOT_FOUND)
