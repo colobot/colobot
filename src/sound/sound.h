@@ -37,7 +37,7 @@
 /*!
  * Maximum possible audio volume
  */
-#define MAXVOLUME 100
+#define MAXVOLUME 100.0f
 
 
 /**

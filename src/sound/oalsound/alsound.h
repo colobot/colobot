@@ -42,7 +42,7 @@ class ALSound : public CSoundInterface
         bool Create(bool b3D);
         bool Cache(Sound, std::string);
 
-        bool RetEnable();
+        bool GetEnable();
 
         void SetSound3D(bool bMode);
         bool GetSound3D();
@@ -86,7 +86,7 @@ class ALSound : public CSoundInterface
         bool mEnabled;
         bool m3D;
         bool mMute;
-        int mAudioVolume;
+        float mAudioVolume;
         ALCdevice* audioDevice;
         ALCcontext* audioContext;
         std::map<Sound, Buffer*> mSounds;

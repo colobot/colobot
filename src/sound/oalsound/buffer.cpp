@@ -20,7 +20,7 @@
 
 Buffer::Buffer() {
     mLoaded = false;
-    mDuration = 0;
+    mDuration = 0.0f;
 }
 
 
@@ -53,7 +53,7 @@ bool Buffer::LoadFromFile(std::string filename, Sound sound) {
     alGetBufferi(mBuffer, AL_CHANNELS, &channels);
     alGetBufferi(mBuffer, AL_FREQUENCY, &freq);
 
-    mDuration =  static_cast<ALfloat>(size) / channels / bits / 8 / static_cast<ALfloat>(freq);
+    mDuration =  static_cast<ALfloat>(size) * 8 / channels / bits / static_cast<ALfloat>(freq);
 
     mLoaded = true;
     return true;

@@ -20,14 +20,13 @@
 
 #include "alsound.h"
 
-
 #define MIN(a, b) (a > b ? b : a)
 
 ALSound::ALSound()
 {
     mEnabled = false;
     m3D = false;
-    mAudioVolume = MAXVOLUME;
+    mAudioVolume = 1.0f;
     mMute = false;
     auto pointer = CInstanceManager::GetInstancePointer();
     if (pointer != nullptr)
@@ -105,7 +104,7 @@ bool ALSound::GetSound3DCap()
 }
 
 
-bool ALSound::RetEnable()
+bool ALSound::GetEnable()
 {
     return mEnabled;
 }
@@ -113,8 +112,8 @@ bool ALSound::RetEnable()
 
 void ALSound::SetAudioVolume(int volume)
 {
-    alListenerf(AL_GAIN, MIN(volume, MAXVOLUME) * 0.01f);
-    mAudioVolume = MIN(volume, MAXVOLUME);
+    alListenerf(AL_GAIN, MIN(static_cast<float>(volume) / MAXVOLUME, 1.0f));
+    mAudioVolume = MIN(static_cast<float>(volume) / MAXVOLUME, 1.0f);
 }
 
 
@@ -291,18 +290,14 @@ int ALSound::Play(Sound sound, float amplitude, float frequency, bool bLoop)
 
 int ALSound::Play(Sound sound, Math::Vector pos, float amplitude, float frequency, bool bLoop)
 {
-    if (!mEnabled)
+    if (!mEnabled) {
         return -1;
-
-    if (mAudioVolume <= 0.0f)
-        return -1;
+    }
 
     if (mSounds.find(sound) == mSounds.end()) {
         GetLogger()->Warn("Sound %d was not loaded!\n", sound);
         return -1;
     }
-       
-    GetLogger()->Trace("ALSound::Play sound: %d volume: %f frequency: %f\n", sound, amplitude, frequency);
 
     int channel;
     bool bAlreadyLoaded;
@@ -312,7 +307,7 @@ int ALSound::Play(Sound sound, Math::Vector pos, float amplitude, float frequenc
     bAlreadyLoaded = false;
     if (!bAlreadyLoaded) {
         if (!mChannels[channel]->SetBuffer(mSounds[sound])) {
-	    GetLogger()->Trace("ALSound::Play SetBuffer failed\n");
+	    mChannels[channel]->SetBuffer(nullptr);
 	    return -1;
 	}
     }
@@ -320,12 +315,13 @@ int ALSound::Play(Sound sound, Math::Vector pos, float amplitude, float frequenc
     Position(channel, pos);
 
     // setting initial values
-    mChannels[channel]->SetStartAmplitude(mAudioVolume);
+    mChannels[channel]->SetStartAmplitude(amplitude);
     mChannels[channel]->SetStartFrequency(frequency);
     mChannels[channel]->SetChangeFrequency(1.0f);
     mChannels[channel]->ResetOper();
-    mChannels[channel]->AdjustFrequency(frequency);    
-    mChannels[channel]->AdjustVolume(amplitude * mAudioVolume);
+    mChannels[channel]->SetFrequency(frequency * mChannels[channel]->GetFrequency());       
+    mChannels[channel]->SetVolume(amplitude);
+    mChannels[channel]->SetLoop(bLoop);
     mChannels[channel]->Play();
     return channel;
 }
@@ -350,15 +346,16 @@ bool ALSound::AddEnvelope(int channel, float amplitude, float frequency, float t
     if (mChannels.find(channel) == mChannels.end()) {
         return false;
     }
-
+    
     SoundOper op;
     op.finalAmplitude = amplitude;
     op.finalFrequency = frequency;
     op.totalTime = time;
     op.nextOper = oper;
+    op.currentTime = 0.0f;
     mChannels[channel]->AddOper(op);
 
-    return false;
+    return true;
 }
 
 
@@ -438,7 +435,6 @@ bool ALSound::MuteAll(bool bMute)
     return true;
 }
 
-
 void ALSound::FrameMove(float delta)
 {
     if (!mEnabled)
@@ -447,36 +443,38 @@ void ALSound::FrameMove(float delta)
     float progress;
     float volume, frequency;
     for (auto it : mChannels) {
-        if (!it.second->IsPlaying())
+        if (!it.second->IsPlaying()) {
             continue;
+	}
 
         if (!it.second->HasEnvelope())
             continue;
-
-        //it.second->GetEnvelope().currentTime += delta;
-        SoundOper oper = it.second->GetEnvelope();
-        progress = it.second->GetCurrentTime() / oper.totalTime;
+	
+        SoundOper &oper = it.second->GetEnvelope();
+	oper.currentTime += delta;
+        progress = oper.currentTime / oper.totalTime;
         progress = MIN(progress, 1.0f);
 
         // setting volume
-        volume = progress * abs(oper.finalAmplitude - it.second->GetStartAmplitude());
-        it.second->AdjustVolume(volume * mAudioVolume);
-
-        // setting frequency
-        frequency = progress * abs(oper.finalFrequency - it.second->GetStartFrequency()) * it.second->GetStartFrequency() * it.second->GetChangeFrequency();
+        volume = progress * (oper.finalAmplitude - it.second->GetStartAmplitude());
+        it.second->SetVolume(volume + it.second->GetStartAmplitude());
+	
+	// setting frequency
+        frequency = progress * (oper.finalFrequency - it.second->GetStartFrequency()) * it.second->GetStartFrequency() * it.second->GetChangeFrequency() * it.second->GetInitFrequency();
         it.second->AdjustFrequency(frequency);
 
-        if (it.second->GetEnvelope().totalTime <= it.second->GetCurrentTime()) {
-
+        if (oper.totalTime <= oper.currentTime) {
             if (oper.nextOper == SOPER_LOOP) {
-                GetLogger()->Trace("ALSound::FrameMove oper: replay.\n");
-                it.second->SetCurrentTime(0.0f);
+		oper.currentTime = 0.0f;
                 it.second->Play();
             } else {
-                GetLogger()->Trace("ALSound::FrameMove oper: next.\n");
-                it.second->SetStartAmplitude(oper.finalAmplitude);
-                it.second->SetStartFrequency(oper.finalFrequency);
-                it.second->PopEnvelope();
+		it.second->SetStartAmplitude(oper.finalAmplitude);
+		it.second->SetStartFrequency(oper.finalFrequency);
+                if (oper.nextOper == SOPER_STOP) {
+		    it.second->Stop();
+                }
+                
+		it.second->PopEnvelope();
             }
         }
     }

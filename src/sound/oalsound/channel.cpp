@@ -18,6 +18,7 @@
 
 #include "channel.h"
 
+#define MIN(a, b) (a > b ? b : a)
 
 Channel::Channel() {
     alGenSources(1, &mSource);
@@ -31,6 +32,8 @@ Channel::Channel() {
     
     mPriority = 0;
     mBuffer = nullptr;
+    mLoop = false;
+    mInitFrequency = 0.0f;
 }
 
 
@@ -49,6 +52,7 @@ bool Channel::Play() {
     if (!mReady || mBuffer == nullptr)
         return false;
     
+    alSourcei(mSource, AL_LOOPING, static_cast<ALint>(mLoop));
     alSourcePlay(mSource);
     if (alCheck())
         GetLogger()->Warn("Could not play audio sound source. Code: %d\n", alGetCode());
@@ -83,6 +87,15 @@ bool Channel::SetFrequency(float freq)
 }
 
 
+bool Channel::AdjustFrequency(float freq)
+{
+    if (!mReady || mBuffer == nullptr)
+        return false;
+
+    return SetFrequency(mInitFrequency - freq);
+}
+
+
 float Channel::GetFrequency()
 {
     ALfloat freq;
@@ -104,7 +117,7 @@ bool Channel::SetVolume(float vol)
     if (!mReady || vol < 0 || mBuffer == nullptr)
         return false;
     
-    alSourcef(mSource, AL_GAIN, vol / MAXVOLUME);
+    alSourcef(mSource, AL_GAIN, MIN(vol, 1.0f));
     if (alCheck()) {
         GetLogger()->Warn("Could not set sound volume to '%f'. Code: %d\n", vol, alGetCode());
         return false;
@@ -125,7 +138,7 @@ float Channel::GetVolume()
         return 0;
     }
 
-    return vol * MAXVOLUME;
+    return vol;
 }
 
 
@@ -144,6 +157,7 @@ void Channel::SetPriority(int pri)
 void Channel::SetStartAmplitude(float gain)
 {
     mStartAmplitude = gain;
+    SetVolume(mStartAmplitude);
 }
 
 
@@ -156,12 +170,6 @@ void Channel::SetStartFrequency(float freq)
 void Channel::SetChangeFrequency(float freq)
 {
     mChangeFrequency = freq;
-}
-
-
-void Channel::SetInitFrequency(float freq)
-{
-    mInitFrequency = freq;
 }
 
 
@@ -213,8 +221,12 @@ bool Channel::SetBuffer(Buffer *buffer) {
     if (!mReady)
         return false;
     
-    assert(buffer);
     mBuffer = buffer;
+    if (buffer == nullptr) {
+	alSourcei(mSource, AL_BUFFER, 0);
+	return true;
+    }    
+    
     alSourcei(mSource, AL_BUFFER, buffer->GetBuffer());
     if (alCheck()) {
         GetLogger()->Warn("Could not set sound buffer. Code: %d\n", alGetCode());
@@ -222,16 +234,6 @@ bool Channel::SetBuffer(Buffer *buffer) {
     }
     mInitFrequency = GetFrequency();
     return true;
-}
-
-
-void Channel::AdjustFrequency(float freq) {
-    SetFrequency(freq * mInitFrequency);
-}
-
-
-void Channel::AdjustVolume(float volume) {
-    SetVolume(mStartAmplitude * volume);
 }
 
 
@@ -322,4 +324,9 @@ SoundOper& Channel::GetEnvelope()
 void Channel::PopEnvelope()
 {
     mOper.pop_front();
+}
+
+
+void Channel::SetLoop(bool loop) {
+    mLoop = loop;
 }
