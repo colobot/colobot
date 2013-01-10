@@ -1,6 +1,7 @@
 language: cpp
 compiler:
   - gcc
+  - clang
 script: cmake . -DCMAKE_VERBOSE_MAKEFILE=ON && make all doc test
 before_install:
   - git submodule update --init --recursive
