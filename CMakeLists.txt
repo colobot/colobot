@@ -46,28 +46,33 @@ if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE debug)
 endif()
 
-# Global compile flags
-# These are specific to GCC/MinGW/clang; for other compilers, change as necessary
-# The flags are used throughout src/ subdir
-set(COLOBOT_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wold-style-cast -std=c++11")
-set(COLOBOT_CXX_FLAGS_RELEASE "-O2")
-set(COLOBOT_CXX_FLAGS_DEBUG "-g -O0")
-
 # Compiler detection
 if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU")
     execute_process(
         COMMAND ${CMAKE_CXX_COMPILER} -dumpversion OUTPUT_VARIABLE GCC_VERSION)
-    if (NOT (GCC_VERSION VERSION_GREATER 4.6 OR GCC_VERSION VERSION_EQUAL 4.6))
-        message(FATAL_ERROR "${PROJECT_NAME} requires GCC 4.6 or greater.")
-    else()
+    if (GCC_VERSION VERSION_GREATER 4.7 OR GCC_VERSION VERSION_EQUAL 4.7)
+        message(STATUS "Detected GCC version 4.7+")
+        set(CXX11_FLAGS "-std=c++11")
+    elseif (GCC_VERSION VERSION_GREATER 4.6 OR GCC_VERSION VERSION_EQUAL 4.6)
         message(STATUS "Detected GCC version 4.6+")
+        set(CXX11_FLAGS "-std=c++0x")
+    else()
+        message(FATAL_ERROR "${PROJECT_NAME} requires GCC 4.6 or greater.")
     endif()
 elseif("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
     message(STATUS "Detected Clang compiler")
+    set(CXX11_FLAGS "-std=c++11")
 else()
     message(FATAL_ERROR "Your C++ compiler doesn't seem to support C++11.\n"
                         "Supported compilers at this time are GCC 4.6+ and clang.")
 endif()
+
+# Global compile flags
+# These are specific to GCC/MinGW/clang; for other compilers, change as necessary
+# The flags are used throughout src/ subdir
+set(COLOBOT_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wold-style-cast ${CXX11_FLAGS}")
+set(COLOBOT_CXX_FLAGS_RELEASE "-O2")
+set(COLOBOT_CXX_FLAGS_DEBUG "-g -O0")
 
 # Asserts can be enabled/disabled regardless of build type
 option(ASSERTS "Enable assert()s" ON)
