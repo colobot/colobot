@@ -237,6 +237,8 @@ protected:
     
     void        UpdateScroll();
 
+    void        RunExternalEditor();
+
 protected:
     CScroll*    m_scroll;           // vertical scrollbar on the right
 
