@@ -27,7 +27,9 @@ ALSound::ALSound()
     mEnabled = false;
     m3D = false;
     mAudioVolume = 1.0f;
+    mMusicVolume = 1.0f;
     mMute = false;
+    mCurrentMusic = new Channel();
     auto pointer = CInstanceManager::GetInstancePointer();
     if (pointer != nullptr)
         CInstanceManager::GetInstancePointer()->AddInstance(CLASS_SOUND, this);
@@ -48,17 +50,21 @@ void ALSound::CleanUp()
     if (mEnabled) {
         GetLogger()->Info("Unloading files and closing device...\n");
         StopAll();
-	
-	for (auto channel : mChannels) {
-	    delete channel.second;
-	}
+
+        for (auto channel : mChannels) {
+            delete channel.second;
+        }
 
         for (auto item : mSounds) {
             delete item.second;
-	}
+        }
 
         mEnabled = false;
-        alutExit();
+
+        mCurrentMusic->FreeBuffer();
+        delete mCurrentMusic;
+        alcDestroyContext(mContext);
+        alcCloseDevice(mDevice);
     }
 }
 
@@ -71,13 +77,20 @@ bool ALSound::Create(bool b3D)
         return true;
 
     GetLogger()->Info("Opening audio device...\n");
-    if (!alutInit(NULL, NULL)) {
-        ALenum error = alutGetError();
-        GetLogger()->Error("Could not open audio device! Reason: %s\n", alutGetErrorString(error));
+    mDevice = alcOpenDevice(NULL);
+    if (!mDevice) {
+        GetLogger()->Error("Could not open audio device!\n");
         return false;
     }
-    GetLogger()->Info("Done.\n");
 
+    mContext = alcCreateContext(mDevice, NULL);
+    if (!mContext) {
+        GetLogger()->Error("Could not create audio context!\n");
+        return false;
+    }
+    alcMakeContextCurrent(mContext);
+
+    GetLogger()->Info("Done.\n");
     mEnabled = true;
     return true;
 }
@@ -119,28 +132,26 @@ void ALSound::SetAudioVolume(int volume)
 
 int ALSound::GetAudioVolume()
 {
-    float volume;
     if ( !mEnabled )
         return 0;
 
-    alGetListenerf(AL_GAIN, &volume);
-    return volume * MAXVOLUME;
+    return mAudioVolume * MAXVOLUME;
 }
 
 
 void ALSound::SetMusicVolume(int volume)
 {
-    // TODO stub! Add music support
+    alListenerf(AL_GAIN, MIN(static_cast<float>(volume) / MAXVOLUME, 1.0f));
+    mMusicVolume = MIN(static_cast<float>(volume) / MAXVOLUME, 1.0f);
 }
 
 
 int ALSound::GetMusicVolume()
 {
-    // TODO stub! Add music support
     if ( !mEnabled )
-        return 0;
+        return 0.0f;
 
-    return 0;
+    return mMusicVolume * MAXVOLUME;
 }
 
 
@@ -242,8 +253,7 @@ bool ALSound::SearchFreeBuffer(Sound sound, int &channel, bool &bAlreadyLoaded)
         auto it = mChannels.end();
         it--;
         int i = (*it).first;
-        while (++i)
-        {
+        while (++i) {
             if (mChannels.find(i) == mChannels.end()) {
                 Channel *chn = new Channel();
                 // check if channel is ready to play music, if not destroy it and seek free one
@@ -307,9 +317,9 @@ int ALSound::Play(Sound sound, Math::Vector pos, float amplitude, float frequenc
     bAlreadyLoaded = false;
     if (!bAlreadyLoaded) {
         if (!mChannels[channel]->SetBuffer(mSounds[sound])) {
-	    mChannels[channel]->SetBuffer(nullptr);
-	    return -1;
-	}
+            mChannels[channel]->SetBuffer(nullptr);
+            return -1;
+        }
     }
 
     Position(channel, pos);
@@ -445,36 +455,36 @@ void ALSound::FrameMove(float delta)
     for (auto it : mChannels) {
         if (!it.second->IsPlaying()) {
             continue;
-	}
+        }
 
         if (!it.second->HasEnvelope())
             continue;
-	
+
         SoundOper &oper = it.second->GetEnvelope();
-	oper.currentTime += delta;
+        oper.currentTime += delta;
         progress = oper.currentTime / oper.totalTime;
         progress = MIN(progress, 1.0f);
 
         // setting volume
         volume = progress * (oper.finalAmplitude - it.second->GetStartAmplitude());
         it.second->SetVolume(volume + it.second->GetStartAmplitude());
-	
-	// setting frequency
+
+        // setting frequency
         frequency = progress * (oper.finalFrequency - it.second->GetStartFrequency()) * it.second->GetStartFrequency() * it.second->GetChangeFrequency() * it.second->GetInitFrequency();
         it.second->AdjustFrequency(frequency);
 
         if (oper.totalTime <= oper.currentTime) {
             if (oper.nextOper == SOPER_LOOP) {
-		oper.currentTime = 0.0f;
+                oper.currentTime = 0.0f;
                 it.second->Play();
             } else {
-		it.second->SetStartAmplitude(oper.finalAmplitude);
-		it.second->SetStartFrequency(oper.finalFrequency);
+                it.second->SetStartAmplitude(oper.finalAmplitude);
+                it.second->SetStartFrequency(oper.finalFrequency);
                 if (oper.nextOper == SOPER_STOP) {
-		    it.second->Stop();
+                    it.second->Stop();
                 }
-                
-		it.second->PopEnvelope();
+
+                it.second->PopEnvelope();
             }
         }
     }
@@ -491,32 +501,67 @@ void ALSound::SetListener(Math::Vector eye, Math::Vector lookat)
 
 bool ALSound::PlayMusic(int rank, bool bRepeat)
 {
-    // TODO stub! Add music support
+    if (!mEnabled) {
+        return false;
+    }
+    
+    if (static_cast<int>(mCurrentMusic->GetSoundType()) != rank) {
+        mCurrentMusic->FreeBuffer();
+
+        if (mMusic.find(rank) == mMusic.end()) {
+            GetLogger()->Info("Requested music %d was not found.\n", rank);
+            return false;
+        }
+
+        Buffer *buffer = new Buffer();
+        buffer->LoadFromFile(mMusic.at(rank), static_cast<Sound>(rank));
+        mCurrentMusic->SetBuffer(buffer);
+    }
+    
+    mCurrentMusic->SetVolume(mMusicVolume);
+    mCurrentMusic->SetLoop(bRepeat);
+    mCurrentMusic->Play();
+    
     return true;
 }
 
 
 bool ALSound::RestartMusic()
 {
-    // TODO stub! Add music support
+    if (!mEnabled || !mCurrentMusic) {
+        return false;
+    }
+
+    mCurrentMusic->Stop();
+    mCurrentMusic->Play();
     return true;
 }
 
 void ALSound::StopMusic()
 {
-    // TODO stub! Add music support
+    if (!mEnabled || !mCurrentMusic) {
+        return;
+    }
+    
     SuspendMusic();
 }
 
 
 bool ALSound::IsPlayingMusic()
 {
-    // TODO stub! Add music support
-    return true;
+    if (!mEnabled || !mCurrentMusic) {
+        return false;
+    }
+    
+    return mCurrentMusic->IsPlaying();
 }
 
 
 void ALSound::SuspendMusic()
 {
-    // TODO stub! Add music support
+    if (!mEnabled || !mCurrentMusic) {
+        return;
+    }
+    
+    mCurrentMusic->Stop();
 }

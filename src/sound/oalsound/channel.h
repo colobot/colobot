@@ -52,7 +52,7 @@ class Channel
 
         bool SetFrequency(float);
         float GetFrequency();
-	bool AdjustFrequency(float);
+        bool AdjustFrequency(float);
 
         float GetCurrentTime();
         void SetCurrentTime(float);
@@ -62,9 +62,11 @@ class Channel
         float GetVolume();
         bool IsPlaying();
         bool IsReady();
-	bool IsLoaded();
+        bool IsLoaded();
 
         bool SetBuffer(Buffer *);
+        bool FreeBuffer();
+        
         bool HasEnvelope();
         SoundOper& GetEnvelope();
         void PopEnvelope();
@@ -84,7 +86,7 @@ class Channel
         void AddOper(SoundOper);
         void ResetOper();
         Sound GetSoundType();
-	void SetLoop(bool);
+        void SetLoop(bool);
         
     private:
         Buffer *mBuffer;
@@ -97,5 +99,5 @@ class Channel
         float mInitFrequency;
         std::deque<SoundOper> mOper;
         bool mReady;
-	bool mLoop;
+        bool mLoop;
 };

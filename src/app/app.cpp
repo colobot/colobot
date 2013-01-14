@@ -321,10 +321,17 @@ bool CApplication::Create()
         #endif
 
         m_sound->Create(true);
-        if (GetProfile().GetLocalProfileString("Resources", "Sound", path))
+        if (GetProfile().GetLocalProfileString("Resources", "Sound", path)) {
             m_sound->CacheAll(path);
-        else
+        } else {
             m_sound->CacheAll(GetDataSubdirPath(DIR_SOUND));
+        }
+        
+        if (GetProfile().GetLocalProfileString("Resources", "Music", path)) {
+            m_sound->AddMusicFiles(path);
+        } else {
+            m_sound->AddMusicFiles(GetDataSubdirPath(DIR_MUSIC));
+        }
     }
 
     std::string standardInfoMessage =

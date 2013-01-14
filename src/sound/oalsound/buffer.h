@@ -19,8 +19,11 @@
 #pragma once
 
 #include <string>
+#include <vector>
+#include <array>
 
-#include <AL/alut.h>
+#include <AL/al.h>
+#include <sndfile.h>
 
 #include "sound/sound.h"
 #include "common/logger.h"

@@ -22,6 +22,7 @@
 
 #pragma once
 
+#include <boost/filesystem.hpp>
 
 #include "math/vector.h"
 
@@ -32,6 +33,7 @@
 #include <iostream>
 #include <iomanip>
 #include <sstream>
+#include <map>
 
 
 /*!
@@ -177,6 +179,16 @@ class CSoundInterface
         }
     };
 
+    /** Function called to add all music files to list */
+    inline void AddMusicFiles(std::string path) {
+        for ( int i = 1; i <= 12; i++ ) {
+            std::stringstream filename;
+            filename << path << "/music" << std::setfill('0') << std::setw(3) << i << ".ogg";
+            if (boost::filesystem::exists(filename.str()))
+                mMusic[i] = filename.str();
+        }
+    };
+    
     /** Function called to cache sound effect file.
      *  This function is called by plugin interface for each file.
      * \param bSound - id of a file, will be used to identify sound files
@@ -328,5 +340,8 @@ class CSoundInterface
      * \return return true if music is playing
      */
     inline virtual bool IsPlayingMusic() {return true;};
+
+    protected:
+        std::map<int, std::string> mMusic;
 };
 

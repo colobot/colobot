@@ -5458,10 +5458,8 @@ void CMainDialog::ChangeSetupButtons()
     ps = static_cast<CSlider*>(pw->SearchControl(EVENT_INTERFACE_VOLMUSIC));
     if ( ps != 0 )
     {
-        /*
-        TODO: midi volume
         value = ps->GetVisibleValue();
-        m_sound->SetMidiVolume((int)value);*/
+        m_sound->SetMusicVolume(static_cast<int>(value));
     }
 }
 

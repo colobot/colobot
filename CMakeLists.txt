@@ -113,6 +113,8 @@ option(GLEW_STATIC "Link statically with GLEW" OFF)
 
 find_package(GLEW REQUIRED)
 
+include("${colobot_SOURCE_DIR}/cmake/FindLibSndFile.cmake")
+
 
 ##
 # Additional settings to use when cross-compiling with MXE (http://mxe.cc/)

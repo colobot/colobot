@@ -30,12 +30,14 @@ if (${OPENAL_SOUND})
     if (${MXE})
         set(OPTIONAL_LIBS
             ${CMAKE_FIND_ROOT_PATH}/lib/libOpenAL32.a
-            ${CMAKE_FIND_ROOT_PATH}/lib/libalut.a
+        )
+    elseif (${PLATFORM_WINDOWS})
+        set(OPTIONAL_LIBS
+            OpenAL32
         )
     else()
         set(OPTIONAL_LIBS
             openal
-            alut
         )
     endif()
 endif()
@@ -200,6 +202,7 @@ ${GLEW_LIBRARY}
 ${Boost_LIBRARIES}
 ${OPTIONAL_LIBS}
 ${PLATFORM_LIBS}
+${LIBSNDFILE_LIBRARY}
 )
 
 # Local
@@ -207,6 +210,7 @@ include_directories(
 .
 ..
 ${CMAKE_CURRENT_BINARY_DIR}
+${LIBSNDFILE_INCLUDE_DIR}
 )
 
 # System

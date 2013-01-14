@@ -22,7 +22,7 @@
 #include <map>
 #include <string>
 
-#include <AL/alut.h>
+#include <AL/al.h>
 
 #include "common/iman.h"
 #include "common/logger.h"
@@ -87,8 +87,10 @@ class ALSound : public CSoundInterface
         bool m3D;
         bool mMute;
         float mAudioVolume;
-        ALCdevice* audioDevice;
-        ALCcontext* audioContext;
+        float mMusicVolume;
+        ALCdevice* mDevice;
+        ALCcontext* mContext;
         std::map<Sound, Buffer*> mSounds;
         std::map<int, Channel*> mChannels;
+        Channel *mCurrentMusic;
 };

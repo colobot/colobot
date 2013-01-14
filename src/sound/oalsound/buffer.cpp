@@ -35,26 +35,43 @@ Buffer::~Buffer() {
 
 bool Buffer::LoadFromFile(std::string filename, Sound sound) {
     mSound = sound;
-
     GetLogger()->Debug("Loading audio file: %s\n", filename.c_str());
-    mBuffer = alutCreateBufferFromFile(filename.c_str());
 
-    ALenum error = alutGetError();
-    if (error) {
-        GetLogger()->Warn("Failed to load file. Reason: %s\n", alutGetErrorString(error));
+    SF_INFO fileInfo;
+    SNDFILE *file = sf_open(filename.c_str(), SFM_READ, &fileInfo);
+
+    GetLogger()->Trace("  channels %d\n", fileInfo.channels);
+    GetLogger()->Trace("  format %d\n", fileInfo.format);
+    GetLogger()->Trace("  frames %d\n", fileInfo.frames);
+    GetLogger()->Trace("  samplerate %d\n", fileInfo.samplerate);
+    GetLogger()->Trace("  sections %d\n", fileInfo.sections);
+
+    if (!file) {
+        GetLogger()->Warn("Could not load file. Reason: %s\n", sf_strerror(file));
         mLoaded = false;
         return false;
     }
 
-    ALint size, bits, channels, freq;
+    alGenBuffers(1, &mBuffer);
+    if (!mBuffer) {
+        GetLogger()->Warn("Could not create audio buffer\n");
+        mLoaded = false;
+        sf_close(file);
+        return false;
+    }
 
-    alGetBufferi(mBuffer, AL_SIZE, &size);
-    alGetBufferi(mBuffer, AL_BITS, &bits);
-    alGetBufferi(mBuffer, AL_CHANNELS, &channels);
-    alGetBufferi(mBuffer, AL_FREQUENCY, &freq);
+    // read chunks of 4096 samples
+    std::vector<uint16_t> data;
+    std::array<int16_t, 4096> buffer;
+    data.reserve(fileInfo.frames);
+    size_t read = 0;
+    while ((read = sf_read_short(file, buffer.data(), buffer.size())) != 0) {
+        data.insert(data.end(), buffer.begin(), buffer.begin() + read);
+    }
+    sf_close(file);   
 
-    mDuration =  static_cast<ALfloat>(size) * 8 / channels / bits / static_cast<ALfloat>(freq);
-
+    alBufferData(mBuffer, fileInfo.channels == 1 ? AL_FORMAT_MONO16 : AL_FORMAT_STEREO16, &data.front(), data.size() * sizeof(uint16_t), fileInfo.samplerate);
+    mDuration = static_cast<float>(fileInfo.frames) / fileInfo.samplerate;
     mLoaded = true;
     return true;
 }
