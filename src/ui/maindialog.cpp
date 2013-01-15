@@ -4676,6 +4676,7 @@ void CMainDialog::UpdateSceneChap(int &chap)
     {
         j = 0;
         fs::directory_iterator dirIt(m_savegameDir), dirEndIt;
+        m_userList.clear();
 
         BOOST_FOREACH (const fs::path & p, std::make_pair(dirIt, dirEndIt))
         {
