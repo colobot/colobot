@@ -29,7 +29,7 @@ ALSound::ALSound()
     mAudioVolume = 1.0f;
     mMusicVolume = 1.0f;
     mMute = false;
-    mCurrentMusic = new Channel();
+    mCurrentMusic = nullptr;    
     auto pointer = CInstanceManager::GetInstancePointer();
     if (pointer != nullptr)
         CInstanceManager::GetInstancePointer()->AddInstance(CLASS_SOUND, this);
@@ -90,6 +90,7 @@ bool ALSound::Create(bool b3D)
     }
     alcMakeContextCurrent(mContext);
 
+    mCurrentMusic = new Channel();
     GetLogger()->Info("Done.\n");
     mEnabled = true;
     return true;
@@ -125,8 +126,8 @@ bool ALSound::GetEnable()
 
 void ALSound::SetAudioVolume(int volume)
 {
-    alListenerf(AL_GAIN, MIN(static_cast<float>(volume) / MAXVOLUME, 1.0f));
     mAudioVolume = MIN(static_cast<float>(volume) / MAXVOLUME, 1.0f);
+    alListenerf(AL_GAIN, mAudioVolume);
 }
 
 
@@ -141,8 +142,10 @@ int ALSound::GetAudioVolume()
 
 void ALSound::SetMusicVolume(int volume)
 {
-    alListenerf(AL_GAIN, MIN(static_cast<float>(volume) / MAXVOLUME, 1.0f));
     mMusicVolume = MIN(static_cast<float>(volume) / MAXVOLUME, 1.0f);
+    if (mCurrentMusic) {
+        mCurrentMusic->SetVolume(mMusicVolume);
+    }
 }
 
 
@@ -310,29 +313,28 @@ int ALSound::Play(Sound sound, Math::Vector pos, float amplitude, float frequenc
     }
 
     int channel;
-    bool bAlreadyLoaded;
+    bool bAlreadyLoaded = false;
     if (!SearchFreeBuffer(sound, channel, bAlreadyLoaded))
         return -1;
-    
-    bAlreadyLoaded = false;
+
     if (!bAlreadyLoaded) {
         if (!mChannels[channel]->SetBuffer(mSounds[sound])) {
             mChannels[channel]->SetBuffer(nullptr);
             return -1;
         }
     }
-
     Position(channel, pos);
 
     // setting initial values
-    mChannels[channel]->SetStartAmplitude(amplitude);
+    mChannels[channel]->SetStartAmplitude(amplitude * mAudioVolume);
     mChannels[channel]->SetStartFrequency(frequency);
     mChannels[channel]->SetChangeFrequency(1.0f);
     mChannels[channel]->ResetOper();
-    mChannels[channel]->SetFrequency(frequency * mChannels[channel]->GetFrequency());       
-    mChannels[channel]->SetVolume(amplitude);
+    mChannels[channel]->SetFrequency(frequency);
+    mChannels[channel]->SetVolume(amplitude * mAudioVolume);
     mChannels[channel]->SetLoop(bLoop);
     mChannels[channel]->Play();
+
     return channel;
 }
 
@@ -464,10 +466,10 @@ void ALSound::FrameMove(float delta)
         oper.currentTime += delta;
         progress = oper.currentTime / oper.totalTime;
         progress = MIN(progress, 1.0f);
-
+       
         // setting volume
         volume = progress * (oper.finalAmplitude - it.second->GetStartAmplitude());
-        it.second->SetVolume(volume + it.second->GetStartAmplitude());
+        it.second->SetVolume((volume + it.second->GetStartAmplitude()) * mAudioVolume);
 
         // setting frequency
         frequency = progress * (oper.finalFrequency - it.second->GetStartFrequency()) * it.second->GetStartFrequency() * it.second->GetChangeFrequency() * it.second->GetInitFrequency();
@@ -506,7 +508,24 @@ bool ALSound::PlayMusic(int rank, bool bRepeat)
     }
     
     if (static_cast<int>(mCurrentMusic->GetSoundType()) != rank) {
-        mCurrentMusic->FreeBuffer();
+        // check if we have music in cache
+        for (auto music : mMusicCache) {
+            if (static_cast<int>(music->GetSoundType()) == rank) {
+                GetLogger()->Debug("Music loaded from cache\n");
+                mCurrentMusic->SetBuffer(music);
+
+                mCurrentMusic->SetVolume(mMusicVolume);
+                mCurrentMusic->SetLoop(bRepeat);
+                mCurrentMusic->Play();
+                return true;
+            }
+        }
+     
+        // we cache only 3 music files
+        if (mMusicCache.size() == 3) {
+            mCurrentMusic->FreeBuffer();
+            mMusicCache.pop_back();
+        }
 
         if (mMusic.find(rank) == mMusic.end()) {
             GetLogger()->Info("Requested music %d was not found.\n", rank);
@@ -514,8 +533,10 @@ bool ALSound::PlayMusic(int rank, bool bRepeat)
         }
 
         Buffer *buffer = new Buffer();
+        mMusicCache.push_front(buffer);
         buffer->LoadFromFile(mMusic.at(rank), static_cast<Sound>(rank));
         mCurrentMusic->SetBuffer(buffer);
+        mMusicCache[rank] = buffer;
     }
     
     mCurrentMusic->SetVolume(mMusicVolume);

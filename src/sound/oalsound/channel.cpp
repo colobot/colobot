@@ -54,7 +54,7 @@ Channel::~Channel() {
 bool Channel::Play() {
     if (!mReady || mBuffer == nullptr)
         return false;
-    
+
     alSourcei(mSource, AL_LOOPING, static_cast<ALint>(mLoop));
     alSourcePlay(mSource);
     if (alCheck())
@@ -223,7 +223,8 @@ Sound Channel::GetSoundType() {
 bool Channel::SetBuffer(Buffer *buffer) {
     if (!mReady)
         return false;
-    
+
+    Stop();    
     mBuffer = buffer;
     if (buffer == nullptr) {
         alSourcei(mSource, AL_BUFFER, 0);
@@ -276,7 +277,7 @@ bool Channel::IsReady() {
 }
 
 bool Channel::IsLoaded() {
-    return mBuffer == nullptr;
+    return mBuffer != nullptr;
 }
 
 

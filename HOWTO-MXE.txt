@@ -49,6 +49,10 @@ libraries and tools.
     xz
     zlib
 
+    for audio support:
+    openal
+    libsndfile
+
 4. Now `cd' to colobot directory. To cross-compile a CMake project, you have to specify
    a CMake toolchain file. MXE has such file in MXE's directory:
    usr/i686-pc-mingw32/share/cmake/mxe-conf.cmake

@@ -42,8 +42,10 @@ How to...
     $ cmake .
     $ make
 
-  Note: If you experience problems with OpenGL's extensions, install GLEW library and enable
-        it in compilation by setting USE_GLEW to 1 in CMakeLists.txt
+  Note #1: If you experience problems with OpenGL's extensions, install GLEW library and enable
+           it in compilation by setting USE_GLEW to 1 in CMakeLists.txt
+
+  Note #2: For audio support you need libsndfile and openal.
 
  1.3 Other platforms, compilers, etc.
 

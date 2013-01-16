@@ -92,5 +92,6 @@ class ALSound : public CSoundInterface
         ALCcontext* mContext;
         std::map<Sound, Buffer*> mSounds;
         std::map<int, Channel*> mChannels;
+        std::deque<Buffer*> mMusicCache;
         Channel *mCurrentMusic;
 };

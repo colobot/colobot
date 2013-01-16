@@ -1,5 +1,5 @@
 # Compile flags as defined in global CMakeLists
-set(CMAKE_CXX_FLAGS ${COLOBOT_CXX_FLAGS})
+set(CMAKE_CXX_FLAGS "${COLOBOT_CXX_FLAGS} ${MXE_CFLAGS}")
 set(CMAKE_CXX_FLAGS_RELEASE ${COLOBOT_CXX_FLAGS_RELEASE})
 set(CMAKE_CXX_FLAGS_DEBUG ${COLOBOT_CXX_FLAGS_DEBUG})
 
@@ -27,11 +27,7 @@ endif()
 set(OPTIONAL_LIBS "")
 
 if (${OPENAL_SOUND})
-    if (${MXE})
-        set(OPTIONAL_LIBS
-            ${CMAKE_FIND_ROOT_PATH}/lib/libOpenAL32.a
-        )
-    elseif (${PLATFORM_WINDOWS})
+    if (${PLATFORM_WINDOWS})
         set(OPTIONAL_LIBS
             OpenAL32
         )
@@ -43,8 +39,6 @@ if (${OPENAL_SOUND})
 endif()
 
 # Additional libraries per platform
-set(PLATFORM_LIBS "")
-
 if (${MXE}) # MXE requires special treatment
     set(PLATFORM_LIBS ${MXE_LIBS})  
 elseif (${PLATFORM_WINDOWS})
@@ -201,8 +195,8 @@ ${PNG_LIBRARIES}
 ${GLEW_LIBRARY}
 ${Boost_LIBRARIES}
 ${OPTIONAL_LIBS}
-${PLATFORM_LIBS}
 ${LIBSNDFILE_LIBRARY}
+${PLATFORM_LIBS}
 )
 
 # Local
@@ -210,7 +204,6 @@ include_directories(
 .
 ..
 ${CMAKE_CURRENT_BINARY_DIR}
-${LIBSNDFILE_INCLUDE_DIR}
 )
 
 # System
@@ -223,6 +216,7 @@ ${PNG_INCLUDE_DIRS}
 ${GLEW_INCLUDE_PATH}
 ${Boost_INCLUDE_DIRS}
 ${OPTIONAL_INCLUDE_DIRS}
+${LIBSNDFILE_INCLUDE_DIR}
 )
 
 link_directories(${CMAKE_CURRENT_SOURCE_DIR}/CBot)
