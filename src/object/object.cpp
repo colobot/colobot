@@ -6243,12 +6243,12 @@ void CObject::SetViewFromHere(Math::Vector &eye, float &dirH, float &dirV,
 
 void CObject::SetCharacter(Character* character)
 {
-    memcpy(&m_character, character, sizeof(m_character));
+    memcpy(&m_character, character, sizeof(Character));
 }
 
 void CObject::GetCharacter(Character* character)
 {
-    memcpy(character, &m_character, sizeof(character));
+    memcpy(character, &m_character, sizeof(Character));
 }
 
 Character* CObject::GetCharacter()

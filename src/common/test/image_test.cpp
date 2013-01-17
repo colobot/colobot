@@ -19,7 +19,7 @@ int main(int argc, char *argv[])
     if (! image.Load(argv[1]))
     {
         std::string err = image.GetError();
-        printf("Error loading '%s': %s\n", err.c_str());
+        printf("Error loading '%s': %s\n", argv[1], err.c_str());
         return 1;
     }
     Gfx::Color color;
@@ -49,7 +49,7 @@ int main(int argc, char *argv[])
     if (! image.SavePNG(argv[2]))
     {
         std::string err = image.GetError();
-        printf("Error saving PNG '%s': %s\n", err.c_str());
+        printf("Error saving PNG '%s': %s\n", argv[2], err.c_str());
         return 2;
     }
 
