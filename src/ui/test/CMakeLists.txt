@@ -31,6 +31,6 @@ add_executable(edit_test
     stubs/restext_stub.cpp
     stubs/robotmain_stub.cpp
     edit_test.cpp)
-target_link_libraries(edit_test gtest gmock ${SDL_LIBRARY} ${SDLTTF_LIBRARY})
+target_link_libraries(edit_test gtest gmock ${SDL_LIBRARY} ${SDLTTF_LIBRARY} ${Boost_LIBRARIES})
 
 add_test(edit_test ./edit_test)
