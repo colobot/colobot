@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2012-12-27 10:55+0100\n"
+"POT-Creation-Date: 2013-01-20 14:26+0100\n"
 "PO-Revision-Date: 2012-12-27 11:00+0100\n"
 "Last-Translator: Didier Raboud <odyx@debian.org>\n"
 "Language-Team: none\n"
@@ -33,8 +33,8 @@ msgstr "Colonise avec des roBots"
 
 #. type: =head1
 #: colobot.pod:3
-msgid "COLOBOT"
-msgstr "COLOBOT"
+msgid "NAME"
+msgstr "NOM"
 
 #. type: textblock
 #: colobot.pod:5
