@@ -5,11 +5,26 @@
 # Copyright (C) 2012, PPC (Polish Portal of Colobot)
 #
 
+bl_info = {
+    "name": "Colobot Model Format (.txt)",
+    "author": "PPC (Polish Portal of Colobot)",
+    "version": (0, 0, 2),
+    "blender": (2, 6, 4),
+    "location": "File > Export > Colobot (.txt)",
+    "description": "Export Colobot Model Format (.txt)",
+    "warning": "",
+    "wiki_url": "http://colobot.info"\
+        "",
+    "tracker_url": ""\
+        "",
+    "category": "Import-Export"}
+
 import bpy
 import struct
 import array
 import os
 import copy
+import math
 
 FUZZY_TOLERANCE = 1e-5
 
@@ -38,7 +53,10 @@ class ColobotVertex:
         return 1
 
     def __eq__(self, other):
-        return fuzzy_equal_v(self.coord, other.coord) and fuzzy_equal_v(self.normal, other.normal) and fuzzy_equal_v(self.t1, other.t1) and fuzzy_equal_v(self.t2, other.t2)
+        return (fuzzy_equal_v(self.coord, other.coord) and
+               fuzzy_equal_v(self.normal, other.normal) and
+               fuzzy_equal_v(self.t1, other.t1) and
+               fuzzy_equal_v(self.t2, other.t2))
 
 class ColobotMaterial:
     """Material as saved in Colobot model file"""
@@ -53,7 +71,11 @@ class ColobotMaterial:
         return 1
 
     def __eq__(self, other):
-        return fuzzy_equal_v(self.diffuse, other.diffuse) and fuzzy_equal_v(self.ambient, other.ambient) and fuzzy_equal_v(self.specular, other.specular) and self.tex1 == other.tex1 and self.tex2 == other.tex2
+        return (fuzzy_equal_v(self.diffuse, other.diffuse) and
+               fuzzy_equal_v(self.ambient, other.ambient) and
+               fuzzy_equal_v(self.specular, other.specular) and
+               self.tex1 == other.tex1 and
+               self.tex2 == other.tex2)
 
 class ColobotTriangle:
     """Triangle as saved in Colobot model file"""
@@ -260,6 +282,7 @@ def read_colobot_model(filename):
         t.state = int(tokens[1])
 
         model.triangles.append(t)
+
 
     return model
 
@@ -469,8 +492,15 @@ class ExportColobot(bpy.types.Operator):
             'max': self.DEFAULT_MAX,
             'state': self.DEFAULT_STATE }
         try:
+            obj = context.object
+            temp_ROT = obj.rotation_euler
+            temp_ROT[0] = temp_ROT[0] + math.radians(270)
+            obj.rotation_euler = temp_ROT
             model = mesh_to_colobot_model(context.object, context.scene, defaults)
             write_colobot_model(self.filepath, model)
+            temp_ROT = obj.rotation_euler
+            temp_ROT[0] = temp_ROT[0] + math.radians(90)
+            obj.rotation_euler = temp_ROT
         except ColobotError as e:
             self.report({'ERROR'}, e.args[0])
             return {'FINISHED'}
@@ -487,10 +517,6 @@ class ExportColobot(bpy.types.Operator):
 def export_menu_func(self, context):
     self.layout.operator_context = 'INVOKE_DEFAULT'
     self.layout.operator(ExportColobot.bl_idname, text="Colobot (Text Format)")
-
-# Register and add to the file selector
-bpy.utils.register_class(ExportColobot)
-bpy.types.INFO_MT_file_export.append(export_menu_func)
 
 
 
@@ -510,6 +536,9 @@ class ImportColobot(bpy.types.Operator):
             model = read_colobot_model(self.filepath)
             mesh = colobot_model_to_mesh(model, 'ColobotMesh', os.path.dirname(self.filepath))
             obj = bpy.data.objects.new('ColobotMesh', mesh)
+            temp_ROT = obj.rotation_euler
+            temp_ROT[0] = temp_ROT[0] + math.radians(90)
+            obj.rotation_euler = temp_ROT
             bpy.context.scene.objects.link(obj)
             bpy.context.scene.objects.active = obj
             obj.select = True
@@ -530,6 +559,9 @@ def import_menu_func(self, context):
     self.layout.operator_context = 'INVOKE_DEFAULT'
     self.layout.operator(ImportColobot.bl_idname, text="Colobot (Text Format)")
 
-# Register and add to the file selector
-bpy.utils.register_class(ImportColobot)
-bpy.types.INFO_MT_file_import.append(import_menu_func)
+
+def register():
+    bpy.utils.register_module(__name__)
+
+    bpy.types.INFO_MT_file_export.append(export_menu_func)
+    bpy.types.INFO_MT_file_import.append(import_menu_func)
