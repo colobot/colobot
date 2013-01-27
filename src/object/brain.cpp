@@ -1947,6 +1947,7 @@ void CBrain::UpdateInterface(float rTime)
         if ( power == 0 )
         {
             energy = 0.0f;
+            limit = 0.0f;
         }
         else
         {

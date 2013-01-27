@@ -1397,27 +1397,39 @@ void CPyro::CreateTriangle(CObject* obj, ObjectType oType, int part)
     int objRank = obj->GetObjectRank(part);
     if (objRank == -1) return;
 
-    float min = 0.0f;
-    float max = m_engine->GetLimitLOD(0);
+
     int total = m_engine->GetObjectTotalTriangles(objRank);
+
     float percent = 0.10f;
     if (total < 50) percent = 0.25f;
     if (total < 20) percent = 0.50f;
     if (m_type == PT_EGG) percent = 0.30f;
 
-    if ( oType == OBJECT_POWER    ||
-         oType == OBJECT_ATOMIC   ||
-         oType == OBJECT_URANIUM  ||
-         oType == OBJECT_TNT      ||
-         oType == OBJECT_BOMB     )  percent = 0.75f;
-    if ( oType == OBJECT_MOBILEtg )  percent = 0.50f;
-    if ( oType == OBJECT_TEEN28   )  percent = 0.75f;
-    if ( oType == OBJECT_MOTHER   )  max = 1000000.0f;
-    if ( oType == OBJECT_TEEN28   )  max = 1000000.0f;
-    if ( oType == OBJECT_TEEN31   )  max = 1000000.0f;
+    if (oType == OBJECT_POWER    ||
+        oType == OBJECT_ATOMIC   ||
+        oType == OBJECT_URANIUM  ||
+        oType == OBJECT_TNT      ||
+        oType == OBJECT_BOMB     ||
+        oType == OBJECT_TEEN28)
+    {
+        percent = 0.75f;
+    }
+    else if (oType == OBJECT_MOBILEtg)
+    {
+        percent = 0.50f;
+    }
+
+    LODLevel lodLevel = LOD_High;
+
+    if (oType == OBJECT_MOTHER ||
+        oType == OBJECT_TEEN28 ||
+        oType == OBJECT_TEEN31)
+    {
+        lodLevel = LOD_Constant;
+    }
 
     std::vector<EngineTriangle> buffer;
-    total = m_engine->GetPartialTriangles(objRank, min, max, percent, 100, buffer);
+    total = m_engine->GetPartialTriangles(objRank, lodLevel, percent, 100, buffer);
 
     for (int i = 0; i < total; i++)
     {

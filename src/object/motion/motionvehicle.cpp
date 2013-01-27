@@ -1877,52 +1877,33 @@ bool CMotionVehicle::EventFrameCanoni(const Event &event)
 
 void CMotionVehicle::UpdateTrackMapping(float left, float right, ObjectType type)
 {
-    Gfx::Material    mat;
-    float           limit[4];
-    int             rRank, lRank, i;
+    Gfx::Material mat;
+    mat.diffuse = Gfx::Color(1.0f, 1.0f, 1.0f);  // white
+    mat.ambient = Gfx::Color(0.5f, 0.5f, 0.5f);
 
-    memset( &mat, 0, sizeof(Gfx::Material) );
-    mat.diffuse.r = 1.0f;
-    mat.diffuse.g = 1.0f;
-    mat.diffuse.b = 1.0f;  // white
-    mat.ambient.r = 0.5f;
-    mat.ambient.g = 0.5f;
-    mat.ambient.b = 0.5f;
+    int rRank = m_object->GetObjectRank(6);
+    int lRank = m_object->GetObjectRank(7);
 
-    rRank = m_object->GetObjectRank(6);
-    lRank = m_object->GetObjectRank(7);
-
-
-    if ( type == OBJECT_MOBILEdr )
+    if (type == OBJECT_MOBILEdr)
     {
-        limit[0] = 0.0f;
-        limit[1] = 1000000.0f;
-        limit[2] = limit[1];
-        limit[3] = m_engine->GetLimitLOD(1);
-
         m_engine->TrackTextureMapping(rRank, mat, Gfx::ENG_RSTATE_PART1, "drawer.png", "",
-                                      limit[0], limit[1], Gfx::ENG_TEX_MAPPING_X,
+                                      Gfx::LOD_Constant, Gfx::ENG_TEX_MAPPING_X,
                                       right, 1.0f, 8.0f, 192.0f, 256.0f);
 
         m_engine->TrackTextureMapping(lRank, mat, Gfx::ENG_RSTATE_PART2, "drawer.png", "",
-                                      limit[0], limit[1], Gfx::ENG_TEX_MAPPING_X,
+                                      Gfx::LOD_Constant, Gfx::ENG_TEX_MAPPING_X,
                                       left, 1.0f, 8.0f, 192.0f, 256.0f);
     }
     else
     {
-        limit[0] = 0.0f;
-        limit[1] = m_engine->GetLimitLOD(0);
-        limit[2] = limit[1];
-        limit[3] = m_engine->GetLimitLOD(1);
-
-        for ( i=0 ; i<2 ; i++ )
+        for (int i = 0; i < 2; i++)
         {
             m_engine->TrackTextureMapping(rRank, mat, Gfx::ENG_RSTATE_PART1, "lemt.png", "",
-                                          limit[i*2+0], limit[i*2+1], Gfx::ENG_TEX_MAPPING_X,
+                                          (i == 0) ? Gfx::LOD_High : Gfx::LOD_Medium, Gfx::ENG_TEX_MAPPING_X,
                                           right, 1.0f, 8.0f, 192.0f, 256.0f);
 
             m_engine->TrackTextureMapping(lRank, mat, Gfx::ENG_RSTATE_PART2, "lemt.png", "",
-                                          limit[i*2+0], limit[i*2+1], Gfx::ENG_TEX_MAPPING_X,
+                                          (i == 0) ? Gfx::LOD_High : Gfx::LOD_Medium, Gfx::ENG_TEX_MAPPING_X,
                                           left, 1.0f, 8.0f, 192.0f, 256.0f);
         }
     }

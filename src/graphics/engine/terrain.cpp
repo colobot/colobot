@@ -487,8 +487,7 @@ VertexTex2 CTerrain::GetVertex(int x, int y, int step)
   +-------------------> x
 \endverbatim */
 bool CTerrain::CreateMosaic(int ox, int oy, int step, int objRank,
-                            const Material &mat,
-                            float min, float max)
+                            const Material &mat)
 {
     int baseObjRank = m_engine->GetObjectBaseRank(objRank);
     if (baseObjRank == -1)
@@ -640,7 +639,7 @@ bool CTerrain::CreateMosaic(int ox, int oy, int step, int objRank,
                     buffer.vertices.push_back(p2);
                 }
 
-                m_engine->AddBaseObjQuick(baseObjRank, buffer, texName1, texName2, min, max, true);
+                m_engine->AddBaseObjQuick(baseObjRank, buffer, texName1, texName2, LOD_Constant, true);
             }
         }
     }
@@ -1170,15 +1169,9 @@ bool CTerrain::CreateSquare(int x, int y)
 
     m_objRanks[x+y*m_mosaicCount] = objRank;
 
-    float min = 0.0f;
-    float max = m_vision;
-    max *= m_engine->GetClippingDistance();
     for (int step = 0; step < m_depth; step++)
     {
-        CreateMosaic(x, y, 1 << step, objRank, mat, min, max);
-        min = max;
-        max *= 2;
-        if (step == m_depth-1) max = Math::HUGE_NUM;
+        CreateMosaic(x, y, 1 << step, objRank, mat);
     }
 
     return true;

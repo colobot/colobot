@@ -39,9 +39,23 @@ namespace Gfx {
 
 
 /**
-  \struct ModelTriangle
-  \brief Triangle of a 3D model
-  */
+ * \enum LODLevel
+ * \brief Level-of-detail
+ *
+ * A quantified replacement for older values of min/max.
+ */
+enum LODLevel
+{
+    LOD_Constant = -1, //!< triangle is always visible, no matter at what distance
+    LOD_Low      =  1, //!< triangle is visible at farthest distance (lowest quality)
+    LOD_Medium   =  2, //!< triangle is visible at medium distance (medium quality)
+    LOD_High     =  4  //!< triangle is visible at closest distance (highest quality)
+};
+
+/**
+ * \struct ModelTriangle
+ * \brief Triangle of a 3D model
+ */
 struct ModelTriangle
 {
     //! 1st vertex
@@ -58,17 +72,15 @@ struct ModelTriangle
     std::string      tex2Name;
     //! If true, 2nd texture will be taken from current engine setting
     bool             variableTex2;
-    //! Min LOD threshold
-    float            min;
-    //! Max LOD threshold
-    float            max;
+    //! LOD level
+    LODLevel         lodLevel;
     //! Rendering state to be set
     int              state;
 
     ModelTriangle()
     {
         variableTex2 = true;
-        min = max = 0.0f;
+        lodLevel = LOD_Constant;
         state = 0;
     }
 };
@@ -126,8 +138,11 @@ public:
     const std::vector<ModelTriangle>& GetTriangles();
 
 protected:
-    //! Adds a triangle to the list
-    void                 CreateTriangle(Math::Vector p1, Math::Vector p2, Math::Vector p3, float min, float max);
+    //@{
+    //! @deprecated min, max conversions
+    LODLevel MinMaxToLodLevel(float min, float max);
+    void LODLevelToMinMax(LODLevel lodLevel, float& min, float& max);
+    //@}
 
 protected:
     //! Model triangles

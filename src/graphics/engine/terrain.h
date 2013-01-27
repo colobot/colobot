@@ -330,7 +330,7 @@ protected:
     //! Calculates a vertex of the terrain
     VertexTex2  GetVertex(int x, int y, int step);
     //! Creates all objects of a mosaic
-    bool        CreateMosaic(int ox, int oy, int step, int objRank, const Material& mat, float min, float max);
+    bool        CreateMosaic(int ox, int oy, int step, int objRank, const Material& mat);
     //! Creates all objects in a mesh square ground
     bool        CreateSquare(int x, int y);
 

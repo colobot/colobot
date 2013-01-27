@@ -40,8 +40,7 @@ const char* const TEXT_MODEL =
 "tex1 lemt.png\n"
 "tex2\n"
 "var_tex2 N\n"
-"min 200\n"
-"max 1e+06\n"
+"lod_level 0\n"
 "state 1024\n"
 "\n"
 "p1 c -19 -1 4 n -1 0 0 t1 0.248047 0.123047 t2 0.905224 0.52067\n"
@@ -51,8 +50,7 @@ const char* const TEXT_MODEL =
 "tex1 derrick.png\n"
 "tex2\n"
 "var_tex2 Y\n"
-"min 200\n"
-"max 1e+06\n"
+"lod_level 1\n"
 "state 0\n"
 "";
 
@@ -81,8 +79,7 @@ void Init()
     TRIANGLE_1.material.specular = Gfx::Color(0, 0, 0, 0);
     TRIANGLE_1.tex1Name = "lemt.png";
     TRIANGLE_1.variableTex2 = false;
-    TRIANGLE_1.min = 200.0f;
-    TRIANGLE_1.max = 1e+06f;
+    TRIANGLE_1.lodLevel = Gfx::LOD_Constant;
     TRIANGLE_1.state = 1024;
 
     TRIANGLE_2.p1 = Gfx::VertexTex2(Math::Vector(-19, -1, 4),
@@ -102,8 +99,7 @@ void Init()
     TRIANGLE_2.material.specular = Gfx::Color(0, 0, 0, 0);
     TRIANGLE_2.tex1Name = "derrick.png";
     TRIANGLE_2.variableTex2 = true;
-    TRIANGLE_2.min = 200.0f;
-    TRIANGLE_2.max = 1e+06f;
+    TRIANGLE_2.lodLevel = Gfx::LOD_Low;
     TRIANGLE_2.state = 0;
 }
 
@@ -171,10 +167,7 @@ bool CompareTriangles(const Gfx::ModelTriangle& t1, const Gfx::ModelTriangle& t2
     if (t1.variableTex2 != t2.variableTex2)
         return false;
 
-    if (!Math::IsEqual(t1.min, t2.min))
-        return false;
-
-    if (!Math::IsEqual(t1.max, t2.max))
+    if (t1.lodLevel != t2.lodLevel)
         return false;
 
     if (t1.state != t2.state)

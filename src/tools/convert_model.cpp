@@ -133,6 +133,18 @@ bool ParseArgs(int argc, char *argv[])
     return true;
 }
 
+std::ostream& operator<<(std::ostream& stream, Gfx::LODLevel lodLevel)
+{
+    switch (lodLevel)
+    {
+        case Gfx::LOD_Constant: stream << "constant"; break;
+        case Gfx::LOD_High:     stream << "high";     break;
+        case Gfx::LOD_Medium:   stream << "medium";   break;
+        case Gfx::LOD_Low:      stream << "low";      break;
+    }
+    return stream;
+}
+
 template<typename T>
 void PrintStats(const std::map<T, int>& stats, int total)
 {
@@ -188,25 +200,25 @@ int main(int argc, char *argv[])
     {
         const std::vector<Gfx::ModelTriangle>& triangles = model.GetTriangles();
 
-        Math::Vector min( Math::HUGE_NUM,  Math::HUGE_NUM,  Math::HUGE_NUM);
-        Math::Vector max(-Math::HUGE_NUM, -Math::HUGE_NUM, -Math::HUGE_NUM);
+        Math::Vector bboxMin( Math::HUGE_NUM,  Math::HUGE_NUM,  Math::HUGE_NUM);
+        Math::Vector bboxMax(-Math::HUGE_NUM, -Math::HUGE_NUM, -Math::HUGE_NUM);
 
         std::map<std::string, int> texs1, texs2;
         std::map<int, int> states;
-        std::map<float, int> mins, maxs;
+        std::map<Gfx::LODLevel, int> lodLevels;
         int variableTexs2 = 0;
 
         for (int i = 0; i < static_cast<int>( triangles.size() ); ++i)
         {
             const Gfx::ModelTriangle& t = triangles[i];
 
-            min.x = Math::Min(t.p1.coord.x, t.p2.coord.x, t.p3.coord.x, min.x);
-            min.y = Math::Min(t.p1.coord.y, t.p2.coord.y, t.p3.coord.y, min.y);
-            min.z = Math::Min(t.p1.coord.z, t.p2.coord.z, t.p3.coord.z, min.z);
+            bboxMin.x = Math::Min(t.p1.coord.x, t.p2.coord.x, t.p3.coord.x, bboxMin.x);
+            bboxMin.y = Math::Min(t.p1.coord.y, t.p2.coord.y, t.p3.coord.y, bboxMin.y);
+            bboxMin.z = Math::Min(t.p1.coord.z, t.p2.coord.z, t.p3.coord.z, bboxMin.z);
 
-            max.x = Math::Max(t.p1.coord.x, t.p2.coord.x, t.p3.coord.x, max.x);
-            max.y = Math::Max(t.p1.coord.y, t.p2.coord.y, t.p3.coord.y, max.y);
-            max.z = Math::Max(t.p1.coord.z, t.p2.coord.z, t.p3.coord.z, max.z);
+            bboxMax.x = Math::Max(t.p1.coord.x, t.p2.coord.x, t.p3.coord.x, bboxMax.x);
+            bboxMax.y = Math::Max(t.p1.coord.y, t.p2.coord.y, t.p3.coord.y, bboxMax.y);
+            bboxMax.z = Math::Max(t.p1.coord.z, t.p2.coord.z, t.p3.coord.z, bboxMax.z);
 
             texs1[t.tex1Name] += 1;
             if (! t.tex2Name.empty())
@@ -215,16 +227,15 @@ int main(int argc, char *argv[])
                 variableTexs2 += 1;
             states[t.state] += 1;
 
-            mins[t.min] += 1;
-            maxs[t.max] += 1;
+            lodLevels[t.lodLevel] += 1;
         }
 
         std::cerr << "---- Info ----" << std::endl;
         std::cerr << "Total triangles: " << triangles.size();
         std::cerr << std::endl;
         std::cerr << "Bounding box:" << std::endl;
-        std::cerr << " min: [" << min.x << ", " << min.y << ", " << min.z << "]" << std::endl;
-        std::cerr << " max: [" << max.x << ", " << max.y << ", " << max.z << "]" << std::endl;
+        std::cerr << " bboxMin: [" << bboxMin.x << ", " << bboxMin.y << ", " << bboxMin.z << "]" << std::endl;
+        std::cerr << " bboxMax: [" << bboxMax.x << ", " << bboxMax.y << ", " << bboxMax.z << "]" << std::endl;
         std::cerr << std::endl;
         std::cerr << "Textures:" << std::endl;
         std::cerr << " tex1:" << std::endl;
@@ -237,10 +248,7 @@ int main(int argc, char *argv[])
         PrintStats(states, triangles.size());
         std::cerr << std::endl;
         std::cerr << "LOD:" << std::endl;
-        std::cerr << " min:" << std::endl;
-        PrintStats(mins, triangles.size());
-        std::cerr << " max:" << std::endl;
-        PrintStats(maxs, triangles.size());
+        PrintStats(lodLevels, triangles.size());
 
         return 0;
     }

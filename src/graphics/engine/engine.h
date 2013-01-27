@@ -32,6 +32,8 @@
 #include "graphics/core/texture.h"
 #include "graphics/core/vertex.h"
 
+#include "graphics/engine/modelfile.h"
+
 #include "math/intpoint.h"
 #include "math/matrix.h"
 #include "math/point.h"
@@ -204,12 +206,11 @@ struct EngineBaseObjDataTier
  */
 struct EngineBaseObjLODTier
 {
-    float                               min;
-    float                               max;
+    LODLevel                            lodLevel;
     std::vector<EngineBaseObjDataTier>  next;
 
-    inline EngineBaseObjLODTier(float min = 0.0f, float max = 0.0f)
-        : min(min), max(max) {}
+    inline EngineBaseObjLODTier(LODLevel lodLevel = LOD_Constant)
+        : lodLevel(lodLevel) {}
 };
 
 /**
@@ -777,12 +778,12 @@ public:
                                         EngineTriangleType triangleType,
                                         const Material& material, int state,
                                         std::string tex1Name, std::string tex2Name,
-                                        float min, float max, bool globalUpdate);
+                                        LODLevel lodLevel, bool globalUpdate);
 
     //! Adds a tier 4 engine object directly
     void            AddBaseObjQuick(int baseObjRank, const EngineBaseObjDataTier& buffer,
                                     std::string tex1Name, std::string tex2Name,
-                                    float min, float max, bool globalUpdate);
+                                    LODLevel lodLevel, bool globalUpdate);
 
     // Objects
 
@@ -827,15 +828,12 @@ public:
 
     //! Returns the first found tier 4 engine object for the given params or nullptr if not found
     EngineBaseObjDataTier* FindTriangles(int objRank, const Material& material,
-                                        int state, std::string tex1Name, std::string tex2Name,
-                                        float min, float max);
+                                         int state, std::string tex1Name, std::string tex2Name,
+                                         int lodLevelMask);
 
     //! Returns a partial list of triangles for given object
-    int             GetPartialTriangles(int objRank, float min, float max, float percent, int maxCount,
+    int             GetPartialTriangles(int objRank, int lodLevelMask, float percent, int maxCount,
                                         std::vector<EngineTriangle>& triangles);
-
-    //! Updates LOD after parameter or resolution change
-    void            ChangeLOD();
 
     //! Changes the 2nd texure for given object
     void            ChangeSecondTexture(int objRank, const std::string& tex2Name);
@@ -843,13 +841,13 @@ public:
     //! Changes (recalculates) texture mapping for given object
     void            ChangeTextureMapping(int objRank, const Material& mat, int state,
                                          const std::string& tex1Name, const std::string& tex2Name,
-                                         float min, float max, EngineTextureMapping mode,
+                                         int lodLevelMask, EngineTextureMapping mode,
                                          float au, float bu, float av, float bv);
 
     //! Changes texture mapping for robot tracks
     void            TrackTextureMapping(int objRank, const Material& mat, int state,
                                         const std::string& tex1Name, const std::string& tex2Name,
-                                        float min, float max, EngineTextureMapping mode,
+                                        int lodLevelMask, EngineTextureMapping mode,
                                         float pos, float factor, float tl, float ts, float tt);
 
     //! Detects the target object that is selected with the mouse
@@ -946,12 +944,6 @@ public:
     void            DeleteTexture(const std::string& name);
     //! Deletes the given texture, unloading it and removing from cache
     void            DeleteTexture(const Texture& tex);
-
-    //@{
-    //! Border management (distance limits) depends of the resolution (LOD = level-of-detail)
-    void            SetLimitLOD(int rank, float limit);
-    float           GetLimitLOD(int rank, bool last=false);
-    //@}
 
     //! Defines of the distance field of vision
     void            SetTerrainVision(float vision);
@@ -1219,7 +1211,7 @@ protected:
     //! Creates a new tier 2 object (texture)
     EngineBaseObjTexTier&  AddLevel2(EngineBaseObject& p1, const std::string& tex1Name, const std::string& tex2Name);
     //! Creates a new tier 3 object (LOD)
-    EngineBaseObjLODTier&  AddLevel3(EngineBaseObjTexTier &p2, float min, float max);
+    EngineBaseObjLODTier&  AddLevel3(EngineBaseObjTexTier &p2, LODLevel lodLevel);
     //! Creates a new tier 4 object (data)
     EngineBaseObjDataTier& AddLevel4(EngineBaseObjLODTier &p3, EngineTriangleType type,
                                      const Material& mat, int state);
@@ -1229,6 +1221,9 @@ protected:
 
     //! Tests whether the given object is visible
     bool        IsVisible(int objRank);
+
+    //! Checks whether the given distance is within LOD min & max limit
+    bool        IsWithinLODLimit(float distance, LODLevel lodLevel);
 
     //! Detects whether an object is affected by the mouse
     bool        DetectBBox(int objRank, Math::Point mouse);
@@ -1304,8 +1299,6 @@ protected:
 
     //! Current size of viewport window
     Math::IntPoint   m_size;
-    //! Previous size of viewport window
-    Math::IntPoint   m_lastSize;
 
     //! Base objects (also level 1 tier list)
     std::vector<EngineBaseObject> m_baseObjects;
@@ -1356,12 +1349,10 @@ protected:
     Texture         m_foregroundTex;
     bool            m_drawWorld;
     bool            m_drawFront;
-    float           m_limitLOD[2];
     float           m_particleDensity;
     float           m_clippingDistance;
     float           m_lastClippingDistance;
     float           m_objectDetail;
-    float           m_lastObjectDetail;
     float           m_terrainVision;
     float           m_gadgetQuantity;
     int             m_textureQuality;

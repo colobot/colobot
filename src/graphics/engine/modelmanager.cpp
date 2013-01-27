@@ -47,30 +47,8 @@ bool CModelManager::LoadModel(const std::string& fileName, bool mirrored)
 
     std::vector<VertexTex2> vs(3, VertexTex2());
 
-    float limit[2];
-    limit[0] = m_engine->GetLimitLOD(0);  // frontier AB as config
-    limit[1] = m_engine->GetLimitLOD(1);  // frontier BC as config
-
     for (int i = 0; i < static_cast<int>( modelInfo.triangles.size() ); i++)
     {
-        float min = modelInfo.triangles[i].min;
-        float max = modelInfo.triangles[i].max;
-
-        // Standard frontiers -> config
-        if (min == 0.0f && max == 100.0f)  // resolution A ?
-        {
-            max = limit[0];
-        }
-        else if (min == 100.0f && max == 200.0f)  // resolution B ?
-        {
-            min = limit[0];
-            max = limit[1];
-        }
-        else if (min == 200.0f && max == 1000000.0f)  // resolution C ?
-        {
-            min = limit[1];
-        }
-
         int state = modelInfo.triangles[i].state;
         std::string tex2Name = modelInfo.triangles[i].tex2Name;
 
@@ -96,7 +74,7 @@ bool CModelManager::LoadModel(const std::string& fileName, bool mirrored)
         m_engine->AddBaseObjTriangles(modelInfo.baseObjRank, vs, ENG_TRIANGLE_TYPE_TRIANGLES,
                                       modelInfo.triangles[i].material, state,
                                       modelInfo.triangles[i].tex1Name, tex2Name,
-                                      min, max, false);
+                                      modelInfo.triangles[i].lodLevel, false);
     }
 
     return true;

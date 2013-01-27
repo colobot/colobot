@@ -109,13 +109,9 @@ CEngine::CEngine(CInstanceManager *iMan, CApplication *app)
     m_lookatPt = Math::Vector(0.0f, 0.0f, 1.0f);
     m_drawWorld = true;
     m_drawFront = false;
-    m_limitLOD[0] = 100.0f;
-    m_limitLOD[1] = 200.0f;
     m_particleDensity = 1.0f;
-    m_clippingDistance = 1.0f;
     m_lastClippingDistance = m_clippingDistance = 1.0f;
     m_objectDetail = 1.0f;
-    m_lastObjectDetail = m_objectDetail;
     m_terrainVision = 1000.0f;
     m_gadgetQuantity = 1.0f;
     m_textureQuality = 1;
@@ -130,7 +126,6 @@ CEngine::CEngine(CInstanceManager *iMan, CApplication *app)
     m_editIndentValue = 4;
     m_tracePrecision = 1.0f;
 
-    m_alphaMode = 1;
 
     m_updateGeometry = false;
     m_updateStaticBuffers = false;
@@ -208,7 +203,7 @@ CText* CEngine::GetText()
 
 bool CEngine::Create()
 {
-    m_size = m_lastSize = m_app->GetVideoConfig().size;
+    m_size = m_app->GetVideoConfig().size;
 
     m_lightMan   = new CLightManager(m_iMan, this);
     m_text       = new CText(m_iMan, this);
@@ -416,11 +411,6 @@ Math::IntPoint CEngine::GetWindowSize()
     return m_size;
 }
 
-Math::IntPoint CEngine::GetLastWindowSize()
-{
-    return m_lastSize;
-}
-
 Math::Point CEngine::WindowToInterfaceCoords(Math::IntPoint pos)
 {
     return Math::Point(        static_cast<float>(pos.x) / static_cast<float>(m_size.x),
@@ -473,15 +463,15 @@ EngineBaseObjTexTier& CEngine::AddLevel2(EngineBaseObject& p1, const std::string
     return p1.next.back();
 }
 
-EngineBaseObjLODTier& CEngine::AddLevel3(EngineBaseObjTexTier& p2, float min, float max)
+EngineBaseObjLODTier& CEngine::AddLevel3(EngineBaseObjTexTier& p2, LODLevel lodLevel)
 {
     for (int i = 0; i < static_cast<int>( p2.next.size() ); i++)
     {
-        if ( (p2.next[i].min == min) && (p2.next[i].max == max) )
+        if (p2.next[i].lodLevel == lodLevel)
             return p2.next[i];
     }
 
-    p2.next.push_back(EngineBaseObjLODTier(min, max));
+    p2.next.push_back(EngineBaseObjLODTier(lodLevel));
     return p2.next.back();
 }
 
@@ -570,17 +560,13 @@ void CEngine::AddBaseObjTriangles(int baseObjRank, const std::vector<VertexTex2>
                                   EngineTriangleType triangleType,
                                   const Material& material, int state,
                                   std::string tex1Name, std::string tex2Name,
-                                  float min, float max, bool globalUpdate)
+                                  LODLevel lodLevel, bool globalUpdate)
 {
     assert(baseObjRank >= 0 && baseObjRank < static_cast<int>( m_baseObjects.size() ));
 
-    m_lastSize = m_size;
-    m_lastObjectDetail = m_objectDetail;
-    m_lastClippingDistance = m_clippingDistance;
-
     EngineBaseObject&      p1 = m_baseObjects[baseObjRank];
     EngineBaseObjTexTier&  p2 = AddLevel2(p1, tex1Name, tex2Name);
-    EngineBaseObjLODTier&  p3 = AddLevel3(p2, min, max);
+    EngineBaseObjLODTier&  p3 = AddLevel3(p2, lodLevel);
     EngineBaseObjDataTier& p4 = AddLevel4(p3, triangleType, material, state);
 
     p4.vertices.insert(p4.vertices.end(), vertices.begin(), vertices.end());
@@ -615,13 +601,13 @@ void CEngine::AddBaseObjTriangles(int baseObjRank, const std::vector<VertexTex2>
 
 void CEngine::AddBaseObjQuick(int baseObjRank, const EngineBaseObjDataTier& buffer,
                               std::string tex1Name, std::string tex2Name,
-                              float min, float max, bool globalUpdate)
+                              LODLevel lodLevel, bool globalUpdate)
 {
     assert(baseObjRank >= 0 && baseObjRank < static_cast<int>( m_baseObjects.size() ));
 
     EngineBaseObject&      p1 = m_baseObjects[baseObjRank];
     EngineBaseObjTexTier&  p2 = AddLevel2(p1, tex1Name, tex2Name);
-    EngineBaseObjLODTier&  p3 = AddLevel3(p2, min, max);
+    EngineBaseObjLODTier&  p3 = AddLevel3(p2, lodLevel);
 
     p3.next.push_back(buffer);
 
@@ -797,7 +783,7 @@ int CEngine::GetObjectTotalTriangles(int objRank)
 
 EngineBaseObjDataTier* CEngine::FindTriangles(int objRank, const Material& material,
                                               int state, std::string tex1Name,
-                                              std::string tex2Name, float min, float max)
+                                              std::string tex2Name, int lodLevelMask)
 {
     assert(objRank >= 0 && objRank < static_cast<int>( m_objects.size() ));
 
@@ -820,7 +806,7 @@ EngineBaseObjDataTier* CEngine::FindTriangles(int objRank, const Material& mater
         {
             EngineBaseObjLODTier& p3 = p2.next[l3];
 
-            if (p3.min != min || p3.max != max)
+            if ((p3.lodLevel & lodLevelMask) == 0)
                 continue;
 
             for (int l4 = 0; l4 < static_cast<int>( p3.next.size() ); l4++)
@@ -839,7 +825,7 @@ EngineBaseObjDataTier* CEngine::FindTriangles(int objRank, const Material& mater
     return nullptr;
 }
 
-int CEngine::GetPartialTriangles(int objRank, float min, float max, float percent, int maxCount,
+int CEngine::GetPartialTriangles(int objRank, int lodLevelMask, float percent, int maxCount,
                                  std::vector<EngineTriangle>& triangles)
 {
     assert(objRank >= 0 && objRank < static_cast<int>( m_objects.size() ));
@@ -866,7 +852,7 @@ int CEngine::GetPartialTriangles(int objRank, float min, float max, float percen
         {
             EngineBaseObjLODTier& p3 = p2.next[l3];
 
-            if (p3.min != min || p3.max != max)
+            if ((p3.lodLevel & lodLevelMask) == 0)
                 continue;
 
             for (int l4 = 0; l4 < static_cast<int>( p3.next.size() ); l4++)
@@ -928,68 +914,6 @@ int CEngine::GetPartialTriangles(int objRank, float min, float max, float percen
     return actualCount;
 }
 
-void CEngine::ChangeLOD()
-{
-    float oldLimit[2] =
-    {
-        GetLimitLOD(0, true),
-        GetLimitLOD(1, true)
-    };
-
-    float newLimit[2] =
-    {
-        GetLimitLOD(0, false),
-        GetLimitLOD(1, false)
-    };
-
-    float oldTerrain = m_terrainVision * m_lastClippingDistance;
-    float newTerrain = m_terrainVision * m_clippingDistance;
-
-    for (int baseObjRank = 0; baseObjRank < static_cast<int>( m_baseObjects.size() ); baseObjRank++)
-    {
-        EngineBaseObject& p1 = m_baseObjects[baseObjRank];
-
-        if (! p1.used)
-            continue;
-
-        for (int l2 = 0; l2 < static_cast<int>( p1.next.size() ); l2++)
-        {
-            EngineBaseObjTexTier& p2 = p1.next[l2];
-
-            for (int l3 = 0; l3 < static_cast<int>( p2.next.size() ); l3++)
-            {
-                EngineBaseObjLODTier& p3 = p2.next[l3];
-
-                if ( Math::IsEqual(p3.min, 0.0f       ) &&
-                     Math::IsEqual(p3.max, oldLimit[0]) )
-                {
-                    p3.max = newLimit[0];
-                }
-                else if ( Math::IsEqual(p3.min, oldLimit[0]) &&
-                          Math::IsEqual(p3.max, oldLimit[1]) )
-                {
-                    p3.min = newLimit[0];
-                    p3.max = newLimit[1];
-                }
-                else if ( Math::IsEqual(p3.min, oldLimit[1]) &&
-                          Math::IsEqual(p3.max, 1000000.0f ) )
-                {
-                    p3.min = newLimit[1];
-                }
-                else if ( Math::IsEqual(p3.min, 0.0f      ) &&
-                          Math::IsEqual(p3.max, oldTerrain) )
-                {
-                    p3.max = newTerrain;
-                }
-            }
-        }
-    }
-
-    m_lastSize = m_size;
-    m_lastObjectDetail = m_objectDetail;
-    m_lastClippingDistance = m_clippingDistance;
-}
-
 void CEngine::ChangeSecondTexture(int objRank, const std::string& tex2Name)
 {
     assert(objRank >= 0 && objRank < static_cast<int>( m_objects.size() ));
@@ -1016,12 +940,12 @@ void CEngine::ChangeSecondTexture(int objRank, const std::string& tex2Name)
 
 void CEngine::ChangeTextureMapping(int objRank, const Material& mat, int state,
                                    const std::string& tex1Name, const std::string& tex2Name,
-                                   float min, float max, EngineTextureMapping mode,
+                                   int lodLevelMask, EngineTextureMapping mode,
                                    float au, float bu, float av, float bv)
 {
     assert(objRank >= 0 && objRank < static_cast<int>( m_objects.size() ));
 
-    EngineBaseObjDataTier* p4 = FindTriangles(objRank, mat, state, tex1Name, tex2Name, min, max);
+    EngineBaseObjDataTier* p4 = FindTriangles(objRank, mat, state, tex1Name, tex2Name, lodLevelMask);
     if (p4 == nullptr)
         return;
 
@@ -1078,12 +1002,12 @@ void CEngine::ChangeTextureMapping(int objRank, const Material& mat, int state,
 
 void CEngine::TrackTextureMapping(int objRank, const Material& mat, int state,
                                   const std::string& tex1Name, const std::string& tex2Name,
-                                  float min, float max, EngineTextureMapping mode,
+                                  int lodLevelMask, EngineTextureMapping mode,
                                   float pos, float factor, float tl, float ts, float tt)
 {
     assert(objRank >= 0 && objRank < static_cast<int>( m_objects.size() ));
 
-    EngineBaseObjDataTier* p4 = FindTriangles(objRank, mat, state, tex1Name, tex2Name, min, max);
+    EngineBaseObjDataTier* p4 = FindTriangles(objRank, mat, state, tex1Name, tex2Name, lodLevelMask);
     if (p4 == nullptr)
         return;
 
@@ -1707,8 +1631,8 @@ int CEngine::DetectObject(Math::Point mouse)
             {
                 EngineBaseObjLODTier& p3 = p2.next[l3];
 
-                if (p3.min != 0.0f)
-                    continue;  // LOD B or C?
+                if (p3.lodLevel != LOD_Constant && p3.lodLevel != LOD_High)
+                    continue;
 
                 for (int l4 = 0; l4 < static_cast<int>( p3.next.size() ); l4++)
                 {
@@ -1820,6 +1744,43 @@ bool CEngine::IsVisible(int objRank)
     return false;
 }
 
+bool CEngine::IsWithinLODLimit(float distance, LODLevel lodLevel)
+{
+    float min = 0.0f, max = 0.0f;
+
+    if (lodLevel == LOD_Constant)
+    {
+        min = 0.0f;
+        max = m_terrainVision * m_clippingDistance;
+    }
+    else
+    {
+        if (lodLevel == LOD_High)
+        {
+            min = 0.0f;
+            max = 100.0f;
+        }
+        else if (lodLevel == LOD_Medium)
+        {
+            min = 100.0f;
+            max = 200.0f;
+        }
+        else if (lodLevel == LOD_Low)
+        {
+            min = 100.0f;
+            max = 1000000.0f;
+        }
+
+        min *= m_size.x / 640.0f;
+        min *= m_objectDetail*2.0f;
+
+        max *= m_size.x / 640.0f;
+        max *= m_objectDetail*2.0f;
+    }
+
+    return distance >= min && distance < max;
+}
+
 bool CEngine::TransformPoint(Math::Vector& p2D, int objRank, Math::Vector p3D)
 {
     assert(objRank >= 0 && objRank < static_cast<int>(m_objects.size()));
@@ -1855,15 +1816,6 @@ void CEngine::SetState(int state, const Color& color)
 
     m_lastState = state;
     m_lastColor = color;
-
-    if (m_alphaMode != 1 && (state & ENG_RSTATE_ALPHA))
-    {
-        state &= ~ENG_RSTATE_ALPHA;
-
-        if (m_alphaMode == 2)
-            state |= ENG_RSTATE_TTEXTURE_BLACK;
-    }
-
 
     if (state & ENG_RSTATE_TTEXTURE_BLACK)  // transparent black texture?
     {
@@ -2447,33 +2399,6 @@ void CEngine::SetTexture(const Texture& tex, int stage)
     m_device->SetTexture(stage, tex);
 }
 
-void CEngine::SetLimitLOD(int rank, float limit)
-{
-    m_limitLOD[rank] = limit;
-}
-
-float CEngine::GetLimitLOD(int rank, bool last)
-{
-    float limit = 0.0f;
-
-    if (last)
-    {
-        limit = m_limitLOD[rank];
-        limit *= m_lastSize.x/640.0f;  // limit further if large window!
-        limit += m_limitLOD[0]*(m_lastObjectDetail*2.0f);
-    }
-    else
-    {
-        limit = m_limitLOD[rank];
-        limit *= m_size.x/640.0f;  // limit further if large window!
-        limit += m_limitLOD[0]*(m_objectDetail*2.0f);
-    }
-
-    if (limit < 0.0f) limit = 0.0f;
-
-    return limit;
-}
-
 void CEngine::SetTerrainVision(float vision)
 {
     m_terrainVision = vision;
@@ -2709,6 +2634,7 @@ void CEngine::SetClippingDistance(float value)
 {
     if (value < 0.5f) value = 0.5f;
     if (value > 2.0f) value = 2.0f;
+    m_lastClippingDistance = m_clippingDistance;
     m_clippingDistance = value;
 }
 
@@ -2920,7 +2846,6 @@ void CEngine::ApplyChange()
     m_deepView[1] /= m_lastClippingDistance;
 
     SetFocus(m_focus);
-    ChangeLOD();
 
     m_deepView[0] *= m_clippingDistance;
     m_deepView[1] *= m_clippingDistance;
@@ -3040,8 +2965,7 @@ void CEngine::Draw3DScene()
                 {
                     EngineBaseObjLODTier& p3 = p2.next[l3];
 
-                    if ( m_objects[objRank].distance <  p3.min ||
-                         m_objects[objRank].distance >= p3.max )
+                    if (! IsWithinLODLimit(m_objects[objRank].distance, p3.lodLevel))
                         continue;
 
                     for (int l4 = 0; l4 < static_cast<int>( p3.next.size() ); l4++)
@@ -3108,8 +3032,7 @@ void CEngine::Draw3DScene()
             {
                 EngineBaseObjLODTier& p3 = p2.next[l3];
 
-                if ( m_objects[objRank].distance <  p3.min ||
-                     m_objects[objRank].distance >= p3.max )
+                if (! IsWithinLODLimit(m_objects[objRank].distance, p3.lodLevel))
                     continue;
 
                 for (int l4 = 0; l4 < static_cast<int>( p3.next.size() ); l4++)
@@ -3177,8 +3100,7 @@ void CEngine::Draw3DScene()
                 {
                     EngineBaseObjLODTier& p3 = p2.next[l3];
 
-                    if (m_objects[objRank].distance <  p3.min ||
-                        m_objects[objRank].distance >= p3.max)
+                    if (! IsWithinLODLimit(m_objects[objRank].distance, p3.lodLevel))
                         continue;
 
                     for (int l4 = 0; l4 < static_cast<int>( p3.next.size() ); l4++)
@@ -3330,8 +3252,7 @@ void CEngine::DrawInterface()
                 {
                     EngineBaseObjLODTier& p3 = p2.next[l3];
 
-                    if (m_objects[objRank].distance <  p3.min ||
-                        m_objects[objRank].distance >= p3.max)
+                    if (! IsWithinLODLimit(m_objects[objRank].distance, p3.lodLevel))
                         continue;
 
                     for (int l4 = 0; l4 < static_cast<int>( p3.next.size() ); l4++)

@@ -5811,21 +5811,16 @@ void CObject::FlatParent()
 
 void CObject::UpdateEnergyMapping()
 {
-    Gfx::Material   mat;
-    float           a, b, i, s, au, bu;
-    float           limit[6];
-    int             j;
+    if (Math::IsEqual(m_energy, m_lastEnergy, 0.01f))
+        return;
 
-    if ( fabs(m_energy-m_lastEnergy) < 0.01f )  return;
     m_lastEnergy = m_energy;
 
-    memset(&mat, 0, sizeof(mat));
-    mat.diffuse.r = 1.0f;
-    mat.diffuse.g = 1.0f;
-    mat.diffuse.b = 1.0f;  // white
-    mat.ambient.r = 0.5f;
-    mat.ambient.g = 0.5f;
-    mat.ambient.b = 0.5f;
+    Gfx::Material mat;
+    mat.diffuse = Gfx::Color(1.0f, 1.0f, 1.0f);  // white
+    mat.ambient = Gfx::Color(0.5f, 0.5f, 0.5f);
+
+    float a = 0.0f, b = 0.0f;
 
     if ( m_type == OBJECT_POWER  ||
          m_type == OBJECT_ATOMIC )
@@ -5833,35 +5828,30 @@ void CObject::UpdateEnergyMapping()
         a = 2.0f;
         b = 0.0f;  // dimensions of the battery (according to y)
     }
-    if ( m_type == OBJECT_STATION )
+    else if ( m_type == OBJECT_STATION )
     {
         a = 10.0f;
         b =  4.0f;  // dimensions of the battery (according to y)
     }
-    if ( m_type == OBJECT_ENERGY )
+    else if ( m_type == OBJECT_ENERGY )
     {
         a = 9.0f;
         b = 3.0f;  // dimensions of the battery (according to y)
     }
 
-    i = 0.50f+0.25f*m_energy;  // origin
-    s = i+0.25f;  // width
+    float i = 0.50f+0.25f*m_energy;  // origin
+    float s = i+0.25f;  // width
 
-    au = (s-i)/(b-a);
-    bu = s-b*(s-i)/(b-a);
+    float au = (s-i)/(b-a);
+    float bu = s-b*(s-i)/(b-a);
 
-    limit[0] = 0.0f;
-    limit[1] = m_engine->GetLimitLOD(0);
-    limit[2] = limit[1];
-    limit[3] = m_engine->GetLimitLOD(1);
-    limit[4] = limit[3];
-    limit[5] = 1000000.0f;
+    Gfx::LODLevel lodLevels[3] = { Gfx::LOD_High, Gfx::LOD_Medium, Gfx::LOD_Low };
 
-    for ( j=0 ; j<3 ; j++ )
+    for (int j = 0; j < 3; j++)
     {
         m_engine->ChangeTextureMapping(m_objectPart[0].object,
                                        mat, Gfx::ENG_RSTATE_PART3, "lemt.png", "",
-                                       limit[j*2+0], limit[j*2+1], Gfx::ENG_TEX_MAPPING_1Y,
+                                       lodLevels[j], Gfx::ENG_TEX_MAPPING_1Y,
                                        au, bu, 1.0f, 0.0f);
     }
 }

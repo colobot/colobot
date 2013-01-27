@@ -495,8 +495,7 @@ bool CModelFile::ReadModel(std::istream& stream)
 
             triangle.material = t.material;
             triangle.tex1Name = std::string(t.texName);
-            triangle.min = t.min;
-            triangle.max = t.max;
+            triangle.lodLevel = MinMaxToLodLevel(t.min, t.max);
 
             m_triangles.push_back(triangle);
         }
@@ -539,8 +538,7 @@ bool CModelFile::ReadModel(std::istream& stream)
 
             triangle.material = t.material;
             triangle.tex1Name = std::string(t.texName);
-            triangle.min = t.min;
-            triangle.max = t.max;
+            triangle.lodLevel = MinMaxToLodLevel(t.min, t.max);
             triangle.state = t.state;
 
             m_triangles.push_back(triangle);
@@ -584,8 +582,7 @@ bool CModelFile::ReadModel(std::istream& stream)
 
             triangle.material = t.material;
             triangle.tex1Name = std::string(t.texName);
-            triangle.min = t.min;
-            triangle.max = t.max;
+            triangle.lodLevel = MinMaxToLodLevel(t.min, t.max);
             triangle.state = t.state;
             triangle.variableTex2 = t.texNum2 == 1;
 
@@ -634,7 +631,7 @@ bool CModelFile::ReadModel(std::istream& stream)
 
         GetLogger()->Trace(" tex1: %s  tex2: %s\n", m_triangles[i].tex1Name.c_str(),
                           m_triangles[i].variableTex2 ? "(variable)" : m_triangles[i].tex2Name.c_str());
-        GetLogger()->Trace(" min: %.2f  max: %.2f\n", m_triangles[i].min, m_triangles[i].max);
+        GetLogger()->Trace(" lod level: %d\n", m_triangles[i].lodLevel);
         GetLogger()->Trace(" state: %ld\n", m_triangles[i].state);
     }
 
@@ -685,8 +682,7 @@ bool CModelFile::WriteModel(std::ostream& stream)
 
         t.material = m_triangles[i].material;
         strncpy(t.texName, m_triangles[i].tex1Name.c_str(), 20);
-        t.min = m_triangles[i].min;
-        t.max = m_triangles[i].max;
+        LODLevelToMinMax(m_triangles[i].lodLevel, t.min, t.max);
         t.state = m_triangles[i].state;
 
         int no = 0;
@@ -720,6 +716,46 @@ bool CModelFile::WriteModel(std::ostream& stream)
     }
 
     return true;
+}
+
+LODLevel CModelFile::MinMaxToLodLevel(float min, float max)
+{
+    if (min == 0.0f && max == 100.0f)
+        return LOD_High;
+    else if (min == 100.0f && max == 200.0f)
+        return LOD_Medium;
+    else if (min == 200.0f && max == 1000000.0f)
+        return LOD_Low;
+    else if (min == 0.0f && max == 1000000.0f)
+        return LOD_Constant;
+
+    return LOD_Constant;
+}
+
+void CModelFile::LODLevelToMinMax(LODLevel lodLevel, float& min, float& max)
+{
+    switch (lodLevel)
+    {
+        case LOD_High:
+            min = 0.0f;
+            max = 100.0f;
+            break;
+
+        case LOD_Medium:
+            min = 100.0f;
+            max = 200.0f;
+            break;
+
+        case LOD_Low:
+            min = 200.0f;
+            max = 1000000.0f;
+            break;
+
+        case LOD_Constant:
+            min = 0.0f;
+            max = 1000000.0f;
+            break;
+    }
 }
 
 
@@ -768,17 +804,15 @@ struct NewModelTriangle1
     std::string      tex2Name;
     //! If true, 2nd texture will be taken from current engine setting
     bool             variableTex2;
-    //! Min LOD threshold
-    float            min;
-    //! Max LOD threshold
-    float            max;
+    //! LOD level
+    int              lodLevel;
     //! Rendering state to be set
     int              state;
 
     NewModelTriangle1()
     {
         variableTex2 = true;
-        min = max = 0.0f;
+        lodLevel = 0;
         state = 0;
     }
 };
@@ -834,8 +868,7 @@ bool CModelFile::ReadTextModel(std::istream& stream)
                          ReadLineValue<std::string>(stream, "tex1", t.tex1Name) &&
                          ReadLineValue<std::string>(stream, "tex2", t.tex2Name) &&
                          ReadLineValue<char>(stream, "var_tex2", varTex2Ch) &&
-                         ReadLineValue<float>(stream, "min", t.min) &&
-                         ReadLineValue<float>(stream, "max", t.max) &&
+                         ReadLineValue<int>(stream, "lod_level", t.lodLevel) &&
                          ReadLineValue<int>(stream, "state", t.state);
 
             if (!triOk || stream.fail())
@@ -855,9 +888,16 @@ bool CModelFile::ReadTextModel(std::istream& stream)
             triangle.tex1Name = t.tex1Name;
             triangle.tex2Name = t.tex2Name;
             triangle.variableTex2 = t.variableTex2;
-            triangle.min = t.min;
-            triangle.max = t.max;
             triangle.state = t.state;
+
+            switch (t.lodLevel)
+            {
+                case 0: triangle.lodLevel = LOD_Constant; break;
+                case 1: triangle.lodLevel = LOD_Low;      break;
+                case 2: triangle.lodLevel = LOD_Medium;   break;
+                case 3: triangle.lodLevel = LOD_High;     break;
+                default: break;
+            }
 
             m_triangles.push_back(triangle);
 
@@ -886,7 +926,7 @@ bool CModelFile::ReadTextModel(std::istream& stream)
         GetLogger()->Trace(" mat: d: %s  a: %s  s: %s\n", d.c_str(), a.c_str(), s.c_str());
 
         GetLogger()->Trace(" tex1: %s  tex2: %s\n", m_triangles[i].tex1Name.c_str(), m_triangles[i].tex2Name.c_str());
-        GetLogger()->Trace(" min: %.2f  max: %.2f\n", m_triangles[i].min, m_triangles[i].max);
+        GetLogger()->Trace(" lod level: %d\n", m_triangles[i].lodLevel);
         GetLogger()->Trace(" state: %ld\n", m_triangles[i].state);
     }
 
@@ -938,9 +978,15 @@ bool CModelFile::WriteTextModel(std::ostream& stream)
         t.tex1Name = m_triangles[i].tex1Name;
         t.tex2Name = m_triangles[i].tex2Name;
         t.variableTex2 = m_triangles[i].variableTex2;
-        t.min = m_triangles[i].min;
-        t.max = m_triangles[i].max;
         t.state = m_triangles[i].state;
+
+        switch (m_triangles[i].lodLevel)
+        {
+            case LOD_Constant: t.lodLevel = 0; break;
+            case LOD_Low:      t.lodLevel = 1; break;
+            case LOD_Medium:   t.lodLevel = 2; break;
+            case LOD_High:     t.lodLevel = 3; break;
+        }
 
         stream << "p1 ";
         WriteTextVertexTex2(t.p1, stream);
@@ -954,8 +1000,7 @@ bool CModelFile::WriteTextModel(std::ostream& stream)
         stream << "tex1 " << t.tex1Name << std::endl;
         stream << "tex2 " << t.tex2Name << std::endl;
         stream << "var_tex2 " << (t.variableTex2 ? 'Y' : 'N') << std::endl;
-        stream << "min " << t.min << std::endl;
-        stream << "max " << t.max << std::endl;
+        stream << "lod_level " << t.lodLevel << std::endl;
         stream << "state " << t.state << std::endl;
 
         stream << std::endl;
@@ -1012,9 +1057,8 @@ bool CModelFile::ReadBinaryModel(std::istream& stream)
             t.tex1Name = IOUtils::ReadBinaryString<1>(stream);
             t.tex2Name = IOUtils::ReadBinaryString<1>(stream);
             t.variableTex2 = IOUtils::ReadBinaryBool(stream);
-            t.min = IOUtils::ReadBinaryFloat(stream);
-            t.max = IOUtils::ReadBinaryFloat(stream);
-            t.state = IOUtils::ReadBinary<4, unsigned int>(stream);
+            t.lodLevel = IOUtils::ReadBinary<4, int>(stream);
+            t.state = IOUtils::ReadBinary<4, int>(stream);
 
             if (stream.fail())
             {
@@ -1030,9 +1074,16 @@ bool CModelFile::ReadBinaryModel(std::istream& stream)
             triangle.tex1Name = t.tex1Name;
             triangle.tex2Name = t.tex2Name;
             triangle.variableTex2 = t.variableTex2;
-            triangle.min = t.min;
-            triangle.max = t.max;
             triangle.state = t.state;
+
+            switch (t.lodLevel)
+            {
+                case 0: triangle.lodLevel = LOD_Constant; break;
+                case 1: triangle.lodLevel = LOD_Low;      break;
+                case 2: triangle.lodLevel = LOD_Medium;   break;
+                case 3: triangle.lodLevel = LOD_High;     break;
+                default: break;
+            }
 
             m_triangles.push_back(triangle);
         }
@@ -1059,7 +1110,7 @@ bool CModelFile::ReadBinaryModel(std::istream& stream)
         GetLogger()->Trace(" mat: d: %s  a: %s  s: %s\n", d.c_str(), a.c_str(), s.c_str());
 
         GetLogger()->Trace(" tex1: %s  tex2: %s\n", m_triangles[i].tex1Name.c_str(), m_triangles[i].tex2Name.c_str());
-        GetLogger()->Trace(" min: %.2f  max: %.2f\n", m_triangles[i].min, m_triangles[i].max);
+        GetLogger()->Trace(" lod level: %d\n", m_triangles[i].lodLevel);
         GetLogger()->Trace(" state: %ld\n", m_triangles[i].state);
     }
 
@@ -1106,9 +1157,15 @@ bool CModelFile::WriteBinaryModel(std::ostream& stream)
         t.tex1Name = m_triangles[i].tex1Name;
         t.tex2Name = m_triangles[i].tex2Name;
         t.variableTex2 = m_triangles[i].variableTex2;
-        t.min = m_triangles[i].min;
-        t.max = m_triangles[i].max;
         t.state = m_triangles[i].state;
+
+        switch (m_triangles[i].lodLevel)
+        {
+            case LOD_Constant: t.lodLevel = 0; break;
+            case LOD_Low:      t.lodLevel = 1; break;
+            case LOD_Medium:   t.lodLevel = 2; break;
+            case LOD_High:     t.lodLevel = 3; break;
+        }
 
         WriteBinaryVertexTex2(t.p1, stream);
         WriteBinaryVertexTex2(t.p2, stream);
@@ -1117,9 +1174,8 @@ bool CModelFile::WriteBinaryModel(std::ostream& stream)
         IOUtils::WriteBinaryString<1>(t.tex1Name, stream);
         IOUtils::WriteBinaryString<1>(t.tex2Name, stream);
         IOUtils::WriteBinaryBool(t.variableTex2, stream);
-        IOUtils::WriteBinaryFloat(t.min, stream);
-        IOUtils::WriteBinaryFloat(t.max, stream);
-        IOUtils::WriteBinary<4, unsigned int>(t.state, stream);
+        IOUtils::WriteBinary<4, int>(t.lodLevel, stream);
+        IOUtils::WriteBinary<4, int>(t.state, stream);
 
         if (stream.fail())
         {
@@ -1132,10 +1188,6 @@ bool CModelFile::WriteBinaryModel(std::ostream& stream)
 }
 
 
-/*******************************************************
-                      Other stuff
- *******************************************************/
-
 const std::vector<ModelTriangle>& CModelFile::GetTriangles()
 {
     return m_triangles;
@@ -1144,24 +1196,6 @@ const std::vector<ModelTriangle>& CModelFile::GetTriangles()
 int CModelFile::GetTriangleCount()
 {
     return m_triangles.size();
-}
-
-void CModelFile::CreateTriangle(Math::Vector p1, Math::Vector p2, Math::Vector p3, float min, float max)
-{
-    ModelTriangle triangle;
-
-    Math::Vector n = Math::NormalToPlane(p3, p2, p1);
-    triangle.p1 = VertexTex2(p1, n);
-    triangle.p2 = VertexTex2(p2, n);
-    triangle.p3 = VertexTex2(p3, n);
-
-    triangle.material.diffuse = Color(1.0f, 1.0f, 1.0f, 0.0f);
-    triangle.material.ambient = Color(0.5f, 0.5f, 0.5f, 0.0f);
-
-    triangle.min = min;
-    triangle.max = max;
-
-    m_triangles.push_back(triangle);
 }
 
 
