@@ -14,14 +14,6 @@ add_subdirectory(po)
 
 add_subdirectory(desktop)
 
-# Tests
-if(${TESTS})
-    add_subdirectory(common/test)
-    add_subdirectory(graphics/engine/test)
-    add_subdirectory(ui/test)
-    add_subdirectory(math/test)
-endif()
-
 
 # Optional libraries
 set(OPTIONAL_LIBS "")

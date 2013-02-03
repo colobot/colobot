@@ -1,0 +1,312 @@
+object radarGuepe(point orig, float dist)
+{
+	int i;
+	object pr, r;
+	float mindist;
+	
+	i = 0;
+	mindist = 1000;
+	while (i<30)
+	{
+		pr = radar(i);
+		if (pr != null)
+		{
+			
+			if (F(orig, pr.position) < mindist and pr.category == AlienWasp and pr.altitude > 3)
+			{
+				mindist = distance(orig, pr.position);
+				r = pr;
+			}
+		}
+		i = i+1;
+	}
+	if (mindist < dist) return(r); else return(null);
+}
+
+
+class Guepe
+{
+	
+	point pos;
+	
+	
+	void cherche(point orig, float dist)
+	{
+		object p;
+		point o;
+		
+		p = radarGuepe(orig, dist);
+		while (p == null)
+		{
+			wait(0.1);
+			p = radarGuepe(orig, dist);
+		}
+		
+		pos.x = p.position.x;
+		pos.y = p.position.y;
+		pos.z = p.position.z;
+		
+		//o = p.position;
+		//wait(0.1);
+		
+		//vitessex = (p.position.x - o.x)/0.1;
+		//vitessey = (p.position.y - o.y)/0.1;
+		//vitessez = (p.position.z - o.z)/0.1;
+		
+	}
+	
+	
+	void tire(point orig, float orient)
+	{
+		//float t = 3;          //temps d'anticipation
+		float angle;
+		point cible;
+		
+		cible.x = pos.x;// + t*vitessex;
+		cible.y = pos.y;// + t*vitessey;
+		cible.z = pos.z;// + t*vitessez;
+		
+		if (cible.x == 0) angle = 90; else
+		  angle = atan(cible.y / cible.x);
+		if (cible.x < 0) angle = angle + 180;
+		angle = angle - orient;
+		if (angle > 180) angle = angle - 360;
+		if (angle < -180) angle = angle + 360;
+		turn(angle);
+		
+		angle = atan((cible.z-orig.z) / distance2d(orig, cible));
+		aim(angle);
+		
+		fire(0.1);
+		
+	}
+}
+
+extern void object::Fourmi6()
+{
+	//fps(1000);
+	Guepe guepe = new Guepe();
+	
+	while (true)
+	{
+		guepe.cherche(position, 50);
+		
+		guepe.tire(position, orientation);
+	}
+}
+object radarGuepe(point orig, float dist)
+{
+	int i;
+	object pr, r;
+	float mindist;
+	
+	i = 0;
+	mindist = 1000;
+	while (i<30)
+	{
+		pr = radar(i);
+		if (pr != null)
+		{
+			
+			if (F(orig, pr.position) < mindist and pr.category == AlienWasp and pr.altitude > 3)
+			{
+				mindist = distance(orig, pr.position);
+				r = pr;
+			}
+		}
+		i = i+1;
+	}
+	if (mindist < dist) return(r); else return(null);
+}
+
+
+class Guepe
+{
+	
+	point pos;
+	
+	
+	void cherche(point orig, float dist)
+	{
+		object p;
+		point o;
+		
+		p = radarGuepe(orig, dist);
+		while (p == null)
+		{
+			wait(0.1);
+			p = radarGuepe(orig, dist);
+		}
+		
+		pos.x = p.position.x;
+		pos.y = p.position.y;
+		pos.z = p.position.z;
+		
+		//o = p.position;
+		//wait(0.1);
+		
+		//vitessex = (p.position.x - o.x)/0.1;
+		//vitessey = (p.position.y - o.y)/0.1;
+		//vitessez = (p.position.z - o.z)/0.1;
+		
+	}
+	
+	
+	void tire(point orig, float orient)
+	{
+		//float t = 3;          //temps d'anticipation
+		float angle;
+		point cible;
+		
+		cible.x = pos.x;// + t*vitessex;
+		cible.y = pos.y;// + t*vitessey;
+		cible.z = pos.z;// + t*vitessez;
+		
+		if (cible.x == 0) angle = 90; else
+		  angle = atan(cible.y / cible.x);
+		if (cible.x < 0) angle = angle + 180;
+		angle = angle - orient;
+		if (angle > 180) angle = angle - 360;
+		if (angle < -180) angle = angle + 360;
+		turn(angle);
+		
+		angle = atan((cible.z-orig.z) / distance2d(orig, cible));
+		aim(angle);
+		
+		fire(0.1);
+		
+	}
+}
+
+extern void object::Fourmi6()
+{
+	//fps(1000);
+	Guepe guepe = new Guepe();
+	
+	while (true)
+	{
+		guepe.cherche(position, 50);
+		
+		guepe.tire(position, orientation);
+	}
+}
+object radarGuepe(point orig, float dist)
+{
+	int i;
+	object pr, r;
+	float mindist;
+	
+	i = 0;
+	mindist = 1000;
+	while (i<30)
+	{
+		pr = radar(i);
+		if (pr != null)
+		{
+			
+			if (F(orig, pr.position) < mindist and pr.category == AlienWasp and pr.altitude > 3)
+			{
+				mindist = distance(orig, pr.position);
+				r = pr;
+			}
+		}
+		i = i+1;
+	}
+	if (mindist < dist) return(r); else return(null);
+}
+
+
+class Guepe
+{
+	
+	point pos;
+	
+	
+	void cherche(point orig, float dist)
+	{
+		object p;
+		point o;
+		
+		p = radarGuepe(orig, dist);
+		while (p == null)
+		{
+			wait(0.1);
+			p = radarGuepe(orig, dist);
+		}
+		
+		pos.x = p.position.x;
+		pos.y = p.position.y;
+		pos.z = p.position.z;
+		
+		//o = p.position;
+		//wait(0.1);
+		
+		//vitessex = (p.position.x - o.x)/0.1;
+		//vitessey = (p.position.y - o.y)/0.1;
+		//vitessez = (p.position.z - o.z)/0.1;
+		
+	}
+	
+	
+	void tire(point orig, float orient)
+	{
+		//float t = 3;          //temps d'anticipation
+		float angle;
+		point cible;
+		
+		cible.x = pos.x;// + t*vitessex;
+		cible.y = pos.y;// + t*vitessey;
+		cible.z = pos.z;// + t*vitessez;
+		
+		if (cible.x == 0) angle = 90; else
+		  angle = atan(cible.y / cible.x);
+		if (cible.x < 0) angle = angle + 180;
+		angle = angle - orient;
+		if (angle > 180) angle = angle - 360;
+		if (angle < -180) angle = angle + 360;
+		turn(angle);
+		
+		angle = atan((cible.z-orig.z) / distance2d(orig, cible));
+		aim(angle);
+		
+		fire(0.1);
+		
+	}
+}
+
+extern void object::Fourmi6()
+{
+	//fps(1000);
+	Guepe guepe = new Guepe();
+	
+	while (true)
+	{
+		guepe.cherche(position, 50);
+		
+		guepe.tire(position, orientation);
+	}
+}
+
+public extern void TestTableau ()
+{
+	int		tableau [ 12 ] ;
+
+	point	array[ 12 ] [ 14 ] ;
+
+	point	zéro ( 1, 2 ) ;
+	point	a = zéro ;
+
+	for ( int i = 0 ; i < 10 ; i++ ) array[ i ] [ i ]= zéro ;
+
+	array[ 5 ] [3 ] . x =1.5 ;
+
+	array[ 2 ] [ 2 ] . y = array[ 5 ] [ 5 ] . x ;
+
+	array[ 4 ] = array [ 2 ] ; 
+
+	for ( int i = 0 ; i < 10 ; i++ ) for ( int j = 0 ; j < 4 ; j++ ) println ( i, j, array [ i ] [ j ]  ) ; 
+
+	show( zéro, a, array );
+
+}
+

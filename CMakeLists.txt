@@ -69,7 +69,7 @@ endif()
 
 # Global compile flags
 # These are specific to GCC/MinGW/clang; for other compilers, change as necessary
-# The flags are used throughout src/ subdir
+# The flags are used throughout src/ and test/ subdirs
 set(COLOBOT_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wold-style-cast ${CXX11_FLAGS}")
 set(COLOBOT_CXX_FLAGS_RELEASE "-O2")
 set(COLOBOT_CXX_FLAGS_DEBUG "-g -O0")
@@ -151,7 +151,6 @@ endif()
 
 if(${TESTS})
     add_definitions(-DTEST_VIRTUAL=virtual)
-    enable_testing()
 else()
     add_definitions(-DTEST_VIRTUAL=)
 endif()
@@ -206,6 +205,11 @@ if(${TESTS})
         add_subdirectory(${GMOCK_SRC_DIR} bin/gmock)
     endif()
 
+
+    # Tests targets
+    enable_testing()
+    add_subdirectory(test bin/test)
+
 endif()
 
 # Installation paths defined before compiling sources
@@ -225,10 +229,10 @@ add_subdirectory(src bin)
 
 # Data: check if the submodule handles its own installation
 if(EXISTS "${CMAKE_SOURCE_DIR}/data/CMakeLists.txt")
-	message(STATUS "Data directory will install itself.")
-	add_subdirectory(data)
+    message(STATUS "Data directory will install itself.")
+    add_subdirectory(data)
 else()
-	message(WARNING "Data directory is not available; make sure colobot-data is installed in ${COLOBOT_INSTALL_DATA_DIR}.")
+    message(WARNING "Data directory is not available; make sure colobot-data is installed in ${COLOBOT_INSTALL_DATA_DIR}.")
 endif()
 
 # Documentation
