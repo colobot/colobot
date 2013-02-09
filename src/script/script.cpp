@@ -3346,7 +3346,6 @@ void CScript::ColorizeScript(Ui::CEdit* edit)
 
         cursor1 = bt->GetStart();
         cursor2 = bt->GetEnd();
-
         color = Gfx::FONT_HIGHLIGHT_NONE;
         if ( type >= TokenKeyWord && type < TokenKeyWord+100 )
         {
@@ -3376,7 +3375,7 @@ void CScript::ColorizeScript(Ui::CEdit* edit)
             color =Gfx::FONT_HIGHLIGHT_CONST;
         }
 
-        if ( cursor1 < cursor2 && color != 0 )
+        if ( cursor1 < cursor2 && color != Gfx::FONT_HIGHLIGHT_NONE )
         {
             edit->SetFormat(cursor1, cursor2, color);
         }

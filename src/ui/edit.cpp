@@ -935,10 +935,10 @@ void CEdit::Draw()
         pos.x = m_pos.x+(10.0f/640.0f);
         if ( m_bAutoIndent )
         {
+            const char *s = "\t";  // line | dotted
             for ( j=0 ; j<m_lineIndent[i] ; j++ )
             {
-                char s = '\t';  // line | dotted
-                m_engine->GetText()->DrawText(&s, m_fontType, m_fontSize, pos, 1.0f, Gfx::TEXT_ALIGN_LEFT, 0);
+                m_engine->GetText()->DrawText(s, m_fontType, m_fontSize, pos, 1.0f, Gfx::TEXT_ALIGN_LEFT, 0);
                 pos.x += indentLength;
             }
         }

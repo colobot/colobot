@@ -682,11 +682,13 @@ void CText::DrawCharAndAdjustPos(UTF8Char ch, FontType font, float size, Math::P
 
     int width = 1;
     if (ch.c1 > 0 && ch.c1 < 32) { // FIXME add support for chars with code 9 10 23
-        ch.c1 = ' ';
+        if (ch.c1 == '\t') {
+            ch.c1 = ':';
+        } else {
+            ch.c1 = ' ';
+        }
         ch.c2 = 0;
         ch.c3 = 0;
-        if (ch.c1 == '\t')
-            width = 4;
     }
 
     auto it = cf->cache.find(ch);

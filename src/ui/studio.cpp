@@ -114,7 +114,7 @@ bool CStudio::EventProcess(const Event &event)
     if ( pw == nullptr )  return false;
 
     edit = static_cast<CEdit*>(pw->SearchControl(EVENT_STUDIO_EDIT));
-    if ( edit == 0 )  return false;
+    if ( edit == nullptr )  return false;
 
     if ( event.type == pw->GetEventTypeClose() )
     {
@@ -692,7 +692,7 @@ void CStudio::AdjustEditScript()
     dim.x = wdim.x-0.02f;
     dim.y = wdim.y-0.22f-hList;
     edit = static_cast< CEdit* >(pw->SearchControl(EVENT_STUDIO_EDIT));
-    if ( edit != 0 )
+    if ( edit != nullptr )
     {
         edit->SetPos(pos);
         edit->SetDim(dim);
@@ -703,7 +703,7 @@ void CStudio::AdjustEditScript()
     dim.x = wdim.x-0.02f;
     dim.y = hList;
     list = static_cast< CList* >(pw->SearchControl(EVENT_STUDIO_LIST));
-    if ( list != 0 )
+    if ( list != nullptr )
     {
         list->SetPos(pos);
         list->SetDim(dim);
@@ -716,56 +716,56 @@ void CStudio::AdjustEditScript()
     pos.y = wpos.y+wdim.y-dim.y-0.06f;
     pos.x = wpos.x+0.01f;
     button = static_cast< CButton* >(pw->SearchControl(EVENT_STUDIO_NEW));
-    if ( button != 0 )
+    if ( button != nullptr )
     {
         button->SetPos(pos);
         button->SetDim(dim);
     }
     pos.x = wpos.x+0.05f;
     button = static_cast< CButton* >(pw->SearchControl(EVENT_STUDIO_OPEN));
-    if ( button != 0 )
+    if ( button != nullptr )
     {
         button->SetPos(pos);
         button->SetDim(dim);
     }
     pos.x = wpos.x+0.09f;
     button = static_cast< CButton* >(pw->SearchControl(EVENT_STUDIO_SAVE));
-    if ( button != 0 )
+    if ( button != nullptr )
     {
         button->SetPos(pos);
         button->SetDim(dim);
     }
     pos.x = wpos.x+0.14f;
     button = static_cast< CButton* >(pw->SearchControl(EVENT_STUDIO_UNDO));
-    if ( button != 0 )
+    if ( button != nullptr )
     {
         button->SetPos(pos);
         button->SetDim(dim);
     }
     pos.x = wpos.x+0.19f;
     button = static_cast< CButton* >(pw->SearchControl(EVENT_STUDIO_CUT));
-    if ( button != 0 )
+    if ( button != nullptr )
     {
         button->SetPos(pos);
         button->SetDim(dim);
     }
     pos.x = wpos.x+0.23f;
     button = static_cast< CButton* >(pw->SearchControl(EVENT_STUDIO_COPY));
-    if ( button != 0 )
+    if ( button != nullptr )
     {
         button->SetPos(pos);
         button->SetDim(dim);
     }
     pos.x = wpos.x+0.27f;
     button = static_cast< CButton* >(pw->SearchControl(EVENT_STUDIO_PASTE));
-    if ( button != 0 )
+    if ( button != nullptr )
     {
         button->SetPos(pos);
         button->SetDim(dim);
     }
     pos.x = wpos.x+0.32f;
     slider = static_cast< CSlider* >(pw->SearchControl(EVENT_STUDIO_SIZE));
-    if ( slider != 0 )
+    if ( slider != nullptr )
     {
         ppos = pos;
         ddim.x = dim.x*0.7f;
@@ -777,21 +777,21 @@ void CStudio::AdjustEditScript()
     }
     pos.x = wpos.x+0.36f;
     group = static_cast< CGroup* >(pw->SearchControl(EVENT_LABEL1));
-    if ( group != 0 )
+    if ( group != nullptr )
     {
         group->SetPos(pos);
         group->SetDim(dim);
     }
     pos.x = wpos.x+0.40f;
     button = static_cast< CButton* >(pw->SearchControl(EVENT_STUDIO_TOOL));
-    if ( button != 0 )
+    if ( button != nullptr )
     {
         button->SetPos(pos);
         button->SetDim(dim);
     }
     pos.x = wpos.x+0.44f;
     button = static_cast< CButton* >(pw->SearchControl(EVENT_STUDIO_HELP));
-    if ( button != 0 )
+    if ( button != nullptr )
     {
         button->SetPos(pos);
         button->SetDim(dim);
@@ -802,14 +802,14 @@ void CStudio::AdjustEditScript()
     dim.x = 80.0f/640.0f;
     dim.y = 25.0f/480.0f;
     button = static_cast< CButton* >(pw->SearchControl(EVENT_STUDIO_OK));
-    if ( button != 0 )
+    if ( button != nullptr )
     {
         button->SetPos(pos);
         button->SetDim(dim);
     }
     pos.x = wpos.x+0.14f;
     button = static_cast< CButton* >(pw->SearchControl(EVENT_STUDIO_CANCEL));
-    if ( button != 0 )
+    if ( button != nullptr )
     {
         button->SetPos(pos);
         button->SetDim(dim);
@@ -817,28 +817,28 @@ void CStudio::AdjustEditScript()
     pos.x = wpos.x+0.28f;
     dim.x = dim.y*0.75f;
     button = static_cast< CButton* >(pw->SearchControl(EVENT_STUDIO_COMPILE));
-    if ( button != 0 )
+    if ( button != nullptr )
     {
         button->SetPos(pos);
         button->SetDim(dim);
     }
     pos.x = wpos.x+0.28f+dim.x*1;
     button = static_cast< CButton* >(pw->SearchControl(EVENT_STUDIO_RUN));
-    if ( button != 0 )
+    if ( button != nullptr )
     {
         button->SetPos(pos);
         button->SetDim(dim);
     }
     pos.x = wpos.x+0.28f+dim.x*2;
     button = static_cast< CButton* >(pw->SearchControl(EVENT_STUDIO_REALTIME));
-    if ( button != 0 )
+    if ( button != nullptr )
     {
         button->SetPos(pos);
         button->SetDim(dim);
     }
     pos.x = wpos.x+0.28f+dim.x*3;
     button = static_cast< CButton* >(pw->SearchControl(EVENT_STUDIO_STEP));
-    if ( button != 0 )
+    if ( button != nullptr )
     {
         button->SetPos(pos);
         button->SetDim(dim);

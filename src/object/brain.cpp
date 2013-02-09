@@ -255,7 +255,7 @@ bool CBrain::EventProcess(const Event &event)
     if ( m_object->GetSelect() &&  // robot selected?
          m_studio != 0          )   // current issue?
     {
-        // m_studio->EventProcess(event);
+        m_studio->EventProcess(event);
 
         if ( action == EVENT_OBJECT_PROGRUN )
         {
