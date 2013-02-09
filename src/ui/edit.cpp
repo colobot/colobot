@@ -735,7 +735,7 @@ int CEdit::MouseDetect(Math::Point mouse)
 //                                                len, offset, size,
 //                                                m_fontStretch);
                 c = m_engine->GetText()->Detect(std::string(m_text+m_lineOffset[i]).substr(0, len),
-                                                m_format,
+                                                m_format.begin() + m_lineOffset[i],
                                                 size,
                                                 offset); // TODO check if good
             }
@@ -950,7 +950,7 @@ void CEdit::Draw()
         size = m_fontSize;
 
         // Headline \b;?
-        if ( beg+len < m_len && m_format.count(beg) &&
+        if ( beg+len < m_len && m_format.size() > static_cast<unsigned int>(beg) &&
              (m_format[beg]&Gfx::FONT_MASK_TITLE) == Gfx::FONT_TITLE_BIG )
         {
             start.x = ppos.x-MARGX;
@@ -964,7 +964,7 @@ void CEdit::Draw()
         }
 
         // As \t;?
-        if ( beg+len < m_len && m_format.count(beg) &&
+        if ( beg+len < m_len && m_format.size() > static_cast<unsigned int>(beg) &&
              (m_format[beg]&Gfx::FONT_MASK_TITLE) == Gfx::FONT_TITLE_NORM )
         {
             start.x = ppos.x-MARGX;
@@ -975,7 +975,7 @@ void CEdit::Draw()
         }
 
         // Subtitle \s;?
-        if ( beg+len < m_len && m_format.count(beg) &&
+        if ( beg+len < m_len && m_format.size() > static_cast<unsigned int>(beg) &&
              (m_format[beg]&Gfx::FONT_MASK_TITLE) == Gfx::FONT_TITLE_LITTLE )
         {
             start.x = ppos.x-MARGX;
@@ -986,7 +986,7 @@ void CEdit::Draw()
         }
 
         // Table \tab;?
-        if ( beg+len < m_len && m_format.count(beg) &&
+        if ( beg+len < m_len && m_format.size() > static_cast<unsigned int>(beg) &&
              (m_format[beg]&Gfx::FONT_MASK_HIGHLIGHT) == Gfx::FONT_HIGHLIGHT_TABLE )
         {
             start.x = ppos.x-MARGX;
@@ -997,7 +997,7 @@ void CEdit::Draw()
         }
 
         // Image \image; ?
-        if ( beg+len < m_len && m_format.count(beg) &&
+        if ( beg+len < m_len && m_format.size() > static_cast<unsigned int>(beg) &&
              (m_format[beg]&Gfx::FONT_MASK_IMAGE) != 0 )
         {
             line = 1;
@@ -1005,7 +1005,7 @@ void CEdit::Draw()
             {
                 if ( i+line >= m_lineTotal                ||
                      i+line >= m_lineFirst+m_lineVisible  ||
-                     (m_format.count(beg+line) && m_format[beg+line]&Gfx::FONT_MASK_IMAGE) == 0 )  break;
+                     (m_format.size() > static_cast<unsigned int>(beg+line) && m_format[beg+line]&Gfx::FONT_MASK_IMAGE) == 0 )  break;
                 line ++;
             }
 
@@ -1034,16 +1034,16 @@ void CEdit::Draw()
             else
             {
                 start.x = ppos.x+m_engine->GetText()->GetStringWidth(std::string(m_text+beg).substr(0, o1-beg),
-                                                                     m_format,
+                                                                     m_format.begin() + beg,
                                                                      size);
                 end.x   = m_engine->GetText()->GetStringWidth(std::string(m_text+o1).substr(0, o2-o1),
-                                                              m_format,
+                                                              m_format.begin() + o1,
                                                               size);
             }
 
             start.y = ppos.y-(m_bMulti?0.0f:MARGY1);
             end.y   = m_lineHeight;
-            if ( m_format.count(beg) && (m_format[beg]&Gfx::FONT_MASK_TITLE) == Gfx::FONT_TITLE_BIG)  end.y *= BIG_FONT;
+            if ( m_format.size() > static_cast<unsigned int>(beg) && (m_format[beg]&Gfx::FONT_MASK_TITLE) == Gfx::FONT_TITLE_BIG)  end.y *= BIG_FONT;
             DrawPart(start, end, 1);  // plain yellow background
         }
 
@@ -1065,7 +1065,7 @@ void CEdit::Draw()
         else
         {
             m_engine->GetText()->DrawText(std::string(m_text+beg).substr(0, len),
-                                          m_format,
+                                          m_format.begin() + beg,
                                           size,
                                           ppos,
                                           m_dim.x,
@@ -1107,7 +1107,7 @@ void CEdit::Draw()
                 else
                 {
                     m_engine->GetText()->SizeText(std::string(m_text+m_lineOffset[i]).substr(0, len),
-                                                  m_format,
+                                                  m_format.begin() + m_lineOffset[i],
                                                   size, pos, Gfx::TEXT_ALIGN_LEFT,
                                                   start, end);
                 }
@@ -1491,8 +1491,11 @@ bool CEdit::ReadText(const char *filename, int addSize)
 
     fread(buffer, 1, len, file);
 
-    if ( m_format.size() > 0 )
-        m_format.clear();
+    m_format.clear();
+    m_format.reserve(m_maxChar+1);
+    for (i = 0; i <= m_maxChar+1; i++) {
+        m_format.push_back(0);
+    }
     
     fclose(file);
 
@@ -1957,8 +1960,11 @@ void CEdit::SetMaxChar(int max)
     m_text = new char[m_maxChar+1];
     memset(m_text, 0, m_maxChar+1);
 
-    if (m_format.size() > 0)
-        m_format.clear();
+    m_format.clear();
+    m_format.reserve(m_maxChar+1);
+    for (int i = 0; i <= m_maxChar+1; i++) {
+        m_format.push_back(0);
+    }
 
     m_len = 0;
     m_cursor1 = 0;
@@ -2147,6 +2153,13 @@ bool CEdit::GetDisplaySpec()
 void CEdit::SetMultiFont(bool bMulti)
 {
     m_format.clear();
+    
+    if (bMulti) {
+        m_format.reserve(m_maxChar+1);
+        for (int i = 0; i <= m_maxChar+1; i++) {
+            m_format.push_back(0);
+        }
+    }
 }
 
 // TODO check if it works correctly; was checking if variable is null
@@ -2450,7 +2463,7 @@ void CEdit::MoveLine(int move, bool bWord, bool bSelect)
     else
     {
         c = m_engine->GetText()->Detect(std::string(m_text+m_lineOffset[line]),
-                                        m_format,
+                                        m_format.begin() + m_lineOffset[line],
                                         m_fontSize,
                                         m_lineOffset[line+1]-m_lineOffset[line]);
     }
@@ -2481,7 +2494,7 @@ void CEdit::ColumnFix()
     {
         m_column = m_engine->GetText()->GetStringWidth(
                                 std::string(m_text+m_lineOffset[line]),
-                                m_format,
+                                m_format.begin() + m_lineOffset[line],
                                 m_fontSize
                             );
     }
@@ -2884,7 +2897,7 @@ void CEdit::DeleteOne(int dir)
     {
         m_text[i] = m_text[i+hole];
 
-        if ( m_format.count(i+hole) )
+        if ( m_format.size() > static_cast<unsigned int>(i + hole) )
         {
             m_format[i] = m_format[i+hole];
         }
@@ -3087,13 +3100,13 @@ void CEdit::Justif()
         {
             size = m_fontSize;
 
-            if ( m_format.count(i) && (m_format[i]&Gfx::FONT_MASK_TITLE) == Gfx::FONT_TITLE_BIG )  // headline?
+            if ( m_format.size() > static_cast<unsigned int>(i) && (m_format[i]&Gfx::FONT_MASK_TITLE) == Gfx::FONT_TITLE_BIG )  // headline?
             {
                 size *= BIG_FONT;
                 bDual = true;
             }
 
-            if ( m_format.count(i) && (m_format[i]&Gfx::FONT_MASK_IMAGE) != 0 )  // image part?
+            if ( m_format.size() > static_cast<unsigned int>(i) && (m_format[i]&Gfx::FONT_MASK_IMAGE) != 0 )  // image part?
             {
                 i ++;  // jumps just a character (index in m_image)
             }
@@ -3101,7 +3114,7 @@ void CEdit::Justif()
             {
                 // TODO check if good
                 i += m_engine->GetText()->Justify(std::string(m_text+i),
-                                                  m_format,
+                                                  m_format.begin() + i,
                                                   size,
                                                   width);
             }
@@ -3296,12 +3309,12 @@ bool CEdit::SetFormat(int cursor1, int cursor2, int format)
 {
     int     i;
 
-    //if ( m_format.size() == 0 )  return false;
+    if ( m_format.size() < static_cast<unsigned int>(cursor2) )
+        SetMultiFont(true);
 
     for ( i=cursor1 ; i<cursor2 ; i++ )
     {
-        if (m_format.count(i))
-            m_format[i] |= format;
+        m_format.at(i) |= format;
     }
 
     return true;
