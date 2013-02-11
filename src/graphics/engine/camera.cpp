@@ -315,6 +315,7 @@ void CCamera::SetType(CameraType type)
         if ( oType == OBJECT_PARA     )  m_backDist = 180.0f;
         if ( oType == OBJECT_SAFE     )  m_backDist =  50.0f;
         if ( oType == OBJECT_HUSTON   )  m_backDist = 120.0f;
+        if ( oType == OBJECT_MOTHER   )  m_backDist =  55.0f;
 
         m_backMin = m_backDist/3.0f;
         if ( oType == OBJECT_HUMAN    )  m_backMin =  10.0f;
