@@ -2836,20 +2836,20 @@ void CEdit::InsertOne(char character)
     {
         m_text[i] = m_text[i-1];  // shoot
 
-        //if ( m_format.size() > 0 )
-        //{
+        if ( m_format.size() > static_cast<unsigned int>(i) )
+        {
             m_format[i] = m_format[i-1];  // shoot
-        //}
+        }
     }
 
     m_len ++;
 
     m_text[m_cursor1] = character;
 
-    //if ( m_format.size() > 0 )
-    //{
+    if ( m_format.size() > static_cast<unsigned int>(m_cursor1) )
+    {
         m_format[m_cursor1] = 0;
-    //}
+    }
 
     m_cursor1++;
     m_cursor2 = m_cursor1;
