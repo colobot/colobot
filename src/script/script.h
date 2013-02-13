@@ -117,6 +117,7 @@ private:
     static CBotTypResult cTestInfo(CBotVar* &var, void* user);
     static CBotTypResult cShield(CBotVar* &var, void* user);
     static CBotTypResult cFire(CBotVar* &var, void* user);
+    static CBotTypResult cAim(CBotVar* &var, void* user);
     static CBotTypResult cMotor(CBotVar* &var, void* user);
     static CBotTypResult cTopo(CBotVar* &var, void* user);
     static CBotTypResult cMessage(CBotVar* &var, void* user);
