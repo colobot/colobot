@@ -2191,12 +2191,12 @@ bool CScript::rFire(CBotVar* var, CBotVar* result, int& exception, void* user)
 CBotTypResult cAim(CBotVar* &var, void* user)
 {
     if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
-    if ( var->GivType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
-    var = var->GivNext();
+    if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
+    var = var->GetNext();
 
     if ( var == 0 )  return CBotTypResult(CBotTypFloat);
-    if ( var->GivType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
-    var = var->GivNext();
+    if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
+    var = var->GetNext();
 
     if ( var != 0 )  return CBotTypResult(CBotErrOverParam);
 
