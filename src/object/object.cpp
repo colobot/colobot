@@ -6617,7 +6617,7 @@ void CObject::SetSelect(bool bMode, bool bDisplayError)
 
     if ( !m_bSelect )
     {
-        SetGunGoalH(0.0f);  // puts the cannon right
+        //SetGunGoalH(0.0f);  // puts the cannon right
         return;  // selects if not finished
     }
 
