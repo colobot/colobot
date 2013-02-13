@@ -328,8 +328,8 @@ void CCamera::SetType(CameraType type)
         if ( oType == OBJECT_HUSTON   )  m_backMin =  80.0f;
     }
 
-    if ( type != CAM_TYPE_ONBOARD && m_cameraObj != 0 )
-        m_cameraObj->SetGunGoalH(0.0f);  // puts the cannon right
+    //if ( type != CAM_TYPE_ONBOARD && m_cameraObj != 0 )
+    //    m_cameraObj->SetGunGoalH(0.0f);  // puts the cannon right
 
     if ( type == CAM_TYPE_ONBOARD )
         m_focus = 1.50f;  // Wide

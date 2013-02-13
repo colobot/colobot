@@ -2186,12 +2186,29 @@ bool CScript::rFire(CBotVar* var, CBotVar* result, int& exception, void* user)
     return Process(script, result, exception);
 }
 
+// Compilation of the instruction "aim(x, y)".
+
+CBotTypResult CScript::cAim(CBotVar* &var, void* user)
+{
+    if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
+    if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
+    var = var->GetNext();
+
+    if ( var == 0 )  return CBotTypResult(CBotTypFloat);
+    if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
+    var = var->GetNext();
+
+    if ( var != 0 )  return CBotTypResult(CBotErrOverParam);
+
+    return CBotTypResult(CBotTypFloat);
+}
+
 // Instruction "aim(dir)".
 
 bool CScript::rAim(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
     CScript*    script = (static_cast<CObject *>(user))->GetRunScript();
-    float       value;
+    float       x, y;
     Error       err;
 
     exception = 0;
@@ -2199,8 +2216,10 @@ bool CScript::rAim(CBotVar* var, CBotVar* result, int& exception, void* user)
     if ( script->m_primaryTask == 0 )  // no task in progress?
     {
         script->m_primaryTask = new CTaskManager(script->m_iMan, script->m_object);
-        value = var->GetValFloat();
-        err = script->m_primaryTask->StartTaskGunGoal(value*Math::PI/180.0f, 0.0f);
+        x = var->GetValFloat();
+    	var = var->GetNext();
+    	var == 0 ? y=0.0f : y=var->GetValFloat();
+        err = script->m_primaryTask->StartTaskGunGoal(x*Math::PI/180.0f, y*Math::PI/180.0f);
         if ( err != ERR_OK )
         {
             delete script->m_primaryTask;
@@ -2731,7 +2750,7 @@ void CScript::InitFonctions()
     CBotProgram::AddFunction("recycle",   rRecycle,   CScript::cNull);
     CBotProgram::AddFunction("shield",    rShield,    CScript::cShield);
     CBotProgram::AddFunction("fire",      rFire,      CScript::cFire);
-    CBotProgram::AddFunction("aim",       rAim,       CScript::cOneFloat);
+    CBotProgram::AddFunction("aim",       rAim,       CScript::cAim);
     CBotProgram::AddFunction("motor",     rMotor,     CScript::cMotor);
     CBotProgram::AddFunction("jet",       rJet,       CScript::cOneFloat);
     CBotProgram::AddFunction("topo",      rTopo,      CScript::cTopo);
