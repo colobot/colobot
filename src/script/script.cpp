@@ -2188,7 +2188,7 @@ bool CScript::rFire(CBotVar* var, CBotVar* result, int& exception, void* user)
 
 // Compilation of the instruction "aim(x, y)".
 
-CBotTypResult cAim(CBotVar* &var, void* user)
+CBotTypResult CScript::cAim(CBotVar* &var, void* user)
 {
     if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
     if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
