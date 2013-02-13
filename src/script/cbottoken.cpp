@@ -476,7 +476,7 @@ const char* GetHelpText(const char *token)
     if ( strcmp(token, "shield"    ) == 0 )  return "shield ( oper, radius );";
     if ( strcmp(token, "fire"      ) == 0 )  return "fire ( time );";
     if ( strcmp(token, "antfire"   ) == 0 )  return "antfire ( );";
-    if ( strcmp(token, "aim"       ) == 0 )  return "aim ( angle );";
+    if ( strcmp(token, "aim"       ) == 0 )  return "aim ( angle, angle );";
     if ( strcmp(token, "motor"     ) == 0 )  return "motor ( left, right );";
     if ( strcmp(token, "jet"       ) == 0 )  return "jet ( power );";
     if ( strcmp(token, "topo"      ) == 0 )  return "topo ( position );";
