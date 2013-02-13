@@ -528,6 +528,10 @@ bool CBrain::EventProcess(const Event &event)
         {
             err = StartTaskBuild(OBJECT_INFO);
         }
+        if ( action == EVENT_OBJECT_BDESTROYER )
+        {
+            err = StartTaskBuild(OBJECT_DESTROYER);
+        }
 
         if ( action == EVENT_OBJECT_GFLAT )
         {
@@ -1454,8 +1458,8 @@ bool CBrain::CreateInterface(bool bSelect)
 
         pos.x = ox+sx*5.4f;
         pos.y = oy+sy*0.1f;
-        pw->CreateButton(pos, ddim, 128+56, EVENT_OBJECT_BXXXX);
-        DeadInterface(pw, EVENT_OBJECT_BXXXX, false);
+        pw->CreateButton(pos, ddim, 128+41, EVENT_OBJECT_BDESTROYER);
+        DeadInterface(pw, EVENT_OBJECT_BDESTROYER, g_build&BUILD_DESTROYER);
 
         if ( g_build&BUILD_GFLAT )
         {
@@ -2181,7 +2185,7 @@ void CBrain::UpdateInterface()
         EnableInterface(pw, EVENT_OBJECT_BNUCLEAR,  bEnable);
         EnableInterface(pw, EVENT_OBJECT_BPARA,     bEnable);
         EnableInterface(pw, EVENT_OBJECT_BINFO,     bEnable);
-        EnableInterface(pw, EVENT_OBJECT_BXXXX,     bEnable);
+        EnableInterface(pw, EVENT_OBJECT_BDESTROYER,bEnable);
     }
 
     pb = static_cast< Ui::CButton* >(pw->SearchControl(EVENT_OBJECT_GFLAT));

@@ -308,6 +308,7 @@ void InitializeRestext()
     stringsEvent[EVENT_OBJECT_BNUCLEAR]     = "Build a nuclear power plant";
     stringsEvent[EVENT_OBJECT_BPARA]        = "Build a lightning conductor";
     stringsEvent[EVENT_OBJECT_BINFO]        = "Build a exchange post";
+    stringsEvent[EVENT_OBJECT_BDESTROYER]   = "Build a destroyer";
     stringsEvent[EVENT_OBJECT_GFLAT]        = "Show if the ground is flat";
     stringsEvent[EVENT_OBJECT_FCREATE]      = "Plant a flag";
     stringsEvent[EVENT_OBJECT_FDELETE]      = "Remove a flag";
