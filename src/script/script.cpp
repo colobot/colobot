@@ -2216,9 +2216,9 @@ bool CScript::rAim(CBotVar* var, CBotVar* result, int& exception, void* user)
     if ( script->m_primaryTask == 0 )  // no task in progress?
     {
         script->m_primaryTask = new CTaskManager(script->m_iMan, script->m_object);
-        x = var->GivValFloat();
-    	var = var->GivNext();
-    	var == 0 ? y=0.0f : y=var->GivValFloat();
+        x = var->GetValFloat();
+    	var = var->GetNext();
+    	var == 0 ? y=0.0f : y=var->GetValFloat();
         err = script->m_primaryTask->StartTaskGunGoal(x*Math::PI/180.0f, y*Math::PI/180.0f);
         if ( err != ERR_OK )
         {
