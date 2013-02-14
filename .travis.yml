@@ -2,7 +2,7 @@ language: cpp
 compiler:
   - gcc
   - clang
-script: mkdir build; cd build; cmake .. -DCMAKE_VERBOSE_MAKEFILE=ON && make all doc test && DESTDIR=. make install
+script: mkdir build; cd build; cmake .. -DCMAKE_VERBOSE_MAKEFILE=ON && make all doc && DESTDIR=. make install
 before_install:
   - git submodule update --init --recursive
   - sudo add-apt-repository ppa:mapnik/boost -y
