@@ -1033,28 +1033,37 @@ bool CScript::rProduce(CBotVar* var, CBotVar* result, int& exception, void* user
         }
     }
 
-    if ( type == OBJECT_FRET     ||
-         type == OBJECT_STONE    ||
-         type == OBJECT_URANIUM  ||
-         type == OBJECT_METAL    ||
-         type == OBJECT_POWER    ||
-         type == OBJECT_ATOMIC   ||
-         type == OBJECT_BULLET   ||
-         type == OBJECT_BBOX     ||
-         type == OBJECT_KEYa     ||
-         type == OBJECT_KEYb     ||
-         type == OBJECT_KEYc     ||
-         type == OBJECT_KEYd     ||
-         type == OBJECT_TNT      ||
-         type == OBJECT_SCRAP1   ||
-         type == OBJECT_SCRAP2   ||
-         type == OBJECT_SCRAP3   ||
-         type == OBJECT_SCRAP4   ||
-         type == OBJECT_SCRAP5   ||
-         type == OBJECT_BOMB     ||
-         type == OBJECT_WAYPOINT ||
-         type == OBJECT_SHOW     ||
-         type == OBJECT_WINFIRE  )
+    if ( type == OBJECT_FRET        ||
+         type == OBJECT_STONE       ||
+         type == OBJECT_URANIUM     ||
+         type == OBJECT_METAL       ||
+         type == OBJECT_POWER       ||
+         type == OBJECT_ATOMIC      ||
+         type == OBJECT_BULLET      ||
+         type == OBJECT_BBOX        ||
+         type == OBJECT_KEYa        ||
+         type == OBJECT_KEYb        ||
+         type == OBJECT_KEYc        ||
+         type == OBJECT_KEYd        ||
+         type == OBJECT_TNT         ||
+         type == OBJECT_SCRAP1      ||
+         type == OBJECT_SCRAP2      ||
+         type == OBJECT_SCRAP3      ||
+         type == OBJECT_SCRAP4      ||
+         type == OBJECT_SCRAP5      ||
+         type == OBJECT_BOMB        ||
+         type == OBJECT_WAYPOINT    ||
+         type == OBJECT_SHOW        ||
+         type == OBJECT_WINFIRE     ||
+         type == OBJECT_BAG         ||
+         type == OBJECT_MARKPOWER   ||
+         type == OBJECT_MARKSTONE   ||
+         type == OBJECT_MARKURANIUM ||
+         type == OBJECT_MARKKEYa    ||
+         type == OBJECT_MARKKEYb    ||
+         type == OBJECT_MARKKEYc    ||
+         type == OBJECT_MARKKEYd    ||
+         type == OBJECT_EGG         )
     {
         object = new CObject(script->m_iMan);
         if ( !object->CreateResource(pos, angle, type) )
@@ -1090,27 +1099,30 @@ bool CScript::rProduce(CBotVar* var, CBotVar* result, int& exception, void* user
         object->SetActivity(false);
     }
     else
-    if ( type == OBJECT_DERRICK   ||
-         type == OBJECT_FACTORY   ||
-         type == OBJECT_STATION   ||
-         type == OBJECT_CONVERT   ||
-         type == OBJECT_REPAIR    ||
-         type == OBJECT_TOWER     ||
-         type == OBJECT_NEST      ||
-         type == OBJECT_RESEARCH  ||
-         type == OBJECT_RADAR     ||
-         type == OBJECT_ENERGY    ||
-         type == OBJECT_LABO      ||
-         type == OBJECT_NUCLEAR   ||
-         type == OBJECT_START     ||
-         type == OBJECT_END       ||
-         type == OBJECT_INFO      ||
-         type == OBJECT_PARA      ||
-         type == OBJECT_TARGET1   ||
-         type == OBJECT_TARGET2   ||
-         type == OBJECT_SAFE      ||
-         type == OBJECT_HUSTON    ||
-         type == OBJECT_DESTROYER  ) {
+    if ( type == OBJECT_PORTICO  ||
+         type == OBJECT_BASE     ||
+         type == OBJECT_DERRICK  ||
+         type == OBJECT_FACTORY  ||
+         type == OBJECT_STATION  ||
+         type == OBJECT_CONVERT  ||
+         type == OBJECT_REPAIR   ||
+         type == OBJECT_DESTROYER||
+         type == OBJECT_TOWER    ||
+         type == OBJECT_NEST     ||
+         type == OBJECT_RESEARCH ||
+         type == OBJECT_RADAR    ||
+         type == OBJECT_INFO     ||
+         type == OBJECT_ENERGY   ||
+         type == OBJECT_LABO     ||
+         type == OBJECT_NUCLEAR  ||
+         type == OBJECT_PARA     ||
+         type == OBJECT_SAFE     ||
+         type == OBJECT_HUSTON   ||
+         type == OBJECT_TARGET1  ||
+         type == OBJECT_TARGET2  ||
+         type == OBJECT_START    ||
+         type == OBJECT_END      )
+    {
         object = new CObject(script->m_iMan);
         if ( !object->CreateBuilding(pos, angle, 0, type) )
         {
@@ -1122,25 +1134,40 @@ bool CScript::rProduce(CBotVar* var, CBotVar* result, int& exception, void* user
         script->m_main->CreateShortcuts();
     }
     else
-    if ( type == OBJECT_MOBILEwt ||
-         type == OBJECT_MOBILEtt ||
-         type == OBJECT_MOBILEft ||
-         type == OBJECT_MOBILEit ||
-         type == OBJECT_MOBILEwa ||
-         type == OBJECT_MOBILEta ||
+    if ( type == OBJECT_FLAGb ||
+         type == OBJECT_FLAGr ||
+         type == OBJECT_FLAGg ||
+         type == OBJECT_FLAGy ||
+         type == OBJECT_FLAGv )
+    {
+        object = new CObject(m_iMan);
+        if ( !object->CreateFlag(pos, angle, type); )
+        {
+            delete object;
+            result->SetValInt(1);  // error
+            return true;
+        }
+        object->SetActivity(false);
+    }
+    else
+    if ( type == OBJECT_HUMAN    ||
+         type == OBJECT_TECH     ||
+         type == OBJECT_TOTO     ||
          type == OBJECT_MOBILEfa ||
+         type == OBJECT_MOBILEta ||
+         type == OBJECT_MOBILEwa ||
          type == OBJECT_MOBILEia ||
-         type == OBJECT_MOBILEwc ||
-         type == OBJECT_MOBILEtc ||
          type == OBJECT_MOBILEfc ||
+         type == OBJECT_MOBILEtc ||
+         type == OBJECT_MOBILEwc ||
          type == OBJECT_MOBILEic ||
-         type == OBJECT_MOBILEwi ||
-         type == OBJECT_MOBILEti ||
          type == OBJECT_MOBILEfi ||
+         type == OBJECT_MOBILEti ||
+         type == OBJECT_MOBILEwi ||
          type == OBJECT_MOBILEii ||
-         type == OBJECT_MOBILEws ||
-         type == OBJECT_MOBILEts ||
          type == OBJECT_MOBILEfs ||
+         type == OBJECT_MOBILEts ||
+         type == OBJECT_MOBILEws ||
          type == OBJECT_MOBILEis ||
          type == OBJECT_MOBILErt ||
          type == OBJECT_MOBILErc ||
@@ -1148,7 +1175,13 @@ bool CScript::rProduce(CBotVar* var, CBotVar* result, int& exception, void* user
          type == OBJECT_MOBILErs ||
          type == OBJECT_MOBILEsa ||
          type == OBJECT_MOBILEtg ||
-         type == OBJECT_MOBILEdr  ) {
+         type == OBJECT_MOBILEft ||
+         type == OBJECT_MOBILEtt ||
+         type == OBJECT_MOBILEwt ||
+         type == OBJECT_MOBILEit ||
+         type == OBJECT_MOBILEdr ||
+         type == OBJECT_APOLLO2  )
+    {
         object = new CObject(script->m_iMan);
         if ( !object->CreateVehicle(pos, angle, type, power, false, false) )
         {
