@@ -1140,7 +1140,7 @@ bool CScript::rProduce(CBotVar* var, CBotVar* result, int& exception, void* user
          type == OBJECT_FLAGy ||
          type == OBJECT_FLAGv )
     {
-        object = new CObject(m_iMan);
+        object = new CObject(script->m_iMan);
         if ( !object->CreateFlag(pos, angle, type); )
         {
             delete object;
