@@ -940,55 +940,98 @@ bool CScript::rDirection(CBotVar* var, CBotVar* result, int& exception, void* us
 }
 
 
-// Compilation of the instruction "produce(pos, angle, type, scriptName)".
+// Compilation of the instruction "produce(pos, angle, type, scriptName, power)".
+// or "produce(pos, angle, type, scriptName)"
+// or "produce(pos, angle, type)"
+// or "produce(type)"
 
 CBotTypResult CScript::cProduce(CBotVar* &var, void* user)
 {
     CBotTypResult   ret;
 
     if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
-    ret = cPoint(var, user);
-    if ( ret.GetType() != 0 )  return ret;
 
-    if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
-    if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
-    var = var->GetNext();
+    if ( var->GetType() <= CBotTypDouble ) {
+        var = var->GetNext();
+    } else {
+        ret = cPoint(var, user);
+        if ( ret.GetType() != 0 )  return ret;
 
-    if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
-    if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
-    var = var->GetNext();
+        if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
+        if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
+        var = var->GetNext();
 
-    if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
-    if ( var->GetType() != CBotTypString )  return CBotTypResult(CBotErrBadString);
-    var = var->GetNext();
+        if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
+        if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
+        var = var->GetNext();
+
+        if ( var != 0 ) {
+            if ( var->GetType() != CBotTypString )  return CBotTypResult(CBotErrBadString);
+            var = var->GetNext();
+
+            if ( var != 0 ) {
+                if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
+                var = var->GetNext();
+            }
+        }
+    }
 
     if ( var != 0 )  return CBotTypResult(CBotErrOverParam);
 
     return CBotTypResult(CBotTypFloat);
 }
 
-// Instruction "produce(pos, angle, type, scriptName)".
+// Instruction "produce(pos, angle, type, scriptName, power)".
+// or "produce(pos, angle, type, scriptName)"
+// or "produce(pos, angle, type)"
+// or "produce(type)"
 
 bool CScript::rProduce(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
     CScript*    script = (static_cast<CObject *>(user))->GetRunScript();
     CObject*    object;
+    CObject*    me = (static_cast<CObject *>(user));
     CBotString  cbs;
     const char* name;
     Math::Vector    pos;
     float       angle;
     ObjectType  type;
+    float       power;
 
-    if ( !GetPoint(var, exception, pos) )  return true;
+    if ( var->GetType() <= CBotTypDouble ) {
+        type = static_cast<ObjectType>(var->GetValInt());
 
-    angle = var->GetValFloat()*Math::PI/180.0f;
-    var = var->GetNext();
+        pos = me->GetPosition(0);
 
-    type = static_cast<ObjectType>(var->GetValInt());
-    var = var->GetNext();
+        Math::Vector rotation = me->GetAngle(0) + me->GetInclinaison();
+        angle = rotation.y;
 
-    cbs = var->GetValString();
-    name = cbs;
+        power = -1.0f;
+
+        name = "";
+    } else {
+        if ( !GetPoint(var, exception, pos) )  return true;
+
+        angle = var->GetValFloat()*Math::PI/180.0f;
+        var = var->GetNext();
+
+        type = static_cast<ObjectType>(var->GetValInt());
+        var = var->GetNext();
+
+        if ( var != 0 ) {
+            cbs = var->GetValString();
+            name = cbs;
+            var = var->GetNext();
+            if ( var != 0 ) {
+                power = var->GetValFloat();
+            } else {
+                power = -1.0f;
+            }
+        } else {
+            name = "";
+            power = -1.0f;
+        }
+    }
 
     if ( type == OBJECT_FRET     ||
          type == OBJECT_STONE    ||
@@ -1020,6 +1063,7 @@ bool CScript::rProduce(CBotVar* var, CBotVar* result, int& exception, void* user
             result->SetValInt(1);  // error
             return true;
         }
+        object->SetActivity(false);
     }
     else
     if ( type == OBJECT_MOTHER ||
@@ -1043,13 +1087,92 @@ bool CScript::rProduce(CBotVar* var, CBotVar* result, int& exception, void* user
         {
             delete egg;
         }
+        object->SetActivity(false);
+    }
+    else
+    if ( type == OBJECT_DERRICK   ||
+         type == OBJECT_FACTORY   ||
+         type == OBJECT_STATION   ||
+         type == OBJECT_CONVERT   ||
+         type == OBJECT_REPAIR    ||
+         type == OBJECT_TOWER     ||
+         type == OBJECT_NEST      ||
+         type == OBJECT_RESEARCH  ||
+         type == OBJECT_RADAR     ||
+         type == OBJECT_ENERGY    ||
+         type == OBJECT_LABO      ||
+         type == OBJECT_NUCLEAR   ||
+         type == OBJECT_START     ||
+         type == OBJECT_END       ||
+         type == OBJECT_INFO      ||
+         type == OBJECT_PARA      ||
+         type == OBJECT_TARGET1   ||
+         type == OBJECT_TARGET2   ||
+         type == OBJECT_SAFE      ||
+         type == OBJECT_HUSTON    ||
+         type == OBJECT_DESTROYER  ) {
+        object = new CObject(script->m_iMan);
+        if ( !object->CreateBuilding(pos, angle, 0, type) )
+        {
+            delete object;
+            result->SetValInt(1);  // error
+            return true;
+        }
+        object->SetActivity(false);
+    }
+    else
+    if ( type == OBJECT_MOBILEwt ||
+         type == OBJECT_MOBILEtt ||
+         type == OBJECT_MOBILEft ||
+         type == OBJECT_MOBILEit ||
+         type == OBJECT_MOBILEwa ||
+         type == OBJECT_MOBILEta ||
+         type == OBJECT_MOBILEfa ||
+         type == OBJECT_MOBILEia ||
+         type == OBJECT_MOBILEwc ||
+         type == OBJECT_MOBILEtc ||
+         type == OBJECT_MOBILEfc ||
+         type == OBJECT_MOBILEic ||
+         type == OBJECT_MOBILEwi ||
+         type == OBJECT_MOBILEti ||
+         type == OBJECT_MOBILEfi ||
+         type == OBJECT_MOBILEii ||
+         type == OBJECT_MOBILEws ||
+         type == OBJECT_MOBILEts ||
+         type == OBJECT_MOBILEfs ||
+         type == OBJECT_MOBILEis ||
+         type == OBJECT_MOBILErt ||
+         type == OBJECT_MOBILErc ||
+         type == OBJECT_MOBILErr ||
+         type == OBJECT_MOBILErs ||
+         type == OBJECT_MOBILEsa ||
+         type == OBJECT_MOBILEtg ||
+         type == OBJECT_MOBILEdr  ) {
+        object = new CObject(script->m_iMan);
+        if ( !object->CreateVehicle(pos, angle, type, power, false, false) )
+        {
+            delete object;
+            result->SetValInt(1);  // error
+            return true;
+        }
+        object->UpdateMapping();
+        object->SetRange(30.0f);
+        object->SetZoom(0, 1.0f);
+        CPhysics* physics = object->GetPhysics();
+        if ( physics != 0 )
+        {
+            physics->SetFreeze(false);  // can move
+        }
+        object->SetLock(false);  // vehicle useable
+        object->SetActivity(true);
+        script->m_main->CreateShortcuts();
     }
     else
     {
         result->SetValInt(1);  // impossible
         return true;
     }
-    object->SetActivity(false);
+
     object->ReadProgram(0, static_cast<const char*>(name));
     object->RunProgram(0);
 
