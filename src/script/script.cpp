@@ -1119,6 +1119,7 @@ bool CScript::rProduce(CBotVar* var, CBotVar* result, int& exception, void* user
             return true;
         }
         object->SetActivity(false);
+        script->m_main->CreateShortcuts();
     }
     else
     if ( type == OBJECT_MOBILEwt ||
