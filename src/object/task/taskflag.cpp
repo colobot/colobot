@@ -14,17 +14,20 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// taskflag.cpp
 
 #include "object/task/taskflag.h"
 
-#include "math/geometry.h"
 #include "common/iman.h"
+
+#include "math/geometry.h"
+
 #include "graphics/engine/particle.h"
 #include "graphics/engine/pyro.h"
 #include "graphics/engine/water.h"
-#include "physics/physics.h"
+
 #include "object/motion/motionhuman.h"
+
+#include "physics/physics.h"
 
 
 
@@ -32,8 +35,7 @@
 
 // Object's constructor.
 
-CTaskFlag::CTaskFlag(CInstanceManager* iMan, CObject* object)
-                       : CTask(iMan, object)
+CTaskFlag::CTaskFlag(CObject* object) : CTask(object)
 {
 }
 
@@ -137,11 +139,13 @@ CObject* CTaskFlag::SearchNearest(Math::Vector pos, ObjectType type)
     float       min, dist;
     int         i;
 
+    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
+
     min = 100000.0f;
     pBest = 0;
     for ( i=0 ; i<1000000 ; i++ )
     {
-        pObj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
+        pObj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
         if ( pObj == 0 )  break;
 
         if ( !pObj->GetEnable() )  continue;
@@ -180,10 +184,12 @@ int CTaskFlag::CountObject(ObjectType type)
     Math::Vector    oPos;
     int         i, count;
 
+    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
+
     count = 0;
     for ( i=0 ; i<1000000 ; i++ )
     {
-        pObj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
+        pObj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
         if ( pObj == 0 )  break;
 
         if ( !pObj->GetEnable() )  continue;
@@ -247,7 +253,7 @@ Error CTaskFlag::CreateFlag(int rank)
         return ERR_FLAG_CREATE;
     }
 
-    pNew = new CObject(m_iMan);
+    pNew = new CObject();
     if ( !pNew->CreateFlag(pos, 0.0f, table[i]) )
     {
         delete pNew;
@@ -256,7 +262,7 @@ Error CTaskFlag::CreateFlag(int rank)
     //pNew->SetZoom(0, 0.0f);
 
     m_sound->Play(SOUND_WAYPOINT, pos);
-    pyro = new Gfx::CPyro(m_iMan);
+    pyro = new Gfx::CPyro();
     pyro->Create(Gfx::PT_FLCREATE, pNew);
 
     return ERR_OK;
@@ -295,7 +301,7 @@ Error CTaskFlag::DeleteFlag()
     }
 
     m_sound->Play(SOUND_WAYPOINT, iPos);
-    pyro = new Gfx::CPyro(m_iMan);
+    pyro = new Gfx::CPyro();
     pyro->Create(Gfx::PT_FLDELETE, pObj);
 
     return ERR_OK;

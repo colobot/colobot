@@ -20,9 +20,13 @@
 #pragma once
 
 #include "common/event.h"
+
 #include "graphics/core/color.h"
+
 #include "math/point.h"
+
 #include "object/object.h"
+
 #include "ui/interface.h"
 
 
@@ -55,7 +59,6 @@ class CMainMap
         void        CenterMap();
 
     protected:
-        CInstanceManager* m_iMan;
         CEventQueue*    m_event;
         Gfx::CEngine*   m_engine;
         CInterface*     m_interface;

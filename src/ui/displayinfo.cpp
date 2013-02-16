@@ -15,17 +15,10 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// displayinfo.cpp
-
 
 #include "ui/displayinfo.h"
 
-#include "ui/interface.h"
-#include "ui/button.h"
-#include "ui/slider.h"
-#include "ui/edit.h"
-#include "ui/group.h"
-#include "ui/window.h"
+#include "app/app.h"
 
 #include "common/iman.h"
 #include "common/misc.h"
@@ -43,25 +36,28 @@
 
 #include "script/cbottoken.h"
 
+#include "ui/interface.h"
+#include "ui/button.h"
+#include "ui/slider.h"
+#include "ui/edit.h"
+#include "ui/group.h"
+#include "ui/window.h"
+
 #include <string.h>
 
 
 namespace Ui {
 // Object's constructor.
 
-//CDisplayInfo::CDisplayInfo(CInstanceManager* iMan)
 CDisplayInfo::CDisplayInfo()
 {
-    m_iMan = CInstanceManager::GetInstancePointer();
-    m_iMan->AddInstance(CLASS_STUDIO, this);
-
-    m_engine    = static_cast <Gfx::CEngine*> (m_iMan->SearchInstance(CLASS_ENGINE));
-    m_event     = static_cast <CEventQueue*> (m_iMan->SearchInstance(CLASS_EVENT));
-    m_interface = static_cast <CInterface*> (m_iMan->SearchInstance(CLASS_INTERFACE));
-    m_main      = static_cast <CRobotMain*> (m_iMan->SearchInstance(CLASS_MAIN));
-    m_camera    = static_cast <Gfx::CCamera*> (m_iMan->SearchInstance(CLASS_CAMERA));
-    m_particle = static_cast <Gfx::CParticle*> (m_iMan->SearchInstance(CLASS_PARTICULE));
-    m_light     = static_cast <Gfx::CLightManager*> (m_iMan->SearchInstance(CLASS_LIGHT));
+    m_event     = CApplication::GetInstancePointer()->GetEventQueue();
+    m_engine    = Gfx::CEngine::GetInstancePointer();
+    m_particle  = m_engine->GetParticle();
+    m_light     = m_engine->GetLightManager();
+    m_main      = CRobotMain::GetInstancePointer();
+    m_interface = m_main->GetInterface();
+    m_camera    = m_main->GetCamera();
 
     m_bInfoMaximized = true;
     m_bInfoMinimized = false;
@@ -77,7 +73,6 @@ CDisplayInfo::CDisplayInfo()
 
 CDisplayInfo::~CDisplayInfo()
 {
-    m_iMan->DeleteInstance(CLASS_STUDIO, this);
 }
 
 
@@ -927,9 +922,11 @@ CObject* CDisplayInfo::SearchToto()
     CObject*    pObj;
     int         i;
 
+    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
+
     for ( i=0 ; i<1000000 ; i++ )
     {
-        pObj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
+        pObj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
         if ( pObj == 0 )  break;
 
         type = pObj->GetType();
@@ -1012,6 +1009,8 @@ void CDisplayInfo::CreateObjectsFile()
     int         i;
     bool        bRadar, bAtLeast;
 
+    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
+
     file = fopen("help\\objects.txt", "w");
     if ( file == 0 )  return;
 
@@ -1019,7 +1018,7 @@ void CDisplayInfo::CreateObjectsFile()
     bRadar = false;
     for ( i=0 ; i<1000000 ; i++ )
     {
-        pObj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
+        pObj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
         if ( pObj == 0 )  break;
 
         if ( !pObj->GetActif() )  continue;

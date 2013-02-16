@@ -14,12 +14,13 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// taskfire.cpp
 
 #include "object/task/taskfire.h"
 
 #include "graphics/engine/particle.h"
+
 #include "math/geometry.h"
+
 #include "physics/physics.h"
 
 
@@ -31,8 +32,7 @@ const float ENERGY_FIREi    = (0.10f/2.5f); // energy consumed/organic
 
 // Object's constructor.
 
-CTaskFire::CTaskFire(CInstanceManager* iMan, CObject* object)
-                     : CTask(iMan, object)
+CTaskFire::CTaskFire(CObject* object) : CTask(object)
 {
     m_soundChannel = -1;
 }

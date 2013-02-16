@@ -15,23 +15,26 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// studio.cpp
 
-
-#include "studio.h"
+#include "ui/studio.h"
 
 #include "CBot/CBotDll.h"
 
 #include "app/app.h"
+
 #include "common/event.h"
-#include "common/iman.h"
 #include "common/misc.h"
+
 #include "graphics/engine/camera.h"
 #include "graphics/engine/engine.h"
+
 #include "object/object.h"
+
 #include "script/cbottoken.h"
 #include "script/script.h"
+
 #include "sound/sound.h"
+
 #include "ui/check.h"
 #include "ui/control.h"
 #include "ui/color.h"
@@ -61,16 +64,13 @@ namespace Ui {
 
 CStudio::CStudio()
 {
-    m_iMan = CInstanceManager::GetInstancePointer();
-    m_iMan->AddInstance(CLASS_STUDIO, this);
-
-    m_engine    = static_cast<Gfx::CEngine*>(m_iMan->SearchInstance(CLASS_ENGINE));
-    m_event     = static_cast<CEventQueue*>(m_iMan->SearchInstance(CLASS_EVENT));
-    m_interface = static_cast<CInterface*>(m_iMan->SearchInstance(CLASS_INTERFACE));
-    m_main      = static_cast<CRobotMain*>(m_iMan->SearchInstance(CLASS_MAIN));
-    m_camera    = static_cast<Gfx::CCamera*>(m_iMan->SearchInstance(CLASS_CAMERA));
-    m_sound     = static_cast<CSoundInterface*>(m_iMan->SearchInstance(CLASS_SOUND));
-    m_app = CApplication::GetInstancePointer();
+    m_app       = CApplication::GetInstancePointer();
+    m_sound     = m_app->GetSound();
+    m_event     = m_app->GetEventQueue();
+    m_engine    = Gfx::CEngine::GetInstancePointer();
+    m_main      = CRobotMain::GetInstancePointer();
+    m_interface = m_main->GetInterface();
+    m_camera    = m_main->GetCamera();
 
     m_bEditMaximized = false;
     m_bEditMinimized = false;
@@ -87,7 +87,6 @@ CStudio::CStudio()
 
 CStudio::~CStudio()
 {
-    m_iMan->DeleteInstance(CLASS_STUDIO, this);
 }
 
 

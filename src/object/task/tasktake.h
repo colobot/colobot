@@ -42,7 +42,7 @@ enum TaskTakeArm
 class CTaskTake : public CTask
 {
 public:
-    CTaskTake(CInstanceManager* iMan, CObject* object);
+    CTaskTake(CObject* object);
     ~CTaskTake();
 
     bool        EventProcess(const Event &event);

@@ -23,8 +23,7 @@
 
 // Object's constructor.
 
-CAutoJostle::CAutoJostle(CInstanceManager* iMan, CObject* object)
-                           : CAuto(iMan, object)
+CAutoJostle::CAutoJostle(CObject* object) : CAuto(object)
 {
     Init();
 }

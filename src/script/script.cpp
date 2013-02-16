@@ -335,7 +335,9 @@ bool CScript::rGetObject(CBotVar* var, CBotVar* result, int& exception, void* us
 
     rank = var->GetValInt();
 
-    pObj = static_cast<CObject*>(script->m_iMan->SearchInstance(CLASS_OBJECT, rank));
+    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
+
+    pObj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, rank));
     if ( pObj == 0 )
     {
         result->SetPointer(0);
@@ -404,11 +406,13 @@ bool CScript::rSearch(CBotVar* var, CBotVar* result, int& exception, void* user)
         bNearest = true;
     }
 
+    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
+
     min = 100000.0f;
     pBest = 0;
     for ( i=0 ; i<1000000 ; i++ )
     {
-        pObj = static_cast<CObject*>(script->m_iMan->SearchInstance(CLASS_OBJECT, i));
+        pObj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
         if ( pObj == 0 )  break;
 
         if ( pObj->GetTruck() != 0 )  continue;  // object transported?
@@ -592,12 +596,14 @@ bool CScript::rRadar(CBotVar* var, CBotVar* result, int& exception, void* user)
     iAngle = pThis->GetAngleY(0)+angle;
     iAngle = Math::NormAngle(iAngle);  // 0..2*Math::PI
 
+    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
+
     if ( sens >= 0.0f )  best = 100000.0f;
     else                 best = 0.0f;
     pBest = 0;
     for ( i=0 ; i<1000000 ; i++ )
     {
-        pObj = static_cast<CObject*>(script->m_iMan->SearchInstance(CLASS_OBJECT, i));
+        pObj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
         if ( pObj == 0 )  break;
         if ( pObj == pThis )  continue;
 
@@ -778,6 +784,8 @@ bool CScript::rDetect(CBotVar* var, CBotVar* result, int& exception, void* user)
         iAngle = pThis->GetAngleY(0)+angle;
         iAngle = Math::NormAngle(iAngle);  // 0..2*Math::PI
 
+        CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
+
         bGoal = 100000.0f;
         pGoal = 0;
         if ( sens >= 0.0f )  best = 100000.0f;
@@ -785,7 +793,7 @@ bool CScript::rDetect(CBotVar* var, CBotVar* result, int& exception, void* user)
         pBest = 0;
         for ( i=0 ; i<1000000 ; i++ )
         {
-            pObj = static_cast<CObject*>(script->m_iMan->SearchInstance(CLASS_OBJECT, i));
+            pObj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
             if ( pObj == 0 )  break;
             if ( pObj == pThis )  continue;
 
@@ -885,7 +893,7 @@ bool CScript::rDetect(CBotVar* var, CBotVar* result, int& exception, void* user)
             script->m_returnValue = 1.0f;
         }
 
-        script->m_primaryTask = new CTaskManager(script->m_iMan, script->m_object);
+        script->m_primaryTask = new CTaskManager(script->m_object);
         err = script->m_primaryTask->StartTaskWait(0.3f);
         if ( err != ERR_OK )
         {
@@ -1065,7 +1073,7 @@ bool CScript::rProduce(CBotVar* var, CBotVar* result, int& exception, void* user
          type == OBJECT_MARKKEYd    ||
          type == OBJECT_EGG         )
     {
-        object = new CObject(script->m_iMan);
+        object = new CObject();
         if ( !object->CreateResource(pos, angle, type) )
         {
             delete object;
@@ -1083,7 +1091,7 @@ bool CScript::rProduce(CBotVar* var, CBotVar* result, int& exception, void* user
     {
         CObject*    egg;
 
-        object = new CObject(script->m_iMan);
+        object = new CObject();
         if ( !object->CreateInsect(pos, angle, type) )
         {
             delete object;
@@ -1091,7 +1099,7 @@ bool CScript::rProduce(CBotVar* var, CBotVar* result, int& exception, void* user
             return true;
         }
 
-        egg = new CObject(script->m_iMan);
+        egg = new CObject();
         if ( !egg->CreateResource(pos, angle, OBJECT_EGG, 0.0f) )
         {
             delete egg;
@@ -1123,7 +1131,7 @@ bool CScript::rProduce(CBotVar* var, CBotVar* result, int& exception, void* user
          type == OBJECT_START    ||
          type == OBJECT_END      )
     {
-        object = new CObject(script->m_iMan);
+        object = new CObject();
         if ( !object->CreateBuilding(pos, angle, 0, type) )
         {
             delete object;
@@ -1140,7 +1148,7 @@ bool CScript::rProduce(CBotVar* var, CBotVar* result, int& exception, void* user
          type == OBJECT_FLAGy ||
          type == OBJECT_FLAGv )
     {
-        object = new CObject(script->m_iMan);
+        object = new CObject();
         if ( !object->CreateFlag(pos, angle, type) )
         {
             delete object;
@@ -1182,7 +1190,7 @@ bool CScript::rProduce(CBotVar* var, CBotVar* result, int& exception, void* user
          type == OBJECT_MOBILEdr ||
          type == OBJECT_APOLLO2  )
     {
-        object = new CObject(script->m_iMan);
+        object = new CObject();
         if ( !object->CreateVehicle(pos, angle, type, power, false, false) )
         {
             delete object;
@@ -1400,7 +1408,7 @@ bool CScript::rWait(CBotVar* var, CBotVar* result, int& exception, void* user)
 
     if ( script->m_primaryTask == 0 )  // no task in progress?
     {
-        script->m_primaryTask = new CTaskManager(script->m_iMan, script->m_object);
+        script->m_primaryTask = new CTaskManager(script->m_object);
         value = var->GetValFloat();
         err = script->m_primaryTask->StartTaskWait(value);
         if ( err != ERR_OK )
@@ -1431,7 +1439,7 @@ bool CScript::rMove(CBotVar* var, CBotVar* result, int& exception, void* user)
 
     if ( script->m_primaryTask == 0 )  // no task in progress?
     {
-        script->m_primaryTask = new CTaskManager(script->m_iMan, script->m_object);
+        script->m_primaryTask = new CTaskManager(script->m_object);
         value = var->GetValFloat();
         err = script->m_primaryTask->StartTaskAdvance(value*g_unit);
         if ( err != ERR_OK )
@@ -1462,7 +1470,7 @@ bool CScript::rTurn(CBotVar* var, CBotVar* result, int& exception, void* user)
 
     if ( script->m_primaryTask == 0 )  // no task in progress?
     {
-        script->m_primaryTask = new CTaskManager(script->m_iMan, script->m_object);
+        script->m_primaryTask = new CTaskManager(script->m_object);
         value = var->GetValFloat();
         err = script->m_primaryTask->StartTaskTurn(-value*Math::PI/180.0f);
         if ( err != ERR_OK )
@@ -1522,7 +1530,7 @@ bool CScript::rGoto(CBotVar* var, CBotVar* result, int& exception, void* user)
 
     if ( script->m_primaryTask == 0 )  // no task in progress?
     {
-        script->m_primaryTask = new CTaskManager(script->m_iMan, script->m_object);
+        script->m_primaryTask = new CTaskManager(script->m_object);
         if ( !GetPoint(var, exception, pos) )  return true;
 
         goal  = TGG_DEFAULT;
@@ -1601,11 +1609,13 @@ bool CScript::rFind(CBotVar* var, CBotVar* result, int& exception, void* user)
             bArray = false;
         }
 
+        CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
+
         best = 100000.0f;
         pBest = 0;
         for ( i=0 ; i<1000000 ; i++ )
         {
-            pObj = static_cast<CObject*>(script->m_iMan->SearchInstance(CLASS_OBJECT, i));
+            pObj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
             if ( pObj == 0 )  break;
             if ( pObj == pThis )  continue;
 
@@ -1684,7 +1694,7 @@ bool CScript::rFind(CBotVar* var, CBotVar* result, int& exception, void* user)
         crash = TGC_DEFAULT;
         altitude = 0.0f*g_unit;
 
-        script->m_primaryTask = new CTaskManager(script->m_iMan, script->m_object);
+        script->m_primaryTask = new CTaskManager(script->m_object);
         err = script->m_primaryTask->StartTaskGoto(pos, altitude, goal, crash);
         if ( err != ERR_OK )
         {
@@ -1727,7 +1737,7 @@ bool CScript::rGrab(CBotVar* var, CBotVar* result, int& exception, void* user)
 
     if ( script->m_primaryTask == 0 )  // no task in progress?
     {
-        script->m_primaryTask = new CTaskManager(script->m_iMan, script->m_object);
+        script->m_primaryTask = new CTaskManager(script->m_object);
         if ( var == 0 )
         {
             type = TMA_FFRONT;
@@ -1778,7 +1788,7 @@ bool CScript::rDrop(CBotVar* var, CBotVar* result, int& exception, void* user)
 
     if ( script->m_primaryTask == 0 )  // no task in progress?
     {
-        script->m_primaryTask = new CTaskManager(script->m_iMan, script->m_object);
+        script->m_primaryTask = new CTaskManager(script->m_object);
         if ( var == 0 )  type = TMA_FFRONT;
         else             type = static_cast<TaskManipArm>(var->GetValInt());
 
@@ -1820,7 +1830,7 @@ bool CScript::rSniff(CBotVar* var, CBotVar* result, int& exception, void* user)
 
     if ( script->m_primaryTask == 0 )  // no task in progress?
     {
-        script->m_primaryTask = new CTaskManager(script->m_iMan, script->m_object);
+        script->m_primaryTask = new CTaskManager(script->m_object);
         err = script->m_primaryTask->StartTaskSearch();
         if ( err != ERR_OK )
         {
@@ -1869,7 +1879,7 @@ bool CScript::rReceive(CBotVar* var, CBotVar* result, int& exception, void* user
 
     if ( script->m_primaryTask == 0 )  // no task in progress?
     {
-        script->m_primaryTask = new CTaskManager(script->m_iMan, script->m_object);
+        script->m_primaryTask = new CTaskManager(script->m_object);
 
         cbs = var->GetValString();
         p = cbs;
@@ -1939,7 +1949,7 @@ bool CScript::rSend(CBotVar* var, CBotVar* result, int& exception, void* user)
 
     if ( script->m_primaryTask == 0 )  // no task in progress?
     {
-        script->m_primaryTask = new CTaskManager(script->m_iMan, script->m_object);
+        script->m_primaryTask = new CTaskManager(script->m_object);
 
         cbs = var->GetValString();
         p = cbs;
@@ -1984,11 +1994,13 @@ CObject* CScript::SearchInfo(CScript* script, CObject* object, float power)
 
     iPos = object->GetPosition(0);
 
+    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
+
     min = 100000.0f;
     pBest = 0;
     for ( i=0 ; i<1000000 ; i++ )
     {
-        pObj = static_cast<CObject*>(script->m_iMan->SearchInstance(CLASS_OBJECT, i));
+        pObj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
         if ( pObj == 0 )  break;
 
         type = pObj->GetType();
@@ -2147,7 +2159,7 @@ bool CScript::rThump(CBotVar* var, CBotVar* result, int& exception, void* user)
 
     if ( script->m_primaryTask == 0 )  // no task in progress?
     {
-        script->m_primaryTask = new CTaskManager(script->m_iMan, script->m_object);
+        script->m_primaryTask = new CTaskManager(script->m_object);
         err = script->m_primaryTask->StartTaskTerraform();
         if ( err != ERR_OK )
         {
@@ -2176,7 +2188,7 @@ bool CScript::rRecycle(CBotVar* var, CBotVar* result, int& exception, void* user
 
     if ( script->m_primaryTask == 0 )  // no task in progress?
     {
-        script->m_primaryTask = new CTaskManager(script->m_iMan, script->m_object);
+        script->m_primaryTask = new CTaskManager(script->m_object);
         err = script->m_primaryTask->StartTaskRecover();
         if ( err != ERR_OK )
         {
@@ -2238,7 +2250,7 @@ bool CScript::rShield(CBotVar* var, CBotVar* result, int& exception, void* user)
         {
             pThis->SetParam(radius);
 
-            *script->m_secondaryTask = new CTaskManager(script->m_iMan, script->m_object);
+            *script->m_secondaryTask = new CTaskManager(script->m_object);
             err = (*script->m_secondaryTask)->StartTaskShield(TSM_UP, 1000.0f);
             if ( err != ERR_OK )
             {
@@ -2311,7 +2323,7 @@ bool CScript::rFire(CBotVar* var, CBotVar* result, int& exception, void* user)
 
     if ( script->m_primaryTask == 0 )  // no task in progress?
     {
-        script->m_primaryTask = new CTaskManager(script->m_iMan, script->m_object);
+        script->m_primaryTask = new CTaskManager(script->m_object);
 
         type = pThis->GetType();
 
@@ -2372,7 +2384,7 @@ bool CScript::rAim(CBotVar* var, CBotVar* result, int& exception, void* user)
 
     if ( script->m_primaryTask == 0 )  // no task in progress?
     {
-        script->m_primaryTask = new CTaskManager(script->m_iMan, script->m_object);
+        script->m_primaryTask = new CTaskManager(script->m_object);
         x = var->GetValFloat();
     	var = var->GetNext();
     	var == 0 ? y=0.0f : y=var->GetValFloat();
@@ -2689,7 +2701,7 @@ bool CScript::rPenDown(CBotVar* var, CBotVar* result, int& exception, void* user
             }
             pThis->SetTraceDown(true);
 
-            script->m_primaryTask = new CTaskManager(script->m_iMan, script->m_object);
+            script->m_primaryTask = new CTaskManager(script->m_object);
             err = script->m_primaryTask->StartTaskPen(pThis->GetTraceDown(), pThis->GetTraceColor());
             if ( err != ERR_OK )
             {
@@ -2746,7 +2758,7 @@ bool CScript::rPenUp(CBotVar* var, CBotVar* result, int& exception, void* user)
         {
             pThis->SetTraceDown(false);
 
-            script->m_primaryTask = new CTaskManager(script->m_iMan, script->m_object);
+            script->m_primaryTask = new CTaskManager(script->m_object);
             err = script->m_primaryTask->StartTaskPen(pThis->GetTraceDown(), pThis->GetTraceColor());
             if ( err != ERR_OK )
             {
@@ -2790,7 +2802,7 @@ bool CScript::rPenColor(CBotVar* var, CBotVar* result, int& exception, void* use
             if ( color > 17 )  color = 17;
             pThis->SetTraceColor(color);
 
-            script->m_primaryTask = new CTaskManager(script->m_iMan, script->m_object);
+            script->m_primaryTask = new CTaskManager(script->m_object);
             err = script->m_primaryTask->StartTaskPen(pThis->GetTraceDown(), pThis->GetTraceColor());
             if ( err != ERR_OK )
             {
@@ -2836,22 +2848,19 @@ bool CScript::rPenWidth(CBotVar* var, CBotVar* result, int& exception, void* use
 
 // Object's constructor.
 
-CScript::CScript(CInstanceManager* iMan, CObject* object, CTaskManager** secondaryTask)
+CScript::CScript(CObject* object, CTaskManager** secondaryTask)
 {
-    m_iMan = iMan;
-    m_iMan->AddInstance(CLASS_SCRIPT, this, 100);
-
-    m_engine        = static_cast<Gfx::CEngine*>(m_iMan->SearchInstance(CLASS_ENGINE));
-    m_main          = static_cast<CRobotMain*>(m_iMan->SearchInstance(CLASS_MAIN));
-    m_terrain       = static_cast<Gfx::CTerrain*>(m_iMan->SearchInstance(CLASS_TERRAIN));
-    m_water         = static_cast<Gfx::CWater*>(m_iMan->SearchInstance(CLASS_WATER));
+    m_engine        = Gfx::CEngine::GetInstancePointer();
+    m_main          = CRobotMain::GetInstancePointer();
+    m_terrain       = m_main->GetTerrain();
+    m_water         = m_engine->GetWater();
     m_botProg       = nullptr;
     m_object        = object;
     m_primaryTask   = nullptr;
     m_secondaryTask = secondaryTask;
 
-    m_interface = static_cast<Ui::CInterface*>(m_iMan->SearchInstance(CLASS_INTERFACE));
-    m_displayText = static_cast<Ui::CDisplayText*>(m_iMan->SearchInstance(CLASS_DISPLAYTEXT));
+    m_interface = m_main->GetInterface();
+    m_displayText = m_main->GetDisplayText();
 
     m_ipf = CBOT_IPF;
     m_errMode = ERM_STOP;
@@ -2938,8 +2947,6 @@ CScript::~CScript()
     m_script = nullptr;
 
     m_len = 0;
-
-    m_iMan->DeleteInstance(CLASS_SCRIPT, this);
 }
 
 

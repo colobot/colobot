@@ -21,10 +21,10 @@
 
 #include "common/event.h"
 #include "common/global.h"
+
 #include "math/const.h"
 
 
-class CInstanceManager;
 class CBrain;
 class CPhysics;
 class CMotion;
@@ -64,7 +64,7 @@ const float ARM_STOCK_ANGLE3 = -70.0f*Math::PI/180.0f;
 class CTask
 {
 public:
-    CTask(CInstanceManager* iMan, CObject* object);
+    CTask(CObject* object);
     virtual ~CTask();
 
     virtual bool    EventProcess(const Event &event);
@@ -73,7 +73,6 @@ public:
     virtual bool    Abort();
 
 protected:
-    CInstanceManager*   m_iMan;
     Gfx::CEngine*       m_engine;
     Gfx::CLightManager* m_lightMan;
     Gfx::CParticle*     m_particle;

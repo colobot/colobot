@@ -26,7 +26,6 @@
 
 #include "math/vector.h"
 
-#include "common/iman.h"
 #include "common/logger.h"
 
 #include <string>
@@ -156,11 +155,8 @@ enum SoundNext
 class CSoundInterface
 {
   public:
-    inline CSoundInterface() {
-      CInstanceManager::GetInstance().AddInstance(CLASS_SOUND, this);
-      //m_iMan->AddInstance(CLASS_SOUND, this);
-    };
-    inline virtual ~CSoundInterface() {};
+    inline CSoundInterface() {}
+    inline virtual ~CSoundInterface() {}
 
     /** Function to initialize sound device
      *  \param b3D - enable support for 3D sound

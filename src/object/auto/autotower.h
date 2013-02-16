@@ -38,7 +38,7 @@ enum AutoTowerPhase
 class CAutoTower : public CAuto
 {
 public:
-    CAutoTower(CInstanceManager* iMan, CObject* object);
+    CAutoTower(CObject* object);
     ~CAutoTower();
 
     void        DeleteObject(bool bAll=false);

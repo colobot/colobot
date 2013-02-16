@@ -20,6 +20,7 @@
 
 #include "object/task/task.h"
 #include "object/object.h"
+
 #include "math/vector.h"
 
 
@@ -35,7 +36,7 @@ enum TaskFlagOrder
 class CTaskFlag : public CTask
 {
 public:
-    CTaskFlag(CInstanceManager* iMan, CObject* object);
+    CTaskFlag(CObject* object);
     ~CTaskFlag();
 
     bool        EventProcess(const Event &event);

@@ -26,7 +26,7 @@
 class CTaskGunGoal : public CTask
 {
 public:
-    CTaskGunGoal(CInstanceManager* iMan, CObject* object);
+    CTaskGunGoal(CObject* object);
     ~CTaskGunGoal();
 
     bool        EventProcess(const Event &event);

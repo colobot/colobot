@@ -17,7 +17,7 @@
 
 #include "object/mainmovie.h"
 
-#include "common/iman.h"
+#include "app/app.h"
 
 #include "math/geometry.h"
 
@@ -30,15 +30,12 @@
 
 // Constructor of the application card.
 
-CMainMovie::CMainMovie(CInstanceManager* iMan)
+CMainMovie::CMainMovie()
 {
-    m_iMan = iMan;
-    m_iMan->AddInstance(CLASS_SHORT, this);
-
-    m_engine    = static_cast< Gfx::CEngine* >(m_iMan->SearchInstance(CLASS_ENGINE));
-    m_main      = static_cast< CRobotMain* >(m_iMan->SearchInstance(CLASS_MAIN));
-    m_camera    = static_cast< Gfx::CCamera* >(m_iMan->SearchInstance(CLASS_CAMERA));
-    m_sound     = static_cast< CSoundInterface* >(m_iMan->SearchInstance(CLASS_SOUND));
+    m_engine    = Gfx::CEngine::GetInstancePointer();
+    m_main      = CRobotMain::GetInstancePointer();
+    m_camera    = m_main->GetCamera();
+    m_sound     = CApplication::GetInstancePointer()->GetSound();
 
     Flush();
 }

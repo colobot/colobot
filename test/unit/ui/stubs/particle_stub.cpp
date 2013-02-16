@@ -7,7 +7,7 @@
 namespace Gfx {
 
 
-CParticle::CParticle(CInstanceManager* /*iMan*/, CEngine* /*engine*/)
+CParticle::CParticle(CEngine* /*engine*/)
 {
 }
 

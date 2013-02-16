@@ -15,20 +15,18 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// interface.cpp
-
 
 #include "ui/interface.h"
+
+#include "app/app.h"
 
 namespace Ui {
 
 
 CInterface::CInterface()
 {
-    m_iMan = CInstanceManager::GetInstancePointer();
-    m_iMan->AddInstance(CLASS_INTERFACE, this);
-    m_event = static_cast<CEventQueue *>( m_iMan->SearchInstance(CLASS_EVENT) );
-    m_engine = static_cast<Gfx::CEngine *>( m_iMan->SearchInstance(CLASS_ENGINE) );
+    m_event  = CApplication::GetInstancePointer()->GetEventQueue();
+    m_engine = Gfx::CEngine::GetInstancePointer();
     m_camera = nullptr;
 
     for (int i = 0; i < MAXCONTROL; i++ )
@@ -42,7 +40,6 @@ CInterface::CInterface()
 CInterface::~CInterface()
 {
     Flush();
-    m_iMan->DeleteInstance(CLASS_INTERFACE, this);
 }
 
 
@@ -278,15 +275,18 @@ CControl* CInterface::SearchControl(EventType eventMsg)
 
 bool CInterface::EventProcess(const Event &event)
 {
-    if (event.type == EVENT_MOUSE_MOVE) {
-        if (m_camera == nullptr) {
-            m_camera = static_cast<Gfx::CCamera *>(m_iMan->SearchInstance(CLASS_CAMERA));
-        }
+    if (event.type == EVENT_MOUSE_MOVE)
+    {
+        if (m_camera == nullptr)
+            m_camera = CRobotMain::GetInstancePointer()->GetCamera();
+
         m_engine->SetMouseType(m_camera->GetMouseDef(event.mousePos));
     }
 
-    for (int i = MAXCONTROL-1; i >= 0; i--) {
-        if (m_table[i] != nullptr &&  m_table[i]->TestState(STATE_ENABLE)) {
+    for (int i = MAXCONTROL-1; i >= 0; i--)
+    {
+        if (m_table[i] != nullptr &&  m_table[i]->TestState(STATE_ENABLE))
+        {
             if ( !m_table[i]->EventProcess(event) )
                 return false;
         }
@@ -300,8 +300,10 @@ bool CInterface::EventProcess(const Event &event)
 
 bool CInterface::GetTooltip(Math::Point pos, std::string &name)
 {
-    for (int i = MAXCONTROL-1; i >= 0; i--) {
-        if (m_table[i] != nullptr) {
+    for (int i = MAXCONTROL-1; i >= 0; i--)
+    {
+        if (m_table[i] != nullptr)
+        {
             if (m_table[i]->GetTooltip(pos, name))
                 return true;
         }
@@ -314,16 +316,8 @@ bool CInterface::GetTooltip(Math::Point pos, std::string &name)
 
 void CInterface::Draw()
 {
-    /*ZeroMemory( &material, sizeof(D3DMATERIAL7) );
-    material.diffuse.r = 1.0f;
-    material.diffuse.g = 1.0f;
-    material.diffuse.b = 1.0f;
-    material.ambient.r = 0.5f;
-    material.ambient.g = 0.5f;
-    material.ambient.b = 0.5f;
-    m_engine->SetMaterial(material);*/
-
-    for (int i = 0; i < MAXCONTROL; i++) {
+    for (int i = 0; i < MAXCONTROL; i++)
+    {
         if ( m_table[i] != nullptr )
             m_table[i]->Draw();
     }

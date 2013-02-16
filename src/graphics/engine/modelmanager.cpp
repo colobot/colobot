@@ -8,7 +8,7 @@
 
 #include <cstdio>
 
-template<> Gfx::CModelManager* CSingleton<Gfx::CModelManager>::mInstance = nullptr;
+template<> Gfx::CModelManager* CSingleton<Gfx::CModelManager>::m_instance = nullptr;
 
 namespace Gfx {
 

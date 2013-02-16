@@ -1,8 +1,10 @@
 #include "app/system.h"
+
 #include "common/logger.h"
 #include "common/image.h"
-#include "common/iman.h"
+
 #include "graphics/opengl/gldevice.h"
+
 #include "math/geometry.h"
 
 #include <SDL/SDL.h>
@@ -364,8 +366,6 @@ int main(int argc, char *argv[])
 
     GetCurrentTimeStamp(PREV_TIME);
     GetCurrentTimeStamp(CURR_TIME);
-
-    CInstanceManager iMan;
 
     // Without any error checking, for simplicity
 

@@ -15,8 +15,6 @@
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
 
-//CBotToken.cpp
-
 //////////////////////////////////////////////////////////////////
 // Managing Tokens
 // the text of a program is first transformed

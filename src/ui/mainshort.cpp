@@ -15,10 +15,13 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// mainshort.cpp
-
 
 #include "ui/mainshort.h"
+
+#include "app/app.h"
+
+#include "common/iman.h"
+
 
 namespace Ui {
 
@@ -26,13 +29,10 @@ namespace Ui {
 
 CMainShort::CMainShort()
 {
-    m_iMan = CInstanceManager::GetInstancePointer();
-    m_iMan->AddInstance(CLASS_SHORT, this);
-
-    m_interface = static_cast<CInterface*>(m_iMan->SearchInstance(CLASS_INTERFACE));
-    m_event     = static_cast<CEventQueue*>(m_iMan->SearchInstance(CLASS_EVENT));
-    m_engine    = static_cast<Gfx::CEngine*>(m_iMan->SearchInstance(CLASS_ENGINE));
-    m_main      = static_cast<CRobotMain*>(m_iMan->SearchInstance(CLASS_MAIN));
+    m_event     = CApplication::GetInstancePointer()->GetEventQueue();
+    m_engine    = Gfx::CEngine::GetInstancePointer();
+    m_main      = CRobotMain::GetInstancePointer();
+    m_interface = m_main->GetInterface();
 
     FlushShortcuts();
 }
@@ -137,9 +137,11 @@ bool CMainShort::CreateShortcuts()
     m_shortcuts[rank] = 0;
     rank ++;
 
+    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
+
     for ( i=0 ; i<1000000 ; i++ )
     {
-        pObj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
+        pObj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
         if ( pObj == nullptr )  break;
 
         if ( !pObj->GetActif() )  continue;

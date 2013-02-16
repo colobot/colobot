@@ -26,7 +26,7 @@
 class CTaskTurn : public CTask
 {
 public:
-    CTaskTurn(CInstanceManager* iMan, CObject* object);
+    CTaskTurn(CObject* object);
     ~CTaskTurn();
 
     bool    EventProcess(const Event &event);

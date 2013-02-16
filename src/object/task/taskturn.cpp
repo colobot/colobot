@@ -14,7 +14,6 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// taskturn.cpp
 
 #include "object/task/taskturn.h"
 
@@ -26,8 +25,7 @@
 
 // Object's constructor.
 
-CTaskTurn::CTaskTurn(CInstanceManager* iMan, CObject* object)
-                     : CTask(iMan, object)
+CTaskTurn::CTaskTurn(CObject* object) : CTask(object)
 {
 }
 

@@ -15,8 +15,6 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// window.cpp
-
 
 #include "ui/window.h"
 
@@ -25,7 +23,6 @@
 namespace Ui {
 // Object's constructor.
 
-//CWindow::CWindow(CInstanceManager* iMan) : CControl(iMan)
 CWindow::CWindow() : CControl()
 {
     int     i;
@@ -122,7 +119,6 @@ CButton* CWindow::CreateButton(Math::Point pos, Math::Point dim, int icon, Event
     {
         if ( m_table[i] == 0 )
         {
-//            m_table[i] = new CButton(m_iMan);
             m_table[i] = new CButton();
             pc = static_cast<CButton*>(m_table[i]);
             pc->Create(pos, dim, icon, eventMsg);
@@ -145,7 +141,6 @@ CColor* CWindow::CreateColor(Math::Point pos, Math::Point dim, int icon, EventTy
     {
         if ( m_table[i] == 0 )
         {
-//            m_table[i] = new CColor(m_iMan);
             m_table[i] = new CColor();
             pc = static_cast<CColor*>(m_table[i]);
             pc->Create(pos, dim, icon, eventMsg);
@@ -168,7 +163,6 @@ CCheck* CWindow::CreateCheck(Math::Point pos, Math::Point dim, int icon, EventTy
     {
         if ( m_table[i] == 0 )
         {
-//            m_table[i] = new CCheck(m_iMan);
             m_table[i] = new CCheck();
             pc = static_cast<CCheck*>(m_table[i]);
             pc->Create(pos, dim, icon, eventMsg);
@@ -191,7 +185,6 @@ CKey* CWindow::CreateKey(Math::Point pos, Math::Point dim, int icon, EventType e
     {
         if ( m_table[i] == 0 )
         {
-//            m_table[i] = new CKey(m_iMan);
             m_table[i] = new CKey();
             pc = static_cast<CKey*>(m_table[i]);
             pc->Create(pos, dim, icon, eventMsg);
@@ -214,7 +207,6 @@ CGroup* CWindow::CreateGroup(Math::Point pos, Math::Point dim, int icon, EventTy
     {
         if ( m_table[i] == 0 )
         {
-//            m_table[i] = new CGroup(m_iMan);
             m_table[i] = new CGroup();
             pc = static_cast<CGroup*>(m_table[i]);
             pc->Create(pos, dim, icon, eventMsg);
@@ -237,7 +229,6 @@ CImage* CWindow::CreateImage(Math::Point pos, Math::Point dim, int icon, EventTy
     {
         if ( m_table[i] == 0 )
         {
-//            m_table[i] = new CImage(m_iMan);
             m_table[i] = new CImage();
             pc = static_cast<CImage*>(m_table[i]);
             pc->Create(pos, dim, icon, eventMsg);
@@ -260,7 +251,6 @@ CLabel* CWindow::CreateLabel(Math::Point pos, Math::Point dim, int icon, EventTy
     {
         if ( m_table[i] == 0 )
         {
-//            m_table[i] = new CLabel(m_iMan);
             m_table[i] = new CLabel();
             pc = static_cast<CLabel*>(m_table[i]);
             pc->Create(pos, dim, icon, eventMsg);
@@ -289,7 +279,6 @@ CEdit* CWindow::CreateEdit(Math::Point pos, Math::Point dim, int icon, EventType
     {
         if ( m_table[i] == 0 )
         {
-//            m_table[i] = new CEdit(m_iMan);
             m_table[i] = new CEdit();
             pc = static_cast<CEdit*>(m_table[i]);
             pc->Create(pos, dim, icon, eventMsg);
@@ -312,7 +301,6 @@ CEditValue* CWindow::CreateEditValue(Math::Point pos, Math::Point dim, int icon,
     {
         if ( m_table[i] == 0 )
         {
-//            m_table[i] = new CEditValue(m_iMan);
             m_table[i] = new CEditValue();
             pc = static_cast<CEditValue*>(m_table[i]);
             pc->Create(pos, dim, icon, eventMsg);
@@ -335,7 +323,6 @@ CScroll* CWindow::CreateScroll(Math::Point pos, Math::Point dim, int icon, Event
     {
         if ( m_table[i] == 0 )
         {
-//            m_table[i] = new CScroll(m_iMan);
             m_table[i] = new CScroll();
             pc = static_cast<CScroll*>(m_table[i]);
             pc->Create(pos, dim, icon, eventMsg);
@@ -358,7 +345,6 @@ CSlider* CWindow::CreateSlider(Math::Point pos, Math::Point dim, int icon, Event
     {
         if ( m_table[i] == 0 )
         {
-//            m_table[i] = new CSlider(m_iMan);
             m_table[i] = new CSlider();
             pc = static_cast<CSlider*>(m_table[i]);
             pc->Create(pos, dim, icon, eventMsg);
@@ -382,7 +368,6 @@ CList* CWindow::CreateList(Math::Point pos, Math::Point dim, int icon, EventType
     {
         if ( m_table[i] == 0 )
         {
-//            m_table[i] = new CList(m_iMan);
             m_table[i] = new CList();
             pc = static_cast<CList*>(m_table[i]);
             pc->Create(pos, dim, icon, eventMsg, expand);

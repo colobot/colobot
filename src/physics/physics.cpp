@@ -17,6 +17,8 @@
 
 #include "physics/physics.h"
 
+#include "app/app.h"
+
 #include "common/event.h"
 #include "common/global.h"
 #include "common/iman.h"
@@ -31,6 +33,7 @@
 #include "math/geometry.h"
 
 #include "object/brain.h"
+#include "object/robotmain.h"
 #include "object/motion/motion.h"
 #include "object/motion/motionhuman.h"
 #include "object/task/task.h"
@@ -51,21 +54,18 @@ const float LANDING_ACCELh  = 1.5f;
 
 // Object's constructor.
 
-CPhysics::CPhysics(CInstanceManager* iMan, CObject* object)
+CPhysics::CPhysics(CObject* object)
 {
-    m_iMan = iMan;
-    m_iMan->AddInstance(CLASS_PHYSICS, this, 100);
-
     m_object    = object;
-    m_engine    = static_cast<Gfx::CEngine*>(m_iMan->SearchInstance(CLASS_ENGINE));
-    m_lightMan  = static_cast<Gfx::CLightManager*>(m_iMan->SearchInstance(CLASS_LIGHT));
-    m_particle  = static_cast<Gfx::CParticle*>(m_iMan->SearchInstance(CLASS_PARTICULE));
-    m_terrain   = static_cast<Gfx::CTerrain*>(m_iMan->SearchInstance(CLASS_TERRAIN));
-    m_water     = static_cast<Gfx::CWater*>(m_iMan->SearchInstance(CLASS_WATER));
-    m_camera    = static_cast<Gfx::CCamera*>(m_iMan->SearchInstance(CLASS_CAMERA));
-    m_sound     = static_cast<CSoundInterface*>(m_iMan->SearchInstance(CLASS_SOUND));
-    m_brain     = 0;
-    m_motion    = 0;
+    m_engine    = Gfx::CEngine::GetInstancePointer();
+    m_lightMan  = m_engine->GetLightManager();
+    m_particle  = m_engine->GetParticle();
+    m_water     = m_engine->GetWater();
+    m_terrain   = CRobotMain::GetInstancePointer()->GetTerrain();
+    m_camera    = CRobotMain::GetInstancePointer()->GetCamera();
+    m_sound     = CApplication::GetInstancePointer()->GetSound();
+    m_brain     = nullptr;
+    m_motion    = nullptr;
 
     m_type = TYPE_ROLLING;
     m_gravity = 9.81f;  // default gravity
@@ -116,8 +116,7 @@ CPhysics::CPhysics(CInstanceManager* iMan, CObject* object)
 
 CPhysics::~CPhysics()
 {
-    m_iMan->DeleteInstance(CLASS_PHYSICS, this);
-}
+    }
 
 
 // Destroys the object.
@@ -2510,9 +2509,11 @@ int CPhysics::ObjectAdapt(const Math::Vector &pos, const Math::Vector &angle)
     iPos = iiPos + (pos - m_object->GetPosition(0));
     iType = m_object->GetType();
 
+    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
+
     for ( i=0 ; i<1000000 ; i++ )
     {
-        pObj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
+        pObj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
         if ( pObj == 0 )  break;
 
         if ( pObj == m_object )  continue;  // yourself?
@@ -2578,7 +2579,7 @@ int CPhysics::ObjectAdapt(const Math::Vector &pos, const Math::Vector &angle)
             if ( distance < 4.0f )
             {
                 m_sound->Play(SOUND_WAYPOINT, m_object->GetPosition(0));
-                pyro = new Gfx::CPyro(m_iMan);
+                pyro = new Gfx::CPyro();
                 pyro->Create(Gfx::PT_WPCHECK, pObj);
             }
         }
@@ -2590,7 +2591,7 @@ int CPhysics::ObjectAdapt(const Math::Vector &pos, const Math::Vector &angle)
             if ( distance < 10.0f*1.5f )
             {
                 m_sound->Play(SOUND_WAYPOINT, m_object->GetPosition(0));
-                pyro = new Gfx::CPyro(m_iMan);
+                pyro = new Gfx::CPyro();
                 pyro->Create(Gfx::PT_WPCHECK, pObj);
             }
         }
@@ -2752,7 +2753,7 @@ bool CPhysics::ExploOther(ObjectType iType,
          (oType == OBJECT_FRET  ||
           oType == OBJECT_METAL ) )
     {
-        pyro = new Gfx::CPyro(m_iMan);
+        pyro = new Gfx::CPyro();
         pyro->Create(Gfx::PT_EXPLOT, pObj);  // total destruction
     }
 
@@ -2760,7 +2761,7 @@ bool CPhysics::ExploOther(ObjectType iType,
          (oType == OBJECT_POWER   ||
           oType == OBJECT_ATOMIC  ) )
     {
-        pyro = new Gfx::CPyro(m_iMan);
+        pyro = new Gfx::CPyro();
         pyro->Create(Gfx::PT_FRAGT, pObj);  // total destruction
     }
 
@@ -2768,7 +2769,7 @@ bool CPhysics::ExploOther(ObjectType iType,
          (oType == OBJECT_STONE   ||
           oType == OBJECT_URANIUM ) )
     {
-        pyro = new Gfx::CPyro(m_iMan);
+        pyro = new Gfx::CPyro();
         pyro->Create(Gfx::PT_FRAGT, pObj);  // total destruction
     }
 
@@ -2829,14 +2830,14 @@ bool CPhysics::ExploOther(ObjectType iType,
          (oType == OBJECT_MOBILEtg ||
           oType == OBJECT_TNT      ) )
     {
-        pyro = new Gfx::CPyro(m_iMan);
+        pyro = new Gfx::CPyro();
         pyro->Create(Gfx::PT_FRAGT, pObj);  // total destruction
     }
 
     if ( force > 0.0f &&
          oType == OBJECT_BOMB )
     {
-        pyro = new Gfx::CPyro(m_iMan);
+        pyro = new Gfx::CPyro();
         pyro->Create(Gfx::PT_FRAGT, pObj);  // total destruction
     }
 
@@ -2859,7 +2860,7 @@ int CPhysics::ExploHimself(ObjectType iType, ObjectType oType, float force)
     {
         if ( iType == OBJECT_HUMAN )  type = Gfx::PT_DEADG;
         else                          type = Gfx::PT_EXPLOT;
-        pyro = new Gfx::CPyro(m_iMan);
+        pyro = new Gfx::CPyro();
         pyro->Create(type, m_object);  // total destruction
         return 2;
     }
@@ -2881,7 +2882,7 @@ int CPhysics::ExploHimself(ObjectType iType, ObjectType oType, float force)
         {
             type = Gfx::PT_EXPLOT;
         }
-        pyro = new Gfx::CPyro(m_iMan);
+        pyro = new Gfx::CPyro();
         pyro->Create(type, m_object);  // total destruction
         return 2;
     }

@@ -20,13 +20,18 @@
 #include "object/auto/autobase.h"
 
 #include "common/iman.h"
+
 #include "graphics/engine/terrain.h"
 #include "graphics/engine/cloud.h"
 #include "graphics/engine/planet.h"
 #include "graphics/engine/lightning.h"
+
 #include "math/geometry.h"
+
 #include "object/robotmain.h"
+
 #include "physics/physics.h"
+
 #include "ui/interface.h"
 #include "ui/window.h"
 #include "ui/displaytext.h"
@@ -47,8 +52,7 @@ const float BASE_TRANSIT_TIME       = 15.0f;    // transit duration
 
 // Object's constructor.
 
-CAutoBase::CAutoBase(CInstanceManager* iMan, CObject* object)
-                     : CAuto(iMan, object)
+CAutoBase::CAutoBase(CObject* object) : CAuto(object)
 {
     m_fogStart = m_engine->GetFogStart();
     m_deepView = m_engine->GetDeepView();
@@ -329,7 +333,7 @@ begin:
         m_main->DeselectAll();
 
         newEvent.type = EVENT_UPDINTERFACE;
-        m_event->AddEvent(newEvent);
+        m_eventQueue->AddEvent(newEvent);
 
         m_camera->SetType(Gfx::CAM_TYPE_SCRIPT);
 
@@ -843,7 +847,7 @@ begin:
         {
             m_soundChannel = -1;
             newEvent.type = EVENT_WIN;
-            m_event->AddEvent(newEvent);
+            m_eventQueue->AddEvent(newEvent);
 
             m_phase    = ABP_WAIT;
             m_progress = 0.0f;
@@ -1176,7 +1180,7 @@ bool CAutoBase::Abort()
              m_phase == ABP_TAKEOFF )  // off?
         {
             newEvent.type = EVENT_WIN;
-            m_event->AddEvent(newEvent);
+            m_eventQueue->AddEvent(newEvent);
         }
     }
 

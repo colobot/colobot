@@ -26,8 +26,7 @@
 
 // Object's constructor.
 
-CAutoHuston::CAutoHuston(CInstanceManager* iMan, CObject* object)
-                         : CAuto(iMan, object)
+CAutoHuston::CAutoHuston(CObject* object) : CAuto(object)
 {
     Math::Vector    pos;
     int         i;

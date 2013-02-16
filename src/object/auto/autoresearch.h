@@ -35,7 +35,7 @@ enum AutoResearchPhase
 class CAutoResearch : public CAuto
 {
 public:
-    CAutoResearch(CInstanceManager* iMan, CObject* object);
+    CAutoResearch(CObject* object);
     ~CAutoResearch();
 
     void        DeleteObject(bool bAll=false);

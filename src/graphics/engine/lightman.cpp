@@ -19,7 +19,6 @@
 #include "graphics/engine/lightman.h"
 
 #include "common/logger.h"
-#include "common/iman.h"
 
 #include "graphics/core/device.h"
 
@@ -78,11 +77,8 @@ DynamicLight::DynamicLight()
 
 
 
-CLightManager::CLightManager(CInstanceManager* iMan, CEngine* engine)
+CLightManager::CLightManager(CEngine* engine)
 {
-    m_iMan = iMan;
-    m_iMan->AddInstance(CLASS_LIGHT, this);
-
     m_device = nullptr;
     m_engine = engine;
 
@@ -91,9 +87,6 @@ CLightManager::CLightManager(CInstanceManager* iMan, CEngine* engine)
 
 CLightManager::~CLightManager()
 {
-    m_iMan->DeleteInstance(CLASS_LIGHT, this);
-
-    m_iMan = nullptr;
     m_device = nullptr;
     m_engine = nullptr;
 }

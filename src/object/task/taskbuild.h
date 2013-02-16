@@ -45,7 +45,7 @@ enum TaskBuildPhase
 class CTaskBuild : public CTask
 {
 public:
-    CTaskBuild(CInstanceManager* iMan, CObject* object);
+    CTaskBuild(CObject* object);
     ~CTaskBuild();
 
     bool        EventProcess(const Event &event);

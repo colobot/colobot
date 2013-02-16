@@ -20,7 +20,7 @@
 #include <stdio.h>
 
 
-template<> CLogger* CSingleton<CLogger>::mInstance = nullptr;
+template<> CLogger* CSingleton<CLogger>::m_instance = nullptr;
 
 
 CLogger::CLogger()

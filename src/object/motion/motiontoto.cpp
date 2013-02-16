@@ -38,8 +38,7 @@ const float START_TIME = 1000.0f;   // beginning of the relative time
 
 // Object's constructor.
 
-CMotionToto::CMotionToto(CInstanceManager* iMan, CObject* object)
-                         : CMotion(iMan, object)
+CMotionToto::CMotionToto(CObject* object) : CMotion(object)
 {
     m_time = 0.0f;
     m_bDisplayInfo = false;

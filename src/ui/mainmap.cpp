@@ -15,10 +15,10 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// mainmap.cpp
-
 
 #include "ui/mainmap.h"
+
+#include "app/app.h"
 
 
 namespace Ui {
@@ -32,12 +32,9 @@ const float ZOOM_MAX = 16.0f;
 
 CMainMap::CMainMap()
 {
-    m_iMan = CInstanceManager::GetInstancePointer();
-    m_iMan->AddInstance(CLASS_MAP, this);
-
-    m_interface = static_cast<CInterface*>(m_iMan->SearchInstance(CLASS_INTERFACE));
-    m_event     = static_cast<CEventQueue*>(m_iMan->SearchInstance(CLASS_EVENT));
-    m_engine    = static_cast<Gfx::CEngine*>(m_iMan->SearchInstance(CLASS_ENGINE));
+    m_interface = CRobotMain::GetInstancePointer()->GetInterface();
+    m_event     = CApplication::GetInstancePointer()->GetEventQueue();
+    m_engine    = Gfx::CEngine::GetInstancePointer();
 
     m_mapMode = 1;
     m_bFixImage = false;

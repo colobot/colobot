@@ -26,6 +26,7 @@
 #include "app/system.h"
 
 #include "common/event.h"
+#include "common/singleton.h"
 
 #include "graphics/core/color.h"
 #include "graphics/core/material.h"
@@ -47,7 +48,6 @@
 
 
 class CApplication;
-class CInstanceManager;
 class CObject;
 class CSoundInterface;
 class CImage;
@@ -671,22 +671,36 @@ struct EngineMouse
  * which is what OpenGL actually wants. The old method is kept for now, with mapping between texture names
  * and texture structs but it will also be subject to refactoring in the future.
  */
-class CEngine
+class CEngine : public CSingleton<CEngine>
 {
 public:
-    CEngine(CInstanceManager* iMan, CApplication* app);
+    CEngine(CApplication* app);
     ~CEngine();
 
     //! Sets the device to be used
     void            SetDevice(CDevice* device);
     //! Returns the current device
-    CDevice*   GetDevice();
-
-    //! Sets the terrain object
-    void            SetTerrain(CTerrain* terrain);
+    CDevice*        GetDevice();
 
     //! Returns the text rendering engine
     CText*          GetText();
+    //! Returns the light manager
+    CLightManager*  GetLightManager();
+    //! Returns the particle manager
+    CParticle*      GetParticle();
+    //! Returns the terrain manager
+    CTerrain*       GetTerrain();
+    //! Returns the water manager
+    CWater*         GetWater();
+    //! Returns the lighting manager
+    CLightning*     GetLightning();
+    //! Returns the planet manager
+    CPlanet*        GetPlanet();
+    //! Returns the fog manager
+    CCloud*         GetCloud();
+
+    //! Sets the terrain object
+    void            SetTerrain(CTerrain* terrain);
 
 
     //! Performs the initialization; must be called after device was set
@@ -735,8 +749,6 @@ public:
 
     //! Returns current size of viewport window
     Math::IntPoint   GetWindowSize();
-    //! Returns the last size of viewport window
-    Math::IntPoint   GetLastWindowSize();
 
     //@{
     //! Conversion functions between window and interface coordinates
@@ -1251,7 +1263,6 @@ protected:
     void        UpdateStaticBuffers();
 
 protected:
-    CInstanceManager* m_iMan;
     CApplication*     m_app;
     CSoundInterface*  m_sound;
     CDevice*          m_device;

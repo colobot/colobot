@@ -28,7 +28,6 @@
 #include "sound/sound.h"
 
 
-class CInstanceManager;
 class CApplication;
 class CPhysics;
 class CBrain;
@@ -39,8 +38,7 @@ class CRobotMain;
 class CBotVar;
 class CScript;
 
-namespace Ui
-{
+namespace Ui {
 class CDisplayText;
 }
 
@@ -377,7 +375,7 @@ enum RadarFilter
 class CObject
 {
 public:
-    CObject(CInstanceManager* iMan);
+    CObject();
     ~CObject();
 
     void        DeleteObject(bool bAll=false);
@@ -679,7 +677,6 @@ protected:
     void        UpdateSelectParticle();
 
 protected:
-    CInstanceManager*   m_iMan;
     CApplication*       m_app;
     Gfx::CEngine*       m_engine;
     Gfx::CLightManager* m_lightMan;

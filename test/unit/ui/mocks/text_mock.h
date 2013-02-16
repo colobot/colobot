@@ -1,4 +1,5 @@
 #include "common/logger.h"
+
 #include "graphics/engine/text.h"
 
 #include <gmock/gmock.h>
@@ -6,7 +7,7 @@
 class CTextMock : public Gfx::CText
 {
 public:
-    CTextMock(CInstanceManager *iMan, Gfx::CEngine* engine) : CText(iMan, engine)
+    CTextMock(Gfx::CEngine* engine) : CText(engine)
     {
     }
 

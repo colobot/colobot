@@ -30,67 +30,23 @@
  * \brief Type of class managed by CInstanceManager
  */
 
-// TODO: remove unnecessary, refactor to singletons, move to CRobotMain, keep others?
-
+/*
+ * TODO: Non-unique classes have already been removed.
+ *  The other class instances along with CInstanceManager will be removed in due course.
+ */
 enum ManagedClassType
 {
-    //! CEventQueue
-    CLASS_EVENT         = 1,
-    //! Ui::CInterface
-    CLASS_INTERFACE     = 2,
-    //! CRobotMain
-    CLASS_MAIN          = 3,
-    //! Gfx::CEngine
-    CLASS_ENGINE        = 4,
-    //! Gfx::CTerrain
-    CLASS_TERRAIN       = 5,
     //! CObject
-    CLASS_OBJECT        = 6,
+    CLASS_OBJECT        = 0,
     //! CPhysics
-    CLASS_PHYSICS       = 7,
+    CLASS_PHYSICS       = 1,
     //! CBrain
-    CLASS_BRAIN         = 8,
-    //! Gfx::CCamera
-    CLASS_CAMERA        = 9,
-    //! Gfx::CLightManager
-    CLASS_LIGHT         = 10,
-    //! Gfx::CParticle
-    CLASS_PARTICULE     = 11,
-    //! CAuto; TODO: remove (unused)
-    CLASS_AUTO          = 12,
-    //! Ui::CDisplayText
-    CLASS_DISPLAYTEXT   = 13,
+    CLASS_BRAIN         = 2,
     //! Gfx::CPyro
-    CLASS_PYRO          = 14,
-    //! Ui::CScript; TODO: remove (unused)
-    CLASS_SCRIPT        = 15,
-    //! Gfx::CText
-    CLASS_TEXT          = 16,
-    //! Ui::CStudio, Ui::CDisplayText; TODO: remove (unused)
-    CLASS_STUDIO        = 17,
-    //! Gfx::CWater
-    CLASS_WATER         = 18,
-    //! Gfx::CCloud; TODO: remove (unused)
-    CLASS_CLOUD         = 19,
-    //! CMotion; TODO: remove (unused)
-    CLASS_MOTION        = 20,
-    //! CSoundInterface
-    CLASS_SOUND         = 21,
-    //! Gfx::CPlanet
-    CLASS_PLANET        = 22,
-    //! CTaskManager; TODO: remove (unused)
-    CLASS_TASKMANAGER   = 23,
-    //! Ui::CMainDialog; TODO: remove (unused)
-    CLASS_DIALOG        = 24,
-    //! Ui::CMainMap; TODO: remove (unused)
-    CLASS_MAP           = 25,
-    //! Ui::CMainShort, CMainMovie; TODO: remove (unused)
-    CLASS_SHORT         = 26,
-    //! Gfx::CLightning; TODO: remove (unused)
-    CLASS_BLITZ         = 27,
+    CLASS_PYRO          = 3,
 
     //! Maximum (number of managed classes)
-    CLASS_MAX           = 30
+    CLASS_MAX           = 4
 };
 
 
@@ -116,7 +72,7 @@ class CInstanceManager : public CSingleton<CInstanceManager>
 {
 public:
     CInstanceManager();
-    ~CInstanceManager();
+    virtual ~CInstanceManager();
 
     //! Remove all managed instances
     void    Flush();
@@ -128,9 +84,6 @@ public:
     bool    DeleteInstance(ManagedClassType classType, void* instance);
     //! Seeks a class instance of given type
     void*   SearchInstance(ManagedClassType classType, int rank=0);
-
-    static CInstanceManager& GetInstance();
-    static CInstanceManager* GetInstancePointer();
 
 protected:
     //! Fills holes in instance table

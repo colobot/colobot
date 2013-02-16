@@ -14,16 +14,19 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// tasktake.cpp
 
 #include "object/task/tasktake.h"
 
 #include "common/iman.h"
+
 #include "graphics/engine/terrain.h"
 #include "graphics/engine/water.h"
+
 #include "math/geometry.h"
+
 #include "object/motion/motionhuman.h"
 #include "object/robotmain.h"
+
 #include "physics/physics.h"
 
 
@@ -31,10 +34,9 @@
 
 // Object's constructor.
 
-CTaskTake::CTaskTake(CInstanceManager* iMan, CObject* object)
-                     : CTask(iMan, object)
+CTaskTake::CTaskTake(CObject* object) : CTask(object)
 {
-    m_terrain = static_cast<Gfx::CTerrain*>(m_iMan->SearchInstance(CLASS_TERRAIN));
+    m_terrain = CRobotMain::GetInstancePointer()->GetTerrain();
 
     m_arm  = TTA_NEUTRAL;
 }
@@ -305,12 +307,14 @@ CObject* CTaskTake::SearchTakeObject(float &angle,
     iAngle = m_object->GetAngleY(0);
     iAngle = Math::NormAngle(iAngle);  // 0..2*Math::PI
 
+    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
+
     min = 1000000.0f;
     pBest = 0;
     bAngle = 0.0f;
     for ( i=0 ; i<1000000 ; i++ )
     {
-        pObj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
+        pObj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
         if ( pObj == 0 )  break;
 
         type = pObj->GetType();
@@ -374,9 +378,11 @@ CObject* CTaskTake::SearchFriendObject(float &angle,
     iAngle = m_object->GetAngleY(0);
     iAngle = Math::NormAngle(iAngle);  // 0..2*Math::PI
 
+    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
+
     for ( i=0 ; i<1000000 ; i++ )
     {
-        pObj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
+        pObj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
         if ( pObj == 0 )  break;
 
         if ( pObj == m_object )  continue;  // yourself?
@@ -569,9 +575,11 @@ bool CTaskTake::IsFreeDeposeObject(Math::Vector pos)
     mat = m_object->GetWorldMatrix(0);
     iPos = Transform(*mat, pos);
 
+    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
+
     for ( i=0 ; i<1000000 ; i++ )
     {
-        pObj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
+        pObj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
         if ( pObj == 0 )  break;
 
         if ( pObj == m_object )  continue;

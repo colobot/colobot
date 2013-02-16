@@ -150,7 +150,7 @@ if(NOT ${ASSERTS})
 endif()
 
 if(${TESTS})
-    add_definitions(-DTEST_VIRTUAL=virtual)
+    add_definitions(-DTESTS -DTEST_VIRTUAL=virtual)
 else()
     add_definitions(-DTEST_VIRTUAL=)
 endif()

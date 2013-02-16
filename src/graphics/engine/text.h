@@ -31,9 +31,6 @@
 #include <map>
 
 
-class CInstanceManager;
-
-
 // Graphics module namespace
 namespace Gfx {
 
@@ -226,7 +223,7 @@ struct MultisizeFont
 class CText
 {
 public:
-    CText(CInstanceManager *iMan, CEngine* engine);
+    CText(CEngine* engine);
     virtual ~CText();
 
     //! Sets the device to be used
@@ -301,7 +298,6 @@ protected:
     void        StringToUTFCharList(const std::string &text, std::vector<UTF8Char> &chars);
 
 protected:
-    CInstanceManager* m_iMan;
     CEngine*       m_engine;
     CDevice*       m_device;
 

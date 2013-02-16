@@ -55,8 +55,7 @@ float Progress(float a, float b, float progress)
 
 // Object's constructor.
 
-CAutoPortico::CAutoPortico(CInstanceManager* iMan, CObject* object)
-                         : CAuto(iMan, object)
+CAutoPortico::CAutoPortico(CObject* object) : CAuto(object)
 {
     Init();
     m_phase = APOP_WAIT;

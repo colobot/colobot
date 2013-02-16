@@ -27,8 +27,6 @@
 #include "math/point.h"
 #include "math/vector.h"
 
-class CInstanceManager;
-
 
 /**
   \enum EventType
@@ -762,7 +760,7 @@ public:
 
 public:
     //! Object's constructor
-    CEventQueue(CInstanceManager* iMan);
+    CEventQueue();
     //! Object's destructor
     ~CEventQueue();
 
@@ -774,7 +772,6 @@ public:
     bool    GetEvent(Event &event);
 
 protected:
-    CInstanceManager* m_iMan;
     Event        m_fifo[MAX_EVENT_QUEUE];
     int          m_head;
     int          m_tail;

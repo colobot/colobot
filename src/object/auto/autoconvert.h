@@ -38,7 +38,7 @@ enum AutoConvertPhase
 class CAutoConvert : public CAuto
 {
 public:
-    CAutoConvert(CInstanceManager* iMan, CObject* object);
+    CAutoConvert(CObject* object);
     ~CAutoConvert();
 
     void        DeleteObject(bool bAll=false);

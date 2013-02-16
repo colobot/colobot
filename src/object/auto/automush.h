@@ -38,7 +38,7 @@ enum AutoMushPhase
 class CAutoMush : public CAuto
 {
 public:
-    CAutoMush(CInstanceManager* iMan, CObject* object);
+    CAutoMush(CObject* object);
     ~CAutoMush();
 
     void        DeleteObject(bool bAll=false);

@@ -18,8 +18,10 @@
 
 #include "object/auto/autoegg.h"
 
-#include "math/geometry.h"
 #include "common/iman.h"
+
+#include "math/geometry.h"
+
 #include "script/cmdtoken.h"
 
 #include <stdio.h>
@@ -28,8 +30,7 @@
 
 // Object's constructor.
 
-CAutoEgg::CAutoEgg(CInstanceManager* iMan, CObject* object)
-                   : CAuto(iMan, object)
+CAutoEgg::CAutoEgg(CObject* object) : CAuto(object)
 {
     m_type = OBJECT_NULL;
     m_value = 0.0f;
@@ -174,7 +175,7 @@ bool CAutoEgg::EventProcess(const Event &event)
         m_progress += event.rTime*m_speed;
         if ( m_progress < 1.0f )  return true;
 
-        alien = new CObject(m_iMan);
+        alien = new CObject();
         if ( !alien->CreateInsect(m_object->GetPosition(0), m_object->GetAngleY(0), m_type) )
         {
             delete alien;
@@ -236,7 +237,7 @@ Error CAutoEgg::IsEnded()
     {
         if ( m_progress < 1.0f )  return ERR_CONTINUE;
 
-        pyro = new Gfx::CPyro(m_iMan);
+        pyro = new Gfx::CPyro();
         pyro->Create(Gfx::PT_EGG, m_object);  // exploding egg
 
         alien->SetZoom(0, 1.0f);  // this is a big boy now

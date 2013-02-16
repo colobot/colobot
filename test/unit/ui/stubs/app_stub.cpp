@@ -1,7 +1,8 @@
 #include "app/app.h"
+
 #include "graphics/opengl/gldevice.h"
 
-template<> CApplication* CSingleton<CApplication>::mInstance = nullptr;
+template<> CApplication* CSingleton<CApplication>::m_instance = nullptr;
 
 namespace Gfx {
 
@@ -10,6 +11,8 @@ GLDeviceConfig::GLDeviceConfig()
 }
 
 } /* Gfx */ 
+
+
 CApplication::CApplication()
 {
 }
@@ -23,4 +26,13 @@ std::string CApplication::GetDataFilePath(DataDir /* dataDir */, const std::stri
     return subpath;
 }
 
+CSoundInterface* CApplication::GetSound()
+{
+    return nullptr;
+}
+
+CEventQueue* CApplication::GetEventQueue()
+{
+    return nullptr;
+}
 

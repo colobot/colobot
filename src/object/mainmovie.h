@@ -23,18 +23,17 @@
 
 
 #include "common/event.h"
+
 #include "math/vector.h"
 
 
-class CInstanceManager;
 class CRobotMain;
 class CSoundInterface;
 
-namespace Gfx
-{
-    class CCamera;
-    class CEngine;
-};
+namespace Gfx {
+class CCamera;
+class CEngine;
+}
 
 enum MainMovieType
 {
@@ -48,7 +47,7 @@ enum MainMovieType
 class CMainMovie
 {
 public:
-    CMainMovie(CInstanceManager* iMan);
+    CMainMovie();
     ~CMainMovie();
 
     void            Flush();
@@ -60,9 +59,6 @@ public:
     MainMovieType   GetStopType();
 
 protected:
-
-protected:
-    CInstanceManager*   m_iMan;
     Gfx::CEngine*       m_engine;
     CRobotMain*         m_main;
     Gfx::CCamera*       m_camera;

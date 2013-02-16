@@ -20,6 +20,7 @@
 
 
 #include "object/task/task.h"
+
 #include "math/vector.h"
 
 
@@ -49,7 +50,7 @@ enum TaskShieldMode
 class CTaskShield : public CTask
 {
 public:
-    CTaskShield(CInstanceManager* iMan, CObject* object);
+    CTaskShield(CObject* object);
     ~CTaskShield();
 
     bool        EventProcess(const Event &event);

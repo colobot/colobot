@@ -30,8 +30,7 @@
 
 // Object's constructor.
 
-CAutoInfo::CAutoInfo(CInstanceManager* iMan, CObject* object)
-                           : CAuto(iMan, object)
+CAutoInfo::CAutoInfo(CObject* object) : CAuto(object)
 {
     Init();
 }

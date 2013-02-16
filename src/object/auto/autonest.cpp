@@ -19,7 +19,9 @@
 #include "object/auto/autonest.h"
 
 #include "common/iman.h"
+
 #include "graphics/engine/terrain.h"
+
 #include "script/cmdtoken.h"
 
 #include <stdio.h>
@@ -28,8 +30,7 @@
 
 // Object's constructor.
 
-CAutoNest::CAutoNest(CInstanceManager* iMan, CObject* object)
-                     : CAuto(iMan, object)
+    CAutoNest::CAutoNest(CObject* object) : CAuto(object)
 {
     Init();
 }
@@ -178,7 +179,7 @@ void CAutoNest::CreateFret(Math::Vector pos, float angle, ObjectType type)
 {
     CObject*    fret;
 
-    fret = new CObject(m_iMan);
+    fret = new CObject();
     if ( !fret->CreateResource(pos, angle, type) )
     {
         delete fret;

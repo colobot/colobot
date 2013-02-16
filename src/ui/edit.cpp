@@ -15,10 +15,10 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// edit.cpp
+
+#include "ui/edit.h"
 
 #include "app/app.h"
-#include "ui/edit.h"
 
 #include <string.h>
 

@@ -209,28 +209,25 @@ void uObject(CBotVar* botThis, void* user)
 
 // Object's constructor.
 
-CObject::CObject(CInstanceManager* iMan)
+CObject::CObject()
 {
-    int     i;
-
-    m_iMan = iMan;
-    m_iMan->AddInstance(CLASS_OBJECT, this, 500);
+    CInstanceManager::GetInstancePointer()->AddInstance(CLASS_OBJECT, this, 500);
 
     m_app         = CApplication::GetInstancePointer();
-    m_engine      = static_cast<Gfx::CEngine*>(m_iMan->SearchInstance(CLASS_ENGINE));
-    m_lightMan    = static_cast<Gfx::CLightManager*>(m_iMan->SearchInstance(CLASS_LIGHT));
-    m_terrain     = static_cast<Gfx::CTerrain*>(m_iMan->SearchInstance(CLASS_TERRAIN));
-    m_water       = static_cast<Gfx::CWater*>(m_iMan->SearchInstance(CLASS_WATER));
-    m_particle    = static_cast<Gfx::CParticle*>(m_iMan->SearchInstance(CLASS_PARTICULE));
-    m_camera      = static_cast<Gfx::CCamera*>(m_iMan->SearchInstance(CLASS_CAMERA));
-    m_displayText = static_cast<Ui::CDisplayText*>(m_iMan->SearchInstance(CLASS_DISPLAYTEXT));
-    m_main        = static_cast<CRobotMain*>(m_iMan->SearchInstance(CLASS_MAIN));
-    m_sound       = static_cast<CSoundInterface*>(m_iMan->SearchInstance(CLASS_SOUND));
-    m_physics     = 0;
-    m_brain       = 0;
-    m_motion      = 0;
-    m_auto        = 0;
-    m_runScript   = 0;
+    m_sound       = m_app->GetSound();
+    m_engine      = Gfx::CEngine::GetInstancePointer();
+    m_lightMan    = m_engine->GetLightManager();
+    m_water       = m_engine->GetWater();
+    m_particle    = m_engine->GetParticle();
+    m_main        = CRobotMain::GetInstancePointer();
+    m_terrain     = m_main->GetTerrain();
+    m_camera      = m_main->GetCamera();
+    m_displayText = m_main->GetDisplayText();
+    m_physics     = nullptr;
+    m_brain       = nullptr;
+    m_motion      = nullptr;
+    m_auto        = nullptr;
+    m_runScript   = nullptr;
 
     m_type = OBJECT_FIX;
     m_id = ++g_id;
@@ -309,18 +306,18 @@ CObject::CObject(CInstanceManager* iMan)
     m_infoReturn = NAN;
     m_bInfoUpdate = false;
 
-    for ( i=0 ; i<OBJECTMAXPART ; i++ )
+    for (int i=0 ; i<OBJECTMAXPART ; i++ )
     {
         m_objectPart[i].bUsed = false;
     }
     m_totalPart = 0;
 
-    for ( i=0 ; i<4 ; i++ )
+    for (int i=0 ; i<4 ; i++ )
     {
         m_partiSel[i] = -1;
     }
 
-    for ( i=0 ; i<OBJECTMAXCMDLINE ; i++ )
+    for (int i=0 ; i<OBJECTMAXCMDLINE ; i++ )
     {
         m_cmdLine[i] = NAN;
     }
@@ -362,7 +359,7 @@ CObject::~CObject()
     delete m_auto;
     m_auto = nullptr;
 
-    m_iMan->DeleteInstance(CLASS_OBJECT, this);
+    CInstanceManager::GetInstancePointer()->DeleteInstance(CLASS_OBJECT, this);
 
     m_app = nullptr;
 }
@@ -376,7 +373,6 @@ void CObject::DeleteObject(bool bAll)
 {
     CObject*    pObj;
     Gfx::CPyro* pPyro;
-    int         i;
 
     if ( m_botVar != 0 )
     {
@@ -388,9 +384,11 @@ void CObject::DeleteObject(bool bAll)
         m_camera->SetControllingObject(0);
     }
 
-    for ( i=0 ; i<1000000 ; i++ )
+    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
+
+    for (int i=0 ; i<1000000 ; i++ )
     {
-        pObj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
+        pObj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
         if ( pObj == 0 )  break;
 
         pObj->DeleteDeselList(this);
@@ -419,9 +417,9 @@ void CObject::DeleteObject(bool bAll)
             }
         }
 #endif
-        for ( i=0 ; i<1000000 ; i++ )
+        for (int i=0 ; i<1000000 ; i++ )
         {
-            pPyro = static_cast<Gfx::CPyro*>(m_iMan->SearchInstance(CLASS_PYRO, i));
+            pPyro = static_cast<Gfx::CPyro*>(iMan->SearchInstance(CLASS_PYRO, i));
             if ( pPyro == 0 )  break;
 
             pPyro->CutObjectLink(this);  // the object no longer exists
@@ -496,7 +494,7 @@ void CObject::DeleteObject(bool bAll)
         m_auto->DeleteObject(bAll);
     }
 
-    for ( i=0 ; i<OBJECTMAXPART ; i++ )
+    for (int i=0 ; i<OBJECTMAXPART ; i++ )
     {
         if ( m_objectPart[i].bUsed )
         {
@@ -753,7 +751,7 @@ bool CObject::ExploObject(ExploType type, float force, float decay)
         loss = 1.0f;
     }
 
-    pyro = new Gfx::CPyro(m_iMan);
+    pyro = new Gfx::CPyro();
     pyro->Create(pyroType, this, loss);
 
     if ( shield == 0.0f )  // dead?
@@ -2091,7 +2089,7 @@ bool CObject::CreateVehicle(Math::Vector pos, float angle, ObjectType type,
 
     if ( type == OBJECT_TOTO )
     {
-        m_motion = new CMotionToto(m_iMan, this);
+        m_motion = new CMotionToto(this);
         m_motion->Create(pos, angle, type, 1.0f);
         return true;
     }
@@ -2099,8 +2097,8 @@ bool CObject::CreateVehicle(Math::Vector pos, float angle, ObjectType type,
     SetTrainer(bTrainer);
     SetToy(bToy);
 
-    m_physics = new CPhysics(m_iMan, this);
-    m_brain   = new CBrain(m_iMan, this);
+    m_physics = new CPhysics(this);
+    m_brain   = new CBrain(this);
 
     m_physics->SetBrain(m_brain);
     m_brain->SetPhysics(m_physics);
@@ -2137,11 +2135,11 @@ bool CObject::CreateVehicle(Math::Vector pos, float angle, ObjectType type,
     if ( type == OBJECT_HUMAN ||
          type == OBJECT_TECH  )
     {
-        m_motion = new CMotionHuman(m_iMan, this);
+        m_motion = new CMotionHuman(this);
     }
     else
     {
-        m_motion = new CMotionVehicle(m_iMan, this);
+        m_motion = new CMotionVehicle(this);
     }
     if ( m_motion == 0 )  return false;
 
@@ -2181,31 +2179,31 @@ bool CObject::CreateInsect(Math::Vector pos, float angle, ObjectType type)
 {
     m_type = type;
 
-    m_physics = new CPhysics(m_iMan, this);
-    m_brain   = new CBrain(m_iMan, this);
+    m_physics = new CPhysics(this);
+    m_brain   = new CBrain(this);
 
     m_physics->SetBrain(m_brain);
     m_brain->SetPhysics(m_physics);
 
     if ( type == OBJECT_MOTHER )
     {
-        m_motion = new CMotionMother(m_iMan, this);
+        m_motion = new CMotionMother(this);
     }
     if ( type == OBJECT_ANT )
     {
-        m_motion = new CMotionAnt(m_iMan, this);
+        m_motion = new CMotionAnt(this);
     }
     if ( type == OBJECT_SPIDER )
     {
-        m_motion = new CMotionSpider(m_iMan, this);
+        m_motion = new CMotionSpider(this);
     }
     if ( type == OBJECT_BEE )
     {
-        m_motion = new CMotionBee(m_iMan, this);
+        m_motion = new CMotionBee(this);
     }
     if ( type == OBJECT_WORM )
     {
-        m_motion = new CMotionWorm(m_iMan, this);
+        m_motion = new CMotionWorm(this);
     }
     if ( m_motion == 0 )  return false;
 
@@ -3139,7 +3137,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
     {
         CObject*    pPower;
 
-        pPower = new CObject(m_iMan);
+        pPower = new CObject();
         pPower->SetType(power<=1.0f?OBJECT_POWER:OBJECT_ATOMIC);
 
         rank = m_engine->CreateObject();
@@ -5467,91 +5465,91 @@ void CObject::CreateOtherObject(ObjectType type)
 {
     if ( type == OBJECT_BASE )
     {
-        m_auto = new CAutoBase(m_iMan, this);
+        m_auto = new CAutoBase(this);
     }
     if ( type == OBJECT_PORTICO )
     {
-        m_auto = new CAutoPortico(m_iMan, this);
+        m_auto = new CAutoPortico(this);
     }
     if ( type == OBJECT_DERRICK )
     {
-        m_auto = new CAutoDerrick(m_iMan, this);
+        m_auto = new CAutoDerrick(this);
     }
     if ( type == OBJECT_FACTORY )
     {
-        m_auto = new CAutoFactory(m_iMan, this);
+        m_auto = new CAutoFactory(this);
     }
     if ( type == OBJECT_REPAIR )
     {
-        m_auto = new CAutoRepair(m_iMan, this);
+        m_auto = new CAutoRepair(this);
     }
     if ( type == OBJECT_DESTROYER )
     {
-        m_auto = new CAutoDestroyer(m_iMan, this);
+        m_auto = new CAutoDestroyer(this);
     }
     if ( type == OBJECT_STATION )
     {
-        m_auto = new CAutoStation(m_iMan, this);
+        m_auto = new CAutoStation(this);
     }
     if ( type == OBJECT_CONVERT )
     {
-        m_auto = new CAutoConvert(m_iMan, this);
+        m_auto = new CAutoConvert(this);
     }
     if ( type == OBJECT_TOWER )
     {
-        m_auto = new CAutoTower(m_iMan, this);
+        m_auto = new CAutoTower(this);
     }
     if ( type == OBJECT_RESEARCH )
     {
-        m_auto = new CAutoResearch(m_iMan, this);
+        m_auto = new CAutoResearch(this);
     }
     if ( type == OBJECT_RADAR )
     {
-        m_auto = new CAutoRadar(m_iMan, this);
+        m_auto = new CAutoRadar(this);
     }
     if ( type == OBJECT_INFO )
     {
-        m_auto = new CAutoInfo(m_iMan, this);
+        m_auto = new CAutoInfo(this);
     }
     if ( type == OBJECT_ENERGY )
     {
-        m_auto = new CAutoEnergy(m_iMan, this);
+        m_auto = new CAutoEnergy(this);
     }
     if ( type == OBJECT_LABO )
     {
-        m_auto = new CAutoLabo(m_iMan, this);
+        m_auto = new CAutoLabo(this);
     }
     if ( type == OBJECT_NUCLEAR )
     {
-        m_auto = new CAutoNuclear(m_iMan, this);
+        m_auto = new CAutoNuclear(this);
     }
     if ( type == OBJECT_PARA )
     {
-        m_auto = new CAutoPara(m_iMan, this);
+        m_auto = new CAutoPara(this);
     }
     if ( type == OBJECT_SAFE )
     {
-        m_auto = new CAutoSafe(m_iMan, this);
+        m_auto = new CAutoSafe(this);
     }
     if ( type == OBJECT_HUSTON )
     {
-        m_auto = new CAutoHuston(m_iMan, this);
+        m_auto = new CAutoHuston(this);
     }
     if ( type == OBJECT_EGG )
     {
-        m_auto = new CAutoEgg(m_iMan, this);
+        m_auto = new CAutoEgg(this);
     }
     if ( type == OBJECT_NEST )
     {
-        m_auto = new CAutoNest(m_iMan, this);
+        m_auto = new CAutoNest(this);
     }
     if ( type == OBJECT_ROOT5 )
     {
-        m_auto = new CAutoRoot(m_iMan, this);
+        m_auto = new CAutoRoot(this);
     }
     if ( type == OBJECT_MUSHROOM2 )
     {
-        m_auto = new CAutoMush(m_iMan, this);
+        m_auto = new CAutoMush(this);
     }
     if ( type == OBJECT_FLAGb ||
          type == OBJECT_FLAGr ||
@@ -5559,13 +5557,13 @@ void CObject::CreateOtherObject(ObjectType type)
          type == OBJECT_FLAGy ||
          type == OBJECT_FLAGv )
     {
-        m_auto = new CAutoFlag(m_iMan, this);
+        m_auto = new CAutoFlag(this);
     }
     if ( type == OBJECT_TEEN36 ||  // trunk?
          type == OBJECT_TEEN37 ||  // boat?
          type == OBJECT_TEEN38 )   // fan?
     {
-        m_auto = new CAutoKid(m_iMan, this);
+        m_auto = new CAutoKid(this);
     }
 }
 
@@ -5979,7 +5977,7 @@ bool CObject::EventFrame(const Event &event)
             m_bProxyActivate = false;
             m_main->CreateShortcuts();
             m_sound->Play(SOUND_FINDING);
-            pyro = new Gfx::CPyro(m_iMan);
+            pyro = new Gfx::CPyro();
             pyro->Create(Gfx::PT_FINDING, this, 0.0f);
             m_displayText->DisplayError(INFO_FINDING, this);
         }
@@ -6453,7 +6451,7 @@ bool CObject::JostleObject(float force)
     {
         if ( m_auto != 0 )  return false;
 
-        m_auto = new CAutoJostle(m_iMan, this);
+        m_auto = new CAutoJostle(this);
         pa = static_cast<CAutoJostle*>(m_auto);
         pa->Start(0, force);
     }

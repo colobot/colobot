@@ -20,9 +20,13 @@
 
 #include "common/global.h"
 #include "common/misc.h"
+
 #include "math/geometry.h"
+
 #include "object/robotmain.h"
+
 #include "script/cmdtoken.h"
+
 #include "ui/interface.h"
 #include "ui/window.h"
 #include "ui/displaytext.h"
@@ -38,8 +42,7 @@ const float LABO_DELAY = 20.0f; // duration of the analysis
 
 // Object's constructor.
 
-CAutoLabo::CAutoLabo(CInstanceManager* iMan, CObject* object)
-                     : CAuto(iMan, object)
+    CAutoLabo::CAutoLabo(CObject* object) : CAuto(object)
 {
     int     i;
 
@@ -543,8 +546,8 @@ void CAutoLabo::SetResearch(EventType event)
     m_main->WriteFreeParam();
 
     Event   newEvent(EVENT_UPDINTERFACE);
-//    m_event->MakeEvent(newEvent, EVENT_UPDINTERFACE);
-    m_event->AddEvent(newEvent);
+//    m_eventQueue->MakeEvent(newEvent, EVENT_UPDINTERFACE);
+    m_eventQueue->AddEvent(newEvent);
     UpdateInterface();
 }
 

@@ -1,6 +1,8 @@
 #include "common/logger.h"
 #include "common/image.h"
+
 #include "graphics/opengl/gldevice.h"
+
 #include "math/geometry.h"
 
 #include <SDL/SDL.h>

@@ -18,8 +18,13 @@
 #include "object/auto/auto.h"
 
 
+#include "app/app.h"
+
+#include "common/event.h"
 #include "common/iman.h"
+
 #include "script/cmdtoken.h"
+
 #include "ui/interface.h"
 #include "ui/gauge.h"
 #include "ui/window.h"
@@ -30,26 +35,24 @@
 
 // Object's constructor.
 
-CAuto::CAuto(CInstanceManager* iMan, CObject* object)
+CAuto::CAuto(CObject* object)
 {
-    m_iMan = iMan;
-    m_iMan->AddInstance(CLASS_AUTO, this, 100);
+    m_iMan = CInstanceManager::GetInstancePointer();
 
     m_object      = object;
-    m_event       = static_cast< CEventQueue* >(m_iMan->SearchInstance(CLASS_EVENT));
-    m_engine      = static_cast< Gfx::CEngine* >(m_iMan->SearchInstance(CLASS_ENGINE));
-    m_particle    = static_cast< Gfx::CParticle* >(m_iMan->SearchInstance(CLASS_PARTICULE));
-    m_lightMan    = static_cast< Gfx::CLightManager* >(m_iMan->SearchInstance(CLASS_LIGHT));
-    m_terrain     = static_cast< Gfx::CTerrain* >(m_iMan->SearchInstance(CLASS_TERRAIN));
-    m_water       = static_cast< Gfx::CWater* >(m_iMan->SearchInstance(CLASS_WATER));
-    m_cloud       = static_cast< Gfx::CCloud* >(m_iMan->SearchInstance(CLASS_CLOUD));
-    m_planet      = static_cast< Gfx::CPlanet* >(m_iMan->SearchInstance(CLASS_PLANET));
-    m_lightning   = static_cast< Gfx::CLightning* >(m_iMan->SearchInstance(CLASS_BLITZ));
-    m_camera      = static_cast< Gfx::CCamera* >(m_iMan->SearchInstance(CLASS_CAMERA));
-    m_interface   = static_cast< Ui::CInterface* >(m_iMan->SearchInstance(CLASS_INTERFACE));
-    m_main        = static_cast< CRobotMain* >(m_iMan->SearchInstance(CLASS_MAIN));
-    m_displayText = static_cast< Ui::CDisplayText* >(m_iMan->SearchInstance(CLASS_DISPLAYTEXT));
-    m_sound       = static_cast< CSoundInterface* >(m_iMan->SearchInstance(CLASS_SOUND));
+    m_engine      = Gfx::CEngine::GetInstancePointer();
+    m_main        = CRobotMain::GetInstancePointer();
+    m_eventQueue  = CApplication::GetInstancePointer()->GetEventQueue();
+    m_sound       = CApplication::GetInstancePointer()->GetSound();
+    m_particle    = m_engine->GetParticle();
+    m_terrain     = m_engine->GetTerrain();
+    m_water       = m_engine->GetWater();
+    m_cloud       = m_engine->GetCloud();
+    m_planet      = m_engine->GetPlanet();
+    m_lightning   = m_engine->GetLightning();
+    m_camera      = m_main->GetCamera();
+    m_interface   = m_main->GetInterface();
+    m_displayText = m_main->GetDisplayText();
 
     m_type = m_object->GetType();
     m_time = 0.0f;
@@ -65,7 +68,22 @@ CAuto::CAuto(CInstanceManager* iMan, CObject* object)
 
 CAuto::~CAuto()
 {
-    m_iMan->DeleteInstance(CLASS_AUTO, this);
+    m_iMan = nullptr;
+
+    m_object      = nullptr;
+    m_engine      = nullptr;
+    m_main        = nullptr;
+    m_eventQueue  = nullptr;
+    m_sound       = nullptr;
+    m_particle    = nullptr;
+    m_terrain     = nullptr;
+    m_water       = nullptr;
+    m_cloud       = nullptr;
+    m_planet      = nullptr;
+    m_lightning   = nullptr;
+    m_camera      = nullptr;
+    m_interface   = nullptr;
+    m_displayText = nullptr;
 }
 
 

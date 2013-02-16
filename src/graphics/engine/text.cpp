@@ -19,10 +19,11 @@
 #include "graphics/engine/text.h"
 
 #include "app/app.h"
+
 #include "common/image.h"
-#include "common/iman.h"
 #include "common/logger.h"
 #include "common/stringutils.h"
+
 #include "math/func.h"
 
 #include <SDL/SDL.h>
@@ -49,11 +50,8 @@ struct CachedFont
 const Math::IntPoint REFERENCE_SIZE(800, 600);
 
 
-CText::CText(CInstanceManager *iMan, CEngine* engine)
+CText::CText(CEngine* engine)
 {
-    m_iMan = iMan;
-    m_iMan->AddInstance(CLASS_TEXT, this);
-
     m_device = nullptr;
     m_engine = engine;
 
@@ -66,9 +64,6 @@ CText::CText(CInstanceManager *iMan, CEngine* engine)
 
 CText::~CText()
 {
-    m_iMan->DeleteInstance(CLASS_TEXT, this);
-
-    m_iMan = nullptr;
     m_device = nullptr;
     m_engine = nullptr;
 }

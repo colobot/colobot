@@ -19,9 +19,13 @@
 #include "object/auto/autoresearch.h"
 
 #include "common/global.h"
+
 #include "math/geometry.h"
+
 #include "object/robotmain.h"
+
 #include "script/cmdtoken.h"
+
 #include "ui/interface.h"
 #include "ui/gauge.h"
 #include "ui/window.h"
@@ -37,8 +41,7 @@ const float SEARCH_TIME = 30.0f;        // duration of a research
 
 // Object's constructor.
 
-CAutoResearch::CAutoResearch(CInstanceManager* iMan, CObject* object)
-                             : CAuto(iMan, object)
+CAutoResearch::CAutoResearch(CObject* object) : CAuto(object)
 {
     int     i;
 
@@ -488,7 +491,7 @@ void CAutoResearch::SetResearch(EventType event)
     m_main->WriteFreeParam();
 
     Event   newEvent(EVENT_UPDINTERFACE);
-    m_event->AddEvent(newEvent);
+    m_eventQueue->AddEvent(newEvent);
     UpdateInterface();
 }
 

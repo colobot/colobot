@@ -20,6 +20,7 @@
 
 
 #include "object/task/task.h"
+
 #include "math/vector.h"
 
 
@@ -38,7 +39,7 @@ enum TaskRecoverPhase
 class CTaskRecover : public CTask
 {
 public:
-    CTaskRecover(CInstanceManager* iMan, CObject* object);
+    CTaskRecover(CObject* object);
     ~CTaskRecover();
 
     bool        EventProcess(const Event &event);

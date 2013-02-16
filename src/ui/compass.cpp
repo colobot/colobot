@@ -15,10 +15,10 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
+
 #include "ui/compass.h"
 
 #include "common/event.h"
-#include "common/iman.h"
 #include "common/misc.h"
 
 #include "graphics/core/device.h"
@@ -29,7 +29,6 @@
 namespace Ui {
 // Object's constructor.
 
-//CCompass::CCompass(CInstanceManager* iMan) : CControl(iMan)
 CCompass::CCompass() : CControl()
 {
     m_dir = 0.0f;

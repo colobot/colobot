@@ -13,19 +13,17 @@ public:
 
     virtual void SetUp()
     {
-        m_engine = new Gfx::CEngine(&m_iMan, NULL);
+        m_engine = new Gfx::CEngine(nullptr);
 
-        m_iMan.AddInstance(CLASS_ENGINE, m_engine);
         m_edit = new Ui::CEdit;
     }
 
     virtual void TearDown()
     {
-        m_iMan.DeleteInstance(CLASS_ENGINE, m_engine);
         delete m_engine;
-        m_engine = NULL;
+        m_engine = nullptr;
         delete m_edit;
-        m_edit = NULL;
+        m_edit = nullptr;
 
     }
     virtual ~CEditTest()
@@ -34,7 +32,6 @@ public:
     };
 
 protected:
-    CInstanceManager m_iMan;
     CApplication m_app;
     Gfx::CEngine * m_engine;
     Ui::CEdit * m_edit;

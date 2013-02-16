@@ -14,11 +14,11 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// taskadvance.cpp
 
 #include "object/task/taskadvance.h"
 
 #include "math/geometry.h"
+
 #include "physics/physics.h"
 
 
@@ -26,8 +26,7 @@
 
 // Object's constructor.
 
-CTaskAdvance::CTaskAdvance(CInstanceManager* iMan, CObject* object)
-                           : CTask(iMan, object)
+CTaskAdvance::CTaskAdvance(CObject* object) : CTask(object)
 {
 }
 

@@ -25,7 +25,7 @@
 #include <boost/regex.hpp>
 
 
-template<> CProfile* CSingleton<CProfile>::mInstance = nullptr;
+template<> CProfile* CSingleton<CProfile>::m_instance = nullptr;
 
 namespace bp = boost::property_tree;
 

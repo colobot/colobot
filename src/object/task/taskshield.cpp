@@ -14,16 +14,19 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// taskshield.cpp
 
 #include "object/task/taskshield.h"
 
 #include "common/iman.h"
+
 #include "graphics/core/light.h"
 #include "graphics/engine/particle.h"
 #include "graphics/engine/lightman.h"
+
 #include "math/geometry.h"
+
 #include "object/brain.h"
+
 #include "physics/physics.h"
 
 #include <string.h>
@@ -34,8 +37,7 @@ const float ENERGY_TIME = 20.0f;        // maximum duration if full battery
 
 // Object's constructor.
 
-CTaskShield::CTaskShield(CInstanceManager* iMan, CObject* object)
-                               : CTask(iMan, object)
+CTaskShield::CTaskShield(CObject* object) : CTask(object)
 {
     m_rankSphere = -1;
     m_soundChannel = -1;
@@ -521,9 +523,11 @@ void CTaskShield::IncreaseShield()
     float       dist, shield;
     int         i;
 
+    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
+
     for ( i=0 ; i<1000000 ; i++ )
     {
-        pObj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
+        pObj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
         if ( pObj == 0 )  break;
 
         type = pObj->GetType();

@@ -20,8 +20,11 @@
 
 
 #include "common/iman.h"
+
 #include "math/geometry.h"
+
 #include "script/cmdtoken.h"
+
 #include "ui/interface.h"
 #include "ui/window.h"
 
@@ -32,8 +35,7 @@
 
 // Object's constructor.
 
-CAutoPara::CAutoPara(CInstanceManager* iMan, CObject* object)
-                          : CAuto(iMan, object)
+CAutoPara::CAutoPara(CObject* object) : CAuto(object)
 {
     m_channelSound = -1;
     Init();

@@ -14,7 +14,6 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// taskgungoal.cpp
 
 #include "object/task/taskgungoal.h"
 
@@ -25,8 +24,7 @@
 
 // Object's constructor.
 
-CTaskGunGoal::CTaskGunGoal(CInstanceManager* iMan, CObject* object)
-                          : CTask(iMan, object)
+CTaskGunGoal::CTaskGunGoal(CObject* object) : CTask(object)
 {
 }
 

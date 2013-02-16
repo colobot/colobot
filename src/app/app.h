@@ -194,6 +194,11 @@ public:
     //! Destructor
     ~CApplication();
 
+    //! Returns the application's event queue
+    CEventQueue* GetEventQueue();
+    //! Returns the sound subsystem
+    CSoundInterface* GetSound();
+
 public:
     //! Parses commandline arguments
     ParseArgsStatus ParseArguments(int argc, char *argv[]);
@@ -363,10 +368,11 @@ protected:
     void UpdatePerformanceCountersData();
 
 protected:
-    //! Instance manager
-    CInstanceManager*       m_iMan;
     //! Private (SDL-dependent data)
     ApplicationPrivate*     m_private;
+    //! Instance manager
+    // TODO: to be removed
+    CInstanceManager*       m_iMan;
     //! Global event queue
     CEventQueue*            m_eventQueue;
     //! Graphics engine

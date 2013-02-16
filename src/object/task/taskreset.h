@@ -36,7 +36,7 @@ enum TaskResetPhase
 class CTaskReset : public CTask
 {
 public:
-    CTaskReset(CInstanceManager* iMan, CObject* object);
+    CTaskReset(CObject* object);
     ~CTaskReset();
 
     bool    EventProcess(const Event &event);

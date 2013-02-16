@@ -6,8 +6,6 @@
  */
 
 #pragma once
-#ifndef CBOTDOC_H_
-#define CBOTDOC_H_
 
 #include "CClass.h"
 #include <string>
@@ -35,5 +33,3 @@ public:
 
 };
 
-
-#endif /* CBOTDOC_H_ */

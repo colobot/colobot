@@ -31,7 +31,6 @@
 #include "object/object.h"
 
 
-class CInstanceManager;
 class CObject;
 class CRobotMain;
 class CSoundInterface;
@@ -111,7 +110,7 @@ struct PyroLightOper
 class CPyro
 {
 public:
-    CPyro(CInstanceManager* iMan);
+    CPyro();
     ~CPyro();
 
     //! Creates pyrotechnic effect
@@ -174,7 +173,6 @@ protected:
     void        LightOperFrame(float rTime);
 
 protected:
-    CInstanceManager* m_iMan;
     CEngine*          m_engine;
     CTerrain*         m_terrain;
     CCamera*          m_camera;

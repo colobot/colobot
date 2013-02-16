@@ -27,7 +27,7 @@
 class CAutoKid : public CAuto
 {
 public:
-    CAutoKid(CInstanceManager* iMan, CObject* object);
+    CAutoKid(CObject* object);
     ~CAutoKid();
 
     void        DeleteObject(bool bAll=false);

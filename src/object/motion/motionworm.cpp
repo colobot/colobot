@@ -42,8 +42,7 @@ const int WORM_PART = 7;        // number of parts of a worm
 
 // Object's constructor.
 
-CMotionWorm::CMotionWorm(CInstanceManager* iMan, CObject* object)
-                        : CMotion(iMan, object)
+CMotionWorm::CMotionWorm(CObject* object) : CMotion(object)
 {
     m_timeUp         = 18.0f;
     m_timeDown       = 18.0f;

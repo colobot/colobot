@@ -26,7 +26,7 @@
 class CTaskFire : public CTask
 {
 public:
-    CTaskFire(CInstanceManager* iMan, CObject* object);
+    CTaskFire(CObject* object);
     ~CTaskFire();
 
     bool        EventProcess(const Event &event);

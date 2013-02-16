@@ -15,8 +15,6 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// map.cpp
-
 
 #include "ui/map.h"
 
@@ -31,9 +29,9 @@ namespace Ui {
 
 CMap::CMap() : CControl()
 {
-    m_main    = static_cast<CRobotMain*>(m_iMan->SearchInstance(CLASS_MAIN));
-    m_terrain = static_cast<Gfx::CTerrain*>(m_iMan->SearchInstance(CLASS_TERRAIN));
-    m_water   = static_cast<Gfx::CWater*>(m_iMan->SearchInstance(CLASS_WATER));
+    m_main    = CRobotMain::GetInstancePointer();
+    m_terrain = m_main->GetTerrain();
+    m_water   = Gfx::CEngine::GetInstancePointer()->GetWater();
 
     m_bEnable  = true;
     m_time     = 0.0f;

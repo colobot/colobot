@@ -129,7 +129,7 @@ class CLightManager
 {
 public:
     //! Constructor
-    CLightManager(CInstanceManager *iMan, CEngine* engine);
+    CLightManager(CEngine* engine);
     //! Destructor
     virtual ~CLightManager();
 
@@ -189,7 +189,6 @@ public:
     void            UpdateDeviceLights(EngineObjectType type);
 
 protected:
-    CInstanceManager* m_iMan;
     CEngine*          m_engine;
     CDevice*          m_device;
 

@@ -38,8 +38,7 @@
 
 // Object's constructor.
 
-CMotionVehicle::CMotionVehicle(CInstanceManager* iMan, CObject* object)
-                              : CMotion(iMan, object)
+CMotionVehicle::CMotionVehicle(CObject* object) : CMotion(object)
 {
     int     i;
 
@@ -926,7 +925,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_object->CreateEffectLight(20.0f, color);
 
         // Creates the battery.
-        pPower = new CObject(m_iMan);
+        pPower = new CObject();
         pPower->SetType(power<=1.0f?OBJECT_POWER:OBJECT_ATOMIC);
 
         rank = m_engine->CreateObject();

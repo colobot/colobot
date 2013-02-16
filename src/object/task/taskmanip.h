@@ -54,7 +54,7 @@ enum TaskManipHand
 class CTaskManip : public CTask
 {
 public:
-    CTaskManip(CInstanceManager* iMan, CObject* object);
+    CTaskManip(CObject* object);
     ~CTaskManip();
 
     bool        EventProcess(const Event &event);

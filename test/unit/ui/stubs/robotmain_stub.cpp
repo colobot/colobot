@@ -1,7 +1,7 @@
 #include "object/robotmain.h"
 
 
-template<> CRobotMain* CSingleton<CRobotMain>::mInstance = nullptr;
+template<> CRobotMain* CSingleton<CRobotMain>::m_instance = nullptr;
 
 bool CRobotMain::GetGlint()
 {

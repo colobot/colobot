@@ -25,31 +25,29 @@
 namespace Ui {
 
 
-    class CButton : public CControl
-    {
-    public:
-        CButton();
-        virtual ~CButton();
+class CButton : public CControl
+{
+public:
+    CButton();
+    virtual ~CButton();
 
-        bool    Create(Math::Point pos, Math::Point dim, int icon, EventType eventType);
+    bool    Create(Math::Point pos, Math::Point dim, int icon, EventType eventType);
 
-        bool    EventProcess(const Event &event);
+    bool    EventProcess(const Event &event);
 
-        void    Draw();
+    void    Draw();
 
-        void    SetImmediat(bool bRepeat);
-        bool    GetImmediat();
+    void    SetImmediat(bool bRepeat);
+    bool    GetImmediat();
 
-        void    SetRepeat(bool bRepeat);
-        bool    GetRepeat();
+    void    SetRepeat(bool bRepeat);
+    bool    GetRepeat();
 
-    protected:
-
-    protected:
-        bool    m_bCapture;
-        bool    m_bImmediat;
-        bool    m_bRepeat;
-        float   m_repeat;
-    };
+protected:
+    bool    m_bCapture;
+    bool    m_bImmediat;
+    bool    m_bRepeat;
+    float   m_repeat;
+};
 
 }

@@ -14,20 +14,20 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// taskpen.cpp
 
 #include "object/task/taskpen.h"
 
 #include "graphics/engine/particle.h"
-#include "math/geometry.h"
+
 #include "object/object.h"
+
+#include "math/geometry.h"
 
 
 
 // Object's constructor.
 
-CTaskPen::CTaskPen(CInstanceManager* iMan, CObject* object)
-                               : CTask(iMan, object)
+CTaskPen::CTaskPen(CObject* object) : CTask(object)
 {
 }
 

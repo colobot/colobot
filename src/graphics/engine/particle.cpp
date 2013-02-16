@@ -18,6 +18,9 @@
 
 #include "graphics/engine/particle.h"
 
+#include "app/app.h"
+
+#include "common/iman.h"
 #include "common/logger.h"
 
 #include "graphics/core/device.h"
@@ -117,11 +120,8 @@ float GetDecay(ObjectType type)
 
 
 
-CParticle::CParticle(CInstanceManager *iMan, CEngine* engine)
+CParticle::CParticle(CEngine* engine)
 {
-    m_iMan = iMan;
-    m_iMan->AddInstance(CLASS_PARTICULE, this);
-
     m_device = nullptr;
     m_engine = engine;
     m_main = nullptr;
@@ -138,7 +138,6 @@ CParticle::CParticle(CInstanceManager *iMan, CEngine* engine)
 
 CParticle::~CParticle()
 {
-    m_iMan->DeleteInstance(CLASS_PARTICULE, this);
 }
 
 void CParticle::SetDevice(CDevice* device)
@@ -213,7 +212,7 @@ int CParticle::CreateParticle(Math::Vector pos, Math::Vector speed, Math::Point 
                               float windSensitivity, int sheet)
 {
     if (m_main == nullptr)
-        m_main = static_cast<CRobotMain*>(m_iMan->SearchInstance(CLASS_MAIN));
+        m_main = CRobotMain::GetInstancePointer();
 
     int t = -1;
     if ( type == PARTIEXPLOT   ||
@@ -649,7 +648,7 @@ void CParticle::CreateWheelTrace(const Math::Vector &p1, const Math::Vector &p2,
     m_wheelTrace[i].startTime = m_absTime;
 
     if (m_terrain == nullptr)
-        m_terrain = static_cast<CTerrain*>(m_iMan->SearchInstance(CLASS_TERRAIN));
+        m_terrain = m_main->GetTerrain();
 
     m_terrain->AdjustToFloor(m_wheelTrace[i].pos[0]);
     m_wheelTrace[i].pos[0].y += 0.2f;  // just above the ground
@@ -808,15 +807,15 @@ void CParticle::SetFrameUpdate(int sheet, bool update)
 void CParticle::FrameParticle(float rTime)
 {
     if (m_main == nullptr)
-        m_main = static_cast<CRobotMain*>(m_iMan->SearchInstance(CLASS_MAIN));
+        m_main = CRobotMain::GetInstancePointer();
 
     bool pause = (m_engine->GetPause() && !m_main->GetInfoLock());
 
     if (m_terrain == nullptr)
-        m_terrain = static_cast<CTerrain*>(m_iMan->SearchInstance(CLASS_TERRAIN));
+        m_terrain = m_main->GetTerrain();
 
     if (m_water == nullptr)
-        m_water = static_cast<CWater*>(m_iMan->SearchInstance(CLASS_WATER));
+        m_water = m_engine->GetWater();
 
     if (!pause)
     {
@@ -3654,11 +3653,13 @@ CObject* CParticle::SearchObjectGun(Math::Vector old, Math::Vector pos,
     box2.y += min;
     box2.z += min;
 
+    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
+
     CObject* best = 0;
     bool shield = false;
     for (int i = 0; i < 1000000; i++)
     {
-        CObject* obj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
+        CObject* obj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
         if (obj == 0)  break;
 
         if (!obj->GetActif()) continue;  // inactive?
@@ -3782,9 +3783,11 @@ CObject* CParticle::SearchObjectRay(Math::Vector pos, Math::Vector goal,
     box2.y += min;
     box2.z += min;
 
+    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
+
     for (int i = 0; i < 1000000; i++)
     {
-        CObject* obj = static_cast<CObject*>( m_iMan->SearchInstance(CLASS_OBJECT, i) );
+        CObject* obj = static_cast<CObject*>( iMan->SearchInstance(CLASS_OBJECT, i) );
         if (obj == nullptr) break;
 
         if (!obj->GetActif()) continue;  // inactive?
@@ -3822,7 +3825,7 @@ CObject* CParticle::SearchObjectRay(Math::Vector pos, Math::Vector goal,
 void CParticle::Play(Sound sound, Math::Vector pos, float amplitude)
 {
     if (m_sound == nullptr)
-        m_sound = static_cast<CSoundInterface*>(m_iMan->SearchInstance(CLASS_SOUND));
+        m_sound = CApplication::GetInstancePointer()->GetSound();
 
     m_sound->Play(sound, pos, amplitude);
 }

@@ -27,7 +27,7 @@
 class CAutoRoot : public CAuto
 {
 public:
-    CAutoRoot(CInstanceManager* iMan, CObject* object);
+    CAutoRoot(CObject* object);
     ~CAutoRoot();
 
     void        DeleteObject(bool bAll=false);

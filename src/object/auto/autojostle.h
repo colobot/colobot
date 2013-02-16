@@ -27,7 +27,7 @@
 class CAutoJostle : public CAuto
 {
 public:
-    CAutoJostle(CInstanceManager* iMan, CObject* object);
+    CAutoJostle(CObject* object);
     ~CAutoJostle();
 
     void        DeleteObject(bool bAll=false);

@@ -19,7 +19,9 @@
 #include "object/auto/autoradar.h"
 
 #include "common/iman.h"
+
 #include "math/geometry.h"
+
 #include "ui/interface.h"
 #include "ui/window.h"
 #include "ui/gauge.h"
@@ -29,8 +31,7 @@
 
 // Object's constructor.
 
-CAutoRadar::CAutoRadar(CInstanceManager* iMan, CObject* object)
-                     : CAuto(iMan, object)
+CAutoRadar::CAutoRadar(CObject* object) : CAuto(object)
 {
     Init();
     m_phase = ARAP_WAIT;

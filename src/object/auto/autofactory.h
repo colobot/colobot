@@ -40,7 +40,7 @@ enum AutoFactoryPhase
 class CAutoFactory : public CAuto
 {
 public:
-    CAutoFactory(CInstanceManager* iMan, CObject* object);
+    CAutoFactory(CObject* object);
     ~CAutoFactory();
 
     void        DeleteObject(bool bAll=false);

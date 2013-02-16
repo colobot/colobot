@@ -19,7 +19,9 @@
 #include "object/auto/autodestroyer.h"
 
 #include "common/iman.h"
+
 #include "script/cmdtoken.h"
+
 #include "ui/interface.h"
 #include "ui/window.h"
 
@@ -29,8 +31,7 @@
 
 // Object's constructor.
 
-CAutoDestroyer::CAutoDestroyer(CInstanceManager* iMan, CObject* object)
-                         : CAuto(iMan, object)
+CAutoDestroyer::CAutoDestroyer(CObject* object) : CAuto(object)
 {
     Init();
     m_phase = ADEP_WAIT;  // paused until the first Init ()
@@ -156,7 +157,7 @@ bool CAutoDestroyer::EventProcess(const Event &event)
             scrap = SearchPlastic();
             if ( scrap != nullptr )
             {
-                pyro = new Gfx::CPyro(m_iMan);
+                pyro = new Gfx::CPyro();
                 pyro->Create(Gfx::PT_FRAGT, scrap);
             }
             m_bExplo = true;

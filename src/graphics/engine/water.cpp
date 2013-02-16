@@ -18,7 +18,8 @@
 
 #include "graphics/engine/water.h"
 
-#include "common/iman.h"
+#include "app/app.h"
+
 #include "common/logger.h"
 
 #include "graphics/core/device.h"
@@ -28,6 +29,7 @@
 #include "math/geometry.h"
 
 #include "object/object.h"
+#include "object/robotmain.h"
 
 #include "sound/sound.h"
 
@@ -42,14 +44,11 @@ const int WATERLINE_PREALLOCATE_COUNT = 500;
 const int VAPOR_SIZE = 10;
 
 
-CWater::CWater(CInstanceManager* iMan, CEngine* engine)
+CWater::CWater(CEngine* engine)
 {
-    m_iMan = iMan;
-    m_iMan->AddInstance(CLASS_WATER, this);
-
     m_engine = engine;
     m_terrain = nullptr;
-    m_particule = nullptr;
+    m_particle = nullptr;
     m_sound = nullptr;
 
     m_type[0] = WATER_NULL;
@@ -67,10 +66,9 @@ CWater::CWater(CInstanceManager* iMan, CEngine* engine)
 
 CWater::~CWater()
 {
-    m_iMan = nullptr;
     m_engine = nullptr;
     m_terrain = nullptr;
-    m_particule = nullptr;
+    m_particle = nullptr;
     m_sound = nullptr;
 }
 
@@ -99,8 +97,8 @@ bool CWater::EventFrame(const Event &event)
 
 void CWater::LavaFrame(float rTime)
 {
-    if (m_particule == nullptr)
-        m_particule = static_cast<CParticle*>( m_iMan->SearchInstance(CLASS_PARTICULE) );
+    if (m_particle == nullptr)
+        m_particle = m_engine->GetParticle();
 
     for (int i = 0; i < static_cast<int>( m_vapors.size() ); i++)
         VaporFrame(i, rTime);
@@ -183,7 +181,7 @@ void CWater::VaporFrame(int i, float rTime)
     m_vapors[i].time += rTime;
 
     if (m_sound == nullptr)
-        m_sound = static_cast<CSoundInterface*>(m_iMan->SearchInstance(CLASS_SOUND));
+        m_sound = CApplication::GetInstancePointer()->GetSound();
 
     if (m_vapors[i].time <= m_vapors[i].delay)
     {
@@ -206,7 +204,7 @@ void CWater::VaporFrame(int i, float rTime)
                     Math::Point dim;
                     dim.x = Math::Rand()*1.5f+1.5f;
                     dim.y = dim.x;
-                    m_particule->CreateParticle(pos, speed, dim, PARTIERROR, 2.0f, 10.0f);
+                    m_particle->CreateParticle(pos, speed, dim, PARTIERROR, 2.0f, 10.0f);
                 }
             }
             else if (m_vapors[i].type == PARTIFLAME)
@@ -222,7 +220,7 @@ void CWater::VaporFrame(int i, float rTime)
                 Math::Point dim;
                 dim.x = Math::Rand()*2.0f+2.0f;
                 dim.y = dim.x;
-                m_particule->CreateParticle(pos, speed, dim, PARTIFLAME);
+                m_particle->CreateParticle(pos, speed, dim, PARTIFLAME);
             }
             else
             {
@@ -237,7 +235,7 @@ void CWater::VaporFrame(int i, float rTime)
                 Math::Point dim;
                 dim.x = Math::Rand()*1.0f+1.0f;
                 dim.y = dim.x;
-                m_particule->CreateParticle(pos, speed, dim, PARTIVAPOR);
+                m_particle->CreateParticle(pos, speed, dim, PARTIVAPOR);
             }
         }
     }
@@ -497,7 +495,7 @@ void CWater::Create(WaterType type1, WaterType type2, const std::string& fileNam
         m_engine->LoadTexture(m_fileName);
 
     if (m_terrain == nullptr)
-        m_terrain = static_cast<CTerrain*>(m_iMan->SearchInstance(CLASS_TERRAIN));
+        m_terrain = CRobotMain::GetInstancePointer()->GetTerrain();
 
     m_brickCount = m_terrain->GetBrickCount()*m_terrain->GetMosaicCount();
     m_brickSize  = m_terrain->GetBrickSize();

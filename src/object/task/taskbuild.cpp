@@ -14,29 +14,32 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// taskbuild.cpp
 
 #include "object/task/taskbuild.h"
 
 #include "common/iman.h"
+
 #include "graphics/core/color.h"
 #include "graphics/core/light.h"
 #include "graphics/engine/lightman.h"
 #include "graphics/engine/terrain.h"
 #include "graphics/engine/water.h"
+
 #include "math/geometry.h"
+
 #include "object/auto/auto.h"
 #include "object/motion/motionhuman.h"
 #include "object/robotmain.h"
+
 #include "physics/physics.h"
+
 #include "ui/displaytext.h"
 
 #include <string.h>
 
 // Object's constructor.
 
-CTaskBuild::CTaskBuild(CInstanceManager* iMan, CObject* object)
-                       : CTask(iMan, object)
+CTaskBuild::CTaskBuild(CObject* object) : CTask(object)
 {
     int     i;
 
@@ -75,7 +78,7 @@ CTaskBuild::~CTaskBuild()
 
 bool CTaskBuild::CreateBuilding(Math::Vector pos, float angle)
 {
-    m_building = new CObject(m_iMan);
+    m_building = new CObject();
     if ( !m_building->CreateBuilding(pos, angle, 0.0f, m_type, 0.0f) )
     {
         delete m_building;
@@ -596,11 +599,13 @@ Error CTaskBuild::FlatFloor()
         return bLittleFlat?ERR_BUILD_FLATLIT:ERR_BUILD_FLAT;
     }
 
+    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
+
     max = 100000.0f;
     bBase = false;
     for ( i=0 ; i<1000000 ; i++ )
     {
-        pObj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
+        pObj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
         if ( pObj == 0 )  break;
 
         if ( !pObj->GetActif() )  continue;  // inactive?
@@ -648,7 +653,7 @@ Error CTaskBuild::FlatFloor()
     max = 100000.0f;
     for ( i=0 ; i<1000000 ; i++ )
     {
-        pObj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
+        pObj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
         if ( pObj == 0 )  break;
 
         if ( !pObj->GetActif() )  continue;  // inactive?
@@ -715,12 +720,14 @@ CObject* CTaskBuild::SearchMetalObject(float &angle, float dMin, float dMax,
     iAngle = m_object->GetAngleY(0);
     iAngle = Math::NormAngle(iAngle);  // 0..2*Math::PI
 
+    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
+
     min = 1000000.0f;
     pBest = 0;
     bMetal = false;
     for ( i=0 ; i<1000000 ; i++ )
     {
-        pObj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
+        pObj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
         if ( pObj == 0 )  break;
 
         if ( !pObj->GetActif() )  continue;  // objet inactive?
@@ -779,9 +786,11 @@ void CTaskBuild::DeleteMark(Math::Vector pos, float radius)
     float       distance;
     int         i;
 
+    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
+
     for ( i=0 ; i<1000000 ; i++ )
     {
-        pObj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
+        pObj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
         if ( pObj == 0 )  break;
 
         type = pObj->GetType();

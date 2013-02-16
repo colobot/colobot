@@ -29,7 +29,6 @@
 #include <stdio.h>
 
 
-class CInstanceManager;
 class CObject;
 class CTaskManager;
 class CRobotMain;
@@ -52,7 +51,7 @@ class CWater;
 class CScript
 {
 public:
-    CScript(CInstanceManager* iMan, CObject* object, CTaskManager** secondaryTask);
+    CScript(CObject* object, CTaskManager** secondaryTask);
     ~CScript();
 
     static void InitFonctions();
@@ -178,7 +177,7 @@ private:
     static bool     Process(CScript* script, CBotVar* result, int &exception);
     static CObject* SearchInfo(CScript* script, CObject* object, float power);
 
-    CInstanceManager*   m_iMan;
+protected:
     Gfx::CEngine*       m_engine;
     Ui::CInterface*         m_interface;
     Ui::CDisplayText*   m_displayText;

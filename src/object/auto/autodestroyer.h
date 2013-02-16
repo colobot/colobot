@@ -37,7 +37,7 @@ enum AutoDestroyerPhase
 class CAutoDestroyer : public CAuto
 {
 public:
-    CAutoDestroyer(CInstanceManager* iMan, CObject* object);
+    CAutoDestroyer(CObject* object);
     ~CAutoDestroyer();
 
     void        DeleteObject(bool bAll=false);

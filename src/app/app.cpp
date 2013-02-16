@@ -46,7 +46,7 @@
 #endif
 
 
-template<> CApplication* CSingleton<CApplication>::mInstance = nullptr;
+template<> CApplication* CSingleton<CApplication>::m_instance = nullptr;
 
 //! Static buffer for putenv locale
 static char S_LANGUAGE[50] = { 0 };
@@ -94,7 +94,7 @@ CApplication::CApplication()
 {
     m_private       = new ApplicationPrivate();
     m_iMan          = new CInstanceManager();
-    m_eventQueue    = new CEventQueue(m_iMan);
+    m_eventQueue    = new CEventQueue();
     m_profile       = new CProfile();
 
     m_engine    = nullptr;
@@ -185,6 +185,16 @@ CApplication::~CApplication()
         DestroyTimeStamp(m_performanceCounters[i][0]);
         DestroyTimeStamp(m_performanceCounters[i][1]);
     }
+}
+
+CEventQueue* CApplication::GetEventQueue()
+{
+    return m_eventQueue;
+}
+
+CSoundInterface* CApplication::GetSound()
+{
+    return m_sound;
 }
 
 ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
@@ -410,7 +420,7 @@ bool CApplication::Create()
     }
 
     // Create the 3D engine
-    m_engine = new Gfx::CEngine(m_iMan, this);
+    m_engine = new Gfx::CEngine(this);
 
     m_engine->SetDevice(m_device);
 
@@ -425,7 +435,7 @@ bool CApplication::Create()
     m_modelManager = new Gfx::CModelManager(m_engine);
 
     // Create the robot application.
-    m_robotMain = new CRobotMain(m_iMan, this);
+    m_robotMain = new CRobotMain(this);
 
     m_robotMain->ChangePhase(PHASE_WELCOME1);
 

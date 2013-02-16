@@ -36,7 +36,7 @@ enum TaskPenPhase
 class CTaskPen : public CTask
 {
 public:
-    CTaskPen(CInstanceManager* iMan, CObject* object);
+    CTaskPen(CObject* object);
     ~CTaskPen();
 
     bool        EventProcess(const Event &event);

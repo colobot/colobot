@@ -37,7 +37,7 @@ enum AutoRadarPhase
 class CAutoRadar : public CAuto
 {
 public:
-    CAutoRadar(CInstanceManager* iMan, CObject* object);
+    CAutoRadar(CObject* object);
     ~CAutoRadar();
 
     void        DeleteObject(bool bAll=false);

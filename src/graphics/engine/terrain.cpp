@@ -19,11 +19,13 @@
 #include "graphics/engine/terrain.h"
 
 #include "app/app.h"
-#include "common/iman.h"
+
 #include "common/image.h"
 #include "common/logger.h"
+
 #include "graphics/engine/engine.h"
 #include "graphics/engine/water.h"
+
 #include "math/geometry.h"
 
 #include <sstream>
@@ -35,13 +37,10 @@
 namespace Gfx {
 
 
-CTerrain::CTerrain(CInstanceManager* iMan)
+CTerrain::CTerrain()
 {
-    m_iMan = iMan;
-    m_iMan->AddInstance(CLASS_TERRAIN, this);
-
-    m_engine = static_cast<CEngine*>( m_iMan->SearchInstance(CLASS_ENGINE) );
-    m_water  = static_cast<CWater*>( m_iMan->SearchInstance(CLASS_WATER) );
+    m_engine = CEngine::GetInstancePointer();
+    m_water  = m_engine->GetWater();
 
     m_mosaicCount     = 20;
     m_brickCount      = 1 << 4;

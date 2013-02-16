@@ -30,21 +30,19 @@
 #include "math/vector.h"
 
 
-class CInstanceManager;
 class CObject;
 class CBrain;
 class CMotion;
 class CSoundInterface;
 
-namespace Gfx
-{
+namespace Gfx {
 class CCamera;
 class CEngine;
 class CLight;
 class CParticle;
 class CTerrain;
 class CWater;
-};
+}
 
 
 enum PhysicsType
@@ -97,7 +95,7 @@ struct Motion
 class CPhysics
 {
 public:
-    CPhysics(CInstanceManager* iMan, CObject* object);
+    CPhysics(CObject* object);
     ~CPhysics();
 
     void        DeleteObject(bool bAll=false);
@@ -195,7 +193,6 @@ protected:
     void        WheelParticle(int color, float width);
 
 protected:
-    CInstanceManager*   m_iMan;
     Gfx::CEngine*       m_engine;
     Gfx::CLightManager* m_lightMan;
     Gfx::CParticle*     m_particle;

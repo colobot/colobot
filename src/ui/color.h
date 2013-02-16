@@ -23,37 +23,34 @@
 
 
 namespace Gfx{
-    class CEngine;
-    struct Color;
+class CEngine;
+struct Color;
 }
 
 namespace Ui {
-    class CColor : public CControl
-    {
-    public:
-    //    CColor(CInstanceManager* iMan);
-        CColor();
-        virtual   ~CColor();
 
-        bool      Create(Math::Point pos, Math::Point dim, int icon, EventType eventType);
+class CColor : public CControl
+{
+public:
+    CColor();
+    virtual   ~CColor();
 
-        bool      EventProcess(const Event &event);
+    bool      Create(Math::Point pos, Math::Point dim, int icon, EventType eventType);
 
-        void      Draw();
+    bool      EventProcess(const Event &event);
 
-        void      SetRepeat(bool bRepeat);
-        bool      GetRepeat();
+    void      Draw();
 
-        void       SetColor(Gfx::Color color);
-        Gfx::Color GetColor();
+    void      SetRepeat(bool bRepeat);
+    bool      GetRepeat();
 
-    protected:
+    void       SetColor(Gfx::Color color);
+    Gfx::Color GetColor();
 
-    protected:
-        bool           m_bRepeat;
-        float          m_repeat;
-        Gfx::Color     m_color;
-    };
-
+protected:
+    bool           m_bRepeat;
+    float          m_repeat;
+    Gfx::Color     m_color;
+};
 
 }

@@ -26,7 +26,6 @@
 #include <string>
 
 class CEventQueue;
-class CInstanceManager;
 class CRobotMain;
 class CScript;
 class CSoundInterface;
@@ -54,70 +53,69 @@ enum StudioDialog
 
 class CStudio
 {
-    public:
-        CStudio();
-        ~CStudio();
+public:
+    CStudio();
+    ~CStudio();
 
-        bool        EventProcess(const Event &event);
+    bool        EventProcess(const Event &event);
 
-        void        StartEditScript(CScript *script, std::string name, int rank);
-        bool        StopEditScript(bool bCancel);
+    void        StartEditScript(CScript *script, std::string name, int rank);
+    bool        StopEditScript(bool bCancel);
 
-    protected:
-        bool        EventFrame(const Event &event);
-        void        SearchToken(CEdit* edit);
-        void        ColorizeScript(CEdit* edit);
-        void        AdjustEditScript();
-        void        SetInfoText(std::string text, bool bClickable);
-        void        ViewEditScript();
-        void        UpdateFlux();
-        void        UpdateButtons();
+protected:
+    bool        EventFrame(const Event &event);
+    void        SearchToken(CEdit* edit);
+    void        ColorizeScript(CEdit* edit);
+    void        AdjustEditScript();
+    void        SetInfoText(std::string text, bool bClickable);
+    void        ViewEditScript();
+    void        UpdateFlux();
+    void        UpdateButtons();
 
-        void        StartDialog(StudioDialog type);
-        void        StopDialog();
-        void        AdjustDialog();
-        bool        EventDialog(const Event &event);
-        void        UpdateChangeList();
-        void        UpdateChangeEdit();
-        void        UpdateDialogAction();
-        void        UpdateDialogPublic();
-        void        UpdateDialogList();
-        void        SearchDirectory(char* dir, bool bCreate);
-        bool        ReadProgram();
-        bool        WriteProgram();
+    void        StartDialog(StudioDialog type);
+    void        StopDialog();
+    void        AdjustDialog();
+    bool        EventDialog(const Event &event);
+    void        UpdateChangeList();
+    void        UpdateChangeEdit();
+    void        UpdateDialogAction();
+    void        UpdateDialogPublic();
+    void        UpdateDialogList();
+    void        SearchDirectory(char* dir, bool bCreate);
+    bool        ReadProgram();
+    bool        WriteProgram();
 
-    protected:
-        CInstanceManager* m_iMan;
-        Gfx::CEngine* m_engine;
-        CEventQueue*     m_event;
-        CRobotMain* m_main;
-        Gfx::CCamera*    m_camera;
-        CSoundInterface* m_sound;
-        CInterface* m_interface;
-        CApplication *m_app;
+protected:
+    Gfx::CEngine*    m_engine;
+    CEventQueue*     m_event;
+    CRobotMain*      m_main;
+    Gfx::CCamera*    m_camera;
+    CSoundInterface* m_sound;
+    CInterface*      m_interface;
+    CApplication*    m_app;
 
-        int         m_rank;
-        CScript*    m_script;
-        Gfx::CameraType m_editCamera;
+    int         m_rank;
+    CScript*    m_script;
+    Gfx::CameraType m_editCamera;
 
-        bool        m_bEditMaximized;
-        bool        m_bEditMinimized;
+    bool        m_bEditMaximized;
+    bool        m_bEditMinimized;
 
-        Math::Point     m_editActualPos;
-        Math::Point     m_editActualDim;
-        Math::Point     m_editFinalPos;
-        Math::Point     m_editFinalDim;
+    Math::Point     m_editActualPos;
+    Math::Point     m_editActualDim;
+    Math::Point     m_editFinalPos;
+    Math::Point     m_editFinalDim;
 
-        float       m_time;
-        float       m_fixInfoTextTime;
-        bool        m_bRunning;
-        bool        m_bRealTime;
-        bool        m_bInitPause;
-        std::string  m_helpFilename;
+    float       m_time;
+    float       m_fixInfoTextTime;
+    bool        m_bRunning;
+    bool        m_bRealTime;
+    bool        m_bInitPause;
+    std::string  m_helpFilename;
 
     StudioDialog m_dialog;
 };
 
 
-}
+} // namespace Ui
 

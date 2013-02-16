@@ -1,20 +1,28 @@
 #include "graphics/engine/engine.h"
 #include "graphics/engine/text.h"
+
 #include "mocks/text_mock.h"
+
+template<> Gfx::CEngine* CSingleton<Gfx::CEngine>::m_instance = nullptr;
 
 namespace Gfx {
 
-CEngine::CEngine(CInstanceManager* iMan, CApplication* app) :
-    m_iMan(iMan), m_app(app)
+CEngine::CEngine(CApplication* app) :
+    m_app(app)
 {
-    m_text = new CTextMock(m_iMan, this);
+    m_text = new CTextMock(this);
     m_text->Create();
 }
 
 CEngine::~CEngine()
 {
     delete m_text;
-    m_text = NULL;
+    m_text = nullptr;
+}
+
+CParticle* CEngine::GetParticle()
+{
+    return nullptr;
 }
 
 Math::Point CEngine::WindowToInterfaceSize(Math::IntPoint size)

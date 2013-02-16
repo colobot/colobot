@@ -26,7 +26,7 @@
 class CMotionWorm : public CMotion
 {
 public:
-    CMotionWorm(CInstanceManager* iMan, CObject* object);
+    CMotionWorm(CObject* object);
     ~CMotionWorm();
 
     void    DeleteObject(bool bAll=false);

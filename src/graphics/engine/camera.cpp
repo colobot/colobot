@@ -30,6 +30,7 @@
 #include "math/geometry.h"
 
 #include "object/object.h"
+#include "object/robotmain.h"
 
 #include "physics/physics.h"
 
@@ -54,14 +55,13 @@ void SetTransparency(CObject* obj, float value)
 
 
 
-CCamera::CCamera(CInstanceManager* iMan)
+CCamera::CCamera()
 {
-    m_iMan = iMan;
-    m_iMan->AddInstance(CLASS_CAMERA, this);
+    m_engine  = CEngine::GetInstancePointer();
+    m_water   = m_engine->GetWater();
 
-    m_engine  = static_cast<CEngine*> ( m_iMan->SearchInstance(CLASS_ENGINE) );
-    m_terrain = static_cast<CTerrain*>( m_iMan->SearchInstance(CLASS_TERRAIN) );
-    m_water   = static_cast<CWater*>  ( m_iMan->SearchInstance(CLASS_WATER) );
+    m_main    = CRobotMain::GetInstancePointer();
+    m_terrain = m_main->GetTerrain();
 
     m_type      = CAM_TYPE_FREE;
     m_smooth    = CAM_SMOOTH_NORM;
@@ -227,11 +227,13 @@ void CCamera::SetType(CameraType type)
     m_remotePan  = 0.0f;
     m_remoteZoom = 0.0f;
 
+    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
+
     if ( (m_type == CAM_TYPE_BACK) && m_transparency )
     {
         for (int i = 0; i < 1000000; i++)
         {
-            CObject* obj = static_cast<CObject*>( m_iMan->SearchInstance(CLASS_OBJECT, i) );
+            CObject* obj = static_cast<CObject*>( iMan->SearchInstance(CLASS_OBJECT, i) );
             if (obj == NULL)
                 break;
 
@@ -881,9 +883,11 @@ bool CCamera::IsCollisionBack(Math::Vector &eye, Math::Vector lookat)
 
     m_transparency = false;
 
+    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
+
     for (int i = 0 ;i < 1000000; i++)
     {
-        CObject *obj = static_cast<CObject*>( m_iMan->SearchInstance(CLASS_OBJECT, i) );
+        CObject *obj = static_cast<CObject*>( iMan->SearchInstance(CLASS_OBJECT, i) );
         if (obj == NULL) break;
 
         if (obj->GetTruck()) continue;  // battery or cargo?
@@ -958,9 +962,11 @@ bool CCamera::IsCollisionBack(Math::Vector &eye, Math::Vector lookat)
 
 bool CCamera::IsCollisionFix(Math::Vector &eye, Math::Vector lookat)
 {
+    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
+
     for (int i = 0; i < 1000000; i++)
     {
-        CObject *obj = static_cast<CObject*>( m_iMan->SearchInstance(CLASS_OBJECT, i) );
+        CObject *obj = static_cast<CObject*>( iMan->SearchInstance(CLASS_OBJECT, i) );
         if (obj == NULL) break;
 
         if (obj == m_cameraObj) continue;
@@ -1650,7 +1656,7 @@ Math::Vector CCamera::ExcludeObject(Math::Vector eye, Math::Vector lookat,
 /*
     for (int i = 0; i < 1000000; i++)
     {
-        CObject* obj = static_cast<CObject*>( m_iMan->SearchInstance(CLASS_OBJECT, i) );
+        CObject* obj = static_cast<CObject*>( iMan->SearchInstance(CLASS_OBJECT, i) );
         if (obj == NULL)
             break;
 

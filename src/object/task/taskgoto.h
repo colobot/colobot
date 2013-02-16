@@ -20,6 +20,7 @@
 
 
 #include "object/task/task.h"
+
 #include "math/vector.h"
 
 
@@ -72,7 +73,7 @@ enum TaskGotoPhase
 class CTaskGoto : public CTask
 {
 public:
-    CTaskGoto(CInstanceManager* iMan, CObject* object);
+    CTaskGoto(CObject* object);
     ~CTaskGoto();
 
     bool        EventProcess(const Event &event);

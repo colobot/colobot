@@ -27,16 +27,14 @@
 
 
 
-class CInstanceManager;
-//class CD3DEngine
 class CObject;
 class CSound;
 
 namespace Gfx {
-    class CEngine;
+class CEngine;
 }
 
-namespace Ui {;
+namespace Ui {
 
 class CInterface;
 
@@ -54,7 +52,6 @@ const int MAXDTLINE = 4;
 class CDisplayText
 {
 public:
-//    CDisplayText(CInstanceManager* iMan);
     CDisplayText();
     ~CDisplayText();
 
@@ -87,7 +84,6 @@ protected:
     CObject*    SearchToto();
 
 protected:
-    CInstanceManager* m_iMan;
     Gfx::CEngine*     m_engine;
     Ui::CInterface*     m_interface;
     CSoundInterface*         m_sound;
@@ -104,4 +100,5 @@ protected:
 };
 
 
-}
+} // namespace Ui
+

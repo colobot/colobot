@@ -19,11 +19,8 @@
 
 #pragma once
 
-#include <string>
-
 #include "common/event.h"
 #include "common/misc.h"
-#include "common/iman.h"
 
 #include "math/point.h"
 
@@ -48,6 +45,8 @@
 #include "ui/target.h"
 #include "ui/map.h"
 #include "ui/window.h"
+
+#include <string>
 
 namespace Ui {
 
@@ -92,7 +91,6 @@ class CInterface
         int GetNextFreeControl();
         template <typename T> inline T* CreateControl(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
 
-        CInstanceManager* m_iMan;
         CEventQueue* m_event;
         Gfx::CEngine* m_engine;
         Gfx::CCamera* m_camera;

@@ -20,7 +20,6 @@
 
 #include "app/app.h"
 
-#include "common/iman.h"
 #include "common/image.h"
 #include "common/key.h"
 #include "common/logger.h"
@@ -43,19 +42,15 @@
 
 #include "ui/interface.h"
 
+template<> Gfx::CEngine* CSingleton<Gfx::CEngine>::m_instance = nullptr;
 
 // Graphics module namespace
 namespace Gfx {
 
-CEngine::CEngine(CInstanceManager *iMan, CApplication *app)
+CEngine::CEngine(CApplication *app)
 {
-    m_iMan   = iMan;
     m_app    = app;
     m_device = nullptr;
-
-    m_iMan = iMan;
-    m_iMan->AddInstance(CLASS_ENGINE, this);
-    m_app = app;
 
     m_lightMan   = nullptr;
     m_text       = nullptr;
@@ -169,11 +164,17 @@ CEngine::CEngine(CInstanceManager *iMan, CApplication *app)
 
 CEngine::~CEngine()
 {
-    m_iMan    = nullptr;
-    m_app     = nullptr;
-    m_device  = nullptr;
-    m_sound   = nullptr;
-    m_terrain = nullptr;
+    m_app       = nullptr;
+    m_sound     = nullptr;
+    m_device    = nullptr;
+    m_text      = nullptr;
+    m_lightMan  = nullptr;
+    m_particle  = nullptr;
+    m_water     = nullptr;
+    m_cloud     = nullptr;
+    m_lightning = nullptr;
+    m_planet    = nullptr;
+    m_terrain   = nullptr;
 
     DestroyTimeStamp(m_lastFrameTime);
     m_lastFrameTime = nullptr;
@@ -191,27 +192,63 @@ CDevice* CEngine::GetDevice()
     return m_device;
 }
 
-void CEngine::SetTerrain(CTerrain* terrain)
-{
-    m_terrain = terrain;
-}
-
 CText* CEngine::GetText()
 {
     return m_text;
 }
 
+CLightManager* CEngine::GetLightManager()
+{
+    return m_lightMan;
+}
+
+CParticle* CEngine::GetParticle()
+{
+    return m_particle;
+}
+
+CTerrain* CEngine::GetTerrain()
+{
+    return m_terrain;
+}
+
+CWater* CEngine::GetWater()
+{
+    return m_water;
+}
+
+CLightning* CEngine::GetLightning()
+{
+    return m_lightning;
+}
+
+CPlanet* CEngine::GetPlanet()
+{
+    return m_planet;
+}
+
+CCloud* CEngine::GetCloud()
+{
+    return m_cloud;
+}
+
+void CEngine::SetTerrain(CTerrain* terrain)
+{
+    m_terrain = terrain;
+}
+
+
 bool CEngine::Create()
 {
     m_size = m_app->GetVideoConfig().size;
 
-    m_lightMan   = new CLightManager(m_iMan, this);
-    m_text       = new CText(m_iMan, this);
-    m_particle   = new CParticle(m_iMan, this);
-    m_water      = new CWater(m_iMan, this);
-    m_cloud      = new CCloud(m_iMan, this);
-    m_lightning  = new CLightning(m_iMan, this);
-    m_planet     = new CPlanet(m_iMan, this);
+    m_lightMan   = new CLightManager(this);
+    m_text       = new CText(this);
+    m_particle   = new CParticle(this);
+    m_water      = new CWater(this);
+    m_cloud      = new CCloud(this);
+    m_lightning  = new CLightning(this);
+    m_planet     = new CPlanet(this);
 
     m_lightMan->SetDevice(m_device);
     m_particle->SetDevice(m_device);
@@ -2046,7 +2083,7 @@ void CEngine::SetViewParams(const Math::Vector& eyePt, const Math::Vector& looka
     Math::LoadViewMatrix(m_matView, eyePt, lookatPt, upVec);
 
     if (m_sound == nullptr)
-        m_sound = static_cast<CSoundInterface*>( m_iMan->SearchInstance(CLASS_SOUND) );
+        m_sound = m_app->GetSound();
 
     if (m_sound != nullptr)
         m_sound->SetListener(eyePt, lookatPt);
@@ -3184,9 +3221,11 @@ void CEngine::DrawInterface()
     SetState(Gfx::ENG_RSTATE_NORMAL);
 
     // Draw the entire interface
-    Ui::CInterface* interface = static_cast<Ui::CInterface*>( m_iMan->SearchInstance(CLASS_INTERFACE) );
+    Ui::CInterface* interface = CRobotMain::GetInstancePointer()->GetInterface();
     if (interface != nullptr)
+    {
         interface->Draw();
+    }
 
     m_interfaceMode = false;
     m_lastState = -1;

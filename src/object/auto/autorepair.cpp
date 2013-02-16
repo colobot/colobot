@@ -19,8 +19,11 @@
 #include "object/auto/autorepair.h"
 
 #include "common/iman.h"
+
 #include "physics/physics.h"
+
 #include "script/cmdtoken.h"
+
 #include "ui/interface.h"
 #include "ui/window.h"
 
@@ -30,8 +33,7 @@
 
 // Object's constructor.
 
-CAutoRepair::CAutoRepair(CInstanceManager* iMan, CObject* object)
-                         : CAuto(iMan, object)
+CAutoRepair::CAutoRepair(CObject* object) : CAuto(object)
 {
     Init();
     m_phase = ARP_WAIT;  // paused until the first Init ()

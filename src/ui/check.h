@@ -22,27 +22,24 @@
 #include "ui/control.h"
 
 
-namespace Gfx{
-    class CEngine;
+namespace Gfx {
+class CEngine;
 }
 
 namespace Ui {
-    class CCheck : public CControl
-    {
-    public:
-        CCheck();
-        virtual ~CCheck();
 
-        bool    Create(Math::Point pos, Math::Point dim, int icon, EventType eventType);
+class CCheck : public CControl
+{
+public:
+    CCheck();
+    virtual ~CCheck();
 
-        bool    EventProcess(const Event &event);
+    bool    Create(Math::Point pos, Math::Point dim, int icon, EventType eventType);
 
-        void    Draw();
+    bool    EventProcess(const Event &event);
 
-    protected:
-
-    protected:
-    };
+    void    Draw();
+};
 
 }
 

@@ -14,14 +14,13 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// group.cpp
 
 #include "ui/group.h"
 
 #include "common/event.h"
 #include "common/misc.h"
-#include "common/iman.h"
 #include "common/restext.h"
+
 #include "graphics/engine/engine.h"
 
 
@@ -32,7 +31,6 @@
 namespace Ui {
 // Object's constructor.
 
-//CGroup::CGroup(CInstanceManager* iMan) : CControl(iMan)
 CGroup::CGroup() : CControl()
 {
 }

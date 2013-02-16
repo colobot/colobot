@@ -37,7 +37,7 @@ enum AutoEggPhase
 class CAutoEgg : public CAuto
 {
 public:
-    CAutoEgg(CInstanceManager* iMan, CObject* object);
+    CAutoEgg(CObject* object);
     ~CAutoEgg();
 
     void        DeleteObject(bool bAll=false);

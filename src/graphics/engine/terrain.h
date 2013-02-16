@@ -26,9 +26,6 @@
 #include "graphics/engine/engine.h"
 
 
-class CInstanceManager;
-
-
 // Graphics module namespace
 namespace Gfx {
 
@@ -223,7 +220,7 @@ struct FlyingLimit
 class CTerrain
 {
 public:
-    CTerrain(CInstanceManager* iMan);
+    CTerrain();
     ~CTerrain();
 
     //! Generates a new flat terrain
@@ -359,7 +356,6 @@ protected:
     void        AdjustBuildingLevel(Math::Vector &p);
 
 protected:
-    CInstanceManager* m_iMan;
     CEngine*        m_engine;
     CWater*         m_water;
 

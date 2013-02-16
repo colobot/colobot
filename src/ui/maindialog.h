@@ -20,20 +20,18 @@
 
 
 #include "graphics/core/color.h"
+
 #include "object/robotmain.h"
 
-class CInstanceManager;
 class CEventQueue;
 class CSoundInterface;
 
-namespace Gfx
-{
+namespace Gfx {
 class CEngine;
 class CParticle;
-};
+}
 
-namespace Ui
-{
+namespace Ui {
 
 class CInterface;
 class CWindow;
@@ -64,7 +62,7 @@ struct GamerPerso
 class CMainDialog
 {
 public:
-    CMainDialog(CInstanceManager* iMan);
+    CMainDialog();
     ~CMainDialog();
 
     bool    EventProcess(const Event &event);
@@ -172,7 +170,6 @@ protected:
     void    ChangeKey(EventType event);
 
 protected:
-    CInstanceManager* m_iMan;
     CApplication*     m_app;
     CRobotMain*       m_main;
     CEventQueue*      m_eventQueue;
@@ -260,3 +257,4 @@ protected:
 };
 
 } // namespace Ui
+

@@ -34,8 +34,7 @@ const float START_TIME = 1000.0f;       // beginning of the relative time
 
 // Object's constructor.
 
-CMotionMother::CMotionMother(CInstanceManager* iMan, CObject* object)
-                            : CMotion(iMan, object)
+CMotionMother::CMotionMother(CObject* object) : CMotion(object)
 {
     m_armMember      = START_TIME;
     m_armTimeAbs     = START_TIME;

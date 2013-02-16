@@ -17,8 +17,10 @@
 
 #include "object/brain.h"
 
-#include "common/misc.h"
+#include "app/app.h"
+
 #include "common/iman.h"
+#include "common/misc.h"
 
 #include "graphics/core/color.h"
 #include "graphics/engine/terrain.h"
@@ -47,28 +49,25 @@ const int MAXTRACERECORD = 1000;
 
 // Object's constructor.
 
-CBrain::CBrain(CInstanceManager* iMan, CObject* object)
+CBrain::CBrain(CObject* object)
 {
-    int         i;
-
-    m_iMan = iMan;
-    m_iMan->AddInstance(CLASS_BRAIN, this, 100);
+    CInstanceManager::GetInstancePointer()->AddInstance(CLASS_BRAIN, this, 100);
 
     m_object      = object;
-    m_engine      = static_cast<Gfx::CEngine*>(m_iMan->SearchInstance(CLASS_ENGINE));
-    m_terrain     = static_cast<Gfx::CTerrain*>(m_iMan->SearchInstance(CLASS_TERRAIN));
-    m_water       = static_cast<Gfx::CWater*>(m_iMan->SearchInstance(CLASS_WATER));
-    m_camera      = static_cast<Gfx::CCamera*>(m_iMan->SearchInstance(CLASS_CAMERA));
-    m_interface   = static_cast<Ui::CInterface*>(m_iMan->SearchInstance(CLASS_INTERFACE));
-    m_displayText = static_cast<Ui::CDisplayText*>(m_iMan->SearchInstance(CLASS_DISPLAYTEXT));
-    m_main        = static_cast<CRobotMain*>(m_iMan->SearchInstance(CLASS_MAIN));
-    m_sound       = static_cast<CSoundInterface*>(m_iMan->SearchInstance(CLASS_SOUND));
-    m_particle    = static_cast<Gfx::CParticle*>(m_iMan->SearchInstance(CLASS_PARTICULE));
-    m_physics     = 0;
-    m_motion      = 0;
-    m_primaryTask = 0;
-    m_secondaryTask = 0;
-    m_studio      = 0;
+    m_engine      = Gfx::CEngine::GetInstancePointer();
+    m_water       = m_engine->GetWater();
+    m_particle    = m_engine->GetParticle();
+    m_main        = CRobotMain::GetInstancePointer();
+    m_terrain     = m_main->GetTerrain();
+    m_camera      = m_main->GetCamera();
+    m_interface   = m_main->GetInterface();
+    m_displayText = m_main->GetDisplayText();
+    m_sound       = CApplication::GetInstancePointer()->GetSound();
+    m_physics     = nullptr;
+    m_motion      = nullptr;
+    m_primaryTask = nullptr;
+    m_secondaryTask = nullptr;
+    m_studio      = nullptr;
 
     m_program = -1;
     m_bActivity = true;
@@ -89,7 +88,7 @@ CBrain::CBrain(CInstanceManager* iMan, CObject* object)
     m_defaultEnter = EVENT_NULL;
     m_manipStyle   = EVENT_OBJECT_MFRONT;
 
-    for ( i=0 ; i<BRAINMAXSCRIPT ; i++ )
+    for (int i=0 ; i<BRAINMAXSCRIPT ; i++ )
     {
         m_script[i] = 0;
         m_scriptName[i][0] = 0;
@@ -106,9 +105,7 @@ CBrain::CBrain(CInstanceManager* iMan, CObject* object)
 
 CBrain::~CBrain()
 {
-    int     i;
-
-    for ( i=0 ; i<BRAINMAXSCRIPT ; i++ )
+    for (int i=0 ; i<BRAINMAXSCRIPT ; i++ )
     {
         delete m_script[i];
         m_script[i] = nullptr;
@@ -126,7 +123,7 @@ CBrain::~CBrain()
     delete[] m_traceRecordBuffer;
     m_traceRecordBuffer = nullptr;
 
-    m_iMan->DeleteInstance(CLASS_BRAIN, this);
+    CInstanceManager::GetInstancePointer()->DeleteInstance(CLASS_BRAIN, this);
 }
 
 
@@ -873,7 +870,7 @@ void CBrain::StartEditScript(int rank, char* name)
 
     if ( m_script[rank] == 0 )
     {
-        m_script[rank] = new CScript(m_iMan, m_object, &m_secondaryTask);
+        m_script[rank] = new CScript(m_object, &m_secondaryTask);
     }
 
     m_studio = new Ui::CStudio();
@@ -908,7 +905,7 @@ Error CBrain::StartTaskTake()
         m_primaryTask = 0;
     }
 
-    m_primaryTask = new CTaskManager(m_iMan, m_object);
+    m_primaryTask = new CTaskManager(m_object);
     err = m_primaryTask->StartTaskTake();
     UpdateInterface();
     return err;
@@ -926,7 +923,7 @@ Error CBrain::StartTaskManip(TaskManipOrder order, TaskManipArm arm)
         m_primaryTask = 0;
     }
 
-    m_primaryTask = new CTaskManager(m_iMan, m_object);
+    m_primaryTask = new CTaskManager(m_object);
     err = m_primaryTask->StartTaskManip(order, arm);
     UpdateInterface();
     return err;
@@ -944,7 +941,7 @@ Error CBrain::StartTaskFlag(TaskFlagOrder order, int rank)
         m_primaryTask = 0;
     }
 
-    m_primaryTask = new CTaskManager(m_iMan, m_object);
+    m_primaryTask = new CTaskManager(m_object);
     err = m_primaryTask->StartTaskFlag(order, rank);
     UpdateInterface();
     return err;
@@ -962,7 +959,7 @@ Error CBrain::StartTaskBuild(ObjectType type)
         m_primaryTask = 0;
     }
 
-    m_primaryTask = new CTaskManager(m_iMan, m_object);
+    m_primaryTask = new CTaskManager(m_object);
     err = m_primaryTask->StartTaskBuild(type);
     UpdateInterface();
     return err;
@@ -980,7 +977,7 @@ Error CBrain::StartTaskSearch()
         m_primaryTask = 0;
     }
 
-    m_primaryTask = new CTaskManager(m_iMan, m_object);
+    m_primaryTask = new CTaskManager(m_object);
     err = m_primaryTask->StartTaskSearch();
     UpdateInterface();
     return err;
@@ -998,7 +995,7 @@ Error CBrain::StartTaskTerraform()
         m_primaryTask = 0;
     }
 
-    m_primaryTask = new CTaskManager(m_iMan, m_object);
+    m_primaryTask = new CTaskManager(m_object);
     err = m_primaryTask->StartTaskTerraform();
     UpdateInterface();
     return err;
@@ -1020,7 +1017,7 @@ Error CBrain::StartTaskPen(bool bDown, int color)
         m_primaryTask = 0;
     }
 
-    m_primaryTask = new CTaskManager(m_iMan, m_object);
+    m_primaryTask = new CTaskManager(m_object);
     err = m_primaryTask->StartTaskPen(bDown, color);
     UpdateInterface();
     return err;
@@ -1038,7 +1035,7 @@ Error CBrain::StartTaskRecover()
         m_primaryTask = 0;
     }
 
-    m_primaryTask = new CTaskManager(m_iMan, m_object);
+    m_primaryTask = new CTaskManager(m_object);
     err = m_primaryTask->StartTaskRecover();
     UpdateInterface();
     return err;
@@ -1056,7 +1053,7 @@ Error CBrain::StartTaskShield(TaskShieldMode mode)
         m_secondaryTask = 0;
     }
 
-    m_secondaryTask = new CTaskManager(m_iMan, m_object);
+    m_secondaryTask = new CTaskManager(m_object);
     err = m_secondaryTask->StartTaskShield(mode, 1000.0f);
     UpdateInterface();
     return err;
@@ -1074,7 +1071,7 @@ Error CBrain::StartTaskFire(float delay)
         m_primaryTask = 0;
     }
 
-    m_primaryTask = new CTaskManager(m_iMan, m_object);
+    m_primaryTask = new CTaskManager(m_object);
     err = m_primaryTask->StartTaskFire(delay);
     UpdateInterface();
     return err;
@@ -1092,7 +1089,7 @@ Error CBrain::StartTaskFireAnt(Math::Vector impact)
         m_primaryTask = 0;
     }
 
-    m_primaryTask = new CTaskManager(m_iMan, m_object);
+    m_primaryTask = new CTaskManager(m_object);
     err = m_primaryTask->StartTaskFireAnt(impact);
     UpdateInterface();
     return err;
@@ -1110,7 +1107,7 @@ Error CBrain::StartTaskGunGoal(float dirV, float dirH)
         m_secondaryTask = 0;
     }
 
-    m_secondaryTask = new CTaskManager(m_iMan, m_object);
+    m_secondaryTask = new CTaskManager(m_object);
     err = m_secondaryTask->StartTaskGunGoal(dirV, dirH);
     UpdateInterface();
     return err;
@@ -1128,7 +1125,7 @@ Error CBrain::StartTaskReset(Math::Vector goal, Math::Vector angle)
         m_primaryTask = 0;
     }
 
-    m_primaryTask = new CTaskManager(m_iMan, m_object);
+    m_primaryTask = new CTaskManager(m_object);
     err = m_primaryTask->StartTaskReset(goal, angle);
     UpdateInterface();
     return err;
@@ -2698,7 +2695,7 @@ bool CBrain::ReadProgram(int rank, const char* filename)
 {
     if ( m_script[rank] == 0 )
     {
-        m_script[rank] = new CScript(m_iMan, m_object, &m_secondaryTask);
+        m_script[rank] = new CScript(m_object, &m_secondaryTask);
     }
 
     if ( m_script[rank]->ReadScript(filename) )  return true;
@@ -2723,7 +2720,7 @@ bool CBrain::WriteProgram(int rank, char* filename)
 {
     if ( m_script[rank] == 0 )
     {
-        m_script[rank] = new CScript(m_iMan, m_object, &m_secondaryTask);
+        m_script[rank] = new CScript(m_object, &m_secondaryTask);
     }
 
     if ( m_script[rank]->WriteScript(filename) )  return true;
@@ -2753,7 +2750,7 @@ bool CBrain::ReadStack(FILE *file)
 
             if ( m_script[op] == 0 )
             {
-                m_script[op] = new CScript(m_iMan, m_object, &m_secondaryTask);
+                m_script[op] = new CScript(m_object, &m_secondaryTask);
             }
             if ( !m_script[op]->ReadStack(file) )  return false;
         }
@@ -2915,7 +2912,7 @@ void CBrain::TraceRecordStop()
     i = m_selScript;
     if ( m_script[i] == 0 )
     {
-        m_script[i] = new CScript(m_iMan, m_object, &m_secondaryTask);
+        m_script[i] = new CScript(m_object, &m_secondaryTask);
     }
     m_script[i]->SendScript(buffer);
     delete[] buffer;

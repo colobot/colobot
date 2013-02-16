@@ -19,6 +19,7 @@
 #include "object/auto/automush.h"
 
 #include "common/iman.h"
+
 #include "script/cmdtoken.h"
 
 
@@ -28,8 +29,7 @@
 
 // Object's constructor.
 
-CAutoMush::CAutoMush(CInstanceManager* iMan, CObject* object)
-                     : CAuto(iMan, object)
+    CAutoMush::CAutoMush(CObject* object) : CAuto(object)
 {
     Init();
 }

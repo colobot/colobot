@@ -15,8 +15,6 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// alsound.cpp
-
 
 #include "alsound.h"
 
@@ -29,18 +27,12 @@ ALSound::ALSound()
     mAudioVolume = 1.0f;
     mMusicVolume = 1.0f;
     mMute = false;
-    mCurrentMusic = nullptr;    
-    auto pointer = CInstanceManager::GetInstancePointer();
-    if (pointer != nullptr)
-        CInstanceManager::GetInstancePointer()->AddInstance(CLASS_SOUND, this);
+    mCurrentMusic = nullptr;
 }
 
 
 ALSound::~ALSound()
 {
-    auto pointer = CInstanceManager::GetInstancePointer();
-    if (pointer != nullptr)
-        CInstanceManager::GetInstancePointer()->DeleteInstance(CLASS_SOUND, this);
     CleanUp();
 }
 

@@ -19,9 +19,13 @@
 #include "object/auto/autoderrick.h"
 
 #include "common/iman.h"
+
 #include "graphics/engine/terrain.h"
+
 #include "math/geometry.h"
+
 #include "script/cmdtoken.h"
+
 #include "ui/interface.h"
 #include "ui/window.h"
 #include "ui/displaytext.h"
@@ -38,8 +42,7 @@ const float DERRICK_DELAYu  = 30.0f;    // same, but for uranium
 
 // Object's constructor.
 
-CAutoDerrick::CAutoDerrick(CInstanceManager* iMan, CObject* object)
-                           : CAuto(iMan, object)
+CAutoDerrick::CAutoDerrick(CObject* object) : CAuto(object)
 {
     Init();
     m_phase = ADP_WAIT;  // paused until the first Init ()
@@ -528,7 +531,7 @@ void CAutoDerrick::CreateFret(Math::Vector pos, float angle, ObjectType type,
 {
     CObject*        fret;
 
-    fret = new CObject(m_iMan);
+    fret = new CObject();
     if ( !fret->CreateResource(pos, angle, type) )
     {
         delete fret;

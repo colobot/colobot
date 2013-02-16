@@ -20,10 +20,15 @@
 
 #include "common/global.h"
 #include "common/iman.h"
+
 #include "math/geometry.h"
+
 #include "object/robotmain.h"
+
 #include "physics/physics.h"
+
 #include "script/cmdtoken.h"
+
 #include "ui/interface.h"
 #include "ui/window.h"
 #include "ui/displaytext.h"
@@ -35,8 +40,7 @@
 
 // Object's constructor.
 
-CAutoFactory::CAutoFactory(CInstanceManager* iMan, CObject* object)
-                           : CAuto(iMan, object)
+CAutoFactory::CAutoFactory(CObject* object) : CAuto(object)
 {
     Init();
     m_type  = OBJECT_MOBILEws;
@@ -632,7 +636,7 @@ bool CAutoFactory::CreateVehicle()
     }
     pos = Transform(*mat, pos);
 
-    vehicle = new CObject(m_iMan);
+    vehicle = new CObject();
     if ( !vehicle->CreateVehicle(pos, angle, m_type, -1.0f, false, false) )
     {
         delete vehicle;

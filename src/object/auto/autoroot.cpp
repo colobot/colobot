@@ -19,6 +19,7 @@
 
 #include "graphics/engine/particle.h"
 #include "graphics/engine/terrain.h"
+
 #include "math/geometry.h"
 
 #include <stdio.h>
@@ -26,8 +27,7 @@
 
 // Object's constructor.
 
-CAutoRoot::CAutoRoot(CInstanceManager* iMan, CObject* object)
-                     : CAuto(iMan, object)
+CAutoRoot::CAutoRoot(CObject* object) : CAuto(object)
 {
     Init();
 }

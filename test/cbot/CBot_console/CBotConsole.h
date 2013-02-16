@@ -5,8 +5,8 @@
  *      Author: michal
  */
 
-#ifndef CBOTCONSOLE_H_
-#define CBOTCONSOLE_H_
+#pragma once
+
 #include "CClass.h"
 
 struct ThreadInfo
@@ -41,4 +41,3 @@ public:
 	long EndProg() ;
 };
 
-#endif /* CBOTCONSOLE_H_ */
