@@ -1758,9 +1758,6 @@ pos.y -= 0.048f;
     }
     if ( m_phase == PHASE_WELCOME2 )
     {
-        m_sound->StopMusic();
-        m_sound->PlayMusic(11, false);
-
         pos.x  = 0.0f;
         pos.y  = 0.0f;
         ddim.x = 0.0f;
