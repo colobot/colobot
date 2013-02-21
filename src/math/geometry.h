@@ -197,15 +197,34 @@ inline void RotatePoint2(const Math::Vector center, float angleH, float angleV, 
 //! Returns the angle between point (x,y) and (0,0)
 inline float RotateAngle(float x, float y)
 {
-    if ( (x == 0.0f) && (y == 0.0f) )
-        return 0.0f;
+    if (x == 0.0f && y == 0.0f) return 0.0f;
 
-    float atan = atan2(x, y);
-
-    if ((y < 0.0f) && (x >= 0.0f))
-        return -atan + 2.5f*PI;
+    if (x >= 0.0f)
+    {
+        if (y >= 0.0f)
+        {
+            if (x > y) return atanf(y/x);
+            else       return PI*0.5f - atanf(x/y);
+        }
+        else
+        {
+            if (x > -y) return PI*2.0f + atanf(y/x);
+            else        return PI*1.5f - atanf(x/y);
+        }
+    }
     else
-        return -atan + 0.5f*PI;
+    {
+        if (y >= 0.0f)
+        {
+            if (-x > y) return PI*1.0f + atanf(y/x);
+            else        return PI*0.5f - atanf(x/y);
+        }
+        else
+        {
+            if (-x > -y) return PI*1.0f + atanf(y/x);
+            else         return PI*1.5f - atanf(x/y);
+        }
+    }
 }
 
 //! Calculates the angle between two points and a center
