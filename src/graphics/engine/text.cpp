@@ -149,6 +149,7 @@ void CText::FlushCache()
 }
 
 void CText::DrawText(const std::string &text, std::vector<FontMetaChar>::iterator format,
+                     std::vector<FontMetaChar>::iterator end,
                      float size, Math::Point pos, float width, TextAlign align,
                      int eol, Color color)
 {
@@ -156,18 +157,18 @@ void CText::DrawText(const std::string &text, std::vector<FontMetaChar>::iterato
 
     if (align == TEXT_ALIGN_CENTER)
     {
-        sw = GetStringWidth(text, format, size);
+        sw = GetStringWidth(text, format, end, size);
         if (sw > width) sw = width;
         pos.x -= sw / 2.0f;
     }
     else if (align == TEXT_ALIGN_RIGHT)
     {
-        sw = GetStringWidth(text, format, size);
+        sw = GetStringWidth(text, format, end, size);
         if (sw > width) sw = width;
         pos.x -= sw;
     }
 
-    DrawString(text, format, size, pos, width, eol, color);
+    DrawString(text, format, end, size, pos, width, eol, color);
 }
 
 void CText::DrawText(const std::string &text, FontType font,
@@ -193,12 +194,13 @@ void CText::DrawText(const std::string &text, FontType font,
 }
 
 void CText::SizeText(const std::string &text, std::vector<FontMetaChar>::iterator format,
+                     std::vector<FontMetaChar>::iterator endFormat,
                      float size, Math::Point pos, TextAlign align,
                      Math::Point &start, Math::Point &end)
 {
     start = end = pos;
 
-    float sw = GetStringWidth(text, format, size);
+    float sw = GetStringWidth(text, format, endFormat, size);
     end.x += sw;
     if (align == TEXT_ALIGN_CENTER)
     {
@@ -276,7 +278,8 @@ float CText::GetHeight(FontType font, float size)
 
 
 float CText::GetStringWidth(const std::string &text,
-                            std::vector<FontMetaChar>::iterator format, float size)
+                            std::vector<FontMetaChar>::iterator format,
+                            std::vector<FontMetaChar>::iterator end, float size)
 {
     float width = 0.0f;
     unsigned int index = 0;
@@ -284,8 +287,8 @@ float CText::GetStringWidth(const std::string &text,
     while (index < text.length())
     {
         FontType font = FONT_COLOBOT;
-        //if (format.size() > fmtIndex)
-            font = static_cast<FontType>(format[fmtIndex] & FONT_MASK_FONT);
+        if (format + fmtIndex != end)
+            font = static_cast<FontType>(*(format + fmtIndex) & FONT_MASK_FONT);
 
         UTF8Char ch;
 
@@ -343,6 +346,7 @@ float CText::GetCharWidth(UTF8Char ch, FontType font, float size, float offset)
 
 
 int CText::Justify(const std::string &text, std::vector<FontMetaChar>::iterator format,
+                   std::vector<FontMetaChar>::iterator end,
                    float size, float width)
 {
     float pos = 0.0f;
@@ -352,8 +356,8 @@ int CText::Justify(const std::string &text, std::vector<FontMetaChar>::iterator 
     while (index < text.length())
     {
         FontType font = FONT_COLOBOT;
-        //if (format.size() > fmtIndex)
-            font = static_cast<FontType>(format[fmtIndex] & FONT_MASK_FONT);
+        if (format + fmtIndex != end)
+            font = static_cast<FontType>(*(format + fmtIndex) & FONT_MASK_FONT);
 
         UTF8Char ch;
 
@@ -427,6 +431,7 @@ int CText::Justify(const std::string &text, FontType font, float size, float wid
 }
 
 int CText::Detect(const std::string &text, std::vector<FontMetaChar>::iterator format,
+                  std::vector<FontMetaChar>::iterator end,
                   float size, float offset)
 {
     float pos = 0.0f;
@@ -435,11 +440,12 @@ int CText::Detect(const std::string &text, std::vector<FontMetaChar>::iterator f
     while (index < text.length())
     {
         FontType font = FONT_COLOBOT;
-        //if (format.size() > fmtIndex)
-            font = static_cast<FontType>(format[fmtIndex] & FONT_MASK_FONT);
+
+        if (format + fmtIndex != end)
+            font = static_cast<FontType>(*(format + fmtIndex) & FONT_MASK_FONT);
 
         // TODO: if (font == FONT_BUTTON)
-        if (font == FONT_BUTTON) continue;
+        //if (font == FONT_BUTTON) continue;
 
         UTF8Char ch;
 
@@ -500,6 +506,7 @@ int CText::Detect(const std::string &text, FontType font, float size, float offs
 }
 
 void CText::DrawString(const std::string &text, std::vector<FontMetaChar>::iterator format,
+                       std::vector<FontMetaChar>::iterator end,
                        float size, Math::Point pos, float width, int eol, Color color)
 {
     m_engine->SetState(ENG_RSTATE_TEXT);
@@ -513,8 +520,8 @@ void CText::DrawString(const std::string &text, std::vector<FontMetaChar>::itera
     for (auto it = chars.begin(); it != chars.end(); ++it)
     {
         FontType font = FONT_COLOBOT;
-        //if (format.size() > fmtIndex)
-            font = static_cast<FontType>(format[fmtIndex] & FONT_MASK_FONT);
+        if (format + fmtIndex != end)
+            font = static_cast<FontType>(*(format + fmtIndex) & FONT_MASK_FONT);
 
         // TODO: if (font == FONT_BUTTON)
         if (font == FONT_BUTTON) continue;

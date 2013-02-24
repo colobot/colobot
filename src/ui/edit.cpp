@@ -261,7 +261,7 @@ bool CEdit::EventProcess(const Event &event)
 
     if ( event.type == EVENT_MOUSE_MOVE )
     {
-        if ( Detect(event.mousePos) &&
+        if ( Detect(event.mousePos) && 
              event.mousePos.x < m_pos.x+m_dim.x-(m_bMulti?MARGX+SCROLL_WIDTH:0.0f) )
         {
             if ( m_bEdit )
@@ -560,7 +560,7 @@ bool CEdit::IsLinkPos(Math::Point pos)
     if ( i == -1 )  return false;
     if ( i >= m_len )  return false;
 
-    if ( (m_format[i]& Gfx::FONT_MASK_HIGHLIGHT) == Gfx::FONT_HIGHLIGHT_LINK)  return true; // TODO
+    if ( m_format.size() > i && ((m_format[i] & Gfx::FONT_MASK_HIGHLIGHT) == Gfx::FONT_HIGHLIGHT_LINK))  return true; // TODO
     return false;
 }
 
@@ -736,6 +736,7 @@ int CEdit::MouseDetect(Math::Point mouse)
 //                                                m_fontStretch);
                 c = m_engine->GetText()->Detect(std::string(m_text+m_lineOffset[i]).substr(0, len),
                                                 m_format.begin() + m_lineOffset[i],
+                                                m_format.end(),
                                                 size,
                                                 offset); // TODO check if good
             }
@@ -1035,9 +1036,11 @@ void CEdit::Draw()
             {
                 start.x = ppos.x+m_engine->GetText()->GetStringWidth(std::string(m_text+beg).substr(0, o1-beg),
                                                                      m_format.begin() + beg,
+                                                                     m_format.end(),
                                                                      size);
                 end.x   = m_engine->GetText()->GetStringWidth(std::string(m_text+o1).substr(0, o2-o1),
                                                               m_format.begin() + o1,
+                                                              m_format.end(),
                                                               size);
             }
 
@@ -1066,6 +1069,7 @@ void CEdit::Draw()
         {
             m_engine->GetText()->DrawText(std::string(m_text+beg).substr(0, len),
                                           m_format.begin() + beg,
+                                          m_format.end(),
                                           size,
                                           ppos,
                                           m_dim.x,
@@ -1108,6 +1112,7 @@ void CEdit::Draw()
                 {
                     m_engine->GetText()->SizeText(std::string(m_text+m_lineOffset[i]).substr(0, len),
                                                   m_format.begin() + m_lineOffset[i],
+                                                  m_format.end(),
                                                   size, pos, Gfx::TEXT_ALIGN_LEFT,
                                                   start, end);
                 }
@@ -2464,6 +2469,7 @@ void CEdit::MoveLine(int move, bool bWord, bool bSelect)
     {
         c = m_engine->GetText()->Detect(std::string(m_text+m_lineOffset[line]),
                                         m_format.begin() + m_lineOffset[line],
+                                        m_format.end(),
                                         m_fontSize,
                                         m_lineOffset[line+1]-m_lineOffset[line]);
     }
@@ -2495,6 +2501,7 @@ void CEdit::ColumnFix()
         m_column = m_engine->GetText()->GetStringWidth(
                                 std::string(m_text+m_lineOffset[line]),
                                 m_format.begin() + m_lineOffset[line],
+                                m_format.end(),
                                 m_fontSize
                             );
     }
@@ -3115,6 +3122,7 @@ void CEdit::Justif()
                 // TODO check if good
                 i += m_engine->GetText()->Justify(std::string(m_text+i),
                                                   m_format.begin() + i,
+                                                  m_format.end(),
                                                   size,
                                                   width);
             }

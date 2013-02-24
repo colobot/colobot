@@ -242,6 +242,7 @@ public:
 
     //! Draws text (multi-format)
     void        DrawText(const std::string &text, std::vector<FontMetaChar>::iterator format,
+                         std::vector<FontMetaChar>::iterator end,
                          float size, Math::Point pos, float width, TextAlign align,
                          int eol, Color color = Color(0.0f, 0.0f, 0.0f, 1.0f));
     //! Draws text (one font)
@@ -251,6 +252,7 @@ public:
 
     //! Calculates dimensions for text (multi-format)
     void        SizeText(const std::string &text, std::vector<FontMetaChar>::iterator format,
+                         std::vector<FontMetaChar>::iterator endFormat,
                          float size, Math::Point pos, TextAlign align,
                          Math::Point &start, Math::Point &end);
     //! Calculates dimensions for text (one font)
@@ -267,7 +269,8 @@ public:
 
     //! Returns width of string (multi-format)
     TEST_VIRTUAL float GetStringWidth(const std::string &text,
-                               std::vector<FontMetaChar>::iterator format, float size);
+                               std::vector<FontMetaChar>::iterator format,
+                               std::vector<FontMetaChar>::iterator end, float size);
     //! Returns width of string (single font)
     TEST_VIRTUAL float GetStringWidth(const std::string &text, FontType font, float size);
     //! Returns width of single character
@@ -275,12 +278,14 @@ public:
 
     //! Justifies a line of text (multi-format)
     int         Justify(const std::string &text, std::vector<FontMetaChar>::iterator format,
+                        std::vector<FontMetaChar>::iterator end,
                         float size, float width);
     //! Justifies a line of text (one font)
     int         Justify(const std::string &text, FontType font, float size, float width);
 
     //! Returns the most suitable position to a given offset (multi-format)
     int         Detect(const std::string &text, std::vector<FontMetaChar>::iterator format,
+                       std::vector<FontMetaChar>::iterator end,
                        float size, float offset);
     //! Returns the most suitable position to a given offset (one font)
     int         Detect(const std::string &text, FontType font, float size, float offset);
@@ -290,6 +295,7 @@ protected:
     CharTexture CreateCharTexture(UTF8Char ch, CachedFont* font);
 
     void        DrawString(const std::string &text, std::vector<FontMetaChar>::iterator format,
+                           std::vector<FontMetaChar>::iterator end,
                            float size, Math::Point pos, float width, int eol, Color color);
     void        DrawString(const std::string &text, FontType font,
                            float size, Math::Point pos, float width, int eol, Color color);
