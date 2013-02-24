@@ -386,7 +386,8 @@ bool ALSound::Frequency(int channel, float frequency)
         return false;
     }
 
-    mChannels[channel]->SetFrequency(frequency);
+    mChannels[channel]->SetFrequency(frequency * mChannels[channel]->GetInitFrequency());
+    mChannels[channel]->SetChangeFrequency(frequency);
     return true;
 }
 
@@ -461,11 +462,13 @@ void ALSound::FrameMove(float delta)
        
         // setting volume
         volume = progress * (oper.finalAmplitude - it.second->GetStartAmplitude());
-        it.second->SetVolume((volume + it.second->GetStartAmplitude()) * mAudioVolume);
+        volume = (volume + it.second->GetStartAmplitude()) * mAudioVolume;
+        it.second->SetVolume(volume);
 
         // setting frequency
         frequency = progress * (oper.finalFrequency - it.second->GetStartFrequency()) * it.second->GetStartFrequency() * it.second->GetChangeFrequency() * it.second->GetInitFrequency();
         it.second->AdjustFrequency(frequency);
+        GetLogger()->Error("%f\n", frequency);
 
         if (oper.totalTime <= oper.currentTime) {
             if (oper.nextOper == SOPER_LOOP) {
