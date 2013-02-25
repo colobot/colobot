@@ -77,11 +77,28 @@ int CEngine::GetEditIndentValue()
 void CEngine::DeleteTexture(const std::string& /* texName */)
 {
 }
+
 Texture CEngine::LoadTexture(const std::string& /* name */)
 {
     Texture texture;
     return texture;
 }
+
+Math::Vector CEngine::GetEyePt()
+{
+    return Math::Vector();
+}
+
+Math::Vector CEngine::GetLookatPt()
+{
+    return Math::Vector();
+}
+
+bool CEngine::GetPause()
+{
+    return false;
+}
+
 
 } /* Gfx */
 

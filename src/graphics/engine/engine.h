@@ -729,7 +729,7 @@ public:
     //@{
     //! Management of game pause mode
     void            SetPause(bool pause);
-    bool            GetPause();
+    TEST_VIRTUAL bool GetPause();
     //@}
 
     //@{
@@ -1170,9 +1170,9 @@ public:
     //! Returns the view matrix
     const Math::Matrix& GetMatView();
     //! Returns the camera center point
-    Math::Vector    GetEyePt();
+    TEST_VIRTUAL Math::Vector GetEyePt();
     //! Returns the camera target point
-    Math::Vector    GetLookatPt();
+    TEST_VIRTUAL Math::Vector GetLookatPt();
     //! Returns the horizontal direction angle of view
     float           GetEyeDirH();
     //! Returns the vertical direction angle of view
