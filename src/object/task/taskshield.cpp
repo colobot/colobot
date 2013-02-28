@@ -488,15 +488,10 @@ bool CTaskShield::CreateLight(Math::Vector pos)
 
     memset(&light, 0, sizeof(light));
     light.type       = Gfx::LIGHT_SPOT;
-    light.diffuse.r  = 0.0f;
-    light.diffuse.g  = 1.0f;
-    light.diffuse.b  = 2.0f;
-    light.position.x  = pos.x;
-    light.position.y  = pos.y;
-    light.position.z  = pos.z;
-    light.direction.x =  0.0f;
-    light.direction.y = -1.0f;  // against the bottom
-    light.direction.z =  0.0f;
+    light.ambient    = Gfx::Color(0.0f, 0.0f, 0.0f);
+    light.diffuse    = Gfx::Color(0.0f, 1.0f, 2.0f);
+    light.position   = pos;
+    light.direction  = Math::Vector(0.0f, -1.0f, 0.0f); // against the bottom
     light.spotIntensity = 128;
     light.attenuation0 = 1.0f;
     light.attenuation1 = 0.0f;

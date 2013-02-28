@@ -1318,12 +1318,9 @@ void CPyro::CreateLight(Math::Vector pos, float height)
 
     Gfx::Light light;
     light.type        = LIGHT_SPOT;
-    light.position.x  = pos.x;
-    light.position.y  = pos.y+height;
-    light.position.z  = pos.z;
-    light.direction.x =  0.0f;
-    light.direction.y = -1.0f;  // against the bottom
-    light.direction.z =  0.0f;
+    light.ambient     = Gfx::Color(0.0f, 0.0f, 0.0f);
+    light.position    = Math::Vector(pos.x, pos.y+height, pos.z);
+    light.direction   = Math::Vector(0.0f, -1.0f, 0.0f);  // against the bottom
     light.spotIntensity = 1.0f;
     light.attenuation0 = 1.0f;
     light.attenuation1 = 0.0f;

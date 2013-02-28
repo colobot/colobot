@@ -4917,6 +4917,7 @@ int CRobotMain::CreateLight(Math::Vector direction, Gfx::Color color)
     Gfx::Light light;
     light.type = Gfx::LIGHT_DIRECTIONAL;
     light.diffuse = color;
+    light.ambient = color * 0.1f;
     light.direction  = direction;
     int obj = m_lightMan->CreateLight(Gfx::LIGHT_PRI_HIGH);
     m_lightMan->SetLight(obj, light);
@@ -4934,6 +4935,7 @@ int CRobotMain::CreateSpot(Math::Vector pos, Gfx::Color color)
     Gfx::Light light;
     light.type          = Gfx::LIGHT_SPOT;
     light.diffuse       = color;
+    light.ambient       = color * 0.1f;
     light.position      = pos;
     light.direction     = Math::Vector(0.0f, -1.0f, 0.0f);
     light.spotIntensity = 1.0f;

@@ -126,6 +126,7 @@ int CLightManager::CreateLight(LightPriority priority)
 
     m_dynLights[index].light.type      = LIGHT_DIRECTIONAL;
     m_dynLights[index].light.diffuse   = Color(0.5f, 0.5f, 0.5f);
+    m_dynLights[index].light.ambient   = Color(0.0f, 0.0f, 0.0f);
     m_dynLights[index].light.position  = Math::Vector(-100.0f,  100.0f, -100.0f);
     m_dynLights[index].light.direction = Math::Vector( 1.0f, -1.0f,  1.0f);
 
@@ -391,21 +392,21 @@ void CLightManager::UpdateDeviceLights(EngineObjectType type)
     std::sort(sortedLights.begin(), sortedLights.end(), LightsComparator(m_engine->GetEyePt(), type));
 
     int lightMapIndex = 0;
-    for (int i = 0; i < static_cast<int>( m_dynLights.size() ); i++)
+    for (int i = 0; i < static_cast<int>( sortedLights.size() ); i++)
     {
-        if (! m_dynLights[i].used)
+        if (! sortedLights[i].used)
             continue;
-        if (! m_dynLights[i].enabled)
+        if (! sortedLights[i].enabled)
             continue;
-        if (m_dynLights[i].intensity.current == 0.0f)
+        if (sortedLights[i].intensity.current == 0.0f)
             continue;
 
         bool enabled = true;
-        if (m_dynLights[i].includeType != ENG_OBJTYPE_NULL)
-            enabled = (m_dynLights[i].includeType == type);
+        if (sortedLights[i].includeType != ENG_OBJTYPE_NULL)
+            enabled = (sortedLights[i].includeType == type);
 
-        if (m_dynLights[i].excludeType != ENG_OBJTYPE_NULL)
-            enabled = (m_dynLights[i].excludeType != type);
+        if (sortedLights[i].excludeType != ENG_OBJTYPE_NULL)
+            enabled = (sortedLights[i].excludeType != type);
 
         if (enabled)
         {
@@ -422,7 +423,8 @@ void CLightManager::UpdateDeviceLights(EngineObjectType type)
         int rank = m_lightMap[i];
         if (rank != -1)
         {
-            m_device->SetLight(i, m_dynLights[rank].light);
+            sortedLights[rank].light.ambient = Gfx::Color(0.2f, 0.2f, 0.2f);
+            m_device->SetLight(i, sortedLights[rank].light);
             m_device->SetLightEnabled(i, true);
         }
         else
@@ -458,7 +460,7 @@ bool CLightManager::LightsComparator::operator()(const DynamicLight& left, const
     float leftWeight = GetLightWeight(left);
     float rightWeight = GetLightWeight(right);
 
-    return leftWeight >= rightWeight;
+    return leftWeight <= rightWeight;
 }
 
 } // namespace Gfx

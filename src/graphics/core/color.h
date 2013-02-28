@@ -76,6 +76,16 @@ struct Color
     {
         return ! this->operator==(other);
     }
+
+    inline Color operator*(float scale) const
+    {
+        Color c = *this;
+        c.r *= scale;
+        c.g *= scale;
+        c.b *= scale;
+        c.a *= scale;
+        return c;
+    }
 };
 
 /**

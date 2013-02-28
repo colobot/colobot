@@ -2248,15 +2248,10 @@ bool CObject::CreateShadowLight(float height, Gfx::Color color)
 
     Gfx::Light light;
     light.type          = Gfx::LIGHT_SPOT;
-    light.diffuse.r     = color.r;
-    light.diffuse.g     = color.g;
-    light.diffuse.b     = color.b;
-    light.position.x    = pos.x;
-    light.position.y    = pos.y+height;
-    light.position.z    = pos.z;
-    light.direction.x   =  0.0f;
-    light.direction.y   = -1.0f;  // against the bottom
-    light.direction.z   =  0.0f;
+    light.diffuse       = color;
+    light.ambient       = color * 0.1f;
+    light.position      = Math::Vector(pos.x, pos.y+height, pos.z);
+    light.direction     = Math::Vector(0.0f, -1.0f, 0.0f); // against the bottom
     light.spotIntensity = 128;
     light.attenuation0  = 1.0f;
     light.attenuation1  = 0.0f;
@@ -2291,15 +2286,9 @@ bool CObject::CreateEffectLight(float height, Gfx::Color color)
 
     Gfx::Light light;
     light.type       = Gfx::LIGHT_SPOT;
-    light.diffuse.r  = color.r;
-    light.diffuse.g  = color.g;
-    light.diffuse.b  = color.b;
-    light.position.x  =  0.0f;
-    light.position.y  =  0.0f+height;
-    light.position.z  =  0.0f;
-    light.direction.x =  0.0f;
-    light.direction.y = -1.0f;  // against the bottom
-    light.direction.z =  0.0f;
+    light.diffuse    = color;
+    light.position   = Math::Vector(0.0f, height, 0.0f);
+    light.direction  = Math::Vector(0.0f, -1.0f, 0.0f); // against the bottom
     light.spotIntensity = 0.0f;
     light.attenuation0 = 1.0f;
     light.attenuation1 = 0.0f;

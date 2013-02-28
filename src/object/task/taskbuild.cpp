@@ -114,7 +114,6 @@ bool CTaskBuild::CreateBuilding(Math::Vector pos, float angle)
 
 void CTaskBuild::CreateLight()
 {
-    Gfx::Light   light;
     Gfx::Color   color;
     Math::Vector center, pos, dir;
     Math::Point  c, p;
@@ -141,18 +140,12 @@ void CTaskBuild::CreateLight()
         pos.y = center.y+40.0f;
         dir = center-pos;
 
-        memset(&light, 0, sizeof(light));
+        Gfx::Light light;
         light.type       = Gfx::LIGHT_SPOT;
-        light.diffuse.r  = 0.0f;
-        light.diffuse.g  = 0.0f;
-        light.diffuse.b  = 0.0f;  // white (invisible)
-        light.position.x  = pos.x;
-        light.position.y  = pos.y;
-        light.position.z  = pos.z;
-        light.direction.x = dir.x;
-        light.direction.y = dir.y;
-        light.direction.z = dir.z;
-        //TODO Is this value correct
+        light.ambient    = Gfx::Color(0.0f, 0.0f, 0.0f);
+        light.diffuse    = Gfx::Color(0.0f, 0.0f, 0.0f); // invisible
+        light.position   = pos;
+        light.direction  = dir;
         light.spotIntensity = 128;
         light.attenuation0 = 1.0f;
         light.attenuation1 = 0.0f;

@@ -75,6 +75,7 @@ void LightManagerUT::AddLight(int type, LightPriority priority, bool used, bool 
 
     Light light;
     light.type = static_cast<LightType>(type);
+    light.position = pos;
     lightManager.SetLight(rank, light);
 
     lightManager.SetLightEnabled(rank, enabled);
@@ -109,7 +110,7 @@ TEST_F(LightManagerUT, LightSorting_IncludeTypesAreIncluded)
     AddLight(2, LIGHT_PRI_LOW, true, true, Math::Vector(0.0f, 0.0f, 0.0f), ENG_OBJTYPE_TERRAIN, ENG_OBJTYPE_NULL);
     AddLight(3, LIGHT_PRI_LOW, true, true, Math::Vector(0.0f, 0.0f, 0.0f), ENG_OBJTYPE_QUARTZ,  ENG_OBJTYPE_NULL);
 
-    std::vector<int> expectedLights = { 1, 2 };
+    std::vector<int> expectedLights = { 2, 1 };
     CheckLightSorting(ENG_OBJTYPE_TERRAIN, expectedLights);
 }
 
@@ -123,7 +124,7 @@ TEST_F(LightManagerUT, LightSorting_ExcludeTypesAreExcluded)
     AddLight(2, LIGHT_PRI_LOW, true, true, Math::Vector(0.0f, 0.0f, 0.0f), ENG_OBJTYPE_NULL, ENG_OBJTYPE_TERRAIN);
     AddLight(3, LIGHT_PRI_LOW, true, true, Math::Vector(0.0f, 0.0f, 0.0f), ENG_OBJTYPE_NULL, ENG_OBJTYPE_QUARTZ);
 
-    std::vector<int> expectedLights = { 1, 3 };
+    std::vector<int> expectedLights = { 3, 1 };
     CheckLightSorting(ENG_OBJTYPE_TERRAIN, expectedLights);
 }
 
@@ -140,6 +141,6 @@ TEST_F(LightManagerUT, LightSorting_SortingAccordingToDistance)
     AddLight(5, LIGHT_PRI_LOW,  true, true, Math::Vector(100.0f, 0.0f, 0.0f), ENG_OBJTYPE_NULL, ENG_OBJTYPE_NULL);
     AddLight(6, LIGHT_PRI_HIGH, true, true, Math::Vector(21.0f, 0.0f, 0.0f),  ENG_OBJTYPE_NULL, ENG_OBJTYPE_NULL);
 
-    std::vector<int> expectedLights = { 1, 2, 3 };
+    std::vector<int> expectedLights = { 2, 1, 3 };
     CheckLightSorting(ENG_OBJTYPE_TERRAIN, expectedLights);
 }
