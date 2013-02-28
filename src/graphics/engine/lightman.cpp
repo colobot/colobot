@@ -389,7 +389,8 @@ void CLightManager::UpdateDeviceLights(EngineObjectType type)
         m_lightMap[i] = -1;
 
     std::vector<DynamicLight> sortedLights = m_dynLights;
-    std::sort(sortedLights.begin(), sortedLights.end(), LightsComparator(m_engine->GetEyePt(), type));
+    LightsComparator lightsComparator(m_engine->GetEyePt(), type);
+    std::sort(sortedLights.begin(), sortedLights.end(), lightsComparator);
 
     int lightMapIndex = 0;
     for (int i = 0; i < static_cast<int>( sortedLights.size() ); i++)
@@ -460,7 +461,7 @@ bool CLightManager::LightsComparator::operator()(const DynamicLight& left, const
     float leftWeight = GetLightWeight(left);
     float rightWeight = GetLightWeight(right);
 
-    return leftWeight <= rightWeight;
+    return leftWeight < rightWeight;
 }
 
 } // namespace Gfx
