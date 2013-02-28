@@ -468,7 +468,6 @@ void ALSound::FrameMove(float delta)
         // setting frequency
         frequency = progress * (oper.finalFrequency - it.second->GetStartFrequency()) * it.second->GetStartFrequency() * it.second->GetChangeFrequency() * it.second->GetInitFrequency();
         it.second->AdjustFrequency(frequency);
-        GetLogger()->Error("%f\n", frequency);
 
         if (oper.totalTime <= oper.currentTime) {
             if (oper.nextOper == SOPER_LOOP) {
