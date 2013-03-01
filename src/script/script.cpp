@@ -948,10 +948,8 @@ bool CScript::rDirection(CBotVar* var, CBotVar* result, int& exception, void* us
 }
 
 
-// Compilation of the instruction "produce(pos, angle, type, scriptName, power)".
-// or "produce(pos, angle, type, scriptName)"
-// or "produce(pos, angle, type)"
-// or "produce(type)"
+// Compilation of the instruction "produce(pos, angle, type[, scriptName[, power]])"
+// or "produce(type[, power])".
 
 CBotTypResult CScript::cProduce(CBotVar* &var, void* user)
 {
@@ -961,6 +959,10 @@ CBotTypResult CScript::cProduce(CBotVar* &var, void* user)
 
     if ( var->GetType() <= CBotTypDouble ) {
         var = var->GetNext();
+        if( var != 0 ) {
+            if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
+            var = var->GetNext();
+        }
     } else {
         ret = cPoint(var, user);
         if ( ret.GetType() != 0 )  return ret;
@@ -989,10 +991,8 @@ CBotTypResult CScript::cProduce(CBotVar* &var, void* user)
     return CBotTypResult(CBotTypFloat);
 }
 
-// Instruction "produce(pos, angle, type, scriptName, power)".
-// or "produce(pos, angle, type, scriptName)"
-// or "produce(pos, angle, type)"
-// or "produce(type)"
+// Instruction "produce(pos, angle, type[, scriptName[, power]])"
+// or "produce(type[, power])".
 
 bool CScript::rProduce(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
@@ -1008,13 +1008,17 @@ bool CScript::rProduce(CBotVar* var, CBotVar* result, int& exception, void* user
 
     if ( var->GetType() <= CBotTypDouble ) {
         type = static_cast<ObjectType>(var->GetValInt());
+        var = var->GetNext();
 
         pos = me->GetPosition(0);
 
         Math::Vector rotation = me->GetAngle(0) + me->GetInclinaison();
         angle = rotation.y;
 
-        power = -1.0f;
+        if( var != 0 )
+            power = var->GetValFloat();
+        else
+            power = -1.0f;
 
         name = "";
     } else {
