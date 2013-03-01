@@ -2457,6 +2457,8 @@ bool CScript::rJet(CBotVar* var, CBotVar* result, int& exception, void* user)
     float       value;
 
     value = var->GetValFloat();
+    if( value > 1.0f ) value = 1.0f;
+
     physics->SetMotorSpeedY(value);
 
     return true;
