@@ -661,7 +661,11 @@ CRobotMain::CRobotMain(CApplication* app)
     m_showPos      = false;
     m_selectInsect = false;
     m_showSoluce   = false;
+    #ifdef NDEBUG
+    m_showAll      = false;
+    #else
     m_showAll      = true; // for development
+    #endif
     m_cheatRadar   = false;
     m_fixScene     = false;
     m_trainerPilot = false;
