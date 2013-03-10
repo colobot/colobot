@@ -110,7 +110,7 @@ TEST_F(LightManagerUT, LightSorting_IncludeTypesAreIncluded)
     AddLight(2, LIGHT_PRI_LOW, true, true, Math::Vector(0.0f, 0.0f, 0.0f), ENG_OBJTYPE_TERRAIN, ENG_OBJTYPE_NULL);
     AddLight(3, LIGHT_PRI_LOW, true, true, Math::Vector(0.0f, 0.0f, 0.0f), ENG_OBJTYPE_QUARTZ,  ENG_OBJTYPE_NULL);
 
-    std::vector<int> expectedLights = { 2, 1 };
+    std::vector<int> expectedLights = { 1, 2 };
     CheckLightSorting(ENG_OBJTYPE_TERRAIN, expectedLights);
 }
 
@@ -124,7 +124,7 @@ TEST_F(LightManagerUT, LightSorting_ExcludeTypesAreExcluded)
     AddLight(2, LIGHT_PRI_LOW, true, true, Math::Vector(0.0f, 0.0f, 0.0f), ENG_OBJTYPE_NULL, ENG_OBJTYPE_TERRAIN);
     AddLight(3, LIGHT_PRI_LOW, true, true, Math::Vector(0.0f, 0.0f, 0.0f), ENG_OBJTYPE_NULL, ENG_OBJTYPE_QUARTZ);
 
-    std::vector<int> expectedLights = { 3, 1 };
+    std::vector<int> expectedLights = { 1, 3 };
     CheckLightSorting(ENG_OBJTYPE_TERRAIN, expectedLights);
 }
 

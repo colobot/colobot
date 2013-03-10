@@ -51,6 +51,8 @@ void GLDeviceConfig::LoadDefault()
     greenSize = 8;
     alphaSize = 8;
     depthSize = 24;
+
+    vboMode = VBO_MODE_AUTO;
 }
 
 
@@ -99,11 +101,26 @@ bool CGLDevice::Create()
         if (!m_multitextureAvailable)
             GetLogger()->Warn("GLEW reports multitexturing not supported - graphics quality will be degraded!\n");
 
-        m_vboAvailable = glewIsSupported("GL_ARB_vertex_buffer_object");
-        if (m_vboAvailable)
-            GetLogger()->Info("Detected ARB_vertex_buffer_object extension - using VBOs\n");
+        if (m_config.vboMode == VBO_MODE_ENABLE)
+        {
+            GetLogger()->Info("VBO enabled by override - using VBOs\n");
+            m_vboAvailable = true;
+        }
+        else if (m_config.vboMode == VBO_MODE_DISABLE)
+        {
+            GetLogger()->Info("VBO disabled by override - using display lists\n");
+            m_vboAvailable = false;
+        }
         else
-            GetLogger()->Info("No ARB_vertex_buffer_object extension present - using display lists\n");
+        {
+            GetLogger()->Info("Auto-detecting VBO support\n");
+            m_vboAvailable = glewIsSupported("GL_ARB_vertex_buffer_object");
+
+            if (m_vboAvailable)
+                GetLogger()->Info("Detected ARB_vertex_buffer_object extension - using VBOs\n");
+            else
+                GetLogger()->Info("No ARB_vertex_buffer_object extension present - using display lists\n");
+        }
     }
 
     // This is mostly done in all modern hardware by default

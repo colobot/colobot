@@ -34,6 +34,17 @@
 namespace Gfx {
 
 /**
+ \enum VBOMode
+ \brief VBO autodetect/override
+ */
+enum VBOMode
+{
+    VBO_MODE_ENABLE,  //! < override: enable
+    VBO_MODE_DISABLE, //! < override: disable
+    VBO_MODE_AUTO     //! < autodetect
+};
+
+/**
  \struct GLDeviceConfig
  \brief Additional config with OpenGL-specific settings */
 struct GLDeviceConfig : public DeviceConfig
@@ -51,6 +62,9 @@ struct GLDeviceConfig : public DeviceConfig
 
     //! Force hardware acceleration (video mode set will fail on lack of hw accel)
     bool hardwareAccel;
+
+    //! VBO override/autodetect
+    VBOMode vboMode;
 
     //! Constructor calls LoadDefaults()
     GLDeviceConfig();

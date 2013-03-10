@@ -31,10 +31,10 @@
 
 /**
  * \public
- * \enum    LogType common/logger.h
+ * \enum    LogLevel common/logger.h
  * \brief   Enum representing log level
 **/
-enum LogType
+enum LogLevel
 {
     LOG_TRACE = 1, /*!< lowest level, execution tracing */
     LOG_DEBUG = 2, /*!< debugging messages */
@@ -53,65 +53,74 @@ enum LogType
 */
 class CLogger : public CSingleton<CLogger>
 {
-    public:
-        CLogger();
-        ~CLogger();
+public:
+    CLogger();
+    ~CLogger();
 
-        /** Write message to console or file
-         * \param str - message to write
-         * \param ... - additional arguments
-         */
-        void Message(const char *str, ...);
+    /** Write message to console or file
+    * \param str - message to write
+    * \param ... - additional arguments
+    */
+    void Message(const char *str, ...);
 
-        /** Write message to console or file with LOG_TRACE level
-         * \param str - message to write
-         * \param ... - additional arguments
-         */
-        void Trace(const char *str, ...);
+    /** Write message to console or file with LOG_TRACE level
+    * \param str - message to write
+    * \param ... - additional arguments
+    */
+    void Trace(const char *str, ...);
 
-        /** Write message to console or file with LOG_DEBUG level
-         * \param str - message to write
-         * \param ... - additional arguments
-         */
-        void Debug(const char *str, ...);
+    /** Write message to console or file with LOG_DEBUG level
+    * \param str - message to write
+    * \param ... - additional arguments
+    */
+    void Debug(const char *str, ...);
 
-        /** Write message to console or file with LOG_INFO level
-         * \param str - message to write
-         * \param ... - additional arguments
-         */
-        void Info(const char *str, ...);
+    /** Write message to console or file with LOG_INFO level
+    * \param str - message to write
+    * \param ... - additional arguments
+    */
+    void Info(const char *str, ...);
 
-        /** Write message to console or file with LOG_WARN level
-         * \param str - message to write
-         * \param ... - additional arguments
-         */
-        void Warn(const char *str, ...);
+    /** Write message to console or file with LOG_WARN level
+    * \param str - message to write
+    * \param ... - additional arguments
+    */
+    void Warn(const char *str, ...);
 
-        /** Write message to console or file with LOG_ERROR level
-         * \param str - message to write
-         * \param ... - additional arguments
-         */
-        void Error(const char *str, ...);
+    /** Write message to console or file with LOG_ERROR level
+    * \param str - message to write
+    * \param ... - additional arguments
+    */
+    void Error(const char *str, ...);
 
-        /** Set output file to write logs to
-         * \param filename - output file to write to
-         */
-        void SetOutputFile(std::string filename);
+    /** Set output file to write logs to
+    * \param filename - output file to write to
+    */
+    void SetOutputFile(std::string filename);
 
-        /** Set log level. Logs with level below will not be shown
-         * \param level - minimum log level to write
-         */
-        void SetLogLevel(LogType level);
+    /** Set log level. Logs with level below will not be shown
+    * \param level - minimum log level to write
+    */
+    void SetLogLevel(LogLevel level);
 
-    private:
-        std::string mFilename;
-        FILE *mFile;
-        LogType mLogLevel;
+    /** Parses string as a log level
+     * \param str string to parse
+     * \param logLevel result log level
+     *
+     * Valid values are "trace", "debug", "info", "warn", "error" and "none".
+     * On invalid value, returns \c false.
+     */
+    static bool ParseLogLevel(const std::string& str, LogLevel& logLevel);
 
-        void Open();
-        void Close();
-        bool IsOpened();
-        void Log(LogType type, const char* str, va_list args);
+private:
+    std::string mFilename;
+    FILE *mFile;
+    LogLevel mLogLevel;
+
+    void Open();
+    void Close();
+    bool IsOpened();
+    void Log(LogLevel type, const char* str, va_list args);
 };
 
 

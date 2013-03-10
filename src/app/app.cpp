@@ -39,6 +39,7 @@
 #include <stdlib.h>
 #include <libintl.h>
 #include <unistd.h>
+#include <getopt.h>
 
 
 #ifdef OPENAL_SOUND
@@ -195,101 +196,130 @@ CEventQueue* CApplication::GetEventQueue()
 CSoundInterface* CApplication::GetSound()
 {
     return m_sound;
+
+    for (int i = 0; i < PCNT_MAX; ++i)
+    {
+        DestroyTimeStamp(m_performanceCounters[i][0]);
+        DestroyTimeStamp(m_performanceCounters[i][1]);
+    }
 }
 
 ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
 {
-    bool waitDataDir = false;
-    bool waitLogLevel = false;
-    bool waitLanguage = false;
-
-    for (int i = 1; i < argc; ++i)
+    enum OptionType
     {
-        std::string arg = argv[i];
+        OPT_HELP = 1,
+        OPT_DEBUG,
+        OPT_DATADIR,
+        OPT_LOGLEVEL,
+        OPT_LANGUAGE,
+        OPT_VBO
+    };
 
-        if (waitDataDir)
-        {
-            waitDataDir = false;
-            m_dataPath = arg;
-            GetLogger()->Info("Using custom data dir: '%s'\n", m_dataPath.c_str());
-            continue;
-        }
+    option options[] =
+    {
+        { "help", no_argument, nullptr, OPT_HELP },
+        { "debug", no_argument, nullptr, OPT_DEBUG },
+        { "datadir", required_argument, nullptr, OPT_DATADIR },
+        { "loglevel", required_argument, nullptr, OPT_LOGLEVEL },
+        { "language", required_argument, nullptr, OPT_LANGUAGE },
+        { "vbo", required_argument, nullptr, OPT_VBO }
+    };
 
-        if (waitLogLevel)
+    opterr = 0;
+
+    int c = 0;
+    int index = -1;
+    while ((c = getopt_long_only(argc, argv, "", options, &index)) != -1)
+    {
+        if (c == '?')
         {
-            waitLogLevel = false;
-            if (arg == "trace")
-                GetLogger()->SetLogLevel(LOG_TRACE);
-            else if (arg == "debug")
-                GetLogger()->SetLogLevel(LOG_DEBUG);
-            else if (arg == "info")
-                GetLogger()->SetLogLevel(LOG_INFO);
-            else if (arg == "warn")
-                GetLogger()->SetLogLevel(LOG_WARN);
-            else if (arg == "error")
-                GetLogger()->SetLogLevel(LOG_ERROR);
-            else if (arg == "none")
-                GetLogger()->SetLogLevel(LOG_NONE);
+            if (optopt == 0)
+                GetLogger()->Error("Invalid argument: %s\n", argv[optind-1]);
             else
-                return PARSE_ARGS_FAIL;
-            continue;
-        }
+                GetLogger()->Error("Expected argument for option: %s\n", argv[optind-1]);
 
-        if (waitLanguage)
-        {
-            waitLanguage = false;
-            if (arg == "en")
-                m_language = LANGUAGE_ENGLISH;
-            else if (arg == "de")
-                m_language = LANGUAGE_GERMAN;
-            else if (arg == "fr")
-                m_language = LANGUAGE_FRENCH;
-            else if (arg == "pl")
-                m_language = LANGUAGE_POLISH;
-            else
-                return PARSE_ARGS_FAIL;
-            continue;
-        }
-
-        if (arg == "-debug")
-        {
-            SetDebugMode(true);
-        }
-        else if (arg == "-loglevel")
-        {
-            waitLogLevel = true;
-        }
-        else if (arg == "-datadir")
-        {
-            waitDataDir = true;
-        }
-        else if (arg == "-language")
-        {
-            waitLanguage = true;
-        }
-        else if (arg == "-help")
-        {
-            GetLogger()->Message("\n");
-            GetLogger()->Message("Colobot %s (%s)\n",COLOBOT_CODENAME,COLOBOT_VERSION);
-            GetLogger()->Message("\n");
-            GetLogger()->Message("List of available options:\n");
-            GetLogger()->Message("  -help            this help\n");
-            GetLogger()->Message("  -datadir path    set custom data directory path\n");
-            GetLogger()->Message("  -debug           enable debug mode (more info printed in logs)\n");
-            GetLogger()->Message("  -loglevel level  set log level to level (one of: trace, debug, info, warn, error, none)\n");
-            GetLogger()->Message("  -language lang   set language (one of: en, de, fr, pl)\n");
-            return PARSE_ARGS_HELP;
-        }
-        else
-        {
             m_exitCode = 1;
             return PARSE_ARGS_FAIL;
         }
-    }
 
-    // Args not given?
-    if (waitDataDir || waitLogLevel || waitLanguage)
-        return PARSE_ARGS_FAIL;
+        index = -1;
+
+        switch (c)
+        {
+            case OPT_HELP:
+            {
+                GetLogger()->Message("\n");
+                GetLogger()->Message("Colobot %s (%s)\n", COLOBOT_CODENAME, COLOBOT_VERSION);
+                GetLogger()->Message("\n");
+                GetLogger()->Message("List of available options:\n");
+                GetLogger()->Message("  -help            this help\n");
+                GetLogger()->Message("  -debug           enable debug mode (more info printed in logs)\n");
+                GetLogger()->Message("  -datadir path    set custom data directory path\n");
+                GetLogger()->Message("  -loglevel level  set log level to level (one of: trace, debug, info, warn, error, none)\n");
+                GetLogger()->Message("  -language lang   set language (one of: en, de, fr, pl)\n");
+                GetLogger()->Message("  -vbo mode        set OpenGL VBO mode (one of: auto, enable, disable)\n");
+                return PARSE_ARGS_HELP;
+            }
+            case OPT_DEBUG:
+            {
+                SetDebugMode(true);
+                break;
+            }
+            case OPT_DATADIR:
+            {
+                m_dataPath = optarg;
+                GetLogger()->Info("Using custom data dir: '%s'\n", m_dataPath.c_str());
+                break;
+            }
+            case OPT_LOGLEVEL:
+            {
+                LogLevel logLevel;
+                if (! CLogger::ParseLogLevel(optarg, logLevel))
+                {
+                    GetLogger()->Error("Invalid log level: \"%s\"\n", optarg);
+                    return PARSE_ARGS_FAIL;
+                }
+
+                GetLogger()->Message("[*****] Log level changed to %s\n", optarg);
+                GetLogger()->SetLogLevel(logLevel);
+                break;
+            }
+            case OPT_LANGUAGE:
+            {
+                Language language;
+                if (! ParseLanguage(optarg, language))
+                {
+                    GetLogger()->Error("Invalid language: \"%s\"\n", optarg);
+                    return PARSE_ARGS_FAIL;
+                }
+
+                GetLogger()->Info("Using language %s\n", optarg);
+                m_language = language;
+                break;
+            }
+            case OPT_VBO:
+            {
+                std::string vbo;
+                vbo = optarg;
+                if (vbo == "auto")
+                    m_deviceConfig.vboMode = Gfx::VBO_MODE_AUTO;
+                else if (vbo == "enable")
+                    m_deviceConfig.vboMode = Gfx::VBO_MODE_ENABLE;
+                else if (vbo == "disable")
+                    m_deviceConfig.vboMode = Gfx::VBO_MODE_DISABLE;
+                else
+                {
+                    GetLogger()->Error("Invalid vbo mode: \"%s\"\n", optarg);
+                    return PARSE_ARGS_FAIL;
+                }
+
+                break;
+            }
+            default:
+                assert(false); // should never get here
+        }
+    }
 
     return PARSE_ARGS_OK;
 }
@@ -336,7 +366,7 @@ bool CApplication::Create()
         } else {
             m_sound->CacheAll(GetDataSubdirPath(DIR_SOUND));
         }
-        
+
         if (GetProfile().GetLocalProfileString("Resources", "Music", path)) {
             m_sound->AddMusicFiles(path);
         } else {
@@ -376,20 +406,22 @@ bool CApplication::Create()
         m_exitCode = 3;
         return false;
     }
- 
+
     // load settings from profile
     int iValue;
-    if ( GetProfile().GetLocalProfileInt("Setup", "Resolution", iValue) ) {
-	std::vector<Math::IntPoint> modes;
-	GetVideoResolutionList(modes, true, true);
-	if (static_cast<unsigned int>(iValue) < modes.size())
-	    m_deviceConfig.size = modes.at(iValue);
+    if ( GetProfile().GetLocalProfileInt("Setup", "Resolution", iValue) )
+    {
+        std::vector<Math::IntPoint> modes;
+        GetVideoResolutionList(modes, true, true);
+        if (static_cast<unsigned int>(iValue) < modes.size())
+            m_deviceConfig.size = modes.at(iValue);
     }
-    
-    if ( GetProfile().GetLocalProfileInt("Setup", "Fullscreen", iValue) ) {
-	m_deviceConfig.fullScreen = (iValue == 1);
+
+    if ( GetProfile().GetLocalProfileInt("Setup", "Fullscreen", iValue) )
+    {
+        m_deviceConfig.fullScreen = (iValue == 1);
     }
-    
+
     if (! CreateVideoSurface())
         return false; // dialog is in function
 
@@ -409,7 +441,7 @@ bool CApplication::Create()
 
     // Don't generate joystick events
     SDL_JoystickEventState(SDL_IGNORE);
-    
+
     // The video is ready, we can create and initalize the graphics device
     m_device = new Gfx::CGLDevice(m_deviceConfig);
     if (! m_device->Create() )
@@ -1501,6 +1533,32 @@ char CApplication::GetLanguageChar()
             break;
     }
     return langChar;
+}
+
+bool CApplication::ParseLanguage(const std::string& str, Language& language)
+{
+    if (str == "en")
+    {
+        language = LANGUAGE_ENGLISH;
+        return true;
+    }
+    else if (str == "de")
+    {
+        language = LANGUAGE_GERMAN;
+        return true;
+    }
+    else if (str == "fr")
+    {
+        language = LANGUAGE_FRENCH;
+        return true;
+    }
+    else if (str == "pl")
+    {
+        language = LANGUAGE_POLISH;
+        return true;
+    }
+
+    return false;
 }
 
 void CApplication::SetLanguage(Language language)
