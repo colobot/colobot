@@ -134,6 +134,31 @@ ${SRC_DIR}/ui/target.cpp
 ${SRC_DIR}/ui/window.cpp
 )
 
+set(OPENAL_SOURCES "")
+
+if (${OPENAL_SOUND})
+    set(OPENAL_SOURCES
+        ${SRC_DIR}/sound/oalsound/alsound.cpp
+        ${SRC_DIR}/sound/oalsound/buffer.cpp
+        ${SRC_DIR}/sound/oalsound/channel.cpp
+    )
+endif()
+
+# Optional libraries
+set(OPTIONAL_LIBS "")
+
+if (${OPENAL_SOUND})
+    if (${PLATFORM_WINDOWS})
+        set(OPTIONAL_LIBS
+            OpenAL32
+        )
+    else()
+        set(OPTIONAL_LIBS
+            openal
+        )
+    endif()
+endif()
+
 set(UT_SOURCES
 main.cpp
 graphics/engine/lightman_test.cpp
@@ -165,9 +190,10 @@ ${GLEW_LIBRARY}
 ${Boost_LIBRARIES}
 ${OPTIONAL_LIBS}
 ${PLATFORM_LIBS}
+${LIBSNDFILE_LIBRARY}
 )
 
-add_executable(colobot_ut ${COLOBOT_SOURCES} ${UT_SOURCES})
+add_executable(colobot_ut ${COLOBOT_SOURCES} ${UT_SOURCES} ${OPENAL_SOURCES})
 target_link_libraries(colobot_ut ${LIBS})
 
 add_test(colobot_ut ./colobot_ut)
