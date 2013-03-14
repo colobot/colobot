@@ -94,7 +94,7 @@ bool Channel::AdjustFrequency(float freq)
     if (!mReady || mBuffer == nullptr)
         return false;
 
-    return SetFrequency(mInitFrequency + freq);
+    return SetFrequency(mInitFrequency + fabs(freq));
 }
 
 

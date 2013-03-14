@@ -136,7 +136,7 @@ void ALSound::SetMusicVolume(int volume)
 {
     mMusicVolume = MIN(static_cast<float>(volume) / MAXVOLUME, 1.0f);
     if (mCurrentMusic) {
-        mCurrentMusic->SetVolume(mMusicVolume);
+        mCurrentMusic->SetVolume(mMusicVolume * mAudioVolume);
     }
 }
 
@@ -318,7 +318,7 @@ int ALSound::Play(Sound sound, Math::Vector pos, float amplitude, float frequenc
     Position(channel, pos);
 
     // setting initial values
-    mChannels[channel]->SetStartAmplitude(amplitude * mAudioVolume);
+    mChannels[channel]->SetStartAmplitude(amplitude);
     mChannels[channel]->SetStartFrequency(frequency);
     mChannels[channel]->SetChangeFrequency(1.0f);
     mChannels[channel]->ResetOper();
@@ -434,7 +434,7 @@ bool ALSound::MuteAll(bool bMute)
         volume = mAudioVolume;
 
     for (auto channel : mChannels) {
-        channel.second->SetVolume(volume);
+        channel.second->SetVolume(volume * mAudioVolume);
     }
 
     return true;
@@ -508,7 +508,7 @@ bool ALSound::PlayMusic(int rank, bool bRepeat)
                 GetLogger()->Debug("Music loaded from cache\n");
                 mCurrentMusic->SetBuffer(music);
 
-                mCurrentMusic->SetVolume(mMusicVolume);
+                mCurrentMusic->SetVolume(mMusicVolume * mAudioVolume);
                 mCurrentMusic->SetLoop(bRepeat);
                 mCurrentMusic->Play();
                 return true;
@@ -533,7 +533,7 @@ bool ALSound::PlayMusic(int rank, bool bRepeat)
         mMusicCache[rank] = buffer;
     }
     
-    mCurrentMusic->SetVolume(mMusicVolume);
+    mCurrentMusic->SetVolume(mMusicVolume * mAudioVolume);
     mCurrentMusic->SetLoop(bRepeat);
     mCurrentMusic->Play();
     
