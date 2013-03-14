@@ -1146,6 +1146,7 @@ void CRobotMain::ChangePhase(Phase phase)
 
     if (m_phase == PHASE_WIN)
     {
+        m_sound->StopAll();
         if (m_endingWinRank == -1)
         {
             ChangePhase(PHASE_TERM);
@@ -1192,13 +1193,13 @@ void CRobotMain::ChangePhase(Phase phase)
             {
                 m_displayText->DisplayError(INFO_WIN, Math::Vector(0.0f,0.0f,0.0f), 15.0f, 60.0f, 1000.0f);
             }
+            StartMusic();
         }
-        m_sound->StopAll();
-        StartMusic();
     }
 
     if (m_phase == PHASE_LOST)
     {
+        m_sound->StopAll();
         if (m_endingLostRank == -1)
         {
             ChangePhase(PHASE_TERM);
@@ -1215,9 +1216,9 @@ void CRobotMain::ChangePhase(Phase phase)
             ddim.x = dim.x*2;  ddim.y = dim.y*2;
             m_interface->CreateButton(pos, ddim, 16, EVENT_BUTTON_OK);
             m_displayText->DisplayError(INFO_LOST, Math::Vector(0.0f,0.0f,0.0f), 15.0f, 60.0f, 1000.0f);
+            
+            StartMusic();
         }
-        m_sound->StopAll();
-        StartMusic();
     }
 
     if (m_phase == PHASE_LOADING)

@@ -745,6 +745,10 @@ pb->SetState(STATE_SHADOW);
             m_phase == PHASE_USER    ||
             m_phase == PHASE_PROTO   )
     {
+        if (!m_sound->IsPlayingMusic()) {
+            m_sound->PlayMusic(11, true);
+        }
+            
         if ( m_phase == PHASE_TRAINER )  m_index = 0;
         if ( m_phase == PHASE_DEFI    )  m_index = 1;
         if ( m_phase == PHASE_MISSION )  m_index = 2;
