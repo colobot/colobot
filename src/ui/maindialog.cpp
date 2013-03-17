@@ -1876,7 +1876,7 @@ ddim.y = 150.0f/480.0f;
 
         // TODO: #if !_DEMO
         pos.x  =  40.0f/640.0f;
-        pos.y  =  83.0f/480.0f;
+        pos.y  =  65.0f/480.0f;
         ddim.x = 246.0f/640.0f;
         ddim.y =  16.0f/480.0f;
         GetResource(RES_TEXT, RT_GENERIC_DEV1, name);
@@ -1884,14 +1884,14 @@ ddim.y = 150.0f/480.0f;
         pl->SetFontType(Gfx::FONT_COURIER);
         pl->SetFontSize(8.0f);
 
-        pos.y  =  13.0f/480.0f;
+        pos.y  =  0.0f/480.0f;
         GetResource(RES_TEXT, RT_GENERIC_DEV2, name);
         pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL2, name);
         pl->SetFontType(Gfx::FONT_COURIER);
         pl->SetFontSize(8.0f);
 
         pos.x  = 355.0f/640.0f;
-        pos.y  =  83.0f/480.0f;
+        pos.y  =  65.0f/480.0f;
         ddim.x = 246.0f/640.0f;
         ddim.y =  16.0f/480.0f;
         GetResource(RES_TEXT, RT_GENERIC_EDIT1, name);
@@ -1899,7 +1899,7 @@ ddim.y = 150.0f/480.0f;
         pl->SetFontType(Gfx::FONT_COURIER);
         pl->SetFontSize(8.0f);
 
-        pos.y  =  13.0f/480.0f;
+        pos.y  =  0.0f/480.0f;
         GetResource(RES_TEXT, RT_GENERIC_EDIT2, name);
         pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL4, name);
         pl->SetFontType(Gfx::FONT_COURIER);
