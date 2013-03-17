@@ -11,6 +11,7 @@ add_executable(edit_test
 ${SRC_DIR}/common/event.cpp
 ${SRC_DIR}/common/logger.cpp
 ${SRC_DIR}/common/misc.cpp
+${SRC_DIR}/common/profile.cpp
 ${SRC_DIR}/common/iman.cpp
 ${SRC_DIR}/common/stringutils.cpp
 ${SRC_DIR}/graphics/engine/text.cpp

@@ -36,3 +36,7 @@ CEventQueue* CApplication::GetEventQueue()
     return nullptr;
 }
 
+std::string CApplication::GetDataDirPath()
+{
+    return "";
+}
