@@ -3559,11 +3559,11 @@ void CMainDialog::SetUserDir(char *base, int rank)
     if ( strcmp(base, "user") == 0 && rank >= 100 )
     {
         dir = m_userDir + "/" + m_userList.at(rank/100-1);
-        UserDir(true, dir.c_str());
+        GetProfile().SetUserDir(dir);
     }
     else
     {
-        UserDir(false, "");
+        GetProfile().SetUserDir("");
     }
 }
 
@@ -4258,7 +4258,6 @@ bool CMainDialog::IsIOReadScene()
     FILE*   file;
     std::string filename;
 
-    //TODO: Change this to point user dir acocrding to operating system
     filename = m_savegameDir + "/" + m_main->GetGamerName() + "/" + "save" + m_sceneName[0] + "000/data.sav";
     file = fopen(filename.c_str(), "r");
     if ( file == NULL )  return false;
@@ -4354,7 +4353,7 @@ void CMainDialog::IOReadList()
         filename = m_savegameDir + "/" + m_main->GetGamerName() + "/save" + m_sceneName[0] + rankStream.str()+ "/data.sav";
 
         // sprintf(filename, "%s\\%s\\save%c%.3d\\data.sav", m_savegameDir, m_main->GetGamerName(), m_sceneName[0], j);
-        file = fopen(filename.c_str(), "r");
+        file = fopen(fs::path(filename).native().c_str(), "r");
         if ( file == NULL )  break;
 
         while ( fgets(line, 500, file) != NULL )
@@ -5046,8 +5045,8 @@ void CMainDialog::UpdateDisplayDevice()
     CWindow*    pw;
     CList*      pl;
     char        bufDevices[1000];
-    char        bufModes[5000];
-    int         i, j, totalDevices, selectDevices, totalModes, selectModes;
+    //char        bufModes[5000];
+    int         i, j;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
     if ( pw == 0 )  return;
@@ -5055,7 +5054,7 @@ void CMainDialog::UpdateDisplayDevice()
     if ( pl == 0 )  return;
     pl->Flush();
 
-    bufModes[0] = 0;
+    //bufModes[0] = 0;
     /* TODO: remove device choice
     m_engine->EnumDevices(bufDevices, 1000,
                           bufModes,   5000,
@@ -5070,10 +5069,10 @@ void CMainDialog::UpdateDisplayDevice()
         while ( bufDevices[i++] != 0 );
     }
 
-    pl->SetSelect(selectDevices);
+    pl->SetSelect(0);
     pl->ShowSelect(false);
 
-    m_setupSelDevice = selectDevices;
+    m_setupSelDevice = 0;
 }
 
 // Updates the list of modes.
@@ -5110,8 +5109,8 @@ void CMainDialog::ChangeDisplay()
     CWindow*    pw;
     CList*      pl;
     CCheck*     pc;
-    char*       device;
-    char*       mode;
+    //char*       device;
+    //char*       mode;
     bool        bFull;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
@@ -5120,12 +5119,12 @@ void CMainDialog::ChangeDisplay()
     pl = static_cast<CList*>(pw->SearchControl(EVENT_LIST1));
     if ( pl == 0 )  return;
     m_setupSelDevice = pl->GetSelect();
-    device = pl->GetName(m_setupSelDevice);
+    //device = pl->GetName(m_setupSelDevice);
 
     pl = static_cast<CList*>(pw->SearchControl(EVENT_LIST2));
     if ( pl == 0 )  return;
     m_setupSelMode = pl->GetSelect();
-    mode = pl->GetName(m_setupSelMode);
+    //mode = pl->GetName(m_setupSelMode);
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_FULL));
     if ( pc == 0 )  return;

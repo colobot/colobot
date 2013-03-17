@@ -35,7 +35,12 @@
 #include "common/restext.h"
 
 #include <set>
+#include <string>
 
+#include <boost/filesystem.hpp>
+#include <boost/algorithm/string.hpp>
+
+namespace fs = boost::filesystem;
 
 
 namespace Ui {
@@ -84,7 +89,7 @@ enum OperUndo
 struct ImageLine
 {
     //! name of the image (without diagram \)
-    char    name[40];
+    std::string    name;
     //! vertical offset (v texture)
     float   offset;
     //! height of the part (dv texture)
@@ -96,15 +101,15 @@ struct ImageLine
 struct HyperLink
 {
     //! text file name (without help \)
-    char    name[40];
+    std::string    name;
     //! name of the marker
-    char    marker[20];
+    std::string    marker;
 };
 
 struct HyperMarker
 {
     //! name of the marker
-    char    name[20];
+    std::string    name;
     //! position in the text
     int pos;
 };
@@ -112,7 +117,7 @@ struct HyperMarker
 struct HyperHistory
 {
     //! full file name text
-    char    filename[50];
+    std::string    filename;
     //! rank of the first displayed line
     int firstLine;
 };
@@ -140,8 +145,8 @@ public:
     char*       GetText();
     int         GetTextLength();
 
-    bool        ReadText(const char *filename, int addSize=0);
-    bool        WriteText(const char *filename);
+    bool        ReadText(std::string filename, int addSize=0);
+    bool        WriteText(std::string filename);
 
     void        SetMaxChar(int max);
     int         GetMaxChar();
@@ -183,7 +188,7 @@ public:
     bool        Undo();
 
     void        HyperFlush();
-    void        HyperHome(const char *filename);
+    void        HyperHome(std::string filename);
     bool        HyperTest(EventType event);
     bool        HyperGo(EventType event);
 
@@ -202,15 +207,15 @@ protected:
     int         MouseDetect(Math::Point mouse);
     void        MoveAdjust();
 
-    void        HyperJump(const char *name, const char *marker);
-    bool        HyperAdd(const char *filename, int firstLine);
+    void        HyperJump(std::string name, std::string marker);
+    bool        HyperAdd(std::string filename, int firstLine);
 
-    void        DrawImage(Math::Point pos, const char *name, float width, float offset, float height, int nbLine);
+    void        DrawImage(Math::Point pos, std::string name, float width, float offset, float height, int nbLine);
     void        DrawBack(Math::Point pos, Math::Point dim);
     void        DrawPart(Math::Point pos, Math::Point dim, int icon);
 
     void        FreeImage();
-    void        LoadImage(const char *name);
+    void        LoadImage(std::string name);
     void        Scroll(int pos, bool bAdjustCursor);
     void        Scroll();
     void        MoveChar(int move, bool bWord, bool bSelect);

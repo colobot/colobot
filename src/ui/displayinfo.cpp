@@ -671,7 +671,7 @@ void CDisplayInfo::ChangeIndexButton(int index)
     {
         filename = m_main->GetDisplayInfoName(m_index);
         edit->ReadText(filename);
-        edit->HyperHome(filename);
+        edit->HyperHome(std::string(filename));
         SetPosition(m_main->GetDisplayInfoPosition(m_index));
     }
 

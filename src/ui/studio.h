@@ -22,6 +22,9 @@
 
 #include "graphics/engine/camera.h"
 
+#include <boost/filesystem.hpp>
+
+namespace fs = boost::filesystem;
 
 #include <string>
 
@@ -81,7 +84,7 @@ protected:
     void        UpdateDialogAction();
     void        UpdateDialogPublic();
     void        UpdateDialogList();
-    void        SearchDirectory(char* dir, bool bCreate);
+    std::string  SearchDirectory(bool bCreate);
     bool        ReadProgram();
     bool        WriteProgram();
 

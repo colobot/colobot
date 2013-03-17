@@ -3900,7 +3900,7 @@ bool CScript::WriteScript(const char* filename)
     edit->SetMaxChar(Ui::EDITSTUDIOMAX);
     edit->SetAutoIndent(m_engine->GetEditIndentMode());
     edit->SetText(m_script);
-    edit->WriteText(name.c_str());
+    edit->WriteText(name);
     m_interface->DeleteControl(EVENT_EDIT9);
     return true;
 }

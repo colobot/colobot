@@ -1477,8 +1477,7 @@ void CStudio::UpdateDialogPublic()
     CCheck*     pc;
     CLabel*     pl;
     char        name[100];
-    char        dir[MAX_FNAME];
-    char        text[MAX_FNAME+100];
+    //char        text[MAX_FNAME+100];
 
     pw = static_cast< CWindow* >(m_interface->SearchControl(EVENT_WINDOW9));
     if ( pw == nullptr )  return;
@@ -1499,9 +1498,7 @@ void CStudio::UpdateDialogPublic()
     if ( pl != 0 )
     {
         GetResource(RES_TEXT, RT_IO_LIST, name);
-        SearchDirectory(dir, false);
-        sprintf(text, name, dir);
-        pl->SetName(text, false);
+        pl->SetName(SearchDirectory(false).c_str(), false);
     }
 }
 
@@ -1572,21 +1569,22 @@ void CStudio::UpdateDialogList()
 // Constructs the name of the folder or open/save.
 // If the folder does not exist, it will be created.
 
-void CStudio::SearchDirectory(char *dir, bool bCreate)
+std::string CStudio::SearchDirectory(bool bCreate)
 {
-    if ( m_main->GetIOPublic() )
-    {
-        sprintf(dir, "%s\\", m_main->GetPublicDir());
+    char dir[MAX_FNAME];
+    if ( m_main->GetIOPublic() ) {
+        sprintf(dir, "%s/", m_main->GetPublicDir());
+    } else {
+        sprintf(dir, "%s/%s/Program/", m_main->GetSavegameDir(), m_main->GetGamerName());
     }
-    else
-    {
-        sprintf(dir, "%s\\%s\\Program\\", m_main->GetSavegameDir(), m_main->GetGamerName());
+    
+    fs::path path = fs::path(dir);
+    
+    if ( bCreate ) {
+        fs::create_directory(path);
     }
 
-    if ( bCreate )
-    {// TODO
-//        mkdir(dir,0777);  // if does not exist yet!
-    }
+    return path.make_preferred().string();
 }
 
 // Reads a new program.
@@ -1612,7 +1610,7 @@ bool CStudio::ReadProgram()
     {
         strcat(filename, ".txt");
     }
-    SearchDirectory(dir, true);
+    strcpy(dir, SearchDirectory(true).c_str());
     strcat(dir, filename);
 
     pw = static_cast< CWindow* >(m_interface->SearchControl(EVENT_WINDOW3));
@@ -1650,7 +1648,7 @@ bool CStudio::WriteProgram()
     {
         strcat(filename, ".txt");
     }
-    SearchDirectory(dir, true);
+    strcpy(dir, SearchDirectory(true).c_str());
     strcat(dir, filename);
 
     pw = static_cast< CWindow* >(m_interface->SearchControl(EVENT_WINDOW3));
@@ -1658,7 +1656,7 @@ bool CStudio::WriteProgram()
     pe = static_cast< CEdit* >(pw->SearchControl(EVENT_STUDIO_EDIT));
     if ( pe == nullptr )  return false;
 
-    if ( !pe->WriteText(dir) )  return false;
+    if ( !pe->WriteText(std::string(dir)) )  return false;
 
     m_script->SetFilename(filename);
     return true;

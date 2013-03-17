@@ -182,3 +182,48 @@ std::vector< std::string > CProfile::GetLocalProfileSection(std::string section,
 
     return ret_list;
 }
+
+
+void CProfile::SetUserDir(std::string dir)
+{
+    m_userDirectory = dir;
+}
+
+
+std::string CProfile::GetUserBasedPath(std::string dir, std::string default_dir)
+{
+    std::string path = dir;
+    boost::replace_all(path, "\\", "/");
+    if (dir.find("/") == std::string::npos) {
+        path = default_dir + "/" + dir;
+    }
+    
+    if (m_userDirectory.length() > 0) {
+        boost::replace_all(path, "%user%", m_userDirectory);
+    } else {
+        boost::replace_all(path, "%user%", default_dir);
+    }
+    
+    return fs::path(path).make_preferred().string();
+}
+        
+        
+bool CProfile::CopyFileToTemp(std::string filename)
+{
+    std::string src, dst;
+    std::string tmp_user_dir = m_userDirectory;
+    
+    src = GetUserBasedPath(filename, "textures");
+    SetUserDir("temp");
+    dst = GetUserBasedPath(filename, "textures");
+    SetUserDir(tmp_user_dir);
+   
+    fs::create_directory(fs::path(dst).parent_path().make_preferred().string());
+    fs::copy_file(src, dst, fs::copy_option::overwrite_if_exists);
+    if (fs::exists(dst)) {
+        return true;    
+    }
+
+    return false;
+}
+

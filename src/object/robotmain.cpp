@@ -1187,7 +1187,7 @@ void CRobotMain::ChangePhase(Phase phase)
                 pe->SetFontType(Gfx::FONT_COLOBOT);
                 pe->SetEditCap(false);
                 pe->SetHiliteCap(false);
-                pe->ReadText("help/win.txt");
+                pe->ReadText(std::string("help/win.txt"));
             }
             else
             {
@@ -4094,8 +4094,9 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
         {
             OpString(line, "image", name);
             AddExt(name, ".png");
-            if (strstr(name, "%user%") != 0)
-                CopyFileToTemp(name);
+            if (strstr(name, "%user%") != 0) {
+                GetProfile().CopyFileToTemp(std::string(name));
+            }
 
             m_terrain->AddMaterial(OpInt(line, "id", 0),
                                    name,

@@ -21,13 +21,19 @@
 
 #pragma once
 
-
 #include "common/singleton.h"
 
+// this is just to fix problem with undefined reference when compiling with c++11 support
+#define BOOST_NO_SCOPED_ENUMS
+
 #include <boost/property_tree/ptree.hpp>
+#include <boost/filesystem.hpp>
+#include <boost/algorithm/string/replace.hpp>
 
 #include <string>
 #include <vector>
+
+namespace fs = boost::filesystem;
 
 
 /**
@@ -101,10 +107,30 @@ class CProfile : public CSingleton<CProfile>
          * \return vector of values
          */
         std::vector< std::string > GetLocalProfileSection(std::string section, std::string key);
+        
+        /** Sets current user directory
+         * \param dir
+         */
+        void SetUserDir(std::string dir);
+        
+        /** Returns path based on current user. Replaces %user% in path with current user dir or
+         * uses default_dir param if no user dir is specified
+         * \param dir
+         * \param default_dir
+         * \return path
+         */
+        std::string GetUserBasedPath(std::string dir, std::string default_dir);
+        
+        /** opy a file into the temporary folder.
+         * \param filename
+         * \return true on success
+         */
+        bool CopyFileToTemp(std::string filename);
 
     private:
         boost::property_tree::ptree m_propertyTree;
         bool m_profileNeedSave;
+        std::string m_userDirectory;
 };
 
 //! Global function to get profile instance
