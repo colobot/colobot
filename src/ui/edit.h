@@ -36,6 +36,7 @@
 
 #include <set>
 #include <string>
+#include <cstdlib>
 
 #include <boost/filesystem.hpp>
 #include <boost/algorithm/string.hpp>

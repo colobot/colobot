@@ -1408,13 +1408,7 @@ int GetValueParam(std::string cmd, int rank)
     int return_value = 0;
     
     if (results.size() > static_cast<unsigned int>(rank)) {
-        try {
-            return_value = std::stoi(results.at(rank));
-        } catch (std::invalid_argument &e) {
-            GetLogger()->Error("Exception std::invalid_argument caught in GetValueParam function");
-        } catch (std::out_of_range  &e) {
-            GetLogger()->Error("Exception std::out_of_range caught in GetValueParam function");
-        }
+        return_value = atoi(results.at(rank).c_str());
     }
 
     return return_value;
