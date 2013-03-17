@@ -1506,64 +1506,31 @@ void CStudio::UpdateDialogPublic()
 
 void CStudio::UpdateDialogList()
 {
-    // TODO rewrite to multiplatform
-    /*CWindow*            pw;
-    CList*              pl;
-    long                hFile;
-    struct _finddata_t  fileBuffer;
-    struct _finddata_t* listBuffer;
-    bool                bDo;
-    char                dir[MAX_FNAME];
-    char                temp[MAX_FNAME];
-    int                 nbFilenames, i;
+    CWindow*        pw;
+    CList*          pl;
+    fs::path        path;
+    int             i = 0;
+    char            time[100];
+    char            temp[100];
 
-    pw = static_cast< CWindow* >(m_interface->SearchControl(EVENT_WINDOW9);
+    pw = static_cast< CWindow* >(m_interface->SearchControl(EVENT_WINDOW9));
     if ( pw == nullptr )  return;
-    pl = static_cast< CList* >(pw->SearchControl(EVENT_DIALOG_LIST);
-    if ( pl == 0 )  return;
+    pl = static_cast< CList* >(pw->SearchControl(EVENT_DIALOG_LIST));
+    if ( pl == nullptr )  return;
     pl->Flush();
 
-    nbFilenames = 0;
-    listBuffer = (_finddata_t*)malloc(sizeof(_finddata_t)*1000);
-
-    SearchDirectory(dir, false);
-    strcat(dir, "*");  // list all
-    hFile = _findfirst(dir, &fileBuffer);
-    if ( hFile != -1 )
-    {
-        do
-        {
-            if ( (fileBuffer.attrib & _A_SUBDIR) == 0 )
-            {
-                listBuffer[nbFilenames++] = fileBuffer;
-            }
-        }
-        while ( _findnext(hFile, &fileBuffer) == 0 && nbFilenames < 1000 );
-    }
-    do  // sorts all names:
-    {
-        bDo = false;
-        for ( i=0 ; i<nbFilenames-1 ; i++ )
-        {
-            if ( strcmp(listBuffer[i].name, listBuffer[i+1].name) > 0 )
-            {
-                fileBuffer = listBuffer[i];  // exchange i and i +1
-                listBuffer[i] = listBuffer[i+1];
-                listBuffer[i+1] = fileBuffer;
-                bDo = true;
+    path = fs::path(SearchDirectory(false));
+    fs::directory_iterator end_iter;
+    if ( fs::exists(path) && fs::is_directory(path) ) {
+        for( fs::directory_iterator file(path); file != end_iter; file++) {
+            if (fs::is_regular_file(file->status()) ) {
+                TimeToAscii(fs::last_write_time(file->path()), time);
+                sprintf(temp, "%s\t%lu  \t%s", file->path().filename().c_str(), fs::file_size(file->path()), time);
+                
+                pl->SetName(i++, temp);
             }
         }
     }
-    while ( bDo );
-
-    for ( i=0 ; i<nbFilenames ; i++ )
-    {
-        TimeToAscii(listBuffer[i].time_write, dir);
-        sprintf(temp, "%s\t%d  \t%s", listBuffer[i].name, listBuffer[i].size, dir);
-        pl->SetName(i, temp);
-    }
-
-    free(listBuffer);*/
 }
 
 // Constructs the name of the folder or open/save.

@@ -4353,7 +4353,7 @@ void CMainDialog::IOReadList()
         filename = m_savegameDir + "/" + m_main->GetGamerName() + "/save" + m_sceneName[0] + rankStream.str()+ "/data.sav";
 
         // sprintf(filename, "%s\\%s\\save%c%.3d\\data.sav", m_savegameDir, m_main->GetGamerName(), m_sceneName[0], j);
-        file = fopen(fs::path(filename).native().c_str(), "r");
+        file = fopen(fs::path(filename).make_preferred().c_str(), "r");
         if ( file == NULL )  break;
 
         while ( fgets(line, 500, file) != NULL )
