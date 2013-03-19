@@ -64,7 +64,7 @@ SystemDialogResult SystemDialog_Linux(SystemDialogType type, const std::string& 
 
 void GetCurrentTimeStamp_Linux(SystemTimeStamp *stamp)
 {
-    clock_gettime(CLOCK_MONOTONIC, &stamp->clockTime);
+    clock_gettime(CLOCK_MONOTONIC_RAW, &stamp->clockTime);
 }
 
 long long GetTimeStampExactResolution_Linux()
