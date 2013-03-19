@@ -20,19 +20,12 @@
  * \brief Fallback code for other systems
  */
 
-/* NOTE: code is contained in this header;
- * there is no separate .cpp module for simplicity */
+#include "app/system.h"
 
 #include <SDL/SDL.h>
 
 #include <iostream>
 
-
-SystemDialogResult SystemDialog_Other(SystemDialogType type, const std::string& title, const std::string& message);
-
-void GetCurrentTimeStamp_Other(SystemTimeStamp *stamp);
-long long GetTimeStampExactResolution_Other();
-long long TimeStampExactDiff_Other(SystemTimeStamp *before, SystemTimeStamp *after);
 
 struct SystemTimeStamp
 {
@@ -45,105 +38,8 @@ struct SystemTimeStamp
 };
 
 
-SystemDialogResult SystemDialog_Other(SystemDialogType type, const std::string& title, const std::string& message)
-{
-    switch (type)
-    {
-        case SDT_INFO:
-            std::cout << "INFO: ";
-            break;
-        case SDT_WARNING:
-            std::cout << "WARNING:";
-            break;
-        case SDT_ERROR:
-            std::cout << "ERROR: ";
-            break;
-        case SDT_YES_NO:
-        case SDT_OK_CANCEL:
-            std::cout << "QUESTION: ";
-            break;
-    }
+SystemDialogResult SystemDialog_Other(SystemDialogType type, const std::string& title, const std::string& message);
 
-    std::cout << message << std::endl;
-
-    std::string line;
-
-    SystemDialogResult result = SDR_OK;
-
-    bool done = false;
-    while (!done)
-    {
-        switch (type)
-        {
-            case SDT_INFO:
-            case SDT_WARNING:
-            case SDT_ERROR:
-                std::cout << "Press ENTER to continue";
-                break;
-
-            case SDT_YES_NO:
-                std::cout << "Type 'Y' for Yes or 'N' for No";
-                break;
-
-            case SDT_OK_CANCEL:
-                std::cout << "Type 'O' for OK or 'C' for Cancel";
-                break;
-        }
-
-        std::getline(std::cin, line);
-
-        switch (type)
-        {
-            case SDT_INFO:
-            case SDT_WARNING:
-            case SDT_ERROR:
-                done = true;
-                break;
-
-            case SDT_YES_NO:
-                if (line == "Y" || line == "y")
-                {
-                    result = SDR_YES;
-                    done = true;
-                }
-                else if (line == "N" || line == "n")
-                {
-                    result = SDR_NO;
-                    done = true;
-                }
-                break;
-
-            case SDT_OK_CANCEL:
-                if (line == "O" || line == "o")
-                {
-                    done = true;
-                    result = SDR_OK;
-                }
-                else if (line == "C" || line == "c")
-                {
-                    done = true;
-                    result = SDR_CANCEL;
-                }
-                break;
-        }
-    }
-
-    return result;
-}
-
-
-
-void GetCurrentTimeStamp_Other(SystemTimeStamp *stamp)
-{
-    stamp->sdlTicks = SDL_GetTicks();
-}
-
-long long GetTimeStampExactResolution_Other()
-{
-    return 1000000ll;
-}
-
-long long TimeStampExactDiff_Other(SystemTimeStamp *before, SystemTimeStamp *after)
-{
-    return (after->sdlTicks - before->sdlTicks) * 1000000ll;
-}
+void GetCurrentTimeStamp_Other(SystemTimeStamp *stamp);
+long long GetTimeStampExactResolution_Other();
+long long TimeStampExactDiff_Other(SystemTimeStamp *before, SystemTimeStamp *after);

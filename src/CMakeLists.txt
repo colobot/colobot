@@ -55,11 +55,21 @@ if (${OPENAL_SOUND})
     )
 endif()
 
+# Platform-dependent implementation of system.h
+if (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+    set(SYSTEM_CPP_MODULE "system_windows.cpp")
+elseif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+    set(SYSTEM_CPP_MODULE "system_linux.cpp")
+else()
+    set(SYSTEM_CPP_MODULE "system_other.cpp")
+endif()
+
 # Source files
 set(SOURCES
 app/app.cpp
 app/main.cpp
 app/system.cpp
+app/${SYSTEM_CPP_MODULE}
 common/event.cpp
 common/image.cpp
 common/iman.cpp

@@ -20,19 +20,10 @@
  * \brief Windows-specific implementation of system functions
  */
 
-/* NOTE: code is contained in this header;
- * there is no separate .cpp module for simplicity */
+#include "app/system.h"
 
 #include <windows.h>
 
-
-std::string UTF8_Encode_Windows(const std::wstring &wstr);
-std::wstring UTF8_Decode_Windows(const std::string &str);
-SystemDialogResult SystemDialog_Windows(SystemDialogType type, const std::string& title, const std::string& message);
-
-void GetCurrentTimeStamp_Windows(SystemTimeStamp *stamp);
-long long GetTimeStampExactResolution_Windows();
-long long TimeStampExactDiff_Windows(SystemTimeStamp *before, SystemTimeStamp *after);
 
 struct SystemTimeStamp
 {
@@ -44,82 +35,10 @@ struct SystemTimeStamp
     }
 };
 
+std::string UTF8_Encode_Windows(const std::wstring &wstr);
+std::wstring UTF8_Decode_Windows(const std::string &str);
+SystemDialogResult SystemDialog_Windows(SystemDialogType type, const std::string& title, const std::string& message);
 
-// Convert a wide Unicode string to an UTF8 string
-std::string UTF8_Encode_Windows(const std::wstring &wstr)
-{
-    int size_needed = WideCharToMultiByte(CP_UTF8, 0, &wstr[0], static_cast<int>(wstr.size()), NULL, 0, NULL, NULL);
-    std::string strTo(size_needed, 0);
-    WideCharToMultiByte(CP_UTF8, 0, &wstr[0], static_cast<int>(wstr.size()), &strTo[0], size_needed, NULL, NULL);
-    return strTo;
-}
-
-// Convert an UTF8 string to a wide Unicode String
-std::wstring UTF8_Decode_Windows(const std::string &str)
-{
-    int size_needed = MultiByteToWideChar(CP_UTF8, 0, &str[0], static_cast<int>(str.size()), NULL, 0);
-    std::wstring wstrTo(size_needed, 0);
-    MultiByteToWideChar(CP_UTF8, 0, &str[0], static_cast<int>(str.size()), &wstrTo[0], size_needed);
-    return wstrTo;
-}
-
-SystemDialogResult SystemDialog_Windows(SystemDialogType type, const std::string& title, const std::string& message)
-{
-    unsigned int windowsType = 0;
-    std::wstring windowsMessage = UTF8_Decode_Windows(message);
-    std::wstring windowsTitle = UTF8_Decode_Windows(title);
-
-    switch (type)
-    {
-        case SDT_INFO:
-        default:
-            windowsType = MB_ICONINFORMATION|MB_OK;
-            break;
-        case SDT_WARNING:
-            windowsType = MB_ICONWARNING|MB_OK;
-            break;
-        case SDT_ERROR:
-            windowsType = MB_ICONERROR|MB_OK;
-            break;
-        case SDT_YES_NO:
-            windowsType = MB_ICONQUESTION|MB_YESNO;
-            break;
-        case SDT_OK_CANCEL:
-            windowsType = MB_ICONWARNING|MB_OKCANCEL;
-            break;
-    }
-
-    switch (MessageBoxW(NULL, windowsMessage.c_str(), windowsTitle.c_str(), windowsType))
-    {
-        case IDOK:
-            return SDR_OK;
-        case IDCANCEL:
-            return SDR_CANCEL;
-        case IDYES:
-            return SDR_YES;
-        case IDNO:
-            return SDR_NO;
-        default:
-            break;
-    }
-
-    return SDR_OK;
-}
-
-
-void GetCurrentTimeStamp_Windows(SystemTimeStamp *stamp)
-{
-    GetSystemTimeAsFileTime(&stamp->fileTime);
-}
-
-long long GetTimeStampExactResolution_Windows()
-{
-    return 100ll;
-}
-
-long long TimeStampExactDiff_Windows(SystemTimeStamp *before, SystemTimeStamp *after)
-{
-    long long tH = (1ll << 32) * (after->fileTime.dwHighDateTime - before->fileTime.dwHighDateTime);
-    long long tL = after->fileTime.dwLowDateTime - before->fileTime.dwLowDateTime;
-    return (tH + tL) * 100ll;
-}
+void GetCurrentTimeStamp_Windows(SystemTimeStamp *stamp);
+long long GetTimeStampExactResolution_Windows();
+long long TimeStampExactDiff_Windows(SystemTimeStamp *before, SystemTimeStamp *after);

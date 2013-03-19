@@ -2,6 +2,14 @@ set(SRC_DIR ${colobot_SOURCE_DIR}/src)
 
 configure_file(${SRC_DIR}/common/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/common/config.h)
 
+# Platform-dependent implementation of system.h
+if (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+    set(SYSTEM_CPP_MODULE "system_windows.cpp")
+elseif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+    set(SYSTEM_CPP_MODULE "system_linux.cpp")
+else()
+    set(SYSTEM_CPP_MODULE "system_other.cpp")
+endif()
 
 set(TEXTURE_SOURCES
 ${SRC_DIR}/graphics/opengl/gldevice.cpp
@@ -17,6 +25,7 @@ ${SRC_DIR}/common/logger.cpp
 ${SRC_DIR}/common/image.cpp
 ${SRC_DIR}/common/stringutils.cpp
 ${SRC_DIR}/app/system.cpp
+${SRC_DIR}/app/${SYSTEM_CPP_MODULE}
 model_test.cpp
 )
 
@@ -25,6 +34,7 @@ ${SRC_DIR}/graphics/opengl/gldevice.cpp
 ${SRC_DIR}/common/logger.cpp
 ${SRC_DIR}/common/image.cpp
 ${SRC_DIR}/app/system.cpp
+${SRC_DIR}/app/${SYSTEM_CPP_MODULE}
 transform_test.cpp
 )
 
@@ -33,6 +43,7 @@ ${SRC_DIR}/graphics/opengl/gldevice.cpp
 ${SRC_DIR}/common/logger.cpp
 ${SRC_DIR}/common/image.cpp
 ${SRC_DIR}/app/system.cpp
+${SRC_DIR}/app/${SYSTEM_CPP_MODULE}
 light_test.cpp
 )
 
