@@ -1186,7 +1186,7 @@ void CRobotMain::ChangePhase(Phase phase)
                 pe->SetGenericMode(true);
                 pe->SetFontType(Gfx::FONT_COLOBOT);
                 pe->SetEditCap(false);
-                pe->SetHiliteCap(false);
+                pe->SetHighlightCap(false);
                 pe->ReadText(std::string("help/win.txt"));
             }
             else

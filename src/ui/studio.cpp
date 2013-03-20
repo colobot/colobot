@@ -990,13 +990,13 @@ void CStudio::UpdateButtons()
     {
         edit->SetIcon(1);  // red background
         edit->SetEditCap(false);  // just to see
-        edit->SetHiliteCap(true);
+        edit->SetHighlightCap(true);
     }
     else
     {
         edit->SetIcon(0);  // standard background
         edit->SetEditCap(true);
-        edit->SetHiliteCap(true);
+        edit->SetHighlightCap(true);
     }
 
     button = static_cast< CButton* >(pw->SearchControl(EVENT_STUDIO_COMPILE));
@@ -1525,7 +1525,7 @@ void CStudio::UpdateDialogList()
         for( fs::directory_iterator file(path); file != end_iter; file++) {
             if (fs::is_regular_file(file->status()) ) {
                 TimeToAscii(fs::last_write_time(file->path()), time);
-                sprintf(temp, "%s\t%lu  \t%s", file->path().filename().c_str(), fs::file_size(file->path()), time);
+                sprintf(temp, "%s\t%lu  \t%s", file->path().filename().string().c_str(), fs::file_size(file->path()), time);
                 
                 pl->SetName(i++, temp);
             }

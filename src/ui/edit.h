@@ -155,8 +155,8 @@ public:
     void        SetEditCap(bool bMode);
     bool        GetEditCap();
 
-    void        SetHiliteCap(bool bEnable);
-    bool        GetHiliteCap();
+    void        SetHighlightCap(bool bEnable);
+    bool        GetHighlightCap();
 
     void        SetInsideScroll(bool bInside);
     bool        GetInsideScroll();

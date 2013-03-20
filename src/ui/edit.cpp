@@ -786,8 +786,7 @@ void CEdit::HyperJump(std::string name, std::string marker)
     if ( name[0] == '%' ) {
         filename = GetProfile().GetUserBasedPath(name, "") + ".txt";
     } else {
-        std::string path = CApplication::GetInstancePointer()->GetDataDirPath() + "/help/" + name + ".txt";
-        filename = fs::path(path).generic_string();
+        filename = "/help/" + name + ".txt";
     }
     
     if ( ReadText(filename) )
@@ -1449,7 +1448,16 @@ bool CEdit::ReadText(std::string filename, int addSize)
     bool        bInSoluce, bBOL;
 
     if ( filename[0] == 0 )  return false;
-    file = fopen(filename.c_str(), "rb");
+    boost::replace_all(filename, "\\", "/");
+    
+    /* This is ugly but doesn't require many changes in code. If file doesn't
+       exists it's posible filename is absolute not full path */
+    std::string path = filename;
+    if (!fs::exists(path)) {
+        path = CApplication::GetInstancePointer()->GetDataDirPath() + "/" + filename;
+    }
+
+    file = fopen(fs::path(path).make_preferred().string().c_str(), "rb");
     if ( file == NULL )  return false;
 
     fseek(file, 0, SEEK_END);
@@ -1974,12 +1982,12 @@ bool CEdit::GetEditCap()
 
 // Mode management "hilitable" (that's the franch).
 
-void CEdit::SetHiliteCap(bool bEnable)
+void CEdit::SetHighlightCap(bool bEnable)
 {
     m_bHilite = bEnable;
 }
 
-bool CEdit::GetHiliteCap()
+bool CEdit::GetHighlightCap()
 {
     return m_bHilite;
 }

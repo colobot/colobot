@@ -891,7 +891,7 @@ pb->SetState(STATE_SHADOW);
         pe->SetState(STATE_SHADOW);
         pe->SetMaxChar(500);
         pe->SetEditCap(false);  // just to see
-        pe->SetHiliteCap(false);
+        pe->SetHighlightCap(false);
 
         // Button displays the "soluce":
         if ( m_phase != PHASE_TRAINER &&
@@ -1815,7 +1815,7 @@ pos.y -= 0.048f;
         pe = pw->CreateEdit(pos, ddim, 0, EVENT_EDIT1);
         pe->SetGenericMode(true);
         pe->SetEditCap(false);
-        pe->SetHiliteCap(false);
+        pe->SetHighlightCap(false);
         pe->SetFontType(Gfx::FONT_COURIER);
         pe->SetFontSize(8.0f);
         pe->ReadText("help/authors.txt");
@@ -1827,7 +1827,7 @@ pos.y -= 0.048f;
         pe = pw->CreateEdit(pos, ddim, 0, EVENT_EDIT2);
         pe->SetGenericMode(true);
         pe->SetEditCap(false);
-        pe->SetHiliteCap(false);
+        pe->SetHighlightCap(false);
         pe->SetFontType(Gfx::FONT_COURIER);
         pe->SetFontSize(6.5f);
         pe->ReadText("help/licences.txt");
@@ -1847,7 +1847,7 @@ ddim.y = 150.0f/480.0f;
         pe = pw->CreateEdit(pos, ddim, 0, EVENT_EDIT1);
         pe->SetGenericMode(true);
         pe->SetEditCap(false);
-        pe->SetHiliteCap(false);
+        pe->SetHighlightCap(false);
         pe->SetFontType(Gfx::FONT_COURIER);
         pe->SetFontSize(8.0f);
         pe->ReadText("help/authors.txt");

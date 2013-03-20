@@ -381,7 +381,7 @@ void CDisplayInfo::StartDisplayInfo(std::string filename, int index, bool bSoluc
     edit->ReadText(filename.c_str());
     edit->HyperHome(filename.c_str());
     edit->SetEditCap(false);  // just to see!
-    edit->SetHiliteCap(false);
+    edit->SetHighlightCap(false);
     edit->SetFocus(true);
 
     ViewDisplayInfo();
@@ -785,7 +785,7 @@ void CDisplayInfo::UpdateIndexButton()
     if ( edit != 0 )
     {
 //?     edit->SetHiliteCap(m_index==SATCOM_LOADING);
-        edit->SetHiliteCap(true);
+        edit->SetHighlightCap(true);
     }
 
     UpdateCopyButton();
