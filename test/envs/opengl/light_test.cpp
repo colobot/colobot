@@ -1,5 +1,6 @@
 #include "app/system.h"
 
+#include "common/config.h"
 #include "common/logger.h"
 #include "common/image.h"
 
@@ -7,8 +8,8 @@
 
 #include "math/geometry.h"
 
-#include <SDL/SDL.h>
-#include <SDL/SDL_image.h>
+#include <SDL.h>
+#include <SDL_image.h>
 #include <unistd.h>
 
 #include <iostream>
@@ -357,7 +358,10 @@ void MouseMove(int x, int y)
     ROTATION.x = ROTATION_BASE.x + (static_cast<float> (y - MOUSE_POS_BASE.y) / 600.0f) * Math::PI;
 }
 
-int main(int argc, char *argv[])
+extern "C"
+{
+
+int SDL_MAIN_FUNC(int argc, char *argv[])
 {
     CLogger logger;
 
@@ -460,3 +464,5 @@ int main(int argc, char *argv[])
 
     return 0;
 }
+
+} // extern "C"

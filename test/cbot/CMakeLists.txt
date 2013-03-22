@@ -1,2 +1,2 @@
 # CBot console interpreter
-add_subdirectory(CBot_console)
+#add_subdirectory(CBot_console)

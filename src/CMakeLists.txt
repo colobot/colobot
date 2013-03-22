@@ -12,22 +12,18 @@ add_subdirectory(tools)
 
 add_subdirectory(po)
 
-add_subdirectory(desktop)
+if(${DESKTOP})
+    add_subdirectory(desktop)
+endif()
 
 
 # Optional libraries
 set(OPTIONAL_LIBS "")
+set(OPTIONAL_INCLUDES "")
 
 if (${OPENAL_SOUND})
-    if (${PLATFORM_WINDOWS})
-        set(OPTIONAL_LIBS
-            OpenAL32
-        )
-    else()
-        set(OPTIONAL_LIBS
-            openal
-        )
-    endif()
+    set(OPTIONAL_LIBS ${OPENAL_LIBRARY})
+    set(OPTIONAL_INCLUDES ${OPENAL_INCLUDE_DIR})
 endif()
 
 # Additional libraries per platform
@@ -196,8 +192,8 @@ ${OPENGL_LIBRARY}
 ${PNG_LIBRARIES}
 ${GLEW_LIBRARY}
 ${Boost_LIBRARIES}
-${OPTIONAL_LIBS}
 ${LIBSNDFILE_LIBRARY}
+${OPTIONAL_LIBS}
 ${PLATFORM_LIBS}
 )
 
@@ -217,8 +213,8 @@ ${SDLTTF_INCLUDE_DIR}
 ${PNG_INCLUDE_DIRS}
 ${GLEW_INCLUDE_PATH}
 ${Boost_INCLUDE_DIRS}
-${OPTIONAL_INCLUDE_DIRS}
 ${LIBSNDFILE_INCLUDE_DIR}
+${OPTIONAL_INCLUDE_DIRS}
 )
 
 link_directories(${CMAKE_CURRENT_SOURCE_DIR}/CBot)

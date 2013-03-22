@@ -22,7 +22,7 @@
 
 #include "app/system.h"
 
-#include <SDL/SDL.h>
+#include <SDL.h>
 
 #include <iostream>
 

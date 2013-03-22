@@ -22,7 +22,7 @@
 #pragma once
 
 
-#include "SDL/SDL_keysym.h"
+#include <SDL_keysym.h>
 
 /* Key definitions are specially defined here so that it is clear in other parts of the code
   that these are used. It is to avoid having SDL-related enum values or #defines lying around

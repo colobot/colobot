@@ -23,6 +23,7 @@
 #include "app/app.h"
 #include "app/system.h"
 
+#include "common/config.h"
 #include "common/logger.h"
 #include "common/misc.h"
 #include "common/restext.h"
@@ -70,7 +71,10 @@ The current layout is the following:
 
 
 //! Entry point to the program
-int main(int argc, char *argv[])
+extern "C"
+{
+
+int SDL_MAIN_FUNC(int argc, char *argv[])
 {
     CLogger logger; // Create the logger
 
@@ -111,3 +115,4 @@ int main(int argc, char *argv[])
     return code;
 }
 
+} // extern "C"

@@ -74,6 +74,7 @@ set(COLOBOT_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wold-style-cast ${CXX11_FLAGS}"
 set(COLOBOT_CXX_FLAGS_RELEASE "-O2")
 set(COLOBOT_CXX_FLAGS_DEBUG "-g -O0")
 
+
 # Asserts can be enabled/disabled regardless of build type
 option(ASSERTS "Enable assert()s" ON)
 
@@ -83,6 +84,9 @@ option(TESTS "Enable tests" ON)
 # CBot can also be a static library
 option(CBOT_STATIC "Build CBot as static libary" OFF)
 
+# Generate desktop files, manpage, etc.
+option(DESKTOP ON)
+
 # Doxygen docs are optional for installation
 option(INSTALL_DOCS "Install Doxygen-generated documentation" OFF)
 
@@ -90,8 +94,16 @@ option(INSTALL_DOCS "Install Doxygen-generated documentation" OFF)
 option(OPENAL_SOUND "Build openal sound support" OFF)
 
 
+# Hacks for MSYS
+if (MSYS)
+    set(COLOBOT_CXX_FLAGS "${COLOBOT_CXX_FLAGS} -U__STRICT_ANSI__") # fixes putenv()
+    set(USE_SDL_MAIN 1) # fixes SDL_main
+    set(DESKTOP OFF) # MSYS doesn't have the necessary tools
+endif()
+
+
 ##
-# Required packages
+# Searching for packages
 ##
 
 find_package(OpenGL 1.4 REQUIRED)
@@ -114,6 +126,10 @@ option(GLEW_STATIC "Link statically with GLEW" OFF)
 find_package(GLEW REQUIRED)
 
 include("${colobot_SOURCE_DIR}/cmake/FindLibSndFile.cmake")
+
+if (${OPENAL_SOUND})
+    find_package(OpenAL REQUIRED)
+endif()
 
 
 ##

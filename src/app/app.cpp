@@ -33,8 +33,8 @@
 
 #include <boost/filesystem.hpp>
 
-#include <SDL/SDL.h>
-#include <SDL/SDL_image.h>
+#include <SDL.h>
+#include <SDL_image.h>
 
 #include <stdlib.h>
 #include <libintl.h>

@@ -158,15 +158,8 @@ endif()
 set(OPTIONAL_LIBS "")
 
 if (${OPENAL_SOUND})
-    if (${PLATFORM_WINDOWS})
-        set(OPTIONAL_LIBS
-            OpenAL32
-        )
-    else()
-        set(OPTIONAL_LIBS
-            openal
-        )
-    endif()
+    set(OPTIONAL_LIBS ${OPENAL_LIBRARY})
+    set(OPTIONAL_INCLUDES ${OPENAL_INCLUDE_DIR})
 endif()
 
 
@@ -189,14 +182,28 @@ math/vector_test.cpp
 ${PLATFORM_TESTS}
 )
 
+# Local
 include_directories(
-${CMAKE_CURRENT_BINARY_DIR}
-${SRC_DIR}
-${GTEST_INCLUDE_DIR}
-${GMOCK_INCLUDE_DIR}
 .
 common
 math
+${SRC_DIR}
+${CMAKE_CURRENT_BINARY_DIR}
+)
+
+# System
+include_directories(
+SYSTEM
+${GTEST_INCLUDE_DIR}
+${GMOCK_INCLUDE_DIR}
+${SDL_INCLUDE_DIR}
+${SDLIMAGE_INCLUDE_DIR}
+${SDLTTF_INCLUDE_DIR}
+${PNG_INCLUDE_DIRS}
+${GLEW_INCLUDE_PATH}
+${Boost_INCLUDE_DIRS}
+${OPTIONAL_INCLUDE_DIRS}
+${LIBSNDFILE_INCLUDE_DIR}
 )
 
 set(LIBS

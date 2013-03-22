@@ -30,7 +30,7 @@
 #include "object/robotmain.h"
 
 #include <libintl.h>
-#include <SDL/SDL_keyboard.h>
+#include <SDL_keyboard.h>
 
 const char* stringsText[RT_MAX]         = { nullptr };
 const char* stringsEvent[EVENT_STD_MAX] = { nullptr };

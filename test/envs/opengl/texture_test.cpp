@@ -1,3 +1,4 @@
+#include "common/config.h"
 #include "common/logger.h"
 #include "common/image.h"
 
@@ -5,8 +6,8 @@
 
 #include "math/geometry.h"
 
-#include <SDL/SDL.h>
-#include <SDL/SDL_image.h>
+#include <SDL.h>
+#include <SDL_image.h>
 #include <unistd.h>
 
 
@@ -124,7 +125,10 @@ void Render(Gfx::CGLDevice *device)
     device->EndScene();
 }
 
-int main()
+extern "C"
+{
+
+int SDL_MAIN_FUNC(int argc, char *argv[])
 {
     CLogger logger;
 
@@ -192,3 +196,5 @@ int main()
 
     return 0;
 }
+
+} // extern "C"

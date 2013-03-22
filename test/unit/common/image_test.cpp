@@ -1,6 +1,6 @@
 #include "common/image.h"
 
-#include <SDL/SDL.h>
+#include <SDL.h>
 #include <stdio.h>
 
 /* For now, just a simple test: loading a file from image
