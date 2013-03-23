@@ -1331,6 +1331,7 @@ bool CRobotMain::EventProcess(Event &event)
     // Management of the console.
     if (m_phase != PHASE_NAME &&
         !m_movie->IsExist()   &&
+        !m_movieLock && !m_editLock &&
         event.type == EVENT_KEY_DOWN &&
         event.key.key == KEY(PAUSE))  // Pause ?
     {
@@ -2090,6 +2091,8 @@ void CRobotMain::StartDisplayInfo(const char *filename, int index)
 //! End of displaying of instructions
 void CRobotMain::StopDisplayInfo()
 {
+    if (m_cmdEdit) return;
+    
     if (m_movieInfoIndex != -1)  // film to read the SatCom?
         m_movie->Start(MM_SATCOMclose, 2.0f);
 
