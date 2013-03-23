@@ -17,30 +17,25 @@
 
 #include "app/system_windows.h"
 
+#include "common/logger.h"
 
-// Convert a wide Unicode string to an UTF8 string
-std::string UTF8_Encode_Windows(const std::wstring &wstr)
+#include <windows.h>
+
+
+void CSystemUtilsWindows::Init()
 {
-    int size_needed = WideCharToMultiByte(CP_UTF8, 0, &wstr[0], static_cast<int>(wstr.size()), NULL, 0, NULL, NULL);
-    std::string strTo(size_needed, 0);
-    WideCharToMultiByte(CP_UTF8, 0, &wstr[0], static_cast<int>(wstr.size()), &strTo[0], size_needed, NULL, NULL);
-    return strTo;
+    LARGE_INTEGER freq;
+    QueryPerformanceFrequency(&freq);
+    m_counterFrequency = freq.QuadPart;
+
+    assert(m_counterFrequency != 0);
 }
 
-// Convert an UTF8 string to a wide Unicode String
-std::wstring UTF8_Decode_Windows(const std::string &str)
-{
-    int size_needed = MultiByteToWideChar(CP_UTF8, 0, &str[0], static_cast<int>(str.size()), NULL, 0);
-    std::wstring wstrTo(size_needed, 0);
-    MultiByteToWideChar(CP_UTF8, 0, &str[0], static_cast<int>(str.size()), &wstrTo[0], size_needed);
-    return wstrTo;
-}
-
-SystemDialogResult SystemDialog_Windows(SystemDialogType type, const std::string& title, const std::string& message)
+SystemDialogResult CSystemUtilsWindows::SystemDialog(SystemDialogType type, const std::string& title, const std::string& message)
 {
     unsigned int windowsType = 0;
-    std::wstring windowsMessage = UTF8_Decode_Windows(message);
-    std::wstring windowsTitle = UTF8_Decode_Windows(title);
+    std::wstring windowsMessage = UTF8_Decode(message);
+    std::wstring windowsTitle = UTF8_Decode(title);
 
     switch (type)
     {
@@ -79,20 +74,39 @@ SystemDialogResult SystemDialog_Windows(SystemDialogType type, const std::string
     return SDR_OK;
 }
 
-
-void GetCurrentTimeStamp_Windows(SystemTimeStamp *stamp)
+void CSystemUtilsWindows::GetCurrentTimeStamp(SystemTimeStamp* stamp)
 {
-    GetSystemTimeAsFileTime(&stamp->fileTime);
+    LARGE_INTEGER value;
+    QueryPerformanceCounter(&value);
+    stamp->counterValue = value.QuadPart;
 }
 
-long long GetTimeStampExactResolution_Windows()
+long long int CSystemUtilsWindows::GetTimeStampExactResolution()
 {
-    return 100ll;
+    return 1000000000ll / m_counterFrequency;
 }
 
-long long TimeStampExactDiff_Windows(SystemTimeStamp *before, SystemTimeStamp *after)
+long long int CSystemUtilsWindows::TimeStampExactDiff(SystemTimeStamp* before, SystemTimeStamp* after)
 {
-    long long tH = (1ll << 32) * (after->fileTime.dwHighDateTime - before->fileTime.dwHighDateTime);
-    long long tL = after->fileTime.dwLowDateTime - before->fileTime.dwLowDateTime;
-    return (tH + tL) * 100ll;
+    float floatValue = static_cast<double>(after->counterValue - before->counterValue) * (1e9 / static_cast<double>(m_counterFrequency));
+    return static_cast<long long>(floatValue);
+}
+
+//! Converts a wide Unicode string to an UTF8 string
+std::string CSystemUtilsWindows::UTF8_Encode(const std::wstring& wstr)
+{
+    int size_needed = WideCharToMultiByte(CP_UTF8, 0, &wstr[0], static_cast<int>(wstr.size()), NULL, 0, NULL, NULL);
+    std::string strTo(size_needed, 0);
+    WideCharToMultiByte(CP_UTF8, 0, &wstr[0], static_cast<int>(wstr.size()), &strTo[0], size_needed, NULL, NULL);
+    return strTo;
+}
+
+//! Converts an UTF8 string to a wide Unicode String
+std::wstring CSystemUtilsWindows::UTF8_Decode(const std::string& str)
+{
+    int size_needed = MultiByteToWideChar(CP_UTF8, 0, &str[0], static_cast<int>(str.size()), NULL, 0);
+    std::wstring wstrTo(size_needed, 0);
+    MultiByteToWideChar(CP_UTF8, 0, &str[0], static_cast<int>(str.size()), &wstrTo[0], size_needed);
+    return wstrTo;
+
 }

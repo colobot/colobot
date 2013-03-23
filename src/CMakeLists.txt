@@ -52,9 +52,9 @@ if (${OPENAL_SOUND})
 endif()
 
 # Platform-dependent implementation of system.h
-if (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+if (${PLATFORM_WINDOWS})
     set(SYSTEM_CPP_MODULE "system_windows.cpp")
-elseif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+elseif(${PLATFORM_LINUX})
     set(SYSTEM_CPP_MODULE "system_linux.cpp")
 else()
     set(SYSTEM_CPP_MODULE "system_other.cpp")

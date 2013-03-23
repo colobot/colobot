@@ -125,14 +125,14 @@ CApplication::CApplication()
     m_absTime = 0.0f;
     m_relTime = 0.0f;
 
-    m_baseTimeStamp = CreateTimeStamp();
-    m_curTimeStamp = CreateTimeStamp();
-    m_lastTimeStamp = CreateTimeStamp();
+    m_baseTimeStamp = GetSystemUtils()->CreateTimeStamp();
+    m_curTimeStamp = GetSystemUtils()->CreateTimeStamp();
+    m_lastTimeStamp = GetSystemUtils()->CreateTimeStamp();
 
     for (int i = 0; i < PCNT_MAX; ++i)
     {
-        m_performanceCounters[i][0] = CreateTimeStamp();
-        m_performanceCounters[i][1] = CreateTimeStamp();
+        m_performanceCounters[i][0] = GetSystemUtils()->CreateTimeStamp();
+        m_performanceCounters[i][1] = GetSystemUtils()->CreateTimeStamp();
     }
 
     m_joystickEnabled = false;
@@ -177,14 +177,14 @@ CApplication::~CApplication()
     delete m_iMan;
     m_iMan = nullptr;
 
-    DestroyTimeStamp(m_baseTimeStamp);
-    DestroyTimeStamp(m_curTimeStamp);
-    DestroyTimeStamp(m_lastTimeStamp);
+    GetSystemUtils()->DestroyTimeStamp(m_baseTimeStamp);
+    GetSystemUtils()->DestroyTimeStamp(m_curTimeStamp);
+    GetSystemUtils()->DestroyTimeStamp(m_lastTimeStamp);
 
     for (int i = 0; i < PCNT_MAX; ++i)
     {
-        DestroyTimeStamp(m_performanceCounters[i][0]);
-        DestroyTimeStamp(m_performanceCounters[i][1]);
+        GetSystemUtils()->DestroyTimeStamp(m_performanceCounters[i][0]);
+        GetSystemUtils()->DestroyTimeStamp(m_performanceCounters[i][1]);
     }
 }
 
@@ -199,8 +199,8 @@ CSoundInterface* CApplication::GetSound()
 
     for (int i = 0; i < PCNT_MAX; ++i)
     {
-        DestroyTimeStamp(m_performanceCounters[i][0]);
-        DestroyTimeStamp(m_performanceCounters[i][1]);
+        GetSystemUtils()->DestroyTimeStamp(m_performanceCounters[i][0]);
+        GetSystemUtils()->DestroyTimeStamp(m_performanceCounters[i][1]);
     }
 }
 
@@ -607,7 +607,7 @@ bool CApplication::ChangeVideoConfig(const Gfx::GLDeviceConfig &newConfig)
                           std::string(SDL_GetError()) + std::string("\n") +
                           std::string("Previous mode will be restored");
             GetLogger()->Error(error.c_str());
-            SystemDialog( SDT_ERROR, "COLOBT - Error", error);
+            GetSystemUtils()->SystemDialog( SDT_ERROR, "COLOBT - Error", error);
 
             restore = true;
             ChangeVideoConfig(m_lastDeviceConfig);
@@ -620,7 +620,7 @@ bool CApplication::ChangeVideoConfig(const Gfx::GLDeviceConfig &newConfig)
             std::string error = std::string("SDL error while restoring previous video mode:\n") +
                           std::string(SDL_GetError());
             GetLogger()->Error(error.c_str());
-            SystemDialog( SDT_ERROR, "COLOBT - Fatal Error", error);
+            GetSystemUtils()->SystemDialog( SDT_ERROR, "COLOBT - Fatal Error", error);
 
 
             // Fatal error, so post the quit event
@@ -755,9 +755,9 @@ int CApplication::Run()
 {
     m_active = true;
 
-    GetCurrentTimeStamp(m_baseTimeStamp);
-    GetCurrentTimeStamp(m_lastTimeStamp);
-    GetCurrentTimeStamp(m_curTimeStamp);
+    GetSystemUtils()->GetCurrentTimeStamp(m_baseTimeStamp);
+    GetSystemUtils()->GetCurrentTimeStamp(m_lastTimeStamp);
+    GetSystemUtils()->GetCurrentTimeStamp(m_curTimeStamp);
 
     MoveMouse(Math::Point(0.5f, 0.5f)); // center mouse on start
 
@@ -1109,49 +1109,49 @@ bool CApplication::ProcessEvent(const Event &event)
         {
             case EVENT_KEY_DOWN:
             case EVENT_KEY_UP:
-                l->Info("EVENT_KEY_%s:\n", (event.type == EVENT_KEY_DOWN) ? "DOWN" : "UP");
-                l->Info(" virt    = %s\n", (event.key.virt) ? "true" : "false");
-                l->Info(" key     = %d\n", event.key.key);
-                l->Info(" unicode = 0x%04x\n", event.key.unicode);
+                l->Trace("EVENT_KEY_%s:\n", (event.type == EVENT_KEY_DOWN) ? "DOWN" : "UP");
+                l->Trace(" virt    = %s\n", (event.key.virt) ? "true" : "false");
+                l->Trace(" key     = %d\n", event.key.key);
+                l->Trace(" unicode = 0x%04x\n", event.key.unicode);
                 break;
             case EVENT_MOUSE_MOVE:
-                l->Info("EVENT_MOUSE_MOVE:\n");
+                l->Trace("EVENT_MOUSE_MOVE:\n");
                 break;
             case EVENT_MOUSE_BUTTON_DOWN:
             case EVENT_MOUSE_BUTTON_UP:
-                l->Info("EVENT_MOUSE_BUTTON_%s:\n", (event.type == EVENT_MOUSE_BUTTON_DOWN) ? "DOWN" : "UP");
-                l->Info(" button = %d\n", event.mouseButton.button);
+                l->Trace("EVENT_MOUSE_BUTTON_%s:\n", (event.type == EVENT_MOUSE_BUTTON_DOWN) ? "DOWN" : "UP");
+                l->Trace(" button = %d\n", event.mouseButton.button);
                 break;
             case EVENT_MOUSE_WHEEL:
-                l->Info("EVENT_MOUSE_WHEEL:\n");
-                l->Info(" dir = %s\n", (event.mouseWheel.dir == WHEEL_DOWN) ? "WHEEL_DOWN" : "WHEEL_UP");
+                l->Trace("EVENT_MOUSE_WHEEL:\n");
+                l->Trace(" dir = %s\n", (event.mouseWheel.dir == WHEEL_DOWN) ? "WHEEL_DOWN" : "WHEEL_UP");
                break;
             case EVENT_JOY_AXIS:
-                l->Info("EVENT_JOY_AXIS:\n");
-                l->Info(" axis  = %d\n", event.joyAxis.axis);
-                l->Info(" value = %d\n", event.joyAxis.value);
+                l->Trace("EVENT_JOY_AXIS:\n");
+                l->Trace(" axis  = %d\n", event.joyAxis.axis);
+                l->Trace(" value = %d\n", event.joyAxis.value);
                 break;
             case EVENT_JOY_BUTTON_DOWN:
             case EVENT_JOY_BUTTON_UP:
-                l->Info("EVENT_JOY_BUTTON_%s:\n", (event.type == EVENT_JOY_BUTTON_DOWN) ? "DOWN" : "UP");
-                l->Info(" button = %d\n", event.joyButton.button);
+                l->Trace("EVENT_JOY_BUTTON_%s:\n", (event.type == EVENT_JOY_BUTTON_DOWN) ? "DOWN" : "UP");
+                l->Trace(" button = %d\n", event.joyButton.button);
                 break;
             case EVENT_ACTIVE:
-                l->Info("EVENT_ACTIVE:\n");
-                l->Info(" flags = 0x%x\n", event.active.flags);
-                l->Info(" gain  = %s\n", event.active.gain ? "true" : "false");
+                l->Trace("EVENT_ACTIVE:\n");
+                l->Trace(" flags = 0x%x\n", event.active.flags);
+                l->Trace(" gain  = %s\n", event.active.gain ? "true" : "false");
                 break;
             default:
-                l->Info("Event type = %d:\n", static_cast<int>(event.type));
+                l->Trace("Event type = %d:\n", static_cast<int>(event.type));
                 break;
         }
 
-        l->Info(" systemEvent = %s\n", event.systemEvent ? "true" : "false");
-        l->Info(" rTime = %f\n", event.rTime);
-        l->Info(" kmodState = %04x\n", event.kmodState);
-        l->Info(" trackedKeysState = %04x\n", event.trackedKeysState);
-        l->Info(" mousePos = %f, %f\n", event.mousePos.x, event.mousePos.y);
-        l->Info(" mouseButtonsState = %02x\n", event.mouseButtonsState);
+        l->Trace(" systemEvent = %s\n", event.systemEvent ? "true" : "false");
+        l->Trace(" rTime = %f\n", event.rTime);
+        l->Trace(" kmodState = %04x\n", event.kmodState);
+        l->Trace(" trackedKeysState = %04x\n", event.trackedKeysState);
+        l->Trace(" mousePos = %f, %f\n", event.mousePos.x, event.mousePos.y);
+        l->Trace(" mouseButtonsState = %02x\n", event.mouseButtonsState);
     }
 
     // By default, pass on all events
@@ -1219,8 +1219,8 @@ void CApplication::ResumeSimulation()
 {
     m_simulationSuspended = false;
 
-    GetCurrentTimeStamp(m_baseTimeStamp);
-    CopyTimeStamp(m_curTimeStamp, m_baseTimeStamp);
+    GetSystemUtils()->GetCurrentTimeStamp(m_baseTimeStamp);
+    GetSystemUtils()->CopyTimeStamp(m_curTimeStamp, m_baseTimeStamp);
     m_realAbsTimeBase = m_realAbsTime;
     m_absTimeBase = m_exactAbsTime;
 
@@ -1236,7 +1236,7 @@ void CApplication::SetSimulationSpeed(float speed)
 {
     m_simulationSpeed = speed;
 
-    GetCurrentTimeStamp(m_baseTimeStamp);
+    GetSystemUtils()->GetCurrentTimeStamp(m_baseTimeStamp);
     m_realAbsTimeBase = m_realAbsTime;
     m_absTimeBase = m_exactAbsTime;
 
@@ -1248,18 +1248,31 @@ Event CApplication::CreateUpdateEvent()
     if (m_simulationSuspended)
         return Event(EVENT_NULL);
 
-    CopyTimeStamp(m_lastTimeStamp, m_curTimeStamp);
-    GetCurrentTimeStamp(m_curTimeStamp);
+    GetSystemUtils()->CopyTimeStamp(m_lastTimeStamp, m_curTimeStamp);
+    GetSystemUtils()->GetCurrentTimeStamp(m_curTimeStamp);
 
-    long long absDiff = TimeStampExactDiff(m_baseTimeStamp, m_curTimeStamp);
-    m_realAbsTime = m_realAbsTimeBase + absDiff;
-    // m_baseTimeStamp is updated on simulation speed change, so this is OK
-    m_exactAbsTime = m_absTimeBase + m_simulationSpeed * absDiff;
-    m_absTime = (m_absTimeBase + m_simulationSpeed * absDiff) / 1e9f;
+    long long absDiff = GetSystemUtils()->TimeStampExactDiff(m_baseTimeStamp, m_curTimeStamp);
+    long long newRealAbsTime = m_realAbsTimeBase + absDiff;
+    long long newRealRelTime = GetSystemUtils()->TimeStampExactDiff(m_lastTimeStamp, m_curTimeStamp);
 
-    m_realRelTime = TimeStampExactDiff(m_lastTimeStamp, m_curTimeStamp);
-    m_exactRelTime = m_simulationSpeed * m_realRelTime;
-    m_relTime = (m_simulationSpeed * m_realRelTime) / 1e9f;
+    if (newRealAbsTime < m_realAbsTime || newRealRelTime < 0)
+    {
+        GetLogger()->Error("Fatal error: got negative system counter difference!\n");
+        GetLogger()->Error("This should never happen. Please report this error.\n");
+        m_eventQueue->AddEvent(Event(EVENT_QUIT));
+        return Event(EVENT_NULL);
+    }
+    else
+    {
+        m_realAbsTime = newRealAbsTime;
+        // m_baseTimeStamp is updated on simulation speed change, so this is OK
+        m_exactAbsTime = m_absTimeBase + m_simulationSpeed * absDiff;
+        m_absTime = (m_absTimeBase + m_simulationSpeed * absDiff) / 1e9f;
+
+        m_realRelTime = newRealRelTime;
+        m_exactRelTime = m_simulationSpeed * m_realRelTime;
+        m_relTime = (m_simulationSpeed * m_realRelTime) / 1e9f;
+    }
 
     Event frameEvent(EVENT_FRAME);
     frameEvent.systemEvent = true;
@@ -1651,12 +1664,12 @@ bool CApplication::GetLowCPU()
 
 void CApplication::StartPerformanceCounter(PerformanceCounter counter)
 {
-    GetCurrentTimeStamp(m_performanceCounters[counter][0]);
+    GetSystemUtils()->GetCurrentTimeStamp(m_performanceCounters[counter][0]);
 }
 
 void CApplication::StopPerformanceCounter(PerformanceCounter counter)
 {
-    GetCurrentTimeStamp(m_performanceCounters[counter][1]);
+    GetSystemUtils()->GetCurrentTimeStamp(m_performanceCounters[counter][1]);
 }
 
 float CApplication::GetPerformanceCounterData(PerformanceCounter counter)
@@ -1675,13 +1688,13 @@ void CApplication::ResetPerformanceCounters()
 
 void CApplication::UpdatePerformanceCountersData()
 {
-    long long sum = TimeStampExactDiff(m_performanceCounters[PCNT_ALL][0],
-                                       m_performanceCounters[PCNT_ALL][1]);
+    long long sum = GetSystemUtils()->TimeStampExactDiff(m_performanceCounters[PCNT_ALL][0],
+                                                         m_performanceCounters[PCNT_ALL][1]);
 
     for (int i = 0; i < PCNT_MAX; ++i)
     {
-        long long diff = TimeStampExactDiff(m_performanceCounters[i][0],
-                                            m_performanceCounters[i][1]);
+        long long diff = GetSystemUtils()->TimeStampExactDiff(m_performanceCounters[i][0],
+                                                              m_performanceCounters[i][1]);
 
         m_performanceCountersData[static_cast<PerformanceCounter>(i)] =
             static_cast<float>(diff) / static_cast<float>(sum);

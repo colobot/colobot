@@ -22,23 +22,32 @@
 
 #include "app/system.h"
 
-#include <windows.h>
-
 
 struct SystemTimeStamp
 {
-    FILETIME fileTime;
+    long long counterValue;
 
     SystemTimeStamp()
     {
-        fileTime.dwHighDateTime = fileTime.dwLowDateTime = 0;
+        counterValue = 0;
     }
 };
 
-std::string UTF8_Encode_Windows(const std::wstring &wstr);
-std::wstring UTF8_Decode_Windows(const std::string &str);
-SystemDialogResult SystemDialog_Windows(SystemDialogType type, const std::string& title, const std::string& message);
+class CSystemUtilsWindows : public CSystemUtils
+{
+public:
+    virtual void Init() override;
 
-void GetCurrentTimeStamp_Windows(SystemTimeStamp *stamp);
-long long GetTimeStampExactResolution_Windows();
-long long TimeStampExactDiff_Windows(SystemTimeStamp *before, SystemTimeStamp *after);
+    virtual SystemDialogResult SystemDialog(SystemDialogType type, const std::string& title, const std::string& message) override;
+
+    virtual void GetCurrentTimeStamp(SystemTimeStamp *stamp) override;
+    virtual long long GetTimeStampExactResolution() override;
+    virtual long long TimeStampExactDiff(SystemTimeStamp *before, SystemTimeStamp *after) override;
+
+private:
+    std::string UTF8_Encode(const std::wstring &wstr);
+    std::wstring UTF8_Decode(const std::string &str);
+
+protected:
+    long long m_counterFrequency;
+};

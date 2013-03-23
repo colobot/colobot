@@ -40,3 +40,8 @@ std::string CApplication::GetDataDirPath()
 {
     return "";
 }
+
+Event CApplication::CreateUpdateEvent()
+{
+    return Event(EVENT_NULL);
+}

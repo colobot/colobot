@@ -352,7 +352,7 @@ protected:
     //! If applicable, creates a virtual event to match the changed state as of new event
     Event       CreateVirtualEvent(const Event& sourceEvent);
     //! Prepares a simulation update event
-    Event       CreateUpdateEvent();
+    TEST_VIRTUAL Event CreateUpdateEvent();
     //! Handles some incoming events
     bool        ProcessEvent(const Event& event);
     //! Renders the image in window

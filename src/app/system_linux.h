@@ -35,9 +35,17 @@ struct SystemTimeStamp
     }
 };
 
+class CSystemUtilsLinux : public CSystemUtils
+{
+public:
+    virtual void Init() override;
 
-SystemDialogResult SystemDialog_Linux(SystemDialogType type, const std::string& title, const std::string& message);
+    virtual SystemDialogResult SystemDialog(SystemDialogType type, const std::string& title, const std::string& message) override;
 
-void GetCurrentTimeStamp_Linux(SystemTimeStamp *stamp);
-long long GetTimeStampExactResolution_Linux();
-long long TimeStampExactDiff_Linux(SystemTimeStamp *before, SystemTimeStamp *after);
+    virtual void GetCurrentTimeStamp(SystemTimeStamp *stamp) override;
+    virtual long long GetTimeStampExactResolution() override;
+    virtual long long TimeStampExactDiff(SystemTimeStamp *before, SystemTimeStamp *after) override;
+
+private:
+    bool m_zenityAvailable;
+};

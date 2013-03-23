@@ -148,8 +148,8 @@ CEngine::CEngine(CApplication *app)
     m_mouseType    = ENG_MOUSE_NORM;
 
     m_fpsCounter = 0;
-    m_lastFrameTime = CreateTimeStamp();
-    m_currentFrameTime = CreateTimeStamp();
+    m_lastFrameTime = GetSystemUtils()->CreateTimeStamp();
+    m_currentFrameTime = GetSystemUtils()->CreateTimeStamp();
 
     m_defaultTexParams.format = TEX_IMG_AUTO;
     m_defaultTexParams.mipmap = true;
@@ -176,9 +176,9 @@ CEngine::~CEngine()
     m_planet    = nullptr;
     m_terrain   = nullptr;
 
-    DestroyTimeStamp(m_lastFrameTime);
+    GetSystemUtils()->DestroyTimeStamp(m_lastFrameTime);
     m_lastFrameTime = nullptr;
-    DestroyTimeStamp(m_currentFrameTime);
+    GetSystemUtils()->DestroyTimeStamp(m_currentFrameTime);
     m_currentFrameTime = nullptr;
 }
 
@@ -279,8 +279,8 @@ bool CEngine::Create()
     params.mipmap = false;
     m_miceTexture = LoadTexture("mouse.png", params);
 
-    GetCurrentTimeStamp(m_currentFrameTime);
-    GetCurrentTimeStamp(m_lastFrameTime);
+    GetSystemUtils()->GetCurrentTimeStamp(m_currentFrameTime);
+    GetSystemUtils()->GetCurrentTimeStamp(m_lastFrameTime);
 
     return true;
 }
@@ -336,11 +336,11 @@ void CEngine::FrameUpdate()
 {
     m_fpsCounter++;
 
-    GetCurrentTimeStamp(m_currentFrameTime);
-    float diff = TimeStampDiff(m_lastFrameTime, m_currentFrameTime, STU_SEC);
+    GetSystemUtils()->GetCurrentTimeStamp(m_currentFrameTime);
+    float diff = GetSystemUtils()->TimeStampDiff(m_lastFrameTime, m_currentFrameTime, STU_SEC);
     if (diff > 1.0f)
     {
-        CopyTimeStamp(m_lastFrameTime, m_currentFrameTime);
+        GetSystemUtils()->CopyTimeStamp(m_lastFrameTime, m_currentFrameTime);
 
         m_fps = m_fpsCounter / diff;
         m_fpsCounter = 0;

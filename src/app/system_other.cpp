@@ -18,105 +18,22 @@
 #include "app/system_other.h"
 
 
-SystemDialogResult SystemDialog_Other(SystemDialogType type, const std::string& title, const std::string& message)
+SystemDialogResult CSystemUtilsOther::SystemDialog(SystemDialogType type, const std::string& title, const std::string& message)
 {
-    switch (type)
-    {
-        case SDT_INFO:
-            std::cout << "INFO: ";
-            break;
-        case SDT_WARNING:
-            std::cout << "WARNING:";
-            break;
-        case SDT_ERROR:
-            std::cout << "ERROR: ";
-            break;
-        case SDT_YES_NO:
-        case SDT_OK_CANCEL:
-            std::cout << "QUESTION: ";
-            break;
-    }
-
-    std::cout << message << std::endl;
-
-    std::string line;
-
-    SystemDialogResult result = SDR_OK;
-
-    bool done = false;
-    while (!done)
-    {
-        switch (type)
-        {
-            case SDT_INFO:
-            case SDT_WARNING:
-            case SDT_ERROR:
-                std::cout << "Press ENTER to continue";
-                break;
-
-            case SDT_YES_NO:
-                std::cout << "Type 'Y' for Yes or 'N' for No";
-                break;
-
-            case SDT_OK_CANCEL:
-                std::cout << "Type 'O' for OK or 'C' for Cancel";
-                break;
-        }
-
-        std::getline(std::cin, line);
-
-        switch (type)
-        {
-            case SDT_INFO:
-            case SDT_WARNING:
-            case SDT_ERROR:
-                done = true;
-                break;
-
-            case SDT_YES_NO:
-                if (line == "Y" || line == "y")
-                {
-                    result = SDR_YES;
-                    done = true;
-                }
-                else if (line == "N" || line == "n")
-                {
-                    result = SDR_NO;
-                    done = true;
-                }
-                break;
-
-            case SDT_OK_CANCEL:
-                if (line == "O" || line == "o")
-                {
-                    done = true;
-                    result = SDR_OK;
-                }
-                else if (line == "C" || line == "c")
-                {
-                    done = true;
-                    result = SDR_CANCEL;
-                }
-                break;
-        }
-    }
-
-    return result;
+    return ConsoleSystemDialog(type, title, message);
 }
 
-
-
-void GetCurrentTimeStamp_Other(SystemTimeStamp *stamp)
+void CSystemUtilsOther::GetCurrentTimeStamp(SystemTimeStamp* stamp)
 {
     stamp->sdlTicks = SDL_GetTicks();
 }
 
-long long GetTimeStampExactResolution_Other()
+long long int CSystemUtilsOther::GetTimeStampExactResolution()
 {
     return 1000000ll;
 }
 
-long long TimeStampExactDiff_Other(SystemTimeStamp *before, SystemTimeStamp *after)
+long long int CSystemUtilsOther::TimeStampExactDiff(SystemTimeStamp* before, SystemTimeStamp* after) const
 {
     return (after->sdlTicks - before->sdlTicks) * 1000000ll;
 }

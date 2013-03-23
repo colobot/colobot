@@ -37,9 +37,12 @@ struct SystemTimeStamp
     }
 };
 
+class CSystemUtilsOther : public CSystemUtils
+{
+public:
+    virtual SystemDialogResult SystemDialog(SystemDialogType type, const std::string& title, const std::string& message) override;
 
-SystemDialogResult SystemDialog_Other(SystemDialogType type, const std::string& title, const std::string& message);
-
-void GetCurrentTimeStamp_Other(SystemTimeStamp *stamp);
-long long GetTimeStampExactResolution_Other();
-long long TimeStampExactDiff_Other(SystemTimeStamp *before, SystemTimeStamp *after);
+    virtual void GetCurrentTimeStamp(SystemTimeStamp *stamp) override;
+    virtual long long GetTimeStampExactResolution() override;
+    virtual long long TimeStampExactDiff(SystemTimeStamp *before, SystemTimeStamp *after) override;
+};

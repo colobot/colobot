@@ -3,10 +3,23 @@
 
 #include <gtest/gtest.h>
 
-TEST(SystemLinuxTest, TimeStampDiff)
+class CSystemUtilsLinuxWrapper : public CSystemUtilsLinux
 {
-    const long long SEC = 1000000000;
+public:
+    CSystemUtilsLinuxWrapper() {}
+};
 
+class SystemUtilsLinuxUT : public testing::Test
+{
+protected:
+    static const long long SEC = 1000000000;
+
+    CSystemUtilsLinuxWrapper systemUtils;
+};
+
+
+TEST_F(SystemUtilsLinuxUT, TimeStampDiff)
+{
     SystemTimeStamp before, after;
 
     before.clockTime.tv_sec = 1;
@@ -15,10 +28,10 @@ TEST(SystemLinuxTest, TimeStampDiff)
     after.clockTime.tv_sec = 1;
     after.clockTime.tv_nsec = 900;
 
-    long long tDiff = TimeStampExactDiff_Linux(&before, &after);
+    long long tDiff = systemUtils.TimeStampExactDiff(&before, &after);
     EXPECT_EQ( 800, tDiff);
 
-    tDiff = TimeStampExactDiff_Linux(&after, &before);
+    tDiff = systemUtils.TimeStampExactDiff(&after, &before);
     EXPECT_EQ(-800, tDiff);
 
     // -------
@@ -29,10 +42,10 @@ TEST(SystemLinuxTest, TimeStampDiff)
     after.clockTime.tv_sec = 3;
     after.clockTime.tv_nsec = 500;
 
-    tDiff = TimeStampExactDiff_Linux(&before, &after);
+    tDiff = systemUtils.TimeStampExactDiff(&before, &after);
     EXPECT_EQ( SEC + 300, tDiff);
 
-    tDiff = TimeStampExactDiff_Linux(&after, &before);
+    tDiff = systemUtils.TimeStampExactDiff(&after, &before);
     EXPECT_EQ(-SEC - 300, tDiff);
 
     // -------
@@ -43,9 +56,9 @@ TEST(SystemLinuxTest, TimeStampDiff)
     after.clockTime.tv_sec = 4;
     after.clockTime.tv_nsec = 100;
 
-    tDiff = TimeStampExactDiff_Linux(&before, &after);
+    tDiff = systemUtils.TimeStampExactDiff(&before, &after);
     EXPECT_EQ( SEC - 100, tDiff);
 
-    tDiff = TimeStampExactDiff_Linux(&after, &before);
+    tDiff = systemUtils.TimeStampExactDiff(&after, &before);
     EXPECT_EQ(-SEC + 100, tDiff);
 }

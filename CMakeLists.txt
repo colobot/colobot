@@ -94,14 +94,6 @@ option(INSTALL_DOCS "Install Doxygen-generated documentation" OFF)
 option(OPENAL_SOUND "Build openal sound support" OFF)
 
 
-# Hacks for MSYS
-if (MSYS)
-    set(COLOBOT_CXX_FLAGS "${COLOBOT_CXX_FLAGS} -U__STRICT_ANSI__") # fixes putenv()
-    set(USE_SDL_MAIN 1) # fixes SDL_main
-    set(DESKTOP OFF) # MSYS doesn't have the necessary tools
-endif()
-
-
 ##
 # Searching for packages
 ##
@@ -132,33 +124,22 @@ endif()
 
 
 ##
-# Additional settings to use when cross-compiling with MXE (http://mxe.cc/)
-##
-
-include("${colobot_SOURCE_DIR}/cmake/mxe.cmake")
-
-
-##
 # Platform detection and some related checks
 ##
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
-    message(STATUS "Windows system detected")
     set(PLATFORM_WINDOWS 1)
     set(PLATFORM_LINUX   0)
     set(PLATFORM_OTHER   0)
 elseif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-    message(STATUS "Linux system detected")
     set(PLATFORM_WINDOWS 0)
     set(PLATFORM_LINUX   1)
     set(PLATFORM_OTHER   0)
 else()
-    message(STATUS "Other system detected")
     set(PLATFORM_WINDOWS 0)
     set(PLATFORM_LINUX   0)
     set(PLATFORM_OTHER   1)
 endif()
-
 
 if(NOT ${ASSERTS})
     add_definitions(-DNDEBUG)
@@ -168,6 +149,30 @@ if(${TESTS})
     add_definitions(-DTESTS -DTEST_VIRTUAL=virtual)
 else()
     add_definitions(-DTEST_VIRTUAL=)
+endif()
+
+
+##
+# Additional settings to use when cross-compiling with MXE (http://mxe.cc/)
+##
+
+include("${colobot_SOURCE_DIR}/cmake/mxe.cmake")
+
+##
+# Additional settings for MSYS
+##
+include("${colobot_SOURCE_DIR}/cmake/msys.cmake")
+
+
+##
+# Summary of detected things
+##
+if (${PLATFORM_WINDOWS})
+    message(STATUS "Build for Windows system")
+elseif(${PLATFORM_LINUX})
+    message(STATUS "Build for Linux system")
+else()
+    message(STATUS "Build for other system")
 endif()
 
 

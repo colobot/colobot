@@ -22,75 +22,142 @@
 
 
 #if defined(PLATFORM_WINDOWS)
-#include "app/system_windows.h"
-
+    #include "app/system_windows.h"
 #elif defined(PLATFORM_LINUX)
-#include "app/system_linux.h"
-
+    #include "app/system_linux.h"
 #else
-#include "app/system_other.h"
-
+    #include "app/system_other.h"
 #endif
-
 
 #include <cassert>
+#include <iostream>
 
 
-/**
- * Displays a system dialog with info, error, question etc. message.
- *
- * \param type type of dialog
- * \param message text of message (in UTF-8)
- * \param title dialog title (in UTF-8)
- * \returns result (which button was clicked)
- */
-SystemDialogResult SystemDialog(SystemDialogType type, const std::string& title, const std::string& message)
+template<>
+CSystemUtils* CSingleton<CSystemUtils>::m_instance = nullptr;
+
+
+CSystemUtils::CSystemUtils()
 {
-#if defined(PLATFORM_WINDOWS)
-    return SystemDialog_Windows(type, title, message);
-#elif defined(PLATFORM_LINUX)
-    return SystemDialog_Linux(type, title, message);
-#else
-    return SystemDialog_Other(type, title, message);
-#endif
 }
 
-SystemTimeStamp* CreateTimeStamp()
+CSystemUtils* CSystemUtils::Create()
+{
+    assert(m_instance == nullptr);
+#if defined(PLATFORM_WINDOWS)
+    m_instance = new CSystemUtilsWindows();
+#elif defined(PLATFORM_LINUX)
+    m_instance = new CSystemUtilsLinux();
+#else
+    m_instance = new CSystemUtilsOther();
+#endif
+    return m_instance;
+}
+
+SystemDialogResult CSystemUtils::ConsoleSystemDialog(SystemDialogType type, const std::string& title, const std::string& message)
+{
+    switch (type)
+    {
+        case SDT_INFO:
+            std::cout << "INFO: ";
+            break;
+        case SDT_WARNING:
+            std::cout << "WARNING:";
+            break;
+        case SDT_ERROR:
+            std::cout << "ERROR: ";
+            break;
+        case SDT_YES_NO:
+        case SDT_OK_CANCEL:
+            std::cout << "QUESTION: ";
+            break;
+    }
+
+    std::cout << message << std::endl;
+
+    std::string line;
+
+    SystemDialogResult result = SDR_OK;
+
+    bool done = false;
+    while (!done)
+    {
+        switch (type)
+        {
+            case SDT_INFO:
+            case SDT_WARNING:
+            case SDT_ERROR:
+                std::cout << "Press ENTER to continue";
+                break;
+
+            case SDT_YES_NO:
+                std::cout << "Type 'Y' for Yes or 'N' for No";
+                break;
+
+            case SDT_OK_CANCEL:
+                std::cout << "Type 'O' for OK or 'C' for Cancel";
+                break;
+        }
+
+        std::getline(std::cin, line);
+
+        switch (type)
+        {
+            case SDT_INFO:
+            case SDT_WARNING:
+            case SDT_ERROR:
+                done = true;
+                break;
+
+            case SDT_YES_NO:
+                if (line == "Y" || line == "y")
+                {
+                    result = SDR_YES;
+                    done = true;
+                }
+                else if (line == "N" || line == "n")
+                {
+                    result = SDR_NO;
+                    done = true;
+                }
+                break;
+
+            case SDT_OK_CANCEL:
+                if (line == "O" || line == "o")
+                {
+                    done = true;
+                    result = SDR_OK;
+                }
+                else if (line == "C" || line == "c")
+                {
+                    done = true;
+                    result = SDR_CANCEL;
+                }
+                break;
+        }
+    }
+
+    return result;
+}
+
+SystemTimeStamp* CSystemUtils::CreateTimeStamp()
 {
     return new SystemTimeStamp();
 }
 
-void DestroyTimeStamp(SystemTimeStamp *stamp)
+void CSystemUtils::DestroyTimeStamp(SystemTimeStamp *stamp)
 {
     delete stamp;
 }
 
-void CopyTimeStamp(SystemTimeStamp *dst, SystemTimeStamp *src)
+void CSystemUtils::CopyTimeStamp(SystemTimeStamp *dst, SystemTimeStamp *src)
 {
     *dst = *src;
 }
 
-void GetCurrentTimeStamp(SystemTimeStamp *stamp)
+float CSystemUtils::GetTimeStampResolution(SystemTimeUnit unit)
 {
-#if defined(PLATFORM_WINDOWS)
-    GetCurrentTimeStamp_Windows(stamp);
-#elif defined(PLATFORM_LINUX)
-    GetCurrentTimeStamp_Linux(stamp);
-#else
-    GetCurrentTimeStamp_Other(stamp);
-#endif
-}
-
-float GetTimeStampResolution(SystemTimeUnit unit)
-{
-    unsigned long long exact = 0;
-#if defined(PLATFORM_WINDOWS)
-    exact = GetTimeStampExactResolution_Windows();
-#elif defined(PLATFORM_LINUX)
-    exact = GetTimeStampExactResolution_Linux();
-#else
-    exact = GetTimeStampExactResolution_Other();
-#endif
+    unsigned long long exact = GetTimeStampExactResolution();
     float result = 0.0f;
     if (unit == STU_SEC)
         result = exact * 1e-9;
@@ -100,30 +167,14 @@ float GetTimeStampResolution(SystemTimeUnit unit)
         result = exact * 1e-3;
     else
         assert(false);
+
     return result;
 }
 
-long long GetTimeStampExactResolution()
+float CSystemUtils::TimeStampDiff(SystemTimeStamp *before, SystemTimeStamp *after, SystemTimeUnit unit)
 {
-#if defined(PLATFORM_WINDOWS)
-    return GetTimeStampExactResolution_Windows();
-#elif defined(PLATFORM_LINUX)
-    return GetTimeStampExactResolution_Linux();
-#else
-    return GetTimeStampExactResolution_Other();
-#endif
-}
+    long long exact = TimeStampExactDiff(before, after);
 
-float TimeStampDiff(SystemTimeStamp *before, SystemTimeStamp *after, SystemTimeUnit unit)
-{
-    long long exact = 0;
-#if defined(PLATFORM_WINDOWS)
-    exact = TimeStampExactDiff_Windows(before, after);
-#elif defined(PLATFORM_LINUX)
-    exact = TimeStampExactDiff_Linux(before, after);
-#else
-    exact = TimeStampExactDiff_Other(before, after);
-#endif
     float result = 0.0f;
     if (unit == STU_SEC)
         result = exact * 1e-9;
@@ -133,16 +184,6 @@ float TimeStampDiff(SystemTimeStamp *before, SystemTimeStamp *after, SystemTimeU
         result = exact * 1e-3;
     else
         assert(false);
-    return result;
-}
 
-long long TimeStampExactDiff(SystemTimeStamp *before, SystemTimeStamp *after)
-{
-#if defined(PLATFORM_WINDOWS)
-    return TimeStampExactDiff_Windows(before, after);
-#elif defined(PLATFORM_LINUX)
-    return TimeStampExactDiff_Linux(before, after);
-#else
-    return TimeStampExactDiff_Other(before, after);
-#endif
+    return result;
 }

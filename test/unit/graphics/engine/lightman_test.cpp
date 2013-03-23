@@ -1,5 +1,7 @@
 #include "graphics/engine/lightman.h"
 
+#include "app/system_mock.h"
+
 #include "graphics/core/device_mock.h"
 #include "graphics/engine/engine_mock.h"
 
@@ -15,7 +17,8 @@ class LightManagerUT : public testing::Test
 {
 protected:
     LightManagerUT()
-      : lightManager(&engine)
+      : systemUtils(true)
+      , lightManager(&engine)
     {}
 
     void PrepareLightTesting(int maxLights, Math::Vector eyePos);
@@ -25,6 +28,7 @@ protected:
                   Math::Vector pos, EngineObjectType includeType, EngineObjectType excludeType);
 
 
+    CSystemUtilsMock systemUtils;
     CLightManager lightManager;
     CEngineMock engine;
     CDeviceMock device;

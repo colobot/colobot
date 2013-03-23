@@ -16,9 +16,9 @@ endif()
 configure_file(${SRC_DIR}/common/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/common/config.h)
 
 # Platform-dependent implementation of system.h
-if (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+if (${PLATFORM_WINDOWS})
     set(SYSTEM_CPP_MODULE "system_windows.cpp")
-elseif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+elseif(${PLATFORM_LINUX})
     set(SYSTEM_CPP_MODULE "system_linux.cpp")
 else()
     set(SYSTEM_CPP_MODULE "system_other.cpp")
@@ -164,17 +164,16 @@ endif()
 
 
 # Platform-dependent tests
-if (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
-    #TODO: set(PLATFORM_TESTS app/system_windows_test.cpp)
-elseif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+if (${PLATFORM_WINDOWS})
+    set(PLATFORM_TESTS app/system_windows_test.cpp)
+elseif(${PLATFORM_LINUX})
     set(PLATFORM_TESTS app/system_linux_test.cpp)
-else()
-    #TODO: set(PLATFORM_TESTS app/system_other_test.cpp)
 endif()
 
 # Tests
 set(UT_SOURCES
 main.cpp
+app/app_test.cpp
 graphics/engine/lightman_test.cpp
 math/geometry_test.cpp
 math/matrix_test.cpp

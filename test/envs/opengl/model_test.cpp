@@ -153,9 +153,9 @@ void Update()
     const float ROT_SPEED = 80.0f * Math::DEG_TO_RAD; // rad / sec
     const float TRANS_SPEED =  3.0f; // units / sec
 
-    GetCurrentTimeStamp(CURR_TIME);
-    float timeDiff = TimeStampDiff(PREV_TIME, CURR_TIME, STU_SEC);
-    CopyTimeStamp(PREV_TIME, CURR_TIME);
+    GetSystemUtils()->GetCurrentTimeStamp(CURR_TIME);
+    float timeDiff = GetSystemUtils()->TimeStampDiff(PREV_TIME, CURR_TIME, STU_SEC);
+    GetSystemUtils()->CopyTimeStamp(PREV_TIME, CURR_TIME);
 
     if (KEYMAP[K_RotYLeft])
         ROTATION.y -= ROT_SPEED * timeDiff;
@@ -265,11 +265,11 @@ int SDL_MAIN_FUNC(int argc, char *argv[])
 {
     CLogger logger;
 
-    PREV_TIME = CreateTimeStamp();
-    CURR_TIME = CreateTimeStamp();
+    PREV_TIME = GetSystemUtils()->CreateTimeStamp();
+    CURR_TIME = GetSystemUtils()->CreateTimeStamp();
 
-    GetCurrentTimeStamp(PREV_TIME);
-    GetCurrentTimeStamp(CURR_TIME);
+    GetSystemUtils()->GetCurrentTimeStamp(PREV_TIME);
+    GetSystemUtils()->GetCurrentTimeStamp(CURR_TIME);
 
     if (argc != 3)
     {
@@ -377,8 +377,8 @@ int SDL_MAIN_FUNC(int argc, char *argv[])
 
     SDL_Quit();
 
-    DestroyTimeStamp(PREV_TIME);
-    DestroyTimeStamp(CURR_TIME);
+    GetSystemUtils()->DestroyTimeStamp(PREV_TIME);
+    GetSystemUtils()->DestroyTimeStamp(CURR_TIME);
 
     return 0;
 }

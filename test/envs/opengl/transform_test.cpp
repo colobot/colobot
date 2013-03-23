@@ -138,9 +138,9 @@ void Update()
 {
     const float TRANS_SPEED =  6.0f; // units / sec
 
-    GetCurrentTimeStamp(CURR_TIME);
-    float timeDiff = TimeStampDiff(PREV_TIME, CURR_TIME, STU_SEC);
-    CopyTimeStamp(PREV_TIME, CURR_TIME);
+    GetSystemUtils()->GetCurrentTimeStamp(CURR_TIME);
+    float timeDiff = GetSystemUtils()->TimeStampDiff(PREV_TIME, CURR_TIME, STU_SEC);
+    GetSystemUtils()->CopyTimeStamp(PREV_TIME, CURR_TIME);
 
     Math::Vector incTrans;
 
@@ -243,11 +243,11 @@ int SDL_MAIN_FUNC(int argc, char *argv[])
 {
     CLogger logger;
 
-    PREV_TIME = CreateTimeStamp();
-    CURR_TIME = CreateTimeStamp();
+    PREV_TIME = GetSystemUtils()->CreateTimeStamp();
+    CURR_TIME = GetSystemUtils()->CreateTimeStamp();
 
-    GetCurrentTimeStamp(PREV_TIME);
-    GetCurrentTimeStamp(CURR_TIME);
+    GetSystemUtils()->GetCurrentTimeStamp(PREV_TIME);
+    GetSystemUtils()->GetCurrentTimeStamp(CURR_TIME);
 
     // Without any error checking, for simplicity
 
@@ -337,8 +337,8 @@ int SDL_MAIN_FUNC(int argc, char *argv[])
 
     SDL_Quit();
 
-    DestroyTimeStamp(PREV_TIME);
-    DestroyTimeStamp(CURR_TIME);
+    GetSystemUtils()->DestroyTimeStamp(PREV_TIME);
+    GetSystemUtils()->DestroyTimeStamp(CURR_TIME);
 
     return 0;
 }

@@ -17,11 +17,28 @@
 
 #include "app/system_linux.h"
 
+#include "common/logger.h"
+
 #include <stdlib.h>
 
 
-SystemDialogResult SystemDialog_Linux(SystemDialogType type, const std::string& title, const std::string& message)
+void CSystemUtilsLinux::Init()
 {
+    m_zenityAvailable = true;
+    if (system("zenity --version") != 0)
+    {
+        m_zenityAvailable = false;
+        GetLogger()->Warn("Zenity not available, will fallback to console users dialogs.\n");
+    }
+}
+
+SystemDialogResult CSystemUtilsLinux::SystemDialog(SystemDialogType type, const std::string& title, const std::string& message)
+{
+    if (!m_zenityAvailable)
+    {
+        return ConsoleSystemDialog(type, title, message);
+    }
+
     std::string options = "";
     switch (type)
     {
@@ -62,17 +79,17 @@ SystemDialogResult SystemDialog_Linux(SystemDialogType type, const std::string& 
     return result;
 }
 
-void GetCurrentTimeStamp_Linux(SystemTimeStamp *stamp)
+void CSystemUtilsLinux::GetCurrentTimeStamp(SystemTimeStamp *stamp)
 {
     clock_gettime(CLOCK_MONOTONIC_RAW, &stamp->clockTime);
 }
 
-long long GetTimeStampExactResolution_Linux()
+long long CSystemUtilsLinux::GetTimeStampExactResolution()
 {
     return 1ll;
 }
 
-long long TimeStampExactDiff_Linux(SystemTimeStamp *before, SystemTimeStamp *after)
+long long CSystemUtilsLinux::TimeStampExactDiff(SystemTimeStamp *before, SystemTimeStamp *after)
 {
     return (after->clockTime.tv_nsec - before->clockTime.tv_nsec) +
            (after->clockTime.tv_sec  - before->clockTime.tv_sec) * 1000000000ll;
