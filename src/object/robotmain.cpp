@@ -649,6 +649,14 @@ CRobotMain::CRobotMain(CApplication* app)
     m_selectObject = 0;
     m_infoUsed     = 0;
 
+    m_beginObject         = false;
+    m_terrainGenerate     = false;
+    m_terrainInit         = false;
+    m_terrainInitTextures = false;
+    m_terrainCreate       = false;
+
+    m_version      = 1;
+    m_retroStyle   = false;
     m_immediatSatCom = false;
     m_beginSatCom  = false;
     m_movieLock    = false;
@@ -3818,21 +3826,32 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
         m_dialog->BuildResumeName(m_resume, base, rank);
         GetResource(RES_TEXT, RT_SCRIPT_NEW, m_scriptName);
         m_scriptFile[0] = 0;
+
+        m_beginObject         = false;
+        m_terrainGenerate     = false;
+        m_terrainInit         = false;
+        m_terrainInitTextures = false;
+        m_terrainCreate       = false;
+
+        m_retroStyle          = false;
     }
 
     char line[500];
     char name[200];
     char dir[100];
     char op[100];
+    char filename[500];
+    int lineNum = 0;
 
     memset(line, 0, 500);
     memset(name, 0, 200);
     memset(dir, 0, 100);
     memset(op, 0, 100);
+    memset(filename, 0, 500);
     std::string tempLine;
     m_dialog->BuildSceneName(tempLine, base, rank);
-    strcpy(line, tempLine.c_str());
-    FILE* file = fopen(line, "r");
+    strcpy(filename, tempLine.c_str());
+    FILE* file = fopen(filename, "r");
     if (file == NULL) return;
 
     int rankObj = 0;
@@ -3848,6 +3867,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
     while (fgets(line, 500, file) != NULL)
     {
+        lineNum++;
         for (int i = 0; i < 500; i++)
         {
             if (line[i] == '\t' ) line[i] = ' ';  // replace tab by space
@@ -3857,6 +3877,9 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 break;
             }
         }
+
+        if (Cmd(line, "MissionFile") && !resetObject)
+           m_version = OpInt(line, "version", 1);
 
         // TODO: Fallback to an non-localized entry
         sprintf(op, "Title.%c", m_app->GetLanguageChar());
@@ -4000,34 +4023,96 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             m_engine->SetForegroundName(name);
         }
 
-        if (Cmd(line, "Global") && !resetObject)
+        if (((m_version == 1 && Cmd(line, "Global")) || (m_version >= 2 && Cmd(line, "Mission"))) && !resetObject)
         {
             g_unit = OpFloat(line, "unitScale", 4.0f);
             m_engine->SetTracePrecision(OpFloat(line, "traceQuality", 1.0f));
             m_shortCut = OpInt(line, "shortcut", 1);
+            if(m_version >= 2) {
+                m_retroStyle = OpInt(line, "retro", 0);
+                if(m_retroStyle) GetLogger()->Info("Retro mode enabled.\n");
+            }
         }
 
         if (Cmd(line, "TerrainGenerate") && !resetObject)
         {
+            if(m_terrainCreate) {
+                GetLogger()->Error("Syntax error in file '%s' (line %d): TerrainGenerate after TerrainCreate\n", filename, lineNum);
+                continue;
+            }
+
+            if(m_terrainInit) {
+                GetLogger()->Error("Syntax error in file '%s' (line %d): TerrainGenerate after TerrainInit\n", filename, lineNum);
+                continue;
+            }
+
             m_terrain->Generate(OpInt(line, "mosaic", 20),
                                 OpInt(line, "brick", 3),
                                 OpFloat(line, "size", 20.0f),
                                 OpFloat(line, "vision", 500.0f)*g_unit,
                                 OpInt(line, "depth", 2),
                                 OpFloat(line, "hard", 0.5f));
+
+            m_terrainGenerate = true;
         }
 
-        if (Cmd(line, "TerrainWind") && !resetObject)
+        if (Cmd(line, "TerrainWind") && !resetObject) {
+            if(m_terrainCreate) {
+                GetLogger()->Error("Syntax error in file '%s' (line %d): TerrainWind after TerrainCreate\n", filename, lineNum);
+                continue;
+            }
+
+            if(m_terrainInit) {
+                GetLogger()->Error("Syntax error in file '%s' (line %d): TerrainWind after TerrainInit\n", filename, lineNum);
+                continue;
+            }
+
+            if(!m_terrainGenerate) {
+                GetLogger()->Error("Syntax error in file '%s' (line %d): TerrainWind before TerrainGenerate\n", filename, lineNum);
+                continue;
+            }
+
             m_terrain->SetWind(OpPos(line, "speed"));
+        }
 
         if (Cmd(line, "TerrainRelief") && !resetObject)
         {
+            if(m_terrainCreate) {
+                GetLogger()->Error("Syntax error in file '%s' (line %d): TerrainRelief after TerrainCreate\n", filename, lineNum);
+                continue;
+            }
+
+            if(m_terrainInit) {
+                GetLogger()->Error("Syntax error in file '%s' (line %d): TerrainRelief after TerrainInit\n", filename, lineNum);
+                continue;
+            }
+
+            if(!m_terrainGenerate) {
+                GetLogger()->Error("Syntax error in file '%s' (line %d): TerrainRelief before TerrainGenerate\n", filename, lineNum);
+                continue;
+            }
+
             OpString(line, "image", name);
             m_terrain->LoadRelief(name, OpFloat(line, "factor", 1.0f), OpInt(line, "border", 1));
         }
 
         if (Cmd(line, "TerrainResource") && !resetObject)
         {
+            if(m_terrainCreate) {
+                GetLogger()->Error("Syntax error in file '%s' (line %d): TerrainResource after TerrainCreate\n", filename, lineNum);
+                continue;
+            }
+
+            if(m_terrainInit) {
+                GetLogger()->Error("Syntax error in file '%s' (line %d): TerrainResource after TerrainInit\n", filename, lineNum);
+                continue;
+            }
+
+            if(!m_terrainGenerate) {
+                GetLogger()->Error("Syntax error in file '%s' (line %d): TerrainResource before TerrainGenerate\n", filename, lineNum);
+                continue;
+            }
+
             OpString(line, "image", name);
             m_terrain->LoadResources(name);
         }
@@ -4072,6 +4157,11 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
         if (Cmd(line, "TerrainInitTextures") && !resetObject)
         {
+            if(m_terrainInit) {
+                GetLogger()->Error("Syntax error in file '%s' (line %d): TerrainInitTextures and TerrainInit at same time\n", filename, lineNum);
+                continue;
+            }
+
             OpString(line, "image", name);
             AddExt(name, ".png");
             int dx = OpInt(line, "dx", 1);
@@ -4085,13 +4175,37 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 CopyFileListToTemp(name, tt, dx*dy);
 
             m_terrain->InitTextures(name, tt, dx, dy);
+
+            m_terrainInitTextures = true;
         }
 
-        if (Cmd(line, "TerrainInit") && !resetObject)
+        if (Cmd(line, "TerrainInit") && !resetObject) {
+            if(m_terrainInitTextures) {
+                GetLogger()->Error("Syntax error in file '%s' (line %d): TerrainInit and TerrainInitTextures at same time\n", filename, lineNum);
+                continue;
+            }
+
             m_terrain->InitMaterials(OpInt(line, "id", 1));
+            m_terrainInit = true;
+        }
 
         if (Cmd(line, "TerrainMaterial") && !resetObject)
         {
+            if(m_terrainCreate) {
+                GetLogger()->Error("Syntax error in file '%s' (line %d): TerrainMaterial after TerrainCreate\n", filename, lineNum);
+                continue;
+            }
+
+            if(m_terrainInit) {
+                GetLogger()->Error("Syntax error in file '%s' (line %d): TerrainMaterial after TerrainInit\n", filename, lineNum);
+                continue;
+            }
+
+            if(m_terrainInitTextures) {
+                GetLogger()->Error("Syntax error in file '%s' (line %d): TerrainMaterial and TerrainInitTextures at same time\n", filename, lineNum);
+                continue;
+            }
+
             OpString(line, "image", name);
             AddExt(name, ".png");
             if (strstr(name, "%user%") != 0) {
@@ -4111,6 +4225,26 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
         if (Cmd(line, "TerrainLevel") && !resetObject)
         {
+            if(m_terrainCreate) {
+                GetLogger()->Error("Syntax error in file '%s' (line %d): TerrainLevel after TerrainCreate\n", filename, lineNum);
+                continue;
+            }
+
+            if(!m_terrainInit) {
+                GetLogger()->Error("Syntax error in file '%s' (line %d): TerrainLevel before TerrainInit\n", filename, lineNum);
+                continue;
+            }
+
+            if(m_terrainInitTextures) {
+                GetLogger()->Error("Syntax error in file '%s' (line %d): TerrainLevel and TerrainInitTextures at same time\n", filename, lineNum);
+                continue;
+            }
+
+            if(!m_terrainGenerate) {
+                GetLogger()->Error("Syntax error in file '%s' (line %d): TerrainLevel before TerrainGenerate\n", filename, lineNum);
+                continue;
+            }
+
             char* op = SearchOp(line, "id");
             int id[50];
             int i = 0;
@@ -4129,8 +4263,10 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                                          OpFloat(line, "radius", 0.0f)*g_unit);
         }
 
-        if (Cmd(line, "TerrainCreate") && !resetObject)
+        if (Cmd(line, "TerrainCreate") && !resetObject) {
             m_terrain->CreateObjects();
+            m_terrainCreate = true;
+        }
 
         if (Cmd(line, "BeginObject"))
         {
@@ -4139,10 +4275,17 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
             if (read[0] != 0)  // loading file ?
                 sel = IOReadScene(read, stack);
+
+            m_beginObject = true;
         }
 
         if (Cmd(line, "CreateObject") && read[0] == 0)
         {
+            if (!m_beginObject) {
+                GetLogger()->Error("Syntax error in file '%s' (line %d): CreateObject before BeginObject\n", filename, lineNum);
+                continue;
+            }
+
             ObjectType type = OpTypeObject(line, "type", OBJECT_NULL);
 
             int gadget = OpInt(line, "gadget", -1);
