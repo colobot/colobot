@@ -375,7 +375,7 @@ pb->SetState(STATE_SHADOW);
         pos.y -=  5.0f/480.0f;
         pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL1, "PPC Team");
         pl->SetFontType(Gfx::FONT_COURIER);
-        pl->SetFontSize(8.0f);
+        pl->SetFontSize(Gfx::FONT_SIZE_SMALL);
 
         m_engine->SetBackground("interface.png",
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
@@ -1817,7 +1817,7 @@ pos.y -= 0.048f;
         pe->SetEditCap(false);
         pe->SetHighlightCap(false);
         pe->SetFontType(Gfx::FONT_COURIER);
-        pe->SetFontSize(8.0f);
+        pe->SetFontSize(Gfx::FONT_SIZE_SMALL);
         pe->ReadText("help/authors.txt");
 
         pos.x  =  80.0f/640.0f;
@@ -1829,28 +1829,28 @@ pos.y -= 0.048f;
         pe->SetEditCap(false);
         pe->SetHighlightCap(false);
         pe->SetFontType(Gfx::FONT_COURIER);
-        pe->SetFontSize(6.5f);
+        pe->SetFontSize(Gfx::FONT_SIZE_SMALL);
         pe->ReadText("help/licences.txt");
         // #endif
         /* TODO: #if _SCHOOL
-#if _CEEBOTDEMO
-pos.x  =  80.0f/640.0f;
-pos.y  = 210.0f/480.0f;
-ddim.x = 490.0f/640.0f;
-ddim.y = 150.0f/480.0f;
-#else
-pos.x  =  80.0f/640.0f;
-pos.y  = 200.0f/480.0f;
-ddim.x = 490.0f/640.0f;
-ddim.y = 150.0f/480.0f;
-#endif*/
+        #if _CEEBOTDEMO
+        pos.x  =  80.0f/640.0f;
+        pos.y  = 210.0f/480.0f;
+        ddim.x = 490.0f/640.0f;
+        ddim.y = 150.0f/480.0f;
+        #else
+        pos.x  =  80.0f/640.0f;
+        pos.y  = 200.0f/480.0f;
+        ddim.x = 490.0f/640.0f;
+        ddim.y = 150.0f/480.0f;
+        #endif
         pe = pw->CreateEdit(pos, ddim, 0, EVENT_EDIT1);
         pe->SetGenericMode(true);
         pe->SetEditCap(false);
         pe->SetHighlightCap(false);
         pe->SetFontType(Gfx::FONT_COURIER);
         pe->SetFontSize(8.0f);
-        pe->ReadText("help/authors.txt");
+        pe->ReadText("help/authors.txt");*/
 
         /* #if _DEMO
         //?     pos.x  =  80.0f/640.0f;
@@ -1886,13 +1886,13 @@ ddim.y = 150.0f/480.0f;
         GetResource(RES_TEXT, RT_GENERIC_DEV1, name);
         pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL1, name);
         pl->SetFontType(Gfx::FONT_COURIER);
-        pl->SetFontSize(8.0f);
+        pl->SetFontSize(Gfx::FONT_SIZE_SMALL);
 
         pos.y  =  0.0f/480.0f;
         GetResource(RES_TEXT, RT_GENERIC_DEV2, name);
         pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL2, name);
         pl->SetFontType(Gfx::FONT_COURIER);
-        pl->SetFontSize(8.0f);
+        pl->SetFontSize(Gfx::FONT_SIZE_SMALL);
 
         pos.x  = 355.0f/640.0f;
         pos.y  =  65.0f/480.0f;
@@ -1901,13 +1901,13 @@ ddim.y = 150.0f/480.0f;
         GetResource(RES_TEXT, RT_GENERIC_EDIT1, name);
         pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL3, name);
         pl->SetFontType(Gfx::FONT_COURIER);
-        pl->SetFontSize(8.0f);
+        pl->SetFontSize(Gfx::FONT_SIZE_SMALL);
 
         pos.y  =  0.0f/480.0f;
         GetResource(RES_TEXT, RT_GENERIC_EDIT2, name);
         pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL4, name);
         pl->SetFontType(Gfx::FONT_COURIER);
-        pl->SetFontSize(8.0f);
+        pl->SetFontSize(Gfx::FONT_SIZE_SMALL);
         // #endif
 
         /* TODO: #if _DEMO
@@ -1926,7 +1926,7 @@ ddim.y = 150.0f/480.0f;
         pb->SetState(STATE_SHADOW);
         // #endif
 
-        m_engine->SetBackground("generic.png",
+        m_engine->SetBackground("generico.png",
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
