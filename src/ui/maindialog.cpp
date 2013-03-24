@@ -1849,7 +1849,7 @@ pos.y -= 0.048f;
         pe->SetEditCap(false);
         pe->SetHighlightCap(false);
         pe->SetFontType(Gfx::FONT_COURIER);
-        pe->SetFontSize(8.0f);
+        pe->SetFontSize(Gfx::FONT_SIZE_SMALL);
         pe->ReadText("help/authors.txt");*/
 
         /* #if _DEMO
@@ -1862,7 +1862,7 @@ pos.y -= 0.048f;
         //?     pe->SetEditCap(false);
         //?     pe->SetHiliteCap(false);
         //?     pe->SetFontType(Gfx::FONT_COURIER);
-        //?     pe->SetFontSize(8.0f);
+        //?     pe->SetFontSize(Gfx::FONT_SIZE_SMALL);
         //?     pe->ReadText("help/demo.txt");
 
         //?     pos.x  =  80.0f/640.0f;
@@ -1874,13 +1874,13 @@ pos.y -= 0.048f;
         //?     pe->SetEditCap(false);
         //?     pe->SetHiliteCap(false);
         //?     pe->SetFontType(Gfx::FONT_COURIER);
-        //?     pe->SetFontSize(8.0f);
+        //?     pe->SetFontSize(Gfx::FONT_SIZE_SMALL);
         //?     pe->ReadText("help/authors.txt");
 #endif */
 
         // TODO: #if !_DEMO
         pos.x  =  40.0f/640.0f;
-        pos.y  =  65.0f/480.0f;
+        pos.y  =  83.0f/480.0f;
         ddim.x = 246.0f/640.0f;
         ddim.y =  16.0f/480.0f;
         GetResource(RES_TEXT, RT_GENERIC_DEV1, name);
@@ -1888,14 +1888,14 @@ pos.y -= 0.048f;
         pl->SetFontType(Gfx::FONT_COURIER);
         pl->SetFontSize(Gfx::FONT_SIZE_SMALL);
 
-        pos.y  =  0.0f/480.0f;
+        pos.y  =  13.0f/480.0f;
         GetResource(RES_TEXT, RT_GENERIC_DEV2, name);
         pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL2, name);
         pl->SetFontType(Gfx::FONT_COURIER);
         pl->SetFontSize(Gfx::FONT_SIZE_SMALL);
 
         pos.x  = 355.0f/640.0f;
-        pos.y  =  65.0f/480.0f;
+        pos.y  =  83.0f/480.0f;
         ddim.x = 246.0f/640.0f;
         ddim.y =  16.0f/480.0f;
         GetResource(RES_TEXT, RT_GENERIC_EDIT1, name);
@@ -1903,7 +1903,7 @@ pos.y -= 0.048f;
         pl->SetFontType(Gfx::FONT_COURIER);
         pl->SetFontSize(Gfx::FONT_SIZE_SMALL);
 
-        pos.y  =  0.0f/480.0f;
+        pos.y  =  13.0f/480.0f;
         GetResource(RES_TEXT, RT_GENERIC_EDIT2, name);
         pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL4, name);
         pl->SetFontType(Gfx::FONT_COURIER);
