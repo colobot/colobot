@@ -3836,6 +3836,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
         m_terrainInitTextures = false;
         m_terrainCreate       = false;
 
+        m_version             = 1;
         m_retroStyle          = false;
     }
 
