@@ -1288,18 +1288,20 @@ bool CBrain::CreateInterface(bool bSelect)
          type == OBJECT_BEE      ||
          type == OBJECT_WORM     )  // vehicle?
     {
-        ddim.x = dim.x*5.1f;
-        ddim.y = dim.y*2.0f;
-        pos.x = ox+sx*0.0f;
-        pos.y = oy+sy*0.0f;
-        pw->CreateList(pos, ddim, -1, EVENT_OBJECT_PROGLIST, 1.10f);
-        UpdateScript(pw);
+        if (!(CRobotMain::GetInstancePointer()->GetRetroMode())) {
+            ddim.x = dim.x*5.1f;
+            ddim.y = dim.y*2.0f;
+            pos.x = ox+sx*0.0f;
+            pos.y = oy+sy*0.0f;
+            pw->CreateList(pos, ddim, -1, EVENT_OBJECT_PROGLIST, 1.10f);
+            UpdateScript(pw);
 
-        pos.x = ox+sx*5.2f;
-        pos.y = oy+sy*1.0f;
-        pw->CreateButton(pos, dim, 8, EVENT_OBJECT_PROGRUN);
-        pos.y = oy+sy*0.0f;
-        pw->CreateButton(pos, dim, 22, EVENT_OBJECT_PROGEDIT);
+            pos.x = ox+sx*5.2f;
+            pos.y = oy+sy*1.0f;
+            pw->CreateButton(pos, dim, 8, EVENT_OBJECT_PROGRUN);
+            pos.y = oy+sy*0.0f;
+            pw->CreateButton(pos, dim, 22, EVENT_OBJECT_PROGEDIT);
+        }
     }
 
     if ( type == OBJECT_HUMAN    ||

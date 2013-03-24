@@ -6795,6 +6795,10 @@ const char* CRobotMain::GetFilesDir()
     return m_dialog->GetFilesDir().c_str();
 }
 
+bool CRobotMain::GetRetroMode()
+{
+    return m_retroStyle;
+}
 
 //! Change the player's name
 void CRobotMain::SetGamerName(const char *name)
