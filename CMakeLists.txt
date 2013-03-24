@@ -85,7 +85,7 @@ option(TESTS "Enable tests" ON)
 option(CBOT_STATIC "Build CBot as static libary" OFF)
 
 # Generate desktop files, manpage, etc.
-option(DESKTOP ON)
+option(DESKTOP "Generate desktop files, manpages, etc" ON)
 
 # Doxygen docs are optional for installation
 option(INSTALL_DOCS "Install Doxygen-generated documentation" OFF)
