@@ -6980,7 +6980,7 @@ void CObject::CreateSelectParticle()
         }
     }
 
-    if ( m_bSelect || IsProgram() )
+    if ( m_bSelect || IsProgram() || m_main->GetRetroMode() )
     {
         // Creates particles lens for the headlights.
         if ( m_type == OBJECT_MOBILEfa ||
@@ -7034,7 +7034,7 @@ void CObject::UpdateSelectParticle()
     float       angle;
     int         i;
 
-    if ( !m_bSelect && !IsProgram() )  return;
+    if ( !m_bSelect && !IsProgram() && !m_main->GetRetroMode() )  return;
 
     dim[0].x = 1.0f;
     dim[1].x = 1.0f;
@@ -7157,7 +7157,8 @@ void CObject::UpdateSelectParticle()
     zoom[2] = 1.0f;
     zoom[3] = 1.0f;
 
-    if ( IsProgram() &&  // current program?
+    if ( ( IsProgram() ||  // current program?
+         m_main->GetRetroMode() ) && // Retro mode?
          Math::Mod(m_aTime, 0.7f) < 0.3f )
     {
         zoom[0] = 0.0f;  // blinks

@@ -1288,7 +1288,7 @@ bool CBrain::CreateInterface(bool bSelect)
          type == OBJECT_BEE      ||
          type == OBJECT_WORM     )  // vehicle?
     {
-        if (!(CRobotMain::GetInstancePointer()->GetRetroMode())) {
+        if (!(m_main->GetRetroMode())) {
             ddim.x = dim.x*5.1f;
             ddim.y = dim.y*2.0f;
             pos.x = ox+sx*0.0f;
