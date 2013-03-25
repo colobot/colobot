@@ -6,9 +6,7 @@ script: mkdir build; cd build; cmake .. -DCMAKE_VERBOSE_MAKEFILE=ON && make all 
 before_install:
   - git submodule update --init --recursive
   - sudo add-apt-repository ppa:mapnik/boost -y
-  - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
   - sudo apt-get update -qq
-  - 'if [ "$CXX" = "g++" ]; then sudo apt-get -qq install g++ g++-4.7 && export CXX=g++-4.7 && export CC=gcc-4.7; fi'
   - sudo apt-get install -qq --no-install-recommends libgl1-mesa-dev libsdl1.2-dev libsdl-image1.2-dev libsdl-ttf2.0-dev libpng12-dev libglew-dev libboost-dev libboost-system-dev libboost-filesystem-dev libboost-regex-dev google-mock libgtest-dev doxygen graphviz po4a librsvg2-bin libsndfile-dev
 notifications:
   email: false
