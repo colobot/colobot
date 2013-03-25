@@ -4398,6 +4398,10 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 obj->SetCheckToken(OpInt(line, "checkToken", 1));
                 obj->SetManual(OpInt(line, "manual", 0));
 
+                Math::Vector zoom = OpDir(line, "zoom");
+                if (zoom.x != 0.0f || zoom.y != 0.0f || zoom.z != 0.0f)
+                    obj->SetZoom(0, zoom);
+
                 CMotion* motion = obj->GetMotion();
                 if (motion != nullptr)
                 {
