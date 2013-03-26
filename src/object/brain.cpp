@@ -602,6 +602,11 @@ bool CBrain::EventProcess(const Event &event)
 //?         err = StartTaskFireAnt();
         }
 
+        if ( action == EVENT_OBJECT_SPIDEREXPLO && m_primaryTask == 0 )
+        {
+            err = StartTaskSpiderExplo();
+        }
+
         if ( action == EVENT_OBJECT_PEN0 )  // up
         {
             err = StartTaskPen(false, m_object->GetTraceColor());
@@ -1073,6 +1078,24 @@ Error CBrain::StartTaskFire(float delay)
 
     m_primaryTask = new CTaskManager(m_object);
     err = m_primaryTask->StartTaskFire(delay);
+    UpdateInterface();
+    return err;
+}
+
+// Explodes spider.
+
+Error CBrain::StartTaskSpiderExplo()
+{
+    Error   err;
+
+    if ( m_primaryTask != 0 )
+    {
+        delete m_primaryTask;  // stops the current task
+        m_primaryTask = 0;
+    }
+
+    m_primaryTask = new CTaskManager(m_object);
+    err = m_primaryTask->StartTaskSpiderExplo();
     UpdateInterface();
     return err;
 }
@@ -1578,6 +1601,15 @@ bool CBrain::CreateInterface(bool bSelect)
 //?     pos.x = ox+sx*10.2f;
 //?     pos.y = oy+sy*0.5f;
 //?     pw->CreateButton(pos, dim, 41, EVENT_OBJECT_LIMIT);
+    }
+
+    if ( type == OBJECT_SPIDER )
+    {
+        pos.x = ox+sx*7.7f;
+        pos.y = oy+sy*0.5f;
+        pb = pw->CreateButton(pos, dim, 42, EVENT_OBJECT_SPIDEREXPLO);
+        pb->SetImmediat(true);
+        DefaultEnter(pw, EVENT_OBJECT_SPIDEREXPLO);
     }
 
     if ( type == OBJECT_MOBILEdr &&
@@ -2136,37 +2168,38 @@ void CBrain::UpdateInterface()
 
     bEnable = ( m_primaryTask == 0 && m_program == -1 );
 
-    EnableInterface(pw, EVENT_OBJECT_PROGEDIT,  (m_primaryTask == 0 && !m_bTraceRecord));
-    EnableInterface(pw, EVENT_OBJECT_PROGLIST,  bEnable && !m_bTraceRecord);
-    EnableInterface(pw, EVENT_OBJECT_LEFT,      bEnable);
-    EnableInterface(pw, EVENT_OBJECT_RIGHT,     bEnable);
-    EnableInterface(pw, EVENT_OBJECT_UP,        bEnable);
-    EnableInterface(pw, EVENT_OBJECT_DOWN,      bEnable);
-    EnableInterface(pw, EVENT_OBJECT_HTAKE,     bEnable);
-    EnableInterface(pw, EVENT_OBJECT_MTAKE,     bEnable);
-    EnableInterface(pw, EVENT_OBJECT_MBACK,     bEnable);
-    EnableInterface(pw, EVENT_OBJECT_MPOWER,    bEnable);
-    EnableInterface(pw, EVENT_OBJECT_MFRONT,    bEnable);
-    EnableInterface(pw, EVENT_OBJECT_GFLAT,     bEnable);
-    EnableInterface(pw, EVENT_OBJECT_FCREATE,   bEnable);
-    EnableInterface(pw, EVENT_OBJECT_FDELETE,   bEnable);
-    EnableInterface(pw, EVENT_OBJECT_SEARCH,    bEnable);
-    EnableInterface(pw, EVENT_OBJECT_TERRAFORM, bEnable);
-    EnableInterface(pw, EVENT_OBJECT_RECOVER,   bEnable);
-    EnableInterface(pw, EVENT_OBJECT_FIRE,      bEnable);
-    EnableInterface(pw, EVENT_OBJECT_RESET,     bEnable);
+    EnableInterface(pw, EVENT_OBJECT_PROGEDIT,    (m_primaryTask == 0 && !m_bTraceRecord));
+    EnableInterface(pw, EVENT_OBJECT_PROGLIST,    bEnable && !m_bTraceRecord);
+    EnableInterface(pw, EVENT_OBJECT_LEFT,        bEnable);
+    EnableInterface(pw, EVENT_OBJECT_RIGHT,       bEnable);
+    EnableInterface(pw, EVENT_OBJECT_UP,          bEnable);
+    EnableInterface(pw, EVENT_OBJECT_DOWN,        bEnable);
+    EnableInterface(pw, EVENT_OBJECT_HTAKE,       bEnable);
+    EnableInterface(pw, EVENT_OBJECT_MTAKE,       bEnable);
+    EnableInterface(pw, EVENT_OBJECT_MBACK,       bEnable);
+    EnableInterface(pw, EVENT_OBJECT_MPOWER,      bEnable);
+    EnableInterface(pw, EVENT_OBJECT_MFRONT,      bEnable);
+    EnableInterface(pw, EVENT_OBJECT_GFLAT,       bEnable);
+    EnableInterface(pw, EVENT_OBJECT_FCREATE,     bEnable);
+    EnableInterface(pw, EVENT_OBJECT_FDELETE,     bEnable);
+    EnableInterface(pw, EVENT_OBJECT_SEARCH,      bEnable);
+    EnableInterface(pw, EVENT_OBJECT_TERRAFORM,   bEnable);
+    EnableInterface(pw, EVENT_OBJECT_RECOVER,     bEnable);
+    EnableInterface(pw, EVENT_OBJECT_FIRE,        bEnable);
+    EnableInterface(pw, EVENT_OBJECT_SPIDEREXPLO, bEnable);
+    EnableInterface(pw, EVENT_OBJECT_RESET,       bEnable);
 #if _TEEN
-    EnableInterface(pw, EVENT_OBJECT_PEN0,      bEnable);
-    EnableInterface(pw, EVENT_OBJECT_PEN1,      bEnable);
-    EnableInterface(pw, EVENT_OBJECT_PEN2,      bEnable);
-    EnableInterface(pw, EVENT_OBJECT_PEN3,      bEnable);
-    EnableInterface(pw, EVENT_OBJECT_PEN4,      bEnable);
-    EnableInterface(pw, EVENT_OBJECT_PEN5,      bEnable);
-    EnableInterface(pw, EVENT_OBJECT_PEN6,      bEnable);
-    EnableInterface(pw, EVENT_OBJECT_PEN7,      bEnable);
-    EnableInterface(pw, EVENT_OBJECT_PEN8,      bEnable);
-    EnableInterface(pw, EVENT_OBJECT_REC,       bEnable);
-    EnableInterface(pw, EVENT_OBJECT_STOP,      bEnable);
+    EnableInterface(pw, EVENT_OBJECT_PEN0,        bEnable);
+    EnableInterface(pw, EVENT_OBJECT_PEN1,        bEnable);
+    EnableInterface(pw, EVENT_OBJECT_PEN2,        bEnable);
+    EnableInterface(pw, EVENT_OBJECT_PEN3,        bEnable);
+    EnableInterface(pw, EVENT_OBJECT_PEN4,        bEnable);
+    EnableInterface(pw, EVENT_OBJECT_PEN5,        bEnable);
+    EnableInterface(pw, EVENT_OBJECT_PEN6,        bEnable);
+    EnableInterface(pw, EVENT_OBJECT_PEN7,        bEnable);
+    EnableInterface(pw, EVENT_OBJECT_PEN8,        bEnable);
+    EnableInterface(pw, EVENT_OBJECT_REC,         bEnable);
+    EnableInterface(pw, EVENT_OBJECT_STOP,        bEnable);
 #endif
 
     if ( type == OBJECT_HUMAN )  // builder?
