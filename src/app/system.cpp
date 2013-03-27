@@ -187,3 +187,13 @@ float CSystemUtils::TimeStampDiff(SystemTimeStamp *before, SystemTimeStamp *afte
 
     return result;
 }
+
+std::string CSystemUtils::profileFileLocation()
+{
+	return std::string("colobot.ini");
+}
+
+std::string CSystemUtils::savegameDirectoryLocation()
+{
+	return std::string("savegame");
+}
