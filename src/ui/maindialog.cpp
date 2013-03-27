@@ -18,6 +18,7 @@
 #include "ui/maindialog.h"
 
 #include "app/app.h"
+#include "app/system.h"
 
 #include "common/global.h"
 #include "common/event.h"
@@ -173,7 +174,7 @@ CMainDialog::CMainDialog()
 
 
     m_sceneDir = "levels";
-    m_savegameDir = "savegame";
+    m_savegameDir = GetSystemUtils()->savegameDirectoryLocation();
     m_publicDir = "program";
     m_userDir = "user";
     m_filesDir = "files";

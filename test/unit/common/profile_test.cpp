@@ -1,5 +1,6 @@
 #include "common/profile.h"
 #include "common/logger.h"
+#include "app/system.h"
 
 #include <iostream>
 #include <string>
