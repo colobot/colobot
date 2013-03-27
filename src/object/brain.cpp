@@ -1389,8 +1389,9 @@ bool CBrain::CreateInterface(bool bSelect)
         pw->CreateButton(pos, dim, 33, EVENT_OBJECT_MFRONT);
     }
 
-    if ( type == OBJECT_MOBILEsa &&  // underwater?
-         !m_object->GetTrainer() )
+    if ( ( type == OBJECT_MOBILEsa &&  // underwater?
+         !m_object->GetTrainer() ) ||
+         type == OBJECT_BEE )
     {
         pos.x = ox+sx*7.7f;
         pos.y = oy+sy*0.5f;
