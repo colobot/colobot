@@ -67,10 +67,15 @@ else()
                         "Supported compilers at this time are GCC 4.6+ and clang.")
 endif()
 
+
 # Global compile flags
 # These are specific to GCC/MinGW/clang; for other compilers, change as necessary
 # The flags are used throughout src/ and test/ subdirs
-set(COLOBOT_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wold-style-cast ${CXX11_FLAGS}")
+
+# Special flags for boost
+set(Boost_FLAGS "-DBOOST_NO_SCOPED_ENUMS -DBOOST_NO_CXX11_SCOPED_ENUMS")
+
+set(COLOBOT_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wold-style-cast ${CXX11_FLAGS} ${Boost_FLAGS}")
 set(COLOBOT_CXX_FLAGS_RELEASE "-O2")
 set(COLOBOT_CXX_FLAGS_DEBUG "-g -O0")
 

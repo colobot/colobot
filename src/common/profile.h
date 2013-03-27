@@ -23,10 +23,6 @@
 
 #include "common/singleton.h"
 
-// this is just to fix problem with undefined reference when compiling with c++11 support
-#define BOOST_NO_SCOPED_ENUMS
-#define BOOST_NO_CXX11_SCOPED_ENUMS
-
 #include <boost/property_tree/ptree.hpp>
 #include <boost/filesystem.hpp>
 #include <boost/algorithm/string/replace.hpp>
