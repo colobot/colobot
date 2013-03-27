@@ -46,6 +46,9 @@ public:
     virtual long long GetTimeStampExactResolution() override;
     virtual long long TimeStampExactDiff(SystemTimeStamp *before, SystemTimeStamp *after) override;
 
+    virtual std::string profileFileLocation() override;
+    virtual std::string savegameDirectoryLocation() override;
+
 private:
     bool m_zenityAvailable;
 };
