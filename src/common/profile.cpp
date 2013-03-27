@@ -19,6 +19,8 @@
 
 #include "common/logger.h"
 
+#include "app/system.h"
+
 #include <utility>
 #include <cstring>
 #include <boost/property_tree/ini_parser.hpp>
@@ -41,7 +43,7 @@ CProfile::~CProfile()
     {
         try
         {
-            bp::ini_parser::write_ini("colobot.ini", m_propertyTree);
+            bp::ini_parser::write_ini(GetSystemUtils()->profileFileLocation(), m_propertyTree);
         }
         catch (std::exception & e)
         {
@@ -55,7 +57,7 @@ bool CProfile::InitCurrentDirectory()
 {
     try
     {
-        bp::ini_parser::read_ini("colobot.ini", m_propertyTree);
+        bp::ini_parser::read_ini(GetSystemUtils()->profileFileLocation(), m_propertyTree);
     }
     catch (std::exception & e)
     {
