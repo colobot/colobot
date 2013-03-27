@@ -2527,6 +2527,7 @@ bool CScript::rMessage(CBotVar* var, CBotVar* result, int& exception, void* user
     const char* p;
     Ui::TextType    type;
 
+    if( var != 0 ) return true;
     cbs = var->GetValString();
     p = cbs;
 
