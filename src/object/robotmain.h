@@ -459,6 +459,7 @@ protected:
     bool            m_retroStyle;      // Retro
     bool            m_immediatSatCom;  // SatCom immediately?
     bool            m_beginSatCom;     // messages SatCom poster?
+    bool            m_lockedSatCom;    // SatCom locked?
     bool            m_movieLock;       // movie in progress?
     bool            m_satComLock;      // call of SatCom is possible?
     bool            m_editLock;        // edition in progress?

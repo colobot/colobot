@@ -659,6 +659,7 @@ CRobotMain::CRobotMain(CApplication* app)
     m_retroStyle   = false;
     m_immediatSatCom = false;
     m_beginSatCom  = false;
+    m_lockedSatCom = false;
     m_movieLock    = false;
     m_satComLock   = false;
     m_editLock     = false;
@@ -2027,7 +2028,7 @@ void CRobotMain::FlushDisplayInfo()
 //! index: SATCOM_*
 void CRobotMain::StartDisplayInfo(int index, bool movie)
 {
-    if (m_cmdEdit || m_satComLock) return;
+    if (m_cmdEdit || m_satComLock || m_lockedSatCom) return;
 
     CObject* obj = GetSelect();
     bool human = obj != nullptr && obj->GetType() == OBJECT_HUMAN;
@@ -3789,6 +3790,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
         m_displayText->SetDelay(1.0f);
         m_displayText->SetEnable(true);
         m_immediatSatCom = false;
+        m_lockedSatCom = false;
         m_endingWinRank   = 0;
         m_endingLostRank  = 0;
         m_endTakeTotal = 0;
@@ -3908,6 +3910,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             strcpy(m_infoFilename[SATCOM_HUSTON], path.c_str());
 
             m_immediatSatCom = OpInt(line, "immediat", 0);
+            if(m_version >= 2) m_beginSatCom = m_lockedSatCom = OpInt(line, "lock", 0);
         }
 
         if (Cmd(line, "Satellite") && !resetObject)
