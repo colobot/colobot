@@ -1136,13 +1136,13 @@ void CRobotMain::ChangePhase(Phase phase)
         if (m_mapImage)
             m_map->SetFixImage(m_mapFilename);
 
-        Math::Point ddim;
+        /*Math::Point ddim;
 
         pos.x = 620.0f/640.0f;
         pos.y = 460.0f/480.0f;
         ddim.x = 20.0f/640.0f;
         ddim.y = 20.0f/480.0f;
-        m_interface->CreateButton(pos, ddim, 11, EVENT_BUTTON_QUIT);
+        m_interface->CreateButton(pos, ddim, 11, EVENT_BUTTON_QUIT);*/
 
         if (m_immediatSatCom && !loading  &&
             m_infoFilename[SATCOM_HUSTON][0] != 0)
