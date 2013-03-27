@@ -3,6 +3,14 @@
 
 template<> CRobotMain* CSingleton<CRobotMain>::m_instance = nullptr;
 
+CRobotMain::CRobotMain(CApplication* app)
+{
+}
+
+CRobotMain::~CRobotMain()
+{
+}
+
 bool CRobotMain::GetGlint()
 {
     return false;
