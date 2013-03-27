@@ -4328,12 +4328,13 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
             Math::Vector pos = OpPos(line, "pos")*g_unit;
             float dir = OpFloat(line, "dir", 0.0f)*Math::PI;
+            bool trainer = OpInt(line, "trainer", 0);
             CObject* obj = CreateObject(pos, dir,
                                         OpFloat(line, "z", 1.0f),
                                         OpFloat(line, "h", 0.0f),
                                         type,
                                         OpFloat(line, "power", 1.0f),
-                                        OpInt(line, "trainer", 0),
+                                        trainer,
                                         OpInt(line, "toy", 0),
                                         OpInt(line, "option", 0));
 
@@ -4395,12 +4396,14 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 obj->SetShield(OpFloat(line, "shield", 1.0f));
                 obj->SetMagnifyDamage(OpFloat(line, "magnifyDamage", 1.0f));
                 obj->SetClip(OpInt(line, "clip", 1));
-                obj->SetCheckToken(OpInt(line, "checkToken", 1));
-                obj->SetManual(OpInt(line, "manual", 0));
+                obj->SetCheckToken(m_version >= 2 ? trainer : OpInt(line, "manual", 1));
+                obj->SetManual(m_version >= 2 ? !trainer : OpInt(line, "manual", 0));
 
-                Math::Vector zoom = OpDir(line, "zoom");
-                if (zoom.x != 0.0f || zoom.y != 0.0f || zoom.z != 0.0f)
-                    obj->SetZoom(0, zoom);
+                if(m_version >= 2) {
+                    Math::Vector zoom = OpDir(line, "zoom");
+                    if (zoom.x != 0.0f || zoom.y != 0.0f || zoom.z != 0.0f)
+                        obj->SetZoom(0, zoom);
+                }
 
                 CMotion* motion = obj->GetMotion();
                 if (motion != nullptr)
