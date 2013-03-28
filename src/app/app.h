@@ -455,6 +455,9 @@ protected:
     //! Path to directory with data files
     std::string     m_dataPath;
 
+    //! Path to directory with language files
+    std::string     m_langPath;
+
     const char*     m_dataDirs[DIR_MAX];
 
     //! Application language

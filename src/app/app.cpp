@@ -144,6 +144,7 @@ CApplication::CApplication()
     m_trackedKeys = 0;
 
     m_dataPath = COLOBOT_DEFAULT_DATADIR;
+    m_langPath = COLOBOT_I18N_DIR;
 
     m_language = LANGUAGE_ENV;
 
@@ -213,6 +214,7 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
         OPT_DATADIR,
         OPT_LOGLEVEL,
         OPT_LANGUAGE,
+        OPT_LANGDIR,
         OPT_VBO
     };
 
@@ -223,6 +225,7 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
         { "datadir", required_argument, nullptr, OPT_DATADIR },
         { "loglevel", required_argument, nullptr, OPT_LOGLEVEL },
         { "language", required_argument, nullptr, OPT_LANGUAGE },
+        { "langdir", required_argument, nullptr, OPT_LANGDIR },
         { "vbo", required_argument, nullptr, OPT_VBO }
     };
 
@@ -258,6 +261,7 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
                 GetLogger()->Message("  -datadir path    set custom data directory path\n");
                 GetLogger()->Message("  -loglevel level  set log level to level (one of: trace, debug, info, warn, error, none)\n");
                 GetLogger()->Message("  -language lang   set language (one of: en, de, fr, pl)\n");
+                GetLogger()->Message("  -langdir path    set custom language directory path\n");
                 GetLogger()->Message("  -vbo mode        set OpenGL VBO mode (one of: auto, enable, disable)\n");
                 return PARSE_ARGS_HELP;
             }
@@ -296,6 +300,12 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
 
                 GetLogger()->Info("Using language %s\n", optarg);
                 m_language = language;
+                break;
+            }
+            case OPT_LANGDIR:
+            {
+                m_langPath = optarg;
+                GetLogger()->Info("Using custom language dir: '%s'\n", m_langPath.c_str());
                 break;
             }
             case OPT_VBO:
@@ -1645,7 +1655,7 @@ void CApplication::SetLanguage(Language language)
     }
     setlocale(LC_ALL, "");
 
-    bindtextdomain("colobot", COLOBOT_I18N_DIR);
+    bindtextdomain("colobot", m_langPath.c_str());
     bind_textdomain_codeset("colobot", "UTF-8");
     textdomain("colobot");
 
