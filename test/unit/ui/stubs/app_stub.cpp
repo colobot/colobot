@@ -45,3 +45,8 @@ Event CApplication::CreateUpdateEvent()
 {
     return Event(EVENT_NULL);
 }
+
+char GetLanguageChar()
+{
+    return "E";
+}
