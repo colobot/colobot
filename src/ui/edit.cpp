@@ -786,7 +786,7 @@ void CEdit::HyperJump(std::string name, std::string marker)
     if ( name[0] == '%' ) {
         filename = GetProfile().GetUserBasedPath(name, "") + ".txt";
     } else {
-        filename = "/help/" + name + ".txt";
+        filename = std::string("help/") + CApplication::GetInstancePointer()->GetLanguageChar() + "/" + name + std::string(".txt");
     }
     
     if ( ReadText(filename) )

@@ -1819,7 +1819,7 @@ pos.y -= 0.048f;
         pe->SetHighlightCap(false);
         pe->SetFontType(Gfx::FONT_COURIER);
         pe->SetFontSize(Gfx::FONT_SIZE_SMALL);
-        pe->ReadText("help/authors.txt");
+        pe->ReadText(std::string("help/") + m_app->GetLanguageChar() + std::string("/authors.txt"));
 
         pos.x  =  80.0f/640.0f;
         pos.y  = 140.0f/480.0f;
@@ -1831,7 +1831,7 @@ pos.y -= 0.048f;
         pe->SetHighlightCap(false);
         pe->SetFontType(Gfx::FONT_COURIER);
         pe->SetFontSize(Gfx::FONT_SIZE_SMALL);
-        pe->ReadText("help/licences.txt");
+        pe->ReadText(std::string("help/") + m_app->GetLanguageChar() + std::string("/licences.txt"));
         // #endif
         /* TODO: #if _SCHOOL
         #if _CEEBOTDEMO

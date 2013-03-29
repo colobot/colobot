@@ -1196,7 +1196,7 @@ void CRobotMain::ChangePhase(Phase phase)
                 pe->SetFontType(Gfx::FONT_COLOBOT);
                 pe->SetEditCap(false);
                 pe->SetHighlightCap(false);
-                pe->ReadText(std::string("help/win.txt"));
+                pe->ReadText(std::string("help/") + m_app->GetLanguageChar() + std::string("/win.txt"));
             }
             else
             {
@@ -2020,7 +2020,7 @@ void CRobotMain::FlushDisplayInfo()
         m_infoFilename[i][0] = 0;
         m_infoPos[i] = 0;
     }
-    strcpy(m_infoFilename[SATCOM_OBJECT], "help/objects.txt");
+    strcpy(m_infoFilename[SATCOM_OBJECT], "help/") + m_app->GetLanguageChar() + std::string("/objects.txt");
     m_infoIndex = 0;
 }
 
@@ -3072,7 +3072,7 @@ void CRobotMain::HelpObject()
     CObject* obj = GetSelect();
     if (obj == nullptr) return;
 
-    const char* filename = GetHelpFilename(obj->GetType());
+    const char* filename = GetHelpFilename(obj->GetType()).c_str();
     if (filename[0] == 0) return;
 
     StartDisplayInfo(filename, -1);

@@ -989,9 +989,9 @@ void ObjectWrite(FILE* file, ObjectList list[], int i)
     strcat(line, res);
 
     strcat(line, "\\u ");
-    p = const_cast<char*>(GetHelpFilename(list[i].type));
+    p = const_cast<char*>(GetHelpFilename(list[i].type).c_str());
     if ( p[0] == 0 )  return;
-    strcat(line, p+5);  // skip "help\"
+    strcat(line, p+7);  // skip "help\?\"
     p = strstr(line, ".txt");
     if ( p != 0 )  *p = 0;
     strcat(line, ";\n");
@@ -1012,7 +1012,7 @@ void CDisplayInfo::CreateObjectsFile()
 
     CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
 
-    file = fopen("help\\objects.txt", "w");
+    file = fopen((std::string("help/") + CApplication::GetInstancePointer()->GetLanguageChar() + std::string("objects.txt")).c_str(), "w");
     if ( file == 0 )  return;
 
     list[0].total = 0;  // empty list

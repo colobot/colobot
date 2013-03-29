@@ -1522,6 +1522,10 @@ std::string CApplication::GetDataFilePath(DataDir stdDir, const std::string& sub
     str << m_dataPath;
     str << "/";
     str << m_dataDirs[index];
+    if (stdDir == DIR_HELP) {
+        str << "/";
+        str << GetLanguageChar();
+    }
     str << "/";
     str << subpath;
     return str.str();

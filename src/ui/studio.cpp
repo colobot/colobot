@@ -500,7 +500,7 @@ void CStudio::SearchToken(CEdit* edit)
     }
     token[i] = 0;
 
-    m_helpFilename = std::string(GetHelpFilename(token));
+    m_helpFilename = GetHelpFilename(token);
     if ( m_helpFilename.length() == 0 )
     {
         for ( i=0 ; i<OBJECT_MAX ; i++ )
