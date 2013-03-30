@@ -349,6 +349,43 @@ bool CScript::rGetObject(CBotVar* var, CBotVar* result, int& exception, void* us
     return true;
 }
 
+// Compilation of the instruction "destroy(rank)".
+
+CBotTypResult CScript::cDestroy(CBotVar* &var, void* user)
+{
+    if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
+    if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
+    var = var->GetNext();
+    if ( var != 0 )  return CBotTypResult(CBotErrOverParam);
+
+    return CBotTypResult(CBotTypFloat);
+}
+
+// Instruction "destroy(rank)".
+
+bool CScript::rDestroy(CBotVar* var, CBotVar* result, int& exception, void* user)
+{
+    CScript*    script = (static_cast<CObject*>(user))->GetRunScript();
+    CObject*    pObj;
+    int         rank;
+
+    rank = var->GetValInt();
+
+    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
+
+    pObj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, rank));
+    if ( pObj == 0 )
+    {
+        return true;
+    }
+    else
+    {
+        pObj->ExploObject(EXPLO_BOUM, 1.0f);
+    }
+    return true;
+}
+
+
 
 // Compilation of the instruction "search(type, pos)".
 
@@ -2898,6 +2935,7 @@ void CScript::InitFonctions()
     CBotProgram::AddFunction("abs",       rAbs,       CScript::cOneFloat);
 
     CBotProgram::AddFunction("retobject", rGetObject, CScript::cGetObject);
+    CBotProgram::AddFunction("destroy",   rDestroy,   CScript::cDestroy);
     CBotProgram::AddFunction("search",    rSearch,    CScript::cSearch);
     CBotProgram::AddFunction("radar",     rRadar,     CScript::cRadar);
     CBotProgram::AddFunction("detect",    rDetect,    CScript::cDetect);
