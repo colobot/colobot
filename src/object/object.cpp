@@ -2658,7 +2658,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
 
     if ( m_type == OBJECT_ENERGY )
     {
-        modelManager->AddModelReference("energy.mod", false, rank);
+        modelManager->AddModelCopy("energy.mod", false, rank);
         SetPosition(0, pos);
         SetAngleY(0, angle);
         SetFloorHeight(0.0f);
@@ -2841,7 +2841,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
 
     if ( m_type == OBJECT_STATION )
     {
-        modelManager->AddModelReference("station.mod", false, rank);
+        modelManager->AddModelCopy("station.mod", false, rank);
         SetPosition(0, pos);
         SetAngleY(0, angle);
         SetFloorHeight(0.0f);
@@ -3207,7 +3207,14 @@ bool CObject::CreateResource(Math::Vector pos, float angle, ObjectType type,
     if ( type == OBJECT_MARKKEYd    )  name = "crossd.mod";
     if ( type == OBJECT_EGG         )  name = "egg.mod";
 
-    modelManager->AddModelReference(name, false, rank);
+    if (type == OBJECT_POWER || type == OBJECT_ATOMIC)
+    {
+        modelManager->AddModelCopy(name, false, rank);
+    }
+    else
+    {
+        modelManager->AddModelReference(name, false, rank);
+    }
 
     SetPosition(0, pos);
     SetAngleY(0, angle);
