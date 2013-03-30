@@ -2056,7 +2056,7 @@ void CBrain::UpdateInterface(float rTime)
         pc->SetState(Ui::STATE_VISIBLE, m_main->GetShowMap());
     }
 
-    pb = (Ui::CButton*)pw->SearchControl(EVENT_OBJECT_REC);
+    pb = static_cast<Ui::CButton*>(pw->SearchControl(EVENT_OBJECT_REC));
     if ( pb != 0 )
     {
         if ( m_bTraceRecord && Math::Mod(m_time, 0.4f) >= 0.2f )

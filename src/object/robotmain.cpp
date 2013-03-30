@@ -1332,7 +1332,7 @@ bool CRobotMain::EventProcess(Event &event)
     // Management of the console.
     if (m_phase != PHASE_NAME &&
         !m_movie->IsExist()   &&
-        !m_movieLock && !m_editLock &&
+        !m_movieLock && !m_editLock && !m_engine->GetPause() &&
         event.type == EVENT_KEY_DOWN &&
         event.key.key == KEY(PAUSE))  // Pause ?
     {
@@ -1474,8 +1474,9 @@ bool CRobotMain::EventProcess(Event &event)
                         ChangePhase(PHASE_WIN);
                     else if (m_lostDelay > 0.0f)
                         ChangePhase(PHASE_LOST);
-                    else
+                    else if (!m_cmdEdit) {
                         m_dialog->StartAbort();  // do you want to leave?
+                    }
                 }
                 if (event.key.key == KEY(PAUSE))
                 {
