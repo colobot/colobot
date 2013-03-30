@@ -79,6 +79,9 @@ public:
     //! Returns the image size
     Math::IntPoint GetSize() const;
 
+    //! Fills the whole image with given color
+    void Fill(Gfx::IntColor color);
+
     //! Sets the color at given pixel
     void SetPixel(Math::IntPoint pixel, Gfx::Color color);
 

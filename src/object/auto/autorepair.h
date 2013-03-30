@@ -38,7 +38,7 @@ enum AutoRepairPhase
 class CAutoRepair : public CAuto
 {
 public:
-    CAutoRepair(CInstanceManager* iMan, CObject* object);
+    CAutoRepair(CObject* object);
     ~CAutoRepair();
 
     void        DeleteObject(bool bAll=false);

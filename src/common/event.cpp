@@ -17,10 +17,10 @@
 
 #include "common/event.h"
 
-#include "common/iman.h"
 #include "common/logger.h"
 
 static EventType g_uniqueEventType = EVENT_USER;
+
 
 
 EventType GetUniqueEventType()
@@ -32,11 +32,8 @@ EventType GetUniqueEventType()
 
 
 
-CEventQueue::CEventQueue(CInstanceManager* iMan)
+CEventQueue::CEventQueue()
 {
-    m_iMan = iMan;
-    m_iMan->AddInstance(CLASS_EVENT, this);
-
     Flush();
 }
 

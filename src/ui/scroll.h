@@ -20,8 +20,9 @@
 #pragma once
 
 
-#include "ui/control.h"
 #include "common/event.h"
+
+#include "ui/control.h"
 
 namespace Ui {
 

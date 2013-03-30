@@ -15,17 +15,10 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// displayinfo.cpp
-
 
 #include "ui/displayinfo.h"
 
-#include "ui/interface.h"
-#include "ui/button.h"
-#include "ui/slider.h"
-#include "ui/edit.h"
-#include "ui/group.h"
-#include "ui/window.h"
+#include "app/app.h"
 
 #include "common/iman.h"
 #include "common/misc.h"
@@ -43,25 +36,28 @@
 
 #include "script/cbottoken.h"
 
+#include "ui/interface.h"
+#include "ui/button.h"
+#include "ui/slider.h"
+#include "ui/edit.h"
+#include "ui/group.h"
+#include "ui/window.h"
+
 #include <string.h>
 
 
 namespace Ui {
 // Object's constructor.
 
-//CDisplayInfo::CDisplayInfo(CInstanceManager* iMan)
 CDisplayInfo::CDisplayInfo()
 {
-    m_iMan = CInstanceManager::GetInstancePointer();
-    m_iMan->AddInstance(CLASS_STUDIO, this);
-
-    m_engine    = static_cast <Gfx::CEngine*> (m_iMan->SearchInstance(CLASS_ENGINE));
-    m_event     = static_cast <CEventQueue*> (m_iMan->SearchInstance(CLASS_EVENT));
-    m_interface = static_cast <CInterface*> (m_iMan->SearchInstance(CLASS_INTERFACE));
-    m_main      = static_cast <CRobotMain*> (m_iMan->SearchInstance(CLASS_MAIN));
-    m_camera    = static_cast <Gfx::CCamera*> (m_iMan->SearchInstance(CLASS_CAMERA));
-    m_particle = static_cast <Gfx::CParticle*> (m_iMan->SearchInstance(CLASS_PARTICULE));
-    m_light     = static_cast <Gfx::CLightManager*> (m_iMan->SearchInstance(CLASS_LIGHT));
+    m_event     = CApplication::GetInstancePointer()->GetEventQueue();
+    m_engine    = Gfx::CEngine::GetInstancePointer();
+    m_particle  = m_engine->GetParticle();
+    m_light     = m_engine->GetLightManager();
+    m_main      = CRobotMain::GetInstancePointer();
+    m_interface = m_main->GetInterface();
+    m_camera    = m_main->GetCamera();
 
     m_bInfoMaximized = true;
     m_bInfoMinimized = false;
@@ -77,7 +73,6 @@ CDisplayInfo::CDisplayInfo()
 
 CDisplayInfo::~CDisplayInfo()
 {
-    m_iMan->DeleteInstance(CLASS_STUDIO, this);
 }
 
 
@@ -386,7 +381,7 @@ void CDisplayInfo::StartDisplayInfo(std::string filename, int index, bool bSoluc
     edit->ReadText(filename.c_str());
     edit->HyperHome(filename.c_str());
     edit->SetEditCap(false);  // just to see!
-    edit->SetHiliteCap(false);
+    edit->SetHighlightCap(false);
     edit->SetFocus(true);
 
     ViewDisplayInfo();
@@ -460,6 +455,7 @@ void CDisplayInfo::StartDisplayInfo(std::string filename, int index, bool bSoluc
     }
 
     light.type    = Gfx::LIGHT_DIRECTIONAL;
+    light.ambient = Gfx::Color(0.0f, 0.0f, 0.0f);
     light.diffuse = Gfx::Color(1.0f, 0.1f, 0.1f);
     light.direction  = Math::Vector(1.0f, 0.0f, 1.0f);
 
@@ -675,7 +671,7 @@ void CDisplayInfo::ChangeIndexButton(int index)
     {
         filename = m_main->GetDisplayInfoName(m_index);
         edit->ReadText(filename);
-        edit->HyperHome(filename);
+        edit->HyperHome(std::string(filename));
         SetPosition(m_main->GetDisplayInfoPosition(m_index));
     }
 
@@ -789,7 +785,7 @@ void CDisplayInfo::UpdateIndexButton()
     if ( edit != 0 )
     {
 //?     edit->SetHiliteCap(m_index==SATCOM_LOADING);
-        edit->SetHiliteCap(true);
+        edit->SetHighlightCap(true);
     }
 
     UpdateCopyButton();
@@ -927,9 +923,11 @@ CObject* CDisplayInfo::SearchToto()
     CObject*    pObj;
     int         i;
 
+    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
+
     for ( i=0 ; i<1000000 ; i++ )
     {
-        pObj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
+        pObj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
         if ( pObj == 0 )  break;
 
         type = pObj->GetType();
@@ -991,9 +989,9 @@ void ObjectWrite(FILE* file, ObjectList list[], int i)
     strcat(line, res);
 
     strcat(line, "\\u ");
-    p = const_cast<char*>(GetHelpFilename(list[i].type));
+    p = const_cast<char*>(GetHelpFilename(list[i].type).c_str());
     if ( p[0] == 0 )  return;
-    strcat(line, p+5);  // skip "help\"
+    strcat(line, p+7);  // skip "help\?\"
     p = strstr(line, ".txt");
     if ( p != 0 )  *p = 0;
     strcat(line, ";\n");
@@ -1012,14 +1010,16 @@ void CDisplayInfo::CreateObjectsFile()
     int         i;
     bool        bRadar, bAtLeast;
 
-    file = fopen("help\\objects.txt", "w");
+    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
+
+    file = fopen((std::string("help/") + CApplication::GetInstancePointer()->GetLanguageChar() + std::string("objects.txt")).c_str(), "w");
     if ( file == 0 )  return;
 
     list[0].total = 0;  // empty list
     bRadar = false;
     for ( i=0 ; i<1000000 ; i++ )
     {
-        pObj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
+        pObj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
         if ( pObj == 0 )  break;
 
         if ( !pObj->GetActif() )  continue;

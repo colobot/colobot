@@ -14,15 +14,18 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// tasksearch.cpp
 
 #include "object/task/tasksearch.h"
 
-#include "math/geometry.h"
 #include "common/iman.h"
+
 #include "graphics/engine/particle.h"
 #include "graphics/engine/terrain.h"
+
+#include "math/geometry.h"
+
 #include "physics/physics.h"
+
 #include "ui/displaytext.h"
 
 
@@ -30,8 +33,7 @@
 
 // Object's constructor.
 
-CTaskSearch::CTaskSearch(CInstanceManager* iMan, CObject* object)
-                         : CTask(iMan, object)
+CTaskSearch::CTaskSearch(CObject* object) : CTask(object)
 {
     m_hand = TSH_UP;
 }
@@ -280,7 +282,7 @@ bool CTaskSearch::CreateMark()
 
 //? DeleteMark(type);
 
-    fret = new CObject(m_iMan);
+    fret = new CObject();
     if ( !fret->CreateResource(pos, 0.0f, type) )
     {
         delete fret;
@@ -301,9 +303,11 @@ void CTaskSearch::DeleteMark(ObjectType type)
     Math::Vector    oPos;
     int         i;
 
+    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
+
     for ( i=0 ; i<1000000 ; i++ )
     {
-        pObj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
+        pObj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
         if ( pObj == 0 )  break;
 
         if ( type == pObj->GetType() )

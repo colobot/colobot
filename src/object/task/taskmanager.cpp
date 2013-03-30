@@ -14,14 +14,13 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// taskmanager.cpp
-
 
 #include <stdio.h>
 
 #include "object/task/taskmanager.h"
 
 #include "common/iman.h"
+
 #include "object/task/taskwait.h"
 #include "object/task/taskadvance.h"
 #include "object/task/taskturn.h"
@@ -43,12 +42,9 @@
 
 // Object's constructor.
 
-CTaskManager::CTaskManager(CInstanceManager* iMan, CObject* object)
+CTaskManager::CTaskManager(CObject* object)
 {
-    m_iMan = iMan;
-    m_iMan->AddInstance(CLASS_TASKMANAGER, this, 100);
-
-    m_task = 0;
+    m_task = nullptr;
     m_object = object;
     m_bPilot = false;
 }
@@ -66,7 +62,7 @@ CTaskManager::~CTaskManager()
 
 Error CTaskManager::StartTaskWait(float time)
 {
-    m_task = new CTaskWait(m_iMan, m_object);
+    m_task = new CTaskWait(m_object);
     return (static_cast<CTaskWait*>(m_task))->Start(time);
 }
 
@@ -74,7 +70,7 @@ Error CTaskManager::StartTaskWait(float time)
 
 Error CTaskManager::StartTaskAdvance(float length)
 {
-    m_task = new CTaskAdvance(m_iMan, m_object);
+    m_task = new CTaskAdvance(m_object);
     return (static_cast<CTaskAdvance*>(m_task))->Start(length);
 }
 
@@ -82,7 +78,7 @@ Error CTaskManager::StartTaskAdvance(float length)
 
 Error CTaskManager::StartTaskTurn(float angle)
 {
-    m_task = new CTaskTurn(m_iMan, m_object);
+    m_task = new CTaskTurn(m_object);
     return (static_cast<CTaskTurn*>(m_task))->Start(angle);
 }
 
@@ -90,7 +86,7 @@ Error CTaskManager::StartTaskTurn(float angle)
 
 Error CTaskManager::StartTaskGoto(Math::Vector pos, float altitude, TaskGotoGoal goalMode, TaskGotoCrash crashMode)
 {
-    m_task = new CTaskGoto(m_iMan, m_object);
+    m_task = new CTaskGoto(m_object);
     return (static_cast<CTaskGoto*>(m_task))->Start(pos, altitude, goalMode, crashMode);
 }
 
@@ -98,7 +94,7 @@ Error CTaskManager::StartTaskGoto(Math::Vector pos, float altitude, TaskGotoGoal
 
 Error CTaskManager::StartTaskTake()
 {
-    m_task = new CTaskTake(m_iMan, m_object);
+    m_task = new CTaskTake(m_object);
     return (static_cast<CTaskTake*>(m_task))->Start();
 }
 
@@ -106,7 +102,7 @@ Error CTaskManager::StartTaskTake()
 
 Error CTaskManager::StartTaskManip(TaskManipOrder order, TaskManipArm arm)
 {
-    m_task = new CTaskManip(m_iMan, m_object);
+    m_task = new CTaskManip(m_object);
     return (static_cast<CTaskManip*>(m_task))->Start(order, arm);
 }
 
@@ -114,7 +110,7 @@ Error CTaskManager::StartTaskManip(TaskManipOrder order, TaskManipArm arm)
 
 Error CTaskManager::StartTaskFlag(TaskFlagOrder order, int rank)
 {
-    m_task = new CTaskFlag(m_iMan, m_object);
+    m_task = new CTaskFlag(m_object);
     return (static_cast<CTaskFlag*>(m_task))->Start(order, rank);
 }
 
@@ -122,7 +118,7 @@ Error CTaskManager::StartTaskFlag(TaskFlagOrder order, int rank)
 
 Error CTaskManager::StartTaskBuild(ObjectType type)
 {
-    m_task = new CTaskBuild(m_iMan, m_object);
+    m_task = new CTaskBuild(m_object);
     return (static_cast<CTaskBuild*>(m_task))->Start(type);
 }
 
@@ -130,7 +126,7 @@ Error CTaskManager::StartTaskBuild(ObjectType type)
 
 Error CTaskManager::StartTaskSearch()
 {
-    m_task = new CTaskSearch(m_iMan, m_object);
+    m_task = new CTaskSearch(m_object);
     return (static_cast<CTaskSearch*>(m_task))->Start();
 }
 
@@ -138,7 +134,7 @@ Error CTaskManager::StartTaskSearch()
 
 Error CTaskManager::StartTaskInfo(const char *name, float value, float power, bool bSend)
 {
-    m_task = new CTaskInfo(m_iMan, m_object);
+    m_task = new CTaskInfo(m_object);
     return (static_cast<CTaskInfo*>(m_task))->Start(name, value, power, bSend);
 }
 
@@ -146,7 +142,7 @@ Error CTaskManager::StartTaskInfo(const char *name, float value, float power, bo
 
 Error CTaskManager::StartTaskTerraform()
 {
-    m_task = new CTaskTerraform(m_iMan, m_object);
+    m_task = new CTaskTerraform(m_object);
     return (static_cast<CTaskTerraform*>(m_task))->Start();
 }
 
@@ -154,7 +150,7 @@ Error CTaskManager::StartTaskTerraform()
 
 Error CTaskManager::StartTaskPen(bool bDown, int color)
 {
-    m_task = new CTaskPen(m_iMan, m_object);
+    m_task = new CTaskPen(m_object);
     return (static_cast<CTaskPen*>(m_task))->Start(bDown, color);
 }
 
@@ -162,7 +158,7 @@ Error CTaskManager::StartTaskPen(bool bDown, int color)
 
 Error CTaskManager::StartTaskRecover()
 {
-    m_task = new CTaskRecover(m_iMan, m_object);
+    m_task = new CTaskRecover(m_object);
     return (static_cast<CTaskRecover*>(m_task))->Start();
 }
 
@@ -172,7 +168,7 @@ Error CTaskManager::StartTaskShield(TaskShieldMode mode, float delay)
 {
     if ( mode == TSM_UP )
     {
-        m_task = new CTaskShield(m_iMan, m_object);
+        m_task = new CTaskShield(m_object);
         return (static_cast<CTaskShield*>(m_task))->Start(mode, delay);
     }
     if ( mode == TSM_DOWN && m_task != 0 )
@@ -191,7 +187,7 @@ Error CTaskManager::StartTaskShield(TaskShieldMode mode, float delay)
 Error CTaskManager::StartTaskFire(float delay)
 {
     m_bPilot = true;
-    m_task = new CTaskFire(m_iMan, m_object);
+    m_task = new CTaskFire(m_object);
     return (static_cast<CTaskFire*>(m_task))->Start(delay);
 }
 
@@ -199,7 +195,7 @@ Error CTaskManager::StartTaskFire(float delay)
 
 Error CTaskManager::StartTaskFireAnt(Math::Vector impact)
 {
-    m_task = new CTaskFireAnt(m_iMan, m_object);
+    m_task = new CTaskFireAnt(m_object);
     return (static_cast<CTaskFireAnt*>(m_task))->Start(impact);
 }
 
@@ -207,7 +203,7 @@ Error CTaskManager::StartTaskFireAnt(Math::Vector impact)
 
 Error CTaskManager::StartTaskGunGoal(float dirV, float dirH)
 {
-    m_task = new CTaskGunGoal(m_iMan, m_object);
+    m_task = new CTaskGunGoal(m_object);
     return (static_cast<CTaskGunGoal*>(m_task))->Start(dirV, dirH);
 }
 
@@ -215,7 +211,7 @@ Error CTaskManager::StartTaskGunGoal(float dirV, float dirH)
 
 Error CTaskManager::StartTaskSpiderExplo()
 {
-    m_task = new CTaskSpiderExplo(m_iMan, m_object);
+    m_task = new CTaskSpiderExplo(m_object);
     return (static_cast<CTaskSpiderExplo*>(m_task))->Start();
 }
 
@@ -223,7 +219,7 @@ Error CTaskManager::StartTaskSpiderExplo()
 
 Error CTaskManager::StartTaskReset(Math::Vector goal, Math::Vector angle)
 {
-    m_task = new CTaskReset(m_iMan, m_object);
+    m_task = new CTaskReset(m_object);
     return (static_cast<CTaskReset*>(m_task))->Start(goal, angle);
 }
 

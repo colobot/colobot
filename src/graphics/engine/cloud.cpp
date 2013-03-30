@@ -18,11 +18,11 @@
 
 #include "graphics/engine/cloud.h"
 
-#include "common/iman.h"
-
 #include "graphics/core/device.h"
 #include "graphics/engine/engine.h"
 #include "graphics/engine/terrain.h"
+
+#include "object/robotmain.h"
 
 #include "math/geometry.h"
 
@@ -37,11 +37,8 @@ const int CLOUD_LINE_PREALLOCATE_COUNT = 100;
 const int CLOUD_SIZE_EXPAND = 4;
 
 
-CCloud::CCloud(CInstanceManager* iMan, CEngine* engine)
+CCloud::CCloud(CEngine* engine)
 {
-    m_iMan = iMan;
-    m_iMan->AddInstance(CLASS_CLOUD, this);
-
     m_engine = engine;
     m_terrain = nullptr;
 
@@ -55,7 +52,6 @@ CCloud::CCloud(CInstanceManager* iMan, CEngine* engine)
 
 CCloud::~CCloud()
 {
-    m_iMan = nullptr;
     m_engine = nullptr;
     m_terrain = nullptr;
 }
@@ -84,7 +80,7 @@ bool CCloud::EventFrame(const Event &event)
 }
 
 void CCloud::AdjustLevel(Math::Vector& pos, Math::Vector& eye, float deep,
-                              Math::Point& uv1, Math::Point& uv2)
+                         Math::Point& uv1, Math::Point& uv2)
 {
     uv1.x = (pos.x+20000.0f)/1280.0f;
     uv1.y = (pos.z+20000.0f)/1280.0f;
@@ -211,8 +207,8 @@ void CCloud::CreateLine(int x, int y, int len)
 }
 
 void CCloud::Create(const std::string& fileName,
-                         const Color& diffuse, const Color& ambient,
-                         float level)
+                    const Color& diffuse, const Color& ambient,
+                    float level)
 {
     m_diffuse  = diffuse;
     m_ambient  = ambient;
@@ -225,7 +221,7 @@ void CCloud::Create(const std::string& fileName,
         m_engine->LoadTexture(m_fileName);
 
     if (m_terrain == nullptr)
-        m_terrain = static_cast<CTerrain*>(m_iMan->SearchInstance(CLASS_TERRAIN));
+        m_terrain = CRobotMain::GetInstancePointer()->GetTerrain();
 
     m_wind = m_terrain->GetWind();
 
@@ -249,7 +245,6 @@ void CCloud::Flush()
 {
     m_level = 0.0f;
 }
-
 
 void CCloud::SetLevel(float level)
 {

@@ -30,8 +30,6 @@
 #include <vector>
 
 
-class CInstanceManager;
-
 
 // Graphics module namespace
 namespace Gfx {
@@ -82,7 +80,7 @@ struct Planet
 class CPlanet
 {
 public:
-    CPlanet(CInstanceManager* iMan, CEngine* engine);
+    CPlanet(CEngine* engine);
     ~CPlanet();
 
     //! Removes all the planets
@@ -110,7 +108,6 @@ protected:
     bool        EventFrame(const Event &event);
 
 protected:
-    CInstanceManager* m_iMan;
     CEngine*     m_engine;
 
     float                    m_time;

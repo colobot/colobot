@@ -80,7 +80,7 @@
 #include "ui/window.h"
 
 
-template<> CRobotMain* CSingleton<CRobotMain>::mInstance = nullptr;
+template<> CRobotMain* CSingleton<CRobotMain>::m_instance = nullptr;
 
 
 // TODO: remove once using std::string
@@ -606,29 +606,27 @@ bool rPoint(CBotVar* pThis, CBotVar* var, CBotVar* pResult, int& Exception)
 
 
 //! Constructor of robot application
-CRobotMain::CRobotMain(CInstanceManager* iMan, CApplication* app)
+CRobotMain::CRobotMain(CApplication* app)
 {
-    m_iMan = iMan;
-    m_iMan->AddInstance(CLASS_MAIN, this);
-
     m_app = app;
 
-    m_eventQueue = static_cast<CEventQueue*>(m_iMan->SearchInstance(CLASS_EVENT));
-    m_engine     = static_cast<Gfx::CEngine*>(m_iMan->SearchInstance(CLASS_ENGINE));
-    m_lightMan   = static_cast<Gfx::CLightManager*>(m_iMan->SearchInstance(CLASS_LIGHT));
-    m_particle   = static_cast<Gfx::CParticle*>(m_iMan->SearchInstance(CLASS_PARTICULE));
-    m_water      = static_cast<Gfx::CWater*>(m_iMan->SearchInstance(CLASS_WATER));
-    m_cloud      = static_cast<Gfx::CCloud*>(m_iMan->SearchInstance(CLASS_CLOUD));
-    m_lightning  = static_cast<Gfx::CLightning*>(m_iMan->SearchInstance(CLASS_BLITZ));
-    m_planet     = static_cast<Gfx::CPlanet*>(m_iMan->SearchInstance(CLASS_PLANET));
-    m_sound      = static_cast<CSoundInterface*>(m_iMan->SearchInstance(CLASS_SOUND));
+    m_eventQueue = m_app->GetEventQueue();
+    m_sound      = m_app->GetSound();
+
+    m_engine     = Gfx::CEngine::GetInstancePointer();
+    m_lightMan   = m_engine->GetLightManager();
+    m_particle   = m_engine->GetParticle();
+    m_water      = m_engine->GetWater();
+    m_cloud      = m_engine->GetCloud();
+    m_lightning  = m_engine->GetLightning();
+    m_planet     = m_engine->GetPlanet();
 
     m_interface   = new Ui::CInterface();
-    m_terrain     = new Gfx::CTerrain(m_iMan);
-    m_camera      = new Gfx::CCamera(m_iMan);
+    m_terrain     = new Gfx::CTerrain();
+    m_camera      = new Gfx::CCamera();
     m_displayText = new Ui::CDisplayText();
-    m_movie       = new CMainMovie(m_iMan);
-    m_dialog      = new Ui::CMainDialog(m_iMan);
+    m_movie       = new CMainMovie();
+    m_dialog      = new Ui::CMainDialog();
     m_short       = new Ui::CMainShort();
     m_map         = new Ui::CMainMap();
     m_displayInfo = nullptr;
@@ -651,8 +649,17 @@ CRobotMain::CRobotMain(CInstanceManager* iMan, CApplication* app)
     m_selectObject = 0;
     m_infoUsed     = 0;
 
+    m_beginObject         = false;
+    m_terrainGenerate     = false;
+    m_terrainInit         = false;
+    m_terrainInitTextures = false;
+    m_terrainCreate       = false;
+
+    m_version      = 1;
+    m_retroStyle   = false;
     m_immediatSatCom = false;
     m_beginSatCom  = false;
+    m_lockedSatCom = false;
     m_movieLock    = false;
     m_satComLock   = false;
     m_editLock     = false;
@@ -663,7 +670,11 @@ CRobotMain::CRobotMain(CInstanceManager* iMan, CApplication* app)
     m_showPos      = false;
     m_selectInsect = false;
     m_showSoluce   = false;
+    #ifdef NDEBUG
+    m_showAll      = false;
+    #else
     m_showAll      = true; // for development
+    #endif
     m_cheatRadar   = false;
     m_fixScene     = false;
     m_trainerPilot = false;
@@ -857,8 +868,27 @@ CRobotMain::~CRobotMain()
     delete m_map;
     m_map = nullptr;
 
-    m_iMan = nullptr;
     m_app = nullptr;
+}
+
+Gfx::CCamera* CRobotMain::GetCamera()
+{
+    return m_camera;
+}
+
+Gfx::CTerrain* CRobotMain::GetTerrain()
+{
+    return m_terrain;
+}
+
+Ui::CInterface* CRobotMain::GetInterface()
+{
+    return m_interface;
+}
+
+Ui::CDisplayText* CRobotMain::GetDisplayText()
+{
+    return m_displayText;
 }
 
 
@@ -1010,7 +1040,7 @@ void CRobotMain::ChangePhase(Phase phase)
     ChangePause(false);
     FlushDisplayInfo();
     m_engine->SetRankView(0);
-    m_engine->FlushObject();
+    m_engine->DeleteAllObjects();
     m_engine->SetWaterAddColor(Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f));
     m_engine->SetBackground("");
     m_engine->SetBackForce(false);
@@ -1027,10 +1057,6 @@ void CRobotMain::ChangePhase(Phase phase)
     m_cloud->Flush();
     m_lightning->Flush();
     m_planet->Flush();
-    m_iMan->Flush(CLASS_OBJECT);
-    m_iMan->Flush(CLASS_PHYSICS);
-    m_iMan->Flush(CLASS_BRAIN);
-    m_iMan->Flush(CLASS_PYRO);
     m_interface->Flush();
     ClearInterface();
     FlushNewScriptName();
@@ -1041,6 +1067,12 @@ void CRobotMain::ChangePhase(Phase phase)
     m_cameraPan  = 0.0f;
     m_cameraZoom = 0.0f;
     m_shortCut = true;
+
+    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
+    iMan->Flush(CLASS_OBJECT);
+    iMan->Flush(CLASS_PHYSICS);
+    iMan->Flush(CLASS_BRAIN);
+    iMan->Flush(CLASS_PYRO);
 
     Math::Point dim, pos;
 
@@ -1105,13 +1137,13 @@ void CRobotMain::ChangePhase(Phase phase)
         if (m_mapImage)
             m_map->SetFixImage(m_mapFilename);
 
-        Math::Point ddim;
+        /*Math::Point ddim;
 
         pos.x = 620.0f/640.0f;
         pos.y = 460.0f/480.0f;
         ddim.x = 20.0f/640.0f;
         ddim.y = 20.0f/480.0f;
-        m_interface->CreateButton(pos, ddim, 11, EVENT_BUTTON_QUIT);
+        m_interface->CreateButton(pos, ddim, 11, EVENT_BUTTON_QUIT);*/
 
         if (m_immediatSatCom && !loading  &&
             m_infoFilename[SATCOM_HUSTON][0] != 0)
@@ -1123,6 +1155,7 @@ void CRobotMain::ChangePhase(Phase phase)
 
     if (m_phase == PHASE_WIN)
     {
+        m_sound->StopAll();
         if (m_endingWinRank == -1)
         {
             ChangePhase(PHASE_TERM);
@@ -1162,20 +1195,20 @@ void CRobotMain::ChangePhase(Phase phase)
                 pe->SetGenericMode(true);
                 pe->SetFontType(Gfx::FONT_COLOBOT);
                 pe->SetEditCap(false);
-                pe->SetHiliteCap(false);
-                pe->ReadText("help/win.txt");
+                pe->SetHighlightCap(false);
+                pe->ReadText(std::string("help/") + m_app->GetLanguageChar() + std::string("/win.txt"));
             }
             else
             {
                 m_displayText->DisplayError(INFO_WIN, Math::Vector(0.0f,0.0f,0.0f), 15.0f, 60.0f, 1000.0f);
             }
+            StartMusic();
         }
-        m_sound->StopAll();
-        StartMusic();
     }
 
     if (m_phase == PHASE_LOST)
     {
+        m_sound->StopAll();
         if (m_endingLostRank == -1)
         {
             ChangePhase(PHASE_TERM);
@@ -1192,9 +1225,9 @@ void CRobotMain::ChangePhase(Phase phase)
             ddim.x = dim.x*2;  ddim.y = dim.y*2;
             m_interface->CreateButton(pos, ddim, 16, EVENT_BUTTON_OK);
             m_displayText->DisplayError(INFO_LOST, Math::Vector(0.0f,0.0f,0.0f), 15.0f, 60.0f, 1000.0f);
+            
+            StartMusic();
         }
-        m_sound->StopAll();
-        StartMusic();
     }
 
     if (m_phase == PHASE_LOADING)
@@ -1299,6 +1332,7 @@ bool CRobotMain::EventProcess(Event &event)
     // Management of the console.
     if (m_phase != PHASE_NAME &&
         !m_movie->IsExist()   &&
+        !m_movieLock && !m_editLock &&
         event.type == EVENT_KEY_DOWN &&
         event.key.key == KEY(PAUSE))  // Pause ?
     {
@@ -1986,7 +2020,7 @@ void CRobotMain::FlushDisplayInfo()
         m_infoFilename[i][0] = 0;
         m_infoPos[i] = 0;
     }
-    strcpy(m_infoFilename[SATCOM_OBJECT], "help/objects.txt");
+    strcpy(m_infoFilename[SATCOM_OBJECT], "help/") + m_app->GetLanguageChar() + std::string("/objects.txt");
     m_infoIndex = 0;
 }
 
@@ -1994,7 +2028,7 @@ void CRobotMain::FlushDisplayInfo()
 //! index: SATCOM_*
 void CRobotMain::StartDisplayInfo(int index, bool movie)
 {
-    if (m_cmdEdit || m_satComLock) return;
+    if (m_cmdEdit || m_satComLock || m_lockedSatCom) return;
 
     CObject* obj = GetSelect();
     bool human = obj != nullptr && obj->GetType() == OBJECT_HUMAN;
@@ -2058,6 +2092,8 @@ void CRobotMain::StartDisplayInfo(const char *filename, int index)
 //! End of displaying of instructions
 void CRobotMain::StopDisplayInfo()
 {
+    if (m_cmdEdit) return;
+    
     if (m_movieInfoIndex != -1)  // film to read the SatCom?
         m_movie->Start(MM_SATCOMclose, 2.0f);
 
@@ -2392,10 +2428,11 @@ CObject* CRobotMain::GetSelectObject()
 //! Deselects everything, and returns the object that was selected
 CObject* CRobotMain::DeselectAll()
 {
+    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
     CObject* prev = nullptr;
     for (int i = 0; i < 1000000; i++)
     {
-        CObject* obj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
+        CObject* obj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
         if (obj == nullptr) break;
 
         if (obj->GetSelect()) prev = obj;
@@ -2503,10 +2540,12 @@ bool CRobotMain::DeselectObject()
 //! Quickly removes all objects
 void CRobotMain::DeleteAllObjects()
 {
+    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
+
     // Removes all pyrotechnic effects in progress.
     while (true)
     {
-        Gfx::CPyro* pyro = static_cast<Gfx::CPyro*>(m_iMan->SearchInstance(CLASS_PYRO, 0));
+        Gfx::CPyro* pyro = static_cast<Gfx::CPyro*>(iMan->SearchInstance(CLASS_PYRO, 0));
         if (pyro == nullptr) break;
 
         pyro->DeleteObject();
@@ -2526,7 +2565,7 @@ void CRobotMain::DeleteAllObjects()
 
     while (true)
     {
-        CObject* obj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, 0));
+        CObject* obj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, 0));
         if (obj == nullptr) break;
 
         obj->DeleteObject(true);  // destroys rapidly
@@ -2543,9 +2582,10 @@ void CRobotMain::SelectHuman()
 //! Returns the object human
 CObject* CRobotMain::SearchHuman()
 {
+    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
     for (int i = 0; i < 1000000; i++)
     {
-        CObject* obj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
+        CObject* obj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
         if (obj == 0)  break;
 
         ObjectType type = obj->GetType();
@@ -2558,9 +2598,10 @@ CObject* CRobotMain::SearchHuman()
 //! Returns the object toto
 CObject* CRobotMain::SearchToto()
 {
+    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
     for (int i = 0; i < 1000000; i++)
     {
-        CObject* obj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
+        CObject* obj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
         if (obj == nullptr) break;
 
         ObjectType type = obj->GetType();
@@ -2573,11 +2614,12 @@ CObject* CRobotMain::SearchToto()
 //! Returns the nearest selectable object from a given position
 CObject* CRobotMain::SearchNearest(Math::Vector pos, CObject* exclu)
 {
+    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
     float min = 100000.0f;
     CObject* best = 0;
     for (int i = 0; i < 1000000; i++)
     {
-        CObject* obj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
+        CObject* obj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
         if (obj == nullptr) break;
 
         if (obj == exclu) continue;
@@ -2600,9 +2642,10 @@ CObject* CRobotMain::SearchNearest(Math::Vector pos, CObject* exclu)
 //! Returns the selected object
 CObject* CRobotMain::GetSelect()
 {
+    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
     for (int i = 0; i < 1000000; i++)
     {
-        CObject* obj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
+        CObject* obj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
         if (obj == nullptr) break;
 
         if (obj->GetSelect())
@@ -2613,9 +2656,10 @@ CObject* CRobotMain::GetSelect()
 
 CObject* CRobotMain::SearchObject(ObjectType type)
 {
+    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
     for (int i = 0; i < 1000000; i++)
     {
-        CObject* obj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
+        CObject* obj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
         if (obj == nullptr) break;
 
         if (obj->GetType() == type)
@@ -2628,10 +2672,11 @@ CObject* CRobotMain::SearchObject(ObjectType type)
 CObject* CRobotMain::DetectObject(Math::Point pos)
 {
     int objRank = m_engine->DetectObject(pos);
+    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
 
     for (int i = 0; i < 1000000; i++)
     {
-        CObject* obj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
+        CObject* obj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
         if (obj == nullptr) break;
 
         if (!obj->GetActif()) continue;
@@ -2850,7 +2895,7 @@ bool CRobotMain::DeleteObject()
     CObject* obj = GetSelect();
     if (obj == nullptr) return false;
 
-    Gfx::CPyro* pyro = new Gfx::CPyro(m_iMan);
+    Gfx::CPyro* pyro = new Gfx::CPyro();
     pyro->Create(Gfx::PT_FRAGT, obj);
 
     obj->SetSelect(false);  // deselects the object
@@ -2873,9 +2918,11 @@ void CRobotMain::HiliteClear()
     int rank = -1;
     m_engine->SetHighlightRank(&rank);  // nothing more selected
 
+    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
+
     for (int i = 0; i < 1000000; i++)
     {
-        CObject* obj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
+        CObject* obj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
         if (obj == nullptr) break;
 
         obj->SetHilite(false);
@@ -3025,7 +3072,7 @@ void CRobotMain::HelpObject()
     CObject* obj = GetSelect();
     if (obj == nullptr) return;
 
-    const char* filename = GetHelpFilename(obj->GetType());
+    const char* filename = GetHelpFilename(obj->GetType()).c_str();
     if (filename[0] == 0) return;
 
     StartDisplayInfo(filename, -1);
@@ -3035,9 +3082,11 @@ void CRobotMain::HelpObject()
 //! Change the mode of the camera
 void CRobotMain::ChangeCamera()
 {
+    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
+
     for (int i = 0; i < 1000000; i++)
     {
-        CObject* obj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
+        CObject* obj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
         if (obj == nullptr) break;
 
         if (obj->GetSelect())
@@ -3191,9 +3240,11 @@ void CRobotMain::RemoteCamera(float pan, float zoom, float rTime)
 //! Cancels the current movie
 void CRobotMain::AbortMovie()
 {
+    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
+
     for (int i = 0; i < 1000000; i++)
     {
-        CObject* obj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
+        CObject* obj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
         if (obj == nullptr) break;
 
         CAuto* automat = obj->GetAuto();
@@ -3261,13 +3312,15 @@ bool CRobotMain::EventFrame(const Event &event)
         if (pm != nullptr) pm->FlushObject();
     }
 
+    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
+
     CObject* toto = nullptr;
     if (!m_freePhoto)
     {
         // Advances all the robots, but not toto.
         for (int i = 0; i < 1000000; i++)
         {
-            CObject* obj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
+            CObject* obj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
             if (obj == nullptr) break;
             if (pm != nullptr) pm->UpdateObject(obj);
             if (obj->GetTruck() != nullptr)  continue;
@@ -3280,7 +3333,7 @@ bool CRobotMain::EventFrame(const Event &event)
         // Advances all objects transported by robots.
         for (int i = 0; i < 1000000; i++)
         {
-            CObject* obj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
+            CObject* obj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
             if (obj == nullptr) break;
             if (obj->GetTruck() == nullptr) continue;
             obj->EventProcess(event);
@@ -3289,7 +3342,7 @@ bool CRobotMain::EventFrame(const Event &event)
         // Advances pyrotechnic effects.
         for (int i = 0; i < 1000000; i++)
         {
-            Gfx::CPyro* pyro = static_cast<Gfx::CPyro*>(m_iMan->SearchInstance(CLASS_PYRO, i));
+            Gfx::CPyro* pyro = static_cast<Gfx::CPyro*>(iMan->SearchInstance(CLASS_PYRO, i));
             if (pyro == nullptr) break;
 
             pyro->EventProcess(event);
@@ -3439,9 +3492,11 @@ bool CRobotMain::EventObject(const Event &event)
 
     m_resetCreate = false;
 
+    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
+
     for (int i = 0; i < 1000000; i++)
     {
-        CObject* obj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
+        CObject* obj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
         if (obj == nullptr) break;
 
         obj->EventProcess(event);
@@ -3673,16 +3728,18 @@ void CRobotMain::Convert()
 void CRobotMain::ScenePerso()
 {
     DeleteAllObjects();  // removes all the current 3D Scene
-    m_engine->FlushObject();
+    m_engine->DeleteAllObjects();
     m_terrain->FlushRelief();  // all flat
     m_terrain->FlushBuildingLevel();
     m_terrain->FlushFlyingLimit();
     m_lightMan->FlushLights();
     m_particle->FlushParticle();
-    m_iMan->Flush(CLASS_OBJECT);
-    m_iMan->Flush(CLASS_PHYSICS);
-    m_iMan->Flush(CLASS_BRAIN);
-    m_iMan->Flush(CLASS_PYRO);
+
+    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
+    iMan->Flush(CLASS_OBJECT);
+    iMan->Flush(CLASS_PHYSICS);
+    iMan->Flush(CLASS_BRAIN);
+    iMan->Flush(CLASS_PYRO);
 
     m_dialog->SetSceneName("perso");
     m_dialog->SetSceneRank(0);
@@ -3733,6 +3790,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
         m_displayText->SetDelay(1.0f);
         m_displayText->SetEnable(true);
         m_immediatSatCom = false;
+        m_lockedSatCom = false;
         m_endingWinRank   = 0;
         m_endingLostRank  = 0;
         m_endTakeTotal = 0;
@@ -3773,31 +3831,49 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
         m_dialog->BuildResumeName(m_resume, base, rank);
         GetResource(RES_TEXT, RT_SCRIPT_NEW, m_scriptName);
         m_scriptFile[0] = 0;
+
+        m_beginObject         = false;
+        m_terrainGenerate     = false;
+        m_terrainInit         = false;
+        m_terrainInitTextures = false;
+        m_terrainCreate       = false;
+
+        m_version             = 1;
+        m_retroStyle          = false;
     }
 
     char line[500];
     char name[200];
     char dir[100];
     char op[100];
+    char filename[500];
+    int lineNum = 0;
 
     memset(line, 0, 500);
     memset(name, 0, 200);
     memset(dir, 0, 100);
     memset(op, 0, 100);
+    memset(filename, 0, 500);
     std::string tempLine;
     m_dialog->BuildSceneName(tempLine, base, rank);
-    strcpy(line, tempLine.c_str());
-    FILE* file = fopen(line, "r");
+    strcpy(filename, tempLine.c_str());
+    FILE* file = fopen(filename, "r");
     if (file == NULL) return;
 
     int rankObj = 0;
     int rankGadget = 0;
     CObject* sel = 0;
+
+    std::string oldLocale;
     char *locale = setlocale(LC_NUMERIC, nullptr);
+    if (locale != nullptr)
+        oldLocale = locale;
+
     setlocale(LC_NUMERIC, "C");
 
     while (fgets(line, 500, file) != NULL)
     {
+        lineNum++;
         for (int i = 0; i < 500; i++)
         {
             if (line[i] == '\t' ) line[i] = ' ';  // replace tab by space
@@ -3807,6 +3883,9 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 break;
             }
         }
+
+        if (Cmd(line, "MissionFile") && !resetObject)
+           m_version = OpInt(line, "version", 1);
 
         // TODO: Fallback to an non-localized entry
         sprintf(op, "Title.%c", m_app->GetLanguageChar());
@@ -3831,6 +3910,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             strcpy(m_infoFilename[SATCOM_HUSTON], path.c_str());
 
             m_immediatSatCom = OpInt(line, "immediat", 0);
+            if(m_version >= 2) m_beginSatCom = m_lockedSatCom = OpInt(line, "lock", 0);
         }
 
         if (Cmd(line, "Satellite") && !resetObject)
@@ -3950,34 +4030,96 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             m_engine->SetForegroundName(name);
         }
 
-        if (Cmd(line, "Global") && !resetObject)
+        if (((m_version == 1 && Cmd(line, "Global")) || (m_version >= 2 && Cmd(line, "Mission"))) && !resetObject)
         {
             g_unit = OpFloat(line, "unitScale", 4.0f);
             m_engine->SetTracePrecision(OpFloat(line, "traceQuality", 1.0f));
             m_shortCut = OpInt(line, "shortcut", 1);
+            if(m_version >= 2) {
+                m_retroStyle = OpInt(line, "retro", 0);
+                if(m_retroStyle) GetLogger()->Info("Retro mode enabled.\n");
+            }
         }
 
         if (Cmd(line, "TerrainGenerate") && !resetObject)
         {
+            if(m_terrainCreate) {
+                GetLogger()->Error("Syntax error in file '%s' (line %d): TerrainGenerate after TerrainCreate\n", filename, lineNum);
+                continue;
+            }
+
+            if(m_terrainInit) {
+                GetLogger()->Error("Syntax error in file '%s' (line %d): TerrainGenerate after TerrainInit\n", filename, lineNum);
+                continue;
+            }
+
             m_terrain->Generate(OpInt(line, "mosaic", 20),
                                 OpInt(line, "brick", 3),
                                 OpFloat(line, "size", 20.0f),
                                 OpFloat(line, "vision", 500.0f)*g_unit,
                                 OpInt(line, "depth", 2),
                                 OpFloat(line, "hard", 0.5f));
+
+            m_terrainGenerate = true;
         }
 
-        if (Cmd(line, "TerrainWind") && !resetObject)
+        if (Cmd(line, "TerrainWind") && !resetObject) {
+            if(m_terrainCreate) {
+                GetLogger()->Error("Syntax error in file '%s' (line %d): TerrainWind after TerrainCreate\n", filename, lineNum);
+                continue;
+            }
+
+            if(m_terrainInit) {
+                GetLogger()->Error("Syntax error in file '%s' (line %d): TerrainWind after TerrainInit\n", filename, lineNum);
+                continue;
+            }
+
+            if(!m_terrainGenerate) {
+                GetLogger()->Error("Syntax error in file '%s' (line %d): TerrainWind before TerrainGenerate\n", filename, lineNum);
+                continue;
+            }
+
             m_terrain->SetWind(OpPos(line, "speed"));
+        }
 
         if (Cmd(line, "TerrainRelief") && !resetObject)
         {
+            if(m_terrainCreate) {
+                GetLogger()->Error("Syntax error in file '%s' (line %d): TerrainRelief after TerrainCreate\n", filename, lineNum);
+                continue;
+            }
+
+            if(m_terrainInit) {
+                GetLogger()->Error("Syntax error in file '%s' (line %d): TerrainRelief after TerrainInit\n", filename, lineNum);
+                continue;
+            }
+
+            if(!m_terrainGenerate) {
+                GetLogger()->Error("Syntax error in file '%s' (line %d): TerrainRelief before TerrainGenerate\n", filename, lineNum);
+                continue;
+            }
+
             OpString(line, "image", name);
             m_terrain->LoadRelief(name, OpFloat(line, "factor", 1.0f), OpInt(line, "border", 1));
         }
 
         if (Cmd(line, "TerrainResource") && !resetObject)
         {
+            if(m_terrainCreate) {
+                GetLogger()->Error("Syntax error in file '%s' (line %d): TerrainResource after TerrainCreate\n", filename, lineNum);
+                continue;
+            }
+
+            if(m_terrainInit) {
+                GetLogger()->Error("Syntax error in file '%s' (line %d): TerrainResource after TerrainInit\n", filename, lineNum);
+                continue;
+            }
+
+            if(!m_terrainGenerate) {
+                GetLogger()->Error("Syntax error in file '%s' (line %d): TerrainResource before TerrainGenerate\n", filename, lineNum);
+                continue;
+            }
+
             OpString(line, "image", name);
             m_terrain->LoadResources(name);
         }
@@ -4022,6 +4164,11 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
         if (Cmd(line, "TerrainInitTextures") && !resetObject)
         {
+            if(m_terrainInit) {
+                GetLogger()->Error("Syntax error in file '%s' (line %d): TerrainInitTextures and TerrainInit at same time\n", filename, lineNum);
+                continue;
+            }
+
             OpString(line, "image", name);
             AddExt(name, ".png");
             int dx = OpInt(line, "dx", 1);
@@ -4035,17 +4182,42 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 CopyFileListToTemp(name, tt, dx*dy);
 
             m_terrain->InitTextures(name, tt, dx, dy);
+
+            m_terrainInitTextures = true;
         }
 
-        if (Cmd(line, "TerrainInit") && !resetObject)
+        if (Cmd(line, "TerrainInit") && !resetObject) {
+            if(m_terrainInitTextures) {
+                GetLogger()->Error("Syntax error in file '%s' (line %d): TerrainInit and TerrainInitTextures at same time\n", filename, lineNum);
+                continue;
+            }
+
             m_terrain->InitMaterials(OpInt(line, "id", 1));
+            m_terrainInit = true;
+        }
 
         if (Cmd(line, "TerrainMaterial") && !resetObject)
         {
+            if(m_terrainCreate) {
+                GetLogger()->Error("Syntax error in file '%s' (line %d): TerrainMaterial after TerrainCreate\n", filename, lineNum);
+                continue;
+            }
+
+            if(m_terrainInit) {
+                GetLogger()->Error("Syntax error in file '%s' (line %d): TerrainMaterial after TerrainInit\n", filename, lineNum);
+                continue;
+            }
+
+            if(m_terrainInitTextures) {
+                GetLogger()->Error("Syntax error in file '%s' (line %d): TerrainMaterial and TerrainInitTextures at same time\n", filename, lineNum);
+                continue;
+            }
+
             OpString(line, "image", name);
             AddExt(name, ".png");
-            if (strstr(name, "%user%") != 0)
-                CopyFileToTemp(name);
+            if (strstr(name, "%user%") != 0) {
+                GetProfile().CopyFileToTemp(std::string(name));
+            }
 
             m_terrain->AddMaterial(OpInt(line, "id", 0),
                                    name,
@@ -4060,6 +4232,26 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
         if (Cmd(line, "TerrainLevel") && !resetObject)
         {
+            if(m_terrainCreate) {
+                GetLogger()->Error("Syntax error in file '%s' (line %d): TerrainLevel after TerrainCreate\n", filename, lineNum);
+                continue;
+            }
+
+            if(!m_terrainInit) {
+                GetLogger()->Error("Syntax error in file '%s' (line %d): TerrainLevel before TerrainInit\n", filename, lineNum);
+                continue;
+            }
+
+            if(m_terrainInitTextures) {
+                GetLogger()->Error("Syntax error in file '%s' (line %d): TerrainLevel and TerrainInitTextures at same time\n", filename, lineNum);
+                continue;
+            }
+
+            if(!m_terrainGenerate) {
+                GetLogger()->Error("Syntax error in file '%s' (line %d): TerrainLevel before TerrainGenerate\n", filename, lineNum);
+                continue;
+            }
+
             char* op = SearchOp(line, "id");
             int id[50];
             int i = 0;
@@ -4078,8 +4270,10 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                                          OpFloat(line, "radius", 0.0f)*g_unit);
         }
 
-        if (Cmd(line, "TerrainCreate") && !resetObject)
+        if (Cmd(line, "TerrainCreate") && !resetObject) {
             m_terrain->CreateObjects();
+            m_terrainCreate = true;
+        }
 
         if (Cmd(line, "BeginObject"))
         {
@@ -4088,10 +4282,17 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
             if (read[0] != 0)  // loading file ?
                 sel = IOReadScene(read, stack);
+
+            m_beginObject = true;
         }
 
         if (Cmd(line, "CreateObject") && read[0] == 0)
         {
+            if (!m_beginObject) {
+                GetLogger()->Error("Syntax error in file '%s' (line %d): CreateObject before BeginObject\n", filename, lineNum);
+                continue;
+            }
+
             ObjectType type = OpTypeObject(line, "type", OBJECT_NULL);
 
             int gadget = OpInt(line, "gadget", -1);
@@ -4130,12 +4331,13 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
             Math::Vector pos = OpPos(line, "pos")*g_unit;
             float dir = OpFloat(line, "dir", 0.0f)*Math::PI;
+            bool trainer = OpInt(line, "trainer", 0);
             CObject* obj = CreateObject(pos, dir,
                                         OpFloat(line, "z", 1.0f),
                                         OpFloat(line, "h", 0.0f),
                                         type,
                                         OpFloat(line, "power", 1.0f),
-                                        OpInt(line, "trainer", 0),
+                                        trainer,
                                         OpInt(line, "toy", 0),
                                         OpInt(line, "option", 0));
 
@@ -4155,7 +4357,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 Gfx::PyroType pType = OpPyro(line, "pyro");
                 if (pType != Gfx::PT_NULL)
                 {
-                    Gfx::CPyro* pyro = new Gfx::CPyro(m_iMan);
+                    Gfx::CPyro* pyro = new Gfx::CPyro();
                     pyro->Create(pType, obj);
                 }
 
@@ -4197,8 +4399,14 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 obj->SetShield(OpFloat(line, "shield", 1.0f));
                 obj->SetMagnifyDamage(OpFloat(line, "magnifyDamage", 1.0f));
                 obj->SetClip(OpInt(line, "clip", 1));
-                obj->SetCheckToken(OpInt(line, "checkToken", 1));
-                obj->SetManual(OpInt(line, "manual", 0));
+                obj->SetCheckToken(m_version >= 2 ? trainer : OpInt(line, "manual", 1));
+                obj->SetManual(m_version >= 2 ? !trainer : OpInt(line, "manual", 0));
+
+                if(m_version >= 2) {
+                    Math::Vector zoom = OpDir(line, "zoom");
+                    if (zoom.x != 0.0f || zoom.y != 0.0f || zoom.z != 0.0f)
+                        obj->SetZoom(0, zoom);
+                }
 
                 CMotion* motion = obj->GetMotion();
                 if (motion != nullptr)
@@ -4528,8 +4736,8 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
     }
     m_dialog->SetSceneRead("");
     m_dialog->SetStackRead("");
-    
-    setlocale(LC_NUMERIC, locale);
+
+    setlocale(LC_NUMERIC, oldLocale.c_str());
 }
 
 //! Creates an object of decoration mobile or stationary
@@ -4572,7 +4780,7 @@ CObject* CRobotMain::CreateObject(Math::Vector pos, float angle, float zoom, flo
          type == OBJECT_START    ||
          type == OBJECT_END      )
     {
-        object = new CObject(m_iMan);
+        object = new CObject();
         object->CreateBuilding(pos, angle, height, type, power);
 
         CAuto* automat = object->GetAuto();
@@ -4614,7 +4822,7 @@ CObject* CRobotMain::CreateObject(Math::Vector pos, float angle, float zoom, flo
          type == OBJECT_MARKKEYd    ||
          type == OBJECT_EGG         )
     {
-        object = new CObject(m_iMan);
+        object = new CObject();
         object->CreateResource(pos, angle, type, power);
     }
     else
@@ -4624,7 +4832,7 @@ CObject* CRobotMain::CreateObject(Math::Vector pos, float angle, float zoom, flo
          type == OBJECT_FLAGy ||
          type == OBJECT_FLAGv )
     {
-        object = new CObject(m_iMan);
+        object = new CObject();
         object->CreateFlag(pos, angle, type);
     }
     else
@@ -4634,7 +4842,7 @@ CObject* CRobotMain::CreateObject(Math::Vector pos, float angle, float zoom, flo
          type == OBJECT_BARRIER3 ||
          type == OBJECT_BARRIER4 )
     {
-        object = new CObject(m_iMan);
+        object = new CObject();
         object->CreateBarrier(pos, angle, height, type);
     }
     else
@@ -4669,7 +4877,7 @@ CObject* CRobotMain::CreateObject(Math::Vector pos, float angle, float zoom, flo
          type == OBJECT_TREE8   ||
          type == OBJECT_TREE9   )
     {
-        object = new CObject(m_iMan);
+        object = new CObject();
         object->CreatePlant(pos, angle, height, type);
     }
     else
@@ -4684,7 +4892,7 @@ CObject* CRobotMain::CreateObject(Math::Vector pos, float angle, float zoom, flo
          type == OBJECT_MUSHROOM8 ||
          type == OBJECT_MUSHROOM9 )
     {
-        object = new CObject(m_iMan);
+        object = new CObject();
         object->CreateMushroom(pos, angle, height, type);
     }
     else
@@ -4739,7 +4947,7 @@ CObject* CRobotMain::CreateObject(Math::Vector pos, float angle, float zoom, flo
          type == OBJECT_TEEN48 ||
          type == OBJECT_TEEN49 )
     {
-        object = new CObject(m_iMan);
+        object = new CObject();
         object->SetOption(option);
         object->CreateTeen(pos, angle, zoom, height, type);
     }
@@ -4755,7 +4963,7 @@ CObject* CRobotMain::CreateObject(Math::Vector pos, float angle, float zoom, flo
          type == OBJECT_QUARTZ8 ||
          type == OBJECT_QUARTZ9 )
     {
-        object = new CObject(m_iMan);
+        object = new CObject();
         object->CreateQuartz(pos, angle, height, type);
     }
     else
@@ -4770,13 +4978,13 @@ CObject* CRobotMain::CreateObject(Math::Vector pos, float angle, float zoom, flo
          type == OBJECT_ROOT8 ||
          type == OBJECT_ROOT9 )
     {
-        object = new CObject(m_iMan);
+        object = new CObject();
         object->CreateRoot(pos, angle, height, type);
     }
     else
     if ( type == OBJECT_HOME1 )
     {
-        object = new CObject(m_iMan);
+        object = new CObject();
         object->CreateHome(pos, angle, height, type);
     }
     else
@@ -4794,7 +5002,7 @@ CObject* CRobotMain::CreateObject(Math::Vector pos, float angle, float zoom, flo
          type == OBJECT_RUINbase     ||
          type == OBJECT_RUINhead     )
     {
-        object = new CObject(m_iMan);
+        object = new CObject();
         object->CreateRuin(pos, angle, height, type);
     }
     else
@@ -4803,7 +5011,7 @@ CObject* CRobotMain::CreateObject(Math::Vector pos, float angle, float zoom, flo
          type == OBJECT_APOLLO4 ||
          type == OBJECT_APOLLO5 )
     {
-        object = new CObject(m_iMan);
+        object = new CObject();
         object->CreateApollo(pos, angle, type);
     }
     else
@@ -4813,7 +5021,7 @@ CObject* CRobotMain::CreateObject(Math::Vector pos, float angle, float zoom, flo
          type == OBJECT_BEE    ||
          type == OBJECT_WORM   )
     {
-        object = new CObject(m_iMan);
+        object = new CObject();
         object->CreateInsect(pos, angle, type);  // no eggs
     }
     else
@@ -4849,7 +5057,7 @@ CObject* CRobotMain::CreateObject(Math::Vector pos, float angle, float zoom, flo
          type == OBJECT_MOBILEdr ||
          type == OBJECT_APOLLO2  )
     {
-        object = new CObject(m_iMan);
+        object = new CObject();
         object->SetOption(option);
         object->CreateVehicle(pos, angle, type, power, trainer, toy);
     }
@@ -4877,6 +5085,7 @@ int CRobotMain::CreateLight(Math::Vector direction, Gfx::Color color)
     Gfx::Light light;
     light.type = Gfx::LIGHT_DIRECTIONAL;
     light.diffuse = color;
+    light.ambient = color * 0.1f;
     light.direction  = direction;
     int obj = m_lightMan->CreateLight(Gfx::LIGHT_PRI_HIGH);
     m_lightMan->SetLight(obj, light);
@@ -4894,6 +5103,7 @@ int CRobotMain::CreateSpot(Math::Vector pos, Gfx::Color color)
     Gfx::Light light;
     light.type          = Gfx::LIGHT_SPOT;
     light.diffuse       = color;
+    light.ambient       = color * 0.1f;
     light.position      = pos;
     light.direction     = Math::Vector(0.0f, -1.0f, 0.0f);
     light.spotIntensity = 1.0f;
@@ -5069,10 +5279,12 @@ bool CRobotMain::TestGadgetQuantity(int rank)
 //! Calculates the distance to the nearest object
 float CRobotMain::SearchNearestObject(Math::Vector center, CObject *exclu)
 {
+    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
+
     float min = 100000.0f;
     for (int i = 0; i < 1000000; i++)
     {
-        CObject* obj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
+        CObject* obj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
         if (obj == nullptr)  break;
 
         if (!obj->GetActif()) continue;  // inactive?
@@ -5218,12 +5430,14 @@ void CRobotMain::ShowDropZone(CObject* metal, CObject* truck)
 
     Math::Vector center = metal->GetPosition(0);
 
+    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
+
     // Calculates the maximum radius possible depending on other items.
     float oMax = 30.0f;  // radius to build the biggest building
     float tMax;
     for (int i = 0; i < 1000000; i++)
     {
-        CObject* obj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
+        CObject* obj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
         if (obj == nullptr) break;
 
         if (!obj->GetActif()) continue;  // inactive?
@@ -5441,13 +5655,15 @@ void CRobotMain::CompileScript(bool soluce)
     int nbError = 0;
     int lastError = 0;
 
+    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
+
     do
     {
         lastError = nbError;
         nbError = 0;
         for (int i = 0; i < 1000000; i++)
         {
-            CObject* obj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
+            CObject* obj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
             if (obj == nullptr) break;
             if (obj->GetTruck() != nullptr) continue;
 
@@ -5476,7 +5692,7 @@ void CRobotMain::CompileScript(bool soluce)
     {
         for (int i = 0; i < 1000000; i++)
         {
-            CObject* obj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
+            CObject* obj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
             if (obj == 0)  break;
             if (obj->GetTruck() != 0)  continue;
 
@@ -5494,7 +5710,7 @@ void CRobotMain::CompileScript(bool soluce)
     // Start all programs according to the command "run".
     for (int i = 0; i < 1000000; i++)
     {
-        CObject* obj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
+        CObject* obj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
         if (obj == nullptr) break;
         if (obj->GetTruck() != nullptr) continue;
 
@@ -5569,9 +5785,11 @@ void CRobotMain::LoadFileScript(CObject *obj, const char* filename, int objRank,
 //! Saves all programs of all the robots
 void CRobotMain::SaveAllScript()
 {
+    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
+
     for (int i = 0; i < 1000000; i++)
     {
-        CObject* obj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
+        CObject* obj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
         if (obj == nullptr) break;
 
         SaveOneScript(obj);
@@ -5706,9 +5924,11 @@ bool CRobotMain::IsBusy()
 {
     if (m_CompteurFileOpen > 0) return true;
 
+    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
+
     for (int i = 0; i < 1000000; i++)
     {
-        CObject* obj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
+        CObject* obj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
         if (obj == nullptr) break;
 
         CBrain* brain = obj->GetBrain();
@@ -5851,10 +6071,12 @@ bool CRobotMain::IOWriteScene(const char *filename, const char *filecbot, char *
         fputs(line, file);
     }
 
+    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
+
     int objRank = 0;
     for (int i = 0; i < 1000000; i++)
     {
-        CObject* obj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
+        CObject* obj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
         if (obj == nullptr) break;
 
         if (obj->GetType() == OBJECT_TOTO) continue;
@@ -5892,7 +6114,7 @@ bool CRobotMain::IOWriteScene(const char *filename, const char *filecbot, char *
     objRank = 0;
     for (int i = 0; i < 1000000; i++)
     {
-        CObject* obj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
+        CObject* obj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
         if (obj == nullptr) break;
 
         if (obj->GetType() == OBJECT_TOTO) continue;
@@ -6047,7 +6269,7 @@ CObject* CRobotMain::IOReadScene(const char *filename, const char *filecbot)
             if (fret != nullptr)
             {
                 obj->SetFret(fret);
-                CTaskManip* task = new CTaskManip(m_iMan, obj);
+                CTaskManip* task = new CTaskManip(obj);
                 task->Start(TMO_AUTO, TMA_GRAB);  // holds the object!
                 delete task;
             }
@@ -6065,6 +6287,8 @@ CObject* CRobotMain::IOReadScene(const char *filename, const char *filecbot)
     fclose(file);
 
 #if CBOT_STACK
+    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
+
     // Compiles scripts.
     int nbError = 0;
     int lastError = 0;
@@ -6074,7 +6298,7 @@ CObject* CRobotMain::IOReadScene(const char *filename, const char *filecbot)
         nbError = 0;
         for (int i = 0; i < 1000000; i++)
         {
-            CObject* obj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
+            CObject* obj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
             if (obj == nullptr) break;
             if (obj->GetTruck() != nullptr) continue;
 
@@ -6100,7 +6324,7 @@ CObject* CRobotMain::IOReadScene(const char *filename, const char *filecbot)
                 objRank = 0;
                 for (int i = 0; i < 1000000; i++)
                 {
-                    CObject* obj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
+                    CObject* obj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
                     if (obj == nullptr) break;
 
                     if (obj->GetType() == OBJECT_TOTO) continue;
@@ -6176,10 +6400,12 @@ void CRobotMain::ResetObject()
     Math::Vector    pos, angle;
     int         i;
 
+    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
+
     // Removes all pyrotechnic effects in progress.
     while ( true )
     {
-        pyro = static_cast<CPyro*>(m_iMan->SearchInstance(CLASS_PYRO, 0));
+        pyro = static_cast<CPyro*>(iMan->SearchInstance(CLASS_PYRO, 0));
         if ( pyro == 0 )  break;
 
         pyro->DeleteObject();
@@ -6194,7 +6420,7 @@ void CRobotMain::ResetObject()
 
     for ( i=0 ; i<1000000 ; i++ )
     {
-        obj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
+        obj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
         if ( obj == 0 )  break;
 
         cap = obj->GetResetCap();
@@ -6243,7 +6469,7 @@ void CRobotMain::ResetObject()
         if ( pos   == obj->GetPosition(0) &&
              angle == obj->GetAngle(0)    )  continue;
 
-        pyro = new CPyro(m_iMan);
+        pyro = new CPyro();
         pyro->Create(PT_RESET, obj);
 
         brain = obj->GetBrain();
@@ -6273,10 +6499,13 @@ void CRobotMain::ResetCreate()
 
     m_particle->FlushParticle();
     m_terrain->FlushBuildingLevel();
-    m_iMan->Flush(CLASS_OBJECT);
-    m_iMan->Flush(CLASS_PHYSICS);
-    m_iMan->Flush(CLASS_BRAIN);
-    m_iMan->Flush(CLASS_PYRO);
+
+    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
+    iMan->Flush(CLASS_OBJECT);
+    iMan->Flush(CLASS_PHYSICS);
+    iMan->Flush(CLASS_BRAIN);
+    iMan->Flush(CLASS_PYRO);
+
     m_camera->SetType(Gfx::CAM_TYPE_DIALOG);
 
     CreateScene(m_dialog->GetSceneSoluce(), false, true);
@@ -6285,13 +6514,13 @@ void CRobotMain::ResetCreate()
 
     for (int i = 0; i < 1000000; i++)
     {
-        CObject* obj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
+        CObject* obj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
         if (obj == nullptr) break;
 
         ResetCap cap = obj->GetResetCap();
         if (cap == RESET_NONE) continue;
 
-        Gfx::CPyro* pyro = new Gfx::CPyro(m_iMan);
+        Gfx::CPyro* pyro = new Gfx::CPyro();
         pyro->Create(Gfx::PT_RESET, obj);
     }
 }
@@ -6299,6 +6528,8 @@ void CRobotMain::ResetCreate()
 //! Checks if the mission is over
 Error CRobotMain::CheckEndMission(bool frame)
 {
+    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
+
     for (int t = 0; t < m_endTakeTotal; t++)
     {
         if (m_endTake[t].message[0] != 0) continue;
@@ -6311,7 +6542,7 @@ Error CRobotMain::CheckEndMission(bool frame)
         int nb = 0;
         for (int i = 0; i < 1000000; i++)
         {
-            CObject* obj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
+            CObject* obj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
             if (obj == nullptr) break;
 
             // Do not use GetActif () because an invisible worm (underground)
@@ -6545,9 +6776,11 @@ bool CRobotMain::GetRadar()
     if (m_cheatRadar)
         return true;
 
+    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
+
     for (int i = 0; i < 1000000; i++)
     {
-        CObject* obj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
+        CObject* obj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
         if (obj == 0)  break;
 
         ObjectType type = obj->GetType();
@@ -6572,6 +6805,10 @@ const char* CRobotMain::GetFilesDir()
     return m_dialog->GetFilesDir().c_str();
 }
 
+bool CRobotMain::GetRetroMode()
+{
+    return m_retroStyle;
+}
 
 //! Change the player's name
 void CRobotMain::SetGamerName(const char *name)

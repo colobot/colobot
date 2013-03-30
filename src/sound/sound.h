@@ -22,22 +22,23 @@
 
 #pragma once
 
+#include <boost/filesystem.hpp>
 
 #include "math/vector.h"
 
-#include "common/iman.h"
 #include "common/logger.h"
 
 #include <string>
 #include <iostream>
 #include <iomanip>
 #include <sstream>
+#include <map>
 
 
 /*!
  * Maximum possible audio volume
  */
-#define MAXVOLUME 100
+#define MAXVOLUME 100.0f
 
 
 /**
@@ -47,6 +48,7 @@
 **/
 enum Sound
 {
+  SOUND_NONE = -1,  
   SOUND_CLICK = 0,
   SOUND_BOUM  = 1,
   SOUND_EXPLO  = 2,
@@ -153,11 +155,8 @@ enum SoundNext
 class CSoundInterface
 {
   public:
-    inline CSoundInterface() {
-      CInstanceManager::GetInstance().AddInstance(CLASS_SOUND, this);
-      //m_iMan->AddInstance(CLASS_SOUND, this);
-    };
-    inline virtual ~CSoundInterface() {};
+    inline CSoundInterface() {}
+    inline virtual ~CSoundInterface() {}
 
     /** Function to initialize sound device
      *  \param b3D - enable support for 3D sound
@@ -176,6 +175,16 @@ class CSoundInterface
         }
     };
 
+    /** Function called to add all music files to list */
+    inline void AddMusicFiles(std::string path) {
+        for ( int i = 1; i <= 12; i++ ) {
+            std::stringstream filename;
+            filename << path << "/music" << std::setfill('0') << std::setw(3) << i << ".ogg";
+            if (boost::filesystem::exists(filename.str()))
+                mMusic[i] = filename.str();
+        }
+    };
+    
     /** Function called to cache sound effect file.
      *  This function is called by plugin interface for each file.
      * \param bSound - id of a file, will be used to identify sound files
@@ -327,5 +336,8 @@ class CSoundInterface
      * \return return true if music is playing
      */
     inline virtual bool IsPlayingMusic() {return true;};
+
+    protected:
+        std::map<int, std::string> mMusic;
 };
 

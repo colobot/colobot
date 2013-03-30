@@ -26,7 +26,7 @@
 class CMotionVehicle : public CMotion
 {
 public:
-    CMotionVehicle(CInstanceManager* iMan, CObject* object);
+    CMotionVehicle(CObject* object);
     ~CMotionVehicle();
 
     void        DeleteObject(bool bAll=false);

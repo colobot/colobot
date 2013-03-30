@@ -15,13 +15,12 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// shortcut.cpp
 
 #include "ui/shortcut.h"
 
 #include "common/event.h"
 #include "common/misc.h"
-#include "common/iman.h"
+
 #include "graphics/engine/engine.h"
 #include "graphics/core/device.h"
 
@@ -31,7 +30,6 @@ namespace Ui {
 
 // Object's constructor.
 
-//CShortcut::CShortcut(CInstanceManager* iMan) : CControl(iMan)
 CShortcut::CShortcut() : CControl()
 {
     m_time = 0.0f;

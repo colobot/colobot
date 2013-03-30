@@ -19,9 +19,13 @@
 #include "object/auto/autoenergy.h"
 
 #include "common/iman.h"
+
 #include "graphics/engine/terrain.h"
+
 #include "math/geometry.h"
+
 #include "script/cmdtoken.h"
+
 #include "ui/interface.h"
 #include "ui/gauge.h"
 #include "ui/window.h"
@@ -39,8 +43,7 @@ const float ENERGY_DELAY    = 12.0f;    // processing time
 
 // Object's constructor.
 
-CAutoEnergy::CAutoEnergy(CInstanceManager* iMan, CObject* object)
-                         : CAuto(iMan, object)
+CAutoEnergy::CAutoEnergy(CObject* object) : CAuto(object)
 {
     m_partiSphere = -1;
     Init();
@@ -461,7 +464,7 @@ void CAutoEnergy::CreatePower()
     pos = m_object->GetPosition(0);
     angle = m_object->GetAngleY(0);
 
-    power = new CObject(m_iMan);
+    power = new CObject();
     if ( !power->CreateResource(pos, angle, OBJECT_POWER) )
     {
         delete power;

@@ -30,8 +30,8 @@
 
 extern const char* GetObjectName(ObjectType type);
 extern const char* GetObjectAlias(ObjectType type);
-extern const char* GetHelpFilename(ObjectType type);
-extern const char* GetHelpFilename(const char *token);
+extern std::string GetHelpFilename(ObjectType type);
+extern std::string GetHelpFilename(const char *token);
 extern bool IsType(const char *token);
 extern bool IsFunction(const char *token);
 extern const char* GetHelpText(const char *token);

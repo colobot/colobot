@@ -19,7 +19,7 @@
 
 #include "app/app.h"
 
-#include "graphics/engine/modelfile.h"
+#include "graphics/engine/modelmanager.h"
 #include "graphics/engine/particle.h"
 
 #include "physics/physics.h"
@@ -35,8 +35,7 @@ const float START_TIME = 1000.0f;       // beginning of the relative time
 
 // Object's constructor.
 
-CMotionSpider::CMotionSpider(CInstanceManager* iMan, CObject* object)
-                            : CMotion(iMan, object)
+CMotionSpider::CMotionSpider(CObject* object) : CMotion(object)
 {
     m_armMember      = START_TIME;
     m_armTimeAbs     = START_TIME;
@@ -69,11 +68,8 @@ void CMotionSpider::DeleteObject(bool bAll)
 bool CMotionSpider::Create(Math::Vector pos, float angle, ObjectType type,
                            float power)
 {
-    Gfx::CModelFile*   pModFile;
     int         rank, i, j, parent;
     char        name[50];
-
-    std::string baseName;
 
     float           table[] =
     {
@@ -99,9 +95,7 @@ bool CMotionSpider::Create(Math::Vector pos, float angle, ObjectType type,
          0.0f,   0.0f,  -2.0f,
     };
 
-//    if ( m_engine->GetRestCreate() < 3+32+2 )  return false;
-
-    pModFile = new Gfx::CModelFile(m_iMan);
+    Gfx::CModelManager* modelManager = Gfx::CModelManager::GetInstancePointer();
 
     m_object->SetType(type);
 
@@ -109,8 +103,7 @@ bool CMotionSpider::Create(Math::Vector pos, float angle, ObjectType type,
     rank = m_engine->CreateObject();
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_VEHICULE);  // this is a moving object
     m_object->SetObjectRank(0, rank);
-    pModFile->ReadModel(m_app->GetDataFilePath(DIR_MODEL, "spider0.mod"));  // doesn't exist
-    pModFile->CreateEngineObject(rank);
+    // This is an "empty" object, without triangles
     m_object->SetPosition(0, pos);
     m_object->SetAngleY(0, angle);
 
@@ -124,8 +117,7 @@ bool CMotionSpider::Create(Math::Vector pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(1, rank);
     m_object->SetObjectParent(1, 0);
-    pModFile->ReadModel(m_app->GetDataFilePath(DIR_MODEL, "spider1.mod"));
-    pModFile->CreateEngineObject(rank);
+    modelManager->AddModelReference("spider1.mod", false, rank);
     m_object->SetPosition(1, Math::Vector(1.0f, 0.0f, 0.0f));
 
     // Creates the head.
@@ -133,8 +125,7 @@ bool CMotionSpider::Create(Math::Vector pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(2, rank);
     m_object->SetObjectParent(2, 0);
-    pModFile->ReadModel(m_app->GetDataFilePath(DIR_MODEL, "spider2.mod"));
-    pModFile->CreateEngineObject(rank);
+    modelManager->AddModelReference("spider2.mod", false, rank);
     m_object->SetPosition(2, Math::Vector(1.0f, 0.0f, 0.0f));
 
     // Creates legs.
@@ -142,8 +133,7 @@ bool CMotionSpider::Create(Math::Vector pos, float angle, ObjectType type,
     {
         for ( j=0 ; j<4 ; j++ )
         {
-            baseName = m_app->GetDataFilePath(DIR_MODEL, "spider%d.mod");
-            sprintf(name, baseName.c_str(), j+3);  // 3..6
+            sprintf(name, "spider%d.mod", j+3);  // 3..6
 
             // Creates the right leg.
             rank = m_engine->CreateObject();
@@ -152,8 +142,7 @@ bool CMotionSpider::Create(Math::Vector pos, float angle, ObjectType type,
             if ( j == 0 )  parent = 0;
             else           parent = 3+i*4+j-1;
             m_object->SetObjectParent(3+i*4+j, parent);
-            pModFile->ReadModel(name);
-            pModFile->CreateEngineObject(rank);
+            modelManager->AddModelReference(name, false, rank);
             pos.x = table[i*12+j*3+0];
             pos.y = table[i*12+j*3+1];
             pos.z = table[i*12+j*3+2];
@@ -166,9 +155,7 @@ bool CMotionSpider::Create(Math::Vector pos, float angle, ObjectType type,
             if ( j == 0 )  parent = 0;
             else           parent = 19+i*4+j-1;
             m_object->SetObjectParent(19+i*4+j, parent);
-            pModFile->ReadModel(name);
-            pModFile->Mirror();
-            pModFile->CreateEngineObject(rank);
+            modelManager->AddModelReference(name, true, rank);
             pos.x =  table[i*12+j*3+0];
             pos.y =  table[i*12+j*3+1];
             pos.z = -table[i*12+j*3+2];
@@ -181,8 +168,7 @@ bool CMotionSpider::Create(Math::Vector pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(35, rank);
     m_object->SetObjectParent(35, 1);
-    pModFile->ReadModel(m_app->GetDataFilePath(DIR_MODEL, "spider7.mod"));
-    pModFile->CreateEngineObject(rank);
+    modelManager->AddModelReference("spider7.mod", false, rank);
     m_object->SetPosition(35, Math::Vector(0.0f, 0.0f, -0.3f));
 
     // Creates the left mandible.
@@ -190,9 +176,7 @@ bool CMotionSpider::Create(Math::Vector pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(36, rank);
     m_object->SetObjectParent(36, 1);
-    pModFile->ReadModel(m_app->GetDataFilePath(DIR_MODEL, "spider7.mod"));
-    pModFile->Mirror();
-    pModFile->CreateEngineObject(rank);
+    modelManager->AddModelReference("spider7.mod", true, rank);
     m_object->SetPosition(36, Math::Vector(0.0f, 0.0f, 0.3f));
 
     m_object->CreateShadowCircle(4.0f, 0.5f);
@@ -205,7 +189,6 @@ bool CMotionSpider::Create(Math::Vector pos, float angle, ObjectType type,
 
     m_engine->LoadAllTextures();
 
-    delete pModFile;
     return true;
 }
 

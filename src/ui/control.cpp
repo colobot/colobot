@@ -18,25 +18,23 @@
 
 #include "ui/control.h"
 
+#include "app/app.h"
+
 
 namespace Ui {
 // Object's constructor.
 CControl::CControl()
 {
-    m_iMan = CInstanceManager::GetInstancePointer();
-
-    m_engine      = static_cast< Gfx::CEngine* > ( m_iMan->SearchInstance(CLASS_ENGINE) );
-    m_event       = static_cast< CEventQueue* > ( m_iMan->SearchInstance(CLASS_EVENT) );
-    m_main        = static_cast< CRobotMain* > ( m_iMan->SearchInstance(CLASS_MAIN) );
-    m_particle    = static_cast< Gfx::CParticle* > (m_iMan->SearchInstance(CLASS_PARTICULE));
-    m_sound       = static_cast< CSoundInterface* > (m_iMan->SearchInstance(CLASS_SOUND));
-    m_eventType    = EVENT_NULL;
+    m_event       = CApplication::GetInstancePointer()->GetEventQueue();
+    m_sound       = CApplication::GetInstancePointer()->GetSound();
+    m_engine      = Gfx::CEngine::GetInstancePointer();
+    m_main        = CRobotMain::GetInstancePointer();
+    m_particle    = m_engine->GetParticle();
+    m_eventType   = EVENT_NULL;
     m_state       = STATE_ENABLE|STATE_VISIBLE|STATE_GLINT;
     m_fontSize    = Gfx::FONT_SIZE_SMALL;
-//    m_fontStretch = Gfx::FONT_NORM_STRETCH; //there is font stretching no more master
     m_fontType    = Gfx::FONT_COLOBOT;
     m_textAlign   = Gfx::TEXT_ALIGN_CENTER; //instead m_justify
-//    m_justif      = 0;
     m_bFocus      = false;
     m_bCapture    = false;
 

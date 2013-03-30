@@ -19,7 +19,7 @@
 
 #include "app/app.h"
 
-#include "common/iman.h"
+#include "object/robotmain.h"
 
 #include "script/cmdtoken.h"
 
@@ -30,20 +30,16 @@
 
 // Object's constructor.
 
-CMotion::CMotion(CInstanceManager* iMan, CObject* object)
+CMotion::CMotion(CObject* object)
 {
-    m_iMan = iMan;
-    m_iMan->AddInstance(CLASS_MOTION, this, 100);
-
     m_app       = CApplication::GetInstancePointer();
-    m_engine    = static_cast< Gfx::CEngine* >(m_iMan->SearchInstance(CLASS_ENGINE));
-    m_light     = static_cast< Gfx::CLight* >(m_iMan->SearchInstance(CLASS_LIGHT));
-    m_particle  = static_cast< Gfx::CParticle* >(m_iMan->SearchInstance(CLASS_PARTICULE));
-    m_terrain   = static_cast< Gfx::CTerrain* >(m_iMan->SearchInstance(CLASS_TERRAIN));
-    m_water     = static_cast< Gfx::CWater* >(m_iMan->SearchInstance(CLASS_WATER));
-    m_camera    = static_cast< Gfx::CCamera* >(m_iMan->SearchInstance(CLASS_CAMERA));
-    m_main      = static_cast< CRobotMain* >(m_iMan->SearchInstance(CLASS_MAIN));
-    m_sound     = static_cast< CSoundInterface* >(m_iMan->SearchInstance(CLASS_SOUND));
+    m_sound     = m_app->GetSound();
+    m_engine    = Gfx::CEngine::GetInstancePointer();
+    m_particle  = m_engine->GetParticle();
+    m_water     = m_engine->GetWater();
+    m_main      = CRobotMain::GetInstancePointer();
+    m_terrain   = m_main->GetTerrain();
+    m_camera    = m_main->GetCamera();
 
     m_object    = object;
     m_physics   = 0;
@@ -62,7 +58,6 @@ CMotion::CMotion(CInstanceManager* iMan, CObject* object)
 
 CMotion::~CMotion()
 {
-    m_iMan->DeleteInstance(CLASS_MOTION, this);
 }
 
 // Deletes the object.

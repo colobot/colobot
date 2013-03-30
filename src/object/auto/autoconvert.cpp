@@ -19,8 +19,11 @@
 #include "object/auto/autoconvert.h"
 
 #include "common/iman.h"
+
 #include "math/geometry.h"
+
 #include "script/cmdtoken.h"
+
 #include "ui/interface.h"
 #include "ui/window.h"
 #include "ui/displaytext.h"
@@ -31,8 +34,7 @@
 
 // Object's constructor.
 
-CAutoConvert::CAutoConvert(CInstanceManager* iMan, CObject* object)
-                           : CAuto(iMan, object)
+CAutoConvert::CAutoConvert(CObject* object) : CAuto(object)
 {
     Init();
     m_phase = ACP_STOP;
@@ -509,7 +511,7 @@ void CAutoConvert::CreateMetal()
     pos = m_object->GetPosition(0);
     angle = m_object->GetAngleY(0);
 
-    fret = new CObject(m_iMan);
+    fret = new CObject();
     if ( !fret->CreateResource(pos, angle, OBJECT_METAL) )
     {
         delete fret;

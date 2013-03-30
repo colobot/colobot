@@ -27,7 +27,7 @@
 class CAutoFlag : public CAuto
 {
 public:
-    CAutoFlag(CInstanceManager* iMan, CObject* object);
+    CAutoFlag(CObject* object);
     ~CAutoFlag();
 
     void        DeleteObject(bool bAll=false);

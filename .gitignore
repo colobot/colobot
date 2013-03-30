@@ -14,3 +14,8 @@ Makefile
 /Testing
 /CTestTestfile.cmake
 /src/CBot/tests/CBot_console/bin/
+.kdev4
+*.kdev4
+*.flv
+*.mp4
+

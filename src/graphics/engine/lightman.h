@@ -71,8 +71,8 @@ struct LightProgression
  */
 enum LightPriority
 {
-    LIGHT_PRI_HIGH,
-    LIGHT_PRI_LOW
+    LIGHT_PRI_HIGH = 1,
+    LIGHT_PRI_LOW  = 2
 };
 
 /**
@@ -129,7 +129,7 @@ class CLightManager
 {
 public:
     //! Constructor
-    CLightManager(CInstanceManager *iMan, CEngine* engine);
+    CLightManager(CEngine* engine);
     //! Destructor
     virtual ~CLightManager();
 
@@ -189,7 +189,21 @@ public:
     void            UpdateDeviceLights(EngineObjectType type);
 
 protected:
-    CInstanceManager* m_iMan;
+    class LightsComparator
+    {
+        public:
+            LightsComparator(Math::Vector eyePos, EngineObjectType objectType);
+
+            bool operator()(const DynamicLight& left, const DynamicLight& right);
+
+        private:
+            float GetLightWeight(const DynamicLight& dynLight);
+
+            Math::Vector m_eyePos;
+            EngineObjectType m_objectType;
+    };
+
+protected:
     CEngine*          m_engine;
     CDevice*          m_device;
 
@@ -197,7 +211,7 @@ protected:
     float             m_time;
     //! List of dynamic lights
     std::vector<DynamicLight> m_dynLights;
-    //! Map of current light allotment: graphics light -> dynamic light
+    //! Map of current light allocation: graphics light -> dynamic light
     std::vector<int>  m_lightMap;
 };
 

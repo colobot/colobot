@@ -26,18 +26,20 @@
 #include "common/image.h"
 #include "common/key.h"
 
+#include "graphics/engine/modelmanager.h"
 #include "graphics/opengl/gldevice.h"
 
 #include "object/robotmain.h"
 
 #include <boost/filesystem.hpp>
 
-#include <SDL/SDL.h>
-#include <SDL/SDL_image.h>
+#include <SDL.h>
+#include <SDL_image.h>
 
 #include <stdlib.h>
 #include <libintl.h>
 #include <unistd.h>
+#include <getopt.h>
 
 
 #ifdef OPENAL_SOUND
@@ -45,7 +47,7 @@
 #endif
 
 
-template<> CApplication* CSingleton<CApplication>::mInstance = nullptr;
+template<> CApplication* CSingleton<CApplication>::m_instance = nullptr;
 
 //! Static buffer for putenv locale
 static char S_LANGUAGE[50] = { 0 };
@@ -93,11 +95,12 @@ CApplication::CApplication()
 {
     m_private       = new ApplicationPrivate();
     m_iMan          = new CInstanceManager();
-    m_eventQueue    = new CEventQueue(m_iMan);
+    m_eventQueue    = new CEventQueue();
     m_profile       = new CProfile();
 
     m_engine    = nullptr;
     m_device    = nullptr;
+    m_modelManager = nullptr;
     m_robotMain = nullptr;
     m_sound     = nullptr;
 
@@ -122,9 +125,15 @@ CApplication::CApplication()
     m_absTime = 0.0f;
     m_relTime = 0.0f;
 
-    m_baseTimeStamp = CreateTimeStamp();
-    m_curTimeStamp = CreateTimeStamp();
-    m_lastTimeStamp = CreateTimeStamp();
+    m_baseTimeStamp = GetSystemUtils()->CreateTimeStamp();
+    m_curTimeStamp = GetSystemUtils()->CreateTimeStamp();
+    m_lastTimeStamp = GetSystemUtils()->CreateTimeStamp();
+
+    for (int i = 0; i < PCNT_MAX; ++i)
+    {
+        m_performanceCounters[i][0] = GetSystemUtils()->CreateTimeStamp();
+        m_performanceCounters[i][1] = GetSystemUtils()->CreateTimeStamp();
+    }
 
     m_joystickEnabled = false;
 
@@ -135,6 +144,7 @@ CApplication::CApplication()
     m_trackedKeys = 0;
 
     m_dataPath = COLOBOT_DEFAULT_DATADIR;
+    m_langPath = COLOBOT_I18N_DIR;
 
     m_language = LANGUAGE_ENV;
 
@@ -168,104 +178,158 @@ CApplication::~CApplication()
     delete m_iMan;
     m_iMan = nullptr;
 
-    DestroyTimeStamp(m_baseTimeStamp);
-    DestroyTimeStamp(m_curTimeStamp);
-    DestroyTimeStamp(m_lastTimeStamp);
+    GetSystemUtils()->DestroyTimeStamp(m_baseTimeStamp);
+    GetSystemUtils()->DestroyTimeStamp(m_curTimeStamp);
+    GetSystemUtils()->DestroyTimeStamp(m_lastTimeStamp);
+
+    for (int i = 0; i < PCNT_MAX; ++i)
+    {
+        GetSystemUtils()->DestroyTimeStamp(m_performanceCounters[i][0]);
+        GetSystemUtils()->DestroyTimeStamp(m_performanceCounters[i][1]);
+    }
+}
+
+CEventQueue* CApplication::GetEventQueue()
+{
+    return m_eventQueue;
+}
+
+CSoundInterface* CApplication::GetSound()
+{
+    return m_sound;
+
+    for (int i = 0; i < PCNT_MAX; ++i)
+    {
+        GetSystemUtils()->DestroyTimeStamp(m_performanceCounters[i][0]);
+        GetSystemUtils()->DestroyTimeStamp(m_performanceCounters[i][1]);
+    }
 }
 
 ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
 {
-    bool waitDataDir = false;
-    bool waitLogLevel = false;
-    bool waitLanguage = false;
-
-    for (int i = 1; i < argc; ++i)
+    enum OptionType
     {
-        std::string arg = argv[i];
+        OPT_HELP = 1,
+        OPT_DEBUG,
+        OPT_DATADIR,
+        OPT_LOGLEVEL,
+        OPT_LANGUAGE,
+        OPT_LANGDIR,
+        OPT_VBO
+    };
 
-        if (waitDataDir)
-        {
-            waitDataDir = false;
-            m_dataPath = arg;
-            GetLogger()->Info("Using custom data dir: '%s'\n", m_dataPath.c_str());
-            continue;
-        }
+    option options[] =
+    {
+        { "help", no_argument, nullptr, OPT_HELP },
+        { "debug", no_argument, nullptr, OPT_DEBUG },
+        { "datadir", required_argument, nullptr, OPT_DATADIR },
+        { "loglevel", required_argument, nullptr, OPT_LOGLEVEL },
+        { "language", required_argument, nullptr, OPT_LANGUAGE },
+        { "langdir", required_argument, nullptr, OPT_LANGDIR },
+        { "vbo", required_argument, nullptr, OPT_VBO }
+    };
 
-        if (waitLogLevel)
+    opterr = 0;
+
+    int c = 0;
+    int index = -1;
+    while ((c = getopt_long_only(argc, argv, "", options, &index)) != -1)
+    {
+        if (c == '?')
         {
-            waitLogLevel = false;
-            if (arg == "trace")
-                GetLogger()->SetLogLevel(LOG_TRACE);
-            else if (arg == "debug")
-                GetLogger()->SetLogLevel(LOG_DEBUG);
-            else if (arg == "info")
-                GetLogger()->SetLogLevel(LOG_INFO);
-            else if (arg == "warn")
-                GetLogger()->SetLogLevel(LOG_WARN);
-            else if (arg == "error")
-                GetLogger()->SetLogLevel(LOG_ERROR);
-            else if (arg == "none")
-                GetLogger()->SetLogLevel(LOG_NONE);
+            if (optopt == 0)
+                GetLogger()->Error("Invalid argument: %s\n", argv[optind-1]);
             else
-                return PARSE_ARGS_FAIL;
-            continue;
-        }
+                GetLogger()->Error("Expected argument for option: %s\n", argv[optind-1]);
 
-        if (waitLanguage)
-        {
-            waitLanguage = false;
-            if (arg == "en")
-                m_language = LANGUAGE_ENGLISH;
-            else if (arg == "de")
-                m_language = LANGUAGE_GERMAN;
-            else if (arg == "fr")
-                m_language = LANGUAGE_FRENCH;
-            else if (arg == "pl")
-                m_language = LANGUAGE_POLISH;
-            else
-                return PARSE_ARGS_FAIL;
-            continue;
-        }
-
-        if (arg == "-debug")
-        {
-            SetDebugMode(true);
-        }
-        else if (arg == "-loglevel")
-        {
-            waitLogLevel = true;
-        }
-        else if (arg == "-datadir")
-        {
-            waitDataDir = true;
-        }
-        else if (arg == "-language")
-        {
-            waitLanguage = true;
-        }
-        else if (arg == "-help")
-        {
-            GetLogger()->Message("\n");
-            GetLogger()->Message("Colobot %s (%s)\n",COLOBOT_CODENAME,COLOBOT_VERSION);
-            GetLogger()->Message("\n");
-            GetLogger()->Message("List of available options:\n");
-            GetLogger()->Message("  -help            this help\n");
-            GetLogger()->Message("  -datadir path    set custom data directory path\n");
-            GetLogger()->Message("  -debug           enable debug mode (more info printed in logs)\n");
-            GetLogger()->Message("  -loglevel level  set log level to level (one of: trace, debug, info, warn, error, none)\n");
-            GetLogger()->Message("  -language lang   set language (one of: en, de, fr, pl)\n");
-            return PARSE_ARGS_HELP;
-        }
-        else
-        {
             m_exitCode = 1;
             return PARSE_ARGS_FAIL;
         }
-    }
 
-    // Args not given?
-    if (waitDataDir || waitLogLevel || waitLanguage)
-        return PARSE_ARGS_FAIL;
+        index = -1;
+
+        switch (c)
+        {
+            case OPT_HELP:
+            {
+                GetLogger()->Message("\n");
+                GetLogger()->Message("Colobot %s (%s)\n", COLOBOT_CODENAME, COLOBOT_VERSION);
+                GetLogger()->Message("\n");
+                GetLogger()->Message("List of available options:\n");
+                GetLogger()->Message("  -help            this help\n");
+                GetLogger()->Message("  -debug           enable debug mode (more info printed in logs)\n");
+                GetLogger()->Message("  -datadir path    set custom data directory path\n");
+                GetLogger()->Message("  -loglevel level  set log level to level (one of: trace, debug, info, warn, error, none)\n");
+                GetLogger()->Message("  -language lang   set language (one of: en, de, fr, pl)\n");
+                GetLogger()->Message("  -langdir path    set custom language directory path\n");
+                GetLogger()->Message("  -vbo mode        set OpenGL VBO mode (one of: auto, enable, disable)\n");
+                return PARSE_ARGS_HELP;
+            }
+            case OPT_DEBUG:
+            {
+                SetDebugMode(true);
+                break;
+            }
+            case OPT_DATADIR:
+            {
+                m_dataPath = optarg;
+                GetLogger()->Info("Using custom data dir: '%s'\n", m_dataPath.c_str());
+                break;
+            }
+            case OPT_LOGLEVEL:
+            {
+                LogLevel logLevel;
+                if (! CLogger::ParseLogLevel(optarg, logLevel))
+                {
+                    GetLogger()->Error("Invalid log level: \"%s\"\n", optarg);
+                    return PARSE_ARGS_FAIL;
+                }
+
+                GetLogger()->Message("[*****] Log level changed to %s\n", optarg);
+                GetLogger()->SetLogLevel(logLevel);
+                break;
+            }
+            case OPT_LANGUAGE:
+            {
+                Language language;
+                if (! ParseLanguage(optarg, language))
+                {
+                    GetLogger()->Error("Invalid language: \"%s\"\n", optarg);
+                    return PARSE_ARGS_FAIL;
+                }
+
+                GetLogger()->Info("Using language %s\n", optarg);
+                m_language = language;
+                break;
+            }
+            case OPT_LANGDIR:
+            {
+                m_langPath = optarg;
+                GetLogger()->Info("Using custom language dir: '%s'\n", m_langPath.c_str());
+                break;
+            }
+            case OPT_VBO:
+            {
+                std::string vbo;
+                vbo = optarg;
+                if (vbo == "auto")
+                    m_deviceConfig.vboMode = Gfx::VBO_MODE_AUTO;
+                else if (vbo == "enable")
+                    m_deviceConfig.vboMode = Gfx::VBO_MODE_ENABLE;
+                else if (vbo == "disable")
+                    m_deviceConfig.vboMode = Gfx::VBO_MODE_DISABLE;
+                else
+                {
+                    GetLogger()->Error("Invalid vbo mode: \"%s\"\n", optarg);
+                    return PARSE_ARGS_FAIL;
+                }
+
+                break;
+            }
+            default:
+                assert(false); // should never get here
+        }
+    }
 
     return PARSE_ARGS_OK;
 }
@@ -307,10 +371,17 @@ bool CApplication::Create()
         #endif
 
         m_sound->Create(true);
-        if (GetProfile().GetLocalProfileString("Resources", "Sound", path))
+        if (GetProfile().GetLocalProfileString("Resources", "Sound", path)) {
             m_sound->CacheAll(path);
-        else
+        } else {
             m_sound->CacheAll(GetDataSubdirPath(DIR_SOUND));
+        }
+
+        if (GetProfile().GetLocalProfileString("Resources", "Music", path)) {
+            m_sound->AddMusicFiles(path);
+        } else {
+            m_sound->AddMusicFiles(GetDataSubdirPath(DIR_MUSIC));
+        }
     }
 
     std::string standardInfoMessage =
@@ -345,20 +416,22 @@ bool CApplication::Create()
         m_exitCode = 3;
         return false;
     }
- 
+
     // load settings from profile
     int iValue;
-    if ( GetProfile().GetLocalProfileInt("Setup", "Resolution", iValue) ) {
-	std::vector<Math::IntPoint> modes;
-	GetVideoResolutionList(modes, true, true);
-	if (static_cast<unsigned int>(iValue) < modes.size())
-	    m_deviceConfig.size = modes.at(iValue);
+    if ( GetProfile().GetLocalProfileInt("Setup", "Resolution", iValue) )
+    {
+        std::vector<Math::IntPoint> modes;
+        GetVideoResolutionList(modes, true, true);
+        if (static_cast<unsigned int>(iValue) < modes.size())
+            m_deviceConfig.size = modes.at(iValue);
     }
-    
-    if ( GetProfile().GetLocalProfileInt("Setup", "Fullscreen", iValue) ) {
-	m_deviceConfig.fullScreen = (iValue == 1);
+
+    if ( GetProfile().GetLocalProfileInt("Setup", "Fullscreen", iValue) )
+    {
+        m_deviceConfig.fullScreen = (iValue == 1);
     }
-    
+
     if (! CreateVideoSurface())
         return false; // dialog is in function
 
@@ -378,7 +451,7 @@ bool CApplication::Create()
 
     // Don't generate joystick events
     SDL_JoystickEventState(SDL_IGNORE);
-    
+
     // The video is ready, we can create and initalize the graphics device
     m_device = new Gfx::CGLDevice(m_deviceConfig);
     if (! m_device->Create() )
@@ -389,7 +462,7 @@ bool CApplication::Create()
     }
 
     // Create the 3D engine
-    m_engine = new Gfx::CEngine(m_iMan, this);
+    m_engine = new Gfx::CEngine(this);
 
     m_engine->SetDevice(m_device);
 
@@ -400,8 +473,11 @@ bool CApplication::Create()
         return false;
     }
 
+    // Create model manager
+    m_modelManager = new Gfx::CModelManager(m_engine);
+
     // Create the robot application.
-    m_robotMain = new CRobotMain(m_iMan, this);
+    m_robotMain = new CRobotMain(this);
 
     m_robotMain->ChangePhase(PHASE_WELCOME1);
 
@@ -427,8 +503,6 @@ bool CApplication::CreateVideoSurface()
     // Use hardware surface if available
     if (videoInfo->hw_available)
         videoFlags |= SDL_HWSURFACE;
-    else
-        videoFlags |= SDL_SWSURFACE;
 
     // Enable hardware blit if available
     if (videoInfo->blit_hw)
@@ -477,6 +551,12 @@ void CApplication::Destroy()
     {
         delete m_sound;
         m_sound = nullptr;
+    }
+
+    if (m_modelManager != nullptr)
+    {
+        delete m_modelManager;
+        m_modelManager = nullptr;
     }
 
     if (m_engine != nullptr)
@@ -537,7 +617,7 @@ bool CApplication::ChangeVideoConfig(const Gfx::GLDeviceConfig &newConfig)
                           std::string(SDL_GetError()) + std::string("\n") +
                           std::string("Previous mode will be restored");
             GetLogger()->Error(error.c_str());
-            SystemDialog( SDT_ERROR, "COLOBT - Error", error);
+            GetSystemUtils()->SystemDialog( SDT_ERROR, "COLOBT - Error", error);
 
             restore = true;
             ChangeVideoConfig(m_lastDeviceConfig);
@@ -550,7 +630,7 @@ bool CApplication::ChangeVideoConfig(const Gfx::GLDeviceConfig &newConfig)
             std::string error = std::string("SDL error while restoring previous video mode:\n") +
                           std::string(SDL_GetError());
             GetLogger()->Error(error.c_str());
-            SystemDialog( SDT_ERROR, "COLOBT - Fatal Error", error);
+            GetSystemUtils()->SystemDialog( SDT_ERROR, "COLOBT - Fatal Error", error);
 
 
             // Fatal error, so post the quit event
@@ -685,14 +765,22 @@ int CApplication::Run()
 {
     m_active = true;
 
-    GetCurrentTimeStamp(m_baseTimeStamp);
-    GetCurrentTimeStamp(m_lastTimeStamp);
-    GetCurrentTimeStamp(m_curTimeStamp);
+    GetSystemUtils()->GetCurrentTimeStamp(m_baseTimeStamp);
+    GetSystemUtils()->GetCurrentTimeStamp(m_lastTimeStamp);
+    GetSystemUtils()->GetCurrentTimeStamp(m_curTimeStamp);
 
     MoveMouse(Math::Point(0.5f, 0.5f)); // center mouse on start
 
     while (true)
     {
+        ResetPerformanceCounters();
+
+        if (m_active)
+        {
+            StartPerformanceCounter(PCNT_ALL);
+            StartPerformanceCounter(PCNT_EVENT_PROCESSING);
+        }
+
         // To be sure no old event remains
         m_private->currentEvent.type = SDL_NOEVENT;
 
@@ -804,15 +892,38 @@ int CApplication::Run()
                     m_robotMain->EventProcess(event);
             }
 
+            StopPerformanceCounter(PCNT_EVENT_PROCESSING);
+
+            StartPerformanceCounter(PCNT_UPDATE_ALL);
+
+            // Prepare and process step simulation event
+            event = CreateUpdateEvent();
+            if (event.type != EVENT_NULL && m_robotMain != nullptr)
+            {
+                StartPerformanceCounter(PCNT_UPDATE_ENGINE);
+                m_engine->FrameUpdate();
+                StopPerformanceCounter(PCNT_UPDATE_ENGINE);
+
+                m_sound->FrameMove(m_relTime);
+
+                StartPerformanceCounter(PCNT_UPDATE_GAME);
+                m_robotMain->EventProcess(event);
+                StopPerformanceCounter(PCNT_UPDATE_GAME);
+            }
+
+            StopPerformanceCounter(PCNT_UPDATE_ALL);
+
             /* Update mouse position explicitly right before rendering
              * because mouse events are usually way behind */
             UpdateMouse();
 
-            // Update game and render a frame during idle time (no messages are waiting)
+            StartPerformanceCounter(PCNT_RENDER_ALL);
             Render();
+            StopPerformanceCounter(PCNT_RENDER_ALL);
 
-            // Update simulation state
-            StepSimulation();
+            StopPerformanceCounter(PCNT_ALL);
+
+            UpdatePerformanceCountersData();
 
             if (m_lowCPU)
             {
@@ -848,14 +959,14 @@ Event CApplication::ProcessSystemEvent()
     {
         event.type = EVENT_QUIT;
     }
-    /*else if (m_private->currentEvent.type == SDL_VIDEORESIZE)
+    else if (m_private->currentEvent.type == SDL_VIDEORESIZE)
     {
         Gfx::GLDeviceConfig newConfig = m_deviceConfig;
         newConfig.size.x = m_private->currentEvent.resize.w;
         newConfig.size.y = m_private->currentEvent.resize.h;
         if (newConfig.size != m_deviceConfig.size)
             ChangeVideoConfig(newConfig);
-    }*/
+    }
     else if ( (m_private->currentEvent.type == SDL_KEYDOWN) ||
               (m_private->currentEvent.type == SDL_KEYUP) )
     {
@@ -1008,49 +1119,49 @@ bool CApplication::ProcessEvent(const Event &event)
         {
             case EVENT_KEY_DOWN:
             case EVENT_KEY_UP:
-                l->Info("EVENT_KEY_%s:\n", (event.type == EVENT_KEY_DOWN) ? "DOWN" : "UP");
-                l->Info(" virt    = %s\n", (event.key.virt) ? "true" : "false");
-                l->Info(" key     = %d\n", event.key.key);
-                l->Info(" unicode = 0x%04x\n", event.key.unicode);
+                l->Trace("EVENT_KEY_%s:\n", (event.type == EVENT_KEY_DOWN) ? "DOWN" : "UP");
+                l->Trace(" virt    = %s\n", (event.key.virt) ? "true" : "false");
+                l->Trace(" key     = %d\n", event.key.key);
+                l->Trace(" unicode = 0x%04x\n", event.key.unicode);
                 break;
             case EVENT_MOUSE_MOVE:
-                l->Info("EVENT_MOUSE_MOVE:\n");
+                l->Trace("EVENT_MOUSE_MOVE:\n");
                 break;
             case EVENT_MOUSE_BUTTON_DOWN:
             case EVENT_MOUSE_BUTTON_UP:
-                l->Info("EVENT_MOUSE_BUTTON_%s:\n", (event.type == EVENT_MOUSE_BUTTON_DOWN) ? "DOWN" : "UP");
-                l->Info(" button = %d\n", event.mouseButton.button);
+                l->Trace("EVENT_MOUSE_BUTTON_%s:\n", (event.type == EVENT_MOUSE_BUTTON_DOWN) ? "DOWN" : "UP");
+                l->Trace(" button = %d\n", event.mouseButton.button);
                 break;
             case EVENT_MOUSE_WHEEL:
-                l->Info("EVENT_MOUSE_WHEEL:\n");
-                l->Info(" dir = %s\n", (event.mouseWheel.dir == WHEEL_DOWN) ? "WHEEL_DOWN" : "WHEEL_UP");
+                l->Trace("EVENT_MOUSE_WHEEL:\n");
+                l->Trace(" dir = %s\n", (event.mouseWheel.dir == WHEEL_DOWN) ? "WHEEL_DOWN" : "WHEEL_UP");
                break;
             case EVENT_JOY_AXIS:
-                l->Info("EVENT_JOY_AXIS:\n");
-                l->Info(" axis  = %d\n", event.joyAxis.axis);
-                l->Info(" value = %d\n", event.joyAxis.value);
+                l->Trace("EVENT_JOY_AXIS:\n");
+                l->Trace(" axis  = %d\n", event.joyAxis.axis);
+                l->Trace(" value = %d\n", event.joyAxis.value);
                 break;
             case EVENT_JOY_BUTTON_DOWN:
             case EVENT_JOY_BUTTON_UP:
-                l->Info("EVENT_JOY_BUTTON_%s:\n", (event.type == EVENT_JOY_BUTTON_DOWN) ? "DOWN" : "UP");
-                l->Info(" button = %d\n", event.joyButton.button);
+                l->Trace("EVENT_JOY_BUTTON_%s:\n", (event.type == EVENT_JOY_BUTTON_DOWN) ? "DOWN" : "UP");
+                l->Trace(" button = %d\n", event.joyButton.button);
                 break;
             case EVENT_ACTIVE:
-                l->Info("EVENT_ACTIVE:\n");
-                l->Info(" flags = 0x%x\n", event.active.flags);
-                l->Info(" gain  = %s\n", event.active.gain ? "true" : "false");
+                l->Trace("EVENT_ACTIVE:\n");
+                l->Trace(" flags = 0x%x\n", event.active.flags);
+                l->Trace(" gain  = %s\n", event.active.gain ? "true" : "false");
                 break;
             default:
-                l->Info("Event type = %d:\n", static_cast<int>(event.type));
+                l->Trace("Event type = %d:\n", static_cast<int>(event.type));
                 break;
         }
 
-        l->Info(" systemEvent = %s\n", event.systemEvent ? "true" : "false");
-        l->Info(" rTime = %f\n", event.rTime);
-        l->Info(" kmodState = %04x\n", event.kmodState);
-        l->Info(" trackedKeysState = %04x\n", event.trackedKeysState);
-        l->Info(" mousePos = %f, %f\n", event.mousePos.x, event.mousePos.y);
-        l->Info(" mouseButtonsState = %02x\n", event.mouseButtonsState);
+        l->Trace(" systemEvent = %s\n", event.systemEvent ? "true" : "false");
+        l->Trace(" rTime = %f\n", event.rTime);
+        l->Trace(" kmodState = %04x\n", event.kmodState);
+        l->Trace(" trackedKeysState = %04x\n", event.trackedKeysState);
+        l->Trace(" mousePos = %f, %f\n", event.mousePos.x, event.mousePos.y);
+        l->Trace(" mouseButtonsState = %02x\n", event.mouseButtonsState);
     }
 
     // By default, pass on all events
@@ -1118,8 +1229,8 @@ void CApplication::ResumeSimulation()
 {
     m_simulationSuspended = false;
 
-    GetCurrentTimeStamp(m_baseTimeStamp);
-    CopyTimeStamp(m_curTimeStamp, m_baseTimeStamp);
+    GetSystemUtils()->GetCurrentTimeStamp(m_baseTimeStamp);
+    GetSystemUtils()->CopyTimeStamp(m_curTimeStamp, m_baseTimeStamp);
     m_realAbsTimeBase = m_realAbsTime;
     m_absTimeBase = m_exactAbsTime;
 
@@ -1135,35 +1246,43 @@ void CApplication::SetSimulationSpeed(float speed)
 {
     m_simulationSpeed = speed;
 
-    GetCurrentTimeStamp(m_baseTimeStamp);
+    GetSystemUtils()->GetCurrentTimeStamp(m_baseTimeStamp);
     m_realAbsTimeBase = m_realAbsTime;
     m_absTimeBase = m_exactAbsTime;
 
     GetLogger()->Info("Simulation speed = %.2f\n", speed);
 }
 
-void CApplication::StepSimulation()
+Event CApplication::CreateUpdateEvent()
 {
     if (m_simulationSuspended)
-        return;
+        return Event(EVENT_NULL);
 
-    CopyTimeStamp(m_lastTimeStamp, m_curTimeStamp);
-    GetCurrentTimeStamp(m_curTimeStamp);
+    GetSystemUtils()->CopyTimeStamp(m_lastTimeStamp, m_curTimeStamp);
+    GetSystemUtils()->GetCurrentTimeStamp(m_curTimeStamp);
 
-    long long absDiff = TimeStampExactDiff(m_baseTimeStamp, m_curTimeStamp);
-    m_realAbsTime = m_realAbsTimeBase + absDiff;
-    // m_baseTimeStamp is updated on simulation speed change, so this is OK
-    m_exactAbsTime = m_absTimeBase + m_simulationSpeed * absDiff;
-    m_absTime = (m_absTimeBase + m_simulationSpeed * absDiff) / 1e9f;
+    long long absDiff = GetSystemUtils()->TimeStampExactDiff(m_baseTimeStamp, m_curTimeStamp);
+    long long newRealAbsTime = m_realAbsTimeBase + absDiff;
+    long long newRealRelTime = GetSystemUtils()->TimeStampExactDiff(m_lastTimeStamp, m_curTimeStamp);
 
-    m_realRelTime = TimeStampExactDiff(m_lastTimeStamp, m_curTimeStamp);
-    m_exactRelTime = m_simulationSpeed * m_realRelTime;
-    m_relTime = (m_simulationSpeed * m_realRelTime) / 1e9f;
+    if (newRealAbsTime < m_realAbsTime || newRealRelTime < 0)
+    {
+        GetLogger()->Error("Fatal error: got negative system counter difference!\n");
+        GetLogger()->Error("This should never happen. Please report this error.\n");
+        m_eventQueue->AddEvent(Event(EVENT_QUIT));
+        return Event(EVENT_NULL);
+    }
+    else
+    {
+        m_realAbsTime = newRealAbsTime;
+        // m_baseTimeStamp is updated on simulation speed change, so this is OK
+        m_exactAbsTime = m_absTimeBase + m_simulationSpeed * absDiff;
+        m_absTime = (m_absTimeBase + m_simulationSpeed * absDiff) / 1e9f;
 
-
-    m_engine->FrameUpdate();
-    m_sound->FrameMove(m_relTime);
-
+        m_realRelTime = newRealRelTime;
+        m_exactRelTime = m_simulationSpeed * m_realRelTime;
+        m_relTime = (m_simulationSpeed * m_realRelTime) / 1e9f;
+    }
 
     Event frameEvent(EVENT_FRAME);
     frameEvent.systemEvent = true;
@@ -1172,7 +1291,8 @@ void CApplication::StepSimulation()
     frameEvent.mousePos = m_mousePos;
     frameEvent.mouseButtonsState = m_mouseButtonsState;
     frameEvent.rTime = m_relTime;
-    m_eventQueue->AddEvent(frameEvent);
+
+    return frameEvent;
 }
 
 float CApplication::GetSimulationSpeed()
@@ -1402,6 +1522,10 @@ std::string CApplication::GetDataFilePath(DataDir stdDir, const std::string& sub
     str << m_dataPath;
     str << "/";
     str << m_dataDirs[index];
+    if (stdDir == DIR_HELP) {
+        str << "/";
+        str << GetLanguageChar();
+    }
     str << "/";
     str << subpath;
     return str.str();
@@ -1436,6 +1560,32 @@ char CApplication::GetLanguageChar()
             break;
     }
     return langChar;
+}
+
+bool CApplication::ParseLanguage(const std::string& str, Language& language)
+{
+    if (str == "en")
+    {
+        language = LANGUAGE_ENGLISH;
+        return true;
+    }
+    else if (str == "de")
+    {
+        language = LANGUAGE_GERMAN;
+        return true;
+    }
+    else if (str == "fr")
+    {
+        language = LANGUAGE_FRENCH;
+        return true;
+    }
+    else if (str == "pl")
+    {
+        language = LANGUAGE_POLISH;
+        return true;
+    }
+
+    return false;
 }
 
 void CApplication::SetLanguage(Language language)
@@ -1509,7 +1659,7 @@ void CApplication::SetLanguage(Language language)
     }
     setlocale(LC_ALL, "");
 
-    bindtextdomain("colobot", COLOBOT_I18N_DIR);
+    bindtextdomain("colobot", m_langPath.c_str());
     bind_textdomain_codeset("colobot", "UTF-8");
     textdomain("colobot");
 
@@ -1525,3 +1675,43 @@ bool CApplication::GetLowCPU()
 {
     return m_lowCPU;
 }
+
+void CApplication::StartPerformanceCounter(PerformanceCounter counter)
+{
+    GetSystemUtils()->GetCurrentTimeStamp(m_performanceCounters[counter][0]);
+}
+
+void CApplication::StopPerformanceCounter(PerformanceCounter counter)
+{
+    GetSystemUtils()->GetCurrentTimeStamp(m_performanceCounters[counter][1]);
+}
+
+float CApplication::GetPerformanceCounterData(PerformanceCounter counter)
+{
+    return m_performanceCountersData[counter];
+}
+
+void CApplication::ResetPerformanceCounters()
+{
+    for (int i = 0; i < PCNT_MAX; ++i)
+    {
+        StartPerformanceCounter(static_cast<PerformanceCounter>(i));
+        StopPerformanceCounter(static_cast<PerformanceCounter>(i));
+    }
+}
+
+void CApplication::UpdatePerformanceCountersData()
+{
+    long long sum = GetSystemUtils()->TimeStampExactDiff(m_performanceCounters[PCNT_ALL][0],
+                                                         m_performanceCounters[PCNT_ALL][1]);
+
+    for (int i = 0; i < PCNT_MAX; ++i)
+    {
+        long long diff = GetSystemUtils()->TimeStampExactDiff(m_performanceCounters[i][0],
+                                                              m_performanceCounters[i][1]);
+
+        m_performanceCountersData[static_cast<PerformanceCounter>(i)] =
+            static_cast<float>(diff) / static_cast<float>(sum);
+    }
+}
+

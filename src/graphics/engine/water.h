@@ -28,7 +28,6 @@
 #include "graphics/engine/particle.h"
 
 
-class CInstanceManager;
 class CSoundInterface;
 
 
@@ -117,8 +116,8 @@ enum WaterType
 class CWater
 {
 public:
-    CWater(CInstanceManager* iMan, CEngine* engine);
-    ~CWater();
+    CWater(CEngine* engine);
+    virtual ~CWater();
 
     void        SetDevice(CDevice* device);
     bool        EventProcess(const Event &event);
@@ -168,11 +167,10 @@ protected:
     void        VaporFrame(int i, float rTime);
 
 protected:
-    CInstanceManager* m_iMan;
     CEngine*          m_engine;
     CDevice*          m_device;
     CTerrain*         m_terrain;
-    CParticle*        m_particule;
+    CParticle*        m_particle;
     CSoundInterface*  m_sound;
 
     WaterType       m_type[2];

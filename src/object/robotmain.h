@@ -71,12 +71,10 @@ enum Phase
 };
 
 
-class CInstanceManager;
 class CEventQueue;
 class CSoundInterface;
 
-namespace Gfx
-{
+namespace Gfx {
 class CEngine;
 class CLightManager;
 class CWater;
@@ -84,17 +82,16 @@ class CCloud;
 class CLightning;
 class CPlanet;
 class CTerrain;
-};
+}
 
-namespace Ui
-{
+namespace Ui {
 class CMainDialog;
 class CMainShort;
 class CMainMap;
 class CInterface;
 class CDisplayText;
 class CDisplayInfo;
-};
+}
 
 
 struct EndTake
@@ -178,8 +175,13 @@ const int AXIS_INVALID = -1;
 class CRobotMain : public CSingleton<CRobotMain>
 {
 public:
-    CRobotMain(CInstanceManager* iMan, CApplication* app);
+    CRobotMain(CApplication* app);
     ~CRobotMain();
+
+    Gfx::CCamera* GetCamera();
+    Gfx::CTerrain* GetTerrain();
+    Ui::CInterface* GetInterface();
+    Ui::CDisplayText* GetDisplayText();
 
     void        CreateIni();
 
@@ -302,6 +304,7 @@ public:
     const char* GetSavegameDir();
     const char* GetPublicDir();
     const char* GetFilesDir();
+    bool        GetRetroMode();
 
     void        SetGamerName(const char *name);
     char*       GetGamerName();
@@ -358,7 +361,6 @@ protected:
     void        Convert();
     void        CreateScene(bool soluce, bool fixScene, bool resetObject);
 
-    void        CreateModel();
     Math::Vector LookatPoint(Math::Vector eye, float angleH, float angleV, float length);
     CObject*    CreateObject(Math::Vector pos, float angle, float zoom,
                              float height, ObjectType type, float power=1.0f,
@@ -390,7 +392,6 @@ protected:
     void        UpdateSpeedLabel();
 
 protected:
-    CInstanceManager*   m_iMan;
     CApplication*       m_app;
     CEventQueue*        m_eventQueue;
     CMainMovie*         m_movie;
@@ -447,8 +448,18 @@ protected:
     int             m_delayWriteMessage;
     int             m_movieInfoIndex;
 
+    //Level Checker flags
+    bool            m_beginObject;
+    bool            m_terrainGenerate;
+    bool            m_terrainInitTextures;
+    bool            m_terrainInit;
+    bool            m_terrainCreate;
+
+    int             m_version;         // Mission file version
+    bool            m_retroStyle;      // Retro
     bool            m_immediatSatCom;  // SatCom immediately?
     bool            m_beginSatCom;     // messages SatCom poster?
+    bool            m_lockedSatCom;    // SatCom locked?
     bool            m_movieLock;       // movie in progress?
     bool            m_satComLock;      // call of SatCom is possible?
     bool            m_editLock;        // edition in progress?

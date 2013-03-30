@@ -26,34 +26,51 @@
 
 template<typename T> class CSingleton
 {
-    protected:
-        static T* mInstance;
+protected:
+    static T* m_instance;
 
-    public:
-        static T& GetInstance() {
-            assert(mInstance != nullptr);
-            return *mInstance;
-        }
+public:
+    static T& GetInstance()
+    {
+        assert(m_instance != nullptr);
+        return *m_instance;
+    }
 
-        static T* GetInstancePointer() {
-            assert(mInstance != nullptr);
-            return mInstance;
-        }
+    static T* GetInstancePointer()
+    {
+        assert(m_instance != nullptr);
+        return m_instance;
+    }
 
-        static bool IsCreated() {
-            return mInstance != nullptr;
-        }
+    static bool IsCreated()
+    {
+        return m_instance != nullptr;
+    }
 
-        CSingleton() {
-            assert(mInstance == nullptr);
-            mInstance = static_cast<T *>(this);
-        }
+    CSingleton()
+    {
+        assert(m_instance == nullptr);
+        m_instance = static_cast<T *>(this);
+    }
 
-        virtual ~CSingleton() {
-            mInstance = nullptr;
-        }
+    virtual ~CSingleton()
+    {
+        m_instance = nullptr;
+    }
 
-    private:
-        CSingleton& operator=(const CSingleton<T> &);
-        CSingleton(const CSingleton<T> &);
+    #ifdef TESTS
+    static void ReplaceInstance(T* newInstance)
+    {
+        assert(newInstance != nullptr);
+
+        if (m_instance != nullptr)
+            delete m_instance;
+
+        m_instance = newInstance;
+    }
+    #endif
+
+private:
+    CSingleton& operator=(const CSingleton<T> &);
+    CSingleton(const CSingleton<T> &);
 };

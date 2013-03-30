@@ -26,7 +26,7 @@
 class CTaskSpiderExplo : public CTask
 {
 public:
-    CTaskSpiderExplo(CInstanceManager* iMan, CObject* object);
+    CTaskSpiderExplo(CObject* object);
     ~CTaskSpiderExplo();
 
     bool        EventProcess(const Event &event);

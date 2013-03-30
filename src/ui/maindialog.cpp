@@ -14,22 +14,25 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// maindialog.cpp
 
 #include "ui/maindialog.h"
 
 #include "app/app.h"
+#include "app/system.h"
+
 #include "common/global.h"
 #include "common/event.h"
 #include "common/logger.h"
 #include "common/misc.h"
 #include "common/profile.h"
-#include "common/iman.h"
 #include "common/restext.h"
 #include "common/logger.h"
+
 #include "object/robotmain.h"
+
 #include "script/cmdtoken.h"
 #include "sound/sound.h"
+
 #include "ui/interface.h"
 #include "ui/button.h"
 #include "ui/color.h"
@@ -54,8 +57,7 @@
 
 //TODO Get rid of all sprintf's
 
-namespace Ui
-{
+namespace Ui {
 
 const int KEY_VISIBLE = 6;      // number of visible keys redefinable
 
@@ -106,20 +108,16 @@ namespace fs = boost::filesystem;
 
 // Constructor of robot application.
 
-CMainDialog::CMainDialog(CInstanceManager* iMan)
+CMainDialog::CMainDialog()
 {
-    m_iMan = iMan;
-    m_iMan->AddInstance(CLASS_DIALOG, this);
-
-    m_app = CApplication::GetInstancePointer();
-
-    m_main       = static_cast<CRobotMain*>(m_iMan->SearchInstance(CLASS_MAIN));
-    m_interface  = static_cast<CInterface*>(m_iMan->SearchInstance(CLASS_INTERFACE));
-    m_eventQueue = static_cast<CEventQueue*>(m_iMan->SearchInstance(CLASS_EVENT));
-    m_engine     = static_cast<Gfx::CEngine*>(m_iMan->SearchInstance(CLASS_ENGINE));
-    m_particle   = static_cast<Gfx::CParticle*>(m_iMan->SearchInstance(CLASS_PARTICULE));
-    m_camera     = static_cast<Gfx::CCamera*>(m_iMan->SearchInstance(CLASS_CAMERA));
-    m_sound      = static_cast<CSoundInterface*>(m_iMan->SearchInstance(CLASS_SOUND));
+    m_app        = CApplication::GetInstancePointer();
+    m_eventQueue = m_app->GetEventQueue();
+    m_sound      = m_app->GetSound();
+    m_main       = CRobotMain::GetInstancePointer();
+    m_interface  = m_main->GetInterface();
+    m_camera     = m_main->GetCamera();
+    m_engine     = Gfx::CEngine::GetInstancePointer();
+    m_particle   = m_engine->GetParticle();
 
     m_phase        = PHASE_NAME;
     m_phaseSetup   = PHASE_SETUPg;
@@ -176,7 +174,7 @@ CMainDialog::CMainDialog(CInstanceManager* iMan)
 
 
     m_sceneDir = "levels";
-    m_savegameDir = "savegame";
+    m_savegameDir = GetSystemUtils()->savegameDirectoryLocation();
     m_publicDir = "program";
     m_userDir = "user";
     m_filesDir = "files";
@@ -378,7 +376,7 @@ pb->SetState(STATE_SHADOW);
         pos.y -=  5.0f/480.0f;
         pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL1, "PPC Team");
         pl->SetFontType(Gfx::FONT_COURIER);
-        pl->SetFontSize(8.0f);
+        pl->SetFontSize(Gfx::FONT_SIZE_SMALL);
 
         m_engine->SetBackground("interface.png",
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
@@ -748,6 +746,10 @@ pb->SetState(STATE_SHADOW);
             m_phase == PHASE_USER    ||
             m_phase == PHASE_PROTO   )
     {
+        if (!m_sound->IsPlayingMusic()) {
+            m_sound->PlayMusic(11, true);
+        }
+            
         if ( m_phase == PHASE_TRAINER )  m_index = 0;
         if ( m_phase == PHASE_DEFI    )  m_index = 1;
         if ( m_phase == PHASE_MISSION )  m_index = 2;
@@ -890,7 +892,7 @@ pb->SetState(STATE_SHADOW);
         pe->SetState(STATE_SHADOW);
         pe->SetMaxChar(500);
         pe->SetEditCap(false);  // just to see
-        pe->SetHiliteCap(false);
+        pe->SetHighlightCap(false);
 
         // Button displays the "soluce":
         if ( m_phase != PHASE_TRAINER &&
@@ -1761,9 +1763,6 @@ pos.y -= 0.048f;
     }
     if ( m_phase == PHASE_WELCOME2 )
     {
-        m_sound->StopMusic();
-        m_sound->PlayMusic(11, false);
-
         pos.x  = 0.0f;
         pos.y  = 0.0f;
         ddim.x = 0.0f;
@@ -1817,10 +1816,10 @@ pos.y -= 0.048f;
         pe = pw->CreateEdit(pos, ddim, 0, EVENT_EDIT1);
         pe->SetGenericMode(true);
         pe->SetEditCap(false);
-        pe->SetHiliteCap(false);
+        pe->SetHighlightCap(false);
         pe->SetFontType(Gfx::FONT_COURIER);
-        pe->SetFontSize(8.0f);
-        pe->ReadText("help/authors.txt");
+        pe->SetFontSize(Gfx::FONT_SIZE_SMALL);
+        pe->ReadText(std::string("help/") + m_app->GetLanguageChar() + std::string("/authors.txt"));
 
         pos.x  =  80.0f/640.0f;
         pos.y  = 140.0f/480.0f;
@@ -1829,30 +1828,30 @@ pos.y -= 0.048f;
         pe = pw->CreateEdit(pos, ddim, 0, EVENT_EDIT2);
         pe->SetGenericMode(true);
         pe->SetEditCap(false);
-        pe->SetHiliteCap(false);
+        pe->SetHighlightCap(false);
         pe->SetFontType(Gfx::FONT_COURIER);
-        pe->SetFontSize(6.5f);
-        pe->ReadText("help/licences.txt");
+        pe->SetFontSize(Gfx::FONT_SIZE_SMALL);
+        pe->ReadText(std::string("help/") + m_app->GetLanguageChar() + std::string("/licences.txt"));
         // #endif
         /* TODO: #if _SCHOOL
-#if _CEEBOTDEMO
-pos.x  =  80.0f/640.0f;
-pos.y  = 210.0f/480.0f;
-ddim.x = 490.0f/640.0f;
-ddim.y = 150.0f/480.0f;
-#else
-pos.x  =  80.0f/640.0f;
-pos.y  = 200.0f/480.0f;
-ddim.x = 490.0f/640.0f;
-ddim.y = 150.0f/480.0f;
-#endif*/
+        #if _CEEBOTDEMO
+        pos.x  =  80.0f/640.0f;
+        pos.y  = 210.0f/480.0f;
+        ddim.x = 490.0f/640.0f;
+        ddim.y = 150.0f/480.0f;
+        #else
+        pos.x  =  80.0f/640.0f;
+        pos.y  = 200.0f/480.0f;
+        ddim.x = 490.0f/640.0f;
+        ddim.y = 150.0f/480.0f;
+        #endif
         pe = pw->CreateEdit(pos, ddim, 0, EVENT_EDIT1);
         pe->SetGenericMode(true);
         pe->SetEditCap(false);
-        pe->SetHiliteCap(false);
+        pe->SetHighlightCap(false);
         pe->SetFontType(Gfx::FONT_COURIER);
-        pe->SetFontSize(8.0f);
-        pe->ReadText("help/authors.txt");
+        pe->SetFontSize(Gfx::FONT_SIZE_SMALL);
+        pe->ReadText("help/authors.txt");*/
 
         /* #if _DEMO
         //?     pos.x  =  80.0f/640.0f;
@@ -1864,7 +1863,7 @@ ddim.y = 150.0f/480.0f;
         //?     pe->SetEditCap(false);
         //?     pe->SetHiliteCap(false);
         //?     pe->SetFontType(Gfx::FONT_COURIER);
-        //?     pe->SetFontSize(8.0f);
+        //?     pe->SetFontSize(Gfx::FONT_SIZE_SMALL);
         //?     pe->ReadText("help/demo.txt");
 
         //?     pos.x  =  80.0f/640.0f;
@@ -1876,7 +1875,7 @@ ddim.y = 150.0f/480.0f;
         //?     pe->SetEditCap(false);
         //?     pe->SetHiliteCap(false);
         //?     pe->SetFontType(Gfx::FONT_COURIER);
-        //?     pe->SetFontSize(8.0f);
+        //?     pe->SetFontSize(Gfx::FONT_SIZE_SMALL);
         //?     pe->ReadText("help/authors.txt");
 #endif */
 
@@ -1888,13 +1887,13 @@ ddim.y = 150.0f/480.0f;
         GetResource(RES_TEXT, RT_GENERIC_DEV1, name);
         pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL1, name);
         pl->SetFontType(Gfx::FONT_COURIER);
-        pl->SetFontSize(8.0f);
+        pl->SetFontSize(Gfx::FONT_SIZE_SMALL);
 
         pos.y  =  13.0f/480.0f;
         GetResource(RES_TEXT, RT_GENERIC_DEV2, name);
         pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL2, name);
         pl->SetFontType(Gfx::FONT_COURIER);
-        pl->SetFontSize(8.0f);
+        pl->SetFontSize(Gfx::FONT_SIZE_SMALL);
 
         pos.x  = 355.0f/640.0f;
         pos.y  =  83.0f/480.0f;
@@ -1903,13 +1902,13 @@ ddim.y = 150.0f/480.0f;
         GetResource(RES_TEXT, RT_GENERIC_EDIT1, name);
         pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL3, name);
         pl->SetFontType(Gfx::FONT_COURIER);
-        pl->SetFontSize(8.0f);
+        pl->SetFontSize(Gfx::FONT_SIZE_SMALL);
 
         pos.y  =  13.0f/480.0f;
         GetResource(RES_TEXT, RT_GENERIC_EDIT2, name);
         pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL4, name);
         pl->SetFontType(Gfx::FONT_COURIER);
-        pl->SetFontSize(8.0f);
+        pl->SetFontSize(Gfx::FONT_SIZE_SMALL);
         // #endif
 
         /* TODO: #if _DEMO
@@ -1928,7 +1927,7 @@ ddim.y = 150.0f/480.0f;
         pb->SetState(STATE_SHADOW);
         // #endif
 
-        m_engine->SetBackground("generic.png",
+        m_engine->SetBackground("generico.png",
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
@@ -1972,8 +1971,8 @@ ddim.y =   9.0f/480.0f;
         ddim.x =  90.0f/640.0f;
         ddim.y =  10.0f/480.0f;
         //#endif
-        GetResource(RES_TEXT, RT_VERSION_ID, name);
-        pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL1, name);
+        //GetResource(RES_TEXT, RT_VERSION_ID, name);
+        pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL1, __DATE__);
         pl->SetFontType(Gfx::FONT_COURIER);
         pl->SetFontSize(9.0f);
     }
@@ -3561,11 +3560,11 @@ void CMainDialog::SetUserDir(char *base, int rank)
     if ( strcmp(base, "user") == 0 && rank >= 100 )
     {
         dir = m_userDir + "/" + m_userList.at(rank/100-1);
-        UserDir(true, dir.c_str());
+        GetProfile().SetUserDir(dir);
     }
     else
     {
-        UserDir(false, "");
+        GetProfile().SetUserDir("");
     }
 }
 
@@ -4260,7 +4259,6 @@ bool CMainDialog::IsIOReadScene()
     FILE*   file;
     std::string filename;
 
-    //TODO: Change this to point user dir acocrding to operating system
     filename = m_savegameDir + "/" + m_main->GetGamerName() + "/" + "save" + m_sceneName[0] + "000/data.sav";
     file = fopen(filename.c_str(), "r");
     if ( file == NULL )  return false;
@@ -4277,6 +4275,7 @@ void CMainDialog::IOReadName()
     CEdit*      pe;
     std::string filename;
     char        op[100];
+    char        op_i18n[100];
     char        line[500];
     char        resume[100];
     char        name[100];
@@ -4290,6 +4289,9 @@ void CMainDialog::IOReadName()
 
     sprintf(resume, "%s %d", m_sceneName, m_chap[m_index]+1);
     BuildSceneName(filename, m_sceneName, (m_chap[m_index]+1)*100);
+    sprintf(op, "Title.E");
+    sprintf(op_i18n, "Title.%c", m_app->GetLanguageChar() );
+
     file = fopen(filename.c_str(), "r");
     if ( file != NULL )
     {
@@ -4305,9 +4307,11 @@ void CMainDialog::IOReadName()
                 }
             }
 
-            // TODO: Fallback to an non-localized entry
-            sprintf(op, "Title.%c", m_app->GetLanguageChar() );
             if ( Cmd(line, op) )
+            {
+                OpString(line, "resume", resume);
+            }
+            if ( Cmd(line, op_i18n) )
             {
                 OpString(line, "resume", resume);
                 break;
@@ -4350,7 +4354,7 @@ void CMainDialog::IOReadList()
         filename = m_savegameDir + "/" + m_main->GetGamerName() + "/save" + m_sceneName[0] + rankStream.str()+ "/data.sav";
 
         // sprintf(filename, "%s\\%s\\save%c%.3d\\data.sav", m_savegameDir, m_main->GetGamerName(), m_sceneName[0], j);
-        file = fopen(filename.c_str(), "r");
+        file = fopen(fs::path(filename).make_preferred().string().c_str(), "r");
         if ( file == NULL )  break;
 
         while ( fgets(line, 500, file) != NULL )
@@ -4648,12 +4652,14 @@ void CMainDialog::UpdateSceneChap(int &chap)
     //struct _finddata_t fileBuffer;
     std::string fileName;
     char        op[100];
+    char        op_i18n[100];
     char        line[500];
     char        name[100];
     int         i, j;
     bool        bPassed;
 
     memset(op, 0, 100);
+    memset(op_i18n, 0, 100);
     memset(line, 0, 500);
     memset(name, 0, 100);
 
@@ -4668,6 +4674,7 @@ void CMainDialog::UpdateSceneChap(int &chap)
     {
         j = 0;
         fs::directory_iterator dirIt(m_savegameDir), dirEndIt;
+        m_userList.clear();
 
         BOOST_FOREACH (const fs::path & p, std::make_pair(dirIt, dirEndIt))
         {
@@ -4689,6 +4696,9 @@ void CMainDialog::UpdateSceneChap(int &chap)
             else
             {
                 BuildResumeName(name, m_sceneName, j+1);  // default name
+                sprintf(op, "Title.E");
+                sprintf(op_i18n, "Title.%c", m_app->GetLanguageChar());
+
                 while ( fgets(line, 500, file) != NULL )
                 {
                     for ( i=0 ; i<500 ; i++ )
@@ -4701,9 +4711,11 @@ void CMainDialog::UpdateSceneChap(int &chap)
                         }
                     }
 
-                    // TODO: Fallback to an non-localized entry
-                    sprintf(op, "Title.%c", m_app->GetLanguageChar());
                     if ( Cmd(line, op) )
+                    {
+                        OpString(line, "text", name);
+                    }
+                    if ( Cmd(line, op_i18n) )
                     {
                         OpString(line, "text", name);
                         break;
@@ -4736,6 +4748,9 @@ void CMainDialog::UpdateSceneChap(int &chap)
             if ( file == NULL )  break;
 
             BuildResumeName(name, m_sceneName, j+1);  // default name
+            sprintf(op, "Title.E");
+            sprintf(op_i18n, "Title.%c", m_app->GetLanguageChar());
+
             while ( fgets(line, 500, file) != NULL )
             {
                 for ( i=0 ; i<500 ; i++ )
@@ -4748,9 +4763,11 @@ void CMainDialog::UpdateSceneChap(int &chap)
                     }
                 }
 
-                // TODO: Fallback to an non-localized entry
-                sprintf(op, "Title.%c", m_app->GetLanguageChar());
                 if ( Cmd(line, op) )
+                {
+                    OpString(line, "text", name);
+                }
+                if ( Cmd(line, op_i18n) )
                 {
                     OpString(line, "text", name);
                     break;
@@ -4801,12 +4818,14 @@ void CMainDialog::UpdateSceneList(int chap, int &sel)
     CList*      pl;
     std::string fileName;
     char        op[100];
+    char        op_i18n[100];
     char        line[500];
     char        name[100];
     int         i, j;
     bool        bPassed;
 
     memset(op, 0, 100);
+    memset(op_i18n, 0, 100);
     memset(line, 0, 500);
     memset(name, 0, 100);
 
@@ -4839,6 +4858,9 @@ void CMainDialog::UpdateSceneList(int chap, int &sel)
         if ( file == NULL )  break;
 
         BuildResumeName(name, m_sceneName, j+1);  // default name
+        sprintf(op, "Title.E");
+        sprintf(op_i18n, "Title.%c", m_app->GetLanguageChar());
+
         while ( fgets(line, 500, file) != NULL )
         {
             for ( i=0 ; i<500 ; i++ )
@@ -4851,9 +4873,11 @@ void CMainDialog::UpdateSceneList(int chap, int &sel)
                 }
             }
 
-            // TODO: Fallback to an non-localized entry
-            sprintf(op, "Title.%c", m_app->GetLanguageChar());
             if ( Cmd(line, op) )
+            {
+                OpString(line, "text", name);
+            }
+            if ( Cmd(line, op_i18n) )
             {
                 OpString(line, "text", name);
                 break;
@@ -4950,6 +4974,7 @@ void CMainDialog::UpdateSceneResume(int rank)
     CCheck*     pc;
     std::string fileName;
     char        op[100];
+    char        op_i18n[100];
     char        line[500];
     char        name[500];
     int         i, numTry;
@@ -4980,6 +5005,9 @@ void CMainDialog::UpdateSceneResume(int rank)
     }
 
     BuildSceneName(fileName, m_sceneName, rank);
+    sprintf(op, "Resume.E");
+    sprintf(op_i18n, "Resume.%c", m_app->GetLanguageChar());
+
     file = fopen(fileName.c_str(), "r");
     if ( file == NULL )  return;
 
@@ -4996,9 +5024,11 @@ void CMainDialog::UpdateSceneResume(int rank)
             }
         }
 
-        // TODO: Fallback to an non-localized entry
-        sprintf(op, "Resume.%c", m_app->GetLanguageChar());
         if ( Cmd(line, op) )
+        {
+            OpString(line, "text", name);
+        }
+        if ( Cmd(line, op_i18n) )
         {
             OpString(line, "text", name);
             break;
@@ -5016,8 +5046,8 @@ void CMainDialog::UpdateDisplayDevice()
     CWindow*    pw;
     CList*      pl;
     char        bufDevices[1000];
-    char        bufModes[5000];
-    int         i, j, totalDevices, selectDevices, totalModes, selectModes;
+    //char        bufModes[5000];
+    int         i, j;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
     if ( pw == 0 )  return;
@@ -5025,7 +5055,7 @@ void CMainDialog::UpdateDisplayDevice()
     if ( pl == 0 )  return;
     pl->Flush();
 
-    bufModes[0] = 0;
+    //bufModes[0] = 0;
     /* TODO: remove device choice
     m_engine->EnumDevices(bufDevices, 1000,
                           bufModes,   5000,
@@ -5040,10 +5070,10 @@ void CMainDialog::UpdateDisplayDevice()
         while ( bufDevices[i++] != 0 );
     }
 
-    pl->SetSelect(selectDevices);
+    pl->SetSelect(0);
     pl->ShowSelect(false);
 
-    m_setupSelDevice = selectDevices;
+    m_setupSelDevice = 0;
 }
 
 // Updates the list of modes.
@@ -5080,8 +5110,8 @@ void CMainDialog::ChangeDisplay()
     CWindow*    pw;
     CList*      pl;
     CCheck*     pc;
-    char*       device;
-    char*       mode;
+    //char*       device;
+    //char*       mode;
     bool        bFull;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
@@ -5090,12 +5120,12 @@ void CMainDialog::ChangeDisplay()
     pl = static_cast<CList*>(pw->SearchControl(EVENT_LIST1));
     if ( pl == 0 )  return;
     m_setupSelDevice = pl->GetSelect();
-    device = pl->GetName(m_setupSelDevice);
+    //device = pl->GetName(m_setupSelDevice);
 
     pl = static_cast<CList*>(pw->SearchControl(EVENT_LIST2));
     if ( pl == 0 )  return;
     m_setupSelMode = pl->GetSelect();
-    mode = pl->GetName(m_setupSelMode);
+    //mode = pl->GetName(m_setupSelMode);
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_FULL));
     if ( pc == 0 )  return;
@@ -5427,10 +5457,8 @@ void CMainDialog::ChangeSetupButtons()
     ps = static_cast<CSlider*>(pw->SearchControl(EVENT_INTERFACE_VOLMUSIC));
     if ( ps != 0 )
     {
-        /*
-        TODO: midi volume
         value = ps->GetVisibleValue();
-        m_sound->SetMidiVolume((int)value);*/
+        m_sound->SetMusicVolume(static_cast<int>(value));
     }
 }
 

@@ -14,12 +14,13 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// taskspiderexplo.cpp
 
 #include "object/task/taskspiderexplo.h"
 
 #include "graphics/engine/pyro.h"
+
 #include "object/motion/motionspider.h"
+
 #include "physics/physics.h"
 
 
@@ -27,8 +28,7 @@
 
 // Object's constructor.
 
-CTaskSpiderExplo::CTaskSpiderExplo(CInstanceManager* iMan, CObject* object)
-                          : CTask(iMan, object)
+CTaskSpiderExplo::CTaskSpiderExplo(CObject* object) : CTask(object)
 {
     m_time = 0.0f;
     m_bError = false;
@@ -91,7 +91,7 @@ Error CTaskSpiderExplo::IsEnded()
 
     if ( m_time < 1.0f )  return ERR_CONTINUE;
 
-    pyro = new Gfx::CPyro(m_iMan);
+    pyro = new Gfx::CPyro();
     pyro->Create(Gfx::PT_SPIDER, m_object);  // the spider explodes (suicide)
 
     Abort();

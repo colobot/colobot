@@ -33,19 +33,29 @@
 #include <iostream>
 
 
-class CInstanceManager;
-
 
 // Graphics module namespace
 namespace Gfx {
 
-class CEngine;
-
 
 /**
-  \struct ModelTriangle
-  \brief Triangle of a 3D model
-  */
+ * \enum LODLevel
+ * \brief Level-of-detail
+ *
+ * A quantified replacement for older values of min/max.
+ */
+enum LODLevel
+{
+    LOD_Constant = -1, //!< triangle is always visible, no matter at what distance
+    LOD_Low      =  1, //!< triangle is visible at farthest distance (lowest quality)
+    LOD_Medium   =  2, //!< triangle is visible at medium distance (medium quality)
+    LOD_High     =  4  //!< triangle is visible at closest distance (highest quality)
+};
+
+/**
+ * \struct ModelTriangle
+ * \brief Triangle of a 3D model
+ */
 struct ModelTriangle
 {
     //! 1st vertex
@@ -62,31 +72,30 @@ struct ModelTriangle
     std::string      tex2Name;
     //! If true, 2nd texture will be taken from current engine setting
     bool             variableTex2;
-    //! Min LOD threshold
-    float            min;
-    //! Max LOD threshold
-    float            max;
+    //! LOD level
+    LODLevel         lodLevel;
     //! Rendering state to be set
     int              state;
 
     ModelTriangle()
     {
         variableTex2 = true;
-        min = max = 0.0f;
+        lodLevel = LOD_Constant;
         state = 0;
     }
 };
 
 
 /**
-  \class CModelFile
-  \brief Model file reader/writer
-
-  Allows reading and writing model objects. Models are collections of ModelTriangle structs. */
+ * \class CModelFile
+ * \brief Model file reader/writer
+ *
+ * Allows reading and writing model objects. Models are collections of ModelTriangle structs.
+ */
 class CModelFile
 {
 public:
-    CModelFile(CInstanceManager* iMan);
+    CModelFile();
     ~CModelFile();
 
     //! Reads a model in text format from file
@@ -128,23 +137,14 @@ public:
     //! Returns the triangle vector
     const std::vector<ModelTriangle>& GetTriangles();
 
-    //! Returns the height of model -- closest point to X and Z coords of \a pos
-    float                GetHeight(Math::Vector pos);
-
-    //! Mirrors the model along the Z axis
-    void                 Mirror();
-
-    //! Creates an object in the graphics engine from the model
-    bool                 CreateEngineObject(int objRank);
+protected:
+    //@{
+    //! @deprecated min, max conversions
+    LODLevel MinMaxToLodLevel(float min, float max);
+    void LODLevelToMinMax(LODLevel lodLevel, float& min, float& max);
+    //@}
 
 protected:
-    //! Adds a triangle to the list
-    void                 CreateTriangle(Math::Vector p1, Math::Vector p2, Math::Vector p3, float min, float max);
-
-protected:
-    CInstanceManager*    m_iMan;
-    CEngine*        m_engine;
-
     //! Model triangles
     std::vector<ModelTriangle> m_triangles;
 };

@@ -19,7 +19,6 @@
 #include "graphics/engine/lightman.h"
 
 #include "common/logger.h"
-#include "common/iman.h"
 
 #include "graphics/core/device.h"
 
@@ -27,6 +26,7 @@
 
 
 #include <cmath>
+#include <algorithm>
 
 
 // Graphics module namespace
@@ -78,11 +78,8 @@ DynamicLight::DynamicLight()
 
 
 
-CLightManager::CLightManager(CInstanceManager* iMan, CEngine* engine)
+CLightManager::CLightManager(CEngine* engine)
 {
-    m_iMan = iMan;
-    m_iMan->AddInstance(CLASS_LIGHT, this);
-
     m_device = nullptr;
     m_engine = engine;
 
@@ -91,9 +88,6 @@ CLightManager::CLightManager(CInstanceManager* iMan, CEngine* engine)
 
 CLightManager::~CLightManager()
 {
-    m_iMan->DeleteInstance(CLASS_LIGHT, this);
-
-    m_iMan = nullptr;
     m_device = nullptr;
     m_engine = nullptr;
 }
@@ -132,6 +126,7 @@ int CLightManager::CreateLight(LightPriority priority)
 
     m_dynLights[index].light.type      = LIGHT_DIRECTIONAL;
     m_dynLights[index].light.diffuse   = Color(0.5f, 0.5f, 0.5f);
+    m_dynLights[index].light.ambient   = Color(0.0f, 0.0f, 0.0f);
     m_dynLights[index].light.position  = Math::Vector(-100.0f,  100.0f, -100.0f);
     m_dynLights[index].light.direction = Math::Vector( 1.0f, -1.0f,  1.0f);
 
@@ -393,68 +388,35 @@ void CLightManager::UpdateDeviceLights(EngineObjectType type)
     for (int i = 0; i < static_cast<int>( m_lightMap.size() ); ++i)
         m_lightMap[i] = -1;
 
-    // High priority
-    for (int i = 0; i < static_cast<int>( m_dynLights.size() ); i++)
+    std::vector<DynamicLight> sortedLights = m_dynLights;
+    LightsComparator lightsComparator(m_engine->GetEyePt(), type);
+    std::sort(sortedLights.begin(), sortedLights.end(), lightsComparator);
+
+    int lightMapIndex = 0;
+    for (int i = 0; i < static_cast<int>( sortedLights.size() ); i++)
     {
-        if (! m_dynLights[i].used)
+        if (! sortedLights[i].used)
             continue;
-        if (! m_dynLights[i].enabled)
+        if (! sortedLights[i].enabled)
             continue;
-        if (Math::IsZero(m_dynLights[i].intensity.current))
-            continue;
-        if (m_dynLights[i].priority == LIGHT_PRI_LOW)
+        if (sortedLights[i].intensity.current == 0.0f)
             continue;
 
         bool enabled = true;
-        if (m_dynLights[i].includeType != ENG_OBJTYPE_NULL)
-            enabled = (m_dynLights[i].includeType == type);
+        if (sortedLights[i].includeType != ENG_OBJTYPE_NULL)
+            enabled = (sortedLights[i].includeType == type);
 
-        if (m_dynLights[i].excludeType != ENG_OBJTYPE_NULL)
-            enabled = (m_dynLights[i].excludeType != type);
-
-        if (enabled)
-        {
-            for (int j = 0; j < static_cast<int>( m_lightMap.size() ); ++j)
-            {
-                if (m_lightMap[j] == -1)
-                {
-                    m_lightMap[j] = i;
-                    break;
-                }
-            }
-        }
-    }
-
-    // Low priority
-    for (int i = 0; i < static_cast<int>( m_dynLights.size() ); i++)
-    {
-        if (! m_dynLights[i].used)
-            continue;
-        if (! m_dynLights[i].enabled)
-            continue;
-        if (m_dynLights[i].intensity.current == 0.0f)
-            continue;
-        if (m_dynLights[i].priority == LIGHT_PRI_HIGH)
-            continue;
-
-        bool enabled = true;
-        if (m_dynLights[i].includeType != ENG_OBJTYPE_NULL)
-            enabled = (m_dynLights[i].includeType == type);
-
-        if (m_dynLights[i].excludeType != ENG_OBJTYPE_NULL)
-            enabled = (m_dynLights[i].excludeType != type);
+        if (sortedLights[i].excludeType != ENG_OBJTYPE_NULL)
+            enabled = (sortedLights[i].excludeType != type);
 
         if (enabled)
         {
-            for (int j = 0; j < static_cast<int>( m_lightMap.size() ); ++j)
-            {
-                if (m_lightMap[j] == -1)
-                {
-                    m_lightMap[j] = i;
-                    break;
-                }
-            }
+            m_lightMap[lightMapIndex] = i;
+            ++lightMapIndex;
         }
+
+        if (lightMapIndex >= static_cast<int>( m_lightMap.size() ))
+            break;
     }
 
     for (int i = 0; i < static_cast<int>( m_lightMap.size() ); ++i)
@@ -462,7 +424,8 @@ void CLightManager::UpdateDeviceLights(EngineObjectType type)
         int rank = m_lightMap[i];
         if (rank != -1)
         {
-            m_device->SetLight(i, m_dynLights[rank].light);
+            sortedLights[rank].light.ambient = Gfx::Color(0.2f, 0.2f, 0.2f);
+            m_device->SetLight(i, sortedLights[rank].light);
             m_device->SetLightEnabled(i, true);
         }
         else
@@ -472,5 +435,33 @@ void CLightManager::UpdateDeviceLights(EngineObjectType type)
     }
 }
 
+// -----------
+
+CLightManager::LightsComparator::LightsComparator(Math::Vector eyePos, EngineObjectType objectType)
+{
+    m_eyePos = eyePos;
+    m_objectType = objectType;
+}
+
+float CLightManager::LightsComparator::GetLightWeight(const DynamicLight& dynLight)
+{
+    bool enabled = true;
+    if (!dynLight.used || !dynLight.enabled || dynLight.intensity.current == 0.0f)
+        enabled = false;
+    else if (dynLight.includeType != ENG_OBJTYPE_NULL)
+        enabled = dynLight.includeType == m_objectType;
+    else if (dynLight.excludeType != ENG_OBJTYPE_NULL)
+        enabled = dynLight.excludeType != m_objectType;
+
+    return enabled ? ( (dynLight.light.position - m_eyePos).Length() * dynLight.priority ) : 10000.0f;
+}
+
+bool CLightManager::LightsComparator::operator()(const DynamicLight& left, const DynamicLight& right)
+{
+    float leftWeight = GetLightWeight(left);
+    float rightWeight = GetLightWeight(right);
+
+    return leftWeight < rightWeight;
+}
 
 } // namespace Gfx

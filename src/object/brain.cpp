@@ -17,8 +17,10 @@
 
 #include "object/brain.h"
 
-#include "common/misc.h"
+#include "app/app.h"
+
 #include "common/iman.h"
+#include "common/misc.h"
 
 #include "graphics/core/color.h"
 #include "graphics/engine/terrain.h"
@@ -47,28 +49,25 @@ const int MAXTRACERECORD = 1000;
 
 // Object's constructor.
 
-CBrain::CBrain(CInstanceManager* iMan, CObject* object)
+CBrain::CBrain(CObject* object)
 {
-    int         i;
-
-    m_iMan = iMan;
-    m_iMan->AddInstance(CLASS_BRAIN, this, 100);
+    CInstanceManager::GetInstancePointer()->AddInstance(CLASS_BRAIN, this, 100);
 
     m_object      = object;
-    m_engine      = static_cast<Gfx::CEngine*>(m_iMan->SearchInstance(CLASS_ENGINE));
-    m_terrain     = static_cast<Gfx::CTerrain*>(m_iMan->SearchInstance(CLASS_TERRAIN));
-    m_water       = static_cast<Gfx::CWater*>(m_iMan->SearchInstance(CLASS_WATER));
-    m_camera      = static_cast<Gfx::CCamera*>(m_iMan->SearchInstance(CLASS_CAMERA));
-    m_interface   = static_cast<Ui::CInterface*>(m_iMan->SearchInstance(CLASS_INTERFACE));
-    m_displayText = static_cast<Ui::CDisplayText*>(m_iMan->SearchInstance(CLASS_DISPLAYTEXT));
-    m_main        = static_cast<CRobotMain*>(m_iMan->SearchInstance(CLASS_MAIN));
-    m_sound       = static_cast<CSoundInterface*>(m_iMan->SearchInstance(CLASS_SOUND));
-    m_particle    = static_cast<Gfx::CParticle*>(m_iMan->SearchInstance(CLASS_PARTICULE));
-    m_physics     = 0;
-    m_motion      = 0;
-    m_primaryTask = 0;
-    m_secondaryTask = 0;
-    m_studio      = 0;
+    m_engine      = Gfx::CEngine::GetInstancePointer();
+    m_water       = m_engine->GetWater();
+    m_particle    = m_engine->GetParticle();
+    m_main        = CRobotMain::GetInstancePointer();
+    m_terrain     = m_main->GetTerrain();
+    m_camera      = m_main->GetCamera();
+    m_interface   = m_main->GetInterface();
+    m_displayText = m_main->GetDisplayText();
+    m_sound       = CApplication::GetInstancePointer()->GetSound();
+    m_physics     = nullptr;
+    m_motion      = nullptr;
+    m_primaryTask = nullptr;
+    m_secondaryTask = nullptr;
+    m_studio      = nullptr;
 
     m_program = -1;
     m_bActivity = true;
@@ -89,7 +88,7 @@ CBrain::CBrain(CInstanceManager* iMan, CObject* object)
     m_defaultEnter = EVENT_NULL;
     m_manipStyle   = EVENT_OBJECT_MFRONT;
 
-    for ( i=0 ; i<BRAINMAXSCRIPT ; i++ )
+    for (int i=0 ; i<BRAINMAXSCRIPT ; i++ )
     {
         m_script[i] = 0;
         m_scriptName[i][0] = 0;
@@ -106,9 +105,7 @@ CBrain::CBrain(CInstanceManager* iMan, CObject* object)
 
 CBrain::~CBrain()
 {
-    int     i;
-
-    for ( i=0 ; i<BRAINMAXSCRIPT ; i++ )
+    for (int i=0 ; i<BRAINMAXSCRIPT ; i++ )
     {
         delete m_script[i];
         m_script[i] = nullptr;
@@ -126,7 +123,7 @@ CBrain::~CBrain()
     delete[] m_traceRecordBuffer;
     m_traceRecordBuffer = nullptr;
 
-    m_iMan->DeleteInstance(CLASS_BRAIN, this);
+    CInstanceManager::GetInstancePointer()->DeleteInstance(CLASS_BRAIN, this);
 }
 
 
@@ -255,7 +252,7 @@ bool CBrain::EventProcess(const Event &event)
     if ( m_object->GetSelect() &&  // robot selected?
          m_studio != 0          )   // current issue?
     {
-        // m_studio->EventProcess(event);
+        m_studio->EventProcess(event);
 
         if ( action == EVENT_OBJECT_PROGRUN )
         {
@@ -528,6 +525,10 @@ bool CBrain::EventProcess(const Event &event)
         {
             err = StartTaskBuild(OBJECT_INFO);
         }
+        if ( action == EVENT_OBJECT_BDESTROYER )
+        {
+            err = StartTaskBuild(OBJECT_DESTROYER);
+        }
 
         if ( action == EVENT_OBJECT_GFLAT )
         {
@@ -599,6 +600,11 @@ bool CBrain::EventProcess(const Event &event)
         if ( action == EVENT_OBJECT_FIREANT )
         {
 //?         err = StartTaskFireAnt();
+        }
+
+        if ( action == EVENT_OBJECT_SPIDEREXPLO && m_primaryTask == 0 )
+        {
+            err = StartTaskSpiderExplo();
         }
 
         if ( action == EVENT_OBJECT_PEN0 )  // up
@@ -869,7 +875,7 @@ void CBrain::StartEditScript(int rank, char* name)
 
     if ( m_script[rank] == 0 )
     {
-        m_script[rank] = new CScript(m_iMan, m_object, &m_secondaryTask);
+        m_script[rank] = new CScript(m_object, &m_secondaryTask);
     }
 
     m_studio = new Ui::CStudio();
@@ -904,7 +910,7 @@ Error CBrain::StartTaskTake()
         m_primaryTask = 0;
     }
 
-    m_primaryTask = new CTaskManager(m_iMan, m_object);
+    m_primaryTask = new CTaskManager(m_object);
     err = m_primaryTask->StartTaskTake();
     UpdateInterface();
     return err;
@@ -922,7 +928,7 @@ Error CBrain::StartTaskManip(TaskManipOrder order, TaskManipArm arm)
         m_primaryTask = 0;
     }
 
-    m_primaryTask = new CTaskManager(m_iMan, m_object);
+    m_primaryTask = new CTaskManager(m_object);
     err = m_primaryTask->StartTaskManip(order, arm);
     UpdateInterface();
     return err;
@@ -940,7 +946,7 @@ Error CBrain::StartTaskFlag(TaskFlagOrder order, int rank)
         m_primaryTask = 0;
     }
 
-    m_primaryTask = new CTaskManager(m_iMan, m_object);
+    m_primaryTask = new CTaskManager(m_object);
     err = m_primaryTask->StartTaskFlag(order, rank);
     UpdateInterface();
     return err;
@@ -958,7 +964,7 @@ Error CBrain::StartTaskBuild(ObjectType type)
         m_primaryTask = 0;
     }
 
-    m_primaryTask = new CTaskManager(m_iMan, m_object);
+    m_primaryTask = new CTaskManager(m_object);
     err = m_primaryTask->StartTaskBuild(type);
     UpdateInterface();
     return err;
@@ -976,7 +982,7 @@ Error CBrain::StartTaskSearch()
         m_primaryTask = 0;
     }
 
-    m_primaryTask = new CTaskManager(m_iMan, m_object);
+    m_primaryTask = new CTaskManager(m_object);
     err = m_primaryTask->StartTaskSearch();
     UpdateInterface();
     return err;
@@ -994,7 +1000,7 @@ Error CBrain::StartTaskTerraform()
         m_primaryTask = 0;
     }
 
-    m_primaryTask = new CTaskManager(m_iMan, m_object);
+    m_primaryTask = new CTaskManager(m_object);
     err = m_primaryTask->StartTaskTerraform();
     UpdateInterface();
     return err;
@@ -1016,7 +1022,7 @@ Error CBrain::StartTaskPen(bool bDown, int color)
         m_primaryTask = 0;
     }
 
-    m_primaryTask = new CTaskManager(m_iMan, m_object);
+    m_primaryTask = new CTaskManager(m_object);
     err = m_primaryTask->StartTaskPen(bDown, color);
     UpdateInterface();
     return err;
@@ -1034,7 +1040,7 @@ Error CBrain::StartTaskRecover()
         m_primaryTask = 0;
     }
 
-    m_primaryTask = new CTaskManager(m_iMan, m_object);
+    m_primaryTask = new CTaskManager(m_object);
     err = m_primaryTask->StartTaskRecover();
     UpdateInterface();
     return err;
@@ -1052,7 +1058,7 @@ Error CBrain::StartTaskShield(TaskShieldMode mode)
         m_secondaryTask = 0;
     }
 
-    m_secondaryTask = new CTaskManager(m_iMan, m_object);
+    m_secondaryTask = new CTaskManager(m_object);
     err = m_secondaryTask->StartTaskShield(mode, 1000.0f);
     UpdateInterface();
     return err;
@@ -1070,8 +1076,26 @@ Error CBrain::StartTaskFire(float delay)
         m_primaryTask = 0;
     }
 
-    m_primaryTask = new CTaskManager(m_iMan, m_object);
+    m_primaryTask = new CTaskManager(m_object);
     err = m_primaryTask->StartTaskFire(delay);
+    UpdateInterface();
+    return err;
+}
+
+// Explodes spider.
+
+Error CBrain::StartTaskSpiderExplo()
+{
+    Error   err;
+
+    if ( m_primaryTask != 0 )
+    {
+        delete m_primaryTask;  // stops the current task
+        m_primaryTask = 0;
+    }
+
+    m_primaryTask = new CTaskManager(m_object);
+    err = m_primaryTask->StartTaskSpiderExplo();
     UpdateInterface();
     return err;
 }
@@ -1088,7 +1112,7 @@ Error CBrain::StartTaskFireAnt(Math::Vector impact)
         m_primaryTask = 0;
     }
 
-    m_primaryTask = new CTaskManager(m_iMan, m_object);
+    m_primaryTask = new CTaskManager(m_object);
     err = m_primaryTask->StartTaskFireAnt(impact);
     UpdateInterface();
     return err;
@@ -1106,7 +1130,7 @@ Error CBrain::StartTaskGunGoal(float dirV, float dirH)
         m_secondaryTask = 0;
     }
 
-    m_secondaryTask = new CTaskManager(m_iMan, m_object);
+    m_secondaryTask = new CTaskManager(m_object);
     err = m_secondaryTask->StartTaskGunGoal(dirV, dirH);
     UpdateInterface();
     return err;
@@ -1124,7 +1148,7 @@ Error CBrain::StartTaskReset(Math::Vector goal, Math::Vector angle)
         m_primaryTask = 0;
     }
 
-    m_primaryTask = new CTaskManager(m_iMan, m_object);
+    m_primaryTask = new CTaskManager(m_object);
     err = m_primaryTask->StartTaskReset(goal, angle);
     UpdateInterface();
     return err;
@@ -1287,18 +1311,20 @@ bool CBrain::CreateInterface(bool bSelect)
          type == OBJECT_BEE      ||
          type == OBJECT_WORM     )  // vehicle?
     {
-        ddim.x = dim.x*5.1f;
-        ddim.y = dim.y*2.0f;
-        pos.x = ox+sx*0.0f;
-        pos.y = oy+sy*0.0f;
-        pw->CreateList(pos, ddim, -1, EVENT_OBJECT_PROGLIST, 1.10f);
-        UpdateScript(pw);
+        if (!(m_main->GetRetroMode())) {
+            ddim.x = dim.x*5.1f;
+            ddim.y = dim.y*2.0f;
+            pos.x = ox+sx*0.0f;
+            pos.y = oy+sy*0.0f;
+            pw->CreateList(pos, ddim, -1, EVENT_OBJECT_PROGLIST, 1.10f);
+            UpdateScript(pw);
 
-        pos.x = ox+sx*5.2f;
-        pos.y = oy+sy*1.0f;
-        pw->CreateButton(pos, dim, 8, EVENT_OBJECT_PROGRUN);
-        pos.y = oy+sy*0.0f;
-        pw->CreateButton(pos, dim, 22, EVENT_OBJECT_PROGEDIT);
+            pos.x = ox+sx*5.2f;
+            pos.y = oy+sy*1.0f;
+            pw->CreateButton(pos, dim, 8, EVENT_OBJECT_PROGRUN);
+            pos.y = oy+sy*0.0f;
+            pw->CreateButton(pos, dim, 22, EVENT_OBJECT_PROGEDIT);
+        }
     }
 
     if ( type == OBJECT_HUMAN    ||
@@ -1363,8 +1389,9 @@ bool CBrain::CreateInterface(bool bSelect)
         pw->CreateButton(pos, dim, 33, EVENT_OBJECT_MFRONT);
     }
 
-    if ( type == OBJECT_MOBILEsa &&  // underwater?
-         !m_object->GetTrainer() )
+    if ( ( type == OBJECT_MOBILEsa &&  // underwater?
+         !m_object->GetTrainer() ) ||
+         type == OBJECT_BEE )
     {
         pos.x = ox+sx*7.7f;
         pos.y = oy+sy*0.5f;
@@ -1454,8 +1481,8 @@ bool CBrain::CreateInterface(bool bSelect)
 
         pos.x = ox+sx*5.4f;
         pos.y = oy+sy*0.1f;
-        pw->CreateButton(pos, ddim, 128+56, EVENT_OBJECT_BXXXX);
-        DeadInterface(pw, EVENT_OBJECT_BXXXX, false);
+        pw->CreateButton(pos, ddim, 128+41, EVENT_OBJECT_BDESTROYER);
+        DeadInterface(pw, EVENT_OBJECT_BDESTROYER, g_build&BUILD_DESTROYER);
 
         if ( g_build&BUILD_GFLAT )
         {
@@ -1575,6 +1602,15 @@ bool CBrain::CreateInterface(bool bSelect)
 //?     pos.x = ox+sx*10.2f;
 //?     pos.y = oy+sy*0.5f;
 //?     pw->CreateButton(pos, dim, 41, EVENT_OBJECT_LIMIT);
+    }
+
+    if ( type == OBJECT_SPIDER )
+    {
+        pos.x = ox+sx*7.7f;
+        pos.y = oy+sy*0.5f;
+        pb = pw->CreateButton(pos, dim, 42, EVENT_OBJECT_SPIDEREXPLO);
+        pb->SetImmediat(true);
+        DefaultEnter(pw, EVENT_OBJECT_SPIDEREXPLO);
     }
 
     if ( type == OBJECT_MOBILEdr &&
@@ -1908,9 +1944,7 @@ bool CBrain::CreateInterface(bool bSelect)
 void CBrain::UpdateInterface(float rTime)
 {
     Ui::CWindow*    pw;
-/* TODO: #if _TEEN
     Ui::CButton*    pb;
-#endif*/
     Ui::CGauge*     pg;
     Ui::CCompass*   pc;
     Ui::CGroup*     pgr;
@@ -1947,6 +1981,7 @@ void CBrain::UpdateInterface(float rTime)
         if ( power == 0 )
         {
             energy = 0.0f;
+            limit = 0.0f;
         }
         else
         {
@@ -2021,8 +2056,7 @@ void CBrain::UpdateInterface(float rTime)
         pc->SetState(Ui::STATE_VISIBLE, m_main->GetShowMap());
     }
 
-#if _TEEN
-    pb = (CButton*)pw->SearchControl(EVENT_OBJECT_REC);
+    pb = (Ui::CButton*)pw->SearchControl(EVENT_OBJECT_REC);
     if ( pb != 0 )
     {
         if ( m_bTraceRecord && Math::Mod(m_time, 0.4f) >= 0.2f )
@@ -2034,7 +2068,6 @@ void CBrain::UpdateInterface(float rTime)
             pb->ClearState(Ui::STATE_CHECK);
         }
     }
-#endif
 
     bOnBoard = m_camera->GetType() == Gfx::CAM_TYPE_ONBOARD;
 
@@ -2114,10 +2147,8 @@ void CBrain::UpdateInterface()
     Ui::CWindow*    pw;
     Ui::CButton*    pb;
     Ui::CSlider*    ps;
-#if _TEEN
-    CColor*     pc;
+    Ui::CColor*     pc;
     int         color;
-#endif
     bool        bEnable, bFly, bRun;
     char        title[100];
 
@@ -2132,38 +2163,37 @@ void CBrain::UpdateInterface()
 
     bEnable = ( m_primaryTask == 0 && m_program == -1 );
 
-    EnableInterface(pw, EVENT_OBJECT_PROGEDIT,  (m_primaryTask == 0 && !m_bTraceRecord));
-    EnableInterface(pw, EVENT_OBJECT_PROGLIST,  bEnable && !m_bTraceRecord);
-    EnableInterface(pw, EVENT_OBJECT_LEFT,      bEnable);
-    EnableInterface(pw, EVENT_OBJECT_RIGHT,     bEnable);
-    EnableInterface(pw, EVENT_OBJECT_UP,        bEnable);
-    EnableInterface(pw, EVENT_OBJECT_DOWN,      bEnable);
-    EnableInterface(pw, EVENT_OBJECT_HTAKE,     bEnable);
-    EnableInterface(pw, EVENT_OBJECT_MTAKE,     bEnable);
-    EnableInterface(pw, EVENT_OBJECT_MBACK,     bEnable);
-    EnableInterface(pw, EVENT_OBJECT_MPOWER,    bEnable);
-    EnableInterface(pw, EVENT_OBJECT_MFRONT,    bEnable);
-    EnableInterface(pw, EVENT_OBJECT_GFLAT,     bEnable);
-    EnableInterface(pw, EVENT_OBJECT_FCREATE,   bEnable);
-    EnableInterface(pw, EVENT_OBJECT_FDELETE,   bEnable);
-    EnableInterface(pw, EVENT_OBJECT_SEARCH,    bEnable);
-    EnableInterface(pw, EVENT_OBJECT_TERRAFORM, bEnable);
-    EnableInterface(pw, EVENT_OBJECT_RECOVER,   bEnable);
-    EnableInterface(pw, EVENT_OBJECT_FIRE,      bEnable);
-    EnableInterface(pw, EVENT_OBJECT_RESET,     bEnable);
-#if _TEEN
-    EnableInterface(pw, EVENT_OBJECT_PEN0,      bEnable);
-    EnableInterface(pw, EVENT_OBJECT_PEN1,      bEnable);
-    EnableInterface(pw, EVENT_OBJECT_PEN2,      bEnable);
-    EnableInterface(pw, EVENT_OBJECT_PEN3,      bEnable);
-    EnableInterface(pw, EVENT_OBJECT_PEN4,      bEnable);
-    EnableInterface(pw, EVENT_OBJECT_PEN5,      bEnable);
-    EnableInterface(pw, EVENT_OBJECT_PEN6,      bEnable);
-    EnableInterface(pw, EVENT_OBJECT_PEN7,      bEnable);
-    EnableInterface(pw, EVENT_OBJECT_PEN8,      bEnable);
-    EnableInterface(pw, EVENT_OBJECT_REC,       bEnable);
-    EnableInterface(pw, EVENT_OBJECT_STOP,      bEnable);
-#endif
+    EnableInterface(pw, EVENT_OBJECT_PROGEDIT,    (m_primaryTask == 0 && !m_bTraceRecord));
+    EnableInterface(pw, EVENT_OBJECT_PROGLIST,    bEnable && !m_bTraceRecord);
+    EnableInterface(pw, EVENT_OBJECT_LEFT,        bEnable);
+    EnableInterface(pw, EVENT_OBJECT_RIGHT,       bEnable);
+    EnableInterface(pw, EVENT_OBJECT_UP,          bEnable);
+    EnableInterface(pw, EVENT_OBJECT_DOWN,        bEnable);
+    EnableInterface(pw, EVENT_OBJECT_HTAKE,       bEnable);
+    EnableInterface(pw, EVENT_OBJECT_MTAKE,       bEnable);
+    EnableInterface(pw, EVENT_OBJECT_MBACK,       bEnable);
+    EnableInterface(pw, EVENT_OBJECT_MPOWER,      bEnable);
+    EnableInterface(pw, EVENT_OBJECT_MFRONT,      bEnable);
+    EnableInterface(pw, EVENT_OBJECT_GFLAT,       bEnable);
+    EnableInterface(pw, EVENT_OBJECT_FCREATE,     bEnable);
+    EnableInterface(pw, EVENT_OBJECT_FDELETE,     bEnable);
+    EnableInterface(pw, EVENT_OBJECT_SEARCH,      bEnable);
+    EnableInterface(pw, EVENT_OBJECT_TERRAFORM,   bEnable);
+    EnableInterface(pw, EVENT_OBJECT_RECOVER,     bEnable);
+    EnableInterface(pw, EVENT_OBJECT_FIRE,        bEnable);
+    EnableInterface(pw, EVENT_OBJECT_SPIDEREXPLO, bEnable);
+    EnableInterface(pw, EVENT_OBJECT_RESET,       bEnable);
+    EnableInterface(pw, EVENT_OBJECT_PEN0,        bEnable);
+    EnableInterface(pw, EVENT_OBJECT_PEN1,        bEnable);
+    EnableInterface(pw, EVENT_OBJECT_PEN2,        bEnable);
+    EnableInterface(pw, EVENT_OBJECT_PEN3,        bEnable);
+    EnableInterface(pw, EVENT_OBJECT_PEN4,        bEnable);
+    EnableInterface(pw, EVENT_OBJECT_PEN5,        bEnable);
+    EnableInterface(pw, EVENT_OBJECT_PEN6,        bEnable);
+    EnableInterface(pw, EVENT_OBJECT_PEN7,        bEnable);
+    EnableInterface(pw, EVENT_OBJECT_PEN8,        bEnable);
+    EnableInterface(pw, EVENT_OBJECT_REC,         bEnable);
+    EnableInterface(pw, EVENT_OBJECT_STOP,        bEnable);
 
     if ( type == OBJECT_HUMAN )  // builder?
     {
@@ -2180,7 +2210,7 @@ void CBrain::UpdateInterface()
         EnableInterface(pw, EVENT_OBJECT_BNUCLEAR,  bEnable);
         EnableInterface(pw, EVENT_OBJECT_BPARA,     bEnable);
         EnableInterface(pw, EVENT_OBJECT_BINFO,     bEnable);
-        EnableInterface(pw, EVENT_OBJECT_BXXXX,     bEnable);
+        EnableInterface(pw, EVENT_OBJECT_BDESTROYER,bEnable);
     }
 
     pb = static_cast< Ui::CButton* >(pw->SearchControl(EVENT_OBJECT_GFLAT));
@@ -2314,7 +2344,6 @@ void CBrain::UpdateInterface()
         CheckInterface(pw, EVENT_OBJECT_MFRONT, m_manipStyle==EVENT_OBJECT_MFRONT);
     }
 
-#if _TEEN
     if ( m_object->GetTraceDown() )
     {
         pb = static_cast< Ui::CButton* >(pw->SearchControl(EVENT_OBJECT_PEN0));
@@ -2414,7 +2443,6 @@ void CBrain::UpdateInterface()
             pc->ClearState(Ui::STATE_CHECK);
         }
     }
-#endif
 }
 
 // Updates the list of programs.
@@ -2693,7 +2721,7 @@ bool CBrain::ReadProgram(int rank, const char* filename)
 {
     if ( m_script[rank] == 0 )
     {
-        m_script[rank] = new CScript(m_iMan, m_object, &m_secondaryTask);
+        m_script[rank] = new CScript(m_object, &m_secondaryTask);
     }
 
     if ( m_script[rank]->ReadScript(filename) )  return true;
@@ -2718,7 +2746,7 @@ bool CBrain::WriteProgram(int rank, char* filename)
 {
     if ( m_script[rank] == 0 )
     {
-        m_script[rank] = new CScript(m_iMan, m_object, &m_secondaryTask);
+        m_script[rank] = new CScript(m_object, &m_secondaryTask);
     }
 
     if ( m_script[rank]->WriteScript(filename) )  return true;
@@ -2748,7 +2776,7 @@ bool CBrain::ReadStack(FILE *file)
 
             if ( m_script[op] == 0 )
             {
-                m_script[op] = new CScript(m_iMan, m_object, &m_secondaryTask);
+                m_script[op] = new CScript(m_object, &m_secondaryTask);
             }
             if ( !m_script[op]->ReadStack(file) )  return false;
         }
@@ -2910,7 +2938,7 @@ void CBrain::TraceRecordStop()
     i = m_selScript;
     if ( m_script[i] == 0 )
     {
-        m_script[i] = new CScript(m_iMan, m_object, &m_secondaryTask);
+        m_script[i] = new CScript(m_object, &m_secondaryTask);
     }
     m_script[i]->SendScript(buffer);
     delete[] buffer;

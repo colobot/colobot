@@ -14,16 +14,19 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// taskshield.cpp
 
 #include "object/task/taskshield.h"
 
 #include "common/iman.h"
+
 #include "graphics/core/light.h"
 #include "graphics/engine/particle.h"
 #include "graphics/engine/lightman.h"
+
 #include "math/geometry.h"
+
 #include "object/brain.h"
+
 #include "physics/physics.h"
 
 #include <string.h>
@@ -34,8 +37,7 @@ const float ENERGY_TIME = 20.0f;        // maximum duration if full battery
 
 // Object's constructor.
 
-CTaskShield::CTaskShield(CInstanceManager* iMan, CObject* object)
-                               : CTask(iMan, object)
+CTaskShield::CTaskShield(CObject* object) : CTask(object)
 {
     m_rankSphere = -1;
     m_soundChannel = -1;
@@ -486,15 +488,10 @@ bool CTaskShield::CreateLight(Math::Vector pos)
 
     memset(&light, 0, sizeof(light));
     light.type       = Gfx::LIGHT_SPOT;
-    light.diffuse.r  = 0.0f;
-    light.diffuse.g  = 1.0f;
-    light.diffuse.b  = 2.0f;
-    light.position.x  = pos.x;
-    light.position.y  = pos.y;
-    light.position.z  = pos.z;
-    light.direction.x =  0.0f;
-    light.direction.y = -1.0f;  // against the bottom
-    light.direction.z =  0.0f;
+    light.ambient    = Gfx::Color(0.0f, 0.0f, 0.0f);
+    light.diffuse    = Gfx::Color(0.0f, 1.0f, 2.0f);
+    light.position   = pos;
+    light.direction  = Math::Vector(0.0f, -1.0f, 0.0f); // against the bottom
     light.spotIntensity = 128;
     light.attenuation0 = 1.0f;
     light.attenuation1 = 0.0f;
@@ -521,9 +518,11 @@ void CTaskShield::IncreaseShield()
     float       dist, shield;
     int         i;
 
+    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
+
     for ( i=0 ; i<1000000 ; i++ )
     {
-        pObj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
+        pObj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
         if ( pObj == 0 )  break;
 
         type = pObj->GetType();

@@ -335,7 +335,9 @@ bool CScript::rGetObject(CBotVar* var, CBotVar* result, int& exception, void* us
 
     rank = var->GetValInt();
 
-    pObj = static_cast<CObject*>(script->m_iMan->SearchInstance(CLASS_OBJECT, rank));
+    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
+
+    pObj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, rank));
     if ( pObj == 0 )
     {
         result->SetPointer(0);
@@ -404,11 +406,13 @@ bool CScript::rSearch(CBotVar* var, CBotVar* result, int& exception, void* user)
         bNearest = true;
     }
 
+    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
+
     min = 100000.0f;
     pBest = 0;
     for ( i=0 ; i<1000000 ; i++ )
     {
-        pObj = static_cast<CObject*>(script->m_iMan->SearchInstance(CLASS_OBJECT, i));
+        pObj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
         if ( pObj == 0 )  break;
 
         if ( pObj->GetTruck() != 0 )  continue;  // object transported?
@@ -592,12 +596,14 @@ bool CScript::rRadar(CBotVar* var, CBotVar* result, int& exception, void* user)
     iAngle = pThis->GetAngleY(0)+angle;
     iAngle = Math::NormAngle(iAngle);  // 0..2*Math::PI
 
+    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
+
     if ( sens >= 0.0f )  best = 100000.0f;
     else                 best = 0.0f;
     pBest = 0;
     for ( i=0 ; i<1000000 ; i++ )
     {
-        pObj = static_cast<CObject*>(script->m_iMan->SearchInstance(CLASS_OBJECT, i));
+        pObj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
         if ( pObj == 0 )  break;
         if ( pObj == pThis )  continue;
 
@@ -778,6 +784,8 @@ bool CScript::rDetect(CBotVar* var, CBotVar* result, int& exception, void* user)
         iAngle = pThis->GetAngleY(0)+angle;
         iAngle = Math::NormAngle(iAngle);  // 0..2*Math::PI
 
+        CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
+
         bGoal = 100000.0f;
         pGoal = 0;
         if ( sens >= 0.0f )  best = 100000.0f;
@@ -785,7 +793,7 @@ bool CScript::rDetect(CBotVar* var, CBotVar* result, int& exception, void* user)
         pBest = 0;
         for ( i=0 ; i<1000000 ; i++ )
         {
-            pObj = static_cast<CObject*>(script->m_iMan->SearchInstance(CLASS_OBJECT, i));
+            pObj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
             if ( pObj == 0 )  break;
             if ( pObj == pThis )  continue;
 
@@ -885,7 +893,7 @@ bool CScript::rDetect(CBotVar* var, CBotVar* result, int& exception, void* user)
             script->m_returnValue = 1.0f;
         }
 
-        script->m_primaryTask = new CTaskManager(script->m_iMan, script->m_object);
+        script->m_primaryTask = new CTaskManager(script->m_object);
         err = script->m_primaryTask->StartTaskWait(0.3f);
         if ( err != ERR_OK )
         {
@@ -940,86 +948,143 @@ bool CScript::rDirection(CBotVar* var, CBotVar* result, int& exception, void* us
 }
 
 
-// Compilation of the instruction "produce(pos, angle, type, scriptName)".
+// Compilation of the instruction "produce(pos, angle, type[, scriptName[, power]])"
+// or "produce(type[, power])".
 
 CBotTypResult CScript::cProduce(CBotVar* &var, void* user)
 {
     CBotTypResult   ret;
 
     if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
-    ret = cPoint(var, user);
-    if ( ret.GetType() != 0 )  return ret;
 
-    if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
-    if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
-    var = var->GetNext();
+    if ( var->GetType() <= CBotTypDouble ) {
+        var = var->GetNext();
+        if( var != 0 ) {
+            if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
+            var = var->GetNext();
+        }
+    } else {
+        ret = cPoint(var, user);
+        if ( ret.GetType() != 0 )  return ret;
 
-    if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
-    if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
-    var = var->GetNext();
+        if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
+        if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
+        var = var->GetNext();
 
-    if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
-    if ( var->GetType() != CBotTypString )  return CBotTypResult(CBotErrBadString);
-    var = var->GetNext();
+        if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
+        if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
+        var = var->GetNext();
+
+        if ( var != 0 ) {
+            if ( var->GetType() != CBotTypString )  return CBotTypResult(CBotErrBadString);
+            var = var->GetNext();
+
+            if ( var != 0 ) {
+                if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
+                var = var->GetNext();
+            }
+        }
+    }
 
     if ( var != 0 )  return CBotTypResult(CBotErrOverParam);
 
     return CBotTypResult(CBotTypFloat);
 }
 
-// Instruction "produce(pos, angle, type, scriptName)".
+// Instruction "produce(pos, angle, type[, scriptName[, power]])"
+// or "produce(type[, power])".
 
 bool CScript::rProduce(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
     CScript*    script = (static_cast<CObject *>(user))->GetRunScript();
     CObject*    object;
+    CObject*    me = (static_cast<CObject *>(user));
     CBotString  cbs;
     const char* name;
     Math::Vector    pos;
     float       angle;
     ObjectType  type;
+    float       power;
 
-    if ( !GetPoint(var, exception, pos) )  return true;
+    if ( var->GetType() <= CBotTypDouble ) {
+        type = static_cast<ObjectType>(var->GetValInt());
+        var = var->GetNext();
 
-    angle = var->GetValFloat()*Math::PI/180.0f;
-    var = var->GetNext();
+        pos = me->GetPosition(0);
 
-    type = static_cast<ObjectType>(var->GetValInt());
-    var = var->GetNext();
+        Math::Vector rotation = me->GetAngle(0) + me->GetInclinaison();
+        angle = rotation.y;
 
-    cbs = var->GetValString();
-    name = cbs;
+        if( var != 0 )
+            power = var->GetValFloat();
+        else
+            power = -1.0f;
 
-    if ( type == OBJECT_FRET     ||
-         type == OBJECT_STONE    ||
-         type == OBJECT_URANIUM  ||
-         type == OBJECT_METAL    ||
-         type == OBJECT_POWER    ||
-         type == OBJECT_ATOMIC   ||
-         type == OBJECT_BULLET   ||
-         type == OBJECT_BBOX     ||
-         type == OBJECT_KEYa     ||
-         type == OBJECT_KEYb     ||
-         type == OBJECT_KEYc     ||
-         type == OBJECT_KEYd     ||
-         type == OBJECT_TNT      ||
-         type == OBJECT_SCRAP1   ||
-         type == OBJECT_SCRAP2   ||
-         type == OBJECT_SCRAP3   ||
-         type == OBJECT_SCRAP4   ||
-         type == OBJECT_SCRAP5   ||
-         type == OBJECT_BOMB     ||
-         type == OBJECT_WAYPOINT ||
-         type == OBJECT_SHOW     ||
-         type == OBJECT_WINFIRE  )
+        name = "";
+    } else {
+        if ( !GetPoint(var, exception, pos) )  return true;
+
+        angle = var->GetValFloat()*Math::PI/180.0f;
+        var = var->GetNext();
+
+        type = static_cast<ObjectType>(var->GetValInt());
+        var = var->GetNext();
+
+        if ( var != 0 ) {
+            cbs = var->GetValString();
+            name = cbs;
+            var = var->GetNext();
+            if ( var != 0 ) {
+                power = var->GetValFloat();
+            } else {
+                power = -1.0f;
+            }
+        } else {
+            name = "";
+            power = -1.0f;
+        }
+    }
+
+    if ( type == OBJECT_FRET        ||
+         type == OBJECT_STONE       ||
+         type == OBJECT_URANIUM     ||
+         type == OBJECT_METAL       ||
+         type == OBJECT_POWER       ||
+         type == OBJECT_ATOMIC      ||
+         type == OBJECT_BULLET      ||
+         type == OBJECT_BBOX        ||
+         type == OBJECT_KEYa        ||
+         type == OBJECT_KEYb        ||
+         type == OBJECT_KEYc        ||
+         type == OBJECT_KEYd        ||
+         type == OBJECT_TNT         ||
+         type == OBJECT_SCRAP1      ||
+         type == OBJECT_SCRAP2      ||
+         type == OBJECT_SCRAP3      ||
+         type == OBJECT_SCRAP4      ||
+         type == OBJECT_SCRAP5      ||
+         type == OBJECT_BOMB        ||
+         type == OBJECT_WAYPOINT    ||
+         type == OBJECT_SHOW        ||
+         type == OBJECT_WINFIRE     ||
+         type == OBJECT_BAG         ||
+         type == OBJECT_MARKPOWER   ||
+         type == OBJECT_MARKSTONE   ||
+         type == OBJECT_MARKURANIUM ||
+         type == OBJECT_MARKKEYa    ||
+         type == OBJECT_MARKKEYb    ||
+         type == OBJECT_MARKKEYc    ||
+         type == OBJECT_MARKKEYd    ||
+         type == OBJECT_EGG         )
     {
-        object = new CObject(script->m_iMan);
+        object = new CObject();
         if ( !object->CreateResource(pos, angle, type) )
         {
             delete object;
             result->SetValInt(1);  // error
             return true;
         }
+        object->SetActivity(false);
     }
     else
     if ( type == OBJECT_MOTHER ||
@@ -1030,7 +1095,7 @@ bool CScript::rProduce(CBotVar* var, CBotVar* result, int& exception, void* user
     {
         CObject*    egg;
 
-        object = new CObject(script->m_iMan);
+        object = new CObject();
         if ( !object->CreateInsect(pos, angle, type) )
         {
             delete object;
@@ -1038,18 +1103,123 @@ bool CScript::rProduce(CBotVar* var, CBotVar* result, int& exception, void* user
             return true;
         }
 
-        egg = new CObject(script->m_iMan);
+        egg = new CObject();
         if ( !egg->CreateResource(pos, angle, OBJECT_EGG, 0.0f) )
         {
             delete egg;
         }
+        object->SetActivity(false);
+    }
+    else
+    if ( type == OBJECT_PORTICO  ||
+         type == OBJECT_BASE     ||
+         type == OBJECT_DERRICK  ||
+         type == OBJECT_FACTORY  ||
+         type == OBJECT_STATION  ||
+         type == OBJECT_CONVERT  ||
+         type == OBJECT_REPAIR   ||
+         type == OBJECT_DESTROYER||
+         type == OBJECT_TOWER    ||
+         type == OBJECT_NEST     ||
+         type == OBJECT_RESEARCH ||
+         type == OBJECT_RADAR    ||
+         type == OBJECT_INFO     ||
+         type == OBJECT_ENERGY   ||
+         type == OBJECT_LABO     ||
+         type == OBJECT_NUCLEAR  ||
+         type == OBJECT_PARA     ||
+         type == OBJECT_SAFE     ||
+         type == OBJECT_HUSTON   ||
+         type == OBJECT_TARGET1  ||
+         type == OBJECT_TARGET2  ||
+         type == OBJECT_START    ||
+         type == OBJECT_END      )
+    {
+        object = new CObject();
+        if ( !object->CreateBuilding(pos, angle, 0, type) )
+        {
+            delete object;
+            result->SetValInt(1);  // error
+            return true;
+        }
+        object->SetActivity(false);
+        script->m_main->CreateShortcuts();
+    }
+    else
+    if ( type == OBJECT_FLAGb ||
+         type == OBJECT_FLAGr ||
+         type == OBJECT_FLAGg ||
+         type == OBJECT_FLAGy ||
+         type == OBJECT_FLAGv )
+    {
+        object = new CObject();
+        if ( !object->CreateFlag(pos, angle, type) )
+        {
+            delete object;
+            result->SetValInt(1);  // error
+            return true;
+        }
+        object->SetActivity(false);
+    }
+    else
+    if ( type == OBJECT_HUMAN    ||
+         type == OBJECT_TECH     ||
+         type == OBJECT_TOTO     ||
+         type == OBJECT_MOBILEfa ||
+         type == OBJECT_MOBILEta ||
+         type == OBJECT_MOBILEwa ||
+         type == OBJECT_MOBILEia ||
+         type == OBJECT_MOBILEfc ||
+         type == OBJECT_MOBILEtc ||
+         type == OBJECT_MOBILEwc ||
+         type == OBJECT_MOBILEic ||
+         type == OBJECT_MOBILEfi ||
+         type == OBJECT_MOBILEti ||
+         type == OBJECT_MOBILEwi ||
+         type == OBJECT_MOBILEii ||
+         type == OBJECT_MOBILEfs ||
+         type == OBJECT_MOBILEts ||
+         type == OBJECT_MOBILEws ||
+         type == OBJECT_MOBILEis ||
+         type == OBJECT_MOBILErt ||
+         type == OBJECT_MOBILErc ||
+         type == OBJECT_MOBILErr ||
+         type == OBJECT_MOBILErs ||
+         type == OBJECT_MOBILEsa ||
+         type == OBJECT_MOBILEtg ||
+         type == OBJECT_MOBILEft ||
+         type == OBJECT_MOBILEtt ||
+         type == OBJECT_MOBILEwt ||
+         type == OBJECT_MOBILEit ||
+         type == OBJECT_MOBILEdr ||
+         type == OBJECT_APOLLO2  )
+    {
+        object = new CObject();
+        if ( !object->CreateVehicle(pos, angle, type, power, false, false) )
+        {
+            delete object;
+            result->SetValInt(1);  // error
+            return true;
+        }
+        object->UpdateMapping();
+        object->SetRange(30.0f);
+        object->SetZoom(0, 1.0f);
+        CPhysics* physics = object->GetPhysics();
+        if ( physics != 0 )
+        {
+            physics->SetFreeze(false);  // can move
+        }
+        object->SetLock(false);  // vehicle useable
+        object->SetManual(true);
+        object->SetActivity(true);
+        script->m_main->CreateShortcuts();
     }
     else
     {
         result->SetValInt(1);  // impossible
         return true;
     }
-    object->SetActivity(false);
+
     object->ReadProgram(0, static_cast<const char*>(name));
     object->RunProgram(0);
 
@@ -1243,7 +1413,7 @@ bool CScript::rWait(CBotVar* var, CBotVar* result, int& exception, void* user)
 
     if ( script->m_primaryTask == 0 )  // no task in progress?
     {
-        script->m_primaryTask = new CTaskManager(script->m_iMan, script->m_object);
+        script->m_primaryTask = new CTaskManager(script->m_object);
         value = var->GetValFloat();
         err = script->m_primaryTask->StartTaskWait(value);
         if ( err != ERR_OK )
@@ -1274,7 +1444,7 @@ bool CScript::rMove(CBotVar* var, CBotVar* result, int& exception, void* user)
 
     if ( script->m_primaryTask == 0 )  // no task in progress?
     {
-        script->m_primaryTask = new CTaskManager(script->m_iMan, script->m_object);
+        script->m_primaryTask = new CTaskManager(script->m_object);
         value = var->GetValFloat();
         err = script->m_primaryTask->StartTaskAdvance(value*g_unit);
         if ( err != ERR_OK )
@@ -1305,7 +1475,7 @@ bool CScript::rTurn(CBotVar* var, CBotVar* result, int& exception, void* user)
 
     if ( script->m_primaryTask == 0 )  // no task in progress?
     {
-        script->m_primaryTask = new CTaskManager(script->m_iMan, script->m_object);
+        script->m_primaryTask = new CTaskManager(script->m_object);
         value = var->GetValFloat();
         err = script->m_primaryTask->StartTaskTurn(-value*Math::PI/180.0f);
         if ( err != ERR_OK )
@@ -1365,7 +1535,7 @@ bool CScript::rGoto(CBotVar* var, CBotVar* result, int& exception, void* user)
 
     if ( script->m_primaryTask == 0 )  // no task in progress?
     {
-        script->m_primaryTask = new CTaskManager(script->m_iMan, script->m_object);
+        script->m_primaryTask = new CTaskManager(script->m_object);
         if ( !GetPoint(var, exception, pos) )  return true;
 
         goal  = TGG_DEFAULT;
@@ -1444,11 +1614,13 @@ bool CScript::rFind(CBotVar* var, CBotVar* result, int& exception, void* user)
             bArray = false;
         }
 
+        CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
+
         best = 100000.0f;
         pBest = 0;
         for ( i=0 ; i<1000000 ; i++ )
         {
-            pObj = static_cast<CObject*>(script->m_iMan->SearchInstance(CLASS_OBJECT, i));
+            pObj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
             if ( pObj == 0 )  break;
             if ( pObj == pThis )  continue;
 
@@ -1527,7 +1699,7 @@ bool CScript::rFind(CBotVar* var, CBotVar* result, int& exception, void* user)
         crash = TGC_DEFAULT;
         altitude = 0.0f*g_unit;
 
-        script->m_primaryTask = new CTaskManager(script->m_iMan, script->m_object);
+        script->m_primaryTask = new CTaskManager(script->m_object);
         err = script->m_primaryTask->StartTaskGoto(pos, altitude, goal, crash);
         if ( err != ERR_OK )
         {
@@ -1570,7 +1742,7 @@ bool CScript::rGrab(CBotVar* var, CBotVar* result, int& exception, void* user)
 
     if ( script->m_primaryTask == 0 )  // no task in progress?
     {
-        script->m_primaryTask = new CTaskManager(script->m_iMan, script->m_object);
+        script->m_primaryTask = new CTaskManager(script->m_object);
         if ( var == 0 )
         {
             type = TMA_FFRONT;
@@ -1621,7 +1793,7 @@ bool CScript::rDrop(CBotVar* var, CBotVar* result, int& exception, void* user)
 
     if ( script->m_primaryTask == 0 )  // no task in progress?
     {
-        script->m_primaryTask = new CTaskManager(script->m_iMan, script->m_object);
+        script->m_primaryTask = new CTaskManager(script->m_object);
         if ( var == 0 )  type = TMA_FFRONT;
         else             type = static_cast<TaskManipArm>(var->GetValInt());
 
@@ -1663,7 +1835,7 @@ bool CScript::rSniff(CBotVar* var, CBotVar* result, int& exception, void* user)
 
     if ( script->m_primaryTask == 0 )  // no task in progress?
     {
-        script->m_primaryTask = new CTaskManager(script->m_iMan, script->m_object);
+        script->m_primaryTask = new CTaskManager(script->m_object);
         err = script->m_primaryTask->StartTaskSearch();
         if ( err != ERR_OK )
         {
@@ -1712,7 +1884,7 @@ bool CScript::rReceive(CBotVar* var, CBotVar* result, int& exception, void* user
 
     if ( script->m_primaryTask == 0 )  // no task in progress?
     {
-        script->m_primaryTask = new CTaskManager(script->m_iMan, script->m_object);
+        script->m_primaryTask = new CTaskManager(script->m_object);
 
         cbs = var->GetValString();
         p = cbs;
@@ -1782,7 +1954,7 @@ bool CScript::rSend(CBotVar* var, CBotVar* result, int& exception, void* user)
 
     if ( script->m_primaryTask == 0 )  // no task in progress?
     {
-        script->m_primaryTask = new CTaskManager(script->m_iMan, script->m_object);
+        script->m_primaryTask = new CTaskManager(script->m_object);
 
         cbs = var->GetValString();
         p = cbs;
@@ -1827,11 +1999,13 @@ CObject* CScript::SearchInfo(CScript* script, CObject* object, float power)
 
     iPos = object->GetPosition(0);
 
+    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
+
     min = 100000.0f;
     pBest = 0;
     for ( i=0 ; i<1000000 ; i++ )
     {
-        pObj = static_cast<CObject*>(script->m_iMan->SearchInstance(CLASS_OBJECT, i));
+        pObj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
         if ( pObj == 0 )  break;
 
         type = pObj->GetType();
@@ -1990,7 +2164,7 @@ bool CScript::rThump(CBotVar* var, CBotVar* result, int& exception, void* user)
 
     if ( script->m_primaryTask == 0 )  // no task in progress?
     {
-        script->m_primaryTask = new CTaskManager(script->m_iMan, script->m_object);
+        script->m_primaryTask = new CTaskManager(script->m_object);
         err = script->m_primaryTask->StartTaskTerraform();
         if ( err != ERR_OK )
         {
@@ -2019,7 +2193,7 @@ bool CScript::rRecycle(CBotVar* var, CBotVar* result, int& exception, void* user
 
     if ( script->m_primaryTask == 0 )  // no task in progress?
     {
-        script->m_primaryTask = new CTaskManager(script->m_iMan, script->m_object);
+        script->m_primaryTask = new CTaskManager(script->m_object);
         err = script->m_primaryTask->StartTaskRecover();
         if ( err != ERR_OK )
         {
@@ -2081,7 +2255,7 @@ bool CScript::rShield(CBotVar* var, CBotVar* result, int& exception, void* user)
         {
             pThis->SetParam(radius);
 
-            *script->m_secondaryTask = new CTaskManager(script->m_iMan, script->m_object);
+            *script->m_secondaryTask = new CTaskManager(script->m_object);
             err = (*script->m_secondaryTask)->StartTaskShield(TSM_UP, 1000.0f);
             if ( err != ERR_OK )
             {
@@ -2154,7 +2328,7 @@ bool CScript::rFire(CBotVar* var, CBotVar* result, int& exception, void* user)
 
     if ( script->m_primaryTask == 0 )  // no task in progress?
     {
-        script->m_primaryTask = new CTaskManager(script->m_iMan, script->m_object);
+        script->m_primaryTask = new CTaskManager(script->m_object);
 
         type = pThis->GetType();
 
@@ -2186,21 +2360,40 @@ bool CScript::rFire(CBotVar* var, CBotVar* result, int& exception, void* user)
     return Process(script, result, exception);
 }
 
+// Compilation of the instruction "aim(x, y)".
+
+CBotTypResult CScript::cAim(CBotVar* &var, void* user)
+{
+    if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
+    if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
+    var = var->GetNext();
+
+    if ( var == 0 )  return CBotTypResult(CBotTypFloat);
+    if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
+    var = var->GetNext();
+
+    if ( var != 0 )  return CBotTypResult(CBotErrOverParam);
+
+    return CBotTypResult(CBotTypFloat);
+}
+
 // Instruction "aim(dir)".
 
 bool CScript::rAim(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
     CScript*    script = (static_cast<CObject *>(user))->GetRunScript();
-    float       value;
+    float       x, y;
     Error       err;
 
     exception = 0;
 
     if ( script->m_primaryTask == 0 )  // no task in progress?
     {
-        script->m_primaryTask = new CTaskManager(script->m_iMan, script->m_object);
-        value = var->GetValFloat();
-        err = script->m_primaryTask->StartTaskGunGoal(value*Math::PI/180.0f, 0.0f);
+        script->m_primaryTask = new CTaskManager(script->m_object);
+        x = var->GetValFloat();
+    	var = var->GetNext();
+    	var == 0 ? y=0.0f : y=var->GetValFloat();
+        err = script->m_primaryTask->StartTaskGunGoal(x*Math::PI/180.0f, y*Math::PI/180.0f);
         if ( err != ERR_OK )
         {
             delete script->m_primaryTask;
@@ -2269,6 +2462,8 @@ bool CScript::rJet(CBotVar* var, CBotVar* result, int& exception, void* user)
     float       value;
 
     value = var->GetValFloat();
+    if( value > 1.0f ) value = 1.0f;
+
     physics->SetMotorSpeedY(value);
 
     return true;
@@ -2513,7 +2708,7 @@ bool CScript::rPenDown(CBotVar* var, CBotVar* result, int& exception, void* user
             }
             pThis->SetTraceDown(true);
 
-            script->m_primaryTask = new CTaskManager(script->m_iMan, script->m_object);
+            script->m_primaryTask = new CTaskManager(script->m_object);
             err = script->m_primaryTask->StartTaskPen(pThis->GetTraceDown(), pThis->GetTraceColor());
             if ( err != ERR_OK )
             {
@@ -2570,7 +2765,7 @@ bool CScript::rPenUp(CBotVar* var, CBotVar* result, int& exception, void* user)
         {
             pThis->SetTraceDown(false);
 
-            script->m_primaryTask = new CTaskManager(script->m_iMan, script->m_object);
+            script->m_primaryTask = new CTaskManager(script->m_object);
             err = script->m_primaryTask->StartTaskPen(pThis->GetTraceDown(), pThis->GetTraceColor());
             if ( err != ERR_OK )
             {
@@ -2614,7 +2809,7 @@ bool CScript::rPenColor(CBotVar* var, CBotVar* result, int& exception, void* use
             if ( color > 17 )  color = 17;
             pThis->SetTraceColor(color);
 
-            script->m_primaryTask = new CTaskManager(script->m_iMan, script->m_object);
+            script->m_primaryTask = new CTaskManager(script->m_object);
             err = script->m_primaryTask->StartTaskPen(pThis->GetTraceDown(), pThis->GetTraceColor());
             if ( err != ERR_OK )
             {
@@ -2660,27 +2855,24 @@ bool CScript::rPenWidth(CBotVar* var, CBotVar* result, int& exception, void* use
 
 // Object's constructor.
 
-CScript::CScript(CInstanceManager* iMan, CObject* object, CTaskManager** secondaryTask)
+CScript::CScript(CObject* object, CTaskManager** secondaryTask)
 {
-    m_iMan = iMan;
-    m_iMan->AddInstance(CLASS_SCRIPT, this, 100);
-
-    m_engine        = static_cast<Gfx::CEngine*>(m_iMan->SearchInstance(CLASS_ENGINE));
-    m_main          = static_cast<CRobotMain*>(m_iMan->SearchInstance(CLASS_MAIN));
-    m_terrain       = static_cast<Gfx::CTerrain*>(m_iMan->SearchInstance(CLASS_TERRAIN));
-    m_water         = static_cast<Gfx::CWater*>(m_iMan->SearchInstance(CLASS_WATER));
-    m_botProg       = 0;
+    m_engine        = Gfx::CEngine::GetInstancePointer();
+    m_main          = CRobotMain::GetInstancePointer();
+    m_terrain       = m_main->GetTerrain();
+    m_water         = m_engine->GetWater();
+    m_botProg       = nullptr;
     m_object        = object;
-    m_primaryTask   = 0;
+    m_primaryTask   = nullptr;
     m_secondaryTask = secondaryTask;
 
-    m_interface = static_cast<Ui::CInterface*>(m_iMan->SearchInstance(CLASS_INTERFACE));
-    m_displayText = static_cast<Ui::CDisplayText*>(m_iMan->SearchInstance(CLASS_DISPLAYTEXT));
+    m_interface = m_main->GetInterface();
+    m_displayText = m_main->GetDisplayText();
 
     m_ipf = CBOT_IPF;
     m_errMode = ERM_STOP;
     m_len = 0;
-    m_script = 0;
+    m_script = nullptr;
     m_bRun = false;
     m_bStepMode = false;
     m_bCompile = false;
@@ -2731,7 +2923,7 @@ void CScript::InitFonctions()
     CBotProgram::AddFunction("recycle",   rRecycle,   CScript::cNull);
     CBotProgram::AddFunction("shield",    rShield,    CScript::cShield);
     CBotProgram::AddFunction("fire",      rFire,      CScript::cFire);
-    CBotProgram::AddFunction("aim",       rAim,       CScript::cOneFloat);
+    CBotProgram::AddFunction("aim",       rAim,       CScript::cAim);
     CBotProgram::AddFunction("motor",     rMotor,     CScript::cMotor);
     CBotProgram::AddFunction("jet",       rJet,       CScript::cOneFloat);
     CBotProgram::AddFunction("topo",      rTopo,      CScript::cTopo);
@@ -2762,8 +2954,6 @@ CScript::~CScript()
     m_script = nullptr;
 
     m_len = 0;
-
-    m_iMan->DeleteInstance(CLASS_SCRIPT, this);
 }
 
 
@@ -3346,7 +3536,6 @@ void CScript::ColorizeScript(Ui::CEdit* edit)
 
         cursor1 = bt->GetStart();
         cursor2 = bt->GetEnd();
-
         color = Gfx::FONT_HIGHLIGHT_NONE;
         if ( type >= TokenKeyWord && type < TokenKeyWord+100 )
         {
@@ -3376,7 +3565,7 @@ void CScript::ColorizeScript(Ui::CEdit* edit)
             color =Gfx::FONT_HIGHLIGHT_CONST;
         }
 
-        if ( cursor1 < cursor2 && color != 0 )
+        if ( cursor1 < cursor2 && color != Gfx::FONT_HIGHLIGHT_NONE )
         {
             edit->SetFormat(cursor1, cursor2, color);
         }
@@ -3712,7 +3901,7 @@ bool CScript::WriteScript(const char* filename)
     edit->SetMaxChar(Ui::EDITSTUDIOMAX);
     edit->SetAutoIndent(m_engine->GetEditIndentMode());
     edit->SetText(m_script);
-    edit->WriteText(name.c_str());
+    edit->WriteText(name);
     m_interface->DeleteControl(EVENT_EDIT9);
     return true;
 }

@@ -32,7 +32,6 @@ namespace Ui {
 class CGauge : public CControl
 {
     public:
-    //    CGauge(CInstanceManager* iMan);
         CGauge();
         virtual ~CGauge();
 

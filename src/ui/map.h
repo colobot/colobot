@@ -22,11 +22,7 @@
 
 #include "ui/control.h"
 
-#include "object/object.h"
-#include "object/robotmain.h"
-
 #include "common/event.h"
-#include "common/iman.h"
 
 #include "graphics/engine/terrain.h"
 #include "graphics/engine/water.h"
@@ -35,6 +31,9 @@
 #include "graphics/core/vertex.h"
 
 #include "math/geometry.h"
+
+#include "object/object.h"
+#include "object/robotmain.h"
 
 
 namespace Ui {

@@ -22,9 +22,8 @@
 #include <map>
 #include <string>
 
-#include <AL/alut.h>
+#include <AL/al.h>
 
-#include "common/iman.h"
 #include "common/logger.h"
 #include "sound/sound.h"
 
@@ -42,7 +41,7 @@ class ALSound : public CSoundInterface
         bool Create(bool b3D);
         bool Cache(Sound, std::string);
 
-        bool RetEnable();
+        bool GetEnable();
 
         void SetSound3D(bool bMode);
         bool GetSound3D();
@@ -86,9 +85,12 @@ class ALSound : public CSoundInterface
         bool mEnabled;
         bool m3D;
         bool mMute;
-        int mAudioVolume;
-        ALCdevice* audioDevice;
-        ALCcontext* audioContext;
+        float mAudioVolume;
+        float mMusicVolume;
+        ALCdevice* mDevice;
+        ALCcontext* mContext;
         std::map<Sound, Buffer*> mSounds;
         std::map<int, Channel*> mChannels;
+        std::deque<Buffer*> mMusicCache;
+        Channel *mCurrentMusic;
 };

@@ -26,7 +26,7 @@
 class CTaskInfo : public CTask
 {
 public:
-    CTaskInfo(CInstanceManager* iMan, CObject* object);
+    CTaskInfo(CObject* object);
     ~CTaskInfo();
 
     bool        EventProcess(const Event &event);

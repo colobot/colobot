@@ -14,29 +14,32 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// taskbuild.cpp
 
 #include "object/task/taskbuild.h"
 
 #include "common/iman.h"
+
 #include "graphics/core/color.h"
 #include "graphics/core/light.h"
 #include "graphics/engine/lightman.h"
 #include "graphics/engine/terrain.h"
 #include "graphics/engine/water.h"
+
 #include "math/geometry.h"
+
 #include "object/auto/auto.h"
 #include "object/motion/motionhuman.h"
 #include "object/robotmain.h"
+
 #include "physics/physics.h"
+
 #include "ui/displaytext.h"
 
 #include <string.h>
 
 // Object's constructor.
 
-CTaskBuild::CTaskBuild(CInstanceManager* iMan, CObject* object)
-                       : CTask(iMan, object)
+CTaskBuild::CTaskBuild(CObject* object) : CTask(object)
 {
     int     i;
 
@@ -75,7 +78,7 @@ CTaskBuild::~CTaskBuild()
 
 bool CTaskBuild::CreateBuilding(Math::Vector pos, float angle)
 {
-    m_building = new CObject(m_iMan);
+    m_building = new CObject();
     if ( !m_building->CreateBuilding(pos, angle, 0.0f, m_type, 0.0f) )
     {
         delete m_building;
@@ -98,6 +101,7 @@ bool CTaskBuild::CreateBuilding(Math::Vector pos, float angle)
     if ( m_type == OBJECT_NUCLEAR  )  m_buildingHeight = 40.0f;
     if ( m_type == OBJECT_PARA     )  m_buildingHeight = 68.0f;
     if ( m_type == OBJECT_INFO     )  m_buildingHeight = 19.0f;
+    if ( m_type == OBJECT_DESTROYER)  m_buildingHeight = 35.0f;
     m_buildingHeight *= 0.25f;
 
     m_buildingPos = m_building->GetPosition(0);
@@ -110,7 +114,6 @@ bool CTaskBuild::CreateBuilding(Math::Vector pos, float angle)
 
 void CTaskBuild::CreateLight()
 {
-    Gfx::Light   light;
     Gfx::Color   color;
     Math::Vector center, pos, dir;
     Math::Point  c, p;
@@ -137,18 +140,12 @@ void CTaskBuild::CreateLight()
         pos.y = center.y+40.0f;
         dir = center-pos;
 
-        memset(&light, 0, sizeof(light));
+        Gfx::Light light;
         light.type       = Gfx::LIGHT_SPOT;
-        light.diffuse.r  = 0.0f;
-        light.diffuse.g  = 0.0f;
-        light.diffuse.b  = 0.0f;  // white (invisible)
-        light.position.x  = pos.x;
-        light.position.y  = pos.y;
-        light.position.z  = pos.z;
-        light.direction.x = dir.x;
-        light.direction.y = dir.y;
-        light.direction.z = dir.z;
-        //TODO Is this value correct
+        light.ambient    = Gfx::Color(0.0f, 0.0f, 0.0f);
+        light.diffuse    = Gfx::Color(0.0f, 0.0f, 0.0f); // invisible
+        light.position   = pos;
+        light.direction  = dir;
         light.spotIntensity = 128;
         light.attenuation0 = 1.0f;
         light.attenuation1 = 0.0f;
@@ -578,6 +575,7 @@ Error CTaskBuild::FlatFloor()
     if ( m_type == OBJECT_NUCLEAR  )  radius = 20.0f;
     if ( m_type == OBJECT_PARA     )  radius = 20.0f;
     if ( m_type == OBJECT_INFO     )  radius =  5.0f;
+    if ( m_type == OBJECT_DESTROYER)  radius = 20.0f;
     if ( radius == 0.0f )  return ERR_GENERIC;
 
     center = m_metal->GetPosition(0);
@@ -594,11 +592,13 @@ Error CTaskBuild::FlatFloor()
         return bLittleFlat?ERR_BUILD_FLATLIT:ERR_BUILD_FLAT;
     }
 
+    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
+
     max = 100000.0f;
     bBase = false;
     for ( i=0 ; i<1000000 ; i++ )
     {
-        pObj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
+        pObj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
         if ( pObj == 0 )  break;
 
         if ( !pObj->GetActif() )  continue;  // inactive?
@@ -646,7 +646,7 @@ Error CTaskBuild::FlatFloor()
     max = 100000.0f;
     for ( i=0 ; i<1000000 ; i++ )
     {
-        pObj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
+        pObj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
         if ( pObj == 0 )  break;
 
         if ( !pObj->GetActif() )  continue;  // inactive?
@@ -666,6 +666,7 @@ Error CTaskBuild::FlatFloor()
              type == OBJECT_ENERGY   ||
              type == OBJECT_LABO     ||
              type == OBJECT_NUCLEAR  ||
+             type == OBJECT_DESTROYER||
              type == OBJECT_START    ||
              type == OBJECT_END      ||
              type == OBJECT_INFO     ||
@@ -712,12 +713,14 @@ CObject* CTaskBuild::SearchMetalObject(float &angle, float dMin, float dMax,
     iAngle = m_object->GetAngleY(0);
     iAngle = Math::NormAngle(iAngle);  // 0..2*Math::PI
 
+    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
+
     min = 1000000.0f;
     pBest = 0;
     bMetal = false;
     for ( i=0 ; i<1000000 ; i++ )
     {
-        pObj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
+        pObj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
         if ( pObj == 0 )  break;
 
         if ( !pObj->GetActif() )  continue;  // objet inactive?
@@ -776,9 +779,11 @@ void CTaskBuild::DeleteMark(Math::Vector pos, float radius)
     float       distance;
     int         i;
 
+    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
+
     for ( i=0 ; i<1000000 ; i++ )
     {
-        pObj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
+        pObj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
         if ( pObj == 0 )  break;
 
         type = pObj->GetType();

@@ -213,6 +213,7 @@ enum BuildType
     BUILD_LABO          = (1<<10),      //! < laboratory
     BUILD_PARA          = (1<<11),      //! < lightning protection
     BUILD_INFO          = (1<<12),      //! < information terminal
+    BUILD_DESTROYER     = (1<<13),      //! < Destroyer
     BUILD_GFLAT         = (1<<16),      //! < flat floor
     BUILD_FLAG          = (1<<17)       //! < puts / removes colored flag
 };

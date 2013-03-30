@@ -15,16 +15,10 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// displaytext.cpp
-
 
 #include "ui/displaytext.h"
 
-#include "ui/interface.h"
-#include "ui/button.h"
-#include "ui/label.h"
-#include "ui/window.h"
-#include "ui/group.h"
+#include "app/app.h"
 
 #include "common/event.h"
 #include "common/iman.h"
@@ -36,6 +30,11 @@
 #include "object/motion/motion.h"
 #include "object/motion/motiontoto.h"
 
+#include "ui/interface.h"
+#include "ui/button.h"
+#include "ui/label.h"
+#include "ui/window.h"
+#include "ui/group.h"
 
 
 
@@ -46,20 +45,13 @@ const float FONTSIZE = 12.0f;
 
 // Object's constructor.
 
-//CDisplayText::CDisplayText(CInstanceManager* iMan)
 CDisplayText::CDisplayText()
 {
-    int     i;
+    m_engine    = Gfx::CEngine::GetInstancePointer();
+    m_interface = CRobotMain::GetInstancePointer()->GetInterface();
+    m_sound     = CApplication::GetInstancePointer()->GetSound();
 
-//    m_iMan = iMan;
-    m_iMan = CInstanceManager::GetInstancePointer();
-    m_iMan->AddInstance(CLASS_DISPLAYTEXT, this);
-
-    m_engine    = static_cast<Gfx::CEngine*>(m_iMan->SearchInstance(CLASS_ENGINE));
-    m_interface = static_cast<CInterface*>(m_iMan->SearchInstance(CLASS_INTERFACE));
-    m_sound     = static_cast<CSoundInterface*>(m_iMan->SearchInstance(CLASS_SOUND));
-
-    for ( i=0 ; i<MAXDTLINE ; i++ )
+    for (int i=0 ; i<MAXDTLINE ; i++ )
     {
         m_bExist[i] = false;
         m_visitGoal[i] = Math::Vector(0.0f, 0.0f, 0.0f);
@@ -77,7 +69,6 @@ CDisplayText::CDisplayText()
 
 CDisplayText::~CDisplayText()
 {
-    m_iMan->DeleteInstance(CLASS_DISPLAYTEXT, this);
 }
 
 
@@ -598,9 +589,11 @@ CObject* CDisplayText::SearchToto()
     CObject*    pObj;
     int         i;
 
+    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
+
     for ( i=0 ; i<1000000 ; i++ )
     {
-        pObj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
+        pObj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
         if ( pObj == 0 )  break;
 
         type = pObj->GetType();

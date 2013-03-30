@@ -58,7 +58,7 @@ enum MotionHumanSpecialAction
 class CMotionHuman : public CMotion
 {
 public:
-    CMotionHuman(CInstanceManager* iMan, CObject* object);
+    CMotionHuman(CObject* object);
     ~CMotionHuman();
 
     void    DeleteObject(bool bAll=false);

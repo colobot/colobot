@@ -14,17 +14,19 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// taskrecover.cpp
-
 
 #include <stdio.h>
 
 #include "object/task/taskrecover.h"
 
-#include "math/geometry.h"
 #include "common/iman.h"
+
 #include "graphics/engine/particle.h"
+
+#include "math/geometry.h"
+
 #include "physics/physics.h"
+
 #include "ui/displaytext.h"
 
 
@@ -35,8 +37,7 @@ const float RECOVER_DIST    = 11.8f;
 
 // Object's constructor.
 
-CTaskRecover::CTaskRecover(CInstanceManager* iMan, CObject* object)
-                               : CTask(iMan, object)
+CTaskRecover::CTaskRecover(CObject* object) : CTask(object)
 {
     m_ruin = 0;
     m_soundChannel = -1;
@@ -297,7 +298,7 @@ Error CTaskRecover::IsEnded()
 
     if ( m_phase == TRP_DOWN )
     {
-        m_metal = new CObject(m_iMan);
+        m_metal = new CObject();
         if ( !m_metal->CreateResource(m_recoverPos, 0.0f, OBJECT_METAL) )
         {
             delete m_metal;
@@ -385,11 +386,13 @@ CObject* CTaskRecover::SearchRuin()
     float       dist, min;
     int         i;
 
+    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
+
     pBest = 0;
     min = 100000.0f;
     for ( i=0 ; i<1000000 ; i++ )
     {
-        pObj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
+        pObj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
         if ( pObj == 0 )  break;
 
         type = pObj->GetType();

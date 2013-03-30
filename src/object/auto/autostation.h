@@ -27,7 +27,7 @@
 class CAutoStation : public CAuto
 {
 public:
-    CAutoStation(CInstanceManager* iMan, CObject* object);
+    CAutoStation(CObject* object);
     ~CAutoStation();
 
     void        DeleteObject(bool bAll=false);

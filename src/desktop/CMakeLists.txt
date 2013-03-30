@@ -39,7 +39,7 @@ endif()
 
 # Create manpage from pod-formatted file
 find_program(POD2MAN pod2man)
-if(POD2MAN)
+if(POD2MAN AND (NOT MSYS))
 	set(COLOBOT_MANPAGE_SECTION 6)
 
         macro(podman)

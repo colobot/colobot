@@ -19,11 +19,11 @@
 
 #pragma once
 
-#include <string>
-
 #include "common/event.h"
 #include "common/misc.h"
 #include "common/restext.h"
+
+#include "graphics/engine/text.h"
 
 #include "ui/button.h"
 #include "ui/color.h"
@@ -44,7 +44,7 @@
 #include "ui/target.h"
 #include "ui/control.h"
 
-#include "graphics/engine/text.h"
+#include <string>
 
 namespace Ui {
 

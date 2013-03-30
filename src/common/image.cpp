@@ -22,8 +22,8 @@
 #include <string.h>
 #include <assert.h>
 
-#include <SDL/SDL.h>
-#include <SDL/SDL_image.h>
+#include <SDL.h>
+#include <SDL_image.h>
 #include <png.h>
 
 
@@ -188,6 +188,15 @@ Math::IntPoint CImage::GetSize() const
         return Math::IntPoint();
 
     return Math::IntPoint(m_data->surface->w, m_data->surface->h);
+}
+
+/** Image must be valid. */
+void CImage::Fill(Gfx::IntColor color)
+{
+    assert(m_data != nullptr);
+
+    Uint32 c = SDL_MapRGBA(m_data->surface->format, color.r, color.g, color.b, color.a);
+    SDL_FillRect(m_data->surface, nullptr, c);
 }
 
 /**

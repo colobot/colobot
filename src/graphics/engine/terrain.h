@@ -26,9 +26,6 @@
 #include "graphics/engine/engine.h"
 
 
-class CInstanceManager;
-
-
 // Graphics module namespace
 namespace Gfx {
 
@@ -223,7 +220,7 @@ struct FlyingLimit
 class CTerrain
 {
 public:
-    CTerrain(CInstanceManager* iMan);
+    CTerrain();
     ~CTerrain();
 
     //! Generates a new flat terrain
@@ -328,9 +325,9 @@ protected:
     //! Calculates a vector of the terrain
     Math::Vector GetVector(int x, int y);
     //! Calculates a vertex of the terrain
-    VertexTex2 GetVertex(int x, int y, int step);
+    VertexTex2  GetVertex(int x, int y, int step);
     //! Creates all objects of a mosaic
-    bool        CreateMosaic(int ox, int oy, int step, int objRank, const Material& mat, float min, float max);
+    bool        CreateMosaic(int ox, int oy, int step, int objRank, const Material& mat);
     //! Creates all objects in a mesh square ground
     bool        CreateSquare(int x, int y);
 
@@ -359,7 +356,6 @@ protected:
     void        AdjustBuildingLevel(Math::Vector &p);
 
 protected:
-    CInstanceManager* m_iMan;
     CEngine*        m_engine;
     CWater*         m_water;
 

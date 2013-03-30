@@ -21,6 +21,7 @@
 
 #pragma once
 
+#include <cmath>
 
 // Math module namespace
 namespace Math {
@@ -48,6 +49,11 @@ struct IntPoint
     inline bool operator!=(const IntPoint& p) const
     {
         return !operator==(p);
+    }
+
+    inline float Length() const
+    {
+        return sqrtf(x*x + y*y);
     }
 };
 

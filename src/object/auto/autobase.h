@@ -65,7 +65,7 @@ enum AutoBasePhase
 class CAutoBase : public CAuto
 {
 public:
-    CAutoBase(CInstanceManager* iMan, CObject* object);
+    CAutoBase(CObject* object);
     ~CAutoBase();
 
     void        DeleteObject(bool bAll=false);

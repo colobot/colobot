@@ -42,7 +42,7 @@ const int HUSTONMAXLENS = 20;
 class CAutoHuston : public CAuto
 {
 public:
-    CAutoHuston(CInstanceManager* iMan, CObject* object);
+    CAutoHuston(CObject* object);
     ~CAutoHuston();
 
     void        DeleteObject(bool bAll=false);

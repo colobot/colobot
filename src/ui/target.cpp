@@ -14,11 +14,10 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// target.cpp
-
 
 #include "ui/target.h"
 
+#include "common/iman.h"
 
 
 namespace Ui {
@@ -189,9 +188,11 @@ CObject* CTarget::DetectFriendObject(Math::Point pos)
 
     objRank = m_engine->DetectObject(pos);
 
+    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
+
     for ( i=0 ; i<1000000 ; i++ )
     {
-        pObj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
+        pObj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
         if ( pObj == 0 )  break;
 
         if ( !pObj->GetActif() )  continue;

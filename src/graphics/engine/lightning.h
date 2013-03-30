@@ -28,7 +28,6 @@
 #include "math/vector.h"
 
 
-class CInstanceManager;
 class CObject;
 class CSoundInterface;
 
@@ -53,7 +52,7 @@ const float LTNG_PROTECTION_RADIUS = 200.0f;
 class CLightning
 {
 public:
-    CLightning(CInstanceManager* iMan, CEngine* engine);
+    CLightning(CEngine* engine);
     ~CLightning();
 
     //! Triggers lightning
@@ -80,7 +79,6 @@ protected:
     CObject*    SearchObject(Math::Vector pos);
 
 protected:
-    CInstanceManager* m_iMan;
     CEngine*          m_engine;
     CTerrain*         m_terrain;
     CCamera*          m_camera;

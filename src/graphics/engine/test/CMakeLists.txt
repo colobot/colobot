@@ -10,7 +10,6 @@ modelfile_test.cpp
 ../modelfile.cpp
 ../../../common/logger.cpp
 ../../../common/stringutils.cpp
-../../../common/iman.cpp
 )
 
 add_definitions(-DMODELFILE_NO_ENGINE)

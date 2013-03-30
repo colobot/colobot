@@ -20,14 +20,14 @@ set(COLOBOT_VERSION_UNRELEASED "~pre-alpha")
 
 # Append git characteristics to version
 if(DEFINED COLOBOT_VERSION_UNRELEASED AND EXISTS "${CMAKE_SOURCE_DIR}/.git")
-	find_package(Git)
-	execute_process(COMMAND ${GIT_EXECUTABLE} rev-parse --abbrev-ref HEAD
-			OUTPUT_VARIABLE GIT_BRANCH
-			OUTPUT_STRIP_TRAILING_WHITESPACE)
-	execute_process(COMMAND ${GIT_EXECUTABLE} rev-parse --short HEAD
-			OUTPUT_VARIABLE GIT_REVISION
-			OUTPUT_STRIP_TRAILING_WHITESPACE)
-	set(COLOBOT_VERSION_UNRELEASED "${COLOBOT_VERSION_UNRELEASED}-git-${GIT_BRANCH}~r${GIT_REVISION}")
+    find_package(Git)
+    execute_process(COMMAND ${GIT_EXECUTABLE} rev-parse --abbrev-ref HEAD
+                    OUTPUT_VARIABLE GIT_BRANCH
+                    OUTPUT_STRIP_TRAILING_WHITESPACE)
+    execute_process(COMMAND ${GIT_EXECUTABLE} rev-parse --short HEAD
+                    OUTPUT_VARIABLE GIT_REVISION
+                    OUTPUT_STRIP_TRAILING_WHITESPACE)
+    set(COLOBOT_VERSION_UNRELEASED "${COLOBOT_VERSION_UNRELEASED}-git-${GIT_BRANCH}~r${GIT_REVISION}")
 endif()
 
 set(COLOBOT_VERSION_FULL "${COLOBOT_VERSION_MAJOR}.${COLOBOT_VERSION_MINOR}.${COLOBOT_VERSION_REVISION}${COLOBOT_VERSION_UNRELEASED}")
@@ -46,11 +46,39 @@ if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE debug)
 endif()
 
+# Compiler detection
+if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU")
+    execute_process(
+        COMMAND ${CMAKE_CXX_COMPILER} -dumpversion OUTPUT_VARIABLE GCC_VERSION)
+    if (GCC_VERSION VERSION_GREATER 4.7 OR GCC_VERSION VERSION_EQUAL 4.7)
+        message(STATUS "Detected GCC version 4.7+")
+        set(CXX11_FLAGS "-std=gnu++11")
+    elseif (GCC_VERSION VERSION_GREATER 4.6 OR GCC_VERSION VERSION_EQUAL 4.6)
+        message(STATUS "Detected GCC version 4.6+")
+        set(CXX11_FLAGS "-std=c++0x -Doverride=")
+    else()
+        message(FATAL_ERROR "${PROJECT_NAME} requires GCC 4.6 or greater.")
+    endif()
+elseif("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
+    message(STATUS "Detected Clang compiler")
+    set(CXX11_FLAGS "-std=c++11")
+else()
+    message(FATAL_ERROR "Your C++ compiler doesn't seem to support C++11.\n"
+                        "Supported compilers at this time are GCC 4.6+ and clang.")
+endif()
+
+
 # Global compile flags
-# These are specific to GCC/MinGW; for other compilers, change as necessary
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wold-style-cast -std=c++11")
-set(CMAKE_CXX_FLAGS_RELEASE "-O2")
-set(CMAKE_CXX_FLAGS_DEBUG "-g -O0")
+# These are specific to GCC/MinGW/clang; for other compilers, change as necessary
+# The flags are used throughout src/ and test/ subdirs
+
+# Special flags for boost
+set(Boost_FLAGS "-DBOOST_NO_SCOPED_ENUMS -DBOOST_NO_CXX11_SCOPED_ENUMS")
+
+set(COLOBOT_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wold-style-cast ${CXX11_FLAGS} ${Boost_FLAGS}")
+set(COLOBOT_CXX_FLAGS_RELEASE "-O2")
+set(COLOBOT_CXX_FLAGS_DEBUG "-g -O0")
+
 
 # Asserts can be enabled/disabled regardless of build type
 option(ASSERTS "Enable assert()s" ON)
@@ -61,14 +89,18 @@ option(TESTS "Enable tests" ON)
 # CBot can also be a static library
 option(CBOT_STATIC "Build CBot as static libary" OFF)
 
+# Generate desktop files, manpage, etc.
+option(DESKTOP "Generate desktop files, manpages, etc" ON)
+
 # Doxygen docs are optional for installation
 option(INSTALL_DOCS "Install Doxygen-generated documentation" OFF)
 
 # Build openal sound support
 option(OPENAL_SOUND "Build openal sound support" OFF)
 
+
 ##
-# Required packages
+# Searching for packages
 ##
 
 find_package(OpenGL 1.4 REQUIRED)
@@ -85,16 +117,44 @@ set(Boost_USE_STATIC_RUNTIME    OFF)
 set(Boost_ADDITIONALVERSION "1.51" "1.51.0")
 find_package(Boost COMPONENTS system filesystem regex REQUIRED)
 
-# GLEW requirement depends on platform
-# By default it is auto detected
-# This setting may be used to override
-# Possible values:
-# - auto -> determine automatically
-# - 1 -> always enable
-# - 0 -> always disable
-set(USE_GLEW auto)
 # This is useful on Windows, if linking against standard GLEW dll fails
 option(GLEW_STATIC "Link statically with GLEW" OFF)
+
+find_package(GLEW REQUIRED)
+
+if (${OPENAL_SOUND})
+    find_package(OpenAL REQUIRED)
+    include("${colobot_SOURCE_DIR}/cmake/FindLibSndFile.cmake")
+endif()
+
+
+##
+# Platform detection and some related checks
+##
+
+if (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+    set(PLATFORM_WINDOWS 1)
+    set(PLATFORM_LINUX   0)
+    set(PLATFORM_OTHER   0)
+elseif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+    set(PLATFORM_WINDOWS 0)
+    set(PLATFORM_LINUX   1)
+    set(PLATFORM_OTHER   0)
+else()
+    set(PLATFORM_WINDOWS 0)
+    set(PLATFORM_LINUX   0)
+    set(PLATFORM_OTHER   1)
+endif()
+
+if(NOT ${ASSERTS})
+    add_definitions(-DNDEBUG)
+endif()
+
+if(${TESTS})
+    add_definitions(-DTESTS -DTEST_VIRTUAL=virtual)
+else()
+    add_definitions(-DTEST_VIRTUAL=)
+endif()
 
 
 ##
@@ -103,57 +163,21 @@ option(GLEW_STATIC "Link statically with GLEW" OFF)
 
 include("${colobot_SOURCE_DIR}/cmake/mxe.cmake")
 
+##
+# Additional settings for MSYS
+##
+include("${colobot_SOURCE_DIR}/cmake/msys.cmake")
+
 
 ##
-# Platform detection and some related checks
+# Summary of detected things
 ##
-
-if (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
-    message(STATUS "Windows system detected")
-    set(PLATFORM_WINDOWS 1)
-    set(PLATFORM_LINUX   0)
-    set(PLATFORM_OTHER   0)
-
-    # On Windows, GLEW is required
-    if (${USE_GLEW} MATCHES "auto")
-        set(USE_GLEW 1)
-    endif()
-elseif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-    message(STATUS "Linux system detected")
-    set(PLATFORM_WINDOWS 0)
-    set(PLATFORM_LINUX   1)
-    set(PLATFORM_OTHER   0)
-
-    # On Linux, we should be fine without GLEW
-    if (${USE_GLEW} MATCHES "auto")
-        set(USE_GLEW 0)
-    endif()
+if (${PLATFORM_WINDOWS})
+    message(STATUS "Build for Windows system")
+elseif(${PLATFORM_LINUX})
+    message(STATUS "Build for Linux system")
 else()
-    message(STATUS "Other system detected")
-    set(PLATFORM_WINDOWS 0)
-    set(PLATFORM_LINUX   0)
-    set(PLATFORM_OTHER   1)
-
-    # Use GLEW to be safe
-    if (${USE_GLEW} MATCHES "auto")
-        set(USE_GLEW 1)
-    endif()
-endif()
-
-
-if(${USE_GLEW})
-    find_package(GLEW REQUIRED)
-endif()
-
-if(NOT ${ASSERTS})
-    add_definitions(-DNDEBUG)
-endif()
-
-if(${TESTS})
-    add_definitions(-DTEST_VIRTUAL=virtual)
-    enable_testing()
-else()
-    add_definitions(-DTEST_VIRTUAL=)
+    message(STATUS "Build for other system")
 endif()
 
 
@@ -206,14 +230,27 @@ if(${TESTS})
         add_subdirectory(${GMOCK_SRC_DIR} bin/gmock)
     endif()
 
+
+    # Tests targets
+    enable_testing()
+    add_subdirectory(test bin/test)
+
 endif()
 
 # Installation paths defined before compiling sources
-set(COLOBOT_INSTALL_BIN_DIR games CACHE PATH "Colobot binary directory")
-set(COLOBOT_INSTALL_DATA_DIR share/games/colobot CACHE PATH "Colobot shared data directory")
-set(COLOBOT_INSTALL_LIB_DIR lib/colobot CACHE PATH "Colobot libraries directory")
-set(COLOBOT_INSTALL_DOC_DIR share/doc/colobot CACHE PATH "Colobot documentation directory")
-set(COLOBOT_INSTALL_I18N_DIR share/locale CACHE PATH "Colobot translations directory")
+if (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+    set(COLOBOT_INSTALL_BIN_DIR ${CMAKE_INSTALL_PREFIX}/ CACHE PATH "Colobot binary directory")
+    set(COLOBOT_INSTALL_LIB_DIR ${CMAKE_INSTALL_PREFIX}/ CACHE PATH "Colobot libraries directory")
+    set(COLOBOT_INSTALL_DATA_DIR ${CMAKE_INSTALL_PREFIX}/data CACHE PATH "Colobot shared data directory")
+    set(COLOBOT_INSTALL_I18N_DIR ${CMAKE_INSTALL_PREFIX}/ CACHE PATH "Colobot translations directory")
+    set(COLOBOT_INSTALL_DOC_DIR ${CMAKE_INSTALL_PREFIX}/doc CACHE PATH "Colobot documentation directory")
+else()
+    set(COLOBOT_INSTALL_BIN_DIR ${CMAKE_INSTALL_PREFIX}/games CACHE PATH "Colobot binary directory")
+    set(COLOBOT_INSTALL_LIB_DIR ${CMAKE_INSTALL_PREFIX}/lib/colobot CACHE PATH "Colobot libraries directory")
+    set(COLOBOT_INSTALL_DATA_DIR ${CMAKE_INSTALL_PREFIX}/share/games/colobot CACHE PATH "Colobot shared data directory")
+    set(COLOBOT_INSTALL_I18N_DIR ${CMAKE_INSTALL_PREFIX}/share/locale CACHE PATH "Colobot translations directory")
+    set(COLOBOT_INSTALL_DOC_DIR ${CMAKE_INSTALL_PREFIX}/share/doc/colobot CACHE PATH "Colobot documentation directory")
+endif()
 
 # Subdirectory with sources
 add_subdirectory(src bin)
@@ -223,10 +260,13 @@ add_subdirectory(src bin)
 # Installation
 ##
 
-file(GLOB DATA_FILES "data/*")
-
-# Data
-install(DIRECTORY data/ DESTINATION ${COLOBOT_INSTALL_DATA_DIR})
+# Data: check if the submodule handles its own installation
+if(EXISTS "${CMAKE_SOURCE_DIR}/data/CMakeLists.txt")
+    message(STATUS "Data directory will install itself.")
+    add_subdirectory(data)
+else()
+    message(WARNING "Data directory is not available; make sure colobot-data is installed in ${COLOBOT_INSTALL_DATA_DIR}.")
+endif()
 
 # Documentation
 if(INSTALL_DOCS AND DOXYGEN_FOUND AND DOXYGEN_DOT_FOUND)

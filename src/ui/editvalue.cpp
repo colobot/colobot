@@ -15,22 +15,21 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// editvalue.cpp
 
+#include "ui/editvalue.h"
 
 #include "common/event.h"
 #include "common/misc.h"
-#include "common/iman.h"
+
 #include "ui/edit.h"
 #include "ui/button.h"
-#include "ui/editvalue.h"
+
 
 
 
 namespace Ui {
 // Object's constructor.
 
-//CEditValue::CEditValue(CInstanceManager* iMan) : CControl(iMan)
 CEditValue::CEditValue() : CControl ()
 {
     m_edit       = 0;

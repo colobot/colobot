@@ -37,7 +37,7 @@ enum AutoInfoPhase
 class CAutoInfo : public CAuto
 {
 public:
-    CAutoInfo(CInstanceManager* iMan, CObject* object);
+    CAutoInfo(CObject* object);
     ~CAutoInfo();
 
     void        DeleteObject(bool bAll=false);

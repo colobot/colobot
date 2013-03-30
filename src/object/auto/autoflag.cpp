@@ -37,8 +37,7 @@ static float g_flag3 = 2.00f;
 
 // Object's constructor.
 
-CAutoFlag::CAutoFlag(CInstanceManager* iMan, CObject* object)
-                     : CAuto(iMan, object)
+CAutoFlag::CAutoFlag(CObject* object) : CAuto(object)
 {
     Init();
 }

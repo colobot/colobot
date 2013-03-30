@@ -14,7 +14,6 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// taskwait.cpp
 
 #include "object/task/taskwait.h"
 
@@ -22,8 +21,7 @@
 
 // Object's constructor.
 
-CTaskWait::CTaskWait(CInstanceManager* iMan, CObject* object)
-                     : CTask(iMan, object)
+CTaskWait::CTaskWait(CObject* object) : CTask(object)
 {
 }
 

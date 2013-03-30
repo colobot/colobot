@@ -35,6 +35,7 @@ struct SoundOper
     float finalAmplitude;
     float finalFrequency;
     float totalTime;
+    float currentTime;
     SoundNext nextOper;
 };
 
@@ -51,6 +52,7 @@ class Channel
 
         bool SetFrequency(float);
         float GetFrequency();
+        bool AdjustFrequency(float);
 
         float GetCurrentTime();
         void SetCurrentTime(float);
@@ -60,8 +62,11 @@ class Channel
         float GetVolume();
         bool IsPlaying();
         bool IsReady();
+        bool IsLoaded();
 
         bool SetBuffer(Buffer *);
+        bool FreeBuffer();
+        
         bool HasEnvelope();
         SoundOper& GetEnvelope();
         void PopEnvelope();
@@ -72,7 +77,6 @@ class Channel
         void SetStartAmplitude(float);
         void SetStartFrequency(float);
         void SetChangeFrequency(float);
-        void SetInitFrequency(float);
 
         float GetStartAmplitude();
         float GetStartFrequency();
@@ -82,8 +86,7 @@ class Channel
         void AddOper(SoundOper);
         void ResetOper();
         Sound GetSoundType();
-        void AdjustFrequency(float);
-        void AdjustVolume(float);
+        void SetLoop(bool);
         
     private:
         Buffer *mBuffer;
@@ -96,4 +99,5 @@ class Channel
         float mInitFrequency;
         std::deque<SoundOper> mOper;
         bool mReady;
+        bool mLoop;
 };

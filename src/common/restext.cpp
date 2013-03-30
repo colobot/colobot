@@ -30,7 +30,7 @@
 #include "object/robotmain.h"
 
 #include <libintl.h>
-#include <SDL/SDL_keyboard.h>
+#include <SDL_keyboard.h>
 
 const char* stringsText[RT_MAX]         = { nullptr };
 const char* stringsEvent[EVENT_STD_MAX] = { nullptr };
@@ -308,6 +308,7 @@ void InitializeRestext()
     stringsEvent[EVENT_OBJECT_BNUCLEAR]     = "Build a nuclear power plant";
     stringsEvent[EVENT_OBJECT_BPARA]        = "Build a lightning conductor";
     stringsEvent[EVENT_OBJECT_BINFO]        = "Build a exchange post";
+    stringsEvent[EVENT_OBJECT_BDESTROYER]   = "Build a destroyer";
     stringsEvent[EVENT_OBJECT_GFLAT]        = "Show if the ground is flat";
     stringsEvent[EVENT_OBJECT_FCREATE]      = "Plant a flag";
     stringsEvent[EVENT_OBJECT_FDELETE]      = "Remove a flag";
@@ -351,6 +352,7 @@ void InitializeRestext()
     stringsEvent[EVENT_OBJECT_SEARCH]       = "Sniff (\\key action;)";
     stringsEvent[EVENT_OBJECT_TERRAFORM]    = "Thump (\\key action;)";
     stringsEvent[EVENT_OBJECT_FIRE]         = "Shoot (\\key action;)";
+    stringsEvent[EVENT_OBJECT_SPIDEREXPLO]  = "Explode (\\key action;)";
     stringsEvent[EVENT_OBJECT_RECOVER]      = "Recycle (\\key action;)";
     stringsEvent[EVENT_OBJECT_BEGSHIELD]    = "Extend shield (\\key action;)";
     stringsEvent[EVENT_OBJECT_ENDSHIELD]    = "Withdraw shield (\\key action;)";

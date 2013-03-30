@@ -18,8 +18,6 @@
 
 #include "graphics/engine/planet.h"
 
-#include "common/iman.h"
-
 #include "graphics/core/device.h"
 #include "graphics/engine/engine.h"
 
@@ -31,11 +29,8 @@ namespace Gfx {
 const int PLANET_PREALLOCATE_COUNT = 10;
 
 
-CPlanet::CPlanet(CInstanceManager* iMan, CEngine* engine)
+CPlanet::CPlanet(CEngine* engine)
 {
-    m_iMan = iMan;
-    m_iMan->AddInstance(CLASS_PLANET, this);
-
     m_planet[0].reserve(PLANET_PREALLOCATE_COUNT);
     m_planet[1].reserve(PLANET_PREALLOCATE_COUNT);
 
@@ -46,7 +41,6 @@ CPlanet::CPlanet(CInstanceManager* iMan, CEngine* engine)
 
 CPlanet::~CPlanet()
 {
-    m_iMan = nullptr;
 }
 
 void CPlanet::Flush()

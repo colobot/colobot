@@ -27,14 +27,12 @@
 
 namespace Gfx {
 class CEngine;
-class CLight;
 class CParticle;
 class CTerrain;
 class CWater;
 class CCamera;
 }
 
-class CInstanceManager;
 class CApplication;
 class CBrain;
 class CPhysics;
@@ -46,7 +44,7 @@ class CSoundInterface;
 class CMotion
 {
 public:
-    CMotion(CInstanceManager* iMan, CObject* object);
+    CMotion(CObject* object);
     virtual ~CMotion();
 
     void    SetPhysics(CPhysics* physics);
@@ -72,12 +70,8 @@ public:
     virtual Math::Vector    GetInclinaison();
 
 protected:
-
-protected:
-    CInstanceManager*   m_iMan;
     CApplication*       m_app;
     Gfx::CEngine*       m_engine;
-    Gfx::CLight*        m_light;
     Gfx::CParticle*     m_particle;
     Gfx::CTerrain*      m_terrain;
     Gfx::CWater*        m_water;

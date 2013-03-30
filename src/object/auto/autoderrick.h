@@ -38,7 +38,7 @@ enum AutoDerrickPhase
 class CAutoDerrick : public CAuto
 {
 public:
-    CAutoDerrick(CInstanceManager* iMan, CObject* object);
+    CAutoDerrick(CObject* object);
     ~CAutoDerrick();
 
     void        DeleteObject(bool bAll=false);

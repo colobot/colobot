@@ -41,7 +41,7 @@ enum AutoLaboPhase
 class CAutoLabo : public CAuto
 {
 public:
-    CAutoLabo(CInstanceManager* iMan, CObject* object);
+    CAutoLabo(CObject* object);
     ~CAutoLabo();
 
     void        DeleteObject(bool bAll=false);

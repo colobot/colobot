@@ -27,10 +27,22 @@
 #include <string>
 #include <vector>
 #include <set>
+#include <map>
 
 
 // Graphics module namespace
 namespace Gfx {
+
+/**
+ \enum VBOMode
+ \brief VBO autodetect/override
+ */
+enum VBOMode
+{
+    VBO_MODE_ENABLE,  //! < override: enable
+    VBO_MODE_DISABLE, //! < override: disable
+    VBO_MODE_AUTO     //! < autodetect
+};
 
 /**
  \struct GLDeviceConfig
@@ -50,6 +62,9 @@ struct GLDeviceConfig : public DeviceConfig
 
     //! Force hardware acceleration (video mode set will fail on lack of hw accel)
     bool hardwareAccel;
+
+    //! VBO override/autodetect
+    VBOMode vboMode;
 
     //! Constructor calls LoadDefaults()
     GLDeviceConfig();
@@ -84,6 +99,9 @@ public:
 
     void ConfigChanged(const GLDeviceConfig &newConfig);
 
+    void SetUseVbo(bool useVbo);
+    bool GetUseVbo();
+
     virtual void BeginScene();
     virtual void EndScene();
 
@@ -107,7 +125,7 @@ public:
     virtual void DestroyTexture(const Texture &texture);
     virtual void DestroyAllTextures();
 
-    virtual int GetMaxTextureCount();
+    virtual int GetMaxTextureStageCount();
     virtual void SetTexture(int index, const Texture &texture);
     virtual void SetTexture(int index, unsigned int textureId);
     virtual Texture GetTexture(int index);
@@ -119,13 +137,20 @@ public:
 
     virtual void SetTextureStageWrap(int index, Gfx::TexWrapMode wrapS, Gfx::TexWrapMode wrapT);
 
-    //! Renders primitive composed of vertices with single texture
     virtual void DrawPrimitive(PrimitiveType type, const Vertex *vertices    , int vertexCount,
                                Color color = Color(1.0f, 1.0f, 1.0f, 1.0f));
-    //! Renders primitive composed of vertices with multitexturing (2 textures)
     virtual void DrawPrimitive(PrimitiveType type, const VertexTex2 *vertices, int vertexCount,
                                Color color = Color(1.0f, 1.0f, 1.0f, 1.0f));
     virtual void DrawPrimitive(PrimitiveType type, const VertexCol *vertices , int vertexCount);
+
+    virtual unsigned int CreateStaticBuffer(PrimitiveType primitiveType, const Vertex* vertices, int vertexCount);
+    virtual unsigned int CreateStaticBuffer(PrimitiveType primitiveType, const VertexTex2* vertices, int vertexCount);
+    virtual unsigned int CreateStaticBuffer(PrimitiveType primitiveType, const VertexCol* vertices, int vertexCount);
+    virtual void UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primitiveType, const Vertex* vertices, int vertexCount);
+    virtual void UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primitiveType, const VertexTex2* vertices, int vertexCount);
+    virtual void UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primitiveType, const VertexCol* vertices, int vertexCount);
+    virtual void DrawStaticBuffer(unsigned int bufferId);
+    virtual void DestroyStaticBuffer(unsigned int bufferId);
 
     virtual int ComputeSphereVisibility(const Math::Vector &center, float radius);
 
@@ -200,6 +225,32 @@ private:
 
     //! Set of all created textures
     std::set<Texture> m_allTextures;
+
+    //! Type of vertex structure
+    enum VertexType
+    {
+        VERTEX_TYPE_NORMAL,
+        VERTEX_TYPE_TEX2,
+        VERTEX_TYPE_COL,
+    };
+
+    //! Info about static VBO buffers
+    struct VboObjectInfo
+    {
+        PrimitiveType primitiveType;
+        unsigned int bufferId;
+        VertexType vertexType;
+        int vertexCount;
+    };
+
+    //! Whether to use multitexturing
+    bool m_multitextureAvailable;
+    //! Whether to use VBOs or display lists
+    bool m_vboAvailable;
+    //! Map of saved VBO objects
+    std::map<unsigned int, VboObjectInfo> m_vboObjects;
+    //! Last ID of VBO object
+    unsigned int m_lastVboId;
 };
 
 

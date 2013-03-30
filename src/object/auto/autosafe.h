@@ -36,7 +36,7 @@ enum AutoSafePhase
 class CAutoSafe : public CAuto
 {
 public:
-    CAutoSafe(CInstanceManager* iMan, CObject* object);
+    CAutoSafe(CObject* object);
     ~CAutoSafe();
 
     void        DeleteObject(bool bAll=false);

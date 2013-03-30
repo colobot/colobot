@@ -20,6 +20,7 @@
 
 
 #include "object/task/task.h"
+
 #include "math/vector.h"
 
 
@@ -37,7 +38,7 @@ enum TaskTerraPhase
 class CTaskTerraform : public CTask
 {
 public:
-    CTaskTerraform(CInstanceManager* iMan, CObject* object);
+    CTaskTerraform(CObject* object);
     ~CTaskTerraform();
 
     bool        EventProcess(const Event &event);

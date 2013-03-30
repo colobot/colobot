@@ -15,13 +15,12 @@
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 ////////////////////////////////////////////////////////////////////////
 
-#pragma once
-#ifndef _CBOTDLL_H_ 
-#define _CBOTDLL_H_
 /**
  * \file CBotDll.h
  * \brief Library for interpretation of CBOT language
  */
+
+#pragma once
 
 #include <stdio.h>
 #include "resource.h"
@@ -1114,5 +1113,4 @@ bool rDoGoto( CBotVar* pVar, CBotVar* pResult, int& exception )
 }
 
 #endif
-#endif //_CBOTDLL_H_
 

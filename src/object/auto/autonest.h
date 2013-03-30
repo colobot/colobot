@@ -35,7 +35,7 @@ enum AutoNestPhase
 class CAutoNest : public CAuto
 {
 public:
-    CAutoNest(CInstanceManager* iMan, CObject* object);
+    CAutoNest(CObject* object);
     ~CAutoNest();
 
     void        DeleteObject(bool bAll=false);

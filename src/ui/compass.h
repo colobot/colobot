@@ -23,32 +23,29 @@
 
 
 namespace Gfx {
-    class CEngine;
+class CEngine;
 }
 
 namespace Ui {
 
-    class CCompass : public CControl
-    {
-    public:
-    //    CCompass(CInstanceManager* iMan);
-        CCompass();
-        virtual ~CCompass();
+class CCompass : public CControl
+{
+public:
+    CCompass();
+    virtual ~CCompass();
 
-        bool    Create(Math::Point pos, Math::Point dim, int icon, EventType eventType);
+    bool    Create(Math::Point pos, Math::Point dim, int icon, EventType eventType);
 
-        bool    EventProcess(const Event &event);
+    bool    EventProcess(const Event &event);
 
-        void    Draw();
+    void    Draw();
 
-        void    SetDirection(float dir);
-        float   GetDirection();
+    void    SetDirection(float dir);
+    float   GetDirection();
 
-    protected:
-
-    protected:
-        float   m_dir;
-    };
+protected:
+    float   m_dir;
+};
 
 
 }

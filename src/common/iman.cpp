@@ -20,21 +20,8 @@
 #include <cassert>
 
 
-template<> CInstanceManager* CSingleton<CInstanceManager>::mInstance = nullptr;
+template<> CInstanceManager* CSingleton<CInstanceManager>::m_instance = nullptr;
 
-
-CInstanceManager& CInstanceManager::GetInstance()
-{
-    assert(mInstance);
-    return *mInstance;
-}
-
-
-CInstanceManager* CInstanceManager::GetInstancePointer()
-{
-    assert(mInstance);
-    return mInstance;
-}
 
 CInstanceManager::CInstanceManager()
 {

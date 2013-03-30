@@ -41,6 +41,10 @@ class CEventQueue;
 class CRobotMain;
 class CSoundInterface;
 
+namespace Gfx {
+class CModelManager;
+}
+
 /**
  * \struct JoystickDevice
  * \brief Information about a joystick device
@@ -112,6 +116,31 @@ enum MouseMode
     MOUSE_NONE,   //! < no cursor visible
 };
 
+/**
+ * \enum PerformanceCounter
+ * \brief Type of counter testing performance
+ */
+enum PerformanceCounter
+{
+    PCNT_EVENT_PROCESSING, //! < event processing (except update events)
+
+    PCNT_UPDATE_ALL,            //! < the whole frame update process
+    PCNT_UPDATE_ENGINE,         //! < frame update in CEngine
+    PCNT_UPDATE_PARTICLE,       //! < frame update in CParticle
+    PCNT_UPDATE_GAME,           //! < frame update in CRobotMain
+
+    PCNT_RENDER_ALL,            //! < the whole rendering process
+    PCNT_RENDER_PARTICLE,       //! < rendering the particles in 3D
+    PCNT_RENDER_WATER,          //! < rendering the water
+    PCNT_RENDER_TERRAIN,        //! < rendering the terrain
+    PCNT_RENDER_OBJECTS,        //! < rendering the 3D objects
+    PCNT_RENDER_INTERFACE,      //! < rendering 2D interface
+
+    PCNT_ALL,                   //! < all counters together
+
+    PCNT_MAX
+};
+
 struct ApplicationPrivate;
 
 /**
@@ -165,6 +194,11 @@ public:
     //! Destructor
     ~CApplication();
 
+    //! Returns the application's event queue
+    CEventQueue* GetEventQueue();
+    //! Returns the sound subsystem
+    CSoundInterface* GetSound();
+
 public:
     //! Parses commandline arguments
     ParseArgsStatus ParseArguments(int argc, char *argv[]);
@@ -197,9 +231,6 @@ public:
     void        ResumeSimulation();
     //! Returns whether simulation is suspended
     bool        GetSimulationSuspended();
-
-    //! Updates the simulation state
-    void        StepSimulation();
 
     //@{
     //! Management of simulation speed
@@ -296,12 +327,20 @@ public:
     Language    GetLanguage();
     char        GetLanguageChar();
     void        SetLanguage(Language language);
+    static bool ParseLanguage(const std::string& str, Language& language);
     //@}
 
     //! Management of sleep in main loop (lowers CPU usage)
     //@{
     void        SetLowCPU(bool low);
     bool        GetLowCPU();
+    //@}
+
+    //! Management of performance counters
+    //@{
+    void        StartPerformanceCounter(PerformanceCounter counter);
+    void        StopPerformanceCounter(PerformanceCounter counter);
+    float       GetPerformanceCounterData(PerformanceCounter counter);
     //@}
 
 protected:
@@ -312,6 +351,8 @@ protected:
     Event       ProcessSystemEvent();
     //! If applicable, creates a virtual event to match the changed state as of new event
     Event       CreateVirtualEvent(const Event& sourceEvent);
+    //! Prepares a simulation update event
+    TEST_VIRTUAL Event CreateUpdateEvent();
     //! Handles some incoming events
     bool        ProcessEvent(const Event& event);
     //! Renders the image in window
@@ -322,21 +363,30 @@ protected:
     //! Closes the joystick device
     void CloseJoystick();
 
+    //! Resets all performance counters to zero
+    void ResetPerformanceCounters();
+    //! Updates performance counters from gathered timer data
+    void UpdatePerformanceCountersData();
+
 protected:
-    //! Instance manager
-    CInstanceManager*       m_iMan;
     //! Private (SDL-dependent data)
     ApplicationPrivate*     m_private;
+    //! Instance manager
+    // TODO: to be removed
+    CInstanceManager*       m_iMan;
     //! Global event queue
     CEventQueue*            m_eventQueue;
     //! Graphics engine
     Gfx::CEngine*           m_engine;
     //! Graphics device
     Gfx::CDevice*           m_device;
+    //! 3D models manager
+    Gfx::CModelManager*     m_modelManager;
     //! Sound subsystem
     CSoundInterface*        m_sound;
     //! Main class of the proper game engine
     CRobotMain*             m_robotMain;
+    //! Profile (INI) reader/writer
     CProfile*               m_profile;
 
     //! Code to return at exit
@@ -362,6 +412,9 @@ protected:
     SystemTimeStamp* m_baseTimeStamp;
     SystemTimeStamp* m_lastTimeStamp;
     SystemTimeStamp* m_curTimeStamp;
+
+    SystemTimeStamp* m_performanceCounters[PCNT_MAX][2];
+    float            m_performanceCountersData[PCNT_MAX];
 
     long long       m_realAbsTimeBase;
     long long       m_realAbsTime;
@@ -401,6 +454,9 @@ protected:
 
     //! Path to directory with data files
     std::string     m_dataPath;
+
+    //! Path to directory with language files
+    std::string     m_langPath;
 
     const char*     m_dataDirs[DIR_MAX];
 

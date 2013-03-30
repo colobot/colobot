@@ -19,8 +19,8 @@
 #pragma once
 
 
-#include "object/task/task.h"
 #include "object/object.h"
+#include "object/task/task.h"
 #include "object/task/taskmanip.h"
 #include "object/task/taskgoto.h"
 #include "object/task/taskshield.h"
@@ -31,7 +31,7 @@
 class CTaskManager
 {
 public:
-    CTaskManager(CInstanceManager* iMan, CObject* object);
+    CTaskManager(CObject* object);
     ~CTaskManager();
 
     Error   StartTaskWait(float time);
@@ -61,9 +61,6 @@ public:
     bool    Abort();
 
 protected:
-
-protected:
-    CInstanceManager* m_iMan;
     CTask*          m_task;
     CObject*        m_object;
     bool            m_bPilot;

@@ -26,7 +26,7 @@
 class CTaskWait : public CTask
 {
 public:
-    CTaskWait(CInstanceManager* iMan, CObject* object);
+    CTaskWait(CObject* object);
     ~CTaskWait();
 
     bool    EventProcess(const Event &event);

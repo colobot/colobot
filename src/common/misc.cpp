@@ -25,10 +25,6 @@
 #include <time.h>
 
 
-static bool         g_bUserDir = false;
-static char         g_userDir[100] = "";
-
-
 // Returns a non-accented letter.
 
 char GetNoAccent(char letter)
@@ -234,72 +230,11 @@ void TimeToAscii(time_t time, char *buffer)
 #endif*/
 }
 
-
-// Makes a copy of a file.
-
-bool Xfer(char* src, char* dst)
-{
-    FILE    *fs, *fd;
-    char    *buffer;
-    int     len;
-
-    fs = fopen(src, "rb");
-    if ( fs == 0 )
-    {
-        return false;
-    }
-
-    fd = fopen(dst, "wb");
-    if ( fd == 0 )
-    {
-        fclose(fs);
-        return false;
-    }
-
-    buffer = static_cast<char*>(malloc(10000));
-
-    while ( true )
-    {
-        len = fread(buffer, 1, 10000, fs);
-        if ( len == 0 )  break;
-        fwrite(buffer, 1, len, fd);
-    }
-
-    free(buffer);
-    fclose(fs);
-    fclose(fd);
-    return true;
-}
-
-// Copy a file into the temporary folder.
-
-bool CopyFileToTemp(char* filename)
-{
-    char    src[100];
-    char    dst[100];
-    char    save[100];
-
-    UserDir(src, filename, "textures");
-
-    strcpy(save, g_userDir);
-    strcpy(g_userDir, "temp");
-    UserDir(dst, filename, "textures");
-    strcpy(g_userDir, save);
-
-    //_mkdir("temp");
-    system("mkdir temp");
-
-    if ( !Xfer(src, dst) )  return false;
-
-    strcpy(filename, dst);
-    return true;
-}
-
 // Copy a list of numbered files into the temporary folder.
 
 bool CopyFileListToTemp(char* filename, int* list, int total)
 {
-    char    name[100];
+    /*char    name[100];
     char    ext[10];
     char    file[100];
     char    save[100];
@@ -329,8 +264,8 @@ bool CopyFileListToTemp(char* filename, int* list, int total)
     UserDir(file, filename, "textures");
     strcpy(filename, file);
     strcpy(g_userDir, save);
-
-    return true;
+*/
+    return false;
 }
 
 
@@ -342,56 +277,3 @@ void AddExt(char* filename, const char* ext)
     strcat(filename, ext);
 }
 
-
-// Specifies the user folder.
-
-void UserDir(bool bUser, const char* dir)
-{
-    g_bUserDir = bUser;
-    strcpy(g_userDir, dir);
-}
-
-// Replaces the string %user% by the user folder.
-// in:  dir = "%user%toto.txt"
-//      def = "abc\"
-// out: buffer = "abc\toto.txt"
-
-void UserDir(char* buffer, const char* dir, const char* def)
-{
-    char    ddir[100];
-    const char*   add;
-
-    if ( strstr(dir, "\\") == 0 && def[0] != 0 )
-    {
-        sprintf(ddir, "%s\\%s", def, dir);
-    }
-    else
-    {
-        strcpy(ddir, dir);
-    }
-    dir = ddir;
-
-    while ( *dir != 0 )
-    {
-        if ( dir[0] == '%' &&
-             dir[1] == 'u' &&
-             dir[2] == 's' &&
-             dir[3] == 'e' &&
-             dir[4] == 'r' &&
-             dir[5] == '%' )  // %user% ?
-        {
-            if ( g_bUserDir )  add = g_userDir;
-            else               add = def;
-
-            while ( *add != 0 )
-            {
-                *buffer++ = *add++;
-            }
-            dir += 6;  // jumps to %user%
-            continue;
-        }
-
-        *buffer++ = *dir++;
-    }
-    *buffer = 0;
-}

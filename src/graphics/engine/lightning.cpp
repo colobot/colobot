@@ -18,6 +18,8 @@
 
 #include "graphics/engine/lightning.h"
 
+#include "app/app.h"
+
 #include "common/logger.h"
 #include "common/iman.h"
 
@@ -25,22 +27,20 @@
 #include "graphics/engine/camera.h"
 #include "graphics/engine/terrain.h"
 
+#include "math/geometry.h"
+
 #include "object/object.h"
+#include "object/robotmain.h"
 
 #include "object/auto/autopara.h"
-
-#include "math/geometry.h"
 
 
 // Graphics module namespace
 namespace Gfx {
 
 
-CLightning::CLightning(CInstanceManager* iMan, CEngine* engine)
+CLightning::CLightning(CEngine* engine)
 {
-    m_iMan = iMan;
-    m_iMan->AddInstance(CLASS_BLITZ, this);
-
     m_engine = engine;
     m_terrain = nullptr;
     m_camera = nullptr;
@@ -187,13 +187,13 @@ bool CLightning::Create(float sleep, float delay, float magnetic)
     m_speed    = 1.0f / m_sleep;
 
     if (m_terrain == nullptr)
-        m_terrain = static_cast<CTerrain*>(m_iMan->SearchInstance(CLASS_TERRAIN));
+        m_terrain = CRobotMain::GetInstancePointer()->GetTerrain();
 
     if (m_camera == nullptr)
-        m_camera = static_cast<CCamera*>(m_iMan->SearchInstance(CLASS_CAMERA));
+        m_camera = CRobotMain::GetInstancePointer()->GetCamera();
 
     if (m_sound == nullptr)
-        m_sound = static_cast<CSoundInterface*>(m_iMan->SearchInstance(CLASS_SOUND));
+        m_sound = CApplication::GetInstancePointer()->GetSound();
 
     return false;
 }
@@ -312,12 +312,14 @@ CObject* CLightning::SearchObject(Math::Vector pos)
     std::vector<Math::Vector> paraObjPos;
     paraObjPos.reserve(100);
 
+    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
+
     // Seeking the object closest to the point of impact of lightning.
     CObject* bestObj = 0;
     float min = 100000.0f;
     for (int i = 0; i < 1000000; i++)
     {
-        CObject* obj = static_cast<CObject*>( m_iMan->SearchInstance(CLASS_OBJECT, i) );
+        CObject* obj = static_cast<CObject*>( iMan->SearchInstance(CLASS_OBJECT, i) );
         if (obj == nullptr) break;
 
         if (!obj->GetActif()) continue;  // inactive object?

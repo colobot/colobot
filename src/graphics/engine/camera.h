@@ -28,8 +28,8 @@
 #include "graphics/engine/engine.h"
 
 
-class CInstanceManager;
 class CObject;
+class CRobotMain;
 
 
 // Graphics module namespace
@@ -130,7 +130,7 @@ enum CameraOverEffect
 class CCamera {
 
     public:
-    CCamera(CInstanceManager* iMan);
+    CCamera();
     ~CCamera();
 
     //! Management of an event
@@ -258,8 +258,8 @@ protected:
     void        OverFrame(const Event &event);
 
 protected:
-    CInstanceManager* m_iMan;
     CEngine*     m_engine;
+    CRobotMain*  m_main;
     CTerrain*    m_terrain;
     CWater*      m_water;
 

@@ -14,15 +14,18 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// taskmanip.cpp
 
 #include "object/task/taskmanip.h"
 
 #include "common/iman.h"
+
 #include "graphics/engine/terrain.h"
 #include "graphics/engine/pyro.h"
+
 #include "math/geometry.h"
+
 #include "object/robotmain.h"
+
 #include "physics/physics.h"
 
 
@@ -40,8 +43,7 @@ const float MARGIN_BEE      = 5.0f;  //OK 1.9
 
 // Object's constructor.
 
-CTaskManip::CTaskManip(CInstanceManager* iMan, CObject* object)
-                       : CTask(iMan, object)
+CTaskManip::CTaskManip(CObject* object) : CTask(object)
 {
     m_arm  = TMA_NEUTRAL;
     m_hand = TMH_OPEN;
@@ -338,7 +340,7 @@ Error CTaskManip::Start(TaskManipOrder order, TaskManipArm arm)
             pos.y += 2.0f;
             m_object->SetPosition(0, pos);  // against the top of jump
 
-            pyro = new Gfx::CPyro(m_iMan);
+            pyro = new Gfx::CPyro();
             pyro->Create(Gfx::PT_FALL, other);  // the ball falls
         }
 
@@ -728,11 +730,13 @@ CObject* CTaskManip::SearchTakeUnderObject(Math::Vector &pos, float dLimit)
 
     iPos   = m_object->GetPosition(0);
 
+    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
+
     min = 1000000.0f;
     pBest = 0;
     for ( i=0 ; i<1000000 ; i++ )
     {
-        pObj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
+        pObj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
         if ( pObj == 0 )  break;
 
         type = pObj->GetType();
@@ -798,12 +802,14 @@ CObject* CTaskManip::SearchTakeFrontObject(bool bAdvance, Math::Vector &pos,
         dLimit = MARGIN_FRONT;
     }
 
+    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
+
     min = 1000000.0f;
     pBest = 0;
     bAngle = 0.0f;
     for ( i=0 ; i<1000000 ; i++ )
     {
-        pObj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
+        pObj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
         if ( pObj == 0 )  break;
 
         type = pObj->GetType();
@@ -889,12 +895,14 @@ CObject* CTaskManip::SearchTakeBackObject(bool bAdvance, Math::Vector &pos,
         dLimit = MARGIN_BACK;
     }
 
+    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
+
     min = 1000000.0f;
     pBest = 0;
     bAngle = 0.0f;
     for ( i=0 ; i<1000000 ; i++ )
     {
-        pObj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
+        pObj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
         if ( pObj == 0 )  break;
 
         type = pObj->GetType();
@@ -989,9 +997,11 @@ CObject* CTaskManip::SearchOtherObject(bool bAdvance, Math::Vector &pos,
         dLimit = MARGIN_FRIEND;
     }
 
+    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
+
     for ( i=0 ; i<1000000 ; i++ )
     {
-        pObj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
+        pObj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
         if ( pObj == 0 )  break;
 
         if ( pObj == m_object )  continue;  // yourself?
@@ -1345,9 +1355,11 @@ bool CTaskManip::IsFreeDeposeObject(Math::Vector pos)
     mat = m_object->GetWorldMatrix(0);
     iPos = Transform(*mat, pos);
 
+    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
+
     for ( i=0 ; i<1000000 ; i++ )
     {
-        pObj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
+        pObj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
         if ( pObj == 0 )  break;
 
         if ( pObj == m_object )  continue;

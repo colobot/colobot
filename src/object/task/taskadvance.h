@@ -20,6 +20,7 @@
 
 
 #include "object/task/task.h"
+
 #include "math/vector.h"
 
 
@@ -27,7 +28,7 @@
 class CTaskAdvance : public CTask
 {
 public:
-    CTaskAdvance(CInstanceManager* iMan, CObject* object);
+    CTaskAdvance(CObject* object);
     ~CTaskAdvance();
 
     bool    EventProcess(const Event &event);

@@ -15,23 +15,26 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// studio.cpp
 
-
-#include "studio.h"
+#include "ui/studio.h"
 
 #include "CBot/CBotDll.h"
 
 #include "app/app.h"
+
 #include "common/event.h"
-#include "common/iman.h"
 #include "common/misc.h"
+
 #include "graphics/engine/camera.h"
 #include "graphics/engine/engine.h"
+
 #include "object/object.h"
+
 #include "script/cbottoken.h"
 #include "script/script.h"
+
 #include "sound/sound.h"
+
 #include "ui/check.h"
 #include "ui/control.h"
 #include "ui/color.h"
@@ -61,16 +64,13 @@ namespace Ui {
 
 CStudio::CStudio()
 {
-    m_iMan = CInstanceManager::GetInstancePointer();
-    m_iMan->AddInstance(CLASS_STUDIO, this);
-
-    m_engine    = static_cast<Gfx::CEngine*>(m_iMan->SearchInstance(CLASS_ENGINE));
-    m_event     = static_cast<CEventQueue*>(m_iMan->SearchInstance(CLASS_EVENT));
-    m_interface = static_cast<CInterface*>(m_iMan->SearchInstance(CLASS_INTERFACE));
-    m_main      = static_cast<CRobotMain*>(m_iMan->SearchInstance(CLASS_MAIN));
-    m_camera    = static_cast<Gfx::CCamera*>(m_iMan->SearchInstance(CLASS_CAMERA));
-    m_sound     = static_cast<CSoundInterface*>(m_iMan->SearchInstance(CLASS_SOUND));
-    m_app = CApplication::GetInstancePointer();
+    m_app       = CApplication::GetInstancePointer();
+    m_sound     = m_app->GetSound();
+    m_event     = m_app->GetEventQueue();
+    m_engine    = Gfx::CEngine::GetInstancePointer();
+    m_main      = CRobotMain::GetInstancePointer();
+    m_interface = m_main->GetInterface();
+    m_camera    = m_main->GetCamera();
 
     m_bEditMaximized = false;
     m_bEditMinimized = false;
@@ -87,7 +87,6 @@ CStudio::CStudio()
 
 CStudio::~CStudio()
 {
-    m_iMan->DeleteInstance(CLASS_STUDIO, this);
 }
 
 
@@ -114,7 +113,7 @@ bool CStudio::EventProcess(const Event &event)
     if ( pw == nullptr )  return false;
 
     edit = static_cast<CEdit*>(pw->SearchControl(EVENT_STUDIO_EDIT));
-    if ( edit == 0 )  return false;
+    if ( edit == nullptr )  return false;
 
     if ( event.type == pw->GetEventTypeClose() )
     {
@@ -501,7 +500,7 @@ void CStudio::SearchToken(CEdit* edit)
     }
     token[i] = 0;
 
-    m_helpFilename = std::string(GetHelpFilename(token));
+    m_helpFilename = GetHelpFilename(token);
     if ( m_helpFilename.length() == 0 )
     {
         for ( i=0 ; i<OBJECT_MAX ; i++ )
@@ -692,7 +691,7 @@ void CStudio::AdjustEditScript()
     dim.x = wdim.x-0.02f;
     dim.y = wdim.y-0.22f-hList;
     edit = static_cast< CEdit* >(pw->SearchControl(EVENT_STUDIO_EDIT));
-    if ( edit != 0 )
+    if ( edit != nullptr )
     {
         edit->SetPos(pos);
         edit->SetDim(dim);
@@ -703,7 +702,7 @@ void CStudio::AdjustEditScript()
     dim.x = wdim.x-0.02f;
     dim.y = hList;
     list = static_cast< CList* >(pw->SearchControl(EVENT_STUDIO_LIST));
-    if ( list != 0 )
+    if ( list != nullptr )
     {
         list->SetPos(pos);
         list->SetDim(dim);
@@ -716,56 +715,56 @@ void CStudio::AdjustEditScript()
     pos.y = wpos.y+wdim.y-dim.y-0.06f;
     pos.x = wpos.x+0.01f;
     button = static_cast< CButton* >(pw->SearchControl(EVENT_STUDIO_NEW));
-    if ( button != 0 )
+    if ( button != nullptr )
     {
         button->SetPos(pos);
         button->SetDim(dim);
     }
     pos.x = wpos.x+0.05f;
     button = static_cast< CButton* >(pw->SearchControl(EVENT_STUDIO_OPEN));
-    if ( button != 0 )
+    if ( button != nullptr )
     {
         button->SetPos(pos);
         button->SetDim(dim);
     }
     pos.x = wpos.x+0.09f;
     button = static_cast< CButton* >(pw->SearchControl(EVENT_STUDIO_SAVE));
-    if ( button != 0 )
+    if ( button != nullptr )
     {
         button->SetPos(pos);
         button->SetDim(dim);
     }
     pos.x = wpos.x+0.14f;
     button = static_cast< CButton* >(pw->SearchControl(EVENT_STUDIO_UNDO));
-    if ( button != 0 )
+    if ( button != nullptr )
     {
         button->SetPos(pos);
         button->SetDim(dim);
     }
     pos.x = wpos.x+0.19f;
     button = static_cast< CButton* >(pw->SearchControl(EVENT_STUDIO_CUT));
-    if ( button != 0 )
+    if ( button != nullptr )
     {
         button->SetPos(pos);
         button->SetDim(dim);
     }
     pos.x = wpos.x+0.23f;
     button = static_cast< CButton* >(pw->SearchControl(EVENT_STUDIO_COPY));
-    if ( button != 0 )
+    if ( button != nullptr )
     {
         button->SetPos(pos);
         button->SetDim(dim);
     }
     pos.x = wpos.x+0.27f;
     button = static_cast< CButton* >(pw->SearchControl(EVENT_STUDIO_PASTE));
-    if ( button != 0 )
+    if ( button != nullptr )
     {
         button->SetPos(pos);
         button->SetDim(dim);
     }
     pos.x = wpos.x+0.32f;
     slider = static_cast< CSlider* >(pw->SearchControl(EVENT_STUDIO_SIZE));
-    if ( slider != 0 )
+    if ( slider != nullptr )
     {
         ppos = pos;
         ddim.x = dim.x*0.7f;
@@ -777,21 +776,21 @@ void CStudio::AdjustEditScript()
     }
     pos.x = wpos.x+0.36f;
     group = static_cast< CGroup* >(pw->SearchControl(EVENT_LABEL1));
-    if ( group != 0 )
+    if ( group != nullptr )
     {
         group->SetPos(pos);
         group->SetDim(dim);
     }
     pos.x = wpos.x+0.40f;
     button = static_cast< CButton* >(pw->SearchControl(EVENT_STUDIO_TOOL));
-    if ( button != 0 )
+    if ( button != nullptr )
     {
         button->SetPos(pos);
         button->SetDim(dim);
     }
     pos.x = wpos.x+0.44f;
     button = static_cast< CButton* >(pw->SearchControl(EVENT_STUDIO_HELP));
-    if ( button != 0 )
+    if ( button != nullptr )
     {
         button->SetPos(pos);
         button->SetDim(dim);
@@ -802,14 +801,14 @@ void CStudio::AdjustEditScript()
     dim.x = 80.0f/640.0f;
     dim.y = 25.0f/480.0f;
     button = static_cast< CButton* >(pw->SearchControl(EVENT_STUDIO_OK));
-    if ( button != 0 )
+    if ( button != nullptr )
     {
         button->SetPos(pos);
         button->SetDim(dim);
     }
     pos.x = wpos.x+0.14f;
     button = static_cast< CButton* >(pw->SearchControl(EVENT_STUDIO_CANCEL));
-    if ( button != 0 )
+    if ( button != nullptr )
     {
         button->SetPos(pos);
         button->SetDim(dim);
@@ -817,28 +816,28 @@ void CStudio::AdjustEditScript()
     pos.x = wpos.x+0.28f;
     dim.x = dim.y*0.75f;
     button = static_cast< CButton* >(pw->SearchControl(EVENT_STUDIO_COMPILE));
-    if ( button != 0 )
+    if ( button != nullptr )
     {
         button->SetPos(pos);
         button->SetDim(dim);
     }
     pos.x = wpos.x+0.28f+dim.x*1;
     button = static_cast< CButton* >(pw->SearchControl(EVENT_STUDIO_RUN));
-    if ( button != 0 )
+    if ( button != nullptr )
     {
         button->SetPos(pos);
         button->SetDim(dim);
     }
     pos.x = wpos.x+0.28f+dim.x*2;
     button = static_cast< CButton* >(pw->SearchControl(EVENT_STUDIO_REALTIME));
-    if ( button != 0 )
+    if ( button != nullptr )
     {
         button->SetPos(pos);
         button->SetDim(dim);
     }
     pos.x = wpos.x+0.28f+dim.x*3;
     button = static_cast< CButton* >(pw->SearchControl(EVENT_STUDIO_STEP));
-    if ( button != 0 )
+    if ( button != nullptr )
     {
         button->SetPos(pos);
         button->SetDim(dim);
@@ -991,13 +990,13 @@ void CStudio::UpdateButtons()
     {
         edit->SetIcon(1);  // red background
         edit->SetEditCap(false);  // just to see
-        edit->SetHiliteCap(true);
+        edit->SetHighlightCap(true);
     }
     else
     {
         edit->SetIcon(0);  // standard background
         edit->SetEditCap(true);
-        edit->SetHiliteCap(true);
+        edit->SetHighlightCap(true);
     }
 
     button = static_cast< CButton* >(pw->SearchControl(EVENT_STUDIO_COMPILE));
@@ -1478,8 +1477,7 @@ void CStudio::UpdateDialogPublic()
     CCheck*     pc;
     CLabel*     pl;
     char        name[100];
-    char        dir[MAX_FNAME];
-    char        text[MAX_FNAME+100];
+    //char        text[MAX_FNAME+100];
 
     pw = static_cast< CWindow* >(m_interface->SearchControl(EVENT_WINDOW9));
     if ( pw == nullptr )  return;
@@ -1500,9 +1498,7 @@ void CStudio::UpdateDialogPublic()
     if ( pl != 0 )
     {
         GetResource(RES_TEXT, RT_IO_LIST, name);
-        SearchDirectory(dir, false);
-        sprintf(text, name, dir);
-        pl->SetName(text, false);
+        pl->SetName(SearchDirectory(false).c_str(), false);
     }
 }
 
@@ -1510,84 +1506,52 @@ void CStudio::UpdateDialogPublic()
 
 void CStudio::UpdateDialogList()
 {
-    // TODO rewrite to multiplatform
-    /*CWindow*            pw;
-    CList*              pl;
-    long                hFile;
-    struct _finddata_t  fileBuffer;
-    struct _finddata_t* listBuffer;
-    bool                bDo;
-    char                dir[MAX_FNAME];
-    char                temp[MAX_FNAME];
-    int                 nbFilenames, i;
+    CWindow*        pw;
+    CList*          pl;
+    fs::path        path;
+    int             i = 0;
+    char            time[100];
+    char            temp[100];
 
-    pw = static_cast< CWindow* >(m_interface->SearchControl(EVENT_WINDOW9);
+    pw = static_cast< CWindow* >(m_interface->SearchControl(EVENT_WINDOW9));
     if ( pw == nullptr )  return;
-    pl = static_cast< CList* >(pw->SearchControl(EVENT_DIALOG_LIST);
-    if ( pl == 0 )  return;
+    pl = static_cast< CList* >(pw->SearchControl(EVENT_DIALOG_LIST));
+    if ( pl == nullptr )  return;
     pl->Flush();
 
-    nbFilenames = 0;
-    listBuffer = (_finddata_t*)malloc(sizeof(_finddata_t)*1000);
-
-    SearchDirectory(dir, false);
-    strcat(dir, "*");  // list all
-    hFile = _findfirst(dir, &fileBuffer);
-    if ( hFile != -1 )
-    {
-        do
-        {
-            if ( (fileBuffer.attrib & _A_SUBDIR) == 0 )
-            {
-                listBuffer[nbFilenames++] = fileBuffer;
-            }
-        }
-        while ( _findnext(hFile, &fileBuffer) == 0 && nbFilenames < 1000 );
-    }
-    do  // sorts all names:
-    {
-        bDo = false;
-        for ( i=0 ; i<nbFilenames-1 ; i++ )
-        {
-            if ( strcmp(listBuffer[i].name, listBuffer[i+1].name) > 0 )
-            {
-                fileBuffer = listBuffer[i];  // exchange i and i +1
-                listBuffer[i] = listBuffer[i+1];
-                listBuffer[i+1] = fileBuffer;
-                bDo = true;
+    path = fs::path(SearchDirectory(false));
+    fs::directory_iterator end_iter;
+    if ( fs::exists(path) && fs::is_directory(path) ) {
+        for( fs::directory_iterator file(path); file != end_iter; file++) {
+            if (fs::is_regular_file(file->status()) ) {
+                TimeToAscii(fs::last_write_time(file->path()), time);
+                sprintf(temp, "%s\t%lu  \t%s", file->path().filename().string().c_str(), fs::file_size(file->path()), time);
+                
+                pl->SetName(i++, temp);
             }
         }
     }
-    while ( bDo );
-
-    for ( i=0 ; i<nbFilenames ; i++ )
-    {
-        TimeToAscii(listBuffer[i].time_write, dir);
-        sprintf(temp, "%s\t%d  \t%s", listBuffer[i].name, listBuffer[i].size, dir);
-        pl->SetName(i, temp);
-    }
-
-    free(listBuffer);*/
 }
 
 // Constructs the name of the folder or open/save.
 // If the folder does not exist, it will be created.
 
-void CStudio::SearchDirectory(char *dir, bool bCreate)
+std::string CStudio::SearchDirectory(bool bCreate)
 {
-    if ( m_main->GetIOPublic() )
-    {
-        sprintf(dir, "%s\\", m_main->GetPublicDir());
+    char dir[MAX_FNAME];
+    if ( m_main->GetIOPublic() ) {
+        sprintf(dir, "%s/", m_main->GetPublicDir());
+    } else {
+        sprintf(dir, "%s/%s/Program/", m_main->GetSavegameDir(), m_main->GetGamerName());
     }
-    else
-    {
-        sprintf(dir, "%s\\%s\\Program\\", m_main->GetSavegameDir(), m_main->GetGamerName());
+    
+    fs::path path = fs::path(dir);
+    
+    if ( bCreate ) {
+        fs::create_directory(path);
     }
 
-    if ( bCreate )
-    {// TODO
-//        mkdir(dir,0777);  // if does not exist yet!
-    }
+    return path.make_preferred().string();
 }
 
 // Reads a new program.
@@ -1613,7 +1577,7 @@ bool CStudio::ReadProgram()
     {
         strcat(filename, ".txt");
     }
-    SearchDirectory(dir, true);
+    strcpy(dir, SearchDirectory(true).c_str());
     strcat(dir, filename);
 
     pw = static_cast< CWindow* >(m_interface->SearchControl(EVENT_WINDOW3));
@@ -1651,7 +1615,7 @@ bool CStudio::WriteProgram()
     {
         strcat(filename, ".txt");
     }
-    SearchDirectory(dir, true);
+    strcpy(dir, SearchDirectory(true).c_str());
     strcat(dir, filename);
 
     pw = static_cast< CWindow* >(m_interface->SearchControl(EVENT_WINDOW3));
@@ -1659,7 +1623,7 @@ bool CStudio::WriteProgram()
     pe = static_cast< CEdit* >(pw->SearchControl(EVENT_STUDIO_EDIT));
     if ( pe == nullptr )  return false;
 
-    if ( !pe->WriteText(dir) )  return false;
+    if ( !pe->WriteText(std::string(dir)) )  return false;
 
     m_script->SetFilename(filename);
     return true;

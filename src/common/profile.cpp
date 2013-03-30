@@ -19,13 +19,15 @@
 
 #include "common/logger.h"
 
+#include "app/system.h"
+
 #include <utility>
 #include <cstring>
 #include <boost/property_tree/ini_parser.hpp>
 #include <boost/regex.hpp>
 
 
-template<> CProfile* CSingleton<CProfile>::mInstance = nullptr;
+template<> CProfile* CSingleton<CProfile>::m_instance = nullptr;
 
 namespace bp = boost::property_tree;
 
@@ -41,7 +43,7 @@ CProfile::~CProfile()
     {
         try
         {
-            bp::ini_parser::write_ini("colobot.ini", m_propertyTree);
+            bp::ini_parser::write_ini(GetSystemUtils()->profileFileLocation(), m_propertyTree);
         }
         catch (std::exception & e)
         {
@@ -55,7 +57,7 @@ bool CProfile::InitCurrentDirectory()
 {
     try
     {
-        bp::ini_parser::read_ini("colobot.ini", m_propertyTree);
+        bp::ini_parser::read_ini(GetSystemUtils()->profileFileLocation(), m_propertyTree);
     }
     catch (std::exception & e)
     {
@@ -182,3 +184,48 @@ std::vector< std::string > CProfile::GetLocalProfileSection(std::string section,
 
     return ret_list;
 }
+
+
+void CProfile::SetUserDir(std::string dir)
+{
+    m_userDirectory = dir;
+}
+
+
+std::string CProfile::GetUserBasedPath(std::string dir, std::string default_dir)
+{
+    std::string path = dir;
+    boost::replace_all(path, "\\", "/");
+    if (dir.find("/") == std::string::npos) {
+        path = default_dir + "/" + dir;
+    }
+    
+    if (m_userDirectory.length() > 0) {
+        boost::replace_all(path, "%user%", m_userDirectory);
+    } else {
+        boost::replace_all(path, "%user%", default_dir);
+    }
+    
+    return fs::path(path).make_preferred().string();
+}
+        
+        
+bool CProfile::CopyFileToTemp(std::string filename)
+{
+    std::string src, dst;
+    std::string tmp_user_dir = m_userDirectory;
+    
+    src = GetUserBasedPath(filename, "textures");
+    SetUserDir("temp");
+    dst = GetUserBasedPath(filename, "textures");
+    SetUserDir(tmp_user_dir);
+   
+    fs::create_directory(fs::path(dst).parent_path().make_preferred().string());
+    fs::copy_file(src, dst, fs::copy_option::overwrite_if_exists);
+    if (fs::exists(dst)) {
+        return true;    
+    }
+
+    return false;
+}
+

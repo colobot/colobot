@@ -14,8 +14,6 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// taskgoto.cpp
-
 
 #include <stdio.h>
 
@@ -23,9 +21,12 @@
 
 #include "common/event.h"
 #include "common/iman.h"
+
 #include "graphics/engine/terrain.h"
 #include "graphics/engine/water.h"
+
 #include "math/geometry.h"
+
 #include "physics/physics.h"
 
 #include <string.h>
@@ -40,8 +41,7 @@ const float BM_DIM_STEP     = 5.0f;
 
 // Object's constructor.
 
-CTaskGoto::CTaskGoto(CInstanceManager* iMan, CObject* object)
-                     : CTask(iMan, object)
+CTaskGoto::CTaskGoto(CObject* object) : CTask(object)
 {
     m_bmArray = 0;
 }
@@ -494,12 +494,14 @@ CObject* CTaskGoto::WormSearch(Math::Vector &impact)
     float       distance, min, radius;
     int         i;
 
+    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
+
     iPos = m_object->GetPosition(0);
     min = 1000000.0f;
 
     for ( i=0 ; i<1000000 ; i++ )
     {
-        pObj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
+        pObj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
         if ( pObj == 0 )  break;
 
         oType = pObj->GetType();
@@ -1026,11 +1028,13 @@ CObject* CTaskGoto::SearchTarget(Math::Vector pos, float margin)
     float       dist, min;
     int         i;
 
+    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
+
     pBest = 0;
     min = 1000000.0f;
     for ( i=0 ; i<1000000 ; i++ )
     {
-        pObj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
+        pObj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
         if ( pObj == 0 )  break;
 
         if ( !pObj->GetActif() )  continue;
@@ -1170,9 +1174,11 @@ bool CTaskGoto::AdjustBuilding(Math::Vector &pos, float margin, float &distance)
     float       dist, suppl;
     int         i;
 
+    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
+
     for ( i=0 ; i<1000000 ; i++ )
     {
-        pObj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
+        pObj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
         if ( pObj == 0 )  break;
 
         if ( !pObj->GetActif() )  continue;
@@ -1339,11 +1345,13 @@ bool CTaskGoto::LeakSearch(Math::Vector &pos, float &delay)
 
     m_object->GetCrashSphere(0, iPos, iRadius);
 
+    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
+
     min = 100000.0f;
     bRadius = 0.0f;
     for ( i=0 ; i<1000000 ; i++ )
     {
-        pObj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
+        pObj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
         if ( pObj == 0 )  break;
 
         if ( pObj == m_object )  continue;
@@ -1401,7 +1409,7 @@ void CTaskGoto::ComputeRepulse(Math::Point &dir)
 
     for ( i=0 ; i<1000000 ; i++ )
     {
-        pObj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
+        pObj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
         if ( pObj == 0 )  break;
 
         if ( pObj == m_object )  continue;
@@ -1522,9 +1530,11 @@ void CTaskGoto::ComputeRepulse(Math::Point &dir)
         bAlien = true;
     }
 
+    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
+
     for ( i=0 ; i<1000000 ; i++ )
     {
-        pObj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
+        pObj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
         if ( pObj == 0 )  break;
 
         if ( pObj == m_object )  continue;
@@ -1614,9 +1624,11 @@ void CTaskGoto::ComputeFlyingRepulse(float &dir)
     fac = 1.5f;
     dir = 0.0f;
 
+    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
+
     for ( i=0 ; i<1000000 ; i++ )
     {
-        pObj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
+        pObj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
         if ( pObj == 0 )  break;
 
         if ( pObj == m_object )  continue;
@@ -1928,9 +1940,11 @@ void CTaskGoto::BitmapObject()
 
     m_object->GetCrashSphere(0, iPos, iRadius);
 
+    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
+
     for ( i=0 ; i<1000000 ; i++ )
     {
-        pObj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
+        pObj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
         if ( pObj == 0 )  break;
 
         type = pObj->GetType();

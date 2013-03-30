@@ -38,7 +38,7 @@ enum AutoEnergyPhase
 class CAutoEnergy : public CAuto
 {
 public:
-    CAutoEnergy(CInstanceManager* iMan, CObject* object);
+    CAutoEnergy(CObject* object);
     ~CAutoEnergy();
 
     void        DeleteObject(bool bAll=false);

@@ -19,9 +19,13 @@
 #include "object/auto/autosafe.h"
 
 #include "common/iman.h"
+
 #include "math/geometry.h"
+
 #include "object/robotmain.h"
+
 #include "script/cmdtoken.h"
+
 #include "ui/interface.h"
 #include "ui/window.h"
 
@@ -34,8 +38,7 @@ const float OPEN_DELAY  = 8.0f; // duration of opening
 
 // Object's constructor.
 
-CAutoSafe::CAutoSafe(CInstanceManager* iMan, CObject* object)
-                          : CAuto(iMan, object)
+CAutoSafe::CAutoSafe(CObject* object) : CAuto(object)
 {
     int     i;
 

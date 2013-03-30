@@ -15,8 +15,6 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// gauge.cpp
-
 
 #include "ui/gauge.h"
 
@@ -24,7 +22,6 @@
 namespace Ui {
 // Object's constructor.
 
-//CGauge::CGauge(CInstanceManager* iMan) : CControl(iMan)
 CGauge::CGauge() : CControl()
 {
     m_level = 0.0f;

@@ -44,7 +44,7 @@ enum MotionSpiderSpecialAction
 class CMotionSpider : public CMotion
 {
 public:
-    CMotionSpider(CInstanceManager* iMan, CObject* object);
+    CMotionSpider(CObject* object);
     ~CMotionSpider();
 
     void    DeleteObject(bool bAll=false);

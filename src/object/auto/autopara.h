@@ -36,7 +36,7 @@ enum AutoParaPhase
 class CAutoPara : public CAuto
 {
 public:
-    CAutoPara(CInstanceManager* iMan, CObject* object);
+    CAutoPara(CObject* object);
     ~CAutoPara();
 
     void        DeleteObject(bool bAll=false);

@@ -5,11 +5,31 @@
 # Copyright (C) 2012, PPC (Polish Portal of Colobot)
 #
 
+bl_info = {
+    "name": "Colobot Model Format (.txt)",
+    "author": "PPC (Polish Portal of Colobot)",
+    "version": (0, 0, 2),
+    "blender": (2, 6, 4),
+    "location": "File > Export > Colobot (.txt)",
+    "description": "Export Colobot Model Format (.txt)",
+    "warning": "",
+    "wiki_url": "http://colobot.info"\
+        "",
+    "tracker_url": ""\
+        "",
+    "category": "Import-Export"}
+
 import bpy
 import struct
 import array
 import os
 import copy
+import math
+
+
+##
+# Data types & helper functions
+##
 
 FUZZY_TOLERANCE = 1e-5
 
@@ -38,10 +58,10 @@ class ColobotVertex:
         return 1
 
     def __eq__(self, other):
-        return fuzzy_equal_v(self.coord, other.coord) and
+        return (fuzzy_equal_v(self.coord, other.coord) and
                fuzzy_equal_v(self.normal, other.normal) and
                fuzzy_equal_v(self.t1, other.t1) and
-               fuzzy_equal_v(self.t2, other.t2)
+               fuzzy_equal_v(self.t2, other.t2))
 
 class ColobotMaterial:
     """Material as saved in Colobot model file"""
@@ -51,28 +71,39 @@ class ColobotMaterial:
         self.specular = array.array('f', [0.0, 0.0, 0.0, 0.0])
         self.tex1 = ''
         self.tex2 = ''
+        self.var_tex2 = False
+        self.state = 0
 
     def __hash__(self):
         return 1
 
     def __eq__(self, other):
-        return fuzzy_equal_v(self.diffuse, other.diffuse) and
+        return (fuzzy_equal_v(self.diffuse, other.diffuse) and
                fuzzy_equal_v(self.ambient, other.ambient) and
                fuzzy_equal_v(self.specular, other.specular) and
                self.tex1 == other.tex1 and
-               self.tex2 == other.tex2
+               self.tex2 == other.tex2 and
+               self.var_tex2 == other.var_tex2 and
+               self.state == other.state)
+
+class ColobotTexPair:
+    """Pair of 2 textures"""
+    def __init__(self):
+        self.tex1 = ''
+        self.tex2 = ''
+
+    def __hash__(self):
+        return 1
+
+    def __eq__(self, other):
+        return self.tex1 == other.tex1 and self.tex2 == other.tex2
 
 class ColobotTriangle:
     """Triangle as saved in Colobot model file"""
     def __init__(self):
         self.p = [ColobotVertex(), ColobotVertex(), ColobotVertex()]
         self.mat = ColobotMaterial()
-        self.tex1 = ''
-        self.tex2 = ''
-        self.var_tex2 = False
-        self.state = 0
-        self.min = 0.0
-        self.max = 0.0
+        self.lod_level = 0
 
 class ColobotModel:
     """Colobot model (content of model file)"""
@@ -80,8 +111,49 @@ class ColobotModel:
         self.version = 1
         self.triangles = []
 
-    def append(self, model):
-        self.triangles.extend(model.triangles)
+    def get_lod_level_list(self):
+        lod_level_set = set()
+        for t in self.triangles:
+            lod_level_set.add(t.lod_level)
+
+        return list(lod_level_set)
+
+    def get_tex_pair_list(self):
+        tex_pair_set = set()
+        for t in self.triangles:
+            tex_pair = ColobotTexPair()
+            tex_pair.tex1 = t.mat.tex1
+            tex_pair.tex2 = t.mat.tex2
+            tex_pair_set.add(tex_pair)
+
+        return list(tex_pair_set)
+
+    def get_triangle_list(self, lod_level):
+        triangles = []
+        for t in self.triangles:
+            if (t.lod_level == lod_level):
+                triangles.append(t)
+
+        return triangles
+
+    def get_vertex_list(self, lod_level):
+        vertex_set = set()
+
+        for t in self.triangles:
+            if (t.lod_level == lod_level):
+                for i in range(0, 3):
+                    vertex_set.add(t.p[i])
+
+        return list(vertex_set)
+
+    def get_material_list(self, lod_level):
+        material_set = set()
+
+        for t in self.triangles:
+            if (t.lod_level == lod_level):
+                material_set.add(t.mat)
+
+        return list(material_set)
 
 def v3to4(vec):
     return array.array('f', [vec[0], vec[1], vec[2], 0.0])
@@ -89,7 +161,14 @@ def v3to4(vec):
 def v4to3(vec):
     return array.array('f', [vec[0], vec[1], vec[2]])
 
+
+##
+# Model file input/output
+##
+
 def write_colobot_model(filename, model):
+    float_format = "{:g}".format
+
     file = open(filename, 'w')
 
     file.write('# Colobot text model\n')
@@ -105,24 +184,23 @@ def write_colobot_model(filename, model):
         for i in range(0, 3):
             p = t.p[i]
             file.write('p' + str(i+1))
-            file.write(' c ' + ' '.join(map(str, p.coord )))
-            file.write(' n ' + ' '.join(map(str, p.normal)))
-            file.write(' t1 ' + ' '.join(map(str, p.t1)))
-            file.write(' t2 ' + ' '.join(map(str, p.t2)))
+            file.write(' c ' + ' '.join(map(float_format, p.coord )))
+            file.write(' n ' + ' '.join(map(float_format, p.normal)))
+            file.write(' t1 ' + ' '.join(map(float_format, p.t1)))
+            file.write(' t2 ' + ' '.join(map(float_format, p.t2)))
             file.write('\n')
 
         file.write('mat')
-        file.write(' dif ' + ' '.join(map(str, t.mat.diffuse)))
-        file.write(' amb ' + ' '.join(map(str, t.mat.ambient)))
-        file.write(' spc ' + ' '.join(map(str, t.mat.specular)))
+        file.write(' dif ' + ' '.join(map(float_format, t.mat.diffuse)))
+        file.write(' amb ' + ' '.join(map(float_format, t.mat.ambient)))
+        file.write(' spc ' + ' '.join(map(float_format, t.mat.specular)))
         file.write('\n')
 
-        file.write('tex1 ' + t.tex1 + '\n')
-        file.write('tex2 ' + t.tex2 + '\n')
-        file.write('var_tex2 ' + ( 'Y' if t.var_tex2 else 'N' + '\n' ) )
-        file.write('min ' + str(t.min) + '\n')
-        file.write('max ' + str(t.max) + '\n')
-        file.write('state ' + str(t.state) + '\n')
+        file.write('tex1 ' + t.mat.tex1 + '\n')
+        file.write('tex2 ' + t.mat.tex2 + '\n')
+        file.write('var_tex2 ' + ( 'Y' if t.mat.var_tex2 else 'N' + '\n' ) )
+        file.write('lod_level ' + str(t.lod_level) + '\n')
+        file.write('state ' + str(t.mat.state) + '\n')
         file.write('\n')
 
     file.close()
@@ -201,14 +279,14 @@ def read_colobot_model(filename):
 
     tokens, index = token_next_line(lines, index)
     if (tokens[0] != 'version'):
-        raise ColobotError('Invalid header')
+        raise ColobotError("Invalid header", "version")
     model.version = int(tokens[1])
     if (model.version != 1):
-        raise ColobotError('Unknown model file version')
+        raise ColobotError("Unknown model file version")
 
     tokens, index = token_next_line(lines, index)
     if (tokens[0] != 'total_triangles'):
-        raise ColobotError('Invalid header')
+        raise ColobotError("Invalid header", "total_triangles")
     numTriangles = int(tokens[1])
 
     for i in range(0, numTriangles):
@@ -216,89 +294,88 @@ def read_colobot_model(filename):
 
         tokens, index = token_next_line(lines, index)
         if (tokens[0] != 'p1'):
-            raise ColobotError('Invalid triangle')
+            raise ColobotError("Invalid triangle", "p1")
         t.p[0] = read_colobot_vertex(tokens)
 
         tokens, index = token_next_line(lines, index)
         if (tokens[0] != 'p2'):
-            raise ColobotError('Invalid triangle')
+            raise ColobotError("Invalid triangle", "p2")
         t.p[1] = read_colobot_vertex(tokens)
 
         tokens, index = token_next_line(lines, index)
         if (tokens[0] != 'p3'):
-            raise ColobotError('Invalid triangle')
+            raise ColobotError("Invalid triangle", "p3")
         t.p[2] = read_colobot_vertex(tokens)
 
         tokens, index = token_next_line(lines, index)
         if (tokens[0] != 'mat'):
-            raise ColobotError('Invalid triangle')
+            raise ColobotError("Invalid triangle", "mat")
         t.mat = read_colobot_material(tokens)
 
         tokens, index = token_next_line(lines, index)
         if (tokens[0] != 'tex1'):
-            raise ColobotError('Invalid triangle')
+            raise ColobotError("Invalid triangle", "tex1")
         if (len(tokens) > 1):
-            t.tex1 = tokens[1]
+            t.mat.tex1 = tokens[1]
 
         tokens, index = token_next_line(lines, index)
         if (tokens[0] != 'tex2'):
-            raise ColobotError('Invalid triangle')
+            raise ColobotError("Invalid triangle", "tex2")
         if (len(tokens) > 1):
-            t.tex2 = tokens[1]
+            t.mat.tex2 = tokens[1]
 
         tokens, index = token_next_line(lines, index)
         if (tokens[0] != 'var_tex2'):
-            raise ColobotError('Invalid triangle')
-        t.var_tex2 = tokens[1] == 'Y'
+            raise ColobotError("Invalid triangle", "var_tex2")
+        t.mat.var_tex2 = tokens[1] == 'Y'
 
         tokens, index = token_next_line(lines, index)
-        if (tokens[0] != 'min'):
-            raise ColobotError('Invalid triangle')
-        t.min = float(tokens[1])
-
-        tokens, index = token_next_line(lines, index)
-        if (tokens[0] != 'max'):
-            raise ColobotError('Invalid triangle')
-        t.max = float(tokens[1])
+        if (tokens[0] != 'lod_level'):
+            raise ColobotError("Invalid triangle", "lod_level")
+        t.lod_level = int(tokens[1])
 
         tokens, index = token_next_line(lines, index)
         if (tokens[0] != 'state'):
-            raise ColobotError('Invalid triangle')
-        t.state = int(tokens[1])
+            raise ColobotError("Invalid triangle", "state")
+        t.mat.state = int(tokens[1])
 
         model.triangles.append(t)
 
     return model
 
-def mesh_to_colobot_model(mesh, scene, defaults):
-    model = ColobotModel()
 
-    if (mesh.type != 'MESH'):
+##
+# Mesh conversion functions
+##
+
+def append_obj_to_colobot_model(obj, model, scene, defaults):
+
+    if (obj.type != 'MESH'):
         raise ColobotError('Only mesh meshs can be exported')
 
-    for poly in mesh.data.polygons:
+    for poly in obj.data.polygons:
         if (poly.loop_total > 3):
             raise ColobotError('Cannot export polygons with > 3 vertices!')
 
-    for i, poly in enumerate(mesh.data.polygons):
+    for i, poly in enumerate(obj.data.polygons):
         t = ColobotTriangle()
         j = 0
         for loop_index in poly.loop_indices:
-            v = mesh.data.vertices[mesh.data.loops[loop_index].vertex_index]
+            v = obj.data.vertices[obj.data.loops[loop_index].vertex_index]
 
             t.p[j].coord = copy.copy(v.co)
             t.p[j].normal = copy.copy(v.normal)
 
-            if (len(mesh.data.uv_layers) >= 1):
-                t.p[j].t1 = copy.copy(mesh.data.uv_layers[0].data[loop_index].uv)
+            if (len(obj.data.uv_layers) >= 1):
+                t.p[j].t1 = copy.copy(obj.data.uv_layers[0].data[loop_index].uv)
                 t.p[j].t1[1] = 1.0 - t.p[j].t1[1]
-            if (len(mesh.data.uv_layers) >= 2):
-                t.p[j].t2 = copy.copy(mesh.data.uv_layers[1].data[loop_index].uv)
+            if (len(obj.data.uv_layers) >= 2):
+                t.p[j].t2 = copy.copy(obj.data.uv_layers[1].data[loop_index].uv)
                 t.p[j].t2[1] = 1.0 - t.p[j].t2[1]
 
             j = j + 1
 
-        mat = mesh.data.materials[poly.material_index]
+        mat = obj.data.materials[poly.material_index]
         t.mat.diffuse = v3to4(mat.diffuse_color)
         t.mat.diffuse[3] = mat.alpha
         t.mat.ambient = v3to4(scene.world.ambient_color * mat.ambient)
@@ -311,95 +388,15 @@ def mesh_to_colobot_model(mesh, scene, defaults):
         if (mat.texture_slots[1] != None):
             t.tex2 = bpy.path.basename(mat.texture_slots[1].texture.image.filepath)
 
-        t.var_tex2 = mesh.get('var_tex2', defaults['var_tex2'])
-        t.state = mesh.get('state', defaults['state'])
-        t.min = mesh.get('min', defaults['min'])
-        t.max = mesh.get('max', defaults['max'])
+        t.var_tex2 = mat.get('var_tex2', defaults['var_tex2'])
+        t.state = mat.get('state', defaults['state'])
+
+        t.lod_level = int(obj.data.get('lod_level', defaults['lod_level']))
 
         model.triangles.append(t)
 
-    return model
 
-
-def colobot_model_to_mesh(model, mesh_name, texture_dir):
-    mesh = bpy.data.meshes.new(name=mesh_name)
-
-    vertex_set = set()
-
-    for t in model.triangles:
-        for i in range(0, 3):
-            vertex_set.add(t.p[i])
-
-    vertex_list = list(vertex_set)
-
-    mat_set = set()
-
-    for t in model.triangles:
-        mat = t.mat
-        mat.tex1 = t.tex1
-        mat.tex2 = t.tex2
-        mat_set.add(mat)
-
-    mat_list = list(mat_set)
-
-    uv1map = False
-    uv2map = False
-
-    zero_t = array.array('f', [0.0, 0.0])
-
-    for v in vertex_list:
-        if ((not uv1map) and (v.t1 != zero_t)):
-            uv1map = True
-        if ((not uv2map) and (v.t2 != zero_t)):
-            uv2map = True
-
-    mesh.vertices.add(len(vertex_list))
-
-    for i, v in enumerate(mesh.vertices):
-        v.co = copy.copy(vertex_list[i].coord)
-        v.normal = copy.copy(vertex_list[i].normal)
-
-    for i, m in enumerate(mat_list):
-        material = bpy.data.materials.new(name=mesh_name + '_mat_' + str(i+1))
-        material.diffuse_color = v4to3(m.diffuse)
-        material.ambient = (m.ambient[0] + m.ambient[1] + m.ambient[2]) / 3.0
-        material.alpha = (m.diffuse[3] + m.ambient[3]) / 2.0
-        material.specular_color = v4to3(m.specular)
-        material.specular_alpha = m.specular[3]
-
-        mesh.materials.append(material)
-
-    mesh.tessfaces.add(len(model.triangles))
-
-    for i, f in enumerate(mesh.tessfaces):
-        t = model.triangles[i]
-        mat = t.mat
-        mat.tex1 = t.tex1
-        mat.tex2 = t.tex2
-        f.material_index = mat_list.index(mat)
-        for i in range(0, 3):
-            f.vertices[i] = vertex_list.index(t.p[i])
-
-    if uv1map:
-        uvlay1 = mesh.tessface_uv_textures.new(name='UV_1')
-        for i, f in enumerate(uvlay1.data):
-            f.uv1[0] = model.triangles[i].p[0].t1[0]
-            f.uv1[1] = 1.0 - model.triangles[i].p[0].t1[1]
-            f.uv2[0] = model.triangles[i].p[1].t1[0]
-            f.uv2[1] = 1.0 - model.triangles[i].p[1].t1[1]
-            f.uv3[0] = model.triangles[i].p[2].t1[0]
-            f.uv3[1] = 1.0 - model.triangles[i].p[2].t1[1]
-
-    if uv2map:
-        uvlay2 = mesh.tessface_uv_textures.new(name='UV_2')
-        for i, f in enumerate(uvlay2.data):
-            f.uv1[0] = model.triangles[i].p[0].t2[0]
-            f.uv1[1] = 1.0 - model.triangles[i].p[0].t2[1]
-            f.uv2[0] = model.triangles[i].p[1].t2[0]
-            f.uv2[1] = 1.0 - model.triangles[i].p[1].t2[1]
-            f.uv3[0] = model.triangles[i].p[2].t2[0]
-            f.uv3[1] = 1.0 - model.triangles[i].p[2].t2[1]
-
+def colobot_model_to_meshes(model, base_mesh_name, texture_dir):
     def load_tex(name):
         import os
         import sys
@@ -408,7 +405,6 @@ def colobot_model_to_mesh(model, mesh_name, texture_dir):
         if (name == ''):
             return None, None
 
-        encoding = sys.getfilesystemencoding()
         image = load_image(name, texture_dir, recursive=True, place_holder=True)
         texture = None
         if image:
@@ -417,51 +413,197 @@ def colobot_model_to_mesh(model, mesh_name, texture_dir):
             texture.image = image
         return image, texture
 
-    for i, m in enumerate(mat_list):
+    class Texture:
+        def __init__(self):
+            self.image1 = None
+            self.image2 = None
+            self.tex1 = None
+            self.tex2 = None
 
-        image1, tex1 = load_tex(m.tex1)
-        if image1:
-            mtex = mesh.materials[i].texture_slots.add()
-            mtex.texture = tex1
-            mtex.texture_coords = 'UV'
-            mtex.uv_layer = 'UV_1'
-            mtex.use_map_color_diffuse = True
+    tex_dict = dict()
+    tex_pair_list = model.get_tex_pair_list()
+    for tex_pair in tex_pair_list:
+        tex_object = Texture()
+        tex_object.image1, tex_object.tex1 = load_tex(tex_pair.tex1)
+        tex_object.image2, tex_object.tex2 = load_tex(tex_pair.tex2)
+        tex_dict[tex_pair] = tex_object
 
-            for j, face in enumerate(mesh.uv_textures[0].data):
-                if (model.triangles[j].tex1 == m.tex1):
-                    face.image = image1
+    meshes = []
 
-        image2, tex2 = load_tex(m.tex2)
-        if image2:
-            mtex = mesh.materials[i].texture_slots.add()
-            mtex.texture = tex2
-            mtex.texture_coords = 'UV'
-            mtex.uv_layer = 'UV_2'
-            mtex.use_map_color_diffuse = True
+    index = 0
+    lod_levels = model.get_lod_level_list()
+    for lod_level in lod_levels:
+        index = index + 1
+        mesh = bpy.data.meshes.new(name=base_mesh_name + str(index))
 
-            for face in mesh.uv_textures[1].data:
-                if (model.triangles[j].tex2 == m.tex2):
-                    face.image = image2
+        triangle_list = model.get_triangle_list(lod_level)
+        vertex_list = model.get_vertex_list(lod_level)
+        material_list = model.get_material_list(lod_level)
 
-    mesh.validate()
-    mesh.update()
+        uv1map = False
+        uv2map = False
 
-    return mesh
+        zero_t = array.array('f', [0.0, 0.0])
+
+        for v in vertex_list:
+            if ((not uv1map) and (v.t1 != zero_t)):
+                uv1map = True
+            if ((not uv2map) and (v.t2 != zero_t)):
+                uv2map = True
+
+        mesh.vertices.add(len(vertex_list))
+
+        for i, v in enumerate(mesh.vertices):
+            v.co = copy.copy(vertex_list[i].coord)
+            v.normal = copy.copy(vertex_list[i].normal)
+
+        for i, m in enumerate(material_list):
+            material = bpy.data.materials.new(name=base_mesh_name + str(index) + '_mat_' + str(i+1))
+            material.diffuse_color = v4to3(m.diffuse)
+            material.ambient = (m.ambient[0] + m.ambient[1] + m.ambient[2]) / 3.0
+            material.alpha = (m.diffuse[3] + m.ambient[3]) / 2.0
+            material.specular_color = v4to3(m.specular)
+            material.specular_alpha = m.specular[3]
+
+            material.var_tex2 = m.var_tex2
+            material.state = m.state
+
+            mesh.materials.append(material)
+
+        mesh.tessfaces.add(len(triangle_list))
+
+        for i, f in enumerate(mesh.tessfaces):
+            t = triangle_list[i]
+            f.material_index = material_list.index(t.mat)
+            for i in range(0, 3):
+                f.vertices[i] = vertex_list.index(t.p[i])
+
+        if uv1map:
+            uvlay1 = mesh.tessface_uv_textures.new(name='UV_1')
+            for i, f in enumerate(uvlay1.data):
+                f.uv1[0] = triangle_list[i].p[0].t1[0]
+                f.uv1[1] = 1.0 - triangle_list[i].p[0].t1[1]
+                f.uv2[0] = triangle_list[i].p[1].t1[0]
+                f.uv2[1] = 1.0 - triangle_list[i].p[1].t1[1]
+                f.uv3[0] = triangle_list[i].p[2].t1[0]
+                f.uv3[1] = 1.0 - triangle_list[i].p[2].t1[1]
+
+        if uv2map:
+            uvlay2 = mesh.tessface_uv_textures.new(name='UV_2')
+            for i, f in enumerate(uvlay2.data):
+                f.uv1[0] = triangle_list[i].p[0].t2[0]
+                f.uv1[1] = 1.0 - triangle_list[i].p[0].t2[1]
+                f.uv2[0] = triangle_list[i].p[1].t2[0]
+                f.uv2[1] = 1.0 - triangle_list[i].p[1].t2[1]
+                f.uv3[0] = triangle_list[i].p[2].t2[0]
+                f.uv3[1] = 1.0 - triangle_list[i].p[2].t2[1]
+
+        for i, m in enumerate(material_list):
+            tex_pair = ColobotTexPair()
+            tex_pair.tex1 = m.tex1
+            tex_pair.tex2 = m.tex2
+            tex_object = tex_dict[tex_pair]
+
+            if tex_object and tex_object.image1:
+                mtex = mesh.materials[i].texture_slots.add()
+                mtex.texture = tex_object.tex1
+                mtex.texture_coords = 'UV'
+                mtex.uv_layer = 'UV_1'
+                mtex.use_map_color_diffuse = True
+
+                for j, face in enumerate(mesh.uv_textures[0].data):
+                    if (triangle_list[j].tex1 == m.tex1):
+                        face.image = tex_object.image1
+
+            if tex_object and tex_object.image2:
+                mtex = mesh.materials[i].texture_slots.add()
+                mtex.texture = tex_object.tex2
+                mtex.texture_coords = 'UV'
+                mtex.uv_layer = 'UV_2'
+                mtex.use_map_color_diffuse = True
+
+                for j, face in enumerate(mesh.uv_textures[1].data):
+                    if (triangle_list[j].tex2 == m.tex2):
+                        face.image = tex_object.image2
+
+        mesh.lod_level = str(lod_level)
+
+        mesh.validate()
+        mesh.update()
+
+        meshes.append(mesh)
+
+    return meshes
+
+
+##
+# Export UI dialog & operator
+##
+
+EXPORT_FILEPATH = ''
+
+class ExportColobotDialog(bpy.types.Operator):
+    bl_idname = 'object.export_colobot_dialog'
+    bl_label = "Dialog for Colobot export"
+
+    mode = bpy.props.EnumProperty(
+        name="Mode",
+        items = [('overwrite', "Overwrite", "Overwrite existing model triangles"),
+                 ('append', "Append", "Append triangles to existing model")],
+                 default='overwrite')
+
+    default_lod_level = bpy.props.EnumProperty(
+        name="Default LOD level",
+        items = [('0', "Constant", "Constant (always visible)"),
+                 ('1', "Low", "Low (visible at furthest distance)"),
+                 ('2', "Medium", "Medium (visible at medium distance)"),
+                 ('3', "High", "High (visible at closest distance)")],
+                 default='0')
+
+    default_var_tex2 = bpy.props.BoolProperty(name="Default variable 2nd texture", default=False)
+
+    default_state = bpy.props.IntProperty(name="Default state", default=0)
+
+    def execute(self, context):
+        global EXPORT_FILEPATH
+        try:
+            defaults = { 'lod_level': self.default_lod_level,
+                         'var_tex2': self.default_var_tex2,
+                         'state': self.default_state }
+
+            model = ColobotModel()
+            if (self.mode == 'append'):
+                model = read_colobot_model(EXPORT_FILEPATH)
+
+            for obj in context.selected_objects:
+                rot = obj.rotation_euler
+                rot[0] = rot[0] + math.radians(270)
+                obj.rotation_euler = rot
+
+                append_obj_to_colobot_model(obj, model, context.scene, defaults)
+
+                rot = obj.rotation_euler
+                rot[0] = rot[0] + math.radians(90)
+                obj.rotation_euler = rot
+
+            write_colobot_model(EXPORT_FILEPATH, model)
+
+        except ColobotError as e:
+            self.report({'ERROR'}, e.args.join(": "))
+            return {'FINISHED'}
+
+        self.report({'INFO'}, 'Export OK')
+        return {'FINISHED'}
+
+    def invoke(self, context, event):
+        context.window_manager.invoke_props_dialog(self, width=500)
+        return {'RUNNING_MODAL'}
+
 
 class ExportColobot(bpy.types.Operator):
     """Exporter to Colobot text format"""
     bl_idname = "export.colobot"
     bl_label = "Export to Colobot"
-
-    # TODO: set the following in a UI dialog or panel
-
-    # Variable tex2
-    DEFAULT_VAR_TEX2 = False
-    # Min & max LOD
-    DEFAULT_MIN = 0.0
-    DEFAULT_MAX = 0.0
-    # Render state
-    DEFAULT_STATE = 0
 
     filepath = bpy.props.StringProperty(subtype="FILE_PATH")
 
@@ -470,19 +612,9 @@ class ExportColobot(bpy.types.Operator):
         return context.object is not None
 
     def execute(self, context):
-        defaults = {
-            'var_tex2': self.DEFAULT_VAR_TEX2,
-            'min': self.DEFAULT_MIN,
-            'max': self.DEFAULT_MAX,
-            'state': self.DEFAULT_STATE }
-        try:
-            model = mesh_to_colobot_model(context.object, context.scene, defaults)
-            write_colobot_model(self.filepath, model)
-        except ColobotError as e:
-            self.report({'ERROR'}, e.args[0])
-            return {'FINISHED'}
-
-        self.report({'INFO'}, 'Export OK')
+        global EXPORT_FILEPATH
+        EXPORT_FILEPATH = self.filepath
+        bpy.ops.object.export_colobot_dialog('INVOKE_DEFAULT')
         return {'FINISHED'}
 
     def invoke(self, context, event):
@@ -490,15 +622,58 @@ class ExportColobot(bpy.types.Operator):
         return {'RUNNING_MODAL'}
 
 
-# For menu item
-def export_menu_func(self, context):
-    self.layout.operator_context = 'INVOKE_DEFAULT'
-    self.layout.operator(ExportColobot.bl_idname, text="Colobot (Text Format)")
+##
+# Import UI dialog & operator
+#
 
-# Register and add to the file selector
-bpy.utils.register_class(ExportColobot)
-bpy.types.INFO_MT_file_export.append(export_menu_func)
+IMPORT_FILEPATH = ''
 
+class ImportColobotDialog(bpy.types.Operator):
+    bl_idname = 'object.import_colobot_dialog'
+    bl_label = "Dialog for Colobot import"
+
+    lod_separate_layers = bpy.props.BoolProperty(name="LOD levels to separate layers", default=True)
+    texture_dir = bpy.props.StringProperty(name="Texture directory", subtype="DIR_PATH")
+
+    def execute(self, context):
+        global IMPORT_FILEPATH
+        try:
+            texture_dir = self.texture_dir
+            if (texture_dir == ""):
+                texture_dir = os.path.dirname(IMPORT_FILEPATH)
+
+            model = read_colobot_model(IMPORT_FILEPATH)
+            meshes = colobot_model_to_meshes(model, 'ColobotMesh_', texture_dir)
+            index = 0
+            for mesh in meshes:
+                index = index + 1
+                obj = bpy.data.objects.new('ColobotMesh_' + str(index), mesh)
+
+                rot = obj.rotation_euler
+                rot[0] = rot[0] + math.radians(90)
+                obj.rotation_euler = rot
+
+                bpy.context.scene.objects.link(obj)
+                bpy.context.scene.objects.active = obj
+                obj.select = True
+
+                # TODO: doesn't seem to work...
+                if (self.lod_separate_layers):
+                    layers = obj.layers
+                    for i in range(0, len(layers)):
+                        layers[i] = int(mesh.lod_level) == i
+                    obj.layers = layers
+
+        except ColobotError as e:
+            self.report({'ERROR'}, e.args.join(": "))
+            return {'FINISHED'}
+
+        self.report({'INFO'}, 'Import OK')
+        return {'FINISHED'}
+
+    def invoke(self, context, event):
+        context.window_manager.invoke_props_dialog(self, width=500)
+        return {'RUNNING_MODAL'}
 
 
 class ImportColobot(bpy.types.Operator):
@@ -513,18 +688,9 @@ class ImportColobot(bpy.types.Operator):
         return True
 
     def execute(self, context):
-        try:
-            model = read_colobot_model(self.filepath)
-            mesh = colobot_model_to_mesh(model, 'ColobotMesh', os.path.dirname(self.filepath))
-            obj = bpy.data.objects.new('ColobotMesh', mesh)
-            bpy.context.scene.objects.link(obj)
-            bpy.context.scene.objects.active = obj
-            obj.select = True
-        except ColobotError as e:
-            self.report({'ERROR'}, e.args[0])
-            return {'FINISHED'}
-
-        self.report({'INFO'}, 'Import OK')
+        global IMPORT_FILEPATH
+        IMPORT_FILEPATH = self.filepath
+        bpy.ops.object.import_colobot_dialog('INVOKE_DEFAULT')
         return {'FINISHED'}
 
     def invoke(self, context, event):
@@ -532,11 +698,34 @@ class ImportColobot(bpy.types.Operator):
         return {'RUNNING_MODAL'}
 
 
-# For menu item
+##
+# Registration
+##
+
+# Callback functions for menu items
+def export_menu_func(self, context):
+    self.layout.operator_context = 'INVOKE_DEFAULT'
+    self.layout.operator(ExportColobot.bl_idname, text="Colobot (Text Format)")
+
 def import_menu_func(self, context):
     self.layout.operator_context = 'INVOKE_DEFAULT'
     self.layout.operator(ImportColobot.bl_idname, text="Colobot (Text Format)")
 
-# Register and add to the file selector
-bpy.utils.register_class(ImportColobot)
-bpy.types.INFO_MT_file_import.append(import_menu_func)
+# Custom properties for materials
+def register_material_props():
+    bpy.types.Mesh.lod_level = bpy.props.EnumProperty(name="LOD level",
+        items = [('0', "Constant", "Constant (always visible)"),
+                 ('1', "Low", "Low (visible at furthest distance)"),
+                 ('2', "Medium", "Medium (visible at medium distance)"),
+                 ('3', "High", "High (visible at closest distance)")])
+    bpy.types.Material.var_tex2 = bpy.props.BoolProperty(name="Variable 2nd texture", description="2nd texture shall be set to dirtyXX.png")
+    bpy.types.Material.state = bpy.props.IntProperty(name="State", description="Engine render state")
+
+# Add-on registration
+def register():
+    bpy.utils.register_module(__name__)
+
+    register_material_props()
+
+    bpy.types.INFO_MT_file_export.append(export_menu_func)
+    bpy.types.INFO_MT_file_import.append(import_menu_func)

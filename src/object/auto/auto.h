@@ -50,7 +50,7 @@ class CLightning;
 class CAuto
 {
 public:
-    CAuto(CInstanceManager* iMan, CObject* object);
+    CAuto(CObject* object);
     virtual ~CAuto();
 
     virtual void    DeleteObject(bool bAll=false);
@@ -88,11 +88,10 @@ protected:
     void        UpdateInterface(float rTime);
 
 protected:
-    CInstanceManager*   m_iMan;
-    CEventQueue*        m_event;
+    CInstanceManager*   m_iMan; // TODO: to be removed
+    CEventQueue*        m_eventQueue;
     Gfx::CEngine*       m_engine;
     Gfx::CParticle*     m_particle;
-    Gfx::CLightManager* m_lightMan;
     Gfx::CTerrain*      m_terrain;
     Gfx::CWater*        m_water;
     Gfx::CCloud*        m_cloud;

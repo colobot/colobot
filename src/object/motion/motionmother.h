@@ -26,7 +26,7 @@
 class CMotionMother : public CMotion
 {
 public:
-    CMotionMother(CInstanceManager* iMan, CObject* object);
+    CMotionMother(CObject* object);
     ~CMotionMother();
 
     void    DeleteObject(bool bAll=false);

@@ -14,13 +14,15 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// taskfireant.cpp
 
 #include "object/task/taskfireant.h"
 
 #include "graphics/engine/particle.h"
+
 #include "math/geometry.h"
+
 #include "object/motion/motionant.h"
+
 #include "physics/physics.h"
 
 
@@ -28,8 +30,7 @@
 
 // Object's constructor.
 
-CTaskFireAnt::CTaskFireAnt(CInstanceManager* iMan, CObject* object)
-                           : CTask(iMan, object)
+CTaskFireAnt::CTaskFireAnt(CObject* object) : CTask(object)
 {
     m_phase = TFA_NULL;
 }

@@ -32,7 +32,6 @@ namespace Ui {
 class CImage : public CControl
 {
 public:
-//    CImage(CInstanceManager* iMan);
     CImage ();
     virtual ~CImage();
 

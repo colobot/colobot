@@ -14,22 +14,24 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// taskterraform.cpp
-
 
 #include <stdio.h>
 
 #include "object/task/taskterraform.h"
 
-#include "math/geometry.h"
 #include "common/iman.h"
+
 #include "graphics/engine/pyro.h"
 #include "graphics/engine/particle.h"
 #include "graphics/engine/terrain.h"
-#include "physics/physics.h"
+
+#include "math/geometry.h"
+
 #include "object/brain.h"
 #include "object/motion/motionant.h"
 #include "object/motion/motionspider.h"
+
+#include "physics/physics.h"
 
 
 const float ENERGY_TERRA    = 0.40f;        // energy consumed by blow
@@ -39,8 +41,7 @@ const float ACTION_RADIUS   = 400.0f;
 
 // Object's constructor.
 
-CTaskTerraform::CTaskTerraform(CInstanceManager* iMan, CObject* object)
-                               : CTask(iMan, object)
+CTaskTerraform::CTaskTerraform(CObject* object) : CTask(object)
 {
     m_lastParticle = 0.0f;
     m_soundChannel = -1;
@@ -370,9 +371,11 @@ bool CTaskTerraform::Terraform()
 
     m_sound->Play(SOUND_THUMP, m_terraPos);
 
+    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
+
     for ( i=0 ; i<1000000 ; i++ )
     {
-        pObj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
+        pObj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
         if ( pObj == 0 )  break;
 
         type = pObj->GetType();
@@ -383,7 +386,7 @@ bool CTaskTerraform::Terraform()
             dist = Math::Distance(m_terraPos, pObj->GetPosition(0));
             if ( dist > 20.0f )  continue;
 
-            pyro = new Gfx::CPyro(m_iMan);
+            pyro = new Gfx::CPyro();
             pyro->Create(Gfx::PT_FRAGT, pObj);
         }
         else

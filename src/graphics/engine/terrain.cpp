@@ -19,33 +19,28 @@
 #include "graphics/engine/terrain.h"
 
 #include "app/app.h"
-#include "common/iman.h"
+
 #include "common/image.h"
 #include "common/logger.h"
+
 #include "graphics/engine/engine.h"
 #include "graphics/engine/water.h"
+
 #include "math/geometry.h"
 
 #include <sstream>
 
-#include <SDL/SDL.h>
+#include <SDL.h>
 
 
 // Graphics module namespace
 namespace Gfx {
 
-const int LEVEL_MAT_PREALLOCATE_COUNT = 101;
-const int FLYING_LIMIT_PREALLOCATE_COUNT = 10;
-const int BUILDING_LEVEL_PREALLOCATE_COUNT = 101;
 
-
-CTerrain::CTerrain(CInstanceManager* iMan)
+CTerrain::CTerrain()
 {
-    m_iMan = iMan;
-    m_iMan->AddInstance(CLASS_TERRAIN, this);
-
-    m_engine = static_cast<CEngine*>( m_iMan->SearchInstance(CLASS_ENGINE) );
-    m_water  = static_cast<CWater*>( m_iMan->SearchInstance(CLASS_WATER) );
+    m_engine = CEngine::GetInstancePointer();
+    m_water  = m_engine->GetWater();
 
     m_mosaicCount     = 20;
     m_brickCount      = 1 << 4;
@@ -59,10 +54,6 @@ CTerrain::CTerrain(CInstanceManager* iMan)
     m_wind            = Math::Vector(0.0f, 0.0f, 0.0f);
     m_defaultHardness = 0.5f;
     m_useMaterials    = false;
-
-    m_materials.reserve(LEVEL_MAT_PREALLOCATE_COUNT);
-    m_flyingLimits.reserve(FLYING_LIMIT_PREALLOCATE_COUNT);
-    m_buildingLevels.reserve(BUILDING_LEVEL_PREALLOCATE_COUNT);
 
     FlushBuildingLevel();
     FlushFlyingLimit();
@@ -478,6 +469,8 @@ VertexTex2 CTerrain::GetVertex(int x, int y, int step)
     v.texCoord.x =        (o.x-oo.x)*m_textureScale*m_textureSubdivCount;
     v.texCoord.y = 1.0f - (o.z-oo.z)*m_textureScale*m_textureSubdivCount;
 
+    v.texCoord2 = v.texCoord;
+
     return v;
 }
 
@@ -493,9 +486,15 @@ VertexTex2 CTerrain::GetVertex(int x, int y, int step)
   +-------------------> x
 \endverbatim */
 bool CTerrain::CreateMosaic(int ox, int oy, int step, int objRank,
-                            const Material &mat,
-                            float min, float max)
+                            const Material &mat)
 {
+    int baseObjRank = m_engine->GetObjectBaseRank(objRank);
+    if (baseObjRank == -1)
+    {
+        baseObjRank = m_engine->CreateBaseObject();
+        m_engine->SetObjectBaseRank(objRank, baseObjRank);
+    }
+
     std::string texName1;
     std::string texName2;
 
@@ -545,7 +544,7 @@ bool CTerrain::CreateMosaic(int ox, int oy, int step, int objRank,
 
             for (int y = 0; y < brick; y += step)
             {
-                EngineObjLevel4 buffer;
+                EngineBaseObjDataTier buffer;
                 buffer.vertices.reserve(total);
 
                 buffer.type = ENG_TRIANGLE_TYPE_SURFACE;
@@ -638,7 +637,8 @@ bool CTerrain::CreateMosaic(int ox, int oy, int step, int objRank,
                     buffer.vertices.push_back(p1);
                     buffer.vertices.push_back(p2);
                 }
-                m_engine->AddQuick(objRank, buffer, texName1, texName2, min, max, true);
+
+                m_engine->AddBaseObjQuick(baseObjRank, buffer, texName1, texName2, LOD_Constant, true);
             }
         }
     }
@@ -1168,15 +1168,9 @@ bool CTerrain::CreateSquare(int x, int y)
 
     m_objRanks[x+y*m_mosaicCount] = objRank;
 
-    float min = 0.0f;
-    float max = m_vision;
-    max *= m_engine->GetClippingDistance();
     for (int step = 0; step < m_depth; step++)
     {
-        CreateMosaic(x, y, 1 << step, objRank, mat, min, max);
-        min = max;
-        max *= 2;
-        if (step == m_depth-1) max = Math::HUGE_NUM;
+        CreateMosaic(x, y, 1 << step, objRank, mat);
     }
 
     return true;
@@ -1272,7 +1266,10 @@ bool CTerrain::Terraform(const Math::Vector &p1, const Math::Vector &p2, float h
     {
         for (int x = pp1.x; x <= pp2.x; x++)
         {
-            m_engine->DeleteObject(m_objRanks[x+y*m_mosaicCount]);
+            int objRank = m_objRanks[x+y*m_mosaicCount];
+            int baseObjRank = m_engine->GetObjectBaseRank(objRank);
+            m_engine->DeleteBaseObject(baseObjRank);
+            m_engine->DeleteObject(objRank);
             CreateSquare(x, y);  // recreates the square
         }
     }

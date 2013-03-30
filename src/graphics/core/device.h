@@ -104,8 +104,7 @@ enum RenderState
     RENDER_STATE_DEPTH_TEST,
     RENDER_STATE_DEPTH_WRITE,
     RENDER_STATE_ALPHA_TEST,
-    RENDER_STATE_CULLING,
-    RENDER_STATE_DITHERING
+    RENDER_STATE_CULLING
 };
 
 /**
@@ -204,22 +203,22 @@ enum PrimitiveType
 };
 
 /**
- * \enum IntersectPlane
- * \brief Intersection plane of projection volume
+ * \enum FrustumPlane
+ * \brief Planes of frustum space
  *
- * These flags can be OR'd together.
+ * Bitset of flags - can be OR'd together.
  */
-enum IntersectPlane
+enum FrustumPlane
 {
-    INTERSECT_PLANE_LEFT   = 0x01,
-    INTERSECT_PLANE_RIGHT  = 0x02,
-    INTERSECT_PLANE_TOP    = 0x04,
-    INTERSECT_PLANE_BOTTOM = 0x08,
-    INTERSECT_PLANE_FRONT  = 0x10,
-    INTERSECT_PLANE_BACK   = 0x20,
-    INTERSECT_PLANE_ALL = INTERSECT_PLANE_LEFT   | INTERSECT_PLANE_RIGHT  |
-                          INTERSECT_PLANE_TOP    | INTERSECT_PLANE_BOTTOM |
-                          INTERSECT_PLANE_FRONT  | INTERSECT_PLANE_BACK
+    FRUSTUM_PLANE_LEFT   = 0x01,
+    FRUSTUM_PLANE_RIGHT  = 0x02,
+    FRUSTUM_PLANE_TOP    = 0x04,
+    FRUSTUM_PLANE_BOTTOM = 0x08,
+    FRUSTUM_PLANE_FRONT  = 0x10,
+    FRUSTUM_PLANE_BACK   = 0x20,
+    FRUSTUM_PLANE_ALL = FRUSTUM_PLANE_LEFT   | FRUSTUM_PLANE_RIGHT  |
+                        FRUSTUM_PLANE_TOP    | FRUSTUM_PLANE_BOTTOM |
+                        FRUSTUM_PLANE_FRONT  | FRUSTUM_PLANE_BACK
 };
 
 /**
@@ -287,7 +286,7 @@ public:
     virtual void DestroyAllTextures() = 0;
 
     //! Returns the maximum number of multitexture stages
-    virtual int GetMaxTextureCount() = 0;
+    virtual int GetMaxTextureStageCount() = 0;
     //! Sets the texture at given texture stage
     virtual void SetTexture(int index, const Texture &texture) = 0;
     //! Sets the texture image by ID at given texture stage
@@ -313,10 +312,35 @@ public:
     //! Renders primitive composed of vertices with multitexturing (2 textures)
     virtual void DrawPrimitive(PrimitiveType type, const VertexTex2 *vertices, int vertexCount,
                                Color color = Color(1.0f, 1.0f, 1.0f, 1.0f)) = 0;
-    //! Renders primitive composed of vertices with color information
+    //! Renders primitive composed of vertices with solid color
     virtual void DrawPrimitive(PrimitiveType type, const VertexCol *vertices , int vertexCount) = 0;
 
-    //! Tests whether a sphere intersects the 6 clipping planes of projection volume
+    //! Creates a static buffer composed of given primitives with single texture vertices
+    virtual unsigned int CreateStaticBuffer(PrimitiveType primitiveType, const Vertex* vertices, int vertexCount) = 0;
+
+    //! Creates a static buffer composed of given primitives with multitexturing
+    virtual unsigned int CreateStaticBuffer(PrimitiveType primitiveType, const VertexTex2* vertices, int vertexCount) = 0;
+
+    //! Creates a static buffer composed of given primitives with solid color
+    virtual unsigned int CreateStaticBuffer(PrimitiveType primitiveType, const VertexCol* vertices, int vertexCount) = 0;
+
+    //! Updates the static buffer composed of given primitives with single texture vertices
+    virtual void UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primitiveType, const Vertex* vertices, int vertexCount) = 0;
+
+    //! Updates the static buffer composed of given primitives with multitexturing
+    virtual void UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primitiveType, const VertexTex2* vertices, int vertexCount) = 0;
+
+    //! Updates the static buffer composed of given primitives with solid color
+    virtual void UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primitiveType, const VertexCol* vertices, int vertexCount) = 0;
+
+    //! Draws a static buffer
+    virtual void DrawStaticBuffer(unsigned int bufferId) = 0;
+
+    //! Deletes a static buffer
+    virtual void DestroyStaticBuffer(unsigned int bufferId) = 0;
+
+    //! Tests whether a sphere is (partially) within the frustum volume
+    //! Returns a mask of frustum planes for which the test is positive
     virtual int ComputeSphereVisibility(const Math::Vector &center, float radius) = 0;
 
     //! Enables/disables the given render state

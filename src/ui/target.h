@@ -18,19 +18,18 @@
 
 #pragma once
 
-#include <string>
-
-#include "ui/control.h"
-
-#include "common/misc.h"
-#include "common/iman.h"
-#include "common/restext.h"
 #include "common/event.h"
+#include "common/misc.h"
+#include "common/restext.h"
 
 #include "graphics/engine/engine.h"
 
 #include "object/robotmain.h"
 #include "object/object.h"
+
+#include "ui/control.h"
+
+#include <string>
 
 
 namespace Ui {

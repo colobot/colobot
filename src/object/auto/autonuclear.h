@@ -38,7 +38,7 @@ enum AutoNuclearPhase
 class CAutoNuclear : public CAuto
 {
 public:
-    CAutoNuclear(CInstanceManager* iMan, CObject* object);
+    CAutoNuclear(CObject* object);
     ~CAutoNuclear();
 
     void        DeleteObject(bool bAll=false);

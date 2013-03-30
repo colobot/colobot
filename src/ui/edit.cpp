@@ -15,10 +15,10 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// edit.cpp
+
+#include "ui/edit.h"
 
 #include "app/app.h"
-#include "ui/edit.h"
 
 #include <string.h>
 
@@ -261,7 +261,7 @@ bool CEdit::EventProcess(const Event &event)
 
     if ( event.type == EVENT_MOUSE_MOVE )
     {
-        if ( Detect(event.mousePos) &&
+        if ( Detect(event.mousePos) && 
              event.mousePos.x < m_pos.x+m_dim.x-(m_bMulti?MARGX+SCROLL_WIDTH:0.0f) )
         {
             if ( m_bEdit )
@@ -560,7 +560,7 @@ bool CEdit::IsLinkPos(Math::Point pos)
     if ( i == -1 )  return false;
     if ( i >= m_len )  return false;
 
-    if ( (m_format[i]& Gfx::FONT_MASK_HIGHLIGHT) == Gfx::FONT_HIGHLIGHT_LINK)  return true; // TODO
+    if ( m_format.size() > static_cast<unsigned int>(i) && ((m_format[i] & Gfx::FONT_MASK_HIGHLIGHT) == Gfx::FONT_HIGHLIGHT_LINK))  return true; // TODO
     return false;
 }
 
@@ -735,7 +735,8 @@ int CEdit::MouseDetect(Math::Point mouse)
 //                                                len, offset, size,
 //                                                m_fontStretch);
                 c = m_engine->GetText()->Detect(std::string(m_text+m_lineOffset[i]).substr(0, len),
-                                                m_format,
+                                                m_format.begin() + m_lineOffset[i],
+                                                m_format.end(),
                                                 size,
                                                 offset); // TODO check if good
             }
@@ -759,7 +760,7 @@ void CEdit::HyperFlush()
 
 // Indicates which is the home page.
 
-void CEdit::HyperHome(const char *filename)
+void CEdit::HyperHome(std::string filename)
 {
     HyperFlush();
     HyperAdd(filename, 0);
@@ -767,10 +768,10 @@ void CEdit::HyperHome(const char *filename)
 
 // Performs a hyper jump through a link.
 
-void CEdit::HyperJump(const char *name, const char *marker)
+void CEdit::HyperJump(std::string name, std::string marker)
 {
-    char    filename[100];
-    char    sMarker[100];
+    std::string filename;
+    std:: string sMarker;
     int     i, line, pos;
 
     if ( m_historyCurrent >= 0 )
@@ -778,18 +779,16 @@ void CEdit::HyperJump(const char *name, const char *marker)
         m_history[m_historyCurrent].firstLine = m_lineFirst;
     }
 
-    strcpy(sMarker, marker);
+    sMarker = marker;
 
 //? sprintf(filename, "help\\%s.txt", name);
-    if ( name[0] == '%' )
-    {
-        UserDir(filename, name, "");
-        strcat(filename, ".txt");
+      
+    if ( name[0] == '%' ) {
+        filename = GetProfile().GetUserBasedPath(name, "") + ".txt";
+    } else {
+        filename = std::string("help/") + CApplication::GetInstancePointer()->GetLanguageChar() + "/" + name + std::string(".txt");
     }
-    else
-    {
-        sprintf(filename, "help\\%s.txt", name);
-    }
+    
     if ( ReadText(filename) )
     {
         Justif();
@@ -797,7 +796,7 @@ void CEdit::HyperJump(const char *name, const char *marker)
         line = 0;
         for ( i=0 ; i<m_markerTotal ; i++ )
         {
-            if ( strcmp(sMarker, m_marker[i].name) == 0 )
+            if (sMarker == m_marker[i].name)
             {
                 pos = m_marker[i].pos;
                 for ( i=0 ; i<m_lineTotal ; i++ )
@@ -818,12 +817,12 @@ void CEdit::HyperJump(const char *name, const char *marker)
 
 // Adds text to the history of visited.
 
-bool CEdit::HyperAdd(const char *filename, int firstLine)
+bool CEdit::HyperAdd(std::string filename, int firstLine)
 {
     if ( m_historyCurrent >= EDITHISTORYMAX-1 )  return false;
 
     m_historyCurrent ++;
-    strcpy(m_history[m_historyCurrent].filename, filename);
+    m_history[m_historyCurrent].filename = filename;
     m_history[m_historyCurrent].firstLine = firstLine;
 
     m_historyTotal = m_historyCurrent+1;
@@ -935,10 +934,10 @@ void CEdit::Draw()
         pos.x = m_pos.x+(10.0f/640.0f);
         if ( m_bAutoIndent )
         {
+            const char *s = "\t";  // line | dotted
             for ( j=0 ; j<m_lineIndent[i] ; j++ )
             {
-                char s = '\t';  // line | dotted
-                m_engine->GetText()->DrawText(&s, m_fontType, m_fontSize, pos, 1.0f, Gfx::TEXT_ALIGN_LEFT, 0);
+                m_engine->GetText()->DrawText(s, m_fontType, m_fontSize, pos, 1.0f, Gfx::TEXT_ALIGN_LEFT, 0);
                 pos.x += indentLength;
             }
         }
@@ -950,7 +949,7 @@ void CEdit::Draw()
         size = m_fontSize;
 
         // Headline \b;?
-        if ( beg+len < m_len && m_format.count(beg) &&
+        if ( beg+len < m_len && m_format.size() > static_cast<unsigned int>(beg) &&
              (m_format[beg]&Gfx::FONT_MASK_TITLE) == Gfx::FONT_TITLE_BIG )
         {
             start.x = ppos.x-MARGX;
@@ -964,7 +963,7 @@ void CEdit::Draw()
         }
 
         // As \t;?
-        if ( beg+len < m_len && m_format.count(beg) &&
+        if ( beg+len < m_len && m_format.size() > static_cast<unsigned int>(beg) &&
              (m_format[beg]&Gfx::FONT_MASK_TITLE) == Gfx::FONT_TITLE_NORM )
         {
             start.x = ppos.x-MARGX;
@@ -975,7 +974,7 @@ void CEdit::Draw()
         }
 
         // Subtitle \s;?
-        if ( beg+len < m_len && m_format.count(beg) &&
+        if ( beg+len < m_len && m_format.size() > static_cast<unsigned int>(beg) &&
              (m_format[beg]&Gfx::FONT_MASK_TITLE) == Gfx::FONT_TITLE_LITTLE )
         {
             start.x = ppos.x-MARGX;
@@ -986,7 +985,7 @@ void CEdit::Draw()
         }
 
         // Table \tab;?
-        if ( beg+len < m_len && m_format.count(beg) &&
+        if ( beg+len < m_len && m_format.size() > static_cast<unsigned int>(beg) &&
              (m_format[beg]&Gfx::FONT_MASK_HIGHLIGHT) == Gfx::FONT_HIGHLIGHT_TABLE )
         {
             start.x = ppos.x-MARGX;
@@ -997,7 +996,7 @@ void CEdit::Draw()
         }
 
         // Image \image; ?
-        if ( beg+len < m_len && m_format.count(beg) &&
+        if ( beg+len < m_len && m_format.size() > static_cast<unsigned int>(beg) &&
              (m_format[beg]&Gfx::FONT_MASK_IMAGE) != 0 )
         {
             line = 1;
@@ -1005,7 +1004,7 @@ void CEdit::Draw()
             {
                 if ( i+line >= m_lineTotal                ||
                      i+line >= m_lineFirst+m_lineVisible  ||
-                     (m_format.count(beg+line) && m_format[beg+line]&Gfx::FONT_MASK_IMAGE) == 0 )  break;
+                     (m_format.size() > static_cast<unsigned int>(beg+line) && m_format[beg+line]&Gfx::FONT_MASK_IMAGE) == 0 )  break;
                 line ++;
             }
 
@@ -1034,16 +1033,18 @@ void CEdit::Draw()
             else
             {
                 start.x = ppos.x+m_engine->GetText()->GetStringWidth(std::string(m_text+beg).substr(0, o1-beg),
-                                                                     m_format,
+                                                                     m_format.begin() + beg,
+                                                                     m_format.end(),
                                                                      size);
                 end.x   = m_engine->GetText()->GetStringWidth(std::string(m_text+o1).substr(0, o2-o1),
-                                                              m_format,
+                                                              m_format.begin() + o1,
+                                                              m_format.end(),
                                                               size);
             }
 
             start.y = ppos.y-(m_bMulti?0.0f:MARGY1);
             end.y   = m_lineHeight;
-            if ( m_format.count(beg) && (m_format[beg]&Gfx::FONT_MASK_TITLE) == Gfx::FONT_TITLE_BIG)  end.y *= BIG_FONT;
+            if ( m_format.size() > static_cast<unsigned int>(beg) && (m_format[beg]&Gfx::FONT_MASK_TITLE) == Gfx::FONT_TITLE_BIG)  end.y *= BIG_FONT;
             DrawPart(start, end, 1);  // plain yellow background
         }
 
@@ -1065,7 +1066,8 @@ void CEdit::Draw()
         else
         {
             m_engine->GetText()->DrawText(std::string(m_text+beg).substr(0, len),
-                                          m_format,
+                                          m_format.begin() + beg,
+                                          m_format.end(),
                                           size,
                                           ppos,
                                           m_dim.x,
@@ -1107,7 +1109,8 @@ void CEdit::Draw()
                 else
                 {
                     m_engine->GetText()->SizeText(std::string(m_text+m_lineOffset[i]).substr(0, len),
-                                                  m_format,
+                                                  m_format.begin() + m_lineOffset[i],
+                                                  m_format.end(),
                                                   size, pos, Gfx::TEXT_ALIGN_LEFT,
                                                   start, end);
                 }
@@ -1131,16 +1134,14 @@ void CEdit::Draw()
 
 // Draw an image part.
 
-void CEdit::DrawImage(Math::Point pos, const char *name, float width,
+void CEdit::DrawImage(Math::Point pos, std::string name, float width,
                       float offset, float height, int nbLine)
 {
-    Math::Point     uv1, uv2, dim;
-    float       dp;
-    char        filename[100];
+    Math::Point uv1, uv2, dim;
+    float dp;
+    std::string filename;
 
-//? sprintf(filename, "diagram\\%s.png", name);
-    UserDir(filename, name, "diagram");
-    strcat(filename, ".png");
+    filename = GetProfile().GetUserBasedPath(name, "diagram") + ".png";
 
     m_engine->SetTexture(filename);
     m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
@@ -1384,77 +1385,58 @@ int CEdit::GetTextLength()
 // Returns a name in a command.
 // \x nom1 nom2 nom3;
 
-void GetNameParam(const char *cmd, int rank, char *buffer)
+std::string GetNameParam(std::string cmd, int rank)
 {
-    int     i;
-
-    for ( i=0 ; i<rank ; i++ )
-    {
-        while ( *cmd != ' ' && *cmd != ';' )
-        {
-            cmd ++;
-        }
-        if ( *cmd != ';' )  cmd ++;
+    std::vector<std::string> results;    
+    boost::split(results, cmd, boost::is_any_of(" ;"));
+    
+    if (results.size() > static_cast<unsigned int>(rank)) {
+        return results.at(rank);
     }
 
-    while ( *cmd != ' ' && *cmd != ';' )
-    {
-        *buffer++ = *cmd++;
-    }
-    *buffer = 0;
+    return "";
 }
 
 // Returns a number of a command.
 // \x nom n1 n2;
 
-int GetValueParam(const char *cmd, int rank)
+int GetValueParam(std::string cmd, int rank)
 {
-    int     n, i;
-
-    for ( i=0 ; i<rank ; i++ )
-    {
-        while ( *cmd != ' ' && *cmd != ';' )
-        {
-            cmd ++;
-        }
-        if ( *cmd != ';' )  cmd ++;
+    std::vector<std::string> results;    
+    boost::split(results, cmd, boost::is_any_of(" ;"));
+    int return_value = 0;
+    
+    if (results.size() > static_cast<unsigned int>(rank)) {
+        return_value = atoi(results.at(rank).c_str());
     }
 
-    sscanf(cmd, "%d", &n);
-    return n;
+    return return_value;
 }
 
 // Frees all images.
 
 void CEdit::FreeImage()
 {
-    char    filename[100];
-    int     i;
+    std::string filename;
 
-    for ( i=0 ; i<m_imageTotal ; i++ )
-    {
-//?     sprintf(filename, "diagram\\%s.png", m_image[i].name);
-        UserDir(filename, m_image[i].name, "diagram");
-        strcat(filename, ".png");
+    for (int i = 0 ; i < m_imageTotal; i++ ) {
+        filename = GetProfile().GetUserBasedPath(m_image[i].name, "diagram") + ".png";
         m_engine->DeleteTexture(filename);
     }
 }
 
 // Reads the texture of an image.
 
-void CEdit::LoadImage(const char *name)
+void CEdit::LoadImage(std::string name)
 {
-    char    filename[100];
-
-//? sprintf(filename, "diagram\\%s.png", name);
-    UserDir(filename, name, "diagram");
-    strcat(filename, ".png");
+    std::string filename;
+    filename = GetProfile().GetUserBasedPath(name, "diagram") + ".png";
     m_engine->LoadTexture(filename);
 }
 
 // Read from a text file.
 
-bool CEdit::ReadText(const char *filename, int addSize)
+bool CEdit::ReadText(std::string filename, int addSize)
 {
     FILE        *file = NULL;
     char        *buffer;
@@ -1466,7 +1448,16 @@ bool CEdit::ReadText(const char *filename, int addSize)
     bool        bInSoluce, bBOL;
 
     if ( filename[0] == 0 )  return false;
-    file = fopen(filename, "rb");
+    boost::replace_all(filename, "\\", "/");
+    
+    /* This is ugly but doesn't require many changes in code. If file doesn't
+       exists it's posible filename is absolute not full path */
+    std::string path = filename;
+    if (!fs::exists(path)) {
+        path = CApplication::GetInstancePointer()->GetDataDirPath() + "/" + filename;
+    }
+
+    file = fopen(fs::path(path).make_preferred().string().c_str(), "rb");
     if ( file == NULL )  return false;
 
     fseek(file, 0, SEEK_END);
@@ -1491,8 +1482,11 @@ bool CEdit::ReadText(const char *filename, int addSize)
 
     fread(buffer, 1, len, file);
 
-    if ( m_format.size() > 0 )
-        m_format.clear();
+    m_format.clear();
+    m_format.reserve(m_maxChar+1);
+    for (i = 0; i <= m_maxChar+1; i++) {
+        m_format.push_back(0);
+    }
     
     fclose(file);
 
@@ -1597,8 +1591,8 @@ bool CEdit::ReadText(const char *filename, int addSize)
             {
                 if ( iLink < EDITLINKMAX )
                 {
-                    GetNameParam(buffer+i+3, 0, m_link[iLink].name);
-                    GetNameParam(buffer+i+3, 1, m_link[iLink].marker);
+                    m_link[iLink].name = GetNameParam(buffer+i+3, 0);
+                    m_link[iLink].marker = GetNameParam(buffer+i+3, 1);
                     iLink ++;
                 }
                 font &= ~Gfx::FONT_MASK_HIGHLIGHT;
@@ -1614,7 +1608,7 @@ bool CEdit::ReadText(const char *filename, int addSize)
             {
                 if ( m_markerTotal < EDITLINKMAX )
                 {
-                    GetNameParam(buffer+i+3, 0, m_marker[m_markerTotal].name);
+                    m_marker[m_markerTotal].name = GetNameParam(buffer+i+3, 0);
                     m_marker[m_markerTotal].pos = j;
                     m_markerTotal ++;
                 }
@@ -1632,21 +1626,19 @@ bool CEdit::ReadText(const char *filename, int addSize)
         {
             if ( m_bSoluce || !bInSoluce )
             {
-#if _DEMO
-                strcpy(iName, "demo");
-#else
-                GetNameParam(buffer+i+7, 0, iName);
-#endif
+
+                strcpy(iName, GetNameParam(buffer+i+7, 0).c_str());
+
 //?             iWidth = m_lineHeight*RetValueParam(buffer+i+7, 1);
                 iWidth = static_cast<float>(GetValueParam(buffer+i+7, 1));
                 iWidth *= m_engine->GetText()->GetHeight(Gfx::FONT_COLOBOT, Gfx::FONT_SIZE_SMALL);
                 iLines = GetValueParam(buffer+i+7, 2);
-                LoadImage(iName);
+                LoadImage(std::string(iName));
 
                 // A part of image per line of text.
                 for ( iCount=0 ; iCount<iLines ; iCount++ )
                 {
-                    strcpy(m_image[iIndex].name, iName);
+                    m_image[iIndex].name = iName;
                     m_image[iIndex].offset = static_cast<float>(iCount/iLines);
                     m_image[iIndex].height = 1.0f/iLines;
                     m_image[iIndex].width = iWidth*0.75f;
@@ -1880,7 +1872,7 @@ bool CEdit::ReadText(const char *filename, int addSize)
 
 // Writes all the text in a file.
 
-bool CEdit::WriteText(const char *filename)
+bool CEdit::WriteText(std::string filename)
 {
     FILE*       file;
     char        buffer[1000+20];
@@ -1888,7 +1880,7 @@ bool CEdit::WriteText(const char *filename)
     float       iDim;
 
     if ( filename[0] == 0 )  return false;
-    file = fopen(filename, "wb");
+    file = fopen(filename.c_str(), "wb");
     if ( file == NULL )  return false;
 
     if ( m_bAutoIndent )
@@ -1957,8 +1949,11 @@ void CEdit::SetMaxChar(int max)
     m_text = new char[m_maxChar+1];
     memset(m_text, 0, m_maxChar+1);
 
-    if (m_format.size() > 0)
-        m_format.clear();
+    m_format.clear();
+    m_format.reserve(m_maxChar+1);
+    for (int i = 0; i <= m_maxChar+1; i++) {
+        m_format.push_back(0);
+    }
 
     m_len = 0;
     m_cursor1 = 0;
@@ -1987,12 +1982,12 @@ bool CEdit::GetEditCap()
 
 // Mode management "hilitable" (that's the franch).
 
-void CEdit::SetHiliteCap(bool bEnable)
+void CEdit::SetHighlightCap(bool bEnable)
 {
     m_bHilite = bEnable;
 }
 
-bool CEdit::GetHiliteCap()
+bool CEdit::GetHighlightCap()
 {
     return m_bHilite;
 }
@@ -2147,6 +2142,13 @@ bool CEdit::GetDisplaySpec()
 void CEdit::SetMultiFont(bool bMulti)
 {
     m_format.clear();
+    
+    if (bMulti) {
+        m_format.reserve(m_maxChar+1);
+        for (int i = 0; i <= m_maxChar+1; i++) {
+            m_format.push_back(0);
+        }
+    }
 }
 
 // TODO check if it works correctly; was checking if variable is null
@@ -2450,7 +2452,8 @@ void CEdit::MoveLine(int move, bool bWord, bool bSelect)
     else
     {
         c = m_engine->GetText()->Detect(std::string(m_text+m_lineOffset[line]),
-                                        m_format,
+                                        m_format.begin() + m_lineOffset[line],
+                                        m_format.end(),
                                         m_fontSize,
                                         m_lineOffset[line+1]-m_lineOffset[line]);
     }
@@ -2481,7 +2484,8 @@ void CEdit::ColumnFix()
     {
         m_column = m_engine->GetText()->GetStringWidth(
                                 std::string(m_text+m_lineOffset[line]),
-                                m_format,
+                                m_format.begin() + m_lineOffset[line],
+                                m_format.end(),
                                 m_fontSize
                             );
     }
@@ -2823,20 +2827,20 @@ void CEdit::InsertOne(char character)
     {
         m_text[i] = m_text[i-1];  // shoot
 
-        //if ( m_format.size() > 0 )
-        //{
+        if ( m_format.size() > static_cast<unsigned int>(i) )
+        {
             m_format[i] = m_format[i-1];  // shoot
-        //}
+        }
     }
 
     m_len ++;
 
     m_text[m_cursor1] = character;
 
-    //if ( m_format.size() > 0 )
-    //{
+    if ( m_format.size() > static_cast<unsigned int>(m_cursor1) )
+    {
         m_format[m_cursor1] = 0;
-    //}
+    }
 
     m_cursor1++;
     m_cursor2 = m_cursor1;
@@ -2884,7 +2888,7 @@ void CEdit::DeleteOne(int dir)
     {
         m_text[i] = m_text[i+hole];
 
-        if ( m_format.count(i+hole) )
+        if ( m_format.size() > static_cast<unsigned int>(i + hole) )
         {
             m_format[i] = m_format[i+hole];
         }
@@ -3087,13 +3091,13 @@ void CEdit::Justif()
         {
             size = m_fontSize;
 
-            if ( m_format.count(i) && (m_format[i]&Gfx::FONT_MASK_TITLE) == Gfx::FONT_TITLE_BIG )  // headline?
+            if ( m_format.size() > static_cast<unsigned int>(i) && (m_format[i]&Gfx::FONT_MASK_TITLE) == Gfx::FONT_TITLE_BIG )  // headline?
             {
                 size *= BIG_FONT;
                 bDual = true;
             }
 
-            if ( m_format.count(i) && (m_format[i]&Gfx::FONT_MASK_IMAGE) != 0 )  // image part?
+            if ( m_format.size() > static_cast<unsigned int>(i) && (m_format[i]&Gfx::FONT_MASK_IMAGE) != 0 )  // image part?
             {
                 i ++;  // jumps just a character (index in m_image)
             }
@@ -3101,7 +3105,8 @@ void CEdit::Justif()
             {
                 // TODO check if good
                 i += m_engine->GetText()->Justify(std::string(m_text+i),
-                                                  m_format,
+                                                  m_format.begin() + i,
+                                                  m_format.end(),
                                                   size,
                                                   width);
             }
@@ -3296,12 +3301,12 @@ bool CEdit::SetFormat(int cursor1, int cursor2, int format)
 {
     int     i;
 
-    //if ( m_format.size() == 0 )  return false;
+    if ( m_format.size() < static_cast<unsigned int>(cursor2) )
+        SetMultiFont(true);
 
     for ( i=cursor1 ; i<cursor2 ; i++ )
     {
-        if (m_format.count(i))
-            m_format[i] |= format;
+        m_format.at(i) |= format;
     }
 
     return true;

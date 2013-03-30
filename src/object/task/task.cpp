@@ -14,33 +14,28 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// task.cpp
-
-
-// #include <stdio.h>
 
 #include "object/task/task.h"
 
-#include "common/iman.h"
-#include "object/object.h"
+#include "app/app.h"
 
+#include "object/object.h"
+#include "object/robotmain.h"
 
 
 // Object's constructor.
 
-CTask::CTask(CInstanceManager* iMan, CObject* object)
+CTask::CTask(CObject* object)
 {
-    m_iMan = iMan;
-
-    m_engine      = static_cast<Gfx::CEngine*>(m_iMan->SearchInstance(CLASS_ENGINE));
-    m_lightMan    = static_cast<Gfx::CLightManager*>(m_iMan->SearchInstance(CLASS_LIGHT));
-    m_terrain     = static_cast<Gfx::CTerrain*>(m_iMan->SearchInstance(CLASS_TERRAIN));
-    m_water       = static_cast<Gfx::CWater*>(m_iMan->SearchInstance(CLASS_WATER));
-    m_particle    = static_cast<Gfx::CParticle*>(m_iMan->SearchInstance(CLASS_PARTICULE));
-    m_camera      = static_cast<Gfx::CCamera*>(m_iMan->SearchInstance(CLASS_CAMERA));
-    m_displayText = static_cast<Ui::CDisplayText*>(m_iMan->SearchInstance(CLASS_DISPLAYTEXT));
-    m_main        = static_cast<CRobotMain*>(m_iMan->SearchInstance(CLASS_MAIN));
-    m_sound       = static_cast<CSoundInterface*>(m_iMan->SearchInstance(CLASS_SOUND));
+    m_sound       = CApplication::GetInstancePointer()->GetSound();
+    m_engine      = Gfx::CEngine::GetInstancePointer();
+    m_lightMan    = m_engine->GetLightManager();
+    m_water       = m_engine->GetWater();
+    m_particle    = m_engine->GetParticle();
+    m_main        = CRobotMain::GetInstancePointer();
+    m_terrain     = m_main->GetTerrain();
+    m_camera      = m_main->GetCamera();
+    m_displayText = m_main->GetDisplayText();
 
     m_object      = object;
     m_physics     = m_object->GetPhysics();

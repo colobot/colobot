@@ -19,9 +19,13 @@
 #include "object/auto/autotower.h"
 
 #include "common/iman.h"
+
 #include "math/geometry.h"
+
 #include "physics/physics.h"
+
 #include "script/cmdtoken.h"
+
 #include "ui/interface.h"
 #include "ui/displaytext.h"
 #include "ui/window.h"
@@ -37,8 +41,7 @@ const float ENERGY_FIRE     = 0.125f;   // energy consumed by fire
 
 // Object's constructor.
 
-CAutoTower::CAutoTower(CInstanceManager* iMan, CObject* object)
-                       : CAuto(iMan, object)
+CAutoTower::CAutoTower(CObject* object) : CAuto(object)
 {
     int     i;
 

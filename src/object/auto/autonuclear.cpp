@@ -19,8 +19,11 @@
 #include "object/auto/autonuclear.h"
 
 #include "common/iman.h"
+
 #include "math/geometry.h"
+
 #include "script/cmdtoken.h"
+
 #include "ui/interface.h"
 #include "ui/window.h"
 #include "ui/displaytext.h"
@@ -36,8 +39,7 @@ const float NUCLEAR_DELAY = 30.0f;  // duration of the generation
 
 // Object's constructor.
 
-CAutoNuclear::CAutoNuclear(CInstanceManager* iMan, CObject* object)
-                          : CAuto(iMan, object)
+CAutoNuclear::CAutoNuclear(CObject* object) : CAuto(object)
 {
     m_channelSound = -1;
     Init();
@@ -396,7 +398,7 @@ void CAutoNuclear::CreatePower()
     pos = m_object->GetPosition(0);
     angle = m_object->GetAngleY(0);
 
-    power = new CObject(m_iMan);
+    power = new CObject();
     if ( !power->CreateResource(pos, angle, OBJECT_ATOMIC) )
     {
         delete power;

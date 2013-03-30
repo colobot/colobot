@@ -44,7 +44,6 @@ class CButton;
 class CEditValue : public CControl
 {
 public:
-//    CEditValue(CInstanceManager* iMan);
     CEditValue();
     virtual ~CEditValue();
 

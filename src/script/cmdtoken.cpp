@@ -708,6 +708,7 @@ int GetBuild(char *line, int rank)
     if ( Cmd(p, "AutoLab"       ) )  return BUILD_LABO;
     if ( Cmd(p, "PowerCaptor"   ) )  return BUILD_PARA;
     if ( Cmd(p, "ExchangePost"  ) )  return BUILD_INFO;
+    if ( Cmd(p, "Destroyer"     ) )  return BUILD_DESTROYER;
     if ( Cmd(p, "FlatGround"    ) )  return BUILD_GFLAT;
     if ( Cmd(p, "Flag"          ) )  return BUILD_FLAG;
 

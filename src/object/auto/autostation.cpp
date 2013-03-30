@@ -19,9 +19,12 @@
 #include "object/auto/autostation.h"
 
 #include "common/iman.h"
+
 #include "graphics/engine/particle.h"
 #include "graphics/engine/terrain.h"
+
 #include "math/geometry.h"
+
 #include "ui/interface.h"
 #include "ui/gauge.h"
 #include "ui/window.h"
@@ -31,8 +34,7 @@
 
 // Object's constructor.
 
-CAutoStation::CAutoStation(CInstanceManager* iMan, CObject* object)
-                           : CAuto(iMan, object)
+CAutoStation::CAutoStation(CObject* object) : CAuto(object)
 {
     Init();
 }

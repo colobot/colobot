@@ -19,7 +19,6 @@
 #include "ui/color.h"
 
 #include "common/event.h"
-#include "common/iman.h"
 #include "common/misc.h"
 #include "common/restext.h"
 
@@ -37,7 +36,6 @@ const float DELAY2 = 0.1f;
 
 // Object's constructor.
 
-//CColor::CColor(CInstanceManager* iMan) : CControl(iMan)
 CColor::CColor() : CControl()
 {
     m_bRepeat = false;

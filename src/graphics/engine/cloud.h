@@ -34,9 +34,6 @@
 #include <string>
 
 
-class CInstanceManager;
-
-
 // Graphics module namespace
 namespace Gfx {
 
@@ -79,12 +76,13 @@ struct CloudLine
 class CCloud
 {
 public:
-    CCloud(CInstanceManager* iMan, CEngine* engine);
+    CCloud(CEngine* engine);
     ~CCloud();
 
     bool        EventProcess(const Event& event);
     //! Removes all the clouds
     void        Flush();
+
     //! Creates all areas of cloud
     void        Create(const std::string& fileName, const Color& diffuse, const Color& ambient, float level);
     //! Draw the clouds
@@ -112,9 +110,8 @@ protected:
     void        CreateLine(int x, int y, int len);
 
 protected:
-    CInstanceManager* m_iMan;
-    CEngine*          m_engine;
-    CTerrain*         m_terrain;
+    CEngine*        m_engine;
+    CTerrain*       m_terrain;
 
     bool            m_enabled;
     //! Overall level

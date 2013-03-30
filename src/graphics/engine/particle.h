@@ -28,7 +28,6 @@
 #include "sound/sound.h"
 
 
-class CInstanceManager;
 class CRobotMain;
 class CObject;
 class CSoundInterface;
@@ -267,7 +266,7 @@ struct WheelTrace
 class CParticle
 {
 public:
-    CParticle(CInstanceManager* iMan, CEngine* engine);
+    CParticle(CEngine* engine);
     ~CParticle();
 
     //! Sets the device to use
@@ -371,7 +370,6 @@ protected:
     void        TrackDraw(int i, ParticleType type);
 
 protected:
-    CInstanceManager* m_iMan;
     CEngine*     m_engine;
     CDevice*     m_device;
     CTerrain*    m_terrain;

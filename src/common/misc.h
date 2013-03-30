@@ -29,8 +29,5 @@ extern char GetToLower(char letter);
 
 extern void TimeToAscii(time_t time, char *buffer);
 
-extern bool CopyFileToTemp(char* filename);
 extern bool CopyFileListToTemp(char* filename, int* list, int total);
 extern void AddExt(char* filename, const char* ext);
-extern void UserDir(bool bUser, const char* dir);
-extern void UserDir(char* buffer, const char* dir, const char* def);

@@ -18,6 +18,9 @@
 
 #include "graphics/engine/pyro.h"
 
+#include "app/app.h"
+
+#include "common/iman.h"
 #include "common/logger.h"
 
 #include "graphics/engine/lightman.h"
@@ -36,20 +39,19 @@
 namespace Gfx {
 
 
-CPyro::CPyro(CInstanceManager* iMan)
+CPyro::CPyro()
 {
-    m_iMan = iMan;
-    m_iMan->AddInstance(CLASS_PYRO, this, 100);
+    CInstanceManager::GetInstancePointer()->AddInstance(CLASS_PYRO, this, 100);
 
-    m_engine      = static_cast<CEngine*>(m_iMan->SearchInstance(CLASS_ENGINE));
-    m_terrain     = static_cast<CTerrain*>(m_iMan->SearchInstance(CLASS_TERRAIN));
-    m_camera      = static_cast<CCamera*>(m_iMan->SearchInstance(CLASS_CAMERA));
-    m_particle    = static_cast<CParticle*>(m_iMan->SearchInstance(CLASS_PARTICULE));
-    m_lightMan    = static_cast<CLightManager*>(m_iMan->SearchInstance(CLASS_LIGHT));
-    m_displayText = static_cast<Ui::CDisplayText*>(m_iMan->SearchInstance(CLASS_DISPLAYTEXT));
-    m_main        = static_cast<CRobotMain*>(m_iMan->SearchInstance(CLASS_MAIN));
-    m_sound       = static_cast<CSoundInterface*>(m_iMan->SearchInstance(CLASS_SOUND));
-    m_object = 0;
+    m_engine      = CEngine::GetInstancePointer();
+    m_main        = CRobotMain::GetInstancePointer();
+    m_terrain     = m_main->GetTerrain();
+    m_camera      = m_main->GetCamera();
+    m_particle    = m_engine->GetParticle();
+    m_lightMan    = m_engine->GetLightManager();
+    m_displayText = m_main->GetDisplayText();
+    m_sound       = CApplication::GetInstancePointer()->GetSound();
+    m_object      = nullptr;
 
     m_progress = 0.0f;
     m_speed = 0.0f;
@@ -60,7 +62,7 @@ CPyro::CPyro(CInstanceManager* iMan)
 
 CPyro::~CPyro()
 {
-    m_iMan->DeleteInstance(CLASS_PYRO, this);
+    CInstanceManager::GetInstancePointer()->DeleteInstance(CLASS_PYRO, this);
 }
 
 void CPyro::DeleteObject()
@@ -1316,12 +1318,9 @@ void CPyro::CreateLight(Math::Vector pos, float height)
 
     Gfx::Light light;
     light.type        = LIGHT_SPOT;
-    light.position.x  = pos.x;
-    light.position.y  = pos.y+height;
-    light.position.z  = pos.z;
-    light.direction.x =  0.0f;
-    light.direction.y = -1.0f;  // against the bottom
-    light.direction.z =  0.0f;
+    light.ambient     = Gfx::Color(0.0f, 0.0f, 0.0f);
+    light.position    = Math::Vector(pos.x, pos.y+height, pos.z);
+    light.direction   = Math::Vector(0.0f, -1.0f, 0.0f);  // against the bottom
     light.spotIntensity = 1.0f;
     light.attenuation0 = 1.0f;
     light.attenuation1 = 0.0f;
@@ -1397,27 +1396,39 @@ void CPyro::CreateTriangle(CObject* obj, ObjectType oType, int part)
     int objRank = obj->GetObjectRank(part);
     if (objRank == -1) return;
 
-    float min = 0.0f;
-    float max = m_engine->GetLimitLOD(0);
+
     int total = m_engine->GetObjectTotalTriangles(objRank);
+
     float percent = 0.10f;
     if (total < 50) percent = 0.25f;
     if (total < 20) percent = 0.50f;
     if (m_type == PT_EGG) percent = 0.30f;
 
-    if ( oType == OBJECT_POWER    ||
-         oType == OBJECT_ATOMIC   ||
-         oType == OBJECT_URANIUM  ||
-         oType == OBJECT_TNT      ||
-         oType == OBJECT_BOMB     )  percent = 0.75f;
-    if ( oType == OBJECT_MOBILEtg )  percent = 0.50f;
-    if ( oType == OBJECT_TEEN28   )  percent = 0.75f;
-    if ( oType == OBJECT_MOTHER   )  max = 1000000.0f;
-    if ( oType == OBJECT_TEEN28   )  max = 1000000.0f;
-    if ( oType == OBJECT_TEEN31   )  max = 1000000.0f;
+    if (oType == OBJECT_POWER    ||
+        oType == OBJECT_ATOMIC   ||
+        oType == OBJECT_URANIUM  ||
+        oType == OBJECT_TNT      ||
+        oType == OBJECT_BOMB     ||
+        oType == OBJECT_TEEN28)
+    {
+        percent = 0.75f;
+    }
+    else if (oType == OBJECT_MOBILEtg)
+    {
+        percent = 0.50f;
+    }
+
+    LODLevel lodLevel = LOD_High;
+
+    if (oType == OBJECT_MOTHER ||
+        oType == OBJECT_TEEN28 ||
+        oType == OBJECT_TEEN31)
+    {
+        lodLevel = LOD_Constant;
+    }
 
     std::vector<EngineTriangle> buffer;
-    total = m_engine->GetPartialTriangles(objRank, min, max, percent, 100, buffer);
+    total = m_engine->GetPartialTriangles(objRank, lodLevel, percent, 100, buffer);
 
     for (int i = 0; i < total; i++)
     {
@@ -2171,9 +2182,11 @@ CObject* CPyro::FallSearchBeeExplo()
     float iRadius;
     m_object->GetCrashSphere(0, iPos, iRadius);
 
+    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
+
     for (int i = 0; i < 1000000; i++)
     {
-        CObject* pObj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
+        CObject* pObj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
         if ( pObj == 0 )  break;
 
         ObjectType oType = pObj->GetType();

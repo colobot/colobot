@@ -46,7 +46,7 @@ enum MotionAntSpecialAction
 class CMotionAnt : public CMotion
 {
 public:
-    CMotionAnt(CInstanceManager* iMan, CObject* object);
+    CMotionAnt(CObject* object);
     ~CMotionAnt();
 
     void    DeleteObject(bool bAll=false);

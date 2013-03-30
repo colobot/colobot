@@ -1,6 +1,6 @@
 =encoding utf8
 
-=head1 COLOBOT
+=head1 NAME
 
 colobot - educational programming strategy game
 

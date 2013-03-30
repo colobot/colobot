@@ -27,8 +27,6 @@
 #include "math/point.h"
 #include "math/vector.h"
 
-class CInstanceManager;
-
 
 /**
   \enum EventType
@@ -411,7 +409,8 @@ enum EventType
     EVENT_OBJECT_BNUCLEAR   = 1060,
     EVENT_OBJECT_BPARA      = 1061,
     EVENT_OBJECT_BINFO      = 1062,
-    EVENT_OBJECT_BXXXX      = 1063,
+    EVENT_OBJECT_BDESTROYER = 1063,
+    //EVENT_OBJECT_BXXXX      = 1063,
     EVENT_OBJECT_GFLAT      = 1070,
     EVENT_OBJECT_FCREATE    = 1071,
     EVENT_OBJECT_FDELETE    = 1072,
@@ -445,6 +444,7 @@ enum EventType
     EVENT_OBJECT_TERRAFORM  = 1201,
     EVENT_OBJECT_FIRE       = 1202,
     EVENT_OBJECT_FIREANT    = 1203,
+    EVENT_OBJECT_SPIDEREXPLO= 1204,
     EVENT_OBJECT_RECOVER    = 1220,
     EVENT_OBJECT_BEGSHIELD  = 1221,
     EVENT_OBJECT_ENDSHIELD  = 1222,
@@ -761,7 +761,7 @@ public:
 
 public:
     //! Object's constructor
-    CEventQueue(CInstanceManager* iMan);
+    CEventQueue();
     //! Object's destructor
     ~CEventQueue();
 
@@ -773,7 +773,6 @@ public:
     bool    GetEvent(Event &event);
 
 protected:
-    CInstanceManager* m_iMan;
     Event        m_fifo[MAX_EVENT_QUEUE];
     int          m_head;
     int          m_tail;

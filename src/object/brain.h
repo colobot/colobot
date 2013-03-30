@@ -31,7 +31,6 @@
 #include "object/task/taskshield.h"
 
 
-class CInstanceManager;
 class CObject;
 class CPhysics;
 class CMotion;
@@ -80,7 +79,7 @@ struct TraceRecord
 class CBrain
 {
 public:
-    CBrain(CInstanceManager* iMan, CObject* object);
+    CBrain(CObject* object);
     ~CBrain();
 
     void        DeleteObject(bool bAll=false);
@@ -134,6 +133,7 @@ public:
     Error       StartTaskShield(TaskShieldMode mode);
     Error       StartTaskFire(float delay);
     Error       StartTaskFireAnt(Math::Vector impact);
+    Error       StartTaskSpiderExplo();
     Error       StartTaskGunGoal(float dirV, float dirH);
     Error       StartTaskReset(Math::Vector goal, Math::Vector angle);
 
@@ -167,7 +167,6 @@ protected:
     bool        TraceRecordPut(char *buffer, int max, TraceOper oper, float param);
 
 protected:
-    CInstanceManager*   m_iMan;
     Gfx::CEngine*       m_engine;
     Gfx::CTerrain*      m_terrain;
     Gfx::CWater*        m_water;

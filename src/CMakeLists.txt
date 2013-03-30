@@ -1,50 +1,32 @@
-# CBot library is built separately
+# Compile flags as defined in global CMakeLists
+set(CMAKE_CXX_FLAGS "${COLOBOT_CXX_FLAGS} ${MXE_CFLAGS}")
+set(CMAKE_CXX_FLAGS_RELEASE ${COLOBOT_CXX_FLAGS_RELEASE})
+set(CMAKE_CXX_FLAGS_DEBUG ${COLOBOT_CXX_FLAGS_DEBUG})
+
+
+# Subdirectories
+
 add_subdirectory(CBot)
 
-# Tools directory is built separately
 add_subdirectory(tools)
 
 add_subdirectory(po)
 
-add_subdirectory(desktop)
-
-# Tests
-if(${TESTS})
-    add_subdirectory(common/test)
-    add_subdirectory(graphics/engine/test)
-    add_subdirectory(ui/test)
-    add_subdirectory(math/test)
+if(${DESKTOP})
+    add_subdirectory(desktop)
 endif()
 
 
 # Optional libraries
 set(OPTIONAL_LIBS "")
-set(OPTIONAL_INCLUDE_DIRS "")
-
-if(${USE_GLEW} AND NOT ${MXE})
-    set(OPTIONAL_LIBS ${OPTIONAL_LIBS} ${GLEW_LIBRARY})
-    set(OPTIONAL_INCLUDE_DIRS ${OPTIONAL_INCLUDE_DIRS} ${GLEW_INCLUDE_PATH})
-endif()
-
-
-# Additional libraries per platform
-set(PLATFORM_LIBS "")
-set(OPENAL_LIBS "")
+set(OPTIONAL_INCLUDES "")
 
 if (${OPENAL_SOUND})
-    if (${MXE})
-	set(OPENAL_LIBS
-	    ${CMAKE_FIND_ROOT_PATH}/lib/libOpenAL32.a
-	    ${CMAKE_FIND_ROOT_PATH}/lib/libalut.a
-	)
-    else()
-	set(OPENAL_LIBS
-	    openal
-	    alut
-	)
-    endif()
+    set(OPTIONAL_LIBS ${OPENAL_LIBRARY})
+    set(OPTIONAL_INCLUDES ${OPENAL_INCLUDE_DIR})
 endif()
 
+# Additional libraries per platform
 if (${MXE}) # MXE requires special treatment
     set(PLATFORM_LIBS ${MXE_LIBS})  
 elseif (${PLATFORM_WINDOWS})
@@ -63,10 +45,19 @@ set(OPENAL_SRC "")
 
 if (${OPENAL_SOUND})
     set(OPENAL_SRC
-	sound/oalsound/alsound.cpp
-	sound/oalsound/buffer.cpp
-	sound/oalsound/channel.cpp
+        sound/oalsound/alsound.cpp
+        sound/oalsound/buffer.cpp
+        sound/oalsound/channel.cpp
     )
+endif()
+
+# Platform-dependent implementation of system.h
+if (${PLATFORM_WINDOWS})
+    set(SYSTEM_CPP_MODULE "system_windows.cpp")
+elseif(${PLATFORM_LINUX})
+    set(SYSTEM_CPP_MODULE "system_linux.cpp")
+else()
+    set(SYSTEM_CPP_MODULE "system_other.cpp")
 endif()
 
 # Source files
@@ -74,6 +65,7 @@ set(SOURCES
 app/app.cpp
 app/main.cpp
 app/system.cpp
+app/${SYSTEM_CPP_MODULE}
 common/event.cpp
 common/image.cpp
 common/iman.cpp
@@ -89,6 +81,7 @@ graphics/engine/engine.cpp
 graphics/engine/lightman.cpp
 graphics/engine/lightning.cpp
 graphics/engine/modelfile.cpp
+graphics/engine/modelmanager.cpp
 graphics/engine/particle.cpp
 graphics/engine/planet.cpp
 graphics/engine/pyro.cpp
@@ -191,28 +184,37 @@ ${OPENAL_SRC}
 
 
 set(LIBS
+CBot
 ${SDL_LIBRARY}
 ${SDLIMAGE_LIBRARY}
 ${SDLTTF_LIBRARY}
 ${OPENGL_LIBRARY}
 ${PNG_LIBRARIES}
+${GLEW_LIBRARY}
+${Boost_LIBRARIES}
+${LIBSNDFILE_LIBRARY}
 ${OPTIONAL_LIBS}
 ${PLATFORM_LIBS}
-${Boost_LIBRARIES}
-CBot
-${OPENAL_LIBS}
 )
 
+# Local
 include_directories(
 .
 ..
 ${CMAKE_CURRENT_BINARY_DIR}
+)
+
+# System
+include_directories(
+SYSTEM
 ${SDL_INCLUDE_DIR}
 ${SDLIMAGE_INCLUDE_DIR}
 ${SDLTTF_INCLUDE_DIR}
 ${PNG_INCLUDE_DIRS}
-${OPTIONAL_INCLUDE_DIRS}
+${GLEW_INCLUDE_PATH}
 ${Boost_INCLUDE_DIRS}
+${LIBSNDFILE_INCLUDE_DIR}
+${OPTIONAL_INCLUDE_DIRS}
 )
 
 link_directories(${CMAKE_CURRENT_SOURCE_DIR}/CBot)
