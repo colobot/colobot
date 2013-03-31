@@ -805,6 +805,11 @@ CRobotMain::CRobotMain(CApplication* app)
     CBotProgram::DefineNum("FilterOnlyLanding", FILTER_ONLYLANDING);
     CBotProgram::DefineNum("FilterOnlyFliying", FILTER_ONLYFLYING);
 
+    CBotProgram::DefineNum("ExploNone", 0);
+    CBotProgram::DefineNum("ExploBoum", EXPLO_BOUM);
+    CBotProgram::DefineNum("ExploBurn", EXPLO_BURN);
+    CBotProgram::DefineNum("ExploWater", EXPLO_WATER);
+
     CBotProgram::DefineNum("PolskiPortalColobota", 1337);
 
     CBotClass* bc;

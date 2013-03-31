@@ -330,7 +330,6 @@ CBotTypResult CScript::cGetObject(CBotVar* &var, void* user)
 
 bool CScript::rGetObject(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-    CScript*    script = (static_cast<CObject*>(user))->GetRunScript();
     CObject*    pObj;
     int         rank;
 
@@ -348,27 +347,48 @@ bool CScript::rGetObject(CBotVar* var, CBotVar* result, int& exception, void* us
     return true;
 }
 
-// Compilation of the instruction "destroy(rank)".
+// Compilation of the instruction "destroy(rank[, exploType[, force]])".
 
 CBotTypResult CScript::cDestroy(CBotVar* &var, void* user)
 {
     if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
+
     if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
     var = var->GetNext();
+
+    if ( var != 0 ) {
+        if ( var->GetType() != CBotTypInt ) return CBotTypResult(CBotErrBadNum);
+        var = var->GetNext();
+
+        if ( var != 0 ) {
+            if ( var->GetType() > CBotTypDouble ) return CBotTypResult(CBotErrBadNum);
+            var = var->GetNext();
+        }
+    }
+
     if ( var != 0 )  return CBotTypResult(CBotErrOverParam);
 
     return CBotTypResult(CBotTypFloat);
 }
 
-// Instruction "destroy(rank)".
+// Instruction "destroy(rank[, exploType[, force]])".
 
 bool CScript::rDestroy(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-    CScript*    script = (static_cast<CObject*>(user))->GetRunScript();
     CObject*    pObj;
     int         rank;
+    int         exploType = 0;
+    float       force = 1.0f;
 
     rank = var->GetValInt();
+    var->GetNext();
+    if ( var != 0 ) {
+        exploType = var->GetValInt();
+        var->GetNext();
+        if ( var != 0 ) {
+            force = var->GetValFloat();
+        }
+    }
 
     pObj = static_cast<CObject*>(CObjectManager::GetInstancePointer()->SearchInstance(rank));
     if ( pObj == 0 )
@@ -377,7 +397,11 @@ bool CScript::rDestroy(CBotVar* var, CBotVar* result, int& exception, void* user
     }
     else
     {
-        pObj->ExploObject(EXPLO_BOUM, 1.0f);
+        if ( exploType ) {
+            pObj->ExploObject(static_cast<ExploType>(exploType), force);
+        } else {
+            pObj->DeleteObject(false);
+        }
     }
     return true;
 }
@@ -414,7 +438,6 @@ CBotTypResult CScript::cSearch(CBotVar* &var, void* user)
 
 bool CScript::rSearch(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-    CScript*    script = (static_cast<CObject *>(user))->GetRunScript();
     CObject     *pObj, *pBest;
     CBotVar*    array;
     Math::Vector    pos, oPos;
@@ -557,7 +580,6 @@ CBotTypResult CScript::cRadar(CBotVar* &var, void* user)
 
 bool CScript::rRadar(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-    CScript*    script = (static_cast<CObject *>(user))->GetRunScript();
     CObject*    pThis = static_cast<CObject *>(user);
     CObject     *pObj, *pBest;
     CPhysics*   physics;
