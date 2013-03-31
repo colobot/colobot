@@ -90,6 +90,7 @@ ${SRC_DIR}/object/motion/motiontoto.cpp
 ${SRC_DIR}/object/motion/motionvehicle.cpp
 ${SRC_DIR}/object/motion/motionworm.cpp
 ${SRC_DIR}/object/object.cpp
+${SRC_DIR}/object/objman.cpp
 ${SRC_DIR}/object/robotmain.cpp
 ${SRC_DIR}/object/task/task.cpp
 ${SRC_DIR}/object/task/taskadvance.cpp
