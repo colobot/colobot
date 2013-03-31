@@ -52,7 +52,6 @@ class Channel
 
         bool SetFrequency(float);
         float GetFrequency();
-        bool AdjustFrequency(float);
 
         float GetCurrentTime();
         void SetCurrentTime(float);
