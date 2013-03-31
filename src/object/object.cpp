@@ -600,7 +600,7 @@ bool CObject::ExploObject(ExploType type, float force, float decay)
         }
     }
 
-    if ( EXPLO_BOUM )
+    if ( type == EXPLO_BOUM )
     {
         if ( m_shotTime < 0.5f )  return false;
         m_shotTime = 0.0f;
