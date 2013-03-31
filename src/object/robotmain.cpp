@@ -34,7 +34,7 @@
 #include "graphics/engine/engine.h"
 #include "graphics/engine/lightman.h"
 #include "graphics/engine/lightning.h"
-#include "graphics/engine/modelfile.h"
+#include "graphics/engine/modelmanager.h"
 #include "graphics/engine/particle.h"
 #include "graphics/engine/planet.h"
 #include "graphics/engine/pyro.h"
@@ -1047,6 +1047,7 @@ void CRobotMain::ChangePhase(Phase phase)
     FlushDisplayInfo();
     m_engine->SetRankView(0);
     m_engine->DeleteAllObjects();
+    Gfx::CModelManager::GetInstancePointer()->DeleteAllModelCopies();
     m_engine->SetWaterAddColor(Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f));
     m_engine->SetBackground("");
     m_engine->SetBackForce(false);
@@ -3736,6 +3737,7 @@ void CRobotMain::ScenePerso()
 {
     DeleteAllObjects();  // removes all the current 3D Scene
     m_engine->DeleteAllObjects();
+    Gfx::CModelManager::GetInstancePointer()->DeleteAllModelCopies();
     m_terrain->FlushRelief();  // all flat
     m_terrain->FlushBuildingLevel();
     m_terrain->FlushFlyingLimit();

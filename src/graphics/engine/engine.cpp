@@ -591,6 +591,27 @@ void CEngine::CopyBaseObject(int sourceBaseObjRank, int destBaseObjRank)
     assert(destBaseObjRank >= 0 && destBaseObjRank < static_cast<int>( m_baseObjects.size() ));
 
     m_baseObjects[destBaseObjRank] = m_baseObjects[sourceBaseObjRank];
+
+    EngineBaseObject& p1 = m_baseObjects[destBaseObjRank];
+
+    if (! p1.used)
+        return;
+
+    for (int l2 = 0; l2 < static_cast<int>( p1.next.size() ); l2++)
+    {
+        EngineBaseObjTexTier& p2 = p1.next[l2];
+
+        for (int l3 = 0; l3 < static_cast<int>( p2.next.size() ); l3++)
+        {
+            EngineBaseObjLODTier& p3 = p2.next[l3];
+
+            for (int l4 = 0; l4 < static_cast<int>( p3.next.size() ); l4++)
+            {
+                EngineBaseObjDataTier& p4 = p3.next[l4];
+                p4.staticBufferId = 0;
+            }
+        }
+    }
 }
 
 void CEngine::AddBaseObjTriangles(int baseObjRank, const std::vector<VertexTex2>& vertices,

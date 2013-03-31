@@ -111,6 +111,8 @@ bool CModelManager::AddModelCopy(const std::string& fileName, bool mirrored, int
     m_engine->CopyBaseObject((*it).second.baseObjRank, copyBaseObjRank);
     m_engine->SetObjectBaseRank(objRank, copyBaseObjRank);
 
+    m_copiesBaseRanks.push_back(copyBaseObjRank);
+
     return true;
 }
 
@@ -126,6 +128,16 @@ int CModelManager::GetModelBaseObjRank(const std::string& fileName, bool mirrore
         return -1;
 
     return (*it).second.baseObjRank;
+}
+
+void CModelManager::DeleteAllModelCopies()
+{
+    for (int baseObjRank : m_copiesBaseRanks)
+    {
+        m_engine->DeleteBaseObject(baseObjRank);
+    }
+
+    m_copiesBaseRanks.clear();
 }
 
 void CModelManager::UnloadModel(const std::string& fileName, bool mirrored)
