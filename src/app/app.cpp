@@ -95,7 +95,7 @@ CApplication::CApplication()
 {
     m_private       = new ApplicationPrivate();
     m_iMan          = new CInstanceManager();
-    m_objMan        = new CObjectManager;
+    m_objMan        = new CObjectManager();
     m_eventQueue    = new CEventQueue();
     m_profile       = new CProfile();
 
