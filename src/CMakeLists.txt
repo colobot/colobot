@@ -128,6 +128,7 @@ object/motion/motionvehicle.cpp
 object/motion/motionworm.cpp
 object/object.cpp
 object/robotmain.cpp
+object/objman.cpp
 object/task/task.cpp
 object/task/taskadvance.cpp
 object/task/taskbuild.cpp

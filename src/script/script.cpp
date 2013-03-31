@@ -33,6 +33,7 @@
 #include "object/object.h"
 #include "object/robotmain.h"
 #include "object/task/taskmanager.h"
+#include "object/objman.h"
 
 #include "physics/physics.h"
 
@@ -335,9 +336,7 @@ bool CScript::rGetObject(CBotVar* var, CBotVar* result, int& exception, void* us
 
     rank = var->GetValInt();
 
-    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
-
-    pObj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, rank));
+    pObj = static_cast<CObject*>(CObjectManager::GetInstancePointer()->SearchInstance(rank));
     if ( pObj == 0 )
     {
         result->SetPointer(0);
@@ -371,9 +370,7 @@ bool CScript::rDestroy(CBotVar* var, CBotVar* result, int& exception, void* user
 
     rank = var->GetValInt();
 
-    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
-
-    pObj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, rank));
+    pObj = static_cast<CObject*>(CObjectManager::GetInstancePointer()->SearchInstance(rank));
     if ( pObj == 0 )
     {
         return true;

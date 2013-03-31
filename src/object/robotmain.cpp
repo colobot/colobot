@@ -831,6 +831,7 @@ CRobotMain::CRobotMain(CApplication* app)
     bc->AddItem("material",    CBotTypResult(CBotTypInt), PR_READ);
     bc->AddItem("energyCell",  CBotTypResult(CBotTypPointer, "object"), PR_READ);
     bc->AddItem("load",        CBotTypResult(CBotTypPointer, "object"), PR_READ);
+    bc->AddItem("id",          CBotTypResult(CBotTypInt), PR_READ);
 
     // Initializes the class FILE.
     InitClassFILE();
