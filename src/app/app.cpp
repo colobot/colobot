@@ -1411,7 +1411,7 @@ bool CApplication::GetMouseButtonState(int index)
 
 void CApplication::ResetKeyStates()
 {
-    GetLogger()->Info("Reset key states\n");
+    GetLogger()->Trace("Reset key states\n");
     m_trackedKeys = 0;
     m_kmodState = 0;
     m_robotMain->ResetKeyStates();

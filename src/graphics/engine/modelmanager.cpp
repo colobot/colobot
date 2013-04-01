@@ -23,7 +23,7 @@ CModelManager::~CModelManager()
 
 bool CModelManager::LoadModel(const std::string& fileName, bool mirrored)
 {
-    GetLogger()->Info("Loading model '%s'\n", fileName.c_str());
+    GetLogger()->Debug("Loading model '%s'\n", fileName.c_str());
 
     CModelFile modelFile;
 
