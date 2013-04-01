@@ -3873,12 +3873,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
     int rankGadget = 0;
     CObject* sel = 0;
 
-    std::string oldLocale;
-    char *locale = setlocale(LC_NUMERIC, nullptr);
-    if (locale != nullptr)
-        oldLocale = locale;
-
-    setlocale(LC_NUMERIC, "C");
+    SetNumericLocale();
 
     while (fgets(line, 500, file) != NULL)
     {
@@ -4746,7 +4741,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
     m_dialog->SetSceneRead("");
     m_dialog->SetStackRead("");
 
-    setlocale(LC_NUMERIC, oldLocale.c_str());
+    RestoreNumericLocale();
 }
 
 //! Creates an object of decoration mobile or stationary
@@ -5953,6 +5948,8 @@ bool CRobotMain::IsBusy()
 void CRobotMain::IOWriteObject(FILE *file, CObject* obj, const char *cmd)
 {
     if (obj->GetType() == OBJECT_FIX) return;
+    
+    SetNumericLocale();
 
     char line[3000];
     char name[100];
@@ -6040,6 +6037,8 @@ void CRobotMain::IOWriteObject(FILE *file, CObject* obj, const char *cmd)
 
     strcat(line, "\n");
     fputs(line, file);
+    
+    RestoreNumericLocale();
 }
 
 //! Saves the current game
@@ -6047,6 +6046,8 @@ bool CRobotMain::IOWriteScene(const char *filename, const char *filecbot, char *
 {
     FILE* file = fopen(filename, "w");
     if (file == NULL)  return false;
+    
+    SetNumericLocale();
 
     char line[500];
 
@@ -6109,6 +6110,8 @@ bool CRobotMain::IOWriteScene(const char *filename, const char *filecbot, char *
         SaveFileScript(obj, filename, objRank++);
     }
     fclose(file);
+    
+    RestoreNumericLocale();
 
 #if CBOT_STACK
     // Writes the file of stacks of execution.
@@ -6154,6 +6157,8 @@ CObject* CRobotMain::IOReadObject(char *line, const char* filename, int objRank)
     if (type == OBJECT_NULL)
         return nullptr;
 
+    SetNumericLocale();
+    
     int trainer = OpInt(line, "trainer", 0);
     int toy = OpInt(line, "toy", 0);
     int option = OpInt(line, "option", 0);
@@ -6219,6 +6224,8 @@ CObject* CRobotMain::IOReadObject(char *line, const char* filename, int objRank)
             automat->Start(run);  // starts the film
     }
 
+    RestoreNumericLocale();
+    
     return obj;
 }
 
@@ -6229,6 +6236,8 @@ CObject* CRobotMain::IOReadScene(const char *filename, const char *filecbot)
 
     FILE* file = fopen(filename, "r");
     if (file == NULL) return 0;
+    
+    SetNumericLocale();
 
     CObject* fret   = nullptr;
     CObject* power  = nullptr;
@@ -6350,6 +6359,8 @@ CObject* CRobotMain::IOReadScene(const char *filename, const char *filecbot)
         fClose(file);
     }
 #endif
+
+    RestoreNumericLocale();
 
     return sel;
 }
@@ -7047,3 +7058,18 @@ void CRobotMain::ClearInterface()
     HiliteClear();  // removes setting evidence
     m_tooltipName[0] = 0;  // really removes the tooltip
 }
+
+void CRobotMain::SetNumericLocale()
+{
+    char *locale = setlocale(LC_NUMERIC, nullptr);
+    if (locale != nullptr)
+        m_oldLocale = locale;
+
+    setlocale(LC_NUMERIC, "C");
+}
+
+void CRobotMain::RestoreNumericLocale()
+{
+    setlocale(LC_NUMERIC, m_oldLocale.c_str());
+}
+    

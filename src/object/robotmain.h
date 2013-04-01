@@ -352,6 +352,9 @@ public:
     CObject*    IOReadObject(char *line, const char* filename, int objRank);
 
     int         CreateSpot(Math::Vector pos, Gfx::Color color);
+    
+    void        SetNumericLocale();
+    void        RestoreNumericLocale();
 
 protected:
     bool        EventFrame(const Event &event);
@@ -390,6 +393,7 @@ protected:
     void        ExecuteCmd(char *cmd);
     bool        TestGadgetQuantity(int rank);
     void        UpdateSpeedLabel();
+    
 
 protected:
     CApplication*       m_app;
@@ -540,5 +544,7 @@ protected:
     Gfx::Color      m_colorRefWater;
     Gfx::Color      m_colorNewWater;
     float           m_colorShiftWater;
+    
+    std::string     m_oldLocale;
 };
 
