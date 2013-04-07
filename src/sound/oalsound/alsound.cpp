@@ -82,6 +82,7 @@ bool ALSound::Create(bool b3D)
     }
     alcMakeContextCurrent(mContext);
     alListenerf(AL_GAIN, mAudioVolume);
+    alDistanceModel(AL_LINEAR_DISTANCE);
 
     mCurrentMusic = new Channel();
     GetLogger()->Info("Done.\n");
