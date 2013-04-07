@@ -81,6 +81,7 @@ class ALSound : public CSoundInterface
         void CleanUp();
         int GetPriority(Sound);
         bool SearchFreeBuffer(Sound sound, int &channel, bool &bAlreadyLoaded);
+        void ComputeVolumePan2D(int channel, Math::Vector &pos);
 
         bool mEnabled;
         bool m3D;
@@ -93,4 +94,6 @@ class ALSound : public CSoundInterface
         std::map<int, Channel*> mChannels;
         std::deque<Buffer*> mMusicCache;
         Channel *mCurrentMusic;
+        Math::Vector mEye;
+        Math::Vector mLookat;
 };
