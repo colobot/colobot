@@ -5719,6 +5719,11 @@ void CMainDialog::SetupRecall()
     {
         m_sound->SetMusicVolume(iValue);
     }
+    
+    if ( GetProfile().GetLocalProfileInt("Setup", "Sound3D", iValue) )
+    {
+        m_sound->SetSound3D(iValue == 1);
+    }
 
     if ( GetProfile().GetLocalProfileInt("Setup", "EditIndentMode", iValue) )
     {
