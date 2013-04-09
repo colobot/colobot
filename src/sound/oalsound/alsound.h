@@ -85,7 +85,6 @@ class ALSound : public CSoundInterface
 
         bool mEnabled;
         bool m3D;
-        bool mMute;
         float mAudioVolume;
         float mMusicVolume;
         ALCdevice* mDevice;

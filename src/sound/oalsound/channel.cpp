@@ -30,6 +30,7 @@ Channel::Channel() {
     mPriority = 0;
     mBuffer = nullptr;
     mLoop = false;
+    mMute = false;
     mInitFrequency = 0.0f;
     mStartAmplitude = 0.0f;
     mStartFrequency = 0.0f;
@@ -350,4 +351,16 @@ void Channel::PopEnvelope()
 
 void Channel::SetLoop(bool loop) {
     mLoop = loop;
+}
+
+
+void Channel::Mute(bool mute)
+{
+    mMute = mute;
+}
+
+
+bool Channel::IsMuted()
+{
+    return mMute;
 }

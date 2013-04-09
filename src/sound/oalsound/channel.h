@@ -86,6 +86,8 @@ class Channel
         void ResetOper();
         Sound GetSoundType();
         void SetLoop(bool);
+        void Mute(bool);
+        bool IsMuted();
         
     private:
         Buffer *mBuffer;
@@ -99,4 +101,5 @@ class Channel
         std::deque<SoundOper> mOper;
         bool mReady;
         bool mLoop;
+        bool mMute;
 };
