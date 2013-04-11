@@ -6801,10 +6801,10 @@ bool CRobotMain::GetRadar()
     for (int i = 0; i < 1000000; i++)
     {
         CObject* obj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
-        if (obj == 0)  break;
+        if (obj == nullptr)  break;
 
         ObjectType type = obj->GetType();
-        if (type == OBJECT_RADAR)
+        if (type == OBJECT_RADAR && !obj->GetLock())
             return true;
     }
     return false;
