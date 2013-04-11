@@ -1511,7 +1511,6 @@ void CStudio::UpdateDialogList()
     fs::path        path;
     int             i = 0;
     char            time[100];
-    std::ostringstream temp;
     
     pw = static_cast< CWindow* >(m_interface->SearchControl(EVENT_WINDOW9));
     if ( pw == nullptr )  return;
@@ -1524,6 +1523,7 @@ void CStudio::UpdateDialogList()
     if ( fs::exists(path) && fs::is_directory(path) ) {
         for( fs::directory_iterator file(path); file != end_iter; file++) {
             if (fs::is_regular_file(file->status()) ) {
+                std::ostringstream temp;
                 TimeToAscii(fs::last_write_time(file->path()), time);
                 temp << file->path().filename().string() << '\t' << fs::file_size(file->path()) << "  \t" << time;                
                 pl->SetName(i++, temp.str().c_str());
