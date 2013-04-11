@@ -17,7 +17,8 @@
 
 #include "channel.h"
 
-Channel::Channel() {
+Channel::Channel()
+{
     alGenSources(1, &mSource);
 
     if (alCheck()) {
@@ -35,10 +36,12 @@ Channel::Channel() {
     mStartAmplitude = 0.0f;
     mStartFrequency = 0.0f;
     mChangeFrequency = 0.0f;
+    mVolume = 0.0f;
 }
 
 
-Channel::~Channel() {
+Channel::~Channel()
+{
     if (mReady) {
         alSourceStop(mSource);
         alSourcei(mSource, AL_BUFFER, 0);
@@ -49,7 +52,8 @@ Channel::~Channel() {
 }
 
 
-bool Channel::Play() {
+bool Channel::Play()
+{
     if (!mReady || mBuffer == nullptr) {
         return false;
     }
@@ -65,7 +69,8 @@ bool Channel::Play() {
 }
 
 
-bool Channel::SetPosition(Math::Vector pos) {
+bool Channel::SetPan(Math::Vector pos)
+{
     if (!mReady || mBuffer == nullptr) {
         return false;
     }
@@ -76,6 +81,18 @@ bool Channel::SetPosition(Math::Vector pos) {
         return false;
     }
     return true;
+}
+
+
+void Channel::SetPosition(Math::Vector pos)
+{
+    mPosition = pos;
+}
+
+
+Math::Vector Channel::GetPosition()
+{
+    return mPosition;
 }
 
 
@@ -141,6 +158,19 @@ float Channel::GetVolume()
 
     return vol;
 }
+
+
+void Channel::SetVolumeAtrib(float volume)
+{
+    mVolume = volume;
+}
+
+
+float Channel::GetVolumeAtrib()
+{
+    return mVolume;
+}
+
 
 
 int Channel::GetPriority()

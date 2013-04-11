@@ -48,7 +48,10 @@ class Channel
 
         bool Play();
         bool Stop();
-        bool SetPosition(Math::Vector);
+        
+        bool SetPan(Math::Vector);
+        void SetPosition(Math::Vector);
+        Math::Vector GetPosition();
 
         bool SetFrequency(float);
         float GetFrequency();
@@ -59,6 +62,9 @@ class Channel
 
         bool SetVolume(float);
         float GetVolume();
+        void SetVolumeAtrib(float);
+        float GetVolumeAtrib();
+        
         bool IsPlaying();
         bool IsReady();
         bool IsLoaded();
@@ -98,8 +104,10 @@ class Channel
         float mStartFrequency;
         float mChangeFrequency;
         float mInitFrequency;
+        float mVolume;
         std::deque<SoundOper> mOper;
         bool mReady;
         bool mLoop;
         bool mMute;
+        Math::Vector mPosition;
 };
