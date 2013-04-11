@@ -478,7 +478,7 @@ void ALSound::FrameMove(float delta)
         // setting volume
         volume = progress * (oper.finalAmplitude - it.second->GetStartAmplitude());
         volume = (volume + it.second->GetStartAmplitude());
-        it.second->SetVolume(powf(volume, 0.2f) * mAudioVolume);
+        it.second->SetVolume(powf(volume * it.second->GetVolume(), 0.2f) * mAudioVolume);
 
         // setting frequency
         frequency = progress;
@@ -515,7 +515,7 @@ void ALSound::SetListener(Math::Vector eye, Math::Vector lookat)
         alListener3f(AL_POSITION, eye.x, eye.y, eye.z); 
         alListenerfv(AL_ORIENTATION, orientation);
     } else {
-        float orientation[] = {0.0f, 0.0f, 0.0f, 0.f, 1.f, 0.f};   
+        float orientation[] = {0.0f, 0.0f, -1.0f, 0.f, 1.f, 0.f};   
         alListener3f(AL_POSITION, 0.0f, 0.0f, 0.0f); 
         alListenerfv(AL_ORIENTATION, orientation);
     }

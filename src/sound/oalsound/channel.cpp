@@ -158,7 +158,6 @@ void Channel::SetPriority(int pri)
 void Channel::SetStartAmplitude(float gain)
 {
     mStartAmplitude = gain;
-    SetVolume(mStartAmplitude);
 }
 
 
