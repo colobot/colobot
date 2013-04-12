@@ -110,7 +110,7 @@ find_package(SDL_ttf 2.0 REQUIRED)
 find_package(PNG 1.2 REQUIRED)
 find_package(Gettext REQUIRED)
 
-set(Boost_USE_STATIC_LIBS        OFF)
+set(Boost_USE_STATIC_LIBS        ON)
 set(Boost_USE_MULTITHREADED      ON)
 set(Boost_USE_STATIC_RUNTIME    OFF)
 

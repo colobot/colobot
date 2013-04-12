@@ -8,7 +8,7 @@ elseif (${PLATFORM_WINDOWS})
     set(PLATFORM_LIBS "-lintl")
 elseif(${PLATFORM_LINUX})
     # for clock_gettime
-    set(PLATFORM_LIBS "-lrt")
+    set(PLATFORM_LIBS "-lrt -lX11")
 endif()
 
 
