@@ -57,7 +57,6 @@ class CBotExprVar;  // a variable name as
 class CBotWhile;    // while (...) {...};
 class CBotIf;       // if (...) {...} else {...}
 class CBotDefParam; // paramerer list of a function
-class CBotRepeat;   // repeat (nb) {...}
 
 
 
@@ -490,32 +489,6 @@ public:
     CBotInstr*    Compile(CBotToken* &p, CBotCStack* pStack);
     bool        Execute(CBotStack* &pj);
     void        RestoreState(CBotStack* &pj, bool bMain);
-};
-
-class CBotRepeat : public CBotInstr
-{
-private:
-    /// Number of iterations
-    CBotInstr*    m_NbIter;
-
-    /// Instructions
-    CBotInstr*    m_Block;
-
-    /// Label
-    CBotString    m_label;            // a label if there is 
-
-public:
-    CBotRepeat();
-    ~CBotRepeat();
-
-    /// Static method used for compilation
-    static CBotInstr*    Compile(CBotToken* &p, CBotCStack* pStack);
-
-    /// Execute
-    bool Execute(CBotStack* &pj);
-
-    /// Restore state
-    void RestoreState(CBotStack* &pj, bool bMain);
 };
 
 class CBotDo : public CBotInstr
