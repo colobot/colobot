@@ -1768,6 +1768,23 @@ void CRobotMain::ExecuteCmd(char *cmd)
             return;
         }
 
+        if (strcmp(cmd, "allbuildings") == 0)
+        {
+            g_build = -1;  // all buildings are available
+
+            m_eventQueue->AddEvent(Event(EVENT_UPDINTERFACE));
+            return;
+        }
+
+        if (strcmp(cmd, "all") == 0)
+        {
+            g_researchDone = -1;  // all research are done
+            g_build = -1;  // all buildings are available
+
+            m_eventQueue->AddEvent(Event(EVENT_UPDINTERFACE));
+            return;
+        }
+
         if (strcmp(cmd, "nolimit") == 0)
         {
             m_terrain->SetFlyingMaxHeight(280.0f);
@@ -2003,6 +2020,11 @@ void CRobotMain::ExecuteCmd(char *cmd)
     }
     if (strcmp(cmd, "speed8") == 0) {
         SetSpeed(8.0f);
+        UpdateSpeedLabel();
+	return;
+    }
+    if (strcmp(cmd, "crazy") == 0) {
+        SetSpeed(1000.0f);
         UpdateSpeedLabel();
 	return;
     }
