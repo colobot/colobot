@@ -643,7 +643,7 @@ CRobotMain::CRobotMain(CApplication* app)
     m_visitLast   = EVENT_NULL;
     m_visitObject = 0;
     m_visitArrow  = 0;
-    m_audioTrack  = 0;
+    m_audioTrack  = "";
     m_audioRepeat = true;
     m_delayWriteMessage = 0;
     m_selectObject = 0;
@@ -3817,7 +3817,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
         FlushDisplayInfo();
         m_terrain->FlushMaterials();
-        m_audioTrack = 0;
+        m_audioTrack = "";
         m_audioRepeat = true;
         m_displayText->SetDelay(1.0f);
         m_displayText->SetEnable(true);
@@ -3981,13 +3981,20 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
         if (Cmd(line, "Audio") && !resetObject)
         {
-            m_audioTrack = OpInt(line, "track", 0);
-            m_audioRepeat = OpInt(line, "repeat", 1);
-            if(m_audioTrack != 0) {
-                std::stringstream filename;
-                filename << "music" << std::setfill('0') << std::setw(3) << m_audioTrack << ".ogg";
-                m_sound->CacheMusic(filename.str());
+            if(m_version < 2) {
+                int trackid = OpInt(line, "track", 0);
+                if(trackid != 0) {
+                    std::stringstream filename;
+                    filename << "music" << std::setfill('0') << std::setw(3) << trackid << ".ogg";
+                    m_audioTrack = filename.str();
+                }
+            } else {
+                char trackname[100];
+                OpString(line, "filename", trackname);
+                m_audioTrack = trackname;
             }
+            m_audioRepeat = OpInt(line, "repeat", 1);
+            if(m_audioTrack != "") m_sound->CacheMusic(m_audioTrack);
         }
 
         if (Cmd(line, "AudioChange") && !resetObject && m_version >= 2)
@@ -7153,7 +7160,7 @@ float CRobotMain::GetTracePrecision()
 void CRobotMain::StartMusic()
 {
     CLogger::GetInstancePointer()->Debug("Starting music...\n");
-    if (m_audioTrack != 0)
+    if (m_audioTrack != "")
     {
         m_sound->StopMusic();
         m_sound->PlayMusic(m_audioTrack, m_audioRepeat);

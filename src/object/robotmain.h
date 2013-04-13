@@ -461,7 +461,7 @@ protected:
     bool            m_cheatRadar;
     bool            m_audioRepeat;
     bool            m_shortCut;
-    int             m_audioTrack;
+    std::string     m_audioTrack;
     int             m_delayWriteMessage;
     int             m_movieInfoIndex;
 
