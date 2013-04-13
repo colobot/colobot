@@ -178,6 +178,8 @@ class CSoundInterface
     /** Function called to add all music files to list */
     inline void AddMusicFiles(std::string path) {
         m_soundPath = path;
+        CacheMusic("sound010.ogg");
+        CacheMusic("sound011.ogg");
     };
     
     /** Function called to cache sound effect file.
@@ -187,6 +189,13 @@ class CSoundInterface
      * \return return true on success
      */
     inline virtual bool Cache(Sound bSound, std::string bFile) { return true; };
+
+    /** Function called to cache music file.
+     *  This function is called by CRobotMain for each file used in the mission.
+     * \param bFile - file to load
+     * \return return true on success
+     */
+    inline virtual bool CacheMusic(std::string bFile) { return true; };
 
     /** Return if plugin is enabled
      *  \return return true if plugin is enabled

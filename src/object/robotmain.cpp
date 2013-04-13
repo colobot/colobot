@@ -3983,6 +3983,11 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
         {
             m_audioTrack = OpInt(line, "track", 0);
             m_audioRepeat = OpInt(line, "repeat", 1);
+            if(m_audioTrack != 0) {
+                std::stringstream filename;
+                filename << "music" << std::setfill('0') << std::setw(3) << m_audioTrack << ".ogg";
+                m_sound->CacheMusic(filename.str());
+            }
         }
 
         if (Cmd(line, "AudioChange") && !resetObject && m_version >= 2)
@@ -3998,6 +4003,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 OpString(line, "filename", m_audioChange[i].music);
                 m_audioChange[i].repeat  = OpInt(line, "repeat", 1);
                 m_audioChange[i].changed = false;
+                m_sound->CacheMusic(m_audioChange[i].music);
                 m_audioChangeTotal ++;
             }
         }

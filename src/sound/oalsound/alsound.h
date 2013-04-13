@@ -40,6 +40,7 @@ class ALSound : public CSoundInterface
 
         bool Create(bool b3D);
         bool Cache(Sound, std::string);
+        bool CacheMusic(std::string);
 
         bool GetEnable();
 
@@ -91,6 +92,7 @@ class ALSound : public CSoundInterface
         ALCdevice* mDevice;
         ALCcontext* mContext;
         std::map<Sound, Buffer*> mSounds;
+        std::map<std::string, Buffer*> mMusic;
         std::map<int, Channel*> mChannels;
         Channel *mCurrentMusic;
         Math::Vector mEye;

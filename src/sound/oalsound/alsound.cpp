@@ -52,6 +52,10 @@ void ALSound::CleanUp()
             delete item.second;
         }
 
+        for (auto item : mMusic) {
+            delete item.second;
+        }
+
         mEnabled = false;
 
         mCurrentMusic->FreeBuffer();
@@ -155,6 +159,18 @@ bool ALSound::Cache(Sound sound, std::string filename)
     Buffer *buffer = new Buffer();
     if (buffer->LoadFromFile(filename, sound)) {
         mSounds[sound] = buffer;
+        return true;
+    }
+    return false;
+}
+
+bool ALSound::CacheMusic(std::string filename)
+{
+    Buffer *buffer = new Buffer();
+    std::stringstream file;
+    file << m_soundPath << "/" << filename;
+    if (buffer->LoadFromFile(file.str(), static_cast<Sound>(-1))) {
+        mMusic[filename] = buffer;
         return true;
     }
     return false;
@@ -555,16 +571,20 @@ bool ALSound::PlayMusic(std::string filename, bool bRepeat)
     std::stringstream file;
     file << m_soundPath << "/" << filename;
 
-    if (!boost::filesystem::exists(file.str())) {
-        GetLogger()->Warn("Requested music %s was not found.\n", filename.c_str());
-        return false;
+    // check if we have music in cache
+    if (mMusic.find(filename) == mMusic.end()) {
+        GetLogger()->Warn("Music %s was not cached!\n", filename.c_str());
+        if (!boost::filesystem::exists(file.str())) {
+            GetLogger()->Warn("Requested music %s was not found.\n", filename.c_str());
+            return false;
+        }
+        Buffer *buffer = new Buffer();
+        buffer->LoadFromFile(file.str(), static_cast<Sound>(-1));
+        mCurrentMusic->SetBuffer(buffer);
+    } else {
+        GetLogger()->Debug("Music loaded from cache\n"); 
+        mCurrentMusic->SetBuffer(mMusic[filename]); 
     }
-
-    // TODO: Cache
-    
-    Buffer *buffer = new Buffer();
-    buffer->LoadFromFile(file.str(), static_cast<Sound>(-1));
-    mCurrentMusic->SetBuffer(buffer);
     
     mCurrentMusic->SetVolume(mMusicVolume);
     mCurrentMusic->SetLoop(bRepeat);
