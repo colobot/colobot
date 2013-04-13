@@ -3476,9 +3476,8 @@ bool CRobotMain::EventFrame(const Event &event)
         {
             m_checkEndTime = m_time;
             CheckEndMission(true);
+            UpdateAudio(true);
         }
-
-        UpdateAudio(true);
 
         if (m_winDelay > 0.0f && !m_editLock)
         {
@@ -3667,7 +3666,7 @@ void CRobotMain::Convert()
             }
         }
 
-        if (Cmd(line, "EndMissionTake"))
+        if (Cmd(line, "EndMissionTake") || Cmd(line, "AudioChange"))
         {
             char* p = strstr(line, "pos=");
             if (p != 0)
@@ -6595,6 +6594,8 @@ void CRobotMain::UpdateAudio(bool frame)
 
     for (int t = 0; t < m_audioChangeTotal; t++)
     {
+        if(m_audioChange[t].changed) continue;
+
         Math::Vector bPos = m_audioChange[t].pos;
         bPos.y = 0.0f;
 
@@ -6635,8 +6636,7 @@ void CRobotMain::UpdateAudio(bool frame)
         }
 
         if (nb >= m_audioChange[t].min &&
-            nb <= m_audioChange[t].max &&
-            !m_audioChange[t].changed)
+            nb <= m_audioChange[t].max)
         {
             CLogger::GetInstancePointer()->Debug("Changing music...\n");
             m_sound->StopMusic();
