@@ -3478,6 +3478,8 @@ bool CRobotMain::EventFrame(const Event &event)
             CheckEndMission(true);
         }
 
+        UpdateAudio(true);
+
         if (m_winDelay > 0.0f && !m_editLock)
         {
             m_winDelay -= event.rTime;
@@ -3824,6 +3826,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
         m_lockedSatCom = false;
         m_endingWinRank   = 0;
         m_endingLostRank  = 0;
+        m_audioChangeTotal = 0;
         m_endTakeTotal = 0;
         m_endTakeResearch = 0;
         m_endTakeWinDelay = 2.0f;
@@ -3982,6 +3985,24 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             m_audioTrack = OpInt(line, "track", 0);
             m_audioRepeat = OpInt(line, "repeat", 1);
         }
+
+        if (Cmd(line, "AudioChange") && !resetObject && m_version >= 2)
+        {
+            int i = m_audioChangeTotal;
+            if (i < 10)
+            {
+                m_audioChange[i].pos  = OpPos(line, "pos")*g_unit;
+                m_audioChange[i].dist = OpFloat(line, "dist", 8.0f)*g_unit;
+                m_audioChange[i].type = OpTypeObject(line, "type", OBJECT_NULL);
+                m_audioChange[i].min  = OpInt(line, "min", 1);
+                m_audioChange[i].max  = OpInt(line, "max", 9999);
+                OpString(line, "filename", m_audioChange[i].music);
+                m_audioChange[i].repeat  = OpInt(line, "repeat", 1);
+                m_audioChange[i].changed = false;
+                m_audioChangeTotal ++;
+            }
+        }
+
 
         if (Cmd(line, "AmbientColor") && !resetObject)
         {
@@ -6567,6 +6588,64 @@ void CRobotMain::ResetCreate()
     }
 }
 
+//! Updates the audiotracks
+void CRobotMain::UpdateAudio(bool frame)
+{
+    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
+
+    for (int t = 0; t < m_audioChangeTotal; t++)
+    {
+        Math::Vector bPos = m_audioChange[t].pos;
+        bPos.y = 0.0f;
+
+        Math::Vector oPos;
+
+        int nb = 0;
+        for (int i = 0; i < 1000000; i++)
+        {
+            CObject* obj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
+            if (obj == nullptr) break;
+
+            // Do not use GetActif () because an invisible worm (underground)
+            // should be regarded as existing here!
+            if (obj->GetLock()) continue;
+            if (obj->GetRuin()) continue;
+            if (!obj->GetEnable()) continue;
+
+            ObjectType type = obj->GetType();
+            if (type == OBJECT_SCRAP2 ||
+                type == OBJECT_SCRAP3 ||
+                type == OBJECT_SCRAP4 ||
+                type == OBJECT_SCRAP5)  // wastes?
+            {
+                type = OBJECT_SCRAP1;
+            }
+
+            if (type != m_audioChange[t].type)  continue;
+
+            if (obj->GetTruck() == 0)
+                oPos = obj->GetPosition(0);
+            else
+                oPos = obj->GetTruck()->GetPosition(0);
+
+            oPos.y = 0.0f;
+
+            if (Math::DistanceProjected(oPos, bPos) <= m_audioChange[t].dist)
+                nb ++;
+        }
+
+        if (nb >= m_audioChange[t].min &&
+            nb <= m_audioChange[t].max &&
+            !m_audioChange[t].changed)
+        {
+            CLogger::GetInstancePointer()->Debug("Changing music...\n");
+            m_sound->StopMusic();
+            m_sound->PlayMusic(std::string(m_audioChange[t].music), m_audioChange[t].repeat);
+            m_audioChange[t].changed = true;
+        }
+    }
+}
+
 //! Checks if the mission is over
 Error CRobotMain::CheckEndMission(bool frame)
 {
@@ -7067,11 +7146,12 @@ float CRobotMain::GetTracePrecision()
 //! Starts music with a mission
 void CRobotMain::StartMusic()
 {
+    CLogger::GetInstancePointer()->Debug("Starting music...\n");
     if (m_audioTrack != 0)
     {
         m_sound->StopMusic();
         m_sound->PlayMusic(m_audioTrack, m_audioRepeat);
-    }
+    }   
 }
 
 //! Removes hilite and tooltip

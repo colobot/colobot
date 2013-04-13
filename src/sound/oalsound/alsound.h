@@ -66,6 +66,7 @@ class ALSound : public CSoundInterface
         bool MuteAll(bool bMute);
 
         bool PlayMusic(int rank, bool bRepeat);
+        bool PlayMusic(std::string filename, bool bRepeat);
         bool RestartMusic();
         void SuspendMusic();
         void StopMusic();
@@ -91,7 +92,6 @@ class ALSound : public CSoundInterface
         ALCcontext* mContext;
         std::map<Sound, Buffer*> mSounds;
         std::map<int, Channel*> mChannels;
-        std::deque<Buffer*> mMusicCache;
         Channel *mCurrentMusic;
         Math::Vector mEye;
         Math::Vector mLookat;

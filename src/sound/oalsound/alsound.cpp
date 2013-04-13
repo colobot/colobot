@@ -539,44 +539,32 @@ void ALSound::SetListener(Math::Vector eye, Math::Vector lookat)
     }
 }
 
-
 bool ALSound::PlayMusic(int rank, bool bRepeat)
+{
+    std::stringstream filename;
+    filename << "music" << std::setfill('0') << std::setw(3) << rank << ".ogg";
+    return PlayMusic(filename.str(), bRepeat);
+}
+
+bool ALSound::PlayMusic(std::string filename, bool bRepeat)
 {
     if (!mEnabled) {
         return false;
     }
-    
-    if (static_cast<int>(mCurrentMusic->GetSoundType()) != rank) {
-        // check if we have music in cache
-        for (auto music : mMusicCache) {
-            if (static_cast<int>(music->GetSoundType()) == rank) {
-                GetLogger()->Debug("Music loaded from cache\n");
-                mCurrentMusic->SetBuffer(music);
 
-                mCurrentMusic->SetVolume(mMusicVolume);
-                mCurrentMusic->SetLoop(bRepeat);
-                mCurrentMusic->Play();
-                return true;
-            }
-        }
-     
-        // we cache only 3 music files
-        if (mMusicCache.size() == 3) {
-            mCurrentMusic->FreeBuffer();
-            mMusicCache.pop_back();
-        }
+    std::stringstream file;
+    file << m_soundPath << "/" << filename;
 
-        if (mMusic.find(rank) == mMusic.end()) {
-            GetLogger()->Info("Requested music %d was not found.\n", rank);
-            return false;
-        }
-
-        Buffer *buffer = new Buffer();
-        mMusicCache.push_front(buffer);
-        buffer->LoadFromFile(mMusic.at(rank), static_cast<Sound>(rank));
-        mCurrentMusic->SetBuffer(buffer);
-        mMusicCache[rank] = buffer;
+    if (!boost::filesystem::exists(file.str())) {
+        GetLogger()->Warn("Requested music %s was not found.\n", filename.c_str());
+        return false;
     }
+
+    // TODO: Cache
+    
+    Buffer *buffer = new Buffer();
+    buffer->LoadFromFile(file.str(), static_cast<Sound>(-1));
+    mCurrentMusic->SetBuffer(buffer);
     
     mCurrentMusic->SetVolume(mMusicVolume);
     mCurrentMusic->SetLoop(bRepeat);

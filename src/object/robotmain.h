@@ -99,11 +99,23 @@ struct EndTake
     Math::Vector  pos;
     float         dist;
     ObjectType    type;
-    int           min;        // wins if>
+    int           min;        // wins if >
     int           max;        // wins if <
     int           lost;       // lost if <=
     bool          immediat;
     char          message[100];
+};
+
+struct AudioChange
+{
+    Math::Vector  pos;
+    float         dist;
+    ObjectType    type;
+    int           min;        // change if >
+    int           max;        // change if <
+    char          music[100];
+    bool          repeat;
+    bool          changed;
 };
 
 
@@ -248,6 +260,7 @@ public:
 
     void        ResetObject();
     void        ResetCreate();
+    void        UpdateAudio(bool frame);
     Error       CheckEndMission(bool frame);
     void        CheckEndMessage(const char* message);
     int         GetObligatoryToken();
@@ -522,6 +535,9 @@ protected:
     long            m_endTakeResearch;
     float           m_endTakeWinDelay;
     float           m_endTakeLostDelay;
+    
+    int             m_audioChangeTotal;
+    AudioChange     m_audioChange[10];
 
     int             m_obligatoryTotal;
     char            m_obligatoryToken[100][20];
