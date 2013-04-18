@@ -449,6 +449,7 @@ bool CApplication::Create()
 
     // Enable translating key codes of key press events to unicode chars
     SDL_EnableUNICODE(1);
+    SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL);
 
     // Don't generate joystick events
     SDL_JoystickEventState(SDL_IGNORE);
