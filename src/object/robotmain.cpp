@@ -4004,14 +4004,16 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             int i = m_audioChangeTotal;
             if (i < 10)
             {
-                m_audioChange[i].pos  = OpPos(line, "pos")*g_unit;
-                m_audioChange[i].dist = OpFloat(line, "dist", 8.0f)*g_unit;
-                m_audioChange[i].type = OpTypeObject(line, "type", OBJECT_NULL);
-                m_audioChange[i].min  = OpInt(line, "min", 1);
-                m_audioChange[i].max  = OpInt(line, "max", 9999);
+                m_audioChange[i].pos      = OpPos(line, "pos")*g_unit;
+                m_audioChange[i].dist     = OpFloat(line, "dist", 8.0f)*g_unit;
+                m_audioChange[i].type     = OpTypeObject(line, "type", OBJECT_NULL);
+                m_audioChange[i].min      = OpInt(line, "min", 1);
+                m_audioChange[i].max      = OpInt(line, "max", 9999);
+                m_audioChange[i].powermin = OpInt(line, "powermin", -1);
+                m_audioChange[i].powermax = OpInt(line, "powermax", 100);
                 OpString(line, "filename", m_audioChange[i].music);
-                m_audioChange[i].repeat  = OpInt(line, "repeat", 1);
-                m_audioChange[i].changed = false;
+                m_audioChange[i].repeat   = OpInt(line, "repeat", 1);
+                m_audioChange[i].changed  = false;
                 m_sound->CacheMusic(m_audioChange[i].music);
                 m_audioChangeTotal ++;
             }
@@ -4670,12 +4672,16 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             int i = m_endTakeTotal;
             if (i < 10)
             {
-                m_endTake[i].pos  = OpPos(line, "pos")*g_unit;
-                m_endTake[i].dist = OpFloat(line, "dist", 8.0f)*g_unit;
-                m_endTake[i].type = OpTypeObject(line, "type", OBJECT_NULL);
-                m_endTake[i].min  = OpInt(line, "min", 1);
-                m_endTake[i].max  = OpInt(line, "max", 9999);
-                m_endTake[i].lost = OpInt(line, "lost", -1);
+                m_endTake[i].pos      = OpPos(line, "pos")*g_unit;
+                m_endTake[i].dist     = OpFloat(line, "dist", 8.0f)*g_unit;
+                m_endTake[i].type     = OpTypeObject(line, "type", OBJECT_NULL);
+                m_endTake[i].min      = OpInt(line, "min", 1);
+                m_endTake[i].max      = OpInt(line, "max", 9999);
+                if (m_version >= 2) {
+                m_endTake[i].powermin = OpInt(line, "powermin", -1);
+                m_endTake[i].powermax = OpInt(line, "powermax", 100);
+                }
+                m_endTake[i].lost     = OpInt(line, "lost", -1);
                 m_endTake[i].immediat = OpInt(line, "immediat", 0);
                 OpString(line, "message", m_endTake[i].message);
                 m_endTakeTotal ++;
@@ -6639,6 +6645,14 @@ void CRobotMain::UpdateAudio(bool frame)
 
             if (type != m_audioChange[t].type)  continue;
 
+            float energyLevel = -1;
+            CObject* power = obj->GetPower();
+            if (power != nullptr) {
+                energyLevel = power->GetEnergy();
+                if (power->GetType() == OBJECT_ATOMIC) energyLevel *= 100;
+            }
+            if (energyLevel < m_audioChange[t].powermin || energyLevel > m_audioChange[t].powermax) continue;
+
             if (obj->GetTruck() == 0)
                 oPos = obj->GetPosition(0);
             else
@@ -6697,6 +6711,14 @@ Error CRobotMain::CheckEndMission(bool frame)
             }
 
             if (type != m_endTake[t].type)  continue;
+
+            float energyLevel = -1;
+            CObject* power = obj->GetPower();
+            if (power != nullptr) {
+                energyLevel = power->GetEnergy();
+                if (power->GetType() == OBJECT_ATOMIC) energyLevel *= 100;
+            }
+            if (energyLevel < m_endTake[t].powermin || energyLevel > m_endTake[t].powermax) continue;
 
             if (obj->GetTruck() == 0)
                 oPos = obj->GetPosition(0);

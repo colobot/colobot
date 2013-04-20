@@ -102,6 +102,8 @@ struct EndTake
     int           min;        // wins if >
     int           max;        // wins if <
     int           lost;       // lost if <=
+    float         powermin;   // wins if energy cell >=
+    float         powermax;   // wins if energy cell <=
     bool          immediat;
     char          message[100];
 };
@@ -113,6 +115,8 @@ struct AudioChange
     ObjectType    type;
     int           min;        // change if >
     int           max;        // change if <
+    float         powermin;   // change if energy cell >=
+    float         powermax;   // change if energy cell <=
     char          music[100];
     bool          repeat;
     bool          changed;
