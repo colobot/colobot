@@ -178,8 +178,8 @@ class CSoundInterface
     /** Function called to add all music files to list */
     inline void AddMusicFiles(std::string path) {
         m_soundPath = path;
-        CacheMusic("sound010.ogg");
-        CacheMusic("sound011.ogg");
+        CacheMusic("music010.ogg");
+        CacheMusic("music011.ogg");
     };
     
     /** Function called to cache sound effect file.
