@@ -13,10 +13,10 @@ if (${PLATFORM_WINDOWS})
     set(SYSTEM_CPP_MODULE "system_windows.cpp")
 elseif(${PLATFORM_LINUX})
     set(SYSTEM_CPP_MODULE "system_linux.cpp")
-    set(ADDITIONAL_LIB X11)
+    set(ADDITIONAL_LIB "-lX11")
 else()
     set(SYSTEM_CPP_MODULE "system_other.cpp")
-    set(ADDITIONAL_LIB X11)
+    set(ADDITIONAL_LIB "-lX11")
 endif()
 
 add_executable(edit_test
@@ -40,7 +40,7 @@ stubs/restext_stub.cpp
 stubs/robotmain_stub.cpp
 edit_test.cpp)
 
-target_link_libraries(edit_test gtest gmock ${SDL_LIBRARY} ${SDLTTF_LIBRARY} ${Boost_LIBRARIES} ${ADDITIONAL_LIB} clipboard)
+target_link_libraries(edit_test gtest gmock clipboard ${SDL_LIBRARY} ${SDLTTF_LIBRARY} ${Boost_LIBRARIES} ${ADDITIONAL_LIB})
 
 
 

@@ -211,6 +211,7 @@ set(LIBS
 gtest
 gmock
 CBot
+clipboard
 ${SDL_LIBRARY}
 ${SDLIMAGE_LIBRARY}
 ${SDLTTF_LIBRARY}
@@ -221,7 +222,6 @@ ${Boost_LIBRARIES}
 ${OPTIONAL_LIBS}
 ${PLATFORM_LIBS}
 ${LIBSNDFILE_LIBRARY}
-clipboard
 )
 
 add_executable(colobot_ut ${COLOBOT_SOURCES} ${UT_SOURCES} ${OPENAL_SOURCES})

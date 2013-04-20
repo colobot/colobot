@@ -186,6 +186,7 @@ ${OPENAL_SRC}
 
 set(LIBS
 CBot
+clipboard
 ${SDL_LIBRARY}
 ${SDLIMAGE_LIBRARY}
 ${SDLTTF_LIBRARY}
@@ -196,7 +197,6 @@ ${Boost_LIBRARIES}
 ${LIBSNDFILE_LIBRARY}
 ${OPTIONAL_LIBS}
 ${PLATFORM_LIBS}
-clipboard
 )
 
 # Local
