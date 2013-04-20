@@ -4680,6 +4680,9 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 if (m_version >= 2) {
                 m_endTake[i].powermin = OpInt(line, "powermin", -1);
                 m_endTake[i].powermax = OpInt(line, "powermax", 100);
+                } else {
+                m_endTake[i].powermin = -1;
+                m_endTake[i].powermax = 100;
                 }
                 m_endTake[i].lost     = OpInt(line, "lost", -1);
                 m_endTake[i].immediat = OpInt(line, "immediat", 0);
