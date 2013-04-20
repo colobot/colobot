@@ -2710,6 +2710,8 @@ CObject* CRobotMain::DetectObject(Math::Point pos)
         if (obj == nullptr) break;
 
         if (!obj->GetActif()) continue;
+        CObject* truck = obj->GetTruck();
+        if (truck != nullptr) if (!truck->GetActif()) continue;
         if (obj->GetProxyActivate()) continue;
 
         CObject* target = nullptr;
