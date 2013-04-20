@@ -5702,7 +5702,7 @@ char* SearchLastDir(char *filename)
 
     while (p != filename)
     {
-        if (*(--p) == '/') return p;
+        if (*(--p) == '/' || *p == '\\') return p;
     }
     return 0;
 }
