@@ -95,6 +95,7 @@ CApplication::CApplication()
 {
     m_private       = new ApplicationPrivate();
     m_iMan          = new CInstanceManager();
+    m_objMan        = new CObjectManager();
     m_eventQueue    = new CEventQueue();
     m_profile       = new CProfile();
 
@@ -448,6 +449,7 @@ bool CApplication::Create()
 
     // Enable translating key codes of key press events to unicode chars
     SDL_EnableUNICODE(1);
+    SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL);
 
     // Don't generate joystick events
     SDL_JoystickEventState(SDL_IGNORE);
@@ -1410,7 +1412,7 @@ bool CApplication::GetMouseButtonState(int index)
 
 void CApplication::ResetKeyStates()
 {
-    GetLogger()->Info("Reset key states\n");
+    GetLogger()->Trace("Reset key states\n");
     m_trackedKeys = 0;
     m_kmodState = 0;
     m_robotMain->ResetKeyStates();

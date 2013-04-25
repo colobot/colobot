@@ -99,11 +99,27 @@ struct EndTake
     Math::Vector  pos;
     float         dist;
     ObjectType    type;
-    int           min;        // wins if>
+    int           min;        // wins if >
     int           max;        // wins if <
     int           lost;       // lost if <=
+    float         powermin;   // wins if energy cell >=
+    float         powermax;   // wins if energy cell <=
     bool          immediat;
     char          message[100];
+};
+
+struct AudioChange
+{
+    Math::Vector  pos;
+    float         dist;
+    ObjectType    type;
+    int           min;        // change if >
+    int           max;        // change if <
+    float         powermin;   // change if energy cell >=
+    float         powermax;   // change if energy cell <=
+    char          music[100];
+    bool          repeat;
+    bool          changed;
 };
 
 
@@ -248,6 +264,7 @@ public:
 
     void        ResetObject();
     void        ResetCreate();
+    void        UpdateAudio(bool frame);
     Error       CheckEndMission(bool frame);
     void        CheckEndMessage(const char* message);
     int         GetObligatoryToken();
@@ -352,6 +369,9 @@ public:
     CObject*    IOReadObject(char *line, const char* filename, int objRank);
 
     int         CreateSpot(Math::Vector pos, Gfx::Color color);
+    
+    void        SetNumericLocale();
+    void        RestoreNumericLocale();
 
 protected:
     bool        EventFrame(const Event &event);
@@ -390,6 +410,7 @@ protected:
     void        ExecuteCmd(char *cmd);
     bool        TestGadgetQuantity(int rank);
     void        UpdateSpeedLabel();
+    
 
 protected:
     CApplication*       m_app;
@@ -444,7 +465,7 @@ protected:
     bool            m_cheatRadar;
     bool            m_audioRepeat;
     bool            m_shortCut;
-    int             m_audioTrack;
+    std::string     m_audioTrack;
     int             m_delayWriteMessage;
     int             m_movieInfoIndex;
 
@@ -518,6 +539,9 @@ protected:
     long            m_endTakeResearch;
     float           m_endTakeWinDelay;
     float           m_endTakeLostDelay;
+    
+    int             m_audioChangeTotal;
+    AudioChange     m_audioChange[10];
 
     int             m_obligatoryTotal;
     char            m_obligatoryToken[100][20];
@@ -540,5 +564,7 @@ protected:
     Gfx::Color      m_colorRefWater;
     Gfx::Color      m_colorNewWater;
     float           m_colorShiftWater;
+    
+    std::string     m_oldLocale;
 };
 

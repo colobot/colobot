@@ -71,6 +71,7 @@
 #include "object/motion/motionvehicle.h"
 #include "object/motion/motionworm.h"
 #include "object/robotmain.h"
+#include "object/objman.h"
 
 #include "physics/physics.h"
 
@@ -202,6 +203,10 @@ void uObject(CBotVar* botThis, void* user)
     fret = object->GetFret();
     if ( fret == 0 )  pVar->SetPointer(0);
     else              pVar->SetPointer(fret->GetBotVar());
+
+    pVar = pVar->GetNext();  // "id"
+    value = object->GetID();
+    pVar->SetValInt(value);
 }
 
 
@@ -337,6 +342,8 @@ CObject::CObject()
     m_botVar = CBotVar::Create("", CBotTypResult(CBotTypClass, "object"));
     m_botVar->SetUserPtr(this);
     m_botVar->SetIdent(m_id);
+    
+    CObjectManager::GetInstancePointer()->AddInstance(this);
 }
 
 // Object's destructor.
@@ -360,6 +367,7 @@ CObject::~CObject()
     m_auto = nullptr;
 
     CInstanceManager::GetInstancePointer()->DeleteInstance(CLASS_OBJECT, this);
+    CObjectManager::GetInstancePointer()->DeleteInstance(this);
 
     m_app = nullptr;
 }
@@ -592,7 +600,7 @@ bool CObject::ExploObject(ExploType type, float force, float decay)
         }
     }
 
-    if ( EXPLO_BOUM )
+    if ( type == EXPLO_BOUM )
     {
         if ( m_shotTime < 0.5f )  return false;
         m_shotTime = 0.0f;

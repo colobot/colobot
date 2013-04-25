@@ -8,7 +8,7 @@ elseif (${PLATFORM_WINDOWS})
     set(PLATFORM_LIBS "-lintl")
 elseif(${PLATFORM_LINUX})
     # for clock_gettime
-    set(PLATFORM_LIBS "-lrt")
+    set(PLATFORM_LIBS "-lrt -lX11")
 endif()
 
 
@@ -90,6 +90,7 @@ ${SRC_DIR}/object/motion/motiontoto.cpp
 ${SRC_DIR}/object/motion/motionvehicle.cpp
 ${SRC_DIR}/object/motion/motionworm.cpp
 ${SRC_DIR}/object/object.cpp
+${SRC_DIR}/object/objman.cpp
 ${SRC_DIR}/object/robotmain.cpp
 ${SRC_DIR}/object/task/task.cpp
 ${SRC_DIR}/object/task/taskadvance.cpp
@@ -203,12 +204,14 @@ ${GLEW_INCLUDE_PATH}
 ${Boost_INCLUDE_DIRS}
 ${OPTIONAL_INCLUDE_DIRS}
 ${LIBSNDFILE_INCLUDE_DIR}
+${CLIPBOARD_DIR}
 )
 
 set(LIBS
 gtest
 gmock
 CBot
+clipboard
 ${SDL_LIBRARY}
 ${SDLIMAGE_LIBRARY}
 ${SDLTTF_LIBRARY}

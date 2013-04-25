@@ -17,9 +17,8 @@
 
 #include "channel.h"
 
-#define MIN(a, b) (a > b ? b : a)
-
-Channel::Channel() {
+Channel::Channel()
+{
     alGenSources(1, &mSource);
 
     if (alCheck()) {
@@ -32,14 +31,17 @@ Channel::Channel() {
     mPriority = 0;
     mBuffer = nullptr;
     mLoop = false;
+    mMute = false;
     mInitFrequency = 0.0f;
     mStartAmplitude = 0.0f;
     mStartFrequency = 0.0f;
     mChangeFrequency = 0.0f;
+    mVolume = 0.0f;
 }
 
 
-Channel::~Channel() {
+Channel::~Channel()
+{
     if (mReady) {
         alSourceStop(mSource);
         alSourcei(mSource, AL_BUFFER, 0);
@@ -50,21 +52,28 @@ Channel::~Channel() {
 }
 
 
-bool Channel::Play() {
-    if (!mReady || mBuffer == nullptr)
+bool Channel::Play()
+{
+    if (!mReady || mBuffer == nullptr) {
         return false;
+    }
 
     alSourcei(mSource, AL_LOOPING, static_cast<ALint>(mLoop));
+    alSourcei(mSource, AL_REFERENCE_DISTANCE, 10.0f);
+    alSourcei(mSource, AL_MAX_DISTANCE, 110.0f);
     alSourcePlay(mSource);
-    if (alCheck())
+    if (alCheck()) {
         GetLogger()->Warn("Could not play audio sound source. Code: %d\n", alGetCode());
+    }
     return true;
 }
 
 
-bool Channel::SetPosition(Math::Vector pos) {
-    if (!mReady || mBuffer == nullptr)
+bool Channel::SetPan(Math::Vector pos)
+{
+    if (!mReady || mBuffer == nullptr) {
         return false;
+    }
     
     alSource3f(mSource, AL_POSITION, pos.x, pos.y, pos.z);
     if (alCheck()) {
@@ -75,10 +84,23 @@ bool Channel::SetPosition(Math::Vector pos) {
 }
 
 
+void Channel::SetPosition(Math::Vector pos)
+{
+    mPosition = pos;
+}
+
+
+Math::Vector Channel::GetPosition()
+{
+    return mPosition;
+}
+
+
 bool Channel::SetFrequency(float freq)
 {
-    if (!mReady || mBuffer == nullptr)
+    if (!mReady || mBuffer == nullptr) {
         return false;
+    }
 
     alSourcef(mSource, AL_PITCH, freq);
     if (alCheck()) {
@@ -89,20 +111,12 @@ bool Channel::SetFrequency(float freq)
 }
 
 
-bool Channel::AdjustFrequency(float freq)
-{
-    if (!mReady || mBuffer == nullptr)
-        return false;
-
-    return SetFrequency(mInitFrequency + fabs(freq));
-}
-
-
 float Channel::GetFrequency()
 {
     ALfloat freq;
-    if (!mReady || mBuffer == nullptr)
+    if (!mReady || mBuffer == nullptr) {
         return 0;
+    }
     
     alGetSourcef(mSource, AL_PITCH, &freq);
     if (alCheck()) {
@@ -116,10 +130,11 @@ float Channel::GetFrequency()
 
 bool Channel::SetVolume(float vol)
 {
-    if (!mReady || vol < 0 || mBuffer == nullptr)
+    if (!mReady || vol < 0 || mBuffer == nullptr) {
         return false;
+    }
     
-    alSourcef(mSource, AL_GAIN, MIN(powf(vol, 0.2f), 1.0f));
+    alSourcef(mSource, AL_GAIN, vol);
     if (alCheck()) {
         GetLogger()->Warn("Could not set sound volume to '%f'. Code: %d\n", vol, alGetCode());
         return false;
@@ -131,8 +146,9 @@ bool Channel::SetVolume(float vol)
 float Channel::GetVolume()
 {
     ALfloat vol;
-    if (!mReady || mBuffer == nullptr)
+    if (!mReady || mBuffer == nullptr) {
         return 0;
+    }
     
     alGetSourcef(mSource, AL_GAIN, &vol);
     if (alCheck()) {
@@ -142,6 +158,19 @@ float Channel::GetVolume()
 
     return vol;
 }
+
+
+void Channel::SetVolumeAtrib(float volume)
+{
+    mVolume = volume;
+}
+
+
+float Channel::GetVolumeAtrib()
+{
+    return mVolume;
+}
+
 
 
 int Channel::GetPriority()
@@ -159,7 +188,6 @@ void Channel::SetPriority(int pri)
 void Channel::SetStartAmplitude(float gain)
 {
     mStartAmplitude = gain;
-    SetVolume(mStartAmplitude);
 }
 
 
@@ -212,8 +240,9 @@ void Channel::ResetOper()
 
 
 Sound Channel::GetSoundType() {
-    if (!mReady || mBuffer == nullptr)
+    if (!mReady || mBuffer == nullptr) {
         return SOUND_NONE;
+    }
     
     return mBuffer->GetSoundType();
 }
@@ -241,10 +270,7 @@ bool Channel::SetBuffer(Buffer *buffer) {
 
 
 bool Channel::FreeBuffer() {
-    if (!mReady)
-        return false;
-    
-    if (!mBuffer) {
+    if (!mReady || !mBuffer) {
         return false;
     }
 
@@ -258,8 +284,9 @@ bool Channel::FreeBuffer() {
 
 bool Channel::IsPlaying() {
     ALint status;
-    if (!mReady || mBuffer == nullptr)
+    if (!mReady || mBuffer == nullptr) {
         return false;
+    }
     
     alGetSourcei(mSource, AL_SOURCE_STATE, &status);
     if (alCheck()) {
@@ -281,8 +308,9 @@ bool Channel::IsLoaded() {
 
 
 bool Channel::Stop() {
-    if (!mReady || mBuffer == nullptr)
+    if (!mReady || mBuffer == nullptr) {
         return false;
+    }
     
     alSourceStop(mSource);
     if (alCheck()) {
@@ -295,8 +323,9 @@ bool Channel::Stop() {
 
 float Channel::GetCurrentTime()
 {
-    if (!mReady || mBuffer == nullptr)
+    if (!mReady || mBuffer == nullptr) {
         return 0.0f;
+    }
     
     ALfloat current;
     alGetSourcef(mSource, AL_SEC_OFFSET, &current);
@@ -310,19 +339,22 @@ float Channel::GetCurrentTime()
 
 void Channel::SetCurrentTime(float current)
 {
-    if (!mReady || mBuffer == nullptr)
+    if (!mReady || mBuffer == nullptr) {
         return;
+    }
     
     alSourcef(mSource, AL_SEC_OFFSET, current);
-    if (alCheck())
+    if (alCheck()) {
         GetLogger()->Warn("Could not get source current play time. Code: %d\n", alGetCode());
+    }
 }
 
 
 float Channel::GetDuration()
 {
-    if (!mReady || mBuffer == nullptr)
+    if (!mReady || mBuffer == nullptr) {
         return 0.0f;
+    }
     
     return mBuffer->GetDuration();
 }
@@ -348,4 +380,16 @@ void Channel::PopEnvelope()
 
 void Channel::SetLoop(bool loop) {
     mLoop = loop;
+}
+
+
+void Channel::Mute(bool mute)
+{
+    mMute = mute;
+}
+
+
+bool Channel::IsMuted()
+{
+    return mMute;
 }

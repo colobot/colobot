@@ -34,7 +34,7 @@
 #include "graphics/engine/engine.h"
 #include "graphics/engine/lightman.h"
 #include "graphics/engine/lightning.h"
-#include "graphics/engine/modelfile.h"
+#include "graphics/engine/modelmanager.h"
 #include "graphics/engine/particle.h"
 #include "graphics/engine/planet.h"
 #include "graphics/engine/pyro.h"
@@ -643,7 +643,7 @@ CRobotMain::CRobotMain(CApplication* app)
     m_visitLast   = EVENT_NULL;
     m_visitObject = 0;
     m_visitArrow  = 0;
-    m_audioTrack  = 0;
+    m_audioTrack  = "";
     m_audioRepeat = true;
     m_delayWriteMessage = 0;
     m_selectObject = 0;
@@ -805,6 +805,11 @@ CRobotMain::CRobotMain(CApplication* app)
     CBotProgram::DefineNum("FilterOnlyLanding", FILTER_ONLYLANDING);
     CBotProgram::DefineNum("FilterOnlyFliying", FILTER_ONLYFLYING);
 
+    CBotProgram::DefineNum("ExploNone", 0);
+    CBotProgram::DefineNum("ExploBoum", EXPLO_BOUM);
+    CBotProgram::DefineNum("ExploBurn", EXPLO_BURN);
+    CBotProgram::DefineNum("ExploWater", EXPLO_WATER);
+
     CBotProgram::DefineNum("PolskiPortalColobota", 1337);
 
     CBotClass* bc;
@@ -831,6 +836,7 @@ CRobotMain::CRobotMain(CApplication* app)
     bc->AddItem("material",    CBotTypResult(CBotTypInt), PR_READ);
     bc->AddItem("energyCell",  CBotTypResult(CBotTypPointer, "object"), PR_READ);
     bc->AddItem("load",        CBotTypResult(CBotTypPointer, "object"), PR_READ);
+    bc->AddItem("id",          CBotTypResult(CBotTypInt), PR_READ);
 
     // Initializes the class FILE.
     InitClassFILE();
@@ -1041,6 +1047,7 @@ void CRobotMain::ChangePhase(Phase phase)
     FlushDisplayInfo();
     m_engine->SetRankView(0);
     m_engine->DeleteAllObjects();
+    Gfx::CModelManager::GetInstancePointer()->DeleteAllModelCopies();
     m_engine->SetWaterAddColor(Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f));
     m_engine->SetBackground("");
     m_engine->SetBackForce(false);
@@ -1332,7 +1339,7 @@ bool CRobotMain::EventProcess(Event &event)
     // Management of the console.
     if (m_phase != PHASE_NAME &&
         !m_movie->IsExist()   &&
-        !m_movieLock && !m_editLock &&
+        !m_movieLock && !m_editLock && !m_engine->GetPause() &&
         event.type == EVENT_KEY_DOWN &&
         event.key.key == KEY(PAUSE))  // Pause ?
     {
@@ -1474,8 +1481,9 @@ bool CRobotMain::EventProcess(Event &event)
                         ChangePhase(PHASE_WIN);
                     else if (m_lostDelay > 0.0f)
                         ChangePhase(PHASE_LOST);
-                    else
+                    else if (!m_cmdEdit) {
                         m_dialog->StartAbort();  // do you want to leave?
+                    }
                 }
                 if (event.key.key == KEY(PAUSE))
                 {
@@ -1760,6 +1768,23 @@ void CRobotMain::ExecuteCmd(char *cmd)
             return;
         }
 
+        if (strcmp(cmd, "allbuildings") == 0)
+        {
+            g_build = -1;  // all buildings are available
+
+            m_eventQueue->AddEvent(Event(EVENT_UPDINTERFACE));
+            return;
+        }
+
+        if (strcmp(cmd, "all") == 0)
+        {
+            g_researchDone = -1;  // all research are done
+            g_build = -1;  // all buildings are available
+
+            m_eventQueue->AddEvent(Event(EVENT_UPDINTERFACE));
+            return;
+        }
+
         if (strcmp(cmd, "nolimit") == 0)
         {
             m_terrain->SetFlyingMaxHeight(280.0f);
@@ -1995,6 +2020,11 @@ void CRobotMain::ExecuteCmd(char *cmd)
     }
     if (strcmp(cmd, "speed8") == 0) {
         SetSpeed(8.0f);
+        UpdateSpeedLabel();
+	return;
+    }
+    if (strcmp(cmd, "crazy") == 0) {
+        SetSpeed(1000.0f);
         UpdateSpeedLabel();
 	return;
     }
@@ -2680,6 +2710,8 @@ CObject* CRobotMain::DetectObject(Math::Point pos)
         if (obj == nullptr) break;
 
         if (!obj->GetActif()) continue;
+        CObject* truck = obj->GetTruck();
+        if (truck != nullptr) if (!truck->GetActif()) continue;
         if (obj->GetProxyActivate()) continue;
 
         CObject* target = nullptr;
@@ -3446,6 +3478,7 @@ bool CRobotMain::EventFrame(const Event &event)
         {
             m_checkEndTime = m_time;
             CheckEndMission(true);
+            UpdateAudio(true);
         }
 
         if (m_winDelay > 0.0f && !m_editLock)
@@ -3635,7 +3668,7 @@ void CRobotMain::Convert()
             }
         }
 
-        if (Cmd(line, "EndMissionTake"))
+        if (Cmd(line, "EndMissionTake") || Cmd(line, "AudioChange"))
         {
             char* p = strstr(line, "pos=");
             if (p != 0)
@@ -3729,6 +3762,7 @@ void CRobotMain::ScenePerso()
 {
     DeleteAllObjects();  // removes all the current 3D Scene
     m_engine->DeleteAllObjects();
+    Gfx::CModelManager::GetInstancePointer()->DeleteAllModelCopies();
     m_terrain->FlushRelief();  // all flat
     m_terrain->FlushBuildingLevel();
     m_terrain->FlushFlyingLimit();
@@ -3785,7 +3819,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
         FlushDisplayInfo();
         m_terrain->FlushMaterials();
-        m_audioTrack = 0;
+        m_audioTrack = "";
         m_audioRepeat = true;
         m_displayText->SetDelay(1.0f);
         m_displayText->SetEnable(true);
@@ -3793,6 +3827,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
         m_lockedSatCom = false;
         m_endingWinRank   = 0;
         m_endingLostRank  = 0;
+        m_audioChangeTotal = 0;
         m_endTakeTotal = 0;
         m_endTakeResearch = 0;
         m_endTakeWinDelay = 2.0f;
@@ -3864,12 +3899,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
     int rankGadget = 0;
     CObject* sel = 0;
 
-    std::string oldLocale;
-    char *locale = setlocale(LC_NUMERIC, nullptr);
-    if (locale != nullptr)
-        oldLocale = locale;
-
-    setlocale(LC_NUMERIC, "C");
+    SetNumericLocale();
 
     while (fgets(line, 500, file) != NULL)
     {
@@ -3953,9 +3983,42 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
         if (Cmd(line, "Audio") && !resetObject)
         {
-            m_audioTrack = OpInt(line, "track", 0);
+            if(m_version < 2) {
+                int trackid = OpInt(line, "track", 0);
+                if(trackid != 0) {
+                    std::stringstream filename;
+                    filename << "music" << std::setfill('0') << std::setw(3) << trackid << ".ogg";
+                    m_audioTrack = filename.str();
+                }
+            } else {
+                char trackname[100];
+                OpString(line, "filename", trackname);
+                m_audioTrack = trackname;
+            }
             m_audioRepeat = OpInt(line, "repeat", 1);
+            if(m_audioTrack != "") m_sound->CacheMusic(m_audioTrack);
         }
+
+        if (Cmd(line, "AudioChange") && !resetObject && m_version >= 2)
+        {
+            int i = m_audioChangeTotal;
+            if (i < 10)
+            {
+                m_audioChange[i].pos      = OpPos(line, "pos")*g_unit;
+                m_audioChange[i].dist     = OpFloat(line, "dist", 8.0f)*g_unit;
+                m_audioChange[i].type     = OpTypeObject(line, "type", OBJECT_NULL);
+                m_audioChange[i].min      = OpInt(line, "min", 1);
+                m_audioChange[i].max      = OpInt(line, "max", 9999);
+                m_audioChange[i].powermin = OpInt(line, "powermin", -1);
+                m_audioChange[i].powermax = OpInt(line, "powermax", 100);
+                OpString(line, "filename", m_audioChange[i].music);
+                m_audioChange[i].repeat   = OpInt(line, "repeat", 1);
+                m_audioChange[i].changed  = false;
+                m_sound->CacheMusic(m_audioChange[i].music);
+                m_audioChangeTotal ++;
+            }
+        }
+
 
         if (Cmd(line, "AmbientColor") && !resetObject)
         {
@@ -4609,12 +4672,19 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             int i = m_endTakeTotal;
             if (i < 10)
             {
-                m_endTake[i].pos  = OpPos(line, "pos")*g_unit;
-                m_endTake[i].dist = OpFloat(line, "dist", 8.0f)*g_unit;
-                m_endTake[i].type = OpTypeObject(line, "type", OBJECT_NULL);
-                m_endTake[i].min  = OpInt(line, "min", 1);
-                m_endTake[i].max  = OpInt(line, "max", 9999);
-                m_endTake[i].lost = OpInt(line, "lost", -1);
+                m_endTake[i].pos      = OpPos(line, "pos")*g_unit;
+                m_endTake[i].dist     = OpFloat(line, "dist", 8.0f)*g_unit;
+                m_endTake[i].type     = OpTypeObject(line, "type", OBJECT_NULL);
+                m_endTake[i].min      = OpInt(line, "min", 1);
+                m_endTake[i].max      = OpInt(line, "max", 9999);
+                if (m_version >= 2) {
+                m_endTake[i].powermin = OpInt(line, "powermin", -1);
+                m_endTake[i].powermax = OpInt(line, "powermax", 100);
+                } else {
+                m_endTake[i].powermin = -1;
+                m_endTake[i].powermax = 100;
+                }
+                m_endTake[i].lost     = OpInt(line, "lost", -1);
                 m_endTake[i].immediat = OpInt(line, "immediat", 0);
                 OpString(line, "message", m_endTake[i].message);
                 m_endTakeTotal ++;
@@ -4737,7 +4807,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
     m_dialog->SetSceneRead("");
     m_dialog->SetStackRead("");
 
-    setlocale(LC_NUMERIC, oldLocale.c_str());
+    RestoreNumericLocale();
 }
 
 //! Creates an object of decoration mobile or stationary
@@ -5643,7 +5713,7 @@ char* SearchLastDir(char *filename)
 
     while (p != filename)
     {
-        if (*(--p) == '/') return p;
+        if (*(--p) == '/' || *p == '\\') return p;
     }
     return 0;
 }
@@ -5944,6 +6014,8 @@ bool CRobotMain::IsBusy()
 void CRobotMain::IOWriteObject(FILE *file, CObject* obj, const char *cmd)
 {
     if (obj->GetType() == OBJECT_FIX) return;
+    
+    SetNumericLocale();
 
     char line[3000];
     char name[100];
@@ -6031,6 +6103,8 @@ void CRobotMain::IOWriteObject(FILE *file, CObject* obj, const char *cmd)
 
     strcat(line, "\n");
     fputs(line, file);
+    
+    RestoreNumericLocale();
 }
 
 //! Saves the current game
@@ -6038,6 +6112,8 @@ bool CRobotMain::IOWriteScene(const char *filename, const char *filecbot, char *
 {
     FILE* file = fopen(filename, "w");
     if (file == NULL)  return false;
+    
+    SetNumericLocale();
 
     char line[500];
 
@@ -6100,6 +6176,8 @@ bool CRobotMain::IOWriteScene(const char *filename, const char *filecbot, char *
         SaveFileScript(obj, filename, objRank++);
     }
     fclose(file);
+    
+    RestoreNumericLocale();
 
 #if CBOT_STACK
     // Writes the file of stacks of execution.
@@ -6145,6 +6223,8 @@ CObject* CRobotMain::IOReadObject(char *line, const char* filename, int objRank)
     if (type == OBJECT_NULL)
         return nullptr;
 
+    SetNumericLocale();
+    
     int trainer = OpInt(line, "trainer", 0);
     int toy = OpInt(line, "toy", 0);
     int option = OpInt(line, "option", 0);
@@ -6210,6 +6290,8 @@ CObject* CRobotMain::IOReadObject(char *line, const char* filename, int objRank)
             automat->Start(run);  // starts the film
     }
 
+    RestoreNumericLocale();
+    
     return obj;
 }
 
@@ -6220,6 +6302,8 @@ CObject* CRobotMain::IOReadScene(const char *filename, const char *filecbot)
 
     FILE* file = fopen(filename, "r");
     if (file == NULL) return 0;
+    
+    SetNumericLocale();
 
     CObject* fret   = nullptr;
     CObject* power  = nullptr;
@@ -6341,6 +6425,8 @@ CObject* CRobotMain::IOReadScene(const char *filename, const char *filecbot)
         fClose(file);
     }
 #endif
+
+    RestoreNumericLocale();
 
     return sel;
 }
@@ -6525,6 +6611,73 @@ void CRobotMain::ResetCreate()
     }
 }
 
+//! Updates the audiotracks
+void CRobotMain::UpdateAudio(bool frame)
+{
+    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
+
+    for (int t = 0; t < m_audioChangeTotal; t++)
+    {
+        if(m_audioChange[t].changed) continue;
+
+        Math::Vector bPos = m_audioChange[t].pos;
+        bPos.y = 0.0f;
+
+        Math::Vector oPos;
+
+        int nb = 0;
+        for (int i = 0; i < 1000000; i++)
+        {
+            CObject* obj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
+            if (obj == nullptr) break;
+
+            // Do not use GetActif () because an invisible worm (underground)
+            // should be regarded as existing here!
+            if (obj->GetLock()) continue;
+            if (obj->GetRuin()) continue;
+            if (!obj->GetEnable()) continue;
+
+            ObjectType type = obj->GetType();
+            if (type == OBJECT_SCRAP2 ||
+                type == OBJECT_SCRAP3 ||
+                type == OBJECT_SCRAP4 ||
+                type == OBJECT_SCRAP5)  // wastes?
+            {
+                type = OBJECT_SCRAP1;
+            }
+
+            if (type != m_audioChange[t].type)  continue;
+
+            float energyLevel = -1;
+            CObject* power = obj->GetPower();
+            if (power != nullptr) {
+                energyLevel = power->GetEnergy();
+                if (power->GetType() == OBJECT_ATOMIC) energyLevel *= 100;
+            }
+            if (energyLevel < m_audioChange[t].powermin || energyLevel > m_audioChange[t].powermax) continue;
+
+            if (obj->GetTruck() == 0)
+                oPos = obj->GetPosition(0);
+            else
+                oPos = obj->GetTruck()->GetPosition(0);
+
+            oPos.y = 0.0f;
+
+            if (Math::DistanceProjected(oPos, bPos) <= m_audioChange[t].dist)
+                nb ++;
+        }
+
+        if (nb >= m_audioChange[t].min &&
+            nb <= m_audioChange[t].max)
+        {
+            CLogger::GetInstancePointer()->Debug("Changing music...\n");
+            m_sound->StopMusic();
+            m_sound->PlayMusic(std::string(m_audioChange[t].music), m_audioChange[t].repeat);
+            m_audioChange[t].changed = true;
+        }
+    }
+}
+
 //! Checks if the mission is over
 Error CRobotMain::CheckEndMission(bool frame)
 {
@@ -6561,6 +6714,14 @@ Error CRobotMain::CheckEndMission(bool frame)
             }
 
             if (type != m_endTake[t].type)  continue;
+
+            float energyLevel = -1;
+            CObject* power = obj->GetPower();
+            if (power != nullptr) {
+                energyLevel = power->GetEnergy();
+                if (power->GetType() == OBJECT_ATOMIC) energyLevel *= 100;
+            }
+            if (energyLevel < m_endTake[t].powermin || energyLevel > m_endTake[t].powermax) continue;
 
             if (obj->GetTruck() == 0)
                 oPos = obj->GetPosition(0);
@@ -6781,10 +6942,10 @@ bool CRobotMain::GetRadar()
     for (int i = 0; i < 1000000; i++)
     {
         CObject* obj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
-        if (obj == 0)  break;
+        if (obj == nullptr)  break;
 
         ObjectType type = obj->GetType();
-        if (type == OBJECT_RADAR)
+        if (type == OBJECT_RADAR && !obj->GetLock())
             return true;
     }
     return false;
@@ -7025,11 +7186,12 @@ float CRobotMain::GetTracePrecision()
 //! Starts music with a mission
 void CRobotMain::StartMusic()
 {
-    if (m_audioTrack != 0)
+    CLogger::GetInstancePointer()->Debug("Starting music...\n");
+    if (m_audioTrack != "")
     {
         m_sound->StopMusic();
         m_sound->PlayMusic(m_audioTrack, m_audioRepeat);
-    }
+    }   
 }
 
 //! Removes hilite and tooltip
@@ -7038,3 +7200,18 @@ void CRobotMain::ClearInterface()
     HiliteClear();  // removes setting evidence
     m_tooltipName[0] = 0;  // really removes the tooltip
 }
+
+void CRobotMain::SetNumericLocale()
+{
+    char *locale = setlocale(LC_NUMERIC, nullptr);
+    if (locale != nullptr)
+        m_oldLocale = locale;
+
+    setlocale(LC_NUMERIC, "C");
+}
+
+void CRobotMain::RestoreNumericLocale()
+{
+    setlocale(LC_NUMERIC, m_oldLocale.c_str());
+}
+    

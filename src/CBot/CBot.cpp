@@ -186,7 +186,7 @@ CBotInstr* CBotInstr::Compile(CBotToken* &p, CBotCStack* pStack)
     {
          type = pp->GetType();
          // these instructions accept only lable
-         if (!IsOfTypeList(pp, ID_WHILE, ID_FOR, ID_DO, ID_REPEAT, 0))
+         if (!IsOfTypeList(pp, ID_WHILE, ID_FOR, ID_DO, 0))
          {
              pStack->SetError(TX_LABEL, pp->GetStart());
              return NULL;
@@ -204,9 +204,6 @@ CBotInstr* CBotInstr::Compile(CBotToken* &p, CBotCStack* pStack)
 
     case ID_DO:
         return CBotDo::Compile(p, pStack);
-
-    case ID_REPEAT:
-        return CBotRepeat::Compile(p, pStack);
 
     case ID_BREAK:
     case ID_CONTINUE:

@@ -53,6 +53,9 @@ public:
     //! Returns the rank of base engine object of given loaded model
     int GetModelBaseObjRank(const std::string& fileName, bool mirrored);
 
+    //! Deletes all copied objects
+    void DeleteAllModelCopies();
+
     //! Unloads the given model
     void UnloadModel(const std::string& fileName, bool mirrored);
     //! Unloads all models
@@ -91,6 +94,7 @@ private:
         }
     };
     std::map<FileInfo, ModelInfo> m_models;
+    std::vector<int> m_copiesBaseRanks;
     CEngine* m_engine;
 };
 

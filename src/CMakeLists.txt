@@ -34,7 +34,7 @@ elseif (${PLATFORM_WINDOWS})
     set(PLATFORM_LIBS "-lintl")
 elseif(${PLATFORM_LINUX})
     # for clock_gettime
-    set(PLATFORM_LIBS "-lrt")
+    set(PLATFORM_LIBS "-lrt -lX11")
 endif()
 
 
@@ -128,6 +128,7 @@ object/motion/motionvehicle.cpp
 object/motion/motionworm.cpp
 object/object.cpp
 object/robotmain.cpp
+object/objman.cpp
 object/task/task.cpp
 object/task/taskadvance.cpp
 object/task/taskbuild.cpp
@@ -185,6 +186,7 @@ ${OPENAL_SRC}
 
 set(LIBS
 CBot
+clipboard
 ${SDL_LIBRARY}
 ${SDLIMAGE_LIBRARY}
 ${SDLTTF_LIBRARY}
@@ -215,6 +217,7 @@ ${GLEW_INCLUDE_PATH}
 ${Boost_INCLUDE_DIRS}
 ${LIBSNDFILE_INCLUDE_DIR}
 ${OPTIONAL_INCLUDE_DIRS}
+${CLIPBOARD_DIR}
 )
 
 link_directories(${CMAKE_CURRENT_SOURCE_DIR}/CBot)

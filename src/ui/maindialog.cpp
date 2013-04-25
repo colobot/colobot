@@ -63,7 +63,7 @@ const int KEY_VISIBLE = 6;      // number of visible keys redefinable
 
 const int KEY_TOTAL = 21;       // total number of keys redefinable
 
-const float WELCOME_LENGTH = 2.0f;
+const float WELCOME_LENGTH = 3.0f;
 
 const int MAX_FNAME = 255; // TODO: remove after rewrite to std::string
 
@@ -1769,7 +1769,7 @@ pos.y -= 0.048f;
         ddim.y = 0.0f;
         pw = m_interface->CreateWindows(pos, ddim, -1, EVENT_WINDOW5);
 
-        m_engine->SetOverColor(Gfx::Color(1.0f, 1.0f, 1.0f, 1.0f), Gfx::ENG_RSTATE_TCOLOR_BLACK); // TODO: color ok?
+        m_engine->SetOverColor(Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f), Gfx::ENG_RSTATE_TCOLOR_WHITE); // TODO: color ok?
         m_engine->SetOverFront(true);
 
         m_engine->SetBackground("colobot.png",
@@ -1953,7 +1953,7 @@ pos.y -= 0.048f;
             m_phase == PHASE_READ    ||
             m_phase == PHASE_LOADING )
     {
-        /*TODO: #if _SCHOOL
+/*TODO: #if _SCHOOL
 #if _TEEN
 pos.x  =  50.0f/640.0f;
 pos.y  = 430.0f/480.0f;
@@ -2001,33 +2001,40 @@ bool CMainDialog::EventProcess(const Event &event)
         //?     else                              welcomeLength = WELCOME_LENGTH;
         welcomeLength = WELCOME_LENGTH;
 
-        if ( m_phase == PHASE_WELCOME1 ||
-                m_phase == PHASE_WELCOME2 ||
-                m_phase == PHASE_WELCOME3 )
+        if (m_phase == PHASE_WELCOME1 ||
+            m_phase == PHASE_WELCOME2 ||
+            m_phase == PHASE_WELCOME3 )
         {
             float   intensity;
-            int     mode = Gfx::ENG_RSTATE_TCOLOR_BLACK;
+            int     mode = Gfx::ENG_RSTATE_TCOLOR_WHITE;
 
-            if ( m_phaseTime < 1.5f )
+            // 1/4 of display time is animating
+            float animatingTime = welcomeLength / 4.0f;
+
+            if ( m_phaseTime <  animatingTime )
             {
-                intensity = 1.0f-(m_phaseTime-0.5f);
+                //appearing
+                intensity = m_phaseTime / animatingTime;
             }
-            else if ( m_phaseTime < welcomeLength-1.0f )
+            else if ( m_phaseTime < welcomeLength - animatingTime )
             {
-                intensity = 0.0f;
+                //showing
+                intensity = 1.0f;
             }
             else
             {
-                intensity = m_phaseTime-(welcomeLength-1.0f);
+                //hiding
+                intensity = (welcomeLength - m_phaseTime) / animatingTime;
             }
+
             if ( intensity < 0.0f )  intensity = 0.0f;
             if ( intensity > 1.0f )  intensity = 1.0f;
 
-            if ( (m_phase == PHASE_WELCOME2 && m_phaseTime > welcomeLength/2.0f) ||
-                    m_phase == PHASE_WELCOME3 )
+            //white first, others -> black fadding
+            if ( (m_phase == PHASE_WELCOME1) && ( m_phaseTime < welcomeLength/2.0f))
             {
-                intensity = 1.0f-intensity;
-                mode = Gfx::ENG_RSTATE_TCOLOR_WHITE;
+              intensity = 1.0f - intensity;
+              mode = Gfx::ENG_RSTATE_TCOLOR_BLACK;
             }
 
             m_engine->SetOverColor(Gfx::Color(intensity, intensity, intensity, intensity), mode); // TODO: color ok?
@@ -2480,10 +2487,10 @@ bool CMainDialog::EventProcess(const Event &event)
     }
 
     if ( m_phase == PHASE_SETUPd ||
-            m_phase == PHASE_SETUPg ||
-            m_phase == PHASE_SETUPp ||
-            m_phase == PHASE_SETUPc ||
-            m_phase == PHASE_SETUPs )
+        m_phase == PHASE_SETUPg ||
+        m_phase == PHASE_SETUPp ||
+        m_phase == PHASE_SETUPc ||
+        m_phase == PHASE_SETUPs )
     {
         pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
         if ( pw == 0 )  return false;
@@ -4256,14 +4263,18 @@ void CMainDialog::DefPerso()
 
 bool CMainDialog::IsIOReadScene()
 {
-    FILE*   file;
-    std::string filename;
-
-    filename = m_savegameDir + "/" + m_main->GetGamerName() + "/" + "save" + m_sceneName[0] + "000/data.sav";
-    file = fopen(filename.c_str(), "r");
-    if ( file == NULL )  return false;
-    fclose(file);
-    return true;
+    fs::directory_iterator end_iter;
+    
+    fs::path saveDir(m_savegameDir + "/" + m_main->GetGamerName());
+    if (fs::exists(saveDir) && fs::is_directory(saveDir)) {
+        for( fs::directory_iterator dir_iter(saveDir) ; dir_iter != end_iter ; ++dir_iter) {
+            if ( fs::is_directory(dir_iter->status()) && fs::exists(dir_iter->path() / "data.sav") ) {
+                return true;
+            }
+        }
+    }
+    
+    return false;
 }
 
 // Builds the file name by default.
@@ -4283,9 +4294,9 @@ void CMainDialog::IOReadName()
     int         i;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
-    if ( pw == 0 )  return;
+    if ( pw == nullptr )  return;
     pe = static_cast<CEdit*>(pw->SearchControl(EVENT_INTERFACE_IONAME));
-    if ( pe == 0 )  return;
+    if ( pe == nullptr )  return;
 
     sprintf(resume, "%s %d", m_sceneName, m_chap[m_index]+1);
     BuildSceneName(filename, m_sceneName, (m_chap[m_index]+1)*100);
@@ -4337,7 +4348,8 @@ void CMainDialog::IOReadList()
     CList*      pl;
     char        line[500];
     char        name[100];
-    int         i, j;
+    int         i;
+    fs::directory_iterator end_iter;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
     if ( pw == 0 )  return;
@@ -4345,50 +4357,46 @@ void CMainDialog::IOReadList()
     if ( pl == 0 )  return;
 
     pl->Flush();
+    
+    fs::path saveDir(m_savegameDir + "/" + m_main->GetGamerName());
+    m_saveList.clear();
+    
+    if (fs::exists(saveDir) && fs::is_directory(saveDir)) {
+        for( fs::directory_iterator dir_iter(saveDir) ; dir_iter != end_iter ; ++dir_iter) {
+            if ( fs::is_directory(dir_iter->status()) && fs::exists(dir_iter->path() / "data.sav") ) {
+                
+                file = fopen((dir_iter->path() / "data.sav").make_preferred().string().c_str(), "r");
+                if ( file == NULL )  continue;
 
-    for ( j=0 ; j<999 ; j++ )
-    {
-        std::string filename;
-        std::ostringstream rankStream;
-        rankStream << std::setfill('0') << std::setw(3) << j;
-        filename = m_savegameDir + "/" + m_main->GetGamerName() + "/save" + m_sceneName[0] + rankStream.str()+ "/data.sav";
+                while ( fgets(line, 500, file) != NULL ) {
+                    for ( i=0 ; i<500 ; i++ ) {
+                        if ( line[i] == '\t' )  line[i] = ' ';  // replaces tab by space
+                        if ( line[i] == '/' && line[i+1] == '/' ) {
+                            line[i] = 0;
+                            break;
+                        }
+                    }
 
-        // sprintf(filename, "%s\\%s\\save%c%.3d\\data.sav", m_savegameDir, m_main->GetGamerName(), m_sceneName[0], j);
-        file = fopen(fs::path(filename).make_preferred().string().c_str(), "r");
-        if ( file == NULL )  break;
-
-        while ( fgets(line, 500, file) != NULL )
-        {
-            for ( i=0 ; i<500 ; i++ )
-            {
-                if ( line[i] == '\t' )  line[i] = ' ';  // replaces tab by space
-                if ( line[i] == '/' && line[i+1] == '/' )
-                {
-                    line[i] = 0;
-                    break;
+                    if ( Cmd(line, "Title") ) {
+                        OpString(line, "text", name);
+                        break;
+                    }
                 }
-            }
+                fclose(file);
 
-            if ( Cmd(line, "Title") )
-            {
-                OpString(line, "text", name);
-                break;
+                pl->SetName(m_saveList.size(), name);
+                m_saveList.push_back(dir_iter->path());
             }
         }
-        fclose(file);
-
-        pl->SetName(j, name);
     }
-
-    if ( m_phase == PHASE_WRITE  ||
-         m_phase == PHASE_WRITEs )
-    {
+    
+    // zly indeks
+    if ( m_phase == PHASE_WRITE  || m_phase == PHASE_WRITEs ) {
         GetResource(RES_TEXT, RT_IO_NEW, name);
-        pl->SetName(j, name);
-        j ++;
+        pl->SetName(m_saveList.size(), name);
     }
 
-    pl->SetSelect(j-1);
+    pl->SetSelect(m_saveList.size());
     pl->ShowSelect(false);  // shows the selected columns
 }
 
@@ -4403,35 +4411,31 @@ void CMainDialog::IOUpdateList()
     int         sel, max;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
-    if ( pw == 0 )  return;
+    if ( pw == nullptr )  return;
     pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_IOLIST));
-    if ( pl == 0 )  return;
+    if ( pl == nullptr )  return;
     pi = static_cast<CImage*>(pw->SearchControl(EVENT_INTERFACE_IOIMAGE));
-    if ( pi == 0 )  return;
+    if ( pi == nullptr )  return;
 
     sel = pl->GetSelect();
     max = pl->GetTotal();
 
-    std::string filename;
-    std::ostringstream rankStream;
-    rankStream << std::setfill('0') << std::setw(3) << sel;
-    filename = m_savegameDir + "/" + m_main->GetGamerName() + "/save" + m_sceneName[0] + rankStream.str()+ "/screen.png";
-
-    if ( m_phase == PHASE_WRITE  ||
-         m_phase == PHASE_WRITEs )
+    if (m_saveList.size() <= static_cast<unsigned int>(sel)) {
+        return;
+    }
+    
+    std::string filename = (m_saveList.at(sel) / "screen.png").make_preferred().string();
+    if ( m_phase == PHASE_WRITE  || m_phase == PHASE_WRITEs )
     {
-        if ( sel < max-1 )
-        {
+        if ( sel < max-1 ) {
             pi->SetFilenameImage(filename.c_str());
         }
-        else
-        {
+        else {
             pi->SetFilenameImage("");
         }
 
         pb = static_cast<CButton*>(pw->SearchControl(EVENT_INTERFACE_IODELETE));
-        if ( pb != 0 )
-        {
+        if ( pb != nullptr ) {
             pb->SetState(STATE_ENABLE, sel < max-1);
         }
     }
@@ -4455,34 +4459,40 @@ void CMainDialog::IODeleteScene()
     if ( pl == 0 )  return;
 
     sel = pl->GetSelect();
-    if ( sel == -1 )
+    if ( sel == -1 || m_saveList.size() <= static_cast<unsigned int>(sel))
     {
         m_sound->Play(SOUND_TZOING);
         return;
     }
 
-
-    std::ostringstream rankStream;
-    std::string fileName;
-    rankStream << std::setfill('0') << std::setw(3) << sel;
-    fileName = m_savegameDir + "/" + m_main->GetGamerName() + "/save" + m_sceneName[0] + rankStream.str();
     try
     {
-        if (fs::exists(fileName) && fs::is_directory(fileName))
-        {
-            fs::remove_all(fileName);
+        if (fs::exists(m_saveList.at(sel)) && fs::is_directory(m_saveList.at(sel))) {
+            fs::remove_all(m_saveList.at(sel));
         }
     }
-    catch (std::exception & e)
-    {
-        GetLogger()->Error("Error on removing directory %s : %s\n", e.what());
+    catch (std::exception & e) {
+        GetLogger()->Error("Error removing save %s : %s\n", pl->GetName(sel), e.what());
     }
 
     IOReadList();
 }
 
-// Writes the scene.
+// clears filename only to leave letter or numbers
+std::string clearName(char *name)
+{
+    std::string ret;
+    int len = strlen(name);
+    for (int i = 0; i < len; i++) {
+        if (isalnum(name[i])) {
+            ret += name[i];
+        }
+    }
+    return ret;
+}
 
+
+// Writes the scene.
 bool CMainDialog::IOWriteScene()
 {
     CWindow*    pw;
@@ -4492,36 +4502,35 @@ bool CMainDialog::IOWriteScene()
     int         sel;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
-    if ( pw == 0 )  return false;
+    if ( pw == nullptr )  return false;
     pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_IOLIST));
-    if ( pl == 0 )  return false;
+    if ( pl == nullptr )  return false;
     pe = static_cast<CEdit*>(pw->SearchControl(EVENT_INTERFACE_IONAME));
-    if ( pe == 0 )  return false;
+    if ( pe == nullptr )  return false;
 
     sel = pl->GetSelect();
-    if ( sel == -1 )  return false;
-
-    std::string directoryName;
-    std::string fileName;
-    std::string fileCBot;
-    std::ostringstream selectStream;
-
-    //TODO: Change this to point user dir according to operating system
-    GetLogger()->Debug("Creating save directory\n");
-    selectStream << std::setfill('0') << std::setw(3) << sel;
-    directoryName =  m_savegameDir + "/" + m_main->GetGamerName() + "/" + "save" + m_sceneName[0] + selectStream.str();
-    if (!fs::exists(directoryName))
-    {
-        fs::create_directories(directoryName);
+    if ( sel == -1 ) {
+        return false;
+    }
+    
+    fs::path dir;
+    pe->GetText(info, 100);
+    if (static_cast<unsigned int>(sel) >= m_saveList.size()) {
+        dir = fs::path(m_savegameDir) / m_main->GetGamerName() / ("save" + clearName(info));
+    } else {
+        dir = m_saveList.at(sel);
+    }   
+    
+    if (!fs::exists(dir)) {
+        fs::create_directories(dir);
     }
 
-    fileName = directoryName + "/data.sav";
-    fileCBot = directoryName + "/cbot.run";
-    pe->GetText(info, 100);
+    std::string fileName = (dir / "data.sav").make_preferred().string();
+    std::string fileCBot = (dir / "cbot.run").make_preferred().string();
     m_main->IOWriteScene(fileName.c_str(), fileCBot.c_str(), info);
 
     m_shotDelay = 3;
-    m_shotName = directoryName + "/screen.png";
+    m_shotName = (dir / "screen.png").make_preferred().string();
 
     return true;
 }
@@ -4538,58 +4547,46 @@ bool CMainDialog::IOReadScene()
     int         sel, i;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
-    if ( pw == 0 )  return false;
+    if ( pw == nullptr )  return false;
     pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_IOLIST));
-    if ( pl == 0 )  return false;
+    if ( pl == nullptr )  return false;
 
     sel = pl->GetSelect();
-    if ( sel == -1 )  return false;
+    if ( sel == -1 || m_saveList.size() <= static_cast<unsigned int>(sel) ) {
+        return false;
+    }
 
-    //TODO: Change this to point user dir according to operating system
-    std::string fileName;
-    std::string fileCbot;
-    std::string directoryName;
-    std::ostringstream selectStream;
-    selectStream << std::setfill('0') << std::setw(3) << sel;
-    directoryName = m_savegameDir + "/" + m_main->GetGamerName() + "/" + "save" + m_sceneName[0] + selectStream.str();
-
-    fileName = directoryName + "/data.sav";
-    fileCbot = directoryName + "/cbot.run";
+    std::string fileName = (m_saveList.at(sel) / "data.sav").make_preferred().string();
+    std::string fileCbot =  (m_saveList.at(sel) / "cbot.run").make_preferred().string();
 
     file = fopen(fileName.c_str(), "r");
-    if ( file == NULL )  return false;
+    if ( file == NULL ) {
+        return false;
+    }
 
-    while ( fgets(line, 500, file) != NULL )
-    {
-        for ( i=0 ; i<500 ; i++ )
-        {
+    while ( fgets(line, 500, file) != NULL )  {
+        for ( i=0 ; i<500 ; i++ ) {
             if ( line[i] == '\t' )  line[i] = ' ';  // replaces tab by space
-            if ( line[i] == '/' && line[i+1] == '/' )
-            {
+            if ( line[i] == '/' && line[i+1] == '/' ) {
                 line[i] = 0;
                 break;
             }
         }
 
-        if ( Cmd(line, "Mission") )
-        {
+        if ( Cmd(line, "Mission") ) {
             OpString(line, "base", m_sceneName);
             m_sceneRank = OpInt(line, "rank", 0);
 
-            if ( strcmp(m_sceneName, "user") == 0 )
-            {
+            if ( strcmp(m_sceneName, "user") == 0 ) {
                 m_sceneRank = m_sceneRank%100;
                 OpString(line, "dir", dir);
-                for ( i=0 ; i<m_userTotal ; i++ )
-                {
-                    if ( strcmp(m_userList[i].c_str(), dir) == 0 )
-                    {
+                for ( i=0 ; i<m_userTotal ; i++ ) {
+                    if ( strcmp(m_userList[i].c_str(), dir) == 0 ) {
                         m_sceneRank += (i+1)*100;
                         break;
                     }
                 }
-                if ( m_sceneRank/100 == 0 )
-                {
+                if ( m_sceneRank/100 == 0 ) {
                     fclose(file);
                     return false;
                 }
@@ -4598,8 +4595,8 @@ bool CMainDialog::IOReadScene()
     }
     fclose(file);
 
-    m_chap[m_index] = (m_sceneRank/100)-1;
-    m_sel[m_index]  = (m_sceneRank%100)-1;
+    m_chap[m_index] = (m_sceneRank / 100)-1;
+    m_sel[m_index]  = (m_sceneRank % 100)-1;
 
     m_sceneRead = fileName;
     m_stackRead = fileCbot;
@@ -5729,6 +5726,11 @@ void CMainDialog::SetupRecall()
     {
         m_sound->SetMusicVolume(iValue);
     }
+    
+    if ( GetProfile().GetLocalProfileInt("Setup", "Sound3D", iValue) )
+    {
+        m_sound->SetSound3D(iValue == 1);
+    }
 
     if ( GetProfile().GetLocalProfileInt("Setup", "EditIndentMode", iValue) )
     {
@@ -6542,6 +6544,8 @@ void CMainDialog::WriteGamerPerso(char *gamer)
     file = fopen(filename, "w");
     if ( file == NULL )  return;
 
+    m_main->SetNumericLocale();
+    
     sprintf(line, "Head face=%d glasses=%d hair=%.2f;%.2f;%.2f;%.2f\n",
                 m_perso.face, m_perso.glasses,
                 m_perso.colorHair.r, m_perso.colorHair.g, m_perso.colorHair.b, m_perso.colorHair.a);
@@ -6553,6 +6557,8 @@ void CMainDialog::WriteGamerPerso(char *gamer)
     fputs(line, file);
 
     fclose(file);
+    
+    m_main->RestoreNumericLocale();
 }
 
 // Reads the personalized player.
@@ -6570,6 +6576,8 @@ void CMainDialog::ReadGamerPerso(char *gamer)
     sprintf(filename, "%s/%s/face.gam", m_savegameDir.c_str(), gamer);
     file = fopen(filename, "r");
     if ( file == NULL )  return;
+    
+    m_main->SetNumericLocale();
 
     while ( fgets(line, 100, file) != NULL )
     {
@@ -6602,6 +6610,8 @@ void CMainDialog::ReadGamerPerso(char *gamer)
     }
 
     fclose(file);
+    
+    m_main->RestoreNumericLocale();
 }
 
 // Specifies the face of the player.

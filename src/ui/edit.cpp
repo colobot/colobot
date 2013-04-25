@@ -20,6 +20,8 @@
 
 #include "app/app.h"
 
+#include "clipboard/clipboard.h"
+
 #include <string.h>
 
 namespace Ui {
@@ -298,55 +300,53 @@ bool CEdit::EventProcess(const Event &event)
         bShift   = ( (event.kmodState & KEY_MOD(SHIFT) ) != 0 );
         bControl = ( (event.kmodState & KEY_MOD(CTRL) ) != 0);
 
-        if ( (event.key.unicode == 'X'       && !bShift &&  bControl) ||
-             ((event.kmodState & KEY_MOD(CTRL)) != 0 &&  bShift && !bControl) )
+        if ( (event.key.key == KEY(x)      && !bShift &&  bControl) ||
+             (event.key.key == KEY(DELETE) &&  bShift && !bControl) )
         {
             Cut();
             return true;
         }
-        if ( (event.key.unicode == 'C'       && !bShift &&  bControl) ||
-             ((event.kmodState & KEY_MOD(CTRL)) != 0 && !bShift &&  bControl) )
+        if ( (event.key.key == KEY(c)      && !bShift &&  bControl) ||
+             (event.key.key == KEY(INSERT) && !bShift &&  bControl) )
         {
             Copy();
             return true;
         }
-        if ( (event.key.unicode == 'V'       && !bShift &&  bControl) ||
-             ((event.kmodState & KEY_MOD(CTRL)) != 0 &&  bShift && !bControl) )
+        if ( (event.key.key == KEY(v)      && !bShift &&  bControl) ||
+             (event.key.key == KEY(INSERT) &&  bShift && !bControl) )
         {
             Paste();
             return true;
         }
 
-        if ( event.key.unicode == 'A' && !bShift && bControl )
+        if ( event.key.key == KEY(a) && !bShift && bControl )
         {
             SetCursor(999999, 0);
             return true;
         }
 
-        if ( event.key.unicode == 'O' && !bShift && bControl )
+        if ( event.key.key == KEY(o) && !bShift && bControl )
         {
             Event   newEvent(EVENT_STUDIO_OPEN);
-//            m_event->NewEvent(newEvent, EVENT_STUDIO_OPEN);
             m_event->AddEvent(newEvent);
         }
-        if ( event.key.unicode == 'S' && !bShift && bControl )
+        if ( event.key.key == KEY(s) && !bShift && bControl )
         {
             Event   newEvent( EVENT_STUDIO_SAVE );
-//            m_event->MakeEvent(newEvent, EVENT_STUDIO_SAVE);
             m_event->AddEvent(newEvent);
         }
 
-        if ( event.key.unicode == 'Z' && !bShift && bControl )
+        if ( event.key.key == KEY(z) && !bShift && bControl )
         {
             Undo();
             return true;
         }
 
-        if ( event.key.unicode == 'U' && !bShift && bControl )
+        if ( event.key.key == KEY(u) && !bShift && bControl )
         {
             if ( MinMaj(false) )  return true;
         }
-        if ( event.key.unicode == 'U' && bShift && bControl )
+        if ( event.key.key == KEY(u) && bShift && bControl )
         {
             if ( MinMaj(true) )  return true;
         }
@@ -2501,200 +2501,100 @@ void CEdit::ColumnFix()
 
 // Cut the selected characters or entire line.
 
-bool CEdit::Cut() // TODO MS Windows allocations
+bool CEdit::Cut()
 {
-  /*  HGLOBAL hg;
-    char*   text;
-    char    c;
-    int     c1, c2, start, len, i, j;
-
-    if ( !m_bEdit )  return false;
-
-    c1 = m_cursor1;
-    c2 = m_cursor2;
-    if ( c1 > c2 )  Math::Swap(c1, c2);  // always c1 <= c2
-
-    if ( c1 == c2 )
-    {
-        while ( c1 > 0 )
-        {
-            if ( m_text[c1-1] == '\n' )  break;
-            c1 --;
-        }
-        while ( c2 < m_len )
-        {
-            c2 ++;
-            if ( m_text[c2-1] == '\n' )  break;
-        }
-    }
-
-    if ( c1 == c2 )  return false;
-
-    start = c1;
-    len   = c2-c1;
-
-    if ( !(hg = GlobalAlloc(GMEM_DDESHARE, len*2+1)) )
-    {
-        return false;
-    }
-    if ( !(text = (char*)GlobalLock(hg)) )
-    {
-        GlobalFree(hg);
-        return false;
-    }
-
-    j = 0;
-    for ( i=start ; i<start+len ; i++ )
-    {
-        c = m_text[i];
-        if ( c == '\n' )  text[j++] = '\r';
-        text[j++] = c;
-    }
-    text[j] = 0;
-    GlobalUnlock(hg);
-
-    if ( !OpenClipboard(NULL) )
-    {
-        GlobalFree(hg);
-        return false;
-    }
-    if ( !EmptyClipboard() )
-    {
-        GlobalFree(hg);
-        return false;
-    }
-    if ( !SetClipboardData(CF_TEXT, hg) )
-    {
-        GlobalFree(hg);
-        return false;
-    }
-    CloseClipboard();
-
     UndoMemorize(OPERUNDO_SPEC);
-    m_cursor1 = c1;
-    m_cursor2 = c2;
+    Copy(true);
+
     DeleteOne(0);  // deletes the selected characters
     Justif();
     ColumnFix();
-    SendModifEvent();*/
+    SendModifEvent();
     return true;
 }
 
 // Copy the selected characters or entire line.
 
-bool CEdit::Copy() // TODO
+bool CEdit::Copy(bool memorize_cursor)
 {
- /*   HGLOBAL hg;
-    char*   text;
-    char    c;
-    int     c1, c2, start, len, i, j;
+    int c1, c2, start, len;
+    char *text;
 
     c1 = m_cursor1;
     c2 = m_cursor2;
-    if ( c1 > c2 )  Math::Swap(c1, c2);  // always c1 <= c2
+    if ( c1 > c2 ) {
+        Math::Swap(c1, c2);  // always c1 <= c2
+    }
 
-    if ( c1 == c2 )
-    {
-        while ( c1 > 0 )
-        {
-            if ( m_text[c1-1] == '\n' )  break;
-            c1 --;
+    if ( c1 == c2 ) {
+        while ( c1 > 0 ) {
+            if ( m_text[c1 - 1] == '\n' ) {
+                break;
+            }
+            c1--;
         }
-        while ( c2 < m_len )
-        {
-            c2 ++;
-            if ( m_text[c2-1] == '\n' )  break;
+        while ( c2 < m_len ) {
+            c2++;
+            if ( m_text[c2 - 1] == '\n' ) {
+                break;
+            }
         }
     }
 
-    if ( c1 == c2 )  return false;
+    if ( c1 == c2 ) {
+        return false;
+    }
 
     start = c1;
-    len   = c2-c1;
+    len   = c2 - c1;
 
-    if ( !(hg = GlobalAlloc(GMEM_DDESHARE, len*2+1)) )
-    {
-        return false;
-    }
-    if ( !(text = (char*)GlobalLock(hg)) )
-    {
-        GlobalFree(hg);
-        return false;
+    text = new char[len + 1];
+    strncpy(text, m_text + start, len);
+    text[len] = 0;
+    widgetSetClipboardText(text);
+    delete []text;
+    
+    if (memorize_cursor) {
+        m_cursor1 = c1;
+        m_cursor2 = c2;
     }
 
-    j = 0;
-    for ( i=start ; i<start+len ; i++ )
-    {
-        c = m_text[i];
-        if ( c == '\n' )  text[j++] = '\r';
-        text[j++] = c;
-    }
-    text[j] = 0;
-    GlobalUnlock(hg);
-
-    if ( !OpenClipboard(NULL) )
-    {
-        GlobalFree(hg);
-        return false;
-    }
-    if ( !EmptyClipboard() )
-    {
-        GlobalFree(hg);
-        return false;
-    }
-    if ( !SetClipboardData(CF_TEXT, hg) )
-    {
-        GlobalFree(hg);
-        return false;
-    }
-    CloseClipboard();
-*/
     return true;
 }
 
 // Paste the contents of the notebook.
 
-bool CEdit::Paste() // TODO
+bool CEdit::Paste()
 {
-    /*HANDLE  h;
     char    c;
-    char*   p;
+    char*   text;
 
-    if ( !m_bEdit )  return false;
-
-    if ( !OpenClipboard(NULL) )
-    {
+    if ( !m_bEdit ) {
         return false;
     }
 
-    if ( !(h = GetClipboardData(CF_TEXT)) )
-    {
-        CloseClipboard();
-        return false;
-    }
-
-    if ( !(p = (char*)GlobalLock(h)) )
-    {
-        CloseClipboard();
+    text = widgetGetClipboardText();
+    
+    if ( text == nullptr ) {
         return false;
     }
 
     UndoMemorize(OPERUNDO_SPEC);
-
-    while ( *p != 0 )
-    {
-        c = *p++;
-        if ( c == '\r' )  continue;
-        if ( c == '\t' && m_bAutoIndent )  continue;
+    for ( unsigned int i = 0; i < strlen(text); i++ ) {
+        c = text[i];
+        if ( c == '\r' ) {
+            continue;
+        }
+        if ( c == '\t' && m_bAutoIndent ) {
+            continue;
+        }
         InsertOne(c);
     }
-
-    GlobalUnlock(h);
-    CloseClipboard();
-
+    
+    free(text);
     Justif();
     ColumnFix();
-    SendModifEvent();*/
+    SendModifEvent();
     return true;
 }
 
@@ -2703,7 +2603,9 @@ bool CEdit::Paste() // TODO
 
 bool CEdit::Undo()
 {
-    if ( !m_bEdit )  return false;
+    if ( !m_bEdit ) {
+        return false;
+    }
 
     return UndoRecall();
 }
@@ -2715,7 +2617,9 @@ void CEdit::Insert(char character)
 {
     int     i, level, tab;
 
-    if ( !m_bEdit )  return;
+    if ( !m_bEdit ) {
+        return;
+    }
 
     if ( !m_bMulti )  // single-line?
     {

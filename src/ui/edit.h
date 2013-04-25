@@ -184,7 +184,7 @@ public:
     bool        GetMultiFont();
 
     bool        Cut();
-    bool        Copy();
+    bool        Copy(bool memorize_cursor = false);
     bool        Paste();
     bool        Undo();
 

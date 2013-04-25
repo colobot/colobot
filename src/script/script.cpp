@@ -33,6 +33,7 @@
 #include "object/object.h"
 #include "object/robotmain.h"
 #include "object/task/taskmanager.h"
+#include "object/objman.h"
 
 #include "physics/physics.h"
 
@@ -329,15 +330,12 @@ CBotTypResult CScript::cGetObject(CBotVar* &var, void* user)
 
 bool CScript::rGetObject(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-    CScript*    script = (static_cast<CObject*>(user))->GetRunScript();
     CObject*    pObj;
     int         rank;
 
     rank = var->GetValInt();
 
-    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
-
-    pObj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, rank));
+    pObj = static_cast<CObject*>(CObjectManager::GetInstancePointer()->SearchInstance(rank));
     if ( pObj == 0 )
     {
         result->SetPointer(0);
@@ -348,6 +346,66 @@ bool CScript::rGetObject(CBotVar* var, CBotVar* result, int& exception, void* us
     }
     return true;
 }
+
+// Compilation of the instruction "destroy(rank[, exploType[, force]])".
+
+CBotTypResult CScript::cDestroy(CBotVar* &var, void* user)
+{
+    if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
+
+    if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
+    var = var->GetNext();
+
+    if ( var != 0 ) {
+        if ( var->GetType() != CBotTypInt ) return CBotTypResult(CBotErrBadNum);
+        var = var->GetNext();
+
+        if ( var != 0 ) {
+            if ( var->GetType() > CBotTypDouble ) return CBotTypResult(CBotErrBadNum);
+            var = var->GetNext();
+        }
+    }
+
+    if ( var != 0 )  return CBotTypResult(CBotErrOverParam);
+
+    return CBotTypResult(CBotTypFloat);
+}
+
+// Instruction "destroy(rank[, exploType[, force]])".
+
+bool CScript::rDestroy(CBotVar* var, CBotVar* result, int& exception, void* user)
+{
+    CObject*    pObj;
+    int         rank;
+    int         exploType = 0;
+    float       force = 1.0f;
+
+    rank = var->GetValInt();
+    var->GetNext();
+    if ( var != 0 ) {
+        exploType = var->GetValInt();
+        var->GetNext();
+        if ( var != 0 ) {
+            force = var->GetValFloat();
+        }
+    }
+
+    pObj = static_cast<CObject*>(CObjectManager::GetInstancePointer()->SearchInstance(rank));
+    if ( pObj == 0 )
+    {
+        return true;
+    }
+    else
+    {
+        if ( exploType ) {
+            pObj->ExploObject(static_cast<ExploType>(exploType), force);
+        } else {
+            pObj->DeleteObject(false);
+        }
+    }
+    return true;
+}
+
 
 
 // Compilation of the instruction "search(type, pos)".
@@ -380,7 +438,6 @@ CBotTypResult CScript::cSearch(CBotVar* &var, void* user)
 
 bool CScript::rSearch(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-    CScript*    script = (static_cast<CObject *>(user))->GetRunScript();
     CObject     *pObj, *pBest;
     CBotVar*    array;
     Math::Vector    pos, oPos;
@@ -523,7 +580,6 @@ CBotTypResult CScript::cRadar(CBotVar* &var, void* user)
 
 bool CScript::rRadar(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-    CScript*    script = (static_cast<CObject *>(user))->GetRunScript();
     CObject*    pThis = static_cast<CObject *>(user);
     CObject     *pObj, *pBest;
     CPhysics*   physics;
@@ -1559,147 +1615,6 @@ bool CScript::rGoto(CBotVar* var, CBotVar* result, int& exception, void* user)
             }
         }
 
-        err = script->m_primaryTask->StartTaskGoto(pos, altitude, goal, crash);
-        if ( err != ERR_OK )
-        {
-            delete script->m_primaryTask;
-            script->m_primaryTask = 0;
-            result->SetValInt(err);  // shows the error
-            if ( script->m_errMode == ERM_STOP )
-            {
-                exception = err;
-                return false;
-            }
-            return true;
-        }
-    }
-    return Process(script, result, exception);
-}
-
-// Instruction "find(type)".
-
-bool CScript::rFind(CBotVar* var, CBotVar* result, int& exception, void* user)
-{
-    CScript*        script = (static_cast<CObject *>(user))->GetRunScript();
-    Math::Vector        pos;
-    TaskGotoGoal    goal;
-    TaskGotoCrash   crash;
-    float           altitude;
-    Error           err;
-    CObject*        pThis = static_cast<CObject *>(user);
-    CObject         *pObj, *pBest;
-    CBotVar*        array;
-    Math::Vector        iPos, oPos;
-    float           best, minDist, maxDist, iAngle, focus, d, a;
-    int             type, oType, i;
-    bool            bArray;
-
-    exception = 0;
-
-    if ( script->m_primaryTask == 0 )  // no task in progress?
-    {
-        type    = OBJECT_NULL;
-        focus   = Math::PI*2.0f;
-        minDist = 0.0f*g_unit;
-        maxDist = 1000.0f*g_unit;
-
-        if ( var->GetType() == CBotTypArrayPointer )
-        {
-            array = var->GetItemList();
-            bArray = true;
-        }
-        else
-        {
-            type = var->GetValInt();
-            bArray = false;
-        }
-
-        CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
-
-        best = 100000.0f;
-        pBest = 0;
-        for ( i=0 ; i<1000000 ; i++ )
-        {
-            pObj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
-            if ( pObj == 0 )  break;
-            if ( pObj == pThis )  continue;
-
-            if ( pObj->GetTruck() != 0 )  continue;  // object transported?
-            if ( !pObj->GetActif() )  continue;
-            if ( pObj->GetProxyActivate() )  continue;
-
-            oType = pObj->GetType();
-            if ( oType == OBJECT_TOTO )  continue;
-
-            if ( oType == OBJECT_RUINmobilew2 ||
-                 oType == OBJECT_RUINmobilet1 ||
-                 oType == OBJECT_RUINmobilet2 ||
-                 oType == OBJECT_RUINmobiler1 ||
-                 oType == OBJECT_RUINmobiler2 )
-            {
-                oType = OBJECT_RUINmobilew1;  // any ruin
-            }
-
-            if ( oType == OBJECT_SCRAP2 ||
-                 oType == OBJECT_SCRAP3 ||
-                 oType == OBJECT_SCRAP4 ||
-                 oType == OBJECT_SCRAP5 )  // wastes?
-            {
-                oType = OBJECT_SCRAP1;  // any waste
-            }
-
-            if ( oType == OBJECT_BARRIER2 ||
-                 oType == OBJECT_BARRIER3 )  // barriers?
-            {
-                oType = OBJECT_BARRIER1;  // any barrier
-            }
-
-            if ( bArray )
-            {
-                if ( !FindList(array, oType) )  continue;
-            }
-            else
-            {
-                if ( type != oType && type != OBJECT_NULL )  continue;
-            }
-
-            oPos = pObj->GetPosition(0);
-            d = Math::DistanceProjected(iPos, oPos);
-            if ( d < minDist || d > maxDist )  continue;  // too close or too far?
-
-            if ( focus >= Math::PI*2.0f )
-            {
-                if ( d < best )
-                {
-                    best = d;
-                    pBest = pObj;
-                }
-                continue;
-            }
-
-            a = Math::RotateAngle(oPos.x-iPos.x, iPos.z-oPos.z);  // CW !
-            if ( Math::TestAngle(a, iAngle-focus/2.0f, iAngle+focus/2.0f) )
-            {
-                if ( d < best )
-                {
-                    best = d;
-                    pBest = pObj;
-                }
-            }
-        }
-
-        if ( pBest == 0 )
-        {
-            exception = ERR_FIND_IMPOSSIBLE;
-            return false;
-        }
-
-        pos = pBest->GetPosition(0);
-        goal  = TGG_DEFAULT;
-        crash = TGC_DEFAULT;
-        altitude = 0.0f*g_unit;
-
-        script->m_primaryTask = new CTaskManager(script->m_object);
         err = script->m_primaryTask->StartTaskGoto(pos, altitude, goal, crash);
         if ( err != ERR_OK )
         {
@@ -2898,6 +2813,7 @@ void CScript::InitFonctions()
     CBotProgram::AddFunction("abs",       rAbs,       CScript::cOneFloat);
 
     CBotProgram::AddFunction("retobject", rGetObject, CScript::cGetObject);
+    CBotProgram::AddFunction("destroy",   rDestroy,   CScript::cDestroy);
     CBotProgram::AddFunction("search",    rSearch,    CScript::cSearch);
     CBotProgram::AddFunction("radar",     rRadar,     CScript::cRadar);
     CBotProgram::AddFunction("detect",    rDetect,    CScript::cDetect);
@@ -2911,7 +2827,6 @@ void CScript::InitFonctions()
     CBotProgram::AddFunction("move",      rMove,      CScript::cOneFloat);
     CBotProgram::AddFunction("turn",      rTurn,      CScript::cOneFloat);
     CBotProgram::AddFunction("goto",      rGoto,      CScript::cGoto);
-    CBotProgram::AddFunction("find",      rFind,      CScript::cOneFloat);
     CBotProgram::AddFunction("grab",      rGrab,      CScript::cGrabDrop);
     CBotProgram::AddFunction("drop",      rDrop,      CScript::cGrabDrop);
     CBotProgram::AddFunction("sniff",     rSniff,     CScript::cNull);

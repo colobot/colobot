@@ -177,12 +177,9 @@ class CSoundInterface
 
     /** Function called to add all music files to list */
     inline void AddMusicFiles(std::string path) {
-        for ( int i = 1; i <= 12; i++ ) {
-            std::stringstream filename;
-            filename << path << "/music" << std::setfill('0') << std::setw(3) << i << ".ogg";
-            if (boost::filesystem::exists(filename.str()))
-                mMusic[i] = filename.str();
-        }
+        m_soundPath = path;
+        CacheMusic("music010.ogg");
+        CacheMusic("music011.ogg");
     };
     
     /** Function called to cache sound effect file.
@@ -192,6 +189,13 @@ class CSoundInterface
      * \return return true on success
      */
     inline virtual bool Cache(Sound bSound, std::string bFile) { return true; };
+
+    /** Function called to cache music file.
+     *  This function is called by CRobotMain for each file used in the mission.
+     * \param bFile - file to load
+     * \return return true on success
+     */
+    inline virtual bool CacheMusic(std::string bFile) { return true; };
 
     /** Return if plugin is enabled
      *  \return return true if plugin is enabled
@@ -317,6 +321,13 @@ class CSoundInterface
      */
     inline virtual bool PlayMusic(int rank, bool bRepeat) {return true;};
 
+    /** Start playing music
+     * \param filename - name of file to play
+     * \param bRepeat - repeat playing
+     * \return return true on success
+     */
+    inline virtual bool PlayMusic(std::string filename, bool bRepeat) {return true;};
+
     /** Restart music
      * @return return true on success
      */
@@ -338,6 +349,6 @@ class CSoundInterface
     inline virtual bool IsPlayingMusic() {return true;};
 
     protected:
-        std::map<int, std::string> mMusic;
+        std::string m_soundPath;
 };
 

@@ -19,3 +19,7 @@ Makefile
 *.flv
 *.mp4
 
+#Ignore user files
+*.user
+*.cbp
+/data

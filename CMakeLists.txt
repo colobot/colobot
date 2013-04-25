@@ -182,6 +182,13 @@ endif()
 
 
 ##
+# Clipboard support
+##
+set(CLIPBOARD_DIR ${colobot_SOURCE_DIR}/lib/clipboard/include)
+add_subdirectory(${colobot_SOURCE_DIR}/lib/clipboard bin/clipboard)
+
+
+##
 # Doxygen docs
 ##
 

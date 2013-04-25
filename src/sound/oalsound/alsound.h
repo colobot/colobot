@@ -40,6 +40,7 @@ class ALSound : public CSoundInterface
 
         bool Create(bool b3D);
         bool Cache(Sound, std::string);
+        bool CacheMusic(std::string);
 
         bool GetEnable();
 
@@ -66,6 +67,7 @@ class ALSound : public CSoundInterface
         bool MuteAll(bool bMute);
 
         bool PlayMusic(int rank, bool bRepeat);
+        bool PlayMusic(std::string filename, bool bRepeat);
         bool RestartMusic();
         void SuspendMusic();
         void StopMusic();
@@ -81,16 +83,18 @@ class ALSound : public CSoundInterface
         void CleanUp();
         int GetPriority(Sound);
         bool SearchFreeBuffer(Sound sound, int &channel, bool &bAlreadyLoaded);
+        void ComputeVolumePan2D(int channel, Math::Vector &pos);
 
         bool mEnabled;
         bool m3D;
-        bool mMute;
         float mAudioVolume;
         float mMusicVolume;
         ALCdevice* mDevice;
         ALCcontext* mContext;
         std::map<Sound, Buffer*> mSounds;
+        std::map<std::string, Buffer*> mMusic;
         std::map<int, Channel*> mChannels;
-        std::deque<Buffer*> mMusicCache;
         Channel *mCurrentMusic;
+        Math::Vector mEye;
+        Math::Vector mLookat;
 };
