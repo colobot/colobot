@@ -63,7 +63,7 @@ const int KEY_VISIBLE = 6;      // number of visible keys redefinable
 
 const int KEY_TOTAL = 21;       // total number of keys redefinable
 
-const float WELCOME_LENGTH = 2.0f;
+const float WELCOME_LENGTH = 3.0f;
 
 const int MAX_FNAME = 255; // TODO: remove after rewrite to std::string
 
@@ -1769,7 +1769,7 @@ pos.y -= 0.048f;
         ddim.y = 0.0f;
         pw = m_interface->CreateWindows(pos, ddim, -1, EVENT_WINDOW5);
 
-        m_engine->SetOverColor(Gfx::Color(1.0f, 1.0f, 1.0f, 1.0f), Gfx::ENG_RSTATE_TCOLOR_BLACK); // TODO: color ok?
+        m_engine->SetOverColor(Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f), Gfx::ENG_RSTATE_TCOLOR_WHITE); // TODO: color ok?
         m_engine->SetOverFront(true);
 
         m_engine->SetBackground("colobot.png",
@@ -2006,28 +2006,35 @@ bool CMainDialog::EventProcess(const Event &event)
                 m_phase == PHASE_WELCOME3 )
         {
             float   intensity;
-            int     mode = Gfx::ENG_RSTATE_TCOLOR_BLACK;
+            int     mode = Gfx::ENG_RSTATE_TCOLOR_WHITE;
 
-            if ( m_phaseTime < 1.5f )
+            // 1/4 of display time is animating
+            float animatingTime = welcomeLength / 4.0f;
+
+            if ( m_phaseTime <  animatingTime )
             {
-                intensity = 1.0f-(m_phaseTime-0.5f);
+                //appearing
+                intensity = m_phaseTime / animatingTime;
             }
-            else if ( m_phaseTime < welcomeLength-1.0f )
+            else if ( m_phaseTime < welcomeLength - animatingTime )
             {
-                intensity = 0.0f;
+                //showing
+                intensity = 1.0f;
             }
             else
             {
-                intensity = m_phaseTime-(welcomeLength-1.0f);
+                //hiding
+                intensity = (welcomeLength - m_phaseTime) / animatingTime;
             }
+
             if ( intensity < 0.0f )  intensity = 0.0f;
             if ( intensity > 1.0f )  intensity = 1.0f;
 
-            if ( (m_phase == PHASE_WELCOME2 && m_phaseTime > welcomeLength/2.0f) ||
-                    m_phase == PHASE_WELCOME3 )
+            //white first, others -> black fadding
+            if ( (m_phase == PHASE_WELCOME1) && ( m_phaseTime < welcomeLength/2.0f))
             {
-                intensity = 1.0f-intensity;
-                mode = Gfx::ENG_RSTATE_TCOLOR_WHITE;
+                intensity = 1.0f - intensity;
+                mode = Gfx::ENG_RSTATE_TCOLOR_BLACK;
             }
 
             m_engine->SetOverColor(Gfx::Color(intensity, intensity, intensity, intensity), mode); // TODO: color ok?
