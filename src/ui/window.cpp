@@ -355,6 +355,9 @@ CSlider* CWindow::CreateSlider(Math::Point pos, Math::Point dim, int icon, Event
 }
 
 // Creates a new list.
+// if expand is less then zero, then the list would try to use expand's absolute value,
+// and try to scale items to some size, so that dim of the list would not change after
+// adjusting
 
 CList* CWindow::CreateList(Math::Point pos, Math::Point dim, int icon, EventType eventMsg,
                          float expand)

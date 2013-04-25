@@ -68,6 +68,9 @@ CList::~CList()
 
 
 // Creates a new list.
+// if expand is less then zero, then the list would try to use expand's absolute value,
+// and try to scale items to some size, so that dim of the list would not change after
+// adjusting
 
 bool CList::Create(Math::Point pos, Math::Point dim, int icon, EventType eventMsg, float expand)
 {
@@ -109,14 +112,22 @@ bool CList::MoveAdjust()
     idim.x = m_dim.x - marging * 2.0f / 640.f;
     idim.y = m_dim.y - marging * 2.0f / 480.f;
 
-    h = m_engine->GetText()->GetHeight(m_fontType, m_fontSize) * m_expand;
-
+    //If m_expand is less then zero, then try to apply it's absolute value
+    h = m_engine->GetText()->GetHeight(m_fontType, m_fontSize) * ((m_expand < 0) ? -m_expand : m_expand);
     m_displayLine = static_cast<int>(idim.y / h);
+
     if (m_displayLine == 0)
         return false;
     if (m_displayLine > LISTMAXDISPLAY)
         m_displayLine = LISTMAXDISPLAY;
-    idim.y = h * m_displayLine;
+
+    // Stretch lines to fill whole area of a list, if needed
+    if (m_expand < 0 && (idim.y - (h * m_displayLine) < h))
+    {
+        h = idim.y / m_displayLine;
+    }
+
+    idim.y = h * m_displayLine; //Here cuts list size if height of shown elements is less then designed height
     m_dim.y = idim.y + marging * 2.0f / 480.f;
 
     ppos.x = ipos.x;

@@ -1313,10 +1313,11 @@ bool CBrain::CreateInterface(bool bSelect)
     {
         if (!(m_main->GetRetroMode())) {
             ddim.x = dim.x*5.1f;
-            ddim.y = dim.y*2.0f;
+            ddim.y = dim.y*2.0f; // default => 2
             pos.x = ox+sx*0.0f;
             pos.y = oy+sy*0.0f;
-            pw->CreateList(pos, ddim, -1, EVENT_OBJECT_PROGLIST, 1.10f);
+
+            pw->CreateList(pos, ddim, -1, EVENT_OBJECT_PROGLIST, -1.10f);
             UpdateScript(pw);
 
             pos.x = ox+sx*5.2f;
