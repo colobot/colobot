@@ -3980,25 +3980,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
         {
             m_displayText->SetDelay(OpFloat(line, "factor", 1.0f));
         }
-
-        if (Cmd(line, "Audio") && !resetObject)
-        {
-            if(m_version < 2) {
-                int trackid = OpInt(line, "track", 0);
-                if(trackid != 0) {
-                    std::stringstream filename;
-                    filename << "music" << std::setfill('0') << std::setw(3) << trackid << ".ogg";
-                    m_audioTrack = filename.str();
-                }
-            } else {
-                char trackname[100];
-                OpString(line, "filename", trackname);
-                m_audioTrack = trackname;
-            }
-            m_audioRepeat = OpInt(line, "repeat", 1);
-            if(m_audioTrack != "") m_sound->CacheMusic(m_audioTrack);
-        }
-
+        
         if (Cmd(line, "AudioChange") && !resetObject && m_version >= 2)
         {
             int i = m_audioChangeTotal;
@@ -4019,6 +4001,23 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             }
         }
 
+        if (Cmd(line, "Audio") && !resetObject)
+        {
+            if(m_version < 2) {
+                int trackid = OpInt(line, "track", 0);
+                if(trackid != 0) {
+                    std::stringstream filename;
+                    filename << "music" << std::setfill('0') << std::setw(3) << trackid << ".ogg";
+                    m_audioTrack = filename.str();
+                }
+            } else {
+                char trackname[100];
+                OpString(line, "filename", trackname);
+                m_audioTrack = trackname;
+            }
+            m_audioRepeat = OpInt(line, "repeat", 1);
+            if(m_audioTrack != "") m_sound->CacheMusic(m_audioTrack);
+        }
 
         if (Cmd(line, "AmbientColor") && !resetObject)
         {
