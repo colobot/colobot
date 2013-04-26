@@ -43,9 +43,14 @@ void ALSound::CleanUp()
     if (mEnabled) {
         GetLogger()->Info("Unloading files and closing device...\n");
         StopAll();
+        StopMusic();
 
         for (auto channel : mChannels) {
             delete channel.second;
+        }
+
+        if (mCurrentMusic) {
+            delete mCurrentMusic;
         }
 
         for (auto item : mSounds) {
@@ -58,8 +63,6 @@ void ALSound::CleanUp()
 
         mEnabled = false;
 
-        mCurrentMusic->FreeBuffer();
-        delete mCurrentMusic;
         alcDestroyContext(mContext);
         alcCloseDevice(mDevice);
     }
