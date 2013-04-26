@@ -90,8 +90,10 @@ bool CTaskGoto::EventProcess(const Event &event)
         rot.x = m_leakPos.x-pos.x;
         rot.y = m_leakPos.z-pos.z;
         dist = Math::Point(rot.x, rot.y).Length();
-        rot.x /= dist;
-        rot.y /= dist;
+        if (dist != 0) {
+            rot.x /= dist;
+            rot.y /= dist;
+        }
 
         a = m_object->GetAngleY(0);
         g = Math::RotateAngle(rot.x, -rot.y);  // CW !
