@@ -3999,6 +3999,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 m_sound->CacheMusic(m_audioChange[i].music);
                 m_audioChangeTotal ++;
             }
+            continue;
         }
 
         if (Cmd(line, "Audio") && !resetObject)
