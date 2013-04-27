@@ -1003,6 +1003,76 @@ bool CScript::rDirection(CBotVar* var, CBotVar* result, int& exception, void* us
     return true;
 }
 
+// Instruction "build(type)"
+// draws error if can not build (wher errormode stop), otherwise 0 <- 1
+
+bool CScript::rBuild(CBotVar* var, CBotVar* result, int& exception, void* user)
+{
+    CScript*    script = (static_cast<CObject *>(user))->GetRunScript();
+    CObject*    pThis = static_cast<CObject *>(user);
+    ObjectType  oType;
+    ObjectType  category;
+    Error       err;
+
+    exception = 0;
+
+    oType = pThis->GetType();
+
+    if ( oType != OBJECT_MOBILEfa &&  // allowed only for grabber bots
+         oType != OBJECT_MOBILEta &&
+         oType != OBJECT_MOBILEwa &&
+         oType != OBJECT_MOBILEia)
+    {
+        err = ERR_MANIP_VEH; //Wrong vehicle;
+    }
+    else
+    {
+        category  = static_cast<ObjectType>(var->GetValInt()); //get category parameter
+
+        //if we can't build anything give an error
+        if ( !(category == OBJECT_DERRICK   && (g_build & BUILD_DERRICK))   &&  //if we can't build derrick
+             !(category == OBJECT_FACTORY   && (g_build & BUILD_FACTORY))   &&  //if we can't build factory
+             !(category == OBJECT_STATION   && (g_build & BUILD_STATION))   &&  //if we can't build station
+             !(category == OBJECT_CONVERT   && (g_build & BUILD_CONVERT))   &&  //if we can't build converter
+             !(category == OBJECT_REPAIR    && (g_build & BUILD_REPAIR))    &&  //if we can't build repair
+             !(category == OBJECT_TOWER     && (g_build & BUILD_TOWER))     &&  //if we can't build tower
+             !(category == OBJECT_RESEARCH  && (g_build & BUILD_RESEARCH))  &&  //if we can't build research
+             !(category == OBJECT_RADAR     && (g_build & BUILD_RADAR))     &&  //if we can't build radar
+             !(category == OBJECT_ENERGY    && (g_build & BUILD_ENERGY))    &&  //if we can't build energy
+             !(category == OBJECT_LABO      && (g_build & BUILD_LABO))      &&  //if we can't build laboratory
+             !(category == OBJECT_NUCLEAR   && (g_build & BUILD_NUCLEAR))   &&  //if we can't build nuclear
+             !(category == OBJECT_INFO      && (g_build & BUILD_INFO  ))    &&  //if we can't build information terminal
+             !(category == OBJECT_PARA      && (g_build & BUILD_PARA )))        //if we can't build lightning protection
+        {
+            err = ERR_BUILD_DISABLED; //can not build in this mission
+        }
+        else if (script->m_primaryTask == 0)
+        {
+            script->m_primaryTask = new CTaskManager(script->m_object);
+            err = script->m_primaryTask->StartTaskBuild(category);
+
+            if (err != ERR_OK)
+            {
+                delete script->m_primaryTask;
+                script->m_primaryTask = 0;
+            }
+        }
+    }
+
+    if ( err != ERR_OK )
+    {
+        result->SetValInt(err);  // return error
+        if ( script->m_errMode == ERM_STOP )
+        {
+            exception = err;
+            return false;
+        }
+        return true;
+    }
+
+    return Process(script, result, exception);
+
+}
 
 // Compilation of the instruction "produce(pos, angle, type[, scriptName[, power]])"
 // or "produce(type[, power])".
@@ -2853,6 +2923,9 @@ void CScript::InitFonctions()
     CBotProgram::AddFunction("penup",     rPenUp,     CScript::cNull);
     CBotProgram::AddFunction("pencolor",  rPenColor,  CScript::cOneFloat);
     CBotProgram::AddFunction("penwidth",  rPenWidth,  CScript::cOneFloat);
+
+    CBotProgram::AddFunction("build", rBuild, CScript::cOneFloat);
+
 }
 
 // Object's destructor.
