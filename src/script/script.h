@@ -139,6 +139,7 @@ private:
     static bool rRadar(CBotVar* var, CBotVar* result, int& exception, void* user);
     static bool rDetect(CBotVar* var, CBotVar* result, int& exception, void* user);
     static bool rDirection(CBotVar* var, CBotVar* result, int& exception, void* user);
+    static bool rBuild(CBotVar* var, CBotVar* result, int& exception, void* user);
     static bool rProduce(CBotVar* var, CBotVar* result, int& exception, void* user);
     static bool rDistance(CBotVar* var, CBotVar* result, int& exception, void* user);
     static bool rDistance2d(CBotVar* var, CBotVar* result, int& exception, void* user);

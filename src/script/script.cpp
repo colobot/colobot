@@ -1003,6 +1003,72 @@ bool CScript::rDirection(CBotVar* var, CBotVar* result, int& exception, void* us
     return true;
 }
 
+// Instruction "build(type)"
+// draws error if can not build (wher errormode stop), otherwise 0 <- 1
+
+bool CScript::rBuild(CBotVar* var, CBotVar* result, int& exception, void* user)
+{
+    CScript*    script = (static_cast<CObject *>(user))->GetRunScript();
+    CObject*    pThis = static_cast<CObject *>(user);
+    ObjectType  oType;
+    ObjectType  category;
+    Error       err;
+
+    exception = 0;
+    category  = static_cast<ObjectType>(var->GetValInt()); //get category parameter
+
+    if ( script->m_primaryTask == 0 )  // no task
+    {
+        script->m_primaryTask = new CTaskManager(script->m_object);
+
+        oType = pThis->GetType();
+
+        if ( oType != OBJECT_MOBILEfa &&  // allowed only for grabber bots
+             oType != OBJECT_MOBILEta &&
+             oType != OBJECT_MOBILEwa &&
+             oType != OBJECT_MOBILEia)
+        {
+            result->SetValInt(1);  // error
+            return true;
+        }
+
+        if ( category != OBJECT_DERRICK &&  //we can build onli specific buildings
+             category != OBJECT_FACTORY &&
+             category != OBJECT_STATION &&
+             category != OBJECT_CONVERT &&
+             category != OBJECT_REPAIR  &&
+             category != OBJECT_TOWER   &&
+             category != OBJECT_RESEARCH &&
+             category != OBJECT_RADAR   &&
+             category != OBJECT_ENERGY  &&
+             category != OBJECT_LABO    &&
+             category != OBJECT_NUCLEAR &&
+             category != OBJECT_INFO    &&
+             category != OBJECT_PARA )
+        {
+            result->SetValInt(1);  // error
+            return true;
+        }
+
+        err = script->m_primaryTask->StartTaskBuild(category);
+
+        if ( err != ERR_OK )
+        {
+            delete script->m_primaryTask;
+            script->m_primaryTask = 0;
+            result->SetValInt(1);  // return error
+            if ( script->m_errMode == ERM_STOP )
+            {
+                exception = err;
+                return false;
+            }
+            return true;
+        }
+
+    }
+
+    return Process(script, result, exception);
+}
 
 // Compilation of the instruction "produce(pos, angle, type[, scriptName[, power]])"
 // or "produce(type[, power])".
@@ -2853,6 +2919,9 @@ void CScript::InitFonctions()
     CBotProgram::AddFunction("penup",     rPenUp,     CScript::cNull);
     CBotProgram::AddFunction("pencolor",  rPenColor,  CScript::cOneFloat);
     CBotProgram::AddFunction("penwidth",  rPenWidth,  CScript::cOneFloat);
+
+    CBotProgram::AddFunction("build", rBuild, CScript::cOneFloat);
+
 }
 
 // Object's destructor.
