@@ -104,7 +104,7 @@ private:
     static CBotTypResult cSearch(CBotVar* &var, void* user);
     static CBotTypResult cRadar(CBotVar* &var, void* user);
     static CBotTypResult cDetect(CBotVar* &var, void* user);
-    static CBotTypResult cDirection(CBotVar* &var, void* user);
+    static CBotTypResult cDirection(CBotVar* &var, void* user);    
     static CBotTypResult cProduce(CBotVar* &var, void* user);
     static CBotTypResult cDistance(CBotVar* &var, void* user);
     static CBotTypResult cSpace(CBotVar* &var, void* user);
@@ -139,6 +139,7 @@ private:
     static bool rRadar(CBotVar* var, CBotVar* result, int& exception, void* user);
     static bool rDetect(CBotVar* var, CBotVar* result, int& exception, void* user);
     static bool rDirection(CBotVar* var, CBotVar* result, int& exception, void* user);
+    static bool rBuild(CBotVar* var, CBotVar* result, int& exception, void* user);
     static bool rProduce(CBotVar* var, CBotVar* result, int& exception, void* user);
     static bool rDistance(CBotVar* var, CBotVar* result, int& exception, void* user);
     static bool rDistance2d(CBotVar* var, CBotVar* result, int& exception, void* user);

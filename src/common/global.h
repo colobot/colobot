@@ -55,6 +55,8 @@ enum Error
     ERR_BUILD_BASE      = 129,      //! <  too close to the rocket
     ERR_BUILD_NARROW    = 130,      //! <  buildings too close
     ERR_BUILD_MOTOR     = 131,      //! <  built: not possible in movement
+    ERR_BUILD_DISABLED  = 132,      //! <  built: can not produce this object in this mission
+    ERR_BUILD_RESEARCH  = 133,      //! <  built: can not produce not researched object
     ERR_SEARCH_FLY      = 140,      //! <  not possible in flight
     ERR_SEARCH_VEH      = 141,      //! <  inappropriate vehicle
     ERR_SEARCH_MOTOR    = 142,      //! <  impossible in movement
