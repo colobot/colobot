@@ -171,7 +171,7 @@ enum EngineObjectType
     //! Fixed object
     ENG_OBJTYPE_FIX         = 2,
     //! Moving object
-    ENG_OBJTYPE_VEHICULE    = 3,
+    ENG_OBJTYPE_VEHICLE    = 3,
     //! Part of a moving object
     ENG_OBJTYPE_DESCENDANT  = 4,
     //! Fixed object type quartz

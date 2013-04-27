@@ -107,7 +107,7 @@ bool CMotionHuman::Create(Math::Vector pos, float angle, ObjectType type,
     if ( m_main->GetGamerOnlyHead() )
     {
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_VEHICULE);  // this is a moving object
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_VEHICLE);  // this is a moving object
         m_object->SetObjectRank(0, rank);
         face = m_main->GetGamerFace();
         sprintf(filename, "human2h%d.mod", face+1);
@@ -134,7 +134,7 @@ bool CMotionHuman::Create(Math::Vector pos, float angle, ObjectType type,
 
     // Creates the main base.
     rank = m_engine->CreateObject();
-    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_VEHICULE);  // this is a moving object
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_VEHICLE);  // this is a moving object
     m_object->SetObjectRank(0, rank);
 
     if (option == 0)  // head in helmet?
