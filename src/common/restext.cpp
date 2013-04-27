@@ -563,6 +563,8 @@ void InitializeRestext()
     stringsErr[ERR_BUILD_NARROW]    = "Too close to a building";
     stringsErr[ERR_BUILD_MOTOR]     = "Impossible when moving";
     stringsErr[ERR_SEARCH_FLY]      = "Impossible when flying";
+    stringsErr[ERR_BUILD_DISABLED]  = "Can not produce this object in this mission";
+    stringsErr[ERR_BUILD_RESEARCH]  = "Can not produce not researched object";
     stringsErr[ERR_SEARCH_VEH]      = "Inappropriate bot";
     stringsErr[ERR_SEARCH_MOTOR]    = "Impossible when moving";
     stringsErr[ERR_TERRA_VEH]       = "Inappropriate bot";
