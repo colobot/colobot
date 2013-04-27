@@ -1266,7 +1266,10 @@ bool CScript::rProduce(CBotVar* var, CBotVar* result, int& exception, void* user
             physics->SetFreeze(false);  // can move
         }
         object->SetLock(false);  // vehicle useable
-        object->SetManual(true);
+        // SetManual will affect bot speed
+        if (type == OBJECT_MOBILEdr) {
+            object->SetManual(true); 
+        }
         object->SetActivity(true);
         script->m_main->CreateShortcuts();
     }
