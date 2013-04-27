@@ -4247,6 +4247,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             m_terrain->InitTextures(name, tt, dx, dy);
 
             m_terrainInitTextures = true;
+            continue;
         }
 
         if (Cmd(line, "TerrainInit") && !resetObject) {
@@ -4462,8 +4463,11 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 obj->SetShield(OpFloat(line, "shield", 1.0f));
                 obj->SetMagnifyDamage(OpFloat(line, "magnifyDamage", 1.0f));
                 obj->SetClip(OpInt(line, "clip", 1));
-                obj->SetCheckToken(m_version >= 2 ? trainer : OpInt(line, "manual", 1));
-                obj->SetManual(m_version >= 2 ? !trainer : OpInt(line, "manual", 0));
+                obj->SetCheckToken(m_version >= 2 ? trainer : OpInt(line, "checkToken", 1));
+                // SetManual will affect bot speed
+                                      if (type == OBJECT_MOBILEdr)  {
+                    obj->SetManual(m_version >= 2 ? !trainer : OpInt(line, "manual", 0));
+                }
 
                 if(m_version >= 2) {
                     Math::Vector zoom = OpDir(line, "zoom");
