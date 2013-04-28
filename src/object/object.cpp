@@ -2145,8 +2145,10 @@ bool CObject::CreateVehicle(Math::Vector pos, float angle, ObjectType type,
     {
         m_motion = new CMotionHuman(this);
     }
-    else
-    {
+    else if ( type == OBJECT_CONTROLLER ) {
+        m_motion = new CMotion(this); //dummy object
+    }
+    else {
         m_motion = new CMotionVehicle(this);
     }
     if ( m_motion == 0 )  return false;

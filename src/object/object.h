@@ -156,6 +156,7 @@ enum ObjectType
     OBJECT_MOBILEsa         = 210,  //! < submarine
     OBJECT_MOBILEtg         = 211,  //! < training target
     OBJECT_MOBILEdr         = 212,  //! < robot drawing
+    OBJECT_CONTROLLER       = 213,  //! < mission controller
     OBJECT_WAYPOINT         = 250,  //! < waypoint
     OBJECT_FLAGb            = 260,  //! < blue flag
     OBJECT_FLAGr            = 261,  //! < red flag

@@ -4351,6 +4351,24 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             m_beginObject = true;
         }
 
+        if (Cmd(line, "MissionController") && read[0] == 0 && m_version == 3)
+        {
+            if (!m_beginObject) {
+                GetLogger()->Error("Syntax error in file '%s' (line %d): MissionController before BeginObject\n", filename, lineNum);
+                continue;
+            }
+
+            CObject* obj = CreateObject(Math::Vector(0.0f, 0.0f, 0.0f), 0.0f, 1.0f, 0.0f, OBJECT_CONTROLLER, 100.0f, false, false, 0);
+            CBrain* brain = obj->GetBrain();
+            if (brain != nullptr)
+            {
+                OpString(line, "script", name);
+                if (name[0] != 0)
+                    brain->SetScriptName(1, name);
+                brain->SetScriptRun(1);
+            }
+        }
+
         if (Cmd(line, "CreateObject") && read[0] == 0)
         {
             if (!m_beginObject) {
@@ -4672,7 +4690,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             m_camera->SetFixDirection(OpFloat(line, "fixDirection", 0.25f)*Math::PI);
         }
 
-        if (Cmd(line, "EndMissionTake") && !resetObject)
+        if (Cmd(line, "EndMissionTake") && !resetObject && m_version<3)
         {
             int i = m_endTakeTotal;
             if (i < 10)
@@ -4695,16 +4713,16 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 m_endTakeTotal ++;
             }
         }
-        if (Cmd(line, "EndMissionDelay") && !resetObject)
+        if (Cmd(line, "EndMissionDelay") && !resetObject && m_version<3)
         {
             m_endTakeWinDelay  = OpFloat(line, "win",  2.0f);
             m_endTakeLostDelay = OpFloat(line, "lost", 2.0f);
         }
-        if (Cmd(line, "EndMissionResearch") && !resetObject)
+        if (Cmd(line, "EndMissionResearch") && !resetObject && m_version<3)
         {
             m_endTakeResearch |= OpResearch(line, "type");
         }
-        if (Cmd(line, "EndMissionNever") && !resetObject && m_version >= 2)
+        if (Cmd(line, "EndMissionNever") && !resetObject && m_version == 2)
         {
             m_endTakeNever = true;
         }
@@ -5134,7 +5152,8 @@ CObject* CRobotMain::CreateObject(Math::Vector pos, float angle, float zoom, flo
          type == OBJECT_MOBILEwt ||
          type == OBJECT_MOBILEit ||
          type == OBJECT_MOBILEdr ||
-         type == OBJECT_APOLLO2  )
+         type == OBJECT_APOLLO2  ||
+         type == OBJECT_CONTROLLER )
     {
         object = new CObject();
         object->SetOption(option);
@@ -6690,6 +6709,8 @@ void CRobotMain::UpdateAudio(bool frame)
 //! Checks if the mission is over
 Error CRobotMain::CheckEndMission(bool frame)
 {
+    if (m_version >= 3) return ERR_MISSION_NOTERM; //disabled. TODO: Control from program
+
     CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
 
     for (int t = 0; t < m_endTakeTotal; t++)
@@ -6769,7 +6790,7 @@ Error CRobotMain::CheckEndMission(bool frame)
         }
         if (nb < m_endTake[t].min ||
             nb > m_endTake[t].max ||
-            m_endTakeNever)
+            m_endTakeNever        )
         {
             m_displayText->SetEnable(true);
             return ERR_MISSION_NOTERM;
