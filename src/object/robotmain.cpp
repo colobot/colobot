@@ -3830,6 +3830,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
         m_audioChangeTotal = 0;
         m_endTakeTotal = 0;
         m_endTakeResearch = 0;
+        m_endTakeNever = false;
         m_endTakeWinDelay = 2.0f;
         m_endTakeLostDelay = 2.0f;
         m_obligatoryTotal = 0;
@@ -4702,6 +4703,10 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
         if (Cmd(line, "EndMissionResearch") && !resetObject)
         {
             m_endTakeResearch |= OpResearch(line, "type");
+        }
+        if (Cmd(line, "EndMissionNever") && !resetObject && m_version >= 2)
+        {
+            m_endTakeNever = true;
         }
 
         if (Cmd(line, "ObligatoryToken") && !resetObject)
@@ -6763,7 +6768,8 @@ Error CRobotMain::CheckEndMission(bool frame)
             }
         }
         if (nb < m_endTake[t].min ||
-            nb > m_endTake[t].max)
+            nb > m_endTake[t].max ||
+            m_endTakeNever)
         {
             m_displayText->SetEnable(true);
             return ERR_MISSION_NOTERM;
