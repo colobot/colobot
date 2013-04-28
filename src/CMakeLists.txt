@@ -120,6 +120,7 @@ object/mainmovie.cpp
 object/motion/motion.cpp
 object/motion/motionant.cpp
 object/motion/motionbee.cpp
+object/motion/motiondummy.cpp
 object/motion/motionhuman.cpp
 object/motion/motionmother.cpp
 object/motion/motionspider.cpp
