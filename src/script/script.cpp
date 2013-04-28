@@ -1003,8 +1003,83 @@ bool CScript::rDirection(CBotVar* var, CBotVar* result, int& exception, void* us
     return true;
 }
 
+// compilation of instruction "canbuild ( category );"
+
+CBotTypResult CScript::cCanBuild(CBotVar* &var, void* user)
+{
+    if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
+    if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
+    var = var->GetNext();
+    if ( var != 0 )  return CBotTypResult(CBotErrOverParam);
+    return CBotTypResult(CBotTypBoolean);
+}
+
+// Instruction "canbuid ( category );"
+// returns true if this building can be built
+
+bool CScript::rCanBuild(CBotVar* var, CBotVar* result, int& exception, void* user)
+{
+    exception = 0;
+
+    CScript::rBuildInfo(var, result, exception, user);
+    Error err = static_cast<Error>(result->GetValInt());
+
+    if (err == ERR_OK)
+        result->SetValInt(true);
+    else
+        result->SetValInt(false);
+
+    return true;
+}
+
+// Instruction "buildinfo ( category );"
+// This function indicates if this building can be built, and returns a specific value
+//
+// returns   0(ERR_OK)             if this building can be built
+// returns 132(ERR_BUILD_DISABLED) if can not build in a current mission
+// returns 133(ERR_BUILD_RESEARCH) if this building needs to be researched
+
+bool CScript::rBuildInfo(CBotVar* var, CBotVar* result, int& exception, void* user)
+{
+    ObjectType category  = static_cast<ObjectType>(var->GetValInt()); //get category parameter
+    exception = 0;
+    int value = ERR_BUILD_DISABLED;
+
+    if ( (category == OBJECT_DERRICK   && (g_build & BUILD_DERRICK))   ||
+         (category == OBJECT_FACTORY   && (g_build & BUILD_FACTORY))   ||
+         (category == OBJECT_STATION   && (g_build & BUILD_STATION))   ||
+         (category == OBJECT_CONVERT   && (g_build & BUILD_CONVERT))   ||
+         (category == OBJECT_REPAIR    && (g_build & BUILD_REPAIR))    ||
+         (category == OBJECT_TOWER     && (g_build & BUILD_TOWER))     ||
+         (category == OBJECT_RESEARCH  && (g_build & BUILD_RESEARCH))  ||
+         (category == OBJECT_RADAR     && (g_build & BUILD_RADAR))     ||
+         (category == OBJECT_ENERGY    && (g_build & BUILD_ENERGY))    ||
+         (category == OBJECT_LABO      && (g_build & BUILD_LABO))      ||
+         (category == OBJECT_NUCLEAR   && (g_build & BUILD_NUCLEAR))   ||
+         (category == OBJECT_INFO      && (g_build & BUILD_INFO  ))    ||
+         (category == OBJECT_PARA      && (g_build & BUILD_PARA )))
+    {
+
+        //if we want to build  not researched one
+        if ( (category == OBJECT_TOWER && !(g_researchDone & RESEARCH_TOWER)) ||
+             (category == OBJECT_NUCLEAR && !(g_researchDone & RESEARCH_ATOMIC))
+            )
+        {
+            value = ERR_BUILD_RESEARCH;
+        }
+        else
+        {
+            value = ERR_OK;
+        }
+
+    }
+
+    result->SetValInt(value);
+    return true;
+}
+
 // Instruction "build(type)"
-// draws error if can not build (wher errormode stop), otherwise 0 <- 1
+// draws error if can not build (wher errormode stop), otherwise 0 <- error
 
 bool CScript::rBuild(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
@@ -1027,48 +1102,26 @@ bool CScript::rBuild(CBotVar* var, CBotVar* result, int& exception, void* user)
     }
     else
     {
-        category  = static_cast<ObjectType>(var->GetValInt()); //get category parameter
+        //Let's check is building this object is possible
+        CScript::rBuildInfo(var, result, exception, user);
+        err = static_cast<Error>(result->GetValInt());
 
-        //if we want to produce one of these buildings
-        if ( (category == OBJECT_DERRICK   && (g_build & BUILD_DERRICK))   ||
-             (category == OBJECT_FACTORY   && (g_build & BUILD_FACTORY))   ||
-             (category == OBJECT_STATION   && (g_build & BUILD_STATION))   ||
-             (category == OBJECT_CONVERT   && (g_build & BUILD_CONVERT))   ||
-             (category == OBJECT_REPAIR    && (g_build & BUILD_REPAIR))    ||
-             (category == OBJECT_TOWER     && (g_build & BUILD_TOWER))     ||
-             (category == OBJECT_RESEARCH  && (g_build & BUILD_RESEARCH))  ||
-             (category == OBJECT_RADAR     && (g_build & BUILD_RADAR))     ||
-             (category == OBJECT_ENERGY    && (g_build & BUILD_ENERGY))    ||
-             (category == OBJECT_LABO      && (g_build & BUILD_LABO))      ||
-             (category == OBJECT_NUCLEAR   && (g_build & BUILD_NUCLEAR))   ||
-             (category == OBJECT_INFO      && (g_build & BUILD_INFO  ))    ||
-             (category == OBJECT_PARA      && (g_build & BUILD_PARA )))
+        if (err == ERR_OK && script->m_primaryTask == 0) //if we can build and no task is present
         {
+            category  = static_cast<ObjectType>(var->GetValInt()); //get category parameter
 
-            //if we want to build  not researched one
-            if ( (category == OBJECT_TOWER && !(g_researchDone & RESEARCH_TOWER)) ||
-                 (category == OBJECT_NUCLEAR && !(g_researchDone & RESEARCH_ATOMIC))
-                )
+            script->m_primaryTask = new CTaskManager(script->m_object);
+            err = script->m_primaryTask->StartTaskBuild(category);
+
+            if (err != ERR_OK)
             {
-                err = ERR_BUILD_RESEARCH;
+                delete script->m_primaryTask;
+                script->m_primaryTask = 0;
             }
-            else if (script->m_primaryTask == 0) //if we have no other tasks
-            {
-                script->m_primaryTask = new CTaskManager(script->m_object);
-                err = script->m_primaryTask->StartTaskBuild(category);
-
-                if (err != ERR_OK)
-                {
-                    delete script->m_primaryTask;
-                    script->m_primaryTask = 0;
-                }
-            }
-
         }
-        else //if we can't build this object
-        {
-            err = ERR_BUILD_DISABLED;
-        }
+        //When script is waiting for finishing this task, it sets ERR_OK, and continues executing Process
+        //without creating new task. I think, there was a problem with previous version in release configuration
+        //It did not init error variable in this situation, and code tried to use variable with trash inside
     }
 
     if ( err != ERR_OK )
@@ -2939,6 +2992,8 @@ void CScript::InitFonctions()
     CBotProgram::AddFunction("pencolor",  rPenColor,  CScript::cOneFloat);
     CBotProgram::AddFunction("penwidth",  rPenWidth,  CScript::cOneFloat);
 
+    CBotProgram::AddFunction("buildinfo", rBuildInfo, CScript::cOneFloat);
+    CBotProgram::AddFunction("canbuild", rCanBuild, CScript::cCanBuild);
     CBotProgram::AddFunction("build", rBuild, CScript::cOneFloat);
 
 }

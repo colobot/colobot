@@ -262,6 +262,8 @@ std::string GetHelpFilename(const char *token)
     if ( strcmp(token, "turn"          ) == 0 )  return std::string("help/") + CApplication::GetInstancePointer()->GetLanguageChar() + std::string("/cbot/turn.txt");
     if ( strcmp(token, "goto"          ) == 0 )  return std::string("help/") + CApplication::GetInstancePointer()->GetLanguageChar() + std::string("/cbot/goto.txt");
     if ( strcmp(token, "grab"          ) == 0 )  return std::string("help/") + CApplication::GetInstancePointer()->GetLanguageChar() + std::string("/cbot/grab.txt");
+    if ( strcmp(token, "buildinfo"     ) == 0 )  return std::string("help/") + CApplication::GetInstancePointer()->GetLanguageChar() + std::string("/cbot/buildinfo.txt");
+    if ( strcmp(token, "canbuild"      ) == 0 )  return std::string("help/") + CApplication::GetInstancePointer()->GetLanguageChar() + std::string("/cbot/canbuild.txt");
     if ( strcmp(token, "build"         ) == 0 )  return std::string("help/") + CApplication::GetInstancePointer()->GetLanguageChar() + std::string("/cbot/build.txt");
     if ( strcmp(token, "drop"          ) == 0 )  return std::string("help/") + CApplication::GetInstancePointer()->GetLanguageChar() + std::string("/cbot/drop.txt");
     if ( strcmp(token, "sniff"         ) == 0 )  return std::string("help/") + CApplication::GetInstancePointer()->GetLanguageChar() + std::string("/cbot/sniff.txt");
@@ -380,7 +382,9 @@ bool IsFunction(const char *token)
     if ( strcmp(token, "turn"         ) == 0 )  return true;
     if ( strcmp(token, "goto"         ) == 0 )  return true;
     if ( strcmp(token, "grab"         ) == 0 )  return true;
-    if ( strcmp(token, "build"         ) == 0 ) return true;
+    if ( strcmp(token, "buildinfo"    ) == 0 ) return true;
+    if ( strcmp(token, "canbuild"     ) == 0 ) return true;
+    if ( strcmp(token, "build"        ) == 0 ) return true;
     if ( strcmp(token, "drop"         ) == 0 )  return true;
     if ( strcmp(token, "sniff"        ) == 0 )  return true;
     if ( strcmp(token, "receive"      ) == 0 )  return true;
@@ -463,7 +467,9 @@ const char* GetHelpText(const char *token)
     if ( strcmp(token, "turn"      ) == 0 )  return "turn ( angle );";
     if ( strcmp(token, "goto"      ) == 0 )  return "goto ( position, altitude );";
     if ( strcmp(token, "grab"      ) == 0 )  return "grab ( order );";
-    if ( strcmp(token, "build"      ) == 0 )  return "build ( category );";
+    if ( strcmp(token, "buildinfo" ) == 0 )  return "buildinfo ( category );";
+    if ( strcmp(token, "canbuild"  ) == 0 )  return "canbuild ( category );";
+    if ( strcmp(token, "build"     ) == 0 )  return "build ( category );";
     if ( strcmp(token, "drop"      ) == 0 )  return "drop ( order );";
     if ( strcmp(token, "sniff"     ) == 0 )  return "sniff ( );";
     if ( strcmp(token, "receive"   ) == 0 )  return "receive ( name, power );";

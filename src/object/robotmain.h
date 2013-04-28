@@ -537,6 +537,7 @@ protected:
     int             m_endTakeTotal;
     EndTake         m_endTake[10];
     long            m_endTakeResearch;
+    bool            m_endTakeNever;
     float           m_endTakeWinDelay;
     float           m_endTakeLostDelay;
     
