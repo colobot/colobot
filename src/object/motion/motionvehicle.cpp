@@ -931,6 +931,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         pPower->SetObjectRank(0, rank);
+        pPower->CreateShadowCircle(1.5f, 1.0f); //create a shadow for battary
 
         if ( power <= 1.0f )  modelManager->AddModelCopy("power.mod", false, rank);
         else                  modelManager->AddModelCopy("atomic.mod", false, rank);

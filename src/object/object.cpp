@@ -64,6 +64,7 @@
 #include "object/motion/motion.h"
 #include "object/motion/motionant.h"
 #include "object/motion/motionbee.h"
+#include "object/motion/motiondummy.h"
 #include "object/motion/motionhuman.h"
 #include "object/motion/motionmother.h"
 #include "object/motion/motionspider.h"
@@ -2146,7 +2147,7 @@ bool CObject::CreateVehicle(Math::Vector pos, float angle, ObjectType type,
         m_motion = new CMotionHuman(this);
     }
     else if ( type == OBJECT_CONTROLLER ) {
-        m_motion = new CMotion(this); //dummy object
+        m_motion = new CMotionDummy(this); //dummy object
     }
     else {
         m_motion = new CMotionVehicle(this);
