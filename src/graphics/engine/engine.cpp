@@ -3651,7 +3651,7 @@ void CEngine::DrawShadow()
     float lastIntensity = -1.0f;
     for (int i = 0; i < static_cast<int>( m_shadows.size() ); i++)
     {
-        if (m_shadows[i].hide)
+        if (m_shadows[i].hide || !m_shadows[i].used)
             continue;
 
         Math::Vector pos = m_shadows[i].pos;  // pos = center of the shadow on the ground
