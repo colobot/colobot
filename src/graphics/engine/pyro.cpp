@@ -1555,7 +1555,7 @@ void CPyro::ExploStart()
     {
         int objRank = m_object->GetObjectRank(i);
         if ( objRank == -1 )  continue;
-        m_engine->ChangeSecondTexture(objRank, "dirty04.tga");
+        m_engine->ChangeSecondTexture(objRank, "dirty04.png");
 
         Math::Vector pos = m_object->GetPosition(i);
 
