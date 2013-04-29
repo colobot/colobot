@@ -747,7 +747,7 @@ pb->SetState(STATE_SHADOW);
             m_phase == PHASE_PROTO   )
     {
         if (!m_sound->IsPlayingMusic()) {
-            m_sound->PlayMusic(11, true);
+            m_sound->PlayMusic("Intro.ogg", false);
         }
             
         if ( m_phase == PHASE_TRAINER )  m_index = 0;
@@ -1742,7 +1742,7 @@ pos.y -= 0.048f;
     if ( m_phase == PHASE_WELCOME1 )
     {
         m_sound->StopMusic();
-        m_sound->PlayMusic(11, false);
+        m_sound->PlayMusic("Intro.ogg", false);
 
         pos.x  = 0.0f;
         pos.y  = 0.0f;
