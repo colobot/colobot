@@ -668,7 +668,7 @@ bool CScript::rRadar(CBotVar* var, CBotVar* result, int& exception, void* user)
         if ( pObj->GetProxyActivate() )  continue;
 
         oType = pObj->GetType();
-        if ( oType == OBJECT_TOTO )  continue;
+        if ( oType == OBJECT_TOTO || oType == OBJECT_CONTROLLER )  continue;
 
         if ( oType == OBJECT_RUINmobilew2 ||
              oType == OBJECT_RUINmobilet1 ||

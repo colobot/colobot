@@ -17,15 +17,11 @@
 
 
 #include "object/motion/motiondummy.h"
-
+#include "physics/physics.h"
 #include "graphics/engine/modelmanager.h"
 
 #include <stdio.h>
 #include <string.h>
-
-
-
-
 
 // Object's constructor.
 
@@ -58,6 +54,31 @@ bool CMotionDummy::Create(Math::Vector pos, float angle, ObjectType type,
     int rank = m_engine->CreateObject();
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_VEHICLE);  // this is a moving object
     m_object->SetObjectRank(0, rank);
+
+    // Movement
+    m_physics->SetType(TYPE_FLYING);
+
+    m_physics->SetLinMotionX(MO_ADVSPEED, 50.0f);
+    m_physics->SetLinMotionX(MO_RECSPEED, 50.0f);
+    m_physics->SetLinMotionX(MO_ADVACCEL, 20.0f);
+    m_physics->SetLinMotionX(MO_RECACCEL, 20.0f);
+    m_physics->SetLinMotionX(MO_STOACCEL, 20.0f);
+    m_physics->SetLinMotionX(MO_TERSLIDE,  5.0f);
+    m_physics->SetLinMotionZ(MO_TERSLIDE,  5.0f);
+    m_physics->SetLinMotionX(MO_TERFORCE, 50.0f);
+    m_physics->SetLinMotionZ(MO_TERFORCE, 50.0f);
+    m_physics->SetLinMotionZ(MO_MOTACCEL, 40.0f);
+    m_physics->SetLinMotionY(MO_ADVSPEED, 60.0f);
+    m_physics->SetLinMotionY(MO_RECSPEED, 60.0f);
+    m_physics->SetLinMotionY(MO_ADVACCEL, 20.0f);
+    m_physics->SetLinMotionY(MO_RECACCEL, 50.0f);
+    m_physics->SetLinMotionY(MO_STOACCEL, 50.0f);
+
+    m_physics->SetCirMotionY(MO_ADVSPEED,  0.4f*Math::PI);
+    m_physics->SetCirMotionY(MO_RECSPEED,  0.4f*Math::PI);
+    m_physics->SetCirMotionY(MO_ADVACCEL,  2.0f);
+    m_physics->SetCirMotionY(MO_RECACCEL,  2.0f);
+    m_physics->SetCirMotionY(MO_STOACCEL,  2.0f);
 
     return true;
 }

@@ -469,6 +469,8 @@ protected:
     int             m_delayWriteMessage;
     int             m_movieInfoIndex;
 
+    CObject*        m_controller;
+
     //Level Checker flags
     bool            m_beginObject;
     bool            m_terrainGenerate;

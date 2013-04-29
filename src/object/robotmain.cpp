@@ -656,6 +656,7 @@ CRobotMain::CRobotMain(CApplication* app)
     m_terrainCreate       = false;
 
     m_version      = 1;
+    m_controller   = nullptr;
     m_retroStyle   = false;
     m_immediatSatCom = false;
     m_beginSatCom  = false;
@@ -1788,6 +1789,23 @@ void CRobotMain::ExecuteCmd(char *cmd)
         if (strcmp(cmd, "nolimit") == 0)
         {
             m_terrain->SetFlyingMaxHeight(280.0f);
+            return;
+        }
+
+        if (strcmp(cmd, "controller") == 0)
+        {
+            if (m_controller != nullptr) {
+                // Don't use SelectObject because it checks if the object is selectable
+                if (m_camera->GetType() == Gfx::CAM_TYPE_VISIT)
+                    StopDisplayVisit();
+
+                CObject* prev = DeselectAll();
+                if (prev != nullptr && prev != m_controller)
+                   m_controller->AddDeselList(prev);
+
+                SelectOneObject(m_controller, true);
+                m_short->UpdateShortcuts();
+            }
             return;
         }
 
@@ -3839,6 +3857,8 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
         m_mapImage = false;
         m_mapFilename[0] = 0;
 
+        m_controller = nullptr;
+
         m_colorRefBot.r =  10.0f/256.0f;
         m_colorRefBot.g = 166.0f/256.0f;
         m_colorRefBot.b = 254.0f/256.0f;  // blue
@@ -4358,14 +4378,15 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 continue;
             }
 
-            CObject* obj = CreateObject(Math::Vector(0.0f, 0.0f, 0.0f), 0.0f, 1.0f, 0.0f, OBJECT_CONTROLLER, 100.0f, false, false, 0);
-            CBrain* brain = obj->GetBrain();
+            m_controller = CreateObject(Math::Vector(0.0f, 0.0f, 0.0f), 0.0f, 1.0f, 0.0f, OBJECT_CONTROLLER, 100.0f, false, false, 0);
+            m_controller->SetMagnifyDamage(100.0f);
+            CBrain* brain = m_controller->GetBrain();
             if (brain != nullptr)
             {
                 OpString(line, "script", name);
                 if (name[0] != 0)
-                    brain->SetScriptName(1, name);
-                brain->SetScriptRun(1);
+                    brain->SetScriptName(0, name);
+                brain->SetScriptRun(0);
             }
         }
 

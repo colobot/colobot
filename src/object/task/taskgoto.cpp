@@ -1455,7 +1455,7 @@ void CTaskGoto::ComputeRepulse(Math::Point &dir)
 
     // The worm goes everywhere and through everything!
     iType = m_object->GetType();
-    if ( iType == OBJECT_WORM )  return;
+    if ( iType == OBJECT_WORM || iType == OBJECT_CONTROLLER )  return;
 
     m_object->GetCrashSphere(0, iPos, iRadius);
     gDist = Math::Distance(iPos, m_goal);

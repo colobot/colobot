@@ -1309,7 +1309,8 @@ bool CBrain::CreateInterface(bool bSelect)
          type == OBJECT_ANT      ||
          type == OBJECT_SPIDER   ||
          type == OBJECT_BEE      ||
-         type == OBJECT_WORM     )  // vehicle?
+         type == OBJECT_WORM     ||
+         type == OBJECT_CONTROLLER)  // vehicle?
     {
         if (!(m_main->GetRetroMode())) {
             ddim.x = dim.x*5.1f;
@@ -1334,7 +1335,8 @@ bool CBrain::CreateInterface(bool bSelect)
          type == OBJECT_MOBILEfi ||
          type == OBJECT_MOBILEfs ||
          type == OBJECT_MOBILEft ||
-         type == OBJECT_BEE      )  // driving?
+         type == OBJECT_BEE      ||
+         type == OBJECT_CONTROLLER)  // driving?
     {
         pos.x = ox+sx*6.4f;
         pos.y = oy+sy*0;
@@ -1346,8 +1348,9 @@ bool CBrain::CreateInterface(bool bSelect)
         pb = pw->CreateButton(pos, dim, 28, EVENT_OBJECT_GASUP);
         pb->SetImmediat(true);
 
-        if ( type != OBJECT_HUMAN       ||
-             m_object->GetOption() != 2 )
+        if ( (type != OBJECT_HUMAN       &&
+              type != OBJECT_CONTROLLER) ||
+              m_object->GetOption() != 2  )
         {
             pos.x = ox+sx*15.3f;
             pos.y = oy+sy*0;
@@ -2305,7 +2308,8 @@ void CBrain::UpdateInterface()
          type == OBJECT_ANT      ||
          type == OBJECT_SPIDER   ||
          type == OBJECT_BEE      ||
-         type == OBJECT_WORM     )  // vehicle?
+         type == OBJECT_WORM     ||
+         type == OBJECT_CONTROLLER)  // vehicle?
     {
         bRun = false;
         if ( m_script[m_selScript] != 0 )
