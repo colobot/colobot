@@ -99,6 +99,7 @@ private:
     static CBotTypResult cOneFloat(CBotVar* &var, void* user);
     static CBotTypResult cTwoFloat(CBotVar* &var, void* user);
     static CBotTypResult cString(CBotVar* &var, void* user);
+    static CBotTypResult cEndMission(CBotVar* &var, void* user);
     static CBotTypResult cGetObject(CBotVar* &var, void* user);
     static CBotTypResult cDestroy(CBotVar* &var, void* user);
     static CBotTypResult cSearch(CBotVar* &var, void* user);
@@ -134,6 +135,7 @@ private:
     static bool rPow(CBotVar* var, CBotVar* result, int& exception, void* user);
     static bool rRand(CBotVar* var, CBotVar* result, int& exception, void* user);
     static bool rAbs(CBotVar* var, CBotVar* result, int& exception, void* user);
+    static bool rEndMission(CBotVar* var, CBotVar* result, int& exception, void* user);
     static bool rGetObject(CBotVar* var, CBotVar* result, int& exception, void* user);
     static bool rDestroy(CBotVar* var, CBotVar* result, int& exception, void* user);
     static bool rSearch(CBotVar* var, CBotVar* result, int& exception, void* user);

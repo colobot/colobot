@@ -313,6 +313,35 @@ bool CScript::rAbs(CBotVar* var, CBotVar* result, int& exception, void* user)
     return true;
 }
 
+// Compilation of the instruction "endmission(result)"
+
+CBotTypResult CScript::cEndMission(CBotVar* &var, void* user)
+{
+    if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
+    if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
+    var = var->GetNext();
+    if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
+    if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
+    var = var->GetNext();
+    if ( var != 0 )  return CBotTypResult(CBotErrOverParam);
+    return CBotTypResult(CBotTypFloat);
+}
+
+// Instruction "endmission(result)"
+
+bool CScript::rEndMission(CBotVar* var, CBotVar* result, int& exception, void* user)
+{
+    Error ended;
+    float delay;
+
+    ended = static_cast<Error>(var->GetValFloat());
+    var = var->GetNext();
+
+    delay = var->GetValFloat();
+
+    CRobotMain::GetInstancePointer()->SetEndMission(ended, delay);
+    return true;
+}
 
 // Compilation of the instruction "retobject(rank)".
 
@@ -2949,6 +2978,8 @@ void CScript::InitFonctions()
     CBotProgram::AddFunction("pow",       rPow,       CScript::cTwoFloat);
     CBotProgram::AddFunction("rand",      rRand,      CScript::cNull);
     CBotProgram::AddFunction("abs",       rAbs,       CScript::cOneFloat);
+
+    CBotProgram::AddFunction("endmission",rEndMission,CScript::cEndMission);
 
     CBotProgram::AddFunction("retobject", rGetObject, CScript::cGetObject);
     CBotProgram::AddFunction("destroy",   rDestroy,   CScript::cDestroy);

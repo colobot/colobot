@@ -265,6 +265,7 @@ public:
     void        ResetObject();
     void        ResetCreate();
     void        UpdateAudio(bool frame);
+    void        SetEndMission(Error result, float delay);
     Error       CheckEndMission(bool frame);
     void        CheckEndMessage(const char* message);
     int         GetObligatoryToken();
@@ -555,6 +556,8 @@ protected:
 
     int             m_freeBuild;        // constructible buildings
     int             m_freeResearch;     // researches possible
+
+    Error           m_missionResult;
 
     ShowLimit       m_showLimit[MAXSHOWLIMIT];
 

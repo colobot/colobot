@@ -811,6 +811,11 @@ CRobotMain::CRobotMain(CApplication* app)
     CBotProgram::DefineNum("ExploBurn", EXPLO_BURN);
     CBotProgram::DefineNum("ExploWater", EXPLO_WATER);
 
+    CBotProgram::DefineNum("ResultNotEnded", ERR_MISSION_NOTERM);
+    CBotProgram::DefineNum("ResultLost", INFO_LOST);
+    CBotProgram::DefineNum("ResultLostQuick", INFO_LOSTq);
+    CBotProgram::DefineNum("ResultWin", ERR_OK);
+
     CBotProgram::DefineNum("PolskiPortalColobota", 1337);
 
     CBotClass* bc;
@@ -3896,6 +3901,8 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
         m_version             = 1;
         m_retroStyle          = false;
+
+        m_missionResult       = ERR_MISSION_NOTERM;
     }
 
     char line[500];
@@ -6727,10 +6734,40 @@ void CRobotMain::UpdateAudio(bool frame)
     }
 }
 
+void CRobotMain::SetEndMission(Error result, float delay)
+{
+    if (m_version >= 3) {
+        m_endTakeWinDelay = delay;
+        m_endTakeLostDelay = delay;
+        m_missionResult = result;
+    }
+}
+
 //! Checks if the mission is over
 Error CRobotMain::CheckEndMission(bool frame)
 {
-    if (m_version >= 3) return ERR_MISSION_NOTERM; //disabled. TODO: Control from program
+    if (m_version >= 3) {
+        if (m_missionResult == INFO_LOST) { //mission lost?
+            m_displayText->DisplayError(INFO_LOST, Math::Vector(0.0f,0.0f,0.0f));
+            m_winDelay = 0.0f;
+            if(m_lostDelay == 0) m_lostDelay = m_endTakeLostDelay;
+            m_displayText->SetEnable(false);
+        }
+        if (m_missionResult == INFO_LOSTq) { //mission lost?
+            m_winDelay = 0.0f;
+            if(m_lostDelay == 0) m_lostDelay = 0.1f;
+            m_displayText->SetEnable(false);
+        }
+        if (frame && m_base) return ERR_MISSION_NOTERM;
+        if (m_missionResult == ERR_OK) { //mission win?
+            if (!(frame && m_base)) m_displayText->DisplayError(INFO_WIN, Math::Vector(0.0f,0.0f,0.0f));
+            if(m_winDelay == 0) m_winDelay = m_endTakeWinDelay;
+            m_lostDelay = 0.0f;
+            m_displayText->SetEnable(false);
+        }
+        if (m_missionResult == ERR_MISSION_NOTERM) m_displayText->SetEnable(true);
+        return m_missionResult;
+    }
 
     CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
 
