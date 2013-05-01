@@ -39,6 +39,8 @@
 
 #include "script/cbottoken.h"
 
+#include "sound/sound.h"
+
 #include "ui/interface.h"
 #include "ui/edit.h"
 #include "ui/list.h"
@@ -313,7 +315,7 @@ bool CScript::rAbs(CBotVar* var, CBotVar* result, int& exception, void* user)
     return true;
 }
 
-// Compilation of the instruction "endmission(result)"
+// Compilation of the instruction "endmission(result, delay)"
 
 CBotTypResult CScript::cEndMission(CBotVar* &var, void* user)
 {
@@ -327,7 +329,7 @@ CBotTypResult CScript::cEndMission(CBotVar* &var, void* user)
     return CBotTypResult(CBotTypFloat);
 }
 
-// Instruction "endmission(result)"
+// Instruction "endmission(result, delay)"
 
 bool CScript::rEndMission(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
@@ -342,6 +344,48 @@ bool CScript::rEndMission(CBotVar* var, CBotVar* result, int& exception, void* u
     CRobotMain::GetInstancePointer()->SetEndMission(ended, delay);
     return true;
 }
+
+// Compilation of the instruction "playmusic(filename, repeat)"
+
+CBotTypResult CScript::cPlayMusic(CBotVar* &var, void* user)
+{
+    if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
+    if ( var->GetType() != CBotTypString )  return CBotTypResult(CBotErrBadNum);
+    var = var->GetNext();
+    if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
+    if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
+    var = var->GetNext();
+    if ( var != 0 )  return CBotTypResult(CBotErrOverParam);
+    return CBotTypResult(CBotTypFloat);
+}
+
+// Instruction "playmusic(filename, repeat)"
+
+bool CScript::rPlayMusic(CBotVar* var, CBotVar* result, int& exception, void* user)
+{
+    std::string filename;
+    CBotString cbs;
+    bool repeat;
+
+    cbs = var->GetValString();
+    filename = std::string(cbs);
+    var = var->GetNext();
+
+    repeat = var->GetValInt();
+
+    CApplication::GetInstancePointer()->GetSound()->StopMusic();
+    CApplication::GetInstancePointer()->GetSound()->PlayMusic(filename, repeat);
+    return true;
+}
+
+// Instruction "stopmusic()"
+
+bool CScript::rStopMusic(CBotVar* var, CBotVar* result, int& exception, void* user)
+{
+    CApplication::GetInstancePointer()->GetSound()->StopMusic();
+    return true;
+}
+
 
 // Compilation of the instruction "retobject(rank)".
 
@@ -2982,6 +3026,8 @@ void CScript::InitFonctions()
     CBotProgram::AddFunction("abs",       rAbs,       CScript::cOneFloat);
 
     CBotProgram::AddFunction("endmission",rEndMission,CScript::cEndMission);
+    CBotProgram::AddFunction("playmusic", rPlayMusic ,CScript::cPlayMusic);
+    CBotProgram::AddFunction("stopmusic", rStopMusic ,CScript::cNull);
 
     CBotProgram::AddFunction("retobject", rGetObject, CScript::cGetObject);
     CBotProgram::AddFunction("destroy",   rDestroy,   CScript::cDestroy);
