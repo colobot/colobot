@@ -552,7 +552,7 @@ protected:
     int             m_prohibitedTotal;
     char            m_prohibitedToken[100][20];
 
-    char            m_gamerName[100];
+    std::string     m_gamerName;
 
     int             m_freeBuild;        // constructible buildings
     int             m_freeResearch;     // researches possible

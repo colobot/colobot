@@ -731,9 +731,9 @@ void InitializeRestext()
 
 static char         g_gamerName[100];
 
-void SetGlobalGamerName(char *name)
+void SetGlobalGamerName(std::string name)
 {
-    strcpy(g_gamerName, name);
+    strcpy(g_gamerName, name.c_str());
 }
 
 

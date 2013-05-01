@@ -706,27 +706,25 @@ CRobotMain::CRobotMain(CApplication* app)
     m_windowPos = Math::Point(0.15f, 0.17f);
     m_windowDim = Math::Point(0.70f, 0.66f);
 
-    // TODO: profile
-    // float fValue;
-    // int iValue;
+    float fValue;
+    int iValue;
 
-    // if (GetLocalProfileFloat("Edit", "FontSize",    fValue)) m_fontSize    = fValue;
-    // if (GetLocalProfileFloat("Edit", "WindowPos.x", fValue)) m_windowPos.x = fValue;
-    // if (GetLocalProfileFloat("Edit", "WindowPos.y", fValue)) m_windowPos.y = fValue;
-    // if (GetLocalProfileFloat("Edit", "WindowDim.x", fValue)) m_windowDim.x = fValue;
-    // if (GetLocalProfileFloat("Edit", "WindowDim.y", fValue)) m_windowDim.y = fValue;
+    if (GetProfile().GetLocalProfileFloat("Edit", "FontSize",    fValue)) m_fontSize    = fValue;
+    if (GetProfile().GetLocalProfileFloat("Edit", "WindowPos.x", fValue)) m_windowPos.x = fValue;
+    if (GetProfile().GetLocalProfileFloat("Edit", "WindowPos.y", fValue)) m_windowPos.y = fValue;
+    if (GetProfile().GetLocalProfileFloat("Edit", "WindowDim.x", fValue)) m_windowDim.x = fValue;
+    if (GetProfile().GetLocalProfileFloat("Edit", "WindowDim.y", fValue)) m_windowDim.y = fValue;
 
     m_IOPublic = false;
     m_IODim = Math::Point(320.0f/640.0f, (121.0f+18.0f*8)/480.0f);
     m_IOPos.x = (1.0f-m_IODim.x)/2.0f;  // in the middle
     m_IOPos.y = (1.0f-m_IODim.y)/2.0f;
 
-    /* TODO: profile
-    if (GetLocalProfileInt  ("Edit", "IOPublic", iValue)) m_IOPublic = iValue;
-    if (GetLocalProfileFloat("Edit", "IOPos.x",  fValue)) m_IOPos.x  = fValue;
-    if (GetLocalProfileFloat("Edit", "IOPos.y",  fValue)) m_IOPos.y  = fValue;
-    if (GetLocalProfileFloat("Edit", "IODim.x",  fValue)) m_IODim.x  = fValue;
-    if (GetLocalProfileFloat("Edit", "IODim.y",  fValue)) m_IODim.y  = fValue; */
+    if (GetProfile().GetLocalProfileInt  ("Edit", "IOPublic", iValue)) m_IOPublic = iValue;
+    if (GetProfile().GetLocalProfileFloat("Edit", "IOPos.x",  fValue)) m_IOPos.x  = fValue;
+    if (GetProfile().GetLocalProfileFloat("Edit", "IOPos.y",  fValue)) m_IOPos.y  = fValue;
+    if (GetProfile().GetLocalProfileFloat("Edit", "IODim.x",  fValue)) m_IODim.x  = fValue;
+    if (GetProfile().GetLocalProfileFloat("Edit", "IODim.y",  fValue)) m_IODim.y  = fValue;
 
     m_short->FlushShortcuts();
     InitEye();
@@ -742,9 +740,8 @@ CRobotMain::CRobotMain(CApplication* app)
     g_researchEnable = 0;
     g_unit = UNIT;
 
-    m_gamerName[0] = 0;
-    /* TODO: profile
-    GetLocalProfileString("Gamer", "LastName", m_gamerName, 100); */
+    m_gamerName = "";
+    GetProfile().GetLocalProfileString("Gamer", "LastName", m_gamerName);
     SetGlobalGamerName(m_gamerName);
     ReadFreeParam();
     m_dialog->SetupRecall();
@@ -907,11 +904,10 @@ Ui::CDisplayText* CRobotMain::GetDisplayText()
 //! Creates the file colobot.ini at the first time
 void CRobotMain::CreateIni()
 {
-    /* TODO: profile
     int iValue;
     // colobot.ini doesn't exist?
-    if (!GetLocalProfileInt("Setup", "TotoMode", iValue))
-        m_dialog->SetupMemorize();*/
+    if (!GetProfile().GetLocalProfileInt("Setup", "TotoMode", iValue))
+        m_dialog->SetupMemorize();
 }
 
 void CRobotMain::SetDefaultInputBindings()
@@ -2235,8 +2231,7 @@ float CRobotMain::GetGameTime()
 void CRobotMain::SetFontSize(float size)
 {
     m_fontSize = size;
-    /* TODO: profile
-    SetLocalProfileFloat("Edit", "FontSize", m_fontSize); */
+    GetProfile().SetLocalProfileFloat("Edit", "FontSize", m_fontSize);
 }
 
 float CRobotMain::GetFontSize()
@@ -2248,9 +2243,8 @@ float CRobotMain::GetFontSize()
 void CRobotMain::SetWindowPos(Math::Point pos)
 {
     m_windowPos = pos;
-    /* TODO: profile
-    SetLocalProfileFloat("Edit", "WindowPos.x", m_windowPos.x);
-    SetLocalProfileFloat("Edit", "WindowPos.y", m_windowPos.y); */
+    GetProfile().SetLocalProfileFloat("Edit", "WindowPos.x", m_windowPos.x);
+    GetProfile().SetLocalProfileFloat("Edit", "WindowPos.y", m_windowPos.y);
 }
 
 Math::Point CRobotMain::GetWindowPos()
@@ -2261,9 +2255,8 @@ Math::Point CRobotMain::GetWindowPos()
 void CRobotMain::SetWindowDim(Math::Point dim)
 {
     m_windowDim = dim;
-    /* TODO: profile
-    SetLocalProfileFloat("Edit", "WindowDim.x", m_windowDim.x);
-    SetLocalProfileFloat("Edit", "WindowDim.y", m_windowDim.y); */
+    GetProfile().SetLocalProfileFloat("Edit", "WindowDim.x", m_windowDim.x);
+    GetProfile().SetLocalProfileFloat("Edit", "WindowDim.y", m_windowDim.y);
 }
 
 Math::Point CRobotMain::GetWindowDim()
@@ -2276,8 +2269,7 @@ Math::Point CRobotMain::GetWindowDim()
 void CRobotMain::SetIOPublic(bool mode)
 {
     m_IOPublic = mode;
-    /* TODO: profile
-    SetLocalProfileInt("Edit", "IOPublic", m_IOPublic); */
+    GetProfile().SetLocalProfileInt("Edit", "IOPublic", m_IOPublic);
 }
 
 bool CRobotMain::GetIOPublic()
@@ -2288,9 +2280,8 @@ bool CRobotMain::GetIOPublic()
 void CRobotMain::SetIOPos(Math::Point pos)
 {
     m_IOPos = pos;
-    /* TODO: profile
-    SetLocalProfileFloat("Edit", "IOPos.x", m_IOPos.x);
-    SetLocalProfileFloat("Edit", "IOPos.y", m_IOPos.y); */
+    GetProfile().SetLocalProfileFloat("Edit", "IOPos.x", m_IOPos.x);
+    GetProfile().SetLocalProfileFloat("Edit", "IOPos.y", m_IOPos.y);
 }
 
 Math::Point CRobotMain::GetIOPos()
@@ -2301,9 +2292,8 @@ Math::Point CRobotMain::GetIOPos()
 void CRobotMain::SetIODim(Math::Point dim)
 {
     m_IODim = dim;
-    /* TODO: profile
-    SetLocalProfileFloat("Edit", "IODim.x", m_IODim.x);
-    SetLocalProfileFloat("Edit", "IODim.y", m_IODim.y); */
+    GetProfile().SetLocalProfileFloat("Edit", "IODim.x", m_IODim.x);
+    GetProfile().SetLocalProfileFloat("Edit", "IODim.y", m_IODim.y);
 }
 
 Math::Point CRobotMain::GetIODim()
@@ -5874,7 +5864,7 @@ void CRobotMain::LoadOneScript(CObject *obj, int &nbError)
 
         char filename[MAX_FNAME];
         sprintf(filename, "%s/%s/%c%.3d%.3d%.1d.txt",
-                    GetSavegameDir(), m_gamerName, name[0], rank, objRank, i);
+                    GetSavegameDir(), m_gamerName.c_str(), name[0], rank, objRank, i);
         brain->ReadProgram(i, filename);
         if (!brain->GetCompile(i)) nbError++;
     }
@@ -5944,7 +5934,7 @@ void CRobotMain::SaveOneScript(CObject *obj)
     {
         char filename[MAX_FNAME];
         sprintf(filename, "%s/%s/%c%.3d%.3d%.1d.txt",
-                    GetSavegameDir(), m_gamerName, name[0], rank, objRank, i);
+                    GetSavegameDir(), m_gamerName.c_str(), name[0], rank, objRank, i);
         brain->WriteProgram(i, filename);
     }
 }
@@ -6494,10 +6484,10 @@ void CRobotMain::WriteFreeParam()
     m_freeResearch |= g_researchDone;
     m_freeBuild    |= g_build;
 
-    if (m_gamerName[0] == 0) return;
+    if (m_gamerName == "") return;
 
     char filename[MAX_FNAME];
-    sprintf(filename, "%s/%s/research.gam", GetSavegameDir(), m_gamerName);
+    sprintf(filename, "%s/%s/research.gam", GetSavegameDir(), m_gamerName.c_str());
     FILE* file = fopen(filename, "w");
     if (file == NULL) return;
 
@@ -6513,10 +6503,10 @@ void CRobotMain::ReadFreeParam()
     m_freeResearch = 0;
     m_freeBuild    = 0;
 
-    if (m_gamerName[0] == 0) return;
+    if (m_gamerName == "") return;
 
     char filename[MAX_FNAME];
-    sprintf(filename, "%s/%s/research.gam", GetSavegameDir(), m_gamerName);
+    sprintf(filename, "%s/%s/research.gam", GetSavegameDir(), m_gamerName.c_str());
     FILE* file = fopen(filename, "r");
     if (file == NULL)  return;
 
@@ -7063,15 +7053,15 @@ bool CRobotMain::GetRetroMode()
 //! Change the player's name
 void CRobotMain::SetGamerName(const char *name)
 {
-    strcpy(m_gamerName, name);
+    m_gamerName = std::string(name);
     SetGlobalGamerName(m_gamerName);
     ReadFreeParam();
 }
 
-//! Getes the player's name
+//! Gets the player's name
 char* CRobotMain::GetGamerName()
 {
-    return m_gamerName;
+    return const_cast<char*>(m_gamerName.c_str());
 }
 
 

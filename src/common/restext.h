@@ -24,6 +24,8 @@
 
 #include "common/global.h"
 
+#include <string>
+
 
 /**
  * \enum ResType
@@ -153,6 +155,6 @@ enum ResTextType
 
 void     InitializeRestext();
 
-void     SetGlobalGamerName(char *name);
+void     SetGlobalGamerName(std::string name);
 bool     SearchKey(const char *cmd, InputSlot& slot);
 bool     GetResource(ResType type, int num, char* text);
