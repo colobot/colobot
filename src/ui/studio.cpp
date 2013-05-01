@@ -167,7 +167,7 @@ bool CStudio::EventProcess(const Event &event)
     {
         slider = static_cast< CSlider* >(pw->SearchControl(EVENT_STUDIO_SIZE));
         if ( slider == nullptr )  return false;
-        m_main->SetFontSize(9.0f+slider->GetVisibleValue()*6.0f);
+        m_main->SetFontSize(9.0f+slider->GetVisibleValue()*12.0f);
         ViewEditScript();
     }
 
