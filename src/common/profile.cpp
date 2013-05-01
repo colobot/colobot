@@ -43,7 +43,11 @@ CProfile::~CProfile()
     {
         try
         {
+            #ifdef NDEBUG
             bp::ini_parser::write_ini(GetSystemUtils()->profileFileLocation(), m_propertyTree);
+            #else
+            bp::ini_parser::write_ini("colobot.ini", m_propertyTree);
+            #endif
         }
         catch (std::exception & e)
         {
@@ -57,7 +61,11 @@ bool CProfile::InitCurrentDirectory()
 {
     try
     {
+        #ifdef NDEBUG
         bp::ini_parser::read_ini(GetSystemUtils()->profileFileLocation(), m_propertyTree);
+        #else
+        bp::ini_parser::read_ini("colobot.ini", m_propertyTree);
+        #endif
     }
     catch (std::exception & e)
     {

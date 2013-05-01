@@ -174,7 +174,11 @@ CMainDialog::CMainDialog()
 
 
     m_sceneDir = "levels";
+    #ifdef NDEBUG
     m_savegameDir = GetSystemUtils()->savegameDirectoryLocation();
+    #else
+    m_savegameDir = "savegame";
+    #endif
     m_publicDir = "program";
     m_userDir = "user";
     m_filesDir = "files";
