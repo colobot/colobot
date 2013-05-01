@@ -6760,7 +6760,7 @@ Error CRobotMain::CheckEndMission(bool frame)
         }
         if (frame && m_base) return ERR_MISSION_NOTERM;
         if (m_missionResult == ERR_OK) { //mission win?
-            if (!(frame && m_base)) m_displayText->DisplayError(INFO_WIN, Math::Vector(0.0f,0.0f,0.0f));
+            m_displayText->DisplayError(INFO_WIN, Math::Vector(0.0f,0.0f,0.0f));
             if(m_winDelay == 0) m_winDelay = m_endTakeWinDelay;
             m_lostDelay = 0.0f;
             m_displayText->SetEnable(false);

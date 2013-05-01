@@ -258,7 +258,7 @@ bool ALSound::SearchFreeBuffer(Sound sound, int &channel, bool &bAlreadyLoaded)
             return true;
         }
         delete chn;
-        GetLogger()->Error("Could not open channel to play sound!");
+        GetLogger()->Error("Could not open channel to play sound!\n");
         return false;
     }
 
@@ -279,7 +279,7 @@ bool ALSound::SearchFreeBuffer(Sound sound, int &channel, bool &bAlreadyLoaded)
                     return true;
                 }
                 delete chn;
-                GetLogger()->Warn("Could not open additional channel to play sound!");
+                GetLogger()->Warn("Could not open additional channel to play sound!\n");
             }
         }
     }
@@ -287,7 +287,7 @@ bool ALSound::SearchFreeBuffer(Sound sound, int &channel, bool &bAlreadyLoaded)
     int lowerOrEqual = -1;
     for (auto it : mChannels) {
         if (it.second->GetPriority() < priority) {
-            GetLogger()->Debug("Sound channel with lower priority will be reused.");
+            GetLogger()->Debug("Sound channel with lower priority will be reused.\n");
             channel = it.first;
             return true;
         }
@@ -297,7 +297,7 @@ bool ALSound::SearchFreeBuffer(Sound sound, int &channel, bool &bAlreadyLoaded)
 
     if (lowerOrEqual != -1) {
         channel = lowerOrEqual;
-        GetLogger()->Debug("Sound channel with lower or equal priority will be reused.");
+        GetLogger()->Debug("Sound channel with lower or equal priority will be reused.\n");
         return true;
     }
 
