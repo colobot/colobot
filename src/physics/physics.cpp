@@ -1917,7 +1917,7 @@ void CPhysics::SoundMotorFull(float rTime, ObjectType type)
 
     if ( m_object->GetToy() )
     {
-        sound = SOUND_MOTORd;
+        sound = SOUND_NONE; //SOUND_MOTORd;
         amplitude = 1.0f;
         time = 0.1f;
     }
@@ -2016,7 +2016,7 @@ void CPhysics::SoundMotorSlow(float rTime, ObjectType type)
 
     if ( m_object->GetToy() )
     {
-        sound = SOUND_MOTORd;
+        sound = SOUND_NONE; // SOUND_MOTORd;
         amplitude = 0.0f;
     }
 

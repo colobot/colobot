@@ -130,7 +130,7 @@ enum Sound
   SOUND_FIREp  = 78, /*!< shooting with phazer */
   SOUND_EXPLOg1  = 79, /*!< impact gun 1 */
   SOUND_EXPLOg2  = 80, /*!< impact gun 2 */
-  SOUND_MOTORd  = 81, /*!< engine friction */
+//  SOUND_MOTORd  = 81, /*!< engine friction */
 };
 
 
