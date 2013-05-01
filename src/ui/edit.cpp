@@ -688,7 +688,7 @@ void CEdit::MouseMove(Math::Point mouse)
 int CEdit::MouseDetect(Math::Point mouse)
 {
     Math::Point pos;
-    float   indentLength, offset, size;
+    float   indentLength = 0.0f, offset, size;
     int     i, len, c;
     bool    bTitle;
 
@@ -886,7 +886,7 @@ bool CEdit::HyperGo(EventType event)
 void CEdit::Draw()
 {
     Math::Point     pos, ppos, dim, start, end;
-    float       size, indentLength;
+    float       size = 0.0f, indentLength = 0.0f;
     int         i, j, beg, len, c1, c2, o1, o2, eol, iIndex, line;
 
     if ( (m_state & STATE_VISIBLE) == 0 )  return;
@@ -1877,7 +1877,7 @@ bool CEdit::WriteText(std::string filename)
     FILE*       file;
     char        buffer[1000+20];
     int         i, j, k, n;
-    float       iDim;
+    float       iDim = 0.0f;
 
     if ( filename[0] == 0 )  return false;
     file = fopen(filename.c_str(), "wb");
@@ -2397,7 +2397,7 @@ void CEdit::MoveChar(int move, bool bWord, bool bSelect)
 
 void CEdit::MoveLine(int move, bool bWord, bool bSelect)
 {
-    float   column, indentLength;
+    float   column, indentLength = 0.0f;
     int     i, line, c;
 
     if ( move == 0 )  return;
@@ -2956,7 +2956,7 @@ bool CEdit::MinMaj(bool bMaj)
 
 void CEdit::Justif()
 {
-    float   width, size, indentLength;
+    float   width, size, indentLength = 0.0f;
     int     i, j, line, indent;
     bool    bDual, bString, bRem;
 

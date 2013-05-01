@@ -167,7 +167,7 @@ class CSoundInterface
      *  Function calls \link CSoundInterface::Cache() \endlink for each file
      */
     inline void CacheAll(std::string path) {
-        for ( int i = 1; i <= 81; i++ ) {
+        for ( int i = 1; i <= 80; i++ ) {
             std::stringstream filename;
             filename << path << "/sound" << std::setfill('0') << std::setw(3) << i << ".wav";
             if ( !Cache(static_cast<Sound>(i), filename.str()) )

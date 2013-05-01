@@ -1650,7 +1650,7 @@ bool CMotionVehicle::EventFrameFly(const Event &event)
 bool CMotionVehicle::EventFrameInsect(const Event &event)
 {
     Math::Vector    dir;
-    float       s, a, prog, time;
+    float       s, a, prog = 0.0f, time;
     int         i, st, nd, action;
     bool        bStop, bOnBoard;
 

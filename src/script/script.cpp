@@ -617,9 +617,10 @@ bool CScript::rRadar(CBotVar* var, CBotVar* result, int& exception, void* user)
     RadarFilter filter;
     float       best, minDist, maxDist, sens, iAngle, angle, focus, d, a;
     int         type, oType, i;
-    bool        bArray;
+    bool        bArray = false;
 
     type    = OBJECT_NULL;
+    array   = 0;
     angle   = 0.0f;
     focus   = Math::PI*2.0f;
     minDist = 0.0f*g_unit;
@@ -836,7 +837,7 @@ bool CScript::rDetect(CBotVar* var, CBotVar* result, int& exception, void* user)
     RadarFilter filter;
     float       bGoal, best, minDist, maxDist, sens, iAngle, angle, focus, d, a;
     int         type, oType, i;
-    bool        bArray;
+    bool        bArray = false;
     Error       err;
 
     exception = 0;
@@ -844,6 +845,7 @@ bool CScript::rDetect(CBotVar* var, CBotVar* result, int& exception, void* user)
     if ( script->m_primaryTask == 0 )  // no task in progress?
     {
         type    = OBJECT_NULL;
+        array   = 0;
         angle   = 0.0f;
         focus   = 45.0f*Math::PI/180.0f;
         minDist = 0.0f*g_unit;

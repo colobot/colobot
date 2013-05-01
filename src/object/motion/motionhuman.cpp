@@ -677,7 +677,7 @@ bool CMotionHuman::EventFrame(const Event &event)
     float       s, a, prog, rTime[2], lTime[2], time, rot, hr, hl;
     float       al, ar, af;
     float       tSt[9], tNd[9];
-    float       aa, bb, shield, deadFactor, level;
+    float       aa, bb, shield, deadFactor = 0.0f, level;
     int         i, ii, st, nd, action, legAction, armAction;
     bool        bOnBoard, bSwim;
 

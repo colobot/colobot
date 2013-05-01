@@ -406,7 +406,7 @@ bool CMotionBee::EventProcess(const Event &event)
 bool CMotionBee::EventFrame(const Event &event)
 {
     Math::Vector        dir;
-    float           s, a, prog;
+    float           s, a, prog = 0.0f;
     int             action, i, st, nd;
     bool            bStop;
 

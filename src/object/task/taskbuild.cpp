@@ -557,7 +557,7 @@ Error CTaskBuild::FlatFloor()
     ObjectType  type;
     Math::Vector    center, pos, oPos, bPos;
     Math::Point     c, p;
-    float       radius, max, oRadius, bRadius, angle, dist;
+    float       radius, max, oRadius, bRadius = 0.0f, angle, dist;
     int         i, j;
     bool        bLittleFlat, bBase;
 

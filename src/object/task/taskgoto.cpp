@@ -756,7 +756,7 @@ Error CTaskGoto::Start(Math::Vector goal, float altitude,
 Error CTaskGoto::IsEnded()
 {
     Math::Vector    pos;
-    float       limit, angle, dist, h, level;
+    float       limit, angle = 0.0f, dist, h, level;
 
     if ( m_engine->GetPause() )  return ERR_CONTINUE;
     if ( m_error != ERR_OK )  return m_error;
@@ -1338,7 +1338,7 @@ bool CTaskGoto::GetHotPoint(CObject *pObj, Math::Vector &pos,
 
 bool CTaskGoto::LeakSearch(Math::Vector &pos, float &delay)
 {
-    CObject     *pObj, *pObstacle;
+    CObject     *pObj, *pObstacle = nullptr;
     Math::Vector    iPos, oPos, bPos;
     float       iRadius, oRadius, bRadius, dist, min, dir;
     int         i, j;
