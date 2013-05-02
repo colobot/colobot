@@ -63,10 +63,10 @@ bool CMotionDummy::Create(Math::Vector pos, float angle, ObjectType type,
     m_physics->SetLinMotionX(MO_ADVACCEL, 20.0f);
     m_physics->SetLinMotionX(MO_RECACCEL, 20.0f);
     m_physics->SetLinMotionX(MO_STOACCEL, 20.0f);
-    m_physics->SetLinMotionX(MO_TERSLIDE,  5.0f);
-    m_physics->SetLinMotionZ(MO_TERSLIDE,  5.0f);
-    m_physics->SetLinMotionX(MO_TERFORCE, 50.0f);
-    m_physics->SetLinMotionZ(MO_TERFORCE, 50.0f);
+    m_physics->SetLinMotionX(MO_TERSLIDE,  0.0f);
+    m_physics->SetLinMotionZ(MO_TERSLIDE,  0.0f);
+    m_physics->SetLinMotionX(MO_TERFORCE,  0.0f);
+    m_physics->SetLinMotionZ(MO_TERFORCE,  0.0f);
     m_physics->SetLinMotionZ(MO_MOTACCEL, 40.0f);
     m_physics->SetLinMotionY(MO_ADVSPEED, 60.0f);
     m_physics->SetLinMotionY(MO_RECSPEED, 60.0f);
