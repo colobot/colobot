@@ -742,6 +742,23 @@ pb->SetState(STATE_SHADOW);
         CameraPerso();
     }
 
+    if ( m_phase != PHASE_SIMUL   &&
+         m_phase != PHASE_WIN     &&
+         m_phase != PHASE_LOST    &&
+         m_phase != PHASE_WRITE   &&
+         m_phase != PHASE_READs   &&
+         m_phase != PHASE_WRITEs  &&
+         m_phase != PHASE_SETUPds &&
+         m_phase != PHASE_SETUPgs &&
+         m_phase != PHASE_SETUPps &&
+         m_phase != PHASE_SETUPcs &&
+         m_phase != PHASE_SETUPss )
+    {
+        if (!m_sound->IsPlayingMusic()) {
+            m_sound->PlayMusic("Intro1.ogg", false);
+        }
+    }
+
     if ( m_phase == PHASE_TRAINER ||
             m_phase == PHASE_DEFI    ||
             m_phase == PHASE_MISSION ||
@@ -750,10 +767,6 @@ pb->SetState(STATE_SHADOW);
             m_phase == PHASE_USER    ||
             m_phase == PHASE_PROTO   )
     {
-        if (!m_sound->IsPlayingMusic()) {
-            m_sound->PlayMusic("Intro1.ogg", false);
-        }
-            
         if ( m_phase == PHASE_TRAINER )  m_index = 0;
         if ( m_phase == PHASE_DEFI    )  m_index = 1;
         if ( m_phase == PHASE_MISSION )  m_index = 2;
@@ -1745,9 +1758,6 @@ pos.y -= 0.048f;
 
     if ( m_phase == PHASE_WELCOME1 )
     {
-        m_sound->StopMusic();
-        m_sound->PlayMusic("Intro1.ogg", false);
-
         pos.x  = 0.0f;
         pos.y  = 0.0f;
         ddim.x = 0.0f;
