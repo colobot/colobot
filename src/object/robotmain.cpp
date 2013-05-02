@@ -3998,6 +3998,14 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
         {
             m_displayText->SetDelay(OpFloat(line, "factor", 1.0f));
         }
+
+        if (Cmd(line, "CacheAudio") && !resetObject && m_version >= 3)
+        {
+            char filename[100];
+            OpString(line, "filename", filename);
+            m_sound->CacheMusic(filename);
+            continue;
+        }
         
         if (Cmd(line, "AudioChange") && !resetObject && m_version >= 2)
         {
