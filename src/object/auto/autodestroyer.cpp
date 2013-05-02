@@ -72,14 +72,35 @@ void CAutoDestroyer::Init()
 
 bool CAutoDestroyer::EventProcess(const Event &event)
 {
-    CObject*    scrap;
-    Gfx::CPyro*      pyro;
+    CObject*        scrap;
+    Gfx::CPyro*     pyro;
     Math::Vector    pos, speed;
     Math::Point     dim;
+    Ui::CWindow*    pw;
 
     CAuto::EventProcess(event);
 
     if ( m_engine->GetPause() )  return true;
+
+    if ( event.type == EVENT_OBJECT_BDESTROY )
+    {
+        if ( m_object->GetVirusMode() )  // contaminated by a virus?
+        {
+            return true; // Don't do anything. TODO: Error?
+        }
+
+        scrap = SearchPlastic();
+        scrap->SetLock(true);  // usable waste
+//?     scrap->SetTruck(m_object);  // usable waste
+
+        m_sound->Play(SOUND_PSHHH2, m_object->GetPosition(0), 1.0f, 1.0f);
+
+        m_phase    = ADEP_DOWN;
+        m_progress = 0.0f;
+        m_speed    = 1.0f/1.0f;
+        m_bExplo   = false;
+    }
+
     if ( event.type != EVENT_FRAME )  return true;
 
     m_progress += event.rTime*m_speed;
@@ -98,55 +119,13 @@ bool CAutoDestroyer::EventProcess(const Event &event)
     {
         if ( m_progress >= 1.0f )
         {
+            m_phase    = ADEP_WAIT;  // still waiting ...
+            m_progress = 0.0f;
+            m_speed    = 1.0f/0.5f;
             scrap = SearchPlastic();
-            if ( scrap == 0 )
-            {
-                m_phase    = ADEP_WAIT;  // still waiting ...
-                m_progress = 0.0f;
-                m_speed    = 1.0f/0.5f;
-            }
-            else
-            {
-                scrap->SetLock(true);  // usable waste
-//?             scrap->SetTruck(m_object);  // usable waste
-
-                if ( SearchVehicle() )
-                {
-                    if ( m_progress < 20.0f ) {
-                        m_phase    = ADEP_WAIT;  // still waiting ...
-                        //m_progress = 0.0f;
-                        m_speed    = 1.0f/0.5f;
-                    } else {
-                        if ( m_object->GetLock() ) { // If still building...
-                            m_phase    = ADEP_WAIT;  // still waiting ...
-                            m_progress = 0.0f;
-                            m_speed    = 1.0f/0.5f;
-                        } else {
-                            m_sound->Play(SOUND_PSHHH2, m_object->GetPosition(0), 1.0f, 1.0f);
-
-                            m_phase    = ADEP_DOWN;
-                            m_progress = 0.0f;
-                            m_speed    = 1.0f/1.0f;
-                            m_bExplo   = false;
-                        }
-                    }
-                }
-                else
-                {
-                    if ( m_object->GetLock() ) { // If still building...
-                        m_phase    = ADEP_WAIT;  // still waiting ...
-                        m_progress = 0.0f;
-                        m_speed    = 1.0f/0.5f;
-                    } else {
-                        m_sound->Play(SOUND_PSHHH2, m_object->GetPosition(0), 1.0f, 1.0f);
-
-                        m_phase    = ADEP_DOWN;
-                        m_progress = 0.0f;
-                        m_speed    = 1.0f/1.0f;
-                        m_bExplo   = false;
-                    }
-                }
-            }
+            pw = static_cast< Ui::CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
+            if ( pw == 0 )  return true;
+            EnableInterface(pw, EVENT_OBJECT_BDESTROY, (scrap != 0));
         }
     }
 
@@ -224,6 +203,7 @@ bool CAutoDestroyer::CreateInterface(bool bSelect)
     Ui::CWindow*    pw;
     Math::Point     pos, ddim;
     float       ox, oy, sx, sy;
+    CObject*        scrap;
 
     CAuto::CreateInterface(bSelect);
 
@@ -242,6 +222,15 @@ bool CAutoDestroyer::CreateInterface(bool bSelect)
     ddim.x = 66.0f/640.0f;
     ddim.y = 66.0f/480.0f;
     pw->CreateGroup(pos, ddim, 106, EVENT_OBJECT_TYPE);
+
+    pos.x = ox+sx*8.00f;
+    pos.y = oy+sy*0.25f;
+    ddim.x = (33.0f/640.0f)*1.5f;
+    ddim.y = (33.0f/480.0f)*1.5f;
+    pw->CreateButton(pos, ddim, 12, EVENT_OBJECT_BDESTROY);
+
+    scrap = SearchPlastic();
+    EnableInterface(pw, EVENT_OBJECT_BDESTROY, (scrap != 0));
 
     return true;
 }
@@ -323,68 +312,6 @@ CObject* CAutoDestroyer::SearchPlastic()
     return nullptr;
 }
 
-// Seeks if one vehicle is too close.
-
-bool CAutoDestroyer::SearchVehicle()
-{
-    CObject*    pObj;
-    Math::Vector    cPos, oPos;
-    ObjectType  type;
-    float       oRadius, dist;
-    int         i;
-
-    cPos = m_object->GetPosition(0);
-
-    for ( i=0 ; i<1000000 ; i++ )
-    {
-        pObj = static_cast< CObject* >(m_iMan->SearchInstance(CLASS_OBJECT, i));
-        if ( pObj == nullptr )  break;
-
-        type = pObj->GetType();
-        if ( type != OBJECT_HUMAN    &&
-             type != OBJECT_MOBILEfa &&
-             type != OBJECT_MOBILEta &&
-             type != OBJECT_MOBILEwa &&
-             type != OBJECT_MOBILEia &&
-             type != OBJECT_MOBILEfc &&
-             type != OBJECT_MOBILEtc &&
-             type != OBJECT_MOBILEwc &&
-             type != OBJECT_MOBILEic &&
-             type != OBJECT_MOBILEfi &&
-             type != OBJECT_MOBILEti &&
-             type != OBJECT_MOBILEwi &&
-             type != OBJECT_MOBILEii &&
-             type != OBJECT_MOBILEfs &&
-             type != OBJECT_MOBILEts &&
-             type != OBJECT_MOBILEws &&
-             type != OBJECT_MOBILEis &&
-             type != OBJECT_MOBILErt &&
-             type != OBJECT_MOBILErc &&
-             type != OBJECT_MOBILErr &&
-             type != OBJECT_MOBILErs &&
-             type != OBJECT_MOBILEsa &&
-             type != OBJECT_MOBILEtg &&
-             type != OBJECT_MOBILEft &&
-             type != OBJECT_MOBILEtt &&
-             type != OBJECT_MOBILEwt &&
-             type != OBJECT_MOBILEit &&
-             type != OBJECT_MOBILEdr &&
-             type != OBJECT_MOTHER   &&
-             type != OBJECT_ANT      &&
-             type != OBJECT_SPIDER   &&
-             type != OBJECT_BEE      &&
-             type != OBJECT_WORM     )  continue;
-
-        if ( !pObj->GetCrashSphere(0, oPos, oRadius) )  continue;
-        dist = Math::Distance(oPos, cPos)-oRadius;
-
-        if ( dist < 20.0f )  return true;
-    }
-
-    return false;
-}
-
-
 // Returns an error due the state of the automation.
 
 Error CAutoDestroyer::GetError()
@@ -440,4 +367,14 @@ bool CAutoDestroyer::Read(char *line)
     return true;
 }
 
+// Changes the state of a button interface.
 
+void CAutoDestroyer::EnableInterface(Ui::CWindow *pw, EventType event, bool bState)
+{
+    Ui::CControl*   control;
+
+    control = pw->SearchControl(event);
+    if ( control == 0 )  return;
+
+    control->SetState(Ui::STATE_ENABLE, bState);
+}

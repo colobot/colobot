@@ -295,6 +295,7 @@ void InitializeRestext()
     stringsEvent[EVENT_OBJECT_MPOWER]       = "..power cell";
     stringsEvent[EVENT_OBJECT_BHELP]        = "Instructions for the mission (\\key help;)";
     stringsEvent[EVENT_OBJECT_BTAKEOFF]     = "Take off to finish the mission";
+    stringsEvent[EVENT_OBJECT_BDESTROY]     = "Destroy";
     stringsEvent[EVENT_OBJECT_BDERRICK]     = "Build a derrick";
     stringsEvent[EVENT_OBJECT_BSTATION]     = "Build a power station";
     stringsEvent[EVENT_OBJECT_BFACTORY]     = "Build a bot factory";

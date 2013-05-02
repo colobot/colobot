@@ -53,7 +53,7 @@ public:
 
 protected:
     CObject*    SearchPlastic();
-    bool        SearchVehicle();
+    void        EnableInterface(Ui::CWindow *pw, EventType event, bool bState);
 
 protected:
     AutoDestroyerPhase  m_phase;
