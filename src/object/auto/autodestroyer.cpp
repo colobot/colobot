@@ -82,23 +82,26 @@ bool CAutoDestroyer::EventProcess(const Event &event)
 
     if ( m_engine->GetPause() )  return true;
 
-    if ( event.type == EVENT_OBJECT_BDESTROY )
+    if (m_main->GetSelect() == m_object)
     {
-        if ( m_object->GetVirusMode() )  // contaminated by a virus?
+        if ( event.type == EVENT_OBJECT_BDESTROY )
         {
-            return true; // Don't do anything. TODO: Error?
+            if ( m_object->GetVirusMode() )  // contaminated by a virus?
+            {
+                return true; // Don't do anything. TODO: Error?
+            }
+
+            scrap = SearchPlastic();
+            scrap->SetLock(true);  // usable waste
+//?         scrap->SetTruck(m_object);  // usable waste
+
+            m_sound->Play(SOUND_PSHHH2, m_object->GetPosition(0), 1.0f, 1.0f);
+
+            m_phase    = ADEP_DOWN;
+            m_progress = 0.0f;
+            m_speed    = 1.0f/1.0f;
+            m_bExplo   = false;
         }
-
-        scrap = SearchPlastic();
-        scrap->SetLock(true);  // usable waste
-//?     scrap->SetTruck(m_object);  // usable waste
-
-        m_sound->Play(SOUND_PSHHH2, m_object->GetPosition(0), 1.0f, 1.0f);
-
-        m_phase    = ADEP_DOWN;
-        m_progress = 0.0f;
-        m_speed    = 1.0f/1.0f;
-        m_bExplo   = false;
     }
 
     if ( event.type != EVENT_FRAME )  return true;
@@ -115,6 +118,7 @@ bool CAutoDestroyer::EventProcess(const Event &event)
         return true;
     }
 
+    pw = static_cast< Ui::CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
     if ( m_phase == ADEP_WAIT )
     {
         if ( m_progress >= 1.0f )
@@ -122,12 +126,12 @@ bool CAutoDestroyer::EventProcess(const Event &event)
             m_phase    = ADEP_WAIT;  // still waiting ...
             m_progress = 0.0f;
             m_speed    = 1.0f/0.5f;
-            scrap = SearchPlastic();
-            pw = static_cast< Ui::CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
-            if ( pw == 0 )  return true;
-            EnableInterface(pw, EVENT_OBJECT_BDESTROY, (scrap != 0));
+            if (m_main->GetSelect() == m_object) {
+                scrap = SearchPlastic();
+                if ( pw != 0 ) EnableInterface(pw, EVENT_OBJECT_BDESTROY, (scrap != 0));
+            }
         }
-    }
+    } else if ( pw != 0 ) EnableInterface(pw, EVENT_OBJECT_BDESTROY, false);
 
     if ( m_phase == ADEP_DOWN )
     {

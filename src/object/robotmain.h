@@ -374,6 +374,8 @@ public:
     void        SetNumericLocale();
     void        RestoreNumericLocale();
 
+    CObject*    GetSelect();
+
 protected:
     bool        EventFrame(const Event &event);
     bool        EventObject(const Event &event);
@@ -404,7 +406,6 @@ protected:
     void        DeleteAllObjects();
     void        UpdateInfoText();
     CObject*    SearchObject(ObjectType type);
-    CObject*    GetSelect();
     void        StartDisplayVisit(EventType event);
     void        FrameVisit(float rTime);
     void        StopDisplayVisit();
