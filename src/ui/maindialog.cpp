@@ -751,7 +751,7 @@ pb->SetState(STATE_SHADOW);
             m_phase == PHASE_PROTO   )
     {
         if (!m_sound->IsPlayingMusic()) {
-            m_sound->PlayMusic("Intro.ogg", false);
+            m_sound->PlayMusic("Intro1.ogg", false);
         }
             
         if ( m_phase == PHASE_TRAINER )  m_index = 0;
@@ -1746,7 +1746,7 @@ pos.y -= 0.048f;
     if ( m_phase == PHASE_WELCOME1 )
     {
         m_sound->StopMusic();
-        m_sound->PlayMusic("Intro.ogg", false);
+        m_sound->PlayMusic("Intro1.ogg", false);
 
         pos.x  = 0.0f;
         pos.y  = 0.0f;
@@ -2004,6 +2004,23 @@ bool CMainDialog::EventProcess(const Event &event)
         //?     if ( m_phase == PHASE_WELCOME1 )  welcomeLength = WELCOME_LENGTH+2.0f;
         //?     else                              welcomeLength = WELCOME_LENGTH;
         welcomeLength = WELCOME_LENGTH;
+
+        if ( m_phase != PHASE_SIMUL   &&
+             m_phase != PHASE_WIN     &&
+             m_phase != PHASE_LOST    &&
+             m_phase != PHASE_WRITE   &&
+             m_phase != PHASE_READs   &&
+             m_phase != PHASE_WRITEs  &&
+             m_phase != PHASE_SETUPds &&
+             m_phase != PHASE_SETUPgs &&
+             m_phase != PHASE_SETUPps &&
+             m_phase != PHASE_SETUPcs &&
+             m_phase != PHASE_SETUPss )
+        {
+            if (!m_sound->IsPlayingMusic()) {
+                m_sound->PlayMusic("Intro2.ogg", true);
+            }
+        }
 
         if ( m_phase == PHASE_WELCOME1 ||
                 m_phase == PHASE_WELCOME2 ||
