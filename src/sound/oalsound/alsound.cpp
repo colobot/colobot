@@ -169,16 +169,17 @@ bool ALSound::Cache(Sound sound, std::string filename)
 
 bool ALSound::CacheMusic(std::string filename)
 {
-    Buffer *buffer = new Buffer();
-    std::stringstream file;
-    file << m_soundPath << "/" << filename;
-    if (buffer->LoadFromFile(file.str(), static_cast<Sound>(-1))) {
-        mMusic[filename] = buffer;
-        return true;
+    if(mMusic.find(filename) == mMusic.end()) {
+        Buffer *buffer = new Buffer();
+        std::stringstream file;
+        file << m_soundPath << "/" << filename;
+        if (buffer->LoadFromFile(file.str(), static_cast<Sound>(-1))) {
+            mMusic[filename] = buffer;
+            return true;
+        }
     }
     return false;
 }
-
 
 int ALSound::GetPriority(Sound sound)
 {
