@@ -51,7 +51,7 @@ CProfile::~CProfile()
         }
         catch (std::exception & e)
         {
-            GetLogger()->Info("Error on storing profile: %s\n", e.what());
+            GetLogger()->Error("Error on storing profile: %s\n", e.what());
         }
     }
 }
@@ -69,7 +69,7 @@ bool CProfile::InitCurrentDirectory()
     }
     catch (std::exception & e)
     {
-        GetLogger()->Info("Error on parsing profile: %s\n", e.what());
+        GetLogger()->Error("Error on parsing profile: %s\n", e.what());
         return false;
     }
     return true;
@@ -86,7 +86,7 @@ bool CProfile::SetLocalProfileString(std::string section, std::string key, std::
     }
     catch (std::exception & e)
     {
-        GetLogger()->Info("Error on parsing profile: %s\n", e.what());
+        GetLogger()->Error("Error on parsing profile: %s\n", e.what());
         return false;
     }
     return true;
@@ -101,7 +101,7 @@ bool CProfile::GetLocalProfileString(std::string section, std::string key, std::
     }
     catch (std::exception & e)
     {
-        GetLogger()->Info("Error on parsing profile: %s\n", e.what());
+        GetLogger()->Error("Error on parsing profile: %s\n", e.what());
         return false;
     }
     return true;
@@ -117,7 +117,7 @@ bool CProfile::SetLocalProfileInt(std::string section, std::string key, int valu
     }
     catch (std::exception & e)
     {
-        GetLogger()->Info("Error on parsing profile: %s\n", e.what());
+        GetLogger()->Error("Error on parsing profile: %s\n", e.what());
         return false;
     }
     return true;
@@ -132,7 +132,7 @@ bool CProfile::GetLocalProfileInt(std::string section, std::string key, int &val
     }
     catch (std::exception & e)
     {
-        GetLogger()->Info("Error on parsing profile: %s\n", e.what());
+        GetLogger()->Error("Error on parsing profile: %s\n", e.what());
         return false;
     }
     return true;
@@ -148,7 +148,7 @@ bool CProfile::SetLocalProfileFloat(std::string section, std::string key, float 
     }
     catch (std::exception & e)
     {
-        GetLogger()->Info("Error on parsing profile: %s\n", e.what());
+        GetLogger()->Error("Error on parsing profile: %s\n", e.what());
         return false;
     }
     return true;
@@ -163,7 +163,7 @@ bool CProfile::GetLocalProfileFloat(std::string section, std::string key, float 
     }
     catch (std::exception & e)
     {
-        GetLogger()->Info("Error on parsing profile: %s\n", e.what());
+        GetLogger()->Error("Error on parsing profile: %s\n", e.what());
         return false;
     }
     return true;
@@ -187,7 +187,7 @@ std::vector< std::string > CProfile::GetLocalProfileSection(std::string section,
     }
     catch (std::exception & e)
     {
-        GetLogger()->Info("Error on parsing profile: %s\n", e.what());
+        GetLogger()->Error("Error on parsing profile: %s\n", e.what());
     }
 
     return ret_list;
