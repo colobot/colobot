@@ -662,8 +662,12 @@ void ALSound::ComputeVolumePan2D(int channel, Math::Vector &pos)
     }
     mChannels[channel]->SetVolumeAtrib(1.0f - ((dist - 10.0f) / 100.0f));
 
-    a = fmodf(Angle(mLookat, mEye), Math::PI * 2.0f);
-    g = fmodf(Angle(pos, mEye), Math::PI * 2.0f);
+    Math::Vector one = Math::Vector(1.0f, 0.0f, 0.0f);
+    float angle_a = Angle(Math::Vector(mLookat.x - mEye.x, mLookat.z - mEye.z, 0.0f), one);
+    float angle_g = Angle(Math::Vector(pos.x - mEye.x, pos.z - mEye.z, 0.0f), one);
+    
+    a = fmodf(angle_a, Math::PI * 2.0f);
+    g = fmodf(angle_g, Math::PI * 2.0f);
     
     if ( a < 0.0f ) {
         a += Math::PI * 2.0f;
@@ -682,5 +686,5 @@ void ALSound::ComputeVolumePan2D(int channel, Math::Vector &pos)
         }
     }
     
-    mChannels[channel]->SetPan( Math::Vector(sinf(g - a), 0.0f, 0.0f) );
+    mChannels[channel]->SetPan( Math::Vector(0.0f, 0.0f, sinf(g - a)) );
 }
