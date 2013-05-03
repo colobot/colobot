@@ -710,10 +710,10 @@ CRobotMain::CRobotMain(CApplication* app)
     int iValue;
 
     if (GetProfile().GetLocalProfileFloat("Edit", "FontSize",    fValue)) m_fontSize    = fValue;
-    if (GetProfile().GetLocalProfileFloat("Edit", "WindowPos.x", fValue)) m_windowPos.x = fValue;
-    if (GetProfile().GetLocalProfileFloat("Edit", "WindowPos.y", fValue)) m_windowPos.y = fValue;
-    if (GetProfile().GetLocalProfileFloat("Edit", "WindowDim.x", fValue)) m_windowDim.x = fValue;
-    if (GetProfile().GetLocalProfileFloat("Edit", "WindowDim.y", fValue)) m_windowDim.y = fValue;
+    if (GetProfile().GetLocalProfileFloat("Edit", "WindowPosX",  fValue)) m_windowPos.x = fValue;
+    if (GetProfile().GetLocalProfileFloat("Edit", "WindowPosY",  fValue)) m_windowPos.y = fValue;
+    if (GetProfile().GetLocalProfileFloat("Edit", "WindowDimX",  fValue)) m_windowDim.x = fValue;
+    if (GetProfile().GetLocalProfileFloat("Edit", "WindowDimY",  fValue)) m_windowDim.y = fValue;
 
     m_IOPublic = false;
     m_IODim = Math::Point(320.0f/640.0f, (121.0f+18.0f*8)/480.0f);
@@ -721,10 +721,10 @@ CRobotMain::CRobotMain(CApplication* app)
     m_IOPos.y = (1.0f-m_IODim.y)/2.0f;
 
     if (GetProfile().GetLocalProfileInt  ("Edit", "IOPublic", iValue)) m_IOPublic = iValue;
-    if (GetProfile().GetLocalProfileFloat("Edit", "IOPos.x",  fValue)) m_IOPos.x  = fValue;
-    if (GetProfile().GetLocalProfileFloat("Edit", "IOPos.y",  fValue)) m_IOPos.y  = fValue;
-    if (GetProfile().GetLocalProfileFloat("Edit", "IODim.x",  fValue)) m_IODim.x  = fValue;
-    if (GetProfile().GetLocalProfileFloat("Edit", "IODim.y",  fValue)) m_IODim.y  = fValue;
+    if (GetProfile().GetLocalProfileFloat("Edit", "IOPosX",   fValue)) m_IOPos.x  = fValue;
+    if (GetProfile().GetLocalProfileFloat("Edit", "IOPosY",   fValue)) m_IOPos.y  = fValue;
+    if (GetProfile().GetLocalProfileFloat("Edit", "IODimX",   fValue)) m_IODim.x  = fValue;
+    if (GetProfile().GetLocalProfileFloat("Edit", "IODimY",   fValue)) m_IODim.y  = fValue;
 
     m_short->FlushShortcuts();
     InitEye();
@@ -2243,8 +2243,8 @@ float CRobotMain::GetFontSize()
 void CRobotMain::SetWindowPos(Math::Point pos)
 {
     m_windowPos = pos;
-    GetProfile().SetLocalProfileFloat("Edit", "WindowPos.x", m_windowPos.x);
-    GetProfile().SetLocalProfileFloat("Edit", "WindowPos.y", m_windowPos.y);
+    GetProfile().SetLocalProfileFloat("Edit", "WindowPosX", m_windowPos.x);
+    GetProfile().SetLocalProfileFloat("Edit", "WindowPosY", m_windowPos.y);
 }
 
 Math::Point CRobotMain::GetWindowPos()
@@ -2255,8 +2255,8 @@ Math::Point CRobotMain::GetWindowPos()
 void CRobotMain::SetWindowDim(Math::Point dim)
 {
     m_windowDim = dim;
-    GetProfile().SetLocalProfileFloat("Edit", "WindowDim.x", m_windowDim.x);
-    GetProfile().SetLocalProfileFloat("Edit", "WindowDim.y", m_windowDim.y);
+    GetProfile().SetLocalProfileFloat("Edit", "WindowDimX", m_windowDim.x);
+    GetProfile().SetLocalProfileFloat("Edit", "WindowDimY", m_windowDim.y);
 }
 
 Math::Point CRobotMain::GetWindowDim()
@@ -2280,8 +2280,8 @@ bool CRobotMain::GetIOPublic()
 void CRobotMain::SetIOPos(Math::Point pos)
 {
     m_IOPos = pos;
-    GetProfile().SetLocalProfileFloat("Edit", "IOPos.x", m_IOPos.x);
-    GetProfile().SetLocalProfileFloat("Edit", "IOPos.y", m_IOPos.y);
+    GetProfile().SetLocalProfileFloat("Edit", "IOPosX", m_IOPos.x);
+    GetProfile().SetLocalProfileFloat("Edit", "IOPosY", m_IOPos.y);
 }
 
 Math::Point CRobotMain::GetIOPos()
@@ -2292,8 +2292,8 @@ Math::Point CRobotMain::GetIOPos()
 void CRobotMain::SetIODim(Math::Point dim)
 {
     m_IODim = dim;
-    GetProfile().SetLocalProfileFloat("Edit", "IODim.x", m_IODim.x);
-    GetProfile().SetLocalProfileFloat("Edit", "IODim.y", m_IODim.y);
+    GetProfile().SetLocalProfileFloat("Edit", "IODimX", m_IODim.x);
+    GetProfile().SetLocalProfileFloat("Edit", "IODimY", m_IODim.y);
 }
 
 Math::Point CRobotMain::GetIODim()
