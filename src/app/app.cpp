@@ -1636,7 +1636,7 @@ void CApplication::SetLanguage(Language language)
         }
         if (envLang == NULL)
         {
-            GetLogger()->Error("Failed to get language from environment, setting default language");
+            GetLogger()->Error("Failed to get language from environment, setting default language\n");
             m_language = LANGUAGE_ENGLISH;
         }
         else if (strncmp(envLang,"en",2) == 0)
