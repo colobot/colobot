@@ -337,7 +337,21 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
 
 bool CApplication::Create()
 {
+    std::string path;
+    bool defaultValues = false;
+
     GetLogger()->Info("Creating CApplication\n");
+
+    if (!GetProfile().InitCurrentDirectory())
+    {
+        GetLogger()->Warn("Config not found. Default values will be used!\n");
+        defaultValues = true;
+    }
+    else
+    {
+        if (GetProfile().GetLocalProfileString("Resources", "Data", path))
+            m_dataPath = path;
+    }
 
     boost::filesystem::path dataPath(m_dataPath);
     if (! (boost::filesystem::exists(dataPath) && boost::filesystem::is_directory(dataPath)) )
@@ -353,37 +367,29 @@ bool CApplication::Create()
     SetLanguage(m_language);
 
     //Create the sound instance.
-    if (!GetProfile().InitCurrentDirectory())
-    {
-        GetLogger()->Warn("Config not found. Default values will be used!\n");
-        m_sound = new CSoundInterface();
+    #ifdef OPENAL_SOUND
+    m_sound = static_cast<CSoundInterface *>(new ALSound());
+    #else
+    GetLogger()->Info("No sound support.\n");
+    m_sound = new CSoundInterface();
+    #endif
+
+    m_sound->Create(true);
+
+    // Cache sound files
+    if (GetProfile().GetLocalProfileString("Resources", "Sound", path)) {
+        m_sound->CacheAll(path);
+    } else {
+        m_sound->CacheAll(GetDataSubdirPath(DIR_SOUND));
     }
-    else
-    {
-        std::string path;
-        if (GetProfile().GetLocalProfileString("Resources", "Data", path))
-            m_dataPath = path;
 
-        #ifdef OPENAL_SOUND
-        m_sound = static_cast<CSoundInterface *>(new ALSound());
-        #else
-        GetLogger()->Info("No sound support.\n");
-        m_sound = new CSoundInterface();
-        #endif
-
-        m_sound->Create(true);
-        if (GetProfile().GetLocalProfileString("Resources", "Sound", path)) {
-            m_sound->CacheAll(path);
-        } else {
-            m_sound->CacheAll(GetDataSubdirPath(DIR_SOUND));
-        }
-
-        if (GetProfile().GetLocalProfileString("Resources", "Music", path)) {
-            m_sound->AddMusicFiles(path);
-        } else {
-            m_sound->AddMusicFiles(GetDataSubdirPath(DIR_MUSIC));
-        }
+    if (GetProfile().GetLocalProfileString("Resources", "Music", path)) {
+        m_sound->AddMusicFiles(path);
+    } else {
+        m_sound->AddMusicFiles(GetDataSubdirPath(DIR_MUSIC));
     }
+
+    GetLogger()->Info("CApplication created successfully\n");
 
     std::string standardInfoMessage =
       "\nPlease see the console output or log file\n"
@@ -481,9 +487,9 @@ bool CApplication::Create()
     // Create the robot application.
     m_robotMain = new CRobotMain(this);
 
-    m_robotMain->ChangePhase(PHASE_WELCOME1);
+    if (defaultValues) m_robotMain->CreateIni();
 
-    GetLogger()->Info("CApplication created successfully\n");
+    m_robotMain->ChangePhase(PHASE_WELCOME1);
 
     return true;
 }
