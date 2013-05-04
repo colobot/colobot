@@ -191,7 +191,7 @@ const int AXIS_INVALID = -1;
 class CRobotMain : public CSingleton<CRobotMain>
 {
 public:
-    CRobotMain(CApplication* app);
+    CRobotMain(CApplication* app, bool loadProfile);
     ~CRobotMain();
 
     Gfx::CCamera* GetCamera();

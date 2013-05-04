@@ -5509,6 +5509,7 @@ void CMainDialog::SetupMemorize()
     GetProfile().SetLocalProfileInt("Setup", "HimselfDamage", m_bHimselfDamage);
     GetProfile().SetLocalProfileInt("Setup", "CameraScroll", m_bCameraScroll);
     GetProfile().SetLocalProfileInt("Setup", "CameraInvertX", m_bCameraInvertX);
+    GetProfile().SetLocalProfileInt("Setup", "CameraInvertY", m_bCameraInvertY);
     GetProfile().SetLocalProfileInt("Setup", "InterfaceEffect", m_bEffect);
     GetProfile().SetLocalProfileInt("Setup", "GroundShadow", m_engine->GetShadow());
     GetProfile().SetLocalProfileInt("Setup", "GroundSpot", m_engine->GetGroundSpot());
@@ -5544,6 +5545,8 @@ void CMainDialog::SetupMemorize()
 	if ( pl != 0 ) {
 	    GetProfile().SetLocalProfileInt("Setup", "Resolution", pl->GetSelect());
 	}
+    } else {
+       // TODO: Default value
     }
     
     std::stringstream key;

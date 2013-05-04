@@ -50,6 +50,11 @@ class CProfile : public CSingleton<CProfile>
          */
         bool InitCurrentDirectory();
 
+        /** Saves colobot.ini to current directory
+         * \return return true on success
+         */
+        bool SaveCurrentDirectory();
+
         /** Sets string value in section under specified key
          * \param section
          * \param key

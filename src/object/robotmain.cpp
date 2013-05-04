@@ -606,7 +606,7 @@ bool rPoint(CBotVar* pThis, CBotVar* var, CBotVar* pResult, int& Exception)
 
 
 //! Constructor of robot application
-CRobotMain::CRobotMain(CApplication* app)
+CRobotMain::CRobotMain(CApplication* app, bool loadProfile)
 {
     m_app = app;
 
@@ -709,22 +709,26 @@ CRobotMain::CRobotMain(CApplication* app)
     float fValue;
     int iValue;
 
-    if (GetProfile().GetLocalProfileFloat("Edit", "FontSize",    fValue)) m_fontSize    = fValue;
-    if (GetProfile().GetLocalProfileFloat("Edit", "WindowPosX",  fValue)) m_windowPos.x = fValue;
-    if (GetProfile().GetLocalProfileFloat("Edit", "WindowPosY",  fValue)) m_windowPos.y = fValue;
-    if (GetProfile().GetLocalProfileFloat("Edit", "WindowDimX",  fValue)) m_windowDim.x = fValue;
-    if (GetProfile().GetLocalProfileFloat("Edit", "WindowDimY",  fValue)) m_windowDim.y = fValue;
+    if (loadProfile) {
+        if (GetProfile().GetLocalProfileFloat("Edit", "FontSize",    fValue)) m_fontSize    = fValue;
+        if (GetProfile().GetLocalProfileFloat("Edit", "WindowPosX",  fValue)) m_windowPos.x = fValue;
+        if (GetProfile().GetLocalProfileFloat("Edit", "WindowPosY",  fValue)) m_windowPos.y = fValue;
+        if (GetProfile().GetLocalProfileFloat("Edit", "WindowDimX",  fValue)) m_windowDim.x = fValue;
+        if (GetProfile().GetLocalProfileFloat("Edit", "WindowDimY",  fValue)) m_windowDim.y = fValue;
+    }
 
     m_IOPublic = false;
     m_IODim = Math::Point(320.0f/640.0f, (121.0f+18.0f*8)/480.0f);
     m_IOPos.x = (1.0f-m_IODim.x)/2.0f;  // in the middle
     m_IOPos.y = (1.0f-m_IODim.y)/2.0f;
 
-    if (GetProfile().GetLocalProfileInt  ("Edit", "IOPublic", iValue)) m_IOPublic = iValue;
-    if (GetProfile().GetLocalProfileFloat("Edit", "IOPosX",   fValue)) m_IOPos.x  = fValue;
-    if (GetProfile().GetLocalProfileFloat("Edit", "IOPosY",   fValue)) m_IOPos.y  = fValue;
-    if (GetProfile().GetLocalProfileFloat("Edit", "IODimX",   fValue)) m_IODim.x  = fValue;
-    if (GetProfile().GetLocalProfileFloat("Edit", "IODimY",   fValue)) m_IODim.y  = fValue;
+    if (loadProfile) {
+        if (GetProfile().GetLocalProfileInt  ("Edit", "IOPublic", iValue)) m_IOPublic = iValue;
+        if (GetProfile().GetLocalProfileFloat("Edit", "IOPosX",   fValue)) m_IOPos.x  = fValue;
+        if (GetProfile().GetLocalProfileFloat("Edit", "IOPosY",   fValue)) m_IOPos.y  = fValue;
+        if (GetProfile().GetLocalProfileFloat("Edit", "IODimX",   fValue)) m_IODim.x  = fValue;
+        if (GetProfile().GetLocalProfileFloat("Edit", "IODimY",   fValue)) m_IODim.y  = fValue;
+    }
 
     m_short->FlushShortcuts();
     InitEye();
@@ -741,10 +745,10 @@ CRobotMain::CRobotMain(CApplication* app)
     g_unit = UNIT;
 
     m_gamerName = "";
-    GetProfile().GetLocalProfileString("Gamer", "LastName", m_gamerName);
+    if (loadProfile) GetProfile().GetLocalProfileString("Gamer", "LastName", m_gamerName);
     SetGlobalGamerName(m_gamerName);
     ReadFreeParam();
-    m_dialog->SetupRecall();
+    if (loadProfile) m_dialog->SetupRecall();
 
     for (int i = 0; i < MAXSHOWLIMIT; i++)
     {
@@ -904,10 +908,20 @@ Ui::CDisplayText* CRobotMain::GetDisplayText()
 //! Creates the file colobot.ini at the first time
 void CRobotMain::CreateIni()
 {
-    int iValue;
-    // colobot.ini doesn't exist?
-    if (!GetProfile().GetLocalProfileInt("Setup", "TotoMode", iValue))
-        m_dialog->SetupMemorize();
+    m_dialog->SetupMemorize();
+
+    GetProfile().SetLocalProfileFloat("Edit", "FontSize", m_fontSize);
+    GetProfile().SetLocalProfileFloat("Edit", "WindowPosX", m_windowPos.x);
+    GetProfile().SetLocalProfileFloat("Edit", "WindowPosY", m_windowPos.y);
+    GetProfile().SetLocalProfileFloat("Edit", "WindowDimX", m_windowDim.x);
+    GetProfile().SetLocalProfileFloat("Edit", "WindowDimY", m_windowDim.y);
+    GetProfile().SetLocalProfileInt("Edit", "IOPublic", m_IOPublic);
+    GetProfile().SetLocalProfileFloat("Edit", "IOPosX", m_IOPos.x);
+    GetProfile().SetLocalProfileFloat("Edit", "IOPosY", m_IOPos.y);
+    GetProfile().SetLocalProfileFloat("Edit", "IODimX", m_IODim.x);
+    GetProfile().SetLocalProfileFloat("Edit", "IODimY", m_IODim.y);
+
+    GetProfile().SaveCurrentDirectory();
 }
 
 void CRobotMain::SetDefaultInputBindings()

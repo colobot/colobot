@@ -364,6 +364,8 @@ bool CApplication::Create()
         return false;
     }
 
+    GetProfile().SetLocalProfileString("Resources", "Data", m_dataPath);
+
     SetLanguage(m_language);
 
     //Create the sound instance.
@@ -377,6 +379,11 @@ bool CApplication::Create()
     m_sound->Create(true);
 
     // Cache sound files
+    if (defaultValues) {
+        GetProfile().SetLocalProfileString("Resources", "Sound", GetDataSubdirPath(DIR_SOUND));
+        GetProfile().SetLocalProfileString("Resources", "Music", GetDataSubdirPath(DIR_MUSIC));
+    }
+
     if (GetProfile().GetLocalProfileString("Resources", "Sound", path)) {
         m_sound->CacheAll(path);
     } else {
@@ -485,7 +492,7 @@ bool CApplication::Create()
     m_modelManager = new Gfx::CModelManager(m_engine);
 
     // Create the robot application.
-    m_robotMain = new CRobotMain(this);
+    m_robotMain = new CRobotMain(this, !defaultValues);
 
     if (defaultValues) m_robotMain->CreateIni();
 

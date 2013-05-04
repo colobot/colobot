@@ -39,21 +39,7 @@ CProfile::CProfile() :
 
 CProfile::~CProfile()
 {
-    if (m_profileNeedSave)
-    {
-        try
-        {
-            #ifdef NDEBUG
-            bp::ini_parser::write_ini(GetSystemUtils()->profileFileLocation(), m_propertyTree);
-            #else
-            bp::ini_parser::write_ini("colobot.ini", m_propertyTree);
-            #endif
-        }
-        catch (std::exception & e)
-        {
-            GetLogger()->Error("Error on storing profile: %s\n", e.what());
-        }
-    }
+    SaveCurrentDirectory();
 }
 
 
@@ -75,7 +61,26 @@ bool CProfile::InitCurrentDirectory()
     return true;
 }
 
-
+bool CProfile::SaveCurrentDirectory()
+{
+    if (m_profileNeedSave)
+    {
+        try
+        {
+            #ifdef NDEBUG
+            bp::ini_parser::write_ini(GetSystemUtils()->profileFileLocation(), m_propertyTree);
+            #else
+            bp::ini_parser::write_ini("colobot.ini", m_propertyTree);
+            #endif
+        }
+        catch (std::exception & e)
+        {
+            GetLogger()->Error("Error on storing profile: %s\n", e.what());
+            return false;
+        }
+    }
+    return true;
+}
 
 bool CProfile::SetLocalProfileString(std::string section, std::string key, std::string value)
 {
