@@ -17,7 +17,7 @@ public:
 
     virtual void SetUp()
     {
-        m_robotMain = new CRobotMain(&m_app);
+        m_robotMain = new CRobotMain(&m_app, false);
 
         m_engine = new Gfx::CEngine(nullptr);
 
