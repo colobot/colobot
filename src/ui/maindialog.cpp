@@ -183,6 +183,8 @@ CMainDialog::CMainDialog()
     m_userDir = "user";
     m_filesDir = "files";
 
+    m_setupFull = m_app->GetVideoConfig().fullScreen;
+
     m_bDialog = false;
 }
 
