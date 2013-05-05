@@ -4013,7 +4013,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             m_displayText->SetDelay(OpFloat(line, "factor", 1.0f));
         }
 
-        if (Cmd(line, "CacheAudio") && !resetObject && m_version >= 3)
+        if (Cmd(line, "CacheAudio") && !resetObject && m_version >= 2)
         {
             char filename[100];
             OpString(line, "filename", filename);
@@ -4021,7 +4021,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             continue;
         }
         
-        if (Cmd(line, "AudioChange") && !resetObject && m_version >= 2)
+        if (Cmd(line, "AudioChange") && !resetObject && m_version >= 2 && m_controller == nullptr)
         {
             int i = m_audioChangeTotal;
             if (i < 10)
@@ -4042,7 +4042,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             continue;
         }
 
-        if (Cmd(line, "Audio") && !resetObject)
+        if (Cmd(line, "Audio") && !resetObject && m_controller == nullptr)
         {
             if(m_version < 2) {
                 int trackid = OpInt(line, "track", 0);
@@ -4390,12 +4390,12 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             m_beginObject = true;
         }
 
-        if (Cmd(line, "MissionController") && read[0] == 0 && m_version == 3)
+        if (Cmd(line, "MissionController") && read[0] == 0 && m_version >= 2)
         {
-            if (!m_beginObject) {
+            /*if (!m_beginObject) {
                 GetLogger()->Error("Syntax error in file '%s' (line %d): MissionController before BeginObject\n", filename, lineNum);
                 continue;
-            }
+            }*/
 
             m_controller = CreateObject(Math::Vector(0.0f, 0.0f, 0.0f), 0.0f, 1.0f, 0.0f, OBJECT_CONTROLLER, 100.0f, false, false, 0);
             m_controller->SetMagnifyDamage(100.0f);
@@ -4514,7 +4514,8 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                     sel = obj;
                 }
 
-                obj->SetSelectable(OpInt(line, "selectable", 1));
+                bool selectable = OpInt(line, "selectable", 1);
+                obj->SetSelectable(selectable);
                 obj->SetEnable(OpInt(line, "enable", 1));
                 obj->SetProxyActivate(OpInt(line, "proxyActivate", 0));
                 obj->SetProxyDistance(OpFloat(line, "proxyDistance", 15.0f)*g_unit);
@@ -4522,9 +4523,9 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 obj->SetShield(OpFloat(line, "shield", 1.0f));
                 obj->SetMagnifyDamage(OpFloat(line, "magnifyDamage", 1.0f));
                 obj->SetClip(OpInt(line, "clip", 1));
-                obj->SetCheckToken(m_version >= 2 ? trainer : OpInt(line, "checkToken", 1));
+                obj->SetCheckToken(m_version >= 2 ? trainer || !selectable : OpInt(line, "checkToken", 1));
                 // SetManual will affect bot speed
-                                      if (type == OBJECT_MOBILEdr)  {
+                if (type == OBJECT_MOBILEdr)  {
                     obj->SetManual(m_version >= 2 ? !trainer : OpInt(line, "manual", 0));
                 }
 
@@ -4730,7 +4731,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             m_camera->SetFixDirection(OpFloat(line, "fixDirection", 0.25f)*Math::PI);
         }
 
-        if (Cmd(line, "EndMissionTake") && !resetObject && m_version<3)
+        if (Cmd(line, "EndMissionTake") && !resetObject && m_controller == nullptr)
         {
             int i = m_endTakeTotal;
             if (i < 10)
@@ -4753,16 +4754,16 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 m_endTakeTotal ++;
             }
         }
-        if (Cmd(line, "EndMissionDelay") && !resetObject && m_version<3)
+        if (Cmd(line, "EndMissionDelay") && !resetObject && m_controller == nullptr)
         {
             m_endTakeWinDelay  = OpFloat(line, "win",  2.0f);
             m_endTakeLostDelay = OpFloat(line, "lost", 2.0f);
         }
-        if (Cmd(line, "EndMissionResearch") && !resetObject && m_version<3)
+        if (Cmd(line, "EndMissionResearch") && !resetObject && m_controller == nullptr)
         {
             m_endTakeResearch |= OpResearch(line, "type");
         }
-        if (Cmd(line, "EndMissionNever") && !resetObject && m_version == 2)
+        if (Cmd(line, "EndMissionNever") && !resetObject && m_controller == nullptr)
         {
             m_endTakeNever = true;
         }
@@ -6748,7 +6749,7 @@ void CRobotMain::UpdateAudio(bool frame)
 
 void CRobotMain::SetEndMission(Error result, float delay)
 {
-    if (m_version >= 3) {
+    if (m_controller != nullptr) {
         m_endTakeWinDelay = delay;
         m_endTakeLostDelay = delay;
         m_missionResult = result;
@@ -6758,7 +6759,7 @@ void CRobotMain::SetEndMission(Error result, float delay)
 //! Checks if the mission is over
 Error CRobotMain::CheckEndMission(bool frame)
 {
-    if (m_version >= 3) {
+    if (m_controller != nullptr) {
         if (m_missionResult == INFO_LOST) { //mission lost?
             m_displayText->DisplayError(INFO_LOST, Math::Vector(0.0f,0.0f,0.0f));
             m_winDelay = 0.0f;
