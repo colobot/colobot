@@ -807,15 +807,47 @@ CRobotMain::CRobotMain(CApplication* app, bool loadProfile)
     CBotProgram::DefineNum("FilterOnlyLanding", FILTER_ONLYLANDING);
     CBotProgram::DefineNum("FilterOnlyFliying", FILTER_ONLYFLYING);
 
-    CBotProgram::DefineNum("ExploNone", 0);
-    CBotProgram::DefineNum("ExploBoum", EXPLO_BOUM);
-    CBotProgram::DefineNum("ExploBurn", EXPLO_BURN);
+    CBotProgram::DefineNum("ExploNone",  0);
+    CBotProgram::DefineNum("ExploBoum",  EXPLO_BOUM);
+    CBotProgram::DefineNum("ExploBurn",  EXPLO_BURN);
     CBotProgram::DefineNum("ExploWater", EXPLO_WATER);
 
-    CBotProgram::DefineNum("ResultNotEnded", ERR_MISSION_NOTERM);
-    CBotProgram::DefineNum("ResultLost", INFO_LOST);
+    CBotProgram::DefineNum("ResultNotEnded",  ERR_MISSION_NOTERM);
+    CBotProgram::DefineNum("ResultLost",      INFO_LOST);
     CBotProgram::DefineNum("ResultLostQuick", INFO_LOSTq);
-    CBotProgram::DefineNum("ResultWin", ERR_OK);
+    CBotProgram::DefineNum("ResultWin",       ERR_OK);
+
+    CBotProgram::DefineNum("BuildBotFactory",       BUILD_FACTORY);
+    CBotProgram::DefineNum("BuildDerrick",          BUILD_DERRICK);
+    CBotProgram::DefineNum("BuildConverter",        BUILD_CONVERT);
+    CBotProgram::DefineNum("BuildRadarStation",     BUILD_RADAR);
+    CBotProgram::DefineNum("BuildPowerPlant",       BUILD_ENERGY);
+    CBotProgram::DefineNum("BuildNuclearPlant",     BUILD_NUCLEAR);
+    CBotProgram::DefineNum("BuildPowerStation",     BUILD_STATION);
+    CBotProgram::DefineNum("BuildRepairCenter",     BUILD_REPAIR);
+    CBotProgram::DefineNum("BuildDefenseTower",     BUILD_TOWER);
+    CBotProgram::DefineNum("BuildResearchCenter",   BUILD_RESEARCH);
+    CBotProgram::DefineNum("BuildAutoLab",          BUILD_LABO);
+    CBotProgram::DefineNum("BuildPowerCaptor",      BUILD_PARA);
+    CBotProgram::DefineNum("BuildExchangePost",     BUILD_INFO);
+    CBotProgram::DefineNum("BuildDestroyer",        BUILD_DESTROYER);
+    CBotProgram::DefineNum("FlatGround",            BUILD_GFLAT);
+    CBotProgram::DefineNum("UseFlags",              BUILD_FLAG);
+    CBotProgram::DefineNum("ResearchTracked",       RESEARCH_TANK);
+    CBotProgram::DefineNum("ResearchWinged",        RESEARCH_FLY);
+    CBotProgram::DefineNum("ResearchShooter",       RESEARCH_CANON);
+    CBotProgram::DefineNum("ResearchDefenseTower",  RESEARCH_TOWER);
+    CBotProgram::DefineNum("ResearchNuclearPlant",  RESEARCH_ATOMIC);
+    CBotProgram::DefineNum("ResearchThumper",       RESEARCH_THUMP);
+    CBotProgram::DefineNum("ResearchShielder",      RESEARCH_SHIELD);
+    CBotProgram::DefineNum("ResearchPhazerShooter", RESEARCH_PHAZER);
+    CBotProgram::DefineNum("ResearchLegged",        RESEARCH_iPAW);
+    CBotProgram::DefineNum("ResearchOrgaShooter",   RESEARCH_iGUN);
+    CBotProgram::DefineNum("ResearchRecycler",      RESEARCH_RECYCLER);
+    CBotProgram::DefineNum("ResearchSubber",        RESEARCH_SUBM);
+    CBotProgram::DefineNum("ResearchSniffer",       RESEARCH_SNIFFER);
+
+    CBotProgram::
 
     CBotProgram::DefineNum("PolskiPortalColobota", 1337);
 
