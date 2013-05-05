@@ -386,6 +386,56 @@ bool CScript::rStopMusic(CBotVar* var, CBotVar* result, int& exception, void* us
     return true;
 }
 
+// Instruction "getbuild()"
+
+bool CScript::rGetBuild(CBotVar* var, CBotVar* result, int& exception, void* user)
+{
+    result->SetValInt(g_build);
+    return true;
+}
+
+// Instruction "getresearchenable()"
+
+bool CScript::rGetResearchEnable(CBotVar* var, CBotVar* result, int& exception, void* user)
+{
+    result->SetValInt(g_researchEnable);
+    return true;
+}
+
+// Instruction "getresearchdone()"
+
+bool CScript::rGetResearchDone(CBotVar* var, CBotVar* result, int& exception, void* user)
+{
+    result->SetValInt(g_researchDone);
+    return true;
+}
+
+// Instruction "setbuild()"
+
+bool CScript::rSetBuild(CBotVar* var, CBotVar* result, int& exception, void* user)
+{
+    g_build = var->GetValInt();
+    CApplication::GetInstancePointer()->GetEventQueue()->AddEvent(Event(EVENT_UPDINTERFACE));
+    return true;
+}
+
+// Instruction "setresearchenable()"
+
+bool CScript::rSetResearchEnable(CBotVar* var, CBotVar* result, int& exception, void* user)
+{
+    g_researchEnable = var->GetValInt();
+    CApplication::GetInstancePointer()->GetEventQueue()->AddEvent(Event(EVENT_UPDINTERFACE));
+    return true;
+}
+
+// Instruction "setresearchdone()"
+
+bool CScript::rSetResearchDone(CBotVar* var, CBotVar* result, int& exception, void* user)
+{
+    g_researchDone = var->GetValInt();
+    CApplication::GetInstancePointer()->GetEventQueue()->AddEvent(Event(EVENT_UPDINTERFACE));
+    return true;
+}
 
 // Compilation of the instruction "retobject(rank)".
 
@@ -1094,31 +1144,10 @@ CBotTypResult CScript::cCanBuild(CBotVar* &var, void* user)
 
 bool CScript::rCanBuild(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-    exception = 0;
-
-    CScript::rBuildInfo(var, result, exception, user);
-    Error err = static_cast<Error>(result->GetValInt());
-
-    if (err == ERR_OK)
-        result->SetValInt(true);
-    else
-        result->SetValInt(false);
-
-    return true;
-}
-
-// Instruction "buildinfo ( category );"
-// This function indicates if this building can be built, and returns a specific value
-//
-// returns   0(ERR_OK)             if this building can be built
-// returns 132(ERR_BUILD_DISABLED) if can not build in a current mission
-// returns 133(ERR_BUILD_RESEARCH) if this building needs to be researched
-
-bool CScript::rBuildInfo(CBotVar* var, CBotVar* result, int& exception, void* user)
-{
     ObjectType category  = static_cast<ObjectType>(var->GetValInt()); //get category parameter
     exception = 0;
-    int value = ERR_BUILD_DISABLED;
+
+    bool can = false;
 
     if ( (category == OBJECT_DERRICK   && (g_build & BUILD_DERRICK))   ||
          (category == OBJECT_FACTORY   && (g_build & BUILD_FACTORY))   ||
@@ -1136,20 +1165,22 @@ bool CScript::rBuildInfo(CBotVar* var, CBotVar* result, int& exception, void* us
     {
 
         //if we want to build  not researched one
-        if ( (category == OBJECT_TOWER && !(g_researchDone & RESEARCH_TOWER)) ||
+        if ( (category == OBJECT_TOWER   && !(g_researchDone & RESEARCH_TOWER)) ||
              (category == OBJECT_NUCLEAR && !(g_researchDone & RESEARCH_ATOMIC))
             )
         {
-            value = ERR_BUILD_RESEARCH;
+            can = false;
         }
         else
         {
-            value = ERR_OK;
+            can = true;
         }
 
     }
 
-    result->SetValInt(value);
+    result->SetValInt(can);
+
+
     return true;
 }
 
@@ -1162,7 +1193,7 @@ bool CScript::rBuild(CBotVar* var, CBotVar* result, int& exception, void* user)
     CObject*    pThis = static_cast<CObject *>(user);
     ObjectType  oType;
     ObjectType  category;
-    Error       err;
+    Error       err = ERR_BUILD_DISABLED;
 
     exception = 0;
 
@@ -1177,14 +1208,38 @@ bool CScript::rBuild(CBotVar* var, CBotVar* result, int& exception, void* user)
     }
     else
     {
-        //Let's check is building this object is possible
-        CScript::rBuildInfo(var, result, exception, user);
-        err = static_cast<Error>(result->GetValInt());
+        category = static_cast<ObjectType>(var->GetValInt()); //get category parameter
+        if ( (category == OBJECT_DERRICK   && (g_build & BUILD_DERRICK))   ||
+             (category == OBJECT_FACTORY   && (g_build & BUILD_FACTORY))   ||
+             (category == OBJECT_STATION   && (g_build & BUILD_STATION))   ||
+             (category == OBJECT_CONVERT   && (g_build & BUILD_CONVERT))   ||
+             (category == OBJECT_REPAIR    && (g_build & BUILD_REPAIR))    ||
+             (category == OBJECT_TOWER     && (g_build & BUILD_TOWER))     ||
+             (category == OBJECT_RESEARCH  && (g_build & BUILD_RESEARCH))  ||
+             (category == OBJECT_RADAR     && (g_build & BUILD_RADAR))     ||
+             (category == OBJECT_ENERGY    && (g_build & BUILD_ENERGY))    ||
+             (category == OBJECT_LABO      && (g_build & BUILD_LABO))      ||
+             (category == OBJECT_NUCLEAR   && (g_build & BUILD_NUCLEAR))   ||
+             (category == OBJECT_INFO      && (g_build & BUILD_INFO  ))    ||
+             (category == OBJECT_PARA      && (g_build & BUILD_PARA )))
+        {
+
+            //if we want to build  not researched one
+            if ( (category == OBJECT_TOWER   && !(g_researchDone & RESEARCH_TOWER)) ||
+                 (category == OBJECT_NUCLEAR && !(g_researchDone & RESEARCH_ATOMIC))
+                )
+            {
+                err = ERR_BUILD_RESEARCH;
+            }
+            else
+            {
+                err = ERR_OK;
+            }
+
+        }
 
         if (err == ERR_OK && script->m_primaryTask == 0) //if we can build and no task is present
         {
-            category  = static_cast<ObjectType>(var->GetValInt()); //get category parameter
-
             script->m_primaryTask = new CTaskManager(script->m_object);
             err = script->m_primaryTask->StartTaskBuild(category);
 
@@ -3029,6 +3084,13 @@ void CScript::InitFonctions()
     CBotProgram::AddFunction("playmusic", rPlayMusic ,CScript::cPlayMusic);
     CBotProgram::AddFunction("stopmusic", rStopMusic ,CScript::cNull);
 
+    CBotProgram::AddFunction("getbuild",          rGetBuild,          CScript::cNull);
+    CBotProgram::AddFunction("getresearchenable", rGetResearchEnable, CScript::cNull);
+    CBotProgram::AddFunction("getresearchdone",   rGetResearchDone,   CScript::cNull);
+    CBotProgram::AddFunction("setbuild",          rSetBuild,          CScript::cOneFloat);
+    CBotProgram::AddFunction("setresearchenable", rSetResearchEnable, CScript::cOneFloat);
+    CBotProgram::AddFunction("setresearchdone",   rSetResearchDone,   CScript::cOneFloat);
+
     CBotProgram::AddFunction("retobject", rGetObject, CScript::cGetObject);
     CBotProgram::AddFunction("destroy",   rDestroy,   CScript::cDestroy);
     CBotProgram::AddFunction("search",    rSearch,    CScript::cSearch);
@@ -3071,7 +3133,6 @@ void CScript::InitFonctions()
     CBotProgram::AddFunction("pencolor",  rPenColor,  CScript::cOneFloat);
     CBotProgram::AddFunction("penwidth",  rPenWidth,  CScript::cOneFloat);
 
-    CBotProgram::AddFunction("buildinfo", rBuildInfo, CScript::cOneFloat);
     CBotProgram::AddFunction("canbuild", rCanBuild, CScript::cCanBuild);
     CBotProgram::AddFunction("build", rBuild, CScript::cOneFloat);
 
