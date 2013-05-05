@@ -4005,6 +4005,10 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             continue;
         }
 
+        if (Cmd(line, "Title")) continue; // Ignore
+        if (Cmd(line, "Resume")) continue; // Ignore
+        if (Cmd(line, "ScriptName")) continue; // Ignore
+
         if (Cmd(line, "ScriptFile") && !resetObject) {
             OpString(line, "name", m_scriptFile);
             continue;
@@ -4915,6 +4919,11 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             AddNewScriptName(OpTypeObject(line, "type", OBJECT_NULL), name);
             continue;
         }
+
+        if (line[0] == '\n') continue; // Ignore empty lines
+        if (read[0] != 0)    continue; // Ignore when loading saved game
+
+        GetLogger()->Error("Syntax error in file '%s' (line %d): Unknown command: %s", filename, lineNum, line); // Don't add \n at the end of log message - it's included in line variable
     }
 
     fclose(file);
