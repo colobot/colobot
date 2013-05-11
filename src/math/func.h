@@ -128,6 +128,12 @@ inline float Rand()
     return static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
 }
 
+//! Returns whether \a x is an even power of 2
+inline bool IsPowerOfTwo(unsigned int x)
+{
+   return x && !(x & (x - 1));
+}
+
 //! Returns the next nearest power of two to \a x
 inline int NextPowerOfTwo(int x)
 {

@@ -417,11 +417,15 @@ bool CGLDevice::GetLightEnabled(int index)
 Texture CGLDevice::CreateTexture(CImage *image, const TextureCreateParams &params)
 {
     ImageData *data = image->GetData();
-    if (data == NULL)
+    if (data == nullptr)
     {
         GetLogger()->Error("Invalid texture data\n");
         return Texture(); // invalid texture
     }
+
+    Math::IntPoint size = image->GetSize();
+    if (!Math::IsPowerOfTwo(size.x) || !Math::IsPowerOfTwo(size.y))
+        GetLogger()->Warn("Creating non-power-of-2 texture (%dx%d)!\n", size.x, size.y);
 
     return CreateTexture(data, params);
 }

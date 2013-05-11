@@ -177,6 +177,7 @@ set(UT_SOURCES
 main.cpp
 app/app_test.cpp
 graphics/engine/lightman_test.cpp
+math/func_test.cpp
 math/geometry_test.cpp
 math/matrix_test.cpp
 math/vector_test.cpp
