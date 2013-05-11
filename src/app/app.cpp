@@ -170,6 +170,9 @@ CApplication::~CApplication()
     delete m_private;
     m_private = nullptr;
 
+    delete m_objMan;
+    m_objMan = nullptr;
+
     delete m_eventQueue;
     m_eventQueue = nullptr;
 
