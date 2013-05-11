@@ -423,11 +423,15 @@ Texture CGLDevice::CreateTexture(CImage *image, const TextureCreateParams &param
         return Texture(); // invalid texture
     }
 
-    Math::IntPoint size = image->GetSize();
-    if (!Math::IsPowerOfTwo(size.x) || !Math::IsPowerOfTwo(size.y))
-        GetLogger()->Warn("Creating non-power-of-2 texture (%dx%d)!\n", size.x, size.y);
+    Math::IntPoint originalSize = image->GetSize();
 
-    return CreateTexture(data, params);
+    if (params.padToNearestPowerOfTwo)
+        image->PadToNearestPowerOfTwo();
+
+    Texture tex = CreateTexture(data, params);
+    tex.originalSize = originalSize;
+
+    return tex;
 }
 
 Texture CGLDevice::CreateTexture(ImageData *data, const TextureCreateParams &params)
@@ -436,6 +440,11 @@ Texture CGLDevice::CreateTexture(ImageData *data, const TextureCreateParams &par
 
     result.size.x = data->surface->w;
     result.size.y = data->surface->h;
+
+    if (!Math::IsPowerOfTwo(result.size.x) || !Math::IsPowerOfTwo(result.size.y))
+        GetLogger()->Warn("Creating non-power-of-2 texture (%dx%d)!\n", result.size.x, result.size.y);
+
+    result.originalSize = result.size;
 
     // Use & enable 1st texture stage
     if (m_multitextureAvailable)

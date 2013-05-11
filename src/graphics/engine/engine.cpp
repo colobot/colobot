@@ -94,7 +94,6 @@ CEngine::CEngine(CApplication *app)
     m_backgroundCloudUp   = Color();
     m_backgroundCloudDown = Color();
     m_backgroundFull = false;
-    m_backgroundScale = Math::Point(1.0f, 1.0f);
     m_overFront = true;
     m_overColor = Color();
     m_overMode  = ENG_RSTATE_TCOLOR_BLACK;
@@ -2188,7 +2187,11 @@ bool CEngine::LoadAllTextures()
     LoadTexture("map.png");
 
     if (! m_backgroundName.empty())
-        m_backgroundTex = LoadTexture(m_backgroundName);
+    {
+        TextureCreateParams params = m_defaultTexParams;
+        params.padToNearestPowerOfTwo = true;
+        m_backgroundTex = LoadTexture(m_backgroundName, params);
+    }
     else
         m_backgroundTex.SetInvalid();
 
@@ -2609,8 +2612,7 @@ float CEngine::GetFogStart(int rank)
 }
 
 void CEngine::SetBackground(const std::string& name, Color up, Color down,
-                                 Color cloudUp, Color cloudDown,
-                                 bool full, Math::Point scale)
+                            Color cloudUp, Color cloudDown, bool full)
 {
     if (m_backgroundTex.Valid())
     {
@@ -2624,15 +2626,17 @@ void CEngine::SetBackground(const std::string& name, Color up, Color down,
     m_backgroundCloudUp   = cloudUp;
     m_backgroundCloudDown = cloudDown;
     m_backgroundFull      = full;
-    m_backgroundScale     = scale;
 
     if (! m_backgroundName.empty())
-        m_backgroundTex = LoadTexture(m_backgroundName);
+    {
+        TextureCreateParams params = m_defaultTexParams;
+        params.padToNearestPowerOfTwo = true;
+        m_backgroundTex = LoadTexture(m_backgroundName, params);
+    }
 }
 
 void CEngine::GetBackground(std::string& name, Color& up, Color& down,
-                                 Color& cloudUp, Color& cloudDown,
-                                 bool &full, Math::Point& scale)
+                            Color& cloudUp, Color& cloudDown, bool &full)
 {
     name      = m_backgroundName;
     up        = m_backgroundColorUp;
@@ -2640,7 +2644,6 @@ void CEngine::GetBackground(std::string& name, Color& up, Color& down,
     cloudUp   = m_backgroundCloudUp;
     cloudDown = m_backgroundCloudDown;
     full      = m_backgroundFull;
-    scale     = m_backgroundScale;
 }
 
 void CEngine::SetForegroundName(const std::string& name)
@@ -3900,8 +3903,12 @@ void CEngine::DrawBackgroundImage()
         v2 = v1+h;
     }
 
-    u2 *= m_backgroundScale.x;
-    v2 *= m_backgroundScale.y;
+    Math::Point backgroundScale;
+    backgroundScale.x = static_cast<float>(m_backgroundTex.originalSize.x) / static_cast<float>(m_backgroundTex.size.x);
+    backgroundScale.y = static_cast<float>(m_backgroundTex.originalSize.y) / static_cast<float>(m_backgroundTex.size.y);
+
+    u2 *= backgroundScale.x;
+    v2 *= backgroundScale.y;
 
     SetTexture(m_backgroundTex);
     SetState(ENG_RSTATE_OPAQUE_TEXTURE | ENG_RSTATE_WRAP);

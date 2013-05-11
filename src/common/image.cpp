@@ -17,6 +17,8 @@
 
 #include "common/image.h"
 
+#include "math/func.h"
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -197,6 +199,33 @@ void CImage::Fill(Gfx::IntColor color)
 
     Uint32 c = SDL_MapRGBA(m_data->surface->format, color.r, color.g, color.b, color.a);
     SDL_FillRect(m_data->surface, nullptr, c);
+}
+
+/**
+ * Image must be valid.
+ *
+ * The dimensions are increased to nearest even power of two values.
+ * If image is already in power-of-two format, nothing is done.
+ */
+void CImage::PadToNearestPowerOfTwo()
+{
+    assert(m_data != nullptr);
+
+    if (Math::IsPowerOfTwo(m_data->surface->w) && Math::IsPowerOfTwo(m_data->surface->h))
+        return;
+
+    int w = Math::NextPowerOfTwo(m_data->surface->w);
+    int h = Math::NextPowerOfTwo(m_data->surface->h);
+
+    m_data->surface->flags &= (~SDL_SRCALPHA);
+    SDL_Surface* resizedSurface = SDL_CreateRGBSurface(0, w, h, 32, 0x00ff0000, 0x0000ff00,
+                                                       0x000000ff, 0xff000000);
+    assert(resizedSurface != NULL);
+    SDL_BlitSurface(m_data->surface, NULL, resizedSurface, NULL);
+
+    SDL_FreeSurface(m_data->surface);
+
+    m_data->surface = resizedSurface;
 }
 
 /**

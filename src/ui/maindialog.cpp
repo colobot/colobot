@@ -389,7 +389,7 @@ pb->SetState(STATE_SHADOW);
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
-                true, Math::Point(1.0f, 768.0f / 1024.0f));
+                true);
         m_engine->SetBackForce(true);
     }
 
@@ -509,7 +509,7 @@ pb->SetState(STATE_SHADOW);
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
-                true, Math::Point(1.0f, 768.0f / 1024.0f));
+                true);
         m_engine->SetBackForce(true);
     }
 
@@ -978,7 +978,7 @@ pb->SetState(STATE_SHADOW);
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
-                true, Math::Point(1.0f, 768.0f / 1024.0f));
+                true);
         m_engine->SetBackForce(true);
     }
 
@@ -1177,7 +1177,7 @@ pb->SetState(STATE_SHADOW);
                     Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                     Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                     Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
-                    true, Math::Point(1.0f, 768.0f / 1024.0f));
+                    true);
             m_engine->SetBackForce(true);
         }
     }
@@ -1702,7 +1702,7 @@ pos.y -= 0.048f;
                     Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                     Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                     Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
-                    true, Math::Point(1.0f, 768.0f / 1024.0f));
+                    true);
             m_engine->SetBackForce(true);
         }
     }
@@ -1752,7 +1752,7 @@ pos.y -= 0.048f;
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
-                true, Math::Point(1.0f, 768.0f / 1024.0f));
+                true);
         m_engine->SetBackForce(true);
 
         m_loadingCounter = 1;  // enough time to display!
@@ -1774,7 +1774,7 @@ pos.y -= 0.048f;
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
-                true, Math::Point(861.0f / 1024.0f, 646.0f / 1024.0f));
+                true);
         m_engine->SetBackForce(true);
     }
     if ( m_phase == PHASE_WELCOME2 )
@@ -1793,7 +1793,7 @@ pos.y -= 0.048f;
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
-                true, Math::Point(640.0f / 1024.0f, 480.0f / 512.0f));
+                true);
         m_engine->SetBackForce(true);
     }
     if ( m_phase == PHASE_WELCOME3 )
@@ -1812,7 +1812,7 @@ pos.y -= 0.048f;
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
-                true, Math::Point(640.0f / 1024.0f, 480.0f / 512.0f));
+                true);
         m_engine->SetBackForce(true);
     }
 
@@ -1948,7 +1948,7 @@ pos.y -= 0.048f;
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
-                true, Math::Point(1.0f, 768.0f / 1024.0f));
+                true);
         m_engine->SetBackForce(true);
     }
 
