@@ -726,6 +726,10 @@ public:
     //! Writes a screenshot containing the current frame
     bool            WriteScreenShot(const std::string& fileName, int width, int height);
 
+    //! Set texture pack
+    void            SetTexturePack(const std::string& texpackName);
+
+
     //@{
     //! Management of game pause mode
     void            SetPause(bool pause);
@@ -1229,7 +1233,7 @@ protected:
                                      const Material& mat, int state);
 
     //! Create texture and add it to cache
-    Texture CreateTexture(const std::string &texName, const TextureCreateParams &params, CImage* image = nullptr);
+    Texture CreateTexture(const std::string &texName, const TextureCreateParams &params, CImage* image = nullptr, std::string orginalName = "");
 
     //! Tests whether the given object is visible
     bool        IsVisible(int objRank);
@@ -1402,6 +1406,9 @@ protected:
     /** Textures on this list were not successful in first loading,
      *  so are disabled for subsequent load calls. */
     std::set<std::string> m_texBlacklist;
+
+    //! Texture pack
+    std::string    m_texPack;
 
     //! Mouse cursor definitions
     EngineMouse     m_mice[ENG_MOUSE_COUNT];

@@ -467,6 +467,9 @@ protected:
     //! Application language
     Language        m_language;
 
+    //! Texture pack
+    std::string     m_texPack;
+
     //! Low cpu mode
     bool            m_lowCPU;
 };

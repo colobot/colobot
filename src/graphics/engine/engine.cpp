@@ -62,6 +62,8 @@ CEngine::CEngine(CApplication *app)
     m_sound      = nullptr;
     m_terrain    = nullptr;
 
+    m_texPack    = "";
+
     m_showStats = false;
 
     m_focus = 0.75f;
@@ -234,6 +236,11 @@ CCloud* CEngine::GetCloud()
 void CEngine::SetTerrain(CTerrain* terrain)
 {
     m_terrain = terrain;
+}
+
+void CEngine::SetTexturePack(const std::string& texpackName)
+{
+    m_texPack = texpackName;
 }
 
 
@@ -2109,7 +2116,7 @@ void CEngine::SetViewParams(const Math::Vector& eyePt, const Math::Vector& looka
         m_sound->SetListener(eyePt, lookatPt);
 }
 
-Texture CEngine::CreateTexture(const std::string& texName, const TextureCreateParams& params, CImage* image)
+Texture CEngine::CreateTexture(const std::string& texName, const TextureCreateParams& params, CImage* image, std::string orginalName)
 {
     if (texName.empty())
         return Texture(); // invalid texture
@@ -2125,7 +2132,7 @@ Texture CEngine::CreateTexture(const std::string& texName, const TextureCreatePa
         if (! img.Load(m_app->GetDataFilePath(DIR_TEXTURE, texName)))
         {
             std::string error = img.GetError();
-            GetLogger()->Error("Couldn't load texture '%s': %s, blacklisting\n", texName.c_str(), error.c_str());
+            if(orginalName == "") GetLogger()->Error("Couldn't load texture '%s': %s, blacklisting\n", texName.c_str(), error.c_str());
             m_texBlacklist.insert(texName);
             return Texture(); // invalid texture
         }
@@ -2139,13 +2146,18 @@ Texture CEngine::CreateTexture(const std::string& texName, const TextureCreatePa
 
     if (! tex.Valid())
     {
-        GetLogger()->Error("Couldn't load texture '%s', blacklisting\n", texName.c_str());
+        if(orginalName == "") GetLogger()->Error("Couldn't load texture '%s', blacklisting\n", texName.c_str());
         m_texBlacklist.insert(texName);
         return tex;
     }
 
-    m_texNameMap[texName] = tex;
-    m_revTexNameMap[tex] = texName;
+    if(orginalName == "") {
+        m_texNameMap[texName] = tex;
+        m_revTexNameMap[tex] = texName;
+    } else {
+        m_texNameMap[orginalName] = tex;
+        m_revTexNameMap[tex] = orginalName;
+    }
 
     return tex;
 }
@@ -2170,7 +2182,18 @@ Texture CEngine::LoadTexture(const std::string& name, const TextureCreateParams&
     if (it != m_texNameMap.end())
         return (*it).second;
 
-    Texture tex = CreateTexture(name, params);
+    Texture tex;
+    if (m_texPack != "") {
+        std::string name_texpack = m_texPack + "/" + name;
+
+        if (m_texBlacklist.find(name_texpack) == m_texBlacklist.end()) {
+            tex = CreateTexture(name_texpack, params, nullptr, name);
+            if (tex.Valid())
+                return tex;
+        }
+    }
+
+    tex = CreateTexture(name, params);
     return tex;
 }
 

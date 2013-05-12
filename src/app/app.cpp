@@ -149,6 +149,8 @@ CApplication::CApplication()
 
     m_language = LANGUAGE_ENV;
 
+    m_texPack = "";
+
     m_lowCPU = true;
 
     for (int i = 0; i < DIR_MAX; ++i)
@@ -219,7 +221,8 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
         OPT_LOGLEVEL,
         OPT_LANGUAGE,
         OPT_LANGDIR,
-        OPT_VBO
+        OPT_VBO,
+        OPT_TEXPACK
     };
 
     option options[] =
@@ -230,7 +233,8 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
         { "loglevel", required_argument, nullptr, OPT_LOGLEVEL },
         { "language", required_argument, nullptr, OPT_LANGUAGE },
         { "langdir", required_argument, nullptr, OPT_LANGDIR },
-        { "vbo", required_argument, nullptr, OPT_VBO }
+        { "vbo", required_argument, nullptr, OPT_VBO },
+        { "texpack", required_argument, nullptr, OPT_TEXPACK }
     };
 
     opterr = 0;
@@ -267,6 +271,7 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
                 GetLogger()->Message("  -language lang   set language (one of: en, de, fr, pl)\n");
                 GetLogger()->Message("  -langdir path    set custom language directory path\n");
                 GetLogger()->Message("  -vbo mode        set OpenGL VBO mode (one of: auto, enable, disable)\n");
+                GetLogger()->Message("  -texpack name    set texture pack\n");
                 return PARSE_ARGS_HELP;
             }
             case OPT_DEBUG:
@@ -328,6 +333,12 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
                     return PARSE_ARGS_FAIL;
                 }
 
+                break;
+            }
+            case OPT_TEXPACK:
+            {
+                m_texPack = optarg;
+                GetLogger()->Info("Using texturepack: '%s'\n", m_texPack.c_str());
                 break;
             }
             default:
@@ -483,6 +494,8 @@ bool CApplication::Create()
     m_engine = new Gfx::CEngine(this);
 
     m_engine->SetDevice(m_device);
+
+    m_engine->SetTexturePack(m_texPack);
 
     if (! m_engine->Create() )
     {
