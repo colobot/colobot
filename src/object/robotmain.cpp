@@ -4921,9 +4921,10 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
         }
 
         if (line[0] == '\n') continue; // Ignore empty lines
+	if (line[0] == '\0') continue; // Ignore empty lines
         if (read[0] != 0)    continue; // Ignore when loading saved game
 
-        GetLogger()->Error("Syntax error in file '%s' (line %d): Unknown command: %s\n", filename, lineNum, line); // Don't add \n at the end of log message - it's included in line variable
+        GetLogger()->Error("Syntax error in file '%s' (line %d): Unknown command: %s", filename, lineNum, line); // Don't add \n at the end of log message - it's included in line variable
     }
 
     fclose(file);
