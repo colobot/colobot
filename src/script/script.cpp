@@ -1544,8 +1544,10 @@ bool CScript::rProduce(CBotVar* var, CBotVar* result, int& exception, void* user
         return true;
     }
 
-    object->ReadProgram(0, static_cast<const char*>(name));
-    object->RunProgram(0);
+    if(name[0] != 0) {
+        object->ReadProgram(0, static_cast<const char*>(name));
+        object->RunProgram(0);
+    }
 
     result->SetValInt(0);  // no error
     return true;
