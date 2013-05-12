@@ -145,6 +145,7 @@ private:
     static bool rSetBuild(CBotVar* var, CBotVar* result, int& exception, void* user);
     static bool rSetResearchEnable(CBotVar* var, CBotVar* result, int& exception, void* user);
     static bool rSetResearchDone(CBotVar* var, CBotVar* result, int& exception, void* user);
+    static bool rGetObjectById(CBotVar* var, CBotVar* result, int& exception, void* user);
     static bool rGetObject(CBotVar* var, CBotVar* result, int& exception, void* user);
     static bool rDestroy(CBotVar* var, CBotVar* result, int& exception, void* user);
     static bool rSearch(CBotVar* var, CBotVar* result, int& exception, void* user);

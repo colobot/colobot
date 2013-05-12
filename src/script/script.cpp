@@ -449,6 +449,27 @@ CBotTypResult CScript::cGetObject(CBotVar* &var, void* user)
     return CBotTypResult(CBotTypPointer, "object");
 }
 
+// Instruction "retobjectbyid(rank)".
+
+bool CScript::rGetObjectById(CBotVar* var, CBotVar* result, int& exception, void* user)
+{
+    CObject*    pObj;
+    int         rank;
+
+    rank = var->GetValInt();
+
+    pObj = static_cast<CObject*>(CObjectManager::GetInstancePointer()->SearchInstance(rank));
+    if ( pObj == 0 )
+    {
+        result->SetPointer(0);
+    }
+    else
+    {
+        result->SetPointer(pObj->GetBotVar());
+    }
+    return true;
+}
+
 // Instruction "retobject(rank)".
 
 bool CScript::rGetObject(CBotVar* var, CBotVar* result, int& exception, void* user)
@@ -458,7 +479,7 @@ bool CScript::rGetObject(CBotVar* var, CBotVar* result, int& exception, void* us
 
     rank = var->GetValInt();
 
-    pObj = static_cast<CObject*>(CObjectManager::GetInstancePointer()->SearchInstance(rank));
+    pObj = static_cast<CObject*>(CInstanceManager::GetInstancePointer()->SearchInstance(CLASS_OBJECT, rank));
     if ( pObj == 0 )
     {
         result->SetPointer(0);
@@ -3094,6 +3115,7 @@ void CScript::InitFonctions()
     CBotProgram::AddFunction("setresearchdone",   rSetResearchDone,   CScript::cOneFloat);
 
     CBotProgram::AddFunction("retobject", rGetObject, CScript::cGetObject);
+    CBotProgram::AddFunction("retobjectbyid", rGetObjectById, CScript::cGetObject);
     CBotProgram::AddFunction("destroy",   rDestroy,   CScript::cDestroy);
     CBotProgram::AddFunction("search",    rSearch,    CScript::cSearch);
     CBotProgram::AddFunction("radar",     rRadar,     CScript::cRadar);

@@ -373,6 +373,7 @@ bool IsFunction(const char *token)
     if ( strcmp(token, "getbuild"     ) == 0 )  return true;
     if ( strcmp(token, "getresearchenable" ) == 0 )  return true;
     if ( strcmp(token, "getresearchdone"   ) == 0 )  return true;
+    if ( strcmp(token, "retobjectbyid") == 0 )  return true;
     if ( strcmp(token, "retobject"    ) == 0 )  return true;
     if ( strcmp(token, "search"       ) == 0 )  return true;
     if ( strcmp(token, "radar"        ) == 0 )  return true;
@@ -460,7 +461,8 @@ const char* GetHelpText(const char *token)
     if ( strcmp(token, "getbuild"  ) == 0 )  return "getbuild ( );";
     if ( strcmp(token, "getresearchenable" ) == 0 )  return "getresearchenable ( );";
     if ( strcmp(token, "getresearchdone" ) == 0 )  return "getresearchdone ( );";
-    if ( strcmp(token, "retobject" ) == 0 )  return "retobject ( );";
+    if ( strcmp(token, "retobject" ) == 0 )  return "retobject ( rank );";
+    if ( strcmp(token, "retobjectbyid") == 0 )  return "retobjectbyid ( rank );";
     if ( strcmp(token, "search"    ) == 0 )  return "search ( );";
     if ( strcmp(token, "radar"     ) == 0 )  return "radar ( cat, angle, focus, min, max, sens );";
     if ( strcmp(token, "detect"    ) == 0 )  return "detect ( cat );";
