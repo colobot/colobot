@@ -181,7 +181,7 @@ CMainDialog::CMainDialog()
     #endif
     m_publicDir = "program";
     m_userDir = "user";
-    m_filesDir = "files";
+    m_filesDir = m_savegameDir;
 
     m_setupFull = m_app->GetVideoConfig().fullScreen;
 
