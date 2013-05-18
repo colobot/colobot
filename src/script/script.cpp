@@ -35,6 +35,9 @@
 #include "object/task/taskmanager.h"
 #include "object/objman.h"
 
+#include "object/auto/auto.h"
+#include "object/auto/autofactory.h"
+
 #include "physics/physics.h"
 
 #include "script/cbottoken.h"
@@ -76,6 +79,11 @@ CBotTypResult CScript::cOneFloat(CBotVar* &var, void* user)
     var = var->GetNext();
     if ( var != 0 )  return CBotTypResult(CBotErrOverParam);
     return CBotTypResult(CBotTypFloat);
+}
+
+CBotTypResult CScript::cClassOneFloat(CBotVar* thisclass, CBotVar* &var)
+{
+    return CScript::cOneFloat(var, nullptr);
 }
 
 // Compiling a procedure with two real numbers.
@@ -488,6 +496,163 @@ bool CScript::rGetObject(CBotVar* var, CBotVar* result, int& exception, void* us
     {
         result->SetPointer(pObj->GetBotVar());
     }
+    return true;
+}
+
+// Instruction "object.factory(cat)"
+
+bool CScript::rFactory(CBotVar* thisclass, CBotVar* var, CBotVar* result, int& exception)
+{
+    Error       err;
+
+    exception = 0;
+
+    CBotVar* classVars = thisclass->GetItemList();  // "category"
+    ObjectType thisType = static_cast<ObjectType>(classVars->GetValInt());
+    classVars = classVars->GetNext();  // "position"
+    classVars = classVars->GetNext();  // "orientation"
+    classVars = classVars->GetNext();  // "pitch"
+    classVars = classVars->GetNext();  // "roll"
+    classVars = classVars->GetNext();  // "energyLevel"
+    classVars = classVars->GetNext();  // "shieldLevel"
+    classVars = classVars->GetNext();  // "temperature"
+    classVars = classVars->GetNext();  // "altitude"
+    classVars = classVars->GetNext();  // "lifeTime"
+    classVars = classVars->GetNext();  // "material"
+    classVars = classVars->GetNext();  // "energyCell"
+    classVars = classVars->GetNext();  // "load"
+    classVars = classVars->GetNext();  // "id"
+    int rank = classVars->GetValInt();
+    CObject* factory = CObjectManager::GetInstancePointer()->SearchInstance(rank);
+    CAuto* automat = factory->GetAuto();
+
+    if ( thisType == OBJECT_FACTORY )
+    {
+        ObjectType type = static_cast<ObjectType>(var->GetValInt());
+        bool bEnable = false;
+
+        if ( type == OBJECT_MOBILEwa )
+        {
+            bEnable = true;
+        }
+        if ( type == OBJECT_MOBILEta )
+        {
+            bEnable = g_researchDone&RESEARCH_TANK;
+        }
+        if ( type == OBJECT_MOBILEfa )
+        {
+            bEnable = g_researchDone&RESEARCH_FLY;
+        }
+        if ( type == OBJECT_MOBILEia )
+        {
+            bEnable = g_researchDone&RESEARCH_iPAW;
+        }
+
+        if ( type == OBJECT_MOBILEws )
+        {
+            bEnable = g_researchDone&RESEARCH_SNIFFER;
+        }
+        if ( type == OBJECT_MOBILEts )
+        {
+            bEnable = ( (g_researchDone&RESEARCH_SNIFFER) &&
+                        (g_researchDone&RESEARCH_TANK)    );
+        }
+        if ( type == OBJECT_MOBILEfs )
+        {
+            bEnable = ( (g_researchDone&RESEARCH_SNIFFER) &&
+                        (g_researchDone&RESEARCH_FLY)     );
+        }
+        if ( type == OBJECT_MOBILEis )
+        {
+            bEnable = ( (g_researchDone&RESEARCH_SNIFFER) &&
+                        (g_researchDone&RESEARCH_iPAW)    );
+        }
+
+        if ( type == OBJECT_MOBILEwc )
+        {
+            bEnable = g_researchDone&RESEARCH_CANON;
+        }
+        if ( type == OBJECT_MOBILEtc )
+        {
+            bEnable = ( (g_researchDone&RESEARCH_CANON) &&
+                        (g_researchDone&RESEARCH_TANK)  );
+        }
+        if ( type == OBJECT_MOBILEfc )
+        {
+            bEnable = ( (g_researchDone&RESEARCH_CANON) &&
+                        (g_researchDone&RESEARCH_FLY)   );
+        }
+        if ( type == OBJECT_MOBILEic )
+        {
+            bEnable = ( (g_researchDone&RESEARCH_CANON) &&
+                        (g_researchDone&RESEARCH_iPAW)  );
+        }
+
+        if ( type == OBJECT_MOBILEwi )
+        {
+            bEnable = g_researchDone&RESEARCH_iGUN;
+        }
+        if ( type == OBJECT_MOBILEti )
+        {
+            bEnable = ( (g_researchDone&RESEARCH_iGUN) &&
+                        (g_researchDone&RESEARCH_TANK) );
+        }
+        if ( type == OBJECT_MOBILEfi )
+        {
+            bEnable = ( (g_researchDone&RESEARCH_iGUN) &&
+                        (g_researchDone&RESEARCH_FLY)  );
+        }
+        if ( type == OBJECT_MOBILEii )
+        {
+            bEnable = ( (g_researchDone&RESEARCH_iGUN) &&
+                        (g_researchDone&RESEARCH_iPAW) );
+        }
+
+        if ( type == OBJECT_MOBILErt )
+        {
+            bEnable = ( (g_researchDone&RESEARCH_THUMP) &&
+                        (g_researchDone&RESEARCH_TANK)  );
+        }
+        if ( type == OBJECT_MOBILErc )
+        {
+            bEnable = ( (g_researchDone&RESEARCH_PHAZER) &&
+                        (g_researchDone&RESEARCH_TANK)   );
+        }
+        if ( type == OBJECT_MOBILErr )
+        {
+            bEnable = ( (g_researchDone&RESEARCH_RECYCLER) &&
+                        (g_researchDone&RESEARCH_TANK)     );
+        }
+        if ( type == OBJECT_MOBILErs )
+        {
+            bEnable = ( (g_researchDone&RESEARCH_SHIELD) &&
+                        (g_researchDone&RESEARCH_TANK)   );
+        }
+
+        if ( type == OBJECT_MOBILEsa )
+        {
+            bEnable = g_researchDone&RESEARCH_SUBM;
+        }
+
+        if ( bEnable )
+            err = automat->StartAction(type);
+        else
+            err = ERR_BUILD_DISABLED;
+    } else
+        err = ERR_MANIP_VEH;
+
+    if ( err != ERR_OK )
+    {
+        result->SetValInt(err);  // return error
+//TODO:        if ( script->m_errMode == ERM_STOP )
+        if( true )
+        {
+            exception = err;
+            return false;
+        }
+        return true;
+    }
+
     return true;
 }
 

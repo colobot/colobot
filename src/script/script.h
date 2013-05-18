@@ -94,7 +94,6 @@ protected:
     bool        Compile();
 
 private:
-
     static CBotTypResult cNull(CBotVar* &var, void* user);
     static CBotTypResult cOneFloat(CBotVar* &var, void* user);
     static CBotTypResult cTwoFloat(CBotVar* &var, void* user);
@@ -191,6 +190,11 @@ private:
     static bool rPenColor(CBotVar* var, CBotVar* result, int& exception, void* user);
     static bool rPenWidth(CBotVar* var, CBotVar* result, int& exception, void* user);
 
+public:
+    static CBotTypResult cClassOneFloat(CBotVar* thisclass, CBotVar* &var);
+    static bool rFactory(CBotVar* thisclass, CBotVar* var, CBotVar* result, int& exception);
+
+private:
     static bool     Process(CScript* script, CBotVar* result, int &exception);
     static CObject* SearchInfo(CScript* script, CObject* object, float power);
 

@@ -602,9 +602,6 @@ bool rPoint(CBotVar* pThis, CBotVar* var, CBotVar* pResult, int& Exception)
     return  true;  // no interruption
 }
 
-
-
-
 //! Constructor of robot application
 CRobotMain::CRobotMain(CApplication* app, bool loadProfile)
 {
@@ -847,7 +844,7 @@ CRobotMain::CRobotMain(CApplication* app, bool loadProfile)
     CBotProgram::DefineNum("ResearchSubber",        RESEARCH_SUBM);
     CBotProgram::DefineNum("ResearchSniffer",       RESEARCH_SNIFFER);
 
-    CBotProgram::
+//?    CBotProgram::
 
     CBotProgram::DefineNum("PolskiPortalColobota", 1337);
 
@@ -876,6 +873,7 @@ CRobotMain::CRobotMain(CApplication* app, bool loadProfile)
     bc->AddItem("energyCell",  CBotTypResult(CBotTypPointer, "object"), PR_READ);
     bc->AddItem("load",        CBotTypResult(CBotTypPointer, "object"), PR_READ);
     bc->AddItem("id",          CBotTypResult(CBotTypInt), PR_READ);
+    bc->AddFunction("factory", CScript::rFactory, CScript::cClassOneFloat);
 
     // Initializes the class FILE.
     InitClassFILE();

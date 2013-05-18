@@ -61,6 +61,8 @@ public:
     virtual Error   IsEnded();
     virtual bool    Abort();
 
+    virtual Error   StartAction(int param);
+
     virtual bool    SetType(ObjectType type);
     virtual bool    SetValue(int rank, float value);
     virtual bool    SetString(char *string);

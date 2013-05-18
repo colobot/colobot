@@ -48,6 +48,8 @@ public:
     void        Init();
     bool        EventProcess(const Event &event);
 
+    Error       StartAction(int param);
+
     bool        CreateInterface(bool bSelect);
 
     bool        Write(char *line);
