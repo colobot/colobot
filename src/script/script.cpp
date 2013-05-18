@@ -1435,11 +1435,12 @@ bool CScript::rCanBuild(CBotVar* var, CBotVar* result, int& exception, void* use
          (category == OBJECT_ENERGY    && (g_build & BUILD_ENERGY))    ||
          (category == OBJECT_LABO      && (g_build & BUILD_LABO))      ||
          (category == OBJECT_NUCLEAR   && (g_build & BUILD_NUCLEAR))   ||
-         (category == OBJECT_INFO      && (g_build & BUILD_INFO  ))    ||
-         (category == OBJECT_PARA      && (g_build & BUILD_PARA )))
+         (category == OBJECT_INFO      && (g_build & BUILD_INFO))      ||
+         (category == OBJECT_PARA      && (g_build & BUILD_PARA))      ||
+         (category == OBJECT_DESTROYER && (g_build & BUILD_DESTROYER)))
     {
 
-        //if we want to build  not researched one
+        //if we want to build not researched one
         if ( (category == OBJECT_TOWER   && !(g_researchDone & RESEARCH_TOWER)) ||
              (category == OBJECT_NUCLEAR && !(g_researchDone & RESEARCH_ATOMIC))
             )
@@ -1495,11 +1496,12 @@ bool CScript::rBuild(CBotVar* var, CBotVar* result, int& exception, void* user)
              (category == OBJECT_ENERGY    && (g_build & BUILD_ENERGY))    ||
              (category == OBJECT_LABO      && (g_build & BUILD_LABO))      ||
              (category == OBJECT_NUCLEAR   && (g_build & BUILD_NUCLEAR))   ||
-             (category == OBJECT_INFO      && (g_build & BUILD_INFO  ))    ||
-             (category == OBJECT_PARA      && (g_build & BUILD_PARA )))
+             (category == OBJECT_INFO      && (g_build & BUILD_INFO))      ||
+             (category == OBJECT_PARA      && (g_build & BUILD_PARA))      ||
+             (category == OBJECT_DESTROYER && (g_build & BUILD_DESTROYER)))
         {
 
-            //if we want to build  not researched one
+            //if we want to build not researched one
             if ( (category == OBJECT_TOWER   && !(g_researchDone & RESEARCH_TOWER)) ||
                  (category == OBJECT_NUCLEAR && !(g_researchDone & RESEARCH_ATOMIC))
                 )
