@@ -46,6 +46,8 @@ public:
     bool        EventProcess(const Event &event);
     Error       GetError();
 
+    Error       StartAction(int param);
+
     bool        CreateInterface(bool bSelect);
 
     bool        Write(char *line);

@@ -70,6 +70,11 @@ CBotTypResult CScript::cNull(CBotVar* &var, void* user)
     return CBotTypResult(CBotTypFloat);
 }
 
+CBotTypResult CScript::cClassNull(CBotVar* thisclass, CBotVar* &var)
+{
+    return CScript::cNull(var, nullptr);
+}
+
 // Compiling a procedure with a single real number.
 
 CBotTypResult CScript::cOneFloat(CBotVar* &var, void* user)
@@ -534,6 +539,51 @@ bool CScript::rBusy(CBotVar* thisclass, CBotVar* var, CBotVar* result, int& exce
         result->SetValInt(automat->GetBusy());
     else
         exception = ERR_MANIP_VEH;
+
+    return true;
+}
+
+bool CScript::rDestroy(CBotVar* thisclass, CBotVar* var, CBotVar* result, int& exception)
+{
+    exception = 0;
+    Error err;
+
+    CBotVar* classVars = thisclass->GetItemList();  // "category"
+    ObjectType thisType = static_cast<ObjectType>(classVars->GetValInt());
+    classVars = classVars->GetNext();  // "position"
+    classVars = classVars->GetNext();  // "orientation"
+    classVars = classVars->GetNext();  // "pitch"
+    classVars = classVars->GetNext();  // "roll"
+    classVars = classVars->GetNext();  // "energyLevel"
+    classVars = classVars->GetNext();  // "shieldLevel"
+    classVars = classVars->GetNext();  // "temperature"
+    classVars = classVars->GetNext();  // "altitude"
+    classVars = classVars->GetNext();  // "lifeTime"
+    classVars = classVars->GetNext();  // "material"
+    classVars = classVars->GetNext();  // "energyCell"
+    classVars = classVars->GetNext();  // "load"
+    classVars = classVars->GetNext();  // "id"
+    int rank = classVars->GetValInt();
+    CObject* obj = CObjectManager::GetInstancePointer()->SearchInstance(rank);
+    CAuto* automat = obj->GetAuto();
+
+    if ( thisType == OBJECT_DESTROYER )
+    {
+        err = automat->StartAction(0);
+    } else
+        err = ERR_MANIP_VEH;
+
+    if ( err != ERR_OK )
+    {
+        result->SetValInt(err);  // return error
+//TODO:        if ( script->m_errMode == ERM_STOP )
+        if( true )
+        {
+            exception = err;
+            return false;
+        }
+        return true;
+    }
 
     return true;
 }

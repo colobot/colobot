@@ -193,9 +193,11 @@ private:
 public:
     static CBotTypResult cBusy(CBotVar* thisclass, CBotVar* &var);
     static CBotTypResult cClassOneFloat(CBotVar* thisclass, CBotVar* &var);
+    static CBotTypResult cClassNull(CBotVar* thisclass, CBotVar* &var);
 
     static bool rBusy(CBotVar* thisclass, CBotVar* var, CBotVar* result, int& exception);
     static bool rFactory(CBotVar* thisclass, CBotVar* var, CBotVar* result, int& exception);
+    static bool rDestroy(CBotVar* thisclass, CBotVar* var, CBotVar* result, int& exception);
 
 private:
     static bool     Process(CScript* script, CBotVar* result, int &exception);

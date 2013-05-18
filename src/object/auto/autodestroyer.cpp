@@ -24,6 +24,7 @@
 
 #include "ui/interface.h"
 #include "ui/window.h"
+#include "ui/displaytext.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -68,6 +69,36 @@ void CAutoDestroyer::Init()
 }
 
 
+// Starts an action
+Error CAutoDestroyer::StartAction(int param)
+{
+    CObject* scrap;
+
+    if ( m_object->GetVirusMode() )  // contaminated by a virus?
+    {
+        return ERR_BAT_VIRUS;
+    }
+
+    scrap = SearchPlastic();
+    if ( scrap == nullptr )
+        return ERR_DESTROY_NOTFOUND;
+    else {
+        if ( m_phase == ADEP_WAIT ) {
+            scrap->SetLock(true);  // usable waste
+//?         scrap->SetTruck(m_object);  // usable waste
+
+            m_sound->Play(SOUND_PSHHH2, m_object->GetPosition(0), 1.0f, 1.0f);
+
+            m_phase    = ADEP_DOWN;
+            m_progress = 0.0f;
+            m_speed    = 1.0f/1.0f;
+            m_bExplo   = false;
+        } else
+            return ERR_GENERIC;
+    }
+    return ERR_OK;
+}
+
 // Management of an event.
 
 bool CAutoDestroyer::EventProcess(const Event &event)
@@ -86,21 +117,11 @@ bool CAutoDestroyer::EventProcess(const Event &event)
     {
         if ( event.type == EVENT_OBJECT_BDESTROY )
         {
-            if ( m_object->GetVirusMode() )  // contaminated by a virus?
-            {
-                return true; // Don't do anything. TODO: Error?
-            }
+            Error err = StartAction(0);
+            if ( err != ERR_OK )
+                m_displayText->DisplayError(err, m_object);
 
-            scrap = SearchPlastic();
-            scrap->SetLock(true);  // usable waste
-//?         scrap->SetTruck(m_object);  // usable waste
-
-            m_sound->Play(SOUND_PSHHH2, m_object->GetPosition(0), 1.0f, 1.0f);
-
-            m_phase    = ADEP_DOWN;
-            m_progress = 0.0f;
-            m_speed    = 1.0f/1.0f;
-            m_bExplo   = false;
+            return false;
         }
     }
 
