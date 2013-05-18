@@ -499,6 +499,45 @@ bool CScript::rGetObject(CBotVar* var, CBotVar* result, int& exception, void* us
     return true;
 }
 
+// Compilation of instruction "object.busy()"
+CBotTypResult CScript::cBusy(CBotVar* thisclass, CBotVar* &var)
+{
+    if ( var != 0 )  return CBotTypResult(CBotErrOverParam);
+    return CBotTypResult(CBotTypBoolean);
+}
+
+// Instruction "object.busy()"
+
+bool CScript::rBusy(CBotVar* thisclass, CBotVar* var, CBotVar* result, int& exception)
+{
+    exception = 0;
+
+    CBotVar* classVars = thisclass->GetItemList();  // "category"
+    classVars = classVars->GetNext();  // "position"
+    classVars = classVars->GetNext();  // "orientation"
+    classVars = classVars->GetNext();  // "pitch"
+    classVars = classVars->GetNext();  // "roll"
+    classVars = classVars->GetNext();  // "energyLevel"
+    classVars = classVars->GetNext();  // "shieldLevel"
+    classVars = classVars->GetNext();  // "temperature"
+    classVars = classVars->GetNext();  // "altitude"
+    classVars = classVars->GetNext();  // "lifeTime"
+    classVars = classVars->GetNext();  // "material"
+    classVars = classVars->GetNext();  // "energyCell"
+    classVars = classVars->GetNext();  // "load"
+    classVars = classVars->GetNext();  // "id"
+    int rank = classVars->GetValInt();
+    CObject* obj = CObjectManager::GetInstancePointer()->SearchInstance(rank);
+    CAuto* automat = obj->GetAuto();
+
+    if ( automat != nullptr )
+        result->SetValInt(automat->GetBusy());
+    else
+        exception = ERR_MANIP_VEH;
+
+    return true;
+}
+
 // Instruction "object.factory(cat)"
 
 bool CScript::rFactory(CBotVar* thisclass, CBotVar* var, CBotVar* result, int& exception)

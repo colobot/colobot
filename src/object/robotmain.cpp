@@ -873,6 +873,7 @@ CRobotMain::CRobotMain(CApplication* app, bool loadProfile)
     bc->AddItem("energyCell",  CBotTypResult(CBotTypPointer, "object"), PR_READ);
     bc->AddItem("load",        CBotTypResult(CBotTypPointer, "object"), PR_READ);
     bc->AddItem("id",          CBotTypResult(CBotTypInt), PR_READ);
+    bc->AddFunction("busy",    CScript::rBusy,    CScript::cBusy);
     bc->AddFunction("factory", CScript::rFactory, CScript::cClassOneFloat);
 
     // Initializes the class FILE.
