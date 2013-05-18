@@ -101,7 +101,7 @@ private:
     static CBotTypResult cEndMission(CBotVar* &var, void* user);
     static CBotTypResult cPlayMusic(CBotVar* &var, void* user);
     static CBotTypResult cGetObject(CBotVar* &var, void* user);
-    static CBotTypResult cDestroy(CBotVar* &var, void* user);
+    static CBotTypResult cDelete(CBotVar* &var, void* user);
     static CBotTypResult cSearch(CBotVar* &var, void* user);
     static CBotTypResult cRadar(CBotVar* &var, void* user);
     static CBotTypResult cDetect(CBotVar* &var, void* user);
@@ -146,7 +146,7 @@ private:
     static bool rSetResearchDone(CBotVar* var, CBotVar* result, int& exception, void* user);
     static bool rGetObjectById(CBotVar* var, CBotVar* result, int& exception, void* user);
     static bool rGetObject(CBotVar* var, CBotVar* result, int& exception, void* user);
-    static bool rDestroy(CBotVar* var, CBotVar* result, int& exception, void* user);
+    static bool rDelete(CBotVar* var, CBotVar* result, int& exception, void* user);
     static bool rSearch(CBotVar* var, CBotVar* result, int& exception, void* user);
     static bool rRadar(CBotVar* var, CBotVar* result, int& exception, void* user);
     static bool rDetect(CBotVar* var, CBotVar* result, int& exception, void* user);

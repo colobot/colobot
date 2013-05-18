@@ -695,9 +695,9 @@ bool CScript::rFactory(CBotVar* thisclass, CBotVar* var, CBotVar* result, int& e
     return true;
 }
 
-// Compilation of the instruction "destroy(rank[, exploType[, force]])".
+// Compilation of the instruction "delete(rank[, exploType[, force]])".
 
-CBotTypResult CScript::cDestroy(CBotVar* &var, void* user)
+CBotTypResult CScript::cDelete(CBotVar* &var, void* user)
 {
     if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
 
@@ -719,9 +719,9 @@ CBotTypResult CScript::cDestroy(CBotVar* &var, void* user)
     return CBotTypResult(CBotTypFloat);
 }
 
-// Instruction "destroy(rank[, exploType[, force]])".
+// Instruction "delete(rank[, exploType[, force]])".
 
-bool CScript::rDestroy(CBotVar* var, CBotVar* result, int& exception, void* user)
+bool CScript::rDelete(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
     CObject*    pObj;
     int         rank;
@@ -3320,7 +3320,7 @@ void CScript::InitFonctions()
 
     CBotProgram::AddFunction("retobject", rGetObject, CScript::cGetObject);
     CBotProgram::AddFunction("retobjectbyid", rGetObjectById, CScript::cGetObject);
-    CBotProgram::AddFunction("destroy",   rDestroy,   CScript::cDestroy);
+    CBotProgram::AddFunction("delete",    rDelete,    CScript::cDelete);
     CBotProgram::AddFunction("search",    rSearch,    CScript::cSearch);
     CBotProgram::AddFunction("radar",     rRadar,     CScript::cRadar);
     CBotProgram::AddFunction("detect",    rDetect,    CScript::cDetect);
