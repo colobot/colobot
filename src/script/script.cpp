@@ -538,7 +538,7 @@ bool CScript::rBusy(CBotVar* thisclass, CBotVar* var, CBotVar* result, int& exce
     if ( automat != nullptr )
         result->SetValInt(automat->GetBusy());
     else
-        exception = ERR_MANIP_VEH;
+        exception = ERR_WRONG_OBJ;
 
     return true;
 }
@@ -571,7 +571,7 @@ bool CScript::rDestroy(CBotVar* thisclass, CBotVar* var, CBotVar* result, int& e
     {
         err = automat->StartAction(0);
     } else
-        err = ERR_MANIP_VEH;
+        err = ERR_WRONG_OBJ;
 
     if ( err != ERR_OK )
     {
@@ -728,7 +728,7 @@ bool CScript::rFactory(CBotVar* thisclass, CBotVar* var, CBotVar* result, int& e
         else
             err = ERR_BUILD_DISABLED;
     } else
-        err = ERR_MANIP_VEH;
+        err = ERR_WRONG_OBJ;
 
     if ( err != ERR_OK )
     {

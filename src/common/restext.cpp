@@ -624,6 +624,7 @@ void InitializeRestext()
     stringsErr[ERR_FLAG_PROXY]      = "Too close to an existing flag";
     stringsErr[ERR_FLAG_DELETE]     = "No flag nearby";
     stringsErr[ERR_DESTROY_NOTFOUND]= "Not found anything to destroy";
+    stringsErr[ERR_WRONG_OBJ]       = "Inappropriate object";
     stringsErr[ERR_MISSION_NOTERM]  = "The mission is not accomplished yet (press \\key help; for more details)";
     stringsErr[ERR_DELETEMOBILE]    = "Bot destroyed";
     stringsErr[ERR_DELETEBUILDING]  = "Building destroyed";
