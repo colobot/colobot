@@ -1310,16 +1310,6 @@ bool CTaskGoto::GetHotPoint(CObject *pObj, Math::Vector &pos,
         return true;
     }
 
-    if ( type == OBJECT_DESTROYER )
-    {
-        mat = pObj->GetWorldMatrix(0);
-        pos.x += 0.0f;
-        if ( bTake && distance != 0.0f )  suppl = 4.0f;
-        if ( bTake )  pos.x += TAKE_DIST+distance+suppl;
-        pos = Transform(*mat, pos);
-        return true;
-    }
-
     if ( type == OBJECT_PARA && m_physics->GetType() == TYPE_FLYING )
     {
         mat = pObj->GetWorldMatrix(0);
