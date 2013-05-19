@@ -874,7 +874,7 @@ CRobotMain::CRobotMain(CApplication* app, bool loadProfile)
     bc->AddItem("load",        CBotTypResult(CBotTypPointer, "object"), PR_READ);
     bc->AddItem("id",          CBotTypResult(CBotTypInt), PR_READ);
     bc->AddFunction("busy",    CScript::rBusy,    CScript::cBusy);
-    bc->AddFunction("factory", CScript::rFactory, CScript::cClassOneFloat);
+    bc->AddFunction("factory", CScript::rFactory, CScript::cFactory);
     bc->AddFunction("destroy", CScript::rDestroy, CScript::cClassNull);
 
     // Initializes the class FILE.

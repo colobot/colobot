@@ -24,6 +24,7 @@
 #include "math/geometry.h"
 
 #include "object/robotmain.h"
+#include "object/brain.h"
 
 #include "physics/physics.h"
 
@@ -103,6 +104,8 @@ void CAutoFactory::Init()
 
     m_fretPos = m_object->GetPosition(0);
 
+    m_program = nullptr;
+
     CAuto::Init();
 }
 
@@ -146,6 +149,15 @@ Error CAutoFactory::StartAction(int param)
         return ERR_OK;
     }
     return ERR_GENERIC;
+}
+
+
+// Sets program for created robot
+
+void CAutoFactory::SetProgram(const char* program)
+{
+    m_program = new char[strlen(program)+1];
+    strcpy(m_program, program);
 }
 
 
@@ -377,7 +389,7 @@ bool CAutoFactory::EventProcess(const Event &event)
                 delete fret;
             }
 
-            vehicle = SearchVehicle();
+            m_vehicle = vehicle = SearchVehicle();
             if ( vehicle != 0 )
             {
                 physics = vehicle->GetPhysics();
@@ -474,6 +486,17 @@ bool CAutoFactory::EventProcess(const Event &event)
             {
                 m_object->SetZoomZ( 1+i, 0.30f);
                 m_object->SetZoomZ(10+i, 0.30f);
+            }
+
+            if ( m_program != nullptr )
+            {
+                CBrain* brain = m_vehicle->GetBrain();
+                if ( brain != nullptr )
+                {
+                    brain->SendProgram(0, const_cast<const char*>(m_program));
+                    brain->SetScriptRun(0);
+                    brain->RunProgram(0);
+                }
             }
 
             SetBusy(false);

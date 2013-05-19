@@ -78,7 +78,7 @@ public:
     void        GetError(char* buffer);
 
     void        New(Ui::CEdit* edit, const char* name);
-    bool        SendScript(char* text);
+    bool        SendScript(const char* text);
     bool        ReadScript(const char* filename);
     bool        WriteScript(const char* filename);
     bool        ReadStack(FILE *file);
@@ -192,7 +192,7 @@ private:
 
 public:
     static CBotTypResult cBusy(CBotVar* thisclass, CBotVar* &var);
-    static CBotTypResult cClassOneFloat(CBotVar* thisclass, CBotVar* &var);
+    static CBotTypResult cFactory(CBotVar* thisclass, CBotVar* &var);
     static CBotTypResult cClassNull(CBotVar* thisclass, CBotVar* &var);
 
     static bool rBusy(CBotVar* thisclass, CBotVar* var, CBotVar* result, int& exception);

@@ -114,6 +114,7 @@ public:
     char*       GetScriptName(int rank);
     void        SetSoluceName(char *name);
     char*       GetSoluceName();
+    bool        SendProgram(int rank, const char* buffer);
 
     bool        ReadSoluce(char* filename);
     bool        ReadProgram(int rank, const char* filename);

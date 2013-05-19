@@ -86,11 +86,6 @@ CBotTypResult CScript::cOneFloat(CBotVar* &var, void* user)
     return CBotTypResult(CBotTypFloat);
 }
 
-CBotTypResult CScript::cClassOneFloat(CBotVar* thisclass, CBotVar* &var)
-{
-    return CScript::cOneFloat(var, nullptr);
-}
-
 // Compiling a procedure with two real numbers.
 
 CBotTypResult CScript::cTwoFloat(CBotVar* &var, void* user)
@@ -588,6 +583,23 @@ bool CScript::rDestroy(CBotVar* thisclass, CBotVar* var, CBotVar* result, int& e
     return true;
 }
 
+
+// Compilation of instruction "object.factory(cat)"
+
+CBotTypResult CScript::cFactory(CBotVar* thisclass, CBotVar* &var)
+{
+    if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
+    if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
+    var = var->GetNext();
+    if ( var != 0 ) 
+    {
+        if ( var->GetType() != CBotTypString )  return CBotTypResult(CBotErrBadNum);
+        var = var->GetNext();
+        if ( var != 0 )  return CBotTypResult(CBotErrOverParam);
+    }
+    return CBotTypResult(CBotTypFloat);
+}
+
 // Instruction "object.factory(cat)"
 
 bool CScript::rFactory(CBotVar* thisclass, CBotVar* var, CBotVar* result, int& exception)
@@ -595,6 +607,18 @@ bool CScript::rFactory(CBotVar* thisclass, CBotVar* var, CBotVar* result, int& e
     Error       err;
 
     exception = 0;
+
+    ObjectType type = static_cast<ObjectType>(var->GetValInt());
+    var = var->GetNext();
+    CBotString cbs;
+    const char* program;
+    if ( var != 0 )
+    {
+        cbs = var->GetValString();
+        program = cbs;
+    }
+    else
+        program = "";
 
     CBotVar* classVars = thisclass->GetItemList();  // "category"
     ObjectType thisType = static_cast<ObjectType>(classVars->GetValInt());
@@ -613,11 +637,10 @@ bool CScript::rFactory(CBotVar* thisclass, CBotVar* var, CBotVar* result, int& e
     classVars = classVars->GetNext();  // "id"
     int rank = classVars->GetValInt();
     CObject* factory = CObjectManager::GetInstancePointer()->SearchInstance(rank);
-    CAuto* automat = factory->GetAuto();
+    CAutoFactory* automat = static_cast<CAutoFactory*>(factory->GetAuto());
 
     if ( thisType == OBJECT_FACTORY )
     {
-        ObjectType type = static_cast<ObjectType>(var->GetValInt());
         bool bEnable = false;
 
         if ( type == OBJECT_MOBILEwa )
@@ -724,10 +747,19 @@ bool CScript::rFactory(CBotVar* thisclass, CBotVar* var, CBotVar* result, int& e
         }
 
         if ( bEnable )
-            err = automat->StartAction(type);
+        {
+            if ( automat != nullptr )
+            {
+                err = automat->StartAction(type);
+                if ( err == ERR_OK ) automat->SetProgram(program);
+            }
+            else
+                err = ERR_GENERIC;
+        }
         else
             err = ERR_BUILD_DISABLED;
-    } else
+    }
+    else
         err = ERR_WRONG_OBJ;
 
     if ( err != ERR_OK )
@@ -4307,13 +4339,20 @@ void CScript::New(Ui::CEdit* edit, const char* name)
 
 // Provided a script for all parts.
 
-bool CScript::SendScript(char* text)
+bool CScript::SendScript(const char* text)
 {
-    m_len = strlen(text);
+    /*m_len = strlen(text);
     m_script = new char[m_len+1];
     strcpy(m_script, text);
     if ( !CheckToken() )  return false;
-    if ( !Compile() )  return false;
+    if ( !Compile() )  return false;*/
+
+    Ui::CEdit* edit = m_interface->CreateEdit(Math::Point(0.0f, 0.0f), Math::Point(0.0f, 0.0f), 0, EVENT_EDIT9);
+    edit->SetMaxChar(Ui::EDITSTUDIOMAX);
+    edit->SetAutoIndent(m_engine->GetEditIndentMode());
+    edit->SetText(text, true);
+    GetScript(edit);
+    m_interface->DeleteControl(EVENT_EDIT9);
 
     return true;
 }

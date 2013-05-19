@@ -540,6 +540,7 @@ void InitializeRestext()
 
 
 
+    stringsErr[ERR_GENERIC]         = "Internal error - tell the developers";
     stringsErr[ERR_CMD]             = "Unknown command";
     stringsErr[ERR_MANIP_VEH]       = "Inappropriate bot";
     stringsErr[ERR_MANIP_FLY]       = "Impossible when flying";

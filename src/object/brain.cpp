@@ -2720,6 +2720,23 @@ bool CBrain::ReadSoluce(char* filename)
     return true;
 }
 
+// Load a script from text buffer.
+
+bool CBrain::SendProgram(int rank, const char* buffer)
+{
+    if ( m_script[rank] == 0 )
+    {
+        m_script[rank] = new CScript(m_object, &m_secondaryTask);
+    }
+
+    if ( m_script[rank]->SendScript(buffer) )  return true;
+
+    delete m_script[rank];
+    m_script[rank] = 0;
+
+    return false;
+}
+
 // Load a script with a text file.
 
 bool CBrain::ReadProgram(int rank, const char* filename)
