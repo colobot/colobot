@@ -256,6 +256,7 @@ std::string GetHelpFilename(const char *token)
     if ( strcmp(token, "progfunc"       ) == 0 )  return std::string("help/") + CApplication::GetInstancePointer()->GetLanguageChar() + std::string("/cbot/factory.txt");
     if ( strcmp(token, "busy"       ) == 0 )  return std::string("help/") + CApplication::GetInstancePointer()->GetLanguageChar() + std::string("/cbot/busy.txt");
     if ( strcmp(token, "factory"       ) == 0 )  return std::string("help/") + CApplication::GetInstancePointer()->GetLanguageChar() + std::string("/cbot/factory.txt");
+    if ( strcmp(token, "research"      ) == 0 )  return std::string("help/") + CApplication::GetInstancePointer()->GetLanguageChar() + std::string("/cbot/research.txt");
     if ( strcmp(token, "destroy"       ) == 0 )  return std::string("help/") + CApplication::GetInstancePointer()->GetLanguageChar() + std::string("/cbot/destroy.txt");
     if ( strcmp(token, "search"        ) == 0 )  return std::string("help/") + CApplication::GetInstancePointer()->GetLanguageChar() + std::string("/cbot/search.txt");
     if ( strcmp(token, "radar"         ) == 0 )  return std::string("help/") + CApplication::GetInstancePointer()->GetLanguageChar() + std::string("/cbot/radar.txt");
@@ -382,6 +383,7 @@ bool IsFunction(const char *token)
     if ( strcmp(token, "progfunc"     ) == 0 )  return true;
     if ( strcmp(token, "busy"         ) == 0 )  return true;
     if ( strcmp(token, "factory"      ) == 0 )  return true;
+    if ( strcmp(token, "research"     ) == 0 )  return true;
     if ( strcmp(token, "destroy"      ) == 0 )  return true;
     if ( strcmp(token, "search"       ) == 0 )  return true;
     if ( strcmp(token, "radar"        ) == 0 )  return true;
@@ -474,6 +476,7 @@ const char* GetHelpText(const char *token)
     if ( strcmp(token, "progfunc"  ) == 0 )  return "progfunc ( funcname );";
     if ( strcmp(token, "busy"      ) == 0 )  return "object.busy ( );";
     if ( strcmp(token, "factory"   ) == 0 )  return "object.factory ( cat, program );";
+    if ( strcmp(token, "research"  ) == 0 )  return "object.research ( type );";
     if ( strcmp(token, "destroy"   ) == 0 )  return "object.destroy ( );";
     if ( strcmp(token, "search"    ) == 0 )  return "search ( );";
     if ( strcmp(token, "radar"     ) == 0 )  return "radar ( cat, angle, focus, min, max, sens );";

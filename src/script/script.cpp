@@ -86,6 +86,11 @@ CBotTypResult CScript::cOneFloat(CBotVar* &var, void* user)
     return CBotTypResult(CBotTypFloat);
 }
 
+CBotTypResult CScript::cClassOneFloat(CBotVar* thisclass, CBotVar* &var)
+{
+    return CScript::cOneFloat(var, nullptr);
+}
+
 // Compiling a procedure with two real numbers.
 
 CBotTypResult CScript::cTwoFloat(CBotVar* &var, void* user)
@@ -534,6 +539,7 @@ bool CScript::rProgFunc(CBotVar* var, CBotVar* result, int& exception, void* use
 
     return true;
 }
+
 // Compilation of instruction "object.busy()"
 CBotTypResult CScript::cBusy(CBotVar* thisclass, CBotVar* &var)
 {
@@ -619,7 +625,7 @@ bool CScript::rDestroy(CBotVar* thisclass, CBotVar* var, CBotVar* result, int& e
 }
 
 
-// Compilation of instruction "object.factory(cat)"
+// Compilation of instruction "object.factory(cat, program)"
 
 CBotTypResult CScript::cFactory(CBotVar* thisclass, CBotVar* &var)
 {
@@ -635,7 +641,7 @@ CBotTypResult CScript::cFactory(CBotVar* thisclass, CBotVar* &var)
     return CBotTypResult(CBotTypFloat);
 }
 
-// Instruction "object.factory(cat)"
+// Instruction "object.factory(cat, program)"
 
 bool CScript::rFactory(CBotVar* thisclass, CBotVar* var, CBotVar* result, int& exception)
 {
@@ -793,6 +799,88 @@ bool CScript::rFactory(CBotVar* thisclass, CBotVar* var, CBotVar* result, int& e
         }
         else
             err = ERR_BUILD_DISABLED;
+    }
+    else
+        err = ERR_WRONG_OBJ;
+
+    if ( err != ERR_OK )
+    {
+        result->SetValInt(err);  // return error
+//TODO:        if ( script->m_errMode == ERM_STOP )
+        if( true )
+        {
+            exception = err;
+            return false;
+        }
+        return true;
+    }
+
+    return true;
+}
+
+// Instruction "object.research(type)"
+
+bool CScript::rResearch(CBotVar* thisclass, CBotVar* var, CBotVar* result, int& exception)
+{
+    Error       err;
+
+    exception = 0;
+
+    ResearchType type = static_cast<ResearchType>(var->GetValInt());
+
+    CBotVar* classVars = thisclass->GetItemList();  // "category"
+    ObjectType thisType = static_cast<ObjectType>(classVars->GetValInt());
+    classVars = classVars->GetNext();  // "position"
+    classVars = classVars->GetNext();  // "orientation"
+    classVars = classVars->GetNext();  // "pitch"
+    classVars = classVars->GetNext();  // "roll"
+    classVars = classVars->GetNext();  // "energyLevel"
+    classVars = classVars->GetNext();  // "shieldLevel"
+    classVars = classVars->GetNext();  // "temperature"
+    classVars = classVars->GetNext();  // "altitude"
+    classVars = classVars->GetNext();  // "lifeTime"
+    classVars = classVars->GetNext();  // "material"
+    classVars = classVars->GetNext();  // "energyCell"
+    classVars = classVars->GetNext();  // "load"
+    classVars = classVars->GetNext();  // "id"
+    int rank = classVars->GetValInt();
+    CObject* center = CObjectManager::GetInstancePointer()->SearchInstance(rank);
+    CAuto* automat = center->GetAuto();
+
+    if ( thisType == OBJECT_RESEARCH ||
+         thisType == OBJECT_LABO      )
+    {
+        bool ok = false;
+        if ( type == RESEARCH_iPAW       ||
+             type == RESEARCH_iGUN        )
+        {
+            if ( thisType != OBJECT_LABO )
+                err = ERR_WRONG_OBJ;
+            else
+                ok = true;
+        }
+        else
+        {
+            if ( thisType != OBJECT_RESEARCH )
+                err = ERR_WRONG_OBJ;
+            else
+                ok = true;
+        }
+        if ( ok )
+        {
+            bool bEnable = ( g_researchEnable & type );
+            if ( bEnable )
+            {
+                if ( automat != nullptr )
+                {
+                    err = automat->StartAction(type);
+                }
+                else
+                    err = ERR_GENERIC;
+            }
+            else
+                err = ERR_BUILD_DISABLED;
+        }
     }
     else
         err = ERR_WRONG_OBJ;
