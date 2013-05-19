@@ -3674,7 +3674,7 @@ bool CScript::Compile()
     {
         if ( liste.GetSize() == 0 )
         {
-            strcpy(m_title, "<sans nom>");
+            strcpy(m_title, "<extern missing>");
         }
         else
         {
@@ -3711,7 +3711,7 @@ bool CScript::Compile()
         {
             m_cursor1 = m_cursor2 = 0;
         }
-        strcpy(m_title, "<erreur>");
+        strcpy(m_title, "<error>");
         return false;
     }
 }
