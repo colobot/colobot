@@ -98,6 +98,7 @@ private:
     static CBotTypResult cOneFloat(CBotVar* &var, void* user);
     static CBotTypResult cTwoFloat(CBotVar* &var, void* user);
     static CBotTypResult cString(CBotVar* &var, void* user);
+    static CBotTypResult cStringString(CBotVar* &var, void* user);
     static CBotTypResult cEndMission(CBotVar* &var, void* user);
     static CBotTypResult cPlayMusic(CBotVar* &var, void* user);
     static CBotTypResult cGetObject(CBotVar* &var, void* user);
@@ -146,6 +147,7 @@ private:
     static bool rSetResearchDone(CBotVar* var, CBotVar* result, int& exception, void* user);
     static bool rGetObjectById(CBotVar* var, CBotVar* result, int& exception, void* user);
     static bool rGetObject(CBotVar* var, CBotVar* result, int& exception, void* user);
+    static bool rProgFunc(CBotVar* var, CBotVar* result, int& exception, void* user);
     static bool rDelete(CBotVar* var, CBotVar* result, int& exception, void* user);
     static bool rSearch(CBotVar* var, CBotVar* result, int& exception, void* user);
     static bool rRadar(CBotVar* var, CBotVar* result, int& exception, void* user);
