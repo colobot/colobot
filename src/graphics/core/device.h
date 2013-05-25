@@ -72,7 +72,7 @@ struct DeviceConfig
         size = Math::IntPoint(800, 600);
         bpp = 32;
         fullScreen = false;
-        resizeable = false;
+        resizeable = true;
         doubleBuf = true;
         noFrame = false;
     }
