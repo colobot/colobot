@@ -37,3 +37,4 @@ inline ALenum alGetCode()
     CODE = AL_NO_ERROR;
     return ret;
 }
+

@@ -118,6 +118,7 @@ ${SRC_DIR}/physics/physics.cpp
 ${SRC_DIR}/script/cbottoken.cpp
 ${SRC_DIR}/script/cmdtoken.cpp
 ${SRC_DIR}/script/script.cpp
+${SRC_DIR}/sound/sound.cpp
 ${SRC_DIR}/ui/button.cpp
 ${SRC_DIR}/ui/check.cpp
 ${SRC_DIR}/ui/color.cpp

@@ -79,6 +79,7 @@
 #include "ui/slider.h"
 #include "ui/window.h"
 
+#include <iomanip>
 
 template<> CRobotMain* CSingleton<CRobotMain>::m_instance = nullptr;
 

@@ -14,9 +14,17 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// buffer.h
+/**
+ * \file buffer.h
+ * \brief OpenAL buffer
+ */
 
 #pragma once
+
+#include "sound/sound.h"
+#include "common/logger.h"
+
+#include "sound/oalsound/check.h"
 
 #include <string>
 #include <vector>
@@ -25,27 +33,23 @@
 #include <AL/al.h>
 #include <sndfile.h>
 
-#include "sound/sound.h"
-#include "common/logger.h"
-
-#include "check.h"
-
 class Buffer
 {
-    public:
-        Buffer();
-        ~Buffer();
+public:
+    Buffer();
+    ~Buffer();
 
-        bool LoadFromFile(std::string, Sound);
-        bool IsLoaded();
+    bool LoadFromFile(std::string, Sound);
+    bool IsLoaded();
 
-        Sound GetSoundType();
-        ALuint GetBuffer();
-        float GetDuration();
+    Sound GetSoundType();
+    ALuint GetBuffer();
+    float GetDuration();
 
-    private:
-        ALuint mBuffer;
-        Sound mSound;
-        bool mLoaded;
-        float mDuration;
+private:
+    ALuint m_buffer;
+    Sound m_sound;
+    bool m_loaded;
+    float m_duration;
 };
+

@@ -22,23 +22,16 @@
 
 #pragma once
 
-#include <boost/filesystem.hpp>
-
 #include "math/vector.h"
 
 #include "common/logger.h"
 
 #include <string>
-#include <iostream>
-#include <iomanip>
-#include <sstream>
-#include <map>
-
 
 /*!
  * Maximum possible audio volume
  */
-#define MAXVOLUME 100.0f
+const float MAXVOLUME = 100.0f;
 
 
 /**
@@ -131,6 +124,7 @@ enum Sound
   SOUND_EXPLOg1  = 79, /*!< impact gun 1 */
   SOUND_EXPLOg2  = 80, /*!< impact gun 2 */
 //  SOUND_MOTORd  = 81, /*!< engine friction */
+  SOUND_MAX /** number of items in enum */
 };
 
 
@@ -154,35 +148,22 @@ enum SoundNext
 */
 class CSoundInterface
 {
-  public:
-    inline CSoundInterface() {}
-    inline virtual ~CSoundInterface() {}
+public:
+    CSoundInterface();
+    virtual ~CSoundInterface();
 
     /** Function to initialize sound device
      *  \param b3D - enable support for 3D sound
      */
-    inline virtual bool Create(bool b3D) { return true; };
+    virtual bool Create(bool b3D);
 
     /** Function called to cache all sound effect files.
      *  Function calls \link CSoundInterface::Cache() \endlink for each file
      */
-    inline void CacheAll(std::string path) {
-        for ( int i = 1; i <= 80; i++ ) {
-            std::stringstream filename;
-            filename << path << "/sound" << std::setfill('0') << std::setw(3) << i << ".wav";
-            if ( !Cache(static_cast<Sound>(i), filename.str()) )
-                GetLogger()->Warn("Unable to load audio: %s\n", filename.str().c_str());
-        }
-    };
+    void CacheAll(std::string path);
 
     /** Function called to add all music files to list */
-    inline void AddMusicFiles(std::string path) {
-        m_soundPath = path;
-        CacheMusic("Intro1.ogg");
-        CacheMusic("Intro2.ogg");
-        CacheMusic("music010.ogg");
-        CacheMusic("music011.ogg");
-    };
+    void AddMusicFiles(std::string path);
 
     /** Function called to cache sound effect file.
      *  This function is called by plugin interface for each file.
@@ -190,65 +171,65 @@ class CSoundInterface
      * \param bFile - file to load
      * \return return true on success
      */
-    inline virtual bool Cache(Sound bSound, std::string bFile) { return true; };
+    virtual bool Cache(Sound bSound, std::string bFile);
 
     /** Function called to cache music file.
      *  This function is called by CRobotMain for each file used in the mission.
      * \param bFile - file to load
      * \return return true on success
      */
-    inline virtual bool CacheMusic(std::string bFile) { return true; };
+    virtual bool CacheMusic(std::string bFile);
 
     /** Return if plugin is enabled
      *  \return return true if plugin is enabled
      */
-    inline virtual bool GetEnable() {return true;};
+    virtual bool GetEnable();
 
     /** Change sound mode to 2D/3D
      * \param bMode - true to enable 3D sound
      */
-    inline virtual void SetSound3D(bool bMode) {};
+    virtual void SetSound3D(bool bMode);
 
     /** Return if we use 3D sound
      * \return true if we have 3D sound enabled
      */
-    inline virtual bool GetSound3D() {return true;};
+    virtual bool GetSound3D();
 
     /** Return if we have 3D sound capable card
      * \return true for 3D sound support
      */
-    inline virtual bool GetSound3DCap() {return true;};
+    virtual bool GetSound3DCap();
 
     /** Change global sound volume
      * \param volume - range from 0 to MAXVOLUME
      */
-    inline virtual void SetAudioVolume(int volume) {};
+    virtual void SetAudioVolume(int volume);
 
     /** Return global sound volume
      * \return global volume as int in range from 0 to MAXVOLUME
      */
-    inline virtual int GetAudioVolume() {return 0;};
+    virtual int GetAudioVolume();
 
     /** Set music volume
      * \param volume - range from 0 to MAXVOLUME
      */
-    inline virtual void SetMusicVolume(int volume) {};
+    virtual void SetMusicVolume(int volume);
 
     /** Return music volume
      * \return music volume as int in range from 0 to MAXVOLUME
      */
-    inline virtual int GetMusicVolume() {return 0;};
+    virtual int GetMusicVolume();
 
     /** Set listener position
      * \param eye - position of listener
      * \param lookat - direction listener is looking at
      */
-    inline virtual void SetListener(Math::Vector eye, Math::Vector lookat) {};
+    virtual void SetListener(Math::Vector eye, Math::Vector lookat);
 
     /** Update data each frame
      * \param rTime - time since last update
      */
-    inline virtual void FrameMove(float rTime) {};
+    virtual void FrameMove(float rTime);
 
     /** Play specific sound
      * \param sound - sound to play
@@ -257,7 +238,7 @@ class CSoundInterface
      * \param bLoop - loop sound
      * \return identifier of channel that sound will be played on
      */
-    inline virtual int Play(Sound sound, float amplitude=1.0f, float frequency=1.0f, bool bLoop = false) {return 0;};
+    virtual int Play(Sound sound, float amplitude=1.0f, float frequency=1.0f, bool bLoop = false);
 
     /** Play specific sound
      * \param sound - sound to play
@@ -267,13 +248,13 @@ class CSoundInterface
      * \param bLoop - loop sound
      * \return identifier of channel that sound will be played on
      */
-    inline virtual int Play(Sound sound, Math::Vector pos, float amplitude=1.0f, float frequency=1.0f, bool bLoop = false) {return 0;};
+    virtual int Play(Sound sound, Math::Vector pos, float amplitude=1.0f, float frequency=1.0f, bool bLoop = false);
 
     /** Remove all operations that would be made on sound in channel.
      * \param channel - channel to work on
      * \return return true on success
      */
-    inline virtual bool FlushEnvelope(int channel) {return true;};
+    virtual bool FlushEnvelope(int channel);
 
     /** Add envelope to sound. Envelope is a operatino that will be performend on sound in future like changing frequency
      * \param channel - channel to work on
@@ -283,74 +264,74 @@ class CSoundInterface
      * \param oper - operation to perform
      * \return return true on success
      */
-    inline virtual bool AddEnvelope(int channel, float amplitude, float frequency, float time, SoundNext oper) {return true;};
+    virtual bool AddEnvelope(int channel, float amplitude, float frequency, float time, SoundNext oper);
 
     /** Set sound position in space
      * \param channel - channel to work on
      * \param pos - new positino of a sound
      * \return return true on success
      */
-    inline virtual bool Position(int channel, Math::Vector pos) {return true;};
+    virtual bool Position(int channel, Math::Vector pos);
 
     /** Set sound frequency
      * \param channel - channel to work on
      * \param frequency - change sound frequency
      * \return return true on success
      */
-    inline virtual bool Frequency(int channel, float frequency) {return true;};
+    virtual bool Frequency(int channel, float frequency);
 
     /** Stop playing sound
      * \param channel - channel to work on
      * \return return true on success
      */
-    inline virtual bool Stop(int channel) {return true;};
+    virtual bool Stop(int channel);
 
     /** Stop playing all sounds
      * \return return true on success
      */
-    inline virtual bool StopAll() {return true;};
+    virtual bool StopAll();
 
     /** Mute/unmute all sounds
      * \param bMute
      * \return return true on success
      */
-    inline virtual bool MuteAll(bool bMute) {return true;};
+    virtual bool MuteAll(bool bMute);
 
     /** Start playing music
      * \param rank - track number
      * \param bRepeat - repeat playing
      * \return return true on success
      */
-    inline virtual bool PlayMusic(int rank, bool bRepeat) {return true;};
+    virtual bool PlayMusic(int rank, bool bRepeat);
 
     /** Start playing music
      * \param filename - name of file to play
      * \param bRepeat - repeat playing
      * \return return true on success
      */
-    inline virtual bool PlayMusic(std::string filename, bool bRepeat) {return true;};
+    virtual bool PlayMusic(std::string filename, bool bRepeat);
 
     /** Restart music
      * @return return true on success
      */
-    inline virtual bool RestartMusic() {return true;};
+    virtual bool RestartMusic();
 
     /** Susspend paying music
      * \return return true on success
      */
-    inline virtual void SuspendMusic() {};
+    virtual void SuspendMusic();
 
     /** Stop playing music
      * \return return true on success
      */
-    inline virtual void StopMusic() {};
+    virtual void StopMusic();
 
     /** Check if music if playing
      * \return return true if music is playing
      */
-    inline virtual bool IsPlayingMusic() {return true;};
+    virtual bool IsPlayingMusic();
 
-    protected:
-        std::string m_soundPath;
+protected:
+    std::string m_soundPath;
 };
 

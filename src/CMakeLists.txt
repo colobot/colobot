@@ -155,6 +155,7 @@ physics/physics.cpp
 script/cbottoken.cpp
 script/cmdtoken.cpp
 script/script.cpp
+sound/sound.cpp
 ui/button.cpp
 ui/check.cpp
 ui/color.cpp

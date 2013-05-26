@@ -14,9 +14,17 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// channel.h
+/**
+ * \file channel.h
+ * \brief OpenAL channel
+ */
 
 #pragma once
+
+#include "sound/sound.h"
+
+#include "sound/oalsound/buffer.h"
+#include "sound/oalsound/check.h"
 
 #include <string>
 #include <deque>
@@ -24,11 +32,6 @@
 
 #include <AL/al.h>
 #include <AL/alc.h>
-
-#include "sound/sound.h"
-
-#include "buffer.h"
-#include "check.h"
 
 struct SoundOper
 {
@@ -42,72 +45,73 @@ struct SoundOper
 
 class Channel
 {
-    public:
-        Channel();
-        ~Channel();
+public:
+    Channel();
+    ~Channel();
 
-        bool Play();
-        bool Stop();
+    bool Play();
+    bool Stop();
 
-        bool SetPan(Math::Vector);
-        void SetPosition(Math::Vector);
-        Math::Vector GetPosition();
+    bool SetPan(Math::Vector);
+    void SetPosition(Math::Vector);
+    Math::Vector GetPosition();
 
-        bool SetFrequency(float);
-        float GetFrequency();
+    bool SetFrequency(float);
+    float GetFrequency();
 
-        float GetCurrentTime();
-        void SetCurrentTime(float);
-        float GetDuration();
+    float GetCurrentTime();
+    void SetCurrentTime(float);
+    float GetDuration();
 
-        bool SetVolume(float);
-        float GetVolume();
-        void SetVolumeAtrib(float);
-        float GetVolumeAtrib();
+    bool SetVolume(float);
+    float GetVolume();
+    void SetVolumeAtrib(float);
+    float GetVolumeAtrib();
 
-        bool IsPlaying();
-        bool IsReady();
-        bool IsLoaded();
+    bool IsPlaying();
+    bool IsReady();
+    bool IsLoaded();
 
-        bool SetBuffer(Buffer *);
-        bool FreeBuffer();
+    bool SetBuffer(Buffer *);
+    bool FreeBuffer();
 
-        bool HasEnvelope();
-        SoundOper& GetEnvelope();
-        void PopEnvelope();
+    bool HasEnvelope();
+    SoundOper& GetEnvelope();
+    void PopEnvelope();
 
-        int GetPriority();
-        void SetPriority(int);
+    int GetPriority();
+    void SetPriority(int);
 
-        void SetStartAmplitude(float);
-        void SetStartFrequency(float);
-        void SetChangeFrequency(float);
+    void SetStartAmplitude(float);
+    void SetStartFrequency(float);
+    void SetChangeFrequency(float);
 
-        float GetStartAmplitude();
-        float GetStartFrequency();
-        float GetChangeFrequency();
-        float GetInitFrequency();
+    float GetStartAmplitude();
+    float GetStartFrequency();
+    float GetChangeFrequency();
+    float GetInitFrequency();
 
-        void AddOper(SoundOper);
-        void ResetOper();
-        Sound GetSoundType();
-        void SetLoop(bool);
-        void Mute(bool);
-        bool IsMuted();
+    void AddOper(SoundOper);
+    void ResetOper();
+    Sound GetSoundType();
+    void SetLoop(bool);
+    void Mute(bool);
+    bool IsMuted();
 
-    private:
-        Buffer *mBuffer;
-        ALuint mSource;
+private:
+    Buffer *m_buffer;
+    ALuint m_source;
 
-        int mPriority;
-        float mStartAmplitude;
-        float mStartFrequency;
-        float mChangeFrequency;
-        float mInitFrequency;
-        float mVolume;
-        std::deque<SoundOper> mOper;
-        bool mReady;
-        bool mLoop;
-        bool mMute;
-        Math::Vector mPosition;
+    int m_priority;
+    float m_startAmplitude;
+    float m_startFrequency;
+    float m_changeFrequency;
+    float m_initFrequency;
+    float m_volume;
+    std::deque<SoundOper> m_oper;
+    bool m_ready;
+    bool m_loop;
+    bool m_mute;
+    Math::Vector m_position;
 };
+

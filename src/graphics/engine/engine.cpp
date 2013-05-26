@@ -42,6 +42,8 @@
 
 #include "ui/interface.h"
 
+#include <iomanip>
+
 template<> Gfx::CEngine* CSingleton<Gfx::CEngine>::m_instance = nullptr;
 
 // Graphics module namespace
