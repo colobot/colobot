@@ -2116,7 +2116,7 @@ void CRobotMain::FlushDisplayInfo()
         m_infoFilename[i][0] = 0;
         m_infoPos[i] = 0;
     }
-    strcpy(m_infoFilename[SATCOM_OBJECT], "help/") + m_app->GetLanguageChar() + std::string("/objects.txt");
+    strcpy(m_infoFilename[SATCOM_OBJECT], "objects.txt");
     m_infoIndex = 0;
 }
 

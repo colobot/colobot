@@ -5046,6 +5046,9 @@ void CMainDialog::UpdateSceneResume(int rank)
     {
         for ( i=0 ; i<500 ; i++ )
         {
+            if (line[i] == 0)
+                break;
+
             if ( line[i] == '\t' )  line[i] = ' ';  // replaces tab by space
             if ( line[i] == '/' && line[i+1] == '/' )
             {

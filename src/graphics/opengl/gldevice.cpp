@@ -653,7 +653,7 @@ void CGLDevice::SetTexture(int index, const Texture &texture)
     glBindTexture(GL_TEXTURE_2D, texture.id);
 
     // Params need to be updated for the new bound texture
-    SetTextureStageParams(index, m_textureStageParams[index]);
+    UpdateTextureParams(index);
 }
 
 void CGLDevice::SetTexture(int index, unsigned int textureId)
@@ -674,7 +674,7 @@ void CGLDevice::SetTexture(int index, unsigned int textureId)
     glBindTexture(GL_TEXTURE_2D, textureId);
 
     // Params need to be updated for the new bound texture
-    SetTextureStageParams(index, m_textureStageParams[index]);
+    UpdateTextureParams(index);
 }
 
 /**
@@ -727,12 +727,21 @@ void CGLDevice::SetTextureStageParams(int index, const TextureStageParams &param
     // Remember the settings
     m_textureStageParams[index] = params;
 
+    UpdateTextureParams(index);
+}
+
+void CGLDevice::UpdateTextureParams(int index)
+{
+    assert(index >= 0 && index < static_cast<int>( m_currentTextures.size() ));
+
     if (!m_multitextureAvailable && index != 0)
         return;
 
     // Don't actually do anything if texture not set
     if (! m_currentTextures[index].Valid())
         return;
+
+    const TextureStageParams &params = m_textureStageParams[index];
 
     if (m_multitextureAvailable)
         glActiveTexture(GL_TEXTURE0 + index);

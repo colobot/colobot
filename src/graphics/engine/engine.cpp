@@ -998,7 +998,8 @@ void CEngine::ChangeSecondTexture(int objRank, const std::string& tex2Name)
             continue;  // already new
 
         EngineBaseObjTexTier& newP2 = AddLevel2(p1, p2.tex1Name, tex2Name);
-        newP2.next.swap(p2.next);
+        newP2.next.insert(newP2.next.end(), p2.next.begin(), p2.next.end());
+        p2.next.clear();
     }
 }
 
