@@ -234,7 +234,8 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
         { "language", required_argument, nullptr, OPT_LANGUAGE },
         { "langdir", required_argument, nullptr, OPT_LANGDIR },
         { "vbo", required_argument, nullptr, OPT_VBO },
-        { "texpack", required_argument, nullptr, OPT_TEXPACK }
+        { "texpack", required_argument, nullptr, OPT_TEXPACK },
+        { nullptr, 0, nullptr, 0}
     };
 
     opterr = 0;
