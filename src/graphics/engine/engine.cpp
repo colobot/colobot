@@ -62,8 +62,6 @@ CEngine::CEngine(CApplication *app)
     m_sound      = nullptr;
     m_terrain    = nullptr;
 
-    m_texPack    = "";
-
     m_showStats = false;
 
     m_focus = 0.75f;
@@ -238,12 +236,6 @@ void CEngine::SetTerrain(CTerrain* terrain)
     m_terrain = terrain;
 }
 
-void CEngine::SetTexturePack(const std::string& texpackName)
-{
-    m_texPack = texpackName;
-}
-
-
 bool CEngine::Create()
 {
     m_size = m_app->GetVideoConfig().size;
@@ -323,7 +315,7 @@ void CEngine::ResetAfterDeviceChanged()
 
     m_text->FlushCache();
 
-    // TODO reload textures, reset device state, etc.
+    FlushTextureCache();
 }
 
 bool CEngine::ProcessEvent(const Event &event)
@@ -2117,7 +2109,7 @@ void CEngine::SetViewParams(const Math::Vector& eyePt, const Math::Vector& looka
         m_sound->SetListener(eyePt, lookatPt);
 }
 
-Texture CEngine::CreateTexture(const std::string& texName, const TextureCreateParams& params, CImage* image, std::string orginalName)
+Texture CEngine::CreateTexture(const std::string& texName, const TextureCreateParams& params, CImage* image)
 {
     if (texName.empty())
         return Texture(); // invalid texture
@@ -2126,39 +2118,53 @@ Texture CEngine::CreateTexture(const std::string& texName, const TextureCreatePa
         return Texture(); // invalid texture
 
     Texture tex;
+    CImage img;
 
     if (image == nullptr)
     {
-        CImage img;
-        if (! img.Load(m_app->GetDataFilePath(DIR_TEXTURE, texName)))
+        bool loadedFromTexPack = false;
+
+        std::string texPackName = m_app->GetTexPackFilePath(texName);
+        if (! texPackName.empty())
         {
-            std::string error = img.GetError();
-            if(orginalName == "") GetLogger()->Error("Couldn't load texture '%s': %s, blacklisting\n", texName.c_str(), error.c_str());
-            m_texBlacklist.insert(texName);
-            return Texture(); // invalid texture
+            if (img.Load(texPackName))
+            {
+                loadedFromTexPack = true;
+            }
+            else
+            {
+                std::string error = img.GetError();
+                GetLogger()->Error("Couldn't load texture '%s' from texpack: %s, blacklisting the texpack path\n",
+                                   texName.c_str(), error.c_str());
+                m_texBlacklist.insert(texPackName);
+            }
         }
 
-        tex = m_device->CreateTexture(&img, params);
+        if (!loadedFromTexPack)
+        {
+            if (! img.Load(m_app->GetDataFilePath(DIR_TEXTURE, texName)))
+            {
+                std::string error = img.GetError();
+                GetLogger()->Error("Couldn't load texture '%s': %s, blacklisting\n", texName.c_str(), error.c_str());
+                m_texBlacklist.insert(texName);
+                return Texture(); // invalid texture
+            }
+        }
+
+        image = &img;
     }
-    else
-    {
-        tex = m_device->CreateTexture(image, params);
-    }
+
+    tex = m_device->CreateTexture(&img, params);
 
     if (! tex.Valid())
     {
-        if(orginalName == "") GetLogger()->Error("Couldn't load texture '%s', blacklisting\n", texName.c_str());
+        GetLogger()->Error("Couldn't load texture '%s', blacklisting\n", texName.c_str());
         m_texBlacklist.insert(texName);
         return tex;
     }
 
-    if(orginalName == "") {
-        m_texNameMap[texName] = tex;
-        m_revTexNameMap[tex] = texName;
-    } else {
-        m_texNameMap[orginalName] = tex;
-        m_revTexNameMap[tex] = orginalName;
-    }
+    m_texNameMap[texName] = tex;
+    m_revTexNameMap[tex] = texName;
 
     return tex;
 }
@@ -2183,19 +2189,7 @@ Texture CEngine::LoadTexture(const std::string& name, const TextureCreateParams&
     if (it != m_texNameMap.end())
         return (*it).second;
 
-    Texture tex;
-    if (m_texPack != "") {
-        std::string name_texpack = m_texPack + "/" + name;
-
-        if (m_texBlacklist.find(name_texpack) == m_texBlacklist.end()) {
-            tex = CreateTexture(name_texpack, params, nullptr, name);
-            if (tex.Valid())
-                return tex;
-        }
-    }
-
-    tex = CreateTexture(name, params);
-    return tex;
+    return CreateTexture(name, params);
 }
 
 bool CEngine::LoadAllTextures()
@@ -2451,6 +2445,13 @@ void CEngine::DeleteTexture(const Texture& tex)
 
     m_revTexNameMap.erase(revIt);
     m_texNameMap.erase(it);
+}
+
+void CEngine::FlushTextureCache()
+{
+    m_texNameMap.clear();
+    m_revTexNameMap.clear();
+    m_texBlacklist.clear();
 }
 
 bool CEngine::SetTexture(const std::string& name, int stage)

@@ -209,20 +209,20 @@ public:
     //! Main event loop
     int         Run();
     //! Returns the code to be returned at main() exit
-    int         GetExitCode();
+    int         GetExitCode() const;
 
     //! Returns the message of error (set to something if exit code is not 0)
-    const std::string& GetErrorMessage();
+    const std::string& GetErrorMessage() const;
 
     //! Cleans up before exit
     void        Destroy();
 
     //! Returns a list of possible video modes
     VideoQueryResult GetVideoResolutionList(std::vector<Math::IntPoint> &resolutions,
-                                            bool fullScreen, bool resizeable);
+                                            bool fullScreen, bool resizeable) const;
 
     //! Returns the current video mode
-    Gfx::GLDeviceConfig GetVideoConfig();
+    Gfx::GLDeviceConfig GetVideoConfig() const;
 
     //! Change the video mode to given mode
     bool        ChangeVideoConfig(const Gfx::GLDeviceConfig &newConfig);
@@ -232,35 +232,35 @@ public:
     //! Resumes animation
     void        ResumeSimulation();
     //! Returns whether simulation is suspended
-    bool        GetSimulationSuspended();
+    bool        GetSimulationSuspended() const;
 
     //@{
     //! Management of simulation speed
     void            SetSimulationSpeed(float speed);
-    float           GetSimulationSpeed();
+    float           GetSimulationSpeed() const;
     //@}
 
     //! Returns the absolute time counter [seconds]
-    float       GetAbsTime();
+    float       GetAbsTime() const;
     //! Returns the exact absolute time counter [nanoseconds]
-    long long   GetExactAbsTime();
+    long long   GetExactAbsTime() const;
 
     //! Returns the exact absolute time counter disregarding speed setting [nanoseconds]
-    long long   GetRealAbsTime();
+    long long   GetRealAbsTime() const;
 
     //! Returns the relative time since last update [seconds]
-    float       GetRelTime();
+    float       GetRelTime() const;
     //! Returns the exact realative time since last update [nanoseconds]
-    long long   GetExactRelTime();
+    long long   GetExactRelTime() const;
 
     //! Returns the exact relative time since last update disregarding speed setting [nanoseconds]
-    long long   GetRealRelTime();
+    long long   GetRealRelTime() const;
 
     //! Returns a list of available joystick devices
-    std::vector<JoystickDevice> GetJoystickList();
+    std::vector<JoystickDevice> GetJoystickList() const;
 
     //! Returns info about the current joystick
-    JoystickDevice GetJoystick();
+    JoystickDevice GetJoystick() const;
 
     //! Change the current joystick device
     bool        ChangeJoystick(const JoystickDevice &newJoystick);
@@ -268,7 +268,7 @@ public:
     //! Management of joystick enable state
     //@{
     void        SetJoystickEnabled(bool enable);
-    bool        GetJoystickEnabled();
+    bool        GetJoystickEnabled() const;
     //@}
 
     //! Polls the state of joystick axes and buttons
@@ -278,15 +278,15 @@ public:
     void        UpdateMouse();
 
     //! Returns the current key modifiers
-    int         GetKmods();
+    int         GetKmods() const;
     //! Returns whether the given kmod is active
-    bool        GetKmodState(int kmod);
+    bool        GetKmodState(int kmod) const;
 
     //! Returns whether the tracked key is pressed
-    bool        GetTrackedKeyState(TrackedKey key);
+    bool        GetTrackedKeyState(TrackedKey key) const;
 
     //! Returns whether the mouse button is pressed
-    bool        GetMouseButtonState(int index);
+    bool        GetMouseButtonState(int index) const;
 
     //! Resets tracked key states and modifiers
     void        ResetKeyStates();
@@ -294,17 +294,17 @@ public:
     //! Management of the grab mode for input (keyboard & mouse)
     //@{
     void        SetGrabInput(bool grab);
-    bool        GetGrabInput();
+    bool        GetGrabInput() const;
     //@}
 
     //! Management of mouse mode
     //@{
     void        SetMouseMode(MouseMode mode);
-    MouseMode   GetMouseMode();
+    MouseMode   GetMouseMode() const;
     //@}
 
     //! Returns the position of mouse cursor (in interface coords)
-    Math::Point GetMousePos();
+    Math::Point GetMousePos() const;
 
     //! Moves (warps) the mouse cursor to the specified position (in interface coords)
     void        MoveMouse(Math::Point pos);
@@ -312,22 +312,25 @@ public:
     //! Management of debug mode (prints more info in logger)
     //@{
     void        SetDebugMode(bool mode);
-    bool        GetDebugMode();
+    bool        GetDebugMode() const;
     //@}
 
     //! Returns the full path to data directory
-    std::string GetDataDirPath();
+    std::string GetDataDirPath() const;
 
     //! Returns the full path to a standard dir in data directory
-    std::string GetDataSubdirPath(DataDir stdDir);
+    std::string GetDataSubdirPath(DataDir stdDir) const;
 
     //! Returns the full path to a file in data directory given standard dir and subpath
-    std::string GetDataFilePath(DataDir stdDir, const std::string &subpath);
+    std::string GetDataFilePath(DataDir stdDir, const std::string &subpath) const;
+
+    //! Returns the full path to a file in texture pack directory
+    std::string GetTexPackFilePath(const std::string& textureName) const;
 
     //! Management of language
     //@{
-    Language    GetLanguage();
-    char        GetLanguageChar();
+    Language    GetLanguage() const;
+    char        GetLanguageChar() const;
     void        SetLanguage(Language language);
     static bool ParseLanguage(const std::string& str, Language& language);
     //@}
@@ -335,14 +338,14 @@ public:
     //! Management of sleep in main loop (lowers CPU usage)
     //@{
     void        SetLowCPU(bool low);
-    bool        GetLowCPU();
+    bool        GetLowCPU() const;
     //@}
 
     //! Management of performance counters
     //@{
     void        StartPerformanceCounter(PerformanceCounter counter);
     void        StopPerformanceCounter(PerformanceCounter counter);
-    float       GetPerformanceCounterData(PerformanceCounter counter);
+    float       GetPerformanceCounterData(PerformanceCounter counter) const;
     //@}
 
 protected:
@@ -462,13 +465,13 @@ protected:
     //! Path to directory with language files
     std::string     m_langPath;
 
-    const char*     m_dataDirs[DIR_MAX];
+    //! Path to directory with user texture pack
+    std::string     m_texPackPath;
+
+    const char*     m_standardDataDirs[DIR_MAX];
 
     //! Application language
     Language        m_language;
-
-    //! Texture pack
-    std::string     m_texPack;
 
     //! Low cpu mode
     bool            m_lowCPU;
