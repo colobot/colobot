@@ -263,3 +263,4 @@ inline float Bounce(float progress, float middle = 0.3f, float bounce = 0.4f)
 
 
 } // namespace Math
+

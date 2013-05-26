@@ -552,5 +552,3 @@ float CTaskShield::GetRadius()
     return RADIUS_SHIELD_MIN + (RADIUS_SHIELD_MAX-RADIUS_SHIELD_MIN)*m_object->GetParam();
 }
 
-
-

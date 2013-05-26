@@ -611,5 +611,3 @@ CObject* CAutoSafe::SearchVehicle()
     return 0;
 }
 
-
-

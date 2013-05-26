@@ -263,7 +263,7 @@ bool CEdit::EventProcess(const Event &event)
 
     if ( event.type == EVENT_MOUSE_MOVE )
     {
-        if ( Detect(event.mousePos) && 
+        if ( Detect(event.mousePos) &&
              event.mousePos.x < m_pos.x+m_dim.x-(m_bMulti?MARGX+SCROLL_WIDTH:0.0f) )
         {
             if ( m_bEdit )
@@ -782,13 +782,16 @@ void CEdit::HyperJump(std::string name, std::string marker)
     sMarker = marker;
 
 //? sprintf(filename, "help\\%s.txt", name);
-      
-    if ( name[0] == '%' ) {
+
+    if ( name[0] == '%' )
+    {
         filename = GetProfile().GetUserBasedPath(name, "") + ".txt";
-    } else {
+    }
+    else
+    {
         filename = std::string("help/") + CApplication::GetInstancePointer()->GetLanguageChar() + "/" + name + std::string(".txt");
     }
-    
+
     if ( ReadText(filename) )
     {
         Justif();
@@ -1249,7 +1252,7 @@ void CEdit::SetText(const char *text, bool bNew)
 {
     int     i, j, font;
     bool    bBOL;
-    
+
     if ( !bNew )  UndoMemorize(OPERUNDO_SPEC);
 
     m_len = strlen(text);
@@ -1387,10 +1390,11 @@ int CEdit::GetTextLength()
 
 std::string GetNameParam(std::string cmd, int rank)
 {
-    std::vector<std::string> results;    
+    std::vector<std::string> results;
     boost::split(results, cmd, boost::is_any_of(" ;"));
-    
-    if (results.size() > static_cast<unsigned int>(rank)) {
+
+    if (results.size() > static_cast<unsigned int>(rank))
+    {
         return results.at(rank);
     }
 
@@ -1402,11 +1406,12 @@ std::string GetNameParam(std::string cmd, int rank)
 
 int GetValueParam(std::string cmd, int rank)
 {
-    std::vector<std::string> results;    
+    std::vector<std::string> results;
     boost::split(results, cmd, boost::is_any_of(" ;"));
     int return_value = 0;
-    
-    if (results.size() > static_cast<unsigned int>(rank)) {
+
+    if (results.size() > static_cast<unsigned int>(rank))
+    {
         return_value = atoi(results.at(rank).c_str());
     }
 
@@ -1419,7 +1424,8 @@ void CEdit::FreeImage()
 {
     std::string filename;
 
-    for (int i = 0 ; i < m_imageTotal; i++ ) {
+    for (int i = 0 ; i < m_imageTotal; i++ )
+    {
         filename = GetProfile().GetUserBasedPath(m_image[i].name, "diagram") + ".png";
         m_engine->DeleteTexture(filename);
     }
@@ -1448,12 +1454,14 @@ bool CEdit::ReadText(std::string filename, int addSize)
     bool        bInSoluce, bBOL;
 
     if ( filename[0] == 0 )  return false;
+
     boost::replace_all(filename, "\\", "/");
-    
+
     /* This is ugly but doesn't require many changes in code. If file doesn't
        exists it's posible filename is absolute not full path */
     std::string path = filename;
-    if (!fs::exists(path)) {
+    if (!fs::exists(path))
+    {
         path = CApplication::GetInstancePointer()->GetDataDirPath() + "/" + filename;
     }
 
@@ -1484,10 +1492,11 @@ bool CEdit::ReadText(std::string filename, int addSize)
 
     m_format.clear();
     m_format.reserve(m_maxChar+1);
-    for (i = 0; i <= m_maxChar+1; i++) {
+    for (i = 0; i <= m_maxChar+1; i++)
+    {
         m_format.push_back(0);
     }
-    
+
     fclose(file);
 
     bInSoluce = false;
@@ -1951,7 +1960,8 @@ void CEdit::SetMaxChar(int max)
 
     m_format.clear();
     m_format.reserve(m_maxChar+1);
-    for (int i = 0; i <= m_maxChar+1; i++) {
+    for (int i = 0; i <= m_maxChar+1; i++)
+    {
         m_format.push_back(0);
     }
 
@@ -2142,10 +2152,12 @@ bool CEdit::GetDisplaySpec()
 void CEdit::SetMultiFont(bool bMulti)
 {
     m_format.clear();
-    
-    if (bMulti) {
+
+    if (bMulti)
+    {
         m_format.reserve(m_maxChar+1);
-        for (int i = 0; i <= m_maxChar+1; i++) {
+        for (int i = 0; i <= m_maxChar+1; i++)
+        {
             m_format.push_back(0);
         }
     }
@@ -2522,26 +2534,33 @@ bool CEdit::Copy(bool memorize_cursor)
 
     c1 = m_cursor1;
     c2 = m_cursor2;
-    if ( c1 > c2 ) {
+    if ( c1 > c2 )
+    {
         Math::Swap(c1, c2);  // always c1 <= c2
     }
 
-    if ( c1 == c2 ) {
-        while ( c1 > 0 ) {
-            if ( m_text[c1 - 1] == '\n' ) {
+    if ( c1 == c2 )
+    {
+        while ( c1 > 0 )
+        {
+            if ( m_text[c1 - 1] == '\n' )
+            {
                 break;
             }
             c1--;
         }
-        while ( c2 < m_len ) {
+        while ( c2 < m_len )
+        {
             c2++;
-            if ( m_text[c2 - 1] == '\n' ) {
+            if ( m_text[c2 - 1] == '\n' )
+            {
                 break;
             }
         }
     }
 
-    if ( c1 == c2 ) {
+    if ( c1 == c2 )
+    {
         return false;
     }
 
@@ -2553,8 +2572,9 @@ bool CEdit::Copy(bool memorize_cursor)
     text[len] = 0;
     widgetSetClipboardText(text);
     delete []text;
-    
-    if (memorize_cursor) {
+
+    if (memorize_cursor)
+    {
         m_cursor1 = c1;
         m_cursor2 = c2;
     }
@@ -2569,28 +2589,33 @@ bool CEdit::Paste()
     char    c;
     char*   text;
 
-    if ( !m_bEdit ) {
+    if ( !m_bEdit )
+    {
         return false;
     }
 
     text = widgetGetClipboardText();
-    
-    if ( text == nullptr ) {
+
+    if ( text == nullptr )
+    {
         return false;
     }
 
     UndoMemorize(OPERUNDO_SPEC);
-    for ( unsigned int i = 0; i < strlen(text); i++ ) {
+    for ( unsigned int i = 0; i < strlen(text); i++ )
+    {
         c = text[i];
-        if ( c == '\r' ) {
+        if ( c == '\r' )
+        {
             continue;
         }
-        if ( c == '\t' && m_bAutoIndent ) {
+        if ( c == '\t' && m_bAutoIndent )
+        {
             continue;
         }
         InsertOne(c);
     }
-    
+
     free(text);
     Justif();
     ColumnFix();
@@ -2603,7 +2628,8 @@ bool CEdit::Paste()
 
 bool CEdit::Undo()
 {
-    if ( !m_bEdit ) {
+    if ( !m_bEdit )
+    {
         return false;
     }
 
@@ -2617,7 +2643,8 @@ void CEdit::Insert(char character)
 {
     int     i, level, tab;
 
-    if ( !m_bEdit ) {
+    if ( !m_bEdit )
+    {
         return;
     }
 
@@ -3219,7 +3246,7 @@ bool CEdit::SetFormat(int cursor1, int cursor2, int format)
 void CEdit::UpdateScroll()
 {
     float value;
-    
+
     if ( m_scroll != nullptr )
     {
         if ( m_lineTotal <= m_lineVisible )
@@ -3243,3 +3270,4 @@ void CEdit::UpdateScroll()
 }
 
 }
+

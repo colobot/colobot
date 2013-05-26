@@ -69,7 +69,7 @@ class CBotDefParam; // paramerer list of a function
 // to use for routine CBotProgram :: Execute (CBotStack)
 
 
-/**\class CBotStack 
+/**\class CBotStack
  * \brief Management of the execution stack.
  * \brief Actually the only thing it can do is to create an instance of a stack
  * \brief to use for routine CBotProgram :: Execute(CBotStack)*/
@@ -210,14 +210,14 @@ public:
                                                                         // in case of eventual break
     bool            IfContinue(int state, const char* name);
                                                                         // or "continue"
-    
+
     bool            IsOk();
 
     bool            SetState(int n, int lim = -10);                        // select a state
     int                GetState();                                            // in what state am I?
     bool            IncState(int lim = -10);                            // passes to the next state
     bool            IfStep();                                            // do step by step
-    bool            Execute(); 
+    bool            Execute();
 
     void            SetVar( CBotVar* var );
     void            SetCopyVar( CBotVar* var );
@@ -259,7 +259,7 @@ private:
     CBotStack*        m_prev;
     friend class CBotInstArray;
 
-#ifdef    _DEBUG 
+#ifdef    _DEBUG
     int                m_index;
 #endif
     int                m_state;
@@ -360,7 +360,7 @@ public:
     CBotCStack*        TokenStack(CBotToken* pToken = NULL, bool bBlock = false);
     CBotInstr*        Return(CBotInstr* p, CBotCStack* pParent);    // transmits the result upper
     CBotFunction*    ReturnFunc(CBotFunction* p, CBotCStack* pParent);    // transmits the result upper
-    
+
     void            SetVar( CBotVar* var );
     void            SetCopyVar( CBotVar* var );
     CBotVar*        GetVar();
@@ -480,7 +480,7 @@ class CBotWhile : public CBotInstr
 private:
     CBotInstr*    m_Condition;        // condition
     CBotInstr*    m_Block;            // instructions
-    CBotString    m_label;            // a label if there is 
+    CBotString    m_label;            // a label if there is
 
 public:
                 CBotWhile();
@@ -496,7 +496,7 @@ class CBotDo : public CBotInstr
 private:
     CBotInstr*    m_Block;            // instruction
     CBotInstr*    m_Condition;        // conditions
-    CBotString    m_label;            // a label if there is 
+    CBotString    m_label;            // a label if there is
 
 public:
                 CBotDo();
@@ -514,7 +514,7 @@ private:
     CBotInstr*    m_Test;                // test condition
     CBotInstr*    m_Incr;                // instruction for increment
     CBotInstr*    m_Block;            // instructions
-    CBotString    m_label;            // a label if there is 
+    CBotString    m_label;            // a label if there is
 
 public:
                 CBotFor();
@@ -528,7 +528,7 @@ public:
 class CBotBreak : public CBotInstr
 {
 private:
-    CBotString    m_label;            // a label if there is 
+    CBotString    m_label;            // a label if there is
 
 public:
                 CBotBreak();
@@ -542,7 +542,7 @@ public:
 class CBotReturn : public CBotInstr
 {
 private:
-    CBotInstr*    m_Instr;            // paramter of return 
+    CBotInstr*    m_Instr;            // paramter of return
 
 public:
                 CBotReturn();
@@ -557,7 +557,7 @@ public:
 class CBotSwitch : public CBotInstr
 {
 private:
-    CBotInstr*    m_Value;            // value to seek 
+    CBotInstr*    m_Value;            // value to seek
     CBotInstr*    m_Block;            // instructions
 
 public:
@@ -704,7 +704,7 @@ public:
 };
 
 
-// definition of a assignment list for a table 
+// definition of a assignment list for a table
 // int [ ] a [ ] = ( ( 1, 2, 3 ) , ( 3, 2, 1 ) ) ;
 
 class CBotListArray : public CBotInstr
@@ -1415,12 +1415,12 @@ public:
     void        IncrementUse();                // a reference to incrementation
     void        DecrementUse();                // a reference to decrementation
 
-    CBotVarClass* 
+    CBotVarClass*
                 GetPointer();
     void        SetItemList(CBotVar* pVar);
 
     void        SetIdent(long n);
-    
+
     static CBotVarClass* Find(long id);
 
 
@@ -1489,7 +1489,7 @@ public:
     void        SetPointer(CBotVar* p);
     CBotVarClass*
                 GetPointer();
-    
+
     void        Copy(CBotVar* pSrc, bool bName=true);
     CBotVar*    GetItem(int n, bool bGrow=false);    // makes an element according to its numeric index
                                                 // enlarged the table if necessary if bExtend
@@ -1544,14 +1544,14 @@ private:
     CBotCall*    m_next;
 
 public:
-                CBotCall(const char* name, 
-                         bool rExec (CBotVar* pVar, CBotVar* pResult, int& Exception, void* pUser), 
+                CBotCall(const char* name,
+                         bool rExec (CBotVar* pVar, CBotVar* pResult, int& Exception, void* pUser),
                          CBotTypResult rCompile (CBotVar* &pVar, void* pUser));
                 ~CBotCall();
 
     static
-    bool        AddFunction(const char* name, 
-                            bool rExec (CBotVar* pVar, CBotVar* pResult, int& Exception, void* pUser), 
+    bool        AddFunction(const char* name,
+                            bool rExec (CBotVar* pVar, CBotVar* pResult, int& Exception, void* pUser),
                             CBotTypResult rCompile (CBotVar* &pVar, void* pUser));
 
     static
@@ -1572,7 +1572,7 @@ public:
 
     CBotString    GetName();
     CBotCall*    Next();
-    
+
     static void    SetPUser(void* pUser);
     static void    Free();
 };
@@ -1591,13 +1591,13 @@ private:
     long        m_nFuncIdent;
 
 public:
-                CBotCallMethode(const char* name, 
-                         bool rExec (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception), 
+                CBotCallMethode(const char* name,
+                         bool rExec (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception),
                          CBotTypResult rCompile (CBotVar* pThis, CBotVar* &pVar));
                 ~CBotCallMethode();
 
     CBotTypResult
-                CompileCall(const char* name, CBotVar* pThis, 
+                CompileCall(const char* name, CBotVar* pThis,
                             CBotVar** ppVars, CBotCStack* pStack,
                             long& nIdent);
 
@@ -1606,7 +1606,7 @@ public:
     CBotString    GetName();
     CBotCallMethode*    Next();
     void        AddNext(CBotCallMethode* p);
-    
+
 };
 
 // a list of parameters
@@ -1702,5 +1702,4 @@ public:
 
     bool            GetPosition(int& start, int& stop, CBotGet modestart, CBotGet modestop);
 };
-
 

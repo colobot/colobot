@@ -64,4 +64,3 @@ Error CTaskWait::IsEnded()
     return ERR_CONTINUE;
 }
 
-

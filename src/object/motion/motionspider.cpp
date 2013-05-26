@@ -743,4 +743,3 @@ bool CMotionSpider::EventFrame(const Event &event)
     return true;
 }
 
-

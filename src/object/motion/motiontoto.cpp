@@ -853,4 +853,3 @@ void CMotionToto::SetLinkType(ObjectType type)
     m_type = type;
 }
 
-

@@ -1214,3 +1214,4 @@ void CDisplayInfo::CreateObjectsFile()
 
 
 }
+

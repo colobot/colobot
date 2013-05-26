@@ -493,4 +493,3 @@ bool CMotionMother::EventFrame(const Event &event)
     return true;
 }
 
-

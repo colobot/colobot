@@ -82,8 +82,10 @@ Error CAutoDestroyer::StartAction(int param)
     scrap = SearchPlastic();
     if ( scrap == nullptr )
         return ERR_DESTROY_NOTFOUND;
-    else {
-        if ( m_phase == ADEP_WAIT ) {
+    else
+    {
+        if ( m_phase == ADEP_WAIT )
+        {
             scrap->SetLock(true);  // usable waste
 //?         scrap->SetTruck(m_object);  // usable waste
 
@@ -93,7 +95,8 @@ Error CAutoDestroyer::StartAction(int param)
             m_progress = 0.0f;
             m_speed    = 1.0f/1.0f;
             m_bExplo   = false;
-        } else
+        }
+        else
             return ERR_GENERIC;
     }
     return ERR_OK;
@@ -147,7 +150,8 @@ bool CAutoDestroyer::EventProcess(const Event &event)
             m_phase    = ADEP_WAIT;  // still waiting ...
             m_progress = 0.0f;
             m_speed    = 1.0f/0.5f;
-            if (m_main->GetSelect() == m_object) {
+            if (m_main->GetSelect() == m_object)
+            {
                 scrap = SearchPlastic();
                 if ( pw != 0 ) EnableInterface(pw, EVENT_OBJECT_BDESTROY, (scrap != 0));
             }
@@ -403,3 +407,4 @@ void CAutoDestroyer::EnableInterface(Ui::CWindow *pw, EventType event, bool bSta
 
     control->SetState(Ui::STATE_ENABLE, bState);
 }
+

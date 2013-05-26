@@ -1511,7 +1511,7 @@ void CStudio::UpdateDialogList()
     fs::path        path;
     int             i = 0;
     char            time[100];
-    
+
     pw = static_cast< CWindow* >(m_interface->SearchControl(EVENT_WINDOW9));
     if ( pw == nullptr )  return;
     pl = static_cast< CList* >(pw->SearchControl(EVENT_DIALOG_LIST));
@@ -1520,12 +1520,15 @@ void CStudio::UpdateDialogList()
 
     path = fs::path(SearchDirectory(false));
     fs::directory_iterator end_iter;
-    if ( fs::exists(path) && fs::is_directory(path) ) {
-        for( fs::directory_iterator file(path); file != end_iter; file++) {
-            if (fs::is_regular_file(file->status()) ) {
+    if ( fs::exists(path) && fs::is_directory(path) )
+    {
+        for( fs::directory_iterator file(path); file != end_iter; file++)
+        {
+            if (fs::is_regular_file(file->status()) )
+            {
                 std::ostringstream temp;
                 TimeToAscii(fs::last_write_time(file->path()), time);
-                temp << file->path().filename().string() << '\t' << fs::file_size(file->path()) << "  \t" << time;                
+                temp << file->path().filename().string() << '\t' << fs::file_size(file->path()) << "  \t" << time;
                 pl->SetItemName(i++, temp.str().c_str());
             }
         }
@@ -1538,15 +1541,19 @@ void CStudio::UpdateDialogList()
 std::string CStudio::SearchDirectory(bool bCreate)
 {
     char dir[MAX_FNAME];
-    if ( m_main->GetIOPublic() ) {
+    if ( m_main->GetIOPublic() )
+    {
         sprintf(dir, "%s/", m_main->GetPublicDir());
-    } else {
+    }
+    else
+    {
         sprintf(dir, "%s/%s/Program/", m_main->GetSavegameDir(), m_main->GetGamerName());
     }
-    
+
     fs::path path = fs::path(dir);
-    
-    if ( bCreate ) {
+
+    if ( bCreate )
+    {
         fs::create_directory(path);
     }
 
@@ -1629,3 +1636,4 @@ bool CStudio::WriteProgram()
 }
 
 }
+

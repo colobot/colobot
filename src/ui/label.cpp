@@ -66,7 +66,8 @@ void CLabel::Draw()
 
     pos.y = m_pos.y + m_dim.y / 2.0f;
 
-    switch (m_textAlign) {
+    switch (m_textAlign)
+    {
         case Gfx::TEXT_ALIGN_LEFT: pos.x = m_pos.x; break;
         case Gfx::TEXT_ALIGN_CENTER: pos.x = m_pos.x + m_dim.x / 2.0f; break;
         case Gfx::TEXT_ALIGN_RIGHT: pos.x = m_pos.x + m_dim.x; break;
@@ -76,3 +77,4 @@ void CLabel::Draw()
 }
 
 }
+

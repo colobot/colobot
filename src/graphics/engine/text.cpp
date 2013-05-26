@@ -913,3 +913,4 @@ CharTexture CText::CreateCharTexture(UTF8Char ch, CachedFont* font)
 
 
 } // namespace Gfx
+

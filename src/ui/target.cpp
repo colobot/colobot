@@ -272,3 +272,4 @@ CObject* CTarget::DetectFriendObject(Math::Point pos)
 }
 
 }
+

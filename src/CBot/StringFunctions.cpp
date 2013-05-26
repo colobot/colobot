@@ -184,10 +184,10 @@ bool rStrMid( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
     if ( pVar->GetNext() != NULL )
     {
         pVar = pVar->GetNext();
-    
+
         // which must be a number
         if ( pVar->GetType() > CBotTypDouble ) { ex = TX_BADNUM ; return true; }
-    
+
         // retrieves this number
         int l = pVar->GetValInt();
 
@@ -231,7 +231,7 @@ CBotTypResult cStrStrIntInt( CBotVar* &pVar, void* pUser )
     // third parameter optional
     if ( pVar->GetNext() != NULL )
     {
-    
+
         pVar = pVar->GetNext();
         // which must be a number
         if ( pVar->GetType() > CBotTypDouble )
@@ -434,3 +434,4 @@ void InitStringFunctions()
     CBotProgram::AddFunction("strupper", rStrUpper, cStrStr );
     CBotProgram::AddFunction("strlower", rStrLower, cStrStr );
 }
+

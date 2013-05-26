@@ -3917,3 +3917,4 @@ bool CParticle::WriteWheelTrace(const char *filename, int width, int height,
 }
 
 } // namespace Gfx
+

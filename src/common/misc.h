@@ -31,3 +31,4 @@ extern void TimeToAscii(time_t time, char *buffer);
 
 extern bool CopyFileListToTemp(char* filename, int* list, int total);
 extern void AddExt(char* filename, const char* ext);
+

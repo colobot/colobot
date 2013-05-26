@@ -589,4 +589,3 @@ Error CAutoDerrick::GetError()
     return ERR_OK;
 }
 
-

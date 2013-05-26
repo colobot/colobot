@@ -63,7 +63,7 @@ CBotStack* CBotStack::FirstStack()
         pp->m_bOver = true;
         pp ++;
     }
-#ifdef    _DEBUG 
+#ifdef    _DEBUG
     int    n = 1;
     pp = p;
     for ( i = 0 ; i< MAXSTACK+10 ; i++ )
@@ -120,7 +120,7 @@ void CBotStack::Delete()
     m_index = n;
 #endif
 
-    if ( p == NULL ) 
+    if ( p == NULL )
         free( this );
 }
 
@@ -128,7 +128,7 @@ void CBotStack::Delete()
 // routine improved
 CBotStack* CBotStack::AddStack(CBotInstr* instr, bool bBlock)
 {
-    if (m_next != NULL) 
+    if (m_next != NULL)
     {
         return m_next;                // included in an existing stack
     }
@@ -160,7 +160,7 @@ CBotStack* CBotStack::AddStack(CBotInstr* instr, bool bBlock)
 
 CBotStack* CBotStack::AddStackEOX(CBotCall* instr, bool bBlock)
 {
-    if (m_next != NULL) 
+    if (m_next != NULL)
     {
         if ( m_next == EOX )
         {
@@ -177,7 +177,7 @@ CBotStack* CBotStack::AddStackEOX(CBotCall* instr, bool bBlock)
 
 CBotStack* CBotStack::AddStack2(bool bBlock)
 {
-    if (m_next2 != NULL) 
+    if (m_next2 != NULL)
     {
         m_next2->m_prog = m_prog;        // special avoids RestoreStack2
         return m_next2;                    // included in an existing stack
@@ -251,8 +251,8 @@ CBotStack::CBotStack(CBotStack* ppapa)
     if (ppapa == NULL) m_timer = m_initimer;                // sets the timer at the beginning
 
     m_listVar = NULL;
-    m_bDontDelete = false; 
-    
+    m_bDontDelete = false;
+
     m_var      = NULL;
     m_prog      = NULL;
     m_instr      = NULL;
@@ -275,7 +275,7 @@ CBotStack::~CBotStack()
 // \TODO routine has/to optimize
 CBotStack* CBotStack::AddStack(CBotInstr* instr, bool bBlock)
 {
-    if (m_next != NULL) 
+    if (m_next != NULL)
     {
         return m_next;                // included in an existing stack
     }
@@ -290,7 +290,7 @@ CBotStack* CBotStack::AddStack(CBotInstr* instr, bool bBlock)
 
 CBotStack* CBotStack::AddStackEOX(CBotCall* instr, bool bBlock)
 {
-    if (m_next != NULL) 
+    if (m_next != NULL)
     {
         if ( m_next == EOX )
         {
@@ -311,7 +311,7 @@ CBotStack* CBotStack::AddStackEOX(CBotCall* instr, bool bBlock)
 
 CBotStack* CBotStack::AddStack2(bool bBlock)
 {
-    if (m_next2 != NULL) 
+    if (m_next2 != NULL)
     {
         m_next2->m_prog = m_prog;        // special avoids RestoreStack2
         return m_next2;                    // included in an existing stack
@@ -362,7 +362,7 @@ void CBotStack::Reset(void* pUser)
 
 CBotStack* CBotStack::RestoreStack(CBotInstr* instr)
 {
-    if (m_next != NULL) 
+    if (m_next != NULL)
     {
         m_next->m_instr = instr;    // reset (if recovery after )
         m_next->m_prog = m_prog;
@@ -480,7 +480,7 @@ CBotVar* CBotStack::FindVar(CBotToken* &pToken, bool bUpdate, bool bModif)
         {
             if (pp->GetName() == name)
             {
-                if ( bUpdate ) 
+                if ( bUpdate )
                     pp->Maj(m_pUser, false);
 
                 return pp;
@@ -521,7 +521,7 @@ CBotVar* CBotStack::FindVar(long ident, bool bUpdate, bool bModif)
         {
             if (pp->GetUniqNum() == ident)
             {
-                if ( bUpdate ) 
+                if ( bUpdate )
                     pp->Maj(m_pUser, false);
 
                 return pp;
@@ -552,7 +552,7 @@ CBotVar* CBotStack::CopyVar(CBotToken& Token, bool bUpdate)
     return    pCopy;
 }
 
- 
+
 bool CBotStack::SetState(int n, int limite)
 {
     m_state = n;
@@ -609,7 +609,7 @@ bool CBotStack::Execute()
     while (p != NULL)
     {
         if ( p->m_next2 != NULL ) break;
-        if ( p->m_call != NULL ) 
+        if ( p->m_call != NULL )
         {
             instr = p->m_call;
             pile  = p->m_prev ;
@@ -684,7 +684,7 @@ void CBotStack::AddVar(CBotVar* pVar)
     while (p != NULL && p->m_bBlock == 0) p = p->m_prev;
 
     if ( p == NULL ) return;
-    
+
 ///    p->m_bDontDelete = bDontDelete;
 
     CBotVar**    pp = &p->m_listVar;
@@ -787,7 +787,7 @@ void CBotStack::GetRunPos(const char* &FunctionName, int &start, int &end)
     {
         if ( p->m_instr != NULL ) instr = p->m_instr;
         if ( p->m_bFunc == 1 ) funct = p->m_instr;
-        if ( p->m_next->m_prog != prog ) break ; 
+        if ( p->m_next->m_prog != prog ) break ;
 
         if (p->m_next2 && p->m_next2->m_state != 0) p = p->m_next2 ;
         else                                        p = p->m_next;
@@ -818,7 +818,7 @@ CBotVar* CBotStack::GetStackVars(const char* &FunctionName, int level)
 
     while (p->m_next != NULL)
     {
-        if ( p->m_next->m_prog != prog ) break ; 
+        if ( p->m_next->m_prog != prog ) break ;
 
         if (p->m_next2 && p->m_next2->m_state != 0) p = p->m_next2 ;
         else                                        p = p->m_next;
@@ -848,7 +848,7 @@ CBotVar* CBotStack::GetStackVars(const char* &FunctionName, int level)
 
     CBotToken* t = pp->m_instr->GetToken();
     FunctionName = t->GetString();
-    
+
     return p->m_listVar;
 }
 
@@ -872,8 +872,8 @@ bool CBotStack::SaveState(FILE* pf)
     if (!WriteWord(pf, m_state)) return false;            // in what state?
     if (!WriteWord(pf, 0)) return false;                // by compatibility m_bDontDelete
     if (!WriteWord(pf, m_step)) return false;            // in what state?
-    
-    
+
+
     if (!SaveVar(pf, m_var)) return false;            // current result
     if (!SaveVar(pf, m_listVar)) return false;        // local variables
 
@@ -921,7 +921,7 @@ bool CBotStack::RestoreState(FILE* pf, CBotStack* &pStack)
 
 
 bool CBotVar::Save0State(FILE* pf)
-{    
+{
     if (!WriteWord(pf, 100+m_mPrivate))return false;        // private variable?
     if (!WriteWord(pf, m_bStatic))return false;                // static variable?
     if (!WriteWord(pf, m_type.GetType()))return false;        // saves the type (always non-zero)
@@ -930,11 +930,11 @@ bool CBotVar::Save0State(FILE* pf)
 }
 
 bool CBotVarInt::Save0State(FILE* pf)
-{    
+{
     if ( !m_defnum.IsEmpty() )
     {
         if(!WriteWord(pf, 200 )) return false;            // special marker
-        if(!WriteString(pf, m_defnum)) return false;    // name of the value 
+        if(!WriteString(pf, m_defnum)) return false;    // name of the value
     }
 
     return CBotVar::Save0State(pf);
@@ -1051,7 +1051,7 @@ bool CBotVar::RestoreState(FILE* pf, CBotVar* &pVar)
                     if ( p != NULL )
                     {
                         delete pNew;
-                        pNew = p;            // resume known element 
+                        pNew = p;            // resume known element
                     }
                 }
             }
@@ -1167,7 +1167,7 @@ CBotCStack* CBotCStack::TokenStack(CBotToken* pToken, bool bBlock)
 
 
 CBotInstr* CBotCStack::Return(CBotInstr* inst, CBotCStack* pfils)
-{        
+{
     if ( pfils == this ) return inst;
 
     if (m_var != NULL) delete m_var;            // value replaced?
@@ -1185,7 +1185,7 @@ CBotInstr* CBotCStack::Return(CBotInstr* inst, CBotCStack* pfils)
 }
 
 CBotFunction* CBotCStack::ReturnFunc(CBotFunction* inst, CBotCStack* pfils)
-{        
+{
     if (m_var != NULL) delete m_var;            // value replaced?
     m_var = pfils->m_var;                        // result transmitted
     pfils->m_var = NULL;                        // not to destroy the variable
@@ -1292,7 +1292,7 @@ bool CBotCStack::IsOk()
     return (m_error == 0);
 }
 
- 
+
 void CBotCStack::SetStartError( int pos )
 {
     if ( m_error != 0) return;            // does not change existing error

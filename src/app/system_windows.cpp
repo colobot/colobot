@@ -111,38 +111,39 @@ std::wstring CSystemUtilsWindows::UTF8_Decode(const std::string& str)
 
 }
 
-std::string CSystemUtilsWindows::profileFileLocation()
+std::string CSystemUtilsWindows::GetProfileFileLocation()
 {
-    std::string m_profileFile;
+    std::string profileFile;
 
     char* envUSERPROFILE = getenv("USERPROFILE");
     if (envUSERPROFILE == NULL)
     {
-        m_profileFile = "colobot.ini";
+        profileFile = "colobot.ini";
     }
     else
     {
-        m_profileFile = std::string(envUSERPROFILE) + "\\colobot\\colobot.ini";
+        profileFile = std::string(envUSERPROFILE) + "\\colobot\\colobot.ini";
     }
-    GetLogger()->Trace("Profile configuration is %s\n", m_profileFile.c_str());
+    GetLogger()->Trace("Profile configuration is %s\n", profileFile.c_str());
 
-    return m_profileFile;
+    return profileFile;
 }
 
-std::string CSystemUtilsWindows::savegameDirectoryLocation()
+std::string CSystemUtilsWindows::GetSavegameDirectoryLocation()
 {
-    std::string m_savegameDir;
+    std::string savegameDir;
 
     char* envUSERPROFILE = getenv("USERPROFILE");
     if (envUSERPROFILE == NULL)
     {
-        m_savegameDir = "savegame";
+        savegameDir = "savegame";
     }
     else
     {
-        m_savegameDir = std::string(envUSERPROFILE) + "\\colobot\\savegame";
+        savegameDir = std::string(envUSERPROFILE) + "\\colobot\\savegame";
     }
-    GetLogger()->Trace("Saved game files are going to %s\n", m_savegameDir.c_str());
+    GetLogger()->Trace("Saved game files are going to %s\n", savegameDir.c_str());
 
-    return m_savegameDir;
+    return savegameDir;
 }
+

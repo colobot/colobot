@@ -112,3 +112,4 @@ private:
     //! Image data
     ImageData* m_data;
 };
+

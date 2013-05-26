@@ -191,3 +191,4 @@ inline float Distance(const Point &a, const Point &b)
 
 
 } // namespace Math
+

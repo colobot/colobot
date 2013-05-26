@@ -29,15 +29,16 @@ namespace Ui {
 
 class CLabel : public CControl
 {
-    public:
-        CLabel();
-        virtual ~CLabel();
+public:
+    CLabel();
+    virtual ~CLabel();
 
-        bool    Create(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
-        bool    EventProcess(const Event &event);
+    bool    Create(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
+    bool    EventProcess(const Event &event);
 
-        void    Draw();
+    void    Draw();
 };
 
 
 }
+

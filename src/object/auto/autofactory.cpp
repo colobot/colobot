@@ -209,8 +209,8 @@ bool CAutoFactory::EventProcess(const Event &event)
         if ( event.type == EVENT_OBJECT_FACTORYrs )  type = OBJECT_MOBILErs;
         if ( event.type == EVENT_OBJECT_FACTORYsa )  type = OBJECT_MOBILEsa;
 
-	Error err = StartAction(type);
-	if( err != ERR_OK && err != ERR_GENERIC )
+        Error err = StartAction(type);
+        if( err != ERR_OK && err != ERR_GENERIC )
             m_displayText->DisplayError(err, m_object);
 
         if( err != ERR_GENERIC )

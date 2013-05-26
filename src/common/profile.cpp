@@ -47,8 +47,9 @@ bool CProfile::InitCurrentDirectory()
 {
     try
     {
+        // TODO: NDEBUG should be replaced with something like BUILD_TYPE == "DEBUG"/"RELEASE"
         #ifdef NDEBUG
-        bp::ini_parser::read_ini(GetSystemUtils()->profileFileLocation(), m_propertyTree);
+        bp::ini_parser::read_ini(GetSystemUtils()->GetProfileFileLocation(), m_propertyTree);
         #else
         bp::ini_parser::read_ini("colobot.ini", m_propertyTree);
         #endif
@@ -68,7 +69,7 @@ bool CProfile::SaveCurrentDirectory()
         try
         {
             #ifdef NDEBUG
-            bp::ini_parser::write_ini(GetSystemUtils()->profileFileLocation(), m_propertyTree);
+            bp::ini_parser::write_ini(GetSystemUtils()->GetProfileFileLocation(), m_propertyTree);
             #else
             bp::ini_parser::write_ini("colobot.ini", m_propertyTree);
             #endif
@@ -209,34 +210,39 @@ std::string CProfile::GetUserBasedPath(std::string dir, std::string default_dir)
 {
     std::string path = dir;
     boost::replace_all(path, "\\", "/");
-    if (dir.find("/") == std::string::npos) {
+    if (dir.find("/") == std::string::npos)
+    {
         path = default_dir + "/" + dir;
     }
-    
-    if (m_userDirectory.length() > 0) {
+
+    if (m_userDirectory.length() > 0)
+    {
         boost::replace_all(path, "%user%", m_userDirectory);
-    } else {
+    }
+    else
+    {
         boost::replace_all(path, "%user%", default_dir);
     }
-    
+
     return fs::path(path).make_preferred().string();
 }
-        
-        
+
+
 bool CProfile::CopyFileToTemp(std::string filename)
 {
     std::string src, dst;
     std::string tmp_user_dir = m_userDirectory;
-    
+
     src = GetUserBasedPath(filename, "textures");
     SetUserDir("temp");
     dst = GetUserBasedPath(filename, "textures");
     SetUserDir(tmp_user_dir);
-   
+
     fs::create_directory(fs::path(dst).parent_path().make_preferred().string());
     fs::copy_file(src, dst, fs::copy_option::overwrite_if_exists);
-    if (fs::exists(dst)) {
-        return true;    
+    if (fs::exists(dst))
+    {
+        return true;
     }
 
     return false;

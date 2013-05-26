@@ -12,3 +12,4 @@ include_directories(SYSTEM ${SDL_INCLUDE_DIR})
 add_definitions(-DMODELFILE_NO_ENGINE)
 
 add_executable(convert_model ${CONVERT_MODEL_SOURCES})
+

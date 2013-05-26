@@ -37,3 +37,4 @@ long long int CSystemUtilsOther::TimeStampExactDiff(SystemTimeStamp* before, Sys
 {
     return (after->sdlTicks - before->sdlTicks) * 1000000ll;
 }
+

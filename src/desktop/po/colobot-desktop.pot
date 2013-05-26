@@ -132,3 +132,4 @@ msgstr ""
 #: colobot.pod:47
 msgid "This manpage was written by Didier Raboud <S<odyx@debian.org>>."
 msgstr ""
+

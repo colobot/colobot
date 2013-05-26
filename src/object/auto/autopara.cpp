@@ -327,4 +327,3 @@ bool CAutoPara::Read(char *line)
     return true;
 }
 
-

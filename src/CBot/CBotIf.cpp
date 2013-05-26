@@ -109,7 +109,7 @@ bool CBotIf :: Execute(CBotStack* &pj)
         // passes into the second state
         if (!pile->SetState(1)) return false;               // ready for further
     }
-    
+
     // second state, evaluates the associated instructions
     // the result of the condition is on the stack
 
@@ -143,7 +143,7 @@ void CBotIf :: RestoreState(CBotStack* &pj, bool bMain)
         m_Condition->RestoreState(pile, bMain); // interrupted here!
         return;
     }
-    
+
     // second state, evaluates the associated instructions
     // the result of the condition is on the stack
 

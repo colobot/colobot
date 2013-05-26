@@ -16,3 +16,4 @@ add_custom_target(update-pot DEPENDS ${_potFile})
 
 file(GLOB _poFiles *.po)
 gettext_create_translations(${_potFile} ALL ${_poFiles})
+

@@ -1735,4 +1735,3 @@ void CMotionHuman::StopDisplayPerso()
     m_bDisplayPerso = false;
 }
 
-

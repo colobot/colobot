@@ -220,10 +220,11 @@ bool CTaskSearch::Abort()
 {
     m_hand  = TSH_UP;
     InitAngle();
-    for (int i = 0; i < 3; i++) {
+    for (int i = 0; i < 3; i++)
+    {
         m_object->SetAngleZ(i+1, m_finalAngle[i]);
     }
-    
+
     m_camera->StopCentering(m_object, 2.0f);
     m_physics->SetFreeze(false);  // is moving again
     return true;
@@ -324,5 +325,4 @@ void CTaskSearch::DeleteMark(ObjectType type)
         }
     }
 }
-
 

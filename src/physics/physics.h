@@ -250,4 +250,3 @@ protected:
     bool        m_bLowLevel;
 };
 
-

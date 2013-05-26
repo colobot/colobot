@@ -48,7 +48,7 @@ class Channel
 
         bool Play();
         bool Stop();
-        
+
         bool SetPan(Math::Vector);
         void SetPosition(Math::Vector);
         Math::Vector GetPosition();
@@ -64,21 +64,21 @@ class Channel
         float GetVolume();
         void SetVolumeAtrib(float);
         float GetVolumeAtrib();
-        
+
         bool IsPlaying();
         bool IsReady();
         bool IsLoaded();
 
         bool SetBuffer(Buffer *);
         bool FreeBuffer();
-        
+
         bool HasEnvelope();
         SoundOper& GetEnvelope();
         void PopEnvelope();
-        
+
         int GetPriority();
         void SetPriority(int);
-        
+
         void SetStartAmplitude(float);
         void SetStartFrequency(float);
         void SetChangeFrequency(float);
@@ -87,14 +87,14 @@ class Channel
         float GetStartFrequency();
         float GetChangeFrequency();
         float GetInitFrequency();
-        
+
         void AddOper(SoundOper);
         void ResetOper();
         Sound GetSoundType();
         void SetLoop(bool);
         void Mute(bool);
         bool IsMuted();
-        
+
     private:
         Buffer *mBuffer;
         ALuint mSource;

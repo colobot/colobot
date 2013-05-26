@@ -84,7 +84,7 @@ CBotInstr* CBotAddExpr::Compile(CBotToken* &p, CBotStack* pStack)
         return pStack->Return(NULL, pStk);
     }
 
-    // if we are not dealing with an operation + or - 
+    // if we are not dealing with an operation + or -
     // goes to that requested, the operand (left) found
     // place the object "addition"
     return pStack->Return(left, pStk);
@@ -140,5 +140,4 @@ bool CBotAddExpr::Execute(CBotStack* &pStack)
     pStk1->Return(pStk2);                       // frees the stack
     return pStack->Return(pStk1);               // transmits the result
 }
-
 

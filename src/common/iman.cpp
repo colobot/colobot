@@ -111,3 +111,4 @@ void CInstanceManager::Compress(ManagedClassType classType)
     }
     m_table[classType].usedCount = j;
 }
+

@@ -269,3 +269,4 @@ struct Texture
 
 
 } // namespace Gfx
+

@@ -947,4 +947,3 @@ Gfx::Color  OpColor(char *line, const char *op, Gfx::Color def)
     return color;
 }
 
-

@@ -139,4 +139,3 @@ Error CTaskAdvance::IsEnded()
     return ERR_CONTINUE;
 }
 
-

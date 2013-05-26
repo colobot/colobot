@@ -110,7 +110,8 @@ bool PNGSaveSurface(const char *filename, SDL_Surface *surf)
         return false;
     }
 
-    if (setjmp(png_jmpbuf(png_ptr))) {
+    if (setjmp(png_jmpbuf(png_ptr)))
+    {
         png_destroy_write_struct(&png_ptr, &info_ptr);
         fclose(fp);
         return false;
@@ -396,3 +397,4 @@ bool CImage::SavePNG(const std::string& fileName)
 
     return true;
 }
+

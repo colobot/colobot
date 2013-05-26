@@ -142,3 +142,4 @@ size_t StrUtils::Utf8StringLength(const std::string &str)
   }
   return result;
 }
+

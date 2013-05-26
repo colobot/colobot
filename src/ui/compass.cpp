@@ -171,3 +171,4 @@ float CCompass::GetDirection()
 
 
 }
+

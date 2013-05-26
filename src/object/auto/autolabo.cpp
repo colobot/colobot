@@ -177,8 +177,8 @@ bool CAutoLabo::EventProcess(const Event &event)
         Error err = ERR_GENERIC;
         if ( event.type == EVENT_OBJECT_RiPAW   ) err = StartAction(RESEARCH_iPAW);
         if ( event.type == EVENT_OBJECT_RiGUN   ) err = StartAction(RESEARCH_iGUN);
-        
-	if( err != ERR_OK && err != ERR_GENERIC )
+
+        if( err != ERR_OK && err != ERR_GENERIC )
             m_displayText->DisplayError(err, m_object);
 
         if( err != ERR_GENERIC )
@@ -631,5 +631,4 @@ bool CAutoLabo::Read(char *line)
 
     return true;
 }
-
 

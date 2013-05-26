@@ -472,7 +472,7 @@ void CBotToken::LoadKeyWords()
 {
     CBotString      s;
     int             i, n = 0;
-    
+
     i = TokenKeyWord; //start with keywords of the language
     while (s.LoadString(i))
     {

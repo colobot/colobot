@@ -342,4 +342,3 @@ bool CAutoMush::Read(char *line)
     return true;
 }
 
-

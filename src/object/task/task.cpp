@@ -81,4 +81,3 @@ bool CTask::Abort()
     return true;
 }
 
-

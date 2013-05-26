@@ -305,4 +305,3 @@ bool CAutoRadar::SearchEnemy(Math::Vector &pos)
     return true;
 }
 
-

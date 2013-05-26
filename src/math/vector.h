@@ -281,3 +281,4 @@ inline Vector Clamp(const Vector &vec, const Vector &min, const Vector &max)
 
 
 } // namespace Math
+

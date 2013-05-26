@@ -74,3 +74,4 @@ private:
     CSingleton& operator=(const CSingleton<T> &);
     CSingleton(const CSingleton<T> &);
 };
+

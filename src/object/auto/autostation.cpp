@@ -368,4 +368,3 @@ void CAutoStation::UpdateInterface(float rTime)
     }
 }
 
-

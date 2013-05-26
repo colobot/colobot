@@ -36,3 +36,4 @@
 
 extern bool IsOfType(CBotToken* &p, int type1, int type2 = -1);
 extern bool IsOfTypeList(CBotToken* &p, int type1, ...);
+

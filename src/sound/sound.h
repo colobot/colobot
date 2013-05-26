@@ -48,7 +48,7 @@
 **/
 enum Sound
 {
-  SOUND_NONE = -1,  
+  SOUND_NONE = -1,
   SOUND_CLICK = 0,
   SOUND_BOUM  = 1,
   SOUND_EXPLO  = 2,
@@ -183,7 +183,7 @@ class CSoundInterface
         CacheMusic("music010.ogg");
         CacheMusic("music011.ogg");
     };
-    
+
     /** Function called to cache sound effect file.
      *  This function is called by plugin interface for each file.
      * \param bSound - id of a file, will be used to identify sound files

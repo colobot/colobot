@@ -831,4 +831,3 @@ bool CMotionAnt::EventFrame(const Event &event)
     return true;
 }
 
-

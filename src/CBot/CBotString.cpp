@@ -161,7 +161,7 @@ CBotString::CBotString(const CBotString& srcString)
 int CBotString::GetLength()
 {
     if (m_ptr == NULL) return 0;
-    return strlen( m_ptr ); 
+    return strlen( m_ptr );
 }
 
 
@@ -336,7 +336,7 @@ const CBotString& CBotString::operator=(const CBotString& stringSrc)
     delete[] m_ptr;
     m_ptr = nullptr;
 
-    m_lg = stringSrc.m_lg; 
+    m_lg = stringSrc.m_lg;
 
     if (m_lg > 0)
     {
@@ -373,7 +373,7 @@ const CBotString& CBotString::operator=(const char ch)
 {
     delete[] m_ptr;
 
-    m_lg = 1; 
+    m_lg = 1;
 
     m_ptr = new char[2];
     m_ptr[0] = ch;
@@ -389,7 +389,7 @@ const CBotString& CBotString::operator=(const char* pString)
 
     if (pString != nullptr)
     {
-        m_lg = strlen(pString); 
+        m_lg = strlen(pString);
 
         if (m_lg != 0)
         {
@@ -520,7 +520,7 @@ int CBotString::Compare(const char * lpsz) const
     char* p = m_ptr;
     if (lpsz  == NULL) lpsz = emptyString;
     if (m_ptr == NULL) p = emptyString;
-    return strcmp(p, lpsz);    // wcscmp 
+    return strcmp(p, lpsz);    // wcscmp
 }
 
 const char * CBotString::MapIdToString(EID id)

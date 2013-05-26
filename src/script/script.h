@@ -38,13 +38,13 @@ class CDisplayText;
 class CEdit;
 class CInterface;
 class CList;
-} /* Ui */ 
+} /* Ui */
 
 namespace Gfx {
 class CEngine;
 class CTerrain;
 class CWater;
-} /* Gfx */ 
+} /* Gfx */
 
 
 
@@ -236,5 +236,4 @@ protected:
     Event   m_event;
     float   m_returnValue;
 };
-
 

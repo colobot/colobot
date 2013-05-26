@@ -59,3 +59,4 @@ struct IntPoint
 
 
 } // namespace Math
+

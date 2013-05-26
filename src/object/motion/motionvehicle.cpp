@@ -1944,4 +1944,3 @@ void CMotionVehicle::SetTraceWidth(float width)
     m_traceWidth = width;
 }
 
-

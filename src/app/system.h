@@ -131,10 +131,10 @@ public:
     virtual long long TimeStampExactDiff(SystemTimeStamp *before, SystemTimeStamp *after) = 0;
 
     //! Returns the profile (colobot.ini) file location
-    virtual std::string profileFileLocation();
+    virtual std::string GetProfileFileLocation();
 
     //! Returns the savegame directory location
-    virtual std::string savegameDirectoryLocation();
+    virtual std::string GetSavegameDirectoryLocation();
 };
 
 //! Global function to get CSystemUtils instance
@@ -142,3 +142,4 @@ inline CSystemUtils* GetSystemUtils()
 {
     return CSystemUtils::GetInstancePointer();
 }
+

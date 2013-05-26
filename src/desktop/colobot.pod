@@ -45,3 +45,4 @@ Set language. Note that you can also fill the B<LANG> environment variable.
 =head1 AUTHOR
 
 This manpage was written by Didier Raboud <S<odyx@debian.org>>.
+

@@ -610,4 +610,3 @@ bool CMotionBee::EventFrame(const Event &event)
     return true;
 }
 
-

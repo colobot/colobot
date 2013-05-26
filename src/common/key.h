@@ -61,3 +61,4 @@ enum VirtualKmod
 
 //! Special value for invalid key bindings
 const unsigned int KEY_INVALID = SDLK_LAST + 1000;
+

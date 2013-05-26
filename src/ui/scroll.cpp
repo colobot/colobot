@@ -467,3 +467,4 @@ float CScroll::GetArrowStep()
 }
 
 }
+

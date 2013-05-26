@@ -262,7 +262,7 @@ protected:
     Math::Point         m_partiPos[10];
 
     SceneInfo       m_sceneInfo[MAXSCENE];
-    
+
     std::vector<fs::path>   m_saveList;
 };
 

@@ -706,7 +706,8 @@ CRobotMain::CRobotMain(CApplication* app, bool loadProfile)
     float fValue;
     int iValue;
 
-    if (loadProfile) {
+    if (loadProfile)
+    {
         if (GetProfile().GetLocalProfileFloat("Edit", "FontSize",    fValue)) m_fontSize    = fValue;
         if (GetProfile().GetLocalProfileFloat("Edit", "WindowPosX",  fValue)) m_windowPos.x = fValue;
         if (GetProfile().GetLocalProfileFloat("Edit", "WindowPosY",  fValue)) m_windowPos.y = fValue;
@@ -719,7 +720,8 @@ CRobotMain::CRobotMain(CApplication* app, bool loadProfile)
     m_IOPos.x = (1.0f-m_IODim.x)/2.0f;  // in the middle
     m_IOPos.y = (1.0f-m_IODim.y)/2.0f;
 
-    if (loadProfile) {
+    if (loadProfile)
+    {
         if (GetProfile().GetLocalProfileInt  ("Edit", "IOPublic", iValue)) m_IOPublic = iValue;
         if (GetProfile().GetLocalProfileFloat("Edit", "IOPosX",   fValue)) m_IOPos.x  = fValue;
         if (GetProfile().GetLocalProfileFloat("Edit", "IOPosY",   fValue)) m_IOPos.y  = fValue;
@@ -1281,7 +1283,7 @@ void CRobotMain::ChangePhase(Phase phase)
             ddim.x = dim.x*2;  ddim.y = dim.y*2;
             m_interface->CreateButton(pos, ddim, 16, EVENT_BUTTON_OK);
             m_displayText->DisplayError(INFO_LOST, Math::Vector(0.0f,0.0f,0.0f), 15.0f, 60.0f, 1000.0f);
-            
+
             StartMusic();
         }
     }
@@ -1530,9 +1532,8 @@ bool CRobotMain::EventProcess(Event &event)
                         ChangePhase(PHASE_WIN);
                     else if (m_lostDelay > 0.0f)
                         ChangePhase(PHASE_LOST);
-                    else if (!m_cmdEdit) {
+                    else if (!m_cmdEdit)
                         m_dialog->StartAbort();  // do you want to leave?
-                    }
                 }
                 if (event.key.key == KEY(PAUSE))
                 {
@@ -1842,7 +1843,8 @@ void CRobotMain::ExecuteCmd(char *cmd)
 
         if (strcmp(cmd, "controller") == 0)
         {
-            if (m_controller != nullptr) {
+            if (m_controller != nullptr)
+            {
                 // Don't use SelectObject because it checks if the object is selectable
                 if (m_camera->GetType() == Gfx::CAM_TYPE_VISIT)
                     StopDisplayVisit();
@@ -1925,7 +1927,7 @@ void CRobotMain::ExecuteCmd(char *cmd)
                 object->SetRange(object->GetRange()*10.0f);
             return;
         }
-        
+
         if (strcmp(cmd, "\155\157\157") == 0)
         {
             // VGhpcyBpcyBlYXN0ZXItZWdnIGFuZCBzbyBpdCBzaG91bGQgYmUgb2JmdXNjYXRlZCEgRG8gbm90
@@ -2079,20 +2081,23 @@ void CRobotMain::ExecuteCmd(char *cmd)
         return;
     }
 
-    if (strcmp(cmd, "speed4") == 0) {
+    if (strcmp(cmd, "speed4") == 0)
+    {
         SetSpeed(4.0f);
         UpdateSpeedLabel();
-	return;
+        return;
     }
-    if (strcmp(cmd, "speed8") == 0) {
+    if (strcmp(cmd, "speed8") == 0)
+    {
         SetSpeed(8.0f);
         UpdateSpeedLabel();
-	return;
+        return;
     }
-    if (strcmp(cmd, "crazy") == 0) {
+    if (strcmp(cmd, "crazy") == 0)
+    {
         SetSpeed(1000.0f);
         UpdateSpeedLabel();
-	return;
+        return;
     }
 
     if (m_phase == PHASE_SIMUL)
@@ -2189,7 +2194,7 @@ void CRobotMain::StartDisplayInfo(const char *filename, int index)
 void CRobotMain::StopDisplayInfo()
 {
     if (m_cmdEdit) return;
-    
+
     if (m_movieInfoIndex != -1)  // film to read the SatCom?
         m_movie->Start(MM_SATCOMclose, 2.0f);
 
@@ -3989,19 +3994,22 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
         // TODO: Fallback to an non-localized entry
         sprintf(op, "Title.%c", m_app->GetLanguageChar());
-        if (Cmd(line, op) && !resetObject) {
+        if (Cmd(line, op) && !resetObject)
+        {
             OpString(line, "text", m_title);
             continue;
         }
 
         sprintf(op, "Resume.%c", m_app->GetLanguageChar());
-        if (Cmd(line, op) && !resetObject) {
+        if (Cmd(line, op) && !resetObject)
+        {
             OpString(line, "text", m_resume);
             continue;
         }
 
         sprintf(op, "ScriptName.%c", m_app->GetLanguageChar());
-        if (Cmd(line, op) && !resetObject) {
+        if (Cmd(line, op) && !resetObject)
+        {
             OpString(line, "text", m_scriptName);
             continue;
         }
@@ -4010,7 +4018,8 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
         if (Cmd(line, "Resume")) continue; // Ignore
         if (Cmd(line, "ScriptName")) continue; // Ignore
 
-        if (Cmd(line, "ScriptFile") && !resetObject) {
+        if (Cmd(line, "ScriptFile") && !resetObject)
+        {
             OpString(line, "name", m_scriptFile);
             continue;
         }
@@ -4022,7 +4031,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             strcpy(m_infoFilename[SATCOM_HUSTON], path.c_str());
 
             m_immediatSatCom = OpInt(line, "immediat", 0);
-            if(m_version >= 2) m_beginSatCom = m_lockedSatCom = OpInt(line, "lock", 0);
+            if (m_version >= 2) m_beginSatCom = m_lockedSatCom = OpInt(line, "lock", 0);
             continue;
         }
 
@@ -4077,7 +4086,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             m_sound->CacheMusic(filename);
             continue;
         }
-        
+
         if (Cmd(line, "AudioChange") && !resetObject && m_version >= 2 && m_controller == nullptr)
         {
             int i = m_audioChangeTotal;
@@ -4101,20 +4110,24 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
         if (Cmd(line, "Audio") && !resetObject && m_controller == nullptr)
         {
-            if(m_version < 2) {
+            if (m_version < 2)
+            {
                 int trackid = OpInt(line, "track", 0);
-                if(trackid != 0) {
+                if (trackid != 0)
+                {
                     std::stringstream filename;
                     filename << "music" << std::setfill('0') << std::setw(3) << trackid << ".ogg";
                     m_audioTrack = filename.str();
                 }
-            } else {
+            }
+            else
+            {
                 char trackname[100];
                 OpString(line, "filename", trackname);
                 m_audioTrack = trackname;
             }
             m_audioRepeat = OpInt(line, "repeat", 1);
-            if(m_audioTrack != "") m_sound->CacheMusic(m_audioTrack);
+            if (m_audioTrack != "") m_sound->CacheMusic(m_audioTrack);
             continue;
         }
 
@@ -4132,17 +4145,20 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             continue;
         }
 
-        if (Cmd(line, "VehicleColor") && !resetObject) {
+        if (Cmd(line, "VehicleColor") && !resetObject)
+        {
             m_colorNewBot = OpColor(line, "color", Gfx::Color(0.533f, 0.533f, 0.533f, 0.533f));
             continue;
         }
 
-        if (Cmd(line, "InsectColor") && !resetObject) {
+        if (Cmd(line, "InsectColor") && !resetObject)
+        {
             m_colorNewAlien = OpColor(line, "color", Gfx::Color(0.533f, 0.533f, 0.533f, 0.533f));
             continue;
         }
 
-        if (Cmd(line, "GreeneryColor") && !resetObject) {
+        if (Cmd(line, "GreeneryColor") && !resetObject)
+        {
             m_colorNewGreen = OpColor(line, "color", Gfx::Color(0.533f, 0.533f, 0.533f, 0.533f));
             continue;
         }
@@ -4161,7 +4177,8 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             continue;
         }
 
-        if (Cmd(line, "SecondTexture") && !resetObject) {
+        if (Cmd(line, "SecondTexture") && !resetObject)
+        {
             m_engine->SetSecondTexture(OpInt(line, "rank", 1));
             continue;
         }
@@ -4211,21 +4228,24 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             g_unit = OpFloat(line, "unitScale", 4.0f);
             m_engine->SetTracePrecision(OpFloat(line, "traceQuality", 1.0f));
             m_shortCut = OpInt(line, "shortcut", 1);
-            if(m_version >= 2) {
+            if (m_version >= 2)
+            {
                 m_retroStyle = OpInt(line, "retro", 0);
-                if(m_retroStyle) GetLogger()->Info("Retro mode enabled.\n");
+                if (m_retroStyle) GetLogger()->Info("Retro mode enabled.\n");
             }
             continue;
         }
 
         if (Cmd(line, "TerrainGenerate") && !resetObject)
         {
-            if(m_terrainCreate) {
+            if (m_terrainCreate)
+            {
                 GetLogger()->Error("Syntax error in file '%s' (line %d): TerrainGenerate after TerrainCreate\n", filename, lineNum);
                 continue;
             }
 
-            if(m_terrainInit) {
+            if (m_terrainInit)
+            {
                 GetLogger()->Error("Syntax error in file '%s' (line %d): TerrainGenerate after TerrainInit\n", filename, lineNum);
                 continue;
             }
@@ -4241,18 +4261,22 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             continue;
         }
 
-        if (Cmd(line, "TerrainWind") && !resetObject) {
-            if(m_terrainCreate) {
+        if (Cmd(line, "TerrainWind") && !resetObject)
+        {
+            if (m_terrainCreate)
+            {
                 GetLogger()->Error("Syntax error in file '%s' (line %d): TerrainWind after TerrainCreate\n", filename, lineNum);
                 continue;
             }
 
-            if(m_terrainInit) {
+            if (m_terrainInit)
+            {
                 GetLogger()->Error("Syntax error in file '%s' (line %d): TerrainWind after TerrainInit\n", filename, lineNum);
                 continue;
             }
 
-            if(!m_terrainGenerate) {
+            if (!m_terrainGenerate)
+            {
                 GetLogger()->Error("Syntax error in file '%s' (line %d): TerrainWind before TerrainGenerate\n", filename, lineNum);
                 continue;
             }
@@ -4263,17 +4287,20 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
         if (Cmd(line, "TerrainRelief") && !resetObject)
         {
-            if(m_terrainCreate) {
+            if (m_terrainCreate)
+            {
                 GetLogger()->Error("Syntax error in file '%s' (line %d): TerrainRelief after TerrainCreate\n", filename, lineNum);
                 continue;
             }
 
-            if(m_terrainInit) {
+            if (m_terrainInit)
+            {
                 GetLogger()->Error("Syntax error in file '%s' (line %d): TerrainRelief after TerrainInit\n", filename, lineNum);
                 continue;
             }
 
-            if(!m_terrainGenerate) {
+            if (!m_terrainGenerate)
+            {
                 GetLogger()->Error("Syntax error in file '%s' (line %d): TerrainRelief before TerrainGenerate\n", filename, lineNum);
                 continue;
             }
@@ -4285,17 +4312,20 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
         if (Cmd(line, "TerrainResource") && !resetObject)
         {
-            if(m_terrainCreate) {
+            if (m_terrainCreate)
+            {
                 GetLogger()->Error("Syntax error in file '%s' (line %d): TerrainResource after TerrainCreate\n", filename, lineNum);
                 continue;
             }
 
-            if(m_terrainInit) {
+            if (m_terrainInit)
+            {
                 GetLogger()->Error("Syntax error in file '%s' (line %d): TerrainResource after TerrainInit\n", filename, lineNum);
                 continue;
             }
 
-            if(!m_terrainGenerate) {
+            if (!m_terrainGenerate)
+            {
                 GetLogger()->Error("Syntax error in file '%s' (line %d): TerrainResource before TerrainGenerate\n", filename, lineNum);
                 continue;
             }
@@ -4325,7 +4355,8 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             continue;
         }
 
-        if (Cmd(line, "TerrainLava") && !resetObject) {
+        if (Cmd(line, "TerrainLava") && !resetObject)
+        {
             m_water->SetLava(OpInt(line, "mode", 0));
             continue;
         }
@@ -4350,7 +4381,8 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
         if (Cmd(line, "TerrainInitTextures") && !resetObject)
         {
-            if(m_terrainInit) {
+            if (m_terrainInit)
+            {
                 GetLogger()->Error("Syntax error in file '%s' (line %d): TerrainInitTextures and TerrainInit at same time\n", filename, lineNum);
                 continue;
             }
@@ -4373,8 +4405,10 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             continue;
         }
 
-        if (Cmd(line, "TerrainInit") && !resetObject) {
-            if(m_terrainInitTextures) {
+        if (Cmd(line, "TerrainInit") && !resetObject)
+        {
+            if (m_terrainInitTextures)
+            {
                 GetLogger()->Error("Syntax error in file '%s' (line %d): TerrainInit and TerrainInitTextures at same time\n", filename, lineNum);
                 continue;
             }
@@ -4386,24 +4420,28 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
         if (Cmd(line, "TerrainMaterial") && !resetObject)
         {
-            if(m_terrainCreate) {
+            if (m_terrainCreate)
+            {
                 GetLogger()->Error("Syntax error in file '%s' (line %d): TerrainMaterial after TerrainCreate\n", filename, lineNum);
                 continue;
             }
 
-            if(m_terrainInit) {
+            if (m_terrainInit)
+            {
                 GetLogger()->Error("Syntax error in file '%s' (line %d): TerrainMaterial after TerrainInit\n", filename, lineNum);
                 continue;
             }
 
-            if(m_terrainInitTextures) {
+            if (m_terrainInitTextures)
+            {
                 GetLogger()->Error("Syntax error in file '%s' (line %d): TerrainMaterial and TerrainInitTextures at same time\n", filename, lineNum);
                 continue;
             }
 
             OpString(line, "image", name);
             AddExt(name, ".png");
-            if (strstr(name, "%user%") != 0) {
+            if (strstr(name, "%user%") != 0)
+            {
                 GetProfile().CopyFileToTemp(std::string(name));
             }
 
@@ -4421,22 +4459,26 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
         if (Cmd(line, "TerrainLevel") && !resetObject)
         {
-            if(m_terrainCreate) {
+            if (m_terrainCreate)
+            {
                 GetLogger()->Error("Syntax error in file '%s' (line %d): TerrainLevel after TerrainCreate\n", filename, lineNum);
                 continue;
             }
 
-            if(!m_terrainInit) {
+            if (!m_terrainInit)
+            {
                 GetLogger()->Error("Syntax error in file '%s' (line %d): TerrainLevel before TerrainInit\n", filename, lineNum);
                 continue;
             }
 
-            if(m_terrainInitTextures) {
+            if (m_terrainInitTextures)
+            {
                 GetLogger()->Error("Syntax error in file '%s' (line %d): TerrainLevel and TerrainInitTextures at same time\n", filename, lineNum);
                 continue;
             }
 
-            if(!m_terrainGenerate) {
+            if (!m_terrainGenerate)
+            {
                 GetLogger()->Error("Syntax error in file '%s' (line %d): TerrainLevel before TerrainGenerate\n", filename, lineNum);
                 continue;
             }
@@ -4460,7 +4502,8 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             continue;
         }
 
-        if (Cmd(line, "TerrainCreate") && !resetObject) {
+        if (Cmd(line, "TerrainCreate") && !resetObject)
+        {
             m_terrain->CreateObjects();
             m_terrainCreate = true;
             continue;
@@ -4480,7 +4523,9 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
         if (Cmd(line, "MissionController") && read[0] == 0 && m_version >= 2)
         {
-            /*if (!m_beginObject) {
+            /* TODO: ???
+            if (!m_beginObject)
+            {
                 GetLogger()->Error("Syntax error in file '%s' (line %d): MissionController before BeginObject\n", filename, lineNum);
                 continue;
             }*/
@@ -4500,7 +4545,8 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
         if (Cmd(line, "CreateObject") && read[0] == 0)
         {
-            if (!m_beginObject) {
+            if (!m_beginObject)
+            {
                 GetLogger()->Error("Syntax error in file '%s' (line %d): CreateObject before BeginObject\n", filename, lineNum);
                 continue;
             }
@@ -4614,11 +4660,13 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 obj->SetClip(OpInt(line, "clip", 1));
                 obj->SetCheckToken(m_version >= 2 ? trainer || !selectable : OpInt(line, "checkToken", 1));
                 // SetManual will affect bot speed
-                if (type == OBJECT_MOBILEdr)  {
+                if (type == OBJECT_MOBILEdr)
+                {
                     obj->SetManual(m_version >= 2 ? !trainer : OpInt(line, "manual", 0));
                 }
 
-                if(m_version >= 2) {
+                if (m_version >= 2)
+                {
                     Math::Vector zoom = OpDir(line, "zoom");
                     if (zoom.x != 0.0f || zoom.y != 0.0f || zoom.z != 0.0f)
                         obj->SetZoom(0, zoom);
@@ -4774,7 +4822,8 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             continue;
         }
 
-        if (Cmd(line, "WaterColor") && !resetObject) {
+        if (Cmd(line, "WaterColor") && !resetObject)
+        {
             m_engine->SetWaterAddColor(OpColor(line, "color", Gfx::Color(0.0f, 0.0f, 0.0f, 1.0f)));
             continue;
         }
@@ -4846,12 +4895,15 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 m_endTake[i].type     = OpTypeObject(line, "type", OBJECT_NULL);
                 m_endTake[i].min      = OpInt(line, "min", 1);
                 m_endTake[i].max      = OpInt(line, "max", 9999);
-                if (m_version >= 2) {
-                m_endTake[i].powermin = OpInt(line, "powermin", -1);
-                m_endTake[i].powermax = OpInt(line, "powermax", 100);
-                } else {
-                m_endTake[i].powermin = -1;
-                m_endTake[i].powermax = 100;
+                if (m_version >= 2)
+                {
+                    m_endTake[i].powermin = OpInt(line, "powermin", -1);
+                    m_endTake[i].powermax = OpInt(line, "powermax", 100);
+                }
+                else
+                {
+                    m_endTake[i].powermin = -1;
+                    m_endTake[i].powermax = 100;
                 }
                 m_endTake[i].lost     = OpInt(line, "lost", -1);
                 m_endTake[i].immediat = OpInt(line, "immediat", 0);
@@ -4899,17 +4951,20 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             continue;
         }
 
-        if (Cmd(line, "EnableBuild") && !resetObject) {
+        if (Cmd(line, "EnableBuild") && !resetObject)
+        {
             g_build |= OpBuild(line, "type");
             continue;
         }
 
-        if (Cmd(line, "EnableResearch") && !resetObject) {
+        if (Cmd(line, "EnableResearch") && !resetObject)
+        {
             g_researchEnable |= OpResearch(line, "type");
             continue;
         }
 
-        if (Cmd(line, "DoneResearch") && read[0] == 0 && !resetObject)  { // not loading file?
+        if (Cmd(line, "DoneResearch") && read[0] == 0 && !resetObject) // not loading file?
+        {
             g_researchDone |= OpResearch(line, "type");
             continue;
         }
@@ -4922,7 +4977,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
         }
 
         if (line[0] == '\n') continue; // Ignore empty lines
-	if (line[0] == '\0') continue; // Ignore empty lines
+        if (line[0] == '\0') continue; // Ignore empty lines
         if (read[0] != 0)    continue; // Ignore when loading saved game
 
         GetLogger()->Error("Syntax error in file '%s' (line %d): Unknown command: %s", filename, lineNum, line); // Don't add \n at the end of log message - it's included in line variable
@@ -6207,7 +6262,7 @@ bool CRobotMain::IsBusy()
 void CRobotMain::IOWriteObject(FILE *file, CObject* obj, const char *cmd)
 {
     if (obj->GetType() == OBJECT_FIX) return;
-    
+
     SetNumericLocale();
 
     char line[3000];
@@ -6296,7 +6351,7 @@ void CRobotMain::IOWriteObject(FILE *file, CObject* obj, const char *cmd)
 
     strcat(line, "\n");
     fputs(line, file);
-    
+
     RestoreNumericLocale();
 }
 
@@ -6305,7 +6360,7 @@ bool CRobotMain::IOWriteScene(const char *filename, const char *filecbot, char *
 {
     FILE* file = fopen(filename, "w");
     if (file == NULL)  return false;
-    
+
     SetNumericLocale();
 
     char line[500];
@@ -6369,7 +6424,7 @@ bool CRobotMain::IOWriteScene(const char *filename, const char *filecbot, char *
         SaveFileScript(obj, filename, objRank++);
     }
     fclose(file);
-    
+
     RestoreNumericLocale();
 
 #if CBOT_STACK
@@ -6417,7 +6472,7 @@ CObject* CRobotMain::IOReadObject(char *line, const char* filename, int objRank)
         return nullptr;
 
     SetNumericLocale();
-    
+
     int trainer = OpInt(line, "trainer", 0);
     int toy = OpInt(line, "toy", 0);
     int option = OpInt(line, "option", 0);
@@ -6484,7 +6539,7 @@ CObject* CRobotMain::IOReadObject(char *line, const char* filename, int objRank)
     }
 
     RestoreNumericLocale();
-    
+
     return obj;
 }
 
@@ -6495,7 +6550,7 @@ CObject* CRobotMain::IOReadScene(const char *filename, const char *filecbot)
 
     FILE* file = fopen(filename, "r");
     if (file == NULL) return 0;
-    
+
     SetNumericLocale();
 
     CObject* fret   = nullptr;
@@ -6811,7 +6866,7 @@ void CRobotMain::UpdateAudio(bool frame)
 
     for (int t = 0; t < m_audioChangeTotal; t++)
     {
-        if(m_audioChange[t].changed) continue;
+        if (m_audioChange[t].changed) continue;
 
         Math::Vector bPos = m_audioChange[t].pos;
         bPos.y = 0.0f;
@@ -6843,7 +6898,8 @@ void CRobotMain::UpdateAudio(bool frame)
 
             float energyLevel = -1;
             CObject* power = obj->GetPower();
-            if (power != nullptr) {
+            if (power != nullptr)
+            {
                 energyLevel = power->GetEnergy();
                 if (power->GetType() == OBJECT_ATOMIC) energyLevel *= 100;
             }
@@ -6873,7 +6929,8 @@ void CRobotMain::UpdateAudio(bool frame)
 
 void CRobotMain::SetEndMission(Error result, float delay)
 {
-    if (m_controller != nullptr) {
+    if (m_controller != nullptr)
+    {
         m_endTakeWinDelay = delay;
         m_endTakeLostDelay = delay;
         m_missionResult = result;
@@ -6883,22 +6940,25 @@ void CRobotMain::SetEndMission(Error result, float delay)
 //! Checks if the mission is over
 Error CRobotMain::CheckEndMission(bool frame)
 {
-    if (m_controller != nullptr) {
-        if (m_missionResult == INFO_LOST) { //mission lost?
+    if (m_controller != nullptr)
+    {
+        if (m_missionResult == INFO_LOST) //mission lost?
+        {
             m_displayText->DisplayError(INFO_LOST, Math::Vector(0.0f,0.0f,0.0f));
             m_winDelay = 0.0f;
-            if(m_lostDelay == 0) m_lostDelay = m_endTakeLostDelay;
+            if (m_lostDelay == 0) m_lostDelay = m_endTakeLostDelay;
             m_displayText->SetEnable(false);
         }
-        if (m_missionResult == INFO_LOSTq) { //mission lost?
+        if (m_missionResult == INFO_LOSTq) //mission lost?
+        {
             m_winDelay = 0.0f;
-            if(m_lostDelay == 0) m_lostDelay = 0.1f;
+            if (m_lostDelay == 0) m_lostDelay = 0.1f;
             m_displayText->SetEnable(false);
         }
         if (frame && m_base) return ERR_MISSION_NOTERM;
         if (m_missionResult == ERR_OK) { //mission win?
             m_displayText->DisplayError(INFO_WIN, Math::Vector(0.0f,0.0f,0.0f));
-            if(m_winDelay == 0) m_winDelay = m_endTakeWinDelay;
+            if (m_winDelay == 0) m_winDelay = m_endTakeWinDelay;
             m_lostDelay = 0.0f;
             m_displayText->SetEnable(false);
         }
@@ -6942,7 +7002,8 @@ Error CRobotMain::CheckEndMission(bool frame)
 
             float energyLevel = -1;
             CObject* power = obj->GetPower();
-            if (power != nullptr) {
+            if (power != nullptr)
+            {
                 energyLevel = power->GetEnergy();
                 if (power->GetType() == OBJECT_ATOMIC) energyLevel *= 100;
             }
@@ -7417,7 +7478,7 @@ void CRobotMain::StartMusic()
     {
         m_sound->StopMusic();
         m_sound->PlayMusic(m_audioTrack, m_audioRepeat);
-    }   
+    }
 }
 
 //! Removes hilite and tooltip
@@ -7440,4 +7501,4 @@ void CRobotMain::RestoreNumericLocale()
 {
     setlocale(LC_NUMERIC, m_oldLocale.c_str());
 }
-    
+

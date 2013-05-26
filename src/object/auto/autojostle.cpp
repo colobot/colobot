@@ -142,4 +142,3 @@ Error CAutoJostle::IsEnded()
     return m_error;
 }
 
-

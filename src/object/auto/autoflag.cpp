@@ -159,4 +159,3 @@ Error CAutoFlag::GetError()
     return ERR_OK;
 }
 
-

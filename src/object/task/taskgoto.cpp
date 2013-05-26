@@ -90,7 +90,8 @@ bool CTaskGoto::EventProcess(const Event &event)
         rot.x = m_leakPos.x-pos.x;
         rot.y = m_leakPos.z-pos.z;
         dist = Math::Point(rot.x, rot.y).Length();
-        if (dist != 0) {
+        if (dist != 0)
+        {
             rot.x /= dist;
             rot.y /= dist;
         }
@@ -2230,5 +2231,4 @@ bool CTaskGoto::BitmapTestDot(int rank, int x, int y)
 
     return m_bmArray[rank*m_bmLine*m_bmSize + m_bmLine*y + x/8] & (1<<x%8);
 }
-
 

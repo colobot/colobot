@@ -58,7 +58,7 @@ void PrepareFilename(CBotString &filename)  //DD!
 // gets the filename as a parameter
 
 // execution
-bool rfconstruct (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception) 
+bool rfconstruct (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception)
 {
     CBotString  mode;
 
@@ -239,7 +239,7 @@ CBotTypResult cfopen (CBotVar* pThis, CBotVar* &pVar)
     return CBotTypResult(CBotTypBoolean);  //DR
 }
 
-    
+
 // FILE :: close method
 
 // execution
@@ -291,7 +291,7 @@ bool rfwrite (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception)
     if ( pVar->GetInit() != IS_DEF) { Exception = CBotErrNotOpen; return false; }
 
     FILE* pFile= (FILE*)pVar->GetValInt();
-    
+
     int res = fputs(param+CBotString("\n"), pFile);
 
     // on error throws an exception

@@ -920,3 +920,4 @@ bool GetResource(ResType type, int num, char* text)
     PutKeyName(text, tmpl);
     return true;
 }
+

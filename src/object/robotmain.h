@@ -370,7 +370,7 @@ public:
     CObject*    IOReadObject(char *line, const char* filename, int objRank);
 
     int         CreateSpot(Math::Vector pos, Gfx::Color color);
-    
+
     void        SetNumericLocale();
     void        RestoreNumericLocale();
 
@@ -412,7 +412,7 @@ protected:
     void        ExecuteCmd(char *cmd);
     bool        TestGadgetQuantity(int rank);
     void        UpdateSpeedLabel();
-    
+
 
 protected:
     CApplication*       m_app;
@@ -544,7 +544,7 @@ protected:
     bool            m_endTakeNever;
     float           m_endTakeWinDelay;
     float           m_endTakeLostDelay;
-    
+
     int             m_audioChangeTotal;
     AudioChange     m_audioChange[10];
 
@@ -571,7 +571,7 @@ protected:
     Gfx::Color      m_colorRefWater;
     Gfx::Color      m_colorNewWater;
     float           m_colorShiftWater;
-    
+
     std::string     m_oldLocale;
 };
 

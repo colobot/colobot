@@ -128,8 +128,7 @@ enum CameraOverEffect
 
   ... */
 class CCamera {
-
-    public:
+public:
     CCamera();
     ~CCamera();
 
@@ -391,3 +390,4 @@ protected:
 
 
 } // namespace Gfx
+

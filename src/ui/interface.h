@@ -55,48 +55,49 @@ const int MAXCONTROL = 100;
 
 class CInterface
 {
-    public:
-        CInterface();
-        ~CInterface();
+public:
+    CInterface();
+    ~CInterface();
 
-        bool        EventProcess(const Event &event);
-        bool        GetTooltip(Math::Point pos, std::string &name);
+    bool        EventProcess(const Event &event);
+    bool        GetTooltip(Math::Point pos, std::string &name);
 
-        void        Flush();
-        CButton*    CreateButton(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
-        CColor*     CreateColor(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
-        CCheck*     CreateCheck(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
-        CKey*       CreateKey(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
-        CGroup*     CreateGroup(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
-        CImage*     CreateImage(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
-        CEdit*      CreateEdit(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
-        CEditValue* CreateEditValue(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
-        CScroll*    CreateScroll(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
-        CSlider*    CreateSlider(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
-        CShortcut*  CreateShortcut(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
-        CCompass*   CreateCompass(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
-        CTarget*    CreateTarget(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
-        CMap*       CreateMap(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
+    void        Flush();
+    CButton*    CreateButton(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
+    CColor*     CreateColor(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
+    CCheck*     CreateCheck(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
+    CKey*       CreateKey(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
+    CGroup*     CreateGroup(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
+    CImage*     CreateImage(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
+    CEdit*      CreateEdit(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
+    CEditValue* CreateEditValue(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
+    CScroll*    CreateScroll(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
+    CSlider*    CreateSlider(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
+    CShortcut*  CreateShortcut(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
+    CCompass*   CreateCompass(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
+    CTarget*    CreateTarget(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
+    CMap*       CreateMap(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
 
-        CWindow*    CreateWindows(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
-        CList*      CreateList(Math::Point pos, Math::Point dim, int icon, EventType eventMsg, float expand=1.2f);
-        CLabel*     CreateLabel(Math::Point pos, Math::Point dim, int icon, EventType eventMsg, std::string name);
+    CWindow*    CreateWindows(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
+    CList*      CreateList(Math::Point pos, Math::Point dim, int icon, EventType eventMsg, float expand=1.2f);
+    CLabel*     CreateLabel(Math::Point pos, Math::Point dim, int icon, EventType eventMsg, std::string name);
 
-        bool        DeleteControl(EventType eventMsg);
-        CControl*   SearchControl(EventType eventMsg);
+    bool        DeleteControl(EventType eventMsg);
+    CControl*   SearchControl(EventType eventMsg);
 
-        void        Draw();
+    void        Draw();
 
-    protected:
-        int GetNextFreeControl();
-        template <typename T> inline T* CreateControl(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
+protected:
+    int GetNextFreeControl();
+    template <typename T> inline T* CreateControl(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
 
-        CEventQueue* m_event;
-        Gfx::CEngine* m_engine;
-        Gfx::CCamera* m_camera;
+    CEventQueue* m_event;
+    Gfx::CEngine* m_engine;
+    Gfx::CCamera* m_camera;
 
-        CControl* m_table[MAXCONTROL];
+    CControl* m_table[MAXCONTROL];
 };
 
 
 }
+

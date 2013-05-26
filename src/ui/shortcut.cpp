@@ -237,3 +237,4 @@ void CShortcut::DrawVertex(int icon, float zoom)
 }
 
 }
+

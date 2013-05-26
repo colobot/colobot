@@ -187,14 +187,17 @@ bool CMap::EventProcess(const Event &event)
     if ( event.type == EVENT_FRAME )
         m_time += event.rTime;
 
-    if ( event.type == EVENT_MOUSE_MOVE && Detect(event.mousePos) )  {
+    if ( event.type == EVENT_MOUSE_MOVE && Detect(event.mousePos) )
+    {
         m_engine->SetMouseType(Gfx::ENG_MOUSE_NORM);
         if ( DetectObject(event.mousePos, bInMap) != 0 )
             m_engine->SetMouseType(Gfx::ENG_MOUSE_HAND);
     }
 
-    if ( event.type == EVENT_MOUSE_BUTTON_DOWN && event.mouseButton.button == MOUSE_BUTTON_LEFT )  {
-        if ( CControl::Detect(event.mousePos) ) {
+    if ( event.type == EVENT_MOUSE_BUTTON_DOWN && event.mouseButton.button == MOUSE_BUTTON_LEFT )
+    {
+        if ( CControl::Detect(event.mousePos) )
+        {
             SelectObject(event.mousePos);
             return false;
         }
@@ -228,11 +231,13 @@ void CMap::SetHighlight(CObject* pObj)
     if ( pObj == nullptr )
         return;
 
-    for (int i = 0; i < MAPMAXOBJECT; i++) {
+    for (int i = 0; i < MAPMAXOBJECT; i++)
+    {
         if ( !m_map[i].bUsed )
             continue;
 
-        if ( m_map[i].object == pObj ) {
+        if ( m_map[i].object == pObj )
+        {
             m_highlightRank = i;
             break;
         }
@@ -262,7 +267,8 @@ CObject* CMap::DetectObject(Math::Point pos, bool &bInMap)
 
     min = 10000.0f;
     best = -1;
-    for (int i = MAPMAXOBJECT - 1; i >= 0; i--) {
+    for (int i = MAPMAXOBJECT - 1; i >= 0; i--)
+    {
         if ( !m_map[i].bUsed )
             continue;
         if ( m_map[i].color == MAPCOLOR_BBOX  && !m_bRadar )
@@ -273,7 +279,8 @@ CObject* CMap::DetectObject(Math::Point pos, bool &bInMap)
         dist = Math::Point(m_map[i].pos.x - pos.x, m_map[i].pos.y - pos.y).Length();
         if ( dist > m_half / m_zoom * 8.0f / 100.0f )
             continue;  // too far?
-        if ( dist < min ) {
+        if ( dist < min )
+        {
             min = dist;
             best = i;
         }
@@ -337,13 +344,15 @@ void CMap::Draw()
     if ( m_map[i].bUsed )  // selection:
         DrawFocus(m_map[i].pos, m_map[i].dir, m_map[i].type, m_map[i].color);
 
-    for ( i=0 ; i<m_totalFix ; i++ ) {  // fixed objects:
+    for ( i=0 ; i<m_totalFix ; i++ ) // fixed objects:
+    {
         if ( i == m_highlightRank )
             continue;
         DrawObject(m_map[i].pos, m_map[i].dir, m_map[i].type, m_map[i].color, false, false);
     }
 
-    for ( i=MAPMAXOBJECT-2 ; i>m_totalMove ; i-- ) { // moving objects:
+    for ( i=MAPMAXOBJECT-2 ; i>m_totalMove ; i-- ) // moving objects:
+    {
         if ( i == m_highlightRank )
             continue;
         DrawObject(m_map[i].pos, m_map[i].dir, m_map[i].type, m_map[i].color, false, false);
@@ -353,7 +362,8 @@ void CMap::Draw()
     if ( m_map[i].bUsed && i != m_highlightRank )  // selection:
         DrawObject(m_map[i].pos, m_map[i].dir, m_map[i].type, m_map[i].color, true, false);
 
-    if ( m_highlightRank != -1 && m_map[m_highlightRank].bUsed ) {
+    if ( m_highlightRank != -1 && m_map[m_highlightRank].bUsed )
+    {
         i = m_highlightRank;
         DrawObject(m_map[i].pos, m_map[i].dir, m_map[i].type, m_map[i].color, false, true);
         DrawHighlight(m_map[i].pos);
@@ -375,23 +385,27 @@ Math::Point CMap::MapInter(Math::Point pos, float dir)
     p1.y -= pos.y;
 
     limit = m_mapPos.x + m_mapDim.x - pos.x;
-    if ( p1.x > limit ) { // exceeds the right?
+    if ( p1.x > limit ) // exceeds the right?
+    {
         p1.y = limit*p1.y/p1.x;
         p1.x = limit;
     }
     limit = m_mapPos.y * 0.75f + m_mapDim.y * 0.75f - pos.y;
-    if ( p1.y > limit ) { // exceeds the top?
+    if ( p1.y > limit ) // exceeds the top?
+    {
         p1.x = limit * p1.x / p1.y;
         p1.y = limit;
     }
     limit = m_mapPos.x - pos.x;
-    if ( p1.x < limit ) { // exceeds the left?
+    if ( p1.x < limit ) // exceeds the left?
+    {
         p1.y = limit * p1.y / p1.x;
         p1.x = limit;
     }
 
     limit = m_mapPos.y * 0.75f - pos.y;
-    if ( p1.y < limit ) { // exceeds the bottom?
+    if ( p1.y < limit ) // exceeds the bottom?
+    {
         p1.x = limit * p1.x / p1.y;
         p1.y = limit;
     }
@@ -1152,7 +1166,7 @@ void CMap::UpdateObject(CObject* pObj)
         pos.z = ppos.y;
         dir += m_angle;
     }
-    
+
     color = MAPCOLOR_NULL;
     if ( type == OBJECT_BASE )
     {
@@ -1303,3 +1317,4 @@ void CMap::UpdateObject(CObject* pObj)
 }
 
 }
+

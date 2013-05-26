@@ -598,4 +598,3 @@ bool CTaskTake::IsFreeDeposeObject(Math::Vector pos)
     return true;  // location free
 }
 
-

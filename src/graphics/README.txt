@@ -10,3 +10,4 @@
  * This namespace was created to avoid clashing with old code, but now it still serves,
  * defining a border between pure graphics engine and other parts of application.
  */
+

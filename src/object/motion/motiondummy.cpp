@@ -82,3 +82,4 @@ bool CMotionDummy::Create(Math::Vector pos, float angle, ObjectType type,
 
     return true;
 }
+

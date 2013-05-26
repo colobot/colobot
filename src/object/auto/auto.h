@@ -31,7 +31,7 @@ namespace Ui {
 class CDisplayText;
 class CInterface;
 class CWindow;
-} /* Ui */ 
+} /* Ui */
 
 namespace Gfx {
 
@@ -44,7 +44,7 @@ class CCloud;
 class CCamera;
 class CPlanet;
 class CLightning;
-} /* Gfx */ 
+} /* Gfx */
 
 
 class CAuto

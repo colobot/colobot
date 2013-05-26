@@ -465,3 +465,4 @@ bool CLightManager::LightsComparator::operator()(const DynamicLight& left, const
 }
 
 } // namespace Gfx
+

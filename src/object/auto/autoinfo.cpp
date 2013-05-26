@@ -513,4 +513,3 @@ bool CAutoInfo::Read(char *line)
     return true;
 }
 
-

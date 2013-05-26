@@ -239,7 +239,7 @@ protected:
     void        UndoFlush();
     void        UndoMemorize(OperUndo oper);
     bool        UndoRecall();
-    
+
     void        UpdateScroll();
 
 protected:
@@ -294,3 +294,4 @@ protected:
 
 
 }
+

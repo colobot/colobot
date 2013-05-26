@@ -25,3 +25,4 @@ add_executable(modelfile_test ${MODELFILE_TEST_SOURCES})
 target_link_libraries(modelfile_test gtest)
 
 add_test(modelfile_test modelfile_test)
+

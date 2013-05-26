@@ -201,3 +201,4 @@ float CModelManager::GetHeight(std::vector<ModelTriangle>& triangles, Math::Vect
 
 
 }
+

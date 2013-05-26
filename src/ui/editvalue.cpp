@@ -369,3 +369,4 @@ float CEditValue::GetMaxValue()
 }
 
 }
+

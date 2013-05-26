@@ -271,4 +271,3 @@ bool CTaskManager::Abort()
     return m_task->Abort();
 }
 
-

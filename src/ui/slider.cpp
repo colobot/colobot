@@ -581,3 +581,4 @@ float CSlider::GetArrowStep()
 
 
 }
+

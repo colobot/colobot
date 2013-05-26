@@ -343,7 +343,7 @@ CObject::CObject()
     m_botVar = CBotVar::Create("", CBotTypResult(CBotTypClass, "object"));
     m_botVar->SetUserPtr(this);
     m_botVar->SetIdent(m_id);
-    
+
     CObjectManager::GetInstancePointer()->AddInstance(this);
 }
 
@@ -2146,10 +2146,12 @@ bool CObject::CreateVehicle(Math::Vector pos, float angle, ObjectType type,
     {
         m_motion = new CMotionHuman(this);
     }
-    else if ( type == OBJECT_CONTROLLER ) {
+    else if ( type == OBJECT_CONTROLLER )
+    {
         m_motion = new CMotionDummy(this); //dummy object
     }
-    else {
+    else
+    {
         m_motion = new CMotionVehicle(this);
     }
     if ( m_motion == 0 )  return false;
@@ -7390,5 +7392,4 @@ void CObject::SetTraceWidth(float width)
     }
     mv->SetTraceWidth(width);
 }
-
 

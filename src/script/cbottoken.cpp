@@ -535,4 +535,3 @@ const char* GetHelpText(const char *token)
     return "";
 }
 
-

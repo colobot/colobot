@@ -1312,7 +1312,8 @@ bool CBrain::CreateInterface(bool bSelect)
          type == OBJECT_WORM     ||
          type == OBJECT_CONTROLLER)  // vehicle?
     {
-        if (!(m_main->GetRetroMode())) {
+        if (!(m_main->GetRetroMode()))
+        {
             ddim.x = dim.x*5.1f;
             ddim.y = dim.y*2.0f; // default => 2
             pos.x = ox+sx*0.0f;

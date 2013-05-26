@@ -52,7 +52,7 @@ class CTerrain;
 class CWater;
 class CCamera;
 class CParticle;
-} /* Gfx */ 
+} /* Gfx */
 
 
 const int BRAINMAXSCRIPT = 10;

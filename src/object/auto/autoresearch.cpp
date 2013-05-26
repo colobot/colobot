@@ -176,8 +176,8 @@ bool CAutoResearch::EventProcess(const Event &event)
         if ( event.type == EVENT_OBJECT_RPHAZER ) err = StartAction(RESEARCH_PHAZER);
         if ( event.type == EVENT_OBJECT_RSHIELD ) err = StartAction(RESEARCH_SHIELD);
         if ( event.type == EVENT_OBJECT_RATOMIC ) err = StartAction(RESEARCH_ATOMIC);
-        
-	if( err != ERR_OK && err != ERR_GENERIC )
+
+        if( err != ERR_OK && err != ERR_GENERIC )
             m_displayText->DisplayError(err, m_object);
 
         if( err != ERR_GENERIC )
@@ -606,5 +606,4 @@ bool CAutoResearch::Read(char *line)
 
     return true;
 }
-
 

@@ -779,3 +779,4 @@ protected:
     int          m_tail;
     int          m_total;
 };
+

@@ -2399,3 +2399,4 @@ void CPyro::LightOperFrame(float rTime)
 
 
 } // namespace Gfx
+

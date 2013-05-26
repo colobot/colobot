@@ -386,3 +386,4 @@ CObject* CObjectManager::CreateObject(Math::Vector pos, float angle, float zoom,
 
     return object;
 }
+

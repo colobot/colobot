@@ -375,7 +375,7 @@ bool ALSound::AddEnvelope(int channel, float amplitude, float frequency, float t
     if (mChannels.find(channel) == mChannels.end()) {
         return false;
     }
-    
+
     SoundOper op;
     op.finalAmplitude = amplitude;
     op.finalFrequency = frequency;
@@ -401,7 +401,7 @@ bool ALSound::Position(int channel, Math::Vector pos)
         mChannels[channel]->SetPan(pos);
     } else {
         ComputeVolumePan2D(channel, pos);
-        
+
         if (!mChannels[channel]->HasEnvelope()) {
             float volume = mChannels[channel]->GetStartAmplitude();
             mChannels[channel]->SetVolume(powf(volume * mChannels[channel]->GetVolumeAtrib(), 0.2f) * mAudioVolume);
@@ -459,7 +459,7 @@ bool ALSound::MuteAll(bool bMute)
 {
     if (!mEnabled)
         return false;
-    
+
     for (auto it : mChannels) {
         if (it.second->IsPlaying()) {
             it.second->Mute(bMute);
@@ -486,7 +486,7 @@ void ALSound::FrameMove(float delta)
         if (!it.second->IsPlaying()) {
             continue;
         }
-        
+
         if (it.second->IsMuted()) {
             it.second->SetVolume(0.0f);
             continue;
@@ -499,7 +499,7 @@ void ALSound::FrameMove(float delta)
         oper.currentTime += delta;
         progress = oper.currentTime / oper.totalTime;
         progress = MIN(progress, 1.0f);
-       
+
         // setting volume
         volume = progress * (oper.finalAmplitude - it.second->GetStartAmplitude());
         volume = volume + it.second->GetStartAmplitude();
@@ -536,20 +536,20 @@ void ALSound::SetListener(Math::Vector eye, Math::Vector lookat)
     mEye = eye;
     mLookat = lookat;
     if (m3D) {
-        float orientation[] = {lookat.x, lookat.y, lookat.z, 0.f, 1.f, 0.f};   
-        alListener3f(AL_POSITION, eye.x, eye.y, eye.z); 
+        float orientation[] = {lookat.x, lookat.y, lookat.z, 0.f, 1.f, 0.f};
+        alListener3f(AL_POSITION, eye.x, eye.y, eye.z);
         alListenerfv(AL_ORIENTATION, orientation);
     } else {
-        float orientation[] = {0.0f, 0.0f, 0.0f, 0.f, 1.f, 0.f};   
-        alListener3f(AL_POSITION, 0.0f, 0.0f, 0.0f); 
+        float orientation[] = {0.0f, 0.0f, 0.0f, 0.f, 1.f, 0.f};
+        alListener3f(AL_POSITION, 0.0f, 0.0f, 0.0f);
         alListenerfv(AL_ORIENTATION, orientation);
-        
+
         // recalculate sound position
         for (auto it : mChannels) {
             if (it.second->IsPlaying()) {
                 Math::Vector pos = it.second->GetPosition();
                 ComputeVolumePan2D(it.first, pos);
-                
+
                 if (!it.second->HasEnvelope()) {
                     float volume = it.second->GetStartAmplitude();
                     it.second->SetVolume(powf(volume * it.second->GetVolumeAtrib(), 0.2f) * mAudioVolume);
@@ -586,14 +586,14 @@ bool ALSound::PlayMusic(std::string filename, bool bRepeat)
         buffer->LoadFromFile(file.str(), static_cast<Sound>(-1));
         mCurrentMusic->SetBuffer(buffer);
     } else {
-        GetLogger()->Debug("Music loaded from cache\n"); 
-        mCurrentMusic->SetBuffer(mMusic[filename]); 
+        GetLogger()->Debug("Music loaded from cache\n");
+        mCurrentMusic->SetBuffer(mMusic[filename]);
     }
-    
+
     mCurrentMusic->SetVolume(mMusicVolume);
     mCurrentMusic->SetLoop(bRepeat);
     mCurrentMusic->Play();
-    
+
     return true;
 }
 
@@ -614,7 +614,7 @@ void ALSound::StopMusic()
     if (!mEnabled || !mCurrentMusic) {
         return;
     }
-    
+
     SuspendMusic();
 }
 
@@ -624,7 +624,7 @@ bool ALSound::IsPlayingMusic()
     if (!mEnabled || !mCurrentMusic) {
         return false;
     }
-    
+
     return mCurrentMusic->IsPlaying();
 }
 
@@ -634,7 +634,7 @@ void ALSound::SuspendMusic()
     if (!mEnabled || !mCurrentMusic) {
         return;
     }
-    
+
     mCurrentMusic->Stop();
 }
 
@@ -665,17 +665,17 @@ void ALSound::ComputeVolumePan2D(int channel, Math::Vector &pos)
     Math::Vector one = Math::Vector(1.0f, 0.0f, 0.0f);
     float angle_a = Angle(Math::Vector(mLookat.x - mEye.x, mLookat.z - mEye.z, 0.0f), one);
     float angle_g = Angle(Math::Vector(pos.x - mEye.x, pos.z - mEye.z, 0.0f), one);
-    
+
     a = fmodf(angle_a, Math::PI * 2.0f);
     g = fmodf(angle_g, Math::PI * 2.0f);
-    
+
     if ( a < 0.0f ) {
         a += Math::PI * 2.0f;
     }
     if ( g < 0.0f ) {
         g += Math::PI * 2.0f;
     }
-    
+
     if ( a < g ) {
         if (a + Math::PI * 2.0f - g < g - a ) {
             a += Math::PI * 2.0f;
@@ -685,6 +685,6 @@ void ALSound::ComputeVolumePan2D(int channel, Math::Vector &pos)
             g += Math::PI * 2.0f;
         }
     }
-    
+
     mChannels[channel]->SetPan( Math::Vector(0.0f, 0.0f, sinf(g - a)) );
 }

@@ -643,3 +643,4 @@ inline Math::Vector RotateView(Math::Vector center, float angleH, float angleV, 
 
 
 } // namespace Math
+

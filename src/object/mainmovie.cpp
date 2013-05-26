@@ -228,4 +228,3 @@ MainMovieType CMainMovie::GetStopType()
     return m_stopType;
 }
 
-

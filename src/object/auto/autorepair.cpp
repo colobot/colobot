@@ -340,4 +340,3 @@ bool CAutoRepair::Read(char *line)
     return true;
 }
 
-

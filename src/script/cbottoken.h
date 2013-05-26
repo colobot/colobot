@@ -36,4 +36,3 @@ extern bool IsType(const char *token);
 extern bool IsFunction(const char *token);
 extern const char* GetHelpText(const char *token);
 
-

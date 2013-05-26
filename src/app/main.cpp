@@ -122,3 +122,4 @@ int SDL_MAIN_FUNC(int argc, char *argv[])
 }
 
 } // extern "C"
+

@@ -67,7 +67,7 @@ bool Buffer::LoadFromFile(std::string filename, Sound sound) {
     while ((read = sf_read_short(file, buffer.data(), buffer.size())) != 0) {
         data.insert(data.end(), buffer.begin(), buffer.begin() + read);
     }
-    sf_close(file);   
+    sf_close(file);
 
     alBufferData(mBuffer, fileInfo.channels == 1 ? AL_FORMAT_MONO16 : AL_FORMAT_STEREO16, &data.front(), data.size() * sizeof(uint16_t), fileInfo.samplerate);
     mDuration = static_cast<float>(fileInfo.frames) / fileInfo.samplerate;

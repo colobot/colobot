@@ -28,7 +28,7 @@ endif()
 
 # Additional libraries per platform
 if (${MXE}) # MXE requires special treatment
-    set(PLATFORM_LIBS ${MXE_LIBS})  
+    set(PLATFORM_LIBS ${MXE_LIBS})
 elseif (${PLATFORM_WINDOWS})
     # because it isn't included in standard linking libraries
     set(PLATFORM_LIBS "-lintl")
@@ -229,3 +229,4 @@ target_link_libraries(colobot ${LIBS})
 
 install(TARGETS colobot RUNTIME DESTINATION ${COLOBOT_INSTALL_BIN_DIR})
 set_target_properties(colobot PROPERTIES INSTALL_RPATH ${COLOBOT_INSTALL_LIB_DIR})
+

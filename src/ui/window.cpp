@@ -1579,3 +1579,4 @@ void CWindow::DrawHach(Math::Point pos, Math::Point dim)
 }
 
 }
+
