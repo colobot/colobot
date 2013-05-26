@@ -576,12 +576,12 @@ bool CWindow::GetTooltip(Math::Point pos, std::string &name)
 
 // Specifies the name for the title bar.
 
-void CWindow::SetName(std::string name)
+void CWindow::SetName(std::string name, bool tooltip)
 {
     CButton*    pc;
     bool        bAdjust;
 
-    CControl::SetName(name);
+    CControl::SetName(name, tooltip);
 
     if ( m_buttonReduce != 0 )
     {

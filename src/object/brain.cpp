@@ -2486,7 +2486,7 @@ void CBrain::UpdateScript(Ui::CWindow *pw)
             }
         }
 
-        pl->SetName(i, name);
+        pl->SetItemName(i, name);
     }
 
     if ( !bSoluce )

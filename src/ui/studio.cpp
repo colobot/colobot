@@ -1397,7 +1397,7 @@ void CStudio::UpdateChangeList()
     pe = static_cast< CEdit* >(pw->SearchControl(EVENT_DIALOG_EDIT));
     if ( pe == nullptr )  return;
 
-    strcpy(name, pl->GetName(pl->GetSelect()));
+    strcpy(name, pl->GetItemName(pl->GetSelect()));
     name[pe->GetMaxChar()] = 0;  // truncates according lg max editable
     p = strchr(name, '\t');  // seeks first tab
     if ( p != 0 )  *p = 0;
@@ -1526,7 +1526,7 @@ void CStudio::UpdateDialogList()
                 std::ostringstream temp;
                 TimeToAscii(fs::last_write_time(file->path()), time);
                 temp << file->path().filename().string() << '\t' << fs::file_size(file->path()) << "  \t" << time;                
-                pl->SetName(i++, temp.str().c_str());
+                pl->SetItemName(i++, temp.str().c_str());
             }
         }
     }

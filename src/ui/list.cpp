@@ -88,6 +88,14 @@ bool CList::Create(Math::Point pos, Math::Point dim, int icon, EventType eventMs
     return MoveAdjust();
 }
 
+// Should never be called
+bool CList::Create(Math::Point pos, Math::Point dim, int icon, EventType eventType)
+{
+    assert(false);
+    return false;
+}
+
+
 // Adjusted after a change of dimensions.
 
 bool CList::MoveAdjust()
@@ -611,7 +619,7 @@ bool CList::GetBlink()
 
 // Specifies the text of a line.
 
-void CList::SetName(int i, const char* name)
+void CList::SetItemName(int i, const char* name)
 {
     if ( i < 0 || i >= LISTMAXTOTAL )
         return;
@@ -630,7 +638,7 @@ void CList::SetName(int i, const char* name)
 
 // Returns the text of a line.
 
-char* CList::GetName(int i)
+char* CList::GetItemName(int i)
 {
     if ( i < 0 || i >= m_totalLine )
         return 0;
@@ -808,4 +816,4 @@ void CList::MoveScroll()
 }
 
 
-}
+} // namespace Ui

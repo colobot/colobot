@@ -4038,7 +4038,7 @@ void PutList(const char *baseName, bool bArray, CBotVar *var, Ui::CList *list, i
     if ( var == 0 && baseName[0] != 0 )
     {
         sprintf(buffer, "%s = null;", baseName);
-        list->SetName(rankList++, buffer);
+        list->SetItemName(rankList++, buffer);
         return;
     }
 
@@ -4080,7 +4080,7 @@ void PutList(const char *baseName, bool bArray, CBotVar *var, Ui::CList *list, i
             value = pStatic->GetValString();
             p = value;
             sprintf(buffer, "%s = %s;", varName, p);
-            list->SetName(rankList++, buffer);
+            list->SetItemName(rankList++, buffer);
         }
         else if ( type == CBotTypString )
         {
@@ -4088,7 +4088,7 @@ void PutList(const char *baseName, bool bArray, CBotVar *var, Ui::CList *list, i
             value = pStatic->GetValString();
             p = value;
             sprintf(buffer, "%s = \"%s\";", varName, p);
-            list->SetName(rankList++, buffer);
+            list->SetItemName(rankList++, buffer);
         }
         else if ( type == CBotTypArrayPointer )
         {
@@ -4104,7 +4104,7 @@ void PutList(const char *baseName, bool bArray, CBotVar *var, Ui::CList *list, i
         else
         {
             sprintf(buffer, "%s = ?;", varName);
-            list->SetName(rankList++, buffer);
+            list->SetItemName(rankList++, buffer);
         }
 
         index ++;

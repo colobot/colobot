@@ -199,7 +199,7 @@ CMainDialog::~CMainDialog()
 
 void CMainDialog::ChangePhase(Phase phase)
 {
-    CWindow*        pw;
+    CWindow*        pw = nullptr;
     CEdit*          pe;
     CEditValue*     pv;
     CLabel*         pl;
@@ -2310,7 +2310,7 @@ bool CMainDialog::EventProcess(const Event &event)
                 if ( pw == 0 )  break;
                 pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_NLIST));
                 if ( pl == 0 )  break;
-                StartDeleteGame(pl->GetName(pl->GetSelect()));
+                StartDeleteGame(pl->GetItemName(pl->GetSelect()));
                 break;
 
             default:
@@ -3688,7 +3688,7 @@ void CMainDialog::ReadNameList()
 
     for (size_t i=0 ; i<fileNames.size() ; ++i )
     {
-        pl->SetName(i, fileNames.at(i).c_str());
+        pl->SetItemName(i, fileNames.at(i).c_str());
     }
 }
 
@@ -3764,7 +3764,7 @@ void CMainDialog::UpdateNameList()
     for ( i=0 ; i<total ; i++ )
     {
         // TODO: stricmp?
-        if ( strcmp(name, pl->GetName(i)) == 0 )
+        if ( strcmp(name, pl->GetItemName(i)) == 0 )
         {
             pl->SetSelect(i);
             pl->ShowSelect(false);
@@ -3800,7 +3800,7 @@ void CMainDialog::UpdateNameEdit()
     }
     else
     {
-        name = pl->GetName(sel);
+        name = pl->GetItemName(sel);
         pe->SetText(name);
         pe->SetCursor(strlen(name), 0);
     }
@@ -3824,7 +3824,7 @@ void CMainDialog::UpdateNameFace()
 
     sel = pl->GetSelect();
     if ( sel == -1 )  return;
-    name = pl->GetName(sel);
+    name = pl->GetItemName(sel);
 
     ReadGamerPerso(name);
 }
@@ -3855,7 +3855,7 @@ void CMainDialog::NameSelect()
     }
     else
     {
-        m_main->SetGamerName(pl->GetName(sel));
+        m_main->SetGamerName(pl->GetItemName(sel));
         m_main->ChangePhase(PHASE_INIT);
     }
 
@@ -3982,7 +3982,7 @@ void CMainDialog::NameDelete()
         m_sound->Play(SOUND_TZOING);
         return;
     }
-    gamer = pl->GetName(sel);
+    gamer = pl->GetItemName(sel);
 
     // Deletes all the contents of the file.
     sprintf(dir, "%s/%s", m_savegameDir.c_str(), gamer);
@@ -4417,7 +4417,7 @@ void CMainDialog::IOReadList()
                 }
                 fclose(file);
 
-                pl->SetName(m_saveList.size(), name);
+                pl->SetItemName(m_saveList.size(), name);
                 m_saveList.push_back(dir_iter->path());
             }
         }
@@ -4426,7 +4426,7 @@ void CMainDialog::IOReadList()
     // zly indeks
     if ( m_phase == PHASE_WRITE  || m_phase == PHASE_WRITEs ) {
         GetResource(RES_TEXT, RT_IO_NEW, name);
-        pl->SetName(m_saveList.size(), name);
+        pl->SetItemName(m_saveList.size(), name);
     }
 
     pl->SetSelect(m_saveList.size());
@@ -4505,7 +4505,7 @@ void CMainDialog::IODeleteScene()
         }
     }
     catch (std::exception & e) {
-        GetLogger()->Error("Error removing save %s : %s\n", pl->GetName(sel), e.what());
+        GetLogger()->Error("Error removing save %s : %s\n", pl->GetItemName(sel), e.what());
     }
 
     IOReadList();
@@ -4754,7 +4754,7 @@ void CMainDialog::UpdateSceneChap(int &chap)
                 fclose(file);
             }
 
-            pl->SetName(j, name);
+            pl->SetItemName(j, name);
             pl->SetEnable(j, true);
         }
     }
@@ -4807,7 +4807,7 @@ void CMainDialog::UpdateSceneChap(int &chap)
 
             bPassed = GetGamerInfoPassed((j+1)*100);
             sprintf(line, "%d: %s", j+1, name);
-            pl->SetName(j, line);
+            pl->SetItemName(j, line);
             pl->SetCheck(j, bPassed);
             pl->SetEnable(j, true);
 
@@ -4917,7 +4917,7 @@ void CMainDialog::UpdateSceneList(int chap, int &sel)
 
         bPassed = GetGamerInfoPassed((chap+1)*100+(j+1));
         sprintf(line, "%d: %s", j+1, name);
-        pl->SetName(j, line);
+        pl->SetItemName(j, line);
         pl->SetCheck(j, bPassed);
         pl->SetEnable(j, true);
 
@@ -5099,7 +5099,7 @@ void CMainDialog::UpdateDisplayDevice()
     j = 0;
     while ( bufDevices[i] != 0 )
     {
-        pl->SetName(j++, bufDevices+i);
+        pl->SetItemName(j++, bufDevices+i);
         while ( bufDevices[i++] != 0 );
     }
 
@@ -5129,7 +5129,7 @@ void CMainDialog::UpdateDisplayMode()
     for (Math::IntPoint mode : modes) {
 	mode_text.str("");
 	mode_text << mode.x << "x" << mode.y;
-	pl->SetName(i++, mode_text.str().c_str());
+	pl->SetItemName(i++, mode_text.str().c_str());
     }
 
     pl->SetSelect(m_setupSelMode);
@@ -5153,12 +5153,12 @@ void CMainDialog::ChangeDisplay()
     pl = static_cast<CList*>(pw->SearchControl(EVENT_LIST1));
     if ( pl == 0 )  return;
     m_setupSelDevice = pl->GetSelect();
-    //device = pl->GetName(m_setupSelDevice);
+    //device = pl->GetItemName(m_setupSelDevice);
 
     pl = static_cast<CList*>(pw->SearchControl(EVENT_LIST2));
     if ( pl == 0 )  return;
     m_setupSelMode = pl->GetSelect();
-    //mode = pl->GetName(m_setupSelMode);
+    //mode = pl->GetItemName(m_setupSelMode);
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_FULL));
     if ( pc == 0 )  return;

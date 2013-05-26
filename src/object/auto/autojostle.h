@@ -37,7 +37,9 @@ public:
     bool        EventProcess(const Event &event);
     Error       IsEnded();
 
-protected:
+private:
+    // Overriden to avoid warning about hiding virtual function
+    virtual void Start(int param) override;
 
 protected:
     float           m_force;
