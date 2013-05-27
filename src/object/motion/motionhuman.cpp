@@ -1617,18 +1617,18 @@ bool CMotionHuman::EventFrame(const Event &event)
          legAction == MH_MARCHTAKE )
     {
         Sound   sound[2];
-        float   speed, synchro, volume[2], freq[2], hard, level;
+        float   synchro, volume[2], freq[2], hard;
 
-        speed = m_physics->GetLinMotionX(MO_REASPEED);
+        float speedX = m_physics->GetLinMotionX(MO_REASPEED);
 
         if ( m_object->GetFret() == 0 )
         {
-            if ( speed > 0.0f )  synchro = 0.21f;  // synchro forward
+            if ( speedX > 0.0f )  synchro = 0.21f;  // synchro forward
             else                 synchro = 0.29f;  // synchro backward
         }
         else
         {
-            if ( speed > 0.0f )  synchro = 0.15f;  // synchro forward
+            if ( speedX > 0.0f )  synchro = 0.15f;  // synchro forward
             else                 synchro = 0.35f;  // synchro backward
         }
         time = rTime[1]+synchro;

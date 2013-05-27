@@ -4082,7 +4082,6 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
         if (Cmd(line, "CacheAudio") && !resetObject && m_version >= 2)
         {
-            char filename[100];
             OpString(line, "filename", filename);
             m_sound->CacheMusic(filename);
             continue;
@@ -4116,9 +4115,9 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 int trackid = OpInt(line, "track", 0);
                 if (trackid != 0)
                 {
-                    std::stringstream filename;
-                    filename << "music" << std::setfill('0') << std::setw(3) << trackid << ".ogg";
-                    m_audioTrack = filename.str();
+                    std::stringstream filenameStr;
+                    filenameStr << "music" << std::setfill('0') << std::setw(3) << trackid << ".ogg";
+                    m_audioTrack = filenameStr.str();
                 }
             }
             else
@@ -4392,10 +4391,10 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             AddExt(name, ".png");
             int dx = OpInt(line, "dx", 1);
             int dy = OpInt(line, "dy", 1);
-            char* op = SearchOp(line, "table");
+            char* opTable = SearchOp(line, "table");
             int tt[100];
             for (int i = 0; i < dx*dy; i++)
-                tt[i] = GetInt(op, i, 0);
+                tt[i] = GetInt(opTable, i, 0);
 
             if (strstr(name, "%user%") != 0)
                 CopyFileListToTemp(name, tt, dx*dy);
@@ -4484,12 +4483,12 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 continue;
             }
 
-            char* op = SearchOp(line, "id");
+            char* opId = SearchOp(line, "id");
             int id[50];
             int i = 0;
             while (i < 50)
             {
-                id[i] = GetInt(op, i, 0);
+                id[i] = GetInt(opId, i, 0);
                 if (id[i++] == 0) break;
             }
 
@@ -4589,9 +4588,9 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             }
 
             Math::Vector pos = OpPos(line, "pos")*g_unit;
-            float dir = OpFloat(line, "dir", 0.0f)*Math::PI;
+            float dirAngle = OpFloat(line, "dir", 0.0f)*Math::PI;
             bool trainer = OpInt(line, "trainer", 0);
-            CObject* obj = CreateObject(pos, dir,
+            CObject* obj = CreateObject(pos, dirAngle,
                                         OpFloat(line, "z", 1.0f),
                                         OpFloat(line, "h", 0.0f),
                                         type,

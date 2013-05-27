@@ -613,7 +613,7 @@ void CText::DrawString(const std::string &text, std::vector<FontMetaChar>::itera
         float cw = GetCharWidth(ch, font, size, offset);
         if (offset + cw > width)  // exceeds the maximum width?
         {
-            UTF8Char ch = TranslateSpecialChar(CHAR_SKIP_RIGHT);
+            ch = TranslateSpecialChar(CHAR_SKIP_RIGHT);
             cw = GetCharWidth(ch, font, size, offset);
             pos.x = start + width - cw;
             color = Color(1.0f, 0.0f, 0.0f);

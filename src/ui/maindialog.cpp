@@ -3677,8 +3677,9 @@ void CMainDialog::ReadNameList()
         {
             fs::directory_iterator dirIt(m_savegameDir), dirEndIt;
 
-            BOOST_FOREACH (const fs::path & p, std::make_pair(dirIt, dirEndIt))
+            for (; dirIt != dirEndIt; ++dirIt)
             {
+                const fs::path& p = *dirIt;
                 if (fs::is_directory(p))
                 {
                     fileNames.push_back(p.leaf().string());
@@ -4745,8 +4746,9 @@ void CMainDialog::UpdateSceneChap(int &chap)
         fs::directory_iterator dirIt(m_savegameDir), dirEndIt;
         m_userList.clear();
 
-        BOOST_FOREACH (const fs::path & p, std::make_pair(dirIt, dirEndIt))
+        for (; dirIt != dirEndIt; ++dirIt)
         {
+            const fs::path& p = *dirIt;
             if (fs::is_directory(p))
             {
                 m_userList.push_back(p.leaf().string());

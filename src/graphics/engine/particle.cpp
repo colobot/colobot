@@ -3553,9 +3553,9 @@ void CParticle::DrawParticle(int sheet)
     {
         m_engine->SetTexture("text.png");
         m_engine->SetState(ENG_RSTATE_TTEXTURE_WHITE);
-        Math::Matrix mat;
-        mat.LoadIdentity();
-        m_device->SetTransform(TRANSFORM_WORLD, mat);
+        Math::Matrix matrix;
+        matrix.LoadIdentity();
+        m_device->SetTransform(TRANSFORM_WORLD, matrix);
 
         for (int i = 0; i < m_wheelTraceTotal; i++)
             DrawParticleWheel(i);

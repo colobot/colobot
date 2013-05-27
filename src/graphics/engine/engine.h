@@ -194,10 +194,15 @@ struct EngineBaseObjDataTier
     unsigned int            staticBufferId;
     bool                    updateStaticBuffer;
 
-    inline EngineBaseObjDataTier(EngineTriangleType type = ENG_TRIANGLE_TYPE_TRIANGLES,
-                                 const Material& material = Material(),
-                                 int state = ENG_RSTATE_NORMAL)
-        : type(type), material(material), state(state), staticBufferId(0), updateStaticBuffer(false) {}
+    inline EngineBaseObjDataTier(EngineTriangleType _type = ENG_TRIANGLE_TYPE_TRIANGLES,
+                                 const Material& _material = Material(),
+                                 int _state = ENG_RSTATE_NORMAL)
+     : type(_type)
+     , material(_material)
+     , state(_state)
+     , staticBufferId(0)
+     , updateStaticBuffer(false)
+    {}
 };
 
 /**
@@ -209,8 +214,9 @@ struct EngineBaseObjLODTier
     LODLevel                            lodLevel;
     std::vector<EngineBaseObjDataTier>  next;
 
-    inline EngineBaseObjLODTier(LODLevel lodLevel = LOD_Constant)
-        : lodLevel(lodLevel) {}
+    inline EngineBaseObjLODTier(LODLevel _lodLevel = LOD_Constant)
+     : lodLevel(_lodLevel)
+    {}
 };
 
 /**
@@ -225,8 +231,10 @@ struct EngineBaseObjTexTier
     Texture                            tex2;
     std::vector<EngineBaseObjLODTier>  next;
 
-    inline EngineBaseObjTexTier(const std::string& tex1Name = "", const std::string& tex2Name = "")
-        : tex1Name(tex1Name), tex2Name(tex2Name) {}
+    inline EngineBaseObjTexTier(const std::string& _tex1Name = "", const std::string& _tex2Name = "")
+     : tex1Name(_tex1Name)
+     , tex2Name(_tex2Name)
+    {}
 };
 
 /**
@@ -556,18 +564,17 @@ struct EngineMouse
     //! Hot point
     Math::Point hotPoint;
 
-    inline EngineMouse(int icon1 = -1, int icon2 = -1, int iconShadow = -1,
-                       EngineRenderState mode1 = ENG_RSTATE_NORMAL,
-                       EngineRenderState mode2 = ENG_RSTATE_NORMAL,
-                       Math::Point hotPoint = Math::Point())
-    {
-        this->icon1      = icon1;
-        this->icon2      = icon2;
-        this->iconShadow = iconShadow;
-        this->mode1      = mode1;
-        this->mode2      = mode2;
-        this->hotPoint   = hotPoint;
-    }
+    inline EngineMouse(int _icon1 = -1, int _icon2 = -1, int _iconShadow = -1,
+                       EngineRenderState _mode1 = ENG_RSTATE_NORMAL,
+                       EngineRenderState _mode2 = ENG_RSTATE_NORMAL,
+                       Math::Point _hotPoint = Math::Point())
+     : icon1(_icon1)
+     , icon2(_icon2)
+     , iconShadow(_iconShadow)
+     , mode1(_mode1)
+     , mode2(_mode2)
+     , hotPoint(_hotPoint)
+    {}
 };
 
 

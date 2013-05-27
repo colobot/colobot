@@ -139,10 +139,10 @@ struct ColorHSV
      //! Returns a string "(h, s, v)"
      inline std::string ToString() const
      {
-        std::stringstream s;
-        s.precision(3);
-        s << "(" << h << ", " << s << ", " << v << ")";
-        return s.str();
+        std::stringstream str;
+        str.precision(3);
+        str << "(" << h << ", " << s << ", " << v << ")";
+        return str.str();
      }
 };
 

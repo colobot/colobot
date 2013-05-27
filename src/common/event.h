@@ -730,16 +730,15 @@ struct Event
         ActiveEventData active;
     };
 
-    Event(EventType type = EVENT_NULL)
-    {
-        this->type = type;
-
-        systemEvent = false;
-        rTime = 0.0f;
-        mouseButtonsState = 0;
-        trackedKeysState = 0;
-        customParam = 0;
-    }
+    explicit Event(EventType _type = EVENT_NULL)
+     : type(_type)
+     , systemEvent(false)
+     , rTime(0.0f)
+     , kmodState(0)
+     , trackedKeysState(0)
+     , mouseButtonsState(0)
+     , customParam(0)
+    {}
 };
 
 

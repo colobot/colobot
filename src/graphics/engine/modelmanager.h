@@ -79,8 +79,10 @@ private:
         std::string fileName;
         bool mirrored;
 
-        inline FileInfo(const std::string& fileName, bool mirrored)
-            : fileName(fileName), mirrored(mirrored) {}
+        inline FileInfo(const std::string& _fileName, bool _mirrored)
+         : fileName(_fileName)
+         , mirrored(_mirrored)
+        {}
 
         inline bool operator<(const FileInfo& other) const
         {

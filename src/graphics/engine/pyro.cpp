@@ -89,13 +89,15 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
 
     DisplayError(type, obj);  // displays eventual messages
 
-    int i = 0;
-    // Copies all spheres of the object.
-    for (; i < 50; i++)
     {
-        if ( !obj->GetCrashSphere(i, m_crashSpherePos[i], m_crashSphereRadius[i]) )  break;
+        int i = 0;
+        // Copies all spheres of the object.
+        for (; i < 50; i++)
+        {
+            if ( !obj->GetCrashSphere(i, m_crashSpherePos[i], m_crashSphereRadius[i]) )  break;
+        }
+        m_crashSphereUsed = i;
     }
-    m_crashSphereUsed = i;
 
     // Calculates the size of the effect.
     if ( oType == OBJECT_ANT    ||

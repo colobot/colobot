@@ -52,16 +52,15 @@ struct Point
 
     //! Constructs a zero point: (0,0)
     inline Point()
-    {
-        LoadZero();
-    }
+     : x(0.0f)
+     , y(0.0f)
+    {}
 
     //! Constructs a point from given coords: (x,y)
-    inline explicit Point(float x, float y)
-    {
-        this->x = x;
-        this->y = y;
-    }
+    inline explicit Point(float _x, float _y)
+     : x(_x)
+     , y(_y)
+    {}
 
     //! Sets the zero point: (0,0)
     inline void LoadZero()
