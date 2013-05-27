@@ -17,6 +17,8 @@
 
 #include "sound/oalsound/buffer.h"
 
+#include <cstring>
+
 Buffer::Buffer()
 {
     m_loaded = false;
@@ -41,6 +43,7 @@ bool Buffer::LoadFromFile(std::string filename, Sound sound)
     GetLogger()->Debug("Loading audio file: %s\n", filename.c_str());
 
     SF_INFO fileInfo;
+    memset(&fileInfo, 0, sizeof(SF_INFO));
     SNDFILE *file = sf_open(filename.c_str(), SFM_READ, &fileInfo);
 
     GetLogger()->Trace("  channels %d\n", fileInfo.channels);

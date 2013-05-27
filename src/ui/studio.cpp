@@ -904,7 +904,7 @@ void CStudio::SetInfoText(std::string text, bool bClickable)
     if ( list == 0 )  return;
 
     list->Flush();  // just text
-    list->SetName(0, text.c_str());
+    list->SetItemName(0, text.c_str());
 
     if ( text[0] == 0 )  bClickable = false;
     list->SetSelectCap(bClickable);
