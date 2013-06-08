@@ -2156,7 +2156,7 @@ Texture CEngine::CreateTexture(const std::string& texName, const TextureCreatePa
         image = &img;
     }
 
-    tex = m_device->CreateTexture(&img, params);
+    tex = m_device->CreateTexture(image, params);
 
     if (! tex.Valid())
     {
