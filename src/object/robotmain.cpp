@@ -4082,8 +4082,8 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
         if (Cmd(line, "CacheAudio") && !resetObject && m_version >= 2)
         {
-            OpString(line, "filename", filename);
-            m_sound->CacheMusic(filename);
+            OpString(line, "filename", name);
+            m_sound->CacheMusic(name);
             continue;
         }
 
