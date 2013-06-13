@@ -234,6 +234,9 @@ public:
     //! Returns whether simulation is suspended
     bool        GetSimulationSuspended() const;
 
+    //! Resets time counters to account for time spent loading game
+    void        ResetTimeAfterLoading();
+
     //@{
     //! Management of simulation speed
     void            SetSimulationSpeed(float speed);
@@ -367,6 +370,9 @@ protected:
     bool OpenJoystick();
     //! Closes the joystick device
     void CloseJoystick();
+
+    //! Internal procedure to reset time counters
+    void InternalResumeSimulation();
 
     //! Resets all performance counters to zero
     void ResetPerformanceCounters();

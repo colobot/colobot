@@ -1264,13 +1264,24 @@ void CApplication::SuspendSimulation()
 void CApplication::ResumeSimulation()
 {
     m_simulationSuspended = false;
+    InternalResumeSimulation();
 
+    GetLogger()->Info("Resume simulation\n");
+}
+
+void CApplication::ResetTimeAfterLoading()
+{
+    InternalResumeSimulation();
+
+    GetLogger()->Trace("Resume simulation on loading\n");
+}
+
+void CApplication::InternalResumeSimulation()
+{
     GetSystemUtils()->GetCurrentTimeStamp(m_baseTimeStamp);
     GetSystemUtils()->CopyTimeStamp(m_curTimeStamp, m_baseTimeStamp);
     m_realAbsTimeBase = m_realAbsTime;
     m_absTimeBase = m_exactAbsTime;
-
-    GetLogger()->Info("Resume simulation\n");
 }
 
 bool CApplication::GetSimulationSuspended() const

@@ -1196,6 +1196,8 @@ void CRobotMain::ChangePhase(Phase phase)
         if (m_mapImage)
             m_map->SetFixImage(m_mapFilename);
 
+        m_app->ResetTimeAfterLoading();
+
         /*Math::Point ddim;
 
         pos.x = 620.0f/640.0f;
