@@ -5,7 +5,7 @@ include_directories(
 ${SRC_DIR}
 ${GTEST_INCLUDE_DIR}
 ${GMOCK_INCLUDE_DIR}
-${CLIPBOARD_DIR}
+${CLIPBOARD_INCLUDE_DIR}
 )
 
 # Platform-dependent implementation of CSystemUtils

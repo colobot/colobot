@@ -40,8 +40,10 @@ enum EventType
     //! Invalid event / no event
     EVENT_NULL              = 0,
 
-    //! Event sent on user or system quit request
-    EVENT_QUIT              = 1,
+    // System events (originating in CApplication)
+
+    //! Event sent on system quit request
+    EVENT_SYS_QUIT          = 1,
 
     //! Frame update event
     EVENT_FRAME             = 2,
@@ -69,10 +71,15 @@ enum EventType
     //! Event sent after releasing a joystick button
     EVENT_JOY_BUTTON_UP     = 14,
 
+    //!< Maximum value of system events
+    EVENT_SYS_MAX,
+
 
     /* Events sent/received in game and user interface */
 
-    EVENT_UPDINTERFACE      = 20,
+    //! Event sent on user quit request
+    EVENT_QUIT              = 20,
+    EVENT_UPDINTERFACE      = 21,
     EVENT_WIN               = 30,
     EVENT_LOST              = 31,
 
@@ -548,7 +555,8 @@ enum EventType
     EVENT_STUDIO_REALTIME   = 2052,
     EVENT_STUDIO_STEP       = 2053,
 
-    EVENT_STD_MAX, //! < maximum value of standard events
+    //! Maximum value of standard events
+    EVENT_STD_MAX,
 
     EVENT_USER              = 10000,
     EVENT_FORCE_LONG        = 0x7fffffff
@@ -669,8 +677,8 @@ struct ActiveEventData
  * \struct Event
  * \brief Event sent by system, interface or game
  *
- * Event is described by its type (EventType) and the union
- * \a data contains additional data about the event.
+ * Event is described by its type (EventType) and anonymous union that
+ * contains additional data about the event.
  * Different members of the union are filled with different event types.
  * With some events, nothing is filled (it's zeroed out).
  * The union contains roughly the same information as SDL_Event struct
@@ -680,9 +688,6 @@ struct Event
 {
     //! Type of event
     EventType type;
-
-    //! If true, the event was produced by system in CApplication; else, it has come from game engine
-    bool systemEvent;
 
     //! Relative time since last EVENT_FRAME
     //! Scope: only EVENT_FRAME events
@@ -732,7 +737,6 @@ struct Event
 
     explicit Event(EventType _type = EVENT_NULL)
      : type(_type)
-     , systemEvent(false)
      , rTime(0.0f)
      , kmodState(0)
      , trackedKeysState(0)
@@ -745,6 +749,11 @@ struct Event
 //! Returns an unique event type (above the standard IDs)
 EventType GetUniqueEventType();
 
+//! Initializes static array with event type strings
+void InitializeEventTypeTexts();
+
+//! Parses event type to string
+std::string ParseEventType(EventType eventType);
 
 /**
  * \class CEventQueue

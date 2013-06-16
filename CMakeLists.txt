@@ -98,6 +98,8 @@ option(INSTALL_DOCS "Install Doxygen-generated documentation" OFF)
 # Build openal sound support
 option(OPENAL_SOUND "Build openal sound support" OFF)
 
+# Change to false in case static boost libraries are not available
+option(STATIC_BOOST "Link with static boost libraries" ON)
 
 ##
 # Searching for packages
@@ -110,9 +112,9 @@ find_package(SDL_ttf 2.0 REQUIRED)
 find_package(PNG 1.2 REQUIRED)
 find_package(Gettext REQUIRED)
 
-set(Boost_USE_STATIC_LIBS        ON)
-set(Boost_USE_MULTITHREADED      ON)
-set(Boost_USE_STATIC_RUNTIME    OFF)
+set(Boost_USE_STATIC_LIBS ${STATIC_BOOST})
+set(Boost_USE_MULTITHREADED ON)
+set(Boost_USE_STATIC_RUNTIME OFF)
 
 set(Boost_ADDITIONALVERSION "1.51" "1.51.0")
 find_package(Boost COMPONENTS system filesystem regex REQUIRED)
@@ -184,7 +186,7 @@ endif()
 ##
 # Clipboard support
 ##
-set(CLIPBOARD_DIR ${colobot_SOURCE_DIR}/lib/clipboard/include)
+set(CLIPBOARD_INCLUDE_DIR ${colobot_SOURCE_DIR}/lib/clipboard/include)
 add_subdirectory(${colobot_SOURCE_DIR}/lib/clipboard bin/clipboard)
 
 

@@ -27,6 +27,9 @@ bool CModelManager::LoadModel(const std::string& fileName, bool mirrored)
 
     CModelFile modelFile;
 
+    if (CApplication::GetInstance().IsDebugModeActive(DEBUG_MODELS))
+        modelFile.SetPrintDebugInfo(true);
+
     std::string filePath = CApplication::GetInstance().GetDataFilePath(DIR_MODEL, fileName);
 
     if (!modelFile.ReadModel(filePath))

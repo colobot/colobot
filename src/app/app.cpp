@@ -25,13 +25,19 @@
 #include "common/iman.h"
 #include "common/image.h"
 #include "common/key.h"
+#include "common/stringutils.h"
 
 #include "graphics/engine/modelmanager.h"
 #include "graphics/opengl/gldevice.h"
 
 #include "object/robotmain.h"
 
+#ifdef OPENAL_SOUND
+    #include "sound/oalsound/alsound.h"
+#endif
+
 #include <boost/filesystem.hpp>
+#include <boost/tokenizer.hpp>
 
 #include <SDL.h>
 #include <SDL_image.h>
@@ -40,11 +46,6 @@
 #include <libintl.h>
 #include <unistd.h>
 #include <getopt.h>
-
-
-#ifdef OPENAL_SOUND
-    #include "sound/oalsound/alsound.h"
-#endif
 
 
 template<> CApplication* CSingleton<CApplication>::m_instance = nullptr;
@@ -107,7 +108,7 @@ CApplication::CApplication()
 
     m_exitCode  = 0;
     m_active    = false;
-    m_debugMode = false;
+    m_debugModes = 0;
 
     m_windowTitle = "COLOBOT";
 
@@ -148,9 +149,14 @@ CApplication::CApplication()
     m_langPath = COLOBOT_I18N_DIR;
     m_texPackPath = "";
 
+    m_runSceneName = "";
+    m_runSceneRank = 0;
+
     m_language = LANGUAGE_ENV;
 
     m_lowCPU = true;
+
+    m_protoMode = false;
 
     for (int i = 0; i < DIR_MAX; ++i)
         m_standardDataDirs[i] = nullptr;
@@ -216,24 +222,27 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
     {
         OPT_HELP = 1,
         OPT_DEBUG,
-        OPT_DATADIR,
+        OPT_RUNSCENE,
         OPT_LOGLEVEL,
         OPT_LANGUAGE,
+        OPT_DATADIR,
         OPT_LANGDIR,
+        OPT_TEXPACK,
         OPT_VBO,
-        OPT_TEXPACK
+        OPT_PROTO
     };
 
     option options[] =
     {
         { "help", no_argument, nullptr, OPT_HELP },
-        { "debug", no_argument, nullptr, OPT_DEBUG },
-        { "datadir", required_argument, nullptr, OPT_DATADIR },
+        { "debug", required_argument, nullptr, OPT_DEBUG },
+        { "runscene", required_argument, nullptr, OPT_RUNSCENE },
         { "loglevel", required_argument, nullptr, OPT_LOGLEVEL },
         { "language", required_argument, nullptr, OPT_LANGUAGE },
+        { "datadir", required_argument, nullptr, OPT_DATADIR },
         { "langdir", required_argument, nullptr, OPT_LANGDIR },
-        { "vbo", required_argument, nullptr, OPT_VBO },
         { "texpack", required_argument, nullptr, OPT_TEXPACK },
+        { "vbo", required_argument, nullptr, OPT_VBO },
         { nullptr, 0, nullptr, 0}
     };
 
@@ -264,19 +273,70 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
                 GetLogger()->Message("Colobot %s (%s)\n", COLOBOT_CODENAME, COLOBOT_VERSION);
                 GetLogger()->Message("\n");
                 GetLogger()->Message("List of available options:\n");
-                GetLogger()->Message("  -help            this help\n");
-                GetLogger()->Message("  -debug           enable debug mode (more info printed in logs)\n");
-                GetLogger()->Message("  -datadir path    set custom data directory path\n");
-                GetLogger()->Message("  -loglevel level  set log level to level (one of: trace, debug, info, warn, error, none)\n");
-                GetLogger()->Message("  -language lang   set language (one of: en, de, fr, pl)\n");
-                GetLogger()->Message("  -langdir path    set custom language directory path\n");
-                GetLogger()->Message("  -vbo mode        set OpenGL VBO mode (one of: auto, enable, disable)\n");
-                GetLogger()->Message("  -texpack path    set path to custom texture pack\n");
+                GetLogger()->Message("  -help               this help\n");
+                GetLogger()->Message("  -debug modes        enable debug modes (more info printed in logs; see code for reference of modes)\n");
+                GetLogger()->Message("  -runscene sceneNNN  run given scene on start\n");
+                GetLogger()->Message("  -loglevel level     set log level to level (one of: trace, debug, info, warn, error, none)\n");
+                GetLogger()->Message("  -language lang      set language (one of: en, de, fr, pl)\n");
+                GetLogger()->Message("  -datadir path       set custom data directory path\n");
+                GetLogger()->Message("  -langdir path       set custom language directory path\n");
+                GetLogger()->Message("  -texpack path       set path to custom texture pack\n");
+                GetLogger()->Message("  -vbo mode           set OpenGL VBO mode (one of: auto, enable, disable)\n");
+                GetLogger()->Message("  -proto              show prototype levels\n");
                 return PARSE_ARGS_HELP;
             }
             case OPT_DEBUG:
             {
-                SetDebugMode(true);
+                if (optarg == nullptr)
+                {
+                    m_debugModes = DEBUG_ALL;
+                    GetLogger()->Info("All debug modes active\n");
+                }
+                else
+                {
+                    int debugModes;
+                    if (! ParseDebugModes(optarg, debugModes))
+                    {
+                        return PARSE_ARGS_FAIL;
+                    }
+
+                    m_debugModes = debugModes;
+                    GetLogger()->Info("Active debug modes: %s\n", optarg);
+                }
+                break;
+            }
+            case OPT_RUNSCENE:
+            {
+                std::string file = optarg;
+                m_runSceneName = file.substr(0, file.size()-3);
+                m_runSceneRank = StrUtils::FromString<int>(file.substr(file.size()-3, 3));
+                GetLogger()->Info("Running scene '%s%d' on start\n", m_runSceneName.c_str(), m_runSceneRank);
+                break;
+            }
+            case OPT_LOGLEVEL:
+            {
+                LogLevel logLevel;
+                if (! CLogger::ParseLogLevel(optarg, logLevel))
+                {
+                    GetLogger()->Error("Invalid log level: '%s'\n", optarg);
+                    return PARSE_ARGS_FAIL;
+                }
+
+                GetLogger()->Message("[*****] Log level changed to %s\n", optarg);
+                GetLogger()->SetLogLevel(logLevel);
+                break;
+            }
+            case OPT_LANGUAGE:
+            {
+                Language language;
+                if (! ParseLanguage(optarg, language))
+                {
+                    GetLogger()->Error("Invalid language: '%s'\n", optarg);
+                    return PARSE_ARGS_FAIL;
+                }
+
+                GetLogger()->Info("Using language %s\n", optarg);
+                m_language = language;
                 break;
             }
             case OPT_DATADIR:
@@ -297,32 +357,6 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
                 GetLogger()->Info("Using texturepack: '%s'\n", m_texPackPath.c_str());
                 break;
             }
-            case OPT_LOGLEVEL:
-            {
-                LogLevel logLevel;
-                if (! CLogger::ParseLogLevel(optarg, logLevel))
-                {
-                    GetLogger()->Error("Invalid log level: \"%s\"\n", optarg);
-                    return PARSE_ARGS_FAIL;
-                }
-
-                GetLogger()->Message("[*****] Log level changed to %s\n", optarg);
-                GetLogger()->SetLogLevel(logLevel);
-                break;
-            }
-            case OPT_LANGUAGE:
-            {
-                Language language;
-                if (! ParseLanguage(optarg, language))
-                {
-                    GetLogger()->Error("Invalid language: \"%s\"\n", optarg);
-                    return PARSE_ARGS_FAIL;
-                }
-
-                GetLogger()->Info("Using language %s\n", optarg);
-                m_language = language;
-                break;
-            }
             case OPT_VBO:
             {
                 std::string vbo;
@@ -335,10 +369,15 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
                     m_deviceConfig.vboMode = Gfx::VBO_MODE_DISABLE;
                 else
                 {
-                    GetLogger()->Error("Invalid vbo mode: \"%s\"\n", optarg);
+                    GetLogger()->Error("Invalid vbo mode: '%s'\n", optarg);
                     return PARSE_ARGS_FAIL;
                 }
 
+                break;
+            }
+            case OPT_PROTO:
+            {
+                m_protoMode = true;
                 break;
             }
             default:
@@ -517,7 +556,10 @@ bool CApplication::Create()
 
     if (defaultValues) m_robotMain->CreateIni();
 
-    m_robotMain->ChangePhase(PHASE_WELCOME1);
+    if (! m_runSceneName.empty())
+        m_robotMain->LoadSceneOnStart(m_runSceneName, m_runSceneRank);
+    else
+        m_robotMain->ChangePhase(PHASE_WELCOME1);
 
     return true;
 }
@@ -641,7 +683,7 @@ bool CApplication::ChangeVideoConfig(const Gfx::GLDeviceConfig &newConfig)
     if (! CreateVideoSurface())
     {
         // Fatal error, so post the quit event
-        m_eventQueue->AddEvent(Event(EVENT_QUIT));
+        m_eventQueue->AddEvent(Event(EVENT_SYS_QUIT));
         return false;
     }
 
@@ -670,7 +712,7 @@ bool CApplication::ChangeVideoConfig(const Gfx::GLDeviceConfig &newConfig)
 
 
             // Fatal error, so post the quit event
-            m_eventQueue->AddEvent(Event(EVENT_QUIT));
+            m_eventQueue->AddEvent(Event(EVENT_SYS_QUIT));
             return false;
         }
     }
@@ -854,31 +896,15 @@ int CApplication::Run()
 
                 Event event = ProcessSystemEvent();
 
-                if (event.type == EVENT_QUIT)
+                if (event.type == EVENT_SYS_QUIT)
                     goto end; // exit the loop
 
                 if (event.type != EVENT_NULL)
-                {
-                    bool passOn = ProcessEvent(event);
-
-                    if (m_engine != nullptr && passOn)
-                        passOn = m_engine->ProcessEvent(event);
-
-                    if (passOn)
-                        m_eventQueue->AddEvent(event);
-                }
+                    m_eventQueue->AddEvent(event);
 
                 Event virtualEvent = CreateVirtualEvent(event);
                 if (virtualEvent.type != EVENT_NULL)
-                {
-                    bool passOn = ProcessEvent(virtualEvent);
-
-                    if (m_engine != nullptr && passOn)
-                        passOn = m_engine->ProcessEvent(virtualEvent);
-
-                    if (passOn)
-                        m_eventQueue->AddEvent(virtualEvent);
-                }
+                    m_eventQueue->AddEvent(virtualEvent);
             }
         }
 
@@ -889,19 +915,11 @@ int CApplication::Run()
 
             Event event = ProcessSystemEvent();
 
-            if (event.type == EVENT_QUIT)
+            if (event.type == EVENT_SYS_QUIT)
                 goto end; // exit the loop
 
             if (event.type != EVENT_NULL)
-            {
-                bool passOn = ProcessEvent(event);
-
-                if (m_engine != nullptr && passOn)
-                    passOn = m_engine->ProcessEvent(event);
-
-                if (passOn)
-                    m_eventQueue->AddEvent(event);
-            }
+                m_eventQueue->AddEvent(event);
         }
 
         // Enter game update & frame rendering only if active
@@ -910,22 +928,17 @@ int CApplication::Run()
             Event event;
             while (m_eventQueue->GetEvent(event))
             {
-                if (event.type == EVENT_QUIT)
+                if (event.type == EVENT_SYS_QUIT || event.type == EVENT_QUIT)
                     goto end; // exit both loops
 
+                LogEvent(event);
+
                 bool passOn = true;
-
-                // Skip system events (they have been processed earlier)
-                if (! event.systemEvent)
-                {
-                    passOn = ProcessEvent(event);
-
-                    if (passOn && m_engine != nullptr)
-                        passOn = m_engine->ProcessEvent(event);
-                }
+                if (m_engine != nullptr)
+                    passOn = m_engine->ProcessEvent(event);
 
                 if (passOn && m_robotMain != nullptr)
-                    m_robotMain->EventProcess(event);
+                    m_robotMain->ProcessEvent(event);
             }
 
             StopPerformanceCounter(PCNT_EVENT_PROCESSING);
@@ -936,6 +949,8 @@ int CApplication::Run()
             event = CreateUpdateEvent();
             if (event.type != EVENT_NULL && m_robotMain != nullptr)
             {
+                LogEvent(event);
+
                 StartPerformanceCounter(PCNT_UPDATE_ENGINE);
                 m_engine->FrameUpdate();
                 StopPerformanceCounter(PCNT_UPDATE_ENGINE);
@@ -943,7 +958,7 @@ int CApplication::Run()
                 m_sound->FrameMove(m_relTime);
 
                 StartPerformanceCounter(PCNT_UPDATE_GAME);
-                m_robotMain->EventProcess(event);
+                m_robotMain->ProcessEvent(event);
                 StopPerformanceCounter(PCNT_UPDATE_GAME);
             }
 
@@ -989,11 +1004,10 @@ const std::string& CApplication::GetErrorMessage() const
 Event CApplication::ProcessSystemEvent()
 {
     Event event;
-    event.systemEvent = true;
 
     if (m_private->currentEvent.type == SDL_QUIT)
     {
-        event.type = EVENT_QUIT;
+        event.type = EVENT_SYS_QUIT;
     }
     else if (m_private->currentEvent.type == SDL_VIDEORESIZE)
     {
@@ -1139,76 +1153,74 @@ Event CApplication::ProcessSystemEvent()
     return event;
 }
 
-/**
- * Processes incoming events. It is the first function called after an event is captured.
- * Event is modified, updating its tracked keys state and mouse position to current values.
- * Function returns \c true if the event is to be passed on to other processing functions
- * or \c false if not. */
-bool CApplication::ProcessEvent(const Event &event)
+void CApplication::LogEvent(const Event &event)
 {
     CLogger *l = GetLogger();
 
-    // Print the events in debug mode to test the code
-    if (m_debugMode)
+    auto PrintEventDetails = [&]()
     {
-        switch (event.type)
-        {
-            case EVENT_KEY_DOWN:
-            case EVENT_KEY_UP:
-                l->Trace("EVENT_KEY_%s:\n", (event.type == EVENT_KEY_DOWN) ? "DOWN" : "UP");
-                l->Trace(" virt    = %s\n", (event.key.virt) ? "true" : "false");
-                l->Trace(" key     = %d\n", event.key.key);
-                l->Trace(" unicode = 0x%04x\n", event.key.unicode);
-                break;
-            case EVENT_MOUSE_MOVE:
-                l->Trace("EVENT_MOUSE_MOVE:\n");
-                break;
-            case EVENT_MOUSE_BUTTON_DOWN:
-            case EVENT_MOUSE_BUTTON_UP:
-                l->Trace("EVENT_MOUSE_BUTTON_%s:\n", (event.type == EVENT_MOUSE_BUTTON_DOWN) ? "DOWN" : "UP");
-                l->Trace(" button = %d\n", event.mouseButton.button);
-                break;
-            case EVENT_MOUSE_WHEEL:
-                l->Trace("EVENT_MOUSE_WHEEL:\n");
-                l->Trace(" dir = %s\n", (event.mouseWheel.dir == WHEEL_DOWN) ? "WHEEL_DOWN" : "WHEEL_UP");
-               break;
-            case EVENT_JOY_AXIS:
-                l->Trace("EVENT_JOY_AXIS:\n");
-                l->Trace(" axis  = %d\n", event.joyAxis.axis);
-                l->Trace(" value = %d\n", event.joyAxis.value);
-                break;
-            case EVENT_JOY_BUTTON_DOWN:
-            case EVENT_JOY_BUTTON_UP:
-                l->Trace("EVENT_JOY_BUTTON_%s:\n", (event.type == EVENT_JOY_BUTTON_DOWN) ? "DOWN" : "UP");
-                l->Trace(" button = %d\n", event.joyButton.button);
-                break;
-            case EVENT_ACTIVE:
-                l->Trace("EVENT_ACTIVE:\n");
-                l->Trace(" flags = 0x%x\n", event.active.flags);
-                l->Trace(" gain  = %s\n", event.active.gain ? "true" : "false");
-                break;
-            default:
-                l->Trace("Event type = %d:\n", static_cast<int>(event.type));
-                break;
-        }
-
-        l->Trace(" systemEvent = %s\n", event.systemEvent ? "true" : "false");
         l->Trace(" rTime = %f\n", event.rTime);
         l->Trace(" kmodState = %04x\n", event.kmodState);
         l->Trace(" trackedKeysState = %04x\n", event.trackedKeysState);
         l->Trace(" mousePos = %f, %f\n", event.mousePos.x, event.mousePos.y);
         l->Trace(" mouseButtonsState = %02x\n", event.mouseButtonsState);
-    }
+        l->Trace(" customParam = %d\n", event.customParam);
+    };
 
-    // By default, pass on all events
-    return true;
+    // Print the events in debug mode to test the code
+    if (IsDebugModeActive(DEBUG_SYS_EVENTS) || IsDebugModeActive(DEBUG_APP_EVENTS))
+    {
+        std::string eventType = ParseEventType(event.type);
+
+        if (IsDebugModeActive(DEBUG_SYS_EVENTS) && event.type <= EVENT_SYS_MAX)
+        {
+            l->Trace("System event %s:\n", eventType.c_str());
+            switch (event.type)
+            {
+                case EVENT_KEY_DOWN:
+                case EVENT_KEY_UP:
+                    l->Trace(" virt    = %s\n", (event.key.virt) ? "true" : "false");
+                    l->Trace(" key     = %d\n", event.key.key);
+                    l->Trace(" unicode = 0x%04x\n", event.key.unicode);
+                    break;
+                case EVENT_MOUSE_BUTTON_DOWN:
+                case EVENT_MOUSE_BUTTON_UP:
+                    l->Trace(" button = %d\n", event.mouseButton.button);
+                    break;
+                case EVENT_MOUSE_WHEEL:
+                    l->Trace(" dir = %s\n", (event.mouseWheel.dir == WHEEL_DOWN) ? "WHEEL_DOWN" : "WHEEL_UP");
+                break;
+                case EVENT_JOY_AXIS:
+                    l->Trace(" axis  = %d\n", event.joyAxis.axis);
+                    l->Trace(" value = %d\n", event.joyAxis.value);
+                    break;
+                case EVENT_JOY_BUTTON_DOWN:
+                case EVENT_JOY_BUTTON_UP:
+                    l->Trace(" button = %d\n", event.joyButton.button);
+                    break;
+                case EVENT_ACTIVE:
+                    l->Trace(" flags = 0x%x\n", event.active.flags);
+                    l->Trace(" gain  = %s\n", event.active.gain ? "true" : "false");
+                    break;
+                default:
+                    break;
+            }
+
+            PrintEventDetails();
+        }
+
+        if (IsDebugModeActive(DEBUG_APP_EVENTS) && event.type > EVENT_SYS_MAX)
+        {
+            l->Trace("App event %s:\n", eventType.c_str());
+            PrintEventDetails();
+        }
+    }
 }
 
 
 Event CApplication::CreateVirtualEvent(const Event& sourceEvent)
 {
     Event virtualEvent;
-    virtualEvent.systemEvent = true;
 
     if ((sourceEvent.type == EVENT_KEY_DOWN) || (sourceEvent.type == EVENT_KEY_UP))
     {
@@ -1316,7 +1328,7 @@ Event CApplication::CreateUpdateEvent()
     {
         GetLogger()->Error("Fatal error: got negative system counter difference!\n");
         GetLogger()->Error("This should never happen. Please report this error.\n");
-        m_eventQueue->AddEvent(Event(EVENT_QUIT));
+        m_eventQueue->AddEvent(Event(EVENT_SYS_QUIT));
         return Event(EVENT_NULL);
     }
     else
@@ -1332,7 +1344,6 @@ Event CApplication::CreateUpdateEvent()
     }
 
     Event frameEvent(EVENT_FRAME);
-    frameEvent.systemEvent = true;
     frameEvent.trackedKeysState = m_trackedKeys;
     frameEvent.kmodState = m_kmodState;
     frameEvent.mousePos = m_mousePos;
@@ -1425,14 +1436,55 @@ VideoQueryResult CApplication::GetVideoResolutionList(std::vector<Math::IntPoint
     return VIDEO_QUERY_OK;
 }
 
-void CApplication::SetDebugMode(bool mode)
+void CApplication::SetDebugModeActive(DebugMode mode, bool active)
 {
-    m_debugMode = mode;
+    if (active)
+        m_debugModes |= mode;
+    else
+        m_debugModes &= (~mode);
 }
 
-bool CApplication::GetDebugMode() const
+bool CApplication::IsDebugModeActive(DebugMode mode) const
 {
-    return m_debugMode;
+    return (m_debugModes & mode) != 0;
+}
+
+bool CApplication::ParseDebugModes(const std::string& str, int& debugModes)
+{
+    debugModes = 0;
+
+    boost::char_separator<char> sep(",");
+    boost::tokenizer<boost::char_separator<char>> tokens(str, sep);
+    for (const auto& modeToken : tokens)
+    {
+        if (modeToken == "sys_events")
+        {
+            debugModes |= DEBUG_SYS_EVENTS;
+        }
+        else if (modeToken == "app_events")
+        {
+            debugModes |= DEBUG_APP_EVENTS;
+        }
+        else if (modeToken == "events")
+        {
+            debugModes |= DEBUG_EVENTS;
+        }
+        else if (modeToken == "models")
+        {
+            debugModes |= DEBUG_MODELS;
+        }
+        else if (modeToken == "all")
+        {
+            debugModes = DEBUG_ALL;
+        }
+        else
+        {
+            GetLogger()->Error("Invalid debug mode: '%s'\n", modeToken.c_str());
+            return false;
+        }
+    }
+
+    return true;
 }
 
 int CApplication::GetKmods() const
@@ -1780,5 +1832,10 @@ void CApplication::UpdatePerformanceCountersData()
         m_performanceCountersData[static_cast<PerformanceCounter>(i)] =
             static_cast<float>(diff) / static_cast<float>(sum);
     }
+}
+
+bool CApplication::GetProtoMode() const
+{
+    return m_protoMode;
 }
 

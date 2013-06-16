@@ -78,7 +78,9 @@ int SDL_MAIN_FUNC(int argc, char *argv[])
 {
     CLogger logger; // single istance of logger
 
-    InitializeRestext(); // init static translation strings
+    // Initialize static string arrays
+    InitializeRestext();
+    InitializeEventTypeTexts();
 
     CSystemUtils* systemUtils = CSystemUtils::Create(); // platform-specific utils
     systemUtils->Init();

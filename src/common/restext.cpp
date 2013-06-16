@@ -848,10 +848,8 @@ static const char* GetResourceBase(ResType type, int num)
 
         case RES_EVENT:
             if (num >= EVENT_STD_MAX)
-            {
-                GetLogger()->Trace("GetResource event num out of range: %d\n", num); // TODO: fix later
-                return "";
-            }
+                return ""; // can be safely ignored (user events)
+
             str = stringsEvent[num];
             break;
 

@@ -43,7 +43,7 @@ class CProfile : public CSingleton<CProfile>
 {
 public:
     CProfile();
-    ~CProfile();
+    virtual ~CProfile();
 
     /** Loads colobot.ini from current directory
         * \return return true on success

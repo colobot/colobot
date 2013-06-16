@@ -940,6 +940,14 @@ Ui::CDisplayText* CRobotMain::GetDisplayText()
     return m_displayText;
 }
 
+void CRobotMain::LoadSceneOnStart(const std::string& name, int rank)
+{
+    // TODO: fix this ugly dependency :(
+    m_dialog->SetSceneName(name.c_str());
+    m_dialog->SetSceneRank(rank);
+    ChangePhase(PHASE_LOADING);
+}
+
 
 //! Creates the file colobot.ini at the first time
 void CRobotMain::CreateIni()
@@ -1010,28 +1018,24 @@ void CRobotMain::SetDefaultInputBindings()
 void CRobotMain::SetInputBinding(InputSlot slot, InputBinding binding)
 {
     unsigned int index = static_cast<unsigned int>(slot);
-    assert(index >= 0 && index < INPUT_SLOT_MAX);
     m_inputBindings[index] = binding;
 }
 
 const InputBinding& CRobotMain::GetInputBinding(InputSlot slot)
 {
     unsigned int index = static_cast<unsigned int>(slot);
-    assert(index >= 0 && index < INPUT_SLOT_MAX);
     return m_inputBindings[index];
 }
 
 void CRobotMain::SetJoyAxisBinding(JoyAxisSlot slot, JoyAxisBinding binding)
 {
     unsigned int index = static_cast<unsigned int>(slot);
-    assert(index >= 0 && index < JOY_AXIS_SLOT_MAX);
     m_joyAxisBindings[index] = binding;
 }
 
 const JoyAxisBinding& CRobotMain::GetJoyAxisBinding(JoyAxisSlot slot)
 {
     unsigned int index = static_cast<unsigned int>(slot);
-    assert(index >= 0 && index < JOY_AXIS_SLOT_MAX);
     return m_joyAxisBindings[index];
 }
 
@@ -1300,7 +1304,7 @@ void CRobotMain::ChangePhase(Phase phase)
 }
 
 //! Processes an event
-bool CRobotMain::EventProcess(Event &event)
+bool CRobotMain::ProcessEvent(Event &event)
 {
     /* Motion vector management */
 
@@ -1997,7 +2001,14 @@ void CRobotMain::ExecuteCmd(char *cmd)
 
     if (strcmp(cmd, "debugmode") == 0)
     {
-        m_app->SetDebugMode(!m_app->GetDebugMode());
+        if (m_app->IsDebugModeActive(DEBUG_ALL))
+        {
+            m_app->SetDebugModeActive(DEBUG_ALL, false);
+        }
+        else
+        {
+            m_app->SetDebugModeActive(DEBUG_ALL, true);
+        }
         return;
     }
 

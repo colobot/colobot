@@ -199,6 +199,9 @@ public:
     Ui::CInterface* GetInterface();
     Ui::CDisplayText* GetDisplayText();
 
+    //! Caused the given mission to be loaded immediately after start
+    void        LoadSceneOnStart(const std::string& name, int rank);
+
     void        CreateIni();
 
     //! Sets the default input bindings (key and axes)
@@ -226,7 +229,7 @@ public:
     void        ResetKeyStates();
 
     void        ChangePhase(Phase phase);
-    bool        EventProcess(Event &event);
+    bool        ProcessEvent(Event &event);
 
     bool        CreateShortcuts();
     void        ScenePerso();

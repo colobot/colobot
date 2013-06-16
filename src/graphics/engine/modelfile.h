@@ -137,6 +137,9 @@ public:
     //! Returns the triangle vector
     const std::vector<ModelTriangle>& GetTriangles();
 
+    //! Controls printing of debug information
+    void SetPrintDebugInfo(bool printDebugInfo);
+
 protected:
     //@{
     //! @deprecated min, max conversions
@@ -147,6 +150,7 @@ protected:
 protected:
     //! Model triangles
     std::vector<ModelTriangle> m_triangles;
+    bool m_printDebugInfo;
 };
 
 }; // namespace Gfx

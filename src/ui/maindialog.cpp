@@ -366,7 +366,8 @@ pb->SetState(STATE_SHADOW);
         }
         // #endif
 
-        if ( m_app->GetDebugMode() )
+        // TODO: remove?
+        if (m_app->GetProtoMode())
         {
             pos.x  = 139.0f/640.0f;
             pos.y  = 313.0f/480.0f;

@@ -310,6 +310,7 @@ bool ReadLineString(std::istream& stream, const std::string& prefix, std::string
 
 
 CModelFile::CModelFile()
+ : m_printDebugInfo(false)
 {
 }
 
@@ -615,23 +616,26 @@ bool CModelFile::ReadModel(std::istream& stream)
         if (m_triangles[i].tex1Name == "plant.png")
             m_triangles[i].state |= ENG_RSTATE_ALPHA;
 
-        GetLogger()->Trace("ModelTriangle %d\n", i+1);
-        std::string s1 = m_triangles[i].p1.ToString();
-        GetLogger()->Trace(" p1: %s\n", s1.c_str());
-        std::string s2 = m_triangles[i].p2.ToString();
-        GetLogger()->Trace(" p2: %s\n", s2.c_str());
-        std::string s3 = m_triangles[i].p3.ToString();
-        GetLogger()->Trace(" p3: %s\n", s3.c_str());
+        if (m_printDebugInfo)
+        {
+            GetLogger()->Trace("ModelTriangle %d\n", i+1);
+            std::string s1 = m_triangles[i].p1.ToString();
+            GetLogger()->Trace(" p1: %s\n", s1.c_str());
+            std::string s2 = m_triangles[i].p2.ToString();
+            GetLogger()->Trace(" p2: %s\n", s2.c_str());
+            std::string s3 = m_triangles[i].p3.ToString();
+            GetLogger()->Trace(" p3: %s\n", s3.c_str());
 
-        std::string d = m_triangles[i].material.diffuse.ToString();
-        std::string a = m_triangles[i].material.ambient.ToString();
-        std::string s = m_triangles[i].material.specular.ToString();
-        GetLogger()->Trace(" mat: d: %s  a: %s  s: %s\n", d.c_str(), a.c_str(), s.c_str());
+            std::string d = m_triangles[i].material.diffuse.ToString();
+            std::string a = m_triangles[i].material.ambient.ToString();
+            std::string s = m_triangles[i].material.specular.ToString();
+            GetLogger()->Trace(" mat: d: %s  a: %s  s: %s\n", d.c_str(), a.c_str(), s.c_str());
 
-        GetLogger()->Trace(" tex1: %s  tex2: %s\n", m_triangles[i].tex1Name.c_str(),
-                          m_triangles[i].variableTex2 ? "(variable)" : m_triangles[i].tex2Name.c_str());
-        GetLogger()->Trace(" lod level: %d\n", m_triangles[i].lodLevel);
-        GetLogger()->Trace(" state: %ld\n", m_triangles[i].state);
+            GetLogger()->Trace(" tex1: %s  tex2: %s\n", m_triangles[i].tex1Name.c_str(),
+                            m_triangles[i].variableTex2 ? "(variable)" : m_triangles[i].tex2Name.c_str());
+            GetLogger()->Trace(" lod level: %d\n", m_triangles[i].lodLevel);
+            GetLogger()->Trace(" state: %ld\n", m_triangles[i].state);
+        }
     }
 
     return true;
@@ -1093,24 +1097,27 @@ bool CModelFile::ReadBinaryModel(std::istream& stream)
         return false;
     }
 
-    for (int i = 0; i < static_cast<int>( m_triangles.size() ); ++i)
+    if (m_printDebugInfo)
     {
-        GetLogger()->Trace("ModelTriangle %d\n", i+1);
-        std::string s1 = m_triangles[i].p1.ToString();
-        GetLogger()->Trace(" p1: %s\n", s1.c_str());
-        std::string s2 = m_triangles[i].p2.ToString();
-        GetLogger()->Trace(" p2: %s\n", s2.c_str());
-        std::string s3 = m_triangles[i].p3.ToString();
-        GetLogger()->Trace(" p3: %s\n", s3.c_str());
+        for (int i = 0; i < static_cast<int>( m_triangles.size() ); ++i)
+        {
+            GetLogger()->Trace("ModelTriangle %d\n", i+1);
+            std::string s1 = m_triangles[i].p1.ToString();
+            GetLogger()->Trace(" p1: %s\n", s1.c_str());
+            std::string s2 = m_triangles[i].p2.ToString();
+            GetLogger()->Trace(" p2: %s\n", s2.c_str());
+            std::string s3 = m_triangles[i].p3.ToString();
+            GetLogger()->Trace(" p3: %s\n", s3.c_str());
 
-        std::string d = m_triangles[i].material.diffuse.ToString();
-        std::string a = m_triangles[i].material.ambient.ToString();
-        std::string s = m_triangles[i].material.specular.ToString();
-        GetLogger()->Trace(" mat: d: %s  a: %s  s: %s\n", d.c_str(), a.c_str(), s.c_str());
+            std::string d = m_triangles[i].material.diffuse.ToString();
+            std::string a = m_triangles[i].material.ambient.ToString();
+            std::string s = m_triangles[i].material.specular.ToString();
+            GetLogger()->Trace(" mat: d: %s  a: %s  s: %s\n", d.c_str(), a.c_str(), s.c_str());
 
-        GetLogger()->Trace(" tex1: %s  tex2: %s\n", m_triangles[i].tex1Name.c_str(), m_triangles[i].tex2Name.c_str());
-        GetLogger()->Trace(" lod level: %d\n", m_triangles[i].lodLevel);
-        GetLogger()->Trace(" state: %ld\n", m_triangles[i].state);
+            GetLogger()->Trace(" tex1: %s  tex2: %s\n", m_triangles[i].tex1Name.c_str(), m_triangles[i].tex2Name.c_str());
+            GetLogger()->Trace(" lod level: %d\n", m_triangles[i].lodLevel);
+            GetLogger()->Trace(" state: %ld\n", m_triangles[i].state);
+        }
     }
 
     return true;
@@ -1197,6 +1204,10 @@ int CModelFile::GetTriangleCount()
     return m_triangles.size();
 }
 
+void CModelFile::SetPrintDebugInfo(bool printDebugInfo)
+{
+    m_printDebugInfo = printDebugInfo;
+}
 
 } // namespace Gfx
 
