@@ -141,11 +141,11 @@ void CLightManager::DebugDumpLights()
         l->Debug("   position = %s\n", str.c_str());
         str = light.direction.ToString();
         l->Debug("   direction = %s\n", str.c_str());
-        l->Debug("   attenuation0 = %s\n", light.attenuation0);
-        l->Debug("   attenuation1 = %s\n", light.attenuation1);
-        l->Debug("   attenuation2 = %s\n", light.attenuation2);
-        l->Debug("   spotAngle = %s\n", light.spotAngle);
-        l->Debug("   spotIntensity = %s\n", light.spotIntensity);
+        l->Debug("   attenuation0 = %f\n", light.attenuation0);
+        l->Debug("   attenuation1 = %f\n", light.attenuation1);
+        l->Debug("   attenuation2 = %f\n", light.attenuation2);
+        l->Debug("   spotAngle = %f\n", light.spotAngle);
+        l->Debug("   spotIntensity = %f\n", light.spotIntensity);
 
         l->Debug(" intensity: %f\n", dynLight.intensity.current);
         l->Debug(" color: %f %f %f\n", dynLight.colorRed.current, dynLight.colorGreen.current, dynLight.colorBlue.current);
