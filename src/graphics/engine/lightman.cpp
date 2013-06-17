@@ -71,6 +71,7 @@ void LightProgression::SetTarget(float value)
 
 DynamicLight::DynamicLight()
 {
+    rank = 0;
     used = enabled = false;
     priority = LIGHT_PRI_LOW;
     includeType = excludeType = ENG_OBJTYPE_NULL;
@@ -98,6 +99,61 @@ void CLightManager::SetDevice(CDevice* device)
     m_lightMap = std::vector<int>(m_device->GetMaxLightCount(), -1);
 }
 
+void CLightManager::DebugDumpLights()
+{
+    CLogger* l = GetLogger();
+
+    l->Debug("Dynamic lights:\n");
+
+    for (int i = 0; i < static_cast<int>( m_dynLights.size() ); ++i)
+    {
+        const DynamicLight& dynLight = m_dynLights[i];
+        if (!dynLight.used)
+            continue;
+
+        int deviceLight = -1;
+        for (int j = 0; j < m_lightMap.size(); ++j)
+        {
+            if (m_lightMap[j] == i)
+            {
+                deviceLight = j;
+                break;
+            }
+        }
+
+        l->Debug(" light %d\n", i);
+        l->Debug("  enabled = %s\n", dynLight.enabled ? "true" : "false");
+        l->Debug("  priority = %d\n", dynLight.priority);
+        l->Debug("  device light = %d\n", deviceLight);
+        l->Debug("  light:\n");
+
+        const Light& light = dynLight.light;
+        std::string str;
+
+        l->Debug("   type = %d\n", light.type);
+        str = light.ambient.ToString();
+        l->Debug("   ambient = %s\n", str.c_str());
+        str = light.diffuse.ToString();
+        l->Debug("   diffuse = %s\n", str.c_str());
+        str = light.specular.ToString();
+        l->Debug("   specular = %s\n", str.c_str());
+        str = light.position.ToString();
+        l->Debug("   position = %s\n", str.c_str());
+        str = light.direction.ToString();
+        l->Debug("   direction = %s\n", str.c_str());
+        l->Debug("   attenuation0 = %s\n", light.attenuation0);
+        l->Debug("   attenuation1 = %s\n", light.attenuation1);
+        l->Debug("   attenuation2 = %s\n", light.attenuation2);
+        l->Debug("   spotAngle = %s\n", light.spotAngle);
+        l->Debug("   spotIntensity = %s\n", light.spotIntensity);
+
+        l->Debug(" intensity: %f\n", dynLight.intensity.current);
+        l->Debug(" color: %f %f %f\n", dynLight.colorRed.current, dynLight.colorGreen.current, dynLight.colorBlue.current);
+        l->Debug(" includeType: %d\n", dynLight.includeType);
+        l->Debug(" excludeType: %d\n", dynLight.excludeType);
+    }
+}
+
 void CLightManager::FlushLights()
 {
     m_dynLights.clear();
@@ -117,6 +173,7 @@ int CLightManager::CreateLight(LightPriority priority)
         m_dynLights.push_back(DynamicLight());
 
     m_dynLights[index] = DynamicLight();
+    m_dynLights[index].rank     = index;
     m_dynLights[index].used     = true;
     m_dynLights[index].enabled  = true;
     m_dynLights[index].priority = priority;
@@ -411,7 +468,7 @@ void CLightManager::UpdateDeviceLights(EngineObjectType type)
 
         if (enabled)
         {
-            m_lightMap[lightMapIndex] = i;
+            m_lightMap[lightMapIndex] = sortedLights[i].rank;
             ++lightMapIndex;
         }
 
@@ -424,8 +481,9 @@ void CLightManager::UpdateDeviceLights(EngineObjectType type)
         int rank = m_lightMap[i];
         if (rank != -1)
         {
-            sortedLights[rank].light.ambient = Gfx::Color(0.2f, 0.2f, 0.2f);
-            m_device->SetLight(i, sortedLights[rank].light);
+            Light light = m_dynLights[rank].light;
+            light.ambient = Gfx::Color(0.2f, 0.2f, 0.2f);
+            m_device->SetLight(i, light);
             m_device->SetLightEnabled(i, true);
         }
         else

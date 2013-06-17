@@ -240,6 +240,9 @@ public:
     //! Provides a hook to debug graphics code (implementation-specific)
     virtual void DebugHook() = 0;
 
+    //! Displays light positions to aid in debuggings
+    virtual void DebugLights() = 0;
+
     //! Initializes the device, setting the initial state
     virtual bool Create() = 0;
     //! Destroys the device, releasing every acquired resource

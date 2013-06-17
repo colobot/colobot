@@ -128,6 +128,9 @@ CEngine::CEngine(CApplication *app)
 
     m_interfaceMode = false;
 
+    m_debugLights = false;
+    m_debugDumpLights = false;
+
     m_mice[ENG_MOUSE_NORM]    = EngineMouse( 0,  1, 32, ENG_RSTATE_TTEXTURE_WHITE, ENG_RSTATE_TTEXTURE_BLACK, Math::Point( 1.0f,  1.0f));
     m_mice[ENG_MOUSE_WAIT]    = EngineMouse( 2,  3, 33, ENG_RSTATE_TTEXTURE_WHITE, ENG_RSTATE_TTEXTURE_BLACK, Math::Point( 8.0f, 12.0f));
     m_mice[ENG_MOUSE_HAND]    = EngineMouse( 4,  5, 34, ENG_RSTATE_TTEXTURE_WHITE, ENG_RSTATE_TTEXTURE_BLACK, Math::Point( 7.0f,  2.0f));
@@ -325,7 +328,22 @@ bool CEngine::ProcessEvent(const Event &event)
     if (event.type == EVENT_KEY_DOWN)
     {
         if (event.key.key == KEY(F12))
+        {
             m_showStats = !m_showStats;
+            return false;
+        }
+
+        if (event.key.key == KEY(F11))
+        {
+            m_debugLights = !m_debugLights;
+            return false;
+        }
+
+        if (event.key.key == KEY(F10))
+        {
+            m_debugDumpLights = true;
+            return false;
+        }
     }
 
     // By default, pass on all events
@@ -3292,6 +3310,15 @@ void CEngine::Draw3DScene()
     m_app->StopPerformanceCounter(PCNT_RENDER_OBJECTS);
 
     m_lightMan->UpdateDeviceLights(ENG_OBJTYPE_TERRAIN);
+
+    if (m_debugLights)
+        m_device->DebugLights();
+
+    if (m_debugDumpLights)
+    {
+        m_debugDumpLights = false;
+        m_lightMan->DebugDumpLights();
+    }
 
     if (m_waterMode)
     {

@@ -97,8 +97,8 @@ struct Matrix
 
     //! Sets value in given row and col
     /**
-     * \param row row (0 to 3)
-     * \param col column (0 to 3)
+     * \param row row (1 to 4)
+     * \param col column (1 to 4)
      * \param value value
      */
     inline void Set(int row, int col, float value)
@@ -108,8 +108,8 @@ struct Matrix
 
     //! Returns the value in given row and col
     /**
-     * \param row row (0 to 3)
-     * \param col column (0 to 3)
+     * \param row row (1 to 4)
+     * \param col column (1 to 4)
      * \returns value
      */
     inline float Get(int row, int col)

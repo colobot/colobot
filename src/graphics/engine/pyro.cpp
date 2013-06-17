@@ -2398,6 +2398,7 @@ void CPyro::LightOperFrame(float rTime)
     {
         if ( m_progress < m_lightOper[i].progress )
         {
+            assert(i > 0); // TODO: if assert fails, fix the code
             float progress = (m_progress-m_lightOper[i-1].progress) / (m_lightOper[i].progress-m_lightOper[i-1].progress);
 
             float intensity = m_lightOper[i-1].intensity + (m_lightOper[i].intensity-m_lightOper[i-1].intensity)*progress;

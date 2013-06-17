@@ -93,6 +93,7 @@ public:
     virtual ~CGLDevice();
 
     virtual void DebugHook();
+    virtual void DebugLights();
 
     virtual bool Create();
     virtual void Destroy();

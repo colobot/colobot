@@ -79,6 +79,106 @@ void CGLDevice::DebugHook()
     glColor3i(0, 0, 0);
 }
 
+void CGLDevice::DebugLights()
+{
+    Gfx::ColorHSV color(0.0, 1.0, 1.0);
+
+    glLineWidth(3.0f);
+    glDisable(GL_LIGHTING);
+    glDepthMask(GL_FALSE);
+    glDisable(GL_BLEND);
+
+    Math::Matrix saveWorldMat = m_worldMat;
+    m_worldMat.LoadIdentity();
+    UpdateModelviewMatrix();
+
+    for (int i = 0; i < m_lights.size(); ++i)
+    {
+        color.h = static_cast<float>(i) / static_cast<float>(m_lights.size());
+        if (m_lightsEnabled[i])
+        {
+            const Light& l = m_lights[i];
+            if (l.type == LIGHT_DIRECTIONAL)
+            {
+                Gfx::VertexCol v[2];
+                v[0].coord = -Math::Normalize(l.direction) * 100.0f + Math::Vector(0.0f, 0.0f, 1.0f) * i;
+                v[0].color = HSV2RGB(color);
+                v[1].coord =  Math::Normalize(l.direction) * 100.0f + Math::Vector(0.0f, 0.0f, 1.0f) * i;
+                v[1].color = HSV2RGB(color);
+                while (v[0].coord.y < 60.0f && v[0].coord.y < 60.0f)
+                {
+                    v[0].coord.y += 10.0f;
+                    v[1].coord.y += 10.0f;
+                }
+                DrawPrimitive(PRIMITIVE_LINES, v, 2);
+
+                v[0].coord = v[1].coord + Math::Normalize(v[0].coord - v[1].coord) * 50.0f;
+
+                glLineWidth(10.0f);
+                DrawPrimitive(PRIMITIVE_LINES, v, 2);
+                glLineWidth(3.0f);
+            }
+            else  if (l.type == LIGHT_POINT)
+            {
+                Gfx::VertexCol v[8];
+                for (int i = 0; i < 8; ++i)
+                    v[i].color = HSV2RGB(color);
+
+                v[0].coord = l.position + Math::Vector(-1.0f, -1.0f, -1.0f) * 4.0f;
+                v[1].coord = l.position + Math::Vector( 1.0f, -1.0f, -1.0f) * 4.0f;
+                v[2].coord = l.position + Math::Vector( 1.0f,  1.0f, -1.0f) * 4.0f;
+                v[3].coord = l.position + Math::Vector(-1.0f,  1.0f, -1.0f) * 4.0f;
+                v[4].coord = l.position + Math::Vector(-1.0f, -1.0f, -1.0f) * 4.0f;
+                DrawPrimitive(PRIMITIVE_LINE_STRIP, v, 5);
+
+                v[0].coord = l.position + Math::Vector(-1.0f, -1.0f,  1.0f) * 4.0f;
+                v[1].coord = l.position + Math::Vector( 1.0f, -1.0f,  1.0f) * 4.0f;
+                v[2].coord = l.position + Math::Vector( 1.0f,  1.0f,  1.0f) * 4.0f;
+                v[3].coord = l.position + Math::Vector(-1.0f,  1.0f,  1.0f) * 4.0f;
+                v[4].coord = l.position + Math::Vector(-1.0f, -1.0f,  1.0f) * 4.0f;
+                DrawPrimitive(PRIMITIVE_LINE_STRIP, v, 5);
+
+                v[0].coord = l.position + Math::Vector(-1.0f, -1.0f, -1.0f) * 4.0f;
+                v[1].coord = l.position + Math::Vector(-1.0f, -1.0f,  1.0f) * 4.0f;
+                v[2].coord = l.position + Math::Vector( 1.0f, -1.0f, -1.0f) * 4.0f;
+                v[3].coord = l.position + Math::Vector( 1.0f, -1.0f,  1.0f) * 4.0f;
+                v[4].coord = l.position + Math::Vector( 1.0f,  1.0f, -1.0f) * 4.0f;
+                v[5].coord = l.position + Math::Vector( 1.0f,  1.0f,  1.0f) * 4.0f;
+                v[6].coord = l.position + Math::Vector(-1.0f,  1.0f, -1.0f) * 4.0f;
+                v[7].coord = l.position + Math::Vector(-1.0f,  1.0f,  1.0f) * 4.0f;
+                DrawPrimitive(PRIMITIVE_LINES, v, 8);
+            }
+            else if (l.type == LIGHT_SPOT)
+            {
+                Gfx::VertexCol v[5];
+                for (int i = 0; i < 5; ++i)
+                    v[i].color = HSV2RGB(color);
+
+                v[0].coord = l.position + Math::Vector(-1.0f,  0.0f, -1.0f) * 4.0f;
+                v[1].coord = l.position + Math::Vector( 1.0f,  0.0f, -1.0f) * 4.0f;
+                v[2].coord = l.position + Math::Vector( 1.0f,  0.0f,  1.0f) * 4.0f;
+                v[3].coord = l.position + Math::Vector(-1.0f,  0.0f,  1.0f) * 4.0f;
+                v[4].coord = l.position + Math::Vector(-1.0f,  0.0f, -1.0f) * 4.0f;
+                DrawPrimitive(PRIMITIVE_LINE_STRIP, v, 5);
+
+                v[0].coord = l.position;
+                v[1].coord = l.position + Math::Normalize(l.direction) * 100.0f;
+                glEnable(GL_LINE_STIPPLE);
+                glLineStipple(3.0, 0xFF);
+                DrawPrimitive(PRIMITIVE_LINES, v, 2);
+                glDisable(GL_LINE_STIPPLE);
+            }
+        }
+    }
+
+    glLineWidth(1.0f);
+    glEnable(GL_LIGHTING);
+    glDepthMask(GL_TRUE);
+    glEnable(GL_BLEND);
+    m_worldMat = saveWorldMat;
+    UpdateModelviewMatrix();
+}
+
 bool CGLDevice::Create()
 {
     GetLogger()->Info("Creating CDevice\n");

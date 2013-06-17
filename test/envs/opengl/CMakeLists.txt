@@ -12,6 +12,7 @@ else()
 endif()
 
 set(TEXTURE_SOURCES
+${SRC_DIR}/graphics/core/color.cpp
 ${SRC_DIR}/graphics/opengl/gldevice.cpp
 ${SRC_DIR}/common/logger.cpp
 ${SRC_DIR}/common/image.cpp
@@ -19,6 +20,7 @@ texture_test.cpp
 )
 
 set(MODEL_SOURCES
+${SRC_DIR}/graphics/core/color.cpp
 ${SRC_DIR}/graphics/opengl/gldevice.cpp
 ${SRC_DIR}/graphics/engine/modelfile.cpp
 ${SRC_DIR}/common/logger.cpp
@@ -30,6 +32,7 @@ model_test.cpp
 )
 
 set(TRANSFORM_SOURCES
+${SRC_DIR}/graphics/core/color.cpp
 ${SRC_DIR}/graphics/opengl/gldevice.cpp
 ${SRC_DIR}/common/logger.cpp
 ${SRC_DIR}/common/image.cpp
@@ -39,6 +42,7 @@ transform_test.cpp
 )
 
 set(LIGHT_SOURCES
+${SRC_DIR}/graphics/core/color.cpp
 ${SRC_DIR}/graphics/opengl/gldevice.cpp
 ${SRC_DIR}/common/logger.cpp
 ${SRC_DIR}/common/image.cpp

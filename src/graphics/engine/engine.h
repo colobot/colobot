@@ -1437,6 +1437,9 @@ protected:
 
     //! True when drawing 2D UI
     bool            m_interfaceMode;
+
+    bool            m_debugLights;
+    bool            m_debugDumpLights;
 };
 
 

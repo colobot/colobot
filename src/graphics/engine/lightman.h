@@ -84,6 +84,9 @@ enum LightPriority
  */
 struct DynamicLight
 {
+    //! Rank (index)
+    int rank;
+
     //! Whether the light is used
     bool used;
     //! Whether the light is turned on
@@ -135,6 +138,9 @@ public:
 
     //! Sets the device to be used
     void            SetDevice(CDevice* device);
+
+    //! Prints debug info
+    void DebugDumpLights();
 
     //! Clears and disables all lights
     void            FlushLights();
