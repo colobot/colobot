@@ -698,6 +698,82 @@ void CEngine::AddBaseObjQuick(int baseObjRank, const EngineBaseObjDataTier& buff
         p1.totalTriangles += p4.vertices.size() - 2;
 }
 
+void CEngine::DebugObject(int objRank)
+{
+    assert(objRank >= 0 && objRank < static_cast<int>( m_objects.size() ));
+
+    CLogger* l = GetLogger();
+
+    l->Debug("Debug object: %d\n", objRank);
+    if (! m_objects[objRank].used)
+    {
+        l->Debug(" not used\n");
+        return;
+    }
+
+    l->Debug(" baseObjRank = %d\n", m_objects[objRank].baseObjRank);
+    l->Debug(" visible = %s\n", m_objects[objRank].visible ? "true" : "false");
+    l->Debug(" drawWorld = %s\n", m_objects[objRank].drawWorld ? "true" : "false");
+    l->Debug(" drawFront = %s\n", m_objects[objRank].drawFront ? "true" : "false");
+    l->Debug(" type = %d\n", m_objects[objRank].type);
+    l->Debug(" distance = %f\n", m_objects[objRank].distance);
+    l->Debug(" shadowRank = %d\n", m_objects[objRank].shadowRank);
+    l->Debug(" transparency = %f\n", m_objects[objRank].transparency);
+
+    l->Debug(" baseObj:\n");
+    int baseObjRank = m_objects[objRank].baseObjRank;
+    if (baseObjRank == -1)
+    {
+        l->Debug("  null\n");
+        return;
+    }
+
+    assert(baseObjRank >= 0 && baseObjRank < static_cast<int>( m_baseObjects.size() ));
+
+    EngineBaseObject& p1 = m_baseObjects[baseObjRank];
+    if (!p1.used)
+    {
+        l->Debug("  not used\n");
+        return;
+    }
+
+    std::string vecStr;
+
+    vecStr = p1.bboxMin.ToString();
+    l->Debug("  bboxMin: %s\n", vecStr.c_str());
+    vecStr = p1.bboxMax.ToString();
+    l->Debug("  bboxMax: %s\n", vecStr.c_str());
+    l->Debug("  totalTriangles: %d\n", p1.totalTriangles);
+    l->Debug("  radius: %f\n", p1.radius);
+
+    for (int l2 = 0; l2 < static_cast<int>( p1.next.size() ); l2++)
+    {
+        EngineBaseObjTexTier& p2 = p1.next[l2];
+        l->Debug("  l2:\n");
+
+        l->Debug("   tex1: %s (id: %u)\n", p2.tex1Name.c_str(), p2.tex1.id);
+        l->Debug("   tex2: %s (id: %u)\n", p2.tex2Name.c_str(), p2.tex2.id);
+
+        for (int l3 = 0; l3 < static_cast<int>( p2.next.size() ); l3++)
+        {
+            EngineBaseObjLODTier& p3 = p2.next[l3];
+
+            l->Debug("    l3:\n");
+            l->Debug("     lodLevel: %d\n", p3.lodLevel);
+
+            for (int l4 = 0; l4 < static_cast<int>( p3.next.size() ); l4++)
+            {
+                EngineBaseObjDataTier& p4 = p3.next[l4];
+
+                l->Debug("     l4:\n");
+                l->Debug("      type: %d\n", p4.type);
+                l->Debug("      state: %d\n", p4.state);
+                l->Debug("      staticBufferId: %u\n", p4.staticBufferId);
+                l->Debug("      updateStaticBuffer: %s\n", p4.updateStaticBuffer ? "true" : "false");
+            }
+        }
+    }
+}
 
 int CEngine::CreateObject()
 {
@@ -986,14 +1062,19 @@ void CEngine::ChangeSecondTexture(int objRank, const std::string& tex2Name)
 
     for (int l2 = 0; l2 < static_cast<int>( p1.next.size() ); l2++)
     {
-        EngineBaseObjTexTier& p2 = p1.next[l2];
-
-        if (p2.tex2Name == tex2Name)
+        if (p1.next[l2].tex2Name == tex2Name)
             continue;  // already new
 
-        EngineBaseObjTexTier& newP2 = AddLevel2(p1, p2.tex1Name, tex2Name);
-        newP2.next.insert(newP2.next.end(), p2.next.begin(), p2.next.end());
-        p2.next.clear();
+        std::string tex1Name = p1.next[l2].tex1Name;
+        EngineBaseObjTexTier& newP2 = AddLevel2(p1, tex1Name, tex2Name);
+        newP2.next.insert(newP2.next.end(), p1.next[l2].next.begin(), p1.next[l2].next.end());
+        p1.next[l2].next.clear();
+
+        if (!newP2.tex1.Valid())
+            newP2.tex1 = LoadTexture(newP2.tex1Name);
+
+        if (!newP2.tex2.Valid())
+            newP2.tex2 = LoadTexture(newP2.tex2Name);
     }
 }
 
