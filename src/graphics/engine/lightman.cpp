@@ -236,6 +236,15 @@ bool CLightManager::SetLightEnabled(int lightRank, bool enabled)
     return true;
 }
 
+bool CLightManager::SetLightPriority(int lightRank, LightPriority priority)
+{
+    if ( (lightRank < 0) || (lightRank >= static_cast<int>( m_dynLights.size() )) )
+        return false;
+
+    m_dynLights[lightRank].priority = priority;
+    return true;
+}
+
 bool CLightManager::SetLightIncludeType(int lightRank, EngineObjectType type)
 {
     if ( (lightRank < 0) || (lightRank >= static_cast<int>( m_dynLights.size() )) )
@@ -503,6 +512,9 @@ CLightManager::LightsComparator::LightsComparator(Math::Vector eyePos, EngineObj
 
 float CLightManager::LightsComparator::GetLightWeight(const DynamicLight& dynLight)
 {
+    if (dynLight.priority == LIGHT_PRI_HIGHEST)
+        return -1.0f;
+
     bool enabled = true;
     if (!dynLight.used || !dynLight.enabled || dynLight.intensity.current == 0.0f)
         enabled = false;

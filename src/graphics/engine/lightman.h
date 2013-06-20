@@ -71,8 +71,9 @@ struct LightProgression
  */
 enum LightPriority
 {
-    LIGHT_PRI_HIGH = 1,
-    LIGHT_PRI_LOW  = 2
+    LIGHT_PRI_HIGHEST = 1, //!< always highest weight (always picked)
+    LIGHT_PRI_HIGH = 2,    //!< high weight
+    LIGHT_PRI_LOW  = 3     //!< low weight
 };
 
 /**
@@ -154,6 +155,8 @@ public:
     bool            GetLight(int lightRank, Light &light);
     //! Enables/disables the given dynamic light
     bool            SetLightEnabled(int lightRank, bool enable);
+    //! Changes the light priority
+    bool            SetLightPriority(int lightRank, LightPriority priority);
 
     //! Sets what objects are included in given dynamic light
     bool            SetLightIncludeType(int lightRank, EngineObjectType type);

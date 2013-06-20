@@ -92,7 +92,7 @@ void CGLDevice::DebugLights()
     m_worldMat.LoadIdentity();
     UpdateModelviewMatrix();
 
-    for (int i = 0; i < m_lights.size(); ++i)
+    for (int i = 0; i < static_cast<int>( m_lights.size() ); ++i)
     {
         color.h = static_cast<float>(i) / static_cast<float>(m_lights.size());
         if (m_lightsEnabled[i])

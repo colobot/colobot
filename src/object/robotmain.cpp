@@ -4784,7 +4784,10 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
             type = OpTypeTerrain(line, "type", Gfx::ENG_OBJTYPE_NULL);
             if (type == Gfx::ENG_OBJTYPE_TERRAIN)
+            {
+                m_lightMan->SetLightPriority(lightRank, Gfx::LIGHT_PRI_HIGHEST);
                 m_lightMan->SetLightIncludeType(lightRank, Gfx::ENG_OBJTYPE_TERRAIN);
+            }
 
             if (type == Gfx::ENG_OBJTYPE_QUARTZ)
                 m_lightMan->SetLightIncludeType(lightRank, Gfx::ENG_OBJTYPE_QUARTZ);
