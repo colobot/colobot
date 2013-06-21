@@ -71,9 +71,9 @@ struct LightProgression
  */
 enum LightPriority
 {
-    LIGHT_PRI_HIGHEST = 1, //!< always highest weight (always picked)
-    LIGHT_PRI_HIGH = 2,    //!< high weight
-    LIGHT_PRI_LOW  = 3     //!< low weight
+    LIGHT_PRI_HIGHEST = 0, //!< always highest weight (always picked)
+    LIGHT_PRI_HIGH = 1,    //!< high weight
+    LIGHT_PRI_LOW  = 2     //!< low weight
 };
 
 /**
