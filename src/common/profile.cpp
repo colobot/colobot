@@ -47,11 +47,10 @@ bool CProfile::InitCurrentDirectory()
 {
     try
     {
-        // TODO: NDEBUG should be replaced with something like BUILD_TYPE == "DEBUG"/"RELEASE"
-        #ifdef NDEBUG
-        bp::ini_parser::read_ini(GetSystemUtils()->GetProfileFileLocation(), m_propertyTree);
-        #else
+        #if DEV_BUILD
         bp::ini_parser::read_ini("colobot.ini", m_propertyTree);
+        #else
+        bp::ini_parser::read_ini(GetSystemUtils()->GetProfileFileLocation(), m_propertyTree);
         #endif
     }
     catch (std::exception & e)
@@ -68,10 +67,10 @@ bool CProfile::SaveCurrentDirectory()
     {
         try
         {
-            #ifdef NDEBUG
-            bp::ini_parser::write_ini(GetSystemUtils()->GetProfileFileLocation(), m_propertyTree);
-            #else
+            #if DEV_BUILD
             bp::ini_parser::write_ini("colobot.ini", m_propertyTree);
+            #else
+            bp::ini_parser::write_ini(GetSystemUtils()->GetProfileFileLocation(), m_propertyTree);
             #endif
         }
         catch (std::exception & e)

@@ -192,7 +192,7 @@ class CRobotMain : public CSingleton<CRobotMain>
 {
 public:
     CRobotMain(CApplication* app, bool loadProfile);
-    ~CRobotMain();
+    virtual ~CRobotMain();
 
     Gfx::CCamera* GetCamera();
     Gfx::CTerrain* GetTerrain();

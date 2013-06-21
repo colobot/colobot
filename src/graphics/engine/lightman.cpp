@@ -112,7 +112,7 @@ void CLightManager::DebugDumpLights()
             continue;
 
         int deviceLight = -1;
-        for (int j = 0; j < m_lightMap.size(); ++j)
+        for (int j = 0; j < static_cast<int>( m_lightMap.size() ); ++j)
         {
             if (m_lightMap[j] == i)
             {

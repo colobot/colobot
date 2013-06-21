@@ -1,10 +1,13 @@
 #include "app/app.h"
+
 #include "ui/edit.h"
+
 #include "mocks/text_mock.h"
+
+#include <fstream>
 
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
-#include <fstream>
 
 class CEditTest : public testing::Test
 {

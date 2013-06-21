@@ -175,12 +175,12 @@ CMainDialog::CMainDialog()
 
     m_sceneDir = "levels";
 
-    // TODO: replace NDEBUG with something like BUILD_TYPE == "DEBUG"/"RELEASE"
-    #ifdef NDEBUG
-    m_savegameDir = GetSystemUtils()->GetSavegameDirectoryLocation();
-    #else
+    #if DEV_BUILD
     m_savegameDir = "savegame";
+    #else
+    m_savegameDir = GetSystemUtils()->GetSavegameDirectoryLocation();
     #endif
+
     m_publicDir = "program";
     m_userDir = "user";
     m_filesDir = m_savegameDir;

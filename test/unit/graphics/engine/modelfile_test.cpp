@@ -1,22 +1,5 @@
-// * This file is part of the COLOBOT source code
-// * Copyright (C) 2012, Polish Portal of Colobot (PPC)
-// *
-// * This program is free software: you can redistribute it and/or modify
-// * it under the terms of the GNU General Public License as published by
-// * the Free Software Foundation, either version 3 of the License, or
-// * (at your option) any later version.
-// *
-// * This program is distributed in the hope that it will be useful,
-// * but WITHOUT ANY WARRANTY; without even the implied warranty of
-// * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-// * GNU General Public License for more details.
-// *
-// * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.
-
-
-#include "common/logger.h"
 #include "graphics/engine/modelfile.h"
+
 #include "math/func.h"
 
 #include <gtest/gtest.h>
@@ -63,17 +46,17 @@ void Init()
 {
 
     TRIANGLE_1.p1 = Gfx::VertexTex2(Math::Vector(-12.4099, 10.0016, -2.54558),
-                                        Math::Vector(1, 0, 1.87319e-07),
-                                        Math::Point(0.970703, 0.751953),
-                                        Math::Point(0, 0));
+                                    Math::Vector(1, 0, 1.87319e-07),
+                                    Math::Point(0.970703, 0.751953),
+                                    Math::Point(0, 0));
     TRIANGLE_1.p2 = Gfx::VertexTex2(Math::Vector(-12.4099, 10.0016, 2.54558),
-                                        Math::Vector(1, 0, 1.87319e-07),
-                                        Math::Point(0.998047, 0.751953),
-                                        Math::Point(0, 0));
+                                    Math::Vector(1, 0, 1.87319e-07),
+                                    Math::Point(0.998047, 0.751953),
+                                    Math::Point(0, 0));
     TRIANGLE_1.p3 = Gfx::VertexTex2(Math::Vector(-12.4099, 4.00165, -2.54558),
-                                        Math::Vector(1, 0, 1.87319e-07),
-                                        Math::Point(0.970703, 0.998047),
-                                        Math::Point(0, 0));
+                                    Math::Vector(1, 0, 1.87319e-07),
+                                    Math::Point(0.970703, 0.998047),
+                                    Math::Point(0, 0));
     TRIANGLE_1.material.diffuse = Gfx::Color(1, 1, 1, 0);
     TRIANGLE_1.material.ambient = Gfx::Color(0.5, 0.5, 0.5, 0);
     TRIANGLE_1.material.specular = Gfx::Color(0, 0, 0, 0);
@@ -83,17 +66,17 @@ void Init()
     TRIANGLE_1.state = 1024;
 
     TRIANGLE_2.p1 = Gfx::VertexTex2(Math::Vector(-19, -1, 4),
-                                       Math::Vector(-1, 0, 0),
-                                       Math::Point(0.248047, 0.123047),
-                                       Math::Point(0.905224, 0.52067));
+                                    Math::Vector(-1, 0, 0),
+                                    Math::Point(0.248047, 0.123047),
+                                    Math::Point(0.905224, 0.52067));
     TRIANGLE_2.p2 = Gfx::VertexTex2(Math::Vector(-19, 4, 4),
-                                       Math::Vector(-1, 0, 0),
-                                       Math::Point(0.248047, 0.00195312),
-                                       Math::Point(0.905224, 0.614223));
+                                    Math::Vector(-1, 0, 0),
+                                    Math::Point(0.248047, 0.00195312),
+                                    Math::Point(0.905224, 0.614223));
     TRIANGLE_2.p3 = Gfx::VertexTex2(Math::Vector(-19, 4, -4),
-                                       Math::Vector(-1, 0, 0),
-                                       Math::Point(0.00195312, 0.00195312),
-                                       Math::Point(0.0947756, 0.614223));
+                                    Math::Vector(-1, 0, 0),
+                                    Math::Point(0.00195312, 0.00195312),
+                                    Math::Point(0.0947756, 0.614223));
     TRIANGLE_2.material.diffuse = Gfx::Color(1, 1, 1, 0);
     TRIANGLE_2.material.ambient = Gfx::Color(0.5, 0.5, 0.5, 0);
     TRIANGLE_2.material.specular = Gfx::Color(0, 0, 0, 0);
@@ -250,14 +233,3 @@ TEST(ModelFileTest, RWOldModel)
     EXPECT_TRUE(CompareTriangles(modelFile.GetTriangles()[0], TRIANGLE_1));
     EXPECT_TRUE(CompareTriangles(modelFile.GetTriangles()[1], TRIANGLE_2));
 }
-
-int main(int argc, char **argv)
-{
-    CLogger logger;
-
-    Init();
-
-    ::testing::InitGoogleTest(&argc, argv);
-    return RUN_ALL_TESTS();
-}
-

@@ -8,12 +8,8 @@ set(CMAKE_CXX_FLAGS_DEBUG ${COLOBOT_CXX_FLAGS_DEBUG})
 
 add_subdirectory(CBot)
 
-add_subdirectory(tools)
-
-add_subdirectory(po)
-
-if(${DESKTOP})
-    add_subdirectory(desktop)
+if(${TOOLS})
+    add_subdirectory(tools)
 endif()
 
 

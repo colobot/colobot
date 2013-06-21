@@ -669,11 +669,13 @@ CRobotMain::CRobotMain(CApplication* app, bool loadProfile)
     m_showPos      = false;
     m_selectInsect = false;
     m_showSoluce   = false;
-    #ifdef NDEBUG
-    m_showAll      = false;
-    #else
+
+    #if DEV_BUILD
     m_showAll      = true; // for development
+    #else
+    m_showAll      = false;
     #endif
+
     m_cheatRadar   = false;
     m_fixScene     = false;
     m_trainerPilot = false;

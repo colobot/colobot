@@ -10,8 +10,6 @@
 
 #include "app/system_mock.h"
 
-#include "common/logger.h"
-
 #include <gtest/gtest.h>
 
 using testing::_;
@@ -57,7 +55,6 @@ protected:
                                long long relTimeReal, long long absTimeReal);
 
 protected:
-    CLogger logger;
     CApplicationWrapper* app;
     CSystemUtilsMock* systemUtils;
 

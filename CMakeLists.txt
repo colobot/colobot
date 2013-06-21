@@ -33,15 +33,28 @@ endif()
 set(COLOBOT_VERSION_FULL "${COLOBOT_VERSION_MAJOR}.${COLOBOT_VERSION_MINOR}.${COLOBOT_VERSION_REVISION}${COLOBOT_VERSION_UNRELEASED}")
 message(STATUS "Building Colobot \"${COLOBOT_VERSION_CODENAME}\" (${COLOBOT_VERSION_FULL})")
 
-# Include cmake directory with some additional scripts
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${colobot_SOURCE_DIR}/cmake")
 
 
 ##
 # Build options
 ##
 
-# Global build type
+# Build targets should be placed in the root build directory
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+
+# Include cmake directory with some additional scripts
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${colobot_SOURCE_DIR}/cmake")
+
+# Auto-detect develpment build if not given
+if(CMAKE_BUILD_TYPE AND NOT(DEV_BUILD))
+    if("${CMAKE_BUILD_TYPE}" MATCHES "debug")
+        SET(DEV_BUILD 1)
+    else()
+        SET(DEV_BUILD 0)
+    endif()
+endif()
+
+# Default build type if not given is debug
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE debug)
 endif()
@@ -83,8 +96,14 @@ set(COLOBOT_CXX_FLAGS_DEBUG "-g -O0")
 # Asserts can be enabled/disabled regardless of build type
 option(ASSERTS "Enable assert()s" ON)
 
+# Development build can be enabled/disabled regardless of build type
+option(DEV_BUILD "Enable development build (enables some debugging tools, local setting paths, etc.)" OFF)
+
 # Building tests can be enabled/disabled
-option(TESTS "Enable tests" ON)
+option(TESTS "Build tests" OFF)
+
+# Building tool programs can be enabled/disabled
+option(TOOLS "Build tool programs" OFF)
 
 # CBot can also be a static library
 option(CBOT_STATIC "Build CBot as static libary" OFF)
@@ -187,7 +206,7 @@ endif()
 # Clipboard support
 ##
 set(CLIPBOARD_INCLUDE_DIR ${colobot_SOURCE_DIR}/lib/clipboard/include)
-add_subdirectory(${colobot_SOURCE_DIR}/lib/clipboard bin/clipboard)
+add_subdirectory(lib/clipboard)
 
 
 ##
@@ -221,7 +240,7 @@ if(${TESTS})
         set(GTEST_INCLUDE_DIR ${colobot_SOURCE_DIR}/lib/gtest/include)
     endif()
 
-    add_subdirectory(${GTEST_SRC_DIR} bin/gtest)
+    add_subdirectory(${GTEST_SRC_DIR} lib/gtest)
 
     # Google Mock library
     find_path(GMOCK_SRC_DIR NAMES src/gmock.cc src/gmock-all.cc PATHS /usr/src PATH_SUFFIXES gmock)
@@ -236,13 +255,13 @@ if(${TESTS})
         message(STATUS "Using bundled gmock library")
         set(GMOCK_SRC_DIR ${colobot_SOURCE_DIR}/lib/gmock)
         set(GMOCK_INCLUDE_DIR ${colobot_SOURCE_DIR}/lib/gmock/include)
-        add_subdirectory(${GMOCK_SRC_DIR} bin/gmock)
+        add_subdirectory(${GMOCK_SRC_DIR} lib/gmock)
     endif()
 
 
     # Tests targets
     enable_testing()
-    add_subdirectory(test bin/test)
+    add_subdirectory(test)
 
 endif()
 
@@ -271,7 +290,13 @@ else()
 endif()
 
 # Subdirectory with sources
-add_subdirectory(src bin)
+add_subdirectory(src)
+
+add_subdirectory(po)
+
+if(${DESKTOP})
+    add_subdirectory(desktop)
+endif()
 
 
 ##
