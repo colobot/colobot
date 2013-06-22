@@ -114,11 +114,14 @@ option(DESKTOP "Generate desktop files, manpages, etc" ON)
 # Doxygen docs are optional for installation
 option(INSTALL_DOCS "Install Doxygen-generated documentation" OFF)
 
-# Build openal sound support
-option(OPENAL_SOUND "Build openal sound support" OFF)
+# Build OpenAL sound support
+option(OPENAL_SOUND "Build OpenAL sound support" ON)
 
 # Change to false in case static boost libraries are not available
-option(STATIC_BOOST "Link with static boost libraries" ON)
+option(BOOST_STATIC "Link with static boost libraries" OFF)
+
+# This is useful on Windows, if linking against standard GLEW dll fails
+option(GLEW_STATIC "Link statically with GLEW" OFF)
 
 ##
 # Searching for packages
@@ -131,15 +134,12 @@ find_package(SDL_ttf 2.0 REQUIRED)
 find_package(PNG 1.2 REQUIRED)
 find_package(Gettext REQUIRED)
 
-set(Boost_USE_STATIC_LIBS ${STATIC_BOOST})
+set(Boost_USE_STATIC_LIBS ${BOOST_STATIC})
 set(Boost_USE_MULTITHREADED ON)
 set(Boost_USE_STATIC_RUNTIME OFF)
 
 set(Boost_ADDITIONALVERSION "1.51" "1.51.0")
 find_package(Boost COMPONENTS system filesystem regex REQUIRED)
-
-# This is useful on Windows, if linking against standard GLEW dll fails
-option(GLEW_STATIC "Link statically with GLEW" OFF)
 
 find_package(GLEW REQUIRED)
 
