@@ -29,6 +29,7 @@ To cross-compile Colobot using MXE:
     * check-requirements
     * expat
     * flac
+    * flac
     * freetype
     * gcc
     * gcc-gmp
@@ -39,23 +40,20 @@ To cross-compile Colobot using MXE:
     * jpeg
     * libiconv
     * libpng
+    * libsndfile
     * libtool
     * mingwrt
+    * ogg
+    * openal
     * portaudio
     * sdl
     * sdl_image
     * sdl_ttf
     * tiff
+    * vorbis
     * w32api
     * xz
     * zlib
-
-   For optional audio support you'll need also:
-    * openal
-    * libsndfile
-    * ogg
-    * vorbis
-    * flac
 
 4. Now `cd` to directory with colobot sources. To cross-compile a CMake project,
    you have to specify a CMake toolchain file. MXE has such file in MXE's directory:
@@ -68,4 +66,4 @@ To cross-compile Colobot using MXE:
 5. `make` should now compile the game with the resulting exe in `bin/colobot.exe`.
    The exe is linked against all libraries *statically*, so there are no dependencies
    on external DLLs. However, the resulting binary will be huge with all these libraries,
-   so you might want to do:`strip bin/colobot.exe`.
+   so you might want to do: `strip bin/colobot.exe`.

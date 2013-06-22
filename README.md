@@ -32,7 +32,7 @@ This will be a new installment in the Colobot series. We have many ideas for the
 
 ## Compiling and running the game
 
-For these instructions see INSTALL.txt file.
+For these instructions see INSTALL.md file.
 
 
 ## Contact
@@ -79,7 +79,7 @@ To będzie nowa część z cyklu gier Colobot. Mamy wiele pomysłów na nową gr
 
 ## Kompilacja i uruchomienie gry
 
-Instrukcje te znajdują się w pliku INSTALL.txt (po angielsku).
+Instrukcje te znajdują się w pliku INSTALL.md (po angielsku).
 
 
 ## Kontakt
