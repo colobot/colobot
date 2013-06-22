@@ -75,7 +75,7 @@ endif()
 # Translate translatable material
 find_program(PO4A po4a)
 
-if(PO4A)
+if(PO4A AND (NOT MSYS))
     add_custom_target(desktop_po4a
         COMMAND ${PO4A} po4a.cfg
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
