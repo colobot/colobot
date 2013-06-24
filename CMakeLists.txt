@@ -45,20 +45,6 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 # Include cmake directory with some additional scripts
 set(CMAKE_MODULE_PATH "${colobot_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
 
-# Auto-detect develpment build if not given
-if(CMAKE_BUILD_TYPE AND NOT(DEV_BUILD))
-    if("${CMAKE_BUILD_TYPE}" MATCHES "debug")
-        SET(DEV_BUILD 1)
-    else()
-        SET(DEV_BUILD 0)
-    endif()
-endif()
-
-# Default build type if not given is debug
-if(NOT CMAKE_BUILD_TYPE)
-    set(CMAKE_BUILD_TYPE debug)
-endif()
-
 # Compiler detection
 if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU")
     execute_process(
@@ -123,6 +109,19 @@ option(BOOST_STATIC "Link with static boost libraries" OFF)
 # This is useful on Windows, if linking against standard GLEW dll fails
 option(GLEW_STATIC "Link statically with GLEW" OFF)
 
+
+# Default build type if not given is debug
+if(NOT DEFINED CMAKE_BUILD_TYPE)
+    message(STATUS "Build type not specified - assuming debug")
+    set(CMAKE_BUILD_TYPE debug)
+endif()
+
+# Warn about development build
+if(DEV_BUILD)
+    message("Building with development extensions")
+endif()
+
+
 ##
 # Searching for packages
 ##
@@ -143,7 +142,7 @@ find_package(Boost COMPONENTS system filesystem regex REQUIRED)
 
 find_package(GLEW REQUIRED)
 
-if (${OPENAL_SOUND})
+if (OPENAL_SOUND)
     find_package(OpenAL REQUIRED)
     find_package(LibSndFile REQUIRED)
 endif()
@@ -153,11 +152,11 @@ endif()
 # Platform detection and some related checks
 ##
 
-if (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+if("${CMAKE_SYSTEM_NAME}" MATCHES "Windows")
     set(PLATFORM_WINDOWS 1)
     set(PLATFORM_LINUX   0)
     set(PLATFORM_OTHER   0)
-elseif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+elseif("${CMAKE_SYSTEM_NAME}" MATCHES "Linux")
     set(PLATFORM_WINDOWS 0)
     set(PLATFORM_LINUX   1)
     set(PLATFORM_OTHER   0)
@@ -167,11 +166,11 @@ else()
     set(PLATFORM_OTHER   1)
 endif()
 
-if(NOT ${ASSERTS})
+if(NOT ASSERTS)
     add_definitions(-DNDEBUG)
 endif()
 
-if(${TESTS})
+if(TESTS)
     add_definitions(-DTESTS -DTEST_VIRTUAL=virtual)
 else()
     add_definitions(-DTEST_VIRTUAL=)
@@ -193,9 +192,9 @@ include("${colobot_SOURCE_DIR}/cmake/msys.cmake")
 ##
 # Summary of detected things
 ##
-if (${PLATFORM_WINDOWS})
+if (PLATFORM_WINDOWS)
     message(STATUS "Build for Windows system")
-elseif(${PLATFORM_LINUX})
+elseif(PLATFORM_LINUX)
     message(STATUS "Build for Linux system")
 else()
     message(STATUS "Build for other system")
@@ -235,7 +234,7 @@ endif()
 # Targets
 ##
 
-if(${TESTS})
+if(TESTS)
     # Google Test library
     find_path(GTEST_SRC_DIR NAMES src/gtest.cc src/gtest-all.cc PATHS /usr/src PATH_SUFFIXES gtest)
     find_path(GTEST_INCLUDE_DIR gtest/gtest.h PATHS /usr/include)
@@ -273,8 +272,8 @@ if(${TESTS})
 endif()
 
 # Installation paths defined before compiling sources
-if (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
-    if (${MXE})
+if(PLATFORM_WINDOWS)
+    if(MXE)
         # We need to use STRING because PATH doesn't accept relative paths
         set(COLOBOT_INSTALL_BIN_DIR ./ CACHE STRING "Colobot binary directory")
         set(COLOBOT_INSTALL_LIB_DIR ./ CACHE STRING "Colobot libraries directory")
@@ -301,8 +300,12 @@ add_subdirectory(src)
 
 add_subdirectory(po)
 
-if(${DESKTOP})
-    add_subdirectory(desktop)
+if(DESKTOP)
+    if(PLATFORM_WINDOWS)
+        message("Desktop files ignored on Windows")
+    else()
+        add_subdirectory(desktop)
+    endif()
 endif()
 
 

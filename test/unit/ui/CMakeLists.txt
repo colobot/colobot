@@ -9,9 +9,9 @@ ${CLIPBOARD_INCLUDE_DIR}
 )
 
 # Platform-dependent implementation of CSystemUtils
-if (${PLATFORM_WINDOWS})
+if(PLATFORM_WINDOWS)
     set(SYSTEM_CPP_MODULE "system_windows.cpp")
-elseif(${PLATFORM_LINUX})
+elseif(PLATFORM_LINUX)
     set(SYSTEM_CPP_MODULE "system_linux.cpp")
     set(ADDITIONAL_LIB "-lX11")
 else()
