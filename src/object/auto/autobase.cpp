@@ -34,7 +34,6 @@
 
 #include "ui/interface.h"
 #include "ui/window.h"
-#include "ui/displaytext.h"
 
 
 
@@ -317,14 +316,14 @@ begin:
         err = CheckCloseDoor();
         if ( err != ERR_OK )
         {
-            m_displayText->DisplayError(err, m_object);
+            m_main->DisplayError(err, m_object);
             return false;
         }
 
         err = m_main->CheckEndMission(false);
         if ( err != ERR_OK )
         {
-            m_displayText->DisplayError(err, m_object);
+            m_main->DisplayError(err, m_object);
             return false;
         }
 

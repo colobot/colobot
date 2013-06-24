@@ -7520,3 +7520,12 @@ void CRobotMain::RestoreNumericLocale()
     setlocale(LC_NUMERIC, m_oldLocale.c_str());
 }
 
+void CRobotMain::DisplayError(Error err, CObject* pObj, float time)
+{
+    m_displayText->DisplayError(err, pObj, time);
+}
+
+void CRobotMain::DisplayError(Error err, Math::Vector goal, float height, float dist, float time)
+{
+    m_displayText->DisplayError(err, goal, height, dist, time);
+}

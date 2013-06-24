@@ -29,7 +29,6 @@
 #include "ui/interface.h"
 #include "ui/gauge.h"
 #include "ui/window.h"
-#include "ui/displaytext.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -178,7 +177,7 @@ bool CAutoResearch::EventProcess(const Event &event)
         if ( event.type == EVENT_OBJECT_RATOMIC ) err = StartAction(RESEARCH_ATOMIC);
 
         if( err != ERR_OK && err != ERR_GENERIC )
-            m_displayText->DisplayError(err, m_object);
+            m_main->DisplayError(err, m_object);
 
         if( err != ERR_GENERIC )
             return false;
@@ -257,7 +256,7 @@ bool CAutoResearch::EventProcess(const Event &event)
             m_eventQueue->AddEvent(newEvent);
             UpdateInterface();
 
-            m_displayText->DisplayError(INFO_RESEARCH, m_object);
+            m_main->DisplayError(INFO_RESEARCH, m_object);
 
             message = ERR_OK;
             if ( m_research == RESEARCH_TANK   )  message = INFO_RESEARCHTANK;
@@ -270,7 +269,7 @@ bool CAutoResearch::EventProcess(const Event &event)
             if ( m_research == RESEARCH_ATOMIC )  message = INFO_RESEARCHATOMIC;
             if ( message != ERR_OK )
             {
-                m_displayText->DisplayError(message, m_object);
+                m_main->DisplayError(message, m_object);
             }
 
             SetBusy(false);

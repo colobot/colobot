@@ -35,10 +35,6 @@ class CObject;
 class CRobotMain;
 class CSoundInterface;
 
-namespace Ui {
-class CDisplayText;
-}
-
 
 // Graphics module namespace
 namespace Gfx {
@@ -179,7 +175,6 @@ protected:
     CParticle*        m_particle;
     CLightManager*    m_lightMan;
     CObject*          m_object;
-    Ui::CDisplayText* m_displayText;
     CRobotMain*       m_main;
     CSoundInterface*  m_sound;
 

@@ -29,7 +29,6 @@
 #include "ui/interface.h"
 #include "ui/gauge.h"
 #include "ui/window.h"
-#include "ui/displaytext.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -325,7 +324,7 @@ bool CAutoEnergy::EventProcess(const Event &event)
                 fret->SetPosition(0, Math::Vector(0.0f, 3.0f, 0.0f));
                 m_object->SetPower(fret);
 
-                m_displayText->DisplayError(INFO_ENERGY, m_object);
+                m_main->DisplayError(INFO_ENERGY, m_object);
             }
 
             SetBusy(false);
@@ -468,7 +467,7 @@ void CAutoEnergy::CreatePower()
     if ( !power->CreateResource(pos, angle, OBJECT_POWER) )
     {
         delete power;
-        m_displayText->DisplayError(ERR_TOOMANY, m_object);
+        m_main->DisplayError(ERR_TOOMANY, m_object);
         return;
     }
     power->SetLock(true);  // battery not yet usable

@@ -43,7 +43,6 @@ namespace Ui {
 class CStudio;
 class CInterface;
 class CWindow;
-class CDisplayText;
 }
 
 namespace Gfx {
@@ -177,7 +176,6 @@ protected:
     CPhysics*           m_physics;
     CMotion*            m_motion;
     Ui::CInterface*     m_interface;
-    Ui::CDisplayText*   m_displayText;
     CRobotMain*         m_main;
     Ui::CStudio*        m_studio;
     CSoundInterface*    m_sound;

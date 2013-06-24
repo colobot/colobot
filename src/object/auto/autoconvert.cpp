@@ -26,7 +26,6 @@
 
 #include "ui/interface.h"
 #include "ui/window.h"
-#include "ui/displaytext.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -515,7 +514,7 @@ void CAutoConvert::CreateMetal()
     if ( !fret->CreateResource(pos, angle, OBJECT_METAL) )
     {
         delete fret;
-        m_displayText->DisplayError(ERR_TOOMANY, m_object);
+        m_main->DisplayError(ERR_TOOMANY, m_object);
         return;
     }
 
@@ -524,6 +523,6 @@ void CAutoConvert::CreateMetal()
         fret->SetResetCap(RESET_DELETE);
     }
 
-    m_displayText->DisplayError(INFO_CONVERT, m_object);
+    m_main->DisplayError(INFO_CONVERT, m_object);
 }
 

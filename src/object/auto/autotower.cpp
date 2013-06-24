@@ -27,7 +27,6 @@
 #include "script/cmdtoken.h"
 
 #include "ui/interface.h"
-#include "ui/displaytext.h"
 #include "ui/window.h"
 #include "ui/gauge.h"
 
@@ -179,7 +178,7 @@ bool CAutoTower::EventProcess(const Event &event)
             target = SearchTarget(m_targetPos);
             if ( energy < ENERGY_FIRE )
             {
-                m_displayText->DisplayError(ERR_TOWER_ENERGY, m_object);
+                m_main->DisplayError(ERR_TOWER_ENERGY, m_object);
             }
             if ( target == 0 || energy < ENERGY_FIRE )
             {

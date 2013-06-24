@@ -32,8 +32,6 @@
 #include "object/robotmain.h"
 #include "object/motion/motionhuman.h"
 
-#include "ui/displaytext.h"
-
 
 // Graphics module namespace
 namespace Gfx {
@@ -49,7 +47,6 @@ CPyro::CPyro()
     m_camera      = m_main->GetCamera();
     m_particle    = m_engine->GetParticle();
     m_lightMan    = m_engine->GetLightManager();
-    m_displayText = m_main->GetDisplayText();
     m_sound       = CApplication::GetInstancePointer()->GetSound();
     m_object      = nullptr;
 
@@ -1301,13 +1298,13 @@ void CPyro::DisplayError(PyroType type, CObject* obj)
              oType == OBJECT_END      )
         {
             err = ERR_DELETEBUILDING;
-            m_displayText->DisplayError(err, obj->GetPosition(0), 5.0f);
+            m_main->DisplayError(err, obj->GetPosition(0), 5.0f);
             return;
         }
 
         if ( err != ERR_OK )
         {
-            m_displayText->DisplayError(err, obj);
+            m_main->DisplayError(err, obj);
         }
     }
 }

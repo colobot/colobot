@@ -52,7 +52,6 @@ CAuto::CAuto(CObject* object)
     m_lightning   = m_engine->GetLightning();
     m_camera      = m_main->GetCamera();
     m_interface   = m_main->GetInterface();
-    m_displayText = m_main->GetDisplayText();
 
     m_type = m_object->GetType();
     m_time = 0.0f;
@@ -83,7 +82,6 @@ CAuto::~CAuto()
     m_lightning   = nullptr;
     m_camera      = nullptr;
     m_interface   = nullptr;
-    m_displayText = nullptr;
 }
 
 

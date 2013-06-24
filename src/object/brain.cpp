@@ -35,7 +35,6 @@
 
 #include "sound/sound.h"
 
-#include "ui/displaytext.h"
 #include "ui/interface.h"
 #include "ui/slider.h"
 #include "ui/studio.h"
@@ -61,7 +60,6 @@ CBrain::CBrain(CObject* object)
     m_terrain     = m_main->GetTerrain();
     m_camera      = m_main->GetCamera();
     m_interface   = m_main->GetInterface();
-    m_displayText = m_main->GetDisplayText();
     m_sound       = CApplication::GetInstancePointer()->GetSound();
     m_physics     = nullptr;
     m_motion      = nullptr;
@@ -733,7 +731,7 @@ bool CBrain::EventProcess(const Event &event)
 
     if ( err != ERR_OK )
     {
-        m_displayText->DisplayError(err, m_object);
+        m_main->DisplayError(err, m_object);
     }
 
     return true;
@@ -1201,7 +1199,7 @@ void CBrain::GroundFlat()
         err = ERR_FLAG_FLY;
         pos = m_object->GetPosition(0);
         if ( pos.y < m_water->GetLevel() )  err = ERR_FLAG_WATER;
-        m_displayText->DisplayError(err, m_object);
+        m_main->DisplayError(err, m_object);
         return;
     }
 

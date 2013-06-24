@@ -20,7 +20,7 @@
 #include "graphics/engine/terrain.h"
 #include "physics/physics.h"
 
-
+#include "object/robotmain.h"
 
 
 // Object's constructor.
