@@ -46,6 +46,7 @@
 #include <libintl.h>
 #include <unistd.h>
 #include <getopt.h>
+#include <localename.h>
 
 
 template<> CApplication* CSingleton<CApplication>::m_instance = nullptr;
@@ -1741,33 +1742,38 @@ void CApplication::SetLanguage(Language language)
 
     if (locale.empty())
     {
-        char *envLang = getenv("LANGUAGE");
-        if (envLang == NULL)
-        {
-            envLang = getenv("LANG");
-        }
+        const char* envLang = gl_locale_name(LC_MESSAGES, "LC_MESSAGES");
         if (envLang == NULL)
         {
             GetLogger()->Error("Failed to get language from environment, setting default language\n");
             m_language = LANGUAGE_ENGLISH;
         }
-        else if (strncmp(envLang,"en",2) == 0)
+        else
         {
-           m_language = LANGUAGE_ENGLISH;
+            GetLogger()->Trace("gl_locale_name: '%s'\n", envLang);
+
+            if (strncmp(envLang,"en",2) == 0)
+            {
+                m_language = LANGUAGE_ENGLISH;
+            }
+            else if (strncmp(envLang,"de",2) == 0)
+            {
+                m_language = LANGUAGE_GERMAN;
+            }
+            else if (strncmp(envLang,"fr",2) == 0)
+            {
+                m_language = LANGUAGE_FRENCH;
+            }
+            else if (strncmp(envLang,"pl",2) == 0)
+            {
+                m_language = LANGUAGE_POLISH;
+            }
+            else
+            {
+                GetLogger()->Warn("Enviromnent locale ('%s') is not supported, setting default language\n", envLang);
+                m_language = LANGUAGE_ENGLISH;
+            }
         }
-        else if (strncmp(envLang,"de",2) == 0)
-        {
-           m_language = LANGUAGE_GERMAN;
-        }
-        else if (strncmp(envLang,"fr",2) == 0)
-        {
-           m_language = LANGUAGE_FRENCH;
-        }
-        else if (strncmp(envLang,"pl",2) == 0)
-        {
-           m_language = LANGUAGE_POLISH;
-        }
-        GetLogger()->Trace("SetLanguage: Inherit LANGUAGE=%s from environment\n", envLang);
     }
     else
     {
@@ -1777,6 +1783,7 @@ void CApplication::SetLanguage(Language language)
         putenv(S_LANGUAGE);
         GetLogger()->Trace("SetLanguage: Set LANGUAGE=%s in environment\n", locale.c_str());
     }
+
     setlocale(LC_ALL, "");
 
     bindtextdomain("colobot", m_langPath.c_str());

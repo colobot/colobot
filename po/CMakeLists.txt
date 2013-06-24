@@ -15,5 +15,6 @@ add_custom_command(OUTPUT ${_potFile}
 add_custom_target(update-pot DEPENDS ${_potFile})
 
 file(GLOB _poFiles *.po)
+set(GETTEXT_INSTALL_PREFIX ${COLOBOT_INSTALL_I18N_DIR})
 gettext_create_translations(${_potFile} ALL ${_poFiles})
 

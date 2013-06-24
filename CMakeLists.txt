@@ -43,7 +43,7 @@ message(STATUS "Building Colobot \"${COLOBOT_VERSION_CODENAME}\" (${COLOBOT_VERS
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 
 # Include cmake directory with some additional scripts
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${colobot_SOURCE_DIR}/cmake")
+set(CMAKE_MODULE_PATH "${colobot_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
 
 # Auto-detect develpment build if not given
 if(CMAKE_BUILD_TYPE AND NOT(DEV_BUILD))
@@ -145,7 +145,7 @@ find_package(GLEW REQUIRED)
 
 if (${OPENAL_SOUND})
     find_package(OpenAL REQUIRED)
-    include("${colobot_SOURCE_DIR}/cmake/FindLibSndFile.cmake")
+    find_package(LibSndFile REQUIRED)
 endif()
 
 
@@ -207,6 +207,13 @@ endif()
 ##
 set(CLIPBOARD_INCLUDE_DIR ${colobot_SOURCE_DIR}/lib/clipboard/include)
 add_subdirectory(lib/clipboard)
+
+
+##
+# Localename
+##
+set(LOCALENAME_INCLUDE_DIR ${colobot_SOURCE_DIR}/lib/localename)
+add_subdirectory(lib/localename)
 
 
 ##
@@ -278,7 +285,7 @@ if (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
         set(COLOBOT_INSTALL_BIN_DIR ${CMAKE_INSTALL_PREFIX}/ CACHE PATH "Colobot binary directory")
         set(COLOBOT_INSTALL_LIB_DIR ${CMAKE_INSTALL_PREFIX}/ CACHE PATH "Colobot libraries directory")
         set(COLOBOT_INSTALL_DATA_DIR ${CMAKE_INSTALL_PREFIX}/data CACHE PATH "Colobot shared data directory")
-        set(COLOBOT_INSTALL_I18N_DIR ${CMAKE_INSTALL_PREFIX}/ CACHE PATH "Colobot translations directory")
+        set(COLOBOT_INSTALL_I18N_DIR ${CMAKE_INSTALL_PREFIX}/lang CACHE PATH "Colobot translations directory")
         set(COLOBOT_INSTALL_DOC_DIR ${CMAKE_INSTALL_PREFIX}/doc CACHE PATH "Colobot documentation directory")
     endif()
 else()
