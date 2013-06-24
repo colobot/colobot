@@ -63,10 +63,10 @@ CBotLogicExpr::~CBotLogicExpr()
 //  acceptable type, operand
 //  zero ends level \TODO précéance
 
-static int  ListOp[] = 
+static int  ListOp[] =
 {
     BOOLEEN,                ID_LOGIC, 0,
-    BOOLEEN,                ID_TXT_OR, 
+    BOOLEEN,                ID_TXT_OR,
     BOOLEEN,                ID_LOG_OR, 0,
     BOOLEEN,                ID_TXT_AND,
     BOOLEEN,                ID_LOG_AND, 0,
@@ -76,7 +76,7 @@ static int  ListOp[] =
     BOOLEEN|ENTIER|FLOTANT
                   |CHAINE
                   |POINTER
-                  |INSTANCE,ID_EQ, 
+                  |INSTANCE,ID_EQ,
     BOOLEEN|ENTIER|FLOTANT
                   |CHAINE
                   |POINTER
@@ -90,8 +90,8 @@ static int  ListOp[] =
     ENTIER,                 ID_ASR, 0,
     ENTIER|FLOTANT|CHAINE,  ID_ADD,
     ENTIER|FLOTANT,         ID_SUB, 0,
-    ENTIER|FLOTANT,         ID_MUL, 
-    ENTIER|FLOTANT,         ID_DIV, 
+    ENTIER|FLOTANT,         ID_MUL,
+    ENTIER|FLOTANT,         ID_DIV,
     ENTIER|FLOTANT,         ID_MODULO, 0,
     ENTIER|FLOTANT,         ID_POWER, 0,
     0,
@@ -194,7 +194,7 @@ CBotInstr* CBotTwoOpExpr::Compile(CBotToken* &p, CBotCStack* pStack, int* pOpera
         if ( NULL != (inst->m_rightop = CBotTwoOpExpr::Compile( p, pStk, pOp )) )
                                                                 // expression (...) right
         {
-            // there is an second operand acceptable 
+            // there is an second operand acceptable
 
             type2 = pStk->GetTypResult();                       // what kind of results?
 
@@ -327,7 +327,7 @@ bool CBotTwoOpExpr::Execute(CBotStack* &pStack)
     }
 
 
-    // requires a little more stack to avoid touching the result 
+    // requires a little more stack to avoid touching the result
     // of which is left on the stack, precisely
 
     CBotStack* pStk2 = pStk1->AddStack();               // adds an item to the stack
@@ -566,3 +566,4 @@ void t(bool t)
     t ? 0 : "test";
 }
 #endif
+

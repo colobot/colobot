@@ -20,6 +20,8 @@
 
 #include "app/app.h"
 
+#include "clipboard/clipboard.h"
+
 #include <string.h>
 
 namespace Ui {
@@ -261,7 +263,7 @@ bool CEdit::EventProcess(const Event &event)
 
     if ( event.type == EVENT_MOUSE_MOVE )
     {
-        if ( Detect(event.mousePos) && 
+        if ( Detect(event.mousePos) &&
              event.mousePos.x < m_pos.x+m_dim.x-(m_bMulti?MARGX+SCROLL_WIDTH:0.0f) )
         {
             if ( m_bEdit )
@@ -298,55 +300,53 @@ bool CEdit::EventProcess(const Event &event)
         bShift   = ( (event.kmodState & KEY_MOD(SHIFT) ) != 0 );
         bControl = ( (event.kmodState & KEY_MOD(CTRL) ) != 0);
 
-        if ( (event.key.unicode == 'X'       && !bShift &&  bControl) ||
-             ((event.kmodState & KEY_MOD(CTRL)) != 0 &&  bShift && !bControl) )
+        if ( (event.key.key == KEY(x)      && !bShift &&  bControl) ||
+             (event.key.key == KEY(DELETE) &&  bShift && !bControl) )
         {
             Cut();
             return true;
         }
-        if ( (event.key.unicode == 'C'       && !bShift &&  bControl) ||
-             ((event.kmodState & KEY_MOD(CTRL)) != 0 && !bShift &&  bControl) )
+        if ( (event.key.key == KEY(c)      && !bShift &&  bControl) ||
+             (event.key.key == KEY(INSERT) && !bShift &&  bControl) )
         {
             Copy();
             return true;
         }
-        if ( (event.key.unicode == 'V'       && !bShift &&  bControl) ||
-             ((event.kmodState & KEY_MOD(CTRL)) != 0 &&  bShift && !bControl) )
+        if ( (event.key.key == KEY(v)      && !bShift &&  bControl) ||
+             (event.key.key == KEY(INSERT) &&  bShift && !bControl) )
         {
             Paste();
             return true;
         }
 
-        if ( event.key.unicode == 'A' && !bShift && bControl )
+        if ( event.key.key == KEY(a) && !bShift && bControl )
         {
             SetCursor(999999, 0);
             return true;
         }
 
-        if ( event.key.unicode == 'O' && !bShift && bControl )
+        if ( event.key.key == KEY(o) && !bShift && bControl )
         {
             Event   newEvent(EVENT_STUDIO_OPEN);
-//            m_event->NewEvent(newEvent, EVENT_STUDIO_OPEN);
             m_event->AddEvent(newEvent);
         }
-        if ( event.key.unicode == 'S' && !bShift && bControl )
+        if ( event.key.key == KEY(s) && !bShift && bControl )
         {
             Event   newEvent( EVENT_STUDIO_SAVE );
-//            m_event->MakeEvent(newEvent, EVENT_STUDIO_SAVE);
             m_event->AddEvent(newEvent);
         }
 
-        if ( event.key.unicode == 'Z' && !bShift && bControl )
+        if ( event.key.key == KEY(z) && !bShift && bControl )
         {
             Undo();
             return true;
         }
 
-        if ( event.key.unicode == 'U' && !bShift && bControl )
+        if ( event.key.key == KEY(u) && !bShift && bControl )
         {
             if ( MinMaj(false) )  return true;
         }
-        if ( event.key.unicode == 'U' && bShift && bControl )
+        if ( event.key.key == KEY(u) && bShift && bControl )
         {
             if ( MinMaj(true) )  return true;
         }
@@ -688,7 +688,7 @@ void CEdit::MouseMove(Math::Point mouse)
 int CEdit::MouseDetect(Math::Point mouse)
 {
     Math::Point pos;
-    float   indentLength, offset, size;
+    float   indentLength = 0.0f, offset, size;
     int     i, len, c;
     bool    bTitle;
 
@@ -782,13 +782,16 @@ void CEdit::HyperJump(std::string name, std::string marker)
     sMarker = marker;
 
 //? sprintf(filename, "help\\%s.txt", name);
-      
-    if ( name[0] == '%' ) {
+
+    if ( name[0] == '%' )
+    {
         filename = GetProfile().GetUserBasedPath(name, "") + ".txt";
-    } else {
+    }
+    else
+    {
         filename = std::string("help/") + CApplication::GetInstancePointer()->GetLanguageChar() + "/" + name + std::string(".txt");
     }
-    
+
     if ( ReadText(filename) )
     {
         Justif();
@@ -886,7 +889,7 @@ bool CEdit::HyperGo(EventType event)
 void CEdit::Draw()
 {
     Math::Point     pos, ppos, dim, start, end;
-    float       size, indentLength;
+    float       size = 0.0f, indentLength = 0.0f;
     int         i, j, beg, len, c1, c2, o1, o2, eol, iIndex, line;
 
     if ( (m_state & STATE_VISIBLE) == 0 )  return;
@@ -1249,7 +1252,7 @@ void CEdit::SetText(const char *text, bool bNew)
 {
     int     i, j, font;
     bool    bBOL;
-    
+
     if ( !bNew )  UndoMemorize(OPERUNDO_SPEC);
 
     m_len = strlen(text);
@@ -1387,10 +1390,11 @@ int CEdit::GetTextLength()
 
 std::string GetNameParam(std::string cmd, int rank)
 {
-    std::vector<std::string> results;    
+    std::vector<std::string> results;
     boost::split(results, cmd, boost::is_any_of(" ;"));
-    
-    if (results.size() > static_cast<unsigned int>(rank)) {
+
+    if (results.size() > static_cast<unsigned int>(rank))
+    {
         return results.at(rank);
     }
 
@@ -1402,11 +1406,12 @@ std::string GetNameParam(std::string cmd, int rank)
 
 int GetValueParam(std::string cmd, int rank)
 {
-    std::vector<std::string> results;    
+    std::vector<std::string> results;
     boost::split(results, cmd, boost::is_any_of(" ;"));
     int return_value = 0;
-    
-    if (results.size() > static_cast<unsigned int>(rank)) {
+
+    if (results.size() > static_cast<unsigned int>(rank))
+    {
         return_value = atoi(results.at(rank).c_str());
     }
 
@@ -1419,7 +1424,8 @@ void CEdit::FreeImage()
 {
     std::string filename;
 
-    for (int i = 0 ; i < m_imageTotal; i++ ) {
+    for (int i = 0 ; i < m_imageTotal; i++ )
+    {
         filename = GetProfile().GetUserBasedPath(m_image[i].name, "diagram") + ".png";
         m_engine->DeleteTexture(filename);
     }
@@ -1448,12 +1454,14 @@ bool CEdit::ReadText(std::string filename, int addSize)
     bool        bInSoluce, bBOL;
 
     if ( filename[0] == 0 )  return false;
+
     boost::replace_all(filename, "\\", "/");
-    
+
     /* This is ugly but doesn't require many changes in code. If file doesn't
        exists it's posible filename is absolute not full path */
     std::string path = filename;
-    if (!fs::exists(path)) {
+    if (!fs::exists(path))
+    {
         path = CApplication::GetInstancePointer()->GetDataDirPath() + "/" + filename;
     }
 
@@ -1484,10 +1492,11 @@ bool CEdit::ReadText(std::string filename, int addSize)
 
     m_format.clear();
     m_format.reserve(m_maxChar+1);
-    for (i = 0; i <= m_maxChar+1; i++) {
+    for (i = 0; i <= m_maxChar+1; i++)
+    {
         m_format.push_back(0);
     }
-    
+
     fclose(file);
 
     bInSoluce = false;
@@ -1877,7 +1886,7 @@ bool CEdit::WriteText(std::string filename)
     FILE*       file;
     char        buffer[1000+20];
     int         i, j, k, n;
-    float       iDim;
+    float       iDim = 0.0f;
 
     if ( filename[0] == 0 )  return false;
     file = fopen(filename.c_str(), "wb");
@@ -1951,7 +1960,8 @@ void CEdit::SetMaxChar(int max)
 
     m_format.clear();
     m_format.reserve(m_maxChar+1);
-    for (int i = 0; i <= m_maxChar+1; i++) {
+    for (int i = 0; i <= m_maxChar+1; i++)
+    {
         m_format.push_back(0);
     }
 
@@ -2142,10 +2152,12 @@ bool CEdit::GetDisplaySpec()
 void CEdit::SetMultiFont(bool bMulti)
 {
     m_format.clear();
-    
-    if (bMulti) {
+
+    if (bMulti)
+    {
         m_format.reserve(m_maxChar+1);
-        for (int i = 0; i <= m_maxChar+1; i++) {
+        for (int i = 0; i <= m_maxChar+1; i++)
+        {
             m_format.push_back(0);
         }
     }
@@ -2397,7 +2409,7 @@ void CEdit::MoveChar(int move, bool bWord, bool bSelect)
 
 void CEdit::MoveLine(int move, bool bWord, bool bSelect)
 {
-    float   column, indentLength;
+    float   column, indentLength = 0.0f;
     int     i, line, c;
 
     if ( move == 0 )  return;
@@ -2501,200 +2513,113 @@ void CEdit::ColumnFix()
 
 // Cut the selected characters or entire line.
 
-bool CEdit::Cut() // TODO MS Windows allocations
+bool CEdit::Cut()
 {
-  /*  HGLOBAL hg;
-    char*   text;
-    char    c;
-    int     c1, c2, start, len, i, j;
-
-    if ( !m_bEdit )  return false;
-
-    c1 = m_cursor1;
-    c2 = m_cursor2;
-    if ( c1 > c2 )  Math::Swap(c1, c2);  // always c1 <= c2
-
-    if ( c1 == c2 )
-    {
-        while ( c1 > 0 )
-        {
-            if ( m_text[c1-1] == '\n' )  break;
-            c1 --;
-        }
-        while ( c2 < m_len )
-        {
-            c2 ++;
-            if ( m_text[c2-1] == '\n' )  break;
-        }
-    }
-
-    if ( c1 == c2 )  return false;
-
-    start = c1;
-    len   = c2-c1;
-
-    if ( !(hg = GlobalAlloc(GMEM_DDESHARE, len*2+1)) )
-    {
-        return false;
-    }
-    if ( !(text = (char*)GlobalLock(hg)) )
-    {
-        GlobalFree(hg);
-        return false;
-    }
-
-    j = 0;
-    for ( i=start ; i<start+len ; i++ )
-    {
-        c = m_text[i];
-        if ( c == '\n' )  text[j++] = '\r';
-        text[j++] = c;
-    }
-    text[j] = 0;
-    GlobalUnlock(hg);
-
-    if ( !OpenClipboard(NULL) )
-    {
-        GlobalFree(hg);
-        return false;
-    }
-    if ( !EmptyClipboard() )
-    {
-        GlobalFree(hg);
-        return false;
-    }
-    if ( !SetClipboardData(CF_TEXT, hg) )
-    {
-        GlobalFree(hg);
-        return false;
-    }
-    CloseClipboard();
-
     UndoMemorize(OPERUNDO_SPEC);
-    m_cursor1 = c1;
-    m_cursor2 = c2;
+    Copy(true);
+
     DeleteOne(0);  // deletes the selected characters
     Justif();
     ColumnFix();
-    SendModifEvent();*/
+    SendModifEvent();
     return true;
 }
 
 // Copy the selected characters or entire line.
 
-bool CEdit::Copy() // TODO
+bool CEdit::Copy(bool memorize_cursor)
 {
- /*   HGLOBAL hg;
-    char*   text;
-    char    c;
-    int     c1, c2, start, len, i, j;
+    int c1, c2, start, len;
+    char *text;
 
     c1 = m_cursor1;
     c2 = m_cursor2;
-    if ( c1 > c2 )  Math::Swap(c1, c2);  // always c1 <= c2
+    if ( c1 > c2 )
+    {
+        Math::Swap(c1, c2);  // always c1 <= c2
+    }
 
     if ( c1 == c2 )
     {
         while ( c1 > 0 )
         {
-            if ( m_text[c1-1] == '\n' )  break;
-            c1 --;
+            if ( m_text[c1 - 1] == '\n' )
+            {
+                break;
+            }
+            c1--;
         }
         while ( c2 < m_len )
         {
-            c2 ++;
-            if ( m_text[c2-1] == '\n' )  break;
+            c2++;
+            if ( m_text[c2 - 1] == '\n' )
+            {
+                break;
+            }
         }
     }
 
-    if ( c1 == c2 )  return false;
-
-    start = c1;
-    len   = c2-c1;
-
-    if ( !(hg = GlobalAlloc(GMEM_DDESHARE, len*2+1)) )
+    if ( c1 == c2 )
     {
-        return false;
-    }
-    if ( !(text = (char*)GlobalLock(hg)) )
-    {
-        GlobalFree(hg);
         return false;
     }
 
-    j = 0;
-    for ( i=start ; i<start+len ; i++ )
-    {
-        c = m_text[i];
-        if ( c == '\n' )  text[j++] = '\r';
-        text[j++] = c;
-    }
-    text[j] = 0;
-    GlobalUnlock(hg);
+    start = c1;
+    len   = c2 - c1;
 
-    if ( !OpenClipboard(NULL) )
+    text = new char[len + 1];
+    strncpy(text, m_text + start, len);
+    text[len] = 0;
+    widgetSetClipboardText(text);
+    delete []text;
+
+    if (memorize_cursor)
     {
-        GlobalFree(hg);
-        return false;
+        m_cursor1 = c1;
+        m_cursor2 = c2;
     }
-    if ( !EmptyClipboard() )
-    {
-        GlobalFree(hg);
-        return false;
-    }
-    if ( !SetClipboardData(CF_TEXT, hg) )
-    {
-        GlobalFree(hg);
-        return false;
-    }
-    CloseClipboard();
-*/
+
     return true;
 }
 
 // Paste the contents of the notebook.
 
-bool CEdit::Paste() // TODO
+bool CEdit::Paste()
 {
-    /*HANDLE  h;
     char    c;
-    char*   p;
+    char*   text;
 
-    if ( !m_bEdit )  return false;
-
-    if ( !OpenClipboard(NULL) )
+    if ( !m_bEdit )
     {
         return false;
     }
 
-    if ( !(h = GetClipboardData(CF_TEXT)) )
-    {
-        CloseClipboard();
-        return false;
-    }
+    text = widgetGetClipboardText();
 
-    if ( !(p = (char*)GlobalLock(h)) )
+    if ( text == nullptr )
     {
-        CloseClipboard();
         return false;
     }
 
     UndoMemorize(OPERUNDO_SPEC);
-
-    while ( *p != 0 )
+    for ( unsigned int i = 0; i < strlen(text); i++ )
     {
-        c = *p++;
-        if ( c == '\r' )  continue;
-        if ( c == '\t' && m_bAutoIndent )  continue;
+        c = text[i];
+        if ( c == '\r' )
+        {
+            continue;
+        }
+        if ( c == '\t' && m_bAutoIndent )
+        {
+            continue;
+        }
         InsertOne(c);
     }
 
-    GlobalUnlock(h);
-    CloseClipboard();
-
+    free(text);
     Justif();
     ColumnFix();
-    SendModifEvent();*/
+    SendModifEvent();
     return true;
 }
 
@@ -2703,7 +2628,10 @@ bool CEdit::Paste() // TODO
 
 bool CEdit::Undo()
 {
-    if ( !m_bEdit )  return false;
+    if ( !m_bEdit )
+    {
+        return false;
+    }
 
     return UndoRecall();
 }
@@ -2715,7 +2643,10 @@ void CEdit::Insert(char character)
 {
     int     i, level, tab;
 
-    if ( !m_bEdit )  return;
+    if ( !m_bEdit )
+    {
+        return;
+    }
 
     if ( !m_bMulti )  // single-line?
     {
@@ -3052,7 +2983,7 @@ bool CEdit::MinMaj(bool bMaj)
 
 void CEdit::Justif()
 {
-    float   width, size, indentLength;
+    float   width, size, indentLength = 0.0f;
     int     i, j, line, indent;
     bool    bDual, bString, bRem;
 
@@ -3315,7 +3246,7 @@ bool CEdit::SetFormat(int cursor1, int cursor2, int format)
 void CEdit::UpdateScroll()
 {
     float value;
-    
+
     if ( m_scroll != nullptr )
     {
         if ( m_lineTotal <= m_lineVisible )
@@ -3339,3 +3270,4 @@ void CEdit::UpdateScroll()
 }
 
 }
+

@@ -63,4 +63,3 @@ protected:
     float           m_lastParticle;
 };
 
-

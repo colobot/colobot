@@ -5,15 +5,18 @@ include_directories(
 ${SRC_DIR}
 ${GTEST_INCLUDE_DIR}
 ${GMOCK_INCLUDE_DIR}
+${CLIPBOARD_INCLUDE_DIR}
 )
 
 # Platform-dependent implementation of CSystemUtils
-if (${PLATFORM_WINDOWS})
+if(PLATFORM_WINDOWS)
     set(SYSTEM_CPP_MODULE "system_windows.cpp")
-elseif(${PLATFORM_LINUX})
+elseif(PLATFORM_LINUX)
     set(SYSTEM_CPP_MODULE "system_linux.cpp")
+    set(ADDITIONAL_LIB "-lX11")
 else()
     set(SYSTEM_CPP_MODULE "system_other.cpp")
+    set(ADDITIONAL_LIB "-lX11")
 endif()
 
 add_executable(edit_test
@@ -36,6 +39,9 @@ stubs/particle_stub.cpp
 stubs/restext_stub.cpp
 stubs/robotmain_stub.cpp
 edit_test.cpp)
-target_link_libraries(edit_test gtest gmock ${SDL_LIBRARY} ${SDLTTF_LIBRARY} ${Boost_LIBRARIES})
+
+target_link_libraries(edit_test gtest gmock clipboard ${SDL_LIBRARY} ${SDLTTF_LIBRARY} ${Boost_LIBRARIES} ${ADDITIONAL_LIB})
+
+
 
 add_test(edit_test ./edit_test)

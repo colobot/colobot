@@ -397,7 +397,7 @@ void CAutoTower::FireStopUpdate(float progress, bool bLightOn)
                 pos.y = 18.0f;
                 pos.z = listpos[i*2+1];
                 pos = Transform(*mat, pos);
-                
+
                 m_partiStop[i] = m_particle->CreateParticle(pos, speed,
                                                               dim, Gfx::PARTISELR,
                                                               1.0f, 0.0f, 0.0f);
@@ -543,5 +543,4 @@ bool CAutoTower::Read(char *line)
 
     return true;
 }
-
 

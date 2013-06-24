@@ -101,7 +101,7 @@ bool CMotionSpider::Create(Math::Vector pos, float angle, ObjectType type,
 
     // Creates the main base.
     rank = m_engine->CreateObject();
-    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_VEHICULE);  // this is a moving object
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_VEHICLE);  // this is a moving object
     m_object->SetObjectRank(0, rank);
     // This is an "empty" object, without triangles
     m_object->SetPosition(0, pos);
@@ -363,7 +363,7 @@ bool CMotionSpider::EventFrame(const Event &event)
 {
     Math::Vector    dir, pos, speed;
     Math::Point     dim;
-    float       s, a, prog, time;
+    float       s, a, prog = 0.0f, time;
     float       tSt[12], tNd[12];
     int         i, ii, st, nd, action;
     bool        bStop;
@@ -742,5 +742,4 @@ bool CMotionSpider::EventFrame(const Event &event)
 
     return true;
 }
-
 

@@ -118,7 +118,7 @@ enum EngineRenderState
     //! Mode for rendering text
     ENG_RSTATE_TEXT             = (1<<18),
     //! Only opaque texture, no blending, etc.
-    ENG_RSTATE_OPAQUE_TEXTURE     = (1<<19),
+    ENG_RSTATE_OPAQUE_TEXTURE   = (1<<19),
     //! Only opaque color, no texture, blending, etc.
     ENG_RSTATE_OPAQUE_COLOR     = (1<<20)
 };
@@ -171,7 +171,7 @@ enum EngineObjectType
     //! Fixed object
     ENG_OBJTYPE_FIX         = 2,
     //! Moving object
-    ENG_OBJTYPE_VEHICULE    = 3,
+    ENG_OBJTYPE_VEHICLE    = 3,
     //! Part of a moving object
     ENG_OBJTYPE_DESCENDANT  = 4,
     //! Fixed object type quartz
@@ -194,10 +194,15 @@ struct EngineBaseObjDataTier
     unsigned int            staticBufferId;
     bool                    updateStaticBuffer;
 
-    inline EngineBaseObjDataTier(EngineTriangleType type = ENG_TRIANGLE_TYPE_TRIANGLES,
-                                 const Material& material = Material(),
-                                 int state = ENG_RSTATE_NORMAL)
-        : type(type), material(material), state(state), staticBufferId(0), updateStaticBuffer(false) {}
+    inline EngineBaseObjDataTier(EngineTriangleType _type = ENG_TRIANGLE_TYPE_TRIANGLES,
+                                 const Material& _material = Material(),
+                                 int _state = ENG_RSTATE_NORMAL)
+     : type(_type)
+     , material(_material)
+     , state(_state)
+     , staticBufferId(0)
+     , updateStaticBuffer(false)
+    {}
 };
 
 /**
@@ -209,8 +214,9 @@ struct EngineBaseObjLODTier
     LODLevel                            lodLevel;
     std::vector<EngineBaseObjDataTier>  next;
 
-    inline EngineBaseObjLODTier(LODLevel lodLevel = LOD_Constant)
-        : lodLevel(lodLevel) {}
+    inline EngineBaseObjLODTier(LODLevel _lodLevel = LOD_Constant)
+     : lodLevel(_lodLevel)
+    {}
 };
 
 /**
@@ -225,8 +231,10 @@ struct EngineBaseObjTexTier
     Texture                            tex2;
     std::vector<EngineBaseObjLODTier>  next;
 
-    inline EngineBaseObjTexTier(const std::string& tex1Name = "", const std::string& tex2Name = "")
-        : tex1Name(tex1Name), tex2Name(tex2Name) {}
+    inline EngineBaseObjTexTier(const std::string& _tex1Name = "", const std::string& _tex2Name = "")
+     : tex1Name(_tex1Name)
+     , tex2Name(_tex2Name)
+    {}
 };
 
 /**
@@ -556,18 +564,17 @@ struct EngineMouse
     //! Hot point
     Math::Point hotPoint;
 
-    inline EngineMouse(int icon1 = -1, int icon2 = -1, int iconShadow = -1,
-                       EngineRenderState mode1 = ENG_RSTATE_NORMAL,
-                       EngineRenderState mode2 = ENG_RSTATE_NORMAL,
-                       Math::Point hotPoint = Math::Point())
-    {
-        this->icon1      = icon1;
-        this->icon2      = icon2;
-        this->iconShadow = iconShadow;
-        this->mode1      = mode1;
-        this->mode2      = mode2;
-        this->hotPoint   = hotPoint;
-    }
+    inline EngineMouse(int _icon1 = -1, int _icon2 = -1, int _iconShadow = -1,
+                       EngineRenderState _mode1 = ENG_RSTATE_NORMAL,
+                       EngineRenderState _mode2 = ENG_RSTATE_NORMAL,
+                       Math::Point _hotPoint = Math::Point())
+     : icon1(_icon1)
+     , icon2(_icon2)
+     , iconShadow(_iconShadow)
+     , mode1(_mode1)
+     , mode2(_mode2)
+     , hotPoint(_hotPoint)
+    {}
 };
 
 
@@ -726,6 +733,7 @@ public:
     //! Writes a screenshot containing the current frame
     bool            WriteScreenShot(const std::string& fileName, int width, int height);
 
+
     //@{
     //! Management of game pause mode
     void            SetPause(bool pause);
@@ -798,6 +806,9 @@ public:
                                     LODLevel lodLevel, bool globalUpdate);
 
     // Objects
+
+    //! Print debug info about an object
+    void            DebugObject(int rank);
 
     //! Creates a new object and returns its rank
     int             CreateObject();
@@ -957,6 +968,9 @@ public:
     //! Deletes the given texture, unloading it and removing from cache
     void            DeleteTexture(const Texture& tex);
 
+    //! Empties the texture cache
+    void            FlushTextureCache();
+
     //! Defines of the distance field of vision
     void            SetTerrainVision(float vision);
 
@@ -1050,10 +1064,10 @@ public:
     //! Management of the background image to use
     void            SetBackground(const std::string& name, Color up = Color(), Color down = Color(),
                                   Color cloudUp = Color(), Color cloudDown = Color(),
-                                  bool full = false, Math::Point scale = Math::Point(1.0f, 1.0f));
+                                  bool full = false);
     void            GetBackground(std::string& name, Color& up, Color& down,
                                   Color& cloudUp, Color& cloudDown,
-                                  bool& full, Math::Point& scale);
+                                  bool& full);
     //@}
 
     //! Specifies the name of foreground texture
@@ -1346,7 +1360,6 @@ protected:
     bool            m_firstGroundSpot;
     int             m_secondTexNum;
     bool            m_backgroundFull;
-    Math::Point     m_backgroundScale;
     std::string     m_backgroundName;
     Texture         m_backgroundTex;
     Color           m_backgroundColorUp;
@@ -1424,7 +1437,11 @@ protected:
 
     //! True when drawing 2D UI
     bool            m_interfaceMode;
+
+    bool            m_debugLights;
+    bool            m_debugDumpLights;
 };
 
 
 } // namespace Gfx
+

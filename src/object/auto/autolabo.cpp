@@ -42,7 +42,7 @@ const float LABO_DELAY = 20.0f; // duration of the analysis
 
 // Object's constructor.
 
-    CAutoLabo::CAutoLabo(CObject* object) : CAuto(object)
+CAutoLabo::CAutoLabo(CObject* object) : CAuto(object)
 {
     int     i;
 
@@ -111,6 +111,48 @@ void CAutoLabo::Init()
 }
 
 
+// Starts an action
+
+Error CAutoLabo::StartAction(int param)
+{
+    CObject* power;
+
+    if ( m_phase != ALAP_WAIT )
+    {
+        return ERR_GENERIC;
+    }
+
+    m_research = static_cast<ResearchType>(param);
+
+    if ( g_researchDone & m_research )
+    {
+        return ERR_LABO_ALREADY;
+    }
+
+    power = m_object->GetPower();
+    if ( power == 0 )
+    {
+        return ERR_LABO_NULL;
+    }
+    if ( power->GetType() != OBJECT_BULLET )
+    {
+        return ERR_LABO_BAD;
+    }
+
+    SetBusy(true);
+    InitProgressTotal(1.0f+1.5f+1.5f+LABO_DELAY+1.5f+1.5f+1.0f);
+    UpdateInterface();
+
+    power->SetLock(true);  // ball longer usable
+
+    SoundManip(1.0f, 1.0f, 1.0f);
+    m_phase    = ALAP_OPEN1;
+    m_progress = 0.0f;
+    m_speed    = 1.0f/1.0f;
+    return ERR_OK;
+}
+
+
 // Management of an event.
 
 bool CAutoLabo::EventProcess(const Event &event)
@@ -130,46 +172,17 @@ bool CAutoLabo::EventProcess(const Event &event)
         if ( m_object->GetSelect() )  CreateInterface(true);
     }
 
-    if ( m_object->GetSelect() &&  // center selected?
-         (event.type == EVENT_OBJECT_RiPAW ||
-          event.type == EVENT_OBJECT_RiGUN) )
+    if ( m_object->GetSelect() )  // center selected?
     {
-        if ( m_phase != ALAP_WAIT )
-        {
+        Error err = ERR_GENERIC;
+        if ( event.type == EVENT_OBJECT_RiPAW   ) err = StartAction(RESEARCH_iPAW);
+        if ( event.type == EVENT_OBJECT_RiGUN   ) err = StartAction(RESEARCH_iGUN);
+
+        if( err != ERR_OK && err != ERR_GENERIC )
+            m_displayText->DisplayError(err, m_object);
+
+        if( err != ERR_GENERIC )
             return false;
-        }
-
-        m_research = event.type;
-
-        if ( TestResearch(m_research) )
-        {
-            m_displayText->DisplayError(ERR_LABO_ALREADY, m_object);
-            return false;
-        }
-
-        power = m_object->GetPower();
-        if ( power == 0 )
-        {
-            m_displayText->DisplayError(ERR_LABO_NULL, m_object);
-            return false;
-        }
-        if ( power->GetType() != OBJECT_BULLET )
-        {
-            m_displayText->DisplayError(ERR_LABO_BAD, m_object);
-            return false;
-        }
-
-        SetBusy(true);
-        InitProgressTotal(1.0f+1.5f+1.5f+LABO_DELAY+1.5f+1.5f+1.0f);
-        UpdateInterface();
-
-        power->SetLock(true);  // ball longer usable
-
-        SoundManip(1.0f, 1.0f, 1.0f);
-        m_phase    = ALAP_OPEN1;
-        m_progress = 0.0f;
-        m_speed    = 1.0f/1.0f;
-        return true;
     }
 
     if ( event.type != EVENT_FRAME )  return true;
@@ -341,7 +354,13 @@ bool CAutoLabo::EventProcess(const Event &event)
         }
         else
         {
-            SetResearch(m_research);  // research done
+            g_researchDone |= m_research;  // research done
+
+            m_main->WriteFreeParam();
+
+            Event newEvent(EVENT_UPDINTERFACE);
+            m_eventQueue->AddEvent(newEvent);
+            UpdateInterface();
 
             power = m_object->GetPower();
             if ( power != 0 )
@@ -606,11 +625,10 @@ bool CAutoLabo::Read(char *line)
     m_phase = static_cast< AutoLaboPhase >(OpInt(line, "aPhase", ALAP_WAIT));
     m_progress = OpFloat(line, "aProgress", 0.0f);
     m_speed = OpFloat(line, "aSpeed", 1.0f);
-    m_research = static_cast< EventType >(OpInt(line, "aResearch", 0));
+    m_research = static_cast< ResearchType >(OpInt(line, "aResearch", 0));
 
     m_lastParticle = 0.0f;
 
     return true;
 }
-
 

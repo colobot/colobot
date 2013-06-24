@@ -93,4 +93,3 @@ protected:
     ManagedClassInstances m_table[CLASS_MAX];
 };
 
-

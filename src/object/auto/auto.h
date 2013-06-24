@@ -31,7 +31,7 @@ namespace Ui {
 class CDisplayText;
 class CInterface;
 class CWindow;
-} /* Ui */ 
+} /* Ui */
 
 namespace Gfx {
 
@@ -44,7 +44,7 @@ class CCloud;
 class CCamera;
 class CPlanet;
 class CLightning;
-} /* Gfx */ 
+} /* Gfx */
 
 
 class CAuto
@@ -60,6 +60,8 @@ public:
     virtual bool    EventProcess(const Event &event);
     virtual Error   IsEnded();
     virtual bool    Abort();
+
+    virtual Error   StartAction(int param);
 
     virtual bool    SetType(ObjectType type);
     virtual bool    SetValue(int rank, float value);

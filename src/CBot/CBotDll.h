@@ -93,22 +93,22 @@ public:
     CBotTypResult(int type);
     // for simple types (CBotTypInt à CBotTypString)
 
-    
+
     CBotTypResult(int type, const char* name);
     // for pointer types and intrinsic classes
-    
+
     CBotTypResult(int type, CBotClass* pClass);
     // for the instance of a class
-    
+
     CBotTypResult(int type, CBotTypResult elem);
     // for arrays of variables
-    
+
     CBotTypResult(const CBotTypResult& typ);
     // for assignments
-    
+
     CBotTypResult();
     // for default
-    
+
     ~CBotTypResult();
 
     int            GetType(int mode = 0) const;
@@ -147,7 +147,7 @@ private:
     CBotClass*        m_pClass;    // for the derivatives of class
     int                m_limite;    // limits of tables
     friend class    CBotVarClass;
-    friend class    CBotVarPointer;    
+    friend class    CBotVarPointer;
 };
 
 /*
@@ -246,7 +246,7 @@ private:
 
 
 ////////////////////////////////////////////////////////////////////////
-// 
+//
 // as part of MFC CString not used here.
 //
 // ( all functions are not implemented yet )
@@ -451,12 +451,12 @@ public:
 
     static
     void            SetTimer(int n);
-    //                defines the number of steps (parts of instructions) to done  
+    //                defines the number of steps (parts of instructions) to done
     //                in Run() before rendering hand "false" \TODO avant de rendre la main "false"
 
     static
-    bool            AddFunction(const char* name, 
-                                bool rExec (CBotVar* pVar, CBotVar* pResult, int& Exception, void* pUser), 
+    bool            AddFunction(const char* name,
+                                bool rExec (CBotVar* pVar, CBotVar* pResult, int& Exception, void* pUser),
                                 CBotTypResult rCompile (CBotVar* &pVar, void* pUser));
     //                call this to add externally (**)
     //                a new function used by the program CBoT
@@ -472,8 +472,8 @@ public:
     //                restores the state of execution from file
     //                the compiled program must obviously be the same
 
-    bool            GetPosition(const char* name, int& start, int& stop, 
-                                CBotGet modestart = GetPosExtern, 
+    bool            GetPosition(const char* name, int& start, int& stop,
+                                CBotGet modestart = GetPosExtern,
                                 CBotGet modestop  = GetPosBloc);
     //                gives the position of a routine in the original text
     //                the user can select the item to find from the beginning to the end
@@ -513,7 +513,7 @@ int    cMean(CBotVar* &pVar, CBotString& ClassName)
 
     while ( pVar != NULL )
     {
-        if ( pVar->GetType() > CBotTypDouble ) return 6002;        // this is not a number 
+        if ( pVar->GetType() > CBotTypDouble ) return 6002;        // this is not a number
         pVar = pVar -> GetNext();
     }
 
@@ -623,7 +623,7 @@ virtual                ~CBotVar( );                        // destructor
     void            SetName(const char* name);    // changes the name of the variable
 
     int                GetType(int mode = 0);          // returns the base type (int) of the variable
-                                                        // TODO check it    
+                                                        // TODO check it
     ////////////////////////////////////////////////////////////////////////////////////////
 
     CBotTypResult    GetTypResult(int mode = 0);    // returns the complete type of the variable
@@ -654,7 +654,7 @@ virtual                ~CBotVar( );                        // destructor
     CBotVar*        GetItemRef(int nIdent);        // idem à partir du n° ref
                                                     // TODO ditto from ref no.
     virtual
-    CBotVar*        GetItem(int row, bool bGrow = false); 
+    CBotVar*        GetItem(int row, bool bGrow = false);
 
     virtual
     CBotVar*        GetItemList();                // lists the elements
@@ -802,8 +802,8 @@ public:
 
                     ~CBotClass( );                            // destructor
 
-    bool            AddFunction(const char* name, 
-                                bool rExec (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception), 
+    bool            AddFunction(const char* name,
+                                bool rExec (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception),
                                 CBotTypResult rCompile (CBotVar* pThis, CBotVar* &pVar));
     //                this call allows to add as external (**)
     //                new method used by the objects of this class
@@ -841,7 +841,7 @@ public:
     CBotVar*        GetItem(const char* name);    // one of the variables according to its name
     CBotVar*        GetItemRef(int nIdent);
 
-    CBotTypResult    CompileMethode(const char* name, CBotVar* pThis, CBotVar** ppParams, 
+    CBotTypResult    CompileMethode(const char* name, CBotVar* pThis, CBotVar** ppParams,
                                    CBotCStack* pStack, long& nIdent);
 
     bool            ExecuteMethode(long& nIdent, const char* name, CBotVar* pThis, CBotVar** ppParams, CBotVar* &pResult, CBotStack* &pStack, CBotToken* pToken);
@@ -854,7 +854,7 @@ public:
     CBotClass*        Compile1(CBotToken* &p, CBotCStack* pStack);
 
     bool            CompileDefItem(CBotToken* &p, CBotCStack* pStack, bool bSecond);
-    
+
     bool            IsIntrinsic();
     void            Purge();
     static
@@ -917,7 +917,7 @@ private:
 
     int                m_start;                    // position in the original text (program)
     int                m_end;                        // the same for the end of the token
-    
+
     /**
      * \brief Check whether given parameter is a keyword
      */
@@ -979,11 +979,11 @@ public:
     CBotToken*        GetPrev();
 
     /**
-     * \brief transforms the entire program 
+     * \brief transforms the entire program
      */
     static
     CBotToken*        CompileTokens(const char* p, int& error);
-       
+
     /**
      * \brief releases the list
      */

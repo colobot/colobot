@@ -52,7 +52,7 @@ class CTerrain;
 class CWater;
 class CCamera;
 class CParticle;
-} /* Gfx */ 
+} /* Gfx */
 
 
 const int BRAINMAXSCRIPT = 10;
@@ -114,6 +114,7 @@ public:
     char*       GetScriptName(int rank);
     void        SetSoluceName(char *name);
     char*       GetSoluceName();
+    bool        SendProgram(int rank, const char* buffer);
 
     bool        ReadSoluce(char* filename);
     bool        ReadProgram(int rank, const char* filename);

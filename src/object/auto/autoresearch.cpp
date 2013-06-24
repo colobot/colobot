@@ -92,6 +92,60 @@ void CAutoResearch::Init()
 }
 
 
+// Starts an action
+
+Error CAutoResearch::StartAction(int param)
+{
+    CObject* power;
+    float    time;
+
+    if ( m_phase != ALP_WAIT )
+    {
+        return ERR_GENERIC;
+    }
+
+    m_research = static_cast<ResearchType>(param);
+
+    if ( g_researchDone & m_research )
+    {
+        return ERR_RESEARCH_ALREADY;
+    }
+
+    power = m_object->GetPower();
+    if ( power == 0 )
+    {
+        return ERR_RESEARCH_POWER;
+    }
+    if ( power->GetCapacity() > 1.0f )
+    {
+        return ERR_RESEARCH_TYPE;
+    }
+    if ( power->GetEnergy() < 1.0f )
+    {
+        return ERR_RESEARCH_ENERGY;
+    }
+
+    time = SEARCH_TIME;
+    if ( m_research == RESEARCH_TANK   )  time *= 0.3f;
+    if ( m_research == RESEARCH_FLY    )  time *= 0.3f;
+    if ( m_research == RESEARCH_ATOMIC )  time *= 2.0f;
+
+    SetBusy(true);
+    InitProgressTotal(time);
+    UpdateInterface();
+
+    m_channelSound = m_sound->Play(SOUND_RESEARCH, m_object->GetPosition(0), 0.0f, 1.0f, true);
+    m_sound->AddEnvelope(m_channelSound, 1.0f, 1.0f,      2.0f, SOPER_CONTINUE);
+    m_sound->AddEnvelope(m_channelSound, 1.0f, 1.0f, time-4.0f, SOPER_CONTINUE);
+    m_sound->AddEnvelope(m_channelSound, 0.0f, 1.0f,      2.0f, SOPER_STOP);
+
+    m_phase    = ALP_SEARCH;
+    m_progress = 0.0f;
+    m_speed    = 1.0f/time;
+    return ERR_OK;
+}
+
+
 // Management of an event.
 
 bool CAutoResearch::EventProcess(const Event &event)
@@ -100,7 +154,7 @@ bool CAutoResearch::EventProcess(const Event &event)
     Math::Vector    pos, speed;
     Error       message;
     Math::Point     dim;
-    float       angle, time;
+    float       angle;
 
     CAuto::EventProcess(event);
 
@@ -111,64 +165,23 @@ bool CAutoResearch::EventProcess(const Event &event)
         if ( m_object->GetSelect() )  CreateInterface(true);
     }
 
-    if ( m_object->GetSelect() &&  // center selected?
-         (event.type == EVENT_OBJECT_RTANK   ||
-          event.type == EVENT_OBJECT_RFLY    ||
-          event.type == EVENT_OBJECT_RTHUMP  ||
-          event.type == EVENT_OBJECT_RCANON  ||
-          event.type == EVENT_OBJECT_RTOWER  ||
-          event.type == EVENT_OBJECT_RPHAZER ||
-          event.type == EVENT_OBJECT_RSHIELD ||
-          event.type == EVENT_OBJECT_RATOMIC ) )
+    if ( m_object->GetSelect() )  // center selected?
     {
-        if ( m_phase != ALP_WAIT )
-        {
+        Error err = ERR_GENERIC;
+        if ( event.type == EVENT_OBJECT_RTANK   ) err = StartAction(RESEARCH_TANK);
+        if ( event.type == EVENT_OBJECT_RFLY    ) err = StartAction(RESEARCH_FLY);
+        if ( event.type == EVENT_OBJECT_RTHUMP  ) err = StartAction(RESEARCH_THUMP);
+        if ( event.type == EVENT_OBJECT_RCANON  ) err = StartAction(RESEARCH_CANON);
+        if ( event.type == EVENT_OBJECT_RTOWER  ) err = StartAction(RESEARCH_TOWER);
+        if ( event.type == EVENT_OBJECT_RPHAZER ) err = StartAction(RESEARCH_PHAZER);
+        if ( event.type == EVENT_OBJECT_RSHIELD ) err = StartAction(RESEARCH_SHIELD);
+        if ( event.type == EVENT_OBJECT_RATOMIC ) err = StartAction(RESEARCH_ATOMIC);
+
+        if( err != ERR_OK && err != ERR_GENERIC )
+            m_displayText->DisplayError(err, m_object);
+
+        if( err != ERR_GENERIC )
             return false;
-        }
-
-        m_research = event.type;
-
-        if ( TestResearch(m_research) )
-        {
-            m_displayText->DisplayError(ERR_RESEARCH_ALREADY, m_object);
-            return false;
-        }
-
-        power = m_object->GetPower();
-        if ( power == 0 )
-        {
-            m_displayText->DisplayError(ERR_RESEARCH_POWER, m_object);
-            return false;
-        }
-        if ( power->GetCapacity() > 1.0f )
-        {
-            m_displayText->DisplayError(ERR_RESEARCH_TYPE, m_object);
-            return false;
-        }
-        if ( power->GetEnergy() < 1.0f )
-        {
-            m_displayText->DisplayError(ERR_RESEARCH_ENERGY, m_object);
-            return false;
-        }
-
-        time = SEARCH_TIME;
-        if ( event.type == EVENT_OBJECT_RTANK   )  time *= 0.3f;
-        if ( event.type == EVENT_OBJECT_RFLY    )  time *= 0.3f;
-        if ( event.type == EVENT_OBJECT_RATOMIC )  time *= 2.0f;
-
-        SetBusy(true);
-        InitProgressTotal(time);
-        UpdateInterface();
-
-        m_channelSound = m_sound->Play(SOUND_RESEARCH, m_object->GetPosition(0), 0.0f, 1.0f, true);
-        m_sound->AddEnvelope(m_channelSound, 1.0f, 1.0f,      2.0f, SOPER_CONTINUE);
-        m_sound->AddEnvelope(m_channelSound, 1.0f, 1.0f, time-4.0f, SOPER_CONTINUE);
-        m_sound->AddEnvelope(m_channelSound, 0.0f, 1.0f,      2.0f, SOPER_STOP);
-
-        m_phase    = ALP_SEARCH;
-        m_progress = 0.0f;
-        m_speed    = 1.0f/time;
-        return true;
     }
 
     if ( event.type != EVENT_FRAME )  return true;
@@ -236,18 +249,25 @@ bool CAutoResearch::EventProcess(const Event &event)
         }
         else
         {
-            SetResearch(m_research);  // research done
+            g_researchDone |= m_research;  // research done
+
+            m_main->WriteFreeParam();
+
+            Event newEvent(EVENT_UPDINTERFACE);
+            m_eventQueue->AddEvent(newEvent);
+            UpdateInterface();
+
             m_displayText->DisplayError(INFO_RESEARCH, m_object);
 
             message = ERR_OK;
-            if ( m_research == EVENT_OBJECT_RTANK   )  message = INFO_RESEARCHTANK;
-            if ( m_research == EVENT_OBJECT_RFLY    )  message = INFO_RESEARCHFLY;
-            if ( m_research == EVENT_OBJECT_RTHUMP  )  message = INFO_RESEARCHTHUMP;
-            if ( m_research == EVENT_OBJECT_RCANON  )  message = INFO_RESEARCHCANON;
-            if ( m_research == EVENT_OBJECT_RTOWER  )  message = INFO_RESEARCHTOWER;
-            if ( m_research == EVENT_OBJECT_RPHAZER )  message = INFO_RESEARCHPHAZER;
-            if ( m_research == EVENT_OBJECT_RSHIELD )  message = INFO_RESEARCHSHIELD;
-            if ( m_research == EVENT_OBJECT_RATOMIC )  message = INFO_RESEARCHATOMIC;
+            if ( m_research == RESEARCH_TANK   )  message = INFO_RESEARCHTANK;
+            if ( m_research == RESEARCH_FLY    )  message = INFO_RESEARCHFLY;
+            if ( m_research == RESEARCH_THUMP  )  message = INFO_RESEARCHTHUMP;
+            if ( m_research == RESEARCH_CANON  )  message = INFO_RESEARCHCANON;
+            if ( m_research == RESEARCH_TOWER  )  message = INFO_RESEARCHTOWER;
+            if ( m_research == RESEARCH_PHAZER )  message = INFO_RESEARCHPHAZER;
+            if ( m_research == RESEARCH_SHIELD )  message = INFO_RESEARCHSHIELD;
+            if ( m_research == RESEARCH_ATOMIC )  message = INFO_RESEARCHATOMIC;
             if ( message != ERR_OK )
             {
                 m_displayText->DisplayError(message, m_object);
@@ -474,27 +494,6 @@ bool CAutoResearch::TestResearch(EventType event)
     return false;
 }
 
-// Indicates a search as made.
-
-void CAutoResearch::SetResearch(EventType event)
-{
-
-    if ( event == EVENT_OBJECT_RTANK   )  g_researchDone |= RESEARCH_TANK;
-    if ( event == EVENT_OBJECT_RFLY    )  g_researchDone |= RESEARCH_FLY;
-    if ( event == EVENT_OBJECT_RTHUMP  )  g_researchDone |= RESEARCH_THUMP;
-    if ( event == EVENT_OBJECT_RCANON  )  g_researchDone |= RESEARCH_CANON;
-    if ( event == EVENT_OBJECT_RTOWER  )  g_researchDone |= RESEARCH_TOWER;
-    if ( event == EVENT_OBJECT_RPHAZER )  g_researchDone |= RESEARCH_PHAZER;
-    if ( event == EVENT_OBJECT_RSHIELD )  g_researchDone |= RESEARCH_SHIELD;
-    if ( event == EVENT_OBJECT_RATOMIC )  g_researchDone |= RESEARCH_ATOMIC;
-
-    m_main->WriteFreeParam();
-
-    Event   newEvent(EVENT_UPDINTERFACE);
-    m_eventQueue->AddEvent(newEvent);
-    UpdateInterface();
-}
-
 
 // Updates the stop lights.
 
@@ -600,12 +599,11 @@ bool CAutoResearch::Read(char *line)
     m_phase = static_cast< AutoResearchPhase >(OpInt(line, "aPhase", ALP_WAIT));
     m_progress = OpFloat(line, "aProgress", 0.0f);
     m_speed = OpFloat(line, "aSpeed", 1.0f);
-    m_research = static_cast< EventType >(OpInt(line, "aResearch", 0));
+    m_research = static_cast< ResearchType >(OpInt(line, "aResearch", 0));
 
     m_lastUpdateTime = 0.0f;
     m_lastParticle = 0.0f;
 
     return true;
 }
-
 

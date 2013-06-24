@@ -10,6 +10,7 @@ public:
     CDeviceMock() {}
 
     MOCK_METHOD0(DebugHook, void());
+    MOCK_METHOD0(DebugLights, void());
 
     MOCK_METHOD0(Create, bool());
     MOCK_METHOD0(Destroy, void());

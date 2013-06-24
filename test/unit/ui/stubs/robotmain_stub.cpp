@@ -3,7 +3,7 @@
 
 template<> CRobotMain* CSingleton<CRobotMain>::m_instance = nullptr;
 
-CRobotMain::CRobotMain(CApplication* app)
+CRobotMain::CRobotMain(CApplication* app, bool loadProfile)
 {
 }
 

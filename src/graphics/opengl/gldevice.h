@@ -93,6 +93,7 @@ public:
     virtual ~CGLDevice();
 
     virtual void DebugHook();
+    virtual void DebugLights();
 
     virtual bool Create();
     virtual void Destroy();
@@ -192,6 +193,8 @@ private:
     void UpdateModelviewMatrix();
     //! Updates position for given light based on transformation matrices
     void UpdateLightPosition(int index);
+    //! Updates the texture params for given texture stage
+    void UpdateTextureParams(int index);
 
 private:
     //! Current config
@@ -255,3 +258,4 @@ private:
 
 
 } // namespace Gfx
+

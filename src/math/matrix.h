@@ -73,10 +73,10 @@ struct Matrix
 
     //! Creates the matrix from 1D array
     /** \a m matrix values in column-major order */
-    inline explicit Matrix(const float (&m)[16])
+    inline explicit Matrix(const float (&_m)[16])
     {
         for (int i = 0; i < 16; ++i)
-            this->m[i] = m[i];
+            m[i] = _m[i];
     }
 
     //! Creates the matrix from 2D array
@@ -84,21 +84,21 @@ struct Matrix
      * The array's first index is row, second is column.
      * \param m array with values
      */
-    inline explicit Matrix(const float (&m)[4][4])
+    inline explicit Matrix(const float (&_m)[4][4])
     {
         for (int c = 0; c < 4; ++c)
         {
             for (int r = 0; r < 4; ++r)
             {
-                this->m[4*c+r] = m[r][c];
+                m[4*c+r] = _m[r][c];
             }
         }
     }
 
     //! Sets value in given row and col
     /**
-     * \param row row (0 to 3)
-     * \param col column (0 to 3)
+     * \param row row (1 to 4)
+     * \param col column (1 to 4)
      * \param value value
      */
     inline void Set(int row, int col, float value)
@@ -108,8 +108,8 @@ struct Matrix
 
     //! Returns the value in given row and col
     /**
-     * \param row row (0 to 3)
-     * \param col column (0 to 3)
+     * \param row row (1 to 4)
+     * \param col column (1 to 4)
      * \returns value
      */
     inline float Get(int row, int col)
@@ -462,3 +462,4 @@ inline Math::Vector MatrixVectorMultiply(const Math::Matrix &m, const Math::Vect
 
 
 } // namespace Math
+

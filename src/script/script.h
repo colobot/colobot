@@ -38,13 +38,13 @@ class CDisplayText;
 class CEdit;
 class CInterface;
 class CList;
-} /* Ui */ 
+} /* Ui */
 
 namespace Gfx {
 class CEngine;
 class CTerrain;
 class CWater;
-} /* Gfx */ 
+} /* Gfx */
 
 
 
@@ -78,7 +78,7 @@ public:
     void        GetError(char* buffer);
 
     void        New(Ui::CEdit* edit, const char* name);
-    bool        SendScript(char* text);
+    bool        SendScript(const char* text);
     bool        ReadScript(const char* filename);
     bool        WriteScript(const char* filename);
     bool        ReadStack(FILE *file);
@@ -94,16 +94,20 @@ protected:
     bool        Compile();
 
 private:
-
     static CBotTypResult cNull(CBotVar* &var, void* user);
     static CBotTypResult cOneFloat(CBotVar* &var, void* user);
     static CBotTypResult cTwoFloat(CBotVar* &var, void* user);
     static CBotTypResult cString(CBotVar* &var, void* user);
+    static CBotTypResult cStringString(CBotVar* &var, void* user);
+    static CBotTypResult cEndMission(CBotVar* &var, void* user);
+    static CBotTypResult cPlayMusic(CBotVar* &var, void* user);
     static CBotTypResult cGetObject(CBotVar* &var, void* user);
+    static CBotTypResult cDelete(CBotVar* &var, void* user);
     static CBotTypResult cSearch(CBotVar* &var, void* user);
     static CBotTypResult cRadar(CBotVar* &var, void* user);
     static CBotTypResult cDetect(CBotVar* &var, void* user);
     static CBotTypResult cDirection(CBotVar* &var, void* user);
+    static CBotTypResult cCanBuild(CBotVar* &var, void* user);
     static CBotTypResult cProduce(CBotVar* &var, void* user);
     static CBotTypResult cDistance(CBotVar* &var, void* user);
     static CBotTypResult cSpace(CBotVar* &var, void* user);
@@ -132,11 +136,25 @@ private:
     static bool rPow(CBotVar* var, CBotVar* result, int& exception, void* user);
     static bool rRand(CBotVar* var, CBotVar* result, int& exception, void* user);
     static bool rAbs(CBotVar* var, CBotVar* result, int& exception, void* user);
+    static bool rEndMission(CBotVar* var, CBotVar* result, int& exception, void* user);
+    static bool rPlayMusic(CBotVar* var, CBotVar* result, int& exception, void* user);
+    static bool rStopMusic(CBotVar* var, CBotVar* result, int& exception, void* user);
+    static bool rGetBuild(CBotVar* var, CBotVar* result, int& exception, void* user);
+    static bool rGetResearchEnable(CBotVar* var, CBotVar* result, int& exception, void* user);
+    static bool rGetResearchDone(CBotVar* var, CBotVar* result, int& exception, void* user);
+    static bool rSetBuild(CBotVar* var, CBotVar* result, int& exception, void* user);
+    static bool rSetResearchEnable(CBotVar* var, CBotVar* result, int& exception, void* user);
+    static bool rSetResearchDone(CBotVar* var, CBotVar* result, int& exception, void* user);
+    static bool rGetObjectById(CBotVar* var, CBotVar* result, int& exception, void* user);
     static bool rGetObject(CBotVar* var, CBotVar* result, int& exception, void* user);
+    static bool rProgFunc(CBotVar* var, CBotVar* result, int& exception, void* user);
+    static bool rDelete(CBotVar* var, CBotVar* result, int& exception, void* user);
     static bool rSearch(CBotVar* var, CBotVar* result, int& exception, void* user);
     static bool rRadar(CBotVar* var, CBotVar* result, int& exception, void* user);
     static bool rDetect(CBotVar* var, CBotVar* result, int& exception, void* user);
     static bool rDirection(CBotVar* var, CBotVar* result, int& exception, void* user);
+    static bool rCanBuild(CBotVar* var, CBotVar* result, int& exception, void* user);
+    static bool rBuild(CBotVar* var, CBotVar* result, int& exception, void* user);
     static bool rProduce(CBotVar* var, CBotVar* result, int& exception, void* user);
     static bool rDistance(CBotVar* var, CBotVar* result, int& exception, void* user);
     static bool rDistance2d(CBotVar* var, CBotVar* result, int& exception, void* user);
@@ -174,6 +192,18 @@ private:
     static bool rPenColor(CBotVar* var, CBotVar* result, int& exception, void* user);
     static bool rPenWidth(CBotVar* var, CBotVar* result, int& exception, void* user);
 
+public:
+    static CBotTypResult cBusy(CBotVar* thisclass, CBotVar* &var);
+    static CBotTypResult cFactory(CBotVar* thisclass, CBotVar* &var);
+    static CBotTypResult cClassNull(CBotVar* thisclass, CBotVar* &var);
+    static CBotTypResult cClassOneFloat(CBotVar* thisclass, CBotVar* &var);
+
+    static bool rBusy(CBotVar* thisclass, CBotVar* var, CBotVar* result, int& exception);
+    static bool rFactory(CBotVar* thisclass, CBotVar* var, CBotVar* result, int& exception);
+    static bool rResearch(CBotVar* thisclass, CBotVar* var, CBotVar* result, int& exception);
+    static bool rDestroy(CBotVar* thisclass, CBotVar* var, CBotVar* result, int& exception);
+
+private:
     static bool     Process(CScript* script, CBotVar* result, int &exception);
     static CObject* SearchInfo(CScript* script, CObject* object, float power);
 
@@ -206,5 +236,4 @@ protected:
     Event   m_event;
     float   m_returnValue;
 };
-
 

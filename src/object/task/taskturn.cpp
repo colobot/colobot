@@ -126,4 +126,3 @@ Error CTaskTurn::IsEnded()
     return ERR_CONTINUE;
 }
 
-

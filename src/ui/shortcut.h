@@ -27,22 +27,23 @@ namespace Ui {
 
 class CShortcut : public CControl
 {
-    public:
-        CShortcut();
-        ~CShortcut();
+public:
+    CShortcut();
+    ~CShortcut();
 
-        bool    Create(Math::Point pos, Math::Point dim, int icon, EventType eventType);
+    bool    Create(Math::Point pos, Math::Point dim, int icon, EventType eventType);
 
-        bool    EventProcess(const Event &event);
+    bool    EventProcess(const Event &event);
 
-        void    Draw();
+    void    Draw();
 
-    protected:
-        void    DrawVertex(int icon, float zoom);
+protected:
+    void    DrawVertex(int icon, float zoom);
 
-    protected:
-        float   m_time;
+protected:
+    float   m_time;
 };
 
 
 }
+

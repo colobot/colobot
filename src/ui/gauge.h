@@ -31,24 +31,23 @@ namespace Ui {
 
 class CGauge : public CControl
 {
-    public:
-        CGauge();
-        virtual ~CGauge();
+public:
+    CGauge();
+    virtual ~CGauge();
 
-        bool    Create(Math::Point pos, Math::Point dim, int icon, EventType eventType);
+    bool    Create(Math::Point pos, Math::Point dim, int icon, EventType eventType);
 
-        bool    EventProcess(const Event &event);
+    bool    EventProcess(const Event &event);
 
-        void    Draw();
+    void    Draw();
 
-        void    SetLevel(float level);
-        float   GetLevel();
+    void    SetLevel(float level);
+    float   GetLevel();
 
-    protected:
-
-    protected:
-        float   m_level;
+protected:
+    float   m_level;
 };
 
 
 }
+

@@ -1676,3 +1676,4 @@ Math::Vector CCamera::ExcludeObject(Math::Vector eye, Math::Vector lookat,
 
 
 }
+

@@ -1,10 +1,13 @@
 #include "app/app.h"
+
 #include "ui/edit.h"
+
 #include "mocks/text_mock.h"
+
+#include <fstream>
 
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
-#include <fstream>
 
 class CEditTest : public testing::Test
 {
@@ -17,7 +20,7 @@ public:
 
     virtual void SetUp()
     {
-        m_robotMain = new CRobotMain(&m_app);
+        m_robotMain = new CRobotMain(&m_app, false);
 
         m_engine = new Gfx::CEngine(nullptr);
 

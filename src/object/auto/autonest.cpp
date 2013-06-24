@@ -273,4 +273,3 @@ bool CAutoNest::Read(char *line)
     return true;
 }
 
-

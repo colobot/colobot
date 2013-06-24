@@ -77,6 +77,11 @@ void CAutoJostle::Start(int param, float force)
     }
 }
 
+// Should never be called
+void CAutoJostle::Start(int param)
+{
+}
+
 
 // Management of an event.
 
@@ -136,5 +141,4 @@ Error CAutoJostle::IsEnded()
 {
     return m_error;
 }
-
 

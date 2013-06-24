@@ -42,6 +42,8 @@
 
 #include "ui/interface.h"
 
+#include <iomanip>
+
 template<> Gfx::CEngine* CSingleton<Gfx::CEngine>::m_instance = nullptr;
 
 // Graphics module namespace
@@ -94,7 +96,6 @@ CEngine::CEngine(CApplication *app)
     m_backgroundCloudUp   = Color();
     m_backgroundCloudDown = Color();
     m_backgroundFull = false;
-    m_backgroundScale = Math::Point(1.0f, 1.0f);
     m_overFront = true;
     m_overColor = Color();
     m_overMode  = ENG_RSTATE_TCOLOR_BLACK;
@@ -126,6 +127,9 @@ CEngine::CEngine(CApplication *app)
     m_updateStaticBuffers = false;
 
     m_interfaceMode = false;
+
+    m_debugLights = false;
+    m_debugDumpLights = false;
 
     m_mice[ENG_MOUSE_NORM]    = EngineMouse( 0,  1, 32, ENG_RSTATE_TTEXTURE_WHITE, ENG_RSTATE_TTEXTURE_BLACK, Math::Point( 1.0f,  1.0f));
     m_mice[ENG_MOUSE_WAIT]    = EngineMouse( 2,  3, 33, ENG_RSTATE_TTEXTURE_WHITE, ENG_RSTATE_TTEXTURE_BLACK, Math::Point( 8.0f, 12.0f));
@@ -237,7 +241,6 @@ void CEngine::SetTerrain(CTerrain* terrain)
     m_terrain = terrain;
 }
 
-
 bool CEngine::Create()
 {
     m_size = m_app->GetVideoConfig().size;
@@ -317,7 +320,7 @@ void CEngine::ResetAfterDeviceChanged()
 
     m_text->FlushCache();
 
-    // TODO reload textures, reset device state, etc.
+    FlushTextureCache();
 }
 
 bool CEngine::ProcessEvent(const Event &event)
@@ -325,7 +328,22 @@ bool CEngine::ProcessEvent(const Event &event)
     if (event.type == EVENT_KEY_DOWN)
     {
         if (event.key.key == KEY(F12))
+        {
             m_showStats = !m_showStats;
+            return false;
+        }
+
+        if (event.key.key == KEY(F11))
+        {
+            m_debugLights = !m_debugLights;
+            return false;
+        }
+
+        if (event.key.key == KEY(F10))
+        {
+            m_debugDumpLights = true;
+            return false;
+        }
     }
 
     // By default, pass on all events
@@ -591,6 +609,27 @@ void CEngine::CopyBaseObject(int sourceBaseObjRank, int destBaseObjRank)
     assert(destBaseObjRank >= 0 && destBaseObjRank < static_cast<int>( m_baseObjects.size() ));
 
     m_baseObjects[destBaseObjRank] = m_baseObjects[sourceBaseObjRank];
+
+    EngineBaseObject& p1 = m_baseObjects[destBaseObjRank];
+
+    if (! p1.used)
+        return;
+
+    for (int l2 = 0; l2 < static_cast<int>( p1.next.size() ); l2++)
+    {
+        EngineBaseObjTexTier& p2 = p1.next[l2];
+
+        for (int l3 = 0; l3 < static_cast<int>( p2.next.size() ); l3++)
+        {
+            EngineBaseObjLODTier& p3 = p2.next[l3];
+
+            for (int l4 = 0; l4 < static_cast<int>( p3.next.size() ); l4++)
+            {
+                EngineBaseObjDataTier& p4 = p3.next[l4];
+                p4.staticBufferId = 0;
+            }
+        }
+    }
 }
 
 void CEngine::AddBaseObjTriangles(int baseObjRank, const std::vector<VertexTex2>& vertices,
@@ -677,6 +716,82 @@ void CEngine::AddBaseObjQuick(int baseObjRank, const EngineBaseObjDataTier& buff
         p1.totalTriangles += p4.vertices.size() - 2;
 }
 
+void CEngine::DebugObject(int objRank)
+{
+    assert(objRank >= 0 && objRank < static_cast<int>( m_objects.size() ));
+
+    CLogger* l = GetLogger();
+
+    l->Debug("Debug object: %d\n", objRank);
+    if (! m_objects[objRank].used)
+    {
+        l->Debug(" not used\n");
+        return;
+    }
+
+    l->Debug(" baseObjRank = %d\n", m_objects[objRank].baseObjRank);
+    l->Debug(" visible = %s\n", m_objects[objRank].visible ? "true" : "false");
+    l->Debug(" drawWorld = %s\n", m_objects[objRank].drawWorld ? "true" : "false");
+    l->Debug(" drawFront = %s\n", m_objects[objRank].drawFront ? "true" : "false");
+    l->Debug(" type = %d\n", m_objects[objRank].type);
+    l->Debug(" distance = %f\n", m_objects[objRank].distance);
+    l->Debug(" shadowRank = %d\n", m_objects[objRank].shadowRank);
+    l->Debug(" transparency = %f\n", m_objects[objRank].transparency);
+
+    l->Debug(" baseObj:\n");
+    int baseObjRank = m_objects[objRank].baseObjRank;
+    if (baseObjRank == -1)
+    {
+        l->Debug("  null\n");
+        return;
+    }
+
+    assert(baseObjRank >= 0 && baseObjRank < static_cast<int>( m_baseObjects.size() ));
+
+    EngineBaseObject& p1 = m_baseObjects[baseObjRank];
+    if (!p1.used)
+    {
+        l->Debug("  not used\n");
+        return;
+    }
+
+    std::string vecStr;
+
+    vecStr = p1.bboxMin.ToString();
+    l->Debug("  bboxMin: %s\n", vecStr.c_str());
+    vecStr = p1.bboxMax.ToString();
+    l->Debug("  bboxMax: %s\n", vecStr.c_str());
+    l->Debug("  totalTriangles: %d\n", p1.totalTriangles);
+    l->Debug("  radius: %f\n", p1.radius);
+
+    for (int l2 = 0; l2 < static_cast<int>( p1.next.size() ); l2++)
+    {
+        EngineBaseObjTexTier& p2 = p1.next[l2];
+        l->Debug("  l2:\n");
+
+        l->Debug("   tex1: %s (id: %u)\n", p2.tex1Name.c_str(), p2.tex1.id);
+        l->Debug("   tex2: %s (id: %u)\n", p2.tex2Name.c_str(), p2.tex2.id);
+
+        for (int l3 = 0; l3 < static_cast<int>( p2.next.size() ); l3++)
+        {
+            EngineBaseObjLODTier& p3 = p2.next[l3];
+
+            l->Debug("    l3:\n");
+            l->Debug("     lodLevel: %d\n", p3.lodLevel);
+
+            for (int l4 = 0; l4 < static_cast<int>( p3.next.size() ); l4++)
+            {
+                EngineBaseObjDataTier& p4 = p3.next[l4];
+
+                l->Debug("     l4:\n");
+                l->Debug("      type: %d\n", p4.type);
+                l->Debug("      state: %d\n", p4.state);
+                l->Debug("      staticBufferId: %u\n", p4.staticBufferId);
+                l->Debug("      updateStaticBuffer: %s\n", p4.updateStaticBuffer ? "true" : "false");
+            }
+        }
+    }
+}
 
 int CEngine::CreateObject()
 {
@@ -965,13 +1080,19 @@ void CEngine::ChangeSecondTexture(int objRank, const std::string& tex2Name)
 
     for (int l2 = 0; l2 < static_cast<int>( p1.next.size() ); l2++)
     {
-        EngineBaseObjTexTier& p2 = p1.next[l2];
-
-        if (p2.tex2Name == tex2Name)
+        if (p1.next[l2].tex2Name == tex2Name)
             continue;  // already new
 
-        EngineBaseObjTexTier& newP2 = AddLevel2(p1, p2.tex1Name, tex2Name);
-        newP2.next.swap(p2.next);
+        std::string tex1Name = p1.next[l2].tex1Name;
+        EngineBaseObjTexTier& newP2 = AddLevel2(p1, tex1Name, tex2Name);
+        newP2.next.insert(newP2.next.end(), p1.next[l2].next.begin(), p1.next[l2].next.end());
+        p1.next[l2].next.clear();
+
+        if (!newP2.tex1.Valid())
+            newP2.tex1 = LoadTexture(newP2.tex1Name);
+
+        if (!newP2.tex2.Valid())
+            newP2.tex2 = LoadTexture(newP2.tex2Name);
     }
 }
 
@@ -2098,24 +2219,43 @@ Texture CEngine::CreateTexture(const std::string& texName, const TextureCreatePa
         return Texture(); // invalid texture
 
     Texture tex;
+    CImage img;
 
     if (image == nullptr)
     {
-        CImage img;
-        if (! img.Load(m_app->GetDataFilePath(DIR_TEXTURE, texName)))
+        bool loadedFromTexPack = false;
+
+        std::string texPackName = m_app->GetTexPackFilePath(texName);
+        if (! texPackName.empty())
         {
-            std::string error = img.GetError();
-            GetLogger()->Error("Couldn't load texture '%s': %s, blacklisting\n", texName.c_str(), error.c_str());
-            m_texBlacklist.insert(texName);
-            return Texture(); // invalid texture
+            if (img.Load(texPackName))
+            {
+                loadedFromTexPack = true;
+            }
+            else
+            {
+                std::string error = img.GetError();
+                GetLogger()->Error("Couldn't load texture '%s' from texpack: %s, blacklisting the texpack path\n",
+                                   texName.c_str(), error.c_str());
+                m_texBlacklist.insert(texPackName);
+            }
         }
 
-        tex = m_device->CreateTexture(&img, params);
+        if (!loadedFromTexPack)
+        {
+            if (! img.Load(m_app->GetDataFilePath(DIR_TEXTURE, texName)))
+            {
+                std::string error = img.GetError();
+                GetLogger()->Error("Couldn't load texture '%s': %s, blacklisting\n", texName.c_str(), error.c_str());
+                m_texBlacklist.insert(texName);
+                return Texture(); // invalid texture
+            }
+        }
+
+        image = &img;
     }
-    else
-    {
-        tex = m_device->CreateTexture(image, params);
-    }
+
+    tex = m_device->CreateTexture(image, params);
 
     if (! tex.Valid())
     {
@@ -2150,8 +2290,7 @@ Texture CEngine::LoadTexture(const std::string& name, const TextureCreateParams&
     if (it != m_texNameMap.end())
         return (*it).second;
 
-    Texture tex = CreateTexture(name, params);
-    return tex;
+    return CreateTexture(name, params);
 }
 
 bool CEngine::LoadAllTextures()
@@ -2167,7 +2306,11 @@ bool CEngine::LoadAllTextures()
     LoadTexture("map.png");
 
     if (! m_backgroundName.empty())
-        m_backgroundTex = LoadTexture(m_backgroundName);
+    {
+        TextureCreateParams params = m_defaultTexParams;
+        params.padToNearestPowerOfTwo = true;
+        m_backgroundTex = LoadTexture(m_backgroundName, params);
+    }
     else
         m_backgroundTex.SetInvalid();
 
@@ -2405,6 +2548,13 @@ void CEngine::DeleteTexture(const Texture& tex)
     m_texNameMap.erase(it);
 }
 
+void CEngine::FlushTextureCache()
+{
+    m_texNameMap.clear();
+    m_revTexNameMap.clear();
+    m_texBlacklist.clear();
+}
+
 bool CEngine::SetTexture(const std::string& name, int stage)
 {
     auto it = m_texNameMap.find(name);
@@ -2588,8 +2738,7 @@ float CEngine::GetFogStart(int rank)
 }
 
 void CEngine::SetBackground(const std::string& name, Color up, Color down,
-                                 Color cloudUp, Color cloudDown,
-                                 bool full, Math::Point scale)
+                            Color cloudUp, Color cloudDown, bool full)
 {
     if (m_backgroundTex.Valid())
     {
@@ -2603,15 +2752,17 @@ void CEngine::SetBackground(const std::string& name, Color up, Color down,
     m_backgroundCloudUp   = cloudUp;
     m_backgroundCloudDown = cloudDown;
     m_backgroundFull      = full;
-    m_backgroundScale     = scale;
 
     if (! m_backgroundName.empty())
-        m_backgroundTex = LoadTexture(m_backgroundName);
+    {
+        TextureCreateParams params = m_defaultTexParams;
+        params.padToNearestPowerOfTwo = true;
+        m_backgroundTex = LoadTexture(m_backgroundName, params);
+    }
 }
 
 void CEngine::GetBackground(std::string& name, Color& up, Color& down,
-                                 Color& cloudUp, Color& cloudDown,
-                                 bool &full, Math::Point& scale)
+                            Color& cloudUp, Color& cloudDown, bool &full)
 {
     name      = m_backgroundName;
     up        = m_backgroundColorUp;
@@ -2619,7 +2770,6 @@ void CEngine::GetBackground(std::string& name, Color& up, Color& down,
     cloudUp   = m_backgroundCloudUp;
     cloudDown = m_backgroundCloudDown;
     full      = m_backgroundFull;
-    scale     = m_backgroundScale;
 }
 
 void CEngine::SetForegroundName(const std::string& name)
@@ -3161,6 +3311,15 @@ void CEngine::Draw3DScene()
 
     m_lightMan->UpdateDeviceLights(ENG_OBJTYPE_TERRAIN);
 
+    if (m_debugLights)
+        m_device->DebugLights();
+
+    if (m_debugDumpLights)
+    {
+        m_debugDumpLights = false;
+        m_lightMan->DebugDumpLights();
+    }
+
     if (m_waterMode)
     {
         m_app->StartPerformanceCounter(PCNT_RENDER_WATER);
@@ -3630,7 +3789,7 @@ void CEngine::DrawShadow()
     float lastIntensity = -1.0f;
     for (int i = 0; i < static_cast<int>( m_shadows.size() ); i++)
     {
-        if (m_shadows[i].hide)
+        if (m_shadows[i].hide || !m_shadows[i].used)
             continue;
 
         Math::Vector pos = m_shadows[i].pos;  // pos = center of the shadow on the ground
@@ -3879,8 +4038,12 @@ void CEngine::DrawBackgroundImage()
         v2 = v1+h;
     }
 
-    u2 *= m_backgroundScale.x;
-    v2 *= m_backgroundScale.y;
+    Math::Point backgroundScale;
+    backgroundScale.x = static_cast<float>(m_backgroundTex.originalSize.x) / static_cast<float>(m_backgroundTex.size.x);
+    backgroundScale.y = static_cast<float>(m_backgroundTex.originalSize.y) / static_cast<float>(m_backgroundTex.size.y);
+
+    u2 *= backgroundScale.x;
+    v2 *= backgroundScale.y;
 
     SetTexture(m_backgroundTex);
     SetState(ENG_RSTATE_OPAQUE_TEXTURE | ENG_RSTATE_WRAP);
@@ -4279,3 +4442,4 @@ void CEngine::DrawStats()
 
 
 } // namespace Gfx
+

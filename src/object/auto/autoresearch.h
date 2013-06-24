@@ -41,6 +41,7 @@ public:
     void        DeleteObject(bool bAll=false);
 
     void        Init();
+    Error       StartAction(int result);
     bool        EventProcess(const Event &event);
     Error       GetError();
 
@@ -54,7 +55,6 @@ protected:
     void        UpdateInterface(float rTime);
     void        OkayButton(Ui::CWindow *pw, EventType event);
     bool        TestResearch(EventType event);
-    void        SetResearch(EventType event);
     void        FireStopUpdate(float progress, bool bLightOn);
 
 protected:
@@ -64,7 +64,7 @@ protected:
     float               m_timeVirus;
     float               m_lastUpdateTime;
     float               m_lastParticle;
-    EventType            m_research;
+    ResearchType        m_research;
     int                 m_partiStop[6];
     int                 m_channelSound;
 };

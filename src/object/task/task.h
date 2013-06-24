@@ -34,7 +34,7 @@ class CSoundInterface;
 
 namespace Ui {
 class CDisplayText;
-} /* Ui */ 
+} /* Ui */
 
 namespace Gfx {
 class CEngine;
@@ -43,7 +43,7 @@ class CParticle;
 class CTerrain;
 class CWater;
 class CCamera;
-} /* Gfx */ 
+} /* Gfx */
 
 
 const float TAKE_DIST       = 6.0f; // distance to an object to pick it

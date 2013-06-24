@@ -54,7 +54,7 @@ CBotClass::CBotClass(const char* name, CBotClass* pPapa, bool bIntrinsic)
 
 CBotClass::~CBotClass()
 {
-    // removes the list of class 
+    // removes the list of class
     if ( m_ExPrev ) m_ExPrev->m_ExNext = m_ExNext;
     else m_ExClass = m_ExNext;
 
@@ -106,7 +106,7 @@ bool CBotClass::Lock(CBotProgram* p)
         m_ProgInLock[0] = p;
         return true;
     }
-    if ( p == m_ProgInLock[0] ) 
+    if ( p == m_ProgInLock[0] )
     {
         m_cptOne++;
         m_cptLock--;                                // has already been counted
@@ -156,14 +156,14 @@ void CBotClass::FreeLock(CBotProgram* p)
 
     while ( pClass != NULL )
     {
-        if ( p == pClass->m_ProgInLock[0] ) 
+        if ( p == pClass->m_ProgInLock[0] )
         {
             pClass->m_cptLock -= pClass->m_cptOne;
             pClass->m_cptOne = 0;
         }
 
         for ( int j = 1; j < 5 ; j++ )
-            if ( p == pClass->m_ProgInLock[j] ) 
+            if ( p == pClass->m_ProgInLock[j] )
                 pClass->m_cptLock--;
 
         pClass = pClass->m_ExNext;
@@ -291,8 +291,8 @@ CBotClass* CBotClass::Find(const char* name)
     return NULL;
 }
 
-bool CBotClass::AddFunction(const char* name, 
-                                bool rExec (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception), 
+bool CBotClass::AddFunction(const char* name,
+                                bool rExec (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception),
                                 CBotTypResult rCompile (CBotVar* pThis, CBotVar* &pVar))
 {
     // stores pointers to the two functions
@@ -313,7 +313,7 @@ bool CBotClass::AddFunction(const char* name,
     }
 
     p = new CBotCallMethode(name, rExec, rCompile);
-    
+
     if (m_pCalls == NULL) m_pCalls = p;
     else    m_pCalls->AddNext(p);               // added to the list
 
@@ -329,8 +329,8 @@ bool CBotClass::AddUpdateFunc( void rMaj ( CBotVar* pThis, void* pUser ) )
 // compiles a method associated with an instance of class
 // the method can be declared by the user or AddFunction
 
-CBotTypResult CBotClass::CompileMethode(const char* name, 
-                                        CBotVar* pThis, CBotVar** ppParams, 
+CBotTypResult CBotClass::CompileMethode(const char* name,
+                                        CBotVar* pThis, CBotVar** ppParams,
                                         CBotCStack* pStack, long& nIdent)
 {
     nIdent = 0; // forget the previous one if necessary
@@ -350,8 +350,8 @@ CBotTypResult CBotClass::CompileMethode(const char* name,
 
 // executes a method
 
-bool CBotClass::ExecuteMethode(long& nIdent, const char* name, 
-                               CBotVar* pThis, CBotVar** ppParams, 
+bool CBotClass::ExecuteMethode(long& nIdent, const char* name,
+                               CBotVar* pThis, CBotVar** ppParams,
                                CBotVar* &pResult, CBotStack* &pStack,
                                CBotToken* pToken)
 {
@@ -437,7 +437,7 @@ bool CBotClass::RestoreStaticState(FILE* pf)
             if (!ReadString( pf, VarName )) return false;
             if ( pClass != NULL ) pVar = pClass->GetItem(VarName);
 
-            if (!CBotVar::RestoreState(pf, pv)) return false;   // the temp variable 
+            if (!CBotVar::RestoreState(pf, pv)) return false;   // the temp variable
 
             if ( pVar != NULL ) pVar->Copy(pv);
             delete pv;
@@ -514,7 +514,7 @@ CBotInstr* CBotClassInst::Compile(CBotToken* &p, CBotCStack* pStack, CBotClass* 
             delete inst;                                    // is not type CBotInt
             p = vartoken;                                   // returns to the variable name
 
-            // compiles declaration an array 
+            // compiles declaration an array
 
             inst = static_cast<CBotClassInst*>(CBotInstArray::Compile( p, pStk, type ));
 
@@ -595,7 +595,7 @@ CBotInstr* CBotClassInst::Compile(CBotToken* &p, CBotCStack* pStack, CBotClass* 
                 goto error;
             }
 //          if ( !bIntrinsic ) var->SetPointer(pStk->GetVar()->GetPointer());
-            if ( !bIntrinsic ) 
+            if ( !bIntrinsic )
             {
                 // does not use the result on the stack, to impose the class
                 CBotVar* pvar = CBotVar::Create("", pClass);
@@ -608,7 +608,7 @@ CBotInstr* CBotClassInst::Compile(CBotToken* &p, CBotCStack* pStack, CBotClass* 
         {
             // creates the object on the "job" (\TODO "tas")
             // with a pointer to the object
-            if ( !bIntrinsic ) 
+            if ( !bIntrinsic )
             {
                 CBotVar* pvar = CBotVar::Create("", pClass);
                 var->SetPointer( pvar );                    // variable already declared instance pointer
@@ -617,14 +617,14 @@ CBotInstr* CBotClassInst::Compile(CBotToken* &p, CBotCStack* pStack, CBotClass* 
             var->SetInit(2);                            // marks the pointer as init
         }
 suite:
-        if (IsOfType(p,  ID_COMMA))                         // several chained definitions 
+        if (IsOfType(p,  ID_COMMA))                         // several chained definitions
         {
             if ( NULL != ( inst->m_next = CBotClassInst::Compile(p, pStk, pClass) ))    // compiles the following
             {
                 return pStack->Return(inst, pStk);
             }
         }
-        
+
         if (IsOfType(p,  ID_SEP))                           // complete instruction
         {
             return pStack->Return(inst, pStk);
@@ -684,7 +684,7 @@ bool CBotClassInst::Execute(CBotStack* &pj)
         {
             // evaluates the expression for the assignment
             if (!m_expr->Execute(pile)) return false;
-    
+
             if ( bIntrincic )
             {
                 CBotVar*    pv = pile->GetVar();
@@ -750,8 +750,8 @@ bool CBotClassInst::Execute(CBotStack* &pj)
             // creates a variable for the result
             CBotVar*    pResult = NULL;     // constructor still void
 
-            if ( !pClass->ExecuteMethode(m_nMethodeIdent, pClass->GetName(), 
-                                         pThis, ppVars, 
+            if ( !pClass->ExecuteMethode(m_nMethodeIdent, pClass->GetName(),
+                                         pThis, ppVars,
                                          pResult, pile2, GetToken())) return false; // interrupt
 
             pThis->SetInit(true);

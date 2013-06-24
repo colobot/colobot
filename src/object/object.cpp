@@ -64,6 +64,7 @@
 #include "object/motion/motion.h"
 #include "object/motion/motionant.h"
 #include "object/motion/motionbee.h"
+#include "object/motion/motiondummy.h"
 #include "object/motion/motionhuman.h"
 #include "object/motion/motionmother.h"
 #include "object/motion/motionspider.h"
@@ -71,6 +72,7 @@
 #include "object/motion/motionvehicle.h"
 #include "object/motion/motionworm.h"
 #include "object/robotmain.h"
+#include "object/objman.h"
 
 #include "physics/physics.h"
 
@@ -202,6 +204,10 @@ void uObject(CBotVar* botThis, void* user)
     fret = object->GetFret();
     if ( fret == 0 )  pVar->SetPointer(0);
     else              pVar->SetPointer(fret->GetBotVar());
+
+    pVar = pVar->GetNext();  // "id"
+    value = object->GetID();
+    pVar->SetValInt(value);
 }
 
 
@@ -337,6 +343,8 @@ CObject::CObject()
     m_botVar = CBotVar::Create("", CBotTypResult(CBotTypClass, "object"));
     m_botVar->SetUserPtr(this);
     m_botVar->SetIdent(m_id);
+
+    CObjectManager::GetInstancePointer()->AddInstance(this);
 }
 
 // Object's destructor.
@@ -360,6 +368,7 @@ CObject::~CObject()
     m_auto = nullptr;
 
     CInstanceManager::GetInstancePointer()->DeleteInstance(CLASS_OBJECT, this);
+    CObjectManager::GetInstancePointer()->DeleteInstance(this);
 
     m_app = nullptr;
 }
@@ -592,7 +601,7 @@ bool CObject::ExploObject(ExploType type, float force, float decay)
         }
     }
 
-    if ( EXPLO_BOUM )
+    if ( type == EXPLO_BOUM )
     {
         if ( m_shotTime < 0.5f )  return false;
         m_shotTime = 0.0f;
@@ -2136,6 +2145,10 @@ bool CObject::CreateVehicle(Math::Vector pos, float angle, ObjectType type,
          type == OBJECT_TECH  )
     {
         m_motion = new CMotionHuman(this);
+    }
+    else if ( type == OBJECT_CONTROLLER )
+    {
+        m_motion = new CMotionDummy(this); //dummy object
     }
     else
     {
@@ -7314,7 +7327,7 @@ bool CObject::GetTraceDown()
     CMotionVehicle* mv = dynamic_cast<CMotionVehicle*>(m_motion);
     if (mv == nullptr)
     {
-        GetLogger()->Debug("GetTraceDown() invalid m_motion class!\n");
+        GetLogger()->Trace("GetTraceDown() invalid m_motion class!\n");
         return false;
     }
     return mv->GetTraceDown();
@@ -7326,7 +7339,7 @@ void CObject::SetTraceDown(bool bDown)
     CMotionVehicle* mv = dynamic_cast<CMotionVehicle*>(m_motion);
     if (mv == nullptr)
     {
-        GetLogger()->Debug("SetTraceDown() invalid m_motion class!\n");
+        GetLogger()->Trace("SetTraceDown() invalid m_motion class!\n");
         return;
     }
     mv->SetTraceDown(bDown);
@@ -7338,7 +7351,7 @@ int CObject::GetTraceColor()
     CMotionVehicle* mv = dynamic_cast<CMotionVehicle*>(m_motion);
     if (mv == nullptr)
     {
-        GetLogger()->Debug("GetTraceColor() invalid m_motion class!\n");
+        GetLogger()->Trace("GetTraceColor() invalid m_motion class!\n");
         return 0;
     }
     return mv->GetTraceColor();
@@ -7350,7 +7363,7 @@ void CObject::SetTraceColor(int color)
     CMotionVehicle* mv = dynamic_cast<CMotionVehicle*>(m_motion);
     if (mv == nullptr)
     {
-        GetLogger()->Debug("SetTraceColor() invalid m_motion class!\n");
+        GetLogger()->Trace("SetTraceColor() invalid m_motion class!\n");
         return;
     }
     mv->SetTraceColor(color);
@@ -7362,7 +7375,7 @@ float CObject::GetTraceWidth()
     CMotionVehicle* mv = dynamic_cast<CMotionVehicle*>(m_motion);
     if (mv == nullptr)
     {
-        GetLogger()->Debug("GetTraceWidth() invalid m_motion class!\n");
+        GetLogger()->Trace("GetTraceWidth() invalid m_motion class!\n");
         return 0.0f;
     }
     return mv->GetTraceWidth();
@@ -7374,10 +7387,9 @@ void CObject::SetTraceWidth(float width)
     CMotionVehicle* mv = dynamic_cast<CMotionVehicle*>(m_motion);
     if (mv == nullptr)
     {
-        GetLogger()->Debug("SetTraceWidth() invalid m_motion class!\n");
+        GetLogger()->Trace("SetTraceWidth() invalid m_motion class!\n");
         return;
     }
     mv->SetTraceWidth(width);
 }
-
 

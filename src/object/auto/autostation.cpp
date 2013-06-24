@@ -82,7 +82,7 @@ bool CAutoStation::EventProcess(const Event &event)
     Math::Matrix*   mat;
     Math::Vector    pos, ppos, speed;
     Math::Point     dim;
-    CObject*    vehicule;
+    CObject*    vehicle;
     CObject*    power;
     Gfx::TerrainRes  res;
     float       big, energy, used, add, freq;
@@ -133,10 +133,10 @@ bool CAutoStation::EventProcess(const Event &event)
     freq = 1.0f;
     if ( big > 0.0f )
     {
-        vehicule = SearchVehicle();
-        if ( vehicule != 0 )
+        vehicle = SearchVehicle();
+        if ( vehicle != 0 )
         {
-            power = vehicule->GetPower();
+            power = vehicle->GetPower();
             if ( power != 0 && power->GetCapacity() == 1.0f )
             {
                 energy = power->GetEnergy();
@@ -149,7 +149,7 @@ bool CAutoStation::EventProcess(const Event &event)
                 big -= add/4.0f;  // discharge the large battery
             }
 
-            power = vehicule->GetFret();
+            power = vehicle->GetFret();
             if ( power != 0 && power->GetType() == OBJECT_POWER )
             {
                 energy = power->GetEnergy();
@@ -367,5 +367,4 @@ void CAutoStation::UpdateInterface(float rTime)
         pg->SetLevel(m_object->GetEnergy());
     }
 }
-
 

@@ -184,7 +184,7 @@ public:
     bool        GetMultiFont();
 
     bool        Cut();
-    bool        Copy();
+    bool        Copy(bool memorize_cursor = false);
     bool        Paste();
     bool        Undo();
 
@@ -239,7 +239,7 @@ protected:
     void        UndoFlush();
     void        UndoMemorize(OperUndo oper);
     bool        UndoRecall();
-    
+
     void        UpdateScroll();
 
 protected:
@@ -294,3 +294,4 @@ protected:
 
 
 }
+

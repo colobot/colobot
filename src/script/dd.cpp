@@ -173,3 +173,4 @@ bool rSpace(CBotVar* var, CBotVar* result, int& exception, void* user)
     }
     return true;
 }
+

@@ -154,28 +154,28 @@ bool CDisplayInfo::EventProcess(const Event &event)
         {
             m_main->SetFontSize(9.0f);
             slider = static_cast<Ui::CSlider*>(pw->SearchControl(EVENT_STUDIO_SIZE));
-            if ( slider != 0 )  slider->SetVisibleValue((m_main->GetFontSize()-9.0f)/6.0f);
+            if ( slider != 0 )  slider->SetVisibleValue((m_main->GetFontSize()-9.0f)/12.0f);
             ViewDisplayInfo();
         }
         if ( event.type == EVENT_HYPER_SIZE2 )  // size 2?
         {
             m_main->SetFontSize(10.0f);
             slider = static_cast<Ui::CSlider*>(pw->SearchControl(EVENT_STUDIO_SIZE));
-            if ( slider != 0 )  slider->SetVisibleValue((m_main->GetFontSize()-9.0f)/6.0f);
+            if ( slider != 0 )  slider->SetVisibleValue((m_main->GetFontSize()-9.0f)/12.0f);
             ViewDisplayInfo();
         }
         if ( event.type == EVENT_HYPER_SIZE3 )  // size 3?
         {
             m_main->SetFontSize(12.0f);
             slider = static_cast<Ui::CSlider*>(pw->SearchControl(EVENT_STUDIO_SIZE));
-            if ( slider != 0 )  slider->SetVisibleValue((m_main->GetFontSize()-9.0f)/6.0f);
+            if ( slider != 0 )  slider->SetVisibleValue((m_main->GetFontSize()-9.0f)/12.0f);
             ViewDisplayInfo();
         }
         if ( event.type == EVENT_HYPER_SIZE4 )  // size 4?
         {
             m_main->SetFontSize(15.0f);
             slider = static_cast<Ui::CSlider*>(pw->SearchControl(EVENT_STUDIO_SIZE));
-            if ( slider != 0 )  slider->SetVisibleValue((m_main->GetFontSize()-9.0f)/6.0f);
+            if ( slider != 0 )  slider->SetVisibleValue((m_main->GetFontSize()-9.0f)/12.0f);
             ViewDisplayInfo();
         }
 
@@ -183,7 +183,7 @@ bool CDisplayInfo::EventProcess(const Event &event)
         {
             slider = static_cast<Ui::CSlider*>(pw->SearchControl(EVENT_STUDIO_SIZE));
             if ( slider == 0 )  return false;
-            m_main->SetFontSize(9.0f+slider->GetVisibleValue()*6.0f);
+            m_main->SetFontSize(9.0f+slider->GetVisibleValue()*12.0f);
             ViewDisplayInfo();
         }
 
@@ -1214,3 +1214,4 @@ void CDisplayInfo::CreateObjectsFile()
 
 
 }
+

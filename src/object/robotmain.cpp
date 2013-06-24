@@ -34,7 +34,7 @@
 #include "graphics/engine/engine.h"
 #include "graphics/engine/lightman.h"
 #include "graphics/engine/lightning.h"
-#include "graphics/engine/modelfile.h"
+#include "graphics/engine/modelmanager.h"
 #include "graphics/engine/particle.h"
 #include "graphics/engine/planet.h"
 #include "graphics/engine/pyro.h"
@@ -79,6 +79,7 @@
 #include "ui/slider.h"
 #include "ui/window.h"
 
+#include <iomanip>
 
 template<> CRobotMain* CSingleton<CRobotMain>::m_instance = nullptr;
 
@@ -602,11 +603,8 @@ bool rPoint(CBotVar* pThis, CBotVar* var, CBotVar* pResult, int& Exception)
     return  true;  // no interruption
 }
 
-
-
-
 //! Constructor of robot application
-CRobotMain::CRobotMain(CApplication* app)
+CRobotMain::CRobotMain(CApplication* app, bool loadProfile)
 {
     m_app = app;
 
@@ -643,7 +641,7 @@ CRobotMain::CRobotMain(CApplication* app)
     m_visitLast   = EVENT_NULL;
     m_visitObject = 0;
     m_visitArrow  = 0;
-    m_audioTrack  = 0;
+    m_audioTrack  = "";
     m_audioRepeat = true;
     m_delayWriteMessage = 0;
     m_selectObject = 0;
@@ -656,6 +654,7 @@ CRobotMain::CRobotMain(CApplication* app)
     m_terrainCreate       = false;
 
     m_version      = 1;
+    m_controller   = nullptr;
     m_retroStyle   = false;
     m_immediatSatCom = false;
     m_beginSatCom  = false;
@@ -670,11 +669,13 @@ CRobotMain::CRobotMain(CApplication* app)
     m_showPos      = false;
     m_selectInsect = false;
     m_showSoluce   = false;
-    #ifdef NDEBUG
-    m_showAll      = false;
-    #else
+
+    #if DEV_BUILD
     m_showAll      = true; // for development
+    #else
+    m_showAll      = false;
     #endif
+
     m_cheatRadar   = false;
     m_fixScene     = false;
     m_trainerPilot = false;
@@ -705,27 +706,31 @@ CRobotMain::CRobotMain(CApplication* app)
     m_windowPos = Math::Point(0.15f, 0.17f);
     m_windowDim = Math::Point(0.70f, 0.66f);
 
-    // TODO: profile
-    // float fValue;
-    // int iValue;
+    float fValue;
+    int iValue;
 
-    // if (GetLocalProfileFloat("Edit", "FontSize",    fValue)) m_fontSize    = fValue;
-    // if (GetLocalProfileFloat("Edit", "WindowPos.x", fValue)) m_windowPos.x = fValue;
-    // if (GetLocalProfileFloat("Edit", "WindowPos.y", fValue)) m_windowPos.y = fValue;
-    // if (GetLocalProfileFloat("Edit", "WindowDim.x", fValue)) m_windowDim.x = fValue;
-    // if (GetLocalProfileFloat("Edit", "WindowDim.y", fValue)) m_windowDim.y = fValue;
+    if (loadProfile)
+    {
+        if (GetProfile().GetLocalProfileFloat("Edit", "FontSize",    fValue)) m_fontSize    = fValue;
+        if (GetProfile().GetLocalProfileFloat("Edit", "WindowPosX",  fValue)) m_windowPos.x = fValue;
+        if (GetProfile().GetLocalProfileFloat("Edit", "WindowPosY",  fValue)) m_windowPos.y = fValue;
+        if (GetProfile().GetLocalProfileFloat("Edit", "WindowDimX",  fValue)) m_windowDim.x = fValue;
+        if (GetProfile().GetLocalProfileFloat("Edit", "WindowDimY",  fValue)) m_windowDim.y = fValue;
+    }
 
     m_IOPublic = false;
     m_IODim = Math::Point(320.0f/640.0f, (121.0f+18.0f*8)/480.0f);
     m_IOPos.x = (1.0f-m_IODim.x)/2.0f;  // in the middle
     m_IOPos.y = (1.0f-m_IODim.y)/2.0f;
 
-    /* TODO: profile
-    if (GetLocalProfileInt  ("Edit", "IOPublic", iValue)) m_IOPublic = iValue;
-    if (GetLocalProfileFloat("Edit", "IOPos.x",  fValue)) m_IOPos.x  = fValue;
-    if (GetLocalProfileFloat("Edit", "IOPos.y",  fValue)) m_IOPos.y  = fValue;
-    if (GetLocalProfileFloat("Edit", "IODim.x",  fValue)) m_IODim.x  = fValue;
-    if (GetLocalProfileFloat("Edit", "IODim.y",  fValue)) m_IODim.y  = fValue; */
+    if (loadProfile)
+    {
+        if (GetProfile().GetLocalProfileInt  ("Edit", "IOPublic", iValue)) m_IOPublic = iValue;
+        if (GetProfile().GetLocalProfileFloat("Edit", "IOPosX",   fValue)) m_IOPos.x  = fValue;
+        if (GetProfile().GetLocalProfileFloat("Edit", "IOPosY",   fValue)) m_IOPos.y  = fValue;
+        if (GetProfile().GetLocalProfileFloat("Edit", "IODimX",   fValue)) m_IODim.x  = fValue;
+        if (GetProfile().GetLocalProfileFloat("Edit", "IODimY",   fValue)) m_IODim.y  = fValue;
+    }
 
     m_short->FlushShortcuts();
     InitEye();
@@ -741,12 +746,11 @@ CRobotMain::CRobotMain(CApplication* app)
     g_researchEnable = 0;
     g_unit = UNIT;
 
-    m_gamerName[0] = 0;
-    /* TODO: profile
-    GetLocalProfileString("Gamer", "LastName", m_gamerName, 100); */
+    m_gamerName = "";
+    if (loadProfile) GetProfile().GetLocalProfileString("Gamer", "LastName", m_gamerName);
     SetGlobalGamerName(m_gamerName);
     ReadFreeParam();
-    m_dialog->SetupRecall();
+    if (loadProfile) m_dialog->SetupRecall();
 
     for (int i = 0; i < MAXSHOWLIMIT; i++)
     {
@@ -805,6 +809,48 @@ CRobotMain::CRobotMain(CApplication* app)
     CBotProgram::DefineNum("FilterOnlyLanding", FILTER_ONLYLANDING);
     CBotProgram::DefineNum("FilterOnlyFliying", FILTER_ONLYFLYING);
 
+    CBotProgram::DefineNum("ExploNone",  0);
+    CBotProgram::DefineNum("ExploBoum",  EXPLO_BOUM);
+    CBotProgram::DefineNum("ExploBurn",  EXPLO_BURN);
+    CBotProgram::DefineNum("ExploWater", EXPLO_WATER);
+
+    CBotProgram::DefineNum("ResultNotEnded",  ERR_MISSION_NOTERM);
+    CBotProgram::DefineNum("ResultLost",      INFO_LOST);
+    CBotProgram::DefineNum("ResultLostQuick", INFO_LOSTq);
+    CBotProgram::DefineNum("ResultWin",       ERR_OK);
+
+    CBotProgram::DefineNum("BuildBotFactory",       BUILD_FACTORY);
+    CBotProgram::DefineNum("BuildDerrick",          BUILD_DERRICK);
+    CBotProgram::DefineNum("BuildConverter",        BUILD_CONVERT);
+    CBotProgram::DefineNum("BuildRadarStation",     BUILD_RADAR);
+    CBotProgram::DefineNum("BuildPowerPlant",       BUILD_ENERGY);
+    CBotProgram::DefineNum("BuildNuclearPlant",     BUILD_NUCLEAR);
+    CBotProgram::DefineNum("BuildPowerStation",     BUILD_STATION);
+    CBotProgram::DefineNum("BuildRepairCenter",     BUILD_REPAIR);
+    CBotProgram::DefineNum("BuildDefenseTower",     BUILD_TOWER);
+    CBotProgram::DefineNum("BuildResearchCenter",   BUILD_RESEARCH);
+    CBotProgram::DefineNum("BuildAutoLab",          BUILD_LABO);
+    CBotProgram::DefineNum("BuildPowerCaptor",      BUILD_PARA);
+    CBotProgram::DefineNum("BuildExchangePost",     BUILD_INFO);
+    CBotProgram::DefineNum("BuildDestroyer",        BUILD_DESTROYER);
+    CBotProgram::DefineNum("FlatGround",            BUILD_GFLAT);
+    CBotProgram::DefineNum("UseFlags",              BUILD_FLAG);
+    CBotProgram::DefineNum("ResearchTracked",       RESEARCH_TANK);
+    CBotProgram::DefineNum("ResearchWinged",        RESEARCH_FLY);
+    CBotProgram::DefineNum("ResearchShooter",       RESEARCH_CANON);
+    CBotProgram::DefineNum("ResearchDefenseTower",  RESEARCH_TOWER);
+    CBotProgram::DefineNum("ResearchNuclearPlant",  RESEARCH_ATOMIC);
+    CBotProgram::DefineNum("ResearchThumper",       RESEARCH_THUMP);
+    CBotProgram::DefineNum("ResearchShielder",      RESEARCH_SHIELD);
+    CBotProgram::DefineNum("ResearchPhazerShooter", RESEARCH_PHAZER);
+    CBotProgram::DefineNum("ResearchLegged",        RESEARCH_iPAW);
+    CBotProgram::DefineNum("ResearchOrgaShooter",   RESEARCH_iGUN);
+    CBotProgram::DefineNum("ResearchRecycler",      RESEARCH_RECYCLER);
+    CBotProgram::DefineNum("ResearchSubber",        RESEARCH_SUBM);
+    CBotProgram::DefineNum("ResearchSniffer",       RESEARCH_SNIFFER);
+
+//?    CBotProgram::
+
     CBotProgram::DefineNum("PolskiPortalColobota", 1337);
 
     CBotClass* bc;
@@ -831,6 +877,11 @@ CRobotMain::CRobotMain(CApplication* app)
     bc->AddItem("material",    CBotTypResult(CBotTypInt), PR_READ);
     bc->AddItem("energyCell",  CBotTypResult(CBotTypPointer, "object"), PR_READ);
     bc->AddItem("load",        CBotTypResult(CBotTypPointer, "object"), PR_READ);
+    bc->AddItem("id",          CBotTypResult(CBotTypInt), PR_READ);
+    bc->AddFunction("busy",     CScript::rBusy,     CScript::cBusy);
+    bc->AddFunction("factory",  CScript::rFactory,  CScript::cFactory);
+    bc->AddFunction("research", CScript::rResearch, CScript::cClassOneFloat);
+    bc->AddFunction("destroy",  CScript::rDestroy,  CScript::cClassNull);
 
     // Initializes the class FILE.
     InitClassFILE();
@@ -891,15 +942,32 @@ Ui::CDisplayText* CRobotMain::GetDisplayText()
     return m_displayText;
 }
 
+void CRobotMain::LoadSceneOnStart(const std::string& name, int rank)
+{
+    // TODO: fix this ugly dependency :(
+    m_dialog->SetSceneName(name.c_str());
+    m_dialog->SetSceneRank(rank);
+    ChangePhase(PHASE_LOADING);
+}
+
 
 //! Creates the file colobot.ini at the first time
 void CRobotMain::CreateIni()
 {
-    /* TODO: profile
-    int iValue;
-    // colobot.ini doesn't exist?
-    if (!GetLocalProfileInt("Setup", "TotoMode", iValue))
-        m_dialog->SetupMemorize();*/
+    m_dialog->SetupMemorize();
+
+    GetProfile().SetLocalProfileFloat("Edit", "FontSize", m_fontSize);
+    GetProfile().SetLocalProfileFloat("Edit", "WindowPosX", m_windowPos.x);
+    GetProfile().SetLocalProfileFloat("Edit", "WindowPosY", m_windowPos.y);
+    GetProfile().SetLocalProfileFloat("Edit", "WindowDimX", m_windowDim.x);
+    GetProfile().SetLocalProfileFloat("Edit", "WindowDimY", m_windowDim.y);
+    GetProfile().SetLocalProfileInt("Edit", "IOPublic", m_IOPublic);
+    GetProfile().SetLocalProfileFloat("Edit", "IOPosX", m_IOPos.x);
+    GetProfile().SetLocalProfileFloat("Edit", "IOPosY", m_IOPos.y);
+    GetProfile().SetLocalProfileFloat("Edit", "IODimX", m_IODim.x);
+    GetProfile().SetLocalProfileFloat("Edit", "IODimY", m_IODim.y);
+
+    GetProfile().SaveCurrentDirectory();
 }
 
 void CRobotMain::SetDefaultInputBindings()
@@ -952,28 +1020,24 @@ void CRobotMain::SetDefaultInputBindings()
 void CRobotMain::SetInputBinding(InputSlot slot, InputBinding binding)
 {
     unsigned int index = static_cast<unsigned int>(slot);
-    assert(index >= 0 && index < INPUT_SLOT_MAX);
     m_inputBindings[index] = binding;
 }
 
 const InputBinding& CRobotMain::GetInputBinding(InputSlot slot)
 {
     unsigned int index = static_cast<unsigned int>(slot);
-    assert(index >= 0 && index < INPUT_SLOT_MAX);
     return m_inputBindings[index];
 }
 
 void CRobotMain::SetJoyAxisBinding(JoyAxisSlot slot, JoyAxisBinding binding)
 {
     unsigned int index = static_cast<unsigned int>(slot);
-    assert(index >= 0 && index < JOY_AXIS_SLOT_MAX);
     m_joyAxisBindings[index] = binding;
 }
 
 const JoyAxisBinding& CRobotMain::GetJoyAxisBinding(JoyAxisSlot slot)
 {
     unsigned int index = static_cast<unsigned int>(slot);
-    assert(index >= 0 && index < JOY_AXIS_SLOT_MAX);
     return m_joyAxisBindings[index];
 }
 
@@ -1041,6 +1105,7 @@ void CRobotMain::ChangePhase(Phase phase)
     FlushDisplayInfo();
     m_engine->SetRankView(0);
     m_engine->DeleteAllObjects();
+    Gfx::CModelManager::GetInstancePointer()->DeleteAllModelCopies();
     m_engine->SetWaterAddColor(Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f));
     m_engine->SetBackground("");
     m_engine->SetBackForce(false);
@@ -1137,6 +1202,8 @@ void CRobotMain::ChangePhase(Phase phase)
         if (m_mapImage)
             m_map->SetFixImage(m_mapFilename);
 
+        m_app->ResetTimeAfterLoading();
+
         /*Math::Point ddim;
 
         pos.x = 620.0f/640.0f;
@@ -1225,7 +1292,7 @@ void CRobotMain::ChangePhase(Phase phase)
             ddim.x = dim.x*2;  ddim.y = dim.y*2;
             m_interface->CreateButton(pos, ddim, 16, EVENT_BUTTON_OK);
             m_displayText->DisplayError(INFO_LOST, Math::Vector(0.0f,0.0f,0.0f), 15.0f, 60.0f, 1000.0f);
-            
+
             StartMusic();
         }
     }
@@ -1239,7 +1306,7 @@ void CRobotMain::ChangePhase(Phase phase)
 }
 
 //! Processes an event
-bool CRobotMain::EventProcess(Event &event)
+bool CRobotMain::ProcessEvent(Event &event)
 {
     /* Motion vector management */
 
@@ -1332,7 +1399,7 @@ bool CRobotMain::EventProcess(Event &event)
     // Management of the console.
     if (m_phase != PHASE_NAME &&
         !m_movie->IsExist()   &&
-        !m_movieLock && !m_editLock &&
+        !m_movieLock && !m_editLock && !m_engine->GetPause() &&
         event.type == EVENT_KEY_DOWN &&
         event.key.key == KEY(PAUSE))  // Pause ?
     {
@@ -1474,7 +1541,7 @@ bool CRobotMain::EventProcess(Event &event)
                         ChangePhase(PHASE_WIN);
                     else if (m_lostDelay > 0.0f)
                         ChangePhase(PHASE_LOST);
-                    else
+                    else if (!m_cmdEdit)
                         m_dialog->StartAbort();  // do you want to leave?
                 }
                 if (event.key.key == KEY(PAUSE))
@@ -1760,9 +1827,44 @@ void CRobotMain::ExecuteCmd(char *cmd)
             return;
         }
 
+        if (strcmp(cmd, "allbuildings") == 0)
+        {
+            g_build = -1;  // all buildings are available
+
+            m_eventQueue->AddEvent(Event(EVENT_UPDINTERFACE));
+            return;
+        }
+
+        if (strcmp(cmd, "all") == 0)
+        {
+            g_researchDone = -1;  // all research are done
+            g_build = -1;  // all buildings are available
+
+            m_eventQueue->AddEvent(Event(EVENT_UPDINTERFACE));
+            return;
+        }
+
         if (strcmp(cmd, "nolimit") == 0)
         {
             m_terrain->SetFlyingMaxHeight(280.0f);
+            return;
+        }
+
+        if (strcmp(cmd, "controller") == 0)
+        {
+            if (m_controller != nullptr)
+            {
+                // Don't use SelectObject because it checks if the object is selectable
+                if (m_camera->GetType() == Gfx::CAM_TYPE_VISIT)
+                    StopDisplayVisit();
+
+                CObject* prev = DeselectAll();
+                if (prev != nullptr && prev != m_controller)
+                   m_controller->AddDeselList(prev);
+
+                SelectOneObject(m_controller, true);
+                m_short->UpdateShortcuts();
+            }
             return;
         }
 
@@ -1834,7 +1936,7 @@ void CRobotMain::ExecuteCmd(char *cmd)
                 object->SetRange(object->GetRange()*10.0f);
             return;
         }
-        
+
         if (strcmp(cmd, "\155\157\157") == 0)
         {
             // VGhpcyBpcyBlYXN0ZXItZWdnIGFuZCBzbyBpdCBzaG91bGQgYmUgb2JmdXNjYXRlZCEgRG8gbm90
@@ -1901,7 +2003,14 @@ void CRobotMain::ExecuteCmd(char *cmd)
 
     if (strcmp(cmd, "debugmode") == 0)
     {
-        m_app->SetDebugMode(!m_app->GetDebugMode());
+        if (m_app->IsDebugModeActive(DEBUG_ALL))
+        {
+            m_app->SetDebugModeActive(DEBUG_ALL, false);
+        }
+        else
+        {
+            m_app->SetDebugModeActive(DEBUG_ALL, true);
+        }
         return;
     }
 
@@ -1988,15 +2097,23 @@ void CRobotMain::ExecuteCmd(char *cmd)
         return;
     }
 
-    if (strcmp(cmd, "speed4") == 0) {
+    if (strcmp(cmd, "speed4") == 0)
+    {
         SetSpeed(4.0f);
         UpdateSpeedLabel();
-	return;
+        return;
     }
-    if (strcmp(cmd, "speed8") == 0) {
+    if (strcmp(cmd, "speed8") == 0)
+    {
         SetSpeed(8.0f);
         UpdateSpeedLabel();
-	return;
+        return;
+    }
+    if (strcmp(cmd, "crazy") == 0)
+    {
+        SetSpeed(1000.0f);
+        UpdateSpeedLabel();
+        return;
     }
 
     if (m_phase == PHASE_SIMUL)
@@ -2020,7 +2137,7 @@ void CRobotMain::FlushDisplayInfo()
         m_infoFilename[i][0] = 0;
         m_infoPos[i] = 0;
     }
-    strcpy(m_infoFilename[SATCOM_OBJECT], "help/") + m_app->GetLanguageChar() + std::string("/objects.txt");
+    strcpy(m_infoFilename[SATCOM_OBJECT], "objects.txt");
     m_infoIndex = 0;
 }
 
@@ -2093,7 +2210,7 @@ void CRobotMain::StartDisplayInfo(const char *filename, int index)
 void CRobotMain::StopDisplayInfo()
 {
     if (m_cmdEdit) return;
-    
+
     if (m_movieInfoIndex != -1)  // film to read the SatCom?
         m_movie->Start(MM_SATCOMclose, 2.0f);
 
@@ -2182,8 +2299,7 @@ float CRobotMain::GetGameTime()
 void CRobotMain::SetFontSize(float size)
 {
     m_fontSize = size;
-    /* TODO: profile
-    SetLocalProfileFloat("Edit", "FontSize", m_fontSize); */
+    GetProfile().SetLocalProfileFloat("Edit", "FontSize", m_fontSize);
 }
 
 float CRobotMain::GetFontSize()
@@ -2195,9 +2311,8 @@ float CRobotMain::GetFontSize()
 void CRobotMain::SetWindowPos(Math::Point pos)
 {
     m_windowPos = pos;
-    /* TODO: profile
-    SetLocalProfileFloat("Edit", "WindowPos.x", m_windowPos.x);
-    SetLocalProfileFloat("Edit", "WindowPos.y", m_windowPos.y); */
+    GetProfile().SetLocalProfileFloat("Edit", "WindowPosX", m_windowPos.x);
+    GetProfile().SetLocalProfileFloat("Edit", "WindowPosY", m_windowPos.y);
 }
 
 Math::Point CRobotMain::GetWindowPos()
@@ -2208,9 +2323,8 @@ Math::Point CRobotMain::GetWindowPos()
 void CRobotMain::SetWindowDim(Math::Point dim)
 {
     m_windowDim = dim;
-    /* TODO: profile
-    SetLocalProfileFloat("Edit", "WindowDim.x", m_windowDim.x);
-    SetLocalProfileFloat("Edit", "WindowDim.y", m_windowDim.y); */
+    GetProfile().SetLocalProfileFloat("Edit", "WindowDimX", m_windowDim.x);
+    GetProfile().SetLocalProfileFloat("Edit", "WindowDimY", m_windowDim.y);
 }
 
 Math::Point CRobotMain::GetWindowDim()
@@ -2223,8 +2337,7 @@ Math::Point CRobotMain::GetWindowDim()
 void CRobotMain::SetIOPublic(bool mode)
 {
     m_IOPublic = mode;
-    /* TODO: profile
-    SetLocalProfileInt("Edit", "IOPublic", m_IOPublic); */
+    GetProfile().SetLocalProfileInt("Edit", "IOPublic", m_IOPublic);
 }
 
 bool CRobotMain::GetIOPublic()
@@ -2235,9 +2348,8 @@ bool CRobotMain::GetIOPublic()
 void CRobotMain::SetIOPos(Math::Point pos)
 {
     m_IOPos = pos;
-    /* TODO: profile
-    SetLocalProfileFloat("Edit", "IOPos.x", m_IOPos.x);
-    SetLocalProfileFloat("Edit", "IOPos.y", m_IOPos.y); */
+    GetProfile().SetLocalProfileFloat("Edit", "IOPosX", m_IOPos.x);
+    GetProfile().SetLocalProfileFloat("Edit", "IOPosY", m_IOPos.y);
 }
 
 Math::Point CRobotMain::GetIOPos()
@@ -2248,9 +2360,8 @@ Math::Point CRobotMain::GetIOPos()
 void CRobotMain::SetIODim(Math::Point dim)
 {
     m_IODim = dim;
-    /* TODO: profile
-    SetLocalProfileFloat("Edit", "IODim.x", m_IODim.x);
-    SetLocalProfileFloat("Edit", "IODim.y", m_IODim.y); */
+    GetProfile().SetLocalProfileFloat("Edit", "IODimX", m_IODim.x);
+    GetProfile().SetLocalProfileFloat("Edit", "IODimY", m_IODim.y);
 }
 
 Math::Point CRobotMain::GetIODim()
@@ -2680,6 +2791,8 @@ CObject* CRobotMain::DetectObject(Math::Point pos)
         if (obj == nullptr) break;
 
         if (!obj->GetActif()) continue;
+        CObject* truck = obj->GetTruck();
+        if (truck != nullptr) if (!truck->GetActif()) continue;
         if (obj->GetProxyActivate()) continue;
 
         CObject* target = nullptr;
@@ -3446,6 +3559,7 @@ bool CRobotMain::EventFrame(const Event &event)
         {
             m_checkEndTime = m_time;
             CheckEndMission(true);
+            UpdateAudio(true);
         }
 
         if (m_winDelay > 0.0f && !m_editLock)
@@ -3635,7 +3749,7 @@ void CRobotMain::Convert()
             }
         }
 
-        if (Cmd(line, "EndMissionTake"))
+        if (Cmd(line, "EndMissionTake") || Cmd(line, "AudioChange"))
         {
             char* p = strstr(line, "pos=");
             if (p != 0)
@@ -3729,6 +3843,7 @@ void CRobotMain::ScenePerso()
 {
     DeleteAllObjects();  // removes all the current 3D Scene
     m_engine->DeleteAllObjects();
+    Gfx::CModelManager::GetInstancePointer()->DeleteAllModelCopies();
     m_terrain->FlushRelief();  // all flat
     m_terrain->FlushBuildingLevel();
     m_terrain->FlushFlyingLimit();
@@ -3785,7 +3900,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
         FlushDisplayInfo();
         m_terrain->FlushMaterials();
-        m_audioTrack = 0;
+        m_audioTrack = "";
         m_audioRepeat = true;
         m_displayText->SetDelay(1.0f);
         m_displayText->SetEnable(true);
@@ -3793,8 +3908,10 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
         m_lockedSatCom = false;
         m_endingWinRank   = 0;
         m_endingLostRank  = 0;
+        m_audioChangeTotal = 0;
         m_endTakeTotal = 0;
         m_endTakeResearch = 0;
+        m_endTakeNever = false;
         m_endTakeWinDelay = 2.0f;
         m_endTakeLostDelay = 2.0f;
         m_obligatoryTotal = 0;
@@ -3802,6 +3919,8 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
         m_mapShow = true;
         m_mapImage = false;
         m_mapFilename[0] = 0;
+
+        m_controller = nullptr;
 
         m_colorRefBot.r =  10.0f/256.0f;
         m_colorRefBot.g = 166.0f/256.0f;
@@ -3840,6 +3959,8 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
         m_version             = 1;
         m_retroStyle          = false;
+
+        m_missionResult       = ERR_MISSION_NOTERM;
     }
 
     char line[500];
@@ -3864,12 +3985,12 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
     int rankGadget = 0;
     CObject* sel = 0;
 
-    std::string oldLocale;
-    char *locale = setlocale(LC_NUMERIC, nullptr);
-    if (locale != nullptr)
-        oldLocale = locale;
+    SetNumericLocale();
 
-    setlocale(LC_NUMERIC, "C");
+    /*
+     * NOTE: Moving frequently used lines to the top
+     *       may speed up loading
+     */
 
     while (fgets(line, 500, file) != NULL)
     {
@@ -3890,18 +4011,34 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
         // TODO: Fallback to an non-localized entry
         sprintf(op, "Title.%c", m_app->GetLanguageChar());
         if (Cmd(line, op) && !resetObject)
+        {
             OpString(line, "text", m_title);
+            continue;
+        }
 
         sprintf(op, "Resume.%c", m_app->GetLanguageChar());
         if (Cmd(line, op) && !resetObject)
+        {
             OpString(line, "text", m_resume);
+            continue;
+        }
 
         sprintf(op, "ScriptName.%c", m_app->GetLanguageChar());
         if (Cmd(line, op) && !resetObject)
+        {
             OpString(line, "text", m_scriptName);
+            continue;
+        }
+
+        if (Cmd(line, "Title")) continue; // Ignore
+        if (Cmd(line, "Resume")) continue; // Ignore
+        if (Cmd(line, "ScriptName")) continue; // Ignore
 
         if (Cmd(line, "ScriptFile") && !resetObject)
+        {
             OpString(line, "name", m_scriptFile);
+            continue;
+        }
 
         if (Cmd(line, "Instructions") && !resetObject)
         {
@@ -3910,7 +4047,8 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             strcpy(m_infoFilename[SATCOM_HUSTON], path.c_str());
 
             m_immediatSatCom = OpInt(line, "immediat", 0);
-            if(m_version >= 2) m_beginSatCom = m_lockedSatCom = OpInt(line, "lock", 0);
+            if (m_version >= 2) m_beginSatCom = m_lockedSatCom = OpInt(line, "lock", 0);
+            continue;
         }
 
         if (Cmd(line, "Satellite") && !resetObject)
@@ -3918,6 +4056,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             OpString(line, "name", name);
             std::string path = m_app->GetDataFilePath(DIR_HELP, name);
             strcpy(m_infoFilename[SATCOM_SAT], path.c_str());
+            continue;
         }
 
         if (Cmd(line, "Loading") && !resetObject)
@@ -3925,6 +4064,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             OpString(line, "name", name);
             std::string path = m_app->GetDataFilePath(DIR_HELP, name);
             strcpy(m_infoFilename[SATCOM_LOADING], path.c_str());
+            continue;
         }
 
         if (Cmd(line, "HelpFile") && !resetObject)
@@ -3932,66 +4072,131 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             OpString(line, "name", name);
             std::string path = m_app->GetDataFilePath(DIR_HELP, name);
             strcpy(m_infoFilename[SATCOM_PROG], path.c_str());
+            continue;
         }
         if (Cmd(line, "SoluceFile") && !resetObject)
         {
             OpString(line, "name", name);
             std::string path = m_app->GetDataFilePath(DIR_HELP, name);
             strcpy(m_infoFilename[SATCOM_SOLUCE], path.c_str());
+            continue;
         }
 
         if (Cmd(line, "EndingFile") && !resetObject)
         {
             m_endingWinRank  = OpInt(line, "win",  0);
             m_endingLostRank = OpInt(line, "lost", 0);
+            continue;
         }
 
         if (Cmd(line, "MessageDelay") && !resetObject)
         {
             m_displayText->SetDelay(OpFloat(line, "factor", 1.0f));
+            continue;
         }
 
-        if (Cmd(line, "Audio") && !resetObject)
+        if (Cmd(line, "CacheAudio") && !resetObject && m_version >= 2)
         {
-            m_audioTrack = OpInt(line, "track", 0);
+            OpString(line, "filename", name);
+            m_sound->CacheMusic(name);
+            continue;
+        }
+
+        if (Cmd(line, "AudioChange") && !resetObject && m_version >= 2 && m_controller == nullptr)
+        {
+            int i = m_audioChangeTotal;
+            if (i < 10)
+            {
+                m_audioChange[i].pos      = OpPos(line, "pos")*g_unit;
+                m_audioChange[i].dist     = OpFloat(line, "dist", 8.0f)*g_unit;
+                m_audioChange[i].type     = OpTypeObject(line, "type", OBJECT_NULL);
+                m_audioChange[i].min      = OpInt(line, "min", 1);
+                m_audioChange[i].max      = OpInt(line, "max", 9999);
+                m_audioChange[i].powermin = OpInt(line, "powermin", -1);
+                m_audioChange[i].powermax = OpInt(line, "powermax", 100);
+                OpString(line, "filename", m_audioChange[i].music);
+                m_audioChange[i].repeat   = OpInt(line, "repeat", 1);
+                m_audioChange[i].changed  = false;
+                m_sound->CacheMusic(m_audioChange[i].music);
+                m_audioChangeTotal ++;
+            }
+            continue;
+        }
+
+        if (Cmd(line, "Audio") && !resetObject && m_controller == nullptr)
+        {
+            if (m_version < 2)
+            {
+                int trackid = OpInt(line, "track", 0);
+                if (trackid != 0)
+                {
+                    std::stringstream filenameStr;
+                    filenameStr << "music" << std::setfill('0') << std::setw(3) << trackid << ".ogg";
+                    m_audioTrack = filenameStr.str();
+                }
+            }
+            else
+            {
+                char trackname[100];
+                OpString(line, "filename", trackname);
+                m_audioTrack = trackname;
+            }
             m_audioRepeat = OpInt(line, "repeat", 1);
+            if (m_audioTrack != "") m_sound->CacheMusic(m_audioTrack);
+            continue;
         }
 
         if (Cmd(line, "AmbientColor") && !resetObject)
         {
             m_engine->SetAmbientColor(OpColor(line, "air",   Gfx::Color(0.533f, 0.533f, 0.533f, 0.533f)), 0);
             m_engine->SetAmbientColor(OpColor(line, "water", Gfx::Color(0.533f, 0.533f, 0.533f, 0.533f)), 1);
+            continue;
         }
 
         if (Cmd(line, "FogColor") && !resetObject)
         {
             m_engine->SetFogColor(OpColor(line, "air",   Gfx::Color(0.533f, 0.533f, 0.533f, 0.533f)), 0);
             m_engine->SetFogColor(OpColor(line, "water", Gfx::Color(0.533f, 0.533f, 0.533f, 0.533f)), 1);
+            continue;
         }
 
         if (Cmd(line, "VehicleColor") && !resetObject)
+        {
             m_colorNewBot = OpColor(line, "color", Gfx::Color(0.533f, 0.533f, 0.533f, 0.533f));
+            continue;
+        }
 
         if (Cmd(line, "InsectColor") && !resetObject)
+        {
             m_colorNewAlien = OpColor(line, "color", Gfx::Color(0.533f, 0.533f, 0.533f, 0.533f));
+            continue;
+        }
 
         if (Cmd(line, "GreeneryColor") && !resetObject)
+        {
             m_colorNewGreen = OpColor(line, "color", Gfx::Color(0.533f, 0.533f, 0.533f, 0.533f));
+            continue;
+        }
 
         if (Cmd(line, "DeepView") && !resetObject)
         {
             m_engine->SetDeepView(OpFloat(line, "air",   500.0f)*g_unit, 0, true);
             m_engine->SetDeepView(OpFloat(line, "water", 100.0f)*g_unit, 1, true);
+            continue;
         }
 
         if (Cmd(line, "FogStart") && !resetObject)
         {
             m_engine->SetFogStart(OpFloat(line, "air",   0.5f), 0);
             m_engine->SetFogStart(OpFloat(line, "water", 0.5f), 1);
+            continue;
         }
 
         if (Cmd(line, "SecondTexture") && !resetObject)
+        {
             m_engine->SetSecondTexture(OpInt(line, "rank", 1));
+            continue;
+        }
 
         if (Cmd(line, "Background") && !resetObject)
         {
@@ -4002,6 +4207,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                                     OpColor(line, "cloudUp",   Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f)),
                                     OpColor(line, "cloudDown", Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f)),
                                     OpInt(line, "full", 0));
+            continue;
         }
 
         if (Cmd(line, "Planet") && !resetObject)
@@ -4022,12 +4228,14 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                              Math::Point(uv2.x, uv2.z),
                              strstr(name, "planet") != nullptr // TODO: add transparent op or modify textures
                             );
+            continue;
         }
 
         if (Cmd(line, "ForegroundName") && !resetObject)
         {
             OpString(line, "image", name);
             m_engine->SetForegroundName(name);
+            continue;
         }
 
         if (((m_version == 1 && Cmd(line, "Global")) || (m_version >= 2 && Cmd(line, "Mission"))) && !resetObject)
@@ -4035,20 +4243,24 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             g_unit = OpFloat(line, "unitScale", 4.0f);
             m_engine->SetTracePrecision(OpFloat(line, "traceQuality", 1.0f));
             m_shortCut = OpInt(line, "shortcut", 1);
-            if(m_version >= 2) {
+            if (m_version >= 2)
+            {
                 m_retroStyle = OpInt(line, "retro", 0);
-                if(m_retroStyle) GetLogger()->Info("Retro mode enabled.\n");
+                if (m_retroStyle) GetLogger()->Info("Retro mode enabled.\n");
             }
+            continue;
         }
 
         if (Cmd(line, "TerrainGenerate") && !resetObject)
         {
-            if(m_terrainCreate) {
+            if (m_terrainCreate)
+            {
                 GetLogger()->Error("Syntax error in file '%s' (line %d): TerrainGenerate after TerrainCreate\n", filename, lineNum);
                 continue;
             }
 
-            if(m_terrainInit) {
+            if (m_terrainInit)
+            {
                 GetLogger()->Error("Syntax error in file '%s' (line %d): TerrainGenerate after TerrainInit\n", filename, lineNum);
                 continue;
             }
@@ -4061,67 +4273,81 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                                 OpFloat(line, "hard", 0.5f));
 
             m_terrainGenerate = true;
+            continue;
         }
 
-        if (Cmd(line, "TerrainWind") && !resetObject) {
-            if(m_terrainCreate) {
+        if (Cmd(line, "TerrainWind") && !resetObject)
+        {
+            if (m_terrainCreate)
+            {
                 GetLogger()->Error("Syntax error in file '%s' (line %d): TerrainWind after TerrainCreate\n", filename, lineNum);
                 continue;
             }
 
-            if(m_terrainInit) {
+            if (m_terrainInit)
+            {
                 GetLogger()->Error("Syntax error in file '%s' (line %d): TerrainWind after TerrainInit\n", filename, lineNum);
                 continue;
             }
 
-            if(!m_terrainGenerate) {
+            if (!m_terrainGenerate)
+            {
                 GetLogger()->Error("Syntax error in file '%s' (line %d): TerrainWind before TerrainGenerate\n", filename, lineNum);
                 continue;
             }
 
             m_terrain->SetWind(OpPos(line, "speed"));
+            continue;
         }
 
         if (Cmd(line, "TerrainRelief") && !resetObject)
         {
-            if(m_terrainCreate) {
+            if (m_terrainCreate)
+            {
                 GetLogger()->Error("Syntax error in file '%s' (line %d): TerrainRelief after TerrainCreate\n", filename, lineNum);
                 continue;
             }
 
-            if(m_terrainInit) {
+            if (m_terrainInit)
+            {
                 GetLogger()->Error("Syntax error in file '%s' (line %d): TerrainRelief after TerrainInit\n", filename, lineNum);
                 continue;
             }
 
-            if(!m_terrainGenerate) {
+            if (!m_terrainGenerate)
+            {
                 GetLogger()->Error("Syntax error in file '%s' (line %d): TerrainRelief before TerrainGenerate\n", filename, lineNum);
                 continue;
             }
 
             OpString(line, "image", name);
             m_terrain->LoadRelief(name, OpFloat(line, "factor", 1.0f), OpInt(line, "border", 1));
+            continue;
         }
 
         if (Cmd(line, "TerrainResource") && !resetObject)
         {
-            if(m_terrainCreate) {
+            if (m_terrainCreate)
+            {
                 GetLogger()->Error("Syntax error in file '%s' (line %d): TerrainResource after TerrainCreate\n", filename, lineNum);
                 continue;
             }
 
-            if(m_terrainInit) {
+            if (m_terrainInit)
+            {
                 GetLogger()->Error("Syntax error in file '%s' (line %d): TerrainResource after TerrainInit\n", filename, lineNum);
                 continue;
             }
 
-            if(!m_terrainGenerate) {
+            if (!m_terrainGenerate)
+            {
                 GetLogger()->Error("Syntax error in file '%s' (line %d): TerrainResource before TerrainGenerate\n", filename, lineNum);
                 continue;
             }
 
             OpString(line, "image", name);
             m_terrain->LoadResources(name);
+            continue;
         }
 
         if (Cmd(line, "TerrainWater") && !resetObject)
@@ -4141,10 +4367,14 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                             pos);
             m_colorNewWater = OpColor(line, "color", m_colorRefWater);
             m_colorShiftWater = OpFloat(line, "brightness", 0.0f);
+            continue;
         }
 
         if (Cmd(line, "TerrainLava") && !resetObject)
+        {
             m_water->SetLava(OpInt(line, "mode", 0));
+            continue;
+        }
 
         if (Cmd(line, "TerrainCloud") && !resetObject)
         {
@@ -4153,6 +4383,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                             OpColor(line, "diffuse", Gfx::Color(1.0f, 1.0f, 1.0f, 1.0f)),
                             OpColor(line, "ambient", Gfx::Color(1.0f, 1.0f, 1.0f, 1.0f)),
                             OpFloat(line, "level", 500.0f) * g_unit);
+            continue;
         }
 
         if (Cmd(line, "TerrainBlitz") && !resetObject)
@@ -4160,11 +4391,13 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             m_lightning->Create(OpFloat(line, "sleep", 0.0f),
                             OpFloat(line, "delay", 3.0f),
                             OpFloat(line, "magnetic", 50.0f) * g_unit);
+            continue;
         }
 
         if (Cmd(line, "TerrainInitTextures") && !resetObject)
         {
-            if(m_terrainInit) {
+            if (m_terrainInit)
+            {
                 GetLogger()->Error("Syntax error in file '%s' (line %d): TerrainInitTextures and TerrainInit at same time\n", filename, lineNum);
                 continue;
             }
@@ -4173,10 +4406,10 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             AddExt(name, ".png");
             int dx = OpInt(line, "dx", 1);
             int dy = OpInt(line, "dy", 1);
-            char* op = SearchOp(line, "table");
+            char* opTable = SearchOp(line, "table");
             int tt[100];
             for (int i = 0; i < dx*dy; i++)
-                tt[i] = GetInt(op, i, 0);
+                tt[i] = GetInt(opTable, i, 0);
 
             if (strstr(name, "%user%") != 0)
                 CopyFileListToTemp(name, tt, dx*dy);
@@ -4184,38 +4417,46 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             m_terrain->InitTextures(name, tt, dx, dy);
 
             m_terrainInitTextures = true;
+            continue;
         }
 
-        if (Cmd(line, "TerrainInit") && !resetObject) {
-            if(m_terrainInitTextures) {
+        if (Cmd(line, "TerrainInit") && !resetObject)
+        {
+            if (m_terrainInitTextures)
+            {
                 GetLogger()->Error("Syntax error in file '%s' (line %d): TerrainInit and TerrainInitTextures at same time\n", filename, lineNum);
                 continue;
             }
 
             m_terrain->InitMaterials(OpInt(line, "id", 1));
             m_terrainInit = true;
+            continue;
         }
 
         if (Cmd(line, "TerrainMaterial") && !resetObject)
         {
-            if(m_terrainCreate) {
+            if (m_terrainCreate)
+            {
                 GetLogger()->Error("Syntax error in file '%s' (line %d): TerrainMaterial after TerrainCreate\n", filename, lineNum);
                 continue;
             }
 
-            if(m_terrainInit) {
+            if (m_terrainInit)
+            {
                 GetLogger()->Error("Syntax error in file '%s' (line %d): TerrainMaterial after TerrainInit\n", filename, lineNum);
                 continue;
             }
 
-            if(m_terrainInitTextures) {
+            if (m_terrainInitTextures)
+            {
                 GetLogger()->Error("Syntax error in file '%s' (line %d): TerrainMaterial and TerrainInitTextures at same time\n", filename, lineNum);
                 continue;
             }
 
             OpString(line, "image", name);
             AddExt(name, ".png");
-            if (strstr(name, "%user%") != 0) {
+            if (strstr(name, "%user%") != 0)
+            {
                 GetProfile().CopyFileToTemp(std::string(name));
             }
 
@@ -4228,36 +4469,41 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                                    OpInt(line, "down",  1),
                                    OpInt(line, "left",  1),
                                    OpFloat(line, "hard", 0.5f));
+            continue;
         }
 
         if (Cmd(line, "TerrainLevel") && !resetObject)
         {
-            if(m_terrainCreate) {
+            if (m_terrainCreate)
+            {
                 GetLogger()->Error("Syntax error in file '%s' (line %d): TerrainLevel after TerrainCreate\n", filename, lineNum);
                 continue;
             }
 
-            if(!m_terrainInit) {
+            if (!m_terrainInit)
+            {
                 GetLogger()->Error("Syntax error in file '%s' (line %d): TerrainLevel before TerrainInit\n", filename, lineNum);
                 continue;
             }
 
-            if(m_terrainInitTextures) {
+            if (m_terrainInitTextures)
+            {
                 GetLogger()->Error("Syntax error in file '%s' (line %d): TerrainLevel and TerrainInitTextures at same time\n", filename, lineNum);
                 continue;
             }
 
-            if(!m_terrainGenerate) {
+            if (!m_terrainGenerate)
+            {
                 GetLogger()->Error("Syntax error in file '%s' (line %d): TerrainLevel before TerrainGenerate\n", filename, lineNum);
                 continue;
             }
 
-            char* op = SearchOp(line, "id");
+            char* opId = SearchOp(line, "id");
             int id[50];
             int i = 0;
             while (i < 50)
             {
-                id[i] = GetInt(op, i, 0);
+                id[i] = GetInt(opId, i, 0);
                 if (id[i++] == 0) break;
             }
 
@@ -4268,11 +4514,14 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                                          OpFloat(line, "freq", 100.0f),
                                          OpPos(line, "center")*g_unit,
                                          OpFloat(line, "radius", 0.0f)*g_unit);
+            continue;
         }
 
-        if (Cmd(line, "TerrainCreate") && !resetObject) {
+        if (Cmd(line, "TerrainCreate") && !resetObject)
+        {
             m_terrain->CreateObjects();
             m_terrainCreate = true;
+            continue;
         }
 
         if (Cmd(line, "BeginObject"))
@@ -4284,11 +4533,35 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 sel = IOReadScene(read, stack);
 
             m_beginObject = true;
+            continue;
+        }
+
+        if (Cmd(line, "MissionController") && read[0] == 0 && m_version >= 2)
+        {
+            /* TODO: ???
+            if (!m_beginObject)
+            {
+                GetLogger()->Error("Syntax error in file '%s' (line %d): MissionController before BeginObject\n", filename, lineNum);
+                continue;
+            }*/
+
+            m_controller = CreateObject(Math::Vector(0.0f, 0.0f, 0.0f), 0.0f, 1.0f, 0.0f, OBJECT_CONTROLLER, 100.0f, false, false, 0);
+            m_controller->SetMagnifyDamage(100.0f);
+            CBrain* brain = m_controller->GetBrain();
+            if (brain != nullptr)
+            {
+                OpString(line, "script", name);
+                if (name[0] != 0)
+                    brain->SetScriptName(0, name);
+                brain->SetScriptRun(0);
+            }
+            continue;
         }
 
         if (Cmd(line, "CreateObject") && read[0] == 0)
         {
-            if (!m_beginObject) {
+            if (!m_beginObject)
+            {
                 GetLogger()->Error("Syntax error in file '%s' (line %d): CreateObject before BeginObject\n", filename, lineNum);
                 continue;
             }
@@ -4330,9 +4603,9 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             }
 
             Math::Vector pos = OpPos(line, "pos")*g_unit;
-            float dir = OpFloat(line, "dir", 0.0f)*Math::PI;
+            float dirAngle = OpFloat(line, "dir", 0.0f)*Math::PI;
             bool trainer = OpInt(line, "trainer", 0);
-            CObject* obj = CreateObject(pos, dir,
+            CObject* obj = CreateObject(pos, dirAngle,
                                         OpFloat(line, "z", 1.0f),
                                         OpFloat(line, "h", 0.0f),
                                         type,
@@ -4391,7 +4664,8 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                     sel = obj;
                 }
 
-                obj->SetSelectable(OpInt(line, "selectable", 1));
+                bool selectable = OpInt(line, "selectable", 1);
+                obj->SetSelectable(selectable);
                 obj->SetEnable(OpInt(line, "enable", 1));
                 obj->SetProxyActivate(OpInt(line, "proxyActivate", 0));
                 obj->SetProxyDistance(OpFloat(line, "proxyDistance", 15.0f)*g_unit);
@@ -4399,10 +4673,15 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 obj->SetShield(OpFloat(line, "shield", 1.0f));
                 obj->SetMagnifyDamage(OpFloat(line, "magnifyDamage", 1.0f));
                 obj->SetClip(OpInt(line, "clip", 1));
-                obj->SetCheckToken(m_version >= 2 ? trainer : OpInt(line, "manual", 1));
-                obj->SetManual(m_version >= 2 ? !trainer : OpInt(line, "manual", 0));
+                obj->SetCheckToken(m_version >= 2 ? trainer || !selectable : OpInt(line, "checkToken", 1));
+                // SetManual will affect bot speed
+                if (type == OBJECT_MOBILEdr)
+                {
+                    obj->SetManual(m_version >= 2 ? !trainer : OpInt(line, "manual", 0));
+                }
 
-                if(m_version >= 2) {
+                if (m_version >= 2)
+                {
                     Math::Vector zoom = OpDir(line, "zoom");
                     if (zoom.x != 0.0f || zoom.y != 0.0f || zoom.z != 0.0f)
                         obj->SetZoom(0, zoom);
@@ -4479,6 +4758,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             }
 
             rankObj ++;
+            continue;
         }
 
         if (Cmd(line, "CreateFog") && !resetObject)
@@ -4494,6 +4774,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             dim.x = ddim;
             dim.y = dim.x;
             m_particle->CreateParticle(pos, Math::Vector(0.0f, 0.0f, 0.0f), dim, type, delay, 0.0f, 0.0f);
+            continue;
         }
 
         if (Cmd(line, "CreateLight") && !resetObject)
@@ -4505,7 +4786,10 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
             type = OpTypeTerrain(line, "type", Gfx::ENG_OBJTYPE_NULL);
             if (type == Gfx::ENG_OBJTYPE_TERRAIN)
+            {
+                m_lightMan->SetLightPriority(lightRank, Gfx::LIGHT_PRI_HIGHEST);
                 m_lightMan->SetLightIncludeType(lightRank, Gfx::ENG_OBJTYPE_TERRAIN);
+            }
 
             if (type == Gfx::ENG_OBJTYPE_QUARTZ)
                 m_lightMan->SetLightIncludeType(lightRank, Gfx::ENG_OBJTYPE_QUARTZ);
@@ -4515,6 +4799,8 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
             if (type == Gfx::ENG_OBJTYPE_FIX)
                 m_lightMan->SetLightExcludeType(lightRank, Gfx::ENG_OBJTYPE_TERRAIN);
+
+            continue;
         }
         if (Cmd(line, "CreateSpot") && !resetObject)
         {
@@ -4535,6 +4821,8 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
             if (type == Gfx::ENG_OBJTYPE_FIX)
                 m_lightMan->SetLightExcludeType(rankLight, Gfx::ENG_OBJTYPE_TERRAIN);
+
+            continue;
         }
 
         if (Cmd(line, "GroundSpot") && !resetObject)
@@ -4549,10 +4837,14 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 m_engine->SetObjectGroundSpotMinMax(rank, OpFloat(line, "min", 0.0f)*g_unit,
                                                           OpFloat(line, "max", 0.0f)*g_unit);
             }
+            continue;
         }
 
         if (Cmd(line, "WaterColor") && !resetObject)
+        {
             m_engine->SetWaterAddColor(OpColor(line, "color", Gfx::Color(0.0f, 0.0f, 0.0f, 1.0f)));
+            continue;
+        }
 
         if (Cmd(line, "MapColor") && !resetObject)
         {
@@ -4573,23 +4865,29 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                                    OpInt(line, "mode", 0),
                                    OpInt(line, "debug", 0));
             }
+            continue;
         }
+
         if (Cmd(line, "MapZoom") && !resetObject)
         {
             m_map->ZoomMap(OpFloat(line, "factor", 2.0f));
             m_map->MapEnable(OpInt(line, "enable", 1));
+            continue;
         }
 
         if (Cmd(line, "MaxFlyingHeight") && !resetObject)
         {
             m_terrain->SetFlyingMaxHeight(OpFloat(line, "max", 280.0f)*g_unit);
+            continue;
         }
+
         if (Cmd(line, "AddFlyingHeight") && !resetObject)
         {
             m_terrain->AddFlyingLimit(OpPos(line, "center")*g_unit,
                                       OpFloat(line, "extRadius", 20.0f)*g_unit,
                                       OpFloat(line, "intRadius", 10.0f)*g_unit,
                                       OpFloat(line, "maxHeight", 200.0f));
+            continue;
         }
 
         if (Cmd(line, "Camera"))
@@ -4602,32 +4900,51 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 m_camera->StartOver(Gfx::CAM_OVER_EFFECT_FADEIN_WHITE, Math::Vector(0.0f, 0.0f, 0.0f), 1.0f);
 
             m_camera->SetFixDirection(OpFloat(line, "fixDirection", 0.25f)*Math::PI);
+            continue;
         }
 
-        if (Cmd(line, "EndMissionTake") && !resetObject)
+        if (Cmd(line, "EndMissionTake") && !resetObject && m_controller == nullptr)
         {
             int i = m_endTakeTotal;
             if (i < 10)
             {
-                m_endTake[i].pos  = OpPos(line, "pos")*g_unit;
-                m_endTake[i].dist = OpFloat(line, "dist", 8.0f)*g_unit;
-                m_endTake[i].type = OpTypeObject(line, "type", OBJECT_NULL);
-                m_endTake[i].min  = OpInt(line, "min", 1);
-                m_endTake[i].max  = OpInt(line, "max", 9999);
-                m_endTake[i].lost = OpInt(line, "lost", -1);
+                m_endTake[i].pos      = OpPos(line, "pos")*g_unit;
+                m_endTake[i].dist     = OpFloat(line, "dist", 8.0f)*g_unit;
+                m_endTake[i].type     = OpTypeObject(line, "type", OBJECT_NULL);
+                m_endTake[i].min      = OpInt(line, "min", 1);
+                m_endTake[i].max      = OpInt(line, "max", 9999);
+                if (m_version >= 2)
+                {
+                    m_endTake[i].powermin = OpInt(line, "powermin", -1);
+                    m_endTake[i].powermax = OpInt(line, "powermax", 100);
+                }
+                else
+                {
+                    m_endTake[i].powermin = -1;
+                    m_endTake[i].powermax = 100;
+                }
+                m_endTake[i].lost     = OpInt(line, "lost", -1);
                 m_endTake[i].immediat = OpInt(line, "immediat", 0);
                 OpString(line, "message", m_endTake[i].message);
                 m_endTakeTotal ++;
             }
+            continue;
         }
-        if (Cmd(line, "EndMissionDelay") && !resetObject)
+        if (Cmd(line, "EndMissionDelay") && !resetObject && m_controller == nullptr)
         {
             m_endTakeWinDelay  = OpFloat(line, "win",  2.0f);
             m_endTakeLostDelay = OpFloat(line, "lost", 2.0f);
+            continue;
         }
-        if (Cmd(line, "EndMissionResearch") && !resetObject)
+        if (Cmd(line, "EndMissionResearch") && !resetObject && m_controller == nullptr)
         {
             m_endTakeResearch |= OpResearch(line, "type");
+            continue;
+        }
+        if (Cmd(line, "EndMissionNever") && !resetObject && m_controller == nullptr)
+        {
+            m_endTakeNever = true;
+            continue;
         }
 
         if (Cmd(line, "ObligatoryToken") && !resetObject)
@@ -4638,6 +4955,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 OpString(line, "text", m_obligatoryToken[i]);
                 m_obligatoryTotal ++;
             }
+            continue;
         }
 
         if (Cmd(line, "ProhibitedToken") && !resetObject)
@@ -4648,22 +4966,39 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 OpString(line, "text", m_prohibitedToken[i]);
                 m_prohibitedTotal ++;
             }
+            continue;
         }
 
         if (Cmd(line, "EnableBuild") && !resetObject)
+        {
             g_build |= OpBuild(line, "type");
+            continue;
+        }
 
         if (Cmd(line, "EnableResearch") && !resetObject)
+        {
             g_researchEnable |= OpResearch(line, "type");
+            continue;
+        }
 
-        if (Cmd(line, "DoneResearch") && read[0] == 0 && !resetObject)  // not loading file?
+        if (Cmd(line, "DoneResearch") && read[0] == 0 && !resetObject) // not loading file?
+        {
             g_researchDone |= OpResearch(line, "type");
+            continue;
+        }
 
         if (Cmd(line, "NewScript") && !resetObject)
         {
             OpString(line, "name", name);
             AddNewScriptName(OpTypeObject(line, "type", OBJECT_NULL), name);
+            continue;
         }
+
+        if (line[0] == '\n') continue; // Ignore empty lines
+        if (line[0] == '\0') continue; // Ignore empty lines
+        if (read[0] != 0)    continue; // Ignore when loading saved game
+
+        GetLogger()->Error("Syntax error in file '%s' (line %d): Unknown command: %s", filename, lineNum, line); // Don't add \n at the end of log message - it's included in line variable
     }
 
     fclose(file);
@@ -4737,7 +5072,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
     m_dialog->SetSceneRead("");
     m_dialog->SetStackRead("");
 
-    setlocale(LC_NUMERIC, oldLocale.c_str());
+    RestoreNumericLocale();
 }
 
 //! Creates an object of decoration mobile or stationary
@@ -5055,7 +5390,8 @@ CObject* CRobotMain::CreateObject(Math::Vector pos, float angle, float zoom, flo
          type == OBJECT_MOBILEwt ||
          type == OBJECT_MOBILEit ||
          type == OBJECT_MOBILEdr ||
-         type == OBJECT_APOLLO2  )
+         type == OBJECT_APOLLO2  ||
+         type == OBJECT_CONTROLLER )
     {
         object = new CObject();
         object->SetOption(option);
@@ -5643,7 +5979,7 @@ char* SearchLastDir(char *filename)
 
     while (p != filename)
     {
-        if (*(--p) == '/') return p;
+        if (*(--p) == '/' || *p == '\\') return p;
     }
     return 0;
 }
@@ -5748,7 +6084,7 @@ void CRobotMain::LoadOneScript(CObject *obj, int &nbError)
 
         char filename[MAX_FNAME];
         sprintf(filename, "%s/%s/%c%.3d%.3d%.1d.txt",
-                    GetSavegameDir(), m_gamerName, name[0], rank, objRank, i);
+                    GetSavegameDir(), m_gamerName.c_str(), name[0], rank, objRank, i);
         brain->ReadProgram(i, filename);
         if (!brain->GetCompile(i)) nbError++;
     }
@@ -5818,7 +6154,7 @@ void CRobotMain::SaveOneScript(CObject *obj)
     {
         char filename[MAX_FNAME];
         sprintf(filename, "%s/%s/%c%.3d%.3d%.1d.txt",
-                    GetSavegameDir(), m_gamerName, name[0], rank, objRank, i);
+                    GetSavegameDir(), m_gamerName.c_str(), name[0], rank, objRank, i);
         brain->WriteProgram(i, filename);
     }
 }
@@ -5945,6 +6281,8 @@ void CRobotMain::IOWriteObject(FILE *file, CObject* obj, const char *cmd)
 {
     if (obj->GetType() == OBJECT_FIX) return;
 
+    SetNumericLocale();
+
     char line[3000];
     char name[100];
 
@@ -6031,6 +6369,8 @@ void CRobotMain::IOWriteObject(FILE *file, CObject* obj, const char *cmd)
 
     strcat(line, "\n");
     fputs(line, file);
+
+    RestoreNumericLocale();
 }
 
 //! Saves the current game
@@ -6038,6 +6378,8 @@ bool CRobotMain::IOWriteScene(const char *filename, const char *filecbot, char *
 {
     FILE* file = fopen(filename, "w");
     if (file == NULL)  return false;
+
+    SetNumericLocale();
 
     char line[500];
 
@@ -6101,6 +6443,8 @@ bool CRobotMain::IOWriteScene(const char *filename, const char *filecbot, char *
     }
     fclose(file);
 
+    RestoreNumericLocale();
+
 #if CBOT_STACK
     // Writes the file of stacks of execution.
     file = fOpen(filecbot, "wb");
@@ -6144,6 +6488,8 @@ CObject* CRobotMain::IOReadObject(char *line, const char* filename, int objRank)
     int id = OpInt(line, "id", 0);
     if (type == OBJECT_NULL)
         return nullptr;
+
+    SetNumericLocale();
 
     int trainer = OpInt(line, "trainer", 0);
     int toy = OpInt(line, "toy", 0);
@@ -6210,6 +6556,8 @@ CObject* CRobotMain::IOReadObject(char *line, const char* filename, int objRank)
             automat->Start(run);  // starts the film
     }
 
+    RestoreNumericLocale();
+
     return obj;
 }
 
@@ -6220,6 +6568,8 @@ CObject* CRobotMain::IOReadScene(const char *filename, const char *filecbot)
 
     FILE* file = fopen(filename, "r");
     if (file == NULL) return 0;
+
+    SetNumericLocale();
 
     CObject* fret   = nullptr;
     CObject* power  = nullptr;
@@ -6342,6 +6692,8 @@ CObject* CRobotMain::IOReadScene(const char *filename, const char *filecbot)
     }
 #endif
 
+    RestoreNumericLocale();
+
     return sel;
 }
 
@@ -6352,10 +6704,10 @@ void CRobotMain::WriteFreeParam()
     m_freeResearch |= g_researchDone;
     m_freeBuild    |= g_build;
 
-    if (m_gamerName[0] == 0) return;
+    if (m_gamerName == "") return;
 
     char filename[MAX_FNAME];
-    sprintf(filename, "%s/%s/research.gam", GetSavegameDir(), m_gamerName);
+    sprintf(filename, "%s/%s/research.gam", GetSavegameDir(), m_gamerName.c_str());
     FILE* file = fopen(filename, "w");
     if (file == NULL) return;
 
@@ -6371,10 +6723,10 @@ void CRobotMain::ReadFreeParam()
     m_freeResearch = 0;
     m_freeBuild    = 0;
 
-    if (m_gamerName[0] == 0) return;
+    if (m_gamerName == "") return;
 
     char filename[MAX_FNAME];
-    sprintf(filename, "%s/%s/research.gam", GetSavegameDir(), m_gamerName);
+    sprintf(filename, "%s/%s/research.gam", GetSavegameDir(), m_gamerName.c_str());
     FILE* file = fopen(filename, "r");
     if (file == NULL)  return;
 
@@ -6525,9 +6877,113 @@ void CRobotMain::ResetCreate()
     }
 }
 
+//! Updates the audiotracks
+void CRobotMain::UpdateAudio(bool frame)
+{
+    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
+
+    for (int t = 0; t < m_audioChangeTotal; t++)
+    {
+        if (m_audioChange[t].changed) continue;
+
+        Math::Vector bPos = m_audioChange[t].pos;
+        bPos.y = 0.0f;
+
+        Math::Vector oPos;
+
+        int nb = 0;
+        for (int i = 0; i < 1000000; i++)
+        {
+            CObject* obj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
+            if (obj == nullptr) break;
+
+            // Do not use GetActif () because an invisible worm (underground)
+            // should be regarded as existing here!
+            if (obj->GetLock()) continue;
+            if (obj->GetRuin()) continue;
+            if (!obj->GetEnable()) continue;
+
+            ObjectType type = obj->GetType();
+            if (type == OBJECT_SCRAP2 ||
+                type == OBJECT_SCRAP3 ||
+                type == OBJECT_SCRAP4 ||
+                type == OBJECT_SCRAP5)  // wastes?
+            {
+                type = OBJECT_SCRAP1;
+            }
+
+            if (type != m_audioChange[t].type)  continue;
+
+            float energyLevel = -1;
+            CObject* power = obj->GetPower();
+            if (power != nullptr)
+            {
+                energyLevel = power->GetEnergy();
+                if (power->GetType() == OBJECT_ATOMIC) energyLevel *= 100;
+            }
+            if (energyLevel < m_audioChange[t].powermin || energyLevel > m_audioChange[t].powermax) continue;
+
+            if (obj->GetTruck() == 0)
+                oPos = obj->GetPosition(0);
+            else
+                oPos = obj->GetTruck()->GetPosition(0);
+
+            oPos.y = 0.0f;
+
+            if (Math::DistanceProjected(oPos, bPos) <= m_audioChange[t].dist)
+                nb ++;
+        }
+
+        if (nb >= m_audioChange[t].min &&
+            nb <= m_audioChange[t].max)
+        {
+            CLogger::GetInstancePointer()->Debug("Changing music...\n");
+            m_sound->StopMusic();
+            m_sound->PlayMusic(std::string(m_audioChange[t].music), m_audioChange[t].repeat);
+            m_audioChange[t].changed = true;
+        }
+    }
+}
+
+void CRobotMain::SetEndMission(Error result, float delay)
+{
+    if (m_controller != nullptr)
+    {
+        m_endTakeWinDelay = delay;
+        m_endTakeLostDelay = delay;
+        m_missionResult = result;
+    }
+}
+
 //! Checks if the mission is over
 Error CRobotMain::CheckEndMission(bool frame)
 {
+    if (m_controller != nullptr)
+    {
+        if (m_missionResult == INFO_LOST) //mission lost?
+        {
+            m_displayText->DisplayError(INFO_LOST, Math::Vector(0.0f,0.0f,0.0f));
+            m_winDelay = 0.0f;
+            if (m_lostDelay == 0) m_lostDelay = m_endTakeLostDelay;
+            m_displayText->SetEnable(false);
+        }
+        if (m_missionResult == INFO_LOSTq) //mission lost?
+        {
+            m_winDelay = 0.0f;
+            if (m_lostDelay == 0) m_lostDelay = 0.1f;
+            m_displayText->SetEnable(false);
+        }
+        if (frame && m_base) return ERR_MISSION_NOTERM;
+        if (m_missionResult == ERR_OK) { //mission win?
+            m_displayText->DisplayError(INFO_WIN, Math::Vector(0.0f,0.0f,0.0f));
+            if (m_winDelay == 0) m_winDelay = m_endTakeWinDelay;
+            m_lostDelay = 0.0f;
+            m_displayText->SetEnable(false);
+        }
+        if (m_missionResult == ERR_MISSION_NOTERM) m_displayText->SetEnable(true);
+        return m_missionResult;
+    }
+
     CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
 
     for (int t = 0; t < m_endTakeTotal; t++)
@@ -6561,6 +7017,15 @@ Error CRobotMain::CheckEndMission(bool frame)
             }
 
             if (type != m_endTake[t].type)  continue;
+
+            float energyLevel = -1;
+            CObject* power = obj->GetPower();
+            if (power != nullptr)
+            {
+                energyLevel = power->GetEnergy();
+                if (power->GetType() == OBJECT_ATOMIC) energyLevel *= 100;
+            }
+            if (energyLevel < m_endTake[t].powermin || energyLevel > m_endTake[t].powermax) continue;
 
             if (obj->GetTruck() == 0)
                 oPos = obj->GetPosition(0);
@@ -6598,7 +7063,8 @@ Error CRobotMain::CheckEndMission(bool frame)
             }
         }
         if (nb < m_endTake[t].min ||
-            nb > m_endTake[t].max)
+            nb > m_endTake[t].max ||
+            m_endTakeNever        )
         {
             m_displayText->SetEnable(true);
             return ERR_MISSION_NOTERM;
@@ -6781,10 +7247,10 @@ bool CRobotMain::GetRadar()
     for (int i = 0; i < 1000000; i++)
     {
         CObject* obj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
-        if (obj == 0)  break;
+        if (obj == nullptr)  break;
 
         ObjectType type = obj->GetType();
-        if (type == OBJECT_RADAR)
+        if (type == OBJECT_RADAR && !obj->GetLock())
             return true;
     }
     return false;
@@ -6813,15 +7279,15 @@ bool CRobotMain::GetRetroMode()
 //! Change the player's name
 void CRobotMain::SetGamerName(const char *name)
 {
-    strcpy(m_gamerName, name);
+    m_gamerName = std::string(name);
     SetGlobalGamerName(m_gamerName);
     ReadFreeParam();
 }
 
-//! Getes the player's name
+//! Gets the player's name
 char* CRobotMain::GetGamerName()
 {
-    return m_gamerName;
+    return const_cast<char*>(m_gamerName.c_str());
 }
 
 
@@ -7025,7 +7491,8 @@ float CRobotMain::GetTracePrecision()
 //! Starts music with a mission
 void CRobotMain::StartMusic()
 {
-    if (m_audioTrack != 0)
+    CLogger::GetInstancePointer()->Debug("Starting music...\n");
+    if (m_audioTrack != "")
     {
         m_sound->StopMusic();
         m_sound->PlayMusic(m_audioTrack, m_audioRepeat);
@@ -7038,3 +7505,18 @@ void CRobotMain::ClearInterface()
     HiliteClear();  // removes setting evidence
     m_tooltipName[0] = 0;  // really removes the tooltip
 }
+
+void CRobotMain::SetNumericLocale()
+{
+    char *locale = setlocale(LC_NUMERIC, nullptr);
+    if (locale != nullptr)
+        m_oldLocale = locale;
+
+    setlocale(LC_NUMERIC, "C");
+}
+
+void CRobotMain::RestoreNumericLocale()
+{
+    setlocale(LC_NUMERIC, m_oldLocale.c_str());
+}
+

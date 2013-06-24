@@ -39,3 +39,4 @@ the object being created with CBotVar :: Create (name, pClasse)
     not destroy the object when there imédiatement pointers
     but marked as virtually destroyed
 
+

@@ -1,10 +1,3 @@
-# Ignore the documentation folder
-/doc
-
-# Ignore local data
-/colobot.ini
-/savegame
-
 # Ignore the CMake build files
 CMakeFiles
 CMakeCache.txt
@@ -13,9 +6,21 @@ Makefile
 /install_manifest.txt
 /Testing
 /CTestTestfile.cmake
-/src/CBot/tests/CBot_console/bin/
+
+# Ignore the generated documentation
+/doc
+/Doxyfile
+
+# Ignore targets
+/colobot
+
+# Ignore local data
+/colobot.ini
+/savegame
+
+# Standard build directory
+/build
+
+# Ignore KDevelop files
 .kdev4
 *.kdev4
-*.flv
-*.mp4
-

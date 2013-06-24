@@ -48,6 +48,9 @@ public:
     void        Init();
     bool        EventProcess(const Event &event);
 
+    Error       StartAction(int param);
+    void        SetProgram(const char* program);
+
     bool        CreateInterface(bool bSelect);
 
     bool        Write(char *line);
@@ -69,7 +72,10 @@ protected:
     float               m_progress;
     float               m_speed;
     float               m_lastParticle;
-    Math::Vector            m_fretPos;
+    Math::Vector        m_fretPos;
     int                 m_channelSound;
+
+    CObject*            m_vehicle;
+    char*               m_program;
 };
 

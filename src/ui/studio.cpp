@@ -167,7 +167,7 @@ bool CStudio::EventProcess(const Event &event)
     {
         slider = static_cast< CSlider* >(pw->SearchControl(EVENT_STUDIO_SIZE));
         if ( slider == nullptr )  return false;
-        m_main->SetFontSize(9.0f+slider->GetVisibleValue()*6.0f);
+        m_main->SetFontSize(9.0f+slider->GetVisibleValue()*12.0f);
         ViewEditScript();
     }
 
@@ -904,7 +904,7 @@ void CStudio::SetInfoText(std::string text, bool bClickable)
     if ( list == 0 )  return;
 
     list->Flush();  // just text
-    list->SetName(0, text.c_str());
+    list->SetItemName(0, text.c_str());
 
     if ( text[0] == 0 )  bClickable = false;
     list->SetSelectCap(bClickable);
@@ -1397,7 +1397,7 @@ void CStudio::UpdateChangeList()
     pe = static_cast< CEdit* >(pw->SearchControl(EVENT_DIALOG_EDIT));
     if ( pe == nullptr )  return;
 
-    strcpy(name, pl->GetName(pl->GetSelect()));
+    strcpy(name, pl->GetItemName(pl->GetSelect()));
     name[pe->GetMaxChar()] = 0;  // truncates according lg max editable
     p = strchr(name, '\t');  // seeks first tab
     if ( p != 0 )  *p = 0;
@@ -1511,7 +1511,6 @@ void CStudio::UpdateDialogList()
     fs::path        path;
     int             i = 0;
     char            time[100];
-    char            temp[100];
 
     pw = static_cast< CWindow* >(m_interface->SearchControl(EVENT_WINDOW9));
     if ( pw == nullptr )  return;
@@ -1521,13 +1520,16 @@ void CStudio::UpdateDialogList()
 
     path = fs::path(SearchDirectory(false));
     fs::directory_iterator end_iter;
-    if ( fs::exists(path) && fs::is_directory(path) ) {
-        for( fs::directory_iterator file(path); file != end_iter; file++) {
-            if (fs::is_regular_file(file->status()) ) {
+    if ( fs::exists(path) && fs::is_directory(path) )
+    {
+        for( fs::directory_iterator file(path); file != end_iter; file++)
+        {
+            if (fs::is_regular_file(file->status()) )
+            {
+                std::ostringstream temp;
                 TimeToAscii(fs::last_write_time(file->path()), time);
-                sprintf(temp, "%s\t%lu  \t%s", file->path().filename().string().c_str(), fs::file_size(file->path()), time);
-                
-                pl->SetName(i++, temp);
+                temp << file->path().filename().string() << '\t' << fs::file_size(file->path()) << "  \t" << time;
+                pl->SetItemName(i++, temp.str().c_str());
             }
         }
     }
@@ -1539,15 +1541,19 @@ void CStudio::UpdateDialogList()
 std::string CStudio::SearchDirectory(bool bCreate)
 {
     char dir[MAX_FNAME];
-    if ( m_main->GetIOPublic() ) {
+    if ( m_main->GetIOPublic() )
+    {
         sprintf(dir, "%s/", m_main->GetPublicDir());
-    } else {
+    }
+    else
+    {
         sprintf(dir, "%s/%s/Program/", m_main->GetSavegameDir(), m_main->GetGamerName());
     }
-    
+
     fs::path path = fs::path(dir);
-    
-    if ( bCreate ) {
+
+    if ( bCreate )
+    {
         fs::create_directory(path);
     }
 
@@ -1630,3 +1636,4 @@ bool CStudio::WriteProgram()
 }
 
 }
+

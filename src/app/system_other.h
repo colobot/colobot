@@ -46,3 +46,4 @@ public:
     virtual long long GetTimeStampExactResolution() override;
     virtual long long TimeStampExactDiff(SystemTimeStamp *before, SystemTimeStamp *after) override;
 };
+

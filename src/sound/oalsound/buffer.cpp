@@ -15,28 +15,35 @@
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
 
-#include "buffer.h"
+#include "sound/oalsound/buffer.h"
 
-Buffer::Buffer() {
-    mLoaded = false;
-    mDuration = 0.0f;
+#include <cstring>
+
+Buffer::Buffer()
+{
+    m_loaded = false;
+    m_duration = 0.0f;
 }
 
 
-Buffer::~Buffer() {
-    if (mLoaded) {
-        alDeleteBuffers(1, &mBuffer);
+Buffer::~Buffer()
+{
+    if (m_loaded)
+    {
+        alDeleteBuffers(1, &m_buffer);
         if (alCheck())
             GetLogger()->Warn("Failed to unload buffer. Code %d\n", alGetCode());
     }
 }
 
 
-bool Buffer::LoadFromFile(std::string filename, Sound sound) {
-    mSound = sound;
+bool Buffer::LoadFromFile(std::string filename, Sound sound)
+{
+    m_sound = sound;
     GetLogger()->Debug("Loading audio file: %s\n", filename.c_str());
 
     SF_INFO fileInfo;
+    memset(&fileInfo, 0, sizeof(SF_INFO));
     SNDFILE *file = sf_open(filename.c_str(), SFM_READ, &fileInfo);
 
     GetLogger()->Trace("  channels %d\n", fileInfo.channels);
@@ -45,16 +52,18 @@ bool Buffer::LoadFromFile(std::string filename, Sound sound) {
     GetLogger()->Trace("  samplerate %d\n", fileInfo.samplerate);
     GetLogger()->Trace("  sections %d\n", fileInfo.sections);
 
-    if (!file) {
+    if (!file)
+    {
         GetLogger()->Warn("Could not load file. Reason: %s\n", sf_strerror(file));
-        mLoaded = false;
+        m_loaded = false;
         return false;
     }
 
-    alGenBuffers(1, &mBuffer);
-    if (!mBuffer) {
+    alGenBuffers(1, &m_buffer);
+    if (!m_buffer)
+    {
         GetLogger()->Warn("Could not create audio buffer\n");
-        mLoaded = false;
+        m_loaded = false;
         sf_close(file);
         return false;
     }
@@ -64,33 +73,39 @@ bool Buffer::LoadFromFile(std::string filename, Sound sound) {
     std::array<int16_t, 4096> buffer;
     data.reserve(fileInfo.frames);
     size_t read = 0;
-    while ((read = sf_read_short(file, buffer.data(), buffer.size())) != 0) {
+    while ((read = sf_read_short(file, buffer.data(), buffer.size())) != 0)
+    {
         data.insert(data.end(), buffer.begin(), buffer.begin() + read);
     }
-    sf_close(file);   
+    sf_close(file);
 
-    alBufferData(mBuffer, fileInfo.channels == 1 ? AL_FORMAT_MONO16 : AL_FORMAT_STEREO16, &data.front(), data.size() * sizeof(uint16_t), fileInfo.samplerate);
-    mDuration = static_cast<float>(fileInfo.frames) / fileInfo.samplerate;
-    mLoaded = true;
+    alBufferData(m_buffer, fileInfo.channels == 1 ? AL_FORMAT_MONO16 : AL_FORMAT_STEREO16, &data.front(), data.size() * sizeof(uint16_t), fileInfo.samplerate);
+    m_duration = static_cast<float>(fileInfo.frames) / fileInfo.samplerate;
+    m_loaded = true;
     return true;
 }
 
 
-Sound Buffer::GetSoundType() {
-    return mSound;
+Sound Buffer::GetSoundType()
+{
+    return m_sound;
 }
 
 
-ALuint Buffer::GetBuffer() {
-    return mBuffer;
+ALuint Buffer::GetBuffer()
+{
+    return m_buffer;
 }
 
 
-bool Buffer::IsLoaded() {
-    return mLoaded;
+bool Buffer::IsLoaded()
+{
+    return m_loaded;
 }
 
 
-float Buffer::GetDuration() {
-    return mDuration;
+float Buffer::GetDuration()
+{
+    return m_duration;
 }
+

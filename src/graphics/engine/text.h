@@ -206,6 +206,20 @@ struct MultisizeFont
 };
 
 /**
+ * \enum SpecialChar
+ * \brief Special codes for certain characters
+ */
+enum SpecialChar
+{
+    CHAR_TAB        = '\t', //! Tab character - :
+    CHAR_NEWLINE    = '\n', //! Newline character - arrow pointing down and left
+    CHAR_DOT        = 1,    //! Single dot in the middle
+    CHAR_SQUARE     = 2,    //! Square
+    CHAR_SKIP_RIGHT = 5,    //! Filled triangle pointing right
+    CHAR_SKIP_LEFT  = 6     //! Filled triangle pointing left
+};
+
+/**
  * \class CText
  * \brief Text rendering engine
  *
@@ -240,6 +254,12 @@ public:
     //! Flushes cached textures
     void        FlushCache();
 
+    //@{
+    //! Tab size management
+    void        SetTabSize(int tabSize);
+    int         GetTabSize();
+    //@}
+
     //! Draws text (multi-format)
     void        DrawText(const std::string &text, std::vector<FontMetaChar>::iterator format,
                          std::vector<FontMetaChar>::iterator end,
@@ -268,11 +288,11 @@ public:
     float       GetHeight(FontType font, float size);
 
     //! Returns width of string (multi-format)
-    TEST_VIRTUAL float GetStringWidth(const std::string &text,
-                               std::vector<FontMetaChar>::iterator format,
-                               std::vector<FontMetaChar>::iterator end, float size);
+    TEST_VIRTUAL float GetStringWidth(const std::string& text,
+                                      std::vector<FontMetaChar>::iterator format,
+                                      std::vector<FontMetaChar>::iterator end, float size);
     //! Returns width of string (single font)
-    TEST_VIRTUAL float GetStringWidth(const std::string &text, FontType font, float size);
+    TEST_VIRTUAL float GetStringWidth(std::string text, FontType font, float size);
     //! Returns width of single character
     TEST_VIRTUAL float GetCharWidth(UTF8Char ch, FontType font, float size, float offset);
 
@@ -289,6 +309,8 @@ public:
                        float size, float offset);
     //! Returns the most suitable position to a given offset (one font)
     int         Detect(const std::string &text, FontType font, float size, float offset);
+
+    UTF8Char    TranslateSpecialChar(int specialChar);
 
 protected:
     CachedFont* GetOrOpenFont(FontType type, float size);
@@ -309,6 +331,7 @@ protected:
 
     std::string  m_error;
     float        m_defaultSize;
+    int          m_tabSize;
 
     std::map<FontType, MultisizeFont*> m_fonts;
 
@@ -319,3 +342,4 @@ protected:
 
 
 } // namespace Gfx
+

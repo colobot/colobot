@@ -47,8 +47,10 @@ CInterface::~CInterface()
 
 void CInterface::Flush()
 {
-    for (int i = 0; i < MAXCONTROL; i++ ) {
-        if ( m_table[i] != nullptr ) {
+    for (int i = 0; i < MAXCONTROL; i++ )
+    {
+        if ( m_table[i] != nullptr )
+        {
             delete m_table[i];
             m_table[i] = nullptr;
         }
@@ -58,7 +60,8 @@ void CInterface::Flush()
 
 int CInterface::GetNextFreeControl()
 {
-    for (int i = 10; i < MAXCONTROL-1; i++) {
+    for (int i = 10; i < MAXCONTROL-1; i++)
+    {
         if (m_table[i] == nullptr)
             return i;
     }
@@ -92,7 +95,8 @@ CWindow* CInterface::CreateWindows(Math::Point pos, Math::Point dim, int icon, E
     if (eventMsg == EVENT_NULL)
         eventMsg = GetUniqueEventType();
 
-    switch (eventMsg) {
+    switch (eventMsg)
+    {
         case EVENT_WINDOW0: index = 0; break;
         case EVENT_WINDOW1: index = 1; break;
         case EVENT_WINDOW2: index = 2; break;
@@ -197,6 +201,9 @@ CSlider* CInterface::CreateSlider(Math::Point pos, Math::Point dim, int icon, Ev
 }
 
 // Creates a new list.
+// if expand is less then zero, then the list would try to use expand's absolute value,
+// and try to scale items to some size, so that dim of the list would not change after
+// adjusting
 
 CList* CInterface::CreateList(Math::Point pos, Math::Point dim, int icon, EventType eventMsg, float expand)
 {
@@ -246,9 +253,12 @@ CMap* CInterface::CreateMap(Math::Point pos, Math::Point dim, int icon, EventTyp
 
 bool CInterface::DeleteControl(EventType eventMsg)
 {
-    for (int i = 0; i < MAXCONTROL; i++) {
-        if ( m_table[i] != nullptr ) {
-            if (eventMsg == m_table[i]->GetEventType()) {
+    for (int i = 0; i < MAXCONTROL; i++)
+    {
+        if ( m_table[i] != nullptr )
+        {
+            if (eventMsg == m_table[i]->GetEventType())
+            {
                 delete m_table[i];
                 m_table[i] = nullptr;
                 return true;
@@ -262,8 +272,10 @@ bool CInterface::DeleteControl(EventType eventMsg)
 
 CControl* CInterface::SearchControl(EventType eventMsg)
 {
-    for (int i = 0; i < MAXCONTROL; i++) {
-        if (m_table[i] != nullptr) {
+    for (int i = 0; i < MAXCONTROL; i++)
+    {
+        if (m_table[i] != nullptr)
+        {
             if (eventMsg == m_table[i]->GetEventType())
                 return m_table[i];
         }
@@ -323,4 +335,5 @@ void CInterface::Draw()
     }
 }
 
-}
+} // namespace Ui
+

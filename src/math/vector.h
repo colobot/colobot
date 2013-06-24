@@ -57,17 +57,17 @@ struct Vector
 
     //! Creates a zero vector (0, 0, 0)
     inline Vector()
-    {
-        LoadZero();
-    }
+     : x(0.0f)
+     , y(0.0f)
+     , z(0.0f)
+    {}
 
     //! Creates a vector from given values
-    inline explicit Vector(float x, float y, float z)
-    {
-        this->x = x;
-        this->y = y;
-        this->z = z;
-    }
+    inline explicit Vector(float _x, float _y, float _z)
+     : x(_x)
+     , y(_y)
+     , z(_z)
+    {}
 
     //! Loads the zero vector (0, 0, 0)
     inline void LoadZero()
@@ -281,3 +281,4 @@ inline Vector Clamp(const Vector &vec, const Vector &min, const Vector &max)
 
 
 } // namespace Math
+

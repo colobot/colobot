@@ -649,3 +649,4 @@ bool CAutoEnergy::Read(char *line)
 
     return true;
 }
+

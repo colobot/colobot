@@ -56,6 +56,7 @@ CText::CText(CEngine* engine)
     m_engine = engine;
 
     m_defaultSize = 12.0f;
+    m_tabSize = 4;
 
     m_lastFontType = FONT_COLOBOT;
     m_lastFontSize = 0;
@@ -146,6 +147,16 @@ void CText::FlushCache()
     m_lastFontType = FONT_COLOBOT;
     m_lastFontSize = 0;
     m_lastCachedFont = nullptr;
+}
+
+int CText::GetTabSize()
+{
+    return m_tabSize;
+}
+
+void CText::SetTabSize(int tabSize)
+{
+    m_tabSize = tabSize;
 }
 
 void CText::DrawText(const std::string &text, std::vector<FontMetaChar>::iterator format,
@@ -309,11 +320,16 @@ float CText::GetStringWidth(const std::string &text,
     return width;
 }
 
-float CText::GetStringWidth(const std::string &text, FontType font, float size)
+float CText::GetStringWidth(std::string text, FontType font, float size)
 {
     assert(font != FONT_BUTTON);
 
-    // TODO: special chars?
+    // Skip special chars
+    for (char& c : text)
+    {
+        if (c < 32)
+            c = ':';
+    }
 
     CachedFont* cf = GetOrOpenFont(font, size);
     assert(cf != nullptr);
@@ -328,8 +344,16 @@ float CText::GetCharWidth(UTF8Char ch, FontType font, float size, float offset)
     // TODO: if (font == FONT_BUTTON)
     if (font == FONT_BUTTON) return 0.0f;
 
-    // TODO: special chars?
-    // TODO: tab sizing
+    int width = 1;
+    if (ch.c1 < 32)
+    {
+        if (ch.c1 == '\t')
+            width = m_tabSize;
+
+        // TODO: tab sizing at intervals?
+
+        ch.c1 = ':';
+    }
 
     CachedFont* cf = GetOrOpenFont(font, size);
     assert(cf != nullptr);
@@ -341,7 +365,7 @@ float CText::GetCharWidth(UTF8Char ch, FontType font, float size, float offset)
     else
         tex = CreateCharTexture(ch, cf);
 
-    return tex.charSize.x;
+    return tex.charSize.x * width;
 }
 
 
@@ -505,6 +529,63 @@ int CText::Detect(const std::string &text, FontType font, float size, float offs
     return index;
 }
 
+UTF8Char CText::TranslateSpecialChar(int specialChar)
+{
+    UTF8Char ch;
+
+    switch (specialChar)
+    {
+        case CHAR_TAB:
+            ch.c1 = ':';
+            ch.c2 = 0;
+            ch.c3 = 0;
+            break;
+
+        case CHAR_NEWLINE:
+            // Unicode: U+21B2
+            ch.c1 = 0xE2;
+            ch.c2 = 0x86;
+            ch.c3 = 0xB2;
+            break;
+
+        case CHAR_DOT:
+            // Unicode: U+23C5
+            ch.c1 = 0xE2;
+            ch.c2 = 0x8F;
+            ch.c3 = 0x85;
+            break;
+
+        case CHAR_SQUARE:
+            // Unicode: U+25FD
+            ch.c1 = 0xE2;
+            ch.c2 = 0x97;
+            ch.c3 = 0xBD;
+            break;
+
+        case CHAR_SKIP_RIGHT:
+            // Unicode: U+25B6
+            ch.c1 = 0xE2;
+            ch.c2 = 0x96;
+            ch.c3 = 0xB6;
+            break;
+
+        case CHAR_SKIP_LEFT:
+            // Unicode: U+25C0
+            ch.c1 = 0xE2;
+            ch.c2 = 0x97;
+            ch.c3 = 0x80;
+            break;
+
+        default:
+            ch.c1 = '?';
+            ch.c2 = 0;
+            ch.c3 = 0;
+            break;
+    }
+
+    return ch;
+}
+
 void CText::DrawString(const std::string &text, std::vector<FontMetaChar>::iterator format,
                        std::vector<FontMetaChar>::iterator end,
                        float size, Math::Point pos, float width, int eol, Color color)
@@ -532,7 +613,11 @@ void CText::DrawString(const std::string &text, std::vector<FontMetaChar>::itera
         float cw = GetCharWidth(ch, font, size, offset);
         if (offset + cw > width)  // exceeds the maximum width?
         {
-            // TODO: special end-of-line char
+            ch = TranslateSpecialChar(CHAR_SKIP_RIGHT);
+            cw = GetCharWidth(ch, font, size, offset);
+            pos.x = start + width - cw;
+            color = Color(1.0f, 0.0f, 0.0f);
+            DrawCharAndAdjustPos(ch, font, size, pos, color);
             break;
         }
 
@@ -550,7 +635,13 @@ void CText::DrawString(const std::string &text, std::vector<FontMetaChar>::itera
         fmtIndex++;
     }
 
-    // TODO: eol
+    if (eol != 0)
+    {
+        FontType font = FONT_COLOBOT;
+        UTF8Char ch = TranslateSpecialChar(eol);
+        color = Color(1.0f, 0.0f, 0.0f);
+        DrawCharAndAdjustPos(ch, font, size, pos, color);
+    }
 }
 
 void CText::StringToUTFCharList(const std::string &text, std::vector<UTF8Char> &chars)
@@ -675,23 +766,18 @@ void CText::DrawCharAndAdjustPos(UTF8Char ch, FontType font, float size, Math::P
     // TODO: if (font == FONT_BUTTON)
     if (font == FONT_BUTTON) return;
 
-    // TODO: special chars?
-
     CachedFont* cf = GetOrOpenFont(font, size);
 
     if (cf == nullptr)
         return;
 
     int width = 1;
-    if (ch.c1 > 0 && ch.c1 < 32) { // FIXME add support for chars with code 9 10 23
-        if (ch.c1 == '\t') {
-            ch.c1 = ':';
-            width = 4;
-        } else {
-            ch.c1 = ' ';
-        }
-        ch.c2 = 0;
-        ch.c3 = 0;
+    if (ch.c1 > 0 && ch.c1 < 32)
+    {
+        if (ch.c1 == '\t')
+            width = m_tabSize;
+
+        ch = TranslateSpecialChar(ch.c1);
     }
 
     auto it = cf->cache.find(ch);
@@ -827,3 +913,4 @@ CharTexture CText::CreateCharTexture(UTF8Char ch, CachedFont* font)
 
 
 } // namespace Gfx
+

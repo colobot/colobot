@@ -47,6 +47,7 @@ public:
     void        DeleteObject(bool bAll=false);
 
     void        Init();
+    Error       StartAction(int param);
     bool        EventProcess(const Event &event);
     Error       GetError();
 
@@ -68,7 +69,7 @@ protected:
     float               m_speed;
     float               m_timeVirus;
     float               m_lastParticle;
-    EventType               m_research;
+    ResearchType        m_research;
     int                 m_partiRank[3];
     int                 m_partiSphere;
     int                 m_soundChannel;

@@ -270,3 +270,4 @@ bool CCloud::GetEnabled()
 
 
 } // namespace Gfx
+

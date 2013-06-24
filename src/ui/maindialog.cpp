@@ -63,7 +63,7 @@ const int KEY_VISIBLE = 6;      // number of visible keys redefinable
 
 const int KEY_TOTAL = 21;       // total number of keys redefinable
 
-const float WELCOME_LENGTH = 2.0f;
+const float WELCOME_LENGTH = 3.0f;
 
 const int MAX_FNAME = 255; // TODO: remove after rewrite to std::string
 
@@ -174,10 +174,18 @@ CMainDialog::CMainDialog()
 
 
     m_sceneDir = "levels";
-    m_savegameDir = GetSystemUtils()->savegameDirectoryLocation();
+
+    #if DEV_BUILD
+    m_savegameDir = "savegame";
+    #else
+    m_savegameDir = GetSystemUtils()->GetSavegameDirectoryLocation();
+    #endif
+
     m_publicDir = "program";
     m_userDir = "user";
-    m_filesDir = "files";
+    m_filesDir = m_savegameDir;
+
+    m_setupFull = m_app->GetVideoConfig().fullScreen;
 
     m_bDialog = false;
 }
@@ -193,7 +201,7 @@ CMainDialog::~CMainDialog()
 
 void CMainDialog::ChangePhase(Phase phase)
 {
-    CWindow*        pw;
+    CWindow*        pw = nullptr;
     CEdit*          pe;
     CEditValue*     pv;
     CLabel*         pl;
@@ -358,7 +366,8 @@ pb->SetState(STATE_SHADOW);
         }
         // #endif
 
-        if ( m_app->GetDebugMode() )
+        // TODO: remove?
+        if (m_app->GetProtoMode())
         {
             pos.x  = 139.0f/640.0f;
             pos.y  = 313.0f/480.0f;
@@ -383,7 +392,7 @@ pb->SetState(STATE_SHADOW);
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
-                true, Math::Point(1.0f, 768.0f / 1024.0f));
+                true);
         m_engine->SetBackForce(true);
     }
 
@@ -503,7 +512,7 @@ pb->SetState(STATE_SHADOW);
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
-                true, Math::Point(1.0f, 768.0f / 1024.0f));
+                true);
         m_engine->SetBackForce(true);
     }
 
@@ -738,6 +747,24 @@ pb->SetState(STATE_SHADOW);
         CameraPerso();
     }
 
+    if ( m_phase != PHASE_SIMUL   &&
+         m_phase != PHASE_WIN     &&
+         m_phase != PHASE_LOST    &&
+         m_phase != PHASE_WRITE   &&
+         m_phase != PHASE_READs   &&
+         m_phase != PHASE_WRITEs  &&
+         m_phase != PHASE_SETUPds &&
+         m_phase != PHASE_SETUPgs &&
+         m_phase != PHASE_SETUPps &&
+         m_phase != PHASE_SETUPcs &&
+         m_phase != PHASE_SETUPss )
+    {
+        if (!m_sound->IsPlayingMusic())
+        {
+            m_sound->PlayMusic("Intro1.ogg", false);
+        }
+    }
+
     if ( m_phase == PHASE_TRAINER ||
             m_phase == PHASE_DEFI    ||
             m_phase == PHASE_MISSION ||
@@ -746,10 +773,6 @@ pb->SetState(STATE_SHADOW);
             m_phase == PHASE_USER    ||
             m_phase == PHASE_PROTO   )
     {
-        if (!m_sound->IsPlayingMusic()) {
-            m_sound->PlayMusic(11, true);
-        }
-            
         if ( m_phase == PHASE_TRAINER )  m_index = 0;
         if ( m_phase == PHASE_DEFI    )  m_index = 1;
         if ( m_phase == PHASE_MISSION )  m_index = 2;
@@ -959,7 +982,7 @@ pb->SetState(STATE_SHADOW);
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
-                true, Math::Point(1.0f, 768.0f / 1024.0f));
+                true);
         m_engine->SetBackForce(true);
     }
 
@@ -1158,7 +1181,7 @@ pb->SetState(STATE_SHADOW);
                     Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                     Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                     Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
-                    true, Math::Point(1.0f, 768.0f / 1024.0f));
+                    true);
             m_engine->SetBackForce(true);
         }
     }
@@ -1604,7 +1627,7 @@ pos.y -= 0.048f;
     }
 
     if ( m_phase == PHASE_READ  ||
-            m_phase == PHASE_READs )
+         m_phase == PHASE_READs )
     {
         pos.x = 0.10f;
         pos.y = 0.10f;
@@ -1683,7 +1706,7 @@ pos.y -= 0.048f;
                     Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                     Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                     Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
-                    true, Math::Point(1.0f, 768.0f / 1024.0f));
+                    true);
             m_engine->SetBackForce(true);
         }
     }
@@ -1733,7 +1756,7 @@ pos.y -= 0.048f;
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
-                true, Math::Point(1.0f, 768.0f / 1024.0f));
+                true);
         m_engine->SetBackForce(true);
 
         m_loadingCounter = 1;  // enough time to display!
@@ -1741,9 +1764,6 @@ pos.y -= 0.048f;
 
     if ( m_phase == PHASE_WELCOME1 )
     {
-        m_sound->StopMusic();
-        m_sound->PlayMusic(11, false);
-
         pos.x  = 0.0f;
         pos.y  = 0.0f;
         ddim.x = 0.0f;
@@ -1758,7 +1778,7 @@ pos.y -= 0.048f;
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
-                true, Math::Point(861.0f / 1024.0f, 646.0f / 1024.0f));
+                true);
         m_engine->SetBackForce(true);
     }
     if ( m_phase == PHASE_WELCOME2 )
@@ -1769,7 +1789,7 @@ pos.y -= 0.048f;
         ddim.y = 0.0f;
         pw = m_interface->CreateWindows(pos, ddim, -1, EVENT_WINDOW5);
 
-        m_engine->SetOverColor(Gfx::Color(1.0f, 1.0f, 1.0f, 1.0f), Gfx::ENG_RSTATE_TCOLOR_BLACK); // TODO: color ok?
+        m_engine->SetOverColor(Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f), Gfx::ENG_RSTATE_TCOLOR_WHITE); // TODO: color ok?
         m_engine->SetOverFront(true);
 
         m_engine->SetBackground("colobot.png",
@@ -1777,7 +1797,7 @@ pos.y -= 0.048f;
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
-                true, Math::Point(640.0f / 1024.0f, 480.0f / 512.0f));
+                true);
         m_engine->SetBackForce(true);
     }
     if ( m_phase == PHASE_WELCOME3 )
@@ -1796,7 +1816,7 @@ pos.y -= 0.048f;
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
-                true, Math::Point(640.0f / 1024.0f, 480.0f / 512.0f));
+                true);
         m_engine->SetBackForce(true);
     }
 
@@ -1932,7 +1952,7 @@ pos.y -= 0.048f;
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
-                true, Math::Point(1.0f, 768.0f / 1024.0f));
+                true);
         m_engine->SetBackForce(true);
     }
 
@@ -2001,33 +2021,58 @@ bool CMainDialog::EventProcess(const Event &event)
         //?     else                              welcomeLength = WELCOME_LENGTH;
         welcomeLength = WELCOME_LENGTH;
 
+        if ( m_phase != PHASE_SIMUL   &&
+             m_phase != PHASE_WIN     &&
+             m_phase != PHASE_LOST    &&
+             m_phase != PHASE_WRITE   &&
+             m_phase != PHASE_READs   &&
+             m_phase != PHASE_WRITEs  &&
+             m_phase != PHASE_SETUPds &&
+             m_phase != PHASE_SETUPgs &&
+             m_phase != PHASE_SETUPps &&
+             m_phase != PHASE_SETUPcs &&
+             m_phase != PHASE_SETUPss )
+        {
+            if (!m_sound->IsPlayingMusic())
+            {
+                m_sound->PlayMusic("Intro2.ogg", true);
+            }
+        }
+
         if ( m_phase == PHASE_WELCOME1 ||
-                m_phase == PHASE_WELCOME2 ||
-                m_phase == PHASE_WELCOME3 )
+             m_phase == PHASE_WELCOME2 ||
+             m_phase == PHASE_WELCOME3 )
         {
             float   intensity;
-            int     mode = Gfx::ENG_RSTATE_TCOLOR_BLACK;
+            int     mode = Gfx::ENG_RSTATE_TCOLOR_WHITE;
 
-            if ( m_phaseTime < 1.5f )
+            // 1/4 of display time is animating
+            float animatingTime = welcomeLength / 4.0f;
+
+            if ( m_phaseTime <  animatingTime )
             {
-                intensity = 1.0f-(m_phaseTime-0.5f);
+                //appearing
+                intensity = m_phaseTime / animatingTime;
             }
-            else if ( m_phaseTime < welcomeLength-1.0f )
+            else if ( m_phaseTime < welcomeLength - animatingTime )
             {
-                intensity = 0.0f;
+                //showing
+                intensity = 1.0f;
             }
             else
             {
-                intensity = m_phaseTime-(welcomeLength-1.0f);
+                //hiding
+                intensity = (welcomeLength - m_phaseTime) / animatingTime;
             }
+
             if ( intensity < 0.0f )  intensity = 0.0f;
             if ( intensity > 1.0f )  intensity = 1.0f;
 
-            if ( (m_phase == PHASE_WELCOME2 && m_phaseTime > welcomeLength/2.0f) ||
-                    m_phase == PHASE_WELCOME3 )
+            //white first, others -> black fadding
+            if ( (m_phase == PHASE_WELCOME1) && ( m_phaseTime < welcomeLength/2.0f))
             {
-                intensity = 1.0f-intensity;
-                mode = Gfx::ENG_RSTATE_TCOLOR_WHITE;
+                intensity = 1.0f - intensity;
+                mode = Gfx::ENG_RSTATE_TCOLOR_BLACK;
             }
 
             m_engine->SetOverColor(Gfx::Color(intensity, intensity, intensity, intensity), mode); // TODO: color ok?
@@ -2270,7 +2315,7 @@ bool CMainDialog::EventProcess(const Event &event)
                 if ( pw == 0 )  break;
                 pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_NLIST));
                 if ( pl == 0 )  break;
-                StartDeleteGame(pl->GetName(pl->GetSelect()));
+                StartDeleteGame(pl->GetItemName(pl->GetSelect()));
                 break;
 
             default:
@@ -2587,15 +2632,18 @@ bool CMainDialog::EventProcess(const Event &event)
                 pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
                 if ( pw == 0 )  break;
                 pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_FULL));
-		if ( pc == 0 )  break;
-		
-		if ( pc->TestState(STATE_CHECK) ) {
-		    m_setupFull = false;
-		    pc->ClearState(STATE_CHECK);
-		} else {
-		    m_setupFull = true;
-		    pc->SetState(STATE_CHECK);
-		}
+                if ( pc == 0 )  break;
+
+                if ( pc->TestState(STATE_CHECK) )
+                {
+                    m_setupFull = false;
+                    pc->ClearState(STATE_CHECK);
+                }
+                else
+                {
+                    m_setupFull = true;
+                    pc->SetState(STATE_CHECK);
+                }
 
                 UpdateApply();
                 break;
@@ -2607,7 +2655,7 @@ bool CMainDialog::EventProcess(const Event &event)
                 if ( pb == 0 )  break;
                 pb->ClearState(STATE_PRESS);
                 pb->ClearState(STATE_HILIGHT);
-		// TODO: uncomment when changing display is implemented
+                // TODO: uncomment when changing display is implemented
                 //ChangeDisplay();
                 UpdateApply();
                 break;
@@ -3630,8 +3678,9 @@ void CMainDialog::ReadNameList()
         {
             fs::directory_iterator dirIt(m_savegameDir), dirEndIt;
 
-            BOOST_FOREACH (const fs::path & p, std::make_pair(dirIt, dirEndIt))
+            for (; dirIt != dirEndIt; ++dirIt)
             {
+                const fs::path& p = *dirIt;
                 if (fs::is_directory(p))
                 {
                     fileNames.push_back(p.leaf().string());
@@ -3648,7 +3697,7 @@ void CMainDialog::ReadNameList()
 
     for (size_t i=0 ; i<fileNames.size() ; ++i )
     {
-        pl->SetName(i, fileNames.at(i).c_str());
+        pl->SetItemName(i, fileNames.at(i).c_str());
     }
 }
 
@@ -3724,7 +3773,7 @@ void CMainDialog::UpdateNameList()
     for ( i=0 ; i<total ; i++ )
     {
         // TODO: stricmp?
-        if ( strcmp(name, pl->GetName(i)) == 0 )
+        if ( strcmp(name, pl->GetItemName(i)) == 0 )
         {
             pl->SetSelect(i);
             pl->ShowSelect(false);
@@ -3760,7 +3809,7 @@ void CMainDialog::UpdateNameEdit()
     }
     else
     {
-        name = pl->GetName(sel);
+        name = pl->GetItemName(sel);
         pe->SetText(name);
         pe->SetCursor(strlen(name), 0);
     }
@@ -3784,7 +3833,7 @@ void CMainDialog::UpdateNameFace()
 
     sel = pl->GetSelect();
     if ( sel == -1 )  return;
-    name = pl->GetName(sel);
+    name = pl->GetItemName(sel);
 
     ReadGamerPerso(name);
 }
@@ -3815,7 +3864,7 @@ void CMainDialog::NameSelect()
     }
     else
     {
-        m_main->SetGamerName(pl->GetName(sel));
+        m_main->SetGamerName(pl->GetItemName(sel));
         m_main->ChangePhase(PHASE_INIT);
     }
 
@@ -3942,7 +3991,7 @@ void CMainDialog::NameDelete()
         m_sound->Play(SOUND_TZOING);
         return;
     }
-    gamer = pl->GetName(sel);
+    gamer = pl->GetItemName(sel);
 
     // Deletes all the contents of the file.
     sprintf(dir, "%s/%s", m_savegameDir.c_str(), gamer);
@@ -4256,14 +4305,21 @@ void CMainDialog::DefPerso()
 
 bool CMainDialog::IsIOReadScene()
 {
-    FILE*   file;
-    std::string filename;
+    fs::directory_iterator end_iter;
 
-    filename = m_savegameDir + "/" + m_main->GetGamerName() + "/" + "save" + m_sceneName[0] + "000/data.sav";
-    file = fopen(filename.c_str(), "r");
-    if ( file == NULL )  return false;
-    fclose(file);
-    return true;
+    fs::path saveDir(m_savegameDir + "/" + m_main->GetGamerName());
+    if (fs::exists(saveDir) && fs::is_directory(saveDir))
+    {
+        for( fs::directory_iterator dir_iter(saveDir) ; dir_iter != end_iter ; ++dir_iter)
+        {
+            if ( fs::is_directory(dir_iter->status()) && fs::exists(dir_iter->path() / "data.sav") )
+            {
+                return true;
+            }
+        }
+    }
+
+    return false;
 }
 
 // Builds the file name by default.
@@ -4283,9 +4339,9 @@ void CMainDialog::IOReadName()
     int         i;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
-    if ( pw == 0 )  return;
+    if ( pw == nullptr )  return;
     pe = static_cast<CEdit*>(pw->SearchControl(EVENT_INTERFACE_IONAME));
-    if ( pe == 0 )  return;
+    if ( pe == nullptr )  return;
 
     sprintf(resume, "%s %d", m_sceneName, m_chap[m_index]+1);
     BuildSceneName(filename, m_sceneName, (m_chap[m_index]+1)*100);
@@ -4337,7 +4393,8 @@ void CMainDialog::IOReadList()
     CList*      pl;
     char        line[500];
     char        name[100];
-    int         i, j;
+    int         i;
+    fs::directory_iterator end_iter;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
     if ( pw == 0 )  return;
@@ -4346,49 +4403,53 @@ void CMainDialog::IOReadList()
 
     pl->Flush();
 
-    for ( j=0 ; j<999 ; j++ )
+    fs::path saveDir(m_savegameDir + "/" + m_main->GetGamerName());
+    m_saveList.clear();
+
+    if (fs::exists(saveDir) && fs::is_directory(saveDir))
     {
-        std::string filename;
-        std::ostringstream rankStream;
-        rankStream << std::setfill('0') << std::setw(3) << j;
-        filename = m_savegameDir + "/" + m_main->GetGamerName() + "/save" + m_sceneName[0] + rankStream.str()+ "/data.sav";
-
-        // sprintf(filename, "%s\\%s\\save%c%.3d\\data.sav", m_savegameDir, m_main->GetGamerName(), m_sceneName[0], j);
-        file = fopen(fs::path(filename).make_preferred().string().c_str(), "r");
-        if ( file == NULL )  break;
-
-        while ( fgets(line, 500, file) != NULL )
+        for( fs::directory_iterator dir_iter(saveDir) ; dir_iter != end_iter ; ++dir_iter)
         {
-            for ( i=0 ; i<500 ; i++ )
+            if ( fs::is_directory(dir_iter->status()) && fs::exists(dir_iter->path() / "data.sav") )
             {
-                if ( line[i] == '\t' )  line[i] = ' ';  // replaces tab by space
-                if ( line[i] == '/' && line[i+1] == '/' )
-                {
-                    line[i] = 0;
-                    break;
-                }
-            }
 
-            if ( Cmd(line, "Title") )
-            {
-                OpString(line, "text", name);
-                break;
+                file = fopen((dir_iter->path() / "data.sav").make_preferred().string().c_str(), "r");
+                if ( file == NULL )  continue;
+
+                while ( fgets(line, 500, file) != NULL )
+                {
+                    for ( i=0 ; i<500 ; i++ )
+                    {
+                        if ( line[i] == '\t' )  line[i] = ' ';  // replaces tab by space
+                        if ( line[i] == '/' && line[i+1] == '/' )
+                        {
+                            line[i] = 0;
+                            break;
+                        }
+                    }
+
+                    if ( Cmd(line, "Title") )
+                    {
+                        OpString(line, "text", name);
+                        break;
+                    }
+                }
+                fclose(file);
+
+                pl->SetItemName(m_saveList.size(), name);
+                m_saveList.push_back(dir_iter->path());
             }
         }
-        fclose(file);
-
-        pl->SetName(j, name);
     }
 
-    if ( m_phase == PHASE_WRITE  ||
-         m_phase == PHASE_WRITEs )
+    // invalid index
+    if ( m_phase == PHASE_WRITE  || m_phase == PHASE_WRITEs )
     {
         GetResource(RES_TEXT, RT_IO_NEW, name);
-        pl->SetName(j, name);
-        j ++;
+        pl->SetItemName(m_saveList.size(), name);
     }
 
-    pl->SetSelect(j-1);
+    pl->SetSelect(m_saveList.size());
     pl->ShowSelect(false);  // shows the selected columns
 }
 
@@ -4403,22 +4464,20 @@ void CMainDialog::IOUpdateList()
     int         sel, max;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
-    if ( pw == 0 )  return;
+    if ( pw == nullptr )  return;
     pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_IOLIST));
-    if ( pl == 0 )  return;
+    if ( pl == nullptr )  return;
     pi = static_cast<CImage*>(pw->SearchControl(EVENT_INTERFACE_IOIMAGE));
-    if ( pi == 0 )  return;
+    if ( pi == nullptr )  return;
 
     sel = pl->GetSelect();
     max = pl->GetTotal();
 
-    std::string filename;
-    std::ostringstream rankStream;
-    rankStream << std::setfill('0') << std::setw(3) << sel;
-    filename = m_savegameDir + "/" + m_main->GetGamerName() + "/save" + m_sceneName[0] + rankStream.str()+ "/screen.png";
+    if (m_saveList.size() <= static_cast<unsigned int>(sel))
+        return;
 
-    if ( m_phase == PHASE_WRITE  ||
-         m_phase == PHASE_WRITEs )
+    std::string filename = (m_saveList.at(sel) / "screen.png").make_preferred().string();
+    if ( m_phase == PHASE_WRITE  || m_phase == PHASE_WRITEs )
     {
         if ( sel < max-1 )
         {
@@ -4430,7 +4489,7 @@ void CMainDialog::IOUpdateList()
         }
 
         pb = static_cast<CButton*>(pw->SearchControl(EVENT_INTERFACE_IODELETE));
-        if ( pb != 0 )
+        if ( pb != nullptr )
         {
             pb->SetState(STATE_ENABLE, sel < max-1);
         }
@@ -4455,34 +4514,44 @@ void CMainDialog::IODeleteScene()
     if ( pl == 0 )  return;
 
     sel = pl->GetSelect();
-    if ( sel == -1 )
+    if ( sel == -1 || m_saveList.size() <= static_cast<unsigned int>(sel))
     {
         m_sound->Play(SOUND_TZOING);
         return;
     }
 
-
-    std::ostringstream rankStream;
-    std::string fileName;
-    rankStream << std::setfill('0') << std::setw(3) << sel;
-    fileName = m_savegameDir + "/" + m_main->GetGamerName() + "/save" + m_sceneName[0] + rankStream.str();
     try
     {
-        if (fs::exists(fileName) && fs::is_directory(fileName))
+        if (fs::exists(m_saveList.at(sel)) && fs::is_directory(m_saveList.at(sel)))
         {
-            fs::remove_all(fileName);
+            fs::remove_all(m_saveList.at(sel));
         }
     }
     catch (std::exception & e)
     {
-        GetLogger()->Error("Error on removing directory %s : %s\n", e.what());
+        GetLogger()->Error("Error removing save %s : %s\n", pl->GetItemName(sel), e.what());
     }
 
     IOReadList();
 }
 
-// Writes the scene.
+// clears filename only to leave letter or numbers
+std::string clearName(char *name)
+{
+    std::string ret;
+    int len = strlen(name);
+    for (int i = 0; i < len; i++)
+    {
+        if (isalnum(name[i]))
+        {
+            ret += name[i];
+        }
+    }
+    return ret;
+}
 
+
+// Writes the scene.
 bool CMainDialog::IOWriteScene()
 {
     CWindow*    pw;
@@ -4492,36 +4561,40 @@ bool CMainDialog::IOWriteScene()
     int         sel;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
-    if ( pw == 0 )  return false;
+    if ( pw == nullptr )  return false;
     pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_IOLIST));
-    if ( pl == 0 )  return false;
+    if ( pl == nullptr )  return false;
     pe = static_cast<CEdit*>(pw->SearchControl(EVENT_INTERFACE_IONAME));
-    if ( pe == 0 )  return false;
+    if ( pe == nullptr )  return false;
 
     sel = pl->GetSelect();
-    if ( sel == -1 )  return false;
-
-    std::string directoryName;
-    std::string fileName;
-    std::string fileCBot;
-    std::ostringstream selectStream;
-
-    //TODO: Change this to point user dir according to operating system
-    GetLogger()->Debug("Creating save directory\n");
-    selectStream << std::setfill('0') << std::setw(3) << sel;
-    directoryName =  m_savegameDir + "/" + m_main->GetGamerName() + "/" + "save" + m_sceneName[0] + selectStream.str();
-    if (!fs::exists(directoryName))
+    if ( sel == -1 )
     {
-        fs::create_directories(directoryName);
+        return false;
     }
 
-    fileName = directoryName + "/data.sav";
-    fileCBot = directoryName + "/cbot.run";
+    fs::path dir;
     pe->GetText(info, 100);
+    if (static_cast<unsigned int>(sel) >= m_saveList.size())
+    {
+        dir = fs::path(m_savegameDir) / m_main->GetGamerName() / ("save" + clearName(info));
+    }
+    else
+    {
+        dir = m_saveList.at(sel);
+    }
+
+    if (!fs::exists(dir))
+    {
+        fs::create_directories(dir);
+    }
+
+    std::string fileName = (dir / "data.sav").make_preferred().string();
+    std::string fileCBot = (dir / "cbot.run").make_preferred().string();
     m_main->IOWriteScene(fileName.c_str(), fileCBot.c_str(), info);
 
     m_shotDelay = 3;
-    m_shotName = directoryName + "/screen.png";
+    m_shotName = (dir / "screen.png").make_preferred().string();
 
     return true;
 }
@@ -4538,26 +4611,24 @@ bool CMainDialog::IOReadScene()
     int         sel, i;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
-    if ( pw == 0 )  return false;
+    if ( pw == nullptr )  return false;
     pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_IOLIST));
-    if ( pl == 0 )  return false;
+    if ( pl == nullptr )  return false;
 
     sel = pl->GetSelect();
-    if ( sel == -1 )  return false;
+    if ( sel == -1 || m_saveList.size() <= static_cast<unsigned int>(sel) )
+    {
+        return false;
+    }
 
-    //TODO: Change this to point user dir according to operating system
-    std::string fileName;
-    std::string fileCbot;
-    std::string directoryName;
-    std::ostringstream selectStream;
-    selectStream << std::setfill('0') << std::setw(3) << sel;
-    directoryName = m_savegameDir + "/" + m_main->GetGamerName() + "/" + "save" + m_sceneName[0] + selectStream.str();
-
-    fileName = directoryName + "/data.sav";
-    fileCbot = directoryName + "/cbot.run";
+    std::string fileName = (m_saveList.at(sel) / "data.sav").make_preferred().string();
+    std::string fileCbot =  (m_saveList.at(sel) / "cbot.run").make_preferred().string();
 
     file = fopen(fileName.c_str(), "r");
-    if ( file == NULL )  return false;
+    if ( file == NULL )
+    {
+        return false;
+    }
 
     while ( fgets(line, 500, file) != NULL )
     {
@@ -4598,8 +4669,8 @@ bool CMainDialog::IOReadScene()
     }
     fclose(file);
 
-    m_chap[m_index] = (m_sceneRank/100)-1;
-    m_sel[m_index]  = (m_sceneRank%100)-1;
+    m_chap[m_index] = (m_sceneRank / 100)-1;
+    m_sel[m_index]  = (m_sceneRank % 100)-1;
 
     m_sceneRead = fileName;
     m_stackRead = fileCbot;
@@ -4676,8 +4747,9 @@ void CMainDialog::UpdateSceneChap(int &chap)
         fs::directory_iterator dirIt(m_savegameDir), dirEndIt;
         m_userList.clear();
 
-        BOOST_FOREACH (const fs::path & p, std::make_pair(dirIt, dirEndIt))
+        for (; dirIt != dirEndIt; ++dirIt)
         {
+            const fs::path& p = *dirIt;
             if (fs::is_directory(p))
             {
                 m_userList.push_back(p.leaf().string());
@@ -4724,7 +4796,7 @@ void CMainDialog::UpdateSceneChap(int &chap)
                 fclose(file);
             }
 
-            pl->SetName(j, name);
+            pl->SetItemName(j, name);
             pl->SetEnable(j, true);
         }
     }
@@ -4777,7 +4849,7 @@ void CMainDialog::UpdateSceneChap(int &chap)
 
             bPassed = GetGamerInfoPassed((j+1)*100);
             sprintf(line, "%d: %s", j+1, name);
-            pl->SetName(j, line);
+            pl->SetItemName(j, line);
             pl->SetCheck(j, bPassed);
             pl->SetEnable(j, true);
 
@@ -4887,7 +4959,7 @@ void CMainDialog::UpdateSceneList(int chap, int &sel)
 
         bPassed = GetGamerInfoPassed((chap+1)*100+(j+1));
         sprintf(line, "%d: %s", j+1, name);
-        pl->SetName(j, line);
+        pl->SetItemName(j, line);
         pl->SetCheck(j, bPassed);
         pl->SetEnable(j, true);
 
@@ -5016,6 +5088,9 @@ void CMainDialog::UpdateSceneResume(int rank)
     {
         for ( i=0 ; i<500 ; i++ )
         {
+            if (line[i] == 0)
+                break;
+
             if ( line[i] == '\t' )  line[i] = ' ';  // replaces tab by space
             if ( line[i] == '/' && line[i+1] == '/' )
             {
@@ -5066,7 +5141,7 @@ void CMainDialog::UpdateDisplayDevice()
     j = 0;
     while ( bufDevices[i] != 0 )
     {
-        pl->SetName(j++, bufDevices+i);
+        pl->SetItemName(j++, bufDevices+i);
         while ( bufDevices[i++] != 0 );
     }
 
@@ -5093,10 +5168,11 @@ void CMainDialog::UpdateDisplayMode()
     m_app->GetVideoResolutionList(modes, true, true);
     int i = 0;
     std::stringstream mode_text;
-    for (Math::IntPoint mode : modes) {
-	mode_text.str("");
-	mode_text << mode.x << "x" << mode.y;
-	pl->SetName(i++, mode_text.str().c_str());
+    for (Math::IntPoint mode : modes)
+    {
+        mode_text.str("");
+        mode_text << mode.x << "x" << mode.y;
+        pl->SetItemName(i++, mode_text.str().c_str());
     }
 
     pl->SetSelect(m_setupSelMode);
@@ -5120,12 +5196,12 @@ void CMainDialog::ChangeDisplay()
     pl = static_cast<CList*>(pw->SearchControl(EVENT_LIST1));
     if ( pl == 0 )  return;
     m_setupSelDevice = pl->GetSelect();
-    //device = pl->GetName(m_setupSelDevice);
+    //device = pl->GetItemName(m_setupSelDevice);
 
     pl = static_cast<CList*>(pw->SearchControl(EVENT_LIST2));
     if ( pl == 0 )  return;
     m_setupSelMode = pl->GetSelect();
-    //mode = pl->GetName(m_setupSelMode);
+    //mode = pl->GetItemName(m_setupSelMode);
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_FULL));
     if ( pc == 0 )  return;
@@ -5481,6 +5557,7 @@ void CMainDialog::SetupMemorize()
     GetProfile().SetLocalProfileInt("Setup", "HimselfDamage", m_bHimselfDamage);
     GetProfile().SetLocalProfileInt("Setup", "CameraScroll", m_bCameraScroll);
     GetProfile().SetLocalProfileInt("Setup", "CameraInvertX", m_bCameraInvertX);
+    GetProfile().SetLocalProfileInt("Setup", "CameraInvertY", m_bCameraInvertY);
     GetProfile().SetLocalProfileInt("Setup", "InterfaceEffect", m_bEffect);
     GetProfile().SetLocalProfileInt("Setup", "GroundShadow", m_engine->GetShadow());
     GetProfile().SetLocalProfileInt("Setup", "GroundSpot", m_engine->GetGroundSpot());
@@ -5501,23 +5578,29 @@ void CMainDialog::SetupMemorize()
     GetProfile().SetLocalProfileInt("Setup", "Sound3D", m_sound->GetSound3D());
     GetProfile().SetLocalProfileInt("Setup", "EditIndentMode", m_engine->GetEditIndentMode());
     GetProfile().SetLocalProfileInt("Setup", "EditIndentValue", m_engine->GetEditIndentValue());
-    
+
     /* screen setup */
     if (m_setupFull)
-	GetProfile().SetLocalProfileInt("Setup", "Fullscreen", 1);
+        GetProfile().SetLocalProfileInt("Setup", "Fullscreen", 1);
     else
-	GetProfile().SetLocalProfileInt("Setup", "Fullscreen", 0);
-    
+        GetProfile().SetLocalProfileInt("Setup", "Fullscreen", 0);
+
     CList *pl;
     CWindow *pw;
     pw = static_cast<CWindow *>(m_interface->SearchControl(EVENT_WINDOW5));
-    if ( pw != 0 ) {
-	pl = static_cast<CList *>(pw->SearchControl(EVENT_LIST2));
-	if ( pl != 0 ) {
-	    GetProfile().SetLocalProfileInt("Setup", "Resolution", pl->GetSelect());
-	}
+    if ( pw != 0 )
+    {
+        pl = static_cast<CList *>(pw->SearchControl(EVENT_LIST2));
+        if ( pl != 0 )
+        {
+            GetProfile().SetLocalProfileInt("Setup", "Resolution", pl->GetSelect());
+        }
     }
-    
+    else
+    {
+       // TODO: Default value
+    }
+
     std::stringstream key;
     for (int i = 0; i < INPUT_SLOT_MAX; i++)
     {
@@ -5730,6 +5813,11 @@ void CMainDialog::SetupRecall()
         m_sound->SetMusicVolume(iValue);
     }
 
+    if ( GetProfile().GetLocalProfileInt("Setup", "Sound3D", iValue) )
+    {
+        m_sound->SetSound3D(iValue == 1);
+    }
+
     if ( GetProfile().GetLocalProfileInt("Setup", "EditIndentMode", iValue) )
     {
         m_engine->SetEditIndentMode(iValue);
@@ -5772,13 +5860,15 @@ void CMainDialog::SetupRecall()
     {
         m_bDeleteGamer = iValue;
     }
-    
-    if ( GetProfile().GetLocalProfileInt("Setup", "Resolution", iValue) ) {
-	m_setupSelMode = iValue;
+
+    if ( GetProfile().GetLocalProfileInt("Setup", "Resolution", iValue) )
+    {
+        m_setupSelMode = iValue;
     }
-    
-    if ( GetProfile().GetLocalProfileInt("Setup", "Fullscreen", iValue) ) {
-	m_setupFull = (iValue == 1);
+
+    if ( GetProfile().GetLocalProfileInt("Setup", "Fullscreen", iValue) )
+    {
+        m_setupFull = (iValue == 1);
     }
 }
 
@@ -6542,6 +6632,8 @@ void CMainDialog::WriteGamerPerso(char *gamer)
     file = fopen(filename, "w");
     if ( file == NULL )  return;
 
+    m_main->SetNumericLocale();
+
     sprintf(line, "Head face=%d glasses=%d hair=%.2f;%.2f;%.2f;%.2f\n",
                 m_perso.face, m_perso.glasses,
                 m_perso.colorHair.r, m_perso.colorHair.g, m_perso.colorHair.b, m_perso.colorHair.a);
@@ -6553,6 +6645,8 @@ void CMainDialog::WriteGamerPerso(char *gamer)
     fputs(line, file);
 
     fclose(file);
+
+    m_main->RestoreNumericLocale();
 }
 
 // Reads the personalized player.
@@ -6570,6 +6664,8 @@ void CMainDialog::ReadGamerPerso(char *gamer)
     sprintf(filename, "%s/%s/face.gam", m_savegameDir.c_str(), gamer);
     file = fopen(filename, "r");
     if ( file == NULL )  return;
+
+    m_main->SetNumericLocale();
 
     while ( fgets(line, 100, file) != NULL )
     {
@@ -6602,6 +6698,8 @@ void CMainDialog::ReadGamerPerso(char *gamer)
     }
 
     fclose(file);
+
+    m_main->RestoreNumericLocale();
 }
 
 // Specifies the face of the player.
@@ -6787,3 +6885,4 @@ bool CMainDialog::NextMission()
 
 
 } // namespace Ui
+

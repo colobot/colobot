@@ -134,8 +134,8 @@ void CBotVarClass::InitCBotVarClass( const CBotToken* name, CBotTypResult& type 
     m_LimExpr = NULL;
     m_pVar        = NULL;
     m_type        = type;
-    if ( type.Eq(CBotTypArrayPointer) )    m_type.SetType( CBotTypArrayBody );    
-    else if ( !type.Eq(CBotTypArrayBody) ) m_type.SetType( CBotTypClass );    
+    if ( type.Eq(CBotTypArrayPointer) )    m_type.SetType( CBotTypArrayBody );
+    else if ( !type.Eq(CBotTypArrayBody) ) m_type.SetType( CBotTypClass );
                                                  // officel type for this object
 
     m_pClass    = NULL;
@@ -394,7 +394,7 @@ CBotVar* CBotVar::Create( const char* n, CBotTypResult type)
             CBotVarClass* instance = new CBotVarClass(&name, type);
             CBotVarArray* array = new CBotVarArray(&name, type);
             array->SetPointer( instance );
-        
+
             CBotVar*    pv = array;
             while (type.Eq(CBotTypArrayBody))
             {
@@ -414,14 +414,14 @@ CBotVar* CBotVar::Create( const char* name, int type, CBotClass* pClass)
 {
     CBotToken    token( name, "" );
     CBotVar*    pVar = Create( &token, type );
-    
+
     if ( type == CBotTypPointer && pClass == NULL )        // pointer "null" ?
         return pVar;
 
     if ( type == CBotTypClass || type == CBotTypPointer ||
          type == CBotTypIntrinsic )
     {
-        if (pClass == NULL) 
+        if (pClass == NULL)
         {
             delete pVar;
             return NULL;
@@ -443,9 +443,9 @@ CBotTypResult CBotVar::GetTypResult(int mode)
 {
     CBotTypResult    r = m_type;
 
-    if ( mode == 1 && m_type.Eq(CBotTypClass) ) 
+    if ( mode == 1 && m_type.Eq(CBotTypClass) )
         r.SetType(CBotTypPointer);
-    if ( mode == 2 && m_type.Eq(CBotTypClass) ) 
+    if ( mode == 2 && m_type.Eq(CBotTypClass) )
         r.SetType(CBotTypIntrinsic);
 
     return r;
@@ -453,9 +453,9 @@ CBotTypResult CBotVar::GetTypResult(int mode)
 
 int CBotVar::GetType(int mode)
 {
-    if ( mode == 1 && m_type.Eq(CBotTypClass) ) 
+    if ( mode == 1 && m_type.Eq(CBotTypClass) )
         return CBotTypPointer;
-    if ( mode == 2 && m_type.Eq(CBotTypClass) ) 
+    if ( mode == 2 && m_type.Eq(CBotTypClass) )
         return CBotTypIntrinsic;
     return m_type.GetType();
 }
@@ -620,7 +620,7 @@ void CBotVar::SetVal(CBotVar* var)
         ASM_TRAP();
     }
 
-    m_binit = var->m_binit;        // copie l'état nan s'il y a 
+    m_binit = var->m_binit;        // copie l'état nan s'il y a
 }
 
 void CBotVar::SetStatic(bool bStatic)
@@ -1293,7 +1293,7 @@ void CBotVarBoolean::XOr(CBotVar* left, CBotVar* right)
 
 void CBotVarBoolean::Not()
 {
-    m_val = m_val ? false : true ; 
+    m_val = m_val ? false : true ;
 }
 
 bool CBotVarBoolean::Eq(CBotVar* left, CBotVar* right)
@@ -1468,7 +1468,7 @@ void CBotVarClass::SetClass(CBotClass* pClass)//, int &nIdent)
         CBotInstr*    p  = pv->m_LimExpr;                            // the different formulas
         if ( p != NULL )
         {
-            CBotStack* pile = CBotStack::FirstStack();    // an independent stack 
+            CBotStack* pile = CBotStack::FirstStack();    // an independent stack
             int     n = 0;
             int     max[100];
 
@@ -1524,7 +1524,7 @@ CBotClass* CBotVarClass::GetClass()
 
 void CBotVarClass::Maj(void* pUser, bool bContinu)
 {
-/*    if (!bContinu && m_pMyThis != NULL) 
+/*    if (!bContinu && m_pMyThis != NULL)
         m_pMyThis->Maj(pUser, true);*/
 
     // an update routine exist?
@@ -1671,7 +1671,7 @@ void CBotVarClass::IncrementUse()
 void CBotVarClass::DecrementUse()
 {
     m_CptUse--;
-    if ( m_CptUse == 0 ) 
+    if ( m_CptUse == 0 )
     {
         // if there is one, call the destructor
         // but only if a constructor had been called.
@@ -2025,7 +2025,7 @@ bool CBotVarPointer::Save1State(FILE* pf)
 
     if (!WriteLong(pf, GetIdent())) return false;        // the unique reference
 
-    // also saves the proceedings copies  
+    // also saves the proceedings copies
     return SaveVar(pf, GetPointer());
 }
 
@@ -2082,7 +2082,7 @@ bool CBotVarPointer::Ne(CBotVar* left, CBotVar* right)
 
 
 ///////////////////////////////////////////////////////
-// management of results types 
+// management of results types
 
 
 CBotTypResult::CBotTypResult(int type)
@@ -2164,7 +2164,7 @@ int CBotTypResult::GetType(int mode) const
 
          if ( m_pClass == NULL ) ASM_TRAP();
 
-        
+
     if ( m_type == CBotTypArrayPointer )
          if ( m_pNext == NULL ) ASM_TRAP();
 #endif
@@ -2244,5 +2244,4 @@ CBotTypResult&
     }
     return *this;
 }
-
 

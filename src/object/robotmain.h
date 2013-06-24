@@ -99,11 +99,27 @@ struct EndTake
     Math::Vector  pos;
     float         dist;
     ObjectType    type;
-    int           min;        // wins if>
+    int           min;        // wins if >
     int           max;        // wins if <
     int           lost;       // lost if <=
+    float         powermin;   // wins if energy cell >=
+    float         powermax;   // wins if energy cell <=
     bool          immediat;
     char          message[100];
+};
+
+struct AudioChange
+{
+    Math::Vector  pos;
+    float         dist;
+    ObjectType    type;
+    int           min;        // change if >
+    int           max;        // change if <
+    float         powermin;   // change if energy cell >=
+    float         powermax;   // change if energy cell <=
+    char          music[100];
+    bool          repeat;
+    bool          changed;
 };
 
 
@@ -175,13 +191,16 @@ const int AXIS_INVALID = -1;
 class CRobotMain : public CSingleton<CRobotMain>
 {
 public:
-    CRobotMain(CApplication* app);
-    ~CRobotMain();
+    CRobotMain(CApplication* app, bool loadProfile);
+    virtual ~CRobotMain();
 
     Gfx::CCamera* GetCamera();
     Gfx::CTerrain* GetTerrain();
     Ui::CInterface* GetInterface();
     Ui::CDisplayText* GetDisplayText();
+
+    //! Caused the given mission to be loaded immediately after start
+    void        LoadSceneOnStart(const std::string& name, int rank);
 
     void        CreateIni();
 
@@ -210,7 +229,7 @@ public:
     void        ResetKeyStates();
 
     void        ChangePhase(Phase phase);
-    bool        EventProcess(Event &event);
+    bool        ProcessEvent(Event &event);
 
     bool        CreateShortcuts();
     void        ScenePerso();
@@ -248,6 +267,8 @@ public:
 
     void        ResetObject();
     void        ResetCreate();
+    void        UpdateAudio(bool frame);
+    void        SetEndMission(Error result, float delay);
     Error       CheckEndMission(bool frame);
     void        CheckEndMessage(const char* message);
     int         GetObligatoryToken();
@@ -353,6 +374,11 @@ public:
 
     int         CreateSpot(Math::Vector pos, Gfx::Color color);
 
+    void        SetNumericLocale();
+    void        RestoreNumericLocale();
+
+    CObject*    GetSelect();
+
 protected:
     bool        EventFrame(const Event &event);
     bool        EventObject(const Event &event);
@@ -383,13 +409,13 @@ protected:
     void        DeleteAllObjects();
     void        UpdateInfoText();
     CObject*    SearchObject(ObjectType type);
-    CObject*    GetSelect();
     void        StartDisplayVisit(EventType event);
     void        FrameVisit(float rTime);
     void        StopDisplayVisit();
     void        ExecuteCmd(char *cmd);
     bool        TestGadgetQuantity(int rank);
     void        UpdateSpeedLabel();
+
 
 protected:
     CApplication*       m_app;
@@ -444,9 +470,11 @@ protected:
     bool            m_cheatRadar;
     bool            m_audioRepeat;
     bool            m_shortCut;
-    int             m_audioTrack;
+    std::string     m_audioTrack;
     int             m_delayWriteMessage;
     int             m_movieInfoIndex;
+
+    CObject*        m_controller;
 
     //Level Checker flags
     bool            m_beginObject;
@@ -516,18 +544,24 @@ protected:
     int             m_endTakeTotal;
     EndTake         m_endTake[10];
     long            m_endTakeResearch;
+    bool            m_endTakeNever;
     float           m_endTakeWinDelay;
     float           m_endTakeLostDelay;
+
+    int             m_audioChangeTotal;
+    AudioChange     m_audioChange[10];
 
     int             m_obligatoryTotal;
     char            m_obligatoryToken[100][20];
     int             m_prohibitedTotal;
     char            m_prohibitedToken[100][20];
 
-    char            m_gamerName[100];
+    std::string     m_gamerName;
 
     int             m_freeBuild;        // constructible buildings
     int             m_freeResearch;     // researches possible
+
+    Error           m_missionResult;
 
     ShowLimit       m_showLimit[MAXSHOWLIMIT];
 
@@ -540,5 +574,7 @@ protected:
     Gfx::Color      m_colorRefWater;
     Gfx::Color      m_colorNewWater;
     float           m_colorShiftWater;
+
+    std::string     m_oldLocale;
 };
 

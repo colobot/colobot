@@ -55,6 +55,8 @@ enum Error
     ERR_BUILD_BASE      = 129,      //! <  too close to the rocket
     ERR_BUILD_NARROW    = 130,      //! <  buildings too close
     ERR_BUILD_MOTOR     = 131,      //! <  built: not possible in movement
+    ERR_BUILD_DISABLED  = 132,      //! <  built: can not produce this object in this mission
+    ERR_BUILD_RESEARCH  = 133,      //! <  built: can not produce not researched object
     ERR_SEARCH_FLY      = 140,      //! <  not possible in flight
     ERR_SEARCH_VEH      = 141,      //! <  inappropriate vehicle
     ERR_SEARCH_MOTOR    = 142,      //! <  impossible in movement
@@ -104,6 +106,8 @@ enum Error
     ERR_INFO_NULL       = 390,      //! <  no information terminal
     ERR_VEH_VIRUS       = 400,      //! <  vehicle infected by a virus
     ERR_BAT_VIRUS       = 401,      //! <  building infected by a virus
+    ERR_DESTROY_NOTFOUND = 410,     //! <  not found anything to destroy
+    ERR_WRONG_OBJ       = 420,      //! <  inappropriate vehicle
     ERR_VEH_POWER       = 500,      //! <  no battery
     ERR_VEH_ENERGY      = 501,      //! <  more energy
     ERR_FLAG_FLY        = 510,      //! <  impossible in flight
@@ -293,3 +297,4 @@ extern int      g_build;                // constructible buildings
 extern int      g_researchDone;         // research done
 extern long     g_researchEnable;       // research available
 extern float    g_unit;                 // conversion factor
+

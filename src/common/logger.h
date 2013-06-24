@@ -113,9 +113,9 @@ public:
     static bool ParseLogLevel(const std::string& str, LogLevel& logLevel);
 
 private:
-    std::string mFilename;
-    FILE *mFile;
-    LogLevel mLogLevel;
+    std::string m_filename;
+    FILE *m_file;
+    LogLevel m_logLevel;
 
     void Open();
     void Close();
@@ -125,6 +125,8 @@ private:
 
 
 //! Global function to get Logger instance
-inline CLogger* GetLogger() {
+inline CLogger* GetLogger()
+{
     return CLogger::GetInstancePointer();
 }
+

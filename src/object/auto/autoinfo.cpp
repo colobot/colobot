@@ -428,7 +428,7 @@ void CAutoInfo::UpdateList()
         {
             info = m_object->GetInfo(i);
             sprintf(text, "%s = %.2f", info.name, info.value);
-            pl->SetName(i, text);
+            pl->SetItemName(i, text);
         }
     }
 
@@ -466,7 +466,7 @@ void CAutoInfo::UpdateListVirus()
         }
         text[j] = 0;
 
-        pl->SetName(i, text);
+        pl->SetItemName(i, text);
     }
 }
 
@@ -512,5 +512,4 @@ bool CAutoInfo::Read(char *line)
 
     return true;
 }
-
 

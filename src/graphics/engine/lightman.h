@@ -71,8 +71,9 @@ struct LightProgression
  */
 enum LightPriority
 {
-    LIGHT_PRI_HIGH = 1,
-    LIGHT_PRI_LOW  = 2
+    LIGHT_PRI_HIGHEST = 0, //!< always highest weight (always picked)
+    LIGHT_PRI_HIGH = 1,    //!< high weight
+    LIGHT_PRI_LOW  = 2     //!< low weight
 };
 
 /**
@@ -84,6 +85,9 @@ enum LightPriority
  */
 struct DynamicLight
 {
+    //! Rank (index)
+    int rank;
+
     //! Whether the light is used
     bool used;
     //! Whether the light is turned on
@@ -136,6 +140,9 @@ public:
     //! Sets the device to be used
     void            SetDevice(CDevice* device);
 
+    //! Prints debug info
+    void DebugDumpLights();
+
     //! Clears and disables all lights
     void            FlushLights();
     //! Creates a new dynamic light and returns its index (lightRank)
@@ -148,6 +155,8 @@ public:
     bool            GetLight(int lightRank, Light &light);
     //! Enables/disables the given dynamic light
     bool            SetLightEnabled(int lightRank, bool enable);
+    //! Changes the light priority
+    bool            SetLightPriority(int lightRank, LightPriority priority);
 
     //! Sets what objects are included in given dynamic light
     bool            SetLightIncludeType(int lightRank, EngineObjectType type);
@@ -216,3 +225,4 @@ protected:
 };
 
 }; // namespace Gfx
+

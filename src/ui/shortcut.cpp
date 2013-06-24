@@ -128,7 +128,7 @@ void CShortcut::Draw()
     if ( m_state & STATE_FRAME )
     {
         Math::Point p1, p2, c, uv1, uv2;
-        float   zoom, dp;
+        float   dp;
 
         m_engine->SetTexture("button2.png");
         m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_WHITE);
@@ -237,3 +237,4 @@ void CShortcut::DrawVertex(int icon, float zoom)
 }
 
 }
+

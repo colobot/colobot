@@ -29,54 +29,55 @@ class CButton;
 
 class CSlider : public CControl
 {
-    public:
-        CSlider();
-        ~CSlider();
+public:
+    CSlider();
+    ~CSlider();
 
-        bool        Create(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
+    bool        Create(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
 
-        void        SetPos(Math::Point pos);
-        void        SetDim(Math::Point dim);
+    void        SetPos(Math::Point pos);
+    void        SetDim(Math::Point dim);
 
-        bool        SetState(int state, bool bState);
-        bool        SetState(int state);
-        bool        ClearState(int state);
+    bool        SetState(int state, bool bState);
+    bool        SetState(int state);
+    bool        ClearState(int state);
 
-        bool        EventProcess(const Event &event);
-        void        Draw();
+    bool        EventProcess(const Event &event);
+    void        Draw();
 
-        void        SetLimit(float min, float max);
+    void        SetLimit(float min, float max);
 
-        void        SetVisibleValue(float value);
-        float       GetVisibleValue();
+    void        SetVisibleValue(float value);
+    float       GetVisibleValue();
 
-        void        SetArrowStep(float step);
-        float       GetArrowStep();
+    void        SetArrowStep(float step);
+    float       GetArrowStep();
 
-    protected:
-        void        MoveAdjust();
-        void        AdjustGlint();
-        void        DrawVertex(Math::Point pos, Math::Point dim, int icon);
+protected:
+    void        MoveAdjust();
+    void        AdjustGlint();
+    void        DrawVertex(Math::Point pos, Math::Point dim, int icon);
 
-    protected:
-        CButton*    m_buttonLeft;
-        CButton*    m_buttonRight;
+protected:
+    CButton*    m_buttonLeft;
+    CButton*    m_buttonRight;
 
-        float       m_min;
-        float       m_max;
-        float       m_visibleValue;
-        float       m_step;
+    float       m_min;
+    float       m_max;
+    float       m_visibleValue;
+    float       m_step;
 
-        bool        m_bHoriz;
-        float       m_marginButton;
+    bool        m_bHoriz;
+    float       m_marginButton;
 
-        bool        m_bCapture;
-        Math::Point     m_pressPos;
-        float       m_pressValue;
+    bool        m_bCapture;
+    Math::Point     m_pressPos;
+    float       m_pressValue;
 
-        EventType    m_eventUp;
-        EventType    m_eventDown;
+    EventType    m_eventUp;
+    EventType    m_eventDown;
 };
 
 
 }
+

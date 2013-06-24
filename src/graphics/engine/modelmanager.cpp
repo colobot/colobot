@@ -23,9 +23,12 @@ CModelManager::~CModelManager()
 
 bool CModelManager::LoadModel(const std::string& fileName, bool mirrored)
 {
-    GetLogger()->Info("Loading model '%s'\n", fileName.c_str());
+    GetLogger()->Debug("Loading model '%s'\n", fileName.c_str());
 
     CModelFile modelFile;
+
+    if (CApplication::GetInstance().IsDebugModeActive(DEBUG_MODELS))
+        modelFile.SetPrintDebugInfo(true);
 
     std::string filePath = CApplication::GetInstance().GetDataFilePath(DIR_MODEL, fileName);
 
@@ -111,6 +114,8 @@ bool CModelManager::AddModelCopy(const std::string& fileName, bool mirrored, int
     m_engine->CopyBaseObject((*it).second.baseObjRank, copyBaseObjRank);
     m_engine->SetObjectBaseRank(objRank, copyBaseObjRank);
 
+    m_copiesBaseRanks.push_back(copyBaseObjRank);
+
     return true;
 }
 
@@ -126,6 +131,16 @@ int CModelManager::GetModelBaseObjRank(const std::string& fileName, bool mirrore
         return -1;
 
     return (*it).second.baseObjRank;
+}
+
+void CModelManager::DeleteAllModelCopies()
+{
+    for (int baseObjRank : m_copiesBaseRanks)
+    {
+        m_engine->DeleteBaseObject(baseObjRank);
+    }
+
+    m_copiesBaseRanks.clear();
 }
 
 void CModelManager::UnloadModel(const std::string& fileName, bool mirrored)
@@ -189,3 +204,4 @@ float CModelManager::GetHeight(std::vector<ModelTriangle>& triangles, Math::Vect
 
 
 }
+

@@ -197,4 +197,3 @@ Error CAutoKid::GetError()
     return ERR_OK;
 }
 
-

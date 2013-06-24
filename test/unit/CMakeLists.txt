@@ -1,14 +1,14 @@
 set(SRC_DIR ${colobot_SOURCE_DIR}/src)
 
 # Additional libraries per platform
-if (${MXE}) # MXE requires special treatment
+if(MXE) # MXE requires special treatment
     set(PLATFORM_LIBS ${MXE_LIBS})
-elseif (${PLATFORM_WINDOWS})
+elseif(PLATFORM_WINDOWS)
     # because it isn't included in standard linking libraries
     set(PLATFORM_LIBS "-lintl")
-elseif(${PLATFORM_LINUX})
+elseif(PLATFORM_LINUX)
     # for clock_gettime
-    set(PLATFORM_LIBS "-lrt")
+    set(PLATFORM_LIBS "-lrt -lX11")
 endif()
 
 
@@ -16,9 +16,9 @@ endif()
 configure_file(${SRC_DIR}/common/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/common/config.h)
 
 # Platform-dependent implementation of system.h
-if (${PLATFORM_WINDOWS})
+if(PLATFORM_WINDOWS)
     set(SYSTEM_CPP_MODULE "system_windows.cpp")
-elseif(${PLATFORM_LINUX})
+elseif(PLATFORM_LINUX)
     set(SYSTEM_CPP_MODULE "system_linux.cpp")
 else()
     set(SYSTEM_CPP_MODULE "system_other.cpp")
@@ -89,7 +89,9 @@ ${SRC_DIR}/object/motion/motionspider.cpp
 ${SRC_DIR}/object/motion/motiontoto.cpp
 ${SRC_DIR}/object/motion/motionvehicle.cpp
 ${SRC_DIR}/object/motion/motionworm.cpp
+${SRC_DIR}/object/motion/motiondummy.cpp
 ${SRC_DIR}/object/object.cpp
+${SRC_DIR}/object/objman.cpp
 ${SRC_DIR}/object/robotmain.cpp
 ${SRC_DIR}/object/task/task.cpp
 ${SRC_DIR}/object/task/taskadvance.cpp
@@ -116,6 +118,7 @@ ${SRC_DIR}/physics/physics.cpp
 ${SRC_DIR}/script/cbottoken.cpp
 ${SRC_DIR}/script/cmdtoken.cpp
 ${SRC_DIR}/script/script.cpp
+${SRC_DIR}/sound/sound.cpp
 ${SRC_DIR}/ui/button.cpp
 ${SRC_DIR}/ui/check.cpp
 ${SRC_DIR}/ui/color.cpp
@@ -146,7 +149,7 @@ ${SRC_DIR}/ui/window.cpp
 
 set(OPENAL_SOURCES "")
 
-if (${OPENAL_SOUND})
+if(OPENAL_SOUND)
     set(OPENAL_SOURCES
         ${SRC_DIR}/sound/oalsound/alsound.cpp
         ${SRC_DIR}/sound/oalsound/buffer.cpp
@@ -157,16 +160,16 @@ endif()
 # Optional libraries
 set(OPTIONAL_LIBS "")
 
-if (${OPENAL_SOUND})
+if(OPENAL_SOUND)
     set(OPTIONAL_LIBS ${OPENAL_LIBRARY})
     set(OPTIONAL_INCLUDES ${OPENAL_INCLUDE_DIR})
 endif()
 
 
 # Platform-dependent tests
-if (${PLATFORM_WINDOWS})
+if(PLATFORM_WINDOWS)
     set(PLATFORM_TESTS app/system_windows_test.cpp)
-elseif(${PLATFORM_LINUX})
+elseif(PLATFORM_LINUX)
     set(PLATFORM_TESTS app/system_linux_test.cpp)
 endif()
 
@@ -175,6 +178,7 @@ set(UT_SOURCES
 main.cpp
 app/app_test.cpp
 graphics/engine/lightman_test.cpp
+math/func_test.cpp
 math/geometry_test.cpp
 math/matrix_test.cpp
 math/vector_test.cpp
@@ -203,12 +207,16 @@ ${GLEW_INCLUDE_PATH}
 ${Boost_INCLUDE_DIRS}
 ${OPTIONAL_INCLUDE_DIRS}
 ${LIBSNDFILE_INCLUDE_DIR}
+${CLIPBOARD_INCLUDE_DIR}
+${LOCALENAME_INCLUDE_DIR}
 )
 
 set(LIBS
 gtest
 gmock
 CBot
+clipboard
+localename
 ${SDL_LIBRARY}
 ${SDLIMAGE_LIBRARY}
 ${SDLTTF_LIBRARY}

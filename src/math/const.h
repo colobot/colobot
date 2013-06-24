@@ -53,3 +53,4 @@ const float LOG_2 = log(2.0f);
 
 
 } // namespace Math
+

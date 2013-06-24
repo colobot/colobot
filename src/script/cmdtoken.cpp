@@ -401,6 +401,7 @@ ObjectType GetTypeObject(char *line, int rank, ObjectType def)
     if ( Cmd(p, "ApolloAntenna"     ) )  return OBJECT_APOLLO5;
     if ( Cmd(p, "Me"                ) )  return OBJECT_HUMAN;
     if ( Cmd(p, "Tech"              ) )  return OBJECT_TECH;
+    if ( Cmd(p, "MissionController" ) )  return OBJECT_CONTROLLER;
 
     return def;
 }
@@ -647,6 +648,7 @@ const char* GetTypeObject(ObjectType type)
     if ( type == OBJECT_APOLLO5      )  return "ApolloAntenna";
     if ( type == OBJECT_HUMAN        )  return "Me";
     if ( type == OBJECT_TECH         )  return "Tech";
+    if ( type == OBJECT_CONTROLLER   )  return "MissionController";
     return "";
 }
 
@@ -944,5 +946,4 @@ Gfx::Color  OpColor(char *line, const char *op, Gfx::Color def)
     color.a = GetFloat(line, 3, 0.0f);
     return color;
 }
-
 

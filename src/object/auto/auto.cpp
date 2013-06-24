@@ -107,6 +107,12 @@ void CAuto::Start(int param)
 {
 }
 
+// Starts an action
+
+Error CAuto::StartAction(int param)
+{
+    return ERR_GENERIC;
+}
 
 // Gete a type.
 

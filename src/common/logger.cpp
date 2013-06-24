@@ -25,8 +25,8 @@ template<> CLogger* CSingleton<CLogger>::m_instance = nullptr;
 
 CLogger::CLogger()
 {
-    mFile = NULL;
-    mLogLevel = LOG_INFO;
+    m_file = NULL;
+    m_logLevel = LOG_INFO;
 }
 
 
@@ -38,31 +38,31 @@ CLogger::~CLogger()
 
 void CLogger::Log(LogLevel type, const char* str, va_list args)
 {
-    if (type < mLogLevel)
+    if (type < m_logLevel)
         return;
 
     switch (type)
     {
         case LOG_TRACE:
-            fprintf(IsOpened() ? mFile : stderr, "[TRACE]: ");
+            fprintf(IsOpened() ? m_file : stderr, "[TRACE]: ");
             break;
         case LOG_DEBUG:
-            fprintf(IsOpened() ? mFile : stderr, "[DEBUG]: ");
+            fprintf(IsOpened() ? m_file : stderr, "[DEBUG]: ");
             break;
         case LOG_WARN:
-            fprintf(IsOpened() ? mFile : stderr, "[WARN]: ");
+            fprintf(IsOpened() ? m_file : stderr, "[WARN]: ");
             break;
         case LOG_INFO:
-            fprintf(IsOpened() ? mFile : stderr, "[INFO]: ");
+            fprintf(IsOpened() ? m_file : stderr, "[INFO]: ");
             break;
         case LOG_ERROR:
-            fprintf(IsOpened() ? mFile : stderr, "[ERROR]: ");
+            fprintf(IsOpened() ? m_file : stderr, "[ERROR]: ");
             break;
         default:
             break;
     }
 
-    vfprintf(IsOpened() ? mFile : stderr, str, args);
+    vfprintf(IsOpened() ? m_file : stderr, str, args);
 }
 
 
@@ -122,36 +122,36 @@ void CLogger::Message(const char* str, ...)
 
 void CLogger::SetOutputFile(std::string filename)
 {
-    mFilename = filename;
+    m_filename = filename;
     Open();
 }
 
 
 void CLogger::Open()
 {
-    mFile = fopen(mFilename.c_str(), "w");
+    m_file = fopen(m_filename.c_str(), "w");
 
-    if (mFile == NULL)
-        fprintf(stderr, "Could not create file %s\n", mFilename.c_str());
+    if (m_file == NULL)
+        fprintf(stderr, "Could not create file %s\n", m_filename.c_str());
 }
 
 
 void CLogger::Close()
 {
     if (IsOpened())
-        fclose(mFile);
+        fclose(m_file);
 }
 
 
 bool CLogger::IsOpened()
 {
-    return mFile != NULL;
+    return m_file != NULL;
 }
 
 
 void CLogger::SetLogLevel(LogLevel type)
 {
-    mLogLevel = type;
+    m_logLevel = type;
 }
 
 

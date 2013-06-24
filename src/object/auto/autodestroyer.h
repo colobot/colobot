@@ -46,6 +46,8 @@ public:
     bool        EventProcess(const Event &event);
     Error       GetError();
 
+    Error       StartAction(int param);
+
     bool        CreateInterface(bool bSelect);
 
     bool        Write(char *line);
@@ -53,7 +55,7 @@ public:
 
 protected:
     CObject*    SearchPlastic();
-    bool        SearchVehicle();
+    void        EnableInterface(Ui::CWindow *pw, EventType event, bool bState);
 
 protected:
     AutoDestroyerPhase  m_phase;

@@ -102,7 +102,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
 
     // Creates the main base.
     rank = m_engine->CreateObject();
-    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_VEHICULE);  // this is a moving object
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_VEHICLE);  // this is a moving object
     m_object->SetObjectRank(0, rank);
 
     if (type == OBJECT_MOBILEfa ||
@@ -931,6 +931,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         pPower->SetObjectRank(0, rank);
+        pPower->CreateShadowCircle(1.5f, 1.0f); //create a shadow for battary
 
         if ( power <= 1.0f )  modelManager->AddModelCopy("power.mod", false, rank);
         else                  modelManager->AddModelCopy("atomic.mod", false, rank);
@@ -1649,7 +1650,7 @@ bool CMotionVehicle::EventFrameFly(const Event &event)
 bool CMotionVehicle::EventFrameInsect(const Event &event)
 {
     Math::Vector    dir;
-    float       s, a, prog, time;
+    float       s, a, prog = 0.0f, time;
     int         i, st, nd, action;
     bool        bStop, bOnBoard;
 
@@ -1942,5 +1943,4 @@ void CMotionVehicle::SetTraceWidth(float width)
 {
     m_traceWidth = width;
 }
-
 

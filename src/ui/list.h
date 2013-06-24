@@ -69,8 +69,8 @@ class CList : public CControl
         void        SetBlink(bool bEnable);
         bool        GetBlink();
 
-        void        SetName(int i, const char* name);
-        char*       GetName(int i);
+        void        SetItemName(int i, const char* name);
+        char*       GetItemName(int i);
 
         void        SetCheck(int i, bool bMode);
         bool        GetCheck(int i);
@@ -92,6 +92,10 @@ class CList : public CControl
         void        UpdateScroll();
         void        MoveScroll();
         void        DrawCase(char *text, Math::Point pos, float width, Gfx::TextAlign justif);
+
+    private:
+        // Overridden to avoid warning about hiding the virtual function
+        virtual bool Create(Math::Point pos, Math::Point dim, int icon, EventType eventType) override;
 
     protected:
         CButton*    m_button[LISTMAXDISPLAY];
@@ -117,5 +121,5 @@ class CList : public CControl
 };
 
 
-}
+} // namespace Ui
 

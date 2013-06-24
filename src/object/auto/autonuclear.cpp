@@ -484,4 +484,3 @@ bool CAutoNuclear::Read(char *line)
     return true;
 }
 
-

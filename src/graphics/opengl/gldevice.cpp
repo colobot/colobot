@@ -79,6 +79,106 @@ void CGLDevice::DebugHook()
     glColor3i(0, 0, 0);
 }
 
+void CGLDevice::DebugLights()
+{
+    Gfx::ColorHSV color(0.0, 1.0, 1.0);
+
+    glLineWidth(3.0f);
+    glDisable(GL_LIGHTING);
+    glDepthMask(GL_FALSE);
+    glDisable(GL_BLEND);
+
+    Math::Matrix saveWorldMat = m_worldMat;
+    m_worldMat.LoadIdentity();
+    UpdateModelviewMatrix();
+
+    for (int i = 0; i < static_cast<int>( m_lights.size() ); ++i)
+    {
+        color.h = static_cast<float>(i) / static_cast<float>(m_lights.size());
+        if (m_lightsEnabled[i])
+        {
+            const Light& l = m_lights[i];
+            if (l.type == LIGHT_DIRECTIONAL)
+            {
+                Gfx::VertexCol v[2];
+                v[0].coord = -Math::Normalize(l.direction) * 100.0f + Math::Vector(0.0f, 0.0f, 1.0f) * i;
+                v[0].color = HSV2RGB(color);
+                v[1].coord =  Math::Normalize(l.direction) * 100.0f + Math::Vector(0.0f, 0.0f, 1.0f) * i;
+                v[1].color = HSV2RGB(color);
+                while (v[0].coord.y < 60.0f && v[0].coord.y < 60.0f)
+                {
+                    v[0].coord.y += 10.0f;
+                    v[1].coord.y += 10.0f;
+                }
+                DrawPrimitive(PRIMITIVE_LINES, v, 2);
+
+                v[0].coord = v[1].coord + Math::Normalize(v[0].coord - v[1].coord) * 50.0f;
+
+                glLineWidth(10.0f);
+                DrawPrimitive(PRIMITIVE_LINES, v, 2);
+                glLineWidth(3.0f);
+            }
+            else  if (l.type == LIGHT_POINT)
+            {
+                Gfx::VertexCol v[8];
+                for (int i = 0; i < 8; ++i)
+                    v[i].color = HSV2RGB(color);
+
+                v[0].coord = l.position + Math::Vector(-1.0f, -1.0f, -1.0f) * 4.0f;
+                v[1].coord = l.position + Math::Vector( 1.0f, -1.0f, -1.0f) * 4.0f;
+                v[2].coord = l.position + Math::Vector( 1.0f,  1.0f, -1.0f) * 4.0f;
+                v[3].coord = l.position + Math::Vector(-1.0f,  1.0f, -1.0f) * 4.0f;
+                v[4].coord = l.position + Math::Vector(-1.0f, -1.0f, -1.0f) * 4.0f;
+                DrawPrimitive(PRIMITIVE_LINE_STRIP, v, 5);
+
+                v[0].coord = l.position + Math::Vector(-1.0f, -1.0f,  1.0f) * 4.0f;
+                v[1].coord = l.position + Math::Vector( 1.0f, -1.0f,  1.0f) * 4.0f;
+                v[2].coord = l.position + Math::Vector( 1.0f,  1.0f,  1.0f) * 4.0f;
+                v[3].coord = l.position + Math::Vector(-1.0f,  1.0f,  1.0f) * 4.0f;
+                v[4].coord = l.position + Math::Vector(-1.0f, -1.0f,  1.0f) * 4.0f;
+                DrawPrimitive(PRIMITIVE_LINE_STRIP, v, 5);
+
+                v[0].coord = l.position + Math::Vector(-1.0f, -1.0f, -1.0f) * 4.0f;
+                v[1].coord = l.position + Math::Vector(-1.0f, -1.0f,  1.0f) * 4.0f;
+                v[2].coord = l.position + Math::Vector( 1.0f, -1.0f, -1.0f) * 4.0f;
+                v[3].coord = l.position + Math::Vector( 1.0f, -1.0f,  1.0f) * 4.0f;
+                v[4].coord = l.position + Math::Vector( 1.0f,  1.0f, -1.0f) * 4.0f;
+                v[5].coord = l.position + Math::Vector( 1.0f,  1.0f,  1.0f) * 4.0f;
+                v[6].coord = l.position + Math::Vector(-1.0f,  1.0f, -1.0f) * 4.0f;
+                v[7].coord = l.position + Math::Vector(-1.0f,  1.0f,  1.0f) * 4.0f;
+                DrawPrimitive(PRIMITIVE_LINES, v, 8);
+            }
+            else if (l.type == LIGHT_SPOT)
+            {
+                Gfx::VertexCol v[5];
+                for (int i = 0; i < 5; ++i)
+                    v[i].color = HSV2RGB(color);
+
+                v[0].coord = l.position + Math::Vector(-1.0f,  0.0f, -1.0f) * 4.0f;
+                v[1].coord = l.position + Math::Vector( 1.0f,  0.0f, -1.0f) * 4.0f;
+                v[2].coord = l.position + Math::Vector( 1.0f,  0.0f,  1.0f) * 4.0f;
+                v[3].coord = l.position + Math::Vector(-1.0f,  0.0f,  1.0f) * 4.0f;
+                v[4].coord = l.position + Math::Vector(-1.0f,  0.0f, -1.0f) * 4.0f;
+                DrawPrimitive(PRIMITIVE_LINE_STRIP, v, 5);
+
+                v[0].coord = l.position;
+                v[1].coord = l.position + Math::Normalize(l.direction) * 100.0f;
+                glEnable(GL_LINE_STIPPLE);
+                glLineStipple(3.0, 0xFF);
+                DrawPrimitive(PRIMITIVE_LINES, v, 2);
+                glDisable(GL_LINE_STIPPLE);
+            }
+        }
+    }
+
+    glLineWidth(1.0f);
+    glEnable(GL_LIGHTING);
+    glDepthMask(GL_TRUE);
+    glEnable(GL_BLEND);
+    m_worldMat = saveWorldMat;
+    UpdateModelviewMatrix();
+}
+
 bool CGLDevice::Create()
 {
     GetLogger()->Info("Creating CDevice\n");
@@ -417,13 +517,21 @@ bool CGLDevice::GetLightEnabled(int index)
 Texture CGLDevice::CreateTexture(CImage *image, const TextureCreateParams &params)
 {
     ImageData *data = image->GetData();
-    if (data == NULL)
+    if (data == nullptr)
     {
         GetLogger()->Error("Invalid texture data\n");
         return Texture(); // invalid texture
     }
 
-    return CreateTexture(data, params);
+    Math::IntPoint originalSize = image->GetSize();
+
+    if (params.padToNearestPowerOfTwo)
+        image->PadToNearestPowerOfTwo();
+
+    Texture tex = CreateTexture(data, params);
+    tex.originalSize = originalSize;
+
+    return tex;
 }
 
 Texture CGLDevice::CreateTexture(ImageData *data, const TextureCreateParams &params)
@@ -432,6 +540,11 @@ Texture CGLDevice::CreateTexture(ImageData *data, const TextureCreateParams &par
 
     result.size.x = data->surface->w;
     result.size.y = data->surface->h;
+
+    if (!Math::IsPowerOfTwo(result.size.x) || !Math::IsPowerOfTwo(result.size.y))
+        GetLogger()->Warn("Creating non-power-of-2 texture (%dx%d)!\n", result.size.x, result.size.y);
+
+    result.originalSize = result.size;
 
     // Use & enable 1st texture stage
     if (m_multitextureAvailable)
@@ -640,7 +753,7 @@ void CGLDevice::SetTexture(int index, const Texture &texture)
     glBindTexture(GL_TEXTURE_2D, texture.id);
 
     // Params need to be updated for the new bound texture
-    SetTextureStageParams(index, m_textureStageParams[index]);
+    UpdateTextureParams(index);
 }
 
 void CGLDevice::SetTexture(int index, unsigned int textureId)
@@ -661,7 +774,7 @@ void CGLDevice::SetTexture(int index, unsigned int textureId)
     glBindTexture(GL_TEXTURE_2D, textureId);
 
     // Params need to be updated for the new bound texture
-    SetTextureStageParams(index, m_textureStageParams[index]);
+    UpdateTextureParams(index);
 }
 
 /**
@@ -714,12 +827,21 @@ void CGLDevice::SetTextureStageParams(int index, const TextureStageParams &param
     // Remember the settings
     m_textureStageParams[index] = params;
 
+    UpdateTextureParams(index);
+}
+
+void CGLDevice::UpdateTextureParams(int index)
+{
+    assert(index >= 0 && index < static_cast<int>( m_currentTextures.size() ));
+
     if (!m_multitextureAvailable && index != 0)
         return;
 
     // Don't actually do anything if texture not set
     if (! m_currentTextures[index].Valid())
         return;
+
+    const TextureStageParams &params = m_textureStageParams[index];
 
     if (m_multitextureAvailable)
         glActiveTexture(GL_TEXTURE0 + index);
@@ -1667,3 +1789,4 @@ FillMode CGLDevice::GetFillMode()
 
 
 } // namespace Gfx
+

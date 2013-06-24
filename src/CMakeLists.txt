@@ -8,12 +8,8 @@ set(CMAKE_CXX_FLAGS_DEBUG ${COLOBOT_CXX_FLAGS_DEBUG})
 
 add_subdirectory(CBot)
 
-add_subdirectory(tools)
-
-add_subdirectory(po)
-
-if(${DESKTOP})
-    add_subdirectory(desktop)
+if(TOOLS)
+    add_subdirectory(tools)
 endif()
 
 
@@ -21,20 +17,20 @@ endif()
 set(OPTIONAL_LIBS "")
 set(OPTIONAL_INCLUDES "")
 
-if (${OPENAL_SOUND})
+if(OPENAL_SOUND)
     set(OPTIONAL_LIBS ${OPENAL_LIBRARY})
     set(OPTIONAL_INCLUDES ${OPENAL_INCLUDE_DIR})
 endif()
 
 # Additional libraries per platform
-if (${MXE}) # MXE requires special treatment
-    set(PLATFORM_LIBS ${MXE_LIBS})  
-elseif (${PLATFORM_WINDOWS})
+if(MXE) # MXE requires special treatment
+    set(PLATFORM_LIBS ${MXE_LIBS})
+elseif(PLATFORM_WINDOWS)
     # because it isn't included in standard linking libraries
     set(PLATFORM_LIBS "-lintl")
-elseif(${PLATFORM_LINUX})
+elseif(PLATFORM_LINUX)
     # for clock_gettime
-    set(PLATFORM_LIBS "-lrt")
+    set(PLATFORM_LIBS "-lrt -lX11")
 endif()
 
 
@@ -43,7 +39,7 @@ configure_file(common/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/common/config.h
 
 set(OPENAL_SRC "")
 
-if (${OPENAL_SOUND})
+if(OPENAL_SOUND)
     set(OPENAL_SRC
         sound/oalsound/alsound.cpp
         sound/oalsound/buffer.cpp
@@ -52,9 +48,9 @@ if (${OPENAL_SOUND})
 endif()
 
 # Platform-dependent implementation of system.h
-if (${PLATFORM_WINDOWS})
+if(PLATFORM_WINDOWS)
     set(SYSTEM_CPP_MODULE "system_windows.cpp")
-elseif(${PLATFORM_LINUX})
+elseif(PLATFORM_LINUX)
     set(SYSTEM_CPP_MODULE "system_linux.cpp")
 else()
     set(SYSTEM_CPP_MODULE "system_other.cpp")
@@ -120,6 +116,7 @@ object/mainmovie.cpp
 object/motion/motion.cpp
 object/motion/motionant.cpp
 object/motion/motionbee.cpp
+object/motion/motiondummy.cpp
 object/motion/motionhuman.cpp
 object/motion/motionmother.cpp
 object/motion/motionspider.cpp
@@ -128,6 +125,7 @@ object/motion/motionvehicle.cpp
 object/motion/motionworm.cpp
 object/object.cpp
 object/robotmain.cpp
+object/objman.cpp
 object/task/task.cpp
 object/task/taskadvance.cpp
 object/task/taskbuild.cpp
@@ -153,6 +151,7 @@ physics/physics.cpp
 script/cbottoken.cpp
 script/cmdtoken.cpp
 script/script.cpp
+sound/sound.cpp
 ui/button.cpp
 ui/check.cpp
 ui/color.cpp
@@ -185,6 +184,8 @@ ${OPENAL_SRC}
 
 set(LIBS
 CBot
+clipboard
+localename
 ${SDL_LIBRARY}
 ${SDLIMAGE_LIBRARY}
 ${SDLTTF_LIBRARY}
@@ -214,7 +215,9 @@ ${PNG_INCLUDE_DIRS}
 ${GLEW_INCLUDE_PATH}
 ${Boost_INCLUDE_DIRS}
 ${LIBSNDFILE_INCLUDE_DIR}
+${LOCALENAME_INCLUDE_DIR}
 ${OPTIONAL_INCLUDE_DIRS}
+${CLIPBOARD_INCLUDE_DIR}
 )
 
 link_directories(${CMAKE_CURRENT_SOURCE_DIR}/CBot)
@@ -225,3 +228,4 @@ target_link_libraries(colobot ${LIBS})
 
 install(TARGETS colobot RUNTIME DESTINATION ${COLOBOT_INSTALL_BIN_DIR})
 set_target_properties(colobot PROPERTIES INSTALL_RPATH ${COLOBOT_INSTALL_LIB_DIR})
+

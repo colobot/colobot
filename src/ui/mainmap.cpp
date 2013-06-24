@@ -55,7 +55,8 @@ void CMainMap::CreateMap()
     Math::Point     pos, dim;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW1));
-    if (pw == nullptr) {
+    if (pw == nullptr)
+    {
         pos.x = 0.0f;
         pos.y = 0.0f;
         dim.x = 0.0f;
@@ -106,7 +107,8 @@ void CMainMap::FloorColorMap(Gfx::Color floor, Gfx::Color water)
         return;
 
     pm = static_cast<CMap*>(pw->SearchControl(EVENT_OBJECT_MAP));
-    if (pm != nullptr) {
+    if (pm != nullptr)
+    {
         pm->SetFloorColor(floor);
         pm->SetWaterColor(water);
     }
@@ -124,9 +126,12 @@ void CMainMap::ShowMap(bool bShow)
     if (pw == nullptr)
         return;
 
-    if (bShow) {
+    if (bShow)
+    {
         DimMap();
-    } else {
+    }
+    else
+    {
         pm = static_cast<CMap*>(pw->SearchControl(EVENT_OBJECT_MAP));
         if (pm != nullptr)
             pm->ClearState(STATE_VISIBLE);
@@ -164,7 +169,8 @@ void CMainMap::DimMap()
     pm->SetDim(dim);
 
     ps = static_cast<CSlider*>(pw->SearchControl(EVENT_OBJECT_MAPZOOM));
-    if (ps != nullptr) {
+    if (ps != nullptr)
+    {
         ps->SetState(STATE_VISIBLE, (m_mapMode != 0));
 
         dim.x = SCROLL_WIDTH;
@@ -392,3 +398,4 @@ void CMainMap::SetHighlight(CObject* pObj)
 
 
 }
+

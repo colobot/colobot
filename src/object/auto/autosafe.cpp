@@ -400,7 +400,7 @@ int CAutoSafe::CountKeys()
     Math::Vector    cPos, oPos;
     Math::Point     rot;
     ObjectType  oType;
-    float       dist, angle, limit, cAngle, oAngle;
+    float       dist, angle, limit = 0.0f, cAngle, oAngle = 0.0f;
     int         i, index;
 
     cPos   = m_object->GetPosition(0);
@@ -610,6 +610,4 @@ CObject* CAutoSafe::SearchVehicle()
     }
     return 0;
 }
-
-
 

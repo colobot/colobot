@@ -223,3 +223,4 @@ Gfx::Color CColor::GetColor()
 
 
 }
+

@@ -75,10 +75,13 @@ bool CControl::Create(Math::Point pos, Math::Point dim, int icon, EventType even
     GetResource(RES_EVENT, m_eventType, text);
     str_text = std::string(text);
     auto p = str_text.find("\\");
-    if ( p == std::string::npos )  {
+    if ( p == std::string::npos )
+    {
         if ( icon != -1 )
             m_tooltip = str_text;
-    } else {
+    }
+    else
+    {
         m_tooltip = str_text.substr(p + 1);
     }
 
@@ -174,15 +177,18 @@ int CControl::GetIcon()
 
 void CControl::SetName(std::string name, bool bTooltip)
 {
-    if ( bTooltip ) {
+    if ( bTooltip )
+    {
         auto p = name.find("\\");
         if ( p == std::string::npos )
             m_name = name;
-        else {
+        else
+        {
             m_tooltip = name.substr(p + 1);
             m_name = name.substr(0, p);
         }
-    } else
+    }
+    else
         m_name = name;
 }
 
@@ -832,3 +838,4 @@ bool CControl::Detect(Math::Point pos)
 }
 
 }
+

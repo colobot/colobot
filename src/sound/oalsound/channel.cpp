@@ -15,59 +15,76 @@
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
 
-#include "channel.h"
+#include "sound/oalsound/channel.h"
 
-#define MIN(a, b) (a > b ? b : a)
+Channel::Channel()
+{
+    alGenSources(1, &m_source);
 
-Channel::Channel() {
-    alGenSources(1, &mSource);
-
-    if (alCheck()) {
+    if (alCheck())
+    {
         GetLogger()->Warn("Failed to create sound source. Code: %d\n", alGetCode());
-        mReady = false;
-    } else {
-        mReady = true;
+        m_ready = false;
     }
-    
-    mPriority = 0;
-    mBuffer = nullptr;
-    mLoop = false;
-    mInitFrequency = 0.0f;
-    mStartAmplitude = 0.0f;
-    mStartFrequency = 0.0f;
-    mChangeFrequency = 0.0f;
+    else
+    {
+        m_ready = true;
+    }
+
+    m_priority = 0;
+    m_buffer = nullptr;
+    m_loop = false;
+    m_mute = false;
+    m_initFrequency = 0.0f;
+    m_startAmplitude = 0.0f;
+    m_startFrequency = 0.0f;
+    m_changeFrequency = 0.0f;
+    m_volume = 0.0f;
 }
 
 
-Channel::~Channel() {
-    if (mReady) {
-        alSourceStop(mSource);
-        alSourcei(mSource, AL_BUFFER, 0);
-        alDeleteSources(1, &mSource);
+Channel::~Channel()
+{
+    if (m_ready)
+    {
+        alSourceStop(m_source);
+        alSourcei(m_source, AL_BUFFER, 0);
+        alDeleteSources(1, &m_source);
         if (alCheck())
             GetLogger()->Warn("Failed to delete sound source. Code: %d\n", alGetCode());
     }
 }
 
 
-bool Channel::Play() {
-    if (!mReady || mBuffer == nullptr)
+bool Channel::Play()
+{
+    if (!m_ready || m_buffer == nullptr)
+    {
         return false;
+    }
 
-    alSourcei(mSource, AL_LOOPING, static_cast<ALint>(mLoop));
-    alSourcePlay(mSource);
+    alSourcei(m_source, AL_LOOPING, static_cast<ALint>(m_loop));
+    alSourcei(m_source, AL_REFERENCE_DISTANCE, 10.0f);
+    alSourcei(m_source, AL_MAX_DISTANCE, 110.0f);
+    alSourcePlay(m_source);
     if (alCheck())
+    {
         GetLogger()->Warn("Could not play audio sound source. Code: %d\n", alGetCode());
+    }
     return true;
 }
 
 
-bool Channel::SetPosition(Math::Vector pos) {
-    if (!mReady || mBuffer == nullptr)
+bool Channel::SetPan(Math::Vector pos)
+{
+    if (!m_ready || m_buffer == nullptr)
+    {
         return false;
-    
-    alSource3f(mSource, AL_POSITION, pos.x, pos.y, pos.z);
-    if (alCheck()) {
+    }
+
+    alSource3f(m_source, AL_POSITION, pos.x, pos.y, pos.z);
+    if (alCheck())
+    {
         GetLogger()->Warn("Could not set sound position. Code: %d\n", alGetCode());
         return false;
     }
@@ -75,13 +92,28 @@ bool Channel::SetPosition(Math::Vector pos) {
 }
 
 
+void Channel::SetPosition(Math::Vector pos)
+{
+    m_position = pos;
+}
+
+
+Math::Vector Channel::GetPosition()
+{
+    return m_position;
+}
+
+
 bool Channel::SetFrequency(float freq)
 {
-    if (!mReady || mBuffer == nullptr)
+    if (!m_ready || m_buffer == nullptr)
+    {
         return false;
+    }
 
-    alSourcef(mSource, AL_PITCH, freq);
-    if (alCheck()) {
+    alSourcef(m_source, AL_PITCH, freq);
+    if (alCheck())
+    {
         GetLogger()->Warn("Could not set sound pitch to '%f'. Code: %d\n", freq, alGetCode());
         return false;
     }
@@ -89,23 +121,17 @@ bool Channel::SetFrequency(float freq)
 }
 
 
-bool Channel::AdjustFrequency(float freq)
-{
-    if (!mReady || mBuffer == nullptr)
-        return false;
-
-    return SetFrequency(mInitFrequency + fabs(freq));
-}
-
-
 float Channel::GetFrequency()
 {
     ALfloat freq;
-    if (!mReady || mBuffer == nullptr)
+    if (!m_ready || m_buffer == nullptr)
+    {
         return 0;
-    
-    alGetSourcef(mSource, AL_PITCH, &freq);
-    if (alCheck()) {
+    }
+
+    alGetSourcef(m_source, AL_PITCH, &freq);
+    if (alCheck())
+    {
         GetLogger()->Warn("Could not get sound pitch. Code: %d\n", alGetCode());
         return 0;
     }
@@ -116,11 +142,14 @@ float Channel::GetFrequency()
 
 bool Channel::SetVolume(float vol)
 {
-    if (!mReady || vol < 0 || mBuffer == nullptr)
+    if (!m_ready || vol < 0 || m_buffer == nullptr)
+    {
         return false;
-    
-    alSourcef(mSource, AL_GAIN, MIN(powf(vol, 0.2f), 1.0f));
-    if (alCheck()) {
+    }
+
+    alSourcef(m_source, AL_GAIN, vol);
+    if (alCheck())
+    {
         GetLogger()->Warn("Could not set sound volume to '%f'. Code: %d\n", vol, alGetCode());
         return false;
     }
@@ -131,11 +160,14 @@ bool Channel::SetVolume(float vol)
 float Channel::GetVolume()
 {
     ALfloat vol;
-    if (!mReady || mBuffer == nullptr)
+    if (!m_ready || m_buffer == nullptr)
+    {
         return 0;
-    
-    alGetSourcef(mSource, AL_GAIN, &vol);
-    if (alCheck()) {
+    }
+
+    alGetSourcef(m_source, AL_GAIN, &vol);
+    if (alCheck())
+    {
         GetLogger()->Warn("Could not get sound volume. Code: %d\n", alGetCode());
         return 0;
     }
@@ -144,125 +176,146 @@ float Channel::GetVolume()
 }
 
 
+void Channel::SetVolumeAtrib(float volume)
+{
+    m_volume = volume;
+}
+
+
+float Channel::GetVolumeAtrib()
+{
+    return m_volume;
+}
+
+
+
 int Channel::GetPriority()
 {
-    return mPriority;
+    return m_priority;
 }
 
 
 void Channel::SetPriority(int pri)
 {
-    mPriority = pri;
+    m_priority = pri;
 }
 
 
 void Channel::SetStartAmplitude(float gain)
 {
-    mStartAmplitude = gain;
-    SetVolume(mStartAmplitude);
+    m_startAmplitude = gain;
 }
 
 
 void Channel::SetStartFrequency(float freq)
 {
-    mStartFrequency = freq;
+    m_startFrequency = freq;
 }
 
 
 void Channel::SetChangeFrequency(float freq)
 {
-    mChangeFrequency = freq;
+    m_changeFrequency = freq;
 }
 
 
 float Channel::GetStartAmplitude()
 {
-    return mStartAmplitude;
+    return m_startAmplitude;
 }
 
 
 float Channel::GetStartFrequency()
 {
-    return mStartFrequency;
+    return m_startFrequency;
 }
 
 
 float Channel::GetChangeFrequency()
 {
-    return mChangeFrequency;
+    return m_changeFrequency;
 }
 
 
 float Channel::GetInitFrequency()
 {
-    return mInitFrequency;
+    return m_initFrequency;
 }
 
 
 void Channel::AddOper(SoundOper oper)
 {
-    mOper.push_back(oper);
+    m_oper.push_back(oper);
 }
 
 
 void Channel::ResetOper()
 {
-    mOper.clear();
+    m_oper.clear();
 }
 
 
-Sound Channel::GetSoundType() {
-    if (!mReady || mBuffer == nullptr)
+Sound Channel::GetSoundType()
+{
+    if (!m_ready || m_buffer == nullptr)
+    {
         return SOUND_NONE;
-    
-    return mBuffer->GetSoundType();
+    }
+
+    return m_buffer->GetSoundType();
 }
 
 
-bool Channel::SetBuffer(Buffer *buffer) {
-    if (!mReady)
+bool Channel::SetBuffer(Buffer *buffer)
+{
+    if (!m_ready)
         return false;
 
-    Stop();    
-    mBuffer = buffer;
-    if (buffer == nullptr) {
-        alSourcei(mSource, AL_BUFFER, 0);
+    Stop();
+    m_buffer = buffer;
+    if (buffer == nullptr)
+    {
+        alSourcei(m_source, AL_BUFFER, 0);
         return true;
-    }    
-    
-    alSourcei(mSource, AL_BUFFER, buffer->GetBuffer());
-    if (alCheck()) {
+    }
+
+    alSourcei(m_source, AL_BUFFER, buffer->GetBuffer());
+    if (alCheck())
+    {
         GetLogger()->Warn("Could not set sound buffer. Code: %d\n", alGetCode());
         return false;
     }
-    mInitFrequency = GetFrequency();
+    m_initFrequency = GetFrequency();
     return true;
 }
 
 
-bool Channel::FreeBuffer() {
-    if (!mReady)
-        return false;
-    
-    if (!mBuffer) {
+bool Channel::FreeBuffer()
+{
+    if (!m_ready || !m_buffer)
+    {
         return false;
     }
 
-    alSourceStop(mSource);
-    alSourcei(mSource, AL_BUFFER, 0);
-    delete mBuffer;
-    mBuffer = nullptr;
+    alSourceStop(m_source);
+    alSourcei(m_source, AL_BUFFER, 0);
+    delete m_buffer;
+    m_buffer = nullptr;
     return true;
 }
 
 
-bool Channel::IsPlaying() {
+bool Channel::IsPlaying()
+{
     ALint status;
-    if (!mReady || mBuffer == nullptr)
+    if (!m_ready || m_buffer == nullptr)
+    {
         return false;
-    
-    alGetSourcei(mSource, AL_SOURCE_STATE, &status);
-    if (alCheck()) {
+    }
+
+    alGetSourcei(m_source, AL_SOURCE_STATE, &status);
+    if (alCheck())
+    {
         GetLogger()->Warn("Could not get sound status. Code: %d\n", alGetCode());
         return false;
     }
@@ -271,21 +324,27 @@ bool Channel::IsPlaying() {
 }
 
 
-bool Channel::IsReady() {
-    return mReady;
+bool Channel::IsReady()
+{
+    return m_ready;
 }
 
-bool Channel::IsLoaded() {
-    return mBuffer != nullptr;
+bool Channel::IsLoaded()
+{
+    return m_buffer != nullptr;
 }
 
 
-bool Channel::Stop() {
-    if (!mReady || mBuffer == nullptr)
+bool Channel::Stop()
+{
+    if (!m_ready || m_buffer == nullptr)
+    {
         return false;
-    
-    alSourceStop(mSource);
-    if (alCheck()) {
+    }
+
+    alSourceStop(m_source);
+    if (alCheck())
+    {
         GetLogger()->Warn("Could not stop sound. Code: %d\n", alGetCode());
         return false;
     }
@@ -295,12 +354,15 @@ bool Channel::Stop() {
 
 float Channel::GetCurrentTime()
 {
-    if (!mReady || mBuffer == nullptr)
+    if (!m_ready || m_buffer == nullptr)
+    {
         return 0.0f;
-    
+    }
+
     ALfloat current;
-    alGetSourcef(mSource, AL_SEC_OFFSET, &current);
-    if (alCheck()) {
+    alGetSourcef(m_source, AL_SEC_OFFSET, &current);
+    if (alCheck())
+    {
         GetLogger()->Warn("Could not get source current play time. Code: %d\n", alGetCode());
         return 0.0f;
     }
@@ -310,42 +372,62 @@ float Channel::GetCurrentTime()
 
 void Channel::SetCurrentTime(float current)
 {
-    if (!mReady || mBuffer == nullptr)
+    if (!m_ready || m_buffer == nullptr)
+    {
         return;
-    
-    alSourcef(mSource, AL_SEC_OFFSET, current);
+    }
+
+    alSourcef(m_source, AL_SEC_OFFSET, current);
     if (alCheck())
+    {
         GetLogger()->Warn("Could not get source current play time. Code: %d\n", alGetCode());
+    }
 }
 
 
 float Channel::GetDuration()
 {
-    if (!mReady || mBuffer == nullptr)
+    if (!m_ready || m_buffer == nullptr)
+    {
         return 0.0f;
-    
-    return mBuffer->GetDuration();
+    }
+
+    return m_buffer->GetDuration();
 }
 
 
 bool Channel::HasEnvelope()
 {
-    return mOper.size() > 0;
+    return m_oper.size() > 0;
 }
 
 
 SoundOper& Channel::GetEnvelope()
 {
-    return mOper.front();
+    return m_oper.front();
 }
 
 
 void Channel::PopEnvelope()
 {
-    mOper.pop_front();
+    m_oper.pop_front();
 }
 
 
-void Channel::SetLoop(bool loop) {
-    mLoop = loop;
+void Channel::SetLoop(bool loop)
+{
+    m_loop = loop;
 }
+
+
+void Channel::Mute(bool mute)
+{
+    m_mute = mute;
+}
+
+
+bool Channel::IsMuted()
+{
+    return m_mute;
+}
+

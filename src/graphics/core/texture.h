@@ -136,6 +136,8 @@ struct TextureCreateParams
     TexMinFilter minFilter;
     //! Magnification filter
     TexMagFilter magFilter;
+    //! Pad the image to nearest power of 2 dimensions
+    bool padToNearestPowerOfTwo;
 
     //! Constructor; calls LoadDefault()
     TextureCreateParams()
@@ -146,6 +148,7 @@ struct TextureCreateParams
     {
         format = TEX_IMG_RGB;
         mipmap = false;
+        padToNearestPowerOfTwo = false;
 
         minFilter = TEX_MIN_FILTER_NEAREST;
         magFilter = TEX_MAG_FILTER_NEAREST;
@@ -212,6 +215,8 @@ struct Texture
     unsigned int id;
     //! Size of texture
     Math::IntPoint size;
+    //! Original size of texture (as loaded from image)
+    Math::IntPoint originalSize;
     //! Whether the texture has alpha channel
     bool alpha;
 
@@ -264,3 +269,4 @@ struct Texture
 
 
 } // namespace Gfx
+

@@ -24,6 +24,7 @@
 #include "math/geometry.h"
 
 #include "object/robotmain.h"
+#include "object/brain.h"
 
 #include "physics/physics.h"
 
@@ -103,7 +104,60 @@ void CAutoFactory::Init()
 
     m_fretPos = m_object->GetPosition(0);
 
+    m_program = nullptr;
+
     CAuto::Init();
+}
+
+
+// Starts an action
+
+Error CAutoFactory::StartAction(int param)
+{
+    CObject*   fret;
+    ObjectType type = static_cast<ObjectType>(param);
+
+    if ( type != OBJECT_NULL )
+    {
+        if ( m_phase != AFP_WAIT )
+        {
+            return ERR_OK;
+        }
+
+        m_type = type;
+
+        fret = SearchFret();  // transform metal?
+        if ( fret == 0 )
+        {
+            return ERR_FACTORY_NULL;
+        }
+        if ( NearestVehicle() )
+        {
+            return ERR_FACTORY_NEAR;
+        }
+
+        SetBusy(true);
+        InitProgressTotal(3.0f+2.0f+15.0f+2.0f+3.0f);
+        UpdateInterface();
+
+        fret->SetLock(true);  // usable metal
+        SoundManip(3.0f, 1.0f, 0.5f);
+
+        m_phase    = AFP_CLOSE_S;
+        m_progress = 0.0f;
+        m_speed    = 1.0f/3.0f;
+        return ERR_OK;
+    }
+    return ERR_GENERIC;
+}
+
+
+// Sets program for created robot
+
+void CAutoFactory::SetProgram(const char* program)
+{
+    m_program = new char[strlen(program)+1];
+    strcpy(m_program, program);
 }
 
 
@@ -111,13 +165,13 @@ void CAutoFactory::Init()
 
 bool CAutoFactory::EventProcess(const Event &event)
 {
+    ObjectType  type;
     CObject*    fret;
     CObject*    vehicle;
     Math::Matrix*   mat;
     CPhysics*   physics;
     Math::Vector    pos, speed;
     Math::Point     dim;
-    ObjectType  type;
     float       zoom, angle, prog;
     int         i;
 
@@ -155,39 +209,12 @@ bool CAutoFactory::EventProcess(const Event &event)
         if ( event.type == EVENT_OBJECT_FACTORYrs )  type = OBJECT_MOBILErs;
         if ( event.type == EVENT_OBJECT_FACTORYsa )  type = OBJECT_MOBILEsa;
 
-        if ( type != OBJECT_NULL )
-        {
-            m_type = type;
+        Error err = StartAction(type);
+        if( err != ERR_OK && err != ERR_GENERIC )
+            m_displayText->DisplayError(err, m_object);
 
-            if ( m_phase != AFP_WAIT )
-            {
-                return false;
-            }
-
-            fret = SearchFret();  // transform metal?
-            if ( fret == 0 )
-            {
-                m_displayText->DisplayError(ERR_FACTORY_NULL, m_object);
-                return false;
-            }
-            if ( NearestVehicle() )
-            {
-                m_displayText->DisplayError(ERR_FACTORY_NEAR, m_object);
-                return false;
-            }
-
-            SetBusy(true);
-            InitProgressTotal(3.0f+2.0f+15.0f+2.0f+3.0f);
-            UpdateInterface();
-
-            fret->SetLock(true);  // usable metal
-            SoundManip(3.0f, 1.0f, 0.5f);
-
-            m_phase    = AFP_CLOSE_S;
-            m_progress = 0.0f;
-            m_speed    = 1.0f/3.0f;
-            return true;
-        }
+        if( err != ERR_GENERIC )
+            return false;
     }
 
     if ( event.type != EVENT_FRAME )  return true;
@@ -362,7 +389,7 @@ bool CAutoFactory::EventProcess(const Event &event)
                 delete fret;
             }
 
-            vehicle = SearchVehicle();
+            m_vehicle = vehicle = SearchVehicle();
             if ( vehicle != 0 )
             {
                 physics = vehicle->GetPhysics();
@@ -459,6 +486,17 @@ bool CAutoFactory::EventProcess(const Event &event)
             {
                 m_object->SetZoomZ( 1+i, 0.30f);
                 m_object->SetZoomZ(10+i, 0.30f);
+            }
+
+            if ( m_program != nullptr )
+            {
+                CBrain* brain = m_vehicle->GetBrain();
+                if ( brain != nullptr )
+                {
+                    brain->SendProgram(0, const_cast<const char*>(m_program));
+                    brain->SetScriptRun(0);
+                    brain->RunProgram(0);
+                }
             }
 
             SetBusy(false);

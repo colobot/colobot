@@ -107,7 +107,7 @@ bool CMotionHuman::Create(Math::Vector pos, float angle, ObjectType type,
     if ( m_main->GetGamerOnlyHead() )
     {
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_VEHICULE);  // this is a moving object
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_VEHICLE);  // this is a moving object
         m_object->SetObjectRank(0, rank);
         face = m_main->GetGamerFace();
         sprintf(filename, "human2h%d.mod", face+1);
@@ -134,7 +134,7 @@ bool CMotionHuman::Create(Math::Vector pos, float angle, ObjectType type,
 
     // Creates the main base.
     rank = m_engine->CreateObject();
-    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_VEHICULE);  // this is a moving object
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_VEHICLE);  // this is a moving object
     m_object->SetObjectRank(0, rank);
 
     if (option == 0)  // head in helmet?
@@ -677,7 +677,7 @@ bool CMotionHuman::EventFrame(const Event &event)
     float       s, a, prog, rTime[2], lTime[2], time, rot, hr, hl;
     float       al, ar, af;
     float       tSt[9], tNd[9];
-    float       aa, bb, shield, deadFactor, level;
+    float       aa, bb, shield, deadFactor = 0.0f, level;
     int         i, ii, st, nd, action, legAction, armAction;
     bool        bOnBoard, bSwim;
 
@@ -1617,18 +1617,18 @@ bool CMotionHuman::EventFrame(const Event &event)
          legAction == MH_MARCHTAKE )
     {
         Sound   sound[2];
-        float   speed, synchro, volume[2], freq[2], hard, level;
+        float   synchro, volume[2], freq[2], hard;
 
-        speed = m_physics->GetLinMotionX(MO_REASPEED);
+        float speedX = m_physics->GetLinMotionX(MO_REASPEED);
 
         if ( m_object->GetFret() == 0 )
         {
-            if ( speed > 0.0f )  synchro = 0.21f;  // synchro forward
+            if ( speedX > 0.0f )  synchro = 0.21f;  // synchro forward
             else                 synchro = 0.29f;  // synchro backward
         }
         else
         {
-            if ( speed > 0.0f )  synchro = 0.15f;  // synchro forward
+            if ( speedX > 0.0f )  synchro = 0.15f;  // synchro forward
             else                 synchro = 0.35f;  // synchro backward
         }
         time = rTime[1]+synchro;
@@ -1734,5 +1734,4 @@ void CMotionHuman::StopDisplayPerso()
 {
     m_bDisplayPerso = false;
 }
-
 

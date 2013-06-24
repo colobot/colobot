@@ -47,7 +47,6 @@ enum EID
     ID_STATIC,
     ID_PROTECTED,
     ID_PRIVATE,
-    ID_REPEAT,
     ID_DEBUGDD,
     ID_INT,
     ID_FLOAT,
@@ -177,3 +176,4 @@ enum EID
 #define TX_ERRWRITE                     6015
 
 #define TX_MAX                          6016
+

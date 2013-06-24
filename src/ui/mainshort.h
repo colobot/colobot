@@ -34,29 +34,30 @@ namespace Ui {
 
 class CMainShort
 {
-    public:
-        CMainShort();
-        ~CMainShort();
+public:
+    CMainShort();
+    ~CMainShort();
 
-        void        SetMode(bool bBuilding);
-        void        FlushShortcuts();
-        bool        CreateShortcuts();
-        bool        UpdateShortcuts();
-        void        SelectShortcut(EventType event);
-        void        SelectNext();
-        CObject*    DetectShort(Math::Point pos);
-        void        SetHighlight(CObject* pObj);
+    void        SetMode(bool bBuilding);
+    void        FlushShortcuts();
+    bool        CreateShortcuts();
+    bool        UpdateShortcuts();
+    void        SelectShortcut(EventType event);
+    void        SelectNext();
+    CObject*    DetectShort(Math::Point pos);
+    void        SetHighlight(CObject* pObj);
 
-    protected:
+protected:
 
-    protected:
-        CEventQueue*      m_event;
-        Gfx::CEngine*     m_engine;
-        CInterface*     m_interface;
-        CRobotMain*     m_main;
+protected:
+    CEventQueue*      m_event;
+    Gfx::CEngine*     m_engine;
+    CInterface*     m_interface;
+    CRobotMain*     m_main;
 
-        CObject*        m_shortcuts[20];
-        bool            m_bBuilding;
+    CObject*        m_shortcuts[20];
+    bool            m_bBuilding;
 };
 
 }
+

@@ -3,15 +3,16 @@ set(SRC_DIR ${colobot_SOURCE_DIR}/src)
 configure_file(${SRC_DIR}/common/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/common/config.h)
 
 # Platform-dependent implementation of system.h
-if (${PLATFORM_WINDOWS})
+if(PLATFORM_WINDOWS)
     set(SYSTEM_CPP_MODULE "system_windows.cpp")
-elseif(${PLATFORM_LINUX})
+elseif(PLATFORM_LINUX)
     set(SYSTEM_CPP_MODULE "system_linux.cpp")
 else()
     set(SYSTEM_CPP_MODULE "system_other.cpp")
 endif()
 
 set(TEXTURE_SOURCES
+${SRC_DIR}/graphics/core/color.cpp
 ${SRC_DIR}/graphics/opengl/gldevice.cpp
 ${SRC_DIR}/common/logger.cpp
 ${SRC_DIR}/common/image.cpp
@@ -19,6 +20,7 @@ texture_test.cpp
 )
 
 set(MODEL_SOURCES
+${SRC_DIR}/graphics/core/color.cpp
 ${SRC_DIR}/graphics/opengl/gldevice.cpp
 ${SRC_DIR}/graphics/engine/modelfile.cpp
 ${SRC_DIR}/common/logger.cpp
@@ -30,6 +32,7 @@ model_test.cpp
 )
 
 set(TRANSFORM_SOURCES
+${SRC_DIR}/graphics/core/color.cpp
 ${SRC_DIR}/graphics/opengl/gldevice.cpp
 ${SRC_DIR}/common/logger.cpp
 ${SRC_DIR}/common/image.cpp
@@ -39,6 +42,7 @@ transform_test.cpp
 )
 
 set(LIGHT_SOURCES
+${SRC_DIR}/graphics/core/color.cpp
 ${SRC_DIR}/graphics/opengl/gldevice.cpp
 ${SRC_DIR}/common/logger.cpp
 ${SRC_DIR}/common/image.cpp

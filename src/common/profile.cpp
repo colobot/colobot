@@ -39,17 +39,7 @@ CProfile::CProfile() :
 
 CProfile::~CProfile()
 {
-    if (m_profileNeedSave)
-    {
-        try
-        {
-            bp::ini_parser::write_ini(GetSystemUtils()->profileFileLocation(), m_propertyTree);
-        }
-        catch (std::exception & e)
-        {
-            GetLogger()->Info("Error on storing profile: %s\n", e.what());
-        }
-    }
+    SaveCurrentDirectory();
 }
 
 
@@ -57,17 +47,40 @@ bool CProfile::InitCurrentDirectory()
 {
     try
     {
-        bp::ini_parser::read_ini(GetSystemUtils()->profileFileLocation(), m_propertyTree);
+        #if DEV_BUILD
+        bp::ini_parser::read_ini("colobot.ini", m_propertyTree);
+        #else
+        bp::ini_parser::read_ini(GetSystemUtils()->GetProfileFileLocation(), m_propertyTree);
+        #endif
     }
     catch (std::exception & e)
     {
-        GetLogger()->Info("Error on parsing profile: %s\n", e.what());
+        GetLogger()->Error("Error on parsing profile: %s\n", e.what());
         return false;
     }
     return true;
 }
 
-
+bool CProfile::SaveCurrentDirectory()
+{
+    if (m_profileNeedSave)
+    {
+        try
+        {
+            #if DEV_BUILD
+            bp::ini_parser::write_ini("colobot.ini", m_propertyTree);
+            #else
+            bp::ini_parser::write_ini(GetSystemUtils()->GetProfileFileLocation(), m_propertyTree);
+            #endif
+        }
+        catch (std::exception & e)
+        {
+            GetLogger()->Error("Error on storing profile: %s\n", e.what());
+            return false;
+        }
+    }
+    return true;
+}
 
 bool CProfile::SetLocalProfileString(std::string section, std::string key, std::string value)
 {
@@ -78,7 +91,7 @@ bool CProfile::SetLocalProfileString(std::string section, std::string key, std::
     }
     catch (std::exception & e)
     {
-        GetLogger()->Info("Error on parsing profile: %s\n", e.what());
+        GetLogger()->Error("Error on parsing profile: %s\n", e.what());
         return false;
     }
     return true;
@@ -93,7 +106,7 @@ bool CProfile::GetLocalProfileString(std::string section, std::string key, std::
     }
     catch (std::exception & e)
     {
-        GetLogger()->Info("Error on parsing profile: %s\n", e.what());
+        GetLogger()->Error("Error on parsing profile: %s\n", e.what());
         return false;
     }
     return true;
@@ -109,7 +122,7 @@ bool CProfile::SetLocalProfileInt(std::string section, std::string key, int valu
     }
     catch (std::exception & e)
     {
-        GetLogger()->Info("Error on parsing profile: %s\n", e.what());
+        GetLogger()->Error("Error on parsing profile: %s\n", e.what());
         return false;
     }
     return true;
@@ -124,7 +137,7 @@ bool CProfile::GetLocalProfileInt(std::string section, std::string key, int &val
     }
     catch (std::exception & e)
     {
-        GetLogger()->Info("Error on parsing profile: %s\n", e.what());
+        GetLogger()->Error("Error on parsing profile: %s\n", e.what());
         return false;
     }
     return true;
@@ -140,7 +153,7 @@ bool CProfile::SetLocalProfileFloat(std::string section, std::string key, float 
     }
     catch (std::exception & e)
     {
-        GetLogger()->Info("Error on parsing profile: %s\n", e.what());
+        GetLogger()->Error("Error on parsing profile: %s\n", e.what());
         return false;
     }
     return true;
@@ -155,7 +168,7 @@ bool CProfile::GetLocalProfileFloat(std::string section, std::string key, float 
     }
     catch (std::exception & e)
     {
-        GetLogger()->Info("Error on parsing profile: %s\n", e.what());
+        GetLogger()->Error("Error on parsing profile: %s\n", e.what());
         return false;
     }
     return true;
@@ -179,7 +192,7 @@ std::vector< std::string > CProfile::GetLocalProfileSection(std::string section,
     }
     catch (std::exception & e)
     {
-        GetLogger()->Info("Error on parsing profile: %s\n", e.what());
+        GetLogger()->Error("Error on parsing profile: %s\n", e.what());
     }
 
     return ret_list;
@@ -196,34 +209,39 @@ std::string CProfile::GetUserBasedPath(std::string dir, std::string default_dir)
 {
     std::string path = dir;
     boost::replace_all(path, "\\", "/");
-    if (dir.find("/") == std::string::npos) {
+    if (dir.find("/") == std::string::npos)
+    {
         path = default_dir + "/" + dir;
     }
-    
-    if (m_userDirectory.length() > 0) {
+
+    if (m_userDirectory.length() > 0)
+    {
         boost::replace_all(path, "%user%", m_userDirectory);
-    } else {
+    }
+    else
+    {
         boost::replace_all(path, "%user%", default_dir);
     }
-    
+
     return fs::path(path).make_preferred().string();
 }
-        
-        
+
+
 bool CProfile::CopyFileToTemp(std::string filename)
 {
     std::string src, dst;
     std::string tmp_user_dir = m_userDirectory;
-    
+
     src = GetUserBasedPath(filename, "textures");
     SetUserDir("temp");
     dst = GetUserBasedPath(filename, "textures");
     SetUserDir(tmp_user_dir);
-   
+
     fs::create_directory(fs::path(dst).parent_path().make_preferred().string());
     fs::copy_file(src, dst, fs::copy_option::overwrite_if_exists);
-    if (fs::exists(dst)) {
-        return true;    
+    if (fs::exists(dst))
+    {
+        return true;
     }
 
     return false;

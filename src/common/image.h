@@ -94,6 +94,9 @@ public:
     //! Returns the precise color at given pixel
     Gfx::IntColor GetPixelInt(Math::IntPoint pixel);
 
+    //! Pads the image to nearest power of 2 dimensions
+    void PadToNearestPowerOfTwo();
+
     //! Loads an image from the specified file
     bool Load(const std::string &fileName);
 
@@ -109,3 +112,4 @@ private:
     //! Image data
     ImageData* m_data;
 };
+

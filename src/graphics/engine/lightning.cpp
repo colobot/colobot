@@ -418,3 +418,4 @@ CObject* CLightning::SearchObject(Math::Vector pos)
 
 
 } // namespace Gfx
+

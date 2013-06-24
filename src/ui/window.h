@@ -83,7 +83,7 @@ public:
     EventType    GetEventTypeFull();
     EventType    GetEventTypeClose();
 
-    void        SetName(std::string name);
+    virtual void SetName(std::string name, bool tooltip = true) override;
 
     void        SetTrashEvent(bool bTrash);
     bool        GetTrashEvent();
@@ -151,3 +151,4 @@ protected:
 
 
 }
+

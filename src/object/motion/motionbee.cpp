@@ -73,7 +73,7 @@ bool CMotionBee::Create(Math::Vector pos, float angle, ObjectType type,
 
     // Creates main base.
     rank = m_engine->CreateObject();
-    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_VEHICULE);  // this is a moving object
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_VEHICLE);  // this is a moving object
     m_object->SetObjectRank(0, rank);
     modelManager->AddModelReference("bee1.mod", false, rank);
     m_object->SetPosition(0, pos);
@@ -406,7 +406,7 @@ bool CMotionBee::EventProcess(const Event &event)
 bool CMotionBee::EventFrame(const Event &event)
 {
     Math::Vector        dir;
-    float           s, a, prog;
+    float           s, a, prog = 0.0f;
     int             action, i, st, nd;
     bool            bStop;
 
@@ -609,5 +609,4 @@ bool CMotionBee::EventFrame(const Event &event)
 
     return true;
 }
-
 

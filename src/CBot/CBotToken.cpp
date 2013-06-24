@@ -248,17 +248,15 @@ CBotToken*  CBotToken::NextToken(char* &program, int& error, bool first)
         {
             while (c != 0 && !CharInList(c, nch))
             {
-                mot += c;
-                c   = *(program++);                 // next character
                 if ( c == '\\' )
                 {
                     c   = *(program++);                 // next character
                     if ( c == 'n' ) c = '\n';
                     if ( c == 'r' ) c = '\r';
                     if ( c == 't' ) c = '\t';
-                    mot += c;
-                    c   = *(program++);                 // next character
                 }
+                mot += c;
+                c = *(program++);
             }
             if ( c == '\"' )
             {
@@ -474,7 +472,7 @@ void CBotToken::LoadKeyWords()
 {
     CBotString      s;
     int             i, n = 0;
-    
+
     i = TokenKeyWord; //start with keywords of the language
     while (s.LoadString(i))
     {

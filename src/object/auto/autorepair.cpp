@@ -74,7 +74,7 @@ void CAutoRepair::Init()
 
 bool CAutoRepair::EventProcess(const Event &event)
 {
-    CObject*    vehicule;
+    CObject*    vehicle;
     Math::Vector    pos, speed;
     Math::Point     dim;
     float       angle, shield;
@@ -137,16 +137,16 @@ bool CAutoRepair::EventProcess(const Event &event)
 
     if ( m_phase == ARP_REPAIR )
     {
-        vehicule = SearchVehicle();
+        vehicle = SearchVehicle();
         if ( m_progress < 1.0f ||
-             (vehicule != 0 && vehicule->GetShield() < 1.0f) )
+             (vehicle != 0 && vehicle->GetShield() < 1.0f) )
         {
-            if ( vehicule != 0 )
+            if ( vehicle != 0 )
             {
-                shield = vehicule->GetShield();
+                shield = vehicle->GetShield();
                 shield += event.rTime*0.2f;
                 if ( shield > 1.0f )  shield = 1.0f;
-                vehicule->SetShield(shield);
+                vehicle->SetShield(shield);
             }
 
             if ( m_lastParticle+m_engine->ParticleAdapt(0.05f) <= m_time )
@@ -339,5 +339,4 @@ bool CAutoRepair::Read(char *line)
 
     return true;
 }
-
 

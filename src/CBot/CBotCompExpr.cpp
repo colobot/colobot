@@ -83,7 +83,7 @@ CBotInstr* CBotCompExpr::Compile(CBotToken* &p, CBotCStack* pStack)
 }
 
 
-// perform the operation 
+// perform the operation
 
 bool CBotCompExpr::Execute(CBotStack* &pStack)
 {

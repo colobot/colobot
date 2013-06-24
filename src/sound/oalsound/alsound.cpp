@@ -16,18 +16,22 @@
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
 
-#include "alsound.h"
+#include "sound/oalsound/alsound.h"
 
-#define MIN(a, b) (a > b ? b : a)
+#include <algorithm>
+#include <iomanip>
+
+#include <boost/filesystem.hpp>
 
 ALSound::ALSound()
 {
-    mEnabled = false;
-    m3D = false;
-    mAudioVolume = 1.0f;
-    mMusicVolume = 1.0f;
-    mMute = false;
-    mCurrentMusic = nullptr;
+    m_enabled = false;
+    m_3D = false;
+    m_audioVolume = 1.0f;
+    m_musicVolume = 1.0f;
+    m_currentMusic = nullptr;
+    m_eye.LoadZero();
+    m_lookat.LoadZero();
 }
 
 
@@ -39,24 +43,36 @@ ALSound::~ALSound()
 
 void ALSound::CleanUp()
 {
-    if (mEnabled) {
+    if (m_enabled)
+    {
         GetLogger()->Info("Unloading files and closing device...\n");
         StopAll();
+        StopMusic();
 
-        for (auto channel : mChannels) {
+        for (auto channel : m_channels)
+        {
             delete channel.second;
         }
 
-        for (auto item : mSounds) {
+        if (m_currentMusic)
+        {
+            delete m_currentMusic;
+        }
+
+        for (auto item : m_sounds)
+        {
             delete item.second;
         }
 
-        mEnabled = false;
+        for (auto item : m_music)
+        {
+            delete item.second;
+        }
 
-        mCurrentMusic->FreeBuffer();
-        delete mCurrentMusic;
-        alcDestroyContext(mContext);
-        alcCloseDevice(mDevice);
+        m_enabled = false;
+
+        alcDestroyContext(m_context);
+        alcCloseDevice(m_device);
     }
 }
 
@@ -65,41 +81,43 @@ bool ALSound::Create(bool b3D)
 {
     CleanUp();
 
-    if (mEnabled)
+    if (m_enabled)
         return true;
 
     GetLogger()->Info("Opening audio device...\n");
-    mDevice = alcOpenDevice(NULL);
-    if (!mDevice) {
+    m_device = alcOpenDevice(NULL);
+    if (!m_device)
+    {
         GetLogger()->Error("Could not open audio device!\n");
         return false;
     }
 
-    mContext = alcCreateContext(mDevice, NULL);
-    if (!mContext) {
+    m_context = alcCreateContext(m_device, NULL);
+    if (!m_context)
+    {
         GetLogger()->Error("Could not create audio context!\n");
         return false;
     }
-    alcMakeContextCurrent(mContext);
+    alcMakeContextCurrent(m_context);
+    alListenerf(AL_GAIN, m_audioVolume);
+    alDistanceModel(AL_LINEAR_DISTANCE_CLAMPED);
 
-    mCurrentMusic = new Channel();
+    m_currentMusic = new Channel();
     GetLogger()->Info("Done.\n");
-    mEnabled = true;
+    m_enabled = true;
     return true;
 }
 
 
 void ALSound::SetSound3D(bool bMode)
 {
-    // TODO stub! need to be implemented
-    m3D = bMode;
+    m_3D = bMode;
 }
 
 
 bool ALSound::GetSound3D()
 {
-    // TODO stub! need to be implemented
-    return true;
+    return m_3D;
 }
 
 
@@ -112,54 +130,70 @@ bool ALSound::GetSound3DCap()
 
 bool ALSound::GetEnable()
 {
-    return mEnabled;
+    return m_enabled;
 }
 
 
 void ALSound::SetAudioVolume(int volume)
 {
-    mAudioVolume = MIN(static_cast<float>(volume) / MAXVOLUME, 1.0f);
-    alListenerf(AL_GAIN, mAudioVolume);
+    m_audioVolume = static_cast<float>(volume) / MAXVOLUME;
 }
 
 
 int ALSound::GetAudioVolume()
 {
-    if ( !mEnabled )
+    if ( !m_enabled )
         return 0;
 
-    return mAudioVolume * MAXVOLUME;
+    return m_audioVolume * MAXVOLUME;
 }
 
 
 void ALSound::SetMusicVolume(int volume)
 {
-    mMusicVolume = MIN(static_cast<float>(volume) / MAXVOLUME, 1.0f);
-    if (mCurrentMusic) {
-        mCurrentMusic->SetVolume(mMusicVolume * mAudioVolume);
+    m_musicVolume = static_cast<float>(volume) / MAXVOLUME;
+    if (m_currentMusic)
+    {
+        m_currentMusic->SetVolume(m_musicVolume);
     }
 }
 
 
 int ALSound::GetMusicVolume()
 {
-    if ( !mEnabled )
+    if ( !m_enabled )
         return 0.0f;
 
-    return mMusicVolume * MAXVOLUME;
+    return m_musicVolume * MAXVOLUME;
 }
 
 
 bool ALSound::Cache(Sound sound, std::string filename)
 {
     Buffer *buffer = new Buffer();
-    if (buffer->LoadFromFile(filename, sound)) {
-        mSounds[sound] = buffer;
+    if (buffer->LoadFromFile(filename, sound))
+    {
+        m_sounds[sound] = buffer;
         return true;
     }
     return false;
 }
 
+bool ALSound::CacheMusic(std::string filename)
+{
+    if (m_music.find(filename) == m_music.end())
+    {
+        Buffer *buffer = new Buffer();
+        std::stringstream file;
+        file << m_soundPath << "/" << filename;
+        if (buffer->LoadFromFile(file.str(), static_cast<Sound>(-1)))
+        {
+            m_music[filename] = buffer;
+            return true;
+        }
+    }
+    return false;
+}
 
 int ALSound::GetPriority(Sound sound)
 {
@@ -215,7 +249,8 @@ bool ALSound::SearchFreeBuffer(Sound sound, int &channel, bool &bAlreadyLoaded)
     int priority = GetPriority(sound);
 
     // Seeks a channel used which sound is stopped.
-    for (auto it : mChannels) {
+    for (auto it : m_channels)
+    {
         if (it.second->IsPlaying())
             continue;
         if (it.second->GetSoundType() != sound)
@@ -228,47 +263,55 @@ bool ALSound::SearchFreeBuffer(Sound sound, int &channel, bool &bAlreadyLoaded)
     }
 
     // just add a new channel if we dont have any
-    if (mChannels.size() == 0) {
+    if (m_channels.size() == 0)
+    {
         Channel *chn = new Channel();
         // check if we channel ready to play music, if not report error
-        if (chn->IsReady()) {
+        if (chn->IsReady())
+        {
             chn->SetPriority(priority);
-            mChannels[1] = chn;
+            m_channels[1] = chn;
             channel = 1;
             bAlreadyLoaded = false;
             return true;
         }
         delete chn;
-        GetLogger()->Error("Could not open channel to play sound!");
+        GetLogger()->Error("Could not open channel to play sound!\n");
         return false;
     }
 
     // Seeks a channel completely free.
-    if (mChannels.size() < 64) {
-        auto it = mChannels.end();
+    if (m_channels.size() < 64)
+    {
+        auto it = m_channels.end();
         it--;
         int i = (*it).first;
-        while (++i) {
-            if (mChannels.find(i) == mChannels.end()) {
+        while (++i)
+        {
+            if (m_channels.find(i) == m_channels.end())
+            {
                 Channel *chn = new Channel();
                 // check if channel is ready to play music, if not destroy it and seek free one
-                if (chn->IsReady()) {
+                if (chn->IsReady())
+                {
                     chn->SetPriority(priority);
-                    mChannels[++i] = chn;
+                    m_channels[++i] = chn;
                     channel = i;
                     bAlreadyLoaded = false;
                     return true;
                 }
                 delete chn;
-                GetLogger()->Warn("Could not open additional channel to play sound!");
+                GetLogger()->Warn("Could not open additional channel to play sound!\n");
             }
         }
     }
 
     int lowerOrEqual = -1;
-    for (auto it : mChannels) {
-        if (it.second->GetPriority() < priority) {
-            GetLogger()->Debug("Sound channel with lower priority will be reused.");
+    for (auto it : m_channels)
+    {
+        if (it.second->GetPriority() < priority)
+        {
+            GetLogger()->Debug("Sound channel with lower priority will be reused.\n");
             channel = it.first;
             return true;
         }
@@ -276,9 +319,10 @@ bool ALSound::SearchFreeBuffer(Sound sound, int &channel, bool &bAlreadyLoaded)
             lowerOrEqual = it.first;
     }
 
-    if (lowerOrEqual != -1) {
+    if (lowerOrEqual != -1)
+    {
         channel = lowerOrEqual;
-        GetLogger()->Debug("Sound channel with lower or equal priority will be reused.");
+        GetLogger()->Debug("Sound channel with lower or equal priority will be reused.\n");
         return true;
     }
 
@@ -289,17 +333,18 @@ bool ALSound::SearchFreeBuffer(Sound sound, int &channel, bool &bAlreadyLoaded)
 
 int ALSound::Play(Sound sound, float amplitude, float frequency, bool bLoop)
 {
-    return Play(sound, Math::Vector(), amplitude, frequency, bLoop);
+    return Play(sound, m_eye, amplitude, frequency, bLoop);
 }
 
 
 int ALSound::Play(Sound sound, Math::Vector pos, float amplitude, float frequency, bool bLoop)
 {
-    if (!mEnabled) {
+    if (!m_enabled)
+    {
         return -1;
     }
-
-    if (mSounds.find(sound) == mSounds.end()) {
+    if (m_sounds.find(sound) == m_sounds.end())
+    {
         GetLogger()->Warn("Sound %d was not loaded!\n", sound);
         return -1;
     }
@@ -309,23 +354,34 @@ int ALSound::Play(Sound sound, Math::Vector pos, float amplitude, float frequenc
     if (!SearchFreeBuffer(sound, channel, bAlreadyLoaded))
         return -1;
 
-    if (!bAlreadyLoaded) {
-        if (!mChannels[channel]->SetBuffer(mSounds[sound])) {
-            mChannels[channel]->SetBuffer(nullptr);
+    if (!bAlreadyLoaded)
+    {
+        if (!m_channels[channel]->SetBuffer(m_sounds[sound]))
+        {
+            m_channels[channel]->SetBuffer(nullptr);
             return -1;
         }
     }
+
     Position(channel, pos);
+    if (!m_3D)
+    {
+        ComputeVolumePan2D(channel, pos);
+    }
+    else
+    {
+        m_channels[channel]->SetVolumeAtrib(1.0f);
+    }
 
     // setting initial values
-    mChannels[channel]->SetStartAmplitude(amplitude);
-    mChannels[channel]->SetStartFrequency(frequency);
-    mChannels[channel]->SetChangeFrequency(1.0f);
-    mChannels[channel]->ResetOper();
-    mChannels[channel]->SetFrequency(frequency);
-    mChannels[channel]->SetVolume(amplitude * mAudioVolume);
-    mChannels[channel]->SetLoop(bLoop);
-    mChannels[channel]->Play();
+    m_channels[channel]->SetStartAmplitude(amplitude);
+    m_channels[channel]->SetStartFrequency(frequency);
+    m_channels[channel]->SetChangeFrequency(1.0f);
+    m_channels[channel]->ResetOper();
+    m_channels[channel]->SetFrequency(frequency);
+    m_channels[channel]->SetVolume(powf(amplitude * m_channels[channel]->GetVolumeAtrib(), 0.2f) * m_audioVolume);
+    m_channels[channel]->SetLoop(bLoop);
+    m_channels[channel]->Play();
 
     return channel;
 }
@@ -333,31 +389,33 @@ int ALSound::Play(Sound sound, Math::Vector pos, float amplitude, float frequenc
 
 bool ALSound::FlushEnvelope(int channel)
 {
-    if (mChannels.find(channel) == mChannels.end()) {
+    if (m_channels.find(channel) == m_channels.end())
+    {
         return false;
     }
 
-    mChannels[channel]->ResetOper();
+    m_channels[channel]->ResetOper();
     return true;
 }
 
 
 bool ALSound::AddEnvelope(int channel, float amplitude, float frequency, float time, SoundNext oper)
 {
-    if (!mEnabled)
+    if (!m_enabled)
         return false;
 
-    if (mChannels.find(channel) == mChannels.end()) {
+    if (m_channels.find(channel) == m_channels.end())
+    {
         return false;
     }
-    
+
     SoundOper op;
     op.finalAmplitude = amplitude;
     op.finalFrequency = frequency;
     op.totalTime = time;
     op.nextOper = oper;
     op.currentTime = 0.0f;
-    mChannels[channel]->AddOper(op);
+    m_channels[channel]->AddOper(op);
 
     return true;
 }
@@ -365,43 +423,59 @@ bool ALSound::AddEnvelope(int channel, float amplitude, float frequency, float t
 
 bool ALSound::Position(int channel, Math::Vector pos)
 {
-    if (!mEnabled)
+    if (!m_enabled)
         return false;
 
-    if (mChannels.find(channel) == mChannels.end()) {
+    if (m_channels.find(channel) == m_channels.end())
+    {
         return false;
     }
 
-    mChannels[channel]->SetPosition(pos);
+    if (m_3D)
+    {
+        m_channels[channel]->SetPan(pos);
+    }
+    else
+    {
+        ComputeVolumePan2D(channel, pos);
+
+        if (!m_channels[channel]->HasEnvelope())
+        {
+            float volume = m_channels[channel]->GetStartAmplitude();
+            m_channels[channel]->SetVolume(powf(volume * m_channels[channel]->GetVolumeAtrib(), 0.2f) * m_audioVolume);
+        }
+    }
     return true;
 }
 
 
 bool ALSound::Frequency(int channel, float frequency)
 {
-    if (!mEnabled)
+    if (!m_enabled)
         return false;
 
-    if (mChannels.find(channel) == mChannels.end()) {
+    if (m_channels.find(channel) == m_channels.end())
+    {
         return false;
     }
 
-    mChannels[channel]->SetFrequency(frequency * mChannels[channel]->GetInitFrequency());
-    mChannels[channel]->SetChangeFrequency(frequency);
+    m_channels[channel]->SetFrequency(frequency * m_channels[channel]->GetInitFrequency());
+    m_channels[channel]->SetChangeFrequency(frequency);
     return true;
 }
 
 bool ALSound::Stop(int channel)
 {
-    if (!mEnabled)
+    if (!m_enabled)
         return false;
 
-    if (mChannels.find(channel) == mChannels.end()) {
+    if (m_channels.find(channel) == m_channels.end())
+    {
         return false;
     }
 
-    mChannels[channel]->Stop();
-    mChannels[channel]->ResetOper();
+    m_channels[channel]->Stop();
+    m_channels[channel]->ResetOper();
 
     return true;
 }
@@ -409,10 +483,11 @@ bool ALSound::Stop(int channel)
 
 bool ALSound::StopAll()
 {
-    if (!mEnabled)
+    if (!m_enabled)
         return false;
 
-    for (auto channel : mChannels) {
+    for (auto channel : m_channels)
+    {
         channel.second->Stop();
         channel.second->ResetOper();
     }
@@ -423,32 +498,46 @@ bool ALSound::StopAll()
 
 bool ALSound::MuteAll(bool bMute)
 {
-    if (!mEnabled)
+    if (!m_enabled)
         return false;
 
-    float volume;
-    mMute = bMute;
-    if (mMute)
-        volume = 0;
-    else
-        volume = mAudioVolume;
-
-    for (auto channel : mChannels) {
-        channel.second->SetVolume(volume * mAudioVolume);
+    for (auto it : m_channels)
+    {
+        if (it.second->IsPlaying())
+        {
+            it.second->Mute(bMute);
+        }
     }
 
+    if (bMute)
+    {
+        m_currentMusic->SetVolume(0.0f);
+    }
+    else
+    {
+        m_currentMusic->SetVolume(m_musicVolume);
+    }
     return true;
 }
 
+
 void ALSound::FrameMove(float delta)
 {
-    if (!mEnabled)
+    if (!m_enabled)
         return;
 
     float progress;
     float volume, frequency;
-    for (auto it : mChannels) {
-        if (!it.second->IsPlaying()) {
+    for (auto it : m_channels)
+    {
+        if (!it.second->IsPlaying())
+        {
+            continue;
+        }
+
+        if (it.second->IsMuted())
+        {
+            it.second->SetVolume(0.0f);
             continue;
         }
 
@@ -458,25 +547,34 @@ void ALSound::FrameMove(float delta)
         SoundOper &oper = it.second->GetEnvelope();
         oper.currentTime += delta;
         progress = oper.currentTime / oper.totalTime;
-        progress = MIN(progress, 1.0f);
-       
+        progress = std::min(progress, 1.0f);
+
         // setting volume
         volume = progress * (oper.finalAmplitude - it.second->GetStartAmplitude());
-        volume = (volume + it.second->GetStartAmplitude()) * mAudioVolume;
-        it.second->SetVolume(volume);
+        volume = volume + it.second->GetStartAmplitude();
+        it.second->SetVolume(powf(volume * it.second->GetVolumeAtrib(), 0.2f) * m_audioVolume);
 
         // setting frequency
-        frequency = progress * (oper.finalFrequency - it.second->GetStartFrequency()) * it.second->GetStartFrequency() * it.second->GetChangeFrequency() * it.second->GetInitFrequency();
-        it.second->AdjustFrequency(frequency);
+        frequency = progress;
+        frequency *= oper.finalFrequency - it.second->GetStartFrequency();
+        frequency += it.second->GetStartFrequency();
+        frequency *= it.second->GetChangeFrequency();
+        frequency = (frequency * it.second->GetInitFrequency());
+        it.second->SetFrequency(frequency);
 
-        if (oper.totalTime <= oper.currentTime) {
-            if (oper.nextOper == SOPER_LOOP) {
+        if (oper.totalTime <= oper.currentTime)
+        {
+            if (oper.nextOper == SOPER_LOOP)
+            {
                 oper.currentTime = 0.0f;
                 it.second->Play();
-            } else {
+            }
+            else
+            {
                 it.second->SetStartAmplitude(oper.finalAmplitude);
                 it.second->SetStartFrequency(oper.finalFrequency);
-                if (oper.nextOper == SOPER_STOP) {
+                if (oper.nextOper == SOPER_STOP)
+                {
                     it.second->Stop();
                 }
 
@@ -489,94 +587,185 @@ void ALSound::FrameMove(float delta)
 
 void ALSound::SetListener(Math::Vector eye, Math::Vector lookat)
 {
-    float orientation[] = {lookat.x, lookat.y, lookat.z, 0.f, 1.f, 0.f};
-    alListener3f(AL_POSITION, eye.x, eye.y, eye.z);
-    alListenerfv(AL_ORIENTATION, orientation);
-}
+    m_eye = eye;
+    m_lookat = lookat;
+    if (m_3D)
+    {
+        float orientation[] = {lookat.x, lookat.y, lookat.z, 0.f, 1.f, 0.f};
+        alListener3f(AL_POSITION, eye.x, eye.y, eye.z);
+        alListenerfv(AL_ORIENTATION, orientation);
+    }
+    else
+    {
+        float orientation[] = {0.0f, 0.0f, 0.0f, 0.f, 1.f, 0.f};
+        alListener3f(AL_POSITION, 0.0f, 0.0f, 0.0f);
+        alListenerfv(AL_ORIENTATION, orientation);
 
+        // recalculate sound position
+        for (auto it : m_channels)
+        {
+            if (it.second->IsPlaying())
+            {
+                Math::Vector pos = it.second->GetPosition();
+                ComputeVolumePan2D(it.first, pos);
+
+                if (!it.second->HasEnvelope())
+                {
+                    float volume = it.second->GetStartAmplitude();
+                    it.second->SetVolume(powf(volume * it.second->GetVolumeAtrib(), 0.2f) * m_audioVolume);
+                }
+            }
+        }
+    }
+}
 
 bool ALSound::PlayMusic(int rank, bool bRepeat)
 {
-    if (!mEnabled) {
+    std::stringstream filename;
+    filename << "music" << std::setfill('0') << std::setw(3) << rank << ".ogg";
+    return PlayMusic(filename.str(), bRepeat);
+}
+
+bool ALSound::PlayMusic(std::string filename, bool bRepeat)
+{
+    if (!m_enabled)
+    {
         return false;
     }
-    
-    if (static_cast<int>(mCurrentMusic->GetSoundType()) != rank) {
-        // check if we have music in cache
-        for (auto music : mMusicCache) {
-            if (static_cast<int>(music->GetSoundType()) == rank) {
-                GetLogger()->Debug("Music loaded from cache\n");
-                mCurrentMusic->SetBuffer(music);
 
-                mCurrentMusic->SetVolume(mMusicVolume * mAudioVolume);
-                mCurrentMusic->SetLoop(bRepeat);
-                mCurrentMusic->Play();
-                return true;
-            }
-        }
-     
-        // we cache only 3 music files
-        if (mMusicCache.size() == 3) {
-            mCurrentMusic->FreeBuffer();
-            mMusicCache.pop_back();
-        }
+    std::stringstream file;
+    file << m_soundPath << "/" << filename;
 
-        if (mMusic.find(rank) == mMusic.end()) {
-            GetLogger()->Info("Requested music %d was not found.\n", rank);
+    // check if we have music in cache
+    if (m_music.find(filename) == m_music.end())
+    {
+        GetLogger()->Warn("Music %s was not cached!\n", filename.c_str());
+        if (!boost::filesystem::exists(file.str()))
+        {
+            GetLogger()->Warn("Requested music %s was not found.\n", filename.c_str());
             return false;
         }
-
         Buffer *buffer = new Buffer();
-        mMusicCache.push_front(buffer);
-        buffer->LoadFromFile(mMusic.at(rank), static_cast<Sound>(rank));
-        mCurrentMusic->SetBuffer(buffer);
-        mMusicCache[rank] = buffer;
+        buffer->LoadFromFile(file.str(), static_cast<Sound>(-1));
+        m_currentMusic->SetBuffer(buffer);
     }
-    
-    mCurrentMusic->SetVolume(mMusicVolume * mAudioVolume);
-    mCurrentMusic->SetLoop(bRepeat);
-    mCurrentMusic->Play();
-    
+    else
+    {
+        GetLogger()->Debug("Music loaded from cache\n");
+        m_currentMusic->SetBuffer(m_music[filename]);
+    }
+
+    m_currentMusic->SetVolume(m_musicVolume);
+    m_currentMusic->SetLoop(bRepeat);
+    m_currentMusic->Play();
+
     return true;
 }
 
 
 bool ALSound::RestartMusic()
 {
-    if (!mEnabled || !mCurrentMusic) {
+    if (!m_enabled || !m_currentMusic)
+    {
         return false;
     }
 
-    mCurrentMusic->Stop();
-    mCurrentMusic->Play();
+    m_currentMusic->Stop();
+    m_currentMusic->Play();
     return true;
 }
 
 void ALSound::StopMusic()
 {
-    if (!mEnabled || !mCurrentMusic) {
+    if (!m_enabled || !m_currentMusic)
+    {
         return;
     }
-    
+
     SuspendMusic();
 }
 
 
 bool ALSound::IsPlayingMusic()
 {
-    if (!mEnabled || !mCurrentMusic) {
+    if (!m_enabled || !m_currentMusic)
+    {
         return false;
     }
-    
-    return mCurrentMusic->IsPlaying();
+
+    return m_currentMusic->IsPlaying();
 }
 
 
 void ALSound::SuspendMusic()
 {
-    if (!mEnabled || !mCurrentMusic) {
+    if (!m_enabled || !m_currentMusic)
+    {
         return;
     }
-    
-    mCurrentMusic->Stop();
+
+    m_currentMusic->Stop();
 }
+
+
+void ALSound::ComputeVolumePan2D(int channel, Math::Vector &pos)
+{
+    float dist, a, g;
+    m_channels[channel]->SetPosition(pos);
+
+    if (VectorsEqual(pos, m_eye))
+    {
+        m_channels[channel]->SetVolumeAtrib(1.0f);  // maximum volume
+        m_channels[channel]->SetPan(Math::Vector());  // at the center
+        return;
+    }
+
+    dist = Distance(pos, m_eye);
+    if ( dist >= 110.0f ) // very far?
+    {
+        m_channels[channel]->SetVolumeAtrib(0.0f);  // silence
+        m_channels[channel]->SetPan(Math::Vector());  // at the center
+        return;
+    }
+    else if ( dist <= 10.0f ) // very close?
+    {
+        m_channels[channel]->SetVolumeAtrib(1.0f);   // maximum volume
+        m_channels[channel]->SetPan(Math::Vector());  // at the center
+        return;
+    }
+    m_channels[channel]->SetVolumeAtrib(1.0f - ((dist - 10.0f) / 100.0f));
+
+    Math::Vector one = Math::Vector(1.0f, 0.0f, 0.0f);
+    float angle_a = Angle(Math::Vector(m_lookat.x - m_eye.x, m_lookat.z - m_eye.z, 0.0f), one);
+    float angle_g = Angle(Math::Vector(pos.x - m_eye.x, pos.z - m_eye.z, 0.0f), one);
+
+    a = fmodf(angle_a, Math::PI * 2.0f);
+    g = fmodf(angle_g, Math::PI * 2.0f);
+
+    if ( a < 0.0f )
+    {
+        a += Math::PI * 2.0f;
+    }
+    if ( g < 0.0f )
+    {
+        g += Math::PI * 2.0f;
+    }
+
+    if ( a < g )
+    {
+        if (a + Math::PI * 2.0f - g < g - a )
+        {
+            a += Math::PI * 2.0f;
+        }
+    }
+    else
+    {
+        if ( g + Math::PI * 2.0f - a < a - g )
+        {
+            g += Math::PI * 2.0f;
+        }
+    }
+
+    m_channels[channel]->SetPan( Math::Vector(0.0f, 0.0f, sinf(g - a)) );
+}
+

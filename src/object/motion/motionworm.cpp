@@ -89,9 +89,9 @@ bool CMotionWorm::Create(Math::Vector pos, float angle, ObjectType type,
 
     // Creates the main base.
     rank = m_engine->CreateObject();
-    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_VEHICULE);  // this is a moving object
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_VEHICLE);  // this is a moving object
     m_object->SetObjectRank(0, rank);
-    // This is an "empty" object, without triangles 
+    // This is an "empty" object, without triangles
     m_object->SetPosition(0, pos);
     m_object->SetAngleY(0, angle);
 
@@ -355,5 +355,4 @@ bool CMotionWorm::EventFrame(const Event &event)
 
     return true;
 }
-
 

@@ -78,3 +78,4 @@ int Utf8CharSizeAt(const std::string &str, unsigned int pos);
 size_t Utf8StringLength(const std::string &str);
 
 }; // namespace StrUtil
+

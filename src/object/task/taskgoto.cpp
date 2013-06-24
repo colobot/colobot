@@ -90,8 +90,11 @@ bool CTaskGoto::EventProcess(const Event &event)
         rot.x = m_leakPos.x-pos.x;
         rot.y = m_leakPos.z-pos.z;
         dist = Math::Point(rot.x, rot.y).Length();
-        rot.x /= dist;
-        rot.y /= dist;
+        if (dist != 0)
+        {
+            rot.x /= dist;
+            rot.y /= dist;
+        }
 
         a = m_object->GetAngleY(0);
         g = Math::RotateAngle(rot.x, -rot.y);  // CW !
@@ -754,7 +757,7 @@ Error CTaskGoto::Start(Math::Vector goal, float altitude,
 Error CTaskGoto::IsEnded()
 {
     Math::Vector    pos;
-    float       limit, angle, dist, h, level;
+    float       limit, angle = 0.0f, dist, h, level;
 
     if ( m_engine->GetPause() )  return ERR_CONTINUE;
     if ( m_error != ERR_OK )  return m_error;
@@ -1308,16 +1311,6 @@ bool CTaskGoto::GetHotPoint(CObject *pObj, Math::Vector &pos,
         return true;
     }
 
-    if ( type == OBJECT_DESTROYER )
-    {
-        mat = pObj->GetWorldMatrix(0);
-        pos.x += 0.0f;
-        if ( bTake && distance != 0.0f )  suppl = 4.0f;
-        if ( bTake )  pos.x += TAKE_DIST+distance+suppl;
-        pos = Transform(*mat, pos);
-        return true;
-    }
-
     if ( type == OBJECT_PARA && m_physics->GetType() == TYPE_FLYING )
     {
         mat = pObj->GetWorldMatrix(0);
@@ -1336,7 +1329,7 @@ bool CTaskGoto::GetHotPoint(CObject *pObj, Math::Vector &pos,
 
 bool CTaskGoto::LeakSearch(Math::Vector &pos, float &delay)
 {
-    CObject     *pObj, *pObstacle;
+    CObject     *pObj, *pObstacle = nullptr;
     Math::Vector    iPos, oPos, bPos;
     float       iRadius, oRadius, bRadius, dist, min, dir;
     int         i, j;
@@ -1453,7 +1446,7 @@ void CTaskGoto::ComputeRepulse(Math::Point &dir)
 
     // The worm goes everywhere and through everything!
     iType = m_object->GetType();
-    if ( iType == OBJECT_WORM )  return;
+    if ( iType == OBJECT_WORM || iType == OBJECT_CONTROLLER )  return;
 
     m_object->GetCrashSphere(0, iPos, iRadius);
     gDist = Math::Distance(iPos, m_goal);
@@ -2238,5 +2231,4 @@ bool CTaskGoto::BitmapTestDot(int rank, int x, int y)
 
     return m_bmArray[rank*m_bmLine*m_bmSize + m_bmLine*y + x/8] & (1<<x%8);
 }
-
 
