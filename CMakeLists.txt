@@ -178,6 +178,9 @@ else()
     add_definitions(-DTEST_VIRTUAL=)
 endif()
 
+if(DEV_BUILD)
+    add_definitions(-DEV_BUILD)
+endif()
 
 ##
 # Additional settings to use when cross-compiling with MXE (http://mxe.cc/)
