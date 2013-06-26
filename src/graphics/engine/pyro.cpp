@@ -1553,15 +1553,18 @@ void CPyro::ExploStart()
     for (int i = 0; i < OBJECTMAXPART; i++)
     {
         int objRank = m_object->GetObjectRank(i);
-        if (objRank == -1)  continue;
+        if (objRank == -1) continue;
 
         // TODO: refactor later to material change
         int oldBaseObjRank = m_engine->GetObjectBaseRank(objRank);
-        int newBaseObjRank = m_engine->CreateBaseObject();
-        m_engine->CopyBaseObject(oldBaseObjRank, newBaseObjRank);
-        m_engine->SetObjectBaseRank(objRank, newBaseObjRank);
+        if (oldBaseObjRank != -1)
+        {
+            int newBaseObjRank = m_engine->CreateBaseObject();
+            m_engine->CopyBaseObject(oldBaseObjRank, newBaseObjRank);
+            m_engine->SetObjectBaseRank(objRank, newBaseObjRank);
 
-        m_engine->ChangeSecondTexture(objRank, "dirty04.png");
+            m_engine->ChangeSecondTexture(objRank, "dirty04.png");
+        }
 
         Math::Vector pos = m_object->GetPosition(i);
 
@@ -1625,11 +1628,14 @@ void CPyro::BurnStart()
 
         // TODO: refactor later to material change
         int oldBaseObjRank = m_engine->GetObjectBaseRank(objRank);
-        int newBaseObjRank = m_engine->CreateBaseObject();
-        m_engine->CopyBaseObject(oldBaseObjRank, newBaseObjRank);
-        m_engine->SetObjectBaseRank(objRank, newBaseObjRank);
+        if (oldBaseObjRank != -1)
+        {
+            int newBaseObjRank = m_engine->CreateBaseObject();
+            m_engine->CopyBaseObject(oldBaseObjRank, newBaseObjRank);
+            m_engine->SetObjectBaseRank(objRank, newBaseObjRank);
 
-        m_engine->ChangeSecondTexture(objRank, "dirty04.png");
+            m_engine->ChangeSecondTexture(objRank, "dirty04.png");
+        }
     }
     m_engine->LoadTexture("dirty04.png");
 
