@@ -179,7 +179,7 @@ else()
 endif()
 
 if(DEV_BUILD)
-    add_definitions(-DEV_BUILD)
+    add_definitions(-DDEV_BUILD)
 endif()
 
 ##
