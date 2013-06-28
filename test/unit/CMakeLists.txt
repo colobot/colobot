@@ -232,7 +232,7 @@ ${LIBSNDFILE_LIBRARY}
 add_executable(colobot_ut ${COLOBOT_SOURCES} ${UT_SOURCES} ${OPENAL_SOURCES})
 target_link_libraries(colobot_ut ${LIBS})
 
-add_test(colobot_ut ./colobot_ut)
+add_test(colobot_ut ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/colobot_ut)
 
 # TODO: change the unit cases to independent automated tests to be included in colobot_ut
 add_subdirectory(common)

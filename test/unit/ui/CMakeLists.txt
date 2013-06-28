@@ -44,4 +44,4 @@ target_link_libraries(edit_test gtest gmock clipboard ${SDL_LIBRARY} ${SDLTTF_LI
 
 
 
-add_test(edit_test ./edit_test)
+add_test(edit_test ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/edit_test)
