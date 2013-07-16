@@ -480,6 +480,9 @@ protected:
     //! Path to directory with data files
     std::string     m_dataPath;
 
+    //! True if datadir was passed in command line
+    bool            m_customDataPath;
+
     //! Path to directory with language files
     std::string     m_langPath;
 
