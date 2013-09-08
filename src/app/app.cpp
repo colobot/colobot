@@ -242,6 +242,7 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
         { "loglevel", required_argument, nullptr, OPT_LOGLEVEL },
         { "language", required_argument, nullptr, OPT_LANGUAGE },
         { "datadir", required_argument, nullptr, OPT_DATADIR },
+        { "game", required_argument, nullptr, OPT_DATADIR },
         { "langdir", required_argument, nullptr, OPT_LANGDIR },
         { "texpack", required_argument, nullptr, OPT_TEXPACK },
         { "vbo", required_argument, nullptr, OPT_VBO },
@@ -282,6 +283,7 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
                 GetLogger()->Message("  -loglevel level     set log level to level (one of: trace, debug, info, warn, error, none)\n");
                 GetLogger()->Message("  -language lang      set language (one of: en, de, fr, pl)\n");
                 GetLogger()->Message("  -datadir path       set custom data directory path\n");
+                GetLogger()->Message("  -game modid         run mod\n");
                 GetLogger()->Message("  -langdir path       set custom language directory path\n");
                 GetLogger()->Message("  -texpack path       set path to custom texture pack\n");
                 GetLogger()->Message("  -vbo mode           set OpenGL VBO mode (one of: auto, enable, disable)\n");
@@ -346,7 +348,7 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
             {
                 m_dataPath = optarg;
                 m_customDataPath = true;
-                GetLogger()->Info("Using custom data dir: '%s'\n", m_dataPath.c_str());
+                GetLogger()->Info("Using custom datadir or running mod: '%s'\n", m_dataPath.c_str());
                 break;
             }
             case OPT_LANGDIR:
