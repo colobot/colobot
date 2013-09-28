@@ -89,7 +89,7 @@ enum OperUndo
 
 struct ImageLine
 {
-    //! name of the image (without diagram \)
+    //! name of the image (without icons/)
     std::string    name;
     //! vertical offset (v texture)
     float   offset;
@@ -101,7 +101,7 @@ struct ImageLine
 
 struct HyperLink
 {
-    //! text file name (without help \)
+    //! text file name (without help/)
     std::string    name;
     //! name of the marker
     std::string    marker;

@@ -1144,7 +1144,7 @@ void CEdit::DrawImage(Math::Point pos, std::string name, float width,
     float dp;
     std::string filename;
 
-    filename = GetProfile().GetUserBasedPath(name, "diagram") + ".png";
+    filename = GetProfile().GetUserBasedPath(name, "../icons") + ".png";
 
     m_engine->SetTexture(filename);
     m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
@@ -1426,7 +1426,7 @@ void CEdit::FreeImage()
 
     for (int i = 0 ; i < m_imageTotal; i++ )
     {
-        filename = GetProfile().GetUserBasedPath(m_image[i].name, "diagram") + ".png";
+        filename = GetProfile().GetUserBasedPath(m_image[i].name, "../icons") + ".png";
         m_engine->DeleteTexture(filename);
     }
 }
@@ -1436,7 +1436,7 @@ void CEdit::FreeImage()
 void CEdit::LoadImage(std::string name)
 {
     std::string filename;
-    filename = GetProfile().GetUserBasedPath(name, "diagram") + ".png";
+    filename = GetProfile().GetUserBasedPath(name, "../icons") + ".png";
     m_engine->LoadTexture(filename);
 }
 
@@ -1653,7 +1653,7 @@ bool CEdit::ReadText(std::string filename, int addSize)
                     m_image[iIndex].width = iWidth*0.75f;
 
                     m_text[j] = static_cast<char>(iIndex++);  // as an index into m_image
-                    m_format[j] = static_cast<unsigned char>(Gfx::FONT_MASK_IMAGE);
+                    m_format[j] = Gfx::FONT_MASK_IMAGE;
                     j ++;
                 }
             }
