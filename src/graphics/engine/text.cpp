@@ -140,6 +140,12 @@ void CText::FlushCache()
         for (auto jt = mf->fonts.begin(); jt != mf->fonts.end(); ++jt)
         {
             CachedFont *f = (*jt).second;
+            for (auto ct = f->cache.begin(); ct != f->cache.end(); ++ct)
+            {
+                Texture tex;
+                tex.id = (*ct).second.id;
+                m_device->DestroyTexture(tex);
+            }
             f->cache.clear();
         }
     }
@@ -358,14 +364,22 @@ float CText::GetCharWidth(UTF8Char ch, FontType font, float size, float offset)
     CachedFont* cf = GetOrOpenFont(font, size);
     assert(cf != nullptr);
 
-    CharTexture tex;
+    Math::Point charSize;
     auto it = cf->cache.find(ch);
     if (it != cf->cache.end())
-        tex = (*it).second;
+    {
+        charSize = (*it).second.charSize;
+    }
     else
-        tex = CreateCharTexture(ch, cf);
+    {
+        Math::IntPoint wndSize;
+        std::string text;
+        text.append({ch.c1, ch.c2, ch.c3});
+        TTF_SizeUTF8(cf->font, text.c_str(), &wndSize.x, &wndSize.y);
+        charSize = m_engine->WindowToInterfaceSize(wndSize);
+    }
 
-    return tex.charSize.x * width;
+    return charSize.x * width;
 }
 
 
@@ -896,7 +910,6 @@ CharTexture CText::CreateCharTexture(UTF8Char ch, CachedFont* font)
     if (! tex.Valid())
     {
         m_error = "Texture create error";
-        return texture;
     }
     else
     {
