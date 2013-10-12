@@ -51,9 +51,12 @@ struct LightProgression
     float   speed;
 
     LightProgression()
-    {
-        starting = ending = current = progress = speed = 0.0f;
-    }
+     : starting(0.0f)
+     , ending(0.0f)
+     , current(0.0f)
+     , progress(0.0f)
+     , speed(0.0f)
+    {}
 
     //! Initializes the progression
     void Init(float value);
@@ -113,7 +116,14 @@ struct DynamicLight
     //! Type of objects excluded from lighting with this light; if ENG_OBJTYPE_NULL is used, it is ignored
     EngineObjectType excludeType;
 
-    DynamicLight();
+    DynamicLight()
+     : rank(0)
+     , used(false)
+     , enabled(false)
+     , priority(LIGHT_PRI_LOW)
+     , includeType(ENG_OBJTYPE_NULL)
+     , excludeType(ENG_OBJTYPE_NULL)
+    {}
 };
 
 /**

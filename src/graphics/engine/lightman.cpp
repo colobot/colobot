@@ -69,16 +69,6 @@ void LightProgression::SetTarget(float value)
 }
 
 
-DynamicLight::DynamicLight()
-{
-    rank = 0;
-    used = enabled = false;
-    priority = LIGHT_PRI_LOW;
-    includeType = excludeType = ENG_OBJTYPE_NULL;
-}
-
-
-
 CLightManager::CLightManager(CEngine* engine)
 {
     m_device = nullptr;

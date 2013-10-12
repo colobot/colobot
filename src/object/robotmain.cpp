@@ -107,7 +107,7 @@ float   g_unit;             // conversion factor
 // Static variables
 
 static CBotClass*   m_pClassFILE;
-static CBotProgram* m_pFuncFile;
+//static CBotProgram* m_pFuncFile;
 static int          m_CompteurFileOpen = 0;
 static std::string  m_filesDir;
 
@@ -503,10 +503,10 @@ void InitClassFILE()
     m_pClassFILE->AddFunction("readln", rfread, cfread );
     m_pClassFILE->AddFunction("eof", rfeof, cfeof );
 
-    m_pFuncFile = new CBotProgram( );
-    CBotStringArray ListFonctions;
-    m_pFuncFile->Compile( "public file openfile(string name, string mode) {return new file(name, mode);}", ListFonctions);
-    m_pFuncFile->SetIdent(-2);  // restoreState in special identifier for this function
+    //m_pFuncFile = new CBotProgram( );
+    //CBotStringArray ListFonctions;
+    //m_pFuncFile->Compile( "public file openfile(string name, string mode) {return new file(name, mode);}", ListFonctions);
+    //m_pFuncFile->SetIdent(-2);  // restoreState in special identifier for this function
 }
 
 

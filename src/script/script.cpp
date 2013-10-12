@@ -3689,6 +3689,7 @@ bool CScript::IsEmpty()
 bool CScript::CheckToken()
 {
     CBotToken*  bt;
+    CBotToken*  allBt;
     CBotString  bs;
     const char* token;
     int         error, cursor1, cursor2, i;
@@ -3706,7 +3707,8 @@ bool CScript::CheckToken()
         used[i] = 0;  // token not used
     }
 
-    bt = CBotToken::CompileTokens(m_script, error);
+    allBt = CBotToken::CompileTokens(m_script, error);
+    bt = allBt;
     while ( bt != 0 )
     {
         bs = bt->GetString();
@@ -3727,7 +3729,7 @@ bool CScript::CheckToken()
             m_cursor1 = cursor1;
             m_cursor2 = cursor2;
             strcpy(m_title, "<erreur>");
-            CBotToken::Delete(bt);
+            CBotToken::Delete(allBt);
             return false;
         }
 
@@ -3742,12 +3744,12 @@ bool CScript::CheckToken()
             strcpy(m_token, m_main->GetObligatoryToken(i));
             m_error = ERR_OBLIGATORYTOKEN;
             strcpy(m_title, "<erreur>");
-            CBotToken::Delete(bt);
+            CBotToken::Delete(allBt);
             return false;
         }
     }
 
-    CBotToken::Delete(bt);
+    CBotToken::Delete(allBt);
     return true;
 }
 
