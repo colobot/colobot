@@ -239,7 +239,7 @@ public:
     //! Generates a level in the terrain
     bool        GenerateMaterials(int *id, float min, float max, float slope, float freq, Math::Vector center, float radius);
 
-    //! Clears the relief data to zero
+    //! Clears the relief, resources and all other associated data
     void        FlushRelief();
     //! Load relief from image
     bool        LoadRelief(const std::string& fileName, float scaleRelief, bool adjustBorder);
