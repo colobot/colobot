@@ -40,10 +40,11 @@ struct SystemTimeStamp
 class CSystemUtilsOther : public CSystemUtils
 {
 public:
+    virtual void Init() {};
     virtual SystemDialogResult SystemDialog(SystemDialogType type, const std::string& title, const std::string& message) override;
 
     virtual void GetCurrentTimeStamp(SystemTimeStamp *stamp) override;
-    virtual long long GetTimeStampExactResolution() override;
+    virtual long long int GetTimeStampExactResolution() override;
     virtual long long TimeStampExactDiff(SystemTimeStamp *before, SystemTimeStamp *after) override;
 };
 
