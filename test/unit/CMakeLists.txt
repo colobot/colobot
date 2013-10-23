@@ -9,6 +9,8 @@ elseif(PLATFORM_WINDOWS)
 elseif(PLATFORM_LINUX)
     # for clock_gettime
     set(PLATFORM_LIBS "-lrt -lX11")
+elseif(PLATFORM_MACOSX)
+    set(PLATFORM_LIBS ${X11_X11_LIB})
 endif()
 
 

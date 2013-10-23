@@ -36,6 +36,35 @@ set(COLOBOT_VERSION_FULL "${COLOBOT_VERSION_MAJOR}.${COLOBOT_VERSION_MINOR}.${CO
 message(STATUS "Building Colobot \"${COLOBOT_VERSION_CODENAME}\" (${COLOBOT_VERSION_FULL})")
 
 
+##
+# Platform detection and some related checks
+##
+if("${CMAKE_SYSTEM_NAME}" MATCHES "Windows")
+    message(STATUS "Build for Windows system")
+    set(PLATFORM_WINDOWS 1)
+    set(PLATFORM_LINUX   0)
+    set(PLATFORM_MACOSX  0)
+    set(PLATFORM_OTHER   0)
+elseif("${CMAKE_SYSTEM_NAME}" MATCHES "Linux")
+    message(STATUS "Build for Linux system")
+    set(PLATFORM_WINDOWS 0)
+    set(PLATFORM_LINUX   1)
+    set(PLATFORM_MACOSX  0)
+    set(PLATFORM_OTHER   0)
+elseif("${CMAKE_SYSTEM_NAME}" MATCHES "Darwin")
+    message(STATUS "Build for Mac OSX system")
+    set(PLATFORM_WINDOWS 0)
+    set(PLATFORM_LINUX   0)
+    set(PLATFORM_MACOSX  1)
+    set(PLATFORM_OTHER   0)
+else()
+    message(STATUS "Build for other system")
+    set(PLATFORM_WINDOWS 0)
+    set(PLATFORM_LINUX   0)
+    set(PLATFORM_MACOSX  0)
+    set(PLATFORM_OTHER   1)
+endif()
+
 
 ##
 # Build options
@@ -150,24 +179,6 @@ if (OPENAL_SOUND)
 endif()
 
 
-##
-# Platform detection and some related checks
-##
-
-if("${CMAKE_SYSTEM_NAME}" MATCHES "Windows")
-    set(PLATFORM_WINDOWS 1)
-    set(PLATFORM_LINUX   0)
-    set(PLATFORM_OTHER   0)
-elseif("${CMAKE_SYSTEM_NAME}" MATCHES "Linux")
-    set(PLATFORM_WINDOWS 0)
-    set(PLATFORM_LINUX   1)
-    set(PLATFORM_OTHER   0)
-else()
-    set(PLATFORM_WINDOWS 0)
-    set(PLATFORM_LINUX   0)
-    set(PLATFORM_OTHER   1)
-endif()
-
 if(NOT ASSERTS)
     add_definitions(-DNDEBUG)
 endif()
@@ -195,14 +206,14 @@ include("${colobot_SOURCE_DIR}/cmake/msys.cmake")
 
 
 ##
-# Summary of detected things
+# Clipboard support needs X11 libraries
 ##
-if (PLATFORM_WINDOWS)
-    message(STATUS "Build for Windows system")
-elseif(PLATFORM_LINUX)
-    message(STATUS "Build for Linux system")
-else()
-    message(STATUS "Build for other system")
+if(PLATFORM_LINUX OR PLATFORM_MACOSX)
+    find_package(X11 REQUIRED)
+    if(PLATFORM_MACOSX)
+       # Add the includes for X11
+       include_directories("/opt/X11/include")
+    endif()
 endif()
 
 
