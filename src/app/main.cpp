@@ -28,6 +28,7 @@
 #include "common/misc.h"
 #include "common/restext.h"
 
+#include <SDL.h>
 
 /* Doxygen main page */
 
