@@ -30,7 +30,7 @@
 #include <vector>
 #include <array>
 
-#include <AL/al.h>
+#include <al.h>
 #include <sndfile.h>
 
 class Buffer

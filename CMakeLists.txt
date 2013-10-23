@@ -175,6 +175,7 @@ find_package(GLEW REQUIRED)
 
 if (OPENAL_SOUND)
     find_package(OpenAL REQUIRED)
+    include_directories(${OPENAL_INCLUDE_DIR})
     find_package(LibSndFile REQUIRED)
 endif()
 

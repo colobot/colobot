@@ -32,7 +32,7 @@
 #include <map>
 #include <string>
 
-#include <AL/al.h>
+#include <al.h>
 
 
 class ALSound : public CSoundInterface

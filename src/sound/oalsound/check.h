@@ -18,10 +18,10 @@
 
 #pragma once
 
-#include <AL/al.h>
-#include <AL/alc.h>
-
 #include "common/logger.h"
+
+#include <al.h>
+#include <alc.h>
 
 static ALenum CODE = AL_NO_ERROR;
 
