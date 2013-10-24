@@ -271,7 +271,7 @@ if(TESTS)
     # Google Mock library
     find_path(GMOCK_SRC_DIR NAMES src/gmock.cc src/gmock-all.cc PATHS /usr/src PATH_SUFFIXES gmock)
     find_path(GMOCK_INCLUDE_DIR gmock/gmock.h PATHS /usr/include)
-    if(NOT(FORCE_BUNDLED_GMOCK) GMOCK_SRC_DIR AND GMOCK_INCLUDE_DIR)
+    if(NOT(FORCE_BUNDLED_GMOCK) AND GMOCK_SRC_DIR AND GMOCK_INCLUDE_DIR)
         message(STATUS "Using system gmock library in ${GMOCK_SRC_DIR}")
 
         include_directories(${GMOCK_SRC_DIR})
