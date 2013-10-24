@@ -140,6 +140,9 @@ option(BOOST_STATIC "Link with static boost libraries" OFF)
 # This is useful on Windows, if linking against standard GLEW dll fails
 option(GLEW_STATIC "Link statically with GLEW" OFF)
 
+# Sometimes helpful if there are different versions of gmock/gtest installed on system vs bundled
+option(FORCE_BUNDLED_GTEST "Force the use of bundled gtest" OFF)
+option(FORCE_BUNDLED_GMOCK "Force the use of bundled gmock" OFF)
 
 # Default build type if not given is debug
 if(NOT DEFINED CMAKE_BUILD_TYPE)
@@ -255,7 +258,7 @@ if(TESTS)
     # Google Test library
     find_path(GTEST_SRC_DIR NAMES src/gtest.cc src/gtest-all.cc PATHS /usr/src PATH_SUFFIXES gtest)
     find_path(GTEST_INCLUDE_DIR gtest/gtest.h PATHS /usr/include)
-    if(GTEST_SRC_DIR AND GTEST_INCLUDE_DIR)
+    if(NOT(FORCE_BUNDLED_GTEST) AND GTEST_SRC_DIR AND GTEST_INCLUDE_DIR)
         message(STATUS "Using system gtest library in ${GTEST_SRC_DIR}")
     else()
         message(STATUS "Using bundled gtest library")
@@ -268,7 +271,7 @@ if(TESTS)
     # Google Mock library
     find_path(GMOCK_SRC_DIR NAMES src/gmock.cc src/gmock-all.cc PATHS /usr/src PATH_SUFFIXES gmock)
     find_path(GMOCK_INCLUDE_DIR gmock/gmock.h PATHS /usr/include)
-    if(GMOCK_SRC_DIR AND GMOCK_INCLUDE_DIR)
+    if(NOT(FORCE_BUNDLED_GMOCK) GMOCK_SRC_DIR AND GMOCK_INCLUDE_DIR)
         message(STATUS "Using system gmock library in ${GMOCK_SRC_DIR}")
 
         include_directories(${GMOCK_SRC_DIR})
