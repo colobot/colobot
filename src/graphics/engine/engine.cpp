@@ -276,7 +276,7 @@ bool CEngine::Create()
     Math::LoadOrthoProjectionMatrix(m_matProjInterface, 0.0f, 1.0f, 0.0f, 1.0f, -1.0f, 1.0f);
 
     TextureCreateParams params;
-    params.format = TEX_IMG_RGB;
+    params.format = TEX_IMG_AUTO;
     params.minFilter = TEX_MIN_FILTER_NEAREST;
     params.magFilter = TEX_MAG_FILTER_NEAREST;
     params.mipmap = false;
