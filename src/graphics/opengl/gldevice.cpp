@@ -606,7 +606,7 @@ Texture CGLDevice::CreateTexture(ImageData *data, const TextureCreateParams &par
     }
     else if (params.format == TEX_IMG_AUTO)
     {
-        if (data->surface->format->Amask != 0)
+        if (data->surface->format->BytesPerPixel == 4)
         {
             if ((data->surface->format->Amask == 0xFF000000) &&
                 (data->surface->format->Rmask == 0x00FF0000) &&
@@ -630,7 +630,7 @@ Texture CGLDevice::CreateTexture(ImageData *data, const TextureCreateParams &par
                 convert = true;
             }
         }
-        else
+        else if (data->surface->format->BytesPerPixel == 3)
         {
             if ((data->surface->format->Rmask == 0xFF0000) &&
                 (data->surface->format->Gmask == 0x00FF00) &&
@@ -651,6 +651,10 @@ Texture CGLDevice::CreateTexture(ImageData *data, const TextureCreateParams &par
                 sourceFormat = GL_RGBA;
                 convert = true;
             }
+        }
+        else {
+            GetLogger()->Error("Unknown data surface format");
+            assert(false);
         }
     }
     else
