@@ -321,11 +321,7 @@ add_subdirectory(src)
 add_subdirectory(po)
 
 if(DESKTOP)
-    if(PLATFORM_WINDOWS)
-        message("Desktop files ignored on Windows")
-    else()
-        add_subdirectory(desktop)
-    endif()
+    add_subdirectory(desktop)
 endif()
 
 
