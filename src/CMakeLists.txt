@@ -50,6 +50,12 @@ if(OPENAL_SOUND)
     )
 endif()
 
+set(RES_FILES "")
+
+if(PLATFORM_WINDOWS)
+    set(RES_FILES "../desktop/colobot.rc")
+endif()
+
 # Platform-dependent implementation of system.h
 if(PLATFORM_WINDOWS)
     set(SYSTEM_CPP_MODULE "system_windows.cpp")
@@ -182,6 +188,7 @@ ui/studio.cpp
 ui/target.cpp
 ui/window.cpp
 ${OPENAL_SRC}
+${RES_FILES}
 )
 
 

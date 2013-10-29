@@ -57,6 +57,8 @@ elseif("${CMAKE_SYSTEM_NAME}" MATCHES "Darwin")
     set(PLATFORM_LINUX   0)
     set(PLATFORM_MACOSX  1)
     set(PLATFORM_OTHER   0)
+    
+    set(USE_SDL_MAIN 1) # fixes SDL_main
 else()
     message(STATUS "Build for other system")
     set(PLATFORM_WINDOWS 0)
@@ -321,11 +323,7 @@ add_subdirectory(src)
 add_subdirectory(po)
 
 if(DESKTOP)
-    if(PLATFORM_WINDOWS)
-        message("Desktop files ignored on Windows")
-    else()
-        add_subdirectory(desktop)
-    endif()
+    add_subdirectory(desktop)
 endif()
 
 
