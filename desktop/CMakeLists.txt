@@ -94,6 +94,13 @@ if(PLATFORM_LINUX)
     endif()
 endif(PLATFORM_LINUX)
 
+if(PLATFORM_MACOSX)
+    configure_file(Info.plist.cmake ${CMAKE_CURRENT_BINARY_DIR}/Info.plist)
+    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/Info.plist
+            DESTINATION ${CMAKE_INSTALL_PREFIX}/Contents/
+           )
+endif(PLATFORM_MACOSX)
+
 if(PLATFORM_WINDOWS)
     set(COLOBOT_VERSION_4COMMAS "${COLOBOT_VERSION_MAJOR},${COLOBOT_VERSION_MINOR},${COLOBOT_VERSION_REVISION},0")
     configure_file(colobot.rc.cmake ${CMAKE_CURRENT_BINARY_DIR}/colobot.rc)
