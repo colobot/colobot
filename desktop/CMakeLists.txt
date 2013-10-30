@@ -1,5 +1,45 @@
 cmake_minimum_required(VERSION 2.8)
 
+set(COLOBOT_ICON_FILE colobot.svg)
+
+# Render SVG icon in various sizes
+find_program(RSVG_CONVERT rsvg-convert)
+if(RSVG_CONVERT AND (PLATFORM_LINUX OR PLATFORM_MACOSX))
+    add_custom_target(png-icons ALL)
+    foreach(PNGSIZE 512 256 128 48 32 16)
+        add_custom_command(
+            OUTPUT ${PNGSIZE}/colobot.png
+            COMMAND mkdir -p ${PNGSIZE}
+            COMMAND ${RSVG_CONVERT} -w ${PNGSIZE} -h ${PNGSIZE} ${CMAKE_CURRENT_SOURCE_DIR}/${COLOBOT_ICON_FILE} > ${PNGSIZE}/colobot.png
+            )
+        add_custom_target(png-icon-${PNGSIZE} ALL DEPENDS ${PNGSIZE}/colobot.png)
+        add_dependencies(png-icons png-icon-${PNGSIZE})
+
+        if(PLATFORM_LINUX)
+            install(
+                FILES ${CMAKE_CURRENT_BINARY_DIR}/${PNGSIZE}/colobot.png
+                DESTINATION ${CMAKE_INSTALL_PREFIX}/share/icons/hicolor/${PNGSIZE}x${PNGSIZE}/apps/
+                )
+        endif()
+        # Prepare the ICNS icon generation
+        list(APPEND ICNS_SRCS "${PNGSIZE}/colobot.png")
+    endforeach()
+    
+    # Pack icon for Mac OS
+    find_program(PNG2ICNS png2icns)
+    if(PNG2ICNS AND PLATFORM_MACOSX)
+        add_custom_command(OUTPUT Colobot.icns
+            COMMAND ${PNG2ICNS} Colobot.icns ${ICNS_SRCS}
+            DEPENDS png-icons
+            )
+        add_custom_target(icns-icon ALL DEPENDS Colobot.icns)
+        install(FILES ${CMAKE_CURRENT_BINARY_DIR}/Colobot.icns
+                DESTINATION ${CMAKE_INSTALL_PREFIX}/Contents/Resources/
+               )
+    endif()
+
+endif()
+
 if(PLATFORM_LINUX)
     # Install Desktop Entry file
     set(COLOBOT_DESKTOP_FILE colobot.desktop)
@@ -16,27 +56,10 @@ if(PLATFORM_LINUX)
         )
 
     # Install Icon
-    set(COLOBOT_ICON_FILE colobot.svg)
     install(
         FILES ${CMAKE_CURRENT_SOURCE_DIR}/${COLOBOT_ICON_FILE}
         DESTINATION ${CMAKE_INSTALL_PREFIX}/share/icons/hicolor/scalable/apps/
         )
-
-    # Render SVG icon in various sizes
-    find_program(RSVG_CONVERT rsvg-convert)
-    if(RSVG_CONVERT)
-        foreach(PNGSIZE "48" "32" "16")
-            file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${PNGSIZE})
-            add_custom_target(resize_icon_${PNGSIZE} ALL
-                COMMAND ${RSVG_CONVERT} -w ${PNGSIZE} -h ${PNGSIZE} ${CMAKE_CURRENT_SOURCE_DIR}/${COLOBOT_ICON_FILE}
-                > ${CMAKE_CURRENT_BINARY_DIR}/${PNGSIZE}/colobot.png
-                )
-            install(
-                FILES ${CMAKE_CURRENT_BINARY_DIR}/${PNGSIZE}/colobot.png
-                DESTINATION ${CMAKE_INSTALL_PREFIX}/share/icons/hicolor/${PNGSIZE}x${PNGSIZE}/apps/
-                )
-        endforeach()
-    endif()
 
     # Translate translatable material
     find_program(PO4A po4a)
