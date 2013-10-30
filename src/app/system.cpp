@@ -25,6 +25,8 @@
     #include "app/system_windows.h"
 #elif defined(PLATFORM_LINUX)
     #include "app/system_linux.h"
+#elif defined(PLATFORM_MACOSX)
+    #include "app/system_macosx.h"
 #else
     #include "app/system_other.h"
 #endif
@@ -48,6 +50,8 @@ CSystemUtils* CSystemUtils::Create()
     m_instance = new CSystemUtilsWindows();
 #elif defined(PLATFORM_LINUX)
     m_instance = new CSystemUtilsLinux();
+#elif defined(PLATFORM_MACOSX)
+    m_instance = new CSystemUtilsMacOSX();
 #else
     m_instance = new CSystemUtilsOther();
 #endif
