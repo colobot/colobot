@@ -83,16 +83,12 @@ if(PLATFORM_LINUX)
 
         if(PO4A)
             # Translate the manpage to other languages
-            add_custom_target(man_po4a
-                COMMAND ${PO4A} po4a.cfg
-                WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-            )
-            add_dependencies(man man_po4a)
+            add_dependencies(man desktop_po4a)
             file(GLOB LINGUAS_PO RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}/po/ ${CMAKE_CURRENT_SOURCE_DIR}/po/*.po)
             string(REGEX REPLACE ".po$" "" LINGUAS ${LINGUAS_PO})
             foreach(LOCALE ${LINGUAS})
                 podman(PODFILE lang/${LOCALE}/colobot.pod LOCALE ${LOCALE})
-                add_dependencies(man${PM_LOCALE} man_po4a)
+                add_dependencies(man${PM_LOCALE} desktop_po4a)
             endforeach()
         endif()
     endif()
