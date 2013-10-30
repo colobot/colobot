@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.8)
 
-if(NOT PLATFORM_WINDOWS)
+if(PLATFORM_LINUX)
     # Install Desktop Entry file
     set(COLOBOT_DESKTOP_FILE colobot.desktop)
     add_custom_command(
@@ -38,12 +38,22 @@ if(NOT PLATFORM_WINDOWS)
         endforeach()
     endif()
 
+    # Translate translatable material
+    find_program(PO4A po4a)
+    if(PO4A)
+        add_custom_target(desktop_po4a
+            COMMAND ${PO4A} po4a.cfg
+            WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+        )
+        add_dependencies(desktopfile desktop_po4a)
+    endif()
+
     # Create manpage from pod-formatted file
     find_program(POD2MAN pod2man)
     if(POD2MAN)
         set(COLOBOT_MANPAGE_SECTION 6)
 
-            macro(podman)
+        macro(podman)
             cmake_parse_arguments(PM "" "PODFILE;LOCALE;" "" ${ARGN})
             if(PM_LOCALE)
                 # This copes with the fact that english has no "/LANG" in the paths and filenames.
@@ -71,19 +81,8 @@ if(NOT PLATFORM_WINDOWS)
         # Create the english manpage
         podman(PODFILE colobot.pod)
 
-    endif()
-
-    # Translate translatable material
-    find_program(PO4A po4a)
-
-    if(PO4A)
-        add_custom_target(desktop_po4a
-            COMMAND ${PO4A} po4a.cfg
-            WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-        )
-        add_dependencies(desktopfile desktop_po4a)
-
-        if(POD2MAN)
+        if(PO4A)
+            # Translate the manpage to other languages
             add_custom_target(man_po4a
                 COMMAND ${PO4A} po4a.cfg
                 WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
@@ -97,8 +96,9 @@ if(NOT PLATFORM_WINDOWS)
             endforeach()
         endif()
     endif()
+endif(PLATFORM_LINUX)
 
-else() # if(NOT PLATFORM_WINDOWS)
+if(PLATFORM_WINDOWS)
     set(COLOBOT_VERSION_4COMMAS "${COLOBOT_VERSION_MAJOR},${COLOBOT_VERSION_MINOR},${COLOBOT_VERSION_REVISION},0")
     configure_file(colobot.rc.cmake ${CMAKE_CURRENT_BINARY_DIR}/colobot.rc)
-endif()
+endif(PLATFORM_WINDOWS)
