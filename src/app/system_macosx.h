@@ -28,6 +28,7 @@ class CSystemUtilsMacOSX : public CSystemUtilsOther
 public:
     virtual void Init() override;
 
+    virtual std::string GetDataPath() override;
     virtual std::string GetProfileFileLocation() override;
     virtual std::string GetSavegameDirectoryLocation() override;
 private:

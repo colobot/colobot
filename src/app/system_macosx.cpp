@@ -21,9 +21,46 @@
 
 #include <stdlib.h>
 
+// MacOS-specific headers
+#include <CoreFoundation/CFBundle.h>
 #include <CoreServices/CoreServices.h>
 
 #include <boost/filesystem.hpp>
+
+inline std::string CFStringRefToStdString(CFStringRef str) {
+
+    std::string stdstr;
+
+    char *fullPath;
+    CFStringEncoding encodingMethod = CFStringGetSystemEncoding();
+
+    // 1st try for English system
+    fullPath = const_cast<char*>(CFStringGetCStringPtr(str, encodingMethod));
+    if( fullPath == NULL )
+    {
+        // 2nd try for Japanese system
+        encodingMethod = kCFStringEncodingUTF8;
+        fullPath = const_cast<char*>(CFStringGetCStringPtr(str, encodingMethod));
+    }
+
+    // for safer operation.
+    if( fullPath == NULL )
+    {
+        CFIndex length = CFStringGetLength(str);
+        fullPath = static_cast<char *>(malloc( length + 1 ));
+
+        // TODO: Check boolean result of that conversion
+        CFStringGetCString(str, fullPath, length, kCFStringEncodingUTF8 );
+
+        stdstr = fullPath;
+
+        free( fullPath );
+    }
+    else
+        stdstr = fullPath;
+
+    return stdstr;
+}
 
 void CSystemUtilsMacOSX::Init()
 {
@@ -39,6 +76,22 @@ void CSystemUtilsMacOSX::Init()
 
     // Make sure the directory exists
     boost::filesystem::create_directories(m_ASPath.c_str());
+}
+
+std::string CSystemUtilsMacOSX::GetDataPath()
+{
+    std::string dataPath;
+    // Get the Resources bundle URL
+    CFBundleRef mainBundle = CFBundleGetMainBundle();
+    CFURLRef resourcesURL = CFBundleCopyBundleURL(mainBundle);
+    CFStringRef str = CFURLCopyFileSystemPath( resourcesURL, kCFURLPOSIXPathStyle );
+    CFRelease(resourcesURL);
+
+    dataPath = CFStringRefToStdString(str);
+    dataPath += "/Contents/Resources";
+    GetLogger()->Trace("dataPath is %s\n", dataPath.c_str());
+
+    return dataPath;
 }
 
 std::string CSystemUtilsMacOSX::GetProfileFileLocation()
