@@ -148,7 +148,7 @@ CApplication::CApplication()
     m_trackedKeys = 0;
 
     m_dataPath = GetSystemUtils()->GetDataPath();
-    m_langPath = COLOBOT_I18N_DIR;
+    m_langPath = GetSystemUtils()->GetLangPath();
     m_texPackPath = "";
 
     m_runSceneName = "";

@@ -194,7 +194,12 @@ float CSystemUtils::TimeStampDiff(SystemTimeStamp *before, SystemTimeStamp *afte
 
 std::string CSystemUtils::GetDataPath()
 {
-    return std::string(COLOBOT_DEFAULT_DATADIR);
+    return COLOBOT_DEFAULT_DATADIR;
+}
+
+std::string CSystemUtils::GetLangPath()
+{
+    return COLOBOT_I18N_DIR;
 }
 
 std::string CSystemUtils::GetProfileFileLocation()
