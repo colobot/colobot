@@ -147,7 +147,7 @@ CApplication::CApplication()
     m_mouseButtonsState = 0;
     m_trackedKeys = 0;
 
-    m_dataPath = COLOBOT_DEFAULT_DATADIR;
+    m_dataPath = GetSystemUtils()->GetDataPath();
     m_langPath = COLOBOT_I18N_DIR;
     m_texPackPath = "";
 
