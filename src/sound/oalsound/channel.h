@@ -30,8 +30,8 @@
 #include <deque>
 #include <cassert>
 
-#include <AL/al.h>
-#include <AL/alc.h>
+#include <al.h>
+#include <alc.h>
 
 struct SoundOper
 {

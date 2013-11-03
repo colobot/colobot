@@ -26,7 +26,6 @@
 
 #include "ui/interface.h"
 #include "ui/window.h"
-#include "ui/displaytext.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -274,7 +273,7 @@ bool CAutoNuclear::EventProcess(const Event &event)
             SetBusy(false);
             UpdateInterface();
 
-            m_displayText->DisplayError(INFO_NUCLEAR, m_object);
+            m_main->DisplayError(INFO_NUCLEAR, m_object);
 
             m_phase    = ANUP_WAIT;
             m_progress = 0.0f;
@@ -402,7 +401,7 @@ void CAutoNuclear::CreatePower()
     if ( !power->CreateResource(pos, angle, OBJECT_ATOMIC) )
     {
         delete power;
-        m_displayText->DisplayError(ERR_TOOMANY, m_object);
+        m_main->DisplayError(ERR_TOOMANY, m_object);
         return;
     }
 

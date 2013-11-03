@@ -26,9 +26,7 @@
 
 #include "physics/physics.h"
 
-#include "ui/displaytext.h"
-
-
+#include "object/robotmain.h"
 
 
 // Object's constructor.
@@ -293,11 +291,11 @@ bool CTaskSearch::CreateMark()
     if ( !fret->CreateResource(pos, 0.0f, type) )
     {
         delete fret;
-        m_displayText->DisplayError(ERR_TOOMANY, m_object);
+        m_main->DisplayError(ERR_TOOMANY, m_object);
         return false;
     }
 
-    m_displayText->DisplayError(info, pos, 5.0f, 50.0f);  // displays the message
+    m_main->DisplayError(info, pos, 5.0f, 50.0f);  // displays the message
 
     return true;
 }

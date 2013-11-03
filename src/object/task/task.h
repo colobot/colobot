@@ -32,9 +32,6 @@ class CObject;
 class CRobotMain;
 class CSoundInterface;
 
-namespace Ui {
-class CDisplayText;
-} /* Ui */
 
 namespace Gfx {
 class CEngine;
@@ -84,7 +81,6 @@ protected:
     CPhysics*           m_physics;
     CObject*            m_object;
     CRobotMain*         m_main;
-    Ui::CDisplayText*   m_displayText;
     CSoundInterface*    m_sound;
 };
 

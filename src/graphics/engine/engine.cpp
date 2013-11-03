@@ -276,7 +276,7 @@ bool CEngine::Create()
     Math::LoadOrthoProjectionMatrix(m_matProjInterface, 0.0f, 1.0f, 0.0f, 1.0f, -1.0f, 1.0f);
 
     TextureCreateParams params;
-    params.format = TEX_IMG_RGB;
+    params.format = TEX_IMG_AUTO;
     params.minFilter = TEX_MIN_FILTER_NEAREST;
     params.magFilter = TEX_MAG_FILTER_NEAREST;
     params.mipmap = false;
@@ -600,6 +600,31 @@ void CEngine::DeleteBaseObject(int baseObjRank)
 
 void CEngine::DeleteAllBaseObjects()
 {
+    for (int baseObjRank = 0; baseObjRank < static_cast<int>( m_baseObjects.size() ); baseObjRank++)
+    {
+        EngineBaseObject& p1 = m_baseObjects[baseObjRank];
+        if (! p1.used)
+            continue;
+
+        for (int l2 = 0; l2 < static_cast<int>( p1.next.size() ); l2++)
+        {
+            EngineBaseObjTexTier& p2 = p1.next[l2];
+
+            for (int l3 = 0; l3 < static_cast<int>( p2.next.size() ); l3++)
+            {
+                EngineBaseObjLODTier& p3 = p2.next[l3];
+
+                for (int l4 = 0; l4 < static_cast<int>( p3.next.size() ); l4++)
+                {
+                    EngineBaseObjDataTier& p4 = p3.next[l4];
+
+                    m_device->DestroyStaticBuffer(p4.staticBufferId);
+                    p4.staticBufferId = 0;
+                }
+            }
+        }
+    }
+
     m_baseObjects.clear();
 }
 
@@ -817,6 +842,7 @@ int CEngine::CreateObject()
 
     m_objects[objRank].drawWorld = true;
     m_objects[objRank].distance = 0.0f;
+    m_objects[objRank].baseObjRank = -1;
     m_objects[objRank].shadowRank = -1;
 
     return objRank;

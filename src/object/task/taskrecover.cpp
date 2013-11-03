@@ -27,7 +27,7 @@
 
 #include "physics/physics.h"
 
-#include "ui/displaytext.h"
+#include "object/robotmain.h"
 
 
 const float ENERGY_RECOVER  = 0.25f;        // energy consumed by recovery
@@ -305,7 +305,7 @@ Error CTaskRecover::IsEnded()
             m_metal = 0;
             Abort();
             m_bError = true;
-            m_displayText->DisplayError(ERR_TOOMANY, m_object);
+            m_main->DisplayError(ERR_TOOMANY, m_object);
             return ERR_STOP;
         }
         m_metal->SetLock(true);  // metal not yet usable

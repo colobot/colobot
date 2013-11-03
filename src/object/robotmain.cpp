@@ -107,7 +107,7 @@ float   g_unit;             // conversion factor
 // Static variables
 
 static CBotClass*   m_pClassFILE;
-static CBotProgram* m_pFuncFile;
+//static CBotProgram* m_pFuncFile;
 static int          m_CompteurFileOpen = 0;
 static std::string  m_filesDir;
 
@@ -503,10 +503,10 @@ void InitClassFILE()
     m_pClassFILE->AddFunction("readln", rfread, cfread );
     m_pClassFILE->AddFunction("eof", rfeof, cfeof );
 
-    m_pFuncFile = new CBotProgram( );
-    CBotStringArray ListFonctions;
-    m_pFuncFile->Compile( "public file openfile(string name, string mode) {return new file(name, mode);}", ListFonctions);
-    m_pFuncFile->SetIdent(-2);  // restoreState in special identifier for this function
+    //m_pFuncFile = new CBotProgram( );
+    //CBotStringArray ListFonctions;
+    //m_pFuncFile->Compile( "public file openfile(string name, string mode) {return new file(name, mode);}", ListFonctions);
+    //m_pFuncFile->SetIdent(-2);  // restoreState in special identifier for this function
 }
 
 
@@ -1104,6 +1104,7 @@ void CRobotMain::ChangePhase(Phase phase)
     ChangePause(false);
     FlushDisplayInfo();
     m_engine->SetRankView(0);
+    m_terrain->FlushRelief();
     m_engine->DeleteAllObjects();
     Gfx::CModelManager::GetInstancePointer()->DeleteAllModelCopies();
     m_engine->SetWaterAddColor(Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f));
@@ -3842,9 +3843,9 @@ void CRobotMain::Convert()
 void CRobotMain::ScenePerso()
 {
     DeleteAllObjects();  // removes all the current 3D Scene
+    m_terrain->FlushRelief();
     m_engine->DeleteAllObjects();
     Gfx::CModelManager::GetInstancePointer()->DeleteAllModelCopies();
-    m_terrain->FlushRelief();  // all flat
     m_terrain->FlushBuildingLevel();
     m_terrain->FlushFlyingLimit();
     m_lightMan->FlushLights();
@@ -7520,3 +7521,12 @@ void CRobotMain::RestoreNumericLocale()
     setlocale(LC_NUMERIC, m_oldLocale.c_str());
 }
 
+void CRobotMain::DisplayError(Error err, CObject* pObj, float time)
+{
+    m_displayText->DisplayError(err, pObj, time);
+}
+
+void CRobotMain::DisplayError(Error err, Math::Vector goal, float height, float dist, float time)
+{
+    m_displayText->DisplayError(err, goal, height, dist, time);
+}

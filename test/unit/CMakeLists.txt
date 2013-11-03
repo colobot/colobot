@@ -9,6 +9,9 @@ elseif(PLATFORM_WINDOWS)
 elseif(PLATFORM_LINUX)
     # for clock_gettime
     set(PLATFORM_LIBS "-lrt -lX11")
+elseif(PLATFORM_MACOSX)
+    find_library(LIBINTL_LIBRARY NAMES intl libintl )
+    set(PLATFORM_LIBS ${LIBINTL_LIBRARY} ${X11_X11_LIB})
 endif()
 
 
@@ -232,7 +235,7 @@ ${LIBSNDFILE_LIBRARY}
 add_executable(colobot_ut ${COLOBOT_SOURCES} ${UT_SOURCES} ${OPENAL_SOURCES})
 target_link_libraries(colobot_ut ${LIBS})
 
-add_test(colobot_ut ./colobot_ut)
+add_test(colobot_ut ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/colobot_ut)
 
 # TODO: change the unit cases to independent automated tests to be included in colobot_ut
 add_subdirectory(common)

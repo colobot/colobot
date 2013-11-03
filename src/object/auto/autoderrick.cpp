@@ -28,7 +28,6 @@
 
 #include "ui/interface.h"
 #include "ui/window.h"
-#include "ui/displaytext.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -535,7 +534,7 @@ void CAutoDerrick::CreateFret(Math::Vector pos, float angle, ObjectType type,
     if ( !fret->CreateResource(pos, angle, type) )
     {
         delete fret;
-        m_displayText->DisplayError(ERR_TOOMANY, m_object);
+        m_main->DisplayError(ERR_TOOMANY, m_object);
         return;
     }
     fret->SetLock(true);  // object not yet usable

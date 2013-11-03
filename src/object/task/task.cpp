@@ -35,7 +35,6 @@ CTask::CTask(CObject* object)
     m_main        = CRobotMain::GetInstancePointer();
     m_terrain     = m_main->GetTerrain();
     m_camera      = m_main->GetCamera();
-    m_displayText = m_main->GetDisplayText();
 
     m_object      = object;
     m_physics     = m_object->GetPhysics();

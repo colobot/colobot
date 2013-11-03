@@ -3174,7 +3174,7 @@ bool CScript::rMessage(CBotVar* var, CBotVar* result, int& exception, void* user
         type = static_cast<Ui::TextType>(var->GetValInt());
     }
 
-    script->m_displayText->DisplayText(p, script->m_object, 10.0f, type);
+    script->m_main->GetDisplayText()->DisplayText(p, script->m_object, 10.0f, type);
     script->m_main->CheckEndMessage(p);
 
     return true;
@@ -3504,7 +3504,6 @@ CScript::CScript(CObject* object, CTaskManager** secondaryTask)
     m_secondaryTask = secondaryTask;
 
     m_interface = m_main->GetInterface();
-    m_displayText = m_main->GetDisplayText();
 
     m_ipf = CBOT_IPF;
     m_errMode = ERM_STOP;
@@ -3690,6 +3689,7 @@ bool CScript::IsEmpty()
 bool CScript::CheckToken()
 {
     CBotToken*  bt;
+    CBotToken*  allBt;
     CBotString  bs;
     const char* token;
     int         error, cursor1, cursor2, i;
@@ -3707,7 +3707,8 @@ bool CScript::CheckToken()
         used[i] = 0;  // token not used
     }
 
-    bt = CBotToken::CompileTokens(m_script, error);
+    allBt = CBotToken::CompileTokens(m_script, error);
+    bt = allBt;
     while ( bt != 0 )
     {
         bs = bt->GetString();
@@ -3728,7 +3729,7 @@ bool CScript::CheckToken()
             m_cursor1 = cursor1;
             m_cursor2 = cursor2;
             strcpy(m_title, "<erreur>");
-            CBotToken::Delete(bt);
+            CBotToken::Delete(allBt);
             return false;
         }
 
@@ -3743,12 +3744,12 @@ bool CScript::CheckToken()
             strcpy(m_token, m_main->GetObligatoryToken(i));
             m_error = ERR_OBLIGATORYTOKEN;
             strcpy(m_title, "<erreur>");
-            CBotToken::Delete(bt);
+            CBotToken::Delete(allBt);
             return false;
         }
     }
 
-    CBotToken::Delete(bt);
+    CBotToken::Delete(allBt);
     return true;
 }
 
@@ -3899,7 +3900,7 @@ bool CScript::Continue(const Event &event)
                 {
                     char    s[100];
                     GetError(s);
-                    m_displayText->DisplayText(s, m_object, 10.0f, Ui::TT_ERROR);
+                    m_main->GetDisplayText()->DisplayText(s, m_object, 10.0f, Ui::TT_ERROR);
                 }
                 m_engine->SetPause(true);  // gives pause
                 return true;
@@ -3932,7 +3933,7 @@ bool CScript::Continue(const Event &event)
         {
             char    s[100];
             GetError(s);
-            m_displayText->DisplayText(s, m_object, 10.0f, Ui::TT_ERROR);
+            m_main->GetDisplayText()->DisplayText(s, m_object, 10.0f, Ui::TT_ERROR);
         }
         return true;
     }
@@ -3974,7 +3975,7 @@ bool CScript::Step(const Event &event)
         {
             char    s[100];
             GetError(s);
-            m_displayText->DisplayText(s, m_object, 10.0f, Ui::TT_ERROR);
+            m_main->GetDisplayText()->DisplayText(s, m_object, 10.0f, Ui::TT_ERROR);
         }
         return true;
     }

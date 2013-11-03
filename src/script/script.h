@@ -34,7 +34,6 @@ class CTaskManager;
 class CRobotMain;
 
 namespace Ui{
-class CDisplayText;
 class CEdit;
 class CInterface;
 class CList;
@@ -210,7 +209,6 @@ private:
 protected:
     Gfx::CEngine*       m_engine;
     Ui::CInterface*         m_interface;
-    Ui::CDisplayText*   m_displayText;
     CBotProgram*        m_botProg;
     CRobotMain*         m_main;
     Gfx::CTerrain*      m_terrain;

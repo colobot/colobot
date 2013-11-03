@@ -33,7 +33,7 @@ long long int CSystemUtilsOther::GetTimeStampExactResolution()
     return 1000000ll;
 }
 
-long long int CSystemUtilsOther::TimeStampExactDiff(SystemTimeStamp* before, SystemTimeStamp* after) const
+long long int CSystemUtilsOther::TimeStampExactDiff(SystemTimeStamp* before, SystemTimeStamp* after)
 {
     return (after->sdlTicks - before->sdlTicks) * 1000000ll;
 }

@@ -90,7 +90,7 @@ bool CTerrain::Generate(int mosaicCount, int brickCountPow2, float brickSize,
     std::vector<int>(dim).swap(m_textures);
 
     dim = m_mosaicCount*m_mosaicCount;
-    std::vector<int>(dim).swap(m_objRanks);
+    std::vector<int>(dim, -1).swap(m_objRanks);
 
     return true;
 }
@@ -258,6 +258,23 @@ TerrainRes CTerrain::GetResource(const Math::Vector &p)
 void CTerrain::FlushRelief()
 {
     m_relief.clear();
+    m_resources.clear();
+    m_textures.clear();
+
+    for (int objRank : m_objRanks)
+    {
+        if (objRank == -1)
+            continue;
+
+        int baseObjRank = m_engine->GetObjectBaseRank(objRank);
+
+        if (baseObjRank != -1)
+            m_engine->DeleteBaseObject(baseObjRank);
+
+        m_engine->DeleteObject(objRank);
+    }
+
+    m_objRanks.clear();
 }
 
 /**

@@ -3,6 +3,7 @@
 // Macros set by CMake
 #cmakedefine PLATFORM_WINDOWS @PLATFORM_WINDOWS@
 #cmakedefine PLATFORM_LINUX @PLATFORM_LINUX@
+#cmakedefine PLATFORM_MACOSX @PLATFORM_MACOSX@
 #cmakedefine PLATFORM_OTHER @PLATFORM_OTHER@
 
 #cmakedefine GLEW_STATIC

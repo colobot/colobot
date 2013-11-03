@@ -79,8 +79,6 @@
 #include "script/cbottoken.h"
 #include "script/cmdtoken.h"
 
-#include "ui/displaytext.h"
-
 
 
 #define ADJUST_ONBOARD  false       // true -> adjusts the camera ONBOARD
@@ -228,7 +226,6 @@ CObject::CObject()
     m_main        = CRobotMain::GetInstancePointer();
     m_terrain     = m_main->GetTerrain();
     m_camera      = m_main->GetCamera();
-    m_displayText = m_main->GetDisplayText();
     m_physics     = nullptr;
     m_brain       = nullptr;
     m_motion      = nullptr;
@@ -5988,7 +5985,7 @@ bool CObject::EventFrame(const Event &event)
             m_sound->Play(SOUND_FINDING);
             pyro = new Gfx::CPyro();
             pyro->Create(Gfx::PT_FINDING, this, 0.0f);
-            m_displayText->DisplayError(INFO_FINDING, this);
+            m_main->DisplayError(INFO_FINDING, this);
         }
     }
 
@@ -6639,7 +6636,7 @@ void CObject::SetSelect(bool bMode, bool bDisplayError)
     }
     if ( err != ERR_OK && bDisplayError )
     {
-        m_displayText->DisplayError(err, this);
+        m_main->DisplayError(err, this);
     }
 }
 

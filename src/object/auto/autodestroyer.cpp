@@ -24,7 +24,6 @@
 
 #include "ui/interface.h"
 #include "ui/window.h"
-#include "ui/displaytext.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -122,7 +121,7 @@ bool CAutoDestroyer::EventProcess(const Event &event)
         {
             Error err = StartAction(0);
             if ( err != ERR_OK )
-                m_displayText->DisplayError(err, m_object);
+                m_main->DisplayError(err, m_object);
 
             return false;
         }

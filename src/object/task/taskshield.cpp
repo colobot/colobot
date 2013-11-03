@@ -26,6 +26,7 @@
 #include "math/geometry.h"
 
 #include "object/brain.h"
+#include "object/robotmain.h"
 
 #include "physics/physics.h"
 

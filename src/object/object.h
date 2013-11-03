@@ -38,10 +38,6 @@ class CRobotMain;
 class CBotVar;
 class CScript;
 
-namespace Ui {
-class CDisplayText;
-}
-
 
 /**
  * \enum ObjectType
@@ -689,7 +685,6 @@ protected:
     CBrain*             m_brain;
     CMotion*            m_motion;
     CAuto*              m_auto;
-    Ui::CDisplayText*   m_displayText;
     CRobotMain*         m_main;
     CSoundInterface*    m_sound;
     CBotVar*            m_botVar;

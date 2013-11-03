@@ -29,7 +29,6 @@
 
 #include "ui/interface.h"
 #include "ui/window.h"
-#include "ui/displaytext.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -179,7 +178,7 @@ bool CAutoLabo::EventProcess(const Event &event)
         if ( event.type == EVENT_OBJECT_RiGUN   ) err = StartAction(RESEARCH_iGUN);
 
         if( err != ERR_OK && err != ERR_GENERIC )
-            m_displayText->DisplayError(err, m_object);
+            m_main->DisplayError(err, m_object);
 
         if( err != ERR_GENERIC )
             return false;
@@ -370,7 +369,7 @@ bool CAutoLabo::EventProcess(const Event &event)
                 delete power;
             }
 
-            m_displayText->DisplayError(INFO_LABO, m_object);
+            m_main->DisplayError(INFO_LABO, m_object);
 
             SoundManip(1.5f, 1.0f, 0.5f);
             m_phase    = ALAP_CLOSE1;

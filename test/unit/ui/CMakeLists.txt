@@ -14,6 +14,9 @@ if(PLATFORM_WINDOWS)
 elseif(PLATFORM_LINUX)
     set(SYSTEM_CPP_MODULE "system_linux.cpp")
     set(ADDITIONAL_LIB "-lX11")
+elseif(PLATFORM_MACOSX)
+    set(SYSTEM_CPP_MODULE "system_other.cpp")
+    set(ADDITIONAL_LIB "${X11_X11_LIB}")
 else()
     set(SYSTEM_CPP_MODULE "system_other.cpp")
     set(ADDITIONAL_LIB "-lX11")
@@ -44,4 +47,4 @@ target_link_libraries(edit_test gtest gmock clipboard ${SDL_LIBRARY} ${SDLTTF_LI
 
 
 
-add_test(edit_test ./edit_test)
+add_test(edit_test ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/edit_test)

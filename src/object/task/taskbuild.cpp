@@ -33,8 +33,6 @@
 
 #include "physics/physics.h"
 
-#include "ui/displaytext.h"
-
 #include <string.h>
 
 // Object's constructor.
@@ -264,7 +262,7 @@ bool CTaskBuild::EventProcess(const Event &event)
             m_camera->FlushEffect();
             Abort();
             m_bError = true;
-            m_displayText->DisplayError(ERR_TOOMANY, m_object->GetPosition(0));
+            m_main->DisplayError(ERR_TOOMANY, m_object->GetPosition(0));
             return false;
         }
         CreateLight();
@@ -486,7 +484,7 @@ Error CTaskBuild::IsEnded()
         m_building->SetCirVibration(Math::Vector(0.0f, 0.0f, 0.0f));
         m_building->SetLock(false);  // building usable
         m_main->CreateShortcuts();
-        m_displayText->DisplayError(INFO_BUILD, m_buildingPos, 10.0f, 50.0f);
+        m_main->DisplayError(INFO_BUILD, m_buildingPos, 10.0f, 50.0f);
 
         automat = m_building->GetAuto();
         if ( automat != 0 )

@@ -28,7 +28,6 @@ class CRobotMain;
 class CSoundInterface;
 
 namespace Ui {
-class CDisplayText;
 class CInterface;
 class CWindow;
 } /* Ui */
@@ -101,7 +100,6 @@ protected:
     Gfx::CLightning*    m_lightning;
     Gfx::CCamera*       m_camera;
     Ui::CInterface*     m_interface;
-    Ui::CDisplayText*   m_displayText;
     CRobotMain*         m_main;
     CObject*            m_object;
     CSoundInterface*    m_sound;

@@ -29,7 +29,7 @@ CInterface::CInterface()
     m_engine = Gfx::CEngine::GetInstancePointer();
     m_camera = nullptr;
 
-    for (int i = 0; i < MAXCONTROL; i++ )
+    for (int i = 0; i < MAXCONTROL; i++)
     {
         m_table[i] = nullptr;
     }
@@ -47,9 +47,9 @@ CInterface::~CInterface()
 
 void CInterface::Flush()
 {
-    for (int i = 0; i < MAXCONTROL; i++ )
+    for (int i = 0; i < MAXCONTROL; i++)
     {
-        if ( m_table[i] != nullptr )
+        if (m_table[i] != nullptr)
         {
             delete m_table[i];
             m_table[i] = nullptr;
@@ -71,16 +71,15 @@ int CInterface::GetNextFreeControl()
 
 template <typename T> inline T* CInterface::CreateControl(Math::Point pos, Math::Point dim, int icon, EventType eventMsg)
 {
-    T* pc;
-    int index;
     if (eventMsg == EVENT_NULL)
         eventMsg = GetUniqueEventType();
 
-    if ((index = GetNextFreeControl()) < 0)
+    int index = GetNextFreeControl();
+    if (index < 0)
         return nullptr;
 
     m_table[index] = new T();
-    pc = static_cast<T *>(m_table[index]);
+    T* pc = static_cast<T *>(m_table[index]);
     pc->Create(pos, dim, icon, eventMsg);
     return pc;
 }
@@ -90,11 +89,10 @@ template <typename T> inline T* CInterface::CreateControl(Math::Point pos, Math:
 
 CWindow* CInterface::CreateWindows(Math::Point pos, Math::Point dim, int icon, EventType eventMsg)
 {
-    CWindow* pc;
-    int index;
     if (eventMsg == EVENT_NULL)
         eventMsg = GetUniqueEventType();
 
+    int index = -1;
     switch (eventMsg)
     {
         case EVENT_WINDOW0: index = 0; break;
@@ -114,8 +112,9 @@ CWindow* CInterface::CreateWindows(Math::Point pos, Math::Point dim, int icon, E
     if (index < 0)
         return nullptr;
 
+    delete m_table[index];
     m_table[index] = new CWindow();
-    pc = static_cast<CWindow *>(m_table[index]);
+    CWindow* pc = static_cast<CWindow *>(m_table[index]);
     pc->Create(pos, dim, icon, eventMsg);
     return pc;
 }
@@ -207,16 +206,15 @@ CSlider* CInterface::CreateSlider(Math::Point pos, Math::Point dim, int icon, Ev
 
 CList* CInterface::CreateList(Math::Point pos, Math::Point dim, int icon, EventType eventMsg, float expand)
 {
-    CList* pc;
-    int index;
     if (eventMsg == EVENT_NULL)
         eventMsg = GetUniqueEventType();
 
-    if ((index = GetNextFreeControl()) < 0)
+    int index = GetNextFreeControl();
+    if (index < 0)
         return nullptr;
 
     m_table[index] = new CList();
-    pc = static_cast<CList *>(m_table[index]);
+    CList* pc = static_cast<CList *>(m_table[index]);
     pc->Create(pos, dim, icon, eventMsg, expand);
     return pc;
 }

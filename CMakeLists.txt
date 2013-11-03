@@ -13,12 +13,12 @@ project(colobot C CXX)
 set(COLOBOT_VERSION_CODENAME "Gold")
 set(COLOBOT_VERSION_MAJOR    0)
 set(COLOBOT_VERSION_MINOR    1)
-set(COLOBOT_VERSION_REVISION 0)
+set(COLOBOT_VERSION_REVISION 1)
 
 # Used on official releases
-set(COLOBOT_VERSION_RELEASE_CODENAME "-alpha")
+#set(COLOBOT_VERSION_RELEASE_CODENAME "-alpha")
 # Used on unreleased, development builds
-#set(COLOBOT_VERSION_UNRELEASED "+alpha")
+set(COLOBOT_VERSION_UNRELEASED "+alpha")
 
 # Append git characteristics to version
 if(DEFINED COLOBOT_VERSION_UNRELEASED AND EXISTS "${CMAKE_SOURCE_DIR}/.git")
@@ -35,6 +35,37 @@ endif()
 set(COLOBOT_VERSION_FULL "${COLOBOT_VERSION_MAJOR}.${COLOBOT_VERSION_MINOR}.${COLOBOT_VERSION_REVISION}${COLOBOT_VERSION_UNRELEASED}${COLOBOT_VERSION_RELEASE_CODENAME}")
 message(STATUS "Building Colobot \"${COLOBOT_VERSION_CODENAME}\" (${COLOBOT_VERSION_FULL})")
 
+
+##
+# Platform detection and some related checks
+##
+if("${CMAKE_SYSTEM_NAME}" MATCHES "Windows")
+    message(STATUS "Build for Windows system")
+    set(PLATFORM_WINDOWS 1)
+    set(PLATFORM_LINUX   0)
+    set(PLATFORM_MACOSX  0)
+    set(PLATFORM_OTHER   0)
+elseif("${CMAKE_SYSTEM_NAME}" MATCHES "Linux")
+    message(STATUS "Build for Linux system")
+    set(PLATFORM_WINDOWS 0)
+    set(PLATFORM_LINUX   1)
+    set(PLATFORM_MACOSX  0)
+    set(PLATFORM_OTHER   0)
+elseif("${CMAKE_SYSTEM_NAME}" MATCHES "Darwin")
+    message(STATUS "Build for Mac OSX system")
+    set(PLATFORM_WINDOWS 0)
+    set(PLATFORM_LINUX   0)
+    set(PLATFORM_MACOSX  1)
+    set(PLATFORM_OTHER   0)
+    
+    set(USE_SDL_MAIN 1) # fixes SDL_main
+else()
+    message(STATUS "Build for other system")
+    set(PLATFORM_WINDOWS 0)
+    set(PLATFORM_LINUX   0)
+    set(PLATFORM_MACOSX  0)
+    set(PLATFORM_OTHER   1)
+endif()
 
 
 ##
@@ -111,6 +142,9 @@ option(BOOST_STATIC "Link with static boost libraries" OFF)
 # This is useful on Windows, if linking against standard GLEW dll fails
 option(GLEW_STATIC "Link statically with GLEW" OFF)
 
+# Sometimes helpful if there are different versions of gmock/gtest installed on system vs bundled
+option(FORCE_BUNDLED_GTEST "Force the use of bundled gtest" OFF)
+option(FORCE_BUNDLED_GMOCK "Force the use of bundled gmock" OFF)
 
 # Default build type if not given is debug
 if(NOT DEFINED CMAKE_BUILD_TYPE)
@@ -146,27 +180,10 @@ find_package(GLEW REQUIRED)
 
 if (OPENAL_SOUND)
     find_package(OpenAL REQUIRED)
+    include_directories(${OPENAL_INCLUDE_DIR})
     find_package(LibSndFile REQUIRED)
 endif()
 
-
-##
-# Platform detection and some related checks
-##
-
-if("${CMAKE_SYSTEM_NAME}" MATCHES "Windows")
-    set(PLATFORM_WINDOWS 1)
-    set(PLATFORM_LINUX   0)
-    set(PLATFORM_OTHER   0)
-elseif("${CMAKE_SYSTEM_NAME}" MATCHES "Linux")
-    set(PLATFORM_WINDOWS 0)
-    set(PLATFORM_LINUX   1)
-    set(PLATFORM_OTHER   0)
-else()
-    set(PLATFORM_WINDOWS 0)
-    set(PLATFORM_LINUX   0)
-    set(PLATFORM_OTHER   1)
-endif()
 
 if(NOT ASSERTS)
     add_definitions(-DNDEBUG)
@@ -178,6 +195,9 @@ else()
     add_definitions(-DTEST_VIRTUAL=)
 endif()
 
+if(DEV_BUILD)
+    add_definitions(-DDEV_BUILD)
+endif()
 
 ##
 # Additional settings to use when cross-compiling with MXE (http://mxe.cc/)
@@ -192,14 +212,14 @@ include("${colobot_SOURCE_DIR}/cmake/msys.cmake")
 
 
 ##
-# Summary of detected things
+# Clipboard support needs X11 libraries
 ##
-if (PLATFORM_WINDOWS)
-    message(STATUS "Build for Windows system")
-elseif(PLATFORM_LINUX)
-    message(STATUS "Build for Linux system")
-else()
-    message(STATUS "Build for other system")
+if(PLATFORM_LINUX OR PLATFORM_MACOSX)
+    find_package(X11 REQUIRED)
+    if(PLATFORM_MACOSX)
+       # Add the includes for X11
+       include_directories("/opt/X11/include")
+    endif()
 endif()
 
 
@@ -240,7 +260,7 @@ if(TESTS)
     # Google Test library
     find_path(GTEST_SRC_DIR NAMES src/gtest.cc src/gtest-all.cc PATHS /usr/src PATH_SUFFIXES gtest)
     find_path(GTEST_INCLUDE_DIR gtest/gtest.h PATHS /usr/include)
-    if(GTEST_SRC_DIR AND GTEST_INCLUDE_DIR)
+    if(NOT(FORCE_BUNDLED_GTEST) AND GTEST_SRC_DIR AND GTEST_INCLUDE_DIR)
         message(STATUS "Using system gtest library in ${GTEST_SRC_DIR}")
     else()
         message(STATUS "Using bundled gtest library")
@@ -253,7 +273,7 @@ if(TESTS)
     # Google Mock library
     find_path(GMOCK_SRC_DIR NAMES src/gmock.cc src/gmock-all.cc PATHS /usr/src PATH_SUFFIXES gmock)
     find_path(GMOCK_INCLUDE_DIR gmock/gmock.h PATHS /usr/include)
-    if(GMOCK_SRC_DIR AND GMOCK_INCLUDE_DIR)
+    if(NOT(FORCE_BUNDLED_GMOCK) AND GMOCK_SRC_DIR AND GMOCK_INCLUDE_DIR)
         message(STATUS "Using system gmock library in ${GMOCK_SRC_DIR}")
 
         include_directories(${GMOCK_SRC_DIR})
@@ -303,11 +323,7 @@ add_subdirectory(src)
 add_subdirectory(po)
 
 if(DESKTOP)
-    if(PLATFORM_WINDOWS)
-        message("Desktop files ignored on Windows")
-    else()
-        add_subdirectory(desktop)
-    endif()
+    add_subdirectory(desktop)
 endif()
 
 

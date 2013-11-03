@@ -32,7 +32,6 @@
 
 #include "ui/interface.h"
 #include "ui/window.h"
-#include "ui/displaytext.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -211,7 +210,7 @@ bool CAutoFactory::EventProcess(const Event &event)
 
         Error err = StartAction(type);
         if( err != ERR_OK && err != ERR_GENERIC )
-            m_displayText->DisplayError(err, m_object);
+            m_main->DisplayError(err, m_object);
 
         if( err != ERR_GENERIC )
             return false;
@@ -379,7 +378,7 @@ bool CAutoFactory::EventProcess(const Event &event)
         }
         else
         {
-            m_displayText->DisplayError(INFO_FACTORY, m_object);
+            m_main->DisplayError(INFO_FACTORY, m_object);
             SoundManip(2.0f, 1.0f, 1.2f);
 
             fret = SearchFret();  // transform metal?
@@ -678,7 +677,7 @@ bool CAutoFactory::CreateVehicle()
     if ( !vehicle->CreateVehicle(pos, angle, m_type, -1.0f, false, false) )
     {
         delete vehicle;
-        m_displayText->DisplayError(ERR_TOOMANY, m_object);
+        m_main->DisplayError(ERR_TOOMANY, m_object);
         return false;
     }
     vehicle->UpdateMapping();

@@ -110,6 +110,7 @@ CApplication::CApplication()
     m_exitCode  = 0;
     m_active    = false;
     m_debugModes = 0;
+    m_customDataPath = false;
 
     m_windowTitle = "COLOBOT";
 
@@ -344,7 +345,8 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
             case OPT_DATADIR:
             {
                 m_dataPath = optarg;
-                GetLogger()->Info("Using custom data dir: '%s'\n", m_dataPath.c_str());
+                m_customDataPath = true;
+                GetLogger()->Info("Using custom datadir or running mod: '%s'\n", m_dataPath.c_str());
                 break;
             }
             case OPT_LANGDIR:
@@ -404,7 +406,7 @@ bool CApplication::Create()
     }
     else
     {
-        if (GetProfile().GetLocalProfileString("Resources", "Data", path))
+        if (!m_customDataPath && GetProfile().GetLocalProfileString("Resources", "Data", path))
             m_dataPath = path;
     }
 
@@ -440,7 +442,7 @@ bool CApplication::Create()
         GetProfile().SetLocalProfileString("Resources", "Music", GetDataSubdirPath(DIR_MUSIC));
     }
 
-    if (GetProfile().GetLocalProfileString("Resources", "Sound", path))
+    if (!m_customDataPath && GetProfile().GetLocalProfileString("Resources", "Sound", path))
     {
         m_sound->CacheAll(path);
     }
@@ -449,7 +451,7 @@ bool CApplication::Create()
         m_sound->CacheAll(GetDataSubdirPath(DIR_SOUND));
     }
 
-    if (GetProfile().GetLocalProfileString("Resources", "Music", path))
+    if (!m_customDataPath && GetProfile().GetLocalProfileString("Resources", "Music", path))
     {
         m_sound->AddMusicFiles(path);
     }

@@ -31,6 +31,9 @@ elseif(PLATFORM_WINDOWS)
 elseif(PLATFORM_LINUX)
     # for clock_gettime
     set(PLATFORM_LIBS "-lrt -lX11")
+elseif(PLATFORM_MACOSX)
+    find_library(LIBINTL_LIBRARY NAMES intl libintl )
+    set(PLATFORM_LIBS ${LIBINTL_LIBRARY} ${X11_X11_LIB})
 endif()
 
 
@@ -45,6 +48,12 @@ if(OPENAL_SOUND)
         sound/oalsound/buffer.cpp
         sound/oalsound/channel.cpp
     )
+endif()
+
+set(RES_FILES "")
+
+if(PLATFORM_WINDOWS)
+    set(RES_FILES "../desktop/colobot.rc")
 endif()
 
 # Platform-dependent implementation of system.h
@@ -179,6 +188,7 @@ ui/studio.cpp
 ui/target.cpp
 ui/window.cpp
 ${OPENAL_SRC}
+${RES_FILES}
 )
 
 
