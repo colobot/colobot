@@ -1683,6 +1683,10 @@ char CApplication::GetLanguageChar() const
         case LANGUAGE_POLISH:
             langChar = 'P';
             break;
+
+        case LANGUAGE_RUSSIAN:
+            langChar = 'R';
+            break;
     }
     return langChar;
 }
@@ -1707,6 +1711,11 @@ bool CApplication::ParseLanguage(const std::string& str, Language& language)
     else if (str == "pl")
     {
         language = LANGUAGE_POLISH;
+        return true;
+    }
+    else if (str == "ru")
+    {
+        language = LANGUAGE_RUSSIAN;
         return true;
     }
 
@@ -1742,6 +1751,10 @@ void CApplication::SetLanguage(Language language)
         case LANGUAGE_POLISH:
             locale = "pl_PL.utf8";
             break;
+
+        case LANGUAGE_RUSSIAN:
+            locale = "ru_RU.utf8";
+            break;
     }
 
     if (locale.empty())
@@ -1771,6 +1784,10 @@ void CApplication::SetLanguage(Language language)
             else if (strncmp(envLang,"pl",2) == 0)
             {
                 m_language = LANGUAGE_POLISH;
+            }
+            else if (strncmp(envLang,"ru",2) == 0)
+            {
+                m_language = LANGUAGE_RUSSIAN;
             }
             else
             {
