@@ -76,22 +76,25 @@ void CSystemUtilsMacOSX::Init()
 
     // Make sure the directory exists
     boost::filesystem::create_directories(m_ASPath.c_str());
-}
 
-std::string CSystemUtilsMacOSX::GetDataPath()
-{
-    std::string dataPath;
     // Get the Resources bundle URL
     CFBundleRef mainBundle = CFBundleGetMainBundle();
     CFURLRef resourcesURL = CFBundleCopyBundleURL(mainBundle);
     CFStringRef str = CFURLCopyFileSystemPath( resourcesURL, kCFURLPOSIXPathStyle );
     CFRelease(resourcesURL);
 
-    dataPath = CFStringRefToStdString(str);
-    dataPath += "/Contents/Resources";
-    GetLogger()->Trace("dataPath is %s\n", dataPath.c_str());
+    m_dataPath = CFStringRefToStdString(str);
+    m_dataPath += "/Contents/Resources";
+}
 
-    return dataPath;
+std::string CSystemUtilsMacOSX::GetDataPath()
+{
+    return m_dataPath;
+}
+
+std::string CSystemUtilsMacOSX::GetLangPath()
+{
+    return m_dataPath + "/i18n";
 }
 
 std::string CSystemUtilsMacOSX::GetProfileFileLocation()
