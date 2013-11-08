@@ -33,9 +33,6 @@ if(RSVG_CONVERT AND (PLATFORM_LINUX OR PLATFORM_MACOSX))
             DEPENDS png-icons
             )
         add_custom_target(icns-icon ALL DEPENDS Colobot.icns)
-        install(FILES ${CMAKE_CURRENT_BINARY_DIR}/Colobot.icns
-                DESTINATION ${CMAKE_INSTALL_PREFIX}/Contents/Resources/
-               )
     endif()
 
 endif()
@@ -119,12 +116,65 @@ endif(PLATFORM_LINUX)
 
 if(PLATFORM_MACOSX)
     configure_file(Info.plist.cmake ${CMAKE_CURRENT_BINARY_DIR}/Info.plist)
-    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/Info.plist
-            DESTINATION ${CMAKE_INSTALL_PREFIX}/Contents/
-           )
 endif(PLATFORM_MACOSX)
 
 if(PLATFORM_WINDOWS)
     set(COLOBOT_VERSION_4COMMAS "${COLOBOT_VERSION_MAJOR},${COLOBOT_VERSION_MINOR},${COLOBOT_VERSION_REVISION},0")
     configure_file(colobot.rc.cmake ${CMAKE_CURRENT_BINARY_DIR}/colobot.rc)
 endif(PLATFORM_WINDOWS)
+
+
+##
+# Packaging
+##
+set(CPACK_BUNDLE_NAME "Colobot")
+set(CPACK_PACKAGE_FILE_NAME "colobot-${COLOBOT_VERSION_FULL}")
+set(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/../README.md")
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Colobot - Colonize with Bots")
+set(CPACK_PACKAGE_VENDOR "Polish Portal of Colobot")
+
+set(CPACK_PACKAGE_VERSION_MAJOR ${COLOBOT_VERSION_MAJOR})
+set(CPACK_PACKAGE_VERSION_MINOR ${COLOBOT_VERSION_MINOR})
+set(CPACK_PACKAGE_VERSION_PATCH ${COLOBOT_VERSION_REVISION})
+
+if(PLATFORM_WINDOWS)
+    set(CPACK_STRIP_FILES TRUE)
+
+    # Don't version the install directory, and allow overwriting
+    set(CPACK_PACKAGE_INSTALL_DIRECTORY "Colobot")
+    set(CPACK_NSIS_DEFINES "SetOverwrite on\nBrandingText \\\"Colobot ${COLOBOT_VERSION_CODENAME} (${COLOBOT_VERSION_FULL})\\\"")
+    # Install the executable directly in Program Files/Colobot/
+    set(CPACK_NSIS_EXECUTABLES_DIRECTORY ".")
+    set(CPACK_PACKAGE_EXECUTABLES "colobot" "Colobot ${COLOBOT_VERSION_CODENAME}")
+
+    # Branding
+    ## Installation and uninstallation icons
+    set(CPACK_NSIS_MUI_ICON    ${CMAKE_CURRENT_SOURCE_DIR}/colobot.ico)
+    set(CPACK_NSIS_MUI_UNIICON ${CMAKE_CURRENT_SOURCE_DIR}/colobot.ico)
+    ## Header and Left banner images
+    set(CPACK_PACKAGE_ICON     "")
+    set(CPACK_NSIS_INSTALLER_ICON_CODE    "!define MUI_HEADERIMAGE_BITMAP       \\\"${CMAKE_CURRENT_SOURCE_DIR}/colobot_nsis.bmp\\\"
+                                           !define MUI_WELCOMEFINISHPAGE_BITMAP \\\"${CMAKE_CURRENT_SOURCE_DIR}/colobot_nsis_left.bmp\\\"")
+
+    ## Allow to directly run Colobot at the end of the installation
+    set(CPACK_NSIS_MUI_FINISHPAGE_RUN "colobot.exe")
+
+    ## TODO: Find a way to have no license prompt. Until that, display the GPL-3
+    set(CPACK_RESOURCE_FILE_LICENSE ${CMAKE_CURRENT_SOURCE_DIR}/../LICENSE.txt)
+
+elseif(PLATFORM_MACOSX)
+    set(CPACK_GENERATOR "Bundle")
+    set(CPACK_BUNDLE_ICON  ${CMAKE_CURRENT_BINARY_DIR}/Colobot.icns)
+    set(CPACK_PACKAGE_ICON ${CMAKE_CURRENT_BINARY_DIR}/Colobot.icns)
+    set(CPACK_BUNDLE_PLIST ${CMAKE_CURRENT_BINARY_DIR}/Info.plist)
+
+    set(CPACK_BINARY_DRAGNDROP ON)
+
+    install(CODE "
+        include(BundleUtilities)
+        message(STATUS \"fixup_bundle(\${CMAKE_INSTALL_PREFIX}/${COLOBOT_INSTALL_BIN_DIR}/colobot/\")
+        fixup_bundle(\"\${CMAKE_INSTALL_PREFIX}/${COLOBOT_INSTALL_BIN_DIR}/colobot\"   \"\"   \"\")
+        ")
+endif()
+
+include(CPack)
