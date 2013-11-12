@@ -1420,7 +1420,7 @@ msgid ""
 "The list is only available if a \\l;radar station\\u object\\radar; is "
 "working.\n"
 msgstr ""
-"Список доступен только если \\l;radar station\\u object\\radar; работают"
+"Список доступен только если \\l;radar station\\u object\\radar; работают\n"
 
 msgid ""
 "The mission is not accomplished yet (press \\key help; for more details)"
