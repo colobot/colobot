@@ -6,6 +6,11 @@
 #cmakedefine PLATFORM_MACOSX @PLATFORM_MACOSX@
 #cmakedefine PLATFORM_OTHER @PLATFORM_OTHER@
 
+#ifdef PLATFORM_MACOSX
+// Assume we have the Mac OS X function CFLocaleCopyCurrent in the CoreFoundation framework
+#define HAVE_CFLOCALECOPYCURRENT 1
+#endif
+
 #cmakedefine GLEW_STATIC
 
 #cmakedefine OPENAL_SOUND
