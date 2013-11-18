@@ -7,6 +7,8 @@ ${GTEST_INCLUDE_DIR}
 
 add_executable(image_test ${SRC_DIR}/common/image.cpp image_test.cpp)
 target_link_libraries(image_test ${SDL_LIBRARY} ${SDLIMAGE_LIBRARY} ${PNG_LIBRARIES})
+add_test(NAME image_test
+         COMMAND ${CMAKE_BINARY_DIR}/image_test ${CMAKE_SOURCE_DIR}/test/envs/opengl/tex1.png ${CMAKE_BINARY_DIR}/tex1_test.png)
 
 file(COPY colobot.ini DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
