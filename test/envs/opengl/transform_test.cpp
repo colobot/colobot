@@ -243,6 +243,9 @@ int SDL_MAIN_FUNC(int argc, char *argv[])
 {
     CLogger logger;
 
+    CSystemUtils* systemUtils = CSystemUtils::Create(); // platform-specific utils
+    systemUtils->Init();
+
     PREV_TIME = GetSystemUtils()->CreateTimeStamp();
     CURR_TIME = GetSystemUtils()->CreateTimeStamp();
 
