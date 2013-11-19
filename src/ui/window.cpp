@@ -1191,8 +1191,8 @@ void CWindow::DrawVertex(Math::Point pos, Math::Point dim, int icon)
     else if ( icon == 1 )
     {
         m_engine->SetTexture("button1.png");
-        m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_WHITE);
-        uv1.x = 128.0f/256.0f;  // yellow tooltip
+        m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
+        uv1.x = 128.0f/256.0f;  // white tooltip
         uv1.y =   0.0f/256.0f;
         uv2.x = 224.0f/256.0f;
         uv2.y =  16.0f/256.0f;

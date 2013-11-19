@@ -3138,9 +3138,9 @@ void CRobotMain::CreateTooltip(Math::Point pos, const char* text)
                                   start, end);
 
     start.x -= 0.010f;
-    start.y -= 0.002f;
+    start.y -= 0.006f;
     end.x   += 0.010f;
-    end.y   += 0.004f;  // ch'tite (?) margin
+    end.y   += 0.008f;  // small'ish margin
 
     pos.x = start.x;
     pos.y = start.y;
