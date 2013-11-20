@@ -2,15 +2,6 @@ set(SRC_DIR ${colobot_SOURCE_DIR}/src)
 
 configure_file(${SRC_DIR}/common/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/common/config.h)
 
-# Platform-dependent implementation of system.h
-if(PLATFORM_WINDOWS)
-    set(SYSTEM_CPP_MODULE "system_windows.cpp")
-elseif(PLATFORM_LINUX)
-    set(SYSTEM_CPP_MODULE "system_linux.cpp")
-else()
-    set(SYSTEM_CPP_MODULE "system_other.cpp")
-endif()
-
 set(TEXTURE_SOURCES
 ${SRC_DIR}/graphics/core/color.cpp
 ${SRC_DIR}/graphics/opengl/gldevice.cpp
@@ -28,6 +19,7 @@ ${SRC_DIR}/common/image.cpp
 ${SRC_DIR}/common/stringutils.cpp
 ${SRC_DIR}/app/system.cpp
 ${SRC_DIR}/app/${SYSTEM_CPP_MODULE}
+${SRC_DIR}/app/system_other.cpp
 model_test.cpp
 )
 
@@ -38,6 +30,7 @@ ${SRC_DIR}/common/logger.cpp
 ${SRC_DIR}/common/image.cpp
 ${SRC_DIR}/app/system.cpp
 ${SRC_DIR}/app/${SYSTEM_CPP_MODULE}
+${SRC_DIR}/app/system_other.cpp
 transform_test.cpp
 )
 
@@ -48,6 +41,7 @@ ${SRC_DIR}/common/logger.cpp
 ${SRC_DIR}/common/image.cpp
 ${SRC_DIR}/app/system.cpp
 ${SRC_DIR}/app/${SYSTEM_CPP_MODULE}
+${SRC_DIR}/app/system_other.cpp
 light_test.cpp
 )
 
@@ -68,6 +62,7 @@ ${SDLIMAGE_LIBRARY}
 ${OPENGL_LIBRARY}
 ${GLEW_LIBRARY}
 ${PNG_LIBRARIES}
+${Boost_LIBRARIES}
 )
 
 add_executable(texture_test ${TEXTURE_SOURCES})

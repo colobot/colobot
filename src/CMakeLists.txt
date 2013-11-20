@@ -56,24 +56,13 @@ if(PLATFORM_WINDOWS)
     set(RES_FILES "../desktop/colobot.rc")
 endif()
 
-# Platform-dependent implementation of system.h
-if(PLATFORM_WINDOWS)
-    set(SYSTEM_CPP_MODULE "system_windows.cpp")
-elseif(PLATFORM_LINUX)
-    set(SYSTEM_CPP_MODULE "system_linux.cpp")
-elseif(PLATFORM_MACOSX)
-    set(SYSTEM_CPP_MODULE "system_macosx.cpp")
-    set(SYSTEM_CPP_MODULE ${SYSTEM_CPP_MODULE} "app/system_other.cpp")
-else()
-    set(SYSTEM_CPP_MODULE "system_other.cpp")
-endif()
-
 # Source files
 set(SOURCES
 app/app.cpp
 app/main.cpp
 app/system.cpp
 app/${SYSTEM_CPP_MODULE}
+app/system_other.cpp
 common/event.cpp
 common/image.cpp
 common/iman.cpp
