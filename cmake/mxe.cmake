@@ -41,6 +41,8 @@ if((${CMAKE_CROSSCOMPILING}) AND (DEFINED MSYS))
       ${CMAKE_FIND_ROOT_PATH}/lib/libbz2.a
       ${OPENAL_MXE_LIBS}
     )
+    # This fixes problem with multiple definition of `IID_IDirectSoundNotify'
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--allow-multiple-definition")
 else()
     set(MXE 0)
 endif()
