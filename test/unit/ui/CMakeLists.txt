@@ -10,21 +10,18 @@ ${CLIPBOARD_INCLUDE_DIR}
 
 # Platform-dependent implementation of CSystemUtils
 if(PLATFORM_WINDOWS)
-    set(SYSTEM_CPP_MODULE "system_windows.cpp")
 elseif(PLATFORM_LINUX)
-    set(SYSTEM_CPP_MODULE "system_linux.cpp")
     set(ADDITIONAL_LIB "-lX11")
 elseif(PLATFORM_MACOSX)
-    set(SYSTEM_CPP_MODULE "system_other.cpp")
     set(ADDITIONAL_LIB "${X11_X11_LIB}")
 else()
-    set(SYSTEM_CPP_MODULE "system_other.cpp")
     set(ADDITIONAL_LIB "-lX11")
 endif()
 
 add_executable(edit_test
 ${SRC_DIR}/app/system.cpp
 ${SRC_DIR}/app/${SYSTEM_CPP_MODULE}
+${SRC_DIR}/app/system_other.cpp
 ${SRC_DIR}/common/event.cpp
 ${SRC_DIR}/common/logger.cpp
 ${SRC_DIR}/common/misc.cpp

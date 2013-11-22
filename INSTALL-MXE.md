@@ -58,12 +58,18 @@ To cross-compile Colobot using MXE:
 4. Now `cd` to directory with colobot sources. To cross-compile a CMake project,
    you have to specify a CMake toolchain file. MXE has such file in MXE's directory:
    `usr/i686-pc-mingw32/share/cmake/mxe-conf.cmake`
-   Toolchain file is specified thus:`cmake -DCMAKE_TOOLCHAIN_FILE=/path/to/mxe-conf.cmake .`
+   Toolchain file is specified that way: `cmake -DCMAKE_TOOLCHAIN_FILE=/path/to/mxe-conf.cmake .`
    CMake files in Colobot should detect that MXE is being used and they will
    modify flags, paths, etc. as required. You should not run into any problems.
    *Note:* you may also want to use a separate out-of-source build directory for MXE.
 
-5. `make` should now compile the game with the resulting exe in `bin/colobot.exe`.
+5. `make` should now compile the game with the resulting executable as `colobot.exe`.
    The exe is linked against all libraries *statically*, so there are no dependencies
    on external DLLs. However, the resulting binary will be huge with all these libraries,
    so you might want to do: `strip bin/colobot.exe`.
+
+6. If you want to create a Colobot installer, you need to additionally build 'nsis'
+   in MXE. Then you can create the NSIS installer that way:
+   `PATH=/path/to/mxe/binaries/:$PATH make package` This will create a versionned
+   colobot-$version.exe installer that will install Colobot in system directories,
+   add a shortcut in the start menu and setup an uninstaller.

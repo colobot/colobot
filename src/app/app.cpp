@@ -147,8 +147,8 @@ CApplication::CApplication()
     m_mouseButtonsState = 0;
     m_trackedKeys = 0;
 
-    m_dataPath = COLOBOT_DEFAULT_DATADIR;
-    m_langPath = COLOBOT_I18N_DIR;
+    m_dataPath = GetSystemUtils()->GetDataPath();
+    m_langPath = GetSystemUtils()->GetLangPath();
     m_texPackPath = "";
 
     m_runSceneName = "";
@@ -423,7 +423,10 @@ bool CApplication::Create()
         return false;
     }
 
+#if !defined(PLATFORM_MACOSX)
+    // On Mac OSX, the bundle can potentially change place, it doesn't make sense to cache it to the configuration file
     GetProfile().SetLocalProfileString("Resources", "Data", m_dataPath);
+#endif
 
     SetLanguage(m_language);
 
@@ -437,12 +440,16 @@ bool CApplication::Create()
 
     m_sound->Create(true);
 
+#if !defined(PLATFORM_MACOSX)
+    // On Mac OSX, the bundle can potentially change place, it doesn't make sense to cache it to the configuration file
+
     // Cache sound files
     if (defaultValues)
     {
         GetProfile().SetLocalProfileString("Resources", "Sound", GetDataSubdirPath(DIR_SOUND));
         GetProfile().SetLocalProfileString("Resources", "Music", GetDataSubdirPath(DIR_MUSIC));
     }
+#endif
 
     if (!m_customDataPath && GetProfile().GetLocalProfileString("Resources", "Sound", path))
     {
