@@ -31,12 +31,19 @@
 
 #define    EOX         (reinterpret_cast<CBotStack*>(-1))   /// \def tag special condition
 
+#include "common/config.h"
 
-// fix for MSVC instruction __asm int 3 (setting a trap)
-#if defined(__MINGW32__) || defined(__GNUC__)
-#define ASM_TRAP()    asm("int $3");
+// Windows doesn't have sys/syscall.h which is needed for debugbreak.h
+#if defined(PLATFORM_WINDOWS)
+    // fix for MSVC instruction __asm int 3 (setting a trap)
+    #if defined(__MINGW32__) || defined(__GNUC__)
+    #define ASM_TRAP()    asm("int $3");
+    #else
+    #define ASM_TRAP()    __asm int 3;
+    #endif
 #else
-#define ASM_TRAP()    __asm int 3;
+    #include <debugbreak.h>
+    #define ASM_TRAP()    debug_break();
 #endif
 
 /////////////////////////////////////////////////////////////////////

@@ -12,6 +12,11 @@ CBotVar.cpp
 CBotWhile.cpp
 )
 
+include_directories(
+${CMAKE_CURRENT_BINARY_DIR}/../
+${DEBUGBREAK_INCLUDE_DIR}
+)
+
 if(CBOT_STATIC)
     add_library(CBot STATIC ${SOURCES})
 else()
