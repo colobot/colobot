@@ -20,6 +20,9 @@
 
 #include "CBot.h"
 
+#include <cassert>
+
+
 // various constructors / destructors
 // \TODO translation:to liberate all according to esteblished tree
 // pour libérer tout selon l'arbre établi
@@ -1046,7 +1049,7 @@ bool CBotDefParam::Execute(CBotVar** ppVars, CBotStack* &pj)
                 }
                 break;
             default:
-                ASM_TRAP();
+                assert(0);
             }
         }
         newvar->SetUniqNum(p->m_nIdent);

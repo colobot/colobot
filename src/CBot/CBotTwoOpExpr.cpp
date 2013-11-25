@@ -20,6 +20,8 @@
 
 #include "CBot.h"
 
+#include <cassert>
+
 // various constructors
 
 CBotTwoOpExpr::CBotTwoOpExpr()
@@ -466,7 +468,7 @@ bool CBotTwoOpExpr::Execute(CBotStack* &pStack)
         if ( !IsNan(left, right, &err) )    result->SL(left , right);
         break;
     default:
-        ASM_TRAP();
+        assert(0);
     }
     delete temp;
 

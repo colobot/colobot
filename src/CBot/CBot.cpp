@@ -33,6 +33,9 @@
 
 #include "CBot.h"
 
+#include <cassert>
+
+
 CBotInstr::CBotInstr()
 {
     name     = "CBotInstr";
@@ -285,7 +288,7 @@ CBotInstr* CBotInstr::Compile(CBotToken* &p, CBotCStack* pStack)
 bool CBotInstr::Execute(CBotStack* &pj)
 {
     CBotString    ClassManquante = name;
-    ASM_TRAP();            // should never go through this routine
+    assert(0);            // should never go through this routine
                             // but use the routines of the subclasses
     return false;
 }
@@ -300,26 +303,26 @@ bool CBotInstr::Execute(CBotStack* &pj, CBotVar* pVar)
 void CBotInstr::RestoreState(CBotStack* &pj, bool bMain)
 {
     CBotString    ClassManquante = name;
-    ASM_TRAP();            // should never go through this routine
+    assert(0);            // should never go through this routine
                            // but use the routines of the subclasses
 }
 
 
 bool CBotInstr::ExecuteVar(CBotVar* &pVar, CBotCStack* &pile)
 {
-    ASM_TRAP();            // dad do not know, see the girls
+    assert(0);            // dad do not know, see the girls
     return false;
 }
 
 bool CBotInstr::ExecuteVar(CBotVar* &pVar, CBotStack* &pile, CBotToken* prevToken, bool bStep, bool bExtend)
 {
-    ASM_TRAP();            // dad do not know, see the girls
+    assert(0);            // dad do not know, see the girls
     return false;
 }
 
 void CBotInstr::RestoreStateVar(CBotStack* &pile, bool bMain)
 {
-    ASM_TRAP();            // dad do not know, see the girls
+    assert(0);            // dad do not know, see the girls
 }
 
 // this routine is defined only for the subclass CBotCase
@@ -531,7 +534,7 @@ void CBotLeftExprVar::RestoreState(CBotStack* &pj, bool bMain)
     CBotVar*     var1;
 
     var1 = pj->FindVar(m_token.GetString());
-    if (var1 == NULL) ASM_TRAP();
+    if (var1 == NULL) assert(0);
 
     var1->SetUniqNum(m_nIdent);                    // with the unique identifier
 }
@@ -1747,7 +1750,7 @@ bool CBotExpression::Execute(CBotStack* &pj)
             pile2->SetVar(result);
             break;
         default:
-            ASM_TRAP();
+            assert(0);
         }
         if (!IsInit)
             pile2->SetError(TX_NOTINIT, m_leftop->GetToken());
@@ -2270,7 +2273,7 @@ CBotIndexExpr::~CBotIndexExpr()
 bool CBotIndexExpr::ExecuteVar(CBotVar* &pVar, CBotCStack* &pile)
 {
     if (pVar->GetType(1) != CBotTypArrayPointer)
-        ASM_TRAP();
+        assert(0);
 
     pVar = (static_cast<CBotVarArray*>(pVar))->GetItem(0, false);    // at compile time makes the element [0]
     if (pVar == NULL)
@@ -2291,7 +2294,7 @@ bool CBotIndexExpr::ExecuteVar(CBotVar* &pVar, CBotStack* &pile, CBotToken* prev
     CBotStack*    pj = pile;
 
     if (pVar->GetType(1) != CBotTypArrayPointer)
-        ASM_TRAP();
+        assert(0);
 
     pile = pile->AddStack();
 
@@ -2372,7 +2375,7 @@ void CBotFieldExpr::SetUniqNum(int num)
 bool CBotFieldExpr::ExecuteVar(CBotVar* &pVar, CBotCStack* &pile)
 {
     if (pVar->GetType(1) != CBotTypPointer)
-        ASM_TRAP();
+        assert(0);
 
     pVar = pVar->GetItemRef(m_nIdent);
     if (pVar == NULL)
@@ -2395,7 +2398,7 @@ bool CBotFieldExpr::ExecuteVar(CBotVar* &pVar, CBotStack* &pile, CBotToken* prev
 
 
     if (pVar->GetType(1) != CBotTypPointer)
-        ASM_TRAP();
+        assert(0);
 
     CBotVarClass* pItem = pVar->GetPointer();
     if (pItem == NULL)
@@ -2648,7 +2651,7 @@ bool CBotLeftExpr::ExecuteVar(CBotVar* &pVar, CBotStack* &pile, CBotToken* prevT
     if (pVar == NULL)
     {
 #ifdef    _DEBUG
-        ASM_TRAP();
+        assert(0);
 #endif
         pile->SetError(2, &m_token);
         return false;
@@ -3289,7 +3292,7 @@ bool CBotExprVar::ExecuteVar(CBotVar* &pVar, CBotStack* &pj, CBotToken* prevToke
     if (pVar == NULL)
     {
 #ifdef    _DEBUG
-        ASM_TRAP();
+        assert(0);
 #endif
         pj->SetError(1, &m_token);
         return false;
