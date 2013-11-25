@@ -21,8 +21,10 @@
 // it never creates an instance of the class mother CBotVar
 
 #include "CBot.h"
-#include <math.h>
-#include <stdio.h>
+
+#include <cassert>
+#include <cmath>
+#include <cstdio>
 
 long CBotVar::m_identcpt = 0;
 
@@ -124,7 +126,7 @@ void CBotVarClass::InitCBotVarClass( const CBotToken* name, CBotTypResult& type 
          !type.Eq(CBotTypIntrinsic)    &&                // by convenience there accepts these types
          !type.Eq(CBotTypPointer)      &&
          !type.Eq(CBotTypArrayPointer) &&
-         !type.Eq(CBotTypArrayBody)) ASM_TRAP();
+         !type.Eq(CBotTypArrayBody)) assert(0);
 
     m_token        = new CBotToken(name);
     m_next        = NULL;
@@ -169,7 +171,7 @@ void CBotVarClass::InitCBotVarClass( const CBotToken* name, CBotTypResult& type 
 CBotVarClass::~CBotVarClass( )
 {
     if ( m_CptUse != 0 )
-        ASM_TRAP();
+        assert(0);
 
     if ( m_pParent ) delete m_pParent;
     m_pParent = NULL;
@@ -242,7 +244,7 @@ void CBotVar::SetUniqNum(long n)
 {
     m_ident = n;
 
-    if ( n == 0 ) ASM_TRAP();
+    if ( n == 0 ) assert(0);
 }
 
 long CBotVar::NextUniqNum()
@@ -267,7 +269,7 @@ bool CBotVar::Save1State(FILE* pf)
     // this routine "virtual" must never be called,
     // there must be a routine for each of the subclasses (CBotVarInt, CBotVarFloat, etc)
     // ( see the type in m_type )
-    ASM_TRAP();
+    assert(0);
     return false;
 }
 
@@ -335,7 +337,7 @@ CBotVar* CBotVar::Create(const CBotToken* name, CBotTypResult type)
         }
     }
 
-    ASM_TRAP();
+    assert(0);
     return NULL;
 }
 
@@ -406,7 +408,7 @@ CBotVar* CBotVar::Create( const char* n, CBotTypResult type)
         }
     }
 
-    ASM_TRAP();
+    assert(0);
     return NULL;
 }
 
@@ -519,25 +521,25 @@ CBotToken* CBotVar::GetToken()
 
 CBotVar* CBotVar::GetItem(const char* name)
 {
-    ASM_TRAP();
+    assert(0);
     return NULL;
 }
 
 CBotVar* CBotVar::GetItemRef(int nIdent)
 {
-    ASM_TRAP();
+    assert(0);
     return NULL;
 }
 
 CBotVar* CBotVar::GetItemList()
 {
-    ASM_TRAP();
+    assert(0);
     return NULL;
 }
 
 CBotVar* CBotVar::GetItem(int row, bool bGrow)
 {
-    ASM_TRAP();
+    assert(0);
     return NULL;
 }
 
@@ -617,7 +619,7 @@ void CBotVar::SetVal(CBotVar* var)
         }
         break;
     default:
-        ASM_TRAP();
+        assert(0);
     }
 
     m_binit = var->m_binit;        // copie l'état nan s'il y a
@@ -651,12 +653,12 @@ int CBotVar::GetPrivate()
 
 void CBotVar::SetPointer(CBotVar* pVarClass)
 {
-    ASM_TRAP();
+    assert(0);
 }
 
 CBotVarClass* CBotVar::GetPointer()
 {
-    ASM_TRAP();
+    assert(0);
     return NULL;
 }
 
@@ -665,167 +667,167 @@ CBotVarClass* CBotVar::GetPointer()
 
 int CBotVar::GetValInt()
 {
-    ASM_TRAP();
+    assert(0);
     return 0;
 }
 
 float CBotVar::GetValFloat()
 {
-    ASM_TRAP();
+    assert(0);
     return 0;
 }
 
 void CBotVar::SetValInt(int c, const char* s)
 {
-    ASM_TRAP();
+    assert(0);
 }
 
 void CBotVar::SetValFloat(float c)
 {
-    ASM_TRAP();
+    assert(0);
 }
 
 void CBotVar::Mul(CBotVar* left, CBotVar* right)
 {
-    ASM_TRAP();
+    assert(0);
 }
 
 void CBotVar::Power(CBotVar* left, CBotVar* right)
 {
-    ASM_TRAP();
+    assert(0);
 }
 
 int CBotVar::Div(CBotVar* left, CBotVar* right)
 {
-    ASM_TRAP();
+    assert(0);
     return 0;
 }
 
 int CBotVar::Modulo(CBotVar* left, CBotVar* right)
 {
-    ASM_TRAP();
+    assert(0);
     return 0;
 }
 
 void CBotVar::Add(CBotVar* left, CBotVar* right)
 {
-    ASM_TRAP();
+    assert(0);
 }
 
 void CBotVar::Sub(CBotVar* left, CBotVar* right)
 {
-    ASM_TRAP();
+    assert(0);
 }
 
 bool CBotVar::Lo(CBotVar* left, CBotVar* right)
 {
-    ASM_TRAP();
+    assert(0);
     return false;
 }
 
 bool CBotVar::Hi(CBotVar* left, CBotVar* right)
 {
-    ASM_TRAP();
+    assert(0);
     return false;
 }
 
 bool CBotVar::Ls(CBotVar* left, CBotVar* right)
 {
-    ASM_TRAP();
+    assert(0);
     return false;
 }
 
 bool CBotVar::Hs(CBotVar* left, CBotVar* right)
 {
-    ASM_TRAP();
+    assert(0);
     return false;
 }
 
 bool CBotVar::Eq(CBotVar* left, CBotVar* right)
 {
-    ASM_TRAP();
+    assert(0);
     return false;
 }
 
 bool CBotVar::Ne(CBotVar* left, CBotVar* right)
 {
-    ASM_TRAP();
+    assert(0);
     return false;
 }
 
 void CBotVar::And(CBotVar* left, CBotVar* right)
 {
-    ASM_TRAP();
+    assert(0);
 }
 
 void CBotVar::Or(CBotVar* left, CBotVar* right)
 {
-    ASM_TRAP();
+    assert(0);
 }
 
 void CBotVar::XOr(CBotVar* left, CBotVar* right)
 {
-    ASM_TRAP();
+    assert(0);
 }
 
 void CBotVar::ASR(CBotVar* left, CBotVar* right)
 {
-    ASM_TRAP();
+    assert(0);
 }
 
 void CBotVar::SR(CBotVar* left, CBotVar* right)
 {
-    ASM_TRAP();
+    assert(0);
 }
 
 void CBotVar::SL(CBotVar* left, CBotVar* right)
 {
-    ASM_TRAP();
+    assert(0);
 }
 
 void CBotVar::Neg()
 {
-    ASM_TRAP();
+    assert(0);
 }
 
 void CBotVar::Not()
 {
-    ASM_TRAP();
+    assert(0);
 }
 
 void CBotVar::Inc()
 {
-    ASM_TRAP();
+    assert(0);
 }
 void CBotVar::Dec()
 {
-    ASM_TRAP();
+    assert(0);
 }
 
 void CBotVar::Copy(CBotVar* pSrc, bool bName)
 {
-    ASM_TRAP();
+    assert(0);
 }
 
 void CBotVar::SetValString(const char* p)
 {
-    ASM_TRAP();
+    assert(0);
 }
 
 CBotString CBotVar::GetValString()
 {
-    ASM_TRAP();
+    assert(0);
     return CBotString();
 }
 
 void CBotVar::SetClass(CBotClass* pClass)
 {
-    ASM_TRAP();
+    assert(0);
 }
 
 CBotClass* CBotVar::GetClass()
 {
-    ASM_TRAP();
+    assert(0);
     return NULL;
 }
 
@@ -1398,7 +1400,7 @@ void CBotVarClass::Copy(CBotVar* pSrc, bool bName)
     pSrc = pSrc->GetPointer();                    // if source given by a pointer
 
     if ( pSrc->GetType() != CBotTypClass )
-        ASM_TRAP();
+        assert(0);
 
     CBotVarClass*    p = static_cast<CBotVarClass*>(pSrc);
 
@@ -1410,7 +1412,7 @@ void CBotVarClass::Copy(CBotVar* pSrc, bool bName)
     m_pClass    = p->m_pClass;
     if ( p->m_pParent )
     {
-        ASM_TRAP();       // "que faire du pParent";
+        assert(0);       // "que faire du pParent";
     }
 
 //    m_next        = NULL;
@@ -1768,7 +1770,7 @@ bool CBotVarClass::Ne(CBotVar* left, CBotVar* right)
 CBotVarArray::CBotVarArray(const CBotToken* name, CBotTypResult& type )
 {
     if ( !type.Eq(CBotTypArrayPointer) &&
-         !type.Eq(CBotTypArrayBody)) ASM_TRAP();
+         !type.Eq(CBotTypArrayBody)) assert(0);
 
     m_token        = new CBotToken(name);
     m_next        = NULL;
@@ -1791,7 +1793,7 @@ CBotVarArray::~CBotVarArray()
 void CBotVarArray::Copy(CBotVar* pSrc, bool bName)
 {
     if ( pSrc->GetType() != CBotTypArrayPointer )
-        ASM_TRAP();
+        assert(0);
 
     CBotVarArray*    p = static_cast<CBotVarArray*>(pSrc);
 
@@ -1825,7 +1827,7 @@ void CBotVarArray::SetPointer(CBotVar* pVarClass)
 
         if ( !pVarClass->m_type.Eq(CBotTypClass) &&
              !pVarClass->m_type.Eq(CBotTypArrayBody))
-            ASM_TRAP();
+            assert(0);
 
         (static_cast<CBotVarClass*>(pVarClass))->IncrementUse();            // incement the reference
     }
@@ -1882,7 +1884,7 @@ CBotVarPointer::CBotVarPointer(const CBotToken* name, CBotTypResult& type )
     if ( !type.Eq(CBotTypPointer) &&
          !type.Eq(CBotTypNullPointer) &&
          !type.Eq(CBotTypClass)   &&                    // for convenience accepts Class and Intrinsic
-         !type.Eq(CBotTypIntrinsic) ) ASM_TRAP();
+         !type.Eq(CBotTypIntrinsic) ) assert(0);
 
     m_token        = new CBotToken(name);
     m_next        = NULL;
@@ -1965,7 +1967,7 @@ void CBotVarPointer::SetPointer(CBotVar* pVarClass)
 
 //        if ( pVarClass->GetType() != CBotTypClass )
         if ( !pVarClass->m_type.Eq(CBotTypClass) )
-            ASM_TRAP();
+            assert(0);
 
         (static_cast<CBotVarClass*>(pVarClass))->IncrementUse();            // increment the reference
         m_pClass = (static_cast<CBotVarClass*>(pVarClass))->m_pClass;
@@ -2034,7 +2036,7 @@ void CBotVarPointer::Copy(CBotVar* pSrc, bool bName)
 {
     if ( pSrc->GetType() != CBotTypPointer &&
          pSrc->GetType() != CBotTypNullPointer)
-        ASM_TRAP();
+        assert(0);
 
     CBotVarPointer*    p = static_cast<CBotVarPointer*>(pSrc);
 
@@ -2162,11 +2164,11 @@ int CBotTypResult::GetType(int mode) const
          m_type == CBotTypClass   ||
          m_type == CBotTypIntrinsic )
 
-         if ( m_pClass == NULL ) ASM_TRAP();
+         if ( m_pClass == NULL ) assert(0);
 
 
     if ( m_type == CBotTypArrayPointer )
-         if ( m_pNext == NULL ) ASM_TRAP();
+         if ( m_pNext == NULL ) assert(0);
 #endif
     if ( mode == 3 && m_type == CBotTypNullPointer ) return CBotTypPointer;
     return    m_type;

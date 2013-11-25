@@ -130,6 +130,12 @@ public:
     /** The difference is \a after - \a before. */
     virtual long long TimeStampExactDiff(SystemTimeStamp *before, SystemTimeStamp *after) = 0;
 
+    //! Returns the data path (containing textures, levels, helpfiles, etc)
+    virtual std::string GetDataPath();
+
+    //! Returns the translations path
+    virtual std::string GetLangPath();
+
     //! Returns the profile (colobot.ini) file location
     virtual std::string GetProfileFileLocation();
 

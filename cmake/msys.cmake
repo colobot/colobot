@@ -8,5 +8,4 @@ if (MSYS AND (NOT MXE))
 
     set(COLOBOT_CXX_FLAGS "${COLOBOT_CXX_FLAGS} -U__STRICT_ANSI__") # fixes putenv()
     set(USE_SDL_MAIN 1) # fixes SDL_main
-    set(DESKTOP OFF) # MSYS doesn't have the necessary tools
 endif()

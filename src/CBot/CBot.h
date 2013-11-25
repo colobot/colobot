@@ -32,13 +32,6 @@
 #define    EOX         (reinterpret_cast<CBotStack*>(-1))   /// \def tag special condition
 
 
-// fix for MSVC instruction __asm int 3 (setting a trap)
-#if defined(__MINGW32__) || defined(__GNUC__)
-#define ASM_TRAP()    asm("int $3");
-#else
-#define ASM_TRAP()    __asm int 3;
-#endif
-
 /////////////////////////////////////////////////////////////////////
 // forward declaration
 

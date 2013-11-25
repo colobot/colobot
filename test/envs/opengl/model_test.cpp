@@ -265,6 +265,9 @@ int SDL_MAIN_FUNC(int argc, char *argv[])
 {
     CLogger logger;
 
+    CSystemUtils* systemUtils = CSystemUtils::Create(); // platform-specific utils
+    systemUtils->Init();
+
     PREV_TIME = GetSystemUtils()->CreateTimeStamp();
     CURR_TIME = GetSystemUtils()->CreateTimeStamp();
 
@@ -273,7 +276,7 @@ int SDL_MAIN_FUNC(int argc, char *argv[])
 
     if (argc != 3)
     {
-        std::cerr << "Usage: " << argv[0] << "{old|new_txt|new_bin} model_file" << std::endl;
+        std::cerr << "Usage: " << argv[0] << " {old|new_txt|new_bin} model_file" << std::endl;
         return 1;
     }
 

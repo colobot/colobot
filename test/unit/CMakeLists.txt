@@ -18,20 +18,12 @@ endif()
 # Configure file
 configure_file(${SRC_DIR}/common/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/common/config.h)
 
-# Platform-dependent implementation of system.h
-if(PLATFORM_WINDOWS)
-    set(SYSTEM_CPP_MODULE "system_windows.cpp")
-elseif(PLATFORM_LINUX)
-    set(SYSTEM_CPP_MODULE "system_linux.cpp")
-else()
-    set(SYSTEM_CPP_MODULE "system_other.cpp")
-endif()
-
 # Code sources
 set(COLOBOT_SOURCES
 ${SRC_DIR}/app/app.cpp
 ${SRC_DIR}/app/system.cpp
 ${SRC_DIR}/app/${SYSTEM_CPP_MODULE}
+${SRC_DIR}/app/system_other.cpp
 ${SRC_DIR}/common/event.cpp
 ${SRC_DIR}/common/image.cpp
 ${SRC_DIR}/common/iman.cpp

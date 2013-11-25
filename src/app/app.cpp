@@ -147,8 +147,8 @@ CApplication::CApplication()
     m_mouseButtonsState = 0;
     m_trackedKeys = 0;
 
-    m_dataPath = COLOBOT_DEFAULT_DATADIR;
-    m_langPath = COLOBOT_I18N_DIR;
+    m_dataPath = GetSystemUtils()->GetDataPath();
+    m_langPath = GetSystemUtils()->GetLangPath();
     m_texPackPath = "";
 
     m_runSceneName = "";
@@ -280,7 +280,7 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
                 GetLogger()->Message("  -debug modes        enable debug modes (more info printed in logs; see code for reference of modes)\n");
                 GetLogger()->Message("  -runscene sceneNNN  run given scene on start\n");
                 GetLogger()->Message("  -loglevel level     set log level to level (one of: trace, debug, info, warn, error, none)\n");
-                GetLogger()->Message("  -language lang      set language (one of: en, de, fr, pl)\n");
+                GetLogger()->Message("  -language lang      set language (one of: en, de, fr, pl, ru)\n");
                 GetLogger()->Message("  -datadir path       set custom data directory path\n");
                 GetLogger()->Message("  -langdir path       set custom language directory path\n");
                 GetLogger()->Message("  -texpack path       set path to custom texture pack\n");
@@ -421,7 +421,10 @@ bool CApplication::Create()
         return false;
     }
 
+#if !defined(PLATFORM_MACOSX)
+    // On Mac OSX, the bundle can potentially change place, it doesn't make sense to cache it to the configuration file
     GetProfile().SetLocalProfileString("Resources", "Data", m_dataPath);
+#endif
 
     SetLanguage(m_language);
 
@@ -435,12 +438,16 @@ bool CApplication::Create()
 
     m_sound->Create(true);
 
+#if !defined(PLATFORM_MACOSX)
+    // On Mac OSX, the bundle can potentially change place, it doesn't make sense to cache it to the configuration file
+
     // Cache sound files
     if (defaultValues)
     {
         GetProfile().SetLocalProfileString("Resources", "Sound", GetDataSubdirPath(DIR_SOUND));
         GetProfile().SetLocalProfileString("Resources", "Music", GetDataSubdirPath(DIR_MUSIC));
     }
+#endif
 
     if (!m_customDataPath && GetProfile().GetLocalProfileString("Resources", "Sound", path))
     {
@@ -1681,6 +1688,10 @@ char CApplication::GetLanguageChar() const
         case LANGUAGE_POLISH:
             langChar = 'P';
             break;
+
+        case LANGUAGE_RUSSIAN:
+            langChar = 'R';
+            break;
     }
     return langChar;
 }
@@ -1705,6 +1716,11 @@ bool CApplication::ParseLanguage(const std::string& str, Language& language)
     else if (str == "pl")
     {
         language = LANGUAGE_POLISH;
+        return true;
+    }
+    else if (str == "ru")
+    {
+        language = LANGUAGE_RUSSIAN;
         return true;
     }
 
@@ -1740,6 +1756,10 @@ void CApplication::SetLanguage(Language language)
         case LANGUAGE_POLISH:
             locale = "pl_PL.utf8";
             break;
+
+        case LANGUAGE_RUSSIAN:
+            locale = "ru_RU.utf8";
+            break;
     }
 
     if (locale.empty())
@@ -1769,6 +1789,10 @@ void CApplication::SetLanguage(Language language)
             else if (strncmp(envLang,"pl",2) == 0)
             {
                 m_language = LANGUAGE_POLISH;
+            }
+            else if (strncmp(envLang,"ru",2) == 0)
+            {
+                m_language = LANGUAGE_RUSSIAN;
             }
             else
             {

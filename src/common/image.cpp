@@ -218,15 +218,30 @@ void CImage::PadToNearestPowerOfTwo()
     int w = Math::NextPowerOfTwo(m_data->surface->w);
     int h = Math::NextPowerOfTwo(m_data->surface->h);
 
+    BlitToNewRGBASurface(w, h);
+}
+
+void CImage::ConvertToRGBA()
+{
+    assert(m_data != nullptr);
+
+    int w = m_data->surface->w;
+    int h = m_data->surface->h;
+
+    BlitToNewRGBASurface(w, h);
+}
+
+void CImage::BlitToNewRGBASurface(int width, int height)
+{
     m_data->surface->flags &= (~SDL_SRCALPHA);
-    SDL_Surface* resizedSurface = SDL_CreateRGBSurface(0, w, h, 32, 0x00ff0000, 0x0000ff00,
-                                                       0x000000ff, 0xff000000);
-    assert(resizedSurface != NULL);
-    SDL_BlitSurface(m_data->surface, NULL, resizedSurface, NULL);
+    SDL_Surface* convertedSurface = SDL_CreateRGBSurface(0, width, height, 32, 0x00FF0000, 0x0000FF00,
+                                                         0x000000FF, 0xFF000000);
+    assert(convertedSurface != nullptr);
+    SDL_BlitSurface(m_data->surface, nullptr, convertedSurface, nullptr);
 
     SDL_FreeSurface(m_data->surface);
 
-    m_data->surface = resizedSurface;
+    m_data->surface = convertedSurface;
 }
 
 /**
@@ -374,6 +389,11 @@ bool CImage::Load(const std::string& fileName)
 
         m_error = std::string(IMG_GetError());
         return false;
+    }
+
+    if (m_data->surface->format->palette != nullptr)
+    {
+        ConvertToRGBA();
     }
 
     return true;

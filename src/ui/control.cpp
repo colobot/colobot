@@ -57,7 +57,7 @@ CControl::~CControl()
 
 bool CControl::Create(Math::Point pos, Math::Point dim, int icon, EventType eventType)
 {
-    char text[100];
+    char text[200];
     std::string str_text;
 
     if ( eventType == EVENT_NULL )

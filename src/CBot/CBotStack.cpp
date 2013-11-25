@@ -18,6 +18,8 @@
 
 
 #include "CBot.h"
+
+#include <cassert>
 #include <cstdlib>
 #include <cstring>
 
@@ -80,12 +82,12 @@ CBotStack* CBotStack::FirstStack()
 CBotStack::CBotStack(CBotStack* ppapa)
 {
     // constructor must exist or the destructor is never called!
-    ASM_TRAP();
+    assert(0);
 }
 
 CBotStack::~CBotStack()
 {
-    ASM_TRAP();    // use Delete () instead
+    assert(0);    // use Delete () instead
 }
 
 void CBotStack::Delete()
@@ -693,7 +695,7 @@ void CBotStack::AddVar(CBotVar* pVar)
     *pp = pVar;                    // added after
 
 #ifdef    _DEBUG
-    if ( pVar->GetUniqNum() == 0 ) ASM_TRAP();
+    if ( pVar->GetUniqNum() == 0 ) assert(0);
 #endif
 }
 
@@ -1091,7 +1093,7 @@ bool CBotVar::RestoreState(FILE* pf, CBotVar* &pVar)
             }
             break;
         default:
-            ASM_TRAP();
+            assert(0);
         }
 
         if ( pPrev != NULL ) pPrev->m_next = pNew;
@@ -1388,7 +1390,7 @@ void CBotCStack::AddVar(CBotVar* pVar)
     *pp = pVar;                    // added after
 
 #ifdef    _DEBUG
-    if ( pVar->GetUniqNum() == 0 ) ASM_TRAP();
+    if ( pVar->GetUniqNum() == 0 ) assert(0);
 #endif
 }
 

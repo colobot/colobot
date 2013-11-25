@@ -97,6 +97,9 @@ public:
     //! Pads the image to nearest power of 2 dimensions
     void PadToNearestPowerOfTwo();
 
+    //! Convert the image to RGBA surface
+    void ConvertToRGBA();
+
     //! Loads an image from the specified file
     bool Load(const std::string &fileName);
 
@@ -107,6 +110,9 @@ public:
     std::string GetError();
 
 private:
+    //! Blit to new RGBA surface with given size
+    void BlitToNewRGBASurface(int width, int height);
+
     //! Last encountered error
     std::string m_error;
     //! Image data

@@ -29,7 +29,6 @@ To cross-compile Colobot using MXE:
     * check-requirements
     * expat
     * flac
-    * flac
     * freetype
     * gcc
     * gcc-gmp
@@ -55,15 +54,25 @@ To cross-compile Colobot using MXE:
     * xz
     * zlib
 
-4. Now `cd` to directory with colobot sources. To cross-compile a CMake project,
-   you have to specify a CMake toolchain file. MXE has such file in MXE's directory:
-   `usr/i686-pc-mingw32/share/cmake/mxe-conf.cmake`
-   Toolchain file is specified thus:`cmake -DCMAKE_TOOLCHAIN_FILE=/path/to/mxe-conf.cmake .`
+4. Now `cd` to directory with colobot sources.
+   It is recommended that you create a separate directory for out-of-source build:
+   `mkdir build-mxe && cd build-mxe`
+
+   In order to cross-compile a CMake project, you have to specify a CMake toolchain file.
+   MXE has such file in MXE's directory: `usr/i686-pc-mingw32/share/cmake/mxe-conf.cmake`
+   So you should use the following cmake command: `cmake -DCMAKE_TOOLCHAIN_FILE=/path/to/mxe-conf.cmake ..`
    CMake files in Colobot should detect that MXE is being used and they will
    modify flags, paths, etc. as required. You should not run into any problems.
-   *Note:* you may also want to use a separate out-of-source build directory for MXE.
 
-5. `make` should now compile the game with the resulting exe in `bin/colobot.exe`.
+5. `make` should now compile the game with the resulting executable as `colobot.exe`.
    The exe is linked against all libraries *statically*, so there are no dependencies
    on external DLLs. However, the resulting binary will be huge with all these libraries,
-   so you might want to do: `strip bin/colobot.exe`.
+   so you might want to do: `strip colobot.exe`.
+
+6. If you want to create a Colobot installer, you need to additionally build 'nsis'
+   in MXE. Then you can create the NSIS installer that way:
+   `PATH=/path/to/mxe/binaries:$PATH make package`
+   where `/path/to/mxe/binaries` is path to cross-compiled MXE binaries available
+   in MXE's directory under `usr/i686-pc-mingw32/bin`.
+   This will create a versioned colobot-$version.exe installer that will install Colobot
+   in system directories, add a shortcut in the start menu and setup an uninstaller.

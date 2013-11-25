@@ -13,7 +13,7 @@ project(colobot C CXX)
 set(COLOBOT_VERSION_CODENAME "Gold")
 set(COLOBOT_VERSION_MAJOR    0)
 set(COLOBOT_VERSION_MINOR    1)
-set(COLOBOT_VERSION_REVISION 1)
+set(COLOBOT_VERSION_REVISION 2)
 
 # Used on official releases
 set(COLOBOT_VERSION_RELEASE_CODENAME "-alpha")
@@ -45,12 +45,18 @@ if("${CMAKE_SYSTEM_NAME}" MATCHES "Windows")
     set(PLATFORM_LINUX   0)
     set(PLATFORM_MACOSX  0)
     set(PLATFORM_OTHER   0)
+
+    # Platform-dependent implementation of system.h
+    set(SYSTEM_CPP_MODULE "system_windows.cpp")
 elseif("${CMAKE_SYSTEM_NAME}" MATCHES "Linux")
     message(STATUS "Build for Linux system")
     set(PLATFORM_WINDOWS 0)
     set(PLATFORM_LINUX   1)
     set(PLATFORM_MACOSX  0)
     set(PLATFORM_OTHER   0)
+
+    # Platform-dependent implementation of system.h
+    set(SYSTEM_CPP_MODULE "system_linux.cpp")
 elseif("${CMAKE_SYSTEM_NAME}" MATCHES "Darwin")
     message(STATUS "Build for Mac OSX system")
     set(PLATFORM_WINDOWS 0)
@@ -58,6 +64,9 @@ elseif("${CMAKE_SYSTEM_NAME}" MATCHES "Darwin")
     set(PLATFORM_MACOSX  1)
     set(PLATFORM_OTHER   0)
     
+    # Platform-dependent implementation of system.h
+    set(SYSTEM_CPP_MODULE "system_macosx.cpp")
+
     set(USE_SDL_MAIN 1) # fixes SDL_main
 else()
     message(STATUS "Build for other system")
@@ -65,6 +74,9 @@ else()
     set(PLATFORM_LINUX   0)
     set(PLATFORM_MACOSX  0)
     set(PLATFORM_OTHER   1)
+
+    # Platform-dependent implementation of system.h
+    set(SYSTEM_CPP_MODULE "system_other.cpp")
 endif()
 
 
@@ -309,6 +321,12 @@ if(PLATFORM_WINDOWS)
         set(COLOBOT_INSTALL_I18N_DIR ${CMAKE_INSTALL_PREFIX}/lang CACHE PATH "Colobot translations directory")
         set(COLOBOT_INSTALL_DOC_DIR ${CMAKE_INSTALL_PREFIX}/doc CACHE PATH "Colobot documentation directory")
     endif()
+elseif(PLATFORM_MACOSX)
+    set(COLOBOT_INSTALL_BIN_DIR ../MacOS CACHE STRING "Colobot binary directory")
+    set(COLOBOT_INSTALL_LIB_DIR ../MacOS CACHE STRING "Colobot libraries directory")
+    set(COLOBOT_INSTALL_DATA_DIR . CACHE STRING "Colobot shared data directory")
+    set(COLOBOT_INSTALL_I18N_DIR i18n CACHE SRING "Colobot translations directory")
+    set(COLOBOT_INSTALL_DOC_DIR doc CACHE STRING "Colobot documentation directory")
 else()
     set(COLOBOT_INSTALL_BIN_DIR ${CMAKE_INSTALL_PREFIX}/games CACHE PATH "Colobot binary directory")
     set(COLOBOT_INSTALL_LIB_DIR ${CMAKE_INSTALL_PREFIX}/lib/colobot CACHE PATH "Colobot libraries directory")
