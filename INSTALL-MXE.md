@@ -67,7 +67,7 @@ To cross-compile Colobot using MXE:
 5. `make` should now compile the game with the resulting executable as `colobot.exe`.
    The exe is linked against all libraries *statically*, so there are no dependencies
    on external DLLs. However, the resulting binary will be huge with all these libraries,
-   so you might want to do: `strip bin/colobot.exe`.
+   so you might want to do: `strip colobot.exe`.
 
 6. If you want to create a Colobot installer, you need to additionally build 'nsis'
    in MXE. Then you can create the NSIS installer that way:

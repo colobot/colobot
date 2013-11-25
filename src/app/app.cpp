@@ -281,7 +281,7 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
                 GetLogger()->Message("  -debug modes        enable debug modes (more info printed in logs; see code for reference of modes)\n");
                 GetLogger()->Message("  -runscene sceneNNN  run given scene on start\n");
                 GetLogger()->Message("  -loglevel level     set log level to level (one of: trace, debug, info, warn, error, none)\n");
-                GetLogger()->Message("  -language lang      set language (one of: en, de, fr, pl)\n");
+                GetLogger()->Message("  -language lang      set language (one of: en, de, fr, pl, ru)\n");
                 GetLogger()->Message("  -datadir path       set custom data directory path\n");
                 GetLogger()->Message("  -game modid         run mod\n");
                 GetLogger()->Message("  -langdir path       set custom language directory path\n");
