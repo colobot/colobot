@@ -248,6 +248,10 @@ add_subdirectory(lib/clipboard)
 set(LOCALENAME_INCLUDE_DIR ${colobot_SOURCE_DIR}/lib/localename)
 add_subdirectory(lib/localename)
 
+##
+# debugbreak
+##
+set(DEBUGBREAK_INCLUDE_DIR ${colobot_SOURCE_DIR}/lib/debugbreak)
 
 ##
 # Doxygen docs
