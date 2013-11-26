@@ -69,7 +69,7 @@ To cross-compile Colobot using MXE:
    on external DLLs. However, the resulting binary will be huge with all these libraries,
    so you might want to do: `strip colobot.exe`.
 
-6. If you want to create a Colobot installer, you need to additionally build 'nsis'
+6. If you want to create a Colobot installer, you need to additionally build `nsis`
    in MXE. Then you can create the NSIS installer that way:
    `PATH=/path/to/mxe/binaries:$PATH make package`
    where `/path/to/mxe/binaries` is path to cross-compiled MXE binaries available

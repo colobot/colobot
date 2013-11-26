@@ -58,30 +58,43 @@ so you have regular bash commands but can specify paths using Windows syntax: "C
 CMake should automatically detect this build environment and use the Windows options to compile.
 
 To compile colobot, change the directory to where you have downloaded the source files:
- $ cd "C:\path\to\colobot\sources"
-
+```
+  $ cd "C:\path\to\colobot\sources"
+```
 It is recommended that you create a build directory:
- $ mkdir build
- $ cd build
-
+```
+  $ mkdir build
+  $ cd build
+```
 Then you have to configure CMake. You should specify the following options:
+```
  $ cmake -G "MSYS Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="C:\some\directory" ..
-where "C:\some\directory" is the directory you want to run colobot from. It can be a proper installation path if you want
-to install it in system, or some temporary directory like "..\colobot-temporary-install" if you just want to try the game.
-You can also skip this argument and use the default install path: "C:\Program Files\colobot".
+```
+where `C:\some\directory` is the directory you want to run colobot from. It can be a proper installation path if you want
+to install it in system, or some temporary directory like `..\colobot-temporary-install` if you just want to try the game.
+You can also skip this argument and use the default install path: `C:\Program Files\colobot`.
 Make sure you specify "MSYS Makefiles" as the CMake generator because otherwise, the default for Windows is to use MSVC nmake
 and it will not work.
 
 Then to compile:
- $ make
-
+```
+  $ make
+```
 Everything should compile just fine. If you see any errors, it most likely means missing libraries or invalid installation.
 Warnings may occur, but are mostly harmless.
 
 Now you need to perform the installation:
- $ make install
-
+```
+  $ make install
+```
 You should get all files ready to use under the installation prefix you specified. Run `colobot.exe` and enjoy the game.
+
+As of 0.1.2-alpha, you can also create a Windows installer package using NSIS (http://nsis.sourceforge.net/). To create
+a package, make sure you have the NSIS utilities (makensis) in your system path (or set `$PATH` accordingly), and invoke:
+```
+  $ make package
+```
+
 
 ### Compiling on Linux
 
@@ -108,38 +121,48 @@ Make sure you install the packages along with header files (often distributed in
 CMake should warn you.
 
 To compile colobot, run your favorite shell and change the directory to where you downloaded colobot source files:
- $ cd /path/to/colobot/sources
-
+```
+  $ cd /path/to/colobot/sources
+```
 It is recommended that you create a build directory:
- $ mkdir build
- $ cd build
-
+```
+  $ mkdir build
+  $ cd build
+```
 Now to configure CMake:
-  $ cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/some/prefix ..
-where "/some/prefix" is installation prefix where you want to put the game files. It could be a proper installation directory
-if you want to install colobot in the system or simply temporary directory like "/tmp/colobot-temporary-install" if you just want to try it.
+```
+   $ cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/some/prefix ..
+```
+where `/some/prefix` is installation prefix where you want to put the game files. It could be a proper installation directory
+if you want to install colobot in the system or simply temporary directory like `/tmp/colobot-temporary-install` if you just want to try it.
 You can also use clang as the compiler. In that case, before issuing cmake, set the following variables:
- $ export CC=clang CXX=clang++
-
+```
+  $ export CC=clang CXX=clang++
+```
 Then to compile:
- $ make
-
+```
+  $ make
+```
 Everything should compile just fine. If you see any errors, it most likely means missing libraries. Warnings may occur,
 but are mostly harmless.
 
 Now you need to install the game files:
- $ make install
-
+```
+  $ make install
+```
 You can now run the game from the prefix you specified. Note that colobot binary is installed in `games/` subdirectory.
 So if you provided prefix "/some/prefix", you can run:
- $ /some/prefix/games/colobot
+```
+  $ /some/prefix/games/colobot
+```
 
 ### Compiling on MacOS X
 
 As of 0.1.2-alpha, we have added MacOS X support. See [INSTALL-MacOSX.md](https://github.com/colobot/colobot/blob/master/INSTALL-MacOSX.md)
 file for details.
 
-## Other platforms
+
+### Other platforms
 
 The code isn't particularly tied to any compiler or platform, so in theory it should work on any platform provided you have
 the required libraries there.  Also, other compilers than currently supported GCC >= 4.6 and Clang may happen to work with our code.
