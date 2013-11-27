@@ -10,8 +10,6 @@ ${CLIPBOARD_INCLUDE_DIR}
 
 # Platform-dependent implementation of CSystemUtils
 if(PLATFORM_WINDOWS)
-elseif(PLATFORM_LINUX)
-    set(ADDITIONAL_LIB "-lX11")
 elseif(PLATFORM_MACOSX)
     set(ADDITIONAL_LIB "${X11_X11_LIB}")
 else()
