@@ -112,6 +112,8 @@ protected:
             void    DrawShadow(Math::Point pos, Math::Point dim, float deep=1.0f);
     virtual bool    Detect(Math::Point pos);
 
+    std::string     GetResourceName(EventType eventType);
+
 protected:
     Gfx::CEngine*     m_engine;
     Gfx::CParticle*   m_particle;

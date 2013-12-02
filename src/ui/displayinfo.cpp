@@ -972,7 +972,6 @@ void ObjectAdd(ObjectList list[], ObjectType type)
 void ObjectWrite(FILE* file, ObjectList list[], int i)
 {
     char        line[100];
-    char        res[100];
     char*       p;
 
     if ( list[i].total < 10 )
@@ -984,12 +983,14 @@ void ObjectWrite(FILE* file, ObjectList list[], int i)
         sprintf(line, "\\c;%dx \\n;\\l;", list[i].total);
     }
 
+    std::string res;
     GetResource(RES_OBJECT, list[i].type, res);
-    if ( res[0] == 0 )  return;
-    strcat(line, res);
+    if (res.empty())  return;
+    strcat(line, res.c_str());
 
     strcat(line, "\\u ");
-    p = const_cast<char*>(GetHelpFilename(list[i].type).c_str());
+    std::string helpFilename = GetHelpFilename(list[i].type);
+    p = const_cast<char*>(helpFilename.c_str());
     if ( p[0] == 0 )  return;
     strcat(line, p+7);  // skip "help\?\"
     p = strstr(line, ".txt");
@@ -1006,7 +1007,7 @@ void CDisplayInfo::CreateObjectsFile()
     CObject*    pObj;
     ObjectType  type;
     ObjectList  list[200];
-    char        line[100];
+    std::string line;
     int         i;
     bool        bRadar, bAtLeast;
 
@@ -1038,7 +1039,7 @@ void CDisplayInfo::CreateObjectsFile()
     if ( bRadar )
     {
         GetResource(RES_TEXT, RT_SATCOM_LIST, line);
-        fputs(line, file);
+        fputs(line.c_str(), file);
         bAtLeast = false;
         for ( i=0 ; i<200 ; i++ )
         {
@@ -1054,13 +1055,12 @@ void CDisplayInfo::CreateObjectsFile()
         if ( !bAtLeast )
         {
             GetResource(RES_TEXT, RT_SATCOM_NULL, line);
-            fputs(line, file);
+            fputs(line.c_str(), file);
         }
 
-        strcpy(line, "\n");
-        fputs(line, file);
+        fputs("\n", file);
         GetResource(RES_TEXT, RT_SATCOM_BOT, line);
-        fputs(line, file);
+        fputs(line.c_str(), file);
         bAtLeast = false;
         for ( i=0 ; i<200 ; i++ )
         {
@@ -1101,13 +1101,12 @@ void CDisplayInfo::CreateObjectsFile()
         if ( !bAtLeast )
         {
             GetResource(RES_TEXT, RT_SATCOM_NULL, line);
-            fputs(line, file);
+            fputs(line.c_str(), file);
         }
 
-        strcpy(line, "\n");
-        fputs(line, file);
+        fputs("\n", file);
         GetResource(RES_TEXT, RT_SATCOM_BUILDING, line);
-        fputs(line, file);
+        fputs(line.c_str(), file);
         bAtLeast = false;
         for ( i=0 ; i<200 ; i++ )
         {
@@ -1142,13 +1141,12 @@ void CDisplayInfo::CreateObjectsFile()
         if ( !bAtLeast )
         {
             GetResource(RES_TEXT, RT_SATCOM_NULL, line);
-            fputs(line, file);
+            fputs(line.c_str(), file);
         }
 
-        strcpy(line, "\n");
-        fputs(line, file);
+        fputs("\n", file);
         GetResource(RES_TEXT, RT_SATCOM_FRET, line);
-        fputs(line, file);
+        fputs(line.c_str(), file);
         bAtLeast = false;
         for ( i=0 ; i<200 ; i++ )
         {
@@ -1170,13 +1168,12 @@ void CDisplayInfo::CreateObjectsFile()
         if ( !bAtLeast )
         {
             GetResource(RES_TEXT, RT_SATCOM_NULL, line);
-            fputs(line, file);
+            fputs(line.c_str(), file);
         }
 
-        strcpy(line, "\n");
-        fputs(line, file);
+        fputs("\n", file);
         GetResource(RES_TEXT, RT_SATCOM_ALIEN, line);
-        fputs(line, file);
+        fputs(line.c_str(), file);
         bAtLeast = false;
         for ( i=0 ; i<200 ; i++ )
         {
@@ -1195,19 +1192,18 @@ void CDisplayInfo::CreateObjectsFile()
         if ( !bAtLeast )
         {
             GetResource(RES_TEXT, RT_SATCOM_NULL, line);
-            fputs(line, file);
+            fputs(line.c_str(), file);
         }
     }
     else
     {
         GetResource(RES_TEXT, RT_SATCOM_ERROR1, line);
-        fputs(line, file);
+        fputs(line.c_str(), file);
         GetResource(RES_TEXT, RT_SATCOM_ERROR2, line);
-        fputs(line, file);
+        fputs(line.c_str(), file);
     }
 
-    strcpy(line, "\n");
-    fputs(line, file);
+    fputs("\n", file);
 
     fclose(file);
 }

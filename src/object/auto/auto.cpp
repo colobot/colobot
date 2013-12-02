@@ -175,7 +175,6 @@ bool CAuto::CreateInterface(bool bSelect)
     Ui::CWindow*    pw;
     Math::Point     pos, dim, ddim;
     float       ox, oy, sx, sy;
-    char        name[100];
 
     pw = static_cast<Ui::CWindow*>(m_interface->SearchControl(EVENT_WINDOW0));
     if ( pw != nullptr )
@@ -195,6 +194,7 @@ bool CAuto::CreateInterface(bool bSelect)
     pw = static_cast<Ui::CWindow*>(m_interface->SearchControl(EVENT_WINDOW0));
     if ( pw == 0 )  return false;
 
+    std::string name;
     m_object->GetTooltipName(name);
     pos.x = 0.0f;
     pos.y = 64.0f/480.0f;

@@ -22,6 +22,7 @@
 #include "common/global.h"
 #include "common/iman.h"
 #include "common/restext.h"
+#include "common/stringutils.h"
 
 #include "graphics/engine/terrain.h"
 #include "graphics/engine/water.h"
@@ -3898,9 +3899,9 @@ bool CScript::Continue(const Event &event)
 
                 if ( m_error != 0 && m_errMode == ERM_STOP )
                 {
-                    char    s[100];
+                    std::string s;
                     GetError(s);
-                    m_main->GetDisplayText()->DisplayText(s, m_object, 10.0f, Ui::TT_ERROR);
+                    m_main->GetDisplayText()->DisplayText(s.c_str(), m_object, 10.0f, Ui::TT_ERROR);
                 }
                 m_engine->SetPause(true);  // gives pause
                 return true;
@@ -3931,9 +3932,9 @@ bool CScript::Continue(const Event &event)
 
         if ( m_error != 0 && m_errMode == ERM_STOP )
         {
-            char    s[100];
+            std::string s;
             GetError(s);
-            m_main->GetDisplayText()->DisplayText(s, m_object, 10.0f, Ui::TT_ERROR);
+            m_main->GetDisplayText()->DisplayText(s.c_str(), m_object, 10.0f, Ui::TT_ERROR);
         }
         return true;
     }
@@ -3973,9 +3974,9 @@ bool CScript::Step(const Event &event)
 
         if ( m_error != 0 && m_errMode == ERM_STOP )
         {
-            char    s[100];
+            std::string s;
             GetError(s);
-            m_main->GetDisplayText()->DisplayText(s, m_object, 10.0f, Ui::TT_ERROR);
+            m_main->GetDisplayText()->DisplayText(s.c_str(), m_object, 10.0f, Ui::TT_ERROR);
         }
         return true;
     }
@@ -4347,27 +4348,27 @@ int CScript::GetError()
 
 // Returns the text of the error.
 
-void CScript::GetError(char* buffer)
+void CScript::GetError(std::string& error)
 {
     if ( m_error == 0 )
     {
-        buffer[0] = 0;
+        error.clear();
     }
     else
     {
         if ( m_error == ERR_OBLIGATORYTOKEN )
         {
-            char s[100];
+            std::string s;
             GetResource(RES_ERR, m_error, s);
-            sprintf(buffer, s, m_token);
+            error = StrUtils::Format(s.c_str(), m_token);
         }
         else if ( m_error < 1000 )
         {
-            GetResource(RES_ERR, m_error, buffer);
+            GetResource(RES_ERR, m_error, error);
         }
         else
         {
-            GetResource(RES_CBOT, m_error, buffer);
+            GetResource(RES_CBOT, m_error, error);
         }
     }
 }
@@ -4385,7 +4386,9 @@ void CScript::New(Ui::CEdit* edit, const char* name)
     char    *sf;
     int     cursor1, cursor2, len, i, j;
 
-    GetResource(RES_TEXT, RT_SCRIPT_NEW, res);
+    std::string resStr;
+    GetResource(RES_TEXT, RT_SCRIPT_NEW, resStr);
+    strcpy(res, resStr.c_str());
     if ( name[0] == 0 )  strcpy(text, res);
     else                 strcpy(text, name);
 

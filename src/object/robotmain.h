@@ -398,7 +398,7 @@ protected:
     void        HiliteClear();
     void        HiliteObject(Math::Point pos);
     void        HiliteFrame(float rTime);
-    void        CreateTooltip(Math::Point pos, const char* text);
+    void        CreateTooltip(Math::Point pos, const std::string& text);
     void        ClearTooltip();
     CObject*    DetectObject(Math::Point pos);
     void        ChangeCamera();
@@ -506,7 +506,7 @@ protected:
     char            m_mapFilename[100];
 
     Math::Point     m_tooltipPos;
-    char            m_tooltipName[100];
+    std::string     m_tooltipName;
     float           m_tooltipTime;
 
     char            m_infoFilename[SATCOM_MAX][100]; // names of text files

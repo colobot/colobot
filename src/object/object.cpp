@@ -7263,10 +7263,10 @@ int  CObject::GetDefRank()
 
 // Getes the object name for the tooltip.
 
-bool CObject::GetTooltipName(char* name)
+bool CObject::GetTooltipName(std::string& name)
 {
     GetResource(RES_OBJECT, m_type, name);
-    return ( name[0] != 0 );
+    return !name.empty();
 }
 
 

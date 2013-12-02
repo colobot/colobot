@@ -1798,8 +1798,10 @@ bool CEdit::ReadText(std::string filename, int addSize)
                     res = main->GetInputBinding(slot).primary;
                     if ( res != 0 )
                     {
-                        if ( GetResource(RES_KEY, res, iName) )
+                        std::string iNameStr;
+                        if ( GetResource(RES_KEY, res, iNameStr) )
                         {
+                            strcpy(iName, iNameStr.c_str());
                             m_text[j] = ' ';
                             m_format[j] = font;
                             j ++;
@@ -1817,9 +1819,13 @@ bool CEdit::ReadText(std::string filename, int addSize)
                             res = main->GetInputBinding(slot).secondary;
                             if ( res != 0 )
                             {
-                                if ( GetResource(RES_KEY, res, iName) )
+                                if ( GetResource(RES_KEY, res, iNameStr) )
                                 {
-                                    GetResource(RES_TEXT, RT_KEY_OR, text);
+                                    strcpy(iName, iNameStr.c_str());
+
+                                    std::string textStr;
+                                    GetResource(RES_TEXT, RT_KEY_OR, textStr);
+                                    strcpy(text, textStr.c_str());
                                     n = 0;
                                     while ( text[n] != 0 )
                                     {

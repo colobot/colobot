@@ -639,7 +639,7 @@ public:
     void        SetDefRank(int rank);
     int         GetDefRank();
 
-    bool        GetTooltipName(char* name);
+    bool        GetTooltipName(std::string& name);
 
     void        AddDeselList(CObject* pObj);
     CObject*    SubDeselList();
