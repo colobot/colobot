@@ -7,8 +7,6 @@ add_definitions(-DLIB_COMPILE=1)
 
 if(PLATFORM_WINDOWS)
     set(CLIPBOARD_SRC src/clipboardWin32.c)
-elseif(PLATFORM_LINUX)
-    set(CLIPBOARD_SRC src/clipboardX11.c)
 else()
     set(CLIPBOARD_SRC src/clipboardX11.c)
 endif()

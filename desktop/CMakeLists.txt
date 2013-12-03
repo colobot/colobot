@@ -4,7 +4,7 @@ set(COLOBOT_ICON_FILE colobot.svg)
 
 # Render SVG icon in various sizes
 find_program(RSVG_CONVERT rsvg-convert)
-if(RSVG_CONVERT AND (PLATFORM_LINUX OR PLATFORM_MACOSX))
+if(RSVG_CONVERT AND (PLATFORM_GNU OR PLATFORM_MACOSX))
     add_custom_target(png-icons ALL)
     foreach(PNGSIZE 512 256 128 48 32 16)
         add_custom_command(
@@ -15,7 +15,7 @@ if(RSVG_CONVERT AND (PLATFORM_LINUX OR PLATFORM_MACOSX))
         add_custom_target(png-icon-${PNGSIZE} ALL DEPENDS ${PNGSIZE}/colobot.png)
         add_dependencies(png-icons png-icon-${PNGSIZE})
 
-        if(PLATFORM_LINUX)
+        if(PLATFORM_GNU)
             install(
                 FILES ${CMAKE_CURRENT_BINARY_DIR}/${PNGSIZE}/colobot.png
                 DESTINATION ${CMAKE_INSTALL_PREFIX}/share/icons/hicolor/${PNGSIZE}x${PNGSIZE}/apps/
@@ -37,7 +37,7 @@ if(RSVG_CONVERT AND (PLATFORM_LINUX OR PLATFORM_MACOSX))
 
 endif()
 
-if(PLATFORM_LINUX)
+if(PLATFORM_GNU)
     # Install Desktop Entry file
     set(COLOBOT_DESKTOP_FILE colobot.desktop)
     add_custom_command(
@@ -112,7 +112,7 @@ if(PLATFORM_LINUX)
             endforeach()
         endif()
     endif()
-endif(PLATFORM_LINUX)
+endif(PLATFORM_GNU)
 
 if(PLATFORM_MACOSX)
     configure_file(Info.plist.cmake ${CMAKE_CURRENT_BINARY_DIR}/Info.plist)
