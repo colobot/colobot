@@ -423,11 +423,6 @@ bool CApplication::Create()
         return false;
     }
 
-#if !defined(PLATFORM_MACOSX)
-    // On Mac OSX, the bundle can potentially change place, it doesn't make sense to cache it to the configuration file
-    GetProfile().SetLocalProfileString("Resources", "Data", m_dataPath);
-#endif
-
     SetLanguage(m_language);
 
     //Create the sound instance.
@@ -439,17 +434,6 @@ bool CApplication::Create()
     #endif
 
     m_sound->Create(true);
-
-#if !defined(PLATFORM_MACOSX)
-    // On Mac OSX, the bundle can potentially change place, it doesn't make sense to cache it to the configuration file
-
-    // Cache sound files
-    if (defaultValues)
-    {
-        GetProfile().SetLocalProfileString("Resources", "Sound", GetDataSubdirPath(DIR_SOUND));
-        GetProfile().SetLocalProfileString("Resources", "Music", GetDataSubdirPath(DIR_MUSIC));
-    }
-#endif
 
     if (!m_customDataPath && GetProfile().GetLocalProfileString("Resources", "Sound", path))
     {
