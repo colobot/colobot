@@ -433,7 +433,7 @@ bool CApplication::Create()
     m_sound = new CSoundInterface();
     #endif
 
-    m_sound->Create(true);
+    m_sound->Create();
 
     if (!m_customDataPath && GetProfile().GetLocalProfileString("Resources", "Sound", path))
     {

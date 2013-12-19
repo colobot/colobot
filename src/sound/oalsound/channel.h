@@ -52,9 +52,7 @@ public:
     bool Play();
     bool Stop();
 
-    bool SetPan(Math::Vector);
-    void SetPosition(Math::Vector);
-    Math::Vector GetPosition();
+    bool SetPosition(const Math::Vector &);
 
     bool SetFrequency(float);
     float GetFrequency();

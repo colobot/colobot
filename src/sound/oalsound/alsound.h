@@ -41,55 +41,43 @@ public:
     ALSound();
     ~ALSound();
 
-    bool Create(bool b3D);
-    bool Cache(Sound, std::string);
-    bool CacheMusic(std::string);
+    bool Create();
+    bool Cache(Sound, const std::string &);
+    bool CacheMusic(const std::string &);
 
     bool GetEnable();
-
-    void SetSound3D(bool bMode);
-    bool GetSound3D();
-    bool GetSound3DCap();
 
     void SetAudioVolume(int volume);
     int GetAudioVolume();
     void SetMusicVolume(int volume);
     int GetMusicVolume();
 
-    void SetListener(Math::Vector eye, Math::Vector lookat);
+    void SetListener(const Math::Vector &eye, const Math::Vector &lookat);
     void FrameMove(float rTime);
 
     int Play(Sound sound, float amplitude=1.0f, float frequency=1.0f, bool bLoop = false);
-    int Play(Sound sound, Math::Vector pos, float amplitude=1.0f, float frequency=1.0f, bool bLoop = false);
+    int Play(Sound sound, const Math::Vector &pos, float amplitude=1.0f, float frequency=1.0f, bool bLoop = false);
     bool FlushEnvelope(int channel);
     bool AddEnvelope(int channel, float amplitude, float frequency, float time, SoundNext oper);
-    bool Position(int channel, Math::Vector pos);
+    bool Position(int channel, const Math::Vector &pos);
     bool Frequency(int channel, float frequency);
     bool Stop(int channel);
     bool StopAll();
     bool MuteAll(bool bMute);
 
     bool PlayMusic(int rank, bool bRepeat);
-    bool PlayMusic(std::string filename, bool bRepeat);
+    bool PlayMusic(const std::string &filename, bool bRepeat);
     bool RestartMusic();
     void SuspendMusic();
     void StopMusic();
     bool IsPlayingMusic();
 
-    // plugin interface
-    std::string PluginName();
-    int PluginVersion();
-    void InstallPlugin();
-    bool UninstallPlugin(std::string &);
-
 private:
     void CleanUp();
     int GetPriority(Sound);
     bool SearchFreeBuffer(Sound sound, int &channel, bool &bAlreadyLoaded);
-    void ComputeVolumePan2D(int channel, Math::Vector &pos);
 
     bool m_enabled;
-    bool m_3D;
     float m_audioVolume;
     float m_musicVolume;
     ALCdevice* m_device;

@@ -1522,13 +1522,6 @@ pos.y -= 0.048f;
         pl->SetTextAlign(Gfx::TEXT_ALIGN_LEFT);
         // #endif
 
-        ddim.x = dim.x*6;
-        ddim.y = dim.y*0.5f;
-        pos.x = ox+sx*10;
-        pos.y = 0.55f;
-        pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_SOUND3D);
-        pc->SetState(STATE_SHADOW);
-
         ddim.x = dim.x*3;
         ddim.y = dim.y*1;
         pos.x = ox+sx*10;
@@ -2911,12 +2904,6 @@ bool CMainDialog::EventProcess(const Event &event)
             case EVENT_INTERFACE_VOLSOUND:
             case EVENT_INTERFACE_VOLMUSIC:
                 ChangeSetupButtons();
-                break;
-
-            case EVENT_INTERFACE_SOUND3D:
-                m_sound->SetSound3D(!m_sound->GetSound3D());
-                ChangeSetupButtons();
-                UpdateSetupButtons();
                 break;
 
             case EVENT_INTERFACE_SILENT:
@@ -5456,13 +5443,6 @@ void CMainDialog::UpdateSetupButtons()
         value = static_cast<float>(m_sound->GetMusicVolume());
         ps->SetVisibleValue(value);
     }
-
-    pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_SOUND3D));
-    if ( pc != 0 )
-    {
-        pc->SetState(STATE_CHECK, m_sound->GetSound3D());
-        pc->SetState(STATE_ENABLE, m_sound->GetSound3DCap());
-    }
 }
 
 // Updates the engine function of the buttons after the setup phase.
@@ -5564,7 +5544,6 @@ void CMainDialog::SetupMemorize()
     GetProfile().SetLocalProfileInt("Setup", "TotoMode", m_engine->GetTotoMode());
     GetProfile().SetLocalProfileInt("Setup", "AudioVolume", m_sound->GetAudioVolume());
     GetProfile().SetLocalProfileInt("Setup", "MusicVolume", m_sound->GetMusicVolume());
-    GetProfile().SetLocalProfileInt("Setup", "Sound3D", m_sound->GetSound3D());
     GetProfile().SetLocalProfileInt("Setup", "EditIndentMode", m_engine->GetEditIndentMode());
     GetProfile().SetLocalProfileInt("Setup", "EditIndentValue", m_engine->GetEditIndentValue());
 
@@ -5800,11 +5779,6 @@ void CMainDialog::SetupRecall()
     if ( GetProfile().GetLocalProfileInt("Setup", "MusicVolume", iValue) )
     {
         m_sound->SetMusicVolume(iValue);
-    }
-
-    if ( GetProfile().GetLocalProfileInt("Setup", "Sound3D", iValue) )
-    {
-        m_sound->SetSound3D(iValue == 1);
     }
 
     if ( GetProfile().GetLocalProfileInt("Setup", "EditIndentMode", iValue) )

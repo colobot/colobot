@@ -75,7 +75,7 @@ bool Channel::Play()
 }
 
 
-bool Channel::SetPan(Math::Vector pos)
+bool Channel::SetPosition(const Math::Vector &pos)
 {
     if (!m_ready || m_buffer == nullptr)
     {
@@ -89,18 +89,6 @@ bool Channel::SetPan(Math::Vector pos)
         return false;
     }
     return true;
-}
-
-
-void Channel::SetPosition(Math::Vector pos)
-{
-    m_position = pos;
-}
-
-
-Math::Vector Channel::GetPosition()
-{
-    return m_position;
 }
 
 
