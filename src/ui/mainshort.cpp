@@ -97,7 +97,6 @@ bool CMainShort::CreateShortcuts()
     ObjectType  type;
     Math::Point     pos, dim;
     int         i, rank, icon;
-    char        name[100];
 
     if ( m_main->GetFixScene() )  return false;
 
@@ -208,10 +207,11 @@ bool CMainShort::CreateShortcuts()
         m_shortcuts[rank] = pObj;
 
         pc = m_interface->SearchControl(table_sc_em[rank]);
-        if ( pc != 0 )
+        if ( pc != nullptr )
         {
-            pObj->GetTooltipName(name);
-            pc->SetTooltip(name);
+            std::string tooltipName;
+            pObj->GetTooltipName(tooltipName);
+            pc->SetTooltip(tooltipName);
         }
         rank ++;
 

@@ -137,6 +137,9 @@ set(COLOBOT_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wold-style-cast ${CXX11_FLAGS} 
 set(COLOBOT_CXX_FLAGS_RELEASE "-O2")
 set(COLOBOT_CXX_FLAGS_DEBUG "-g -O0")
 
+# Flags for gtest
+set(COLOBOT_GTEST_CXX_FLAGS "-pthread")
+
 
 # Asserts can be enabled/disabled regardless of build type
 option(ASSERTS "Enable assert()s" ON)

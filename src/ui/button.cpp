@@ -60,12 +60,7 @@ bool CButton::Create(Math::Point pos, Math::Point dim, int icon, EventType event
 
     if ( icon == -1 )
     {
-        char    name[100];
-        char*   p;
-
-        GetResource(RES_EVENT, eventType, name);
-        p = strchr(name, '\\');
-        if ( p != 0 )  *p = 0;
+        std::string name = GetResourceName(eventType);
         SetName(name);
     }
 

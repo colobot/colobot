@@ -19,16 +19,19 @@
 #include "ui/key.h"
 
 #include "common/global.h"
+#include "common/stringutils.h"
 
 #include <cstring>
 
 namespace Ui {
 
 
-void GetKeyName(char* name, unsigned int key)
+static void GetKeyName(std::string& name, unsigned int key)
 {
     if (!GetResource(RES_KEY, key, name))
-        sprintf(name, "Code %d", key);
+    {
+        name = StrUtils::Format("Code %d", key);
+    }
 }
 
 
@@ -51,9 +54,9 @@ bool CKey::Create(Math::Point pos, Math::Point dim, int icon, EventType eventMsg
 
     CControl::Create(pos, dim, icon, eventMsg);
 
-    char name[100];
+    std::string name;
     GetResource(RES_EVENT, eventMsg, name);
-    SetName(std::string(name));
+    SetName(name);
 
     return true;
 }
@@ -176,19 +179,24 @@ void CKey::Draw()
 
     float h = m_engine->GetText()->GetHeight(m_fontType, m_fontSize) / 2.0f;
 
-    char text[100];
-    GetKeyName(text, m_binding.primary);
+    std::string keyName;
+    GetKeyName(keyName, m_binding.primary);
     if (m_binding.secondary != KEY_INVALID)
     {
-        GetResource(RES_TEXT, RT_KEY_OR, text+strlen(text));
-        GetKeyName(text+strlen(text), m_binding.secondary);
+        std::string orText;
+        GetResource(RES_TEXT, RT_KEY_OR, orText);
+        keyName.append(orText);
+
+        std::string secondaryKeyName;
+        GetKeyName(secondaryKeyName, m_binding.secondary);
+        keyName.append(secondaryKeyName);
     }
 
     Math::Point pos;
     pos.x = m_pos.x + m_dim.x * 0.5f;
     pos.y = m_pos.y + m_dim.y * 0.5f;
     pos.y -= h;
-    m_engine->GetText()->DrawText(std::string(text), m_fontType, m_fontSize, pos, m_dim.x, Gfx::TEXT_ALIGN_CENTER, 0);
+    m_engine->GetText()->DrawText(keyName, m_fontType, m_fontSize, pos, m_dim.x, Gfx::TEXT_ALIGN_CENTER, 0);
 
     m_dim = iDim;
 
@@ -199,7 +207,7 @@ void CKey::Draw()
     pos.x = m_pos.x + (214.0f / 640.0f);
     pos.y = m_pos.y + m_dim.y * 0.5f;
     pos.y -= h;
-    m_engine->GetText()->DrawText(std::string(m_name), m_fontType, m_fontSize, pos, m_dim.x, Gfx::TEXT_ALIGN_LEFT, 0);
+    m_engine->GetText()->DrawText(m_name, m_fontType, m_fontSize, pos, m_dim.x, Gfx::TEXT_ALIGN_LEFT, 0);
 }
 
 void CKey::SetBinding(InputBinding b)

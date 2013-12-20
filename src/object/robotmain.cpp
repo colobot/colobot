@@ -690,7 +690,7 @@ CRobotMain::CRobotMain(CApplication* app, bool loadProfile)
     m_movieInfoIndex = -1;
 
     m_tooltipPos = Math::Point(0.0f, 0.0f);
-    m_tooltipName[0] = 0;
+    m_tooltipName.clear();
     m_tooltipTime = 0.0f;
 
     m_endingWinRank   = 0;
@@ -3025,7 +3025,7 @@ bool CRobotMain::DeleteObject()
 void CRobotMain::HiliteClear()
 {
     ClearTooltip();
-    m_tooltipName[0] = 0;  // really removes the tooltip
+    m_tooltipName.clear();  // really removes the tooltip
 
     if (!m_hilite) return;
 
@@ -3059,11 +3059,11 @@ void CRobotMain::HiliteObject(Math::Point pos)
 
     CObject* obj = m_short->DetectShort(pos);
 
-    std::string nameStr;
-    if (m_dialog->GetTooltip() && m_interface->GetTooltip(pos, nameStr))
+    std::string interfaceTooltipName;
+    if (m_dialog->GetTooltip() && m_interface->GetTooltip(pos, interfaceTooltipName))
     {
         m_tooltipPos = pos;
-        strcpy(m_tooltipName, nameStr.c_str());
+        m_tooltipName = interfaceTooltipName;
         m_tooltipTime = 0.0f;
         if (obj == nullptr) return;
     }
@@ -3086,13 +3086,13 @@ void CRobotMain::HiliteObject(Math::Point pos)
         }
     }
 
-    char name[100];
     if (obj != nullptr)
     {
-        if (m_dialog->GetTooltip() && obj->GetTooltipName(name))
+        std::string objectTooltipName;
+        if (m_dialog->GetTooltip() && obj->GetTooltipName(objectTooltipName))
         {
             m_tooltipPos = pos;
-            strcpy(m_tooltipName, name);
+            m_tooltipName = objectTooltipName;
             m_tooltipTime = 0.0f;
         }
 
@@ -3117,15 +3117,14 @@ void CRobotMain::HiliteFrame(float rTime)
 
     ClearTooltip();
 
-    if (m_tooltipTime >= 0.2f &&
-        m_tooltipName[0] != 0)
+    if (m_tooltipTime >= 0.2f && !m_tooltipName.empty())
     {
         CreateTooltip(m_tooltipPos, m_tooltipName);
     }
 }
 
 //! Creates a tooltip
-void CRobotMain::CreateTooltip(Math::Point pos, const char* text)
+void CRobotMain::CreateTooltip(Math::Point pos, const std::string& text)
 {
     Math::Point corner;
     corner.x = pos.x+0.022f;
@@ -3949,7 +3948,9 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
         m_dialog->BuildResumeName(m_title, base, rank);
         m_dialog->BuildResumeName(m_resume, base, rank);
-        GetResource(RES_TEXT, RT_SCRIPT_NEW, m_scriptName);
+        std::string scriptNameStr;
+        GetResource(RES_TEXT, RT_SCRIPT_NEW, scriptNameStr);
+        strcpy(m_scriptName, scriptNameStr.c_str());
         m_scriptFile[0] = 0;
 
         m_beginObject         = false;
@@ -7504,7 +7505,7 @@ void CRobotMain::StartMusic()
 void CRobotMain::ClearInterface()
 {
     HiliteClear();  // removes setting evidence
-    m_tooltipName[0] = 0;  // really removes the tooltip
+    m_tooltipName.clear();  // really removes the tooltip
 }
 
 void CRobotMain::SetNumericLocale()

@@ -51,6 +51,7 @@ protected:
 };
 
 using ::testing::_;
+using ::testing::An;
 using ::testing::Return;
 
 TEST_F(CEditTest, WriteTest)
@@ -58,7 +59,7 @@ TEST_F(CEditTest, WriteTest)
     ASSERT_TRUE(true);
     CTextMock * text = dynamic_cast<CTextMock *>(m_engine->GetText());
     EXPECT_CALL(*text, GetCharWidth(_, _, _, _)).WillRepeatedly(Return(1.0f));
-    EXPECT_CALL(*text, GetStringWidth(_, _, _, _)).WillOnce(Return(1.0f));
+    EXPECT_CALL(*text, GetStringWidth(An<const std::string&>(), _, _, _)).WillOnce(Return(1.0f));
     std::string filename = "test.file";
     m_edit->SetMaxChar(Ui::EDITSTUDIOMAX);
     m_edit->SetAutoIndent(true);

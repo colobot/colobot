@@ -74,7 +74,7 @@ public:
     bool        IntroduceVirus();
 
     int         GetError();
-    void        GetError(char* buffer);
+    void        GetError(std::string& error);
 
     void        New(Ui::CEdit* edit, const char* name);
     bool        SendScript(const char* text);

@@ -1238,7 +1238,6 @@ bool CBrain::CreateInterface(bool bSelect)
     Ui::CLabel*      pl;
     Math::Point      pos, dim, ddim;
     float       ox, oy, sx, sy;
-    char        name[100];
 
     pw = static_cast< Ui::CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
     if ( pw != 0 )
@@ -1259,13 +1258,14 @@ bool CBrain::CreateInterface(bool bSelect)
     pw = static_cast< Ui::CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
     if ( pw == 0 )  return false;
 
-    m_object->GetTooltipName(name);
+    std::string tooltipLabel;
+    m_object->GetTooltipName(tooltipLabel);
     pos.x = 0.0f;
     pos.y = 64.0f/480.0f;
     ddim.x = 540.0f/640.0f;
     if ( !m_main->GetShowMap() )  ddim.x = 640.0f/640.0f;
     ddim.y = 16.0f/480.0f;
-    pw->CreateLabel(pos, ddim, 0, EVENT_LABEL0, name);
+    pw->CreateLabel(pos, ddim, 0, EVENT_LABEL0, tooltipLabel);
 
     dim.x = 33.0f/640.0f;
     dim.y = 33.0f/480.0f;
@@ -1674,8 +1674,10 @@ bool CBrain::CreateInterface(bool bSelect)
         pos.y = oy+sy*1.2f;
         ddim.x = dim.x*2.2f;
         ddim.y = dim.y*0.4f;
-        GetResource(RES_TEXT, RT_INTERFACE_REC, name);
-        pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL1, name);
+
+        std::string recordLabel;
+        GetResource(RES_TEXT, RT_INTERFACE_REC, recordLabel);
+        pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL1, recordLabel);
         pl->SetFontSize(9.0f);
 
         pos.x = ox+sx*7.0f;

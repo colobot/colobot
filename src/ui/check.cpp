@@ -47,16 +47,11 @@ CCheck::~CCheck()
 
 bool CCheck::Create(Math::Point pos, Math::Point dim, int icon, EventType eventType)
 {
-    char    name[100];
-    char*   p;
-
     if ( eventType == EVENT_NULL )  eventType = GetUniqueEventType();
 
     CControl::Create(pos, dim, icon, eventType);
 
-    GetResource(RES_EVENT, eventType, name);
-    p = strchr(name, '\\');
-    if ( p != 0 )  *p = 0;
+    std::string name = GetResourceName(eventType);
     SetName(name);
 
     return true;

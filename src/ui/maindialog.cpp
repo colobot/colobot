@@ -26,7 +26,7 @@
 #include "common/misc.h"
 #include "common/profile.h"
 #include "common/restext.h"
-#include "common/logger.h"
+#include "common/stringutils.h"
 
 #include "object/robotmain.h"
 
@@ -215,7 +215,7 @@ void CMainDialog::ChangePhase(Phase phase)
     CImage*         pi;
     Math::Point         pos, dim, ddim;
     float           ox, oy, sx, sy;
-    char            name[100];
+    std::string     name;
     char*           gamer;
     int             res, i, j;
 
@@ -458,10 +458,10 @@ pb->SetState(STATE_SHADOW);
         }
         else
         {
-            strcpy(name, gamer);
+            name = gamer;
         }
-        pe->SetText(name);
-        pe->SetCursor(strlen(name), 0);
+        pe->SetText(name.c_str());
+        pe->SetCursor(name.length(), 0);
         pe->SetFocus(true);
 
         pos.x = 380.0f/640.0f;
@@ -4006,7 +4006,7 @@ void CMainDialog::UpdatePerso()
     CColor*         pc;
     CSlider*        ps;
     Gfx::Color   color;
-    char            name[100];
+    std::string  name;
     int             i;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
@@ -4421,8 +4421,9 @@ void CMainDialog::IOReadList()
     // invalid index
     if ( m_phase == PHASE_WRITE  || m_phase == PHASE_WRITEs )
     {
-        GetResource(RES_TEXT, RT_IO_NEW, name);
-        pl->SetItemName(m_saveList.size(), name);
+        std::string nameStr;
+        GetResource(RES_TEXT, RT_IO_NEW, nameStr);
+        pl->SetItemName(m_saveList.size(), nameStr.c_str());
     }
 
     pl->SetSelect(m_saveList.size());
@@ -6000,7 +6001,7 @@ void CMainDialog::StartAbort()
     CWindow*    pw;
     CButton*    pb;
     Math::Point     pos, dim;
-    char        name[100];
+    std::string name;
 
     StartDialog(Math::Point(0.3f, 0.8f), true, false, false);
     m_bDialogDelete = false;
@@ -6079,7 +6080,7 @@ void CMainDialog::StartDeleteObject()
     CWindow*    pw;
     CButton*    pb;
     Math::Point     pos, dim;
-    char        name[100];
+    std::string name;
 
     StartDialog(Math::Point(0.7f, 0.3f), false, true, true);
     m_bDialogDelete = true;
@@ -6113,21 +6114,22 @@ void CMainDialog::StartDeleteGame(char *gamer)
     CWindow*    pw;
     CButton*    pb;
     Math::Point     pos, dim;
-    char        name[100];
-    char        text[100];
 
     StartDialog(Math::Point(0.7f, 0.3f), false, true, true);
     m_bDialogDelete = true;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW9));
-    if ( pw == 0 )  return;
+    if (pw == nullptr)
+        return;
+
+    std::string name;
 
     pos.x = 0.00f;
     pos.y = 0.50f;
     dim.x = 1.00f;
     dim.y = 0.05f;
     GetResource(RES_TEXT, RT_DIALOG_DELGAME, name);
-    sprintf(text, name, gamer);
+    std::string text = StrUtils::Format(name.c_str(), gamer);
     pw->CreateLabel(pos, dim, -1, EVENT_DIALOG_LABEL, text);
 
     pb = static_cast<CButton*>(pw->SearchControl(EVENT_DIALOG_OK));
@@ -6149,12 +6151,14 @@ void CMainDialog::StartQuit()
     CWindow*    pw;
     CButton*    pb;
     Math::Point     pos, dim;
-    char        name[100];
 
     StartDialog(Math::Point(0.6f, 0.3f), false, true, true);
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW9));
-    if ( pw == 0 )  return;
+    if (pw == nullptr)
+        return;
+
+    std::string name;
 
     pos.x = 0.00f;
     pos.y = 0.50f;
@@ -6182,7 +6186,6 @@ void CMainDialog::StartDialog(Math::Point dim, bool bFire, bool bOK, bool bCance
     CWindow*    pw;
     CButton*    pb;
     Math::Point     pos, ddim;
-    char        name[100];
 
     StartSuspend();
 
@@ -6220,6 +6223,8 @@ void CMainDialog::StartDialog(Math::Point dim, bool bFire, bool bOK, bool bCance
     }
 
     m_bDialogFire = bFire;
+
+    std::string name;
 
     pos.x = (1.0f-dim.x)/2.0f;
     pos.y = (1.0f-dim.y)/2.0f;

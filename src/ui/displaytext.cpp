@@ -127,9 +127,6 @@ void CDisplayText::DisplayError(Error err, CObject* pObj, float time)
 void CDisplayText::DisplayError(Error err, Math::Vector goal, float height,
                                 float dist, float time)
 {
-    TextType    type;
-    char        text[100];
-
     if ( err == ERR_OK )  return;
 
 #if 0
@@ -148,7 +145,7 @@ void CDisplayText::DisplayError(Error err, Math::Vector goal, float height,
         type = TT_WARNING;
     }
 #else
-    type = TT_WARNING;
+    TextType type = TT_WARNING;
     if ( err >= INFO_FIRST )
     {
         type = TT_INFO;
@@ -164,8 +161,9 @@ void CDisplayText::DisplayError(Error err, Math::Vector goal, float height,
     }
 #endif
 
+    std::string text;
     GetResource(RES_ERR, err, text);
-    DisplayText(text, goal, height, dist, time, type);
+    DisplayText(text.c_str(), goal, height, dist, time, type);
 }
 
 // Displays text.
