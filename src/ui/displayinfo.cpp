@@ -23,6 +23,7 @@
 #include "common/iman.h"
 #include "common/misc.h"
 #include "common/restext.h"
+#include "common/stringutils.h"
 
 #include "graphics/core/light.h"
 #include "graphics/engine/engine.h"
@@ -971,32 +972,41 @@ void ObjectAdd(ObjectList list[], ObjectType type)
 
 void ObjectWrite(FILE* file, ObjectList list[], int i)
 {
-    char        line[100];
-    char*       p;
+    std::string line;
 
     if ( list[i].total < 10 )
     {
-        sprintf(line, "\\c; %dx \\n;\\l;", list[i].total);
+        line = StrUtils::Format("\\c; %dx \\n;\\l;", list[i].total);
     }
     else
     {
-        sprintf(line, "\\c;%dx \\n;\\l;", list[i].total);
+        line = StrUtils::Format("\\c;%dx \\n;\\l;", list[i].total);
     }
 
     std::string res;
     GetResource(RES_OBJECT, list[i].type, res);
-    if (res.empty())  return;
-    strcat(line, res.c_str());
+    if (res.empty())
+        return;
 
-    strcat(line, "\\u ");
+    line += res;
+
+    line += "\\u ";
+
     std::string helpFilename = GetHelpFilename(list[i].type);
-    p = const_cast<char*>(helpFilename.c_str());
-    if ( p[0] == 0 )  return;
-    strcat(line, p+7);  // skip "help\?\"
-    p = strstr(line, ".txt");
-    if ( p != 0 )  *p = 0;
-    strcat(line, ";\n");
-    fputs(line, file);
+    if (helpFilename.empty())
+        return;
+
+    line += helpFilename.substr(7);  // skip "help\?\"
+
+    auto pos = line.find(".txt");
+    if (pos != std::string::npos)
+    {
+        line = line.substr(0, pos);
+    }
+
+    line += ";\n";
+
+    fputs(line.c_str(), file);
 }
 
 // Creates the file containing the list of objects.

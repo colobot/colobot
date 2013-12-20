@@ -1497,7 +1497,7 @@ void CStudio::UpdateDialogPublic()
     pl = static_cast< CLabel* >(pw->SearchControl(EVENT_DIALOG_LABEL1));
     if ( pl != 0 )
     {
-        //? GetResource(RES_TEXT, RT_IO_LIST, name);
+        // GetResource(RES_TEXT, RT_IO_LIST, name); // TODO: unused?
         pl->SetName(SearchDirectory(false).c_str(), false);
     }
 }
