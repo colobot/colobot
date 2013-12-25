@@ -987,6 +987,10 @@ void CRobotMain::SetDefaultInputBindings()
     m_inputBindings[INPUT_SLOT_RIGHT  ].primary   = KEY(RIGHT);
     m_inputBindings[INPUT_SLOT_UP     ].primary   = KEY(UP);
     m_inputBindings[INPUT_SLOT_DOWN   ].primary   = KEY(DOWN);
+    m_inputBindings[INPUT_SLOT_LEFT   ].secondary = KEY(a);
+    m_inputBindings[INPUT_SLOT_RIGHT  ].secondary = KEY(d);
+    m_inputBindings[INPUT_SLOT_UP     ].secondary = KEY(w);
+    m_inputBindings[INPUT_SLOT_DOWN   ].secondary = KEY(s);
     m_inputBindings[INPUT_SLOT_GUP    ].primary   = VIRTUAL_KMOD(SHIFT);
     m_inputBindings[INPUT_SLOT_GDOWN  ].primary   = VIRTUAL_KMOD(CTRL);
     m_inputBindings[INPUT_SLOT_CAMERA ].primary   = KEY(SPACE);
