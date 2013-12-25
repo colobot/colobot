@@ -18,6 +18,7 @@
 #include "common/stringutils.h"
 
 #include <cstdarg>
+#include <cstdio>
 #include <vector>
 
 
