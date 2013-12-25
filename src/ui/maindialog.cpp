@@ -2881,7 +2881,7 @@ bool CMainDialog::EventProcess(const Event &event)
                 break;
 
             case EVENT_INTERFACE_KDEF:
-                m_app->ResetKeyStates();
+                m_main->SetDefaultInputBindings();
                 UpdateKey();
                 break;
 
