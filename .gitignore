@@ -24,3 +24,6 @@ Makefile
 # Ignore KDevelop files
 .kdev4
 *.kdev4
+
+# Ignore gedit temp files
+*~
