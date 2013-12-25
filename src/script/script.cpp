@@ -1916,7 +1916,14 @@ bool CScript::rProduce(CBotVar* var, CBotVar* result, int& exception, void* user
             result->SetValInt(1);  // error
             return true;
         }
-        object->SetActivity(false);
+        object->SetActivity(true);
+        
+        CAuto* automat = object->GetAuto();
+        if (automat != nullptr)
+        {
+            automat->Init();
+        }
+        
         script->m_main->CreateShortcuts();
     }
     else if ( type == OBJECT_FLAGb ||
