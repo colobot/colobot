@@ -786,6 +786,10 @@ void CPhysics::MotorUpdate(float aTime, float rTime)
 
     type = m_object->GetType();
 
+    if(isnan(m_motorSpeed.x)) m_motorSpeed.x = 0.f;
+    if(isnan(m_motorSpeed.y)) m_motorSpeed.y = 0.f;
+    if(isnan(m_motorSpeed.z)) m_motorSpeed.z = 0.f;
+
     motorSpeed = m_motorSpeed;
 
     if ( type == OBJECT_MOTHER   ||
