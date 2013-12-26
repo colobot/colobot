@@ -4546,13 +4546,6 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
         if (Cmd(line, "MissionController") && read[0] == 0 && m_version >= 2)
         {
-            /* TODO: ???
-            if (!m_beginObject)
-            {
-                GetLogger()->Error("Syntax error in file '%s' (line %d): MissionController before BeginObject\n", filename, lineNum);
-                continue;
-            }*/
-
             m_controller = CreateObject(Math::Vector(0.0f, 0.0f, 0.0f), 0.0f, 1.0f, 0.0f, OBJECT_CONTROLLER, 100.0f, false, false, 0);
             m_controller->SetMagnifyDamage(100.0f);
             CBrain* brain = m_controller->GetBrain();
@@ -6021,7 +6014,9 @@ void CRobotMain::CompileScript(bool soluce)
                 char* name = brain->GetScriptName(j);
                 if (name[0] != 0)
                 {
-                    brain->ReadProgram(j, name);
+                    if(! brain->ReadProgram(j, name)) {
+				    	CLogger::GetInstancePointer()->Error("Unable to read script from file \"%s\"\n", name);
+                    }
                     if (!brain->GetCompile(j)) nbError++;
                 }
             }
