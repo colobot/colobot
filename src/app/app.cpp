@@ -188,6 +188,7 @@ CApplication::~CApplication()
     m_eventQueue = nullptr;
 
     delete m_profile;
+    m_profile = nullptr;
 
     delete m_iMan;
     m_iMan = nullptr;
