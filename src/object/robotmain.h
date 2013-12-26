@@ -522,6 +522,8 @@ protected:
     int             m_endingWinRank;
     int             m_endingLostRank;
     bool            m_winTerminate;
+    
+    bool            m_exitAfterMission;
 
     float           m_fontSize;
     Math::Point     m_windowPos;

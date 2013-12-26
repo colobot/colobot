@@ -696,6 +696,8 @@ CRobotMain::CRobotMain(CApplication* app, bool loadProfile)
     m_endingWinRank   = 0;
     m_endingLostRank  = 0;
     m_winTerminate   = false;
+    
+    m_exitAfterMission = true;
 
     m_joystickDeadzone = 0.2f;
     SetDefaultInputBindings();
@@ -945,6 +947,7 @@ Ui::CDisplayText* CRobotMain::GetDisplayText()
 
 void CRobotMain::LoadSceneOnStart(const std::string& name, int rank)
 {
+    m_exitAfterMission = true;
     // TODO: fix this ugly dependency :(
     m_dialog->SetSceneName(name.c_str());
     m_dialog->SetSceneRank(rank);
@@ -1747,10 +1750,14 @@ bool CRobotMain::ProcessEvent(Event &event)
 
             case EVENT_WIN:
                 ChangePhase(PHASE_WIN);
+                if(m_exitAfterMission)
+                    m_eventQueue->AddEvent(Event(EVENT_QUIT));
                 break;
 
             case EVENT_LOST:
                 ChangePhase(PHASE_LOST);
+                if(m_exitAfterMission)
+                    m_eventQueue->AddEvent(Event(EVENT_QUIT));
                 break;
 
             default:
@@ -1787,6 +1794,7 @@ bool CRobotMain::ProcessEvent(Event &event)
                     ChangePhase(PHASE_INIT);
                 else
                     ChangePhase(PHASE_TERM);
+                    
                 break;
 
             default:
