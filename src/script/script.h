@@ -200,6 +200,7 @@ public:
     static bool rBusy(CBotVar* thisclass, CBotVar* var, CBotVar* result, int& exception);
     static bool rFactory(CBotVar* thisclass, CBotVar* var, CBotVar* result, int& exception);
     static bool rResearch(CBotVar* thisclass, CBotVar* var, CBotVar* result, int& exception);
+    static bool rTakeOff(CBotVar* thisclass, CBotVar* var, CBotVar* result, int& exception);
     static bool rDestroy(CBotVar* thisclass, CBotVar* var, CBotVar* result, int& exception);
 
 private:

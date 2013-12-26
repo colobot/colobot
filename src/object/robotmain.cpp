@@ -881,6 +881,7 @@ CRobotMain::CRobotMain(CApplication* app, bool loadProfile)
     bc->AddFunction("busy",     CScript::rBusy,     CScript::cBusy);
     bc->AddFunction("factory",  CScript::rFactory,  CScript::cFactory);
     bc->AddFunction("research", CScript::rResearch, CScript::cClassOneFloat);
+    bc->AddFunction("takeoff",  CScript::rTakeOff,  CScript::cClassNull);
     bc->AddFunction("destroy",  CScript::rDestroy,  CScript::cClassNull);
 
     // Initializes the class FILE.

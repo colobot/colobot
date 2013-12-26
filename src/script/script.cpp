@@ -38,6 +38,7 @@
 
 #include "object/auto/auto.h"
 #include "object/auto/autofactory.h"
+#include "object/auto/autobase.h"
 
 #include "physics/physics.h"
 
@@ -885,6 +886,54 @@ bool CScript::rResearch(CBotVar* thisclass, CBotVar* var, CBotVar* result, int& 
     }
     else
         err = ERR_WRONG_OBJ;
+
+    if ( err != ERR_OK )
+    {
+        result->SetValInt(err);  // return error
+//TODO:        if ( script->m_errMode == ERM_STOP )
+        if( true )
+        {
+            exception = err;
+            return false;
+        }
+        return true;
+    }
+
+    return true;
+}
+
+// Instruction "object.takeoff()"
+
+bool CScript::rTakeOff(CBotVar* thisclass, CBotVar* var, CBotVar* result, int& exception)
+{
+    Error       err;
+
+    exception = 0;
+
+    CBotVar* classVars = thisclass->GetItemList();  // "category"
+    ObjectType thisType = static_cast<ObjectType>(classVars->GetValInt());
+    classVars = classVars->GetNext();  // "position"
+    classVars = classVars->GetNext();  // "orientation"
+    classVars = classVars->GetNext();  // "pitch"
+    classVars = classVars->GetNext();  // "roll"
+    classVars = classVars->GetNext();  // "energyLevel"
+    classVars = classVars->GetNext();  // "shieldLevel"
+    classVars = classVars->GetNext();  // "temperature"
+    classVars = classVars->GetNext();  // "altitude"
+    classVars = classVars->GetNext();  // "lifeTime"
+    classVars = classVars->GetNext();  // "material"
+    classVars = classVars->GetNext();  // "energyCell"
+    classVars = classVars->GetNext();  // "load"
+    classVars = classVars->GetNext();  // "id"
+    int rank = classVars->GetValInt();
+    CObject* center = CObjectManager::GetInstancePointer()->SearchInstance(rank);
+    CAuto* automat = center->GetAuto();
+
+    if ( thisType == OBJECT_BASE )
+    {
+    	err = (static_cast<CAutoBase*>(automat))->TakeOff(false);
+  	} else
+  		err = ERR_WRONG_OBJ;
 
     if ( err != ERR_OK )
     {

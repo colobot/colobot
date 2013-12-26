@@ -77,6 +77,8 @@ public:
     Error       GetError();
 
     bool        CreateInterface(bool bSelect);
+    
+    Error		TakeOff(bool printMsg);
 
 protected:
     void        UpdateInterface();
