@@ -26,7 +26,11 @@ template<> CLogger* CSingleton<CLogger>::m_instance = nullptr;
 CLogger::CLogger()
 {
     m_file = NULL;
+    #if DEV_BUILD
+    m_logLevel = LOG_DEBUG;
+    #else
     m_logLevel = LOG_INFO;
+    #endif
 }
 
 
