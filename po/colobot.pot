@@ -279,7 +279,7 @@ msgstr ""
 msgid "Proto\\Prototypes under development"
 msgstr ""
 
-msgid "New player\\Choose player's name"
+msgid "Change player\\Change player"
 msgstr ""
 
 msgid "Options\\Preferences"

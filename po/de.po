@@ -363,6 +363,9 @@ msgstr "Challenges\\Herausforderungen"
 msgid "Change camera\\Switches between onboard camera and following camera"
 msgstr "Andere Kamera\\Sichtpunkt einstellen"
 
+msgid "Change player\\Change player"
+msgstr "Anderer Spieler\\Spielername ändern"
+
 msgid "Checkpoint"
 msgstr "Checkpoint"
 
@@ -846,9 +849,6 @@ msgstr "Neu ..."
 
 msgid "New bot available"
 msgstr "Neuer Roboter verfügbar"
-
-msgid "New player\\Choose player's name"
-msgstr "Anderer Spieler\\Spielername ändern"
 
 msgid "Next"
 msgstr "Nächster"
@@ -2053,4 +2053,3 @@ msgstr "www.epsitec.com"
 
 #~ msgid "Zoom"
 #~ msgstr "Zoom"
-

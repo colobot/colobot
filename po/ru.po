@@ -366,6 +366,9 @@ msgstr "Задания\\Практика программирования"
 msgid "Change camera\\Switches between onboard camera and following camera"
 msgstr "Изменить вид\\Переключение между бортовой камерой и следящей камерой"
 
+msgid "Change player\\Change player"
+msgstr "Новый игрок\\Выберите имя для игрока"
+
 msgid "Checkpoint"
 msgstr "Контрольная точка"
 
@@ -848,9 +851,6 @@ msgstr "Новый ..."
 
 msgid "New bot available"
 msgstr "Доступен новый бот"
-
-msgid "New player\\Choose player's name"
-msgstr "Новый игрок\\Выберите имя для игрока"
 
 msgid "Next"
 msgstr "Следующий"

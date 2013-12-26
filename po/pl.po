@@ -361,6 +361,9 @@ msgstr "Wyzwania\\Wyzwania programistyczne"
 msgid "Change camera\\Switches between onboard camera and following camera"
 msgstr "Zmień kamerę\\Przełącza pomiędzy kamerą pokładową i śledzącą"
 
+msgid "Change player\\Change player"
+msgstr "Zmień gracza\\Zmień gracza"
+
 msgid "Checkpoint"
 msgstr "Punkt kontrolny"
 
@@ -846,9 +849,6 @@ msgstr "Nowy ..."
 
 msgid "New bot available"
 msgstr "Dostępny nowy robot"
-
-msgid "New player\\Choose player's name"
-msgstr "Nowy gracz\\Wybierz imię gracza"
 
 msgid "Next"
 msgstr "Następny"
@@ -2058,4 +2058,3 @@ msgstr "www.epsitec.com"
 
 #~ msgid "Zoom"
 #~ msgstr "Powiększenie"
-

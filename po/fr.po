@@ -363,6 +363,9 @@ msgstr "Défis\\Défis de programmation"
 msgid "Change camera\\Switches between onboard camera and following camera"
 msgstr "Changement de caméra\\Autre de point de vue"
 
+msgid "Change player\\Change player"
+msgstr "Autre joueur\\Choix du nom du joueur"
+
 msgid "Checkpoint"
 msgstr "Indicateur"
 
@@ -847,9 +850,6 @@ msgstr "Nouveau ..."
 
 msgid "New bot available"
 msgstr "Nouveau robot disponible"
-
-msgid "New player\\Choose player's name"
-msgstr "Autre joueur\\Choix du nom du joueur"
 
 msgid "Next"
 msgstr "Suivant"
@@ -2055,4 +2055,3 @@ msgstr "www.epsitec.com"
 
 #~ msgid "Zoom"
 #~ msgstr "Zoom"
-

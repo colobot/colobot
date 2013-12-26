@@ -156,7 +156,7 @@ void InitializeRestext()
     stringsEvent[EVENT_INTERFACE_TEEN]      = "Free game\\Free game without a specific goal";
     stringsEvent[EVENT_INTERFACE_USER]      = "User\\User levels";
     stringsEvent[EVENT_INTERFACE_PROTO]     = "Proto\\Prototypes under development";
-    stringsEvent[EVENT_INTERFACE_NAME]      = "New player\\Choose player's name";
+    stringsEvent[EVENT_INTERFACE_NAME]      = "Change player\\Change player";
     stringsEvent[EVENT_INTERFACE_SETUP]     = "Options\\Preferences";
     stringsEvent[EVENT_INTERFACE_AGAIN]     = "Restart\\Restart the mission from the beginning";
     stringsEvent[EVENT_INTERFACE_WRITE]     = "Save\\Save the current mission ";
