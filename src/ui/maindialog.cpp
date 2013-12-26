@@ -351,6 +351,7 @@ pb->SetState(STATE_SHADOW);
         pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_QUIT);
         pb->SetState(STATE_SHADOW);
 
+        #if DEV_BUILD
         // TODO: #if !_DEMO & !_SCHOOL
         if ( m_accessEnable && m_accessUser )
         {
@@ -365,6 +366,7 @@ pb->SetState(STATE_SHADOW);
             pb->SetState(STATE_SHADOW);
         }
         // #endif
+        #endif
 
         // TODO: remove?
         if (m_app->GetProtoMode())
