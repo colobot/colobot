@@ -153,6 +153,8 @@ CApplication::CApplication()
 
     m_runSceneName = "";
     m_runSceneRank = 0;
+    
+    m_sceneTest = false;
 
     m_language = LANGUAGE_ENV;
 
@@ -186,7 +188,6 @@ CApplication::~CApplication()
     m_eventQueue = nullptr;
 
     delete m_profile;
-    m_profile = nullptr;
 
     delete m_iMan;
     m_iMan = nullptr;
@@ -225,6 +226,7 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
         OPT_HELP = 1,
         OPT_DEBUG,
         OPT_RUNSCENE,
+        OPT_SCENETEST,
         OPT_LOGLEVEL,
         OPT_LANGUAGE,
         OPT_DATADIR,
@@ -239,6 +241,7 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
         { "help", no_argument, nullptr, OPT_HELP },
         { "debug", required_argument, nullptr, OPT_DEBUG },
         { "runscene", required_argument, nullptr, OPT_RUNSCENE },
+        { "scenetest", no_argument, nullptr, OPT_SCENETEST },
         { "loglevel", required_argument, nullptr, OPT_LOGLEVEL },
         { "language", required_argument, nullptr, OPT_LANGUAGE },
         { "datadir", required_argument, nullptr, OPT_DATADIR },
@@ -280,6 +283,7 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
                 GetLogger()->Message("  -help               this help\n");
                 GetLogger()->Message("  -debug modes        enable debug modes (more info printed in logs; see code for reference of modes)\n");
                 GetLogger()->Message("  -runscene sceneNNN  run given scene on start\n");
+                GetLogger()->Message("  -scenetest          win every mission right after it's loaded\n");
                 GetLogger()->Message("  -loglevel level     set log level to level (one of: trace, debug, info, warn, error, none)\n");
                 GetLogger()->Message("  -language lang      set language (one of: en, de, fr, pl, ru)\n");
                 GetLogger()->Message("  -datadir path       set custom data directory path\n");
@@ -316,6 +320,11 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
                 m_runSceneName = file.substr(0, file.size()-3);
                 m_runSceneRank = StrUtils::FromString<int>(file.substr(file.size()-3, 3));
                 GetLogger()->Info("Running scene '%s%d' on start\n", m_runSceneName.c_str(), m_runSceneRank);
+                break;
+            }
+            case OPT_SCENETEST:
+            {
+                m_sceneTest = true;
                 break;
             }
             case OPT_LOGLEVEL:
@@ -1859,3 +1868,7 @@ bool CApplication::GetProtoMode() const
     return m_protoMode;
 }
 
+bool CApplication::GetSceneTestMode()
+{
+    return m_sceneTest;
+}

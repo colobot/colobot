@@ -362,6 +362,8 @@ public:
     //@}
 
     bool        GetProtoMode() const;
+    
+    bool        GetSceneTestMode();
 
 protected:
     //! Creates the window's SDL_Surface
@@ -494,6 +496,9 @@ protected:
     std::string     m_runSceneName;
     int             m_runSceneRank;
     //@}
+    
+    //! Scene test mode
+    bool            m_sceneTest;
 
     const char*     m_standardDataDirs[DIR_MAX];
 

@@ -697,7 +697,7 @@ CRobotMain::CRobotMain(CApplication* app, bool loadProfile)
     m_endingLostRank  = 0;
     m_winTerminate   = false;
     
-    m_exitAfterMission = true;
+    m_exitAfterMission = false;
 
     m_joystickDeadzone = 0.2f;
     SetDefaultInputBindings();
@@ -5082,6 +5082,9 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
     m_dialog->SetStackRead("");
 
     RestoreNumericLocale();
+    
+    if(m_app->GetSceneTestMode())
+        m_eventQueue->AddEvent(Event(EVENT_WIN));
 }
 
 //! Creates an object of decoration mobile or stationary
