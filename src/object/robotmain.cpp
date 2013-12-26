@@ -6015,7 +6015,7 @@ void CRobotMain::CompileScript(bool soluce)
                 if (name[0] != 0)
                 {
                     if(! brain->ReadProgram(j, name)) {
-				    	CLogger::GetInstancePointer()->Error("Unable to read script from file \"%s\"\n", name);
+                        CLogger::GetInstancePointer()->Error("Unable to read script from file \"%s\"\n", name);
                     }
                     if (!brain->GetCompile(j)) nbError++;
                 }

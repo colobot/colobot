@@ -312,7 +312,7 @@ begin:
 
     if ( event.type == EVENT_OBJECT_BTAKEOFF )
     {
-		return TakeOff(true);
+        return TakeOff(true);
     }
 
     if ( event.type != EVENT_FRAME )  return true;
@@ -1405,7 +1405,7 @@ Error CAutoBase::TakeOff(bool printMsg)
 
     Event           newEvent;
     Math::Vector    pos;
-	Error           err;
+    Error           err;
 	
     err = CheckCloseDoor();
     if ( err != ERR_OK )
