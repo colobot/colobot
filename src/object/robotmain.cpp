@@ -4064,6 +4064,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
             m_immediatSatCom = OpInt(line, "immediat", 0);
             if (m_version >= 2) m_beginSatCom = m_lockedSatCom = OpInt(line, "lock", 0);
+            if (m_app->GetSceneTestMode()) m_immediatSatCom = false;
             continue;
         }
 
