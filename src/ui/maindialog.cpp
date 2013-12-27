@@ -53,6 +53,7 @@
 #include <string.h>
 #include <sstream>
 #include <iomanip>
+#include <vector>
 #include <boost/filesystem.hpp>
 #include <boost/foreach.hpp>
 
@@ -4332,8 +4333,8 @@ void CMainDialog::IOReadName()
     }
 
     time(&now);
-    TimeToAscii(now, line);
-    sprintf(name, "%s %d - %s", resume, m_sel[m_index]+1, line);
+    TimeToAsciiClean(now, line);
+    sprintf(name, "%s - %s %d", line, resume, m_sel[m_index]+1);
     pe->SetText(name);
     pe->SetCursor(strlen(name), 0);
     pe->SetFocus(true);
@@ -4349,7 +4350,7 @@ void CMainDialog::IOReadList()
     char        line[500];
     char        name[100];
     int         i;
-    fs::directory_iterator end_iter;
+    std::vector<fs::path> v;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
     if ( pw == 0 )  return;
@@ -4363,12 +4364,14 @@ void CMainDialog::IOReadList()
 
     if (fs::exists(saveDir) && fs::is_directory(saveDir))
     {
-        for( fs::directory_iterator dir_iter(saveDir) ; dir_iter != end_iter ; ++dir_iter)
+        copy(fs::directory_iterator(saveDir), fs::directory_iterator(), back_inserter(v));
+        std::sort(v.begin(), v.end());
+        for( std::vector<fs::path>::iterator iter = v.begin(); iter != v.end(); ++iter)
         {
-            if ( fs::is_directory(dir_iter->status()) && fs::exists(dir_iter->path() / "data.sav") )
+            if ( fs::is_directory(*iter) && fs::exists(*iter / "data.sav") )
             {
 
-                file = fopen((dir_iter->path() / "data.sav").make_preferred().string().c_str(), "r");
+                file = fopen((*iter / "data.sav").make_preferred().string().c_str(), "r");
                 if ( file == NULL )  continue;
 
                 while ( fgets(line, 500, file) != NULL )
@@ -4392,7 +4395,7 @@ void CMainDialog::IOReadList()
                 fclose(file);
 
                 pl->SetItemName(m_saveList.size(), name);
-                m_saveList.push_back(dir_iter->path());
+                m_saveList.push_back(*iter);
             }
         }
     }

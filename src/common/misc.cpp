@@ -230,6 +230,23 @@ void TimeToAscii(time_t time, char *buffer)
 #endif*/
 }
 
+// Converting time to string.
+
+void TimeToAsciiClean(time_t time, char *buffer)
+{
+    struct tm   when;
+    int         year;
+
+    when = *localtime(&time);
+    year = when.tm_year+1900;
+    if ( year < 2000 )  year -= 1900;
+    else                year -= 2000;
+
+    sprintf(buffer, "%.2d%.2d%.2d%.2d%.2d",
+                    year, when.tm_mon+1, when.tm_mday,
+                    when.tm_hour, when.tm_min);
+}
+
 // Copy a list of numbered files into the temporary folder.
 
 bool CopyFileListToTemp(char* filename, int* list, int total)

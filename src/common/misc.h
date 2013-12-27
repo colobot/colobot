@@ -28,6 +28,7 @@ extern char GetToUpper(char letter);
 extern char GetToLower(char letter);
 
 extern void TimeToAscii(time_t time, char *buffer);
+extern void TimeToAsciiClean(time_t time, char *buffer);
 
 extern bool CopyFileListToTemp(char* filename, int* list, int total);
 extern void AddExt(char* filename, const char* ext);
