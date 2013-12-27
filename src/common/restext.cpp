@@ -63,7 +63,6 @@ void InitializeRestext()
     stringsText[RT_TITLE_FREE]       = "Free game";
     stringsText[RT_TITLE_TEEN]       = "Free game";
     stringsText[RT_TITLE_USER]       = "User levels";
-    stringsText[RT_TITLE_PROTO]      = "Prototypes";
     stringsText[RT_TITLE_SETUP]      = "Options";
     stringsText[RT_TITLE_NAME]       = "Player's name";
     stringsText[RT_TITLE_PERSO]      = "Customize your appearance";
@@ -75,14 +74,12 @@ void InitializeRestext()
     stringsText[RT_PLAY_CHAPm]       = " Planets:";
     stringsText[RT_PLAY_CHAPf]       = " Planets:";
     stringsText[RT_PLAY_CHAPu]       = " User levels:";
-    stringsText[RT_PLAY_CHAPp]       = " Planets:";
     stringsText[RT_PLAY_CHAPte]      = " Chapters:";
     stringsText[RT_PLAY_LISTt]       = " Exercises in the chapter:";
     stringsText[RT_PLAY_LISTd]       = " Challenges in the chapter:";
     stringsText[RT_PLAY_LISTm]       = " Missions on this planet:";
     stringsText[RT_PLAY_LISTf]       = " Free game on this planet:";
     stringsText[RT_PLAY_LISTu]       = " Missions on this level:";
-    stringsText[RT_PLAY_LISTp]       = " Prototypes on this planet:";
     stringsText[RT_PLAY_LISTk]       = " Free game on this chapter:";
     stringsText[RT_PLAY_RESUME]      = " Summary:";
 
@@ -155,7 +152,6 @@ void InitializeRestext()
     stringsEvent[EVENT_INTERFACE_FREE]      = "Free game\\Free game without a specific goal";
     stringsEvent[EVENT_INTERFACE_TEEN]      = "Free game\\Free game without a specific goal";
     stringsEvent[EVENT_INTERFACE_USER]      = "User\\User levels";
-    stringsEvent[EVENT_INTERFACE_PROTO]     = "Proto\\Prototypes under development";
     stringsEvent[EVENT_INTERFACE_NAME]      = "Change player\\Change player";
     stringsEvent[EVENT_INTERFACE_SETUP]     = "Options\\Preferences";
     stringsEvent[EVENT_INTERFACE_AGAIN]     = "Restart\\Restart the mission from the beginning";

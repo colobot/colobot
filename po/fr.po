@@ -44,9 +44,6 @@ msgstr " Liste des missions du chapitre :"
 msgid " Planets:"
 msgstr " Liste des planètes :"
 
-msgid " Prototypes on this planet:"
-msgstr " Liste des prototypes du chapitre :"
-
 msgid " Resolution:"
 msgstr " Résolutions :"
 
@@ -1114,12 +1111,6 @@ msgstr "Instructions programmation\\Explication sur la programmation"
 
 msgid "Programs dispatched by Houston"
 msgstr "Programmes envoyés par Houston"
-
-msgid "Proto\\Prototypes under development"
-msgstr "Proto\\Prototypes en cours d'élaboration"
-
-msgid "Prototypes"
-msgstr "Prototypes"
 
 msgid "Public required"
 msgstr "Public requis"

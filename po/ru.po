@@ -49,9 +49,6 @@ msgstr "Миссии на этой планете:"
 msgid " Planets:"
 msgstr " Планеты:"
 
-msgid " Prototypes on this planet:"
-msgstr "Прототипы на этой планете:"
-
 msgid " Resolution:"
 msgstr " Разрешение:"
 
@@ -1113,17 +1110,10 @@ msgid "Programming help  (\\key prog;)"
 msgstr "Помощь в программировании (\\key prog;)"
 
 msgid "Programming help\\Gives more detailed help with programming"
-msgstr ""
-"Помощь в программировании\\Дает более детальную помощь в программировании"
+msgstr "Помощь в программировании\\Дает более детальную помощь в программировании"
 
 msgid "Programs dispatched by Houston"
 msgstr "Программы переданные с Хьюстона"
-
-msgid "Proto\\Prototypes under development"
-msgstr "Прототипы\\Прототипы в стадии разработки"
-
-msgid "Prototypes"
-msgstr "Прототипы"
 
 msgid "Public required"
 msgstr "Требуется общественное"

@@ -360,8 +360,6 @@ public:
     void        StopPerformanceCounter(PerformanceCounter counter);
     float       GetPerformanceCounterData(PerformanceCounter counter) const;
     //@}
-
-    bool        GetProtoMode() const;
     
     bool        GetSceneTestMode();
 

@@ -26,7 +26,7 @@ msgid " Exercises in the chapter:"
 msgstr " Ćwiczenia w tym rozdziale:"
 
 msgid " Free game on this chapter:"
-msgstr " Prototypy na tej planecie:"
+msgstr " Swobodna gra na tej planecie:"
 
 msgid " Free game on this planet:"
 msgstr " Swobodna gra na tej planecie:"
@@ -39,9 +39,6 @@ msgstr " Misje na tej planecie:"
 
 msgid " Planets:"
 msgstr " Planety:"
-
-msgid " Prototypes on this planet:"
-msgstr " Prototypy na tej planecie:"
 
 msgid " Resolution:"
 msgstr " Rozdzielczość:"
@@ -1115,12 +1112,6 @@ msgstr "Podręcznik programowania\\Dostarcza szczegółową pomoc w programowani
 
 msgid "Programs dispatched by Houston"
 msgstr "Program dostarczony z Houston"
-
-msgid "Proto\\Prototypes under development"
-msgstr "Prototypy\\Prototypy w trakcie rozwijania"
-
-msgid "Prototypes"
-msgstr "Prototypy"
 
 msgid "Public required"
 msgstr "Wymagany publiczny"

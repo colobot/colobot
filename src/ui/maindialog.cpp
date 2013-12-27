@@ -369,15 +369,11 @@ pb->SetState(STATE_SHADOW);
         // #endif
         #endif
 
-        // TODO: remove?
-        if (m_app->GetProtoMode())
-        {
-            pos.x  = 139.0f/640.0f;
-            pos.y  = 313.0f/480.0f;
-            ddim.x = 0.09f;
-            pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_PROTO);
-            pb->SetState(STATE_SHADOW);
-        }
+        /*pos.x  = 139.0f/640.0f;
+        pos.y  = 313.0f/480.0f;
+        ddim.x = 0.09f;
+        pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_PROTO);
+        pb->SetState(STATE_SHADOW);*/
 
         pos.x  = 0.40f;
         ddim.x = 0.20f;
@@ -773,15 +769,13 @@ pb->SetState(STATE_SHADOW);
             m_phase == PHASE_MISSION ||
             m_phase == PHASE_FREE    ||
             m_phase == PHASE_TEEN    ||
-            m_phase == PHASE_USER    ||
-            m_phase == PHASE_PROTO   )
+            m_phase == PHASE_USER    )
     {
         if ( m_phase == PHASE_TRAINER )  m_index = 0;
         if ( m_phase == PHASE_DEFI    )  m_index = 1;
         if ( m_phase == PHASE_MISSION )  m_index = 2;
         if ( m_phase == PHASE_FREE    )  m_index = 3;
         if ( m_phase == PHASE_USER    )  m_index = 4;
-        if ( m_phase == PHASE_PROTO   )  m_index = 5;
         if ( m_phase == PHASE_TEEN    )  m_index = 6;
 
         if ( m_phase == PHASE_FREE )
@@ -797,7 +791,6 @@ pb->SetState(STATE_SHADOW);
         if ( m_phase == PHASE_FREE    )  strcpy(m_sceneName, "free");
         if ( m_phase == PHASE_TEEN    )  strcpy(m_sceneName, "teen");
         if ( m_phase == PHASE_USER    )  strcpy(m_sceneName, "user");
-        if ( m_phase == PHASE_PROTO   )  strcpy(m_sceneName, "proto");
 
         ReadGamerInfo();
 
@@ -813,7 +806,6 @@ pb->SetState(STATE_SHADOW);
         if ( m_phase == PHASE_FREE    )  res = RT_TITLE_FREE;
         if ( m_phase == PHASE_TEEN    )  res = RT_TITLE_TEEN;
         if ( m_phase == PHASE_USER    )  res = RT_TITLE_USER;
-        if ( m_phase == PHASE_PROTO   )  res = RT_TITLE_PROTO;
         GetResource(RES_TEXT, res, name);
         pw->SetName(name);
 
@@ -862,7 +854,6 @@ pb->SetState(STATE_SHADOW);
         if ( m_phase == PHASE_FREE    )  res = RT_PLAY_CHAPf;
         if ( m_phase == PHASE_TEEN    )  res = RT_PLAY_CHAPte;
         if ( m_phase == PHASE_USER    )  res = RT_PLAY_CHAPu;
-        if ( m_phase == PHASE_PROTO   )  res = RT_PLAY_CHAPp;
         GetResource(RES_TEXT, res, name);
         pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL11, name);
         pl->SetTextAlign(Gfx::TEXT_ALIGN_LEFT);
@@ -886,7 +877,6 @@ pb->SetState(STATE_SHADOW);
         if ( m_phase == PHASE_FREE    )  res = RT_PLAY_LISTf;
         if ( m_phase == PHASE_TEEN    )  res = RT_PLAY_LISTk;
         if ( m_phase == PHASE_USER    )  res = RT_PLAY_LISTu;
-        if ( m_phase == PHASE_PROTO   )  res = RT_PLAY_LISTp;
         GetResource(RES_TEXT, res, name);
         pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL12, name);
         pl->SetTextAlign(Gfx::TEXT_ALIGN_LEFT);
@@ -1949,7 +1939,6 @@ pos.y -= 0.048f;
             m_phase == PHASE_FREE    ||
             m_phase == PHASE_TEEN    ||
             m_phase == PHASE_USER    ||
-            m_phase == PHASE_PROTO   ||
             m_phase == PHASE_SETUPd  ||
             m_phase == PHASE_SETUPg  ||
             m_phase == PHASE_SETUPp  ||
@@ -2233,10 +2222,6 @@ bool CMainDialog::EventProcess(const Event &event)
                 m_main->ChangePhase(PHASE_USER);
                 break;
 
-            case EVENT_INTERFACE_PROTO:
-                m_main->ChangePhase(PHASE_PROTO);
-                break;
-
             case EVENT_INTERFACE_SETUP:
                 m_main->ChangePhase(m_phaseSetup);
                 break;
@@ -2440,8 +2425,7 @@ bool CMainDialog::EventProcess(const Event &event)
             m_phase == PHASE_MISSION ||
             m_phase == PHASE_FREE    ||
             m_phase == PHASE_TEEN    ||
-            m_phase == PHASE_USER    ||
-            m_phase == PHASE_PROTO   )
+            m_phase == PHASE_USER    )
     {
         pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
         if ( pw == 0 )  return false;
@@ -2460,8 +2444,7 @@ bool CMainDialog::EventProcess(const Event &event)
             m_phase == PHASE_MISSION ||
             m_phase == PHASE_FREE    ||
             m_phase == PHASE_TEEN    ||
-            m_phase == PHASE_USER    ||
-            m_phase == PHASE_PROTO   )
+            m_phase == PHASE_USER    )
     {
         switch( event.type )
         {
@@ -2488,11 +2471,6 @@ bool CMainDialog::EventProcess(const Event &event)
                 break;
 
             case EVENT_INTERFACE_PLAY:
-                if ( m_phase == PHASE_PROTO && m_chap[m_index] == 0 && m_sel[m_index] == 0 )
-                {
-                    m_main->ChangePhase(PHASE_MODEL);
-                    break;
-                }
                 m_sceneRank = (m_chap[m_index]+1)*100+(m_sel[m_index]+1);
                 m_phaseTerm = m_phase;
                 m_main->ChangePhase(PHASE_LOADING);
@@ -3109,8 +3087,7 @@ void CMainDialog::GlintMove()
             m_phase == PHASE_MISSION ||
             m_phase == PHASE_FREE    ||
             m_phase == PHASE_TEEN    ||
-            m_phase == PHASE_USER    ||
-            m_phase == PHASE_PROTO   )
+            m_phase == PHASE_USER    )
     {
         pg = static_cast<CGroup*>(pw->SearchControl(EVENT_INTERFACE_GLINTl));
         if ( pg != 0 )
@@ -3338,7 +3315,6 @@ void CMainDialog::FrameParticle(float rTime)
             m_phase == PHASE_FREE    ||
             m_phase == PHASE_TEEN    ||
             m_phase == PHASE_USER    ||
-            m_phase == PHASE_PROTO   ||
             m_phase == PHASE_SETUPd  ||
             m_phase == PHASE_SETUPg  ||
             m_phase == PHASE_SETUPp  ||
@@ -4685,8 +4661,7 @@ void CMainDialog::AllMissionUpdate()
          m_phase == PHASE_MISSION ||
          m_phase == PHASE_FREE    ||
          m_phase == PHASE_TEEN    ||
-         m_phase == PHASE_USER    ||
-         m_phase == PHASE_PROTO   )
+         m_phase == PHASE_USER    )
     {
         UpdateSceneChap(m_chap[m_index]);
         UpdateSceneList(m_chap[m_index], m_sel[m_index]);
@@ -4989,8 +4964,7 @@ void CMainDialog::ShowSoluceUpdate()
          m_phase == PHASE_MISSION ||
          m_phase == PHASE_FREE    ||
          m_phase == PHASE_TEEN    ||
-         m_phase == PHASE_USER    ||
-         m_phase == PHASE_PROTO   )
+         m_phase == PHASE_USER    )
     {
         m_bSceneSoluce = false;
 

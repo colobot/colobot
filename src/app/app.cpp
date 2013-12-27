@@ -233,8 +233,7 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
         OPT_DATADIR,
         OPT_LANGDIR,
         OPT_TEXPACK,
-        OPT_VBO,
-        OPT_PROTO
+        OPT_VBO
     };
 
     option options[] =
@@ -250,7 +249,6 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
         { "langdir", required_argument, nullptr, OPT_LANGDIR },
         { "texpack", required_argument, nullptr, OPT_TEXPACK },
         { "vbo", required_argument, nullptr, OPT_VBO },
-        { "proto", no_argument, nullptr, OPT_PROTO },
         { nullptr, 0, nullptr, 0}
     };
 
@@ -292,7 +290,6 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
                 GetLogger()->Message("  -langdir path       set custom language directory path\n");
                 GetLogger()->Message("  -texpack path       set path to custom texture pack\n");
                 GetLogger()->Message("  -vbo mode           set OpenGL VBO mode (one of: auto, enable, disable)\n");
-                GetLogger()->Message("  -proto              show prototype levels\n");
                 return PARSE_ARGS_HELP;
             }
             case OPT_DEBUG:
@@ -389,11 +386,6 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
                     return PARSE_ARGS_FAIL;
                 }
 
-                break;
-            }
-            case OPT_PROTO:
-            {
-                m_protoMode = true;
                 break;
             }
             default:
@@ -1862,11 +1854,6 @@ void CApplication::UpdatePerformanceCountersData()
         m_performanceCountersData[static_cast<PerformanceCounter>(i)] =
             static_cast<float>(diff) / static_cast<float>(sum);
     }
-}
-
-bool CApplication::GetProtoMode() const
-{
-    return m_protoMode;
 }
 
 bool CApplication::GetSceneTestMode()

@@ -44,7 +44,6 @@ enum Phase
     PHASE_FREE,
     PHASE_TEEN,
     PHASE_USER,
-    PHASE_PROTO,
     PHASE_LOADING,
     PHASE_SIMUL,
     PHASE_MODEL,
