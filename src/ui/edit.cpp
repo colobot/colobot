@@ -1466,7 +1466,10 @@ bool CEdit::ReadText(std::string filename, int addSize)
     }
 
     file = fopen(fs::path(path).make_preferred().string().c_str(), "rb");
-    if ( file == NULL )  return false;
+    if ( file == NULL )  {
+        CLogger::GetInstancePointer()->Error("Unable to read text from file \"%s\"\n", path.c_str());
+        return false;
+    }
 
     fseek(file, 0, SEEK_END);
     len = ftell(file);
