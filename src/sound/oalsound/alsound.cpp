@@ -472,17 +472,7 @@ bool ALSound::MuteAll(bool bMute)
             it.second->Mute(bMute);
         }
     }
-
-    if (m_currentMusic) {
-        if (bMute)
-        {
-            m_currentMusic->SetVolume(0.0f);
-        }
-        else
-        {
-            m_currentMusic->SetVolume(m_musicVolume);
-        }
-    }
+    
     return true;
 }
 
