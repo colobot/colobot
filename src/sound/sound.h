@@ -284,16 +284,18 @@ public:
     /** Start playing music
      * \param rank - track number
      * \param bRepeat - repeat playing
+     * \param fadeTime - time of transition between music
      * \return return true on success
      */
-    virtual bool PlayMusic(int rank, bool bRepeat);
+    virtual bool PlayMusic(int rank, bool bRepeat, float fadeTime=5.0f);
 
     /** Start playing music
      * \param filename - name of file to play
      * \param bRepeat - repeat playing
+     * \param fadeTime - time of transition between music
      * \return return true on success
      */
-    virtual bool PlayMusic(const std::string &filename, bool bRepeat);
+    virtual bool PlayMusic(const std::string &filename, bool bRepeat, float fadeTime=5.0f);
 
     /** Restart music
      * @return return true on success
@@ -308,7 +310,7 @@ public:
     /** Stop playing music
      * \return return true on success
      */
-    virtual void StopMusic();
+    virtual void StopMusic(float fadeTime=5.0f);
 
     /** Check if music if playing
      * \return return true if music is playing

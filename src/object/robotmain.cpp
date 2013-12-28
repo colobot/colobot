@@ -1072,7 +1072,7 @@ void CRobotMain::ChangePhase(Phase phase)
     if (m_phase == PHASE_SIMUL)  // ends a simulation?
     {
         SaveAllScript();
-        m_sound->StopMusic();
+        m_sound->StopMusic(0.0f);
         m_camera->SetControllingObject(0);
 
 /* TODO: #if _SCHOOL
@@ -1226,7 +1226,7 @@ void CRobotMain::ChangePhase(Phase phase)
             m_infoFilename[SATCOM_HUSTON][0] != 0)
             StartDisplayInfo(SATCOM_HUSTON, false);  // shows the instructions
 
-        m_sound->StopMusic();
+        m_sound->StopMusic(0.0f);
         if (!m_base || loading) StartMusic();
     }
 
@@ -6954,7 +6954,6 @@ void CRobotMain::UpdateAudio(bool frame)
             nb <= m_audioChange[t].max)
         {
             CLogger::GetInstancePointer()->Info("Changing music to \"%s\"\n", m_audioChange[t].music);
-            m_sound->StopMusic();
             m_sound->PlayMusic(std::string(m_audioChange[t].music), m_audioChange[t].repeat);
             m_audioChange[t].changed = true;
         }
@@ -7510,8 +7509,7 @@ void CRobotMain::StartMusic()
     CLogger::GetInstancePointer()->Debug("Starting music...\n");
     if (m_audioTrack != "")
     {
-        m_sound->StopMusic();
-        m_sound->PlayMusic(m_audioTrack, m_audioRepeat);
+        m_sound->PlayMusic(m_audioTrack, m_audioRepeat, 0.0f);
     }
 }
 

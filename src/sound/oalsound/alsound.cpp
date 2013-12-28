@@ -57,6 +57,11 @@ void ALSound::CleanUp()
         {
             delete m_currentMusic;
         }
+        
+        for (auto item : m_oldMusic)
+        {
+            delete item.music;
+        }
 
         for (auto item : m_sounds)
         {
@@ -101,7 +106,6 @@ bool ALSound::Create()
     alListenerf(AL_GAIN, m_audioVolume);
     alDistanceModel(AL_LINEAR_DISTANCE_CLAMPED);
 
-    m_currentMusic = new Channel();
     GetLogger()->Info("Done.\n");
     m_enabled = true;
     return true;
@@ -469,13 +473,15 @@ bool ALSound::MuteAll(bool bMute)
         }
     }
 
-    if (bMute)
-    {
-        m_currentMusic->SetVolume(0.0f);
-    }
-    else
-    {
-        m_currentMusic->SetVolume(m_musicVolume);
+    if (m_currentMusic) {
+        if (bMute)
+        {
+            m_currentMusic->SetVolume(0.0f);
+        }
+        else
+        {
+            m_currentMusic->SetVolume(m_musicVolume);
+        }
     }
     return true;
 }
@@ -542,6 +548,22 @@ void ALSound::FrameMove(float delta)
             }
         }
     }
+    
+    std::list<OldMusic> toRemove;
+    
+    for (auto& it : m_oldMusic)
+    {
+        if (it.currentTime >= it.fadeTime) {
+            delete it.music;
+            toRemove.push_back(it);
+        } else {
+            it.currentTime += delta;
+            it.music->SetVolume(((it.fadeTime-it.currentTime) / it.fadeTime) * m_musicVolume);
+        }
+    }
+    
+    for (auto it : toRemove)
+        m_oldMusic.remove(it);
 }
 
 
@@ -557,14 +579,23 @@ void ALSound::SetListener(const Math::Vector &eye, const Math::Vector &lookat)
     alListenerfv(AL_ORIENTATION, orientation);
 }
 
-bool ALSound::PlayMusic(int rank, bool bRepeat)
+bool ALSound::PlayMusic(int rank, bool bRepeat, float fadeTime)
 {
     std::stringstream filename;
     filename << "music" << std::setfill('0') << std::setw(3) << rank << ".ogg";
-    return PlayMusic(filename.str(), bRepeat);
+    return PlayMusic(filename.str(), bRepeat, fadeTime);
 }
 
-bool ALSound::PlayMusic(const std::string &filename, bool bRepeat)
+bool operator<(const OldMusic & l, const OldMusic & r)
+{
+    return l.currentTime < r.currentTime;
+}
+bool operator==(const OldMusic & l, const OldMusic & r)
+{
+    return l.currentTime == r.currentTime;
+}
+
+bool ALSound::PlayMusic(const std::string &filename, bool bRepeat, float fadeTime)
 {
     if (!m_enabled)
     {
@@ -573,6 +604,8 @@ bool ALSound::PlayMusic(const std::string &filename, bool bRepeat)
 
     std::stringstream file;
     file << m_soundPath << "/" << filename;
+    
+    Buffer *buffer;
 
     // check if we have music in cache
     if (m_music.find(filename) == m_music.end())
@@ -583,16 +616,26 @@ bool ALSound::PlayMusic(const std::string &filename, bool bRepeat)
             GetLogger()->Warn("Requested music %s was not found.\n", filename.c_str());
             return false;
         }
-        Buffer *buffer = new Buffer();
+        
+        buffer = new Buffer();
         buffer->LoadFromFile(file.str(), static_cast<Sound>(-1));
-        m_currentMusic->SetBuffer(buffer);
     }
     else
     {
         GetLogger()->Debug("Music loaded from cache\n");
-        m_currentMusic->SetBuffer(m_music[filename]);
+        buffer = m_music[filename];
+    }
+    
+    if (m_currentMusic) {
+        OldMusic old;
+        old.music = m_currentMusic;
+        old.fadeTime = fadeTime;
+        old.currentTime = 0.0f;
+        m_oldMusic.push_back(old);
     }
 
+    m_currentMusic = new Channel();
+    m_currentMusic->SetBuffer(buffer);
     m_currentMusic->SetVolume(m_musicVolume);
     m_currentMusic->SetLoop(bRepeat);
     m_currentMusic->Play();
@@ -613,14 +656,20 @@ bool ALSound::RestartMusic()
     return true;
 }
 
-void ALSound::StopMusic()
+void ALSound::StopMusic(float fadeTime)
 {
     if (!m_enabled || !m_currentMusic)
     {
         return;
     }
 
-    SuspendMusic();
+    OldMusic old;
+    old.music = m_currentMusic;
+    old.fadeTime = fadeTime;
+    old.currentTime = 0.0f;
+    m_oldMusic.push_back(old);
+    
+    m_currentMusic = nullptr;
 }
 
 

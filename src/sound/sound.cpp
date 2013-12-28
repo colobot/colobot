@@ -147,12 +147,12 @@ bool CSoundInterface::MuteAll(bool bMute)
     return true;
 }
 
-bool CSoundInterface::PlayMusic(int rank, bool bRepeat)
+bool CSoundInterface::PlayMusic(int rank, bool bRepeat, float fadeTime)
 {
     return true;
 }
 
-bool CSoundInterface::PlayMusic(const std::string &filename, bool bRepeat)
+bool CSoundInterface::PlayMusic(const std::string &filename, bool bRepeat, float fadeTime)
 {
     return true;
 }
@@ -166,7 +166,7 @@ void CSoundInterface::SuspendMusic()
 {
 }
 
-void CSoundInterface::StopMusic()
+void CSoundInterface::StopMusic(float fadeTime)
 {
 }
 

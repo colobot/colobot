@@ -31,9 +31,16 @@
 
 #include <map>
 #include <string>
+#include <list>
 
 #include <al.h>
 
+
+struct OldMusic {
+    Channel* music;
+    float fadeTime;
+    float currentTime;
+};
 
 class ALSound : public CSoundInterface
 {
@@ -65,11 +72,11 @@ public:
     bool StopAll();
     bool MuteAll(bool bMute);
 
-    bool PlayMusic(int rank, bool bRepeat);
-    bool PlayMusic(const std::string &filename, bool bRepeat);
+    bool PlayMusic(int rank, bool bRepeat, float fadeTime=5.0f);
+    bool PlayMusic(const std::string &filename, bool bRepeat, float fadeTime=5.0f);
     bool RestartMusic();
     void SuspendMusic();
-    void StopMusic();
+    void StopMusic(float fadeTime=5.0f);
     bool IsPlayingMusic();
 
 private:
@@ -86,6 +93,7 @@ private:
     std::map<std::string, Buffer*> m_music;
     std::map<int, Channel*> m_channels;
     Channel *m_currentMusic;
+    std::list<OldMusic> m_oldMusic;
     Math::Vector m_eye;
     Math::Vector m_lookat;
 };
