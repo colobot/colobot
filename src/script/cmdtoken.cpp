@@ -535,11 +535,11 @@ const char* GetTypeObject(ObjectType type)
     if ( type == OBJECT_INFO         )  return "ExchangePost";
     if ( type == OBJECT_ENERGY       )  return "PowerPlant";
     if ( type == OBJECT_LABO         )  return "AutoLab";
-#if _GERMAN | _WG
+/* TODO: #if _GERMAN | _WG
     if ( type == OBJECT_NUCLEAR      )  return "FuelCellPlant";
-#else
+#else */
     if ( type == OBJECT_NUCLEAR      )  return "NuclearPlant";
-#endif
+/* #endif */
     if ( type == OBJECT_PARA         )  return "PowerCaptor";
     if ( type == OBJECT_SAFE         )  return "Vault";
     if ( type == OBJECT_HUSTON       )  return "Houston";
@@ -800,6 +800,62 @@ const char* GetCamera(Gfx::CameraType type)
     return "BACK";
 }
 
+// Returns the type of drive.
+
+DriveType GetDrive(char *line, int rank)
+{
+    char*   p;
+
+    p = SearchArg(line, rank);
+    if ( *p == 0 )  return DRIVE_OTHER;
+
+    if ( Cmd(p, "Wheeled" ) )  return DRIVE_WHEELED;
+    if ( Cmd(p, "Tracked" ) )  return DRIVE_TRACKED;
+    if ( Cmd(p, "Winged"  ) )  return DRIVE_WINGED;
+    if ( Cmd(p, "Legged"  ) )  return DRIVE_LEGGED;
+
+    return DRIVE_OTHER;
+}
+
+// Returns the name of a drive.
+
+const char* GetDrive(DriveType type)
+{
+    if ( type == DRIVE_WHEELED )  return "Wheeled";
+    if ( type == DRIVE_TRACKED )  return "Tracked";
+    if ( type == DRIVE_WINGED  )  return "Winged";
+    if ( type == DRIVE_LEGGED  )  return "Legged";
+    return "Other";
+}
+
+// Returns the type of tool.
+
+ToolType GetTool(char *line, int rank)
+{
+    char*   p;
+
+    p = SearchArg(line, rank);
+    if ( *p == 0 )  return TOOL_OTHER;
+
+    if ( Cmd(p, "Grabber"     ) )  return TOOL_GRABBER;
+    if ( Cmd(p, "Sniffer"     ) )  return TOOL_SNIFFER;
+    if ( Cmd(p, "Shooter"     ) )  return TOOL_SHOOTER;
+    if ( Cmd(p, "OrgaShooter" ) )  return TOOL_ORGASHOOTER;
+
+    return TOOL_OTHER;
+}
+
+// Returns the name of a tool.
+
+const char* GetTool(ToolType type)
+{
+    if ( type == TOOL_GRABBER     )  return "Grabber";
+    if ( type == TOOL_SNIFFER     )  return "Sniffer";
+    if ( type == TOOL_SHOOTER     )  return "Shooter";
+    if ( type == TOOL_ORGASHOOTER )  return "OrgaShooter";
+    return "Other";
+}
+
 // Returns an integer.
 
 int OpInt(char *line, const char *op, int def)
@@ -885,6 +941,24 @@ Gfx::CameraType OpCamera(char *line, const char *op)
     line = SearchOp(line, op);
     if ( *line == 0 )  return Gfx::CAM_TYPE_NULL;
     return GetCamera(line, 0);
+}
+
+// Returns the type of drive.
+
+DriveType OpDrive(char *line, const char *op)
+{
+    line = SearchOp(line, op);
+    if ( *line == 0 )  return DRIVE_OTHER;
+    return GetDrive(line, 0);
+}
+
+// Returns the type of tool.
+
+ToolType OpTool(char *line, const char *op)
+{
+    line = SearchOp(line, op);
+    if ( *line == 0 )  return TOOL_OTHER;
+    return GetTool(line, 0);
 }
 
 // Returns the type of a building.

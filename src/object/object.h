@@ -125,34 +125,34 @@ enum ObjectType
     OBJECT_TREE7            = 97,   //! < tree 7
     OBJECT_TREE8            = 98,   //! < tree 8
     OBJECT_TREE9            = 99,   //! < tree 9
-    OBJECT_MOBILEwt         = 100,  //! < wheel-trainer
-    OBJECT_MOBILEtt         = 101,  //! < track-trainer
-    OBJECT_MOBILEft         = 102,  //! < fly-trainer
-    OBJECT_MOBILEit         = 103,  //! < insect-trainer
-    OBJECT_MOBILEwa         = 110,  //! < wheel-arm
-    OBJECT_MOBILEta         = 111,  //! < track-arm
-    OBJECT_MOBILEfa         = 112,  //! < fly-arm
-    OBJECT_MOBILEia         = 113,  //! < insect-arm
-    OBJECT_MOBILEwc         = 120,  //! < wheel-cannon
-    OBJECT_MOBILEtc         = 121,  //! < track-cannon
-    OBJECT_MOBILEfc         = 122,  //! < fly-cannon
-    OBJECT_MOBILEic         = 123,  //! < insect-cannon
-    OBJECT_MOBILEwi         = 130,  //! < wheel-insect-cannon
-    OBJECT_MOBILEti         = 131,  //! < track-insect-cannon
-    OBJECT_MOBILEfi         = 132,  //! < fly-insect-cannon
-    OBJECT_MOBILEii         = 133,  //! < insect-insect-cannon
-    OBJECT_MOBILEws         = 140,  //! < wheel-search
-    OBJECT_MOBILEts         = 141,  //! < track-search
-    OBJECT_MOBILEfs         = 142,  //! < fly-search
-    OBJECT_MOBILEis         = 143,  //! < insect-search
-    OBJECT_MOBILErt         = 200,  //! < roller-terraform
-    OBJECT_MOBILErc         = 201,  //! < roller-canon
-    OBJECT_MOBILErr         = 202,  //! < roller-recover
-    OBJECT_MOBILErs         = 203,  //! < roller-shield
-    OBJECT_MOBILEsa         = 210,  //! < submarine
-    OBJECT_MOBILEtg         = 211,  //! < training target
-    OBJECT_MOBILEdr         = 212,  //! < robot drawing
-    OBJECT_CONTROLLER       = 213,  //! < mission controller
+    OBJECT_MOBILEwt         = 100,  //! < PracticeBot
+    OBJECT_MOBILEtt         = 101,  //! < track-trainer (unused)
+    OBJECT_MOBILEft         = 102,  //! < fly-trainer (unused)
+    OBJECT_MOBILEit         = 103,  //! < insect-trainer (unused)
+    OBJECT_MOBILEwa         = 110,  //! < WheeledGrabber
+    OBJECT_MOBILEta         = 111,  //! < TrackedGrabber
+    OBJECT_MOBILEfa         = 112,  //! < WingedGrabber
+    OBJECT_MOBILEia         = 113,  //! < LeggedGrabber
+    OBJECT_MOBILEwc         = 120,  //! < WheeledShooter
+    OBJECT_MOBILEtc         = 121,  //! < TrackedShooter
+    OBJECT_MOBILEfc         = 122,  //! < WingedShooter
+    OBJECT_MOBILEic         = 123,  //! < LeggedShooter
+    OBJECT_MOBILEwi         = 130,  //! < WheeledOrgaShooter
+    OBJECT_MOBILEti         = 131,  //! < TrackedOrgaShooter
+    OBJECT_MOBILEfi         = 132,  //! < WingedOrgaShooter
+    OBJECT_MOBILEii         = 133,  //! < LeggedOrgaShooter
+    OBJECT_MOBILEws         = 140,  //! < WheeledSniffer
+    OBJECT_MOBILEts         = 141,  //! < TrackedSniffer
+    OBJECT_MOBILEfs         = 142,  //! < WingedSniffer
+    OBJECT_MOBILEis         = 143,  //! < LeggedSniffer
+    OBJECT_MOBILErt         = 200,  //! < Thumper
+    OBJECT_MOBILErc         = 201,  //! < PhazerShooter
+    OBJECT_MOBILErr         = 202,  //! < Recycler
+    OBJECT_MOBILErs         = 203,  //! < Shielder
+    OBJECT_MOBILEsa         = 210,  //! < Subber
+    OBJECT_MOBILEtg         = 211,  //! < TargetBot
+    OBJECT_MOBILEdr         = 212,  //! < Scribbler
+    OBJECT_CONTROLLER       = 213,  //! < MissionController
     OBJECT_WAYPOINT         = 250,  //! < waypoint
     OBJECT_FLAGb            = 260,  //! < blue flag
     OBJECT_FLAGr            = 261,  //! < red flag
@@ -309,6 +309,24 @@ enum ObjectMaterial
     OM_ANIMAL  = 3,    // insect
     OM_VEGETAL = 4,    // plant
     OM_MINERAL = 5,    // stone
+};
+
+enum DriveType
+{
+    DRIVE_OTHER = 0,
+    DRIVE_WHEELED,
+    DRIVE_TRACKED,
+    DRIVE_WINGED,
+    DRIVE_LEGGED,
+};
+
+enum ToolType
+{
+    TOOL_OTHER = 0,
+    TOOL_GRABBER,
+    TOOL_SNIFFER,
+    TOOL_SHOOTER,
+    TOOL_ORGASHOOTER,
 };
 
 struct ObjectPart
@@ -659,6 +677,9 @@ public:
     void        SetTraceWidth(float width);
 
     std::string GetModelDirName();
+    
+    static DriveType GetDriveFromObject(ObjectType type);
+    static ToolType  GetToolFromObject(ObjectType type);
 
 protected:
     bool        EventFrame(const Event &event);

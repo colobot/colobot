@@ -103,6 +103,8 @@ struct EndTake
     int           lost;       // lost if <=
     float         powermin;   // wins if energy cell >=
     float         powermax;   // wins if energy cell <=
+    ToolType      tool;
+    DriveType     drive;
     bool          immediat;
     char          message[100];
 };
@@ -116,6 +118,8 @@ struct AudioChange
     int           max;        // change if <
     float         powermin;   // change if energy cell >=
     float         powermax;   // change if energy cell <=
+    ToolType      tool;
+    DriveType     drive;
     char          music[100];
     bool          repeat;
     bool          changed;

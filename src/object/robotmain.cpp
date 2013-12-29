@@ -4131,6 +4131,8 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 m_audioChange[i].max      = OpInt(line, "max", 9999);
                 m_audioChange[i].powermin = OpFloat(line, "powermin", -1);
                 m_audioChange[i].powermax = OpFloat(line, "powermax", 100);
+                m_audioChange[i].tool     = OpTool(line, "tool");
+                m_audioChange[i].drive    = OpDrive(line, "drive");
                 OpString(line, "filename", m_audioChange[i].music);
                 m_audioChange[i].repeat   = OpInt(line, "repeat", 1);
                 m_audioChange[i].changed  = false;
@@ -4928,11 +4930,15 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 {
                     m_endTake[i].powermin = OpFloat(line, "powermin", -1);
                     m_endTake[i].powermax = OpFloat(line, "powermax", 100);
+                    m_endTake[i].tool     = OpTool(line, "tool");
+                    m_endTake[i].drive    = OpDrive(line, "drive");
                 }
                 else
                 {
                     m_endTake[i].powermin = -1;
                     m_endTake[i].powermax = 100;
+                    m_endTake[i].tool     = TOOL_OTHER;
+                    m_endTake[i].drive    = DRIVE_OTHER;
                 }
                 m_endTake[i].lost     = OpInt(line, "lost", -1);
                 m_endTake[i].immediat = OpInt(line, "immediat", 0);
@@ -6594,8 +6600,13 @@ void CRobotMain::UpdateAudio(bool frame)
             {
                 type = OBJECT_SCRAP1;
             }
+            
+            ToolType tool = CObject::GetToolFromObject(type);
+            DriveType drive = CObject::GetDriveFromObject(type);
+            if (m_audioChange[t].tool != TOOL_OTHER) if(tool != m_audioChange[t].tool) continue;
+            if (m_audioChange[t].drive != DRIVE_OTHER) if(drive != m_audioChange[t].drive) continue;
 
-            if (type != m_audioChange[t].type)  continue;
+            if (m_audioChange[t].tool == TOOL_OTHER && m_audioChange[t].drive == DRIVE_OTHER) if (type != m_audioChange[t].type)  continue;
 
             float energyLevel = -1;
             CObject* power = obj->GetPower();
@@ -6699,7 +6710,12 @@ Error CRobotMain::CheckEndMission(bool frame)
                 type = OBJECT_SCRAP1;
             }
 
-            if (type != m_endTake[t].type)  continue;
+            ToolType tool = CObject::GetToolFromObject(type);
+            DriveType drive = CObject::GetDriveFromObject(type);
+            if (m_endTake[t].tool != TOOL_OTHER) if(tool != m_endTake[t].tool) continue;
+            if (m_endTake[t].drive != DRIVE_OTHER) if(drive != m_endTake[t].drive) continue;
+
+            if (m_endTake[t].tool == TOOL_OTHER && m_endTake[t].drive == DRIVE_OTHER) if (type != m_endTake[t].type)  continue;
 
             float energyLevel = -1;
             CObject* power = obj->GetPower();

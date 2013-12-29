@@ -7390,3 +7390,70 @@ void CObject::SetTraceWidth(float width)
     mv->SetTraceWidth(width);
 }
 
+DriveType CObject::GetDriveFromObject(ObjectType type)
+{
+    switch(type) {
+        case OBJECT_MOBILEwt:
+        case OBJECT_MOBILEwa:
+        case OBJECT_MOBILEwc:
+        case OBJECT_MOBILEwi:
+        case OBJECT_MOBILEws:
+            return DRIVE_WHEELED;
+            
+        case OBJECT_MOBILEtt:
+        case OBJECT_MOBILEta:
+        case OBJECT_MOBILEtc:
+        case OBJECT_MOBILEti:
+        case OBJECT_MOBILEts:
+            return DRIVE_TRACKED;
+            
+        case OBJECT_MOBILEft:
+        case OBJECT_MOBILEfa:
+        case OBJECT_MOBILEfc:
+        case OBJECT_MOBILEfi:
+        case OBJECT_MOBILEfs:
+            return DRIVE_WINGED;
+            
+        case OBJECT_MOBILEit:
+        case OBJECT_MOBILEia:
+        case OBJECT_MOBILEic:
+        case OBJECT_MOBILEii:
+        case OBJECT_MOBILEis:
+            return DRIVE_LEGGED;
+            
+        default:
+            return DRIVE_OTHER;
+    }
+}
+
+ToolType CObject::GetToolFromObject(ObjectType type)
+{
+    switch(type) {
+        case OBJECT_MOBILEwa:
+        case OBJECT_MOBILEta:
+        case OBJECT_MOBILEfa:
+        case OBJECT_MOBILEia:
+            return TOOL_GRABBER;
+            
+        case OBJECT_MOBILEws:
+        case OBJECT_MOBILEts:
+        case OBJECT_MOBILEfs:
+        case OBJECT_MOBILEis:
+            return TOOL_SNIFFER;
+            
+        case OBJECT_MOBILEwc:
+        case OBJECT_MOBILEtc:
+        case OBJECT_MOBILEfc:
+        case OBJECT_MOBILEic:
+            return TOOL_SHOOTER;
+            
+        case OBJECT_MOBILEwi:
+        case OBJECT_MOBILEti:
+        case OBJECT_MOBILEfi:
+        case OBJECT_MOBILEii:
+            return TOOL_ORGASHOOTER;
+            
+        default:
+            return TOOL_OTHER;
+    }
+}
