@@ -680,10 +680,23 @@ bool CScript::rFactory(CBotVar* thisclass, CBotVar* var, CBotVar* result, int& e
     classVars = classVars->GetNext();  // "id"
     int rank = classVars->GetValInt();
     CObject* factory = CObjectManager::GetInstancePointer()->SearchInstance(rank);
-    CAutoFactory* automat = static_cast<CAutoFactory*>(factory->GetAuto());
+    if (factory == nullptr) {
+        exception = ERR_GENERIC;
+        result->SetValInt(ERR_GENERIC);
+        CLogger::GetInstancePointer()->Error("in object.factory() - factory is nullptr");
+        return false;
+    }
 
     if ( thisType == OBJECT_FACTORY )
     {
+        CAutoFactory* automat = static_cast<CAutoFactory*>(factory->GetAuto());
+        if(automat == nullptr) {
+            exception = ERR_GENERIC;
+            result->SetValInt(ERR_GENERIC);
+            CLogger::GetInstancePointer()->Error("in object.factory() - automat is nullptr");
+            return false;
+        }
+        
         bool bEnable = false;
 
         if ( type == OBJECT_MOBILEwa )
