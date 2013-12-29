@@ -390,9 +390,6 @@ protected:
     void        CreateScene(bool soluce, bool fixScene, bool resetObject);
 
     Math::Vector LookatPoint(Math::Vector eye, float angleH, float angleV, float length);
-    CObject*    CreateObject(Math::Vector pos, float angle, float zoom,
-                             float height, ObjectType type, float power=1.0f,
-                             bool trainer=false, bool toy=false, int option=0);
     int         CreateLight(Math::Vector direction, Gfx::Color color);
     void        HiliteClear();
     void        HiliteObject(Math::Point pos);

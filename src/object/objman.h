@@ -44,7 +44,7 @@ public:
     //! Seeks for an object
     CObject*  SearchInstance(int id);
     //! Creates an object
-    CObject*  CreateObject(Math::Vector pos, float angle, float zoom, float height, ObjectType type, float power, bool trainer, bool toy, int option);
+    CObject*  CreateObject(Math::Vector pos, float angle, ObjectType type, float power = -1.f, float zoom = 1.f, float height = 0.f, bool trainer = false, bool toy = false, int option = 0);
 
 protected:
     CObject* m_table[MAX_OBJECTS];

@@ -63,10 +63,9 @@ CObject* CObjectManager::SearchInstance(int id)
     return m_table[id];
 }
 
-CObject* CObjectManager::CreateObject(Math::Vector pos, float angle, float zoom, float height,
-                                  ObjectType type, float power,
-                                  bool trainer, bool toy,
-                                  int option)
+CObject* CObjectManager::CreateObject(Math::Vector pos, float angle, ObjectType type,
+                                      float power, float zoom, float height,
+                                      bool trainer, bool toy, int option)
 {
     CObject* object = nullptr;
 
