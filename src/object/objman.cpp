@@ -30,7 +30,7 @@ CObjectManager::CObjectManager()
     {
         m_table[i] = nullptr;
     }
-    usedCount = 0;
+    m_usedCount = 0;
 }
 
 CObjectManager::~CObjectManager()
@@ -39,16 +39,16 @@ CObjectManager::~CObjectManager()
 
 bool CObjectManager::AddInstance(CObject* instance)
 {
-    if (usedCount >= MAX_OBJECTS) return false;
+    if (m_usedCount >= MAX_OBJECTS) return false;
 
     m_table[instance->GetID()] = instance;
-    usedCount++;
+    m_usedCount++;
     return true;
 }
 
 bool CObjectManager::DeleteInstance(CObject* instance)
 {
-    for (int i = 0; i < usedCount; i++)
+    for (int i = 0; i < m_usedCount; i++)
     {
         if (m_table[i] == instance)
             m_table[i] = nullptr;
@@ -386,3 +386,11 @@ CObject* CObjectManager::CreateObject(Math::Vector pos, float angle, ObjectType 
     return object;
 }
 
+void CObjectManager::Flush()
+{
+    for (int i = 0; i < MAX_OBJECTS; i++)
+    {
+        m_table[i] = nullptr;
+    }
+    m_usedCount = 0;
+}

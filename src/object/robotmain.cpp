@@ -1148,6 +1148,8 @@ void CRobotMain::ChangePhase(Phase phase)
     iMan->Flush(CLASS_PHYSICS);
     iMan->Flush(CLASS_BRAIN);
     iMan->Flush(CLASS_PYRO);
+    
+    CObjectManager::GetInstancePointer()->Flush();
 
     Math::Point dim, pos;
 
@@ -3869,6 +3871,8 @@ void CRobotMain::ScenePerso()
     iMan->Flush(CLASS_PHYSICS);
     iMan->Flush(CLASS_BRAIN);
     iMan->Flush(CLASS_PYRO);
+    
+    CObjectManager::GetInstancePointer()->Flush();
 
     m_dialog->SetSceneName("perso");
     m_dialog->SetSceneRank(0);
@@ -6546,6 +6550,8 @@ void CRobotMain::ResetCreate()
     iMan->Flush(CLASS_PHYSICS);
     iMan->Flush(CLASS_BRAIN);
     iMan->Flush(CLASS_PYRO);
+    
+    CObjectManager::GetInstancePointer()->Flush();
 
     m_camera->SetType(Gfx::CAM_TYPE_DIALOG);
 

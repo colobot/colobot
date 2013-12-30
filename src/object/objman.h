@@ -45,9 +45,11 @@ public:
     CObject*  SearchInstance(int id);
     //! Creates an object
     CObject*  CreateObject(Math::Vector pos, float angle, ObjectType type, float power = -1.f, float zoom = 1.f, float height = 0.f, bool trainer = false, bool toy = false, int option = 0);
+    //! Removes all objects
+    void      Flush();
 
 protected:
     CObject* m_table[MAX_OBJECTS];
-    int usedCount;
+    int m_usedCount;
 };
 
