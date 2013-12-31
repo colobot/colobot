@@ -65,6 +65,7 @@ app/main.cpp
 app/system.cpp
 app/${SYSTEM_CPP_MODULE}
 app/system_other.cpp
+app/pausemanager.cpp
 common/event.cpp
 common/image.cpp
 common/iman.cpp

@@ -24,6 +24,8 @@
 
 #include "common/event.h"
 
+#include "app/pausemanager.h"
+
 #include "CBot/CBotDll.h"
 
 #include <stdio.h>
@@ -217,6 +219,7 @@ protected:
     CTaskManager*       m_primaryTask;
     CTaskManager**      m_secondaryTask;
     CObject*            m_object;
+    CPauseManager*      m_pause;
 
     int     m_ipf;          // number of instructions/second
     int     m_errMode;      // what to do in case of error

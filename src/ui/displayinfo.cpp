@@ -59,6 +59,7 @@ CDisplayInfo::CDisplayInfo()
     m_main      = CRobotMain::GetInstancePointer();
     m_interface = m_main->GetInterface();
     m_camera    = m_main->GetCamera();
+    m_pause     = CPauseManager::GetInstancePointer();
 
     m_bInfoMaximized = true;
     m_bInfoMinimized = false;
@@ -330,13 +331,13 @@ void CDisplayInfo::HyperUpdate()
 
 void CDisplayInfo::StartDisplayInfo(std::string filename, int index, bool bSoluce)
 {
-    Gfx::Light         light;
+    Gfx::Light          light;
     Math::Point         pos, dim;
     Ui::CWindow*        pw;
     Ui::CEdit*          edit;
     Ui::CButton*        button;
     Ui::CSlider*        slider;
-    CMotionToto*    toto;
+    CMotionToto*        toto;
 
     m_index = index;
     m_bSoluce = bSoluce;
@@ -355,8 +356,8 @@ void CDisplayInfo::StartDisplayInfo(std::string filename, int index, bool bSoluc
 
     m_main->SetEditLock(true, false);
     m_main->SetEditFull(false);
-    m_bInitPause = m_engine->GetPause();
-    m_engine->SetPause(true);
+    m_bInitPause = m_pause->GetPauseType();
+    m_pause->SetPause(PAUSE_SATCOM);
     m_infoCamera = m_camera->GetType();
     m_camera->SetType(Gfx::CAM_TYPE_INFO);
 
@@ -839,7 +840,7 @@ void CDisplayInfo::StopDisplayInfo()
     }
     else
     {
-        if ( !m_bInitPause )  m_engine->SetPause(false);
+        m_pause->SetPause(m_bInitPause);
         m_main->SetEditLock(false, false);
     }
     m_camera->SetType(m_infoCamera);

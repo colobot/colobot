@@ -618,6 +618,7 @@ CRobotMain::CRobotMain(CApplication* app, bool loadProfile)
     m_cloud      = m_engine->GetCloud();
     m_lightning  = m_engine->GetLightning();
     m_planet     = m_engine->GetPlanet();
+    m_pause      = CPauseManager::GetInstancePointer();
 
     m_interface   = new Ui::CInterface();
     m_terrain     = new Gfx::CTerrain();
@@ -663,7 +664,6 @@ CRobotMain::CRobotMain(CApplication* app, bool loadProfile)
     m_satComLock   = false;
     m_editLock     = false;
     m_editFull     = false;
-    m_pause        = false;
     m_hilite       = false;
     m_freePhoto    = false;
     m_showPos      = false;
@@ -1110,7 +1110,7 @@ void CRobotMain::ChangePhase(Phase phase)
     m_resetCreate = false;
 
     m_engine->SetMovieLock(m_movieLock);
-    ChangePause(false);
+    ChangePause(PAUSE_NONE);
     FlushDisplayInfo();
     m_engine->SetRankView(0);
     m_terrain->FlushRelief();
@@ -1387,7 +1387,7 @@ bool CRobotMain::ProcessEvent(Event &event)
             MainMovieType type = m_movie->GetStopType();
             if (type == MM_SATCOMopen)
             {
-                ChangePause(false);
+                ChangePause(PAUSE_NONE);
                 SelectObject(m_infoObject, false);  // hands over the command buttons
                 m_map->ShowMap(m_mapShow);
                 m_displayText->HideText(false);
@@ -1419,7 +1419,7 @@ bool CRobotMain::ProcessEvent(Event &event)
         if (pe == nullptr) return false;
         pe->SetState(Ui::STATE_VISIBLE);
         pe->SetFocus(true);
-        if (m_phase == PHASE_SIMUL) ChangePause(true);
+        if (m_phase == PHASE_SIMUL) ChangePause(PAUSE_CHEAT);
         m_cmdEdit = true;
         return false;
     }
@@ -1432,7 +1432,7 @@ bool CRobotMain::ProcessEvent(Event &event)
         pe->GetText(cmd, 50);
         pe->SetText("");
         pe->ClearState(Ui::STATE_VISIBLE);
-        if (m_phase == PHASE_SIMUL) ChangePause(false);
+        if (m_phase == PHASE_SIMUL) ChangePause(PAUSE_NONE);
         ExecuteCmd(cmd);
         m_cmdEdit = false;
         return false;
@@ -1562,7 +1562,7 @@ bool CRobotMain::ProcessEvent(Event &event)
                         m_camera->GetType() != Gfx::CAM_TYPE_VISIT &&
                         !m_movie->IsExist())
                     {
-                        ChangePause(!m_engine->GetPause());
+                        ChangePause(m_pause->GetPause(PAUSE_USER) ? PAUSE_NONE : PAUSE_USER);
                     }
                 }
                 if (event.key.key == GetInputBinding(INPUT_SLOT_CAMERA).primary ||
@@ -1891,12 +1891,12 @@ void CRobotMain::ExecuteCmd(char *cmd)
             if (m_freePhoto)
             {
                 m_camera->SetType(Gfx::CAM_TYPE_FREE);
-                ChangePause(true);
+                ChangePause(PAUSE_PHOTO);
             }
             else
             {
                 m_camera->SetType(Gfx::CAM_TYPE_BACK);
-                ChangePause(false);
+                ChangePause(PAUSE_NONE);
             }
             return;
         }
@@ -1907,7 +1907,7 @@ void CRobotMain::ExecuteCmd(char *cmd)
             if (m_freePhoto)
             {
                 m_camera->SetType(Gfx::CAM_TYPE_FREE);
-                ChangePause(true);
+                ChangePause(PAUSE_PHOTO);
                 DeselectAll();  // removes the control buttons
                 m_map->ShowMap(false);
                 m_displayText->HideText(true);
@@ -1915,7 +1915,7 @@ void CRobotMain::ExecuteCmd(char *cmd)
             else
             {
                 m_camera->SetType(Gfx::CAM_TYPE_BACK);
-                ChangePause(false);
+                ChangePause(PAUSE_NONE);
                 m_map->ShowMap(m_mapShow);
                 m_displayText->HideText(false);
             }
@@ -2174,7 +2174,7 @@ void CRobotMain::StartDisplayInfo(int index, bool movie)
         {
             m_movieInfoIndex = index;
             m_movie->Start(MM_SATCOMopen, 2.5f);
-            ChangePause(true);
+            ChangePause(PAUSE_SATCOM);
             m_infoObject = DeselectAll();  // removes the control buttons
             m_displayText->HideText(true);
             return;
@@ -2184,7 +2184,7 @@ void CRobotMain::StartDisplayInfo(int index, bool movie)
     if (m_movie->IsExist())
     {
         m_movie->Stop();
-        ChangePause(false);
+        ChangePause(PAUSE_NONE);
         SelectObject(m_infoObject, false);  // hands over the command buttons
         m_displayText->HideText(false);
     }
@@ -2476,7 +2476,7 @@ void CRobotMain::StartDisplayVisit(EventType event)
     m_camera->StartVisit(m_displayText->GetVisitGoal(event),
                          m_displayText->GetVisitDist(event));
     m_displayText->SetVisit(event);
-    ChangePause(true);
+    ChangePause(PAUSE_VISIT);
 }
 
 //! Move the arrow to visit
@@ -2530,7 +2530,7 @@ void CRobotMain::StopDisplayVisit()
 
     m_camera->StopVisit();
     m_displayText->ClearVisit();
-    ChangePause(false);
+    ChangePause(PAUSE_NONE);
     if (m_visitObject != 0)
     {
         SelectObject(m_visitObject, false);  // gives the command buttons
@@ -2628,7 +2628,7 @@ bool CRobotMain::SelectObject(CObject* obj, bool displayError)
     if (m_camera->GetType() == Gfx::CAM_TYPE_VISIT)
         StopDisplayVisit();
 
-    if (m_movieLock || m_editLock || m_pause) return false;
+    if (m_movieLock || m_editLock || m_pause->GetPause()) return false;
     if (m_movie->IsExist()) return false;
     if (obj == nullptr || !IsSelectable(obj)) return false;
 
@@ -3530,7 +3530,7 @@ bool CRobotMain::EventFrame(const Event &event)
     }
 
     // Moves edition indicator.
-    if (m_editLock || m_pause)  // edition in progress?
+    if (m_editLock || m_pause->GetPause())  // edition in progress?
     {
         Ui::CControl* pc = m_interface->SearchControl(EVENT_OBJECT_EDITLOCK);
         if (pc != nullptr)
@@ -7022,14 +7022,16 @@ float CRobotMain::GetPersoAngle()
 
 
 //! Changes on the pause mode
-void CRobotMain::ChangePause(bool pause)
+void CRobotMain::ChangePause(PauseType pause)
 {
-    m_pause = pause;
-    m_engine->SetPause(m_pause);
+    if(pause != PAUSE_NONE)
+        m_pause->SetPause(pause);
+    else
+        m_pause->ClearPause();
 
-    m_sound->MuteAll(m_pause);
+    m_sound->MuteAll(m_pause->GetPause());
     CreateShortcuts();
-    if (m_pause) HiliteClear();
+    if (m_pause->GetPause()) HiliteClear();
 }
 
 

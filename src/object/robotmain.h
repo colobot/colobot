@@ -30,6 +30,8 @@
 #include "object/object.h"
 #include "object/mainmovie.h"
 
+#include "app/pausemanager.h"
+
 #include <stdio.h>
 
 enum Phase
@@ -253,7 +255,7 @@ public:
     void        SetTracePrecision(float factor);
     float       GetTracePrecision();
 
-    void        ChangePause(bool pause);
+    void        ChangePause(PauseType pause);
 
     void        SetSpeed(float speed);
     float       GetSpeed();
@@ -440,6 +442,7 @@ protected:
     Ui::CDisplayText*   m_displayText;
     Ui::CDisplayInfo*   m_displayInfo;
     CSoundInterface*    m_sound;
+    CPauseManager*      m_pause;
 
     //! Bindings for user inputs
     InputBinding    m_inputBindings[INPUT_SLOT_MAX];
@@ -495,7 +498,6 @@ protected:
     bool            m_satComLock;      // call of SatCom is possible?
     bool            m_editLock;        // edition in progress?
     bool            m_editFull;        // edition in full screen?
-    bool            m_pause;       // simulation paused
     bool            m_hilite;
     bool            m_trainerPilot;    // remote trainer?
     bool            m_suspend;

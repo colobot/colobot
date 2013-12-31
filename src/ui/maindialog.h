@@ -23,6 +23,8 @@
 
 #include "object/robotmain.h"
 
+#include "app/pausemanager.h"
+
 #include <boost/filesystem.hpp>
 #include <boost/algorithm/string.hpp>
 
@@ -186,6 +188,7 @@ protected:
     Gfx::CParticle*   m_particle;
     Gfx::CCamera*     m_camera;
     CSoundInterface*  m_sound;
+    CPauseManager*    m_pause;
 
     Phase           m_phase;            // copy of CRobotMain
     Phase           m_phaseSetup;           // tab selected
@@ -242,26 +245,26 @@ protected:
     bool            m_bCameraInvertY;       // for CCamera
     bool            m_bEffect;          // for CCamera
 
-    Math::Point         m_glintMouse;
-    float           m_glintTime;
+    Math::Point          m_glintMouse;
+    float                m_glintTime;
 
-    int             m_loadingCounter;
+    int                  m_loadingCounter;
 
-    bool            m_bDialog;          // this dialogue?
-    bool            m_bDialogFire;          // setting on fire?
-    bool            m_bDialogDelete;
-    Math::Point         m_dialogPos;
-    Math::Point         m_dialogDim;
-    float           m_dialogParti;
-    float           m_dialogTime;
-    bool            m_bInitPause;
+    bool                 m_bDialog;          // this dialogue?
+    bool                 m_bDialogFire;          // setting on fire?
+    bool                 m_bDialogDelete;
+    Math::Point          m_dialogPos;
+    Math::Point          m_dialogDim;
+    float                m_dialogParti;
+    float                m_dialogTime;
+    PauseType            m_bInitPause;
     Gfx::CameraType      m_initCamera;
 
-    int             m_partiPhase[10];
-    float           m_partiTime[10];
-    Math::Point         m_partiPos[10];
+    int                  m_partiPhase[10];
+    float                m_partiTime[10];
+    Math::Point          m_partiPos[10];
 
-    SceneInfo       m_sceneInfo[MAXSCENE];
+    SceneInfo            m_sceneInfo[MAXSCENE];
 
     std::vector<fs::path>   m_saveList;
 };

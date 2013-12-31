@@ -63,6 +63,7 @@ CEngine::CEngine(CApplication *app)
     m_planet     = nullptr;
     m_sound      = nullptr;
     m_terrain    = nullptr;
+    m_pause      = nullptr;
 
     m_showStats = false;
 
@@ -80,7 +81,6 @@ CEngine::CEngine(CApplication *app)
     m_fogStart[1]     = 0.75f;
     m_waterAddColor   = Color(0.0f, 0.0f, 0.0f, 0.0f);
 
-    m_pause             = false;
     m_render            = true;
     m_movieLock         = false;
     m_shadowVisible     = true;
@@ -179,6 +179,7 @@ CEngine::~CEngine()
     m_lightning = nullptr;
     m_planet    = nullptr;
     m_terrain   = nullptr;
+    m_pause     = nullptr;
 
     GetSystemUtils()->DestroyTimeStamp(m_lastFrameTime);
     m_lastFrameTime = nullptr;
@@ -252,6 +253,7 @@ bool CEngine::Create()
     m_cloud      = new CCloud(this);
     m_lightning  = new CLightning(this);
     m_planet     = new CPlanet(this);
+    m_pause      = new CPauseManager();
 
     m_lightMan->SetDevice(m_device);
     m_particle->SetDevice(m_device);
@@ -422,18 +424,13 @@ void CEngine::FrameUpdate()
 bool CEngine::WriteScreenShot(const std::string& fileName, int width, int height)
 {
     // TODO write screenshot: not very important for now
-    GetLogger()->Trace("CEngine::WriteSceenShot(): stub!\n");
+    GetLogger()->Debug("CEngine::WriteSceenShot(): stub!\n");
     return true;
-}
-
-void CEngine::SetPause(bool pause)
-{
-    m_pause = pause;
 }
 
 bool CEngine::GetPause()
 {
-    return m_pause;
+    return m_pause->GetPause();
 }
 
 void CEngine::SetMovieLock(bool lock)

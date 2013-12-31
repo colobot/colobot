@@ -71,6 +71,7 @@ CStudio::CStudio()
     m_main      = CRobotMain::GetInstancePointer();
     m_interface = m_main->GetInterface();
     m_camera    = m_main->GetCamera();
+    m_pause     = CPauseManager::GetInstancePointer();
 
     m_bEditMaximized = false;
     m_bEditMinimized = false;
@@ -563,7 +564,7 @@ void CStudio::StartEditScript(CScript *script, std::string name, int rank)
 
     m_main->SetEditLock(true, true);
     m_main->SetEditFull(false);
-    m_bInitPause = m_engine->GetPause();
+    m_bInitPause = m_pause->GetPauseType();
     m_main->SetSpeed(1.0f);
     m_editCamera = m_camera->GetType();
     m_camera->SetType(Gfx::CAM_TYPE_EDIT);
@@ -882,7 +883,7 @@ bool CStudio::StopEditScript(bool bCancel)
         button->SetState(STATE_VISIBLE);
     }
 
-    if ( !m_bInitPause )  m_engine->SetPause(false);
+    m_pause->SetPause(m_bInitPause);
     m_sound->MuteAll(false);
     m_main->SetEditLock(false, true);
     m_camera->SetType(m_editCamera);
@@ -954,22 +955,22 @@ void CStudio::UpdateFlux()
 #if 1
         if ( m_bRealTime )  // run?
         {
-            m_engine->SetPause(false);
+            m_pause->ClearPause();
             m_sound->MuteAll(false);
         }
         else    // step by step?
         {
-            m_engine->SetPause(true);
+            m_pause->SetPause(PAUSE_EDITOR);
             m_sound->MuteAll(true);
         }
 #else
-        m_engine->SetPause(false);
+        m_pause->ClearPause();
         m_sound->MuteAll(false);
 #endif
     }
     else    // stop?
     {
-        m_engine->SetPause(true);
+        m_pause->SetPause(PAUSE_EDITOR);
         m_sound->MuteAll(true);
     }
 }

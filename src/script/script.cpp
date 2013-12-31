@@ -3423,6 +3423,7 @@ CScript::CScript(CObject* object, CTaskManager** secondaryTask)
     m_secondaryTask = secondaryTask;
 
     m_interface = m_main->GetInterface();
+    m_pause = CPauseManager::GetInstancePointer();
 
     m_ipf = CBOT_IPF;
     m_errMode = ERM_STOP;
@@ -3821,12 +3822,12 @@ bool CScript::Continue(const Event &event)
                     GetError(s);
                     m_main->GetDisplayText()->DisplayText(s.c_str(), m_object, 10.0f, Ui::TT_ERROR);
                 }
-                m_engine->SetPause(true);  // gives pause
+                m_pause->SetPause(PAUSE_EDITOR);  // gives pause
                 return true;
             }
             if ( !m_bContinue )
             {
-                m_engine->SetPause(true);  // gives pause
+                m_pause->SetPause(PAUSE_EDITOR);  // gives pause
             }
         }
 
@@ -3869,9 +3870,9 @@ bool CScript::Step(const Event &event)
     if ( !m_bRun )  return true;
     if ( !m_bStepMode )  return false;
 
-    m_engine->SetPause(false);
+    // ??? m_engine->SetPause(false);
     // TODO: m_app StepSimulation??? m_engine->StepSimulation(0.01f);  // advance of 10ms
-    m_engine->SetPause(true);
+    // ??? m_engine->SetPause(true);
 
     m_event = event;
 
@@ -3901,7 +3902,7 @@ bool CScript::Step(const Event &event)
 
     if ( m_bContinue )  // instuction "move", "goto", etc. ?
     {
-        m_engine->SetPause(false);  // removes the pause
+        m_pause->ClearPause();  // removes the pause
     }
     return false;
 }

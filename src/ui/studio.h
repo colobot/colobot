@@ -22,6 +22,8 @@
 
 #include "graphics/engine/camera.h"
 
+#include "app/pausemanager.h"
+
 #include <boost/filesystem.hpp>
 
 namespace fs = boost::filesystem;
@@ -96,6 +98,7 @@ protected:
     CSoundInterface* m_sound;
     CInterface*      m_interface;
     CApplication*    m_app;
+    CPauseManager*   m_pause;
 
     int         m_rank;
     CScript*    m_script;
@@ -109,11 +112,11 @@ protected:
     Math::Point     m_editFinalPos;
     Math::Point     m_editFinalDim;
 
-    float       m_time;
-    float       m_fixInfoTextTime;
-    bool        m_bRunning;
-    bool        m_bRealTime;
-    bool        m_bInitPause;
+    float        m_time;
+    float        m_fixInfoTextTime;
+    bool         m_bRunning;
+    bool         m_bRealTime;
+    PauseType    m_bInitPause;
     std::string  m_helpFilename;
 
     StudioDialog m_dialog;

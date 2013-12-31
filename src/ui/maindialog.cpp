@@ -120,6 +120,7 @@ CMainDialog::CMainDialog()
     m_camera     = m_main->GetCamera();
     m_engine     = Gfx::CEngine::GetInstancePointer();
     m_particle   = m_engine->GetParticle();
+    m_pause      = CPauseManager::GetInstancePointer();
 
     m_phase        = PHASE_NAME;
     m_phaseSetup   = PHASE_SETUPg;
@@ -6401,8 +6402,8 @@ void CMainDialog::StartSuspend()
 {
     m_sound->MuteAll(true);
     m_main->ClearInterface();
-    m_bInitPause = m_engine->GetPause();
-    m_engine->SetPause(true);
+    m_bInitPause = m_pause->GetPauseType();
+    m_pause->SetPause(PAUSE_DIALOG);
     m_engine->SetOverFront(false);  // over flat behind
     m_main->CreateShortcuts();
     m_main->StartSuspend();
@@ -6416,7 +6417,7 @@ void CMainDialog::StopSuspend()
 {
     m_sound->MuteAll(false);
     m_main->ClearInterface();
-    if ( !m_bInitPause )  m_engine->SetPause(false);
+    m_pause->SetPause(m_bInitPause);
     m_engine->SetOverFront(true);  // over flat front
     m_main->CreateShortcuts();
     m_main->StopSuspend();
