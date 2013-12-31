@@ -1639,7 +1639,7 @@ CBotTypResult CScript::cCanBuild(CBotVar* &var, void* user)
     return CBotTypResult(CBotTypBoolean);
 }
 
-// Instruction "canbuid ( category );"
+// Instruction "canbuild ( category );"
 // returns true if this building can be built
 
 bool CScript::rCanBuild(CBotVar* var, CBotVar* result, int& exception, void* user)
@@ -3407,6 +3407,47 @@ bool CScript::rPenWidth(CBotVar* var, CBotVar* result, int& exception, void* use
     return true;
 }
 
+// Compilation of the instruction with one object parameter
+
+CBotTypResult CScript::cOneObject(CBotVar* &var, void* user)
+{
+    if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
+    var = var->GetNext();
+    if ( var == 0 )  return CBotTypResult(CBotTypFloat);
+    
+    return CBotTypResult(CBotErrOverParam);
+}
+
+// Instruction "camerafocus(object)".
+
+bool CScript::rCameraFocus(CBotVar* var, CBotVar* result, int& exception, void* user)
+{
+    CScript* script = (static_cast<CObject *>(user))->GetRunScript();
+    
+    CBotVar* classVars = var->GetItemList();  // "category"
+    classVars = classVars->GetNext();  // "position"
+    classVars = classVars->GetNext();  // "orientation"
+    classVars = classVars->GetNext();  // "pitch"
+    classVars = classVars->GetNext();  // "roll"
+    classVars = classVars->GetNext();  // "energyLevel"
+    classVars = classVars->GetNext();  // "shieldLevel"
+    classVars = classVars->GetNext();  // "temperature"
+    classVars = classVars->GetNext();  // "altitude"
+    classVars = classVars->GetNext();  // "lifeTime"
+    classVars = classVars->GetNext();  // "material"
+    classVars = classVars->GetNext();  // "energyCell"
+    classVars = classVars->GetNext();  // "load"
+    classVars = classVars->GetNext();  // "id"
+    int rank = classVars->GetValInt();
+    CObject* object = CObjectManager::GetInstancePointer()->SearchInstance(rank);
+    
+    script->m_main->SelectObject(object, false);
+    
+    result->SetValInt(ERR_OK);
+    exception = ERR_OK;
+    return true;
+}
+
 
 
 // Object's constructor.
@@ -3507,6 +3548,8 @@ void CScript::InitFonctions()
     CBotProgram::AddFunction("penup",     rPenUp,     CScript::cNull);
     CBotProgram::AddFunction("pencolor",  rPenColor,  CScript::cOneFloat);
     CBotProgram::AddFunction("penwidth",  rPenWidth,  CScript::cOneFloat);
+    
+    CBotProgram::AddFunction("camerafocus", rCameraFocus, CScript::cOneObject);
 
     CBotProgram::AddFunction("canbuild", rCanBuild, CScript::cCanBuild);
     CBotProgram::AddFunction("build", rBuild, CScript::cOneFloat);

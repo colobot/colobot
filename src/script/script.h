@@ -128,6 +128,7 @@ private:
     static CBotTypResult cPenDown(CBotVar* &var, void* user);
     static CBotTypResult cOnePoint(CBotVar* &var, void* user);
     static CBotTypResult cPoint(CBotVar* &var, void* user);
+    static CBotTypResult cOneObject(CBotVar* &var, void* user);
 
 
     static bool rSin(CBotVar* var, CBotVar* result, int& exception, void* user);
@@ -192,6 +193,7 @@ private:
     static bool rPenUp(CBotVar* var, CBotVar* result, int& exception, void* user);
     static bool rPenColor(CBotVar* var, CBotVar* result, int& exception, void* user);
     static bool rPenWidth(CBotVar* var, CBotVar* result, int& exception, void* user);
+    static bool rCameraFocus(CBotVar* var, CBotVar* result, int& exception, void* user);
 
 public:
     static CBotTypResult cBusy(CBotVar* thisclass, CBotVar* &var);
