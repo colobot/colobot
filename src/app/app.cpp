@@ -425,6 +425,16 @@ bool CApplication::Create()
         return false;
     }
 
+    if (GetProfile().GetLocalProfileString("Language", "Lang", path)) {
+        Language language;
+        if (ParseLanguage(path, language)) {
+            m_language = language;
+            GetLogger()->Error("Setting language '%s' from ini file\n", path.c_str());
+        } else {
+            GetLogger()->Error("Invalid language '%s' in ini file\n", path.c_str());
+        }
+    }
+
     SetLanguage(m_language);
 
     //Create the sound instance.
