@@ -72,12 +72,14 @@ public:
     bool StopAll();
     bool MuteAll(bool bMute);
 
-    bool PlayMusic(int rank, bool bRepeat, float fadeTime=5.0f);
-    bool PlayMusic(const std::string &filename, bool bRepeat, float fadeTime=5.0f);
+    bool PlayMusic(int rank, bool bRepeat, float fadeTime=2.0f);
+    bool PlayMusic(const std::string &filename, bool bRepeat, float fadeTime=2.0f);
     bool RestartMusic();
     void SuspendMusic();
-    void StopMusic(float fadeTime=5.0f);
+    void StopMusic(float fadeTime=2.0f);
     bool IsPlayingMusic();
+    bool PlayPauseMusic(const std::string &filename);
+    void StopPauseMusic();
 
 private:
     void CleanUp();
@@ -94,6 +96,7 @@ private:
     std::map<int, Channel*> m_channels;
     Channel *m_currentMusic;
     std::list<OldMusic> m_oldMusic;
+    OldMusic m_previousMusic;
     Math::Vector m_eye;
     Math::Vector m_lookat;
 };

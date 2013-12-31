@@ -22,6 +22,7 @@
 #pragma once
 
 #include "common/singleton.h"
+#include "sound/sound.h"
 
 #include <string>
 
@@ -30,6 +31,7 @@ enum PauseType {
     PAUSE_NONE = 0,
     PAUSE_USER,
     PAUSE_SATCOM,
+    PAUSE_SATCOMMOVIE,
     PAUSE_DIALOG,
     PAUSE_EDITOR,
     PAUSE_VISIT,
@@ -51,6 +53,9 @@ public:
     
 private:
     std::string GetPauseName(PauseType pause);
+    
+private:
+    CSoundInterface* m_sound;
     
     PauseType m_pause;
 };

@@ -74,6 +74,21 @@ bool Channel::Play()
     return true;
 }
 
+bool Channel::Pause()
+{
+    if(!m_ready || !IsPlaying())
+    {
+        return false;
+    }
+    
+    alSourcePause(m_source);
+    if (alCheck())
+    {
+        GetLogger()->Warn("Could not pause audio sound source. Code: %d\n", alGetCode());
+    }
+    return true;
+}
+
 
 bool Channel::SetPosition(const Math::Vector &pos)
 {

@@ -50,6 +50,7 @@ public:
     ~Channel();
 
     bool Play();
+    bool Pause();
     bool Stop();
 
     bool SetPosition(const Math::Vector &);

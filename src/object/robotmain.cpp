@@ -2174,7 +2174,7 @@ void CRobotMain::StartDisplayInfo(int index, bool movie)
         {
             m_movieInfoIndex = index;
             m_movie->Start(MM_SATCOMopen, 2.5f);
-            ChangePause(PAUSE_SATCOM);
+            ChangePause(PAUSE_SATCOMMOVIE);
             m_infoObject = DeselectAll();  // removes the control buttons
             m_displayText->HideText(true);
             return;

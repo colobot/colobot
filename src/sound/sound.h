@@ -287,7 +287,7 @@ public:
      * \param fadeTime - time of transition between music
      * \return return true on success
      */
-    virtual bool PlayMusic(int rank, bool bRepeat, float fadeTime=5.0f);
+    virtual bool PlayMusic(int rank, bool bRepeat, float fadeTime=2.0f);
 
     /** Start playing music
      * \param filename - name of file to play
@@ -295,27 +295,38 @@ public:
      * \param fadeTime - time of transition between music
      * \return return true on success
      */
-    virtual bool PlayMusic(const std::string &filename, bool bRepeat, float fadeTime=5.0f);
+    virtual bool PlayMusic(const std::string &filename, bool bRepeat, float fadeTime=2.0f);
 
     /** Restart music
-     * @return return true on success
+     * \return return true on success
      */
     virtual bool RestartMusic();
 
-    /** Susspend paying music
-     * \return return true on success
+    /** Susspend playing music
+     * \return nothing
      */
     virtual void SuspendMusic();
 
     /** Stop playing music
-     * \return return true on success
+     * \return nothing
      */
-    virtual void StopMusic(float fadeTime=5.0f);
+    virtual void StopMusic(float fadeTime=2.0f);
 
     /** Check if music if playing
      * \return return true if music is playing
      */
     virtual bool IsPlayingMusic();
+    
+    /** Start playing pause music
+     * \param filename - name of file to play
+     * \return return true on success
+     */
+     virtual bool PlayPauseMusic(const std::string &filename);
+     
+     /** Stop playing pause music and return to the mission music
+      * \return nothing
+      */
+     virtual void StopPauseMusic();
 
 protected:
     std::string m_soundPath;

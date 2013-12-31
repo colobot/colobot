@@ -31,6 +31,8 @@ ALSound::ALSound()
     m_currentMusic = nullptr;
     m_eye.LoadZero();
     m_lookat.LoadZero();
+    m_previousMusic.fadeTime = 0.0f;
+    m_previousMusic.music = nullptr;
 }
 
 
@@ -61,6 +63,11 @@ void ALSound::CleanUp()
         for (auto item : m_oldMusic)
         {
             delete item.music;
+        }
+        
+        if (m_previousMusic.music)
+        {
+            delete m_previousMusic.music;
         }
 
         for (auto item : m_sounds)
@@ -552,6 +559,15 @@ void ALSound::FrameMove(float delta)
         }
     }
     
+    if (m_previousMusic.fadeTime > 0.0f) {
+        if (m_previousMusic.currentTime >= m_previousMusic.fadeTime) {
+            m_previousMusic.music->Pause();
+        } else {
+            m_previousMusic.currentTime += delta;
+            m_previousMusic.music->SetVolume(((m_previousMusic.fadeTime-m_previousMusic.currentTime) / m_previousMusic.fadeTime) * m_musicVolume);
+        }
+    }
+    
     for (auto it : toRemove)
         m_oldMusic.remove(it);
 }
@@ -609,6 +625,7 @@ bool ALSound::PlayMusic(const std::string &filename, bool bRepeat, float fadeTim
         
         buffer = new Buffer();
         buffer->LoadFromFile(file.str(), static_cast<Sound>(-1));
+        m_music[filename] = buffer;
     }
     else
     {
@@ -631,6 +648,43 @@ bool ALSound::PlayMusic(const std::string &filename, bool bRepeat, float fadeTim
     m_currentMusic->Play();
 
     return true;
+}
+
+bool ALSound::PlayPauseMusic(const std::string &filename)
+{
+    if (m_previousMusic.fadeTime > 0.0f) {
+        OldMusic old;
+        old.music = m_currentMusic;
+        old.fadeTime = 2.0f;
+        old.currentTime = 0.0f;
+        m_oldMusic.push_back(old);
+        m_currentMusic = nullptr;
+    } else {
+        if (m_currentMusic) {
+            m_previousMusic.music = m_currentMusic;
+            m_previousMusic.fadeTime = 2.0f;
+            m_previousMusic.currentTime = 0.0f;
+            m_currentMusic = nullptr;
+        }
+    }
+    return PlayMusic(filename, true);
+}
+
+void ALSound::StopPauseMusic()
+{
+    if (m_previousMusic.fadeTime > 0.0f) {
+        StopMusic();
+        
+        m_currentMusic = m_previousMusic.music;
+        m_previousMusic.music = nullptr;
+        if(m_currentMusic != nullptr) {
+            m_currentMusic->SetVolume(m_musicVolume);
+            if(m_previousMusic.currentTime >= m_previousMusic.fadeTime) {
+                m_currentMusic->Play();
+            }
+        }
+        m_previousMusic.fadeTime = 0.0f;
+    }
 }
 
 

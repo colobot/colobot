@@ -15,6 +15,7 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
+#include "app/app.h"
 #include "app/pausemanager.h"
 
 #include "common/logger.h"
@@ -25,18 +26,43 @@ template<> CPauseManager* CSingleton<CPauseManager>::m_instance = nullptr;
 
 CPauseManager::CPauseManager()
 {
+    m_sound = CApplication::GetInstancePointer()->GetSound();
+    
     m_pause = PAUSE_NONE;
 }
 
 CPauseManager::~CPauseManager()
 {
+    m_sound = nullptr;
 }
 
 void CPauseManager::SetPause(PauseType pause)
 {
     if(pause != PAUSE_NONE) {
-        if(m_pause != pause)
+        if(m_pause != pause) {
             CLogger::GetInstancePointer()->Info("Game paused - %s\n", GetPauseName(pause).c_str());
+            switch(pause) {
+                case PAUSE_EDITOR:
+                    // TODO: We don't have this music yet
+                    // m_sound->PlayPauseMusic("");
+                    #if DEV_BUILD
+                    m_sound->PlayPauseMusic("Prototype.ogg");
+                    #endif
+                    break;
+                    
+                case PAUSE_SATCOM:
+                    // TODO: We don't have this music yet
+                    // m_sound->PlayPauseMusic("");
+                    #if DEV_BUILD
+                    m_sound->PlayPauseMusic("Constructive.ogg");
+                    #endif
+                    break;
+                
+                default:
+                    // Don't change music
+                    break;
+            }
+        }
         
         m_pause = pause;
     } else
@@ -45,8 +71,10 @@ void CPauseManager::SetPause(PauseType pause)
 
 void CPauseManager::ClearPause()
 {
-    if(m_pause != PAUSE_NONE)
+    if(m_pause != PAUSE_NONE) {
         CLogger::GetInstancePointer()->Info("Game resumed\n");
+        m_sound->StopPauseMusic();
+    }
     
     m_pause = PAUSE_NONE;
 }
@@ -70,14 +98,15 @@ std::string CPauseManager::GetPauseName(PauseType pause)
 {
     switch(pause)
     {
-        case PAUSE_NONE:   return "None";
-        case PAUSE_USER:   return "User";
-        case PAUSE_SATCOM: return "SatCom";
-        case PAUSE_DIALOG: return "Dialog";
-        case PAUSE_EDITOR: return "CBot editor";
-        case PAUSE_VISIT:  return "Visit";
-        case PAUSE_CHEAT:  return "Cheat console";
-        case PAUSE_PHOTO:  return "Photo mode";
+        case PAUSE_NONE:        return "None";
+        case PAUSE_USER:        return "User";
+        case PAUSE_SATCOM:      return "SatCom";
+        case PAUSE_SATCOMMOVIE: return "SatCom opening animation";
+        case PAUSE_DIALOG:      return "Dialog";
+        case PAUSE_EDITOR:      return "CBot editor";
+        case PAUSE_VISIT:       return "Visit";
+        case PAUSE_CHEAT:       return "Cheat console";
+        case PAUSE_PHOTO:       return "Photo mode";
         default: assert(false); // Should never happen
     }
 }
