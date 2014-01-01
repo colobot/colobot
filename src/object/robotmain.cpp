@@ -4630,6 +4630,13 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                                         trainer = OpInt(line, "trainer", 0),
                                         OpInt(line, "toy", 0),
                                         OpInt(line, "option", 0));
+            
+            if (m_fixScene && type == OBJECT_HUMAN)
+            {
+                CMotion* motion = obj->GetMotion();
+                if (m_phase == PHASE_WIN ) motion->SetAction(MHS_WIN,  0.4f);
+                if (m_phase == PHASE_LOST) motion->SetAction(MHS_LOST, 0.5f);
+            }
 
             if (obj != nullptr)
             {

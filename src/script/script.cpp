@@ -1905,6 +1905,7 @@ bool CScript::rProduce(CBotVar* var, CBotVar* result, int& exception, void* user
         }
         object->SetActivity(false);
     } else {
+        if ((type == OBJECT_POWER || type == OBJECT_ATOMIC) && power == -1.0f) power = 1.0f;
         object = CObjectManager::GetInstancePointer()->CreateObject(pos, angle, type, power);
         if ( object == nullptr )
         {
