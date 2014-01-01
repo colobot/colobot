@@ -429,7 +429,7 @@ bool CApplication::Create()
         Language language;
         if (ParseLanguage(path, language)) {
             m_language = language;
-            GetLogger()->Error("Setting language '%s' from ini file\n", path.c_str());
+            GetLogger()->Info("Setting language '%s' from ini file\n", path.c_str());
         } else {
             GetLogger()->Error("Invalid language '%s' in ini file\n", path.c_str());
         }
