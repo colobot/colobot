@@ -53,6 +53,9 @@ msgstr ""
 msgid "COLOBOT"
 msgstr ""
 
+msgid "COLOBOT: Gold Edition"
+msgstr ""
+
 msgid "Programming exercises"
 msgstr ""
 

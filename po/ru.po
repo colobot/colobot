@@ -315,6 +315,9 @@ msgstr "Кнопка %1"
 msgid "COLOBOT"
 msgstr "КОЛОБОТ"
 
+msgid "COLOBOT: Gold Edition"
+msgstr ""
+
 msgid "Calling an unknown function"
 msgstr "Вызов неизвестной функции"
 
@@ -1110,7 +1113,8 @@ msgid "Programming help  (\\key prog;)"
 msgstr "Помощь в программировании (\\key prog;)"
 
 msgid "Programming help\\Gives more detailed help with programming"
-msgstr "Помощь в программировании\\Дает более детальную помощь в программировании"
+msgstr ""
+"Помощь в программировании\\Дает более детальную помощь в программировании"
 
 msgid "Programs dispatched by Houston"
 msgstr "Программы переданные с Хьюстона"

@@ -56,7 +56,7 @@ void InitializeRestext()
     stringsText[RT_KEY_OR]           = " or ";
 
     stringsText[RT_TITLE_BASE]       = "COLOBOT";
-    stringsText[RT_TITLE_INIT]       = "COLOBOT";
+    stringsText[RT_TITLE_INIT]       = "COLOBOT: Gold Edition";
     stringsText[RT_TITLE_TRAINER]    = "Programming exercises";
     stringsText[RT_TITLE_DEFI]       = "Challenges";
     stringsText[RT_TITLE_MISSION]    = "Missions";

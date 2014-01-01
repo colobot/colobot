@@ -310,6 +310,9 @@ msgstr "Przycisk %1"
 msgid "COLOBOT"
 msgstr "COLOBOT"
 
+msgid "COLOBOT: Gold Edition"
+msgstr "COLOBOT: Gold Edition"
+
 msgid "Calling an unknown function"
 msgstr "Odwołanie do nieznanej funkcji"
 

@@ -312,6 +312,9 @@ msgstr "Bouton %1"
 msgid "COLOBOT"
 msgstr "COLOBOT"
 
+msgid "COLOBOT: Gold Edition"
+msgstr "COLOBOT: Gold Edition"
+
 msgid "Calling an unknown function"
 msgstr "Appel d'une fonction inexistante"
 
