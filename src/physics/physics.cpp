@@ -2565,19 +2565,19 @@ int CPhysics::ObjectAdapt(const Math::Vector &pos, const Math::Vector &angle)
                  oType == OBJECT_KEYd    ||
                  oType == OBJECT_TNT     ||
                 (oType >= OBJECT_PLANT0    && oType <= OBJECT_PLANT19  ) ||
-                (oType >= OBJECT_MUSHROOM0 && oType <= OBJECT_MUSHROOM9) )  continue;
+                (oType >= OBJECT_MUSHROOM1 && oType <= OBJECT_MUSHROOM2) )  continue;
         }
 
-#if _TEEN
+/* TODO: #if _TEEN
         if ( oType == OBJECT_WAYPOINT &&
              pObj->GetEnable()        &&
             !m_object->GetResetBusy() )  // driving vehicle?
-#else
+#else */
         if ( oType == OBJECT_WAYPOINT &&
              pObj->GetEnable()        &&
             !m_object->GetResetBusy() &&
              m_object->GetTrainer()   )  // driving vehicle?
-#endif
+/* #endif */
         {
             oPos = pObj->GetPosition(0);
             distance = Math::DistanceProjected(oPos, iPos);

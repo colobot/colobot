@@ -1559,8 +1559,8 @@ void CTaskGoto::ComputeRepulse(Math::Point &dir)
                  oType == OBJECT_BOMB    ||
                 (oType >= OBJECT_PLANT0    &&
                  oType <= OBJECT_PLANT19   ) ||
-                (oType >= OBJECT_MUSHROOM0 &&
-                 oType <= OBJECT_MUSHROOM9 ) )  continue;
+                (oType >= OBJECT_MUSHROOM1 &&
+                 oType <= OBJECT_MUSHROOM2 ) )  continue;
         }
 
         addi = add;

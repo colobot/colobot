@@ -4592,11 +4592,11 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                      (type >= OBJECT_PLANT0  &&
                       type <= OBJECT_PLANT19 ) ||
                      (type >= OBJECT_TREE0   &&
-                      type <= OBJECT_TREE9   ) ||
+                      type <= OBJECT_TREE5   ) ||
                      (type >= OBJECT_TEEN0   &&
-                      type <= OBJECT_TEEN49  ) ||
+                      type <= OBJECT_TEEN44  ) ||
                      (type >= OBJECT_QUARTZ0 &&
-                      type <= OBJECT_QUARTZ9 ) ||
+                      type <= OBJECT_QUARTZ3 ) ||
                      (type >= OBJECT_ROOT0   &&
                       type <= OBJECT_ROOT4   ) )  // not ROOT5!
                 {

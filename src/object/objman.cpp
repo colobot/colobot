@@ -160,8 +160,7 @@ CObject* CObjectManager::CreateObject(Math::Vector pos, float angle, ObjectType 
     if ( type == OBJECT_BARRIER0 ||
          type == OBJECT_BARRIER1 ||
          type == OBJECT_BARRIER2 ||
-         type == OBJECT_BARRIER3 ||
-         type == OBJECT_BARRIER4 )
+         type == OBJECT_BARRIER3 )
     {
         object = new CObject();
         object->CreateBarrier(pos, angle, height, type);
@@ -192,26 +191,14 @@ CObject* CObjectManager::CreateObject(Math::Vector pos, float angle, ObjectType 
          type == OBJECT_TREE2   ||
          type == OBJECT_TREE3   ||
          type == OBJECT_TREE4   ||
-         type == OBJECT_TREE5   ||
-         type == OBJECT_TREE6   ||
-         type == OBJECT_TREE7   ||
-         type == OBJECT_TREE8   ||
-         type == OBJECT_TREE9   )
+         type == OBJECT_TREE5   )
     {
         object = new CObject();
         object->CreatePlant(pos, angle, height, type);
     }
     else
-    if ( type == OBJECT_MUSHROOM0 ||
-         type == OBJECT_MUSHROOM1 ||
-         type == OBJECT_MUSHROOM2 ||
-         type == OBJECT_MUSHROOM3 ||
-         type == OBJECT_MUSHROOM4 ||
-         type == OBJECT_MUSHROOM5 ||
-         type == OBJECT_MUSHROOM6 ||
-         type == OBJECT_MUSHROOM7 ||
-         type == OBJECT_MUSHROOM8 ||
-         type == OBJECT_MUSHROOM9 )
+    if ( type == OBJECT_MUSHROOM1 ||
+         type == OBJECT_MUSHROOM2 )
     {
         object = new CObject();
         object->CreateMushroom(pos, angle, height, type);
@@ -261,12 +248,7 @@ CObject* CObjectManager::CreateObject(Math::Vector pos, float angle, ObjectType 
          type == OBJECT_TEEN41 ||
          type == OBJECT_TEEN42 ||
          type == OBJECT_TEEN43 ||
-         type == OBJECT_TEEN44 ||
-         type == OBJECT_TEEN45 ||
-         type == OBJECT_TEEN46 ||
-         type == OBJECT_TEEN47 ||
-         type == OBJECT_TEEN48 ||
-         type == OBJECT_TEEN49 )
+         type == OBJECT_TEEN44 )
     {
         object = new CObject();
         object->SetOption(option);
@@ -276,13 +258,7 @@ CObject* CObjectManager::CreateObject(Math::Vector pos, float angle, ObjectType 
     if ( type == OBJECT_QUARTZ0 ||
          type == OBJECT_QUARTZ1 ||
          type == OBJECT_QUARTZ2 ||
-         type == OBJECT_QUARTZ3 ||
-         type == OBJECT_QUARTZ4 ||
-         type == OBJECT_QUARTZ5 ||
-         type == OBJECT_QUARTZ6 ||
-         type == OBJECT_QUARTZ7 ||
-         type == OBJECT_QUARTZ8 ||
-         type == OBJECT_QUARTZ9 )
+         type == OBJECT_QUARTZ3 )
     {
         object = new CObject();
         object->CreateQuartz(pos, angle, height, type);
@@ -293,11 +269,7 @@ CObject* CObjectManager::CreateObject(Math::Vector pos, float angle, ObjectType 
          type == OBJECT_ROOT2 ||
          type == OBJECT_ROOT3 ||
          type == OBJECT_ROOT4 ||
-         type == OBJECT_ROOT5 ||
-         type == OBJECT_ROOT6 ||
-         type == OBJECT_ROOT7 ||
-         type == OBJECT_ROOT8 ||
-         type == OBJECT_ROOT9 )
+         type == OBJECT_ROOT5 )
     {
         object = new CObject();
         object->CreateRoot(pos, angle, height, type);
