@@ -42,8 +42,15 @@ bool Cmd(char *line, const char *token)
     char*   p;
 
     line = SkipSpace(line);
+    
     p = strstr(line, token);
-    return ( p == line );  // command at the beginning?
+    if(p != line) return false;  // command at the beginning?
+    
+    unsigned int len = 0;
+    for(char* x = p; *x != 0 && *x != ' ' && *x != '\t' && *x != '\n'; x++, len++);
+    if(len != strlen(token)) return false; // ends with space?
+    
+    return true;
 }
 
 // Seeking an operator.
@@ -324,46 +331,6 @@ ObjectType GetTypeObject(char *line, int rank, ObjectType def)
     if ( Cmd(p, "Barrier2"          ) )  return OBJECT_BARRIER2;
     if ( Cmd(p, "Barrier3"          ) )  return OBJECT_BARRIER3;
     if ( Cmd(p, "Barrier4"          ) )  return OBJECT_BARRIER4;
-    if ( Cmd(p, "Teen40"            ) )  return OBJECT_TEEN40;
-    if ( Cmd(p, "Teen41"            ) )  return OBJECT_TEEN41;
-    if ( Cmd(p, "Teen42"            ) )  return OBJECT_TEEN42;
-    if ( Cmd(p, "Teen43"            ) )  return OBJECT_TEEN43;
-    if ( Cmd(p, "Teen44"            ) )  return OBJECT_TEEN44;
-    if ( Cmd(p, "Teen45"            ) )  return OBJECT_TEEN45;
-    if ( Cmd(p, "Teen46"            ) )  return OBJECT_TEEN46;
-    if ( Cmd(p, "Teen47"            ) )  return OBJECT_TEEN47;
-    if ( Cmd(p, "Teen48"            ) )  return OBJECT_TEEN48;
-    if ( Cmd(p, "Teen49"            ) )  return OBJECT_TEEN49;
-    if ( Cmd(p, "Teen30"            ) )  return OBJECT_TEEN30;
-    if ( Cmd(p, "Teen31"            ) )  return OBJECT_TEEN31;
-    if ( Cmd(p, "Teen32"            ) )  return OBJECT_TEEN32;
-    if ( Cmd(p, "Teen33"            ) )  return OBJECT_TEEN33;
-    if ( Cmd(p, "Stone"             ) )  return OBJECT_TEEN34;
-    if ( Cmd(p, "Teen35"            ) )  return OBJECT_TEEN35;
-    if ( Cmd(p, "Teen36"            ) )  return OBJECT_TEEN36;
-    if ( Cmd(p, "Teen37"            ) )  return OBJECT_TEEN37;
-    if ( Cmd(p, "Teen38"            ) )  return OBJECT_TEEN38;
-    if ( Cmd(p, "Teen39"            ) )  return OBJECT_TEEN39;
-    if ( Cmd(p, "Teen20"            ) )  return OBJECT_TEEN20;
-    if ( Cmd(p, "Teen21"            ) )  return OBJECT_TEEN21;
-    if ( Cmd(p, "Teen22"            ) )  return OBJECT_TEEN22;
-    if ( Cmd(p, "Teen23"            ) )  return OBJECT_TEEN23;
-    if ( Cmd(p, "Teen24"            ) )  return OBJECT_TEEN24;
-    if ( Cmd(p, "Teen25"            ) )  return OBJECT_TEEN25;
-    if ( Cmd(p, "Teen26"            ) )  return OBJECT_TEEN26;
-    if ( Cmd(p, "Teen27"            ) )  return OBJECT_TEEN27;
-    if ( Cmd(p, "Teen28"            ) )  return OBJECT_TEEN28;
-    if ( Cmd(p, "Teen29"            ) )  return OBJECT_TEEN29;
-    if ( Cmd(p, "Teen10"            ) )  return OBJECT_TEEN10;
-    if ( Cmd(p, "Teen11"            ) )  return OBJECT_TEEN11;
-    if ( Cmd(p, "Teen12"            ) )  return OBJECT_TEEN12;
-    if ( Cmd(p, "Teen13"            ) )  return OBJECT_TEEN13;
-    if ( Cmd(p, "Teen14"            ) )  return OBJECT_TEEN14;
-    if ( Cmd(p, "Teen15"            ) )  return OBJECT_TEEN15;
-    if ( Cmd(p, "Teen16"            ) )  return OBJECT_TEEN16;
-    if ( Cmd(p, "Teen17"            ) )  return OBJECT_TEEN17;
-    if ( Cmd(p, "Teen18"            ) )  return OBJECT_TEEN18;
-    if ( Cmd(p, "Teen19"            ) )  return OBJECT_TEEN19;
     if ( Cmd(p, "Teen0"             ) )  return OBJECT_TEEN0;
     if ( Cmd(p, "Teen1"             ) )  return OBJECT_TEEN1;
     if ( Cmd(p, "Teen2"             ) )  return OBJECT_TEEN2;
@@ -374,6 +341,46 @@ ObjectType GetTypeObject(char *line, int rank, ObjectType def)
     if ( Cmd(p, "Teen7"             ) )  return OBJECT_TEEN7;
     if ( Cmd(p, "Teen8"             ) )  return OBJECT_TEEN8;
     if ( Cmd(p, "Teen9"             ) )  return OBJECT_TEEN9;
+    if ( Cmd(p, "Teen10"            ) )  return OBJECT_TEEN10;
+    if ( Cmd(p, "Teen11"            ) )  return OBJECT_TEEN11;
+    if ( Cmd(p, "Teen12"            ) )  return OBJECT_TEEN12;
+    if ( Cmd(p, "Teen13"            ) )  return OBJECT_TEEN13;
+    if ( Cmd(p, "Teen14"            ) )  return OBJECT_TEEN14;
+    if ( Cmd(p, "Teen15"            ) )  return OBJECT_TEEN15;
+    if ( Cmd(p, "Teen16"            ) )  return OBJECT_TEEN16;
+    if ( Cmd(p, "Teen17"            ) )  return OBJECT_TEEN17;
+    if ( Cmd(p, "Teen18"            ) )  return OBJECT_TEEN18;
+    if ( Cmd(p, "Teen19"            ) )  return OBJECT_TEEN19;
+    if ( Cmd(p, "Teen20"            ) )  return OBJECT_TEEN20;
+    if ( Cmd(p, "Teen21"            ) )  return OBJECT_TEEN21;
+    if ( Cmd(p, "Teen22"            ) )  return OBJECT_TEEN22;
+    if ( Cmd(p, "Teen23"            ) )  return OBJECT_TEEN23;
+    if ( Cmd(p, "Teen24"            ) )  return OBJECT_TEEN24;
+    if ( Cmd(p, "Teen25"            ) )  return OBJECT_TEEN25;
+    if ( Cmd(p, "Teen26"            ) )  return OBJECT_TEEN26;
+    if ( Cmd(p, "Teen27"            ) )  return OBJECT_TEEN27;
+    if ( Cmd(p, "Teen28"            ) )  return OBJECT_TEEN28;
+    if ( Cmd(p, "Teen29"            ) )  return OBJECT_TEEN29;
+    if ( Cmd(p, "Teen30"            ) )  return OBJECT_TEEN30;
+    if ( Cmd(p, "Teen31"            ) )  return OBJECT_TEEN31;
+    if ( Cmd(p, "Teen32"            ) )  return OBJECT_TEEN32;
+    if ( Cmd(p, "Teen33"            ) )  return OBJECT_TEEN33;
+    if ( Cmd(p, "Stone"             ) )  return OBJECT_TEEN34;
+    if ( Cmd(p, "Teen35"            ) )  return OBJECT_TEEN35;
+    if ( Cmd(p, "Teen36"            ) )  return OBJECT_TEEN36;
+    if ( Cmd(p, "Teen37"            ) )  return OBJECT_TEEN37;
+    if ( Cmd(p, "Teen38"            ) )  return OBJECT_TEEN38;
+    if ( Cmd(p, "Teen39"            ) )  return OBJECT_TEEN39;
+    if ( Cmd(p, "Teen40"            ) )  return OBJECT_TEEN40;
+    if ( Cmd(p, "Teen41"            ) )  return OBJECT_TEEN41;
+    if ( Cmd(p, "Teen42"            ) )  return OBJECT_TEEN42;
+    if ( Cmd(p, "Teen43"            ) )  return OBJECT_TEEN43;
+    if ( Cmd(p, "Teen44"            ) )  return OBJECT_TEEN44;
+    if ( Cmd(p, "Teen45"            ) )  return OBJECT_TEEN45;
+    if ( Cmd(p, "Teen46"            ) )  return OBJECT_TEEN46;
+    if ( Cmd(p, "Teen47"            ) )  return OBJECT_TEEN47;
+    if ( Cmd(p, "Teen48"            ) )  return OBJECT_TEEN48;
+    if ( Cmd(p, "Teen49"            ) )  return OBJECT_TEEN49;
     if ( Cmd(p, "Quartz0"           ) )  return OBJECT_QUARTZ0;
     if ( Cmd(p, "Quartz1"           ) )  return OBJECT_QUARTZ1;
     if ( Cmd(p, "Quartz2"           ) )  return OBJECT_QUARTZ2;
