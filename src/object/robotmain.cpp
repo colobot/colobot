@@ -673,7 +673,6 @@ CRobotMain::CRobotMain(CApplication* app, bool loadProfile)
     m_editFull     = false;
     m_hilite       = false;
     m_freePhoto    = false;
-    m_showPos      = false;
     m_selectInsect = false;
     m_showSoluce   = false;
 
@@ -2080,12 +2079,6 @@ void CRobotMain::ExecuteCmd(char *cmd)
         return;
     }
 
-    if (strcmp(cmd, "showpos") == 0)
-    {
-        m_showPos = !m_showPos;
-        return;
-    }
-
     if (strcmp(cmd, "selectinsect") == 0)
     {
         m_selectInsect = !m_selectInsect;
@@ -3369,16 +3362,11 @@ void CRobotMain::AbortMovie()
 //! Updates the text information
 void CRobotMain::UpdateInfoText()
 {
-    if (m_showPos)
+    CObject* obj = GetSelect();
+    if (obj != nullptr)
     {
-        CObject* obj = GetSelect();
-        if (obj != nullptr)
-        {
-            Math::Vector pos = obj->GetPosition(0);
-            char info[100];
-            sprintf(info, "Pos = %.2f ; %.2f", pos.x/g_unit, pos.z/g_unit);
-            //TODO: m_engine->SetInfoText(4, info);
-        }
+        Math::Vector pos = obj->GetPosition(0);
+        m_engine->SetStatisticPos(pos);
     }
 }
 

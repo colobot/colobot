@@ -515,6 +515,11 @@ int CEngine::GetStatisticTriangle()
     return m_statisticTriangle;
 }
 
+void CEngine::SetStatisticPos(Math::Vector pos)
+{
+    m_statisticPos = pos;
+}
+
 
 
 /*******************************************************
@@ -4335,7 +4340,7 @@ void CEngine::DrawStats()
     float height = m_text->GetAscent(FONT_COLOBOT, 12.0f);
     float width = 0.2f;
 
-    Math::Point pos(0.04f, 0.04f + 17 * height);
+    Math::Point pos(0.04f, 0.04f + 20 * height);
 
     SetState(ENG_RSTATE_OPAQUE_COLOR);
 
@@ -4343,9 +4348,9 @@ void CEngine::DrawStats()
 
     VertexCol vertex[4] =
     {
-        VertexCol(Math::Vector(pos.x        , pos.y - 17 * height, 0.0f), black),
+        VertexCol(Math::Vector(pos.x        , pos.y - 20 * height, 0.0f), black),
         VertexCol(Math::Vector(pos.x        , pos.y + height, 0.0f), black),
-        VertexCol(Math::Vector(pos.x + width, pos.y - 17 * height, 0.0f), black),
+        VertexCol(Math::Vector(pos.x + width, pos.y - 20 * height, 0.0f), black),
         VertexCol(Math::Vector(pos.x + width, pos.y + height, 0.0f), black)
     };
 
@@ -4458,6 +4463,20 @@ void CEngine::DrawStats()
     pos.y -= height;
 
     m_text->DrawText(m_fpsText, FONT_COLOBOT, 12.0f, pos, 1.0f, TEXT_ALIGN_LEFT, 0, Color(1.0f, 1.0f, 1.0f, 1.0f));
+    
+    
+    pos.y -= height;
+    pos.y -= height;
+    
+    str.str("");
+    str << "Position x: " << std::fixed << std::setprecision(2) << m_statisticPos.x/g_unit;
+    m_text->DrawText(str.str(), FONT_COLOBOT, 12.0f, pos, 1.0f, TEXT_ALIGN_LEFT, 0, Color(1.0f, 1.0f, 1.0f, 1.0f));
+    
+    pos.y -= height;
+    
+    str.str("");
+    str << "Position y: " << std::fixed << std::setprecision(2) << m_statisticPos.z/g_unit;
+    m_text->DrawText(str.str(), FONT_COLOBOT, 12.0f, pos, 1.0f, TEXT_ALIGN_LEFT, 0, Color(1.0f, 1.0f, 1.0f, 1.0f));
 }
 
 
