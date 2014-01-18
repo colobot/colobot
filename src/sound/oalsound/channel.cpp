@@ -23,7 +23,7 @@ Channel::Channel()
 
     if (alCheck())
     {
-        GetLogger()->Warn("Failed to create sound source. Code: %d\n", alGetCode());
+        GetLogger()->Debug("Failed to create sound source. Code: %d\n", alGetCode());
         m_ready = false;
     }
     else
@@ -40,6 +40,7 @@ Channel::Channel()
     m_startFrequency = 0.0f;
     m_changeFrequency = 0.0f;
     m_volume = 0.0f;
+    m_id = 0;
 }
 
 
@@ -51,7 +52,7 @@ Channel::~Channel()
         alSourcei(m_source, AL_BUFFER, 0);
         alDeleteSources(1, &m_source);
         if (alCheck())
-            GetLogger()->Warn("Failed to delete sound source. Code: %d\n", alGetCode());
+            GetLogger()->Debug("Failed to delete sound source. Code: %d\n", alGetCode());
     }
 }
 
@@ -69,7 +70,7 @@ bool Channel::Play()
     alSourcePlay(m_source);
     if (alCheck())
     {
-        GetLogger()->Warn("Could not play audio sound source. Code: %d\n", alGetCode());
+        GetLogger()->Debug("Could not play audio sound source. Code: %d\n", alGetCode());
     }
     return true;
 }
@@ -84,7 +85,7 @@ bool Channel::Pause()
     alSourcePause(m_source);
     if (alCheck())
     {
-        GetLogger()->Warn("Could not pause audio sound source. Code: %d\n", alGetCode());
+        GetLogger()->Debug("Could not pause audio sound source. Code: %d\n", alGetCode());
     }
     return true;
 }
@@ -100,7 +101,7 @@ bool Channel::SetPosition(const Math::Vector &pos)
     alSource3f(m_source, AL_POSITION, pos.x, pos.y, pos.z);
     if (alCheck())
     {
-        GetLogger()->Warn("Could not set sound position. Code: %d\n", alGetCode());
+        GetLogger()->Debug("Could not set sound position. Code: %d\n", alGetCode());
         return false;
     }
     return true;
@@ -117,7 +118,7 @@ bool Channel::SetFrequency(float freq)
     alSourcef(m_source, AL_PITCH, freq);
     if (alCheck())
     {
-        GetLogger()->Warn("Could not set sound pitch to '%f'. Code: %d\n", freq, alGetCode());
+        GetLogger()->Debug("Could not set sound pitch to '%f'. Code: %d\n", freq, alGetCode());
         return false;
     }
     return true;
@@ -135,7 +136,7 @@ float Channel::GetFrequency()
     alGetSourcef(m_source, AL_PITCH, &freq);
     if (alCheck())
     {
-        GetLogger()->Warn("Could not get sound pitch. Code: %d\n", alGetCode());
+        GetLogger()->Debug("Could not get sound pitch. Code: %d\n", alGetCode());
         return 0;
     }
 
@@ -153,7 +154,7 @@ bool Channel::SetVolume(float vol)
     alSourcef(m_source, AL_GAIN, vol);
     if (alCheck())
     {
-        GetLogger()->Warn("Could not set sound volume to '%f'. Code: %d\n", vol, alGetCode());
+        GetLogger()->Debug("Could not set sound volume to '%f'. Code: %d\n", vol, alGetCode());
         return false;
     }
     return true;
@@ -171,7 +172,7 @@ float Channel::GetVolume()
     alGetSourcef(m_source, AL_GAIN, &vol);
     if (alCheck())
     {
-        GetLogger()->Warn("Could not get sound volume. Code: %d\n", alGetCode());
+        GetLogger()->Debug("Could not get sound volume. Code: %d\n", alGetCode());
         return 0;
     }
 
@@ -432,5 +433,17 @@ void Channel::Mute(bool mute)
 bool Channel::IsMuted()
 {
     return m_mute;
+}
+
+
+void Channel::Reset()
+{
+    m_id++;
+}
+
+
+int Channel::GetId()
+{
+    return m_id;
 }
 

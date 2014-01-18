@@ -81,6 +81,8 @@ public:
     bool PlayPauseMusic(const std::string &filename);
     void StopPauseMusic();
 
+    bool CheckChannel(int &channel);
+
 private:
     void CleanUp();
     int GetPriority(Sound);
@@ -89,6 +91,7 @@ private:
     bool m_enabled;
     float m_audioVolume;
     float m_musicVolume;
+    unsigned int m_channels_limit;
     ALCdevice* m_device;
     ALCcontext* m_context;
     std::map<Sound, Buffer*> m_sounds;

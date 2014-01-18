@@ -97,11 +97,15 @@ public:
     void Mute(bool);
     bool IsMuted();
 
+    void Reset();
+    int GetId();
+
 private:
     Buffer *m_buffer;
     ALuint m_source;
 
     int m_priority;
+    int m_id;
     float m_startAmplitude;
     float m_startFrequency;
     float m_changeFrequency;
