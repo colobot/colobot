@@ -81,6 +81,9 @@
 
 #include <iomanip>
 
+#include <boost/regex.hpp>
+
+
 template<> CRobotMain* CSingleton<CRobotMain>::m_instance = nullptr;
 
 
@@ -4050,9 +4053,14 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             continue;
         }
 
-        if (Cmd(line, "Title")) continue; // Ignore
-        if (Cmd(line, "Resume")) continue; // Ignore
-        if (Cmd(line, "ScriptName")) continue; // Ignore
+        static const boost::regex titleCmdRe("Title\\.[A-Z]");
+        static const boost::regex resumeCmdRe("Resume\\.[A-Z]");
+        static const boost::regex scriptNameCmdRe("ScriptName\.[A-Z]");
+
+        if (boost::regex_match(GetCmd(line), titleCmdRe)) continue; // Ignore
+        if (boost::regex_match(GetCmd(line), resumeCmdRe)) continue; // Ignore
+        if (boost::regex_match(GetCmd(line), scriptNameCmdRe)) continue; // Ignore
+
 
         if (Cmd(line, "ScriptFile") && !resetObject)
         {

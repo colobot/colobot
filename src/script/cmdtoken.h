@@ -30,6 +30,7 @@
 
 // Procedures.
 
+extern std::string GetCmd(char* line);
 extern bool Cmd(char *line, const char *token);
 extern char* SearchOp(char *line, const char *op);
 
