@@ -960,15 +960,15 @@ int CApplication::Run()
             {
                 LogEvent(event);
 
-                StartPerformanceCounter(PCNT_UPDATE_ENGINE);
-                m_engine->FrameUpdate();
-                StopPerformanceCounter(PCNT_UPDATE_ENGINE);
-
                 m_sound->FrameMove(m_relTime);
 
                 StartPerformanceCounter(PCNT_UPDATE_GAME);
                 m_robotMain->ProcessEvent(event);
                 StopPerformanceCounter(PCNT_UPDATE_GAME);
+
+                StartPerformanceCounter(PCNT_UPDATE_ENGINE);
+                m_engine->FrameUpdate();
+                StopPerformanceCounter(PCNT_UPDATE_ENGINE);
             }
 
             StopPerformanceCounter(PCNT_UPDATE_ALL);
