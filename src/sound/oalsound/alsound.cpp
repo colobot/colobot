@@ -20,7 +20,6 @@
 
 #include <algorithm>
 #include <iomanip>
-#include <algorithm>
 
 #include <boost/filesystem.hpp>
 
@@ -381,7 +380,7 @@ int ALSound::Play(Sound sound, const Math::Vector &pos, float amplitude, float f
 
     if (!m_channels[channel]->Play())
     {
-        m_channels_limit = std::min(m_channels.size() - 1, m_channels_limit - 1);
+        m_channels_limit = m_channels.size() - 1;
         GetLogger()->Debug("Changing channel limit to %u.\n", m_channels_limit);
         auto it = m_channels.find(channel);
         Channel *ch = it->second;
