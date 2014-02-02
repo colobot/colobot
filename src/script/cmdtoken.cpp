@@ -35,6 +35,16 @@ char* SkipSpace(char *line)
     return line;
 }
 
+std::string GetCmd(char* line)
+{
+    line = SkipSpace(line);
+
+    int len = 0;
+    for(char* x = line; *x != 0 && *x != ' ' && *x != '\t' && *x != '\n'; x++, len++);
+
+    return std::string(line, len);
+}
+
 // Checks if a line contains a command.
 
 bool Cmd(char *line, const char *token)

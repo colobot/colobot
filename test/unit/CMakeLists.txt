@@ -23,6 +23,7 @@ configure_file(${SRC_DIR}/common/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/comm
 # Code sources
 set(COLOBOT_SOURCES
 ${SRC_DIR}/app/app.cpp
+${SRC_DIR}/app/pausemanager.cpp
 ${SRC_DIR}/app/system.cpp
 ${SRC_DIR}/app/${SYSTEM_CPP_MODULE}
 ${SRC_DIR}/app/system_other.cpp
