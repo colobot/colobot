@@ -321,7 +321,7 @@ public:
      * \param filename - name of file to play
      * \return return true on success
      */
-     virtual bool PlayPauseMusic(const std::string &filename);
+     virtual bool PlayPauseMusic(const std::string &filename, bool repeat);
      
      /** Stop playing pause music and return to the mission music
       * \return nothing

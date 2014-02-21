@@ -340,6 +340,7 @@ public:
     float       GetPersoAngle();
 
     void        StartMusic();
+    void        StartPauseMusic(PauseType pause);
     void        ClearInterface();
     void        ChangeColor();
 
@@ -474,15 +475,19 @@ protected:
     bool            m_showSoluce;
     bool            m_showAll;
     bool            m_cheatRadar;
-    bool            m_audioRepeat;
     bool            m_shortCut;
     std::string     m_audioTrack;
+    bool            m_audioRepeat;
+    std::string     m_satcomTrack;
+    bool            m_satcomRepeat;
+    std::string     m_editorTrack;
+    bool            m_editorRepeat;
     int             m_delayWriteMessage;
     int             m_movieInfoIndex;
 
     CObject*        m_controller;
 
-    //Level Checker flags
+    // Level Checker flags
     bool            m_beginObject;
     bool            m_terrainGenerate;
     bool            m_terrainInitTextures;

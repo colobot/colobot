@@ -647,6 +647,10 @@ CRobotMain::CRobotMain(CApplication* app, bool loadProfile)
     m_visitArrow  = 0;
     m_audioTrack  = "";
     m_audioRepeat = true;
+    m_satcomTrack  = "";
+    m_satcomRepeat = true;
+    m_editorTrack  = "";
+    m_editorRepeat = true;
     m_delayWriteMessage = 0;
     m_selectObject = 0;
     m_infoUsed     = 0;
@@ -3923,6 +3927,10 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
         m_terrain->FlushMaterials();
         m_audioTrack = "";
         m_audioRepeat = true;
+        m_satcomTrack  = "";
+        m_satcomRepeat = true;
+        m_editorTrack  = "";
+        m_editorRepeat = true;
         m_displayText->SetDelay(1.0f);
         m_displayText->SetEnable(true);
         m_immediatSatCom = false;
@@ -4028,8 +4036,10 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             }
         }
 
-        if (Cmd(line, "MissionFile") && !resetObject)
+        if (Cmd(line, "MissionFile") && !resetObject) {
            m_version = OpInt(line, "version", 1);
+           continue;
+        }
 
         // TODO: Fallback to an non-localized entry
         sprintf(op, "Title.%c", m_app->GetLanguageChar());
@@ -4165,15 +4175,27 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                     filenameStr << "music" << std::setfill('0') << std::setw(3) << trackid << ".ogg";
                     m_audioTrack = filenameStr.str();
                 }
+                m_audioRepeat = OpInt(line, "repeat", 1);
             }
             else
             {
                 char trackname[100];
-                OpString(line, "filename", trackname);
+                
+                OpString(line, "main", trackname);
                 m_audioTrack = trackname;
+                m_audioRepeat = OpInt(line, "mainRepeat", 1);
+                
+                OpString(line, "satcom", trackname);
+                m_satcomTrack = trackname;
+                m_satcomRepeat = OpInt(line, "satcomRepeat", 1);
+                
+                OpString(line, "editor", trackname);
+                m_editorTrack = trackname;
+                m_editorRepeat = OpInt(line, "editorRepeat", 1);
             }
-            m_audioRepeat = OpInt(line, "repeat", 1);
             if (m_audioTrack != "") m_sound->CacheMusic(m_audioTrack);
+            if (m_satcomTrack != "") m_sound->CacheMusic(m_satcomTrack);
+            if (m_editorTrack != "") m_sound->CacheMusic(m_editorTrack);
             continue;
         }
 
@@ -7217,6 +7239,24 @@ void CRobotMain::StartMusic()
     if (m_audioTrack != "")
     {
         m_sound->PlayMusic(m_audioTrack, m_audioRepeat, 0.0f);
+    }
+}
+
+//! Starts pause music
+void CRobotMain::StartPauseMusic(PauseType pause)
+{
+    switch(pause) {
+        case PAUSE_EDITOR:
+            m_sound->PlayPauseMusic(m_editorTrack, m_editorRepeat);
+            break;
+            
+        case PAUSE_SATCOM:
+            m_sound->PlayPauseMusic(m_satcomTrack, m_satcomRepeat);
+            break;
+        
+        default:
+            // Don't change music
+            break;
     }
 }
 

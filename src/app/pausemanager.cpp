@@ -20,6 +20,8 @@
 
 #include "common/logger.h"
 
+#include "object/robotmain.h"
+
 
 template<> CPauseManager* CSingleton<CPauseManager>::m_instance = nullptr;
 
@@ -41,27 +43,7 @@ void CPauseManager::SetPause(PauseType pause)
     if(pause != PAUSE_NONE) {
         if(m_pause != pause) {
             CLogger::GetInstancePointer()->Info("Game paused - %s\n", GetPauseName(pause).c_str());
-            switch(pause) {
-                case PAUSE_EDITOR:
-                    // TODO: We don't have this music yet
-                    // m_sound->PlayPauseMusic("");
-                    #if DEV_BUILD
-                    m_sound->PlayPauseMusic("Prototype.ogg");
-                    #endif
-                    break;
-                    
-                case PAUSE_SATCOM:
-                    // TODO: We don't have this music yet
-                    // m_sound->PlayPauseMusic("");
-                    #if DEV_BUILD
-                    m_sound->PlayPauseMusic("Constructive.ogg");
-                    #endif
-                    break;
-                
-                default:
-                    // Don't change music
-                    break;
-            }
+            CRobotMain::GetInstancePointer()->StartPauseMusic(pause);
         }
         
         m_pause = pause;

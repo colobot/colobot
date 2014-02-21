@@ -682,7 +682,7 @@ bool ALSound::PlayMusic(const std::string &filename, bool bRepeat, float fadeTim
 }
 
 
-bool ALSound::PlayPauseMusic(const std::string &filename)
+bool ALSound::PlayPauseMusic(const std::string &filename, bool repeat)
 {
     if (m_previousMusic.fadeTime > 0.0f)
     {
@@ -703,7 +703,7 @@ bool ALSound::PlayPauseMusic(const std::string &filename)
             m_currentMusic = nullptr;
         }
     }
-    return PlayMusic(filename, true);
+    return PlayMusic(filename, repeat);
 }
 
 

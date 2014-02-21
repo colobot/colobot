@@ -59,12 +59,6 @@ void CSoundInterface::AddMusicFiles(const std::string &path)
     CacheMusic("Intro2.ogg");
     CacheMusic("music010.ogg");
     CacheMusic("music011.ogg");
-    // TODO: Add pause music here
-    // CacheMusic("");
-    #if DEV_BUILD
-    CacheMusic("Prototype.ogg");
-    CacheMusic("Constructive.ogg");
-    #endif
 }
 
 bool CSoundInterface::Cache(Sound bSound, const std::string &bFile)
@@ -181,7 +175,7 @@ bool CSoundInterface::IsPlayingMusic()
     return true;
 }
 
-bool CSoundInterface::PlayPauseMusic(const std::string &filename)
+bool CSoundInterface::PlayPauseMusic(const std::string &filename, bool repeat)
 {
     return true;
 }

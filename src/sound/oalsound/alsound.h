@@ -78,7 +78,7 @@ public:
     void SuspendMusic();
     void StopMusic(float fadeTime=2.0f);
     bool IsPlayingMusic();
-    bool PlayPauseMusic(const std::string &filename);
+    bool PlayPauseMusic(const std::string &filename, bool repeat);
     void StopPauseMusic();
 
     bool CheckChannel(int &channel);
