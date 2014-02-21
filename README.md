@@ -6,7 +6,7 @@ This is official repository for the open-source Colobot project developed by Pol
 
 The source code contained here was released by Epsitec -- the original creator of the game -- on open source (GPLv3) license. The code was given and the rights granted specifically to PPC community in March 2012. Since then, we have been developing the game further.
 
-More information for developers (in English) can be found on the [developer wiki](http://colobot.info/w/Dev:Main_Page) or (in Polish) [our forum](http://colobot.info/forum/). However, the freshest source of information is our IRC channels (see below).
+More information for developers (in English) can be found on the [developer wiki](http://colobot.info/wiki/Dev:Main_Page) or (in Polish) [our forum](http://colobot.info/forum/). However, the freshest source of information is our IRC channels (see below).
 
 This repository contains only the source code of the project. The game requires also data files which are now provided as git submodule and are hosted in [separate repository](https://github.com/colobot/colobot-data).
 
@@ -54,7 +54,7 @@ To jest oficjalne repozytorium z kodem projektu open-source Colobot rozwijanego 
 
 Kod źródłowy zawarty tutaj został wydany przez Epsitec -- oryginalnego twórcę gry -- na otwartej licencji (GPLv3). Kod został wydany i prawa nadane specjalnie dla społeczności PPC w marcu 2012. Od tamtej pory, zajmowaliśmy się dalszym rozwojem gry.
 
-Więcej informacji dla developerów projektu (po angielsku) można znaleźć na [wiki dla developerów](htt://colobot.info/w/Dev:Main_Page) lub (po polsku) na  [naszym forum](http://colobot.info/forum/). Jednak źródłem najświeższych informacji są nasze kanały IRC (patrz niżej).
+Więcej informacji dla developerów projektu (po angielsku) można znaleźć na [wiki dla developerów](htt://colobot.info/wiki/Dev:Main_Page) lub (po polsku) na  [naszym forum](http://colobot.info/forum/). Jednak źródłem najświeższych informacji są nasze kanały IRC (patrz niżej).
 
 To repozytorium zawiera jedynie kod źródłowy projektu. Gra wymaga jeszcze plików danych, które są teraz udostępniane jako submoduł gita i hostowane w [osobnym repozytorium]((https://github.com/colobot/colobot-data).
 
