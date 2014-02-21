@@ -4065,7 +4065,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
         static const boost::regex titleCmdRe("Title\\.[A-Z]");
         static const boost::regex resumeCmdRe("Resume\\.[A-Z]");
-        static const boost::regex scriptNameCmdRe("ScriptName\.[A-Z]");
+        static const boost::regex scriptNameCmdRe("ScriptName\\.[A-Z]");
 
         if (boost::regex_match(GetCmd(line), titleCmdRe)) continue; // Ignore
         if (boost::regex_match(GetCmd(line), resumeCmdRe)) continue; // Ignore
