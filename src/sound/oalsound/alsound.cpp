@@ -346,7 +346,7 @@ int ALSound::Play(Sound sound, const Math::Vector &pos, float amplitude, float f
     }
     if (m_sounds.find(sound) == m_sounds.end())
     {
-        GetLogger()->Warn("Sound %d was not loaded!\n", sound);
+        GetLogger()->Debug("Sound %d was not loaded!\n", sound);
         return -1;
     }
 
@@ -638,21 +638,23 @@ bool ALSound::PlayMusic(const std::string &filename, bool bRepeat, float fadeTim
 
     std::stringstream file;
     file << m_soundPath << "/" << filename;
-    
     Buffer *buffer;
 
     // check if we have music in cache
     if (m_music.find(filename) == m_music.end())
     {
-        GetLogger()->Warn("Music %s was not cached!\n", filename.c_str());
+        GetLogger()->Debug("Music %s was not cached!\n", filename.c_str());
         if (!boost::filesystem::exists(file.str()))
         {
-            GetLogger()->Warn("Requested music %s was not found.\n", filename.c_str());
+            GetLogger()->Debug("Requested music %s was not found.\n", filename.c_str());
             return false;
         }
-        
+
         buffer = new Buffer();
-        buffer->LoadFromFile(file.str(), static_cast<Sound>(-1));
+        if (!buffer->LoadFromFile(file.str(), static_cast<Sound>(-1)))
+        {
+            return false;
+        }
         m_music[filename] = buffer;
     }
     else
