@@ -214,6 +214,8 @@ find_package(Boost COMPONENTS system filesystem regex REQUIRED)
 
 find_package(GLEW REQUIRED)
 
+find_package(CEGUI REQUIRED)
+
 if (OPENAL_SOUND)
     find_package(OpenAL REQUIRED)
     include_directories(${OPENAL_INCLUDE_DIR})

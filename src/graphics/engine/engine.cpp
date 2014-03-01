@@ -44,6 +44,8 @@
 
 #include <iomanip>
 
+#include <CEGUI/CEGUI.h>
+
 template<> Gfx::CEngine* CSingleton<Gfx::CEngine>::m_instance = nullptr;
 
 // Graphics module namespace
@@ -3408,6 +3410,8 @@ void CEngine::DrawInterface()
     {
         interface->Draw();
     }
+    
+    CEGUI::System::getSingleton().renderAllGUIContexts();
 
     m_interfaceMode = false;
     m_lastState = -1;
@@ -3505,7 +3509,7 @@ void CEngine::DrawInterface()
         DrawOverColor();
 
     // At the end to not overlap
-    DrawMouse();
+    //DrawMouse();
     DrawHighlight();
     DrawStats();
 }

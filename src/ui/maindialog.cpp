@@ -57,6 +57,10 @@
 #include <boost/filesystem.hpp>
 #include <boost/foreach.hpp>
 
+#include <CEGUI/CEGUI.h>
+#include <CEGUI/RendererModules/OpenGL/GLRenderer.h>
+#include <CEGUI/DefaultResourceProvider.h>
+
 //TODO Get rid of all sprintf's
 
 namespace Ui {
@@ -191,6 +195,35 @@ CMainDialog::CMainDialog()
     m_setupFull = m_app->GetVideoConfig().fullScreen;
 
     m_bDialog = false;
+    
+    CEGUI::OpenGLRenderer& renderer = CEGUI::OpenGLRenderer::create();
+    renderer.enableExtraStateSettings(true);
+    CEGUI::System::create( renderer );
+    
+    CEGUI::DefaultResourceProvider* rp = static_cast<CEGUI::DefaultResourceProvider*>(CEGUI::System::getSingleton().getResourceProvider());
+    std::string dataDir = CApplication::GetInstancePointer()->GetDataDirPath()+"/interface";
+    rp->setResourceGroupDirectory("schemes", dataDir+"/schemes/");
+    rp->setResourceGroupDirectory("imagesets", dataDir+"/imagesets/");
+    rp->setResourceGroupDirectory("fonts", dataDir+"/fonts/");
+    rp->setResourceGroupDirectory("layouts", dataDir+"/layouts/");
+    rp->setResourceGroupDirectory("looknfeels", dataDir+"/looknfeel/");
+    
+    CEGUI::ImageManager::setImagesetDefaultResourceGroup("imagesets");
+    CEGUI::Font::setDefaultResourceGroup("fonts");
+    CEGUI::Scheme::setDefaultResourceGroup("schemes");
+    CEGUI::WidgetLookManager::setDefaultResourceGroup("looknfeels");
+    CEGUI::WindowManager::setDefaultResourceGroup("layouts");
+    
+    CEGUI::SchemeManager::getSingleton().createFromFile("WindowsLook.scheme");
+    CEGUI::SchemeManager::getSingleton().createFromFile("colobot.scheme");
+    
+    /*CEGUI::System::getSingleton().getDefaultGUIContext().getMouseCursor().setDefaultImage("ColobotMouse/Normal2");
+    CEGUI::System::getSingleton().getDefaultGUIContext().getMouseCursor().setExplicitRenderSize(CEGUI::Sizef(64.0f, 64.0f));
+    CEGUI::System::getSingleton().getDefaultGUIContext().getMouseCursor().offsetPosition(CEGUI::Vector2f(1.0f, 1.0f));*/
+    CEGUI::System::getSingleton().getDefaultGUIContext().getMouseCursor().setDefaultImage("WindowsLook/MouseArrow");
+    
+    CEGUI::Window *window = CEGUI::WindowManager::getSingleton().loadLayoutFromFile("test.layout");
+    CEGUI::System::getSingleton().getDefaultGUIContext().setRootWindow(window);
 }
 
 // Destructor of robot application.
@@ -1992,6 +2025,7 @@ bool CMainDialog::EventProcess(const Event &event)
     if ( event.type == EVENT_FRAME )
     {
         m_phaseTime += event.rTime;
+        CEGUI::System::getSingleton().injectTimePulse(event.rTime);
 
         //?     if ( m_phase == PHASE_WELCOME1 )  welcomeLength = WELCOME_LENGTH+2.0f;
         //?     else                              welcomeLength = WELCOME_LENGTH;

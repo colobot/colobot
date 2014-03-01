@@ -48,6 +48,9 @@
 #include <getopt.h>
 #include <localename.h>
 
+#include <CEGUI/CEGUI.h>
+#include <GL/glew.h>
+
 
 template<> CApplication* CSingleton<CApplication>::m_instance = nullptr;
 
@@ -1008,10 +1011,77 @@ const std::string& CApplication::GetErrorMessage() const
     return m_errorMessage;
 }
 
+void CApplication::InjectEvent()
+{
+    SDL_Event e = m_private->currentEvent;
+    
+    switch(e.type)
+    {
+        case SDL_MOUSEMOTION:
+            CEGUI::System::getSingleton().getDefaultGUIContext().injectMousePosition(
+                static_cast<float>(e.motion.x),
+                static_cast<float>(e.motion.y)
+            );
+            break;
+
+        case SDL_MOUSEBUTTONDOWN:
+	        switch(e.button.button)
+		    {
+		        case SDL_BUTTON_LEFT:
+			        CEGUI::System::getSingleton().getDefaultGUIContext().injectMouseButtonDown(CEGUI::LeftButton);
+			        break;
+		        case SDL_BUTTON_MIDDLE:
+			        CEGUI::System::getSingleton().getDefaultGUIContext().injectMouseButtonDown(CEGUI::MiddleButton);
+			        break;
+		        case SDL_BUTTON_RIGHT:
+			        CEGUI::System::getSingleton().getDefaultGUIContext().injectMouseButtonDown(CEGUI::RightButton);
+			        break;
+                
+		        case SDL_BUTTON_WHEELDOWN:
+			        CEGUI::System::getSingleton().getDefaultGUIContext().injectMouseWheelChange( -1 );
+			        break;
+		        case SDL_BUTTON_WHEELUP:
+			        CEGUI::System::getSingleton().getDefaultGUIContext().injectMouseWheelChange( +1 );
+			        break;
+		    }
+            break;
+
+        case SDL_MOUSEBUTTONUP:
+	        switch(e.button.button)
+		    {
+		        case SDL_BUTTON_LEFT:
+			        CEGUI::System::getSingleton().getDefaultGUIContext().injectMouseButtonUp(CEGUI::LeftButton);
+			        break;
+		        case SDL_BUTTON_MIDDLE:
+			        CEGUI::System::getSingleton().getDefaultGUIContext().injectMouseButtonUp(CEGUI::MiddleButton);
+			        break;
+		        case SDL_BUTTON_RIGHT:
+			        CEGUI::System::getSingleton().getDefaultGUIContext().injectMouseButtonUp(CEGUI::RightButton);
+			        break;
+			}
+            break;
+
+
+        case SDL_KEYDOWN:
+            CEGUI::System::getSingleton().getDefaultGUIContext().injectKeyDown(static_cast<CEGUI::Key::Scan>(e.key.keysym.scancode));
+
+            if ((e.key.keysym.unicode != 0))
+                CEGUI::System::getSingleton().getDefaultGUIContext().injectChar(e.key.keysym.unicode);
+            
+            break;
+
+        case SDL_KEYUP:
+            CEGUI::System::getSingleton().getDefaultGUIContext().injectKeyUp(static_cast<CEGUI::Key::Scan>(e.key.keysym.scancode));
+            break;
+    }
+}
+
 /** The SDL event parsed is stored internally.
     If event is not available or is not understood, returned event is of type EVENT_NULL. */
 Event CApplication::ProcessSystemEvent()
 {
+    InjectEvent();
+
     Event event;
 
     if (m_private->currentEvent.type == SDL_QUIT)

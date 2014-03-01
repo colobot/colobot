@@ -369,6 +369,8 @@ protected:
 
     //! Processes the captured SDL event to Event struct
     Event       ProcessSystemEvent();
+    //! Inject an event to CEGUI
+    void        InjectEvent();
     //! If applicable, creates a virtual event to match the changed state as of new event
     Event       CreateVirtualEvent(const Event& sourceEvent);
     //! Prepares a simulation update event
