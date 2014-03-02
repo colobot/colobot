@@ -7247,11 +7247,13 @@ void CRobotMain::StartPauseMusic(PauseType pause)
 {
     switch(pause) {
         case PAUSE_EDITOR:
-            m_sound->PlayPauseMusic(m_editorTrack, m_editorRepeat);
+            if(m_editorTrack != "")
+                m_sound->PlayPauseMusic(m_editorTrack, m_editorRepeat);
             break;
             
         case PAUSE_SATCOM:
-            m_sound->PlayPauseMusic(m_satcomTrack, m_satcomRepeat);
+            if(m_satcomTrack != "")
+                m_sound->PlayPauseMusic(m_satcomTrack, m_satcomRepeat);
             break;
         
         default:
