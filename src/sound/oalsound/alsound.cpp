@@ -514,7 +514,6 @@ void ALSound::FrameMove(float delta)
         {
             continue;
         }
-
         if (it.second->IsMuted())
         {
             it.second->SetVolume(0.0f);
@@ -686,12 +685,15 @@ bool ALSound::PlayPauseMusic(const std::string &filename, bool repeat)
 {
     if (m_previousMusic.fadeTime > 0.0f)
     {
-        OldMusic old;
-        old.music = m_currentMusic;
-        old.fadeTime = 2.0f;
-        old.currentTime = 0.0f;
-        m_oldMusic.push_back(old);
-        m_currentMusic = nullptr;
+		if(m_currentMusic)
+		{
+			OldMusic old;
+			old.music = m_currentMusic;
+			old.fadeTime = 2.0f;
+			old.currentTime = 0.0f;
+			m_oldMusic.push_back(old);
+			m_currentMusic = nullptr;
+		}
     }
     else
     {
