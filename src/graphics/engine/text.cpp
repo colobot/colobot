@@ -333,7 +333,7 @@ float CText::GetStringWidth(std::string text, FontType font, float size)
     // Skip special chars
     for (char& c : text)
     {
-        if (c < 32)
+        if (c < 32 && c >= 0)
             c = ':';
     }
 
@@ -351,7 +351,7 @@ float CText::GetCharWidth(UTF8Char ch, FontType font, float size, float offset)
     if (font == FONT_BUTTON) return 0.0f;
 
     int width = 1;
-    if (ch.c1 < 32)
+    if (ch.c1 < 32 && ch.c1 >= 0)
     {
         if (ch.c1 == '\t')
             width = m_tabSize;
