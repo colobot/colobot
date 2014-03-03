@@ -276,6 +276,7 @@ CObject::CObject()
     m_lastVirusParticle = 0.0f;
     m_totalDesectList = 0;
     m_bLock  = false;
+    m_bIgnoreBuildCheck = false;
     m_bExplo = false;
     m_bCargo = false;
     m_bBurn  = false;
@@ -6781,7 +6782,7 @@ float CObject::GetParam()
 
 // Management of the mode "blocked" of an object.
 // For example, a cube of titanium is blocked while it is used to make something,
-//or a vehicle is blocked as its construction is not finished.
+// or a vehicle is blocked as its construction is not finished.
 
 void CObject::SetLock(bool bLock)
 {
@@ -6791,6 +6792,18 @@ void CObject::SetLock(bool bLock)
 bool CObject::GetLock()
 {
     return m_bLock;
+}
+
+// Ignore checks in build() function
+
+void CObject::SetIgnoreBuildCheck(bool bIgnoreBuildCheck)
+{
+    m_bIgnoreBuildCheck = bIgnoreBuildCheck;
+}
+
+bool CObject::GetIgnoreBuildCheck()
+{
+    return m_bIgnoreBuildCheck;
 }
 
 // Management of the mode "current explosion" of an object.

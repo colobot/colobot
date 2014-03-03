@@ -1665,7 +1665,7 @@ bool CScript::rCanBuild(CBotVar* var, CBotVar* result, int& exception, void* use
          (category == OBJECT_DESTROYER && (g_build & BUILD_DESTROYER)))
     {
 
-        //if we want to build not researched one
+        // if we want to build not researched one
         if ( (category == OBJECT_TOWER   && !(g_researchDone & RESEARCH_TOWER)) ||
              (category == OBJECT_NUCLEAR && !(g_researchDone & RESEARCH_ATOMIC))
             )
@@ -1709,7 +1709,7 @@ bool CScript::rBuild(CBotVar* var, CBotVar* result, int& exception, void* user)
     }
     else
     {
-        category = static_cast<ObjectType>(var->GetValInt()); //get category parameter
+        category = static_cast<ObjectType>(var->GetValInt()); // get category parameter
         if ( (category == OBJECT_DERRICK   && (g_build & BUILD_DERRICK))   ||
              (category == OBJECT_FACTORY   && (g_build & BUILD_FACTORY))   ||
              (category == OBJECT_STATION   && (g_build & BUILD_STATION))   ||
@@ -1726,7 +1726,7 @@ bool CScript::rBuild(CBotVar* var, CBotVar* result, int& exception, void* user)
              (category == OBJECT_DESTROYER && (g_build & BUILD_DESTROYER)))
         {
 
-            //if we want to build not researched one
+            // if we want to build not researched one
             if ( (category == OBJECT_TOWER   && !(g_researchDone & RESEARCH_TOWER)) ||
                  (category == OBJECT_NUCLEAR && !(g_researchDone & RESEARCH_ATOMIC))
                 )
@@ -1739,8 +1739,11 @@ bool CScript::rBuild(CBotVar* var, CBotVar* result, int& exception, void* user)
             }
 
         }
+        
+        if (pThis->GetIgnoreBuildCheck())
+            err = ERR_OK;
 
-        if (err == ERR_OK && script->m_primaryTask == 0) //if we can build and no task is present
+        if (err == ERR_OK && script->m_primaryTask == 0) // if we can build and no task is present
         {
             script->m_primaryTask = new CTaskManager(script->m_object);
             err = script->m_primaryTask->StartTaskBuild(category);
@@ -1751,9 +1754,9 @@ bool CScript::rBuild(CBotVar* var, CBotVar* result, int& exception, void* user)
                 script->m_primaryTask = 0;
             }
         }
-        //When script is waiting for finishing this task, it sets ERR_OK, and continues executing Process
-        //without creating new task. I think, there was a problem with previous version in release configuration
-        //It did not init error variable in this situation, and code tried to use variable with trash inside
+        // When script is waiting for finishing this task, it sets ERR_OK, and continues executing Process
+        // without creating new task. I think, there was a problem with previous version in release configuration
+        // It did not init error variable in this situation, and code tried to use variable with trash inside
     }
 
     if ( err != ERR_OK )
