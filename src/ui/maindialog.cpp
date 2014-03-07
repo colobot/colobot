@@ -201,21 +201,29 @@ CMainDialog::CMainDialog()
     CEGUI::System::create( renderer );
     
     CEGUI::DefaultResourceProvider* rp = static_cast<CEGUI::DefaultResourceProvider*>(CEGUI::System::getSingleton().getResourceProvider());
-    std::string dataDir = CApplication::GetInstancePointer()->GetDataDirPath()+"/interface";
-    rp->setResourceGroupDirectory("schemes", dataDir+"/schemes/");
-    rp->setResourceGroupDirectory("imagesets", dataDir+"/imagesets/");
-    rp->setResourceGroupDirectory("fonts", dataDir+"/fonts/");
-    rp->setResourceGroupDirectory("layouts", dataDir+"/layouts/");
-    rp->setResourceGroupDirectory("looknfeels", dataDir+"/looknfeel/");
+    std::string dataDir = CApplication::GetInstancePointer()->GetDataDirPath();
+    std::string interfaceDir = dataDir+"/interface";
+    // XML files
+    rp->setResourceGroupDirectory("schemes", interfaceDir+"/schemes/");
+    rp->setResourceGroupDirectory("imagesets", interfaceDir+"/imagesets/");
+    rp->setResourceGroupDirectory("fonts", interfaceDir+"/fonts/");
+    rp->setResourceGroupDirectory("layouts", interfaceDir+"/layouts/");
+    rp->setResourceGroupDirectory("looknfeels", interfaceDir+"/looknfeel/");
+    rp->setResourceGroupDirectory("animations", interfaceDir+"/animations/");
+    // data files
+    rp->setResourceGroupDirectory("textures", dataDir+"/textures/");
+    rp->setResourceGroupDirectory("ttf", dataDir+"/fonts/");
     
     CEGUI::ImageManager::setImagesetDefaultResourceGroup("imagesets");
     CEGUI::Font::setDefaultResourceGroup("fonts");
     CEGUI::Scheme::setDefaultResourceGroup("schemes");
     CEGUI::WidgetLookManager::setDefaultResourceGroup("looknfeels");
     CEGUI::WindowManager::setDefaultResourceGroup("layouts");
+    CEGUI::AnimationManager::setDefaultResourceGroup("animations");
     
     CEGUI::SchemeManager::getSingleton().createFromFile("WindowsLook.scheme");
     CEGUI::SchemeManager::getSingleton().createFromFile("colobot.scheme");
+    CEGUI::AnimationManager::getSingleton().loadAnimationsFromXML("colobot.animations");
     
     /*CEGUI::System::getSingleton().getDefaultGUIContext().getMouseCursor().setDefaultImage("ColobotMouse/Normal2");
     CEGUI::System::getSingleton().getDefaultGUIContext().getMouseCursor().setExplicitRenderSize(CEGUI::Sizef(64.0f, 64.0f));
@@ -224,6 +232,8 @@ CMainDialog::CMainDialog()
     
     CEGUI::Window *window = CEGUI::WindowManager::getSingleton().loadLayoutFromFile("test.layout");
     CEGUI::System::getSingleton().getDefaultGUIContext().setRootWindow(window);
+    
+    m_splash = new CSplash();
 }
 
 // Destructor of robot application.
@@ -1783,62 +1793,9 @@ pos.y -= 0.048f;
         m_loadingCounter = 1;  // enough time to display!
     }
 
-    if ( m_phase == PHASE_WELCOME1 )
+    if ( m_phase == PHASE_SPLASH )
     {
-        pos.x  = 0.0f;
-        pos.y  = 0.0f;
-        ddim.x = 0.0f;
-        ddim.y = 0.0f;
-        pw = m_interface->CreateWindows(pos, ddim, -1, EVENT_WINDOW5);
-
-        m_engine->SetOverColor(Gfx::Color(1.0f, 1.0f, 1.0f, 1.0f), Gfx::ENG_RSTATE_TCOLOR_BLACK); // TODO: color ok?
-        m_engine->SetOverFront(true);
-
-        m_engine->SetBackground("ppc.png",
-                Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
-                Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
-                Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
-                Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
-                true);
-        m_engine->SetBackForce(true);
-    }
-    if ( m_phase == PHASE_WELCOME2 )
-    {
-        pos.x  = 0.0f;
-        pos.y  = 0.0f;
-        ddim.x = 0.0f;
-        ddim.y = 0.0f;
-        pw = m_interface->CreateWindows(pos, ddim, -1, EVENT_WINDOW5);
-
-        m_engine->SetOverColor(Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f), Gfx::ENG_RSTATE_TCOLOR_WHITE); // TODO: color ok?
-        m_engine->SetOverFront(true);
-
-        m_engine->SetBackground("colobot.png",
-                Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
-                Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
-                Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
-                Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
-                true);
-        m_engine->SetBackForce(true);
-    }
-    if ( m_phase == PHASE_WELCOME3 )
-    {
-        pos.x  = 0.0f;
-        pos.y  = 0.0f;
-        ddim.x = 0.0f;
-        ddim.y = 0.0f;
-        pw = m_interface->CreateWindows(pos, ddim, -1, EVENT_WINDOW5);
-
-        m_engine->SetOverColor(Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f), Gfx::ENG_RSTATE_TCOLOR_WHITE); // TODO: color ok?
-        m_engine->SetOverFront(true);
-
-        m_engine->SetBackground("epsitec.png",
-                Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
-                Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
-                Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
-                Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
-                true);
-        m_engine->SetBackForce(true);
+        m_splash->Start();
     }
 
     if ( m_phase == PHASE_GENERIC )
@@ -2020,16 +1977,11 @@ bool CMainDialog::EventProcess(const Event &event)
     CButton*    pb;
     CCheck*     pc;
     Event       newEvent;
-    float       welcomeLength;
 
     if ( event.type == EVENT_FRAME )
     {
         m_phaseTime += event.rTime;
         CEGUI::System::getSingleton().injectTimePulse(event.rTime);
-
-        //?     if ( m_phase == PHASE_WELCOME1 )  welcomeLength = WELCOME_LENGTH+2.0f;
-        //?     else                              welcomeLength = WELCOME_LENGTH;
-        welcomeLength = WELCOME_LENGTH;
 
         if ( m_phase != PHASE_SIMUL   &&
              m_phase != PHASE_WIN     &&
@@ -2049,59 +2001,10 @@ bool CMainDialog::EventProcess(const Event &event)
             }
         }
 
-        if ( m_phase == PHASE_WELCOME1 ||
-             m_phase == PHASE_WELCOME2 ||
-             m_phase == PHASE_WELCOME3 )
+        if ( m_phase == PHASE_SPLASH )
         {
-            float   intensity;
-            int     mode = Gfx::ENG_RSTATE_TCOLOR_WHITE;
-
-            // 1/4 of display time is animating
-            float animatingTime = welcomeLength / 4.0f;
-
-            if ( m_phaseTime <  animatingTime )
-            {
-                //appearing
-                intensity = m_phaseTime / animatingTime;
-            }
-            else if ( m_phaseTime < welcomeLength - animatingTime )
-            {
-                //showing
-                intensity = 1.0f;
-            }
-            else
-            {
-                //hiding
-                intensity = (welcomeLength - m_phaseTime) / animatingTime;
-            }
-
-            if ( intensity < 0.0f )  intensity = 0.0f;
-            if ( intensity > 1.0f )  intensity = 1.0f;
-
-            //white first, others -> black fadding
-            if ( (m_phase == PHASE_WELCOME1) && ( m_phaseTime < welcomeLength/2.0f))
-            {
-                intensity = 1.0f - intensity;
-                mode = Gfx::ENG_RSTATE_TCOLOR_BLACK;
-            }
-
-            m_engine->SetOverColor(Gfx::Color(intensity, intensity, intensity, intensity), mode); // TODO: color ok?
-        }
-
-        if ( m_phase == PHASE_WELCOME1 && m_phaseTime >= welcomeLength )
-        {
-            ChangePhase(PHASE_WELCOME2);
-            return true;
-        }
-        if ( m_phase == PHASE_WELCOME2 && m_phaseTime >= welcomeLength )
-        {
-            ChangePhase(PHASE_WELCOME3);
-            return true;
-        }
-        if ( m_phase == PHASE_WELCOME3 && m_phaseTime >= welcomeLength )
-        {
-            ChangePhase(PHASE_NAME);
-            return true;
+            if ( m_splash->IsFinished() )
+                ChangePhase(PHASE_NAME);
         }
 
         if ( m_shotDelay > 0 && !m_bDialog )  // screenshot done?
@@ -3017,30 +2920,12 @@ bool CMainDialog::EventProcess(const Event &event)
         return false;
     }
 
-    if ( m_phase == PHASE_WELCOME1 )
+    if ( m_phase == PHASE_SPLASH )
     {
         if ( event.type == EVENT_KEY_DOWN     ||
-                event.type == EVENT_MOUSE_BUTTON_DOWN )
+             event.type == EVENT_MOUSE_BUTTON_DOWN )
         {
-            ChangePhase(PHASE_WELCOME2);
-            return true;
-        }
-    }
-    if ( m_phase == PHASE_WELCOME2 )
-    {
-        if ( event.type == EVENT_KEY_DOWN     ||
-                event.type == EVENT_MOUSE_BUTTON_DOWN )
-        {
-            ChangePhase(PHASE_WELCOME3);
-            return true;
-        }
-    }
-    if ( m_phase == PHASE_WELCOME3 )
-    {
-        if ( event.type == EVENT_KEY_DOWN     ||
-                event.type == EVENT_MOUSE_BUTTON_DOWN )
-        {
-            ChangePhase(PHASE_NAME);
+            m_splash->Next();
             return true;
         }
     }

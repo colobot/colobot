@@ -14,16 +14,15 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// maindialog.h
-
 #pragma once
 
+#include "app/pausemanager.h"
 
 #include "graphics/core/color.h"
 
 #include "object/robotmain.h"
 
-#include "app/pausemanager.h"
+#include "ui/splash.h"
 
 #include <boost/filesystem.hpp>
 #include <boost/algorithm/string.hpp>
@@ -189,6 +188,8 @@ protected:
     Gfx::CCamera*     m_camera;
     CSoundInterface*  m_sound;
     CPauseManager*    m_pause;
+    
+    CSplash*          m_splash;
 
     Phase           m_phase;            // copy of CRobotMain
     Phase           m_phaseSetup;           // tab selected

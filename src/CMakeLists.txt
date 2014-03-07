@@ -179,6 +179,7 @@ ui/map.cpp
 ui/scroll.cpp
 ui/shortcut.cpp
 ui/slider.cpp
+ui/splash.cpp
 ui/studio.cpp
 ui/target.cpp
 ui/window.cpp

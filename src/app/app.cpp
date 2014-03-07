@@ -571,7 +571,7 @@ bool CApplication::Create()
     if (! m_runSceneName.empty())
         m_robotMain->LoadSceneOnStart(m_runSceneName, m_runSceneRank);
     else
-        m_robotMain->ChangePhase(PHASE_WELCOME1);
+        m_robotMain->ChangePhase(PHASE_SPLASH);
 
     return true;
 }
