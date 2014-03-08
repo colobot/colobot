@@ -983,13 +983,6 @@ void CPhysics::MotorUpdate(float aTime, float rTime)
         m_cirMotion.motorSpeed.y = 0.0f;
     }
 
-    if ( m_bLand && m_fallingHeight != 0.0f ) // if fell
-    {
-        float force = m_fallingHeight * m_fallDamageFraction;
-        m_object->ExploObject(EXPLO_BOUM, force);
-        m_fallingHeight = 0.0f;
-    }
-
     if ( m_type == TYPE_FLYING && m_bLand )  // flying on the ground?
     {
         if ( type == OBJECT_HUMAN ||
@@ -1620,6 +1613,13 @@ bool CPhysics::EventFrame(const Event &event)
 
     MotorParticle(m_time, event.rTime);
     SoundMotor(event.rTime);
+
+    if ( m_bLand && m_fallingHeight != 0.0f ) // if fell
+    {
+        float force = m_fallingHeight * m_fallDamageFraction;
+        m_object->ExploObject(EXPLO_BOUM, force);
+        m_fallingHeight = 0.0f;
+    }
 
     m_bForceUpdate = false;
 
