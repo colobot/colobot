@@ -248,5 +248,8 @@ protected:
     bool        m_bSoundSlow;
     bool        m_bForceUpdate;
     bool        m_bLowLevel;
+    float m_fallingHeight;
+    float m_fallDamageFraction;
+    float m_minFallingHeight;
 };
 

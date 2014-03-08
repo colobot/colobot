@@ -107,6 +107,9 @@ CPhysics::CPhysics(CObject* object)
     m_bFreeze = false;
     m_bForceUpdate = true;
     m_bLowLevel = false;
+    m_fallingHeight = 0.0f;
+    m_fallDamageFraction = 0.0f;
+    m_minFallingHeight = 0.0f;
 
     memset(&m_linMotion, 0, sizeof(Motion));
     memset(&m_cirMotion, 0,sizeof(Motion));
@@ -912,9 +915,15 @@ void CPhysics::MotorUpdate(float aTime, float rTime)
             if ( m_reactorRange < 0.5f )  m_bLowLevel = true;
         }
 
+        m_minFallingHeight = 20.0f;
+        m_fallDamageFraction = 0.007f;
+
         if ( m_reactorRange == 0.0f )  // reactor tilt?
         {
             motorSpeed.y = -1.0f;  // grave
+
+            if (m_fallingHeight == 0.0f && m_floorHeight >= m_minFallingHeight)
+                m_fallingHeight = m_floorHeight;
         }
     }
 
@@ -972,6 +981,13 @@ void CPhysics::MotorUpdate(float aTime, float rTime)
     {
         m_cirMotion.motorAccel.y = m_cirMotion.stopAccel.y;
         m_cirMotion.motorSpeed.y = 0.0f;
+    }
+
+    if ( m_bLand && m_fallingHeight != 0.0f ) // if fell
+    {
+        float force = m_fallingHeight * m_fallDamageFraction;
+        m_object->ExploObject(EXPLO_BOUM, force);
+        m_fallingHeight = 0.0f;
     }
 
     if ( m_type == TYPE_FLYING && m_bLand )  // flying on the ground?
