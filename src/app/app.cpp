@@ -115,7 +115,7 @@ CApplication::CApplication()
     m_debugModes = 0;
     m_customDataPath = false;
 
-    m_windowTitle = "COLOBOT";
+    m_windowTitle = "COLOBOT GOLD";
 
     m_simulationSuspended = false;
 

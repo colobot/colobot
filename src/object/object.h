@@ -582,6 +582,9 @@ public:
 
     void        SetParam(float value);
     float       GetParam();
+    
+    void        SetIgnoreBuildCheck(bool bIgnoreBuildCheck);
+    bool        GetIgnoreBuildCheck();
 
     void        SetExplo(bool bExplo);
     bool        GetExplo();
@@ -720,6 +723,7 @@ protected:
     bool        m_bTrainer;         // drive vehicle (without remote)
     bool        m_bToy;             // toy key
     bool        m_bManual;          // manual control (Scribbler)
+    bool        m_bIgnoreBuildCheck;
     bool        m_bFixed;
     bool        m_bClip;
     bool        m_bShowLimit;

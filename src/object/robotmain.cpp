@@ -4593,6 +4593,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
         {
             m_controller = CObjectManager::GetInstancePointer()->CreateObject(Math::Vector(0.0f, 0.0f, 0.0f), 0.0f, OBJECT_CONTROLLER, 100.0f);
             m_controller->SetMagnifyDamage(100.0f);
+            m_controller->SetIgnoreBuildCheck(true);
             CBrain* brain = m_controller->GetBrain();
             if (brain != nullptr)
             {
@@ -4720,6 +4721,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
                 bool selectable = OpInt(line, "selectable", 1);
                 obj->SetSelectable(selectable);
+                obj->SetIgnoreBuildCheck(OpInt(line, "ignoreBuildCheck", 0));
                 obj->SetEnable(OpInt(line, "enable", 1));
                 obj->SetProxyActivate(OpInt(line, "proxyActivate", 0));
                 obj->SetProxyDistance(OpFloat(line, "proxyDistance", 15.0f)*g_unit);
@@ -6068,6 +6070,9 @@ void CRobotMain::IOWriteObject(FILE *file, CObject* obj, const char *cmd)
 
     sprintf(name, " trainer=%d", obj->GetTrainer());
     strcat(line, name);
+    
+    sprintf(name, " ignoreBuildCheck=%d", obj->GetIgnoreBuildCheck());
+    strcat(line, name);
 
     sprintf(name, " option=%d", obj->GetOption());
     strcat(line, name);
@@ -6229,6 +6234,7 @@ CObject* CRobotMain::IOReadObject(char *line, const char* filename, int objRank)
     obj->SetDefRank(objRank);
     obj->SetPosition(0, pos);
     obj->SetAngle(0, dir);
+    obj->SetIgnoreBuildCheck(OpInt(line, "ignoreBuildCheck", 0));
     obj->SetID(id);
     if (g_id < id) g_id = id;
 
