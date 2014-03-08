@@ -24,6 +24,7 @@
 
 #include "common/singleton.h"
 
+#include <CEGUI/CEGUI.h>
 #include <string>
 #include <cstdarg>
 #include <cstdio>
@@ -51,7 +52,7 @@ enum LogLevel
 * @brief Class for loggin information to file or console
 *
 */
-class CLogger : public CSingleton<CLogger>
+class CLogger : public CSingleton<CLogger>, public CEGUI::Logger
 {
 public:
     CLogger();
@@ -111,6 +112,9 @@ public:
      * On invalid value, returns \c false.
      */
     static bool ParseLogLevel(const std::string& str, LogLevel& logLevel);
+    
+    void logEvent(const CEGUI::String &message, CEGUI::LoggingLevel level);
+    void setLogFilename(const CEGUI::String &filename, bool append) {}; // We don't need this
 
 private:
     std::string m_filename;

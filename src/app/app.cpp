@@ -1552,6 +1552,10 @@ bool CApplication::ParseDebugModes(const std::string& str, int& debugModes)
         {
             debugModes |= DEBUG_MODELS;
         }
+        else if (modeToken == "cegui")
+        {
+            debugModes |= DEBUG_CEGUI;
+        }
         else if (modeToken == "all")
         {
             debugModes = DEBUG_ALL;

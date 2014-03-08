@@ -156,6 +156,7 @@ script/cbottoken.cpp
 script/cmdtoken.cpp
 script/script.cpp
 sound/sound.cpp
+ui/screen/mainmenu.cpp
 ui/screen/splash.cpp
 ui/button.cpp
 ui/check.cpp

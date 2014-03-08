@@ -15,6 +15,7 @@
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
 
+#include "app/app.h"
 #include "common/logger.h"
 
 #include <stdio.h>
@@ -193,5 +194,18 @@ bool CLogger::ParseLogLevel(const std::string& str, LogLevel& logLevel)
     }
 
     return false;
+}
+
+void CLogger::logEvent(const CEGUI::String &message, CEGUI::LoggingLevel level)
+{
+    if(!CApplication::GetInstancePointer()->IsDebugModeActive(DEBUG_CEGUI)) return;
+    
+    switch(level) {
+        case CEGUI::LoggingLevel::Errors:      Error("%s\n", message.c_str()); break;
+        case CEGUI::LoggingLevel::Warnings:    Warn("%s\n", message.c_str()); break;
+        case CEGUI::LoggingLevel::Standard:    Info("%s\n", message.c_str()); break;
+        case CEGUI::LoggingLevel::Informative: Debug("%s\n", message.c_str()); break;
+        case CEGUI::LoggingLevel::Insane:      Trace("%s\n", message.c_str()); break;
+    }
 }
 

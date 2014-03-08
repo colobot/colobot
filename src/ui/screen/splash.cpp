@@ -60,11 +60,15 @@ void CScreenSplash::Start()
 
 void CScreenSplash::Stop()
 {
-    if(m_splashWindowAnim != nullptr)
+    if(m_splashWindowAnim != nullptr) {
         CEGUI::AnimationManager::getSingleton().destroyAnimationInstance(m_splashWindowAnim);
+        m_splashWindowAnim = nullptr;
+    }
     
-    if(m_splashWindow != nullptr)
+    if(m_splashWindow != nullptr) {
         CEGUI::WindowManager::getSingleton().destroyWindow(m_splashWindow);
+        m_splashWindow = nullptr;
+    }
 }
 
 void CScreenSplash::Next()

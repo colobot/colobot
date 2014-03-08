@@ -35,6 +35,7 @@
 #include "script/cmdtoken.h"
 #include "sound/sound.h"
 
+#include "ui/screen/mainmenu.h"
 #include "ui/screen/splash.h"
 
 #include "ui/interface.h"
@@ -233,10 +234,14 @@ CMainDialog::CMainDialog()
     CEGUI::System::getSingleton().getDefaultGUIContext().getMouseCursor().offsetPosition(CEGUI::Vector2f(1.0f, 1.0f));*/
     CEGUI::System::getSingleton().getDefaultGUIContext().getMouseCursor().setDefaultImage("WindowsLook/MouseArrow");
     
-    CEGUI::Window *window = CEGUI::WindowManager::getSingleton().loadLayoutFromFile("test.layout");
-    CEGUI::System::getSingleton().getDefaultGUIContext().setRootWindow(window);
+    CEGUI::Window *rootWindow = CEGUI::WindowManager::getSingleton().createWindow("DefaultWindow", "root");
+    CEGUI::System::getSingleton().getDefaultGUIContext().setRootWindow(rootWindow);
+    
+    CEGUI::Window *testWindow = CEGUI::WindowManager::getSingleton().loadLayoutFromFile("test.layout");
+    rootWindow->addChild(testWindow);
     
     RegisterScreen(new CScreenSplash());
+    RegisterScreen(new CScreenMainMenu());
 }
 
 // Destructor of robot application.
@@ -402,9 +407,9 @@ pb->SetState(STATE_SHADOW);
 
         if ( m_accessEnable && m_accessMission )
         {
-            pos.y = oy+sy*10.3f;
+            /*pos.y = oy+sy*10.3f;
             pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_MISSION);
-            pb->SetState(STATE_SHADOW);
+            pb->SetState(STATE_SHADOW);*/
 
             pos.y = oy+sy*9.2f;
             pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_FREE);
