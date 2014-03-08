@@ -17,6 +17,7 @@
 
 #include "ui/maindialog.h"
 
+
 #include "app/app.h"
 #include "app/system.h"
 
@@ -33,6 +34,8 @@
 
 #include "script/cmdtoken.h"
 #include "sound/sound.h"
+
+#include "ui/screen/splash.h"
 
 #include "ui/interface.h"
 #include "ui/button.h"
@@ -233,13 +236,25 @@ CMainDialog::CMainDialog()
     CEGUI::Window *window = CEGUI::WindowManager::getSingleton().loadLayoutFromFile("test.layout");
     CEGUI::System::getSingleton().getDefaultGUIContext().setRootWindow(window);
     
-    m_splash = new CSplash();
+    RegisterScreen(new CScreenSplash());
 }
 
 // Destructor of robot application.
 
 CMainDialog::~CMainDialog()
 {
+    for(auto s : m_screens)
+    {
+        delete s;
+    }
+}
+
+
+// Registers a screen.
+
+void CMainDialog::RegisterScreen(CScreen* screen)
+{
+    m_screens.insert(screen);
 }
 
 
@@ -264,6 +279,7 @@ void CMainDialog::ChangePhase(Phase phase)
     std::string     name;
     char*           gamer;
     int             res, i, j;
+    Phase           fromPhase = m_phase;
 
     m_camera->SetType(Gfx::CAM_TYPE_DIALOG);
     m_engine->SetOverFront(false);
@@ -282,6 +298,24 @@ void CMainDialog::ChangePhase(Phase phase)
     oy = 3.0f/480.0f;
     sx = (32.0f+2.0f)/640.0f;
     sy = (32.0f+2.0f)/480.0f;
+    
+    for ( auto s : m_screens )
+    {
+        if(s->m_enabledPhases.find(phase) != s->m_enabledPhases.end() && s->m_enabledPhases.find(fromPhase) == s->m_enabledPhases.end())
+        {
+            s->m_enabled = true;
+            s->Start();
+        }
+        
+        if(s->m_enabled)
+            s->ChangePhase(phase);
+        
+        if(s->m_enabledPhases.find(phase) == s->m_enabledPhases.end() && s->m_enabledPhases.find(fromPhase) != s->m_enabledPhases.end())
+        {
+            s->Stop();
+            s->m_enabled = false;
+        }
+    }
 
     if ( m_phase == PHASE_INIT )
     {
@@ -1793,11 +1827,6 @@ pos.y -= 0.048f;
         m_loadingCounter = 1;  // enough time to display!
     }
 
-    if ( m_phase == PHASE_SPLASH )
-    {
-        m_splash->Start();
-    }
-
     if ( m_phase == PHASE_GENERIC )
     {
         pos.x  = 0.0f;
@@ -1977,6 +2006,12 @@ bool CMainDialog::EventProcess(const Event &event)
     CButton*    pb;
     CCheck*     pc;
     Event       newEvent;
+    
+    for ( auto s : m_screens )
+    {
+        if(s->m_enabled)
+            s->EventProcess(event);
+    }
 
     if ( event.type == EVENT_FRAME )
     {
@@ -1999,12 +2034,6 @@ bool CMainDialog::EventProcess(const Event &event)
             {
                 m_sound->PlayMusic("Intro2.ogg", true);
             }
-        }
-
-        if ( m_phase == PHASE_SPLASH )
-        {
-            if ( m_splash->IsFinished() )
-                ChangePhase(PHASE_NAME);
         }
 
         if ( m_shotDelay > 0 && !m_bDialog )  // screenshot done?
@@ -2918,16 +2947,6 @@ bool CMainDialog::EventProcess(const Event &event)
         }
 
         return false;
-    }
-
-    if ( m_phase == PHASE_SPLASH )
-    {
-        if ( event.type == EVENT_KEY_DOWN     ||
-             event.type == EVENT_MOUSE_BUTTON_DOWN )
-        {
-            m_splash->Next();
-            return true;
-        }
     }
 
     if ( m_phase == PHASE_GENERIC )

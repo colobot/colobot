@@ -156,6 +156,7 @@ script/cbottoken.cpp
 script/cmdtoken.cpp
 script/script.cpp
 sound/sound.cpp
+ui/screen/splash.cpp
 ui/button.cpp
 ui/check.cpp
 ui/color.cpp
@@ -179,7 +180,6 @@ ui/map.cpp
 ui/scroll.cpp
 ui/shortcut.cpp
 ui/slider.cpp
-ui/splash.cpp
 ui/studio.cpp
 ui/target.cpp
 ui/window.cpp

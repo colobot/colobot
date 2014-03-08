@@ -22,11 +22,12 @@
 
 #include "object/robotmain.h"
 
-#include "ui/splash.h"
+#include "ui/screen/screen.h"
 
 #include <boost/filesystem.hpp>
 #include <boost/algorithm/string.hpp>
 
+#include <set>
 #include <vector>
 
 namespace fs = boost::filesystem;
@@ -76,6 +77,8 @@ public:
 
     bool    EventProcess(const Event &event);
     void    ChangePhase(Phase phase);
+    
+    void    RegisterScreen(CScreen* screen);
 
     void          SetSceneRead(const char* name);
     void          SetStackRead(const char* name);
@@ -188,8 +191,6 @@ protected:
     Gfx::CCamera*     m_camera;
     CSoundInterface*  m_sound;
     CPauseManager*    m_pause;
-    
-    CSplash*          m_splash;
 
     Phase           m_phase;            // copy of CRobotMain
     Phase           m_phaseSetup;           // tab selected
@@ -268,6 +269,8 @@ protected:
     SceneInfo            m_sceneInfo[MAXSCENE];
 
     std::vector<fs::path>   m_saveList;
+    
+    std::set<CScreen*>   m_screens;
 };
 
 } // namespace Ui
