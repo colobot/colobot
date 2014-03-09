@@ -108,8 +108,8 @@ CPhysics::CPhysics(CObject* object)
     m_bForceUpdate = true;
     m_bLowLevel = false;
     m_fallingHeight = 0.0f;
-    m_fallDamageFraction = 0.0f;
-    m_minFallingHeight = 0.0f;
+    m_minFallingHeight = 20.0f;
+    m_fallDamageFraction = 0.007f;
 
     memset(&m_linMotion, 0, sizeof(Motion));
     memset(&m_cirMotion, 0,sizeof(Motion));
@@ -854,6 +854,7 @@ void CPhysics::MotorUpdate(float aTime, float rTime)
             else
             {
                 motorSpeed.y = -1.0f;  // grave
+                SetFalling();
             }
             SetMotor(false);
         }
@@ -915,15 +916,10 @@ void CPhysics::MotorUpdate(float aTime, float rTime)
             if ( m_reactorRange < 0.5f )  m_bLowLevel = true;
         }
 
-        m_minFallingHeight = 20.0f;
-        m_fallDamageFraction = 0.007f;
-
         if ( m_reactorRange == 0.0f )  // reactor tilt?
         {
             motorSpeed.y = -1.0f;  // grave
-
-            if (m_fallingHeight == 0.0f && m_floorHeight >= m_minFallingHeight)
-                m_fallingHeight = m_floorHeight;
+            SetFalling();
         }
     }
 
@@ -1522,6 +1518,7 @@ bool CPhysics::EventFrame(const Event &event)
         if ( pos.y < m_water->GetLevel(m_object) )  // underwater?
         {
             h *= 0.5f;
+            m_fallingHeight = 0.0f; // can't fall underwater
         }
 #endif
 //?     m_linMotion.terrainSpeed.x = -tAngle.z*m_linMotion.terrainForce.x*h;
@@ -3899,5 +3896,38 @@ Error CPhysics::GetError()
     }
 
     return ERR_OK;
+}
+
+void CPhysics::SetFalling()
+{
+    if (m_fallingHeight == 0.0f && m_floorHeight >= m_minFallingHeight)
+        m_fallingHeight = m_floorHeight;
+}
+
+float CPhysics::GetFallingHeight()
+{
+    return m_fallingHeight;
+}
+
+void CPhysics::SetMinFallingHeight(float value)
+{
+    if (value < 0.0f) return;
+    m_minFallingHeight = value;
+}
+
+float CPhysics::GetMinFallingHeight()
+{
+    return m_minFallingHeight;
+}
+
+void CPhysics::SetFallDamageFraction(float value)
+{
+    if (value < 0.0f) return;
+    m_fallDamageFraction = value;
+}
+
+float CPhysics::GetFallDamageFraction()
+{
+    return m_fallDamageFraction;
 }
 
