@@ -144,6 +144,7 @@ public:
     void    ShowSoluceUpdate();
 
 protected:
+    void    InitCEGUI();
     void    GlintMove();
     void    FrameParticle(float rTime);
     void    NiceParticle(Math::Point mouse, bool bPress);

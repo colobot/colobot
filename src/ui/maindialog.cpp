@@ -200,6 +200,16 @@ CMainDialog::CMainDialog()
 
     m_bDialog = false;
     
+    InitCEGUI();
+    
+    RegisterScreen(new CScreenSplash());
+    RegisterScreen(new CScreenMainMenu());
+}
+
+// Initialise CEGUI
+
+void CMainDialog::InitCEGUI()
+{
     CEGUI::OpenGLRenderer& renderer = CEGUI::OpenGLRenderer::create();
     renderer.enableExtraStateSettings(true);
     CEGUI::System::create( renderer );
@@ -234,14 +244,13 @@ CMainDialog::CMainDialog()
     CEGUI::System::getSingleton().getDefaultGUIContext().getMouseCursor().offsetPosition(CEGUI::Vector2f(1.0f, 1.0f));*/
     CEGUI::System::getSingleton().getDefaultGUIContext().getMouseCursor().setDefaultImage("WindowsLook/MouseArrow");
     
+    CEGUI::System::getSingleton().getDefaultGUIContext().setDefaultTooltipType("WindowsLook/Tooltip");
+    
     CEGUI::Window *rootWindow = CEGUI::WindowManager::getSingleton().createWindow("DefaultWindow", "root");
     CEGUI::System::getSingleton().getDefaultGUIContext().setRootWindow(rootWindow);
     
     CEGUI::Window *testWindow = CEGUI::WindowManager::getSingleton().loadLayoutFromFile("test.layout");
     rootWindow->addChild(testWindow);
-    
-    RegisterScreen(new CScreenSplash());
-    RegisterScreen(new CScreenMainMenu());
 }
 
 // Destructor of robot application.
@@ -405,11 +414,11 @@ pb->SetState(STATE_SHADOW);
         ddim.y = dim.y*1;
         pos.x = 0.41f;
 
-        if ( m_accessEnable && m_accessMission )
+        /*if ( m_accessEnable && m_accessMission )
         {
-            /*pos.y = oy+sy*10.3f;
+            pos.y = oy+sy*10.3f;
             pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_MISSION);
-            pb->SetState(STATE_SHADOW);*/
+            pb->SetState(STATE_SHADOW);
 
             pos.y = oy+sy*9.2f;
             pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_FREE);
@@ -446,12 +455,12 @@ pb->SetState(STATE_SHADOW);
             /*#if _POLISH
               pos.x  -=  5.0f/640.0f;
               ddim.x += 10.0f/640.0f;
-#endif*/
+#endif*//*
             pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_USER);
             pb->SetState(STATE_SHADOW);
         }
         // #endif
-        #endif
+        #endif*/
 
         /*pos.x  = 139.0f/640.0f;
         pos.y  = 313.0f/480.0f;
@@ -2165,7 +2174,7 @@ bool CMainDialog::EventProcess(const Event &event)
                 }
                 break;
 
-            case EVENT_INTERFACE_QUIT:
+            /*case EVENT_INTERFACE_QUIT:
                 //?             StartQuit();  // would you leave?
                 m_sound->Play(SOUND_TZOING);
                 m_main->ChangePhase(PHASE_GENERIC);
@@ -2201,7 +2210,7 @@ bool CMainDialog::EventProcess(const Event &event)
 
             case EVENT_INTERFACE_NAME:
                 m_main->ChangePhase(PHASE_NAME);
-                break;
+                break;*/
 
             default:
                 break;

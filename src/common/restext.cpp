@@ -33,6 +33,7 @@
 #include <SDL_keyboard.h>
 
 const char* stringsText[RT_MAX]         = { nullptr };
+const char* stringsUi[RUIT_MAX]         = { nullptr };
 const char* stringsEvent[EVENT_STD_MAX] = { nullptr };
 const char* stringsObject[OBJECT_MAX]   = { nullptr };
 const char* stringsErr[ERR_MAX]         = { nullptr };
@@ -137,6 +138,17 @@ void InitializeRestext()
 
 
 
+    stringsUi[RUIT_MISSIONS]   = "Missions\\Select mission";
+    stringsUi[RUIT_FREEGAME]   = "Free game\\Free game without a specific goal";
+    stringsUi[RUIT_EXERCISES]  = "Exercises\\Programming exercises";
+    stringsUi[RUIT_CHALLENGES] = "Challenges\\Programming challenges";
+    stringsUi[RUIT_USERLVL]    = "User\\User levels";
+    stringsUi[RUIT_NAME]       = "Change player\\Change player";
+    stringsUi[RUIT_SETUP]      = "Options\\Preferences";
+    stringsUi[RUIT_QUIT]       = "Quit\\Quit COLOBOT";
+
+
+
     stringsEvent[EVENT_BUTTON_OK]           = "OK";
     stringsEvent[EVENT_BUTTON_CANCEL]       = "Cancel";
     stringsEvent[EVENT_BUTTON_NEXT]         = "Next";
@@ -146,19 +158,10 @@ void InitializeRestext()
     stringsEvent[EVENT_DIALOG_OK]           = "OK";
     stringsEvent[EVENT_DIALOG_CANCEL]       = "Cancel";
 
-    stringsEvent[EVENT_INTERFACE_TRAINER]   = "Exercises\\Programming exercises";
-    stringsEvent[EVENT_INTERFACE_DEFI]      = "Challenges\\Programming challenges";
-    stringsEvent[EVENT_INTERFACE_MISSION]   = "Missions\\Select mission";
-    stringsEvent[EVENT_INTERFACE_FREE]      = "Free game\\Free game without a specific goal";
-    stringsEvent[EVENT_INTERFACE_TEEN]      = "Free game\\Free game without a specific goal";
-    stringsEvent[EVENT_INTERFACE_USER]      = "User\\User levels";
-    stringsEvent[EVENT_INTERFACE_NAME]      = "Change player\\Change player";
-    stringsEvent[EVENT_INTERFACE_SETUP]     = "Options\\Preferences";
     stringsEvent[EVENT_INTERFACE_AGAIN]     = "Restart\\Restart the mission from the beginning";
     stringsEvent[EVENT_INTERFACE_WRITE]     = "Save\\Save the current mission ";
     stringsEvent[EVENT_INTERFACE_READ]      = "Load\\Load a saved mission";
     stringsEvent[EVENT_INTERFACE_ABORT]     = "\\Return to COLOBOT";
-    stringsEvent[EVENT_INTERFACE_QUIT]      = "Quit\\Quit COLOBOT";
     stringsEvent[EVENT_INTERFACE_BACK]      = "<<  Back  \\Back to the previous screen";
     stringsEvent[EVENT_INTERFACE_PLAY]      = "Play\\Start mission!";
     stringsEvent[EVENT_INTERFACE_SETUPd]    = "Device\\Driver and resolution settings";
@@ -832,6 +835,11 @@ static const char* GetResourceBase(ResType type, int num)
         case RES_TEXT:
             assert(num < RT_MAX);
             str = stringsText[num];
+            break;
+            
+        case RES_UI:
+            assert(num < RUIT_MAX);
+            str = stringsUi[num];
             break;
 
         case RES_EVENT:

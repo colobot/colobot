@@ -34,11 +34,12 @@
 enum ResType
 {
     RES_TEXT        = 0,    //! < RT_*
-    RES_EVENT       = 1,    //! < EVENT_*  (EventMsg)
-    RES_OBJECT      = 2,    //! < OBJECT_* (ObjectType)
-    RES_ERR         = 3,    //! < ERR_*    (Error)
-    RES_KEY         = 4,    //! < KEY()    (keys)
-    RES_CBOT        = 5,    //! < TX_*     (CBot)
+    RES_UI          = 1,    //! < RUIT_*
+    RES_EVENT       = 2,    //! < EVENT_*  (EventMsg)
+    RES_OBJECT      = 3,    //! < OBJECT_* (ObjectType)
+    RES_ERR         = 4,    //! < ERR_*    (Error)
+    RES_KEY         = 5,    //! < KEY()    (keys)
+    RES_CBOT        = 6,    //! < TX_*     (CBot)
 };
 
 /**
@@ -145,6 +146,24 @@ enum ResTextType
 
 
     RT_MAX //! < number of values
+};
+
+/**
+ * \enum ResUiTextType
+ * \brief Interface text resources available for translation
+ */
+enum ResUiTextType
+{
+    RUIT_MISSIONS   = 1,
+    RUIT_FREEGAME   = 2,
+    RUIT_EXERCISES  = 3,
+    RUIT_CHALLENGES = 4,
+    RUIT_USERLVL    = 5,
+    RUIT_NAME       = 6,
+    RUIT_SETUP      = 7,
+    RUIT_QUIT       = 8,
+    
+    RUIT_MAX //! < number of values
 };
 
 

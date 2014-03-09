@@ -18,7 +18,11 @@
 
 #include "ui/screen/screen.h"
 
+
+#include "common/restext.h"
+
 #include <CEGUI/CEGUI.h>
+#include <string>
 
 namespace Ui {
 
@@ -33,6 +37,18 @@ public:
     void ChangePhase(Phase phase);
 
 protected:
+    const std::string BUTTON_MISSIONS   = "missions_button";
+    const std::string BUTTON_FREEGAME   = "freegame_button";
+    const std::string BUTTON_EXERCISES  = "exercises_button";
+    const std::string BUTTON_CHALLENGES = "challenges_button";
+    const std::string BUTTON_USERLVL    = "userlvl_button";
+    const std::string BUTTON_SETUP      = "setup_button";
+    const std::string BUTTON_NAME       = "name_button";
+    const std::string BUTTON_QUIT       = "quit_button";
+
+    void InitButton(std::string button, ResUiTextType textId);
+    bool OnClick(const CEGUI::EventArgs& e);
+    
     CEGUI::Window* m_window;
 };
 
