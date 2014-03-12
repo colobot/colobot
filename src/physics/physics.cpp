@@ -1613,7 +1613,7 @@ bool CPhysics::EventFrame(const Event &event)
 
     if ( m_bLand && m_fallingHeight != 0.0f ) // if fell
     {
-        float force = m_fallingHeight * m_fallDamageFraction;
+        float force = (m_fallingHeight - m_object->GetPosition(0).y) * m_fallDamageFraction;
         m_object->ExploObject(EXPLO_BOUM, force);
         m_fallingHeight = 0.0f;
     }
@@ -3901,7 +3901,7 @@ Error CPhysics::GetError()
 void CPhysics::SetFalling()
 {
     if (m_fallingHeight == 0.0f && m_floorHeight >= m_minFallingHeight)
-        m_fallingHeight = m_floorHeight;
+        m_fallingHeight = m_object->GetPosition(0).y;
 }
 
 float CPhysics::GetFallingHeight()
