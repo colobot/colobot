@@ -63,8 +63,8 @@ void CScreenMainMenu::InitButton(std::string button, ResUiTextType textId)
     std::vector<std::string> strings;
     boost::split(strings, translated, boost::is_any_of("\\"));
     
-    m_window->getChildRecursive(button)->setText(strings[0]);
-    m_window->getChildRecursive(button)->setTooltipText(strings[1]);
+    m_window->getChildRecursive(button)->setText(reinterpret_cast<const CEGUI::utf8*>(strings[0].c_str()));
+    m_window->getChildRecursive(button)->setTooltipText(reinterpret_cast<const CEGUI::utf8*>(strings[1].c_str()));
 }
 
 void CScreenMainMenu::Stop()
