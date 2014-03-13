@@ -249,8 +249,8 @@ void CMainDialog::InitCEGUI()
     CEGUI::Window *rootWindow = CEGUI::WindowManager::getSingleton().createWindow("DefaultWindow", "root");
     CEGUI::System::getSingleton().getDefaultGUIContext().setRootWindow(rootWindow);
     
-    CEGUI::Window *testWindow = CEGUI::WindowManager::getSingleton().loadLayoutFromFile("test.layout");
-    rootWindow->addChild(testWindow);
+    /*CEGUI::Window *testWindow = CEGUI::WindowManager::getSingleton().loadLayoutFromFile("test.layout");
+    rootWindow->addChild(testWindow);*/
 }
 
 // Destructor of robot application.
@@ -391,83 +391,6 @@ void CMainDialog::ChangePhase(Phase phase)
         pg = pw->CreateGroup(pos, ddim, 26, EVENT_LABEL1);  // red
         pg->SetState(STATE_SHADOW);
 
-        /* TODO: #if _SCHOOL
-           ddim.x = 0.18f;
-           ddim.y = dim.y*1;
-           pos.x = 0.41f;
-           pos.y = oy+sy*9.1f;
-           pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_TRAINER);
-           pb->SetState(STATE_SHADOW);
-
-           pos.y = oy+sy*8.0f;
-#if _TEEN
-pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_TEEN);
-#else
-pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_DEFI);
-#endif
-#if _CEEBOTDEMO
-pb->ClearState(STATE_ENABLE);
-#endif
-pb->SetState(STATE_SHADOW);
-#else */
-        ddim.x = 0.18f;
-        ddim.y = dim.y*1;
-        pos.x = 0.41f;
-
-        /*if ( m_accessEnable && m_accessMission )
-        {
-            pos.y = oy+sy*10.3f;
-            pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_MISSION);
-            pb->SetState(STATE_SHADOW);
-
-            pos.y = oy+sy*9.2f;
-            pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_FREE);
-            pb->SetState(STATE_SHADOW);
-        }
-
-        pos.y = oy+sy*8.0f;
-        pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_TRAINER);
-        pb->SetState(STATE_SHADOW);
-
-        pos.y = oy+sy*6.9f;
-        pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_DEFI);
-        pb->SetState(STATE_SHADOW);
-
-        pos.y = oy+sy*5.1f;
-        pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_SETUP);
-        pb->SetState(STATE_SHADOW);
-
-        pos.y = oy+sy*4.0f;
-        pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_NAME);
-        pb->SetState(STATE_SHADOW);
-
-        pos.y = oy+sy*2.0f;
-        pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_QUIT);
-        pb->SetState(STATE_SHADOW);
-
-        #if DEV_BUILD
-        // TODO: #if !_DEMO & !_SCHOOL
-        if ( m_accessEnable && m_accessUser )
-        {
-            pos.x  = 447.0f/640.0f;
-            pos.y  = 313.0f/480.0f;
-            ddim.x = 0.09f;
-            /*#if _POLISH
-              pos.x  -=  5.0f/640.0f;
-              ddim.x += 10.0f/640.0f;
-#endif*//*
-            pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_USER);
-            pb->SetState(STATE_SHADOW);
-        }
-        // #endif
-        #endif*/
-
-        /*pos.x  = 139.0f/640.0f;
-        pos.y  = 313.0f/480.0f;
-        ddim.x = 0.09f;
-        pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_PROTO);
-        pb->SetState(STATE_SHADOW);*/
-
         pos.x  = 0.40f;
         ddim.x = 0.20f;
         pos.y  =  26.0f/480.0f;
@@ -475,7 +398,7 @@ pb->SetState(STATE_SHADOW);
         pg = pw->CreateGroup(pos, ddim, 1, EVENT_LABEL1);
         pg->SetState(STATE_SHADOW);
         pos.y -=  5.0f/480.0f;
-        pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL1, "PPC Team");
+        pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL1, "colobot.info");
         pl->SetFontType(Gfx::FONT_COURIER);
         pl->SetFontSize(Gfx::FONT_SIZE_SMALL);
 
@@ -2158,63 +2081,6 @@ bool CMainDialog::EventProcess(const Event &event)
     if ( /* m_engine->GetMouseVisible() && TODO: WTF ?! */
             !m_interface->EventProcess(event) )
     {
-        return false;
-    }
-
-    if ( m_phase == PHASE_INIT )
-    {
-        switch( event.type )
-        {
-            case EVENT_KEY_DOWN:
-                if ( event.key.key == KEY(ESCAPE) )
-                {
-                    //?                 StartQuit();  // would you leave?
-                    m_sound->Play(SOUND_TZOING);
-                    m_main->ChangePhase(PHASE_GENERIC);
-                }
-                break;
-
-            /*case EVENT_INTERFACE_QUIT:
-                //?             StartQuit();  // would you leave?
-                m_sound->Play(SOUND_TZOING);
-                m_main->ChangePhase(PHASE_GENERIC);
-                break;
-
-            case EVENT_INTERFACE_TRAINER:
-                m_main->ChangePhase(PHASE_TRAINER);
-                break;
-
-            case EVENT_INTERFACE_DEFI:
-                m_main->ChangePhase(PHASE_DEFI);
-                break;
-
-            case EVENT_INTERFACE_MISSION:
-                m_main->ChangePhase(PHASE_MISSION);
-                break;
-
-            case EVENT_INTERFACE_FREE:
-                m_main->ChangePhase(PHASE_FREE);
-                break;
-
-            case EVENT_INTERFACE_TEEN:
-                m_main->ChangePhase(PHASE_TEEN);
-                break;
-
-            case EVENT_INTERFACE_USER:
-                m_main->ChangePhase(PHASE_USER);
-                break;
-
-            case EVENT_INTERFACE_SETUP:
-                m_main->ChangePhase(m_phaseSetup);
-                break;
-
-            case EVENT_INTERFACE_NAME:
-                m_main->ChangePhase(PHASE_NAME);
-                break;*/
-
-            default:
-                break;
-        }
         return false;
     }
 

@@ -18,6 +18,8 @@
 #include "ui/screen/mainmenu.h"
 
 
+#include "app/app.h"
+
 #include "common/logger.h"
 
 #include "ui/maindialog.h"
@@ -64,7 +66,7 @@ void CScreenMainMenu::InitButton(std::string button, ResUiTextType textId)
     boost::split(strings, translated, boost::is_any_of("\\"));
     
     m_window->getChildRecursive(button)->setText(reinterpret_cast<const CEGUI::utf8*>(strings[0].c_str()));
-    m_window->getChildRecursive(button)->setTooltipText(reinterpret_cast<const CEGUI::utf8*>(strings[1].c_str()));
+    m_window->getChildRecursive(button)->setTooltipText(reinterpret_cast<const CEGUI::utf8*>(strings[1].c_str())); //TODO: For some reason tooltips don't work
 }
 
 void CScreenMainMenu::Stop()
@@ -94,7 +96,19 @@ bool CScreenMainMenu::OnClick(const CEGUI::EventArgs& e)
 
 bool CScreenMainMenu::EventProcess(const Event &event)
 {
-    return true;
+    switch( event.type )
+    {
+        case EVENT_KEY_DOWN:
+            if ( event.key.key == KEY(ESCAPE) )
+            {
+                CApplication::GetInstancePointer()->GetSound()->Play(SOUND_TZOING);
+                CRobotMain::GetInstancePointer()->ChangePhase(PHASE_GENERIC);
+            }
+            return false;
+        
+        default:
+            return true;
+    }
 }
 
 void CScreenMainMenu::ChangePhase(Phase phase)
