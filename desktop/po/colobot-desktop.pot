@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2013-01-20 14:26+0100\n"
+"POT-Creation-Date: 2014-03-14 16:36+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -132,4 +132,3 @@ msgstr ""
 #: colobot.pod:47
 msgid "This manpage was written by Didier Raboud <S<odyx@debian.org>>."
 msgstr ""
-

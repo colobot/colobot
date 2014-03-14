@@ -22,6 +22,9 @@
 
 #include "common/logger.h"
 
+#include "graphics/engine/engine.h"
+
+#include "ui/interface.h"
 #include "ui/maindialog.h"
 
 #include <boost/algorithm/string/split.hpp>
@@ -54,6 +57,39 @@ void CScreenMainMenu::Start()
     InitButton(BUTTON_SETUP, RUIT_SETUP);
     InitButton(BUTTON_NAME, RUIT_NAME);
     InitButton(BUTTON_QUIT, RUIT_QUIT);
+    
+    // TODO: Move this to CEGUI
+    Math::Point pos, ddim;
+    std::string     name;
+    pos.x  = 0.35f;
+    pos.y  = 0.10f;
+    ddim.x = 0.30f;
+    ddim.y = 0.80f;
+    CWindow* pw = CRobotMain::GetInstancePointer()->GetInterface()->CreateWindows(pos, ddim, 10, EVENT_WINDOW5);
+    GetResource(RES_TEXT, RT_TITLE_INIT, name);
+    pw->SetName(name);
+    
+    /* TODO: What does this do? Is it needed?
+    pos.x  = 0.35f;
+    pos.y  = 0.60f;
+    ddim.x = 0.30f;
+    ddim.y = 0.30f;
+    pw->CreateGroup(pos, ddim, 5, EVENT_INTERFACE_GLINTl);  // orange corner
+    pos.x  = 0.35f;
+    pos.y  = 0.10f;
+    ddim.x = 0.30f;
+    ddim.y = 0.30f;
+    pw->CreateGroup(pos, ddim, 4, EVENT_INTERFACE_GLINTr);  // blue corner
+    */
+    
+    Gfx::CEngine* engine = Gfx::CEngine::GetInstancePointer();
+    engine->SetBackground("interface.png",
+            Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
+            Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
+            Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
+            Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
+            true);
+    engine->SetBackForce(true);
 }
 
 void CScreenMainMenu::InitButton(std::string button, ResUiTextType textId)

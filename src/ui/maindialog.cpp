@@ -249,8 +249,11 @@ void CMainDialog::InitCEGUI()
     CEGUI::Window *rootWindow = CEGUI::WindowManager::getSingleton().createWindow("DefaultWindow", "root");
     CEGUI::System::getSingleton().getDefaultGUIContext().setRootWindow(rootWindow);
     
-    /*CEGUI::Window *testWindow = CEGUI::WindowManager::getSingleton().loadLayoutFromFile("test.layout");
-    rootWindow->addChild(testWindow);*/
+    #if DEV_BUILD
+    CEGUI::Window *testWindow = CEGUI::WindowManager::getSingleton().loadLayoutFromFile("debug.layout");
+    testWindow->setAlwaysOnTop(true);
+    rootWindow->addChild(testWindow);
+    #endif
 }
 
 // Destructor of robot application.
@@ -329,86 +332,6 @@ void CMainDialog::ChangePhase(Phase phase)
             s->Stop();
             s->m_enabled = false;
         }
-    }
-
-    if ( m_phase == PHASE_INIT )
-    {
-        pos.x  = 0.35f;
-        pos.y  = 0.10f;
-        ddim.x = 0.30f;
-        ddim.y = 0.80f;
-        /* TODO: #if _TEEN
-           pw = m_interface->CreateWindows(pos, ddim, 12, EVENT_WINDOW5);
-#else*/
-        pw = m_interface->CreateWindows(pos, ddim, 10, EVENT_WINDOW5);
-
-        GetResource(RES_TEXT, RT_TITLE_INIT, name);
-        pw->SetName(name);
-
-        pos.x  = 0.35f;
-        pos.y  = 0.60f;
-        ddim.x = 0.30f;
-        ddim.y = 0.30f;
-        pw->CreateGroup(pos, ddim, 5, EVENT_INTERFACE_GLINTl);  // orange corner
-        pos.x  = 0.35f;
-        pos.y  = 0.10f;
-        ddim.x = 0.30f;
-        ddim.y = 0.30f;
-        pw->CreateGroup(pos, ddim, 4, EVENT_INTERFACE_GLINTr);  // blue corner
-
-        /* TODO: #if _SCHOOL
-           ddim.x = 0.20f;
-           ddim.y = dim.y*2.4f;
-           pos.x = 0.40f;
-           pos.y = oy+sy*7.9f;
-           pg = pw->CreateGroup(pos, ddim, 24, EVENT_LABEL1);  // orange
-           pg->SetState(STATE_SHADOW);
-           pos.y = oy+sy*3.9f;
-           pg = pw->CreateGroup(pos, ddim, 25, EVENT_LABEL1);  // orange
-           pg->SetState(STATE_SHADOW);
-           ddim.y = dim.y*1.2f;
-           pos.y = oy+sy*1.9f;
-           pg = pw->CreateGroup(pos, ddim, 26, EVENT_LABEL1);  // red
-           pg->SetState(STATE_SHADOW);
-#else */
-        ddim.x = 0.20f;
-        ddim.y = dim.y*2.4f;
-        pos.x = 0.40f;
-        if ( m_accessEnable && m_accessMission )
-        {
-            pos.y = oy+sy*9.1f;
-            pg = pw->CreateGroup(pos, ddim, 23, EVENT_LABEL1);  // yellow
-            pg->SetState(STATE_SHADOW);
-        }
-        pos.y = oy+sy*6.8f;
-        pg = pw->CreateGroup(pos, ddim, 24, EVENT_LABEL1);  // orange
-        pg->SetState(STATE_SHADOW);
-        pos.y = oy+sy*3.9f;
-        pg = pw->CreateGroup(pos, ddim, 25, EVENT_LABEL1);  // orange
-        pg->SetState(STATE_SHADOW);
-        ddim.y = dim.y*1.2f;
-        pos.y = oy+sy*1.9f;
-        pg = pw->CreateGroup(pos, ddim, 26, EVENT_LABEL1);  // red
-        pg->SetState(STATE_SHADOW);
-
-        pos.x  = 0.40f;
-        ddim.x = 0.20f;
-        pos.y  =  26.0f/480.0f;
-        ddim.y =  12.0f/480.0f;
-        pg = pw->CreateGroup(pos, ddim, 1, EVENT_LABEL1);
-        pg->SetState(STATE_SHADOW);
-        pos.y -=  5.0f/480.0f;
-        pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL1, "colobot.info");
-        pl->SetFontType(Gfx::FONT_COURIER);
-        pl->SetFontSize(Gfx::FONT_SIZE_SMALL);
-
-        m_engine->SetBackground("interface.png",
-                Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
-                Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
-                Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
-                Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
-                true);
-        m_engine->SetBackForce(true);
     }
 
     if ( m_phase == PHASE_NAME )
@@ -1905,6 +1828,8 @@ pos.y -= 0.048f;
             m_phase == PHASE_READ    ||
             m_phase == PHASE_LOADING )
     {
+        pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
+        
         /*TODO: #if _SCHOOL
 #if _TEEN
 pos.x  =  50.0f/640.0f;
