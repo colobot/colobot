@@ -44,6 +44,10 @@ public:
     void ChangePhase(Phase phase);
 
 protected:
+    const std::string WINDOW_INIT        = "mainmenu_window";
+    const std::string WINDOW_STARTGAME   = "startgame_window";
+    const std::string WINDOW_MULTIPLAYER = "multiplayer_window";
+    
     const std::string BUTTON_BACK        = "back_button";
     
     const std::string BUTTON_STARTGAME   = "startgame_button";
@@ -61,7 +65,8 @@ protected:
     void ChangePage(MenuPage page);
 
     void LoadLayout(CEGUI::String name);
-    void InitButton(std::string button, ResUiTextType textId);
+    void InitButton(std::string name, ResUiTextType textId);
+    void InitWindow(std::string name, ResUiTextType textId);
     bool OnClick(const CEGUI::EventArgs& e);
     
     MenuPage m_page;

@@ -50,34 +50,21 @@ CScreenMenu::~CScreenMenu()
 
 void CScreenMenu::Start()
 {
-    CWindow* pw;
-    Math::Point pos, ddim;
-    std::string name;
-    
     if(m_page == MENUPAGE_INIT)
     {
         LoadLayout("mainmenu");
+        InitWindow(WINDOW_INIT, RUIT_TITLE_INIT);
         InitButton(BUTTON_STARTGAME, RUIT_STARTGAME);
         InitButton(BUTTON_MULTIPLAYER, RUIT_MULTIPLAYER);
         InitButton(BUTTON_SETUP, RUIT_SETUP);
         InitButton(BUTTON_NAME, RUIT_NAME);
         InitButton(BUTTON_QUIT, RUIT_QUIT);
-        
-        // TODO: Move this to CEGUI
-        Math::Point pos, ddim;
-        std::string     name;
-        pos.x  = 0.35f;
-        pos.y  = 0.10f;
-        ddim.x = 0.30f;
-        ddim.y = 0.80f;
-        pw = CRobotMain::GetInstancePointer()->GetInterface()->CreateWindows(pos, ddim, 10, EVENT_WINDOW5);
-        GetResource(RES_UI, RUIT_TITLE_INIT, name);
-        pw->SetName(name);
     }
     
     if(m_page == MENUPAGE_STARTGAME)
     {
         LoadLayout("startgame");
+        InitWindow(WINDOW_STARTGAME, RUIT_TITLE_STARTGAME);
         InitButton(BUTTON_MISSIONS, RUIT_MISSIONS);
         InitButton(BUTTON_FREEGAME, RUIT_FREEGAME);
         InitButton(BUTTON_EXERCISES, RUIT_EXERCISES);
@@ -88,30 +75,13 @@ void CScreenMenu::Start()
         #if !DEV_BUILD
         m_window->getChildRecursive(BUTTON_USERLVL)->setEnabled(false);
         #endif
-        
-        // TODO: Move this to CEGUI
-        pos.x  = 0.35f;
-        pos.y  = 0.10f;
-        ddim.x = 0.30f;
-        ddim.y = 0.80f;
-        pw = CRobotMain::GetInstancePointer()->GetInterface()->CreateWindows(pos, ddim, 10, EVENT_WINDOW5);
-        GetResource(RES_UI, RUIT_TITLE_STARTGAME, name);
-        pw->SetName(name);
     }
     
     if(m_page == MENUPAGE_MULTIPLAYER)
     {
         LoadLayout("multiplayer");
+        InitWindow(WINDOW_MULTIPLAYER, RUIT_TITLE_MULTIPLAYER);
         InitButton(BUTTON_BACK, RUIT_BACK);
-        
-        // TODO: Move this to CEGUI
-        pos.x  = 0.35f;
-        pos.y  = 0.10f;
-        ddim.x = 0.30f;
-        ddim.y = 0.80f;
-        pw = CRobotMain::GetInstancePointer()->GetInterface()->CreateWindows(pos, ddim, 10, EVENT_WINDOW5);
-        GetResource(RES_UI, RUIT_TITLE_MULTIPLAYER, name);
-        pw->SetName(name);
         
         m_oldAudioVol = CApplication::GetInstancePointer()->GetSound()->GetAudioVolume();
         m_oldMusicVol = CApplication::GetInstancePointer()->GetSound()->GetMusicVolume();
@@ -134,13 +104,13 @@ void CScreenMenu::Start()
     */
     
     // TODO: CEGUI
-    pos.x  = 540.0f/640.0f;
+    /*pos.x  = 540.0f/640.0f;
     pos.y  =   9.0f/480.0f;
     ddim.x =  90.0f/640.0f;
     ddim.y =  10.0f/480.0f;
     CLabel* pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL1, COLOBOT_VERSION_DISPLAY);
     pl->SetFontType(Gfx::FONT_COURIER);
-    pl->SetFontSize(9.0f);
+    pl->SetFontSize(9.0f);*/
     
     Gfx::CEngine* engine = Gfx::CEngine::GetInstancePointer();
     engine->SetBackground("interface.png",
@@ -152,17 +122,25 @@ void CScreenMenu::Start()
     engine->SetBackForce(true);
 }
 
-void CScreenMenu::InitButton(std::string button, ResUiTextType textId)
+void CScreenMenu::InitButton(std::string name, ResUiTextType textId)
 {
-    m_window->getChildRecursive(button)->subscribeEvent(CEGUI::Window::EventMouseClick, CEGUI::Event::Subscriber(&CScreenMenu::OnClick, this));
+    m_window->getChildRecursive(name)->subscribeEvent(CEGUI::Window::EventMouseClick, CEGUI::Event::Subscriber(&CScreenMenu::OnClick, this));
     
     std::string translated;
     GetResource(RES_UI, textId, translated);
     std::vector<std::string> strings;
     boost::split(strings, translated, boost::is_any_of("\\"));
     
-    m_window->getChildRecursive(button)->setText(reinterpret_cast<const CEGUI::utf8*>(strings[0].c_str()));
-    m_window->getChildRecursive(button)->setTooltipText(reinterpret_cast<const CEGUI::utf8*>(strings[1].c_str())); //TODO: For some reason tooltips don't work
+    m_window->getChildRecursive(name)->setText(reinterpret_cast<const CEGUI::utf8*>(strings[0].c_str()));
+    m_window->getChildRecursive(name)->setTooltipText(reinterpret_cast<const CEGUI::utf8*>(strings[1].c_str())); //TODO: For some reason tooltips don't work
+}
+
+void CScreenMenu::InitWindow(std::string name, ResUiTextType textId)
+{
+    std::string translated;
+    GetResource(RES_UI, textId, translated);
+    
+    m_window->getChildRecursive(name)->setProperty("LabelText", reinterpret_cast<const CEGUI::utf8*>(translated.c_str()));
 }
 
 void CScreenMenu::Stop()
