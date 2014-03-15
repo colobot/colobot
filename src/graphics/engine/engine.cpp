@@ -3411,6 +3411,7 @@ void CEngine::DrawInterface()
         interface->Draw();
     }
     
+    m_device->SetTextureEnabled(0, false);
     CEGUI::System::getSingleton().renderAllGUIContexts();
 
     m_interfaceMode = false;
