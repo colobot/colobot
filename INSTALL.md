@@ -116,6 +116,7 @@ You will need:
  * libogg >= 1.3.0
  * OpenAL (OpenAL-Soft) >= 1.13
  * po4a >= 0.45 (to generate translated data files)
+ * CEGUI >= 0.8.3 (with OpenGLRenderer)
 
 Make sure you install the packages along with header files (often distributed in separate *-dev packages). If you miss any requirements,
 CMake should warn you.
