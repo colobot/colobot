@@ -85,6 +85,10 @@ void CScreenMenu::Start()
         InitButton(BUTTON_USERLVL, RUIT_USERLVL);
         InitButton(BUTTON_BACK, RUIT_BACK);
         
+        #if !DEV_BUILD
+        m_window->getChildRecursive(BUTTON_USERLVL)->setEnabled(false);
+        #endif
+        
         // TODO: Move this to CEGUI
         pos.x  = 0.35f;
         pos.y  = 0.10f;
