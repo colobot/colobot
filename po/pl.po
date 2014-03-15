@@ -347,10 +347,10 @@ msgid "Can not create this; there are too many objects"
 msgstr "Nie można tego utworzyć, za dużo obiektów"
 
 msgid "Can not produce not researched object"
-msgstr ""
+msgstr "Nie można stworzyć niezbadanego obiektu"
 
 msgid "Can not produce this object in this mission"
-msgstr ""
+msgstr "Nie można stworzyć tego obiektu w tej misji"
 
 msgid "Can't open file"
 msgstr "Nie można otworzyć pliku"
@@ -712,7 +712,6 @@ msgstr "Nieodpowiedni robot"
 msgid "Inappropriate cell type"
 msgstr "Nieodpowiedni rodzaj ogniw"
 
-#, fuzzy
 msgid "Inappropriate object"
 msgstr "Nieodpowiedni robot"
 
@@ -753,7 +752,7 @@ msgid "Instructions\\Shows the instructions for the current mission"
 msgstr "Rozkazy\\Pokazuje rozkazy dotyczące bieżącej misji"
 
 msgid "Internal error - tell the developers"
-msgstr ""
+msgstr "Błąd wewnętrzny - powiedz developerom"
 
 msgid "Jet temperature"
 msgstr "Temperatura silnika"
