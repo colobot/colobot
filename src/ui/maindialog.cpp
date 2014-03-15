@@ -35,7 +35,7 @@
 #include "script/cmdtoken.h"
 #include "sound/sound.h"
 
-#include "ui/screen/mainmenu.h"
+#include "ui/screen/menu.h"
 #include "ui/screen/splash.h"
 
 #include "ui/interface.h"
@@ -203,7 +203,7 @@ CMainDialog::CMainDialog()
     InitCEGUI();
     
     RegisterScreen(new CScreenSplash());
-    RegisterScreen(new CScreenMainMenu());
+    RegisterScreen(new CScreenMenu());
 }
 
 // Initialise CEGUI
@@ -1812,8 +1812,7 @@ pos.y -= 0.048f;
         m_engine->SetBackForce(true);
     }
 
-    if ( m_phase == PHASE_INIT    ||
-            m_phase == PHASE_NAME    ||
+    if ( m_phase == PHASE_NAME    ||
             m_phase == PHASE_TRAINER ||
             m_phase == PHASE_DEFI    ||
             m_phase == PHASE_MISSION ||
@@ -1828,8 +1827,6 @@ pos.y -= 0.048f;
             m_phase == PHASE_READ    ||
             m_phase == PHASE_LOADING )
     {
-        pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
-        
         /*TODO: #if _SCHOOL
 #if _TEEN
 pos.x  =  50.0f/640.0f;
@@ -1949,7 +1946,7 @@ bool CMainDialog::EventProcess(const Event &event)
             {
                 NameDelete();
             }
-            if ( m_phase == PHASE_INIT )
+            if ( m_phase == PHASE_MENU )
             {
                 //?             m_eventQueue->MakeEvent(newEvent, EVENT_QUIT);
                 //?             m_eventQueue->AddEvent(newEvent);
@@ -2026,7 +2023,7 @@ bool CMainDialog::EventProcess(const Event &event)
                     if ( pb == 0 )  break;
                     if ( pb->TestState(STATE_ENABLE) )
                     {
-                        m_main->ChangePhase(PHASE_INIT);
+                        m_main->ChangePhase(PHASE_MENU);
                     }
                 }
                 break;
@@ -2050,7 +2047,7 @@ bool CMainDialog::EventProcess(const Event &event)
                 break;
 
             case EVENT_INTERFACE_NCANCEL:
-                m_main->ChangePhase(PHASE_INIT);
+                m_main->ChangePhase(PHASE_MENU);
                 break;
 
             case EVENT_INTERFACE_NDELETE:
@@ -2073,7 +2070,7 @@ bool CMainDialog::EventProcess(const Event &event)
             case EVENT_KEY_DOWN:
                 if ( event.key.key == KEY(RETURN) )
                 {
-                    m_main->ChangePhase(PHASE_INIT);
+                    m_main->ChangePhase(PHASE_MENU);
                 }
                 if ( event.key.key == KEY(ESCAPE) )
                 {
@@ -2179,7 +2176,7 @@ bool CMainDialog::EventProcess(const Event &event)
                 break;
 
             case EVENT_INTERFACE_POK:
-                m_main->ChangePhase(PHASE_INIT);
+                m_main->ChangePhase(PHASE_MENU);
                 break;
 
             case EVENT_INTERFACE_PCANCEL:
@@ -2207,7 +2204,7 @@ bool CMainDialog::EventProcess(const Event &event)
                 event.type == EVENT_INTERFACE_BACK   ||
                 (event.type == EVENT_KEY_DOWN && event.key.key == KEY(ESCAPE)) )
         {
-            m_main->ChangePhase(PHASE_INIT);
+            m_main->ChangePhase(PHASE_MENU);
             return false;
         }
     }
@@ -2275,7 +2272,7 @@ bool CMainDialog::EventProcess(const Event &event)
         {
             SetupMemorize();
             m_engine->ApplyChange();
-            m_main->ChangePhase(PHASE_INIT);
+            m_main->ChangePhase(PHASE_MENU);
             return false;
         }
 
@@ -2758,14 +2755,14 @@ bool CMainDialog::EventProcess(const Event &event)
     {
         if ( event.type == EVENT_INTERFACE_ABORT )
         {
-            ChangePhase(PHASE_INIT);
+            ChangePhase(PHASE_MENU);
         }
 
         if ( event.type == EVENT_KEY_DOWN )
         {
             if ( event.key.key == KEY(ESCAPE) )
             {
-                ChangePhase(PHASE_INIT);
+                ChangePhase(PHASE_MENU);
             }
             else
             {
@@ -2796,7 +2793,7 @@ void CMainDialog::GlintMove()
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
     if ( pw == 0 )  return;
 
-    if ( m_phase == PHASE_INIT )
+    if ( m_phase == PHASE_MENU )
     {
         pg = static_cast<CGroup*>(pw->SearchControl(EVENT_INTERFACE_GLINTl));
         if ( pg != 0 )
@@ -3048,7 +3045,7 @@ void CMainDialog::FrameParticle(float rTime)
 
     if ( m_bDialog || !m_bRain )  return;
 
-    if ( m_phase == PHASE_INIT )
+    if ( m_phase == PHASE_MENU )
     {
         pParti = partiPosInit;
         pGlint = glintPosInit;
@@ -3565,7 +3562,7 @@ void CMainDialog::NameSelect()
     else
     {
         m_main->SetGamerName(pl->GetItemName(sel));
-        m_main->ChangePhase(PHASE_INIT);
+        m_main->ChangePhase(PHASE_MENU);
     }
 
     GetGamerFace(m_main->GetGamerName());
@@ -3641,7 +3638,7 @@ void CMainDialog::NameCreate()
     SetGamerFace(name, 0);
 
     m_main->SetGamerName(name);
-    m_main->ChangePhase(PHASE_INIT);
+    m_main->ChangePhase(PHASE_MENU);
 }
 
 // Deletes a folder and all its offspring.

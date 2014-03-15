@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-12-27 17:09+0100\n"
+"POT-Creation-Date: 2014-03-15 12:01+0100\n"
 "PO-Revision-Date: 2012-12-27 14:07+0100\n"
 "Last-Translator: Didier Raboud <odyx@debian.org>\n"
 "Language: fr\n"
@@ -165,6 +165,9 @@ msgstr "Indentation automatique\\Pendant l'édition d'un programme"
 msgid "Back"
 msgstr "Page précédente"
 
+msgid "Back\\Go back to previous menu"
+msgstr "Retour\\Retour au niveau précédent"
+
 msgid "Background sound :\\Volume of audio tracks on the CD"
 msgstr "Fond sonore :\\Volume des pistes audio du CD"
 
@@ -206,6 +209,9 @@ msgstr "Construit une tour"
 
 msgid "Build a derrick"
 msgstr "Construit un derrick"
+
+msgid "Build a destroyer"
+msgstr ""
 
 msgid "Build a exchange post"
 msgstr "Construit une borne d'information"
@@ -342,6 +348,12 @@ msgstr "Caméra à droite"
 msgid "Can not create this; there are too many objects"
 msgstr "Création impossible; il y a trop d'objets"
 
+msgid "Can not produce not researched object"
+msgstr ""
+
+msgid "Can not produce this object in this mission"
+msgstr ""
+
 msgid "Can't open file"
 msgstr "Ouverture du fichier impossible"
 
@@ -450,6 +462,9 @@ msgstr "Derrick"
 msgid "Descend\\Reduces the power of the jet"
 msgstr "Descendre\\Diminuer la puissance du réacteur"
 
+msgid "Destroy"
+msgstr ""
+
 msgid "Destroy the building"
 msgstr "Démolit le bâtiment"
 
@@ -528,6 +543,9 @@ msgstr "Programmation\\Exercices de programmation"
 
 msgid "Exit film\\Film at the exit of exercises"
 msgstr "Retour animé\\Retour animé dans les exercices"
+
+msgid "Explode (\\key action;)"
+msgstr ""
 
 msgid "Explosive"
 msgstr "Explosif"
@@ -626,10 +644,6 @@ msgstr "Jeu\\Options de jouabilité"
 msgid "Gantry crane"
 msgstr "Portique"
 
-#, c-format
-msgid "GetResource event num out of range: %d\n"
-msgstr ""
-
 msgid "Goto: destination occupied"
 msgstr "Goto: Destination occupée"
 
@@ -699,6 +713,9 @@ msgstr "Robot inadapté"
 msgid "Inappropriate cell type"
 msgstr "Pas le bon type de pile"
 
+msgid "Inappropriate object"
+msgstr "Robot inadapté"
+
 msgid "Incorrect index type"
 msgstr "Mauvais type d'index"
 
@@ -734,6 +751,9 @@ msgstr "Instructions de Houston"
 
 msgid "Instructions\\Shows the instructions for the current mission"
 msgstr "Instructions mission\\Marche à suivre"
+
+msgid "Internal error - tell the developers"
+msgstr ""
 
 msgid "Jet temperature"
 msgstr "Température du réacteur"
@@ -830,6 +850,12 @@ msgstr ""
 msgid "Mouse shadow\\Gives the mouse a shadow"
 msgstr "Souris ombrée\\Jolie souris avec une ombre"
 
+msgid "Multiplayer"
+msgstr ""
+
+msgid "Multiplayer\\Play with friends!"
+msgstr ""
+
 msgid "Mute\\No sound"
 msgstr "Silencieux\\Totalement silencieux"
 
@@ -916,6 +942,9 @@ msgstr "Pas assez d'énergie"
 
 msgid "Not enough energy yet"
 msgstr "Pas encore assez d'énergie"
+
+msgid "Not found anything to destroy"
+msgstr ""
 
 msgid "Not yet enough energy"
 msgstr "Pas encore assez d'énergie"
@@ -1361,6 +1390,12 @@ msgstr "Standard\\Remet les couleurs standards"
 msgid "Start"
 msgstr "Départ"
 
+msgid "Start game"
+msgstr ""
+
+msgid "Start game\\Singleplayer"
+msgstr ""
+
 msgid "Still working ..."
 msgstr "Travail en cours ..."
 
@@ -1539,8 +1574,8 @@ msgstr "Utilise un joystick\\Joystick ou clavier"
 msgid "User levels"
 msgstr "Niveaux supplémentaires"
 
-msgid "User\\User levels"
-msgstr "Suppl.\\Niveaux supplémentaires"
+msgid "Userlevels\\Custom missions"
+msgstr ""
 
 msgid "Variable name missing"
 msgstr "Nom d'une variable attendu"

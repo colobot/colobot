@@ -57,7 +57,6 @@ void InitializeRestext()
     stringsText[RT_KEY_OR]           = " or ";
 
     stringsText[RT_TITLE_BASE]       = "COLOBOT";
-    stringsText[RT_TITLE_INIT]       = "COLOBOT: Gold Edition";
     stringsText[RT_TITLE_TRAINER]    = "Programming exercises";
     stringsText[RT_TITLE_DEFI]       = "Challenges";
     stringsText[RT_TITLE_MISSION]    = "Missions";
@@ -138,14 +137,23 @@ void InitializeRestext()
 
 
 
-    stringsUi[RUIT_MISSIONS]   = "Missions\\Select mission";
-    stringsUi[RUIT_FREEGAME]   = "Free game\\Free game without a specific goal";
-    stringsUi[RUIT_EXERCISES]  = "Exercises\\Programming exercises";
-    stringsUi[RUIT_CHALLENGES] = "Challenges\\Programming challenges";
-    stringsUi[RUIT_USERLVL]    = "User\\User levels";
-    stringsUi[RUIT_NAME]       = "Change player\\Change player";
-    stringsUi[RUIT_SETUP]      = "Options\\Preferences";
-    stringsUi[RUIT_QUIT]       = "Quit\\Quit COLOBOT";
+    stringsUi[RUIT_BACK]              = "Back\\Go back to previous menu";
+
+    stringsUi[RUIT_TITLE_INIT]        = "COLOBOT: Gold Edition";
+    stringsUi[RUIT_STARTGAME]         = "Start game\\Singleplayer";
+    stringsUi[RUIT_MULTIPLAYER]       = "Multiplayer\\Play with friends!";
+    stringsUi[RUIT_NAME]              = "Change player\\Change player";
+    stringsUi[RUIT_SETUP]             = "Options\\Preferences";
+    stringsUi[RUIT_QUIT]              = "Quit\\Quit COLOBOT";
+
+    stringsUi[RUIT_TITLE_STARTGAME]   = "Start game";
+    stringsUi[RUIT_MISSIONS]          = "Missions\\Select mission";
+    stringsUi[RUIT_FREEGAME]          = "Free game\\Free game without a specific goal";
+    stringsUi[RUIT_EXERCISES]         = "Exercises\\Programming exercises";
+    stringsUi[RUIT_CHALLENGES]        = "Challenges\\Programming challenges";
+    stringsUi[RUIT_USERLVL]           = "Userlevels\\Custom missions";
+
+    stringsUi[RUIT_TITLE_MULTIPLAYER] = "Multiplayer";
 
 
 

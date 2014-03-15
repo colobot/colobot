@@ -59,6 +59,7 @@ void CSoundInterface::AddMusicFiles(const std::string &path)
     CacheMusic("Intro2.ogg");
     CacheMusic("music010.ogg");
     CacheMusic("music011.ogg");
+    CacheMusic("music012.ogg");
 }
 
 bool CSoundInterface::Cache(Sound bSound, const std::string &bFile)

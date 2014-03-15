@@ -36,7 +36,7 @@
 
 enum Phase
 {
-    PHASE_INIT,
+    PHASE_MENU,
     PHASE_TERM,
     PHASE_NAME,
     PHASE_PERSO,

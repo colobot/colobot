@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-12-27 17:09+0100\n"
+"POT-Creation-Date: 2014-03-15 12:01+0100\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -161,6 +161,9 @@ msgstr "Automatyczne wcięcia\\Automatyczne wcięcia podczas edycji programu"
 msgid "Back"
 msgstr "Wstecz"
 
+msgid "Back\\Go back to previous menu"
+msgstr "Wstecz\\Wraca do poprzedniego ekranu"
+
 msgid "Background sound :\\Volume of audio tracks on the CD"
 msgstr "Muzyka w tle :\\Głośność ścieżek dźwiękowych z płyty CD"
 
@@ -204,6 +207,9 @@ msgstr "Zbuduj wieżę obronną"
 
 msgid "Build a derrick"
 msgstr "Zbuduj kopalnię"
+
+msgid "Build a destroyer"
+msgstr "Zbuduj niszczarkę"
 
 msgid "Build a exchange post"
 msgstr "Zbuduj stację przekaźnikową"
@@ -340,6 +346,12 @@ msgstr "Camera to right"
 msgid "Can not create this; there are too many objects"
 msgstr "Nie można tego utworzyć, za dużo obiektów"
 
+msgid "Can not produce not researched object"
+msgstr ""
+
+msgid "Can not produce this object in this mission"
+msgstr ""
+
 msgid "Can't open file"
 msgstr "Nie można otworzyć pliku"
 
@@ -448,6 +460,9 @@ msgstr "Kopalnia"
 msgid "Descend\\Reduces the power of the jet"
 msgstr "W dół\\Zmniejsza moc silnika"
 
+msgid "Destroy"
+msgstr "Zniszcz"
+
 msgid "Destroy the building"
 msgstr "Zniszcz budynek"
 
@@ -526,6 +541,9 @@ msgstr "Ćwiczenia\\Ćwiczenia programistyczne"
 
 msgid "Exit film\\Film at the exit of exercises"
 msgstr "Końcowy film\\Film na zakończenie ćwiczeń"
+
+msgid "Explode (\\key action;)"
+msgstr "Wybuchnij (\\key action;)"
 
 msgid "Explosive"
 msgstr "Materiały wybuchowe"
@@ -624,10 +642,6 @@ msgstr "Gra\\Ustawienia gry"
 msgid "Gantry crane"
 msgstr "Żuraw przesuwalny"
 
-#, c-format
-msgid "GetResource event num out of range: %d\n"
-msgstr ""
-
 msgid "Goto: destination occupied"
 msgstr "Goto: miejsce docelowe zajęte"
 
@@ -698,6 +712,10 @@ msgstr "Nieodpowiedni robot"
 msgid "Inappropriate cell type"
 msgstr "Nieodpowiedni rodzaj ogniw"
 
+#, fuzzy
+msgid "Inappropriate object"
+msgstr "Nieodpowiedni robot"
+
 msgid "Incorrect index type"
 msgstr "Nieprawidłowy typ indeksu"
 
@@ -733,6 +751,9 @@ msgstr "Rozkazy z Houston"
 
 msgid "Instructions\\Shows the instructions for the current mission"
 msgstr "Rozkazy\\Pokazuje rozkazy dotyczące bieżącej misji"
+
+msgid "Internal error - tell the developers"
+msgstr ""
 
 msgid "Jet temperature"
 msgstr "Temperatura silnika"
@@ -829,6 +850,12 @@ msgstr "Odwrócenie myszy Y\\Odwrócenie kierunków przewijania w pionie"
 msgid "Mouse shadow\\Gives the mouse a shadow"
 msgstr "Cień kursora myszy\\Dodaje cień kursorowi myszy"
 
+msgid "Multiplayer"
+msgstr "Tryb wieloosobowy"
+
+msgid "Multiplayer\\Play with friends!"
+msgstr "Tryb wieloosobowy\\Graj z kolegami!"
+
 msgid "Mute\\No sound"
 msgstr "Cisza\\Brak dźwięków"
 
@@ -915,6 +942,9 @@ msgstr "Za mało energii"
 
 msgid "Not enough energy yet"
 msgstr "Wciąż za mało energii"
+
+msgid "Not found anything to destroy"
+msgstr "Nie ma nic do zniszczenia"
 
 msgid "Not yet enough energy"
 msgstr "Wciąż za mało energii"
@@ -1364,6 +1394,12 @@ msgstr "Standardowe\\Standardowe ustawienia wyglądu"
 msgid "Start"
 msgstr "Początek"
 
+msgid "Start game"
+msgstr "Rozpocznij grę"
+
+msgid "Start game\\Singleplayer"
+msgstr "Rozpocznij grę\\Tryb dla jednego gracza"
+
 msgid "Still working ..."
 msgstr "Wciąż pracuje..."
 
@@ -1543,8 +1579,8 @@ msgstr "Używaj joysticka\\Joystick lub klawiatura"
 msgid "User levels"
 msgstr "Poziomy użytkownika"
 
-msgid "User\\User levels"
-msgstr "Poziomy\\Poziomy użytkownika"
+msgid "Userlevels\\Custom missions"
+msgstr "Poziomy użytkownika\\Własne misje"
 
 msgid "Variable name missing"
 msgstr "Brak nazwy zmiennej"

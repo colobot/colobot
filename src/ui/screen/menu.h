@@ -26,28 +26,46 @@
 
 namespace Ui {
 
-class CScreenMainMenu : public CScreen
+enum MenuPage
+{
+    MENUPAGE_INIT,
+    MENUPAGE_STARTGAME,
+    MENUPAGE_MULTIPLAYER
+};
+
+class CScreenMenu : public CScreen
 {
 public:
-    CScreenMainMenu();
-    ~CScreenMainMenu();
+    CScreenMenu();
+    ~CScreenMenu();
     void Start();
     void Stop();
     bool EventProcess(const Event &event);
     void ChangePhase(Phase phase);
 
 protected:
+    const std::string BUTTON_BACK        = "back_button";
+    
+    const std::string BUTTON_STARTGAME   = "startgame_button";
+    const std::string BUTTON_MULTIPLAYER = "multiplayer_button";
+    const std::string BUTTON_SETUP       = "setup_button";
+    const std::string BUTTON_NAME        = "name_button";
+    const std::string BUTTON_QUIT        = "quit_button";
+    
     const std::string BUTTON_MISSIONS   = "missions_button";
     const std::string BUTTON_FREEGAME   = "freegame_button";
     const std::string BUTTON_EXERCISES  = "exercises_button";
     const std::string BUTTON_CHALLENGES = "challenges_button";
     const std::string BUTTON_USERLVL    = "userlvl_button";
-    const std::string BUTTON_SETUP      = "setup_button";
-    const std::string BUTTON_NAME       = "name_button";
-    const std::string BUTTON_QUIT       = "quit_button";
 
+    void ChangePage(MenuPage page);
+
+    void LoadLayout(CEGUI::String name);
     void InitButton(std::string button, ResUiTextType textId);
     bool OnClick(const CEGUI::EventArgs& e);
+    
+    MenuPage m_page;
+    int m_oldAudioVol, m_oldMusicVol;
     
     CEGUI::Window* m_window;
 };

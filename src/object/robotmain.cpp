@@ -1203,7 +1203,7 @@ void CRobotMain::ChangePhase(Phase phase)
         m_fixScene = false;
     }
 
-    if (m_phase == PHASE_INIT)
+    if (m_phase == PHASE_MENU)
     {
         m_engine->DeleteTexture("generic.png");
     }
@@ -1792,7 +1792,7 @@ bool CRobotMain::ProcessEvent(Event &event)
                     event.key.key == KEY(RETURN))
                 {
                     if (m_winTerminate)
-                        ChangePhase(PHASE_INIT);
+                        ChangePhase(PHASE_MENU);
                     else
                         ChangePhase(PHASE_TERM);
                 }
@@ -1800,7 +1800,7 @@ bool CRobotMain::ProcessEvent(Event &event)
 
             case EVENT_BUTTON_OK:
                 if (m_winTerminate)
-                    ChangePhase(PHASE_INIT);
+                    ChangePhase(PHASE_MENU);
                 else
                     ChangePhase(PHASE_TERM);
                     

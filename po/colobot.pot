@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-12-27 17:09+0100\n"
+"POT-Creation-Date: 2014-03-15 12:01+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -51,9 +51,6 @@ msgid " or "
 msgstr ""
 
 msgid "COLOBOT"
-msgstr ""
-
-msgid "COLOBOT: Gold Edition"
 msgstr ""
 
 msgid "Programming exercises"
@@ -246,6 +243,45 @@ msgstr ""
 msgid "Recorder"
 msgstr ""
 
+msgid "Back\\Go back to previous menu"
+msgstr ""
+
+msgid "COLOBOT: Gold Edition"
+msgstr ""
+
+msgid "Start game\\Singleplayer"
+msgstr ""
+
+msgid "Multiplayer\\Play with friends!"
+msgstr ""
+
+msgid "Change player\\Change player"
+msgstr ""
+
+msgid "Options\\Preferences"
+msgstr ""
+
+msgid "Start game"
+msgstr ""
+
+msgid "Missions\\Select mission"
+msgstr ""
+
+msgid "Free game\\Free game without a specific goal"
+msgstr ""
+
+msgid "Exercises\\Programming exercises"
+msgstr ""
+
+msgid "Challenges\\Programming challenges"
+msgstr ""
+
+msgid "Userlevels\\Custom missions"
+msgstr ""
+
+msgid "Multiplayer"
+msgstr ""
+
 msgid "OK"
 msgstr ""
 
@@ -256,27 +292,6 @@ msgid "Previous"
 msgstr ""
 
 msgid "Menu (\\key quit;)"
-msgstr ""
-
-msgid "Exercises\\Programming exercises"
-msgstr ""
-
-msgid "Challenges\\Programming challenges"
-msgstr ""
-
-msgid "Missions\\Select mission"
-msgstr ""
-
-msgid "Free game\\Free game without a specific goal"
-msgstr ""
-
-msgid "User\\User levels"
-msgstr ""
-
-msgid "Change player\\Change player"
-msgstr ""
-
-msgid "Options\\Preferences"
 msgstr ""
 
 msgid "Restart\\Restart the mission from the beginning"
@@ -641,6 +656,9 @@ msgstr ""
 msgid "Take off to finish the mission"
 msgstr ""
 
+msgid "Destroy"
+msgstr ""
+
 msgid "Build a derrick"
 msgstr ""
 
@@ -678,6 +696,9 @@ msgid "Build a lightning conductor"
 msgstr ""
 
 msgid "Build a exchange post"
+msgstr ""
+
+msgid "Build a destroyer"
 msgstr ""
 
 msgid "Show if the ground is flat"
@@ -807,6 +828,9 @@ msgid "Thump (\\key action;)"
 msgstr ""
 
 msgid "Shoot (\\key action;)"
+msgstr ""
+
+msgid "Explode (\\key action;)"
 msgstr ""
 
 msgid "Recycle (\\key action;)"
@@ -1280,6 +1304,9 @@ msgstr ""
 msgid "Lunar Roving Vehicle"
 msgstr ""
 
+msgid "Internal error - tell the developers"
+msgstr ""
+
 msgid "Unknown command"
 msgstr ""
 
@@ -1338,6 +1365,12 @@ msgid "Too close to space ship"
 msgstr ""
 
 msgid "Too close to a building"
+msgstr ""
+
+msgid "Can not produce this object in this mission"
+msgstr ""
+
+msgid "Can not produce not researched object"
 msgstr ""
 
 msgid "Ground inappropriate"
@@ -1443,6 +1476,12 @@ msgid "Too close to an existing flag"
 msgstr ""
 
 msgid "No flag nearby"
+msgstr ""
+
+msgid "Not found anything to destroy"
+msgstr ""
+
+msgid "Inappropriate object"
 msgstr ""
 
 msgid ""
@@ -1789,10 +1828,6 @@ msgstr ""
 msgid "speed20;"
 msgstr ""
 
-#, c-format
-msgid "GetResource event num out of range: %d\n"
-msgstr ""
-
 msgid "Ctrl"
 msgstr ""
 
@@ -1810,4 +1845,3 @@ msgstr ""
 
 msgid "%1"
 msgstr ""
-

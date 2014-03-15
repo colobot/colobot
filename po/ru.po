@@ -3,12 +3,11 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-12-27 17:09+0100\n"
+"POT-Creation-Date: 2014-03-15 12:01+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -168,6 +167,9 @@ msgstr "Автоматический отступ\\При редактирова
 msgid "Back"
 msgstr "Назад"
 
+msgid "Back\\Go back to previous menu"
+msgstr "Назад\\Вернуться на предыдущую страницу"
+
 msgid "Background sound :\\Volume of audio tracks on the CD"
 msgstr "Фоновый звук:\\Громкость звуковых дорожек на CD"
 
@@ -209,6 +211,9 @@ msgstr "Построить защитную башню"
 
 msgid "Build a derrick"
 msgstr "Построить буровую вышку"
+
+msgid "Build a destroyer"
+msgstr ""
 
 msgid "Build a exchange post"
 msgstr "Построить пост по обмену сообщениями"
@@ -345,6 +350,12 @@ msgstr "Камеру вправо"
 msgid "Can not create this; there are too many objects"
 msgstr "Не удается это создать, слишком много объектов"
 
+msgid "Can not produce not researched object"
+msgstr ""
+
+msgid "Can not produce this object in this mission"
+msgstr ""
+
 msgid "Can't open file"
 msgstr "Невозможно открыть файл"
 
@@ -453,6 +464,9 @@ msgstr "Космический корабль"
 msgid "Descend\\Reduces the power of the jet"
 msgstr "Снижение и посадка\\Понижение мощности реактивного двигателя"
 
+msgid "Destroy"
+msgstr ""
+
 msgid "Destroy the building"
 msgstr "Уничтожить здание"
 
@@ -531,6 +545,9 @@ msgstr "Упражнения\\Упражнения по программиров
 
 msgid "Exit film\\Film at the exit of exercises"
 msgstr "Ролик при выходе\\Ролик во время выхода из упражнения"
+
+msgid "Explode (\\key action;)"
+msgstr ""
 
 msgid "Explosive"
 msgstr "Взрывчатка"
@@ -629,10 +646,6 @@ msgstr "Игра\\Настройки игры"
 msgid "Gantry crane"
 msgstr "Козловой кран"
 
-#, c-format
-msgid "GetResource event num out of range: %d\n"
-msgstr "событие GetResource, число вне диапазона: %d\n"
-
 msgid "Goto: destination occupied"
 msgstr "Перейти: место занято"
 
@@ -702,6 +715,9 @@ msgstr "Неверный бот"
 msgid "Inappropriate cell type"
 msgstr "Батарея не подходит"
 
+msgid "Inappropriate object"
+msgstr "Неверный бот"
+
 msgid "Incorrect index type"
 msgstr "Неверный тип индекса"
 
@@ -737,6 +753,9 @@ msgstr "Инструкции из Хьюстона"
 
 msgid "Instructions\\Shows the instructions for the current mission"
 msgstr "Инструкции\\Показывает инструкции по текущей миссии"
+
+msgid "Internal error - tell the developers"
+msgstr ""
 
 msgid "Jet temperature"
 msgstr "Температура реактивного двигателя"
@@ -831,6 +850,12 @@ msgstr "Инверсия мыши по оси Y\\Инверсия прокрут
 msgid "Mouse shadow\\Gives the mouse a shadow"
 msgstr "Тень мыши\\Мышь отбрасывает тень"
 
+msgid "Multiplayer"
+msgstr ""
+
+msgid "Multiplayer\\Play with friends!"
+msgstr ""
+
 msgid "Mute\\No sound"
 msgstr "Без звука\\Без звука"
 
@@ -917,6 +942,9 @@ msgstr "Не хватает энергии"
 
 msgid "Not enough energy yet"
 msgstr "Не хватает энергии"
+
+msgid "Not found anything to destroy"
+msgstr ""
 
 msgid "Not yet enough energy"
 msgstr "Не хватает энергии"
@@ -1365,6 +1393,12 @@ msgstr "По умолчанию\\Настройки внешнего вида п
 msgid "Start"
 msgstr "Начало"
 
+msgid "Start game"
+msgstr ""
+
+msgid "Start game\\Singleplayer"
+msgstr ""
+
 msgid "Still working ..."
 msgstr "Работает ..."
 
@@ -1544,8 +1578,8 @@ msgstr "Использовать джойстик\\Джойстик или кл�
 msgid "User levels"
 msgstr "Пользовательские уровни"
 
-msgid "User\\User levels"
-msgstr "Польз.\\Пользовательские уровни"
+msgid "Userlevels\\Custom missions"
+msgstr ""
 
 msgid "Variable name missing"
 msgstr "Нет имени переменной"

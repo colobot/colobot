@@ -154,14 +154,23 @@ enum ResTextType
  */
 enum ResUiTextType
 {
-    RUIT_MISSIONS   = 1,
-    RUIT_FREEGAME   = 2,
-    RUIT_EXERCISES  = 3,
-    RUIT_CHALLENGES = 4,
-    RUIT_USERLVL    = 5,
-    RUIT_NAME       = 6,
-    RUIT_SETUP      = 7,
-    RUIT_QUIT       = 8,
+    RUIT_BACK              = 1,
+    
+    RUIT_TITLE_INIT        = 10,
+    RUIT_STARTGAME         = 11,
+    RUIT_MULTIPLAYER       = 12,
+    RUIT_NAME              = 13,
+    RUIT_SETUP             = 14,
+    RUIT_QUIT              = 15,
+    
+    RUIT_TITLE_STARTGAME   = 20,
+    RUIT_MISSIONS          = 21,
+    RUIT_FREEGAME          = 22,
+    RUIT_EXERCISES         = 23,
+    RUIT_CHALLENGES        = 24,
+    RUIT_USERLVL           = 25,
+    
+    RUIT_TITLE_MULTIPLAYER = 30,
     
     RUIT_MAX //! < number of values
 };
