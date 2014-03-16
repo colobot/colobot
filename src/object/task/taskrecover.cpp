@@ -105,8 +105,10 @@ bool CTaskRecover::EventProcess(const Event &event)
         if ( power != 0 )
         {
             energy = power->GetEnergy();
-            power->SetEnergy(energy-ENERGY_RECOVER*event.rTime*m_speed);
+            energy -= event.rTime * ENERGY_RECOVER / power->GetCapacity() * m_speed;
+            power->SetEnergy(energy);
         }
+
 
         speed.x = (Math::Rand()-0.5f)*0.1f*m_progress;
         speed.y = (Math::Rand()-0.5f)*0.1f*m_progress;
