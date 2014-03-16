@@ -61,6 +61,8 @@ protected:
     const std::string BUTTON_EXERCISES  = "exercises_button";
     const std::string BUTTON_CHALLENGES = "challenges_button";
     const std::string BUTTON_USERLVL    = "userlvl_button";
+    
+    const std::string LABEL_VERSION     = "version_label";
 
     void ChangePage(MenuPage page);
 
@@ -72,6 +74,7 @@ protected:
     MenuPage m_page;
     int m_oldAudioVol, m_oldMusicVol;
     
+    CEGUI::Window* m_menuRoot;
     CEGUI::Window* m_window;
 };
 

@@ -243,7 +243,7 @@ void CMainDialog::InitCEGUI()
     CEGUI::System::getSingleton().getDefaultGUIContext().getMouseCursor().setExplicitRenderSize(CEGUI::Sizef(64.0f, 64.0f));
     CEGUI::System::getSingleton().getDefaultGUIContext().getMouseCursor().offsetPosition(CEGUI::Vector2f(1.0f, 1.0f));*/
     CEGUI::System::getSingleton().getDefaultGUIContext().getMouseCursor().setDefaultImage("WindowsLook/MouseArrow");
-    
+    CEGUI::System::getSingleton().getDefaultGUIContext().setDefaultFont("dvu_sans-11");
     CEGUI::System::getSingleton().getDefaultGUIContext().setDefaultTooltipType("WindowsLook/Tooltip");
     
     CEGUI::Window *rootWindow = CEGUI::WindowManager::getSingleton().createWindow("DefaultWindow", "root");
@@ -1846,7 +1846,7 @@ ddim.y =   9.0f/480.0f;
         ddim.y =  10.0f/480.0f;
         //#endif
         //GetResource(RES_TEXT, RT_VERSION_ID, name);
-        pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL1, COLOBOT_VERSION_DISPLAY);
+        pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL1, COLOBOT_VERSION_DISPLAY_NOCEGUI);
         pl->SetFontType(Gfx::FONT_COURIER);
         pl->SetFontSize(9.0f);
     }

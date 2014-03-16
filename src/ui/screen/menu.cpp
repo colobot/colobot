@@ -25,7 +25,6 @@
 
 #include "graphics/engine/engine.h"
 
-#include "ui/interface.h"
 #include "ui/maindialog.h"
 
 #include <boost/algorithm/string/split.hpp>
@@ -50,6 +49,9 @@ CScreenMenu::~CScreenMenu()
 
 void CScreenMenu::Start()
 {
+    m_window = CEGUI::WindowManager::getSingleton().loadLayoutFromFile("menu.layout");
+    CEGUI::System::getSingleton().getDefaultGUIContext().getRootWindow()->addChild(m_window);
+    
     if(m_page == MENUPAGE_INIT)
     {
         LoadLayout("mainmenu");
@@ -103,14 +105,7 @@ void CScreenMenu::Start()
     pw->CreateGroup(pos, ddim, 4, EVENT_INTERFACE_GLINTr);  // blue corner
     */
     
-    // TODO: CEGUI
-    /*pos.x  = 540.0f/640.0f;
-    pos.y  =   9.0f/480.0f;
-    ddim.x =  90.0f/640.0f;
-    ddim.y =  10.0f/480.0f;
-    CLabel* pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL1, COLOBOT_VERSION_DISPLAY);
-    pl->SetFontType(Gfx::FONT_COURIER);
-    pl->SetFontSize(9.0f);*/
+    m_window->getChildRecursive(LABEL_VERSION)->setText(COLOBOT_VERSION_DISPLAY+CEGUI::String("\n")+COLOBOT_VERSION_DATE);
     
     Gfx::CEngine* engine = Gfx::CEngine::GetInstancePointer();
     engine->SetBackground("interface.png",
@@ -160,8 +155,8 @@ void CScreenMenu::ChangePage(MenuPage page)
 
 void CScreenMenu::LoadLayout(CEGUI::String name)
 {
-    m_window = CEGUI::WindowManager::getSingleton().loadLayoutFromFile(name+".layout");
-    CEGUI::System::getSingleton().getDefaultGUIContext().getRootWindow()->addChild(m_window);
+    CEGUI::Window* menuContent = CEGUI::WindowManager::getSingleton().loadLayoutFromFile(name+".layout");
+    m_window->addChild(menuContent);
 }
 
 bool CScreenMenu::OnClick(const CEGUI::EventArgs& e)
@@ -210,8 +205,18 @@ bool CScreenMenu::EventProcess(const Event &event)
         case EVENT_KEY_DOWN:
             if ( event.key.key == KEY(ESCAPE) )
             {
-                CApplication::GetInstancePointer()->GetSound()->Play(SOUND_TZOING);
-                CRobotMain::GetInstancePointer()->ChangePhase(PHASE_GENERIC);
+                if(m_page == MENUPAGE_INIT) {
+                    CApplication::GetInstancePointer()->GetSound()->Play(SOUND_TZOING);
+                    CRobotMain::GetInstancePointer()->ChangePhase(PHASE_GENERIC);
+                } else {
+                    if(m_page == MENUPAGE_MULTIPLAYER)
+                    {
+                        CApplication::GetInstancePointer()->GetSound()->SetAudioVolume(m_oldAudioVol);
+                        CApplication::GetInstancePointer()->GetSound()->SetMusicVolume(m_oldMusicVol);
+                        CApplication::GetInstancePointer()->GetSound()->PlayMusic("Intro1.ogg", false, 1.f);
+                    }
+                    ChangePage(MENUPAGE_INIT);
+                }
             }
             return false;
         
