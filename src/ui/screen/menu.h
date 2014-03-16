@@ -74,7 +74,6 @@ protected:
     MenuPage m_page;
     int m_oldAudioVol, m_oldMusicVol;
     
-    CEGUI::Window* m_menuRoot;
     CEGUI::Window* m_window;
 };
 
