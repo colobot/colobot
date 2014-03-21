@@ -1412,10 +1412,10 @@ bool CScript::Process(CScript* script, CBotVar* result, int &exception)
 bool CScript::ShouldProcessStop(Error err, int errMode)
 {
     // aim impossible  - not a real error
-    if (err == ERR_AIM_IMPOSSIBLE)
+    if ( err == ERR_AIM_IMPOSSIBLE )
         return false;
 
-    if (err != ERR_OK && errMode == ERM_STOP)
+    if ( err != ERR_OK && errMode == ERM_STOP )
         return true;
 
     return false;
@@ -2969,7 +2969,7 @@ bool CScript::rAim(CBotVar* var, CBotVar* result, int& exception, void* user)
         var = var->GetNext();
         var == 0 ? y=0.0f : y=var->GetValFloat();
         err = script->m_primaryTask->StartTaskGunGoal(x*Math::PI/180.0f, y*Math::PI/180.0f);
-        if (err == ERR_AIM_IMPOSSIBLE)
+        if ( err == ERR_AIM_IMPOSSIBLE )
         {
             result->SetValInt(err);  // shows the error
         }
