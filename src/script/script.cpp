@@ -1393,7 +1393,7 @@ bool CScript::Process(CScript* script, CBotVar* result, int &exception)
 
         if ( err == ERR_STOP )  err = ERR_OK;
         result->SetValInt(err);  // indicates the error or ok
-        if ( ShouldExecutionStop(err, script->m_errMode) )
+        if ( ShouldProcessStop(err, script->m_errMode) )
         {
             exception = err;
             return false;
@@ -1407,9 +1407,9 @@ bool CScript::Process(CScript* script, CBotVar* result, int &exception)
 }
 
 
-// Returns true if error code means rela error and exception must be thrown
+// Returns true if error code means real error and exception must be thrown
 
-bool CScript::ShouldExecutionStop(Error err, int errMode)
+bool CScript::ShouldProcessStop(Error err, int errMode)
 {
     // aim impossible  - not a real error
     if (err == ERR_AIM_IMPOSSIBLE)
