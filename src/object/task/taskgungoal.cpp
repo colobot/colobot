@@ -26,6 +26,7 @@
 
 CTaskGunGoal::CTaskGunGoal(CObject* object) : CTask(object)
 {
+    m_aimImpossible = false;
 }
 
 // Object's destructor.
@@ -116,6 +117,12 @@ Error CTaskGunGoal::Start(float dirV, float dirH)
 
     m_progress = 0.0f;
 
+    // direction was constrainted, hence resulting in impossible move
+    if (dirV != m_finalDirV || dirH != m_finalDirH)
+    {
+        m_aimImpossible = true;
+    }
+
     return ERR_OK;
 }
 
@@ -126,12 +133,25 @@ Error CTaskGunGoal::IsEnded()
     if ( m_engine->GetPause() )  return ERR_CONTINUE;
 
     if ( m_initialDirV == m_finalDirV &&
-         m_initialDirH == m_finalDirH )  return ERR_STOP;
-    if ( m_progress < 1.0f )  return ERR_CONTINUE;
+         m_initialDirH == m_finalDirH )
+    {
+        if ( m_aimImpossible )
+            return ERR_AIM_IMPOSSIBLE;
+        else
+            return ERR_STOP;
+    }
+
+    if ( m_progress < 1.0f ) return ERR_CONTINUE;
 
     m_object->SetGunGoalV(m_finalDirV);
     m_object->SetGunGoalH(m_finalDirH);
     Abort();
+
+    if ( m_aimImpossible )
+    {
+        return ERR_AIM_IMPOSSIBLE;
+    }
+
     return ERR_STOP;
 }
 

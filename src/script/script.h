@@ -24,6 +24,8 @@
 
 #include "common/event.h"
 
+#include "common/global.h"
+
 #include "app/pausemanager.h"
 
 #include "CBot/CBotDll.h"
@@ -209,6 +211,7 @@ public:
 
 private:
     static bool     Process(CScript* script, CBotVar* result, int &exception);
+    static bool     ShouldProcessStop(Error err, int errMode);
     static CObject* SearchInfo(CScript* script, CObject* object, float power);
 
 protected:
