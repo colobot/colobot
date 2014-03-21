@@ -1393,7 +1393,7 @@ bool CScript::Process(CScript* script, CBotVar* result, int &exception)
 
         if ( err == ERR_STOP )  err = ERR_OK;
         result->SetValInt(err);  // indicates the error or ok
-        if ( err != ERR_OK && script->m_errMode == ERM_STOP )
+        if ( ShouldExecutionStop(err, script->m_errMode) )
         {
             exception = err;
             return false;
@@ -1404,6 +1404,21 @@ bool CScript::Process(CScript* script, CBotVar* result, int &exception)
     script->m_primaryTask->EventProcess(script->m_event);
     script->m_bContinue = true;
     return false;  // not done
+}
+
+
+// Returns true if error code means rela error and exception must be thrown
+
+bool CScript::ShouldExecutionStop(Error err, int errMode)
+{
+    // aim impossible  - not a real error
+    if (err == ERR_AIM_IMPOSSIBLE)
+        return false;
+
+    if (err != ERR_OK && errMode == ERM_STOP)
+        return true;
+
+    return false;
 }
 
 
@@ -2954,7 +2969,11 @@ bool CScript::rAim(CBotVar* var, CBotVar* result, int& exception, void* user)
         var = var->GetNext();
         var == 0 ? y=0.0f : y=var->GetValFloat();
         err = script->m_primaryTask->StartTaskGunGoal(x*Math::PI/180.0f, y*Math::PI/180.0f);
-        if ( err != ERR_OK )
+        if (err == ERR_AIM_IMPOSSIBLE)
+        {
+            result->SetValInt(err);  // shows the error
+        }
+        else if ( err != ERR_OK )
         {
             delete script->m_primaryTask;
             script->m_primaryTask = 0;

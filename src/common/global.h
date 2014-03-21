@@ -123,6 +123,7 @@ enum Error
     ERR_TOOMANY           = 702,      //! <  too many objects
     ERR_OBLIGATORYTOKEN   = 800,      //! <  compulsory instruction missing
     ERR_PROHIBITEDTOKEN   = 801,      //! <  instruction prohibited
+    ERR_AIM_IMPOSSIBLE    = 900,      //! <  cannot aim at specified angle(s)
 
     INFO_FIRST            = 10000,    //! <  first information
     INFO_BUILD            = 10001,    //! <  construction builded
