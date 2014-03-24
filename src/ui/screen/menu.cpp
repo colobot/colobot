@@ -173,7 +173,7 @@ bool CScreenMenu::OnClick(const CEGUI::EventArgs& e)
         if(targetName == BUTTON_CREDITS)     CRobotMain::GetInstancePointer()->ChangePhase(PHASE_CREDITS);
         if(targetName == BUTTON_SETUP)       CRobotMain::GetInstancePointer()->ChangePhase(PHASE_SETUPg);
         if(targetName == BUTTON_NAME)        CRobotMain::GetInstancePointer()->ChangePhase(PHASE_NAME);
-        if(targetName == BUTTON_QUIT)        CRobotMain::GetInstancePointer()->ChangePhase(PHASE_GENERIC);
+        if(targetName == BUTTON_QUIT)        CApplication::GetInstancePointer()->GetEventQueue()->AddEvent(Event(EVENT_QUIT));
     }
     
     if(m_page == MENUPAGE_STARTGAME)
@@ -208,8 +208,7 @@ bool CScreenMenu::EventProcess(const Event &event)
             if ( event.key.key == KEY(ESCAPE) )
             {
                 if(m_page == MENUPAGE_INIT) {
-                    CApplication::GetInstancePointer()->GetSound()->Play(SOUND_TZOING);
-                    CRobotMain::GetInstancePointer()->ChangePhase(PHASE_GENERIC);
+                    CApplication::GetInstancePointer()->GetEventQueue()->AddEvent(Event(EVENT_QUIT));
                 } else {
                     if(m_page == MENUPAGE_MULTIPLAYER)
                     {

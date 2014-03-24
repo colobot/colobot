@@ -1689,131 +1689,6 @@ pos.y -= 0.048f;
         m_loadingCounter = 1;  // enough time to display!
     }
 
-    if ( m_phase == PHASE_GENERIC )
-    {
-        pos.x  = 0.0f;
-        pos.y  = 0.0f;
-        ddim.x = 0.0f;
-        ddim.y = 0.0f;
-        pw = m_interface->CreateWindows(pos, ddim, -1, EVENT_WINDOW5);
-
-        // TODO: #if _FULL | _NET
-        pos.x  =  80.0f/640.0f;
-        pos.y  = 240.0f/480.0f;
-        ddim.x = 490.0f/640.0f;
-        ddim.y = 110.0f/480.0f;
-        pe = pw->CreateEdit(pos, ddim, 0, EVENT_EDIT1);
-        pe->SetGenericMode(true);
-        pe->SetEditCap(false);
-        pe->SetHighlightCap(false);
-        pe->SetFontType(Gfx::FONT_COURIER);
-        pe->SetFontSize(Gfx::FONT_SIZE_SMALL);
-        pe->ReadText(std::string("help/") + m_app->GetLanguageChar() + std::string("/authors.txt"));
-
-        // #endif
-        /* TODO: #if _SCHOOL
-        #if _CEEBOTDEMO
-        pos.x  =  80.0f/640.0f;
-        pos.y  = 210.0f/480.0f;
-        ddim.x = 490.0f/640.0f;
-        ddim.y = 150.0f/480.0f;
-        #else
-        pos.x  =  80.0f/640.0f;
-        pos.y  = 200.0f/480.0f;
-        ddim.x = 490.0f/640.0f;
-        ddim.y = 150.0f/480.0f;
-        #endif
-        pe = pw->CreateEdit(pos, ddim, 0, EVENT_EDIT1);
-        pe->SetGenericMode(true);
-        pe->SetEditCap(false);
-        pe->SetHighlightCap(false);
-        pe->SetFontType(Gfx::FONT_COURIER);
-        pe->SetFontSize(Gfx::FONT_SIZE_SMALL);
-        pe->ReadText("help/authors.txt");*/
-
-        /* #if _DEMO
-        //?     pos.x  =  80.0f/640.0f;
-        //?     pos.y  = 240.0f/480.0f;
-        //?     ddim.x = 490.0f/640.0f;
-        //?     ddim.y = 110.0f/480.0f;
-        //?     pe = pw->CreateEdit(pos, ddim, 0, EVENT_EDIT1);
-        //?     pe->SetGenericMode(true);
-        //?     pe->SetEditCap(false);
-        //?     pe->SetHiliteCap(false);
-        //?     pe->SetFontType(Gfx::FONT_COURIER);
-        //?     pe->SetFontSize(Gfx::FONT_SIZE_SMALL);
-        //?     pe->ReadText("help/demo.txt");
-
-        //?     pos.x  =  80.0f/640.0f;
-        //?     pos.y  = 140.0f/480.0f;
-        //?     ddim.x = 490.0f/640.0f;
-        //?     ddim.y = 100.0f/480.0f;
-        //?     pe = pw->CreateEdit(pos, ddim, 0, EVENT_EDIT2);
-        //?     pe->SetGenericMode(true);
-        //?     pe->SetEditCap(false);
-        //?     pe->SetHiliteCap(false);
-        //?     pe->SetFontType(Gfx::FONT_COURIER);
-        //?     pe->SetFontSize(Gfx::FONT_SIZE_SMALL);
-        //?     pe->ReadText("help/authors.txt");
-#endif */
-
-        // TODO: #if !_DEMO
-        pos.x  =  40.0f/640.0f;
-        pos.y  =  83.0f/480.0f;
-        ddim.x = 246.0f/640.0f;
-        ddim.y =  16.0f/480.0f;
-        GetResource(RES_TEXT, RT_GENERIC_DEV1, name);
-        pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL1, name);
-        pl->SetFontType(Gfx::FONT_COURIER);
-        pl->SetFontSize(Gfx::FONT_SIZE_SMALL);
-
-        pos.y  =  13.0f/480.0f;
-        GetResource(RES_TEXT, RT_GENERIC_DEV2, name);
-        pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL2, name);
-        pl->SetFontType(Gfx::FONT_COURIER);
-        pl->SetFontSize(Gfx::FONT_SIZE_SMALL);
-
-        pos.x  = 355.0f/640.0f;
-        pos.y  =  83.0f/480.0f;
-        ddim.x = 246.0f/640.0f;
-        ddim.y =  16.0f/480.0f;
-        GetResource(RES_TEXT, RT_GENERIC_EDIT1, name);
-        pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL3, name);
-        pl->SetFontType(Gfx::FONT_COURIER);
-        pl->SetFontSize(Gfx::FONT_SIZE_SMALL);
-
-        pos.y  =  13.0f/480.0f;
-        GetResource(RES_TEXT, RT_GENERIC_EDIT2, name);
-        pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL4, name);
-        pl->SetFontType(Gfx::FONT_COURIER);
-        pl->SetFontSize(Gfx::FONT_SIZE_SMALL);
-        // #endif
-
-        /* TODO: #if _DEMO
-           pos.x  = 481.0f/640.0f;
-           pos.y  =  51.0f/480.0f;
-           ddim.x =  30.0f/640.0f;
-           ddim.y =  30.0f/480.0f;
-           pb = pw->CreateButton(pos, ddim, 49, EVENT_INTERFACE_ABORT);
-           pb->SetState(STATE_SHADOW);
-#else */
-        pos.x  = 306.0f/640.0f;
-        pos.y  =  17.0f/480.0f;
-        ddim.x =  30.0f/640.0f;
-        ddim.y =  30.0f/480.0f;
-        pb = pw->CreateButton(pos, ddim, 49, EVENT_INTERFACE_ABORT);
-        pb->SetState(STATE_SHADOW);
-        // #endif
-
-        m_engine->SetBackground("generico.png",
-                Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
-                Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
-                Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
-                Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
-                true);
-        m_engine->SetBackForce(true);
-    }
-
     if ( m_phase == PHASE_NAME    ||
             m_phase == PHASE_TRAINER ||
             m_phase == PHASE_DEFI    ||
@@ -1947,12 +1822,6 @@ bool CMainDialog::EventProcess(const Event &event)
             if ( m_phase == PHASE_NAME )
             {
                 NameDelete();
-            }
-            if ( m_phase == PHASE_MENU )
-            {
-                //?             m_eventQueue->MakeEvent(newEvent, EVENT_QUIT);
-                //?             m_eventQueue->AddEvent(newEvent);
-                m_main->ChangePhase(PHASE_GENERIC);
             }
             if ( m_phase == PHASE_SIMUL )
             {
@@ -2751,31 +2620,6 @@ bool CMainDialog::EventProcess(const Event &event)
         }
 
         return false;
-    }
-
-    if ( m_phase == PHASE_GENERIC )
-    {
-        if ( event.type == EVENT_INTERFACE_ABORT )
-        {
-            ChangePhase(PHASE_MENU);
-        }
-
-        if ( event.type == EVENT_KEY_DOWN )
-        {
-            if ( event.key.key == KEY(ESCAPE) )
-            {
-                ChangePhase(PHASE_MENU);
-            }
-            else
-            {
-                m_eventQueue->AddEvent(Event(EVENT_QUIT));
-            }
-        }
-
-        if ( event.type == EVENT_MOUSE_BUTTON_DOWN )
-        {
-            m_eventQueue->AddEvent(Event(EVENT_QUIT));
-        }
     }
 
     return true;
