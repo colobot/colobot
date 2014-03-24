@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-03-15 12:01+0100\n"
+"POT-Creation-Date: 2014-03-24 20:46+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -87,6 +87,12 @@ msgstr "1) Сначала нажми на клавишу, которую вы х
 
 msgid "2) Then press the key you want to use instead."
 msgstr "2) После этого нажмите на клавишу, которую вы хотите использовать."
+
+msgid "2D graphics:"
+msgstr ""
+
+msgid "3D graphics:"
+msgstr ""
 
 msgid "3D sound\\3D positioning of the sound"
 msgstr "3D-звук\\Стерео звук"
@@ -398,6 +404,9 @@ msgstr "Закрывающая скобка отсутствует"
 msgid "Colobot rules!"
 msgstr "Правила игры!"
 
+msgid "Colobot: Gold Edition"
+msgstr ""
+
 msgid "Command line"
 msgstr "Командная строка"
 
@@ -430,6 +439,9 @@ msgstr "Копировать"
 
 msgid "Copy (Ctrl+c)"
 msgstr "Копировать (Ctrl+C)"
+
+msgid "Credits\\Credits"
+msgstr ""
 
 msgid "Ctrl"
 msgstr "Ctrl"
@@ -645,6 +657,9 @@ msgstr "Игра\\Настройки игры"
 
 msgid "Gantry crane"
 msgstr "Козловой кран"
+
+msgid "Gold Edition developed by:"
+msgstr ""
 
 msgid "Goto: destination occupied"
 msgstr "Перейти: место занято"
@@ -1029,6 +1044,12 @@ msgstr ""
 "Источник сообщения\\Показывает место, откуда было отправлено последнеее "
 "сообщение"
 
+msgid "Original game developed by:"
+msgstr ""
+
+msgid "Original version creators:"
+msgstr ""
+
 msgid "Parameters missing "
 msgstr "Отсутствуют параметры "
 
@@ -1131,6 +1152,9 @@ msgstr "Программа выполнена"
 msgid "Program infected by a virus"
 msgstr "Программа заражена вирусом"
 
+msgid "Programmers:"
+msgstr ""
+
 msgid "Programming exercises"
 msgstr "Упражнения"
 
@@ -1146,6 +1170,9 @@ msgstr ""
 
 msgid "Programs dispatched by Houston"
 msgstr "Программы переданные с Хьюстона"
+
+msgid "Project director:"
+msgstr ""
 
 msgid "Public required"
 msgstr "Требуется общественное"

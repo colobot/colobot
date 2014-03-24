@@ -142,6 +142,7 @@ void InitializeRestext()
     stringsUi[RUIT_TITLE_INIT]        = "COLOBOT: Gold Edition";
     stringsUi[RUIT_STARTGAME]         = "Start game\\Singleplayer";
     stringsUi[RUIT_MULTIPLAYER]       = "Multiplayer\\Play with friends!";
+    stringsUi[RUIT_CREDITS]           = "Credits\\Credits";
     stringsUi[RUIT_NAME]              = "Change player\\Change player";
     stringsUi[RUIT_SETUP]             = "Options\\Preferences";
     stringsUi[RUIT_QUIT]              = "Quit\\Quit COLOBOT";
@@ -154,6 +155,15 @@ void InitializeRestext()
     stringsUi[RUIT_USERLVL]           = "Userlevels\\Custom missions";
 
     stringsUi[RUIT_TITLE_MULTIPLAYER] = "Multiplayer";
+    
+    stringsUi[RUIT_GAMENAME]          = "Colobot: Gold Edition";
+    stringsUi[RUIT_DIRECTOR]          = "Project director:";
+    stringsUi[RUIT_PROGRAMMERS]       = "Programmers:";
+    stringsUi[RUIT_2DGRAPHICS]        = "2D graphics:";
+    stringsUi[RUIT_3DGRAPHICS]        = "3D graphics:";
+    stringsUi[RUIT_GOLD_BY]           = "Gold Edition developed by:";
+    stringsUi[RUIT_ORIGINAL_BY]       = "Original game developed by:";
+    stringsUi[RUIT_ORIGINAL_CREATORS] = "Original version creators:";
 
 
 

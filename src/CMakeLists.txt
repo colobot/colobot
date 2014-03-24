@@ -158,6 +158,7 @@ script/script.cpp
 sound/sound.cpp
 ui/screen/menu.cpp
 ui/screen/splash.cpp
+ui/screen/credits.cpp
 ui/button.cpp
 ui/check.cpp
 ui/color.cpp

@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-03-15 12:01+0100\n"
+"POT-Creation-Date: 2014-03-24 20:46+0100\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -78,6 +78,12 @@ msgstr "1) Klicken Sie auf die neu zu definierende Taste."
 
 msgid "2) Then press the key you want to use instead."
 msgstr "2) Drücken Sie auf die neue Taste."
+
+msgid "2D graphics:"
+msgstr ""
+
+msgid "3D graphics:"
+msgstr ""
 
 msgid "3D sound\\3D positioning of the sound"
 msgstr "3D-Geräusche\\Orten der Geräusche im Raum"
@@ -392,6 +398,9 @@ msgstr "Es fehlt eine geschlossene Klammer \")\""
 msgid "Colobot rules!"
 msgstr "Colobot ist wunderbar!"
 
+msgid "Colobot: Gold Edition"
+msgstr "Colobot: Gold Edition"
+
 msgid "Command line"
 msgstr "Befehleingabe"
 
@@ -424,6 +433,9 @@ msgstr "Kopieren"
 
 msgid "Copy (Ctrl+c)"
 msgstr "Kopieren (Ctrl+c)"
+
+msgid "Credits\\Credits"
+msgstr ""
 
 msgid "Ctrl"
 msgstr "Ctrl"
@@ -639,6 +651,9 @@ msgstr "Spiel\\Gameplay Einstellungen"
 
 msgid "Gantry crane"
 msgstr "Träger"
+
+msgid "Gold Edition developed by:"
+msgstr ""
 
 msgid "Goto: destination occupied"
 msgstr "Ziel ist schon besetzt"
@@ -1021,6 +1036,12 @@ msgstr "Orgastoff"
 msgid "Origin of last message\\Shows where the last message was sent from"
 msgstr "Ort der Meldung\\Zeigt den Ort, von dem die letzte Meldung stammt"
 
+msgid "Original game developed by:"
+msgstr ""
+
+msgid "Original version creators:"
+msgstr ""
+
 msgid "Parameters missing "
 msgstr "Nicht genug Parameter"
 
@@ -1123,6 +1144,9 @@ msgstr "Programm beendet"
 msgid "Program infected by a virus"
 msgstr "Ein Programm wurde von einem Virus infiziert"
 
+msgid "Programmers:"
+msgstr ""
+
 msgid "Programming exercises"
 msgstr "Programmieren"
 
@@ -1137,6 +1161,9 @@ msgstr "Hilfe CBOT-Sprache\\Hilfe über die Programmiersprache CBOT"
 
 msgid "Programs dispatched by Houston"
 msgstr "Von Houston übermittelte Programme"
+
+msgid "Project director:"
+msgstr ""
 
 msgid "Public required"
 msgstr "Hier muss das Wort \"public\" stehen"

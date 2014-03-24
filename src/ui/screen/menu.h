@@ -52,6 +52,7 @@ protected:
     
     const std::string BUTTON_STARTGAME   = "startgame_button";
     const std::string BUTTON_MULTIPLAYER = "multiplayer_button";
+    const std::string BUTTON_CREDITS     = "credits_button";
     const std::string BUTTON_SETUP       = "setup_button";
     const std::string BUTTON_NAME        = "name_button";
     const std::string BUTTON_QUIT        = "quit_button";

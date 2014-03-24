@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-03-15 12:01+0100\n"
+"POT-Creation-Date: 2014-03-24 20:46+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -255,6 +255,9 @@ msgstr ""
 msgid "Multiplayer\\Play with friends!"
 msgstr ""
 
+msgid "Credits\\Credits"
+msgstr ""
+
 msgid "Change player\\Change player"
 msgstr ""
 
@@ -280,6 +283,30 @@ msgid "Userlevels\\Custom missions"
 msgstr ""
 
 msgid "Multiplayer"
+msgstr ""
+
+msgid "Colobot: Gold Edition"
+msgstr ""
+
+msgid "Project director:"
+msgstr ""
+
+msgid "Programmers:"
+msgstr ""
+
+msgid "2D graphics:"
+msgstr ""
+
+msgid "3D graphics:"
+msgstr ""
+
+msgid "Original game developed by:"
+msgstr ""
+
+msgid "Gold Edition developed by:"
+msgstr ""
+
+msgid "Original version creators:"
 msgstr ""
 
 msgid "OK"

@@ -159,9 +159,10 @@ enum ResUiTextType
     RUIT_TITLE_INIT        = 10,
     RUIT_STARTGAME         = 11,
     RUIT_MULTIPLAYER       = 12,
-    RUIT_NAME              = 13,
-    RUIT_SETUP             = 14,
-    RUIT_QUIT              = 15,
+    RUIT_CREDITS           = 13,
+    RUIT_NAME              = 14,
+    RUIT_SETUP             = 15,
+    RUIT_QUIT              = 16,
     
     RUIT_TITLE_STARTGAME   = 20,
     RUIT_MISSIONS          = 21,
@@ -171,6 +172,15 @@ enum ResUiTextType
     RUIT_USERLVL           = 25,
     
     RUIT_TITLE_MULTIPLAYER = 30,
+    
+    RUIT_GAMENAME          = 40,
+    RUIT_DIRECTOR          = 41,
+    RUIT_PROGRAMMERS       = 42,
+    RUIT_2DGRAPHICS        = 43,
+    RUIT_3DGRAPHICS        = 44,
+    RUIT_GOLD_BY           = 45,
+    RUIT_ORIGINAL_BY       = 46,
+    RUIT_ORIGINAL_CREATORS = 47,
     
     RUIT_MAX //! < number of values
 };

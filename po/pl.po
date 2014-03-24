@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-03-15 12:01+0100\n"
+"POT-Creation-Date: 2014-03-24 20:46+0100\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -79,6 +79,12 @@ msgstr "1) Najpierw kliknij klawisz, który chcesz przedefiniować."
 
 msgid "2) Then press the key you want to use instead."
 msgstr "2) Następnie naciśnij klawisz, którego chcesz używać."
+
+msgid "2D graphics:"
+msgstr "Graficy 2D:"
+
+msgid "3D graphics:"
+msgstr "Graficy 3D:"
 
 msgid "3D sound\\3D positioning of the sound"
 msgstr "Dźwięk 3D\\Przestrzenne pozycjonowanie dźwięków"
@@ -394,6 +400,9 @@ msgstr "Brak nawiasu zamykającego"
 msgid "Colobot rules!"
 msgstr "Colobot rządzi!"
 
+msgid "Colobot: Gold Edition"
+msgstr "Colobot: Gold Edition"
+
 msgid "Command line"
 msgstr "Linia polecenia"
 
@@ -426,6 +435,9 @@ msgstr "Kopiuj"
 
 msgid "Copy (Ctrl+c)"
 msgstr "Kopiuj (Ctrl+C)"
+
+msgid "Credits\\Credits"
+msgstr "Autorzy\\Informacje o autorach"
 
 msgid "Ctrl"
 msgstr "Ctrl"
@@ -641,6 +653,9 @@ msgstr "Gra\\Ustawienia gry"
 
 msgid "Gantry crane"
 msgstr "Żuraw przesuwalny"
+
+msgid "Gold Edition developed by:"
+msgstr "Złota Edycja stworzona przez:"
 
 msgid "Goto: destination occupied"
 msgstr "Goto: miejsce docelowe zajęte"
@@ -1027,6 +1042,12 @@ msgid "Origin of last message\\Shows where the last message was sent from"
 msgstr ""
 "Miejsce nadania wiadomości\\Pokazuje skąd została wysłana ostatnia wiadomość"
 
+msgid "Original game developed by:"
+msgstr "Oryginalna gra stworzona przez:"
+
+msgid "Original version creators:"
+msgstr "Twórcy oryginalnej gry:"
+
 msgid "Parameters missing "
 msgstr "Brak wymaganego parametru"
 
@@ -1130,6 +1151,9 @@ msgstr "Program zakończony"
 msgid "Program infected by a virus"
 msgstr "Program zawirusowany"
 
+msgid "Programmers:"
+msgstr "Programiści:"
+
 msgid "Programming exercises"
 msgstr "Ćwiczenia programistyczne"
 
@@ -1144,6 +1168,9 @@ msgstr "Podręcznik programowania\\Dostarcza szczegółową pomoc w programowani
 
 msgid "Programs dispatched by Houston"
 msgstr "Program dostarczony z Houston"
+
+msgid "Project director:"
+msgstr "Kierownik projektu:"
 
 msgid "Public required"
 msgstr "Wymagany publiczny"

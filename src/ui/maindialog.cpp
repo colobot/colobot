@@ -37,6 +37,7 @@
 
 #include "ui/screen/menu.h"
 #include "ui/screen/splash.h"
+#include "ui/screen/credits.h"
 
 #include "ui/interface.h"
 #include "ui/button.h"
@@ -204,6 +205,7 @@ CMainDialog::CMainDialog()
     
     RegisterScreen(new CScreenSplash());
     RegisterScreen(new CScreenMenu());
+    RegisterScreen(new CScreenCredits());
 }
 
 // Initialise CEGUI

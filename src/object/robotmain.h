@@ -67,6 +67,7 @@ enum Phase
     PHASE_LOST,
     PHASE_SPLASH,
     PHASE_GENERIC,
+    PHASE_CREDITS,
 };
 
 

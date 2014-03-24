@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-03-15 12:01+0100\n"
+"POT-Creation-Date: 2014-03-24 20:46+0100\n"
 "PO-Revision-Date: 2012-12-27 14:07+0100\n"
 "Last-Translator: Didier Raboud <odyx@debian.org>\n"
 "Language: fr\n"
@@ -83,6 +83,12 @@ msgstr "1) Cliquez d'abord sur la touche à redéfinir."
 
 msgid "2) Then press the key you want to use instead."
 msgstr "2) Appuyez ensuite sur la nouvelle touche souhaitée."
+
+msgid "2D graphics:"
+msgstr ""
+
+msgid "3D graphics:"
+msgstr ""
 
 msgid "3D sound\\3D positioning of the sound"
 msgstr "Bruitages 3D\\Positionnement sonore dans l'espace"
@@ -396,6 +402,9 @@ msgstr "Il manque une parenthèse fermante"
 msgid "Colobot rules!"
 msgstr "Colobot est super!"
 
+msgid "Colobot: Gold Edition"
+msgstr "Colobot: Gold Edition"
+
 msgid "Command line"
 msgstr "Console de commande"
 
@@ -428,6 +437,9 @@ msgstr "Copier"
 
 msgid "Copy (Ctrl+c)"
 msgstr "Copier (Ctrl+c)"
+
+msgid "Credits\\Credits"
+msgstr ""
 
 msgid "Ctrl"
 msgstr "Ctrl"
@@ -643,6 +655,9 @@ msgstr "Jeu\\Options de jouabilité"
 
 msgid "Gantry crane"
 msgstr "Portique"
+
+msgid "Gold Edition developed by:"
+msgstr ""
 
 msgid "Goto: destination occupied"
 msgstr "Goto: Destination occupée"
@@ -1027,6 +1042,12 @@ msgstr "Matière organique"
 msgid "Origin of last message\\Shows where the last message was sent from"
 msgstr "Montrer le lieu d'un message\\Montrer le lieu du dernier message"
 
+msgid "Original game developed by:"
+msgstr ""
+
+msgid "Original version creators:"
+msgstr ""
+
 msgid "Parameters missing "
 msgstr "Pas assez de paramètres"
 
@@ -1129,6 +1150,9 @@ msgstr "Programme terminé"
 msgid "Program infected by a virus"
 msgstr "Un programme est infecté par un virus"
 
+msgid "Programmers:"
+msgstr ""
+
 msgid "Programming exercises"
 msgstr "Programmation"
 
@@ -1143,6 +1167,9 @@ msgstr "Instructions programmation\\Explication sur la programmation"
 
 msgid "Programs dispatched by Houston"
 msgstr "Programmes envoyés par Houston"
+
+msgid "Project director:"
+msgstr ""
 
 msgid "Public required"
 msgstr "Public requis"

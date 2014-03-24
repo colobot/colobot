@@ -58,6 +58,7 @@ void CScreenMenu::Start()
         InitWindow(WINDOW_INIT, RUIT_TITLE_INIT);
         InitButton(BUTTON_STARTGAME, RUIT_STARTGAME);
         InitButton(BUTTON_MULTIPLAYER, RUIT_MULTIPLAYER);
+        InitButton(BUTTON_CREDITS, RUIT_CREDITS);
         InitButton(BUTTON_SETUP, RUIT_SETUP);
         InitButton(BUTTON_NAME, RUIT_NAME);
         InitButton(BUTTON_QUIT, RUIT_QUIT);
@@ -169,6 +170,7 @@ bool CScreenMenu::OnClick(const CEGUI::EventArgs& e)
     {
         if(targetName == BUTTON_STARTGAME)   ChangePage(MENUPAGE_STARTGAME);
         if(targetName == BUTTON_MULTIPLAYER) ChangePage(MENUPAGE_MULTIPLAYER);
+        if(targetName == BUTTON_CREDITS)     CRobotMain::GetInstancePointer()->ChangePhase(PHASE_CREDITS);
         if(targetName == BUTTON_SETUP)       CRobotMain::GetInstancePointer()->ChangePhase(PHASE_SETUPg);
         if(targetName == BUTTON_NAME)        CRobotMain::GetInstancePointer()->ChangePhase(PHASE_NAME);
         if(targetName == BUTTON_QUIT)        CRobotMain::GetInstancePointer()->ChangePhase(PHASE_GENERIC);
