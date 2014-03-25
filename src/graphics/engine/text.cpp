@@ -646,7 +646,13 @@ void CText::DrawString(const std::string &text, std::vector<FontMetaChar>::itera
 
         DrawCharAndAdjustPos(ch, font, size, pos, color);
 
-        fmtIndex++;
+        // increment fmtIndex for each byte in multibyte character
+        if ( ch.c1 != 0 )
+            fmtIndex++;
+        if ( ch.c2 != 0 )
+            fmtIndex++;
+        if ( ch.c3 != 0 )
+            fmtIndex++;
     }
 
     if (eol != 0)
