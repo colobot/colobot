@@ -241,10 +241,7 @@ void CMainDialog::InitCEGUI()
     CEGUI::SchemeManager::getSingleton().createFromFile("colobot.scheme");
     CEGUI::AnimationManager::getSingleton().loadAnimationsFromXML("colobot.animations");
     
-    /*CEGUI::System::getSingleton().getDefaultGUIContext().getMouseCursor().setDefaultImage("ColobotMouse/Normal2");
-    CEGUI::System::getSingleton().getDefaultGUIContext().getMouseCursor().setExplicitRenderSize(CEGUI::Sizef(64.0f, 64.0f));
-    CEGUI::System::getSingleton().getDefaultGUIContext().getMouseCursor().offsetPosition(CEGUI::Vector2f(1.0f, 1.0f));*/
-    CEGUI::System::getSingleton().getDefaultGUIContext().getMouseCursor().setDefaultImage("WindowsLook/MouseArrow");
+    CEGUI::System::getSingleton().getDefaultGUIContext().getMouseCursor().setDefaultImage("ColobotMouse/Normal");
     CEGUI::System::getSingleton().getDefaultGUIContext().setDefaultFont("dvu_sans-11");
     CEGUI::System::getSingleton().getDefaultGUIContext().setDefaultTooltipType("WindowsLook/Tooltip");
     
