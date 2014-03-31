@@ -1750,6 +1750,32 @@ bool CMainDialog::EventProcess(const Event &event)
     {
         m_phaseTime += event.rTime;
         CEGUI::System::getSingleton().injectTimePulse(event.rTime);
+        
+        CEGUI::String mouseImage;
+        switch(m_engine->GetMouseType())
+        {
+            default:
+            case Gfx::ENG_MOUSE_NORM: mouseImage = "ColobotMouse/Normal"; break;
+            case Gfx::ENG_MOUSE_WAIT: mouseImage = "ColobotMouse/Wait"; break;
+            case Gfx::ENG_MOUSE_EDIT: mouseImage = "ColobotMouse/Edit"; break;
+            case Gfx::ENG_MOUSE_HAND: mouseImage = "ColobotMouse/Hand"; break;
+            case Gfx::ENG_MOUSE_CROSS: mouseImage = "ColobotMouse/Cross"; break;
+            //? case Gfx::ENG_MOUSE_SHOW: mouseImage = "ColobotMouse/?"; break;
+            case Gfx::ENG_MOUSE_NO: mouseImage = "ColobotMouse/No"; break;
+            case Gfx::ENG_MOUSE_MOVE: mouseImage = "ColobotMouse/Resize"; break;
+            case Gfx::ENG_MOUSE_MOVEH: mouseImage = "ColobotMouse/ResizeH"; break;
+            case Gfx::ENG_MOUSE_MOVEV: mouseImage = "ColobotMouse/ResizeV"; break;
+            case Gfx::ENG_MOUSE_MOVED: mouseImage = "ColobotMouse/ResizeDL"; break;
+            case Gfx::ENG_MOUSE_MOVEI: mouseImage = "ColobotMouse/ResizeDR"; break;
+            case Gfx::ENG_MOUSE_SCROLLL: mouseImage = "ColobotMouse/ScrollL"; break;
+            case Gfx::ENG_MOUSE_SCROLLR: mouseImage = "ColobotMouse/ScrollR"; break;
+            case Gfx::ENG_MOUSE_SCROLLU: mouseImage = "ColobotMouse/ScrollU"; break;
+            case Gfx::ENG_MOUSE_SCROLLD: mouseImage = "ColobotMouse/ScrollD"; break;
+            case Gfx::ENG_MOUSE_TARGET: mouseImage = "ColobotMouse/Target"; break;
+        }
+        CEGUI::System::getSingleton().getDefaultGUIContext().getMouseCursor().setDefaultImage(mouseImage);
+        if(CEGUI::System::getSingleton().getDefaultGUIContext().getWindowContainingMouse()->getMouseCursor(true) == CEGUI::System::getSingleton().getDefaultGUIContext().getMouseCursor().getDefaultImage())
+            CEGUI::System::getSingleton().getDefaultGUIContext().getMouseCursor().setImage(mouseImage);
 
         if ( m_phase != PHASE_SIMUL   &&
              m_phase != PHASE_WIN     &&
