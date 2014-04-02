@@ -98,6 +98,12 @@ a package, make sure you have the NSIS utilities (makensis) in your system path 
 
 ### Compiling on Linux
 
+#### Compiling on Ubuntu
+
+See [INSTALL-Ubuntu.md](https://github.com/colobot/colobot/blob/master/INSTALL-Ubuntu.md)
+
+#### Generic instructions
+
 Since there are so many Linux flavors, it is difficult to write generic instructions. However, here is the general gist of what
 you will need to compile colobot.
 
