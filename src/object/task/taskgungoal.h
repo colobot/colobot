@@ -44,5 +44,7 @@ protected:
     float       m_finalDirV;    // direction to reach
     float       m_initialDirH;  // initial direction
     float       m_finalDirH;    // direction to reach
+
+    bool        m_aimImpossible; // set to true if impossible aim was set
 };
 
