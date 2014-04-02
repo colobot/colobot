@@ -117,12 +117,23 @@ You will need:
  * OpenAL (OpenAL-Soft) >= 1.13
  * po4a >= 0.45 (to generate translated data files)
 
+On Ubuntu (and probably any other Debian-based system), you can use the following command to install all required packages:
+```
+  $ apt-get install build-essential cmake libsdl1.2debian libsdl1.2-dev libsdl-image1.2 libsdl-image1.2-dev libsdl-ttf2.0-0 libsdl-ttf2.0-dev libsdl-mixer1.2 libsdl-mixer1.2-dev libsndfile1-dev libvorbis-dev libogg-dev libpng12-dev libglew-dev libopenal-dev libboost-dev libboost-system-dev libboost-filesystem-dev libboost-regex-dev git
+```
+
 Make sure you install the packages along with header files (often distributed in separate *-dev packages). If you miss any requirements,
 CMake should warn you.
 
-To compile colobot, run your favorite shell and change the directory to where you downloaded colobot source files:
+To compile colobot, run your favorite shell and download colobot source files:
 ```
+  $ git clone https://github.com/colobot/colobot.git /path/to/colobot/sources
   $ cd /path/to/colobot/sources
+  $ git submodule update --init
+```
+If you want to compile development branch, change the first command to:
+```
+  $ git clone -b dev https://github.com/colobot/colobot.git /path/to/colobot/sources
 ```
 It is recommended that you create a build directory:
 ```
