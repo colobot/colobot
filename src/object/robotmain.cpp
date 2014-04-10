@@ -4377,6 +4377,12 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             m_terrain->LoadRelief(name, OpFloat(line, "factor", 1.0f), OpInt(line, "border", 1));
             continue;
         }
+        
+        if (Cmd(line, "TerrainRandomRelief") && !resetObject)
+        {
+            m_terrain->RandomizeRelief();
+            continue;
+        }
 
         if (Cmd(line, "TerrainResource") && !resetObject)
         {

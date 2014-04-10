@@ -331,6 +331,66 @@ bool CTerrain::LoadRelief(const std::string &fileName, float scaleRelief,
     return true;
 }
 
+bool CTerrain::RandomizeRelief()
+{
+    // Perlin noise
+    // Based on Python implementation by Marek Rogalski (mafik)
+    // http://amt2014.pl/archiwum/perlin.py
+    
+    int size = (m_mosaicCount*m_brickCount)+1;
+    const int ilosc_oktaw = 6;
+    
+    float* oktawy[ilosc_oktaw];
+    for(int i=0; i<ilosc_oktaw; i++)
+    {
+        int pxCount = static_cast<int>(pow(2, (i+1)*2));
+        oktawy[i] = new float[pxCount];
+        for(int j=0; j<pxCount; j++)
+        {
+            oktawy[i][j] = Math::Rand();
+        }
+    }
+    
+    for(int y2=0; y2 < size; y2++)
+    {
+        float y = static_cast<float>(y2) / size;
+        for(int x2=0; x2 < size; x2++)
+        {
+            float x = static_cast<float>(x2) / size;
+            
+            float wart = 0;
+            for(int i=0; i<ilosc_oktaw; i++)
+            {
+                int rozmiar_oktawy = sqrt(static_cast<int>(pow(2, (i+1)*2)));
+                double xi, yi, a, b;
+                a = modf(x * (rozmiar_oktawy-1), &xi);
+                b = modf(y * (rozmiar_oktawy-1), &yi);
+                /*int xi = floor(x * (rozmiar_oktawy-1));
+                int yi = floor(y * (rozmiar_oktawy-1));
+                float a = (x * (rozmiar_oktawy-1)) - xi;
+                float b = (y * (rozmiar_oktawy-1)) - yi;*/
+                //CLogger::GetInstancePointer()->Error("%f %f %f %f\n", xi, yi, a, b);
+                
+                float lg = oktawy[i][static_cast<int>(yi * rozmiar_oktawy + xi)];
+                float pg = oktawy[i][static_cast<int>(yi * rozmiar_oktawy + xi + 1)];
+                float ld = oktawy[i][static_cast<int>((yi+1) * rozmiar_oktawy + xi)];
+                float pd = oktawy[i][static_cast<int>((yi+1) * rozmiar_oktawy + xi + 1)];
+                //CLogger::GetInstancePointer()->Error("%f %f %f %f\n", lg, pg, ld, pd);
+                
+                float g = pg * a + lg * (1-a);
+                float d = pd * a + ld * (1-a);
+                float res = d * b + g * (1-b);
+                wart += res;
+            }
+            
+            wart /= ilosc_oktaw;
+
+            m_relief[x2+y2*size] = wart * 255.0f;
+        }
+    }
+    return true;
+}
+
 bool CTerrain::AddReliefPoint(Math::Vector pos, float scaleRelief)
 {
     float dim = (m_mosaicCount*m_brickCount*m_brickSize)/2.0f;
