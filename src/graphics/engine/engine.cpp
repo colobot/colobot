@@ -19,6 +19,7 @@
 #include "graphics/engine/engine.h"
 
 #include "app/app.h"
+#include "app/gamedata.h"
 
 #include "common/image.h"
 #include "common/key.h"
@@ -2246,33 +2247,12 @@ Texture CEngine::CreateTexture(const std::string& texName, const TextureCreatePa
 
     if (image == nullptr)
     {
-        bool loadedFromTexPack = false;
-
-        std::string texPackName = m_app->GetTexPackFilePath(texName);
-        if (! texPackName.empty())
+        if (! img.Load(CGameData::GetInstancePointer()->GetFilePath(DIR_TEXTURE, texName)))
         {
-            if (img.Load(texPackName))
-            {
-                loadedFromTexPack = true;
-            }
-            else
-            {
-                std::string error = img.GetError();
-                GetLogger()->Error("Couldn't load texture '%s' from texpack: %s, blacklisting the texpack path\n",
-                                   texName.c_str(), error.c_str());
-                m_texBlacklist.insert(texPackName);
-            }
-        }
-
-        if (!loadedFromTexPack)
-        {
-            if (! img.Load(m_app->GetDataFilePath(DIR_TEXTURE, texName)))
-            {
-                std::string error = img.GetError();
-                GetLogger()->Error("Couldn't load texture '%s': %s, blacklisting\n", texName.c_str(), error.c_str());
-                m_texBlacklist.insert(texName);
-                return Texture(); // invalid texture
-            }
+            std::string error = img.GetError();
+            GetLogger()->Error("Couldn't load texture '%s': %s, blacklisting\n", texName.c_str(), error.c_str());
+            m_texBlacklist.insert(texName);
+            return Texture(); // invalid texture
         }
 
         image = &img;
@@ -2435,7 +2415,7 @@ bool CEngine::ChangeTextureColor(const std::string& texName,
 
 
     CImage img;
-    if (! img.Load(m_app->GetDataFilePath(DIR_TEXTURE, texName)))
+    if (! img.Load(CGameData::GetInstancePointer()->GetFilePath(DIR_TEXTURE, texName)))
     {
         std::string error = img.GetError();
         GetLogger()->Error("Couldn't load texture '%s': %s, blacklisting\n", texName.c_str(), error.c_str());

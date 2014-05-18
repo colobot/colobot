@@ -178,25 +178,6 @@ enum Language
     LANGUAGE_RUSSIAN = 4
 };
 
-/**
- * \enum DataDir
- * \brief Directories in data directory
- */
-enum DataDir
-{
-    DIR_AI,       //! < ai scripts
-    DIR_FONT,     //! < fonts
-    DIR_HELP,     //! < help files
-    DIR_ICON,     //! < icons & images
-    DIR_LEVEL,    //! < levels
-    DIR_MODEL,    //! < models
-    DIR_MUSIC,    //! < music
-    DIR_SOUND,    //! < sounds
-    DIR_TEXTURE,  //! < textures
-
-    DIR_MAX       //! < number of dirs
-};
-
 
 /**
  * \enum BuildType

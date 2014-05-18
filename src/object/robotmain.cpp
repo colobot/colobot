@@ -20,6 +20,7 @@
 #include "CBot/CBotDll.h"
 
 #include "app/app.h"
+#include "app/gamedata.h"
 
 #include "common/event.h"
 #include "common/global.h"
@@ -4081,7 +4082,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
         if (Cmd(line, "Instructions") && !resetObject)
         {
             OpString(line, "name", name);
-            std::string path = m_app->GetDataFilePath(DIR_HELP, name);
+            std::string path = CGameData::GetInstancePointer()->GetFilePath(DIR_HELP, name);
             strcpy(m_infoFilename[SATCOM_HUSTON], path.c_str());
 
             m_immediatSatCom = OpInt(line, "immediat", 0);
@@ -4093,7 +4094,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
         if (Cmd(line, "Satellite") && !resetObject)
         {
             OpString(line, "name", name);
-            std::string path = m_app->GetDataFilePath(DIR_HELP, name);
+            std::string path = CGameData::GetInstancePointer()->GetFilePath(DIR_HELP, name);
             strcpy(m_infoFilename[SATCOM_SAT], path.c_str());
             continue;
         }
@@ -4101,7 +4102,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
         if (Cmd(line, "Loading") && !resetObject)
         {
             OpString(line, "name", name);
-            std::string path = m_app->GetDataFilePath(DIR_HELP, name);
+            std::string path = CGameData::GetInstancePointer()->GetFilePath(DIR_HELP, name);
             strcpy(m_infoFilename[SATCOM_LOADING], path.c_str());
             continue;
         }
@@ -4109,14 +4110,14 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
         if (Cmd(line, "HelpFile") && !resetObject)
         {
             OpString(line, "name", name);
-            std::string path = m_app->GetDataFilePath(DIR_HELP, name);
+            std::string path = CGameData::GetInstancePointer()->GetFilePath(DIR_HELP, name);
             strcpy(m_infoFilename[SATCOM_PROG], path.c_str());
             continue;
         }
         if (Cmd(line, "SoluceFile") && !resetObject)
         {
             OpString(line, "name", name);
-            std::string path = m_app->GetDataFilePath(DIR_HELP, name);
+            std::string path = CGameData::GetInstancePointer()->GetFilePath(DIR_HELP, name);
             strcpy(m_infoFilename[SATCOM_SOLUCE], path.c_str());
             continue;
         }

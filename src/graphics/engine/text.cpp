@@ -19,6 +19,7 @@
 #include "graphics/engine/text.h"
 
 #include "app/app.h"
+#include "app/gamedata.h"
 
 #include "common/image.h"
 #include "common/logger.h"
@@ -865,7 +866,7 @@ CachedFont* CText::GetOrOpenFont(FontType font, float size)
         return m_lastCachedFont;
     }
 
-    std::string path = CApplication::GetInstance().GetDataFilePath(DIR_FONT, mf->fileName);
+    std::string path = CGameData::GetInstancePointer()->GetFilePath(DIR_FONT, mf->fileName);
 
     m_lastCachedFont = new CachedFont();
     m_lastCachedFont->font = TTF_OpenFont(path.c_str(), pointSize);

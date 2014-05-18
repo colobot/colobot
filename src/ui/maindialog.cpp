@@ -18,6 +18,7 @@
 #include "ui/maindialog.h"
 
 #include "app/app.h"
+#include "app/gamedata.h"
 #include "app/system.h"
 
 #include "common/config.h"
@@ -3588,7 +3589,7 @@ void CMainDialog::BuildSceneName(std::string &filename, char *base, int rank)
     {
         rankStream << std::setfill('0') << std::setw(3) << rank;
         filename = base + rankStream.str() + ".txt";
-        filename = CApplication::GetInstance().GetDataFilePath(DIR_LEVEL, filename);
+        filename = CGameData::GetInstancePointer()->GetFilePath(DIR_LEVEL, filename);
     }
 }
 

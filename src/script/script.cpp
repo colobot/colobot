@@ -18,6 +18,7 @@
 #include "script/script.h"
 
 #include "app/app.h"
+#include "app/gamedata.h"
 
 #include "common/global.h"
 #include "common/iman.h"
@@ -4406,7 +4407,7 @@ void CScript::New(Ui::CEdit* edit, const char* name)
     sf = m_main->GetScriptFile();
     if ( sf[0] != 0 )  // Load an empty program specific?
     {
-        std::string filename = CApplication::GetInstancePointer()->GetDataFilePath(DIR_AI, sf);
+        std::string filename = CGameData::GetInstancePointer()->GetFilePath(DIR_AI, sf);
         file = fopen(filename.c_str(), "rb");
         if ( file != NULL )
         {
@@ -4500,7 +4501,7 @@ bool CScript::ReadScript(const char* filename)
 
     if ( strchr(filename, '/') == 0 ) //we're reading non user script
     {
-        name = CApplication::GetInstancePointer()->GetDataFilePath(DIR_AI, filename);
+        name = CGameData::GetInstancePointer()->GetFilePath(DIR_AI, filename);
     }
     else
     {
@@ -4534,7 +4535,7 @@ bool CScript::WriteScript(const char* filename)
 
     if ( strchr(filename, '/') == 0 ) //we're writing non user script
     {
-        name = CApplication::GetInstancePointer()->GetDataFilePath(DIR_AI, filename);
+        name = CGameData::GetInstancePointer()->GetFilePath(DIR_AI, filename);
     }
     else
     {

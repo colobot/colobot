@@ -19,6 +19,7 @@
 #include "ui/edit.h"
 
 #include "app/app.h"
+#include "app/gamedata.h"
 
 #include "clipboard/clipboard.h"
 
@@ -1462,7 +1463,7 @@ bool CEdit::ReadText(std::string filename, int addSize)
     std::string path = filename;
     if (!fs::exists(path))
     {
-        path = CApplication::GetInstancePointer()->GetDataDirPath() + "/" + filename;
+        path = CGameData::GetInstancePointer()->GetDataPath(filename);
     }
 
     file = fopen(fs::path(path).make_preferred().string().c_str(), "rb");
