@@ -200,12 +200,6 @@ CEventQueue* CApplication::GetEventQueue()
 CSoundInterface* CApplication::GetSound()
 {
     return m_sound;
-
-    for (int i = 0; i < PCNT_MAX; ++i)
-    {
-        GetSystemUtils()->DestroyTimeStamp(m_performanceCounters[i][0]);
-        GetSystemUtils()->DestroyTimeStamp(m_performanceCounters[i][1]);
-    }
 }
 
 ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
