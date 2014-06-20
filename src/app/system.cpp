@@ -192,23 +192,7 @@ float CSystemUtils::TimeStampDiff(SystemTimeStamp *before, SystemTimeStamp *afte
     return result;
 }
 
-std::string CSystemUtils::GetDataPath()
-{
-    return COLOBOT_DEFAULT_DATADIR;
-}
-
-std::string CSystemUtils::GetLangPath()
-{
-    return COLOBOT_I18N_DIR;
-}
-
 std::string CSystemUtils::GetProfileFileLocation()
 {
     return std::string("colobot.ini");
 }
-
-std::string CSystemUtils::GetSavegameDirectoryLocation()
-{
-    return std::string("savegame");
-}
-

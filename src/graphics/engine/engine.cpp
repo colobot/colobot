@@ -19,7 +19,6 @@
 #include "graphics/engine/engine.h"
 
 #include "app/app.h"
-#include "app/gamedata.h"
 
 #include "common/image.h"
 #include "common/key.h"
@@ -283,7 +282,7 @@ bool CEngine::Create()
     params.minFilter = TEX_MIN_FILTER_NEAREST;
     params.magFilter = TEX_MAG_FILTER_NEAREST;
     params.mipmap = false;
-    m_miceTexture = LoadTexture("mouse.png", params);
+    m_miceTexture = LoadTexture("textures/interface/mouse.png", params);
 
     GetSystemUtils()->GetCurrentTimeStamp(m_currentFrameTime);
     GetSystemUtils()->GetCurrentTimeStamp(m_lastFrameTime);
@@ -2247,7 +2246,7 @@ Texture CEngine::CreateTexture(const std::string& texName, const TextureCreatePa
 
     if (image == nullptr)
     {
-        if (! img.Load(CGameData::GetInstancePointer()->GetFilePath(DIR_TEXTURE, texName)))
+        if (!img.Load(texName))
         {
             std::string error = img.GetError();
             GetLogger()->Error("Couldn't load texture '%s': %s, blacklisting\n", texName.c_str(), error.c_str());
@@ -2298,15 +2297,15 @@ Texture CEngine::LoadTexture(const std::string& name, const TextureCreateParams&
 
 bool CEngine::LoadAllTextures()
 {
-    LoadTexture("text.png");
-    m_miceTexture = LoadTexture("mouse.png");
-    LoadTexture("button1.png");
-    LoadTexture("button2.png");
-    LoadTexture("button3.png");
-    LoadTexture("effect00.png");
-    LoadTexture("effect01.png");
-    LoadTexture("effect02.png");
-    LoadTexture("map.png");
+    LoadTexture("textures/interface/text.png");
+    m_miceTexture = LoadTexture("textures/interface/mouse.png");
+    LoadTexture("textures/interface/button1.png");
+    LoadTexture("textures/interface/button2.png");
+    LoadTexture("textures/interface/button3.png");
+    LoadTexture("textures/interface/effect00.png");
+    LoadTexture("textures/interface/effect01.png");
+    LoadTexture("textures/interface/effect02.png");
+    LoadTexture("textures/interface/map.png");
 
     if (! m_backgroundName.empty())
     {
@@ -2415,7 +2414,7 @@ bool CEngine::ChangeTextureColor(const std::string& texName,
 
 
     CImage img;
-    if (! img.Load(CGameData::GetInstancePointer()->GetFilePath(DIR_TEXTURE, texName)))
+    if (!img.Load(texName))
     {
         std::string error = img.GetError();
         GetLogger()->Error("Couldn't load texture '%s': %s, blacklisting\n", texName.c_str(), error.c_str());

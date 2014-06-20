@@ -198,10 +198,10 @@ void CParticle::FlushParticle(int sheet)
 //! Returns file name of the effect effectNN.png, with NN = number
 void NameParticle(std::string &name, int num)
 {
-         if (num == 1)  name = "effect00.png";
-    else if (num == 2)  name = "effect01.png";
-    else if (num == 3)  name = "effect02.png";
-    else if (num == 4)  name = "text.png";
+         if (num == 1)  name = "textures/interface/effect00.png";
+    else if (num == 2)  name = "textures/interface/effect01.png";
+    else if (num == 3)  name = "textures/interface/effect02.png";
+    else if (num == 4)  name = "textures/interface/text.png";
     else                name = "";
 }
 

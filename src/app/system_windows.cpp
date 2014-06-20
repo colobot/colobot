@@ -128,22 +128,3 @@ std::string CSystemUtilsWindows::GetProfileFileLocation()
 
     return profileFile;
 }
-
-std::string CSystemUtilsWindows::GetSavegameDirectoryLocation()
-{
-    std::string savegameDir;
-
-    char* envUSERPROFILE = getenv("USERPROFILE");
-    if (envUSERPROFILE == NULL)
-    {
-        savegameDir = "savegame";
-    }
-    else
-    {
-        savegameDir = std::string(envUSERPROFILE) + "\\colobot\\savegame";
-    }
-    GetLogger()->Trace("Saved game files are going to %s\n", savegameDir.c_str());
-
-    return savegameDir;
-}
-

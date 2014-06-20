@@ -61,7 +61,6 @@ endif()
 # Source files
 set(SOURCES
 app/app.cpp
-app/gamedata.cpp
 app/main.cpp
 app/pausemanager.cpp
 app/system.cpp
@@ -75,6 +74,9 @@ common/misc.cpp
 common/profile.cpp
 common/restext.cpp
 common/stringutils.cpp
+common/resources/resourcemanager.cpp
+common/resources/resourcestreambuffer.cpp
+common/resources/inputstream.cpp
 graphics/core/color.cpp
 graphics/engine/camera.cpp
 graphics/engine/cloud.cpp
@@ -202,6 +204,7 @@ ${Boost_LIBRARIES}
 ${LIBSNDFILE_LIBRARY}
 ${OPTIONAL_LIBS}
 ${PLATFORM_LIBS}
+${PHYSFS_LIBRARY}
 )
 
 # Local
@@ -224,6 +227,7 @@ ${LIBSNDFILE_INCLUDE_DIR}
 ${LOCALENAME_INCLUDE_DIR}
 ${OPTIONAL_INCLUDE_DIRS}
 ${CLIPBOARD_INCLUDE_DIR}
+${PHYSFS_INCLUDE_PATH}
 )
 
 link_directories(${CMAKE_CURRENT_SOURCE_DIR}/CBot)

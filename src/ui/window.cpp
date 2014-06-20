@@ -1174,7 +1174,7 @@ void CWindow::DrawVertex(Math::Point pos, Math::Point dim, int icon)
 
     if ( icon == 0 )
     {
-        m_engine->SetTexture("button2.png");
+        m_engine->SetTexture("textures/interface/button2.png");
         m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_WHITE);
         uv1.x =  64.0f/256.0f;  // dark blue transparent
         uv1.y =  64.0f/256.0f;
@@ -1190,7 +1190,7 @@ void CWindow::DrawVertex(Math::Point pos, Math::Point dim, int icon)
     }
     else if ( icon == 1 )
     {
-        m_engine->SetTexture("button1.png");
+        m_engine->SetTexture("textures/interface/button1.png");
         m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
         uv1.x = 128.0f/256.0f;  // white tooltip
         uv1.y =   0.0f/256.0f;
@@ -1204,7 +1204,7 @@ void CWindow::DrawVertex(Math::Point pos, Math::Point dim, int icon)
     }
     else if ( icon == 2 )
     {
-        m_engine->SetTexture("button1.png");
+        m_engine->SetTexture("textures/interface/button1.png");
         m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
         uv1.x = 128.0f/256.0f;  // yellow
         uv1.y =  16.0f/256.0f;
@@ -1218,7 +1218,7 @@ void CWindow::DrawVertex(Math::Point pos, Math::Point dim, int icon)
     }
     else if ( icon == 3 )
     {
-        m_engine->SetTexture("button2.png");
+        m_engine->SetTexture("textures/interface/button2.png");
         m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_BLACK);
         uv1.x =   0.0f/256.0f;  // transparent blue bar with yellow upper
         uv1.y =  64.0f/256.0f;
@@ -1237,7 +1237,7 @@ void CWindow::DrawVertex(Math::Point pos, Math::Point dim, int icon)
         dim.x += 100.0f/640.0f;
         dim.y +=  60.0f/480.0f;
 
-        m_engine->SetTexture("human.png");
+        m_engine->SetTexture("textures/interface/human.png");
         m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
         uv1.x = 140.0f/256.0f;
         uv1.y =  32.0f/256.0f;
@@ -1254,7 +1254,7 @@ void CWindow::DrawVertex(Math::Point pos, Math::Point dim, int icon)
         dim.x -= 20.0f/640.0f;
         dim.y +=  0.0f/480.0f;
 
-        m_engine->SetTexture("button2.png");
+        m_engine->SetTexture("textures/interface/button2.png");
         m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_WHITE);
         uv1.x = 192.0f/256.0f;
         uv1.y =  32.0f/256.0f;
@@ -1273,7 +1273,7 @@ void CWindow::DrawVertex(Math::Point pos, Math::Point dim, int icon)
         dim.x -= 20.0f/640.0f;
         dim.y -= 20.0f/480.0f;
 
-        m_engine->SetTexture("button1.png");
+        m_engine->SetTexture("textures/interface/button1.png");
         m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
         uv1.x =  64.0f/256.0f;
         uv1.y =   0.0f/256.0f;
@@ -1309,7 +1309,7 @@ void CWindow::DrawVertex(Math::Point pos, Math::Point dim, int icon)
         dim.x -= 20.0f/640.0f;
         dim.y -= 20.0f/480.0f;
 
-        m_engine->SetTexture("button3.png");
+        m_engine->SetTexture("textures/interface/button3.png");
         uv1.x =   0.0f/256.0f;
         uv1.y = 224.0f/256.0f;
         uv2.x =  32.0f/256.0f;
@@ -1320,7 +1320,7 @@ void CWindow::DrawVertex(Math::Point pos, Math::Point dim, int icon)
         uv2.y -= dp;
         DrawIcon(pos, dim, uv1, uv2);  // dark blue background
 
-        m_engine->SetTexture("button2.png");
+        m_engine->SetTexture("textures/interface/button2.png");
         uv1.x = 224.0f/256.0f;
         uv1.y = 224.0f/256.0f;
         uv2.x = 249.0f/256.0f;
@@ -1392,7 +1392,7 @@ void CWindow::DrawVertex(Math::Point pos, Math::Point dim, int icon)
     }
     else if ( icon == 5 )
     {
-        m_engine->SetTexture("button2.png");
+        m_engine->SetTexture("textures/interface/button2.png");
         m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_BLACK);
         uv1.x =  64.0f/256.0f;  // transparent green
         uv1.y = 160.0f/256.0f;
@@ -1406,7 +1406,7 @@ void CWindow::DrawVertex(Math::Point pos, Math::Point dim, int icon)
     }
     else if ( icon == 6 )
     {
-        m_engine->SetTexture("button2.png");
+        m_engine->SetTexture("textures/interface/button2.png");
         m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_BLACK);
         uv1.x =  64.0f/256.0f;  // transparent red
         uv1.y = 176.0f/256.0f;
@@ -1420,7 +1420,7 @@ void CWindow::DrawVertex(Math::Point pos, Math::Point dim, int icon)
     }
     else if ( icon == 7 )
     {
-        m_engine->SetTexture("button2.png");
+        m_engine->SetTexture("textures/interface/button2.png");
         m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_BLACK);
         uv1.x =  64.0f/256.0f;  // transparent blue
         uv1.y = 192.0f/256.0f;
@@ -1434,7 +1434,7 @@ void CWindow::DrawVertex(Math::Point pos, Math::Point dim, int icon)
     }
     else if ( icon == 8 )
     {
-        m_engine->SetTexture("button1.png");
+        m_engine->SetTexture("textures/interface/button1.png");
         m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
         uv1.x =   0.0f/256.0f;  // opaque orange
         uv1.y =   0.0f/256.0f;
@@ -1450,7 +1450,7 @@ void CWindow::DrawVertex(Math::Point pos, Math::Point dim, int icon)
     }
     else if ( icon == 9 )
     {
-        m_engine->SetTexture("button2.png");
+        m_engine->SetTexture("textures/interface/button2.png");
         m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
         uv1.x =  32.0f/256.0f;  // opaque gray
         uv1.y =  32.0f/256.0f;
@@ -1470,7 +1470,7 @@ void CWindow::DrawVertex(Math::Point pos, Math::Point dim, int icon)
     }
     else if ( icon == 11 )
     {
-        m_engine->SetTexture("button2.png");
+        m_engine->SetTexture("textures/interface/button2.png");
         m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_BLACK);
         uv1.x =  64.0f/256.0f;  // transparent yellow
         uv1.y = 224.0f/256.0f;
@@ -1484,7 +1484,7 @@ void CWindow::DrawVertex(Math::Point pos, Math::Point dim, int icon)
     }
     else if ( icon == 12 )
     {
-        m_engine->SetTexture("button1.png");
+        m_engine->SetTexture("textures/interface/button1.png");
         m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
         uv1.x = 128.0f/256.0f;  // dirty opaque gray
         uv1.y = 128.0f/256.0f;
@@ -1500,7 +1500,7 @@ void CWindow::DrawVertex(Math::Point pos, Math::Point dim, int icon)
     }
     else if ( icon == 13 )
     {
-        m_engine->SetTexture("button1.png");
+        m_engine->SetTexture("textures/interface/button1.png");
         m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
         uv1.x = 192.0f/256.0f;  //  dirty opaque blue
         uv1.y = 128.0f/256.0f;
@@ -1516,7 +1516,7 @@ void CWindow::DrawVertex(Math::Point pos, Math::Point dim, int icon)
     }
     else if ( icon == 14 )
     {
-        m_engine->SetTexture("button1.png");
+        m_engine->SetTexture("textures/interface/button1.png");
         m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
         uv1.x = 160.0f/256.0f;  // dirty opaque red
         uv1.y = 128.0f/256.0f;
@@ -1544,7 +1544,7 @@ void CWindow::DrawHach(Math::Point pos, Math::Point dim)
 
     dp = 0.5f/256.0f;
 
-    m_engine->SetTexture("button2.png");
+    m_engine->SetTexture("textures/interface/button2.png");
     m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
     uv1.x =  64.0f/256.0f;  // hatching
     uv1.y = 208.0f/256.0f;

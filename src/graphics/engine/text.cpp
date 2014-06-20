@@ -19,11 +19,11 @@
 #include "graphics/engine/text.h"
 
 #include "app/app.h"
-#include "app/gamedata.h"
 
 #include "common/image.h"
 #include "common/logger.h"
 #include "common/stringutils.h"
+#include "common/resources/resourcemanager.h"
 
 #include "math/func.h"
 
@@ -78,12 +78,12 @@ bool CText::Create()
         return false;
     }
 
-    m_fonts[FONT_COLOBOT]        = new MultisizeFont("dvu_sans.ttf");
-    m_fonts[FONT_COLOBOT_BOLD]   = new MultisizeFont("dvu_sans_bold.ttf");
-    m_fonts[FONT_COLOBOT_ITALIC] = new MultisizeFont("dvu_sans_italic.ttf");
+    m_fonts[FONT_COLOBOT]        = new MultisizeFont("fonts/dvu_sans.ttf");
+    m_fonts[FONT_COLOBOT_BOLD]   = new MultisizeFont("fonts/dvu_sans_bold.ttf");
+    m_fonts[FONT_COLOBOT_ITALIC] = new MultisizeFont("fonts/dvu_sans_italic.ttf");
 
-    m_fonts[FONT_COURIER]        = new MultisizeFont("dvu_sans_mono.ttf");
-    m_fonts[FONT_COURIER_BOLD]   = new MultisizeFont("dvu_sans_mono_bold.ttf");
+    m_fonts[FONT_COURIER]        = new MultisizeFont("fonts/dvu_sans_mono.ttf");
+    m_fonts[FONT_COURIER_BOLD]   = new MultisizeFont("fonts/dvu_sans_mono_bold.ttf");
 
     for (auto it = m_fonts.begin(); it != m_fonts.end(); ++it)
     {
@@ -866,10 +866,8 @@ CachedFont* CText::GetOrOpenFont(FontType font, float size)
         return m_lastCachedFont;
     }
 
-    std::string path = CGameData::GetInstancePointer()->GetFilePath(DIR_FONT, mf->fileName);
-
     m_lastCachedFont = new CachedFont();
-    m_lastCachedFont->font = TTF_OpenFont(path.c_str(), pointSize);
+    m_lastCachedFont->font = TTF_OpenFontRW(CResourceManager::GetSDLFileHandler(mf->fileName), 1, pointSize);
     if (m_lastCachedFont->font == nullptr)
         m_error = std::string("TTF_OpenFont error ") + std::string(TTF_GetError());
 

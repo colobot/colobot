@@ -19,7 +19,6 @@
 
 #include "app/app.h"
 
-#include "app/gamedata.h"
 #include "app/system.h"
 
 #include "common/logger.h"
@@ -27,6 +26,7 @@
 #include "common/image.h"
 #include "common/key.h"
 #include "common/stringutils.h"
+#include "common/resources/resourcemanager.h"
 
 #include "graphics/engine/modelmanager.h"
 #include "graphics/opengl/gldevice.h"
@@ -101,7 +101,6 @@ CApplication::CApplication()
     m_objMan        = new CObjectManager();
     m_eventQueue    = new CEventQueue();
     m_profile       = new CProfile();
-    m_gameData      = new CGameData();
 
     m_engine    = nullptr;
     m_device    = nullptr;
@@ -112,7 +111,6 @@ CApplication::CApplication()
     m_exitCode  = 0;
     m_active    = false;
     m_debugModes = 0;
-    m_customDataPath = false;
 
     m_windowTitle = "COLOBOT GOLD";
 
@@ -148,9 +146,6 @@ CApplication::CApplication()
     m_kmodState = 0;
     m_mouseButtonsState = 0;
     m_trackedKeys = 0;
-
-    m_dataPath = GetSystemUtils()->GetDataPath();
-    m_langPath = GetSystemUtils()->GetLangPath();
 
     m_runSceneName = "";
     m_runSceneRank = 0;
@@ -266,8 +261,6 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
                 GetLogger()->Message("  -scenetest          win every mission right after it's loaded\n");
                 GetLogger()->Message("  -loglevel level     set log level to level (one of: trace, debug, info, warn, error, none)\n");
                 GetLogger()->Message("  -language lang      set language (one of: en, de, fr, pl, ru)\n");
-                GetLogger()->Message("  -datadir path       set custom data directory path\n");
-                GetLogger()->Message("  -mod path           run mod\n");
                 GetLogger()->Message("  -langdir path       set custom language directory path\n");
                 GetLogger()->Message("  -vbo mode           set OpenGL VBO mode (one of: auto, enable, disable)\n");
                 return PARSE_ARGS_HELP;
@@ -331,25 +324,6 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
                 m_language = language;
                 break;
             }
-            case OPT_DATADIR:
-            {
-                m_dataPath = optarg;
-                m_customDataPath = true;
-                GetLogger()->Info("Using datadir: '%s'\n", optarg);
-                break;
-            }
-            case OPT_MOD:
-            {
-                m_gameData->AddMod(std::string(optarg));
-                GetLogger()->Info("Running mod from path: '%s'\n", optarg);
-                break;
-            }
-            case OPT_LANGDIR:
-            {
-                m_langPath = optarg;
-                GetLogger()->Info("Using language dir: '%s'\n", m_langPath.c_str());
-                break;
-            }
             case OPT_VBO:
             {
                 std::string vbo;
@@ -388,25 +362,17 @@ bool CApplication::Create()
         GetLogger()->Warn("Config not found. Default values will be used!\n");
         defaultValues = true;
     }
-    else
-    {
-        if (!m_customDataPath && GetProfile().GetLocalProfileString("Resources", "Data", path))
-            m_dataPath = path;
-    }
 
-    boost::filesystem::path dataPath(m_dataPath);
+    boost::filesystem::path dataPath(COLOBOT_DEFAULT_DATADIR);
     if (! (boost::filesystem::exists(dataPath) && boost::filesystem::is_directory(dataPath)) )
     {
-        GetLogger()->Error("Data directory '%s' doesn't exist or is not a directory\n", m_dataPath.c_str());
+        GetLogger()->Error("Data directory '%s' doesn't exist or is not a directory\n", COLOBOT_DEFAULT_DATADIR);
         m_errorMessage = std::string("Could not read from data directory:\n") +
-                         std::string("'") + m_dataPath + std::string("'\n") +
+                         std::string("'") + COLOBOT_DEFAULT_DATADIR + std::string("'\n") +
                          std::string("Please check your installation, or supply a valid data directory by -datadir option.");
         m_exitCode = 1;
         return false;
     }
-    
-    m_gameData->SetDataDir(std::string(m_dataPath));
-    m_gameData->Init();
 
     if (GetProfile().GetLocalProfileString("Language", "Lang", path)) {
         Language language;
@@ -1724,7 +1690,7 @@ void CApplication::SetLanguage(Language language)
 
     setlocale(LC_ALL, "");
 
-    bindtextdomain("colobot", m_langPath.c_str());
+    bindtextdomain("colobot", CResourceManager::GetLanguageLocation().c_str());
     bind_textdomain_codeset("colobot", "UTF-8");
     textdomain("colobot");
 

@@ -1,6 +1,5 @@
 // * This file is part of the COLOBOT source code
-// * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
-// * Copyright (C) 2012, Polish Portal of Colobot (PPC)
+// * Copyright (C) 2014 Polish Portal of Colobot (PPC)
 // *
 // * This program is free software: you can redistribute it and/or modify
 // * it under the terms of the GNU General Public License as published by
@@ -15,22 +14,20 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-/**
- * \file app/system_macosx.h
- * \brief MacOSX-specific implementation of system functions
- */
+#pragma once
 
-#include "app/system.h"
-#include "app/system_other.h"
+#include <istream>
+#include <string>
 
-class CSystemUtilsMacOSX : public CSystemUtilsOther
+
+class CInputStream : public std::istream
 {
 public:
-    virtual void Init() override;
-
-    virtual std::string GetProfileFileLocation() override;
-private:
-    std::string m_ASPath;
-    std::string m_dataPath;
+    CInputStream();
+    virtual ~CInputStream();
+    
+    void open(const std::string &filename);
+    void close();
+    bool is_open();    
+    size_t size();
 };
-

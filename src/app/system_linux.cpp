@@ -121,31 +121,3 @@ std::string CSystemUtilsLinux::GetProfileFileLocation()
 
     return profileFile;
 }
-
-std::string CSystemUtilsLinux::GetSavegameDirectoryLocation()
-{
-    std::string savegameDir;
-
-    // Determine savegame dir according to XDG Base Directory Specification
-    char *envXDG_DATA_HOME = getenv("XDG_CONFIG_DATA");
-    if (envXDG_DATA_HOME == NULL)
-    {
-        char *envHOME = getenv("HOME");
-        if (envHOME == NULL)
-        {
-            savegameDir = "/tmp/colobot-savegame";
-        }
-        else
-        {
-            savegameDir = std::string(envHOME) + "/.local/share/colobot";
-        }
-    }
-    else
-    {
-        savegameDir = std::string(envXDG_DATA_HOME) + "/colobot";
-    }
-    GetLogger()->Trace("Saved game files are going to %s\n", savegameDir.c_str());
-
-    return savegameDir;
-}
-

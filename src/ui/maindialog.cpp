@@ -18,7 +18,6 @@
 #include "ui/maindialog.h"
 
 #include "app/app.h"
-#include "app/gamedata.h"
 #include "app/system.h"
 
 #include "common/config.h"
@@ -182,7 +181,7 @@ CMainDialog::CMainDialog()
     #if DEV_BUILD
     m_savegameDir = "savegame";
     #else
-    m_savegameDir = GetSystemUtils()->GetSavegameDirectoryLocation();
+    m_savegameDir = "savegame";
     #endif
 
     m_publicDir = "program";
@@ -389,7 +388,7 @@ pb->SetState(STATE_SHADOW);
         pl->SetFontType(Gfx::FONT_COURIER);
         pl->SetFontSize(Gfx::FONT_SIZE_SMALL);
 
-        m_engine->SetBackground("interface.png",
+        m_engine->SetBackground("textures/interface/interface.png",
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
@@ -509,7 +508,7 @@ pb->SetState(STATE_SHADOW);
         UpdateNameControl();
         UpdateNameFace();
 
-        m_engine->SetBackground("interface.png",
+        m_engine->SetBackground("textures/interface/interface.png",
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
@@ -973,7 +972,7 @@ pb->SetState(STATE_SHADOW);
         pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_BACK);
         pb->SetState(STATE_SHADOW);
 
-        m_engine->SetBackground("interface.png",
+        m_engine->SetBackground("textures/interface/interface.png",
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
@@ -1172,7 +1171,7 @@ pb->SetState(STATE_SHADOW);
 
         if ( !m_bSimulSetup )
         {
-            m_engine->SetBackground("interface.png",
+            m_engine->SetBackground("textures/interface/interface.png",
                     Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                     Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                     Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
@@ -1690,7 +1689,7 @@ pos.y -= 0.048f;
 
         if ( m_phase == PHASE_READ )
         {
-            m_engine->SetBackground("interface.png",
+            m_engine->SetBackground("textures/interface/interface.png",
                     Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                     Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                     Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
@@ -1740,7 +1739,7 @@ pos.y -= 0.048f;
         pl->SetFontSize(12.0f);
         pl->SetTextAlign(Gfx::TEXT_ALIGN_CENTER);
 
-        m_engine->SetBackground("interface.png",
+        m_engine->SetBackground("textures/interface/interface.png",
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
@@ -1762,7 +1761,7 @@ pos.y -= 0.048f;
         m_engine->SetOverColor(Gfx::Color(1.0f, 1.0f, 1.0f, 1.0f), Gfx::ENG_RSTATE_TCOLOR_BLACK); // TODO: color ok?
         m_engine->SetOverFront(true);
 
-        m_engine->SetBackground("ppc.png",
+        m_engine->SetBackground("textures/interface/ppc.png",
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
@@ -1781,7 +1780,7 @@ pos.y -= 0.048f;
         m_engine->SetOverColor(Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f), Gfx::ENG_RSTATE_TCOLOR_WHITE); // TODO: color ok?
         m_engine->SetOverFront(true);
 
-        m_engine->SetBackground("colobot.png",
+        m_engine->SetBackground("textures/interface/colobot.png",
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
@@ -1800,7 +1799,7 @@ pos.y -= 0.048f;
         m_engine->SetOverColor(Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f), Gfx::ENG_RSTATE_TCOLOR_WHITE); // TODO: color ok?
         m_engine->SetOverFront(true);
 
-        m_engine->SetBackground("epsitec.png",
+        m_engine->SetBackground("textures/interface/epsitec.png",
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
@@ -1925,7 +1924,7 @@ pos.y -= 0.048f;
         pb->SetState(STATE_SHADOW);
         // #endif
 
-        m_engine->SetBackground("generico.png",
+        m_engine->SetBackground("textures/interface/generico.png",
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
@@ -3589,7 +3588,6 @@ void CMainDialog::BuildSceneName(std::string &filename, char *base, int rank)
     {
         rankStream << std::setfill('0') << std::setw(3) << rank;
         filename = base + rankStream.str() + ".txt";
-        filename = CGameData::GetInstancePointer()->GetFilePath(DIR_LEVEL, filename);
     }
 }
 

@@ -20,7 +20,6 @@
 #include "CBot/CBotDll.h"
 
 #include "app/app.h"
-#include "app/gamedata.h"
 
 #include "common/event.h"
 #include "common/global.h"
@@ -4082,8 +4081,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
         if (Cmd(line, "Instructions") && !resetObject)
         {
             OpString(line, "name", name);
-            std::string path = CGameData::GetInstancePointer()->GetFilePath(DIR_HELP, name);
-            strcpy(m_infoFilename[SATCOM_HUSTON], path.c_str());
+            strcpy(m_infoFilename[SATCOM_HUSTON], name);
 
             m_immediatSatCom = OpInt(line, "immediat", 0);
             if (m_version >= 2) m_beginSatCom = m_lockedSatCom = OpInt(line, "lock", 0);
@@ -4094,31 +4092,27 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
         if (Cmd(line, "Satellite") && !resetObject)
         {
             OpString(line, "name", name);
-            std::string path = CGameData::GetInstancePointer()->GetFilePath(DIR_HELP, name);
-            strcpy(m_infoFilename[SATCOM_SAT], path.c_str());
+            strcpy(m_infoFilename[SATCOM_SAT], name);
             continue;
         }
 
         if (Cmd(line, "Loading") && !resetObject)
         {
             OpString(line, "name", name);
-            std::string path = CGameData::GetInstancePointer()->GetFilePath(DIR_HELP, name);
-            strcpy(m_infoFilename[SATCOM_LOADING], path.c_str());
+            strcpy(m_infoFilename[SATCOM_LOADING], name);
             continue;
         }
 
         if (Cmd(line, "HelpFile") && !resetObject)
         {
             OpString(line, "name", name);
-            std::string path = CGameData::GetInstancePointer()->GetFilePath(DIR_HELP, name);
-            strcpy(m_infoFilename[SATCOM_PROG], path.c_str());
+            strcpy(m_infoFilename[SATCOM_PROG], name);
             continue;
         }
         if (Cmd(line, "SoluceFile") && !resetObject)
         {
             OpString(line, "name", name);
-            std::string path = CGameData::GetInstancePointer()->GetFilePath(DIR_HELP, name);
-            strcpy(m_infoFilename[SATCOM_SOLUCE], path.c_str());
+            strcpy(m_infoFilename[SATCOM_SOLUCE], name);
             continue;
         }
 
@@ -5308,12 +5302,12 @@ void CRobotMain::ChangeColor()
     // PARTIPLOUF0 and PARTIDROP :
     ts = Math::Point(0.500f, 0.500f);
     ti = Math::Point(0.875f, 0.750f);
-    m_engine->ChangeTextureColor("effect00.png", m_colorRefWater, m_colorNewWater, colorRef2, colorNew2, 0.20f, -1.0f, ts, ti, 0, m_colorShiftWater, true);
+    m_engine->ChangeTextureColor("textures/interface/effect00.png", m_colorRefWater, m_colorNewWater, colorRef2, colorNew2, 0.20f, -1.0f, ts, ti, 0, m_colorShiftWater, true);
 
     // PARTIFLIC :
     ts = Math::Point(0.00f, 0.75f);
     ti = Math::Point(0.25f, 1.00f);
-    m_engine->ChangeTextureColor("effect02.png", m_colorRefWater, m_colorNewWater, colorRef2, colorNew2, 0.20f, -1.0f, ts, ti, 0, m_colorShiftWater, true);
+    m_engine->ChangeTextureColor("textures/interface/effect02.png", m_colorRefWater, m_colorNewWater, colorRef2, colorNew2, 0.20f, -1.0f, ts, ti, 0, m_colorShiftWater, true);
 }
 
 //! Updates the number of unnecessary objects

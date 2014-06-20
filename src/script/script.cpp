@@ -18,7 +18,6 @@
 #include "script/script.h"
 
 #include "app/app.h"
-#include "app/gamedata.h"
 
 #include "common/global.h"
 #include "common/iman.h"
@@ -4407,7 +4406,7 @@ void CScript::New(Ui::CEdit* edit, const char* name)
     sf = m_main->GetScriptFile();
     if ( sf[0] != 0 )  // Load an empty program specific?
     {
-        std::string filename = CGameData::GetInstancePointer()->GetFilePath(DIR_AI, sf);
+        std::string filename = sf;
         file = fopen(filename.c_str(), "rb");
         if ( file != NULL )
         {
@@ -4497,20 +4496,8 @@ bool CScript::ReadScript(const char* filename)
 {
     FILE*       file;
     Ui::CEdit*  edit;
-    std::string name;
 
-    if ( strchr(filename, '/') == 0 ) //we're reading non user script
-    {
-        name = CGameData::GetInstancePointer()->GetFilePath(DIR_AI, filename);
-    }
-    else
-    {
-        name = filename;
-        //TODO: is this needed?
-        // UserDir(name, filename, "");
-    }
-
-    file = fopen(name.c_str(), "rb");
+    file = fopen(filename, "rb");
     if ( file == NULL )  return false;
     fclose(file);
 
@@ -4520,7 +4507,7 @@ bool CScript::ReadScript(const char* filename)
     edit = m_interface->CreateEdit(Math::Point(0.0f, 0.0f), Math::Point(0.0f, 0.0f), 0, EVENT_EDIT9);
     edit->SetMaxChar(Ui::EDITSTUDIOMAX);
     edit->SetAutoIndent(m_engine->GetEditIndentMode());
-    edit->ReadText(name.c_str());
+    edit->ReadText(filename);
     GetScript(edit);
     m_interface->DeleteControl(EVENT_EDIT9);
     return true;
@@ -4531,16 +4518,6 @@ bool CScript::ReadScript(const char* filename)
 bool CScript::WriteScript(const char* filename)
 {
     Ui::CEdit*  edit;
-    std::string name;
-
-    if ( strchr(filename, '/') == 0 ) //we're writing non user script
-    {
-        name = CGameData::GetInstancePointer()->GetFilePath(DIR_AI, filename);
-    }
-    else
-    {
-        name = filename;
-    }
 
     if ( m_script == nullptr )
     {
@@ -4552,7 +4529,7 @@ bool CScript::WriteScript(const char* filename)
     edit->SetMaxChar(Ui::EDITSTUDIOMAX);
     edit->SetAutoIndent(m_engine->GetEditIndentMode());
     edit->SetText(m_script);
-    edit->WriteText(name);
+    edit->WriteText(filename);
     m_interface->DeleteControl(EVENT_EDIT9);
     return true;
 }

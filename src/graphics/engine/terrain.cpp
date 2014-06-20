@@ -19,7 +19,6 @@
 #include "graphics/engine/terrain.h"
 
 #include "app/app.h"
-#include "app/gamedata.h"
 
 #include "common/image.h"
 #include "common/logger.h"
@@ -190,10 +189,10 @@ void CTerrain::AddMaterial(int id, const std::string& texName, const Math::Point
 bool CTerrain::LoadResources(const std::string& fileName)
 {
     CImage img;
-    std::string path = CGameData::GetInstancePointer()->GetFilePath(DIR_TEXTURE, fileName);
-    if (! img.Load(path))
+
+    if (! img.Load(fileName))
     {
-        GetLogger()->Error("Cannot load resource file: '%s'\n", path.c_str());
+        GetLogger()->Error("Cannot load resource file: '%s'\n", fileName.c_str());
         return false;
     }
 
@@ -287,10 +286,10 @@ bool CTerrain::LoadRelief(const std::string &fileName, float scaleRelief,
     m_scaleRelief = scaleRelief;
 
     CImage img;
-    std::string path = CGameData::GetInstancePointer()->GetFilePath(DIR_TEXTURE, fileName);
-    if (! img.Load(path))
+
+    if (! img.Load(fileName))
     {
-        GetLogger()->Error("Could not load relief file: '%s'!\n", path.c_str());
+        GetLogger()->Error("Could not load relief file: '%s'!\n", fileName.c_str());
         return false;
     }
 

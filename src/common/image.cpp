@@ -18,6 +18,7 @@
 #include "common/image.h"
 
 #include "math/func.h"
+#include "common/resources/resourcemanager.h"
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -381,7 +382,7 @@ bool CImage::Load(const std::string& fileName)
 
     m_error = "";
 
-    m_data->surface = IMG_Load(fileName.c_str());
+    m_data->surface = IMG_Load_RW(CResourceManager::GetSDLFileHandler(fileName.c_str()), 1);
     if (m_data->surface == nullptr)
     {
         delete m_data;

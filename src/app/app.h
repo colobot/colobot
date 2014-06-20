@@ -42,7 +42,6 @@ class CInstanceManager;
 class CEventQueue;
 class CRobotMain;
 class CSoundInterface;
-class CGameData;
 
 namespace Gfx {
 class CModelManager;
@@ -402,8 +401,6 @@ protected:
     CRobotMain*             m_robotMain;
     //! Profile (INI) reader/writer
     CProfile*               m_profile;
-    //! Game data
-    CGameData*              m_gameData;
 
     //! Code to return at exit
     int             m_exitCode;
@@ -467,16 +464,7 @@ protected:
     std::vector<int> m_joyAxeState;
     //! Current state of joystick buttons; may be updated from another thread
     std::vector<bool> m_joyButtonState;
-
-    //! Path to directory with data files
-    std::string     m_dataPath;
-
-    //! True if datadir was passed in command line
-    bool            m_customDataPath;
-
-    //! Path to directory with language files
-    std::string     m_langPath;
-    
+   
     //@{
     //! Scene to run on startup
     std::string     m_runSceneName;

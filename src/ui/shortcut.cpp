@@ -114,7 +114,7 @@ void CShortcut::Draw()
         zoom = 1.0f;
     }
 
-    m_engine->SetTexture("button3.png");
+    m_engine->SetTexture("textures/interface/button3.png");
 
     if ( icon != -1 )
     {
@@ -130,7 +130,7 @@ void CShortcut::Draw()
         Math::Point p1, p2, c, uv1, uv2;
         float   dp;
 
-        m_engine->SetTexture("button2.png");
+        m_engine->SetTexture("textures/interface/button2.png");
         m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_WHITE);
 
         zoom = 0.9f+sinf(m_time*8.0f)*0.1f;
@@ -170,7 +170,7 @@ void CShortcut::Draw()
         Math::Point uv1, uv2;
         float   dp;
 
-        m_engine->SetTexture("button3.png");
+        m_engine->SetTexture("textures/interface/button3.png");
         m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_WHITE);
 
         uv1.x = 160.0f/256.0f;

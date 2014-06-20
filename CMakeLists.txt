@@ -204,6 +204,7 @@ find_package(SDL_image 1.2 REQUIRED)
 find_package(SDL_ttf 2.0 REQUIRED)
 find_package(PNG 1.2 REQUIRED)
 find_package(Gettext REQUIRED)
+find_package(PhysFS REQUIRED)
 
 set(Boost_USE_STATIC_LIBS ${BOOST_STATIC})
 set(Boost_USE_MULTITHREADED ON)
