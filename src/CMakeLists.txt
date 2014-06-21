@@ -77,6 +77,7 @@ common/stringutils.cpp
 common/resources/resourcemanager.cpp
 common/resources/resourcestreambuffer.cpp
 common/resources/inputstream.cpp
+common/resources/sndfile.cpp
 graphics/core/color.cpp
 graphics/engine/camera.cpp
 graphics/engine/cloud.cpp

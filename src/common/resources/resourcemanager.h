@@ -19,6 +19,8 @@
 #include <string>
 #include <SDL.h>
 
+#include "common/resources/sndfile.h"
+
 class CResourceManager
 {
 public:
@@ -30,6 +32,7 @@ public:
     static bool SetSaveLocation(const std::string &location);
     static std::string GetLanguageLocation();
     static SDL_RWops* GetSDLFileHandler(const std::string &filename);
+    static CSNDFile* GetSNDFileHandler(const std::string &filename);
 
 private:
     static int SDLSeek(SDL_RWops *context, int offset, int whence);

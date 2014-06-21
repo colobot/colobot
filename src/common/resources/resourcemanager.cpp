@@ -124,7 +124,13 @@ SDL_RWops* CResourceManager::GetSDLFileHandler(const std::string &filename)
 }
 
 
-int CResourceManager::SDLClose(SDL_RWops* context)
+CSNDFile* CResourceManager::GetSNDFileHandler(const std::string &filename)
+{   
+    return new CSNDFile(filename);
+}
+
+
+int CResourceManager::SDLClose(SDL_RWops *context)
 {
     if (CheckSDLContext(context))
     {
@@ -138,7 +144,7 @@ int CResourceManager::SDLClose(SDL_RWops* context)
 }
 
 
-int CResourceManager::SDLRead(SDL_RWops* context, void* ptr, int size, int maxnum)
+int CResourceManager::SDLRead(SDL_RWops *context, void *ptr, int size, int maxnum)
 {
     if (CheckSDLContext(context))
     {
@@ -152,13 +158,13 @@ int CResourceManager::SDLRead(SDL_RWops* context, void* ptr, int size, int maxnu
 }
 
 
-int CResourceManager::SDLWrite(SDL_RWops* context, const void* ptr, int size, int num)
+int CResourceManager::SDLWrite(SDL_RWops *context, const void *ptr, int size, int num)
 {
     return 0;
 }
 
 
-int CResourceManager::SDLSeek(SDL_RWops* context, int offset, int whence)
+int CResourceManager::SDLSeek(SDL_RWops *context, int offset, int whence)
 {
     if (CheckSDLContext(context))
     {
@@ -188,7 +194,7 @@ int CResourceManager::SDLSeek(SDL_RWops* context, int offset, int whence)
 }
 
 
-bool CResourceManager::CheckSDLContext(SDL_RWops* context)
+bool CResourceManager::CheckSDLContext(SDL_RWops *context)
 {
     if (context->type != 0xc010b04f)
     {

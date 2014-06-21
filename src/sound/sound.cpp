@@ -46,7 +46,7 @@ void CSoundInterface::CacheAll()
     for ( int i = 1; i < SOUND_MAX; i++ )
     {
         std::stringstream filename;
-        filename << "sound" << std::setfill('0') << std::setw(3) << i << ".wav";
+        filename << "sounds/sound" << std::setfill('0') << std::setw(3) << i << ".wav";
         if ( !Cache(static_cast<Sound>(i), filename.str()) )
             GetLogger()->Warn("Unable to load audio: %s\n", filename.str().c_str());
     }
@@ -54,10 +54,10 @@ void CSoundInterface::CacheAll()
 
 void CSoundInterface::AddMusicFiles()
 {
-    CacheMusic("Intro1.ogg");
-    CacheMusic("Intro2.ogg");
-    CacheMusic("music010.ogg");
-    CacheMusic("music011.ogg");
+    CacheMusic("music/Intro1.ogg");
+    CacheMusic("music/Intro2.ogg");
+    CacheMusic("music/music010.ogg");
+    CacheMusic("music/music011.ogg");
 }
 
 bool CSoundInterface::Cache(Sound bSound, const std::string &bFile)
