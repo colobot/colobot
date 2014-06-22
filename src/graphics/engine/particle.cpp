@@ -3551,7 +3551,7 @@ void CParticle::DrawParticle(int sheet)
     // Draw tire marks.
     if (m_wheelTraceTotal > 0 && sheet == SH_WORLD)
     {
-        m_engine->SetTexture("text.png");
+        m_engine->SetTexture("textures/interface/text.png");
         m_engine->SetState(ENG_RSTATE_TTEXTURE_WHITE);
         Math::Matrix matrix;
         matrix.LoadIdentity();

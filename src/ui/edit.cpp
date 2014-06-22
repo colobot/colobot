@@ -23,6 +23,7 @@
 #include "clipboard/clipboard.h"
 
 #include "common/resources/inputstream.h"
+#include "common/resources/outputstream.h"
 
 #include <string.h>
 
@@ -1453,12 +1454,9 @@ bool CEdit::ReadText(std::string filename, int addSize)
     bool        bInSoluce, bBOL;
 
     if ( filename[0] == 0 )  return false;
-
-    boost::replace_all(filename, "\\", "/");
-    std::string path = filename;
     
     CInputStream stream;
-    stream.open(fs::path(path).make_preferred().string());  
+    stream.open(filename);  
     
     if (!stream.is_open())
     {
@@ -1886,14 +1884,19 @@ bool CEdit::ReadText(std::string filename, int addSize)
 
 bool CEdit::WriteText(std::string filename)
 {
-    FILE*       file;
     char        buffer[1000+20];
     int         i, j, k, n;
     float       iDim = 0.0f;
 
     if ( filename[0] == 0 )  return false;
-    file = fopen(filename.c_str(), "wb");
-    if ( file == NULL )  return false;
+    
+    COutputStream stream;
+    stream.open(filename);
+    
+    if (!stream.is_open())
+    {
+        return false;
+    }
 
     if ( m_bAutoIndent )
     {
@@ -1924,7 +1927,7 @@ bool CEdit::WriteText(std::string filename)
 
         if ( j >= 1000-1 )
         {
-            fwrite(buffer, 1, j, file);
+            stream.write(buffer, j);
             j = 0;
         }
 
@@ -1932,10 +1935,10 @@ bool CEdit::WriteText(std::string filename)
     }
     if ( j > 0 )
     {
-        fwrite(buffer, 1, j, file);
+        stream.write(buffer, j);
     }
 
-    fclose(file);
+    stream.close();
 
     if ( m_bAutoIndent )
     {

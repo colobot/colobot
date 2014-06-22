@@ -609,7 +609,7 @@ void ALSound::SetListener(const Math::Vector &eye, const Math::Vector &lookat)
 bool ALSound::PlayMusic(int rank, bool bRepeat, float fadeTime)
 {
     std::stringstream filename;
-    filename << "music" << std::setfill('0') << std::setw(3) << rank << ".ogg";
+    filename << "music/music" << std::setfill('0') << std::setw(3) << rank << ".ogg";
     return PlayMusic(filename.str(), bRepeat, fadeTime);
 }
 

@@ -3773,7 +3773,7 @@ void CEngine::DrawShadow()
     SetMaterial(material);
 
     // TODO: create a separate texture
-    SetTexture("text.png");
+    SetTexture("textures/interface/text.png");
 
     Math::Point ts, ti;
 

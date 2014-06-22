@@ -207,8 +207,6 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
         OPT_SCENETEST,
         OPT_LOGLEVEL,
         OPT_LANGUAGE,
-        OPT_DATADIR,
-        OPT_MOD,
         OPT_LANGDIR,
         OPT_VBO
     };
@@ -221,8 +219,6 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
         { "scenetest", no_argument, nullptr, OPT_SCENETEST },
         { "loglevel", required_argument, nullptr, OPT_LOGLEVEL },
         { "language", required_argument, nullptr, OPT_LANGUAGE },
-        { "datadir", required_argument, nullptr, OPT_DATADIR },
-        { "mod", required_argument, nullptr, OPT_MOD },
         { "langdir", required_argument, nullptr, OPT_LANGDIR },
         { "vbo", required_argument, nullptr, OPT_VBO },
         { nullptr, 0, nullptr, 0}
