@@ -33,6 +33,7 @@ public:
     static std::string GetLanguageLocation();
     static SDL_RWops* GetSDLFileHandler(const std::string &filename);
     static CSNDFile* GetSNDFileHandler(const std::string &filename);
+    static bool Exists(const std::string &filename);
 
 private:
     static int SDLSeek(SDL_RWops *context, int offset, int whence);

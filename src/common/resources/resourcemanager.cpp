@@ -130,6 +130,12 @@ CSNDFile* CResourceManager::GetSNDFileHandler(const std::string &filename)
 }
 
 
+bool CResourceManager::Exists(const std::string &filename)
+{
+    return PHYSFS_exists(filename.c_str());
+}
+
+
 int CResourceManager::SDLClose(SDL_RWops *context)
 {
     if (CheckSDLContext(context))
