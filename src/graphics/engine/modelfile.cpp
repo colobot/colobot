@@ -436,7 +436,7 @@ bool CModelFile::ReadModel(const std::string& fileName)
 
     CInputStream stream;
     stream.open(fileName.c_str());
-    if (!stream.good())
+    if (!stream.is_open())
     {
         GetLogger()->Error("Could not open file '%s'\n", fileName.c_str());
         return false;
@@ -827,7 +827,7 @@ bool CModelFile::ReadTextModel(const std::string& fileName)
 {
     CInputStream stream;
     stream.open(fileName.c_str());
-    if (!stream.good())
+    if (!stream.is_open())
     {
         GetLogger()->Error("Could not open file '%s'\n", fileName.c_str());
         return false;
@@ -1024,7 +1024,7 @@ bool CModelFile::ReadBinaryModel(const std::string& fileName)
 {
     CInputStream stream;
     stream.open(fileName.c_str());
-    if (!stream.good())
+    if (!stream.is_open())
     {
         GetLogger()->Error("Could not open file '%s'\n", fileName.c_str());
         return false;

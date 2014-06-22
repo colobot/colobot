@@ -27,6 +27,7 @@ CResourceStreamBuffer::CResourceStreamBuffer(size_t buffer_size) : m_buffer_size
     }
 
     m_buffer = new char[buffer_size];
+    m_file = nullptr;
 }
 
 

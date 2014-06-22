@@ -24,6 +24,9 @@
 #include "common/restext.h"
 #include "common/stringutils.h"
 
+#include "common/resources/inputstream.h"
+#include "common/resources/resourcemanager.h"
+
 #include "graphics/engine/terrain.h"
 #include "graphics/engine/water.h"
 #include "graphics/engine/text.h"
@@ -50,6 +53,7 @@
 #include "ui/edit.h"
 #include "ui/list.h"
 #include "ui/displaytext.h"
+#include <test/cbot/CBot_console/CClass.h>
 
 
 #include <stdio.h>
@@ -4363,7 +4367,6 @@ void CScript::GetError(std::string& error)
 
 void CScript::New(Ui::CEdit* edit, const char* name)
 {
-    FILE    *file = NULL;
     char    res[100];
     char    text[100];
     char    script[500];
@@ -4407,17 +4410,17 @@ void CScript::New(Ui::CEdit* edit, const char* name)
     if ( sf[0] != 0 )  // Load an empty program specific?
     {
         std::string filename = sf;
-        file = fopen(filename.c_str(), "rb");
-        if ( file != NULL )
+        CInputStream stream;
+        stream.open(filename);
+
+        if (stream.is_open())
         {
-            fseek(file, 0, SEEK_END);
-            len = ftell(file);
-            fseek(file, 0, SEEK_SET);
+            len = stream.size();
 
             if ( len > 500-1 )  len = 500-1;
-            fread(buffer, 1, len, file);
+            stream.read(buffer, len);
             buffer[len] = 0;
-            fclose(file);
+            stream.close();
 
             cursor1 = 0;
             i = 0;
@@ -4494,12 +4497,9 @@ bool CScript::SendScript(const char* text)
 
 bool CScript::ReadScript(const char* filename)
 {
-    FILE*       file;
     Ui::CEdit*  edit;
 
-    file = fopen(filename, "rb");
-    if ( file == NULL )  return false;
-    fclose(file);
+    if (!CResourceManager::Exists(filename))  return false;
 
     delete[] m_script;
     m_script = nullptr;

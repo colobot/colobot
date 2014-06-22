@@ -29,6 +29,8 @@
 #include "common/profile.h"
 #include "common/restext.h"
 
+#include "common/resources/inputstream.h"
+
 #include "graphics/engine/camera.h"
 #include "graphics/engine/cloud.h"
 #include "graphics/engine/engine.h"
@@ -4009,8 +4011,11 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
     std::string tempLine;
     m_dialog->BuildSceneName(tempLine, base, rank);
     strcpy(filename, tempLine.c_str());
-    FILE* file = fopen(filename, "r");
-    if (file == NULL) return;
+    
+    CInputStream stream;
+    stream.open(filename);
+    
+    if (!stream.is_open()) return;
 
     int rankObj = 0;
     int rankGadget = 0;
@@ -4023,7 +4028,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
      *       may speed up loading
      */
 
-    while (fgets(line, 500, file) != NULL)
+    while (stream.getline(line, 500))
     {
         lineNum++;
         for (int i = 0; i < 500; i++)
@@ -5062,7 +5067,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
         GetLogger()->Error("Syntax error in file '%s' (line %d): Unknown command: %s", filename, lineNum, line); // Don't add \n at the end of log message - it's included in line variable
     }
 
-    fclose(file);
+    stream.close();
 
     if (read[0] == 0)
         CompileScript(soluce);  // compiles all scripts

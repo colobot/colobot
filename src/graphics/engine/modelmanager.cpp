@@ -47,7 +47,7 @@ bool CModelManager::LoadModel(const std::string& fileName, bool mirrored)
     if (CApplication::GetInstance().IsDebugModeActive(DEBUG_MODELS))
         modelFile.SetPrintDebugInfo(true);
 
-    if (!modelFile.ReadModel(fileName))
+    if (!modelFile.ReadModel("models/" + fileName))
     {
         GetLogger()->Error("Loading model '%s' failed\n", fileName.c_str());
         return false;
