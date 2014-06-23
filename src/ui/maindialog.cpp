@@ -2075,9 +2075,10 @@ bool CMainDialog::EventProcess(const Event &event)
         {
             m_shotDelay --;
             if ( m_shotDelay == 0 )
-            {
-                m_engine->WriteScreenShot(m_shotName, 320, 240);
-                //?             m_engine->WriteScreenShot(m_shotName, 160, 120);
+            {   
+                Math::IntPoint screenSize = m_app->GetVideoConfig().size;
+
+                m_engine->WriteScreenShot(m_shotName, screenSize.x, screenSize.y);
             }
         }
 

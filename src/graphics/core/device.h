@@ -400,6 +400,9 @@ public:
     virtual void SetFillMode(FillMode mode) = 0;
     //! Returns the current fill mode
     virtual FillMode GetFillMode() = 0;
+
+    //! Returns the pixels of the entire screen
+    virtual void* GetFrameBufferPixels()const = 0;
 };
 
 
