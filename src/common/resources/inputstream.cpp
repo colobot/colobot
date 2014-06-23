@@ -15,10 +15,10 @@
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
 #include "common/resources/inputstream.h"
-#include "common/resources/resourcestreambuffer.h"
+#include "common/resources/inputstreambuffer.h"
 
 
-CInputStream::CInputStream() : std::istream(new CResourceStreamBuffer())
+CInputStream::CInputStream() : std::istream(new CInputStreamBuffer())
 {
 }
 
@@ -31,23 +31,23 @@ CInputStream::~CInputStream()
 
 void CInputStream::open(const std::string& filename)
 {
-    static_cast<CResourceStreamBuffer *>(rdbuf())->open(filename);
+    static_cast<CInputStreamBuffer *>(rdbuf())->open(filename);
 }
 
 
 void CInputStream::close()
 {
-    static_cast<CResourceStreamBuffer *>(rdbuf())->close();
+    static_cast<CInputStreamBuffer *>(rdbuf())->close();
 }
 
 
 bool CInputStream::is_open()
 {
-    return static_cast<CResourceStreamBuffer *>(rdbuf())->is_open();
+    return static_cast<CInputStreamBuffer *>(rdbuf())->is_open();
 }
 
 
 size_t CInputStream::size()
 {
-    return static_cast<CResourceStreamBuffer *>(rdbuf())->size();
+    return static_cast<CInputStreamBuffer *>(rdbuf())->size();
 }

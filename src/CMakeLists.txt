@@ -75,7 +75,8 @@ common/profile.cpp
 common/restext.cpp
 common/stringutils.cpp
 common/resources/resourcemanager.cpp
-common/resources/resourcestreambuffer.cpp
+common/resources/inputstreambuffer.cpp
+common/resources/outputstreambuffer.cpp
 common/resources/inputstream.cpp
 common/resources/outputstream.cpp
 common/resources/sndfile.cpp

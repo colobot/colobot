@@ -15,10 +15,10 @@
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
 #include "common/resources/outputstream.h"
-#include "common/resources/resourcestreambuffer.h"
+#include "common/resources/outputstreambuffer.h"
 
 
-COutputStream::COutputStream() : std::ostream(new CResourceStreamBuffer())
+COutputStream::COutputStream() : std::ostream(new COutputStreamBuffer())
 {
 }
 
@@ -31,23 +31,17 @@ COutputStream::~COutputStream()
 
 void COutputStream::open(const std::string& filename)
 {
-    static_cast<CResourceStreamBuffer *>(rdbuf())->open(filename);
+    static_cast<COutputStreamBuffer *>(rdbuf())->open(filename);
 }
 
 
 void COutputStream::close()
 {
-    static_cast<CResourceStreamBuffer *>(rdbuf())->close();
+    static_cast<COutputStreamBuffer *>(rdbuf())->close();
 }
 
 
 bool COutputStream::is_open()
 {
-    return static_cast<CResourceStreamBuffer *>(rdbuf())->is_open();
-}
-
-
-size_t COutputStream::size()
-{
-    return static_cast<CResourceStreamBuffer *>(rdbuf())->size();
+    return static_cast<COutputStreamBuffer *>(rdbuf())->is_open();
 }
