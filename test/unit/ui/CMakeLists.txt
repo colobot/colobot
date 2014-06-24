@@ -17,6 +17,7 @@ else()
 endif()
 
 add_executable(edit_test
+${SRC_DIR}/app/gamedata.cpp
 ${SRC_DIR}/app/system.cpp
 ${SRC_DIR}/app/${SYSTEM_CPP_MODULE}
 ${SRC_DIR}/app/system_other.cpp
