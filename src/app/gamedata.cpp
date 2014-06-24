@@ -78,16 +78,22 @@ std::string CGameData::GetFilePath(DataDir dir, const std::string& subpath)
     
     for(std::vector<std::string>::reverse_iterator rit = m_dataDirs.rbegin(); rit != m_dataDirs.rend(); ++rit) {
         std::stringstream str;
-        str << *rit;
-        str << "/";
-        str << m_standardDataDirs[index];
-        if (dir == DIR_HELP)
-        {
+        
+        if ( subpath.find("save") == std::string::npos ){ // if its NOT a path to a savefile screenshot
+            str << *rit;
             str << "/";
-            str << CApplication::GetInstancePointer()->GetLanguageChar();
+            str << m_standardDataDirs[index];
+
+            if (dir == DIR_HELP)
+            {
+                str << "/";
+                str << CApplication::GetInstancePointer()->GetLanguageChar();
+            }
+            str << "/";
         }
-        str << "/";
+
         str << subpath;
+
         boost::filesystem::path path(str.str());
         if(boost::filesystem::exists(path))
         {
@@ -95,18 +101,9 @@ std::string CGameData::GetFilePath(DataDir dir, const std::string& subpath)
         }
     }
     
-    std::stringstream str;
-    str << m_dataDirs[0];
-    str << "/";
-    str << m_standardDataDirs[index];
-    if (dir == DIR_HELP)
-    {
-        str << "/";
-        str << CApplication::GetInstancePointer()->GetLanguageChar();
-    }
-    str << "/";
-    str << subpath;
-    return str.str();
+    GetLogger()->Error("file subpath error\n");
+    
+    return "";
 }
 
 std::string CGameData::GetDataPath(const std::string &subpath)
