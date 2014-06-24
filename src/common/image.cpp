@@ -420,26 +420,27 @@ bool CImage::SavePNG(const std::string& fileName)
 
 void CImage::SetDataPixels(void *pixels){
 
-    if (m_data != nullptr){
-
-        if (m_data->surface != nullptr)
-        {
-            if ( m_data->surface->pixels != nullptr ){
-                unsigned int* pixels = static_cast<unsigned int*>(m_data->surface->pixels);
-                delete [] pixels;
-                m_data->surface->pixels = nullptr;
-            }
-        }
+    Uint8* srcPixels = static_cast<Uint8*> (pixels);
+    Uint8* resultPixels = static_cast<Uint8*> (m_data->surface->pixels);
+ 
+    Uint32 pitch = m_data->surface->pitch;
+ 
+    for(int line = 0; line < m_data->surface->h; ++line) {
+        Uint32 pos = line * pitch;
+        memcpy(&resultPixels[pos], &srcPixels[pos], pitch);
     }
-
-    m_data->surface->pixels = pixels;
 }
 
-void CImage::flipVertical(){
+void CImage::flipVertically(){
 
-    SDL_Surface* result = SDL_CreateRGBSurface(m_data->surface->flags, m_data->surface->w, m_data->surface->h,
-        m_data->surface->format->BytesPerPixel * 8, m_data->surface->format->Rmask, m_data->surface->format->Gmask,
-        m_data->surface->format->Bmask, m_data->surface->format->Amask);
+    SDL_Surface* result = SDL_CreateRGBSurface( m_data->surface->flags,
+                                                m_data->surface->w,
+                                                m_data->surface->h,
+                                                m_data->surface->format->BytesPerPixel * 8,
+                                                m_data->surface->format->Rmask,
+                                                m_data->surface->format->Gmask,
+                                                m_data->surface->format->Bmask,
+                                                m_data->surface->format->Amask);
     
     assert(result != nullptr);
  

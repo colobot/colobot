@@ -1793,17 +1793,13 @@ FillMode CGLDevice::GetFillMode()
 
 void* CGLDevice::GetFrameBufferPixels()const{
 
-    SDL_Surface* surface = SDL_GetVideoSurface();
-
-    assert(surface != nullptr);
-
-    GLubyte* pixels = new GLubyte [4 * surface->h * surface->w];
+    GLubyte* pixels = new GLubyte [4 * m_config.size.x * m_config.size.y];
     
-    glReadPixels(0,0,surface->w,surface->h,GL_RGBA,GL_UNSIGNED_BYTE,pixels);
+    glReadPixels(0, 0, m_config.size.x, m_config.size.y, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
 
     unsigned int* p = static_cast<unsigned int*> ( static_cast<void*>(pixels) );
 
-    for (int i = 0; i < surface->h * surface->w; ++i)
+    for (int i = 0; i < m_config.size.x * m_config.size.y; ++i)
         p[i] |= 0xFF000000;
 
     return static_cast<void*>(p);
