@@ -109,6 +109,12 @@ public:
     //! Returns the last error
     std::string GetError();
 
+    //! Flips the image vertically
+    void flipVertically();
+    
+    //! sets/replaces the pixels from the surface 
+    void SetDataPixels(void *pixels);
+
 private:
     //! Blit to new RGBA surface with given size
     void BlitToNewRGBASurface(int width, int height);
