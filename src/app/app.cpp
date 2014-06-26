@@ -180,6 +180,9 @@ CApplication::~CApplication()
 
     delete m_iMan;
     m_iMan = nullptr;
+    
+    delete m_gameData;
+    m_gameData = nullptr;
 
     GetSystemUtils()->DestroyTimeStamp(m_baseTimeStamp);
     GetSystemUtils()->DestroyTimeStamp(m_curTimeStamp);
