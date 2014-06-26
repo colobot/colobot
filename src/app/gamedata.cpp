@@ -101,9 +101,25 @@ std::string CGameData::GetFilePath(DataDir dir, const std::string& subpath)
         }
     }
     
-    GetLogger()->Error("file subpath error\n");
+    if(m_dataDirs.size() > 0) {
+        std::stringstream str;
+        if ( subpath.find("save") == std::string::npos ){ // if its NOT a path to a savefile screenshot
+            str << m_dataDirs[0];
+            str << "/";
+            str << m_standardDataDirs[index];
+            
+            if (dir == DIR_HELP)
+            {
+                str << "/";
+                str << CApplication::GetInstancePointer()->GetLanguageChar();
+            }
+            str << "/";
+        }
+        str << subpath;
+        return str.str();
+    }
     
-    return "";
+    return subpath;
 }
 
 std::string CGameData::GetDataPath(const std::string &subpath)
