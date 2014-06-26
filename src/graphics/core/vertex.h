@@ -82,7 +82,9 @@ struct VertexCol
     Math::Vector coord;
     Color color;
 
-    explicit VertexCol(Math::Vector aCoord = Math::Vector(),
+    VertexCol() = default;
+
+    explicit VertexCol(Math::Vector aCoord,
                        Color aColor = Color())
         : coord(aCoord), color(aColor) {}
 
