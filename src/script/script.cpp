@@ -2862,7 +2862,6 @@ bool CScript::rShield(CBotVar* var, CBotVar* result, int& exception, void* user)
 
 CBotTypResult CScript::cFire(CBotVar* &var, void* user)
 {
-#if 0
     CObject*    pThis = static_cast<CObject *>(user);
     ObjectType  type;
 
@@ -2870,23 +2869,25 @@ CBotTypResult CScript::cFire(CBotVar* &var, void* user)
 
     if ( type == OBJECT_ANT )
     {
-        return cOnePoint(var, user);
+        if ( var == 0 ) return CBotTypResult(CBotErrLowParam);
+        CBotTypResult ret = cPoint(var, user);
+        if ( ret.GetType() != 0 )  return ret;
+        if ( var != 0 )  return CBotTypResult(CBotErrOverParam);
     }
     else if ( type == OBJECT_SPIDER )
     {
-        return cNull(var, user);
+        if ( var != 0 )  return CBotTypResult(CBotErrOverParam);
     }
     else
     {
-        if ( var == 0 )  return CBotTypResult(CBotTypFloat);
-        if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
-        var = var->GetNext();
-        if ( var != 0 )  return CBotTypResult(CBotErrOverParam);
-        return CBotTypResult(CBotTypFloat);
+        if ( var != 0 )
+        {
+            if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
+            var = var->GetNext();
+            if ( var != 0 )  return CBotTypResult(CBotErrOverParam);
+        }
     }
-#else
     return CBotTypResult(CBotTypFloat);
-#endif
 }
 
 // Instruction "fire(delay)".
@@ -2922,6 +2923,7 @@ bool CScript::rFire(CBotVar* var, CBotVar* result, int& exception, void* user)
         {
             if ( var == 0 )  delay = 0.0f;
             else             delay = var->GetValFloat();
+	    if ( delay < 0.0f ) delay = -delay;
             err = script->m_primaryTask->StartTaskFire(delay);
         }
 
