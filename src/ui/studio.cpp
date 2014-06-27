@@ -1111,17 +1111,11 @@ void CStudio::StartDialog(StudioDialog type)
         GetResource(RES_TEXT, RT_IO_PRIVATE, name);
         pc->SetName(name);
         pc->SetState(STATE_SHADOW);
-#if _POLISH
-        pc->SetFontSize(8.0f);
-#endif
 
         pc = pw->CreateCheck(pos, dim, 0, EVENT_DIALOG_CHECK2);
         GetResource(RES_TEXT, RT_IO_PUBLIC, name);
         pc->SetName(name);
         pc->SetState(STATE_SHADOW);
-#if _POLISH
-        pc->SetFontSize(8.0f);
-#endif
 
         pb = pw->CreateButton(pos, dim, -1, EVENT_DIALOG_OK);
         pb->SetState(STATE_SHADOW);

@@ -506,11 +506,7 @@ void CControl::Draw()
         if ( icon >= 192 )
         {
             icon -= 192;
-#if _POLISH
-            m_engine->SetTexture("textp.png");
-#else
             m_engine->SetTexture("text.png");
-#endif
             m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_WHITE);
         }
         else if ( icon >= 128 )

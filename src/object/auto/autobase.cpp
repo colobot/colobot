@@ -1356,11 +1356,7 @@ void CAutoBase::BeginTransit()
     }
     else
     {
-#if _DEMO
-        m_bgBack = "back46b.png";  // paintings
-#else
         m_bgBack = "back46.png";  // paintings
-#endif
     }
 
     m_engine->SetFogStart(0.9f);  // hardly any fog

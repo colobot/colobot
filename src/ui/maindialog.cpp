@@ -157,9 +157,6 @@ CMainDialog::CMainDialog()
     m_bMovies        = true;
     m_bNiceReset     = true;
     m_bHimselfDamage = true;
-/* TODO: #if _TEEN
-    m_bCameraScroll  = false;
-#else*/
     m_bCameraScroll  = true;
 
     m_bCameraInvertX = false;
@@ -247,9 +244,6 @@ void CMainDialog::ChangePhase(Phase phase)
         pos.y  = 0.10f;
         ddim.x = 0.30f;
         ddim.y = 0.80f;
-        /* TODO: #if _TEEN
-           pw = m_interface->CreateWindows(pos, ddim, 12, EVENT_WINDOW5);
-#else*/
         pw = m_interface->CreateWindows(pos, ddim, 10, EVENT_WINDOW5);
 
         GetResource(RES_TEXT, RT_TITLE_INIT, name);
@@ -265,22 +259,7 @@ void CMainDialog::ChangePhase(Phase phase)
         ddim.x = 0.30f;
         ddim.y = 0.30f;
         pw->CreateGroup(pos, ddim, 4, EVENT_INTERFACE_GLINTr);  // blue corner
-
-        /* TODO: #if _SCHOOL
-           ddim.x = 0.20f;
-           ddim.y = dim.y*2.4f;
-           pos.x = 0.40f;
-           pos.y = oy+sy*7.9f;
-           pg = pw->CreateGroup(pos, ddim, 24, EVENT_LABEL1);  // orange
-           pg->SetState(STATE_SHADOW);
-           pos.y = oy+sy*3.9f;
-           pg = pw->CreateGroup(pos, ddim, 25, EVENT_LABEL1);  // orange
-           pg->SetState(STATE_SHADOW);
-           ddim.y = dim.y*1.2f;
-           pos.y = oy+sy*1.9f;
-           pg = pw->CreateGroup(pos, ddim, 26, EVENT_LABEL1);  // red
-           pg->SetState(STATE_SHADOW);
-#else */
+        
         ddim.x = 0.20f;
         ddim.y = dim.y*2.4f;
         pos.x = 0.40f;
@@ -300,26 +279,7 @@ void CMainDialog::ChangePhase(Phase phase)
         pos.y = oy+sy*1.9f;
         pg = pw->CreateGroup(pos, ddim, 26, EVENT_LABEL1);  // red
         pg->SetState(STATE_SHADOW);
-
-        /* TODO: #if _SCHOOL
-           ddim.x = 0.18f;
-           ddim.y = dim.y*1;
-           pos.x = 0.41f;
-           pos.y = oy+sy*9.1f;
-           pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_TRAINER);
-           pb->SetState(STATE_SHADOW);
-
-           pos.y = oy+sy*8.0f;
-#if _TEEN
-pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_TEEN);
-#else
-pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_DEFI);
-#endif
-#if _CEEBOTDEMO
-pb->ClearState(STATE_ENABLE);
-#endif
-pb->SetState(STATE_SHADOW);
-#else */
+        
         ddim.x = 0.18f;
         ddim.y = dim.y*1;
         pos.x = 0.41f;
@@ -356,20 +316,14 @@ pb->SetState(STATE_SHADOW);
         pb->SetState(STATE_SHADOW);
 
         #if DEV_BUILD
-        // TODO: #if !_DEMO & !_SCHOOL
         if ( m_accessEnable && m_accessUser )
         {
             pos.x  = 447.0f/640.0f;
             pos.y  = 313.0f/480.0f;
             ddim.x = 0.09f;
-            /*#if _POLISH
-              pos.x  -=  5.0f/640.0f;
-              ddim.x += 10.0f/640.0f;
-#endif*/
             pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_USER);
             pb->SetState(STATE_SHADOW);
         }
-        // #endif
         #endif
 
         /*pos.x  = 139.0f/640.0f;
@@ -407,19 +361,6 @@ pb->SetState(STATE_SHADOW);
         pw = m_interface->CreateWindows(pos, ddim, 12, EVENT_WINDOW5);
         GetResource(RES_TEXT, RT_TITLE_NAME, name);
         pw->SetName(name);
-
-        /* TODO: #if _NEWLOOK
-           pos.x  =  80.0f/640.0f;
-           pos.y  =  93.0f/480.0f;
-           ddim.x = 285.0f/640.0f;
-           ddim.y = 266.0f/480.0f;
-           pg = pw->CreateGroup(pos, ddim, 23, EVENT_LABEL1);  // blue
-           pg->SetState(STATE_SHADOW);
-           pos.x  = 372.0f/640.0f;
-           ddim.x = 188.0f/640.0f;
-           pg = pw->CreateGroup(pos, ddim, 26, EVENT_LABEL1);  // violet
-           pg->SetState(STATE_SHADOW);
-#endif*/
 
         pos.x  = 0.10f;
         pos.y  = 0.40f;
@@ -527,15 +468,6 @@ pb->SetState(STATE_SHADOW);
         pw = m_interface->CreateWindows(pos, ddim, 12, EVENT_WINDOW5);
         GetResource(RES_TEXT, RT_TITLE_PERSO, name);
         pw->SetName(name);
-
-        /* TODO: #if _NEWLOOK
-           pos.x  =  95.0f/640.0f;
-           pos.y  =  66.0f/480.0f;
-           ddim.x = 443.0f/640.0f;
-           ddim.y =  42.0f/480.0f;
-           pg = pw->CreateGroup(pos, ddim, 26, EVENT_LABEL1);  // violet
-           pg->SetState(STATE_SHADOW);
-#endif*/
 
         pos.x  = 0.10f;
         pos.y  = 0.40f;
@@ -812,29 +744,6 @@ pb->SetState(STATE_SHADOW);
         GetResource(RES_TEXT, res, name);
         pw->SetName(name);
 
-        /* TODO: #if _NEWLOOK
-           pos.x  = 100.0f/640.0f;
-           pos.y  = 226.0f/480.0f;
-           ddim.x = 216.0f/640.0f;
-           ddim.y = 160.0f/480.0f;
-           pg = pw->CreateGroup(pos, ddim, 23, EVENT_LABEL1);  // blue
-           pg->SetState(STATE_SHADOW);
-           pos.x  = 322.0f/640.0f;
-           pg = pw->CreateGroup(pos, ddim, 24, EVENT_LABEL1);  // cyan
-           pg->SetState(STATE_SHADOW);
-
-           pos.x  = 100.0f/640.0f;
-           pos.y  = 122.0f/480.0f;
-           ddim.x = 438.0f/640.0f;
-           ddim.y =  98.0f/480.0f;
-           pg = pw->CreateGroup(pos, ddim, 25, EVENT_LABEL1);  // green
-           pg->SetState(STATE_SHADOW);
-           pos.y  =  66.0f/480.0f;
-           ddim.y =  42.0f/480.0f;
-           pg = pw->CreateGroup(pos, ddim, 26, EVENT_LABEL1);  // violet
-           pg->SetState(STATE_SHADOW);
-#endif */
-
         pos.x  = 0.10f;
         pos.y  = 0.40f;
         ddim.x = 0.50f;
@@ -1044,80 +953,6 @@ pb->SetState(STATE_SHADOW);
         pos.y  = 0.76f;
         ddim.y = 0.05f;
         pw->CreateGroup(pos, ddim, 3, EVENT_NULL);  // transparent -> gray
-
-        /* TODO: #if _NEWLOOK
-           if ( m_phase == PHASE_SETUPd  || // setup/display ?
-           m_phase == PHASE_SETUPds )
-           {
-           pos.x  = 100.0f/640.0f;
-           pos.y  = 130.0f/480.0f;
-           ddim.x = 216.0f/640.0f;
-           ddim.y = 212.0f/480.0f;
-           pg = pw->CreateGroup(pos, ddim, 23, EVENT_LABEL1);  // blue
-           pg->SetState(STATE_SHADOW);
-           pos.x  = 324.0f/640.0f;
-           pg = pw->CreateGroup(pos, ddim, 24, EVENT_LABEL1);  // cyan
-           pg->SetState(STATE_SHADOW);
-           }
-           if ( m_phase == PHASE_SETUPg  || // setup/graphic ?
-           m_phase == PHASE_SETUPgs )
-           {
-           pos.x  = 100.0f/640.0f;
-           pos.y  = 130.0f/480.0f;
-           ddim.x = 174.0f/640.0f;
-           ddim.y = 212.0f/480.0f;
-           pg = pw->CreateGroup(pos, ddim, 23, EVENT_LABEL1);  // blue
-           pg->SetState(STATE_SHADOW);
-           pos.x  = 282.0f/640.0f;
-           ddim.x = 258.0f/640.0f;
-           pg = pw->CreateGroup(pos, ddim, 24, EVENT_LABEL1);  // cyan
-           pg->SetState(STATE_SHADOW);
-           }
-           if ( m_phase == PHASE_SETUPp  || // setup/game ?
-           m_phase == PHASE_SETUPps )
-           {
-           pos.x  = 100.0f/640.0f;
-           pos.y  = 130.0f/480.0f;
-           ddim.x = 226.0f/640.0f;
-           ddim.y = 212.0f/480.0f;
-           pg = pw->CreateGroup(pos, ddim, 23, EVENT_LABEL1);  // blue
-           pg->SetState(STATE_SHADOW);
-           pos.x  = 334.0f/640.0f;
-           ddim.x = 206.0f/640.0f;
-           pg = pw->CreateGroup(pos, ddim, 24, EVENT_LABEL1);  // cyan
-           pg->SetState(STATE_SHADOW);
-           }
-           if ( m_phase == PHASE_SETUPc  || // setup/command ?
-           m_phase == PHASE_SETUPcs )
-           {
-           pos.x  = 100.0f/640.0f;
-           pos.y  = 125.0f/480.0f;
-           ddim.x = 440.0f/640.0f;
-           ddim.y = 222.0f/480.0f;
-           pg = pw->CreateGroup(pos, ddim, 23, EVENT_LABEL1);  // blue
-           pg->SetState(STATE_SHADOW);
-           }
-           if ( m_phase == PHASE_SETUPs  || // setup/sound ?
-           m_phase == PHASE_SETUPss )
-           {
-           pos.x  = 100.0f/640.0f;
-           pos.y  = 130.0f/480.0f;
-           ddim.x = 216.0f/640.0f;
-           ddim.y = 212.0f/480.0f;
-           pg = pw->CreateGroup(pos, ddim, 23, EVENT_LABEL1);  // blue
-           pg->SetState(STATE_SHADOW);
-           pos.x  = 324.0f/640.0f;
-           pg = pw->CreateGroup(pos, ddim, 24, EVENT_LABEL1);  // cyan
-           pg->SetState(STATE_SHADOW);
-           }
-
-           pos.x  = 100.0f/640.0f;
-           pos.y  =  66.0f/480.0f;
-           ddim.x = 440.0f/640.0f;
-           ddim.y =  42.0f/480.0f;
-           pg = pw->CreateGroup(pos, ddim, 26, EVENT_LABEL1);  // violet
-        pg->SetState(STATE_SHADOW);
-#endif */
 
         ddim.x = 0.78f/5-0.01f;
         ddim.y = 0.06f;
@@ -1349,10 +1184,7 @@ pb->SetState(STATE_SHADOW);
         ddim.y = dim.y*1;
         pos.x = ox+sx*10;
         pos.y = oy+sy*2;
-        /* TODO: #if _POLISH
-           ddim.x += 20.0f/640.0f;
-           pos.x -= 20.0f/640.0f*3.0f;
-#endif*/
+        
         pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_MIN);
         pb->SetState(STATE_SHADOW);
         pos.x += ddim.x;
@@ -1375,13 +1207,7 @@ pb->SetState(STATE_SHADOW);
         //?     pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_TOTO);
         //?     pc->SetState(STATE_SHADOW);
         //?     pos.y -= 0.048f;
-        /*TODO: #if _SCHOOL
-#if _EDU
-pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_SOLUCE4);
-pc->SetState(STATE_SHADOW);
-pos.y -= 0.048f;
-#endif
-#else*/
+        
         pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_MOVIES);
         pc->SetState(STATE_SHADOW);
         pos.y -= 0.048f;
@@ -1503,7 +1329,6 @@ pos.y -= 0.048f;
         pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL1, name);
         pl->SetTextAlign(Gfx::TEXT_ALIGN_LEFT);
 
-        // TODO: #if (_FULL | _NET) & _SOUNDTRACKS
         pos.x = ox+sx*3;
         pos.y = 0.40f;
         ddim.x = dim.x*4.0f;
@@ -1516,7 +1341,6 @@ pos.y -= 0.048f;
         GetResource(RES_EVENT, EVENT_INTERFACE_VOLMUSIC, name);
         pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL2, name);
         pl->SetTextAlign(Gfx::TEXT_ALIGN_LEFT);
-        // #endif
 
         ddim.x = dim.x*3;
         ddim.y = dim.y*1;
@@ -1553,15 +1377,6 @@ pos.y -= 0.048f;
         ddim.x = 0.50f;
         ddim.y = 0.50f;
         pw->CreateGroup(pos, ddim, 4, EVENT_INTERFACE_GLINTr);  // blue corner
-
-        /* TODO: #if _NEWLOOK
-           pos.x  = 100.0f/640.0f;
-           pos.y  =  66.0f/480.0f;
-           ddim.x = 438.0f/640.0f;
-           ddim.y =  42.0f/480.0f;
-           pg = pw->CreateGroup(pos, ddim, 26, EVENT_LABEL1);  // violet
-           pg->SetState(STATE_SHADOW);
-#endif */
 
         pos.x  = 290.0f/640.0f;
         ddim.x = 245.0f/640.0f;
@@ -1638,15 +1453,6 @@ pos.y -= 0.048f;
         ddim.y = 0.50f;
         pw->CreateGroup(pos, ddim, 4, EVENT_INTERFACE_GLINTr);  // blue corner
 
-        /* TODO: #if _NEWLOOK
-           pos.x  = 100.0f/640.0f;
-           pos.y  =  66.0f/480.0f;
-           ddim.x = 438.0f/640.0f;
-           ddim.y =  42.0f/480.0f;
-           pg = pw->CreateGroup(pos, ddim, 26, EVENT_LABEL1);  // violet
-           pg->SetState(STATE_SHADOW);
-#endif*/
-
         pos.x  = 290.0f/640.0f;
         ddim.x = 245.0f/640.0f;
 
@@ -1706,9 +1512,6 @@ pos.y -= 0.048f;
         pos.y  = 0.10f;
         ddim.x = 0.30f;
         ddim.y = 0.80f;
-        /*TODO: #if _TEEN
-          pw = m_interface->CreateWindows(pos, ddim, 12, EVENT_WINDOW5);
-#else*/
         pw = m_interface->CreateWindows(pos, ddim, 10, EVENT_WINDOW5);
 
         pw->SetName(" ");
@@ -1817,7 +1620,6 @@ pos.y -= 0.048f;
         ddim.y = 0.0f;
         pw = m_interface->CreateWindows(pos, ddim, -1, EVENT_WINDOW5);
 
-        // TODO: #if _FULL | _NET
         pos.x  =  80.0f/640.0f;
         pos.y  = 240.0f/480.0f;
         ddim.x = 490.0f/640.0f;
@@ -1830,54 +1632,6 @@ pos.y -= 0.048f;
         pe->SetFontSize(Gfx::FONT_SIZE_SMALL);
         pe->ReadText(std::string("help/") + m_app->GetLanguageChar() + std::string("/authors.txt"));
 
-        // #endif
-        /* TODO: #if _SCHOOL
-        #if _CEEBOTDEMO
-        pos.x  =  80.0f/640.0f;
-        pos.y  = 210.0f/480.0f;
-        ddim.x = 490.0f/640.0f;
-        ddim.y = 150.0f/480.0f;
-        #else
-        pos.x  =  80.0f/640.0f;
-        pos.y  = 200.0f/480.0f;
-        ddim.x = 490.0f/640.0f;
-        ddim.y = 150.0f/480.0f;
-        #endif
-        pe = pw->CreateEdit(pos, ddim, 0, EVENT_EDIT1);
-        pe->SetGenericMode(true);
-        pe->SetEditCap(false);
-        pe->SetHighlightCap(false);
-        pe->SetFontType(Gfx::FONT_COURIER);
-        pe->SetFontSize(Gfx::FONT_SIZE_SMALL);
-        pe->ReadText("help/authors.txt");*/
-
-        /* #if _DEMO
-        //?     pos.x  =  80.0f/640.0f;
-        //?     pos.y  = 240.0f/480.0f;
-        //?     ddim.x = 490.0f/640.0f;
-        //?     ddim.y = 110.0f/480.0f;
-        //?     pe = pw->CreateEdit(pos, ddim, 0, EVENT_EDIT1);
-        //?     pe->SetGenericMode(true);
-        //?     pe->SetEditCap(false);
-        //?     pe->SetHiliteCap(false);
-        //?     pe->SetFontType(Gfx::FONT_COURIER);
-        //?     pe->SetFontSize(Gfx::FONT_SIZE_SMALL);
-        //?     pe->ReadText("help/demo.txt");
-
-        //?     pos.x  =  80.0f/640.0f;
-        //?     pos.y  = 140.0f/480.0f;
-        //?     ddim.x = 490.0f/640.0f;
-        //?     ddim.y = 100.0f/480.0f;
-        //?     pe = pw->CreateEdit(pos, ddim, 0, EVENT_EDIT2);
-        //?     pe->SetGenericMode(true);
-        //?     pe->SetEditCap(false);
-        //?     pe->SetHiliteCap(false);
-        //?     pe->SetFontType(Gfx::FONT_COURIER);
-        //?     pe->SetFontSize(Gfx::FONT_SIZE_SMALL);
-        //?     pe->ReadText("help/authors.txt");
-#endif */
-
-        // TODO: #if !_DEMO
         pos.x  =  40.0f/640.0f;
         pos.y  =  83.0f/480.0f;
         ddim.x = 246.0f/640.0f;
@@ -1907,23 +1661,13 @@ pos.y -= 0.048f;
         pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL4, name);
         pl->SetFontType(Gfx::FONT_COURIER);
         pl->SetFontSize(Gfx::FONT_SIZE_SMALL);
-        // #endif
-
-        /* TODO: #if _DEMO
-           pos.x  = 481.0f/640.0f;
-           pos.y  =  51.0f/480.0f;
-           ddim.x =  30.0f/640.0f;
-           ddim.y =  30.0f/480.0f;
-           pb = pw->CreateButton(pos, ddim, 49, EVENT_INTERFACE_ABORT);
-           pb->SetState(STATE_SHADOW);
-#else */
+        
         pos.x  = 306.0f/640.0f;
         pos.y  =  17.0f/480.0f;
         ddim.x =  30.0f/640.0f;
         ddim.y =  30.0f/480.0f;
         pb = pw->CreateButton(pos, ddim, 49, EVENT_INTERFACE_ABORT);
         pb->SetState(STATE_SHADOW);
-        // #endif
 
         m_engine->SetBackground("generico.png",
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
@@ -1950,24 +1694,10 @@ pos.y -= 0.048f;
             m_phase == PHASE_READ    ||
             m_phase == PHASE_LOADING )
     {
-        /*TODO: #if _SCHOOL
-#if _TEEN
-pos.x  =  50.0f/640.0f;
-pos.y  = 430.0f/480.0f;
-ddim.x = 200.0f/640.0f;
-ddim.y =  10.0f/480.0f;
-#else
-pos.x  = 450.0f/640.0f;
-pos.y  =   0.0f/480.0f;
-ddim.x = 170.0f/640.0f;
-ddim.y =   9.0f/480.0f;
-#endif
-#else */
         pos.x  = 540.0f/640.0f;
         pos.y  =   9.0f/480.0f;
         ddim.x =  90.0f/640.0f;
         ddim.y =  10.0f/480.0f;
-        //#endif
         //GetResource(RES_TEXT, RT_VERSION_ID, name);
         pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL1, COLOBOT_VERSION_DISPLAY);
         pl->SetFontType(Gfx::FONT_COURIER);
@@ -3227,8 +2957,6 @@ Math::Vector SoundRand()
 
 void CMainDialog::FrameParticle(float rTime)
 {
-    /* TODO: #if _NEWLOOK
-#else */
     Math::Vector    pos, speed;
     Math::Point     dim;
     float       *pParti, *pGlint;
@@ -4765,17 +4493,6 @@ void CMainDialog::UpdateSceneChap(int &chap)
     {
         for ( j=0 ; j<9 ; j++ )
         {
-/* TODO: #if _SCHOOL
-            if ( m_phase == PHASE_MISSION )  break;
-            if ( m_phase == PHASE_FREE    )  break;
-#if _CEEBOTDEMO
-            if ( m_phase == PHASE_TRAINER && j >= 2 )  break;
-#endif
-#endif
-#if _DEMO
-            if ( m_phase == PHASE_MISSION && j >= 4 )  break;
-            if ( m_phase == PHASE_TRAINER && j >= 1 )  break;
-#endif */
             BuildSceneName(fileName, m_sceneName, (j+1)*100);
             file = fopen(fileName.c_str(), "r");
             if ( file == NULL )  break;
@@ -4820,14 +4537,6 @@ void CMainDialog::UpdateSceneChap(int &chap)
                 break;
             }
 
-/* TODO: #if _TEEN
-            if ( m_phase == PHASE_TRAINER && !m_main->GetShowAll() && !bPassed )
-            {
-                j ++;
-                break;
-            }
-#endif*/
-
             if ( m_phase == PHASE_FREE && j == m_accessChap )
             {
                 j ++;
@@ -4871,21 +4580,6 @@ void CMainDialog::UpdateSceneList(int chap, int &sel)
 
     for ( j=0 ; j<99 ; j++ )
     {
-/* TODO: #if _SCHOOL
-        if ( m_phase == PHASE_MISSION )  break;
-        if ( m_phase == PHASE_FREE    )  break;
-#if _CEEBOTDEMO
-#if _TEEN
-        if ( m_phase == PHASE_TRAINER && j >= 5 )  break;
-#else
-        if ( m_phase == PHASE_TRAINER && j >= 3 )  break;
-#endif
-#endif
-#endif
-#if _DEMO
-        if ( m_phase == PHASE_MISSION && j >= 3 )  break;
-        if ( m_phase == PHASE_TRAINER && j >= 5 )  break;
-#endif */
         BuildSceneName(fileName, m_sceneName, (chap+1)*100+(j+1));
         file = fopen(fileName.c_str(), "r");
         if ( file == NULL )  break;
@@ -4929,14 +4623,6 @@ void CMainDialog::UpdateSceneList(int chap, int &sel)
             j ++;
             break;
         }
-
-/* TODO: #if _TEEN
-        if ( m_phase == PHASE_TRAINER && !m_main->GetShowAll() && !bPassed )
-        {
-            j ++;
-            break;
-        }
-#endif*/
     }
 
     BuildSceneName(fileName, m_sceneName, (chap+1)*100+(j+1));
@@ -5564,21 +5250,7 @@ void CMainDialog::SetupMemorize()
 
     GetProfile().SetLocalProfileString("Setup", "KeyMap", key.str());
 
-#if _NET
-    if ( m_accessEnable )
-    {
-        iValue = m_accessMission;
-        SetLocalProfileInt("Setup", "AccessMission", iValue);
-
-        iValue = m_accessUser;
-        SetLocalProfileInt("Setup", "AccessUser", iValue);
-    }
-#endif
-
     GetProfile().SetLocalProfileInt("Setup", "DeleteGamer", m_bDeleteGamer);
-
-    // TODO: write graphic engine profile
-    //m_engine->WriteProfile();
 }
 
 // Remember all the settings.
@@ -5788,21 +5460,6 @@ void CMainDialog::SetupRecall()
          }
     }
 
-#if _NET
-    if ( m_accessEnable )
-    {
-        if ( GetProfile().GetLocalProfileInt("Setup", "AccessMission", iValue) )
-        {
-            m_accessMission = iValue;
-        }
-
-        if ( GetProfile().GetLocalProfileInt("Setup", "AccessUser", iValue) )
-        {
-            m_accessUser = iValue;
-        }
-    }
-#endif
-
     if ( GetProfile().GetLocalProfileInt("Setup", "DeleteGamer", iValue) )
     {
         m_bDeleteGamer = iValue;
@@ -6005,10 +5662,6 @@ void CMainDialog::StartAbort()
 
     pos.x = 0.40f;
     dim.x = 0.20f;
-/* TODO: #if _POLISH
-    pos.x -=  7.0f/640.0f;
-    dim.x += 14.0f/640.0f;
-#endif*/
     dim.y = 32.0f/480.0f;
 
     pos.y = 0.74f;

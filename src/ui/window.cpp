@@ -1536,8 +1536,6 @@ void CWindow::DrawVertex(Math::Point pos, Math::Point dim, int icon)
 
 void CWindow::DrawHach(Math::Point pos, Math::Point dim)
 {
-#if _NEWLOOK
-#else
     Math::Point     ppos, ddim, uv1, uv2;
     float       dp, max, ndim;
     bool        bStop;
@@ -1575,7 +1573,6 @@ void CWindow::DrawHach(Math::Point pos, Math::Point dim)
         ppos.x += ddim.x;
     }
     while ( !bStop );
-#endif
 }
 
 }

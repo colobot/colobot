@@ -2581,16 +2581,10 @@ int CPhysics::ObjectAdapt(const Math::Vector &pos, const Math::Vector &angle)
                 (oType >= OBJECT_MUSHROOM1 && oType <= OBJECT_MUSHROOM2) )  continue;
         }
 
-/* TODO: #if _TEEN
-        if ( oType == OBJECT_WAYPOINT &&
-             pObj->GetEnable()        &&
-            !m_object->GetResetBusy() )  // driving vehicle?
-#else */
         if ( oType == OBJECT_WAYPOINT &&
              pObj->GetEnable()        &&
             !m_object->GetResetBusy() &&
              m_object->GetTrainer()   )  // driving vehicle?
-/* #endif */
         {
             oPos = pObj->GetPosition(0);
             distance = Math::DistanceProjected(oPos, iPos);
@@ -2996,15 +2990,15 @@ void CPhysics::FrameParticle(float aTime, float rTime)
 {
     Math::Vector    pos;
     CObject*    power;
-    float       energy, intensity;
+    float       energy/*, intensity*/;
     int         effectLight;
-    bool        bFlash;
+    //bool        bFlash;
 
     m_restBreakParticle -= rTime;
     if ( aTime-m_lastPowerParticle < m_engine->ParticleAdapt(0.05f) )  return;
     m_lastPowerParticle = aTime;
 
-    bFlash = false;
+    //bFlash = false;
 
     energy = 0.0f;
     power = m_object->GetPower();
@@ -3018,7 +3012,7 @@ void CPhysics::FrameParticle(float aTime, float rTime)
         if ( energy > m_lastEnergy )  // recharge?
         {
             PowerParticle(1.0f, false);
-            bFlash = true;
+            //bFlash = true;
         }
 
         if ( energy == 0.0f || m_lastEnergy == 0.0f )
@@ -3032,7 +3026,7 @@ void CPhysics::FrameParticle(float aTime, float rTime)
     if ( m_restBreakParticle > 0.0f )
     {
         PowerParticle(m_restBreakParticle/2.5f, (energy == 0));
-        bFlash = true;
+        //bFlash = true;
     }
 
     effectLight = m_object->GetEffectLight();

@@ -390,13 +390,7 @@ void CDisplayInfo::StartDisplayInfo(std::string filename, int index, bool bSoluc
 
     button = pw->CreateButton(pos, dim, 128+57, EVENT_SATCOM_HUSTON);
     button->SetState(STATE_SHADOW);
-#if _TEEN
-#if !_ENGLISH
-    button = pw->CreateButton(pos, dim, 46, EVENT_SATCOM_SAT);
-#endif
-#else
     button = pw->CreateButton(pos, dim, 128+58, EVENT_SATCOM_SAT);
-#endif
     button->SetState(STATE_SHADOW);
 //? button = pw->CreateButton(pos, dim, 128+59, EVENT_SATCOM_OBJECT);
 //? button->SetState(STATE_SHADOW);

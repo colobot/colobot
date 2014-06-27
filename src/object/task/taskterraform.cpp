@@ -76,15 +76,9 @@ bool CTaskTerraform::EventProcess(const Event &event)
     {
         if ( m_soundChannel == -1 )
         {
-#if _TEEN
-            m_soundChannel = m_sound->Play(SOUND_GGG, m_object->GetPosition(0), 1.0f, 0.5f, true);
-            m_sound->AddEnvelope(m_soundChannel, 1.0f, 2.0f, 1.5f, SOPER_CONTINUE);
-            m_sound->AddEnvelope(m_soundChannel, 0.0f, 0.5f, 0.5f, SOPER_STOP);
-#else
             m_soundChannel = m_sound->Play(SOUND_GGG, m_object->GetPosition(0), 1.0f, 0.5f, true);
             m_sound->AddEnvelope(m_soundChannel, 1.0f, 2.0f, 4.0f, SOPER_CONTINUE);
             m_sound->AddEnvelope(m_soundChannel, 0.0f, 0.5f, 0.5f, SOPER_STOP);
-#endif
         }
 
         dir.x = 0.0f;
@@ -109,11 +103,7 @@ bool CTaskTerraform::EventProcess(const Event &event)
     if ( m_phase == TTP_DOWN )
     {
         pos.x = 9.0f;
-#if _TEEN
-        pos.y = 4.0f-m_progress*4.0f;
-#else
         pos.y = 4.0f-m_progress*5.8f;
-#endif
         pos.z = 0.0f;
         m_object->SetPosition(2, pos);
     }
@@ -121,11 +111,7 @@ bool CTaskTerraform::EventProcess(const Event &event)
     if ( m_phase == TTP_UP )
     {
         pos.x = 9.0f;
-#if _TEEN
-        pos.y = 4.0f-(1.0f-m_progress)*4.0f;
-#else
         pos.y = 4.0f-(1.0f-m_progress)*5.8f;
-#endif
         pos.z = 0.0f;
         m_object->SetPosition(2, pos);
     }
@@ -230,11 +216,7 @@ Error CTaskTerraform::Start()
 
     m_phase    = TTP_CHARGE;
     m_progress = 0.0f;
-#if _TEEN
-    m_speed    = 1.0f/1.5f;
-#else
     m_speed    = 1.0f/4.0f;
-#endif
     m_time     = 0.0f;
 
     m_bError = false;  // ok
@@ -261,9 +243,6 @@ Error CTaskTerraform::IsEnded()
 
     if ( m_phase == TTP_CHARGE )
     {
-#if _TEEN
-        Terraform();  // changes the terrain.
-#endif
 
         m_phase = TTP_DOWN;
         m_speed = 1.0f/0.2f;
@@ -272,9 +251,7 @@ Error CTaskTerraform::IsEnded()
 
     if ( m_phase == TTP_DOWN )
     {
-#if !_TEEN
         Terraform();  // changes the terrain.
-#endif
 
         m_object->SetCirVibration(Math::Vector(0.0f, 0.0f, 0.0f));
         m_object->SetZoom(0, 1.0f);
