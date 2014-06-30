@@ -200,7 +200,6 @@ protected:
     int         m_persoTab;         // perso: tab selected
     float           m_persoAngle;           // perso: angle of presentation
 
-    std::string     m_sceneDir;     // scene folder
     std::string     m_savegameDir;  // savegame folder
     std::string     m_publicDir;    // program folder
     std::string     m_userDir;      // user folder

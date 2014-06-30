@@ -29,6 +29,10 @@
 #include "common/restext.h"
 #include "common/stringutils.h"
 
+#include "common/resources/resourcemanager.h"
+#include "common/resources/inputstream.h"
+#include "common/resources/outputstream.h"
+
 #include "object/robotmain.h"
 
 #include "script/cmdtoken.h"
@@ -48,6 +52,7 @@
 #include "ui/window.h"
 #include "ui/edit.h"
 #include "ui/editvalue.h"
+#include <test/cbot/CBot_console/CClass.h>
 
 #include <stdio.h>
 #include <string.h>
@@ -174,9 +179,6 @@ CMainDialog::CMainDialog()
         m_partiPhase[i] = 0;
         m_partiTime[i]  = 0.0f;
     }
-
-
-    m_sceneDir = "levels";
 
     #if DEV_BUILD
     m_savegameDir = "savegame";
@@ -762,7 +764,7 @@ pb->SetState(STATE_SHADOW);
     {
         if (!m_sound->IsPlayingMusic())
         {
-            m_sound->PlayMusic("Intro1.ogg", false);
+            m_sound->PlayMusic("music/Intro1.ogg", false);
         }
     }
 
@@ -782,15 +784,15 @@ pb->SetState(STATE_SHADOW);
 
         if ( m_phase == PHASE_FREE )
         {
-            strcpy(m_sceneName, "scene");
+            strcpy(m_sceneName, "levels/missions/");
             ReadGamerInfo();
             m_accessChap = GetChapPassed();
         }
 
-        if ( m_phase == PHASE_TRAINER )  strcpy(m_sceneName, "train");
-        if ( m_phase == PHASE_DEFI    )  strcpy(m_sceneName, "defi" );
-        if ( m_phase == PHASE_MISSION )  strcpy(m_sceneName, "scene");
-        if ( m_phase == PHASE_FREE    )  strcpy(m_sceneName, "free");
+        if ( m_phase == PHASE_TRAINER )  strcpy(m_sceneName, "levels/exercises/");
+        if ( m_phase == PHASE_DEFI    )  strcpy(m_sceneName, "levels/challenges/" );
+        if ( m_phase == PHASE_MISSION )  strcpy(m_sceneName, "levels/missions/");
+        if ( m_phase == PHASE_FREE    )  strcpy(m_sceneName, "levels/freemissions/");
         if ( m_phase == PHASE_TEEN    )  strcpy(m_sceneName, "teen");
         if ( m_phase == PHASE_USER    )  strcpy(m_sceneName, "user");
 
@@ -2011,7 +2013,7 @@ bool CMainDialog::EventProcess(const Event &event)
         {
             if (!m_sound->IsPlayingMusic())
             {
-                m_sound->PlayMusic("Intro2.ogg", true);
+                m_sound->PlayMusic("music/Intro2.ogg", true);
             }
         }
 
@@ -3584,10 +3586,22 @@ void CMainDialog::BuildSceneName(std::string &filename, char *base, int rank)
         rankStream << std::setfill('0') << std::setw(2) << rank%100;
         filename = m_userDir + "/" + m_userList[rank/100-1] + "/" + rankStream.str() + ".txt";
     }
+    else if ( strcmp(base, "perso") == 0 )
+    {
+        filename = "levels/other/perso.txt";
+    }
     else
     {
-        rankStream << std::setfill('0') << std::setw(3) << rank;
-        filename = base + rankStream.str() + ".txt";
+        rankStream << "chapter" << std::setfill('0') << std::setw(3) << (rank / 100);
+        if (rank % 100 == 0)
+        {
+            rankStream << "/chaptertitle.txt";
+        }
+        else
+        {
+            rankStream << "/level" << std::setfill('0') << std::setw(3) << (rank % 100) << "/scene.txt";
+        }
+        filename = base + rankStream.str();
     }
 }
 
@@ -4282,7 +4296,6 @@ bool CMainDialog::IsIOReadScene()
 
 void CMainDialog::IOReadName()
 {
-    FILE*       file;
     CWindow*    pw;
     CEdit*      pe;
     std::string filename;
@@ -4304,10 +4317,12 @@ void CMainDialog::IOReadName()
     sprintf(op, "Title.E");
     sprintf(op_i18n, "Title.%c", m_app->GetLanguageChar() );
 
-    file = fopen(filename.c_str(), "r");
-    if ( file != NULL )
+    CInputStream stream;
+    stream.open(filename);
+    
+    if (stream.is_open())
     {
-        while ( fgets(line, 500, file) != NULL )
+        while (stream.getline(line, 500))
         {
             for ( i=0 ; i<500 ; i++ )
             {
@@ -4329,7 +4344,7 @@ void CMainDialog::IOReadName()
                 break;
             }
         }
-        fclose(file);
+        stream.close();
     }
 
     time(&now);
@@ -4675,10 +4690,10 @@ void CMainDialog::AllMissionUpdate()
 
 void CMainDialog::UpdateSceneChap(int &chap)
 {
-    FILE*       file = NULL;
     CWindow*    pw;
     CList*      pl;
-    //struct _finddata_t fileBuffer;
+    FILE *file;
+
     std::string fileName;
     char        op[100];
     char        op_i18n[100];
@@ -4762,26 +4777,16 @@ void CMainDialog::UpdateSceneChap(int &chap)
     {
         for ( j=0 ; j<9 ; j++ )
         {
-/* TODO: #if _SCHOOL
-            if ( m_phase == PHASE_MISSION )  break;
-            if ( m_phase == PHASE_FREE    )  break;
-#if _CEEBOTDEMO
-            if ( m_phase == PHASE_TRAINER && j >= 2 )  break;
-#endif
-#endif
-#if _DEMO
-            if ( m_phase == PHASE_MISSION && j >= 4 )  break;
-            if ( m_phase == PHASE_TRAINER && j >= 1 )  break;
-#endif */
             BuildSceneName(fileName, m_sceneName, (j+1)*100);
-            file = fopen(fileName.c_str(), "r");
-            if ( file == NULL )  break;
+            CInputStream stream;
+            stream.open(fileName);
+            if (!stream.is_open())  break;
 
             BuildResumeName(name, m_sceneName, j+1);  // default name
             sprintf(op, "Title.E");
             sprintf(op_i18n, "Title.%c", m_app->GetLanguageChar());
 
-            while ( fgets(line, 500, file) != NULL )
+            while (stream.getline(line, 500))
             {
                 for ( i=0 ; i<500 ; i++ )
                 {
@@ -4803,7 +4808,7 @@ void CMainDialog::UpdateSceneChap(int &chap)
                     break;
                 }
             }
-            fclose(file);
+            stream.close();
 
             bPassed = GetGamerInfoPassed((j+1)*100);
             sprintf(line, "%d: %s", j+1, name);
@@ -4816,14 +4821,6 @@ void CMainDialog::UpdateSceneChap(int &chap)
                 j ++;
                 break;
             }
-
-/* TODO: #if _TEEN
-            if ( m_phase == PHASE_TRAINER && !m_main->GetShowAll() && !bPassed )
-            {
-                j ++;
-                break;
-            }
-#endif*/
 
             if ( m_phase == PHASE_FREE && j == m_accessChap )
             {
@@ -5493,7 +5490,6 @@ void CMainDialog::ChangeSetupButtons()
 
 void CMainDialog::SetupMemorize()
 {
-    GetProfile().SetLocalProfileString("Directory", "scene",    m_sceneDir);
     GetProfile().SetLocalProfileString("Directory", "savegame", m_savegameDir);
     GetProfile().SetLocalProfileString("Directory", "public",   m_publicDir);
     GetProfile().SetLocalProfileString("Directory", "user",     m_userDir);
@@ -5585,11 +5581,6 @@ void CMainDialog::SetupRecall()
     float       fValue;
     int         iValue;
     std::string key;
-
-    if ( GetProfile().GetLocalProfileString("Directory", "scene", key) )
-    {
-        m_sceneDir = key;
-    }
 
     if ( GetProfile().GetLocalProfileString("Directory", "savegame", key) )
     {
