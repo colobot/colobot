@@ -56,14 +56,13 @@ void InitializeRestext()
     stringsText[RT_KEY_OR]           = " or ";
 
     stringsText[RT_TITLE_BASE]       = "COLOBOT";
-    stringsText[RT_TITLE_INIT]       = "COLOBOT";
+    stringsText[RT_TITLE_INIT]       = "COLOBOT: Gold Edition";
     stringsText[RT_TITLE_TRAINER]    = "Programming exercises";
     stringsText[RT_TITLE_DEFI]       = "Challenges";
     stringsText[RT_TITLE_MISSION]    = "Missions";
     stringsText[RT_TITLE_FREE]       = "Free game";
     stringsText[RT_TITLE_TEEN]       = "Free game";
     stringsText[RT_TITLE_USER]       = "User levels";
-    stringsText[RT_TITLE_PROTO]      = "Prototypes";
     stringsText[RT_TITLE_SETUP]      = "Options";
     stringsText[RT_TITLE_NAME]       = "Player's name";
     stringsText[RT_TITLE_PERSO]      = "Customize your appearance";
@@ -75,14 +74,12 @@ void InitializeRestext()
     stringsText[RT_PLAY_CHAPm]       = " Planets:";
     stringsText[RT_PLAY_CHAPf]       = " Planets:";
     stringsText[RT_PLAY_CHAPu]       = " User levels:";
-    stringsText[RT_PLAY_CHAPp]       = " Planets:";
     stringsText[RT_PLAY_CHAPte]      = " Chapters:";
     stringsText[RT_PLAY_LISTt]       = " Exercises in the chapter:";
     stringsText[RT_PLAY_LISTd]       = " Challenges in the chapter:";
     stringsText[RT_PLAY_LISTm]       = " Missions on this planet:";
     stringsText[RT_PLAY_LISTf]       = " Free game on this planet:";
     stringsText[RT_PLAY_LISTu]       = " Missions on this level:";
-    stringsText[RT_PLAY_LISTp]       = " Prototypes on this planet:";
     stringsText[RT_PLAY_LISTk]       = " Free game on this chapter:";
     stringsText[RT_PLAY_RESUME]      = " Summary:";
 
@@ -155,8 +152,7 @@ void InitializeRestext()
     stringsEvent[EVENT_INTERFACE_FREE]      = "Free game\\Free game without a specific goal";
     stringsEvent[EVENT_INTERFACE_TEEN]      = "Free game\\Free game without a specific goal";
     stringsEvent[EVENT_INTERFACE_USER]      = "User\\User levels";
-    stringsEvent[EVENT_INTERFACE_PROTO]     = "Proto\\Prototypes under development";
-    stringsEvent[EVENT_INTERFACE_NAME]      = "New player\\Choose player's name";
+    stringsEvent[EVENT_INTERFACE_NAME]      = "Change player\\Change player";
     stringsEvent[EVENT_INTERFACE_SETUP]     = "Options\\Preferences";
     stringsEvent[EVENT_INTERFACE_AGAIN]     = "Restart\\Restart the mission from the beginning";
     stringsEvent[EVENT_INTERFACE_WRITE]     = "Save\\Save the current mission ";
@@ -776,9 +772,7 @@ static KeyDesc keyTable[22] =
 
 bool SearchKey(const char *cmd, InputSlot &key)
 {
-    int     i;
-
-    for ( i=0 ; i<22 ; i++ )
+    for (int i = 0; i < 22 ;i++)
     {
         if ( strstr(cmd, keyTable[i].name) == cmd )
         {
@@ -791,14 +785,11 @@ bool SearchKey(const char *cmd, InputSlot &key)
 
 // Replaces the commands "\key name;" in a text.
 
-static void PutKeyName(char* dst, const char* src)
+static void PutKeyName(std::string& dst, const char* src)
 {
-    InputSlot key;
-    char    name[50];
-    int     s, d, n;
-    unsigned int res;
+    dst.clear();
 
-    s = d = 0;
+    int s = 0;
     while ( src[s] != 0 )
     {
         if ( src[s+0] == '\\' &&
@@ -807,18 +798,16 @@ static void PutKeyName(char* dst, const char* src)
              src[s+3] == 'y'  &&
              src[s+4] == ' '  )
         {
+            InputSlot key;
             if ( SearchKey(src+s+5, key) )
             {
-                res = CRobotMain::GetInstancePointer()->GetInputBinding(key).primary;
+                unsigned int res = CRobotMain::GetInstancePointer()->GetInputBinding(key).primary;
                 if (res != KEY_INVALID)
                 {
-                    if ( GetResource(RES_KEY, res, name) )
+                    std::string keyName;
+                    if ( GetResource(RES_KEY, res, keyName) )
                     {
-                        n = 0;
-                        while ( name[n] != 0 )
-                        {
-                            dst[d++] = name[n++];
-                        }
+                        dst.append(keyName);
                         while ( src[s++] != ';' );
                         continue;
                     }
@@ -826,9 +815,8 @@ static void PutKeyName(char* dst, const char* src)
             }
         }
 
-        dst[d++] = src[s++];
+        dst.append(1, src[s++]);
     }
-    dst[d++] = 0;
 }
 
 // Returns the translated text of a resource that needs key substitution
@@ -905,13 +893,13 @@ static const char* GetResourceBase(ResType type, int num)
 
 // Returns the text of a resource.
 
-bool GetResource(ResType type, int num, char* text)
+bool GetResource(ResType type, int num, std::string& text)
 {
     const char *tmpl = GetResourceBase(type, num);
 
     if (!tmpl)
     {
-        text[0] = 0;
+        text.clear();
         return false;
     }
 

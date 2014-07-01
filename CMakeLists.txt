@@ -13,7 +13,7 @@ project(colobot C CXX)
 set(COLOBOT_VERSION_CODENAME "Gold")
 set(COLOBOT_VERSION_MAJOR    0)
 set(COLOBOT_VERSION_MINOR    1)
-set(COLOBOT_VERSION_REVISION 2)
+set(COLOBOT_VERSION_REVISION 3)
 
 # Used on official releases
 set(COLOBOT_VERSION_RELEASE_CODENAME "-alpha")
@@ -21,15 +21,24 @@ set(COLOBOT_VERSION_RELEASE_CODENAME "-alpha")
 #set(COLOBOT_VERSION_UNRELEASED "+alpha")
 
 # Append git characteristics to version
-if(DEFINED COLOBOT_VERSION_UNRELEASED AND EXISTS "${CMAKE_SOURCE_DIR}/.git")
-    find_package(Git)
-    execute_process(COMMAND ${GIT_EXECUTABLE} rev-parse --abbrev-ref HEAD
-                    OUTPUT_VARIABLE GIT_BRANCH
-                    OUTPUT_STRIP_TRAILING_WHITESPACE)
-    execute_process(COMMAND ${GIT_EXECUTABLE} rev-parse --short HEAD
-                    OUTPUT_VARIABLE GIT_REVISION
-                    OUTPUT_STRIP_TRAILING_WHITESPACE)
-    set(COLOBOT_VERSION_UNRELEASED "${COLOBOT_VERSION_UNRELEASED}-git-${GIT_BRANCH}~r${GIT_REVISION}")
+if(DEFINED COLOBOT_VERSION_UNRELEASED)
+    if(EXISTS "${CMAKE_SOURCE_DIR}/.git")
+        find_package(Git)
+        execute_process(COMMAND ${GIT_EXECUTABLE} rev-parse --abbrev-ref HEAD
+                        WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
+                        OUTPUT_VARIABLE GIT_BRANCH
+                        OUTPUT_STRIP_TRAILING_WHITESPACE)
+        execute_process(COMMAND ${GIT_EXECUTABLE} rev-parse --short HEAD
+                        WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
+                        OUTPUT_VARIABLE GIT_REVISION
+                        OUTPUT_STRIP_TRAILING_WHITESPACE)
+        set(COLOBOT_VERSION_UNRELEASED "${COLOBOT_VERSION_UNRELEASED}-git-${GIT_BRANCH}~r${GIT_REVISION}")
+        set(COLOBOT_VERSION_DISPLAY "git-${GIT_BRANCH}~r${GIT_REVISION}")
+    else()
+        set(COLOBOT_VERSION_DISPLAY "${COLOBOT_VERSION_CODENAME}-${COLOBOT_VERSION_UNRELEASED}")
+    endif()
+else()
+    set(COLOBOT_VERSION_DISPLAY "${COLOBOT_VERSION_MAJOR}.${COLOBOT_VERSION_MINOR}.${COLOBOT_VERSION_REVISION}${COLOBOT_VERSION_RELEASE_CODENAME}")
 endif()
 
 set(COLOBOT_VERSION_FULL "${COLOBOT_VERSION_MAJOR}.${COLOBOT_VERSION_MINOR}.${COLOBOT_VERSION_REVISION}${COLOBOT_VERSION_UNRELEASED}${COLOBOT_VERSION_RELEASE_CODENAME}")
@@ -42,6 +51,7 @@ message(STATUS "Building Colobot \"${COLOBOT_VERSION_CODENAME}\" (${COLOBOT_VERS
 if("${CMAKE_SYSTEM_NAME}" MATCHES "Windows")
     message(STATUS "Build for Windows system")
     set(PLATFORM_WINDOWS 1)
+    set(PLATFORM_GNU     0)
     set(PLATFORM_LINUX   0)
     set(PLATFORM_MACOSX  0)
     set(PLATFORM_OTHER   0)
@@ -52,15 +62,27 @@ elseif("${CMAKE_SYSTEM_NAME}" MATCHES "Linux")
     message(STATUS "Build for Linux system")
     set(PLATFORM_WINDOWS 0)
     set(PLATFORM_LINUX   1)
+    set(PLATFORM_GNU     1)
     set(PLATFORM_MACOSX  0)
     set(PLATFORM_OTHER   0)
 
     # Platform-dependent implementation of system.h
     set(SYSTEM_CPP_MODULE "system_linux.cpp")
+elseif("${CMAKE_SYSTEM_NAME}" MATCHES "kFreeBSD" OR "${CMAKE_SYSTEM_NAME}" STREQUAL "GNU")
+    message(STATUS "Build for kFreeBSD system")
+    set(PLATFORM_WINDOWS 0)
+    set(PLATFORM_LINUX   0)
+    set(PLATFORM_GNU     1)
+    set(PLATFORM_MACOSX  0)
+    set(PLATFORM_OTHER   0)
+
+    # Platform-dependent implementation of system.h
+    set(SYSTEM_CPP_MODULE "system_other.cpp")
 elseif("${CMAKE_SYSTEM_NAME}" MATCHES "Darwin")
     message(STATUS "Build for Mac OSX system")
     set(PLATFORM_WINDOWS 0)
     set(PLATFORM_LINUX   0)
+    set(PLATFORM_GNU     0)
     set(PLATFORM_MACOSX  1)
     set(PLATFORM_OTHER   0)
     
@@ -72,6 +94,7 @@ else()
     message(STATUS "Build for other system")
     set(PLATFORM_WINDOWS 0)
     set(PLATFORM_LINUX   0)
+    set(PLATFORM_GNU     0)
     set(PLATFORM_MACOSX  0)
     set(PLATFORM_OTHER   1)
 
@@ -122,6 +145,9 @@ set(Boost_FLAGS "-DBOOST_NO_SCOPED_ENUMS -DBOOST_NO_CXX11_SCOPED_ENUMS")
 set(COLOBOT_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wold-style-cast ${CXX11_FLAGS} ${Boost_FLAGS}")
 set(COLOBOT_CXX_FLAGS_RELEASE "-O2")
 set(COLOBOT_CXX_FLAGS_DEBUG "-g -O0")
+
+# Flags for gtest
+set(COLOBOT_GTEST_CXX_FLAGS "-pthread")
 
 
 # Asserts can be enabled/disabled regardless of build type
@@ -226,7 +252,7 @@ include("${colobot_SOURCE_DIR}/cmake/msys.cmake")
 ##
 # Clipboard support needs X11 libraries
 ##
-if(PLATFORM_LINUX OR PLATFORM_MACOSX)
+if(PLATFORM_GNU OR PLATFORM_MACOSX)
     find_package(X11 REQUIRED)
     if(PLATFORM_MACOSX)
        # Add the includes for X11

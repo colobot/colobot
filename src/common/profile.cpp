@@ -91,7 +91,7 @@ bool CProfile::SetLocalProfileString(std::string section, std::string key, std::
     }
     catch (std::exception & e)
     {
-        GetLogger()->Error("Error on parsing profile: %s\n", e.what());
+        GetLogger()->Info("Error on parsing profile: %s\n", e.what());
         return false;
     }
     return true;
@@ -106,7 +106,7 @@ bool CProfile::GetLocalProfileString(std::string section, std::string key, std::
     }
     catch (std::exception & e)
     {
-        GetLogger()->Error("Error on parsing profile: %s\n", e.what());
+        GetLogger()->Info("Error on parsing profile: %s\n", e.what());
         return false;
     }
     return true;
@@ -122,7 +122,7 @@ bool CProfile::SetLocalProfileInt(std::string section, std::string key, int valu
     }
     catch (std::exception & e)
     {
-        GetLogger()->Error("Error on parsing profile: %s\n", e.what());
+        GetLogger()->Info("Error on parsing profile: %s\n", e.what());
         return false;
     }
     return true;
@@ -137,7 +137,7 @@ bool CProfile::GetLocalProfileInt(std::string section, std::string key, int &val
     }
     catch (std::exception & e)
     {
-        GetLogger()->Error("Error on parsing profile: %s\n", e.what());
+        GetLogger()->Info("Error on parsing profile: %s\n", e.what());
         return false;
     }
     return true;
@@ -153,7 +153,7 @@ bool CProfile::SetLocalProfileFloat(std::string section, std::string key, float 
     }
     catch (std::exception & e)
     {
-        GetLogger()->Error("Error on parsing profile: %s\n", e.what());
+        GetLogger()->Info("Error on parsing profile: %s\n", e.what());
         return false;
     }
     return true;
@@ -168,7 +168,7 @@ bool CProfile::GetLocalProfileFloat(std::string section, std::string key, float 
     }
     catch (std::exception & e)
     {
-        GetLogger()->Error("Error on parsing profile: %s\n", e.what());
+        GetLogger()->Info("Error on parsing profile: %s\n", e.what());
         return false;
     }
     return true;
@@ -178,7 +178,7 @@ bool CProfile::GetLocalProfileFloat(std::string section, std::string key, float 
 std::vector< std::string > CProfile::GetLocalProfileSection(std::string section, std::string key)
 {
     std::vector< std::string > ret_list;
-    boost::regex re(key + "[0-9]*"); //we want to match all key followed my any number
+    boost::regex re(key + "[0-9]*"); //we want to match all key followed by any number
 
     try
     {
@@ -192,7 +192,7 @@ std::vector< std::string > CProfile::GetLocalProfileSection(std::string section,
     }
     catch (std::exception & e)
     {
-        GetLogger()->Error("Error on parsing profile: %s\n", e.what());
+        GetLogger()->Info("Error on parsing profile: %s\n", e.what());
     }
 
     return ret_list;

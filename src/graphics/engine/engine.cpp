@@ -19,6 +19,7 @@
 #include "graphics/engine/engine.h"
 
 #include "app/app.h"
+#include "app/gamedata.h"
 
 #include "common/image.h"
 #include "common/key.h"
@@ -63,6 +64,7 @@ CEngine::CEngine(CApplication *app)
     m_planet     = nullptr;
     m_sound      = nullptr;
     m_terrain    = nullptr;
+    m_pause      = nullptr;
 
     m_showStats = false;
 
@@ -80,7 +82,6 @@ CEngine::CEngine(CApplication *app)
     m_fogStart[1]     = 0.75f;
     m_waterAddColor   = Color(0.0f, 0.0f, 0.0f, 0.0f);
 
-    m_pause             = false;
     m_render            = true;
     m_movieLock         = false;
     m_shadowVisible     = true;
@@ -179,6 +180,7 @@ CEngine::~CEngine()
     m_lightning = nullptr;
     m_planet    = nullptr;
     m_terrain   = nullptr;
+    m_pause     = nullptr;
 
     GetSystemUtils()->DestroyTimeStamp(m_lastFrameTime);
     m_lastFrameTime = nullptr;
@@ -252,6 +254,7 @@ bool CEngine::Create()
     m_cloud      = new CCloud(this);
     m_lightning  = new CLightning(this);
     m_planet     = new CPlanet(this);
+    m_pause      = new CPauseManager();
 
     m_lightMan->SetDevice(m_device);
     m_particle->SetDevice(m_device);
@@ -421,19 +424,25 @@ void CEngine::FrameUpdate()
 
 bool CEngine::WriteScreenShot(const std::string& fileName, int width, int height)
 {
-    // TODO write screenshot: not very important for now
-    GetLogger()->Trace("CEngine::WriteSceenShot(): stub!\n");
-    return true;
-}
+    void *pixels = m_device->GetFrameBufferPixels();
+    CImage img({width,height});
 
-void CEngine::SetPause(bool pause)
-{
-    m_pause = pause;
+    img.SetDataPixels(pixels);
+    img.flipVertically();
+
+    if ( img.SavePNG(fileName.c_str()) ){
+       GetLogger()->Info("Save SceenShot Saved Successfully!\n");
+       return true;
+    }
+    else{
+       GetLogger()->Error("%s!\n",img.GetError().c_str());
+       return false;
+    }   
 }
 
 bool CEngine::GetPause()
 {
-    return m_pause;
+    return m_pause->GetPause();
 }
 
 void CEngine::SetMovieLock(bool lock)
@@ -2249,33 +2258,12 @@ Texture CEngine::CreateTexture(const std::string& texName, const TextureCreatePa
 
     if (image == nullptr)
     {
-        bool loadedFromTexPack = false;
-
-        std::string texPackName = m_app->GetTexPackFilePath(texName);
-        if (! texPackName.empty())
+        if (! img.Load(CGameData::GetInstancePointer()->GetFilePath(DIR_TEXTURE, texName)))
         {
-            if (img.Load(texPackName))
-            {
-                loadedFromTexPack = true;
-            }
-            else
-            {
-                std::string error = img.GetError();
-                GetLogger()->Error("Couldn't load texture '%s' from texpack: %s, blacklisting the texpack path\n",
-                                   texName.c_str(), error.c_str());
-                m_texBlacklist.insert(texPackName);
-            }
-        }
-
-        if (!loadedFromTexPack)
-        {
-            if (! img.Load(m_app->GetDataFilePath(DIR_TEXTURE, texName)))
-            {
-                std::string error = img.GetError();
-                GetLogger()->Error("Couldn't load texture '%s': %s, blacklisting\n", texName.c_str(), error.c_str());
-                m_texBlacklist.insert(texName);
-                return Texture(); // invalid texture
-            }
+            std::string error = img.GetError();
+            GetLogger()->Error("Couldn't load texture '%s': %s, blacklisting\n", texName.c_str(), error.c_str());
+            m_texBlacklist.insert(texName);
+            return Texture(); // invalid texture
         }
 
         image = &img;
@@ -2438,7 +2426,7 @@ bool CEngine::ChangeTextureColor(const std::string& texName,
 
 
     CImage img;
-    if (! img.Load(m_app->GetDataFilePath(DIR_TEXTURE, texName)))
+    if (! img.Load(CGameData::GetInstancePointer()->GetFilePath(DIR_TEXTURE, texName)))
     {
         std::string error = img.GetError();
         GetLogger()->Error("Couldn't load texture '%s': %s, blacklisting\n", texName.c_str(), error.c_str());

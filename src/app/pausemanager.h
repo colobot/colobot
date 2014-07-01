@@ -1,5 +1,6 @@
 // * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// * Copyright (C) 2012, Polish Portal of Colobot (PPC)
 // *
 // * This program is free software: you can redistribute it and/or modify
 // * it under the terms of the GNU General Public License as published by
@@ -15,41 +16,47 @@
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
 /**
- * \file object/objman.h
- * \brief Instance manager for objects
+ * \file app/pausemanager.h
+ * \brief Management of pause modes
  */
-
 #pragma once
 
-#include "object/object.h"
-
 #include "common/singleton.h"
+#include "sound/sound.h"
 
-const int MAX_OBJECTS = 500;
+#include <string>
 
-/**
- * \class ObjectManager
- * \brief Manager for objects
- */
-class CObjectManager : public CSingleton<CObjectManager>
+
+enum PauseType {
+    PAUSE_NONE = 0,
+    PAUSE_USER,
+    PAUSE_SATCOM,
+    PAUSE_SATCOMMOVIE,
+    PAUSE_DIALOG,
+    PAUSE_EDITOR,
+    PAUSE_VISIT,
+    PAUSE_CHEAT,
+    PAUSE_PHOTO
+};
+
+class CPauseManager : public CSingleton<CPauseManager>
 {
 public:
-    CObjectManager();
-    virtual ~CObjectManager();
-
-    //! Registers new object
-    bool      AddInstance(CObject* instance);
-    //! Deletes the registered object
-    bool      DeleteInstance(CObject* instance);
-    //! Seeks for an object
-    CObject*  SearchInstance(int id);
-    //! Creates an object
-    CObject*  CreateObject(Math::Vector pos, float angle, ObjectType type, float power = -1.f, float zoom = 1.f, float height = 0.f, bool trainer = false, bool toy = false, int option = 0);
-    //! Removes all objects
-    void      Flush();
-
-protected:
-    CObject* m_table[MAX_OBJECTS];
-    int m_usedCount;
+    CPauseManager();
+    ~CPauseManager();
+    
+    void SetPause(PauseType pause);
+    void ClearPause();
+    bool GetPause();
+    bool GetPause(PauseType pause);
+    PauseType GetPauseType();
+    
+private:
+    std::string GetPauseName(PauseType pause);
+    
+private:
+    CSoundInterface* m_sound;
+    
+    PauseType m_pause;
 };
 

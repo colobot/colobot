@@ -23,6 +23,7 @@
 #include "common/iman.h"
 #include "common/misc.h"
 #include "common/restext.h"
+#include "common/stringutils.h"
 
 #include "graphics/core/light.h"
 #include "graphics/engine/engine.h"
@@ -58,6 +59,7 @@ CDisplayInfo::CDisplayInfo()
     m_main      = CRobotMain::GetInstancePointer();
     m_interface = m_main->GetInterface();
     m_camera    = m_main->GetCamera();
+    m_pause     = CPauseManager::GetInstancePointer();
 
     m_bInfoMaximized = true;
     m_bInfoMinimized = false;
@@ -329,13 +331,13 @@ void CDisplayInfo::HyperUpdate()
 
 void CDisplayInfo::StartDisplayInfo(std::string filename, int index, bool bSoluce)
 {
-    Gfx::Light         light;
+    Gfx::Light          light;
     Math::Point         pos, dim;
     Ui::CWindow*        pw;
     Ui::CEdit*          edit;
     Ui::CButton*        button;
     Ui::CSlider*        slider;
-    CMotionToto*    toto;
+    CMotionToto*        toto;
 
     m_index = index;
     m_bSoluce = bSoluce;
@@ -354,8 +356,8 @@ void CDisplayInfo::StartDisplayInfo(std::string filename, int index, bool bSoluc
 
     m_main->SetEditLock(true, false);
     m_main->SetEditFull(false);
-    m_bInitPause = m_engine->GetPause();
-    m_engine->SetPause(true);
+    m_bInitPause = m_pause->GetPauseType();
+    m_pause->SetPause(PAUSE_SATCOM);
     m_infoCamera = m_camera->GetType();
     m_camera->SetType(Gfx::CAM_TYPE_INFO);
 
@@ -388,13 +390,7 @@ void CDisplayInfo::StartDisplayInfo(std::string filename, int index, bool bSoluc
 
     button = pw->CreateButton(pos, dim, 128+57, EVENT_SATCOM_HUSTON);
     button->SetState(STATE_SHADOW);
-#if _TEEN
-#if !_ENGLISH
-    button = pw->CreateButton(pos, dim, 46, EVENT_SATCOM_SAT);
-#endif
-#else
     button = pw->CreateButton(pos, dim, 128+58, EVENT_SATCOM_SAT);
-#endif
     button->SetState(STATE_SHADOW);
 //? button = pw->CreateButton(pos, dim, 128+59, EVENT_SATCOM_OBJECT);
 //? button->SetState(STATE_SHADOW);
@@ -838,7 +834,7 @@ void CDisplayInfo::StopDisplayInfo()
     }
     else
     {
-        if ( !m_bInitPause )  m_engine->SetPause(false);
+        m_pause->SetPause(m_bInitPause);
         m_main->SetEditLock(false, false);
     }
     m_camera->SetType(m_infoCamera);
@@ -971,31 +967,41 @@ void ObjectAdd(ObjectList list[], ObjectType type)
 
 void ObjectWrite(FILE* file, ObjectList list[], int i)
 {
-    char        line[100];
-    char        res[100];
-    char*       p;
+    std::string line;
 
     if ( list[i].total < 10 )
     {
-        sprintf(line, "\\c; %dx \\n;\\l;", list[i].total);
+        line = StrUtils::Format("\\c; %dx \\n;\\l;", list[i].total);
     }
     else
     {
-        sprintf(line, "\\c;%dx \\n;\\l;", list[i].total);
+        line = StrUtils::Format("\\c;%dx \\n;\\l;", list[i].total);
     }
 
+    std::string res;
     GetResource(RES_OBJECT, list[i].type, res);
-    if ( res[0] == 0 )  return;
-    strcat(line, res);
+    if (res.empty())
+        return;
 
-    strcat(line, "\\u ");
-    p = const_cast<char*>(GetHelpFilename(list[i].type).c_str());
-    if ( p[0] == 0 )  return;
-    strcat(line, p+7);  // skip "help\?\"
-    p = strstr(line, ".txt");
-    if ( p != 0 )  *p = 0;
-    strcat(line, ";\n");
-    fputs(line, file);
+    line += res;
+
+    line += "\\u ";
+
+    std::string helpFilename = GetHelpFilename(list[i].type);
+    if (helpFilename.empty())
+        return;
+
+    line += helpFilename.substr(7);  // skip "help\?\"
+
+    auto pos = line.find(".txt");
+    if (pos != std::string::npos)
+    {
+        line = line.substr(0, pos);
+    }
+
+    line += ";\n";
+
+    fputs(line.c_str(), file);
 }
 
 // Creates the file containing the list of objects.
@@ -1006,7 +1012,7 @@ void CDisplayInfo::CreateObjectsFile()
     CObject*    pObj;
     ObjectType  type;
     ObjectList  list[200];
-    char        line[100];
+    std::string line;
     int         i;
     bool        bRadar, bAtLeast;
 
@@ -1038,7 +1044,7 @@ void CDisplayInfo::CreateObjectsFile()
     if ( bRadar )
     {
         GetResource(RES_TEXT, RT_SATCOM_LIST, line);
-        fputs(line, file);
+        fputs(line.c_str(), file);
         bAtLeast = false;
         for ( i=0 ; i<200 ; i++ )
         {
@@ -1054,13 +1060,12 @@ void CDisplayInfo::CreateObjectsFile()
         if ( !bAtLeast )
         {
             GetResource(RES_TEXT, RT_SATCOM_NULL, line);
-            fputs(line, file);
+            fputs(line.c_str(), file);
         }
 
-        strcpy(line, "\n");
-        fputs(line, file);
+        fputs("\n", file);
         GetResource(RES_TEXT, RT_SATCOM_BOT, line);
-        fputs(line, file);
+        fputs(line.c_str(), file);
         bAtLeast = false;
         for ( i=0 ; i<200 ; i++ )
         {
@@ -1101,13 +1106,12 @@ void CDisplayInfo::CreateObjectsFile()
         if ( !bAtLeast )
         {
             GetResource(RES_TEXT, RT_SATCOM_NULL, line);
-            fputs(line, file);
+            fputs(line.c_str(), file);
         }
 
-        strcpy(line, "\n");
-        fputs(line, file);
+        fputs("\n", file);
         GetResource(RES_TEXT, RT_SATCOM_BUILDING, line);
-        fputs(line, file);
+        fputs(line.c_str(), file);
         bAtLeast = false;
         for ( i=0 ; i<200 ; i++ )
         {
@@ -1142,13 +1146,12 @@ void CDisplayInfo::CreateObjectsFile()
         if ( !bAtLeast )
         {
             GetResource(RES_TEXT, RT_SATCOM_NULL, line);
-            fputs(line, file);
+            fputs(line.c_str(), file);
         }
 
-        strcpy(line, "\n");
-        fputs(line, file);
+        fputs("\n", file);
         GetResource(RES_TEXT, RT_SATCOM_FRET, line);
-        fputs(line, file);
+        fputs(line.c_str(), file);
         bAtLeast = false;
         for ( i=0 ; i<200 ; i++ )
         {
@@ -1170,13 +1173,12 @@ void CDisplayInfo::CreateObjectsFile()
         if ( !bAtLeast )
         {
             GetResource(RES_TEXT, RT_SATCOM_NULL, line);
-            fputs(line, file);
+            fputs(line.c_str(), file);
         }
 
-        strcpy(line, "\n");
-        fputs(line, file);
+        fputs("\n", file);
         GetResource(RES_TEXT, RT_SATCOM_ALIEN, line);
-        fputs(line, file);
+        fputs(line.c_str(), file);
         bAtLeast = false;
         for ( i=0 ; i<200 ; i++ )
         {
@@ -1195,19 +1197,18 @@ void CDisplayInfo::CreateObjectsFile()
         if ( !bAtLeast )
         {
             GetResource(RES_TEXT, RT_SATCOM_NULL, line);
-            fputs(line, file);
+            fputs(line.c_str(), file);
         }
     }
     else
     {
         GetResource(RES_TEXT, RT_SATCOM_ERROR1, line);
-        fputs(line, file);
+        fputs(line.c_str(), file);
         GetResource(RES_TEXT, RT_SATCOM_ERROR2, line);
-        fputs(line, file);
+        fputs(line.c_str(), file);
     }
 
-    strcpy(line, "\n");
-    fputs(line, file);
+    fputs("\n", file);
 
     fclose(file);
 }

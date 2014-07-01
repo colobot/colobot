@@ -17,6 +17,41 @@
 
 #include "common/stringutils.h"
 
+#include <cstdarg>
+#include <cstdio>
+#include <vector>
+
+
+static std::string VFormat(const char *fmt, va_list ap)
+{
+    size_t size = 1024;
+    char stackbuf[1024];
+    std::vector<char> dynamicbuf;
+    char *buf = &stackbuf[0];
+
+    while (1)
+    {
+        int needed = vsnprintf (buf, size, fmt, ap);
+
+        if (needed <= static_cast<int>(size) && needed >= 0)
+        {
+            return std::string(buf, static_cast<size_t>(needed));
+        }
+
+        size = (needed > 0) ? (needed+1) : (size*2);
+        dynamicbuf.resize(size);
+        buf = &dynamicbuf[0];
+    }
+}
+
+std::string StrUtils::Format(const char *fmt, ...)
+{
+    va_list ap;
+    va_start(ap, fmt);
+    std::string buf = VFormat(fmt, ap);
+    va_end(ap);
+    return buf;
+}
 
 std::string StrUtils::Replace(const std::string &str, const std::string &oldStr, const std::string &newStr)
 {

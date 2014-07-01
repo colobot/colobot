@@ -64,12 +64,7 @@ bool CColor::Create(Math::Point pos, Math::Point dim, int icon, EventType eventT
 
     if ( icon == -1 )
     {
-        char    name[100];
-        char*   p;
-
-        GetResource(RES_EVENT, eventType, name);
-        p = strchr(name, '\\');
-        if ( p != 0 )  *p = 0;
+        std::string name = GetResourceName(eventType);
         SetName(name);
     }
 
@@ -146,38 +141,7 @@ void CColor::Draw()
     m_engine->SetTexture("button1.png");
     m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
     CControl::Draw();
-
-#if _TEEN
-//    color = GetColor(m_color);
-    color = GetColor();
-
-    m_engine->SetTexture("");  // no texture
-    m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
-
-    device = m_engine->GetDevice();
-
-    p1.x = m_pos.x + (4.0f / 640.0f);
-    p1.y = m_pos.y + (4.0f / 480.0f);
-    p2.x = m_pos.x + m_dim.x - (4.0f / 640.0f);
-    p2.y = m_pos.y + m_dim.y - (4.0f / 480.0f);
-    vertex[0] = Gfx::Vertex(Math::Vector(p1.x, p1.y, 0.0f), 0x00000000,0x00000000, Math::Point( 0.0f, 0.0f));
-    vertex[1] = Gfx::Vertex(Math::Vector(p1.x, p2.y, 0.0f), 0x00000000,0x00000000, Math::Point( 0.0f, 0.0f));
-    vertex[2] = Gfx::Vertex(Math::Vector(p2.x, p1.y, 0.0f), 0x00000000,0x00000000, Math::Point( 0.0f, 0.0f));
-    vertex[3] = Gfx::Vertex(Math::Vector(p2.x, p2.y, 0.0f), 0x00000000,0x00000000, Math::Point( 0.0f, 0.0f));
-    device->DrawPrimitive(Gfx::PRIMITIVE_TRIANGLE_STRIP, vertex, 4);
-
-    p1.x = m_pos.x + (5.0f / 640.0f);
-    p1.y = m_pos.y + (5.0f / 480.0f);
-    p2.x = m_pos.x + m_dim.x - (5.0f / 640.0f);
-    p2.y = m_pos.y + m_dim.y - (5.0f / 480.0f);
-    vertex[0] = Gfx::Vertex(Math::Vector(p1.x, p1.y, 0.0f), color,0x00000000, Math::Point( 0.0f, 0.0f));
-    vertex[1] = Gfx::Vertex(Math::Vector(p1.x, p2.y, 0.0f), color,0x00000000, Math::Point( 0.0f, 0.0f));
-    vertex[2] = Gfx::Vertex(Math::Vector(p2.x, p1.y, 0.0f), color,0x00000000, Math::Point( 0.0f, 0.0f));
-    vertex[3] = Gfx::Vertex(Math::Vector(p2.x, p2.y, 0.0f), color,0x00000000, Math::Point( 0.0f, 0.0f));
-    device->DrawPrimitive(Gfx::PRIMITIVE_TRIANGLE_STRIP, vertex, 4);
-
-    m_engine->AddStatisticTriangle(4);
-#else
+    
     p1.x = m_pos.x + (3.0f / 640.0f);
     p1.y = m_pos.y + (3.0f / 480.0f);
     p2.x = m_pos.x + m_dim.x - (3.0f / 640.0f);
@@ -196,7 +160,6 @@ void CColor::Draw()
     device = m_engine->GetDevice();
     device->DrawPrimitive(Gfx::PRIMITIVE_TRIANGLE_STRIP, vertex, 4);
     m_engine->AddStatisticTriangle(2);
-#endif
 }
 
 

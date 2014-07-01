@@ -1791,6 +1791,19 @@ FillMode CGLDevice::GetFillMode()
     return FILL_POINT;
 }
 
+void* CGLDevice::GetFrameBufferPixels()const{
+
+    GLubyte* pixels = new GLubyte [4 * m_config.size.x * m_config.size.y];
+    
+    glReadPixels(0, 0, m_config.size.x, m_config.size.y, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+
+    unsigned int* p = static_cast<unsigned int*> ( static_cast<void*>(pixels) );
+
+    for (int i = 0; i < m_config.size.x * m_config.size.y; ++i)
+        p[i] |= 0xFF000000;
+
+    return static_cast<void*>(p);
+}
 
 } // namespace Gfx
 

@@ -6,6 +6,8 @@ if(MXE) # MXE requires special treatment
 elseif(PLATFORM_WINDOWS)
     # because it isn't included in standard linking libraries
     set(PLATFORM_LIBS "-lintl")
+elseif(PLATFORM_GNU)
+    set(PLATFORM_LIBS "-lX11")
 elseif(PLATFORM_LINUX)
     # for clock_gettime
     set(PLATFORM_LIBS "-lrt -lX11")
@@ -21,6 +23,8 @@ configure_file(${SRC_DIR}/common/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/comm
 # Code sources
 set(COLOBOT_SOURCES
 ${SRC_DIR}/app/app.cpp
+${SRC_DIR}/app/gamedata.cpp
+${SRC_DIR}/app/pausemanager.cpp
 ${SRC_DIR}/app/system.cpp
 ${SRC_DIR}/app/${SYSTEM_CPP_MODULE}
 ${SRC_DIR}/app/system_other.cpp

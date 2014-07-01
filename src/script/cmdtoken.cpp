@@ -35,6 +35,16 @@ char* SkipSpace(char *line)
     return line;
 }
 
+std::string GetCmd(char* line)
+{
+    line = SkipSpace(line);
+
+    int len = 0;
+    for(char* x = line; *x != 0 && *x != ' ' && *x != '\t' && *x != '\n'; x++, len++);
+
+    return std::string(line, len);
+}
+
 // Checks if a line contains a command.
 
 bool Cmd(char *line, const char *token)
@@ -42,8 +52,15 @@ bool Cmd(char *line, const char *token)
     char*   p;
 
     line = SkipSpace(line);
+    
     p = strstr(line, token);
-    return ( p == line );  // command at the beginning?
+    if(p != line) return false;  // command at the beginning?
+    
+    unsigned int len = 0;
+    for(char* x = p; *x != 0 && *x != ' ' && *x != '\t' && *x != '\n'; x++, len++);
+    if(len != strlen(token)) return false; // ends with space?
+    
+    return true;
 }
 
 // Seeking an operator.
@@ -238,16 +255,6 @@ ObjectType GetTypeObject(char *line, int rank, ObjectType def)
     if ( Cmd(p, "Mine"              ) )  return OBJECT_BOMB;
     if ( Cmd(p, "Firework"          ) )  return OBJECT_WINFIRE;
     if ( Cmd(p, "Bag"               ) )  return OBJECT_BAG;
-    if ( Cmd(p, "Greenery10"        ) )  return OBJECT_PLANT10;
-    if ( Cmd(p, "Greenery11"        ) )  return OBJECT_PLANT11;
-    if ( Cmd(p, "Greenery12"        ) )  return OBJECT_PLANT12;
-    if ( Cmd(p, "Greenery13"        ) )  return OBJECT_PLANT13;
-    if ( Cmd(p, "Greenery14"        ) )  return OBJECT_PLANT14;
-    if ( Cmd(p, "Greenery15"        ) )  return OBJECT_PLANT15;
-    if ( Cmd(p, "Greenery16"        ) )  return OBJECT_PLANT16;
-    if ( Cmd(p, "Greenery17"        ) )  return OBJECT_PLANT17;
-    if ( Cmd(p, "Greenery18"        ) )  return OBJECT_PLANT18;
-    if ( Cmd(p, "Greenery19"        ) )  return OBJECT_PLANT19;
     if ( Cmd(p, "Greenery0"         ) )  return OBJECT_PLANT0;
     if ( Cmd(p, "Greenery1"         ) )  return OBJECT_PLANT1;
     if ( Cmd(p, "Greenery2"         ) )  return OBJECT_PLANT2;
@@ -258,26 +265,24 @@ ObjectType GetTypeObject(char *line, int rank, ObjectType def)
     if ( Cmd(p, "Greenery7"         ) )  return OBJECT_PLANT7;
     if ( Cmd(p, "Greenery8"         ) )  return OBJECT_PLANT8;
     if ( Cmd(p, "Greenery9"         ) )  return OBJECT_PLANT9;
+    if ( Cmd(p, "Greenery10"        ) )  return OBJECT_PLANT10;
+    if ( Cmd(p, "Greenery11"        ) )  return OBJECT_PLANT11;
+    if ( Cmd(p, "Greenery12"        ) )  return OBJECT_PLANT12;
+    if ( Cmd(p, "Greenery13"        ) )  return OBJECT_PLANT13;
+    if ( Cmd(p, "Greenery14"        ) )  return OBJECT_PLANT14;
+    if ( Cmd(p, "Greenery15"        ) )  return OBJECT_PLANT15;
+    if ( Cmd(p, "Greenery16"        ) )  return OBJECT_PLANT16;
+    if ( Cmd(p, "Greenery17"        ) )  return OBJECT_PLANT17;
+    if ( Cmd(p, "Greenery18"        ) )  return OBJECT_PLANT18;
+    if ( Cmd(p, "Greenery19"        ) )  return OBJECT_PLANT19;
     if ( Cmd(p, "Tree0"             ) )  return OBJECT_TREE0;
     if ( Cmd(p, "Tree1"             ) )  return OBJECT_TREE1;
     if ( Cmd(p, "Tree2"             ) )  return OBJECT_TREE2;
     if ( Cmd(p, "Tree3"             ) )  return OBJECT_TREE3;
     if ( Cmd(p, "Tree4"             ) )  return OBJECT_TREE4;
     if ( Cmd(p, "Tree5"             ) )  return OBJECT_TREE5;
-    if ( Cmd(p, "Tree6"             ) )  return OBJECT_TREE6;
-    if ( Cmd(p, "Tree7"             ) )  return OBJECT_TREE7;
-    if ( Cmd(p, "Tree8"             ) )  return OBJECT_TREE8;
-    if ( Cmd(p, "Tree9"             ) )  return OBJECT_TREE9;
-    if ( Cmd(p, "Mushroom0"         ) )  return OBJECT_MUSHROOM0;
     if ( Cmd(p, "Mushroom1"         ) )  return OBJECT_MUSHROOM1;
     if ( Cmd(p, "Mushroom2"         ) )  return OBJECT_MUSHROOM2;
-    if ( Cmd(p, "Mushroom3"         ) )  return OBJECT_MUSHROOM3;
-    if ( Cmd(p, "Mushroom4"         ) )  return OBJECT_MUSHROOM4;
-    if ( Cmd(p, "Mushroom5"         ) )  return OBJECT_MUSHROOM5;
-    if ( Cmd(p, "Mushroom6"         ) )  return OBJECT_MUSHROOM6;
-    if ( Cmd(p, "Mushroom7"         ) )  return OBJECT_MUSHROOM7;
-    if ( Cmd(p, "Mushroom8"         ) )  return OBJECT_MUSHROOM8;
-    if ( Cmd(p, "Mushroom9"         ) )  return OBJECT_MUSHROOM9;
     if ( Cmd(p, "Home"              ) )  return OBJECT_HOME1;
     if ( Cmd(p, "Derrick"           ) )  return OBJECT_DERRICK;
     if ( Cmd(p, "BotFactory"        ) )  return OBJECT_FACTORY;
@@ -323,47 +328,6 @@ ObjectType GetTypeObject(char *line, int rank, ObjectType def)
     if ( Cmd(p, "Barrier1"          ) )  return OBJECT_BARRIER1;
     if ( Cmd(p, "Barrier2"          ) )  return OBJECT_BARRIER2;
     if ( Cmd(p, "Barrier3"          ) )  return OBJECT_BARRIER3;
-    if ( Cmd(p, "Barrier4"          ) )  return OBJECT_BARRIER4;
-    if ( Cmd(p, "Teen40"            ) )  return OBJECT_TEEN40;
-    if ( Cmd(p, "Teen41"            ) )  return OBJECT_TEEN41;
-    if ( Cmd(p, "Teen42"            ) )  return OBJECT_TEEN42;
-    if ( Cmd(p, "Teen43"            ) )  return OBJECT_TEEN43;
-    if ( Cmd(p, "Teen44"            ) )  return OBJECT_TEEN44;
-    if ( Cmd(p, "Teen45"            ) )  return OBJECT_TEEN45;
-    if ( Cmd(p, "Teen46"            ) )  return OBJECT_TEEN46;
-    if ( Cmd(p, "Teen47"            ) )  return OBJECT_TEEN47;
-    if ( Cmd(p, "Teen48"            ) )  return OBJECT_TEEN48;
-    if ( Cmd(p, "Teen49"            ) )  return OBJECT_TEEN49;
-    if ( Cmd(p, "Teen30"            ) )  return OBJECT_TEEN30;
-    if ( Cmd(p, "Teen31"            ) )  return OBJECT_TEEN31;
-    if ( Cmd(p, "Teen32"            ) )  return OBJECT_TEEN32;
-    if ( Cmd(p, "Teen33"            ) )  return OBJECT_TEEN33;
-    if ( Cmd(p, "Stone"             ) )  return OBJECT_TEEN34;
-    if ( Cmd(p, "Teen35"            ) )  return OBJECT_TEEN35;
-    if ( Cmd(p, "Teen36"            ) )  return OBJECT_TEEN36;
-    if ( Cmd(p, "Teen37"            ) )  return OBJECT_TEEN37;
-    if ( Cmd(p, "Teen38"            ) )  return OBJECT_TEEN38;
-    if ( Cmd(p, "Teen39"            ) )  return OBJECT_TEEN39;
-    if ( Cmd(p, "Teen20"            ) )  return OBJECT_TEEN20;
-    if ( Cmd(p, "Teen21"            ) )  return OBJECT_TEEN21;
-    if ( Cmd(p, "Teen22"            ) )  return OBJECT_TEEN22;
-    if ( Cmd(p, "Teen23"            ) )  return OBJECT_TEEN23;
-    if ( Cmd(p, "Teen24"            ) )  return OBJECT_TEEN24;
-    if ( Cmd(p, "Teen25"            ) )  return OBJECT_TEEN25;
-    if ( Cmd(p, "Teen26"            ) )  return OBJECT_TEEN26;
-    if ( Cmd(p, "Teen27"            ) )  return OBJECT_TEEN27;
-    if ( Cmd(p, "Teen28"            ) )  return OBJECT_TEEN28;
-    if ( Cmd(p, "Teen29"            ) )  return OBJECT_TEEN29;
-    if ( Cmd(p, "Teen10"            ) )  return OBJECT_TEEN10;
-    if ( Cmd(p, "Teen11"            ) )  return OBJECT_TEEN11;
-    if ( Cmd(p, "Teen12"            ) )  return OBJECT_TEEN12;
-    if ( Cmd(p, "Teen13"            ) )  return OBJECT_TEEN13;
-    if ( Cmd(p, "Teen14"            ) )  return OBJECT_TEEN14;
-    if ( Cmd(p, "Teen15"            ) )  return OBJECT_TEEN15;
-    if ( Cmd(p, "Teen16"            ) )  return OBJECT_TEEN16;
-    if ( Cmd(p, "Teen17"            ) )  return OBJECT_TEEN17;
-    if ( Cmd(p, "Teen18"            ) )  return OBJECT_TEEN18;
-    if ( Cmd(p, "Teen19"            ) )  return OBJECT_TEEN19;
     if ( Cmd(p, "Teen0"             ) )  return OBJECT_TEEN0;
     if ( Cmd(p, "Teen1"             ) )  return OBJECT_TEEN1;
     if ( Cmd(p, "Teen2"             ) )  return OBJECT_TEEN2;
@@ -374,26 +338,51 @@ ObjectType GetTypeObject(char *line, int rank, ObjectType def)
     if ( Cmd(p, "Teen7"             ) )  return OBJECT_TEEN7;
     if ( Cmd(p, "Teen8"             ) )  return OBJECT_TEEN8;
     if ( Cmd(p, "Teen9"             ) )  return OBJECT_TEEN9;
+    if ( Cmd(p, "Teen10"            ) )  return OBJECT_TEEN10;
+    if ( Cmd(p, "Teen11"            ) )  return OBJECT_TEEN11;
+    if ( Cmd(p, "Teen12"            ) )  return OBJECT_TEEN12;
+    if ( Cmd(p, "Teen13"            ) )  return OBJECT_TEEN13;
+    if ( Cmd(p, "Teen14"            ) )  return OBJECT_TEEN14;
+    if ( Cmd(p, "Teen15"            ) )  return OBJECT_TEEN15;
+    if ( Cmd(p, "Teen16"            ) )  return OBJECT_TEEN16;
+    if ( Cmd(p, "Teen17"            ) )  return OBJECT_TEEN17;
+    if ( Cmd(p, "Teen18"            ) )  return OBJECT_TEEN18;
+    if ( Cmd(p, "Teen19"            ) )  return OBJECT_TEEN19;
+    if ( Cmd(p, "Teen20"            ) )  return OBJECT_TEEN20;
+    if ( Cmd(p, "Teen21"            ) )  return OBJECT_TEEN21;
+    if ( Cmd(p, "Teen22"            ) )  return OBJECT_TEEN22;
+    if ( Cmd(p, "Teen23"            ) )  return OBJECT_TEEN23;
+    if ( Cmd(p, "Teen24"            ) )  return OBJECT_TEEN24;
+    if ( Cmd(p, "Teen25"            ) )  return OBJECT_TEEN25;
+    if ( Cmd(p, "Teen26"            ) )  return OBJECT_TEEN26;
+    if ( Cmd(p, "Teen27"            ) )  return OBJECT_TEEN27;
+    if ( Cmd(p, "Teen28"            ) )  return OBJECT_TEEN28;
+    if ( Cmd(p, "Teen29"            ) )  return OBJECT_TEEN29;
+    if ( Cmd(p, "Teen30"            ) )  return OBJECT_TEEN30;
+    if ( Cmd(p, "Teen31"            ) )  return OBJECT_TEEN31;
+    if ( Cmd(p, "Teen32"            ) )  return OBJECT_TEEN32;
+    if ( Cmd(p, "Teen33"            ) )  return OBJECT_TEEN33;
+    if ( Cmd(p, "Stone"             ) )  return OBJECT_TEEN34;
+    if ( Cmd(p, "Teen35"            ) )  return OBJECT_TEEN35;
+    if ( Cmd(p, "Teen36"            ) )  return OBJECT_TEEN36;
+    if ( Cmd(p, "Teen37"            ) )  return OBJECT_TEEN37;
+    if ( Cmd(p, "Teen38"            ) )  return OBJECT_TEEN38;
+    if ( Cmd(p, "Teen39"            ) )  return OBJECT_TEEN39;
+    if ( Cmd(p, "Teen40"            ) )  return OBJECT_TEEN40;
+    if ( Cmd(p, "Teen41"            ) )  return OBJECT_TEEN41;
+    if ( Cmd(p, "Teen42"            ) )  return OBJECT_TEEN42;
+    if ( Cmd(p, "Teen43"            ) )  return OBJECT_TEEN43;
+    if ( Cmd(p, "Teen44"            ) )  return OBJECT_TEEN44;
     if ( Cmd(p, "Quartz0"           ) )  return OBJECT_QUARTZ0;
     if ( Cmd(p, "Quartz1"           ) )  return OBJECT_QUARTZ1;
     if ( Cmd(p, "Quartz2"           ) )  return OBJECT_QUARTZ2;
     if ( Cmd(p, "Quartz3"           ) )  return OBJECT_QUARTZ3;
-    if ( Cmd(p, "Quartz4"           ) )  return OBJECT_QUARTZ4;
-    if ( Cmd(p, "Quartz5"           ) )  return OBJECT_QUARTZ5;
-    if ( Cmd(p, "Quartz6"           ) )  return OBJECT_QUARTZ6;
-    if ( Cmd(p, "Quartz7"           ) )  return OBJECT_QUARTZ7;
-    if ( Cmd(p, "Quartz8"           ) )  return OBJECT_QUARTZ8;
-    if ( Cmd(p, "Quartz9"           ) )  return OBJECT_QUARTZ9;
     if ( Cmd(p, "MegaStalk0"        ) )  return OBJECT_ROOT0;
     if ( Cmd(p, "MegaStalk1"        ) )  return OBJECT_ROOT1;
     if ( Cmd(p, "MegaStalk2"        ) )  return OBJECT_ROOT2;
     if ( Cmd(p, "MegaStalk3"        ) )  return OBJECT_ROOT3;
     if ( Cmd(p, "MegaStalk4"        ) )  return OBJECT_ROOT4;
     if ( Cmd(p, "MegaStalk5"        ) )  return OBJECT_ROOT5;
-    if ( Cmd(p, "MegaStalk6"        ) )  return OBJECT_ROOT6;
-    if ( Cmd(p, "MegaStalk7"        ) )  return OBJECT_ROOT7;
-    if ( Cmd(p, "MegaStalk8"        ) )  return OBJECT_ROOT8;
-    if ( Cmd(p, "MegaStalk9"        ) )  return OBJECT_ROOT9;
     if ( Cmd(p, "ApolloLEM"         ) )  return OBJECT_APOLLO1;
     if ( Cmd(p, "ApolloJeep"        ) )  return OBJECT_APOLLO2;
     if ( Cmd(p, "ApolloFlag"        ) )  return OBJECT_APOLLO3;
@@ -438,11 +427,7 @@ const char* GetTypeObject(ObjectType type)
     if ( type == OBJECT_MOBILEdr     )  return "Scribbler";
     if ( type == OBJECT_MARKPOWER    )  return "PowerSpot";
     if ( type == OBJECT_MARKSTONE    )  return "TitaniumSpot";
-#if _GERMAN | _WG
-    if ( type == OBJECT_MARKURANIUM  )  return "PlatinumSpot";
-#else
     if ( type == OBJECT_MARKURANIUM  )  return "UraniumSpot";
-#endif
     if ( type == OBJECT_MARKKEYa     )  return "KeyASpot";
     if ( type == OBJECT_MARKKEYb     )  return "KeyBSpot";
     if ( type == OBJECT_MARKKEYc     )  return "KeyCSpot";
@@ -454,17 +439,9 @@ const char* GetTypeObject(ObjectType type)
     if ( type == OBJECT_FLAGy        )  return "YellowFlag";
     if ( type == OBJECT_FLAGv        )  return "VioletFlag";
     if ( type == OBJECT_POWER        )  return "PowerCell";
-#if _GERMAN | _WG
-    if ( type == OBJECT_ATOMIC       )  return "FuelCell";
-#else
     if ( type == OBJECT_ATOMIC       )  return "NuclearCell";
-#endif
     if ( type == OBJECT_STONE        )  return "TitaniumOre";
-#if _GERMAN | _WG
-    if ( type == OBJECT_URANIUM      )  return "PlatinumOre";
-#else
     if ( type == OBJECT_URANIUM      )  return "UraniumOre";
-#endif
     if ( type == OBJECT_METAL        )  return "Titanium";
     if ( type == OBJECT_BULLET       )  return "OrgaMatter";
     if ( type == OBJECT_BBOX         )  return "BlackBox";
@@ -507,20 +484,8 @@ const char* GetTypeObject(ObjectType type)
     if ( type == OBJECT_TREE3        )  return "Tree3";
     if ( type == OBJECT_TREE4        )  return "Tree4";
     if ( type == OBJECT_TREE5        )  return "Tree5";
-    if ( type == OBJECT_TREE6        )  return "Tree6";
-    if ( type == OBJECT_TREE7        )  return "Tree7";
-    if ( type == OBJECT_TREE8        )  return "Tree8";
-    if ( type == OBJECT_TREE9        )  return "Tree9";
-    if ( type == OBJECT_MUSHROOM0    )  return "Mushroom0";
     if ( type == OBJECT_MUSHROOM1    )  return "Mushroom1";
     if ( type == OBJECT_MUSHROOM2    )  return "Mushroom2";
-    if ( type == OBJECT_MUSHROOM3    )  return "Mushroom3";
-    if ( type == OBJECT_MUSHROOM4    )  return "Mushroom4";
-    if ( type == OBJECT_MUSHROOM5    )  return "Mushroom5";
-    if ( type == OBJECT_MUSHROOM6    )  return "Mushroom6";
-    if ( type == OBJECT_MUSHROOM7    )  return "Mushroom7";
-    if ( type == OBJECT_MUSHROOM8    )  return "Mushroom8";
-    if ( type == OBJECT_MUSHROOM9    )  return "Mushroom9";
     if ( type == OBJECT_HOME1        )  return "Home";
     if ( type == OBJECT_DERRICK      )  return "Derrick";
     if ( type == OBJECT_FACTORY      )  return "BotFactory";
@@ -535,11 +500,7 @@ const char* GetTypeObject(ObjectType type)
     if ( type == OBJECT_INFO         )  return "ExchangePost";
     if ( type == OBJECT_ENERGY       )  return "PowerPlant";
     if ( type == OBJECT_LABO         )  return "AutoLab";
-#if _GERMAN | _WG
-    if ( type == OBJECT_NUCLEAR      )  return "FuelCellPlant";
-#else
     if ( type == OBJECT_NUCLEAR      )  return "NuclearPlant";
-#endif
     if ( type == OBJECT_PARA         )  return "PowerCaptor";
     if ( type == OBJECT_SAFE         )  return "Vault";
     if ( type == OBJECT_HUSTON       )  return "Houston";
@@ -570,7 +531,6 @@ const char* GetTypeObject(ObjectType type)
     if ( type == OBJECT_BARRIER1     )  return "Barrier1";
     if ( type == OBJECT_BARRIER2     )  return "Barrier2";
     if ( type == OBJECT_BARRIER3     )  return "Barrier3";
-    if ( type == OBJECT_BARRIER4     )  return "Barrier4";
     if ( type == OBJECT_TEEN0        )  return "Teen0";
     if ( type == OBJECT_TEEN1        )  return "Teen1";
     if ( type == OBJECT_TEEN2        )  return "Teen2";
@@ -616,31 +576,16 @@ const char* GetTypeObject(ObjectType type)
     if ( type == OBJECT_TEEN42       )  return "Teen42";
     if ( type == OBJECT_TEEN43       )  return "Teen43";
     if ( type == OBJECT_TEEN44       )  return "Teen44";
-    if ( type == OBJECT_TEEN45       )  return "Teen45";
-    if ( type == OBJECT_TEEN46       )  return "Teen46";
-    if ( type == OBJECT_TEEN47       )  return "Teen47";
-    if ( type == OBJECT_TEEN48       )  return "Teen48";
-    if ( type == OBJECT_TEEN49       )  return "Teen49";
     if ( type == OBJECT_QUARTZ0      )  return "Quartz0";
     if ( type == OBJECT_QUARTZ1      )  return "Quartz1";
     if ( type == OBJECT_QUARTZ2      )  return "Quartz2";
     if ( type == OBJECT_QUARTZ3      )  return "Quartz3";
-    if ( type == OBJECT_QUARTZ4      )  return "Quartz4";
-    if ( type == OBJECT_QUARTZ5      )  return "Quartz5";
-    if ( type == OBJECT_QUARTZ6      )  return "Quartz6";
-    if ( type == OBJECT_QUARTZ7      )  return "Quartz7";
-    if ( type == OBJECT_QUARTZ8      )  return "Quartz8";
-    if ( type == OBJECT_QUARTZ9      )  return "Quartz9";
     if ( type == OBJECT_ROOT0        )  return "MegaStalk0";
     if ( type == OBJECT_ROOT1        )  return "MegaStalk1";
     if ( type == OBJECT_ROOT2        )  return "MegaStalk2";
     if ( type == OBJECT_ROOT3        )  return "MegaStalk3";
     if ( type == OBJECT_ROOT4        )  return "MegaStalk4";
     if ( type == OBJECT_ROOT5        )  return "MegaStalk5";
-    if ( type == OBJECT_ROOT6        )  return "MegaStalk6";
-    if ( type == OBJECT_ROOT7        )  return "MegaStalk7";
-    if ( type == OBJECT_ROOT8        )  return "MegaStalk8";
-    if ( type == OBJECT_ROOT9        )  return "MegaStalk9";
     if ( type == OBJECT_APOLLO1      )  return "ApolloLEM";
     if ( type == OBJECT_APOLLO2      )  return "ApolloJeep";
     if ( type == OBJECT_APOLLO3      )  return "ApolloFlag";
@@ -800,6 +745,62 @@ const char* GetCamera(Gfx::CameraType type)
     return "BACK";
 }
 
+// Returns the type of drive.
+
+DriveType GetDrive(char *line, int rank)
+{
+    char*   p;
+
+    p = SearchArg(line, rank);
+    if ( *p == 0 )  return DRIVE_OTHER;
+
+    if ( Cmd(p, "Wheeled" ) )  return DRIVE_WHEELED;
+    if ( Cmd(p, "Tracked" ) )  return DRIVE_TRACKED;
+    if ( Cmd(p, "Winged"  ) )  return DRIVE_WINGED;
+    if ( Cmd(p, "Legged"  ) )  return DRIVE_LEGGED;
+
+    return DRIVE_OTHER;
+}
+
+// Returns the name of a drive.
+
+const char* GetDrive(DriveType type)
+{
+    if ( type == DRIVE_WHEELED )  return "Wheeled";
+    if ( type == DRIVE_TRACKED )  return "Tracked";
+    if ( type == DRIVE_WINGED  )  return "Winged";
+    if ( type == DRIVE_LEGGED  )  return "Legged";
+    return "Other";
+}
+
+// Returns the type of tool.
+
+ToolType GetTool(char *line, int rank)
+{
+    char*   p;
+
+    p = SearchArg(line, rank);
+    if ( *p == 0 )  return TOOL_OTHER;
+
+    if ( Cmd(p, "Grabber"     ) )  return TOOL_GRABBER;
+    if ( Cmd(p, "Sniffer"     ) )  return TOOL_SNIFFER;
+    if ( Cmd(p, "Shooter"     ) )  return TOOL_SHOOTER;
+    if ( Cmd(p, "OrgaShooter" ) )  return TOOL_ORGASHOOTER;
+
+    return TOOL_OTHER;
+}
+
+// Returns the name of a tool.
+
+const char* GetTool(ToolType type)
+{
+    if ( type == TOOL_GRABBER     )  return "Grabber";
+    if ( type == TOOL_SNIFFER     )  return "Sniffer";
+    if ( type == TOOL_SHOOTER     )  return "Shooter";
+    if ( type == TOOL_ORGASHOOTER )  return "OrgaShooter";
+    return "Other";
+}
+
 // Returns an integer.
 
 int OpInt(char *line, const char *op, int def)
@@ -885,6 +886,24 @@ Gfx::CameraType OpCamera(char *line, const char *op)
     line = SearchOp(line, op);
     if ( *line == 0 )  return Gfx::CAM_TYPE_NULL;
     return GetCamera(line, 0);
+}
+
+// Returns the type of drive.
+
+DriveType OpDrive(char *line, const char *op)
+{
+    line = SearchOp(line, op);
+    if ( *line == 0 )  return DRIVE_OTHER;
+    return GetDrive(line, 0);
+}
+
+// Returns the type of tool.
+
+ToolType OpTool(char *line, const char *op)
+{
+    line = SearchOp(line, op);
+    if ( *line == 0 )  return TOOL_OTHER;
+    return GetTool(line, 0);
 }
 
 // Returns the type of a building.

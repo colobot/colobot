@@ -276,6 +276,7 @@ CObject::CObject()
     m_lastVirusParticle = 0.0f;
     m_totalDesectList = 0;
     m_bLock  = false;
+    m_bIgnoreBuildCheck = false;
     m_bExplo = false;
     m_bCargo = false;
     m_bBurn  = false;
@@ -6781,7 +6782,7 @@ float CObject::GetParam()
 
 // Management of the mode "blocked" of an object.
 // For example, a cube of titanium is blocked while it is used to make something,
-//or a vehicle is blocked as its construction is not finished.
+// or a vehicle is blocked as its construction is not finished.
 
 void CObject::SetLock(bool bLock)
 {
@@ -6791,6 +6792,18 @@ void CObject::SetLock(bool bLock)
 bool CObject::GetLock()
 {
     return m_bLock;
+}
+
+// Ignore checks in build() function
+
+void CObject::SetIgnoreBuildCheck(bool bIgnoreBuildCheck)
+{
+    m_bIgnoreBuildCheck = bIgnoreBuildCheck;
+}
+
+bool CObject::GetIgnoreBuildCheck()
+{
+    return m_bIgnoreBuildCheck;
 }
 
 // Management of the mode "current explosion" of an object.
@@ -7263,10 +7276,10 @@ int  CObject::GetDefRank()
 
 // Getes the object name for the tooltip.
 
-bool CObject::GetTooltipName(char* name)
+bool CObject::GetTooltipName(std::string& name)
 {
     GetResource(RES_OBJECT, m_type, name);
-    return ( name[0] != 0 );
+    return !name.empty();
 }
 
 
@@ -7390,3 +7403,70 @@ void CObject::SetTraceWidth(float width)
     mv->SetTraceWidth(width);
 }
 
+DriveType CObject::GetDriveFromObject(ObjectType type)
+{
+    switch(type) {
+        case OBJECT_MOBILEwt:
+        case OBJECT_MOBILEwa:
+        case OBJECT_MOBILEwc:
+        case OBJECT_MOBILEwi:
+        case OBJECT_MOBILEws:
+            return DRIVE_WHEELED;
+            
+        case OBJECT_MOBILEtt:
+        case OBJECT_MOBILEta:
+        case OBJECT_MOBILEtc:
+        case OBJECT_MOBILEti:
+        case OBJECT_MOBILEts:
+            return DRIVE_TRACKED;
+            
+        case OBJECT_MOBILEft:
+        case OBJECT_MOBILEfa:
+        case OBJECT_MOBILEfc:
+        case OBJECT_MOBILEfi:
+        case OBJECT_MOBILEfs:
+            return DRIVE_WINGED;
+            
+        case OBJECT_MOBILEit:
+        case OBJECT_MOBILEia:
+        case OBJECT_MOBILEic:
+        case OBJECT_MOBILEii:
+        case OBJECT_MOBILEis:
+            return DRIVE_LEGGED;
+            
+        default:
+            return DRIVE_OTHER;
+    }
+}
+
+ToolType CObject::GetToolFromObject(ObjectType type)
+{
+    switch(type) {
+        case OBJECT_MOBILEwa:
+        case OBJECT_MOBILEta:
+        case OBJECT_MOBILEfa:
+        case OBJECT_MOBILEia:
+            return TOOL_GRABBER;
+            
+        case OBJECT_MOBILEws:
+        case OBJECT_MOBILEts:
+        case OBJECT_MOBILEfs:
+        case OBJECT_MOBILEis:
+            return TOOL_SNIFFER;
+            
+        case OBJECT_MOBILEwc:
+        case OBJECT_MOBILEtc:
+        case OBJECT_MOBILEfc:
+        case OBJECT_MOBILEic:
+            return TOOL_SHOOTER;
+            
+        case OBJECT_MOBILEwi:
+        case OBJECT_MOBILEti:
+        case OBJECT_MOBILEfi:
+        case OBJECT_MOBILEii:
+            return TOOL_ORGASHOOTER;
+            
+        default:
+            return TOOL_OTHER;
+    }
+}

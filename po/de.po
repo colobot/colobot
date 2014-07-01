@@ -39,9 +39,6 @@ msgstr " Liste der Missionen des Planeten:"
 msgid " Planets:"
 msgstr " Liste der Planeten:"
 
-msgid " Prototypes on this planet:"
-msgstr " Liste der Prototypen des Planeten:"
-
 msgid " Resolution:"
 msgstr " Auflösung:"
 
@@ -88,15 +85,12 @@ msgstr "3D-Geräusche\\Orten der Geräusche im Raum"
 msgid "<<  Back  \\Back to the previous screen"
 msgstr "<<  Zurück  \\Zurück zum Hauptmenü"
 
-#, fuzzy
 msgid "<<< Sorry; mission failed >>>"
 msgstr "<<< Mission gescheitert >>>"
 
-#, fuzzy
 msgid "<<< Well done; mission accomplished >>>"
 msgstr "<<< Bravo, Mission vollendet >>>"
 
-#, fuzzy
 msgid "A label must be followed by \"for\"; \"while\"; \"do\" or \"switch\""
 msgstr ""
 "Ein Label kann nur vor den Anweisungen \"for\", \"while\", \"do\" oder "
@@ -314,6 +308,9 @@ msgstr "Knopf %1"
 msgid "COLOBOT"
 msgstr "COLOBOT"
 
+msgid "COLOBOT: Gold Edition"
+msgstr "COLOBOT: Gold Edition"
+
 msgid "Calling an unknown function"
 msgstr "Die aufgerufene Funktion existiert nicht"
 
@@ -338,7 +335,6 @@ msgstr "Kamera links"
 msgid "Camera to right"
 msgstr "Kamera rechts"
 
-#, fuzzy
 msgid "Can not create this; there are too many objects"
 msgstr "Kein neues Objekt kann erstellt werden (zu viele vorhanden)"
 
@@ -362,6 +358,9 @@ msgstr "Challenges\\Herausforderungen"
 
 msgid "Change camera\\Switches between onboard camera and following camera"
 msgstr "Andere Kamera\\Sichtpunkt einstellen"
+
+msgid "Change player\\Change player"
+msgstr "Anderer Spieler\\Spielername ändern"
 
 msgid "Checkpoint"
 msgstr "Checkpoint"
@@ -699,7 +698,6 @@ msgstr "Falscher Batterietyp"
 msgid "Incorrect index type"
 msgstr "Falscher Typ für einen Index"
 
-#, fuzzy
 msgid "Infected by a virus; temporarily out of order"
 msgstr "Von Virus infiziert, zeitweise außer Betrieb"
 
@@ -846,9 +844,6 @@ msgstr "Neu ..."
 
 msgid "New bot available"
 msgstr "Neuer Roboter verfügbar"
-
-msgid "New player\\Choose player's name"
-msgstr "Anderer Spieler\\Spielername ändern"
 
 msgid "Next"
 msgstr "Nächster"
@@ -1113,12 +1108,6 @@ msgstr "Hilfe CBOT-Sprache\\Hilfe über die Programmiersprache CBOT"
 
 msgid "Programs dispatched by Houston"
 msgstr "Von Houston übermittelte Programme"
-
-msgid "Proto\\Prototypes under development"
-msgstr "Proto\\In Entwicklung befindliche Prototypen"
-
-msgid "Prototypes"
-msgstr "Prototypen"
 
 msgid "Public required"
 msgstr "Hier muss das Wort \"public\" stehen"
@@ -2053,4 +2042,3 @@ msgstr "www.epsitec.com"
 
 #~ msgid "Zoom"
 #~ msgstr "Zoom"
-

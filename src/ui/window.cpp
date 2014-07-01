@@ -788,7 +788,7 @@ bool CWindow::GetFixed()
 
 void CWindow::AdjustButtons()
 {
-    char    res[100];
+    std::string res;
 
     if ( m_buttonFull != 0 )
     {
@@ -796,13 +796,13 @@ void CWindow::AdjustButtons()
         {
             m_buttonFull->SetIcon(54);
             GetResource(RES_TEXT, RT_WINDOW_STANDARD, res);
-            m_buttonFull->SetTooltip(std::string(res));
+            m_buttonFull->SetTooltip(res);
         }
         else
         {
             m_buttonFull->SetIcon(52);
             GetResource(RES_TEXT, RT_WINDOW_MAXIMIZED, res);
-            m_buttonFull->SetTooltip(std::string(res));
+            m_buttonFull->SetTooltip(res);
         }
     }
 
@@ -812,13 +812,13 @@ void CWindow::AdjustButtons()
         {
             m_buttonReduce->SetIcon(54);
             GetResource(RES_TEXT, RT_WINDOW_STANDARD, res);
-            m_buttonReduce->SetTooltip(std::string(res));
+            m_buttonReduce->SetTooltip(res);
         }
         else
         {
             m_buttonReduce->SetIcon(51);
             GetResource(RES_TEXT, RT_WINDOW_MINIMIZED, res);
-            m_buttonReduce->SetTooltip(std::string(res));
+            m_buttonReduce->SetTooltip(res);
         }
     }
 
@@ -826,7 +826,7 @@ void CWindow::AdjustButtons()
     {
         m_buttonClose->SetIcon(11);  // x
         GetResource(RES_TEXT, RT_WINDOW_CLOSE, res);
-        m_buttonClose->SetTooltip(std::string(res));
+        m_buttonClose->SetTooltip(res);
     }
 }
 
@@ -1536,8 +1536,6 @@ void CWindow::DrawVertex(Math::Point pos, Math::Point dim, int icon)
 
 void CWindow::DrawHach(Math::Point pos, Math::Point dim)
 {
-#if _NEWLOOK
-#else
     Math::Point     ppos, ddim, uv1, uv2;
     float       dp, max, ndim;
     bool        bStop;
@@ -1575,7 +1573,6 @@ void CWindow::DrawHach(Math::Point pos, Math::Point dim)
         ppos.x += ddim.x;
     }
     while ( !bStop );
-#endif
 }
 
 }

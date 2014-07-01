@@ -24,6 +24,10 @@
 
 #include "common/event.h"
 
+#include "common/global.h"
+
+#include "app/pausemanager.h"
+
 #include "CBot/CBotDll.h"
 
 #include <stdio.h>
@@ -74,7 +78,7 @@ public:
     bool        IntroduceVirus();
 
     int         GetError();
-    void        GetError(char* buffer);
+    void        GetError(std::string& error);
 
     void        New(Ui::CEdit* edit, const char* name);
     bool        SendScript(const char* text);
@@ -126,6 +130,7 @@ private:
     static CBotTypResult cPenDown(CBotVar* &var, void* user);
     static CBotTypResult cOnePoint(CBotVar* &var, void* user);
     static CBotTypResult cPoint(CBotVar* &var, void* user);
+    static CBotTypResult cOneObject(CBotVar* &var, void* user);
 
 
     static bool rSin(CBotVar* var, CBotVar* result, int& exception, void* user);
@@ -190,6 +195,7 @@ private:
     static bool rPenUp(CBotVar* var, CBotVar* result, int& exception, void* user);
     static bool rPenColor(CBotVar* var, CBotVar* result, int& exception, void* user);
     static bool rPenWidth(CBotVar* var, CBotVar* result, int& exception, void* user);
+    static bool rCameraFocus(CBotVar* var, CBotVar* result, int& exception, void* user);
 
 public:
     static CBotTypResult cBusy(CBotVar* thisclass, CBotVar* &var);
@@ -200,10 +206,12 @@ public:
     static bool rBusy(CBotVar* thisclass, CBotVar* var, CBotVar* result, int& exception);
     static bool rFactory(CBotVar* thisclass, CBotVar* var, CBotVar* result, int& exception);
     static bool rResearch(CBotVar* thisclass, CBotVar* var, CBotVar* result, int& exception);
+    static bool rTakeOff(CBotVar* thisclass, CBotVar* var, CBotVar* result, int& exception);
     static bool rDestroy(CBotVar* thisclass, CBotVar* var, CBotVar* result, int& exception);
 
 private:
     static bool     Process(CScript* script, CBotVar* result, int &exception);
+    static bool     ShouldProcessStop(Error err, int errMode);
     static CObject* SearchInfo(CScript* script, CObject* object, float power);
 
 protected:
@@ -216,6 +224,7 @@ protected:
     CTaskManager*       m_primaryTask;
     CTaskManager**      m_secondaryTask;
     CObject*            m_object;
+    CPauseManager*      m_pause;
 
     int     m_ipf;          // number of instructions/second
     int     m_errMode;      // what to do in case of error

@@ -192,18 +192,6 @@ void TimeToAscii(time_t time, char *buffer)
     year = when.tm_year+1900;
     if ( year < 2000 )  year -= 1900;
     else                year -= 2000;
-/* TODO
-#if _FRENCH
-    sprintf(buffer, "%.2d.%.2d.%.2d %.2d:%.2d",
-                    when.tm_mday, when.tm_mon+1, year,
-                    when.tm_hour, when.tm_min);
-#endif
-#if _GERMAN | _WG
-    sprintf(buffer, "%.2d.%.2d.%.2d %.2d:%.2d",
-                    when.tm_mday, when.tm_mon+1, year,
-                    when.tm_hour, when.tm_min);
-#endif
-#if _ENGLISH*/
     char        format[10];
     int         hour;
 
@@ -222,12 +210,23 @@ void TimeToAscii(time_t time, char *buffer)
     sprintf(buffer, "%.2d.%.2d.%.2d %.2d:%.2d %s",
                     when.tm_mon+1, when.tm_mday, year,
                     hour, when.tm_min, format);
-/*#endif
-#if _POLISH
-    sprintf(buffer, "%.2d.%.2d.%.2d %.2d:%.2d",
-                    when.tm_mday, when.tm_mon+1, year,
+}
+
+// Converting time to string.
+
+void TimeToAsciiClean(time_t time, char *buffer)
+{
+    struct tm   when;
+    int         year;
+
+    when = *localtime(&time);
+    year = when.tm_year+1900;
+    if ( year < 2000 )  year -= 1900;
+    else                year -= 2000;
+
+    sprintf(buffer, "%.2d%.2d%.2d%.2d%.2d",
+                    year, when.tm_mon+1, when.tm_mday,
                     when.tm_hour, when.tm_min);
-#endif*/
 }
 
 // Copy a list of numbered files into the temporary folder.

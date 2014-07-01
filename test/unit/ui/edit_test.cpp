@@ -1,4 +1,5 @@
 #include "app/app.h"
+#include "app/gamedata.h"
 
 #include "ui/edit.h"
 
@@ -14,6 +15,7 @@ class CEditTest : public testing::Test
 public:
     CEditTest()
      : m_robotMain(nullptr)
+     , m_gameData(nullptr)
      , m_engine(nullptr)
      , m_edit(nullptr)
     {}
@@ -21,21 +23,24 @@ public:
     virtual void SetUp()
     {
         m_robotMain = new CRobotMain(&m_app, false);
-
+        
+        m_gameData = new CGameData();
+        
         m_engine = new Gfx::CEngine(nullptr);
-
+        
         m_edit = new Ui::CEdit;
     }
 
     virtual void TearDown()
     {
-        delete m_robotMain;
-        m_robotMain = nullptr;
-        delete m_engine;
-        m_engine = nullptr;
         delete m_edit;
         m_edit = nullptr;
-
+        delete m_engine;
+        m_engine = nullptr;
+        delete m_gameData;
+        m_gameData = nullptr;
+        delete m_robotMain;
+        m_robotMain = nullptr;
     }
     virtual ~CEditTest()
     {
@@ -45,12 +50,14 @@ public:
 protected:
     CApplication m_app;
     CRobotMain* m_robotMain;
+    CGameData * m_gameData;
     Gfx::CEngine * m_engine;
     Ui::CEdit * m_edit;
     CLogger m_logger;
 };
 
 using ::testing::_;
+using ::testing::An;
 using ::testing::Return;
 
 TEST_F(CEditTest, WriteTest)
@@ -58,7 +65,7 @@ TEST_F(CEditTest, WriteTest)
     ASSERT_TRUE(true);
     CTextMock * text = dynamic_cast<CTextMock *>(m_engine->GetText());
     EXPECT_CALL(*text, GetCharWidth(_, _, _, _)).WillRepeatedly(Return(1.0f));
-    EXPECT_CALL(*text, GetStringWidth(_, _, _, _)).WillOnce(Return(1.0f));
+    EXPECT_CALL(*text, GetStringWidth(An<const std::string&>(), _, _, _)).WillOnce(Return(1.0f));
     std::string filename = "test.file";
     m_edit->SetMaxChar(Ui::EDITSTUDIOMAX);
     m_edit->SetAutoIndent(true);

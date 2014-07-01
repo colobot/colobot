@@ -78,7 +78,7 @@ void Render(Gfx::CGLDevice *device)
     worldMat.LoadIdentity();
     device->SetTransform(Gfx::TRANSFORM_WORLD, worldMat);
 
-    Gfx::VertexCol line[2] = { Gfx::VertexCol() };
+    Gfx::VertexCol line[2] = {};
 
     for (int x = -40; x <= 40; ++x)
     {
@@ -103,7 +103,7 @@ void Render(Gfx::CGLDevice *device)
     }
 
 
-    Gfx::VertexCol quad[6] = { Gfx::VertexCol() };
+    Gfx::VertexCol quad[6] = {};
 
     quad[0].coord = Math::Vector(-1.0f, -1.0f, 0.0f);
     quad[1].coord = Math::Vector( 1.0f, -1.0f, 0.0f);

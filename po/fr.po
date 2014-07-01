@@ -44,9 +44,6 @@ msgstr " Liste des missions du chapitre :"
 msgid " Planets:"
 msgstr " Liste des planètes :"
 
-msgid " Prototypes on this planet:"
-msgstr " Liste des prototypes du chapitre :"
-
 msgid " Resolution:"
 msgstr " Résolutions :"
 
@@ -315,6 +312,9 @@ msgstr "Bouton %1"
 msgid "COLOBOT"
 msgstr "COLOBOT"
 
+msgid "COLOBOT: Gold Edition"
+msgstr "COLOBOT: Gold Edition"
+
 msgid "Calling an unknown function"
 msgstr "Appel d'une fonction inexistante"
 
@@ -362,6 +362,9 @@ msgstr "Défis\\Défis de programmation"
 
 msgid "Change camera\\Switches between onboard camera and following camera"
 msgstr "Changement de caméra\\Autre de point de vue"
+
+msgid "Change player\\Change player"
+msgstr "Autre joueur\\Choix du nom du joueur"
 
 msgid "Checkpoint"
 msgstr "Indicateur"
@@ -848,9 +851,6 @@ msgstr "Nouveau ..."
 msgid "New bot available"
 msgstr "Nouveau robot disponible"
 
-msgid "New player\\Choose player's name"
-msgstr "Autre joueur\\Choix du nom du joueur"
-
 msgid "Next"
 msgstr "Suivant"
 
@@ -1114,12 +1114,6 @@ msgstr "Instructions programmation\\Explication sur la programmation"
 
 msgid "Programs dispatched by Houston"
 msgstr "Programmes envoyés par Houston"
-
-msgid "Proto\\Prototypes under development"
-msgstr "Proto\\Prototypes en cours d'élaboration"
-
-msgid "Prototypes"
-msgstr "Prototypes"
 
 msgid "Public required"
 msgstr "Public requis"
@@ -2055,4 +2049,3 @@ msgstr "www.epsitec.com"
 
 #~ msgid "Zoom"
 #~ msgstr "Zoom"
-

@@ -30,6 +30,8 @@
 #include "object/object.h"
 #include "object/mainmovie.h"
 
+#include "app/pausemanager.h"
+
 #include <stdio.h>
 
 enum Phase
@@ -44,7 +46,6 @@ enum Phase
     PHASE_FREE,
     PHASE_TEEN,
     PHASE_USER,
-    PHASE_PROTO,
     PHASE_LOADING,
     PHASE_SIMUL,
     PHASE_MODEL,
@@ -104,6 +105,8 @@ struct EndTake
     int           lost;       // lost if <=
     float         powermin;   // wins if energy cell >=
     float         powermax;   // wins if energy cell <=
+    ToolType      tool;
+    DriveType     drive;
     bool          immediat;
     char          message[100];
 };
@@ -117,6 +120,8 @@ struct AudioChange
     int           max;        // change if <
     float         powermin;   // change if energy cell >=
     float         powermax;   // change if energy cell <=
+    ToolType      tool;
+    DriveType     drive;
     char          music[100];
     bool          repeat;
     bool          changed;
@@ -250,7 +255,7 @@ public:
     void        SetTracePrecision(float factor);
     float       GetTracePrecision();
 
-    void        ChangePause(bool pause);
+    void        ChangePause(PauseType pause);
 
     void        SetSpeed(float speed);
     float       GetSpeed();
@@ -335,6 +340,7 @@ public:
     float       GetPersoAngle();
 
     void        StartMusic();
+    void        StartPauseMusic(PauseType pause);
     void        ClearInterface();
     void        ChangeColor();
 
@@ -391,14 +397,11 @@ protected:
     void        CreateScene(bool soluce, bool fixScene, bool resetObject);
 
     Math::Vector LookatPoint(Math::Vector eye, float angleH, float angleV, float length);
-    CObject*    CreateObject(Math::Vector pos, float angle, float zoom,
-                             float height, ObjectType type, float power=1.0f,
-                             bool trainer=false, bool toy=false, int option=0);
     int         CreateLight(Math::Vector direction, Gfx::Color color);
     void        HiliteClear();
     void        HiliteObject(Math::Point pos);
     void        HiliteFrame(float rTime);
-    void        CreateTooltip(Math::Point pos, const char* text);
+    void        CreateTooltip(Math::Point pos, const std::string& text);
     void        ClearTooltip();
     CObject*    DetectObject(Math::Point pos);
     void        ChangeCamera();
@@ -440,6 +443,7 @@ protected:
     Ui::CDisplayText*   m_displayText;
     Ui::CDisplayInfo*   m_displayInfo;
     CSoundInterface*    m_sound;
+    CPauseManager*      m_pause;
 
     //! Bindings for user inputs
     InputBinding    m_inputBindings[INPUT_SLOT_MAX];
@@ -471,15 +475,19 @@ protected:
     bool            m_showSoluce;
     bool            m_showAll;
     bool            m_cheatRadar;
-    bool            m_audioRepeat;
     bool            m_shortCut;
     std::string     m_audioTrack;
+    bool            m_audioRepeat;
+    std::string     m_satcomTrack;
+    bool            m_satcomRepeat;
+    std::string     m_editorTrack;
+    bool            m_editorRepeat;
     int             m_delayWriteMessage;
     int             m_movieInfoIndex;
 
     CObject*        m_controller;
 
-    //Level Checker flags
+    // Level Checker flags
     bool            m_beginObject;
     bool            m_terrainGenerate;
     bool            m_terrainInitTextures;
@@ -495,7 +503,6 @@ protected:
     bool            m_satComLock;      // call of SatCom is possible?
     bool            m_editLock;        // edition in progress?
     bool            m_editFull;        // edition in full screen?
-    bool            m_pause;       // simulation paused
     bool            m_hilite;
     bool            m_trainerPilot;    // remote trainer?
     bool            m_suspend;
@@ -506,7 +513,7 @@ protected:
     char            m_mapFilename[100];
 
     Math::Point     m_tooltipPos;
-    char            m_tooltipName[100];
+    std::string     m_tooltipName;
     float           m_tooltipTime;
 
     char            m_infoFilename[SATCOM_MAX][100]; // names of text files
@@ -522,6 +529,8 @@ protected:
     int             m_endingWinRank;
     int             m_endingLostRank;
     bool            m_winTerminate;
+    
+    bool            m_exitAfterMission;
 
     float           m_fontSize;
     Math::Point     m_windowPos;

@@ -32,7 +32,7 @@ Buffer::~Buffer()
     {
         alDeleteBuffers(1, &m_buffer);
         if (alCheck())
-            GetLogger()->Warn("Failed to unload buffer. Code %d\n", alGetCode());
+            GetLogger()->Debug("Failed to unload buffer. Code %d\n", alGetCode());
     }
 }
 

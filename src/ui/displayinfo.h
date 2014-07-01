@@ -25,6 +25,8 @@
 
 #include "graphics/engine/camera.h"
 
+#include "app/pausemanager.h"
+
 class CRobotMain;
 class CObject;
 class CEventQueue;
@@ -67,13 +69,14 @@ protected:
     void        CreateObjectsFile();
 
 protected:
-    Gfx::CEngine* m_engine;
-    CEventQueue*     m_event;
-    CRobotMain* m_main;
-    Gfx::CCamera*    m_camera;
-    CInterface* m_interface;
-    Gfx::CParticle* m_particle;
-    Gfx::CLightManager*     m_light;
+    Gfx::CEngine*       m_engine;
+    CEventQueue*        m_event;
+    CRobotMain*         m_main;
+    Gfx::CCamera*       m_camera;
+    CInterface*         m_interface;
+    Gfx::CParticle*     m_particle;
+    Gfx::CLightManager* m_light;
+    CPauseManager*      m_pause;
 
     bool        m_bInfoMaximized;
     bool        m_bInfoMinimized;
@@ -88,7 +91,7 @@ protected:
     Math::Point     m_infoFinalDim;
     int         m_lightSuppl;
     bool        m_bEditLock;
-    bool        m_bInitPause;
+    PauseType   m_bInitPause;
     bool        m_bSoluce;
     CObject*    m_toto;
 };

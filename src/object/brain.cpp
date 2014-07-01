@@ -1238,7 +1238,6 @@ bool CBrain::CreateInterface(bool bSelect)
     Ui::CLabel*      pl;
     Math::Point      pos, dim, ddim;
     float       ox, oy, sx, sy;
-    char        name[100];
 
     pw = static_cast< Ui::CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
     if ( pw != 0 )
@@ -1259,13 +1258,14 @@ bool CBrain::CreateInterface(bool bSelect)
     pw = static_cast< Ui::CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
     if ( pw == 0 )  return false;
 
-    m_object->GetTooltipName(name);
+    std::string tooltipLabel;
+    m_object->GetTooltipName(tooltipLabel);
     pos.x = 0.0f;
     pos.y = 64.0f/480.0f;
     ddim.x = 540.0f/640.0f;
     if ( !m_main->GetShowMap() )  ddim.x = 640.0f/640.0f;
     ddim.y = 16.0f/480.0f;
-    pw->CreateLabel(pos, ddim, 0, EVENT_LABEL0, name);
+    pw->CreateLabel(pos, ddim, 0, EVENT_LABEL0, tooltipLabel);
 
     dim.x = 33.0f/640.0f;
     dim.y = 33.0f/480.0f;
@@ -1674,8 +1674,10 @@ bool CBrain::CreateInterface(bool bSelect)
         pos.y = oy+sy*1.2f;
         ddim.x = dim.x*2.2f;
         ddim.y = dim.y*0.4f;
-        GetResource(RES_TEXT, RT_INTERFACE_REC, name);
-        pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL1, name);
+
+        std::string recordLabel;
+        GetResource(RES_TEXT, RT_INTERFACE_REC, recordLabel);
+        pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL1, recordLabel);
         pl->SetFontSize(9.0f);
 
         pos.x = ox+sx*7.0f;
@@ -1787,9 +1789,6 @@ bool CBrain::CreateInterface(bool bSelect)
 
     pos.x = ox+sx*13.4f;
     pos.y = oy+sy*0;
-#if _TEEN
-    pw->CreateButton(pos, dim, 9, EVENT_OBJECT_RESET);
-#else
     if ( m_object->GetTrainer() )  // Training?
     {
         pw->CreateButton(pos, dim, 9, EVENT_OBJECT_RESET);
@@ -1798,7 +1797,6 @@ bool CBrain::CreateInterface(bool bSelect)
     {
         pw->CreateButton(pos, dim, 10, EVENT_OBJECT_DESELECT);
     }
-#endif
 
     if ( type == OBJECT_MOBILEfa ||
          type == OBJECT_MOBILEta ||
@@ -2457,16 +2455,9 @@ void CBrain::UpdateScript(Ui::CWindow *pw)
     char        name[100];
     char        title[100];
     int         i;
-    bool        bSoluce;
 
     pl = static_cast< Ui::CList* >(pw->SearchControl(EVENT_OBJECT_PROGLIST));
     if ( pl == 0 )  return;
-
-#if _SCHOOL
-    bSoluce = m_main->GetSoluce4();
-#else
-    bSoluce = true;
-#endif
 
     for ( i=0 ; i<BRAINMAXSCRIPT ; i++ )
     {
@@ -2475,10 +2466,6 @@ void CBrain::UpdateScript(Ui::CWindow *pw)
         if ( m_script[i] != 0 )
         {
             m_script[i]->GetTitle(title);
-            if ( !bSoluce && i == 3 )
-            {
-                title[0] = 0;
-            }
             if ( title[0] != 0 )
             {
                 sprintf(name, "%d: %s", i+1, title);
@@ -2486,11 +2473,6 @@ void CBrain::UpdateScript(Ui::CWindow *pw)
         }
 
         pl->SetItemName(i, name);
-    }
-
-    if ( !bSoluce )
-    {
-        pl->SetEnable(3, false);
     }
 
     pl->SetSelect(m_selScript);

@@ -253,10 +253,11 @@ std::string GetHelpFilename(const char *token)
     if ( strcmp(token, "getresearchenable" ) == 0 )  return std::string("help/") + CApplication::GetInstancePointer()->GetLanguageChar() + std::string("/cbot/getresen.txt");
     if ( strcmp(token, "getresearchdone"   ) == 0 )  return std::string("help/") + CApplication::GetInstancePointer()->GetLanguageChar() + std::string("/cbot/getresdo.txt");
     if ( strcmp(token, "retobject"     ) == 0 )  return std::string("help/") + CApplication::GetInstancePointer()->GetLanguageChar() + std::string("/cbot/retobj.txt");
-    if ( strcmp(token, "progfunc"       ) == 0 )  return std::string("help/") + CApplication::GetInstancePointer()->GetLanguageChar() + std::string("/cbot/factory.txt");
-    if ( strcmp(token, "busy"       ) == 0 )  return std::string("help/") + CApplication::GetInstancePointer()->GetLanguageChar() + std::string("/cbot/busy.txt");
-    if ( strcmp(token, "factory"       ) == 0 )  return std::string("help/") + CApplication::GetInstancePointer()->GetLanguageChar() + std::string("/cbot/factory.txt");
+    if ( strcmp(token, "progfunc"      ) == 0 )  return std::string("help/") + CApplication::GetInstancePointer()->GetLanguageChar() + std::string("/cbot/factory.txt");
+    if ( strcmp(token, "busy"          ) == 0 )  return std::string("help/") + CApplication::GetInstancePointer()->GetLanguageChar() + std::string("/cbot/busy.txt");
+    if ( strcmp(token, "takeoff"       ) == 0 )  return std::string("help/") + CApplication::GetInstancePointer()->GetLanguageChar() + std::string("/cbot/takeoff.txt");
     if ( strcmp(token, "research"      ) == 0 )  return std::string("help/") + CApplication::GetInstancePointer()->GetLanguageChar() + std::string("/cbot/research.txt");
+    if ( strcmp(token, "factory"       ) == 0 )  return std::string("help/") + CApplication::GetInstancePointer()->GetLanguageChar() + std::string("/cbot/factory.txt");
     if ( strcmp(token, "destroy"       ) == 0 )  return std::string("help/") + CApplication::GetInstancePointer()->GetLanguageChar() + std::string("/cbot/destroy.txt");
     if ( strcmp(token, "search"        ) == 0 )  return std::string("help/") + CApplication::GetInstancePointer()->GetLanguageChar() + std::string("/cbot/search.txt");
     if ( strcmp(token, "radar"         ) == 0 )  return std::string("help/") + CApplication::GetInstancePointer()->GetLanguageChar() + std::string("/cbot/radar.txt");
@@ -333,6 +334,7 @@ std::string GetHelpFilename(const char *token)
     if ( strcmp(token, "penup"         ) == 0 )  return std::string("help/") + CApplication::GetInstancePointer()->GetLanguageChar() + std::string("/cbot/penup.txt");
     if ( strcmp(token, "pencolor"      ) == 0 )  return std::string("help/") + CApplication::GetInstancePointer()->GetLanguageChar() + std::string("/cbot/pencolor.txt");
     if ( strcmp(token, "penwidth"      ) == 0 )  return std::string("help/") + CApplication::GetInstancePointer()->GetLanguageChar() + std::string("/cbot/penwidth.txt");
+    if ( strcmp(token, "camerafocus"      ) == 0 )  return std::string("help/") + CApplication::GetInstancePointer()->GetLanguageChar() + std::string("/cbot/camerafocus.txt");
     if ( strcmp(token, "extern"        ) == 0 )  return std::string("help/") + CApplication::GetInstancePointer()->GetLanguageChar() + std::string("/cbot/extern.txt");
     if ( strcmp(token, "class"         ) == 0 )  return std::string("help/") + CApplication::GetInstancePointer()->GetLanguageChar() + std::string("/cbot/class.txt");
     if ( strcmp(token, "static"        ) == 0 )  return std::string("help/") + CApplication::GetInstancePointer()->GetLanguageChar() + std::string("/cbot/static.txt");
@@ -384,6 +386,7 @@ bool IsFunction(const char *token)
     if ( strcmp(token, "busy"         ) == 0 )  return true;
     if ( strcmp(token, "factory"      ) == 0 )  return true;
     if ( strcmp(token, "research"     ) == 0 )  return true;
+    if ( strcmp(token, "takeoff"      ) == 0 )  return true;
     if ( strcmp(token, "destroy"      ) == 0 )  return true;
     if ( strcmp(token, "search"       ) == 0 )  return true;
     if ( strcmp(token, "radar"        ) == 0 )  return true;
@@ -439,6 +442,7 @@ bool IsFunction(const char *token)
     if ( strcmp(token, "penup"        ) == 0 )  return true;
     if ( strcmp(token, "pencolor"     ) == 0 )  return true;
     if ( strcmp(token, "penwidth"     ) == 0 )  return true;
+    if ( strcmp(token, "camerafocus"  ) == 0 )  return true;
     if ( strcmp(token, "sizeof"       ) == 0 )  return true;
     return false;
 }
@@ -477,6 +481,7 @@ const char* GetHelpText(const char *token)
     if ( strcmp(token, "busy"      ) == 0 )  return "object.busy ( );";
     if ( strcmp(token, "factory"   ) == 0 )  return "object.factory ( cat, program );";
     if ( strcmp(token, "research"  ) == 0 )  return "object.research ( type );";
+    if ( strcmp(token, "takeoff"   ) == 0 )  return "object.takeoff ( );";
     if ( strcmp(token, "destroy"   ) == 0 )  return "object.destroy ( );";
     if ( strcmp(token, "search"    ) == 0 )  return "search ( );";
     if ( strcmp(token, "radar"     ) == 0 )  return "radar ( cat, angle, focus, min, max, sens );";
@@ -532,6 +537,7 @@ const char* GetHelpText(const char *token)
     if ( strcmp(token, "penup"     ) == 0 )  return "penup ( );";
     if ( strcmp(token, "pencolor"  ) == 0 )  return "pencolor ( color );";
     if ( strcmp(token, "penwidth"  ) == 0 )  return "penwidth ( width );";
+    if ( strcmp(token, "camerafocus") == 0 )  return "camerafocus ( object );";
     return "";
 }
 

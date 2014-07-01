@@ -165,6 +165,14 @@ public:
     void        CreateInterface(bool bSelect);
     Error       GetError();
 
+    float       GetFallingHeight();
+
+    void        SetMinFallingHeight(float value);
+    float       GetMinFallingHeight();
+
+    void        SetFallDamageFraction(float value);
+    float       GetFallDamageFraction();
+
 protected:
     bool        EventFrame(const Event &event);
     void        WaterFrame(float aTime, float rTime);
@@ -191,6 +199,7 @@ protected:
     void        MotorParticle(float aTime, float rTime);
     void        WaterParticle(float aTime, Math::Vector pos, ObjectType type, float floor, float advance, float turn);
     void        WheelParticle(int color, float width);
+    void        SetFalling();
 
 protected:
     Gfx::CEngine*       m_engine;
@@ -240,13 +249,16 @@ protected:
     float       m_restBreakParticle;
     float       m_floorLevel;       // ground level
     float       m_floorHeight;      // height above the ground
-    int     m_soundChannel;
-    int     m_soundChannelSlide;
+    int         m_soundChannel;
+    int         m_soundChannelSlide;
     float       m_soundTimePshhh;
     float       m_soundTimeJostle;
     float       m_soundTimeBoum;
     bool        m_bSoundSlow;
     bool        m_bForceUpdate;
     bool        m_bLowLevel;
+    float       m_fallingHeight;
+    float       m_fallDamageFraction;
+    float       m_minFallingHeight;
 };
 

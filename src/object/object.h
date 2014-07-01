@@ -47,245 +47,207 @@ enum ObjectType
 {
     OBJECT_NULL             = 0,    //! < object destroyed
     OBJECT_FIX              = 1,    //! < stationary scenery
-    OBJECT_PORTICO          = 2,    //! < gantry
-    OBJECT_BASE             = 3,    //! < great main base
-    OBJECT_DERRICK          = 4,    //! < derrick set
-    OBJECT_FACTORY          = 5,    //! < factory set
-    OBJECT_STATION          = 6,    //! < recharging station
-    OBJECT_CONVERT          = 7,    //! < converter station
-    OBJECT_REPAIR           = 8,    //! < reparation
-    OBJECT_TOWER            = 9,    //! < defense tower
-    OBJECT_NEST             = 10,   //! < nest
-    OBJECT_RESEARCH         = 11,   //! < research center
-    OBJECT_RADAR            = 12,   //! < radar
-    OBJECT_ENERGY           = 13,   //! < energy factory
-    OBJECT_LABO             = 14,   //! < analytical laboratory for insect
-    OBJECT_NUCLEAR          = 15,   //! < nuclear power plant
-    OBJECT_START            = 16,   //! < starting
-    OBJECT_END              = 17,   //! < finish
-    OBJECT_INFO             = 18,   //! < information terminal
-    OBJECT_PARA             = 19,   //! < lightning conductor
-    OBJECT_TARGET1          = 20,   //! < gate target
-    OBJECT_TARGET2          = 21,   //! < center target
-    OBJECT_SAFE             = 22,   //! < safe
-    OBJECT_HUSTON           = 23,   //! < control centre
-    OBJECT_DESTROYER        = 24,   //! < destroyer
-    OBJECT_FRET             = 30,   //! < transportable
-    OBJECT_STONE            = 31,   //! < stone
-    OBJECT_URANIUM          = 32,   //! < uranium
-    OBJECT_METAL            = 33,   //! < metal
-    OBJECT_POWER            = 34,   //! < normal battery
-    OBJECT_ATOMIC           = 35,   //! < atomic battery
-    OBJECT_BULLET           = 36,   //! < bullet
-    OBJECT_BBOX             = 37,   //! < black-box
-    OBJECT_TNT              = 38,   //! < box of TNT
-    OBJECT_SCRAP1           = 40,   //! < metal waste
-    OBJECT_SCRAP2           = 41,   //! < metal waste
-    OBJECT_SCRAP3           = 42,   //! < metal waste
-    OBJECT_SCRAP4           = 43,   //! < plastic waste
-    OBJECT_SCRAP5           = 44,   //! < plastic waste
-    OBJECT_MARKPOWER        = 50,   //! < mark underground energy source
-    OBJECT_MARKSTONE        = 51,   //! < mark underground ore
-    OBJECT_MARKURANIUM      = 52,   //! < mark underground uranium
-    OBJECT_MARKKEYa         = 53,   //! < mark underground key
-    OBJECT_MARKKEYb         = 54,   //! < mark underground key
-    OBJECT_MARKKEYc         = 55,   //! < mark underground key
-    OBJECT_MARKKEYd         = 56,   //! < mark underground key
-    OBJECT_BOMB             = 60,   //! < bomb
-    OBJECT_WINFIRE          = 61,   //! < fireworks
-    OBJECT_SHOW             = 62,   //! < shows a place
-    OBJECT_BAG              = 63,   //! < survival bag
-    OBJECT_PLANT0           = 70,   //! < plant 0
-    OBJECT_PLANT1           = 71,   //! < plant 1
-    OBJECT_PLANT2           = 72,   //! < plant 2
-    OBJECT_PLANT3           = 73,   //! < plant 3
-    OBJECT_PLANT4           = 74,   //! < plant 4
-    OBJECT_PLANT5           = 75,   //! < plant 5
-    OBJECT_PLANT6           = 76,   //! < plant 6
-    OBJECT_PLANT7           = 77,   //! < plant 7
-    OBJECT_PLANT8           = 78,   //! < plant 8
-    OBJECT_PLANT9           = 79,   //! < plant 9
-    OBJECT_PLANT10          = 80,   //! < plant 10
-    OBJECT_PLANT11          = 81,   //! < plant 11
-    OBJECT_PLANT12          = 82,   //! < plant 12
-    OBJECT_PLANT13          = 83,   //! < plant 13
-    OBJECT_PLANT14          = 84,   //! < plant 14
-    OBJECT_PLANT15          = 85,   //! < plant 15
-    OBJECT_PLANT16          = 86,   //! < plant 16
-    OBJECT_PLANT17          = 87,   //! < plant 17
-    OBJECT_PLANT18          = 88,   //! < plant 18
-    OBJECT_PLANT19          = 89,   //! < plant 19
-    OBJECT_TREE0            = 90,   //! < tree 0
-    OBJECT_TREE1            = 91,   //! < tree 1
-    OBJECT_TREE2            = 92,   //! < tree 2
-    OBJECT_TREE3            = 93,   //! < tree 3
-    OBJECT_TREE4            = 94,   //! < tree 4
-    OBJECT_TREE5            = 95,   //! < tree 5
-    OBJECT_TREE6            = 96,   //! < tree 6
-    OBJECT_TREE7            = 97,   //! < tree 7
-    OBJECT_TREE8            = 98,   //! < tree 8
-    OBJECT_TREE9            = 99,   //! < tree 9
-    OBJECT_MOBILEwt         = 100,  //! < wheel-trainer
-    OBJECT_MOBILEtt         = 101,  //! < track-trainer
-    OBJECT_MOBILEft         = 102,  //! < fly-trainer
-    OBJECT_MOBILEit         = 103,  //! < insect-trainer
-    OBJECT_MOBILEwa         = 110,  //! < wheel-arm
-    OBJECT_MOBILEta         = 111,  //! < track-arm
-    OBJECT_MOBILEfa         = 112,  //! < fly-arm
-    OBJECT_MOBILEia         = 113,  //! < insect-arm
-    OBJECT_MOBILEwc         = 120,  //! < wheel-cannon
-    OBJECT_MOBILEtc         = 121,  //! < track-cannon
-    OBJECT_MOBILEfc         = 122,  //! < fly-cannon
-    OBJECT_MOBILEic         = 123,  //! < insect-cannon
-    OBJECT_MOBILEwi         = 130,  //! < wheel-insect-cannon
-    OBJECT_MOBILEti         = 131,  //! < track-insect-cannon
-    OBJECT_MOBILEfi         = 132,  //! < fly-insect-cannon
-    OBJECT_MOBILEii         = 133,  //! < insect-insect-cannon
-    OBJECT_MOBILEws         = 140,  //! < wheel-search
-    OBJECT_MOBILEts         = 141,  //! < track-search
-    OBJECT_MOBILEfs         = 142,  //! < fly-search
-    OBJECT_MOBILEis         = 143,  //! < insect-search
-    OBJECT_MOBILErt         = 200,  //! < roller-terraform
-    OBJECT_MOBILErc         = 201,  //! < roller-canon
-    OBJECT_MOBILErr         = 202,  //! < roller-recover
-    OBJECT_MOBILErs         = 203,  //! < roller-shield
-    OBJECT_MOBILEsa         = 210,  //! < submarine
-    OBJECT_MOBILEtg         = 211,  //! < training target
-    OBJECT_MOBILEdr         = 212,  //! < robot drawing
-    OBJECT_CONTROLLER       = 213,  //! < mission controller
-    OBJECT_WAYPOINT         = 250,  //! < waypoint
-    OBJECT_FLAGb            = 260,  //! < blue flag
-    OBJECT_FLAGr            = 261,  //! < red flag
-    OBJECT_FLAGg            = 262,  //! < green flag
-    OBJECT_FLAGy            = 263,  //! < yellow flag
-    OBJECT_FLAGv            = 264,  //! < violet flag
-    OBJECT_KEYa             = 270,  //! < key a
-    OBJECT_KEYb             =  271,  //! < key b
-    OBJECT_KEYc             = 272,  //! < key c
-    OBJECT_KEYd             = 273,  //! < key d
-    OBJECT_HUMAN            = 300,  //! < human
-    OBJECT_TOTO             = 301,  //! < toto
-    OBJECT_TECH             = 302,  //! < technician
-    OBJECT_BARRIER0         = 400,  //! < barrier
-    OBJECT_BARRIER1         = 401,  //! < barrier
-    OBJECT_BARRIER2         = 402,  //! < barrier
-    OBJECT_BARRIER3         = 403,  //! < barrier
-    OBJECT_BARRIER4         = 404,  //! < barrier
-    OBJECT_MOTHER           = 500,  //! < insect queen
-    OBJECT_EGG              = 501,  //! < egg
-    OBJECT_ANT              = 502,  //! < ant
-    OBJECT_SPIDER           = 503,  //! < spider
-    OBJECT_BEE              = 504,  //! < bee
-    OBJECT_WORM             = 505,  //! < worm
-    OBJECT_RUINmobilew1     = 600,  //! < ruin 1
-    OBJECT_RUINmobilew2     = 601,  //! < ruin 1
-    OBJECT_RUINmobilet1     = 602,  //! < ruin 2
-    OBJECT_RUINmobilet2     = 603,  //! < ruin 2
-    OBJECT_RUINmobiler1     = 604,  //! < ruin 3
-    OBJECT_RUINmobiler2     = 605,  //! < ruin 3
-    OBJECT_RUINfactory      = 606,  //! < ruin 4
-    OBJECT_RUINdoor         = 607,  //! < ruin 5
-    OBJECT_RUINsupport      = 608,  //! < ruin 6
-    OBJECT_RUINradar        = 609,  //! < ruin 7
-    OBJECT_RUINconvert      = 610,  //! < ruin 8
-    OBJECT_RUINbase         = 611,  //! < ruin 9
-    OBJECT_RUINhead         = 612,  //! < ruin 10
-    OBJECT_TEEN0            = 620,  //! < toy
-    OBJECT_TEEN1            = 621,  //! < toy
-    OBJECT_TEEN2            = 622,  //! < toy
-    OBJECT_TEEN3            = 623,  //! < toy
-    OBJECT_TEEN4            = 624,  //! < toy
-    OBJECT_TEEN5            = 625,  //! < toy
-    OBJECT_TEEN6            = 626,  //! < toy
-    OBJECT_TEEN7            = 627,  //! < toy
-    OBJECT_TEEN8            = 628,  //! < toy
-    OBJECT_TEEN9            = 629,  //! < toy
-    OBJECT_TEEN10           = 630,  //! < toy
-    OBJECT_TEEN11           = 631,  //! < toy
-    OBJECT_TEEN12           = 632,  //! < toy
-    OBJECT_TEEN13           = 633,  //! < toy
-    OBJECT_TEEN14           = 634,  //! < toy
-    OBJECT_TEEN15           = 635,  //! < toy
-    OBJECT_TEEN16           = 636,  //! < toy
-    OBJECT_TEEN17           = 637,  //! < toy
-    OBJECT_TEEN18           = 638,  //! < toy
-    OBJECT_TEEN19           = 639,  //! < toy
-    OBJECT_TEEN20           = 640,  //! < toy
-    OBJECT_TEEN21           = 641,  //! < toy
-    OBJECT_TEEN22           = 642,  //! < toy
-    OBJECT_TEEN23           = 643,  //! < toy
-    OBJECT_TEEN24           = 644,  //! < toy
-    OBJECT_TEEN25           = 645,  //! < toy
-    OBJECT_TEEN26           = 646,  //! < toy
-    OBJECT_TEEN27           = 647,  //! < toy
-    OBJECT_TEEN28           = 648,  //! < toy
-    OBJECT_TEEN29           = 649,  //! < toy
-    OBJECT_TEEN30           = 650,  //! < toy
-    OBJECT_TEEN31           = 651,  //! < toy
-    OBJECT_TEEN32           = 652,  //! < toy
-    OBJECT_TEEN33           = 653,  //! < toy
-    OBJECT_TEEN34           = 654,  //! < toy
-    OBJECT_TEEN35           = 655,  //! < toy
-    OBJECT_TEEN36           = 656,  //! < toy
-    OBJECT_TEEN37           = 657,  //! < toy
-    OBJECT_TEEN38           = 658,  //! < toy
-    OBJECT_TEEN39           = 659,  //! < toy
-    OBJECT_TEEN40           = 660,  //! < toy
-    OBJECT_TEEN41           = 661,  //! < toy
-    OBJECT_TEEN42           = 662,  //! < toy
-    OBJECT_TEEN43           = 663,  //! < toy
-    OBJECT_TEEN44           = 664,  //! < toy
-    OBJECT_TEEN45           = 665,  //! < toy
-    OBJECT_TEEN46           = 666,  //! < toy
-    OBJECT_TEEN47           = 667,  //! < toy
-    OBJECT_TEEN48           = 668,  //! < toy
-    OBJECT_TEEN49           = 669,  //! < toy
-    OBJECT_QUARTZ0          = 700,  //! < crystal 0
-    OBJECT_QUARTZ1          = 701,  //! < crystal 1
-    OBJECT_QUARTZ2          = 702,  //! < crystal 2
-    OBJECT_QUARTZ3          = 703,  //! < crystal 3
-    OBJECT_QUARTZ4          = 704,  //! < crystal 4
-    OBJECT_QUARTZ5          = 705,  //! < crystal 5
-    OBJECT_QUARTZ6          = 706,  //! < crystal 6
-    OBJECT_QUARTZ7          = 707,  //! < crystal 7
-    OBJECT_QUARTZ8          = 708,  //! < crystal 8
-    OBJECT_QUARTZ9          = 709,  //! < crystal 9
-    OBJECT_ROOT0            = 710,  //! < root 0
-    OBJECT_ROOT1            = 711,  //! < root 1
-    OBJECT_ROOT2            = 712,  //! < root 2
-    OBJECT_ROOT3            = 713,  //! < root 3
-    OBJECT_ROOT4            = 714,  //! < root 4
-    OBJECT_ROOT5            = 715,  //! < root 5
-    OBJECT_ROOT6            = 716,  //! < root 6
-    OBJECT_ROOT7            = 717,  //! < root 7
-    OBJECT_ROOT8            = 718,  //! < root 8
-    OBJECT_ROOT9            = 719,  //! < root 9
-    OBJECT_SEAWEED0         = 720,  //! < seaweed 0
-    OBJECT_SEAWEED1         = 721,  //! < seaweed 1
-    OBJECT_SEAWEED2         = 722,  //! < seaweed 2
-    OBJECT_SEAWEED3         = 723,  //! < seaweed 3
-    OBJECT_SEAWEED4         = 724,  //! < seaweed 4
-    OBJECT_SEAWEED5         = 725,  //! < seaweed 5
-    OBJECT_SEAWEED6         = 726,  //! < seaweed 6
-    OBJECT_SEAWEED7         = 727,  //! < seaweed 7
-    OBJECT_SEAWEED8         = 728,  //! < seaweed 8
-    OBJECT_SEAWEED9         = 729,  //! < seaweed 9
-    OBJECT_MUSHROOM0        = 730,  //! < mushroom 0
-    OBJECT_MUSHROOM1        = 731,  //! < mushroom 1
-    OBJECT_MUSHROOM2        = 732,  //! < mushroom 2
-    OBJECT_MUSHROOM3        = 733,  //! < mushroom 3
-    OBJECT_MUSHROOM4        = 734,  //! < mushroom 4
-    OBJECT_MUSHROOM5        = 735,  //! < mushroom 5
-    OBJECT_MUSHROOM6        = 736,  //! < mushroom 6
-    OBJECT_MUSHROOM7        = 737,  //! < mushroom 7
-    OBJECT_MUSHROOM8        = 738,  //! < mushroom 8
-    OBJECT_MUSHROOM9        = 739,  //! < mushroom 9
-    OBJECT_APOLLO1          = 900,  //! < apollo lem
-    OBJECT_APOLLO2          = 901,  //! < apollo jeep
-    OBJECT_APOLLO3          = 902,  //! < apollo flag
-    OBJECT_APOLLO4          = 903,  //! < apollo module
-    OBJECT_APOLLO5          = 904,  //! < apollo antenna
-    OBJECT_HOME1            = 910,  //! < home 1
+    OBJECT_PORTICO          = 2,    //! < Portico
+    OBJECT_BASE             = 3,    //! < SpaceShip
+    OBJECT_DERRICK          = 4,    //! < Derrick
+    OBJECT_FACTORY          = 5,    //! < BotFactory
+    OBJECT_STATION          = 6,    //! < PowerStation
+    OBJECT_CONVERT          = 7,    //! < Converter
+    OBJECT_REPAIR           = 8,    //! < RepairStation
+    OBJECT_TOWER            = 9,    //! < DefenseTower
+    OBJECT_NEST             = 10,   //! < AlienNest
+    OBJECT_RESEARCH         = 11,   //! < ResearchCenter
+    OBJECT_RADAR            = 12,   //! < RadarStation
+    OBJECT_ENERGY           = 13,   //! < PowerPlant
+    OBJECT_LABO             = 14,   //! < AutoLab
+    OBJECT_NUCLEAR          = 15,   //! < NuclearPlant
+    OBJECT_START            = 16,   //! < StartArea
+    OBJECT_END              = 17,   //! < EndArea
+    OBJECT_INFO             = 18,   //! < ExchangePost
+    OBJECT_PARA             = 19,   //! < PowerCaptor
+    OBJECT_TARGET1          = 20,   //! < Target1 (gate)
+    OBJECT_TARGET2          = 21,   //! < Target2 (center)
+    OBJECT_SAFE             = 22,   //! < Vault
+    OBJECT_HUSTON           = 23,   //! < Houston
+    OBJECT_DESTROYER        = 24,   //! < Destroyer
+    OBJECT_FRET             = 30,   //! < transportable (unused)
+    OBJECT_STONE            = 31,   //! < TitaniumOre
+    OBJECT_URANIUM          = 32,   //! < UraniumOre
+    OBJECT_METAL            = 33,   //! < Titanium
+    OBJECT_POWER            = 34,   //! < PowerCell
+    OBJECT_ATOMIC           = 35,   //! < NuclearCell
+    OBJECT_BULLET           = 36,   //! < OrgaMatter
+    OBJECT_BBOX             = 37,   //! < BlackBox
+    OBJECT_TNT              = 38,   //! < TNT
+    OBJECT_SCRAP1           = 40,   //! < Scrap1 (metal)
+    OBJECT_SCRAP2           = 41,   //! < Scrap2 (metal)
+    OBJECT_SCRAP3           = 42,   //! < Scrap3 (metal)
+    OBJECT_SCRAP4           = 43,   //! < Scrap4 (plastic)
+    OBJECT_SCRAP5           = 44,   //! < Scrap5 (plastic)
+    OBJECT_MARKPOWER        = 50,   //! < PowerSpot
+    OBJECT_MARKSTONE        = 51,   //! < TitaniumSpot
+    OBJECT_MARKURANIUM      = 52,   //! < UraniumSpot
+    OBJECT_MARKKEYa         = 53,   //! < KeyASpot
+    OBJECT_MARKKEYb         = 54,   //! < KeyBSpot
+    OBJECT_MARKKEYc         = 55,   //! < KeyCSpot
+    OBJECT_MARKKEYd         = 56,   //! < KeyDSpot
+    OBJECT_BOMB             = 60,   //! < Mine
+    OBJECT_WINFIRE          = 61,   //! < Firework
+    OBJECT_SHOW             = 62,   //! < arrow above object (Visit)
+    OBJECT_BAG              = 63,   //! < Bag
+    OBJECT_PLANT0           = 70,   //! < Greenery0
+    OBJECT_PLANT1           = 71,   //! < Greenery1
+    OBJECT_PLANT2           = 72,   //! < Greenery2
+    OBJECT_PLANT3           = 73,   //! < Greenery3
+    OBJECT_PLANT4           = 74,   //! < Greenery4
+    OBJECT_PLANT5           = 75,   //! < Greenery5
+    OBJECT_PLANT6           = 76,   //! < Greenery6
+    OBJECT_PLANT7           = 77,   //! < Greenery7
+    OBJECT_PLANT8           = 78,   //! < Greenery8
+    OBJECT_PLANT9           = 79,   //! < Greenery9
+    OBJECT_PLANT10          = 80,   //! < Greenery10
+    OBJECT_PLANT11          = 81,   //! < Greenery11
+    OBJECT_PLANT12          = 82,   //! < Greenery12
+    OBJECT_PLANT13          = 83,   //! < Greenery13
+    OBJECT_PLANT14          = 84,   //! < Greenery14
+    OBJECT_PLANT15          = 85,   //! < Greenery15
+    OBJECT_PLANT16          = 86,   //! < Greenery16
+    OBJECT_PLANT17          = 87,   //! < Greenery17
+    OBJECT_PLANT18          = 88,   //! < Greenery18
+    OBJECT_PLANT19          = 89,   //! < Greenery19
+    OBJECT_TREE0            = 90,   //! < Tree0
+    OBJECT_TREE1            = 91,   //! < Tree1
+    OBJECT_TREE2            = 92,   //! < Tree2
+    OBJECT_TREE3            = 93,   //! < Tree3
+    OBJECT_TREE4            = 94,   //! < Tree4
+    OBJECT_TREE5            = 95,   //! < Tree5
+    OBJECT_MOBILEwt         = 100,  //! < PracticeBot
+    OBJECT_MOBILEtt         = 101,  //! < track-trainer (unused)
+    OBJECT_MOBILEft         = 102,  //! < fly-trainer (unused)
+    OBJECT_MOBILEit         = 103,  //! < insect-trainer (unused)
+    OBJECT_MOBILEwa         = 110,  //! < WheeledGrabber
+    OBJECT_MOBILEta         = 111,  //! < TrackedGrabber
+    OBJECT_MOBILEfa         = 112,  //! < WingedGrabber
+    OBJECT_MOBILEia         = 113,  //! < LeggedGrabber
+    OBJECT_MOBILEwc         = 120,  //! < WheeledShooter
+    OBJECT_MOBILEtc         = 121,  //! < TrackedShooter
+    OBJECT_MOBILEfc         = 122,  //! < WingedShooter
+    OBJECT_MOBILEic         = 123,  //! < LeggedShooter
+    OBJECT_MOBILEwi         = 130,  //! < WheeledOrgaShooter
+    OBJECT_MOBILEti         = 131,  //! < TrackedOrgaShooter
+    OBJECT_MOBILEfi         = 132,  //! < WingedOrgaShooter
+    OBJECT_MOBILEii         = 133,  //! < LeggedOrgaShooter
+    OBJECT_MOBILEws         = 140,  //! < WheeledSniffer
+    OBJECT_MOBILEts         = 141,  //! < TrackedSniffer
+    OBJECT_MOBILEfs         = 142,  //! < WingedSniffer
+    OBJECT_MOBILEis         = 143,  //! < LeggedSniffer
+    OBJECT_MOBILErt         = 200,  //! < Thumper
+    OBJECT_MOBILErc         = 201,  //! < PhazerShooter
+    OBJECT_MOBILErr         = 202,  //! < Recycler
+    OBJECT_MOBILErs         = 203,  //! < Shielder
+    OBJECT_MOBILEsa         = 210,  //! < Subber
+    OBJECT_MOBILEtg         = 211,  //! < TargetBot
+    OBJECT_MOBILEdr         = 212,  //! < Scribbler
+    OBJECT_CONTROLLER       = 213,  //! < MissionController
+    OBJECT_WAYPOINT         = 250,  //! < WayPoint
+    OBJECT_FLAGb            = 260,  //! < BlueFlag
+    OBJECT_FLAGr            = 261,  //! < RedFlag
+    OBJECT_FLAGg            = 262,  //! < GreenFlag
+    OBJECT_FLAGy            = 263,  //! < YellowFlag
+    OBJECT_FLAGv            = 264,  //! < VioletFlag
+    OBJECT_KEYa             = 270,  //! < KeyA
+    OBJECT_KEYb             = 271,  //! < KeyB
+    OBJECT_KEYc             = 272,  //! < KeyC
+    OBJECT_KEYd             = 273,  //! < KeyD
+    OBJECT_HUMAN            = 300,  //! < Me
+    OBJECT_TOTO             = 301,  //! < Robby (toto)
+    OBJECT_TECH             = 302,  //! < Tech
+    OBJECT_BARRIER0         = 400,  //! < Barrier0
+    OBJECT_BARRIER1         = 401,  //! < Barrier1
+    OBJECT_BARRIER2         = 402,  //! < Barrier2
+    OBJECT_BARRIER3         = 403,  //! < Barrier3
+    OBJECT_MOTHER           = 500,  //! < AlienQueen
+    OBJECT_EGG              = 501,  //! < AlienEgg
+    OBJECT_ANT              = 502,  //! < AlienAnt
+    OBJECT_SPIDER           = 503,  //! < AlienSpider
+    OBJECT_BEE              = 504,  //! < AlienWasp
+    OBJECT_WORM             = 505,  //! < AlienWorm
+    OBJECT_RUINmobilew1     = 600,  //! < WreckBotw1
+    OBJECT_RUINmobilew2     = 601,  //! < WreckBotw2
+    OBJECT_RUINmobilet1     = 602,  //! < WreckBott1
+    OBJECT_RUINmobilet2     = 603,  //! < WreckBott2
+    OBJECT_RUINmobiler1     = 604,  //! < WreckBotr1
+    OBJECT_RUINmobiler2     = 605,  //! < WreckBotr2
+    OBJECT_RUINfactory      = 606,  //! < RuinBotFactory
+    OBJECT_RUINdoor         = 607,  //! < RuinDoor
+    OBJECT_RUINsupport      = 608,  //! < RuinSupport
+    OBJECT_RUINradar        = 609,  //! < RuinRadar
+    OBJECT_RUINconvert      = 610,  //! < RuinConvert
+    OBJECT_RUINbase         = 611,  //! < RuinBaseCamp
+    OBJECT_RUINhead         = 612,  //! < RuinHeadCamp
+    OBJECT_TEEN0            = 620,  //! < Teen0
+    OBJECT_TEEN1            = 621,  //! < Teen1
+    OBJECT_TEEN2            = 622,  //! < Teen2
+    OBJECT_TEEN3            = 623,  //! < Teen3
+    OBJECT_TEEN4            = 624,  //! < Teen4
+    OBJECT_TEEN5            = 625,  //! < Teen5
+    OBJECT_TEEN6            = 626,  //! < Teen6
+    OBJECT_TEEN7            = 627,  //! < Teen7
+    OBJECT_TEEN8            = 628,  //! < Teen8
+    OBJECT_TEEN9            = 629,  //! < Teen9
+    OBJECT_TEEN10           = 630,  //! < Teen10
+    OBJECT_TEEN11           = 631,  //! < Teen11
+    OBJECT_TEEN12           = 632,  //! < Teen12
+    OBJECT_TEEN13           = 633,  //! < Teen13
+    OBJECT_TEEN14           = 634,  //! < Teen14
+    OBJECT_TEEN15           = 635,  //! < Teen15
+    OBJECT_TEEN16           = 636,  //! < Teen16
+    OBJECT_TEEN17           = 637,  //! < Teen17
+    OBJECT_TEEN18           = 638,  //! < Teen18
+    OBJECT_TEEN19           = 639,  //! < Teen19
+    OBJECT_TEEN20           = 640,  //! < Teen20
+    OBJECT_TEEN21           = 641,  //! < Teen21
+    OBJECT_TEEN22           = 642,  //! < Teen22
+    OBJECT_TEEN23           = 643,  //! < Teen23
+    OBJECT_TEEN24           = 644,  //! < Teen24
+    OBJECT_TEEN25           = 645,  //! < Teen25
+    OBJECT_TEEN26           = 646,  //! < Teen26
+    OBJECT_TEEN27           = 647,  //! < Teen27
+    OBJECT_TEEN28           = 648,  //! < Teen28
+    OBJECT_TEEN29           = 649,  //! < Teen29
+    OBJECT_TEEN30           = 650,  //! < Teen30
+    OBJECT_TEEN31           = 651,  //! < Teen31
+    OBJECT_TEEN32           = 652,  //! < Teen32
+    OBJECT_TEEN33           = 653,  //! < Teen33
+    OBJECT_TEEN34           = 654,  //! < Stone (Teen34)
+    OBJECT_TEEN35           = 655,  //! < Teen35
+    OBJECT_TEEN36           = 656,  //! < Teen36
+    OBJECT_TEEN37           = 657,  //! < Teen37
+    OBJECT_TEEN38           = 658,  //! < Teen38
+    OBJECT_TEEN39           = 659,  //! < Teen39
+    OBJECT_TEEN40           = 660,  //! < Teen40
+    OBJECT_TEEN41           = 661,  //! < Teen41
+    OBJECT_TEEN42           = 662,  //! < Teen42
+    OBJECT_TEEN43           = 663,  //! < Teen43
+    OBJECT_TEEN44           = 664,  //! < Teen44
+    OBJECT_QUARTZ0          = 700,  //! < Quartz0
+    OBJECT_QUARTZ1          = 701,  //! < Quartz1
+    OBJECT_QUARTZ2          = 702,  //! < Quartz2
+    OBJECT_QUARTZ3          = 703,  //! < Quartz3
+    OBJECT_ROOT0            = 710,  //! < MegaStalk0
+    OBJECT_ROOT1            = 711,  //! < MegaStalk1
+    OBJECT_ROOT2            = 712,  //! < MegaStalk2
+    OBJECT_ROOT3            = 713,  //! < MegaStalk3
+    OBJECT_ROOT4            = 714,  //! < MegaStalk4
+    OBJECT_ROOT5            = 715,  //! < MegaStalk5
+    OBJECT_MUSHROOM1        = 731,  //! < Mushroom1
+    OBJECT_MUSHROOM2        = 732,  //! < Mushroom2
+    OBJECT_APOLLO1          = 900,  //! < ApolloLEM
+    OBJECT_APOLLO2          = 901,  //! < ApolloJeep
+    OBJECT_APOLLO3          = 902,  //! < ApolloFlag
+    OBJECT_APOLLO4          = 903,  //! < ApolloModule
+    OBJECT_APOLLO5          = 904,  //! < ApolloAntenna
+    OBJECT_HOME1            = 910,  //! < Home
 
     OBJECT_MAX              = 1000  //! < number of values
 };
@@ -309,6 +271,24 @@ enum ObjectMaterial
     OM_ANIMAL  = 3,    // insect
     OM_VEGETAL = 4,    // plant
     OM_MINERAL = 5,    // stone
+};
+
+enum DriveType
+{
+    DRIVE_OTHER = 0,
+    DRIVE_WHEELED,
+    DRIVE_TRACKED,
+    DRIVE_WINGED,
+    DRIVE_LEGGED,
+};
+
+enum ToolType
+{
+    TOOL_OTHER = 0,
+    TOOL_GRABBER,
+    TOOL_SNIFFER,
+    TOOL_SHOOTER,
+    TOOL_ORGASHOOTER,
 };
 
 struct ObjectPart
@@ -602,6 +582,9 @@ public:
 
     void        SetParam(float value);
     float       GetParam();
+    
+    void        SetIgnoreBuildCheck(bool bIgnoreBuildCheck);
+    bool        GetIgnoreBuildCheck();
 
     void        SetExplo(bool bExplo);
     bool        GetExplo();
@@ -639,7 +622,7 @@ public:
     void        SetDefRank(int rank);
     int         GetDefRank();
 
-    bool        GetTooltipName(char* name);
+    bool        GetTooltipName(std::string& name);
 
     void        AddDeselList(CObject* pObj);
     CObject*    SubDeselList();
@@ -659,6 +642,9 @@ public:
     void        SetTraceWidth(float width);
 
     std::string GetModelDirName();
+    
+    static DriveType GetDriveFromObject(ObjectType type);
+    static ToolType  GetToolFromObject(ObjectType type);
 
 protected:
     bool        EventFrame(const Event &event);
@@ -737,6 +723,7 @@ protected:
     bool        m_bTrainer;         // drive vehicle (without remote)
     bool        m_bToy;             // toy key
     bool        m_bManual;          // manual control (Scribbler)
+    bool        m_bIgnoreBuildCheck;
     bool        m_bFixed;
     bool        m_bClip;
     bool        m_bShowLimit;

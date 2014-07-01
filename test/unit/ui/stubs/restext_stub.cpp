@@ -1,6 +1,6 @@
 #include "common/restext.h"
 
-bool GetResource(ResType /* type */, int /* num */, char* /* text */)
+bool GetResource(ResType /* type */, int /* num */, std::string& /* text */)
 {
     return true;
 }

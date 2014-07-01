@@ -31,9 +31,16 @@
 
 #include <map>
 #include <string>
+#include <list>
 
 #include <al.h>
 
+
+struct OldMusic {
+    Channel* music;
+    float fadeTime;
+    float currentTime;
+};
 
 class ALSound : public CSoundInterface
 {
@@ -41,63 +48,58 @@ public:
     ALSound();
     ~ALSound();
 
-    bool Create(bool b3D);
-    bool Cache(Sound, std::string);
-    bool CacheMusic(std::string);
+    bool Create();
+    bool Cache(Sound, const std::string &);
+    bool CacheMusic(const std::string &);
 
     bool GetEnable();
-
-    void SetSound3D(bool bMode);
-    bool GetSound3D();
-    bool GetSound3DCap();
 
     void SetAudioVolume(int volume);
     int GetAudioVolume();
     void SetMusicVolume(int volume);
     int GetMusicVolume();
 
-    void SetListener(Math::Vector eye, Math::Vector lookat);
+    void SetListener(const Math::Vector &eye, const Math::Vector &lookat);
     void FrameMove(float rTime);
 
     int Play(Sound sound, float amplitude=1.0f, float frequency=1.0f, bool bLoop = false);
-    int Play(Sound sound, Math::Vector pos, float amplitude=1.0f, float frequency=1.0f, bool bLoop = false);
+    int Play(Sound sound, const Math::Vector &pos, float amplitude=1.0f, float frequency=1.0f, bool bLoop = false);
     bool FlushEnvelope(int channel);
     bool AddEnvelope(int channel, float amplitude, float frequency, float time, SoundNext oper);
-    bool Position(int channel, Math::Vector pos);
+    bool Position(int channel, const Math::Vector &pos);
     bool Frequency(int channel, float frequency);
     bool Stop(int channel);
     bool StopAll();
     bool MuteAll(bool bMute);
 
-    bool PlayMusic(int rank, bool bRepeat);
-    bool PlayMusic(std::string filename, bool bRepeat);
+    bool PlayMusic(int rank, bool bRepeat, float fadeTime=2.0f);
+    bool PlayMusic(const std::string &filename, bool bRepeat, float fadeTime=2.0f);
     bool RestartMusic();
     void SuspendMusic();
-    void StopMusic();
+    void StopMusic(float fadeTime=2.0f);
     bool IsPlayingMusic();
+    bool PlayPauseMusic(const std::string &filename, bool repeat);
+    void StopPauseMusic();
 
-    // plugin interface
-    std::string PluginName();
-    int PluginVersion();
-    void InstallPlugin();
-    bool UninstallPlugin(std::string &);
+    bool CheckChannel(int &channel);
 
 private:
     void CleanUp();
     int GetPriority(Sound);
     bool SearchFreeBuffer(Sound sound, int &channel, bool &bAlreadyLoaded);
-    void ComputeVolumePan2D(int channel, Math::Vector &pos);
 
     bool m_enabled;
-    bool m_3D;
     float m_audioVolume;
     float m_musicVolume;
+    unsigned int m_channels_limit;
     ALCdevice* m_device;
     ALCcontext* m_context;
     std::map<Sound, Buffer*> m_sounds;
     std::map<std::string, Buffer*> m_music;
     std::map<int, Channel*> m_channels;
     Channel *m_currentMusic;
+    std::list<OldMusic> m_oldMusic;
+    OldMusic m_previousMusic;
     Math::Vector m_eye;
     Math::Vector m_lookat;
 };

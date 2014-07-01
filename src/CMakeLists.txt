@@ -28,6 +28,8 @@ if(MXE) # MXE requires special treatment
 elseif(PLATFORM_WINDOWS)
     # because it isn't included in standard linking libraries
     set(PLATFORM_LIBS "-lintl")
+elseif(PLATFORM_GNU)
+    set(PLATFORM_LIBS "-lX11")
 elseif(PLATFORM_LINUX)
     # for clock_gettime
     set(PLATFORM_LIBS "-lrt -lX11")
@@ -59,7 +61,9 @@ endif()
 # Source files
 set(SOURCES
 app/app.cpp
+app/gamedata.cpp
 app/main.cpp
+app/pausemanager.cpp
 app/system.cpp
 app/${SYSTEM_CPP_MODULE}
 app/system_other.cpp

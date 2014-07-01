@@ -107,6 +107,9 @@ CPhysics::CPhysics(CObject* object)
     m_bFreeze = false;
     m_bForceUpdate = true;
     m_bLowLevel = false;
+    m_fallingHeight = 0.0f;
+    m_minFallingHeight = 20.0f;
+    m_fallDamageFraction = 0.007f;
 
     memset(&m_linMotion, 0, sizeof(Motion));
     memset(&m_cirMotion, 0,sizeof(Motion));
@@ -786,6 +789,10 @@ void CPhysics::MotorUpdate(float aTime, float rTime)
 
     type = m_object->GetType();
 
+    if(std::isnan(m_motorSpeed.x)) m_motorSpeed.x = 0.f;
+    if(std::isnan(m_motorSpeed.y)) m_motorSpeed.y = 0.f;
+    if(std::isnan(m_motorSpeed.z)) m_motorSpeed.z = 0.f;
+
     motorSpeed = m_motorSpeed;
 
     if ( type == OBJECT_MOTHER   ||
@@ -847,6 +854,7 @@ void CPhysics::MotorUpdate(float aTime, float rTime)
             else
             {
                 motorSpeed.y = -1.0f;  // grave
+                SetFalling();
             }
             SetMotor(false);
         }
@@ -911,6 +919,7 @@ void CPhysics::MotorUpdate(float aTime, float rTime)
         if ( m_reactorRange == 0.0f )  // reactor tilt?
         {
             motorSpeed.y = -1.0f;  // grave
+            SetFalling();
         }
     }
 
@@ -1509,6 +1518,7 @@ bool CPhysics::EventFrame(const Event &event)
         if ( pos.y < m_water->GetLevel(m_object) )  // underwater?
         {
             h *= 0.5f;
+            m_fallingHeight = 0.0f; // can't fall underwater
         }
 #endif
 //?     m_linMotion.terrainSpeed.x = -tAngle.z*m_linMotion.terrainForce.x*h;
@@ -1600,6 +1610,13 @@ bool CPhysics::EventFrame(const Event &event)
 
     MotorParticle(m_time, event.rTime);
     SoundMotor(event.rTime);
+
+    if ( m_bLand && m_fallingHeight != 0.0f ) // if fell
+    {
+        float force = (m_fallingHeight - m_object->GetPosition(0).y) * m_fallDamageFraction;
+        m_object->ExploObject(EXPLO_BOUM, force);
+        m_fallingHeight = 0.0f;
+    }
 
     m_bForceUpdate = false;
 
@@ -2561,19 +2578,13 @@ int CPhysics::ObjectAdapt(const Math::Vector &pos, const Math::Vector &angle)
                  oType == OBJECT_KEYd    ||
                  oType == OBJECT_TNT     ||
                 (oType >= OBJECT_PLANT0    && oType <= OBJECT_PLANT19  ) ||
-                (oType >= OBJECT_MUSHROOM0 && oType <= OBJECT_MUSHROOM9) )  continue;
+                (oType >= OBJECT_MUSHROOM1 && oType <= OBJECT_MUSHROOM2) )  continue;
         }
 
-#if _TEEN
-        if ( oType == OBJECT_WAYPOINT &&
-             pObj->GetEnable()        &&
-            !m_object->GetResetBusy() )  // driving vehicle?
-#else
         if ( oType == OBJECT_WAYPOINT &&
              pObj->GetEnable()        &&
             !m_object->GetResetBusy() &&
              m_object->GetTrainer()   )  // driving vehicle?
-#endif
         {
             oPos = pObj->GetPosition(0);
             distance = Math::DistanceProjected(oPos, iPos);
@@ -2979,15 +2990,15 @@ void CPhysics::FrameParticle(float aTime, float rTime)
 {
     Math::Vector    pos;
     CObject*    power;
-    float       energy, intensity;
+    float       energy/*, intensity*/;
     int         effectLight;
-    bool        bFlash;
+    //bool        bFlash;
 
     m_restBreakParticle -= rTime;
     if ( aTime-m_lastPowerParticle < m_engine->ParticleAdapt(0.05f) )  return;
     m_lastPowerParticle = aTime;
 
-    bFlash = false;
+    //bFlash = false;
 
     energy = 0.0f;
     power = m_object->GetPower();
@@ -3001,7 +3012,7 @@ void CPhysics::FrameParticle(float aTime, float rTime)
         if ( energy > m_lastEnergy )  // recharge?
         {
             PowerParticle(1.0f, false);
-            bFlash = true;
+            //bFlash = true;
         }
 
         if ( energy == 0.0f || m_lastEnergy == 0.0f )
@@ -3015,7 +3026,7 @@ void CPhysics::FrameParticle(float aTime, float rTime)
     if ( m_restBreakParticle > 0.0f )
     {
         PowerParticle(m_restBreakParticle/2.5f, (energy == 0));
-        bFlash = true;
+        //bFlash = true;
     }
 
     effectLight = m_object->GetEffectLight();
@@ -3879,5 +3890,38 @@ Error CPhysics::GetError()
     }
 
     return ERR_OK;
+}
+
+void CPhysics::SetFalling()
+{
+    if (m_fallingHeight == 0.0f && m_floorHeight >= m_minFallingHeight)
+        m_fallingHeight = m_object->GetPosition(0).y;
+}
+
+float CPhysics::GetFallingHeight()
+{
+    return m_fallingHeight;
+}
+
+void CPhysics::SetMinFallingHeight(float value)
+{
+    if (value < 0.0f) return;
+    m_minFallingHeight = value;
+}
+
+float CPhysics::GetMinFallingHeight()
+{
+    return m_minFallingHeight;
+}
+
+void CPhysics::SetFallDamageFraction(float value)
+{
+    if (value < 0.0f) return;
+    m_fallDamageFraction = value;
+}
+
+float CPhysics::GetFallDamageFraction()
+{
+    return m_fallDamageFraction;
 }
 

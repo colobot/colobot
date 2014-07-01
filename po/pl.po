@@ -26,7 +26,7 @@ msgid " Exercises in the chapter:"
 msgstr " Ćwiczenia w tym rozdziale:"
 
 msgid " Free game on this chapter:"
-msgstr " Prototypy na tej planecie:"
+msgstr " Swobodna gra na tej planecie:"
 
 msgid " Free game on this planet:"
 msgstr " Swobodna gra na tej planecie:"
@@ -39,9 +39,6 @@ msgstr " Misje na tej planecie:"
 
 msgid " Planets:"
 msgstr " Planety:"
-
-msgid " Prototypes on this planet:"
-msgstr " Prototypy na tej planecie:"
 
 msgid " Resolution:"
 msgstr " Rozdzielczość:"
@@ -89,15 +86,12 @@ msgstr "Dźwięk 3D\\Przestrzenne pozycjonowanie dźwięków"
 msgid "<<  Back  \\Back to the previous screen"
 msgstr "<<  Wstecz  \\Wraca do poprzedniego ekranu"
 
-#, fuzzy
 msgid "<<< Sorry; mission failed >>>"
 msgstr "<<< Niestety, misja nie powiodła się >>>"
 
-#, fuzzy
 msgid "<<< Well done; mission accomplished >>>"
 msgstr "<<< Dobra robota, misja wypełniona >>>"
 
-#, fuzzy
 msgid "A label must be followed by \"for\"; \"while\"; \"do\" or \"switch\""
 msgstr "Po etykiecie musi wystąpić \"for\", \"while\", \"do\" lub \"switch\""
 
@@ -316,6 +310,9 @@ msgstr "Przycisk %1"
 msgid "COLOBOT"
 msgstr "COLOBOT"
 
+msgid "COLOBOT: Gold Edition"
+msgstr "COLOBOT: Gold Edition"
+
 msgid "Calling an unknown function"
 msgstr "Odwołanie do nieznanej funkcji"
 
@@ -340,7 +337,6 @@ msgstr "Camera to left"
 msgid "Camera to right"
 msgstr "Camera to right"
 
-#, fuzzy
 msgid "Can not create this; there are too many objects"
 msgstr "Nie można tego utworzyć, za dużo obiektów"
 
@@ -364,6 +360,9 @@ msgstr "Wyzwania\\Wyzwania programistyczne"
 
 msgid "Change camera\\Switches between onboard camera and following camera"
 msgstr "Zmień kamerę\\Przełącza pomiędzy kamerą pokładową i śledzącą"
+
+msgid "Change player\\Change player"
+msgstr "Zmień gracza\\Zmień gracza"
 
 msgid "Checkpoint"
 msgstr "Punkt kontrolny"
@@ -702,7 +701,6 @@ msgstr "Nieodpowiedni rodzaj ogniw"
 msgid "Incorrect index type"
 msgstr "Nieprawidłowy typ indeksu"
 
-#, fuzzy
 msgid "Infected by a virus; temporarily out of order"
 msgstr "Zainfekowane wirusem, chwilowo niesprawne"
 
@@ -851,9 +849,6 @@ msgstr "Nowy ..."
 
 msgid "New bot available"
 msgstr "Dostępny nowy robot"
-
-msgid "New player\\Choose player's name"
-msgstr "Nowy gracz\\Wybierz imię gracza"
 
 msgid "Next"
 msgstr "Następny"
@@ -1120,12 +1115,6 @@ msgstr "Podręcznik programowania\\Dostarcza szczegółową pomoc w programowani
 
 msgid "Programs dispatched by Houston"
 msgstr "Program dostarczony z Houston"
-
-msgid "Proto\\Prototypes under development"
-msgstr "Prototypy\\Prototypy w trakcie rozwijania"
-
-msgid "Prototypes"
-msgstr "Prototypy"
 
 msgid "Public required"
 msgstr "Wymagany publiczny"
@@ -2063,4 +2052,3 @@ msgstr "www.epsitec.com"
 
 #~ msgid "Zoom"
 #~ msgstr "Powiększenie"
-

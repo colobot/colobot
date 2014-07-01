@@ -19,6 +19,7 @@
 #include "graphics/engine/text.h"
 
 #include "app/app.h"
+#include "app/gamedata.h"
 
 #include "common/image.h"
 #include "common/logger.h"
@@ -333,7 +334,7 @@ float CText::GetStringWidth(std::string text, FontType font, float size)
     // Skip special chars
     for (char& c : text)
     {
-        if (c < 32)
+        if (c < 32 && c >= 0)
             c = ':';
     }
 
@@ -351,7 +352,7 @@ float CText::GetCharWidth(UTF8Char ch, FontType font, float size, float offset)
     if (font == FONT_BUTTON) return 0.0f;
 
     int width = 1;
-    if (ch.c1 < 32)
+    if (ch.c1 < 32 && ch.c1 >= 0)
     {
         if (ch.c1 == '\t')
             width = m_tabSize;
@@ -646,7 +647,13 @@ void CText::DrawString(const std::string &text, std::vector<FontMetaChar>::itera
 
         DrawCharAndAdjustPos(ch, font, size, pos, color);
 
-        fmtIndex++;
+        // increment fmtIndex for each byte in multibyte character
+        if ( ch.c1 != 0 )
+            fmtIndex++;
+        if ( ch.c2 != 0 )
+            fmtIndex++;
+        if ( ch.c3 != 0 )
+            fmtIndex++;
     }
 
     if (eol != 0)
@@ -859,7 +866,7 @@ CachedFont* CText::GetOrOpenFont(FontType font, float size)
         return m_lastCachedFont;
     }
 
-    std::string path = CApplication::GetInstance().GetDataFilePath(DIR_FONT, mf->fileName);
+    std::string path = CGameData::GetInstancePointer()->GetFilePath(DIR_FONT, mf->fileName);
 
     m_lastCachedFont = new CachedFont();
     m_lastCachedFont->font = TTF_OpenFont(path.c_str(), pointSize);

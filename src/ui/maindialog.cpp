@@ -18,15 +18,17 @@
 #include "ui/maindialog.h"
 
 #include "app/app.h"
+#include "app/gamedata.h"
 #include "app/system.h"
 
+#include "common/config.h"
 #include "common/global.h"
 #include "common/event.h"
 #include "common/logger.h"
 #include "common/misc.h"
 #include "common/profile.h"
 #include "common/restext.h"
-#include "common/logger.h"
+#include "common/stringutils.h"
 
 #include "object/robotmain.h"
 
@@ -52,6 +54,7 @@
 #include <string.h>
 #include <sstream>
 #include <iomanip>
+#include <vector>
 #include <boost/filesystem.hpp>
 #include <boost/foreach.hpp>
 
@@ -118,6 +121,7 @@ CMainDialog::CMainDialog()
     m_camera     = m_main->GetCamera();
     m_engine     = Gfx::CEngine::GetInstancePointer();
     m_particle   = m_engine->GetParticle();
+    m_pause      = CPauseManager::GetInstancePointer();
 
     m_phase        = PHASE_NAME;
     m_phaseSetup   = PHASE_SETUPg;
@@ -153,9 +157,6 @@ CMainDialog::CMainDialog()
     m_bMovies        = true;
     m_bNiceReset     = true;
     m_bHimselfDamage = true;
-/* TODO: #if _TEEN
-    m_bCameraScroll  = false;
-#else*/
     m_bCameraScroll  = true;
 
     m_bCameraInvertX = false;
@@ -215,7 +216,7 @@ void CMainDialog::ChangePhase(Phase phase)
     CImage*         pi;
     Math::Point         pos, dim, ddim;
     float           ox, oy, sx, sy;
-    char            name[100];
+    std::string     name;
     char*           gamer;
     int             res, i, j;
 
@@ -243,9 +244,6 @@ void CMainDialog::ChangePhase(Phase phase)
         pos.y  = 0.10f;
         ddim.x = 0.30f;
         ddim.y = 0.80f;
-        /* TODO: #if _TEEN
-           pw = m_interface->CreateWindows(pos, ddim, 12, EVENT_WINDOW5);
-#else*/
         pw = m_interface->CreateWindows(pos, ddim, 10, EVENT_WINDOW5);
 
         GetResource(RES_TEXT, RT_TITLE_INIT, name);
@@ -261,22 +259,7 @@ void CMainDialog::ChangePhase(Phase phase)
         ddim.x = 0.30f;
         ddim.y = 0.30f;
         pw->CreateGroup(pos, ddim, 4, EVENT_INTERFACE_GLINTr);  // blue corner
-
-        /* TODO: #if _SCHOOL
-           ddim.x = 0.20f;
-           ddim.y = dim.y*2.4f;
-           pos.x = 0.40f;
-           pos.y = oy+sy*7.9f;
-           pg = pw->CreateGroup(pos, ddim, 24, EVENT_LABEL1);  // orange
-           pg->SetState(STATE_SHADOW);
-           pos.y = oy+sy*3.9f;
-           pg = pw->CreateGroup(pos, ddim, 25, EVENT_LABEL1);  // orange
-           pg->SetState(STATE_SHADOW);
-           ddim.y = dim.y*1.2f;
-           pos.y = oy+sy*1.9f;
-           pg = pw->CreateGroup(pos, ddim, 26, EVENT_LABEL1);  // red
-           pg->SetState(STATE_SHADOW);
-#else */
+        
         ddim.x = 0.20f;
         ddim.y = dim.y*2.4f;
         pos.x = 0.40f;
@@ -296,26 +279,7 @@ void CMainDialog::ChangePhase(Phase phase)
         pos.y = oy+sy*1.9f;
         pg = pw->CreateGroup(pos, ddim, 26, EVENT_LABEL1);  // red
         pg->SetState(STATE_SHADOW);
-
-        /* TODO: #if _SCHOOL
-           ddim.x = 0.18f;
-           ddim.y = dim.y*1;
-           pos.x = 0.41f;
-           pos.y = oy+sy*9.1f;
-           pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_TRAINER);
-           pb->SetState(STATE_SHADOW);
-
-           pos.y = oy+sy*8.0f;
-#if _TEEN
-pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_TEEN);
-#else
-pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_DEFI);
-#endif
-#if _CEEBOTDEMO
-pb->ClearState(STATE_ENABLE);
-#endif
-pb->SetState(STATE_SHADOW);
-#else */
+        
         ddim.x = 0.18f;
         ddim.y = dim.y*1;
         pos.x = 0.41f;
@@ -351,30 +315,22 @@ pb->SetState(STATE_SHADOW);
         pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_QUIT);
         pb->SetState(STATE_SHADOW);
 
-        // TODO: #if !_DEMO & !_SCHOOL
+        #if DEV_BUILD
         if ( m_accessEnable && m_accessUser )
         {
             pos.x  = 447.0f/640.0f;
             pos.y  = 313.0f/480.0f;
             ddim.x = 0.09f;
-            /*#if _POLISH
-              pos.x  -=  5.0f/640.0f;
-              ddim.x += 10.0f/640.0f;
-#endif*/
             pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_USER);
             pb->SetState(STATE_SHADOW);
         }
-        // #endif
+        #endif
 
-        // TODO: remove?
-        if (m_app->GetProtoMode())
-        {
-            pos.x  = 139.0f/640.0f;
-            pos.y  = 313.0f/480.0f;
-            ddim.x = 0.09f;
-            pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_PROTO);
-            pb->SetState(STATE_SHADOW);
-        }
+        /*pos.x  = 139.0f/640.0f;
+        pos.y  = 313.0f/480.0f;
+        ddim.x = 0.09f;
+        pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_PROTO);
+        pb->SetState(STATE_SHADOW);*/
 
         pos.x  = 0.40f;
         ddim.x = 0.20f;
@@ -405,19 +361,6 @@ pb->SetState(STATE_SHADOW);
         pw = m_interface->CreateWindows(pos, ddim, 12, EVENT_WINDOW5);
         GetResource(RES_TEXT, RT_TITLE_NAME, name);
         pw->SetName(name);
-
-        /* TODO: #if _NEWLOOK
-           pos.x  =  80.0f/640.0f;
-           pos.y  =  93.0f/480.0f;
-           ddim.x = 285.0f/640.0f;
-           ddim.y = 266.0f/480.0f;
-           pg = pw->CreateGroup(pos, ddim, 23, EVENT_LABEL1);  // blue
-           pg->SetState(STATE_SHADOW);
-           pos.x  = 372.0f/640.0f;
-           ddim.x = 188.0f/640.0f;
-           pg = pw->CreateGroup(pos, ddim, 26, EVENT_LABEL1);  // violet
-           pg->SetState(STATE_SHADOW);
-#endif*/
 
         pos.x  = 0.10f;
         pos.y  = 0.40f;
@@ -458,10 +401,10 @@ pb->SetState(STATE_SHADOW);
         }
         else
         {
-            strcpy(name, gamer);
+            name = gamer;
         }
-        pe->SetText(name);
-        pe->SetCursor(strlen(name), 0);
+        pe->SetText(name.c_str());
+        pe->SetCursor(name.length(), 0);
         pe->SetFocus(true);
 
         pos.x = 380.0f/640.0f;
@@ -525,15 +468,6 @@ pb->SetState(STATE_SHADOW);
         pw = m_interface->CreateWindows(pos, ddim, 12, EVENT_WINDOW5);
         GetResource(RES_TEXT, RT_TITLE_PERSO, name);
         pw->SetName(name);
-
-        /* TODO: #if _NEWLOOK
-           pos.x  =  95.0f/640.0f;
-           pos.y  =  66.0f/480.0f;
-           ddim.x = 443.0f/640.0f;
-           ddim.y =  42.0f/480.0f;
-           pg = pw->CreateGroup(pos, ddim, 26, EVENT_LABEL1);  // violet
-           pg->SetState(STATE_SHADOW);
-#endif*/
 
         pos.x  = 0.10f;
         pos.y  = 0.40f;
@@ -770,15 +704,13 @@ pb->SetState(STATE_SHADOW);
             m_phase == PHASE_MISSION ||
             m_phase == PHASE_FREE    ||
             m_phase == PHASE_TEEN    ||
-            m_phase == PHASE_USER    ||
-            m_phase == PHASE_PROTO   )
+            m_phase == PHASE_USER    )
     {
         if ( m_phase == PHASE_TRAINER )  m_index = 0;
         if ( m_phase == PHASE_DEFI    )  m_index = 1;
         if ( m_phase == PHASE_MISSION )  m_index = 2;
         if ( m_phase == PHASE_FREE    )  m_index = 3;
         if ( m_phase == PHASE_USER    )  m_index = 4;
-        if ( m_phase == PHASE_PROTO   )  m_index = 5;
         if ( m_phase == PHASE_TEEN    )  m_index = 6;
 
         if ( m_phase == PHASE_FREE )
@@ -794,7 +726,6 @@ pb->SetState(STATE_SHADOW);
         if ( m_phase == PHASE_FREE    )  strcpy(m_sceneName, "free");
         if ( m_phase == PHASE_TEEN    )  strcpy(m_sceneName, "teen");
         if ( m_phase == PHASE_USER    )  strcpy(m_sceneName, "user");
-        if ( m_phase == PHASE_PROTO   )  strcpy(m_sceneName, "proto");
 
         ReadGamerInfo();
 
@@ -810,32 +741,8 @@ pb->SetState(STATE_SHADOW);
         if ( m_phase == PHASE_FREE    )  res = RT_TITLE_FREE;
         if ( m_phase == PHASE_TEEN    )  res = RT_TITLE_TEEN;
         if ( m_phase == PHASE_USER    )  res = RT_TITLE_USER;
-        if ( m_phase == PHASE_PROTO   )  res = RT_TITLE_PROTO;
         GetResource(RES_TEXT, res, name);
         pw->SetName(name);
-
-        /* TODO: #if _NEWLOOK
-           pos.x  = 100.0f/640.0f;
-           pos.y  = 226.0f/480.0f;
-           ddim.x = 216.0f/640.0f;
-           ddim.y = 160.0f/480.0f;
-           pg = pw->CreateGroup(pos, ddim, 23, EVENT_LABEL1);  // blue
-           pg->SetState(STATE_SHADOW);
-           pos.x  = 322.0f/640.0f;
-           pg = pw->CreateGroup(pos, ddim, 24, EVENT_LABEL1);  // cyan
-           pg->SetState(STATE_SHADOW);
-
-           pos.x  = 100.0f/640.0f;
-           pos.y  = 122.0f/480.0f;
-           ddim.x = 438.0f/640.0f;
-           ddim.y =  98.0f/480.0f;
-           pg = pw->CreateGroup(pos, ddim, 25, EVENT_LABEL1);  // green
-           pg->SetState(STATE_SHADOW);
-           pos.y  =  66.0f/480.0f;
-           ddim.y =  42.0f/480.0f;
-           pg = pw->CreateGroup(pos, ddim, 26, EVENT_LABEL1);  // violet
-           pg->SetState(STATE_SHADOW);
-#endif */
 
         pos.x  = 0.10f;
         pos.y  = 0.40f;
@@ -859,7 +766,6 @@ pb->SetState(STATE_SHADOW);
         if ( m_phase == PHASE_FREE    )  res = RT_PLAY_CHAPf;
         if ( m_phase == PHASE_TEEN    )  res = RT_PLAY_CHAPte;
         if ( m_phase == PHASE_USER    )  res = RT_PLAY_CHAPu;
-        if ( m_phase == PHASE_PROTO   )  res = RT_PLAY_CHAPp;
         GetResource(RES_TEXT, res, name);
         pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL11, name);
         pl->SetTextAlign(Gfx::TEXT_ALIGN_LEFT);
@@ -883,7 +789,6 @@ pb->SetState(STATE_SHADOW);
         if ( m_phase == PHASE_FREE    )  res = RT_PLAY_LISTf;
         if ( m_phase == PHASE_TEEN    )  res = RT_PLAY_LISTk;
         if ( m_phase == PHASE_USER    )  res = RT_PLAY_LISTu;
-        if ( m_phase == PHASE_PROTO   )  res = RT_PLAY_LISTp;
         GetResource(RES_TEXT, res, name);
         pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL12, name);
         pl->SetTextAlign(Gfx::TEXT_ALIGN_LEFT);
@@ -1048,80 +953,6 @@ pb->SetState(STATE_SHADOW);
         pos.y  = 0.76f;
         ddim.y = 0.05f;
         pw->CreateGroup(pos, ddim, 3, EVENT_NULL);  // transparent -> gray
-
-        /* TODO: #if _NEWLOOK
-           if ( m_phase == PHASE_SETUPd  || // setup/display ?
-           m_phase == PHASE_SETUPds )
-           {
-           pos.x  = 100.0f/640.0f;
-           pos.y  = 130.0f/480.0f;
-           ddim.x = 216.0f/640.0f;
-           ddim.y = 212.0f/480.0f;
-           pg = pw->CreateGroup(pos, ddim, 23, EVENT_LABEL1);  // blue
-           pg->SetState(STATE_SHADOW);
-           pos.x  = 324.0f/640.0f;
-           pg = pw->CreateGroup(pos, ddim, 24, EVENT_LABEL1);  // cyan
-           pg->SetState(STATE_SHADOW);
-           }
-           if ( m_phase == PHASE_SETUPg  || // setup/graphic ?
-           m_phase == PHASE_SETUPgs )
-           {
-           pos.x  = 100.0f/640.0f;
-           pos.y  = 130.0f/480.0f;
-           ddim.x = 174.0f/640.0f;
-           ddim.y = 212.0f/480.0f;
-           pg = pw->CreateGroup(pos, ddim, 23, EVENT_LABEL1);  // blue
-           pg->SetState(STATE_SHADOW);
-           pos.x  = 282.0f/640.0f;
-           ddim.x = 258.0f/640.0f;
-           pg = pw->CreateGroup(pos, ddim, 24, EVENT_LABEL1);  // cyan
-           pg->SetState(STATE_SHADOW);
-           }
-           if ( m_phase == PHASE_SETUPp  || // setup/game ?
-           m_phase == PHASE_SETUPps )
-           {
-           pos.x  = 100.0f/640.0f;
-           pos.y  = 130.0f/480.0f;
-           ddim.x = 226.0f/640.0f;
-           ddim.y = 212.0f/480.0f;
-           pg = pw->CreateGroup(pos, ddim, 23, EVENT_LABEL1);  // blue
-           pg->SetState(STATE_SHADOW);
-           pos.x  = 334.0f/640.0f;
-           ddim.x = 206.0f/640.0f;
-           pg = pw->CreateGroup(pos, ddim, 24, EVENT_LABEL1);  // cyan
-           pg->SetState(STATE_SHADOW);
-           }
-           if ( m_phase == PHASE_SETUPc  || // setup/command ?
-           m_phase == PHASE_SETUPcs )
-           {
-           pos.x  = 100.0f/640.0f;
-           pos.y  = 125.0f/480.0f;
-           ddim.x = 440.0f/640.0f;
-           ddim.y = 222.0f/480.0f;
-           pg = pw->CreateGroup(pos, ddim, 23, EVENT_LABEL1);  // blue
-           pg->SetState(STATE_SHADOW);
-           }
-           if ( m_phase == PHASE_SETUPs  || // setup/sound ?
-           m_phase == PHASE_SETUPss )
-           {
-           pos.x  = 100.0f/640.0f;
-           pos.y  = 130.0f/480.0f;
-           ddim.x = 216.0f/640.0f;
-           ddim.y = 212.0f/480.0f;
-           pg = pw->CreateGroup(pos, ddim, 23, EVENT_LABEL1);  // blue
-           pg->SetState(STATE_SHADOW);
-           pos.x  = 324.0f/640.0f;
-           pg = pw->CreateGroup(pos, ddim, 24, EVENT_LABEL1);  // cyan
-           pg->SetState(STATE_SHADOW);
-           }
-
-           pos.x  = 100.0f/640.0f;
-           pos.y  =  66.0f/480.0f;
-           ddim.x = 440.0f/640.0f;
-           ddim.y =  42.0f/480.0f;
-           pg = pw->CreateGroup(pos, ddim, 26, EVENT_LABEL1);  // violet
-        pg->SetState(STATE_SHADOW);
-#endif */
 
         ddim.x = 0.78f/5-0.01f;
         ddim.y = 0.06f;
@@ -1353,10 +1184,7 @@ pb->SetState(STATE_SHADOW);
         ddim.y = dim.y*1;
         pos.x = ox+sx*10;
         pos.y = oy+sy*2;
-        /* TODO: #if _POLISH
-           ddim.x += 20.0f/640.0f;
-           pos.x -= 20.0f/640.0f*3.0f;
-#endif*/
+        
         pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_MIN);
         pb->SetState(STATE_SHADOW);
         pos.x += ddim.x;
@@ -1379,13 +1207,7 @@ pb->SetState(STATE_SHADOW);
         //?     pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_TOTO);
         //?     pc->SetState(STATE_SHADOW);
         //?     pos.y -= 0.048f;
-        /*TODO: #if _SCHOOL
-#if _EDU
-pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_SOLUCE4);
-pc->SetState(STATE_SHADOW);
-pos.y -= 0.048f;
-#endif
-#else*/
+        
         pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_MOVIES);
         pc->SetState(STATE_SHADOW);
         pos.y -= 0.048f;
@@ -1507,7 +1329,6 @@ pos.y -= 0.048f;
         pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL1, name);
         pl->SetTextAlign(Gfx::TEXT_ALIGN_LEFT);
 
-        // TODO: #if (_FULL | _NET) & _SOUNDTRACKS
         pos.x = ox+sx*3;
         pos.y = 0.40f;
         ddim.x = dim.x*4.0f;
@@ -1520,14 +1341,6 @@ pos.y -= 0.048f;
         GetResource(RES_EVENT, EVENT_INTERFACE_VOLMUSIC, name);
         pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL2, name);
         pl->SetTextAlign(Gfx::TEXT_ALIGN_LEFT);
-        // #endif
-
-        ddim.x = dim.x*6;
-        ddim.y = dim.y*0.5f;
-        pos.x = ox+sx*10;
-        pos.y = 0.55f;
-        pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_SOUND3D);
-        pc->SetState(STATE_SHADOW);
 
         ddim.x = dim.x*3;
         ddim.y = dim.y*1;
@@ -1564,15 +1377,6 @@ pos.y -= 0.048f;
         ddim.x = 0.50f;
         ddim.y = 0.50f;
         pw->CreateGroup(pos, ddim, 4, EVENT_INTERFACE_GLINTr);  // blue corner
-
-        /* TODO: #if _NEWLOOK
-           pos.x  = 100.0f/640.0f;
-           pos.y  =  66.0f/480.0f;
-           ddim.x = 438.0f/640.0f;
-           ddim.y =  42.0f/480.0f;
-           pg = pw->CreateGroup(pos, ddim, 26, EVENT_LABEL1);  // violet
-           pg->SetState(STATE_SHADOW);
-#endif */
 
         pos.x  = 290.0f/640.0f;
         ddim.x = 245.0f/640.0f;
@@ -1649,15 +1453,6 @@ pos.y -= 0.048f;
         ddim.y = 0.50f;
         pw->CreateGroup(pos, ddim, 4, EVENT_INTERFACE_GLINTr);  // blue corner
 
-        /* TODO: #if _NEWLOOK
-           pos.x  = 100.0f/640.0f;
-           pos.y  =  66.0f/480.0f;
-           ddim.x = 438.0f/640.0f;
-           ddim.y =  42.0f/480.0f;
-           pg = pw->CreateGroup(pos, ddim, 26, EVENT_LABEL1);  // violet
-           pg->SetState(STATE_SHADOW);
-#endif*/
-
         pos.x  = 290.0f/640.0f;
         ddim.x = 245.0f/640.0f;
 
@@ -1717,9 +1512,6 @@ pos.y -= 0.048f;
         pos.y  = 0.10f;
         ddim.x = 0.30f;
         ddim.y = 0.80f;
-        /*TODO: #if _TEEN
-          pw = m_interface->CreateWindows(pos, ddim, 12, EVENT_WINDOW5);
-#else*/
         pw = m_interface->CreateWindows(pos, ddim, 10, EVENT_WINDOW5);
 
         pw->SetName(" ");
@@ -1828,7 +1620,6 @@ pos.y -= 0.048f;
         ddim.y = 0.0f;
         pw = m_interface->CreateWindows(pos, ddim, -1, EVENT_WINDOW5);
 
-        // TODO: #if _FULL | _NET
         pos.x  =  80.0f/640.0f;
         pos.y  = 240.0f/480.0f;
         ddim.x = 490.0f/640.0f;
@@ -1841,54 +1632,6 @@ pos.y -= 0.048f;
         pe->SetFontSize(Gfx::FONT_SIZE_SMALL);
         pe->ReadText(std::string("help/") + m_app->GetLanguageChar() + std::string("/authors.txt"));
 
-        // #endif
-        /* TODO: #if _SCHOOL
-        #if _CEEBOTDEMO
-        pos.x  =  80.0f/640.0f;
-        pos.y  = 210.0f/480.0f;
-        ddim.x = 490.0f/640.0f;
-        ddim.y = 150.0f/480.0f;
-        #else
-        pos.x  =  80.0f/640.0f;
-        pos.y  = 200.0f/480.0f;
-        ddim.x = 490.0f/640.0f;
-        ddim.y = 150.0f/480.0f;
-        #endif
-        pe = pw->CreateEdit(pos, ddim, 0, EVENT_EDIT1);
-        pe->SetGenericMode(true);
-        pe->SetEditCap(false);
-        pe->SetHighlightCap(false);
-        pe->SetFontType(Gfx::FONT_COURIER);
-        pe->SetFontSize(Gfx::FONT_SIZE_SMALL);
-        pe->ReadText("help/authors.txt");*/
-
-        /* #if _DEMO
-        //?     pos.x  =  80.0f/640.0f;
-        //?     pos.y  = 240.0f/480.0f;
-        //?     ddim.x = 490.0f/640.0f;
-        //?     ddim.y = 110.0f/480.0f;
-        //?     pe = pw->CreateEdit(pos, ddim, 0, EVENT_EDIT1);
-        //?     pe->SetGenericMode(true);
-        //?     pe->SetEditCap(false);
-        //?     pe->SetHiliteCap(false);
-        //?     pe->SetFontType(Gfx::FONT_COURIER);
-        //?     pe->SetFontSize(Gfx::FONT_SIZE_SMALL);
-        //?     pe->ReadText("help/demo.txt");
-
-        //?     pos.x  =  80.0f/640.0f;
-        //?     pos.y  = 140.0f/480.0f;
-        //?     ddim.x = 490.0f/640.0f;
-        //?     ddim.y = 100.0f/480.0f;
-        //?     pe = pw->CreateEdit(pos, ddim, 0, EVENT_EDIT2);
-        //?     pe->SetGenericMode(true);
-        //?     pe->SetEditCap(false);
-        //?     pe->SetHiliteCap(false);
-        //?     pe->SetFontType(Gfx::FONT_COURIER);
-        //?     pe->SetFontSize(Gfx::FONT_SIZE_SMALL);
-        //?     pe->ReadText("help/authors.txt");
-#endif */
-
-        // TODO: #if !_DEMO
         pos.x  =  40.0f/640.0f;
         pos.y  =  83.0f/480.0f;
         ddim.x = 246.0f/640.0f;
@@ -1918,23 +1661,13 @@ pos.y -= 0.048f;
         pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL4, name);
         pl->SetFontType(Gfx::FONT_COURIER);
         pl->SetFontSize(Gfx::FONT_SIZE_SMALL);
-        // #endif
-
-        /* TODO: #if _DEMO
-           pos.x  = 481.0f/640.0f;
-           pos.y  =  51.0f/480.0f;
-           ddim.x =  30.0f/640.0f;
-           ddim.y =  30.0f/480.0f;
-           pb = pw->CreateButton(pos, ddim, 49, EVENT_INTERFACE_ABORT);
-           pb->SetState(STATE_SHADOW);
-#else */
+        
         pos.x  = 306.0f/640.0f;
         pos.y  =  17.0f/480.0f;
         ddim.x =  30.0f/640.0f;
         ddim.y =  30.0f/480.0f;
         pb = pw->CreateButton(pos, ddim, 49, EVENT_INTERFACE_ABORT);
         pb->SetState(STATE_SHADOW);
-        // #endif
 
         m_engine->SetBackground("generico.png",
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
@@ -1953,7 +1686,6 @@ pos.y -= 0.048f;
             m_phase == PHASE_FREE    ||
             m_phase == PHASE_TEEN    ||
             m_phase == PHASE_USER    ||
-            m_phase == PHASE_PROTO   ||
             m_phase == PHASE_SETUPd  ||
             m_phase == PHASE_SETUPg  ||
             m_phase == PHASE_SETUPp  ||
@@ -1962,26 +1694,12 @@ pos.y -= 0.048f;
             m_phase == PHASE_READ    ||
             m_phase == PHASE_LOADING )
     {
-        /*TODO: #if _SCHOOL
-#if _TEEN
-pos.x  =  50.0f/640.0f;
-pos.y  = 430.0f/480.0f;
-ddim.x = 200.0f/640.0f;
-ddim.y =  10.0f/480.0f;
-#else
-pos.x  = 450.0f/640.0f;
-pos.y  =   0.0f/480.0f;
-ddim.x = 170.0f/640.0f;
-ddim.y =   9.0f/480.0f;
-#endif
-#else */
         pos.x  = 540.0f/640.0f;
         pos.y  =   9.0f/480.0f;
         ddim.x =  90.0f/640.0f;
         ddim.y =  10.0f/480.0f;
-        //#endif
         //GetResource(RES_TEXT, RT_VERSION_ID, name);
-        pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL1, __DATE__);
+        pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL1, COLOBOT_VERSION_DISPLAY);
         pl->SetFontType(Gfx::FONT_COURIER);
         pl->SetFontSize(9.0f);
     }
@@ -2087,9 +1805,10 @@ bool CMainDialog::EventProcess(const Event &event)
         {
             m_shotDelay --;
             if ( m_shotDelay == 0 )
-            {
-                m_engine->WriteScreenShot(m_shotName, 320, 240);
-                //?             m_engine->WriteScreenShot(m_shotName, 160, 120);
+            {   
+                Math::IntPoint windowSize = m_engine->GetWindowSize();
+
+                m_engine->WriteScreenShot(m_shotName, windowSize.x, windowSize.y);
             }
         }
 
@@ -2235,10 +1954,6 @@ bool CMainDialog::EventProcess(const Event &event)
 
             case EVENT_INTERFACE_USER:
                 m_main->ChangePhase(PHASE_USER);
-                break;
-
-            case EVENT_INTERFACE_PROTO:
-                m_main->ChangePhase(PHASE_PROTO);
                 break;
 
             case EVENT_INTERFACE_SETUP:
@@ -2444,8 +2159,7 @@ bool CMainDialog::EventProcess(const Event &event)
             m_phase == PHASE_MISSION ||
             m_phase == PHASE_FREE    ||
             m_phase == PHASE_TEEN    ||
-            m_phase == PHASE_USER    ||
-            m_phase == PHASE_PROTO   )
+            m_phase == PHASE_USER    )
     {
         pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
         if ( pw == 0 )  return false;
@@ -2464,8 +2178,7 @@ bool CMainDialog::EventProcess(const Event &event)
             m_phase == PHASE_MISSION ||
             m_phase == PHASE_FREE    ||
             m_phase == PHASE_TEEN    ||
-            m_phase == PHASE_USER    ||
-            m_phase == PHASE_PROTO   )
+            m_phase == PHASE_USER    )
     {
         switch( event.type )
         {
@@ -2492,11 +2205,6 @@ bool CMainDialog::EventProcess(const Event &event)
                 break;
 
             case EVENT_INTERFACE_PLAY:
-                if ( m_phase == PHASE_PROTO && m_chap[m_index] == 0 && m_sel[m_index] == 0 )
-                {
-                    m_main->ChangePhase(PHASE_MODEL);
-                    break;
-                }
                 m_sceneRank = (m_chap[m_index]+1)*100+(m_sel[m_index]+1);
                 m_phaseTerm = m_phase;
                 m_main->ChangePhase(PHASE_LOADING);
@@ -2888,7 +2596,7 @@ bool CMainDialog::EventProcess(const Event &event)
                 break;
 
             case EVENT_INTERFACE_KDEF:
-                m_app->ResetKeyStates();
+                m_main->SetDefaultInputBindings();
                 UpdateKey();
                 break;
 
@@ -2911,12 +2619,6 @@ bool CMainDialog::EventProcess(const Event &event)
             case EVENT_INTERFACE_VOLSOUND:
             case EVENT_INTERFACE_VOLMUSIC:
                 ChangeSetupButtons();
-                break;
-
-            case EVENT_INTERFACE_SOUND3D:
-                m_sound->SetSound3D(!m_sound->GetSound3D());
-                ChangeSetupButtons();
-                UpdateSetupButtons();
                 break;
 
             case EVENT_INTERFACE_SILENT:
@@ -3119,8 +2821,7 @@ void CMainDialog::GlintMove()
             m_phase == PHASE_MISSION ||
             m_phase == PHASE_FREE    ||
             m_phase == PHASE_TEEN    ||
-            m_phase == PHASE_USER    ||
-            m_phase == PHASE_PROTO   )
+            m_phase == PHASE_USER    )
     {
         pg = static_cast<CGroup*>(pw->SearchControl(EVENT_INTERFACE_GLINTl));
         if ( pg != 0 )
@@ -3256,8 +2957,6 @@ Math::Vector SoundRand()
 
 void CMainDialog::FrameParticle(float rTime)
 {
-    /* TODO: #if _NEWLOOK
-#else */
     Math::Vector    pos, speed;
     Math::Point     dim;
     float       *pParti, *pGlint;
@@ -3348,7 +3047,6 @@ void CMainDialog::FrameParticle(float rTime)
             m_phase == PHASE_FREE    ||
             m_phase == PHASE_TEEN    ||
             m_phase == PHASE_USER    ||
-            m_phase == PHASE_PROTO   ||
             m_phase == PHASE_SETUPd  ||
             m_phase == PHASE_SETUPg  ||
             m_phase == PHASE_SETUPp  ||
@@ -3620,7 +3318,7 @@ void CMainDialog::BuildSceneName(std::string &filename, char *base, int rank)
     {
         rankStream << std::setfill('0') << std::setw(3) << rank;
         filename = base + rankStream.str() + ".txt";
-        filename = CApplication::GetInstance().GetDataFilePath(DIR_LEVEL, filename);
+        filename = CGameData::GetInstancePointer()->GetFilePath(DIR_LEVEL, filename);
     }
 }
 
@@ -4019,7 +3717,7 @@ void CMainDialog::UpdatePerso()
     CColor*         pc;
     CSlider*        ps;
     Gfx::Color   color;
-    char            name[100];
+    std::string  name;
     int             i;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
@@ -4366,8 +4064,8 @@ void CMainDialog::IOReadName()
     }
 
     time(&now);
-    TimeToAscii(now, line);
-    sprintf(name, "%s %d - %s", resume, m_sel[m_index]+1, line);
+    TimeToAsciiClean(now, line);
+    sprintf(name, "%s - %s %d", line, resume, m_sel[m_index]+1);
     pe->SetText(name);
     pe->SetCursor(strlen(name), 0);
     pe->SetFocus(true);
@@ -4383,7 +4081,7 @@ void CMainDialog::IOReadList()
     char        line[500];
     char        name[100];
     int         i;
-    fs::directory_iterator end_iter;
+    std::vector<fs::path> v;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
     if ( pw == 0 )  return;
@@ -4397,12 +4095,14 @@ void CMainDialog::IOReadList()
 
     if (fs::exists(saveDir) && fs::is_directory(saveDir))
     {
-        for( fs::directory_iterator dir_iter(saveDir) ; dir_iter != end_iter ; ++dir_iter)
+        copy(fs::directory_iterator(saveDir), fs::directory_iterator(), back_inserter(v));
+        std::sort(v.begin(), v.end());
+        for( std::vector<fs::path>::iterator iter = v.begin(); iter != v.end(); ++iter)
         {
-            if ( fs::is_directory(dir_iter->status()) && fs::exists(dir_iter->path() / "data.sav") )
+            if ( fs::is_directory(*iter) && fs::exists(*iter / "data.sav") )
             {
 
-                file = fopen((dir_iter->path() / "data.sav").make_preferred().string().c_str(), "r");
+                file = fopen((*iter / "data.sav").make_preferred().string().c_str(), "r");
                 if ( file == NULL )  continue;
 
                 while ( fgets(line, 500, file) != NULL )
@@ -4426,7 +4126,7 @@ void CMainDialog::IOReadList()
                 fclose(file);
 
                 pl->SetItemName(m_saveList.size(), name);
-                m_saveList.push_back(dir_iter->path());
+                m_saveList.push_back(*iter);
             }
         }
     }
@@ -4434,8 +4134,9 @@ void CMainDialog::IOReadList()
     // invalid index
     if ( m_phase == PHASE_WRITE  || m_phase == PHASE_WRITEs )
     {
-        GetResource(RES_TEXT, RT_IO_NEW, name);
-        pl->SetItemName(m_saveList.size(), name);
+        std::string nameStr;
+        GetResource(RES_TEXT, RT_IO_NEW, nameStr);
+        pl->SetItemName(m_saveList.size(), nameStr.c_str());
     }
 
     pl->SetSelect(m_saveList.size());
@@ -4694,8 +4395,7 @@ void CMainDialog::AllMissionUpdate()
          m_phase == PHASE_MISSION ||
          m_phase == PHASE_FREE    ||
          m_phase == PHASE_TEEN    ||
-         m_phase == PHASE_USER    ||
-         m_phase == PHASE_PROTO   )
+         m_phase == PHASE_USER    )
     {
         UpdateSceneChap(m_chap[m_index]);
         UpdateSceneList(m_chap[m_index], m_sel[m_index]);
@@ -4793,17 +4493,6 @@ void CMainDialog::UpdateSceneChap(int &chap)
     {
         for ( j=0 ; j<9 ; j++ )
         {
-/* TODO: #if _SCHOOL
-            if ( m_phase == PHASE_MISSION )  break;
-            if ( m_phase == PHASE_FREE    )  break;
-#if _CEEBOTDEMO
-            if ( m_phase == PHASE_TRAINER && j >= 2 )  break;
-#endif
-#endif
-#if _DEMO
-            if ( m_phase == PHASE_MISSION && j >= 4 )  break;
-            if ( m_phase == PHASE_TRAINER && j >= 1 )  break;
-#endif */
             BuildSceneName(fileName, m_sceneName, (j+1)*100);
             file = fopen(fileName.c_str(), "r");
             if ( file == NULL )  break;
@@ -4848,14 +4537,6 @@ void CMainDialog::UpdateSceneChap(int &chap)
                 break;
             }
 
-/* TODO: #if _TEEN
-            if ( m_phase == PHASE_TRAINER && !m_main->GetShowAll() && !bPassed )
-            {
-                j ++;
-                break;
-            }
-#endif*/
-
             if ( m_phase == PHASE_FREE && j == m_accessChap )
             {
                 j ++;
@@ -4899,21 +4580,6 @@ void CMainDialog::UpdateSceneList(int chap, int &sel)
 
     for ( j=0 ; j<99 ; j++ )
     {
-/* TODO: #if _SCHOOL
-        if ( m_phase == PHASE_MISSION )  break;
-        if ( m_phase == PHASE_FREE    )  break;
-#if _CEEBOTDEMO
-#if _TEEN
-        if ( m_phase == PHASE_TRAINER && j >= 5 )  break;
-#else
-        if ( m_phase == PHASE_TRAINER && j >= 3 )  break;
-#endif
-#endif
-#endif
-#if _DEMO
-        if ( m_phase == PHASE_MISSION && j >= 3 )  break;
-        if ( m_phase == PHASE_TRAINER && j >= 5 )  break;
-#endif */
         BuildSceneName(fileName, m_sceneName, (chap+1)*100+(j+1));
         file = fopen(fileName.c_str(), "r");
         if ( file == NULL )  break;
@@ -4957,14 +4623,6 @@ void CMainDialog::UpdateSceneList(int chap, int &sel)
             j ++;
             break;
         }
-
-/* TODO: #if _TEEN
-        if ( m_phase == PHASE_TRAINER && !m_main->GetShowAll() && !bPassed )
-        {
-            j ++;
-            break;
-        }
-#endif*/
     }
 
     BuildSceneName(fileName, m_sceneName, (chap+1)*100+(j+1));
@@ -4998,8 +4656,7 @@ void CMainDialog::ShowSoluceUpdate()
          m_phase == PHASE_MISSION ||
          m_phase == PHASE_FREE    ||
          m_phase == PHASE_TEEN    ||
-         m_phase == PHASE_USER    ||
-         m_phase == PHASE_PROTO   )
+         m_phase == PHASE_USER    )
     {
         m_bSceneSoluce = false;
 
@@ -5456,13 +5113,6 @@ void CMainDialog::UpdateSetupButtons()
         value = static_cast<float>(m_sound->GetMusicVolume());
         ps->SetVisibleValue(value);
     }
-
-    pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_SOUND3D));
-    if ( pc != 0 )
-    {
-        pc->SetState(STATE_CHECK, m_sound->GetSound3D());
-        pc->SetState(STATE_ENABLE, m_sound->GetSound3DCap());
-    }
 }
 
 // Updates the engine function of the buttons after the setup phase.
@@ -5564,7 +5214,6 @@ void CMainDialog::SetupMemorize()
     GetProfile().SetLocalProfileInt("Setup", "TotoMode", m_engine->GetTotoMode());
     GetProfile().SetLocalProfileInt("Setup", "AudioVolume", m_sound->GetAudioVolume());
     GetProfile().SetLocalProfileInt("Setup", "MusicVolume", m_sound->GetMusicVolume());
-    GetProfile().SetLocalProfileInt("Setup", "Sound3D", m_sound->GetSound3D());
     GetProfile().SetLocalProfileInt("Setup", "EditIndentMode", m_engine->GetEditIndentMode());
     GetProfile().SetLocalProfileInt("Setup", "EditIndentValue", m_engine->GetEditIndentValue());
 
@@ -5601,21 +5250,7 @@ void CMainDialog::SetupMemorize()
 
     GetProfile().SetLocalProfileString("Setup", "KeyMap", key.str());
 
-#if _NET
-    if ( m_accessEnable )
-    {
-        iValue = m_accessMission;
-        SetLocalProfileInt("Setup", "AccessMission", iValue);
-
-        iValue = m_accessUser;
-        SetLocalProfileInt("Setup", "AccessUser", iValue);
-    }
-#endif
-
     GetProfile().SetLocalProfileInt("Setup", "DeleteGamer", m_bDeleteGamer);
-
-    // TODO: write graphic engine profile
-    //m_engine->WriteProfile();
 }
 
 // Remember all the settings.
@@ -5802,11 +5437,6 @@ void CMainDialog::SetupRecall()
         m_sound->SetMusicVolume(iValue);
     }
 
-    if ( GetProfile().GetLocalProfileInt("Setup", "Sound3D", iValue) )
-    {
-        m_sound->SetSound3D(iValue == 1);
-    }
-
     if ( GetProfile().GetLocalProfileInt("Setup", "EditIndentMode", iValue) )
     {
         m_engine->SetEditIndentMode(iValue);
@@ -5829,21 +5459,6 @@ void CMainDialog::SetupRecall()
             m_main->SetInputBinding(static_cast<InputSlot>(i), b);
          }
     }
-
-#if _NET
-    if ( m_accessEnable )
-    {
-        if ( GetProfile().GetLocalProfileInt("Setup", "AccessMission", iValue) )
-        {
-            m_accessMission = iValue;
-        }
-
-        if ( GetProfile().GetLocalProfileInt("Setup", "AccessUser", iValue) )
-        {
-            m_accessUser = iValue;
-        }
-    }
-#endif
 
     if ( GetProfile().GetLocalProfileInt("Setup", "DeleteGamer", iValue) )
     {
@@ -6026,7 +5641,7 @@ void CMainDialog::StartAbort()
     CWindow*    pw;
     CButton*    pb;
     Math::Point     pos, dim;
-    char        name[100];
+    std::string name;
 
     StartDialog(Math::Point(0.3f, 0.8f), true, false, false);
     m_bDialogDelete = false;
@@ -6047,10 +5662,6 @@ void CMainDialog::StartAbort()
 
     pos.x = 0.40f;
     dim.x = 0.20f;
-/* TODO: #if _POLISH
-    pos.x -=  7.0f/640.0f;
-    dim.x += 14.0f/640.0f;
-#endif*/
     dim.y = 32.0f/480.0f;
 
     pos.y = 0.74f;
@@ -6105,7 +5716,7 @@ void CMainDialog::StartDeleteObject()
     CWindow*    pw;
     CButton*    pb;
     Math::Point     pos, dim;
-    char        name[100];
+    std::string name;
 
     StartDialog(Math::Point(0.7f, 0.3f), false, true, true);
     m_bDialogDelete = true;
@@ -6139,21 +5750,22 @@ void CMainDialog::StartDeleteGame(char *gamer)
     CWindow*    pw;
     CButton*    pb;
     Math::Point     pos, dim;
-    char        name[100];
-    char        text[100];
 
     StartDialog(Math::Point(0.7f, 0.3f), false, true, true);
     m_bDialogDelete = true;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW9));
-    if ( pw == 0 )  return;
+    if (pw == nullptr)
+        return;
+
+    std::string name;
 
     pos.x = 0.00f;
     pos.y = 0.50f;
     dim.x = 1.00f;
     dim.y = 0.05f;
     GetResource(RES_TEXT, RT_DIALOG_DELGAME, name);
-    sprintf(text, name, gamer);
+    std::string text = StrUtils::Format(name.c_str(), gamer);
     pw->CreateLabel(pos, dim, -1, EVENT_DIALOG_LABEL, text);
 
     pb = static_cast<CButton*>(pw->SearchControl(EVENT_DIALOG_OK));
@@ -6175,12 +5787,14 @@ void CMainDialog::StartQuit()
     CWindow*    pw;
     CButton*    pb;
     Math::Point     pos, dim;
-    char        name[100];
 
     StartDialog(Math::Point(0.6f, 0.3f), false, true, true);
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW9));
-    if ( pw == 0 )  return;
+    if (pw == nullptr)
+        return;
+
+    std::string name;
 
     pos.x = 0.00f;
     pos.y = 0.50f;
@@ -6208,7 +5822,6 @@ void CMainDialog::StartDialog(Math::Point dim, bool bFire, bool bOK, bool bCance
     CWindow*    pw;
     CButton*    pb;
     Math::Point     pos, ddim;
-    char        name[100];
 
     StartSuspend();
 
@@ -6246,6 +5859,8 @@ void CMainDialog::StartDialog(Math::Point dim, bool bFire, bool bOK, bool bCance
     }
 
     m_bDialogFire = bFire;
+
+    std::string name;
 
     pos.x = (1.0f-dim.x)/2.0f;
     pos.y = (1.0f-dim.y)/2.0f;
@@ -6442,8 +6057,8 @@ void CMainDialog::StartSuspend()
 {
     m_sound->MuteAll(true);
     m_main->ClearInterface();
-    m_bInitPause = m_engine->GetPause();
-    m_engine->SetPause(true);
+    m_bInitPause = m_pause->GetPauseType();
+    m_pause->SetPause(PAUSE_DIALOG);
     m_engine->SetOverFront(false);  // over flat behind
     m_main->CreateShortcuts();
     m_main->StartSuspend();
@@ -6457,7 +6072,7 @@ void CMainDialog::StopSuspend()
 {
     m_sound->MuteAll(false);
     m_main->ClearInterface();
-    if ( !m_bInitPause )  m_engine->SetPause(false);
+    m_pause->SetPause(m_bInitPause);
     m_engine->SetOverFront(true);  // over flat front
     m_main->CreateShortcuts();
     m_main->StopSuspend();

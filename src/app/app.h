@@ -42,6 +42,7 @@ class CInstanceManager;
 class CEventQueue;
 class CRobotMain;
 class CSoundInterface;
+class CGameData;
 
 namespace Gfx {
 class CModelManager;
@@ -328,18 +329,6 @@ public:
     static bool ParseDebugModes(const std::string& str, int& debugModes);
     //@}
 
-    //! Returns the full path to data directory
-    std::string GetDataDirPath() const;
-
-    //! Returns the full path to a standard dir in data directory
-    std::string GetDataSubdirPath(DataDir stdDir) const;
-
-    //! Returns the full path to a file in data directory given standard dir and subpath
-    std::string GetDataFilePath(DataDir stdDir, const std::string &subpath) const;
-
-    //! Returns the full path to a file in texture pack directory
-    std::string GetTexPackFilePath(const std::string& textureName) const;
-
     //! Management of language
     //@{
     Language    GetLanguage() const;
@@ -360,8 +349,8 @@ public:
     void        StopPerformanceCounter(PerformanceCounter counter);
     float       GetPerformanceCounterData(PerformanceCounter counter) const;
     //@}
-
-    bool        GetProtoMode() const;
+    
+    bool        GetSceneTestMode();
 
 protected:
     //! Creates the window's SDL_Surface
@@ -413,6 +402,8 @@ protected:
     CRobotMain*             m_robotMain;
     //! Profile (INI) reader/writer
     CProfile*               m_profile;
+    //! Game data
+    CGameData*              m_gameData;
 
     //! Code to return at exit
     int             m_exitCode;
@@ -485,17 +476,15 @@ protected:
 
     //! Path to directory with language files
     std::string     m_langPath;
-
-    //! Path to directory with user texture pack
-    std::string     m_texPackPath;
-
+    
     //@{
     //! Scene to run on startup
     std::string     m_runSceneName;
     int             m_runSceneRank;
     //@}
-
-    const char*     m_standardDataDirs[DIR_MAX];
+    
+    //! Scene test mode
+    bool            m_sceneTest;
 
     //! Application language
     Language        m_language;

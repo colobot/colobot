@@ -36,56 +36,41 @@ CSoundInterface::~CSoundInterface()
 {
 }
 
-bool CSoundInterface::Create(bool b3D)
+bool CSoundInterface::Create()
 {
     return true;
 }
 
-void CSoundInterface::CacheAll(std::string path)
+void CSoundInterface::CacheAll()
 {
     for ( int i = 1; i < SOUND_MAX; i++ )
     {
         std::stringstream filename;
-        filename << path << "/sound" << std::setfill('0') << std::setw(3) << i << ".wav";
+        filename << "sound" << std::setfill('0') << std::setw(3) << i << ".wav";
         if ( !Cache(static_cast<Sound>(i), filename.str()) )
             GetLogger()->Warn("Unable to load audio: %s\n", filename.str().c_str());
     }
 }
 
-void CSoundInterface::AddMusicFiles(std::string path)
+void CSoundInterface::AddMusicFiles()
 {
-    m_soundPath = path;
     CacheMusic("Intro1.ogg");
     CacheMusic("Intro2.ogg");
     CacheMusic("music010.ogg");
     CacheMusic("music011.ogg");
 }
 
-bool CSoundInterface::Cache(Sound bSound, std::string bFile)
+bool CSoundInterface::Cache(Sound bSound, const std::string &bFile)
 {
     return true;
 }
 
-bool CSoundInterface::CacheMusic(std::string bFile)
+bool CSoundInterface::CacheMusic(const std::string &bFile)
 {
     return true;
 }
 
 bool CSoundInterface::GetEnable()
-{
-    return true;
-}
-
-void CSoundInterface::SetSound3D(bool bMode)
-{
-}
-
-bool CSoundInterface::GetSound3D()
-{
-    return true;
-}
-
-bool CSoundInterface::GetSound3DCap()
 {
     return true;
 }
@@ -108,7 +93,7 @@ int CSoundInterface::GetMusicVolume()
     return 0;
 }
 
-void CSoundInterface::SetListener(Math::Vector eye, Math::Vector lookat)
+void CSoundInterface::SetListener(const Math::Vector &eye, const Math::Vector &lookat)
 {
 }
 
@@ -121,7 +106,7 @@ int CSoundInterface::Play(Sound sound, float amplitude, float frequency, bool bL
     return 0;
 }
 
-int CSoundInterface::Play(Sound sound, Math::Vector pos, float amplitude, float frequency, bool bLoop)
+int CSoundInterface::Play(Sound sound, const Math::Vector &pos, float amplitude, float frequency, bool bLoop)
 {
     return 0;
 }
@@ -136,7 +121,7 @@ bool CSoundInterface::AddEnvelope(int channel, float amplitude, float frequency,
     return true;
 }
 
-bool CSoundInterface::Position(int channel, Math::Vector pos)
+bool CSoundInterface::Position(int channel, const Math::Vector &pos)
 {
     return true;
 }
@@ -161,12 +146,12 @@ bool CSoundInterface::MuteAll(bool bMute)
     return true;
 }
 
-bool CSoundInterface::PlayMusic(int rank, bool bRepeat)
+bool CSoundInterface::PlayMusic(int rank, bool bRepeat, float fadeTime)
 {
     return true;
 }
 
-bool CSoundInterface::PlayMusic(std::string filename, bool bRepeat)
+bool CSoundInterface::PlayMusic(const std::string &filename, bool bRepeat, float fadeTime)
 {
     return true;
 }
@@ -180,7 +165,7 @@ void CSoundInterface::SuspendMusic()
 {
 }
 
-void CSoundInterface::StopMusic()
+void CSoundInterface::StopMusic(float fadeTime)
 {
 }
 
@@ -189,3 +174,11 @@ bool CSoundInterface::IsPlayingMusic()
     return true;
 }
 
+bool CSoundInterface::PlayPauseMusic(const std::string &filename, bool repeat)
+{
+    return true;
+}
+
+void CSoundInterface::StopPauseMusic()
+{
+}

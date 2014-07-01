@@ -49,9 +49,6 @@ msgstr "Миссии на этой планете:"
 msgid " Planets:"
 msgstr " Планеты:"
 
-msgid " Prototypes on this planet:"
-msgstr "Прототипы на этой планете:"
-
 msgid " Resolution:"
 msgstr " Разрешение:"
 
@@ -318,6 +315,9 @@ msgstr "Кнопка %1"
 msgid "COLOBOT"
 msgstr "КОЛОБОТ"
 
+msgid "COLOBOT: Gold Edition"
+msgstr ""
+
 msgid "Calling an unknown function"
 msgstr "Вызов неизвестной функции"
 
@@ -365,6 +365,9 @@ msgstr "Задания\\Практика программирования"
 
 msgid "Change camera\\Switches between onboard camera and following camera"
 msgstr "Изменить вид\\Переключение между бортовой камерой и следящей камерой"
+
+msgid "Change player\\Change player"
+msgstr "Новый игрок\\Выберите имя для игрока"
 
 msgid "Checkpoint"
 msgstr "Контрольная точка"
@@ -849,9 +852,6 @@ msgstr "Новый ..."
 msgid "New bot available"
 msgstr "Доступен новый бот"
 
-msgid "New player\\Choose player's name"
-msgstr "Новый игрок\\Выберите имя для игрока"
-
 msgid "Next"
 msgstr "Следующий"
 
@@ -1118,12 +1118,6 @@ msgstr ""
 
 msgid "Programs dispatched by Houston"
 msgstr "Программы переданные с Хьюстона"
-
-msgid "Proto\\Prototypes under development"
-msgstr "Прототипы\\Прототипы в стадии разработки"
-
-msgid "Prototypes"
-msgstr "Прототипы"
 
 msgid "Public required"
 msgstr "Требуется общественное"

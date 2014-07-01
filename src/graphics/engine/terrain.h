@@ -212,7 +212,7 @@ struct FlyingLimit
  * where relief data is specifically adjusted to level space to allow
  * construction of buildings.
  *
- * Undergound resources can be supplied by loading them from image like relief data.
+ * Underground resources can be supplied by loading them from image like relief data.
  *
  * Terrain also specifies flying limits for player: one global level and possible
  * additional spherical restrictions.
@@ -243,6 +243,8 @@ public:
     void        FlushRelief();
     //! Load relief from image
     bool        LoadRelief(const std::string& fileName, float scaleRelief, bool adjustBorder);
+    //! Load ramdomized relief
+    bool        RandomizeRelief();
 
     //! Load resources from image
     bool        LoadResources(const std::string& fileName);

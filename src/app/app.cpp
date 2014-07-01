@@ -19,6 +19,7 @@
 
 #include "app/app.h"
 
+#include "app/gamedata.h"
 #include "app/system.h"
 
 #include "common/logger.h"
@@ -100,6 +101,7 @@ CApplication::CApplication()
     m_objMan        = new CObjectManager();
     m_eventQueue    = new CEventQueue();
     m_profile       = new CProfile();
+    m_gameData      = new CGameData();
 
     m_engine    = nullptr;
     m_device    = nullptr;
@@ -112,7 +114,7 @@ CApplication::CApplication()
     m_debugModes = 0;
     m_customDataPath = false;
 
-    m_windowTitle = "COLOBOT";
+    m_windowTitle = "COLOBOT GOLD";
 
     m_simulationSuspended = false;
 
@@ -149,29 +151,17 @@ CApplication::CApplication()
 
     m_dataPath = GetSystemUtils()->GetDataPath();
     m_langPath = GetSystemUtils()->GetLangPath();
-    m_texPackPath = "";
 
     m_runSceneName = "";
     m_runSceneRank = 0;
+    
+    m_sceneTest = false;
 
     m_language = LANGUAGE_ENV;
 
     m_lowCPU = true;
 
     m_protoMode = false;
-
-    for (int i = 0; i < DIR_MAX; ++i)
-        m_standardDataDirs[i] = nullptr;
-
-    m_standardDataDirs[DIR_AI]       = "ai";
-    m_standardDataDirs[DIR_FONT]     = "fonts";
-    m_standardDataDirs[DIR_HELP]     = "help";
-    m_standardDataDirs[DIR_ICON]     = "icons";
-    m_standardDataDirs[DIR_LEVEL]    = "levels";
-    m_standardDataDirs[DIR_MODEL]    = "models";
-    m_standardDataDirs[DIR_MUSIC]    = "music";
-    m_standardDataDirs[DIR_SOUND]    = "sounds";
-    m_standardDataDirs[DIR_TEXTURE]  = "textures";
 }
 
 CApplication::~CApplication()
@@ -190,6 +180,9 @@ CApplication::~CApplication()
 
     delete m_iMan;
     m_iMan = nullptr;
+    
+    delete m_gameData;
+    m_gameData = nullptr;
 
     GetSystemUtils()->DestroyTimeStamp(m_baseTimeStamp);
     GetSystemUtils()->DestroyTimeStamp(m_curTimeStamp);
@@ -210,12 +203,6 @@ CEventQueue* CApplication::GetEventQueue()
 CSoundInterface* CApplication::GetSound()
 {
     return m_sound;
-
-    for (int i = 0; i < PCNT_MAX; ++i)
-    {
-        GetSystemUtils()->DestroyTimeStamp(m_performanceCounters[i][0]);
-        GetSystemUtils()->DestroyTimeStamp(m_performanceCounters[i][1]);
-    }
 }
 
 ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
@@ -225,13 +212,13 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
         OPT_HELP = 1,
         OPT_DEBUG,
         OPT_RUNSCENE,
+        OPT_SCENETEST,
         OPT_LOGLEVEL,
         OPT_LANGUAGE,
         OPT_DATADIR,
+        OPT_MOD,
         OPT_LANGDIR,
-        OPT_TEXPACK,
-        OPT_VBO,
-        OPT_PROTO
+        OPT_VBO
     };
 
     option options[] =
@@ -239,13 +226,13 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
         { "help", no_argument, nullptr, OPT_HELP },
         { "debug", required_argument, nullptr, OPT_DEBUG },
         { "runscene", required_argument, nullptr, OPT_RUNSCENE },
+        { "scenetest", no_argument, nullptr, OPT_SCENETEST },
         { "loglevel", required_argument, nullptr, OPT_LOGLEVEL },
         { "language", required_argument, nullptr, OPT_LANGUAGE },
         { "datadir", required_argument, nullptr, OPT_DATADIR },
+        { "mod", required_argument, nullptr, OPT_MOD },
         { "langdir", required_argument, nullptr, OPT_LANGDIR },
-        { "texpack", required_argument, nullptr, OPT_TEXPACK },
         { "vbo", required_argument, nullptr, OPT_VBO },
-        { "proto", no_argument, nullptr, OPT_PROTO },
         { nullptr, 0, nullptr, 0}
     };
 
@@ -279,13 +266,13 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
                 GetLogger()->Message("  -help               this help\n");
                 GetLogger()->Message("  -debug modes        enable debug modes (more info printed in logs; see code for reference of modes)\n");
                 GetLogger()->Message("  -runscene sceneNNN  run given scene on start\n");
+                GetLogger()->Message("  -scenetest          win every mission right after it's loaded\n");
                 GetLogger()->Message("  -loglevel level     set log level to level (one of: trace, debug, info, warn, error, none)\n");
                 GetLogger()->Message("  -language lang      set language (one of: en, de, fr, pl, ru)\n");
                 GetLogger()->Message("  -datadir path       set custom data directory path\n");
+                GetLogger()->Message("  -mod path           run mod\n");
                 GetLogger()->Message("  -langdir path       set custom language directory path\n");
-                GetLogger()->Message("  -texpack path       set path to custom texture pack\n");
                 GetLogger()->Message("  -vbo mode           set OpenGL VBO mode (one of: auto, enable, disable)\n");
-                GetLogger()->Message("  -proto              show prototype levels\n");
                 return PARSE_ARGS_HELP;
             }
             case OPT_DEBUG:
@@ -314,6 +301,11 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
                 m_runSceneName = file.substr(0, file.size()-3);
                 m_runSceneRank = StrUtils::FromString<int>(file.substr(file.size()-3, 3));
                 GetLogger()->Info("Running scene '%s%d' on start\n", m_runSceneName.c_str(), m_runSceneRank);
+                break;
+            }
+            case OPT_SCENETEST:
+            {
+                m_sceneTest = true;
                 break;
             }
             case OPT_LOGLEVEL:
@@ -346,19 +338,19 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
             {
                 m_dataPath = optarg;
                 m_customDataPath = true;
-                GetLogger()->Info("Using custom datadir or running mod: '%s'\n", m_dataPath.c_str());
+                GetLogger()->Info("Using datadir: '%s'\n", optarg);
+                break;
+            }
+            case OPT_MOD:
+            {
+                m_gameData->AddMod(std::string(optarg));
+                GetLogger()->Info("Running mod from path: '%s'\n", optarg);
                 break;
             }
             case OPT_LANGDIR:
             {
                 m_langPath = optarg;
-                GetLogger()->Info("Using custom language dir: '%s'\n", m_langPath.c_str());
-                break;
-            }
-            case OPT_TEXPACK:
-            {
-                m_texPackPath = optarg;
-                GetLogger()->Info("Using texturepack: '%s'\n", m_texPackPath.c_str());
+                GetLogger()->Info("Using language dir: '%s'\n", m_langPath.c_str());
                 break;
             }
             case OPT_VBO:
@@ -377,11 +369,6 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
                     return PARSE_ARGS_FAIL;
                 }
 
-                break;
-            }
-            case OPT_PROTO:
-            {
-                m_protoMode = true;
                 break;
             }
             default:
@@ -420,11 +407,19 @@ bool CApplication::Create()
         m_exitCode = 1;
         return false;
     }
+    
+    m_gameData->SetDataDir(std::string(m_dataPath));
+    m_gameData->Init();
 
-#if !defined(PLATFORM_MACOSX)
-    // On Mac OSX, the bundle can potentially change place, it doesn't make sense to cache it to the configuration file
-    GetProfile().SetLocalProfileString("Resources", "Data", m_dataPath);
-#endif
+    if (GetProfile().GetLocalProfileString("Language", "Lang", path)) {
+        Language language;
+        if (ParseLanguage(path, language)) {
+            m_language = language;
+            GetLogger()->Info("Setting language '%s' from ini file\n", path.c_str());
+        } else {
+            GetLogger()->Error("Invalid language '%s' in ini file\n", path.c_str());
+        }
+    }
 
     SetLanguage(m_language);
 
@@ -436,36 +431,9 @@ bool CApplication::Create()
     m_sound = new CSoundInterface();
     #endif
 
-    m_sound->Create(true);
-
-#if !defined(PLATFORM_MACOSX)
-    // On Mac OSX, the bundle can potentially change place, it doesn't make sense to cache it to the configuration file
-
-    // Cache sound files
-    if (defaultValues)
-    {
-        GetProfile().SetLocalProfileString("Resources", "Sound", GetDataSubdirPath(DIR_SOUND));
-        GetProfile().SetLocalProfileString("Resources", "Music", GetDataSubdirPath(DIR_MUSIC));
-    }
-#endif
-
-    if (!m_customDataPath && GetProfile().GetLocalProfileString("Resources", "Sound", path))
-    {
-        m_sound->CacheAll(path);
-    }
-    else
-    {
-        m_sound->CacheAll(GetDataSubdirPath(DIR_SOUND));
-    }
-
-    if (!m_customDataPath && GetProfile().GetLocalProfileString("Resources", "Music", path))
-    {
-        m_sound->AddMusicFiles(path);
-    }
-    else
-    {
-        m_sound->AddMusicFiles(GetDataSubdirPath(DIR_MUSIC));
-    }
+    m_sound->Create();
+    m_sound->CacheAll();
+    m_sound->AddMusicFiles();
 
     GetLogger()->Info("CApplication created successfully\n");
 
@@ -962,15 +930,15 @@ int CApplication::Run()
             {
                 LogEvent(event);
 
-                StartPerformanceCounter(PCNT_UPDATE_ENGINE);
-                m_engine->FrameUpdate();
-                StopPerformanceCounter(PCNT_UPDATE_ENGINE);
-
                 m_sound->FrameMove(m_relTime);
 
                 StartPerformanceCounter(PCNT_UPDATE_GAME);
                 m_robotMain->ProcessEvent(event);
                 StopPerformanceCounter(PCNT_UPDATE_GAME);
+
+                StartPerformanceCounter(PCNT_UPDATE_ENGINE);
+                m_engine->FrameUpdate();
+                StopPerformanceCounter(PCNT_UPDATE_ENGINE);
             }
 
             StopPerformanceCounter(PCNT_UPDATE_ALL);
@@ -1608,59 +1576,6 @@ bool CApplication::GetJoystickEnabled() const
     return m_joystickEnabled;
 }
 
-std::string CApplication::GetDataDirPath() const
-{
-    return m_dataPath;
-}
-
-std::string CApplication::GetDataSubdirPath(DataDir stdDir) const
-{
-    int index = static_cast<int>(stdDir);
-    assert(index >= 0 && index < DIR_MAX);
-    std::stringstream str;
-    str << m_dataPath;
-    str << "/";
-    str << m_standardDataDirs[index];
-    return str.str();
-}
-
-std::string CApplication::GetDataFilePath(DataDir stdDir, const std::string& subpath) const
-{
-    int index = static_cast<int>(stdDir);
-    assert(index >= 0 && index < DIR_MAX);
-    std::stringstream str;
-    str << m_dataPath;
-    str << "/";
-    str << m_standardDataDirs[index];
-    if (stdDir == DIR_HELP)
-    {
-        str << "/";
-        str << GetLanguageChar();
-    }
-    str << "/";
-    str << subpath;
-    return str.str();
-}
-
-std::string CApplication::GetTexPackFilePath(const std::string& textureName) const
-{
-    std::stringstream str;
-
-    if (! m_texPackPath.empty())
-    {
-        str << m_texPackPath;
-        str << "/";
-        str << textureName;
-        if (! boost::filesystem::exists(str.str()))
-        {
-            GetLogger()->Trace("Texture '%s' not in texpack\n", textureName.c_str());
-            str.str("");
-        }
-    }
-
-    return str.str();
-}
-
 Language CApplication::GetLanguage() const
 {
     return m_language;
@@ -1868,8 +1783,7 @@ void CApplication::UpdatePerformanceCountersData()
     }
 }
 
-bool CApplication::GetProtoMode() const
+bool CApplication::GetSceneTestMode()
 {
-    return m_protoMode;
+    return m_sceneTest;
 }
-

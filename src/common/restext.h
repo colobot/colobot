@@ -66,7 +66,6 @@ enum ResTextType
     RT_TITLE_DEFI           = 43,
     RT_TITLE_MISSION        = 44,
     RT_TITLE_FREE           = 45,
-    RT_TITLE_PROTO          = 46,
     RT_TITLE_SETUP          = 47,
     RT_TITLE_NAME           = 48,
     RT_TITLE_PERSO          = 49,
@@ -79,12 +78,10 @@ enum ResTextType
     RT_PLAY_CHAPd           = 61,
     RT_PLAY_CHAPm           = 62,
     RT_PLAY_CHAPf           = 63,
-    RT_PLAY_CHAPp           = 64,
     RT_PLAY_LISTt           = 65,
     RT_PLAY_LISTd           = 66,
     RT_PLAY_LISTm           = 67,
     RT_PLAY_LISTf           = 68,
-    RT_PLAY_LISTp           = 69,
     RT_PLAY_RESUME          = 70,
     RT_PLAY_CHAPu           = 71,
     RT_PLAY_LISTu           = 72,
@@ -157,5 +154,5 @@ void     InitializeRestext();
 
 void     SetGlobalGamerName(std::string name);
 bool     SearchKey(const char *cmd, InputSlot& slot);
-bool     GetResource(ResType type, int num, char* text);
+bool     GetResource(ResType type, int num, std::string& text);
 

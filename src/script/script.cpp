@@ -18,10 +18,12 @@
 #include "script/script.h"
 
 #include "app/app.h"
+#include "app/gamedata.h"
 
 #include "common/global.h"
 #include "common/iman.h"
 #include "common/restext.h"
+#include "common/stringutils.h"
 
 #include "graphics/engine/terrain.h"
 #include "graphics/engine/water.h"
@@ -37,6 +39,7 @@
 
 #include "object/auto/auto.h"
 #include "object/auto/autofactory.h"
+#include "object/auto/autobase.h"
 
 #include "physics/physics.h"
 
@@ -678,10 +681,23 @@ bool CScript::rFactory(CBotVar* thisclass, CBotVar* var, CBotVar* result, int& e
     classVars = classVars->GetNext();  // "id"
     int rank = classVars->GetValInt();
     CObject* factory = CObjectManager::GetInstancePointer()->SearchInstance(rank);
-    CAutoFactory* automat = static_cast<CAutoFactory*>(factory->GetAuto());
+    if (factory == nullptr) {
+        exception = ERR_GENERIC;
+        result->SetValInt(ERR_GENERIC);
+        CLogger::GetInstancePointer()->Error("in object.factory() - factory is nullptr");
+        return false;
+    }
 
     if ( thisType == OBJECT_FACTORY )
     {
+        CAutoFactory* automat = static_cast<CAutoFactory*>(factory->GetAuto());
+        if(automat == nullptr) {
+            exception = ERR_GENERIC;
+            result->SetValInt(ERR_GENERIC);
+            CLogger::GetInstancePointer()->Error("in object.factory() - automat is nullptr");
+            return false;
+        }
+        
         bool bEnable = false;
 
         if ( type == OBJECT_MOBILEwa )
@@ -884,6 +900,54 @@ bool CScript::rResearch(CBotVar* thisclass, CBotVar* var, CBotVar* result, int& 
     }
     else
         err = ERR_WRONG_OBJ;
+
+    if ( err != ERR_OK )
+    {
+        result->SetValInt(err);  // return error
+//TODO:        if ( script->m_errMode == ERM_STOP )
+        if( true )
+        {
+            exception = err;
+            return false;
+        }
+        return true;
+    }
+
+    return true;
+}
+
+// Instruction "object.takeoff()"
+
+bool CScript::rTakeOff(CBotVar* thisclass, CBotVar* var, CBotVar* result, int& exception)
+{
+    Error       err;
+
+    exception = 0;
+
+    CBotVar* classVars = thisclass->GetItemList();  // "category"
+    ObjectType thisType = static_cast<ObjectType>(classVars->GetValInt());
+    classVars = classVars->GetNext();  // "position"
+    classVars = classVars->GetNext();  // "orientation"
+    classVars = classVars->GetNext();  // "pitch"
+    classVars = classVars->GetNext();  // "roll"
+    classVars = classVars->GetNext();  // "energyLevel"
+    classVars = classVars->GetNext();  // "shieldLevel"
+    classVars = classVars->GetNext();  // "temperature"
+    classVars = classVars->GetNext();  // "altitude"
+    classVars = classVars->GetNext();  // "lifeTime"
+    classVars = classVars->GetNext();  // "material"
+    classVars = classVars->GetNext();  // "energyCell"
+    classVars = classVars->GetNext();  // "load"
+    classVars = classVars->GetNext();  // "id"
+    int rank = classVars->GetValInt();
+    CObject* center = CObjectManager::GetInstancePointer()->SearchInstance(rank);
+    CAuto* automat = center->GetAuto();
+
+    if ( thisType == OBJECT_BASE )
+    {
+    	err = (static_cast<CAutoBase*>(automat))->TakeOff(false);
+  	} else
+  		err = ERR_WRONG_OBJ;
 
     if ( err != ERR_OK )
     {
@@ -1330,7 +1394,7 @@ bool CScript::Process(CScript* script, CBotVar* result, int &exception)
 
         if ( err == ERR_STOP )  err = ERR_OK;
         result->SetValInt(err);  // indicates the error or ok
-        if ( err != ERR_OK && script->m_errMode == ERM_STOP )
+        if ( ShouldProcessStop(err, script->m_errMode) )
         {
             exception = err;
             return false;
@@ -1341,6 +1405,21 @@ bool CScript::Process(CScript* script, CBotVar* result, int &exception)
     script->m_primaryTask->EventProcess(script->m_event);
     script->m_bContinue = true;
     return false;  // not done
+}
+
+
+// Returns true if error code means real error and exception must be thrown
+
+bool CScript::ShouldProcessStop(Error err, int errMode)
+{
+    // aim impossible  - not a real error
+    if ( err == ERR_AIM_IMPOSSIBLE )
+        return false;
+
+    if ( err != ERR_OK && errMode == ERM_STOP )
+        return true;
+
+    return false;
 }
 
 
@@ -1576,7 +1655,7 @@ CBotTypResult CScript::cCanBuild(CBotVar* &var, void* user)
     return CBotTypResult(CBotTypBoolean);
 }
 
-// Instruction "canbuid ( category );"
+// Instruction "canbuild ( category );"
 // returns true if this building can be built
 
 bool CScript::rCanBuild(CBotVar* var, CBotVar* result, int& exception, void* user)
@@ -1602,7 +1681,7 @@ bool CScript::rCanBuild(CBotVar* var, CBotVar* result, int& exception, void* use
          (category == OBJECT_DESTROYER && (g_build & BUILD_DESTROYER)))
     {
 
-        //if we want to build not researched one
+        // if we want to build not researched one
         if ( (category == OBJECT_TOWER   && !(g_researchDone & RESEARCH_TOWER)) ||
              (category == OBJECT_NUCLEAR && !(g_researchDone & RESEARCH_ATOMIC))
             )
@@ -1646,7 +1725,7 @@ bool CScript::rBuild(CBotVar* var, CBotVar* result, int& exception, void* user)
     }
     else
     {
-        category = static_cast<ObjectType>(var->GetValInt()); //get category parameter
+        category = static_cast<ObjectType>(var->GetValInt()); // get category parameter
         if ( (category == OBJECT_DERRICK   && (g_build & BUILD_DERRICK))   ||
              (category == OBJECT_FACTORY   && (g_build & BUILD_FACTORY))   ||
              (category == OBJECT_STATION   && (g_build & BUILD_STATION))   ||
@@ -1663,7 +1742,7 @@ bool CScript::rBuild(CBotVar* var, CBotVar* result, int& exception, void* user)
              (category == OBJECT_DESTROYER && (g_build & BUILD_DESTROYER)))
         {
 
-            //if we want to build not researched one
+            // if we want to build not researched one
             if ( (category == OBJECT_TOWER   && !(g_researchDone & RESEARCH_TOWER)) ||
                  (category == OBJECT_NUCLEAR && !(g_researchDone & RESEARCH_ATOMIC))
                 )
@@ -1676,8 +1755,11 @@ bool CScript::rBuild(CBotVar* var, CBotVar* result, int& exception, void* user)
             }
 
         }
+        
+        if (pThis->GetIgnoreBuildCheck())
+            err = ERR_OK;
 
-        if (err == ERR_OK && script->m_primaryTask == 0) //if we can build and no task is present
+        if (err == ERR_OK && script->m_primaryTask == 0) // if we can build and no task is present
         {
             script->m_primaryTask = new CTaskManager(script->m_object);
             err = script->m_primaryTask->StartTaskBuild(category);
@@ -1688,9 +1770,9 @@ bool CScript::rBuild(CBotVar* var, CBotVar* result, int& exception, void* user)
                 script->m_primaryTask = 0;
             }
         }
-        //When script is waiting for finishing this task, it sets ERR_OK, and continues executing Process
-        //without creating new task. I think, there was a problem with previous version in release configuration
-        //It did not init error variable in this situation, and code tried to use variable with trash inside
+        // When script is waiting for finishing this task, it sets ERR_OK, and continues executing Process
+        // without creating new task. I think, there was a problem with previous version in release configuration
+        // It did not init error variable in this situation, and code tried to use variable with trash inside
     }
 
     if ( err != ERR_OK )
@@ -1820,52 +1902,10 @@ bool CScript::rProduce(CBotVar* var, CBotVar* result, int& exception, void* user
         }
     }
 
-    if ( type == OBJECT_FRET        ||
-         type == OBJECT_STONE       ||
-         type == OBJECT_URANIUM     ||
-         type == OBJECT_METAL       ||
-         type == OBJECT_POWER       ||
-         type == OBJECT_ATOMIC      ||
-         type == OBJECT_BULLET      ||
-         type == OBJECT_BBOX        ||
-         type == OBJECT_KEYa        ||
-         type == OBJECT_KEYb        ||
-         type == OBJECT_KEYc        ||
-         type == OBJECT_KEYd        ||
-         type == OBJECT_TNT         ||
-         type == OBJECT_SCRAP1      ||
-         type == OBJECT_SCRAP2      ||
-         type == OBJECT_SCRAP3      ||
-         type == OBJECT_SCRAP4      ||
-         type == OBJECT_SCRAP5      ||
-         type == OBJECT_BOMB        ||
-         type == OBJECT_WAYPOINT    ||
-         type == OBJECT_SHOW        ||
-         type == OBJECT_WINFIRE     ||
-         type == OBJECT_BAG         ||
-         type == OBJECT_MARKPOWER   ||
-         type == OBJECT_MARKSTONE   ||
-         type == OBJECT_MARKURANIUM ||
-         type == OBJECT_MARKKEYa    ||
-         type == OBJECT_MARKKEYb    ||
-         type == OBJECT_MARKKEYc    ||
-         type == OBJECT_MARKKEYd    ||
-         type == OBJECT_EGG         )
-    {
-        object = new CObject();
-        if ( !object->CreateResource(pos, angle, type) )
-        {
-            delete object;
-            result->SetValInt(1);  // error
-            return true;
-        }
-        object->SetActivity(false);
-    }
-    else if ( type == OBJECT_MOTHER ||
-              type == OBJECT_ANT    ||
-              type == OBJECT_SPIDER ||
-              type == OBJECT_BEE    ||
-              type == OBJECT_WORM   )
+    if ( type == OBJECT_ANT    ||
+         type == OBJECT_SPIDER ||
+         type == OBJECT_BEE    ||
+         type == OBJECT_WORM   )
     {
         CObject*    egg;
 
@@ -1883,116 +1923,15 @@ bool CScript::rProduce(CBotVar* var, CBotVar* result, int& exception, void* user
             delete egg;
         }
         object->SetActivity(false);
-    }
-    else if ( type == OBJECT_PORTICO  ||
-              type == OBJECT_BASE     ||
-              type == OBJECT_DERRICK  ||
-              type == OBJECT_FACTORY  ||
-              type == OBJECT_STATION  ||
-              type == OBJECT_CONVERT  ||
-              type == OBJECT_REPAIR   ||
-              type == OBJECT_DESTROYER||
-              type == OBJECT_TOWER    ||
-              type == OBJECT_NEST     ||
-              type == OBJECT_RESEARCH ||
-              type == OBJECT_RADAR    ||
-              type == OBJECT_INFO     ||
-              type == OBJECT_ENERGY   ||
-              type == OBJECT_LABO     ||
-              type == OBJECT_NUCLEAR  ||
-              type == OBJECT_PARA     ||
-              type == OBJECT_SAFE     ||
-              type == OBJECT_HUSTON   ||
-              type == OBJECT_TARGET1  ||
-              type == OBJECT_TARGET2  ||
-              type == OBJECT_START    ||
-              type == OBJECT_END      )
-    {
-        object = new CObject();
-        if ( !object->CreateBuilding(pos, angle, 0, type) )
+    } else {
+        if ((type == OBJECT_POWER || type == OBJECT_ATOMIC) && power == -1.0f) power = 1.0f;
+        object = CObjectManager::GetInstancePointer()->CreateObject(pos, angle, type, power);
+        if ( object == nullptr )
         {
-            delete object;
             result->SetValInt(1);  // error
             return true;
         }
-        object->SetActivity(false);
         script->m_main->CreateShortcuts();
-    }
-    else if ( type == OBJECT_FLAGb ||
-              type == OBJECT_FLAGr ||
-              type == OBJECT_FLAGg ||
-              type == OBJECT_FLAGy ||
-              type == OBJECT_FLAGv )
-    {
-        object = new CObject();
-        if ( !object->CreateFlag(pos, angle, type) )
-        {
-            delete object;
-            result->SetValInt(1);  // error
-            return true;
-        }
-        object->SetActivity(false);
-    }
-    else if ( type == OBJECT_HUMAN    ||
-              type == OBJECT_TECH     ||
-              type == OBJECT_TOTO     ||
-              type == OBJECT_MOBILEfa ||
-              type == OBJECT_MOBILEta ||
-              type == OBJECT_MOBILEwa ||
-              type == OBJECT_MOBILEia ||
-              type == OBJECT_MOBILEfc ||
-              type == OBJECT_MOBILEtc ||
-              type == OBJECT_MOBILEwc ||
-              type == OBJECT_MOBILEic ||
-              type == OBJECT_MOBILEfi ||
-              type == OBJECT_MOBILEti ||
-              type == OBJECT_MOBILEwi ||
-              type == OBJECT_MOBILEii ||
-              type == OBJECT_MOBILEfs ||
-              type == OBJECT_MOBILEts ||
-              type == OBJECT_MOBILEws ||
-              type == OBJECT_MOBILEis ||
-              type == OBJECT_MOBILErt ||
-              type == OBJECT_MOBILErc ||
-              type == OBJECT_MOBILErr ||
-              type == OBJECT_MOBILErs ||
-              type == OBJECT_MOBILEsa ||
-              type == OBJECT_MOBILEtg ||
-              type == OBJECT_MOBILEft ||
-              type == OBJECT_MOBILEtt ||
-              type == OBJECT_MOBILEwt ||
-              type == OBJECT_MOBILEit ||
-              type == OBJECT_MOBILEdr ||
-              type == OBJECT_APOLLO2  )
-    {
-        object = new CObject();
-        if ( !object->CreateVehicle(pos, angle, type, power, false, false) )
-        {
-            delete object;
-            result->SetValInt(1);  // error
-            return true;
-        }
-        object->UpdateMapping();
-        object->SetRange(30.0f);
-        object->SetZoom(0, 1.0f);
-        CPhysics* physics = object->GetPhysics();
-        if ( physics != 0 )
-        {
-            physics->SetFreeze(false);  // can move
-        }
-        object->SetLock(false);  // vehicle useable
-        // SetManual will affect bot speed
-        if (type == OBJECT_MOBILEdr)
-        {
-            object->SetManual(true);
-        }
-        object->SetActivity(true);
-        script->m_main->CreateShortcuts();
-    }
-    else
-    {
-        result->SetValInt(1);  // impossible
-        return true;
     }
 
     if (name[0] != 0)
@@ -2923,7 +2862,6 @@ bool CScript::rShield(CBotVar* var, CBotVar* result, int& exception, void* user)
 
 CBotTypResult CScript::cFire(CBotVar* &var, void* user)
 {
-#if 0
     CObject*    pThis = static_cast<CObject *>(user);
     ObjectType  type;
 
@@ -2931,23 +2869,25 @@ CBotTypResult CScript::cFire(CBotVar* &var, void* user)
 
     if ( type == OBJECT_ANT )
     {
-        return cOnePoint(var, user);
+        if ( var == 0 ) return CBotTypResult(CBotErrLowParam);
+        CBotTypResult ret = cPoint(var, user);
+        if ( ret.GetType() != 0 )  return ret;
+        if ( var != 0 )  return CBotTypResult(CBotErrOverParam);
     }
     else if ( type == OBJECT_SPIDER )
     {
-        return cNull(var, user);
+        if ( var != 0 )  return CBotTypResult(CBotErrOverParam);
     }
     else
     {
-        if ( var == 0 )  return CBotTypResult(CBotTypFloat);
-        if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
-        var = var->GetNext();
-        if ( var != 0 )  return CBotTypResult(CBotErrOverParam);
-        return CBotTypResult(CBotTypFloat);
+        if ( var != 0 )
+        {
+            if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
+            var = var->GetNext();
+            if ( var != 0 )  return CBotTypResult(CBotErrOverParam);
+        }
     }
-#else
     return CBotTypResult(CBotTypFloat);
-#endif
 }
 
 // Instruction "fire(delay)".
@@ -2983,6 +2923,7 @@ bool CScript::rFire(CBotVar* var, CBotVar* result, int& exception, void* user)
         {
             if ( var == 0 )  delay = 0.0f;
             else             delay = var->GetValFloat();
+	    if ( delay < 0.0f ) delay = -delay;
             err = script->m_primaryTask->StartTaskFire(delay);
         }
 
@@ -3031,7 +2972,11 @@ bool CScript::rAim(CBotVar* var, CBotVar* result, int& exception, void* user)
         var = var->GetNext();
         var == 0 ? y=0.0f : y=var->GetValFloat();
         err = script->m_primaryTask->StartTaskGunGoal(x*Math::PI/180.0f, y*Math::PI/180.0f);
-        if ( err != ERR_OK )
+        if ( err == ERR_AIM_IMPOSSIBLE )
+        {
+            result->SetValInt(err);  // shows the error
+        }
+        else if ( err != ERR_OK )
         {
             delete script->m_primaryTask;
             script->m_primaryTask = 0;
@@ -3488,6 +3433,47 @@ bool CScript::rPenWidth(CBotVar* var, CBotVar* result, int& exception, void* use
     return true;
 }
 
+// Compilation of the instruction with one object parameter
+
+CBotTypResult CScript::cOneObject(CBotVar* &var, void* user)
+{
+    if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
+    var = var->GetNext();
+    if ( var == 0 )  return CBotTypResult(CBotTypFloat);
+    
+    return CBotTypResult(CBotErrOverParam);
+}
+
+// Instruction "camerafocus(object)".
+
+bool CScript::rCameraFocus(CBotVar* var, CBotVar* result, int& exception, void* user)
+{
+    CScript* script = (static_cast<CObject *>(user))->GetRunScript();
+    
+    CBotVar* classVars = var->GetItemList();  // "category"
+    classVars = classVars->GetNext();  // "position"
+    classVars = classVars->GetNext();  // "orientation"
+    classVars = classVars->GetNext();  // "pitch"
+    classVars = classVars->GetNext();  // "roll"
+    classVars = classVars->GetNext();  // "energyLevel"
+    classVars = classVars->GetNext();  // "shieldLevel"
+    classVars = classVars->GetNext();  // "temperature"
+    classVars = classVars->GetNext();  // "altitude"
+    classVars = classVars->GetNext();  // "lifeTime"
+    classVars = classVars->GetNext();  // "material"
+    classVars = classVars->GetNext();  // "energyCell"
+    classVars = classVars->GetNext();  // "load"
+    classVars = classVars->GetNext();  // "id"
+    int rank = classVars->GetValInt();
+    CObject* object = CObjectManager::GetInstancePointer()->SearchInstance(rank);
+    
+    script->m_main->SelectObject(object, false);
+    
+    result->SetValInt(ERR_OK);
+    exception = ERR_OK;
+    return true;
+}
+
 
 
 // Object's constructor.
@@ -3504,6 +3490,7 @@ CScript::CScript(CObject* object, CTaskManager** secondaryTask)
     m_secondaryTask = secondaryTask;
 
     m_interface = m_main->GetInterface();
+    m_pause = CPauseManager::GetInstancePointer();
 
     m_ipf = CBOT_IPF;
     m_errMode = ERM_STOP;
@@ -3587,6 +3574,8 @@ void CScript::InitFonctions()
     CBotProgram::AddFunction("penup",     rPenUp,     CScript::cNull);
     CBotProgram::AddFunction("pencolor",  rPenColor,  CScript::cOneFloat);
     CBotProgram::AddFunction("penwidth",  rPenWidth,  CScript::cOneFloat);
+    
+    CBotProgram::AddFunction("camerafocus", rCameraFocus, CScript::cOneObject);
 
     CBotProgram::AddFunction("canbuild", rCanBuild, CScript::cCanBuild);
     CBotProgram::AddFunction("build", rBuild, CScript::cOneFloat);
@@ -3898,16 +3887,16 @@ bool CScript::Continue(const Event &event)
 
                 if ( m_error != 0 && m_errMode == ERM_STOP )
                 {
-                    char    s[100];
+                    std::string s;
                     GetError(s);
-                    m_main->GetDisplayText()->DisplayText(s, m_object, 10.0f, Ui::TT_ERROR);
+                    m_main->GetDisplayText()->DisplayText(s.c_str(), m_object, 10.0f, Ui::TT_ERROR);
                 }
-                m_engine->SetPause(true);  // gives pause
+                m_pause->SetPause(PAUSE_EDITOR);  // gives pause
                 return true;
             }
             if ( !m_bContinue )
             {
-                m_engine->SetPause(true);  // gives pause
+                m_pause->SetPause(PAUSE_EDITOR);  // gives pause
             }
         }
 
@@ -3931,9 +3920,9 @@ bool CScript::Continue(const Event &event)
 
         if ( m_error != 0 && m_errMode == ERM_STOP )
         {
-            char    s[100];
+            std::string s;
             GetError(s);
-            m_main->GetDisplayText()->DisplayText(s, m_object, 10.0f, Ui::TT_ERROR);
+            m_main->GetDisplayText()->DisplayText(s.c_str(), m_object, 10.0f, Ui::TT_ERROR);
         }
         return true;
     }
@@ -3950,9 +3939,9 @@ bool CScript::Step(const Event &event)
     if ( !m_bRun )  return true;
     if ( !m_bStepMode )  return false;
 
-    m_engine->SetPause(false);
+    // ??? m_engine->SetPause(false);
     // TODO: m_app StepSimulation??? m_engine->StepSimulation(0.01f);  // advance of 10ms
-    m_engine->SetPause(true);
+    // ??? m_engine->SetPause(true);
 
     m_event = event;
 
@@ -3973,16 +3962,16 @@ bool CScript::Step(const Event &event)
 
         if ( m_error != 0 && m_errMode == ERM_STOP )
         {
-            char    s[100];
+            std::string s;
             GetError(s);
-            m_main->GetDisplayText()->DisplayText(s, m_object, 10.0f, Ui::TT_ERROR);
+            m_main->GetDisplayText()->DisplayText(s.c_str(), m_object, 10.0f, Ui::TT_ERROR);
         }
         return true;
     }
 
     if ( m_bContinue )  // instuction "move", "goto", etc. ?
     {
-        m_engine->SetPause(false);  // removes the pause
+        m_pause->ClearPause();  // removes the pause
     }
     return false;
 }
@@ -4347,27 +4336,27 @@ int CScript::GetError()
 
 // Returns the text of the error.
 
-void CScript::GetError(char* buffer)
+void CScript::GetError(std::string& error)
 {
     if ( m_error == 0 )
     {
-        buffer[0] = 0;
+        error.clear();
     }
     else
     {
         if ( m_error == ERR_OBLIGATORYTOKEN )
         {
-            char s[100];
+            std::string s;
             GetResource(RES_ERR, m_error, s);
-            sprintf(buffer, s, m_token);
+            error = StrUtils::Format(s.c_str(), m_token);
         }
         else if ( m_error < 1000 )
         {
-            GetResource(RES_ERR, m_error, buffer);
+            GetResource(RES_ERR, m_error, error);
         }
         else
         {
-            GetResource(RES_CBOT, m_error, buffer);
+            GetResource(RES_CBOT, m_error, error);
         }
     }
 }
@@ -4385,7 +4374,9 @@ void CScript::New(Ui::CEdit* edit, const char* name)
     char    *sf;
     int     cursor1, cursor2, len, i, j;
 
-    GetResource(RES_TEXT, RT_SCRIPT_NEW, res);
+    std::string resStr;
+    GetResource(RES_TEXT, RT_SCRIPT_NEW, resStr);
+    strcpy(res, resStr.c_str());
     if ( name[0] == 0 )  strcpy(text, res);
     else                 strcpy(text, name);
 
@@ -4418,7 +4409,7 @@ void CScript::New(Ui::CEdit* edit, const char* name)
     sf = m_main->GetScriptFile();
     if ( sf[0] != 0 )  // Load an empty program specific?
     {
-        std::string filename = CApplication::GetInstancePointer()->GetDataFilePath(DIR_AI, sf);
+        std::string filename = CGameData::GetInstancePointer()->GetFilePath(DIR_AI, sf);
         file = fopen(filename.c_str(), "rb");
         if ( file != NULL )
         {
@@ -4512,7 +4503,7 @@ bool CScript::ReadScript(const char* filename)
 
     if ( strchr(filename, '/') == 0 ) //we're reading non user script
     {
-        name = CApplication::GetInstancePointer()->GetDataFilePath(DIR_AI, filename);
+        name = CGameData::GetInstancePointer()->GetFilePath(DIR_AI, filename);
     }
     else
     {
@@ -4546,7 +4537,7 @@ bool CScript::WriteScript(const char* filename)
 
     if ( strchr(filename, '/') == 0 ) //we're writing non user script
     {
-        name = CApplication::GetInstancePointer()->GetDataFilePath(DIR_AI, filename);
+        name = CGameData::GetInstancePointer()->GetFilePath(DIR_AI, filename);
     }
     else
     {

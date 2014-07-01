@@ -153,17 +153,16 @@ public:
     virtual ~CSoundInterface();
 
     /** Function to initialize sound device
-     *  \param b3D - enable support for 3D sound
      */
-    virtual bool Create(bool b3D);
+    virtual bool Create();
 
     /** Function called to cache all sound effect files.
      *  Function calls \link CSoundInterface::Cache() \endlink for each file
      */
-    void CacheAll(std::string path);
+    void CacheAll();
 
     /** Function called to add all music files to list */
-    void AddMusicFiles(std::string path);
+    void AddMusicFiles();
 
     /** Function called to cache sound effect file.
      *  This function is called by plugin interface for each file.
@@ -171,34 +170,19 @@ public:
      * \param bFile - file to load
      * \return return true on success
      */
-    virtual bool Cache(Sound bSound, std::string bFile);
+    virtual bool Cache(Sound bSound, const std::string &bFile);
 
     /** Function called to cache music file.
      *  This function is called by CRobotMain for each file used in the mission.
      * \param bFile - file to load
      * \return return true on success
      */
-    virtual bool CacheMusic(std::string bFile);
+    virtual bool CacheMusic(const std::string &bFile);
 
     /** Return if plugin is enabled
      *  \return return true if plugin is enabled
      */
     virtual bool GetEnable();
-
-    /** Change sound mode to 2D/3D
-     * \param bMode - true to enable 3D sound
-     */
-    virtual void SetSound3D(bool bMode);
-
-    /** Return if we use 3D sound
-     * \return true if we have 3D sound enabled
-     */
-    virtual bool GetSound3D();
-
-    /** Return if we have 3D sound capable card
-     * \return true for 3D sound support
-     */
-    virtual bool GetSound3DCap();
 
     /** Change global sound volume
      * \param volume - range from 0 to MAXVOLUME
@@ -224,7 +208,7 @@ public:
      * \param eye - position of listener
      * \param lookat - direction listener is looking at
      */
-    virtual void SetListener(Math::Vector eye, Math::Vector lookat);
+    virtual void SetListener(const Math::Vector &eye, const Math::Vector &lookat);
 
     /** Update data each frame
      * \param rTime - time since last update
@@ -248,7 +232,7 @@ public:
      * \param bLoop - loop sound
      * \return identifier of channel that sound will be played on
      */
-    virtual int Play(Sound sound, Math::Vector pos, float amplitude=1.0f, float frequency=1.0f, bool bLoop = false);
+    virtual int Play(Sound sound, const Math::Vector &pos, float amplitude=1.0f, float frequency=1.0f, bool bLoop = false);
 
     /** Remove all operations that would be made on sound in channel.
      * \param channel - channel to work on
@@ -271,7 +255,7 @@ public:
      * \param pos - new positino of a sound
      * \return return true on success
      */
-    virtual bool Position(int channel, Math::Vector pos);
+    virtual bool Position(int channel, const Math::Vector &pos);
 
     /** Set sound frequency
      * \param channel - channel to work on
@@ -300,38 +284,48 @@ public:
     /** Start playing music
      * \param rank - track number
      * \param bRepeat - repeat playing
+     * \param fadeTime - time of transition between music
      * \return return true on success
      */
-    virtual bool PlayMusic(int rank, bool bRepeat);
+    virtual bool PlayMusic(int rank, bool bRepeat, float fadeTime=2.0f);
 
     /** Start playing music
      * \param filename - name of file to play
      * \param bRepeat - repeat playing
+     * \param fadeTime - time of transition between music
      * \return return true on success
      */
-    virtual bool PlayMusic(std::string filename, bool bRepeat);
+    virtual bool PlayMusic(const std::string &filename, bool bRepeat, float fadeTime=2.0f);
 
     /** Restart music
-     * @return return true on success
+     * \return return true on success
      */
     virtual bool RestartMusic();
 
-    /** Susspend paying music
-     * \return return true on success
+    /** Susspend playing music
+     * \return nothing
      */
     virtual void SuspendMusic();
 
     /** Stop playing music
-     * \return return true on success
+     * \return nothing
      */
-    virtual void StopMusic();
+    virtual void StopMusic(float fadeTime=2.0f);
 
     /** Check if music if playing
      * \return return true if music is playing
      */
     virtual bool IsPlayingMusic();
-
-protected:
-    std::string m_soundPath;
+    
+    /** Start playing pause music
+     * \param filename - name of file to play
+     * \return return true on success
+     */
+     virtual bool PlayPauseMusic(const std::string &filename, bool repeat);
+     
+     /** Stop playing pause music and return to the mission music
+      * \return nothing
+      */
+     virtual void StopPauseMusic();
 };
 

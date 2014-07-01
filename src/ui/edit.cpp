@@ -19,6 +19,7 @@
 #include "ui/edit.h"
 
 #include "app/app.h"
+#include "app/gamedata.h"
 
 #include "clipboard/clipboard.h"
 
@@ -1224,11 +1225,7 @@ void CEdit::DrawPart(Math::Point pos, Math::Point dim, int icon)
     Math::Point     uv1, uv2;
     float       dp;
 
-#if _POLISH
-    m_engine->SetTexture("textp.png");
-#else
     m_engine->SetTexture("text.png");
-#endif
     m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
 
     uv1.x = (16.0f/256.0f)*(icon%16);
@@ -1462,11 +1459,14 @@ bool CEdit::ReadText(std::string filename, int addSize)
     std::string path = filename;
     if (!fs::exists(path))
     {
-        path = CApplication::GetInstancePointer()->GetDataDirPath() + "/" + filename;
+        path = CGameData::GetInstancePointer()->GetDataPath(filename);
     }
 
     file = fopen(fs::path(path).make_preferred().string().c_str(), "rb");
-    if ( file == NULL )  return false;
+    if ( file == NULL )  {
+        CLogger::GetInstancePointer()->Error("Unable to read text from file \"%s\"\n", path.c_str());
+        return false;
+    }
 
     fseek(file, 0, SEEK_END);
     len = ftell(file);
@@ -1669,12 +1669,14 @@ bool CEdit::ReadText(std::string filename, int addSize)
                   buffer[i+6] == 'n'  &&
                   buffer[i+7] == ' '  )
         {
+            /* TODO: \button X; isn't working. Issue #232
             if ( m_bSoluce || !bInSoluce )
             {
                 m_text[j] = GetValueParam(buffer+i+8, 0);
                 m_format[j] = font|Gfx::FONT_BUTTON;
                 j ++;
             }
+            */
             i += strchr(buffer+i, ';')-(buffer+i)+1;
         }
         else if ( //m_format.size() > 0       &&
@@ -1798,8 +1800,10 @@ bool CEdit::ReadText(std::string filename, int addSize)
                     res = main->GetInputBinding(slot).primary;
                     if ( res != 0 )
                     {
-                        if ( GetResource(RES_KEY, res, iName) )
+                        std::string iNameStr;
+                        if ( GetResource(RES_KEY, res, iNameStr) )
                         {
+                            strcpy(iName, iNameStr.c_str());
                             m_text[j] = ' ';
                             m_format[j] = font;
                             j ++;
@@ -1817,9 +1821,13 @@ bool CEdit::ReadText(std::string filename, int addSize)
                             res = main->GetInputBinding(slot).secondary;
                             if ( res != 0 )
                             {
-                                if ( GetResource(RES_KEY, res, iName) )
+                                if ( GetResource(RES_KEY, res, iNameStr) )
                                 {
-                                    GetResource(RES_TEXT, RT_KEY_OR, text);
+                                    strcpy(iName, iNameStr.c_str());
+
+                                    std::string textStr;
+                                    GetResource(RES_TEXT, RT_KEY_OR, textStr);
+                                    strcpy(text, textStr.c_str());
                                     n = 0;
                                     while ( text[n] != 0 )
                                     {

@@ -57,9 +57,6 @@ CControl::~CControl()
 
 bool CControl::Create(Math::Point pos, Math::Point dim, int icon, EventType eventType)
 {
-    char text[200];
-    std::string str_text;
-
     if ( eventType == EVENT_NULL )
         eventType = GetUniqueEventType();
 
@@ -72,17 +69,17 @@ bool CControl::Create(Math::Point pos, Math::Point dim, int icon, EventType even
     pos.y = m_pos.y + m_dim.y;
     GlintCreate(pos);
 
+    std::string text;
     GetResource(RES_EVENT, m_eventType, text);
-    str_text = std::string(text);
-    auto p = str_text.find("\\");
-    if ( p == std::string::npos )
+    auto p = text.find("\\");
+    if (p == std::string::npos)
     {
         if ( icon != -1 )
-            m_tooltip = str_text;
+            m_tooltip = text;
     }
     else
     {
-        m_tooltip = str_text.substr(p + 1);
+        m_tooltip = text.substr(p + 1);
     }
 
     return true;
@@ -509,11 +506,7 @@ void CControl::Draw()
         if ( icon >= 192 )
         {
             icon -= 192;
-#if _POLISH
-            m_engine->SetTexture("textp.png");
-#else
             m_engine->SetTexture("text.png");
-#endif
             m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_WHITE);
         }
         else if ( icon >= 128 )
@@ -836,6 +829,19 @@ bool CControl::Detect(Math::Point pos)
               pos.y >= m_pos.y           &&
               pos.y <= m_pos.y + m_dim.y );
 }
+
+std::string CControl::GetResourceName(EventType eventType)
+{
+    std::string name;
+    GetResource(RES_EVENT, eventType, name);
+    auto index = name.find('\\');
+    if (index != std::string::npos)
+    {
+        name = name.substr(0, index);
+    }
+    return name;
+}
+
 
 }
 

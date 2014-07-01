@@ -30,6 +30,7 @@
 
 // Procedures.
 
+extern std::string GetCmd(char* line);
 extern bool Cmd(char *line, const char *token);
 extern char* SearchOp(char *line, const char *op);
 
@@ -45,6 +46,10 @@ extern int GetResearch(char *line, int rank);
 extern Gfx::PyroType GetPyro(char *line, int rank);
 extern Gfx::CameraType GetCamera(char *line, int rank);
 extern const char* GetCamera(Gfx::CameraType type);
+extern DriveType GetDrive(char *line, int rank);
+extern const char* GetDrive(DriveType type);
+extern ToolType GetTool(char *line, int rank);
+extern const char* GetTool(ToolType type);
 
 extern int OpInt(char *line, const char *op, int def);
 extern float OpFloat(char *line, const char *op, float def);
@@ -55,6 +60,8 @@ extern Gfx::EngineObjectType OpTypeTerrain(char *line, const char *op, Gfx::Engi
 extern int OpResearch(char *line, const char *op);
 extern Gfx::PyroType OpPyro(char *line, const char *op);
 extern Gfx::CameraType OpCamera(char *line, const char *op);
+extern DriveType OpDrive(char *line, const char *op);
+extern ToolType OpTool(char *line, const char *op);
 extern int OpBuild(char *line, const char *op);
 extern Math::Vector OpPos(char *line, const char *op);
 extern Math::Vector OpDir(char *line, const char *op);

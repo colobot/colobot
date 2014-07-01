@@ -121,7 +121,6 @@ bool CAutoBase::EventProcess(const Event &event)
     CObject*    pObj;
     Math::Vector    pos, speed, vibCir, iPos;
     Math::Point     dim, p;
-    Error       err;
     float       angle, dist, time, h, len, vSpeed;
     int         i, max;
 
@@ -313,50 +312,7 @@ begin:
 
     if ( event.type == EVENT_OBJECT_BTAKEOFF )
     {
-        err = CheckCloseDoor();
-        if ( err != ERR_OK )
-        {
-            m_main->DisplayError(err, m_object);
-            return false;
-        }
-
-        err = m_main->CheckEndMission(false);
-        if ( err != ERR_OK )
-        {
-            m_main->DisplayError(err, m_object);
-            return false;
-        }
-
-        FreezeCargo(true);  // freeze whole cargo
-        m_main->SetMovieLock(true);  // blocks everything until the end
-        m_main->DeselectAll();
-
-        newEvent.type = EVENT_UPDINTERFACE;
-        m_eventQueue->AddEvent(newEvent);
-
-        m_camera->SetType(Gfx::CAM_TYPE_SCRIPT);
-
-        pos = m_pos;
-        pos.x -= 110.0f;
-        m_terrain->AdjustToFloor(pos);
-        pos.y += 10.0f;
-        m_camera->SetScriptEye(pos);
-        m_posSound = pos;
-
-        pos = m_object->GetPosition(0);
-        pos.y += 50.0f;
-        m_camera->SetScriptLookat(pos);
-
-        m_engine->SetFocus(1.0f);
-
-        m_soundChannel = m_sound->Play(SOUND_MANIP, m_posSound, 0.3f, 1.5f, true);
-        m_sound->AddEnvelope(m_soundChannel, 0.3f, 1.5f, BASE_DOOR_TIME2, SOPER_CONTINUE);
-        m_sound->AddEnvelope(m_soundChannel, 0.0f, 1.5f, 0.5f, SOPER_STOP);
-
-        m_phase    = ABP_CLOSE2;
-        m_progress = 0.0f;
-        m_speed    = 1.0f/BASE_DOOR_TIME2;
-        return true;
+        return TakeOff(true);
     }
 
     if ( event.type != EVENT_FRAME )  return true;
@@ -1400,11 +1356,7 @@ void CAutoBase::BeginTransit()
     }
     else
     {
-#if _DEMO
-        m_bgBack = "back46b.png";  // paintings
-#else
         m_bgBack = "back46.png";  // paintings
-#endif
     }
 
     m_engine->SetFogStart(0.9f);  // hardly any fog
@@ -1442,5 +1394,58 @@ void CAutoBase::EndTransit()
     m_planet->SetMode(0);
 
     m_main->StartMusic();
+}
+
+Error CAutoBase::TakeOff(bool printMsg)
+{
+
+    Event           newEvent;
+    Math::Vector    pos;
+    Error           err;
+	
+    err = CheckCloseDoor();
+    if ( err != ERR_OK )
+    {
+        if(printMsg) m_main->DisplayError(err, m_object);
+        return err;
+    }
+
+    err = m_main->CheckEndMission(false);
+    if ( err != ERR_OK )
+    {
+        if(printMsg) m_main->DisplayError(err, m_object);
+        return err;
+    }
+
+    FreezeCargo(true);  // freeze whole cargo
+    m_main->SetMovieLock(true);  // blocks everything until the end
+    m_main->DeselectAll();
+
+    newEvent.type = EVENT_UPDINTERFACE;
+    m_eventQueue->AddEvent(newEvent);
+
+    m_camera->SetType(Gfx::CAM_TYPE_SCRIPT);
+
+    pos = m_pos;
+    pos.x -= 110.0f;
+    m_terrain->AdjustToFloor(pos);
+    pos.y += 10.0f;
+    m_camera->SetScriptEye(pos);
+    m_posSound = pos;
+
+    pos = m_object->GetPosition(0);
+    pos.y += 50.0f;
+    m_camera->SetScriptLookat(pos);
+
+    m_engine->SetFocus(1.0f);
+
+    m_soundChannel = m_sound->Play(SOUND_MANIP, m_posSound, 0.3f, 1.5f, true);
+    m_sound->AddEnvelope(m_soundChannel, 0.3f, 1.5f, BASE_DOOR_TIME2, SOPER_CONTINUE);
+    m_sound->AddEnvelope(m_soundChannel, 0.0f, 1.5f, 0.5f, SOPER_STOP);
+
+    m_phase    = ABP_CLOSE2;
+    m_progress = 0.0f;
+    m_speed    = 1.0f/BASE_DOOR_TIME2;
+    return ERR_OK;
 }
 

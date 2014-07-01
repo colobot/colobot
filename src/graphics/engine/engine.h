@@ -24,6 +24,7 @@
 
 
 #include "app/system.h"
+#include "app/pausemanager.h"
 
 #include "common/event.h"
 #include "common/singleton.h"
@@ -734,11 +735,8 @@ public:
     bool            WriteScreenShot(const std::string& fileName, int width, int height);
 
 
-    //@{
-    //! Management of game pause mode
-    void            SetPause(bool pause);
+    //! Get pause mode
     TEST_VIRTUAL bool GetPause();
-    //@}
 
     //@{
     //! Management of lock for the duration of movie sequence
@@ -1288,6 +1286,7 @@ protected:
     CLightning*       m_lightning;
     CPlanet*          m_planet;
     CTerrain*         m_terrain;
+    CPauseManager*    m_pause;
 
     //! Last encountered error
     std::string     m_error;
@@ -1300,9 +1299,6 @@ protected:
     //! Whether to show stats (FPS, etc)
     bool            m_showStats;
     std::string     m_fpsText;
-
-    //! Pause mode
-    bool            m_pause;
     //! Rendering enabled?
     bool            m_render;
     //! Lock for duration of movie?

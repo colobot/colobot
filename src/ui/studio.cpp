@@ -71,6 +71,7 @@ CStudio::CStudio()
     m_main      = CRobotMain::GetInstancePointer();
     m_interface = m_main->GetInterface();
     m_camera    = m_main->GetCamera();
+    m_pause     = CPauseManager::GetInstancePointer();
 
     m_bEditMaximized = false;
     m_bEditMinimized = false;
@@ -97,7 +98,6 @@ bool CStudio::EventProcess(const Event &event)
     CWindow*    pw;
     CEdit*      edit;
     CSlider*    slider;
-    char        res[100];
 
     if ( m_dialog != SD_NULL )  // dialogue exists?
     {
@@ -184,17 +184,17 @@ bool CStudio::EventProcess(const Event &event)
 
     if ( event.type == EVENT_STUDIO_COMPILE )  // compile?
     {
-        char    buffer[100];
-
         if ( m_script->GetScript(edit) )  // compile
         {
+            std::string res;
             GetResource(RES_TEXT, RT_STUDIO_COMPOK, res);
             SetInfoText(res, false);
         }
         else
         {
-            m_script->GetError(buffer);
-            SetInfoText(buffer, false);
+            std::string error;
+            m_script->GetError(error);
+            SetInfoText(error, false);
         }
     }
 
@@ -218,9 +218,9 @@ bool CStudio::EventProcess(const Event &event)
             }
             else
             {
-                char    buffer[100];
-                m_script->GetError(buffer);
-                SetInfoText(buffer, false);
+                std::string error;
+                m_script->GetError(error);
+                SetInfoText(error, false);
             }
         }
     }
@@ -344,7 +344,6 @@ bool CStudio::EventFrame(const Event &event)
     CList*      list;
     float       time;
     int         cursor1, cursor2, iCursor1, iCursor2;
-    char        res[100];
 
     m_time += event.rTime;
     m_fixInfoTextTime -= event.rTime;
@@ -363,6 +362,7 @@ bool CStudio::EventFrame(const Event &event)
         m_bRunning = false;
         UpdateFlux();  // stop
         AdjustEditScript();
+        std::string res;
         GetResource(RES_TEXT, RT_STUDIO_PROGSTOP, res);
         SetInfoText(res, false);
 
@@ -558,14 +558,13 @@ void CStudio::StartEditScript(CScript *script, std::string name, int rank)
     CButton*    button;
     CSlider*    slider;
     CList*      list;
-    char        res[100];
 
     m_script = script;
     m_rank   = rank;
 
     m_main->SetEditLock(true, true);
     m_main->SetEditFull(false);
-    m_bInitPause = m_engine->GetPause();
+    m_bInitPause = m_pause->GetPauseType();
     m_main->SetSpeed(1.0f);
     m_editCamera = m_camera->GetType();
     m_camera->SetType(Gfx::CAM_TYPE_EDIT);
@@ -575,28 +574,33 @@ void CStudio::StartEditScript(CScript *script, std::string name, int rank)
     m_script->SetStepMode(!m_bRealTime);
 
     button = static_cast< CButton* >(m_interface->SearchControl(EVENT_BUTTON_QUIT));
-    if ( button != 0 )
-    {
+    if (button != nullptr)
         button->ClearState(STATE_VISIBLE);
-    }
 
     pos = m_editFinalPos = m_editActualPos = m_main->GetWindowPos();
     dim = m_editFinalDim = m_editActualDim = m_main->GetWindowDim();
     pw = m_interface->CreateWindows(pos, dim, 8, EVENT_WINDOW3);
-    if ( pw == nullptr )  return;
+    if (pw == nullptr)
+        return;
+
     pw->SetState(STATE_SHADOW);
     pw->SetRedim(true);  // before SetName!
     pw->SetMovable(true);
     pw->SetClosable(true);
+
+    std::string res;
     GetResource(RES_TEXT, RT_STUDIO_TITLE, res);
     pw->SetName(res);
+
     pw->SetMinDim(Math::Point(0.49f, 0.50f));
     pw->SetMaximized(m_bEditMaximized);
     pw->SetMinimized(m_bEditMinimized);
     m_main->SetEditFull(m_bEditMaximized);
 
     edit = pw->CreateEdit(pos, dim, 0, EVENT_STUDIO_EDIT);
-    if ( edit == 0 )  return;
+    if (edit == nullptr)
+        return;
+
     edit->SetState(STATE_SHADOW);
     edit->SetInsideScroll(false);
 //? if ( m_bRunning )  edit->SetEdit(false);
@@ -851,7 +855,6 @@ bool CStudio::StopEditScript(bool bCancel)
     CWindow*    pw;
     CEdit*      edit;
     CButton*    button;
-    char        buffer[100];
 
     pw = static_cast< CWindow* >(m_interface->SearchControl(EVENT_WINDOW3));
     if ( pw == nullptr )  return false;
@@ -863,8 +866,9 @@ bool CStudio::StopEditScript(bool bCancel)
         {
             if ( !m_script->GetScript(edit) )  // compile
             {
-                m_script->GetError(buffer);
-                SetInfoText(buffer, false);
+                std::string error;
+                m_script->GetError(error);
+                SetInfoText(error, false);
                 return false;
             }
         }
@@ -879,7 +883,7 @@ bool CStudio::StopEditScript(bool bCancel)
         button->SetState(STATE_VISIBLE);
     }
 
-    if ( !m_bInitPause )  m_engine->SetPause(false);
+    m_pause->SetPause(m_bInitPause);
     m_sound->MuteAll(false);
     m_main->SetEditLock(false, true);
     m_camera->SetType(m_editCamera);
@@ -892,8 +896,6 @@ bool CStudio::StopEditScript(bool bCancel)
 
 void CStudio::SetInfoText(std::string text, bool bClickable)
 {
-    char        res[100];
-
     if ( bClickable && m_fixInfoTextTime > 0.0f )  return;
     if ( !bClickable )  m_fixInfoTextTime = 8.0f;
 
@@ -911,6 +913,7 @@ void CStudio::SetInfoText(std::string text, bool bClickable)
 
     if ( bClickable )
     {
+        std::string res;
         GetResource(RES_TEXT, RT_STUDIO_LISTTT, res);
         list->SetTooltip(res);
         list->SetState(STATE_ENABLE);
@@ -952,22 +955,22 @@ void CStudio::UpdateFlux()
 #if 1
         if ( m_bRealTime )  // run?
         {
-            m_engine->SetPause(false);
+            m_pause->ClearPause();
             m_sound->MuteAll(false);
         }
         else    // step by step?
         {
-            m_engine->SetPause(true);
+            m_pause->SetPause(PAUSE_EDITOR);
             m_sound->MuteAll(true);
         }
 #else
-        m_engine->SetPause(false);
+        m_pause->ClearPause();
         m_sound->MuteAll(false);
 #endif
     }
     else    // stop?
     {
-        m_engine->SetPause(true);
+        m_pause->SetPause(PAUSE_EDITOR);
         m_sound->MuteAll(true);
     }
 }
@@ -1029,7 +1032,7 @@ void CStudio::StartDialog(StudioDialog type)
     CList*      pli;
     CEdit*      pe;
     Math::Point     pos, dim;
-    char        name[100];
+    std::string name;
 
     m_dialog = type;
 
@@ -1108,17 +1111,11 @@ void CStudio::StartDialog(StudioDialog type)
         GetResource(RES_TEXT, RT_IO_PRIVATE, name);
         pc->SetName(name);
         pc->SetState(STATE_SHADOW);
-#if _POLISH
-        pc->SetFontSize(8.0f);
-#endif
 
         pc = pw->CreateCheck(pos, dim, 0, EVENT_DIALOG_CHECK2);
         GetResource(RES_TEXT, RT_IO_PUBLIC, name);
         pc->SetName(name);
         pc->SetState(STATE_SHADOW);
-#if _POLISH
-        pc->SetFontSize(8.0f);
-#endif
 
         pb = pw->CreateButton(pos, dim, -1, EVENT_DIALOG_OK);
         pb->SetState(STATE_SHADOW);
@@ -1476,8 +1473,6 @@ void CStudio::UpdateDialogPublic()
     CWindow*    pw;
     CCheck*     pc;
     CLabel*     pl;
-    char        name[100];
-    //char        text[MAX_FNAME+100];
 
     pw = static_cast< CWindow* >(m_interface->SearchControl(EVENT_WINDOW9));
     if ( pw == nullptr )  return;
@@ -1497,7 +1492,7 @@ void CStudio::UpdateDialogPublic()
     pl = static_cast< CLabel* >(pw->SearchControl(EVENT_DIALOG_LABEL1));
     if ( pl != 0 )
     {
-        GetResource(RES_TEXT, RT_IO_LIST, name);
+        // GetResource(RES_TEXT, RT_IO_LIST, name); // TODO: unused?
         pl->SetName(SearchDirectory(false).c_str(), false);
     }
 }

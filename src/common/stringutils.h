@@ -31,11 +31,11 @@ namespace StrUtils {
 /** If given, \a ok is set to true/false on success/failure.
     Warning: To avoid unnecessary problems, *always* give full template qualifier e.g. ToString\<int\> */
 template<class T>
-std::string ToString(T value, bool *ok = NULL)
+std::string ToString(T value, bool *ok = nullptr)
 {
   std::ostringstream s;
   s << value;
-  if (ok != NULL)
+  if (ok != nullptr)
     *ok = !s.fail();
   return s.str();
 }
@@ -44,16 +44,19 @@ std::string ToString(T value, bool *ok = NULL)
 /** If given, \a ok is set to true/false on success/failure.
     Warning: To avoid unnecessary problems, *always* give full template qualifier e.g. FromString\<int\> */
 template<class T>
-T FromString(const std::string &str, bool *ok = NULL)
+T FromString(const std::string &str, bool *ok = nullptr)
 {
   std::istringstream s;
   s.str(str);
   T value;
   s >> value;
-  if (ok != NULL)
+  if (ok != nullptr)
     *ok = !s.fail();
   return value;
 }
+
+//! Replacement for sprintf()
+std::string Format(const char *fmt, ...);
 
 //! Returns a string with every occurence of \a oldStr in \a str replaced to \a newStr
 std::string Replace(const std::string &str, const std::string &oldStr, const std::string &newStr);
