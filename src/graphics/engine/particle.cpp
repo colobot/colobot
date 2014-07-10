@@ -198,10 +198,10 @@ void CParticle::FlushParticle(int sheet)
 //! Returns file name of the effect effectNN.png, with NN = number
 void NameParticle(std::string &name, int num)
 {
-         if (num == 1)  name = "textures/interface/effect00.png";
-    else if (num == 2)  name = "textures/interface/effect01.png";
-    else if (num == 3)  name = "textures/interface/effect02.png";
-    else if (num == 4)  name = "textures/interface/text.png";
+         if (num == 1)  name = "interface/effect00.png";
+    else if (num == 2)  name = "interface/effect01.png";
+    else if (num == 3)  name = "interface/effect02.png";
+    else if (num == 4)  name = "interface/text.png";
     else                name = "";
 }
 
@@ -3551,7 +3551,7 @@ void CParticle::DrawParticle(int sheet)
     // Draw tire marks.
     if (m_wheelTraceTotal > 0 && sheet == SH_WORLD)
     {
-        m_engine->SetTexture("textures/interface/text.png");
+        m_engine->SetTexture("interface/text.png");
         m_engine->SetState(ENG_RSTATE_TTEXTURE_WHITE);
         Math::Matrix matrix;
         matrix.LoadIdentity();

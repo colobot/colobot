@@ -110,7 +110,7 @@ void CImage::Draw()
 
     if ( m_icon == 0 )  // hollow frame?
     {
-        m_engine->SetTexture("textures/interface/button2.png");
+        m_engine->SetTexture("interface/button2.png");
         m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
         uv1.x = 160.0f / 256.0f;
         uv1.y = 192.0f / 256.0f;  // u-v texture

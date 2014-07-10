@@ -322,7 +322,7 @@ void CMap::Draw()
         m_offset = AdjustOffset(m_map[MAPMAXOBJECT - 1].pos);
 
     if ( m_fixImage[0] == 0 ) { // drawing of the relief?
-        m_engine->SetTexture("textures/interface/map.png");
+        m_engine->SetTexture("interface/map.png");
         m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
         uv1.x = 0.5f + (m_offset.x - (m_half / m_zoom)) / (m_half * 2.0f);
         uv1.y = 0.5f - (m_offset.y + (m_half / m_zoom)) / (m_half * 2.0f);
@@ -469,7 +469,7 @@ void CMap::DrawFocus(Math::Point pos, float dir, ObjectType type, MapColor color
     uv2.x = 126.0f/256.0f;
     uv2.y = 255.0f/256.0f;
 
-    m_engine->SetTexture("textures/interface/button2.png");
+    m_engine->SetTexture("interface/button2.png");
     m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_WHITE);
 
     bEnding = false;
@@ -529,7 +529,7 @@ void CMap::DrawObject(Math::Point pos, float dir, ObjectType type, MapColor colo
             return;  // flashes
         }
 
-        m_engine->SetTexture("textures/interface/button2.png");
+        m_engine->SetTexture("interface/button2.png");
         m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_BLACK);
         if ( bUp )
         {
@@ -672,7 +672,7 @@ void CMap::DrawObject(Math::Point pos, float dir, ObjectType type, MapColor colo
     {
         if ( bSelect )
         {
-            m_engine->SetTexture("textures/interface/button2.png");
+            m_engine->SetTexture("interface/button2.png");
             m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
             if ( m_bToy )
             {
@@ -698,7 +698,7 @@ void CMap::DrawObject(Math::Point pos, float dir, ObjectType type, MapColor colo
     {
         if ( m_bRadar )
         {
-            m_engine->SetTexture("textures/interface/button2.png");
+            m_engine->SetTexture("interface/button2.png");
             m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_WHITE);
             uv1.x =  64.5f/256.0f;  // blue triangle
             uv1.y = 240.5f/256.0f;
@@ -718,7 +718,7 @@ void CMap::DrawObject(Math::Point pos, float dir, ObjectType type, MapColor colo
 
     if ( color == MAPCOLOR_WAYPOINTb )
     {
-        m_engine->SetTexture("textures/interface/button2.png");
+        m_engine->SetTexture("interface/button2.png");
         m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_BLACK);
         uv1.x = 192.5f/256.0f;  // blue cross
         uv1.y = 240.5f/256.0f;
@@ -728,7 +728,7 @@ void CMap::DrawObject(Math::Point pos, float dir, ObjectType type, MapColor colo
     }
     if ( color == MAPCOLOR_WAYPOINTr )
     {
-        m_engine->SetTexture("textures/interface/button2.png");
+        m_engine->SetTexture("interface/button2.png");
         m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_BLACK);
         uv1.x = 208.5f/256.0f;  // red cross
         uv1.y = 240.5f/256.0f;
@@ -738,7 +738,7 @@ void CMap::DrawObject(Math::Point pos, float dir, ObjectType type, MapColor colo
     }
     if ( color == MAPCOLOR_WAYPOINTg )
     {
-        m_engine->SetTexture("textures/interface/button2.png");
+        m_engine->SetTexture("interface/button2.png");
         m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_BLACK);
         uv1.x = 224.5f/256.0f;  // green cross
         uv1.y = 240.5f/256.0f;
@@ -748,7 +748,7 @@ void CMap::DrawObject(Math::Point pos, float dir, ObjectType type, MapColor colo
     }
     if ( color == MAPCOLOR_WAYPOINTy )
     {
-        m_engine->SetTexture("textures/interface/button2.png");
+        m_engine->SetTexture("interface/button2.png");
         m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_BLACK);
         uv1.x = 240.5f/256.0f;  // yellow cross
         uv1.y = 240.5f/256.0f;
@@ -758,7 +758,7 @@ void CMap::DrawObject(Math::Point pos, float dir, ObjectType type, MapColor colo
     }
     if ( color == MAPCOLOR_WAYPOINTv )
     {
-        m_engine->SetTexture("textures/interface/button2.png");
+        m_engine->SetTexture("interface/button2.png");
         m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_BLACK);
         uv1.x = 192.5f/256.0f;  // violet cross
         uv1.y = 224.5f/256.0f;
@@ -779,7 +779,7 @@ void CMap::DrawObjectIcon(Math::Point pos, Math::Point dim, MapColor color,
 
     dp = 0.5f/256.0f;
 
-    m_engine->SetTexture("textures/interface/button3.png");
+    m_engine->SetTexture("interface/button3.png");
     m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
     if ( color == MAPCOLOR_MOVE )
     {
@@ -894,7 +894,7 @@ void CMap::DrawHighlight(Math::Point pos)
     dim.x *= 2.0f+cosf(m_time*8.0f)*0.5f;
     dim.y *= 2.0f+cosf(m_time*8.0f)*0.5f;
 
-    m_engine->SetTexture("textures/interface/button2.png");
+    m_engine->SetTexture("interface/button2.png");
     m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_BLACK);
     uv1.x = 160.5f/256.0f;  // hilite
     uv1.y = 224.5f/256.0f;
@@ -1052,8 +1052,8 @@ void CMap::UpdateTerrain()
         }
     }
 
-    m_engine->DeleteTexture("textures/interface/map.png");
-    m_engine->LoadTexture("textures/interface/map.png", &img);
+    m_engine->DeleteTexture("interface/map.png");
+    m_engine->LoadTexture("interface/map.png", &img);
 }
 
 // Updates the field in the map.

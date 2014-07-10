@@ -365,17 +365,11 @@ bool CTerrain::RandomizeRelief()
                 double xi, yi, a, b;
                 a = modf(x * (rozmiar_oktawy-1), &xi);
                 b = modf(y * (rozmiar_oktawy-1), &yi);
-                /*int xi = floor(x * (rozmiar_oktawy-1));
-                int yi = floor(y * (rozmiar_oktawy-1));
-                float a = (x * (rozmiar_oktawy-1)) - xi;
-                float b = (y * (rozmiar_oktawy-1)) - yi;*/
-                //CLogger::GetInstancePointer()->Error("%f %f %f %f\n", xi, yi, a, b);
                 
                 float lg = oktawy[i][static_cast<int>(yi * rozmiar_oktawy + xi)];
                 float pg = oktawy[i][static_cast<int>(yi * rozmiar_oktawy + xi + 1)];
                 float ld = oktawy[i][static_cast<int>((yi+1) * rozmiar_oktawy + xi)];
                 float pd = oktawy[i][static_cast<int>((yi+1) * rozmiar_oktawy + xi + 1)];
-                //CLogger::GetInstancePointer()->Error("%f %f %f %f\n", lg, pg, ld, pd);
                 
                 float g = pg * a + lg * (1-a);
                 float d = pd * a + ld * (1-a);

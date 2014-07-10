@@ -390,7 +390,7 @@ pb->SetState(STATE_SHADOW);
         pl->SetFontType(Gfx::FONT_COURIER);
         pl->SetFontSize(Gfx::FONT_SIZE_SMALL);
 
-        m_engine->SetBackground("textures/interface/interface.png",
+        m_engine->SetBackground("interface/interface.png",
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
@@ -510,7 +510,7 @@ pb->SetState(STATE_SHADOW);
         UpdateNameControl();
         UpdateNameFace();
 
-        m_engine->SetBackground("textures/interface/interface.png",
+        m_engine->SetBackground("interface/interface.png",
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
@@ -974,7 +974,7 @@ pb->SetState(STATE_SHADOW);
         pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_BACK);
         pb->SetState(STATE_SHADOW);
 
-        m_engine->SetBackground("textures/interface/interface.png",
+        m_engine->SetBackground("interface/interface.png",
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
@@ -1173,7 +1173,7 @@ pb->SetState(STATE_SHADOW);
 
         if ( !m_bSimulSetup )
         {
-            m_engine->SetBackground("textures/interface/interface.png",
+            m_engine->SetBackground("interface/interface.png",
                     Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                     Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                     Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
@@ -1691,7 +1691,7 @@ pos.y -= 0.048f;
 
         if ( m_phase == PHASE_READ )
         {
-            m_engine->SetBackground("textures/interface/interface.png",
+            m_engine->SetBackground("interface/interface.png",
                     Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                     Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                     Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
@@ -1741,7 +1741,7 @@ pos.y -= 0.048f;
         pl->SetFontSize(12.0f);
         pl->SetTextAlign(Gfx::TEXT_ALIGN_CENTER);
 
-        m_engine->SetBackground("textures/interface/interface.png",
+        m_engine->SetBackground("interface/interface.png",
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
@@ -1763,7 +1763,7 @@ pos.y -= 0.048f;
         m_engine->SetOverColor(Gfx::Color(1.0f, 1.0f, 1.0f, 1.0f), Gfx::ENG_RSTATE_TCOLOR_BLACK); // TODO: color ok?
         m_engine->SetOverFront(true);
 
-        m_engine->SetBackground("textures/interface/ppc.png",
+        m_engine->SetBackground("interface/ppc.png",
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
@@ -1782,7 +1782,7 @@ pos.y -= 0.048f;
         m_engine->SetOverColor(Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f), Gfx::ENG_RSTATE_TCOLOR_WHITE); // TODO: color ok?
         m_engine->SetOverFront(true);
 
-        m_engine->SetBackground("textures/interface/colobot.png",
+        m_engine->SetBackground("interface/colobot.png",
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
@@ -1801,7 +1801,7 @@ pos.y -= 0.048f;
         m_engine->SetOverColor(Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f), Gfx::ENG_RSTATE_TCOLOR_WHITE); // TODO: color ok?
         m_engine->SetOverFront(true);
 
-        m_engine->SetBackground("textures/interface/epsitec.png",
+        m_engine->SetBackground("interface/epsitec.png",
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
@@ -1926,7 +1926,7 @@ pos.y -= 0.048f;
         pb->SetState(STATE_SHADOW);
         // #endif
 
-        m_engine->SetBackground("textures/interface/generico.png",
+        m_engine->SetBackground("interface/generico.png",
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),

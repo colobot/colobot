@@ -282,7 +282,7 @@ bool CEngine::Create()
     params.minFilter = TEX_MIN_FILTER_NEAREST;
     params.magFilter = TEX_MAG_FILTER_NEAREST;
     params.mipmap = false;
-    m_miceTexture = LoadTexture("textures/interface/mouse.png", params);
+    m_miceTexture = LoadTexture("interface/mouse.png", params);
 
     GetSystemUtils()->GetCurrentTimeStamp(m_currentFrameTime);
     GetSystemUtils()->GetCurrentTimeStamp(m_lastFrameTime);
@@ -2246,7 +2246,7 @@ Texture CEngine::CreateTexture(const std::string& texName, const TextureCreatePa
 
     if (image == nullptr)
     {
-        if (!img.Load(texName))
+        if (!img.Load("textures/"+texName))
         {
             std::string error = img.GetError();
             GetLogger()->Error("Couldn't load texture '%s': %s, blacklisting\n", texName.c_str(), error.c_str());
@@ -2297,15 +2297,15 @@ Texture CEngine::LoadTexture(const std::string& name, const TextureCreateParams&
 
 bool CEngine::LoadAllTextures()
 {
-    LoadTexture("textures/interface/text.png");
-    m_miceTexture = LoadTexture("textures/interface/mouse.png");
-    LoadTexture("textures/interface/button1.png");
-    LoadTexture("textures/interface/button2.png");
-    LoadTexture("textures/interface/button3.png");
-    LoadTexture("textures/interface/effect00.png");
-    LoadTexture("textures/interface/effect01.png");
-    LoadTexture("textures/interface/effect02.png");
-    LoadTexture("textures/interface/map.png");
+    LoadTexture("interface/text.png");
+    m_miceTexture = LoadTexture("interface/mouse.png");
+    LoadTexture("interface/button1.png");
+    LoadTexture("interface/button2.png");
+    LoadTexture("interface/button3.png");
+    LoadTexture("interface/effect00.png");
+    LoadTexture("interface/effect01.png");
+    LoadTexture("interface/effect02.png");
+    LoadTexture("interface/map.png");
 
     if (! m_backgroundName.empty())
     {
@@ -2414,7 +2414,7 @@ bool CEngine::ChangeTextureColor(const std::string& texName,
 
 
     CImage img;
-    if (!img.Load(texName))
+    if (!img.Load("textures/"+texName))
     {
         std::string error = img.GetError();
         GetLogger()->Error("Couldn't load texture '%s': %s, blacklisting\n", texName.c_str(), error.c_str());
@@ -3773,7 +3773,7 @@ void CEngine::DrawShadow()
     SetMaterial(material);
 
     // TODO: create a separate texture
-    SetTexture("textures/interface/text.png");
+    SetTexture("interface/text.png");
 
     Math::Point ts, ti;
 

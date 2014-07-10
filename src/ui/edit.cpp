@@ -1175,7 +1175,7 @@ void CEdit::DrawBack(Math::Point pos, Math::Point dim)
 
     if ( m_bGeneric )  return;
 
-    m_engine->SetTexture("textures/interface/button2.png");
+    m_engine->SetTexture("interface/button2.png");
     m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
 
     if ( m_bMulti )
@@ -1226,9 +1226,9 @@ void CEdit::DrawPart(Math::Point pos, Math::Point dim, int icon)
     float       dp;
 
 #if _POLISH
-    m_engine->SetTexture("textures/interface/textp.png");
+    m_engine->SetTexture("interface/textp.png");
 #else
-    m_engine->SetTexture("textures/interface/text.png");
+    m_engine->SetTexture("interface/text.png");
 #endif
     m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
 

@@ -382,7 +382,16 @@ bool CImage::Load(const std::string& fileName)
 
     m_error = "";
 
-    m_data->surface = IMG_Load_RW(CResourceManager::GetSDLFileHandler(fileName.c_str()), 1);
+    SDL_RWops* pointer = CResourceManager::GetSDLFileHandler(fileName.c_str());
+    if (pointer == nullptr)
+    {
+        delete m_data;
+        m_data = nullptr;
+            
+        m_error = "Unable to open file";
+        return false;
+    }
+    m_data->surface = IMG_Load_RW(pointer, 1);
     if (m_data->surface == nullptr)
     {
         delete m_data;

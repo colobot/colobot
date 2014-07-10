@@ -4374,7 +4374,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             }
 
             OpString(line, "image", name);
-            m_terrain->LoadRelief(name, OpFloat(line, "factor", 1.0f), OpInt(line, "border", 1));
+            m_terrain->LoadRelief(std::string("textures/")+name, OpFloat(line, "factor", 1.0f), OpInt(line, "border", 1));
             continue;
         }
         
@@ -4405,7 +4405,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             }
 
             OpString(line, "image", name);
-            m_terrain->LoadResources(name);
+            m_terrain->LoadResources(std::string("textures/")+name);
             continue;
         }
 
@@ -5307,12 +5307,12 @@ void CRobotMain::ChangeColor()
     // PARTIPLOUF0 and PARTIDROP :
     ts = Math::Point(0.500f, 0.500f);
     ti = Math::Point(0.875f, 0.750f);
-    m_engine->ChangeTextureColor("textures/interface/effect00.png", m_colorRefWater, m_colorNewWater, colorRef2, colorNew2, 0.20f, -1.0f, ts, ti, 0, m_colorShiftWater, true);
+    m_engine->ChangeTextureColor("interface/effect00.png", m_colorRefWater, m_colorNewWater, colorRef2, colorNew2, 0.20f, -1.0f, ts, ti, 0, m_colorShiftWater, true);
 
     // PARTIFLIC :
     ts = Math::Point(0.00f, 0.75f);
     ti = Math::Point(0.25f, 1.00f);
-    m_engine->ChangeTextureColor("textures/interface/effect02.png", m_colorRefWater, m_colorNewWater, colorRef2, colorNew2, 0.20f, -1.0f, ts, ti, 0, m_colorShiftWater, true);
+    m_engine->ChangeTextureColor("interface/effect02.png", m_colorRefWater, m_colorNewWater, colorRef2, colorNew2, 0.20f, -1.0f, ts, ti, 0, m_colorShiftWater, true);
 }
 
 //! Updates the number of unnecessary objects
@@ -5746,11 +5746,12 @@ void CRobotMain::CompileScript(bool soluce)
             {
                 if (brain->GetCompile(j)) continue;
 
-                char* name = brain->GetScriptName(j);
+                std::string name = brain->GetScriptName(j);
+                name = "ai/"+name;
                 if (name[0] != 0)
                 {
-                    if(! brain->ReadProgram(j, name)) {
-                        CLogger::GetInstancePointer()->Error("Unable to read script from file \"%s\"\n", name);
+                    if(! brain->ReadProgram(j, const_cast<char*>(name.c_str()))) {
+                        CLogger::GetInstancePointer()->Error("Unable to read script from file \"%s\"\n", name.c_str());
                     }
                     if (!brain->GetCompile(j)) nbError++;
                 }
