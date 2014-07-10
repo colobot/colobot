@@ -1,14 +1,25 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 msgid ""
 msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-07-10 17:39+0200\n"
+"POT-Creation-Date: 2014-07-10 16:50+0200\n"
+"PO-Revision-Date: 2014-07-10 15:23+0200\n"
+"Last-Translator: krzys_h <krzys_h@interia.pl>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: pl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
 "|| n%100>=20) ? 1 : 2);\n"
+"X-Generator: Pootle 2.5.1.1\n"
 "X-Language: pl_PL\n"
 "X-Source-Language: en_US\n"
+"X-POOTLE-MTIME: 1405002225.000000\n"
 
 msgid " "
 msgstr " "
@@ -24,6 +35,9 @@ msgstr " Sterowniki:"
 
 msgid " Exercises in the chapter:"
 msgstr " Ćwiczenia w tym rozdziale:"
+
+msgid " Free game on this chapter:"
+msgstr " Swobodna gra na tej planecie:"
 
 msgid " Free game on this planet:"
 msgstr " Swobodna gra na tej planecie:"
@@ -57,10 +71,10 @@ msgstr "Brak \" ] \""
 
 #, c-format
 msgid "\"%s\" missing in this exercise"
-msgstr "It misses \"%s\" in this exercise"
+msgstr "Brakuje \"%s\" w tym ćwiczeniu"
 
 msgid "%1"
-msgstr ""
+msgstr "%1"
 
 msgid "..behind"
 msgstr "..za"
@@ -202,9 +216,8 @@ msgstr "Zbuduj wieżę obronną"
 msgid "Build a derrick"
 msgstr "Zbuduj kopalnię"
 
-#, fuzzy
 msgid "Build a destroyer"
-msgstr "Budynek zniszczony"
+msgstr "Zbuduj niszczarkę"
 
 msgid "Build a exchange post"
 msgstr "Zbuduj stację przekaźnikową"
@@ -342,10 +355,10 @@ msgid "Can not create this; there are too many objects"
 msgstr "Nie można tego utworzyć, za dużo obiektów"
 
 msgid "Can not produce not researched object"
-msgstr ""
+msgstr "Nie można wyprodukować nie odkrytego obiektu"
 
 msgid "Can not produce this object in this mission"
-msgstr ""
+msgstr "Nie można utworzyć tego obiektu w tej misji"
 
 msgid "Can't open file"
 msgstr "Nie można otworzyć pliku"
@@ -455,9 +468,8 @@ msgstr "Kopalnia"
 msgid "Descend\\Reduces the power of the jet"
 msgstr "W dół\\Zmniejsza moc silnika"
 
-#, fuzzy
 msgid "Destroy"
-msgstr "Destroyer"
+msgstr "Zniszcz"
 
 msgid "Destroy the building"
 msgstr "Zniszcz budynek"
@@ -538,9 +550,8 @@ msgstr "Ćwiczenia\\Ćwiczenia programistyczne"
 msgid "Exit film\\Film at the exit of exercises"
 msgstr "Końcowy film\\Film na zakończenie ćwiczeń"
 
-#, fuzzy
 msgid "Explode (\\key action;)"
-msgstr "Odzyskaj (\\key action;)"
+msgstr "Wysadź (\\key action;)"
 
 msgid "Explosive"
 msgstr "Materiały wybuchowe"
@@ -709,9 +720,8 @@ msgstr "Nieodpowiedni robot"
 msgid "Inappropriate cell type"
 msgstr "Nieodpowiedni rodzaj ogniw"
 
-#, fuzzy
 msgid "Inappropriate object"
-msgstr "Nieodpowiedni robot"
+msgstr "Nieodpowiedni objekt"
 
 msgid "Incorrect index type"
 msgstr "Nieprawidłowy typ indeksu"
@@ -750,7 +760,7 @@ msgid "Instructions\\Shows the instructions for the current mission"
 msgstr "Rozkazy\\Pokazuje rozkazy dotyczące bieżącej misji"
 
 msgid "Internal error - tell the developers"
-msgstr ""
+msgstr "Błąd wewnętrzny - powiadom twórców gry"
 
 msgid "Jet temperature"
 msgstr "Temperatura silnika"
@@ -931,9 +941,8 @@ msgstr "Za mało energii"
 msgid "Not enough energy yet"
 msgstr "Wciąż za mało energii"
 
-#, fuzzy
 msgid "Not found anything to destroy"
-msgstr "Nie ma nic do upuszczenia"
+msgstr "Nie znaleziono nic do zniszczenia"
 
 msgid "Not yet enough energy"
 msgstr "Wciąż za mało energii"
@@ -1605,7 +1614,7 @@ msgid "Wheeled sniffer"
 msgstr "Szperacz na kołach"
 
 msgid "Win"
-msgstr ""
+msgstr "Win"
 
 msgid "Winged grabber"
 msgstr "Transporter latający"
@@ -1773,73 +1782,70 @@ msgid "\\c; (none)\\n;\n"
 msgstr "\\c; (brak)\\n;\n"
 
 msgid "action;"
-msgstr ""
+msgstr "action;"
 
 msgid "away;"
-msgstr ""
+msgstr "away;"
 
 msgid "camera;"
-msgstr ""
+msgstr "camera;"
 
 msgid "cbot;"
-msgstr ""
+msgstr "cbot;"
 
 msgid "desel;"
-msgstr ""
+msgstr "desel;"
 
 msgid "down;"
-msgstr ""
+msgstr "down;"
 
 msgid "gdown;"
-msgstr ""
+msgstr "gdown;"
 
 msgid "gup;"
-msgstr ""
+msgstr "gup;"
 
 msgid "help;"
-msgstr ""
+msgstr "help;"
 
 msgid "human;"
-msgstr ""
+msgstr "human;"
 
 msgid "left;"
-msgstr ""
+msgstr "left;"
 
 msgid "near;"
-msgstr ""
+msgstr "near;"
 
 msgid "next;"
-msgstr ""
+msgstr "next;"
 
 msgid "prog;"
-msgstr ""
+msgstr "prog;"
 
 msgid "quit;"
-msgstr ""
+msgstr "quit;"
 
 msgid "right;"
-msgstr ""
+msgstr "right;"
 
 msgid "speed10;"
-msgstr ""
+msgstr "speed10;"
 
 msgid "speed15;"
-msgstr ""
+msgstr "speed15;"
 
 msgid "speed20;"
-msgstr ""
+msgstr "speed20;"
 
 msgid "up;"
-msgstr ""
+msgstr "up;"
 
 msgid "visit;"
-msgstr ""
+msgstr "visit;"
 
 msgid "www.epsitec.com"
 msgstr "www.epsitec.com"
-
-#~ msgid " Free game on this chapter:"
-#~ msgstr " Swobodna gra na tej planecie:"
 
 #~ msgid "< none >"
 #~ msgstr "< brak >"
@@ -1966,6 +1972,9 @@ msgstr "www.epsitec.com"
 
 #~ msgid "F9"
 #~ msgstr "F9"
+
+#~ msgid "GetResource event num out of range: %d\n"
+#~ msgstr "GetResource numer zdarzenia poza zakresem: %d\n"
 
 #~ msgid "Help"
 #~ msgstr "Pomoc"
