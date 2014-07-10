@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-07-10 16:50+0200\n"
+"POT-Creation-Date: 2014-07-10 17:39+0200\n"
 "PO-Revision-Date: 2012-12-27 14:07+0100\n"
 "Last-Translator: Didier Raboud <odyx@debian.org>\n"
 "Language: fr\n"
@@ -28,9 +28,6 @@ msgstr " Pilotes :"
 
 msgid " Exercises in the chapter:"
 msgstr " Liste des exercices du chapitre :"
-
-msgid " Free game on this chapter:"
-msgstr " Liste des jeux libres du chapitre :"
 
 msgid " Free game on this planet:"
 msgstr " Liste des jeux libres du chapitre :"
@@ -1837,6 +1834,9 @@ msgstr ""
 
 msgid "www.epsitec.com"
 msgstr "www.epsitec.com"
+
+#~ msgid " Free game on this chapter:"
+#~ msgstr " Liste des jeux libres du chapitre :"
 
 #~ msgid "< none >"
 #~ msgstr "< aucune >"

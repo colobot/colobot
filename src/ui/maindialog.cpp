@@ -703,7 +703,6 @@ void CMainDialog::ChangePhase(Phase phase)
             m_phase == PHASE_DEFI    ||
             m_phase == PHASE_MISSION ||
             m_phase == PHASE_FREE    ||
-            m_phase == PHASE_TEEN    ||
             m_phase == PHASE_USER    )
     {
         if ( m_phase == PHASE_TRAINER )  m_index = 0;
@@ -711,7 +710,6 @@ void CMainDialog::ChangePhase(Phase phase)
         if ( m_phase == PHASE_MISSION )  m_index = 2;
         if ( m_phase == PHASE_FREE    )  m_index = 3;
         if ( m_phase == PHASE_USER    )  m_index = 4;
-        if ( m_phase == PHASE_TEEN    )  m_index = 6;
 
         if ( m_phase == PHASE_FREE )
         {
@@ -724,7 +722,6 @@ void CMainDialog::ChangePhase(Phase phase)
         if ( m_phase == PHASE_DEFI    )  strcpy(m_sceneName, "defi" );
         if ( m_phase == PHASE_MISSION )  strcpy(m_sceneName, "scene");
         if ( m_phase == PHASE_FREE    )  strcpy(m_sceneName, "free");
-        if ( m_phase == PHASE_TEEN    )  strcpy(m_sceneName, "teen");
         if ( m_phase == PHASE_USER    )  strcpy(m_sceneName, "user");
 
         ReadGamerInfo();
@@ -739,7 +736,6 @@ void CMainDialog::ChangePhase(Phase phase)
         if ( m_phase == PHASE_DEFI    )  res = RT_TITLE_DEFI;
         if ( m_phase == PHASE_MISSION )  res = RT_TITLE_MISSION;
         if ( m_phase == PHASE_FREE    )  res = RT_TITLE_FREE;
-        if ( m_phase == PHASE_TEEN    )  res = RT_TITLE_TEEN;
         if ( m_phase == PHASE_USER    )  res = RT_TITLE_USER;
         GetResource(RES_TEXT, res, name);
         pw->SetName(name);
@@ -764,7 +760,6 @@ void CMainDialog::ChangePhase(Phase phase)
         if ( m_phase == PHASE_DEFI    )  res = RT_PLAY_CHAPd;
         if ( m_phase == PHASE_MISSION )  res = RT_PLAY_CHAPm;
         if ( m_phase == PHASE_FREE    )  res = RT_PLAY_CHAPf;
-        if ( m_phase == PHASE_TEEN    )  res = RT_PLAY_CHAPte;
         if ( m_phase == PHASE_USER    )  res = RT_PLAY_CHAPu;
         GetResource(RES_TEXT, res, name);
         pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL11, name);
@@ -787,7 +782,6 @@ void CMainDialog::ChangePhase(Phase phase)
         if ( m_phase == PHASE_DEFI    )  res = RT_PLAY_LISTd;
         if ( m_phase == PHASE_MISSION )  res = RT_PLAY_LISTm;
         if ( m_phase == PHASE_FREE    )  res = RT_PLAY_LISTf;
-        if ( m_phase == PHASE_TEEN    )  res = RT_PLAY_LISTk;
         if ( m_phase == PHASE_USER    )  res = RT_PLAY_LISTu;
         GetResource(RES_TEXT, res, name);
         pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL12, name);
@@ -824,8 +818,7 @@ void CMainDialog::ChangePhase(Phase phase)
 
         // Button displays the "soluce":
         if ( m_phase != PHASE_TRAINER &&
-                m_phase != PHASE_FREE    &&
-                m_phase != PHASE_TEEN    )
+                m_phase != PHASE_FREE    )
         {
             pos.x = ox+sx*9.5f;
             pos.y = oy+sy*5.8f;
@@ -1684,7 +1677,6 @@ void CMainDialog::ChangePhase(Phase phase)
             m_phase == PHASE_DEFI    ||
             m_phase == PHASE_MISSION ||
             m_phase == PHASE_FREE    ||
-            m_phase == PHASE_TEEN    ||
             m_phase == PHASE_USER    ||
             m_phase == PHASE_SETUPd  ||
             m_phase == PHASE_SETUPg  ||
@@ -1948,10 +1940,6 @@ bool CMainDialog::EventProcess(const Event &event)
                 m_main->ChangePhase(PHASE_FREE);
                 break;
 
-            case EVENT_INTERFACE_TEEN:
-                m_main->ChangePhase(PHASE_TEEN);
-                break;
-
             case EVENT_INTERFACE_USER:
                 m_main->ChangePhase(PHASE_USER);
                 break;
@@ -2158,7 +2146,6 @@ bool CMainDialog::EventProcess(const Event &event)
             m_phase == PHASE_DEFI    ||
             m_phase == PHASE_MISSION ||
             m_phase == PHASE_FREE    ||
-            m_phase == PHASE_TEEN    ||
             m_phase == PHASE_USER    )
     {
         pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
@@ -2177,7 +2164,6 @@ bool CMainDialog::EventProcess(const Event &event)
             m_phase == PHASE_DEFI    ||
             m_phase == PHASE_MISSION ||
             m_phase == PHASE_FREE    ||
-            m_phase == PHASE_TEEN    ||
             m_phase == PHASE_USER    )
     {
         switch( event.type )
@@ -2820,7 +2806,6 @@ void CMainDialog::GlintMove()
             m_phase == PHASE_TRAINER ||
             m_phase == PHASE_MISSION ||
             m_phase == PHASE_FREE    ||
-            m_phase == PHASE_TEEN    ||
             m_phase == PHASE_USER    )
     {
         pg = static_cast<CGroup*>(pw->SearchControl(EVENT_INTERFACE_GLINTl));
@@ -3045,7 +3030,6 @@ void CMainDialog::FrameParticle(float rTime)
             m_phase == PHASE_DEFI    ||
             m_phase == PHASE_MISSION ||
             m_phase == PHASE_FREE    ||
-            m_phase == PHASE_TEEN    ||
             m_phase == PHASE_USER    ||
             m_phase == PHASE_SETUPd  ||
             m_phase == PHASE_SETUPg  ||
@@ -4394,7 +4378,6 @@ void CMainDialog::AllMissionUpdate()
          m_phase == PHASE_DEFI    ||
          m_phase == PHASE_MISSION ||
          m_phase == PHASE_FREE    ||
-         m_phase == PHASE_TEEN    ||
          m_phase == PHASE_USER    )
     {
         UpdateSceneChap(m_chap[m_index]);
@@ -4655,7 +4638,6 @@ void CMainDialog::ShowSoluceUpdate()
          m_phase == PHASE_DEFI    ||
          m_phase == PHASE_MISSION ||
          m_phase == PHASE_FREE    ||
-         m_phase == PHASE_TEEN    ||
          m_phase == PHASE_USER    )
     {
         m_bSceneSoluce = false;

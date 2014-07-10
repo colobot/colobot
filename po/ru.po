@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-07-10 16:50+0200\n"
+"POT-Creation-Date: 2014-07-10 17:39+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -33,9 +33,6 @@ msgstr " Драйверы:"
 
 msgid " Exercises in the chapter:"
 msgstr " Упражнения в разделе:"
-
-msgid " Free game on this chapter:"
-msgstr " Свободная игра на этой главе:"
 
 msgid " Free game on this planet:"
 msgstr " Свободная игра на этой планете:"
@@ -1841,6 +1838,9 @@ msgstr "посетить"
 
 msgid "www.epsitec.com"
 msgstr "www.epsitec.com"
+
+#~ msgid " Free game on this chapter:"
+#~ msgstr " Свободная игра на этой главе:"
 
 #~ msgid "GetResource event num out of range: %d\n"
 #~ msgstr "событие GetResource, число вне диапазона: %d\n"

@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-07-10 16:50+0200\n"
+"POT-Creation-Date: 2014-07-10 17:39+0200\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -24,9 +24,6 @@ msgstr " Sterowniki:"
 
 msgid " Exercises in the chapter:"
 msgstr " Ćwiczenia w tym rozdziale:"
-
-msgid " Free game on this chapter:"
-msgstr " Swobodna gra na tej planecie:"
 
 msgid " Free game on this planet:"
 msgstr " Swobodna gra na tej planecie:"
@@ -1840,6 +1837,9 @@ msgstr ""
 
 msgid "www.epsitec.com"
 msgstr "www.epsitec.com"
+
+#~ msgid " Free game on this chapter:"
+#~ msgstr " Swobodna gra na tej planecie:"
 
 #~ msgid "< none >"
 #~ msgstr "< brak >"
