@@ -764,7 +764,7 @@ pb->SetState(STATE_SHADOW);
     {
         if (!m_sound->IsPlayingMusic())
         {
-            m_sound->PlayMusic("music/Intro1.ogg", false);
+            m_sound->PlayMusic("Intro1.ogg", false);
         }
     }
 
@@ -2013,7 +2013,7 @@ bool CMainDialog::EventProcess(const Event &event)
         {
             if (!m_sound->IsPlayingMusic())
             {
-                m_sound->PlayMusic("music/Intro2.ogg", true);
+                m_sound->PlayMusic("Intro2.ogg", true);
             }
         }
 
@@ -3579,7 +3579,7 @@ void CMainDialog::SetUserDir(char *base, int rank)
 
 void CMainDialog::BuildSceneName(std::string &filename, char *base, int rank)
 {
-    //TODO: Support for more than 100
+    //TODO: Support for more than 9 chapters
     int chapter = rank/100;
     int new_rank = rank%100;
     
@@ -3614,7 +3614,6 @@ void CMainDialog::BuildSceneName(std::string &filename, char *base, int rank)
             outstream << "scene.txt";
         }
         filename = outstream.str();
-        std::cout << filename.c_str() << std::endl;
     }
 }
 

@@ -173,12 +173,12 @@ bool ALSound::Cache(Sound sound, const std::string &filename)
 
 bool ALSound::CacheMusic(const std::string &filename)
 {
-    if (m_music.find(filename) == m_music.end())
+    if (m_music.find("music/"+filename) == m_music.end())
     {
         Buffer *buffer = new Buffer();
-        if (buffer->LoadFromFile(filename, static_cast<Sound>(-1)))
+        if (buffer->LoadFromFile("music/"+filename, static_cast<Sound>(-1)))
         {
-            m_music[filename] = buffer;
+            m_music["music/"+filename] = buffer;
             return true;
         }
     }
@@ -609,7 +609,7 @@ void ALSound::SetListener(const Math::Vector &eye, const Math::Vector &lookat)
 bool ALSound::PlayMusic(int rank, bool bRepeat, float fadeTime)
 {
     std::stringstream filename;
-    filename << "music/music" << std::setfill('0') << std::setw(3) << rank << ".ogg";
+    filename << "music" << std::setfill('0') << std::setw(3) << rank << ".ogg";
     return PlayMusic(filename.str(), bRepeat, fadeTime);
 }
 
@@ -636,26 +636,26 @@ bool ALSound::PlayMusic(const std::string &filename, bool bRepeat, float fadeTim
     Buffer *buffer;
 
     // check if we have music in cache
-    if (m_music.find(filename) == m_music.end())
+    if (m_music.find("music/"+filename) == m_music.end())
     {
         GetLogger()->Debug("Music %s was not cached!\n", filename.c_str());
-        if (!boost::filesystem::exists(filename))
+        /* TODO: if (!boost::filesystem::exists("music/"+filename))
         {
             GetLogger()->Debug("Requested music %s was not found.\n", filename.c_str());
             return false;
-        }
+        } */
 
         buffer = new Buffer();
-        if (!buffer->LoadFromFile(filename, static_cast<Sound>(-1)))
+        if (!buffer->LoadFromFile("music/"+filename, static_cast<Sound>(-1)))
         {
             return false;
         }
-        m_music[filename] = buffer;
+        m_music["music/"+filename] = buffer;
     }
     else
     {
         GetLogger()->Debug("Music loaded from cache\n");
-        buffer = m_music[filename];
+        buffer = m_music["music/"+filename];
     }
 
     if (m_currentMusic)
