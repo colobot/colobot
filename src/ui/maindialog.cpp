@@ -784,15 +784,15 @@ pb->SetState(STATE_SHADOW);
 
         if ( m_phase == PHASE_FREE )
         {
-            strcpy(m_sceneName, "levels/missions/");
+            strcpy(m_sceneName, "missions");
             ReadGamerInfo();
             m_accessChap = GetChapPassed();
         }
 
-        if ( m_phase == PHASE_TRAINER )  strcpy(m_sceneName, "levels/exercises/");
-        if ( m_phase == PHASE_DEFI    )  strcpy(m_sceneName, "levels/challenges/" );
-        if ( m_phase == PHASE_MISSION )  strcpy(m_sceneName, "levels/missions/");
-        if ( m_phase == PHASE_FREE    )  strcpy(m_sceneName, "levels/freemissions/");
+        if ( m_phase == PHASE_TRAINER )  strcpy(m_sceneName, "exercises");
+        if ( m_phase == PHASE_DEFI    )  strcpy(m_sceneName, "challenges" );
+        if ( m_phase == PHASE_MISSION )  strcpy(m_sceneName, "missions");
+        if ( m_phase == PHASE_FREE    )  strcpy(m_sceneName, "freemissions");
         if ( m_phase == PHASE_TEEN    )  strcpy(m_sceneName, "teen");
         if ( m_phase == PHASE_USER    )  strcpy(m_sceneName, "user");
 
@@ -3579,29 +3579,42 @@ void CMainDialog::SetUserDir(char *base, int rank)
 
 void CMainDialog::BuildSceneName(std::string &filename, char *base, int rank)
 {
-    std::ostringstream rankStream;
+    //TODO: Support for more than 100
+    int chapter = rank/100;
+    int new_rank = rank%100;
+    
+    std::ostringstream outstream;
     if ( strcmp(base, "user") == 0 )
     {
         //TODO: Change this to point user dir according to operating system
-        rankStream << std::setfill('0') << std::setw(2) << rank%100;
-        filename = m_userDir + "/" + m_userList[rank/100-1] + "/" + rankStream.str() + ".txt";
+        /*rankStream << std::setfill('0') << std::setw(2) << rank%100;
+        filename = m_userDir + "/" + m_userList[rank/100-1] + "/" + rankStream.str() + ".txt";*/
+        assert(false); //TODO: Userlevel support
     }
     else if ( strcmp(base, "perso") == 0 )
     {
         filename = "levels/other/perso.txt";
     }
+    else if( strcmp(base, "win") == 0 || strcmp(base, "lost") == 0 )
+    {
+        outstream << "levels/other/";
+        outstream << base << std::setfill('0') << std::setw(3) << chapter << "/";
+        outstream << "scene.txt";
+        std::cout << outstream.str() << std::endl;
+        filename = outstream.str();
+    }
     else
     {
-        rankStream << "chapter" << std::setfill('0') << std::setw(3) << (rank / 100);
-        if (rank % 100 == 0)
-        {
-            rankStream << "/chaptertitle.txt";
+        outstream << "levels/" << base << "/";
+        outstream << "chapter" << std::setfill('0') << std::setw(3) << chapter << "/";
+        if(new_rank == 000) {
+            outstream << "chaptertitle.txt";
+        } else {
+            outstream << "level" << std::setfill('0') << std::setw(3) << new_rank << "/";
+            outstream << "scene.txt";
         }
-        else
-        {
-            rankStream << "/level" << std::setfill('0') << std::setw(3) << (rank % 100) << "/scene.txt";
-        }
-        filename = base + rankStream.str();
+        filename = outstream.str();
+        std::cout << filename.c_str() << std::endl;
     }
 }
 
@@ -4881,14 +4894,16 @@ void CMainDialog::UpdateSceneList(int chap, int &sel)
         if ( m_phase == PHASE_TRAINER && j >= 5 )  break;
 #endif */
         BuildSceneName(fileName, m_sceneName, (chap+1)*100+(j+1));
-        file = fopen(fileName.c_str(), "r");
-        if ( file == NULL )  break;
+        
+        CInputStream stream;
+        stream.open(fileName);
+        if (!stream.is_open())  break;
 
         BuildResumeName(name, m_sceneName, j+1);  // default name
         sprintf(op, "Title.E");
         sprintf(op_i18n, "Title.%c", m_app->GetLanguageChar());
 
-        while ( fgets(line, 500, file) != NULL )
+        while (stream.getline(line, 500))
         {
             for ( i=0 ; i<500 ; i++ )
             {
@@ -4910,7 +4925,7 @@ void CMainDialog::UpdateSceneList(int chap, int &sel)
                 break;
             }
         }
-        fclose(file);
+        stream.close();
 
         bPassed = GetGamerInfoPassed((chap+1)*100+(j+1));
         sprintf(line, "%d: %s", j+1, name);
