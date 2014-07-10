@@ -4852,7 +4852,6 @@ void CMainDialog::UpdateSceneChap(int &chap)
 
 void CMainDialog::UpdateSceneList(int chap, int &sel)
 {
-    FILE*       file = NULL;
     CWindow*    pw;
     CList*      pl;
     std::string fileName;
@@ -4947,6 +4946,7 @@ void CMainDialog::UpdateSceneList(int chap, int &sel)
 #endif*/
     }
 
+    /* TODO: ?????
     BuildSceneName(fileName, m_sceneName, (chap+1)*100+(j+1));
     file = fopen(fileName.c_str(), "r");
     if ( file == NULL )
@@ -4957,7 +4957,8 @@ void CMainDialog::UpdateSceneList(int chap, int &sel)
     {
         m_maxList = j+1;  // this is not the last!
         fclose(file);
-    }
+    }*/
+    m_maxList = j;
 
     if ( sel > j-1 )  sel = j-1;
 
@@ -5008,7 +5009,6 @@ void CMainDialog::ShowSoluceUpdate()
 
 void CMainDialog::UpdateSceneResume(int rank)
 {
-    FILE*       file = NULL;
     CWindow*    pw;
     CEdit*      pe;
     CCheck*     pc;
@@ -5048,11 +5048,12 @@ void CMainDialog::UpdateSceneResume(int rank)
     sprintf(op, "Resume.E");
     sprintf(op_i18n, "Resume.%c", m_app->GetLanguageChar());
 
-    file = fopen(fileName.c_str(), "r");
-    if ( file == NULL )  return;
+    CInputStream stream;
+    stream.open(fileName);
+    if (!stream.is_open())  return;
 
     name[0] = 0;
-    while ( fgets(line, 500, file) != NULL )
+    while ( stream.getline(line, 500) )
     {
         for ( i=0 ; i<500 ; i++ )
         {
@@ -5077,7 +5078,7 @@ void CMainDialog::UpdateSceneResume(int rank)
             break;
         }
     }
-    fclose(file);
+    stream.close();
 
     pe->SetText(name);
 }
