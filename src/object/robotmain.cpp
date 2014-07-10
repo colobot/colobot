@@ -859,8 +859,6 @@ CRobotMain::CRobotMain(CApplication* app, bool loadProfile)
     CBotProgram::DefineNum("ResearchSubber",        RESEARCH_SUBM);
     CBotProgram::DefineNum("ResearchSniffer",       RESEARCH_SNIFFER);
 
-//?    CBotProgram::
-
     CBotProgram::DefineNum("PolskiPortalColobota", 1337);
 
     CBotClass* bc;
@@ -1214,14 +1212,6 @@ void CRobotMain::ChangePhase(Phase phase)
             m_map->SetFixImage(m_mapFilename);
 
         m_app->ResetTimeAfterLoading();
-
-        /*Math::Point ddim;
-
-        pos.x = 620.0f/640.0f;
-        pos.y = 460.0f/480.0f;
-        ddim.x = 20.0f/640.0f;
-        ddim.y = 20.0f/480.0f;
-        m_interface->CreateButton(pos, ddim, 11, EVENT_BUTTON_QUIT);*/
 
         if (m_immediatSatCom && !loading  &&
             m_infoFilename[SATCOM_HUSTON][0] != 0)
@@ -1636,18 +1626,6 @@ bool CRobotMain::ProcessEvent(Event &event)
 
                 m_cameraPan  = 0.0f;
                 m_cameraZoom = 0.0f;
-                break;
-
-            case EVENT_BUTTON_QUIT:
-                if (m_movie->IsExist())
-                    StartDisplayInfo(SATCOM_HUSTON, false);
-                else if (m_winDelay > 0.0f)
-                    ChangePhase(PHASE_WIN);
-                else if (m_lostDelay > 0.0f)
-
-                    ChangePhase(PHASE_LOST);
-                else
-                    m_dialog->StartAbort();  // do you want to leave?
                 break;
 
             case EVENT_OBJECT_LIMIT:
@@ -2189,12 +2167,6 @@ void CRobotMain::StartDisplayInfo(const char *filename, int index)
         m_sound->MuteAll(true);
     }
 
-    Ui::CButton* pb = static_cast<Ui::CButton*>(m_interface->SearchControl(EVENT_BUTTON_QUIT));
-    if (pb != nullptr)
-    {
-        pb->ClearState(Ui::STATE_VISIBLE);
-    }
-
     bool soluce = m_dialog->GetSceneSoluce();
 
     m_displayInfo = new Ui::CDisplayInfo();
@@ -2223,10 +2195,6 @@ void CRobotMain::StopDisplayInfo()
 
     if (!m_editLock)
     {
-        Ui::CButton* pb = static_cast<Ui::CButton*>(m_interface->SearchControl(EVENT_BUTTON_QUIT));
-        if (pb != nullptr)
-            pb->SetState(Ui::STATE_VISIBLE);
-
         SelectObject(m_infoObject, false);  // gives the command buttons
         m_displayText->HideText(false);
 
@@ -2264,20 +2232,12 @@ void CRobotMain::StartSuspend()
     m_infoObject = DeselectAll();  // removes the control buttons
     m_displayText->HideText(true);
 
-    Ui::CButton* pb = static_cast<Ui::CButton*>(m_interface->SearchControl(EVENT_BUTTON_QUIT));
-    if (pb != nullptr)
-        pb->ClearState(Ui::STATE_VISIBLE);
-
     m_suspend = true;
 }
 
 //! End of dialogue during the game
 void CRobotMain::StopSuspend()
 {
-    Ui::CButton* pb = static_cast<Ui::CButton*>(m_interface->SearchControl(EVENT_BUTTON_QUIT));
-    if (pb != nullptr)
-        pb->SetState(Ui::STATE_VISIBLE);
-
     SelectObject(m_infoObject, false);  // gives the command buttons
     m_map->ShowMap(m_mapShow);
     m_displayText->HideText(false);

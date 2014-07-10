@@ -141,7 +141,6 @@ void InitializeRestext()
     stringsEvent[EVENT_BUTTON_CANCEL]       = "Cancel";
     stringsEvent[EVENT_BUTTON_NEXT]         = "Next";
     stringsEvent[EVENT_BUTTON_PREV]         = "Previous";
-    stringsEvent[EVENT_BUTTON_QUIT]         = "Menu (\\key quit;)";
 
     stringsEvent[EVENT_DIALOG_OK]           = "OK";
     stringsEvent[EVENT_DIALOG_CANCEL]       = "Cancel";

@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-12-27 17:09+0100\n"
+"POT-Creation-Date: 2014-07-10 16:50+0200\n"
 "PO-Revision-Date: 2012-12-27 14:07+0100\n"
 "Last-Translator: Didier Raboud <odyx@debian.org>\n"
 "Language: fr\n"
@@ -207,6 +207,10 @@ msgstr "Construit une tour"
 msgid "Build a derrick"
 msgstr "Construit un derrick"
 
+#, fuzzy
+msgid "Build a destroyer"
+msgstr "Bâtiment détruit"
+
 msgid "Build a exchange post"
 msgstr "Construit une borne d'information"
 
@@ -342,6 +346,12 @@ msgstr "Caméra à droite"
 msgid "Can not create this; there are too many objects"
 msgstr "Création impossible; il y a trop d'objets"
 
+msgid "Can not produce not researched object"
+msgstr ""
+
+msgid "Can not produce this object in this mission"
+msgstr ""
+
 msgid "Can't open file"
 msgstr "Ouverture du fichier impossible"
 
@@ -450,6 +460,10 @@ msgstr "Derrick"
 msgid "Descend\\Reduces the power of the jet"
 msgstr "Descendre\\Diminuer la puissance du réacteur"
 
+#, fuzzy
+msgid "Destroy"
+msgstr "Destructeur"
+
 msgid "Destroy the building"
 msgstr "Démolit le bâtiment"
 
@@ -528,6 +542,10 @@ msgstr "Programmation\\Exercices de programmation"
 
 msgid "Exit film\\Film at the exit of exercises"
 msgstr "Retour animé\\Retour animé dans les exercices"
+
+#, fuzzy
+msgid "Explode (\\key action;)"
+msgstr "Recycle (\\key action;)"
 
 msgid "Explosive"
 msgstr "Explosif"
@@ -626,10 +644,6 @@ msgstr "Jeu\\Options de jouabilité"
 msgid "Gantry crane"
 msgstr "Portique"
 
-#, c-format
-msgid "GetResource event num out of range: %d\n"
-msgstr ""
-
 msgid "Goto: destination occupied"
 msgstr "Goto: Destination occupée"
 
@@ -699,6 +713,10 @@ msgstr "Robot inadapté"
 msgid "Inappropriate cell type"
 msgstr "Pas le bon type de pile"
 
+#, fuzzy
+msgid "Inappropriate object"
+msgstr "Robot inadapté"
+
 msgid "Incorrect index type"
 msgstr "Mauvais type d'index"
 
@@ -734,6 +752,9 @@ msgstr "Instructions de Houston"
 
 msgid "Instructions\\Shows the instructions for the current mission"
 msgstr "Instructions mission\\Marche à suivre"
+
+msgid "Internal error - tell the developers"
+msgstr ""
 
 msgid "Jet temperature"
 msgstr "Température du réacteur"
@@ -803,9 +824,6 @@ msgstr "Marques sur le sol\\Marques dessinées sur le sol"
 
 msgid "Maximize"
 msgstr "Taille maximale"
-
-msgid "Menu (\\key quit;)"
-msgstr "Menu (\\key quit;)"
 
 msgid "Minimize"
 msgstr "Taille réduite"
@@ -916,6 +934,10 @@ msgstr "Pas assez d'énergie"
 
 msgid "Not enough energy yet"
 msgstr "Pas encore assez d'énergie"
+
+#, fuzzy
+msgid "Not found anything to destroy"
+msgstr "Rien à déposer"
 
 msgid "Not yet enough energy"
 msgstr "Pas encore assez d'énergie"
@@ -1953,6 +1975,9 @@ msgstr "www.epsitec.com"
 
 #~ msgid "Left Windows"
 #~ msgstr "Left Windows"
+
+#~ msgid "Menu (\\key quit;)"
+#~ msgstr "Menu (\\key quit;)"
 
 #~ msgid "Mini-map"
 #~ msgstr "Mini-carte"

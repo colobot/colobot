@@ -5852,12 +5852,6 @@ void CMainDialog::StartDialog(Math::Point dim, bool bFire, bool bOK, bool bCance
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW8));
     if ( pw != 0 )  pw->ClearState(STATE_ENABLE);
 
-    pb = static_cast<CButton*>(m_interface->SearchControl(EVENT_BUTTON_QUIT));
-    if ( pb != 0 )
-    {
-        pb->ClearState(STATE_VISIBLE);
-    }
-
     m_bDialogFire = bFire;
 
     std::string name;
@@ -6039,12 +6033,6 @@ void CMainDialog::StopDialog()
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW8));
     if ( pw != 0 )  pw->SetState(STATE_ENABLE);
-
-    pb = static_cast<CButton*>(m_interface->SearchControl(EVENT_BUTTON_QUIT));
-    if ( pb != 0 )
-    {
-        pb->SetState(STATE_VISIBLE);
-    }
 
     StopSuspend();
     m_interface->DeleteControl(EVENT_WINDOW9);

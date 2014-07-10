@@ -90,7 +90,6 @@ enum EventType
     EVENT_BUTTON_CANCEL     = 41,
     EVENT_BUTTON_NEXT       = 42,
     EVENT_BUTTON_PREV       = 43,
-    EVENT_BUTTON_QUIT       = 44,
 
     EVENT_BUTTON0           = 50,
     EVENT_BUTTON1           = 51,

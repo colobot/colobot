@@ -573,10 +573,6 @@ void CStudio::StartEditScript(CScript *script, std::string name, int rank)
     m_bRealTime = m_bRunning;
     m_script->SetStepMode(!m_bRealTime);
 
-    button = static_cast< CButton* >(m_interface->SearchControl(EVENT_BUTTON_QUIT));
-    if (button != nullptr)
-        button->ClearState(STATE_VISIBLE);
-
     pos = m_editFinalPos = m_editActualPos = m_main->GetWindowPos();
     dim = m_editFinalDim = m_editActualDim = m_main->GetWindowDim();
     pw = m_interface->CreateWindows(pos, dim, 8, EVENT_WINDOW3);
@@ -876,12 +872,6 @@ bool CStudio::StopEditScript(bool bCancel)
     m_script->SetStepMode(false);
 
     m_interface->DeleteControl(EVENT_WINDOW3);
-
-    button = static_cast< CButton* >(m_interface->SearchControl(EVENT_BUTTON_QUIT));
-    if ( button != 0 )
-    {
-        button->SetState(STATE_VISIBLE);
-    }
 
     m_pause->SetPause(m_bInitPause);
     m_sound->MuteAll(false);
