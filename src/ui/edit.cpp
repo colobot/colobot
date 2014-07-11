@@ -22,10 +22,13 @@
 
 #include "clipboard/clipboard.h"
 
+#include "object/robotmain.h"
+
 #include "common/resources/inputstream.h"
 #include "common/resources/outputstream.h"
 
 #include <string.h>
+#include <boost/algorithm/string.hpp>
 
 namespace Ui {
 
@@ -784,14 +787,9 @@ void CEdit::HyperJump(std::string name, std::string marker)
 
     sMarker = marker;
 
-    if ( name[0] == '%' )
-    {
-        filename = GetProfile().GetUserBasedPath(name, "") + ".txt";
-    }
-    else
-    {
-        filename = name + std::string(".txt");
-    }
+    filename = name + std::string(".txt");
+    CRobotMain::InjectLevelDir(filename, "help/%lng%");
+    boost::replace_all(filename, "\\", "/"); //TODO: Fix this in files
 
     if ( ReadText(filename) )
     {
@@ -1146,6 +1144,9 @@ void CEdit::DrawImage(Math::Point pos, std::string name, float width,
     std::string filename;
 
     filename = name + ".png";
+    CRobotMain::InjectLevelDir(filename, "icons");
+    boost::replace_all(filename, "\\", "/"); //TODO: Fix this in files
+    filename = "../" + filename;
 
     m_engine->SetTexture(filename);
     m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
@@ -1434,7 +1435,9 @@ void CEdit::LoadImage(std::string name)
 {
     std::string filename;
     filename = name + ".png";
-    m_engine->LoadTexture(filename);
+    CRobotMain::InjectLevelDir(filename, "icons");
+    boost::replace_all(filename, "\\", "/"); //TODO: Fix this in files
+    m_engine->LoadTexture("../"+filename);
 }
 
 // Read from a text file.
@@ -1449,13 +1452,14 @@ bool CEdit::ReadText(std::string filename, int addSize)
     InputSlot   slot;
     bool        bInSoluce, bBOL;
 
-    if ( filename[0] == 0 )  return false;
+    if ( filename == "" )  return false;
     
     CInputStream stream;
-    stream.open(filename);  
+    stream.open(filename);
     
     if (!stream.is_open())
     {
+        CLogger::GetInstancePointer()->Error("Failed to load text file %s\n", filename.c_str());
         return false;
     }
 

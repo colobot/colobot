@@ -3843,11 +3843,6 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
     const char* stack = m_dialog->GetStackRead().c_str();
     m_dialog->SetUserDir(base, rank);
 
-    /*
-     * TODO: original code relying on UserDir() was removed.
-     * A new way of providing custom data file paths will need to be devised.
-     */
-
     m_fixScene = fixScene;
 
     g_id = 0;
@@ -4020,7 +4015,9 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
         if (Cmd(line, "Instructions") && !resetObject)
         {
             OpString(line, "name", name);
-            strcpy(m_infoFilename[SATCOM_HUSTON], name);
+            std::string path = name;
+            InjectLevelDir(path, "help/%lng%");
+            strcpy(m_infoFilename[SATCOM_HUSTON], path.c_str());
 
             m_immediatSatCom = OpInt(line, "immediat", 0);
             if (m_version >= 2) m_beginSatCom = m_lockedSatCom = OpInt(line, "lock", 0);
@@ -4031,27 +4028,35 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
         if (Cmd(line, "Satellite") && !resetObject)
         {
             OpString(line, "name", name);
-            strcpy(m_infoFilename[SATCOM_SAT], name);
+            std::string path = name;
+            InjectLevelDir(path, "help/%lng%");
+            strcpy(m_infoFilename[SATCOM_SAT], path.c_str());
             continue;
         }
 
         if (Cmd(line, "Loading") && !resetObject)
         {
             OpString(line, "name", name);
-            strcpy(m_infoFilename[SATCOM_LOADING], name);
+            std::string path = name;
+            InjectLevelDir(path, "help/%lng%");
+            strcpy(m_infoFilename[SATCOM_LOADING], path.c_str());
             continue;
         }
 
         if (Cmd(line, "HelpFile") && !resetObject)
         {
             OpString(line, "name", name);
-            strcpy(m_infoFilename[SATCOM_PROG], name);
+            std::string path = name;
+            InjectLevelDir(path, "help/%lng%");
+            strcpy(m_infoFilename[SATCOM_PROG], path.c_str());
             continue;
         }
         if (Cmd(line, "SoluceFile") && !resetObject)
         {
             OpString(line, "name", name);
-            strcpy(m_infoFilename[SATCOM_SOLUCE], name);
+            std::string path = name;
+            InjectLevelDir(path, "help/%lng%");
+            strcpy(m_infoFilename[SATCOM_SOLUCE], path.c_str());
             continue;
         }
 
@@ -7001,6 +7006,21 @@ float CRobotMain::GetPersoAngle()
     return m_dialog->GetPersoAngle();
 }
 
+char* CRobotMain::GetSceneName()
+{
+    return m_dialog->GetSceneName();
+}
+
+int CRobotMain::GetSceneRank()
+{
+    return m_dialog->GetSceneRank();
+}
+
+void CRobotMain::BuildSceneName(std::string &filename, char *base, int rank, bool sceneFile)
+{
+    m_dialog->BuildSceneName(filename, base, rank, sceneFile);
+}
+
 
 //! Changes on the pause mode
 void CRobotMain::ChangePause(PauseType pause)
@@ -7235,4 +7255,18 @@ void CRobotMain::DisplayError(Error err, CObject* pObj, float time)
 void CRobotMain::DisplayError(Error err, Math::Vector goal, float height, float dist, float time)
 {
     m_displayText->DisplayError(err, goal, height, dist, time);
+}
+
+void CRobotMain::InjectLevelDir(std::string& path, const std::string defaultDir)
+{
+    std::string oldPath = path;
+    std::string lvlDir;
+    CRobotMain::GetInstancePointer()->BuildSceneName(lvlDir, CRobotMain::GetInstancePointer()->GetSceneName(), CRobotMain::GetInstancePointer()->GetSceneRank(), false);
+    boost::replace_all(path, "%lvl%", lvlDir);
+    if(path == oldPath)
+    {
+        path = defaultDir + "/" + path;
+    }
+    std::string langStr(1, CApplication::GetInstancePointer()->GetLanguageChar());
+    boost::replace_all(path, "%lng%", langStr);
 }

@@ -99,7 +99,7 @@ public:
     bool    GetHimselfDamage();
 
     void          SetUserDir(char *base, int rank);
-    void          BuildSceneName(std::string &filename, char *base, int rank);
+    void          BuildSceneName(std::string &filename, char *base, int rank, bool sceneFile = true);
     void          BuildResumeName(char *filename, char *base, int rank);
     std::string & GetFilesDir();
 

@@ -3290,7 +3290,7 @@ void CMainDialog::SetUserDir(char *base, int rank)
 
 // Builds the file name of a mission.
 
-void CMainDialog::BuildSceneName(std::string &filename, char *base, int rank)
+void CMainDialog::BuildSceneName(std::string &filename, char *base, int rank, bool sceneFile)
 {
     //TODO: Support for more than 9 chapters
     int chapter = rank/100;
@@ -3311,20 +3311,27 @@ void CMainDialog::BuildSceneName(std::string &filename, char *base, int rank)
     else if( strcmp(base, "win") == 0 || strcmp(base, "lost") == 0 )
     {
         outstream << "levels/other/";
-        outstream << base << std::setfill('0') << std::setw(3) << chapter << "/";
-        outstream << "scene.txt";
-        std::cout << outstream.str() << std::endl;
+        outstream << base << std::setfill('0') << std::setw(3) << rank << ".txt";
         filename = outstream.str();
     }
     else
     {
         outstream << "levels/" << base << "/";
         outstream << "chapter" << std::setfill('0') << std::setw(3) << chapter << "/";
-        if(new_rank == 000) {
-            outstream << "chaptertitle.txt";
-        } else {
+        if(new_rank == 000)
+        {
+            if(sceneFile)
+            {
+                outstream << "chaptertitle.txt";
+            }
+        }
+        else
+        {
             outstream << "level" << std::setfill('0') << std::setw(3) << new_rank << "/";
-            outstream << "scene.txt";
+            if(sceneFile)
+            {
+                outstream << "scene.txt";
+            }
         }
         filename = outstream.str();
     }
