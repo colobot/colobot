@@ -61,7 +61,6 @@ void InitializeRestext()
     stringsText[RT_TITLE_DEFI]       = "Challenges";
     stringsText[RT_TITLE_MISSION]    = "Missions";
     stringsText[RT_TITLE_FREE]       = "Free game";
-    stringsText[RT_TITLE_TEEN]       = "Free game";
     stringsText[RT_TITLE_USER]       = "User levels";
     stringsText[RT_TITLE_SETUP]      = "Options";
     stringsText[RT_TITLE_NAME]       = "Player's name";
@@ -80,7 +79,6 @@ void InitializeRestext()
     stringsText[RT_PLAY_LISTm]       = " Missions on this planet:";
     stringsText[RT_PLAY_LISTf]       = " Free game on this planet:";
     stringsText[RT_PLAY_LISTu]       = " Missions on this level:";
-    stringsText[RT_PLAY_LISTk]       = " Free game on this chapter:";
     stringsText[RT_PLAY_RESUME]      = " Summary:";
 
     stringsText[RT_SETUP_DEVICE]     = " Drivers:";
@@ -141,7 +139,6 @@ void InitializeRestext()
     stringsEvent[EVENT_BUTTON_CANCEL]       = "Cancel";
     stringsEvent[EVENT_BUTTON_NEXT]         = "Next";
     stringsEvent[EVENT_BUTTON_PREV]         = "Previous";
-    stringsEvent[EVENT_BUTTON_QUIT]         = "Menu (\\key quit;)";
 
     stringsEvent[EVENT_DIALOG_OK]           = "OK";
     stringsEvent[EVENT_DIALOG_CANCEL]       = "Cancel";
@@ -150,7 +147,6 @@ void InitializeRestext()
     stringsEvent[EVENT_INTERFACE_DEFI]      = "Challenges\\Programming challenges";
     stringsEvent[EVENT_INTERFACE_MISSION]   = "Missions\\Select mission";
     stringsEvent[EVENT_INTERFACE_FREE]      = "Free game\\Free game without a specific goal";
-    stringsEvent[EVENT_INTERFACE_TEEN]      = "Free game\\Free game without a specific goal";
     stringsEvent[EVENT_INTERFACE_USER]      = "User\\User levels";
     stringsEvent[EVENT_INTERFACE_NAME]      = "Change player\\Change player";
     stringsEvent[EVENT_INTERFACE_SETUP]     = "Options\\Preferences";

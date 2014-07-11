@@ -21,11 +21,6 @@ CApplication::~CApplication()
 {
 }
 
-std::string CApplication::GetDataFilePath(DataDir /* dataDir */, const std::string& subpath) const
-{
-    return subpath;
-}
-
 CSoundInterface* CApplication::GetSound()
 {
     return nullptr;
@@ -34,11 +29,6 @@ CSoundInterface* CApplication::GetSound()
 CEventQueue* CApplication::GetEventQueue()
 {
     return nullptr;
-}
-
-std::string CApplication::GetDataDirPath() const
-{
-    return "";
 }
 
 Event CApplication::CreateUpdateEvent()

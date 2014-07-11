@@ -72,7 +72,6 @@ enum ResTextType
     RT_TITLE_WRITE          = 50,
     RT_TITLE_READ           = 51,
     RT_TITLE_USER           = 52,
-    RT_TITLE_TEEN           = 53,
 
     RT_PLAY_CHAPt           = 60,
     RT_PLAY_CHAPd           = 61,
@@ -86,7 +85,6 @@ enum ResTextType
     RT_PLAY_CHAPu           = 71,
     RT_PLAY_LISTu           = 72,
     RT_PLAY_CHAPte          = 73,
-    RT_PLAY_LISTk           = 74,
 
     RT_SETUP_DEVICE         = 80,
     RT_SETUP_MODE           = 81,

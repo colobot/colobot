@@ -90,7 +90,6 @@ enum EventType
     EVENT_BUTTON_CANCEL     = 41,
     EVENT_BUTTON_NEXT       = 42,
     EVENT_BUTTON_PREV       = 43,
-    EVENT_BUTTON_QUIT       = 44,
 
     EVENT_BUTTON0           = 50,
     EVENT_BUTTON1           = 51,
@@ -193,7 +192,6 @@ enum EventType
     EVENT_INTERFACE_READ    = 411,
     EVENT_INTERFACE_ABORT   = 412,
     EVENT_INTERFACE_USER    = 413,
-    EVENT_INTERFACE_TEEN    = 414,
 
     EVENT_INTERFACE_CHAP    = 420,
     EVENT_INTERFACE_LIST    = 421,

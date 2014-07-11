@@ -1789,9 +1789,6 @@ bool CBrain::CreateInterface(bool bSelect)
 
     pos.x = ox+sx*13.4f;
     pos.y = oy+sy*0;
-#if _TEEN
-    pw->CreateButton(pos, dim, 9, EVENT_OBJECT_RESET);
-#else
     if ( m_object->GetTrainer() )  // Training?
     {
         pw->CreateButton(pos, dim, 9, EVENT_OBJECT_RESET);
@@ -1800,7 +1797,6 @@ bool CBrain::CreateInterface(bool bSelect)
     {
         pw->CreateButton(pos, dim, 10, EVENT_OBJECT_DESELECT);
     }
-#endif
 
     if ( type == OBJECT_MOBILEfa ||
          type == OBJECT_MOBILEta ||
@@ -2459,16 +2455,9 @@ void CBrain::UpdateScript(Ui::CWindow *pw)
     char        name[100];
     char        title[100];
     int         i;
-    bool        bSoluce;
 
     pl = static_cast< Ui::CList* >(pw->SearchControl(EVENT_OBJECT_PROGLIST));
     if ( pl == 0 )  return;
-
-#if _SCHOOL
-    bSoluce = m_main->GetSoluce4();
-#else
-    bSoluce = true;
-#endif
 
     for ( i=0 ; i<BRAINMAXSCRIPT ; i++ )
     {
@@ -2477,10 +2466,6 @@ void CBrain::UpdateScript(Ui::CWindow *pw)
         if ( m_script[i] != 0 )
         {
             m_script[i]->GetTitle(title);
-            if ( !bSoluce && i == 3 )
-            {
-                title[0] = 0;
-            }
             if ( title[0] != 0 )
             {
                 sprintf(name, "%d: %s", i+1, title);
@@ -2488,11 +2473,6 @@ void CBrain::UpdateScript(Ui::CWindow *pw)
         }
 
         pl->SetItemName(i, name);
-    }
-
-    if ( !bSoluce )
-    {
-        pl->SetEnable(3, false);
     }
 
     pl->SetSelect(m_selScript);

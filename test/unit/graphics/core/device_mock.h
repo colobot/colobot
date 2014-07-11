@@ -105,4 +105,6 @@ public:
 
     MOCK_METHOD1(SetFillMode, void(Gfx::FillMode mode));
     MOCK_METHOD0(GetFillMode, Gfx::FillMode());
+
+    MOCK_CONST_METHOD0(GetFrameBufferPixels, void*());
 };

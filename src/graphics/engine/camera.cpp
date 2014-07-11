@@ -593,9 +593,6 @@ void CCamera::EffectFrame(const Event &event)
     dist = Math::Norm((dist - 100.f) / 100.0f);
 
     force *= 1.0f-dist;
-#if _TEEN
-    force *= 2.0f;
-#endif
     m_effectOffset *= force;
 
     if (m_effectProgress >= 1.0f)

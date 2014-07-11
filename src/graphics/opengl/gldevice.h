@@ -188,6 +188,8 @@ public:
     virtual void SetFillMode(FillMode mode) ;
     virtual FillMode GetFillMode();
 
+    virtual void* GetFrameBufferPixels()const;
+
 private:
     //! Updates internal modelview matrix
     void UpdateModelviewMatrix();

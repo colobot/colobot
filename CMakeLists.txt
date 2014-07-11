@@ -13,7 +13,7 @@ project(colobot C CXX)
 set(COLOBOT_VERSION_CODENAME "Gold")
 set(COLOBOT_VERSION_MAJOR    0)
 set(COLOBOT_VERSION_MINOR    1)
-set(COLOBOT_VERSION_REVISION 2)
+set(COLOBOT_VERSION_REVISION 3)
 
 # Used on official releases
 #set(COLOBOT_VERSION_RELEASE_CODENAME "-alpha")
@@ -25,9 +25,11 @@ if(DEFINED COLOBOT_VERSION_UNRELEASED)
     if(EXISTS "${CMAKE_SOURCE_DIR}/.git")
         find_package(Git)
         execute_process(COMMAND ${GIT_EXECUTABLE} rev-parse --abbrev-ref HEAD
+                        WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
                         OUTPUT_VARIABLE GIT_BRANCH
                         OUTPUT_STRIP_TRAILING_WHITESPACE)
         execute_process(COMMAND ${GIT_EXECUTABLE} rev-parse --short HEAD
+                        WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
                         OUTPUT_VARIABLE GIT_REVISION
                         OUTPUT_STRIP_TRAILING_WHITESPACE)
         set(COLOBOT_VERSION_UNRELEASED "${COLOBOT_VERSION_UNRELEASED}-git-${GIT_BRANCH}~r${GIT_REVISION}")

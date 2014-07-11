@@ -860,8 +860,6 @@ CRobotMain::CRobotMain(CApplication* app, bool loadProfile)
     CBotProgram::DefineNum("ResearchSubber",        RESEARCH_SUBM);
     CBotProgram::DefineNum("ResearchSniffer",       RESEARCH_SNIFFER);
 
-//?    CBotProgram::
-
     CBotProgram::DefineNum("PolskiPortalColobota", 1337);
 
     CBotClass* bc;
@@ -1084,9 +1082,6 @@ void CRobotMain::ChangePhase(Phase phase)
         m_sound->StopMusic(0.0f);
         m_camera->SetControllingObject(0);
 
-/* TODO: #if _SCHOOL
-        if ( true )
-#else*/
         if (m_gameTime > 10.0f)  // did you play at least 10 seconds?
         {
             int rank = m_dialog->GetSceneRank();
@@ -1173,12 +1168,6 @@ void CRobotMain::ChangePhase(Phase phase)
     m_cmdEdit = false;  // hidden for now
 
     // Creates the speedometer.
-/* TODO: #if _TEEN
-    dim.x =  30.0f/640.0f;
-    dim.y =  20.0f/480.0f;
-    pos.x =   4.0f/640.0f;
-    pos.y = 454.0f/480.0f;
-#else*/
     dim.x =  30.0f/640.0f;
     dim.y =  20.0f/480.0f;
     pos.x =   4.0f/640.0f;
@@ -1225,14 +1214,6 @@ void CRobotMain::ChangePhase(Phase phase)
 
         m_app->ResetTimeAfterLoading();
 
-        /*Math::Point ddim;
-
-        pos.x = 620.0f/640.0f;
-        pos.y = 460.0f/480.0f;
-        ddim.x = 20.0f/640.0f;
-        ddim.y = 20.0f/480.0f;
-        m_interface->CreateButton(pos, ddim, 11, EVENT_BUTTON_QUIT);*/
-
         if (m_immediatSatCom && !loading  &&
             m_infoFilename[SATCOM_HUSTON][0] != 0)
             StartDisplayInfo(SATCOM_HUSTON, false);  // shows the instructions
@@ -1250,10 +1231,6 @@ void CRobotMain::ChangePhase(Phase phase)
         }
         else
         {
-/* TODO: #if _TEEN
-            m_winTerminate = (m_endingWinRank == 900);
-            m_dialog->SetSceneName("teenw");
-#else*/
             m_winTerminate = (m_endingWinRank == 904);
             m_dialog->SetSceneName("win");
 
@@ -1267,16 +1244,6 @@ void CRobotMain::ChangePhase(Phase phase)
 
             if (m_winTerminate)
             {
-/* TODO: #if _TEEN
-                pos.x = ox+sx*3;  pos.y = oy+sy*1;
-                ddim.x = dim.x*15;  ddim.y = dim.y*2;
-                pe = m_interface->CreateEdit(pos, ddim, 0, EVENT_EDIT0);
-                pe->SetFontType(FONT_COLOBOT);
-                pe->SetEditCap(false);
-                pe->SetHiliteCap(false);
-                pe->ReadText("help/teenw.txt");
-#else*/
-
                 pos.x = ox+sx*3;  pos.y = oy+sy*0.2f;
                 ddim.x = dim.x*15;  ddim.y = dim.y*3.0f;
                 pe = m_interface->CreateEdit(pos, ddim, 0, EVENT_EDIT0);
@@ -1660,18 +1627,6 @@ bool CRobotMain::ProcessEvent(Event &event)
 
                 m_cameraPan  = 0.0f;
                 m_cameraZoom = 0.0f;
-                break;
-
-            case EVENT_BUTTON_QUIT:
-                if (m_movie->IsExist())
-                    StartDisplayInfo(SATCOM_HUSTON, false);
-                else if (m_winDelay > 0.0f)
-                    ChangePhase(PHASE_WIN);
-                else if (m_lostDelay > 0.0f)
-
-                    ChangePhase(PHASE_LOST);
-                else
-                    m_dialog->StartAbort();  // do you want to leave?
                 break;
 
             case EVENT_OBJECT_LIMIT:
@@ -2107,9 +2062,6 @@ void CRobotMain::ExecuteCmd(char *cmd)
         return;
     }
 
-/* TODO: #if _TEEN
-    if (strcmp(cmd, "allteens") == 0)
-#else*/
     if (strcmp(cmd, "allmission") == 0)
     {
         m_showAll = !m_showAll;
@@ -2216,12 +2168,6 @@ void CRobotMain::StartDisplayInfo(const char *filename, int index)
         m_sound->MuteAll(true);
     }
 
-    Ui::CButton* pb = static_cast<Ui::CButton*>(m_interface->SearchControl(EVENT_BUTTON_QUIT));
-    if (pb != nullptr)
-    {
-        pb->ClearState(Ui::STATE_VISIBLE);
-    }
-
     bool soluce = m_dialog->GetSceneSoluce();
 
     m_displayInfo = new Ui::CDisplayInfo();
@@ -2250,10 +2196,6 @@ void CRobotMain::StopDisplayInfo()
 
     if (!m_editLock)
     {
-        Ui::CButton* pb = static_cast<Ui::CButton*>(m_interface->SearchControl(EVENT_BUTTON_QUIT));
-        if (pb != nullptr)
-            pb->SetState(Ui::STATE_VISIBLE);
-
         SelectObject(m_infoObject, false);  // gives the command buttons
         m_displayText->HideText(false);
 
@@ -2291,20 +2233,12 @@ void CRobotMain::StartSuspend()
     m_infoObject = DeselectAll();  // removes the control buttons
     m_displayText->HideText(true);
 
-    Ui::CButton* pb = static_cast<Ui::CButton*>(m_interface->SearchControl(EVENT_BUTTON_QUIT));
-    if (pb != nullptr)
-        pb->ClearState(Ui::STATE_VISIBLE);
-
     m_suspend = true;
 }
 
 //! End of dialogue during the game
 void CRobotMain::StopSuspend()
 {
-    Ui::CButton* pb = static_cast<Ui::CButton*>(m_interface->SearchControl(EVENT_BUTTON_QUIT));
-    if (pb != nullptr)
-        pb->SetState(Ui::STATE_VISIBLE);
-
     SelectObject(m_infoObject, false);  // gives the command buttons
     m_map->ShowMap(m_mapShow);
     m_displayText->HideText(false);
@@ -4770,9 +4704,6 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                     {
                         sprintf(op, "script%d", i+1);  // script1..script10
                         OpString(line, op, name);
-/* TODO: #if _SCHOOL
-                        if ( !m_dialog->GetSoluce4() && i == 3 )  continue;
-#endif*/
                         if (name[0] != 0)
                             brain->SetScriptName(i, name);
 

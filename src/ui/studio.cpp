@@ -573,10 +573,6 @@ void CStudio::StartEditScript(CScript *script, std::string name, int rank)
     m_bRealTime = m_bRunning;
     m_script->SetStepMode(!m_bRealTime);
 
-    button = static_cast< CButton* >(m_interface->SearchControl(EVENT_BUTTON_QUIT));
-    if (button != nullptr)
-        button->ClearState(STATE_VISIBLE);
-
     pos = m_editFinalPos = m_editActualPos = m_main->GetWindowPos();
     dim = m_editFinalDim = m_editActualDim = m_main->GetWindowDim();
     pw = m_interface->CreateWindows(pos, dim, 8, EVENT_WINDOW3);
@@ -877,12 +873,6 @@ bool CStudio::StopEditScript(bool bCancel)
 
     m_interface->DeleteControl(EVENT_WINDOW3);
 
-    button = static_cast< CButton* >(m_interface->SearchControl(EVENT_BUTTON_QUIT));
-    if ( button != 0 )
-    {
-        button->SetState(STATE_VISIBLE);
-    }
-
     m_pause->SetPause(m_bInitPause);
     m_sound->MuteAll(false);
     m_main->SetEditLock(false, true);
@@ -1111,17 +1101,11 @@ void CStudio::StartDialog(StudioDialog type)
         GetResource(RES_TEXT, RT_IO_PRIVATE, name);
         pc->SetName(name);
         pc->SetState(STATE_SHADOW);
-#if _POLISH
-        pc->SetFontSize(8.0f);
-#endif
 
         pc = pw->CreateCheck(pos, dim, 0, EVENT_DIALOG_CHECK2);
         GetResource(RES_TEXT, RT_IO_PUBLIC, name);
         pc->SetName(name);
         pc->SetState(STATE_SHADOW);
-#if _POLISH
-        pc->SetFontSize(8.0f);
-#endif
 
         pb = pw->CreateButton(pos, dim, -1, EVENT_DIALOG_OK);
         pb->SetState(STATE_SHADOW);

@@ -423,9 +423,20 @@ void CEngine::FrameUpdate()
 
 bool CEngine::WriteScreenShot(const std::string& fileName, int width, int height)
 {
-    // TODO write screenshot: not very important for now
-    GetLogger()->Debug("CEngine::WriteSceenShot(): stub!\n");
-    return true;
+    void *pixels = m_device->GetFrameBufferPixels();
+    CImage img({width,height});
+
+    img.SetDataPixels(pixels);
+    img.flipVertically();
+
+    if ( img.SavePNG(fileName.c_str()) ){
+       GetLogger()->Info("Save SceenShot Saved Successfully!\n");
+       return true;
+    }
+    else{
+       GetLogger()->Error("%s!\n",img.GetError().c_str());
+       return false;
+    }   
 }
 
 bool CEngine::GetPause()
