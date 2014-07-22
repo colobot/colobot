@@ -3124,67 +3124,67 @@ void CEngine::Draw3DScene()
 
     m_app->StartPerformanceCounter(PCNT_RENDER_TERRAIN);
 
-    // Draw terrain with shadows, if shadows enabled
-    if (m_shadowVisible)
+    // Draw terrain 
+    
+    m_lightMan->UpdateDeviceLights(ENG_OBJTYPE_TERRAIN);
+
+    for (int objRank = 0; objRank < static_cast<int>(m_objects.size()); objRank++)
     {
-        m_lightMan->UpdateDeviceLights(ENG_OBJTYPE_TERRAIN);
+        if (! m_objects[objRank].used)
+            continue;
 
-        for (int objRank = 0; objRank < static_cast<int>(m_objects.size()); objRank++)
+        if (m_objects[objRank].type != ENG_OBJTYPE_TERRAIN)
+            continue;
+
+        if (! m_objects[objRank].drawWorld)
+            continue;
+
+        m_device->SetTransform(TRANSFORM_WORLD, m_objects[objRank].transform);
+
+        if (! IsVisible(objRank))
+            continue;
+
+        int baseObjRank = m_objects[objRank].baseObjRank;
+        if (baseObjRank == -1)
+            continue;
+
+        assert(baseObjRank >= 0 && baseObjRank < static_cast<int>( m_baseObjects.size() ));
+
+        EngineBaseObject& p1 = m_baseObjects[baseObjRank];
+        if (! p1.used)
+            continue;
+
+        for (int l2 = 0; l2 < static_cast<int>( p1.next.size() ); l2++)
         {
-            if (! m_objects[objRank].used)
-                continue;
+            EngineBaseObjTexTier& p2 = p1.next[l2];
 
-            if (m_objects[objRank].type != ENG_OBJTYPE_TERRAIN)
-                continue;
+            SetTexture(p2.tex1, 0);
+            SetTexture(p2.tex2, 1);
 
-            if (! m_objects[objRank].drawWorld)
-                continue;
-
-            m_device->SetTransform(TRANSFORM_WORLD, m_objects[objRank].transform);
-
-            if (! IsVisible(objRank))
-                continue;
-
-            int baseObjRank = m_objects[objRank].baseObjRank;
-            if (baseObjRank == -1)
-                continue;
-
-            assert(baseObjRank >= 0 && baseObjRank < static_cast<int>( m_baseObjects.size() ));
-
-            EngineBaseObject& p1 = m_baseObjects[baseObjRank];
-            if (! p1.used)
-                continue;
-
-            for (int l2 = 0; l2 < static_cast<int>( p1.next.size() ); l2++)
+            for (int l3 = 0; l3 < static_cast<int>( p2.next.size() ); l3++)
             {
-                EngineBaseObjTexTier& p2 = p1.next[l2];
+                EngineBaseObjLODTier& p3 = p2.next[l3];
 
-                SetTexture(p2.tex1, 0);
-                SetTexture(p2.tex2, 1);
+                if (! IsWithinLODLimit(m_objects[objRank].distance, p3.lodLevel))
+                    continue;
 
-                for (int l3 = 0; l3 < static_cast<int>( p2.next.size() ); l3++)
+                for (int l4 = 0; l4 < static_cast<int>( p3.next.size() ); l4++)
                 {
-                    EngineBaseObjLODTier& p3 = p2.next[l3];
+                    EngineBaseObjDataTier& p4 = p3.next[l4];
 
-                    if (! IsWithinLODLimit(m_objects[objRank].distance, p3.lodLevel))
-                        continue;
+                    SetMaterial(p4.material);
+                    SetState(p4.state);
 
-                    for (int l4 = 0; l4 < static_cast<int>( p3.next.size() ); l4++)
-                    {
-                        EngineBaseObjDataTier& p4 = p3.next[l4];
-
-                        SetMaterial(p4.material);
-                        SetState(p4.state);
-
-                        DrawObject(p4);
-                    }
+                    DrawObject(p4);
                 }
             }
         }
-
-        // Draws the shadows
-        DrawShadow();
     }
+
+        // Draws the shadows , if shadows enabled
+	if (m_shadowVisible)
+        DrawShadow();
+    
 
     m_app->StopPerformanceCounter(PCNT_RENDER_TERRAIN);
 
