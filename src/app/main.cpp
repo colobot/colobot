@@ -79,7 +79,7 @@ int SDL_MAIN_FUNC(int argc, char *argv[])
 {
     CLogger logger; // single istance of logger
     CResourceManager manager(argv[0]);
-    manager.AddLocation(COLOBOT_DEFAULT_DATADIR);
+    manager.AddLocation(COLOBOT_DEFAULT_DATADIR, false);
 
     // Initialize static string arrays
     InitializeRestext();

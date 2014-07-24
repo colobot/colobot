@@ -208,7 +208,8 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
         OPT_LOGLEVEL,
         OPT_LANGUAGE,
         OPT_LANGDIR,
-        OPT_VBO
+        OPT_VBO,
+        OPT_MOD
     };
 
     option options[] =
@@ -221,6 +222,7 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
         { "language", required_argument, nullptr, OPT_LANGUAGE },
         { "langdir", required_argument, nullptr, OPT_LANGDIR },
         { "vbo", required_argument, nullptr, OPT_VBO },
+        { "mod", required_argument, nullptr, OPT_MOD },
         { nullptr, 0, nullptr, 0}
     };
 
@@ -259,6 +261,7 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
                 GetLogger()->Message("  -language lang      set language (one of: en, de, fr, pl, ru)\n");
                 GetLogger()->Message("  -langdir path       set custom language directory path\n");
                 GetLogger()->Message("  -vbo mode           set OpenGL VBO mode (one of: auto, enable, disable)\n");
+                GetLogger()->Message("  -mod path           load datadir mod from given path\n");
                 return PARSE_ARGS_HELP;
             }
             case OPT_DEBUG:
@@ -336,6 +339,13 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
                     return PARSE_ARGS_FAIL;
                 }
 
+                break;
+            }
+            case OPT_MOD:
+            {
+                GetLogger()->Info("Loading mod from \"%s\"\n", optarg);
+                CResourceManager::AddLocation(optarg, true);
+                
                 break;
             }
             default:
