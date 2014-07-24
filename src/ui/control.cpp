@@ -437,7 +437,7 @@ void CControl::Draw()
 
     if ( (m_state & STATE_VISIBLE) == 0 )  return;
 
-    m_engine->SetTexture("interface/button1.png");
+    m_engine->SetTexture("textures/interface/button1.png");
     m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
 
     zoomExt = 1.00f;
@@ -491,7 +491,7 @@ void CControl::Draw()
 
     if ( m_state & STATE_OKAY )
     {
-        m_engine->SetTexture("interface/button3.png");
+        m_engine->SetTexture("textures/interface/button3.png");
         icon = 3;  // yellow with green point pressed
     }
 
@@ -506,19 +506,19 @@ void CControl::Draw()
         if ( icon >= 192 )
         {
             icon -= 192;
-            m_engine->SetTexture("interface/text.png");
+            m_engine->SetTexture("textures/interface/text.png");
             m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_WHITE);
         }
         else if ( icon >= 128 )
         {
             icon -= 128;
-            m_engine->SetTexture("interface/button3.png");
+            m_engine->SetTexture("textures/interface/button3.png");
             m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_WHITE);
         }
         else if ( icon >= 64 )
         {
             icon -= 64;
-            m_engine->SetTexture("interface/button2.png");
+            m_engine->SetTexture("textures/interface/button2.png");
             m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_WHITE);
         }
         else
@@ -751,7 +751,7 @@ void CControl::DrawWarning(Math::Point pos, Math::Point dim)
 
     dp = 0.5f / 256.0f;
 
-    m_engine->SetTexture("interface/button2.png");
+    m_engine->SetTexture("textures/interface/button2.png");
     m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
 
     uv1.x =  64.0f / 256.0f;
@@ -795,7 +795,7 @@ void CControl::DrawShadow(Math::Point pos, Math::Point dim, float deep)
 
     dp = 0.5f/256.0f;
 
-    m_engine->SetTexture("interface/button2.png");
+    m_engine->SetTexture("textures/interface/button2.png");
     m_engine->SetState( Gfx::ENG_RSTATE_TTEXTURE_WHITE);
 
     pos.x += deep * 0.010f * 0.75f;

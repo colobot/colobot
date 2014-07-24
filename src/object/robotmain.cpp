@@ -5153,7 +5153,7 @@ void CRobotMain::ChangeColor()
     exclu[3] = Math::Point(256.0f/256.0f, 256.0f/256.0f);  // SatCom screen
     exclu[4] = Math::Point(0.0f, 0.0f);
     exclu[5] = Math::Point(0.0f, 0.0f);  // terminator
-    m_engine->ChangeTextureColor("human.png", colorRef1, colorNew1, colorRef2, colorNew2, 0.30f, 0.01f, ts, ti, exclu);
+    m_engine->ChangeTextureColor("textures/human.png", colorRef1, colorNew1, colorRef2, colorNew2, 0.30f, 0.01f, ts, ti, exclu);
 
     float tolerance;
 
@@ -5195,7 +5195,7 @@ void CRobotMain::ChangeColor()
     colorNew2.b = 0.0f;
 
     char name[100];
-    sprintf(name, "face%.2d.png", face+1);
+    sprintf(name, "textures/face%.2d.png", face+1);
     exclu[0] = Math::Point(105.0f/256.0f, 47.0f/166.0f);
     exclu[1] = Math::Point(153.0f/256.0f, 79.0f/166.0f);  // blue canister
     exclu[2] = Math::Point(0.0f, 0.0f);
@@ -5209,19 +5209,19 @@ void CRobotMain::ChangeColor()
     colorNew2.g = 0.0f;
     colorNew2.b = 0.0f;
 
-    m_engine->ChangeTextureColor("base1.png",   m_colorRefBot, m_colorNewBot, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, 0, 0, true);
-    m_engine->ChangeTextureColor("convert.png", m_colorRefBot, m_colorNewBot, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, 0, 0, true);
-    m_engine->ChangeTextureColor("derrick.png", m_colorRefBot, m_colorNewBot, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, 0, 0, true);
-    m_engine->ChangeTextureColor("factory.png", m_colorRefBot, m_colorNewBot, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, 0, 0, true);
-    m_engine->ChangeTextureColor("lemt.png",    m_colorRefBot, m_colorNewBot, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, 0, 0, true);
-    m_engine->ChangeTextureColor("roller.png",  m_colorRefBot, m_colorNewBot, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, 0, 0, true);
-    m_engine->ChangeTextureColor("search.png",  m_colorRefBot, m_colorNewBot, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, 0, 0, true);
+    m_engine->ChangeTextureColor("textures/base1.png",   m_colorRefBot, m_colorNewBot, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, 0, 0, true);
+    m_engine->ChangeTextureColor("textures/convert.png", m_colorRefBot, m_colorNewBot, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, 0, 0, true);
+    m_engine->ChangeTextureColor("textures/derrick.png", m_colorRefBot, m_colorNewBot, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, 0, 0, true);
+    m_engine->ChangeTextureColor("textures/factory.png", m_colorRefBot, m_colorNewBot, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, 0, 0, true);
+    m_engine->ChangeTextureColor("textures/lemt.png",    m_colorRefBot, m_colorNewBot, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, 0, 0, true);
+    m_engine->ChangeTextureColor("textures/roller.png",  m_colorRefBot, m_colorNewBot, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, 0, 0, true);
+    m_engine->ChangeTextureColor("textures/search.png",  m_colorRefBot, m_colorNewBot, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, 0, 0, true);
 
     exclu[0] = Math::Point(  0.0f/256.0f, 160.0f/256.0f);
     exclu[1] = Math::Point(256.0f/256.0f, 256.0f/256.0f);  // pencils
     exclu[2] = Math::Point(0.0f, 0.0f);
     exclu[3] = Math::Point(0.0f, 0.0f);  // terminator
-    m_engine->ChangeTextureColor("drawer.png",  m_colorRefBot, m_colorNewBot, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, exclu, 0, true);
+    m_engine->ChangeTextureColor("textures/drawer.png",  m_colorRefBot, m_colorNewBot, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, exclu, 0, true);
 
     exclu[0] = Math::Point(237.0f/256.0f, 176.0f/256.0f);
     exclu[1] = Math::Point(256.0f/256.0f, 220.0f/256.0f);  // blue canister
@@ -5229,26 +5229,26 @@ void CRobotMain::ChangeColor()
     exclu[3] = Math::Point(130.0f/256.0f, 214.0f/256.0f);  // safe location
     exclu[4] = Math::Point(0.0f, 0.0f);
     exclu[5] = Math::Point(0.0f, 0.0f);  // terminator
-    m_engine->ChangeTextureColor("subm.png",    m_colorRefBot, m_colorNewBot, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, exclu, 0, true);
+    m_engine->ChangeTextureColor("textures/subm.png",    m_colorRefBot, m_colorNewBot, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, exclu, 0, true);
 
     exclu[0] = Math::Point(128.0f/256.0f, 160.0f/256.0f);
     exclu[1] = Math::Point(256.0f/256.0f, 256.0f/256.0f);  // SatCom
     exclu[2] = Math::Point(0.0f, 0.0f);
     exclu[3] = Math::Point(0.0f, 0.0f);  // terminator
-    m_engine->ChangeTextureColor("ant.png",     m_colorRefAlien, m_colorNewAlien, colorRef2, colorNew2, 0.50f, -1.0f, ts, ti, exclu);
-    m_engine->ChangeTextureColor("mother.png",  m_colorRefAlien, m_colorNewAlien, colorRef2, colorNew2, 0.50f, -1.0f, ts, ti);
+    m_engine->ChangeTextureColor("textures/ant.png",     m_colorRefAlien, m_colorNewAlien, colorRef2, colorNew2, 0.50f, -1.0f, ts, ti, exclu);
+    m_engine->ChangeTextureColor("textures/mother.png",  m_colorRefAlien, m_colorNewAlien, colorRef2, colorNew2, 0.50f, -1.0f, ts, ti);
 
-    m_engine->ChangeTextureColor("plant.png",   m_colorRefGreen, m_colorNewGreen, colorRef2, colorNew2, 0.50f, -1.0f, ts, ti);
+    m_engine->ChangeTextureColor("textures/plant.png",   m_colorRefGreen, m_colorNewGreen, colorRef2, colorNew2, 0.50f, -1.0f, ts, ti);
 
     // PARTIPLOUF0 and PARTIDROP :
     ts = Math::Point(0.500f, 0.500f);
     ti = Math::Point(0.875f, 0.750f);
-    m_engine->ChangeTextureColor("interface/effect00.png", m_colorRefWater, m_colorNewWater, colorRef2, colorNew2, 0.20f, -1.0f, ts, ti, 0, m_colorShiftWater, true);
+    m_engine->ChangeTextureColor("textures/interface/effect00.png", m_colorRefWater, m_colorNewWater, colorRef2, colorNew2, 0.20f, -1.0f, ts, ti, 0, m_colorShiftWater, true);
 
     // PARTIFLIC :
     ts = Math::Point(0.00f, 0.75f);
     ti = Math::Point(0.25f, 1.00f);
-    m_engine->ChangeTextureColor("interface/effect02.png", m_colorRefWater, m_colorNewWater, colorRef2, colorNew2, 0.20f, -1.0f, ts, ti, 0, m_colorShiftWater, true);
+    m_engine->ChangeTextureColor("textures/interface/effect02.png", m_colorRefWater, m_colorNewWater, colorRef2, colorNew2, 0.20f, -1.0f, ts, ti, 0, m_colorShiftWater, true);
 }
 
 //! Updates the number of unnecessary objects

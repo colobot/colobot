@@ -1371,7 +1371,7 @@ void CAutoBase::BeginTransit()
             Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
             Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
             Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f));
-    m_engine->LoadTexture(m_bgBack);
+    m_engine->LoadTexture("textures/"+m_bgBack);
 
     m_cloud->SetEnabled(false);  // cache clouds
     m_planet->SetMode(1);
@@ -1388,7 +1388,7 @@ void CAutoBase::EndTransit()
     m_engine->DeleteTexture(m_bgBack);
 
     m_engine->SetBackground(m_bgName, m_bgUp, m_bgDown, m_bgCloudUp, m_bgCloudDown);
-    m_engine->LoadTexture(m_bgName);
+    m_engine->LoadTexture("textures/"+m_bgName);
 
     m_cloud->SetEnabled(true);  // gives the clouds
     m_planet->SetMode(0);

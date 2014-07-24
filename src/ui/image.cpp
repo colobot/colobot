@@ -110,7 +110,7 @@ void CImage::Draw()
 
     if ( m_icon == 0 )  // hollow frame?
     {
-        m_engine->SetTexture("interface/button2.png");
+        m_engine->SetTexture("textures/interface/button2.png");
         m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
         uv1.x = 160.0f / 256.0f;
         uv1.y = 192.0f / 256.0f;  // u-v texture
@@ -127,8 +127,10 @@ void CImage::Draw()
 
     if ( m_filename[0] != 0 )  // displays an image?
     {
-        m_engine->LoadTexture(m_filename);
-        m_engine->SetTexture(m_filename);
+        std::string texFilename = m_filename;
+        texFilename = "textures/"+texFilename;
+        m_engine->LoadTexture(texFilename.c_str());
+        m_engine->SetTexture(texFilename);
         m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
         pos = m_pos;
         dim = m_dim;

@@ -87,7 +87,7 @@ void CGroup::Draw()
 
     if ( m_icon == 0 )  // hollow frame?
     {
-        m_engine->SetTexture("interface/button2.png");
+        m_engine->SetTexture("textures/interface/button2.png");
         m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
         uv1.x = 160.0f / 256.0f;
         uv1.y = 192.0f / 256.0f;  // u-v texture
@@ -103,7 +103,7 @@ void CGroup::Draw()
     }
     if ( m_icon == 1 )  // orange solid opaque?
     {
-        m_engine->SetTexture("interface/button2.png");
+        m_engine->SetTexture("textures/interface/button2.png");
         m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
         uv1.x = 104.0f / 256.0f;
         uv1.y =  48.0f / 256.0f;
@@ -117,7 +117,7 @@ void CGroup::Draw()
     }
     if ( m_icon == 2 )  // orange degrade -> transparent?
     {
-        m_engine->SetTexture("interface/button2.png");
+        m_engine->SetTexture("textures/interface/button2.png");
         m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_WHITE);
         uv1.x = 112.0f / 256.0f;
         uv1.y =  48.0f / 256.0f;
@@ -131,7 +131,7 @@ void CGroup::Draw()
     }
     if ( m_icon == 3 )  // transparent gradient -> gray?
     {
-        m_engine->SetTexture("interface/button2.png");
+        m_engine->SetTexture("textures/interface/button2.png");
         m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_WHITE);
         uv1.x = 120.0f / 256.0f;
         uv1.y =  48.0f / 256.0f;
@@ -145,7 +145,7 @@ void CGroup::Draw()
     }
     if ( m_icon == 4 )  // degrade blue corner?
     {
-        m_engine->SetTexture("interface/button2.png");
+        m_engine->SetTexture("textures/interface/button2.png");
         m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_WHITE);
         uv1.x = 192.0f / 256.0f;
         uv1.y = 128.0f / 256.0f;
@@ -159,7 +159,7 @@ void CGroup::Draw()
     }
     if ( m_icon == 5 )  // degrade orange corner?
     {
-        m_engine->SetTexture("interface/button2.png");
+        m_engine->SetTexture("textures/interface/button2.png");
         m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_WHITE);
         uv1.x = 224.0f / 256.0f;
         uv1.y = 128.0f / 256.0f;
@@ -173,7 +173,7 @@ void CGroup::Draw()
     }
     if ( m_icon == 6 )
     {
-        m_engine->SetTexture("interface/button2.png");
+        m_engine->SetTexture("textures/interface/button2.png");
         m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_BLACK);
         uv1.x =   0.0f / 256.0f;  // brown transparent
         uv1.y =  75.0f / 256.0f;
@@ -189,7 +189,7 @@ void CGroup::Draw()
     }
     if ( m_icon == 7 )
     {
-        m_engine->SetTexture("interface/button1.png");
+        m_engine->SetTexture("textures/interface/button1.png");
         m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
         uv1.x =  64.0f / 256.0f;
         uv1.y =   0.0f / 256.0f;
@@ -203,7 +203,7 @@ void CGroup::Draw()
     }
     if ( m_icon == 8 )
     {
-        m_engine->SetTexture("interface/button2.png");
+        m_engine->SetTexture("textures/interface/button2.png");
         m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_BLACK);
         uv1.x =  64.0f / 256.0f;  // green transparent
         uv1.y = 160.0f / 256.0f;
@@ -217,7 +217,7 @@ void CGroup::Draw()
     }
     if ( m_icon == 9 )
     {
-        m_engine->SetTexture("interface/button2.png");
+        m_engine->SetTexture("textures/interface/button2.png");
         m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_BLACK);
         uv1.x =  64.0f / 256.0f;  // red transparent
         uv1.y = 176.0f/256.0f;
@@ -231,7 +231,7 @@ void CGroup::Draw()
     }
     if ( m_icon == 10 )
     {
-        m_engine->SetTexture("interface/button2.png");
+        m_engine->SetTexture("textures/interface/button2.png");
         m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_BLACK);
         uv1.x =  64.0f / 256.0f;  // blue transparent
         uv1.y = 192.0f / 256.0f;
@@ -245,7 +245,7 @@ void CGroup::Draw()
     }
     if ( m_icon == 11 )
     {
-        m_engine->SetTexture("interface/button2.png");
+        m_engine->SetTexture("textures/interface/button2.png");
         m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_BLACK);
         uv1.x =  64.0f / 256.0f;  // yellow transparent
         uv1.y = 224.0f / 256.0f;
@@ -262,7 +262,7 @@ void CGroup::Draw()
         dim.x = m_dim.x / 2.0f;
         dim.y = m_dim.y / 2.0f;
 
-        m_engine->SetTexture("interface/mouse.png");
+        m_engine->SetTexture("textures/interface/mouse.png");
         m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_BLACK);
         pos.x = m_pos.x-m_dim.x/300.0f;
         pos.y = m_pos.y+m_dim.y/300.0f+dim.y;
@@ -301,7 +301,7 @@ void CGroup::Draw()
     }
     if ( m_icon == 13 )  // corner upper / left?
     {
-        m_engine->SetTexture("interface/mouse.png");
+        m_engine->SetTexture("textures/interface/mouse.png");
         m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_BLACK);
         pos.x = m_pos.x-m_dim.x/150.0f;
         pos.y = m_pos.y+m_dim.y/150.0f;
@@ -322,7 +322,7 @@ void CGroup::Draw()
     }
     if ( m_icon == 14 )  // corner upper / right?
     {
-        m_engine->SetTexture("interface/mouse.png");
+        m_engine->SetTexture("textures/interface/mouse.png");
         m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_BLACK);
         pos.x = m_pos.x-m_dim.x/150.0f;
         pos.y = m_pos.y+m_dim.y/150.0f;
@@ -343,7 +343,7 @@ void CGroup::Draw()
     }
     if ( m_icon == 15 )  // corner lower / left?
     {
-        m_engine->SetTexture("interface/mouse.png");
+        m_engine->SetTexture("textures/interface/mouse.png");
         m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_BLACK);
         pos.x = m_pos.x-m_dim.x/150.0f;
         pos.y = m_pos.y+m_dim.y/150.0f;
@@ -364,7 +364,7 @@ void CGroup::Draw()
     }
     if ( m_icon == 16 )  // corner lower / left?
     {
-        m_engine->SetTexture("interface/mouse.png");
+        m_engine->SetTexture("textures/interface/mouse.png");
         m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_BLACK);
         pos.x = m_pos.x-m_dim.x/150.0f;
         pos.y = m_pos.y+m_dim.y/150.0f;
@@ -385,7 +385,7 @@ void CGroup::Draw()
     }
     if ( m_icon == 17 )
     {
-        m_engine->SetTexture("interface/button2.png");
+        m_engine->SetTexture("textures/interface/button2.png");
         m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
         uv1.x =   0.0f / 256.0f;  // blue frame
         uv1.y =  75.0f / 256.0f;
@@ -401,7 +401,7 @@ void CGroup::Draw()
     }
     if ( m_icon == 18 )  // arrow> for SatCom?
     {
-        m_engine->SetTexture("interface/button1.png");
+        m_engine->SetTexture("textures/interface/button1.png");
         m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_WHITE);
         uv1.x =   0.0f / 256.0f;   // >
         uv1.y = 192.0f / 256.0f;
@@ -415,7 +415,7 @@ void CGroup::Draw()
     }
     if ( m_icon == 19 )  // SatCom symbol?
     {
-        m_engine->SetTexture("interface/button1.png");
+        m_engine->SetTexture("textures/interface/button1.png");
         m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_WHITE);
         uv1.x = 224.0f / 256.0f;  // SatCom symbol
         uv1.y = 224.0f / 256.0f;
@@ -429,7 +429,7 @@ void CGroup::Draw()
     }
     if ( m_icon == 20 )  // solid blue background?
     {
-        m_engine->SetTexture("interface/button1.png");
+        m_engine->SetTexture("textures/interface/button1.png");
         m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_WHITE);
         uv1.x = 224.0f / 256.0f;
         uv1.y =  32.0f / 256.0f;
@@ -443,7 +443,7 @@ void CGroup::Draw()
     }
     if ( m_icon == 21 )  // stand-by symbol?
     {
-        m_engine->SetTexture("interface/button2.png");
+        m_engine->SetTexture("textures/interface/button2.png");
         m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_WHITE);
         uv1.x = 160.0f / 256.0f;
         uv1.y =  32.0f / 256.0f;
@@ -457,7 +457,7 @@ void CGroup::Draw()
     }
     if ( m_icon == 22 )
     {
-        m_engine->SetTexture("interface/button2.png");
+        m_engine->SetTexture("textures/interface/button2.png");
         m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
         uv1.x =  64.0f / 256.0f;  // opaque yellow
         uv1.y = 224.0f / 256.0f;
@@ -474,7 +474,7 @@ void CGroup::Draw()
 
     if ( m_icon == 23 )
     {
-        m_engine->SetTexture("interface/button3.png");
+        m_engine->SetTexture("textures/interface/button3.png");
         m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
         uv1.x =  64.0f / 256.0f;  // yellow
         uv1.y = 192.0f / 256.0f;
@@ -490,7 +490,7 @@ void CGroup::Draw()
     }
     if ( m_icon == 24 )
     {
-        m_engine->SetTexture("interface/button3.png");
+        m_engine->SetTexture("textures/interface/button3.png");
         m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
         uv1.x =  80.0f / 256.0f;  // orange
         uv1.y = 192.0f / 256.0f;
@@ -506,7 +506,7 @@ void CGroup::Draw()
     }
     if ( m_icon == 25 )
     {
-        m_engine->SetTexture("interface/button3.png");
+        m_engine->SetTexture("textures/interface/button3.png");
         m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
         uv1.x =  64.0f / 256.0f;  // orange
         uv1.y = 208.0f / 256.0f;
@@ -522,7 +522,7 @@ void CGroup::Draw()
     }
     if ( m_icon == 26 )
     {
-        m_engine->SetTexture("interface/button3.png");
+        m_engine->SetTexture("textures/interface/button3.png");
         m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
         uv1.x =  80.0f / 256.0f;   // red
         uv1.y = 208.0f / 256.0f;
@@ -538,7 +538,7 @@ void CGroup::Draw()
     }
     if ( m_icon == 27 )
     {
-        m_engine->SetTexture("interface/button3.png");
+        m_engine->SetTexture("textures/interface/button3.png");
         m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
         uv1.x =  32.0f / 256.0f;
         uv1.y =   0.0f / 256.0f;
@@ -556,7 +556,7 @@ void CGroup::Draw()
         pos = m_pos;
         dim = m_dim;
 
-        m_engine->SetTexture("interface/button2.png");
+        m_engine->SetTexture("textures/interface/button2.png");
         m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
         uv1.x = 32.0f / 256.0f;
         uv1.y = 32.0f / 256.0f;
@@ -568,7 +568,7 @@ void CGroup::Draw()
         uv2.y -= dp;
         DrawIcon(pos, dim, uv1, uv2);
 
-        m_engine->SetTexture("interface/button3.png");
+        m_engine->SetTexture("textures/interface/button3.png");
         m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
         pos.x +=  8.0f / 640.0f;
         pos.y +=  8.0f / 480.0f;

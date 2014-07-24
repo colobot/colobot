@@ -125,8 +125,8 @@ void CCloud::Draw()
     material.ambient = m_ambient;
     m_engine->SetMaterial(material);
 
-    m_engine->SetTexture(m_fileName, 0);
-    m_engine->SetTexture(m_fileName, 1);
+    m_engine->SetTexture("textures/"+m_fileName, 0);
+    m_engine->SetTexture("textures/"+m_fileName, 1);
 
     m_engine->SetState(ENG_RSTATE_TTEXTURE_BLACK | ENG_RSTATE_FOG | ENG_RSTATE_WRAP);
 
@@ -218,7 +218,7 @@ void CCloud::Create(const std::string& fileName,
     m_fileName = fileName;
 
     if (! m_fileName.empty())
-        m_engine->LoadTexture(m_fileName);
+        m_engine->LoadTexture("textures/"+m_fileName);
 
     if (m_terrain == nullptr)
         m_terrain = CRobotMain::GetInstancePointer()->GetTerrain();

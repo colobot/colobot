@@ -138,7 +138,7 @@ void CColor::Draw()
         DrawShadow(m_pos, m_dim);
     }
 
-    m_engine->SetTexture("interface/button1.png");
+    m_engine->SetTexture("textures/interface/button1.png");
     m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
     CControl::Draw();
     

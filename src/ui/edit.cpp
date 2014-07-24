@@ -1146,7 +1146,6 @@ void CEdit::DrawImage(Math::Point pos, std::string name, float width,
     filename = name + ".png";
     CRobotMain::InjectLevelDir(filename, "icons");
     boost::replace_all(filename, "\\", "/"); //TODO: Fix this in files
-    filename = "../" + filename;
 
     m_engine->SetTexture(filename);
     m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
@@ -1176,7 +1175,7 @@ void CEdit::DrawBack(Math::Point pos, Math::Point dim)
 
     if ( m_bGeneric )  return;
 
-    m_engine->SetTexture("interface/button2.png");
+    m_engine->SetTexture("textures/interface/button2.png");
     m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
 
     if ( m_bMulti )
@@ -1226,7 +1225,7 @@ void CEdit::DrawPart(Math::Point pos, Math::Point dim, int icon)
     Math::Point     uv1, uv2;
     float       dp;
 
-    m_engine->SetTexture("interface/text.png");
+    m_engine->SetTexture("textures/interface/text.png");
     m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
 
     uv1.x = (16.0f/256.0f)*(icon%16);
@@ -1437,7 +1436,7 @@ void CEdit::LoadImage(std::string name)
     filename = name + ".png";
     CRobotMain::InjectLevelDir(filename, "icons");
     boost::replace_all(filename, "\\", "/"); //TODO: Fix this in files
-    m_engine->LoadTexture("../"+filename);
+    m_engine->LoadTexture(filename);
 }
 
 // Read from a text file.
