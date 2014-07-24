@@ -95,29 +95,29 @@ long long CSystemUtilsLinux::TimeStampExactDiff(SystemTimeStamp *before, SystemT
            (after->clockTime.tv_sec  - before->clockTime.tv_sec) * 1000000000ll;
 }
 
-std::string CSystemUtilsLinux::GetProfileFileLocation()
+std::string CSystemUtilsLinux::GetSaveDir()
 {
-    std::string profileFile;
-
-    // Determine profileFile according to XDG Base Directory Specification
-    char* envXDG_CONFIG_HOME = getenv("XDG_CONFIG_HOME");
-    if (envXDG_CONFIG_HOME == NULL)
+    std::string savegameDir;
+    
+    // Determine savegame dir according to XDG Base Directory Specification
+    char *envXDG_DATA_HOME = getenv("XDG_CONFIG_DATA");
+    if (envXDG_DATA_HOME == NULL)
     {
         char *envHOME = getenv("HOME");
         if (envHOME == NULL)
         {
-            profileFile = "colobot.ini";
+            savegameDir = "/tmp/colobot-save";
         }
         else
         {
-            profileFile = std::string(envHOME) + "/.config/colobot.ini";
+            savegameDir = std::string(envHOME) + "/.local/share/colobot";
         }
     }
     else
     {
-        profileFile = std::string(envXDG_CONFIG_HOME) + "/colobot.ini";
+        savegameDir = std::string(envXDG_DATA_HOME) + "/colobot";
     }
-    GetLogger()->Trace("Profile configuration is %s\n", profileFile.c_str());
-
-    return profileFile;
+    GetLogger()->Trace("Saved game files are going to %s\n", savegameDir.c_str());
+    
+    return savegameDir;
 }

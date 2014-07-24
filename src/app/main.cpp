@@ -102,6 +102,9 @@ int SDL_MAIN_FUNC(int argc, char *argv[])
     {
         return app->GetExitCode();
     }
+    
+    manager.SetSaveLocation(systemUtils->GetSaveDir());
+    manager.AddLocation(systemUtils->GetSaveDir(), true);
 
     int code = 0;
 
@@ -121,6 +124,7 @@ int SDL_MAIN_FUNC(int argc, char *argv[])
 
     delete app;
     delete systemUtils;
+    //delete manager;
 
     logger.Info("Exiting with code %d\n", code);
     return code;

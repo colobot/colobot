@@ -43,6 +43,7 @@ void COutputStreamBuffer::open(const std::string &filename)
 
 void COutputStreamBuffer::close()
 {
+    sync();
     if (is_open())
         PHYSFS_close(m_file);
 }

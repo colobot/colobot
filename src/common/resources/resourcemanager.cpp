@@ -18,15 +18,16 @@
 #include "common/resources/resourcemanager.h"
 
 #include "common/config.h"
+#include "common/logger.h"
 
 #include <physfs.h>
 
 
 CResourceManager::CResourceManager(const char *argv0)
 {
-    if (PHYSFS_init(argv0))
+    if (!PHYSFS_init(argv0))
     {
-        // TODO error
+        CLogger::GetInstancePointer()->Error("Error while initializing physfs\n");
     }
 }
 
@@ -35,9 +36,9 @@ CResourceManager::~CResourceManager()
 {
     if (PHYSFS_isInit())
     {
-        if (PHYSFS_deinit())
+        if (!PHYSFS_deinit())
         {
-            // TODO error
+            CLogger::GetInstancePointer()->Error("Error while deinitializing physfs\n");
         }
     }
 }
@@ -47,9 +48,9 @@ bool CResourceManager::AddLocation(const std::string &location, bool prepend)
 {
     if (PHYSFS_isInit())
     {
-        if (PHYSFS_mount(location.c_str(), nullptr, prepend ? 0 : 1))
+        if (!PHYSFS_mount(location.c_str(), nullptr, prepend ? 0 : 1))
         {
-            // TODO error
+            CLogger::GetInstancePointer()->Error("Error while mounting \"%s\"\n", location.c_str());
         }
     }
     
@@ -61,9 +62,9 @@ bool CResourceManager::RemoveLocation(const std::string &location)
 {
     if (PHYSFS_isInit())
     {
-        if (PHYSFS_removeFromSearchPath(location.c_str()))
+        if (!PHYSFS_removeFromSearchPath(location.c_str()))
         {
-            // TODO error
+            CLogger::GetInstancePointer()->Error("Error while unmounting \"%s\"\n", location.c_str());
         }
     }
     
@@ -75,9 +76,9 @@ bool CResourceManager::SetSaveLocation(const std::string &location)
 {
     if (PHYSFS_isInit())
     {
-        if (PHYSFS_setWriteDir(location.c_str()))
+        if (!PHYSFS_setWriteDir(location.c_str()))
         {
-            // TODO error
+            CLogger::GetInstancePointer()->Error("Error while setting save location to \"%s\"\n", location.c_str());
         }
     }
     
@@ -96,7 +97,7 @@ SDL_RWops* CResourceManager::GetSDLFileHandler(const std::string &filename)
     SDL_RWops *handler = SDL_AllocRW();
     if (!handler)
     {
-        // TODO error
+        CLogger::GetInstancePointer()->Error("Unable to allocate SDL_RWops for \"%s\"\n", filename.c_str());
         return nullptr;
     }
     

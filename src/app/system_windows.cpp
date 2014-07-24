@@ -111,20 +111,20 @@ std::wstring CSystemUtilsWindows::UTF8_Decode(const std::string& str)
 
 }
 
-std::string CSystemUtilsWindows::GetProfileFileLocation()
+std::string CSystemUtilsWindows::GetSaveDir()
 {
-    std::string profileFile;
-
+    std::string savegameDir;
+    
     char* envUSERPROFILE = getenv("USERPROFILE");
     if (envUSERPROFILE == NULL)
     {
-        profileFile = "colobot.ini";
+        savegameDir = "save";
     }
     else
     {
-        profileFile = std::string(envUSERPROFILE) + "\\colobot\\colobot.ini";
+        savegameDir = std::string(envUSERPROFILE) + "\\colobot";
     }
-    GetLogger()->Trace("Profile configuration is %s\n", profileFile.c_str());
-
-    return profileFile;
+    GetLogger()->Trace("Saved game files are going to %s\n", savegameDir.c_str());
+    
+    return savegameDir;
 }

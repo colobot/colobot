@@ -18,6 +18,8 @@
 #include "common/profile.h"
 
 #include "common/logger.h"
+#include "common/resources/inputstream.h"
+#include "common/resources/outputstream.h"
 
 #include "app/system.h"
 
@@ -47,11 +49,15 @@ bool CProfile::InitCurrentDirectory()
 {
     try
     {
-        #if DEV_BUILD
-        bp::ini_parser::read_ini("colobot.ini", m_propertyTree);
-        #else
-        bp::ini_parser::read_ini(GetSystemUtils()->GetProfileFileLocation(), m_propertyTree);
-        #endif
+        CInputStream stream;
+        stream.open("colobot.ini");
+        if(stream.is_open()) {
+            bp::ini_parser::read_ini(stream, m_propertyTree);
+        } else {
+            GetLogger()->Error("Error on parsing profile: failed to open file\n");
+            return false;
+        }
+        stream.close();
     }
     catch (std::exception & e)
     {
@@ -67,11 +73,15 @@ bool CProfile::SaveCurrentDirectory()
     {
         try
         {
-            #if DEV_BUILD
-            bp::ini_parser::write_ini("colobot.ini", m_propertyTree);
-            #else
-            bp::ini_parser::write_ini(GetSystemUtils()->GetProfileFileLocation(), m_propertyTree);
-            #endif
+            COutputStream stream;
+            stream.open("colobot.ini");
+            if(stream.is_open()) {
+                bp::ini_parser::write_ini(stream, m_propertyTree);
+            } else {
+                GetLogger()->Error("Error on storing profile: failed to open file\n");
+                return false;
+            }
+            stream.close();
         }
         catch (std::exception & e)
         {

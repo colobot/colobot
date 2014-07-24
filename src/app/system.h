@@ -130,8 +130,8 @@ public:
     /** The difference is \a after - \a before. */
     virtual long long TimeStampExactDiff(SystemTimeStamp *before, SystemTimeStamp *after) = 0;
 
-    //! Returns the profile (colobot.ini) file location
-    virtual std::string GetProfileFileLocation();
+    //! Returns the save dir location
+    virtual std::string GetSaveDir();
 };
 
 //! Global function to get CSystemUtils instance
