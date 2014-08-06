@@ -1965,10 +1965,10 @@ bool CEngine::IsWithinLODLimit(float distance, LODLevel lodLevel)
         }
 
         min *= m_size.x / 640.0f;
-        min *= m_objectDetail*2.0f;
+        min *= 1.0f+m_objectDetail*2.0f;
 
         max *= m_size.x / 640.0f;
-        max *= m_objectDetail*2.0f;
+        max *= 1.0f+m_objectDetail*2.0f;
     }
 
     return distance >= min && distance < max;
