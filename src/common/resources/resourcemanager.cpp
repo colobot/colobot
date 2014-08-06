@@ -130,6 +130,21 @@ bool CResourceManager::Exists(const std::string &filename)
     return PHYSFS_exists(filename.c_str());
 }
 
+std::vector<std::string> CResourceManager::ListFiles(const std::string &directory)
+{
+    std::vector<std::string> result;
+    
+    char **files = PHYSFS_enumerateFiles(directory.c_str());
+    
+    for (char **i = files; *i != nullptr; i++) {
+        result.push_back(*i);
+    }
+    
+    PHYSFS_freeList(files);
+    
+    return result;
+}
+
 
 int CResourceManager::SDLClose(SDL_RWops *context)
 {

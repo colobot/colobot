@@ -401,8 +401,13 @@ bool CApplication::Create()
         return false;
     }
     
-    CResourceManager::AddLocation(m_dataPath, false);
     boost::filesystem::create_directories(m_savePath);
+    boost::filesystem::create_directories(m_savePath+"/mods");
+    
+    LoadModsFromDir(m_dataPath+"/mods");
+    LoadModsFromDir(m_savePath+"/mods");
+    
+    CResourceManager::AddLocation(m_dataPath, false);
     CResourceManager::SetSaveLocation(m_savePath);
     CResourceManager::AddLocation(m_savePath, true);
 
@@ -593,6 +598,23 @@ bool CApplication::CreateVideoSurface()
                                           m_deviceConfig.bpp, videoFlags);
 
     return true;
+}
+
+void CApplication::LoadModsFromDir(const std::string &dir)
+{
+    try {
+        boost::filesystem::directory_iterator iterator(dir);
+        for(; iterator != boost::filesystem::directory_iterator(); ++iterator)
+        {
+            std::string fn = iterator->path().string();
+            CLogger::GetInstancePointer()->Info("Loading mod: '%s'\n", fn.c_str());
+            CResourceManager::AddLocation(fn, false);
+        }
+    }
+    catch(std::exception &e)
+    {
+        CLogger::GetInstancePointer()->Warn("Unable to load mods from directory '%s': %s\n", dir.c_str(), e.what());
+    }
 }
 
 void CApplication::Destroy()

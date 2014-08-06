@@ -16,6 +16,7 @@
 
 #pragma once
 
+#include <vector>
 #include <string>
 #include <SDL.h>
 
@@ -33,6 +34,7 @@ public:
     static SDL_RWops* GetSDLFileHandler(const std::string &filename);
     static CSNDFile* GetSNDFileHandler(const std::string &filename);
     static bool Exists(const std::string &filename);
+    static std::vector<std::string> ListFiles(const std::string &directory);
 
 private:
     static int SDLSeek(SDL_RWops *context, int offset, int whence);

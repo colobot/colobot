@@ -354,6 +354,9 @@ public:
 protected:
     //! Creates the window's SDL_Surface
     bool CreateVideoSurface();
+    
+    //! Loads all mods from given directory
+    void LoadModsFromDir(const std::string &dir);
 
     //! Processes the captured SDL event to Event struct
     Event       ProcessSystemEvent();
