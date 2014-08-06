@@ -28,6 +28,8 @@ class CSystemUtilsMacOSX : public CSystemUtilsOther
 public:
     virtual void Init() override;
 
+    virtual std::string GetDataPath() override;
+    virtual std::string GetLangPath() override;
     virtual std::string GetSaveDir() override;
 private:
     std::string m_ASPath;

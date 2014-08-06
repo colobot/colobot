@@ -30,7 +30,6 @@ public:
     static bool AddLocation(const std::string &location, bool prepend = true);
     static bool RemoveLocation(const std::string &location);
     static bool SetSaveLocation(const std::string &location);
-    static std::string GetLanguageLocation();
     static SDL_RWops* GetSDLFileHandler(const std::string &filename);
     static CSNDFile* GetSNDFileHandler(const std::string &filename);
     static bool Exists(const std::string &filename);

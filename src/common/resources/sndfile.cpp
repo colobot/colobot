@@ -52,18 +52,17 @@ CSNDFile::~CSNDFile()
     if (m_file)
     {
         PHYSFS_close(m_file);
-    }
-    
-    if (m_snd_file)
-    {
-        sf_close(m_snd_file);
+        if (m_snd_file)
+        {
+            sf_close(m_snd_file);
+        }
     }
 }
 
 
 bool CSNDFile::IsOpen()
 {
-    return m_snd_file;
+    return m_file && m_snd_file;
 }
 
 

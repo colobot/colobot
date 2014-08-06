@@ -79,7 +79,6 @@ int SDL_MAIN_FUNC(int argc, char *argv[])
 {
     CLogger logger; // single istance of logger
     CResourceManager manager(argv[0]);
-    manager.AddLocation(COLOBOT_DEFAULT_DATADIR, false);
 
     // Initialize static string arrays
     InitializeRestext();
@@ -102,9 +101,6 @@ int SDL_MAIN_FUNC(int argc, char *argv[])
     {
         return app->GetExitCode();
     }
-    
-    manager.SetSaveLocation(systemUtils->GetSaveDir());
-    manager.AddLocation(systemUtils->GetSaveDir(), true);
 
     int code = 0;
 
@@ -124,7 +120,6 @@ int SDL_MAIN_FUNC(int argc, char *argv[])
 
     delete app;
     delete systemUtils;
-    //delete manager;
 
     logger.Info("Exiting with code %d\n", code);
     return code;

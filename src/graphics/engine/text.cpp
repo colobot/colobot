@@ -867,7 +867,13 @@ CachedFont* CText::GetOrOpenFont(FontType font, float size)
     }
 
     m_lastCachedFont = new CachedFont();
-    m_lastCachedFont->font = TTF_OpenFontRW(CResourceManager::GetSDLFileHandler(mf->fileName), 1, pointSize);
+    SDL_RWops* file = CResourceManager::GetSDLFileHandler(mf->fileName);
+    if(file == nullptr)
+    {
+        m_error = std::string("Unable to open file");
+        return nullptr;
+    }
+    m_lastCachedFont->font = TTF_OpenFontRW(file, 1, pointSize);
     if (m_lastCachedFont->font == nullptr)
         m_error = std::string("TTF_OpenFont error ") + std::string(TTF_GetError());
 

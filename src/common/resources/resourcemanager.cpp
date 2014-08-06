@@ -86,12 +86,6 @@ bool CResourceManager::SetSaveLocation(const std::string &location)
 }
 
 
-std::string CResourceManager::GetLanguageLocation()
-{
-    return COLOBOT_I18N_DIR;
-}
-
-
 SDL_RWops* CResourceManager::GetSDLFileHandler(const std::string &filename)
 {
     SDL_RWops *handler = SDL_AllocRW();

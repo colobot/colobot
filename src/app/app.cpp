@@ -146,6 +146,10 @@ CApplication::CApplication()
     m_kmodState = 0;
     m_mouseButtonsState = 0;
     m_trackedKeys = 0;
+    
+    m_dataPath = GetSystemUtils()->GetDataPath();
+    m_langPath = GetSystemUtils()->GetLangPath();
+    m_savePath = GetSystemUtils()->GetSaveDir();
 
     m_runSceneName = "";
     m_runSceneRank = 0;
@@ -208,8 +212,10 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
         OPT_LOGLEVEL,
         OPT_LANGUAGE,
         OPT_LANGDIR,
-        OPT_VBO,
-        OPT_MOD
+        OPT_DATADIR,
+        OPT_SAVEDIR,
+        OPT_MOD,
+        OPT_VBO
     };
 
     option options[] =
@@ -221,8 +227,10 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
         { "loglevel", required_argument, nullptr, OPT_LOGLEVEL },
         { "language", required_argument, nullptr, OPT_LANGUAGE },
         { "langdir", required_argument, nullptr, OPT_LANGDIR },
-        { "vbo", required_argument, nullptr, OPT_VBO },
+        { "datadir", required_argument, nullptr, OPT_DATADIR },
+        { "savedir", required_argument, nullptr, OPT_SAVEDIR },
         { "mod", required_argument, nullptr, OPT_MOD },
+        { "vbo", required_argument, nullptr, OPT_VBO },
         { nullptr, 0, nullptr, 0}
     };
 
@@ -260,8 +268,10 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
                 GetLogger()->Message("  -loglevel level     set log level to level (one of: trace, debug, info, warn, error, none)\n");
                 GetLogger()->Message("  -language lang      set language (one of: en, de, fr, pl, ru)\n");
                 GetLogger()->Message("  -langdir path       set custom language directory path\n");
-                GetLogger()->Message("  -vbo mode           set OpenGL VBO mode (one of: auto, enable, disable)\n");
+                GetLogger()->Message("  -datadir path       set custom data directory path\n");
+                GetLogger()->Message("  -savedir path       set custom save directory path (must be writable)\n");
                 GetLogger()->Message("  -mod path           load datadir mod from given path\n");
+                GetLogger()->Message("  -vbo mode           set OpenGL VBO mode (one of: auto, enable, disable)\n");
                 return PARSE_ARGS_HELP;
             }
             case OPT_DEBUG:
@@ -341,11 +351,28 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
 
                 break;
             }
+            case OPT_DATADIR:
+            {
+                m_dataPath = optarg;
+                GetLogger()->Info("Using data dir: '%s'\n", optarg);
+                break;
+            }
+            case OPT_LANGDIR:
+            {
+                m_langPath = optarg;
+                GetLogger()->Info("Using language dir: '%s'\n", optarg);
+                break;
+            }
+            case OPT_SAVEDIR:
+            {
+                m_savePath = optarg;
+                GetLogger()->Info("Using save dir: '%s'\n", optarg);
+                break;
+            }
             case OPT_MOD:
             {
-                GetLogger()->Info("Loading mod from \"%s\"\n", optarg);
+                GetLogger()->Info("Loading mod: '%s'\n", optarg);
                 CResourceManager::AddLocation(optarg, true);
-                
                 break;
             }
             default:
@@ -362,22 +389,27 @@ bool CApplication::Create()
     bool defaultValues = false;
 
     GetLogger()->Info("Creating CApplication\n");
+    
+    boost::filesystem::path dataPath(m_dataPath);
+    if (! (boost::filesystem::exists(dataPath) && boost::filesystem::is_directory(dataPath)) )
+    {
+        GetLogger()->Error("Data directory '%s' doesn't exist or is not a directory\n", m_dataPath.c_str());
+        m_errorMessage = std::string("Could not read from data directory:\n") +
+        std::string("'") + m_dataPath + std::string("'\n") +
+        std::string("Please check your installation, or supply a valid data directory by -datadir option.");
+        m_exitCode = 1;
+        return false;
+    }
+    
+    CResourceManager::AddLocation(m_dataPath, false);
+    boost::filesystem::create_directories(m_savePath);
+    CResourceManager::SetSaveLocation(m_savePath);
+    CResourceManager::AddLocation(m_savePath, true);
 
     if (!GetProfile().InitCurrentDirectory())
     {
         GetLogger()->Warn("Config not found. Default values will be used!\n");
         defaultValues = true;
-    }
-
-    boost::filesystem::path dataPath(COLOBOT_DEFAULT_DATADIR);
-    if (! (boost::filesystem::exists(dataPath) && boost::filesystem::is_directory(dataPath)) )
-    {
-        GetLogger()->Error("Data directory '%s' doesn't exist or is not a directory\n", COLOBOT_DEFAULT_DATADIR);
-        m_errorMessage = std::string("Could not read from data directory:\n") +
-                         std::string("'") + COLOBOT_DEFAULT_DATADIR + std::string("'\n") +
-                         std::string("Please check your installation, or supply a valid data directory by -datadir option.");
-        m_exitCode = 1;
-        return false;
     }
 
     if (GetProfile().GetLocalProfileString("Language", "Lang", path)) {
@@ -1696,7 +1728,7 @@ void CApplication::SetLanguage(Language language)
 
     setlocale(LC_ALL, "");
 
-    bindtextdomain("colobot", CResourceManager::GetLanguageLocation().c_str());
+    bindtextdomain("colobot", m_langPath.c_str());
     bind_textdomain_codeset("colobot", "UTF-8");
     textdomain("colobot");
 

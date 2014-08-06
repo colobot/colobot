@@ -464,6 +464,15 @@ protected:
     std::vector<int> m_joyAxeState;
     //! Current state of joystick buttons; may be updated from another thread
     std::vector<bool> m_joyButtonState;
+    
+    //! Path to directory with data files
+    std::string     m_dataPath;
+    
+    //! Path to directory with language files
+    std::string     m_langPath;
+    
+    //! Path to directory with save files
+    std::string     m_savePath;
    
     //@{
     //! Scene to run on startup
