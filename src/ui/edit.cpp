@@ -373,23 +373,23 @@ bool CEdit::EventProcess(const Event &event)
                 MoveChar(1, bControl, bShift);
                 return true;
             }
-            if ( event.key.key == KEY(UP) )
+            if ( event.key.key == KEY(UP) && m_bMulti )
             {
                 MoveLine(-1, bControl, bShift);
                 return true;
             }
-            if ( event.key.key == KEY(DOWN) )
+            if ( event.key.key == KEY(DOWN) && m_bMulti )
             {
                 MoveLine(1, bControl, bShift);
                 return true;
             }
 
-            if ( event.key.key == KEY(PAGEUP) )  // PageUp ?
+            if ( event.key.key == KEY(PAGEUP) && m_bMulti )  // PageUp ?
             {
                 MoveLine(-(m_lineVisible-1), bControl, bShift);
                 return true;
             }
-            if ( event.key.key == KEY(PAGEDOWN) )  // PageDown ?
+            if ( event.key.key == KEY(PAGEDOWN) && m_bMulti )  // PageDown ?
             {
                 MoveLine(m_lineVisible-1, bControl, bShift);
                 return true;
