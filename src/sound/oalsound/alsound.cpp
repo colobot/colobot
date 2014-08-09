@@ -58,20 +58,14 @@ void ALSound::CleanUp()
             delete channel.second;
         }
 
-        if (m_currentMusic)
-        {
-            delete m_currentMusic;
-        }
-        
+        delete m_currentMusic;
+
         for (auto item : m_oldMusic)
         {
             delete item.music;
         }
-        
-        if (m_previousMusic.music)
-        {
-            delete m_previousMusic.music;
-        }
+
+        delete m_previousMusic.music;
 
         for (auto item : m_sounds)
         {

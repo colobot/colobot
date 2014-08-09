@@ -49,11 +49,8 @@ void CInterface::Flush()
 {
     for (int i = 0; i < MAXCONTROL; i++)
     {
-        if (m_table[i] != nullptr)
-        {
-            delete m_table[i];
-            m_table[i] = nullptr;
-        }
+        delete m_table[i];
+        m_table[i] = nullptr;
     }
 }
 

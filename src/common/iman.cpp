@@ -42,9 +42,7 @@ void CInstanceManager::Flush()
 {
     for (int i = 0; i < CLASS_MAX; i++)
     {
-        if (m_table[i].instances != nullptr)
-            delete[] m_table[i].instances;
-
+        delete[] m_table[i].instances;
         m_table[i].instances = nullptr;
     }
 }
