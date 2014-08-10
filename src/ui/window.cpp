@@ -64,34 +64,20 @@ CWindow::~CWindow()
 
 void CWindow::Flush()
 {
-    int     i;
-
-    for ( i=0 ; i<MAXWINDOW ; i++ )
+    for (int i = 0 ; i < MAXWINDOW; i++)
     {
-        if ( m_table[i] != 0 )
-        {
-            delete m_table[i];
-            m_table[i] = 0;
-        }
+        delete m_table[i];
+        m_table[i] = nullptr;
     }
 
-    if ( m_buttonReduce != 0 )
-    {
-        delete m_buttonReduce;
-        m_buttonReduce = 0;
-    }
+    delete m_buttonReduce;
+    m_buttonReduce = nullptr;
 
-    if ( m_buttonFull != 0 )
-    {
-        delete m_buttonFull;
-        m_buttonFull = 0;
-    }
+    delete m_buttonFull;
+    m_buttonFull = nullptr;
 
-    if ( m_buttonClose != 0 )
-    {
-        delete m_buttonClose;
-        m_buttonClose = 0;
-    }
+    delete m_buttonClose;
+    m_buttonClose = nullptr;
 }
 
 
@@ -583,23 +569,14 @@ void CWindow::SetName(std::string name, bool tooltip)
 
     CControl::SetName(name, tooltip);
 
-    if ( m_buttonReduce != 0 )
-    {
-        delete m_buttonReduce;
-        m_buttonReduce = 0;
-    }
+    delete m_buttonReduce;
+    m_buttonReduce = nullptr;
 
-    if ( m_buttonFull != 0 )
-    {
-        delete m_buttonFull;
-        m_buttonFull = 0;
-    }
+    delete m_buttonFull;
+    m_buttonFull = nullptr;
 
-    if ( m_buttonClose != 0 )
-    {
-        delete m_buttonClose;
-        m_buttonClose = 0;
-    }
+    delete m_buttonClose;
+    m_buttonClose = nullptr;
 
     bAdjust = false;
 

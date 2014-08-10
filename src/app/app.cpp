@@ -598,23 +598,14 @@ void CApplication::Destroy()
 {
     m_joystickEnabled = false;
 
-    if (m_robotMain != nullptr)
-    {
-        delete m_robotMain;
-        m_robotMain = nullptr;
-    }
+    delete m_robotMain;
+    m_robotMain = nullptr;
 
-    if (m_sound != nullptr)
-    {
-        delete m_sound;
-        m_sound = nullptr;
-    }
+    delete m_sound;
+    m_sound = nullptr;
 
-    if (m_modelManager != nullptr)
-    {
-        delete m_modelManager;
-        m_modelManager = nullptr;
-    }
+    delete m_modelManager;
+    m_modelManager = nullptr;
 
     if (m_engine != nullptr)
     {

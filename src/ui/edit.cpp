@@ -115,21 +115,16 @@ CEdit::CEdit () : CControl ()
 
 CEdit::~CEdit()
 {
-    int     i;
-
     FreeImage();
 
-    for ( i=0 ; i<EDITUNDOMAX ; i++ )
+    for (int i = 0; i < EDITUNDOMAX; i++)
     {
         delete m_undo[i].text;
         m_undo[i].text = nullptr;
     }
 
-    if (m_text != nullptr)
-    {
-        delete[] m_text;
-        m_text = nullptr;
-    }
+    delete[] m_text;
+    m_text = nullptr;
 
     delete m_scroll;
     m_scroll = nullptr;
@@ -1479,8 +1474,7 @@ bool CEdit::ReadText(std::string filename, int addSize)
 
     FreeImage();
 
-    if (m_text != nullptr)
-        delete[] m_text;
+    delete[] m_text;
 
     m_text = new char[m_maxChar+1];
     memset(m_text, 0, m_maxChar+1);
@@ -1958,8 +1952,7 @@ void CEdit::SetMaxChar(int max)
 {
     FreeImage();
 
-    if (m_text != nullptr)
-        delete[] m_text;
+    delete[] m_text;
 
     m_maxChar = max;
 

@@ -61,12 +61,10 @@ CList::~CList()
 {
     for (int i = 0; i < LISTMAXDISPLAY; i++)
     {
-        if (m_button[i] != nullptr)
-            delete m_button[i];
+        delete m_button[i];
     }
 
-    if (m_scroll != nullptr)
-        delete m_scroll;
+    delete m_scroll;
 }
 
 
