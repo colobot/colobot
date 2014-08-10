@@ -128,7 +128,7 @@ public:
     Error       StartTaskBuild(ObjectType type);
     Error       StartTaskSearch();
     Error       StartTaskTerraform();
-    Error       StartTaskPen(bool bDown, int color);
+    Error       StartTaskPen(bool down, int color);
     Error       StartTaskRecover();
     Error       StartTaskShield(TaskShieldMode mode);
     Error       StartTaskFire(float delay);

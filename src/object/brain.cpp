@@ -812,11 +812,11 @@ void CBrain::StopProgram()
 
 void CBrain::StopTask()
 {
-    if ( m_primaryTask != 0 )
+    if (m_primaryTask != nullptr)
     {
         m_primaryTask->Abort();
         delete m_primaryTask;  // stops the current task
-        m_primaryTask = 0;
+        m_primaryTask = nullptr;
     }
 }
 
@@ -900,16 +900,10 @@ void CBrain::StopEditScript(bool bCancel)
 
 Error CBrain::StartTaskTake()
 {
-    Error   err;
-
-    if ( m_primaryTask != 0 )
-    {
-        delete m_primaryTask;  // stops the current task
-        m_primaryTask = 0;
-    }
+    StopTask();
 
     m_primaryTask = new CTaskManager(m_object);
-    err = m_primaryTask->StartTaskTake();
+    Error err = m_primaryTask->StartTaskTake();
     UpdateInterface();
     return err;
 }
@@ -918,16 +912,10 @@ Error CBrain::StartTaskTake()
 
 Error CBrain::StartTaskManip(TaskManipOrder order, TaskManipArm arm)
 {
-    Error   err;
-
-    if ( m_primaryTask != 0 )
-    {
-        delete m_primaryTask;  // stops the current task
-        m_primaryTask = 0;
-    }
+    StopTask();
 
     m_primaryTask = new CTaskManager(m_object);
-    err = m_primaryTask->StartTaskManip(order, arm);
+    Error err = m_primaryTask->StartTaskManip(order, arm);
     UpdateInterface();
     return err;
 }
@@ -936,16 +924,10 @@ Error CBrain::StartTaskManip(TaskManipOrder order, TaskManipArm arm)
 
 Error CBrain::StartTaskFlag(TaskFlagOrder order, int rank)
 {
-    Error   err;
-
-    if ( m_primaryTask != 0 )
-    {
-        delete m_primaryTask;  // stops the current task
-        m_primaryTask = 0;
-    }
+    StopTask();
 
     m_primaryTask = new CTaskManager(m_object);
-    err = m_primaryTask->StartTaskFlag(order, rank);
+    Error err = m_primaryTask->StartTaskFlag(order, rank);
     UpdateInterface();
     return err;
 }
@@ -954,16 +936,10 @@ Error CBrain::StartTaskFlag(TaskFlagOrder order, int rank)
 
 Error CBrain::StartTaskBuild(ObjectType type)
 {
-    Error   err;
-
-    if ( m_primaryTask != 0 )
-    {
-        delete m_primaryTask;  // stops the current task
-        m_primaryTask = 0;
-    }
+    StopTask();
 
     m_primaryTask = new CTaskManager(m_object);
-    err = m_primaryTask->StartTaskBuild(type);
+    Error err = m_primaryTask->StartTaskBuild(type);
     UpdateInterface();
     return err;
 }
@@ -972,16 +948,10 @@ Error CBrain::StartTaskBuild(ObjectType type)
 
 Error CBrain::StartTaskSearch()
 {
-    Error   err;
-
-    if ( m_primaryTask != 0 )
-    {
-        delete m_primaryTask;  // stops the current task
-        m_primaryTask = 0;
-    }
+    StopTask();
 
     m_primaryTask = new CTaskManager(m_object);
-    err = m_primaryTask->StartTaskSearch();
+    Error err = m_primaryTask->StartTaskSearch();
     UpdateInterface();
     return err;
 }
@@ -990,38 +960,26 @@ Error CBrain::StartTaskSearch()
 
 Error CBrain::StartTaskTerraform()
 {
-    Error   err;
-
-    if ( m_primaryTask != 0 )
-    {
-        delete m_primaryTask;  // stops the current task
-        m_primaryTask = 0;
-    }
+    StopTask();
 
     m_primaryTask = new CTaskManager(m_object);
-    err = m_primaryTask->StartTaskTerraform();
+    Error err = m_primaryTask->StartTaskTerraform();
     UpdateInterface();
     return err;
 }
 
 // Change pencil.
 
-Error CBrain::StartTaskPen(bool bDown, int color)
+Error CBrain::StartTaskPen(bool down, int color)
 {
-    Error   err;
-
     m_physics->SetMotorSpeedX(0.0f);
     m_physics->SetMotorSpeedY(0.0f);
     m_physics->SetMotorSpeedZ(0.0f);
 
-    if ( m_primaryTask != 0 )
-    {
-        delete m_primaryTask;  // stops the current task
-        m_primaryTask = 0;
-    }
+    StopTask();
 
     m_primaryTask = new CTaskManager(m_object);
-    err = m_primaryTask->StartTaskPen(bDown, color);
+    Error err = m_primaryTask->StartTaskPen(down, color);
     UpdateInterface();
     return err;
 }
@@ -1030,16 +988,10 @@ Error CBrain::StartTaskPen(bool bDown, int color)
 
 Error CBrain::StartTaskRecover()
 {
-    Error   err;
-
-    if ( m_primaryTask != 0 )
-    {
-        delete m_primaryTask;  // stops the current task
-        m_primaryTask = 0;
-    }
+    StopTask();
 
     m_primaryTask = new CTaskManager(m_object);
-    err = m_primaryTask->StartTaskRecover();
+    Error err = m_primaryTask->StartTaskRecover();
     UpdateInterface();
     return err;
 }
@@ -1048,16 +1000,10 @@ Error CBrain::StartTaskRecover()
 
 Error CBrain::StartTaskShield(TaskShieldMode mode)
 {
-    Error   err;
-
-    if ( m_secondaryTask != 0 )
-    {
-        delete m_secondaryTask;  // stops the current task
-        m_secondaryTask = 0;
-    }
+    StopTask();
 
     m_secondaryTask = new CTaskManager(m_object);
-    err = m_secondaryTask->StartTaskShield(mode, 1000.0f);
+    Error err = m_secondaryTask->StartTaskShield(mode, 1000.0f);
     UpdateInterface();
     return err;
 }
@@ -1066,16 +1012,10 @@ Error CBrain::StartTaskShield(TaskShieldMode mode)
 
 Error CBrain::StartTaskFire(float delay)
 {
-    Error   err;
-
-    if ( m_primaryTask != 0 )
-    {
-        delete m_primaryTask;  // stops the current task
-        m_primaryTask = 0;
-    }
+    StopTask();
 
     m_primaryTask = new CTaskManager(m_object);
-    err = m_primaryTask->StartTaskFire(delay);
+    Error err = m_primaryTask->StartTaskFire(delay);
     UpdateInterface();
     return err;
 }
@@ -1084,16 +1024,10 @@ Error CBrain::StartTaskFire(float delay)
 
 Error CBrain::StartTaskSpiderExplo()
 {
-    Error   err;
-
-    if ( m_primaryTask != 0 )
-    {
-        delete m_primaryTask;  // stops the current task
-        m_primaryTask = 0;
-    }
+    StopTask();
 
     m_primaryTask = new CTaskManager(m_object);
-    err = m_primaryTask->StartTaskSpiderExplo();
+    Error err = m_primaryTask->StartTaskSpiderExplo();
     UpdateInterface();
     return err;
 }
@@ -1102,16 +1036,10 @@ Error CBrain::StartTaskSpiderExplo()
 
 Error CBrain::StartTaskFireAnt(Math::Vector impact)
 {
-    Error   err;
-
-    if ( m_primaryTask != 0 )
-    {
-        delete m_primaryTask;  // stops the current task
-        m_primaryTask = 0;
-    }
+    StopTask();
 
     m_primaryTask = new CTaskManager(m_object);
-    err = m_primaryTask->StartTaskFireAnt(impact);
+    Error err = m_primaryTask->StartTaskFireAnt(impact);
     UpdateInterface();
     return err;
 }
@@ -1120,16 +1048,10 @@ Error CBrain::StartTaskFireAnt(Math::Vector impact)
 
 Error CBrain::StartTaskGunGoal(float dirV, float dirH)
 {
-    Error   err;
-
-    if ( m_secondaryTask != 0 )
-    {
-        delete m_secondaryTask;  // stops the current task
-        m_secondaryTask = 0;
-    }
+    StopTask();
 
     m_secondaryTask = new CTaskManager(m_object);
-    err = m_secondaryTask->StartTaskGunGoal(dirV, dirH);
+    Error err = m_secondaryTask->StartTaskGunGoal(dirV, dirH);
     UpdateInterface();
     return err;
 }
@@ -1138,16 +1060,10 @@ Error CBrain::StartTaskGunGoal(float dirV, float dirH)
 
 Error CBrain::StartTaskReset(Math::Vector goal, Math::Vector angle)
 {
-    Error   err;
-
-    if ( m_primaryTask != 0 )
-    {
-        delete m_primaryTask;  // stops the current task
-        m_primaryTask = 0;
-    }
+    StopTask();
 
     m_primaryTask = new CTaskManager(m_object);
-    err = m_primaryTask->StartTaskReset(goal, angle);
+    Error err = m_primaryTask->StartTaskReset(goal, angle);
     UpdateInterface();
     return err;
 }
@@ -1156,30 +1072,29 @@ Error CBrain::StartTaskReset(Math::Vector goal, Math::Vector angle)
 
 Error CBrain::EndedTask()
 {
-    Error   err;
-
-    if ( m_secondaryTask != 0 )  // current task?
+    if (m_secondaryTask != nullptr)  // current task?
     {
-        err = m_secondaryTask->IsEnded();
+        Error err = m_secondaryTask->IsEnded();
         if ( err != ERR_CONTINUE )  // job ended?
         {
             delete m_secondaryTask;
-            m_secondaryTask = 0;
+            m_secondaryTask = nullptr;
             UpdateInterface();
         }
     }
 
-    if ( m_primaryTask != 0 )  // current task?
+    if (m_primaryTask != nullptr)  // current task?
     {
-        err = m_primaryTask->IsEnded();
+        Error err = m_primaryTask->IsEnded();
         if ( err != ERR_CONTINUE )  // job ended?
         {
             delete m_primaryTask;
-            m_primaryTask = 0;
+            m_primaryTask = nullptr;
             UpdateInterface();
         }
         return err;
     }
+
     return ERR_STOP;
 }
 
