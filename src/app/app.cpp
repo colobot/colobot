@@ -386,14 +386,14 @@ bool CApplication::Create()
 
     GetLogger()->Info("Creating CApplication\n");
 
-    if (!GetProfile().InitCurrentDirectory())
+    if (!GetProfile().Init())
     {
         GetLogger()->Warn("Config not found. Default values will be used!\n");
         defaultValues = true;
     }
     else
     {
-        if (!m_customDataPath && GetProfile().GetLocalProfileString("Resources", "Data", path))
+        if (!m_customDataPath && GetProfile().GetStringProperty("Resources", "Data", path))
             m_dataPath = path;
     }
 
@@ -411,7 +411,7 @@ bool CApplication::Create()
     m_gameData->SetDataDir(std::string(m_dataPath));
     m_gameData->Init();
 
-    if (GetProfile().GetLocalProfileString("Language", "Lang", path)) {
+    if (GetProfile().GetStringProperty("Language", "Lang", path)) {
         Language language;
         if (ParseLanguage(path, language)) {
             m_language = language;
@@ -472,7 +472,7 @@ bool CApplication::Create()
 
     // load settings from profile
     int iValue;
-    if ( GetProfile().GetLocalProfileInt("Setup", "Resolution", iValue) )
+    if ( GetProfile().GetIntProperty("Setup", "Resolution", iValue) )
     {
         std::vector<Math::IntPoint> modes;
         GetVideoResolutionList(modes, true, true);
@@ -480,7 +480,7 @@ bool CApplication::Create()
             m_deviceConfig.size = modes.at(iValue);
     }
 
-    if ( GetProfile().GetLocalProfileInt("Setup", "Fullscreen", iValue) )
+    if ( GetProfile().GetIntProperty("Setup", "Fullscreen", iValue) )
     {
         m_deviceConfig.fullScreen = (iValue == 1);
     }
