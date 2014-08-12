@@ -11,13 +11,14 @@
 class CProfileTest : public testing::Test
 {
 protected:
-    CLogger m_logger;
     CProfile m_profile;
 
 };
 
 TEST_F(CProfileTest, ReadTest)
 {
+    m_profile.SetUseLocalDirectory(true);
+
     ASSERT_TRUE(m_profile.InitCurrentDirectory()); // load colobot.ini file
 
     std::string result;
@@ -35,10 +36,4 @@ TEST_F(CProfileTest, ReadTest)
     std::vector<std::string> list;
     list = m_profile.GetLocalProfileSection("test_multi", "entry");
     ASSERT_EQ(5u, list.size());
-}
-
-int main(int argc, char *argv[])
-{
-    ::testing::InitGoogleTest(&argc, argv);
-    return RUN_ALL_TESTS();
 }

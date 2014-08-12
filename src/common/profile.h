@@ -45,6 +45,9 @@ public:
     CProfile();
     virtual ~CProfile();
 
+    /** Set flag to force using ini file from local directory */
+    void SetUseLocalDirectory(bool useLocalDirectory);
+
     /** Loads colobot.ini from current directory
         * \return return true on success
         */
@@ -130,9 +133,13 @@ public:
     bool CopyFileToTemp(std::string filename);
 
 private:
+    std::string GetIniFileLocation();
+
+private:
     boost::property_tree::ptree m_propertyTree;
     bool m_profileNeedSave;
     std::string m_userDirectory;
+    bool m_useLocalDirectory;
 };
 
 //! Global function to get profile instance

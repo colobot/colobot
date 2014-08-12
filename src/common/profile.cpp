@@ -31,8 +31,9 @@ template<> CProfile* CSingleton<CProfile>::m_instance = nullptr;
 
 namespace bp = boost::property_tree;
 
-CProfile::CProfile() :
-    m_profileNeedSave(false)
+CProfile::CProfile()
+   : m_profileNeedSave(false)
+   , m_useLocalDirectory(false)
 {
 }
 
@@ -42,16 +43,21 @@ CProfile::~CProfile()
     SaveCurrentDirectory();
 }
 
+void CProfile::SetUseLocalDirectory(bool useLocalDirectory)
+{
+    m_useLocalDirectory = useLocalDirectory;
+}
+
+std::string CProfile::GetIniFileLocation()
+{
+    return m_useLocalDirectory ? "colobot.ini" : GetSystemUtils()->GetProfileFileLocation();
+}
 
 bool CProfile::InitCurrentDirectory()
 {
     try
     {
-        #if DEV_BUILD
-        bp::ini_parser::read_ini("colobot.ini", m_propertyTree);
-        #else
-        bp::ini_parser::read_ini(GetSystemUtils()->GetProfileFileLocation(), m_propertyTree);
-        #endif
+        bp::ini_parser::read_ini(GetIniFileLocation(), m_propertyTree);
     }
     catch (std::exception & e)
     {
@@ -67,11 +73,7 @@ bool CProfile::SaveCurrentDirectory()
     {
         try
         {
-            #if DEV_BUILD
-            bp::ini_parser::write_ini("colobot.ini", m_propertyTree);
-            #else
-            bp::ini_parser::write_ini(GetSystemUtils()->GetProfileFileLocation(), m_propertyTree);
-            #endif
+            bp::ini_parser::write_ini(GetIniFileLocation(), m_propertyTree);
         }
         catch (std::exception & e)
         {
