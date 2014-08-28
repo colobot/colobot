@@ -503,5 +503,8 @@ protected:
 
     //! Show prototype levels
     bool            m_protoMode;
+    
+    //! Screen resoultion overriden by commandline
+    bool            m_resolutionOverride;
 };
 

@@ -168,12 +168,11 @@ CApplication::CApplication()
     m_runSceneRank = 0;
 
     m_sceneTest = false;
+    m_resolutionOverride = false;
 
     m_language = LANGUAGE_ENV;
 
     m_lowCPU = true;
-
-    m_protoMode = false;
 }
 
 CApplication::~CApplication()
@@ -228,7 +227,8 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
         OPT_DATADIR,
         OPT_SAVEDIR,
         OPT_MOD,
-        OPT_VBO
+        OPT_VBO,
+        OPT_RESOLUTION
     };
 
     option options[] =
@@ -244,6 +244,7 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
         { "savedir", required_argument, nullptr, OPT_SAVEDIR },
         { "mod", required_argument, nullptr, OPT_MOD },
         { "vbo", required_argument, nullptr, OPT_VBO },
+        { "resolution", required_argument, nullptr, OPT_RESOLUTION },
         { nullptr, 0, nullptr, 0}
     };
 
@@ -285,6 +286,7 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
                 GetLogger()->Message("  -savedir path       set custom save directory path (must be writable)\n");
                 GetLogger()->Message("  -mod path           load datadir mod from given path\n");
                 GetLogger()->Message("  -vbo mode           set OpenGL VBO mode (one of: auto, enable, disable)\n");
+                GetLogger()->Message("  -resolution WxH     set resolution\n");
                 return PARSE_ARGS_HELP;
             }
             case OPT_DEBUG:
@@ -386,6 +388,18 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
             {
                 GetLogger()->Info("Loading mod: '%s'\n", optarg);
                 CResourceManager::AddLocation(optarg, true);
+                break;
+            }
+            case OPT_RESOLUTION:
+            {
+                std::istringstream resolution(optarg);
+                std::string w, h;
+                std::getline(resolution, w, 'x');
+                std::getline(resolution, h, 'x');
+                
+                m_deviceConfig.size.x = atoi(w.c_str());
+                m_deviceConfig.size.y = atoi(h.c_str());
+                m_resolutionOverride = true;
                 break;
             }
             default:
@@ -493,7 +507,7 @@ bool CApplication::Create()
 
     // load settings from profile
     int iValue;
-    if ( GetProfile().GetIntProperty("Setup", "Resolution", iValue) )
+    if ( GetProfile().GetIntProperty("Setup", "Resolution", iValue) && !m_resolutionOverride )
     {
         std::vector<Math::IntPoint> modes;
         GetVideoResolutionList(modes, true, true);
@@ -501,7 +515,7 @@ bool CApplication::Create()
             m_deviceConfig.size = modes.at(iValue);
     }
 
-    if ( GetProfile().GetIntProperty("Setup", "Fullscreen", iValue) )
+    if ( GetProfile().GetIntProperty("Setup", "Fullscreen", iValue) && !m_resolutionOverride )
     {
         m_deviceConfig.fullScreen = (iValue == 1);
     }
