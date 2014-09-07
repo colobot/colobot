@@ -22,6 +22,10 @@
 
 #include <physfs.h>
 
+#include <boost/filesystem.hpp>
+
+namespace fs = boost::filesystem;
+
 namespace
 {
     const Uint32 PHYSFS_RWOPS_TYPE = 0xc010b04f;
@@ -135,14 +139,60 @@ bool CResourceManager::Exists(const std::string &filename)
     return PHYSFS_exists(filename.c_str());
 }
 
+bool CResourceManager::DirectoryExists(const std::string& directory)
+{
+    return PHYSFS_exists(directory.c_str()) && PHYSFS_isDirectory(directory.c_str());
+}
+
+bool CResourceManager::CreateDirectory(const std::string& directory)
+{
+    return PHYSFS_mkdir(directory.c_str());
+}
+
+bool CResourceManager::RemoveDirectory(const std::string& directory)
+{
+    bool success = true;
+    std::string writeDir = PHYSFS_getWriteDir();
+    try
+    {
+        fs::remove_all(writeDir + "/" + directory);
+    }
+    catch (std::exception & e)
+    {
+        success = false;
+    }
+    return success;
+}
+
 std::vector<std::string> CResourceManager::ListFiles(const std::string &directory)
 {
     std::vector<std::string> result;
 
     char **files = PHYSFS_enumerateFiles(directory.c_str());
 
-    for (char **i = files; *i != nullptr; i++) {
+    for (char **i = files; *i != nullptr; i++)
+    {
         result.push_back(*i);
+    }
+
+    PHYSFS_freeList(files);
+
+    return result;
+}
+
+std::vector<std::string> CResourceManager::ListDirectories(const std::string &directory)
+{
+    std::vector<std::string> result;
+
+    char **files = PHYSFS_enumerateFiles(directory.c_str());
+
+    for (char **i = files; *i != nullptr; i++)
+    {
+        std::string path = directory + "/" + (*i);
+        if (PHYSFS_isDirectory(path.c_str()))
+        {
+            result.push_back(*i);
+        }
     }
 
     PHYSFS_freeList(files);

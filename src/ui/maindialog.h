@@ -25,12 +25,7 @@
 
 #include "app/pausemanager.h"
 
-#include <boost/filesystem.hpp>
-#include <boost/algorithm/string.hpp>
-
 #include <vector>
-
-namespace fs = boost::filesystem;
 
 
 class CEventQueue;
@@ -265,7 +260,7 @@ protected:
 
     SceneInfo            m_sceneInfo[MAXSCENE];
 
-    std::vector<fs::path>   m_saveList;
+    std::vector<std::string> m_saveList;
 };
 
 } // namespace Ui

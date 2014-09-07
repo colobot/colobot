@@ -52,15 +52,12 @@
 #include "ui/window.h"
 #include "ui/edit.h"
 #include "ui/editvalue.h"
-#include <test/cbot/CBot_console/CClass.h>
 
 #include <stdio.h>
 #include <string.h>
 #include <sstream>
 #include <iomanip>
 #include <vector>
-#include <boost/filesystem.hpp>
-#include <boost/foreach.hpp>
 
 //TODO Get rid of all sprintf's
 
@@ -110,8 +107,6 @@ static int perso_color[3*10*3] =
      70,  51,  84,  // dark
       0,   0,   0,  //
 };
-
-namespace fs = boost::filesystem;
 
 // Constructor of robot application.
 
@@ -177,12 +172,7 @@ CMainDialog::CMainDialog()
         m_partiTime[i]  = 0.0f;
     }
 
-    #if DEV_BUILD
     m_savegameDir = "savegame";
-    #else
-    m_savegameDir = "savegame";
-    #endif
-
     m_publicDir = "program";
     m_userDir = "user";
     m_filesDir = m_savegameDir;
@@ -3356,50 +3346,16 @@ std::string & CMainDialog::GetFilesDir()
 
 void CMainDialog::ReadNameList()
 {
-    CWindow*            pw;
-    CList*              pl;
-    //struct _finddata_t  fBuffer;
-    char                dir[MAX_FNAME];
-    // char                filenames[MAX_FNAME][100];
-    std::vector<std::string> fileNames;
-
-    pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
-    if ( pw == 0 )  return;
-    pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_NLIST));
-    if ( pl == 0 )  return;
+    CWindow* pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
+    if (pw == nullptr) return;
+    CList* pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_NLIST));
+    if (pl == nullptr) return;
     pl->Flush();
 
-
-    try
+    auto userSaveDirs = CResourceManager::ListDirectories(m_savegameDir);
+    for (int i = 0; i < static_cast<int>(userSaveDirs.size()); ++i)
     {
-        if (! fs::exists(m_savegameDir) && fs::is_directory(m_savegameDir))
-        {
-            GetLogger()->Error("Savegame dir does not exist %s\n",dir);
-        }
-        else
-        {
-            fs::directory_iterator dirIt(m_savegameDir), dirEndIt;
-
-            for (; dirIt != dirEndIt; ++dirIt)
-            {
-                const fs::path& p = *dirIt;
-                if (fs::is_directory(p))
-                {
-                    fileNames.push_back(p.leaf().string());
-                }
-            }
-        }
-    }
-    catch (std::exception & e)
-    {
-        GetLogger()->Error("Error on listing savegame directory : %s\n", e.what());
-        return;
-    }
-
-
-    for (size_t i=0 ; i<fileNames.size() ; ++i )
-    {
-        pl->SetItemName(i, fileNames.at(i).c_str());
+        pl->SetItemName(i, userSaveDirs.at(i).c_str());
     }
 }
 
@@ -3582,7 +3538,6 @@ void CMainDialog::NameCreate()
     CWindow*    pw;
     CEdit*      pe;
     char        name[100];
-    std::string dir;
     char        c;
     int         len, i, j;
 
@@ -3623,13 +3578,10 @@ void CMainDialog::NameCreate()
         return;
     }
 
-    // TODO: _mkdir(m_savegameDir);  // if does not exist yet!
-
-
-    dir = m_savegameDir + "/" + name;
-    if (!fs::exists(dir))
+    std::string userSaveDir = m_savegameDir + "/" + name;
+    if (!CResourceManager::DirectoryExists(userSaveDir))
     {
-        fs::create_directories(dir);
+        CResourceManager::CreateDirectory(userSaveDir);
     }
     else
     {
@@ -3646,58 +3598,26 @@ void CMainDialog::NameCreate()
     m_main->ChangePhase(PHASE_INIT);
 }
 
-// Deletes a folder and all its offspring.
-
-bool RemoveDir(char *dirName)
-{
-    try
-    {
-
-        if (!fs::exists(dirName) && fs::is_directory(dirName))
-        {
-            GetLogger()->Error("Directory does not exist %s\n",dirName);
-            return false;
-        }
-        else
-        {
-            fs::remove_all(dirName);
-        }
-
-    }
-    catch (std::exception & e)
-    {
-        GetLogger()->Error("Error on removing directory %s : %s\n", dirName, e.what());
-        return false;
-    }
-    return true;
-}
-
 // Removes a player.
 
 void CMainDialog::NameDelete()
 {
-    CWindow*    pw;
-    CList*      pl;
-    int         sel;
-    char*       gamer;
-    char        dir[100];
+    CWindow* pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
+    if (pw == nullptr) return;
+    CList* pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_NLIST));
+    if (pl == nullptr) return;
 
-    pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
-    if ( pw == 0 )  return;
-    pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_NLIST));
-    if ( pl == 0 )  return;
-
-    sel = pl->GetSelect();
-    if ( sel == -1 )
+    int sel = pl->GetSelect();
+    if (sel == -1)
     {
         m_sound->Play(SOUND_TZOING);
         return;
     }
-    gamer = pl->GetItemName(sel);
 
-    // Deletes all the contents of the file.
-    sprintf(dir, "%s/%s", m_savegameDir.c_str(), gamer);
-    if ( !RemoveDir(dir) )
+    char* gamer = pl->GetItemName(sel);
+
+    std::string userSaveDir = m_savegameDir + "/" + gamer;
+    if (!CResourceManager::RemoveDirectory(userSaveDir))
     {
         m_sound->Play(SOUND_TZOING);
         return;
@@ -4007,17 +3927,13 @@ void CMainDialog::DefPerso()
 
 bool CMainDialog::IsIOReadScene()
 {
-    fs::directory_iterator end_iter;
-
-    fs::path saveDir(m_savegameDir + "/" + m_main->GetGamerName());
-    if (fs::exists(saveDir) && fs::is_directory(saveDir))
+    std::string userSaveDir = m_savegameDir + "/" + m_main->GetGamerName();
+    auto saveDirs = CResourceManager::ListDirectories(userSaveDir);
+    for (auto dir : saveDirs)
     {
-        for( fs::directory_iterator dir_iter(saveDir) ; dir_iter != end_iter ; ++dir_iter)
+        if (CResourceManager::Exists(userSaveDir + "/" + dir + "/" + "data.sav"))
         {
-            if ( fs::is_directory(dir_iter->status()) && fs::exists(dir_iter->path() / "data.sav") )
-            {
-                return true;
-            }
+            return true;
         }
     }
 
@@ -4091,59 +4007,53 @@ void CMainDialog::IOReadName()
 
 void CMainDialog::IOReadList()
 {
-    FILE*       file = NULL;
-    CWindow*    pw;
-    CList*      pl;
-    char        line[500];
-    char        name[100];
-    int         i;
-    std::vector<fs::path> v;
-
-    pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
-    if ( pw == 0 )  return;
-    pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_IOLIST));
-    if ( pl == 0 )  return;
+    CWindow* pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
+    if (pw == nullptr) return;
+    CList* pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_IOLIST));
+    if (pl == nullptr) return;
 
     pl->Flush();
 
-    fs::path saveDir(m_savegameDir + "/" + m_main->GetGamerName());
     m_saveList.clear();
 
-    if (fs::exists(saveDir) && fs::is_directory(saveDir))
+    std::string userSaveDir = m_savegameDir + "/" + m_main->GetGamerName();
+
+    auto saveDirs = CResourceManager::ListDirectories(userSaveDir);
+    std::sort(saveDirs.begin(), saveDirs.end());
+
+    for (auto dir : saveDirs)
     {
-        copy(fs::directory_iterator(saveDir), fs::directory_iterator(), back_inserter(v));
-        std::sort(v.begin(), v.end());
-        for( std::vector<fs::path>::iterator iter = v.begin(); iter != v.end(); ++iter)
+        std::string savegameFile = userSaveDir + "/" + dir + "/" + "data.sav";
+        if (CResourceManager::Exists(savegameFile))
         {
-            if ( fs::is_directory(*iter) && fs::exists(*iter / "data.sav") )
+            char line[500];
+            char name[100];
+
+            FILE* file = fopen(savegameFile.c_str(), "r");
+            if ( file == NULL )  continue;
+
+            while ( fgets(line, 500, file) != NULL )
             {
-
-                file = fopen((*iter / "data.sav").make_preferred().string().c_str(), "r");
-                if ( file == NULL )  continue;
-
-                while ( fgets(line, 500, file) != NULL )
+                for (int i=0 ; i<500 ; i++ )
                 {
-                    for ( i=0 ; i<500 ; i++ )
+                    if ( line[i] == '\t' )  line[i] = ' ';  // replaces tab by space
+                    if ( line[i] == '/' && line[i+1] == '/' )
                     {
-                        if ( line[i] == '\t' )  line[i] = ' ';  // replaces tab by space
-                        if ( line[i] == '/' && line[i+1] == '/' )
-                        {
-                            line[i] = 0;
-                            break;
-                        }
-                    }
-
-                    if ( Cmd(line, "Title") )
-                    {
-                        OpString(line, "text", name);
+                        line[i] = 0;
                         break;
                     }
                 }
-                fclose(file);
 
-                pl->SetItemName(m_saveList.size(), name);
-                m_saveList.push_back(*iter);
+                if ( Cmd(line, "Title") )
+                {
+                    OpString(line, "text", name);
+                    break;
+                }
             }
+            fclose(file);
+
+            pl->SetItemName(m_saveList.size(), name);
+            m_saveList.push_back(userSaveDir + "/" + dir);
         }
     }
 
@@ -4182,7 +4092,7 @@ void CMainDialog::IOUpdateList()
     if (m_saveList.size() <= static_cast<unsigned int>(sel))
         return;
 
-    std::string filename = (m_saveList.at(sel) / "screen.png").make_preferred().string();
+    std::string filename = m_saveList.at(sel) + "/" + "screen.png";
     if ( m_phase == PHASE_WRITE  || m_phase == PHASE_WRITEs )
     {
         if ( sel < max-1 )
@@ -4226,16 +4136,9 @@ void CMainDialog::IODeleteScene()
         return;
     }
 
-    try
+    if (CResourceManager::DirectoryExists(m_saveList.at(sel)))
     {
-        if (fs::exists(m_saveList.at(sel)) && fs::is_directory(m_saveList.at(sel)))
-        {
-            fs::remove_all(m_saveList.at(sel));
-        }
-    }
-    catch (std::exception & e)
-    {
-        GetLogger()->Error("Error removing save %s : %s\n", pl->GetItemName(sel), e.what());
+        CResourceManager::RemoveDirectory(m_saveList.at(sel));
     }
 
     IOReadList();
@@ -4279,28 +4182,28 @@ bool CMainDialog::IOWriteScene()
         return false;
     }
 
-    fs::path dir;
+    std::string dir;
     pe->GetText(info, 100);
     if (static_cast<unsigned int>(sel) >= m_saveList.size())
     {
-        dir = fs::path(m_savegameDir) / m_main->GetGamerName() / ("save" + clearName(info));
+        dir = m_savegameDir + "/" + m_main->GetGamerName() + "/" + "save" + clearName(info);
     }
     else
     {
         dir = m_saveList.at(sel);
     }
 
-    if (!fs::exists(dir))
+    if (!CResourceManager::DirectoryExists(dir))
     {
-        fs::create_directories(dir);
+        CResourceManager::CreateDirectory(dir);
     }
 
-    std::string fileName = (dir / "data.sav").make_preferred().string();
-    std::string fileCBot = (dir / "cbot.run").make_preferred().string();
-    m_main->IOWriteScene(fileName.c_str(), fileCBot.c_str(), info);
+    std::string savegameFileName = dir + "/" + "data.sav";
+    std::string fileCBot = dir + "/" + "cbot.run";
+    m_main->IOWriteScene(savegameFileName.c_str(), fileCBot.c_str(), info);
 
     m_shotDelay = 3;
-    m_shotName = (dir / "screen.png").make_preferred().string();
+    m_shotName = dir + "/" + "screen.png";
 
     return true;
 }
@@ -4327,8 +4230,8 @@ bool CMainDialog::IOReadScene()
         return false;
     }
 
-    std::string fileName = (m_saveList.at(sel) / "data.sav").make_preferred().string();
-    std::string fileCbot =  (m_saveList.at(sel) / "cbot.run").make_preferred().string();
+    std::string fileName = m_saveList.at(sel) + "/" + "data.sav";
+    std::string fileCbot = m_saveList.at(sel) + "/" + "cbot.run";
 
     file = fopen(fileName.c_str(), "r");
     if ( file == NULL )
@@ -4448,17 +4351,10 @@ void CMainDialog::UpdateSceneChap(int &chap)
     if ( m_phase == PHASE_USER )
     {
         j = 0;
-        fs::directory_iterator dirIt(m_savegameDir), dirEndIt;
-        m_userList.clear();
 
-        for (; dirIt != dirEndIt; ++dirIt)
-        {
-            const fs::path& p = *dirIt;
-            if (fs::is_directory(p))
-            {
-                m_userList.push_back(p.leaf().string());
-            }
-        }
+        auto userSaveDirs = CResourceManager::ListDirectories(m_savegameDir);
+        std::sort(userSaveDirs.begin(), userSaveDirs.end());
+        m_userList = userSaveDirs;
         m_userTotal = m_userList.size();
 
         for ( j=0 ; j<m_userTotal ; j++ )

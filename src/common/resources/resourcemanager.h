@@ -30,11 +30,26 @@ public:
 
     static bool AddLocation(const std::string &location, bool prepend = true);
     static bool RemoveLocation(const std::string &location);
+
     static bool SetSaveLocation(const std::string &location);
+
     static SDL_RWops* GetSDLFileHandler(const std::string &filename);
     static CSNDFile* GetSNDFileHandler(const std::string &filename);
+
+    //! Check if file exists
     static bool Exists(const std::string &filename);
+    //! Check if file exists and is a directory
+    static bool DirectoryExists(const std::string& directory);
+
+    //! Create directory in write directory
+    static bool CreateDirectory(const std::string& directory);
+    //! Remove directory in write directory, recursively
+    static bool RemoveDirectory(const std::string& directory);
+
+    //! List files contained in directory
     static std::vector<std::string> ListFiles(const std::string &directory);
+    //! List directories contained in directory
+    static std::vector<std::string> ListDirectories(const std::string &directory);
 
 private:
     static int SDLSeek(SDL_RWops *context, int offset, int whence);
