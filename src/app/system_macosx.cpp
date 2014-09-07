@@ -101,6 +101,6 @@ std::string CSystemUtilsMacOSX::GetSaveDir()
 {
     std::string savegameDir = m_ASPath;
     GetLogger()->Trace("Saved game files are going to %s\n", savegameDir.c_str());
-    
+
     return savegameDir;
 }

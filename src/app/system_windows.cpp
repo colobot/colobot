@@ -114,7 +114,7 @@ std::wstring CSystemUtilsWindows::UTF8_Decode(const std::string& str)
 std::string CSystemUtilsWindows::GetSaveDir()
 {
     std::string savegameDir;
-    
+
     char* envUSERPROFILE = getenv("USERPROFILE");
     if (envUSERPROFILE == NULL)
     {
@@ -125,6 +125,6 @@ std::string CSystemUtilsWindows::GetSaveDir()
         savegameDir = std::string(envUSERPROFILE) + "\\colobot";
     }
     GetLogger()->Trace("Saved game files are going to %s\n", savegameDir.c_str());
-    
+
     return savegameDir;
 }

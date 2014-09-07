@@ -59,7 +59,7 @@ std::streambuf::int_type COutputStreamBuffer::overflow(std::streambuf::int_type 
 {
     /* This function should be called when pptr() == epptr(). We use it also in sync()
        so we also have to write data if buffer is not full. */
-    
+
     if (pbase() == pptr()) // no data to write, sync() called with empty buffer
         return 0;
 
@@ -68,7 +68,7 @@ std::streambuf::int_type COutputStreamBuffer::overflow(std::streambuf::int_type 
     if (bytes_written <= 0)
         return traits_type::eof();
 
-    pbump(-bytes_written);    
+    pbump(-bytes_written);
     // write final char
     if (ch != traits_type::eof()) {
         bytes_written = PHYSFS_write(m_file, &ch, 1, 1);

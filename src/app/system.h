@@ -132,10 +132,10 @@ public:
 
     //! Returns the data path (containing textures, levels, helpfiles, etc)
     virtual std::string GetDataPath();
-    
+
     //! Returns the translations path
     virtual std::string GetLangPath();
-    
+
     //! Returns the save dir location
     virtual std::string GetSaveDir();
 };

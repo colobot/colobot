@@ -146,14 +146,14 @@ CApplication::CApplication()
     m_kmodState = 0;
     m_mouseButtonsState = 0;
     m_trackedKeys = 0;
-    
+
     m_dataPath = GetSystemUtils()->GetDataPath();
     m_langPath = GetSystemUtils()->GetLangPath();
     m_savePath = GetSystemUtils()->GetSaveDir();
 
     m_runSceneName = "";
     m_runSceneRank = 0;
-    
+
     m_sceneTest = false;
 
     m_language = LANGUAGE_ENV;
@@ -389,7 +389,7 @@ bool CApplication::Create()
     bool defaultValues = false;
 
     GetLogger()->Info("Creating CApplication\n");
-    
+
     boost::filesystem::path dataPath(m_dataPath);
     if (! (boost::filesystem::exists(dataPath) && boost::filesystem::is_directory(dataPath)) )
     {
@@ -400,13 +400,13 @@ bool CApplication::Create()
         m_exitCode = 1;
         return false;
     }
-    
+
     boost::filesystem::create_directories(m_savePath);
     boost::filesystem::create_directories(m_savePath+"/mods");
-    
+
     LoadModsFromDir(m_dataPath+"/mods");
     LoadModsFromDir(m_savePath+"/mods");
-    
+
     CResourceManager::AddLocation(m_dataPath, false);
     CResourceManager::SetSaveLocation(m_savePath);
     CResourceManager::AddLocation(m_savePath, true);

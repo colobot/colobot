@@ -25,7 +25,7 @@ class CInputStreamBuffer : public std::streambuf
 public:
     CInputStreamBuffer(size_t buffer_size = 512);
     virtual ~CInputStreamBuffer();
-    
+
     void open(const std::string &filename);
     void close();
     bool is_open();
@@ -41,7 +41,7 @@ private:
     // copying not allowed
     CInputStreamBuffer(const CInputStreamBuffer &);
     CInputStreamBuffer &operator= (const CInputStreamBuffer &);
-    
+
     PHYSFS_File *m_file;
     char *m_buffer;
     size_t m_buffer_size;

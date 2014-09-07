@@ -25,7 +25,7 @@
 void CSystemUtilsLinux::Init()
 {
     m_zenityAvailable = true;
-    if (system("zenity --version") != 0)
+    if (system("zenity --version >& /dev/null") != 0)
     {
         m_zenityAvailable = false;
         GetLogger()->Warn("Zenity not available, will fallback to console users dialogs.\n");
@@ -98,7 +98,7 @@ long long CSystemUtilsLinux::TimeStampExactDiff(SystemTimeStamp *before, SystemT
 std::string CSystemUtilsLinux::GetSaveDir()
 {
     std::string savegameDir;
-    
+
     // Determine savegame dir according to XDG Base Directory Specification
     char *envXDG_DATA_HOME = getenv("XDG_CONFIG_DATA");
     if (envXDG_DATA_HOME == NULL)
@@ -118,6 +118,6 @@ std::string CSystemUtilsLinux::GetSaveDir()
         savegameDir = std::string(envXDG_DATA_HOME) + "/colobot";
     }
     GetLogger()->Trace("Saved game files are going to %s\n", savegameDir.c_str());
-    
+
     return savegameDir;
 }

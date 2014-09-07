@@ -31,7 +31,6 @@ CSNDFile::CSNDFile(const std::string& filename)
     {
         m_last_error = "Resource system not started!";
     }
-    
     if (m_file)
     {
         m_snd_file = sf_open_virtual(&snd_callbacks, SFM_READ, &m_file_info, m_file);
@@ -99,7 +98,6 @@ sf_count_t CSNDFile::SNDRead(void *ptr, sf_count_t count, void *data)
 sf_count_t CSNDFile::SNDSeek(sf_count_t offset, int whence, void *data)
 {
     PHYSFS_File *file = static_cast<PHYSFS_File *>(data);
-    
     switch(whence)
     {
         case SEEK_CUR:

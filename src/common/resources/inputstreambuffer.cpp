@@ -68,14 +68,14 @@ std::streambuf::int_type CInputStreamBuffer::underflow()
 {
     if (gptr() < egptr())
         return traits_type::to_int_type(*gptr());
-    
+
     if (PHYSFS_eof(m_file))
         return traits_type::eof();
-    
+
     PHYSFS_sint64 read_count = PHYSFS_read(m_file, m_buffer, sizeof(char), m_buffer_size);
     if (read_count <= 0)
         return traits_type::eof();
-    
+
     setg(m_buffer, m_buffer, m_buffer + read_count);
 
     return traits_type::to_int_type(*gptr());
@@ -98,7 +98,7 @@ std::streampos CInputStreamBuffer::seekoff(std::streamoff off, std::ios_base::se
        off argument is relative to way */
 
     std::streamoff new_position;
-    
+
     switch (way)
     {
         case std::ios_base::beg:

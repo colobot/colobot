@@ -22,6 +22,11 @@
 
 #include <physfs.h>
 
+namespace
+{
+    const Uint32 PHYSFS_RWOPS_TYPE = 0xc010b04f;
+}
+
 
 CResourceManager::CResourceManager(const char *argv0)
 {
@@ -53,7 +58,7 @@ bool CResourceManager::AddLocation(const std::string &location, bool prepend)
             CLogger::GetInstancePointer()->Error("Error while mounting \"%s\"\n", location.c_str());
         }
     }
-    
+
     return false;
 }
 
@@ -67,7 +72,7 @@ bool CResourceManager::RemoveLocation(const std::string &location)
             CLogger::GetInstancePointer()->Error("Error while unmounting \"%s\"\n", location.c_str());
         }
     }
-    
+
     return false;
 }
 
@@ -81,7 +86,7 @@ bool CResourceManager::SetSaveLocation(const std::string &location)
             CLogger::GetInstancePointer()->Error("Error while setting save location to \"%s\"\n", location.c_str());
         }
     }
-    
+
     return false;
 }
 
@@ -94,13 +99,13 @@ SDL_RWops* CResourceManager::GetSDLFileHandler(const std::string &filename)
         CLogger::GetInstancePointer()->Error("Unable to allocate SDL_RWops for \"%s\"\n", filename.c_str());
         return nullptr;
     }
-    
+
     if (!PHYSFS_isInit())
     {
         SDL_FreeRW(handler);
         return nullptr;
     }
-    
+
     PHYSFS_File *file = PHYSFS_openRead(filename.c_str());
     if (!file)
     {
@@ -112,15 +117,15 @@ SDL_RWops* CResourceManager::GetSDLFileHandler(const std::string &filename)
     handler->read = SDLRead;
     handler->write = SDLWrite;
     handler->close = SDLClose;
-    handler->type = 0xc010b04f;
+    handler->type = PHYSFS_RWOPS_TYPE;
     handler->hidden.unknown.data1 = file;
-    
+
     return handler;
 }
 
 
 CSNDFile* CResourceManager::GetSNDFileHandler(const std::string &filename)
-{   
+{
     return new CSNDFile(filename);
 }
 
@@ -133,15 +138,15 @@ bool CResourceManager::Exists(const std::string &filename)
 std::vector<std::string> CResourceManager::ListFiles(const std::string &directory)
 {
     std::vector<std::string> result;
-    
+
     char **files = PHYSFS_enumerateFiles(directory.c_str());
-    
+
     for (char **i = files; *i != nullptr; i++) {
         result.push_back(*i);
     }
-    
+
     PHYSFS_freeList(files);
-    
+
     return result;
 }
 
@@ -152,10 +157,10 @@ int CResourceManager::SDLClose(SDL_RWops *context)
     {
         PHYSFS_close(static_cast<PHYSFS_File *>(context->hidden.unknown.data1));
         SDL_FreeRW(context);
-        
+
         return 0;
     }
-    
+
     return 1;
 }
 
@@ -166,10 +171,10 @@ int CResourceManager::SDLRead(SDL_RWops *context, void *ptr, int size, int maxnu
     {
         PHYSFS_File *file = static_cast<PHYSFS_File *>(context->hidden.unknown.data1);
         SDL_memset(ptr, 0, size * maxnum);
-       
+
         return PHYSFS_read(file, ptr, size, maxnum);
     }
-    
+
     return 0;
 }
 
@@ -186,37 +191,37 @@ int CResourceManager::SDLSeek(SDL_RWops *context, int offset, int whence)
     {
         PHYSFS_File *file = static_cast<PHYSFS_File *>(context->hidden.unknown.data1);
         int position, result;
-        
+
         switch (whence)
         {
             default:
             case RW_SEEK_SET:
                 result = PHYSFS_seek(file, offset);
                 return result > 0 ? offset : -1;
-                
+
             case RW_SEEK_CUR:
                 position = offset + PHYSFS_tell(file);
                 result = PHYSFS_seek(file, position);
                 return result > 0 ? position : -1;
-                
+
             case RW_SEEK_END:
                 position = PHYSFS_fileLength(file) - offset;
                 result = PHYSFS_seek(file, position);
-                return result > 0 ? position : -1; 
+                return result > 0 ? position : -1;
         }
     }
-    
+
     return -1;
 }
 
 
 bool CResourceManager::CheckSDLContext(SDL_RWops *context)
 {
-    if (context->type != 0xc010b04f)
+    if (context->type != PHYSFS_RWOPS_TYPE)
     {
         SDL_SetError("Wrong kind of RWops");
         return false;
     }
-    
+
     return true;
 }

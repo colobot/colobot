@@ -38,7 +38,6 @@ private:
     static sf_count_t SNDRead(void *ptr, sf_count_t count, void *data);
     static sf_count_t SNDWrite(const void *ptr, sf_count_t count, void *data);
     static sf_count_t SNDTell(void *data);
-    
     SF_INFO m_file_info;
     SNDFILE *m_snd_file;
     PHYSFS_File *m_file;

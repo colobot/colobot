@@ -25,7 +25,7 @@ class COutputStream : public std::ostream
 public:
     COutputStream();
     virtual ~COutputStream();
-    
+
     void open(const std::string &filename);
     void close();
     bool is_open();

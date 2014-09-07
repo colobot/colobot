@@ -25,9 +25,9 @@ class CInputStream : public std::istream
 public:
     CInputStream();
     virtual ~CInputStream();
-    
+
     void open(const std::string &filename);
     void close();
-    bool is_open();    
+    bool is_open();
     size_t size();
 };

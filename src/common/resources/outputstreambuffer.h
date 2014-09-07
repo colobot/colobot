@@ -25,7 +25,6 @@ class COutputStreamBuffer : public std::streambuf
 public:
     COutputStreamBuffer(size_t buffer_size = 512);
     virtual ~COutputStreamBuffer();
-    
     void open(const std::string &filename);
     void close();
     bool is_open();
@@ -38,7 +37,6 @@ private:
     // copying not allowed
     COutputStreamBuffer(const COutputStreamBuffer &);
     COutputStreamBuffer &operator= (const COutputStreamBuffer &);
-    
     PHYSFS_File *m_file;
     char *m_buffer;
     size_t m_buffer_size;
