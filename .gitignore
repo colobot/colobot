@@ -6,6 +6,8 @@ Makefile
 /install_manifest.txt
 /Testing
 /CTestTestfile.cmake
+/CPackConfig.cmake
+/CPackSourceConfig.cmake
 
 # Ignore the generated documentation
 /doc
