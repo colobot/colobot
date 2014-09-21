@@ -25,7 +25,7 @@
 void CSystemUtilsLinux::Init()
 {
     m_zenityAvailable = true;
-    if (system("zenity --version >& /dev/null") != 0)
+    if (system("zenity --version 1> /dev/null 2> /dev/null") != 0)
     {
         m_zenityAvailable = false;
         GetLogger()->Warn("Zenity not available, will fallback to console users dialogs.\n");
