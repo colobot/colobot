@@ -53,7 +53,6 @@
 #include "ui/edit.h"
 #include "ui/list.h"
 #include "ui/displaytext.h"
-#include <test/cbot/CBot_console/CClass.h>
 
 
 #include <stdio.h>

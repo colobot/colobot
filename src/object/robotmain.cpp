@@ -58,6 +58,7 @@
 #include "object/task/task.h"
 #include "object/task/taskbuild.h"
 #include "object/task/taskmanip.h"
+#include "object/level/parser.h"
 
 #include "physics/physics.h"
 
@@ -83,7 +84,7 @@
 
 #include <iomanip>
 
-#include <boost/regex.hpp>
+#include <boost/lexical_cast.hpp>
 
 
 template<> CRobotMain* CSingleton<CRobotMain>::m_instance = nullptr;
@@ -1208,18 +1209,27 @@ void CRobotMain::ChangePhase(Phase phase)
         bool loading = (m_dialog->GetSceneRead()[0] != 0);
 
         m_map->CreateMap();
-        CreateScene(m_dialog->GetSceneSoluce(), false, false);  // interactive scene
-        if (m_mapImage)
-            m_map->SetFixImage(m_mapFilename);
+        
+        try {
+            CreateScene(m_dialog->GetSceneSoluce(), false, false);  // interactive scene
+            if (m_mapImage)
+                m_map->SetFixImage(m_mapFilename);
 
-        m_app->ResetTimeAfterLoading();
+            m_app->ResetTimeAfterLoading();
 
-        if (m_immediatSatCom && !loading  &&
-            m_infoFilename[SATCOM_HUSTON][0] != 0)
-            StartDisplayInfo(SATCOM_HUSTON, false);  // shows the instructions
+            if (m_immediatSatCom && !loading  &&
+                m_infoFilename[SATCOM_HUSTON][0] != 0)
+                StartDisplayInfo(SATCOM_HUSTON, false);  // shows the instructions
 
-        m_sound->StopMusic(0.0f);
-        if (!m_base || loading) StartMusic();
+            m_sound->StopMusic(0.0f);
+            if (!m_base || loading) StartMusic();
+        }
+        catch(const CLevelParserException& e)
+        {
+            CLogger::GetInstancePointer()->Error("An error occured while trying to load a level\n");
+            CLogger::GetInstancePointer()->Error("%s\n", e.what());
+            ChangePhase(PHASE_INIT);
+        }
     }
 
     if (m_phase == PHASE_WIN)
@@ -1235,29 +1245,37 @@ void CRobotMain::ChangePhase(Phase phase)
             m_dialog->SetSceneName("win");
 
             m_dialog->SetSceneRank(m_endingWinRank);
-            CreateScene(false, true, false);  // sets scene
+            try {
+                CreateScene(false, true, false);  // sets scene
 
-            pos.x = ox+sx*1;  pos.y = oy+sy*1;
-            Math::Point ddim;
-            ddim.x = dim.x*2;  ddim.y = dim.y*2;
-            m_interface->CreateButton(pos, ddim, 16, EVENT_BUTTON_OK);
+                pos.x = ox+sx*1;  pos.y = oy+sy*1;
+                Math::Point ddim;
+                ddim.x = dim.x*2;  ddim.y = dim.y*2;
+                m_interface->CreateButton(pos, ddim, 16, EVENT_BUTTON_OK);
 
-            if (m_winTerminate)
-            {
-                pos.x = ox+sx*3;  pos.y = oy+sy*0.2f;
-                ddim.x = dim.x*15;  ddim.y = dim.y*3.0f;
-                pe = m_interface->CreateEdit(pos, ddim, 0, EVENT_EDIT0);
-                pe->SetGenericMode(true);
-                pe->SetFontType(Gfx::FONT_COLOBOT);
-                pe->SetEditCap(false);
-                pe->SetHighlightCap(false);
-                pe->ReadText(std::string("help/") + m_app->GetLanguageChar() + std::string("/win.txt"));
+                if (m_winTerminate)
+                {
+                    pos.x = ox+sx*3;  pos.y = oy+sy*0.2f;
+                    ddim.x = dim.x*15;  ddim.y = dim.y*3.0f;
+                    pe = m_interface->CreateEdit(pos, ddim, 0, EVENT_EDIT0);
+                    pe->SetGenericMode(true);
+                    pe->SetFontType(Gfx::FONT_COLOBOT);
+                    pe->SetEditCap(false);
+                    pe->SetHighlightCap(false);
+                    pe->ReadText(std::string("help/") + m_app->GetLanguageChar() + std::string("/win.txt"));
+                }
+                else
+                {
+                    m_displayText->DisplayError(INFO_WIN, Math::Vector(0.0f,0.0f,0.0f), 15.0f, 60.0f, 1000.0f);
+                }
+                StartMusic();
             }
-            else
+            catch(const CLevelParserException& e)
             {
-                m_displayText->DisplayError(INFO_WIN, Math::Vector(0.0f,0.0f,0.0f), 15.0f, 60.0f, 1000.0f);
+                CLogger::GetInstancePointer()->Error("An error occured while trying to load win scene\n");
+                CLogger::GetInstancePointer()->Error("%s\n", e.what());
+                ChangePhase(PHASE_TERM);
             }
-            StartMusic();
         }
     }
 
@@ -1273,15 +1291,23 @@ void CRobotMain::ChangePhase(Phase phase)
             m_winTerminate = false;
             m_dialog->SetSceneName("lost");
             m_dialog->SetSceneRank(m_endingLostRank);
-            CreateScene(false, true, false);  // sets scene
+            try {
+                CreateScene(false, true, false);  // sets scene
 
-            pos.x = ox+sx*1;  pos.y = oy+sy*1;
-            Math::Point ddim;
-            ddim.x = dim.x*2;  ddim.y = dim.y*2;
-            m_interface->CreateButton(pos, ddim, 16, EVENT_BUTTON_OK);
-            m_displayText->DisplayError(INFO_LOST, Math::Vector(0.0f,0.0f,0.0f), 15.0f, 60.0f, 1000.0f);
+                pos.x = ox+sx*1;  pos.y = oy+sy*1;
+                Math::Point ddim;
+                ddim.x = dim.x*2;  ddim.y = dim.y*2;
+                m_interface->CreateButton(pos, ddim, 16, EVENT_BUTTON_OK);
+                m_displayText->DisplayError(INFO_LOST, Math::Vector(0.0f,0.0f,0.0f), 15.0f, 60.0f, 1000.0f);
 
-            StartMusic();
+                StartMusic();
+            }
+            catch(const CLevelParserException& e)
+            {
+                CLogger::GetInstancePointer()->Error("An error occured while trying to load lost scene\n");
+                CLogger::GetInstancePointer()->Error("%s\n", e.what());
+                ChangePhase(PHASE_TERM);
+            }
         }
     }
 
@@ -3819,7 +3845,14 @@ void CRobotMain::ScenePerso()
 
     m_dialog->SetSceneName("perso");
     m_dialog->SetSceneRank(0);
-    CreateScene(false, true, false);  // sets scene
+    try {
+        CreateScene(false, true, false);  // sets scene
+    }
+    catch(const CLevelParserException& e)
+    {
+        CLogger::GetInstancePointer()->Error("An error occured while trying to load apperance scene\n");
+        CLogger::GetInstancePointer()->Error("%s\n", e.what());
+    }
 
     m_engine->SetDrawWorld(false);  // does not draw anything on the interface
     m_engine->SetDrawFront(true);  // draws on the human interface
@@ -3924,27 +3957,9 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
         m_missionResult       = ERR_MISSION_NOTERM;
     }
-
-    char line[500];
-    char name[200];
-    char dir[100];
-    char op[100];
-    char filename[500];
-    int lineNum = 0;
-
-    memset(line, 0, 500);
-    memset(name, 0, 200);
-    memset(dir, 0, 100);
-    memset(op, 0, 100);
-    memset(filename, 0, 500);
-    std::string tempLine;
-    m_dialog->BuildSceneName(tempLine, base, rank);
-    strcpy(filename, tempLine.c_str());
     
-    CInputStream stream;
-    stream.open(filename);
-    
-    if (!stream.is_open()) return;
+    CLevelParser* level = new CLevelParser(base, rank/100, rank%100);
+    level->Load();
 
     int rankObj = 0;
     int rankGadget = 0;
@@ -3957,584 +3972,445 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
      *       may speed up loading
      */
 
-    while (stream.getline(line, 500))
+    for(auto& line : level->GetLines())
     {
-        lineNum++;
-        for (int i = 0; i < 500; i++)
+        if (line->GetCommand() == "MissionFile" && !resetObject)
         {
-            if (line[i] == '\t' ) line[i] = ' ';  // replace tab by space
-            if (line[i] == '/' && line[i+1] == '/')
-            {
-                line[i] = 0;
-                break;
-            }
-        }
-
-        if (Cmd(line, "MissionFile") && !resetObject) {
-           m_version = OpInt(line, "version", 1);
-           continue;
-        }
-
-        // TODO: Fallback to an non-localized entry
-        sprintf(op, "Title.%c", m_app->GetLanguageChar());
-        if (Cmd(line, op) && !resetObject)
-        {
-            OpString(line, "text", m_title);
+            m_version = line->GetParam("version")->AsInt(1);
             continue;
         }
-
-        sprintf(op, "Resume.%c", m_app->GetLanguageChar());
-        if (Cmd(line, op) && !resetObject)
+        
+        if(line->GetCommand() == "Title" && !resetObject)
         {
-            OpString(line, "text", m_resume);
+            strcpy(m_title, line->GetParam("text")->AsString().c_str());
             continue;
         }
-
-        sprintf(op, "ScriptName.%c", m_app->GetLanguageChar());
-        if (Cmd(line, op) && !resetObject)
+        
+        if(line->GetCommand() == "Resume" && !resetObject)
         {
-            OpString(line, "text", m_scriptName);
+            strcpy(m_resume, line->GetParam("text")->AsString().c_str());
             continue;
         }
-
-        static const boost::regex titleCmdRe("Title\\.[A-Z]");
-        static const boost::regex resumeCmdRe("Resume\\.[A-Z]");
-        static const boost::regex scriptNameCmdRe("ScriptName\\.[A-Z]");
-
-        if (boost::regex_match(GetCmd(line), titleCmdRe)) continue; // Ignore
-        if (boost::regex_match(GetCmd(line), resumeCmdRe)) continue; // Ignore
-        if (boost::regex_match(GetCmd(line), scriptNameCmdRe)) continue; // Ignore
-
-
-        if (Cmd(line, "ScriptFile") && !resetObject)
+        
+        if(line->GetCommand() == "ScriptName" && !resetObject)
         {
-            OpString(line, "name", m_scriptFile);
+            strcpy(m_scriptName, line->GetParam("text")->AsString().c_str());
             continue;
         }
-
-        if (Cmd(line, "Instructions") && !resetObject)
+        
+        if (line->GetCommand() == "ScriptFile" && !resetObject)
         {
-            OpString(line, "name", name);
-            std::string path = name;
-            InjectLevelDir(path, "help/%lng%");
-            strcpy(m_infoFilename[SATCOM_HUSTON], path.c_str());
-
-            m_immediatSatCom = OpInt(line, "immediat", 0);
-            if (m_version >= 2) m_beginSatCom = m_lockedSatCom = OpInt(line, "lock", 0);
+            strcpy(m_scriptFile, line->GetParam("name")->AsString().c_str());
+            continue;
+        }
+        
+        if (line->GetCommand() == "Instructions" && !resetObject)
+        {
+            strcpy(m_infoFilename[SATCOM_HUSTON], line->GetParam("name")->AsPath("help/%lng%").c_str());
+            
+            m_immediatSatCom = line->GetParam("immediat")->AsBool(false);
+            if (m_version >= 2) m_beginSatCom = m_lockedSatCom = line->GetParam("lock")->AsBool(false);
             if (m_app->GetSceneTestMode()) m_immediatSatCom = false;
             continue;
         }
-
-        if (Cmd(line, "Satellite") && !resetObject)
+        
+        if (line->GetCommand() == "Satellite" && !resetObject)
         {
-            OpString(line, "name", name);
-            std::string path = name;
-            InjectLevelDir(path, "help/%lng%");
-            strcpy(m_infoFilename[SATCOM_SAT], path.c_str());
+            strcpy(m_infoFilename[SATCOM_SAT], line->GetParam("name")->AsPath("help/%lng%").c_str());
             continue;
         }
-
-        if (Cmd(line, "Loading") && !resetObject)
+        
+        if (line->GetCommand() == "Loading" && !resetObject)
         {
-            OpString(line, "name", name);
-            std::string path = name;
-            InjectLevelDir(path, "help/%lng%");
-            strcpy(m_infoFilename[SATCOM_LOADING], path.c_str());
+            strcpy(m_infoFilename[SATCOM_LOADING], line->GetParam("name")->AsPath("help/%lng%").c_str());
             continue;
         }
-
-        if (Cmd(line, "HelpFile") && !resetObject)
+        
+        if (line->GetCommand() == "HelpFile" && !resetObject)
         {
-            OpString(line, "name", name);
-            std::string path = name;
-            InjectLevelDir(path, "help/%lng%");
-            strcpy(m_infoFilename[SATCOM_PROG], path.c_str());
+            strcpy(m_infoFilename[SATCOM_PROG], line->GetParam("name")->AsPath("help/%lng%").c_str());
             continue;
         }
-        if (Cmd(line, "SoluceFile") && !resetObject)
+        if (line->GetCommand() == "SoluceFile" && !resetObject)
         {
-            OpString(line, "name", name);
-            std::string path = name;
-            InjectLevelDir(path, "help/%lng%");
-            strcpy(m_infoFilename[SATCOM_SOLUCE], path.c_str());
+            strcpy(m_infoFilename[SATCOM_SOLUCE], line->GetParam("name")->AsPath("help/%lng%").c_str());
             continue;
         }
-
-        if (Cmd(line, "EndingFile") && !resetObject)
+        
+        if (line->GetCommand() == "EndingFile" && !resetObject)
         {
-            m_endingWinRank  = OpInt(line, "win",  0);
-            m_endingLostRank = OpInt(line, "lost", 0);
+            // NOTE: The old default was 0, but I think -1 is more correct - 0 means "ending file 000", while -1 means "no ending file"
+            m_endingWinRank  = line->GetParam("win")->AsInt(-1);
+            m_endingLostRank = line->GetParam("lost")->AsInt(-1);
             continue;
         }
-
-        if (Cmd(line, "MessageDelay") && !resetObject)
+        
+        if (line->GetCommand() == "MessageDelay" && !resetObject)
         {
-            m_displayText->SetDelay(OpFloat(line, "factor", 1.0f));
+            m_displayText->SetDelay(line->GetParam("factor")->AsFloat());
             continue;
         }
-
-        if (Cmd(line, "CacheAudio") && !resetObject && m_version >= 2)
+        
+        if (line->GetCommand() == "CacheAudio" && !resetObject && m_version >= 2)
         {
-            OpString(line, "filename", name);
-            m_sound->CacheMusic(name);
+            m_sound->CacheMusic(line->GetParam("filename")->AsPath("").c_str()); //TODO: don't make this relative to music/
             continue;
         }
-
-        if (Cmd(line, "AudioChange") && !resetObject && m_version >= 2 && m_controller == nullptr)
+        
+        if (line->GetCommand() == "AudioChange" && !resetObject && m_version >= 2 && m_controller == nullptr)
         {
             int i = m_audioChangeTotal;
             if (i < 10)
             {
-                m_audioChange[i].pos      = OpPos(line, "pos")*g_unit;
-                m_audioChange[i].dist     = OpFloat(line, "dist", 1000.0f)*g_unit;
-                m_audioChange[i].type     = OpTypeObject(line, "type", OBJECT_NULL);
-                m_audioChange[i].min      = OpInt(line, "min", 1);
-                m_audioChange[i].max      = OpInt(line, "max", 9999);
-                m_audioChange[i].powermin = OpFloat(line, "powermin", -1);
-                m_audioChange[i].powermax = OpFloat(line, "powermax", 100);
-                m_audioChange[i].tool     = OpTool(line, "tool");
-                m_audioChange[i].drive    = OpDrive(line, "drive");
-                OpString(line, "filename", m_audioChange[i].music);
-                m_audioChange[i].repeat   = OpInt(line, "repeat", 1);
+                m_audioChange[i].pos      = line->GetParam("pos")->AsPoint(Math::Vector(0.0f, 0.0f, 0.0f))*g_unit;
+                m_audioChange[i].dist     = line->GetParam("dist")->AsFloat(1000.0f)*g_unit;
+                m_audioChange[i].type     = line->GetParam("type")->AsObjectType(OBJECT_NULL);
+                m_audioChange[i].min      = line->GetParam("min")->AsInt(1);
+                m_audioChange[i].max      = line->GetParam("max")->AsInt(9999);
+                m_audioChange[i].powermin = line->GetParam("powermin")->AsFloat(-1);
+                m_audioChange[i].powermax = line->GetParam("powermax")->AsFloat(100);
+                m_audioChange[i].tool     = line->GetParam("tool")->AsToolType(TOOL_OTHER);
+                m_audioChange[i].drive    = line->GetParam("drive")->AsDriveType(DRIVE_OTHER);
+                strcpy(m_audioChange[i].music, line->GetParam("filename")->AsPath("").c_str()); //TODO: don't make this relative to music/
+                m_audioChange[i].repeat   = line->GetParam("repeat")->AsBool(true);
                 m_audioChange[i].changed  = false;
                 m_sound->CacheMusic(m_audioChange[i].music);
                 m_audioChangeTotal ++;
             }
             continue;
         }
-
-        if (Cmd(line, "Audio") && !resetObject && m_controller == nullptr)
+        
+        if (line->GetCommand() == "Audio" && !resetObject && m_controller == nullptr)
         {
             if (m_version < 2)
             {
-                int trackid = OpInt(line, "track", 0);
+                int trackid = line->GetParam("track")->AsInt();
                 if (trackid != 0)
                 {
                     std::stringstream filenameStr;
                     filenameStr << "music" << std::setfill('0') << std::setw(3) << trackid << ".ogg";
                     m_audioTrack = filenameStr.str();
                 }
-                m_audioRepeat = OpInt(line, "repeat", 1);
+                m_audioRepeat = line->GetParam("repeat")->AsBool(true);
             }
             else
             {
-                char trackname[100];
+                m_audioTrack = line->GetParam("main")->AsPath("", ""); //TODO: don't make this relative to music/
+                m_audioRepeat = line->GetParam("mainRepeat")->AsBool(true);
                 
-                OpString(line, "main", trackname);
-                m_audioTrack = trackname;
-                m_audioRepeat = OpInt(line, "mainRepeat", 1);
+                m_satcomTrack = line->GetParam("satcom")->AsPath("", ""); //TODO: don't make this relative to music/
+                m_satcomRepeat = line->GetParam("satcomRepeat")->AsBool(true);
                 
-                OpString(line, "satcom", trackname);
-                m_satcomTrack = trackname;
-                m_satcomRepeat = OpInt(line, "satcomRepeat", 1);
-                
-                OpString(line, "editor", trackname);
-                m_editorTrack = trackname;
-                m_editorRepeat = OpInt(line, "editorRepeat", 1);
+                m_editorTrack = line->GetParam("editor")->AsPath("", ""); //TODO: don't make this relative to music/
+                m_editorRepeat = line->GetParam("editorRepeat")->AsBool(true);
             }
             if (m_audioTrack != "") m_sound->CacheMusic(m_audioTrack);
             if (m_satcomTrack != "") m_sound->CacheMusic(m_satcomTrack);
             if (m_editorTrack != "") m_sound->CacheMusic(m_editorTrack);
             continue;
         }
-
-        if (Cmd(line, "AmbientColor") && !resetObject)
+        
+        if (line->GetCommand() == "AmbientColor" && !resetObject)
         {
-            m_engine->SetAmbientColor(OpColor(line, "air",   Gfx::Color(0.533f, 0.533f, 0.533f, 0.533f)), 0);
-            m_engine->SetAmbientColor(OpColor(line, "water", Gfx::Color(0.533f, 0.533f, 0.533f, 0.533f)), 1);
+            m_engine->SetAmbientColor(line->GetParam("air")->AsColor(Gfx::Color(0.533f, 0.533f, 0.533f, 0.533f)), 0);
+            m_engine->SetAmbientColor(line->GetParam("water")->AsColor(Gfx::Color(0.533f, 0.533f, 0.533f, 0.533f)), 1);
             continue;
         }
-
-        if (Cmd(line, "FogColor") && !resetObject)
+        
+        if (line->GetCommand() == "FogColor" && !resetObject)
         {
-            m_engine->SetFogColor(OpColor(line, "air",   Gfx::Color(0.533f, 0.533f, 0.533f, 0.533f)), 0);
-            m_engine->SetFogColor(OpColor(line, "water", Gfx::Color(0.533f, 0.533f, 0.533f, 0.533f)), 1);
+            m_engine->SetFogColor(line->GetParam("air")->AsColor(Gfx::Color(0.533f, 0.533f, 0.533f, 0.533f)), 0);
+            m_engine->SetFogColor(line->GetParam("water")->AsColor(Gfx::Color(0.533f, 0.533f, 0.533f, 0.533f)), 1);
             continue;
         }
-
-        if (Cmd(line, "VehicleColor") && !resetObject)
+        
+        if (line->GetCommand() == "VehicleColor" && !resetObject)
         {
-            m_colorNewBot = OpColor(line, "color", Gfx::Color(0.533f, 0.533f, 0.533f, 0.533f));
+            m_colorNewBot = line->GetParam("color")->AsColor(Gfx::Color(0.533f, 0.533f, 0.533f, 0.533f));
             continue;
         }
-
-        if (Cmd(line, "InsectColor") && !resetObject)
+        
+        if (line->GetCommand() == "InsectColor" && !resetObject)
         {
-            m_colorNewAlien = OpColor(line, "color", Gfx::Color(0.533f, 0.533f, 0.533f, 0.533f));
+            m_colorNewAlien = line->GetParam("color")->AsColor(Gfx::Color(0.533f, 0.533f, 0.533f, 0.533f));
             continue;
         }
-
-        if (Cmd(line, "GreeneryColor") && !resetObject)
+        
+        if (line->GetCommand() == "GreeneryColor" && !resetObject)
         {
-            m_colorNewGreen = OpColor(line, "color", Gfx::Color(0.533f, 0.533f, 0.533f, 0.533f));
+            m_colorNewGreen = line->GetParam("color")->AsColor(Gfx::Color(0.533f, 0.533f, 0.533f, 0.533f));
             continue;
         }
-
-        if (Cmd(line, "DeepView") && !resetObject)
+        
+        if (line->GetCommand() == "DeepView" && !resetObject)
         {
-            m_engine->SetDeepView(OpFloat(line, "air",   500.0f)*g_unit, 0, true);
-            m_engine->SetDeepView(OpFloat(line, "water", 100.0f)*g_unit, 1, true);
+            m_engine->SetDeepView(line->GetParam("air")->AsFloat(500.0f)*g_unit, 0, true);
+            m_engine->SetDeepView(line->GetParam("water")->AsFloat(100.0f)*g_unit, 1, true);
             continue;
         }
-
-        if (Cmd(line, "FogStart") && !resetObject)
+        
+        if (line->GetCommand() == "FogStart" && !resetObject)
         {
-            m_engine->SetFogStart(OpFloat(line, "air",   0.5f), 0);
-            m_engine->SetFogStart(OpFloat(line, "water", 0.5f), 1);
+            m_engine->SetFogStart(line->GetParam("air")->AsFloat(0.5f), 0);
+            m_engine->SetFogStart(line->GetParam("water")->AsFloat(0.5f), 1);
             continue;
         }
-
-        if (Cmd(line, "SecondTexture") && !resetObject)
+        
+        if (line->GetCommand() == "SecondTexture" && !resetObject)
         {
-            m_engine->SetSecondTexture(OpInt(line, "rank", 1));
+            m_engine->SetSecondTexture(line->GetParam("rank")->AsInt());
             continue;
         }
-
-        if (Cmd(line, "Background") && !resetObject)
+        
+        if (line->GetCommand() == "Background" && !resetObject)
         {
-            OpString(line, "image", name);
-            m_engine->SetBackground(name,
-                                    OpColor(line, "up",        Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f)),
-                                    OpColor(line, "down",      Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f)),
-                                    OpColor(line, "cloudUp",   Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f)),
-                                    OpColor(line, "cloudDown", Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f)),
-                                    OpInt(line, "full", 0));
+            m_engine->SetBackground(line->GetParam("image")->AsPath("", "").c_str(), //TODO: don't make this relative to textures/
+                                    line->GetParam("up")->AsColor(Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f)),
+                                    line->GetParam("down")->AsColor(Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f)),
+                                    line->GetParam("cloudUp")->AsColor(Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f)),
+                                    line->GetParam("cloudDown")->AsColor(Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f)),
+                                    line->GetParam("full")->AsBool(false));
             continue;
         }
-
-        if (Cmd(line, "Planet") && !resetObject)
+        
+        if (line->GetCommand() == "Planet" && !resetObject)
         {
             Math::Vector    ppos, uv1, uv2;
-
-            ppos  = OpPos(line, "pos");
-            uv1   = OpPos(line, "uv1");
-            uv2   = OpPos(line, "uv2");
-            OpString(line, "image", name);
-            m_planet->Create(OpInt(line, "mode", 0),
+            
+            ppos  = line->GetParam("pos")->AsPoint();
+            uv1   = line->GetParam("uv1")->AsPoint();
+            uv2   = line->GetParam("uv2")->AsPoint();
+            m_planet->Create(line->GetParam("mode")->AsInt(0),
                              Math::Point(ppos.x, ppos.z),
-                             OpFloat(line, "dim", 0.2f),
-                             OpFloat(line, "speed", 0.0f),
-                             OpFloat(line, "dir", 0.0f),
-                             name,
+                             line->GetParam("dim")->AsFloat(0.2f),
+                             line->GetParam("speed")->AsFloat(0.0f),
+                             line->GetParam("dir")->AsFloat(0.0f),
+                             line->GetParam("image")->AsPath(""), //TODO: don't make this relative to textures/
                              Math::Point(uv1.x, uv1.z),
                              Math::Point(uv2.x, uv2.z),
-                             strstr(name, "planet") != nullptr // TODO: add transparent op or modify textures
-                            );
+                             line->GetParam("image")->AsPath("").find("planet") != std::string::npos // TODO: add transparent op or modify textures
+            );
             continue;
         }
-
-        if (Cmd(line, "ForegroundName") && !resetObject)
+        
+        if (line->GetCommand() == "ForegroundName" && !resetObject)
         {
-            OpString(line, "image", name);
-            m_engine->SetForegroundName(name);
+            m_engine->SetForegroundName(line->GetParam("image")->AsPath("")); //TODO: don't make this relative to textures/
             continue;
         }
-
-        if (((m_version == 1 && Cmd(line, "Global")) || (m_version >= 2 && Cmd(line, "Mission"))) && !resetObject)
+        
+        if (((line->GetCommand() == "Global") || (m_version >= 2 && line->GetCommand() == "Mission")) && !resetObject)
         {
-            g_unit = OpFloat(line, "unitScale", 4.0f);
-            m_engine->SetTracePrecision(OpFloat(line, "traceQuality", 1.0f));
-            m_shortCut = OpInt(line, "shortcut", 1);
+            g_unit = line->GetParam("unitScale")->AsFloat(4.0f);
+            m_engine->SetTracePrecision(line->GetParam("traceQuality")->AsFloat(1.0f));
+            m_shortCut = line->GetParam("shortcut")->AsBool(true);
             if (m_version >= 2)
             {
-                m_retroStyle = OpInt(line, "retro", 0);
+                m_retroStyle = line->GetParam("retro")->AsBool(false);
                 if (m_retroStyle) GetLogger()->Info("Retro mode enabled.\n");
             }
             continue;
         }
-
-        if (Cmd(line, "TerrainGenerate") && !resetObject)
+        
+        if (line->GetCommand() == "TerrainGenerate" && !resetObject)
         {
-            if (m_terrainCreate)
-            {
-                GetLogger()->Error("Syntax error in file '%s' (line %d): TerrainGenerate after TerrainCreate\n", filename, lineNum);
-                continue;
-            }
-
-            if (m_terrainInit)
-            {
-                GetLogger()->Error("Syntax error in file '%s' (line %d): TerrainGenerate after TerrainInit\n", filename, lineNum);
-                continue;
-            }
-
-            m_terrain->Generate(OpInt(line, "mosaic", 20),
-                                OpInt(line, "brick", 3),
-                                OpFloat(line, "size", 20.0f),
-                                OpFloat(line, "vision", 500.0f)*g_unit,
-                                OpInt(line, "depth", 2),
-                                OpFloat(line, "hard", 0.5f));
-
-            m_terrainGenerate = true;
-            continue;
-        }
-
-        if (Cmd(line, "TerrainWind") && !resetObject)
-        {
-            if (m_terrainCreate)
-            {
-                GetLogger()->Error("Syntax error in file '%s' (line %d): TerrainWind after TerrainCreate\n", filename, lineNum);
-                continue;
-            }
-
-            if (m_terrainInit)
-            {
-                GetLogger()->Error("Syntax error in file '%s' (line %d): TerrainWind after TerrainInit\n", filename, lineNum);
-                continue;
-            }
-
-            if (!m_terrainGenerate)
-            {
-                GetLogger()->Error("Syntax error in file '%s' (line %d): TerrainWind before TerrainGenerate\n", filename, lineNum);
-                continue;
-            }
-
-            m_terrain->SetWind(OpPos(line, "speed"));
-            continue;
-        }
-
-        if (Cmd(line, "TerrainRelief") && !resetObject)
-        {
-            if (m_terrainCreate)
-            {
-                GetLogger()->Error("Syntax error in file '%s' (line %d): TerrainRelief after TerrainCreate\n", filename, lineNum);
-                continue;
-            }
-
-            if (m_terrainInit)
-            {
-                GetLogger()->Error("Syntax error in file '%s' (line %d): TerrainRelief after TerrainInit\n", filename, lineNum);
-                continue;
-            }
-
-            if (!m_terrainGenerate)
-            {
-                GetLogger()->Error("Syntax error in file '%s' (line %d): TerrainRelief before TerrainGenerate\n", filename, lineNum);
-                continue;
-            }
-
-            OpString(line, "image", name);
-            m_terrain->LoadRelief(std::string("textures/")+name, OpFloat(line, "factor", 1.0f), OpInt(line, "border", 1));
+            m_terrain->Generate(line->GetParam("mosaic")->AsInt(20),
+                                line->GetParam("brick")->AsInt(3),
+                                line->GetParam("size")->AsFloat(20.0f),
+                                line->GetParam("vision")->AsFloat(500.0f)*g_unit,
+                                line->GetParam("depth")->AsInt(2),
+                                line->GetParam("hard")->AsFloat(0.5f));
             continue;
         }
         
-        if (Cmd(line, "TerrainRandomRelief") && !resetObject)
+        if (line->GetCommand() == "TerrainWind" && !resetObject)
+        {
+            m_terrain->SetWind(line->GetParam("speed")->AsPoint());
+            continue;
+        }
+        
+        if (line->GetCommand() == "TerrainRelief" && !resetObject)
+        {
+            m_terrain->LoadRelief(
+                line->GetParam("image")->AsPath("textures"),
+                line->GetParam("factor")->AsFloat(1.0f),
+                line->GetParam("border")->AsBool(true));
+            continue;
+        }
+        
+        if (line->GetCommand() == "TerrainRandomRelief" && !resetObject)
         {
             m_terrain->RandomizeRelief();
             continue;
         }
-
-        if (Cmd(line, "TerrainResource") && !resetObject)
+        
+        if (line->GetCommand() == "TerrainResource" && !resetObject)
         {
-            if (m_terrainCreate)
-            {
-                GetLogger()->Error("Syntax error in file '%s' (line %d): TerrainResource after TerrainCreate\n", filename, lineNum);
-                continue;
-            }
-
-            if (m_terrainInit)
-            {
-                GetLogger()->Error("Syntax error in file '%s' (line %d): TerrainResource after TerrainInit\n", filename, lineNum);
-                continue;
-            }
-
-            if (!m_terrainGenerate)
-            {
-                GetLogger()->Error("Syntax error in file '%s' (line %d): TerrainResource before TerrainGenerate\n", filename, lineNum);
-                continue;
-            }
-
-            OpString(line, "image", name);
-            m_terrain->LoadResources(std::string("textures/")+name);
+            m_terrain->LoadResources(line->GetParam("image")->AsPath("textures"));
             continue;
         }
-
-        if (Cmd(line, "TerrainWater") && !resetObject)
+        
+        if (line->GetCommand() == "TerrainWater" && !resetObject)
         {
-            OpString(line, "image", name);
             Math::Vector pos;
-            pos.x = OpFloat(line, "moveX", 0.0f);
-            pos.y = OpFloat(line, "moveY", 0.0f);
+            pos.x = line->GetParam("moxeX")->AsFloat(0.0f);
+            pos.y = line->GetParam("moxeY")->AsFloat(0.0f);
             pos.z = pos.x;
-            m_water->Create(OpTypeWater(line, "air",   Gfx::WATER_TT),
-                            OpTypeWater(line, "water", Gfx::WATER_TT),
-                            name,
-                            OpColor(line, "diffuse", Gfx::Color(1.0f, 1.0f, 1.0f, 1.0f)),
-                            OpColor(line, "ambient", Gfx::Color(1.0f, 1.0f, 1.0f, 1.0f)),
-                            OpFloat(line, "level", 100.0f)*g_unit,
-                            OpFloat(line, "glint", 1.0f),
+            m_water->Create(line->GetParam("air")->AsWaterType(Gfx::WATER_TT),
+                            line->GetParam("water")->AsWaterType(Gfx::WATER_TT),
+                            line->GetParam("image")->AsPath(""), //TODO: don't make this relative to textures/
+                            line->GetParam("diffuse")->AsColor(Gfx::Color(1.0f, 1.0f, 1.0f, 1.0f)),
+                            line->GetParam("ambient")->AsColor(Gfx::Color(1.0f, 1.0f, 1.0f, 1.0f)),
+                            line->GetParam("level")->AsFloat(100.0f)*g_unit,
+                            line->GetParam("glint")->AsFloat(1.0f),
                             pos);
-            m_colorNewWater = OpColor(line, "color", m_colorRefWater);
-            m_colorShiftWater = OpFloat(line, "brightness", 0.0f);
+            m_colorNewWater = line->GetParam("color")->AsColor(m_colorRefWater);
+            m_colorShiftWater = line->GetParam("brightness")->AsFloat(0.0f);
             continue;
         }
-
-        if (Cmd(line, "TerrainLava") && !resetObject)
+        
+        if (line->GetCommand() == "TerrainLava" && !resetObject)
         {
-            m_water->SetLava(OpInt(line, "mode", 0));
+            m_water->SetLava(line->GetParam("mode")->AsBool());
             continue;
         }
-
-        if (Cmd(line, "TerrainCloud") && !resetObject)
+        
+        if (line->GetCommand() == "TerrainCloud" && !resetObject)
         {
-            OpString(line, "image", name);
-            m_cloud->Create(name,
-                            OpColor(line, "diffuse", Gfx::Color(1.0f, 1.0f, 1.0f, 1.0f)),
-                            OpColor(line, "ambient", Gfx::Color(1.0f, 1.0f, 1.0f, 1.0f)),
-                            OpFloat(line, "level", 500.0f) * g_unit);
+            m_cloud->Create(line->GetParam("image")->AsPath("", ""), //TODO: don't make this relative to textures/
+                            line->GetParam("diffuse")->AsColor(Gfx::Color(1.0f, 1.0f, 1.0f, 1.0f)),
+                            line->GetParam("ambient")->AsColor(Gfx::Color(1.0f, 1.0f, 1.0f, 1.0f)),
+                            line->GetParam("level")->AsFloat(500.0f)*g_unit);
             continue;
         }
-
-        if (Cmd(line, "TerrainBlitz") && !resetObject)
+        
+        if (line->GetCommand() == "TerrainBlitz" && !resetObject)
         {
-            m_lightning->Create(OpFloat(line, "sleep", 0.0f),
-                            OpFloat(line, "delay", 3.0f),
-                            OpFloat(line, "magnetic", 50.0f) * g_unit);
+            m_lightning->Create(line->GetParam("sleep")->AsFloat(0.0f),
+                                line->GetParam("delay")->AsFloat(3.0f),
+                                line->GetParam("magnetic")->AsFloat(50.0f)*g_unit);
             continue;
         }
-
-        if (Cmd(line, "TerrainInitTextures") && !resetObject)
+        
+        if (line->GetCommand() == "TerrainInitTextures" && !resetObject)
         {
-            if (m_terrainInit)
-            {
-                GetLogger()->Error("Syntax error in file '%s' (line %d): TerrainInitTextures and TerrainInit at same time\n", filename, lineNum);
-                continue;
+            std::string name = line->GetParam("image")->AsPath(""); //TODO: don't make this relative to textures/
+            if(name.find(".") == std::string::npos)
+                name += ".png";
+            int dx = line->GetParam("dx")->AsInt(1);
+            int dy = line->GetParam("dy")->AsInt(1);
+            
+            int tt[100]; //TODO: I have no idea how TerrainInitTextures works, but maybe we shuld remove the limit to 100?
+            if(dx*dy > 100)
+                throw CLevelParserException("In TerrainInitTextures: dx*dy must be <100");
+            if(line->GetParam("table")->IsDefined()) {
+                const std::vector<CLevelParserParam*>& table = line->GetParam("table")->AsArray();
+                
+                if(table.size() > dx*dy)
+                    throw CLevelParserException("In TerrainInitTextures: table size must be dx*dy");
+                
+                for (int i = 0; i < dx*dy; i++)
+                {
+                    if(i >= table.size())
+                    {
+                        tt[i] = 0;
+                    } else {
+                        tt[i] = table[i]->AsInt();
+                    }
+                }
+            } else {
+                for (int i = 0; i < dx*dy; i++)
+                {
+                    tt[i] = 0;
+                }
             }
-
-            OpString(line, "image", name);
-            AddExt(name, ".png");
-            int dx = OpInt(line, "dx", 1);
-            int dy = OpInt(line, "dy", 1);
-            char* opTable = SearchOp(line, "table");
-            int tt[100];
-            for (int i = 0; i < dx*dy; i++)
-                tt[i] = GetInt(opTable, i, 0);
-
+            
+            /*TODO: ???
             if (strstr(name, "%user%") != 0)
                 CopyFileListToTemp(name, tt, dx*dy);
-
-            m_terrain->InitTextures(name, tt, dx, dy);
-
-            m_terrainInitTextures = true;
+            */
+            
+            m_terrain->InitTextures(name.c_str(), tt, dx, dy);
             continue;
         }
-
-        if (Cmd(line, "TerrainInit") && !resetObject)
+        
+        if (line->GetCommand() == "TerrainInit" && !resetObject)
         {
-            if (m_terrainInitTextures)
-            {
-                GetLogger()->Error("Syntax error in file '%s' (line %d): TerrainInit and TerrainInitTextures at same time\n", filename, lineNum);
-                continue;
-            }
-
-            m_terrain->InitMaterials(OpInt(line, "id", 1));
+            m_terrain->InitMaterials(line->GetParam("id")->AsInt(1));
             m_terrainInit = true;
             continue;
         }
-
-        if (Cmd(line, "TerrainMaterial") && !resetObject)
+        
+        if (line->GetCommand() == "TerrainMaterial" && !resetObject)
         {
-            if (m_terrainCreate)
-            {
-                GetLogger()->Error("Syntax error in file '%s' (line %d): TerrainMaterial after TerrainCreate\n", filename, lineNum);
-                continue;
-            }
-
-            if (m_terrainInit)
-            {
-                GetLogger()->Error("Syntax error in file '%s' (line %d): TerrainMaterial after TerrainInit\n", filename, lineNum);
-                continue;
-            }
-
-            if (m_terrainInitTextures)
-            {
-                GetLogger()->Error("Syntax error in file '%s' (line %d): TerrainMaterial and TerrainInitTextures at same time\n", filename, lineNum);
-                continue;
-            }
-
-            OpString(line, "image", name);
-            AddExt(name, ".png");
+            std::string name = line->GetParam("image")->AsPath(""); //TODO: don't make this relative to textures/
+            if(name.find(".") == std::string::npos)
+                name += ".png";
+            /*TODO: ???
             if (strstr(name, "%user%") != 0)
             {
                 GetProfile().CopyFileToTemp(std::string(name));
             }
-
-            m_terrain->AddMaterial(OpInt(line, "id", 0),
-                                   name,
-                                   Math::Point(OpFloat(line, "u", 0.0f),
-                                               OpFloat(line, "v", 0.0f)),
-                                   OpInt(line, "up",    1),
-                                   OpInt(line, "right", 1),
-                                   OpInt(line, "down",  1),
-                                   OpInt(line, "left",  1),
-                                   OpFloat(line, "hard", 0.5f));
+            */
+            
+            m_terrain->AddMaterial(line->GetParam("id")->AsInt(0),
+                                   name.c_str(),
+                                   Math::Point(line->GetParam("u")->AsFloat(),
+                                               line->GetParam("v")->AsFloat()),
+                                   line->GetParam("up")->AsInt(),
+                                   line->GetParam("right")->AsInt(),
+                                   line->GetParam("down")->AsInt(),
+                                   line->GetParam("left")->AsInt(),
+                                   line->GetParam("hard")->AsFloat(0.5f));
             continue;
         }
-
-        if (Cmd(line, "TerrainLevel") && !resetObject)
+        
+        if (line->GetCommand() == "TerrainLevel" && !resetObject)
         {
-            if (m_terrainCreate)
-            {
-                GetLogger()->Error("Syntax error in file '%s' (line %d): TerrainLevel after TerrainCreate\n", filename, lineNum);
-                continue;
+            int id[50]; //TODO: I have no idea how TerrainLevel works, but maybe we should remove the limit to 50?
+            if(line->GetParam("id")->IsDefined()) {
+                const std::vector<CLevelParserParam*>& id_array = line->GetParam("id")->AsArray();
+                
+                if(id_array.size() > 50)
+                    throw CLevelParserException("In TerrainLevel: id array size must be < 50");
+                
+                int i = 0;
+                while (i < 50)
+                {
+                    id[i] = id_array[i]->AsInt();
+                    i++;
+                    if(i >= id_array.size()) break;
+                }
             }
-
-            if (!m_terrainInit)
-            {
-                GetLogger()->Error("Syntax error in file '%s' (line %d): TerrainLevel before TerrainInit\n", filename, lineNum);
-                continue;
-            }
-
-            if (m_terrainInitTextures)
-            {
-                GetLogger()->Error("Syntax error in file '%s' (line %d): TerrainLevel and TerrainInitTextures at same time\n", filename, lineNum);
-                continue;
-            }
-
-            if (!m_terrainGenerate)
-            {
-                GetLogger()->Error("Syntax error in file '%s' (line %d): TerrainLevel before TerrainGenerate\n", filename, lineNum);
-                continue;
-            }
-
-            char* opId = SearchOp(line, "id");
-            int id[50];
-            int i = 0;
-            while (i < 50)
-            {
-                id[i] = GetInt(opId, i, 0);
-                if (id[i++] == 0) break;
-            }
-
+            
             m_terrain->GenerateMaterials(id,
-                                         OpFloat(line, "min", 0.0f)*g_unit,
-                                         OpFloat(line, "max", 100.0f)*g_unit,
-                                         OpFloat(line, "slope", 5.0f),
-                                         OpFloat(line, "freq", 100.0f),
-                                         OpPos(line, "center")*g_unit,
-                                         OpFloat(line, "radius", 0.0f)*g_unit);
+                                         line->GetParam("min")->AsFloat(0.0f)*g_unit,
+                                         line->GetParam("max")->AsFloat(100.0f)*g_unit,
+                                         line->GetParam("slope")->AsFloat(5.0f),
+                                         line->GetParam("freq")->AsFloat(100.0f),
+                                         line->GetParam("center")->AsPoint(Math::Vector(0.0f, 0.0f, 0.0f))*g_unit,
+                                         line->GetParam("radius")->AsFloat(0.0f)*g_unit);
             continue;
         }
-
-        if (Cmd(line, "TerrainCreate") && !resetObject)
+        
+        if (line->GetCommand() == "TerrainCreate" && !resetObject)
         {
             m_terrain->CreateObjects();
-            m_terrainCreate = true;
             continue;
         }
-
-        if (Cmd(line, "BeginObject"))
+        
+        if (line->GetCommand() == "BeginObject")
         {
             InitEye();
             SetMovieLock(false);
-
+            
             if (read[0] != 0)  // loading file ?
                 sel = IOReadScene(read, stack);
-
-            m_beginObject = true;
+            
             continue;
         }
-
-        if (Cmd(line, "MissionController") && read[0] == 0 && m_version >= 2)
+        
+        if (line->GetCommand() == "MissionController" && read[0] == 0 && m_version >= 2)
         {
             m_controller = CObjectManager::GetInstancePointer()->CreateObject(Math::Vector(0.0f, 0.0f, 0.0f), 0.0f, OBJECT_CONTROLLER, 100.0f);
             m_controller->SetMagnifyDamage(100.0f);
@@ -4542,48 +4418,42 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             CBrain* brain = m_controller->GetBrain();
             if (brain != nullptr)
             {
-                OpString(line, "script", name);
-                if (name[0] != 0)
-                    brain->SetScriptName(0, name);
+                std::string name = line->GetParam("script")->AsPath(""); //TODO: Don't make this relative to ai/
+                if (!name.empty())
+                    brain->SetScriptName(0, const_cast<char*>(name.c_str()));
                 brain->SetScriptRun(0);
             }
             continue;
         }
-
-        if (Cmd(line, "CreateObject") && read[0] == 0)
+        
+        if (line->GetCommand() == "CreateObject" && read[0] == 0)
         {
-            if (!m_beginObject)
-            {
-                GetLogger()->Error("Syntax error in file '%s' (line %d): CreateObject before BeginObject\n", filename, lineNum);
-                continue;
-            }
-
-            ObjectType type = OpTypeObject(line, "type", OBJECT_NULL);
-
-            int gadget = OpInt(line, "gadget", -1);
+            ObjectType type = line->GetParam("type")->AsObjectType();
+            
+            int gadget = line->GetParam("gadget")->AsInt(-1);
             if ( gadget == -1 )
             {
                 gadget = 0;
                 if ( type == OBJECT_TECH ||
-                     (type >= OBJECT_PLANT0  &&
-                      type <= OBJECT_PLANT19 ) ||
-                     (type >= OBJECT_TREE0   &&
-                      type <= OBJECT_TREE5   ) ||
-                     (type >= OBJECT_TEEN0   &&
-                      type <= OBJECT_TEEN44  ) ||
-                     (type >= OBJECT_QUARTZ0 &&
-                      type <= OBJECT_QUARTZ3 ) ||
-                     (type >= OBJECT_ROOT0   &&
-                      type <= OBJECT_ROOT4   ) )  // not ROOT5!
+                    (type >= OBJECT_PLANT0  &&
+                    type <= OBJECT_PLANT19 ) ||
+                    (type >= OBJECT_TREE0   &&
+                    type <= OBJECT_TREE5   ) ||
+                    (type >= OBJECT_TEEN0   &&
+                    type <= OBJECT_TEEN44  ) ||
+                    (type >= OBJECT_QUARTZ0 &&
+                    type <= OBJECT_QUARTZ3 ) ||
+                    (type >= OBJECT_ROOT0   &&
+                    type <= OBJECT_ROOT4   ) )  // not ROOT5!
                 {
                     if ( type != OBJECT_TEEN11 &&  // lamp?
-                         type != OBJECT_TEEN12 &&  // coke?
-                         type != OBJECT_TEEN20 &&  // wall?
-                         type != OBJECT_TEEN21 &&  // wall?
-                         type != OBJECT_TEEN22 &&  // wall?
-                         type != OBJECT_TEEN26 &&  // lamp?
-                         type != OBJECT_TEEN28 &&  // bottle?
-                         type != OBJECT_TEEN34 )   // stone?
+                        type != OBJECT_TEEN12 &&  // coke?
+                        type != OBJECT_TEEN20 &&  // wall?
+                        type != OBJECT_TEEN21 &&  // wall?
+                        type != OBJECT_TEEN22 &&  // wall?
+                        type != OBJECT_TEEN26 &&  // lamp?
+                        type != OBJECT_TEEN28 &&  // bottle?
+                        type != OBJECT_TEEN34 )   // stone?
                     {
                         gadget = 1;
                     }
@@ -4593,19 +4463,20 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             {
                 if (!TestGadgetQuantity(rankGadget++)) continue;
             }
-
-            Math::Vector pos = OpPos(line, "pos")*g_unit;
-            float dirAngle = OpFloat(line, "dir", 0.0f)*Math::PI;
+            
+            Math::Vector pos = line->GetParam("pos")->AsPoint()*g_unit;
+            float dirAngle = line->GetParam("dir")->AsFloat(0.0f)*Math::PI;
             bool trainer;
             CObject* obj = CObjectManager::GetInstancePointer()->CreateObject(
-                                        pos, dirAngle,
-                                        type,
-                                        OpFloat(line, "power", 1.0f),
-                                        OpFloat(line, "z", 1.0f),
-                                        OpFloat(line, "h", 0.0f),
-                                        trainer = OpInt(line, "trainer", 0),
-                                        OpInt(line, "toy", 0),
-                                        OpInt(line, "option", 0));
+                pos, dirAngle,
+                type,
+                line->GetParam("power")->AsFloat(1.0f),
+                line->GetParam("z")->AsFloat(1.0f),
+                line->GetParam("h")->AsFloat(0.0f),
+                trainer = line->GetParam("trainer")->AsBool(false),
+                line->GetParam("toy")->AsBool(false),
+                line->GetParam("option")->AsInt(0)
+            );
             
             if (m_fixScene && type == OBJECT_HUMAN)
             {
@@ -4613,108 +4484,112 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 if (m_phase == PHASE_WIN ) motion->SetAction(MHS_WIN,  0.4f);
                 if (m_phase == PHASE_LOST) motion->SetAction(MHS_LOST, 0.5f);
             }
-
+            
             if (obj != nullptr)
             {
                 obj->SetDefRank(rankObj);
-
+                
                 if (type == OBJECT_BASE) m_base = true;
-
-                Gfx::CameraType cType = OpCamera(line, "camera");
+                
+                Gfx::CameraType cType = line->GetParam("camera")->AsCameraType(Gfx::CAM_TYPE_NULL);
                 if (cType != Gfx::CAM_TYPE_NULL)
                     obj->SetCameraType(cType);
-
-                obj->SetCameraDist(OpFloat(line, "cameraDist", 50.0f));
-                obj->SetCameraLock(OpInt(line, "cameraLock", 0));
-
-                Gfx::PyroType pType = OpPyro(line, "pyro");
+                
+                obj->SetCameraDist(line->GetParam("cameraDist")->AsFloat(50.0f));
+                obj->SetCameraLock(line->GetParam("cameraLock")->AsBool(false));
+                
+                Gfx::PyroType pType = line->GetParam("pyro")->AsPyroType(Gfx::PT_NULL);
                 if (pType != Gfx::PT_NULL)
                 {
                     Gfx::CPyro* pyro = new Gfx::CPyro();
                     pyro->Create(pType, obj);
                 }
-
+                
                 // Puts information in terminal (OBJECT_INFO).
                 for (int i = 0; i < OBJECTMAXINFO; i++)
                 {
-                    sprintf(op, "info%d", i+1);
-                    char text[100];
-                    OpString(line, op, text);
-                    if (text[0] == 0)  break;
-                    char* p = strchr(text, '=');
-                    if (p == 0) break;
-                    *p = 0;
+                    std::string op = "info"+std::to_string(i+1);
+                    if(!line->GetParam(op)->IsDefined()) break;
+                    std::string text = line->GetParam(op)->AsString();
+                    std::size_t p = text.find_first_of("=");
+                    if(p == std::string::npos) 
+                        throw CLevelParserExceptionBadParam(line->GetParam(op), "info");
                     Info info;
-                    strcpy(info.name, text);
-                    sscanf(p+1, "%f", &info.value);
+                    strcpy(info.name, text.substr(0, p).c_str());
+                    try {
+                        info.value = boost::lexical_cast<float>(text.substr(p+1).c_str());
+                    }
+                    catch(...)
+                    {
+                        throw CLevelParserExceptionBadParam(line->GetParam(op), "info.value (float)");
+                    }
                     obj->SetInfo(i, info);
                 }
-
+                
                 // Sets the parameters of the command line.
-                char* p = SearchOp(line, "cmdline");
-                for (int i = 0; i < OBJECTMAXCMDLINE; i++)
-                {
-                    float value = GetFloat(p, i, NAN);
-                    if (value == NAN) break;
-                    obj->SetCmdLine(i, value);
+                if(line->GetParam("cmdline")->IsDefined()) {
+                    const std::vector<CLevelParserParam*>& cmdline = line->GetParam("cmdline")->AsArray();
+                    for (int i = 0; i < OBJECTMAXCMDLINE && i < cmdline.size(); i++) //TODO: get rid of the limit
+                    {
+                        obj->SetCmdLine(i, cmdline[i]->AsFloat());
+                    }
                 }
-
-                if (OpInt(line, "select", 0) == 1)
+                
+                if (line->GetParam("select")->AsBool(false))
                 {
                     sel = obj;
                 }
-
-                bool selectable = OpInt(line, "selectable", 1);
+                
+                bool selectable = line->GetParam("selectable")->AsBool(true);
                 obj->SetSelectable(selectable);
-                obj->SetIgnoreBuildCheck(OpInt(line, "ignoreBuildCheck", 0));
-                obj->SetEnable(OpInt(line, "enable", 1));
-                obj->SetProxyActivate(OpInt(line, "proxyActivate", 0));
-                obj->SetProxyDistance(OpFloat(line, "proxyDistance", 15.0f)*g_unit);
-                obj->SetRange(OpFloat(line, "range", 30.0f));
-                obj->SetShield(OpFloat(line, "shield", 1.0f));
-                obj->SetMagnifyDamage(OpFloat(line, "magnifyDamage", 1.0f));
-                obj->SetClip(OpInt(line, "clip", 1));
-                obj->SetCheckToken(m_version >= 2 ? trainer || !selectable : OpInt(line, "checkToken", 1));
+                obj->SetIgnoreBuildCheck(line->GetParam("ignoreBuildCheck")->AsBool(false));
+                obj->SetEnable(line->GetParam("enable")->AsBool(true));
+                obj->SetProxyActivate(line->GetParam("proxyActivate")->AsBool(false));
+                if(line->GetParam("proxyActivate")->AsBool(false))
+                    obj->SetProxyDistance(line->GetParam("proxyDistance")->AsFloat()*g_unit);
+                obj->SetRange(line->GetParam("range")->AsFloat(30.0f));
+                obj->SetShield(line->GetParam("shield")->AsFloat(1.0f));
+                obj->SetMagnifyDamage(line->GetParam("magnifyDamage")->AsFloat(1.0f));
+                obj->SetClip(line->GetParam("clip")->AsBool(true));
+                obj->SetCheckToken(m_version >= 2 ? trainer || !selectable : line->GetParam("checkToken")->AsBool(true));
                 // SetManual will affect bot speed
                 if (type == OBJECT_MOBILEdr)
                 {
-                    obj->SetManual(m_version >= 2 ? !trainer : OpInt(line, "manual", 0));
+                    obj->SetManual(m_version >= 2 ? !trainer : line->GetParam("manual")->AsBool(false));
                 }
-
+                
                 if (m_version >= 2)
                 {
-                    Math::Vector zoom = OpDir(line, "zoom");
+                    Math::Vector zoom = line->GetParam("zoom")->AsPoint(Math::Vector(0.0f, 0.0f, 0.0f));
                     if (zoom.x != 0.0f || zoom.y != 0.0f || zoom.z != 0.0f)
                         obj->SetZoom(0, zoom);
                 }
-
+                
+                //TODO: I don't remember what this is used for
                 CMotion* motion = obj->GetMotion();
-                if (motion != nullptr)
+                if (motion != nullptr && line->GetParam("param")->IsDefined())
                 {
-                    p = SearchOp(line, "param");
-                    for (int i = 0; i < 10; i++)
+                    const std::vector<CLevelParserParam*>& p = line->GetParam("param")->AsArray();
+                    for (int i = 0; i < 10 && i < p.size(); i++)
                     {
-                        float   value;
-                        value = GetFloat(p, i, NAN);
-                        if (value == NAN) break;
-                        motion->SetParam(i, value);
+                        motion->SetParam(i, p[i]->AsFloat());
                     }
                 }
-
+                
                 int run = -1;
                 CBrain* brain = obj->GetBrain();
                 if (brain != nullptr)
                 {
                     for (int i = 0; i < 10; i++)
                     {
-                        sprintf(op, "script%d", i+1);  // script1..script10
-                        OpString(line, op, name);
-                        if (name[0] != 0)
-                            brain->SetScriptName(i, name);
-
+                        std::string op = "script"+std::to_string(i+1); // script1..script10
+                        if(line->GetParam(op)->IsDefined()) {
+                            brain->SetScriptName(i, const_cast<char*>(line->GetParam(op)->AsPath("").c_str())); //TODO: don't make this relative to ai/
+                        }
+                        
                     }
-
-                    int i = OpInt(line, "run", 0);
+                    
+                    int i = line->GetParam("run")->AsInt(0);
                     if (i != 0)
                     {
                         run = i-1;
@@ -4724,17 +4599,16 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 CAuto* automat = obj->GetAuto();
                 if (automat != nullptr)
                 {
-                    type = OpTypeObject(line, "autoType", OBJECT_NULL);
+                    type = line->GetParam("autoType")->AsObjectType(OBJECT_NULL);
                     automat->SetType(type);
                     for (int i = 0; i < 5; i++)
                     {
-                        sprintf(op, "autoValue%d", i+1);  // autoValue1..autoValue5
-                        automat->SetValue(i, OpFloat(line, op, 0.0f));
+                        std::string op = "autoValue"+std::to_string(i+1); // autoValue1..autoValue5
+                        automat->SetValue(i, line->GetParam(op)->AsFloat(0.0f));
                     }
-                    OpString(line, "autoString", name);
-                    automat->SetString(name);
-
-                    int i = OpInt(line, "run", -1);
+                    automat->SetString(const_cast<char*>(line->GetParam("autoString")->AsString("").c_str()));
+                    
+                    int i = line->GetParam("run")->AsInt(-1);
                     if (i != -1)
                     {
                         if (i != PARAM_FIXSCENE &&
@@ -4742,30 +4616,29 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                         automat->Start(i);  // starts the film
                     }
                 }
-
-                OpString(line, "soluce", name);
-                if (soluce && brain != 0 && name[0] != 0)
-                    brain->SetSoluceName(name);
-
+                
+                if (soluce && brain != nullptr && line->GetParam("soluce")->IsDefined())
+                    brain->SetSoluceName(const_cast<char*>(line->GetParam("soluce")->AsString().c_str()));
+                
                 obj->SetResetPosition(obj->GetPosition(0));
                 obj->SetResetAngle(obj->GetAngle(0));
                 obj->SetResetRun(run);
-
-                if (OpInt(line, "reset", 0) == 1)
+                
+                if (line->GetParam("reset")->AsBool(false))
                     obj->SetResetCap(RESET_MOVE);
             }
-
+            
             rankObj ++;
             continue;
         }
-
-        if (Cmd(line, "CreateFog") && !resetObject)
+        
+        if (line->GetCommand() == "CreateFog" && !resetObject)
         {
-            Gfx::ParticleType type = static_cast<Gfx::ParticleType>((Gfx::PARTIFOG0+OpInt(line, "type", 0)));
-            Math::Vector pos = OpPos(line, "pos")*g_unit;
-            float height = OpFloat(line, "height", 1.0f)*g_unit;
-            float ddim = OpFloat(line, "dim", 50.0f)*g_unit;
-            float delay = OpFloat(line, "delay", 2.0f);
+            Gfx::ParticleType type = static_cast<Gfx::ParticleType>(Gfx::PARTIFOG0+(line->GetParam("type")->AsInt()));
+            Math::Vector pos = line->GetParam("pos")->AsPoint()*g_unit;
+            float height = line->GetParam("height")->AsFloat(1.0f)*g_unit;
+            float ddim = line->GetParam("dim")->AsFloat(50.0f)*g_unit;
+            float delay = line->GetParam("delay")->AsFloat(2.0f);
             m_terrain->AdjustToFloor(pos);
             pos.y += height;
             Math::Point dim;
@@ -4774,149 +4647,150 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             m_particle->CreateParticle(pos, Math::Vector(0.0f, 0.0f, 0.0f), dim, type, delay, 0.0f, 0.0f);
             continue;
         }
-
-        if (Cmd(line, "CreateLight") && !resetObject)
+        
+        if (line->GetCommand() == "CreateLight" && !resetObject)
         {
             Gfx::EngineObjectType  type;
-
-            int lightRank = CreateLight(OpDir(line, "dir"),
-                                        OpColor(line, "color", Gfx::Color(0.5f, 0.5f, 0.5f, 1.0f)));
-
-            type = OpTypeTerrain(line, "type", Gfx::ENG_OBJTYPE_NULL);
+            
+            int lightRank = CreateLight(line->GetParam("dir")->AsPoint(),
+                                        line->GetParam("color")->AsColor(Gfx::Color(0.5f, 0.5f, 0.5f, 1.0f)));
+            
+            type = line->GetParam("type")->AsTerrainType(Gfx::ENG_OBJTYPE_NULL);
+            
             if (type == Gfx::ENG_OBJTYPE_TERRAIN)
             {
                 m_lightMan->SetLightPriority(lightRank, Gfx::LIGHT_PRI_HIGHEST);
                 m_lightMan->SetLightIncludeType(lightRank, Gfx::ENG_OBJTYPE_TERRAIN);
             }
-
+            
             if (type == Gfx::ENG_OBJTYPE_QUARTZ)
                 m_lightMan->SetLightIncludeType(lightRank, Gfx::ENG_OBJTYPE_QUARTZ);
-
+            
             if (type == Gfx::ENG_OBJTYPE_METAL)
                 m_lightMan->SetLightIncludeType(lightRank, Gfx::ENG_OBJTYPE_METAL);
-
+            
             if (type == Gfx::ENG_OBJTYPE_FIX)
                 m_lightMan->SetLightExcludeType(lightRank, Gfx::ENG_OBJTYPE_TERRAIN);
-
+            
             continue;
         }
-        if (Cmd(line, "CreateSpot") && !resetObject)
+        if (line->GetCommand() == "CreateSpot" && !resetObject)
         {
             Gfx::EngineObjectType  type;
-
-            int rankLight = CreateSpot(OpDir(line, "pos")*g_unit,
-                                       OpColor(line, "color", Gfx::Color(0.5f, 0.5f, 0.5f, 1.0f)));
-
-            type = OpTypeTerrain(line, "type", Gfx::ENG_OBJTYPE_NULL);
+            
+            int rankLight = CreateSpot(line->GetParam("pos")->AsPoint()*g_unit,
+                                       line->GetParam("color")->AsColor(Gfx::Color(0.5f, 0.5f, 0.5f, 1.0f)));
+            
+            type = line->GetParam("type")->AsTerrainType(Gfx::ENG_OBJTYPE_NULL);
             if (type == Gfx::ENG_OBJTYPE_TERRAIN)
                 m_lightMan->SetLightIncludeType(rankLight, Gfx::ENG_OBJTYPE_TERRAIN);
-
+            
             if (type == Gfx::ENG_OBJTYPE_QUARTZ)
                 m_lightMan->SetLightIncludeType(rankLight, Gfx::ENG_OBJTYPE_QUARTZ);
-
+            
             if (type == Gfx::ENG_OBJTYPE_METAL)
                 m_lightMan->SetLightIncludeType(rankLight, Gfx::ENG_OBJTYPE_METAL);
-
+            
             if (type == Gfx::ENG_OBJTYPE_FIX)
                 m_lightMan->SetLightExcludeType(rankLight, Gfx::ENG_OBJTYPE_TERRAIN);
-
+            
             continue;
         }
-
-        if (Cmd(line, "GroundSpot") && !resetObject)
+        
+        if (line->GetCommand() == "GroundSpot" && !resetObject)
         {
             rank = m_engine->CreateGroundSpot();
             if (rank != -1)
             {
-                m_engine->SetObjectGroundSpotPos(rank, OpPos(line, "pos")*g_unit);
-                m_engine->SetObjectGroundSpotRadius(rank, OpFloat(line, "radius", 10.0f)*g_unit);
-                m_engine->SetObjectGroundSpotColor(rank, OpColor(line, "color", Gfx::Color(0.533f, 0.533f, 0.533f, 0.533f)));
-                m_engine->SetObjectGroundSpotSmooth(rank, OpFloat(line, "smooth", 1.0f));
-                m_engine->SetObjectGroundSpotMinMax(rank, OpFloat(line, "min", 0.0f)*g_unit,
-                                                          OpFloat(line, "max", 0.0f)*g_unit);
+                m_engine->SetObjectGroundSpotPos(rank, line->GetParam("pos")->AsPoint()*g_unit);
+                m_engine->SetObjectGroundSpotRadius(rank, line->GetParam("radius")->AsFloat(10.0f)*g_unit);
+                m_engine->SetObjectGroundSpotColor(rank, line->GetParam("color")->AsColor(Gfx::Color(0.533f, 0.533f, 0.533f, 0.533f)));
+                m_engine->SetObjectGroundSpotSmooth(rank, line->GetParam("smooth")->AsFloat(1.0f));
+                m_engine->SetObjectGroundSpotMinMax(rank, line->GetParam("min")->AsFloat(0.0f)*g_unit,
+                                                    line->GetParam("max")->AsFloat(0.0f)*g_unit);
             }
             continue;
         }
-
-        if (Cmd(line, "WaterColor") && !resetObject)
+        
+        if (line->GetCommand() == "WaterColor" && !resetObject)
         {
-            m_engine->SetWaterAddColor(OpColor(line, "color", Gfx::Color(0.0f, 0.0f, 0.0f, 1.0f)));
+            m_engine->SetWaterAddColor(line->GetParam("color")->AsColor());
             continue;
         }
-
-        if (Cmd(line, "MapColor") && !resetObject)
+        
+        if (line->GetCommand() == "MapColor" && !resetObject)
         {
-            m_map->FloorColorMap(OpColor(line, "floor", Gfx::Color(0.533f, 0.533f, 0.533f, 0.533f)),
-                                 OpColor(line, "water", Gfx::Color(0.533f, 0.533f, 0.533f, 0.533f)));
-            m_mapShow = OpInt(line, "show", 1);
+            m_map->FloorColorMap(line->GetParam("floor")->AsColor(Gfx::Color(0.533f, 0.533f, 0.533f, 0.533f)),
+                                 line->GetParam("water")->AsColor(Gfx::Color(0.533f, 0.533f, 0.533f, 0.533f)));
+            m_mapShow = line->GetParam("show")->AsBool(true);
             m_map->ShowMap(m_mapShow);
-            m_map->SetToy(OpInt(line, "toyIcon", 0));
-            m_mapImage = OpInt(line, "image", 0);
+            m_map->SetToy(line->GetParam("toyIcon")->AsBool(false));
+            m_mapImage = line->GetParam("image")->AsBool(false);
             if (m_mapImage)
             {
-                Math::Vector    offset;
-                OpString(line, "filename", m_mapFilename);
-                offset = OpPos(line, "offset");
-                m_map->SetFixParam(OpFloat(line, "zoom", 1.0f),
+                Math::Vector offset;
+                strcpy(m_mapFilename, line->GetParam("filename")->AsPath("").c_str()); //TODO: don't make this relative to textures/
+                offset = line->GetParam("offset")->AsPoint(Math::Vector(0.0f, 0.0f, 0.0f));
+                m_map->SetFixParam(line->GetParam("zoom")->AsFloat(1.0f),
                                    offset.x, offset.z,
-                                   OpFloat(line, "angle", 0.0f)*Math::PI/180.0f,
-                                   OpInt(line, "mode", 0),
-                                   OpInt(line, "debug", 0));
+                                   line->GetParam("angle")->AsFloat(0.0f)*Math::PI/180.0f,
+                                   line->GetParam("mode")->AsInt(0),
+                                   line->GetParam("debug")->AsBool(false));
             }
             continue;
         }
-
-        if (Cmd(line, "MapZoom") && !resetObject)
+        
+        if (line->GetCommand() == "MapZoom" && !resetObject)
         {
-            m_map->ZoomMap(OpFloat(line, "factor", 2.0f));
-            m_map->MapEnable(OpInt(line, "enable", 1));
+            m_map->ZoomMap(line->GetParam("factor")->AsFloat(2.0f));
+            m_map->MapEnable(line->GetParam("enable")->AsBool(true));
             continue;
         }
-
-        if (Cmd(line, "MaxFlyingHeight") && !resetObject)
+        
+        if (line->GetCommand() == "MaxFlyingHeight" && !resetObject)
         {
-            m_terrain->SetFlyingMaxHeight(OpFloat(line, "max", 280.0f)*g_unit);
+            m_terrain->SetFlyingMaxHeight(line->GetParam("max")->AsFloat(280.0f)*g_unit);
             continue;
         }
-
-        if (Cmd(line, "AddFlyingHeight") && !resetObject)
+        
+        if (line->GetCommand() == "AddFlyingHeight" && !resetObject)
         {
-            m_terrain->AddFlyingLimit(OpPos(line, "center")*g_unit,
-                                      OpFloat(line, "extRadius", 20.0f)*g_unit,
-                                      OpFloat(line, "intRadius", 10.0f)*g_unit,
-                                      OpFloat(line, "maxHeight", 200.0f));
+            m_terrain->AddFlyingLimit(line->GetParam("center")->AsPoint()*g_unit,
+                                      line->GetParam("extRadius")->AsFloat(20.0f)*g_unit,
+                                      line->GetParam("intRadius")->AsFloat(10.0f)*g_unit,
+                                      line->GetParam("maxHeight")->AsFloat(200.0f));
             continue;
         }
-
-        if (Cmd(line, "Camera"))
+        
+        if (line->GetCommand() == "Camera")
         {
-            m_camera->Init(OpDir(line, "eye")*g_unit,
-                           OpDir(line, "lookat")*g_unit,
-                           resetObject?0.0f:OpFloat(line, "delay", 0.0f));
-
-            if (OpInt(line, "fadeIn", 0) == 1)
+            m_camera->Init(line->GetParam("eye")->AsPoint(Math::Vector(0.0f, 0.0f, 0.0f))*g_unit,
+                           line->GetParam("lookat")->AsPoint(Math::Vector(0.0f, 0.0f, 0.0f))*g_unit,
+                           resetObject ? 0.0f : line->GetParam("delay")->AsFloat(0.0f));
+            
+            if (line->GetParam("fadeIn")->AsBool(false))
                 m_camera->StartOver(Gfx::CAM_OVER_EFFECT_FADEIN_WHITE, Math::Vector(0.0f, 0.0f, 0.0f), 1.0f);
-
-            m_camera->SetFixDirection(OpFloat(line, "fixDirection", 0.25f)*Math::PI);
+            
+            m_camera->SetFixDirection(line->GetParam("fixDirection")->AsFloat(0.25f)*Math::PI);
             continue;
         }
-
-        if (Cmd(line, "EndMissionTake") && !resetObject && m_controller == nullptr)
+        
+        if (line->GetCommand() == "EndMissionTake" && !resetObject && m_controller == nullptr)
         {
             int i = m_endTakeTotal;
             if (i < 10)
             {
-                m_endTake[i].pos      = OpPos(line, "pos")*g_unit;
-                m_endTake[i].dist     = OpFloat(line, "dist", (m_version < 2 ? 8.0f : 100.0f))*g_unit;
-                m_endTake[i].type     = OpTypeObject(line, "type", OBJECT_NULL);
-                m_endTake[i].min      = OpInt(line, "min", 1);
-                m_endTake[i].max      = OpInt(line, "max", 9999);
+                m_endTake[i].pos      = line->GetParam("pos")->AsPoint(Math::Vector(0.0f, 0.0f, 0.0f))*g_unit;
+                m_endTake[i].dist     = line->GetParam("dist")->AsFloat(m_version < 2 ? 8.0f : 100.0f)*g_unit;
+                m_endTake[i].type     = line->GetParam("type")->AsObjectType(OBJECT_NULL);
+                m_endTake[i].min      = line->GetParam("min")->AsInt(1);
+                m_endTake[i].max      = line->GetParam("max")->AsInt(9999);
                 if (m_version >= 2)
                 {
-                    m_endTake[i].powermin = OpFloat(line, "powermin", -1);
-                    m_endTake[i].powermax = OpFloat(line, "powermax", 100);
-                    m_endTake[i].tool     = OpTool(line, "tool");
-                    m_endTake[i].drive    = OpDrive(line, "drive");
+                    m_endTake[i].powermin = line->GetParam("powermin")->AsFloat(-1);
+                    m_endTake[i].powermax = line->GetParam("powermax")->AsFloat(100);
+                    m_endTake[i].tool     = line->GetParam("tool")->AsToolType(TOOL_OTHER);
+                    m_endTake[i].drive    = line->GetParam("drive")->AsDriveType(DRIVE_OTHER);
                 }
                 else
                 {
@@ -4925,93 +4799,91 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                     m_endTake[i].tool     = TOOL_OTHER;
                     m_endTake[i].drive    = DRIVE_OTHER;
                 }
-                m_endTake[i].lost     = OpInt(line, "lost", -1);
-                m_endTake[i].immediat = OpInt(line, "immediat", 0);
-                OpString(line, "message", m_endTake[i].message);
+                m_endTake[i].lost     = line->GetParam("lost")->AsInt(-1);
+                m_endTake[i].immediat = line->GetParam("immediat")->AsBool(false);
+                strcpy(m_endTake[i].message, line->GetParam("message")->AsString("").c_str()); //TODO: Really, ending mission on message()? Is this used anywhere? Do we need that?
                 m_endTakeTotal ++;
             }
             continue;
         }
-        if (Cmd(line, "EndMissionDelay") && !resetObject && m_controller == nullptr)
+        if (line->GetCommand() == "EndMissionDelay" && !resetObject && m_controller == nullptr)
         {
-            m_endTakeWinDelay  = OpFloat(line, "win",  2.0f);
-            m_endTakeLostDelay = OpFloat(line, "lost", 2.0f);
+            m_endTakeWinDelay  = line->GetParam("win")->AsFloat(2.0f);
+            m_endTakeLostDelay = line->GetParam("lost")->AsFloat(2.0f);
             continue;
         }
-        if (Cmd(line, "EndMissionResearch") && !resetObject && m_controller == nullptr)
+        if (line->GetCommand() == "EndMissionResearch" && !resetObject && m_controller == nullptr) //TODO: Is this used anywhere?
         {
-            m_endTakeResearch |= OpResearch(line, "type");
+            m_endTakeResearch |= line->GetParam("type")->AsResearchFlag();
             continue;
         }
-        if (Cmd(line, "EndMissionNever") && !resetObject && m_controller == nullptr)
+        if (line->GetCommand() == "EndMissionNever" && !resetObject && m_controller == nullptr)
         {
             m_endTakeNever = true;
             continue;
         }
-
-        if (Cmd(line, "ObligatoryToken") && !resetObject)
+        
+        if (line->GetCommand() == "ObligatoryToken" && !resetObject) //NOTE: This was used only in CeeBot, maybe we should add this to some Colobot exercises?
         {
             int i = m_obligatoryTotal;
-            if (i < 100)
+            if (i < 100) //TODO: remove the limit
             {
-                OpString(line, "text", m_obligatoryToken[i]);
+                strcpy(m_obligatoryToken[i], line->GetParam("text")->AsString().c_str());
                 m_obligatoryTotal ++;
             }
             continue;
         }
-
-        if (Cmd(line, "ProhibitedToken") && !resetObject)
+        
+        if (line->GetCommand() == "ProhibitedToken" && !resetObject) //NOTE: This was used only in CeeBot, maybe we should add this to some Colobot exercises?
         {
             int i = m_prohibitedTotal;
-            if (i < 100)
+            if (i < 100) //TODO: remove the limit
             {
-                OpString(line, "text", m_prohibitedToken[i]);
+                strcpy(m_prohibitedToken[i], line->GetParam("text")->AsString().c_str());
                 m_prohibitedTotal ++;
             }
             continue;
         }
-
-        if (Cmd(line, "EnableBuild") && !resetObject)
+        
+        if (line->GetCommand() == "EnableBuild" && !resetObject)
         {
-            g_build |= OpBuild(line, "type");
+            g_build |= line->GetParam("type")->AsBuildFlag();
             continue;
         }
-
-        if (Cmd(line, "EnableResearch") && !resetObject)
+        
+        if (line->GetCommand() == "EnableResearch" && !resetObject)
         {
-            g_researchEnable |= OpResearch(line, "type");
+            g_researchEnable |= line->GetParam("type")->AsResearchFlag();
             continue;
         }
-
-        if (Cmd(line, "DoneResearch") && read[0] == 0 && !resetObject) // not loading file?
+        
+        if (line->GetCommand() == "DoneResearch" && read[0] == 0 && !resetObject) // not loading file?
         {
-            g_researchDone |= OpResearch(line, "type");
+            g_researchDone |= line->GetParam("type")->AsResearchFlag();
             continue;
         }
-
-        if (Cmd(line, "NewScript") && !resetObject)
+        
+        if (line->GetCommand() == "NewScript" && !resetObject)
         {
-            OpString(line, "name", name);
-            AddNewScriptName(OpTypeObject(line, "type", OBJECT_NULL), name);
+            char name[200];
+            strcpy(name, line->GetParam("name")->AsPath("").c_str()); //TODO: don't make this relative to ai/
+            AddNewScriptName(line->GetParam("type")->AsObjectType(OBJECT_NULL), name);
             continue;
         }
-
-        if (line[0] == '\n') continue; // Ignore empty lines
-        if (line[0] == '\0') continue; // Ignore empty lines
-        if (read[0] != 0)    continue; // Ignore when loading saved game
-
-        GetLogger()->Error("Syntax error in file '%s' (line %d): Unknown command: %s", filename, lineNum, line); // Don't add \n at the end of log message - it's included in line variable
+        
+        if(read[0] != 0) continue; // ignore errors when loading saevd game (TODO: don't report ones that are just not loaded when loading saved game)
+        if(resetObject) continue; // ignore when reseting just objects (TODO: see above)
+        
+        throw CLevelParserException("Unknown command: '"+line->GetCommand()+"' in "+line->GetLevel()->GetFilename()+":"+std::to_string(line->GetLineNumber()));
     }
-
-    stream.close();
 
     if (read[0] == 0)
         CompileScript(soluce);  // compiles all scripts
 
-    if (strcmp(base, "scene") == 0 && !resetObject)  // mission?
+    if (strcmp(base, "missions") == 0 && !resetObject)  // mission?
         WriteFreeParam();
 
-    if (strcmp(base, "free") == 0 && !resetObject)  // free play?
+    if (strcmp(base, "freemissions") == 0 && !resetObject)  // free play?
     {
         g_researchDone = m_freeResearch;
 
@@ -6541,20 +6413,28 @@ void CRobotMain::ResetCreate()
 
     m_camera->SetType(Gfx::CAM_TYPE_DIALOG);
 
-    CreateScene(m_dialog->GetSceneSoluce(), false, true);
+    try {
+        CreateScene(m_dialog->GetSceneSoluce(), false, true);
 
-    if (!GetNiceReset()) return;
+        if (!GetNiceReset()) return;
 
-    for (int i = 0; i < 1000000; i++)
+        for (int i = 0; i < 1000000; i++)
+        {
+            CObject* obj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
+            if (obj == nullptr) break;
+
+            ResetCap cap = obj->GetResetCap();
+            if (cap == RESET_NONE) continue;
+
+            Gfx::CPyro* pyro = new Gfx::CPyro();
+            pyro->Create(Gfx::PT_RESET, obj);
+        }
+    }
+    catch(const CLevelParserException& e)
     {
-        CObject* obj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
-        if (obj == nullptr) break;
-
-        ResetCap cap = obj->GetResetCap();
-        if (cap == RESET_NONE) continue;
-
-        Gfx::CPyro* pyro = new Gfx::CPyro();
-        pyro->Create(Gfx::PT_RESET, obj);
+        CLogger::GetInstancePointer()->Error("An error occured while trying to reset scene\n");
+        CLogger::GetInstancePointer()->Error("%s\n", e.what());
+        ChangePhase(PHASE_TERM);
     }
 }
 

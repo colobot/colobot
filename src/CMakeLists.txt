@@ -122,6 +122,10 @@ object/auto/autosafe.cpp
 object/auto/autostation.cpp
 object/auto/autotower.cpp
 object/brain.cpp
+object/level/parser.cpp
+object/level/parserline.cpp
+object/level/parserparam.cpp
+object/level/parserexceptions.cpp
 object/mainmovie.cpp
 object/motion/motion.cpp
 object/motion/motionant.cpp
