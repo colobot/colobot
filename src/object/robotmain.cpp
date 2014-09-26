@@ -3874,7 +3874,6 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
     int         rank  = m_dialog->GetSceneRank();
     const char* read  = m_dialog->GetSceneRead().c_str();
     const char* stack = m_dialog->GetStackRead().c_str();
-    m_dialog->SetUserDir(base, rank);
 
     m_fixScene = fixScene;
 
@@ -7137,16 +7136,7 @@ void CRobotMain::DisplayError(Error err, Math::Vector goal, float height, float 
     m_displayText->DisplayError(err, goal, height, dist, time);
 }
 
-void CRobotMain::InjectLevelDir(std::string& path, const std::string defaultDir)
+std::string& CRobotMain::GetUserLevelName(int id)
 {
-    std::string oldPath = path;
-    std::string lvlDir;
-    CRobotMain::GetInstancePointer()->BuildSceneName(lvlDir, CRobotMain::GetInstancePointer()->GetSceneName(), CRobotMain::GetInstancePointer()->GetSceneRank(), false);
-    boost::replace_all(path, "%lvl%", lvlDir);
-    if(path == oldPath)
-    {
-        path = defaultDir + "/" + path;
-    }
-    std::string langStr(1, CApplication::GetInstancePointer()->GetLanguageChar());
-    boost::replace_all(path, "%lng%", langStr);
+    return m_dialog->GetUserLevelName(id);
 }

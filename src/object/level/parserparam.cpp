@@ -168,9 +168,6 @@ std::string CLevelParserParam::InjectLevelDir(std::string path, const std::strin
     if(newPath == path)
     {
         newPath = defaultDir + (!defaultDir.empty() ? "/" : "") + newPath;
-    } else {
-        if(defaultDir == "")
-            throw CLevelParserException("TODO: Param "+m_name+" does not yet support %lvl%! :(");
     }
     //TODO: Fallback to English
     std::string langStr(1, CApplication::GetInstancePointer()->GetLanguageChar());
@@ -178,12 +175,20 @@ std::string CLevelParserParam::InjectLevelDir(std::string path, const std::strin
     return newPath;
 }
 
+std::string CLevelParserParam::ToPath(std::string path, const std::string defaultDir)
+{
+    if(defaultDir == "" && path.find("%lvl%") != std::string::npos)
+        throw CLevelParserException("TODO: Param "+m_name+" does not yet support %lvl%! :(");
+    
+    return InjectLevelDir(path, defaultDir);
+}
+
 std::string CLevelParserParam::AsPath(const std::string defaultDir)
 {
     if(m_empty)
         throw CLevelParserExceptionMissingParam(this);
     
-    return InjectLevelDir(AsString(), defaultDir);
+    return ToPath(AsString(), defaultDir);
 }
 
 std::string CLevelParserParam::AsPath(const std::string defaultDir, std::string def)
@@ -191,7 +196,7 @@ std::string CLevelParserParam::AsPath(const std::string defaultDir, std::string 
     if(m_empty)
         return InjectLevelDir(def, defaultDir);
     
-    return InjectLevelDir(AsString(def), defaultDir);
+    return ToPath(AsString(def), defaultDir);
 }
 
 

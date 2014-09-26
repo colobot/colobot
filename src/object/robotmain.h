@@ -390,7 +390,7 @@ public:
     void        DisplayError(Error err, CObject* pObj, float time=10.0f);
     void        DisplayError(Error err, Math::Vector goal, float height=15.0f, float dist=60.0f, float time=10.0f);
     
-    static void InjectLevelDir(std::string& path, const std::string defaultDir = "");
+    std::string& GetUserLevelName(int id);
 
 protected:
     bool        EventFrame(const Event &event);

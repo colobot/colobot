@@ -23,6 +23,8 @@
 
 #include "object/level/parserexceptions.h"
 
+#include "object/robotmain.h"
+
 #include <string>
 #include <exception>
 #include <sstream>
@@ -57,12 +59,25 @@ CLevelParser::~CLevelParser()
 std::string CLevelParser::BuildSceneName(std::string category, int chapter, int rank, bool sceneFile)
 {
     std::ostringstream outstream;
-    if(category == "user")
+    if(category == "custom")
     {
-        //TODO: Change this to point user dir according to operating system
-        /*rankStream << std::setfill('0') << std::setw(2) << rank%100;
-        filename = m_userDir + "/" + m_userList[rank/100-1] + "/" + rankStream.str() + ".txt";*/
-        assert(false); //TODO: Userlevel support
+        outstream << "levels/custom/";
+        outstream << CRobotMain::GetInstancePointer()->GetUserLevelName(chapter) << "/";
+        if(rank == 000)
+        {
+            if(sceneFile)
+            {
+                outstream << "/chaptertitle.txt";
+            }
+        }
+        else
+        {
+            outstream << "/level" << std::setfill('0') << std::setw(3) << rank;
+            if(sceneFile)
+            {
+                outstream << "/scene.txt";
+            }
+        }
     }
     else if(category == "perso")
     {
@@ -217,5 +232,9 @@ void CLevelParser::AddLine(CLevelParserLine* line)
 
 CLevelParserLine* CLevelParser::Get(std::string command)
 {
-    assert(false); //TODO
+    for(auto& line : m_lines) {
+        if(line->GetCommand() == command)
+            return line;
+    }
+    throw CLevelParserException("Command not found: "+command);
 }

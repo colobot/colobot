@@ -33,6 +33,8 @@
 #include "common/resources/inputstream.h"
 #include "common/resources/outputstream.h"
 
+#include "object/level/parser.h"
+
 #include "object/robotmain.h"
 
 #include "script/cmdtoken.h"
@@ -52,7 +54,6 @@
 #include "ui/window.h"
 #include "ui/edit.h"
 #include "ui/editvalue.h"
-#include <test/cbot/CBot_console/CClass.h>
 
 #include <stdio.h>
 #include <string.h>
@@ -177,14 +178,8 @@ CMainDialog::CMainDialog()
         m_partiTime[i]  = 0.0f;
     }
 
-    #if DEV_BUILD
     m_savegameDir = "savegame";
-    #else
-    m_savegameDir = "savegame";
-    #endif
-
     m_publicDir = "program";
-    m_userDir = "user";
     m_filesDir = m_savegameDir;
 
     m_setupFull = m_app->GetVideoConfig().fullScreen;
@@ -316,7 +311,6 @@ void CMainDialog::ChangePhase(Phase phase)
         pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_QUIT);
         pb->SetState(STATE_SHADOW);
 
-        #if DEV_BUILD
         if ( m_accessEnable && m_accessUser )
         {
             pos.x  = 447.0f/640.0f;
@@ -325,7 +319,6 @@ void CMainDialog::ChangePhase(Phase phase)
             pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_USER);
             pb->SetState(STATE_SHADOW);
         }
-        #endif
 
         /*pos.x  = 139.0f/640.0f;
         pos.y  = 313.0f/480.0f;
@@ -723,7 +716,7 @@ void CMainDialog::ChangePhase(Phase phase)
         if ( m_phase == PHASE_DEFI    )  strcpy(m_sceneName, "challenges" );
         if ( m_phase == PHASE_MISSION )  strcpy(m_sceneName, "missions");
         if ( m_phase == PHASE_FREE    )  strcpy(m_sceneName, "freemissions");
-        if ( m_phase == PHASE_USER    )  strcpy(m_sceneName, "user");
+        if ( m_phase == PHASE_USER    )  strcpy(m_sceneName, "custom");
 
         ReadGamerInfo();
 
@@ -3271,23 +3264,6 @@ void CMainDialog::NiceParticle(Math::Point mouse, bool bPress)
 
 
 
-// Specifies the special user folder if needed.
-
-void CMainDialog::SetUserDir(char *base, int rank)
-{
-    std::string dir;
-
-    if ( strcmp(base, "user") == 0 && rank >= 100 )
-    {
-        dir = m_userDir + "/" + m_userList.at(rank/100-1);
-        GetProfile().SetUserDir(dir);
-    }
-    else
-    {
-        GetProfile().SetUserDir("");
-    }
-}
-
 // Builds the file name of a mission.
 
 void CMainDialog::BuildSceneName(std::string &filename, char *base, int rank, bool sceneFile)
@@ -3296,45 +3272,7 @@ void CMainDialog::BuildSceneName(std::string &filename, char *base, int rank, bo
     int chapter = rank/100;
     int new_rank = rank%100;
     
-    std::ostringstream outstream;
-    if ( strcmp(base, "user") == 0 )
-    {
-        //TODO: Change this to point user dir according to operating system
-        /*rankStream << std::setfill('0') << std::setw(2) << rank%100;
-        filename = m_userDir + "/" + m_userList[rank/100-1] + "/" + rankStream.str() + ".txt";*/
-        assert(false); //TODO: Userlevel support
-    }
-    else if ( strcmp(base, "perso") == 0 )
-    {
-        filename = "levels/other/perso.txt";
-    }
-    else if( strcmp(base, "win") == 0 || strcmp(base, "lost") == 0 )
-    {
-        outstream << "levels/other/";
-        outstream << base << std::setfill('0') << std::setw(3) << rank << ".txt";
-        filename = outstream.str();
-    }
-    else
-    {
-        outstream << "levels/" << base << "/";
-        outstream << "chapter" << std::setfill('0') << std::setw(3) << chapter << "/";
-        if(new_rank == 000)
-        {
-            if(sceneFile)
-            {
-                outstream << "chaptertitle.txt";
-            }
-        }
-        else
-        {
-            outstream << "level" << std::setfill('0') << std::setw(3) << new_rank << "/";
-            if(sceneFile)
-            {
-                outstream << "scene.txt";
-            }
-        }
-        filename = outstream.str();
-    }
+    filename = CLevelParser::BuildSceneName(std::string(base), chapter, new_rank, sceneFile);
 }
 
 // Built the default descriptive name of a mission.
@@ -4423,7 +4361,6 @@ void CMainDialog::UpdateSceneChap(int &chap)
 {
     CWindow*    pw;
     CList*      pl;
-    FILE *file;
 
     std::string fileName;
     char        op[100];
@@ -4448,60 +4385,25 @@ void CMainDialog::UpdateSceneChap(int &chap)
     if ( m_phase == PHASE_USER )
     {
         j = 0;
-        fs::directory_iterator dirIt(m_savegameDir), dirEndIt;
-        m_userList.clear();
-
-        for (; dirIt != dirEndIt; ++dirIt)
-        {
-            const fs::path& p = *dirIt;
-            if (fs::is_directory(p))
-            {
-                m_userList.push_back(p.leaf().string());
-            }
-        }
+        auto userLevelDirs = CResourceManager::ListDirectories("levels/custom/");
+        std::sort(userLevelDirs.begin(), userLevelDirs.end());
+        m_userList = userLevelDirs;
         m_userTotal = m_userList.size();
 
         for ( j=0 ; j<m_userTotal ; j++ )
         {
-            BuildSceneName(fileName, m_sceneName, (j+1)*100);
-            file = fopen(fileName.c_str(), "r");
-            if ( file == NULL )
-            {
-                strcpy(name, m_userList[j].c_str());
+            try {
+                CLevelParser* level = new CLevelParser("custom", j+1, 0);
+                level->Load();
+                pl->SetItemName(j, level->Get("Title")->GetParam("text")->AsString().c_str());
+                pl->SetEnable(j, true);
+                delete level;
             }
-            else
+            catch(CLevelParserException& e)
             {
-                BuildResumeName(name, m_sceneName, j+1);  // default name
-                sprintf(op, "Title.E");
-                sprintf(op_i18n, "Title.%c", m_app->GetLanguageChar());
-
-                while ( fgets(line, 500, file) != NULL )
-                {
-                    for ( i=0 ; i<500 ; i++ )
-                    {
-                        if ( line[i] == '\t' )  line[i] = ' ';  // replaces tab by space
-                        if ( line[i] == '/' && line[i+1] == '/' )
-                        {
-                            line[i] = 0;
-                            break;
-                        }
-                    }
-
-                    if ( Cmd(line, op) )
-                    {
-                        OpString(line, "text", name);
-                    }
-                    if ( Cmd(line, op_i18n) )
-                    {
-                        OpString(line, "text", name);
-                        break;
-                    }
-                }
-                fclose(file);
+                pl->SetItemName(j, (std::string("[ERROR]: ")+e.what()).c_str());
+                pl->SetEnable(j, false);
             }
-
-            pl->SetItemName(j, name);
-            pl->SetEnable(j, true);
         }
     }
     else
@@ -4592,6 +4494,8 @@ void CMainDialog::UpdateSceneList(int chap, int &sel)
     if ( pl == 0 )  return;
 
     pl->Flush();
+    
+    if(chap < 0) return;
 
     for ( j=0 ; j<99 ; j++ )
     {
@@ -4738,44 +4642,18 @@ void CMainDialog::UpdateSceneResume(int rank)
             m_bSceneSoluce = false;
         }
     }
-
-    BuildSceneName(fileName, m_sceneName, rank);
-    sprintf(op, "Resume.E");
-    sprintf(op_i18n, "Resume.%c", m_app->GetLanguageChar());
-
-    CInputStream stream;
-    stream.open(fileName);
-    if (!stream.is_open())  return;
-
-    name[0] = 0;
-    while ( stream.getline(line, 500) )
-    {
-        for ( i=0 ; i<500 ; i++ )
-        {
-            if (line[i] == 0)
-                break;
-
-            if ( line[i] == '\t' )  line[i] = ' ';  // replaces tab by space
-            if ( line[i] == '/' && line[i+1] == '/' )
-            {
-                line[i] = 0;
-                break;
-            }
-        }
-
-        if ( Cmd(line, op) )
-        {
-            OpString(line, "text", name);
-        }
-        if ( Cmd(line, op_i18n) )
-        {
-            OpString(line, "text", name);
-            break;
-        }
+    
+    if(rank<100) return;
+    
+    try {
+        CLevelParser* level = new CLevelParser(m_sceneName, rank/100, rank%100);
+        level->Load();
+        pe->SetText(level->Get("Resume")->GetParam("text")->AsString().c_str());
     }
-    stream.close();
-
-    pe->SetText(name);
+    catch(CLevelParserException& e)
+    {
+        pe->SetText((std::string("[ERROR]: ")+e.what()).c_str());
+    }
 }
 
 // Updates the list of devices.
@@ -5202,7 +5080,6 @@ void CMainDialog::SetupMemorize()
 {
     GetProfile().SetLocalProfileString("Directory", "savegame", m_savegameDir);
     GetProfile().SetLocalProfileString("Directory", "public",   m_publicDir);
-    GetProfile().SetLocalProfileString("Directory", "user",     m_userDir);
     GetProfile().SetLocalProfileString("Directory", "files",    m_filesDir);
     GetProfile().SetLocalProfileInt("Setup", "Tooltips", m_bTooltip);
     GetProfile().SetLocalProfileInt("Setup", "InterfaceGlint", m_bGlint);
@@ -5286,11 +5163,6 @@ void CMainDialog::SetupRecall()
     if ( GetProfile().GetLocalProfileString("Directory", "public", key) )
     {
         m_publicDir = key;
-    }
-
-    if ( GetProfile().GetLocalProfileString("Directory", "user", key) )
-    {
-        m_userDir = key;
     }
 
     if ( GetProfile().GetLocalProfileString("Directory", "files", key) )
@@ -6485,6 +6357,11 @@ bool CMainDialog::NextMission()
     }
 
     return true;
+}
+
+std::string& CMainDialog::GetUserLevelName(int id)
+{
+    return m_userList[id-1];
 }
 
 

@@ -103,14 +103,15 @@ public:
     std::string GetValue();
     bool IsDefined();
     
+    static std::string InjectLevelDir(std::string path, const std::string defaultDir);
+    
 private:
     void ParseArray();
     
     template<typename T> T Cast(std::string value, std::string requestedType);
     template<typename T> T Cast(std::string requestedType);
     
-    std::string InjectLevelDir(std::string path, const std::string defaultDir);
-    
+    std::string ToPath(std::string path, const std::string defaultDir);
     ObjectType ToObjectType(std::string value);
     DriveType ToDriveType(std::string value);
     ToolType ToToolType(std::string value);
