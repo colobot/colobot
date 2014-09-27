@@ -658,12 +658,6 @@ CRobotMain::CRobotMain(CApplication* app, bool loadProfile)
     m_selectObject = 0;
     m_infoUsed     = 0;
 
-    m_beginObject         = false;
-    m_terrainGenerate     = false;
-    m_terrainInit         = false;
-    m_terrainInitTextures = false;
-    m_terrainCreate       = false;
-
     m_version      = 1;
     m_controller   = nullptr;
     m_retroStyle   = false;
@@ -3945,12 +3939,6 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
         strcpy(m_scriptName, scriptNameStr.c_str());
         m_scriptFile[0] = 0;
 
-        m_beginObject         = false;
-        m_terrainGenerate     = false;
-        m_terrainInit         = false;
-        m_terrainInitTextures = false;
-        m_terrainCreate       = false;
-
         m_version             = 1;
         m_retroStyle          = false;
 
@@ -4336,7 +4324,6 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
         if (line->GetCommand() == "TerrainInit" && !resetObject)
         {
             m_terrain->InitMaterials(line->GetParam("id")->AsInt(1));
-            m_terrainInit = true;
             continue;
         }
         

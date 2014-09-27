@@ -491,13 +491,6 @@ protected:
 
     CObject*        m_controller;
 
-    // Level Checker flags
-    bool            m_beginObject;
-    bool            m_terrainGenerate;
-    bool            m_terrainInitTextures;
-    bool            m_terrainInit;
-    bool            m_terrainCreate;
-
     int             m_version;         // Mission file version
     bool            m_retroStyle;      // Retro
     bool            m_immediatSatCom;  // SatCom immediately?
