@@ -4612,11 +4612,7 @@ void CMainDialog::UpdateSceneResume(int rank)
     CEdit*      pe;
     CCheck*     pc;
     std::string fileName;
-    char        op[100];
-    char        op_i18n[100];
-    char        line[500];
-    char        name[500];
-    int         i, numTry;
+    int         numTry;
     bool        bPassed, bVisible;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
@@ -5889,7 +5885,6 @@ void CMainDialog::FrameDialog(float rTime)
 void CMainDialog::StopDialog()
 {
     CWindow*    pw;
-    CButton*    pb;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW0));
     if ( pw != 0 )  pw->SetState(STATE_ENABLE);

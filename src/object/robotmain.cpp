@@ -4296,8 +4296,8 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             std::string name = line->GetParam("image")->AsPath(""); //TODO: don't make this relative to textures/
             if(name.find(".") == std::string::npos)
                 name += ".png";
-            int dx = line->GetParam("dx")->AsInt(1);
-            int dy = line->GetParam("dy")->AsInt(1);
+            unsigned int dx = line->GetParam("dx")->AsInt(1);
+            unsigned int dy = line->GetParam("dy")->AsInt(1);
             
             int tt[100]; //TODO: I have no idea how TerrainInitTextures works, but maybe we shuld remove the limit to 100?
             if(dx*dy > 100)
@@ -4308,7 +4308,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 if(table.size() > dx*dy)
                     throw CLevelParserException("In TerrainInitTextures: table size must be dx*dy");
                 
-                for (int i = 0; i < dx*dy; i++)
+                for (unsigned int i = 0; i < dx*dy; i++)
                 {
                     if(i >= table.size())
                     {
@@ -4318,7 +4318,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                     }
                 }
             } else {
-                for (int i = 0; i < dx*dy; i++)
+                for (unsigned int i = 0; i < dx*dy; i++)
                 {
                     tt[i] = 0;
                 }
@@ -4373,7 +4373,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 if(id_array.size() > 50)
                     throw CLevelParserException("In TerrainLevel: id array size must be < 50");
                 
-                int i = 0;
+                unsigned int i = 0;
                 while (i < 50)
                 {
                     id[i] = id_array[i]->AsInt();
@@ -4528,7 +4528,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 // Sets the parameters of the command line.
                 if(line->GetParam("cmdline")->IsDefined()) {
                     const std::vector<CLevelParserParam*>& cmdline = line->GetParam("cmdline")->AsArray();
-                    for (int i = 0; i < OBJECTMAXCMDLINE && i < cmdline.size(); i++) //TODO: get rid of the limit
+                    for (unsigned int i = 0; i < OBJECTMAXCMDLINE && i < cmdline.size(); i++) //TODO: get rid of the limit
                     {
                         obj->SetCmdLine(i, cmdline[i]->AsFloat());
                     }
@@ -4569,7 +4569,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 if (motion != nullptr && line->GetParam("param")->IsDefined())
                 {
                     const std::vector<CLevelParserParam*>& p = line->GetParam("param")->AsArray();
-                    for (int i = 0; i < 10 && i < p.size(); i++)
+                    for (unsigned int i = 0; i < 10 && i < p.size(); i++)
                     {
                         motion->SetParam(i, p[i]->AsFloat());
                     }
