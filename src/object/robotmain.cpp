@@ -4367,6 +4367,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                     i++;
                     if(i >= id_array.size()) break;
                 }
+                id[i] = 0;
             }
             
             m_terrain->GenerateMaterials(id,
