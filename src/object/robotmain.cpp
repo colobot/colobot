@@ -4532,8 +4532,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 obj->SetIgnoreBuildCheck(line->GetParam("ignoreBuildCheck")->AsBool(false));
                 obj->SetEnable(line->GetParam("enable")->AsBool(true));
                 obj->SetProxyActivate(line->GetParam("proxyActivate")->AsBool(false));
-                if(line->GetParam("proxyActivate")->AsBool(false))
-                    obj->SetProxyDistance(line->GetParam("proxyDistance")->AsFloat()*g_unit);
+                obj->SetProxyDistance(line->GetParam("proxyDistance")->AsFloat(15.0f)*g_unit);
                 obj->SetRange(line->GetParam("range")->AsFloat(30.0f));
                 obj->SetShield(line->GetParam("shield")->AsFloat(1.0f));
                 obj->SetMagnifyDamage(line->GetParam("magnifyDamage")->AsFloat(1.0f));
