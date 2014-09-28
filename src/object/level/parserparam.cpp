@@ -650,7 +650,7 @@ const std::string CLevelParserParam::FromObjectType(ObjectType value)
     if(value == OBJECT_HUMAN       ) return "Me";
     if(value == OBJECT_TECH        ) return "Tech";
     if(value == OBJECT_CONTROLLER  ) return "MissionController";
-    return std::to_string(static_cast<int>(value));
+    return boost::lexical_cast<std::string>(static_cast<int>(value));
 }
 
 ObjectType CLevelParserParam::AsObjectType()
@@ -888,7 +888,7 @@ const std::string CLevelParserParam::FromCameraType(Gfx::CameraType value)
 {
     if(value == Gfx::CAM_TYPE_ONBOARD) return "ONBOARD";
     if(value == Gfx::CAM_TYPE_FIX    ) return "FIX";
-    return std::to_string(static_cast<int>(value));
+    return boost::lexical_cast<std::string>(static_cast<int>(value));
 }
 
 Gfx::CameraType CLevelParserParam::AsCameraType()
@@ -917,7 +917,7 @@ void CLevelParserParam::ParseArray()
     for(auto& value : values) {
         boost::algorithm::trim(value);
         if(value.empty()) continue;
-        CLevelParserParam* param = new CLevelParserParam(m_name+"["+std::to_string(i)+"]", value);
+        CLevelParserParam* param = new CLevelParserParam(m_name+"["+boost::lexical_cast<std::string>(i)+"]", value);
         param->SetLine(m_line);
         m_array.push_back(param);
         i++;

@@ -4495,7 +4495,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 // Puts information in terminal (OBJECT_INFO).
                 for (int i = 0; i < OBJECTMAXINFO; i++)
                 {
-                    std::string op = "info"+std::to_string(i+1);
+                    std::string op = "info"+boost::lexical_cast<std::string>(i+1);
                     if(!line->GetParam(op)->IsDefined()) break;
                     std::string text = line->GetParam(op)->AsString();
                     std::size_t p = text.find_first_of("=");
@@ -4568,7 +4568,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 {
                     for (int i = 0; i < 10; i++)
                     {
-                        std::string op = "script"+std::to_string(i+1); // script1..script10
+                        std::string op = "script"+boost::lexical_cast<std::string>(i+1); // script1..script10
                         if(line->GetParam(op)->IsDefined()) {
                             brain->SetScriptName(i, const_cast<char*>(line->GetParam(op)->AsPath("").c_str())); //TODO: don't make this relative to ai/
                         }
@@ -4589,7 +4589,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                     automat->SetType(type);
                     for (int i = 0; i < 5; i++)
                     {
-                        std::string op = "autoValue"+std::to_string(i+1); // autoValue1..autoValue5
+                        std::string op = "autoValue"+boost::lexical_cast<std::string>(i+1); // autoValue1..autoValue5
                         automat->SetValue(i, line->GetParam(op)->AsFloat(0.0f));
                     }
                     automat->SetString(const_cast<char*>(line->GetParam("autoString")->AsString("").c_str()));
@@ -4860,7 +4860,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
         if(read[0] != 0) continue; // ignore errors when loading saevd game (TODO: don't report ones that are just not loaded when loading saved game)
         if(resetObject) continue; // ignore when reseting just objects (TODO: see above)
         
-        throw CLevelParserException("Unknown command: '"+line->GetCommand()+"' in "+line->GetLevel()->GetFilename()+":"+std::to_string(line->GetLineNumber()));
+        throw CLevelParserException("Unknown command: '"+line->GetCommand()+"' in "+line->GetLevel()->GetFilename()+":"+boost::lexical_cast<std::string>(line->GetLineNumber()));
     }
 
     if (read[0] == 0)

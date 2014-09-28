@@ -32,6 +32,7 @@
 
 #include <boost/algorithm/string/trim.hpp>
 #include <boost/algorithm/string/replace.hpp>
+#include <boost/lexical_cast.hpp>
 
 CLevelParser::CLevelParser()
 {
@@ -177,11 +178,11 @@ void CLevelParser::Load()
             if(line[0] == '\"') {
                 pos = line.find_first_of("\"", 1);
                 if(pos == std::string::npos)
-                    throw CLevelParserException("Unclosed \" in "+m_filename+":"+std::to_string(lineNumber));
+                    throw CLevelParserException("Unclosed \" in "+m_filename+":"+boost::lexical_cast<std::string>(lineNumber));
             } else if(line[0] == '\'') {
                 pos = line.find_first_of("'", 1);
                 if(pos == std::string::npos)
-                    throw CLevelParserException("Unclosed ' in "+m_filename+":"+std::to_string(lineNumber));
+                    throw CLevelParserException("Unclosed ' in "+m_filename+":"+boost::lexical_cast<std::string>(lineNumber));
             } else {
                 pos = line.find_first_of("=");
                 if(pos != std::string::npos) {
