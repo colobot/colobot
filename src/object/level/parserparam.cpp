@@ -165,6 +165,8 @@ std::string CLevelParserParam::InjectLevelDir(std::string path, const std::strin
     std::string newPath = path;
     std::string lvlDir = CLevelParser::BuildSceneName(CRobotMain::GetInstancePointer()->GetSceneName(), CRobotMain::GetInstancePointer()->GetSceneRank()/100, CRobotMain::GetInstancePointer()->GetSceneRank()%100, false);
     boost::replace_all(newPath, "%lvl%", lvlDir);
+    std::string chapDir = CLevelParser::BuildSceneName(CRobotMain::GetInstancePointer()->GetSceneName(), CRobotMain::GetInstancePointer()->GetSceneRank()/100, 0, false);
+    boost::replace_all(newPath, "%chap%", chapDir);
     if(newPath == path)
     {
         newPath = defaultDir + (!defaultDir.empty() ? "/" : "") + newPath;

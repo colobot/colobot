@@ -63,7 +63,7 @@ std::string CLevelParser::BuildSceneName(std::string category, int chapter, int 
     if(category == "custom")
     {
         outstream << "levels/custom/";
-        outstream << CRobotMain::GetInstancePointer()->GetUserLevelName(chapter) << "/";
+        outstream << CRobotMain::GetInstancePointer()->GetUserLevelName(chapter);
         if(rank == 000)
         {
             if(sceneFile)
