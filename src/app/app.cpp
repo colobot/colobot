@@ -149,7 +149,11 @@ CApplication::CApplication()
 
     m_dataPath = GetSystemUtils()->GetDataPath();
     m_langPath = GetSystemUtils()->GetLangPath();
+    #if DEV_BUILD
+    m_savePath = "saves";
+    #else
     m_savePath = GetSystemUtils()->GetSaveDir();
+    #endif
 
     m_runSceneName = "";
     m_runSceneRank = 0;
