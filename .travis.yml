@@ -7,6 +7,6 @@ before_install:
   - git submodule update --init --recursive
   - sudo add-apt-repository ppa:mapnik/boost -y
   - sudo apt-get update -qq
-  - sudo apt-get install -qq --no-install-recommends libgl1-mesa-dev libsdl1.2-dev libsdl-image1.2-dev libsdl-ttf2.0-dev libpng12-dev libglew-dev libboost-dev libboost-system-dev libboost-filesystem-dev libboost-regex-dev google-mock libgtest-dev doxygen graphviz po4a librsvg2-bin libsndfile-dev libopenal-dev
+  - sudo apt-get install -qq --no-install-recommends libgl1-mesa-dev libsdl1.2-dev libsdl-image1.2-dev libsdl-ttf2.0-dev libpng12-dev libglew-dev libboost-dev libboost-system-dev libboost-filesystem-dev libboost-regex-dev google-mock libgtest-dev doxygen graphviz po4a librsvg2-bin libsndfile-dev libopenal-dev libphysfs-dev
 notifications:
   email: false
