@@ -415,13 +415,13 @@ bool CApplication::Create()
     CResourceManager::SetSaveLocation(m_savePath);
     CResourceManager::AddLocation(m_savePath, true);
 
-    if (!GetProfile().InitCurrentDirectory())
+    if (!GetProfile().Init())
     {
         GetLogger()->Warn("Config not found. Default values will be used!\n");
         defaultValues = true;
     }
 
-    if (GetProfile().GetLocalProfileString("Language", "Lang", path)) {
+    if (GetProfile().GetStringProperty("Language", "Lang", path)) {
         Language language;
         if (ParseLanguage(path, language)) {
             m_language = language;
@@ -482,7 +482,7 @@ bool CApplication::Create()
 
     // load settings from profile
     int iValue;
-    if ( GetProfile().GetLocalProfileInt("Setup", "Resolution", iValue) )
+    if ( GetProfile().GetIntProperty("Setup", "Resolution", iValue) )
     {
         std::vector<Math::IntPoint> modes;
         GetVideoResolutionList(modes, true, true);
@@ -490,7 +490,7 @@ bool CApplication::Create()
             m_deviceConfig.size = modes.at(iValue);
     }
 
-    if ( GetProfile().GetLocalProfileInt("Setup", "Fullscreen", iValue) )
+    if ( GetProfile().GetIntProperty("Setup", "Fullscreen", iValue) )
     {
         m_deviceConfig.fullScreen = (iValue == 1);
     }
@@ -625,23 +625,14 @@ void CApplication::Destroy()
 {
     m_joystickEnabled = false;
 
-    if (m_robotMain != nullptr)
-    {
-        delete m_robotMain;
-        m_robotMain = nullptr;
-    }
+    delete m_robotMain;
+    m_robotMain = nullptr;
 
-    if (m_sound != nullptr)
-    {
-        delete m_sound;
-        m_sound = nullptr;
-    }
+    delete m_sound;
+    m_sound = nullptr;
 
-    if (m_modelManager != nullptr)
-    {
-        delete m_modelManager;
-        m_modelManager = nullptr;
-    }
+    delete m_modelManager;
+    m_modelManager = nullptr;
 
     if (m_engine != nullptr)
     {

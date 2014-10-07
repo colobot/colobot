@@ -3510,7 +3510,7 @@ void CMainDialog::NameSelect()
 
     GetGamerFace(m_main->GetGamerName());
 
-    GetProfile().SetLocalProfileString("Gamer", "LastName", m_main->GetGamerName());
+    GetProfile().SetStringProperty("Gamer", "LastName", m_main->GetGamerName());
 }
 
 // Creates a new player.
@@ -5074,44 +5074,44 @@ void CMainDialog::ChangeSetupButtons()
 
 void CMainDialog::SetupMemorize()
 {
-    GetProfile().SetLocalProfileString("Directory", "savegame", m_savegameDir);
-    GetProfile().SetLocalProfileString("Directory", "public",   m_publicDir);
-    GetProfile().SetLocalProfileString("Directory", "files",    m_filesDir);
-    GetProfile().SetLocalProfileInt("Setup", "Tooltips", m_bTooltip);
-    GetProfile().SetLocalProfileInt("Setup", "InterfaceGlint", m_bGlint);
-    GetProfile().SetLocalProfileInt("Setup", "InterfaceGlint", m_bRain);
-    GetProfile().SetLocalProfileInt("Setup", "Soluce4", m_bSoluce4);
-    GetProfile().SetLocalProfileInt("Setup", "Movies", m_bMovies);
-    GetProfile().SetLocalProfileInt("Setup", "NiceReset", m_bNiceReset);
-    GetProfile().SetLocalProfileInt("Setup", "HimselfDamage", m_bHimselfDamage);
-    GetProfile().SetLocalProfileInt("Setup", "CameraScroll", m_bCameraScroll);
-    GetProfile().SetLocalProfileInt("Setup", "CameraInvertX", m_bCameraInvertX);
-    GetProfile().SetLocalProfileInt("Setup", "CameraInvertY", m_bCameraInvertY);
-    GetProfile().SetLocalProfileInt("Setup", "InterfaceEffect", m_bEffect);
-    GetProfile().SetLocalProfileInt("Setup", "GroundShadow", m_engine->GetShadow());
-    GetProfile().SetLocalProfileInt("Setup", "GroundSpot", m_engine->GetGroundSpot());
-    GetProfile().SetLocalProfileInt("Setup", "ObjectDirty", m_engine->GetDirty());
-    GetProfile().SetLocalProfileInt("Setup", "FogMode", m_engine->GetFog());
-    GetProfile().SetLocalProfileInt("Setup", "LensMode", m_engine->GetLensMode());
-    GetProfile().SetLocalProfileInt("Setup", "SkyMode", m_engine->GetSkyMode());
-    GetProfile().SetLocalProfileInt("Setup", "PlanetMode", m_engine->GetPlanetMode());
-    GetProfile().SetLocalProfileInt("Setup", "LightMode", m_engine->GetLightMode());
-    GetProfile().SetLocalProfileFloat("Setup", "ParticleDensity", m_engine->GetParticleDensity());
-    GetProfile().SetLocalProfileFloat("Setup", "ClippingDistance", m_engine->GetClippingDistance());
-    GetProfile().SetLocalProfileFloat("Setup", "ObjectDetail", m_engine->GetObjectDetail());
-    GetProfile().SetLocalProfileFloat("Setup", "GadgetQuantity", m_engine->GetGadgetQuantity());
-    GetProfile().SetLocalProfileInt("Setup", "TextureQuality", m_engine->GetTextureQuality());
-    GetProfile().SetLocalProfileInt("Setup", "TotoMode", m_engine->GetTotoMode());
-    GetProfile().SetLocalProfileInt("Setup", "AudioVolume", m_sound->GetAudioVolume());
-    GetProfile().SetLocalProfileInt("Setup", "MusicVolume", m_sound->GetMusicVolume());
-    GetProfile().SetLocalProfileInt("Setup", "EditIndentMode", m_engine->GetEditIndentMode());
-    GetProfile().SetLocalProfileInt("Setup", "EditIndentValue", m_engine->GetEditIndentValue());
+    GetProfile().SetStringProperty("Directory", "savegame", m_savegameDir);
+    GetProfile().SetStringProperty("Directory", "public",   m_publicDir);
+    GetProfile().SetStringProperty("Directory", "files",    m_filesDir);
+    GetProfile().SetIntProperty("Setup", "Tooltips", m_bTooltip);
+    GetProfile().SetIntProperty("Setup", "InterfaceGlint", m_bGlint);
+    GetProfile().SetIntProperty("Setup", "InterfaceGlint", m_bRain);
+    GetProfile().SetIntProperty("Setup", "Soluce4", m_bSoluce4);
+    GetProfile().SetIntProperty("Setup", "Movies", m_bMovies);
+    GetProfile().SetIntProperty("Setup", "NiceReset", m_bNiceReset);
+    GetProfile().SetIntProperty("Setup", "HimselfDamage", m_bHimselfDamage);
+    GetProfile().SetIntProperty("Setup", "CameraScroll", m_bCameraScroll);
+    GetProfile().SetIntProperty("Setup", "CameraInvertX", m_bCameraInvertX);
+    GetProfile().SetIntProperty("Setup", "CameraInvertY", m_bCameraInvertY);
+    GetProfile().SetIntProperty("Setup", "InterfaceEffect", m_bEffect);
+    GetProfile().SetIntProperty("Setup", "GroundShadow", m_engine->GetShadow());
+    GetProfile().SetIntProperty("Setup", "GroundSpot", m_engine->GetGroundSpot());
+    GetProfile().SetIntProperty("Setup", "ObjectDirty", m_engine->GetDirty());
+    GetProfile().SetIntProperty("Setup", "FogMode", m_engine->GetFog());
+    GetProfile().SetIntProperty("Setup", "LensMode", m_engine->GetLensMode());
+    GetProfile().SetIntProperty("Setup", "SkyMode", m_engine->GetSkyMode());
+    GetProfile().SetIntProperty("Setup", "PlanetMode", m_engine->GetPlanetMode());
+    GetProfile().SetIntProperty("Setup", "LightMode", m_engine->GetLightMode());
+    GetProfile().SetFloatProperty("Setup", "ParticleDensity", m_engine->GetParticleDensity());
+    GetProfile().SetFloatProperty("Setup", "ClippingDistance", m_engine->GetClippingDistance());
+    GetProfile().SetFloatProperty("Setup", "ObjectDetail", m_engine->GetObjectDetail());
+    GetProfile().SetFloatProperty("Setup", "GadgetQuantity", m_engine->GetGadgetQuantity());
+    GetProfile().SetIntProperty("Setup", "TextureQuality", m_engine->GetTextureQuality());
+    GetProfile().SetIntProperty("Setup", "TotoMode", m_engine->GetTotoMode());
+    GetProfile().SetIntProperty("Setup", "AudioVolume", m_sound->GetAudioVolume());
+    GetProfile().SetIntProperty("Setup", "MusicVolume", m_sound->GetMusicVolume());
+    GetProfile().SetIntProperty("Setup", "EditIndentMode", m_engine->GetEditIndentMode());
+    GetProfile().SetIntProperty("Setup", "EditIndentValue", m_engine->GetEditIndentValue());
 
     /* screen setup */
     if (m_setupFull)
-        GetProfile().SetLocalProfileInt("Setup", "Fullscreen", 1);
+        GetProfile().SetIntProperty("Setup", "Fullscreen", 1);
     else
-        GetProfile().SetLocalProfileInt("Setup", "Fullscreen", 0);
+        GetProfile().SetIntProperty("Setup", "Fullscreen", 0);
 
     CList *pl;
     CWindow *pw;
@@ -5121,7 +5121,7 @@ void CMainDialog::SetupMemorize()
         pl = static_cast<CList *>(pw->SearchControl(EVENT_LIST2));
         if ( pl != 0 )
         {
-            GetProfile().SetLocalProfileInt("Setup", "Resolution", pl->GetSelect());
+            GetProfile().SetIntProperty("Setup", "Resolution", pl->GetSelect());
         }
     }
     else
@@ -5138,9 +5138,9 @@ void CMainDialog::SetupMemorize()
         key << b.secondary << "  ";
     }
 
-    GetProfile().SetLocalProfileString("Setup", "KeyMap", key.str());
+    GetProfile().SetStringProperty("Setup", "KeyMap", key.str());
 
-    GetProfile().SetLocalProfileInt("Setup", "DeleteGamer", m_bDeleteGamer);
+    GetProfile().SetIntProperty("Setup", "DeleteGamer", m_bDeleteGamer);
 }
 
 // Remember all the settings.
@@ -5151,38 +5151,38 @@ void CMainDialog::SetupRecall()
     int         iValue;
     std::string key;
 
-    if ( GetProfile().GetLocalProfileString("Directory", "savegame", key) )
+    if ( GetProfile().GetStringProperty("Directory", "savegame", key) )
     {
         m_savegameDir = key;
     }
 
-    if ( GetProfile().GetLocalProfileString("Directory", "public", key) )
+    if ( GetProfile().GetStringProperty("Directory", "public", key) )
     {
         m_publicDir = key;
     }
 
-    if ( GetProfile().GetLocalProfileString("Directory", "files", key) )
+    if ( GetProfile().GetStringProperty("Directory", "files", key) )
     {
         m_filesDir = key;
     }
 
 
-    if ( GetProfile().GetLocalProfileInt("Setup", "TotoMode", iValue) )
+    if ( GetProfile().GetIntProperty("Setup", "TotoMode", iValue) )
     {
         m_engine->SetTotoMode(iValue);
     }
 
-    if ( GetProfile().GetLocalProfileInt("Setup", "Tooltips", iValue) )
+    if ( GetProfile().GetIntProperty("Setup", "Tooltips", iValue) )
     {
         m_bTooltip = iValue;
     }
 
-    if ( GetProfile().GetLocalProfileInt("Setup", "InterfaceGlint", iValue) )
+    if ( GetProfile().GetIntProperty("Setup", "InterfaceGlint", iValue) )
     {
         m_bGlint = iValue;
     }
 
-    if ( GetProfile().GetLocalProfileInt("Setup", "InterfaceGlint", iValue) )
+    if ( GetProfile().GetIntProperty("Setup", "InterfaceGlint", iValue) )
     {
         m_bRain = iValue;
     }
@@ -5193,86 +5193,86 @@ void CMainDialog::SetupRecall()
     //     m_engine->SetNiceMouse(iValue);
     // }
 
-    if ( GetProfile().GetLocalProfileInt("Setup", "Soluce4", iValue) )
+    if ( GetProfile().GetIntProperty("Setup", "Soluce4", iValue) )
     {
         m_bSoluce4 = iValue;
     }
 
-    if ( GetProfile().GetLocalProfileInt("Setup", "Movies", iValue) )
+    if ( GetProfile().GetIntProperty("Setup", "Movies", iValue) )
     {
         m_bMovies = iValue;
     }
 
-    if ( GetProfile().GetLocalProfileInt("Setup", "NiceReset", iValue) )
+    if ( GetProfile().GetIntProperty("Setup", "NiceReset", iValue) )
     {
         m_bNiceReset = iValue;
     }
 
-    if ( GetProfile().GetLocalProfileInt("Setup", "HimselfDamage", iValue) )
+    if ( GetProfile().GetIntProperty("Setup", "HimselfDamage", iValue) )
     {
         m_bHimselfDamage = iValue;
     }
 
-    if ( GetProfile().GetLocalProfileInt("Setup", "CameraScroll", iValue) )
+    if ( GetProfile().GetIntProperty("Setup", "CameraScroll", iValue) )
     {
         m_bCameraScroll = iValue;
         m_camera->SetCameraScroll(m_bCameraScroll);
     }
 
-    if ( GetProfile().GetLocalProfileInt("Setup", "CameraInvertX", iValue) )
+    if ( GetProfile().GetIntProperty("Setup", "CameraInvertX", iValue) )
     {
         m_bCameraInvertX = iValue;
         m_camera->SetCameraInvertX(m_bCameraInvertX);
     }
 
-    if ( GetProfile().GetLocalProfileInt("Setup", "CameraInvertY", iValue) )
+    if ( GetProfile().GetIntProperty("Setup", "CameraInvertY", iValue) )
     {
         m_bCameraInvertY = iValue;
         m_camera->SetCameraInvertY(m_bCameraInvertY);
     }
 
-    if ( GetProfile().GetLocalProfileInt("Setup", "InterfaceEffect", iValue) )
+    if ( GetProfile().GetIntProperty("Setup", "InterfaceEffect", iValue) )
     {
         m_bEffect = iValue;
     }
 
-    if ( GetProfile().GetLocalProfileInt("Setup", "GroundShadow", iValue) )
+    if ( GetProfile().GetIntProperty("Setup", "GroundShadow", iValue) )
     {
         m_engine->SetShadow(iValue);
     }
 
-    if ( GetProfile().GetLocalProfileInt("Setup", "GroundSpot", iValue) )
+    if ( GetProfile().GetIntProperty("Setup", "GroundSpot", iValue) )
     {
         m_engine->SetGroundSpot(iValue);
     }
 
-    if ( GetProfile().GetLocalProfileInt("Setup", "ObjectDirty", iValue) )
+    if ( GetProfile().GetIntProperty("Setup", "ObjectDirty", iValue) )
     {
         m_engine->SetDirty(iValue);
     }
 
-    if ( GetProfile().GetLocalProfileInt("Setup", "FogMode", iValue) )
+    if ( GetProfile().GetIntProperty("Setup", "FogMode", iValue) )
     {
         m_engine->SetFog(iValue);
         m_camera->SetOverBaseColor(Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f)); // TODO: color ok?
     }
 
-    if ( GetProfile().GetLocalProfileInt("Setup", "LensMode", iValue) )
+    if ( GetProfile().GetIntProperty("Setup", "LensMode", iValue) )
     {
         m_engine->SetLensMode(iValue);
     }
 
-    if ( GetProfile().GetLocalProfileInt("Setup", "SkyMode", iValue) )
+    if ( GetProfile().GetIntProperty("Setup", "SkyMode", iValue) )
     {
         m_engine->SetSkyMode(iValue);
     }
 
-    if ( GetProfile().GetLocalProfileInt("Setup", "PlanetMode", iValue) )
+    if ( GetProfile().GetIntProperty("Setup", "PlanetMode", iValue) )
     {
         m_engine->SetPlanetMode(iValue);
     }
 
-    if ( GetProfile().GetLocalProfileInt("Setup", "LightMode", iValue) )
+    if ( GetProfile().GetIntProperty("Setup", "LightMode", iValue) )
     {
         m_engine->SetLightMode(iValue);
     }
@@ -5282,52 +5282,52 @@ void CMainDialog::SetupRecall()
     //     m_engine->SetJoystick(iValue);
     // }
 
-    if ( GetProfile().GetLocalProfileFloat("Setup", "ParticleDensity", fValue) )
+    if ( GetProfile().GetFloatProperty("Setup", "ParticleDensity", fValue) )
     {
         m_engine->SetParticleDensity(fValue);
     }
 
-    if ( GetProfile().GetLocalProfileFloat("Setup", "ClippingDistance", fValue) )
+    if ( GetProfile().GetFloatProperty("Setup", "ClippingDistance", fValue) )
     {
         m_engine->SetClippingDistance(fValue);
     }
 
-    if ( GetProfile().GetLocalProfileFloat("Setup", "ObjectDetail", fValue) )
+    if ( GetProfile().GetFloatProperty("Setup", "ObjectDetail", fValue) )
     {
         m_engine->SetObjectDetail(fValue);
     }
 
-    if ( GetProfile().GetLocalProfileFloat("Setup", "GadgetQuantity", fValue) )
+    if ( GetProfile().GetFloatProperty("Setup", "GadgetQuantity", fValue) )
     {
         m_engine->SetGadgetQuantity(fValue);
     }
 
-    if ( GetProfile().GetLocalProfileInt("Setup", "TextureQuality", iValue) )
+    if ( GetProfile().GetIntProperty("Setup", "TextureQuality", iValue) )
     {
         m_engine->SetTextureQuality(iValue);
     }
 
-    if ( GetProfile().GetLocalProfileInt("Setup", "AudioVolume", iValue) )
+    if ( GetProfile().GetIntProperty("Setup", "AudioVolume", iValue) )
     {
         m_sound->SetAudioVolume(iValue);
     }
 
-    if ( GetProfile().GetLocalProfileInt("Setup", "MusicVolume", iValue) )
+    if ( GetProfile().GetIntProperty("Setup", "MusicVolume", iValue) )
     {
         m_sound->SetMusicVolume(iValue);
     }
 
-    if ( GetProfile().GetLocalProfileInt("Setup", "EditIndentMode", iValue) )
+    if ( GetProfile().GetIntProperty("Setup", "EditIndentMode", iValue) )
     {
         m_engine->SetEditIndentMode(iValue);
     }
 
-    if ( GetProfile().GetLocalProfileInt("Setup", "EditIndentValue", iValue) )
+    if ( GetProfile().GetIntProperty("Setup", "EditIndentValue", iValue) )
     {
         m_engine->SetEditIndentValue(iValue);
     }
 
-    if (GetProfile().GetLocalProfileString("Setup", "KeyMap", key))
+    if (GetProfile().GetStringProperty("Setup", "KeyMap", key))
     {
         std::stringstream skey;
         skey.str(key);
@@ -5340,17 +5340,17 @@ void CMainDialog::SetupRecall()
          }
     }
 
-    if ( GetProfile().GetLocalProfileInt("Setup", "DeleteGamer", iValue) )
+    if ( GetProfile().GetIntProperty("Setup", "DeleteGamer", iValue) )
     {
         m_bDeleteGamer = iValue;
     }
 
-    if ( GetProfile().GetLocalProfileInt("Setup", "Resolution", iValue) )
+    if ( GetProfile().GetIntProperty("Setup", "Resolution", iValue) )
     {
         m_setupSelMode = iValue;
     }
 
-    if ( GetProfile().GetLocalProfileInt("Setup", "Fullscreen", iValue) )
+    if ( GetProfile().GetIntProperty("Setup", "Fullscreen", iValue) )
     {
         m_setupFull = (iValue == 1);
     }

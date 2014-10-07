@@ -105,7 +105,7 @@ void CBotToken::Free()
 
 const CBotToken& CBotToken::operator=(const CBotToken& src)
 {
-    if (m_next != NULL) delete(m_next);
+    delete m_next;
     m_next      = NULL;
     m_prev      = NULL;
 

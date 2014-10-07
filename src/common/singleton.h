@@ -62,10 +62,7 @@ public:
     static void ReplaceInstance(T* newInstance)
     {
         assert(newInstance != nullptr);
-
-        if (m_instance != nullptr)
-            delete m_instance;
-
+        delete m_instance;
         m_instance = newInstance;
     }
     #endif

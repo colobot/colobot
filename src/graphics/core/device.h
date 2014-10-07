@@ -258,26 +258,16 @@ public:
 
     //! Sets the transform matrix of given type
     virtual void SetTransform(TransformType type, const Math::Matrix &matrix) = 0;
-    //! Returns the current transform matrix of given type
-    virtual const Math::Matrix& GetTransform(TransformType type) = 0;
-    //! Multiplies the current transform matrix of given type by given matrix
-    virtual void MultiplyTransform(TransformType type, const Math::Matrix &matrix) = 0;
 
     //! Sets the current material
     virtual void SetMaterial(const Material &material) = 0;
-    //! Returns the current material
-    virtual const Material& GetMaterial() = 0;
 
     //! Returns the maximum number of lights available
     virtual int GetMaxLightCount() = 0;
     //! Sets the light at given index
     virtual void SetLight(int index, const Light &light) = 0;
-    //! Returns the current light at given index
-    virtual const Light& GetLight(int index) = 0;
     //! Enables/disables the light at given index
     virtual void SetLightEnabled(int index, bool enabled) = 0;
-    //! Returns the current enable state of light at given index
-    virtual bool GetLightEnabled(int index) = 0;
 
     //! Creates a texture from image; the image can be safely removed after that
     virtual Texture CreateTexture(CImage *image, const TextureCreateParams &params) = 0;
@@ -294,17 +284,11 @@ public:
     virtual void SetTexture(int index, const Texture &texture) = 0;
     //! Sets the texture image by ID at given texture stage
     virtual void SetTexture(int index, unsigned int textureId) = 0;
-    //! Returns the (multi)texture at given index
-    virtual Texture GetTexture(int index) = 0;
     //! Enables/disables the given texture stage
     virtual void SetTextureEnabled(int index, bool enabled) = 0;
-    //! Returns the current enable state of given texture stage
-    virtual bool GetTextureEnabled(int index) = 0;
 
     //! Sets the params for texture stage with given index
     virtual void SetTextureStageParams(int index, const TextureStageParams &params) = 0;
-    //! Returns the current params of texture stage with given index
-    virtual TextureStageParams GetTextureStageParams(int index) = 0;
 
     //! Sets only the texture wrap modes (for faster than thru stage params)
     virtual void SetTextureStageWrap(int index, TexWrapMode wrapS, TexWrapMode wrapT) = 0;
@@ -348,61 +332,39 @@ public:
 
     //! Enables/disables the given render state
     virtual void SetRenderState(RenderState state, bool enabled) = 0;
-    //! Returns the current setting of given render state
-    virtual bool GetRenderState(RenderState state) = 0;
 
     //! Sets the function of depth test
     virtual void SetDepthTestFunc(CompFunc func) = 0;
-    //! Returns the current function of depth test
-    virtual CompFunc GetDepthTestFunc() = 0;
 
     //! Sets the depth bias (constant value added to Z-coords)
     virtual void SetDepthBias(float factor) = 0;
-    //! Returns the current depth bias
-    virtual float GetDepthBias() = 0;
 
     //! Sets the alpha test function and reference value
     virtual void SetAlphaTestFunc(CompFunc func, float refValue) = 0;
-    //! Returns the current alpha test function and reference value
-    virtual void GetAlphaTestFunc(CompFunc &func, float &refValue) = 0;
 
     //! Sets the blending functions for source and destination operations
     virtual void SetBlendFunc(BlendFunc srcBlend, BlendFunc dstBlend) = 0;
-    //! Returns the current blending functions for source and destination operations
-    virtual void GetBlendFunc(BlendFunc &srcBlend, BlendFunc &dstBlend) = 0;
 
     //! Sets the clear color
     virtual void SetClearColor(const Color &color) = 0;
-    //! Returns the current clear color
-    virtual Color GetClearColor() = 0;
 
     //! Sets the global ambient color
     virtual void SetGlobalAmbient(const Color &color) = 0;
-    //! Returns the global ambient color
-    virtual Color GetGlobalAmbient() = 0;
 
     //! Sets the fog parameters: mode, color, start distance, end distance and density (for exp models)
     virtual void SetFogParams(FogMode mode, const Color &color, float start, float end, float density) = 0;
-    //! Returns the current fog parameters: mode, color, start distance, end distance and density (for exp models)
-    virtual void GetFogParams(FogMode &mode, Color &color, float &start, float &end, float &density) = 0;
 
     //! Sets the current cull mode
     virtual void SetCullMode(CullMode mode) = 0;
-    //! Returns the current cull mode
-    virtual CullMode GetCullMode() = 0;
 
     //! Sets the shade model
     virtual void SetShadeModel(ShadeModel model) = 0;
-    //! Returns the current shade model
-    virtual ShadeModel GetShadeModel() = 0;
 
     //! Sets the current fill mode
     virtual void SetFillMode(FillMode mode) = 0;
-    //! Returns the current fill mode
-    virtual FillMode GetFillMode() = 0;
 
     //! Returns the pixels of the entire screen
-    virtual void* GetFrameBufferPixels()const = 0;
+    virtual void* GetFrameBufferPixels() const = 0;
 };
 
 

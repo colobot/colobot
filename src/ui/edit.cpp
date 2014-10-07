@@ -122,21 +122,16 @@ CEdit::CEdit () : CControl ()
 
 CEdit::~CEdit()
 {
-    int     i;
-
     FreeImage();
 
-    for ( i=0 ; i<EDITUNDOMAX ; i++ )
+    for (int i = 0; i < EDITUNDOMAX; i++)
     {
         delete m_undo[i].text;
         m_undo[i].text = nullptr;
     }
 
-    if (m_text != nullptr)
-    {
-        delete[] m_text;
-        m_text = nullptr;
-    }
+    delete[] m_text;
+    m_text = nullptr;
 
     delete m_scroll;
     m_scroll = nullptr;
@@ -380,23 +375,23 @@ bool CEdit::EventProcess(const Event &event)
                 MoveChar(1, bControl, bShift);
                 return true;
             }
-            if ( event.key.key == KEY(UP) )
+            if ( event.key.key == KEY(UP) && m_bMulti )
             {
                 MoveLine(-1, bControl, bShift);
                 return true;
             }
-            if ( event.key.key == KEY(DOWN) )
+            if ( event.key.key == KEY(DOWN) && m_bMulti )
             {
                 MoveLine(1, bControl, bShift);
                 return true;
             }
 
-            if ( event.key.key == KEY(PAGEUP) )  // PageUp ?
+            if ( event.key.key == KEY(PAGEUP) && m_bMulti )  // PageUp ?
             {
                 MoveLine(-(m_lineVisible-1), bControl, bShift);
                 return true;
             }
-            if ( event.key.key == KEY(PAGEDOWN) )  // PageDown ?
+            if ( event.key.key == KEY(PAGEDOWN) && m_bMulti )  // PageDown ?
             {
                 MoveLine(m_lineVisible-1, bControl, bShift);
                 return true;
@@ -1473,8 +1468,7 @@ bool CEdit::ReadText(std::string filename, int addSize)
 
     FreeImage();
 
-    if (m_text != nullptr)
-        delete[] m_text;
+    delete[] m_text;
 
     m_text = new char[m_maxChar+1];
     memset(m_text, 0, m_maxChar+1);
@@ -1957,8 +1951,7 @@ void CEdit::SetMaxChar(int max)
 {
     FreeImage();
 
-    if (m_text != nullptr)
-        delete[] m_text;
+    delete[] m_text;
 
     m_maxChar = max;
 

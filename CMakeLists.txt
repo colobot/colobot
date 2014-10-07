@@ -295,43 +295,6 @@ endif()
 # Targets
 ##
 
-if(TESTS)
-    # Google Test library
-    find_path(GTEST_SRC_DIR NAMES src/gtest.cc src/gtest-all.cc PATHS /usr/src PATH_SUFFIXES gtest)
-    find_path(GTEST_INCLUDE_DIR gtest/gtest.h PATHS /usr/include)
-    if(NOT(FORCE_BUNDLED_GTEST) AND GTEST_SRC_DIR AND GTEST_INCLUDE_DIR)
-        message(STATUS "Using system gtest library in ${GTEST_SRC_DIR}")
-    else()
-        message(STATUS "Using bundled gtest library")
-        set(GTEST_SRC_DIR ${colobot_SOURCE_DIR}/lib/gtest)
-        set(GTEST_INCLUDE_DIR ${colobot_SOURCE_DIR}/lib/gtest/include)
-    endif()
-
-    add_subdirectory(${GTEST_SRC_DIR} lib/gtest)
-
-    # Google Mock library
-    find_path(GMOCK_SRC_DIR NAMES src/gmock.cc src/gmock-all.cc PATHS /usr/src PATH_SUFFIXES gmock)
-    find_path(GMOCK_INCLUDE_DIR gmock/gmock.h PATHS /usr/include)
-    if(NOT(FORCE_BUNDLED_GMOCK) AND GMOCK_SRC_DIR AND GMOCK_INCLUDE_DIR)
-        message(STATUS "Using system gmock library in ${GMOCK_SRC_DIR}")
-
-        include_directories(${GMOCK_SRC_DIR})
-        # gmock-all.cc includes all other sources
-        add_library(gmock STATIC ${GMOCK_SRC_DIR}/src/gmock-all.cc)
-    else()
-        message(STATUS "Using bundled gmock library")
-        set(GMOCK_SRC_DIR ${colobot_SOURCE_DIR}/lib/gmock)
-        set(GMOCK_INCLUDE_DIR ${colobot_SOURCE_DIR}/lib/gmock/include)
-        add_subdirectory(${GMOCK_SRC_DIR} lib/gmock)
-    endif()
-
-
-    # Tests targets
-    enable_testing()
-    add_subdirectory(test)
-
-endif()
-
 # Installation paths defined before compiling sources
 if(PLATFORM_WINDOWS)
     if(MXE)
@@ -369,6 +332,43 @@ add_subdirectory(po)
 
 if(DESKTOP)
     add_subdirectory(desktop)
+endif()
+
+if(TESTS)
+    # Google Test library
+    find_path(GTEST_SRC_DIR NAMES src/gtest.cc src/gtest-all.cc PATHS /usr/src PATH_SUFFIXES gtest)
+    find_path(GTEST_INCLUDE_DIR gtest/gtest.h PATHS /usr/include)
+    if(NOT(FORCE_BUNDLED_GTEST) AND GTEST_SRC_DIR AND GTEST_INCLUDE_DIR)
+        message(STATUS "Using system gtest library in ${GTEST_SRC_DIR}")
+    else()
+        message(STATUS "Using bundled gtest library")
+        set(GTEST_SRC_DIR ${colobot_SOURCE_DIR}/lib/gtest)
+        set(GTEST_INCLUDE_DIR ${colobot_SOURCE_DIR}/lib/gtest/include)
+    endif()
+
+    add_subdirectory(${GTEST_SRC_DIR} lib/gtest)
+
+    # Google Mock library
+    find_path(GMOCK_SRC_DIR NAMES src/gmock.cc src/gmock-all.cc PATHS /usr/src PATH_SUFFIXES gmock)
+    find_path(GMOCK_INCLUDE_DIR gmock/gmock.h PATHS /usr/include)
+    if(NOT(FORCE_BUNDLED_GMOCK) AND GMOCK_SRC_DIR AND GMOCK_INCLUDE_DIR)
+        message(STATUS "Using system gmock library in ${GMOCK_SRC_DIR}")
+
+        include_directories(${GMOCK_SRC_DIR})
+        # gmock-all.cc includes all other sources
+        add_library(gmock STATIC ${GMOCK_SRC_DIR}/src/gmock-all.cc)
+    else()
+        message(STATUS "Using bundled gmock library")
+        set(GMOCK_SRC_DIR ${colobot_SOURCE_DIR}/lib/gmock)
+        set(GMOCK_INCLUDE_DIR ${colobot_SOURCE_DIR}/lib/gmock/include)
+        add_subdirectory(${GMOCK_SRC_DIR} lib/gmock)
+    endif()
+
+
+    # Tests targets
+    enable_testing()
+    add_subdirectory(test)
+
 endif()
 
 

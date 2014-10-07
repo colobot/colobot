@@ -290,11 +290,6 @@ void CGLDevice::SetUseVbo(bool vboAvailable)
     m_vboAvailable = vboAvailable;
 }
 
-bool CGLDevice::GetUseVbo()
-{
-    return m_vboAvailable;
-}
-
 void CGLDevice::BeginScene()
 {
     Clear();
@@ -339,44 +334,6 @@ void CGLDevice::SetTransform(TransformType type, const Math::Matrix &matrix)
     }
 }
 
-const Math::Matrix& CGLDevice::GetTransform(TransformType type)
-{
-    if      (type == TRANSFORM_WORLD)
-        return m_worldMat;
-    else if (type == TRANSFORM_VIEW)
-        return m_viewMat;
-    else if (type == TRANSFORM_PROJECTION)
-        return m_projectionMat;
-    else
-        assert(false);
-
-    return m_worldMat; // to avoid warning
-}
-
-void CGLDevice::MultiplyTransform(TransformType type, const Math::Matrix &matrix)
-{
-    if      (type == TRANSFORM_WORLD)
-    {
-        m_worldMat = Math::MultiplyMatrices(m_worldMat, matrix);
-        UpdateModelviewMatrix();
-    }
-    else if (type == TRANSFORM_VIEW)
-    {
-        m_viewMat = Math::MultiplyMatrices(m_viewMat, matrix);
-        UpdateModelviewMatrix();
-    }
-    else if (type == TRANSFORM_PROJECTION)
-    {
-        m_projectionMat = Math::MultiplyMatrices(m_projectionMat, matrix);
-        glMatrixMode(GL_PROJECTION);
-        glLoadMatrixf(m_projectionMat.Array());
-    }
-    else
-    {
-        assert(false);
-    }
-}
-
 void CGLDevice::UpdateModelviewMatrix()
 {
     m_modelviewMat = Math::MultiplyMatrices(m_viewMat, m_worldMat);
@@ -400,11 +357,6 @@ void CGLDevice::SetMaterial(const Material &material)
     glMaterialfv(GL_FRONT, GL_AMBIENT,  m_material.ambient.Array());
     glMaterialfv(GL_FRONT, GL_DIFFUSE,  m_material.diffuse.Array());
     glMaterialfv(GL_FRONT, GL_SPECULAR, m_material.specular.Array());
-}
-
-const Material& CGLDevice::GetMaterial()
-{
-    return m_material;
 }
 
 int CGLDevice::GetMaxLightCount()
@@ -482,14 +434,6 @@ void CGLDevice::UpdateLightPosition(int index)
     glPopMatrix();
 }
 
-const Light& CGLDevice::GetLight(int index)
-{
-    assert(index >= 0);
-    assert(index < static_cast<int>( m_lights.size() ));
-
-    return m_lights[index];
-}
-
 void CGLDevice::SetLightEnabled(int index, bool enabled)
 {
     assert(index >= 0);
@@ -501,14 +445,6 @@ void CGLDevice::SetLightEnabled(int index, bool enabled)
         glEnable(GL_LIGHT0 + index);
     else
         glDisable(GL_LIGHT0 + index);
-}
-
-bool CGLDevice::GetLightEnabled(int index)
-{
-    assert(index >= 0);
-    assert(index < static_cast<int>( m_lights.size() ));
-
-    return m_lightsEnabled[index];
 }
 
 /** If image is invalid, returns invalid texture.
@@ -781,15 +717,6 @@ void CGLDevice::SetTexture(int index, unsigned int textureId)
     UpdateTextureParams(index);
 }
 
-/**
-  Returns the previously assigned texture or invalid texture if the given stage is not enabled. */
-Texture CGLDevice::GetTexture(int index)
-{
-    assert(index >= 0 && index < static_cast<int>( m_currentTextures.size() ));
-
-    return m_currentTextures[index];
-}
-
 void CGLDevice::SetTextureEnabled(int index, bool enabled)
 {
     assert(index >= 0 && index < static_cast<int>( m_currentTextures.size() ));
@@ -811,13 +738,6 @@ void CGLDevice::SetTextureEnabled(int index, bool enabled)
         glEnable(GL_TEXTURE_2D);
     else
         glDisable(GL_TEXTURE_2D);
-}
-
-bool CGLDevice::GetTextureEnabled(int index)
-{
-    assert(index >= 0 && index < static_cast<int>( m_currentTextures.size() ));
-
-    return m_texturesEnabled[index];
 }
 
 /**
@@ -1000,13 +920,6 @@ void CGLDevice::SetTextureStageWrap(int index, TexWrapMode wrapS, TexWrapMode wr
     else if (wrapT == TEX_WRAP_REPEAT)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     else  assert(false);
-}
-
-TextureStageParams CGLDevice::GetTextureStageParams(int index)
-{
-    assert(index >= 0 && index < static_cast<int>( m_currentTextures.size() ));
-
-    return m_textureStageParams[index];
 }
 
 GLenum TranslateGfxPrimitive(PrimitiveType type)
@@ -1529,30 +1442,6 @@ void CGLDevice::SetRenderState(RenderState state, bool enabled)
         glDisable(flag);
 }
 
-bool CGLDevice::GetRenderState(RenderState state)
-{
-    if (state == RENDER_STATE_LIGHTING)
-        return m_lighting;
-
-    GLenum flag = 0;
-
-    switch (state)
-    {
-        case RENDER_STATE_DEPTH_WRITE: flag = GL_DEPTH_WRITEMASK; break;
-        case RENDER_STATE_BLENDING:    flag = GL_BLEND; break;
-        case RENDER_STATE_FOG:         flag = GL_FOG; break;
-        case RENDER_STATE_DEPTH_TEST:  flag = GL_DEPTH_TEST; break;
-        case RENDER_STATE_ALPHA_TEST:  flag = GL_ALPHA_TEST; break;
-        case RENDER_STATE_CULLING:     flag = GL_CULL_FACE; break;
-        default: assert(false); break;
-    }
-
-    GLboolean result = GL_FALSE;
-    glGetBooleanv(flag, &result);
-
-    return result == GL_TRUE;
-}
-
 CompFunc TranslateGLCompFunc(GLenum flag)
 {
     switch (flag)
@@ -1592,37 +1481,14 @@ void CGLDevice::SetDepthTestFunc(CompFunc func)
     glDepthFunc(TranslateGfxCompFunc(func));
 }
 
-CompFunc CGLDevice::GetDepthTestFunc()
-{
-    GLint flag = 0;
-    glGetIntegerv(GL_DEPTH_FUNC, &flag);
-    return TranslateGLCompFunc(static_cast<GLenum>(flag));
-}
-
 void CGLDevice::SetDepthBias(float factor)
 {
     glPolygonOffset(factor, 0.0f);
 }
 
-float CGLDevice::GetDepthBias()
-{
-    GLfloat result = 0.0f;
-    glGetFloatv(GL_POLYGON_OFFSET_FACTOR, &result);
-    return result;
-}
-
 void CGLDevice::SetAlphaTestFunc(CompFunc func, float refValue)
 {
     glAlphaFunc(TranslateGfxCompFunc(func), refValue);
-}
-
-void CGLDevice::GetAlphaTestFunc(CompFunc &func, float &refValue)
-{
-    GLint flag = 0;
-    glGetIntegerv(GL_ALPHA_TEST_FUNC, &flag);
-    func = TranslateGLCompFunc(static_cast<GLenum>(flag));
-
-    glGetFloatv(GL_ALPHA_TEST_REF, static_cast<GLfloat*>(&refValue));
 }
 
 BlendFunc TranslateGLBlendFunc(GLenum flag)
@@ -1671,39 +1537,14 @@ void CGLDevice::SetBlendFunc(BlendFunc srcBlend, BlendFunc dstBlend)
     glBlendFunc(TranslateGfxBlendFunc(srcBlend), TranslateGfxBlendFunc(dstBlend));
 }
 
-void CGLDevice::GetBlendFunc(BlendFunc &srcBlend, BlendFunc &dstBlend)
-{
-    GLint srcFlag = 0;
-    glGetIntegerv(GL_ALPHA_TEST_FUNC, &srcFlag);
-    srcBlend = TranslateGLBlendFunc(static_cast<GLenum>(srcFlag));
-
-    GLint dstFlag = 0;
-    glGetIntegerv(GL_ALPHA_TEST_FUNC, &dstFlag);
-    dstBlend = TranslateGLBlendFunc(static_cast<GLenum>(dstFlag));
-}
-
 void CGLDevice::SetClearColor(const Color &color)
 {
     glClearColor(color.r, color.g, color.b, color.a);
 }
 
-Color CGLDevice::GetClearColor()
-{
-    GLfloat color[4] = { 0.0f };
-    glGetFloatv(GL_COLOR_CLEAR_VALUE, color);
-    return Color(color[0], color[1], color[2], color[3]);
-}
-
 void CGLDevice::SetGlobalAmbient(const Color &color)
 {
     glLightModelfv(GL_LIGHT_MODEL_AMBIENT, color.Array());
-}
-
-Color CGLDevice::GetGlobalAmbient()
-{
-    GLfloat color[4] = { 0.0f };
-    glGetFloatv(GL_LIGHT_MODEL_AMBIENT, color);
-    return Color(color[0], color[1], color[2], color[3]);
 }
 
 void CGLDevice::SetFogParams(FogMode mode, const Color &color, float start, float end, float density)
@@ -1719,23 +1560,6 @@ void CGLDevice::SetFogParams(FogMode mode, const Color &color, float start, floa
     glFogfv(GL_FOG_COLOR,  color.Array());
 }
 
-void CGLDevice::GetFogParams(FogMode &mode, Color &color, float &start, float &end, float &density)
-{
-    GLint flag = 0;
-    glGetIntegerv(GL_FOG_MODE, &flag);
-    if      (flag == GL_LINEAR) mode = FOG_LINEAR;
-    else if (flag == GL_EXP)    mode = FOG_EXP;
-    else if (flag == GL_EXP2)   mode = FOG_EXP2;
-    else assert(false);
-
-    glGetFloatv(GL_FOG_START,   static_cast<GLfloat*>(&start));
-    glGetFloatv(GL_FOG_END,     static_cast<GLfloat*>(&end));
-    glGetFloatv(GL_FOG_DENSITY, static_cast<GLfloat*>(&density));
-    GLfloat col[4] = { 0.0f };
-    glGetFloatv(GL_FOG_COLOR,  col);
-    color = Color(col[0], col[1], col[2], col[3]);
-}
-
 void CGLDevice::SetCullMode(CullMode mode)
 {
     // Cull clockwise back faces, so front face is the opposite
@@ -1745,31 +1569,11 @@ void CGLDevice::SetCullMode(CullMode mode)
     else assert(false);
 }
 
-CullMode CGLDevice::GetCullMode()
-{
-    GLint flag = 0;
-    glGetIntegerv(GL_FRONT_FACE, &flag);
-    if      (flag == GL_CW)  return CULL_CCW;
-    else if (flag == GL_CCW) return CULL_CW;
-    else assert(false);
-    return CULL_CW;
-}
-
 void CGLDevice::SetShadeModel(ShadeModel model)
 {
     if      (model == SHADE_FLAT)   glShadeModel(GL_FLAT);
     else if (model == SHADE_SMOOTH) glShadeModel(GL_SMOOTH);
     else  assert(false);
-}
-
-ShadeModel CGLDevice::GetShadeModel()
-{
-    GLint flag = 0;
-    glGetIntegerv(GL_SHADE_MODEL, &flag);
-    if      (flag == GL_FLAT)    return SHADE_FLAT;
-    else if (flag == GL_SMOOTH)  return SHADE_SMOOTH;
-    else  assert(false);
-    return SHADE_FLAT;
 }
 
 void CGLDevice::SetFillMode(FillMode mode)
@@ -1780,21 +1584,10 @@ void CGLDevice::SetFillMode(FillMode mode)
     else assert(false);
 }
 
-FillMode CGLDevice::GetFillMode()
-{
-    GLint flag = 0;
-    glGetIntegerv(GL_POLYGON_MODE, &flag);
-    if      (flag == GL_POINT) return FILL_POINT;
-    else if (flag == GL_LINE)  return FILL_LINES;
-    else if (flag == GL_FILL)  return FILL_POLY;
-    else  assert(false);
-    return FILL_POINT;
-}
-
 void* CGLDevice::GetFrameBufferPixels()const{
 
-    GLubyte* pixels = new GLubyte [4 * m_config.size.x * m_config.size.y];
-    
+    GLubyte* pixels = new GLubyte[4 * m_config.size.x * m_config.size.y];
+
     glReadPixels(0, 0, m_config.size.x, m_config.size.y, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
 
     unsigned int* p = static_cast<unsigned int*> ( static_cast<void*>(pixels) );

@@ -397,7 +397,6 @@ protected:
     bool        EventObject(const Event &event);
     void        InitEye();
 
-    void        Convert();
     void        CreateScene(bool soluce, bool fixScene, bool resetObject);
 
     Math::Vector LookatPoint(Math::Vector eye, float angleH, float angleV, float length);

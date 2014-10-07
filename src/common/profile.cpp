@@ -17,11 +17,11 @@
 
 #include "common/profile.h"
 
-#include "common/logger.h"
 #include "common/resources/inputstream.h"
 #include "common/resources/outputstream.h"
-
 #include "app/system.h"
+
+#include "common/logger.h"
 
 #include <utility>
 #include <cstring>
@@ -33,19 +33,24 @@ template<> CProfile* CSingleton<CProfile>::m_instance = nullptr;
 
 namespace bp = boost::property_tree;
 
-CProfile::CProfile() :
-    m_profileNeedSave(false)
+CProfile::CProfile()
+   : m_profileNeedSave(false)
+   , m_useCurrentDirectory(false)
 {
 }
 
 
 CProfile::~CProfile()
 {
-    SaveCurrentDirectory();
+    Save();
 }
 
+void CProfile::SetUseCurrentDirectory(bool useCurrentDirectory)
+{
+    m_useCurrentDirectory = useCurrentDirectory;
+}
 
-bool CProfile::InitCurrentDirectory()
+bool CProfile::Init()
 {
     try
     {
@@ -67,7 +72,7 @@ bool CProfile::InitCurrentDirectory()
     return true;
 }
 
-bool CProfile::SaveCurrentDirectory()
+bool CProfile::Save()
 {
     if (m_profileNeedSave)
     {
@@ -92,7 +97,7 @@ bool CProfile::SaveCurrentDirectory()
     return true;
 }
 
-bool CProfile::SetLocalProfileString(std::string section, std::string key, std::string value)
+bool CProfile::SetStringProperty(std::string section, std::string key, std::string value)
 {
     try
     {
@@ -108,7 +113,7 @@ bool CProfile::SetLocalProfileString(std::string section, std::string key, std::
 }
 
 
-bool CProfile::GetLocalProfileString(std::string section, std::string key, std::string &buffer)
+bool CProfile::GetStringProperty(std::string section, std::string key, std::string &buffer)
 {
     try
     {
@@ -123,7 +128,7 @@ bool CProfile::GetLocalProfileString(std::string section, std::string key, std::
 }
 
 
-bool CProfile::SetLocalProfileInt(std::string section, std::string key, int value)
+bool CProfile::SetIntProperty(std::string section, std::string key, int value)
 {
     try
     {
@@ -139,7 +144,7 @@ bool CProfile::SetLocalProfileInt(std::string section, std::string key, int valu
 }
 
 
-bool CProfile::GetLocalProfileInt(std::string section, std::string key, int &value)
+bool CProfile::GetIntProperty(std::string section, std::string key, int &value)
 {
     try
     {
@@ -154,7 +159,7 @@ bool CProfile::GetLocalProfileInt(std::string section, std::string key, int &val
 }
 
 
-bool CProfile::SetLocalProfileFloat(std::string section, std::string key, float value)
+bool CProfile::SetFloatProperty(std::string section, std::string key, float value)
 {
     try
     {
@@ -170,7 +175,7 @@ bool CProfile::SetLocalProfileFloat(std::string section, std::string key, float 
 }
 
 
-bool CProfile::GetLocalProfileFloat(std::string section, std::string key, float &value)
+bool CProfile::GetFloatProperty(std::string section, std::string key, float &value)
 {
     try
     {
@@ -185,7 +190,7 @@ bool CProfile::GetLocalProfileFloat(std::string section, std::string key, float 
 }
 
 
-std::vector< std::string > CProfile::GetLocalProfileSection(std::string section, std::string key)
+std::vector< std::string > CProfile::GetSection(std::string section, std::string key)
 {
     std::vector< std::string > ret_list;
     boost::regex re(key + "[0-9]*"); //we want to match all key followed by any number
@@ -215,13 +220,13 @@ void CProfile::SetUserDir(std::string dir)
 }
 
 
-std::string CProfile::GetUserBasedPath(std::string dir, std::string default_dir)
+std::string CProfile::GetUserBasedPath(std::string dir, std::string defaultDir)
 {
     std::string path = dir;
     boost::replace_all(path, "\\", "/");
     if (dir.find("/") == std::string::npos)
     {
-        path = default_dir + "/" + dir;
+        path = defaultDir + "/" + dir;
     }
 
     if (m_userDirectory.length() > 0)
@@ -230,7 +235,7 @@ std::string CProfile::GetUserBasedPath(std::string dir, std::string default_dir)
     }
     else
     {
-        boost::replace_all(path, "%user%", default_dir);
+        boost::replace_all(path, "%user%", defaultDir);
     }
 
     return fs::path(path).make_preferred().string();
