@@ -787,8 +787,9 @@ void CBotStack::GetRunPos(const char* &FunctionName, int &start, int &end)
 
     while (p->m_next != NULL)
     {
+        
         if ( p->m_instr != NULL ) instr = p->m_instr;
-        if ( p->m_bFunc == 1 ) funct = p->m_instr;
+        if ( p->m_bFunc == 1 && p->m_instr != NULL ) funct = p->m_instr;
         if ( p->m_next->m_prog != prog ) break ;
 
         if (p->m_next2 && p->m_next2->m_state != 0) p = p->m_next2 ;
@@ -807,7 +808,7 @@ void CBotStack::GetRunPos(const char* &FunctionName, int &start, int &end)
 
     t = instr->GetToken();
     start = t->GetStart();
-    end      = t->GetEnd();
+    end   = t->GetEnd();
 }
 
 CBotVar* CBotStack::GetStackVars(const char* &FunctionName, int level)
