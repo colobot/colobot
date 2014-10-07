@@ -102,6 +102,7 @@ public:
     int         GetProgram();
     void        StopProgram();
     void        StopTask();
+    void        StopSecondaryTask();
 
     bool        IntroduceVirus();
     void        SetActiveVirus(bool bActive);

@@ -820,6 +820,18 @@ void CBrain::StopTask()
     }
 }
 
+// Stops the current secondary task.
+
+void CBrain::StopSecondaryTask()
+{
+    if (m_secondaryTask != nullptr)
+    {
+        m_secondaryTask->Abort();
+        delete m_secondaryTask;  // stops the current secondary task
+        m_secondaryTask = nullptr;
+    }
+}
+
 
 // Introduces a virus into a program.
 // Returns true if it was inserted.
@@ -1000,7 +1012,7 @@ Error CBrain::StartTaskRecover()
 
 Error CBrain::StartTaskShield(TaskShieldMode mode)
 {
-    StopTask();
+    StopSecondaryTask();
 
     m_secondaryTask = new CTaskManager(m_object);
     Error err = m_secondaryTask->StartTaskShield(mode, 1000.0f);
@@ -1048,7 +1060,7 @@ Error CBrain::StartTaskFireAnt(Math::Vector impact)
 
 Error CBrain::StartTaskGunGoal(float dirV, float dirH)
 {
-    StopTask();
+    StopSecondaryTask();
 
     m_secondaryTask = new CTaskManager(m_object);
     Error err = m_secondaryTask->StartTaskGunGoal(dirV, dirH);
