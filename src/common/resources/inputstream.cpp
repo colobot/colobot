@@ -22,6 +22,11 @@ CInputStream::CInputStream() : std::istream(new CInputStreamBuffer())
 {
 }
 
+CInputStream::CInputStream(const std::string& filename) : std::istream(new CInputStreamBuffer())
+{
+    open(filename);
+}
+
 
 CInputStream::~CInputStream()
 {

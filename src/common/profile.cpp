@@ -23,6 +23,7 @@
 
 #include "common/logger.h"
 
+#include <memory>
 #include <utility>
 #include <cstring>
 #include <boost/property_tree/ini_parser.hpp>
@@ -54,15 +55,25 @@ bool CProfile::Init()
 {
     try
     {
-        CInputStream stream;
-        stream.open("colobot.ini");
-        if(stream.is_open()) {
-            bp::ini_parser::read_ini(stream, m_propertyTree);
-        } else {
+        std::unique_ptr<std::istream> stream;
+        if (m_useCurrentDirectory)
+        {
+            stream = std::unique_ptr<std::istream>(new std::ifstream("./colobot.ini"));
+        }
+        else
+        {
+            stream = std::unique_ptr<std::istream>(new CInputStream("colobot.ini"));
+        }
+
+        if (stream->good())
+        {
+            bp::ini_parser::read_ini(*stream, m_propertyTree);
+        }
+        else
+        {
             GetLogger()->Error("Error on parsing profile: failed to open file\n");
             return false;
         }
-        stream.close();
     }
     catch (std::exception & e)
     {
@@ -78,15 +89,25 @@ bool CProfile::Save()
     {
         try
         {
-            COutputStream stream;
-            stream.open("colobot.ini");
-            if(stream.is_open()) {
-                bp::ini_parser::write_ini(stream, m_propertyTree);
-            } else {
+            std::unique_ptr<std::ostream> stream;
+            if (m_useCurrentDirectory)
+            {
+                stream = std::unique_ptr<std::ostream>(new std::ofstream("./colobot.ini"));
+            }
+            else
+            {
+                stream = std::unique_ptr<std::ostream>(new COutputStream("colobot.ini"));
+            }
+
+            if (stream->good())
+            {
+                bp::ini_parser::write_ini(*stream, m_propertyTree);
+            }
+            else
+            {
                 GetLogger()->Error("Error on storing profile: failed to open file\n");
                 return false;
             }
-            stream.close();
         }
         catch (std::exception & e)
         {

@@ -22,6 +22,11 @@ COutputStream::COutputStream() : std::ostream(new COutputStreamBuffer())
 {
 }
 
+COutputStream::COutputStream(const std::string& filename) : std::ostream(new COutputStreamBuffer())
+{
+    open(filename);
+}
+
 
 COutputStream::~COutputStream()
 {

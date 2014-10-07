@@ -12,7 +12,6 @@ class CProfileTest : public testing::Test
 {
 protected:
     CProfile m_profile;
-
 };
 
 TEST_F(CProfileTest, ReadTest)
