@@ -42,12 +42,5 @@ private:
     SNDFILE *m_snd_file;
     PHYSFS_File *m_file;
     std::string m_last_error;
-
-    SF_VIRTUAL_IO snd_callbacks = {
-        SNDLength,
-        SNDSeek,
-        SNDRead,
-        SNDWrite,
-        SNDTell
-    };
+    SF_VIRTUAL_IO m_snd_callbacks;
 };

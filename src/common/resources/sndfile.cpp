@@ -20,9 +20,12 @@
 
 
 CSNDFile::CSNDFile(const std::string& filename)
+    : m_file_info{}
+    , m_snd_file{nullptr}
+    , m_file{nullptr}
+    , m_last_error{}
+    , m_snd_callbacks{SNDLength, SNDSeek, SNDRead, SNDWrite, SNDTell}
 {
-    memset(&m_file_info, 0, sizeof(SF_INFO));
-
     if (PHYSFS_isInit())
     {
         m_file = PHYSFS_openRead(filename.c_str());
@@ -33,7 +36,7 @@ CSNDFile::CSNDFile(const std::string& filename)
     }
     if (m_file)
     {
-        m_snd_file = sf_open_virtual(&snd_callbacks, SFM_READ, &m_file_info, m_file);
+        m_snd_file = sf_open_virtual(&m_snd_callbacks, SFM_READ, &m_file_info, m_file);
         if (!m_snd_file)
         {
             m_last_error = "Could not load file";
