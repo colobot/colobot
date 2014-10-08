@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-07-10 16:50+0200\n"
+"POT-Creation-Date: DATE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -108,9 +108,6 @@ msgid " Free game on this planet:"
 msgstr ""
 
 msgid " Missions on this level:"
-msgstr ""
-
-msgid " Free game on this chapter:"
 msgstr ""
 
 msgid " Summary:"
@@ -1747,83 +1744,5 @@ msgstr ""
 msgid "Write error"
 msgstr ""
 
-msgid "left;"
-msgstr ""
-
-msgid "right;"
-msgstr ""
-
-msgid "up;"
-msgstr ""
-
-msgid "down;"
-msgstr ""
-
-msgid "gup;"
-msgstr ""
-
-msgid "gdown;"
-msgstr ""
-
-msgid "camera;"
-msgstr ""
-
-msgid "desel;"
-msgstr ""
-
-msgid "action;"
-msgstr ""
-
-msgid "near;"
-msgstr ""
-
-msgid "away;"
-msgstr ""
-
-msgid "next;"
-msgstr ""
-
-msgid "human;"
-msgstr ""
-
-msgid "quit;"
-msgstr ""
-
-msgid "help;"
-msgstr ""
-
-msgid "prog;"
-msgstr ""
-
-msgid "cbot;"
-msgstr ""
-
-msgid "visit;"
-msgstr ""
-
-msgid "speed10;"
-msgstr ""
-
-msgid "speed15;"
-msgstr ""
-
-msgid "speed20;"
-msgstr ""
-
-msgid "Ctrl"
-msgstr ""
-
-msgid "Shift"
-msgstr ""
-
-msgid "Alt"
-msgstr ""
-
-msgid "Win"
-msgstr ""
-
 msgid "Button %1"
-msgstr ""
-
-msgid "%1"
 msgstr ""
