@@ -1,12 +1,12 @@
 # English
 
-Welcome to the Colobot project code repository
+Welcome to the Colobot: Gold Edition project code repository
 
-This is official repository for the open-source Colobot project developed by Polish Portal of Colobot (PPC; in Polish: Polski Portal Colobota) with the official site at: [colobot.info](http://colobot.info/joomla).
+This is official repository for the open-source Colobot: Gold Edition project developed by TerranovaTeam, part of International Colobot Community (ICC, previously known as Polish Portal of Colobot/PPC) with the official site at: [colobot.info](http://colobot.info/).
 
-The source code contained here was released by Epsitec -- the original creator of the game -- on open source (GPLv3) license. The code was given and the rights granted specifically to PPC community in March 2012. Since then, we have been developing the game further.
+The source code contained here was released by Epsitec -- the original creator of the game -- on open source (GPLv3) license. The code was given and the rights granted specifically to ICC community in March 2012. Since then, we have been developing the game further.
 
-More information for developers (in English) can be found on the [developer wiki](http://colobot.info/wiki/Dev:Main_Page) or (in Polish) [our forum](http://colobot.info/forum/). However, the freshest source of information is our IRC channels (see below).
+More information for developers (in English) can be found on the [developer wiki](http://colobot.info/wiki/dev/) or [our forum](http://colobot.info/forum/). However, the freshest source of information is our IRC channels (see below).
 
 This repository contains only the source code of the project. The game requires also data files which are now provided as git submodule and are hosted in [separate repository](https://github.com/colobot/colobot-data).
 
@@ -24,7 +24,7 @@ In the future, we will begin development on a new installment in the Colobot ser
 
 ## Download packages
 
-We provide compiled packages of most recent versions using an [automated build bot service](http://colobot.info/files/compiled.php). Available versions include packages for Windows and Linux in both Release and Debug configurations.
+We provide compiled packages of most recent versions using an [automated build bot service](http://compiled.colobot.info/). Available versions include packages for Windows and Linux in both Release and Debug configurations.
 
 On some Linux distributions there are also distribution packages available:
  * Debian Sid (unstable): http://packages.debian.org/sid/colobot
@@ -38,7 +38,7 @@ If you want to compile colobot yourself, see [INSTALL.md](https://github.com/col
 
 ## Contact
 
-If you want to help in the project, please contact us on our IRC channels or [our forum](http://colobot.info/forum/) (Polish, though there is an English board as well).
+If you want to help in the project, please contact us on our IRC channels or [our forum](http://colobot.info/forum/).
 
 ### IRC channels
 
@@ -48,15 +48,15 @@ If you want to help in the project, please contact us on our IRC channels or [ou
 
 # Polski
 
-Witamy w repozytorium projektu Colobot
+Witamy w repozytorium projektu Colobot: Gold Edition
 
-To jest oficjalne repozytorium z kodem projektu open-source Colobot rozwijanego przez Polski Portal Colobota (PPC; po angielsku: Polish Portal of Colobot) z oficjalną stroną: [colobot.info](http://colobot.info/joomla/?lang=pl).
+To jest oficjalne repozytorium z kodem otwartoźródłowego projektu Colobot: Gold Edition rozwijanego przez TerranovaTeam (część International Colobot Community, dawniej znanej jako Polski Portal Colobota/PPC) z oficjalną stroną: [colobot.info](http://colobot.info/).
 
-Kod źródłowy zawarty tutaj został wydany przez Epsitec -- oryginalnego twórcę gry -- na otwartej licencji (GPLv3). Kod został wydany i prawa nadane specjalnie dla społeczności PPC w marcu 2012. Od tamtej pory, zajmowaliśmy się dalszym rozwojem gry.
+Kod źródłowy zawarty tutaj został wydany przez Epsitec -- oryginalnego twórcę gry -- na otwartej licencji (GPLv3). Kod został wydany i prawa nadane specjalnie dla społeczności ICC w marcu 2012. Od tamtej pory, zajmowaliśmy się dalszym rozwojem gry.
 
-Więcej informacji dla developerów projektu (po angielsku) można znaleźć na [wiki dla developerów](htt://colobot.info/wiki/Dev:Main_Page) lub (po polsku) na  [naszym forum](http://colobot.info/forum/). Jednak źródłem najświeższych informacji są nasze kanały IRC (patrz niżej).
+Więcej informacji dla developerów projektu (po angielsku) można znaleźć na [wiki dla developerów](htt://colobot.info/wiki/dev/) lub (po polsku) na [naszym forum](http://colobot.info/forum/). Jednak źródłem najświeższych informacji są nasze kanały IRC (patrz niżej).
 
-To repozytorium zawiera jedynie kod źródłowy projektu. Gra wymaga jeszcze plików danych, które są teraz udostępniane jako submoduł gita i hostowane w [osobnym repozytorium]((https://github.com/colobot/colobot-data).
+To repozytorium zawiera jedynie kod źródłowy projektu. Gra wymaga jeszcze plików danych, które są teraz udostępniane jako submoduł gita i hostowane w [osobnym repozytorium](https://github.com/colobot/colobot-data).
 
 
 ## Status
@@ -72,7 +72,7 @@ W przyszłości, planujemy rozpocząć prace nad nową częścią z serii Colobo
 
 ## Paczki do pobrania
 
-Udostępniamy gotowe skompilowane paczki z ostatnich wersji używając [automatycznego build bota](http://colobot.info/files/compiled.php?lang=pl). Dostępne są paczki dla Windowsa i Linuksa w konfiguracjach Release i Debug.
+Udostępniamy gotowe skompilowane paczki z ostatnich wersji używając [automatycznego build bota](http://compiled.colobot.info/?lang=pl). Dostępne są paczki dla Windowsa i Linuksa w konfiguracjach Release i Debug.
 
 Dla niektórych dystrybucji Linuksa, dostępne są pakiety danej dystrybucji:
  * Debian Sid (unstable): http://packages.debian.org/sid/colobot
@@ -86,10 +86,10 @@ Jeżeli chcesz sam skompilować colobota, zobacz plik [INSTALL.md](https://githu
 
 ## Kontakt
 
-Jeżeli chcesz pomóc w projekcie, prosimy o kontakt na naszych kanałach IRC lub  [naszym forum](http://colobot.info/forum/).
+Jeżeli chcesz pomóc w projekcie, prosimy o kontakt na naszych kanałach IRC lub [naszym forum](http://colobot.info/forum/).
 
 
 ### Kanały IRC
 
-* [#colobot on pirc.pl](irc://pirc.pl#colobot) polski;
-* [#colobot on Freenode](irc://freenode.net#colobot) angielski;
+* [#colobot na pirc.pl](irc://pirc.pl#colobot) (polski);
+* [#colobot na Freenode](irc://freenode.net#colobot) (angielski);

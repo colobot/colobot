@@ -2,12 +2,12 @@
 # Script for exporting Blender models (meshes) to Colobot model files
 #  (text format)
 #
-# Copyright (C) 2012, PPC (Polish Portal of Colobot)
+# Copyright (C) 2012-2014, TerranovaTeam
 #
 
 bl_info = {
     "name": "Colobot Model Format (.txt)",
-    "author": "PPC (Polish Portal of Colobot)",
+    "author": "TerranovaTeam",
     "version": (0, 0, 2),
     "blender": (2, 6, 4),
     "location": "File > Export > Colobot (.txt)",
