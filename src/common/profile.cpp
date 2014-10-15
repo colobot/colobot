@@ -59,7 +59,7 @@ bool CProfile::Init()
     try
     {
         std::unique_ptr<std::istream> stream;
-        bool good = false;
+        bool good;
         if (m_useCurrentDirectory)
         {
             std::ifstream* inputStream = new std::ifstream("./colobot.ini");
@@ -98,16 +98,21 @@ bool CProfile::Save()
         try
         {
             std::unique_ptr<std::ostream> stream;
+            bool good;
             if (m_useCurrentDirectory)
             {
-                stream = std::unique_ptr<std::ostream>(new std::ofstream("./colobot.ini"));
+                std::ofstream* outputStream = new std::ofstream("./colobot.ini");
+                stream = std::unique_ptr<std::ostream>(outputStream);
+                good = outputStream->good();
             }
             else
             {
-                stream = std::unique_ptr<std::ostream>(new COutputStream("colobot.ini"));
+                COutputStream* outputStream = new COutputStream("colobot.ini");
+                stream = std::unique_ptr<std::ostream>(outputStream);
+                good = outputStream->is_open();
             }
 
-            if (stream->good())
+            if (good)
             {
                 bp::ini_parser::write_ini(*stream, m_propertyTree);
             }
