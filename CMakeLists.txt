@@ -156,6 +156,9 @@ option(ASSERTS "Enable assert()s" ON)
 # Development build can be enabled/disabled regardless of build type
 option(DEV_BUILD "Enable development build (enables some debugging tools, local setting paths, etc.)" OFF)
 
+# Portable build - load all data from current directory
+option(PORTABLE "Portable build" OFF)
+
 # Building tests can be enabled/disabled
 option(TESTS "Build tests" OFF)
 

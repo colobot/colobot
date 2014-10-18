@@ -151,8 +151,13 @@ CApplication::CApplication()
     m_mouseButtonsState = 0;
     m_trackedKeys = 0;
 
+    #ifdef PORTABLE
+    m_dataPath = "./data";
+    m_langPath = "./lang";
+    #else
     m_dataPath = GetSystemUtils()->GetDataPath();
     m_langPath = GetSystemUtils()->GetLangPath();
+    #endif
 
     m_runSceneName = "";
     m_runSceneRank = 0;
