@@ -1630,7 +1630,7 @@ void CMainDialog::ChangePhase(Phase phase)
         pe->SetHighlightCap(false);
         pe->SetFontType(Gfx::FONT_COURIER);
         pe->SetFontSize(Gfx::FONT_SIZE_SMALL);
-        pe->ReadText(std::string("help/") + m_app->GetLanguageChar() + std::string("/authors.txt"));
+        pe->ReadText(std::string("help/generic/") + m_app->GetLanguageChar() + std::string("/authors.txt"));
 
         pos.x  =  40.0f/640.0f;
         pos.y  =  83.0f/480.0f;
