@@ -158,28 +158,28 @@ bool CDisplayInfo::EventProcess(const Event &event)
         {
             m_main->SetFontSize(9.0f);
             slider = static_cast<Ui::CSlider*>(pw->SearchControl(EVENT_STUDIO_SIZE));
-            if ( slider != 0 )  slider->SetVisibleValue((m_main->GetFontSize()-9.0f)/12.0f);
+            if ( slider != 0 )  slider->SetVisibleValue((m_main->GetFontSize()-9.0f)/15.0f);
             ViewDisplayInfo();
         }
         if ( event.type == EVENT_HYPER_SIZE2 )  // size 2?
         {
-            m_main->SetFontSize(10.0f);
+            m_main->SetFontSize(14.0f);
             slider = static_cast<Ui::CSlider*>(pw->SearchControl(EVENT_STUDIO_SIZE));
-            if ( slider != 0 )  slider->SetVisibleValue((m_main->GetFontSize()-9.0f)/12.0f);
+            if ( slider != 0 )  slider->SetVisibleValue((m_main->GetFontSize()-9.0f)/15.0f);
             ViewDisplayInfo();
         }
         if ( event.type == EVENT_HYPER_SIZE3 )  // size 3?
         {
-            m_main->SetFontSize(12.0f);
+            m_main->SetFontSize(19.0f);
             slider = static_cast<Ui::CSlider*>(pw->SearchControl(EVENT_STUDIO_SIZE));
-            if ( slider != 0 )  slider->SetVisibleValue((m_main->GetFontSize()-9.0f)/12.0f);
+            if ( slider != 0 )  slider->SetVisibleValue((m_main->GetFontSize()-9.0f)/15.0f);
             ViewDisplayInfo();
         }
         if ( event.type == EVENT_HYPER_SIZE4 )  // size 4?
         {
-            m_main->SetFontSize(15.0f);
+            m_main->SetFontSize(24.0f);
             slider = static_cast<Ui::CSlider*>(pw->SearchControl(EVENT_STUDIO_SIZE));
-            if ( slider != 0 )  slider->SetVisibleValue((m_main->GetFontSize()-9.0f)/12.0f);
+            if ( slider != 0 )  slider->SetVisibleValue((m_main->GetFontSize()-9.0f)/15.0f);
             ViewDisplayInfo();
         }
 
@@ -187,7 +187,7 @@ bool CDisplayInfo::EventProcess(const Event &event)
         {
             slider = static_cast<Ui::CSlider*>(pw->SearchControl(EVENT_STUDIO_SIZE));
             if ( slider == 0 )  return false;
-            m_main->SetFontSize(9.0f+slider->GetVisibleValue()*12.0f);
+            m_main->SetFontSize(9.0f+slider->GetVisibleValue()*15.0f);
             ViewDisplayInfo();
         }
 
@@ -422,7 +422,7 @@ void CDisplayInfo::StartDisplayInfo(std::string filename, int index, bool bSoluc
     button->SetState(STATE_SHADOW);
     slider = pw->CreateSlider(pos, dim, 0, EVENT_STUDIO_SIZE);
     slider->SetState(STATE_SHADOW);
-    slider->SetVisibleValue((m_main->GetFontSize()-9.0f)/6.0f);
+    slider->SetVisibleValue((m_main->GetFontSize()-9.0f)/15.0f);
     button = pw->CreateButton(pos, dim, 61, EVENT_HYPER_COPY);
     button->SetState(STATE_SHADOW);
     HyperUpdate();

@@ -169,7 +169,7 @@ bool CStudio::EventProcess(const Event &event)
     {
         slider = static_cast< CSlider* >(pw->SearchControl(EVENT_STUDIO_SIZE));
         if ( slider == nullptr )  return false;
-        m_main->SetFontSize(9.0f+slider->GetVisibleValue()*12.0f);
+        m_main->SetFontSize(9.0f+slider->GetVisibleValue()*15.0f);
         ViewEditScript();
     }
 
@@ -636,7 +636,7 @@ void CStudio::StartEditScript(CScript *script, std::string name, int rank)
     button->SetState(STATE_SHADOW);
     slider = pw->CreateSlider(pos, dim, 0, EVENT_STUDIO_SIZE);
     slider->SetState(STATE_SHADOW);
-    slider->SetVisibleValue((m_main->GetFontSize()-9.0f)/6.0f);
+    slider->SetVisibleValue((m_main->GetFontSize()-9.0f)/15.0f);
     pw->CreateGroup(pos, dim, 19, EVENT_LABEL1);  // SatCom logo
     button = pw->CreateButton(pos, dim, 128+57, EVENT_STUDIO_TOOL);
     button->SetState(STATE_SHADOW);
