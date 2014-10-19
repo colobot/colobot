@@ -3527,7 +3527,7 @@ void CMainDialog::NameCreate()
     char        c;
     int         len, i, j;
 
-    GetLogger()->Debug("Creating new player\n");
+    GetLogger()->Info("Creating new player\n");
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
     if ( pw == 0 )  return;
     pe = static_cast<CEdit*>(pw->SearchControl(EVENT_INTERFACE_NEDIT));
@@ -3564,13 +3564,16 @@ void CMainDialog::NameCreate()
         return;
     }
 
-    // TODO: _mkdir(m_savegameDir);  // if does not exist yet!
 
-
+    if(!CResourceManager::DirectoryExists(m_savegameDir))
+        CResourceManager::CreateDirectory(m_savegameDir);
+    
     dir = m_savegameDir + "/" + name;
     if (!fs::exists(dir))
     {
         fs::create_directories(dir);
+        if(!CResourceManager::DirectoryExists(dir))
+            CResourceManager::CreateDirectory(dir);
     }
     else
     {
