@@ -44,6 +44,7 @@ To cross-compile Colobot using MXE:
     * mingwrt
     * ogg
     * openal
+    * physfs
     * portaudio
     * sdl
     * sdl_image
