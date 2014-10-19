@@ -203,7 +203,7 @@ void NameParticle(std::string &name, int num)
          if (num == 1)  name = "effect00.png";
     else if (num == 2)  name = "effect01.png";
     else if (num == 3)  name = "effect02.png";
-    else if (num == 4)  name = "text.png";
+    else if (num == 4)  name = "interface/text.png";
     else                name = "";
 }
 
@@ -3534,7 +3534,7 @@ void CParticle::DrawParticle(int sheet)
             if (m_particle[i].sheet != sheet)  continue;
             if (m_particle[i].type == PARTIPART)  continue;
 
-            m_engine->SetTexture(m_triangle[i].tex1Name);
+            m_engine->SetTexture("textures/"+m_triangle[i].tex1Name);
             m_engine->SetMaterial(m_triangle[i].material);
             m_engine->SetState(m_triangle[i].state);
             DrawParticleTriangle(i);
@@ -3553,7 +3553,7 @@ void CParticle::DrawParticle(int sheet)
     // Draw tire marks.
     if (m_wheelTraceTotal > 0 && sheet == SH_WORLD)
     {
-        m_engine->SetTexture("text.png");
+        m_engine->SetTexture("textures/interface/text.png");
         m_engine->SetState(ENG_RSTATE_TTEXTURE_WHITE);
         Math::Matrix matrix;
         matrix.LoadIdentity();
@@ -3584,7 +3584,7 @@ void CParticle::DrawParticle(int sheet)
             {
                 std::string name;
                 NameParticle(name, t);
-                m_engine->SetTexture(name);
+                m_engine->SetTexture("textures/"+name);
                 loadTexture = true;
             }
 

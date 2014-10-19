@@ -99,20 +99,10 @@ std::string CSystemUtilsMacOSX::GetLangPath()
     return m_dataPath + "/i18n";
 }
 
-std::string CSystemUtilsMacOSX::GetProfileFileLocation()
+std::string CSystemUtilsMacOSX::GetSaveDir()
 {
-    std::string profileFile = m_ASPath + "/colobot.ini";
-
-    GetLogger()->Trace("Profile file is %s\n", profileFile.c_str());
-    return profileFile;
-}
-
-std::string CSystemUtilsMacOSX::GetSavegameDirectoryLocation()
-{
-    std::string savegameDir = m_ASPath + "/savegame";
-    boost::filesystem::create_directories(savegameDir.c_str());
+    std::string savegameDir = m_ASPath;
     GetLogger()->Trace("Saved game files are going to %s\n", savegameDir.c_str());
 
     return savegameDir;
 }
-

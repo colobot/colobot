@@ -46,8 +46,7 @@ public:
     virtual long long GetTimeStampExactResolution() override;
     virtual long long TimeStampExactDiff(SystemTimeStamp *before, SystemTimeStamp *after) override;
 
-    virtual std::string GetProfileFileLocation() override;
-    virtual std::string GetSavegameDirectoryLocation() override;
+    virtual std::string GetSaveDir() override;
 
 private:
     std::string UTF8_Encode(const std::wstring &wstr);

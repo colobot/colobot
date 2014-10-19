@@ -350,8 +350,8 @@ void CWater::DrawSurf()
     material.ambient = m_ambient;
     m_engine->SetMaterial(material);
 
-    m_engine->SetTexture(m_fileName, 0);
-    m_engine->SetTexture(m_fileName, 1);
+    m_engine->SetTexture("textures/"+m_fileName, 0);
+    m_engine->SetTexture("textures/"+m_fileName, 1);
 
     if (m_type[rankview] == WATER_TT)
         m_engine->SetState(ENG_RSTATE_TTEXTURE_BLACK | ENG_RSTATE_DUAL_WHITE | ENG_RSTATE_WRAP, m_color);
@@ -494,7 +494,7 @@ void CWater::Create(WaterType type1, WaterType type2, const std::string& fileNam
     VaporFlush();
 
     if (! m_fileName.empty())
-        m_engine->LoadTexture(m_fileName);
+        m_engine->LoadTexture("textures/"+m_fileName);
 
     if (m_terrain == nullptr)
         m_terrain = CRobotMain::GetInstancePointer()->GetTerrain();

@@ -21,7 +21,6 @@
 #include "graphics/engine/engine.h"
 
 #include "app/app.h"
-#include "app/gamedata.h"
 
 #include "common/image.h"
 #include "common/key.h"
@@ -285,7 +284,7 @@ bool CEngine::Create()
     params.minFilter = TEX_MIN_FILTER_NEAREST;
     params.magFilter = TEX_MAG_FILTER_NEAREST;
     params.mipmap = false;
-    m_miceTexture = LoadTexture("mouse.png", params);
+    m_miceTexture = LoadTexture("textures/interface/mouse.png", params);
 
     GetSystemUtils()->GetCurrentTimeStamp(m_currentFrameTime);
     GetSystemUtils()->GetCurrentTimeStamp(m_lastFrameTime);
@@ -1126,10 +1125,10 @@ void CEngine::ChangeSecondTexture(int objRank, const std::string& tex2Name)
         p1.next[l2].next.clear();
 
         if (!newP2.tex1.Valid())
-            newP2.tex1 = LoadTexture(newP2.tex1Name);
+            newP2.tex1 = LoadTexture("textures/"+newP2.tex1Name);
 
         if (!newP2.tex2.Valid())
-            newP2.tex2 = LoadTexture(newP2.tex2Name);
+            newP2.tex2 = LoadTexture("textures/"+newP2.tex2Name);
     }
 }
 
@@ -2260,7 +2259,7 @@ Texture CEngine::CreateTexture(const std::string& texName, const TextureCreatePa
 
     if (image == nullptr)
     {
-        if (! img.Load(CGameData::GetInstancePointer()->GetFilePath(DIR_TEXTURE, texName)))
+        if (!img.Load(texName))
         {
             std::string error = img.GetError();
             GetLogger()->Error("Couldn't load texture '%s': %s, blacklisting\n", texName.c_str(), error.c_str());
@@ -2311,27 +2310,27 @@ Texture CEngine::LoadTexture(const std::string& name, const TextureCreateParams&
 
 bool CEngine::LoadAllTextures()
 {
-    LoadTexture("text.png");
-    m_miceTexture = LoadTexture("mouse.png");
-    LoadTexture("button1.png");
-    LoadTexture("button2.png");
-    LoadTexture("button3.png");
-    LoadTexture("effect00.png");
-    LoadTexture("effect01.png");
-    LoadTexture("effect02.png");
-    LoadTexture("map.png");
+    LoadTexture("textures/interface/text.png");
+    m_miceTexture = LoadTexture("textures/interface/mouse.png");
+    LoadTexture("textures/interface/button1.png");
+    LoadTexture("textures/interface/button2.png");
+    LoadTexture("textures/interface/button3.png");
+    LoadTexture("textures/effect00.png");
+    LoadTexture("textures/effect01.png");
+    LoadTexture("textures/effect02.png");
+    LoadTexture("textures/interface/map.png");
 
     if (! m_backgroundName.empty())
     {
         TextureCreateParams params = m_defaultTexParams;
         params.padToNearestPowerOfTwo = true;
-        m_backgroundTex = LoadTexture(m_backgroundName, params);
+        m_backgroundTex = LoadTexture("textures/"+m_backgroundName, params);
     }
     else
         m_backgroundTex.SetInvalid();
 
     if (! m_foregroundName.empty())
-        m_foregroundTex = LoadTexture(m_foregroundName);
+        m_foregroundTex = LoadTexture("textures/"+m_foregroundName);
     else
         m_foregroundTex.SetInvalid();
 
@@ -2365,9 +2364,9 @@ bool CEngine::LoadAllTextures()
             if (! p2.tex1Name.empty())
             {
                 if (terrain)
-                    p2.tex1 = LoadTexture(p2.tex1Name, m_terrainTexParams);
+                    p2.tex1 = LoadTexture("textures/"+p2.tex1Name, m_terrainTexParams);
                 else
-                    p2.tex1 = LoadTexture(p2.tex1Name);
+                    p2.tex1 = LoadTexture("textures/"+p2.tex1Name);
 
                 if (! p2.tex1.Valid())
                     ok = false;
@@ -2376,9 +2375,9 @@ bool CEngine::LoadAllTextures()
             if (! p2.tex2Name.empty())
             {
                 if (terrain)
-                    p2.tex2 = LoadTexture(p2.tex2Name, m_terrainTexParams);
+                    p2.tex2 = LoadTexture("textures/"+p2.tex2Name, m_terrainTexParams);
                 else
-                    p2.tex2 = LoadTexture(p2.tex2Name);
+                    p2.tex2 = LoadTexture("textures/"+p2.tex2Name);
 
                 if (! p2.tex2.Valid())
                     ok = false;
@@ -2428,7 +2427,7 @@ bool CEngine::ChangeTextureColor(const std::string& texName,
 
 
     CImage img;
-    if (! img.Load(CGameData::GetInstancePointer()->GetFilePath(DIR_TEXTURE, texName)))
+    if (!img.Load(texName))
     {
         std::string error = img.GetError();
         GetLogger()->Error("Couldn't load texture '%s': %s, blacklisting\n", texName.c_str(), error.c_str());
@@ -2773,7 +2772,7 @@ void CEngine::SetBackground(const std::string& name, Color up, Color down,
     {
         TextureCreateParams params = m_defaultTexParams;
         params.padToNearestPowerOfTwo = true;
-        m_backgroundTex = LoadTexture(m_backgroundName, params);
+        m_backgroundTex = LoadTexture("textures/"+m_backgroundName, params);
     }
 }
 
@@ -2799,7 +2798,7 @@ void CEngine::SetForegroundName(const std::string& name)
     m_foregroundName = name;
 
     if (! m_foregroundName.empty())
-        m_foregroundTex = LoadTexture(m_foregroundName);
+        m_foregroundTex = LoadTexture("textures/"+m_foregroundName);
 }
 
 void CEngine::SetOverFront(bool front)
@@ -3738,7 +3737,7 @@ void CEngine::UpdateGroundSpotTextures()
             }
 
             std::stringstream str;
-            str << "shadow" << std::setfill('0') << std::setw(2) << s << ".png";
+            str << "textures/shadow" << std::setfill('0') << std::setw(2) << s << ".png";
             std::string texName = str.str();
 
             DeleteTexture(texName);
@@ -3787,7 +3786,7 @@ void CEngine::DrawShadow()
     SetMaterial(material);
 
     // TODO: create a separate texture
-    SetTexture("text.png");
+    SetTexture("textures/interface/text.png");
 
     Math::Point ts, ti;
 

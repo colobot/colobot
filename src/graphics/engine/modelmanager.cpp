@@ -20,7 +20,6 @@
 #include "graphics/engine/modelmanager.h"
 
 #include "app/app.h"
-#include "app/gamedata.h"
 
 #include "common/logger.h"
 
@@ -50,11 +49,9 @@ bool CModelManager::LoadModel(const std::string& fileName, bool mirrored)
     if (CApplication::GetInstance().IsDebugModeActive(DEBUG_MODELS))
         modelFile.SetPrintDebugInfo(true);
 
-    std::string filePath = CGameData::GetInstancePointer()->GetFilePath(DIR_MODEL, fileName);
-
-    if (!modelFile.ReadModel(filePath))
+    if (!modelFile.ReadModel("models/" + fileName))
     {
-        GetLogger()->Error("Loading model '%s' failed\n", filePath.c_str());
+        GetLogger()->Error("Loading model '%s' failed\n", fileName.c_str());
         return false;
     }
 

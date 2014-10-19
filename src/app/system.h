@@ -138,11 +138,8 @@ public:
     //! Returns the translations path
     virtual std::string GetLangPath();
 
-    //! Returns the profile (colobot.ini) file location
-    virtual std::string GetProfileFileLocation();
-
-    //! Returns the savegame directory location
-    virtual std::string GetSavegameDirectoryLocation();
+    //! Returns the save dir location
+    virtual std::string GetSaveDir();
 };
 
 //! Global function to get CSystemUtils instance

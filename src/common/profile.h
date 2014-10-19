@@ -136,9 +136,6 @@ public:
     bool CopyFileToTemp(std::string filename);
 
 private:
-    std::string GetIniFileLocation();
-
-private:
     boost::property_tree::ptree m_propertyTree;
     bool m_profileNeedSave;
     std::string m_userDirectory;

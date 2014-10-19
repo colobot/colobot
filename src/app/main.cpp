@@ -71,6 +71,7 @@ The current layout is the following:
  - src/script - link with the CBot library
 */
 
+#include "common/resources/resourcemanager.h"
 
 //! Entry point to the program
 extern "C"
@@ -79,6 +80,7 @@ extern "C"
 int SDL_MAIN_FUNC(int argc, char *argv[])
 {
     CLogger logger; // single istance of logger
+    CResourceManager manager(argv[0]);
 
     // Initialize static string arrays
     InitializeRestext();

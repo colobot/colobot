@@ -68,7 +68,6 @@ protected:
     void        UpdateCopyButton();
     void        ViewDisplayInfo();
     CObject*    SearchToto();
-    void        CreateObjectsFile();
 
 protected:
     Gfx::CEngine*       m_engine;

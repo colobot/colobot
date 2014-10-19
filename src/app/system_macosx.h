@@ -32,8 +32,7 @@ public:
 
     virtual std::string GetDataPath() override;
     virtual std::string GetLangPath() override;
-    virtual std::string GetProfileFileLocation() override;
-    virtual std::string GetSavegameDirectoryLocation() override;
+    virtual std::string GetSaveDir() override;
 private:
     std::string m_ASPath;
     std::string m_dataPath;

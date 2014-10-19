@@ -852,7 +852,6 @@ bool CStudio::StopEditScript(bool bCancel)
 {
     CWindow*    pw;
     CEdit*      edit;
-    CButton*    button;
 
     pw = static_cast< CWindow* >(m_interface->SearchControl(EVENT_WINDOW3));
     if ( pw == nullptr )  return false;

@@ -21,12 +21,14 @@
 #include "script/script.h"
 
 #include "app/app.h"
-#include "app/gamedata.h"
 
 #include "common/global.h"
 #include "common/iman.h"
 #include "common/restext.h"
 #include "common/stringutils.h"
+
+#include "common/resources/inputstream.h"
+#include "common/resources/resourcemanager.h"
 
 #include "graphics/engine/terrain.h"
 #include "graphics/engine/water.h"
@@ -4369,7 +4371,6 @@ void CScript::GetError(std::string& error)
 
 void CScript::New(Ui::CEdit* edit, const char* name)
 {
-    FILE    *file = NULL;
     char    res[100];
     char    text[100];
     char    script[500];
@@ -4412,18 +4413,18 @@ void CScript::New(Ui::CEdit* edit, const char* name)
     sf = m_main->GetScriptFile();
     if ( sf[0] != 0 )  // Load an empty program specific?
     {
-        std::string filename = CGameData::GetInstancePointer()->GetFilePath(DIR_AI, sf);
-        file = fopen(filename.c_str(), "rb");
-        if ( file != NULL )
+        std::string filename = sf;
+        CInputStream stream;
+        stream.open(filename);
+
+        if (stream.is_open())
         {
-            fseek(file, 0, SEEK_END);
-            len = ftell(file);
-            fseek(file, 0, SEEK_SET);
+            len = stream.size();
 
             if ( len > 500-1 )  len = 500-1;
-            fread(buffer, 1, len, file);
+            stream.read(buffer, len);
             buffer[len] = 0;
-            fclose(file);
+            stream.close();
 
             cursor1 = 0;
             i = 0;
@@ -4500,24 +4501,9 @@ bool CScript::SendScript(const char* text)
 
 bool CScript::ReadScript(const char* filename)
 {
-    FILE*       file;
     Ui::CEdit*  edit;
-    std::string name;
 
-    if ( strchr(filename, '/') == 0 ) //we're reading non user script
-    {
-        name = CGameData::GetInstancePointer()->GetFilePath(DIR_AI, filename);
-    }
-    else
-    {
-        name = filename;
-        //TODO: is this needed?
-        // UserDir(name, filename, "");
-    }
-
-    file = fopen(name.c_str(), "rb");
-    if ( file == NULL )  return false;
-    fclose(file);
+    if (!CResourceManager::Exists(filename))  return false;
 
     delete[] m_script;
     m_script = nullptr;
@@ -4525,7 +4511,7 @@ bool CScript::ReadScript(const char* filename)
     edit = m_interface->CreateEdit(Math::Point(0.0f, 0.0f), Math::Point(0.0f, 0.0f), 0, EVENT_EDIT9);
     edit->SetMaxChar(Ui::EDITSTUDIOMAX);
     edit->SetAutoIndent(m_engine->GetEditIndentMode());
-    edit->ReadText(name.c_str());
+    edit->ReadText(filename);
     GetScript(edit);
     m_interface->DeleteControl(EVENT_EDIT9);
     return true;
@@ -4536,16 +4522,6 @@ bool CScript::ReadScript(const char* filename)
 bool CScript::WriteScript(const char* filename)
 {
     Ui::CEdit*  edit;
-    std::string name;
-
-    if ( strchr(filename, '/') == 0 ) //we're writing non user script
-    {
-        name = CGameData::GetInstancePointer()->GetFilePath(DIR_AI, filename);
-    }
-    else
-    {
-        name = filename;
-    }
 
     if ( m_script == nullptr )
     {
@@ -4557,7 +4533,7 @@ bool CScript::WriteScript(const char* filename)
     edit->SetMaxChar(Ui::EDITSTUDIOMAX);
     edit->SetAutoIndent(m_engine->GetEditIndentMode());
     edit->SetText(m_script);
-    edit->WriteText(name);
+    edit->WriteText(filename);
     m_interface->DeleteControl(EVENT_EDIT9);
     return true;
 }

@@ -21,7 +21,6 @@
 #include "ui/maindialog.h"
 
 #include "app/app.h"
-#include "app/gamedata.h"
 #include "app/system.h"
 
 #include "common/config.h"
@@ -32,6 +31,12 @@
 #include "common/profile.h"
 #include "common/restext.h"
 #include "common/stringutils.h"
+
+#include "common/resources/resourcemanager.h"
+#include "common/resources/inputstream.h"
+#include "common/resources/outputstream.h"
+
+#include "object/level/parser.h"
 
 #include "object/robotmain.h"
 
@@ -176,17 +181,8 @@ CMainDialog::CMainDialog()
         m_partiTime[i]  = 0.0f;
     }
 
-
-    m_sceneDir = "levels";
-
-    #if DEV_BUILD
     m_savegameDir = "savegame";
-    #else
-    m_savegameDir = GetSystemUtils()->GetSavegameDirectoryLocation();
-    #endif
-
     m_publicDir = "program";
-    m_userDir = "user";
     m_filesDir = m_savegameDir;
 
     m_setupFull = m_app->GetVideoConfig().fullScreen;
@@ -318,7 +314,6 @@ void CMainDialog::ChangePhase(Phase phase)
         pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_QUIT);
         pb->SetState(STATE_SHADOW);
 
-        #if DEV_BUILD
         if ( m_accessEnable && m_accessUser )
         {
             pos.x  = 447.0f/640.0f;
@@ -327,7 +322,6 @@ void CMainDialog::ChangePhase(Phase phase)
             pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_USER);
             pb->SetState(STATE_SHADOW);
         }
-        #endif
 
         /*pos.x  = 139.0f/640.0f;
         pos.y  = 313.0f/480.0f;
@@ -346,7 +340,7 @@ void CMainDialog::ChangePhase(Phase phase)
         pl->SetFontType(Gfx::FONT_COURIER);
         pl->SetFontSize(Gfx::FONT_SIZE_SMALL);
 
-        m_engine->SetBackground("interface.png",
+        m_engine->SetBackground("interface/interface.png",
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
@@ -453,7 +447,7 @@ void CMainDialog::ChangePhase(Phase phase)
         UpdateNameControl();
         UpdateNameFace();
 
-        m_engine->SetBackground("interface.png",
+        m_engine->SetBackground("interface/interface.png",
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
@@ -716,16 +710,16 @@ void CMainDialog::ChangePhase(Phase phase)
 
         if ( m_phase == PHASE_FREE )
         {
-            strcpy(m_sceneName, "scene");
+            strcpy(m_sceneName, "missions");
             ReadGamerInfo();
             m_accessChap = GetChapPassed();
         }
 
-        if ( m_phase == PHASE_TRAINER )  strcpy(m_sceneName, "train");
-        if ( m_phase == PHASE_DEFI    )  strcpy(m_sceneName, "defi" );
-        if ( m_phase == PHASE_MISSION )  strcpy(m_sceneName, "scene");
-        if ( m_phase == PHASE_FREE    )  strcpy(m_sceneName, "free");
-        if ( m_phase == PHASE_USER    )  strcpy(m_sceneName, "user");
+        if ( m_phase == PHASE_TRAINER )  strcpy(m_sceneName, "exercises");
+        if ( m_phase == PHASE_DEFI    )  strcpy(m_sceneName, "challenges" );
+        if ( m_phase == PHASE_MISSION )  strcpy(m_sceneName, "missions");
+        if ( m_phase == PHASE_FREE    )  strcpy(m_sceneName, "freemissions");
+        if ( m_phase == PHASE_USER    )  strcpy(m_sceneName, "custom");
 
         ReadGamerInfo();
 
@@ -878,7 +872,7 @@ void CMainDialog::ChangePhase(Phase phase)
         pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_BACK);
         pb->SetState(STATE_SHADOW);
 
-        m_engine->SetBackground("interface.png",
+        m_engine->SetBackground("interface/interface.png",
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
@@ -1003,7 +997,7 @@ void CMainDialog::ChangePhase(Phase phase)
 
         if ( !m_bSimulSetup )
         {
-            m_engine->SetBackground("interface.png",
+            m_engine->SetBackground("interface/interface.png",
                     Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                     Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                     Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
@@ -1492,7 +1486,7 @@ void CMainDialog::ChangePhase(Phase phase)
 
         if ( m_phase == PHASE_READ )
         {
-            m_engine->SetBackground("interface.png",
+            m_engine->SetBackground("interface/interface.png",
                     Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                     Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                     Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
@@ -1539,7 +1533,7 @@ void CMainDialog::ChangePhase(Phase phase)
         pl->SetFontSize(12.0f);
         pl->SetTextAlign(Gfx::TEXT_ALIGN_CENTER);
 
-        m_engine->SetBackground("interface.png",
+        m_engine->SetBackground("interface/interface.png",
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
@@ -1561,7 +1555,7 @@ void CMainDialog::ChangePhase(Phase phase)
         m_engine->SetOverColor(Gfx::Color(1.0f, 1.0f, 1.0f, 1.0f), Gfx::ENG_RSTATE_TCOLOR_BLACK); // TODO: color ok?
         m_engine->SetOverFront(true);
 
-        m_engine->SetBackground("ppc.png",
+        m_engine->SetBackground("interface/ppc.png",
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
@@ -1580,7 +1574,7 @@ void CMainDialog::ChangePhase(Phase phase)
         m_engine->SetOverColor(Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f), Gfx::ENG_RSTATE_TCOLOR_WHITE); // TODO: color ok?
         m_engine->SetOverFront(true);
 
-        m_engine->SetBackground("colobot.png",
+        m_engine->SetBackground("interface/colobot.png",
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
@@ -1599,7 +1593,7 @@ void CMainDialog::ChangePhase(Phase phase)
         m_engine->SetOverColor(Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f), Gfx::ENG_RSTATE_TCOLOR_WHITE); // TODO: color ok?
         m_engine->SetOverFront(true);
 
-        m_engine->SetBackground("epsitec.png",
+        m_engine->SetBackground("interface/epsitec.png",
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
@@ -1665,7 +1659,7 @@ void CMainDialog::ChangePhase(Phase phase)
         pb = pw->CreateButton(pos, ddim, 49, EVENT_INTERFACE_ABORT);
         pb->SetState(STATE_SHADOW);
 
-        m_engine->SetBackground("generico.png",
+        m_engine->SetBackground("interface/generico.png",
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
@@ -3271,40 +3265,15 @@ void CMainDialog::NiceParticle(Math::Point mouse, bool bPress)
 
 
 
-// Specifies the special user folder if needed.
-
-void CMainDialog::SetUserDir(char *base, int rank)
-{
-    std::string dir;
-
-    if ( strcmp(base, "user") == 0 && rank >= 100 )
-    {
-        dir = m_userDir + "/" + m_userList.at(rank/100-1);
-        GetProfile().SetUserDir(dir);
-    }
-    else
-    {
-        GetProfile().SetUserDir("");
-    }
-}
-
 // Builds the file name of a mission.
 
-void CMainDialog::BuildSceneName(std::string &filename, char *base, int rank)
+void CMainDialog::BuildSceneName(std::string &filename, char *base, int rank, bool sceneFile)
 {
-    std::ostringstream rankStream;
-    if ( strcmp(base, "user") == 0 )
-    {
-        //TODO: Change this to point user dir according to operating system
-        rankStream << std::setfill('0') << std::setw(2) << rank%100;
-        filename = m_userDir + "/" + m_userList[rank/100-1] + "/" + rankStream.str() + ".txt";
-    }
-    else
-    {
-        rankStream << std::setfill('0') << std::setw(3) << rank;
-        filename = base + rankStream.str() + ".txt";
-        filename = CGameData::GetInstancePointer()->GetFilePath(DIR_LEVEL, filename);
-    }
+    //TODO: Support for more than 9 chapters
+    int chapter = rank/100;
+    int new_rank = rank%100;
+    
+    filename = CLevelParser::BuildSceneName(std::string(base), chapter, new_rank, sceneFile);
 }
 
 // Built the default descriptive name of a mission.
@@ -3556,7 +3525,7 @@ void CMainDialog::NameCreate()
     char        c;
     int         len, i, j;
 
-    GetLogger()->Debug("Creating new player\n");
+    GetLogger()->Info("Creating new player\n");
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
     if ( pw == 0 )  return;
     pe = static_cast<CEdit*>(pw->SearchControl(EVENT_INTERFACE_NEDIT));
@@ -3593,13 +3562,16 @@ void CMainDialog::NameCreate()
         return;
     }
 
-    // TODO: _mkdir(m_savegameDir);  // if does not exist yet!
 
-
+    if(!CResourceManager::DirectoryExists(m_savegameDir))
+        CResourceManager::CreateDirectory(m_savegameDir);
+    
     dir = m_savegameDir + "/" + name;
     if (!fs::exists(dir))
     {
         fs::create_directories(dir);
+        if(!CResourceManager::DirectoryExists(dir))
+            CResourceManager::CreateDirectory(dir);
     }
     else
     {
@@ -3998,7 +3970,6 @@ bool CMainDialog::IsIOReadScene()
 
 void CMainDialog::IOReadName()
 {
-    FILE*       file;
     CWindow*    pw;
     CEdit*      pe;
     std::string filename;
@@ -4020,10 +3991,12 @@ void CMainDialog::IOReadName()
     sprintf(op, "Title.E");
     sprintf(op_i18n, "Title.%c", m_app->GetLanguageChar() );
 
-    file = fopen(filename.c_str(), "r");
-    if ( file != NULL )
+    CInputStream stream;
+    stream.open(filename);
+    
+    if (stream.is_open())
     {
-        while ( fgets(line, 500, file) != NULL )
+        while (stream.getline(line, 500))
         {
             for ( i=0 ; i<500 ; i++ )
             {
@@ -4045,7 +4018,7 @@ void CMainDialog::IOReadName()
                 break;
             }
         }
-        fclose(file);
+        stream.close();
     }
 
     time(&now);
@@ -4390,10 +4363,9 @@ void CMainDialog::AllMissionUpdate()
 
 void CMainDialog::UpdateSceneChap(int &chap)
 {
-    FILE*       file = NULL;
     CWindow*    pw;
     CList*      pl;
-    //struct _finddata_t fileBuffer;
+
     std::string fileName;
     char        op[100];
     char        op_i18n[100];
@@ -4417,60 +4389,25 @@ void CMainDialog::UpdateSceneChap(int &chap)
     if ( m_phase == PHASE_USER )
     {
         j = 0;
-        fs::directory_iterator dirIt(m_savegameDir), dirEndIt;
-        m_userList.clear();
-
-        for (; dirIt != dirEndIt; ++dirIt)
-        {
-            const fs::path& p = *dirIt;
-            if (fs::is_directory(p))
-            {
-                m_userList.push_back(p.leaf().string());
-            }
-        }
+        auto userLevelDirs = CResourceManager::ListDirectories("levels/custom/");
+        std::sort(userLevelDirs.begin(), userLevelDirs.end());
+        m_userList = userLevelDirs;
         m_userTotal = m_userList.size();
 
         for ( j=0 ; j<m_userTotal ; j++ )
         {
-            BuildSceneName(fileName, m_sceneName, (j+1)*100);
-            file = fopen(fileName.c_str(), "r");
-            if ( file == NULL )
-            {
-                strcpy(name, m_userList[j].c_str());
+            try {
+                CLevelParser* level = new CLevelParser("custom", j+1, 0);
+                level->Load();
+                pl->SetItemName(j, level->Get("Title")->GetParam("text")->AsString().c_str());
+                pl->SetEnable(j, true);
+                delete level;
             }
-            else
+            catch(CLevelParserException& e)
             {
-                BuildResumeName(name, m_sceneName, j+1);  // default name
-                sprintf(op, "Title.E");
-                sprintf(op_i18n, "Title.%c", m_app->GetLanguageChar());
-
-                while ( fgets(line, 500, file) != NULL )
-                {
-                    for ( i=0 ; i<500 ; i++ )
-                    {
-                        if ( line[i] == '\t' )  line[i] = ' ';  // replaces tab by space
-                        if ( line[i] == '/' && line[i+1] == '/' )
-                        {
-                            line[i] = 0;
-                            break;
-                        }
-                    }
-
-                    if ( Cmd(line, op) )
-                    {
-                        OpString(line, "text", name);
-                    }
-                    if ( Cmd(line, op_i18n) )
-                    {
-                        OpString(line, "text", name);
-                        break;
-                    }
-                }
-                fclose(file);
+                pl->SetItemName(j, (std::string("[ERROR]: ")+e.what()).c_str());
+                pl->SetEnable(j, false);
             }
-
-            pl->SetItemName(j, name);
-            pl->SetEnable(j, true);
         }
     }
     else
@@ -4478,14 +4415,15 @@ void CMainDialog::UpdateSceneChap(int &chap)
         for ( j=0 ; j<9 ; j++ )
         {
             BuildSceneName(fileName, m_sceneName, (j+1)*100);
-            file = fopen(fileName.c_str(), "r");
-            if ( file == NULL )  break;
+            CInputStream stream;
+            stream.open(fileName);
+            if (!stream.is_open())  break;
 
             BuildResumeName(name, m_sceneName, j+1);  // default name
             sprintf(op, "Title.E");
             sprintf(op_i18n, "Title.%c", m_app->GetLanguageChar());
 
-            while ( fgets(line, 500, file) != NULL )
+            while (stream.getline(line, 500))
             {
                 for ( i=0 ; i<500 ; i++ )
                 {
@@ -4507,7 +4445,7 @@ void CMainDialog::UpdateSceneChap(int &chap)
                     break;
                 }
             }
-            fclose(file);
+            stream.close();
 
             bPassed = GetGamerInfoPassed((j+1)*100);
             sprintf(line, "%d: %s", j+1, name);
@@ -4539,7 +4477,6 @@ void CMainDialog::UpdateSceneChap(int &chap)
 
 void CMainDialog::UpdateSceneList(int chap, int &sel)
 {
-    FILE*       file = NULL;
     CWindow*    pw;
     CList*      pl;
     std::string fileName;
@@ -4561,18 +4498,22 @@ void CMainDialog::UpdateSceneList(int chap, int &sel)
     if ( pl == 0 )  return;
 
     pl->Flush();
+    
+    if(chap < 0) return;
 
     for ( j=0 ; j<99 ; j++ )
     {
         BuildSceneName(fileName, m_sceneName, (chap+1)*100+(j+1));
-        file = fopen(fileName.c_str(), "r");
-        if ( file == NULL )  break;
+        
+        CInputStream stream;
+        stream.open(fileName);
+        if (!stream.is_open())  break;
 
         BuildResumeName(name, m_sceneName, j+1);  // default name
         sprintf(op, "Title.E");
         sprintf(op_i18n, "Title.%c", m_app->GetLanguageChar());
 
-        while ( fgets(line, 500, file) != NULL )
+        while (stream.getline(line, 500))
         {
             for ( i=0 ; i<500 ; i++ )
             {
@@ -4594,7 +4535,7 @@ void CMainDialog::UpdateSceneList(int chap, int &sel)
                 break;
             }
         }
-        fclose(file);
+        stream.close();
 
         bPassed = GetGamerInfoPassed((chap+1)*100+(j+1));
         sprintf(line, "%d: %s", j+1, name);
@@ -4609,6 +4550,7 @@ void CMainDialog::UpdateSceneList(int chap, int &sel)
         }
     }
 
+    /* TODO: ?????
     BuildSceneName(fileName, m_sceneName, (chap+1)*100+(j+1));
     file = fopen(fileName.c_str(), "r");
     if ( file == NULL )
@@ -4619,7 +4561,8 @@ void CMainDialog::UpdateSceneList(int chap, int &sel)
     {
         m_maxList = j+1;  // this is not the last!
         fclose(file);
-    }
+    }*/
+    m_maxList = j;
 
     if ( sel > j-1 )  sel = j-1;
 
@@ -4669,16 +4612,11 @@ void CMainDialog::ShowSoluceUpdate()
 
 void CMainDialog::UpdateSceneResume(int rank)
 {
-    FILE*       file = NULL;
     CWindow*    pw;
     CEdit*      pe;
     CCheck*     pc;
     std::string fileName;
-    char        op[100];
-    char        op_i18n[100];
-    char        line[500];
-    char        name[500];
-    int         i, numTry;
+    int         numTry;
     bool        bPassed, bVisible;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
@@ -4704,43 +4642,18 @@ void CMainDialog::UpdateSceneResume(int rank)
             m_bSceneSoluce = false;
         }
     }
-
-    BuildSceneName(fileName, m_sceneName, rank);
-    sprintf(op, "Resume.E");
-    sprintf(op_i18n, "Resume.%c", m_app->GetLanguageChar());
-
-    file = fopen(fileName.c_str(), "r");
-    if ( file == NULL )  return;
-
-    name[0] = 0;
-    while ( fgets(line, 500, file) != NULL )
-    {
-        for ( i=0 ; i<500 ; i++ )
-        {
-            if (line[i] == 0)
-                break;
-
-            if ( line[i] == '\t' )  line[i] = ' ';  // replaces tab by space
-            if ( line[i] == '/' && line[i+1] == '/' )
-            {
-                line[i] = 0;
-                break;
-            }
-        }
-
-        if ( Cmd(line, op) )
-        {
-            OpString(line, "text", name);
-        }
-        if ( Cmd(line, op_i18n) )
-        {
-            OpString(line, "text", name);
-            break;
-        }
+    
+    if(rank<100) return;
+    
+    try {
+        CLevelParser* level = new CLevelParser(m_sceneName, rank/100, rank%100);
+        level->Load();
+        pe->SetText(level->Get("Resume")->GetParam("text")->AsString().c_str());
     }
-    fclose(file);
-
-    pe->SetText(name);
+    catch(CLevelParserException& e)
+    {
+        pe->SetText((std::string("[ERROR]: ")+e.what()).c_str());
+    }
 }
 
 // Updates the list of modes.
@@ -5121,10 +5034,8 @@ void CMainDialog::ChangeSetupButtons()
 
 void CMainDialog::SetupMemorize()
 {
-    GetProfile().SetStringProperty("Directory", "scene",    m_sceneDir);
     GetProfile().SetStringProperty("Directory", "savegame", m_savegameDir);
     GetProfile().SetStringProperty("Directory", "public",   m_publicDir);
-    GetProfile().SetStringProperty("Directory", "user",     m_userDir);
     GetProfile().SetStringProperty("Directory", "files",    m_filesDir);
     GetProfile().SetIntProperty("Setup", "Tooltips", m_bTooltip);
     GetProfile().SetIntProperty("Setup", "InterfaceGlint", m_bGlint);
@@ -5200,11 +5111,6 @@ void CMainDialog::SetupRecall()
     int         iValue;
     std::string key;
 
-    if ( GetProfile().GetStringProperty("Directory", "scene", key) )
-    {
-        m_sceneDir = key;
-    }
-
     if ( GetProfile().GetStringProperty("Directory", "savegame", key) )
     {
         m_savegameDir = key;
@@ -5213,11 +5119,6 @@ void CMainDialog::SetupRecall()
     if ( GetProfile().GetStringProperty("Directory", "public", key) )
     {
         m_publicDir = key;
-    }
-
-    if ( GetProfile().GetStringProperty("Directory", "user", key) )
-    {
-        m_userDir = key;
     }
 
     if ( GetProfile().GetStringProperty("Directory", "files", key) )
@@ -5944,7 +5845,6 @@ void CMainDialog::FrameDialog(float rTime)
 void CMainDialog::StopDialog()
 {
     CWindow*    pw;
-    CButton*    pb;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW0));
     if ( pw != 0 )  pw->SetState(STATE_ENABLE);
@@ -6412,6 +6312,11 @@ bool CMainDialog::NextMission()
     }
 
     return true;
+}
+
+std::string& CMainDialog::GetUserLevelName(int id)
+{
+    return m_userList[id-1];
 }
 
 

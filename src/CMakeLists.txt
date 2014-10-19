@@ -61,7 +61,6 @@ endif()
 # Source files
 set(BASE_SOURCES
     app/app.cpp
-    app/gamedata.cpp
     app/pausemanager.cpp
     app/system.cpp
     app/${SYSTEM_CPP_MODULE}
@@ -74,6 +73,12 @@ set(BASE_SOURCES
     common/profile.cpp
     common/restext.cpp
     common/stringutils.cpp
+    common/resources/resourcemanager.cpp
+    common/resources/inputstreambuffer.cpp
+    common/resources/outputstreambuffer.cpp
+    common/resources/inputstream.cpp
+    common/resources/outputstream.cpp
+    common/resources/sndfile.cpp
     graphics/core/color.cpp
     graphics/engine/camera.cpp
     graphics/engine/cloud.cpp
@@ -116,6 +121,10 @@ set(BASE_SOURCES
     object/auto/autostation.cpp
     object/auto/autotower.cpp
     object/brain.cpp
+    object/level/parser.cpp
+    object/level/parserline.cpp
+    object/level/parserparam.cpp
+    object/level/parserexceptions.cpp
     object/mainmovie.cpp
     object/motion/motion.cpp
     object/motion/motionant.cpp
@@ -206,6 +215,7 @@ set(LIBS
     ${LIBSNDFILE_LIBRARY}
     ${OPTIONAL_LIBS}
     ${PLATFORM_LIBS}
+${PHYSFS_LIBRARY}
 )
 
 set(COLOBOT_LIBS ${LIBS} PARENT_SCOPE)
@@ -229,6 +239,7 @@ set(SYSTEM_INCLUDES
     ${LOCALENAME_INCLUDE_DIR}
     ${OPTIONAL_INCLUDE_DIRS}
     ${CLIPBOARD_INCLUDE_DIR}
+${PHYSFS_INCLUDE_PATH}
 )
 
 set(COLOBOT_LOCAL_INCLUDES ${LOCAL_INCLUDES} PARENT_SCOPE)

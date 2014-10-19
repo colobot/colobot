@@ -178,7 +178,7 @@ void CButton::Draw()
          (m_state & STATE_CARD  ) == 0 &&
          (m_state & STATE_SIMPLY) == 0 )
     {
-        m_engine->SetTexture("button2.png");
+        m_engine->SetTexture("textures/interface/button2.png");
         m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
 
         dp = 0.5f / 256.0f;

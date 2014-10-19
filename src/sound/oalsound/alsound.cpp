@@ -20,8 +20,6 @@
 
 #include "sound/oalsound/alsound.h"
 
-#include "app/gamedata.h"
-
 #include <algorithm>
 #include <iomanip>
 
@@ -161,7 +159,7 @@ int ALSound::GetMusicVolume()
 bool ALSound::Cache(Sound sound, const std::string &filename)
 {
     Buffer *buffer = new Buffer();
-    if (buffer->LoadFromFile(CGameData::GetInstancePointer()->GetFilePath(DIR_SOUND, filename), sound))
+    if (buffer->LoadFromFile(filename, sound))
     {
         m_sounds[sound] = buffer;
         return true;
@@ -171,12 +169,12 @@ bool ALSound::Cache(Sound sound, const std::string &filename)
 
 bool ALSound::CacheMusic(const std::string &filename)
 {
-    if (m_music.find(filename) == m_music.end())
+    if (m_music.find("music/"+filename) == m_music.end())
     {
         Buffer *buffer = new Buffer();
-        if (buffer->LoadFromFile(CGameData::GetInstancePointer()->GetFilePath(DIR_MUSIC, filename), static_cast<Sound>(-1)))
+        if (buffer->LoadFromFile("music/"+filename, static_cast<Sound>(-1)))
         {
-            m_music[filename] = buffer;
+            m_music["music/"+filename] = buffer;
             return true;
         }
     }
@@ -632,30 +630,29 @@ bool ALSound::PlayMusic(const std::string &filename, bool bRepeat, float fadeTim
         return false;
     }
 
-    std::string file = CGameData::GetInstancePointer()->GetFilePath(DIR_MUSIC, filename);
     Buffer *buffer;
 
     // check if we have music in cache
-    if (m_music.find(filename) == m_music.end())
+    if (m_music.find("music/"+filename) == m_music.end())
     {
         GetLogger()->Debug("Music %s was not cached!\n", filename.c_str());
-        if (!boost::filesystem::exists(file))
+        /* TODO: if (!boost::filesystem::exists("music/"+filename))
         {
             GetLogger()->Debug("Requested music %s was not found.\n", filename.c_str());
             return false;
-        }
+        } */
 
         buffer = new Buffer();
-        if (!buffer->LoadFromFile(file, static_cast<Sound>(-1)))
+        if (!buffer->LoadFromFile("music/"+filename, static_cast<Sound>(-1)))
         {
             return false;
         }
-        m_music[filename] = buffer;
+        m_music["music/"+filename] = buffer;
     }
     else
     {
         GetLogger()->Debug("Music loaded from cache\n");
-        buffer = m_music[filename];
+        buffer = m_music["music/"+filename];
     }
 
     if (m_currentMusic)

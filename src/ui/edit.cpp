@@ -21,11 +21,18 @@
 #include "ui/edit.h"
 
 #include "app/app.h"
-#include "app/gamedata.h"
 
 #include "clipboard/clipboard.h"
 
+#include "object/robotmain.h"
+
+#include "object/level/parserparam.h"
+
+#include "common/resources/inputstream.h"
+#include "common/resources/outputstream.h"
+
 #include <string.h>
+#include <boost/algorithm/string.hpp>
 
 namespace Ui {
 
@@ -779,16 +786,9 @@ void CEdit::HyperJump(std::string name, std::string marker)
 
     sMarker = marker;
 
-//? sprintf(filename, "help\\%s.txt", name);
-
-    if ( name[0] == '%' )
-    {
-        filename = GetProfile().GetUserBasedPath(name, "") + ".txt";
-    }
-    else
-    {
-        filename = std::string("help/") + CApplication::GetInstancePointer()->GetLanguageChar() + "/" + name + std::string(".txt");
-    }
+    filename = name + std::string(".txt");
+    filename = CLevelParserParam::InjectLevelDir(filename, "help/%lng%");
+    boost::replace_all(filename, "\\", "/"); //TODO: Fix this in files
 
     if ( ReadText(filename) )
     {
@@ -1142,7 +1142,9 @@ void CEdit::DrawImage(Math::Point pos, std::string name, float width,
     float dp;
     std::string filename;
 
-    filename = GetProfile().GetUserBasedPath(name, "../icons") + ".png";
+    filename = name + ".png";
+    filename = CLevelParserParam::InjectLevelDir(filename, "icons");
+    boost::replace_all(filename, "\\", "/"); //TODO: Fix this in files
 
     m_engine->SetTexture(filename);
     m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
@@ -1172,7 +1174,7 @@ void CEdit::DrawBack(Math::Point pos, Math::Point dim)
 
     if ( m_bGeneric )  return;
 
-    m_engine->SetTexture("button2.png");
+    m_engine->SetTexture("textures/interface/button2.png");
     m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
 
     if ( m_bMulti )
@@ -1222,7 +1224,7 @@ void CEdit::DrawPart(Math::Point pos, Math::Point dim, int icon)
     Math::Point     uv1, uv2;
     float       dp;
 
-    m_engine->SetTexture("text.png");
+    m_engine->SetTexture("textures/interface/text.png");
     m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
 
     uv1.x = (16.0f/256.0f)*(icon%16);
@@ -1420,7 +1422,7 @@ void CEdit::FreeImage()
 
     for (int i = 0 ; i < m_imageTotal; i++ )
     {
-        filename = GetProfile().GetUserBasedPath(m_image[i].name, "../icons") + ".png";
+        filename = m_image[i].name + ".png";
         m_engine->DeleteTexture(filename);
     }
 }
@@ -1430,7 +1432,9 @@ void CEdit::FreeImage()
 void CEdit::LoadImage(std::string name)
 {
     std::string filename;
-    filename = GetProfile().GetUserBasedPath(name, "../icons") + ".png";
+    filename = name + ".png";
+    filename = CLevelParserParam::InjectLevelDir(filename, "icons");
+    boost::replace_all(filename, "\\", "/"); //TODO: Fix this in files
     m_engine->LoadTexture(filename);
 }
 
@@ -1438,7 +1442,6 @@ void CEdit::LoadImage(std::string name)
 
 bool CEdit::ReadText(std::string filename, int addSize)
 {
-    FILE        *file = NULL;
     char        *buffer;
     int         len, i, j, n, font, iIndex, iLines, iCount, iLink, res;
     char        iName[50];
@@ -1447,27 +1450,18 @@ bool CEdit::ReadText(std::string filename, int addSize)
     InputSlot   slot;
     bool        bInSoluce, bBOL;
 
-    if ( filename[0] == 0 )  return false;
-
-    boost::replace_all(filename, "\\", "/");
-
-    /* This is ugly but doesn't require many changes in code. If file doesn't
-       exists it's posible filename is absolute not full path */
-    std::string path = filename;
-    if (!fs::exists(path))
+    if ( filename == "" )  return false;
+    
+    CInputStream stream;
+    stream.open(filename);
+    
+    if (!stream.is_open())
     {
-        path = CGameData::GetInstancePointer()->GetDataPath(filename);
-    }
-
-    file = fopen(fs::path(path).make_preferred().string().c_str(), "rb");
-    if ( file == NULL )  {
-        CLogger::GetInstancePointer()->Error("Unable to read text from file \"%s\"\n", path.c_str());
+        CLogger::GetInstancePointer()->Error("Failed to load text file %s\n", filename.c_str());
         return false;
     }
 
-    fseek(file, 0, SEEK_END);
-    len = ftell(file);
-    fseek(file, 0, SEEK_SET);
+    len = stream.size();
 
     m_maxChar = len+addSize+100;
     m_len = len;
@@ -1484,7 +1478,7 @@ bool CEdit::ReadText(std::string filename, int addSize)
     buffer = new char[m_maxChar+1];
     memset(buffer, 0, m_maxChar+1);
 
-    fread(buffer, 1, len, file);
+    stream.read(buffer, len);
 
     m_format.clear();
     m_format.reserve(m_maxChar+1);
@@ -1493,7 +1487,7 @@ bool CEdit::ReadText(std::string filename, int addSize)
         m_format.push_back(0);
     }
 
-    fclose(file);
+    stream.close();
 
     bInSoluce = false;
     font = m_fontType;
@@ -1887,14 +1881,19 @@ bool CEdit::ReadText(std::string filename, int addSize)
 
 bool CEdit::WriteText(std::string filename)
 {
-    FILE*       file;
     char        buffer[1000+20];
     int         i, j, k, n;
     float       iDim = 0.0f;
 
     if ( filename[0] == 0 )  return false;
-    file = fopen(filename.c_str(), "wb");
-    if ( file == NULL )  return false;
+    
+    COutputStream stream;
+    stream.open(filename);
+    
+    if (!stream.is_open())
+    {
+        return false;
+    }
 
     if ( m_bAutoIndent )
     {
@@ -1925,7 +1924,7 @@ bool CEdit::WriteText(std::string filename)
 
         if ( j >= 1000-1 )
         {
-            fwrite(buffer, 1, j, file);
+            stream.write(buffer, j);
             j = 0;
         }
 
@@ -1933,10 +1932,10 @@ bool CEdit::WriteText(std::string filename)
     }
     if ( j > 0 )
     {
-        fwrite(buffer, 1, j, file);
+        stream.write(buffer, j);
     }
 
-    fclose(file);
+    stream.close();
 
     if ( m_bAutoIndent )
     {

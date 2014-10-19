@@ -20,10 +20,13 @@
 
 #include "common/profile.h"
 
+#include "common/resources/inputstream.h"
+#include "common/resources/outputstream.h"
 #include "app/system.h"
 
 #include "common/logger.h"
 
+#include <memory>
 #include <utility>
 #include <cstring>
 #include <boost/property_tree/ini_parser.hpp>
@@ -51,16 +54,34 @@ void CProfile::SetUseCurrentDirectory(bool useCurrentDirectory)
     m_useCurrentDirectory = useCurrentDirectory;
 }
 
-std::string CProfile::GetIniFileLocation()
-{
-    return m_useCurrentDirectory ? "colobot.ini" : GetSystemUtils()->GetProfileFileLocation();
-}
-
 bool CProfile::Init()
 {
     try
     {
-        bp::ini_parser::read_ini(GetIniFileLocation(), m_propertyTree);
+        std::unique_ptr<std::istream> stream;
+        bool good;
+        if (m_useCurrentDirectory)
+        {
+            std::ifstream* inputStream = new std::ifstream("./colobot.ini");
+            stream = std::unique_ptr<std::istream>(inputStream);
+            good = inputStream->good();
+        }
+        else
+        {
+            CInputStream* inputStream = new CInputStream("colobot.ini");
+            stream = std::unique_ptr<std::istream>(inputStream);
+            good = inputStream->is_open();
+        }
+
+        if (good)
+        {
+            bp::ini_parser::read_ini(*stream, m_propertyTree);
+        }
+        else
+        {
+            GetLogger()->Error("Error on parsing profile: failed to open file\n");
+            return false;
+        }
     }
     catch (std::exception & e)
     {
@@ -76,7 +97,30 @@ bool CProfile::Save()
     {
         try
         {
-            bp::ini_parser::write_ini(GetIniFileLocation(), m_propertyTree);
+            std::unique_ptr<std::ostream> stream;
+            bool good;
+            if (m_useCurrentDirectory)
+            {
+                std::ofstream* outputStream = new std::ofstream("./colobot.ini");
+                stream = std::unique_ptr<std::ostream>(outputStream);
+                good = outputStream->good();
+            }
+            else
+            {
+                COutputStream* outputStream = new COutputStream("colobot.ini");
+                stream = std::unique_ptr<std::ostream>(outputStream);
+                good = outputStream->is_open();
+            }
+
+            if (good)
+            {
+                bp::ini_parser::write_ini(*stream, m_propertyTree);
+            }
+            else
+            {
+                GetLogger()->Error("Error on storing profile: failed to open file\n");
+                return false;
+            }
         }
         catch (std::exception & e)
         {

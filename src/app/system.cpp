@@ -204,13 +204,7 @@ std::string CSystemUtils::GetLangPath()
     return COLOBOT_I18N_DIR;
 }
 
-std::string CSystemUtils::GetProfileFileLocation()
+std::string CSystemUtils::GetSaveDir()
 {
-    return std::string("colobot.ini");
+    return std::string("save");
 }
-
-std::string CSystemUtils::GetSavegameDirectoryLocation()
-{
-    return std::string("savegame");
-}
-

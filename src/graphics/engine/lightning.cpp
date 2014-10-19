@@ -237,7 +237,7 @@ void CLightning::Draw()
     mat.LoadIdentity();
     device->SetTransform(TRANSFORM_WORLD, mat);
 
-    m_engine->SetTexture("effect00.png");
+    m_engine->SetTexture("textures/effect00.png");
     m_engine->SetState(ENG_RSTATE_TTEXTURE_BLACK);
 
     Math::Point texInf;

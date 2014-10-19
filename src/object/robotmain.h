@@ -340,6 +340,9 @@ public:
     int         GetGamerGlasses();
     bool        GetGamerOnlyHead();
     float       GetPersoAngle();
+    char*       GetSceneName();
+    int         GetSceneRank();
+    void        BuildSceneName(std::string &filename, char *base, int rank, bool sceneFile = true);
 
     void        StartMusic();
     void        StartPauseMusic(PauseType pause);
@@ -389,6 +392,8 @@ public:
 
     void        DisplayError(Error err, CObject* pObj, float time=10.0f);
     void        DisplayError(Error err, Math::Vector goal, float height=15.0f, float dist=60.0f, float time=10.0f);
+    
+    std::string& GetUserLevelName(int id);
 
 protected:
     bool        EventFrame(const Event &event);
@@ -487,13 +492,6 @@ protected:
     int             m_movieInfoIndex;
 
     CObject*        m_controller;
-
-    // Level Checker flags
-    bool            m_beginObject;
-    bool            m_terrainGenerate;
-    bool            m_terrainInitTextures;
-    bool            m_terrainInit;
-    bool            m_terrainCreate;
 
     int             m_version;         // Mission file version
     bool            m_retroStyle;      // Retro

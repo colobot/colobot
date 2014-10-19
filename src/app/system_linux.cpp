@@ -27,7 +27,7 @@
 void CSystemUtilsLinux::Init()
 {
     m_zenityAvailable = true;
-    if (system("zenity --version") != 0)
+    if (system("zenity --version 1> /dev/null 2> /dev/null") != 0)
     {
         m_zenityAvailable = false;
         GetLogger()->Warn("Zenity not available, will fallback to console users dialogs.\n");
@@ -97,34 +97,7 @@ long long CSystemUtilsLinux::TimeStampExactDiff(SystemTimeStamp *before, SystemT
            (after->clockTime.tv_sec  - before->clockTime.tv_sec) * 1000000000ll;
 }
 
-std::string CSystemUtilsLinux::GetProfileFileLocation()
-{
-    std::string profileFile;
-
-    // Determine profileFile according to XDG Base Directory Specification
-    char* envXDG_CONFIG_HOME = getenv("XDG_CONFIG_HOME");
-    if (envXDG_CONFIG_HOME == NULL)
-    {
-        char *envHOME = getenv("HOME");
-        if (envHOME == NULL)
-        {
-            profileFile = "colobot.ini";
-        }
-        else
-        {
-            profileFile = std::string(envHOME) + "/.config/colobot.ini";
-        }
-    }
-    else
-    {
-        profileFile = std::string(envXDG_CONFIG_HOME) + "/colobot.ini";
-    }
-    GetLogger()->Trace("Profile configuration is %s\n", profileFile.c_str());
-
-    return profileFile;
-}
-
-std::string CSystemUtilsLinux::GetSavegameDirectoryLocation()
+std::string CSystemUtilsLinux::GetSaveDir()
 {
     std::string savegameDir;
 
@@ -135,7 +108,7 @@ std::string CSystemUtilsLinux::GetSavegameDirectoryLocation()
         char *envHOME = getenv("HOME");
         if (envHOME == NULL)
         {
-            savegameDir = "/tmp/colobot-savegame";
+            savegameDir = "/tmp/colobot-save";
         }
         else
         {
@@ -150,4 +123,3 @@ std::string CSystemUtilsLinux::GetSavegameDirectoryLocation()
 
     return savegameDir;
 }
-

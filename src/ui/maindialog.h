@@ -101,8 +101,7 @@ public:
     bool    GetNiceReset();
     bool    GetHimselfDamage();
 
-    void          SetUserDir(char *base, int rank);
-    void          BuildSceneName(std::string &filename, char *base, int rank);
+    void          BuildSceneName(std::string &filename, char *base, int rank, bool sceneFile = true);
     void          BuildResumeName(char *filename, char *base, int rank);
     std::string & GetFilesDir();
 
@@ -143,6 +142,8 @@ public:
 
     void    AllMissionUpdate();
     void    ShowSoluceUpdate();
+    
+    std::string& GetUserLevelName(int id);
 
 protected:
     void    GlintMove();
@@ -202,10 +203,8 @@ protected:
     int         m_persoTab;         // perso: tab selected
     float           m_persoAngle;           // perso: angle of presentation
 
-    std::string     m_sceneDir;     // scene folder
     std::string     m_savegameDir;  // savegame folder
     std::string     m_publicDir;    // program folder
-    std::string     m_userDir;      // user folder
     std::string     m_filesDir;     // case files
 
     int             m_index;        // 0..4

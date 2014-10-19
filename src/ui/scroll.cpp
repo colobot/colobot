@@ -381,7 +381,7 @@ void CScroll::DrawVertex(Math::Point pos, Math::Point dim, int icon)
 
     if ( icon == 0 )
     {
-        m_engine->SetTexture("button2.png");
+        m_engine->SetTexture("textures/interface/button2.png");
         m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
         uv1.x =   0.0f/256.0f;  // yellow rectangle
         uv1.y =  32.0f/256.0f;
@@ -391,7 +391,7 @@ void CScroll::DrawVertex(Math::Point pos, Math::Point dim, int icon)
     }
     else if ( icon == 1 )
     {
-        m_engine->SetTexture("button2.png");
+        m_engine->SetTexture("textures/interface/button2.png");
         m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
         uv1.x = 128.0f/256.0f;  // gray rectangle
         uv1.y =  32.0f/256.0f;
@@ -401,7 +401,7 @@ void CScroll::DrawVertex(Math::Point pos, Math::Point dim, int icon)
     }
     else if ( icon == 2 )
     {
-        m_engine->SetTexture("button1.png");
+        m_engine->SetTexture("textures/interface/button1.png");
         m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
         uv1.x =  64.0f/256.0f;  // blue rectangle
         uv1.y =   0.0f/256.0f;
@@ -411,7 +411,7 @@ void CScroll::DrawVertex(Math::Point pos, Math::Point dim, int icon)
     }
     else
     {
-        m_engine->SetTexture("button2.png");
+        m_engine->SetTexture("textures/interface/button2.png");
         m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
         uv1.x = 104.0f/256.0f;  // blue line -
         uv1.y =  32.0f/256.0f;

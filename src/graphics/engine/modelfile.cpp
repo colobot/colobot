@@ -24,6 +24,8 @@
 #include "common/logger.h"
 #include "common/stringutils.h"
 
+#include "common/resources/inputstream.h"
+
 #include "graphics/engine/engine.h"
 
 #include "math/geometry.h"
@@ -434,9 +436,9 @@ bool CModelFile::ReadModel(const std::string& fileName)
 {
     m_triangles.clear();
 
-    std::ifstream stream;
-    stream.open(fileName.c_str(), std::ios_base::in | std::ios_base::binary);
-    if (!stream.good())
+    CInputStream stream;
+    stream.open(fileName.c_str());
+    if (!stream.is_open())
     {
         GetLogger()->Error("Could not open file '%s'\n", fileName.c_str());
         return false;
@@ -825,9 +827,9 @@ struct NewModelTriangle1
 
 bool CModelFile::ReadTextModel(const std::string& fileName)
 {
-    std::ifstream stream;
-    stream.open(fileName.c_str(), std::ios_base::in);
-    if (!stream.good())
+    CInputStream stream;
+    stream.open(fileName.c_str());
+    if (!stream.is_open())
     {
         GetLogger()->Error("Could not open file '%s'\n", fileName.c_str());
         return false;
@@ -1022,9 +1024,9 @@ bool CModelFile::WriteTextModel(std::ostream& stream)
 
 bool CModelFile::ReadBinaryModel(const std::string& fileName)
 {
-    std::ifstream stream;
-    stream.open(fileName.c_str(), std::ios_base::in | std::ios_base::binary);
-    if (!stream.good())
+    CInputStream stream;
+    stream.open(fileName.c_str());
+    if (!stream.is_open())
     {
         GetLogger()->Error("Could not open file '%s'\n", fileName.c_str());
         return false;

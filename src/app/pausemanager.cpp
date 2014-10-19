@@ -31,7 +31,7 @@ template<> CPauseManager* CSingleton<CPauseManager>::m_instance = nullptr;
 CPauseManager::CPauseManager()
 {
     m_sound = CApplication::GetInstancePointer()->GetSound();
-    
+
     m_pause = PAUSE_NONE;
 }
 
@@ -42,24 +42,28 @@ CPauseManager::~CPauseManager()
 
 void CPauseManager::SetPause(PauseType pause)
 {
-    if(pause != PAUSE_NONE) {
-        if(m_pause != pause) {
+    if (pause != PAUSE_NONE)
+    {
+        if (m_pause != pause)
+        {
             CLogger::GetInstancePointer()->Info("Game paused - %s\n", GetPauseName(pause).c_str());
             CRobotMain::GetInstancePointer()->StartPauseMusic(pause);
         }
-        
+
         m_pause = pause;
-    } else
+    }
+    else
         ClearPause();
 }
 
 void CPauseManager::ClearPause()
 {
-    if(m_pause != PAUSE_NONE) {
+    if(m_pause != PAUSE_NONE)
+    {
         CLogger::GetInstancePointer()->Info("Game resumed\n");
         m_sound->StopPauseMusic();
     }
-    
+
     m_pause = PAUSE_NONE;
 }
 
