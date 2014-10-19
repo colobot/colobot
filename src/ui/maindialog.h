@@ -172,7 +172,6 @@ protected:
     void    UpdateSceneChap(int &chap);
     void    UpdateSceneList(int chap, int &sel);
     void    UpdateSceneResume(int rank);
-    void    UpdateDisplayDevice();
     void    UpdateDisplayMode();
     void    ChangeDisplay();
     void    UpdateApply();
@@ -232,7 +231,6 @@ protected:
     int             m_shotDelay;        // number of frames before copy
     std::string     m_shotName;        // generate a file name
 
-    int             m_setupSelDevice;
     int             m_setupSelMode;
     bool            m_setupFull;
 

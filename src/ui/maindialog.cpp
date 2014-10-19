@@ -2309,7 +2309,6 @@ bool CMainDialog::EventProcess(const Event &event)
     {
         switch( event.type )
         {
-            case EVENT_LIST1:
             case EVENT_LIST2:
                 UpdateApply();
                 break;
@@ -2341,8 +2340,7 @@ bool CMainDialog::EventProcess(const Event &event)
                 if ( pb == 0 )  break;
                 pb->ClearState(STATE_PRESS);
                 pb->ClearState(STATE_HILIGHT);
-                // TODO: uncomment when changing display is implemented
-                //ChangeDisplay();
+                ChangeDisplay();
                 UpdateApply();
                 break;
 
@@ -4745,43 +4743,6 @@ void CMainDialog::UpdateSceneResume(int rank)
     pe->SetText(name);
 }
 
-// Updates the list of devices.
-
-void CMainDialog::UpdateDisplayDevice()
-{
-    CWindow*    pw;
-    CList*      pl;
-    char        bufDevices[1000];
-    //char        bufModes[5000];
-    int         i, j;
-
-    pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
-    if ( pw == 0 )  return;
-    pl = static_cast<CList*>(pw->SearchControl(EVENT_LIST1));
-    if ( pl == 0 )  return;
-    pl->Flush();
-
-    //bufModes[0] = 0;
-    /* TODO: remove device choice
-    m_engine->EnumDevices(bufDevices, 1000,
-                          bufModes,   5000,
-                          totalDevices, selectDevices,
-                          totalModes,   selectModes);*/
-
-    i = 0;
-    j = 0;
-    while ( bufDevices[i] != 0 )
-    {
-        pl->SetItemName(j++, bufDevices+i);
-        while ( bufDevices[i++] != 0 );
-    }
-
-    pl->SetSelect(0);
-    pl->ShowSelect(false);
-
-    m_setupSelDevice = 0;
-}
-
 // Updates the list of modes.
 
 void CMainDialog::UpdateDisplayMode()
@@ -4817,31 +4778,30 @@ void CMainDialog::ChangeDisplay()
     CWindow*    pw;
     CList*      pl;
     CCheck*     pc;
-    //char*       device;
-    //char*       mode;
     bool        bFull;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
     if ( pw == 0 )  return;
 
-    pl = static_cast<CList*>(pw->SearchControl(EVENT_LIST1));
-    if ( pl == 0 )  return;
-    m_setupSelDevice = pl->GetSelect();
-    //device = pl->GetItemName(m_setupSelDevice);
-
     pl = static_cast<CList*>(pw->SearchControl(EVENT_LIST2));
     if ( pl == 0 )  return;
     m_setupSelMode = pl->GetSelect();
-    //mode = pl->GetItemName(m_setupSelMode);
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_FULL));
     if ( pc == 0 )  return;
     bFull = pc->TestState(STATE_CHECK);
     m_setupFull = bFull;
+    
+    
+    std::vector<Math::IntPoint> modes;
+    m_app->GetVideoResolutionList(modes, true, true);
+    
+    Gfx::GLDeviceConfig config = m_app->GetVideoConfig();
+    config.size = modes[m_setupSelMode];
+    config.fullScreen = bFull;
+    m_app->ChangeVideoConfig(config);
 
-    // TODO: remove device choice
-    // m_engine->ChangeDevice(device, mode, bFull);
-
+    
     if ( m_bSimulSetup )
     {
         m_main->ChangeColor();
@@ -4859,18 +4819,13 @@ void CMainDialog::UpdateApply()
     CButton*    pb;
     CList*      pl;
     CCheck*     pc;
-    int         sel1, sel2;
+    int         sel2;
     bool        bFull;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
     if ( pw == 0 )  return;
 
     pb = static_cast<CButton*>(pw->SearchControl(EVENT_INTERFACE_APPLY));
-    if ( pb == 0 )  return;
-
-    pl = static_cast<CList*>(pw->SearchControl(EVENT_LIST1));
-    if ( pl == 0 )  return;
-    sel1 = pl->GetSelect();
 
     pl = static_cast<CList*>(pw->SearchControl(EVENT_LIST2));
     if ( pl == 0 )  return;
@@ -4879,8 +4834,7 @@ void CMainDialog::UpdateApply()
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_FULL));
     bFull = pc->TestState(STATE_CHECK);
 
-    if ( sel1 == m_setupSelDevice &&
-         sel2 == m_setupSelMode   &&
+    if ( sel2 == m_setupSelMode   &&
          bFull == m_setupFull     )
     {
         pb->ClearState(STATE_ENABLE);

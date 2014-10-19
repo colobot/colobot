@@ -116,7 +116,7 @@ CApplication::CApplication()
     m_debugModes = 0;
     m_customDataPath = false;
 
-    m_windowTitle = "COLOBOT GOLD";
+    m_windowTitle = "COLOBOT: Gold Edition";
 
     m_simulationSuspended = false;
 
@@ -672,7 +672,7 @@ bool CApplication::ChangeVideoConfig(const Gfx::GLDeviceConfig &newConfig)
                           std::string(SDL_GetError()) + std::string("\n") +
                           std::string("Previous mode will be restored");
             GetLogger()->Error(error.c_str());
-            GetSystemUtils()->SystemDialog( SDT_ERROR, "COLOBT - Error", error);
+            GetSystemUtils()->SystemDialog( SDT_ERROR, "COLOBOT - Error", error);
 
             restore = true;
             ChangeVideoConfig(m_lastDeviceConfig);
@@ -685,7 +685,7 @@ bool CApplication::ChangeVideoConfig(const Gfx::GLDeviceConfig &newConfig)
             std::string error = std::string("SDL error while restoring previous video mode:\n") +
                           std::string(SDL_GetError());
             GetLogger()->Error(error.c_str());
-            GetSystemUtils()->SystemDialog( SDT_ERROR, "COLOBT - Fatal Error", error);
+            GetSystemUtils()->SystemDialog( SDT_ERROR, "COLOBOT - Fatal Error", error);
 
 
             // Fatal error, so post the quit event
