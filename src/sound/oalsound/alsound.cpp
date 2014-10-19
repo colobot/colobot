@@ -297,6 +297,7 @@ bool ALSound::SearchFreeBuffer(Sound sound, int &channel, bool &bAlreadyLoaded)
                 }
                 delete chn;
                 GetLogger()->Debug("Could not open additional channel to play sound!\n");
+                break;
             }
         }
     }
