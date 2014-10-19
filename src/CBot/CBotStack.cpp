@@ -790,7 +790,6 @@ void CBotStack::GetRunPos(const char* &FunctionName, int &start, int &end)
 
     while (p->m_next != NULL)
     {
-        
         if ( p->m_instr != NULL ) instr = p->m_instr;
         if ( p->m_bFunc == 1 && p->m_instr != NULL ) funct = p->m_instr;
         if ( p->m_next->m_prog != prog ) break ;
@@ -800,7 +799,7 @@ void CBotStack::GetRunPos(const char* &FunctionName, int &start, int &end)
     }
 
     if ( p->m_instr != NULL ) instr = p->m_instr;
-    if ( p->m_bFunc == 1 ) funct = p->m_instr;
+    if ( p->m_bFunc == 1 && p->m_instr != NULL ) funct = p->m_instr;
 
     if ( funct == NULL ) return;
 
@@ -829,16 +828,19 @@ CBotVar* CBotStack::GetStackVars(const char* &FunctionName, int level)
         if (p->m_next2 && p->m_next2->m_state != 0) p = p->m_next2 ;
         else                                        p = p->m_next;
     }
+    // Now p is the highest element on the stack
 
 
     // descends upon the elements of block
     while ( p != NULL && !p->m_bBlock )    p = p->m_prev;
+    // Now p is on the beggining of the top block (with local variables)
 
     while ( p != NULL && level++ < 0 )
     {
         p = p->m_prev;
         while ( p != NULL && !p->m_bBlock )    p = p->m_prev;
     }
+    // Now p is on the block "level"
 
     if ( p == NULL ) return NULL;
 
