@@ -320,7 +320,7 @@ void CEngine::Destroy()
 
 void CEngine::ResetAfterDeviceChanged()
 {
-    m_size = m_app->GetVideoConfig().size;;
+    m_size = m_app->GetVideoConfig().size;
 
     m_text->FlushCache();
 

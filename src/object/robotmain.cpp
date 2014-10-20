@@ -959,6 +959,20 @@ void CRobotMain::LoadSceneOnStart(const std::string& name, int rank)
     ChangePhase(PHASE_LOADING);
 }
 
+void CRobotMain::ResetAfterDeviceChanged()
+{
+    if(m_phase == PHASE_SETUPds ||
+       m_phase == PHASE_SETUPgs ||
+       m_phase == PHASE_SETUPps ||
+       m_phase == PHASE_SETUPcs ||
+       m_phase == PHASE_SETUPss ||
+       m_phase == PHASE_SIMUL ||
+       m_phase == PHASE_WIN ||
+       m_phase == PHASE_LOST)
+    ChangeColor();
+    UpdateMap();
+}
+
 
 //! Creates the file colobot.ini at the first time
 void CRobotMain::CreateIni()

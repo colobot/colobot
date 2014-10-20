@@ -725,6 +725,7 @@ bool CApplication::ChangeVideoConfig(const Gfx::GLDeviceConfig &newConfig)
     ( static_cast<Gfx::CGLDevice*>(m_device) )->ConfigChanged(m_deviceConfig);
 
     m_engine->ResetAfterDeviceChanged();
+    m_robotMain->ResetAfterDeviceChanged();
 
     return true;
 }

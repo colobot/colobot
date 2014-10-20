@@ -210,6 +210,8 @@ public:
     void        LoadSceneOnStart(const std::string& name, int rank);
 
     void        CreateIni();
+    
+    void        ResetAfterDeviceChanged();
 
     //! Sets the default input bindings (key and axes)
     void        SetDefaultInputBindings();

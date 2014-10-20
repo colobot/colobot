@@ -4713,13 +4713,6 @@ void CMainDialog::ChangeDisplay()
     config.size = modes[m_setupSelMode];
     config.fullScreen = bFull;
     m_app->ChangeVideoConfig(config);
-
-    
-    if ( m_bSimulSetup )
-    {
-        m_main->ChangeColor();
-        m_main->UpdateMap();
-    }
 }
 
 
