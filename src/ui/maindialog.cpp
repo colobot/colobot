@@ -182,8 +182,8 @@ CMainDialog::CMainDialog()
     }
 
     m_savegameDir = "savegame";
-    m_publicDir = "program";
-    m_filesDir = m_savegameDir;
+    m_publicDir = CResourceManager::GetSaveLocation()+"/program"; //TODO: Refactor to use PHYSFS
+    m_filesDir = CResourceManager::GetSaveLocation()+"/files"; //TODO: Refactor to use PHYSFS
 
     m_setupFull = m_app->GetVideoConfig().fullScreen;
 
@@ -3311,13 +3311,13 @@ void CMainDialog::ReadNameList()
 
     try
     {
-        if (! fs::exists(m_savegameDir) && fs::is_directory(m_savegameDir))
+        if (! fs::exists(GetSavegameDir()) && fs::is_directory(GetSavegameDir()))
         {
             GetLogger()->Error("Savegame dir does not exist %s\n",dir);
         }
         else
         {
-            fs::directory_iterator dirIt(m_savegameDir), dirEndIt;
+            fs::directory_iterator dirIt(GetSavegameDir()), dirEndIt;
 
             for (; dirIt != dirEndIt; ++dirIt)
             {
@@ -3563,15 +3563,15 @@ void CMainDialog::NameCreate()
     }
 
 
-    if(!CResourceManager::DirectoryExists(m_savegameDir))
-        CResourceManager::CreateDirectory(m_savegameDir);
+    if(!CResourceManager::DirectoryExists(GetPHYSFSSavegameDir()))
+        CResourceManager::CreateDirectory(GetPHYSFSSavegameDir());
     
-    dir = m_savegameDir + "/" + name;
+    dir = GetSavegameDir() + "/" + name;
     if (!fs::exists(dir))
     {
         fs::create_directories(dir);
-        if(!CResourceManager::DirectoryExists(dir))
-            CResourceManager::CreateDirectory(dir);
+        if(!CResourceManager::DirectoryExists(GetPHYSFSSavegameDir()+"/"+name))
+            CResourceManager::CreateDirectory(GetPHYSFSSavegameDir()+"/"+name);
     }
     else
     {
@@ -3638,7 +3638,7 @@ void CMainDialog::NameDelete()
     gamer = pl->GetItemName(sel);
 
     // Deletes all the contents of the file.
-    sprintf(dir, "%s/%s", m_savegameDir.c_str(), gamer);
+    sprintf(dir, "%s/%s", GetSavegameDir().c_str(), gamer);
     if ( !RemoveDir(dir) )
     {
         m_sound->Play(SOUND_TZOING);
@@ -3951,7 +3951,7 @@ bool CMainDialog::IsIOReadScene()
 {
     fs::directory_iterator end_iter;
 
-    fs::path saveDir(m_savegameDir + "/" + m_main->GetGamerName());
+    fs::path saveDir(GetSavegameDir() + "/" + m_main->GetGamerName());
     if (fs::exists(saveDir) && fs::is_directory(saveDir))
     {
         for( fs::directory_iterator dir_iter(saveDir) ; dir_iter != end_iter ; ++dir_iter)
@@ -4048,7 +4048,7 @@ void CMainDialog::IOReadList()
 
     pl->Flush();
 
-    fs::path saveDir(m_savegameDir + "/" + m_main->GetGamerName());
+    fs::path saveDir(GetSavegameDir() + "/" + m_main->GetGamerName());
     m_saveList.clear();
 
     if (fs::exists(saveDir) && fs::is_directory(saveDir))
@@ -4225,7 +4225,7 @@ bool CMainDialog::IOWriteScene()
     pe->GetText(info, 100);
     if (static_cast<unsigned int>(sel) >= m_saveList.size())
     {
-        dir = fs::path(m_savegameDir) / m_main->GetGamerName() / ("save" + clearName(info));
+        dir = fs::path(GetSavegameDir()) / m_main->GetGamerName() / ("save" + clearName(info));
     }
     else
     {
@@ -6001,7 +6001,13 @@ bool CMainDialog::GetSceneSoluce()
 
 // Returns the name of the folder to save.
 
-std::string & CMainDialog::GetSavegameDir()
+std::string CMainDialog::GetSavegameDir()
+{
+    return CResourceManager::GetSaveLocation()+"/"+m_savegameDir;
+}
+
+//TODO: Use PHYSFS everywhere
+std::string & CMainDialog::GetPHYSFSSavegameDir()
 {
     return m_savegameDir;
 }
@@ -6059,7 +6065,7 @@ void CMainDialog::WriteGamerPerso(char *gamer)
     char    filename[100];
     char    line[100];
 
-    sprintf(filename, "%s/%s/face.gam", m_savegameDir.c_str(), gamer);
+    sprintf(filename, "%s/%s/face.gam", GetSavegameDir().c_str(), gamer);
     file = fopen(filename, "w");
     if ( file == NULL )  return;
 
@@ -6092,7 +6098,7 @@ void CMainDialog::ReadGamerPerso(char *gamer)
     m_perso.face = 0;
     DefPerso();
 
-    sprintf(filename, "%s/%s/face.gam", m_savegameDir.c_str(), gamer);
+    sprintf(filename, "%s/%s/face.gam", GetSavegameDir().c_str(), gamer);
     file = fopen(filename, "r");
     if ( file == NULL )  return;
 
@@ -6201,7 +6207,7 @@ bool CMainDialog::ReadGamerInfo()
         m_sceneInfo[i].bPassed = false;
     }
 
-    sprintf(line, "%s/%s/%s.gam", m_savegameDir.c_str(), m_main->GetGamerName(), m_sceneName);
+    sprintf(line, "%s/%s/%s.gam", GetSavegameDir().c_str(), m_main->GetGamerName(), m_sceneName);
     file = fopen(line, "r");
     if ( file == NULL )  return false;
 
@@ -6237,7 +6243,7 @@ bool CMainDialog::WriteGamerInfo()
     char    line[100];
     int     i;
 
-    sprintf(line, "%s/%s/%s.gam", m_savegameDir.c_str(), m_main->GetGamerName(), m_sceneName);
+    sprintf(line, "%s/%s/%s.gam", GetSavegameDir().c_str(), m_main->GetGamerName(), m_sceneName);
     file = fopen(line, "w");
     if ( file == NULL )  return false;
 

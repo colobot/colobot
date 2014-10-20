@@ -329,6 +329,7 @@ public:
     bool        GetSceneSoluce();
     bool        GetShowAll();
     bool        GetRadar();
+    const char* GetPHYSFSSavegameDir();
     const char* GetSavegameDir();
     const char* GetPublicDir();
     const char* GetFilesDir();

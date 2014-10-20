@@ -1533,7 +1533,7 @@ std::string CStudio::SearchDirectory(bool bCreate)
     }
     else
     {
-        sprintf(dir, "%s/%s/Program/", m_main->GetSavegameDir(), m_main->GetGamerName());
+        sprintf(dir, "%s/%s/Program/", m_main->GetPHYSFSSavegameDir(), m_main->GetGamerName());
     }
 
     fs::path path = fs::path(dir);

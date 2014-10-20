@@ -35,6 +35,7 @@ public:
     static bool RemoveLocation(const std::string &location);
 
     static bool SetSaveLocation(const std::string &location);
+    static std::string GetSaveLocation();
 
     static SDL_RWops* GetSDLFileHandler(const std::string &filename);
     static CSNDFile* GetSNDFileHandler(const std::string &filename);

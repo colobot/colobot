@@ -97,6 +97,14 @@ bool CResourceManager::SetSaveLocation(const std::string &location)
     return false;
 }
 
+std::string CResourceManager::GetSaveLocation()
+{
+    if(PHYSFS_isInit()) {
+        return PHYSFS_getWriteDir();
+    }
+    return "";
+}
+
 
 SDL_RWops* CResourceManager::GetSDLFileHandler(const std::string &filename)
 {

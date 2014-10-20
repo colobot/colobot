@@ -5427,7 +5427,7 @@ void CRobotMain::LoadOneScript(CObject *obj, int &nbError)
 
         char filename[MAX_FNAME];
         sprintf(filename, "%s/%s/%c%.3d%.3d%.1d.txt",
-                    GetSavegameDir(), m_gamerName.c_str(), name[0], rank, objRank, i);
+                    GetPHYSFSSavegameDir(), m_gamerName.c_str(), name[0], rank, objRank, i);
         brain->ReadProgram(i, filename);
         if (!brain->GetCompile(i)) nbError++;
     }
@@ -5497,7 +5497,7 @@ void CRobotMain::SaveOneScript(CObject *obj)
     {
         char filename[MAX_FNAME];
         sprintf(filename, "%s/%s/%c%.3d%.3d%.1d.txt",
-                    GetSavegameDir(), m_gamerName.c_str(), name[0], rank, objRank, i);
+                    GetPHYSFSSavegameDir(), m_gamerName.c_str(), name[0], rank, objRank, i);
         brain->WriteProgram(i, filename);
     }
 }
@@ -6621,6 +6621,12 @@ bool CRobotMain::GetRadar()
             return true;
     }
     return false;
+}
+
+//TODO: Use PHYSFS everywhere
+const char* CRobotMain::GetPHYSFSSavegameDir()
+{
+    return m_dialog->GetPHYSFSSavegameDir().c_str();
 }
 
 const char* CRobotMain::GetSavegameDir()
