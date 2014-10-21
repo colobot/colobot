@@ -217,12 +217,25 @@ bool CGLDevice::Create()
         else
         {
             GetLogger()->Info("Auto-detecting VBO support\n");
-            m_vboAvailable = glewIsSupported("GL_ARB_vertex_buffer_object");
+            
+            // extracting OpenGL version
+            const char *version = reinterpret_cast<const char*>(glGetString(GL_VERSION));
+            int major = 0, minor = 0;
 
-            if (m_vboAvailable)
-                GetLogger()->Info("Detected ARB_vertex_buffer_object extension - using VBOs\n");
+            sscanf(version, "%d.%d", &major, &minor);
+
+            // VBO is core OpenGL feature since 1.5
+            // everything below 1.5 means no VBO support
+            if(major > 1 || minor > 4)
+            {
+                GetLogger()->Info("OpenGL %d.%d, VBO supported\n", major, minor);
+                m_vboAvailable = true;
+            }
             else
-                GetLogger()->Info("No ARB_vertex_buffer_object extension present - using display lists\n");
+            {
+                GetLogger()->Info("OpenGL %d.%d, VBO not supported\n", major, minor);
+                m_vboAvailable = false;
+            }
         }
     }
 
