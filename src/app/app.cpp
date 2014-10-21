@@ -586,8 +586,8 @@ bool CApplication::CreateVideoSurface()
     if (m_deviceConfig.fullScreen)
         videoFlags |= SDL_FULLSCREEN;
 
-    if (m_deviceConfig.resizeable)
-        videoFlags |= SDL_RESIZABLE;
+    //if (m_deviceConfig.resizeable)
+    //    videoFlags |= SDL_RESIZABLE;
 
     // Set OpenGL attributes
 
