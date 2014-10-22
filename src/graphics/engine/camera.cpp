@@ -139,6 +139,7 @@ CCamera::CCamera()
     m_scriptLookat = Math::Vector(0.0f, 0.0f, 0.0f);
 
     m_effect        = true;
+    m_blood         = true;
     m_cameraScroll  = true;
     m_cameraInvertX = false;
     m_cameraInvertY = false;
@@ -151,6 +152,15 @@ CCamera::~CCamera()
 void CCamera::SetEffect(bool enable)
 {
     m_effect = enable;
+}
+
+void CCamera::SetBlood(bool enable)
+{
+    m_blood = enable;
+}
+
+bool CCamera::GetBlood() {
+    return m_blood;
 }
 
 void CCamera::SetCameraScroll(bool scroll)

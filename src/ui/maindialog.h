@@ -245,6 +245,7 @@ protected:
     bool            m_bCameraInvertX;       // for CCamera
     bool            m_bCameraInvertY;       // for CCamera
     bool            m_bEffect;          // for CCamera
+    bool            m_bBlood;          // for CCamera
 
     Math::Point          m_glintMouse;
     float                m_glintTime;
