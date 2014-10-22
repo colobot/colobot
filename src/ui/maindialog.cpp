@@ -162,6 +162,7 @@ CMainDialog::CMainDialog()
     m_bCameraInvertX = false;
     m_bCameraInvertY = false;
     m_bEffect        = true;
+    m_bBlood         = true;
     m_shotDelay      = 0;
 
     m_glintMouse = Math::Point(0.0f, 0.0f);
@@ -1222,6 +1223,9 @@ void CMainDialog::ChangePhase(Phase phase)
         pc->SetState(STATE_SHADOW);
         pos.y -= 0.048f;
         pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_EFFECT);
+        pc->SetState(STATE_SHADOW);
+        pos.y -= 0.048f;
+        pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_BLOOD);
         pc->SetState(STATE_SHADOW);
         //?     pos.y -= 0.048f;
         //?     pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_NICERST);
@@ -2550,6 +2554,13 @@ bool CMainDialog::EventProcess(const Event &event)
             case EVENT_INTERFACE_EFFECT:
                 m_bEffect = !m_bEffect;
                 m_camera->SetEffect(m_bEffect);
+                ChangeSetupButtons();
+                UpdateSetupButtons();
+                break;
+
+            case EVENT_INTERFACE_BLOOD:
+                m_bBlood = !m_bBlood;
+                m_camera->SetBlood(m_bBlood);
                 ChangeSetupButtons();
                 UpdateSetupButtons();
                 break;
@@ -5011,6 +5022,12 @@ void CMainDialog::UpdateSetupButtons()
         pc->SetState(STATE_CHECK, m_bEffect);
     }
 
+    pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_BLOOD));
+    if ( pc != 0 )
+    {
+        pc->SetState(STATE_CHECK, m_bBlood);
+    }
+
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_SHADOW));
     if ( pc != 0 )
     {
@@ -5198,6 +5215,7 @@ void CMainDialog::SetupMemorize()
     GetProfile().SetLocalProfileInt("Setup", "CameraInvertX", m_bCameraInvertX);
     GetProfile().SetLocalProfileInt("Setup", "CameraInvertY", m_bCameraInvertY);
     GetProfile().SetLocalProfileInt("Setup", "InterfaceEffect", m_bEffect);
+    GetProfile().SetLocalProfileInt("Setup", "Blood", m_bBlood);
     GetProfile().SetLocalProfileInt("Setup", "GroundShadow", m_engine->GetShadow());
     GetProfile().SetLocalProfileInt("Setup", "GroundSpot", m_engine->GetGroundSpot());
     GetProfile().SetLocalProfileInt("Setup", "ObjectDirty", m_engine->GetDirty());
@@ -5354,6 +5372,11 @@ void CMainDialog::SetupRecall()
     if ( GetProfile().GetLocalProfileInt("Setup", "InterfaceEffect", iValue) )
     {
         m_bEffect = iValue;
+    }
+
+    if ( GetProfile().GetLocalProfileInt("Setup", "Blood", iValue) )
+    {
+        m_bBlood = iValue;
     }
 
     if ( GetProfile().GetLocalProfileInt("Setup", "GroundShadow", iValue) )
