@@ -198,6 +198,8 @@ public:
     void        SetScriptLookat(Math::Vector lookat);
 
     void        SetEffect(bool enable);
+    void        SetBlood(bool enable);
+    bool        GetBlood();
     void        SetCameraScroll(bool scroll);
     void        SetCameraInvertX(bool invert);
     void        SetCameraInvertY(bool invert);
@@ -379,6 +381,8 @@ protected:
 
     //! Shocks if explosion?
     bool        m_effect;
+    //! Blood?
+    bool        m_blood;
     //! Scroll in the edges?
     bool        m_cameraScroll;
     //! X inversion in the edges?

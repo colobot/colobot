@@ -199,6 +199,7 @@ void InitializeRestext()
     stringsEvent[EVENT_INTERFACE_EDITMODE]  = "Automatic indent\\When program editing";
     stringsEvent[EVENT_INTERFACE_EDITVALUE] = "Big indent\\Indent 2 or 4 spaces per level defined by braces";
     stringsEvent[EVENT_INTERFACE_SOLUCE4]   = "Access to solutions\\Show program \"4: Solution\" in the exercises";
+    stringsEvent[EVENT_INTERFACE_BLOOD]     = "Blood\\Display blood when the astronaut or the alien queen is hit";
 
     stringsEvent[EVENT_INTERFACE_KDEF]      = "Standard controls\\Standard key functions";
     stringsEvent[EVENT_INTERFACE_KLEFT]     = "Turn left\\turns the bot to the left";

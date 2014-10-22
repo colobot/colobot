@@ -312,7 +312,7 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
     }
     if ( m_type == PT_SHOTH )
     {
-        if ( m_object->GetSelect() )
+        if ( m_camera->GetBlood() && m_object->GetSelect() )
         {
             m_camera->StartOver(CAM_OVER_EFFECT_BLOOD, m_pos, force);
         }
@@ -672,7 +672,7 @@ bool CPyro::EventProcess(const Event &event)
         }
     }
 
-    if ( m_type == PT_SHOTH &&
+    if ( m_camera->GetBlood() && m_type == PT_SHOTH &&
          m_lastParticle+m_engine->ParticleAdapt(0.05f) <= m_time )
     {
         m_lastParticle = m_time;
@@ -694,7 +694,7 @@ bool CPyro::EventProcess(const Event &event)
         }
     }
 
-    if ( m_type == PT_SHOTM &&
+    if ( m_camera->GetBlood() && m_type == PT_SHOTM &&
          m_lastParticle+m_engine->ParticleAdapt(0.05f) <= m_time )
     {
         m_lastParticle = m_time;
