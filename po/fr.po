@@ -176,6 +176,9 @@ msgstr "Grande indentation\\Indente avec 2 ou 4 espaces"
 msgid "Black box"
 msgstr "Boîte noire"
 
+msgid "Blood\\Display blood when the astronaut or the alien queen is hit"
+msgstr ""
+
 msgid "Blue"
 msgstr "Bleu"
 

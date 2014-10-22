@@ -176,6 +176,9 @@ msgstr "Большой отступ\\Отступать на 2 или 4 проб
 msgid "Black box"
 msgstr "Черный ящик"
 
+msgid "Blood\\Display blood when the astronaut or the alien queen is hit"
+msgstr ""
+
 msgid "Blue"
 msgstr "Синий"
 

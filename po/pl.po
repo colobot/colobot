@@ -183,6 +183,9 @@ msgstr ""
 msgid "Black box"
 msgstr "Czarna skrzynka"
 
+msgid "Blood\\Display blood when the astronaut or the alien queen is hit"
+msgstr "Krew\\Pokazuj krew gdy astronauta lub Królowa Obcych zostaje trafiona"
+
 msgid "Blue"
 msgstr "Niebieski"
 

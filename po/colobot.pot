@@ -402,6 +402,9 @@ msgstr ""
 msgid "Access to solutions\\Show program \"4: Solution\" in the exercises"
 msgstr ""
 
+msgid "Blood\\Display blood when the astronaut or the alien queen is hit"
+msgstr ""
+
 msgid "Standard controls\\Standard key functions"
 msgstr ""
 

@@ -181,6 +181,9 @@ msgstr "Einrücken mit 4 Leerstellen\\Einrücken mit 2 oder 4 Leerstellen"
 msgid "Black box"
 msgstr "Flugschreiber"
 
+msgid "Blood\\Display blood when the astronaut or the alien queen is hit"
+msgstr ""
+
 msgid "Blue"
 msgstr "Blau"
 
