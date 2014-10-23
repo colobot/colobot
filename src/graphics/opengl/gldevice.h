@@ -48,6 +48,17 @@ enum VBOMode
 };
 
 /**
+ \enum VertexBufferType
+ \brief Specifies type of vertex buffer to use
+ */
+enum VertexBufferType
+{
+   VBT_DISPLAY_LIST,    //! use display lists
+   VBT_VBO_CORE,        //! use core OpenGL 1.5 VBOs
+   VBT_VBO_ARB          //! use ARB extension VBOs
+};
+
+/**
  \struct GLDeviceConfig
  \brief Additional config with OpenGL-specific settings */
 struct GLDeviceConfig : public DeviceConfig
@@ -104,6 +115,7 @@ public:
     void ConfigChanged(const GLDeviceConfig &newConfig);
 
     void SetUseVbo(bool useVbo);
+    void SetVertexBufferType(VertexBufferType type);
 
     virtual void BeginScene() override;
     virtual void EndScene() override;
@@ -235,6 +247,8 @@ private:
     bool m_multitextureAvailable;
     //! Whether to use VBOs or display lists
     bool m_vboAvailable;
+    //! Which vertex buffer type to use
+    VertexBufferType m_vertexBufferType;
     //! Map of saved VBO objects
     std::map<unsigned int, VboObjectInfo> m_vboObjects;
     //! Last ID of VBO object
