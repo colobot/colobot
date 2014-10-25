@@ -4497,8 +4497,13 @@ void CMainDialog::UpdateSceneList(int chap, int &sel)
     for ( j=0 ; j<99 ; j++ )
     {
         CLevelParser* level = new CLevelParser(m_sceneName, chap+1, j+1);
-        if(!level->Exists())
+        if(!level->Exists()) {
+            readAll = true;
             break;
+        } else {
+            if(!readAll)
+                break;
+        }
         try {
             level->Load();
             sprintf(line, "%d: %s", j+1, level->Get("Title")->GetParam("text")->AsString().c_str());
@@ -4515,9 +4520,7 @@ void CMainDialog::UpdateSceneList(int chap, int &sel)
 
         if ( m_phase == PHASE_MISSION && !m_main->GetShowAll() && !bPassed )
         {
-            j ++;
             readAll = false;
-            break;
         }
     }
 
@@ -4529,6 +4532,7 @@ void CMainDialog::UpdateSceneList(int chap, int &sel)
     {
         m_maxList = j+1;  // this is not the last!
     }
+    CLogger::GetInstancePointer()->Debug("m_maxList = %d\n", m_maxList);
 
     if ( sel > j-1 )  sel = j-1;
 
