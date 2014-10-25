@@ -322,6 +322,21 @@ void CMainDialog::ChangePhase(Phase phase)
             ddim.x = 0.09f;
             pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_USER);
             pb->SetState(STATE_SHADOW);
+            
+            try {
+                CLevelParser* level = new CLevelParser("levels/custom/config.txt");
+                if(level->Exists()) {
+                    level->Load();
+                    CLevelParserLine* line = level->Get("Button");
+                    if(line->GetParam("name")->IsDefined())
+                        pb->SetName(line->GetParam("name")->AsString());
+                    if(line->GetParam("tooltip")->IsDefined())
+                        pb->SetTooltip(line->GetParam("tooltip")->AsString());
+                }
+            }
+            catch(CLevelParserException& e) {
+                CLogger::GetInstancePointer()->Error("Failed loading userlevel button name: %s\n", e.what());
+            }
         }
 
         /*pos.x  = 139.0f/640.0f;
