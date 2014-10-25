@@ -46,6 +46,8 @@ public:
     //! Build level filename
     static std::string BuildSceneName(std::string category, int chapter, int rank, bool sceneFile = true);
     
+    //! Check if level file exists
+    bool Exists();
     //! Load file
     void Load();
     //! Save file

@@ -22,6 +22,7 @@
 
 #include "app/app.h"
 
+#include "common/resources/resourcemanager.h"
 #include "common/resources/inputstream.h"
 
 #include "object/level/parserexceptions.h"
@@ -113,6 +114,11 @@ std::string CLevelParser::BuildSceneName(std::string category, int chapter, int 
         }
     }
     return outstream.str();
+}
+
+bool CLevelParser::Exists()
+{
+    return CResourceManager::Exists(m_filename);
 }
 
 void CLevelParser::Load()

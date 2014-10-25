@@ -4378,17 +4378,11 @@ void CMainDialog::UpdateSceneChap(int &chap)
     CList*      pl;
 
     std::string fileName;
-    char        op[100];
-    char        op_i18n[100];
     char        line[500];
-    char        name[100];
-    int         i, j;
+    int         j;
     bool        bPassed;
 
-    memset(op, 0, 100);
-    memset(op_i18n, 0, 100);
     memset(line, 0, 500);
-    memset(name, 0, 100);
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
     if ( pw == 0 )  return;
@@ -4425,41 +4419,19 @@ void CMainDialog::UpdateSceneChap(int &chap)
     {
         for ( j=0 ; j<9 ; j++ )
         {
-            BuildSceneName(fileName, m_sceneName, (j+1)*100);
-            CInputStream stream;
-            stream.open(fileName);
-            if (!stream.is_open())  break;
-
-            BuildResumeName(name, m_sceneName, j+1);  // default name
-            sprintf(op, "Title.E");
-            sprintf(op_i18n, "Title.%c", m_app->GetLanguageChar());
-
-            while (stream.getline(line, 500))
-            {
-                for ( i=0 ; i<500 ; i++ )
-                {
-                    if ( line[i] == '\t' )  line[i] = ' ';  // replaces tab by space
-                    if ( line[i] == '/' && line[i+1] == '/' )
-                    {
-                        line[i] = 0;
-                        break;
-                    }
-                }
-
-                if ( Cmd(line, op) )
-                {
-                    OpString(line, "text", name);
-                }
-                if ( Cmd(line, op_i18n) )
-                {
-                    OpString(line, "text", name);
-                    break;
-                }
+            CLevelParser* level = new CLevelParser(m_sceneName, j+1, 0);
+            if(!level->Exists())
+                break;
+            try {
+                level->Load();
+                sprintf(line, "%d: %s", j+1, level->Get("Title")->GetParam("text")->AsString().c_str());
             }
-            stream.close();
+            catch(CLevelParserException& e) {
+                sprintf(line, "%s", (std::string("[ERROR]: ")+e.what()).c_str());
+            }
+            delete level;
 
             bPassed = GetGamerInfoPassed((j+1)*100);
-            sprintf(line, "%d: %s", j+1, name);
             pl->SetItemName(j, line);
             pl->SetCheck(j, bPassed);
             pl->SetEnable(j, true);
@@ -4491,17 +4463,11 @@ void CMainDialog::UpdateSceneList(int chap, int &sel)
     CWindow*    pw;
     CList*      pl;
     std::string fileName;
-    char        op[100];
-    char        op_i18n[100];
     char        line[500];
-    char        name[100];
-    int         i, j;
+    int         j;
     bool        bPassed;
 
-    memset(op, 0, 100);
-    memset(op_i18n, 0, 100);
     memset(line, 0, 500);
-    memset(name, 0, 100);
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
     if ( pw == 0 )  return;
@@ -4512,44 +4478,22 @@ void CMainDialog::UpdateSceneList(int chap, int &sel)
     
     if(chap < 0) return;
 
+    bool readAll = true;
     for ( j=0 ; j<99 ; j++ )
     {
-        BuildSceneName(fileName, m_sceneName, (chap+1)*100+(j+1));
-        
-        CInputStream stream;
-        stream.open(fileName);
-        if (!stream.is_open())  break;
-
-        BuildResumeName(name, m_sceneName, j+1);  // default name
-        sprintf(op, "Title.E");
-        sprintf(op_i18n, "Title.%c", m_app->GetLanguageChar());
-
-        while (stream.getline(line, 500))
-        {
-            for ( i=0 ; i<500 ; i++ )
-            {
-                if ( line[i] == '\t' )  line[i] = ' ';  // replaces tab by space
-                if ( line[i] == '/' && line[i+1] == '/' )
-                {
-                    line[i] = 0;
-                    break;
-                }
-            }
-
-            if ( Cmd(line, op) )
-            {
-                OpString(line, "text", name);
-            }
-            if ( Cmd(line, op_i18n) )
-            {
-                OpString(line, "text", name);
-                break;
-            }
+        CLevelParser* level = new CLevelParser(m_sceneName, chap+1, j+1);
+        if(!level->Exists())
+            break;
+        try {
+            level->Load();
+            sprintf(line, "%d: %s", j+1, level->Get("Title")->GetParam("text")->AsString().c_str());
         }
-        stream.close();
+        catch(CLevelParserException& e) {
+            sprintf(line, "%s", (std::string("[ERROR]: ")+e.what()).c_str());
+        }
+        delete level;
 
         bPassed = GetGamerInfoPassed((chap+1)*100+(j+1));
-        sprintf(line, "%d: %s", j+1, name);
         pl->SetItemName(j, line);
         pl->SetCheck(j, bPassed);
         pl->SetEnable(j, true);
@@ -4557,23 +4501,19 @@ void CMainDialog::UpdateSceneList(int chap, int &sel)
         if ( m_phase == PHASE_MISSION && !m_main->GetShowAll() && !bPassed )
         {
             j ++;
+            readAll = false;
             break;
         }
     }
 
-    /* TODO: ?????
-    BuildSceneName(fileName, m_sceneName, (chap+1)*100+(j+1));
-    file = fopen(fileName.c_str(), "r");
-    if ( file == NULL )
+    if(readAll)
     {
         m_maxList = j;
     }
     else
     {
         m_maxList = j+1;  // this is not the last!
-        fclose(file);
-    }*/
-    m_maxList = j;
+    }
 
     if ( sel > j-1 )  sel = j-1;
 
