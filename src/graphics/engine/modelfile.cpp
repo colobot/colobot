@@ -24,7 +24,9 @@
 #include "common/logger.h"
 #include "common/stringutils.h"
 
+#ifndef MODELFILE_NO_ENGINE
 #include "common/resources/inputstream.h"
+#endif
 
 #include "graphics/engine/engine.h"
 
@@ -436,13 +438,23 @@ bool CModelFile::ReadModel(const std::string& fileName)
 {
     m_triangles.clear();
 
+    #ifndef MODELFILE_NO_ENGINE
     CInputStream stream;
-    stream.open(fileName.c_str());
+    stream.open(fileName);
     if (!stream.is_open())
     {
         GetLogger()->Error("Could not open file '%s'\n", fileName.c_str());
         return false;
     }
+    #else
+    std::ifstream stream;
+    stream.open(fileName);
+    if (!stream.good())
+    {
+        GetLogger()->Error("Could not open file '%s'\n", fileName.c_str());
+        return false;
+    }
+    #endif
 
     return ReadModel(stream);
 }
@@ -827,13 +839,23 @@ struct NewModelTriangle1
 
 bool CModelFile::ReadTextModel(const std::string& fileName)
 {
+    #ifndef MODELFILE_NO_ENGINE
     CInputStream stream;
-    stream.open(fileName.c_str());
+    stream.open(fileName);
     if (!stream.is_open())
     {
         GetLogger()->Error("Could not open file '%s'\n", fileName.c_str());
         return false;
     }
+    #else
+    std::ifstream stream;
+    stream.open(fileName);
+    if (!stream.good())
+    {
+        GetLogger()->Error("Could not open file '%s'\n", fileName.c_str());
+        return false;
+    }
+    #endif
 
     return ReadTextModel(stream);
 }
@@ -1024,13 +1046,23 @@ bool CModelFile::WriteTextModel(std::ostream& stream)
 
 bool CModelFile::ReadBinaryModel(const std::string& fileName)
 {
+    #ifndef MODELFILE_NO_ENGINE
     CInputStream stream;
-    stream.open(fileName.c_str());
+    stream.open(fileName);
     if (!stream.is_open())
     {
         GetLogger()->Error("Could not open file '%s'\n", fileName.c_str());
         return false;
     }
+    #else
+    std::ifstream stream;
+    stream.open(fileName);
+    if (!stream.good())
+    {
+        GetLogger()->Error("Could not open file '%s'\n", fileName.c_str());
+        return false;
+    }
+    #endif
 
     return ReadBinaryModel(stream);
 }
