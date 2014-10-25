@@ -295,6 +295,9 @@ bool CEngine::Create()
 void CEngine::Destroy()
 {
     m_text->Destroy();
+    
+    delete m_pause;
+    m_pause = nullptr;
 
     delete m_lightMan;
     m_lightMan = nullptr;
@@ -325,6 +328,8 @@ void CEngine::ResetAfterDeviceChanged()
     m_text->FlushCache();
 
     FlushTextureCache();
+    
+    LoadAllTextures();
 }
 
 bool CEngine::ProcessEvent(const Event &event)
