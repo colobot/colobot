@@ -6209,7 +6209,7 @@ bool CMainDialog::WriteGamerInfo()
 
     for ( i=0 ; i<MAXSCENE ; i++ )
     {
-        if ( m_sceneInfo[i].numTry == 0 )  continue;
+        if ( m_sceneInfo[i].numTry == 0 && !m_sceneInfo[i].bPassed )  continue;
 
         sprintf(line, "Chapter %d: Scene %d: numTry=%d passed=%d\n",
                 i/100, i%100, m_sceneInfo[i].numTry, m_sceneInfo[i].bPassed);
