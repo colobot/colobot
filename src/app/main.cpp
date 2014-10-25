@@ -86,42 +86,46 @@ int SDL_MAIN_FUNC(int argc, char *argv[])
     InitializeRestext();
     InitializeEventTypeTexts();
 
-    CSystemUtils* systemUtils = CSystemUtils::Create(); // platform-specific utils
-    systemUtils->Init();
-
     logger.Info("Colobot starting\n");
-
-    CApplication* app = new CApplication(); // single instance of the application
-
-    ParseArgsStatus status = app->ParseArguments(argc, argv);
-    if (status == PARSE_ARGS_FAIL)
-    {
-        systemUtils->SystemDialog(SDT_ERROR, "COLOBOT - Fatal Error", "Invalid commandline arguments!\n");
-        return app->GetExitCode();
-    }
-    else if (status == PARSE_ARGS_HELP)
-    {
-        return app->GetExitCode();
-    }
-
+    
     int code = 0;
+    while(true) {
+        CSystemUtils* systemUtils = CSystemUtils::Create(); // platform-specific utils
+        systemUtils->Init();
+        
+        CApplication* app = new CApplication(); // single instance of the application
 
-    if (! app->Create())
-    {
-        app->Destroy(); // ensure a clean exit
-        code = app->GetExitCode();
-        if ( code != 0 && !app->GetErrorMessage().empty() )
+        ParseArgsStatus status = app->ParseArguments(argc, argv);
+        if (status == PARSE_ARGS_FAIL)
         {
-            systemUtils->SystemDialog(SDT_ERROR, "COLOBOT - Fatal Error", app->GetErrorMessage());
+            systemUtils->SystemDialog(SDT_ERROR, "COLOBOT - Fatal Error", "Invalid commandline arguments!\n");
+            return app->GetExitCode();
         }
-        logger.Info("Didn't run main loop. Exiting with code %d\n", code);
-        return code;
+        else if (status == PARSE_ARGS_HELP)
+        {
+            return app->GetExitCode();
+        }
+
+
+        if (! app->Create())
+        {
+            app->Destroy(); // ensure a clean exit
+            code = app->GetExitCode();
+            if ( code != 0 && !app->GetErrorMessage().empty() )
+            {
+                systemUtils->SystemDialog(SDT_ERROR, "COLOBOT - Fatal Error", app->GetErrorMessage());
+            }
+            logger.Info("Didn't run main loop. Exiting with code %d\n", code);
+            return code;
+        }
+
+        code = app->Run();
+        bool restarting = app->IsRestarting();
+
+        delete app;
+        delete systemUtils;
+        if(!restarting) break;
     }
-
-    code = app->Run();
-
-    delete app;
-    delete systemUtils;
 
     logger.Info("Exiting with code %d\n", code);
     return code;

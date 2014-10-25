@@ -4677,7 +4677,13 @@ void CMainDialog::ChangeDisplay()
     bFull = pc->TestState(STATE_CHECK);
     m_setupFull = bFull;
     
+    SetupMemorize();
     
+    #if !PLATFORM_LINUX
+    // Windows causes problems, so we'll restart the game
+    // Mac OS was not tested so let's restart just to be sure
+    m_app->Restart();
+    #else
     std::vector<Math::IntPoint> modes;
     m_app->GetVideoResolutionList(modes, true, true);
     
@@ -4685,6 +4691,7 @@ void CMainDialog::ChangeDisplay()
     config.size = modes[m_setupSelMode];
     config.fullScreen = bFull;
     m_app->ChangeVideoConfig(config);
+    #endif
 }
 
 

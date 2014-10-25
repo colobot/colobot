@@ -227,6 +227,11 @@ public:
 
     //! Cleans up before exit
     void        Destroy();
+    
+    //! Restart
+    void        Restart();
+    //! Should we restart after app quits?
+    bool        IsRestarting();
 
     //! Returns a list of possible video modes
     VideoQueryResult GetVideoResolutionList(std::vector<Math::IntPoint> &resolutions,
@@ -413,6 +418,8 @@ protected:
     bool            m_active;
     //! Bit array of active debug modes
     long            m_debugModes;
+    //! If we are restarting the app
+    bool            m_restart;
 
     //! Message to be displayed as error to the user
     std::string     m_errorMessage;

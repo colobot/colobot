@@ -113,6 +113,7 @@ CApplication::CApplication()
     m_exitCode  = 0;
     m_active    = false;
     m_debugModes = 0;
+    m_restart   = false;
 
     m_windowTitle = "COLOBOT: Gold Edition";
 
@@ -673,6 +674,17 @@ void CApplication::Destroy()
     IMG_Quit();
 
     SDL_Quit();
+}
+
+void CApplication::Restart()
+{
+    m_restart = true;
+    m_eventQueue->AddEvent(Event(EVENT_SYS_QUIT));
+}
+
+bool CApplication::IsRestarting()
+{
+    return m_restart;
 }
 
 bool CApplication::ChangeVideoConfig(const Gfx::GLDeviceConfig &newConfig)
