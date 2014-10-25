@@ -968,6 +968,7 @@ void CMainDialog::ChangePhase(Phase phase)
         pb->SetState(STATE_SHADOW);
         pb->SetState(STATE_CARD);
         pb->SetState(STATE_CHECK, (m_phase == PHASE_SETUPd || m_phase == PHASE_SETUPds));
+        pb->SetState(STATE_ENABLE, !m_bSimulSetup);
 
         pos.x += ddim.x+0.01f;
         pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_SETUPg);
@@ -4532,7 +4533,6 @@ void CMainDialog::UpdateSceneList(int chap, int &sel)
     {
         m_maxList = j+1;  // this is not the last!
     }
-    CLogger::GetInstancePointer()->Debug("m_maxList = %d\n", m_maxList);
 
     if ( sel > j-1 )  sel = j-1;
 
