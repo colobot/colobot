@@ -4416,7 +4416,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                         std::string op = "autoValue"+boost::lexical_cast<std::string>(i+1); // autoValue1..autoValue5
                         automat->SetValue(i, line->GetParam(op)->AsFloat(0.0f));
                     }
-                    automat->SetString(const_cast<char*>(line->GetParam("autoString")->AsString("").c_str()));
+                    automat->SetString(const_cast<char*>(line->GetParam("autoString")->AsPath("ai", "").c_str()));
                     
                     int i = line->GetParam("run")->AsInt(-1);
                     if (i != -1)
@@ -4681,7 +4681,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             continue;
         }
         
-        if(read[0] != 0) continue; // ignore errors when loading saevd game (TODO: don't report ones that are just not loaded when loading saved game)
+        if(read[0] != 0) continue; // ignore errors when loading saved game (TODO: don't report ones that are just not loaded when loading saved game)
         if(resetObject) continue; // ignore when reseting just objects (TODO: see above)
         
         throw CLevelParserException("Unknown command: '"+line->GetCommand()+"' in "+line->GetLevel()->GetFilename()+":"+boost::lexical_cast<std::string>(line->GetLineNumber()));
