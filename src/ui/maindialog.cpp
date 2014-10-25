@@ -968,7 +968,9 @@ void CMainDialog::ChangePhase(Phase phase)
         pb->SetState(STATE_SHADOW);
         pb->SetState(STATE_CARD);
         pb->SetState(STATE_CHECK, (m_phase == PHASE_SETUPd || m_phase == PHASE_SETUPds));
+        #if PLATFORM_WINDOWS
         pb->SetState(STATE_ENABLE, !m_bSimulSetup);
+        #endif
 
         pos.x += ddim.x+0.01f;
         pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_SETUPg);
