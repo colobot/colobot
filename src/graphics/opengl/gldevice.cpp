@@ -187,7 +187,7 @@ bool CGLDevice::Create()
 {
     GetLogger()->Info("Creating CDevice\n");
 
-    static bool glewInited = false;
+    /*static*/ bool glewInited = false;
 
     if (!glewInited)
     {
