@@ -127,11 +127,11 @@ endif(PLATFORM_WINDOWS)
 ##
 # Packaging
 ##
-set(CPACK_BUNDLE_NAME "Colobot")
+set(CPACK_BUNDLE_NAME "Colobot: Gold Edition")
 set(CPACK_PACKAGE_FILE_NAME "colobot-${COLOBOT_VERSION_FULL}")
 set(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/../README.md")
-set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Colobot - Colonize with Bots")
-set(CPACK_PACKAGE_VENDOR "Polish Portal of Colobot")
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Colobot: Gold Edition")
+set(CPACK_PACKAGE_VENDOR "Terranova Team")
 
 set(CPACK_PACKAGE_VERSION_MAJOR ${COLOBOT_VERSION_MAJOR})
 set(CPACK_PACKAGE_VERSION_MINOR ${COLOBOT_VERSION_MINOR})
@@ -142,10 +142,10 @@ if(PLATFORM_WINDOWS)
 
     # Don't version the install directory, and allow overwriting
     set(CPACK_PACKAGE_INSTALL_DIRECTORY "Colobot")
-    set(CPACK_NSIS_DEFINES "SetOverwrite on\nBrandingText \\\"Colobot ${COLOBOT_VERSION_CODENAME} (${COLOBOT_VERSION_FULL})\\\"")
+    set(CPACK_NSIS_DEFINES "SetOverwrite on\nBrandingText \\\"Colobot: Gold Edition (${COLOBOT_VERSION_FULL})\\\"")
     # Install the executable directly in Program Files/Colobot/
     set(CPACK_NSIS_EXECUTABLES_DIRECTORY ".")
-    set(CPACK_PACKAGE_EXECUTABLES "colobot" "Colobot ${COLOBOT_VERSION_CODENAME}")
+    set(CPACK_PACKAGE_EXECUTABLES "colobot" "Colobot: Gold Edition")
 
     # Branding
     ## Installation and uninstallation icons
