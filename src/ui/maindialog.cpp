@@ -1899,6 +1899,9 @@ bool CMainDialog::EventProcess(const Event &event)
         {
             StopDialog();
             StartSuspend();
+            #if PLATFORM_WINDOWS
+            if ( m_phaseSetup == PHASE_SETUPd ) m_phaseSetup = PHASE_SETUPg;
+            #endif
             if ( m_phaseSetup == PHASE_SETUPd )  ChangePhase(PHASE_SETUPds);
             if ( m_phaseSetup == PHASE_SETUPg )  ChangePhase(PHASE_SETUPgs);
             if ( m_phaseSetup == PHASE_SETUPp )  ChangePhase(PHASE_SETUPps);
