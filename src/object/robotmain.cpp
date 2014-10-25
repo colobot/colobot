@@ -4675,9 +4675,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
         
         if (line->GetCommand() == "NewScript" && !resetObject)
         {
-            char name[200];
-            strcpy(name, line->GetParam("name")->AsPath("").c_str()); //TODO: don't make this relative to ai/
-            AddNewScriptName(line->GetParam("type")->AsObjectType(OBJECT_NULL), name);
+            AddNewScriptName(line->GetParam("type")->AsObjectType(OBJECT_NULL), const_cast<char*>(line->GetParam("name")->AsPath("ai").c_str()));
             continue;
         }
         
