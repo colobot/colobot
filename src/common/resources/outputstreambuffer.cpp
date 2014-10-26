@@ -19,6 +19,8 @@
 
 #include "common/resources/outputstreambuffer.h"
 
+#include "common/resources/resourcemanager.h"
+
 #include <stdexcept>
 #include <sstream>
 
@@ -40,7 +42,7 @@ COutputStreamBuffer::~COutputStreamBuffer()
 void COutputStreamBuffer::open(const std::string &filename)
 {
     if (PHYSFS_isInit())
-        m_file = PHYSFS_openWrite(filename.c_str());
+        m_file = PHYSFS_openWrite(CResourceManager::CleanPath(filename).c_str());
 }
 
 

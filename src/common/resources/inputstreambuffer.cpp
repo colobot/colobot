@@ -19,6 +19,8 @@
 
 #include "common/resources/inputstreambuffer.h"
 
+#include "common/resources/resourcemanager.h"
+
 #include <stdexcept>
 #include <sstream>
 
@@ -44,7 +46,7 @@ CInputStreamBuffer::~CInputStreamBuffer()
 void CInputStreamBuffer::open(const std::string &filename)
 {
     if (PHYSFS_isInit())
-        m_file = PHYSFS_openRead(filename.c_str());
+        m_file = PHYSFS_openRead(CResourceManager::CleanPath(filename).c_str());
 }
 
 

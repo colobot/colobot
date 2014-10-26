@@ -30,6 +30,8 @@ class CResourceManager
 public:
     CResourceManager(const char *argv0);
     ~CResourceManager();
+    
+    static std::string CleanPath(const std::string &path);
 
     static bool AddLocation(const std::string &location, bool prepend = true);
     static bool RemoveLocation(const std::string &location);

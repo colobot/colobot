@@ -26,6 +26,7 @@
 #include <physfs.h>
 
 #include <boost/filesystem.hpp>
+#include <boost/regex.hpp>
 
 namespace fs = boost::filesystem;
 
@@ -53,6 +54,11 @@ CResourceManager::~CResourceManager()
             CLogger::GetInstancePointer()->Error("Error while deinitializing physfs\n");
         }
     }
+}
+
+std::string CResourceManager::CleanPath(const std::string& path)
+{
+    return boost::regex_replace(path, boost::regex("\\.\\./(.*)/"), "");
 }
 
 
@@ -121,7 +127,7 @@ SDL_RWops* CResourceManager::GetSDLFileHandler(const std::string &filename)
         return nullptr;
     }
 
-    PHYSFS_File *file = PHYSFS_openRead(filename.c_str());
+    PHYSFS_File *file = PHYSFS_openRead(CleanPath(filename).c_str());
     if (!file)
     {
         SDL_FreeRW(handler);
@@ -141,32 +147,33 @@ SDL_RWops* CResourceManager::GetSDLFileHandler(const std::string &filename)
 
 CSNDFile* CResourceManager::GetSNDFileHandler(const std::string &filename)
 {
-    return new CSNDFile(filename);
+    return new CSNDFile(CleanPath(filename));
 }
 
 
 bool CResourceManager::Exists(const std::string &filename)
 {
-    return PHYSFS_exists(filename.c_str());
+    return PHYSFS_exists(CleanPath(filename).c_str());
 }
 
 bool CResourceManager::DirectoryExists(const std::string& directory)
 {
-    return PHYSFS_exists(directory.c_str()) && PHYSFS_isDirectory(directory.c_str());
+    return PHYSFS_exists(CleanPath(directory).c_str()) && PHYSFS_isDirectory(CleanPath(directory).c_str());
 }
 
 bool CResourceManager::CreateDirectory(const std::string& directory)
 {
-    return PHYSFS_mkdir(directory.c_str());
+    return PHYSFS_mkdir(CleanPath(directory).c_str());
 }
 
+//TODO: Don't use boost filesystem here
 bool CResourceManager::RemoveDirectory(const std::string& directory)
 {
     bool success = true;
     std::string writeDir = PHYSFS_getWriteDir();
     try
     {
-        fs::remove_all(writeDir + "/" + directory);
+        fs::remove_all(writeDir + "/" + CleanPath(directory));
     }
     catch (std::exception & e)
     {
@@ -179,7 +186,7 @@ std::vector<std::string> CResourceManager::ListFiles(const std::string &director
 {
     std::vector<std::string> result;
 
-    char **files = PHYSFS_enumerateFiles(directory.c_str());
+    char **files = PHYSFS_enumerateFiles(CleanPath(directory).c_str());
 
     for (char **i = files; *i != nullptr; i++)
     {
@@ -195,11 +202,11 @@ std::vector<std::string> CResourceManager::ListDirectories(const std::string &di
 {
     std::vector<std::string> result;
 
-    char **files = PHYSFS_enumerateFiles(directory.c_str());
+    char **files = PHYSFS_enumerateFiles(CleanPath(directory).c_str());
 
     for (char **i = files; *i != nullptr; i++)
     {
-        std::string path = directory + "/" + (*i);
+        std::string path = CleanPath(directory) + "/" + (*i);
         if (PHYSFS_isDirectory(path.c_str()))
         {
             result.push_back(*i);

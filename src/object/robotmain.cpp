@@ -3864,7 +3864,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
         
         if (line->GetCommand() == "CacheAudio" && !resetObject && m_version >= 2)
         {
-            m_sound->CacheMusic(line->GetParam("filename")->AsPath("").c_str()); //TODO: don't make this relative to music/
+            m_sound->CacheMusic(std::string("../")+line->GetParam("filename")->AsPath("music"));
             continue;
         }
         
@@ -3882,7 +3882,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 m_audioChange[i].powermax = line->GetParam("powermax")->AsFloat(100);
                 m_audioChange[i].tool     = line->GetParam("tool")->AsToolType(TOOL_OTHER);
                 m_audioChange[i].drive    = line->GetParam("drive")->AsDriveType(DRIVE_OTHER);
-                strcpy(m_audioChange[i].music, line->GetParam("filename")->AsPath("").c_str()); //TODO: don't make this relative to music/
+                strcpy(m_audioChange[i].music, (std::string("../")+line->GetParam("filename")->AsPath("music")).c_str());
                 m_audioChange[i].repeat   = line->GetParam("repeat")->AsBool(true);
                 m_audioChange[i].changed  = false;
                 m_sound->CacheMusic(m_audioChange[i].music);
@@ -3906,14 +3906,26 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             }
             else
             {
-                m_audioTrack = line->GetParam("main")->AsPath("", ""); //TODO: don't make this relative to music/
-                m_audioRepeat = line->GetParam("mainRepeat")->AsBool(true);
+                if(line->GetParam("main")->IsDefined()) {
+                    m_audioTrack = std::string("../")+line->GetParam("main")->AsPath("music");
+                    m_audioRepeat = line->GetParam("mainRepeat")->AsBool(true);
+                } else {
+                    m_audioTrack = "";
+                }
                 
-                m_satcomTrack = line->GetParam("satcom")->AsPath("", ""); //TODO: don't make this relative to music/
-                m_satcomRepeat = line->GetParam("satcomRepeat")->AsBool(true);
+                if(line->GetParam("satcom")->IsDefined()) {
+                    m_satcomTrack = std::string("../")+line->GetParam("satcom")->AsPath("music");
+                    m_satcomRepeat = line->GetParam("satcomRepeat")->AsBool(true);
+                } else {
+                    m_satcomTrack = "";
+                }
                 
-                m_editorTrack = line->GetParam("editor")->AsPath("", ""); //TODO: don't make this relative to music/
-                m_editorRepeat = line->GetParam("editorRepeat")->AsBool(true);
+                if(line->GetParam("editor")->IsDefined()) {
+                    m_editorTrack = std::string("../")+line->GetParam("editor")->AsPath("music");
+                    m_editorRepeat = line->GetParam("editorRepeat")->AsBool(true);
+                } else {
+                    m_editorTrack = "";
+                }
             }
             if (m_audioTrack != "") m_sound->CacheMusic(m_audioTrack);
             if (m_satcomTrack != "") m_sound->CacheMusic(m_satcomTrack);
@@ -3975,7 +3987,10 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
         
         if (line->GetCommand() == "Background" && !resetObject)
         {
-            m_engine->SetBackground(line->GetParam("image")->AsPath("", "").c_str(), //TODO: don't make this relative to textures/
+            std::string path = "";
+            if(line->GetParam("image")->IsDefined())
+                path = "../"+line->GetParam("image")->AsPath("textures");
+            m_engine->SetBackground(path.c_str(),
                                     line->GetParam("up")->AsColor(Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f)),
                                     line->GetParam("down")->AsColor(Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f)),
                                     line->GetParam("cloudUp")->AsColor(Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f)),
@@ -3996,17 +4011,17 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                              line->GetParam("dim")->AsFloat(0.2f),
                              line->GetParam("speed")->AsFloat(0.0f),
                              line->GetParam("dir")->AsFloat(0.0f),
-                             line->GetParam("image")->AsPath(""), //TODO: don't make this relative to textures/
+                             "../"+line->GetParam("image")->AsPath("textures"),
                              Math::Point(uv1.x, uv1.z),
                              Math::Point(uv2.x, uv2.z),
-                             line->GetParam("image")->AsPath("").find("planet") != std::string::npos // TODO: add transparent op or modify textures
+                             line->GetParam("image")->AsPath("textures").find("planet") != std::string::npos // TODO: add transparent op or modify textures
             );
             continue;
         }
         
         if (line->GetCommand() == "ForegroundName" && !resetObject)
         {
-            m_engine->SetForegroundName(line->GetParam("image")->AsPath("")); //TODO: don't make this relative to textures/
+            m_engine->SetForegroundName("../"+line->GetParam("image")->AsPath("textures"));
             continue;
         }
         
@@ -4069,7 +4084,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             pos.z = pos.x;
             m_water->Create(line->GetParam("air")->AsWaterType(Gfx::WATER_TT),
                             line->GetParam("water")->AsWaterType(Gfx::WATER_TT),
-                            line->GetParam("image")->AsPath(""), //TODO: don't make this relative to textures/
+                            "../"+line->GetParam("image")->AsPath("textures"),
                             line->GetParam("diffuse")->AsColor(Gfx::Color(1.0f, 1.0f, 1.0f, 1.0f)),
                             line->GetParam("ambient")->AsColor(Gfx::Color(1.0f, 1.0f, 1.0f, 1.0f)),
                             line->GetParam("level")->AsFloat(100.0f)*g_unit,
@@ -4088,7 +4103,10 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
         
         if (line->GetCommand() == "TerrainCloud" && !resetObject)
         {
-            m_cloud->Create(line->GetParam("image")->AsPath("", ""), //TODO: don't make this relative to textures/
+            std::string path = "";
+            if(line->GetParam("image")->IsDefined())
+                path = "../"+line->GetParam("image")->AsPath("textures");
+            m_cloud->Create(path,
                             line->GetParam("diffuse")->AsColor(Gfx::Color(1.0f, 1.0f, 1.0f, 1.0f)),
                             line->GetParam("ambient")->AsColor(Gfx::Color(1.0f, 1.0f, 1.0f, 1.0f)),
                             line->GetParam("level")->AsFloat(500.0f)*g_unit);
@@ -4153,9 +4171,10 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
         
         if (line->GetCommand() == "TerrainMaterial" && !resetObject)
         {
-            std::string name = line->GetParam("image")->AsPath(""); //TODO: don't make this relative to textures/
+            std::string name = line->GetParam("image")->AsPath("textures");
             if(name.find(".") == std::string::npos)
                 name += ".png";
+            name = "../"+name;
             /*TODO: ???
             if (strstr(name, "%user%") != 0)
             {
@@ -4229,7 +4248,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             CBrain* brain = m_controller->GetBrain();
             if (brain != nullptr)
             {
-                std::string name = line->GetParam("script")->AsPath(""); //TODO: Don't make this relative to ai/
+                std::string name = "../"+line->GetParam("script")->AsPath("ai");
                 if (!name.empty())
                     brain->SetScriptName(0, const_cast<char*>(name.c_str()));
                 brain->SetScriptRun(0);
@@ -4394,7 +4413,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                     {
                         std::string op = "script"+boost::lexical_cast<std::string>(i+1); // script1..script10
                         if(line->GetParam(op)->IsDefined()) {
-                            brain->SetScriptName(i, const_cast<char*>(line->GetParam(op)->AsPath("").c_str())); //TODO: don't make this relative to ai/
+                            brain->SetScriptName(i, const_cast<char*>(("../"+line->GetParam(op)->AsPath("ai")).c_str()));
                         }
                         
                     }
@@ -4539,7 +4558,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             if (m_mapImage)
             {
                 Math::Vector offset;
-                strcpy(m_mapFilename, line->GetParam("filename")->AsPath("").c_str()); //TODO: don't make this relative to textures/
+                strcpy(m_mapFilename, ("../"+line->GetParam("filename")->AsPath("textures")).c_str());
                 offset = line->GetParam("offset")->AsPoint(Math::Vector(0.0f, 0.0f, 0.0f));
                 m_map->SetFixParam(line->GetParam("zoom")->AsFloat(1.0f),
                                    offset.x, offset.z,
