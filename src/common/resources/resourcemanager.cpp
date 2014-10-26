@@ -58,7 +58,7 @@ CResourceManager::~CResourceManager()
 
 std::string CResourceManager::CleanPath(const std::string& path)
 {
-    return boost::regex_replace(path, boost::regex("\\.\\./(.*)/"), "");
+    return boost::regex_replace(path, boost::regex("(.*)/\\.\\./"), "");
 }
 
 
