@@ -8,6 +8,7 @@ Makefile
 /CTestTestfile.cmake
 /CPackConfig.cmake
 /CPackSourceConfig.cmake
+/src/libcolobotbase.a
 
 # Ignore the generated documentation
 /doc
