@@ -6054,7 +6054,7 @@ bool CMainDialog::GetHimselfDamage()
 
 
 
-// the personalized player.
+// Saves the personalized player.
 
 void CMainDialog::WriteGamerPerso(char *gamer)
 {
