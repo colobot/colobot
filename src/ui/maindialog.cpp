@@ -4165,6 +4165,8 @@ void CMainDialog::IOUpdateList()
         return;
 
     std::string filename = (m_saveList.at(sel) / "screen.png").make_preferred().string();
+    boost::replace_all(filename, GetSavegameDir(), GetPHYSFSSavegameDir()); //TODO: Refactor everything to PHYSFS, see issue #334
+    filename = "../"+filename;
     if ( m_phase == PHASE_WRITE  || m_phase == PHASE_WRITEs )
     {
         if ( sel < max-1 )
@@ -6052,7 +6054,7 @@ bool CMainDialog::GetHimselfDamage()
 
 
 
-// Saves the personalized player.
+// the personalized player.
 
 void CMainDialog::WriteGamerPerso(char *gamer)
 {
