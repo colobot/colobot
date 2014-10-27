@@ -5465,9 +5465,12 @@ void CRobotMain::LoadFileScript(CObject *obj, const char* filename, int objRank,
     ObjectType type = obj->GetType();
     if (type == OBJECT_HUMAN) return;
 
-
+    
+    std::string fnstr = filename;
+    boost::replace_all(fnstr, m_dialog->GetSavegameDir(), m_dialog->GetPHYSFSSavegameDir()); //TODO: Refactor to get physfs path here
+    //TODO: Refactor to std::string
     char fn[MAX_FNAME];
-    strcpy(fn, filename);
+    strcpy(fn, fnstr.c_str());
     char* ldir = SearchLastDir(fn);
     if (ldir == 0) return;
 
@@ -5534,8 +5537,11 @@ void CRobotMain::SaveFileScript(CObject *obj, const char* filename, int objRank)
     ObjectType type = obj->GetType();
     if (type == OBJECT_HUMAN) return;
 
+    std::string fnstr = filename;
+    boost::replace_all(fnstr, m_dialog->GetSavegameDir(), m_dialog->GetPHYSFSSavegameDir()); //TODO: Refactor to get physfs path here
+    //TODO: Refactor to std::string
     char fn[MAX_FNAME];
-    strcpy(fn, filename);
+    strcpy(fn, fnstr.c_str());
     char* ldir = SearchLastDir(fn);
     if (ldir == 0) return;
 
