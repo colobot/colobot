@@ -4123,7 +4123,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
         
         if (line->GetCommand() == "TerrainInitTextures" && !resetObject)
         {
-            std::string name = line->GetParam("image")->AsPath(""); //TODO: don't make this relative to textures/
+            std::string name = "../"+line->GetParam("image")->AsPath("textures");
             if(name.find(".") == std::string::npos)
                 name += ".png";
             unsigned int dx = line->GetParam("dx")->AsInt(1);
@@ -4154,11 +4154,6 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 }
             }
             
-            /*TODO: ???
-            if (strstr(name, "%user%") != 0)
-                CopyFileListToTemp(name, tt, dx*dy);
-            */
-            
             m_terrain->InitTextures(name.c_str(), tt, dx, dy);
             continue;
         }
@@ -4175,12 +4170,6 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             if(name.find(".") == std::string::npos)
                 name += ".png";
             name = "../"+name;
-            /*TODO: ???
-            if (strstr(name, "%user%") != 0)
-            {
-                GetProfile().CopyFileToTemp(std::string(name));
-            }
-            */
             
             m_terrain->AddMaterial(line->GetParam("id")->AsInt(0),
                                    name.c_str(),

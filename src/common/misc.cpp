@@ -232,44 +232,6 @@ void TimeToAsciiClean(time_t time, char *buffer)
                     when.tm_hour, when.tm_min);
 }
 
-// Copy a list of numbered files into the temporary folder.
-
-bool CopyFileListToTemp(char* filename, int* list, int total)
-{
-    /*char    name[100];
-    char    ext[10];
-    char    file[100];
-    char    save[100];
-    char*   p;
-    int     i;
-
-    strcpy(name, filename);
-    p = strchr(name, '.');
-    if ( p == 0 )
-    {
-        strcpy(ext, ".tga");
-    }
-    else
-    {
-        strcpy(ext, p);
-        *p = 0;
-    }
-
-    for ( i=0 ; i<total ; i++ )
-    {
-        sprintf(file, "%s%.3d%s", name, list[i], ext);  // nameNNN.ext
-        CopyFileToTemp(file);
-    }
-
-    strcpy(save, g_userDir);
-    strcpy(g_userDir, "temp");
-    UserDir(file, filename, "textures");
-    strcpy(filename, file);
-    strcpy(g_userDir, save);
-*/
-    return false;
-}
-
 
 // Adds an extension to file, if doesn't already one.
 
