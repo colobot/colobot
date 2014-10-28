@@ -1585,7 +1585,7 @@ void CMainDialog::ChangePhase(Phase phase)
         m_engine->SetOverColor(Gfx::Color(1.0f, 1.0f, 1.0f, 1.0f), Gfx::ENG_RSTATE_TCOLOR_BLACK); // TODO: color ok?
         m_engine->SetOverFront(true);
 
-        m_engine->SetBackground("interface/ppc.png",
+        m_engine->SetBackground("interface/intro1.png",
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
@@ -1604,7 +1604,7 @@ void CMainDialog::ChangePhase(Phase phase)
         m_engine->SetOverColor(Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f), Gfx::ENG_RSTATE_TCOLOR_WHITE); // TODO: color ok?
         m_engine->SetOverFront(true);
 
-        m_engine->SetBackground("interface/colobot.png",
+        m_engine->SetBackground("interface/intro2.png",
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
@@ -1623,7 +1623,7 @@ void CMainDialog::ChangePhase(Phase phase)
         m_engine->SetOverColor(Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f), Gfx::ENG_RSTATE_TCOLOR_WHITE); // TODO: color ok?
         m_engine->SetOverFront(true);
 
-        m_engine->SetBackground("interface/epsitec.png",
+        m_engine->SetBackground("interface/intro3.png",
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
