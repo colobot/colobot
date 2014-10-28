@@ -177,7 +177,7 @@ msgid "Black box"
 msgstr "Boîte noire"
 
 msgid "Blood\\Display blood when the astronaut or the alien queen is hit"
-msgstr ""
+msgstr "Sang\\Afficher du sang quand le cosmonaute ou la pondeuse sont touchés"
 
 msgid "Blue"
 msgstr "Bleu"
@@ -204,7 +204,7 @@ msgid "Build a derrick"
 msgstr "Construit un derrick"
 
 msgid "Build a destroyer"
-msgstr ""
+msgstr "Construit un destructeur"
 
 msgid "Build a exchange post"
 msgstr "Construit une borne d'information"
@@ -345,7 +345,7 @@ msgid "Can not produce not researched object"
 msgstr ""
 
 msgid "Can not produce this object in this mission"
-msgstr ""
+msgstr "Impossible de créer cet objet dans cette mission"
 
 msgid "Can't open file"
 msgstr "Ouverture du fichier impossible"
@@ -453,7 +453,7 @@ msgid "Descend\\Reduces the power of the jet"
 msgstr "Descendre\\Diminuer la puissance du réacteur"
 
 msgid "Destroy"
-msgstr ""
+msgstr "Détruire"
 
 msgid "Destroy the building"
 msgstr "Démolit le bâtiment"
@@ -535,7 +535,7 @@ msgid "Exit film\\Film at the exit of exercises"
 msgstr "Retour animé\\Retour animé dans les exercices"
 
 msgid "Explode (\\key action;)"
-msgstr ""
+msgstr "Exploser (\\key action;)"
 
 msgid "Explosive"
 msgstr "Explosif"
@@ -704,7 +704,7 @@ msgid "Inappropriate cell type"
 msgstr "Pas le bon type de pile"
 
 msgid "Inappropriate object"
-msgstr ""
+msgstr "Pas le bon objet"
 
 msgid "Incorrect index type"
 msgstr "Mauvais type d'index"
@@ -743,7 +743,7 @@ msgid "Instructions\\Shows the instructions for the current mission"
 msgstr "Instructions mission\\Marche à suivre"
 
 msgid "Internal error - tell the developers"
-msgstr ""
+msgstr "Erreur interne - contacter les développeurs"
 
 msgid "Jet temperature"
 msgstr "Température du réacteur"
