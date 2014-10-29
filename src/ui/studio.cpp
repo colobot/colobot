@@ -1548,7 +1548,6 @@ std::string CStudio::SearchDirectory(bool bCreate, bool physfsReady)
     if(physfsReady) {
         boost::replace_all(dir2, CResourceManager::GetSaveLocation()+"/", "");
     }
-    CLogger::GetInstancePointer()->Debug("%s -> %s\n", dir, dir2.c_str());
     return dir2;
 }
 
@@ -1620,8 +1619,6 @@ bool CStudio::WriteProgram()
     if ( pw == nullptr )  return false;
     pe = static_cast< CEdit* >(pw->SearchControl(EVENT_STUDIO_EDIT));
     if ( pe == nullptr )  return false;
-
-    CLogger::GetInstancePointer()->Debug("%s\n", dir);
     
     if ( !pe->WriteText(std::string(dir)) )  return false;
 
