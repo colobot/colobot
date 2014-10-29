@@ -24,6 +24,8 @@
 
 #include "app/app.h"
 
+#include "common/resources/resourcemanager.h"
+
 #include "common/event.h"
 #include "common/misc.h"
 
@@ -1523,8 +1525,8 @@ void CStudio::UpdateDialogList()
 
 // Constructs the name of the folder or open/save.
 // If the folder does not exist, it will be created.
-
-std::string CStudio::SearchDirectory(bool bCreate)
+//TODO: Refactor to PHYSFS
+std::string CStudio::SearchDirectory(bool bCreate, bool physfsReady)
 {
     char dir[MAX_FNAME];
     if ( m_main->GetIOPublic() )
@@ -1533,17 +1535,21 @@ std::string CStudio::SearchDirectory(bool bCreate)
     }
     else
     {
-        sprintf(dir, "%s/%s/Program/", m_main->GetPHYSFSSavegameDir(), m_main->GetGamerName());
+        sprintf(dir, "%s/%s/Program/", m_main->GetSavegameDir(), m_main->GetGamerName());
     }
-
-    fs::path path = fs::path(dir);
 
     if ( bCreate )
     {
-        fs::create_directory(path);
+        fs::path path = fs::path(dir);
+        fs::create_directories(path);
     }
 
-    return path.make_preferred().string();
+    std::string dir2 = dir;
+    if(physfsReady) {
+        boost::replace_all(dir2, CResourceManager::GetSaveLocation()+"/", "");
+    }
+    CLogger::GetInstancePointer()->Debug("%s -> %s\n", dir, dir2.c_str());
+    return dir2;
 }
 
 // Reads a new program.
@@ -1569,7 +1575,7 @@ bool CStudio::ReadProgram()
     {
         strcat(filename, ".txt");
     }
-    strcpy(dir, SearchDirectory(true).c_str());
+    strcpy(dir, SearchDirectory(true, true).c_str());
     strcat(dir, filename);
 
     pw = static_cast< CWindow* >(m_interface->SearchControl(EVENT_WINDOW3));
@@ -1607,7 +1613,7 @@ bool CStudio::WriteProgram()
     {
         strcat(filename, ".txt");
     }
-    strcpy(dir, SearchDirectory(true).c_str());
+    strcpy(dir, SearchDirectory(true, true).c_str());
     strcat(dir, filename);
 
     pw = static_cast< CWindow* >(m_interface->SearchControl(EVENT_WINDOW3));
@@ -1615,6 +1621,8 @@ bool CStudio::WriteProgram()
     pe = static_cast< CEdit* >(pw->SearchControl(EVENT_STUDIO_EDIT));
     if ( pe == nullptr )  return false;
 
+    CLogger::GetInstancePointer()->Debug("%s\n", dir);
+    
     if ( !pe->WriteText(std::string(dir)) )  return false;
 
     m_script->SetFilename(filename);
