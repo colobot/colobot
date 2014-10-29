@@ -1416,6 +1416,11 @@ bool CRobotMain::ProcessEvent(Event &event)
         m_interface->EventProcess(event);
         if (m_displayInfo != nullptr)  // current edition?
             m_displayInfo->EventProcess(event);
+        
+        if (m_phase == PHASE_SIMUL)
+        {
+            UpdateInfoText();
+        }
 
         return EventFrame(event);
     }
@@ -1500,8 +1505,6 @@ bool CRobotMain::ProcessEvent(Event &event)
     // Simulation phase of the game
     if (m_phase == PHASE_SIMUL)
     {
-        UpdateInfoText();
-
         if (!m_editFull)
             m_camera->EventProcess(event);
 
