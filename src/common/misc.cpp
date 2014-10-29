@@ -26,6 +26,8 @@
 #include <string.h>
 #include <ctype.h>
 #include <time.h>
+#include <sstream>
+#include <iomanip>
 
 
 // Returns a non-accented letter.
@@ -230,6 +232,17 @@ void TimeToAsciiClean(time_t time, char *buffer)
     sprintf(buffer, "%.2d%.2d%.2d%.2d%.2d",
                     year, when.tm_mon+1, when.tm_mday,
                     when.tm_hour, when.tm_min);
+}
+
+std::string TimeFormat(float time)
+{
+    int minutes = floor(time/60);
+    double time2 = fmod(time, 60);
+    double seconds;
+    double fraction = modf(time2, &seconds)*100;
+    std::ostringstream sstream;
+    sstream << std::setfill('0') << std::setw(2) << minutes << ":" << std::setfill('0') << std::setw(2) << floor(seconds) << "." << std::setfill('0') << std::setw(2) << floor(fraction);
+    return sstream.str();
 }
 
 

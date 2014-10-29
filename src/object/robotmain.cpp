@@ -645,6 +645,10 @@ CRobotMain::CRobotMain(CApplication* app, bool loadProfile)
     m_time = 0.0f;
     m_gameTime = 0.0f;
     m_checkEndTime = 0.0f;
+    
+    m_missionTimerEnabled = false;
+    m_missionTimerStarted = false;
+    m_missionTimer = 0.0f;
 
     m_phase       = PHASE_NAME;
     m_cameraRank  = -1;
@@ -1087,6 +1091,9 @@ void CRobotMain::ResetKeyStates()
 //! Changes phase
 void CRobotMain::ChangePhase(Phase phase)
 {
+    m_missionTimerEnabled = m_missionTimerStarted = false;
+    m_missionTimer = 0.0f;
+    
     if (m_phase == PHASE_SIMUL)  // ends a simulation?
     {
         SaveAllScript();
@@ -1417,10 +1424,7 @@ bool CRobotMain::ProcessEvent(Event &event)
         if (m_displayInfo != nullptr)  // current edition?
             m_displayInfo->EventProcess(event);
         
-        if (m_phase == PHASE_SIMUL)
-        {
-            UpdateInfoText();
-        }
+        UpdateInfoText();
 
         return EventFrame(event);
     }
@@ -1754,12 +1758,14 @@ bool CRobotMain::ProcessEvent(Event &event)
                 break;
 
             case EVENT_WIN:
+                m_missionTimerEnabled = m_missionTimerStarted = false;
                 ChangePhase(PHASE_WIN);
                 if(m_exitAfterMission)
                     m_eventQueue->AddEvent(Event(EVENT_QUIT));
                 break;
 
             case EVENT_LOST:
+                m_missionTimerEnabled = m_missionTimerStarted = false;
                 ChangePhase(PHASE_LOST);
                 if(m_exitAfterMission)
                     m_eventQueue->AddEvent(Event(EVENT_QUIT));
@@ -3365,12 +3371,16 @@ void CRobotMain::AbortMovie()
 //! Updates the text information
 void CRobotMain::UpdateInfoText()
 {
-    CObject* obj = GetSelect();
-    if (obj != nullptr)
+    if (m_phase == PHASE_SIMUL)
     {
-        Math::Vector pos = obj->GetPosition(0);
-        m_engine->SetStatisticPos(pos);
+        CObject* obj = GetSelect();
+        if (obj != nullptr)
+        {
+            Math::Vector pos = obj->GetPosition(0);
+            m_engine->SetStatisticPos(pos);
+        }
     }
+    m_engine->SetTimerDisplay(m_missionTimerEnabled && m_missionTimerStarted ? TimeFormat(m_missionTimer) : "");
 }
 
 
@@ -3394,6 +3404,9 @@ bool CRobotMain::EventFrame(const Event &event)
         m_displayText->DisplayError(INFO_BEGINSATCOM, Math::Vector(0.0f,0.0f,0.0f));
         m_beginSatCom = true;  // message appears
     }
+    
+    if(!m_movieLock && m_pause->GetPause() == PAUSE_NONE && m_missionTimerStarted)
+        m_missionTimer += event.rTime;
 
     m_water->EventProcess(event);
     m_cloud->EventProcess(event);
@@ -3760,6 +3773,11 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
         m_missionResult       = ERR_MISSION_NOTERM;
     }
     
+    //NOTE: Reset timer always, even when only resetting object positions
+    m_missionTimerEnabled = false;
+    m_missionTimerStarted = false;
+    m_missionTimer = 0.0f;
+    
     CLevelParser* level = new CLevelParser(base, rank/100, rank%100);
     level->Load();
 
@@ -3850,6 +3868,15 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
         if (line->GetCommand() == "MessageDelay" && !resetObject)
         {
             m_displayText->SetDelay(line->GetParam("factor")->AsFloat());
+            continue;
+        }
+        
+        if (line->GetCommand() == "MissionTimer")
+        {
+            m_missionTimerEnabled = line->GetParam("enabled")->AsBool();
+            if(!line->GetParam("program")->AsBool(false)) {
+                m_missionTimerStarted = true;
+            }
             continue;
         }
         
@@ -6342,12 +6369,14 @@ Error CRobotMain::CheckEndMission(bool frame)
         if (m_missionResult == INFO_LOST) //mission lost?
         {
             m_displayText->DisplayError(INFO_LOST, Math::Vector(0.0f,0.0f,0.0f));
+            m_missionTimerEnabled = m_missionTimerStarted = false;
             m_winDelay = 0.0f;
             if (m_lostDelay == 0) m_lostDelay = m_endTakeLostDelay;
             m_displayText->SetEnable(false);
         }
         if (m_missionResult == INFO_LOSTq) //mission lost?
         {
+            m_missionTimerEnabled = m_missionTimerStarted = false;
             m_winDelay = 0.0f;
             if (m_lostDelay == 0) m_lostDelay = 0.1f;
             m_displayText->SetEnable(false);
@@ -6355,6 +6384,11 @@ Error CRobotMain::CheckEndMission(bool frame)
         if (frame && m_base) return ERR_MISSION_NOTERM;
         if (m_missionResult == ERR_OK) { //mission win?
             m_displayText->DisplayError(INFO_WIN, Math::Vector(0.0f,0.0f,0.0f));
+            if(m_missionTimerEnabled && m_missionTimerStarted) {
+                CLogger::GetInstancePointer()->Info("Mission time: %s\n", TimeFormat(m_missionTimer).c_str());
+                m_displayText->DisplayText(("Time: "+TimeFormat(m_missionTimer)).c_str(), Math::Vector(0.0f,0.0f,0.0f));
+            }
+            m_missionTimerEnabled = m_missionTimerStarted = false;
             if (m_winDelay == 0) m_winDelay = m_endTakeWinDelay;
             m_lostDelay = 0.0f;
             m_displayText->SetEnable(false);
@@ -6431,6 +6465,7 @@ Error CRobotMain::CheckEndMission(bool frame)
                     m_lostDelay = 0.1f;  // lost immediately
                     m_winDelay  = 0.0f;
                 }
+                m_missionTimerEnabled = m_missionTimerStarted = false;
                 m_displayText->SetEnable(false);
                 return INFO_LOSTq;
             }
@@ -6442,6 +6477,7 @@ Error CRobotMain::CheckEndMission(bool frame)
                     m_lostDelay = m_endTakeLostDelay;  // lost in 6 seconds
                     m_winDelay  = 0.0f;
                 }
+                m_missionTimerEnabled = m_missionTimerStarted = false;
                 m_displayText->SetEnable(false);
                 return INFO_LOST;
             }
@@ -6460,6 +6496,7 @@ Error CRobotMain::CheckEndMission(bool frame)
                 m_winDelay  = m_endTakeWinDelay;  // wins in x seconds
                 m_lostDelay = 0.0f;
             }
+            m_missionTimerEnabled = m_missionTimerStarted = false;
             m_displayText->SetEnable(false);
             return ERR_OK;  // mission ended
         }
@@ -6478,6 +6515,7 @@ Error CRobotMain::CheckEndMission(bool frame)
     {
         m_winDelay  = 1.0f;  // wins in one second
         m_lostDelay = 0.0f;
+        m_missionTimerEnabled = m_missionTimerStarted = false;
         m_displayText->SetEnable(false);
         return ERR_OK;  // mission ended
     }
@@ -6487,6 +6525,11 @@ Error CRobotMain::CheckEndMission(bool frame)
     if (m_winDelay == 0.0f)
     {
         m_displayText->DisplayError(INFO_WIN, Math::Vector(0.0f,0.0f,0.0f));
+        if(m_missionTimerEnabled && m_missionTimerStarted) {
+            CLogger::GetInstancePointer()->Info("Mission time: %s\n", TimeFormat(m_missionTimer).c_str());
+            m_displayText->DisplayText(("Time: "+TimeFormat(m_missionTimer)).c_str(), Math::Vector(0.0f,0.0f,0.0f));
+        }
+        m_missionTimerEnabled = m_missionTimerStarted = false;
         m_winDelay  = m_endTakeWinDelay;  // wins in two seconds
         m_lostDelay = 0.0f;
     }
@@ -6959,4 +7002,12 @@ void CRobotMain::DisplayError(Error err, Math::Vector goal, float height, float 
 std::string& CRobotMain::GetUserLevelName(int id)
 {
     return m_dialog->GetUserLevelName(id);
+}
+
+void CRobotMain::StartMissionTimer()
+{
+    if(m_missionTimerEnabled && !m_missionTimerStarted) {
+        CLogger::GetInstancePointer()->Info("Starting mission timer...\n");
+        m_missionTimerStarted = true;
+    }
 }

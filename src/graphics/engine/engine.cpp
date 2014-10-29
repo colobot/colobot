@@ -520,6 +520,11 @@ void CEngine::SetStatisticPos(Math::Vector pos)
     m_statisticPos = pos;
 }
 
+void CEngine::SetTimerDisplay(const std::string& text)
+{
+    m_timerText = text;
+}
+
 
 
 /*******************************************************
@@ -3510,6 +3515,7 @@ void CEngine::DrawInterface()
     DrawMouse();
     DrawHighlight();
     DrawStats();
+    DrawTimer();
 }
 
 void CEngine::UpdateGroundSpotTextures()
@@ -4477,6 +4483,14 @@ void CEngine::DrawStats()
     str.str("");
     str << "Position y: " << std::fixed << std::setprecision(2) << m_statisticPos.z/g_unit;
     m_text->DrawText(str.str(), FONT_COLOBOT, 12.0f, pos, 1.0f, TEXT_ALIGN_LEFT, 0, Color(1.0f, 1.0f, 1.0f, 1.0f));
+}
+
+void CEngine::DrawTimer()
+{
+    SetState(ENG_RSTATE_TEXT);
+    
+    Math::Point pos(0.98f, 0.98f-m_text->GetAscent(FONT_COLOBOT, 15.0f));
+    m_text->DrawText(m_timerText, FONT_COLOBOT, 15.0f, pos, 1.0f, TEXT_ALIGN_RIGHT, 0, Color(1.0f, 1.0f, 1.0f, 1.0f));
 }
 
 

@@ -397,6 +397,8 @@ public:
     void        DisplayError(Error err, Math::Vector goal, float height=15.0f, float dist=60.0f, float time=10.0f);
     
     std::string& GetUserLevelName(int id);
+    
+    void        StartMissionTimer();
 
 protected:
     bool        EventFrame(const Event &event);
@@ -589,5 +591,9 @@ protected:
     float           m_colorShiftWater;
 
     std::string     m_oldLocale;
+    
+    bool            m_missionTimerEnabled;
+    bool            m_missionTimerStarted;
+    float           m_missionTimer;
 };
 

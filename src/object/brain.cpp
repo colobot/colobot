@@ -2546,6 +2546,8 @@ void CBrain::RunProgram(int rank)
         BlinkScript(true);  // blink
         m_object->CreateSelectParticle();
         m_main->UpdateShortcuts();
+        if(m_object->GetTrainer())
+            m_main->StartMissionTimer();
     }
 }
 

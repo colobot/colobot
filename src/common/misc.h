@@ -22,6 +22,7 @@
 
 
 #include <time.h>
+#include <string>
 
 
 // TODO: rewrite/refactor or remove
@@ -32,6 +33,7 @@ extern char GetToLower(char letter);
 
 extern void TimeToAscii(time_t time, char *buffer);
 extern void TimeToAsciiClean(time_t time, char *buffer);
+extern std::string TimeFormat(float time);
 
 extern void AddExt(char* filename, const char* ext);
 

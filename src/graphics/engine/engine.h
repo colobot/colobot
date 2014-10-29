@@ -780,6 +780,9 @@ public:
     
     //! Sets the coordinates to display in stats window
     void            SetStatisticPos(Math::Vector pos);
+    
+    //! Sets text to display as mission timer
+    void            SetTimerDisplay(const std::string& text);
 
 
     /* *************** Object management *************** */
@@ -1236,6 +1239,8 @@ protected:
     void        DrawMouseSprite(Math::Point pos, Math::Point dim, int icon);
     //! Draw statistic texts
     void        DrawStats();
+    //! Draw mission timer
+    void        DrawTimer();
 
     //! Creates a new tier 2 object (texture)
     EngineBaseObjTexTier&  AddLevel2(EngineBaseObject& p1, const std::string& tex1Name, const std::string& tex2Name);
@@ -1442,6 +1447,8 @@ protected:
 
     bool            m_debugLights;
     bool            m_debugDumpLights;
+    
+    std::string     m_timerText;
 };
 
 
