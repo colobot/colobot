@@ -3555,7 +3555,7 @@ bool CRobotMain::EventFrame(const Event &event)
 
     if (m_phase == PHASE_SIMUL)
     {
-        if (!m_editLock && m_checkEndTime+1.0f < m_time)
+        if (!m_editLock /*&& m_checkEndTime+1.0f < m_time*/)
         {
             m_checkEndTime = m_time;
             CheckEndMission(true);
