@@ -420,6 +420,8 @@ bool CApplication::Create()
     LoadModsFromDir(m_dataPath+"/mods");
     LoadModsFromDir(m_savePath+"/mods");
 
+    GetLogger()->Info("Data path: %s\n", m_dataPath.c_str());
+    GetLogger()->Info("Save path: %s\n", m_savePath.c_str());
     CResourceManager::AddLocation(m_dataPath, false);
     CResourceManager::SetSaveLocation(m_savePath);
     CResourceManager::AddLocation(m_savePath, true);

@@ -185,6 +185,7 @@ CMainDialog::CMainDialog()
     m_savegameDir = "savegame";
     m_publicDir = CResourceManager::GetSaveLocation()+"/program"; //TODO: Refactor to use PHYSFS
     m_filesDir = CResourceManager::GetSaveLocation()+"/files"; //TODO: Refactor to use PHYSFS
+    CLogger::GetInstancePointer()->Trace("Savegame path: normal=%s, physfs=%s\n", GetSavegameDir().c_str(), GetPHYSFSSavegameDir().c_str());
 
     m_setupFull = m_app->GetVideoConfig().fullScreen;
 
@@ -4165,7 +4166,7 @@ void CMainDialog::IOUpdateList()
         return;
 
     std::string filename = (m_saveList.at(sel) / "screen.png").make_preferred().string();
-    boost::replace_all(filename, CResourceManager::GetSaveLocation()+"/", ""); //TODO: Refactor everything to PHYSFS, see issue #334
+    boost::replace_all(filename, GetSavegameDir(), GetPHYSFSSavegameDir()); //TODO: Refactor everything to PHYSFS, see issue #334
     filename = "../"+filename;
     if ( m_phase == PHASE_WRITE  || m_phase == PHASE_WRITEs )
     {
@@ -6000,7 +6001,9 @@ bool CMainDialog::GetSceneSoluce()
 
 std::string CMainDialog::GetSavegameDir()
 {
-    return CResourceManager::GetSaveLocation()+"/"+m_savegameDir;
+    std::string out = CResourceManager::GetSaveLocation()+"/"+m_savegameDir;
+    boost::replace_all(out, "\\", "/");
+    return out;
 }
 
 //TODO: Use PHYSFS everywhere
