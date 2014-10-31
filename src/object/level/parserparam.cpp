@@ -22,6 +22,7 @@
 
 #include "app/app.h"
 #include "common/logger.h"
+#include "common/resources/resourcemanager.h"
 #include "object/level/parser.h"
 #include "object/robotmain.h"
 
@@ -174,10 +175,19 @@ std::string CLevelParserParam::InjectLevelDir(std::string path, const std::strin
     {
         newPath = defaultDir + (!defaultDir.empty() ? "/" : "") + newPath;
     }
-    //TODO: Fallback to English
+    
+    std::string langPath = newPath;
     std::string langStr(1, CApplication::GetInstancePointer()->GetLanguageChar());
-    boost::replace_all(newPath, "%lng%", langStr);
-    return newPath;
+    boost::replace_all(langPath, "%lng%", langStr);
+    if(CResourceManager::Exists(langPath))
+        return langPath;
+    
+    // Fallback to English if file doesn't exist
+    boost::replace_all(newPath, "%lng%", "E");
+    if(CResourceManager::Exists(newPath))
+        return newPath;
+    
+    return langPath; // Return current language file if none of the files exist
 }
 
 std::string CLevelParserParam::ToPath(std::string path, const std::string defaultDir)
