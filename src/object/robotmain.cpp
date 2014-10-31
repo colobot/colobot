@@ -957,6 +957,7 @@ void CRobotMain::LoadSceneOnStart(const std::string& name, int rank)
 {
     m_exitAfterMission = true;
     // TODO: fix this ugly dependency :(
+    ChangePhase(PHASE_USER); // To load userlevel list
     m_dialog->SetSceneName(name.c_str());
     m_dialog->SetSceneRank(rank);
     ChangePhase(PHASE_LOADING);
