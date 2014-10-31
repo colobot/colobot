@@ -5390,9 +5390,9 @@ void CRobotMain::CompileScript(bool soluce)
                 if (brain->GetCompile(j)) continue;
 
                 std::string name = brain->GetScriptName(j);
-                name = "ai/"+name;
                 if (name[0] != 0)
                 {
+                    name = "ai/"+name;
                     if(! brain->ReadProgram(j, const_cast<char*>(name.c_str()))) {
                         CLogger::GetInstancePointer()->Error("Unable to read script from file \"%s\"\n", name.c_str());
                     }
@@ -5486,6 +5486,7 @@ void CRobotMain::LoadFileScript(CObject *obj, const char* filename, int objRank,
 
     
     std::string fnstr = filename;
+    boost::replace_all(fnstr, "\\", "/");
     boost::replace_all(fnstr, m_dialog->GetSavegameDir(), m_dialog->GetPHYSFSSavegameDir()); //TODO: Refactor to get physfs path here
     //TODO: Refactor to std::string
     char fn[MAX_FNAME];
@@ -5557,6 +5558,7 @@ void CRobotMain::SaveFileScript(CObject *obj, const char* filename, int objRank)
     if (type == OBJECT_HUMAN) return;
 
     std::string fnstr = filename;
+    boost::replace_all(fnstr, "\\", "/");
     boost::replace_all(fnstr, m_dialog->GetSavegameDir(), m_dialog->GetPHYSFSSavegameDir()); //TODO: Refactor to get physfs path here
     //TODO: Refactor to std::string
     char fn[MAX_FNAME];
