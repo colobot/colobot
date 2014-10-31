@@ -80,6 +80,7 @@ set(BASE_SOURCES
     common/resources/outputstream.cpp
     common/resources/sndfile.cpp
     graphics/core/color.cpp
+    graphics/core/nulldevice.cpp
     graphics/engine/camera.cpp
     graphics/engine/cloud.cpp
     graphics/engine/engine.cpp

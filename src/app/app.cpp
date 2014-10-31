@@ -31,6 +31,7 @@
 #include "common/resources/resourcemanager.h"
 
 #include "graphics/engine/modelmanager.h"
+#include "graphics/core/nulldevice.h"
 #include "graphics/opengl/gldevice.h"
 
 #include "object/robotmain.h"
@@ -168,6 +169,7 @@ CApplication::CApplication()
     m_runSceneRank = 0;
 
     m_sceneTest = false;
+    m_headless = false;
     m_resolutionOverride = false;
 
     m_language = LANGUAGE_ENV;
@@ -228,7 +230,8 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
         OPT_SAVEDIR,
         OPT_MOD,
         OPT_VBO,
-        OPT_RESOLUTION
+        OPT_RESOLUTION,
+        OPT_HEADLESS
     };
 
     option options[] =
@@ -245,6 +248,7 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
         { "mod", required_argument, nullptr, OPT_MOD },
         { "vbo", required_argument, nullptr, OPT_VBO },
         { "resolution", required_argument, nullptr, OPT_RESOLUTION },
+        { "headless", no_argument, nullptr, OPT_HEADLESS },
         { nullptr, 0, nullptr, 0}
     };
 
@@ -287,6 +291,7 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
                 GetLogger()->Message("  -mod path           load datadir mod from given path\n");
                 GetLogger()->Message("  -vbo mode           set OpenGL VBO mode (one of: auto, enable, disable)\n");
                 GetLogger()->Message("  -resolution WxH     set resolution\n");
+                GetLogger()->Message("  -headless           headless mode - disables graphics, sound and user interaction\n");
                 return PARSE_ARGS_HELP;
             }
             case OPT_DEBUG:
@@ -402,6 +407,11 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
                 m_resolutionOverride = true;
                 break;
             }
+            case OPT_HEADLESS:
+            {
+                m_headless = true;
+                break;
+            }
             default:
                 assert(false); // should never get here
         }
@@ -460,7 +470,11 @@ bool CApplication::Create()
 
     //Create the sound instance.
     #ifdef OPENAL_SOUND
-    m_sound = static_cast<CSoundInterface *>(new ALSound());
+    if(!m_headless) {
+        m_sound = static_cast<CSoundInterface *>(new ALSound());
+    } else {
+        m_sound = new CSoundInterface();
+    }
     #else
     GetLogger()->Info("No sound support.\n");
     m_sound = new CSoundInterface();
@@ -505,34 +519,36 @@ bool CApplication::Create()
         return false;
     }
 
-    // load settings from profile
-    int iValue;
-    if ( GetProfile().GetIntProperty("Setup", "Resolution", iValue) && !m_resolutionOverride )
-    {
-        std::vector<Math::IntPoint> modes;
-        GetVideoResolutionList(modes, true, true);
-        if (static_cast<unsigned int>(iValue) < modes.size())
-            m_deviceConfig.size = modes.at(iValue);
+    if(!m_headless) {
+        // load settings from profile
+        int iValue;
+        if ( GetProfile().GetIntProperty("Setup", "Resolution", iValue) && !m_resolutionOverride )
+        {
+            std::vector<Math::IntPoint> modes;
+            GetVideoResolutionList(modes, true, true);
+            if (static_cast<unsigned int>(iValue) < modes.size())
+                m_deviceConfig.size = modes.at(iValue);
+        }
+
+        if ( GetProfile().GetIntProperty("Setup", "Fullscreen", iValue) && !m_resolutionOverride )
+        {
+            m_deviceConfig.fullScreen = (iValue == 1);
+        }
+
+        if (! CreateVideoSurface())
+            return false; // dialog is in function
+
+        if (m_private->surface == nullptr)
+        {
+            m_errorMessage = std::string("SDL error while setting video mode:\n") +
+                            std::string(SDL_GetError());
+            GetLogger()->Error(m_errorMessage.c_str());
+            m_exitCode = 4;
+            return false;
+        }
+        
+        SDL_WM_SetCaption(m_windowTitle.c_str(), m_windowTitle.c_str());
     }
-
-    if ( GetProfile().GetIntProperty("Setup", "Fullscreen", iValue) && !m_resolutionOverride )
-    {
-        m_deviceConfig.fullScreen = (iValue == 1);
-    }
-
-    if (! CreateVideoSurface())
-        return false; // dialog is in function
-
-    if (m_private->surface == nullptr)
-    {
-        m_errorMessage = std::string("SDL error while setting video mode:\n") +
-                         std::string(SDL_GetError());
-        GetLogger()->Error(m_errorMessage.c_str());
-        m_exitCode = 4;
-        return false;
-    }
-
-    SDL_WM_SetCaption(m_windowTitle.c_str(), m_windowTitle.c_str());
 
     // Enable translating key codes of key press events to unicode chars
     SDL_EnableUNICODE(1);
@@ -541,8 +557,12 @@ bool CApplication::Create()
     // Don't generate joystick events
     SDL_JoystickEventState(SDL_IGNORE);
 
-    // The video is ready, we can create and initalize the graphics device
-    m_device = new Gfx::CGLDevice(m_deviceConfig);
+    if(!m_headless) {
+        // The video is ready, we can create and initalize the graphics device
+        m_device = new Gfx::CGLDevice(m_deviceConfig);
+    } else {
+        m_device = new Gfx::CNullDevice();
+    }
     if (! m_device->Create() )
     {
         m_errorMessage = std::string("Error in CDevice::Create()\n") + standardInfoMessage;

@@ -500,11 +500,11 @@ protected:
 
     //! Low cpu mode
     bool            m_lowCPU;
-
-    //! Show prototype levels
-    bool            m_protoMode;
     
     //! Screen resoultion overriden by commandline
     bool            m_resolutionOverride;
+    
+    //! Headles mode
+    bool            m_headless;
 };
 
