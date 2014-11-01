@@ -10,10 +10,10 @@ BEGIN
 		BEGIN
 			VALUE "OriginalFilename", "colobot.exe\0"
 			VALUE "InternalName", "colobot\0"
-			VALUE "FileDescription", "Colobot - Colonize with Bots\0"
-			VALUE "ProductName", "Colobot\0"
-			VALUE "CompanyName", "Polish Portal of Colobot\0"
-			VALUE "LegalCopyright", "Copyright (c) 2012-2013 Polish Portal of Colobot\0"
+			VALUE "FileDescription", "Colobot: Gold Edition - Colonize with Bots\0"
+			VALUE "ProductName", "Colobot: Gold Edition\0"
+			VALUE "CompanyName", "TerranovaTeam\0"
+			VALUE "LegalCopyright", "Copyright (c) 2012-2014 TerranovaTeam\0"
 			VALUE "FileVersion", "@COLOBOT_VERSION_FULL@\0"
 			VALUE "ProductVersion", "@COLOBOT_VERSION_FULL@\0"
 			END

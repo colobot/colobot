@@ -193,11 +193,11 @@ set(BASE_SOURCES
     ui/target.cpp
     ui/window.cpp
     ${OPENAL_SRC}
-    ${RES_FILES}
 )
 
 set(MAIN_SOURCES
     app/main.cpp
+    ${RES_FILES}
 )
 
 
