@@ -32,6 +32,7 @@
 #include "common/profile.h"
 #include "common/restext.h"
 
+#include "common/resources/resourcemanager.h"
 #include "common/resources/inputstream.h"
 
 #include "graphics/engine/camera.h"
@@ -5482,8 +5483,10 @@ void CRobotMain::LoadFileScript(CObject *obj, const char* filename, int objRank,
 
     
     std::string fnstr = filename;
+    std::string savedir = CResourceManager::GetSaveLocation()+"/";
     boost::replace_all(fnstr, "\\", "/");
-    boost::replace_all(fnstr, m_dialog->GetSavegameDir(), m_dialog->GetPHYSFSSavegameDir()); //TODO: Refactor to get physfs path here
+    boost::replace_all(savedir, "\\", "/");
+    boost::replace_all(fnstr, savedir, ""); //TODO: Refactor to get physfs path here
     //TODO: Refactor to std::string
     char fn[MAX_FNAME];
     strcpy(fn, fnstr.c_str());
@@ -5554,8 +5557,10 @@ void CRobotMain::SaveFileScript(CObject *obj, const char* filename, int objRank)
     if (type == OBJECT_HUMAN) return;
 
     std::string fnstr = filename;
+    std::string savedir = CResourceManager::GetSaveLocation()+"/";
     boost::replace_all(fnstr, "\\", "/");
-    boost::replace_all(fnstr, m_dialog->GetSavegameDir(), m_dialog->GetPHYSFSSavegameDir()); //TODO: Refactor to get physfs path here
+    boost::replace_all(savedir, "\\", "/");
+    boost::replace_all(fnstr, savedir, ""); //TODO: Refactor to get physfs path here
     //TODO: Refactor to std::string
     char fn[MAX_FNAME];
     strcpy(fn, fnstr.c_str());

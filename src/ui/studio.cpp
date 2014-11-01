@@ -1546,7 +1546,10 @@ std::string CStudio::SearchDirectory(bool bCreate, bool physfsReady)
 
     std::string dir2 = dir;
     if(physfsReady) {
-        boost::replace_all(dir2, CResourceManager::GetSaveLocation()+"/", "");
+        std::string savedir = CResourceManager::GetSaveLocation()+"/";
+        boost::replace_all(dir2, "\\", "/");
+        boost::replace_all(savedir, "\\", "/");
+        boost::replace_all(dir2, savedir, "");
     }
     return dir2;
 }

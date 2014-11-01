@@ -4166,8 +4166,10 @@ void CMainDialog::IOUpdateList()
         return;
 
     std::string filename = (m_saveList.at(sel) / "screen.png").make_preferred().string();
+    std::string savedir = CResourceManager::GetSaveLocation()+"/";
     boost::replace_all(filename, "\\", "/");
-    boost::replace_all(filename, GetSavegameDir(), GetPHYSFSSavegameDir()); //TODO: Refactor everything to PHYSFS, see issue #334
+    boost::replace_all(savedir, "\\", "/");
+    boost::replace_all(filename, savedir, ""); //TODO: Refactor everything to PHYSFS, see issue #334
     filename = "../"+filename;
     if ( m_phase == PHASE_WRITE  || m_phase == PHASE_WRITEs )
     {
@@ -6002,9 +6004,7 @@ bool CMainDialog::GetSceneSoluce()
 
 std::string CMainDialog::GetSavegameDir()
 {
-    std::string out = CResourceManager::GetSaveLocation()+"/"+m_savegameDir;
-    boost::replace_all(out, "\\", "/");
-    return out;
+    return CResourceManager::GetSaveLocation()+"/"+m_savegameDir;
 }
 
 //TODO: Use PHYSFS everywhere
