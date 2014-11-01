@@ -129,7 +129,7 @@ To compile colobot, run your favorite shell and download colobot source files:
 ```
   $ git clone https://github.com/colobot/colobot.git /path/to/colobot/sources
   $ cd /path/to/colobot/sources
-  $ git submodule update --init
+  $ git submodule update --init --recursive
 ```
 If you want to compile development branch, change the first command to:
 ```
