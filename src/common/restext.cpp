@@ -65,8 +65,8 @@ void InitializeRestext()
     stringsText[RT_IO_NEW]           = TR("New ...");
     stringsText[RT_KEY_OR]           = TR(" or ");
 
-    stringsText[RT_TITLE_BASE]       = TR("COLOBOT");
-    stringsText[RT_TITLE_INIT]       = TR("COLOBOT: Gold Edition");
+    stringsText[RT_TITLE_BASE]       = TR("Colobot: Gold Edition");
+    stringsText[RT_TITLE_INIT]       = TR("Colobot: Gold Edition");
     stringsText[RT_TITLE_TRAINER]    = TR("Programming exercises");
     stringsText[RT_TITLE_DEFI]       = TR("Challenges");
     stringsText[RT_TITLE_MISSION]    = TR("Missions");
@@ -102,9 +102,9 @@ void InitializeRestext()
     stringsText[RT_PERSO_COMBI]      = TR("Suit color:");
     stringsText[RT_PERSO_BAND]       = TR("Strip color:");
 
-    stringsText[RT_DIALOG_QUIT]      = TR("Do you want to quit COLOBOT ?");
-    stringsText[RT_DIALOG_TITLE]     = TR("COLOBOT");
-    stringsText[RT_DIALOG_YESQUIT]   = TR("Quit\\Quit COLOBOT");
+    stringsText[RT_DIALOG_QUIT]      = TR("Do you want to quit Colobot: Gold Edition?");
+    stringsText[RT_DIALOG_TITLE]     = TR("Colobot: Gold Edition");
+    stringsText[RT_DIALOG_YESQUIT]   = TR("Quit\\Quit Colobot: Gold Edition");
     stringsText[RT_DIALOG_ABORT]     = TR("Quit the mission?");
     stringsText[RT_DIALOG_YES]       = TR("Abort\\Abort the current mission");
     stringsText[RT_DIALOG_NO]        = TR("Continue\\Continue the current mission");
@@ -163,8 +163,8 @@ void InitializeRestext()
     stringsEvent[EVENT_INTERFACE_AGAIN]     = TR("Restart\\Restart the mission from the beginning");
     stringsEvent[EVENT_INTERFACE_WRITE]     = TR("Save\\Save the current mission ");
     stringsEvent[EVENT_INTERFACE_READ]      = TR("Load\\Load a saved mission");
-    stringsEvent[EVENT_INTERFACE_ABORT]     = TR("\\Return to COLOBOT");
-    stringsEvent[EVENT_INTERFACE_QUIT]      = TR("Quit\\Quit COLOBOT");
+    stringsEvent[EVENT_INTERFACE_ABORT]     = TR("\\Return to Colobot: Gold Edition");
+    stringsEvent[EVENT_INTERFACE_QUIT]      = TR("Quit\\Quit Colobot: Gold Edition");
     stringsEvent[EVENT_INTERFACE_BACK]      = TR("<<  Back  \\Back to the previous screen");
     stringsEvent[EVENT_INTERFACE_PLAY]      = TR("Play\\Start mission!");
     stringsEvent[EVENT_INTERFACE_SETUPd]    = TR("Device\\Driver and resolution settings");

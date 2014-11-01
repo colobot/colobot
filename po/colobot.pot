@@ -50,10 +50,7 @@ msgstr ""
 msgid " or "
 msgstr ""
 
-msgid "COLOBOT"
-msgstr ""
-
-msgid "COLOBOT: Gold Edition"
+msgid "Colobot: Gold Edition"
 msgstr ""
 
 msgid "Programming exercises"
@@ -140,10 +137,10 @@ msgstr ""
 msgid "Strip color:"
 msgstr ""
 
-msgid "Do you want to quit COLOBOT ?"
+msgid "Do you want to quit Colobot: Gold Edition?"
 msgstr ""
 
-msgid "Quit\\Quit COLOBOT"
+msgid "Quit\\Quit Colobot: Gold Edition"
 msgstr ""
 
 msgid "Quit the mission?"
@@ -282,7 +279,7 @@ msgstr ""
 msgid "Load\\Load a saved mission"
 msgstr ""
 
-msgid "\\Return to COLOBOT"
+msgid "\\Return to Colobot: Gold Edition"
 msgstr ""
 
 msgid "<<  Back  \\Back to the previous screen"

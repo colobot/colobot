@@ -313,12 +313,6 @@ msgstr "Gebäude zu nahe"
 msgid "Button %1"
 msgstr "Knopf %1"
 
-msgid "COLOBOT"
-msgstr "COLOBOT"
-
-msgid "COLOBOT: Gold Edition"
-msgstr "COLOBOT: Gold Edition"
-
 msgid "Calling an unknown function"
 msgstr "Die aufgerufene Funktion existiert nicht"
 
@@ -393,6 +387,10 @@ msgstr "Es fehlt eine geschlossene Klammer \")\""
 
 msgid "Colobot rules!"
 msgstr "Colobot ist wunderbar!"
+
+#, fuzzy
+msgid "Colobot: Gold Edition"
+msgstr "COLOBOT: Gold Edition"
 
 msgid "Command line"
 msgstr "Befehleingabe"
@@ -488,7 +486,8 @@ msgstr "Wollen Sie das angewählte Gebäude wirklich zerstören ?"
 msgid "Do you want to delete %s's saved games? "
 msgstr "Wollen Sie die gespeicherten Missionen von %s löschen ?"
 
-msgid "Do you want to quit COLOBOT ?"
+#, fuzzy
+msgid "Do you want to quit Colobot: Gold Edition?"
 msgstr "Wollen Sie COLOBOT schließen ?"
 
 msgid "Doors blocked by a robot or another object "
@@ -1141,8 +1140,8 @@ msgstr "Beben bei Explosionen\\Die Kamera bebt bei Explosionen"
 msgid "Quit the mission?"
 msgstr "Mission abbrechen ?"
 
-msgid "Quit\\Quit COLOBOT"
-msgstr "Schließen\\COLOBOT schließen"
+msgid "Quit\\Quit Colobot: Gold Edition"
+msgstr ""
 
 msgid "Quit\\Quit the current mission or exercise"
 msgstr "Mission verlassen\\Eine Mission oder Übung verlassen"
@@ -1689,8 +1688,8 @@ msgstr "\\Bleistift abheben"
 msgid "\\Red flags"
 msgstr "\\Rote Fahne"
 
-msgid "\\Return to COLOBOT"
-msgstr "\\Zurück zu COLOBOT"
+msgid "\\Return to Colobot: Gold Edition"
+msgstr ""
 
 msgid "\\SatCom on standby"
 msgstr "\\SatCom in Standby"
@@ -1760,3 +1759,12 @@ msgstr "\\c; (keine)\\n;\n"
 
 msgid "www.epsitec.com"
 msgstr "www.epsitec.com"
+
+#~ msgid "COLOBOT"
+#~ msgstr "COLOBOT"
+
+#~ msgid "Quit\\Quit COLOBOT"
+#~ msgstr "Schließen\\COLOBOT schließen"
+
+#~ msgid "\\Return to COLOBOT"
+#~ msgstr "\\Zurück zu COLOBOT"

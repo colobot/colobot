@@ -308,12 +308,6 @@ msgstr "Bâtiment trop proche"
 msgid "Button %1"
 msgstr "Bouton %1"
 
-msgid "COLOBOT"
-msgstr "COLOBOT"
-
-msgid "COLOBOT: Gold Edition"
-msgstr "COLOBOT: Gold Edition"
-
 msgid "Calling an unknown function"
 msgstr "Appel d'une fonction inexistante"
 
@@ -388,6 +382,10 @@ msgstr "Il manque une parenthèse fermante"
 
 msgid "Colobot rules!"
 msgstr "Colobot est super!"
+
+#, fuzzy
+msgid "Colobot: Gold Edition"
+msgstr "COLOBOT: Gold Edition"
 
 msgid "Command line"
 msgstr "Console de commande"
@@ -483,7 +481,8 @@ msgstr "Voulez-vous vraiment détruire le bâtiment sélectionné ?"
 msgid "Do you want to delete %s's saved games? "
 msgstr "Voulez-vous détruire les sauvegardes de %s ?"
 
-msgid "Do you want to quit COLOBOT ?"
+#, fuzzy
+msgid "Do you want to quit Colobot: Gold Edition?"
 msgstr "Voulez-vous quitter COLOBOT ?"
 
 msgid "Doors blocked by a robot or another object "
@@ -1137,8 +1136,8 @@ msgstr "Secousses lors d'explosions\\L'écran vibre lors d'une explosion"
 msgid "Quit the mission?"
 msgstr "Quitter la mission ?"
 
-msgid "Quit\\Quit COLOBOT"
-msgstr "Quitter\\Quitter COLOBOT"
+msgid "Quit\\Quit Colobot: Gold Edition"
+msgstr ""
 
 msgid "Quit\\Quit the current mission or exercise"
 msgstr "Quitter la mission en cours\\Terminer un exercice ou une mssion"
@@ -1685,8 +1684,8 @@ msgstr "\\Relève le crayon"
 msgid "\\Red flags"
 msgstr "\\Drapeaux rouges"
 
-msgid "\\Return to COLOBOT"
-msgstr "\\Retourner dans COLOBOT"
+msgid "\\Return to Colobot: Gold Edition"
+msgstr ""
 
 msgid "\\SatCom on standby"
 msgstr "\\Mettre le SatCom en veille"
@@ -1756,3 +1755,12 @@ msgstr "\\c; (aucun)\\n;\n"
 
 msgid "www.epsitec.com"
 msgstr "www.epsitec.com"
+
+#~ msgid "COLOBOT"
+#~ msgstr "COLOBOT"
+
+#~ msgid "Quit\\Quit COLOBOT"
+#~ msgstr "Quitter\\Quitter COLOBOT"
+
+#~ msgid "\\Return to COLOBOT"
+#~ msgstr "\\Retourner dans COLOBOT"

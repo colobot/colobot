@@ -315,12 +315,6 @@ msgstr "Budynek za blisko"
 msgid "Button %1"
 msgstr "Przycisk %1"
 
-msgid "COLOBOT"
-msgstr "COLOBOT"
-
-msgid "COLOBOT: Gold Edition"
-msgstr "COLOBOT: Gold Edition"
-
 msgid "Calling an unknown function"
 msgstr "Odwołanie do nieznanej funkcji"
 
@@ -395,6 +389,9 @@ msgstr "Brak nawiasu zamykającego"
 
 msgid "Colobot rules!"
 msgstr "Colobot rządzi!"
+
+msgid "Colobot: Gold Edition"
+msgstr "Colobot: Gold Edition"
 
 msgid "Command line"
 msgstr "Linia polecenia"
@@ -490,8 +487,8 @@ msgstr "Czy na pewno chcesz zniszczyć zaznaczony budynek?"
 msgid "Do you want to delete %s's saved games? "
 msgstr "Czy na pewno chcesz skasować zapisane gry gracza %s? "
 
-msgid "Do you want to quit COLOBOT ?"
-msgstr "Czy na pewno chcesz opuścić grę COLOBOT?"
+msgid "Do you want to quit Colobot: Gold Edition?"
+msgstr "Czy na pewno chcesz opuścić grę Colobot: Gold Edition?"
 
 msgid "Doors blocked by a robot or another object "
 msgstr "Drzwi zablokowane przez robota lub inny obiekt "
@@ -1147,8 +1144,8 @@ msgstr "Wstrząsy przy wybuchach\\Ekran trzęsie się podczas wybuchów"
 msgid "Quit the mission?"
 msgstr "Opuścić misję?"
 
-msgid "Quit\\Quit COLOBOT"
-msgstr "Zakończ\\Kończy grę COLOBOT"
+msgid "Quit\\Quit Colobot: Gold Edition"
+msgstr "Wyjdź\\Kończy grę Colobot: Gold Edition"
 
 msgid "Quit\\Quit the current mission or exercise"
 msgstr "Zakończ\\Kończy bieżącą misję lub ćwiczenie"
@@ -1697,8 +1694,8 @@ msgstr "\\Relčve le crayon"
 msgid "\\Red flags"
 msgstr "\\Czerwone flagi"
 
-msgid "\\Return to COLOBOT"
-msgstr "\\Powróć do gry COLOBOT"
+msgid "\\Return to Colobot: Gold Edition"
+msgstr "\\Powróć do gry Colobot: Gold Edition"
 
 msgid "\\SatCom on standby"
 msgstr "\\Przełącz przekaźnik SatCom w stan gotowości"

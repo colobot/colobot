@@ -116,7 +116,7 @@ CApplication::CApplication()
     m_debugModes = 0;
     m_restart   = false;
 
-    m_windowTitle = "COLOBOT: Gold Edition";
+    m_windowTitle = "Colobot: Gold Edition";
 
     m_simulationSuspended = false;
 
