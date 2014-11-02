@@ -116,7 +116,7 @@ bool IsAlien(ObjectType type)
 //! Returns the damping factor for friendly fire
 float GetDecay(ObjectType type)
 {
-    if (IsSoft(type))  return 0.2f;
+    if (IsSoft(type))  return 0.004f;
     return 1.0f;
 }
 
