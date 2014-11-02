@@ -72,6 +72,16 @@ bool CSoundInterface::CacheMusic(const std::string &bFile)
     return true;
 }
 
+bool CSoundInterface::IsCached(Sound bSound)
+{
+    return false;
+}
+
+bool CSoundInterface::IsCachedMusic(const std::string& bFile)
+{
+    return false;
+}
+
 bool CSoundInterface::GetEnable()
 {
     return true;

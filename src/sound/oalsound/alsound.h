@@ -53,6 +53,8 @@ public:
     bool Create() override;
     bool Cache(Sound, const std::string &) override;
     bool CacheMusic(const std::string &) override;
+    bool IsCached(Sound) override;
+    bool IsCachedMusic(const std::string &) override;
 
     bool GetEnable() override;
 

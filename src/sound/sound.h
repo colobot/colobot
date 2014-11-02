@@ -180,6 +180,18 @@ public:
      * \return return true on success
      */
     virtual bool CacheMusic(const std::string &bFile);
+    
+    /** Function to check if sound effect file was cached.
+     * \param bSound - id of a sound effect file
+     * \return return true if the file was cached
+     */
+    virtual bool IsCached(Sound bSound);
+    
+    /** Function called to check if music file was cached.
+     * \param bFile - file to check
+     * \return return true if the file was cached
+     */
+    virtual bool IsCachedMusic(const std::string &bFile);
 
     /** Return if plugin is enabled
      *  \return return true if plugin is enabled

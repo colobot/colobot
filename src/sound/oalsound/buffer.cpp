@@ -58,7 +58,7 @@ bool Buffer::LoadFromFile(std::string filename, Sound sound)
 
     if (!file->IsOpen())
     {
-        GetLogger()->Warn("Could not load file. Reason: %s\n", file->GetLastError().c_str());
+        GetLogger()->Warn("Could not load file %s. Reason: %s\n", filename.c_str(), file->GetLastError().c_str());
         m_loaded = false;
         return false;
     }

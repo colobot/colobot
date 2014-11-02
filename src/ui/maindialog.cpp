@@ -707,7 +707,7 @@ void CMainDialog::ChangePhase(Phase phase)
          m_phase != PHASE_SETUPcs &&
          m_phase != PHASE_SETUPss )
     {
-        if (!m_sound->IsPlayingMusic())
+        if (!m_sound->IsPlayingMusic() && m_sound->IsCachedMusic("Intro1.ogg"))
         {
             m_sound->PlayMusic("Intro1.ogg", false);
         }
@@ -733,7 +733,7 @@ void CMainDialog::ChangePhase(Phase phase)
         }
 
         if ( m_phase == PHASE_TRAINER )  strcpy(m_sceneName, "exercises");
-        if ( m_phase == PHASE_DEFI    )  strcpy(m_sceneName, "challenges" );
+        if ( m_phase == PHASE_DEFI    )  strcpy(m_sceneName, "challenges");
         if ( m_phase == PHASE_MISSION )  strcpy(m_sceneName, "missions");
         if ( m_phase == PHASE_FREE    )  strcpy(m_sceneName, "freemissions");
         if ( m_phase == PHASE_USER    )  strcpy(m_sceneName, "custom");
@@ -1760,7 +1760,7 @@ bool CMainDialog::EventProcess(const Event &event)
              m_phase != PHASE_SETUPcs &&
              m_phase != PHASE_SETUPss )
         {
-            if (!m_sound->IsPlayingMusic())
+            if (!m_sound->IsPlayingMusic() && m_sound->IsCachedMusic("Intro2.ogg"))
             {
                 m_sound->PlayMusic("Intro2.ogg", true);
             }

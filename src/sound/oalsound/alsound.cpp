@@ -181,6 +181,16 @@ bool ALSound::CacheMusic(const std::string &filename)
     return false;
 }
 
+bool ALSound::IsCached(Sound sound)
+{
+    return m_sounds.find(sound) != m_sounds.end();
+}
+
+bool ALSound::IsCachedMusic(const std::string &filename)
+{
+    return m_music.find("music/"+filename) != m_music.end();
+}
+
 int ALSound::GetPriority(Sound sound)
 {
     if ( sound == SOUND_FLYh   ||
