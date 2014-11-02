@@ -127,6 +127,7 @@ SDL_RWops* CResourceManager::GetSDLFileHandler(const std::string &filename)
         return nullptr;
     }
 
+    PHYSFS_permitSymbolicLinks(1);
     PHYSFS_File *file = PHYSFS_openRead(CleanPath(filename).c_str());
     if (!file)
     {
