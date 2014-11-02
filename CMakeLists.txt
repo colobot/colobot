@@ -16,9 +16,9 @@ set(COLOBOT_VERSION_MINOR    1)
 set(COLOBOT_VERSION_REVISION 4)
 
 # Used on official releases
-set(COLOBOT_VERSION_RELEASE_CODENAME "-alpha")
+#set(COLOBOT_VERSION_RELEASE_CODENAME "-alpha")
 # Used on unreleased, development builds
-#set(COLOBOT_VERSION_UNRELEASED "+alpha")
+set(COLOBOT_VERSION_UNRELEASED "+alpha")
 
 # Append git characteristics to version
 if(DEFINED COLOBOT_VERSION_UNRELEASED)
