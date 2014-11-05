@@ -187,7 +187,7 @@ void InitializeRestext()
     stringsEvent[EVENT_INTERFACE_PLANET]    = TR("Planets and stars\\Astronomical objects in the sky");
     stringsEvent[EVENT_INTERFACE_LIGHT]     = TR("Dynamic lighting\\Mobile light sources");
     stringsEvent[EVENT_INTERFACE_PARTI]     = TR("Number of particles\\Explosions, dust, reflections, etc.");
-    stringsEvent[EVENT_INTERFACE_CLIP]      = TR("Depth of field\\Maximum visibility");
+    stringsEvent[EVENT_INTERFACE_CLIP]      = TR("Render distance\\Maximum visibility");
     stringsEvent[EVENT_INTERFACE_DETAIL]    = TR("Details\\Visual quality of 3D objects");
     stringsEvent[EVENT_INTERFACE_TEXTURE]   = TR("Textures\\Quality of textures ");
     stringsEvent[EVENT_INTERFACE_GADGET]    = TR("Num of decorative objects\\Number of purely ornamental objects");

@@ -446,7 +446,8 @@ msgstr "Spieler löschen\\Löscht den Spieler aus der Liste"
 msgid "Delete\\Deletes the selected file"
 msgstr "Löschen\\Löscht die gespeicherte Mission"
 
-msgid "Depth of field\\Maximum visibility"
+#, fuzzy
+msgid "Render distance\\Maximum visibility"
 msgstr "Sichtweite\\Maximale Sichtweite"
 
 msgid "Derrick"

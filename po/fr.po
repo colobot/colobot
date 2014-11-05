@@ -441,7 +441,8 @@ msgstr "Supprimer le joueur\\Supprimer le joueur de la liste"
 msgid "Delete\\Deletes the selected file"
 msgstr "Supprimer\\Supprime l'enregistrement sélectionné"
 
-msgid "Depth of field\\Maximum visibility"
+#, fuzzy
+msgid "Render distance\\Maximum visibility"
 msgstr "Profondeur de champ\\Distance de vue maximale"
 
 msgid "Derrick"

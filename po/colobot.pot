@@ -345,7 +345,7 @@ msgstr ""
 msgid "Number of particles\\Explosions, dust, reflections, etc."
 msgstr ""
 
-msgid "Depth of field\\Maximum visibility"
+msgid "Render distance\\Maximum visibility"
 msgstr ""
 
 msgid "Details\\Visual quality of 3D objects"

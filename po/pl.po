@@ -447,8 +447,8 @@ msgstr "Usuń gracza\\Usuwa gracza z listy"
 msgid "Delete\\Deletes the selected file"
 msgstr "Usuń\\Usuwa zaznaczony plik"
 
-msgid "Depth of field\\Maximum visibility"
-msgstr "Głębokość pola\\Maksymalna widoczność"
+msgid "Render distance\\Maximum visibility"
+msgstr "Zasięg renderingu\\Maksymalna widoczność"
 
 msgid "Derrick"
 msgstr "Kopalnia"
