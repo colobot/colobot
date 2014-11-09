@@ -645,7 +645,6 @@ CRobotMain::CRobotMain(CApplication* app, bool loadProfile)
 
     m_time = 0.0f;
     m_gameTime = 0.0f;
-    m_checkEndTime = 0.0f;
     
     m_missionTimerEnabled = false;
     m_missionTimerStarted = false;
@@ -3553,9 +3552,8 @@ bool CRobotMain::EventFrame(const Event &event)
 
     if (m_phase == PHASE_SIMUL)
     {
-        if (!m_editLock /*&& m_checkEndTime+1.0f < m_time*/)
+        if (!m_editLock)
         {
-            m_checkEndTime = m_time;
             CheckEndMission(true);
             UpdateAudio(true);
         }
@@ -4739,7 +4737,6 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
     m_app->ResetKeyStates();
     m_time = 0.0f;
     m_gameTime = 0.0f;
-    m_checkEndTime = 0.0f;
     m_infoUsed = 0;
 
     m_selectObject = sel;

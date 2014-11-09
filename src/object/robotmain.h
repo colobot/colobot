@@ -468,7 +468,6 @@ protected:
 
     float           m_time;
     float           m_gameTime;
-    float           m_checkEndTime;
     float           m_winDelay;
     float           m_lostDelay;
     bool            m_fixScene;        // scene fixed, no interraction
