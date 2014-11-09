@@ -1436,7 +1436,7 @@ bool CRobotMain::ProcessEvent(Event &event)
         !m_movie->IsExist()   &&
         !m_movieLock && !m_editLock && !m_engine->GetPause() &&
         event.type == EVENT_KEY_DOWN &&
-        event.key.key == KEY(PAUSE))  // Pause ?
+        event.key.key == KEY(BACKQUOTE))  // Pause ?
     {
         Ui::CEdit* pe = static_cast<Ui::CEdit*>(m_interface->SearchControl(EVENT_CMD));
         if (pe == nullptr) return false;
