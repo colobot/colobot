@@ -447,9 +447,6 @@ msgstr "Usuń gracza\\Usuwa gracza z listy"
 msgid "Delete\\Deletes the selected file"
 msgstr "Usuń\\Usuwa zaznaczony plik"
 
-msgid "Render distance\\Maximum visibility"
-msgstr "Zasięg renderingu\\Maksymalna widoczność"
-
 msgid "Derrick"
 msgstr "Kopalnia"
 
@@ -1179,6 +1176,9 @@ msgstr "Pozostałości z misji Apollo"
 
 msgid "Remove a flag"
 msgstr "Usuń flagę"
+
+msgid "Render distance\\Maximum visibility"
+msgstr "Zasięg renderingu\\Maksymalna widoczność"
 
 msgid "Repair center"
 msgstr "Warsztat"

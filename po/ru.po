@@ -440,10 +440,6 @@ msgstr "Удалить игрока\\Удаление игрока из спис
 msgid "Delete\\Deletes the selected file"
 msgstr "Удалить\\Удаление выбранного файла"
 
-#, fuzzy
-msgid "Render distance\\Maximum visibility"
-msgstr "Дальность прорисовки\\Максимальная видимость"
-
 msgid "Derrick"
 msgstr "Космический корабль"
 
@@ -1172,6 +1168,10 @@ msgstr "Остатки миссии Аполлон"
 
 msgid "Remove a flag"
 msgstr "Удалить флаг"
+
+#, fuzzy
+msgid "Render distance\\Maximum visibility"
+msgstr "Дальность прорисовки\\Максимальная видимость"
 
 msgid "Repair center"
 msgstr "Ремонтный пункт"

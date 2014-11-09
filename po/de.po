@@ -446,10 +446,6 @@ msgstr "Spieler löschen\\Löscht den Spieler aus der Liste"
 msgid "Delete\\Deletes the selected file"
 msgstr "Löschen\\Löscht die gespeicherte Mission"
 
-#, fuzzy
-msgid "Render distance\\Maximum visibility"
-msgstr "Sichtweite\\Maximale Sichtweite"
-
 msgid "Derrick"
 msgstr "Bohrturm"
 
@@ -1176,6 +1172,10 @@ msgstr "Überreste einer Apollo-Mission"
 
 msgid "Remove a flag"
 msgstr "Sammelt die Fahne ein"
+
+#, fuzzy
+msgid "Render distance\\Maximum visibility"
+msgstr "Sichtweite\\Maximale Sichtweite"
 
 msgid "Repair center"
 msgstr "Reparaturzentrum"

@@ -441,10 +441,6 @@ msgstr "Supprimer le joueur\\Supprimer le joueur de la liste"
 msgid "Delete\\Deletes the selected file"
 msgstr "Supprimer\\Supprime l'enregistrement sélectionné"
 
-#, fuzzy
-msgid "Render distance\\Maximum visibility"
-msgstr "Profondeur de champ\\Distance de vue maximale"
-
 msgid "Derrick"
 msgstr "Derrick"
 
@@ -1172,6 +1168,10 @@ msgstr "Vestige d'une mission Apollo"
 
 msgid "Remove a flag"
 msgstr "Enlève un drapeau"
+
+#, fuzzy
+msgid "Render distance\\Maximum visibility"
+msgstr "Profondeur de champ\\Distance de vue maximale"
 
 msgid "Repair center"
 msgstr "Centre de réparation"
