@@ -471,7 +471,7 @@ protected:
     float           m_winDelay;
     float           m_lostDelay;
     bool            m_fixScene;        // scene fixed, no interraction
-    bool            m_base;        // OBJECT_BASE exists in mission
+    CObject*        m_base;        // OBJECT_BASE exists in mission
     Math::Point     m_lastMousePos;
     CObject*        m_selectObject;
 

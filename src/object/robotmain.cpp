@@ -1240,7 +1240,7 @@ void CRobotMain::ChangePhase(Phase phase)
                 StartDisplayInfo(SATCOM_HUSTON, false);  // shows the instructions
 
             m_sound->StopMusic(0.0f);
-            if (!m_base || loading) StartMusic();
+            if (m_base == nullptr || loading) StartMusic();
         }
         catch(const CLevelParserException& e)
         {
@@ -3696,7 +3696,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
     m_fixScene = fixScene;
 
     g_id = 0;
-    m_base = false;
+    m_base = nullptr;
 
     if (!resetObject)
     {
@@ -4322,7 +4322,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             {
                 obj->SetDefRank(rankObj);
                 
-                if (type == OBJECT_BASE) m_base = true;
+                if (type == OBJECT_BASE) m_base = obj;
                 
                 Gfx::CameraType cType = line->GetParam("camera")->AsCameraType(Gfx::CAM_TYPE_NULL);
                 if (cType != Gfx::CAM_TYPE_NULL)
@@ -4741,7 +4741,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
     m_selectObject = sel;
 
-    if (!m_base     &&  // no main base?
+    if (m_base == nullptr &&  // no main base?
         !m_fixScene)    // interractive scene?
     {
         CObject* obj;
@@ -5924,7 +5924,7 @@ CObject* CRobotMain::IOReadObject(char *line, const char* filename, int objRank)
         }
     }
 
-    if (type == OBJECT_BASE) m_base = true;
+    if (type == OBJECT_BASE) m_base = obj;
 
     obj->Read(line);
 
@@ -5956,7 +5956,7 @@ CObject* CRobotMain::IOReadObject(char *line, const char* filename, int objRank)
 //! Resumes some part of the game
 CObject* CRobotMain::IOReadScene(const char *filename, const char *filecbot)
 {
-    m_base = false;
+    m_base = nullptr;
 
     FILE* file = fopen(filename, "r");
     if (file == NULL) return 0;
@@ -6386,7 +6386,7 @@ Error CRobotMain::CheckEndMission(bool frame)
             if(m_exitAfterMission)
                 m_eventQueue->AddEvent(Event(EVENT_QUIT));
         }
-        if (frame && m_base) return ERR_MISSION_NOTERM;
+        if (frame && m_base != nullptr && m_base->GetSelectable()) return ERR_MISSION_NOTERM;
         if (m_missionResult == ERR_OK) { //mission win?
             m_displayText->DisplayError(INFO_WIN, Math::Vector(0.0f,0.0f,0.0f));
             if(m_missionTimerEnabled && m_missionTimerStarted) {
@@ -6529,7 +6529,7 @@ Error CRobotMain::CheckEndMission(bool frame)
         return ERR_OK;  // mission ended
     }
 
-    if (frame && m_base) return ERR_MISSION_NOTERM;
+    if (frame && m_base != nullptr && m_base->GetSelectable()) return ERR_MISSION_NOTERM;
 
     if (m_winDelay == 0.0f)
     {
