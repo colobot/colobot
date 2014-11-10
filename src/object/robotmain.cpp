@@ -34,6 +34,7 @@
 
 #include "common/resources/resourcemanager.h"
 #include "common/resources/inputstream.h"
+#include "common/resources/outputstream.h"
 
 #include "graphics/engine/camera.h"
 #include "graphics/engine/cloud.h"
@@ -6006,15 +6007,17 @@ void CRobotMain::WriteFreeParam()
 
     if (m_gamerName == "") return;
 
-    char filename[MAX_FNAME];
-    sprintf(filename, "%s/%s/research.gam", GetSavegameDir(), m_gamerName.c_str());
-    FILE* file = fopen(filename, "w");
-    if (file == NULL) return;
-
-    char line[100];
-    sprintf(line, "research=%d build=%d\n", m_freeResearch, m_freeBuild);
-    fputs(line, file);
-    fclose(file);
+    COutputStream file;
+    file.open(std::string(GetPHYSFSSavegameDir())+"/"+m_gamerName+"/research.gam");
+    if(!file.is_open())
+    {
+        CLogger::GetInstancePointer()->Error("Unable to write free game unlock state\n");
+        return;
+    }
+    
+    file << "research=" << m_freeResearch << " build=" << m_freeBuild << "\n";
+    
+    file.close();
 }
 
 //! Reads the global parameters for free play
@@ -6025,16 +6028,23 @@ void CRobotMain::ReadFreeParam()
 
     if (m_gamerName == "") return;
 
-    char filename[MAX_FNAME];
-    sprintf(filename, "%s/%s/research.gam", GetSavegameDir(), m_gamerName.c_str());
-    FILE* file = fopen(filename, "r");
-    if (file == NULL)  return;
+    if(!CResourceManager::Exists(std::string(GetPHYSFSSavegameDir())+"/"+m_gamerName+"/research.gam"))
+        return;
+    
+    CInputStream file;
+    file.open(std::string(GetPHYSFSSavegameDir())+"/"+m_gamerName+"/research.gam");
+    if(!file.is_open())
+    {
+        CLogger::GetInstancePointer()->Error("Unable to read free game unlock state\n");
+        return;
+    }
 
-    char line[100];
-    if (fgets(line, 100, file) != NULL)
-        sscanf(line, "research=%d build=%d\n", &m_freeResearch, &m_freeBuild);
+    std::string line;
+    file >> line;
+    
+    sscanf(line.c_str(), "research=%d build=%d\n", &m_freeResearch, &m_freeBuild);
 
-    fclose(file);
+    file.close();
 }
 
 
