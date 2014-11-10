@@ -5336,23 +5336,6 @@ void CRobotMain::FrameShowLimit(float rTime)
 }
 
 
-
-//! Returns a pointer to the last slash in a filename.
-char* SearchLastDir(char *filename)
-{
-    char* p = filename;
-
-    while (*p++ != 0);
-    p --;  // ^on the zero terminator
-
-    while (p != filename)
-    {
-        if (*(--p) == '/' || *p == '\\') return p;
-    }
-    return 0;
-}
-
-
 //! Compiles all scripts of robots
 void CRobotMain::CompileScript(bool soluce)
 {
@@ -5473,23 +5456,13 @@ void CRobotMain::LoadFileScript(CObject *obj, const char* filename, int objRank,
     ObjectType type = obj->GetType();
     if (type == OBJECT_HUMAN) return;
 
+    std::string dirname = filename;
+    dirname = dirname.substr(0, dirname.find_last_of("/"));
     
-    std::string fnstr = filename;
-    std::string savedir = CResourceManager::GetSaveLocation()+"/";
-    boost::replace_all(fnstr, "\\", "/");
-    boost::replace_all(savedir, "\\", "/");
-    boost::replace_all(fnstr, savedir, ""); //TODO: Refactor to get physfs path here
-    //TODO: Refactor to std::string
-    char fn[MAX_FNAME];
-    strcpy(fn, fnstr.c_str());
-    char* ldir = SearchLastDir(fn);
-    if (ldir == 0) return;
-
+    char fn[MAX_FNAME]; //TODO: Refactor to std::string
     for (int i = 0; i < BRAINMAXSCRIPT; i++)
     {
-        if (brain->GetCompile(i)) continue;
-
-        sprintf(ldir, "/prog%.3d%.1d.txt", objRank, i);
+        sprintf(fn, "%s/prog%.3d%.1d.txt", dirname.c_str(), objRank, i);
         brain->ReadProgram(i, fn);
         if (!brain->GetCompile(i)) nbError++;
     }
@@ -5547,21 +5520,14 @@ void CRobotMain::SaveFileScript(CObject *obj, const char* filename, int objRank)
 
     ObjectType type = obj->GetType();
     if (type == OBJECT_HUMAN) return;
-
-    std::string fnstr = filename;
-    std::string savedir = CResourceManager::GetSaveLocation()+"/";
-    boost::replace_all(fnstr, "\\", "/");
-    boost::replace_all(savedir, "\\", "/");
-    boost::replace_all(fnstr, savedir, ""); //TODO: Refactor to get physfs path here
-    //TODO: Refactor to std::string
-    char fn[MAX_FNAME];
-    strcpy(fn, fnstr.c_str());
-    char* ldir = SearchLastDir(fn);
-    if (ldir == 0) return;
-
+    
+    std::string dirname = filename;
+    dirname = dirname.substr(0, dirname.find_last_of("/"));
+    
+    char fn[MAX_FNAME]; //TODO: Refactor to std::string
     for (int i = 0; i < BRAINMAXSCRIPT; i++)
     {
-        sprintf(ldir, "/prog%.3d%.1d.txt", objRank, i);
+        sprintf(fn, "%s/prog%.3d%.1d.txt", dirname.c_str(), objRank, i);
         brain->WriteProgram(i, fn);
     }
 }
