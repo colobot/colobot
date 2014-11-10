@@ -1085,7 +1085,7 @@ bool CObject::Write(CLevelParserLine* line)
     for ( i=0 ; i<OBJECTMAXCMDLINE ; i++ )
     {
         value = GetCmdLine(i);
-        if ( isnan(value) )  break;
+        if ( std::isnan(value) )  break;
 
         cmdline.push_back(new CLevelParserParam(value));
     }
