@@ -91,6 +91,8 @@ protected:
     std::string  SearchDirectory(bool bCreate);
     bool        ReadProgram();
     bool        WriteProgram();
+    
+    void        SetFilenameField(CEdit* edit, const std::string& filename);
 
 protected:
     Gfx::CEngine*    m_engine;

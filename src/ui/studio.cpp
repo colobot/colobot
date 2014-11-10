@@ -1091,10 +1091,6 @@ void CStudio::StartDialog(StudioDialog type)
 
         pe = pw->CreateEdit(pos, dim, 0, EVENT_DIALOG_EDIT);
         pe->SetState(STATE_SHADOW);
-        if ( m_dialog == SD_SAVE )
-        {
-            pe->SetText(m_script->GetFilename());
-        }
 
         GetResource(RES_TEXT, RT_IO_DIR, name);
         pla = pw->CreateLabel(pos, dim, 0, EVENT_DIALOG_LABEL3, name);
@@ -1125,6 +1121,12 @@ void CStudio::StartDialog(StudioDialog type)
         UpdateDialogList();
         UpdateDialogPublic();
         UpdateDialogAction();
+        
+        if ( m_dialog == SD_SAVE )
+        {
+            SetFilenameField(pe, m_script->GetFilename());
+            UpdateChangeEdit();
+        }
 
         pe->SetCursor(999, 0);  // selects all
         pe->SetFocus(true);
@@ -1377,8 +1379,6 @@ void CStudio::UpdateChangeList()
     CWindow*    pw;
     CList*      pl;
     CEdit*      pe;
-    char        name[100];
-    char*       p;
 
     pw = static_cast< CWindow* >(m_interface->SearchControl(EVENT_WINDOW9));
     if ( pw == nullptr )  return;
@@ -1387,15 +1387,27 @@ void CStudio::UpdateChangeList()
     pe = static_cast< CEdit* >(pw->SearchControl(EVENT_DIALOG_EDIT));
     if ( pe == nullptr )  return;
 
-    strcpy(name, pl->GetItemName(pl->GetSelect()));
-    name[pe->GetMaxChar()] = 0;  // truncates according lg max editable
-    p = strchr(name, '\t');  // seeks first tab
-    if ( p != 0 )  *p = 0;
-    pe->SetText(name);
+    std::string name = pl->GetItemName(pl->GetSelect());
+    name = name.substr(0, name.find_first_of("\t"));
+    SetFilenameField(pe, name);
     pe->SetCursor(999, 0);  // selects all
     pe->SetFocus(true);
 
     UpdateDialogAction();
+}
+
+void CStudio::SetFilenameField(CEdit* edit, const std::string& filename)
+{
+    std::string name = filename;
+    if(name.length() > edit->GetMaxChar()) {
+        if(name.substr(name.length()-4) == ".txt")
+            name = name.substr(0, name.length()-4);
+        if(name.length() > edit->GetMaxChar()) {
+            CLogger::GetInstancePointer()->Warn("Tried to load too long filename!\n");
+            name = name.substr(0, edit->GetMaxChar());  // truncates according to max length
+        }
+    }
+    edit->SetText(name.c_str());
 }
 
 // Updates the list after a change in name.
