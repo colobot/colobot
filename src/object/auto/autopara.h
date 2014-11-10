@@ -50,8 +50,8 @@ public:
 
     bool        CreateInterface(bool bSelect);
 
-    bool        Write(char *line);
-    bool        Read(char *line);
+    bool        Write(CLevelParserLine* line);
+    bool        Read(CLevelParserLine* line);
 
 protected:
     void        ChargeObject(float rTime);

@@ -1496,7 +1496,6 @@ void CStudio::UpdateDialogList()
 {
     CWindow*        pw;
     CList*          pl;
-    fs::path        path;
     int             i = 0;
     char            time[100];
 
@@ -1506,52 +1505,38 @@ void CStudio::UpdateDialogList()
     if ( pl == nullptr )  return;
     pl->Flush();
 
-    path = fs::path(SearchDirectory(false));
-    fs::directory_iterator end_iter;
-    if ( fs::exists(path) && fs::is_directory(path) )
-    {
-        for( fs::directory_iterator file(path); file != end_iter; file++)
-        {
-            if (fs::is_regular_file(file->status()) )
-            {
-                std::ostringstream temp;
-                TimeToAscii(fs::last_write_time(file->path()), time);
-                temp << file->path().filename().string() << '\t' << fs::file_size(file->path()) << "  \t" << time;
-                pl->SetItemName(i++, temp.str().c_str());
-            }
-        }
+    if(!CResourceManager::DirectoryExists(SearchDirectory(false)))
+        return;
+    
+    std::vector<std::string> programs = CResourceManager::ListFiles(SearchDirectory(false));
+    for(auto& prog : programs) {
+        std::ostringstream temp;
+        TimeToAscii(CResourceManager::GetLastModificationTime(SearchDirectory(false) + prog), time);
+        temp << prog << '\t' << CResourceManager::GetFileSize(SearchDirectory(false) + prog) << "  \t" << time;
+        pl->SetItemName(i++, temp.str().c_str());
     }
 }
 
 // Constructs the name of the folder or open/save.
 // If the folder does not exist, it will be created.
-//TODO: Refactor to PHYSFS
-std::string CStudio::SearchDirectory(bool bCreate, bool physfsReady)
+std::string CStudio::SearchDirectory(bool bCreate)
 {
-    char dir[MAX_FNAME];
+    std::string dir;
     if ( m_main->GetIOPublic() )
     {
-        sprintf(dir, "%s/", m_main->GetPublicDir());
+        dir = std::string(m_main->GetPublicDir()) + "/";
     }
     else
     {
-        sprintf(dir, "%s/%s/Program/", m_main->GetSavegameDir(), m_main->GetGamerName());
+        dir = std::string(m_main->GetSavegameDir()) + "/" + std::string(m_main->GetGamerName()) + "/program/";
     }
 
     if ( bCreate )
     {
-        fs::path path = fs::path(dir);
-        fs::create_directories(path);
+        if(!CResourceManager::DirectoryExists(dir))
+            CResourceManager::CreateDirectory(dir);
     }
-
-    std::string dir2 = dir;
-    if(physfsReady) {
-        std::string savedir = CResourceManager::GetSaveLocation()+"/";
-        boost::replace_all(dir2, "\\", "/");
-        boost::replace_all(savedir, "\\", "/");
-        boost::replace_all(dir2, savedir, "");
-    }
-    return dir2;
+    return dir;
 }
 
 // Reads a new program.
@@ -1577,7 +1562,7 @@ bool CStudio::ReadProgram()
     {
         strcat(filename, ".txt");
     }
-    strcpy(dir, SearchDirectory(true, true).c_str());
+    strcpy(dir, SearchDirectory(true).c_str());
     strcat(dir, filename);
 
     pw = static_cast< CWindow* >(m_interface->SearchControl(EVENT_WINDOW3));
@@ -1615,7 +1600,7 @@ bool CStudio::WriteProgram()
     {
         strcat(filename, ".txt");
     }
-    strcpy(dir, SearchDirectory(true, true).c_str());
+    strcpy(dir, SearchDirectory(true).c_str());
     strcat(dir, filename);
 
     pw = static_cast< CWindow* >(m_interface->SearchControl(EVENT_WINDOW3));

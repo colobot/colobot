@@ -25,6 +25,8 @@
 #include "math/geometry.h"
 
 #include "object/robotmain.h"
+#include "object/level/parserline.h"
+#include "object/level/parserparam.h"
 
 #include "script/cmdtoken.h"
 
@@ -563,44 +565,31 @@ void CAutoResearch::FireStopUpdate(float progress, bool bLightOn)
 
 // Saves all parameters of the controller.
 
-bool CAutoResearch::Write(char *line)
+bool CAutoResearch::Write(CLevelParserLine* line)
 {
-    char    name[100];
-
     if ( m_phase == ALP_WAIT )  return false;
-
-    sprintf(name, " aExist=%d", 1);
-    strcat(line, name);
-
+    
+    line->AddParam("aExist", new CLevelParserParam(true));
     CAuto::Write(line);
-
-    sprintf(name, " aPhase=%d", m_phase);
-    strcat(line, name);
-
-    sprintf(name, " aProgress=%.2f", m_progress);
-    strcat(line, name);
-
-    sprintf(name, " aSpeed=%.2f", m_speed);
-    strcat(line, name);
-
-    sprintf(name, " aResearch=%d", m_research);
-    strcat(line, name);
+    line->AddParam("aPhase", new CLevelParserParam(static_cast<int>(m_phase)));
+    line->AddParam("aProgress", new CLevelParserParam(m_progress));
+    line->AddParam("aSpeed", new CLevelParserParam(m_speed));
+    line->AddParam("aResearch", new CLevelParserParam(static_cast<int>(m_research)));
 
     return true;
 }
 
 // Restores all parameters of the controller.
 
-bool CAutoResearch::Read(char *line)
+bool CAutoResearch::Read(CLevelParserLine* line)
 {
-    if ( OpInt(line, "aExist", 0) == 0 )  return false;
+    if ( !line->GetParam("aExist")->AsBool(false) )  return false;
 
     CAuto::Read(line);
-
-    m_phase = static_cast< AutoResearchPhase >(OpInt(line, "aPhase", ALP_WAIT));
-    m_progress = OpFloat(line, "aProgress", 0.0f);
-    m_speed = OpFloat(line, "aSpeed", 1.0f);
-    m_research = static_cast< ResearchType >(OpInt(line, "aResearch", 0));
+    m_phase = static_cast< AutoResearchPhase >(line->GetParam("aPhase")->AsInt(ALP_WAIT));
+    m_progress = line->GetParam("aProgress")->AsFloat(0.0f);
+    m_speed = line->GetParam("aSpeed")->AsFloat(1.0f);
+    m_research = static_cast< ResearchType >(line->GetParam("aResearch")->AsInt(0));
 
     m_lastUpdateTime = 0.0f;
     m_lastParticle = 0.0f;

@@ -56,6 +56,12 @@ public:
     static std::vector<std::string> ListFiles(const std::string &directory);
     //! List directories contained in directory
     static std::vector<std::string> ListDirectories(const std::string &directory);
+    
+    
+    //! Returns file size in bytes
+    static long long GetFileSize(const std::string &filename);
+    //! Returns last modification date as timestamp
+    static long long GetLastModificationTime(const std::string &filename);
 
 private:
     static int SDLSeek(SDL_RWops *context, int offset, int whence);

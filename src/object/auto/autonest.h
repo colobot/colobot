@@ -46,8 +46,8 @@ public:
     bool        EventProcess(const Event &event);
     Error       GetError();
 
-    bool        Write(char *line);
-    bool        Read(char *line);
+    bool        Write(CLevelParserLine* line);
+    bool        Read(CLevelParserLine* line);
 
 protected:
     bool        SearchFree(Math::Vector pos);

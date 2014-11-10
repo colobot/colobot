@@ -54,8 +54,8 @@ public:
     bool        SetValue(int rank, float value);
     bool        SetString(char *string);
 
-    bool        Write(char *line);
-    bool        Read(char *line);
+    bool        Write(CLevelParserLine* line);
+    bool        Read(CLevelParserLine* line);
 
 protected:
     CObject*    SearchAlien();

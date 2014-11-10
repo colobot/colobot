@@ -34,6 +34,7 @@
 
 #include "common/resources/resourcemanager.h"
 #include "common/resources/inputstream.h"
+#include "common/resources/outputstream.h"
 
 #include "graphics/engine/camera.h"
 #include "graphics/engine/cloud.h"
@@ -99,7 +100,6 @@ const int MAX_FNAME = 255;
 
 
 
-#define CBOT_STACK  true    // saves the stack of programs CBOT
 const float UNIT = 4.0f;
 
 
@@ -3781,8 +3781,6 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
     int rankGadget = 0;
     CObject* sel = 0;
 
-    SetNumericLocale();
-
     /*
      * NOTE: Moving frequently used lines to the top
      *       may speed up loading
@@ -4774,8 +4772,6 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
     }
     m_dialog->SetSceneRead("");
     m_dialog->SetStackRead("");
-
-    RestoreNumericLocale();
     
     if(m_app->GetSceneTestMode())
         m_eventQueue->AddEvent(Event(EVENT_WIN));
@@ -5341,23 +5337,6 @@ void CRobotMain::FrameShowLimit(float rTime)
 }
 
 
-
-//! Returns a pointer to the last slash in a filename.
-char* SearchLastDir(char *filename)
-{
-    char* p = filename;
-
-    while (*p++ != 0);
-    p --;  // ^on the zero terminator
-
-    while (p != filename)
-    {
-        if (*(--p) == '/' || *p == '\\') return p;
-    }
-    return 0;
-}
-
-
 //! Compiles all scripts of robots
 void CRobotMain::CompileScript(bool soluce)
 {
@@ -5460,7 +5439,7 @@ void CRobotMain::LoadOneScript(CObject *obj, int &nbError)
 
         char filename[MAX_FNAME];
         sprintf(filename, "%s/%s/%c%.3d%.3d%.1d.txt",
-                    GetPHYSFSSavegameDir(), m_gamerName.c_str(), name[0], rank, objRank, i);
+                    GetSavegameDir(), m_gamerName.c_str(), name[0], rank, objRank, i);
         brain->ReadProgram(i, filename);
         if (!brain->GetCompile(i)) nbError++;
     }
@@ -5478,23 +5457,13 @@ void CRobotMain::LoadFileScript(CObject *obj, const char* filename, int objRank,
     ObjectType type = obj->GetType();
     if (type == OBJECT_HUMAN) return;
 
+    std::string dirname = filename;
+    dirname = dirname.substr(0, dirname.find_last_of("/"));
     
-    std::string fnstr = filename;
-    std::string savedir = CResourceManager::GetSaveLocation()+"/";
-    boost::replace_all(fnstr, "\\", "/");
-    boost::replace_all(savedir, "\\", "/");
-    boost::replace_all(fnstr, savedir, ""); //TODO: Refactor to get physfs path here
-    //TODO: Refactor to std::string
-    char fn[MAX_FNAME];
-    strcpy(fn, fnstr.c_str());
-    char* ldir = SearchLastDir(fn);
-    if (ldir == 0) return;
-
+    char fn[MAX_FNAME]; //TODO: Refactor to std::string
     for (int i = 0; i < BRAINMAXSCRIPT; i++)
     {
-        if (brain->GetCompile(i)) continue;
-
-        sprintf(ldir, "/prog%.3d%.1d.txt", objRank, i);
+        sprintf(fn, "%s/prog%.3d%.1d.txt", dirname.c_str(), objRank, i);
         brain->ReadProgram(i, fn);
         if (!brain->GetCompile(i)) nbError++;
     }
@@ -5536,7 +5505,7 @@ void CRobotMain::SaveOneScript(CObject *obj)
     {
         char filename[MAX_FNAME];
         sprintf(filename, "%s/%s/%c%.3d%.3d%.1d.txt",
-                    GetPHYSFSSavegameDir(), m_gamerName.c_str(), name[0], rank, objRank, i);
+                    GetSavegameDir(), m_gamerName.c_str(), name[0], rank, objRank, i);
         brain->WriteProgram(i, filename);
     }
 }
@@ -5552,21 +5521,14 @@ void CRobotMain::SaveFileScript(CObject *obj, const char* filename, int objRank)
 
     ObjectType type = obj->GetType();
     if (type == OBJECT_HUMAN) return;
-
-    std::string fnstr = filename;
-    std::string savedir = CResourceManager::GetSaveLocation()+"/";
-    boost::replace_all(fnstr, "\\", "/");
-    boost::replace_all(savedir, "\\", "/");
-    boost::replace_all(fnstr, savedir, ""); //TODO: Refactor to get physfs path here
-    //TODO: Refactor to std::string
-    char fn[MAX_FNAME];
-    strcpy(fn, fnstr.c_str());
-    char* ldir = SearchLastDir(fn);
-    if (ldir == 0) return;
-
+    
+    std::string dirname = filename;
+    dirname = dirname.substr(0, dirname.find_last_of("/"));
+    
+    char fn[MAX_FNAME]; //TODO: Refactor to std::string
     for (int i = 0; i < BRAINMAXSCRIPT; i++)
     {
-        sprintf(ldir, "/prog%.3d%.1d.txt", objRank, i);
+        sprintf(fn, "%s/prog%.3d%.1d.txt", dirname.c_str(), objRank, i);
         brain->WriteProgram(i, fn);
     }
 }
@@ -5665,37 +5627,17 @@ bool CRobotMain::IsBusy()
 }
 
 //! Writes an object into the backup file
-void CRobotMain::IOWriteObject(FILE *file, CObject* obj, const char *cmd)
+void CRobotMain::IOWriteObject(CLevelParserLine* line, CObject* obj)
 {
     if (obj->GetType() == OBJECT_FIX) return;
 
-    SetNumericLocale();
-
-    char line[3000];
-    char name[100];
-
-    strcpy(line, cmd);
-
-    sprintf(name, " type=%s", GetTypeObject(obj->GetType()));
-    strcat(line, name);
-
-    sprintf(name, " id=%d", obj->GetID());
-    strcat(line, name);
+    line->AddParam("type", new CLevelParserParam(obj->GetType()));
+    line->AddParam("id", new CLevelParserParam(obj->GetID()));
+    line->AddParam("pos", new CLevelParserParam(obj->GetPosition(0)/g_unit));
+    line->AddParam("angle", new CLevelParserParam(obj->GetAngle(0)/(Math::PI/180.0f)));
+    line->AddParam("zoom", new CLevelParserParam(obj->GetZoom(0)));
 
     Math::Vector pos;
-
-    pos = obj->GetPosition(0)/g_unit;
-    sprintf(name, " pos=%.2f;%.2f;%.2f", pos.x, pos.y, pos.z);
-    strcat(line, name);
-
-    pos = obj->GetAngle(0)/(Math::PI/180.0f);
-    sprintf(name, " angle=%.2f;%.2f;%.2f", pos.x, pos.y, pos.z);
-    strcat(line, name);
-
-    pos = obj->GetZoom(0);
-    sprintf(name, " zoom=%.2f;%.2f;%.2f", pos.x, pos.y, pos.z);
-    strcat(line, name);
-
     for (int i = 1; i < OBJECTMAXPART; i++)
     {
         if (obj->GetObjectRank(i) == -1) continue;
@@ -5704,104 +5646,94 @@ void CRobotMain::IOWriteObject(FILE *file, CObject* obj, const char *cmd)
         if (pos.x != 0.0f || pos.y != 0.0f || pos.z != 0.0f)
         {
             pos /= g_unit;
-            sprintf(name, " p%d=%.2f;%.2f;%.2f", i, pos.x, pos.y, pos.z);
-            strcat(line, name);
+            line->AddParam("p"+boost::lexical_cast<std::string>(i), new CLevelParserParam(pos));
         }
 
         pos = obj->GetAngle(i);
         if (pos.x != 0.0f || pos.y != 0.0f || pos.z != 0.0f)
         {
             pos /= (Math::PI/180.0f);
-            sprintf(name, " a%d=%.2f;%.2f;%.2f", i, pos.x, pos.y, pos.z);
-            strcat(line, name);
+            line->AddParam("a"+boost::lexical_cast<std::string>(i), new CLevelParserParam(pos));
         }
 
         pos = obj->GetZoom(i);
         if (pos.x != 1.0f || pos.y != 1.0f || pos.z != 1.0f)
         {
-            sprintf(name, " z%d=%.2f;%.2f;%.2f", i, pos.x, pos.y, pos.z);
-            strcat(line, name);
+            line->AddParam("z"+boost::lexical_cast<std::string>(i), new CLevelParserParam(pos));
         }
     }
 
-    sprintf(name, " trainer=%d", obj->GetTrainer());
-    strcat(line, name);
+    line->AddParam("trainer", new CLevelParserParam(obj->GetTrainer()));
+    line->AddParam("ignoreBuildCheck", new CLevelParserParam(obj->GetIgnoreBuildCheck()));
+    line->AddParam("option", new CLevelParserParam(obj->GetOption()));
+    if (obj == m_infoObject)
+        line->AddParam("select", new CLevelParserParam(1));
     
-    sprintf(name, " ignoreBuildCheck=%d", obj->GetIgnoreBuildCheck());
-    strcat(line, name);
-
-    sprintf(name, " option=%d", obj->GetOption());
-    strcat(line, name);
-
-    if (obj == m_infoObject)  // selects object?
-    {
-        sprintf(name, " select=1");
-        strcat(line, name);
-    }
-
     obj->Write(line);
-
-    if (obj->GetType() == OBJECT_BASE)
-    {
-        sprintf(name, " run=3");  // stops and open (PARAM_FIXSCENE)
-        strcat(line, name);
-    }
-
+    
+    if(obj->GetType() == OBJECT_BASE)
+        line->AddParam("run", new CLevelParserParam(3));  // stops and open (PARAM_FIXSCENE)
+    
     CBrain* brain = obj->GetBrain();
     if (brain != nullptr)
     {
         int run = brain->GetProgram();
         if (run != -1)
         {
-            sprintf(name, " run=%d", run+1);
-            strcat(line, name);
+            line->AddParam("run", new CLevelParserParam(run+1));
         }
     }
-
-    strcat(line, "\n");
-    fputs(line, file);
-
-    RestoreNumericLocale();
 }
 
 //! Saves the current game
 bool CRobotMain::IOWriteScene(const char *filename, const char *filecbot, char *info)
 {
-    FILE* file = fopen(filename, "w");
-    if (file == NULL)  return false;
+    std::string fnstr = filename;
+    std::string savedir = CResourceManager::GetSaveLocation()+"/";
+    boost::replace_all(fnstr, "\\", "/");
+    boost::replace_all(savedir, "\\", "/");
+    boost::replace_all(fnstr, savedir, ""); //TODO: Refactor to get physfs path here
+    
+    CLevelParser* level = new CLevelParser(fnstr);
+    CLevelParserLine* line;
 
-    SetNumericLocale();
-
-    char line[500];
-
-    sprintf(line, "Title text=\"%s\"\n", info);
-    fputs(line, file);
-
-    sprintf(line, "Version maj=%d min=%d\n", 0, 1);
-    fputs(line, file);
+    line = new CLevelParserLine("Title");
+    line->AddParam("text", new CLevelParserParam(std::string(info)));
+    level->AddLine(line);
+    
+    //TODO: Do we need that? It's not used anyway
+    line = new CLevelParserLine("Version");
+    line->AddParam("maj", new CLevelParserParam(0));
+    line->AddParam("min", new CLevelParserParam(1));
+    level->AddLine(line);
 
     char* name = m_dialog->GetSceneName();
-    if (strcmp(name, "user") == 0)
+    line = new CLevelParserLine("Mission");
+    line->AddParam("base", new CLevelParserParam(std::string(name)));
+    line->AddParam("rank", new CLevelParserParam(m_dialog->GetSceneRank()));
+    if (std::string(name) == "custom")
     {
-        sprintf(line, "Mission base=\"%s\" rank=%.3d dir=\"%s\"\n", name, m_dialog->GetSceneRank(), m_dialog->GetSceneDir());
+        line->AddParam("dir", new CLevelParserParam(std::string(m_dialog->GetSceneDir())));
     }
-    else
-    {
-        sprintf(line, "Mission base=\"%s\" rank=%.3d\n", name, m_dialog->GetSceneRank());
-    }
-    fputs(line, file);
+    level->AddLine(line);
 
-    sprintf(line, "Map zoom=%.2f\n", m_map->GetZoomMap());
-    fputs(line, file);
+    line = new CLevelParserLine("Map");
+    line->AddParam("zoom", new CLevelParserParam(m_map->GetZoomMap()));
+    level->AddLine(line);
 
-    sprintf(line, "DoneResearch bits=%d\n", static_cast<int>(g_researchDone));
-    fputs(line, file);
+    line = new CLevelParserLine("DoneResearch");
+    line->AddParam("bits", new CLevelParserParam(static_cast<int>(g_researchDone)));
+    level->AddLine(line);
 
     float sleep, delay, magnetic, progress;
     if (m_lightning->GetStatus(sleep, delay, magnetic, progress))
     {
-        sprintf(line, "BlitzMode sleep=%.2f delay=%.2f magnetic=%.2f progress=%.2f\n", sleep, delay, magnetic/g_unit, progress);
-        fputs(line, file);
+        line = new CLevelParserLine("BlitzMode");
+        line->AddParam("sleep", new CLevelParserParam(sleep));
+        line->AddParam("delay", new CLevelParserParam(delay));
+        line->AddParam("magnetic", new CLevelParserParam(magnetic/g_unit));
+        line->AddParam("progress", new CLevelParserParam(progress));
+        level->AddLine(line);
     }
 
     CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
@@ -5822,23 +5754,35 @@ bool CRobotMain::IOWriteScene(const char *filename, const char *filecbot, char *
         CObject* power = obj->GetPower();
         CObject* fret  = obj->GetFret();
 
-        if (fret != nullptr)  // object transported?
-            IOWriteObject(file, fret, "CreateFret");
+        if (fret != nullptr){  // object transported?
+            line = new CLevelParserLine("CreateFret");
+            IOWriteObject(line, fret);
+            level->AddLine(line);
+        }
 
-        if (power != nullptr)  // battery transported?
-            IOWriteObject(file, power, "CreatePower");
-
-        IOWriteObject(file, obj, "CreateObject");
+        if (power != nullptr) { // battery transported?
+            line = new CLevelParserLine("CreatePower");
+            IOWriteObject(line, power);
+            level->AddLine(line);
+        }
+        
+        line = new CLevelParserLine("CreateObject");
+        IOWriteObject(line, obj);
+        level->AddLine(line);
 
         SaveFileScript(obj, filename, objRank++);
     }
-    fclose(file);
+    try {
+        level->Save();
+    } catch(CLevelParserException& e) {
+        CLogger::GetInstancePointer()->Error("Failed to save level state - %s\n", e.what());
+        delete level;
+        return false;
+    }
+    delete level;
 
-    RestoreNumericLocale();
-
-#if CBOT_STACK
     // Writes the file of stacks of execution.
-    file = fOpen(filecbot, "wb");
+    FILE* file = fOpen(filecbot, "wb");
     if (file == NULL) return false;
 
     long version = 1;
@@ -5862,35 +5806,30 @@ bool CRobotMain::IOWriteScene(const char *filename, const char *filecbot, char *
     }
     CBotClass::SaveStaticState(file);
     fClose(file);
-#endif
 
     m_delayWriteMessage = 4;  // displays message in 3 frames
     return true;
 }
 
 //! Resumes the game
-CObject* CRobotMain::IOReadObject(char *line, const char* filename, int objRank)
+CObject* CRobotMain::IOReadObject(CLevelParserLine *line, const char* filename, int objRank)
 {
-    Math::Vector pos  = OpDir(line, "pos")*g_unit;
-    Math::Vector dir  = OpDir(line, "angle")*(Math::PI/180.0f);
-    Math::Vector zoom = OpDir(line, "zoom");
+    Math::Vector pos  = line->GetParam("pos")->AsPoint()*g_unit;
+    Math::Vector dir  = line->GetParam("angle")->AsPoint()*(Math::PI/180.0f);
+    Math::Vector zoom = line->GetParam("zoom")->AsPoint();
 
-    ObjectType type = OpTypeObject(line, "type", OBJECT_NULL);
-    int id = OpInt(line, "id", 0);
-    if (type == OBJECT_NULL)
-        return nullptr;
+    ObjectType type = line->GetParam("type")->AsObjectType();
+    int id = line->GetParam("id")->AsInt();
 
-    SetNumericLocale();
-
-    int trainer = OpInt(line, "trainer", 0);
-    int toy = OpInt(line, "toy", 0);
-    int option = OpInt(line, "option", 0);
+    bool trainer = line->GetParam("trainer")->AsBool(false);
+    bool toy = line->GetParam("toy")->AsBool(false);
+    int option = line->GetParam("option")->AsInt(0);
 
     CObject* obj = CObjectManager::GetInstancePointer()->CreateObject(pos, dir.y, type, 0.0f, 1.0f, 0.0f, trainer, toy, option);
     obj->SetDefRank(objRank);
     obj->SetPosition(0, pos);
     obj->SetAngle(0, dir);
-    obj->SetIgnoreBuildCheck(OpInt(line, "ignoreBuildCheck", 0));
+    obj->SetIgnoreBuildCheck(line->GetParam("ignoreBuildCheck")->AsBool(false));
     obj->SetID(id);
     if (g_id < id) g_id = id;
 
@@ -5901,23 +5840,19 @@ CObject* CRobotMain::IOReadObject(char *line, const char* filename, int objRank)
     {
         if (obj->GetObjectRank(i) == -1) continue;
 
-        char op[10];
-        sprintf(op, "p%d", i);
-        pos = OpDir(line, op);
+        pos = line->GetParam(std::string("p")+boost::lexical_cast<std::string>(i))->AsPoint(Math::Vector());
         if (pos.x != 0.0f || pos.y != 0.0f || pos.z != 0.0f)
         {
             obj->SetPosition(i, pos*g_unit);
         }
-
-        sprintf(op, "a%d", i);
-        dir = OpDir(line, op);
+        
+        dir = line->GetParam(std::string("a")+boost::lexical_cast<std::string>(i))->AsPoint(Math::Vector());
         if (dir.x != 0.0f || dir.y != 0.0f || dir.z != 0.0f)
         {
             obj->SetAngle(i, dir*(Math::PI/180.0f));
         }
-
-        sprintf(op, "z%d", i);
-        zoom = OpDir(line, op);
+        
+        zoom = line->GetParam(std::string("z")+boost::lexical_cast<std::string>(i))->AsPoint(Math::Vector());
         if (zoom.x != 0.0f || zoom.y != 0.0f || zoom.z != 0.0f)
         {
             obj->SetZoom(i, zoom);
@@ -5928,27 +5863,13 @@ CObject* CRobotMain::IOReadObject(char *line, const char* filename, int objRank)
 
     obj->Read(line);
 
-#if CBOT_STACK
-#else
-    LoadFileScript(obj, filename, objRank, i);
-#endif
-
-    int run = OpInt(line, "run", -1);
+    int run = line->GetParam("run")->AsInt(-1);
     if (run != -1)
     {
-#if CBOT_STACK
-#else
-        CBrain* brain = obj->GetBrain();
-        if (brain != nullptr)
-            brain->RunProgram(run-1);  // starts the program
-#endif
-
         CAuto* automat = obj->GetAuto();
         if (automat != nullptr)
             automat->Start(run);  // starts the film
     }
-
-    RestoreNumericLocale();
 
     return obj;
 }
@@ -5956,56 +5877,48 @@ CObject* CRobotMain::IOReadObject(char *line, const char* filename, int objRank)
 //! Resumes some part of the game
 CObject* CRobotMain::IOReadScene(const char *filename, const char *filecbot)
 {
+    std::string fnstr = filename;
+    std::string savedir = CResourceManager::GetSaveLocation()+"/";
+    boost::replace_all(fnstr, "\\", "/");
+    boost::replace_all(savedir, "\\", "/");
+    boost::replace_all(fnstr, savedir, ""); //TODO: Refactor to get physfs path here
+
+    CLevelParser* level = new CLevelParser(fnstr);
+    level->Load();
+
     m_base = nullptr;
-
-    FILE* file = fopen(filename, "r");
-    if (file == NULL) return 0;
-
-    SetNumericLocale();
-
     CObject* fret   = nullptr;
     CObject* power  = nullptr;
     CObject* sel    = nullptr;
     int objRank = 0;
-    char line[3000];
-    while (fgets(line, 3000, file) != NULL)
+    for(auto& line : level->GetLines())
     {
-        for (int i = 0; i < 3000; i++)
+        if (line->GetCommand() == "Map")
+            m_map->ZoomMap(line->GetParam("zoom")->AsFloat());
+
+        if (line->GetCommand() == "DoneResearch")
+            g_researchDone = line->GetParam("bits")->AsInt();
+
+        if (line->GetCommand() == "BlitzMode")
         {
-            if (line[i] == '\t') line[i] = ' ';  // replace tab by space
-            if (line[i] == '/' && line[i+1] == '/')
-            {
-                line[i] = 0;
-                break;
-            }
-        }
-
-        if (Cmd(line, "Map"))
-            m_map->ZoomMap(OpFloat(line, "zoom", 1.0f));
-
-        if (Cmd(line, "DoneResearch"))
-            g_researchDone = OpInt(line, "bits", 0);
-
-        if (Cmd(line, "BlitzMode"))
-        {
-            float sleep = OpFloat(line, "sleep", 0.0f);
-            float delay = OpFloat(line, "delay", 3.0f);
-            float magnetic = OpFloat(line, "magnetic", 50.0f)*g_unit;
-            float progress = OpFloat(line, "progress", 0.0f);
+            float sleep = line->GetParam("sleep")->AsFloat();
+            float delay = line->GetParam("delay")->AsFloat();
+            float magnetic = line->GetParam("magnetic")->AsFloat()*g_unit;
+            float progress = line->GetParam("progress")->AsFloat();
             m_lightning->SetStatus(sleep, delay, magnetic, progress);
         }
 
-        if (Cmd(line, "CreateFret"))
+        if (line->GetCommand() == "CreateFret")
             fret = IOReadObject(line, filename, -1);
 
-        if (Cmd(line, "CreatePower"))
+        if (line->GetCommand() == "CreatePower")
             power = IOReadObject(line, filename, -1);
 
-        if (Cmd(line, "CreateObject"))
+        if (line->GetCommand() == "CreateObject")
         {
             CObject* obj = IOReadObject(line, filename, objRank++);
 
-            if (OpInt(line, "select", 0))
+            if (line->GetParam("select")->AsBool(false))
                 sel = obj;
 
             if (fret != nullptr)
@@ -6026,9 +5939,8 @@ CObject* CRobotMain::IOReadScene(const char *filename, const char *filecbot)
             power = nullptr;
         }
     }
-    fclose(file);
+    delete level;
 
-#if CBOT_STACK
     CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
 
     // Compiles scripts.
@@ -6053,7 +5965,7 @@ CObject* CRobotMain::IOReadScene(const char *filename, const char *filecbot)
     while (nbError > 0 && nbError != lastError);
 
     // Reads the file of stacks of execution.
-    file = fOpen(filecbot, "rb");
+    FILE* file = fOpen(filecbot, "rb");
     if (file != NULL)
     {
         long version;
@@ -6082,9 +5994,6 @@ CObject* CRobotMain::IOReadScene(const char *filename, const char *filecbot)
         CBotClass::RestoreStaticState(file);
         fClose(file);
     }
-#endif
-
-    RestoreNumericLocale();
 
     return sel;
 }
@@ -6098,15 +6007,17 @@ void CRobotMain::WriteFreeParam()
 
     if (m_gamerName == "") return;
 
-    char filename[MAX_FNAME];
-    sprintf(filename, "%s/%s/research.gam", GetSavegameDir(), m_gamerName.c_str());
-    FILE* file = fopen(filename, "w");
-    if (file == NULL) return;
-
-    char line[100];
-    sprintf(line, "research=%d build=%d\n", m_freeResearch, m_freeBuild);
-    fputs(line, file);
-    fclose(file);
+    COutputStream file;
+    file.open(std::string(GetSavegameDir())+"/"+m_gamerName+"/research.gam");
+    if(!file.is_open())
+    {
+        CLogger::GetInstancePointer()->Error("Unable to write free game unlock state\n");
+        return;
+    }
+    
+    file << "research=" << m_freeResearch << " build=" << m_freeBuild << "\n";
+    
+    file.close();
 }
 
 //! Reads the global parameters for free play
@@ -6117,16 +6028,23 @@ void CRobotMain::ReadFreeParam()
 
     if (m_gamerName == "") return;
 
-    char filename[MAX_FNAME];
-    sprintf(filename, "%s/%s/research.gam", GetSavegameDir(), m_gamerName.c_str());
-    FILE* file = fopen(filename, "r");
-    if (file == NULL)  return;
+    if(!CResourceManager::Exists(std::string(GetSavegameDir())+"/"+m_gamerName+"/research.gam"))
+        return;
+    
+    CInputStream file;
+    file.open(std::string(GetSavegameDir())+"/"+m_gamerName+"/research.gam");
+    if(!file.is_open())
+    {
+        CLogger::GetInstancePointer()->Error("Unable to read free game unlock state\n");
+        return;
+    }
 
-    char line[100];
-    if (fgets(line, 100, file) != NULL)
-        sscanf(line, "research=%d build=%d\n", &m_freeResearch, &m_freeBuild);
+    std::string line;
+    std::getline(file, line);
+    
+    sscanf(line.c_str(), "research=%d build=%d\n", &m_freeResearch, &m_freeBuild);
 
-    fclose(file);
+    file.close();
 }
 
 
@@ -6694,12 +6612,6 @@ bool CRobotMain::GetRadar()
     return false;
 }
 
-//TODO: Use PHYSFS everywhere
-const char* CRobotMain::GetPHYSFSSavegameDir()
-{
-    return m_dialog->GetPHYSFSSavegameDir().c_str();
-}
-
 const char* CRobotMain::GetSavegameDir()
 {
     return m_dialog->GetSavegameDir().c_str();
@@ -6984,20 +6896,6 @@ void CRobotMain::ClearInterface()
 {
     HiliteClear();  // removes setting evidence
     m_tooltipName.clear();  // really removes the tooltip
-}
-
-void CRobotMain::SetNumericLocale()
-{
-    char *locale = setlocale(LC_NUMERIC, nullptr);
-    if (locale != nullptr)
-        m_oldLocale = locale;
-
-    setlocale(LC_NUMERIC, "C");
-}
-
-void CRobotMain::RestoreNumericLocale()
-{
-    setlocale(LC_NUMERIC, m_oldLocale.c_str());
 }
 
 void CRobotMain::DisplayError(Error err, CObject* pObj, float time)

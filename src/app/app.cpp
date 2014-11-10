@@ -1799,8 +1799,8 @@ void CApplication::SetLanguage(Language language)
         putenv(S_LANGUAGE);
         GetLogger()->Trace("SetLanguage: Set LANGUAGE=%s in environment\n", locale.c_str());
     }
-
-    setlocale(LC_ALL, "");
+    
+    std::locale::global(std::locale(std::locale(""), "C", std::locale::numeric));
 
     bindtextdomain("colobot", m_langPath.c_str());
     bind_textdomain_codeset("colobot", "UTF-8");

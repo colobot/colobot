@@ -167,7 +167,7 @@ bool CResourceManager::CreateDirectory(const std::string& directory)
     return PHYSFS_mkdir(CleanPath(directory).c_str());
 }
 
-//TODO: Don't use boost filesystem here
+//TODO: Don't use boost::filesystem here
 bool CResourceManager::RemoveDirectory(const std::string& directory)
 {
     bool success = true;
@@ -217,6 +217,28 @@ std::vector<std::string> CResourceManager::ListDirectories(const std::string &di
     PHYSFS_freeList(files);
 
     return result;
+}
+
+long long CResourceManager::GetFileSize(const std::string& filename)
+{
+    if(PHYSFS_isInit())
+    {
+        PHYSFS_File* file = PHYSFS_openRead(CleanPath(filename).c_str());
+        if(file == nullptr) return -1;
+        long long size = PHYSFS_fileLength(file);
+        PHYSFS_close(file);
+        return size;
+    }
+    return -1;
+}
+
+long long CResourceManager::GetLastModificationTime(const std::string& filename)
+{
+    if(PHYSFS_isInit())
+    {
+        return PHYSFS_getLastModTime(CleanPath(filename).c_str());
+    }
+    return -1;
 }
 
 

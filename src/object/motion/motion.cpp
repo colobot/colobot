@@ -23,6 +23,8 @@
 #include "app/app.h"
 
 #include "object/robotmain.h"
+#include "object/level/parserline.h"
+#include "object/level/parserparam.h"
 
 #include "script/cmdtoken.h"
 
@@ -171,31 +173,24 @@ float CMotion::GetParam(int rank)
 
 // Saves all parameters of the object.
 
-bool CMotion::Write(char *line)
+bool CMotion::Write(CLevelParserLine* line)
 {
-    char    name[100];
-
     if ( m_actionType == -1 )  return false;
-
-    sprintf(name, " mType=%d", m_actionType);
-    strcat(line, name);
-
-    sprintf(name, " mTime=%.2f", m_actionTime);
-    strcat(line, name);
-
-    sprintf(name, " mProgress=%.2f", m_progress);
-    strcat(line, name);
+    
+    line->AddParam("mType", new CLevelParserParam(m_actionType));
+    line->AddParam("mTime", new CLevelParserParam(m_actionTime));
+    line->AddParam("mProgress", new CLevelParserParam(m_progress));
 
     return false;
 }
 
 // Restores all parameters of the object.
 
-bool CMotion::Read(char *line)
+bool CMotion::Read(CLevelParserLine* line)
 {
-    m_actionType = OpInt(line, "mType", -1);
-    m_actionTime = OpFloat(line, "mTime", 0.0f);
-    m_progress = OpFloat(line, "mProgress", 0.0f);
+    m_actionType = line->GetParam("mType")->AsInt(-1);
+    m_actionTime = line->GetParam("mTime")->AsFloat(0.0f);
+    m_progress = line->GetParam("mProgress")->AsFloat(0.0f);
 
     return false;
 }

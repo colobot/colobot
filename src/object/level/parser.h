@@ -51,7 +51,7 @@ public:
     //! Load file
     void Load();
     //! Save file
-    void Save(std::string filename);
+    void Save();
     
     //! Get filename
     const std::string& GetFilename();
@@ -65,7 +65,6 @@ public:
     CLevelParserLine* Get(std::string command);
     
 private:
-    
     std::string m_filename;
     std::vector<CLevelParserLine*> m_lines;
 };

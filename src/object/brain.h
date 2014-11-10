@@ -41,6 +41,7 @@ class CTaskManager;
 class CScript;
 class CRobotMain;
 class CSoundInterface;
+class CLevelParserLine;
 
 namespace Ui {
 class CStudio;
@@ -92,8 +93,8 @@ public:
     bool        EventProcess(const Event &event);
     bool        CreateInterface(bool bSelect);
 
-    bool        Write(char *line);
-    bool        Read(char *line);
+    bool        Write(CLevelParserLine* line);
+    bool        Read(CLevelParserLine* line);
 
     bool        IsBusy();
     void        SetActivity(bool bMode);

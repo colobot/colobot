@@ -26,6 +26,9 @@
 
 #include "math/geometry.h"
 
+#include "object/level/parserline.h"
+#include "object/level/parserparam.h"
+
 #include "script/cmdtoken.h"
 
 #include "ui/interface.h"
@@ -428,40 +431,29 @@ bool CAutoDerrick::CreateInterface(bool bSelect)
 
 // Saves all parameters of the controller.
 
-bool CAutoDerrick::Write(char *line)
+bool CAutoDerrick::Write(CLevelParserLine* line)
 {
-    char    name[100];
-
     if ( m_phase == ADP_WAIT )  return false;
-
-    sprintf(name, " aExist=%d", 1);
-    strcat(line, name);
-
+    
+    line->AddParam("aExist", new CLevelParserParam(true));
     CAuto::Write(line);
-
-    sprintf(name, " aPhase=%d", m_phase);
-    strcat(line, name);
-
-    sprintf(name, " aProgress=%.2f", m_progress);
-    strcat(line, name);
-
-    sprintf(name, " aSpeed=%.2f", m_speed);
-    strcat(line, name);
+    line->AddParam("aPhase", new CLevelParserParam(static_cast<int>(m_phase)));
+    line->AddParam("aProgress", new CLevelParserParam(m_progress));
+    line->AddParam("aSpeed", new CLevelParserParam(m_speed));
 
     return true;
 }
 
 // Restores all parameters of the controller.
 
-bool CAutoDerrick::Read(char *line)
+bool CAutoDerrick::Read(CLevelParserLine* line)
 {
-    if ( OpInt(line, "aExist", 0) == 0 )  return false;
+    if ( !line->GetParam("aExist")->AsBool(false) )  return false;
 
     CAuto::Read(line);
-
-    m_phase = static_cast< AutoDerrickPhase >(OpInt(line, "aPhase", ADP_WAIT));
-    m_progress = OpFloat(line, "aProgress", 0.0f);
-    m_speed = OpFloat(line, "aSpeed", 1.0f);
+    m_phase = static_cast< AutoDerrickPhase >(line->GetParam("aPhase")->AsInt(ADP_WAIT));
+    m_progress = line->GetParam("aProgress")->AsFloat(0.0f);
+    m_speed = line->GetParam("aSpeed")->AsFloat(1.0f);
 
     m_lastParticle = 0.0f;
 

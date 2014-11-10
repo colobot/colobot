@@ -29,6 +29,7 @@
 class CInstanceManager;
 class CRobotMain;
 class CSoundInterface;
+class CLevelParserLine;
 
 namespace Ui {
 class CInterface;
@@ -80,8 +81,8 @@ public:
     virtual bool    GetMotor();
     virtual void    SetMotor(bool bMotor);
 
-    virtual bool    Write(char *line);
-    virtual bool    Read(char *line);
+    virtual bool    Write(CLevelParserLine* line);
+    virtual bool    Read(CLevelParserLine* line);
 
 protected:
     void        CheckInterface(Ui::CWindow *pw, EventType event, bool bState);

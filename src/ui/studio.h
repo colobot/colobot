@@ -88,7 +88,7 @@ protected:
     void        UpdateDialogAction();
     void        UpdateDialogPublic();
     void        UpdateDialogList();
-    std::string  SearchDirectory(bool bCreate, bool physfsReady=false);
+    std::string  SearchDirectory(bool bCreate);
     bool        ReadProgram();
     bool        WriteProgram();
 

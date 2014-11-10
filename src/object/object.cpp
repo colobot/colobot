@@ -76,11 +76,16 @@
 #include "object/motion/motionworm.h"
 #include "object/robotmain.h"
 #include "object/objman.h"
+#include "object/level/parserline.h"
+#include "object/level/parserparam.h"
+#include "object/level/parserexceptions.h"
 
 #include "physics/physics.h"
 
 #include "script/cbottoken.h"
 #include "script/cmdtoken.h"
+
+#include <boost/lexical_cast.hpp>
 
 
 
@@ -995,137 +1000,76 @@ int CObject::GetID()
 
 // Saves all the parameters of the object.
 
-bool CObject::Write(char *line)
+bool CObject::Write(CLevelParserLine* line)
 {
     Math::Vector    pos;
     Info        info;
-    char        name[100];
     float       value;
     int         i;
 
-    sprintf(name, " camera=%s", GetCamera(GetCameraType()));
-    strcat(line, name);
+    line->AddParam("camera", new CLevelParserParam(GetCameraType()));
 
-    if ( GetCameraLock() != 0 )
-    {
-        sprintf(name, " cameraLock=%d", GetCameraLock());
-        strcat(line, name);
-    }
+    if ( GetCameraLock() )
+        line->AddParam("cameraLock", new CLevelParserParam(GetCameraLock()));
 
     if ( GetEnergy() != 0.0f )
-    {
-        sprintf(name, " energy=%.2f", GetEnergy());
-        strcat(line, name);
-    }
+        line->AddParam("energy", new CLevelParserParam(GetEnergy()));
 
     if ( GetCapacity() != 1.0f )
-    {
-        sprintf(name, " capacity=%.2f", GetCapacity());
-        strcat(line, name);
-    }
-
+        line->AddParam("capacity", new CLevelParserParam(GetCapacity()));
+    
     if ( GetShield() != 1.0f )
-    {
-        sprintf(name, " shield=%.2f", GetShield());
-        strcat(line, name);
-    }
+        line->AddParam("shield", new CLevelParserParam(GetShield()));
 
     if ( GetRange() != 1.0f )
-    {
-        sprintf(name, " range=%.2f", GetRange());
-        strcat(line, name);
-    }
+        line->AddParam("range", new CLevelParserParam(GetRange()));
+    
+    if ( !GetSelectable() )
+        line->AddParam("selectable", new CLevelParserParam(GetSelectable()));
 
-    if ( GetSelectable() != 1 )
-    {
-        sprintf(name, " selectable=%d", GetSelectable());
-        strcat(line, name);
-    }
+    if ( !GetEnable() )
+        line->AddParam("enable", new CLevelParserParam(GetEnable()));
 
-    if ( GetEnable() != 1 )
-    {
-        sprintf(name, " enable=%d", GetEnable());
-        strcat(line, name);
-    }
+    if ( GetFixed() )
+        line->AddParam("fixed", new CLevelParserParam(GetFixed()));
 
-    if ( GetFixed() != 0 )
-    {
-        sprintf(name, " fixed=%d", GetFixed());
-        strcat(line, name);
-    }
+    if ( !GetClip() )
+        line->AddParam("clip", new CLevelParserParam(GetClip()));
 
-    if ( GetClip() != 1 )
-    {
-        sprintf(name, " clip=%d", GetClip());
-        strcat(line, name);
-    }
+    if ( GetLock() )
+        line->AddParam("lock", new CLevelParserParam(GetLock()));
 
-    if ( GetLock() != 0 )
+    if ( GetProxyActivate() )
     {
-        sprintf(name, " lock=%d", GetLock());
-        strcat(line, name);
-    }
-
-    if ( GetProxyActivate() != 0 )
-    {
-        sprintf(name, " proxyActivate=%d", GetProxyActivate());
-        strcat(line, name);
-
-        sprintf(name, " proxyDistance=%.2f", GetProxyDistance()/g_unit);
-        strcat(line, name);
+        line->AddParam("proxyActivate", new CLevelParserParam(GetProxyActivate()));
+        line->AddParam("proxyDistance", new CLevelParserParam(GetProxyDistance()/g_unit));
     }
 
     if ( GetMagnifyDamage() != 1.0f )
-    {
-        sprintf(name, " magnifyDamage=%.2f", GetMagnifyDamage());
-        strcat(line, name);
-    }
+        line->AddParam("magnifyDamage", new CLevelParserParam(GetMagnifyDamage()));
 
     if ( GetGunGoalV() != 0.0f )
-    {
-        sprintf(name, " aimV=%.2f", GetGunGoalV());
-        strcat(line, name);
-    }
+        line->AddParam("aimV", new CLevelParserParam(GetGunGoalV()));
+    
     if ( GetGunGoalH() != 0.0f )
-    {
-        sprintf(name, " aimH=%.2f", GetGunGoalH());
-        strcat(line, name);
-    }
+        line->AddParam("aimH", new CLevelParserParam(GetGunGoalH()));
 
     if ( GetParam() != 0.0f )
-    {
-        sprintf(name, " param=%.2f", GetParam());
-        strcat(line, name);
-    }
+        line->AddParam("param", new CLevelParserParam(GetParam()));
 
     if ( GetResetCap() != 0 )
     {
-        sprintf(name, " resetCap=%d", GetResetCap());
-        strcat(line, name);
-
-        pos = GetResetPosition()/g_unit;
-        sprintf(name, " resetPos=%.2f;%.2f;%.2f", pos.x, pos.y, pos.z);
-        strcat(line, name);
-
-        pos = GetResetAngle()/(Math::PI/180.0f);
-        sprintf(name, " resetAngle=%.2f;%.2f;%.2f", pos.x, pos.y, pos.z);
-        strcat(line, name);
-
-        sprintf(name, " resetRun=%d", GetResetRun());
-        strcat(line, name);
+        line->AddParam("resetCap", new CLevelParserParam(static_cast<int>(GetResetCap())));
+        line->AddParam("resetPos", new CLevelParserParam(GetResetPosition()/g_unit));
+        line->AddParam("resetAngle", new CLevelParserParam(GetResetAngle()/(Math::PI/180.0f)));
+        line->AddParam("resetRun", new CLevelParserParam(GetResetRun()));
     }
 
-    if ( m_bVirusMode != 0 )
-    {
-        sprintf(name, " virusMode=%d", m_bVirusMode);
-        strcat(line, name);
-    }
+    if ( m_bVirusMode )
+        line->AddParam("virusMode", new CLevelParserParam(m_bVirusMode));
 
     if ( m_virusTime != 0.0f )
-    {
-        sprintf(name, " virusTime=%.2f", m_virusTime);
-        strcat(line, name);
-    }
+        line->AddParam("virusTime", new CLevelParserParam(m_virusTime));
 
     // Puts information in terminal (OBJECT_INFO).
     for ( i=0 ; i<m_infoTotal ; i++ )
@@ -1133,37 +1077,37 @@ bool CObject::Write(char *line)
         info = GetInfo(i);
         if ( info.name[0] == 0 )  break;
 
-        sprintf(name, " info%d=\"%s=%.2f\"", i+1, info.name, info.value);
-        strcat(line, name);
+        line->AddParam("info"+boost::lexical_cast<std::string>(i+1), new CLevelParserParam(std::string(info.name)+"="+boost::lexical_cast<std::string>(info.value)));
     }
 
     // Sets the parameters of the command line.
+    std::vector<CLevelParserParam*> cmdline;
     for ( i=0 ; i<OBJECTMAXCMDLINE ; i++ )
     {
         value = GetCmdLine(i);
-        if ( value == NAN )  break;
+        if ( isnan(value) )  break;
 
-        if ( i == 0 )  sprintf(name, " cmdline=%.2f", value);
-        else           sprintf(name, ";%.2f", value);
-        strcat(line, name);
+        cmdline.push_back(new CLevelParserParam(value));
     }
+    if(cmdline.size() > 0)
+        line->AddParam("cmdline", new CLevelParserParam(cmdline));
 
-    if ( m_motion != 0 )
+    if ( m_motion != nullptr )
     {
         m_motion->Write(line);
     }
 
-    if ( m_brain != 0 )
+    if ( m_brain != nullptr )
     {
         m_brain->Write(line);
     }
 
-    if ( m_physics != 0 )
+    if ( m_physics != nullptr )
     {
         m_physics->Write(line);
     }
 
-    if ( m_auto != 0 )
+    if ( m_auto != nullptr )
     {
         m_auto->Write(line);
     }
@@ -1173,87 +1117,91 @@ bool CObject::Write(char *line)
 
 // Returns all parameters of the object.
 
-bool CObject::Read(char *line)
+bool CObject::Read(CLevelParserLine* line)
 {
     Math::Vector    pos, dir;
-    Info            info;
     Gfx::CameraType cType;
-    char            op[20];
-    char            text[100];
-    char*           p;
-    float           value;
     int             i;
 
-    cType = OpCamera(line, "camera");
+    cType = line->GetParam("camera")->AsCameraType(Gfx::CAM_TYPE_NULL);
     if ( cType != Gfx::CAM_TYPE_NULL )
     {
         SetCameraType(cType);
     }
 
-    SetCameraLock(OpInt(line, "cameraLock", 0));
-    SetEnergy(OpFloat(line, "energy", 0.0f));
-    SetCapacity(OpFloat(line, "capacity", 1.0f));
-    SetShield(OpFloat(line, "shield", 1.0f));
-    SetRange(OpFloat(line, "range", 1.0f));
-    SetSelectable(OpInt(line, "selectable", 1));
-    SetEnable(OpInt(line, "enable", 1));
-    SetFixed(OpInt(line, "fixed", 0));
-    SetClip(OpInt(line, "clip", 1));
-    SetLock(OpInt(line, "lock", 0));
-    SetProxyActivate(OpInt(line, "proxyActivate", 0));
-    SetProxyDistance(OpFloat(line, "proxyDistance", 15.0f)*g_unit);
-    SetRange(OpFloat(line, "range", 30.0f));
-    SetMagnifyDamage(OpFloat(line, "magnifyDamage", 1.0f));
-    SetGunGoalV(OpFloat(line, "aimV", 0.0f));
-    SetGunGoalH(OpFloat(line, "aimH", 0.0f));
-    SetParam(OpFloat(line, "param", 0.0f));
-    SetResetCap(static_cast<ResetCap>(OpInt(line, "resetCap", 0)));
-    SetResetPosition(OpDir(line, "resetPos")*g_unit);
-    SetResetAngle(OpDir(line, "resetAngle")*(Math::PI/180.0f));
-    SetResetRun(OpInt(line, "resetRun", 0));
-    m_bBurn = OpInt(line, "burnMode", 0);
-    m_bVirusMode = OpInt(line, "virusMode", 0);
-    m_virusTime = OpFloat(line, "virusTime", 0.0f);
+    SetCameraLock(line->GetParam("cameraLock")->AsBool(false));
+    SetEnergy(line->GetParam("energy")->AsFloat(0.0f));
+    SetCapacity(line->GetParam("capacity")->AsFloat(1.0f));
+    SetShield(line->GetParam("shield")->AsFloat(1.0f));
+    SetRange(line->GetParam("range")->AsFloat(1.0f));
+    SetSelectable(line->GetParam("selectable")->AsBool(true));
+    SetEnable(line->GetParam("enable")->AsBool(true));
+    SetFixed(line->GetParam("fixed")->AsBool(false));
+    SetClip(line->GetParam("clip")->AsBool(true));
+    SetLock(line->GetParam("lock")->AsBool(false));
+    SetProxyActivate(line->GetParam("proxyActivate")->AsBool(false));
+    SetProxyDistance(line->GetParam("proxyDistance")->AsFloat(15.0f)*g_unit);
+    SetRange(line->GetParam("range")->AsFloat(30.0f));
+    SetMagnifyDamage(line->GetParam("magnifyDamage")->AsFloat(1.0f));
+    SetGunGoalV(line->GetParam("aimV")->AsFloat(0.0f));
+    SetGunGoalH(line->GetParam("aimH")->AsFloat(0.0f));
+    SetParam(line->GetParam("param")->AsFloat(0.0f));
+    SetResetCap(static_cast<ResetCap>(line->GetParam("resetCap")->AsInt(0)));
+    SetResetPosition(line->GetParam("resetPos")->AsPoint(Math::Vector())*g_unit);
+    SetResetAngle(line->GetParam("resetAngle")->AsPoint(Math::Vector())*(Math::PI/180.0f));
+    SetResetRun(line->GetParam("resetRun")->AsInt(0));
+    m_bBurn = line->GetParam("burnMode")->AsBool(false);
+    m_bVirusMode = line->GetParam("virusMode")->AsBool(false);
+    m_virusTime = line->GetParam("virusTime")->AsFloat(0.0f);
 
     // Puts information in terminal (OBJECT_INFO).
     for ( i=0 ; i<OBJECTMAXINFO ; i++ )
     {
-        sprintf(op, "info%d", i+1);
-        OpString(line, op, text);
-        if ( text[0] == 0 )  break;
-        p = strchr(text, '=');
-        if ( p == 0 )  break;
-        *p = 0;
-        strcpy(info.name, text);
-        sscanf(p+1, "%f", &info.value);
+        std::string op = std::string("info")+boost::lexical_cast<std::string>(i+1);
+        if(!line->GetParam(op)->IsDefined()) break;
+        std::string text = line->GetParam(op)->AsString();
+        
+        std::size_t p = text.find_first_of("=");
+        if(p == std::string::npos) 
+            throw CLevelParserExceptionBadParam(line->GetParam(op), "info");
+        Info info;
+        strcpy(info.name, text.substr(0, p).c_str());
+        try {
+            info.value = boost::lexical_cast<float>(text.substr(p+1).c_str());
+        }
+        catch(...)
+        {
+            throw CLevelParserExceptionBadParam(line->GetParam(op), "info.value (float)");
+        }
+        
         SetInfo(i, info);
     }
 
     // Sets the parameters of the command line.
-    p = SearchOp(line, "cmdline");
-    for ( i=0 ; i<OBJECTMAXCMDLINE ; i++ )
-    {
-        value = GetFloat(p, i, NAN);
-        if ( value == NAN )  break;
-        SetCmdLine(i, value);
+    i = 0;
+    if(line->GetParam("cmdline")->IsDefined()) {
+        for(auto& p : line->GetParam("cmdline")->AsArray()) {
+            if(i >= OBJECTMAXCMDLINE) break;
+            SetCmdLine(i, p->AsFloat());
+        }
     }
 
-    if ( m_motion != 0 )
+    if ( m_motion != nullptr )
     {
         m_motion->Read(line);
     }
 
-    if ( m_brain != 0 )
+    if ( m_brain != nullptr )
     {
         m_brain->Read(line);
     }
 
-    if ( m_physics != 0 )
+    if ( m_physics != nullptr )
     {
         m_physics->Read(line);
     }
 
-    if ( m_auto != 0 )
+    if ( m_auto != nullptr )
     {
         m_auto->Read(line);
     }

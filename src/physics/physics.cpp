@@ -40,6 +40,8 @@
 #include "object/motion/motion.h"
 #include "object/motion/motionhuman.h"
 #include "object/task/task.h"
+#include "object/level/parserline.h"
+#include "object/level/parserparam.h"
 
 #include "script/cmdtoken.h"
 
@@ -171,20 +173,14 @@ PhysicsType CPhysics::GetType()
 
 // Saves all parameters of the object.
 
-bool CPhysics::Write(char *line)
+bool CPhysics::Write(CLevelParserLine* line)
 {
-    char        name[100];
-
-    sprintf(name, " motor=%.2f;%.2f;%.2f", m_motorSpeed.x, m_motorSpeed.y, m_motorSpeed.z);
-    strcat(line, name);
+    line->AddParam("motor", new CLevelParserParam(m_motorSpeed));
 
     if ( m_type == TYPE_FLYING )
     {
-        sprintf(name, " reactorRange=%.2f", GetReactorRange());
-        strcat(line, name);
-
-        sprintf(name, " land=%d", GetLand());
-        strcat(line, name);
+        line->AddParam("reactorRange", new CLevelParserParam(GetReactorRange()));
+        line->AddParam("land", new CLevelParserParam(GetLand()));
     }
 
     return true;
@@ -192,14 +188,14 @@ bool CPhysics::Write(char *line)
 
 // Restores all parameters of the object.
 
-bool CPhysics::Read(char *line)
+bool CPhysics::Read(CLevelParserLine* line)
 {
-    m_motorSpeed = OpDir(line, "motor");
+    m_motorSpeed = line->GetParam("motor")->AsPoint();
 
     if ( m_type == TYPE_FLYING )
     {
-        SetReactorRange(OpFloat(line, "reactorRange", 0.0f));
-        SetLand(OpInt(line, "land", 0));
+        SetReactorRange(line->GetParam("reactorRange")->AsFloat());
+        SetLand(line->GetParam("land")->AsBool());
     }
 
     return true;

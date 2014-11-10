@@ -63,8 +63,6 @@
 #include <sstream>
 #include <iomanip>
 #include <vector>
-#include <boost/filesystem.hpp>
-#include <boost/foreach.hpp>
 
 //TODO Get rid of all sprintf's
 
@@ -114,8 +112,6 @@ static int perso_color[3*10*3] =
      70,  51,  84,  // dark
       0,   0,   0,  //
 };
-
-namespace fs = boost::filesystem;
 
 // Constructor of robot application.
 
@@ -183,9 +179,8 @@ CMainDialog::CMainDialog()
     }
 
     m_savegameDir = "savegame";
-    m_publicDir = CResourceManager::GetSaveLocation()+"/program"; //TODO: Refactor to use PHYSFS
-    m_filesDir = CResourceManager::GetSaveLocation()+"/files"; //TODO: Refactor to use PHYSFS
-    CLogger::GetInstancePointer()->Trace("Savegame path: normal=%s, physfs=%s\n", GetSavegameDir().c_str(), GetPHYSFSSavegameDir().c_str());
+    m_publicDir = "program";
+    m_filesDir = "files";
 
     m_setupFull = m_app->GetVideoConfig().fullScreen;
 
@@ -3336,50 +3331,16 @@ std::string & CMainDialog::GetFilesDir()
 
 void CMainDialog::ReadNameList()
 {
-    CWindow*            pw;
-    CList*              pl;
-    //struct _finddata_t  fBuffer;
-    char                dir[MAX_FNAME];
-    // char                filenames[MAX_FNAME][100];
-    std::vector<std::string> fileNames;
-
-    pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
-    if ( pw == 0 )  return;
-    pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_NLIST));
-    if ( pl == 0 )  return;
+    CWindow* pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
+    if (pw == nullptr) return;
+    CList* pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_NLIST));
+    if (pl == nullptr) return;
     pl->Flush();
 
-
-    try
+    auto userSaveDirs = CResourceManager::ListDirectories(m_savegameDir);
+    for (int i = 0; i < static_cast<int>(userSaveDirs.size()); ++i)
     {
-        if (! fs::exists(GetSavegameDir()) && fs::is_directory(GetSavegameDir()))
-        {
-            GetLogger()->Error("Savegame dir does not exist %s\n",dir);
-        }
-        else
-        {
-            fs::directory_iterator dirIt(GetSavegameDir()), dirEndIt;
-
-            for (; dirIt != dirEndIt; ++dirIt)
-            {
-                const fs::path& p = *dirIt;
-                if (fs::is_directory(p))
-                {
-                    fileNames.push_back(p.leaf().string());
-                }
-            }
-        }
-    }
-    catch (std::exception & e)
-    {
-        GetLogger()->Error("Error on listing savegame directory : %s\n", e.what());
-        return;
-    }
-
-
-    for (size_t i=0 ; i<fileNames.size() ; ++i )
-    {
-        pl->SetItemName(i, fileNames.at(i).c_str());
+        pl->SetItemName(i, userSaveDirs.at(i).c_str());
     }
 }
 
@@ -3562,7 +3523,6 @@ void CMainDialog::NameCreate()
     CWindow*    pw;
     CEdit*      pe;
     char        name[100];
-    std::string dir;
     char        c;
     int         len, i, j;
 
@@ -3603,16 +3563,10 @@ void CMainDialog::NameCreate()
         return;
     }
 
-
-    if(!CResourceManager::DirectoryExists(GetPHYSFSSavegameDir()))
-        CResourceManager::CreateDirectory(GetPHYSFSSavegameDir());
-    
-    dir = GetSavegameDir() + "/" + name;
-    if (!fs::exists(dir))
+    std::string userSaveDir = m_savegameDir + "/" + name;
+    if (!CResourceManager::DirectoryExists(userSaveDir))
     {
-        fs::create_directories(dir);
-        if(!CResourceManager::DirectoryExists(GetPHYSFSSavegameDir()+"/"+name))
-            CResourceManager::CreateDirectory(GetPHYSFSSavegameDir()+"/"+name);
+        CResourceManager::CreateDirectory(userSaveDir);
     }
     else
     {
@@ -3629,58 +3583,26 @@ void CMainDialog::NameCreate()
     m_main->ChangePhase(PHASE_INIT);
 }
 
-// Deletes a folder and all its offspring.
-
-bool RemoveDir(char *dirName)
-{
-    try
-    {
-
-        if (!fs::exists(dirName) && fs::is_directory(dirName))
-        {
-            GetLogger()->Error("Directory does not exist %s\n",dirName);
-            return false;
-        }
-        else
-        {
-            fs::remove_all(dirName);
-        }
-
-    }
-    catch (std::exception & e)
-    {
-        GetLogger()->Error("Error on removing directory %s : %s\n", dirName, e.what());
-        return false;
-    }
-    return true;
-}
-
 // Removes a player.
 
 void CMainDialog::NameDelete()
 {
-    CWindow*    pw;
-    CList*      pl;
-    int         sel;
-    char*       gamer;
-    char        dir[100];
+    CWindow* pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
+    if (pw == nullptr) return;
+    CList* pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_NLIST));
+    if (pl == nullptr) return;
 
-    pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
-    if ( pw == 0 )  return;
-    pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_NLIST));
-    if ( pl == 0 )  return;
-
-    sel = pl->GetSelect();
-    if ( sel == -1 )
+    int sel = pl->GetSelect();
+    if (sel == -1)
     {
         m_sound->Play(SOUND_TZOING);
         return;
     }
-    gamer = pl->GetItemName(sel);
 
-    // Deletes all the contents of the file.
-    sprintf(dir, "%s/%s", GetSavegameDir().c_str(), gamer);
-    if ( !RemoveDir(dir) )
+    char* gamer = pl->GetItemName(sel);
+
+    std::string userSaveDir = m_savegameDir + "/" + gamer;
+    if (!CResourceManager::RemoveDirectory(userSaveDir))
     {
         m_sound->Play(SOUND_TZOING);
         return;
@@ -3990,17 +3912,13 @@ void CMainDialog::DefPerso()
 
 bool CMainDialog::IsIOReadScene()
 {
-    fs::directory_iterator end_iter;
-
-    fs::path saveDir(GetSavegameDir() + "/" + m_main->GetGamerName());
-    if (fs::exists(saveDir) && fs::is_directory(saveDir))
+    std::string userSaveDir = m_savegameDir + "/" + m_main->GetGamerName();
+    auto saveDirs = CResourceManager::ListDirectories(userSaveDir);
+    for (auto dir : saveDirs)
     {
-        for( fs::directory_iterator dir_iter(saveDir) ; dir_iter != end_iter ; ++dir_iter)
+        if (CResourceManager::Exists(userSaveDir + "/" + dir + "/" + "data.sav"))
         {
-            if ( fs::is_directory(dir_iter->status()) && fs::exists(dir_iter->path() / "data.sav") )
-            {
-                return true;
-            }
+            return true;
         }
     }
 
@@ -4074,59 +3992,30 @@ void CMainDialog::IOReadName()
 
 void CMainDialog::IOReadList()
 {
-    FILE*       file = NULL;
-    CWindow*    pw;
-    CList*      pl;
-    char        line[500];
-    char        name[100];
-    int         i;
-    std::vector<fs::path> v;
-
-    pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
-    if ( pw == 0 )  return;
-    pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_IOLIST));
-    if ( pl == 0 )  return;
+    CWindow* pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
+    if (pw == nullptr) return;
+    CList* pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_IOLIST));
+    if (pl == nullptr) return;
 
     pl->Flush();
 
-    fs::path saveDir(GetSavegameDir() + "/" + m_main->GetGamerName());
     m_saveList.clear();
 
-    if (fs::exists(saveDir) && fs::is_directory(saveDir))
+    std::string userSaveDir = m_savegameDir + "/" + m_main->GetGamerName();
+
+    auto saveDirs = CResourceManager::ListDirectories(userSaveDir);
+    std::sort(saveDirs.begin(), saveDirs.end());
+
+    for (auto dir : saveDirs)
     {
-        copy(fs::directory_iterator(saveDir), fs::directory_iterator(), back_inserter(v));
-        std::sort(v.begin(), v.end());
-        for( std::vector<fs::path>::iterator iter = v.begin(); iter != v.end(); ++iter)
+        std::string savegameFile = userSaveDir + "/" + dir + "/" + "data.sav";
+        if (CResourceManager::Exists(savegameFile))
         {
-            if ( fs::is_directory(*iter) && fs::exists(*iter / "data.sav") )
-            {
-
-                file = fopen((*iter / "data.sav").make_preferred().string().c_str(), "r");
-                if ( file == NULL )  continue;
-
-                while ( fgets(line, 500, file) != NULL )
-                {
-                    for ( i=0 ; i<500 ; i++ )
-                    {
-                        if ( line[i] == '\t' )  line[i] = ' ';  // replaces tab by space
-                        if ( line[i] == '/' && line[i+1] == '/' )
-                        {
-                            line[i] = 0;
-                            break;
-                        }
-                    }
-
-                    if ( Cmd(line, "Title") )
-                    {
-                        OpString(line, "text", name);
-                        break;
-                    }
-                }
-                fclose(file);
-
-                pl->SetItemName(m_saveList.size(), name);
-                m_saveList.push_back(*iter);
-            }
+            CLevelParser* level = new CLevelParser(savegameFile);
+            level->Load();
+            pl->SetItemName(m_saveList.size(), level->Get("Title")->GetParam("text")->AsString().c_str());
+            m_saveList.push_back(userSaveDir + "/" + dir);
+            delete level;
         }
     }
 
@@ -4165,12 +4054,7 @@ void CMainDialog::IOUpdateList()
     if (m_saveList.size() <= static_cast<unsigned int>(sel))
         return;
 
-    std::string filename = (m_saveList.at(sel) / "screen.png").make_preferred().string();
-    std::string savedir = CResourceManager::GetSaveLocation()+"/";
-    boost::replace_all(filename, "\\", "/");
-    boost::replace_all(savedir, "\\", "/");
-    boost::replace_all(filename, savedir, ""); //TODO: Refactor everything to PHYSFS, see issue #334
-    filename = "../"+filename;
+    std::string filename = "../"+m_saveList.at(sel) + "/screen.png";
     if ( m_phase == PHASE_WRITE  || m_phase == PHASE_WRITEs )
     {
         if ( sel < max-1 )
@@ -4214,16 +4098,9 @@ void CMainDialog::IODeleteScene()
         return;
     }
 
-    try
+    if (CResourceManager::DirectoryExists(m_saveList.at(sel)))
     {
-        if (fs::exists(m_saveList.at(sel)) && fs::is_directory(m_saveList.at(sel)))
-        {
-            fs::remove_all(m_saveList.at(sel));
-        }
-    }
-    catch (std::exception & e)
-    {
-        GetLogger()->Error("Error removing save %s : %s\n", pl->GetItemName(sel), e.what());
+        CResourceManager::RemoveDirectory(m_saveList.at(sel));
     }
 
     IOReadList();
@@ -4267,28 +4144,28 @@ bool CMainDialog::IOWriteScene()
         return false;
     }
 
-    fs::path dir;
+    std::string dir;
     pe->GetText(info, 100);
     if (static_cast<unsigned int>(sel) >= m_saveList.size())
     {
-        dir = fs::path(GetSavegameDir()) / m_main->GetGamerName() / ("save" + clearName(info));
+        dir = m_savegameDir + "/" + m_main->GetGamerName() + "/save" + clearName(info);
     }
     else
     {
         dir = m_saveList.at(sel);
     }
 
-    if (!fs::exists(dir))
+    if (!CResourceManager::DirectoryExists(dir))
     {
-        fs::create_directories(dir);
+        CResourceManager::CreateDirectory(dir);
     }
 
-    std::string fileName = (dir / "data.sav").make_preferred().string();
-    std::string fileCBot = (dir / "cbot.run").make_preferred().string();
-    m_main->IOWriteScene(fileName.c_str(), fileCBot.c_str(), info);
+    std::string savegameFileName = dir + "/data.sav";
+    std::string fileCBot = CResourceManager::GetSaveLocation() + "/" + dir + "/cbot.run";
+    m_main->IOWriteScene(savegameFileName.c_str(), fileCBot.c_str(), info);
 
     m_shotDelay = 3;
-    m_shotName = (dir / "screen.png").make_preferred().string();
+    m_shotName = CResourceManager::GetSaveLocation() + "/" + dir + "/screen.png"; //TODO: Use PHYSFS?
 
     return true;
 }
@@ -4297,11 +4174,8 @@ bool CMainDialog::IOWriteScene()
 
 bool CMainDialog::IOReadScene()
 {
-    FILE*       file;
     CWindow*    pw;
     CList*      pl;
-    char        line[500];
-    char        dir[100];
     int         sel, i;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
@@ -4315,53 +4189,37 @@ bool CMainDialog::IOReadScene()
         return false;
     }
 
-    std::string fileName = (m_saveList.at(sel) / "data.sav").make_preferred().string();
-    std::string fileCbot =  (m_saveList.at(sel) / "cbot.run").make_preferred().string();
+    std::string fileName = m_saveList.at(sel) + "/" + "data.sav";
+    std::string fileCbot = CResourceManager::GetSaveLocation()+"/"+m_saveList.at(sel) + "/" + "cbot.run";
 
-    file = fopen(fileName.c_str(), "r");
-    if ( file == NULL )
+    CLevelParser* level = new CLevelParser(fileName);
+    level->Load();
+    
+    CLevelParserLine* line = level->Get("Mission");
+    strcpy(m_sceneName, line->GetParam("base")->AsString().c_str());
+    m_sceneRank = line->GetParam("rank")->AsInt();
+    
+    if(std::string(m_sceneName) == "custom")
     {
-        return false;
-    }
-
-    while ( fgets(line, 500, file) != NULL )
-    {
-        for ( i=0 ; i<500 ; i++ )
+        m_sceneRank = m_sceneRank%100;
+        
+        std::string dir = line->GetParam("dir")->AsString();
+        for ( i=0 ; i<m_userTotal ; i++ )
         {
-            if ( line[i] == '\t' )  line[i] = ' ';  // replaces tab by space
-            if ( line[i] == '/' && line[i+1] == '/' )
+            if ( m_userList[i] == dir )
             {
-                line[i] = 0;
+                m_sceneRank += (i+1)*100;
                 break;
             }
         }
-
-        if ( Cmd(line, "Mission") )
+        if ( m_sceneRank/100 == 0 )
         {
-            OpString(line, "base", m_sceneName);
-            m_sceneRank = OpInt(line, "rank", 0);
-
-            if ( strcmp(m_sceneName, "user") == 0 )
-            {
-                m_sceneRank = m_sceneRank%100;
-                OpString(line, "dir", dir);
-                for ( i=0 ; i<m_userTotal ; i++ )
-                {
-                    if ( strcmp(m_userList[i].c_str(), dir) == 0 )
-                    {
-                        m_sceneRank += (i+1)*100;
-                        break;
-                    }
-                }
-                if ( m_sceneRank/100 == 0 )
-                {
-                    fclose(file);
-                    return false;
-                }
-            }
+            delete level;
+            return false;
         }
     }
-    fclose(file);
+    
+    delete level;
 
     m_chap[m_index] = (m_sceneRank / 100)-1;
     m_sel[m_index]  = (m_sceneRank % 100)-1;
@@ -6002,13 +5860,7 @@ bool CMainDialog::GetSceneSoluce()
 
 // Returns the name of the folder to save.
 
-std::string CMainDialog::GetSavegameDir()
-{
-    return CResourceManager::GetSaveLocation()+"/"+m_savegameDir;
-}
-
-//TODO: Use PHYSFS everywhere
-std::string & CMainDialog::GetPHYSFSSavegameDir()
+std::string & CMainDialog::GetSavegameDir()
 {
     return m_savegameDir;
 }
@@ -6062,82 +5914,56 @@ bool CMainDialog::GetHimselfDamage()
 
 void CMainDialog::WriteGamerPerso(char *gamer)
 {
-    FILE*   file;
-    char    filename[100];
-    char    line[100];
+    try {
+        CLevelParser* perso = new CLevelParser(GetSavegameDir()+"/"+gamer+"/face.gam");
+        CLevelParserLine* line;
+        
+        line = new CLevelParserLine("Head");
+        line->AddParam("face", new CLevelParserParam(m_perso.face));
+        line->AddParam("glasses", new CLevelParserParam(m_perso.glasses));
+        line->AddParam("hair", new CLevelParserParam(m_perso.colorHair));
+        perso->AddLine(line);
+        
+        line = new CLevelParserLine("Body");
+        line->AddParam("combi", new CLevelParserParam(m_perso.colorCombi));
+        line->AddParam("band", new CLevelParserParam(m_perso.colorBand));
+        perso->AddLine(line);
 
-    sprintf(filename, "%s/%s/face.gam", GetSavegameDir().c_str(), gamer);
-    file = fopen(filename, "w");
-    if ( file == NULL )  return;
-
-    m_main->SetNumericLocale();
-
-    sprintf(line, "Head face=%d glasses=%d hair=%.2f;%.2f;%.2f;%.2f\n",
-                m_perso.face, m_perso.glasses,
-                m_perso.colorHair.r, m_perso.colorHair.g, m_perso.colorHair.b, m_perso.colorHair.a);
-    fputs(line, file);
-
-    sprintf(line, "Body combi=%.2f;%.2f;%.2f;%.2f band=%.2f;%.2f;%.2f;%.2f\n",
-                m_perso.colorCombi.r, m_perso.colorCombi.g, m_perso.colorCombi.b, m_perso.colorCombi.a,
-                m_perso.colorBand.r, m_perso.colorBand.g, m_perso.colorBand.b, m_perso.colorBand.a);
-    fputs(line, file);
-
-    fclose(file);
-
-    m_main->RestoreNumericLocale();
+        perso->Save();
+        delete perso;
+    } catch(CLevelParserException& e) {
+        CLogger::GetInstancePointer()->Error("Unable to write personalized player apperance: %s\n", e.what());
+    }
 }
 
 // Reads the personalized player.
 
 void CMainDialog::ReadGamerPerso(char *gamer)
 {
-    FILE*           file;
-    char            filename[100];
-    char            line[100];
-    Gfx::Color   color;
-
     m_perso.face = 0;
     DefPerso();
+    
+    if(!CResourceManager::Exists(GetSavegameDir()+"/"+gamer+"/face.gam"))
+        return;
 
-    sprintf(filename, "%s/%s/face.gam", GetSavegameDir().c_str(), gamer);
-    file = fopen(filename, "r");
-    if ( file == NULL )  return;
+    try {
+        CLevelParser* perso = new CLevelParser(GetSavegameDir()+"/"+gamer+"/face.gam");
+        perso->Load();
+        CLevelParserLine* line;
+        
+        line = perso->Get("Head");
+        m_perso.face = line->GetParam("face")->AsInt();
+        m_perso.glasses = line->GetParam("glasses")->AsInt();
+        m_perso.colorHair = line->GetParam("hair")->AsColor();
+        
+        line = perso->Get("Body");
+        m_perso.colorCombi = line->GetParam("combi")->AsColor();
+        m_perso.colorBand = line->GetParam("band")->AsColor();
 
-    m_main->SetNumericLocale();
-
-    while ( fgets(line, 100, file) != NULL )
-    {
-        if ( Cmd(line, "Head") )
-        {
-            m_perso.face = OpInt(line, "face", 0);
-            m_perso.glasses = OpInt(line, "glasses", 0);
-
-            color.r = 0.0f;
-            color.g = 0.0f;
-            color.b = 0.0f;
-            color.a = 0.0f;
-            m_perso.colorHair = OpColor(line, "hair", color);
-        }
-
-        if ( Cmd(line, "Body") )
-        {
-            color.r = 0.0f;
-            color.g = 0.0f;
-            color.b = 0.0f;
-            color.a = 0.0f;
-            m_perso.colorCombi = OpColor(line, "combi", color);
-
-            color.r = 0.0f;
-            color.g = 0.0f;
-            color.b = 0.0f;
-            color.a = 0.0f;
-            m_perso.colorBand = OpColor(line, "band", color);
-        }
+        delete perso;
+    } catch(CLevelParserException& e) {
+        CLogger::GetInstancePointer()->Error("Unable to read personalized player apperance: %s\n", e.what());
     }
-
-    fclose(file);
-
-    m_main->RestoreNumericLocale();
 }
 
 // Specifies the face of the player.
@@ -6198,9 +6024,8 @@ Gfx::Color CMainDialog::GetGamerColorBand()
 
 bool CMainDialog::ReadGamerInfo()
 {
-    FILE*   file;
-    char    line[100];
-    int     chap, i, numTry, passed;
+    std::string line;
+    int chap, i, numTry, passed;
 
     for ( i=0 ; i<MAXSCENE ; i++ )
     {
@@ -6208,20 +6033,25 @@ bool CMainDialog::ReadGamerInfo()
         m_sceneInfo[i].bPassed = false;
     }
 
-    sprintf(line, "%s/%s/%s.gam", GetSavegameDir().c_str(), m_main->GetGamerName(), m_sceneName);
-    file = fopen(line, "r");
-    if ( file == NULL )  return false;
-
-    if ( fgets(line, 100, file) != NULL )
-    {
-        sscanf(line, "CurrentChapter=%d CurrentSel=%d\n", &chap, &i);
-        m_chap[m_index] = chap-1;
-        m_sel[m_index]  = i-1;
+    if(!CResourceManager::Exists(GetSavegameDir()+"/"+m_main->GetGamerName()+"/"+m_sceneName+".gam"))
+        return false;
+    
+    CInputStream file;
+    file.open(GetSavegameDir()+"/"+m_main->GetGamerName()+"/"+m_sceneName+".gam");
+    if(!file.is_open()) {
+        CLogger::GetInstancePointer()->Error("Unable to read list of finished missions\n");
+        return false;
     }
+    
+    std::getline(file, line);
+    sscanf(line.c_str(), "CurrentChapter=%d CurrentSel=%d\n", &chap, &i);
+    m_chap[m_index] = chap-1;
+    m_sel[m_index]  = i-1;
 
-    while ( fgets(line, 100, file) != NULL )
+    while(!file.eof())
     {
-        sscanf(line, "Chapter %d: Scene %d: numTry=%d passed=%d\n",
+        std::getline(file, line);
+        sscanf(line.c_str(), "Chapter %d: Scene %d: numTry=%d passed=%d\n",
                 &chap, &i, &numTry, &passed);
 
         i += chap*100;
@@ -6232,7 +6062,7 @@ bool CMainDialog::ReadGamerInfo()
         }
     }
 
-    fclose(file);
+    file.close();
     return true;
 }
 
@@ -6240,28 +6070,25 @@ bool CMainDialog::ReadGamerInfo()
 
 bool CMainDialog::WriteGamerInfo()
 {
-    FILE*   file;
-    char    line[100];
     int     i;
 
-    sprintf(line, "%s/%s/%s.gam", GetSavegameDir().c_str(), m_main->GetGamerName(), m_sceneName);
-    file = fopen(line, "w");
-    if ( file == NULL )  return false;
+    COutputStream file;
+    file.open(GetSavegameDir()+"/"+m_main->GetGamerName()+"/"+m_sceneName+".gam");
+    if(!file.is_open()) {
+        CLogger::GetInstancePointer()->Error("Unable to read list of finished missions\n");
+        return false;
+    }
 
-    sprintf(line, "CurrentChapter=%d CurrentSel=%d\n",
-            m_chap[m_index]+1, m_sel[m_index]+1);
-    fputs(line, file);
+    file << "CurrentChapter=" << m_chap[m_index]+1 << " CurrentSel=" << m_sel[m_index]+1 << "\n";
 
     for ( i=0 ; i<MAXSCENE ; i++ )
     {
         if ( m_sceneInfo[i].numTry == 0 && !m_sceneInfo[i].bPassed )  continue;
 
-        sprintf(line, "Chapter %d: Scene %d: numTry=%d passed=%d\n",
-                i/100, i%100, m_sceneInfo[i].numTry, m_sceneInfo[i].bPassed);
-        fputs(line, file);
+        file << "Chapter " << i/100 << ": Scene " << i%100 << ": numTry=" << m_sceneInfo[i].numTry << " passed=1" << m_sceneInfo[i].bPassed << "\n";
     }
 
-    fclose(file);
+    file.close();
     return true;
 }
 

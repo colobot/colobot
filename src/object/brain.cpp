@@ -30,6 +30,8 @@
 
 #include "object/motion/motion.h"
 #include "object/task/taskmanager.h"
+#include "object/level/parserline.h"
+#include "object/level/parserparam.h"
 
 #include "physics/physics.h"
 
@@ -169,21 +171,18 @@ void CBrain::SetMotion(CMotion* motion)
 
 // Saves all parameters of the object.
 
-bool CBrain::Write(char *line)
+bool CBrain::Write(CLevelParserLine* line)
 {
-    char        name[100];
-
-    sprintf(name, " bVirusActive=%d", m_bActiveVirus);
-    strcat(line, name);
+    line->AddParam("bVirusActive", new CLevelParserParam(m_bActiveVirus));
 
     return true;
 }
 
 // Restores all parameters of the object.
 
-bool CBrain::Read(char *line)
+bool CBrain::Read(CLevelParserLine* line)
 {
-    m_bActiveVirus = OpInt(line, "bVirusActive", 0);
+    m_bActiveVirus = line->GetParam("bVirusActive")->AsBool(false);
 
     return true;
 }
