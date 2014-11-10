@@ -134,7 +134,7 @@ bool CAutoTower::EventProcess(const Event &event)
             power = m_object->GetPower();
             if ( power != 0 )
             {
-                energy = power->GetEnergy();
+                energy = power->GetEnergy()*power->GetCapacity();
             }
             if ( energy >= ENERGY_FIRE )
             {
@@ -174,7 +174,7 @@ bool CAutoTower::EventProcess(const Event &event)
             power = m_object->GetPower();
             if ( power != 0 )
             {
-                energy = power->GetEnergy();
+                energy = power->GetEnergy()*power->GetCapacity();
             }
 
             target = SearchTarget(m_targetPos);
@@ -329,13 +329,13 @@ Error CAutoTower::GetError()
     }
 
     power = m_object->GetPower();
-    if ( power == 0 )
+    if ( power == nullptr )
     {
         return ERR_TOWER_POWER;  // no battery
     }
     else
     {
-        if ( power->GetEnergy() < ENERGY_FIRE )
+        if ( power->GetEnergy()*power->GetCapacity() < ENERGY_FIRE )
         {
             return ERR_TOWER_ENERGY;  // not enough energy
         }
