@@ -5921,74 +5921,56 @@ bool CMainDialog::GetHimselfDamage()
 
 void CMainDialog::WriteGamerPerso(char *gamer)
 {
-    FILE*   file;
-    char    filename[100];
-    char    line[100];
+    try {
+        CLevelParser* perso = new CLevelParser(GetPHYSFSSavegameDir()+"/"+gamer+"/face.gam");
+        CLevelParserLine* line;
+        
+        line = new CLevelParserLine("Head");
+        line->AddParam("face", new CLevelParserParam(m_perso.face));
+        line->AddParam("glasses", new CLevelParserParam(m_perso.glasses));
+        line->AddParam("hair", new CLevelParserParam(m_perso.colorHair));
+        perso->AddLine(line);
+        
+        line = new CLevelParserLine("Body");
+        line->AddParam("combi", new CLevelParserParam(m_perso.colorCombi));
+        line->AddParam("band", new CLevelParserParam(m_perso.colorBand));
+        perso->AddLine(line);
 
-    sprintf(filename, "%s/%s/face.gam", GetSavegameDir().c_str(), gamer);
-    file = fopen(filename, "w");
-    if ( file == NULL )  return;
-
-    sprintf(line, "Head face=%d glasses=%d hair=%.2f;%.2f;%.2f;%.2f\n",
-                m_perso.face, m_perso.glasses,
-                m_perso.colorHair.r, m_perso.colorHair.g, m_perso.colorHair.b, m_perso.colorHair.a);
-    fputs(line, file);
-
-    sprintf(line, "Body combi=%.2f;%.2f;%.2f;%.2f band=%.2f;%.2f;%.2f;%.2f\n",
-                m_perso.colorCombi.r, m_perso.colorCombi.g, m_perso.colorCombi.b, m_perso.colorCombi.a,
-                m_perso.colorBand.r, m_perso.colorBand.g, m_perso.colorBand.b, m_perso.colorBand.a);
-    fputs(line, file);
-
-    fclose(file);
+        perso->Save();
+        delete perso;
+    } catch(CLevelParserException& e) {
+        CLogger::GetInstancePointer()->Error("Unable to write personalized player apperance: %s\n", e.what());
+    }
 }
 
 // Reads the personalized player.
 
 void CMainDialog::ReadGamerPerso(char *gamer)
 {
-    FILE*           file;
-    char            filename[100];
-    char            line[100];
-    Gfx::Color   color;
-
     m_perso.face = 0;
     DefPerso();
+    
+    if(!CResourceManager::Exists(GetPHYSFSSavegameDir()+"/"+gamer+"/face.gam"))
+        return;
 
-    sprintf(filename, "%s/%s/face.gam", GetSavegameDir().c_str(), gamer);
-    file = fopen(filename, "r");
-    if ( file == NULL )  return;
+    try {
+        CLevelParser* perso = new CLevelParser(GetPHYSFSSavegameDir()+"/"+gamer+"/face.gam");
+        perso->Load();
+        CLevelParserLine* line;
+        
+        line = perso->Get("Head");
+        m_perso.face = line->GetParam("face")->AsInt();
+        m_perso.glasses = line->GetParam("glasses")->AsInt();
+        m_perso.colorHair = line->GetParam("hair")->AsColor();
+        
+        line = perso->Get("Body");
+        m_perso.colorCombi = line->GetParam("combi")->AsColor();
+        m_perso.colorBand = line->GetParam("band")->AsColor();
 
-    while ( fgets(line, 100, file) != NULL )
-    {
-        if ( Cmd(line, "Head") )
-        {
-            m_perso.face = OpInt(line, "face", 0);
-            m_perso.glasses = OpInt(line, "glasses", 0);
-
-            color.r = 0.0f;
-            color.g = 0.0f;
-            color.b = 0.0f;
-            color.a = 0.0f;
-            m_perso.colorHair = OpColor(line, "hair", color);
-        }
-
-        if ( Cmd(line, "Body") )
-        {
-            color.r = 0.0f;
-            color.g = 0.0f;
-            color.b = 0.0f;
-            color.a = 0.0f;
-            m_perso.colorCombi = OpColor(line, "combi", color);
-
-            color.r = 0.0f;
-            color.g = 0.0f;
-            color.b = 0.0f;
-            color.a = 0.0f;
-            m_perso.colorBand = OpColor(line, "band", color);
-        }
+        delete perso;
+    } catch(CLevelParserException& e) {
+        CLogger::GetInstancePointer()->Error("Unable to read personalized player apperance: %s\n", e.what());
     }
-
-    fclose(file);
 }
 
 // Specifies the face of the player.
