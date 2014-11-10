@@ -89,7 +89,7 @@ CEngine::CEngine(CApplication *app)
     m_groundSpotVisible = true;
     m_dirty             = true;
     m_fog               = true;
-    m_secondTexNum      = 0;
+    m_secondTex         = "";
     m_eyeDirH           = 0.0f;
     m_eyeDirV           = 0.0f;
     m_backgroundName    = "";  // no background image
@@ -2675,14 +2675,14 @@ bool CEngine::GetFog()
     return m_fog;
 }
 
-void CEngine::SetSecondTexture(int texNum)
+void CEngine::SetSecondTexture(const std::string& texNum)
 {
-    m_secondTexNum = texNum;
+    m_secondTex = texNum;
 }
 
-int CEngine::GetSecondTexture()
+const std::string& CEngine::GetSecondTexture()
 {
-    return m_secondTexNum;
+    return m_secondTex;
 }
 
 void CEngine::SetRankView(int rank)

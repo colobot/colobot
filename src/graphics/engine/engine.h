@@ -1015,8 +1015,8 @@ public:
 
     //@{
     //! Management of the global mode of secondary texturing
-    void            SetSecondTexture(int texNum);
-    int             GetSecondTexture();
+    void            SetSecondTexture(const std::string& texNum);
+    const std::string& GetSecondTexture();
     //@}
 
     //@{
@@ -1365,7 +1365,7 @@ protected:
     bool            m_dirty;
     bool            m_fog;
     bool            m_firstGroundSpot;
-    int             m_secondTexNum;
+    std::string     m_secondTex;
     bool            m_backgroundFull;
     std::string     m_backgroundName;
     Texture         m_backgroundTex;

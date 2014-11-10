@@ -74,17 +74,15 @@ bool CModelManager::LoadModel(const std::string& fileName, bool mirrored)
 
         if (modelInfo.triangles[i].variableTex2)
         {
-            int texNum = m_engine->GetSecondTexture();
+            state |= ENG_RSTATE_DUAL_BLACK;
 
+            /*TODO: This seems to be not used by Colobot
             if (texNum >= 1 && texNum <= 10)
                 state |= ENG_RSTATE_DUAL_BLACK;
 
             if (texNum >= 11 && texNum <= 20)
-                state |= ENG_RSTATE_DUAL_WHITE;
-
-            char name[20] = { 0 };
-            sprintf(name, "dirty%.2d.png", texNum);
-            tex2Name = name;
+                state |= ENG_RSTATE_DUAL_WHITE;*/
+            tex2Name = m_engine->GetSecondTexture();
         }
 
         vs[0] = modelInfo.triangles[i].p1;

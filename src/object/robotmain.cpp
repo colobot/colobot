@@ -3993,7 +3993,13 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
         
         if (line->GetCommand() == "SecondTexture" && !resetObject)
         {
-            m_engine->SetSecondTexture(line->GetParam("rank")->AsInt());
+            if(line->GetParam("rank")->IsDefined()) {
+                char tex[20] = { 0 };
+                sprintf(tex, "dirty%.2d.png", line->GetParam("rank")->AsInt());
+                m_engine->SetSecondTexture(tex);
+            } else {
+                m_engine->SetSecondTexture("../"+line->GetParam("texture")->AsPath("textures"));
+            }
             continue;
         }
         
