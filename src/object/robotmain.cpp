@@ -6040,7 +6040,7 @@ void CRobotMain::ReadFreeParam()
     }
 
     std::string line;
-    file >> line;
+    std::getline(file, line);
     
     sscanf(line.c_str(), "research=%d build=%d\n", &m_freeResearch, &m_freeBuild);
 

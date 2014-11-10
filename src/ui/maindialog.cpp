@@ -6031,9 +6031,8 @@ Gfx::Color CMainDialog::GetGamerColorBand()
 
 bool CMainDialog::ReadGamerInfo()
 {
-    FILE*   file;
-    char    line[100];
-    int     chap, i, numTry, passed;
+    std::string line;
+    int chap, i, numTry, passed;
 
     for ( i=0 ; i<MAXSCENE ; i++ )
     {
@@ -6041,20 +6040,25 @@ bool CMainDialog::ReadGamerInfo()
         m_sceneInfo[i].bPassed = false;
     }
 
-    sprintf(line, "%s/%s/%s.gam", GetSavegameDir().c_str(), m_main->GetGamerName(), m_sceneName);
-    file = fopen(line, "r");
-    if ( file == NULL )  return false;
-
-    if ( fgets(line, 100, file) != NULL )
-    {
-        sscanf(line, "CurrentChapter=%d CurrentSel=%d\n", &chap, &i);
-        m_chap[m_index] = chap-1;
-        m_sel[m_index]  = i-1;
+    if(!CResourceManager::Exists(GetPHYSFSSavegameDir()+"/"+m_main->GetGamerName()+"/"+m_sceneName+".gam"))
+        return false;
+    
+    CInputStream file;
+    file.open(GetPHYSFSSavegameDir()+"/"+m_main->GetGamerName()+"/"+m_sceneName+".gam");
+    if(!file.is_open()) {
+        CLogger::GetInstancePointer()->Error("Unable to read list of finished missions\n");
+        return false;
     }
+    
+    std::getline(file, line);
+    sscanf(line.c_str(), "CurrentChapter=%d CurrentSel=%d\n", &chap, &i);
+    m_chap[m_index] = chap-1;
+    m_sel[m_index]  = i-1;
 
-    while ( fgets(line, 100, file) != NULL )
+    while(!file.eof())
     {
-        sscanf(line, "Chapter %d: Scene %d: numTry=%d passed=%d\n",
+        std::getline(file, line);
+        sscanf(line.c_str(), "Chapter %d: Scene %d: numTry=%d passed=%d\n",
                 &chap, &i, &numTry, &passed);
 
         i += chap*100;
@@ -6065,7 +6069,7 @@ bool CMainDialog::ReadGamerInfo()
         }
     }
 
-    fclose(file);
+    file.close();
     return true;
 }
 
@@ -6073,28 +6077,25 @@ bool CMainDialog::ReadGamerInfo()
 
 bool CMainDialog::WriteGamerInfo()
 {
-    FILE*   file;
-    char    line[100];
     int     i;
 
-    sprintf(line, "%s/%s/%s.gam", GetSavegameDir().c_str(), m_main->GetGamerName(), m_sceneName);
-    file = fopen(line, "w");
-    if ( file == NULL )  return false;
+    COutputStream file;
+    file.open(GetPHYSFSSavegameDir()+"/"+m_main->GetGamerName()+"/"+m_sceneName+".gam");
+    if(!file.is_open()) {
+        CLogger::GetInstancePointer()->Error("Unable to read list of finished missions\n");
+        return false;
+    }
 
-    sprintf(line, "CurrentChapter=%d CurrentSel=%d\n",
-            m_chap[m_index]+1, m_sel[m_index]+1);
-    fputs(line, file);
+    file << "CurrentChapter=" << m_chap[m_index]+1 << " CurrentSel=" << m_sel[m_index]+1 << "\n";
 
     for ( i=0 ; i<MAXSCENE ; i++ )
     {
         if ( m_sceneInfo[i].numTry == 0 && !m_sceneInfo[i].bPassed )  continue;
 
-        sprintf(line, "Chapter %d: Scene %d: numTry=%d passed=%d\n",
-                i/100, i%100, m_sceneInfo[i].numTry, m_sceneInfo[i].bPassed);
-        fputs(line, file);
+        file << "Chapter " << i/100 << ": Scene " << i%100 << ": numTry=" << m_sceneInfo[i].numTry << " passed=1" << m_sceneInfo[i].bPassed << "\n";
     }
 
-    fclose(file);
+    file.close();
     return true;
 }
 
