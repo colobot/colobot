@@ -43,11 +43,6 @@ CLevelParserLine::~CLevelParserLine()
     }
 }
 
-std::string CLevelParserLine::GetLine()
-{
-    assert(false); //TODO
-}
-
 int CLevelParserLine::GetLineNumber()
 {
     return m_lineNumber;
@@ -87,4 +82,9 @@ void CLevelParserLine::AddParam(std::string name, CLevelParserParam* value)
 {
     value->SetLine(this);
     m_params[name] = value;
+}
+
+const std::map<std::string, CLevelParserParam*>& CLevelParserLine::GetParams()
+{
+    return m_params;
 }

@@ -45,6 +45,7 @@ public:
     CLevelParserParam(bool value);
     CLevelParserParam(Gfx::Color value);
     CLevelParserParam(Math::Point value);
+    CLevelParserParam(Math::Vector value);
     CLevelParserParam(ObjectType value);
     CLevelParserParam(Gfx::CameraType value);
     CLevelParserParam(const std::vector<CLevelParserParam*>& value);
@@ -110,6 +111,7 @@ public:
     
 private:
     void ParseArray();
+    void LoadArray();
     
     template<typename T> T Cast(std::string value, std::string requestedType);
     template<typename T> T Cast(std::string requestedType);

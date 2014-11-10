@@ -51,7 +51,7 @@ public:
     //! Load file
     void Load();
     //! Save file
-    void Save(std::string filename);
+    void Save();
     
     //! Get filename
     const std::string& GetFilename();

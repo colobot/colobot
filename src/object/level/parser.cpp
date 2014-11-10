@@ -24,6 +24,7 @@
 
 #include "common/resources/resourcemanager.h"
 #include "common/resources/inputstream.h"
+#include "common/resources/outputstream.h"
 
 #include "object/level/parserexceptions.h"
 
@@ -219,9 +220,23 @@ void CLevelParser::Load()
     file.close();
 }
 
-void CLevelParser::Save(std::string filename)
+void CLevelParser::Save()
 {
-    assert(false); //TODO
+    COutputStream file;
+    file.open(m_filename);
+    if(!file.is_open())
+        throw CLevelParserException("Failed to open file: "+m_filename);
+    
+    for(CLevelParserLine* line : m_lines) {
+        file << line->GetCommand();
+        for(auto param : line->GetParams()) {
+            file << " " << param.first << "=" << param.second->GetValue();
+        }
+        file << "\n";
+    }
+    
+    file.close();
+    
 }
 
 const std::string& CLevelParser::GetFilename()

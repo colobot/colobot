@@ -37,9 +37,6 @@ public:
     CLevelParserLine(std::string command);
     ~CLevelParserLine();
     
-    //! Get line to be saved in level file
-    std::string GetLine();
-    
     //! Get line number
     int GetLineNumber();
     
@@ -53,6 +50,7 @@ public:
     
     CLevelParserParam* GetParam(std::string name);
     void AddParam(std::string name, CLevelParserParam* value);
+    const std::map<std::string, CLevelParserParam*>& GetParams();
     
 private:
     CLevelParser* m_level;

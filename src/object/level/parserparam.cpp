@@ -939,6 +939,18 @@ void CLevelParserParam::ParseArray()
     }
 }
 
+void CLevelParserParam::LoadArray()
+{
+    m_value = "";
+    bool first = true;
+    for(auto& value : m_array) {
+        if(!first)
+            m_value += ";";
+        m_value += value->GetValue();
+        first = false;
+    }
+}
+
 const std::vector<CLevelParserParam*>& CLevelParserParam::AsArray()
 {
     if(m_empty)
@@ -948,3 +960,55 @@ const std::vector<CLevelParserParam*>& CLevelParserParam::AsArray()
     
     return m_array;
 }
+
+CLevelParserParam::CLevelParserParam(int value)
+{
+    m_value = boost::lexical_cast<std::string>(value);
+}
+CLevelParserParam::CLevelParserParam(float value)
+{
+    m_value = boost::lexical_cast<std::string>(value);
+}
+CLevelParserParam::CLevelParserParam(std::string value)
+{
+    m_value = "\""+value+"\"";
+}
+CLevelParserParam::CLevelParserParam(bool value)
+{
+    m_value = value ? "true" : "false";
+}
+CLevelParserParam::CLevelParserParam(Gfx::Color value)
+{
+    m_array.push_back(new CLevelParserParam(value.r));
+    m_array.push_back(new CLevelParserParam(value.g));
+    m_array.push_back(new CLevelParserParam(value.b));
+    m_array.push_back(new CLevelParserParam(value.a));
+    LoadArray();
+}
+CLevelParserParam::CLevelParserParam(Math::Point value)
+{
+    m_array.push_back(new CLevelParserParam(value.x));
+    m_array.push_back(new CLevelParserParam(value.y));
+    LoadArray();
+}
+CLevelParserParam::CLevelParserParam(Math::Vector value)
+{
+    m_array.push_back(new CLevelParserParam(value.x));
+    m_array.push_back(new CLevelParserParam(value.y));
+    m_array.push_back(new CLevelParserParam(value.z));
+    LoadArray();
+}
+CLevelParserParam::CLevelParserParam(ObjectType value)
+{
+    m_value = FromObjectType(value);
+}
+CLevelParserParam::CLevelParserParam(Gfx::CameraType value)
+{
+    m_value = FromCameraType(value);
+}
+CLevelParserParam::CLevelParserParam(const std::vector<CLevelParserParam*>& value)
+{
+    m_array = value;
+    LoadArray();
+}
+

@@ -5767,6 +5767,24 @@ void CRobotMain::IOWriteObject(FILE *file, CObject* obj, const char *cmd)
 //! Saves the current game
 bool CRobotMain::IOWriteScene(const char *filename, const char *filecbot, char *info)
 {
+    std::string fnstr = filename;
+    std::string savedir = CResourceManager::GetSaveLocation()+"/";
+    boost::replace_all(fnstr, "\\", "/");
+    boost::replace_all(savedir, "\\", "/");
+    boost::replace_all(fnstr, savedir, ""); //TODO: Refactor to get physfs path here
+    
+    /*CLevelParser* level = new CLevelParser(fnstr);
+    CLevelParserLine* line1 = new CLevelParserLine("TestCommand");
+    line1->AddParam("test", new CLevelParserParam(1.0f));
+    level->AddLine(line1);
+    CLevelParserLine* line2 = new CLevelParserLine("TestCommand2");
+    line2->AddParam("testStr", new CLevelParserParam("12345"));
+    line2->AddParam("testBool", new CLevelParserParam(true));
+    level->AddLine(line2);
+    level->Save();
+    delete level;
+    return true;*/
+    
     FILE* file = fopen(filename, "w");
     if (file == NULL)  return false;
 
