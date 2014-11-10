@@ -4774,7 +4774,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
     m_dialog->SetStackRead("");
     
     if(m_app->GetSceneTestMode())
-        m_eventQueue->AddEvent(Event(EVENT_WIN));
+        m_eventQueue->AddEvent(Event(EVENT_QUIT));
 }
 
 //! Creates a directional light
@@ -6392,6 +6392,8 @@ Error CRobotMain::CheckEndMission(bool frame)
                 }
                 m_missionTimerEnabled = m_missionTimerStarted = false;
                 m_displayText->SetEnable(false);
+                if(m_exitAfterMission)
+                    m_eventQueue->AddEvent(Event(EVENT_QUIT));
                 return INFO_LOSTq;
             }
             else
@@ -6404,6 +6406,8 @@ Error CRobotMain::CheckEndMission(bool frame)
                 }
                 m_missionTimerEnabled = m_missionTimerStarted = false;
                 m_displayText->SetEnable(false);
+                if(m_exitAfterMission)
+                    m_eventQueue->AddEvent(Event(EVENT_QUIT));
                 return INFO_LOST;
             }
         }
@@ -6423,6 +6427,8 @@ Error CRobotMain::CheckEndMission(bool frame)
             }
             m_missionTimerEnabled = m_missionTimerStarted = false;
             m_displayText->SetEnable(false);
+            if(m_exitAfterMission)
+                m_eventQueue->AddEvent(Event(EVENT_QUIT));
             return ERR_OK;  // mission ended
         }
     }
@@ -6459,9 +6465,9 @@ Error CRobotMain::CheckEndMission(bool frame)
         m_missionTimerEnabled = m_missionTimerStarted = false;
         m_winDelay  = m_endTakeWinDelay;  // wins in two seconds
         m_lostDelay = 0.0f;
-        if(m_exitAfterMission)
-            m_eventQueue->AddEvent(Event(EVENT_QUIT));
     }
+    if(m_exitAfterMission)
+        m_eventQueue->AddEvent(Event(EVENT_QUIT));
     m_displayText->SetEnable(false);
     return ERR_OK;  // mission ended
 }

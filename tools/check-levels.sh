@@ -13,7 +13,7 @@ for category in $categories; do
 			if [ ! -d /usr/local/share/games/colobot/levels/$category/chapter00$chapter/$level ]; then continue; fi
 			level=`echo -n $level | cut -d . -f 1 | tail -c 3`
 			echo $category$chapter$level
-			colobot -runscene $category$chapter$level -scenetest -loglevel warn
+			colobot -runscene $category$chapter$level -scenetest -loglevel warn -headless
 		done
 	done
 done
