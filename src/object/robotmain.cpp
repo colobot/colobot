@@ -99,7 +99,6 @@ const int MAX_FNAME = 255;
 
 
 
-#define CBOT_STACK  true    // saves the stack of programs CBOT
 const float UNIT = 4.0f;
 
 
@@ -5815,7 +5814,6 @@ bool CRobotMain::IOWriteScene(const char *filename, const char *filecbot, char *
     }
     delete level;
 
-#if CBOT_STACK
     // Writes the file of stacks of execution.
     FILE* file = fOpen(filecbot, "wb");
     if (file == NULL) return false;
@@ -5841,7 +5839,6 @@ bool CRobotMain::IOWriteScene(const char *filename, const char *filecbot, char *
     }
     CBotClass::SaveStaticState(file);
     fClose(file);
-#endif
 
     m_delayWriteMessage = 4;  // displays message in 3 frames
     return true;
@@ -5899,21 +5896,9 @@ CObject* CRobotMain::IOReadObject(CLevelParserLine *line, const char* filename, 
 
     obj->Read(line);
 
-#if CBOT_STACK
-#else
-    LoadFileScript(obj, filename, objRank, i);
-#endif
-
     int run = line->GetParam("run")->AsInt(-1);
     if (run != -1)
     {
-#if CBOT_STACK
-#else
-        CBrain* brain = obj->GetBrain();
-        if (brain != nullptr)
-            brain->RunProgram(run-1);  // starts the program
-#endif
-
         CAuto* automat = obj->GetAuto();
         if (automat != nullptr)
             automat->Start(run);  // starts the film
@@ -5989,7 +5974,6 @@ CObject* CRobotMain::IOReadScene(const char *filename, const char *filecbot)
     }
     delete level;
 
-#if CBOT_STACK
     CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
 
     // Compiles scripts.
@@ -6043,7 +6027,6 @@ CObject* CRobotMain::IOReadScene(const char *filename, const char *filecbot)
         CBotClass::RestoreStaticState(file);
         fClose(file);
     }
-#endif
 
     return sel;
 }
