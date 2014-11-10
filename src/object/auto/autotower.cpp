@@ -508,20 +508,19 @@ bool CAutoTower::Write(CLevelParserLine* line)
 
 // Restores all parameters of the controller.
 
-bool CAutoTower::Read(char *line)
+bool CAutoTower::Read(CLevelParserLine* line)
 {
-    if ( OpInt(line, "aExist", 0) == 0 )  return false;
+    if ( !line->GetParam("aExist")->AsBool(false) )  return false;
 
     CAuto::Read(line);
-
-    m_phase = static_cast< AutoTowerPhase >(OpInt(line, "aPhase", ATP_WAIT));
-    m_progress = OpFloat(line, "aProgress", 0.0f);
-    m_speed = OpFloat(line, "aSpeed", 1.0f);
-    m_targetPos = OpDir(line, "aTargetPos");
-    m_angleYactual = OpFloat(line, "aAngleYactual", 0.0f);
-    m_angleZactual = OpFloat(line, "aAngleZactual", 0.0f);
-    m_angleYfinal = OpFloat(line, "aAngleYfinal", 0.0f);
-    m_angleZfinal = OpFloat(line, "aAngleZfinal", 0.0f);
+    m_phase = static_cast< AutoTowerPhase >(line->GetParam("aPhase")->AsInt(ATP_WAIT));
+    m_progress = line->GetParam("aProgress")->AsFloat(0.0f);
+    m_speed = line->GetParam("aSpeed")->AsFloat(1.0f);
+    m_targetPos = line->GetParam("aTargetPos")->AsPoint(Math::Vector());
+    m_angleYactual = line->GetParam("aAngleYactual")->AsFloat(0.0f);
+    m_angleZactual = line->GetParam("aAngleZactual")->AsFloat(0.0f);
+    m_angleYfinal = line->GetParam("aAngleYfinal")->AsFloat(0.0f);
+    m_angleZfinal = line->GetParam("aAngleZfinal")->AsFloat(0.0f);
 
     m_lastUpdateTime = 0.0f;
 

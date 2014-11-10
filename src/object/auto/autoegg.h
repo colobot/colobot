@@ -55,7 +55,7 @@ public:
     bool        SetString(char *string);
 
     bool        Write(CLevelParserLine* line);
-    bool        Read(char *line);
+    bool        Read(CLevelParserLine* line);
 
 protected:
     CObject*    SearchAlien();

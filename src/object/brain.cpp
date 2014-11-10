@@ -180,9 +180,9 @@ bool CBrain::Write(CLevelParserLine* line)
 
 // Restores all parameters of the object.
 
-bool CBrain::Read(char *line)
+bool CBrain::Read(CLevelParserLine* line)
 {
-    m_bActiveVirus = OpInt(line, "bVirusActive", 0);
+    m_bActiveVirus = line->GetParam("bVirusActive")->AsBool(false);
 
     return true;
 }

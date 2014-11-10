@@ -188,14 +188,14 @@ bool CPhysics::Write(CLevelParserLine* line)
 
 // Restores all parameters of the object.
 
-bool CPhysics::Read(char *line)
+bool CPhysics::Read(CLevelParserLine* line)
 {
-    m_motorSpeed = OpDir(line, "motor");
+    m_motorSpeed = line->GetParam("motor")->AsPoint();
 
     if ( m_type == TYPE_FLYING )
     {
-        SetReactorRange(OpFloat(line, "reactorRange", 0.0f));
-        SetLand(OpInt(line, "land", 0));
+        SetReactorRange(line->GetParam("reactorRange")->AsFloat());
+        SetLand(line->GetParam("land")->AsBool());
     }
 
     return true;

@@ -384,8 +384,8 @@ public:
     bool        IsBusy();
     bool        IOWriteScene(const char *filename, const char *filecbot, char *info);
     CObject*    IOReadScene(const char *filename, const char *filecbot);
-    void        IOWriteObject(CLevelParserLine *file, CObject* pObj);
-    CObject*    IOReadObject(char *line, const char* filename, int objRank);
+    void        IOWriteObject(CLevelParserLine *line, CObject* obj);
+    CObject*    IOReadObject(CLevelParserLine *line, const char* filename, int objRank);
 
     int         CreateSpot(Math::Vector pos, Gfx::Color color);
 

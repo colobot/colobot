@@ -186,11 +186,11 @@ bool CMotion::Write(CLevelParserLine* line)
 
 // Restores all parameters of the object.
 
-bool CMotion::Read(char *line)
+bool CMotion::Read(CLevelParserLine* line)
 {
-    m_actionType = OpInt(line, "mType", -1);
-    m_actionTime = OpFloat(line, "mTime", 0.0f);
-    m_progress = OpFloat(line, "mProgress", 0.0f);
+    m_actionType = line->GetParam("mType")->AsInt(-1);
+    m_actionTime = line->GetParam("mTime")->AsFloat(0.0f);
+    m_progress = line->GetParam("mProgress")->AsFloat(0.0f);
 
     return false;
 }

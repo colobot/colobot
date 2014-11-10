@@ -50,7 +50,7 @@ public:
     Error       GetError();
 
     bool        Write(CLevelParserLine* line);
-    bool        Read(char *line);
+    bool        Read(CLevelParserLine* line);
 
 protected:
     bool        SearchTarget();

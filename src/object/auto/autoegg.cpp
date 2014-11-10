@@ -331,18 +331,17 @@ bool CAutoEgg::Write(CLevelParserLine* line)
 
 // Restores all parameters of the controller.
 
-bool CAutoEgg::Read(char *line)
+bool CAutoEgg::Read(CLevelParserLine* line)
 {
-    if ( OpInt(line, "aExist", 0) == 0 )  return false;
+    if ( !line->GetParam("aExist")->AsBool(false) )  return false;
 
     CAuto::Read(line);
-
-    m_phase = static_cast< AutoEggPhase >(OpInt(line, "aPhase", AEP_NULL));
-    m_progress = OpFloat(line, "aProgress", 0.0f);
-    m_speed = OpFloat(line, "aSpeed", 1.0f);
-    m_type = OpTypeObject(line, "aParamType", OBJECT_NULL);
-    m_value = OpFloat(line, "aParamValue1", 0.0f);
-    OpString(line, "aParamString", m_string);
+    m_phase = static_cast< AutoEggPhase >(line->GetParam("aPhase")->AsInt(AEP_NULL));
+    m_progress = line->GetParam("aProgress")->AsFloat(0.0f);
+    m_speed = line->GetParam("aSpeed")->AsFloat(1.0f);
+    m_type = line->GetParam("aParamType")->AsObjectType(OBJECT_NULL);
+    m_value = line->GetParam("aParamValue1")->AsFloat(0.0f);
+    strcpy(m_string, line->GetParam("aParamString")->AsString("").c_str());
 
     return true;
 }

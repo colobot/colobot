@@ -604,16 +604,15 @@ bool CAutoLabo::Write(CLevelParserLine* line)
 
 // Restores all parameters of the controller.
 
-bool CAutoLabo::Read(char *line)
+bool CAutoLabo::Read(CLevelParserLine* line)
 {
-    if ( OpInt(line, "aExist", 0) == 0 )  return false;
+    if ( !line->GetParam("aExist")->AsBool(false) )  return false;
 
     CAuto::Read(line);
-
-    m_phase = static_cast< AutoLaboPhase >(OpInt(line, "aPhase", ALAP_WAIT));
-    m_progress = OpFloat(line, "aProgress", 0.0f);
-    m_speed = OpFloat(line, "aSpeed", 1.0f);
-    m_research = static_cast< ResearchType >(OpInt(line, "aResearch", 0));
+    m_phase = static_cast< AutoLaboPhase >(line->GetParam("aPhase")->AsInt(ALAP_WAIT));
+    m_progress = line->GetParam("aProgress")->AsFloat(0.0f);
+    m_speed = line->GetParam("aSpeed")->AsFloat(1.0f);
+    m_research = static_cast< ResearchType >(line->GetParam("aResearch")->AsInt(0));
 
     m_lastParticle = 0.0f;
 

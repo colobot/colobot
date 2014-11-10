@@ -112,7 +112,7 @@ public:
     PhysicsType GetType();
 
     bool        Write(CLevelParserLine* line);
-    bool        Read(char *line);
+    bool        Read(CLevelParserLine* line);
 
     void        SetGravity(float value);
     float       GetGravity();

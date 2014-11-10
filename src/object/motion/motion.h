@@ -64,7 +64,7 @@ public:
     virtual float           GetParam(int rank);
 
     virtual bool            Write(CLevelParserLine* line);
-    virtual bool            Read(char *line);
+    virtual bool            Read(CLevelParserLine* line);
 
     virtual void            SetLinVibration(Math::Vector dir);
     virtual Math::Vector    GetLinVibration();

@@ -375,15 +375,14 @@ bool CAutoDestroyer::Write(CLevelParserLine* line)
 
 // Restores all parameters of the controller.
 
-bool CAutoDestroyer::Read(char *line)
+bool CAutoDestroyer::Read(CLevelParserLine* line)
 {
-    if ( OpInt(line, "aExist", 0) == 0 )  return false;
+    if ( !line->GetParam("aExist")->AsBool(false) )  return false;
 
     CAuto::Read(line);
-
-    m_phase = static_cast< AutoDestroyerPhase >(OpInt(line, "aPhase", ADEP_WAIT));
-    m_progress = OpFloat(line, "aProgress", 0.0f);
-    m_speed = OpFloat(line, "aSpeed", 1.0f);
+    m_phase = static_cast< AutoDestroyerPhase >(line->GetParam("aPhase")->AsInt(ADEP_WAIT));
+    m_progress = line->GetParam("aProgress")->AsFloat(0.0f);
+    m_speed = line->GetParam("aSpeed")->AsFloat(1.0f);
 
     m_lastParticle = 0.0f;
 

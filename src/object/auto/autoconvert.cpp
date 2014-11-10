@@ -380,15 +380,14 @@ bool CAutoConvert::Write(CLevelParserLine* line)
 
 // Restores all parameters of the controller.
 
-bool CAutoConvert::Read(char *line)
+bool CAutoConvert::Read(CLevelParserLine* line)
 {
-    if ( OpInt(line, "aExist", 0) == 0 )  return false;
+    if ( !line->GetParam("aExist")->AsBool(false) )  return false;
 
     CAuto::Read(line);
-
-    m_phase = static_cast< AutoConvertPhase >(OpInt(line, "aPhase", ACP_WAIT));
-    m_progress = OpFloat(line, "aProgress", 0.0f);
-    m_speed = OpFloat(line, "aSpeed", 1.0f);
+    m_phase = static_cast< AutoConvertPhase >(line->GetParam("aPhase")->AsInt(ACP_WAIT));
+    m_progress = line->GetParam("aProgress")->AsFloat(0.0f);
+    m_speed = line->GetParam("aSpeed")->AsFloat(1.0f);
 
     m_lastParticle = 0.0f;
 

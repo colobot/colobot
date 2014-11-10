@@ -532,15 +532,14 @@ bool CAutoFactory::Write(CLevelParserLine* line)
 
 // Restores all parameters of the controller
 
-bool CAutoFactory::Read(char *line)
+bool CAutoFactory::Read(CLevelParserLine* line)
 {
-    if ( OpInt(line, "aExist", 0) == 0 )  return false;
+    if ( !line->GetParam("aExist")->AsBool(false) )  return false;
 
     CAuto::Read(line);
-
-    m_phase = static_cast< AutoFactoryPhase >(OpInt(line, "aPhase", AFP_WAIT));
-    m_progress = OpFloat(line, "aProgress", 0.0f);
-    m_speed = OpFloat(line, "aSpeed", 1.0f);
+    m_phase = static_cast< AutoFactoryPhase >(line->GetParam("aPhase")->AsInt(AFP_WAIT));
+    m_progress = line->GetParam("aProgress")->AsFloat(0.0f);
+    m_speed = line->GetParam("aSpeed")->AsFloat(1.0f);
 
     m_lastParticle = 0.0f;
     m_fretPos = m_object->GetPosition(0);

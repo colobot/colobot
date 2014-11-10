@@ -82,7 +82,7 @@ public:
     virtual void    SetMotor(bool bMotor);
 
     virtual bool    Write(CLevelParserLine* line);
-    virtual bool    Read(char *line);
+    virtual bool    Read(CLevelParserLine* line);
 
 protected:
     void        CheckInterface(Ui::CWindow *pw, EventType event, bool bState);

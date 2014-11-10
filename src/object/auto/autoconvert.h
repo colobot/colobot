@@ -53,7 +53,7 @@ public:
     bool        CreateInterface(bool bSelect);
 
     bool        Write(CLevelParserLine* line);
-    bool        Read(char *line);
+    bool        Read(CLevelParserLine* line);
 
 protected:
     CObject*    SearchStone(ObjectType type);

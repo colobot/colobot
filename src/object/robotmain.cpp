@@ -5848,26 +5848,24 @@ bool CRobotMain::IOWriteScene(const char *filename, const char *filecbot, char *
 }
 
 //! Resumes the game
-CObject* CRobotMain::IOReadObject(char *line, const char* filename, int objRank)
+CObject* CRobotMain::IOReadObject(CLevelParserLine *line, const char* filename, int objRank)
 {
-    Math::Vector pos  = OpDir(line, "pos")*g_unit;
-    Math::Vector dir  = OpDir(line, "angle")*(Math::PI/180.0f);
-    Math::Vector zoom = OpDir(line, "zoom");
+    Math::Vector pos  = line->GetParam("pos")->AsPoint()*g_unit;
+    Math::Vector dir  = line->GetParam("angle")->AsPoint()*(Math::PI/180.0f);
+    Math::Vector zoom = line->GetParam("zoom")->AsPoint();
 
-    ObjectType type = OpTypeObject(line, "type", OBJECT_NULL);
-    int id = OpInt(line, "id", 0);
-    if (type == OBJECT_NULL)
-        return nullptr;
+    ObjectType type = line->GetParam("type")->AsObjectType();
+    int id = line->GetParam("id")->AsInt();
 
-    int trainer = OpInt(line, "trainer", 0);
-    int toy = OpInt(line, "toy", 0);
-    int option = OpInt(line, "option", 0);
+    bool trainer = line->GetParam("trainer")->AsBool(false);
+    bool toy = line->GetParam("toy")->AsBool(false);
+    int option = line->GetParam("option")->AsInt(0);
 
     CObject* obj = CObjectManager::GetInstancePointer()->CreateObject(pos, dir.y, type, 0.0f, 1.0f, 0.0f, trainer, toy, option);
     obj->SetDefRank(objRank);
     obj->SetPosition(0, pos);
     obj->SetAngle(0, dir);
-    obj->SetIgnoreBuildCheck(OpInt(line, "ignoreBuildCheck", 0));
+    obj->SetIgnoreBuildCheck(line->GetParam("ignoreBuildCheck")->AsBool(false));
     obj->SetID(id);
     if (g_id < id) g_id = id;
 
@@ -5878,23 +5876,19 @@ CObject* CRobotMain::IOReadObject(char *line, const char* filename, int objRank)
     {
         if (obj->GetObjectRank(i) == -1) continue;
 
-        char op[10];
-        sprintf(op, "p%d", i);
-        pos = OpDir(line, op);
+        pos = line->GetParam(std::string("p")+boost::lexical_cast<std::string>(i))->AsPoint(Math::Vector());
         if (pos.x != 0.0f || pos.y != 0.0f || pos.z != 0.0f)
         {
             obj->SetPosition(i, pos*g_unit);
         }
-
-        sprintf(op, "a%d", i);
-        dir = OpDir(line, op);
+        
+        dir = line->GetParam(std::string("a")+boost::lexical_cast<std::string>(i))->AsPoint(Math::Vector());
         if (dir.x != 0.0f || dir.y != 0.0f || dir.z != 0.0f)
         {
             obj->SetAngle(i, dir*(Math::PI/180.0f));
         }
-
-        sprintf(op, "z%d", i);
-        zoom = OpDir(line, op);
+        
+        zoom = line->GetParam(std::string("z")+boost::lexical_cast<std::string>(i))->AsPoint(Math::Vector());
         if (zoom.x != 0.0f || zoom.y != 0.0f || zoom.z != 0.0f)
         {
             obj->SetZoom(i, zoom);
@@ -5910,7 +5904,7 @@ CObject* CRobotMain::IOReadObject(char *line, const char* filename, int objRank)
     LoadFileScript(obj, filename, objRank, i);
 #endif
 
-    int run = OpInt(line, "run", -1);
+    int run = line->GetParam("run")->AsInt(-1);
     if (run != -1)
     {
 #if CBOT_STACK
@@ -5931,54 +5925,48 @@ CObject* CRobotMain::IOReadObject(char *line, const char* filename, int objRank)
 //! Resumes some part of the game
 CObject* CRobotMain::IOReadScene(const char *filename, const char *filecbot)
 {
+    std::string fnstr = filename;
+    std::string savedir = CResourceManager::GetSaveLocation()+"/";
+    boost::replace_all(fnstr, "\\", "/");
+    boost::replace_all(savedir, "\\", "/");
+    boost::replace_all(fnstr, savedir, ""); //TODO: Refactor to get physfs path here
+
+    CLevelParser* level = new CLevelParser(fnstr);
+    level->Load();
+
     m_base = nullptr;
-
-    FILE* file = fopen(filename, "r");
-    if (file == NULL) return 0;
-
     CObject* fret   = nullptr;
     CObject* power  = nullptr;
     CObject* sel    = nullptr;
     int objRank = 0;
-    char line[3000];
-    while (fgets(line, 3000, file) != NULL)
+    for(auto& line : level->GetLines())
     {
-        for (int i = 0; i < 3000; i++)
+        if (line->GetCommand() == "Map")
+            m_map->ZoomMap(line->GetParam("zoom")->AsFloat());
+
+        if (line->GetCommand() == "DoneResearch")
+            g_researchDone = line->GetParam("bits")->AsInt();
+
+        if (line->GetCommand() == "BlitzMode")
         {
-            if (line[i] == '\t') line[i] = ' ';  // replace tab by space
-            if (line[i] == '/' && line[i+1] == '/')
-            {
-                line[i] = 0;
-                break;
-            }
-        }
-
-        if (Cmd(line, "Map"))
-            m_map->ZoomMap(OpFloat(line, "zoom", 1.0f));
-
-        if (Cmd(line, "DoneResearch"))
-            g_researchDone = OpInt(line, "bits", 0);
-
-        if (Cmd(line, "BlitzMode"))
-        {
-            float sleep = OpFloat(line, "sleep", 0.0f);
-            float delay = OpFloat(line, "delay", 3.0f);
-            float magnetic = OpFloat(line, "magnetic", 50.0f)*g_unit;
-            float progress = OpFloat(line, "progress", 0.0f);
+            float sleep = line->GetParam("sleep")->AsFloat();
+            float delay = line->GetParam("delay")->AsFloat();
+            float magnetic = line->GetParam("magnetic")->AsFloat()*g_unit;
+            float progress = line->GetParam("progress")->AsFloat();
             m_lightning->SetStatus(sleep, delay, magnetic, progress);
         }
 
-        if (Cmd(line, "CreateFret"))
+        if (line->GetCommand() == "CreateFret")
             fret = IOReadObject(line, filename, -1);
 
-        if (Cmd(line, "CreatePower"))
+        if (line->GetCommand() == "CreatePower")
             power = IOReadObject(line, filename, -1);
 
-        if (Cmd(line, "CreateObject"))
+        if (line->GetCommand() == "CreateObject")
         {
             CObject* obj = IOReadObject(line, filename, objRank++);
 
-            if (OpInt(line, "select", 0))
+            if (line->GetParam("select")->AsBool(false))
                 sel = obj;
 
             if (fret != nullptr)
@@ -5999,7 +5987,7 @@ CObject* CRobotMain::IOReadScene(const char *filename, const char *filecbot)
             power = nullptr;
         }
     }
-    fclose(file);
+    delete level;
 
 #if CBOT_STACK
     CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
@@ -6026,7 +6014,7 @@ CObject* CRobotMain::IOReadScene(const char *filename, const char *filecbot)
     while (nbError > 0 && nbError != lastError);
 
     // Reads the file of stacks of execution.
-    file = fOpen(filecbot, "rb");
+    FILE* file = fOpen(filecbot, "rb");
     if (file != NULL)
     {
         long version;

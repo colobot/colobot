@@ -381,7 +381,7 @@ public:
     int         GetID();
 
     bool        Write(CLevelParserLine* line);
-    bool        Read(char *line);
+    bool        Read(CLevelParserLine* line);
 
     void        SetDrawWorld(bool bDraw);
     void        SetDrawFront(bool bDraw);

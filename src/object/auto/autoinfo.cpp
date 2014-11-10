@@ -495,15 +495,14 @@ bool CAutoInfo::Write(CLevelParserLine* line)
 
 // Restores all parameters of the controller.
 
-bool CAutoInfo::Read(char *line)
+bool CAutoInfo::Read(CLevelParserLine* line)
 {
-    if ( OpInt(line, "aExist", 0) == 0 )  return false;
+    if ( !line->GetParam("aExist")->AsBool(false) )  return false;
 
     CAuto::Read(line);
-
-    m_phase = static_cast< AutoInfoPhase > (OpInt(line, "aPhase", AIP_WAIT));
-    m_progress = OpFloat(line, "aProgress", 0.0f);
-    m_speed = OpFloat(line, "aSpeed", 1.0f);
+    m_phase = static_cast< AutoInfoPhase >(line->GetParam("aPhase")->AsInt(AIP_WAIT));
+    m_progress = line->GetParam("aProgress")->AsFloat(0.0f);
+    m_speed = line->GetParam("aSpeed")->AsFloat(1.0f);
 
     m_lastParticle = 0.0f;
 
