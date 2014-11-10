@@ -3774,1007 +3774,1013 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
     m_missionTimerStarted = false;
     m_missionTimer = 0.0f;
     
-    CLevelParser* level = new CLevelParser(base, rank/100, rank%100);
-    level->Load();
+    try {
+        CLevelParser* level = new CLevelParser(base, rank/100, rank%100);
+        level->Load();
 
-    int rankObj = 0;
-    int rankGadget = 0;
-    CObject* sel = 0;
+        int rankObj = 0;
+        int rankGadget = 0;
+        CObject* sel = 0;
 
-    /*
-     * NOTE: Moving frequently used lines to the top
-     *       may speed up loading
-     */
+        /*
+        * NOTE: Moving frequently used lines to the top
+        *       may speed up loading
+        */
 
-    for(auto& line : level->GetLines())
-    {
-        if (line->GetCommand() == "MissionFile" && !resetObject)
+        for(auto& line : level->GetLines())
         {
-            m_version = line->GetParam("version")->AsInt(1);
-            continue;
-        }
-        
-        if(line->GetCommand() == "Title" && !resetObject)
-        {
-            strcpy(m_title, line->GetParam("text")->AsString().c_str());
-            continue;
-        }
-        
-        if(line->GetCommand() == "Resume" && !resetObject)
-        {
-            strcpy(m_resume, line->GetParam("text")->AsString().c_str());
-            continue;
-        }
-        
-        if(line->GetCommand() == "ScriptName" && !resetObject)
-        {
-            strcpy(m_scriptName, line->GetParam("text")->AsString().c_str());
-            continue;
-        }
-        
-        if (line->GetCommand() == "ScriptFile" && !resetObject)
-        {
-            strcpy(m_scriptFile, line->GetParam("name")->AsString().c_str());
-            continue;
-        }
-        
-        if (line->GetCommand() == "Instructions" && !resetObject)
-        {
-            strcpy(m_infoFilename[SATCOM_HUSTON], line->GetParam("name")->AsPath("help/%lng%").c_str());
+            if (line->GetCommand() == "MissionFile" && !resetObject)
+            {
+                m_version = line->GetParam("version")->AsInt(1);
+                continue;
+            }
             
-            m_immediatSatCom = line->GetParam("immediat")->AsBool(false);
-            if (m_version >= 2) m_beginSatCom = m_lockedSatCom = line->GetParam("lock")->AsBool(false);
-            if (m_app->GetSceneTestMode()) m_immediatSatCom = false;
-            continue;
-        }
-        
-        if (line->GetCommand() == "Satellite" && !resetObject)
-        {
-            strcpy(m_infoFilename[SATCOM_SAT], line->GetParam("name")->AsPath("help/%lng%").c_str());
-            continue;
-        }
-        
-        if (line->GetCommand() == "Loading" && !resetObject)
-        {
-            strcpy(m_infoFilename[SATCOM_LOADING], line->GetParam("name")->AsPath("help/%lng%").c_str());
-            continue;
-        }
-        
-        if (line->GetCommand() == "HelpFile" && !resetObject)
-        {
-            strcpy(m_infoFilename[SATCOM_PROG], line->GetParam("name")->AsPath("help/%lng%").c_str());
-            continue;
-        }
-        if (line->GetCommand() == "SoluceFile" && !resetObject)
-        {
-            strcpy(m_infoFilename[SATCOM_SOLUCE], line->GetParam("name")->AsPath("help/%lng%").c_str());
-            continue;
-        }
-        
-        if (line->GetCommand() == "EndingFile" && !resetObject)
-        {
-            // NOTE: The old default was 0, but I think -1 is more correct - 0 means "ending file 000", while -1 means "no ending file"
-            m_endingWinRank  = line->GetParam("win")->AsInt(-1);
-            m_endingLostRank = line->GetParam("lost")->AsInt(-1);
-            continue;
-        }
-        
-        if (line->GetCommand() == "MessageDelay" && !resetObject)
-        {
-            m_displayText->SetDelay(line->GetParam("factor")->AsFloat());
-            continue;
-        }
-        
-        if (line->GetCommand() == "MissionTimer")
-        {
-            m_missionTimerEnabled = line->GetParam("enabled")->AsBool();
-            if(!line->GetParam("program")->AsBool(false)) {
-                m_missionTimerStarted = true;
-            }
-            continue;
-        }
-        
-        if (line->GetCommand() == "CacheAudio" && !resetObject && m_version >= 2)
-        {
-            m_sound->CacheMusic(std::string("../")+line->GetParam("filename")->AsPath("music"));
-            continue;
-        }
-        
-        if (line->GetCommand() == "AudioChange" && !resetObject && m_version >= 2 && m_controller == nullptr)
-        {
-            int i = m_audioChangeTotal;
-            if (i < 10)
+            if(line->GetCommand() == "Title" && !resetObject)
             {
-                m_audioChange[i].pos      = line->GetParam("pos")->AsPoint(Math::Vector(0.0f, 0.0f, 0.0f))*g_unit;
-                m_audioChange[i].dist     = line->GetParam("dist")->AsFloat(1000.0f)*g_unit;
-                m_audioChange[i].type     = line->GetParam("type")->AsObjectType(OBJECT_NULL);
-                m_audioChange[i].min      = line->GetParam("min")->AsInt(1);
-                m_audioChange[i].max      = line->GetParam("max")->AsInt(9999);
-                m_audioChange[i].powermin = line->GetParam("powermin")->AsFloat(-1);
-                m_audioChange[i].powermax = line->GetParam("powermax")->AsFloat(100);
-                m_audioChange[i].tool     = line->GetParam("tool")->AsToolType(TOOL_OTHER);
-                m_audioChange[i].drive    = line->GetParam("drive")->AsDriveType(DRIVE_OTHER);
-                strcpy(m_audioChange[i].music, (std::string("../")+line->GetParam("filename")->AsPath("music")).c_str());
-                m_audioChange[i].repeat   = line->GetParam("repeat")->AsBool(true);
-                m_audioChange[i].changed  = false;
-                m_sound->CacheMusic(m_audioChange[i].music);
-                m_audioChangeTotal ++;
+                strcpy(m_title, line->GetParam("text")->AsString().c_str());
+                continue;
             }
-            continue;
-        }
-        
-        if (line->GetCommand() == "Audio" && !resetObject && m_controller == nullptr)
-        {
-            if (m_version < 2)
+            
+            if(line->GetCommand() == "Resume" && !resetObject)
             {
-                int trackid = line->GetParam("track")->AsInt();
-                if (trackid != 0)
+                strcpy(m_resume, line->GetParam("text")->AsString().c_str());
+                continue;
+            }
+            
+            if(line->GetCommand() == "ScriptName" && !resetObject)
+            {
+                strcpy(m_scriptName, line->GetParam("text")->AsString().c_str());
+                continue;
+            }
+            
+            if (line->GetCommand() == "ScriptFile" && !resetObject)
+            {
+                strcpy(m_scriptFile, line->GetParam("name")->AsString().c_str());
+                continue;
+            }
+            
+            if (line->GetCommand() == "Instructions" && !resetObject)
+            {
+                strcpy(m_infoFilename[SATCOM_HUSTON], line->GetParam("name")->AsPath("help/%lng%").c_str());
+                
+                m_immediatSatCom = line->GetParam("immediat")->AsBool(false);
+                if (m_version >= 2) m_beginSatCom = m_lockedSatCom = line->GetParam("lock")->AsBool(false);
+                if (m_app->GetSceneTestMode()) m_immediatSatCom = false;
+                continue;
+            }
+            
+            if (line->GetCommand() == "Satellite" && !resetObject)
+            {
+                strcpy(m_infoFilename[SATCOM_SAT], line->GetParam("name")->AsPath("help/%lng%").c_str());
+                continue;
+            }
+            
+            if (line->GetCommand() == "Loading" && !resetObject)
+            {
+                strcpy(m_infoFilename[SATCOM_LOADING], line->GetParam("name")->AsPath("help/%lng%").c_str());
+                continue;
+            }
+            
+            if (line->GetCommand() == "HelpFile" && !resetObject)
+            {
+                strcpy(m_infoFilename[SATCOM_PROG], line->GetParam("name")->AsPath("help/%lng%").c_str());
+                continue;
+            }
+            if (line->GetCommand() == "SoluceFile" && !resetObject)
+            {
+                strcpy(m_infoFilename[SATCOM_SOLUCE], line->GetParam("name")->AsPath("help/%lng%").c_str());
+                continue;
+            }
+            
+            if (line->GetCommand() == "EndingFile" && !resetObject)
+            {
+                // NOTE: The old default was 0, but I think -1 is more correct - 0 means "ending file 000", while -1 means "no ending file"
+                m_endingWinRank  = line->GetParam("win")->AsInt(-1);
+                m_endingLostRank = line->GetParam("lost")->AsInt(-1);
+                continue;
+            }
+            
+            if (line->GetCommand() == "MessageDelay" && !resetObject)
+            {
+                m_displayText->SetDelay(line->GetParam("factor")->AsFloat());
+                continue;
+            }
+            
+            if (line->GetCommand() == "MissionTimer")
+            {
+                m_missionTimerEnabled = line->GetParam("enabled")->AsBool();
+                if(!line->GetParam("program")->AsBool(false)) {
+                    m_missionTimerStarted = true;
+                }
+                continue;
+            }
+            
+            if (line->GetCommand() == "CacheAudio" && !resetObject && m_version >= 2)
+            {
+                m_sound->CacheMusic(std::string("../")+line->GetParam("filename")->AsPath("music"));
+                continue;
+            }
+            
+            if (line->GetCommand() == "AudioChange" && !resetObject && m_version >= 2 && m_controller == nullptr)
+            {
+                int i = m_audioChangeTotal;
+                if (i < 10)
                 {
-                    std::stringstream filenameStr;
-                    filenameStr << "music" << std::setfill('0') << std::setw(3) << trackid << ".ogg";
-                    m_audioTrack = filenameStr.str();
+                    m_audioChange[i].pos      = line->GetParam("pos")->AsPoint(Math::Vector(0.0f, 0.0f, 0.0f))*g_unit;
+                    m_audioChange[i].dist     = line->GetParam("dist")->AsFloat(1000.0f)*g_unit;
+                    m_audioChange[i].type     = line->GetParam("type")->AsObjectType(OBJECT_NULL);
+                    m_audioChange[i].min      = line->GetParam("min")->AsInt(1);
+                    m_audioChange[i].max      = line->GetParam("max")->AsInt(9999);
+                    m_audioChange[i].powermin = line->GetParam("powermin")->AsFloat(-1);
+                    m_audioChange[i].powermax = line->GetParam("powermax")->AsFloat(100);
+                    m_audioChange[i].tool     = line->GetParam("tool")->AsToolType(TOOL_OTHER);
+                    m_audioChange[i].drive    = line->GetParam("drive")->AsDriveType(DRIVE_OTHER);
+                    strcpy(m_audioChange[i].music, (std::string("../")+line->GetParam("filename")->AsPath("music")).c_str());
+                    m_audioChange[i].repeat   = line->GetParam("repeat")->AsBool(true);
+                    m_audioChange[i].changed  = false;
+                    m_sound->CacheMusic(m_audioChange[i].music);
+                    m_audioChangeTotal ++;
                 }
-                m_audioRepeat = line->GetParam("repeat")->AsBool(true);
+                continue;
             }
-            else
-            {
-                if(line->GetParam("main")->IsDefined()) {
-                    m_audioTrack = std::string("../")+line->GetParam("main")->AsPath("music");
-                    m_audioRepeat = line->GetParam("mainRepeat")->AsBool(true);
-                } else {
-                    m_audioTrack = "";
-                }
-                
-                if(line->GetParam("satcom")->IsDefined()) {
-                    m_satcomTrack = std::string("../")+line->GetParam("satcom")->AsPath("music");
-                    m_satcomRepeat = line->GetParam("satcomRepeat")->AsBool(true);
-                } else {
-                    m_satcomTrack = "";
-                }
-                
-                if(line->GetParam("editor")->IsDefined()) {
-                    m_editorTrack = std::string("../")+line->GetParam("editor")->AsPath("music");
-                    m_editorRepeat = line->GetParam("editorRepeat")->AsBool(true);
-                } else {
-                    m_editorTrack = "";
-                }
-            }
-            if (m_audioTrack != "") m_sound->CacheMusic(m_audioTrack);
-            if (m_satcomTrack != "") m_sound->CacheMusic(m_satcomTrack);
-            if (m_editorTrack != "") m_sound->CacheMusic(m_editorTrack);
-            continue;
-        }
-        
-        if (line->GetCommand() == "AmbientColor" && !resetObject)
-        {
-            m_engine->SetAmbientColor(line->GetParam("air")->AsColor(Gfx::Color(0.533f, 0.533f, 0.533f, 0.533f)), 0);
-            m_engine->SetAmbientColor(line->GetParam("water")->AsColor(Gfx::Color(0.533f, 0.533f, 0.533f, 0.533f)), 1);
-            continue;
-        }
-        
-        if (line->GetCommand() == "FogColor" && !resetObject)
-        {
-            m_engine->SetFogColor(line->GetParam("air")->AsColor(Gfx::Color(0.533f, 0.533f, 0.533f, 0.533f)), 0);
-            m_engine->SetFogColor(line->GetParam("water")->AsColor(Gfx::Color(0.533f, 0.533f, 0.533f, 0.533f)), 1);
-            continue;
-        }
-        
-        if (line->GetCommand() == "VehicleColor" && !resetObject)
-        {
-            m_colorNewBot = line->GetParam("color")->AsColor(Gfx::Color(0.533f, 0.533f, 0.533f, 0.533f));
-            continue;
-        }
-        
-        if (line->GetCommand() == "InsectColor" && !resetObject)
-        {
-            m_colorNewAlien = line->GetParam("color")->AsColor(Gfx::Color(0.533f, 0.533f, 0.533f, 0.533f));
-            continue;
-        }
-        
-        if (line->GetCommand() == "GreeneryColor" && !resetObject)
-        {
-            m_colorNewGreen = line->GetParam("color")->AsColor(Gfx::Color(0.533f, 0.533f, 0.533f, 0.533f));
-            continue;
-        }
-        
-        if (line->GetCommand() == "DeepView" && !resetObject)
-        {
-            m_engine->SetDeepView(line->GetParam("air")->AsFloat(500.0f)*g_unit, 0, true);
-            m_engine->SetDeepView(line->GetParam("water")->AsFloat(100.0f)*g_unit, 1, true);
-            continue;
-        }
-        
-        if (line->GetCommand() == "FogStart" && !resetObject)
-        {
-            m_engine->SetFogStart(line->GetParam("air")->AsFloat(0.5f), 0);
-            m_engine->SetFogStart(line->GetParam("water")->AsFloat(0.5f), 1);
-            continue;
-        }
-        
-        if (line->GetCommand() == "SecondTexture" && !resetObject)
-        {
-            if(line->GetParam("rank")->IsDefined()) {
-                char tex[20] = { 0 };
-                sprintf(tex, "dirty%.2d.png", line->GetParam("rank")->AsInt());
-                m_engine->SetSecondTexture(tex);
-            } else {
-                m_engine->SetSecondTexture("../"+line->GetParam("texture")->AsPath("textures"));
-            }
-            continue;
-        }
-        
-        if (line->GetCommand() == "Background" && !resetObject)
-        {
-            std::string path = "";
-            if(line->GetParam("image")->IsDefined())
-                path = "../"+line->GetParam("image")->AsPath("textures");
-            m_engine->SetBackground(path.c_str(),
-                                    line->GetParam("up")->AsColor(Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f)),
-                                    line->GetParam("down")->AsColor(Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f)),
-                                    line->GetParam("cloudUp")->AsColor(Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f)),
-                                    line->GetParam("cloudDown")->AsColor(Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f)),
-                                    line->GetParam("full")->AsBool(false));
-            continue;
-        }
-        
-        if (line->GetCommand() == "Planet" && !resetObject)
-        {
-            Math::Vector    ppos, uv1, uv2;
             
-            ppos  = line->GetParam("pos")->AsPoint();
-            uv1   = line->GetParam("uv1")->AsPoint();
-            uv2   = line->GetParam("uv2")->AsPoint();
-            m_planet->Create(line->GetParam("mode")->AsInt(0),
-                             Math::Point(ppos.x, ppos.z),
-                             line->GetParam("dim")->AsFloat(0.2f),
-                             line->GetParam("speed")->AsFloat(0.0f),
-                             line->GetParam("dir")->AsFloat(0.0f),
-                             "../"+line->GetParam("image")->AsPath("textures"),
-                             Math::Point(uv1.x, uv1.z),
-                             Math::Point(uv2.x, uv2.z),
-                             line->GetParam("image")->AsPath("textures").find("planet") != std::string::npos // TODO: add transparent op or modify textures
-            );
-            continue;
-        }
-        
-        if (line->GetCommand() == "ForegroundName" && !resetObject)
-        {
-            m_engine->SetForegroundName("../"+line->GetParam("image")->AsPath("textures"));
-            continue;
-        }
-        
-        if (((line->GetCommand() == "Global") || (m_version >= 2 && line->GetCommand() == "Mission")) && !resetObject)
-        {
-            g_unit = line->GetParam("unitScale")->AsFloat(4.0f);
-            m_engine->SetTracePrecision(line->GetParam("traceQuality")->AsFloat(1.0f));
-            m_shortCut = line->GetParam("shortcut")->AsBool(true);
-            if (m_version >= 2)
+            if (line->GetCommand() == "Audio" && !resetObject && m_controller == nullptr)
             {
-                m_retroStyle = line->GetParam("retro")->AsBool(false);
-                if (m_retroStyle) GetLogger()->Info("Retro mode enabled.\n");
-            }
-            continue;
-        }
-        
-        if (line->GetCommand() == "TerrainGenerate" && !resetObject)
-        {
-            m_terrain->Generate(line->GetParam("mosaic")->AsInt(20),
-                                line->GetParam("brick")->AsInt(3),
-                                line->GetParam("size")->AsFloat(20.0f),
-                                line->GetParam("vision")->AsFloat(500.0f)*g_unit,
-                                line->GetParam("depth")->AsInt(2),
-                                line->GetParam("hard")->AsFloat(0.5f));
-            continue;
-        }
-        
-        if (line->GetCommand() == "TerrainWind" && !resetObject)
-        {
-            m_terrain->SetWind(line->GetParam("speed")->AsPoint());
-            continue;
-        }
-        
-        if (line->GetCommand() == "TerrainRelief" && !resetObject)
-        {
-            m_terrain->LoadRelief(
-                line->GetParam("image")->AsPath("textures"),
-                line->GetParam("factor")->AsFloat(1.0f),
-                line->GetParam("border")->AsBool(true));
-            continue;
-        }
-        
-        if (line->GetCommand() == "TerrainRandomRelief" && !resetObject)
-        {
-            m_terrain->RandomizeRelief();
-            continue;
-        }
-        
-        if (line->GetCommand() == "TerrainResource" && !resetObject)
-        {
-            m_terrain->LoadResources(line->GetParam("image")->AsPath("textures"));
-            continue;
-        }
-        
-        if (line->GetCommand() == "TerrainWater" && !resetObject)
-        {
-            Math::Vector pos;
-            pos.x = line->GetParam("moxeX")->AsFloat(0.0f);
-            pos.y = line->GetParam("moxeY")->AsFloat(0.0f);
-            pos.z = pos.x;
-            m_water->Create(line->GetParam("air")->AsWaterType(Gfx::WATER_TT),
-                            line->GetParam("water")->AsWaterType(Gfx::WATER_TT),
-                            "../"+line->GetParam("image")->AsPath("textures"),
-                            line->GetParam("diffuse")->AsColor(Gfx::Color(1.0f, 1.0f, 1.0f, 1.0f)),
-                            line->GetParam("ambient")->AsColor(Gfx::Color(1.0f, 1.0f, 1.0f, 1.0f)),
-                            line->GetParam("level")->AsFloat(100.0f)*g_unit,
-                            line->GetParam("glint")->AsFloat(1.0f),
-                            pos);
-            m_colorNewWater = line->GetParam("color")->AsColor(m_colorRefWater);
-            m_colorShiftWater = line->GetParam("brightness")->AsFloat(0.0f);
-            continue;
-        }
-        
-        if (line->GetCommand() == "TerrainLava" && !resetObject)
-        {
-            m_water->SetLava(line->GetParam("mode")->AsBool());
-            continue;
-        }
-        
-        if (line->GetCommand() == "TerrainCloud" && !resetObject)
-        {
-            std::string path = "";
-            if(line->GetParam("image")->IsDefined())
-                path = "../"+line->GetParam("image")->AsPath("textures");
-            m_cloud->Create(path,
-                            line->GetParam("diffuse")->AsColor(Gfx::Color(1.0f, 1.0f, 1.0f, 1.0f)),
-                            line->GetParam("ambient")->AsColor(Gfx::Color(1.0f, 1.0f, 1.0f, 1.0f)),
-                            line->GetParam("level")->AsFloat(500.0f)*g_unit);
-            continue;
-        }
-        
-        if (line->GetCommand() == "TerrainBlitz" && !resetObject)
-        {
-            m_lightning->Create(line->GetParam("sleep")->AsFloat(0.0f),
-                                line->GetParam("delay")->AsFloat(3.0f),
-                                line->GetParam("magnetic")->AsFloat(50.0f)*g_unit);
-            continue;
-        }
-        
-        if (line->GetCommand() == "TerrainInitTextures" && !resetObject)
-        {
-            std::string name = "../"+line->GetParam("image")->AsPath("textures");
-            if(name.find(".") == std::string::npos)
-                name += ".png";
-            unsigned int dx = line->GetParam("dx")->AsInt(1);
-            unsigned int dy = line->GetParam("dy")->AsInt(1);
-            
-            int tt[100]; //TODO: I have no idea how TerrainInitTextures works, but maybe we shuld remove the limit to 100?
-            if(dx*dy > 100)
-                throw CLevelParserException("In TerrainInitTextures: dx*dy must be <100");
-            if(line->GetParam("table")->IsDefined()) {
-                const std::vector<CLevelParserParam*>& table = line->GetParam("table")->AsArray();
-                
-                if(table.size() > dx*dy)
-                    throw CLevelParserException("In TerrainInitTextures: table size must be dx*dy");
-                
-                for (unsigned int i = 0; i < dx*dy; i++)
+                if (m_version < 2)
                 {
-                    if(i >= table.size())
+                    int trackid = line->GetParam("track")->AsInt();
+                    if (trackid != 0)
                     {
-                        tt[i] = 0;
-                    } else {
-                        tt[i] = table[i]->AsInt();
+                        std::stringstream filenameStr;
+                        filenameStr << "music" << std::setfill('0') << std::setw(3) << trackid << ".ogg";
+                        m_audioTrack = filenameStr.str();
                     }
-                }
-            } else {
-                for (unsigned int i = 0; i < dx*dy; i++)
-                {
-                    tt[i] = 0;
-                }
-            }
-            
-            m_terrain->InitTextures(name.c_str(), tt, dx, dy);
-            continue;
-        }
-        
-        if (line->GetCommand() == "TerrainInit" && !resetObject)
-        {
-            m_terrain->InitMaterials(line->GetParam("id")->AsInt(1));
-            continue;
-        }
-        
-        if (line->GetCommand() == "TerrainMaterial" && !resetObject)
-        {
-            std::string name = line->GetParam("image")->AsPath("textures");
-            if(name.find(".") == std::string::npos)
-                name += ".png";
-            name = "../"+name;
-            
-            m_terrain->AddMaterial(line->GetParam("id")->AsInt(0),
-                                   name.c_str(),
-                                   Math::Point(line->GetParam("u")->AsFloat(),
-                                               line->GetParam("v")->AsFloat()),
-                                   line->GetParam("up")->AsInt(),
-                                   line->GetParam("right")->AsInt(),
-                                   line->GetParam("down")->AsInt(),
-                                   line->GetParam("left")->AsInt(),
-                                   line->GetParam("hard")->AsFloat(0.5f));
-            continue;
-        }
-        
-        if (line->GetCommand() == "TerrainLevel" && !resetObject)
-        {
-            int id[50]; //TODO: I have no idea how TerrainLevel works, but maybe we should remove the limit to 50?
-            if(line->GetParam("id")->IsDefined()) {
-                const std::vector<CLevelParserParam*>& id_array = line->GetParam("id")->AsArray();
-                
-                if(id_array.size() > 50)
-                    throw CLevelParserException("In TerrainLevel: id array size must be < 50");
-                
-                unsigned int i = 0;
-                while (i < 50)
-                {
-                    id[i] = id_array[i]->AsInt();
-                    i++;
-                    if(i >= id_array.size()) break;
-                }
-                id[i] = 0;
-            }
-            
-            m_terrain->GenerateMaterials(id,
-                                         line->GetParam("min")->AsFloat(0.0f)*g_unit,
-                                         line->GetParam("max")->AsFloat(100.0f)*g_unit,
-                                         line->GetParam("slope")->AsFloat(5.0f),
-                                         line->GetParam("freq")->AsFloat(100.0f),
-                                         line->GetParam("center")->AsPoint(Math::Vector(0.0f, 0.0f, 0.0f))*g_unit,
-                                         line->GetParam("radius")->AsFloat(0.0f)*g_unit);
-            continue;
-        }
-        
-        if (line->GetCommand() == "TerrainCreate" && !resetObject)
-        {
-            m_terrain->CreateObjects();
-            continue;
-        }
-        
-        if (line->GetCommand() == "BeginObject")
-        {
-            InitEye();
-            SetMovieLock(false);
-            
-            if (read[0] != 0)  // loading file ?
-                sel = IOReadScene(read, stack);
-            
-            continue;
-        }
-        
-        if (line->GetCommand() == "MissionController" && read[0] == 0 && m_version >= 2)
-        {
-            m_controller = CObjectManager::GetInstancePointer()->CreateObject(Math::Vector(0.0f, 0.0f, 0.0f), 0.0f, OBJECT_CONTROLLER, 100.0f);
-            m_controller->SetMagnifyDamage(100.0f);
-            m_controller->SetIgnoreBuildCheck(true);
-            CBrain* brain = m_controller->GetBrain();
-            if (brain != nullptr)
-            {
-                std::string name = "../"+line->GetParam("script")->AsPath("ai");
-                if (!name.empty())
-                    brain->SetScriptName(0, const_cast<char*>(name.c_str()));
-                brain->SetScriptRun(0);
-            }
-            continue;
-        }
-        
-        if (line->GetCommand() == "CreateObject" && read[0] == 0)
-        {
-            ObjectType type = line->GetParam("type")->AsObjectType();
-            
-            int gadget = line->GetParam("gadget")->AsInt(-1);
-            if ( gadget == -1 )
-            {
-                gadget = 0;
-                if ( type == OBJECT_TECH ||
-                    (type >= OBJECT_PLANT0  &&
-                    type <= OBJECT_PLANT19 ) ||
-                    (type >= OBJECT_TREE0   &&
-                    type <= OBJECT_TREE5   ) ||
-                    (type >= OBJECT_TEEN0   &&
-                    type <= OBJECT_TEEN44  ) ||
-                    (type >= OBJECT_QUARTZ0 &&
-                    type <= OBJECT_QUARTZ3 ) ||
-                    (type >= OBJECT_ROOT0   &&
-                    type <= OBJECT_ROOT4   ) )  // not ROOT5!
-                {
-                    if ( type != OBJECT_TEEN11 &&  // lamp?
-                        type != OBJECT_TEEN12 &&  // coke?
-                        type != OBJECT_TEEN20 &&  // wall?
-                        type != OBJECT_TEEN21 &&  // wall?
-                        type != OBJECT_TEEN22 &&  // wall?
-                        type != OBJECT_TEEN26 &&  // lamp?
-                        type != OBJECT_TEEN28 &&  // bottle?
-                        type != OBJECT_TEEN34 )   // stone?
-                    {
-                        gadget = 1;
-                    }
-                }
-            }
-            if (gadget != 0)  // is this a gadget?
-            {
-                if (!TestGadgetQuantity(rankGadget++)) continue;
-            }
-            
-            Math::Vector pos = line->GetParam("pos")->AsPoint()*g_unit;
-            float dirAngle = line->GetParam("dir")->AsFloat(0.0f)*Math::PI;
-            bool trainer;
-            CObject* obj = CObjectManager::GetInstancePointer()->CreateObject(
-                pos, dirAngle,
-                type,
-                line->GetParam("power")->AsFloat(1.0f),
-                line->GetParam("z")->AsFloat(1.0f),
-                line->GetParam("h")->AsFloat(0.0f),
-                trainer = line->GetParam("trainer")->AsBool(false),
-                line->GetParam("toy")->AsBool(false),
-                line->GetParam("option")->AsInt(0)
-            );
-            
-            if (m_fixScene && type == OBJECT_HUMAN)
-            {
-                CMotion* motion = obj->GetMotion();
-                if (m_phase == PHASE_WIN ) motion->SetAction(MHS_WIN,  0.4f);
-                if (m_phase == PHASE_LOST) motion->SetAction(MHS_LOST, 0.5f);
-            }
-            
-            if (obj != nullptr)
-            {
-                obj->SetDefRank(rankObj);
-                
-                if (type == OBJECT_BASE) m_base = obj;
-                
-                Gfx::CameraType cType = line->GetParam("camera")->AsCameraType(Gfx::CAM_TYPE_NULL);
-                if (cType != Gfx::CAM_TYPE_NULL)
-                    obj->SetCameraType(cType);
-                
-                obj->SetCameraDist(line->GetParam("cameraDist")->AsFloat(50.0f));
-                obj->SetCameraLock(line->GetParam("cameraLock")->AsBool(false));
-                
-                Gfx::PyroType pType = line->GetParam("pyro")->AsPyroType(Gfx::PT_NULL);
-                if (pType != Gfx::PT_NULL)
-                {
-                    Gfx::CPyro* pyro = new Gfx::CPyro();
-                    pyro->Create(pType, obj);
-                }
-                
-                // Puts information in terminal (OBJECT_INFO).
-                for (int i = 0; i < OBJECTMAXINFO; i++)
-                {
-                    std::string op = "info"+boost::lexical_cast<std::string>(i+1);
-                    if(!line->GetParam(op)->IsDefined()) break;
-                    std::string text = line->GetParam(op)->AsString();
-                    std::size_t p = text.find_first_of("=");
-                    if(p == std::string::npos) 
-                        throw CLevelParserExceptionBadParam(line->GetParam(op), "info");
-                    Info info;
-                    strcpy(info.name, text.substr(0, p).c_str());
-                    try {
-                        info.value = boost::lexical_cast<float>(text.substr(p+1).c_str());
-                    }
-                    catch(...)
-                    {
-                        throw CLevelParserExceptionBadParam(line->GetParam(op), "info.value (float)");
-                    }
-                    obj->SetInfo(i, info);
-                }
-                
-                // Sets the parameters of the command line.
-                if(line->GetParam("cmdline")->IsDefined()) {
-                    const std::vector<CLevelParserParam*>& cmdline = line->GetParam("cmdline")->AsArray();
-                    for (unsigned int i = 0; i < OBJECTMAXCMDLINE && i < cmdline.size(); i++) //TODO: get rid of the limit
-                    {
-                        obj->SetCmdLine(i, cmdline[i]->AsFloat());
-                    }
-                }
-                
-                if (line->GetParam("select")->AsBool(false))
-                {
-                    sel = obj;
-                }
-                
-                bool selectable = line->GetParam("selectable")->AsBool(true);
-                obj->SetSelectable(selectable);
-                obj->SetIgnoreBuildCheck(line->GetParam("ignoreBuildCheck")->AsBool(false));
-                obj->SetEnable(line->GetParam("enable")->AsBool(true));
-                obj->SetProxyActivate(line->GetParam("proxyActivate")->AsBool(false));
-                obj->SetProxyDistance(line->GetParam("proxyDistance")->AsFloat(15.0f)*g_unit);
-                obj->SetRange(line->GetParam("range")->AsFloat(30.0f));
-                obj->SetShield(line->GetParam("shield")->AsFloat(1.0f));
-                obj->SetMagnifyDamage(line->GetParam("magnifyDamage")->AsFloat(1.0f));
-                obj->SetClip(line->GetParam("clip")->AsBool(true));
-                obj->SetCheckToken(m_version >= 2 ? trainer || !selectable : line->GetParam("checkToken")->AsBool(true));
-                // SetManual will affect bot speed
-                if (type == OBJECT_MOBILEdr)
-                {
-                    obj->SetManual(m_version >= 2 ? !trainer : line->GetParam("manual")->AsBool(false));
-                }
-                
-                if (m_version >= 2)
-                {
-                    Math::Vector zoom = line->GetParam("zoom")->AsPoint(Math::Vector(0.0f, 0.0f, 0.0f));
-                    if (zoom.x != 0.0f || zoom.y != 0.0f || zoom.z != 0.0f)
-                        obj->SetZoom(0, zoom);
-                }
-                
-                //TODO: I don't remember what this is used for
-                CMotion* motion = obj->GetMotion();
-                if (motion != nullptr && line->GetParam("param")->IsDefined())
-                {
-                    const std::vector<CLevelParserParam*>& p = line->GetParam("param")->AsArray();
-                    for (unsigned int i = 0; i < 10 && i < p.size(); i++)
-                    {
-                        motion->SetParam(i, p[i]->AsFloat());
-                    }
-                }
-                
-                int run = -1;
-                CBrain* brain = obj->GetBrain();
-                if (brain != nullptr)
-                {
-                    for (int i = 0; i < 10; i++)
-                    {
-                        std::string op = "script"+boost::lexical_cast<std::string>(i+1); // script1..script10
-                        if(line->GetParam(op)->IsDefined()) {
-                            brain->SetScriptName(i, const_cast<char*>(("../"+line->GetParam(op)->AsPath("ai")).c_str()));
-                        }
-                        
-                    }
-                    
-                    int i = line->GetParam("run")->AsInt(0);
-                    if (i != 0)
-                    {
-                        run = i-1;
-                        brain->SetScriptRun(run);
-                    }
-                }
-                CAuto* automat = obj->GetAuto();
-                if (automat != nullptr)
-                {
-                    type = line->GetParam("autoType")->AsObjectType(OBJECT_NULL);
-                    automat->SetType(type);
-                    for (int i = 0; i < 5; i++)
-                    {
-                        std::string op = "autoValue"+boost::lexical_cast<std::string>(i+1); // autoValue1..autoValue5
-                        automat->SetValue(i, line->GetParam(op)->AsFloat(0.0f));
-                    }
-                    automat->SetString(const_cast<char*>(line->GetParam("autoString")->AsPath("ai", "").c_str()));
-                    
-                    int i = line->GetParam("run")->AsInt(-1);
-                    if (i != -1)
-                    {
-                        if (i != PARAM_FIXSCENE &&
-                            !m_dialog->GetMovies()) i = 0;
-                        automat->Start(i);  // starts the film
-                    }
-                }
-                
-                if (soluce && brain != nullptr && line->GetParam("soluce")->IsDefined())
-                    brain->SetSoluceName(const_cast<char*>(line->GetParam("soluce")->AsString().c_str()));
-                
-                obj->SetResetPosition(obj->GetPosition(0));
-                obj->SetResetAngle(obj->GetAngle(0));
-                obj->SetResetRun(run);
-                
-                if (line->GetParam("reset")->AsBool(false))
-                    obj->SetResetCap(RESET_MOVE);
-            }
-            
-            rankObj ++;
-            continue;
-        }
-        
-        if (line->GetCommand() == "CreateFog" && !resetObject)
-        {
-            Gfx::ParticleType type = static_cast<Gfx::ParticleType>(Gfx::PARTIFOG0+(line->GetParam("type")->AsInt()));
-            Math::Vector pos = line->GetParam("pos")->AsPoint()*g_unit;
-            float height = line->GetParam("height")->AsFloat(1.0f)*g_unit;
-            float ddim = line->GetParam("dim")->AsFloat(50.0f)*g_unit;
-            float delay = line->GetParam("delay")->AsFloat(2.0f);
-            m_terrain->AdjustToFloor(pos);
-            pos.y += height;
-            Math::Point dim;
-            dim.x = ddim;
-            dim.y = dim.x;
-            m_particle->CreateParticle(pos, Math::Vector(0.0f, 0.0f, 0.0f), dim, type, delay, 0.0f, 0.0f);
-            continue;
-        }
-        
-        if (line->GetCommand() == "CreateLight" && !resetObject)
-        {
-            Gfx::EngineObjectType  type;
-            
-            int lightRank = CreateLight(line->GetParam("dir")->AsPoint(),
-                                        line->GetParam("color")->AsColor(Gfx::Color(0.5f, 0.5f, 0.5f, 1.0f)));
-            
-            type = line->GetParam("type")->AsTerrainType(Gfx::ENG_OBJTYPE_NULL);
-            
-            if (type == Gfx::ENG_OBJTYPE_TERRAIN)
-            {
-                m_lightMan->SetLightPriority(lightRank, Gfx::LIGHT_PRI_HIGHEST);
-                m_lightMan->SetLightIncludeType(lightRank, Gfx::ENG_OBJTYPE_TERRAIN);
-            }
-            
-            if (type == Gfx::ENG_OBJTYPE_QUARTZ)
-                m_lightMan->SetLightIncludeType(lightRank, Gfx::ENG_OBJTYPE_QUARTZ);
-            
-            if (type == Gfx::ENG_OBJTYPE_METAL)
-                m_lightMan->SetLightIncludeType(lightRank, Gfx::ENG_OBJTYPE_METAL);
-            
-            if (type == Gfx::ENG_OBJTYPE_FIX)
-                m_lightMan->SetLightExcludeType(lightRank, Gfx::ENG_OBJTYPE_TERRAIN);
-            
-            continue;
-        }
-        if (line->GetCommand() == "CreateSpot" && !resetObject)
-        {
-            Gfx::EngineObjectType  type;
-            
-            int rankLight = CreateSpot(line->GetParam("pos")->AsPoint()*g_unit,
-                                       line->GetParam("color")->AsColor(Gfx::Color(0.5f, 0.5f, 0.5f, 1.0f)));
-            
-            type = line->GetParam("type")->AsTerrainType(Gfx::ENG_OBJTYPE_NULL);
-            if (type == Gfx::ENG_OBJTYPE_TERRAIN)
-                m_lightMan->SetLightIncludeType(rankLight, Gfx::ENG_OBJTYPE_TERRAIN);
-            
-            if (type == Gfx::ENG_OBJTYPE_QUARTZ)
-                m_lightMan->SetLightIncludeType(rankLight, Gfx::ENG_OBJTYPE_QUARTZ);
-            
-            if (type == Gfx::ENG_OBJTYPE_METAL)
-                m_lightMan->SetLightIncludeType(rankLight, Gfx::ENG_OBJTYPE_METAL);
-            
-            if (type == Gfx::ENG_OBJTYPE_FIX)
-                m_lightMan->SetLightExcludeType(rankLight, Gfx::ENG_OBJTYPE_TERRAIN);
-            
-            continue;
-        }
-        
-        if (line->GetCommand() == "GroundSpot" && !resetObject)
-        {
-            rank = m_engine->CreateGroundSpot();
-            if (rank != -1)
-            {
-                m_engine->SetObjectGroundSpotPos(rank, line->GetParam("pos")->AsPoint(Math::Vector(0.0f, 0.0f, 0.0f))*g_unit);
-                m_engine->SetObjectGroundSpotRadius(rank, line->GetParam("radius")->AsFloat(10.0f)*g_unit);
-                m_engine->SetObjectGroundSpotColor(rank, line->GetParam("color")->AsColor(Gfx::Color(0.533f, 0.533f, 0.533f, 0.533f)));
-                m_engine->SetObjectGroundSpotSmooth(rank, line->GetParam("smooth")->AsFloat(1.0f));
-                m_engine->SetObjectGroundSpotMinMax(rank, line->GetParam("min")->AsFloat(0.0f)*g_unit,
-                                                    line->GetParam("max")->AsFloat(0.0f)*g_unit);
-            }
-            continue;
-        }
-        
-        if (line->GetCommand() == "WaterColor" && !resetObject)
-        {
-            m_engine->SetWaterAddColor(line->GetParam("color")->AsColor());
-            continue;
-        }
-        
-        if (line->GetCommand() == "MapColor" && !resetObject)
-        {
-            m_map->FloorColorMap(line->GetParam("floor")->AsColor(Gfx::Color(0.533f, 0.533f, 0.533f, 0.533f)),
-                                 line->GetParam("water")->AsColor(Gfx::Color(0.533f, 0.533f, 0.533f, 0.533f)));
-            m_mapShow = line->GetParam("show")->AsBool(true);
-            m_map->ShowMap(m_mapShow);
-            m_map->SetToy(line->GetParam("toyIcon")->AsBool(false));
-            m_mapImage = line->GetParam("image")->AsBool(false);
-            if (m_mapImage)
-            {
-                Math::Vector offset;
-                strcpy(m_mapFilename, ("../"+line->GetParam("filename")->AsPath("textures")).c_str());
-                offset = line->GetParam("offset")->AsPoint(Math::Vector(0.0f, 0.0f, 0.0f));
-                m_map->SetFixParam(line->GetParam("zoom")->AsFloat(1.0f),
-                                   offset.x, offset.z,
-                                   line->GetParam("angle")->AsFloat(0.0f)*Math::PI/180.0f,
-                                   line->GetParam("mode")->AsInt(0),
-                                   line->GetParam("debug")->AsBool(false));
-            }
-            continue;
-        }
-        
-        if (line->GetCommand() == "MapZoom" && !resetObject)
-        {
-            m_map->ZoomMap(line->GetParam("factor")->AsFloat(2.0f));
-            m_map->MapEnable(line->GetParam("enable")->AsBool(true));
-            continue;
-        }
-        
-        if (line->GetCommand() == "MaxFlyingHeight" && !resetObject)
-        {
-            m_terrain->SetFlyingMaxHeight(line->GetParam("max")->AsFloat(280.0f)*g_unit);
-            continue;
-        }
-        
-        if (line->GetCommand() == "AddFlyingHeight" && !resetObject)
-        {
-            m_terrain->AddFlyingLimit(line->GetParam("center")->AsPoint()*g_unit,
-                                      line->GetParam("extRadius")->AsFloat(20.0f)*g_unit,
-                                      line->GetParam("intRadius")->AsFloat(10.0f)*g_unit,
-                                      line->GetParam("maxHeight")->AsFloat(200.0f));
-            continue;
-        }
-        
-        if (line->GetCommand() == "Camera")
-        {
-            m_camera->Init(line->GetParam("eye")->AsPoint(Math::Vector(0.0f, 0.0f, 0.0f))*g_unit,
-                           line->GetParam("lookat")->AsPoint(Math::Vector(0.0f, 0.0f, 0.0f))*g_unit,
-                           resetObject ? 0.0f : line->GetParam("delay")->AsFloat(0.0f));
-            
-            if (line->GetParam("fadeIn")->AsBool(false))
-                m_camera->StartOver(Gfx::CAM_OVER_EFFECT_FADEIN_WHITE, Math::Vector(0.0f, 0.0f, 0.0f), 1.0f);
-            
-            m_camera->SetFixDirection(line->GetParam("fixDirection")->AsFloat(0.25f)*Math::PI);
-            continue;
-        }
-        
-        if (line->GetCommand() == "EndMissionTake" && !resetObject && m_controller == nullptr)
-        {
-            int i = m_endTakeTotal;
-            if (i < 10)
-            {
-                m_endTake[i].pos      = line->GetParam("pos")->AsPoint(Math::Vector(0.0f, 0.0f, 0.0f))*g_unit;
-                m_endTake[i].dist     = line->GetParam("dist")->AsFloat(m_version < 2 ? 8.0f : 100.0f)*g_unit;
-                m_endTake[i].type     = line->GetParam("type")->AsObjectType(OBJECT_NULL);
-                m_endTake[i].min      = line->GetParam("min")->AsInt(1);
-                m_endTake[i].max      = line->GetParam("max")->AsInt(9999);
-                if (m_version >= 2)
-                {
-                    m_endTake[i].powermin = line->GetParam("powermin")->AsFloat(-1);
-                    m_endTake[i].powermax = line->GetParam("powermax")->AsFloat(100);
-                    m_endTake[i].tool     = line->GetParam("tool")->AsToolType(TOOL_OTHER);
-                    m_endTake[i].drive    = line->GetParam("drive")->AsDriveType(DRIVE_OTHER);
+                    m_audioRepeat = line->GetParam("repeat")->AsBool(true);
                 }
                 else
                 {
-                    m_endTake[i].powermin = -1;
-                    m_endTake[i].powermax = 100;
-                    m_endTake[i].tool     = TOOL_OTHER;
-                    m_endTake[i].drive    = DRIVE_OTHER;
+                    if(line->GetParam("main")->IsDefined()) {
+                        m_audioTrack = std::string("../")+line->GetParam("main")->AsPath("music");
+                        m_audioRepeat = line->GetParam("mainRepeat")->AsBool(true);
+                    } else {
+                        m_audioTrack = "";
+                    }
+                    
+                    if(line->GetParam("satcom")->IsDefined()) {
+                        m_satcomTrack = std::string("../")+line->GetParam("satcom")->AsPath("music");
+                        m_satcomRepeat = line->GetParam("satcomRepeat")->AsBool(true);
+                    } else {
+                        m_satcomTrack = "";
+                    }
+                    
+                    if(line->GetParam("editor")->IsDefined()) {
+                        m_editorTrack = std::string("../")+line->GetParam("editor")->AsPath("music");
+                        m_editorRepeat = line->GetParam("editorRepeat")->AsBool(true);
+                    } else {
+                        m_editorTrack = "";
+                    }
                 }
-                m_endTake[i].lost     = line->GetParam("lost")->AsInt(-1);
-                m_endTake[i].immediat = line->GetParam("immediat")->AsBool(false);
-                strcpy(m_endTake[i].message, line->GetParam("message")->AsString("").c_str()); //TODO: Really, ending mission on message()? Is this used anywhere? Do we need that?
-                m_endTakeTotal ++;
+                if (m_audioTrack != "") m_sound->CacheMusic(m_audioTrack);
+                if (m_satcomTrack != "") m_sound->CacheMusic(m_satcomTrack);
+                if (m_editorTrack != "") m_sound->CacheMusic(m_editorTrack);
+                continue;
             }
-            continue;
-        }
-        if (line->GetCommand() == "EndMissionDelay" && !resetObject && m_controller == nullptr)
-        {
-            m_endTakeWinDelay  = line->GetParam("win")->AsFloat(2.0f);
-            m_endTakeLostDelay = line->GetParam("lost")->AsFloat(2.0f);
-            continue;
-        }
-        if (line->GetCommand() == "EndMissionResearch" && !resetObject && m_controller == nullptr) //TODO: Is this used anywhere?
-        {
-            m_endTakeResearch |= line->GetParam("type")->AsResearchFlag();
-            continue;
-        }
-        if (line->GetCommand() == "EndMissionNever" && !resetObject && m_controller == nullptr)
-        {
-            m_endTakeNever = true;
-            continue;
-        }
-        
-        if (line->GetCommand() == "ObligatoryToken" && !resetObject) //NOTE: This was used only in CeeBot, maybe we should add this to some Colobot exercises?
-        {
-            int i = m_obligatoryTotal;
-            if (i < 100) //TODO: remove the limit
+            
+            if (line->GetCommand() == "AmbientColor" && !resetObject)
             {
-                strcpy(m_obligatoryToken[i], line->GetParam("text")->AsString().c_str());
-                m_obligatoryTotal ++;
+                m_engine->SetAmbientColor(line->GetParam("air")->AsColor(Gfx::Color(0.533f, 0.533f, 0.533f, 0.533f)), 0);
+                m_engine->SetAmbientColor(line->GetParam("water")->AsColor(Gfx::Color(0.533f, 0.533f, 0.533f, 0.533f)), 1);
+                continue;
             }
-            continue;
-        }
-        
-        if (line->GetCommand() == "ProhibitedToken" && !resetObject) //NOTE: This was used only in CeeBot, maybe we should add this to some Colobot exercises?
-        {
-            int i = m_prohibitedTotal;
-            if (i < 100) //TODO: remove the limit
+            
+            if (line->GetCommand() == "FogColor" && !resetObject)
             {
-                strcpy(m_prohibitedToken[i], line->GetParam("text")->AsString().c_str());
-                m_prohibitedTotal ++;
+                m_engine->SetFogColor(line->GetParam("air")->AsColor(Gfx::Color(0.533f, 0.533f, 0.533f, 0.533f)), 0);
+                m_engine->SetFogColor(line->GetParam("water")->AsColor(Gfx::Color(0.533f, 0.533f, 0.533f, 0.533f)), 1);
+                continue;
             }
-            continue;
+            
+            if (line->GetCommand() == "VehicleColor" && !resetObject)
+            {
+                m_colorNewBot = line->GetParam("color")->AsColor(Gfx::Color(0.533f, 0.533f, 0.533f, 0.533f));
+                continue;
+            }
+            
+            if (line->GetCommand() == "InsectColor" && !resetObject)
+            {
+                m_colorNewAlien = line->GetParam("color")->AsColor(Gfx::Color(0.533f, 0.533f, 0.533f, 0.533f));
+                continue;
+            }
+            
+            if (line->GetCommand() == "GreeneryColor" && !resetObject)
+            {
+                m_colorNewGreen = line->GetParam("color")->AsColor(Gfx::Color(0.533f, 0.533f, 0.533f, 0.533f));
+                continue;
+            }
+            
+            if (line->GetCommand() == "DeepView" && !resetObject)
+            {
+                m_engine->SetDeepView(line->GetParam("air")->AsFloat(500.0f)*g_unit, 0, true);
+                m_engine->SetDeepView(line->GetParam("water")->AsFloat(100.0f)*g_unit, 1, true);
+                continue;
+            }
+            
+            if (line->GetCommand() == "FogStart" && !resetObject)
+            {
+                m_engine->SetFogStart(line->GetParam("air")->AsFloat(0.5f), 0);
+                m_engine->SetFogStart(line->GetParam("water")->AsFloat(0.5f), 1);
+                continue;
+            }
+            
+            if (line->GetCommand() == "SecondTexture" && !resetObject)
+            {
+                if(line->GetParam("rank")->IsDefined()) {
+                    char tex[20] = { 0 };
+                    sprintf(tex, "dirty%.2d.png", line->GetParam("rank")->AsInt());
+                    m_engine->SetSecondTexture(tex);
+                } else {
+                    m_engine->SetSecondTexture("../"+line->GetParam("texture")->AsPath("textures"));
+                }
+                continue;
+            }
+            
+            if (line->GetCommand() == "Background" && !resetObject)
+            {
+                std::string path = "";
+                if(line->GetParam("image")->IsDefined())
+                    path = "../"+line->GetParam("image")->AsPath("textures");
+                m_engine->SetBackground(path.c_str(),
+                                        line->GetParam("up")->AsColor(Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f)),
+                                        line->GetParam("down")->AsColor(Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f)),
+                                        line->GetParam("cloudUp")->AsColor(Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f)),
+                                        line->GetParam("cloudDown")->AsColor(Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f)),
+                                        line->GetParam("full")->AsBool(false));
+                continue;
+            }
+            
+            if (line->GetCommand() == "Planet" && !resetObject)
+            {
+                Math::Vector    ppos, uv1, uv2;
+                
+                ppos  = line->GetParam("pos")->AsPoint();
+                uv1   = line->GetParam("uv1")->AsPoint();
+                uv2   = line->GetParam("uv2")->AsPoint();
+                m_planet->Create(line->GetParam("mode")->AsInt(0),
+                                Math::Point(ppos.x, ppos.z),
+                                line->GetParam("dim")->AsFloat(0.2f),
+                                line->GetParam("speed")->AsFloat(0.0f),
+                                line->GetParam("dir")->AsFloat(0.0f),
+                                "../"+line->GetParam("image")->AsPath("textures"),
+                                Math::Point(uv1.x, uv1.z),
+                                Math::Point(uv2.x, uv2.z),
+                                line->GetParam("image")->AsPath("textures").find("planet") != std::string::npos // TODO: add transparent op or modify textures
+                );
+                continue;
+            }
+            
+            if (line->GetCommand() == "ForegroundName" && !resetObject)
+            {
+                m_engine->SetForegroundName("../"+line->GetParam("image")->AsPath("textures"));
+                continue;
+            }
+            
+            if (((line->GetCommand() == "Global") || (m_version >= 2 && line->GetCommand() == "Mission")) && !resetObject)
+            {
+                g_unit = line->GetParam("unitScale")->AsFloat(4.0f);
+                m_engine->SetTracePrecision(line->GetParam("traceQuality")->AsFloat(1.0f));
+                m_shortCut = line->GetParam("shortcut")->AsBool(true);
+                if (m_version >= 2)
+                {
+                    m_retroStyle = line->GetParam("retro")->AsBool(false);
+                    if (m_retroStyle) GetLogger()->Info("Retro mode enabled.\n");
+                }
+                continue;
+            }
+            
+            if (line->GetCommand() == "TerrainGenerate" && !resetObject)
+            {
+                m_terrain->Generate(line->GetParam("mosaic")->AsInt(20),
+                                    line->GetParam("brick")->AsInt(3),
+                                    line->GetParam("size")->AsFloat(20.0f),
+                                    line->GetParam("vision")->AsFloat(500.0f)*g_unit,
+                                    line->GetParam("depth")->AsInt(2),
+                                    line->GetParam("hard")->AsFloat(0.5f));
+                continue;
+            }
+            
+            if (line->GetCommand() == "TerrainWind" && !resetObject)
+            {
+                m_terrain->SetWind(line->GetParam("speed")->AsPoint());
+                continue;
+            }
+            
+            if (line->GetCommand() == "TerrainRelief" && !resetObject)
+            {
+                m_terrain->LoadRelief(
+                    line->GetParam("image")->AsPath("textures"),
+                    line->GetParam("factor")->AsFloat(1.0f),
+                    line->GetParam("border")->AsBool(true));
+                continue;
+            }
+            
+            if (line->GetCommand() == "TerrainRandomRelief" && !resetObject)
+            {
+                m_terrain->RandomizeRelief();
+                continue;
+            }
+            
+            if (line->GetCommand() == "TerrainResource" && !resetObject)
+            {
+                m_terrain->LoadResources(line->GetParam("image")->AsPath("textures"));
+                continue;
+            }
+            
+            if (line->GetCommand() == "TerrainWater" && !resetObject)
+            {
+                Math::Vector pos;
+                pos.x = line->GetParam("moxeX")->AsFloat(0.0f);
+                pos.y = line->GetParam("moxeY")->AsFloat(0.0f);
+                pos.z = pos.x;
+                m_water->Create(line->GetParam("air")->AsWaterType(Gfx::WATER_TT),
+                                line->GetParam("water")->AsWaterType(Gfx::WATER_TT),
+                                "../"+line->GetParam("image")->AsPath("textures"),
+                                line->GetParam("diffuse")->AsColor(Gfx::Color(1.0f, 1.0f, 1.0f, 1.0f)),
+                                line->GetParam("ambient")->AsColor(Gfx::Color(1.0f, 1.0f, 1.0f, 1.0f)),
+                                line->GetParam("level")->AsFloat(100.0f)*g_unit,
+                                line->GetParam("glint")->AsFloat(1.0f),
+                                pos);
+                m_colorNewWater = line->GetParam("color")->AsColor(m_colorRefWater);
+                m_colorShiftWater = line->GetParam("brightness")->AsFloat(0.0f);
+                continue;
+            }
+            
+            if (line->GetCommand() == "TerrainLava" && !resetObject)
+            {
+                m_water->SetLava(line->GetParam("mode")->AsBool());
+                continue;
+            }
+            
+            if (line->GetCommand() == "TerrainCloud" && !resetObject)
+            {
+                std::string path = "";
+                if(line->GetParam("image")->IsDefined())
+                    path = "../"+line->GetParam("image")->AsPath("textures");
+                m_cloud->Create(path,
+                                line->GetParam("diffuse")->AsColor(Gfx::Color(1.0f, 1.0f, 1.0f, 1.0f)),
+                                line->GetParam("ambient")->AsColor(Gfx::Color(1.0f, 1.0f, 1.0f, 1.0f)),
+                                line->GetParam("level")->AsFloat(500.0f)*g_unit);
+                continue;
+            }
+            
+            if (line->GetCommand() == "TerrainBlitz" && !resetObject)
+            {
+                m_lightning->Create(line->GetParam("sleep")->AsFloat(0.0f),
+                                    line->GetParam("delay")->AsFloat(3.0f),
+                                    line->GetParam("magnetic")->AsFloat(50.0f)*g_unit);
+                continue;
+            }
+            
+            if (line->GetCommand() == "TerrainInitTextures" && !resetObject)
+            {
+                std::string name = "../"+line->GetParam("image")->AsPath("textures");
+                if(name.find(".") == std::string::npos)
+                    name += ".png";
+                unsigned int dx = line->GetParam("dx")->AsInt(1);
+                unsigned int dy = line->GetParam("dy")->AsInt(1);
+                
+                int tt[100]; //TODO: I have no idea how TerrainInitTextures works, but maybe we shuld remove the limit to 100?
+                if(dx*dy > 100)
+                    throw CLevelParserException("In TerrainInitTextures: dx*dy must be <100");
+                if(line->GetParam("table")->IsDefined()) {
+                    const std::vector<CLevelParserParam*>& table = line->GetParam("table")->AsArray();
+                    
+                    if(table.size() > dx*dy)
+                        throw CLevelParserException("In TerrainInitTextures: table size must be dx*dy");
+                    
+                    for (unsigned int i = 0; i < dx*dy; i++)
+                    {
+                        if(i >= table.size())
+                        {
+                            tt[i] = 0;
+                        } else {
+                            tt[i] = table[i]->AsInt();
+                        }
+                    }
+                } else {
+                    for (unsigned int i = 0; i < dx*dy; i++)
+                    {
+                        tt[i] = 0;
+                    }
+                }
+                
+                m_terrain->InitTextures(name.c_str(), tt, dx, dy);
+                continue;
+            }
+            
+            if (line->GetCommand() == "TerrainInit" && !resetObject)
+            {
+                m_terrain->InitMaterials(line->GetParam("id")->AsInt(1));
+                continue;
+            }
+            
+            if (line->GetCommand() == "TerrainMaterial" && !resetObject)
+            {
+                std::string name = line->GetParam("image")->AsPath("textures");
+                if(name.find(".") == std::string::npos)
+                    name += ".png";
+                name = "../"+name;
+                
+                m_terrain->AddMaterial(line->GetParam("id")->AsInt(0),
+                                    name.c_str(),
+                                    Math::Point(line->GetParam("u")->AsFloat(),
+                                                line->GetParam("v")->AsFloat()),
+                                    line->GetParam("up")->AsInt(),
+                                    line->GetParam("right")->AsInt(),
+                                    line->GetParam("down")->AsInt(),
+                                    line->GetParam("left")->AsInt(),
+                                    line->GetParam("hard")->AsFloat(0.5f));
+                continue;
+            }
+            
+            if (line->GetCommand() == "TerrainLevel" && !resetObject)
+            {
+                int id[50]; //TODO: I have no idea how TerrainLevel works, but maybe we should remove the limit to 50?
+                if(line->GetParam("id")->IsDefined()) {
+                    const std::vector<CLevelParserParam*>& id_array = line->GetParam("id")->AsArray();
+                    
+                    if(id_array.size() > 50)
+                        throw CLevelParserException("In TerrainLevel: id array size must be < 50");
+                    
+                    unsigned int i = 0;
+                    while (i < 50)
+                    {
+                        id[i] = id_array[i]->AsInt();
+                        i++;
+                        if(i >= id_array.size()) break;
+                    }
+                    id[i] = 0;
+                }
+                
+                m_terrain->GenerateMaterials(id,
+                                            line->GetParam("min")->AsFloat(0.0f)*g_unit,
+                                            line->GetParam("max")->AsFloat(100.0f)*g_unit,
+                                            line->GetParam("slope")->AsFloat(5.0f),
+                                            line->GetParam("freq")->AsFloat(100.0f),
+                                            line->GetParam("center")->AsPoint(Math::Vector(0.0f, 0.0f, 0.0f))*g_unit,
+                                            line->GetParam("radius")->AsFloat(0.0f)*g_unit);
+                continue;
+            }
+            
+            if (line->GetCommand() == "TerrainCreate" && !resetObject)
+            {
+                m_terrain->CreateObjects();
+                continue;
+            }
+            
+            if (line->GetCommand() == "BeginObject")
+            {
+                InitEye();
+                SetMovieLock(false);
+                
+                if (read[0] != 0)  // loading file ?
+                    sel = IOReadScene(read, stack);
+                
+                continue;
+            }
+            
+            if (line->GetCommand() == "MissionController" && read[0] == 0 && m_version >= 2)
+            {
+                m_controller = CObjectManager::GetInstancePointer()->CreateObject(Math::Vector(0.0f, 0.0f, 0.0f), 0.0f, OBJECT_CONTROLLER, 100.0f);
+                m_controller->SetMagnifyDamage(100.0f);
+                m_controller->SetIgnoreBuildCheck(true);
+                CBrain* brain = m_controller->GetBrain();
+                if (brain != nullptr)
+                {
+                    std::string name = "../"+line->GetParam("script")->AsPath("ai");
+                    if (!name.empty())
+                        brain->SetScriptName(0, const_cast<char*>(name.c_str()));
+                    brain->SetScriptRun(0);
+                }
+                continue;
+            }
+            
+            if (line->GetCommand() == "CreateObject" && read[0] == 0)
+            {
+                ObjectType type = line->GetParam("type")->AsObjectType();
+                
+                int gadget = line->GetParam("gadget")->AsInt(-1);
+                if ( gadget == -1 )
+                {
+                    gadget = 0;
+                    if ( type == OBJECT_TECH ||
+                        (type >= OBJECT_PLANT0  &&
+                        type <= OBJECT_PLANT19 ) ||
+                        (type >= OBJECT_TREE0   &&
+                        type <= OBJECT_TREE5   ) ||
+                        (type >= OBJECT_TEEN0   &&
+                        type <= OBJECT_TEEN44  ) ||
+                        (type >= OBJECT_QUARTZ0 &&
+                        type <= OBJECT_QUARTZ3 ) ||
+                        (type >= OBJECT_ROOT0   &&
+                        type <= OBJECT_ROOT4   ) )  // not ROOT5!
+                    {
+                        if ( type != OBJECT_TEEN11 &&  // lamp?
+                            type != OBJECT_TEEN12 &&  // coke?
+                            type != OBJECT_TEEN20 &&  // wall?
+                            type != OBJECT_TEEN21 &&  // wall?
+                            type != OBJECT_TEEN22 &&  // wall?
+                            type != OBJECT_TEEN26 &&  // lamp?
+                            type != OBJECT_TEEN28 &&  // bottle?
+                            type != OBJECT_TEEN34 )   // stone?
+                        {
+                            gadget = 1;
+                        }
+                    }
+                }
+                if (gadget != 0)  // is this a gadget?
+                {
+                    if (!TestGadgetQuantity(rankGadget++)) continue;
+                }
+                
+                Math::Vector pos = line->GetParam("pos")->AsPoint()*g_unit;
+                float dirAngle = line->GetParam("dir")->AsFloat(0.0f)*Math::PI;
+                bool trainer;
+                CObject* obj = CObjectManager::GetInstancePointer()->CreateObject(
+                    pos, dirAngle,
+                    type,
+                    line->GetParam("power")->AsFloat(1.0f),
+                    line->GetParam("z")->AsFloat(1.0f),
+                    line->GetParam("h")->AsFloat(0.0f),
+                    trainer = line->GetParam("trainer")->AsBool(false),
+                    line->GetParam("toy")->AsBool(false),
+                    line->GetParam("option")->AsInt(0)
+                );
+                
+                if (m_fixScene && type == OBJECT_HUMAN)
+                {
+                    CMotion* motion = obj->GetMotion();
+                    if (m_phase == PHASE_WIN ) motion->SetAction(MHS_WIN,  0.4f);
+                    if (m_phase == PHASE_LOST) motion->SetAction(MHS_LOST, 0.5f);
+                }
+                
+                if (obj != nullptr)
+                {
+                    obj->SetDefRank(rankObj);
+                    
+                    if (type == OBJECT_BASE) m_base = obj;
+                    
+                    Gfx::CameraType cType = line->GetParam("camera")->AsCameraType(Gfx::CAM_TYPE_NULL);
+                    if (cType != Gfx::CAM_TYPE_NULL)
+                        obj->SetCameraType(cType);
+                    
+                    obj->SetCameraDist(line->GetParam("cameraDist")->AsFloat(50.0f));
+                    obj->SetCameraLock(line->GetParam("cameraLock")->AsBool(false));
+                    
+                    Gfx::PyroType pType = line->GetParam("pyro")->AsPyroType(Gfx::PT_NULL);
+                    if (pType != Gfx::PT_NULL)
+                    {
+                        Gfx::CPyro* pyro = new Gfx::CPyro();
+                        pyro->Create(pType, obj);
+                    }
+                    
+                    // Puts information in terminal (OBJECT_INFO).
+                    for (int i = 0; i < OBJECTMAXINFO; i++)
+                    {
+                        std::string op = "info"+boost::lexical_cast<std::string>(i+1);
+                        if(!line->GetParam(op)->IsDefined()) break;
+                        std::string text = line->GetParam(op)->AsString();
+                        std::size_t p = text.find_first_of("=");
+                        if(p == std::string::npos) 
+                            throw CLevelParserExceptionBadParam(line->GetParam(op), "info");
+                        Info info;
+                        strcpy(info.name, text.substr(0, p).c_str());
+                        try {
+                            info.value = boost::lexical_cast<float>(text.substr(p+1).c_str());
+                        }
+                        catch(...)
+                        {
+                            throw CLevelParserExceptionBadParam(line->GetParam(op), "info.value (float)");
+                        }
+                        obj->SetInfo(i, info);
+                    }
+                    
+                    // Sets the parameters of the command line.
+                    if(line->GetParam("cmdline")->IsDefined()) {
+                        const std::vector<CLevelParserParam*>& cmdline = line->GetParam("cmdline")->AsArray();
+                        for (unsigned int i = 0; i < OBJECTMAXCMDLINE && i < cmdline.size(); i++) //TODO: get rid of the limit
+                        {
+                            obj->SetCmdLine(i, cmdline[i]->AsFloat());
+                        }
+                    }
+                    
+                    if (line->GetParam("select")->AsBool(false))
+                    {
+                        sel = obj;
+                    }
+                    
+                    bool selectable = line->GetParam("selectable")->AsBool(true);
+                    obj->SetSelectable(selectable);
+                    obj->SetIgnoreBuildCheck(line->GetParam("ignoreBuildCheck")->AsBool(false));
+                    obj->SetEnable(line->GetParam("enable")->AsBool(true));
+                    obj->SetProxyActivate(line->GetParam("proxyActivate")->AsBool(false));
+                    obj->SetProxyDistance(line->GetParam("proxyDistance")->AsFloat(15.0f)*g_unit);
+                    obj->SetRange(line->GetParam("range")->AsFloat(30.0f));
+                    obj->SetShield(line->GetParam("shield")->AsFloat(1.0f));
+                    obj->SetMagnifyDamage(line->GetParam("magnifyDamage")->AsFloat(1.0f));
+                    obj->SetClip(line->GetParam("clip")->AsBool(true));
+                    obj->SetCheckToken(m_version >= 2 ? trainer || !selectable : line->GetParam("checkToken")->AsBool(true));
+                    // SetManual will affect bot speed
+                    if (type == OBJECT_MOBILEdr)
+                    {
+                        obj->SetManual(m_version >= 2 ? !trainer : line->GetParam("manual")->AsBool(false));
+                    }
+                    
+                    if (m_version >= 2)
+                    {
+                        Math::Vector zoom = line->GetParam("zoom")->AsPoint(Math::Vector(0.0f, 0.0f, 0.0f));
+                        if (zoom.x != 0.0f || zoom.y != 0.0f || zoom.z != 0.0f)
+                            obj->SetZoom(0, zoom);
+                    }
+                    
+                    //TODO: I don't remember what this is used for
+                    CMotion* motion = obj->GetMotion();
+                    if (motion != nullptr && line->GetParam("param")->IsDefined())
+                    {
+                        const std::vector<CLevelParserParam*>& p = line->GetParam("param")->AsArray();
+                        for (unsigned int i = 0; i < 10 && i < p.size(); i++)
+                        {
+                            motion->SetParam(i, p[i]->AsFloat());
+                        }
+                    }
+                    
+                    int run = -1;
+                    CBrain* brain = obj->GetBrain();
+                    if (brain != nullptr)
+                    {
+                        for (int i = 0; i < 10; i++)
+                        {
+                            std::string op = "script"+boost::lexical_cast<std::string>(i+1); // script1..script10
+                            if(line->GetParam(op)->IsDefined()) {
+                                brain->SetScriptName(i, const_cast<char*>(("../"+line->GetParam(op)->AsPath("ai")).c_str()));
+                            }
+                            
+                        }
+                        
+                        int i = line->GetParam("run")->AsInt(0);
+                        if (i != 0)
+                        {
+                            run = i-1;
+                            brain->SetScriptRun(run);
+                        }
+                    }
+                    CAuto* automat = obj->GetAuto();
+                    if (automat != nullptr)
+                    {
+                        type = line->GetParam("autoType")->AsObjectType(OBJECT_NULL);
+                        automat->SetType(type);
+                        for (int i = 0; i < 5; i++)
+                        {
+                            std::string op = "autoValue"+boost::lexical_cast<std::string>(i+1); // autoValue1..autoValue5
+                            automat->SetValue(i, line->GetParam(op)->AsFloat(0.0f));
+                        }
+                        automat->SetString(const_cast<char*>(line->GetParam("autoString")->AsPath("ai", "").c_str()));
+                        
+                        int i = line->GetParam("run")->AsInt(-1);
+                        if (i != -1)
+                        {
+                            if (i != PARAM_FIXSCENE &&
+                                !m_dialog->GetMovies()) i = 0;
+                            automat->Start(i);  // starts the film
+                        }
+                    }
+                    
+                    if (soluce && brain != nullptr && line->GetParam("soluce")->IsDefined())
+                        brain->SetSoluceName(const_cast<char*>(line->GetParam("soluce")->AsString().c_str()));
+                    
+                    obj->SetResetPosition(obj->GetPosition(0));
+                    obj->SetResetAngle(obj->GetAngle(0));
+                    obj->SetResetRun(run);
+                    
+                    if (line->GetParam("reset")->AsBool(false))
+                        obj->SetResetCap(RESET_MOVE);
+                }
+                
+                rankObj ++;
+                continue;
+            }
+            
+            if (line->GetCommand() == "CreateFog" && !resetObject)
+            {
+                Gfx::ParticleType type = static_cast<Gfx::ParticleType>(Gfx::PARTIFOG0+(line->GetParam("type")->AsInt()));
+                Math::Vector pos = line->GetParam("pos")->AsPoint()*g_unit;
+                float height = line->GetParam("height")->AsFloat(1.0f)*g_unit;
+                float ddim = line->GetParam("dim")->AsFloat(50.0f)*g_unit;
+                float delay = line->GetParam("delay")->AsFloat(2.0f);
+                m_terrain->AdjustToFloor(pos);
+                pos.y += height;
+                Math::Point dim;
+                dim.x = ddim;
+                dim.y = dim.x;
+                m_particle->CreateParticle(pos, Math::Vector(0.0f, 0.0f, 0.0f), dim, type, delay, 0.0f, 0.0f);
+                continue;
+            }
+            
+            if (line->GetCommand() == "CreateLight" && !resetObject)
+            {
+                Gfx::EngineObjectType  type;
+                
+                int lightRank = CreateLight(line->GetParam("dir")->AsPoint(),
+                                            line->GetParam("color")->AsColor(Gfx::Color(0.5f, 0.5f, 0.5f, 1.0f)));
+                
+                type = line->GetParam("type")->AsTerrainType(Gfx::ENG_OBJTYPE_NULL);
+                
+                if (type == Gfx::ENG_OBJTYPE_TERRAIN)
+                {
+                    m_lightMan->SetLightPriority(lightRank, Gfx::LIGHT_PRI_HIGHEST);
+                    m_lightMan->SetLightIncludeType(lightRank, Gfx::ENG_OBJTYPE_TERRAIN);
+                }
+                
+                if (type == Gfx::ENG_OBJTYPE_QUARTZ)
+                    m_lightMan->SetLightIncludeType(lightRank, Gfx::ENG_OBJTYPE_QUARTZ);
+                
+                if (type == Gfx::ENG_OBJTYPE_METAL)
+                    m_lightMan->SetLightIncludeType(lightRank, Gfx::ENG_OBJTYPE_METAL);
+                
+                if (type == Gfx::ENG_OBJTYPE_FIX)
+                    m_lightMan->SetLightExcludeType(lightRank, Gfx::ENG_OBJTYPE_TERRAIN);
+                
+                continue;
+            }
+            if (line->GetCommand() == "CreateSpot" && !resetObject)
+            {
+                Gfx::EngineObjectType  type;
+                
+                int rankLight = CreateSpot(line->GetParam("pos")->AsPoint()*g_unit,
+                                        line->GetParam("color")->AsColor(Gfx::Color(0.5f, 0.5f, 0.5f, 1.0f)));
+                
+                type = line->GetParam("type")->AsTerrainType(Gfx::ENG_OBJTYPE_NULL);
+                if (type == Gfx::ENG_OBJTYPE_TERRAIN)
+                    m_lightMan->SetLightIncludeType(rankLight, Gfx::ENG_OBJTYPE_TERRAIN);
+                
+                if (type == Gfx::ENG_OBJTYPE_QUARTZ)
+                    m_lightMan->SetLightIncludeType(rankLight, Gfx::ENG_OBJTYPE_QUARTZ);
+                
+                if (type == Gfx::ENG_OBJTYPE_METAL)
+                    m_lightMan->SetLightIncludeType(rankLight, Gfx::ENG_OBJTYPE_METAL);
+                
+                if (type == Gfx::ENG_OBJTYPE_FIX)
+                    m_lightMan->SetLightExcludeType(rankLight, Gfx::ENG_OBJTYPE_TERRAIN);
+                
+                continue;
+            }
+            
+            if (line->GetCommand() == "GroundSpot" && !resetObject)
+            {
+                rank = m_engine->CreateGroundSpot();
+                if (rank != -1)
+                {
+                    m_engine->SetObjectGroundSpotPos(rank, line->GetParam("pos")->AsPoint(Math::Vector(0.0f, 0.0f, 0.0f))*g_unit);
+                    m_engine->SetObjectGroundSpotRadius(rank, line->GetParam("radius")->AsFloat(10.0f)*g_unit);
+                    m_engine->SetObjectGroundSpotColor(rank, line->GetParam("color")->AsColor(Gfx::Color(0.533f, 0.533f, 0.533f, 0.533f)));
+                    m_engine->SetObjectGroundSpotSmooth(rank, line->GetParam("smooth")->AsFloat(1.0f));
+                    m_engine->SetObjectGroundSpotMinMax(rank, line->GetParam("min")->AsFloat(0.0f)*g_unit,
+                                                        line->GetParam("max")->AsFloat(0.0f)*g_unit);
+                }
+                continue;
+            }
+            
+            if (line->GetCommand() == "WaterColor" && !resetObject)
+            {
+                m_engine->SetWaterAddColor(line->GetParam("color")->AsColor());
+                continue;
+            }
+            
+            if (line->GetCommand() == "MapColor" && !resetObject)
+            {
+                m_map->FloorColorMap(line->GetParam("floor")->AsColor(Gfx::Color(0.533f, 0.533f, 0.533f, 0.533f)),
+                                    line->GetParam("water")->AsColor(Gfx::Color(0.533f, 0.533f, 0.533f, 0.533f)));
+                m_mapShow = line->GetParam("show")->AsBool(true);
+                m_map->ShowMap(m_mapShow);
+                m_map->SetToy(line->GetParam("toyIcon")->AsBool(false));
+                m_mapImage = line->GetParam("image")->AsBool(false);
+                if (m_mapImage)
+                {
+                    Math::Vector offset;
+                    strcpy(m_mapFilename, ("../"+line->GetParam("filename")->AsPath("textures")).c_str());
+                    offset = line->GetParam("offset")->AsPoint(Math::Vector(0.0f, 0.0f, 0.0f));
+                    m_map->SetFixParam(line->GetParam("zoom")->AsFloat(1.0f),
+                                    offset.x, offset.z,
+                                    line->GetParam("angle")->AsFloat(0.0f)*Math::PI/180.0f,
+                                    line->GetParam("mode")->AsInt(0),
+                                    line->GetParam("debug")->AsBool(false));
+                }
+                continue;
+            }
+            
+            if (line->GetCommand() == "MapZoom" && !resetObject)
+            {
+                m_map->ZoomMap(line->GetParam("factor")->AsFloat(2.0f));
+                m_map->MapEnable(line->GetParam("enable")->AsBool(true));
+                continue;
+            }
+            
+            if (line->GetCommand() == "MaxFlyingHeight" && !resetObject)
+            {
+                m_terrain->SetFlyingMaxHeight(line->GetParam("max")->AsFloat(280.0f)*g_unit);
+                continue;
+            }
+            
+            if (line->GetCommand() == "AddFlyingHeight" && !resetObject)
+            {
+                m_terrain->AddFlyingLimit(line->GetParam("center")->AsPoint()*g_unit,
+                                        line->GetParam("extRadius")->AsFloat(20.0f)*g_unit,
+                                        line->GetParam("intRadius")->AsFloat(10.0f)*g_unit,
+                                        line->GetParam("maxHeight")->AsFloat(200.0f));
+                continue;
+            }
+            
+            if (line->GetCommand() == "Camera")
+            {
+                m_camera->Init(line->GetParam("eye")->AsPoint(Math::Vector(0.0f, 0.0f, 0.0f))*g_unit,
+                            line->GetParam("lookat")->AsPoint(Math::Vector(0.0f, 0.0f, 0.0f))*g_unit,
+                            resetObject ? 0.0f : line->GetParam("delay")->AsFloat(0.0f));
+                
+                if (line->GetParam("fadeIn")->AsBool(false))
+                    m_camera->StartOver(Gfx::CAM_OVER_EFFECT_FADEIN_WHITE, Math::Vector(0.0f, 0.0f, 0.0f), 1.0f);
+                
+                m_camera->SetFixDirection(line->GetParam("fixDirection")->AsFloat(0.25f)*Math::PI);
+                continue;
+            }
+            
+            if (line->GetCommand() == "EndMissionTake" && !resetObject && m_controller == nullptr)
+            {
+                int i = m_endTakeTotal;
+                if (i < 10)
+                {
+                    m_endTake[i].pos      = line->GetParam("pos")->AsPoint(Math::Vector(0.0f, 0.0f, 0.0f))*g_unit;
+                    m_endTake[i].dist     = line->GetParam("dist")->AsFloat(m_version < 2 ? 8.0f : 100.0f)*g_unit;
+                    m_endTake[i].type     = line->GetParam("type")->AsObjectType(OBJECT_NULL);
+                    m_endTake[i].min      = line->GetParam("min")->AsInt(1);
+                    m_endTake[i].max      = line->GetParam("max")->AsInt(9999);
+                    if (m_version >= 2)
+                    {
+                        m_endTake[i].powermin = line->GetParam("powermin")->AsFloat(-1);
+                        m_endTake[i].powermax = line->GetParam("powermax")->AsFloat(100);
+                        m_endTake[i].tool     = line->GetParam("tool")->AsToolType(TOOL_OTHER);
+                        m_endTake[i].drive    = line->GetParam("drive")->AsDriveType(DRIVE_OTHER);
+                    }
+                    else
+                    {
+                        m_endTake[i].powermin = -1;
+                        m_endTake[i].powermax = 100;
+                        m_endTake[i].tool     = TOOL_OTHER;
+                        m_endTake[i].drive    = DRIVE_OTHER;
+                    }
+                    m_endTake[i].lost     = line->GetParam("lost")->AsInt(-1);
+                    m_endTake[i].immediat = line->GetParam("immediat")->AsBool(false);
+                    strcpy(m_endTake[i].message, line->GetParam("message")->AsString("").c_str()); //TODO: Really, ending mission on message()? Is this used anywhere? Do we need that?
+                    m_endTakeTotal ++;
+                }
+                continue;
+            }
+            if (line->GetCommand() == "EndMissionDelay" && !resetObject && m_controller == nullptr)
+            {
+                m_endTakeWinDelay  = line->GetParam("win")->AsFloat(2.0f);
+                m_endTakeLostDelay = line->GetParam("lost")->AsFloat(2.0f);
+                continue;
+            }
+            if (line->GetCommand() == "EndMissionResearch" && !resetObject && m_controller == nullptr) //TODO: Is this used anywhere?
+            {
+                m_endTakeResearch |= line->GetParam("type")->AsResearchFlag();
+                continue;
+            }
+            if (line->GetCommand() == "EndMissionNever" && !resetObject && m_controller == nullptr)
+            {
+                m_endTakeNever = true;
+                continue;
+            }
+            
+            if (line->GetCommand() == "ObligatoryToken" && !resetObject) //NOTE: This was used only in CeeBot, maybe we should add this to some Colobot exercises?
+            {
+                int i = m_obligatoryTotal;
+                if (i < 100) //TODO: remove the limit
+                {
+                    strcpy(m_obligatoryToken[i], line->GetParam("text")->AsString().c_str());
+                    m_obligatoryTotal ++;
+                }
+                continue;
+            }
+            
+            if (line->GetCommand() == "ProhibitedToken" && !resetObject) //NOTE: This was used only in CeeBot, maybe we should add this to some Colobot exercises?
+            {
+                int i = m_prohibitedTotal;
+                if (i < 100) //TODO: remove the limit
+                {
+                    strcpy(m_prohibitedToken[i], line->GetParam("text")->AsString().c_str());
+                    m_prohibitedTotal ++;
+                }
+                continue;
+            }
+            
+            if (line->GetCommand() == "EnableBuild" && !resetObject)
+            {
+                g_build |= line->GetParam("type")->AsBuildFlag();
+                continue;
+            }
+            
+            if (line->GetCommand() == "EnableResearch" && !resetObject)
+            {
+                g_researchEnable |= line->GetParam("type")->AsResearchFlag();
+                continue;
+            }
+            
+            if (line->GetCommand() == "DoneResearch" && read[0] == 0 && !resetObject) // not loading file?
+            {
+                g_researchDone |= line->GetParam("type")->AsResearchFlag();
+                continue;
+            }
+            
+            if (line->GetCommand() == "NewScript" && !resetObject)
+            {
+                AddNewScriptName(line->GetParam("type")->AsObjectType(OBJECT_NULL), const_cast<char*>(line->GetParam("name")->AsPath("ai").c_str()));
+                continue;
+            }
+            
+            if(read[0] != 0) continue; // ignore errors when loading saved game (TODO: don't report ones that are just not loaded when loading saved game)
+            if(resetObject) continue; // ignore when reseting just objects (TODO: see above)
+            
+            throw CLevelParserException("Unknown command: '"+line->GetCommand()+"' in "+line->GetLevel()->GetFilename()+":"+boost::lexical_cast<std::string>(line->GetLineNumber()));
         }
-        
-        if (line->GetCommand() == "EnableBuild" && !resetObject)
+
+        if (read[0] == 0)
+            CompileScript(soluce);  // compiles all scripts
+
+        if (strcmp(base, "missions") == 0 && !resetObject)  // mission?
+            WriteFreeParam();
+
+        if (strcmp(base, "freemissions") == 0 && !resetObject)  // free play?
         {
-            g_build |= line->GetParam("type")->AsBuildFlag();
-            continue;
+            g_researchDone = m_freeResearch;
+
+            g_build = m_freeBuild;
+            g_build &= ~BUILD_RESEARCH;
+            g_build &= ~BUILD_LABO;
+            g_build |= BUILD_FACTORY;
+            g_build |= BUILD_GFLAT;
+            g_build |= BUILD_FLAG;
         }
-        
-        if (line->GetCommand() == "EnableResearch" && !resetObject)
+
+        if (!resetObject)
         {
-            g_researchEnable |= line->GetParam("type")->AsResearchFlag();
-            continue;
+            ChangeColor();  // changes the colors of texture
+            m_short->SetMode(false);  // vehicles?
         }
-        
-        if (line->GetCommand() == "DoneResearch" && read[0] == 0 && !resetObject) // not loading file?
+
+        CreateShortcuts();
+        m_map->UpdateMap();
+        // TODO: m_engine->TimeInit(); ??
+        m_app->ResetKeyStates();
+        m_time = 0.0f;
+        m_gameTime = 0.0f;
+        m_infoUsed = 0;
+
+        m_selectObject = sel;
+
+        if (m_base == nullptr &&  // no main base?
+            !m_fixScene)    // interractive scene?
         {
-            g_researchDone |= line->GetParam("type")->AsResearchFlag();
-            continue;
+            CObject* obj;
+            if (sel == nullptr)
+                obj = SearchHuman();
+            else
+                obj = sel;
+
+            if (obj != nullptr)
+            {
+                SelectObject(obj);
+                m_camera->SetControllingObject(obj);
+                m_camera->SetType(obj->GetCameraType());
+            }
         }
-        
-        if (line->GetCommand() == "NewScript" && !resetObject)
+
+        if (m_fixScene)
+            m_camera->SetType(Gfx::CAM_TYPE_SCRIPT);
+
+        if (read[0] != 0 && sel != 0)  // loading file?
         {
-            AddNewScriptName(line->GetParam("type")->AsObjectType(OBJECT_NULL), const_cast<char*>(line->GetParam("name")->AsPath("ai").c_str()));
-            continue;
+            Math::Vector pos = sel->GetPosition(0);
+            m_camera->Init(pos, pos, 0.0f);
+            m_camera->FixCamera();
+
+            SelectObject(sel);
+            m_camera->SetControllingObject(sel);
+
+            m_beginSatCom = true;  // message already displayed
         }
-        
-        if(read[0] != 0) continue; // ignore errors when loading saved game (TODO: don't report ones that are just not loaded when loading saved game)
-        if(resetObject) continue; // ignore when reseting just objects (TODO: see above)
-        
-        throw CLevelParserException("Unknown command: '"+line->GetCommand()+"' in "+line->GetLevel()->GetFilename()+":"+boost::lexical_cast<std::string>(line->GetLineNumber()));
-    }
-
-    if (read[0] == 0)
-        CompileScript(soluce);  // compiles all scripts
-
-    if (strcmp(base, "missions") == 0 && !resetObject)  // mission?
-        WriteFreeParam();
-
-    if (strcmp(base, "freemissions") == 0 && !resetObject)  // free play?
-    {
-        g_researchDone = m_freeResearch;
-
-        g_build = m_freeBuild;
-        g_build &= ~BUILD_RESEARCH;
-        g_build &= ~BUILD_LABO;
-        g_build |= BUILD_FACTORY;
-        g_build |= BUILD_GFLAT;
-        g_build |= BUILD_FLAG;
-    }
-
-    if (!resetObject)
-    {
-        ChangeColor();  // changes the colors of texture
-        m_short->SetMode(false);  // vehicles?
-    }
-
-    CreateShortcuts();
-    m_map->UpdateMap();
-    // TODO: m_engine->TimeInit(); ??
-    m_app->ResetKeyStates();
-    m_time = 0.0f;
-    m_gameTime = 0.0f;
-    m_infoUsed = 0;
-
-    m_selectObject = sel;
-
-    if (m_base == nullptr &&  // no main base?
-        !m_fixScene)    // interractive scene?
-    {
-        CObject* obj;
-        if (sel == nullptr)
-            obj = SearchHuman();
-        else
-            obj = sel;
-
-        if (obj != nullptr)
-        {
-            SelectObject(obj);
-            m_camera->SetControllingObject(obj);
-            m_camera->SetType(obj->GetCameraType());
-        }
-    }
-
-    if (m_fixScene)
-        m_camera->SetType(Gfx::CAM_TYPE_SCRIPT);
-
-    if (read[0] != 0 && sel != 0)  // loading file?
-    {
-        Math::Vector pos = sel->GetPosition(0);
-        m_camera->Init(pos, pos, 0.0f);
-        m_camera->FixCamera();
-
-        SelectObject(sel);
-        m_camera->SetControllingObject(sel);
-
-        m_beginSatCom = true;  // message already displayed
+    } catch(...) {
+        m_dialog->SetSceneRead("");
+        m_dialog->SetStackRead("");
+        throw;
     }
     m_dialog->SetSceneRead("");
     m_dialog->SetStackRead("");
