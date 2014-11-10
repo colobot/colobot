@@ -1528,7 +1528,7 @@ std::string CStudio::SearchDirectory(bool bCreate)
     }
     else
     {
-        dir = std::string(m_main->GetPHYSFSSavegameDir()) + "/" + std::string(m_main->GetGamerName()) + "/program/";
+        dir = std::string(m_main->GetSavegameDir()) + "/" + std::string(m_main->GetGamerName()) + "/program/";
     }
 
     if ( bCreate )

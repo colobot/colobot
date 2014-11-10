@@ -5439,7 +5439,7 @@ void CRobotMain::LoadOneScript(CObject *obj, int &nbError)
 
         char filename[MAX_FNAME];
         sprintf(filename, "%s/%s/%c%.3d%.3d%.1d.txt",
-                    GetPHYSFSSavegameDir(), m_gamerName.c_str(), name[0], rank, objRank, i);
+                    GetSavegameDir(), m_gamerName.c_str(), name[0], rank, objRank, i);
         brain->ReadProgram(i, filename);
         if (!brain->GetCompile(i)) nbError++;
     }
@@ -5505,7 +5505,7 @@ void CRobotMain::SaveOneScript(CObject *obj)
     {
         char filename[MAX_FNAME];
         sprintf(filename, "%s/%s/%c%.3d%.3d%.1d.txt",
-                    GetPHYSFSSavegameDir(), m_gamerName.c_str(), name[0], rank, objRank, i);
+                    GetSavegameDir(), m_gamerName.c_str(), name[0], rank, objRank, i);
         brain->WriteProgram(i, filename);
     }
 }
@@ -6008,7 +6008,7 @@ void CRobotMain::WriteFreeParam()
     if (m_gamerName == "") return;
 
     COutputStream file;
-    file.open(std::string(GetPHYSFSSavegameDir())+"/"+m_gamerName+"/research.gam");
+    file.open(std::string(GetSavegameDir())+"/"+m_gamerName+"/research.gam");
     if(!file.is_open())
     {
         CLogger::GetInstancePointer()->Error("Unable to write free game unlock state\n");
@@ -6028,11 +6028,11 @@ void CRobotMain::ReadFreeParam()
 
     if (m_gamerName == "") return;
 
-    if(!CResourceManager::Exists(std::string(GetPHYSFSSavegameDir())+"/"+m_gamerName+"/research.gam"))
+    if(!CResourceManager::Exists(std::string(GetSavegameDir())+"/"+m_gamerName+"/research.gam"))
         return;
     
     CInputStream file;
-    file.open(std::string(GetPHYSFSSavegameDir())+"/"+m_gamerName+"/research.gam");
+    file.open(std::string(GetSavegameDir())+"/"+m_gamerName+"/research.gam");
     if(!file.is_open())
     {
         CLogger::GetInstancePointer()->Error("Unable to read free game unlock state\n");
@@ -6612,15 +6612,9 @@ bool CRobotMain::GetRadar()
     return false;
 }
 
-//TODO: Use PHYSFS everywhere
-const char* CRobotMain::GetPHYSFSSavegameDir()
-{
-    return m_dialog->GetPHYSFSSavegameDir().c_str();
-}
-
 const char* CRobotMain::GetSavegameDir()
 {
-    return m_dialog->GetSavegameDir().c_str();
+    return m_dialog->GetPHYSFSSavegameDir().c_str();
 }
 
 const char* CRobotMain::GetPublicDir()
