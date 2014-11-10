@@ -238,6 +238,7 @@ protected:
     bool    m_bContinue;        // external function to continue
     bool    m_bCompile;     // compilation ok?
     char    m_title[50];        // script title
+    char    m_mainFunction[50];
     char    m_filename[50];     // file name
     char    m_token[50];        // missing instruction
     int     m_error;        // error (0=ok)

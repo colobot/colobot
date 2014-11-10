@@ -3505,6 +3505,7 @@ CScript::CScript(CObject* object, CTaskManager** secondaryTask)
     m_bStepMode = false;
     m_bCompile = false;
     m_title[0] = 0;
+    m_mainFunction[0] = 0;
     m_cursor1 = 0;
     m_cursor2 = 0;
     m_filename[0] = 0;
@@ -3693,6 +3694,7 @@ bool CScript::CheckToken()
 
     m_error = 0;
     m_title[0] = 0;
+    m_mainFunction[0] = 0;
     m_token[0] = 0;
     m_bCompile = false;
 
@@ -3722,7 +3724,8 @@ bool CScript::CheckToken()
             m_error = ERR_PROHIBITEDTOKEN;
             m_cursor1 = cursor1;
             m_cursor2 = cursor2;
-            strcpy(m_title, "<erreur>");
+            strcpy(m_title, "<prohibited>");
+            m_mainFunction[0] = 0;
             CBotToken::Delete(allBt);
             return false;
         }
@@ -3737,7 +3740,8 @@ bool CScript::CheckToken()
         {
             strcpy(m_token, m_main->GetObligatoryToken(i));
             m_error = ERR_OBLIGATORYTOKEN;
-            strcpy(m_title, "<erreur>");
+            strcpy(m_title, "<obligatory>");
+            m_mainFunction[0] = 0;
             CBotToken::Delete(allBt);
             return false;
         }
@@ -3759,6 +3763,7 @@ bool CScript::Compile()
     m_cursor1 = 0;
     m_cursor2 = 0;
     m_title[0] = 0;
+    m_mainFunction[0] = 0;
     m_bCompile = false;
 
     if ( IsEmpty() )  // program exist?
@@ -3778,25 +3783,32 @@ bool CScript::Compile()
         if ( liste.GetSize() == 0 )
         {
             strcpy(m_title, "<extern missing>");
+            m_mainFunction[0] = 0;
         }
         else
         {
             p = liste[0];
             i = 0;
+            bool titleDone = false;
             while ( true )
             {
                 if ( p[i] == 0 || p[i] == '(' )  break;
-                if ( i >= 20 )
+                if ( i >= 20 && !titleDone )
                 {
-                    m_title[i++] = '.';
-                    m_title[i++] = '.';
-                    m_title[i++] = '.';
-                    break;
+                    m_title[i+0] = '.';
+                    m_title[i+1] = '.';
+                    m_title[i+2] = '.';
+                    m_title[i+3] = 0;
+                    titleDone = true;
                 }
-                m_title[i] = p[i];
+                if(!titleDone)
+                    m_title[i] = p[i];
+                m_mainFunction[i] = p[i];
                 i ++;
             }
-            m_title[i] = 0;
+            if(!titleDone)
+                m_title[i] = 0;
+            m_mainFunction[i] = p[i];
         }
         m_bCompile = true;
         return true;
@@ -3815,6 +3827,7 @@ bool CScript::Compile()
             m_cursor1 = m_cursor2 = 0;
         }
         strcpy(m_title, "<error>");
+        m_mainFunction[0] = 0;
         return false;
     }
 }
@@ -3842,8 +3855,9 @@ bool CScript::Run()
 {
     if( m_botProg == 0 )  return false;
     if ( m_script == nullptr || m_len == 0 )  return false;
-
-    if ( !m_botProg->Start(m_title) )  return false;
+    if ( m_mainFunction[0] == 0 ) return false;
+    
+    if ( !m_botProg->Start(m_mainFunction) )  return false;
 
     m_object->SetRunScript(this);
     m_bRun = true;
