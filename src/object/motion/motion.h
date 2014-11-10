@@ -42,6 +42,7 @@ class CPhysics;
 class CObject;
 class CRobotMain;
 class CSoundInterface;
+class CLevelParserLine;
 
 
 class CMotion
@@ -62,7 +63,7 @@ public:
     virtual bool            SetParam(int rank, float value);
     virtual float           GetParam(int rank);
 
-    virtual bool            Write(char *line);
+    virtual bool            Write(CLevelParserLine* line);
     virtual bool            Read(char *line);
 
     virtual void            SetLinVibration(Math::Vector dir);

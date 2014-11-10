@@ -236,7 +236,6 @@ void CLevelParser::Save()
     }
     
     file.close();
-    
 }
 
 const std::string& CLevelParser::GetFilename()

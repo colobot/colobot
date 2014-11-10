@@ -24,6 +24,9 @@
 
 #include "math/geometry.h"
 
+#include "object/level/parserline.h"
+#include "object/level/parserparam.h"
+
 #include "script/cmdtoken.h"
 
 #include <stdio.h>
@@ -310,34 +313,18 @@ CObject* CAutoEgg::SearchAlien()
 
 // Saves all parameters of the controller.
 
-bool CAutoEgg::Write(char *line)
+bool CAutoEgg::Write(CLevelParserLine* line)
 {
-    char    name[100];
-
     if ( m_phase == AEP_NULL )  return false;
-
-    sprintf(name, " aExist=%d", 1);
-    strcat(line, name);
-
+    
+    line->AddParam("aExist", new CLevelParserParam(true));
     CAuto::Write(line);
-
-    sprintf(name, " aPhase=%d", m_phase);
-    strcat(line, name);
-
-    sprintf(name, " aProgress=%.2f", m_progress);
-    strcat(line, name);
-
-    sprintf(name, " aSpeed=%.5f", m_speed);
-    strcat(line, name);
-
-    sprintf(name, " aParamType=%s", GetTypeObject(m_type));
-    strcat(line, name);
-
-    sprintf(name, " aParamValue1=%.2f", m_value);
-    strcat(line, name);
-
-    sprintf(name, " aParamString=\"%s\"", m_string);
-    strcat(line, name);
+    line->AddParam("aPhase", new CLevelParserParam(static_cast<int>(m_phase)));
+    line->AddParam("aProgress", new CLevelParserParam(m_progress));
+    line->AddParam("aSpeed", new CLevelParserParam(m_speed));
+    line->AddParam("aParamType", new CLevelParserParam(m_type));
+    line->AddParam("aParamValue1", new CLevelParserParam(m_value));
+    line->AddParam("aParamString", new CLevelParserParam(m_string));
 
     return true;
 }

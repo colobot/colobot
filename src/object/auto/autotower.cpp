@@ -24,6 +24,9 @@
 
 #include "math/geometry.h"
 
+#include "object/level/parserline.h"
+#include "object/level/parserparam.h"
+
 #include "physics/physics.h"
 
 #include "script/cmdtoken.h"
@@ -485,40 +488,20 @@ void CAutoTower::UpdateInterface(float rTime)
 
 // Saves all parameters of the controller.
 
-bool CAutoTower::Write(char *line)
+bool CAutoTower::Write(CLevelParserLine* line)
 {
-    char    name[100];
-
     if ( m_phase == ATP_WAIT )  return false;
-
-    sprintf(name, " aExist=%d", 1);
-    strcat(line, name);
-
+    
+    line->AddParam("aExist", new CLevelParserParam(true));
     CAuto::Write(line);
-
-    sprintf(name, " aPhase=%d", m_phase);
-    strcat(line, name);
-
-    sprintf(name, " aProgress=%.2f", m_progress);
-    strcat(line, name);
-
-    sprintf(name, " aSpeed=%.2f", m_speed);
-    strcat(line, name);
-
-    sprintf(name, " aTargetPos=%.2f;%.2f;%.2f", m_targetPos.x, m_targetPos.y, m_targetPos.z);
-    strcat(line, name);
-
-    sprintf(name, " aAngleYactual=%.2f", m_angleYactual);
-    strcat(line, name);
-
-    sprintf(name, " aAngleZactual=%.2f", m_angleZactual);
-    strcat(line, name);
-
-    sprintf(name, " aAngleYfinal=%.2f", m_angleYfinal);
-    strcat(line, name);
-
-    sprintf(name, " aAngleZfinal=%.2f", m_angleZfinal);
-    strcat(line, name);
+    line->AddParam("aPhase", new CLevelParserParam(static_cast<int>(m_phase)));
+    line->AddParam("aProgress", new CLevelParserParam(m_progress));
+    line->AddParam("aSpeed", new CLevelParserParam(m_speed));
+    line->AddParam("aTargetPos", new CLevelParserParam(m_targetPos));
+    line->AddParam("aAngleYactual", new CLevelParserParam(m_angleYactual));
+    line->AddParam("aAngleZactual", new CLevelParserParam(m_angleZactual));
+    line->AddParam("aAngleYfinal", new CLevelParserParam(m_angleYfinal));
+    line->AddParam("aAngleZfinal", new CLevelParserParam(m_angleZfinal));
 
     return true;
 }

@@ -65,7 +65,6 @@ public:
     CLevelParserLine* Get(std::string command);
     
 private:
-    
     std::string m_filename;
     std::vector<CLevelParserLine*> m_lines;
 };

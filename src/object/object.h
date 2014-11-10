@@ -40,6 +40,7 @@ class CDisplayText;
 class CRobotMain;
 class CBotVar;
 class CScript;
+class CLevelParserLine;
 
 
 /**
@@ -379,7 +380,7 @@ public:
     void        SetID(int id);
     int         GetID();
 
-    bool        Write(char *line);
+    bool        Write(CLevelParserLine* line);
     bool        Read(char *line);
 
     void        SetDrawWorld(bool bDraw);

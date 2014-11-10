@@ -26,6 +26,9 @@
 #include "common/event.h"
 #include "common/iman.h"
 
+#include "object/level/parserline.h"
+#include "object/level/parserparam.h"
+
 #include "script/cmdtoken.h"
 
 #include "ui/interface.h"
@@ -424,24 +427,13 @@ void CAuto::SetMotor(bool bMotor)
 
 // Saves all parameters of the controller.
 
-bool CAuto::Write(char *line)
+bool CAuto::Write(CLevelParserLine* line)
 {
-    char    name[100];
-
-    sprintf(name, " aType=%d", m_type);
-    strcat(line, name);
-
-    sprintf(name, " aBusy=%d", m_bBusy);
-    strcat(line, name);
-
-    sprintf(name, " aTime=%.2f", m_time);
-    strcat(line, name);
-
-    sprintf(name, " aProgressTime=%.2f", m_progressTime);
-    strcat(line, name);
-
-    sprintf(name, " aProgressTotal=%.2f", m_progressTotal);
-    strcat(line, name);
+    line->AddParam("aType", new CLevelParserParam(m_type));
+    line->AddParam("aBusy", new CLevelParserParam(m_bBusy));
+    line->AddParam("aTime", new CLevelParserParam(m_time));
+    line->AddParam("aProgressTime", new CLevelParserParam(m_progressTime));
+    line->AddParam("aProgressTotal", new CLevelParserParam(m_progressTotal));
 
     return false;
 }

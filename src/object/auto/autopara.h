@@ -50,7 +50,7 @@ public:
 
     bool        CreateInterface(bool bSelect);
 
-    bool        Write(char *line);
+    bool        Write(CLevelParserLine* line);
     bool        Read(char *line);
 
 protected:

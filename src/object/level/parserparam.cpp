@@ -975,7 +975,7 @@ CLevelParserParam::CLevelParserParam(std::string value)
 }
 CLevelParserParam::CLevelParserParam(bool value)
 {
-    m_value = value ? "true" : "false";
+    m_value = value ? "1" : "0";
 }
 CLevelParserParam::CLevelParserParam(Gfx::Color value)
 {

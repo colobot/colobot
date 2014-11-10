@@ -36,6 +36,7 @@ class CObject;
 class CBrain;
 class CMotion;
 class CSoundInterface;
+class CLevelParserLine;
 
 namespace Gfx {
 class CCamera;
@@ -110,7 +111,7 @@ public:
     void        SetType(PhysicsType type);
     PhysicsType GetType();
 
-    bool        Write(char *line);
+    bool        Write(CLevelParserLine* line);
     bool        Read(char *line);
 
     void        SetGravity(float value);

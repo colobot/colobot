@@ -6070,8 +6070,6 @@ void CMainDialog::WriteGamerPerso(char *gamer)
     file = fopen(filename, "w");
     if ( file == NULL )  return;
 
-    m_main->SetNumericLocale();
-
     sprintf(line, "Head face=%d glasses=%d hair=%.2f;%.2f;%.2f;%.2f\n",
                 m_perso.face, m_perso.glasses,
                 m_perso.colorHair.r, m_perso.colorHair.g, m_perso.colorHair.b, m_perso.colorHair.a);
@@ -6083,8 +6081,6 @@ void CMainDialog::WriteGamerPerso(char *gamer)
     fputs(line, file);
 
     fclose(file);
-
-    m_main->RestoreNumericLocale();
 }
 
 // Reads the personalized player.
@@ -6102,8 +6098,6 @@ void CMainDialog::ReadGamerPerso(char *gamer)
     sprintf(filename, "%s/%s/face.gam", GetSavegameDir().c_str(), gamer);
     file = fopen(filename, "r");
     if ( file == NULL )  return;
-
-    m_main->SetNumericLocale();
 
     while ( fgets(line, 100, file) != NULL )
     {
@@ -6136,8 +6130,6 @@ void CMainDialog::ReadGamerPerso(char *gamer)
     }
 
     fclose(file);
-
-    m_main->RestoreNumericLocale();
 }
 
 // Specifies the face of the player.

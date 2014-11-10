@@ -76,6 +76,7 @@ enum Phase
 
 class CEventQueue;
 class CSoundInterface;
+class CLevelParserLine;
 
 namespace Gfx {
 class CEngine;
@@ -383,13 +384,10 @@ public:
     bool        IsBusy();
     bool        IOWriteScene(const char *filename, const char *filecbot, char *info);
     CObject*    IOReadScene(const char *filename, const char *filecbot);
-    void        IOWriteObject(FILE *file, CObject* pObj, const char *cmd);
+    void        IOWriteObject(CLevelParserLine *file, CObject* pObj);
     CObject*    IOReadObject(char *line, const char* filename, int objRank);
 
     int         CreateSpot(Math::Vector pos, Gfx::Color color);
-
-    void        SetNumericLocale();
-    void        RestoreNumericLocale();
 
     CObject*    GetSelect();
 
@@ -588,8 +586,6 @@ protected:
     Gfx::Color      m_colorRefWater;
     Gfx::Color      m_colorNewWater;
     float           m_colorShiftWater;
-
-    std::string     m_oldLocale;
     
     bool            m_missionTimerEnabled;
     bool            m_missionTimerStarted;

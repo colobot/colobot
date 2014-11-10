@@ -76,11 +76,15 @@
 #include "object/motion/motionworm.h"
 #include "object/robotmain.h"
 #include "object/objman.h"
+#include "object/level/parserline.h"
+#include "object/level/parserparam.h"
 
 #include "physics/physics.h"
 
 #include "script/cbottoken.h"
 #include "script/cmdtoken.h"
+
+#include <boost/lexical_cast.hpp>
 
 
 
@@ -995,137 +999,76 @@ int CObject::GetID()
 
 // Saves all the parameters of the object.
 
-bool CObject::Write(char *line)
+bool CObject::Write(CLevelParserLine* line)
 {
     Math::Vector    pos;
     Info        info;
-    char        name[100];
     float       value;
     int         i;
 
-    sprintf(name, " camera=%s", GetCamera(GetCameraType()));
-    strcat(line, name);
+    line->AddParam("camera", new CLevelParserParam(GetCameraType()));
 
-    if ( GetCameraLock() != 0 )
-    {
-        sprintf(name, " cameraLock=%d", GetCameraLock());
-        strcat(line, name);
-    }
+    if ( GetCameraLock() )
+        line->AddParam("cameraLock", new CLevelParserParam(GetCameraLock()));
 
     if ( GetEnergy() != 0.0f )
-    {
-        sprintf(name, " energy=%.2f", GetEnergy());
-        strcat(line, name);
-    }
+        line->AddParam("energy", new CLevelParserParam(GetEnergy()));
 
     if ( GetCapacity() != 1.0f )
-    {
-        sprintf(name, " capacity=%.2f", GetCapacity());
-        strcat(line, name);
-    }
-
+        line->AddParam("capacity", new CLevelParserParam(GetCapacity()));
+    
     if ( GetShield() != 1.0f )
-    {
-        sprintf(name, " shield=%.2f", GetShield());
-        strcat(line, name);
-    }
+        line->AddParam("shield", new CLevelParserParam(GetShield()));
 
     if ( GetRange() != 1.0f )
-    {
-        sprintf(name, " range=%.2f", GetRange());
-        strcat(line, name);
-    }
+        line->AddParam("range", new CLevelParserParam(GetRange()));
+    
+    if ( !GetSelectable() )
+        line->AddParam("selectable", new CLevelParserParam(GetSelectable()));
 
-    if ( GetSelectable() != 1 )
-    {
-        sprintf(name, " selectable=%d", GetSelectable());
-        strcat(line, name);
-    }
+    if ( !GetEnable() )
+        line->AddParam("enable", new CLevelParserParam(GetEnable()));
 
-    if ( GetEnable() != 1 )
-    {
-        sprintf(name, " enable=%d", GetEnable());
-        strcat(line, name);
-    }
+    if ( GetFixed() )
+        line->AddParam("fixed", new CLevelParserParam(GetFixed()));
 
-    if ( GetFixed() != 0 )
-    {
-        sprintf(name, " fixed=%d", GetFixed());
-        strcat(line, name);
-    }
+    if ( !GetClip() )
+        line->AddParam("clip", new CLevelParserParam(GetClip()));
 
-    if ( GetClip() != 1 )
-    {
-        sprintf(name, " clip=%d", GetClip());
-        strcat(line, name);
-    }
+    if ( GetLock() )
+        line->AddParam("lock", new CLevelParserParam(GetLock()));
 
-    if ( GetLock() != 0 )
+    if ( GetProxyActivate() )
     {
-        sprintf(name, " lock=%d", GetLock());
-        strcat(line, name);
-    }
-
-    if ( GetProxyActivate() != 0 )
-    {
-        sprintf(name, " proxyActivate=%d", GetProxyActivate());
-        strcat(line, name);
-
-        sprintf(name, " proxyDistance=%.2f", GetProxyDistance()/g_unit);
-        strcat(line, name);
+        line->AddParam("proxyActivate", new CLevelParserParam(GetProxyActivate()));
+        line->AddParam("proxyActivate", new CLevelParserParam(GetProxyDistance()/g_unit));
     }
 
     if ( GetMagnifyDamage() != 1.0f )
-    {
-        sprintf(name, " magnifyDamage=%.2f", GetMagnifyDamage());
-        strcat(line, name);
-    }
+        line->AddParam("magnifyDamage", new CLevelParserParam(GetMagnifyDamage()));
 
     if ( GetGunGoalV() != 0.0f )
-    {
-        sprintf(name, " aimV=%.2f", GetGunGoalV());
-        strcat(line, name);
-    }
+        line->AddParam("aimV", new CLevelParserParam(GetGunGoalV()));
+    
     if ( GetGunGoalH() != 0.0f )
-    {
-        sprintf(name, " aimH=%.2f", GetGunGoalH());
-        strcat(line, name);
-    }
+        line->AddParam("aimH", new CLevelParserParam(GetGunGoalH()));
 
     if ( GetParam() != 0.0f )
-    {
-        sprintf(name, " param=%.2f", GetParam());
-        strcat(line, name);
-    }
+        line->AddParam("param", new CLevelParserParam(GetParam()));
 
     if ( GetResetCap() != 0 )
     {
-        sprintf(name, " resetCap=%d", GetResetCap());
-        strcat(line, name);
-
-        pos = GetResetPosition()/g_unit;
-        sprintf(name, " resetPos=%.2f;%.2f;%.2f", pos.x, pos.y, pos.z);
-        strcat(line, name);
-
-        pos = GetResetAngle()/(Math::PI/180.0f);
-        sprintf(name, " resetAngle=%.2f;%.2f;%.2f", pos.x, pos.y, pos.z);
-        strcat(line, name);
-
-        sprintf(name, " resetRun=%d", GetResetRun());
-        strcat(line, name);
+        line->AddParam("resetCap", new CLevelParserParam(static_cast<int>(GetResetCap())));
+        line->AddParam("resetPos", new CLevelParserParam(GetResetPosition()/g_unit));
+        line->AddParam("resetAngle", new CLevelParserParam(GetResetAngle()/(Math::PI/180.0f)));
+        line->AddParam("resetRun", new CLevelParserParam(GetResetRun()));
     }
 
-    if ( m_bVirusMode != 0 )
-    {
-        sprintf(name, " virusMode=%d", m_bVirusMode);
-        strcat(line, name);
-    }
+    if ( m_bVirusMode )
+        line->AddParam("virusMode", new CLevelParserParam(m_bVirusMode));
 
     if ( m_virusTime != 0.0f )
-    {
-        sprintf(name, " virusTime=%.2f", m_virusTime);
-        strcat(line, name);
-    }
+        line->AddParam("virusTime", new CLevelParserParam(m_virusTime));
 
     // Puts information in terminal (OBJECT_INFO).
     for ( i=0 ; i<m_infoTotal ; i++ )
@@ -1133,20 +1076,20 @@ bool CObject::Write(char *line)
         info = GetInfo(i);
         if ( info.name[0] == 0 )  break;
 
-        sprintf(name, " info%d=\"%s=%.2f\"", i+1, info.name, info.value);
-        strcat(line, name);
+        line->AddParam("info"+boost::lexical_cast<std::string>(i+1), new CLevelParserParam(std::string(info.name)+"="+boost::lexical_cast<std::string>(info.value)));
     }
 
     // Sets the parameters of the command line.
+    std::vector<CLevelParserParam*> cmdline;
     for ( i=0 ; i<OBJECTMAXCMDLINE ; i++ )
     {
         value = GetCmdLine(i);
         if ( value == NAN )  break;
 
-        if ( i == 0 )  sprintf(name, " cmdline=%.2f", value);
-        else           sprintf(name, ";%.2f", value);
-        strcat(line, name);
+        cmdline.push_back(new CLevelParserParam(value));
     }
+    if(cmdline.size() > 0)
+        line->AddParam("cmdline", new CLevelParserParam(cmdline));
 
     if ( m_motion != 0 )
     {

@@ -26,6 +26,8 @@
 #include "math/geometry.h"
 
 #include "object/robotmain.h"
+#include "object/level/parserline.h"
+#include "object/level/parserparam.h"
 
 #include "script/cmdtoken.h"
 
@@ -586,29 +588,16 @@ void CAutoLabo::SoundManip(float time, float amplitude, float frequency)
 
 // Saves all parameters of the controller.
 
-bool CAutoLabo::Write(char *line)
+bool CAutoLabo::Write(CLevelParserLine* line)
 {
-    Math::Vector    pos;
-    char        name[100];
-
     if ( m_phase == ALAP_WAIT )  return false;
-
-    sprintf(name, " aExist=%d", 1);
-    strcat(line, name);
-
+    
+    line->AddParam("aExist", new CLevelParserParam(true));
     CAuto::Write(line);
-
-    sprintf(name, " aPhase=%d", m_phase);
-    strcat(line, name);
-
-    sprintf(name, " aProgress=%.2f", m_progress);
-    strcat(line, name);
-
-    sprintf(name, " aSpeed=%.2f", m_speed);
-    strcat(line, name);
-
-    sprintf(name, " aResearch=%d", m_research);
-    strcat(line, name);
+    line->AddParam("aPhase", new CLevelParserParam(static_cast<int>(m_phase)));
+    line->AddParam("aProgress", new CLevelParserParam(m_progress));
+    line->AddParam("aSpeed", new CLevelParserParam(m_speed));
+    line->AddParam("aResearch", new CLevelParserParam(static_cast<int>(m_research)));
 
     return true;
 }
@@ -617,8 +606,6 @@ bool CAutoLabo::Write(char *line)
 
 bool CAutoLabo::Read(char *line)
 {
-    Math::Vector    pos;
-
     if ( OpInt(line, "aExist", 0) == 0 )  return false;
 
     CAuto::Read(line);

@@ -46,7 +46,7 @@ public:
     bool        EventProcess(const Event &event);
     Error       GetError();
 
-    bool        Write(char *line);
+    bool        Write(CLevelParserLine* line);
     bool        Read(char *line);
 
 protected:
