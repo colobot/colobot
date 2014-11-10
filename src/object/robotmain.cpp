@@ -5694,13 +5694,7 @@ void CRobotMain::IOWriteObject(CLevelParserLine* line, CObject* obj)
 //! Saves the current game
 bool CRobotMain::IOWriteScene(const char *filename, const char *filecbot, char *info)
 {
-    std::string fnstr = filename;
-    std::string savedir = CResourceManager::GetSaveLocation()+"/";
-    boost::replace_all(fnstr, "\\", "/");
-    boost::replace_all(savedir, "\\", "/");
-    boost::replace_all(fnstr, savedir, ""); //TODO: Refactor to get physfs path here
-    
-    CLevelParser* level = new CLevelParser(fnstr);
+    CLevelParser* level = new CLevelParser(filename);
     CLevelParserLine* line;
 
     line = new CLevelParserLine("Title");
@@ -5883,13 +5877,7 @@ CObject* CRobotMain::IOReadObject(CLevelParserLine *line, const char* filename, 
 //! Resumes some part of the game
 CObject* CRobotMain::IOReadScene(const char *filename, const char *filecbot)
 {
-    std::string fnstr = filename;
-    std::string savedir = CResourceManager::GetSaveLocation()+"/";
-    boost::replace_all(fnstr, "\\", "/");
-    boost::replace_all(savedir, "\\", "/");
-    boost::replace_all(fnstr, savedir, ""); //TODO: Refactor to get physfs path here
-
-    CLevelParser* level = new CLevelParser(fnstr);
+    CLevelParser* level = new CLevelParser(filename);
     level->Load();
 
     m_base = nullptr;
