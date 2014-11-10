@@ -179,8 +179,6 @@ CMainDialog::CMainDialog()
     }
 
     m_savegameDir = "savegame";
-    /*m_publicDir = CResourceManager::GetSaveLocation()+"/program"; //TODO: Refactor to use PHYSFS
-    m_filesDir = CResourceManager::GetSaveLocation()+"/files"; //TODO: Refactor to use PHYSFS*/
     m_publicDir = "program";
     m_filesDir = "files";
     CLogger::GetInstancePointer()->Trace("Savegame path: normal=%s, physfs=%s\n", GetSavegameDir().c_str(), GetPHYSFSSavegameDir().c_str());
@@ -4151,7 +4149,7 @@ bool CMainDialog::IOWriteScene()
     pe->GetText(info, 100);
     if (static_cast<unsigned int>(sel) >= m_saveList.size())
     {
-        dir = m_savegameDir + "/" + m_main->GetGamerName() + "/" + "save" + clearName(info);
+        dir = m_savegameDir + "/" + m_main->GetGamerName() + "/save" + clearName(info);
     }
     else
     {
@@ -4163,12 +4161,12 @@ bool CMainDialog::IOWriteScene()
         CResourceManager::CreateDirectory(dir);
     }
 
-    std::string savegameFileName = dir + "/" + "data.sav";
-    std::string fileCBot = dir + "/" + "cbot.run";
+    std::string savegameFileName = dir + "/data.sav";
+    std::string fileCBot = CResourceManager::GetSaveLocation() + "/" + dir + "/cbot.run";
     m_main->IOWriteScene(savegameFileName.c_str(), fileCBot.c_str(), info);
 
     m_shotDelay = 3;
-    m_shotName = dir + "/" + "screen.png";
+    m_shotName = CResourceManager::GetSaveLocation() + "/" + dir + "/screen.png"; //TODO: Use PHYSFS?
 
     return true;
 }
