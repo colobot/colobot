@@ -6614,7 +6614,7 @@ bool CRobotMain::GetRadar()
 
 const char* CRobotMain::GetSavegameDir()
 {
-    return m_dialog->GetPHYSFSSavegameDir().c_str();
+    return m_dialog->GetSavegameDir().c_str();
 }
 
 const char* CRobotMain::GetPublicDir()

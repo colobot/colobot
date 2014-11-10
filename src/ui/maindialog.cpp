@@ -181,7 +181,6 @@ CMainDialog::CMainDialog()
     m_savegameDir = "savegame";
     m_publicDir = "program";
     m_filesDir = "files";
-    CLogger::GetInstancePointer()->Trace("Savegame path: normal=%s, physfs=%s\n", GetSavegameDir().c_str(), GetPHYSFSSavegameDir().c_str());
 
     m_setupFull = m_app->GetVideoConfig().fullScreen;
 
@@ -5861,13 +5860,7 @@ bool CMainDialog::GetSceneSoluce()
 
 // Returns the name of the folder to save.
 
-std::string CMainDialog::GetSavegameDir()
-{
-    return CResourceManager::GetSaveLocation()+"/"+m_savegameDir;
-}
-
-//TODO: Use PHYSFS everywhere
-std::string & CMainDialog::GetPHYSFSSavegameDir()
+std::string & CMainDialog::GetSavegameDir()
 {
     return m_savegameDir;
 }
@@ -5922,7 +5915,7 @@ bool CMainDialog::GetHimselfDamage()
 void CMainDialog::WriteGamerPerso(char *gamer)
 {
     try {
-        CLevelParser* perso = new CLevelParser(GetPHYSFSSavegameDir()+"/"+gamer+"/face.gam");
+        CLevelParser* perso = new CLevelParser(GetSavegameDir()+"/"+gamer+"/face.gam");
         CLevelParserLine* line;
         
         line = new CLevelParserLine("Head");
@@ -5950,11 +5943,11 @@ void CMainDialog::ReadGamerPerso(char *gamer)
     m_perso.face = 0;
     DefPerso();
     
-    if(!CResourceManager::Exists(GetPHYSFSSavegameDir()+"/"+gamer+"/face.gam"))
+    if(!CResourceManager::Exists(GetSavegameDir()+"/"+gamer+"/face.gam"))
         return;
 
     try {
-        CLevelParser* perso = new CLevelParser(GetPHYSFSSavegameDir()+"/"+gamer+"/face.gam");
+        CLevelParser* perso = new CLevelParser(GetSavegameDir()+"/"+gamer+"/face.gam");
         perso->Load();
         CLevelParserLine* line;
         
@@ -6040,11 +6033,11 @@ bool CMainDialog::ReadGamerInfo()
         m_sceneInfo[i].bPassed = false;
     }
 
-    if(!CResourceManager::Exists(GetPHYSFSSavegameDir()+"/"+m_main->GetGamerName()+"/"+m_sceneName+".gam"))
+    if(!CResourceManager::Exists(GetSavegameDir()+"/"+m_main->GetGamerName()+"/"+m_sceneName+".gam"))
         return false;
     
     CInputStream file;
-    file.open(GetPHYSFSSavegameDir()+"/"+m_main->GetGamerName()+"/"+m_sceneName+".gam");
+    file.open(GetSavegameDir()+"/"+m_main->GetGamerName()+"/"+m_sceneName+".gam");
     if(!file.is_open()) {
         CLogger::GetInstancePointer()->Error("Unable to read list of finished missions\n");
         return false;
@@ -6080,7 +6073,7 @@ bool CMainDialog::WriteGamerInfo()
     int     i;
 
     COutputStream file;
-    file.open(GetPHYSFSSavegameDir()+"/"+m_main->GetGamerName()+"/"+m_sceneName+".gam");
+    file.open(GetSavegameDir()+"/"+m_main->GetGamerName()+"/"+m_sceneName+".gam");
     if(!file.is_open()) {
         CLogger::GetInstancePointer()->Error("Unable to read list of finished missions\n");
         return false;

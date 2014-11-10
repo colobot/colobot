@@ -86,8 +86,7 @@ public:
     int           GetSceneRank();
     const char*   GetSceneDir();
     bool          GetSceneSoluce();
-    std::string   GetSavegameDir();
-    std::string & GetPHYSFSSavegameDir();
+    std::string & GetSavegameDir();
     std::string & GetPublicDir();
 
     bool    GetTooltip();
