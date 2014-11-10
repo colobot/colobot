@@ -1042,7 +1042,7 @@ bool CObject::Write(CLevelParserLine* line)
     if ( GetProxyActivate() )
     {
         line->AddParam("proxyActivate", new CLevelParserParam(GetProxyActivate()));
-        line->AddParam("proxyActivate", new CLevelParserParam(GetProxyDistance()/g_unit));
+        line->AddParam("proxyDistance", new CLevelParserParam(GetProxyDistance()/g_unit));
     }
 
     if ( GetMagnifyDamage() != 1.0f )
