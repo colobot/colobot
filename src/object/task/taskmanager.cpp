@@ -169,16 +169,12 @@ Error CTaskManager::StartTaskRecover()
 
 Error CTaskManager::StartTaskShield(TaskShieldMode mode, float delay)
 {
-    if ( mode == TSM_UP )
+    if ( mode == TSM_UP || mode == TSM_START )
     {
         m_task = new CTaskShield(m_object);
         return (static_cast<CTaskShield*>(m_task))->Start(mode, delay);
     }
-    if ( mode == TSM_DOWN && m_task != 0 )
-    {
-        return (static_cast<CTaskShield*>(m_task))->Start(mode, delay);
-    }
-    if ( mode == TSM_UPDATE && m_task != 0 )
+    else if ( m_task != 0 )
     {
         return (static_cast<CTaskShield*>(m_task))->Start(mode, delay);
     }

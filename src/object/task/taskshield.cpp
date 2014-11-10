@@ -252,6 +252,42 @@ Error CTaskShield::Start(TaskShieldMode mode, float delay)
         return ERR_OK;
     }
 
+    if ( mode == TSM_START )
+    {
+        Math::Point dim;
+        
+        m_object->SetShieldRadius(GetRadius());
+        
+        mat = m_object->GetWorldMatrix(0);
+        pos = Math::Vector(7.0f, 15.0f, 0.0f);
+        pos = Transform(*mat, pos);  // sphere position
+        m_shieldPos = pos;
+        
+        pos = m_shieldPos;
+        speed = Math::Vector(0.0f, 0.0f, 0.0f);
+        dim.x = GetRadius();
+        dim.y = dim.x;
+        m_rankSphere = m_particle->CreateParticle(pos, speed, dim, Gfx::PARTISPHERE3, 2.0f, 0.0f, 0.0f);
+        
+        m_phase = TS_SHIELD;
+        m_progress = 0.0f;
+        m_speed = 1.0f/999.9f;
+        m_time     = 0.0f;
+        m_delay    = delay;
+        m_lastParticle = 0.0f;
+        m_lastRay = 0.0f;
+        m_lastIncrease = 0.0f;
+        m_energyUsed = 0.0f;
+        
+        m_bError = false;  // ok
+        
+        if ( m_object->GetSelect() )
+        {
+            m_brain->UpdateInterface();
+        }
+        return ERR_OK;
+    }
+    
     type = m_object->GetType();
     if ( type != OBJECT_MOBILErs )  return ERR_SHIELD_VEH;
 

@@ -174,6 +174,11 @@ void CBrain::SetMotion(CMotion* motion)
 bool CBrain::Write(CLevelParserLine* line)
 {
     line->AddParam("bVirusActive", new CLevelParserParam(m_bActiveVirus));
+    
+    if ( m_object->GetType() == OBJECT_MOBILErs )
+    {
+        line->AddParam("bShieldActive", new CLevelParserParam(m_secondaryTask != nullptr));
+    }
 
     return true;
 }
@@ -183,7 +188,13 @@ bool CBrain::Write(CLevelParserLine* line)
 bool CBrain::Read(CLevelParserLine* line)
 {
     m_bActiveVirus = line->GetParam("bVirusActive")->AsBool(false);
-
+    if ( m_object->GetType() == OBJECT_MOBILErs )
+    {
+        if( line->GetParam("bShieldActive")->AsBool(false) )
+        {
+            StartTaskShield(TSM_START);
+        }
+    }
     return true;
 }
 

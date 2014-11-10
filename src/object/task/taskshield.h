@@ -46,6 +46,7 @@ enum TaskShieldMode
     TSM_UP      = 1,    // deploys shield
     TSM_DOWN    = 2,    // returns the shield
     TSM_UPDATE  = 3,    // radius change
+    TSM_START   = 4,    // start with shield up
 };
 
 
