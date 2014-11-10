@@ -324,7 +324,7 @@ bool CAutoEgg::Write(CLevelParserLine* line)
     line->AddParam("aSpeed", new CLevelParserParam(m_speed));
     line->AddParam("aParamType", new CLevelParserParam(m_type));
     line->AddParam("aParamValue1", new CLevelParserParam(m_value));
-    line->AddParam("aParamString", new CLevelParserParam(m_string));
+    line->AddParam("aParamString", new CLevelParserParam(std::string(m_string)));
 
     return true;
 }
