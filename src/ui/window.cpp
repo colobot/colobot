@@ -1216,7 +1216,7 @@ void CWindow::DrawVertex(Math::Point pos, Math::Point dim, int icon)
         dim.x += 100.0f/640.0f;
         dim.y +=  60.0f/480.0f;
 
-        m_engine->SetTexture("textures/human.png");
+        m_engine->SetTexture("textures/objects/human.png");
         m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
         uv1.x = 140.0f/256.0f;
         uv1.y =  32.0f/256.0f;

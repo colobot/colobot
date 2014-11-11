@@ -70,6 +70,9 @@ bool CModelManager::LoadModel(const std::string& fileName, bool mirrored)
     for (int i = 0; i < static_cast<int>( modelInfo.triangles.size() ); i++)
     {
         int state = modelInfo.triangles[i].state;
+        std::string tex1Name = "objects/"+modelInfo.triangles[i].tex1Name;
+        if(modelInfo.triangles[i].tex1Name.empty())
+            tex1Name.clear();
         std::string tex2Name = modelInfo.triangles[i].tex2Name;
 
         if (modelInfo.triangles[i].variableTex2)
@@ -91,7 +94,7 @@ bool CModelManager::LoadModel(const std::string& fileName, bool mirrored)
 
         m_engine->AddBaseObjTriangles(modelInfo.baseObjRank, vs, ENG_TRIANGLE_TYPE_TRIANGLES,
                                       modelInfo.triangles[i].material, state,
-                                      modelInfo.triangles[i].tex1Name, tex2Name,
+                                      tex1Name, tex2Name,
                                       modelInfo.triangles[i].lodLevel, false);
     }
 
