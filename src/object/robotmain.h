@@ -396,6 +396,13 @@ public:
     std::string& GetUserLevelName(int id);
     
     void        StartMissionTimer();
+    
+    void        SetAutosave(bool enable);
+    bool        GetAutosave();
+    void        SetAutosaveInterval(int interval);
+    int         GetAutosaveInterval();
+    void        SetAutosaveSlots(int slots);
+    int         GetAutosaveSlots();
 
 protected:
     bool        EventFrame(const Event &event);
@@ -429,6 +436,9 @@ protected:
     void        ExecuteCmd(char *cmd);
     bool        TestGadgetQuantity(int rank);
     void        UpdateSpeedLabel();
+    
+    int         AutosaveRotate(bool freeOne);
+    void        Autosave();
 
 
 protected:
@@ -589,5 +599,10 @@ protected:
     bool            m_missionTimerEnabled;
     bool            m_missionTimerStarted;
     float           m_missionTimer;
+    
+    bool            m_autosave;
+    int             m_autosaveInterval;
+    int             m_autosaveSlots;
+    float           m_autosaveLast;
 };
 

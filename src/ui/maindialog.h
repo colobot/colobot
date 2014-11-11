@@ -139,6 +139,8 @@ public:
     void    ShowSoluceUpdate();
     
     std::string& GetUserLevelName(int id);
+    
+    void    MakeSaveScreenshot(const std::string& name);
 
 protected:
     void    GlintMove();
@@ -240,6 +242,7 @@ protected:
     bool            m_bCameraInvertY;       // for CCamera
     bool            m_bEffect;          // for CCamera
     bool            m_bBlood;          // for CCamera
+    bool            m_bAutosave;
 
     Math::Point          m_glintMouse;
     float                m_glintTime;

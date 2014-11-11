@@ -469,15 +469,18 @@ void CSlider::Draw()
 
     if ( m_bHoriz )
     {
-        sprintf(text, "%d", static_cast<int>(m_min+m_visibleValue*(m_max-m_min)));
-        h = m_engine->GetText()->GetHeight(m_fontType, m_fontSize);
-        pos.x = m_pos.x+m_dim.x+(10.0f/640.0f);
-        pos.y = m_pos.y+(m_dim.y-h)/2.0f;
-        m_engine->GetText()->DrawText(text, m_fontType, m_fontSize, pos, m_dim.x, Gfx::TEXT_ALIGN_LEFT, 0);
+        if ( m_state & STATE_ENABLE )
+        {
+            sprintf(text, "%d", static_cast<int>(m_min+m_visibleValue*(m_max-m_min)));
+            h = m_engine->GetText()->GetHeight(m_fontType, m_fontSize);
+            pos.x = m_pos.x+m_dim.x+(10.0f/640.0f);
+            pos.y = m_pos.y+(m_dim.y-h)/2.0f;
+            m_engine->GetText()->DrawText(text, m_fontType, m_fontSize, pos, m_dim.x, Gfx::TEXT_ALIGN_LEFT, 0);
+        }
     }
     else
     {
-        if ( m_state & STATE_VALUE )
+        if ( m_state & STATE_VALUE && m_state & STATE_ENABLE )
         {
             pos.x = m_pos.x+m_dim.x+4.0f/640.0f;
             h = m_dim.y-m_marginButton*2.0f;

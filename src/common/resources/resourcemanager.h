@@ -62,6 +62,11 @@ public:
     static long long GetFileSize(const std::string &filename);
     //! Returns last modification date as timestamp
     static long long GetLastModificationTime(const std::string &filename);
+    
+    //! Move file/directory
+    static bool Move(const std::string &from, const std::string &to);
+    //! Copy file/directory
+    static bool Copy(const std::string &from, const std::string &to);
 
 private:
     static int SDLSeek(SDL_RWops *context, int offset, int whence);

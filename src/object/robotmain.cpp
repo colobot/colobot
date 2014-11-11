@@ -708,6 +708,11 @@ CRobotMain::CRobotMain(CApplication* app, bool loadProfile)
     m_winTerminate   = false;
     
     m_exitAfterMission = false;
+    
+    m_autosave = true;
+    m_autosaveInterval = 15;
+    m_autosaveSlots = 3;
+    m_autosaveLast = 0.0f;
 
     m_joystickDeadzone = 0.2f;
     SetDefaultInputBindings();
@@ -3393,7 +3398,7 @@ void CRobotMain::InitEye()
 bool CRobotMain::EventFrame(const Event &event)
 {
     m_time += event.rTime;
-    if (!m_movieLock) m_gameTime += event.rTime;
+    if (!m_movieLock && m_pause->GetPause() == PAUSE_NONE) m_gameTime += event.rTime;
 
     if (!m_immediatSatCom && !m_beginSatCom &&
          m_gameTime > 0.1f && m_phase == PHASE_SIMUL)
@@ -3404,6 +3409,12 @@ bool CRobotMain::EventFrame(const Event &event)
     
     if(!m_movieLock && m_pause->GetPause() == PAUSE_NONE && m_missionTimerStarted)
         m_missionTimer += event.rTime;
+    
+    if(m_pause->GetPause() == PAUSE_NONE && m_autosave && m_gameTime >= m_autosaveLast+(m_autosaveInterval*60) && m_phase == PHASE_SIMUL) {
+        m_autosaveLast = m_gameTime;
+        Autosave();
+    }
+    //CLogger::GetInstancePointer()->Debug("%f %f %d\n", m_gameTime, m_autosaveLast, m_autosaveInterval);
 
     m_water->EventProcess(event);
     m_cloud->EventProcess(event);
@@ -4742,6 +4753,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
         m_app->ResetKeyStates();
         m_time = 0.0f;
         m_gameTime = 0.0f;
+        m_autosaveLast = 0.0f;
         m_infoUsed = 0;
 
         m_selectObject = sel;
@@ -6929,4 +6941,122 @@ void CRobotMain::StartMissionTimer()
         CLogger::GetInstancePointer()->Info("Starting mission timer...\n");
         m_missionTimerStarted = true;
     }
+}
+
+void CRobotMain::SetAutosave(bool enable)
+{
+    m_autosave = enable;
+    m_autosaveLast = m_gameTime;
+    AutosaveRotate(false);
+}
+
+bool CRobotMain::GetAutosave()
+{
+    return m_autosave;
+}
+
+void CRobotMain::SetAutosaveInterval(int interval)
+{
+    m_autosaveInterval = interval;
+    m_autosaveLast = m_gameTime;
+}
+
+int CRobotMain::GetAutosaveInterval()
+{
+    return m_autosaveInterval;
+}
+
+void CRobotMain::SetAutosaveSlots(int slots)
+{
+    m_autosaveSlots = slots;
+    AutosaveRotate(false);
+}
+
+int CRobotMain::GetAutosaveSlots()
+{
+    return m_autosaveSlots;
+}
+
+int CRobotMain::AutosaveRotate(bool freeOne)
+{
+    CLogger::GetInstancePointer()->Debug("Rotate autosaves...\n");
+    // Find autosave dirs
+    auto saveDirs = CResourceManager::ListDirectories(std::string(GetSavegameDir()) + "/" + GetGamerName());
+    std::map<int, std::string> autosaveDirs;
+    for(auto& dir : saveDirs)
+    {
+        try
+        {
+            const std::string autosavePrefix = "autosave";
+            if(dir.substr(0, autosavePrefix.length()) == "autosave")
+            {
+                int id = boost::lexical_cast<int>(dir.substr(autosavePrefix.length()));
+                autosaveDirs[id] = std::string(GetSavegameDir()) + "/" + GetGamerName() + "/" + dir;
+            }
+        }
+        catch(...)
+        {
+            CLogger::GetInstancePointer()->Debug("bad?\n");
+            // skip
+        }
+    }
+    if(autosaveDirs.size() == 0) return 1;
+    
+    // Remove all but last m_autosaveSlots
+    std::map<int, std::string> autosavesToKeep;
+    int last_id = autosaveDirs.rbegin()->first;
+    int count = 0;
+    int to_keep = m_autosaveSlots-(freeOne ? 1 : 0);
+    int new_last_id = Math::Min(autosaveDirs.size(), to_keep);
+    bool rotate = false;
+    for(int i = last_id; i > 0; i--)
+    {
+        if(autosaveDirs.count(i) > 0)
+        {
+            count++;
+            if(count > m_autosaveSlots-(freeOne ? 1 : 0) || !m_autosave)
+            {
+                CLogger::GetInstancePointer()->Trace("Remove %s\n", autosaveDirs[i].c_str());
+                CResourceManager::RemoveDirectory(autosaveDirs[i]);
+                rotate = true;
+            }
+            else
+            {
+                CLogger::GetInstancePointer()->Trace("Keep %s\n", autosaveDirs[i].c_str());
+                autosavesToKeep[new_last_id-count+1] = autosaveDirs[i];
+            }
+        }
+    }
+    
+    // Rename autosaves that we kept
+    if(rotate) {
+        for(auto& save : autosavesToKeep) {
+            std::string newDir = std::string(GetSavegameDir()) + "/" + GetGamerName() + "/autosave" + boost::lexical_cast<std::string>(save.first);
+            CLogger::GetInstancePointer()->Trace("Rename %s -> %s\n", save.second.c_str(), newDir.c_str());
+            CResourceManager::Move(save.second, newDir);
+        }
+    }
+    
+    return rotate ? count : count+1;
+}
+
+void CRobotMain::Autosave()
+{
+    int id = AutosaveRotate(true);
+    CLogger::GetInstancePointer()->Info("Autosave!\n");
+    
+    std::string dir = std::string(GetSavegameDir()) + "/" + GetGamerName() + "/autosave" + boost::lexical_cast<std::string>(id);
+    
+    if (!CResourceManager::DirectoryExists(dir))
+    {
+        CResourceManager::CreateDirectory(dir);
+    }
+    
+    std::string savegameFileName = dir + "/data.sav";
+    std::string fileCBot = CResourceManager::GetSaveLocation() + "/" + dir + "/cbot.run";
+    char timestr[100];
+    TimeToAscii(time(NULL), timestr);
+    IOWriteScene(savegameFileName.c_str(), fileCBot.c_str(), const_cast<char*>((std::string("[AUTOSAVE] ")+timestr).c_str()));
+    
+    m_dialog->MakeSaveScreenshot(dir + "/screen.png");
 }

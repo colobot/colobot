@@ -154,47 +154,66 @@ CSNDFile* CResourceManager::GetSNDFileHandler(const std::string &filename)
 
 bool CResourceManager::Exists(const std::string &filename)
 {
-    return PHYSFS_exists(CleanPath(filename).c_str());
+    if(PHYSFS_isInit())
+    {
+        return PHYSFS_exists(CleanPath(filename).c_str());
+    }
+    return false;
 }
 
 bool CResourceManager::DirectoryExists(const std::string& directory)
 {
-    return PHYSFS_exists(CleanPath(directory).c_str()) && PHYSFS_isDirectory(CleanPath(directory).c_str());
+    if(PHYSFS_isInit())
+    {
+        return PHYSFS_exists(CleanPath(directory).c_str()) && PHYSFS_isDirectory(CleanPath(directory).c_str());
+    }
+    return false;
 }
 
 bool CResourceManager::CreateDirectory(const std::string& directory)
 {
-    return PHYSFS_mkdir(CleanPath(directory).c_str());
+    if(PHYSFS_isInit())
+    {
+        return PHYSFS_mkdir(CleanPath(directory).c_str());
+    }
+    return false;
 }
 
 //TODO: Don't use boost::filesystem here
 bool CResourceManager::RemoveDirectory(const std::string& directory)
 {
-    bool success = true;
-    std::string writeDir = PHYSFS_getWriteDir();
-    try
+    if(PHYSFS_isInit())
     {
-        fs::remove_all(writeDir + "/" + CleanPath(directory));
+        bool success = true;
+        std::string writeDir = PHYSFS_getWriteDir();
+        try
+        {
+            fs::remove_all(writeDir + "/" + CleanPath(directory));
+        }
+        catch (std::exception & e)
+        {
+            success = false;
+        }
+        return success;
     }
-    catch (std::exception & e)
-    {
-        success = false;
-    }
-    return success;
+    return false;
 }
 
 std::vector<std::string> CResourceManager::ListFiles(const std::string &directory)
 {
     std::vector<std::string> result;
-
-    char **files = PHYSFS_enumerateFiles(CleanPath(directory).c_str());
-
-    for (char **i = files; *i != nullptr; i++)
+    
+    if(PHYSFS_isInit())
     {
-        result.push_back(*i);
-    }
+        char **files = PHYSFS_enumerateFiles(CleanPath(directory).c_str());
 
-    PHYSFS_freeList(files);
+        for (char **i = files; *i != nullptr; i++)
+        {
+            result.push_back(*i);
+        }
+
+        PHYSFS_freeList(files);
+    }
 
     return result;
 }
@@ -203,18 +222,21 @@ std::vector<std::string> CResourceManager::ListDirectories(const std::string &di
 {
     std::vector<std::string> result;
 
-    char **files = PHYSFS_enumerateFiles(CleanPath(directory).c_str());
-
-    for (char **i = files; *i != nullptr; i++)
+    if(PHYSFS_isInit())
     {
-        std::string path = CleanPath(directory) + "/" + (*i);
-        if (PHYSFS_isDirectory(path.c_str()))
-        {
-            result.push_back(*i);
-        }
-    }
+        char **files = PHYSFS_enumerateFiles(CleanPath(directory).c_str());
 
-    PHYSFS_freeList(files);
+        for (char **i = files; *i != nullptr; i++)
+        {
+            std::string path = CleanPath(directory) + "/" + (*i);
+            if (PHYSFS_isDirectory(path.c_str()))
+            {
+                result.push_back(*i);
+            }
+        }
+
+        PHYSFS_freeList(files);
+    }
 
     return result;
 }
@@ -241,6 +263,45 @@ long long CResourceManager::GetLastModificationTime(const std::string& filename)
     return -1;
 }
 
+//TODO: Don't use boost::filesystem. Why doesn't PHYSFS have this?
+bool CResourceManager::Move(const std::string& from, const std::string& to)
+{
+    if(PHYSFS_isInit())
+    {
+        bool success = true;
+        std::string writeDir = PHYSFS_getWriteDir();
+        try
+        {
+            fs::rename(writeDir + "/" + CleanPath(from), writeDir + "/" + CleanPath(to));
+        }
+        catch (std::exception & e)
+        {
+            success = false;
+        }
+        return success;
+    }
+    return false;
+}
+
+//TODO: Don't use boost::filesystem. Why doesn't PHYSFS have this?
+bool CResourceManager::Copy(const std::string& from, const std::string& to)
+{
+    if(PHYSFS_isInit())
+    {
+        bool success = true;
+        std::string writeDir = PHYSFS_getWriteDir();
+        try
+        {
+            fs::copy(writeDir + "/" + CleanPath(from), writeDir + "/" + CleanPath(to));
+        }
+        catch (std::exception & e)
+        {
+            success = false;
+        }
+        return success;
+    }
+    return false;
+}
 
 int CResourceManager::SDLClose(SDL_RWops *context)
 {

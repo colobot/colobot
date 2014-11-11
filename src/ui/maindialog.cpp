@@ -167,6 +167,7 @@ CMainDialog::CMainDialog()
     m_bCameraInvertY = false;
     m_bEffect        = true;
     m_bBlood         = true;
+    m_bAutosave      = true;
     m_shotDelay      = 0;
 
     m_glintMouse = Math::Point(0.0f, 0.0f);
@@ -1239,6 +1240,34 @@ void CMainDialog::ChangePhase(Phase phase)
         pos.y -= 0.048f;
         pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_BLOOD);
         pc->SetState(STATE_SHADOW);
+        pos.y -= 0.048f;
+        pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_AUTOSAVE_ENABLE);
+        pc->SetState(STATE_SHADOW);
+        pos.y -= 0.048f;
+        
+        pos.y -= ddim.y;
+        ddim.x = dim.x*2.5f;
+        psl = pw->CreateSlider(pos, ddim, -1, EVENT_INTERFACE_AUTOSAVE_INTERVAL);
+        psl->SetState(STATE_SHADOW);
+        psl->SetLimit(1.0f, 30.0f);
+        psl->SetArrowStep(1.0f);
+        pos.y += ddim.y/2;
+        GetResource(RES_EVENT, EVENT_INTERFACE_AUTOSAVE_INTERVAL, name);
+        pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL1, name);
+        pl->SetTextAlign(Gfx::TEXT_ALIGN_LEFT);
+        pos.y -= ddim.y/2;
+        pos.x = ox+sx*3+dim.x*3.5f;
+        psl = pw->CreateSlider(pos, ddim, -1, EVENT_INTERFACE_AUTOSAVE_SLOTS);
+        psl->SetState(STATE_SHADOW);
+        psl->SetLimit(1.0f, 10.0f);
+        psl->SetArrowStep(1.0f);
+        pos.y += ddim.y/2;
+        GetResource(RES_EVENT, EVENT_INTERFACE_AUTOSAVE_SLOTS, name);
+        pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL1, name);
+        pl->SetTextAlign(Gfx::TEXT_ALIGN_LEFT);
+        pos.y -= ddim.y/2;
+        
+        
         //?     pos.y -= 0.048f;
         //?     pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_NICERST);
         //?     pc->SetState(STATE_SHADOW);
@@ -2567,6 +2596,23 @@ bool CMainDialog::EventProcess(const Event &event)
             case EVENT_INTERFACE_BLOOD:
                 m_bBlood = !m_bBlood;
                 m_camera->SetBlood(m_bBlood);
+                ChangeSetupButtons();
+                UpdateSetupButtons();
+                break;
+                
+            case EVENT_INTERFACE_AUTOSAVE_ENABLE:
+                m_bAutosave = !m_bAutosave;
+                m_main->SetAutosave(m_bAutosave);
+                ChangeSetupButtons();
+                UpdateSetupButtons();
+                break;
+            
+            case EVENT_INTERFACE_AUTOSAVE_INTERVAL:
+                ChangeSetupButtons();
+                UpdateSetupButtons();
+                break;
+                
+            case EVENT_INTERFACE_AUTOSAVE_SLOTS:
                 ChangeSetupButtons();
                 UpdateSetupButtons();
                 break;
@@ -4175,10 +4221,15 @@ bool CMainDialog::IOWriteScene()
     std::string fileCBot = CResourceManager::GetSaveLocation() + "/" + dir + "/cbot.run";
     m_main->IOWriteScene(savegameFileName.c_str(), fileCBot.c_str(), info);
 
-    m_shotDelay = 3;
-    m_shotName = CResourceManager::GetSaveLocation() + "/" + dir + "/screen.png"; //TODO: Use PHYSFS?
-
+    MakeSaveScreenshot(dir + "/screen.png");
+    
     return true;
+}
+
+void CMainDialog::MakeSaveScreenshot(const std::string& name)
+{
+    m_shotDelay = 3;
+    m_shotName = CResourceManager::GetSaveLocation() + "/" + name; //TODO: Use PHYSFS?
 }
 
 // Reads the scene.
@@ -4726,6 +4777,27 @@ void CMainDialog::UpdateSetupButtons()
     {
         pc->SetState(STATE_CHECK, m_bBlood);
     }
+    
+    pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_AUTOSAVE_ENABLE));
+    if ( pc != 0 )
+    {
+        pc->SetState(STATE_CHECK, m_bAutosave);
+    }
+    
+    ps = static_cast<CSlider*>(pw->SearchControl(EVENT_INTERFACE_AUTOSAVE_INTERVAL));
+    if ( ps != 0 )
+    {
+        ps->SetState(STATE_ENABLE, m_bAutosave);
+        ps->SetVisibleValue(m_main->GetAutosaveInterval());
+        
+    }
+    
+    ps = static_cast<CSlider*>(pw->SearchControl(EVENT_INTERFACE_AUTOSAVE_SLOTS));
+    if ( ps != 0 )
+    {
+        ps->SetState(STATE_ENABLE, m_bAutosave);
+        ps->SetVisibleValue(m_main->GetAutosaveSlots());
+    }
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_SHADOW));
     if ( pc != 0 )
@@ -4891,6 +4963,20 @@ void CMainDialog::ChangeSetupButtons()
         value = ps->GetVisibleValue();
         m_sound->SetMusicVolume(static_cast<int>(value));
     }
+    
+    ps = static_cast<CSlider*>(pw->SearchControl(EVENT_INTERFACE_AUTOSAVE_INTERVAL));
+    if ( ps != 0 )
+    {
+        value = ps->GetVisibleValue();
+        m_main->SetAutosaveInterval(static_cast<int>(value));
+    }
+    
+    ps = static_cast<CSlider*>(pw->SearchControl(EVENT_INTERFACE_AUTOSAVE_SLOTS));
+    if ( ps != 0 )
+    {
+        value = ps->GetVisibleValue();
+        m_main->SetAutosaveSlots(static_cast<int>(value));
+    }
 }
 
 
@@ -4913,6 +4999,9 @@ void CMainDialog::SetupMemorize()
     GetProfile().SetIntProperty("Setup", "CameraInvertY", m_bCameraInvertY);
     GetProfile().SetIntProperty("Setup", "InterfaceEffect", m_bEffect);
     GetProfile().SetIntProperty("Setup", "Blood", m_bBlood);
+    GetProfile().SetIntProperty("Setup", "Autosave", m_bAutosave);
+    GetProfile().SetIntProperty("Setup", "AutosaveInterval", m_main->GetAutosaveInterval());
+    GetProfile().SetIntProperty("Setup", "AutosaveSlots", m_main->GetAutosaveSlots());
     GetProfile().SetIntProperty("Setup", "GroundShadow", m_engine->GetShadow());
     GetProfile().SetIntProperty("Setup", "GroundSpot", m_engine->GetGroundSpot());
     GetProfile().SetIntProperty("Setup", "ObjectDirty", m_engine->GetDirty());
@@ -5064,6 +5153,21 @@ void CMainDialog::SetupRecall()
     if ( GetProfile().GetIntProperty("Setup", "Blood", iValue) )
     {
         m_bBlood = iValue;
+    }
+    
+    if ( GetProfile().GetIntProperty("Setup", "Autosave", iValue) )
+    {
+        m_bAutosave = iValue;
+    }
+    
+    if ( GetProfile().GetIntProperty("Setup", "AutosaveInterval", iValue) )
+    {
+        m_main->SetAutosaveInterval(iValue);
+    }
+    
+    if ( GetProfile().GetIntProperty("Setup", "AutosaveSlots", iValue) )
+    {
+        m_main->SetAutosaveSlots(iValue);
     }
     
     if ( GetProfile().GetIntProperty("Setup", "GroundShadow", iValue) )
