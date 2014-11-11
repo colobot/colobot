@@ -155,6 +155,15 @@ msgstr "Laboratoire de matières organiques"
 msgid "Automatic indent\\When program editing"
 msgstr "Indentation automatique\\Pendant l'édition d'un programme"
 
+msgid "Autosave interval\\How often your game will autosave"
+msgstr ""
+
+msgid "Autosave slots\\How many autosave slots you'll have"
+msgstr ""
+
+msgid "Autosave\\Enables autosave"
+msgstr ""
+
 msgid "Back"
 msgstr "Page précédente"
 

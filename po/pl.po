@@ -160,6 +160,15 @@ msgstr "Laboratorium"
 msgid "Automatic indent\\When program editing"
 msgstr "Automatyczne wcięcia\\Automatyczne wcięcia podczas edycji programu"
 
+msgid "Autosave interval\\How often your game will autosave"
+msgstr "Częstotliwość autozapisu\\Jak często gra będzie automatycznie zapisywać twój postęp"
+
+msgid "Autosave slots\\How many autosave slots you'll have"
+msgstr "Sloty autozapisów\\Określa ile slotów na automatyczne zapisy będzie dostępnych"
+
+msgid "Autosave\\Enables autosave"
+msgstr "Autozapis\\Włącza automatyczny zapis"
+
 msgid "Back"
 msgstr "Wstecz"
 

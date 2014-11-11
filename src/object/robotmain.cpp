@@ -6996,7 +6996,7 @@ int CRobotMain::AutosaveRotate(bool freeOne)
         }
         catch(...)
         {
-            CLogger::GetInstancePointer()->Debug("bad?\n");
+            CLogger::GetInstancePointer()->Info("Bad autosave found: %s\n", dir.c_str());
             // skip
         }
     }

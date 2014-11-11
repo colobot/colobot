@@ -160,6 +160,15 @@ msgstr "Automatisches Labor"
 msgid "Automatic indent\\When program editing"
 msgstr "Automatisches Einrücken\\Beim Bearbeiten der Programme"
 
+msgid "Autosave interval\\How often your game will autosave"
+msgstr ""
+
+msgid "Autosave slots\\How many autosave slots you'll have"
+msgstr ""
+
+msgid "Autosave\\Enables autosave"
+msgstr ""
+
 msgid "Back"
 msgstr "Vorherg. Seite"
 

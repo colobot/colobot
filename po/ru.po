@@ -155,6 +155,15 @@ msgstr "Лаборатория"
 msgid "Automatic indent\\When program editing"
 msgstr "Автоматический отступ\\При редактировании программы"
 
+msgid "Autosave interval\\How often your game will autosave"
+msgstr ""
+
+msgid "Autosave slots\\How many autosave slots you'll have"
+msgstr ""
+
+msgid "Autosave\\Enables autosave"
+msgstr ""
+
 msgid "Back"
 msgstr "Назад"
 

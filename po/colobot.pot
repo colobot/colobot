@@ -402,6 +402,15 @@ msgstr ""
 msgid "Blood\\Display blood when the astronaut or the alien queen is hit"
 msgstr ""
 
+msgid "Autosave\\Enables autosave"
+msgstr ""
+
+msgid "Autosave interval\\How often your game will autosave"
+msgstr ""
+
+msgid "Autosave slots\\How many autosave slots you'll have"
+msgstr ""
+
 msgid "Standard controls\\Standard key functions"
 msgstr ""
 
