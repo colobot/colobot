@@ -684,7 +684,6 @@ void CDisplayInfo::UpdateIndexButton()
     Ui::CEdit*      edit;
     Math::Point     pos, dim;
     char*       filename;
-    char*       loading;
 
     static int table[SATCOM_MAX] =
     {
@@ -723,13 +722,12 @@ void CDisplayInfo::UpdateIndexButton()
 //?     button->SetState(STATE_VISIBLE, filename[0]!=0);
 //? }
 
-    loading = 0;
     button = static_cast<Ui::CButton*>(pw->SearchControl(EVENT_SATCOM_LOADING));
     if ( button != 0 )
     {
         button->SetState(STATE_CHECK, m_index==SATCOM_LOADING);
-        loading = m_main->GetDisplayInfoName(SATCOM_LOADING);
-        button->SetState(STATE_VISIBLE, loading[0]!=0);
+        filename = m_main->GetDisplayInfoName(SATCOM_LOADING);
+        button->SetState(STATE_VISIBLE, filename[0]!=0);
     }
 
     button = static_cast<Ui::CButton*>(pw->SearchControl(EVENT_SATCOM_PROG));
@@ -737,7 +735,7 @@ void CDisplayInfo::UpdateIndexButton()
     {
         button->SetState(STATE_CHECK, m_index==SATCOM_PROG);
         filename = m_main->GetDisplayInfoName(SATCOM_PROG);
-        button->SetState(STATE_VISIBLE, filename[0]!=0 && (m_index==SATCOM_LOADING||m_index==SATCOM_PROG||(loading!=0&&loading[0]==0)));
+        button->SetState(STATE_VISIBLE, filename[0]!=0);
     }
 
     button = static_cast<Ui::CButton*>(pw->SearchControl(EVENT_SATCOM_SOLUCE));
