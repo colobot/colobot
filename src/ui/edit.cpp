@@ -437,26 +437,26 @@ bool CEdit::EventProcess(const Event &event)
             return true;
         }
 
-        if ( event.key.key == KEY(BACKSPACE) )  // backspace ( <- ) ?
+        if ( event.key.key == KEY(BACKSPACE) && !bControl )  // backspace ( <- ) ?
         {
             Delete(-1);
             SendModifEvent();
             return true;
         }
-        if ( event.key.key == KEY(DELETE) )
+        if ( event.key.key == KEY(DELETE) && !bControl )
         {
             Delete(1);
             SendModifEvent();
             return true;
         }
 
-        if ( event.key.key == KEY(RETURN) )
+        if ( event.key.key == KEY(RETURN) && !bControl )
         {
             Insert('\n');
             SendModifEvent();
             return true;
         }
-        if ( event.key.key == KEY(TAB) )
+        if ( event.key.key == KEY(TAB) && !bControl )
         {
             Insert('\t');
             SendModifEvent();
@@ -464,7 +464,7 @@ bool CEdit::EventProcess(const Event &event)
         }
     }
 
-    if ( event.type == EVENT_KEY_DOWN && m_bFocus )
+    if ( event.type == EVENT_KEY_DOWN && !bControl && m_bFocus )
     {
         if (event.key.unicode >= ' ')
         {

@@ -125,6 +125,18 @@ bool CStudio::EventProcess(const Event &event)
         newEvent.type = EVENT_STUDIO_OK;
         m_event->AddEvent(newEvent);
     }
+    
+    if ( event.type == EVENT_KEY_DOWN )
+    {
+        if ( (event.key.key == m_main->GetInputBinding(INPUT_SLOT_ACTION).primary ||
+              event.key.key == m_main->GetInputBinding(INPUT_SLOT_ACTION).secondary) &&
+              (event.kmodState & KEY_MOD(CTRL)) != 0 )
+        {
+            Event newEvent = event;
+            newEvent.type = EVENT_STUDIO_OK;
+            m_event->AddEvent(newEvent);
+        }
+    }
 
     if ( event.type == EVENT_STUDIO_EDIT )  // text modifief?
     {
