@@ -484,7 +484,7 @@ msgstr ""
 msgid "Sound effects:\\Volume of engines, voice, shooting, etc."
 msgstr ""
 
-msgid "Background sound :\\Volume of audio tracks on the CD"
+msgid "Background sound :\\Volume of audio tracks"
 msgstr ""
 
 msgid "3D sound\\3D positioning of the sound"

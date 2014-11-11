@@ -167,7 +167,8 @@ msgstr ""
 msgid "Back"
 msgstr "Page précédente"
 
-msgid "Background sound :\\Volume of audio tracks on the CD"
+#, fuzzy
+msgid "Background sound :\\Volume of audio tracks"
 msgstr "Fond sonore :\\Volume des pistes audio du CD"
 
 msgid "Backward (\\key down;)"

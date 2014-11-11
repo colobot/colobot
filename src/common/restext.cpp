@@ -235,8 +235,7 @@ void InitializeRestext()
     stringsEvent[EVENT_INTERFACE_KSPEED30]  = TR("Speed 3.0x\\Three times faster");
 
     stringsEvent[EVENT_INTERFACE_VOLSOUND]  = TR("Sound effects:\\Volume of engines, voice, shooting, etc.");
-    stringsEvent[EVENT_INTERFACE_VOLMUSIC]  = TR("Background sound :\\Volume of audio tracks on the CD");
-    stringsEvent[EVENT_INTERFACE_SOUND3D]   = TR("3D sound\\3D positioning of the sound");
+    stringsEvent[EVENT_INTERFACE_VOLMUSIC]  = TR("Background sound :\\Volume of audio tracks");
 
     stringsEvent[EVENT_INTERFACE_MIN]       = TR("Lowest\\Minimum graphic quality (highest frame rate)");
     stringsEvent[EVENT_INTERFACE_NORM]      = TR("Normal\\Normal graphic quality");
