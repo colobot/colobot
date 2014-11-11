@@ -3945,6 +3945,7 @@ void CMainDialog::IOReadName()
     pe = static_cast<CEdit*>(pw->SearchControl(EVENT_INTERFACE_IONAME));
     if ( pe == nullptr )  return;
 
+    //TODO: CLevelParser
     sprintf(resume, "%s %d", m_sceneName, m_chap[m_index]+1);
     BuildSceneName(filename, m_sceneName, (m_chap[m_index]+1)*100);
     sprintf(op, "Title.E");
@@ -4004,7 +4005,10 @@ void CMainDialog::IOReadList()
     std::string userSaveDir = m_savegameDir + "/" + m_main->GetGamerName();
 
     auto saveDirs = CResourceManager::ListDirectories(userSaveDir);
-    std::sort(saveDirs.begin(), saveDirs.end());
+    //std::sort(saveDirs.begin(), saveDirs.end());
+    
+    std::map<int, std::string> sortedSaveDirs;
+    std::map<int, std::string> names;
 
     for (auto dir : saveDirs)
     {
@@ -4013,10 +4017,17 @@ void CMainDialog::IOReadList()
         {
             CLevelParser* level = new CLevelParser(savegameFile);
             level->Load();
-            pl->SetItemName(m_saveList.size(), level->Get("Title")->GetParam("text")->AsString().c_str());
-            m_saveList.push_back(userSaveDir + "/" + dir);
+            int time = level->Get("Created")->GetParam("date")->AsInt();
+            sortedSaveDirs[time] = userSaveDir + "/" + dir;
+            names[time] = level->Get("Title")->GetParam("text")->AsString();
             delete level;
         }
+    }
+    
+    for (auto dir : sortedSaveDirs)
+    {
+        pl->SetItemName(m_saveList.size(), names[dir.first].c_str());
+        m_saveList.push_back(dir.second);
     }
 
     // invalid index

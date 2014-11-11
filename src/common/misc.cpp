@@ -28,6 +28,7 @@
 #include <time.h>
 #include <sstream>
 #include <iomanip>
+#include <chrono>
 
 
 // Returns a non-accented letter.
@@ -254,3 +255,7 @@ void AddExt(char* filename, const char* ext)
     strcat(filename, ext);
 }
 
+int GetCurrentTimestamp()
+{
+    return std::chrono::seconds(std::time(NULL)).count();
+}

@@ -37,3 +37,4 @@ extern std::string TimeFormat(float time);
 
 extern void AddExt(char* filename, const char* ext);
 
+extern int GetCurrentTimestamp();

@@ -5712,6 +5712,10 @@ bool CRobotMain::IOWriteScene(const char *filename, const char *filecbot, char *
     line->AddParam("maj", new CLevelParserParam(0));
     line->AddParam("min", new CLevelParserParam(1));
     level->AddLine(line);
+    
+    line = new CLevelParserLine("Created");
+    line->AddParam("date", new CLevelParserParam(GetCurrentTimestamp()));
+    level->AddLine(line);
 
     char* name = m_dialog->GetSceneName();
     line = new CLevelParserLine("Mission");
