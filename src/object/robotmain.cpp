@@ -3766,6 +3766,17 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
         m_colorRefWater.b = 240.0f/256.0f;  // cyan
         m_colorRefWater.a = 0.0f;
         m_colorNewWater = m_colorRefWater;
+        
+        m_engine->SetAmbientColor(Gfx::Color(0.5f, 0.5f, 0.5f, 0.5f), 0);
+        m_engine->SetAmbientColor(Gfx::Color(0.5f, 0.5f, 0.5f, 0.5f), 1);
+        m_engine->SetFogColor(Gfx::Color(1.0f, 1.0f, 1.0f, 1.0f), 0);
+        m_engine->SetFogColor(Gfx::Color(1.0f, 1.0f, 1.0f, 1.0f), 1);
+        m_engine->SetDeepView(1000.0f, 0);
+        m_engine->SetDeepView(1000.0f, 1);
+        m_engine->SetFogStart(0.75f, 0);
+        m_engine->SetFogStart(0.75f, 1);
+        m_engine->SetSecondTexture("");
+        m_engine->SetForegroundName("");
 
         m_dialog->BuildResumeName(m_title, base, rank);
         m_dialog->BuildResumeName(m_resume, base, rank);
