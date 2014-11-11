@@ -2429,17 +2429,7 @@ bool CEngine::ChangeTextureColor(const std::string& texName,
                                  Math::Point ts, Math::Point ti,
                                  Math::Point *exclude, float shift, bool hsv)
 {
-    if (colorRef1.r == colorNew1.r &&
-        colorRef1.g == colorNew1.g &&
-        colorRef1.b == colorNew1.b &&
-        colorRef2.r == colorNew2.r &&
-        colorRef2.g == colorNew2.g &&
-        colorRef2.b == colorNew2.b)
-        return true;
-
-
     DeleteTexture(texName);
-
 
     CImage img;
     if (!img.Load(texName))
@@ -2449,6 +2439,14 @@ bool CEngine::ChangeTextureColor(const std::string& texName,
         m_texBlacklist.insert(texName);
         return false;
     }
+    
+    if (colorRef1.r == colorNew1.r &&
+        colorRef1.g == colorNew1.g &&
+        colorRef1.b == colorNew1.b &&
+        colorRef2.r == colorNew2.r &&
+        colorRef2.g == colorNew2.g &&
+        colorRef2.b == colorNew2.b)
+        return true;
 
 
     int dx = img.GetSize().x;
