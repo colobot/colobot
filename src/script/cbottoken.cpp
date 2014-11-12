@@ -256,6 +256,7 @@ std::string GetHelpFilename(const char *token)
     if ( strcmp(token, "getresearchenable" ) == 0 )  return std::string("help/") + CApplication::GetInstancePointer()->GetLanguageChar() + std::string("/cbot/getresen.txt");
     if ( strcmp(token, "getresearchdone"   ) == 0 )  return std::string("help/") + CApplication::GetInstancePointer()->GetLanguageChar() + std::string("/cbot/getresdo.txt");
     if ( strcmp(token, "retobject"     ) == 0 )  return std::string("help/") + CApplication::GetInstancePointer()->GetLanguageChar() + std::string("/cbot/retobj.txt");
+    if ( strcmp(token, "errmode"     ) == 0 )  return std::string("help/") + CApplication::GetInstancePointer()->GetLanguageChar() + std::string("/cbot/errmode.txt");
     if ( strcmp(token, "progfunc"      ) == 0 )  return std::string("help/") + CApplication::GetInstancePointer()->GetLanguageChar() + std::string("/cbot/factory.txt");
     if ( strcmp(token, "busy"          ) == 0 )  return std::string("help/") + CApplication::GetInstancePointer()->GetLanguageChar() + std::string("/cbot/busy.txt");
     if ( strcmp(token, "takeoff"       ) == 0 )  return std::string("help/") + CApplication::GetInstancePointer()->GetLanguageChar() + std::string("/cbot/takeoff.txt");
@@ -519,7 +520,7 @@ const char* GetHelpText(const char *token)
     if ( strcmp(token, "message"   ) == 0 )  return "message ( string, type );";
     if ( strcmp(token, "abstime"   ) == 0 )  return "abstime ( );";
     if ( strcmp(token, "ismovie"   ) == 0 )  return "ismovie ( );";
-    if ( strcmp(token, "errmode"   ) == 0 )  return "errmode ( mdoe );";
+    if ( strcmp(token, "errmode"   ) == 0 )  return "errmode ( mode );";
     if ( strcmp(token, "ipf"       ) == 0 )  return "ipf ( number );";
     if ( strcmp(token, "strlen"    ) == 0 )  return "strlen ( string );";
     if ( strcmp(token, "strleft"   ) == 0 )  return "strleft ( string, len );";
