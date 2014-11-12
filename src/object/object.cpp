@@ -1183,6 +1183,7 @@ bool CObject::Read(CLevelParserLine* line)
         for(auto& p : line->GetParam("cmdline")->AsArray()) {
             if(i >= OBJECTMAXCMDLINE) break;
             SetCmdLine(i, p->AsFloat());
+            i++;
         }
     }
 
