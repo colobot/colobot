@@ -2373,12 +2373,10 @@ bool CMainDialog::EventProcess(const Event &event)
 
                 if ( pc->TestState(STATE_CHECK) )
                 {
-                    m_setupFull = false;
                     pc->ClearState(STATE_CHECK);
                 }
                 else
                 {
-                    m_setupFull = true;
                     pc->SetState(STATE_CHECK);
                 }
 
