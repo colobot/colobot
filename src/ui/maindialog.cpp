@@ -6200,7 +6200,7 @@ bool CMainDialog::WriteGamerInfo()
     {
         if ( m_sceneInfo[i].numTry == 0 && !m_sceneInfo[i].bPassed )  continue;
 
-        file << "Chapter " << i/100 << ": Scene " << i%100 << ": numTry=" << m_sceneInfo[i].numTry << " passed=1" << m_sceneInfo[i].bPassed << "\n";
+        file << "Chapter " << i/100 << ": Scene " << i%100 << ": numTry=" << m_sceneInfo[i].numTry << " passed=" << (m_sceneInfo[i].bPassed ? "1" : "0") << "\n";
     }
 
     file.close();

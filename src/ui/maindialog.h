@@ -52,8 +52,8 @@ const int MAXSCENE = 1000;
 
 struct SceneInfo
 {
-    char    numTry;
-    char    bPassed;
+    int     numTry;
+    bool    bPassed;
 };
 
 struct GamerPerso
