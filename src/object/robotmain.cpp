@@ -3641,17 +3641,6 @@ Math::Vector CRobotMain::LookatPoint(Math::Vector eye, float angleH, float angle
     return lookat;
 }
 
-
-
-char* SkipNum(char *p)
-{
-    while (*p == ' ' || *p == '.' || *p == '-' || (*p >= '0' && *p <= '9'))
-    {
-        p++;
-    }
-    return p;
-}
-
 //! Load the scene for the character
 void CRobotMain::ScenePerso()
 {
@@ -3671,7 +3660,9 @@ void CRobotMain::ScenePerso()
     iMan->Flush(CLASS_PYRO);
     
     CObjectManager::GetInstancePointer()->Flush();
-
+    
+    ChangeColor();
+    
     m_dialog->SetSceneName("perso");
     m_dialog->SetSceneRank(0);
     try {
@@ -4752,7 +4743,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             g_build |= BUILD_FLAG;
         }
 
-        if (!resetObject)
+        if (!resetObject && !fixScene)
         {
             ChangeColor();  // changes the colors of texture
             m_short->SetMode(false);  // vehicles?
