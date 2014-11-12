@@ -202,8 +202,9 @@ struct ApplicationPrivate;
 class CApplication : public CSingleton<CApplication>
 {
 public:
+    //! Constructor (can only be called once!)
     CApplication();
-    
+    //! Destructor
     ~CApplication();
 
     //! Returns the application's event queue
