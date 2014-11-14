@@ -5033,7 +5033,7 @@ void CMainDialog::SetupMemorize()
         pl = static_cast<CList *>(pw->SearchControl(EVENT_LIST2));
         if ( pl != 0 )
         {
-            GetProfile().SetIntProperty("Setup", "Resolution", pl->GetSelect());
+            GetProfile().SetIntProperty("Setup", "Resolution", m_setupSelMode);
         }
     }
     else
