@@ -6164,6 +6164,12 @@ bool CMainDialog::ReadGamerInfo()
     while(!file.eof())
     {
         std::getline(file, line);
+	
+	if(line == "")
+	{
+	    break;
+	}
+	
         sscanf(line.c_str(), "Chapter %d: Scene %d: numTry=%d passed=%d\n",
                 &chap, &i, &numTry, &passed);
 
