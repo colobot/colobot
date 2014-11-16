@@ -2300,9 +2300,9 @@ Texture CEngine::CreateTexture(const std::string& texName, const TextureCreatePa
     return tex;
 }
 
-Texture CEngine::LoadTexture(const std::string& name)
+Texture CEngine::LoadTexture(const std::string& name, bool canFromBuffer)
 {
-    return LoadTexture(name, m_defaultTexParams);
+    return LoadTexture(name, m_defaultTexParams, canFromBuffer);
 }
 
 Texture CEngine::LoadTexture(const std::string& name, CImage* image)
@@ -2311,14 +2311,18 @@ Texture CEngine::LoadTexture(const std::string& name, CImage* image)
     return tex;
 }
 
-Texture CEngine::LoadTexture(const std::string& name, const TextureCreateParams& params)
+Texture CEngine::LoadTexture(const std::string& name, const TextureCreateParams& params, bool canFromBuffer)
 {
     if (m_texBlacklist.find(name) != m_texBlacklist.end())
         return Texture();
-
-    std::map<std::string, Texture>::iterator it = m_texNameMap.find(name);
-    if (it != m_texNameMap.end())
-        return (*it).second;
+    
+    
+    if ( canFromBuffer )
+    {    
+	std::map<std::string, Texture>::iterator it = m_texNameMap.find(name);
+	if (it != m_texNameMap.end())
+	    return (*it).second;
+    }
 
     return CreateTexture(name, params);
 }
