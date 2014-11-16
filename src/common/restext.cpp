@@ -363,6 +363,7 @@ void InitializeRestext()
     stringsEvent[EVENT_OBJECT_BEGSHIELD]    = TR("Extend shield (\\key action;)");
     stringsEvent[EVENT_OBJECT_ENDSHIELD]    = TR("Withdraw shield (\\key action;)");
     stringsEvent[EVENT_OBJECT_DIMSHIELD]    = TR("Shield radius");
+    stringsEvent[EVENT_OBJECT_DELSEARCH]    = TR("Delete mark");
     stringsEvent[EVENT_OBJECT_PROGRUN]      = TR("Execute the selected program");
     stringsEvent[EVENT_OBJECT_PROGEDIT]     = TR("Edit the selected program");
     stringsEvent[EVENT_OBJECT_INFOOK]       = TR("\\SatCom on standby");

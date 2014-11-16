@@ -132,6 +132,7 @@ public:
     Error       StartTaskFlag(TaskFlagOrder order, int rank);
     Error       StartTaskBuild(ObjectType type);
     Error       StartTaskSearch();
+    Error       StartTaskDeleteMark();
     Error       StartTaskTerraform();
     Error       StartTaskPen(bool down, int color);
     Error       StartTaskRecover();
