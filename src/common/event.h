@@ -160,7 +160,7 @@ enum EventType
 
     EVENT_LIST0             = 110,
     EVENT_LIST1             = 111,
-    EVENT_LIST2             = 112,
+    EVENT_LIST2             = 112, // list of resolutions
     EVENT_LIST3             = 113,
     EVENT_LIST4             = 114,
     EVENT_LIST5             = 115,
@@ -453,6 +453,7 @@ enum EventType
     EVENT_OBJECT_RESET      = 1233,
     EVENT_OBJECT_DIMSHIELD  = 1234,
     EVENT_OBJECT_TARGET     = 1235,
+    EVENT_OBJECT_DELSEARCH  = 1236, // delete mark on ground
     EVENT_OBJECT_PROGLIST   = 1310,
     EVENT_OBJECT_PROGRUN    = 1311,
     EVENT_OBJECT_PROGEDIT   = 1312,

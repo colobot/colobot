@@ -147,6 +147,7 @@ set(BASE_SOURCES
     object/task/task.cpp
     object/task/taskadvance.cpp
     object/task/taskbuild.cpp
+    object/task/taskdeletemark.cpp
     object/task/taskfire.cpp
     object/task/taskfireant.cpp
     object/task/taskflag.cpp
