@@ -30,6 +30,7 @@
 #include "object/task/tasktake.h"
 #include "object/task/taskbuild.h"
 #include "object/task/tasksearch.h"
+#include "object/task/taskdeletemark.h"
 #include "object/task/taskterraform.h"
 #include "object/task/taskpen.h"
 #include "object/task/taskrecover.h"
@@ -132,6 +133,15 @@ Error CTaskManager::StartTaskSearch()
     m_task = new CTaskSearch(m_object);
     return (static_cast<CTaskSearch*>(m_task))->Start();
 }
+
+// Delete mark on ground
+
+Error CTaskManager::StartTaskDeleteMark()
+{
+    m_task = new CTaskDeleteMark(m_object);
+    return (static_cast<CTaskDeleteMark*>(m_task))->Start();
+}
+
 
 // Reads an information terminal.
 
