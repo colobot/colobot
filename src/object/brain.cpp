@@ -566,6 +566,11 @@ bool CBrain::EventProcess(const Event &event)
         {
             err = StartTaskSearch();
         }
+        
+        if ( action == EVENT_OBJECT_DELSEARCH )
+	{
+	    err = StartTaskDeleteMark();
+	}
 
         if ( action == EVENT_OBJECT_TERRAFORM )
         {
@@ -981,6 +986,19 @@ Error CBrain::StartTaskSearch()
     return err;
 }
 
+// Delete mark on ground
+
+Error CBrain::StartTaskDeleteMark()
+{
+    StopTask();
+
+    m_primaryTask = new CTaskManager(m_object);
+    Error err = m_primaryTask->StartTaskDeleteMark();
+    UpdateInterface();
+    return err;
+}
+
+
 // Terraformed the ground.
 
 Error CBrain::StartTaskTerraform()
@@ -1163,7 +1181,6 @@ void CBrain::ColorFlag(int color)
     m_flagColor = color;
     UpdateInterface();
 }
-
 
 // Creates all the interface when the object is selected.
 
@@ -1475,6 +1492,14 @@ bool CBrain::CreateInterface(bool bSelect)
         pos.y = oy+sy*0.5f;
         pw->CreateButton(pos, dim, 40, EVENT_OBJECT_SEARCH);
         DefaultEnter(pw, EVENT_OBJECT_SEARCH);
+	
+	pos.x = ox+sx*9.0f;
+        pos.y = oy+sy*0.5f;
+        pw->CreateButton(pos, dim, 111, EVENT_OBJECT_GFLAT);
+	
+	pos.x = ox+sx*10.1f;
+        pos.y = oy+sy*0.5f;
+        pw->CreateButton(pos, dim, 11, EVENT_OBJECT_DELSEARCH);
     }
 
     if ( type == OBJECT_MOBILErt &&  // Terraformer?
@@ -2119,6 +2144,7 @@ void CBrain::UpdateInterface()
     EnableInterface(pw, EVENT_OBJECT_FCREATE,     bEnable);
     EnableInterface(pw, EVENT_OBJECT_FDELETE,     bEnable);
     EnableInterface(pw, EVENT_OBJECT_SEARCH,      bEnable);
+    EnableInterface(pw, EVENT_OBJECT_DELSEARCH,   bEnable);
     EnableInterface(pw, EVENT_OBJECT_TERRAFORM,   bEnable);
     EnableInterface(pw, EVENT_OBJECT_RECOVER,     bEnable);
     EnableInterface(pw, EVENT_OBJECT_FIRE,        bEnable);

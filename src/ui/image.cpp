@@ -131,7 +131,7 @@ void CImage::Draw()
     {
         std::string texFilename = m_filename;
         texFilename = "textures/"+texFilename;
-        m_engine->LoadTexture(texFilename.c_str());
+        m_engine->LoadTexture(texFilename.c_str(), false);
         m_engine->SetTexture(texFilename);
         m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
         pos = m_pos;
