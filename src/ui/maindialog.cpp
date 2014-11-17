@@ -4198,6 +4198,9 @@ bool CMainDialog::IOWriteScene()
     {
         return false;
     }
+    
+    std::string oldScreen = "textures/../"+m_saveList.at(sel) + "/screen.png";
+    m_engine->DeleteTexture(oldScreen);
 
     std::string dir;
     pe->GetText(info, 100);
