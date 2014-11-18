@@ -4084,6 +4084,15 @@ void CMainDialog::IOReadList()
 
     pl->SetSelect(m_saveList.size());
     pl->ShowSelect(false);  // shows the selected columns
+    
+    int          i;
+    std::string  screenName;
+    
+    for ( i=0; i < m_saveList.size(); i++ )
+    {
+	screenName = "textures/../" + m_saveList.at(i) + "/screen.png";
+	m_engine->DeleteTexture(screenName);
+    }
 }
 
 // Updates the buttons according to the selected part in the list.
