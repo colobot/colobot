@@ -2439,14 +2439,18 @@ bool CEngine::ChangeTextureColor(const std::string& texName,
         m_texBlacklist.insert(texName);
         return false;
     }
-    
+
+    bool changeColorsNeeded = true;
+
     if (colorRef1.r == colorNew1.r &&
         colorRef1.g == colorNew1.g &&
         colorRef1.b == colorNew1.b &&
         colorRef2.r == colorNew2.r &&
         colorRef2.g == colorNew2.g &&
         colorRef2.b == colorNew2.b)
-        return true;
+    {
+        changeColorsNeeded = false;
+    }
 
 
     int dx = img.GetSize().x;
@@ -2464,66 +2468,69 @@ bool CEngine::ChangeTextureColor(const std::string& texName,
     ColorHSV cr2 = RGB2HSV(colorRef2);
     ColorHSV cn2 = RGB2HSV(colorNew2);
 
-    for (int y = sy; y < ey; y++)
+    if (changeColorsNeeded)
     {
-        for (int x = sx; x < ex; x++)
+        for (int y = sy; y < ey; y++)
         {
-            if (exclude != nullptr && IsExcludeColor(exclude, x,y) )
-                continue;
-
-            Color color = img.GetPixel(Math::IntPoint(x, y));
-
-            if (hsv)
+            for (int x = sx; x < ex; x++)
             {
-                ColorHSV c = RGB2HSV(color);
-                if (c.s > 0.01f && fabs(c.h - cr1.h) < tolerance1)
+                if (exclude != nullptr && IsExcludeColor(exclude, x,y) )
+                    continue;
+
+                Color color = img.GetPixel(Math::IntPoint(x, y));
+
+                if (hsv)
                 {
-                    c.h += cn1.h - cr1.h;
-                    c.s += cn1.s - cr1.s;
-                    c.v += cn1.v - cr1.v;
-                    if (c.h < 0.0f) c.h -= 1.0f;
-                    if (c.h > 1.0f) c.h += 1.0f;
-                    color = HSV2RGB(c);
-                    color.r = Math::Norm(color.r + shift);
-                    color.g = Math::Norm(color.g + shift);
-                    color.b = Math::Norm(color.b + shift);
-                    img.SetPixel(Math::IntPoint(x, y), color);
+                    ColorHSV c = RGB2HSV(color);
+                    if (c.s > 0.01f && fabs(c.h - cr1.h) < tolerance1)
+                    {
+                        c.h += cn1.h - cr1.h;
+                        c.s += cn1.s - cr1.s;
+                        c.v += cn1.v - cr1.v;
+                        if (c.h < 0.0f) c.h -= 1.0f;
+                        if (c.h > 1.0f) c.h += 1.0f;
+                        color = HSV2RGB(c);
+                        color.r = Math::Norm(color.r + shift);
+                        color.g = Math::Norm(color.g + shift);
+                        color.b = Math::Norm(color.b + shift);
+                        img.SetPixel(Math::IntPoint(x, y), color);
+                    }
+                    else if (tolerance2 != -1.0f &&
+                            c.s > 0.01f && fabs(c.h - cr2.h) < tolerance2)
+                    {
+                        c.h += cn2.h - cr2.h;
+                        c.s += cn2.s - cr2.s;
+                        c.v += cn2.v - cr2.v;
+                        if (c.h < 0.0f) c.h -= 1.0f;
+                        if (c.h > 1.0f) c.h += 1.0f;
+                        color = HSV2RGB(c);
+                        color.r = Math::Norm(color.r + shift);
+                        color.g = Math::Norm(color.g + shift);
+                        color.b = Math::Norm(color.b + shift);
+                        img.SetPixel(Math::IntPoint(x, y), color);
+                    }
                 }
-                else if (tolerance2 != -1.0f &&
-                         c.s > 0.01f && fabs(c.h - cr2.h) < tolerance2)
+                else
                 {
-                    c.h += cn2.h - cr2.h;
-                    c.s += cn2.s - cr2.s;
-                    c.v += cn2.v - cr2.v;
-                    if (c.h < 0.0f) c.h -= 1.0f;
-                    if (c.h > 1.0f) c.h += 1.0f;
-                    color = HSV2RGB(c);
-                    color.r = Math::Norm(color.r + shift);
-                    color.g = Math::Norm(color.g + shift);
-                    color.b = Math::Norm(color.b + shift);
-                    img.SetPixel(Math::IntPoint(x, y), color);
-                }
-            }
-            else
-            {
-                if ( fabs(color.r - colorRef1.r) +
-                     fabs(color.g - colorRef1.g) +
-                     fabs(color.b - colorRef1.b) < tolerance1 * 3.0f)
-                {
-                    color.r = Math::Norm(colorNew1.r + color.r - colorRef1.r + shift);
-                    color.g = Math::Norm(colorNew1.g + color.g - colorRef1.g + shift);
-                    color.b = Math::Norm(colorNew1.b + color.b - colorRef1.b + shift);
-                    img.SetPixel(Math::IntPoint(x, y), color);
-                }
-                else if (tolerance2 != -1 &&
-                         fabs(color.r - colorRef2.r) +
-                         fabs(color.g - colorRef2.g) +
-                         fabs(color.b - colorRef2.b) < tolerance2 * 3.0f)
-                {
-                    color.r = Math::Norm(colorNew2.r + color.r - colorRef2.r + shift);
-                    color.g = Math::Norm(colorNew2.g + color.g - colorRef2.g + shift);
-                    color.b = Math::Norm(colorNew2.b + color.b - colorRef2.b + shift);
-                    img.SetPixel(Math::IntPoint(x, y), color);
+                    if ( fabs(color.r - colorRef1.r) +
+                        fabs(color.g - colorRef1.g) +
+                        fabs(color.b - colorRef1.b) < tolerance1 * 3.0f)
+                    {
+                        color.r = Math::Norm(colorNew1.r + color.r - colorRef1.r + shift);
+                        color.g = Math::Norm(colorNew1.g + color.g - colorRef1.g + shift);
+                        color.b = Math::Norm(colorNew1.b + color.b - colorRef1.b + shift);
+                        img.SetPixel(Math::IntPoint(x, y), color);
+                    }
+                    else if (tolerance2 != -1 &&
+                            fabs(color.r - colorRef2.r) +
+                            fabs(color.g - colorRef2.g) +
+                            fabs(color.b - colorRef2.b) < tolerance2 * 3.0f)
+                    {
+                        color.r = Math::Norm(colorNew2.r + color.r - colorRef2.r + shift);
+                        color.g = Math::Norm(colorNew2.g + color.g - colorRef2.g + shift);
+                        color.b = Math::Norm(colorNew2.b + color.b - colorRef2.b + shift);
+                        img.SetPixel(Math::IntPoint(x, y), color);
+                    }
                 }
             }
         }
