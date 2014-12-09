@@ -256,12 +256,8 @@ include("${colobot_SOURCE_DIR}/cmake/msys.cmake")
 ##
 # Clipboard support needs X11 libraries
 ##
-if(PLATFORM_GNU OR PLATFORM_MACOSX)
+if(PLATFORM_GNU)
     find_package(X11 REQUIRED)
-    if(PLATFORM_MACOSX)
-       # Add the includes for X11
-       include_directories("/opt/X11/include")
-    endif()
 endif()
 
 

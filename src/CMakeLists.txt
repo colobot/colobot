@@ -35,7 +35,7 @@ elseif(PLATFORM_LINUX)
     set(PLATFORM_LIBS "-lrt -lX11")
 elseif(PLATFORM_MACOSX)
     find_library(LIBINTL_LIBRARY NAMES intl libintl )
-    set(PLATFORM_LIBS ${LIBINTL_LIBRARY} ${X11_X11_LIB})
+    set(PLATFORM_LIBS ${LIBINTL_LIBRARY})
 endif()
 
 
