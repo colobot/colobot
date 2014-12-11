@@ -1743,7 +1743,6 @@ void CMainDialog::ChangePhase(Phase phase)
         pos.y  =   9.0f/480.0f;
         ddim.x =  90.0f/640.0f;
         ddim.y =  10.0f/480.0f;
-        //GetResource(RES_TEXT, RT_VERSION_ID, name);
         pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL1, COLOBOT_VERSION_DISPLAY);
         pl->SetFontType(Gfx::FONT_COURIER);
         pl->SetFontSize(9.0f);

@@ -277,7 +277,7 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
             case OPT_HELP:
             {
                 GetLogger()->Message("\n");
-                GetLogger()->Message("Colobot %s (%s)\n", COLOBOT_CODENAME, COLOBOT_VERSION);
+                GetLogger()->Message("%s\n", COLOBOT_FULLNAME);
                 GetLogger()->Message("\n");
                 GetLogger()->Message("List of available options:\n");
                 GetLogger()->Message("  -help               this help\n");

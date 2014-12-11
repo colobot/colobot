@@ -50,7 +50,6 @@ enum ResType
  */
 enum ResTextType
 {
-    RT_VERSION_ID           = 1,
     RT_DISINFO_TITLE        = 2,
     RT_WINDOW_MAXIMIZED     = 3,
     RT_WINDOW_MINIMIZED     = 4,

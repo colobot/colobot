@@ -86,7 +86,7 @@ int SDL_MAIN_FUNC(int argc, char *argv[])
     InitializeRestext();
     InitializeEventTypeTexts();
 
-    logger.Info("Colobot starting\n");
+    logger.Info("%s starting\n", COLOBOT_FULLNAME);
     
     int code = 0;
     while(true) {

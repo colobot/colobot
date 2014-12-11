@@ -54,8 +54,6 @@ const char* stringsCbot[TX_MAX]         = { nullptr };
 
 void InitializeRestext()
 {
-    stringsText[RT_VERSION_ID]       = COLOBOT_FULLNAME;
-
     stringsText[RT_DISINFO_TITLE]    = TR("SatCom");
     stringsText[RT_WINDOW_MAXIMIZED] = TR("Maximize");
     stringsText[RT_WINDOW_MINIMIZED] = TR("Minimize");
