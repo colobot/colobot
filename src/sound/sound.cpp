@@ -45,7 +45,7 @@ bool CSoundInterface::Create()
 
 void CSoundInterface::CacheAll()
 {
-    for ( int i = 1; i < SOUND_MAX; i++ )
+    for ( int i = 0; i < SOUND_MAX; i++ )
     {
         std::stringstream filename;
         filename << "sounds/sound" << std::setfill('0') << std::setw(3) << i << ".wav";
