@@ -34,7 +34,8 @@ elseif(PLATFORM_LINUX)
     # for clock_gettime
     set(PLATFORM_LIBS "-lrt -lX11")
 elseif(PLATFORM_MACOSX)
-    find_library(LIBINTL_LIBRARY NAMES intl libintl )
+    find_library(LIBINTL_LIBRARY NAMES intl libintl)
+    find_path(LIBINTL_INCLUDE_PATH NAMES libintl.h)
     set(PLATFORM_LIBS ${LIBINTL_LIBRARY})
 endif()
 
@@ -241,6 +242,7 @@ set(SYSTEM_INCLUDES
     ${OPTIONAL_INCLUDE_DIRS}
     ${CLIPBOARD_INCLUDE_DIR}
     ${PHYSFS_INCLUDE_PATH}
+    ${LIBINTL_INCLUDE_PATH}
 )
 
 set(COLOBOT_LOCAL_INCLUDES ${LOCAL_INCLUDES} PARENT_SCOPE)
