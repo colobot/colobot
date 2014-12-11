@@ -21,6 +21,7 @@
 #include "ui/maindialog.h"
 
 #include "app/app.h"
+#include "app/input.h"
 #include "app/system.h"
 
 #include "common/config.h"
@@ -2657,7 +2658,7 @@ bool CMainDialog::EventProcess(const Event &event)
                 break;
 
             case EVENT_INTERFACE_KDEF:
-                m_main->SetDefaultInputBindings();
+                CInput::GetInstancePointer()->SetDefaultInputBindings();
                 UpdateKey();
                 break;
 
@@ -4085,13 +4086,13 @@ void CMainDialog::IOReadList()
     pl->SetSelect(m_saveList.size());
     pl->ShowSelect(false);  // shows the selected columns
     
-    int          i;
+    unsigned int i;
     std::string  screenName;
     
     for ( i=0; i < m_saveList.size(); i++ )
     {
-	screenName = "textures/../" + m_saveList.at(i) + "/screen.png";
-	m_engine->DeleteTexture(screenName);
+        screenName = "textures/../" + m_saveList.at(i) + "/screen.png";
+        m_engine->DeleteTexture(screenName);
     }
 }
 
@@ -5050,16 +5051,7 @@ void CMainDialog::SetupMemorize()
        // TODO: Default value
     }
 
-    std::stringstream key;
-    for (int i = 0; i < INPUT_SLOT_MAX; i++)
-    {
-        InputBinding b = m_main->GetInputBinding(static_cast<InputSlot>(i));
-
-        key << b.primary << " ";
-        key << b.secondary << "  ";
-    }
-
-    GetProfile().SetStringProperty("Setup", "KeyMap", key.str());
+    GetProfile().SetStringProperty("Setup", "KeyMap", CInput::GetInstancePointer()->SaveKeyBindings());
 
     GetProfile().SetIntProperty("Setup", "DeleteGamer", m_bDeleteGamer);
 }
@@ -5270,15 +5262,7 @@ void CMainDialog::SetupRecall()
 
     if (GetProfile().GetStringProperty("Setup", "KeyMap", key))
     {
-        std::stringstream skey;
-        skey.str(key);
-        for (int i = 0; i < INPUT_SLOT_MAX; i++)
-        {
-            InputBinding b;
-            skey >> b.primary;
-            skey >> b.secondary;
-            m_main->SetInputBinding(static_cast<InputSlot>(i), b);
-         }
+        CInput::GetInstancePointer()->LoadKeyBindings(key);
     }
 
     if ( GetProfile().GetIntProperty("Setup", "DeleteGamer", iValue) )
@@ -5426,7 +5410,7 @@ void CMainDialog::UpdateKey()
         CKey* pk = static_cast<CKey*>(pw->SearchControl(key_event[first+i]));
         if (pk == nullptr) break;
 
-        pk->SetBinding(m_main->GetInputBinding(key_table[first+i]));
+        pk->SetBinding(CInput::GetInstancePointer()->GetInputBinding(key_table[first+i]));
         pos.y -= dim.y;
     }
 }
@@ -5448,7 +5432,7 @@ void CMainDialog::ChangeKey(EventType event)
             CKey* pk = static_cast<CKey*>(pw->SearchControl(key_event[i]));
             if (pk == nullptr) break;
 
-            m_main->SetInputBinding(key_table[i], pk->GetBinding());
+            CInput::GetInstancePointer()->SetInputBinding(key_table[i], pk->GetBinding());
         }
     }
 }

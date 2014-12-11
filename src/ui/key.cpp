@@ -28,25 +28,16 @@
 namespace Ui {
 
 
-static void GetKeyName(std::string& name, unsigned int key)
-{
-    if (!GetResource(RES_KEY, key, name))
-    {
-        name = StrUtils::Format("Code %d", key);
-    }
-}
-
-
 CKey::CKey() : CControl()
 {
     m_catch = false;
 
-    m_robotMain = CRobotMain::GetInstancePointer();
+    m_input = CInput::GetInstancePointer();
 }
 
 CKey::~CKey()
 {
-    m_robotMain = nullptr;
+    m_input = nullptr;
 }
 
 bool CKey::Create(Math::Point pos, Math::Point dim, int icon, EventType eventMsg)
@@ -110,17 +101,19 @@ bool CKey::EventProcess(const Event &event)
 
 bool CKey::TestKey(unsigned int key)
 {
-    if (key == KEY(PAUSE) || key == KEY(PRINT)) return true;  // blocked key
+    if (key == KEY(PAUSE) || key == KEY(PRINT) || key == KEY(ESCAPE)) return true;  // blocked key
 
     for (int i = 0; i < INPUT_SLOT_MAX; i++)
     {
         InputSlot slot = static_cast<InputSlot>(i);
-        InputBinding b = m_robotMain->GetInputBinding(slot);
-        if (key == b.primary || key == b.secondary)
-            m_robotMain->SetInputBinding(slot, InputBinding());  // nothing!
+        InputBinding b = m_input->GetInputBinding(slot);
+        if (key == b.primary)
+            m_input->SetInputBinding(slot, InputBinding(b.secondary, KEY_INVALID));  // nothing!
+        if (key == b.secondary)
+            m_input->SetInputBinding(slot, InputBinding(b.primary, KEY_INVALID));  // nothing!
 
         if (b.primary == KEY_INVALID) // first free option?
-            m_robotMain->SetInputBinding(slot, InputBinding(b.secondary, b.primary));  // shift
+            m_input->SetInputBinding(slot, InputBinding(b.secondary, b.primary));  // shift
     }
 
     return false;  // not used
@@ -139,7 +132,7 @@ void CKey::Draw()
 
 
     m_engine->SetTexture("textures/interface/button1.png");
-    m_engine->SetState(Gfx::ENG_RSTATE_NORMAL); // was D3DSTATENORMAL
+    m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
 
     float zoomExt = 1.00f;
     float zoomInt = 0.95f;
@@ -181,18 +174,7 @@ void CKey::Draw()
 
     float h = m_engine->GetText()->GetHeight(m_fontType, m_fontSize) / 2.0f;
 
-    std::string keyName;
-    GetKeyName(keyName, m_binding.primary);
-    if (m_binding.secondary != KEY_INVALID)
-    {
-        std::string orText;
-        GetResource(RES_TEXT, RT_KEY_OR, orText);
-        keyName.append(orText);
-
-        std::string secondaryKeyName;
-        GetKeyName(secondaryKeyName, m_binding.secondary);
-        keyName.append(secondaryKeyName);
-    }
+    std::string keyName = m_input->GetKeysString(m_binding);
 
     Math::Point pos;
     pos.x = m_pos.x + m_dim.x * 0.5f;

@@ -21,6 +21,7 @@
 
 #include "app/app.h"
 
+#include "app/input.h"
 #include "app/system.h"
 
 #include "common/logger.h"
@@ -104,6 +105,7 @@ CApplication::CApplication()
     m_objMan        = new CObjectManager();
     m_eventQueue    = new CEventQueue();
     m_profile       = new CProfile();
+    m_input         = new CInput();
 
     m_engine    = nullptr;
     m_device    = nullptr;
@@ -147,10 +149,6 @@ CApplication::CApplication()
 
     m_mouseMode = MOUSE_SYSTEM;
 
-    m_kmodState = 0;
-    m_mouseButtonsState = 0;
-    m_trackedKeys = 0;
-
     #ifdef PORTABLE
     m_dataPath = "./data";
     m_langPath = "./lang";
@@ -181,6 +179,9 @@ CApplication::~CApplication()
 {
     delete m_private;
     m_private = nullptr;
+    
+    delete m_input;
+    m_input = nullptr;
 
     delete m_objMan;
     m_objMan = nullptr;
@@ -890,7 +891,7 @@ void CApplication::UpdateMouse()
 {
     Math::IntPoint pos;
     SDL_GetMouseState(&pos.x, &pos.y);
-    m_mousePos = m_engine->WindowToInterfaceCoords(pos);
+    m_input->MouseMove(pos);
 }
 
 int CApplication::Run()
@@ -1082,9 +1083,7 @@ Event CApplication::ProcessSystemEvent()
         event.key.virt = false;
         event.key.key = m_private->currentEvent.key.keysym.sym;
         event.key.unicode = m_private->currentEvent.key.keysym.unicode;
-
-        // Use the occasion to update kmods
-        m_kmodState = m_private->currentEvent.key.keysym.mod;
+        event.kmodState = m_private->currentEvent.key.keysym.mod;
     }
     else if ( (m_private->currentEvent.type == SDL_MOUSEBUTTONDOWN) ||
          (m_private->currentEvent.type == SDL_MOUSEBUTTONUP) )
@@ -1109,24 +1108,13 @@ Event CApplication::ProcessSystemEvent()
                 event.type = EVENT_MOUSE_BUTTON_UP;
 
             event.mouseButton.button = static_cast<MouseButton>(1 << m_private->currentEvent.button.button);
-
-            // Use the occasion to update mouse button state
-            if (m_private->currentEvent.type == SDL_MOUSEBUTTONDOWN)
-                m_mouseButtonsState |= event.mouseButton.button;
-            else
-                m_mouseButtonsState &= ~event.mouseButton.button;
         }
-
-        // Use the occasion to update mouse pos
-        m_mousePos = m_engine->WindowToInterfaceCoords(
-            Math::IntPoint(m_private->currentEvent.button.x, m_private->currentEvent.button.y));
     }
     else if (m_private->currentEvent.type == SDL_MOUSEMOTION)
     {
         event.type = EVENT_MOUSE_MOVE;
 
-        m_mousePos = m_engine->WindowToInterfaceCoords(
-            Math::IntPoint(m_private->currentEvent.button.x, m_private->currentEvent.button.y));
+        m_input->MouseMove(Math::IntPoint(m_private->currentEvent.button.x, m_private->currentEvent.button.y));
     }
     else if (m_private->currentEvent.type == SDL_JOYAXISMOTION)
     {
@@ -1158,51 +1146,8 @@ Event CApplication::ProcessSystemEvent()
 
         event.active.gain = m_private->currentEvent.active.gain == 1;
     }
-
-
-    if (event.type == EVENT_KEY_DOWN)
-    {
-        if      (event.key.key == KEY(KP8))
-            m_trackedKeys |= TRKEY_NUM_UP;
-        else if (event.key.key == KEY(KP2))
-            m_trackedKeys |= TRKEY_NUM_DOWN;
-        else if (event.key.key == KEY(KP4))
-            m_trackedKeys |= TRKEY_NUM_LEFT;
-        else if (event.key.key == KEY(KP6))
-            m_trackedKeys |= TRKEY_NUM_RIGHT;
-        else if (event.key.key == KEY(KP_PLUS))
-            m_trackedKeys |= TRKEY_NUM_PLUS;
-        else if (event.key.key == KEY(KP_MINUS))
-            m_trackedKeys |= TRKEY_NUM_MINUS;
-        else if (event.key.key == KEY(PAGEUP))
-            m_trackedKeys |= TRKEY_PAGE_UP;
-        else if (event.key.key == KEY(PAGEDOWN))
-            m_trackedKeys |= TRKEY_PAGE_DOWN;
-    }
-    else if (event.type == EVENT_KEY_UP)
-    {
-        if      (event.key.key == KEY(KP8))
-            m_trackedKeys &= ~TRKEY_NUM_UP;
-        else if (event.key.key == KEY(KP2))
-            m_trackedKeys &= ~TRKEY_NUM_DOWN;
-        else if (event.key.key == KEY(KP4))
-            m_trackedKeys &= ~TRKEY_NUM_LEFT;
-        else if (event.key.key == KEY(KP6))
-            m_trackedKeys &= ~TRKEY_NUM_RIGHT;
-        else if (event.key.key == KEY(KP_PLUS))
-            m_trackedKeys &= ~TRKEY_NUM_PLUS;
-        else if (event.key.key == KEY(KP_MINUS))
-            m_trackedKeys &= ~TRKEY_NUM_MINUS;
-        else if (event.key.key == KEY(PAGEUP))
-            m_trackedKeys &= ~TRKEY_PAGE_UP;
-        else if (event.key.key == KEY(PAGEDOWN))
-            m_trackedKeys &= ~TRKEY_PAGE_DOWN;
-    }
-
-    event.trackedKeysState = m_trackedKeys;
-    event.kmodState = m_kmodState;
-    event.mousePos = m_mousePos;
-    event.mouseButtonsState = m_mouseButtonsState;
+    
+    m_input->EventProcess(event);
 
     return event;
 }
@@ -1398,10 +1343,7 @@ Event CApplication::CreateUpdateEvent()
     }
 
     Event frameEvent(EVENT_FRAME);
-    frameEvent.trackedKeysState = m_trackedKeys;
-    frameEvent.kmodState = m_kmodState;
-    frameEvent.mousePos = m_mousePos;
-    frameEvent.mouseButtonsState = m_mouseButtonsState;
+    m_input->EventProcess(frameEvent);
     frameEvent.rTime = m_relTime;
 
     return frameEvent;
@@ -1541,34 +1483,6 @@ bool CApplication::ParseDebugModes(const std::string& str, int& debugModes)
     return true;
 }
 
-int CApplication::GetKmods() const
-{
-    return m_kmodState;
-}
-
-bool CApplication::GetKmodState(int kmod) const
-{
-    return (m_kmodState & kmod) != 0;
-}
-
-bool CApplication::GetTrackedKeyState(TrackedKey key) const
-{
-    return (m_trackedKeys & key) != 0;
-}
-
-bool CApplication::GetMouseButtonState(int index) const
-{
-    return (m_mouseButtonsState & (1<<index)) != 0;
-}
-
-void CApplication::ResetKeyStates()
-{
-    GetLogger()->Trace("Reset key states\n");
-    m_trackedKeys = 0;
-    m_kmodState = 0;
-    m_robotMain->ResetKeyStates();
-}
-
 void CApplication::SetGrabInput(bool grab)
 {
     SDL_WM_GrabInput(grab ? SDL_GRAB_ON : SDL_GRAB_OFF);
@@ -1594,16 +1508,10 @@ MouseMode CApplication::GetMouseMode() const
     return m_mouseMode;
 }
 
-Math::Point CApplication::GetMousePos() const
-{
-    return m_mousePos;
-}
-
 void CApplication::MoveMouse(Math::Point pos)
 {
-    m_mousePos = pos;
-
     Math::IntPoint windowPos = m_engine->InterfaceToWindowCoords(pos);
+    m_input->MouseMove(windowPos);
     SDL_WarpMouse(windowPos.x, windowPos.y);
 }
 

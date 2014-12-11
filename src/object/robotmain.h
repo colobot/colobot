@@ -77,6 +77,7 @@ enum Phase
 class CEventQueue;
 class CSoundInterface;
 class CLevelParserLine;
+class CInput;
 
 namespace Gfx {
 class CEngine;
@@ -166,36 +167,6 @@ const int SATCOM_PROG       = 4;
 const int SATCOM_SOLUCE     = 5;
 const int SATCOM_MAX        = 6;
 
-
-/**
- * \struct InputBinding
- * \brief Binding for input slot
- */
-struct InputBinding
-{
-    //! Primary and secondary bindings
-    //! Can be regular key, virtual key or virtual joystick button
-    unsigned int primary, secondary;
-
-    InputBinding(unsigned int p = KEY_INVALID, unsigned int s = KEY_INVALID)
-        : primary(p), secondary(s) {}
-};
-
-/**
- * \struct JoyAxisBinding
- * \brief Binding for joystick axis
- */
-struct JoyAxisBinding
-{
-    //! Axis index or AXIS_INVALID
-    int axis;
-    //! True to invert axis value
-    bool invert;
-};
-
-//! Invalid value for axis binding (no axis assigned)
-const int AXIS_INVALID = -1;
-
 class CRobotMain : public CSingleton<CRobotMain>
 {
 public:
@@ -213,30 +184,6 @@ public:
     void        CreateIni();
     
     void        ResetAfterDeviceChanged();
-
-    //! Sets the default input bindings (key and axes)
-    void        SetDefaultInputBindings();
-
-    //! Management of input bindings
-    //@{
-    void        SetInputBinding(InputSlot slot, InputBinding binding);
-    const InputBinding& GetInputBinding(InputSlot slot);
-    //@}
-
-    //! Management of joystick axis bindings
-    //@{
-    void        SetJoyAxisBinding(JoyAxisSlot slot, JoyAxisBinding binding);
-    const JoyAxisBinding& GetJoyAxisBinding(JoyAxisSlot slot);
-    //@}
-
-    //! Management of joystick deadzone
-    //@{
-    void        SetJoystickDeadzone(float zone);
-    float       GetJoystickDeadzone();
-    //@}
-
-    //! Resets tracked key states (motion vectors)
-    void        ResetKeyStates();
 
     void        ChangePhase(Phase phase);
     bool        ProcessEvent(Event &event);
@@ -421,7 +368,7 @@ protected:
     CObject*    DetectObject(Math::Point pos);
     void        ChangeCamera();
     void        RemoteCamera(float pan, float zoom, float rTime);
-    void        KeyCamera(EventType event, unsigned int key);
+    void        KeyCamera(EventType event, InputSlot key);
     void        AbortMovie();
     bool        IsSelectable(CObject* pObj);
     void        SelectOneObject(CObject* pObj, bool displayError=true);
@@ -462,15 +409,7 @@ protected:
     Ui::CDisplayInfo*   m_displayInfo;
     CSoundInterface*    m_sound;
     CPauseManager*      m_pause;
-
-    //! Bindings for user inputs
-    InputBinding    m_inputBindings[INPUT_SLOT_MAX];
-    JoyAxisBinding  m_joyAxisBindings[JOY_AXIS_SLOT_MAX];
-    float           m_joystickDeadzone;
-    //! Motion vector set by keyboard or joystick buttons
-    Math::Vector    m_keyMotion;
-    //! Motion vector set by joystick axes
-    Math::Vector    m_joyMotion;
+    CInput*             m_input;
 
 
     float           m_time;

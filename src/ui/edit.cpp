@@ -21,6 +21,7 @@
 #include "ui/edit.h"
 
 #include "app/app.h"
+#include "app/input.h"
 
 #include "clipboard/clipboard.h"
 
@@ -1443,9 +1444,8 @@ void CEdit::LoadImage(std::string name)
 bool CEdit::ReadText(std::string filename, int addSize)
 {
     char        *buffer;
-    int         len, i, j, n, font, iIndex, iLines, iCount, iLink, res;
+    int         len, i, j, n, font, iIndex, iLines, iCount, iLink;
     char        iName[50];
-    char        text[50];
     float       iWidth;
     InputSlot   slot;
     bool        bInSoluce, bBOL;
@@ -1782,71 +1782,36 @@ bool CEdit::ReadText(std::string filename, int addSize)
                   buffer[i+3] == 'y'  &&
                   buffer[i+4] == ' '  )
         {
-            if ( m_bSoluce || !bInSoluce )
+            int count;
+            for(count = 0; buffer[i+5+count] != ';'; count++);
+            if ( m_bSoluce || !bInSoluce ) //TODO: ???
             {
-                if ( SearchKey(buffer+i+5, slot) )
+                CInput* input = CInput::GetInstancePointer();
+                slot = input->SearchKeyById(std::string(&buffer[i+5], count));
+                if ( slot != INPUT_SLOT_MAX )
                 {
-                    CRobotMain* main = CRobotMain::GetInstancePointer();
-                    res = main->GetInputBinding(slot).primary;
-                    if ( res != 0 )
+                    std::string iNameStr = input->GetKeysString(slot);
+                    strcpy(iName, iNameStr.c_str());
+                    m_text[j] = ' ';
+                    m_format[j] = font;
+                    j ++;
+                    n = 0;
+                    while ( iName[n] != 0 )
                     {
-                        std::string iNameStr;
-                        if ( GetResource(RES_KEY, res, iNameStr) )
-                        {
-                            strcpy(iName, iNameStr.c_str());
-                            m_text[j] = ' ';
-                            m_format[j] = font;
-                            j ++;
-                            n = 0;
-                            while ( iName[n] != 0 )
-                            {
-                                m_text[j] = iName[n++];
-                                m_format[j] = font;
-                                j ++;
-                            }
-                            m_text[j] = ' ';
-                            m_format[j] = font;
-                            j ++;
-
-                            res = main->GetInputBinding(slot).secondary;
-                            if ( res != 0 )
-                            {
-                                if ( GetResource(RES_KEY, res, iNameStr) )
-                                {
-                                    strcpy(iName, iNameStr.c_str());
-
-                                    std::string textStr;
-                                    GetResource(RES_TEXT, RT_KEY_OR, textStr);
-                                    strcpy(text, textStr.c_str());
-                                    n = 0;
-                                    while ( text[n] != 0 )
-                                    {
-                                        m_text[j] = text[n++];
-                                        m_format[j] = font&~Gfx::FONT_MASK_HIGHLIGHT;
-                                        j ++;
-                                    }
-                                    n = 0;
-                                    while ( iName[n] != 0 )
-                                    {
-                                        m_text[j] = iName[n++];
-                                        m_format[j] = font;
-                                        j ++;
-                                    }
-                                    m_text[j] = ' ';
-                                    m_format[j] = font;
-                                    j ++;
-                                }
-                            }
-                            while ( buffer[i++] != ';' );
-                            continue;
-                        }
+                        m_text[j] = iName[n++];
+                        m_format[j] = font;
+                        j ++;
                     }
+                    m_text[j] = ' ';
+                    m_format[j] = font;
+                    j ++;
+                } else {
+                    m_text[j] = '?';
+                    m_format[j] = font;
+                    j ++;
                 }
-                m_text[j] = '?';
-                m_format[j] = font;
-                j ++;
             }
-            while ( buffer[i++] != ';' );
+            i = i+5+count+1;
         }
         else
         {

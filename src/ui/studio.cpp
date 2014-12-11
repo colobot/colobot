@@ -128,9 +128,8 @@ bool CStudio::EventProcess(const Event &event)
     
     if ( event.type == EVENT_KEY_DOWN )
     {
-        if ( (event.key.key == m_main->GetInputBinding(INPUT_SLOT_ACTION).primary ||
-              event.key.key == m_main->GetInputBinding(INPUT_SLOT_ACTION).secondary) &&
-              (event.kmodState & KEY_MOD(CTRL)) != 0 )
+        if ( event.key.slot == INPUT_SLOT_ACTION &&
+             (event.kmodState & KEY_MOD(CTRL)) != 0 )
         {
             Event newEvent = event;
             newEvent.type = EVENT_STUDIO_OK;
@@ -256,8 +255,7 @@ bool CStudio::EventProcess(const Event &event)
 
     if ( event.type == EVENT_KEY_DOWN )
     {
-        if (  event.key.key == m_main->GetInputBinding(INPUT_SLOT_CBOT).primary ||
-              event.key.key == m_main->GetInputBinding(INPUT_SLOT_CBOT).secondary )
+        if ( event.key.slot == INPUT_SLOT_CBOT )
         {
             if ( m_helpFilename.length() > 0 )
             {
@@ -1411,10 +1409,10 @@ void CStudio::UpdateChangeList()
 void CStudio::SetFilenameField(CEdit* edit, const std::string& filename)
 {
     std::string name = filename;
-    if(name.length() > edit->GetMaxChar()) {
+    if(name.length() > static_cast<unsigned int>(edit->GetMaxChar())) {
         if(name.substr(name.length()-4) == ".txt")
             name = name.substr(0, name.length()-4);
-        if(name.length() > edit->GetMaxChar()) {
+        if(name.length() > static_cast<unsigned int>(edit->GetMaxChar())) {
             CLogger::GetInstancePointer()->Warn("Tried to load too long filename!\n");
             name = name.substr(0, edit->GetMaxChar());  // truncates according to max length
         }

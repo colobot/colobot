@@ -20,6 +20,8 @@
 
 #include "common/restext.h"
 
+#include "app/input.h"
+
 #include "common/config.h"
 
 #include "common/global.h"
@@ -745,53 +747,6 @@ void SetGlobalGamerName(std::string name)
     strcpy(g_gamerName, name.c_str());
 }
 
-
-struct KeyDesc
-{
-    InputSlot   key;
-    char        name[20];
-};
-
-static KeyDesc keyTable[22] =
-{
-    { INPUT_SLOT_LEFT,     "left;"    },
-    { INPUT_SLOT_RIGHT,    "right;"   },
-    { INPUT_SLOT_UP,       "up;"      },
-    { INPUT_SLOT_DOWN,     "down;"    },
-    { INPUT_SLOT_GUP,      "gup;"     },
-    { INPUT_SLOT_GDOWN,    "gdown;"   },
-    { INPUT_SLOT_CAMERA,   "camera;"  },
-    { INPUT_SLOT_DESEL,    "desel;"   },
-    { INPUT_SLOT_ACTION,   "action;"  },
-    { INPUT_SLOT_NEAR,     "near;"    },
-    { INPUT_SLOT_AWAY,     "away;"    },
-    { INPUT_SLOT_NEXT,     "next;"    },
-    { INPUT_SLOT_HUMAN,    "human;"   },
-    { INPUT_SLOT_QUIT,     "quit;"    },
-    { INPUT_SLOT_HELP,     "help;"    },
-    { INPUT_SLOT_PROG,     "prog;"    },
-    { INPUT_SLOT_CBOT,     "cbot;"    },
-    { INPUT_SLOT_VISIT,    "visit;"   },
-    { INPUT_SLOT_SPEED10,  "speed10;" },
-    { INPUT_SLOT_SPEED15,  "speed15;" },
-    { INPUT_SLOT_SPEED20,  "speed20;" }
-};
-
-// Seeks a key.
-
-bool SearchKey(const char *cmd, InputSlot &key)
-{
-    for (int i = 0; i < 22 ;i++)
-    {
-        if ( strstr(cmd, keyTable[i].name) == cmd )
-        {
-            key = keyTable[i].key;
-            return true;
-        }
-    }
-    return false;
-}
-
 // Replaces the commands "\key name;" in a text.
 
 static void PutKeyName(std::string& dst, const char* src)
@@ -807,21 +762,12 @@ static void PutKeyName(std::string& dst, const char* src)
              src[s+3] == 'y'  &&
              src[s+4] == ' '  )
         {
-            InputSlot key;
-            if ( SearchKey(src+s+5, key) )
-            {
-                unsigned int res = CRobotMain::GetInstancePointer()->GetInputBinding(key).primary;
-                if (res != KEY_INVALID)
-                {
-                    std::string keyName;
-                    if ( GetResource(RES_KEY, res, keyName) )
-                    {
-                        dst.append(keyName);
-                        while ( src[s++] != ';' );
-                        continue;
-                    }
-                }
-            }
+            int count;
+            for(count = 0; src[s+5+count] != ';'; count++);
+            CInput* input = CInput::GetInstancePointer();
+            InputSlot key = input->SearchKeyById(std::string(&src[s+5], count));
+            dst.append(input->GetKeysString(key));
+            s = s+5+count+1;
         }
 
         dst.append(1, src[s++]);

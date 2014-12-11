@@ -154,6 +154,5 @@ enum ResTextType
 void     InitializeRestext();
 
 void     SetGlobalGamerName(std::string name);
-bool     SearchKey(const char *cmd, InputSlot& slot);
 bool     GetResource(ResType type, int num, std::string& text);
 

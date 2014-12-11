@@ -226,8 +226,7 @@ bool CBrain::EventProcess(const Event &event)
     action = EVENT_NULL;
 
     if ( event.type == EVENT_KEY_DOWN &&
-         (event.key.key == m_main->GetInputBinding(INPUT_SLOT_ACTION).primary ||
-          event.key.key == m_main->GetInputBinding(INPUT_SLOT_ACTION).secondary ) &&
+         event.key.slot == INPUT_SLOT_ACTION &&
          !m_main->GetEditLock() )
     {
         pw = static_cast< Ui::CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));

@@ -65,3 +65,49 @@ enum VirtualKmod
 //! Special value for invalid key bindings
 const unsigned int KEY_INVALID = SDLK_LAST + 1000;
 
+/**
+ * \enum InputSlot
+ * \brief Available slots for input bindings
+ */
+enum InputSlot
+{
+    INPUT_SLOT_LEFT    = 0,
+    INPUT_SLOT_RIGHT   = 1,
+    INPUT_SLOT_UP      = 2,
+    INPUT_SLOT_DOWN    = 3,
+    INPUT_SLOT_GUP     = 4,
+    INPUT_SLOT_GDOWN   = 5,
+    INPUT_SLOT_CAMERA  = 6,
+    INPUT_SLOT_DESEL   = 7,
+    INPUT_SLOT_ACTION  = 8,
+    INPUT_SLOT_NEAR    = 9,
+    INPUT_SLOT_AWAY    = 10,
+    INPUT_SLOT_NEXT    = 11,
+    INPUT_SLOT_HUMAN   = 12,
+    INPUT_SLOT_QUIT    = 13,
+    INPUT_SLOT_HELP    = 14,
+    INPUT_SLOT_PROG    = 15,
+    INPUT_SLOT_VISIT   = 16,
+    INPUT_SLOT_SPEED10 = 17,
+    INPUT_SLOT_SPEED15 = 18,
+    INPUT_SLOT_SPEED20 = 19,
+    INPUT_SLOT_SPEED30 = 20,
+    INPUT_SLOT_AIMUP   = 21,
+    INPUT_SLOT_AIMDOWN = 22,
+    INPUT_SLOT_CBOT    = 23,
+    
+    INPUT_SLOT_MAX
+};
+
+/**
+ * \enum JoyAxisSlot
+ * \brief Slots for joystick axes inputs
+ */
+enum JoyAxisSlot
+{
+    JOY_AXIS_SLOT_X,
+    JOY_AXIS_SLOT_Y,
+    JOY_AXIS_SLOT_Z,
+    
+    JOY_AXIS_SLOT_MAX
+};

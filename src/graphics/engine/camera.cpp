@@ -21,6 +21,7 @@
 #include "graphics/engine/camera.h"
 
 #include "app/app.h"
+#include "app/input.h"
 
 #include "common/iman.h"
 

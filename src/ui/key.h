@@ -26,6 +26,8 @@
 
 #include "ui/control.h"
 
+#include "app/input.h"
+
 #include "common/event.h"
 #include "common/restext.h"
 #include "common/key.h"
@@ -58,7 +60,7 @@ protected:
     bool    TestKey(unsigned int key);
 
 protected:
-    CRobotMain* m_robotMain;
+    CInput*      m_input;
 
     InputBinding m_binding;
     bool         m_catch;

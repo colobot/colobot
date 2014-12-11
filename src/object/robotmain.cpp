@@ -23,6 +23,7 @@
 #include "CBot/CBotDll.h"
 
 #include "app/app.h"
+#include "app/input.h"
 
 #include "common/event.h"
 #include "common/global.h"
@@ -629,6 +630,7 @@ CRobotMain::CRobotMain(CApplication* app, bool loadProfile)
     m_lightning  = m_engine->GetLightning();
     m_planet     = m_engine->GetPlanet();
     m_pause      = CPauseManager::GetInstancePointer();
+    m_input      = CInput::GetInstancePointer();
 
     m_interface   = new Ui::CInterface();
     m_terrain     = new Gfx::CTerrain();
@@ -713,9 +715,6 @@ CRobotMain::CRobotMain(CApplication* app, bool loadProfile)
     m_autosaveInterval = 15;
     m_autosaveSlots = 3;
     m_autosaveLast = 0.0f;
-
-    m_joystickDeadzone = 0.2f;
-    SetDefaultInputBindings();
 
     FlushDisplayInfo();
 
@@ -935,6 +934,8 @@ CRobotMain::~CRobotMain()
     delete m_map;
     m_map = nullptr;
 
+    m_input = nullptr;
+    m_pause = nullptr;
     m_app = nullptr;
 }
 
@@ -1000,98 +1001,6 @@ void CRobotMain::CreateIni()
     GetProfile().SetFloatProperty("Edit", "IODimY", m_IODim.y);
 
     GetProfile().Save();
-}
-
-void CRobotMain::SetDefaultInputBindings()
-{
-    for (int i = 0; i < INPUT_SLOT_MAX; i++)
-    {
-        m_inputBindings[i].primary = m_inputBindings[i].secondary = KEY_INVALID;
-    }
-
-    for (int i = 0; i < JOY_AXIS_SLOT_MAX; i++)
-    {
-        m_joyAxisBindings[i].axis = AXIS_INVALID;
-        m_joyAxisBindings[i].invert = false;
-    }
-
-    m_inputBindings[INPUT_SLOT_LEFT   ].primary   = KEY(LEFT);
-    m_inputBindings[INPUT_SLOT_RIGHT  ].primary   = KEY(RIGHT);
-    m_inputBindings[INPUT_SLOT_UP     ].primary   = KEY(UP);
-    m_inputBindings[INPUT_SLOT_DOWN   ].primary   = KEY(DOWN);
-    m_inputBindings[INPUT_SLOT_LEFT   ].secondary = KEY(a);
-    m_inputBindings[INPUT_SLOT_RIGHT  ].secondary = KEY(d);
-    m_inputBindings[INPUT_SLOT_UP     ].secondary = KEY(w);
-    m_inputBindings[INPUT_SLOT_DOWN   ].secondary = KEY(s);
-    m_inputBindings[INPUT_SLOT_GUP    ].primary   = VIRTUAL_KMOD(SHIFT);
-    m_inputBindings[INPUT_SLOT_GDOWN  ].primary   = VIRTUAL_KMOD(CTRL);
-    m_inputBindings[INPUT_SLOT_CAMERA ].primary   = KEY(SPACE);
-//    m_inputBindings[INPUT_SLOT_CAMERA ].secondary = VIRTUAL_JOY(2);
-    m_inputBindings[INPUT_SLOT_DESEL  ].primary   = KEY(KP0);
-//    m_inputBindings[INPUT_SLOT_DESEL  ].secondary = VIRTUAL_JOY(6);
-    m_inputBindings[INPUT_SLOT_ACTION ].primary   = KEY(RETURN);
-//    m_inputBindings[INPUT_SLOT_ACTION ].secondary = VIRTUAL_JOY(1);
-    m_inputBindings[INPUT_SLOT_ACTION ].secondary = KEY(e);
-    m_inputBindings[INPUT_SLOT_NEAR   ].primary   = KEY(KP_PLUS);
-//    m_inputBindings[INPUT_SLOT_NEAR   ].secondary = VIRTUAL_JOY(5);
-    m_inputBindings[INPUT_SLOT_AWAY   ].primary   = KEY(KP_MINUS);
-//    m_inputBindings[INPUT_SLOT_AWAY   ].secondary = VIRTUAL_JOY(4);
-    m_inputBindings[INPUT_SLOT_NEXT   ].primary   = KEY(TAB);
-//    m_inputBindings[INPUT_SLOT_NEXT   ].secondary = VIRTUAL_JOY(3);
-    m_inputBindings[INPUT_SLOT_HUMAN  ].primary   = KEY(HOME);
-//    m_inputBindings[INPUT_SLOT_HUMAN  ].secondary = VIRTUAL_JOY(7);
-    m_inputBindings[INPUT_SLOT_QUIT   ].primary   = KEY(ESCAPE);
-    m_inputBindings[INPUT_SLOT_HELP   ].primary   = KEY(F1);
-    m_inputBindings[INPUT_SLOT_PROG   ].primary   = KEY(F2);
-    m_inputBindings[INPUT_SLOT_CBOT   ].primary   = KEY(F3);
-    m_inputBindings[INPUT_SLOT_VISIT  ].primary   = KEY(KP_PERIOD);
-    m_inputBindings[INPUT_SLOT_SPEED10].primary   = KEY(F4);
-    m_inputBindings[INPUT_SLOT_SPEED15].primary   = KEY(F5);
-    m_inputBindings[INPUT_SLOT_SPEED20].primary   = KEY(F6);
-
-    m_joyAxisBindings[JOY_AXIS_SLOT_X].axis = 0;
-    m_joyAxisBindings[JOY_AXIS_SLOT_Y].axis = 1;
-    m_joyAxisBindings[JOY_AXIS_SLOT_Z].axis = 2;
-}
-
-void CRobotMain::SetInputBinding(InputSlot slot, InputBinding binding)
-{
-    unsigned int index = static_cast<unsigned int>(slot);
-    m_inputBindings[index] = binding;
-}
-
-const InputBinding& CRobotMain::GetInputBinding(InputSlot slot)
-{
-    unsigned int index = static_cast<unsigned int>(slot);
-    return m_inputBindings[index];
-}
-
-void CRobotMain::SetJoyAxisBinding(JoyAxisSlot slot, JoyAxisBinding binding)
-{
-    unsigned int index = static_cast<unsigned int>(slot);
-    m_joyAxisBindings[index] = binding;
-}
-
-const JoyAxisBinding& CRobotMain::GetJoyAxisBinding(JoyAxisSlot slot)
-{
-    unsigned int index = static_cast<unsigned int>(slot);
-    return m_joyAxisBindings[index];
-}
-
-void CRobotMain::SetJoystickDeadzone(float zone)
-{
-    m_joystickDeadzone = zone;
-}
-
-float CRobotMain::GetJoystickDeadzone()
-{
-    return m_joystickDeadzone;
-}
-
-void CRobotMain::ResetKeyStates()
-{
-    m_keyMotion = Math::Vector(0.0f, 0.0f, 0.0f);
-    m_joyMotion = Math::Vector(0.0f, 0.0f, 0.0f);
 }
 
 //! Changes phase
@@ -1345,66 +1254,6 @@ void CRobotMain::ChangePhase(Phase phase)
 //! Processes an event
 bool CRobotMain::ProcessEvent(Event &event)
 {
-    /* Motion vector management */
-
-    if (event.type == EVENT_KEY_DOWN)
-    {
-        if (event.key.key == GetInputBinding(INPUT_SLOT_UP   ).primary)    m_keyMotion.y =  1.0f;
-        if (event.key.key == GetInputBinding(INPUT_SLOT_UP   ).secondary)  m_keyMotion.y =  1.0f;
-        if (event.key.key == GetInputBinding(INPUT_SLOT_DOWN ).primary)    m_keyMotion.y = -1.0f;
-        if (event.key.key == GetInputBinding(INPUT_SLOT_DOWN ).secondary)  m_keyMotion.y = -1.0f;
-        if (event.key.key == GetInputBinding(INPUT_SLOT_LEFT ).primary)    m_keyMotion.x = -1.0f;
-        if (event.key.key == GetInputBinding(INPUT_SLOT_LEFT ).secondary)  m_keyMotion.x = -1.0f;
-        if (event.key.key == GetInputBinding(INPUT_SLOT_RIGHT).primary)    m_keyMotion.x =  1.0f;
-        if (event.key.key == GetInputBinding(INPUT_SLOT_RIGHT).secondary)  m_keyMotion.x =  1.0f;
-        if (event.key.key == GetInputBinding(INPUT_SLOT_GUP  ).primary)    m_keyMotion.z =  1.0f;
-        if (event.key.key == GetInputBinding(INPUT_SLOT_GUP  ).secondary)  m_keyMotion.z =  1.0f;
-        if (event.key.key == GetInputBinding(INPUT_SLOT_GDOWN).primary)    m_keyMotion.z = -1.0f;
-        if (event.key.key == GetInputBinding(INPUT_SLOT_GDOWN).secondary)  m_keyMotion.z = -1.0f;
-    }
-    else if (event.type == EVENT_KEY_UP)
-    {
-        if (event.key.key == GetInputBinding(INPUT_SLOT_UP   ).primary)    m_keyMotion.y =  0.0f;
-        if (event.key.key == GetInputBinding(INPUT_SLOT_UP   ).secondary)  m_keyMotion.y =  0.0f;
-        if (event.key.key == GetInputBinding(INPUT_SLOT_DOWN ).primary)    m_keyMotion.y =  0.0f;
-        if (event.key.key == GetInputBinding(INPUT_SLOT_DOWN ).secondary)  m_keyMotion.y =  0.0f;
-        if (event.key.key == GetInputBinding(INPUT_SLOT_LEFT ).primary)    m_keyMotion.x =  0.0f;
-        if (event.key.key == GetInputBinding(INPUT_SLOT_LEFT ).secondary)  m_keyMotion.x =  0.0f;
-        if (event.key.key == GetInputBinding(INPUT_SLOT_RIGHT).primary)    m_keyMotion.x =  0.0f;
-        if (event.key.key == GetInputBinding(INPUT_SLOT_RIGHT).secondary)  m_keyMotion.x =  0.0f;
-        if (event.key.key == GetInputBinding(INPUT_SLOT_GUP  ).primary)    m_keyMotion.z =  0.0f;
-        if (event.key.key == GetInputBinding(INPUT_SLOT_GUP  ).secondary)  m_keyMotion.z =  0.0f;
-        if (event.key.key == GetInputBinding(INPUT_SLOT_GDOWN).primary)    m_keyMotion.z =  0.0f;
-        if (event.key.key == GetInputBinding(INPUT_SLOT_GDOWN).secondary)  m_keyMotion.z =  0.0f;
-    }
-    else if (event.type == EVENT_JOY_AXIS)
-    {
-        if (event.joyAxis.axis == GetJoyAxisBinding(JOY_AXIS_SLOT_X).axis)
-        {
-            m_joyMotion.x = Math::Neutral(event.joyAxis.value / 32768.0f, m_joystickDeadzone);
-            if (GetJoyAxisBinding(JOY_AXIS_SLOT_X).invert)
-                m_joyMotion.x *= -1.0f;
-        }
-
-        if (event.joyAxis.axis == GetJoyAxisBinding(JOY_AXIS_SLOT_Y).axis)
-        {
-            m_joyMotion.y = Math::Neutral(event.joyAxis.value / 32768.0f, m_joystickDeadzone);
-            if (GetJoyAxisBinding(JOY_AXIS_SLOT_Y).invert)
-                m_joyMotion.y *= -1.0f;
-        }
-
-        if (event.joyAxis.axis == GetJoyAxisBinding(JOY_AXIS_SLOT_Z).axis)
-        {
-            m_joyMotion.z = Math::Neutral(event.joyAxis.value / 32768.0f, m_joystickDeadzone);
-            if (GetJoyAxisBinding(JOY_AXIS_SLOT_Z).invert)
-                m_joyMotion.z *= -1.0f;
-        }
-    }
-
-    event.motionInput = Math::Clamp(m_joyMotion + m_keyMotion, Math::Vector(-1.0f, -1.0f, -1.0f), Math::Vector(1.0f, 1.0f, 1.0f));
-
-
-
     if (event.type == EVENT_FRAME)
     {
         if (!m_movie->EventProcess(event))  // end of the movie?
@@ -1494,10 +1343,8 @@ bool CRobotMain::ProcessEvent(Event &event)
 
         if (event.type == EVENT_KEY_DOWN)
         {
-            if (event.key.key == GetInputBinding(INPUT_SLOT_HELP).primary ||
-                event.key.key == GetInputBinding(INPUT_SLOT_HELP).secondary ||
-                event.key.key == GetInputBinding(INPUT_SLOT_PROG).primary ||
-                event.key.key == GetInputBinding(INPUT_SLOT_PROG).secondary ||
+            if (event.key.slot == INPUT_SLOT_HELP ||
+                event.key.slot == INPUT_SLOT_PROG ||
                 event.key.key == KEY(ESCAPE))
             {
                 StopDisplayInfo();
@@ -1521,7 +1368,7 @@ bool CRobotMain::ProcessEvent(Event &event)
         switch (event.type)
         {
             case EVENT_KEY_DOWN:
-                KeyCamera(event.type, event.key.key);
+                KeyCamera(event.type, event.key.slot);
                 HiliteClear();
                 if (event.key.key == KEY(F11))
                 {
@@ -1530,14 +1377,12 @@ bool CRobotMain::ProcessEvent(Event &event)
                 }
                 if (m_editLock)  // current edition?
                 {
-                    if (event.key.key == GetInputBinding(INPUT_SLOT_HELP).primary ||
-                        event.key.key == GetInputBinding(INPUT_SLOT_HELP).secondary)
+                    if (event.key.slot == INPUT_SLOT_HELP)
                     {
                         StartDisplayInfo(SATCOM_HUSTON, false);
                         return false;
                     }
-                    if (event.key.key == GetInputBinding(INPUT_SLOT_PROG).primary ||
-                        event.key.key == GetInputBinding(INPUT_SLOT_PROG).secondary)
+                    if (event.key.slot == INPUT_SLOT_PROG)
                     {
                         StartDisplayInfo(SATCOM_PROG, false);
                         return false;
@@ -1546,8 +1391,7 @@ bool CRobotMain::ProcessEvent(Event &event)
                 }
                 if (m_movieLock)  // current movie?
                 {
-                    if (event.key.key == GetInputBinding(INPUT_SLOT_QUIT).primary ||
-                        event.key.key == GetInputBinding(INPUT_SLOT_QUIT).secondary ||
+                    if (event.key.slot == INPUT_SLOT_QUIT ||
                         event.key.key == KEY(ESCAPE))
                     {
                         AbortMovie();
@@ -1556,21 +1400,18 @@ bool CRobotMain::ProcessEvent(Event &event)
                 }
                 if (m_camera->GetType() == Gfx::CAM_TYPE_VISIT)
                 {
-                    if (event.key.key == GetInputBinding(INPUT_SLOT_VISIT).primary ||
-                        event.key.key == GetInputBinding(INPUT_SLOT_VISIT).secondary)
+                    if (event.key.slot == INPUT_SLOT_VISIT)
                     {
                         StartDisplayVisit(EVENT_NULL);
                     }
-                    if (event.key.key == GetInputBinding(INPUT_SLOT_QUIT).primary ||
-                        event.key.key == GetInputBinding(INPUT_SLOT_QUIT).secondary ||
+                    if (event.key.slot == INPUT_SLOT_QUIT ||
                         event.key.key == KEY(ESCAPE))
                     {
                         StopDisplayVisit();
                     }
                     return false;
                 }
-                if (event.key.key == GetInputBinding(INPUT_SLOT_QUIT).primary ||
-                    event.key.key == GetInputBinding(INPUT_SLOT_QUIT).secondary)
+                if (event.key.slot == INPUT_SLOT_QUIT)
                 {
                     if (m_movie->IsExist())
                         StartDisplayInfo(SATCOM_HUSTON, false);
@@ -1581,7 +1422,7 @@ bool CRobotMain::ProcessEvent(Event &event)
                     else if (!m_cmdEdit)
                         m_dialog->StartAbort();  // do you want to leave?
                 }
-                if (event.key.key == KEY(PAUSE))
+                if (event.key.key == KEY(PAUSE)) //TODO: key binding
                 {
                     if (!m_movieLock && !m_editLock && !m_cmdEdit &&
                         m_camera->GetType() != Gfx::CAM_TYPE_VISIT &&
@@ -1590,62 +1431,52 @@ bool CRobotMain::ProcessEvent(Event &event)
                         ChangePause(m_pause->GetPause(PAUSE_USER) ? PAUSE_NONE : PAUSE_USER);
                     }
                 }
-                if (event.key.key == GetInputBinding(INPUT_SLOT_CAMERA).primary ||
-                    event.key.key == GetInputBinding(INPUT_SLOT_CAMERA).secondary)
+                if (event.key.slot == INPUT_SLOT_CAMERA)
                 {
                     ChangeCamera();
                 }
-                if (event.key.key == GetInputBinding(INPUT_SLOT_DESEL).primary ||
-                    event.key.key == GetInputBinding(INPUT_SLOT_DESEL).secondary)
+                if (event.key.slot == INPUT_SLOT_DESEL)
                 {
                     if (m_shortCut)
                         DeselectObject();
                 }
-                if (event.key.key == GetInputBinding(INPUT_SLOT_HUMAN).primary ||
-                    event.key.key == GetInputBinding(INPUT_SLOT_HUMAN).secondary)
+                if (event.key.slot == INPUT_SLOT_HUMAN)
                 {
                     SelectHuman();
                 }
-                if (event.key.key == GetInputBinding(INPUT_SLOT_NEXT).primary ||
-                    event.key.key == GetInputBinding(INPUT_SLOT_NEXT).secondary)
+                if (event.key.slot == INPUT_SLOT_NEXT)
                 {
                     if (m_shortCut)
                         m_short->SelectNext();
                 }
-                if (event.key.key == GetInputBinding(INPUT_SLOT_HELP).primary ||
-                    event.key.key == GetInputBinding(INPUT_SLOT_HELP).secondary)
+                if (event.key.slot == INPUT_SLOT_HELP)
                 {
                     StartDisplayInfo(SATCOM_HUSTON, true);
                 }
-                if (event.key.key == GetInputBinding(INPUT_SLOT_PROG).primary ||
-                    event.key.key == GetInputBinding(INPUT_SLOT_PROG).secondary)
+                if (event.key.slot == INPUT_SLOT_PROG)
                 {
                     StartDisplayInfo(SATCOM_PROG, true);
                 }
-                if (event.key.key == GetInputBinding(INPUT_SLOT_VISIT).primary ||
-                    event.key.key == GetInputBinding(INPUT_SLOT_VISIT).secondary)
+                if (event.key.slot == INPUT_SLOT_VISIT)
                 {
                     StartDisplayVisit(EVENT_NULL);
                 }
-                if (event.key.key == GetInputBinding(INPUT_SLOT_SPEED10).primary ||
-                    event.key.key == GetInputBinding(INPUT_SLOT_SPEED10).secondary)
+                if (event.key.slot == INPUT_SLOT_SPEED10)
                 {
                     SetSpeed(1.0f);
                 }
-                if (event.key.key == GetInputBinding(INPUT_SLOT_SPEED15).primary ||
-                    event.key.key == GetInputBinding(INPUT_SLOT_SPEED15).secondary)
+                if (event.key.slot == INPUT_SLOT_SPEED15)
                 {
                     SetSpeed(1.5f);
                 }
-                if (event.key.key == GetInputBinding(INPUT_SLOT_SPEED20).primary ||
-                    event.key.key == GetInputBinding(INPUT_SLOT_SPEED20).secondary)
+                if (event.key.slot == INPUT_SLOT_SPEED20)
                 {
                     SetSpeed(2.0f);
                 }
                 break;
 
             case EVENT_KEY_UP:
-                KeyCamera(event.type, event.key.key);
+                KeyCamera(event.type, event.key.slot);
                 break;
 
             case EVENT_MOUSE_BUTTON_DOWN:
@@ -3263,32 +3094,26 @@ void CRobotMain::ChangeCamera()
 }
 
 //! Remote control the camera using the arrow keys
-void CRobotMain::KeyCamera(EventType type, unsigned int key)
+void CRobotMain::KeyCamera(EventType type, InputSlot key)
 {
-    // TODO: rewrite key handling to input bindings
-
     if (type == EVENT_KEY_UP)
     {
-        if (key == GetInputBinding(INPUT_SLOT_LEFT).primary ||
-            key == GetInputBinding(INPUT_SLOT_LEFT).secondary)
+        if (key == INPUT_SLOT_LEFT)
         {
             m_cameraPan = 0.0f;
         }
 
-        if (key == GetInputBinding(INPUT_SLOT_RIGHT).primary ||
-            key == GetInputBinding(INPUT_SLOT_RIGHT).secondary)
+        if (key == INPUT_SLOT_RIGHT)
         {
             m_cameraPan = 0.0f;
         }
 
-        if (key == GetInputBinding(INPUT_SLOT_UP).primary ||
-            key == GetInputBinding(INPUT_SLOT_UP).secondary)
+        if (key == INPUT_SLOT_UP)
         {
             m_cameraZoom = 0.0f;
         }
 
-        if (key == GetInputBinding(INPUT_SLOT_DOWN).primary ||
-            key == GetInputBinding(INPUT_SLOT_DOWN).secondary)
+        if (key == INPUT_SLOT_DOWN)
         {
             m_cameraZoom = 0.0f;
         }
@@ -3304,26 +3129,22 @@ void CRobotMain::KeyCamera(EventType type, unsigned int key)
 
     if (type == EVENT_KEY_DOWN)
     {
-        if (key == GetInputBinding(INPUT_SLOT_LEFT).primary ||
-            key == GetInputBinding(INPUT_SLOT_LEFT).secondary)
+        if (key == INPUT_SLOT_LEFT)
         {
             m_cameraPan = -1.0f;
         }
 
-        if (key == GetInputBinding(INPUT_SLOT_RIGHT).primary ||
-            key == GetInputBinding(INPUT_SLOT_RIGHT).secondary)
+        if (key == INPUT_SLOT_RIGHT)
         {
             m_cameraPan = 1.0f;
         }
 
-        if (key == GetInputBinding(INPUT_SLOT_UP).primary ||
-            key == GetInputBinding(INPUT_SLOT_UP).secondary)
+        if (key == INPUT_SLOT_UP)
         {
             m_cameraZoom = -1.0f;
         }
 
-        if (key == GetInputBinding(INPUT_SLOT_DOWN).primary ||
-            key == GetInputBinding(INPUT_SLOT_DOWN).secondary)
+        if (key == INPUT_SLOT_DOWN)
         {
             m_cameraZoom = 1.0f;
         }
@@ -4750,7 +4571,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
         CreateShortcuts();
         m_map->UpdateMap();
         // TODO: m_engine->TimeInit(); ??
-        m_app->ResetKeyStates();
+        m_input->ResetKeyStates();
         m_time = 0.0f;
         m_gameTime = 0.0f;
         m_autosaveLast = 0.0f;
@@ -6828,7 +6649,7 @@ void CRobotMain::SetEditLock(bool lock, bool edit)
         m_map->ShowMap(!m_editLock && m_mapShow);
 
     m_displayText->HideText(lock);
-    m_app->ResetKeyStates();
+    m_input->ResetKeyStates();
 
     if (m_editLock)
         HiliteClear();

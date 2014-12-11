@@ -21,6 +21,7 @@
 #include "graphics/engine/engine.h"
 
 #include "app/app.h"
+#include "app/input.h"
 
 #include "common/image.h"
 #include "common/key.h"
@@ -4292,7 +4293,7 @@ void CEngine::DrawMouse()
 
     int index = static_cast<int>(m_mouseType);
 
-    Math::Point pos = m_app->GetMousePos();
+    Math::Point pos = CInput::GetInstancePointer()->GetMousePos();
     pos.x = pos.x - (m_mice[index].hotPoint.x * m_mouseSize.x) / 32.0f;
     pos.y = pos.y - ((32.0f - m_mice[index].hotPoint.y) * m_mouseSize.y) / 32.0f;
 

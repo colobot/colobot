@@ -44,6 +44,7 @@ class CInstanceManager;
 class CEventQueue;
 class CRobotMain;
 class CSoundInterface;
+class CInput;
 
 namespace Gfx {
 class CModelManager;
@@ -78,23 +79,6 @@ enum VideoQueryResult
     VIDEO_QUERY_NONE,
     VIDEO_QUERY_ALL,
     VIDEO_QUERY_OK
-};
-
-
-/**
- * \enum TrackedKey
- * \brief Additional keys whose state (pressed/released) is tracked by CApplication
- */
-enum TrackedKey
-{
-    TRKEY_NUM_UP    = (1<<0),
-    TRKEY_NUM_DOWN  = (1<<1),
-    TRKEY_NUM_LEFT  = (1<<2),
-    TRKEY_NUM_RIGHT = (1<<3),
-    TRKEY_NUM_PLUS  = (1<<4),
-    TRKEY_NUM_MINUS = (1<<5),
-    TRKEY_PAGE_UP   = (1<<6),
-    TRKEY_PAGE_DOWN = (1<<7)
 };
 
 /**
@@ -296,20 +280,6 @@ public:
     //! Updates the mouse position explicitly
     void        UpdateMouse();
 
-    //! Returns the current key modifiers
-    int         GetKmods() const;
-    //! Returns whether the given kmod is active
-    bool        GetKmodState(int kmod) const;
-
-    //! Returns whether the tracked key is pressed
-    bool        GetTrackedKeyState(TrackedKey key) const;
-
-    //! Returns whether the mouse button is pressed
-    bool        GetMouseButtonState(int index) const;
-
-    //! Resets tracked key states and modifiers
-    void        ResetKeyStates();
-
     //! Management of the grab mode for input (keyboard & mouse)
     //@{
     void        SetGrabInput(bool grab);
@@ -321,9 +291,6 @@ public:
     void        SetMouseMode(MouseMode mode);
     MouseMode   GetMouseMode() const;
     //@}
-
-    //! Returns the position of mouse cursor (in interface coords)
-    Math::Point GetMousePos() const;
 
     //! Moves (warps) the mouse cursor to the specified position (in interface coords)
     void        MoveMouse(Math::Point pos);
@@ -411,6 +378,8 @@ protected:
     CRobotMain*             m_robotMain;
     //! Profile (INI) reader/writer
     CProfile*               m_profile;
+    //! Input manager
+    CInput*                 m_input;
 
     //! Code to return at exit
     int             m_exitCode;
@@ -456,17 +425,8 @@ protected:
     bool            m_simulationSuspended;
     //@}
 
-    //! Current state of key modifiers (bitmask of SDLMod)
-    unsigned int    m_kmodState;
-    //! Current state of some tracked keys (bitmask of TrackedKey enum values)
-    unsigned int    m_trackedKeys;
-
     //! Current mode of mouse
     MouseMode       m_mouseMode;
-    //! Current position of mouse cursor
-    Math::Point     m_mousePos;
-    //! Current state of mouse buttons (bitmask of MouseButton enum values)
-    unsigned int    m_mouseButtonsState;
 
     //! Info about current joystick device
     JoystickDevice  m_joystick;

@@ -579,6 +579,8 @@ struct KeyEventData
     //! Unicode character
     //! NOTE: applicable only to EVENT_KEY_DOWN events!
     unsigned int unicode;
+    //! Input binding slot for this key
+    InputSlot slot;
 };
 
 /**
