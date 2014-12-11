@@ -101,7 +101,7 @@ bool CKey::EventProcess(const Event &event)
 
 bool CKey::TestKey(unsigned int key)
 {
-    if (key == KEY(PAUSE) || key == KEY(PRINT) || key == KEY(ESCAPE)) return true;  // blocked key
+    if (key == KEY(PAUSE) || key == KEY(PRINT)) return true;  // blocked key
 
     for (int i = 0; i < INPUT_SLOT_MAX; i++)
     {

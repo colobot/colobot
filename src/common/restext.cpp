@@ -36,6 +36,7 @@
 
 #include <libintl.h>
 #include <SDL_keyboard.h>
+#include <boost/regex.hpp>
 
 const char* stringsText[RT_MAX]         = { nullptr };
 const char* stringsEvent[EVENT_STD_MAX] = { nullptr };
@@ -814,31 +815,6 @@ static const char* GetResourceBase(ResType type, int num)
             str = stringsCbot[num];
             break;
 
-        case RES_KEY:
-
-            if (static_cast<unsigned int>(num) == KEY_INVALID)
-                return "";
-            else if (num == VIRTUAL_KMOD_CTRL)
-                return "Ctrl";
-            else if (num == VIRTUAL_KMOD_SHIFT)
-                return "Shift";
-            else if (num == VIRTUAL_KMOD_ALT)
-                return "Alt";
-            else if (num == VIRTUAL_KMOD_META)
-                return "Win";
-            else if (num > VIRTUAL_JOY(0))
-            {
-                // TODO: temporary fix
-                static std::string sstr;
-                sstr = gettext("Button %1");
-                sstr = StrUtils::Replace(sstr, "%1", StrUtils::ToString<int>(1 + num - VIRTUAL_JOY(0)));
-                return sstr.c_str();
-            }
-            else
-                str = SDL_GetKeyName(static_cast<SDLKey>(num));
-
-            break;
-
         default:
             assert(false);
     }
@@ -850,15 +826,43 @@ static const char* GetResourceBase(ResType type, int num)
 
 bool GetResource(ResType type, int num, std::string& text)
 {
-    const char *tmpl = GetResourceBase(type, num);
-
-    if (!tmpl)
+    if(type != RES_KEY)
     {
-        text.clear();
-        return false;
-    }
+        const char *tmpl = GetResourceBase(type, num);
 
-    PutKeyName(text, tmpl);
-    return true;
+        if (!tmpl)
+        {
+            text.clear();
+            return false;
+        }
+
+        PutKeyName(text, tmpl);
+        return true;
+    }
+    else
+    {
+        if (static_cast<unsigned int>(num) == KEY_INVALID)
+            text.clear();
+        else if (num == VIRTUAL_KMOD_CTRL)
+            text = "Ctrl";
+        else if (num == VIRTUAL_KMOD_SHIFT)
+            text = "Shift";
+        else if (num == VIRTUAL_KMOD_ALT)
+            text = "Alt";
+        else if (num == VIRTUAL_KMOD_META)
+            text = "Win";
+        else if (num > VIRTUAL_JOY(0))
+        {
+            text = gettext("Button %1");
+            text = StrUtils::Replace(text, "%1", StrUtils::ToString<int>(1 + num - VIRTUAL_JOY(0)));
+        }
+        else
+        {
+            text = SDL_GetKeyName(static_cast<SDLKey>(num));
+            text = boost::regex_replace(text, boost::regex("\\[(.*)\\]"), "\\1");
+            text[0] = toupper(text[0]);
+        }
+        return true;
+    }
 }
 
