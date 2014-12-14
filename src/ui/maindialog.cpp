@@ -71,8 +71,6 @@ namespace Ui {
 
 const int KEY_VISIBLE = 6;      // number of visible keys redefinable
 
-const int KEY_TOTAL = 21;       // total number of keys redefinable
-
 const float WELCOME_LENGTH = 3.0f;
 
 const int MAX_FNAME = 255; // TODO: remove after rewrite to std::string
@@ -1338,8 +1336,8 @@ void CMainDialog::ChangePhase(Phase phase)
         pos.x = 510.0f/640.0f;
         pos.y = 168.0f/480.0f;
         ps = pw->CreateScroll(pos, ddim, -1, EVENT_INTERFACE_KSCROLL);
-        ps->SetVisibleRatio(static_cast<float>(KEY_VISIBLE/KEY_TOTAL));
-        ps->SetArrowStep(1.0f/(static_cast<float>(KEY_TOTAL-KEY_VISIBLE)));
+        ps->SetVisibleRatio(static_cast<float>(KEY_VISIBLE/INPUT_SLOT_MAX));
+        ps->SetArrowStep(1.0f/(static_cast<float>(INPUT_SLOT_MAX-KEY_VISIBLE)));
         UpdateKey();
 
         ddim.x = dim.x*6;
@@ -2630,32 +2628,6 @@ bool CMainDialog::EventProcess(const Event &event)
                 UpdateKey();
                 break;
 
-            case EVENT_INTERFACE_KLEFT:
-            case EVENT_INTERFACE_KRIGHT:
-            case EVENT_INTERFACE_KUP:
-            case EVENT_INTERFACE_KDOWN:
-            case EVENT_INTERFACE_KGUP:
-            case EVENT_INTERFACE_KGDOWN:
-            case EVENT_INTERFACE_KCAMERA:
-            case EVENT_INTERFACE_KDESEL:
-            case EVENT_INTERFACE_KACTION:
-            case EVENT_INTERFACE_KNEAR:
-            case EVENT_INTERFACE_KAWAY:
-            case EVENT_INTERFACE_KNEXT:
-            case EVENT_INTERFACE_KHUMAN:
-            case EVENT_INTERFACE_KQUIT:
-            case EVENT_INTERFACE_KHELP:
-            case EVENT_INTERFACE_KPROG:
-            case EVENT_INTERFACE_KCBOT:
-            case EVENT_INTERFACE_KSPEED10:
-            case EVENT_INTERFACE_KSPEED15:
-            case EVENT_INTERFACE_KSPEED20:
-            case EVENT_INTERFACE_KSPEED30:
-            case EVENT_INTERFACE_KVISIT:
-                ChangeKey(event.type);
-                UpdateKey();
-                break;
-
             case EVENT_INTERFACE_KDEF:
                 CInput::GetInstancePointer()->SetDefaultInputBindings();
                 UpdateKey();
@@ -2667,6 +2639,11 @@ bool CMainDialog::EventProcess(const Event &event)
                 break;
 
             default:
+                if(event.type >= EVENT_INTERFACE_KEY && event.type <= EVENT_INTERFACE_KEY_END)
+                {
+                    ChangeKey(event.type);
+                    UpdateKey();
+                }
                 break;
         }
         return false;
@@ -5329,59 +5306,6 @@ void CMainDialog::ChangeSetupQuality(int quality)
     //m_engine->FirstExecuteAdapt(false);
 }
 
-
-// Redefinable keys:
-
-static InputSlot key_table[KEY_TOTAL] =
-{
-    INPUT_SLOT_LEFT,
-    INPUT_SLOT_RIGHT,
-    INPUT_SLOT_UP,
-    INPUT_SLOT_DOWN,
-    INPUT_SLOT_GUP,
-    INPUT_SLOT_GDOWN,
-    INPUT_SLOT_ACTION,
-    INPUT_SLOT_CAMERA,
-    INPUT_SLOT_VISIT,
-    INPUT_SLOT_NEXT,
-    INPUT_SLOT_HUMAN,
-    INPUT_SLOT_DESEL,
-    INPUT_SLOT_NEAR,
-    INPUT_SLOT_AWAY,
-    INPUT_SLOT_HELP,
-    INPUT_SLOT_PROG,
-    INPUT_SLOT_CBOT,
-    INPUT_SLOT_SPEED10,
-    INPUT_SLOT_SPEED15,
-    INPUT_SLOT_SPEED20,
-    INPUT_SLOT_QUIT,
-};
-
-static EventType key_event[KEY_TOTAL] =
-{
-    EVENT_INTERFACE_KLEFT,
-    EVENT_INTERFACE_KRIGHT,
-    EVENT_INTERFACE_KUP,
-    EVENT_INTERFACE_KDOWN,
-    EVENT_INTERFACE_KGUP,
-    EVENT_INTERFACE_KGDOWN,
-    EVENT_INTERFACE_KACTION,
-    EVENT_INTERFACE_KCAMERA,
-    EVENT_INTERFACE_KVISIT,
-    EVENT_INTERFACE_KNEXT,
-    EVENT_INTERFACE_KHUMAN,
-    EVENT_INTERFACE_KDESEL,
-    EVENT_INTERFACE_KNEAR,
-    EVENT_INTERFACE_KAWAY,
-    EVENT_INTERFACE_KHELP,
-    EVENT_INTERFACE_KPROG,
-    EVENT_INTERFACE_KCBOT,
-    EVENT_INTERFACE_KSPEED10,
-    EVENT_INTERFACE_KSPEED15,
-    EVENT_INTERFACE_KSPEED20,
-    EVENT_INTERFACE_KQUIT,
-};
-
 // Updates the list of keys.
 
 void CMainDialog::UpdateKey()
@@ -5392,10 +5316,10 @@ void CMainDialog::UpdateKey()
     CScroll* ps = static_cast<CScroll*>(pw->SearchControl(EVENT_INTERFACE_KSCROLL));
     if (ps == nullptr) return;
 
-    int first = static_cast<int>(ps->GetVisibleValue()*(KEY_TOTAL-KEY_VISIBLE));
+    int first = static_cast<int>(ps->GetVisibleValue()*(INPUT_SLOT_MAX-KEY_VISIBLE));
 
-    for (int i = 0; i < KEY_TOTAL; i++)
-        pw->DeleteControl(key_event[i]);
+    for (int i = 0; i < INPUT_SLOT_MAX; i++)
+        pw->DeleteControl(static_cast<EventType>(EVENT_INTERFACE_KEY+i));
 
     Math::Point dim;
     dim.x = 400.0f/640.0f;
@@ -5405,11 +5329,11 @@ void CMainDialog::UpdateKey()
     pos.y = 168.0f/480.0f + dim.y*(KEY_VISIBLE-1);
     for (int i = 0; i < KEY_VISIBLE; i++)
     {
-        pw->CreateKey(pos, dim, -1, key_event[first+i]);
-        CKey* pk = static_cast<CKey*>(pw->SearchControl(key_event[first+i]));
+        pw->CreateKey(pos, dim, -1, static_cast<EventType>(EVENT_INTERFACE_KEY+first+i));
+        CKey* pk = static_cast<CKey*>(pw->SearchControl(static_cast<EventType>(EVENT_INTERFACE_KEY+first+i)));
         if (pk == nullptr) break;
 
-        pk->SetBinding(CInput::GetInstancePointer()->GetInputBinding(key_table[first+i]));
+        pk->SetBinding(CInput::GetInstancePointer()->GetInputBinding(static_cast<InputSlot>(first+i)));
         pos.y -= dim.y;
     }
 }
@@ -5424,14 +5348,14 @@ void CMainDialog::ChangeKey(EventType event)
     CScroll* ps = static_cast<CScroll*>(pw->SearchControl(EVENT_INTERFACE_KSCROLL));
     if (ps == nullptr) return;
 
-    for (int i = 0; i < KEY_TOTAL; i++)
+    for (int i = 0; i < INPUT_SLOT_MAX; i++)
     {
-        if ( key_event[i] == event )
+        if ( EVENT_INTERFACE_KEY+i == event )
         {
-            CKey* pk = static_cast<CKey*>(pw->SearchControl(key_event[i]));
+            CKey* pk = static_cast<CKey*>(pw->SearchControl(static_cast<EventType>(EVENT_INTERFACE_KEY+i)));
             if (pk == nullptr) break;
 
-            CInput::GetInstancePointer()->SetInputBinding(key_table[i], pk->GetBinding());
+            CInput::GetInstancePointer()->SetInputBinding(static_cast<InputSlot>(i), pk->GetBinding());
         }
     }
 }

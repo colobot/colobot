@@ -65,6 +65,8 @@ CCamera::CCamera()
 
     m_main    = CRobotMain::GetInstancePointer();
     m_terrain = m_main->GetTerrain();
+    
+    m_input   = CInput::GetInstancePointer();
 
     m_type      = CAM_TYPE_FREE;
     m_smooth    = CAM_SMOOTH_NORM;
@@ -1225,12 +1227,12 @@ bool CCamera::EventFrameFree(const Event &event)
     }
 
     // PageUp/PageDown
-    if ( event.trackedKeysState & TRKEY_NUM_MINUS )
+    if ( m_input->GetKeyState(INPUT_SLOT_AWAY) )
     {
         if (m_heightEye < 500.0f)
             m_heightEye += event.rTime * factor * m_speed;
     }
-    if ( event.trackedKeysState & TRKEY_NUM_PLUS )
+    if ( m_input->GetKeyState(INPUT_SLOT_NEAR) )
     {
         if (m_heightEye > -2.0f)
             m_heightEye -= event.rTime * factor * m_speed;
@@ -1318,12 +1320,12 @@ bool CCamera::EventFrameBack(const Event &event)
         type = m_cameraObj->GetType();
 
     // +/-.
-    if (event.trackedKeysState & TRKEY_NUM_PLUS)
+    if (m_input->GetKeyState(INPUT_SLOT_NEAR))
     {
         m_backDist -= event.rTime * 30.0f * m_speed;
         if (m_backDist < m_backMin) m_backDist = m_backMin;
     }
-    if (event.trackedKeysState & TRKEY_NUM_MINUS)
+    if (m_input->GetKeyState(INPUT_SLOT_AWAY))
     {
         m_backDist += event.rTime * 30.0f * m_speed;
         if (m_backDist > 200.0f) m_backDist = 200.0f;
@@ -1467,12 +1469,12 @@ bool CCamera::EventFrameBack(const Event &event)
 bool CCamera::EventFrameFix(const Event &event)
 {
     // +/-.
-    if (event.trackedKeysState & TRKEY_NUM_PLUS)
+    if (m_input->GetKeyState(INPUT_SLOT_NEAR))
     {
         m_fixDist -= event.rTime * 30.0f * m_speed;
         if (m_fixDist < 10.0f) m_fixDist = 10.0f;
     }
-    if (event.trackedKeysState & TRKEY_NUM_MINUS)
+    if (m_input->GetKeyState(INPUT_SLOT_AWAY))
     {
         m_fixDist += event.rTime * 30.0f * m_speed;
         if (m_fixDist > 200.0f) m_fixDist = 200.0f;
@@ -1571,24 +1573,24 @@ bool CCamera::EventFrameVisit(const Event &event)
     m_visitTime += event.rTime;
 
     // +/-.
-    if (event.trackedKeysState & TRKEY_NUM_PLUS)
+    if (m_input->GetKeyState(INPUT_SLOT_NEAR))
     {
         m_visitDist -= event.rTime * 50.0f * m_speed;
         if (m_visitDist < 20.0f) m_visitDist = 20.0f;
     }
-    if (event.trackedKeysState & TRKEY_NUM_MINUS)
+    if (m_input->GetKeyState(INPUT_SLOT_AWAY))
     {
         m_visitDist += event.rTime * 50.0f * m_speed;
         if (m_visitDist > 200.0f) m_visitDist = 200.0f;
     }
 
     // PageUp/Down.
-    if (event.trackedKeysState & TRKEY_PAGE_UP)
+    if (m_input->GetKeyState(INPUT_SLOT_CAMERA_UP))
     {
         m_visitDirectionV -= event.rTime * 1.0f * m_speed;
         if (m_visitDirectionV < -Math::PI * 0.40f) m_visitDirectionV = -Math::PI * 0.40f;
     }
-    if (event.trackedKeysState & TRKEY_PAGE_DOWN)
+    if (m_input->GetKeyState(INPUT_SLOT_CAMERA_DOWN))
     {
         m_visitDirectionV += event.rTime * 1.0f * m_speed;
         if (m_visitDirectionV > 0.0f ) m_visitDirectionV = 0.0f;

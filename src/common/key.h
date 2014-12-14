@@ -68,6 +68,7 @@ const unsigned int KEY_INVALID = SDLK_LAST + 1000;
 /**
  * \enum InputSlot
  * \brief Available slots for input bindings
+ * NOTE: When adding new values, remember to also update keyTable in input.cpp and their descriptions in restext.cpp
  */
 enum InputSlot
 {
@@ -91,10 +92,10 @@ enum InputSlot
     INPUT_SLOT_SPEED10 = 17,
     INPUT_SLOT_SPEED15 = 18,
     INPUT_SLOT_SPEED20 = 19,
-    INPUT_SLOT_SPEED30 = 20,
-    INPUT_SLOT_AIMUP   = 21,
-    INPUT_SLOT_AIMDOWN = 22,
-    INPUT_SLOT_CBOT    = 23,
+    INPUT_SLOT_CBOT    = 20,
+    INPUT_SLOT_CAMERA_UP   = 21,
+    INPUT_SLOT_CAMERA_DOWN = 22,
+    INPUT_SLOT_PAUSE       = 23,
     
     INPUT_SLOT_MAX
 };

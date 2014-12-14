@@ -31,21 +31,6 @@
 #include "math/intpoint.h"
 
 
-/**
- * \enum TrackedKey
- * \brief Additional keys whose state (pressed/released) is tracked by CInput
- */
-enum TrackedKey
-{
-    TRKEY_NUM_UP    = (1<<0),
-    TRKEY_NUM_DOWN  = (1<<1),
-    TRKEY_NUM_LEFT  = (1<<2),
-    TRKEY_NUM_RIGHT = (1<<3),
-    TRKEY_NUM_PLUS  = (1<<4),
-    TRKEY_NUM_MINUS = (1<<5),
-    TRKEY_PAGE_UP   = (1<<6),
-    TRKEY_PAGE_DOWN = (1<<7)
-};
 
 /**
  * \struct InputBinding
@@ -86,7 +71,7 @@ public:
     //! Constructor
     CInput();
     
-    //! Process an incoming event, also sets .trackedKeysState, .kmodState, .mousePos, .mouseButtonsState and .key.slot
+    //! Process an incoming event, also sets .kmodState, .mousePos, .mouseButtonsState and .key.slot
     void EventProcess(Event &event);
     
     //! Called by CApplication on SDL MOUSE_MOTION event
@@ -99,8 +84,8 @@ public:
     //! Returns whether the given kmod is active
     bool        GetKmodState(int kmod) const;
     
-    //! Returns whether the tracked key is pressed
-    bool        GetTrackedKeyState(TrackedKey key) const;
+    //! Returns whether the key is pressed
+    bool        GetKeyState(InputSlot key) const;
     
     //! Returns whether the mouse button is pressed
     bool        GetMouseButtonState(int index) const;
@@ -154,8 +139,8 @@ public:
 private:
     //! Current state of key modifiers (bitmask of SDLMod)
     unsigned int    m_kmodState;
-    //! Current state of some tracked keys (bitmask of TrackedKey enum values)
-    unsigned int    m_trackedKeys;
+    //! Current state of keys
+    bool            m_keyPresses[INPUT_SLOT_MAX];
     
     
     //! Current position of mouse cursor

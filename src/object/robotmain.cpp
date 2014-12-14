@@ -1422,7 +1422,7 @@ bool CRobotMain::ProcessEvent(Event &event)
                     else if (!m_cmdEdit)
                         m_dialog->StartAbort();  // do you want to leave?
                 }
-                if (event.key.key == KEY(PAUSE)) //TODO: key binding
+                if (event.key.slot == INPUT_SLOT_PAUSE)
                 {
                     if (!m_movieLock && !m_editLock && !m_cmdEdit &&
                         m_camera->GetType() != Gfx::CAM_TYPE_VISIT &&

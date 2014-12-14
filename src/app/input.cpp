@@ -36,9 +36,11 @@ template<> CInput* CSingleton<CInput>::m_instance = nullptr;
 CInput::CInput()
 {
     m_kmodState = 0;
-    m_trackedKeys = 0;
     m_mousePos = Math::Point();
     m_mouseButtonsState = 0;
+    
+    for(int i=0; i<INPUT_SLOT_MAX; i++)
+        m_keyPresses[i] = false;
     
     m_joystickDeadzone = 0.2f;
     SetDefaultInputBindings();
@@ -63,46 +65,6 @@ void CInput::EventProcess(Event& event)
         m_mouseButtonsState &= ~event.mouseButton.button;
     }
     
-    if (event.type == EVENT_KEY_DOWN)
-    {
-        if      (event.key.key == KEY(KP8))
-            m_trackedKeys |= TRKEY_NUM_UP;
-        else if (event.key.key == KEY(KP2))
-            m_trackedKeys |= TRKEY_NUM_DOWN;
-        else if (event.key.key == KEY(KP4))
-            m_trackedKeys |= TRKEY_NUM_LEFT;
-        else if (event.key.key == KEY(KP6))
-            m_trackedKeys |= TRKEY_NUM_RIGHT;
-        else if (event.key.key == KEY(KP_PLUS))
-            m_trackedKeys |= TRKEY_NUM_PLUS;
-        else if (event.key.key == KEY(KP_MINUS))
-            m_trackedKeys |= TRKEY_NUM_MINUS;
-        else if (event.key.key == KEY(PAGEUP))
-            m_trackedKeys |= TRKEY_PAGE_UP;
-        else if (event.key.key == KEY(PAGEDOWN))
-            m_trackedKeys |= TRKEY_PAGE_DOWN;
-    }
-    else if (event.type == EVENT_KEY_UP)
-    {
-        if      (event.key.key == KEY(KP8))
-            m_trackedKeys &= ~TRKEY_NUM_UP;
-        else if (event.key.key == KEY(KP2))
-            m_trackedKeys &= ~TRKEY_NUM_DOWN;
-        else if (event.key.key == KEY(KP4))
-            m_trackedKeys &= ~TRKEY_NUM_LEFT;
-        else if (event.key.key == KEY(KP6))
-            m_trackedKeys &= ~TRKEY_NUM_RIGHT;
-        else if (event.key.key == KEY(KP_PLUS))
-            m_trackedKeys &= ~TRKEY_NUM_PLUS;
-        else if (event.key.key == KEY(KP_MINUS))
-            m_trackedKeys &= ~TRKEY_NUM_MINUS;
-        else if (event.key.key == KEY(PAGEUP))
-            m_trackedKeys &= ~TRKEY_PAGE_UP;
-        else if (event.key.key == KEY(PAGEDOWN))
-            m_trackedKeys &= ~TRKEY_PAGE_DOWN;
-    }
-    
-    
     
     if(event.type == EVENT_KEY_DOWN ||
        event.type == EVENT_KEY_UP)
@@ -110,10 +72,16 @@ void CInput::EventProcess(Event& event)
         event.key.slot = FindBinding(event.key.key);
     }
     
-    event.trackedKeysState = m_trackedKeys;
     event.kmodState = m_kmodState;
     event.mousePos = m_mousePos;
     event.mouseButtonsState = m_mouseButtonsState;
+    
+    
+    if (event.type == EVENT_KEY_DOWN ||
+        event.type == EVENT_KEY_UP)
+    {
+        m_keyPresses[event.key.slot] = (event.type == EVENT_KEY_DOWN);
+    }
     
     
     
@@ -179,9 +147,9 @@ bool CInput::GetKmodState(int kmod) const
     return (m_kmodState & kmod) != 0;
 }
 
-bool CInput::GetTrackedKeyState(TrackedKey key) const
+bool CInput::GetKeyState(InputSlot key) const
 {
-    return (m_trackedKeys & key) != 0;
+    return m_keyPresses[key];
 }
 
 bool CInput::GetMouseButtonState(int index) const
@@ -192,10 +160,11 @@ bool CInput::GetMouseButtonState(int index) const
 void CInput::ResetKeyStates()
 {
     CLogger::GetInstancePointer()->Trace("Reset key states\n");
-    m_trackedKeys = 0;
     m_kmodState = 0;
     m_keyMotion = Math::Vector(0.0f, 0.0f, 0.0f);
     m_joyMotion = Math::Vector(0.0f, 0.0f, 0.0f);
+    for(int i=0; i<INPUT_SLOT_MAX; i++)
+        m_keyPresses[i] = false;
 }
 
 Math::Point CInput::GetMousePos() const
@@ -227,20 +196,13 @@ void CInput::SetDefaultInputBindings()
     m_inputBindings[INPUT_SLOT_GUP    ].primary   = VIRTUAL_KMOD(SHIFT);
     m_inputBindings[INPUT_SLOT_GDOWN  ].primary   = VIRTUAL_KMOD(CTRL);
     m_inputBindings[INPUT_SLOT_CAMERA ].primary   = KEY(SPACE);
-    //    m_inputBindings[INPUT_SLOT_CAMERA ].secondary = VIRTUAL_JOY(2);
     m_inputBindings[INPUT_SLOT_DESEL  ].primary   = KEY(KP0);
-    //    m_inputBindings[INPUT_SLOT_DESEL  ].secondary = VIRTUAL_JOY(6);
     m_inputBindings[INPUT_SLOT_ACTION ].primary   = KEY(RETURN);
-    //    m_inputBindings[INPUT_SLOT_ACTION ].secondary = VIRTUAL_JOY(1);
     m_inputBindings[INPUT_SLOT_ACTION ].secondary = KEY(e);
     m_inputBindings[INPUT_SLOT_NEAR   ].primary   = KEY(KP_PLUS);
-    //    m_inputBindings[INPUT_SLOT_NEAR   ].secondary = VIRTUAL_JOY(5);
     m_inputBindings[INPUT_SLOT_AWAY   ].primary   = KEY(KP_MINUS);
-    //    m_inputBindings[INPUT_SLOT_AWAY   ].secondary = VIRTUAL_JOY(4);
     m_inputBindings[INPUT_SLOT_NEXT   ].primary   = KEY(TAB);
-    //    m_inputBindings[INPUT_SLOT_NEXT   ].secondary = VIRTUAL_JOY(3);
     m_inputBindings[INPUT_SLOT_HUMAN  ].primary   = KEY(HOME);
-    //    m_inputBindings[INPUT_SLOT_HUMAN  ].secondary = VIRTUAL_JOY(7);
     m_inputBindings[INPUT_SLOT_QUIT   ].primary   = KEY(ESCAPE);
     m_inputBindings[INPUT_SLOT_HELP   ].primary   = KEY(F1);
     m_inputBindings[INPUT_SLOT_PROG   ].primary   = KEY(F2);
@@ -249,6 +211,10 @@ void CInput::SetDefaultInputBindings()
     m_inputBindings[INPUT_SLOT_SPEED10].primary   = KEY(F4);
     m_inputBindings[INPUT_SLOT_SPEED15].primary   = KEY(F5);
     m_inputBindings[INPUT_SLOT_SPEED20].primary   = KEY(F6);
+    m_inputBindings[INPUT_SLOT_CAMERA_UP].primary   = KEY(PAGEUP);
+    m_inputBindings[INPUT_SLOT_CAMERA_DOWN].primary = KEY(PAGEDOWN);
+    m_inputBindings[INPUT_SLOT_PAUSE].primary       = KEY(PAUSE);
+    m_inputBindings[INPUT_SLOT_PAUSE].secondary     = KEY(p);
     
     m_joyAxisBindings[JOY_AXIS_SLOT_X].axis = 0;
     m_joyAxisBindings[JOY_AXIS_SLOT_Y].axis = 1;
@@ -349,7 +315,9 @@ static std::map<InputSlot, std::string> keyTable =
     { INPUT_SLOT_VISIT,    "visit"   },
     { INPUT_SLOT_SPEED10,  "speed10" },
     { INPUT_SLOT_SPEED15,  "speed15" },
-    { INPUT_SLOT_SPEED20,  "speed20" }
+    { INPUT_SLOT_SPEED20,  "speed20" },
+    { INPUT_SLOT_CAMERA_UP,   "camup"   },
+    { INPUT_SLOT_CAMERA_DOWN, "camdown" },
 };
 
 InputSlot CInput::SearchKeyById(std::string id)

@@ -1160,7 +1160,6 @@ void CApplication::LogEvent(const Event &event)
     {
         l->Trace(" rTime = %f\n", event.rTime);
         l->Trace(" kmodState = %04x\n", event.kmodState);
-        l->Trace(" trackedKeysState = %04x\n", event.trackedKeysState);
         l->Trace(" mousePos = %f, %f\n", event.mousePos.x, event.mousePos.y);
         l->Trace(" mouseButtonsState = %02x\n", event.mouseButtonsState);
         l->Trace(" customParam = %d\n", event.customParam);

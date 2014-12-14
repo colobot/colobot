@@ -32,6 +32,7 @@
 
 class CObject;
 class CRobotMain;
+class CInput;
 
 
 // Graphics module namespace
@@ -265,6 +266,7 @@ protected:
     CRobotMain*  m_main;
     CTerrain*    m_terrain;
     CWater*      m_water;
+    CInput*      m_input;
 
     //! The type of camera
     CameraType   m_type;

@@ -250,38 +250,19 @@ enum EventType
     EVENT_INTERFACE_KGROUP  = 502,
     EVENT_INTERFACE_KSCROLL = 503,
     EVENT_INTERFACE_KDEF    = 504,
-    EVENT_INTERFACE_KLEFT   = 505,
-    EVENT_INTERFACE_KRIGHT  = 506,
-    EVENT_INTERFACE_KUP     = 507,
-    EVENT_INTERFACE_KDOWN   = 508,
-    EVENT_INTERFACE_KGUP    = 509,
-    EVENT_INTERFACE_KGDOWN  = 510,
-    EVENT_INTERFACE_KCAMERA = 511,
-    EVENT_INTERFACE_KDESEL  = 512,
-    EVENT_INTERFACE_KACTION = 513,
-    EVENT_INTERFACE_KNEAR   = 514,
-    EVENT_INTERFACE_KAWAY   = 515,
-    EVENT_INTERFACE_KNEXT   = 516,
-    EVENT_INTERFACE_KHUMAN  = 517,
-    EVENT_INTERFACE_KQUIT   = 518,
-    EVENT_INTERFACE_KHELP   = 519,
-    EVENT_INTERFACE_KPROG   = 520,
-    EVENT_INTERFACE_KCBOT   = 521,
-    EVENT_INTERFACE_KVISIT  = 522,
-    EVENT_INTERFACE_KSPEED10= 523,
-    EVENT_INTERFACE_KSPEED15= 524,
-    EVENT_INTERFACE_KSPEED20= 525,
-    EVENT_INTERFACE_KSPEED30= 526,
-
-    EVENT_INTERFACE_VOLSOUND= 530,
-    EVENT_INTERFACE_VOLMUSIC= 531,
+    // Reserved space for keybindings
+    // This is not the nicest solution, but it'll have to work like that until we move to CEGUI
+    EVENT_INTERFACE_KEY     = 505,
+    EVENT_INTERFACE_KEY_END = 539,
 
     EVENT_INTERFACE_MIN     = 540,
     EVENT_INTERFACE_NORM    = 541,
     EVENT_INTERFACE_MAX     = 542,
-
-    EVENT_INTERFACE_SILENT  = 550,
-    EVENT_INTERFACE_NOISY   = 551,
+    
+    EVENT_INTERFACE_VOLSOUND= 550,
+    EVENT_INTERFACE_VOLMUSIC= 551,
+    EVENT_INTERFACE_SILENT  = 552,
+    EVENT_INTERFACE_NOISY   = 553,
 
     EVENT_INTERFACE_JOYSTICK= 560,
     EVENT_INTERFACE_SOLUCE  = 561,
@@ -699,17 +680,13 @@ struct Event
     // TODO: gradually replace the usage of this with new CApplication's time functions
     float        rTime;
 
-    //! Motion vector set by keyboard or joystick (managed by CRobotMain)
+    //! Motion vector set by keyboard or joystick (managed by CInput)
     //! Scope: all system events
     Math::Vector motionInput;
 
     //! Current state of keyboard modifier keys: bitmask made of KEY_MOD(...) macro values (from common/key.h)
     //! Scope: all system events
     unsigned int kmodState;
-
-    //! Current state of tracked keys: bitmask of TrackedKey enum values
-    //! Scope: all system events
-    unsigned int trackedKeysState;
 
     //! Current position of mouse cursor in interface coords
     //! Scope: all system events
@@ -744,7 +721,6 @@ struct Event
      : type(_type)
      , rTime(0.0f)
      , kmodState(0)
-     , trackedKeysState(0)
      , mouseButtonsState(0)
      , customParam(0)
     {}
