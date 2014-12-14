@@ -80,9 +80,6 @@ msgstr "1) Cliquez d'abord sur la touche à redéfinir."
 msgid "2) Then press the key you want to use instead."
 msgstr "2) Appuyez ensuite sur la nouvelle touche souhaitée."
 
-msgid "3D sound\\3D positioning of the sound"
-msgstr "Bruitages 3D\\Positionnement sonore dans l'espace"
-
 msgid "<<  Back  \\Back to the previous screen"
 msgstr "<<  Retour  \\Retour au niveau précédent"
 
@@ -333,6 +330,9 @@ msgstr "Caméra plus loin\\Recule la caméra"
 msgid "Camera closer\\Moves the camera forward"
 msgstr "Caméra plus proche\\Avance la caméra"
 
+msgid "Camera down\\Decrease camera angle while visiting message origin"
+msgstr ""
+
 msgid "Camera nearest"
 msgstr "Caméra plus proche"
 
@@ -341,6 +341,9 @@ msgstr "Caméra à gauche"
 
 msgid "Camera to right"
 msgstr "Caméra à droite"
+
+msgid "Camera up\\Increase camera angle while visiting message origin"
+msgstr ""
 
 msgid "Can not create this; there are too many objects"
 msgstr "Création impossible; il y a trop d'objets"
@@ -766,9 +769,6 @@ msgstr "Clé C"
 msgid "Key D"
 msgstr "Clé D"
 
-msgid "Key word help\\More detailed help about key words"
-msgstr "Instructions mot-clé\\Explication sur le mot-clé"
-
 msgid "Keyword \"while\" missing"
 msgstr "Manque le mot \"while\""
 
@@ -1025,6 +1025,9 @@ msgstr "Coller (Ctrl+v)"
 
 msgid "Pause/continue"
 msgstr "Pause/continuer"
+
+msgid "Pause\\Pause the game without opening menu"
+msgstr ""
 
 msgid "Phazer shooter"
 msgstr "Robot phazer"
@@ -1344,6 +1347,10 @@ msgstr "Vaisseau spatial"
 msgid "Spaceship ruin"
 msgstr "Epave de vaisseau spatial"
 
+#, fuzzy
+msgid "Speed 0.5x\\Half speed"
+msgstr "Vitesse 1.0x\\Vitesse normale"
+
 msgid "Speed 1.0x\\Normal speed"
 msgstr "Vitesse 1.0x\\Vitesse normale"
 
@@ -1353,8 +1360,13 @@ msgstr "Vitesse 1.5x\\Une fois et demi plus rapide"
 msgid "Speed 2.0x\\Double speed"
 msgstr "Vitesse 2.0x\\Deux fois plus rapide"
 
-msgid "Speed 3.0x\\Three times faster"
-msgstr "Vitesse 3.0x\\Trois fois plus rapide"
+#, fuzzy
+msgid "Speed 3.0x\\Triple speed"
+msgstr "Vitesse 2.0x\\Deux fois plus rapide"
+
+#, fuzzy
+msgid "Speed 4.0x\\Quadruple speed"
+msgstr "Vitesse 2.0x\\Deux fois plus rapide"
 
 msgid "Spider"
 msgstr "Araignée"
@@ -1767,11 +1779,20 @@ msgstr "\\c; (aucun)\\n;\n"
 msgid "www.epsitec.com"
 msgstr "www.epsitec.com"
 
+#~ msgid "3D sound\\3D positioning of the sound"
+#~ msgstr "Bruitages 3D\\Positionnement sonore dans l'espace"
+
 #~ msgid "COLOBOT"
 #~ msgstr "COLOBOT"
 
+#~ msgid "Key word help\\More detailed help about key words"
+#~ msgstr "Instructions mot-clé\\Explication sur le mot-clé"
+
 #~ msgid "Quit\\Quit COLOBOT"
 #~ msgstr "Quitter\\Quitter COLOBOT"
+
+#~ msgid "Speed 3.0x\\Three times faster"
+#~ msgstr "Vitesse 3.0x\\Trois fois plus rapide"
 
 #~ msgid "\\Return to COLOBOT"
 #~ msgstr "\\Retourner dans COLOBOT"

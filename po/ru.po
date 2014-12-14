@@ -82,9 +82,6 @@ msgstr "1) Сначала нажми на клавишу, которую вы х
 msgid "2) Then press the key you want to use instead."
 msgstr "2) После этого нажмите на клавишу, которую вы хотите использовать."
 
-msgid "3D sound\\3D positioning of the sound"
-msgstr "3D-звук\\Стерео звук"
-
 msgid "<<  Back  \\Back to the previous screen"
 msgstr "<< Назад \\Вернуться на предыдущую страницу"
 
@@ -333,6 +330,9 @@ msgstr "Отдалить камеру\\Перемещение камеры на�
 msgid "Camera closer\\Moves the camera forward"
 msgstr "Приблизать камеру\\Перемещение камеры вперед"
 
+msgid "Camera down\\Decrease camera angle while visiting message origin"
+msgstr ""
+
 msgid "Camera nearest"
 msgstr "Приблизить камеру"
 
@@ -341,6 +341,9 @@ msgstr "Камеру влево"
 
 msgid "Camera to right"
 msgstr "Камеру вправо"
+
+msgid "Camera up\\Increase camera angle while visiting message origin"
+msgstr ""
 
 msgid "Can not create this; there are too many objects"
 msgstr "Не удается это создать, слишком много объектов"
@@ -765,9 +768,6 @@ msgstr "Ключ C"
 msgid "Key D"
 msgstr "Ключ D"
 
-msgid "Key word help\\More detailed help about key words"
-msgstr "Помощь по командам\\Более подробная справку по командам"
-
 msgid "Keyword \"while\" missing"
 msgstr "Нет ключевого слова \"while\" "
 
@@ -1024,6 +1024,9 @@ msgstr "Вставить (Ctrl+V)"
 
 msgid "Pause/continue"
 msgstr "Пауза/продолжить"
+
+msgid "Pause\\Pause the game without opening menu"
+msgstr ""
 
 msgid "Phazer shooter"
 msgstr "Фазовый стрелок"
@@ -1342,6 +1345,10 @@ msgstr "Космический корабль"
 msgid "Spaceship ruin"
 msgstr "Обломки корабля"
 
+#, fuzzy
+msgid "Speed 0.5x\\Half speed"
+msgstr "Скорость 1.0х\\Нормальная скорость"
+
 msgid "Speed 1.0x\\Normal speed"
 msgstr "Скорость 1.0х\\Нормальная скорость"
 
@@ -1351,8 +1358,13 @@ msgstr "Скорость 1.5х\\В полтора раза быстрее"
 msgid "Speed 2.0x\\Double speed"
 msgstr "Скорость 2.0х\\В два раза скорость"
 
-msgid "Speed 3.0x\\Three times faster"
-msgstr "Скорость 3.0х\\В три раза быстрее"
+#, fuzzy
+msgid "Speed 3.0x\\Triple speed"
+msgstr "Скорость 2.0х\\В два раза скорость"
+
+#, fuzzy
+msgid "Speed 4.0x\\Quadruple speed"
+msgstr "Скорость 2.0х\\В два раза скорость"
 
 msgid "Spider"
 msgstr "Маук"
@@ -1767,11 +1779,20 @@ msgstr "\\c; (нет)\\n;\n"
 msgid "www.epsitec.com"
 msgstr "www.epsitec.com"
 
+#~ msgid "3D sound\\3D positioning of the sound"
+#~ msgstr "3D-звук\\Стерео звук"
+
 #~ msgid "COLOBOT"
 #~ msgstr "КОЛОБОТ"
 
+#~ msgid "Key word help\\More detailed help about key words"
+#~ msgstr "Помощь по командам\\Более подробная справку по командам"
+
 #~ msgid "Quit\\Quit COLOBOT"
 #~ msgstr "Выход\\Выход из COLOBOT"
+
+#~ msgid "Speed 3.0x\\Three times faster"
+#~ msgstr "Скорость 3.0х\\В три раза быстрее"
 
 #~ msgid "\\Return to COLOBOT"
 #~ msgstr "\\Вернуться в COLOBOT"

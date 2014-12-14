@@ -85,9 +85,6 @@ msgstr "1) Najpierw kliknij klawisz, który chcesz przedefiniować."
 msgid "2) Then press the key you want to use instead."
 msgstr "2) Następnie naciśnij klawisz, którego chcesz używać."
 
-msgid "3D sound\\3D positioning of the sound"
-msgstr "Dźwięk 3D\\Przestrzenne pozycjonowanie dźwięków"
-
 msgid "<<  Back  \\Back to the previous screen"
 msgstr "<<  Wstecz  \\Wraca do poprzedniego ekranu"
 
@@ -343,6 +340,9 @@ msgstr "Kamera dalej\\Oddala kamerę"
 msgid "Camera closer\\Moves the camera forward"
 msgstr "Kamera bliżej\\Przybliża kamerę"
 
+msgid "Camera down\\Decrease camera angle while visiting message origin"
+msgstr "Kamera w dół\\Opuść kamerę podczas sprawdzania źródła wiadomości"
+
 msgid "Camera nearest"
 msgstr "Camera nearest"
 
@@ -351,6 +351,9 @@ msgstr "Camera to left"
 
 msgid "Camera to right"
 msgstr "Camera to right"
+
+msgid "Camera up\\Increase camera angle while visiting message origin"
+msgstr "Kamera w górę\\Podnieś kamerę podczas sprawdzania źródła wiadomości"
 
 msgid "Can not create this; there are too many objects"
 msgstr "Nie można tego utworzyć, za dużo obiektów"
@@ -775,10 +778,6 @@ msgstr "Klucz C"
 msgid "Key D"
 msgstr "Klucz D"
 
-msgid "Key word help\\More detailed help about key words"
-msgstr ""
-"Pomoc dot. słów kluczowych\\Dokładniejsza pomoc na temat słów kluczowych"
-
 msgid "Keyword \"while\" missing"
 msgstr "Brak kluczowego słowa \"while"
 
@@ -1035,6 +1034,9 @@ msgstr "Wklej (Ctrl+V)"
 
 msgid "Pause/continue"
 msgstr "Pauza/Kontynuuj"
+
+msgid "Pause\\Pause the game without opening menu"
+msgstr ""
 
 msgid "Phazer shooter"
 msgstr "Działo fazowe"
@@ -1354,6 +1356,9 @@ msgstr "Statek kosmiczny"
 msgid "Spaceship ruin"
 msgstr "Ruiny statku kosmicznego"
 
+msgid "Speed 0.5x\\Half speed"
+msgstr "Prędkość 0,5x\\Połowa prękości"
+
 msgid "Speed 1.0x\\Normal speed"
 msgstr "Prędkość 1,0x\\Prędkość normalna"
 
@@ -1363,8 +1368,11 @@ msgstr "Prędkość 1,5x\\1,5 raza szybciej"
 msgid "Speed 2.0x\\Double speed"
 msgstr "Prędkość 2,0x\\Dwa razy szybciej"
 
-msgid "Speed 3.0x\\Three times faster"
+msgid "Speed 3.0x\\Triple speed"
 msgstr "Prędkość 3,0x\\Trzy razy szybciej"
+
+msgid "Speed 4.0x\\Quadruple speed"
+msgstr "Prędkość 4,0x\\Cztery razy szybciej"
 
 msgid "Spider"
 msgstr "Pająk"
@@ -1778,3 +1786,13 @@ msgstr "\\c; (brak)\\n;\n"
 
 msgid "www.epsitec.com"
 msgstr "www.epsitec.com"
+
+#~ msgid "3D sound\\3D positioning of the sound"
+#~ msgstr "Dźwięk 3D\\Przestrzenne pozycjonowanie dźwięków"
+
+#~ msgid "Key word help\\More detailed help about key words"
+#~ msgstr ""
+#~ "Pomoc dot. słów kluczowych\\Dokładniejsza pomoc na temat słów kluczowych"
+
+#~ msgid "Speed 3.0x\\Three times faster"
+#~ msgstr "Prędkość 3,0x\\Trzy razy szybciej"

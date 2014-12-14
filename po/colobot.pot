@@ -463,10 +463,10 @@ msgstr ""
 msgid "Programming help\\Gives more detailed help with programming"
 msgstr ""
 
-msgid "Key word help\\More detailed help about key words"
+msgid "Origin of last message\\Shows where the last message was sent from"
 msgstr ""
 
-msgid "Origin of last message\\Shows where the last message was sent from"
+msgid "Speed 0.5x\\Half speed"
 msgstr ""
 
 msgid "Speed 1.0x\\Normal speed"
@@ -478,16 +478,25 @@ msgstr ""
 msgid "Speed 2.0x\\Double speed"
 msgstr ""
 
-msgid "Speed 3.0x\\Three times faster"
+msgid "Speed 3.0x\\Triple speed"
+msgstr ""
+
+msgid "Speed 4.0x\\Quadruple speed"
+msgstr ""
+
+msgid "Camera up\\Increase camera angle while visiting message origin"
+msgstr ""
+
+msgid "Camera down\\Decrease camera angle while visiting message origin"
+msgstr ""
+
+msgid "Pause\\Pause the game without opening menu"
 msgstr ""
 
 msgid "Sound effects:\\Volume of engines, voice, shooting, etc."
 msgstr ""
 
 msgid "Background sound :\\Volume of audio tracks"
-msgstr ""
-
-msgid "3D sound\\3D positioning of the sound"
 msgstr ""
 
 msgid "Lowest\\Minimum graphic quality (highest frame rate)"

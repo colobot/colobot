@@ -84,9 +84,6 @@ msgstr "1) Klicken Sie auf die neu zu definierende Taste."
 msgid "2) Then press the key you want to use instead."
 msgstr "2) Drücken Sie auf die neue Taste."
 
-msgid "3D sound\\3D positioning of the sound"
-msgstr "3D-Geräusche\\Orten der Geräusche im Raum"
-
 msgid "<<  Back  \\Back to the previous screen"
 msgstr "<<  Zurück  \\Zurück zum Hauptmenü"
 
@@ -338,6 +335,9 @@ msgstr "Kamera weiter\\Bewegung der Kamera rückwärts"
 msgid "Camera closer\\Moves the camera forward"
 msgstr "Kamera näher\\Bewegung der Kamera vorwärts"
 
+msgid "Camera down\\Decrease camera angle while visiting message origin"
+msgstr ""
+
 msgid "Camera nearest"
 msgstr "Kamera näher"
 
@@ -346,6 +346,9 @@ msgstr "Kamera links"
 
 msgid "Camera to right"
 msgstr "Kamera rechts"
+
+msgid "Camera up\\Increase camera angle while visiting message origin"
+msgstr ""
 
 msgid "Can not create this; there are too many objects"
 msgstr "Kein neues Objekt kann erstellt werden (zu viele vorhanden)"
@@ -772,9 +775,6 @@ msgstr "Schlüssel C"
 msgid "Key D"
 msgstr "Schlüssel D"
 
-msgid "Key word help\\More detailed help about key words"
-msgstr "Hilfe über Begriff\\Hilfe über einen Begriff"
-
 msgid "Keyword \"while\" missing"
 msgstr "Es fehlt das Wort \"while\""
 
@@ -1029,6 +1029,9 @@ msgstr "Einfügen (Ctrl+v)"
 
 msgid "Pause/continue"
 msgstr "Pause/Weitermachen"
+
+msgid "Pause\\Pause the game without opening menu"
+msgstr ""
 
 msgid "Phazer shooter"
 msgstr "Phazershooter"
@@ -1348,6 +1351,10 @@ msgstr "Raumschiff"
 msgid "Spaceship ruin"
 msgstr "Raumschiffruine"
 
+#, fuzzy
+msgid "Speed 0.5x\\Half speed"
+msgstr "Geschwindigkeit 1.0x\\Normale Spielgeschwindigkeit"
+
 msgid "Speed 1.0x\\Normal speed"
 msgstr "Geschwindigkeit 1.0x\\Normale Spielgeschwindigkeit"
 
@@ -1357,8 +1364,13 @@ msgstr "Geschwindigkeit 1.5x\\Spielgeschwindigkeit anderthalb Mal schneller"
 msgid "Speed 2.0x\\Double speed"
 msgstr "Geschwindigkeit 2.0x\\Spielgeschwindigkeit doppelt so schnell"
 
-msgid "Speed 3.0x\\Three times faster"
-msgstr "Geschwindigkeit 3.0x\\Spielgeschwindigkeit drei Mal schneller"
+#, fuzzy
+msgid "Speed 3.0x\\Triple speed"
+msgstr "Geschwindigkeit 2.0x\\Spielgeschwindigkeit doppelt so schnell"
+
+#, fuzzy
+msgid "Speed 4.0x\\Quadruple speed"
+msgstr "Geschwindigkeit 2.0x\\Spielgeschwindigkeit doppelt so schnell"
 
 msgid "Spider"
 msgstr "Spinne"
@@ -1771,11 +1783,20 @@ msgstr "\\c; (keine)\\n;\n"
 msgid "www.epsitec.com"
 msgstr "www.epsitec.com"
 
+#~ msgid "3D sound\\3D positioning of the sound"
+#~ msgstr "3D-Geräusche\\Orten der Geräusche im Raum"
+
 #~ msgid "COLOBOT"
 #~ msgstr "COLOBOT"
 
+#~ msgid "Key word help\\More detailed help about key words"
+#~ msgstr "Hilfe über Begriff\\Hilfe über einen Begriff"
+
 #~ msgid "Quit\\Quit COLOBOT"
 #~ msgstr "Schließen\\COLOBOT schließen"
+
+#~ msgid "Speed 3.0x\\Three times faster"
+#~ msgstr "Geschwindigkeit 3.0x\\Spielgeschwindigkeit drei Mal schneller"
 
 #~ msgid "\\Return to COLOBOT"
 #~ msgstr "\\Zurück zu COLOBOT"
