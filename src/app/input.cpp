@@ -206,11 +206,13 @@ void CInput::SetDefaultInputBindings()
     m_inputBindings[INPUT_SLOT_QUIT   ].primary   = KEY(ESCAPE);
     m_inputBindings[INPUT_SLOT_HELP   ].primary   = KEY(F1);
     m_inputBindings[INPUT_SLOT_PROG   ].primary   = KEY(F2);
-    m_inputBindings[INPUT_SLOT_CBOT   ].primary   = KEY(F3);
     m_inputBindings[INPUT_SLOT_VISIT  ].primary   = KEY(KP_PERIOD);
+    m_inputBindings[INPUT_SLOT_SPEED05].primary   = KEY(F3);
     m_inputBindings[INPUT_SLOT_SPEED10].primary   = KEY(F4);
     m_inputBindings[INPUT_SLOT_SPEED15].primary   = KEY(F5);
     m_inputBindings[INPUT_SLOT_SPEED20].primary   = KEY(F6);
+    m_inputBindings[INPUT_SLOT_SPEED30].primary   = KEY(F7);
+    m_inputBindings[INPUT_SLOT_SPEED40].primary   = KEY(F8);
     m_inputBindings[INPUT_SLOT_CAMERA_UP].primary   = KEY(PAGEUP);
     m_inputBindings[INPUT_SLOT_CAMERA_DOWN].primary = KEY(PAGEDOWN);
     m_inputBindings[INPUT_SLOT_PAUSE].primary       = KEY(PAUSE);
@@ -311,11 +313,13 @@ static std::map<InputSlot, std::string> keyTable =
     { INPUT_SLOT_QUIT,     "quit"    },
     { INPUT_SLOT_HELP,     "help"    },
     { INPUT_SLOT_PROG,     "prog"    },
-    { INPUT_SLOT_CBOT,     "cbot"    },
     { INPUT_SLOT_VISIT,    "visit"   },
+    { INPUT_SLOT_SPEED05,  "speed05" },
     { INPUT_SLOT_SPEED10,  "speed10" },
     { INPUT_SLOT_SPEED15,  "speed15" },
     { INPUT_SLOT_SPEED20,  "speed20" },
+    { INPUT_SLOT_SPEED30,  "speed30" },
+    { INPUT_SLOT_SPEED40,  "speed40" },
     { INPUT_SLOT_CAMERA_UP,   "camup"   },
     { INPUT_SLOT_CAMERA_DOWN, "camdown" },
 };

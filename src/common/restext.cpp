@@ -229,11 +229,13 @@ void InitializeRestext()
     stringsEvent[EVENT_INTERFACE_KEY+INPUT_SLOT_QUIT]        = TR("Quit\\Quit the current mission or exercise");
     stringsEvent[EVENT_INTERFACE_KEY+INPUT_SLOT_HELP]        = TR("Instructions\\Shows the instructions for the current mission");
     stringsEvent[EVENT_INTERFACE_KEY+INPUT_SLOT_PROG]        = TR("Programming help\\Gives more detailed help with programming");
-    stringsEvent[EVENT_INTERFACE_KEY+INPUT_SLOT_CBOT]        = TR("Key word help\\More detailed help about key words");
     stringsEvent[EVENT_INTERFACE_KEY+INPUT_SLOT_VISIT]       = TR("Origin of last message\\Shows where the last message was sent from");
+    stringsEvent[EVENT_INTERFACE_KEY+INPUT_SLOT_SPEED05]     = TR("Speed 0.5x\\Half speed");
     stringsEvent[EVENT_INTERFACE_KEY+INPUT_SLOT_SPEED10]     = TR("Speed 1.0x\\Normal speed");
     stringsEvent[EVENT_INTERFACE_KEY+INPUT_SLOT_SPEED15]     = TR("Speed 1.5x\\1.5 times faster");
     stringsEvent[EVENT_INTERFACE_KEY+INPUT_SLOT_SPEED20]     = TR("Speed 2.0x\\Double speed");
+    stringsEvent[EVENT_INTERFACE_KEY+INPUT_SLOT_SPEED30]     = TR("Speed 3.0x\\Triple speed");
+    stringsEvent[EVENT_INTERFACE_KEY+INPUT_SLOT_SPEED40]     = TR("Speed 4.0x\\Quadruple speed");
     stringsEvent[EVENT_INTERFACE_KEY+INPUT_SLOT_CAMERA_UP]   = TR("Camera up\\Increase camera angle while visiting message origin");
     stringsEvent[EVENT_INTERFACE_KEY+INPUT_SLOT_CAMERA_DOWN] = TR("Camera down\\Decrease camera angle while visiting message origin");
     stringsEvent[EVENT_INTERFACE_KEY+INPUT_SLOT_PAUSE]       = TR("Pause\\Pause the game without opening menu");

@@ -253,17 +253,6 @@ bool CStudio::EventProcess(const Event &event)
         m_script->Step(event);
     }
 
-    if ( event.type == EVENT_KEY_DOWN )
-    {
-        if ( event.key.slot == INPUT_SLOT_CBOT )
-        {
-            if ( m_helpFilename.length() > 0 )
-            {
-                m_main->StartDisplayInfo(const_cast<char *>(m_helpFilename.c_str()), -1); // TODO change to std::string when RobotMain changes
-            }
-        }
-    }
-
     if ( event.type == EVENT_WINDOW3 )  // window is moved?
     {
         m_editActualPos = m_editFinalPos = pw->GetPos();

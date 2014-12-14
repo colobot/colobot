@@ -1461,6 +1461,10 @@ bool CRobotMain::ProcessEvent(Event &event)
                 {
                     StartDisplayVisit(EVENT_NULL);
                 }
+                if (event.key.slot == INPUT_SLOT_SPEED05)
+                {
+                    SetSpeed(0.5f);
+                }
                 if (event.key.slot == INPUT_SLOT_SPEED10)
                 {
                     SetSpeed(1.0f);
@@ -1472,6 +1476,14 @@ bool CRobotMain::ProcessEvent(Event &event)
                 if (event.key.slot == INPUT_SLOT_SPEED20)
                 {
                     SetSpeed(2.0f);
+                }
+                if (event.key.slot == INPUT_SLOT_SPEED30)
+                {
+                    SetSpeed(3.0f);
+                }
+                if (event.key.slot == INPUT_SLOT_SPEED40)
+                {
+                    SetSpeed(4.0f);
                 }
                 break;
 
