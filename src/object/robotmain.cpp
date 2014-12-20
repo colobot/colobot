@@ -71,6 +71,7 @@
 #include "script/cbottoken.h"
 #include "script/cmdtoken.h"
 #include "script/script.h"
+#include "script/scriptfunc.h"
 
 #include "sound/sound.h"
 
@@ -277,8 +278,8 @@ CRobotMain::CRobotMain(CApplication* app, bool loadProfile)
         m_showLimit[i].link = 0;
     }
     
-    CScript::m_filesDir = CResourceManager::GetSaveLocation()+"/"+m_dialog->GetFilesDir(); //TODO: Refactor to PHYSFS while rewriting CBot engine
-    CScript::InitFonctions();
+    CScriptFunctions::m_filesDir = CResourceManager::GetSaveLocation()+"/"+m_dialog->GetFilesDir(); //TODO: Refactor to PHYSFS while rewriting CBot engine
+    CScriptFunctions::Init();
 }
 
 //! Destructor of robot application
@@ -4842,7 +4843,7 @@ char*  CRobotMain::GetNewScriptName(ObjectType type, int rank)
 //! Seeks if an object occupies in a spot, to prevent a backup of the game
 bool CRobotMain::IsBusy()
 {
-    if (CScript::m_CompteurFileOpen > 0) return true;
+    if (CScriptFunctions::m_CompteurFileOpen > 0) return true;
 
     CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
 
