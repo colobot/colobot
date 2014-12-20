@@ -1049,13 +1049,12 @@ CBotTypResult CScriptFunctions::cSearch(CBotVar* &var, void* user)
 
 bool CScriptFunctions::rSearch(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-    CObject     *pObj, *pBest;
+    CObject*    pThis = static_cast<CObject *>(user);
+    CObject     *pBest;
     CBotVar*    array;
     Math::Vector    pos, oPos;
-    bool        bNearest = false;
     bool        bArray;
-    float       min, dist;
-    int         type, oType, i;
+    int         type;
     
     if ( var->GetType() == CBotTypArrayPointer )
     {
@@ -1071,72 +1070,26 @@ bool CScriptFunctions::rSearch(CBotVar* var, CBotVar* result, int& exception, vo
     if ( var != 0 )
     {
         if ( !GetPoint(var, exception, pos) )  return true;
-        bNearest = true;
+    } else {
+        pos = pThis->GetPosition(0);
     }
     
-    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
-    
-    min = 100000.0f;
-    pBest = 0;
-    for ( i=0 ; i<1000000 ; i++ )
+    std::vector<ObjectType> type_v;
+    if(bArray)
     {
-        pObj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
-        if ( pObj == 0 )  break;
-        
-        if ( pObj->GetTruck() != 0 )  continue;  // object transported?
-        if ( !pObj->GetActif() )  continue;
-        
-        oType = pObj->GetType();
-        if ( oType == OBJECT_TOTO )  continue;
-        
-        if ( oType == OBJECT_RUINmobilew2 ||
-            oType == OBJECT_RUINmobilet1 ||
-            oType == OBJECT_RUINmobilet2 ||
-            oType == OBJECT_RUINmobiler1 ||
-            oType == OBJECT_RUINmobiler2 )
+        while ( array != 0 )
         {
-            oType = OBJECT_RUINmobilew1;  // any ruin
+            type_v.push_back(static_cast<ObjectType>(array->GetValInt()));
+            array = array->GetNext();
         }
-        
-        if ( oType == OBJECT_SCRAP2 ||
-            oType == OBJECT_SCRAP3 ||
-            oType == OBJECT_SCRAP4 ||
-            oType == OBJECT_SCRAP5 )  // wastes?
+    } else {
+        if(type != OBJECT_NULL)
         {
-            oType = OBJECT_SCRAP1;  // any waste
-        }
-        
-        if ( oType == OBJECT_BARRIER2 ||
-            oType == OBJECT_BARRIER3 )  // barriers?
-        {
-            oType = OBJECT_BARRIER1;  // any barrier
-        }
-        
-        if ( bArray )
-        {
-            if ( !FindList(array, oType) )  continue;
-        }
-        else
-        {
-            if ( type != oType && type != OBJECT_NULL )  continue;
-        }
-        
-        if ( bNearest )
-        {
-            oPos = pObj->GetPosition(0);
-            dist = Math::DistanceProjected(pos, oPos);
-            if ( dist < min )
-            {
-                min = dist;
-                pBest = pObj;
-            }
-        }
-        else
-        {
-            pBest = pObj;
-            break;
+            type_v.push_back(static_cast<ObjectType>(type));
         }
     }
+    
+    pBest = CObjectManager::GetInstancePointer()->Radar(pThis, pos, 0.0f, type_v, 0.0f, Math::PI*2.0f, 0.0f, 1000.0f, false, FILTER_NONE, true);
     
     if ( pBest == 0 )
     {
@@ -1192,13 +1145,12 @@ CBotTypResult CScriptFunctions::cRadar(CBotVar* &var, void* user)
 bool CScriptFunctions::rRadar(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
     CObject*    pThis = static_cast<CObject *>(user);
-    CObject     *pObj, *pBest;
-    CPhysics*   physics;
+    CObject     *pBest;
     CBotVar*    array;
-    Math::Vector    iPos, oPos;
+    Math::Vector    oPos;
     RadarFilter filter;
-    float       best, minDist, maxDist, sens, iAngle, angle, focus, d, a;
-    int         type, oType, i;
+    float       minDist, maxDist, sens, angle, focus;
+    int         type;
     bool        bArray = false;
     
     type    = OBJECT_NULL;
@@ -1260,100 +1212,24 @@ bool CScriptFunctions::rRadar(CBotVar* var, CBotVar* result, int& exception, voi
         }
     }
     
-    iPos   = pThis->GetPosition(0);
-    iAngle = pThis->GetAngleY(0)+angle;
-    iAngle = Math::NormAngle(iAngle);  // 0..2*Math::PI
-    
-    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
-    
-    if ( sens >= 0.0f )  best = 100000.0f;
-    else                 best = 0.0f;
-    pBest = 0;
-    for ( i=0 ; i<1000000 ; i++ )
+    std::vector<ObjectType> type_v;
+    if(bArray)
     {
-        pObj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
-        if ( pObj == 0 )  break;
-        if ( pObj == pThis )  continue;
-        
-        if ( pObj->GetTruck() != 0 )  continue;  // object transported?
-        if ( !pObj->GetActif() )  continue;
-        if ( pObj->GetProxyActivate() )  continue;
-        
-        oType = pObj->GetType();
-        if ( oType == OBJECT_TOTO || oType == OBJECT_CONTROLLER )  continue;
-        
-        if ( oType == OBJECT_RUINmobilew2 ||
-            oType == OBJECT_RUINmobilet1 ||
-            oType == OBJECT_RUINmobilet2 ||
-            oType == OBJECT_RUINmobiler1 ||
-            oType == OBJECT_RUINmobiler2 )
+        while ( array != 0 )
         {
-            oType = OBJECT_RUINmobilew1;  // any ruin
+            type_v.push_back(static_cast<ObjectType>(array->GetValInt()));
+            array = array->GetNext();
         }
-        
-        if ( oType == OBJECT_SCRAP2 ||
-            oType == OBJECT_SCRAP3 ||
-            oType == OBJECT_SCRAP4 ||
-            oType == OBJECT_SCRAP5 )  // wastes?
+    } else {
+        if(type != OBJECT_NULL)
         {
-            oType = OBJECT_SCRAP1;  // any waste
-        }
-        
-        if ( oType == OBJECT_BARRIER2 ||
-            oType == OBJECT_BARRIER3 )  // barriers?
-        {
-            oType = OBJECT_BARRIER1;  // any barrier
-        }
-        
-        if ( filter == FILTER_ONLYLANDING )
-        {
-            physics = pObj->GetPhysics();
-            if ( physics != 0 && !physics->GetLand() )  continue;
-        }
-        if ( filter == FILTER_ONLYFLYING )
-        {
-            physics = pObj->GetPhysics();
-            if ( physics != 0 && physics->GetLand() )  continue;
-        }
-        
-        if ( bArray )
-        {
-            if ( !FindList(array, oType) )  continue;
-        }
-        else
-        {
-            if ( type != oType && type != OBJECT_NULL )  continue;
-        }
-        
-        oPos = pObj->GetPosition(0);
-        d = Math::DistanceProjected(iPos, oPos);
-        if ( d < minDist || d > maxDist )  continue;  // too close or too far?
-        
-        if ( focus >= Math::PI*2.0f )
-        {
-            if ( (sens >= 0.0f && d < best) ||
-                (sens <  0.0f && d > best) )
-            {
-                best = d;
-                pBest = pObj;
-            }
-            continue;
-        }
-        
-        a = Math::RotateAngle(oPos.x-iPos.x, iPos.z-oPos.z);  // CW !
-        //TODO uninitialized variable
-        if ( Math::TestAngle(a, iAngle-focus/2.0f, iAngle+focus/2.0f) )
-        {
-            if ( (sens >= 0.0f && d < best) ||
-                (sens <  0.0f && d > best) )
-            {
-                best = d;
-                pBest = pObj;
-            }
+            type_v.push_back(static_cast<ObjectType>(type));
         }
     }
     
-    if ( pBest == 0 )
+    pBest = CObjectManager::GetInstancePointer()->Radar(pThis, type_v, angle, focus, minDist, maxDist, sens < 0, filter, true); //TODO: why is "sens" done like that?
+    
+    if ( pBest == nullptr )
     {
         result->SetPointer(0);
     }
@@ -1427,13 +1303,9 @@ bool CScriptFunctions::rDetect(CBotVar* var, CBotVar* result, int& exception, vo
 {
     CScript*    script = (static_cast<CObject *>(user))->GetRunScript();
     CObject*    pThis = static_cast<CObject *>(user);
-    CObject     *pObj, *pGoal, *pBest;
-    CPhysics*   physics;
+    CObject     *pBest;
     CBotVar*    array;
-    Math::Vector    iPos, oPos;
-    RadarFilter filter;
-    float       bGoal, best, minDist, maxDist, sens, iAngle, angle, focus, d, a;
-    int         type, oType, i;
+    int         type;
     bool        bArray = false;
     Error       err;
     
@@ -1443,12 +1315,6 @@ bool CScriptFunctions::rDetect(CBotVar* var, CBotVar* result, int& exception, vo
     {
         type    = OBJECT_NULL;
         array   = 0;
-        angle   = 0.0f;
-        focus   = 45.0f*Math::PI/180.0f;
-        minDist = 0.0f*g_unit;
-        maxDist = 20.0f*g_unit;
-        sens    = 1.0f;
-        filter  = FILTER_NONE;
         
         if ( var != 0 )
         {
@@ -1464,109 +1330,24 @@ bool CScriptFunctions::rDetect(CBotVar* var, CBotVar* result, int& exception, vo
             }
         }
         
-        iPos   = pThis->GetPosition(0);
-        iAngle = pThis->GetAngleY(0)+angle;
-        iAngle = Math::NormAngle(iAngle);  // 0..2*Math::PI
-        
-        CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
-        
-        bGoal = 100000.0f;
-        pGoal = 0;
-        if ( sens >= 0.0f )  best = 100000.0f;
-        else                 best = 0.0f;
-        pBest = 0;
-        for ( i=0 ; i<1000000 ; i++ )
+        std::vector<ObjectType> type_v;
+        if(bArray)
         {
-            pObj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
-            if ( pObj == 0 )  break;
-            if ( pObj == pThis )  continue;
-            
-            if ( pObj->GetTruck() != 0 )  continue;  // object transported?
-            if ( !pObj->GetActif() )  continue;
-            if ( pObj->GetProxyActivate() )  continue;
-            
-            oType = pObj->GetType();
-            if ( oType == OBJECT_TOTO )  continue;
-            
-            if ( oType == OBJECT_RUINmobilew2 ||
-                oType == OBJECT_RUINmobilet1 ||
-                oType == OBJECT_RUINmobilet2 ||
-                oType == OBJECT_RUINmobiler1 ||
-                oType == OBJECT_RUINmobiler2 )
+            while ( array != 0 )
             {
-                oType = OBJECT_RUINmobilew1;  // any ruin
+                type_v.push_back(static_cast<ObjectType>(array->GetValInt()));
+                array = array->GetNext();
             }
-            
-            if ( oType == OBJECT_SCRAP2 ||
-                oType == OBJECT_SCRAP3 ||
-                oType == OBJECT_SCRAP4 ||
-                oType == OBJECT_SCRAP5 )  // wastes?
+        } else {
+            if(type != OBJECT_NULL)
             {
-                oType = OBJECT_SCRAP1;  // any waste
-            }
-            
-            if ( oType == OBJECT_BARRIER2 ||
-                oType == OBJECT_BARRIER3 )  // barriers?
-            {
-                oType = OBJECT_BARRIER1;  // any barrier
-            }
-            
-            if ( filter == FILTER_ONLYLANDING )
-            {
-                physics = pObj->GetPhysics();
-                if ( physics != 0 && !physics->GetLand() )  continue;
-            }
-            if ( filter == FILTER_ONLYFLYING )
-            {
-                physics = pObj->GetPhysics();
-                if ( physics != 0 && physics->GetLand() )  continue;
-            }
-            
-            if ( bArray )
-            {
-                if ( !FindList(array, oType) )  continue;
-            }
-            else
-            {
-                if ( type != oType && type != OBJECT_NULL )  continue;
-            }
-            
-            oPos = pObj->GetPosition(0);
-            d = Math::DistanceProjected(iPos, oPos);
-            a = Math::RotateAngle(oPos.x-iPos.x, iPos.z-oPos.z);  // CW !
-            
-            if ( d < bGoal &&
-                Math::TestAngle(a, iAngle-(5.0f*Math::PI/180.0f)/2.0f, iAngle+(5.0f*Math::PI/180.0f)/2.0f) )
-            {
-                bGoal = d;
-                pGoal = pObj;
-            }
-            
-            if ( d < minDist || d > maxDist )  continue;  // too close or too far?
-            
-            if ( focus >= Math::PI*2.0f )
-            {
-                if ( (sens >= 0.0f && d < best) ||
-                    (sens <  0.0f && d > best) )
-                {
-                    best = d;
-                    pBest = pObj;
-                }
-                continue;
-            }
-            
-            if ( Math::TestAngle(a, iAngle-focus/2.0f, iAngle+focus/2.0f) )
-            {
-                if ( (sens >= 0.0f && d < best) ||
-                    (sens <  0.0f && d > best) )
-                {
-                    best = d;
-                    pBest = pObj;
-                }
+                type_v.push_back(static_cast<ObjectType>(type));
             }
         }
         
-        pThis->StartDetectEffect(pGoal, pBest!=0);
+        pBest = CObjectManager::GetInstancePointer()->Radar(pThis, type_v, 0.0f, 45.0f*Math::PI/180.0f, 0.0f, 20.0f, false, FILTER_NONE, true);
+        
+        pThis->StartDetectEffect(pBest, pBest != nullptr);
         
         if ( pBest == 0 )
         {
@@ -2554,37 +2335,17 @@ bool CScriptFunctions::rSend(CBotVar* var, CBotVar* result, int& exception, void
 
 CObject* CScriptFunctions::SearchInfo(CScript* script, CObject* object, float power)
 {
-    CObject     *pObj, *pBest;
+    CObject     *pBest;
     Math::Vector    iPos, oPos;
-    ObjectType  type;
-    float       dist, min;
-    int         i;
     
     iPos = object->GetPosition(0);
+    pBest = CObjectManager::GetInstancePointer()->Radar(object, OBJECT_INFO);
+    if(pBest == nullptr)
+        return nullptr;
+    oPos = object->GetPosition(0);
     
-    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
-    
-    min = 100000.0f;
-    pBest = 0;
-    for ( i=0 ; i<1000000 ; i++ )
-    {
-        pObj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
-        if ( pObj == 0 )  break;
-        
-        type = pObj->GetType();
-        if ( type != OBJECT_INFO )  continue;
-        
-        if ( !pObj->GetActif() )  continue;
-        
-        oPos = pObj->GetPosition(0);
-        dist = Math::Distance(oPos, iPos);
-        if ( dist > power )  continue;  // too far?
-        if ( dist < min )
-        {
-            min = dist;
-            pBest = pObj;
-        }
-    }
+    if(Math::DistanceProjected(iPos, oPos) > power)
+        return nullptr;
     
     return pBest;
 }

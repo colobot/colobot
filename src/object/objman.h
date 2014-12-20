@@ -46,6 +46,8 @@ public:
     bool      DeleteObject(CObject* instance);
     //! Finds object by id
     CObject*  GetObjectById(int id);
+    //! Returns all objects
+    const std::map<int, CObject*>& GetAllObjects();
     //! Removes all objects
     void      Flush();
     
@@ -54,6 +56,13 @@ public:
     CObject*  CreateObject(Math::Vector pos, float angle, ObjectType type, float power = -1.f, float zoom = 1.f, float height = 0.f, bool trainer = false, bool toy = false, int option = 0);
     //! Destroys an object
     bool      DestroyObject(int id);
+    //! Finds an object, like radar() in CBot
+    //@{
+    CObject*  Radar(CObject* pThis, ObjectType type = OBJECT_NULL, float angle = 0.0f, float focus = Math::PI*2.0f, float minDist = 0.0f, float maxDist = 1000.0f, bool furthest = false, RadarFilter filter = FILTER_NONE, bool cbotTypes = false);
+    CObject*  Radar(CObject* pThis, std::vector<ObjectType> type = {}, float angle = 0.0f, float focus = Math::PI*2.0f, float minDist = 0.0f, float maxDist = 1000.0f, bool furthest = false, RadarFilter filter = FILTER_NONE, bool cbotTypes = false);
+    CObject*  Radar(CObject* pThis, Math::Vector thisPosition, float thisAngle, ObjectType type = OBJECT_NULL, float angle = 0.0f, float focus = Math::PI*2.0f, float minDist = 0.0f, float maxDist = 1000.0f, bool furthest = false, RadarFilter filter = FILTER_NONE, bool cbotTypes = false);
+    CObject*  Radar(CObject* pThis, Math::Vector thisPosition, float thisAngle, std::vector<ObjectType> type = {}, float angle = 0.0f, float focus = Math::PI*2.0f, float minDist = 0.0f, float maxDist = 1000.0f, bool furthest = false, RadarFilter filter = FILTER_NONE, bool cbotTypes = false);
+    //@}
 
 protected:
     std::map<int, CObject*> m_table;
