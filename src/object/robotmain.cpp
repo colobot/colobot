@@ -277,7 +277,7 @@ CRobotMain::CRobotMain(CApplication* app, bool loadProfile)
         m_showLimit[i].link = 0;
     }
     
-    CScript::m_filesDir = m_dialog->GetFilesDir();
+    CScript::m_filesDir = CResourceManager::GetSaveLocation()+"/"+m_dialog->GetFilesDir(); //TODO: Refactor to PHYSFS while rewriting CBot engine
     CScript::InitFonctions();
 }
 

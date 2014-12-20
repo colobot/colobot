@@ -3493,13 +3493,7 @@ void PrepareFilename(CBotString &filename)
     int pos = filename.ReverseFind('/');
     if ( pos > 0 )
     {
-        filename = filename.Mid(pos+1);  // Remove files with
-    }
-    
-    pos = filename.ReverseFind('/');
-    if ( pos > 0 )
-    {
-        filename = filename.Mid(pos+1);  // also with /
+        filename = filename.Mid(pos+1);  // Remove files with /
     }
     
     pos = filename.ReverseFind(':');
@@ -3509,6 +3503,7 @@ void PrepareFilename(CBotString &filename)
     }
     
     filename = CBotString(CScript::m_filesDir.c_str()) + CBotString("/") + filename;
+    CLogger::GetInstancePointer()->Debug("CBot accessing file '%s'\n", static_cast<const char*>(filename));
 }
 
 
@@ -3553,7 +3548,7 @@ bool CScript::rfconstruct (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int&
         
         m_CompteurFileOpen ++;
         
-        // save the channel file
+        // save the file handle
         pVar = pThis->GetItem("handle");
         pVar->SetValInt(reinterpret_cast<long>(pFile));
     }
@@ -3663,7 +3658,7 @@ bool CScript::rfopen (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exce
     
     m_CompteurFileOpen ++;
     
-    // Registered the channel file
+    // save file handle
     pVar = pThis->GetItem("handle");
     pVar->SetValInt(reinterpret_cast<long>(pFile));
     
