@@ -200,7 +200,7 @@ private:
     static bool rPenWidth(CBotVar* var, CBotVar* result, int& exception, void* user);
     static bool rCameraFocus(CBotVar* var, CBotVar* result, int& exception, void* user);
 
-public:
+    
     static CBotTypResult cBusy(CBotVar* thisclass, CBotVar* &var);
     static CBotTypResult cFactory(CBotVar* thisclass, CBotVar* &var);
     static CBotTypResult cClassNull(CBotVar* thisclass, CBotVar* &var);
@@ -211,6 +211,28 @@ public:
     static bool rResearch(CBotVar* thisclass, CBotVar* var, CBotVar* result, int& exception);
     static bool rTakeOff(CBotVar* thisclass, CBotVar* var, CBotVar* result, int& exception);
     static bool rDestroy(CBotVar* thisclass, CBotVar* var, CBotVar* result, int& exception);
+    
+    
+    static CBotTypResult cfconstruct (CBotVar* pThis, CBotVar* &pVar);
+    static CBotTypResult cfopen (CBotVar* pThis, CBotVar* &pVar);
+    static CBotTypResult cfclose (CBotVar* pThis, CBotVar* &pVar);
+    static CBotTypResult cfwrite (CBotVar* pThis, CBotVar* &pVar);
+    static CBotTypResult cfread (CBotVar* pThis, CBotVar* &pVar);
+    static CBotTypResult cfeof (CBotVar* pThis, CBotVar* &pVar);
+    static bool rfconstruct (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception);
+    static bool rfdestruct (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception);
+    static bool rfopen (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception);
+    static bool rfclose (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception);
+    static bool rfwrite (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception);
+    static bool rfread (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception);
+    static bool rfeof (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception);
+    
+    static CBotTypResult cPointConstructor(CBotVar* pThis, CBotVar* &var);
+    static bool rPointConstructor(CBotVar* pThis, CBotVar* var, CBotVar* pResult, int& Exception);
+
+public:
+    static int m_CompteurFileOpen;
+    static std::string m_filesDir;
 
 private:
     static bool     Process(CScript* script, CBotVar* result, int &exception);
