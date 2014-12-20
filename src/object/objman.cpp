@@ -29,41 +29,43 @@ template<> CObjectManager* CSingleton<CObjectManager>::m_instance = nullptr;
 
 CObjectManager::CObjectManager()
 {
-    for (int i = 0; i < MAX_OBJECTS; i++)
-    {
-        m_table[i] = nullptr;
-    }
-    m_usedCount = 0;
 }
 
 CObjectManager::~CObjectManager()
 {
 }
 
-bool CObjectManager::AddInstance(CObject* instance)
+bool CObjectManager::AddObject(CObject* instance)
 {
-    if (m_usedCount >= MAX_OBJECTS) return false;
-
+    assert(instance != nullptr);
+    assert(m_table[instance->GetID()] == nullptr);
     m_table[instance->GetID()] = instance;
-    m_usedCount++;
     return true;
 }
 
-bool CObjectManager::DeleteInstance(CObject* instance)
+bool CObjectManager::DeleteObject(CObject* instance)
 {
-    for (int i = 0; i < m_usedCount; i++)
+    assert(instance != nullptr);
+    for(auto it = m_table.begin(); it != m_table.end(); ++it)
     {
-        if (m_table[i] == instance)
-            m_table[i] = nullptr;
+        if(it->second == instance)
+        {
+            m_table.erase(it);
+            return true;
+        }
     }
 
-    return true;
+    return false;
 }
 
-CObject* CObjectManager::SearchInstance(int id)
+CObject* CObjectManager::GetObjectById(int id)
 {
-    if (id >= MAX_OBJECTS) return nullptr;
     return m_table[id];
+}
+
+void CObjectManager::Flush()
+{
+    m_table.clear();
 }
 
 CObject* CObjectManager::CreateObject(Math::Vector pos, float angle, ObjectType type,
@@ -361,11 +363,10 @@ CObject* CObjectManager::CreateObject(Math::Vector pos, float angle, ObjectType 
     return object;
 }
 
-void CObjectManager::Flush()
+bool CObjectManager::DestroyObject(int id)
 {
-    for (int i = 0; i < MAX_OBJECTS; i++)
-    {
-        m_table[i] = nullptr;
-    }
-    m_usedCount = 0;
+    CObject* obj = GetObjectById(id);
+    if(obj == nullptr) return false;
+    delete obj; // Destructor calls CObjectManager::DeleteObject
+    return true;
 }

@@ -473,7 +473,7 @@ bool CScriptFunctions::rGetObjectById(CBotVar* var, CBotVar* result, int& except
     
     rank = var->GetValInt();
     
-    pObj = static_cast<CObject*>(CObjectManager::GetInstancePointer()->SearchInstance(rank));
+    pObj = static_cast<CObject*>(CObjectManager::GetInstancePointer()->GetObjectById(rank));
     if ( pObj == 0 )
     {
         result->SetPointer(0);
@@ -558,7 +558,7 @@ bool CScriptFunctions::rBusy(CBotVar* thisclass, CBotVar* var, CBotVar* result, 
     classVars = classVars->GetNext();  // "load"
     classVars = classVars->GetNext();  // "id"
     int rank = classVars->GetValInt();
-    CObject* obj = CObjectManager::GetInstancePointer()->SearchInstance(rank);
+    CObject* obj = CObjectManager::GetInstancePointer()->GetObjectById(rank);
     CAuto* automat = obj->GetAuto();
     
     if ( automat != nullptr )
@@ -590,7 +590,7 @@ bool CScriptFunctions::rDestroy(CBotVar* thisclass, CBotVar* var, CBotVar* resul
     classVars = classVars->GetNext();  // "load"
     classVars = classVars->GetNext();  // "id"
     int rank = classVars->GetValInt();
-    CObject* obj = CObjectManager::GetInstancePointer()->SearchInstance(rank);
+    CObject* obj = CObjectManager::GetInstancePointer()->GetObjectById(rank);
     CAuto* automat = obj->GetAuto();
     
     if ( thisType == OBJECT_DESTROYER )
@@ -667,7 +667,7 @@ bool CScriptFunctions::rFactory(CBotVar* thisclass, CBotVar* var, CBotVar* resul
     classVars = classVars->GetNext();  // "load"
     classVars = classVars->GetNext();  // "id"
     int rank = classVars->GetValInt();
-    CObject* factory = CObjectManager::GetInstancePointer()->SearchInstance(rank);
+    CObject* factory = CObjectManager::GetInstancePointer()->GetObjectById(rank);
     if (factory == nullptr) {
         exception = ERR_GENERIC;
         result->SetValInt(ERR_GENERIC);
@@ -847,7 +847,7 @@ bool CScriptFunctions::rResearch(CBotVar* thisclass, CBotVar* var, CBotVar* resu
     classVars = classVars->GetNext();  // "load"
     classVars = classVars->GetNext();  // "id"
     int rank = classVars->GetValInt();
-    CObject* center = CObjectManager::GetInstancePointer()->SearchInstance(rank);
+    CObject* center = CObjectManager::GetInstancePointer()->GetObjectById(rank);
     CAuto* automat = center->GetAuto();
     
     if ( thisType == OBJECT_RESEARCH ||
@@ -927,7 +927,7 @@ bool CScriptFunctions::rTakeOff(CBotVar* thisclass, CBotVar* var, CBotVar* resul
     classVars = classVars->GetNext();  // "load"
     classVars = classVars->GetNext();  // "id"
     int rank = classVars->GetValInt();
-    CObject* center = CObjectManager::GetInstancePointer()->SearchInstance(rank);
+    CObject* center = CObjectManager::GetInstancePointer()->GetObjectById(rank);
     CAuto* automat = center->GetAuto();
     
     if ( thisType == OBJECT_BASE )
@@ -998,7 +998,7 @@ bool CScriptFunctions::rDelete(CBotVar* var, CBotVar* result, int& exception, vo
         }
     }
     
-    pObj = static_cast<CObject*>(CObjectManager::GetInstancePointer()->SearchInstance(rank));
+    pObj = static_cast<CObject*>(CObjectManager::GetInstancePointer()->GetObjectById(rank));
     if ( pObj == 0 )
     {
         return true;
@@ -3452,7 +3452,7 @@ bool CScriptFunctions::rCameraFocus(CBotVar* var, CBotVar* result, int& exceptio
     classVars = classVars->GetNext();  // "load"
     classVars = classVars->GetNext();  // "id"
     int rank = classVars->GetValInt();
-    CObject* object = CObjectManager::GetInstancePointer()->SearchInstance(rank);
+    CObject* object = CObjectManager::GetInstancePointer()->GetObjectById(rank);
     
     script->m_main->SelectObject(object, false);
     

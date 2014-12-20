@@ -19,7 +19,7 @@
 
 /**
  * \file object/objman.h
- * \brief Instance manager for objects
+ * \brief Object manager
  */
 
 #pragma once
@@ -28,11 +28,11 @@
 
 #include "common/singleton.h"
 
-const int MAX_OBJECTS = 500;
+#include <map>
 
 /**
  * \class ObjectManager
- * \brief Manager for objects
+ * \brief Manages CObject instances
  */
 class CObjectManager : public CSingleton<CObjectManager>
 {
@@ -41,18 +41,21 @@ public:
     virtual ~CObjectManager();
 
     //! Registers new object
-    bool      AddInstance(CObject* instance);
-    //! Deletes the registered object
-    bool      DeleteInstance(CObject* instance);
-    //! Seeks for an object
-    CObject*  SearchInstance(int id);
-    //! Creates an object
-    CObject*  CreateObject(Math::Vector pos, float angle, ObjectType type, float power = -1.f, float zoom = 1.f, float height = 0.f, bool trainer = false, bool toy = false, int option = 0);
+    bool      AddObject(CObject* instance);
+    //! Unregisters the object
+    bool      DeleteObject(CObject* instance);
+    //! Finds object by id
+    CObject*  GetObjectById(int id);
     //! Removes all objects
     void      Flush();
+    
+    
+    //! Creates an object
+    CObject*  CreateObject(Math::Vector pos, float angle, ObjectType type, float power = -1.f, float zoom = 1.f, float height = 0.f, bool trainer = false, bool toy = false, int option = 0);
+    //! Destroys an object
+    bool      DestroyObject(int id);
 
 protected:
-    CObject* m_table[MAX_OBJECTS];
-    int m_usedCount;
+    std::map<int, CObject*> m_table;
 };
 

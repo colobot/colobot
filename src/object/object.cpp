@@ -350,7 +350,7 @@ CObject::CObject()
     m_botVar->SetUserPtr(this);
     m_botVar->SetIdent(m_id);
 
-    CObjectManager::GetInstancePointer()->AddInstance(this);
+    CObjectManager::GetInstancePointer()->AddObject(this);
 }
 
 // Object's destructor.
@@ -374,7 +374,7 @@ CObject::~CObject()
     m_auto = nullptr;
 
     CInstanceManager::GetInstancePointer()->DeleteInstance(CLASS_OBJECT, this);
-    CObjectManager::GetInstancePointer()->DeleteInstance(this);
+    CObjectManager::GetInstancePointer()->DeleteObject(this);
 
     m_app = nullptr;
 }
