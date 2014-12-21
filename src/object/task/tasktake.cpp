@@ -20,14 +20,13 @@
 
 #include "object/task/tasktake.h"
 
-#include "common/iman.h"
-
 #include "graphics/engine/terrain.h"
 #include "graphics/engine/water.h"
 
 #include "math/geometry.h"
 
 #include "object/motion/motionhuman.h"
+#include "object/objman.h"
 #include "object/robotmain.h"
 
 #include "physics/physics.h"
@@ -304,21 +303,17 @@ CObject* CTaskTake::SearchTakeObject(float &angle,
     Math::Vector    iPos, oPos;
     ObjectType  type;
     float       min, iAngle, bAngle, a, distance;
-    int         i;
 
     iPos   = m_object->GetPosition(0);
     iAngle = m_object->GetAngleY(0);
     iAngle = Math::NormAngle(iAngle);  // 0..2*Math::PI
 
-    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
-
     min = 1000000.0f;
     pBest = 0;
     bAngle = 0.0f;
-    for ( i=0 ; i<1000000 ; i++ )
+    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
-        if ( pObj == 0 )  break;
+        pObj = it.second;
 
         type = pObj->GetType();
 
@@ -375,18 +370,14 @@ CObject* CTaskTake::SearchFriendObject(float &angle,
     Math::Vector    iPos, oPos;
     ObjectType  type, powerType;
     float       iAngle, iRad, distance;
-    int         i;
 
     if ( !m_object->GetCrashSphere(0, iPos, iRad) )  return 0;
     iAngle = m_object->GetAngleY(0);
     iAngle = Math::NormAngle(iAngle);  // 0..2*Math::PI
-
-    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
-
-    for ( i=0 ; i<1000000 ; i++ )
+    
+    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
-        if ( pObj == 0 )  break;
+        pObj = it.second;
 
         if ( pObj == m_object )  continue;  // yourself?
 
@@ -573,17 +564,14 @@ bool CTaskTake::IsFreeDeposeObject(Math::Vector pos)
     Math::Matrix*   mat;
     Math::Vector    iPos, oPos;
     float       oRadius;
-    int         i, j;
+    int         j;
 
     mat = m_object->GetWorldMatrix(0);
     iPos = Transform(*mat, pos);
-
-    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
-
-    for ( i=0 ; i<1000000 ; i++ )
+    
+    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
-        if ( pObj == 0 )  break;
+        pObj = it.second;
 
         if ( pObj == m_object )  continue;
         if ( !pObj->GetActif() )  continue;  // inactive?

@@ -20,13 +20,12 @@
 
 #include "object/task/taskmanip.h"
 
-#include "common/iman.h"
-
 #include "graphics/engine/terrain.h"
 #include "graphics/engine/pyro.h"
 
 #include "math/geometry.h"
 
+#include "object/objman.h"
 #include "object/robotmain.h"
 
 #include "physics/physics.h"
@@ -729,18 +728,14 @@ CObject* CTaskManip::SearchTakeUnderObject(Math::Vector &pos, float dLimit)
     Math::Vector    iPos, oPos;
     ObjectType  type;
     float       min, distance;
-    int         i;
 
     iPos   = m_object->GetPosition(0);
 
-    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
-
     min = 1000000.0f;
     pBest = 0;
-    for ( i=0 ; i<1000000 ; i++ )
+    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
-        if ( pObj == 0 )  break;
+        pObj = it.second;
 
         type = pObj->GetType();
 
@@ -787,7 +782,6 @@ CObject* CTaskManip::SearchTakeFrontObject(bool bAdvance, Math::Vector &pos,
     Math::Vector    iPos, oPos;
     ObjectType  type;
     float       min, iAngle, bAngle, aLimit, dLimit, f;
-    int         i;
 
     iPos   = m_object->GetPosition(0);
     iAngle = m_object->GetAngleY(0);
@@ -805,15 +799,12 @@ CObject* CTaskManip::SearchTakeFrontObject(bool bAdvance, Math::Vector &pos,
         dLimit = MARGIN_FRONT;
     }
 
-    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
-
     min = 1000000.0f;
     pBest = 0;
     bAngle = 0.0f;
-    for ( i=0 ; i<1000000 ; i++ )
+    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
-        if ( pObj == 0 )  break;
+        pObj = it.second;
 
         type = pObj->GetType();
 
@@ -881,7 +872,6 @@ CObject* CTaskManip::SearchTakeBackObject(bool bAdvance, Math::Vector &pos,
     Math::Vector    iPos, oPos;
     ObjectType  type;
     float       min, iAngle, bAngle, aLimit, dLimit, f;
-    int         i;
 
     iPos   = m_object->GetPosition(0);
     iAngle = m_object->GetAngleY(0)+Math::PI;
@@ -898,15 +888,12 @@ CObject* CTaskManip::SearchTakeBackObject(bool bAdvance, Math::Vector &pos,
         dLimit = MARGIN_BACK;
     }
 
-    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
-
     min = 1000000.0f;
     pBest = 0;
     bAngle = 0.0f;
-    for ( i=0 ; i<1000000 ; i++ )
+    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
-        if ( pObj == 0 )  break;
+        pObj = it.second;
 
         type = pObj->GetType();
 
@@ -978,7 +965,6 @@ CObject* CTaskManip::SearchOtherObject(bool bAdvance, Math::Vector &pos,
     Math::Vector    iPos, oPos;
     ObjectType  type, powerType;
     float       iAngle, iRad, oAngle, oLimit, aLimit, dLimit;
-    int         i;
 
     distance = 1000000.0f;
     angle = 0.0f;
@@ -999,13 +985,10 @@ CObject* CTaskManip::SearchOtherObject(bool bAdvance, Math::Vector &pos,
         aLimit = 7.0f*Math::PI/180.0f;
         dLimit = MARGIN_FRIEND;
     }
-
-    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
-
-    for ( i=0 ; i<1000000 ; i++ )
+    
+    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
-        if ( pObj == 0 )  break;
+        pObj = it.second;
 
         if ( pObj == m_object )  continue;  // yourself?
 
@@ -1353,17 +1336,14 @@ bool CTaskManip::IsFreeDeposeObject(Math::Vector pos)
     Math::Matrix*   mat;
     Math::Vector    iPos, oPos;
     float       oRadius;
-    int         i, j;
+    int         j;
 
     mat = m_object->GetWorldMatrix(0);
     iPos = Transform(*mat, pos);
-
-    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
-
-    for ( i=0 ; i<1000000 ; i++ )
+    
+    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
-        if ( pObj == 0 )  break;
+        pObj = it.second;
 
         if ( pObj == m_object )  continue;
         if ( !pObj->GetActif() )  continue;  // inactive?

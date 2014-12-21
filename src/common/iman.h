@@ -39,17 +39,15 @@
  */
 enum ManagedClassType
 {
-    //! CObject
-    CLASS_OBJECT        = 0,
     //! CPhysics
-    CLASS_PHYSICS       = 1,
+    CLASS_PHYSICS       = 0,
     //! CBrain
-    CLASS_BRAIN         = 2,
+    CLASS_BRAIN         = 1,
     //! Gfx::CPyro
-    CLASS_PYRO          = 3,
+    CLASS_PYRO          = 2,
 
     //! Maximum (number of managed classes)
-    CLASS_MAX           = 4
+    CLASS_MAX           = 3
 };
 
 

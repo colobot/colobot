@@ -33,8 +33,6 @@
 #include "graphics/engine/engine.h"
 #include "graphics/opengl/gldevice.h"
 
-#include "object/objman.h"
-
 
 #include <string>
 #include <vector>
@@ -45,6 +43,7 @@ class CEventQueue;
 class CRobotMain;
 class CSoundInterface;
 class CInput;
+class CObjectManager;
 
 namespace Gfx {
 class CModelManager;

@@ -22,7 +22,6 @@
 
 #include "app/app.h"
 
-#include "common/iman.h"
 #include "common/misc.h"
 #include "common/restext.h"
 #include "common/stringutils.h"
@@ -33,6 +32,7 @@
 #include "graphics/engine/particle.h"
 
 #include "object/object.h"
+#include "object/objman.h"
 #include "object/robotmain.h"
 #include "object/motion/motion.h"
 #include "object/motion/motiontoto.h"
@@ -913,24 +913,7 @@ void CDisplayInfo::ViewDisplayInfo()
 
 CObject* CDisplayInfo::SearchToto()
 {
-    ObjectType  type;
-    CObject*    pObj;
-    int         i;
-
-    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
-
-    for ( i=0 ; i<1000000 ; i++ )
-    {
-        pObj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
-        if ( pObj == 0 )  break;
-
-        type = pObj->GetType();
-        if ( type == OBJECT_TOTO )
-        {
-            return pObj;
-        }
-    }
-    return 0;
+    return CObjectManager::GetInstancePointer()->FindNearest(nullptr, OBJECT_TOTO);
 }
 
 }

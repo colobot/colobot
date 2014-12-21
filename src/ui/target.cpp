@@ -20,7 +20,7 @@
 
 #include "ui/target.h"
 
-#include "common/iman.h"
+#include "object/objman.h"
 
 
 namespace Ui {
@@ -187,16 +187,13 @@ CObject* CTarget::DetectFriendObject(Math::Point pos)
 {
     ObjectType  type;
     CObject     *pObj, *pTarget;
-    int         objRank, i, j, rank;
+    int         objRank, j, rank;
 
     objRank = m_engine->DetectObject(pos);
-
-    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
-
-    for ( i=0 ; i<1000000 ; i++ )
+    
+    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
-        if ( pObj == 0 )  break;
+        pObj = it.second;
 
         if ( !pObj->GetActif() )  continue;
         if ( pObj->GetProxyActivate() )  continue;

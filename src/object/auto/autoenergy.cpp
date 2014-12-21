@@ -20,12 +20,11 @@
 
 #include "object/auto/autoenergy.h"
 
-#include "common/iman.h"
-
 #include "graphics/engine/terrain.h"
 
 #include "math/geometry.h"
 
+#include "object/objman.h"
 #include "object/level/parserline.h"
 #include "object/level/parserparam.h"
 
@@ -404,14 +403,12 @@ bool CAutoEnergy::SearchVehicle()
     Math::Vector    cPos, oPos;
     ObjectType  type;
     float       oRadius, dist;
-    int         i;
 
     cPos = m_object->GetPosition(0);
-
-    for ( i=0 ; i<1000000 ; i++ )
+    
+    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = static_cast< CObject* >(m_iMan->SearchInstance(CLASS_OBJECT, i));
-        if ( pObj == 0 )  break;
+        pObj = it.second;
 
         type = pObj->GetType();
         if ( type != OBJECT_HUMAN    &&
@@ -489,14 +486,12 @@ CObject* CAutoEnergy::SearchPower()
     CObject*    pObj;
     Math::Vector    cPos, oPos;
     ObjectType  type;
-    int         i;
 
     cPos = m_object->GetPosition(0);
-
-    for ( i=0 ; i<1000000 ; i++ )
+    
+    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = static_cast< CObject* >(m_iMan->SearchInstance(CLASS_OBJECT, i));
-        if ( pObj == 0 )  break;
+        pObj = it.second;
 
         if ( !pObj->GetLock() )  continue;
 

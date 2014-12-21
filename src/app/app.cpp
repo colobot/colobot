@@ -36,6 +36,7 @@
 #include "graphics/opengl/gldevice.h"
 
 #include "object/robotmain.h"
+#include "object/objman.h"
 
 #ifdef OPENAL_SOUND
     #include "sound/oalsound/alsound.h"

@@ -20,10 +20,9 @@
 
 #include "object/task/taskinfo.h"
 
-#include "common/iman.h"
-
 #include "graphics/engine/particle.h"
 
+#include "object/objman.h"
 #include "object/auto/autoinfo.h"
 
 #include <string.h>
@@ -184,38 +183,6 @@ bool CTaskInfo::Abort()
 
 CObject* CTaskInfo::SearchInfo(float power)
 {
-    CObject      *pObj, *pBest;
-    Math::Vector iPos, oPos;
-    ObjectType   type;
-    float        dist, min;
-    int          i;
-
-    iPos = m_object->GetPosition(0);
-
-    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
-
-    min = 100000.0f;
-    pBest = 0;
-    for ( i=0 ; i<1000000 ; i++ )
-    {
-        pObj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
-        if ( pObj == 0 )  break;
-
-        type = pObj->GetType();
-        if ( type != OBJECT_INFO )  continue;
-
-        if ( !pObj->GetActif() )  continue;
-
-        oPos = pObj->GetPosition(0);
-        dist = Math::Distance(oPos, iPos);
-        if ( dist > power )  continue;  // too far?
-        if ( dist < min )
-        {
-            min = dist;
-            pBest = pObj;
-        }
-    }
-
-    return pBest;
+    return CObjectManager::GetInstancePointer()->FindNearest(m_object, OBJECT_INFO, power/g_unit);
 }
 

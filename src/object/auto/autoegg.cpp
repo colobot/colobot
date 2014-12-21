@@ -20,10 +20,9 @@
 
 #include "object/auto/autoegg.h"
 
-#include "common/iman.h"
-
 #include "math/geometry.h"
 
+#include "object/objman.h"
 #include "object/level/parserline.h"
 #include "object/level/parserparam.h"
 
@@ -281,15 +280,13 @@ CObject* CAutoEgg::SearchAlien()
     Math::Vector    cPos, oPos;
     ObjectType  type;
     float       dist, min;
-    int         i;
 
     cPos = m_object->GetPosition(0);
     min = 100000.0f;
     pBest = 0;
-    for ( i=0 ; i<1000000 ; i++ )
+    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = static_cast< CObject* >(m_iMan->SearchInstance(CLASS_OBJECT, i));
-        if ( pObj == 0 )  break;
+        pObj = it.second;
 
         if ( pObj->GetTruck() != 0 )  continue;
 

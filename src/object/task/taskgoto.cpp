@@ -23,12 +23,13 @@
 #include "object/task/taskgoto.h"
 
 #include "common/event.h"
-#include "common/iman.h"
 
 #include "graphics/engine/terrain.h"
 #include "graphics/engine/water.h"
 
 #include "math/geometry.h"
+
+#include "object/objman.h"
 
 #include "physics/physics.h"
 
@@ -503,17 +504,13 @@ CObject* CTaskGoto::WormSearch(Math::Vector &impact)
     Math::Vector    iPos, oPos;
     ObjectType  oType;
     float       distance, min, radius;
-    int         i;
-
-    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
 
     iPos = m_object->GetPosition(0);
     min = 1000000.0f;
-
-    for ( i=0 ; i<1000000 ; i++ )
+    
+    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
-        if ( pObj == 0 )  break;
+        pObj = it.second;
 
         oType = pObj->GetType();
         if ( oType != OBJECT_MOBILEfa &&
@@ -1034,34 +1031,7 @@ Error CTaskGoto::IsEnded()
 
 CObject* CTaskGoto::SearchTarget(Math::Vector pos, float margin)
 {
-    CObject     *pObj, *pBest;
-    Math::Vector    oPos;
-    float       dist, min;
-    int         i;
-
-    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
-
-    pBest = 0;
-    min = 1000000.0f;
-    for ( i=0 ; i<1000000 ; i++ )
-    {
-        pObj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
-        if ( pObj == 0 )  break;
-
-        if ( !pObj->GetActif() )  continue;
-        if ( pObj->GetTruck() != 0 )  continue;  // object transtorted?
-
-        oPos = pObj->GetPosition(0);
-        dist = Math::DistanceProjected(pos, oPos);
-
-        if ( dist <= margin && dist <= min )
-        {
-            min = dist;
-            pBest = pObj;
-        }
-    }
-
-    return pBest;
+    return CObjectManager::GetInstancePointer()->FindNearest(nullptr, pos, OBJECT_NULL, margin);;
 }
 
 // Adjusts the target as a function of the object.
@@ -1183,14 +1153,10 @@ bool CTaskGoto::AdjustBuilding(Math::Vector &pos, float margin, float &distance)
     CObject*    pObj;
     Math::Vector    oPos;
     float       dist, suppl;
-    int         i;
-
-    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
-
-    for ( i=0 ; i<1000000 ; i++ )
+    
+    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
-        if ( pObj == 0 )  break;
+        pObj = it.second;
 
         if ( !pObj->GetActif() )  continue;
         if ( pObj->GetTruck() != 0 )  continue;  // object transported?
@@ -1340,20 +1306,17 @@ bool CTaskGoto::LeakSearch(Math::Vector &pos, float &delay)
     CObject     *pObj, *pObstacle = nullptr;
     Math::Vector    iPos, oPos, bPos;
     float       iRadius, oRadius, bRadius, dist, min, dir;
-    int         i, j;
+    int         j;
 
     if ( !m_physics->GetLand() )  return false;  // in flight?
 
     m_object->GetCrashSphere(0, iPos, iRadius);
 
-    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
-
     min = 100000.0f;
     bRadius = 0.0f;
-    for ( i=0 ; i<1000000 ; i++ )
+    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
-        if ( pObj == 0 )  break;
+        pObj = it.second;
 
         if ( pObj == m_object )  continue;
         if ( !pObj->GetActif() )  continue;
@@ -1446,7 +1409,7 @@ void CTaskGoto::ComputeRepulse(Math::Point &dir)
     Math::Point     repulse;
     CObject     *pObj;
     float       gDist, add, addi, fac, dist, iRadius, oRadius;
-    int         i, j;
+    int         j;
     bool        bAlien;
 
     dir.x = 0.0f;
@@ -1530,13 +1493,10 @@ void CTaskGoto::ComputeRepulse(Math::Point &dir)
     {
         bAlien = true;
     }
-
-    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
-
-    for ( i=0 ; i<1000000 ; i++ )
+    
+    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
-        if ( pObj == 0 )  break;
+        pObj = it.second;
 
         if ( pObj == m_object )  continue;
         if ( pObj->GetTruck() != 0 )  continue;
@@ -1617,20 +1577,17 @@ void CTaskGoto::ComputeFlyingRepulse(float &dir)
     Math::Vector    iPos, oPos;
     CObject     *pObj;
     float       add, fac, dist, iRadius, oRadius, repulse;
-    int         i, j;
+    int         j;
 
     m_object->GetCrashSphere(0, iPos, iRadius);
 
     add = 0.0f;
     fac = 1.5f;
     dir = 0.0f;
-
-    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
-
-    for ( i=0 ; i<1000000 ; i++ )
+    
+    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
-        if ( pObj == 0 )  break;
+        pObj = it.second;
 
         if ( pObj == m_object )  continue;
         if ( pObj->GetTruck() != 0 )  continue;
@@ -1937,16 +1894,13 @@ void CTaskGoto::BitmapObject()
     ObjectType  type;
     Math::Vector    iPos, oPos;
     float       iRadius, oRadius, h;
-    int         i, j;
+    int         j;
 
     m_object->GetCrashSphere(0, iPos, iRadius);
-
-    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
-
-    for ( i=0 ; i<1000000 ; i++ )
+    
+    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
-        if ( pObj == 0 )  break;
+        pObj = it.second;
 
         type = pObj->GetType();
 

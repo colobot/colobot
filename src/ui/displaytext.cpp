@@ -29,6 +29,7 @@
 #include "graphics/engine/engine.h"
 
 #include "object/object.h"
+#include "object/objman.h"
 #include "object/motion/motion.h"
 #include "object/motion/motiontoto.h"
 
@@ -585,24 +586,7 @@ bool CDisplayText::IsVisit(EventType event)
 
 CObject* CDisplayText::SearchToto()
 {
-    ObjectType  type;
-    CObject*    pObj;
-    int         i;
-
-    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
-
-    for ( i=0 ; i<1000000 ; i++ )
-    {
-        pObj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
-        if ( pObj == 0 )  break;
-
-        type = pObj->GetType();
-        if ( type == OBJECT_TOTO )
-        {
-            return pObj;
-        }
-    }
-    return 0;
+    return CObjectManager::GetInstancePointer()->FindNearest(nullptr, OBJECT_TOTO);
 }
 
 }

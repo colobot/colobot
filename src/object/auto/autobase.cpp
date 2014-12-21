@@ -22,8 +22,6 @@
 
 #include "object/auto/autobase.h"
 
-#include "common/iman.h"
-
 #include "graphics/engine/terrain.h"
 #include "graphics/engine/cloud.h"
 #include "graphics/engine/planet.h"
@@ -31,6 +29,7 @@
 
 #include "math/geometry.h"
 
+#include "object/objman.h"
 #include "object/robotmain.h"
 
 #include "physics/physics.h"
@@ -1244,12 +1243,10 @@ void CAutoBase::FreezeCargo(bool bFreeze)
     CPhysics*   physics;
     Math::Vector    oPos;
     float       dist;
-    int         i;
-
-    for ( i=0 ; i<1000000 ; i++ )
+    
+    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
-        if ( pObj == 0 )  break;
+        pObj = it.second;
 
         pObj->SetCargo(false);
 
@@ -1280,14 +1277,12 @@ void CAutoBase::MoveCargo()
 {
     CObject*    pObj;
     Math::Vector    oPos, sPos;
-    int         i;
 
     sPos = m_object->GetPosition(0);
-
-    for ( i=0 ; i<1000000 ; i++ )
+    
+    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = static_cast < CObject* > (m_iMan->SearchInstance(CLASS_OBJECT, i));
-        if ( pObj == 0 )  break;
+        pObj = it.second;
 
         if ( !pObj->GetCargo() )  continue;
 
@@ -1311,12 +1306,11 @@ Error CAutoBase::CheckCloseDoor()
     Math::Vector    oPos;
     ObjectType  type;
     float       oRad, dist;
-    int         i, j;
-
-    for ( i=0 ; i<1000000 ; i++ )
+    int         j;
+    
+    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = static_cast< CObject* > (m_iMan->SearchInstance(CLASS_OBJECT, i));
-        if ( pObj == 0 )  break;
+        pObj = it.second;
 
         if ( pObj == m_object )  continue;  // yourself?
         if ( !pObj->GetActif() )  continue;  // inactive?

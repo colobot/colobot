@@ -24,7 +24,6 @@
 
 #include "common/event.h"
 #include "common/global.h"
-#include "common/iman.h"
 
 #include "graphics/engine/camera.h"
 #include "graphics/engine/engine.h"
@@ -36,6 +35,7 @@
 #include "math/geometry.h"
 
 #include "object/brain.h"
+#include "object/objman.h"
 #include "object/robotmain.h"
 #include "object/motion/motion.h"
 #include "object/motion/motionhuman.h"
@@ -2514,7 +2514,7 @@ int CPhysics::ObjectAdapt(const Math::Vector &pos, const Math::Vector &angle)
     Math::Vector    iPos, oPos, iiPos, oAngle, oSpeed;
     Sound           sound;
     float           iRad, oRad, distance, force, volume;
-    int             i, j, colType;
+    int             j, colType;
     ObjectType      iType, oType;
 
     if ( m_object->GetRuin() )  return 0;  // is burning or exploding?
@@ -2526,12 +2526,10 @@ int CPhysics::ObjectAdapt(const Math::Vector &pos, const Math::Vector &angle)
     iPos = iiPos + (pos - m_object->GetPosition(0));
     iType = m_object->GetType();
 
-    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
-
-    for ( i=0 ; i<1000000 ; i++ )
+    
+    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
-        if ( pObj == 0 )  break;
+        pObj = it.second;
 
         if ( pObj == m_object )  continue;  // yourself?
         if ( pObj->GetTruck() != 0 )  continue;  // object transported?

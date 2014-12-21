@@ -22,8 +22,6 @@
 
 #include "app/app.h"
 
-#include "common/iman.h"
-
 #include "common/resources/inputstream.h"
 #include "common/resources/resourcemanager.h"
 
@@ -494,8 +492,8 @@ bool CScriptFunctions::rGetObject(CBotVar* var, CBotVar* result, int& exception,
     
     rank = var->GetValInt();
     
-    pObj = static_cast<CObject*>(CInstanceManager::GetInstancePointer()->SearchInstance(CLASS_OBJECT, rank));
-    if ( pObj == 0 )
+    pObj = CObjectManager::GetInstancePointer()->GetObjectByRank(rank);
+    if ( pObj == nullptr )
     {
         result->SetPointer(0);
     }

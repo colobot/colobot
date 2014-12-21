@@ -20,10 +20,9 @@
 
 #include "object/auto/autotower.h"
 
-#include "common/iman.h"
-
 #include "math/geometry.h"
 
+#include "object/objman.h"
 #include "object/level/parserline.h"
 #include "object/level/parserparam.h"
 
@@ -274,15 +273,13 @@ CObject* CAutoTower::SearchTarget(Math::Vector &impact)
     Math::Vector    iPos, oPos;
     ObjectType  oType;
     float       distance, min, radius, speed;
-    int         i;
 
     iPos = m_object->GetPosition(0);
     min = 1000000.0f;
-
-    for ( i=0 ; i<1000000 ; i++ )
+    
+    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = static_cast< CObject* >(m_iMan->SearchInstance(CLASS_OBJECT, i));
-        if ( pObj == 0 )  break;
+        pObj = it.second;
 
         oType = pObj->GetType();
         if ( oType != OBJECT_MOTHER &&

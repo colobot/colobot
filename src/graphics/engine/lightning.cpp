@@ -23,7 +23,6 @@
 #include "app/app.h"
 
 #include "common/logger.h"
-#include "common/iman.h"
 
 #include "graphics/core/device.h"
 #include "graphics/engine/camera.h"
@@ -33,6 +32,7 @@
 
 #include "object/object.h"
 #include "object/robotmain.h"
+#include "object/objman.h"
 
 #include "object/auto/autopara.h"
 
@@ -314,15 +314,12 @@ CObject* CLightning::SearchObject(Math::Vector pos)
     std::vector<Math::Vector> paraObjPos;
     paraObjPos.reserve(100);
 
-    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
-
     // Seeking the object closest to the point of impact of lightning.
     CObject* bestObj = 0;
     float min = 100000.0f;
-    for (int i = 0; i < 1000000; i++)
+    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        CObject* obj = static_cast<CObject*>( iMan->SearchInstance(CLASS_OBJECT, i) );
-        if (obj == nullptr) break;
+        CObject* obj = it.second;
 
         if (!obj->GetActif()) continue;  // inactive object?
         if (obj->GetTruck() != nullptr) continue;  // object transported?

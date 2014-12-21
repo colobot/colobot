@@ -223,8 +223,6 @@ void uObject(CBotVar* botThis, void* user)
 
 CObject::CObject()
 {
-    CInstanceManager::GetInstancePointer()->AddInstance(CLASS_OBJECT, this, 500);
-
     m_app         = CApplication::GetInstancePointer();
     m_sound       = m_app->GetSound();
     m_engine      = Gfx::CEngine::GetInstancePointer();
@@ -372,8 +370,7 @@ CObject::~CObject()
     m_motion = nullptr;
     delete m_auto;
     m_auto = nullptr;
-
-    CInstanceManager::GetInstancePointer()->DeleteInstance(CLASS_OBJECT, this);
+    
     CObjectManager::GetInstancePointer()->DeleteObject(this);
 
     m_app = nullptr;
@@ -398,13 +395,12 @@ void CObject::DeleteObject(bool bAll)
     {
         m_camera->SetControllingObject(0);
     }
-
+    
     CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
-
-    for (int i=0 ; i<1000000 ; i++ )
+    
+    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
-        if ( pObj == 0 )  break;
+        pObj = it.second;
 
         pObj->DeleteDeselList(this);
     }

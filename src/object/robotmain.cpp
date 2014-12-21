@@ -61,6 +61,7 @@
 #include "object/motion/motionhuman.h"
 #include "object/motion/motiontoto.h"
 #include "object/object.h"
+#include "object/objman.h"
 #include "object/task/task.h"
 #include "object/task/taskbuild.h"
 #include "object/task/taskmanip.h"
@@ -459,7 +460,6 @@ void CRobotMain::ChangePhase(Phase phase)
     m_shortCut = true;
 
     CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
-    iMan->Flush(CLASS_OBJECT);
     iMan->Flush(CLASS_PHYSICS);
     iMan->Flush(CLASS_BRAIN);
     iMan->Flush(CLASS_PYRO);
@@ -1761,12 +1761,10 @@ CObject* CRobotMain::GetSelectObject()
 //! Deselects everything, and returns the object that was selected
 CObject* CRobotMain::DeselectAll()
 {
-    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
     CObject* prev = nullptr;
-    for (int i = 0; i < 1000000; i++)
+    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        CObject* obj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
-        if (obj == nullptr) break;
+        CObject* obj = it.second;
 
         if (obj->GetSelect()) prev = obj;
         obj->SetSelect(false);
@@ -1895,11 +1893,10 @@ void CRobotMain::DeleteAllObjects()
 
     for (int i = 0; i < MAXSHOWLIMIT; i++)
         FlushShowLimit(i);
-
-    while (true)
+    
+    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        CObject* obj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, 0));
-        if (obj == nullptr) break;
+        CObject* obj = it.second;
 
         obj->DeleteObject(true);  // destroys rapidly
         delete obj;
@@ -1915,45 +1912,23 @@ void CRobotMain::SelectHuman()
 //! Returns the object human
 CObject* CRobotMain::SearchHuman()
 {
-    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
-    for (int i = 0; i < 1000000; i++)
-    {
-        CObject* obj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
-        if (obj == 0)  break;
-
-        ObjectType type = obj->GetType();
-        if (type == OBJECT_HUMAN)
-            return obj;
-    }
-    return 0;
+    return CObjectManager::GetInstancePointer()->FindNearest(nullptr, OBJECT_HUMAN);
 }
 
 //! Returns the object toto
 CObject* CRobotMain::SearchToto()
 {
-    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
-    for (int i = 0; i < 1000000; i++)
-    {
-        CObject* obj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
-        if (obj == nullptr) break;
-
-        ObjectType type = obj->GetType();
-        if (type == OBJECT_TOTO)
-            return obj;
-    }
-    return nullptr;
+    return CObjectManager::GetInstancePointer()->FindNearest(nullptr, OBJECT_TOTO);
 }
 
 //! Returns the nearest selectable object from a given position
 CObject* CRobotMain::SearchNearest(Math::Vector pos, CObject* exclu)
 {
-    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
     float min = 100000.0f;
     CObject* best = 0;
-    for (int i = 0; i < 1000000; i++)
+    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        CObject* obj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
-        if (obj == nullptr) break;
+        CObject* obj = it.second;
 
         if (obj == exclu) continue;
         if (!IsSelectable(obj)) continue;
@@ -1975,11 +1950,9 @@ CObject* CRobotMain::SearchNearest(Math::Vector pos, CObject* exclu)
 //! Returns the selected object
 CObject* CRobotMain::GetSelect()
 {
-    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
-    for (int i = 0; i < 1000000; i++)
+    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        CObject* obj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
-        if (obj == nullptr) break;
+        CObject* obj = it.second;
 
         if (obj->GetSelect())
             return obj;
@@ -1989,28 +1962,17 @@ CObject* CRobotMain::GetSelect()
 
 CObject* CRobotMain::SearchObject(ObjectType type)
 {
-    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
-    for (int i = 0; i < 1000000; i++)
-    {
-        CObject* obj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
-        if (obj == nullptr) break;
-
-        if (obj->GetType() == type)
-            return obj;
-    }
-    return nullptr;
+    return CObjectManager::GetInstancePointer()->FindNearest(nullptr, type);
 }
 
 //! Detects the object aimed by the mouse
 CObject* CRobotMain::DetectObject(Math::Point pos)
 {
     int objRank = m_engine->DetectObject(pos);
-    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
-
-    for (int i = 0; i < 1000000; i++)
+    
+    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        CObject* obj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
-        if (obj == nullptr) break;
+        CObject* obj = it.second;
 
         if (!obj->GetActif()) continue;
         CObject* truck = obj->GetTruck();
@@ -2252,13 +2214,10 @@ void CRobotMain::HiliteClear()
 
     int rank = -1;
     m_engine->SetHighlightRank(&rank);  // nothing more selected
-
-    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
-
-    for (int i = 0; i < 1000000; i++)
+    
+    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        CObject* obj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
-        if (obj == nullptr) break;
+        CObject* obj = it.second;
 
         obj->SetHilite(false);
         m_map->SetHighlight(0);
@@ -2416,12 +2375,9 @@ void CRobotMain::HelpObject()
 //! Change the mode of the camera
 void CRobotMain::ChangeCamera()
 {
-    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
-
-    for (int i = 0; i < 1000000; i++)
+    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        CObject* obj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
-        if (obj == nullptr) break;
+        CObject* obj = it.second;
 
         if (obj->GetSelect())
         {
@@ -2564,12 +2520,9 @@ void CRobotMain::RemoteCamera(float pan, float zoom, float rTime)
 //! Cancels the current movie
 void CRobotMain::AbortMovie()
 {
-    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
-
-    for (int i = 0; i < 1000000; i++)
+    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        CObject* obj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
-        if (obj == nullptr) break;
+        CObject* obj = it.second;
 
         CAuto* automat = obj->GetAuto();
         if (automat != 0)
@@ -2643,17 +2596,17 @@ bool CRobotMain::EventFrame(const Event &event)
         pm = static_cast<Ui::CMap*>(pw->SearchControl(EVENT_OBJECT_MAP));
         if (pm != nullptr) pm->FlushObject();
     }
-
+    
     CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
+    CObjectManager* objman = CObjectManager::GetInstancePointer();
 
     CObject* toto = nullptr;
     if (!m_freePhoto)
     {
         // Advances all the robots, but not toto.
-        for (int i = 0; i < 1000000; i++)
+        for(auto it : objman->GetAllObjects())
         {
-            CObject* obj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
-            if (obj == nullptr) break;
+            CObject* obj = it.second;
             if (pm != nullptr) pm->UpdateObject(obj);
             if (obj->GetTruck() != nullptr)  continue;
             ObjectType type = obj->GetType();
@@ -2663,10 +2616,9 @@ bool CRobotMain::EventFrame(const Event &event)
                 obj->EventProcess(event);
         }
         // Advances all objects transported by robots.
-        for (int i = 0; i < 1000000; i++)
+        for(auto it : objman->GetAllObjects())
         {
-            CObject* obj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
-            if (obj == nullptr) break;
+            CObject* obj = it.second;
             if (obj->GetTruck() == nullptr) continue;
             obj->EventProcess(event);
         }
@@ -2823,13 +2775,10 @@ bool CRobotMain::EventObject(const Event &event)
     if (m_freePhoto) return true;
 
     m_resetCreate = false;
-
-    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
-
-    for (int i = 0; i < 1000000; i++)
+    
+    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        CObject* obj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
-        if (obj == nullptr) break;
+        CObject* obj = it.second;
 
         obj->EventProcess(event);
     }
@@ -2865,7 +2814,6 @@ void CRobotMain::ScenePerso()
     m_particle->FlushParticle();
 
     CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
-    iMan->Flush(CLASS_OBJECT);
     iMan->Flush(CLASS_PHYSICS);
     iMan->Flush(CLASS_BRAIN);
     iMan->Flush(CLASS_PYRO);
@@ -4219,13 +4167,10 @@ bool CRobotMain::TestGadgetQuantity(int rank)
 //! Calculates the distance to the nearest object
 float CRobotMain::SearchNearestObject(Math::Vector center, CObject *exclu)
 {
-    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
-
     float min = 100000.0f;
-    for (int i = 0; i < 1000000; i++)
+    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        CObject* obj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
-        if (obj == nullptr)  break;
+        CObject* obj = it.second;
 
         if (!obj->GetActif()) continue;  // inactive?
         if (obj->GetTruck() != nullptr) continue;  // object carries?
@@ -4370,15 +4315,12 @@ void CRobotMain::ShowDropZone(CObject* metal, CObject* truck)
 
     Math::Vector center = metal->GetPosition(0);
 
-    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
-
     // Calculates the maximum radius possible depending on other items.
     float oMax = 30.0f;  // radius to build the biggest building
     float tMax;
-    for (int i = 0; i < 1000000; i++)
+    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        CObject* obj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
-        if (obj == nullptr) break;
+        CObject* obj = it.second;
 
         if (!obj->GetActif()) continue;  // inactive?
         if (obj->GetTruck() != nullptr) continue;  // object carried?
@@ -4577,17 +4519,16 @@ void CRobotMain::CompileScript(bool soluce)
 {
     int nbError = 0;
     int lastError = 0;
-
-    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
+    
+    CObjectManager* objman = CObjectManager::GetInstancePointer();
 
     do
     {
         lastError = nbError;
         nbError = 0;
-        for (int i = 0; i < 1000000; i++)
+        for(auto it : objman->GetAllObjects())
         {
-            CObject* obj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
-            if (obj == nullptr) break;
+            CObject* obj = it.second;
             if (obj->GetTruck() != nullptr) continue;
 
             CBrain* brain = obj->GetBrain();
@@ -4616,10 +4557,9 @@ void CRobotMain::CompileScript(bool soluce)
     // Load all solutions.
     if (soluce)
     {
-        for (int i = 0; i < 1000000; i++)
+        for(auto it : objman->GetAllObjects())
         {
-            CObject* obj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
-            if (obj == 0)  break;
+            CObject* obj = it.second;
             if (obj->GetTruck() != 0)  continue;
 
             CBrain* brain = obj->GetBrain();
@@ -4634,10 +4574,9 @@ void CRobotMain::CompileScript(bool soluce)
     }
 
     // Start all programs according to the command "run".
-    for (int i = 0; i < 1000000; i++)
+    for(auto it : objman->GetAllObjects())
     {
-        CObject* obj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
-        if (obj == nullptr) break;
+        CObject* obj = it.second;
         if (obj->GetTruck() != nullptr) continue;
 
         CBrain* brain = obj->GetBrain();
@@ -4707,12 +4646,9 @@ void CRobotMain::LoadFileScript(CObject *obj, const char* filename, int objRank,
 //! Saves all programs of all the robots
 void CRobotMain::SaveAllScript()
 {
-    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
-
-    for (int i = 0; i < 1000000; i++)
+    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        CObject* obj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
-        if (obj == nullptr) break;
+        CObject* obj = it.second;
 
         SaveOneScript(obj);
     }
@@ -4844,13 +4780,10 @@ char*  CRobotMain::GetNewScriptName(ObjectType type, int rank)
 bool CRobotMain::IsBusy()
 {
     if (CScriptFunctions::m_CompteurFileOpen > 0) return true;
-
-    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
-
-    for (int i = 0; i < 1000000; i++)
+    
+    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        CObject* obj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
-        if (obj == nullptr) break;
+        CObject* obj = it.second;
 
         CBrain* brain = obj->GetBrain();
         if (brain != nullptr)
@@ -4968,14 +4901,11 @@ bool CRobotMain::IOWriteScene(const char *filename, const char *filecbot, char *
         line->AddParam("progress", new CLevelParserParam(progress));
         level->AddLine(line);
     }
-
-    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
-
+    
     int objRank = 0;
-    for (int i = 0; i < 1000000; i++)
+    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        CObject* obj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
-        if (obj == nullptr) break;
+        CObject* obj = it.second;
 
         if (obj->GetType() == OBJECT_TOTO) continue;
         if (obj->GetType() == OBJECT_FIX) continue;
@@ -5024,10 +4954,9 @@ bool CRobotMain::IOWriteScene(const char *filename, const char *filecbot, char *
     fWrite(&version, sizeof(long), 1, file);  // version of CBOT
 
     objRank = 0;
-    for (int i = 0; i < 1000000; i++)
+    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        CObject* obj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
-        if (obj == nullptr) break;
+        CObject* obj = it.second;
 
         if (obj->GetType() == OBJECT_TOTO) continue;
         if (obj->GetType() == OBJECT_FIX) continue;
@@ -5167,8 +5096,8 @@ CObject* CRobotMain::IOReadScene(const char *filename, const char *filecbot)
         }
     }
     delete level;
-
-    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
+    
+    CObjectManager* objman = CObjectManager::GetInstancePointer();
 
     // Compiles scripts.
     int nbError = 0;
@@ -5177,10 +5106,9 @@ CObject* CRobotMain::IOReadScene(const char *filename, const char *filecbot)
     {
         lastError = nbError;
         nbError = 0;
-        for (int i = 0; i < 1000000; i++)
+        for(auto it : objman->GetAllObjects())
         {
-            CObject* obj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
-            if (obj == nullptr) break;
+            CObject* obj = it.second;
             if (obj->GetTruck() != nullptr) continue;
 
             objRank = obj->GetDefRank();
@@ -5203,10 +5131,9 @@ CObject* CRobotMain::IOReadScene(const char *filename, const char *filecbot)
             if (version == CBotProgram::GetVersion())
             {
                 objRank = 0;
-                for (int i = 0; i < 1000000; i++)
+                for(auto it : objman->GetAllObjects())
                 {
-                    CObject* obj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
-                    if (obj == nullptr) break;
+                    CObject* obj = it.second;
 
                     if (obj->GetType() == OBJECT_TOTO) continue;
                     if (obj->GetType() == OBJECT_FIX) continue;
@@ -5390,7 +5317,6 @@ void CRobotMain::ResetCreate()
     m_terrain->FlushBuildingLevel();
 
     CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
-    iMan->Flush(CLASS_OBJECT);
     iMan->Flush(CLASS_PHYSICS);
     iMan->Flush(CLASS_BRAIN);
     iMan->Flush(CLASS_PYRO);
@@ -5403,11 +5329,10 @@ void CRobotMain::ResetCreate()
         CreateScene(m_dialog->GetSceneSoluce(), false, true);
 
         if (!GetNiceReset()) return;
-
-        for (int i = 0; i < 1000000; i++)
+        
+        for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
         {
-            CObject* obj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
-            if (obj == nullptr) break;
+            CObject* obj = it.second;
 
             ResetCap cap = obj->GetResetCap();
             if (cap == RESET_NONE) continue;
@@ -5427,8 +5352,6 @@ void CRobotMain::ResetCreate()
 //! Updates the audiotracks
 void CRobotMain::UpdateAudio(bool frame)
 {
-    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
-
     for (int t = 0; t < m_audioChangeTotal; t++)
     {
         if (m_audioChange[t].changed) continue;
@@ -5439,10 +5362,9 @@ void CRobotMain::UpdateAudio(bool frame)
         Math::Vector oPos;
 
         int nb = 0;
-        for (int i = 0; i < 1000000; i++)
+        for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
         {
-            CObject* obj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
-            if (obj == nullptr) break;
+            CObject* obj = it.second;
 
             // Do not use GetActif () because an invisible worm (underground)
             // should be regarded as existing here!
@@ -5549,8 +5471,6 @@ Error CRobotMain::CheckEndMission(bool frame)
         return m_missionResult;
     }
 
-    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
-
     for (int t = 0; t < m_endTakeTotal; t++)
     {
         if (m_endTake[t].message[0] != 0) continue;
@@ -5561,10 +5481,9 @@ Error CRobotMain::CheckEndMission(bool frame)
         Math::Vector oPos;
 
         int nb = 0;
-        for (int i = 0; i < 1000000; i++)
+        for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
         {
-            CObject* obj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
-            if (obj == nullptr) break;
+            CObject* obj = it.second;
 
             // Do not use GetActif () because an invisible worm (underground)
             // should be regarded as existing here!
@@ -5830,13 +5749,10 @@ bool CRobotMain::GetRadar()
 {
     if (m_cheatRadar)
         return true;
-
-    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
-
-    for (int i = 0; i < 1000000; i++)
+    
+    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        CObject* obj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
-        if (obj == nullptr)  break;
+        CObject* obj = it.second;
 
         ObjectType type = obj->GetType();
         if (type == OBJECT_RADAR && !obj->GetLock())

@@ -20,12 +20,12 @@
 
 #include "object/auto/autostation.h"
 
-#include "common/iman.h"
-
 #include "graphics/engine/particle.h"
 #include "graphics/engine/terrain.h"
 
 #include "math/geometry.h"
+
+#include "object/objman.h"
 
 #include "ui/interface.h"
 #include "ui/gauge.h"
@@ -245,14 +245,12 @@ CObject* CAutoStation::SearchVehicle()
     Math::Vector    sPos, oPos;
     ObjectType  type;
     float       dist;
-    int         i;
 
     sPos = m_object->GetPosition(0);
-
-    for ( i=0 ; i<1000000 ; i++ )
+    
+    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = static_cast< CObject* >(m_iMan->SearchInstance(CLASS_OBJECT, i));
-        if ( pObj == 0 )  break;
+        pObj = it.second;
 
         type = pObj->GetType();
         if ( type != OBJECT_HUMAN    &&

@@ -33,6 +33,7 @@
 #include "math/geometry.h"
 
 #include "object/object.h"
+#include "object/objman.h"
 #include "object/robotmain.h"
 
 #include <cstring>
@@ -3655,14 +3656,11 @@ CObject* CParticle::SearchObjectGun(Math::Vector old, Math::Vector pos,
     box2.y += min;
     box2.z += min;
 
-    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
-
     CObject* best = 0;
     bool shield = false;
-    for (int i = 0; i < 1000000; i++)
+    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        CObject* obj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
-        if (obj == 0)  break;
+        CObject* obj = it.second;
 
         if (!obj->GetActif()) continue;  // inactive?
         if (obj == father) continue;
@@ -3784,13 +3782,10 @@ CObject* CParticle::SearchObjectRay(Math::Vector pos, Math::Vector goal,
     box2.x += min;
     box2.y += min;
     box2.z += min;
-
-    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
-
-    for (int i = 0; i < 1000000; i++)
+    
+    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        CObject* obj = static_cast<CObject*>( iMan->SearchInstance(CLASS_OBJECT, i) );
-        if (obj == nullptr) break;
+        CObject* obj = it.second;
 
         if (!obj->GetActif()) continue;  // inactive?
         if (obj == father) continue;

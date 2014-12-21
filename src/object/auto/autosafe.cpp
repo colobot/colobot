@@ -20,10 +20,9 @@
 
 #include "object/auto/autosafe.h"
 
-#include "common/iman.h"
-
 #include "math/geometry.h"
 
+#include "object/objman.h"
 #include "object/robotmain.h"
 #include "object/level/parserline.h"
 #include "object/level/parserparam.h"
@@ -404,11 +403,10 @@ int CAutoSafe::CountKeys()
         m_bKey[index] = false;
         m_keyPos[index] = cPos;
     }
-
-    for ( i=0 ; i<1000000 ; i++ )
+    
+    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = static_cast< CObject* >(m_iMan->SearchInstance(CLASS_OBJECT, i));
-        if ( pObj == 0 )  break;
+        pObj = it.second;
 
         if ( pObj->GetTruck() != 0 )  continue;
 
@@ -478,14 +476,12 @@ void CAutoSafe::LockKeys()
     Math::Vector    cPos, oPos;
     ObjectType  oType;
     float       dist;
-    int         i;
 
     cPos = m_object->GetPosition(0);
-
-    for ( i=0 ; i<1000000 ; i++ )
+    
+    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = static_cast< CObject* >(m_iMan->SearchInstance(CLASS_OBJECT, i));
-        if ( pObj == 0 )  break;
+        pObj = it.second;
 
         oType = pObj->GetType();
         if ( pObj->GetTruck() != 0 )  continue;
@@ -511,14 +507,12 @@ void CAutoSafe::DownKeys(float progress)
     Math::Vector    cPos, oPos;
     ObjectType  oType;
     float       dist;
-    int         i;
 
     cPos = m_object->GetPosition(0);
-
-    for ( i=0 ; i<1000000 ; i++ )
+    
+    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = static_cast< CObject* >(m_iMan->SearchInstance(CLASS_OBJECT, i));
-        if ( pObj == 0 )  break;
+        pObj = it.second;
 
         oType = pObj->GetType();
         if ( pObj->GetTruck() != 0 )  continue;
@@ -545,7 +539,6 @@ void CAutoSafe::DeleteKeys()
     Math::Vector    cPos, oPos;
     ObjectType  oType;
     float       dist;
-    int         i;
     bool        bDelete;
 
     cPos = m_object->GetPosition(0);
@@ -553,10 +546,9 @@ void CAutoSafe::DeleteKeys()
     do
     {
         bDelete = false;
-        for ( i=0 ; i<1000000 ; i++ )
+        for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
         {
-            pObj = static_cast< CObject* >(m_iMan->SearchInstance(CLASS_OBJECT, i));
-            if ( pObj == 0 )  break;
+            pObj = it.second;
 
             oType = pObj->GetType();
             if ( pObj->GetTruck() != 0 )  continue;
@@ -582,25 +574,6 @@ void CAutoSafe::DeleteKeys()
 
 CObject* CAutoSafe::SearchVehicle()
 {
-    CObject*    pObj;
-    Math::Vector    cPos, oPos;
-    float       dist;
-    int         i;
-
-    cPos = m_object->GetPosition(0);
-
-    for ( i=0 ; i<1000000 ; i++ )
-    {
-        pObj = static_cast< CObject* >(m_iMan->SearchInstance(CLASS_OBJECT, i));
-        if ( pObj == 0 )  break;
-
-        if ( pObj == m_object )  continue;
-        if ( pObj->GetTruck() != 0 )  continue;
-
-        oPos = pObj->GetPosition(0);
-        dist = Math::DistanceProjected(oPos, cPos);
-        if ( dist <= 4.0f )  return pObj;
-    }
-    return 0;
+    return CObjectManager::GetInstancePointer()->FindNearest(m_object, OBJECT_NULL, 4.0f/g_unit);
 }
 

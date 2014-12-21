@@ -20,10 +20,9 @@
 
 #include "object/auto/autonuclear.h"
 
-#include "common/iman.h"
-
 #include "math/geometry.h"
 
+#include "object/objman.h"
 #include "object/level/parserline.h"
 #include "object/level/parserparam.h"
 
@@ -340,12 +339,10 @@ bool CAutoNuclear::SearchVehicle()
     Math::Vector    oPos;
     ObjectType  type;
     float       oRadius, dist;
-    int         i;
-
-    for ( i=0 ; i<1000000 ; i++ )
+    
+    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = static_cast< CObject* >(m_iMan->SearchInstance(CLASS_OBJECT, i));
-        if ( pObj == 0 )  break;
+        pObj = it.second;
 
         type = pObj->GetType();
         if ( type != OBJECT_HUMAN    &&

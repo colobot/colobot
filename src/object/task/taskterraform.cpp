@@ -22,8 +22,6 @@
 
 #include "object/task/taskterraform.h"
 
-#include "common/iman.h"
-
 #include "graphics/engine/pyro.h"
 #include "graphics/engine/particle.h"
 #include "graphics/engine/terrain.h"
@@ -31,6 +29,7 @@
 #include "math/geometry.h"
 
 #include "object/brain.h"
+#include "object/objman.h"
 #include "object/robotmain.h"
 #include "object/motion/motionant.h"
 #include "object/motion/motionspider.h"
@@ -346,18 +345,14 @@ bool CTaskTerraform::Terraform()
     Gfx::CPyro* pyro;
     ObjectType  type;
     float       dist;
-    int         i;
 
     m_camera->StartEffect(Gfx::CAM_EFFECT_TERRAFORM, m_terraPos, 1.0f);
 
     m_sound->Play(SOUND_THUMP, m_terraPos);
-
-    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
-
-    for ( i=0 ; i<1000000 ; i++ )
+    
+    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
-        if ( pObj == 0 )  break;
+        pObj = it.second;
 
         type = pObj->GetType();
         if ( type == OBJECT_NULL )  continue;

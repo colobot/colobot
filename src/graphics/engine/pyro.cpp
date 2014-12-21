@@ -31,6 +31,7 @@
 
 #include "math/geometry.h"
 
+#include "object/objman.h"
 #include "object/robotmain.h"
 #include "object/motion/motionhuman.h"
 
@@ -2202,13 +2203,10 @@ CObject* CPyro::FallSearchBeeExplo()
     Math::Vector iPos;
     float iRadius;
     m_object->GetCrashSphere(0, iPos, iRadius);
-
-    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
-
-    for (int i = 0; i < 1000000; i++)
+    
+    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        CObject* pObj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
-        if ( pObj == 0 )  break;
+        CObject* pObj = it.second;
 
         ObjectType oType = pObj->GetType();
         if ( oType != OBJECT_HUMAN    &&

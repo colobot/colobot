@@ -24,7 +24,6 @@
 #include "app/app.h"
 
 #include "common/event.h"
-#include "common/iman.h"
 
 #include "object/level/parserline.h"
 #include "object/level/parserparam.h"
@@ -43,8 +42,6 @@
 
 CAuto::CAuto(CObject* object)
 {
-    m_iMan = CInstanceManager::GetInstancePointer();
-
     m_object      = object;
     m_engine      = Gfx::CEngine::GetInstancePointer();
     m_main        = CRobotMain::GetInstancePointer();
@@ -73,8 +70,6 @@ CAuto::CAuto(CObject* object)
 
 CAuto::~CAuto()
 {
-    m_iMan = nullptr;
-
     m_object      = nullptr;
     m_engine      = nullptr;
     m_main        = nullptr;

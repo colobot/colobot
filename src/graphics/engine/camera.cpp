@@ -23,8 +23,6 @@
 #include "app/app.h"
 #include "app/input.h"
 
-#include "common/iman.h"
-
 #include "graphics/engine/engine.h"
 #include "graphics/engine/terrain.h"
 #include "graphics/engine/water.h"
@@ -33,6 +31,7 @@
 #include "math/geometry.h"
 
 #include "object/object.h"
+#include "object/objman.h"
 #include "object/robotmain.h"
 
 #include "physics/physics.h"
@@ -242,15 +241,11 @@ void CCamera::SetType(CameraType type)
     m_remotePan  = 0.0f;
     m_remoteZoom = 0.0f;
 
-    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
-
     if ( (m_type == CAM_TYPE_BACK) && m_transparency )
     {
-        for (int i = 0; i < 1000000; i++)
+        for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
         {
-            CObject* obj = static_cast<CObject*>( iMan->SearchInstance(CLASS_OBJECT, i) );
-            if (obj == NULL)
-                break;
+            CObject* obj = it.second;
 
             if (obj->GetTruck())
                 continue;  // battery or cargo?
@@ -894,13 +889,10 @@ bool CCamera::IsCollisionBack(Math::Vector &eye, Math::Vector lookat)
     max.z = Math::Max(m_actualEye.z, m_actualLookat.z);
 
     m_transparency = false;
-
-    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
-
-    for (int i = 0 ;i < 1000000; i++)
+    
+    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        CObject *obj = static_cast<CObject*>( iMan->SearchInstance(CLASS_OBJECT, i) );
-        if (obj == NULL) break;
+        CObject* obj = it.second;
 
         if (obj->GetTruck()) continue;  // battery or cargo?
 
@@ -974,12 +966,9 @@ bool CCamera::IsCollisionBack(Math::Vector &eye, Math::Vector lookat)
 
 bool CCamera::IsCollisionFix(Math::Vector &eye, Math::Vector lookat)
 {
-    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
-
-    for (int i = 0; i < 1000000; i++)
+    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        CObject *obj = static_cast<CObject*>( iMan->SearchInstance(CLASS_OBJECT, i) );
-        if (obj == NULL) break;
+        CObject* obj = it.second;
 
         if (obj == m_cameraObj) continue;
 

@@ -20,8 +20,6 @@
 
 #include "object/task/taskshield.h"
 
-#include "common/iman.h"
-
 #include "graphics/core/light.h"
 #include "graphics/engine/particle.h"
 #include "graphics/engine/lightman.h"
@@ -29,6 +27,7 @@
 #include "math/geometry.h"
 
 #include "object/brain.h"
+#include "object/objman.h"
 #include "object/robotmain.h"
 
 #include "physics/physics.h"
@@ -556,14 +555,10 @@ void CTaskShield::IncreaseShield()
     CObject*    pObj;
     Math::Vector    oPos;
     float       dist, shield;
-    int         i;
-
-    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
-
-    for ( i=0 ; i<1000000 ; i++ )
+    
+    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
-        if ( pObj == 0 )  break;
+        pObj = it.second;
 
         type = pObj->GetType();
         if ( type == OBJECT_MOTHER ||

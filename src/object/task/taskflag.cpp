@@ -20,17 +20,17 @@
 
 #include "object/task/taskflag.h"
 
-#include "common/iman.h"
-
 #include "math/geometry.h"
 
 #include "graphics/engine/particle.h"
 #include "graphics/engine/pyro.h"
 #include "graphics/engine/water.h"
 
+#include "object/objman.h"
 #include "object/motion/motionhuman.h"
 
 #include "physics/physics.h"
+#include <boost/concept_check.hpp>
 
 
 
@@ -136,46 +136,14 @@ bool CTaskFlag::Abort()
 
 CObject* CTaskFlag::SearchNearest(Math::Vector pos, ObjectType type)
 {
-    ObjectType  oType;
-    CObject     *pObj, *pBest;
-    Math::Vector    oPos;
-    float       min, dist;
-    int         i;
-
-    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
-
-    min = 100000.0f;
-    pBest = 0;
-    for ( i=0 ; i<1000000 ; i++ )
+    std::vector<ObjectType> types;
+    if(type == OBJECT_NULL)
     {
-        pObj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
-        if ( pObj == 0 )  break;
-
-        if ( !pObj->GetEnable() )  continue;
-
-        oType = pObj->GetType();
-        if ( type == OBJECT_NULL )
-        {
-            if ( oType != OBJECT_FLAGb &&
-                 oType != OBJECT_FLAGr &&
-                 oType != OBJECT_FLAGg &&
-                 oType != OBJECT_FLAGy &&
-                 oType != OBJECT_FLAGv )  continue;
-        }
-        else
-        {
-            if ( oType != type )  continue;
-        }
-
-        oPos = pObj->GetPosition(0);
-        dist = Math::DistanceProjected(oPos, pos);
-        if ( dist < min )
-        {
-            min = dist;
-            pBest = pObj;
-        }
+        types = {OBJECT_FLAGb, OBJECT_FLAGr, OBJECT_FLAGg, OBJECT_FLAGy, OBJECT_FLAGv};
+    } else {
+        types = {type};
     }
-    return pBest;
+    return CObjectManager::GetInstancePointer()->FindNearest(nullptr, pos, types);
 }
 
 // Counts the number of existing objects.
@@ -185,15 +153,12 @@ int CTaskFlag::CountObject(ObjectType type)
     ObjectType  oType;
     CObject     *pObj;
     Math::Vector    oPos;
-    int         i, count;
-
-    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
+    int         count;
 
     count = 0;
-    for ( i=0 ; i<1000000 ; i++ )
+    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
-        if ( pObj == 0 )  break;
+        pObj = it.second;
 
         if ( !pObj->GetEnable() )  continue;
 

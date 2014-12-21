@@ -20,8 +20,7 @@
 
 #include "object/auto/automush.h"
 
-#include "common/iman.h"
-
+#include "object/objman.h"
 #include "object/level/parserline.h"
 #include "object/level/parserparam.h"
 
@@ -230,14 +229,12 @@ bool CAutoMush::SearchTarget()
     Math::Vector    iPos, oPos;
     ObjectType  type;
     float       dist;
-    int         i;
 
     iPos = m_object->GetPosition(0);
-
-    for ( i=0 ; i<1000000 ; i++ )
+    
+    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = static_cast< CObject* >(m_iMan->SearchInstance(CLASS_OBJECT, i));
-        if ( pObj == 0 )  break;
+        pObj = it.second;
 
         if ( pObj->GetLock() )  continue;
 

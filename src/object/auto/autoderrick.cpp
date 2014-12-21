@@ -20,12 +20,11 @@
 
 #include "object/auto/autoderrick.h"
 
-#include "common/iman.h"
-
 #include "graphics/engine/terrain.h"
 
 #include "math/geometry.h"
 
+#include "object/objman.h"
 #include "object/level/parserline.h"
 #include "object/level/parserparam.h"
 
@@ -468,12 +467,10 @@ CObject* CAutoDerrick::SearchFret()
     CObject*    pObj;
     Math::Vector    oPos;
     ObjectType  type;
-    int         i;
-
-    for ( i=0 ; i<1000000 ; i++ )
+    
+    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = static_cast< CObject* >(m_iMan->SearchInstance(CLASS_OBJECT, i));
-        if ( pObj == 0 )  break;
+        pObj = it.second;
 
         type = pObj->GetType();
         if ( type == OBJECT_DERRICK )  continue;
@@ -495,12 +492,11 @@ bool CAutoDerrick::SearchFree(Math::Vector pos)
     Math::Vector    sPos;
     ObjectType  type;
     float       sRadius, distance;
-    int         i, j;
-
-    for ( i=0 ; i<1000000 ; i++ )
+    int         j;
+    
+    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = static_cast< CObject* >(m_iMan->SearchInstance(CLASS_OBJECT, i));
-        if ( pObj == 0 )  break;
+        pObj = it.second;
 
         type = pObj->GetType();
         if ( type == OBJECT_DERRICK )  continue;
@@ -547,25 +543,12 @@ void CAutoDerrick::CreateFret(Math::Vector pos, float angle, ObjectType type,
 
 bool CAutoDerrick::ExistKey()
 {
-    CObject*    pObj;
-    ObjectType  type;
-    int         i;
-
     if ( m_type != OBJECT_KEYa &&
          m_type != OBJECT_KEYb &&
          m_type != OBJECT_KEYc &&
          m_type != OBJECT_KEYd )  return false;
-
-    for ( i=0 ; i<1000000 ; i++ )
-    {
-        pObj = static_cast< CObject* >(m_iMan->SearchInstance(CLASS_OBJECT, i));
-        if ( pObj == 0 )  break;
-
-        type = pObj->GetType();
-        if ( type == m_type )  return true;
-    }
-
-    return false;
+    
+    return CObjectManager::GetInstancePointer()->FindNearest(nullptr, m_type) != nullptr;
 }
 
 

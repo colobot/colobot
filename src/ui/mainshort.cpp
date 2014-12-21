@@ -22,7 +22,7 @@
 
 #include "app/app.h"
 
-#include "common/iman.h"
+#include "object/objman.h"
 
 
 namespace Ui {
@@ -137,13 +137,10 @@ bool CMainShort::CreateShortcuts()
     pos.x += dim.x*1.2f;
     m_shortcuts[rank] = 0;
     rank ++;
-
-    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
-
-    for ( i=0 ; i<1000000 ; i++ )
+    
+    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
-        if ( pObj == nullptr )  break;
+        pObj = it.second;
 
         if ( !pObj->GetActif() )  continue;
         if ( !pObj->GetSelectable() )  continue;

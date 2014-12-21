@@ -20,9 +20,8 @@
 
 #include "object/task/taskreset.h"
 
-#include "common/iman.h"
-
 #include "object/brain.h"
+#include "object/objman.h"
 #include "object/robotmain.h"
 
 
@@ -273,14 +272,10 @@ bool CTaskReset::SearchVehicle()
     Math::Vector    oPos;
     ObjectType  type;
     float       oRadius, dist;
-    int         i;
-
-    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
-
-    for ( i=0 ; i<1000000 ; i++ )
+    
+    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
-        if ( pObj == 0 )  break;
+        pObj = it.second;
 
         if ( pObj == m_object )  continue;
 

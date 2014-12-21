@@ -26,7 +26,6 @@
 #include "object/object.h"
 
 
-class CInstanceManager;
 class CRobotMain;
 class CSoundInterface;
 class CLevelParserLine;
@@ -93,7 +92,6 @@ protected:
     void        UpdateInterface(float rTime);
 
 protected:
-    CInstanceManager*   m_iMan; // TODO: to be removed
     CEventQueue*        m_eventQueue;
     Gfx::CEngine*       m_engine;
     Gfx::CParticle*     m_particle;

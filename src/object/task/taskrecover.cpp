@@ -22,14 +22,13 @@
 
 #include "object/task/taskrecover.h"
 
-#include "common/iman.h"
-
 #include "graphics/engine/particle.h"
 
 #include "math/geometry.h"
 
 #include "physics/physics.h"
 
+#include "object/objman.h"
 #include "object/robotmain.h"
 
 
@@ -385,41 +384,6 @@ bool CTaskRecover::Abort()
 
 CObject* CTaskRecover::SearchRuin()
 {
-    CObject     *pObj, *pBest;
-    Math::Vector    oPos;
-    ObjectType  type;
-    float       dist, min;
-    int         i;
-
-    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
-
-    pBest = 0;
-    min = 100000.0f;
-    for ( i=0 ; i<1000000 ; i++ )
-    {
-        pObj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
-        if ( pObj == 0 )  break;
-
-        type = pObj->GetType();
-        if ( type == OBJECT_RUINmobilew1 ||
-             type == OBJECT_RUINmobilew2 ||
-             type == OBJECT_RUINmobilet1 ||
-             type == OBJECT_RUINmobilet2 ||
-             type == OBJECT_RUINmobiler1 ||
-             type == OBJECT_RUINmobiler2 )  // vehicle in ruin?
-        {
-            oPos = pObj->GetPosition(0);
-            dist = Math::Distance(oPos, m_recoverPos);
-            if ( dist > 40.0f )  continue;
-
-            if ( dist < min )
-            {
-                min = dist;
-                pBest = pObj;
-            }
-        }
-
-    }
-    return pBest;
+    return CObjectManager::GetInstancePointer()->FindNearest(nullptr, m_recoverPos, {OBJECT_RUINmobilew1, OBJECT_RUINmobilew2, OBJECT_RUINmobilet1, OBJECT_RUINmobilet2, OBJECT_RUINmobiler1, OBJECT_RUINmobiler2}, 10.0f);
 }
 

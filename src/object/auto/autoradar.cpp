@@ -20,9 +20,9 @@
 
 #include "object/auto/autoradar.h"
 
-#include "common/iman.h"
-
 #include "math/geometry.h"
+
+#include "object/objman.h"
 
 #include "ui/interface.h"
 #include "ui/window.h"
@@ -269,16 +269,14 @@ bool CAutoRadar::SearchEnemy(Math::Vector &pos)
     Math::Vector    iPos, oPos;
     ObjectType  oType;
     float       distance, min;
-    int         i;
 
     iPos = m_object->GetPosition(0);
     min = 1000000.0f;
     m_totalDetect = 0;
-
-    for ( i=0 ; i<1000000 ; i++ )
+    
+    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = static_cast< CObject* >(m_iMan->SearchInstance(CLASS_OBJECT, i));
-        if ( pObj == 0 )  break;
+        pObj = it.second;
 
         if ( !pObj->GetActif() )  continue;
 

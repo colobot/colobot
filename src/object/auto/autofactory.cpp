@@ -21,12 +21,12 @@
 #include "object/auto/autofactory.h"
 
 #include "common/global.h"
-#include "common/iman.h"
 
 #include "math/geometry.h"
 
-#include "object/robotmain.h"
 #include "object/brain.h"
+#include "object/objman.h"
+#include "object/robotmain.h"
 #include "object/level/parserline.h"
 #include "object/level/parserparam.h"
 
@@ -552,28 +552,7 @@ bool CAutoFactory::Read(CLevelParserLine* line)
 
 CObject* CAutoFactory::SearchFret()
 {
-    CObject*    pObj;
-    Math::Vector    oPos;
-    ObjectType  type;
-    float       dist;
-    int         i;
-
-    for ( i=0 ; i<1000000 ; i++ )
-    {
-        pObj = static_cast< CObject* >(m_iMan->SearchInstance(CLASS_OBJECT, i));
-        if ( pObj == 0 )  break;
-
-        type = pObj->GetType();
-        if ( type != OBJECT_METAL )  continue;
-        if ( pObj->GetTruck() != 0 )  continue;
-
-        oPos = pObj->GetPosition(0);
-        dist = Math::Distance(oPos, m_fretPos);
-
-        if ( dist < 8.0f )  return pObj;
-    }
-
-    return 0;
+    return CObjectManager::GetInstancePointer()->FindNearest(nullptr, m_fretPos, OBJECT_METAL, 8.0f/g_unit);
 }
 
 // Search if a vehicle is too close.
@@ -584,14 +563,12 @@ bool CAutoFactory::NearestVehicle()
     Math::Vector    cPos, oPos;
     ObjectType  type;
     float       oRadius, dist;
-    int         i;
 
     cPos = m_object->GetPosition(0);
-
-    for ( i=0 ; i<1000000 ; i++ )
+    
+    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = static_cast< CObject* >(m_iMan->SearchInstance(CLASS_OBJECT, i));
-        if ( pObj == 0 )  break;
+        pObj = it.second;
 
         type = pObj->GetType();
         if ( type != OBJECT_HUMAN    &&
@@ -696,33 +673,9 @@ bool CAutoFactory::CreateVehicle()
 // Seeking the vehicle during manufacture.
 
 CObject* CAutoFactory::SearchVehicle()
-{
-    CObject*    pObj;
-    Math::Vector    oPos;
-    ObjectType  type;
-    float       dist;
-    int         i;
-
-    for ( i=0 ; i<1000000 ; i++ )
-    {
-        pObj = static_cast< CObject* >(m_iMan->SearchInstance(CLASS_OBJECT, i));
-        if ( pObj == 0 )  break;
-
-        if ( !pObj->GetLock() )  continue;
-
-        type = pObj->GetType();
-        if ( type != m_type )  continue;
-        if ( pObj->GetTruck() != 0 )  continue;
-
-        oPos = pObj->GetPosition(0);
-        dist = Math::Distance(oPos, m_fretPos);
-
-        if ( dist < 8.0f )  return pObj;
-    }
-
-    return 0;
+{    
+    return CObjectManager::GetInstancePointer()->FindNearest(nullptr, m_fretPos, m_type, 8.0f/g_unit);
 }
-
 
 // Creates all the interface when the object is selected.
 
