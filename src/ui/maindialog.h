@@ -72,6 +72,8 @@ class CMainDialog
 public:
     CMainDialog();
     ~CMainDialog();
+    
+    void    Create();
 
     bool    EventProcess(const Event &event);
     void    ChangePhase(Phase phase);

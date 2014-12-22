@@ -21,6 +21,7 @@
 
 #include "app/app.h"
 
+#include "app/controller.h"
 #include "app/input.h"
 #include "app/system.h"
 
@@ -108,16 +109,16 @@ CApplication::CApplication()
     m_profile       = new CProfile();
     m_input         = new CInput();
 
-    m_engine    = nullptr;
-    m_device    = nullptr;
-    m_modelManager = nullptr;
-    m_robotMain = nullptr;
-    m_sound     = nullptr;
+    m_engine        = nullptr;
+    m_device        = nullptr;
+    m_modelManager  = nullptr;
+    m_controller    = nullptr;
+    m_sound         = nullptr;
 
-    m_exitCode  = 0;
-    m_active    = false;
-    m_debugModes = 0;
-    m_restart   = false;
+    m_exitCode      = 0;
+    m_active        = false;
+    m_debugModes    = 0;
+    m_restart       = false;
 
     m_windowTitle = "Colobot: Gold Edition";
 
@@ -588,14 +589,15 @@ bool CApplication::Create()
     m_modelManager = new Gfx::CModelManager(m_engine);
 
     // Create the robot application.
-    m_robotMain = new CRobotMain(this, !defaultValues);
+    m_controller = new CController(this, !defaultValues);
 
-    if (defaultValues) m_robotMain->CreateIni();
-
-    if (! m_runSceneName.empty())
-        m_robotMain->LoadSceneOnStart(m_runSceneName, m_runSceneRank);
-    else
-        m_robotMain->ChangePhase(PHASE_WELCOME1);
+    if (m_runSceneName.empty())
+        m_controller->StartApp();
+    else {
+        m_controller->GetRobotMain()->ChangePhase(PHASE_USER); // To load userlevel list - TODO: this is ugly
+        m_controller->GetRobotMain()->SetExitAfterMission(true);
+        m_controller->StartGame(m_runSceneName, m_runSceneRank/100, m_runSceneRank%100);
+    }
 
     return true;
 }
@@ -672,8 +674,8 @@ void CApplication::Destroy()
 {
     m_joystickEnabled = false;
 
-    delete m_robotMain;
-    m_robotMain = nullptr;
+    delete m_controller;
+    m_controller = nullptr;
 
     delete m_sound;
     m_sound = nullptr;
@@ -775,7 +777,7 @@ bool CApplication::ChangeVideoConfig(const Gfx::GLDeviceConfig &newConfig)
     ( static_cast<Gfx::CGLDevice*>(m_device) )->ConfigChanged(m_deviceConfig);
 
     m_engine->ResetAfterDeviceChanged();
-    m_robotMain->ResetAfterDeviceChanged();
+    m_controller->GetRobotMain()->ResetAfterDeviceChanged();
 
     return true;
 }
@@ -993,8 +995,8 @@ int CApplication::Run()
                 if (m_engine != nullptr)
                     passOn = m_engine->ProcessEvent(event);
 
-                if (passOn && m_robotMain != nullptr)
-                    m_robotMain->ProcessEvent(event);
+                if (passOn && m_controller != nullptr)
+                    m_controller->ProcessEvent(event);
             }
 
             StopPerformanceCounter(PCNT_EVENT_PROCESSING);
@@ -1003,14 +1005,14 @@ int CApplication::Run()
 
             // Prepare and process step simulation event
             event = CreateUpdateEvent();
-            if (event.type != EVENT_NULL && m_robotMain != nullptr)
+            if (event.type != EVENT_NULL && m_controller != nullptr)
             {
                 LogEvent(event);
 
                 m_sound->FrameMove(m_relTime);
 
                 StartPerformanceCounter(PCNT_UPDATE_GAME);
-                m_robotMain->ProcessEvent(event);
+                m_controller->ProcessEvent(event);
                 StopPerformanceCounter(PCNT_UPDATE_GAME);
 
                 StartPerformanceCounter(PCNT_UPDATE_ENGINE);

@@ -116,15 +116,15 @@ static int perso_color[3*10*3] =
 
 CMainDialog::CMainDialog()
 {
-    m_app        = CApplication::GetInstancePointer();
-    m_eventQueue = m_app->GetEventQueue();
-    m_sound      = m_app->GetSound();
-    m_main       = CRobotMain::GetInstancePointer();
-    m_interface  = m_main->GetInterface();
-    m_camera     = m_main->GetCamera();
-    m_engine     = Gfx::CEngine::GetInstancePointer();
-    m_particle   = m_engine->GetParticle();
-    m_pause      = CPauseManager::GetInstancePointer();
+    m_app        = nullptr;
+    m_eventQueue = nullptr;
+    m_sound      = nullptr;
+    m_main       = nullptr;
+    m_interface  = nullptr;
+    m_camera     = nullptr;
+    m_engine     = nullptr;
+    m_particle   = nullptr;
+    m_pause      = nullptr;
 
     m_phase        = PHASE_NAME;
     m_phaseSetup   = PHASE_SETUPg;
@@ -182,9 +182,24 @@ CMainDialog::CMainDialog()
     m_publicDir = "program";
     m_filesDir = "files";
 
-    m_setupFull = m_app->GetVideoConfig().fullScreen;
+    m_setupFull = false;
 
     m_bDialog = false;
+}
+
+void CMainDialog::Create()
+{
+    m_app        = CApplication::GetInstancePointer();
+    m_eventQueue = m_app->GetEventQueue();
+    m_sound      = m_app->GetSound();
+    m_main       = CRobotMain::GetInstancePointer();
+    m_interface  = m_main->GetInterface();
+    m_camera     = m_main->GetCamera();
+    m_engine     = Gfx::CEngine::GetInstancePointer();
+    m_particle   = m_engine->GetParticle();
+    m_pause      = CPauseManager::GetInstancePointer();
+    
+    m_setupFull = m_app->GetVideoConfig().fullScreen;
 }
 
 // Destructor of robot application.

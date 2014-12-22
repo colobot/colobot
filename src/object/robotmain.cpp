@@ -23,6 +23,7 @@
 #include "CBot/CBotDll.h"
 
 #include "app/app.h"
+#include "app/controller.h"
 #include "app/input.h"
 
 #include "common/event.h"
@@ -120,34 +121,33 @@ float   g_unit;             // conversion factor
 
 
 //! Constructor of robot application
-CRobotMain::CRobotMain(CApplication* app, bool loadProfile)
+CRobotMain::CRobotMain(CController* controller)
 {
-    m_app = app;
+    m_ctrl       = controller;
+    m_app        = nullptr;
 
-    m_eventQueue = m_app->GetEventQueue();
-    m_sound      = m_app->GetSound();
+    m_eventQueue = nullptr;
+    m_sound      = nullptr;
 
-    m_engine     = Gfx::CEngine::GetInstancePointer();
-    m_lightMan   = m_engine->GetLightManager();
-    m_particle   = m_engine->GetParticle();
-    m_water      = m_engine->GetWater();
-    m_cloud      = m_engine->GetCloud();
-    m_lightning  = m_engine->GetLightning();
-    m_planet     = m_engine->GetPlanet();
-    m_pause      = CPauseManager::GetInstancePointer();
-    m_input      = CInput::GetInstancePointer();
+    m_engine     = nullptr;
+    m_lightMan   = nullptr;
+    m_particle   = nullptr;
+    m_water      = nullptr;
+    m_cloud      = nullptr;
+    m_lightning  = nullptr;
+    m_planet     = nullptr;
+    m_pause      = nullptr;
+    m_input      = nullptr;
 
-    m_interface   = new Ui::CInterface();
-    m_terrain     = new Gfx::CTerrain();
-    m_camera      = new Gfx::CCamera();
-    m_displayText = new Ui::CDisplayText();
-    m_movie       = new CMainMovie();
-    m_dialog      = new Ui::CMainDialog();
-    m_short       = new Ui::CMainShort();
-    m_map         = new Ui::CMainMap();
+    m_interface   = nullptr;
+    m_terrain     = nullptr;
+    m_camera      = nullptr;
+    m_displayText = nullptr;
+    m_movie       = nullptr;
+    m_dialog      = nullptr;
+    m_short       = nullptr;
+    m_map         = nullptr;
     m_displayInfo = nullptr;
-
-    m_engine->SetTerrain(m_terrain);
 
     m_time = 0.0f;
     m_gameTime = 0.0f;
@@ -199,10 +199,7 @@ CRobotMain::CRobotMain(CApplication* app, bool loadProfile)
     m_friendAim    = false;
     m_resetCreate  = false;
     m_shortCut     = true;
-
-    m_engine->SetMovieLock(m_movieLock);
-
-    m_movie->Flush();
+    
     m_movieInfoIndex = -1;
 
     m_tooltipPos = Math::Point(0.0f, 0.0f);
@@ -220,43 +217,6 @@ CRobotMain::CRobotMain(CApplication* app, bool loadProfile)
     m_autosaveSlots = 3;
     m_autosaveLast = 0.0f;
 
-    FlushDisplayInfo();
-
-    m_fontSize  = 19.0f;
-    m_windowPos = Math::Point(0.15f, 0.17f);
-    m_windowDim = Math::Point(0.70f, 0.66f);
-
-    float fValue;
-    int iValue;
-
-    if (loadProfile)
-    {
-        if (GetProfile().GetFloatProperty("Edit", "FontSize",    fValue)) m_fontSize    = fValue;
-        if (GetProfile().GetFloatProperty("Edit", "WindowPosX",  fValue)) m_windowPos.x = fValue;
-        if (GetProfile().GetFloatProperty("Edit", "WindowPosY",  fValue)) m_windowPos.y = fValue;
-        if (GetProfile().GetFloatProperty("Edit", "WindowDimX",  fValue)) m_windowDim.x = fValue;
-        if (GetProfile().GetFloatProperty("Edit", "WindowDimY",  fValue)) m_windowDim.y = fValue;
-    }
-
-    m_IOPublic = false;
-    m_IODim = Math::Point(320.0f/640.0f, (121.0f+18.0f*8)/480.0f);
-    m_IOPos.x = (1.0f-m_IODim.x)/2.0f;  // in the middle
-    m_IOPos.y = (1.0f-m_IODim.y)/2.0f;
-
-    if (loadProfile)
-    {
-        if (GetProfile().GetIntProperty  ("Edit", "IOPublic", iValue)) m_IOPublic = iValue;
-        if (GetProfile().GetFloatProperty("Edit", "IOPosX",   fValue)) m_IOPos.x  = fValue;
-        if (GetProfile().GetFloatProperty("Edit", "IOPosY",   fValue)) m_IOPos.y  = fValue;
-        if (GetProfile().GetFloatProperty("Edit", "IODimX",   fValue)) m_IODim.x  = fValue;
-        if (GetProfile().GetFloatProperty("Edit", "IODimY",   fValue)) m_IODim.y  = fValue;
-    }
-
-    m_short->FlushShortcuts();
-    InitEye();
-
-    m_engine->SetTracePrecision(1.0f);
-
     m_cameraPan  = 0.0f;
     m_cameraZoom = 0.0f;
 
@@ -267,10 +227,6 @@ CRobotMain::CRobotMain(CApplication* app, bool loadProfile)
     g_unit = UNIT;
 
     m_gamerName = "";
-    if (loadProfile) GetProfile().GetStringProperty("Gamer", "LastName", m_gamerName);
-    SetGlobalGamerName(m_gamerName);
-    ReadFreeParam();
-    if (loadProfile) m_dialog->SetupRecall();
 
     for (int i = 0; i < MAXSHOWLIMIT; i++)
     {
@@ -278,6 +234,81 @@ CRobotMain::CRobotMain(CApplication* app, bool loadProfile)
         m_showLimit[i].total = 0;
         m_showLimit[i].link = 0;
     }
+}
+
+void CRobotMain::Create(bool loadProfile)
+{
+    m_app        = m_ctrl->GetApplication();
+    
+    m_eventQueue = m_app->GetEventQueue();
+    m_sound      = m_app->GetSound();
+    
+    m_engine     = Gfx::CEngine::GetInstancePointer();
+    m_lightMan   = m_engine->GetLightManager();
+    m_particle   = m_engine->GetParticle();
+    m_water      = m_engine->GetWater();
+    m_cloud      = m_engine->GetCloud();
+    m_lightning  = m_engine->GetLightning();
+    m_planet     = m_engine->GetPlanet();
+    m_pause      = CPauseManager::GetInstancePointer();
+    m_input      = CInput::GetInstancePointer();
+    
+    m_interface   = new Ui::CInterface();
+    m_terrain     = new Gfx::CTerrain();
+    m_camera      = new Gfx::CCamera();
+    m_displayText = new Ui::CDisplayText();
+    m_movie       = new CMainMovie();
+    m_dialog      = m_ctrl->GetMainDialog();
+    m_short       = new Ui::CMainShort();
+    m_map         = new Ui::CMainMap();
+    m_displayInfo = nullptr;
+    
+    m_engine->SetTerrain(m_terrain);
+    
+    m_engine->SetMovieLock(m_movieLock);
+    
+    m_movie->Flush();
+    
+    FlushDisplayInfo();
+    
+    m_fontSize  = 19.0f;
+    m_windowPos = Math::Point(0.15f, 0.17f);
+    m_windowDim = Math::Point(0.70f, 0.66f);
+    
+    float fValue;
+    int iValue;
+    
+    if (loadProfile)
+    {
+        if (GetProfile().GetFloatProperty("Edit", "FontSize",    fValue)) m_fontSize    = fValue;
+        if (GetProfile().GetFloatProperty("Edit", "WindowPosX",  fValue)) m_windowPos.x = fValue;
+        if (GetProfile().GetFloatProperty("Edit", "WindowPosY",  fValue)) m_windowPos.y = fValue;
+        if (GetProfile().GetFloatProperty("Edit", "WindowDimX",  fValue)) m_windowDim.x = fValue;
+        if (GetProfile().GetFloatProperty("Edit", "WindowDimY",  fValue)) m_windowDim.y = fValue;
+    }
+    
+    m_IOPublic = false;
+    m_IODim = Math::Point(320.0f/640.0f, (121.0f+18.0f*8)/480.0f);
+    m_IOPos.x = (1.0f-m_IODim.x)/2.0f;  // in the middle
+    m_IOPos.y = (1.0f-m_IODim.y)/2.0f;
+    
+    if (loadProfile)
+    {
+        if (GetProfile().GetIntProperty  ("Edit", "IOPublic", iValue)) m_IOPublic = iValue;
+        if (GetProfile().GetFloatProperty("Edit", "IOPosX",   fValue)) m_IOPos.x  = fValue;
+        if (GetProfile().GetFloatProperty("Edit", "IOPosY",   fValue)) m_IOPos.y  = fValue;
+        if (GetProfile().GetFloatProperty("Edit", "IODimX",   fValue)) m_IODim.x  = fValue;
+        if (GetProfile().GetFloatProperty("Edit", "IODimY",   fValue)) m_IODim.y  = fValue;
+    }
+    
+    m_short->FlushShortcuts();
+    InitEye();
+    
+    m_engine->SetTracePrecision(1.0f);
+    
+    if (loadProfile) GetProfile().GetStringProperty("Gamer", "LastName", m_gamerName);
+    SetGlobalGamerName(m_gamerName);
+    ReadFreeParam();
     
     CScriptFunctions::m_filesDir = CResourceManager::GetSaveLocation()+"/"+m_dialog->GetFilesDir(); //TODO: Refactor to PHYSFS while rewriting CBot engine
     CScriptFunctions::Init();
@@ -304,18 +335,17 @@ CRobotMain::~CRobotMain()
     delete m_movie;
     m_movie = nullptr;
 
-    delete m_dialog;
-    m_dialog = nullptr;
-
     delete m_short;
     m_short = nullptr;
 
     delete m_map;
     m_map = nullptr;
-
+    
+    m_dialog = nullptr;
     m_input = nullptr;
     m_pause = nullptr;
     m_app = nullptr;
+    m_ctrl = nullptr;
 }
 
 Gfx::CCamera* CRobotMain::GetCamera()
@@ -336,16 +366,6 @@ Ui::CInterface* CRobotMain::GetInterface()
 Ui::CDisplayText* CRobotMain::GetDisplayText()
 {
     return m_displayText;
-}
-
-void CRobotMain::LoadSceneOnStart(const std::string& name, int rank)
-{
-    m_exitAfterMission = true;
-    // TODO: fix this ugly dependency :(
-    ChangePhase(PHASE_USER); // To load userlevel list
-    m_dialog->SetSceneName(name.c_str());
-    m_dialog->SetSceneRank(rank);
-    ChangePhase(PHASE_LOADING);
 }
 
 void CRobotMain::ResetAfterDeviceChanged()
@@ -380,6 +400,11 @@ void CRobotMain::CreateIni()
     GetProfile().SetFloatProperty("Edit", "IODimY", m_IODim.y);
 
     GetProfile().Save();
+}
+
+void CRobotMain::LoadIni()
+{
+    m_dialog->SetupRecall();
 }
 
 //! Changes phase
@@ -649,7 +674,6 @@ bool CRobotMain::ProcessEvent(Event &event)
             }
         }
 
-        m_dialog->EventProcess(event);
         m_displayText->EventProcess(event);
         RemoteCamera(m_cameraPan, m_cameraZoom, event.rTime);
 
@@ -696,14 +720,10 @@ bool CRobotMain::ProcessEvent(Event &event)
     if (event.type == EVENT_SPEED)
         SetSpeed(1.0f);
 
-    if (!m_dialog->EventProcess(event))
+    if (event.type == EVENT_MOUSE_MOVE)
     {
-        if (event.type == EVENT_MOUSE_MOVE)
-        {
-            m_lastMousePos = event.mousePos;
-            HiliteObject(event.mousePos);
-        }
-        return false;
+        m_lastMousePos = event.mousePos;
+        HiliteObject(event.mousePos);
     }
 
     if (!m_displayText->EventProcess(event))
@@ -6186,4 +6206,9 @@ void CRobotMain::Autosave()
     IOWriteScene(savegameFileName.c_str(), fileCBot.c_str(), const_cast<char*>((std::string("[AUTOSAVE] ")+timestr).c_str()));
     
     m_dialog->MakeSaveScreenshot(dir + "/screen.png");
+}
+
+void CRobotMain::SetExitAfterMission(bool exit)
+{
+    m_exitAfterMission = exit;
 }

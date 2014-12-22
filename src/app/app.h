@@ -40,7 +40,7 @@
 
 class CInstanceManager;
 class CEventQueue;
-class CRobotMain;
+class CController;
 class CSoundInterface;
 class CInput;
 class CObjectManager;
@@ -373,8 +373,8 @@ protected:
     Gfx::CModelManager*     m_modelManager;
     //! Sound subsystem
     CSoundInterface*        m_sound;
-    //! Main class of the proper game engine
-    CRobotMain*             m_robotMain;
+    //! Game controller - game engine and UI
+    CController*            m_controller;
     //! Profile (INI) reader/writer
     CProfile*               m_profile;
     //! Input manager

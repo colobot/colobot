@@ -74,6 +74,7 @@ enum Phase
 };
 
 
+class CController;
 class CEventQueue;
 class CSoundInterface;
 class CLevelParserLine;
@@ -170,18 +171,18 @@ const int SATCOM_MAX        = 6;
 class CRobotMain : public CSingleton<CRobotMain>
 {
 public:
-    CRobotMain(CApplication* app, bool loadProfile);
+    CRobotMain(CController* controller);
     virtual ~CRobotMain();
+    
+    void Create(bool loadProfile = true);
 
     Gfx::CCamera* GetCamera();
     Gfx::CTerrain* GetTerrain();
     Ui::CInterface* GetInterface();
     Ui::CDisplayText* GetDisplayText();
 
-    //! Caused the given mission to be loaded immediately after start
-    void        LoadSceneOnStart(const std::string& name, int rank);
-
     void        CreateIni();
+    void        LoadIni();
     
     void        ResetAfterDeviceChanged();
 
@@ -350,6 +351,9 @@ public:
     int         GetAutosaveInterval();
     void        SetAutosaveSlots(int slots);
     int         GetAutosaveSlots();
+    
+    //! Enable mode where completing mission closes the game
+    void        SetExitAfterMission(bool exit);
 
 protected:
     bool        EventFrame(const Event &event);
@@ -389,6 +393,7 @@ protected:
 
 
 protected:
+    CController*        m_ctrl;
     CApplication*       m_app;
     CEventQueue*        m_eventQueue;
     CMainMovie*         m_movie;

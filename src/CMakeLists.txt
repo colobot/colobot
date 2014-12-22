@@ -61,6 +61,7 @@ endif()
 # Source files
 set(BASE_SOURCES
     app/app.cpp
+    app/controller.cpp
     app/input.cpp
     app/pausemanager.cpp
     app/system.cpp
