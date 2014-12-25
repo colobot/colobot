@@ -186,7 +186,7 @@ class CApplication : public CSingleton<CApplication>
 {
 public:
     //! Constructor (can only be called once!)
-    CApplication();
+    CApplication(bool dedicatedServer = false);
     //! Destructor
     ~CApplication();
 
@@ -379,6 +379,9 @@ protected:
     CProfile*               m_profile;
     //! Input manager
     CInput*                 m_input;
+    
+    //! Is it a dedicated server?
+    bool            m_dedicatedServer;
 
     //! Code to return at exit
     int             m_exitCode;
@@ -450,6 +453,9 @@ protected:
     std::string     m_runSceneName;
     int             m_runSceneRank;
     //@}
+    
+    //! Server to connect to
+    std::string     m_serverAddress;
     
     //! Scene test mode
     bool            m_sceneTest;

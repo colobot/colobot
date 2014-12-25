@@ -24,7 +24,6 @@
 
 #pragma once
 
-
 #include "graphics/core/color.h"
 
 #include "math/point.h"

@@ -100,7 +100,7 @@ struct ApplicationPrivate
 
 
 
-CApplication::CApplication()
+CApplication::CApplication(bool dedicatedServer)
 {
     m_private       = new ApplicationPrivate();
     m_iMan          = new CInstanceManager();
@@ -115,6 +115,8 @@ CApplication::CApplication()
     m_controller    = nullptr;
     m_sound         = nullptr;
 
+    m_dedicatedServer = dedicatedServer;
+    
     m_exitCode      = 0;
     m_active        = false;
     m_debugModes    = 0;
@@ -167,6 +169,8 @@ CApplication::CApplication()
 
     m_runSceneName = "";
     m_runSceneRank = 0;
+    
+    m_serverAddress = "";
 
     m_sceneTest = false;
     m_headless = false;
@@ -234,7 +238,8 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
         OPT_MOD,
         OPT_VBO,
         OPT_RESOLUTION,
-        OPT_HEADLESS
+        OPT_HEADLESS,
+        OPT_CONNECT
     };
 
     option options[] =
@@ -252,6 +257,7 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
         { "vbo", required_argument, nullptr, OPT_VBO },
         { "resolution", required_argument, nullptr, OPT_RESOLUTION },
         { "headless", no_argument, nullptr, OPT_HEADLESS },
+        { "connect", required_argument, nullptr, OPT_CONNECT },
         { nullptr, 0, nullptr, 0}
     };
 
@@ -295,6 +301,7 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
                 GetLogger()->Message("  -vbo mode           set OpenGL VBO mode (one of: auto, enable, disable)\n");
                 GetLogger()->Message("  -resolution WxH     set resolution\n");
                 GetLogger()->Message("  -headless           headless mode - disables graphics, sound and user interaction\n");
+                GetLogger()->Message("  -connect ip         connect to multiplayer server\n");
                 return PARSE_ARGS_HELP;
             }
             case OPT_DEBUG:
@@ -415,6 +422,11 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
                 m_headless = true;
                 break;
             }
+            case OPT_CONNECT:
+            {
+                m_serverAddress = optarg;
+                break;
+            }
             default:
                 assert(false); // should never get here
         }
@@ -429,6 +441,13 @@ bool CApplication::Create()
     bool defaultValues = false;
 
     GetLogger()->Info("Creating CApplication\n");
+    
+    if(m_dedicatedServer && m_runSceneName.empty()) {
+        GetLogger()->Error("Mission file for dedicated server not specified\n");
+        GetLogger()->Info("Please use -runscene scenename, e.g. -runscene freemissions901\n");
+        m_exitCode = 1;
+        return false;
+    }
 
     boost::filesystem::path dataPath(m_dataPath);
     if (! (boost::filesystem::exists(dataPath) && boost::filesystem::is_directory(dataPath)) )
@@ -473,7 +492,7 @@ bool CApplication::Create()
 
     //Create the sound instance.
     #ifdef OPENAL_SOUND
-    if(!m_headless) {
+    if(!m_headless && !m_dedicatedServer) {
         m_sound = static_cast<CSoundInterface *>(new ALSound());
     } else {
         m_sound = new CSoundInterface();
@@ -522,7 +541,7 @@ bool CApplication::Create()
         return false;
     }
 
-    if(!m_headless) {
+    if(!m_headless && !m_dedicatedServer) {
         // load settings from profile
         int iValue;
         if ( GetProfile().GetIntProperty("Setup", "Resolution", iValue) && !m_resolutionOverride )
@@ -560,7 +579,7 @@ bool CApplication::Create()
     // Don't generate joystick events
     SDL_JoystickEventState(SDL_IGNORE);
 
-    if(!m_headless) {
+    if(!m_headless && !m_dedicatedServer) {
         // The video is ready, we can create and initalize the graphics device
         m_device = new Gfx::CGLDevice(m_deviceConfig);
     } else {
@@ -591,12 +610,23 @@ bool CApplication::Create()
     // Create the robot application.
     m_controller = new CController(this, !defaultValues);
 
-    if (m_runSceneName.empty())
-        m_controller->StartApp();
-    else {
-        m_controller->GetRobotMain()->ChangePhase(PHASE_USER); // To load userlevel list - TODO: this is ugly
-        m_controller->GetRobotMain()->SetExitAfterMission(true);
-        m_controller->StartGame(m_runSceneName, m_runSceneRank/100, m_runSceneRank%100);
+    if(m_dedicatedServer)
+    {
+        m_controller->StartMPServer(m_runSceneName, m_runSceneRank/100, m_runSceneRank%100);
+    } else {
+        if(!m_serverAddress.empty())
+        {
+            m_controller->StartMPClient(m_serverAddress);
+        } else {
+            if(m_runSceneName.empty())
+            {
+                m_controller->StartApp();
+            } else {
+                m_controller->GetRobotMain()->ChangePhase(PHASE_USER); // To load userlevel list - TODO: this is ugly
+                m_controller->GetRobotMain()->SetExitAfterMission(true);
+                m_controller->StartSP(m_runSceneName, m_runSceneRank/100, m_runSceneRank%100);
+            }
+        }
     }
 
     return true;

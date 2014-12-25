@@ -140,9 +140,15 @@ endif()
 # The flags are used throughout src/ and test/ subdirs
 
 # Special flags for boost
-set(Boost_FLAGS "-DBOOST_NO_SCOPED_ENUMS -DBOOST_NO_CXX11_SCOPED_ENUMS")
+set(Boost_FLAGS "-DBOOST_NO_SCOPED_ENUMS -DBOOST_NO_CXX11_SCOPED_ENUMS -DBOOST_THREAD_USE_LIB")
 
-set(COLOBOT_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wold-style-cast ${CXX11_FLAGS} ${Boost_FLAGS}")
+if(PLATFORM_WINDOWS)
+    set(BOOST_ASIO_FLAGS "-D_WIN32_WINNT=0x0601")
+elseif()
+    set(BOOST_ASIO_FLAGS "")
+endif()
+
+set(COLOBOT_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wold-style-cast ${CXX11_FLAGS} ${Boost_FLAGS} ${BOOST_ASIO_FLAGS}")
 set(COLOBOT_CXX_FLAGS_RELEASE "-O2")
 set(COLOBOT_CXX_FLAGS_DEBUG "-g -O0")
 
@@ -216,7 +222,14 @@ set(Boost_USE_MULTITHREADED ON)
 set(Boost_USE_STATIC_RUNTIME OFF)
 
 set(Boost_ADDITIONALVERSION "1.51" "1.51.0")
-find_package(Boost COMPONENTS system filesystem regex REQUIRED)
+if(PLATFORM_WINDOWS)
+    set(BOOST_THREAD_COMPONENT "thread_win32")
+    set(BOOST_ASIO_ADDITIONAL_LIBS ws2_32 wsock32)
+else()
+    set(BOOST_THREAD_COMPONENT "thread")
+    set(BOOST_ASIO_ADDITIONAL_LIBS "")
+endif()
+find_package(Boost COMPONENTS system filesystem regex ${BOOST_THREAD_COMPONENT} serialization REQUIRED)
 
 find_package(GLEW REQUIRED)
 

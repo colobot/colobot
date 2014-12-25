@@ -33,6 +33,7 @@
 #include "common/misc.h"
 #include "common/profile.h"
 #include "common/restext.h"
+#include "common/windowsfix.h"
 
 #include "common/resources/resourcemanager.h"
 #include "common/resources/inputstream.h"
@@ -53,6 +54,10 @@
 
 #include "math/const.h"
 #include "math/geometry.h"
+
+#include "net/connections/connclient.h"
+#include "net/packets/objectparams.h"
+#include "net/services/client.h"
 
 #include "object/auto/auto.h"
 #include "object/auto/autobase.h"
@@ -3432,8 +3437,24 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 InitEye();
                 SetMovieLock(false);
                 
-                if (read[0] != 0)  // loading file ?
-                    sel = IOReadScene(read, stack);
+                if(!m_ctrl->IsServer())
+                {
+                    for(ObjectParams op : m_ctrl->GetClient()->GetConnection()->GetLevelData())
+                    {
+                        CLogger::GetInstancePointer()->Debug("Received object %d from server\n", op.id); //TODO: Change to Trace later
+                        g_id = op.id-1; //TODO: Well, this is a bit hacky solution
+                        CObjectManager::GetInstancePointer()->CreateObject(op.pos[0], op.angle[0].y, op.type, -1.0f);
+                        op.Apply(false);
+                    }
+                    
+                    for(ObjectParams op : m_ctrl->GetClient()->GetConnection()->GetLevelData())
+                    {
+                        op.LinkObjects();
+                    }
+                } else {
+                    if (read[0] != 0)  // loading file ?
+                        sel = IOReadScene(read, stack);
+                }
                 
                 continue;
             }
@@ -3456,6 +3477,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             
             if (line->GetCommand() == "CreateObject" && read[0] == 0)
             {
+                if(!m_ctrl->IsServer()) continue;
                 ObjectType type = line->GetParam("type")->AsObjectType();
                 
                 int gadget = line->GetParam("gadget")->AsInt(-1);

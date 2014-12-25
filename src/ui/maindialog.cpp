@@ -21,6 +21,7 @@
 #include "ui/maindialog.h"
 
 #include "app/app.h"
+#include "app/controller.h"
 #include "app/input.h"
 #include "app/system.h"
 
@@ -114,8 +115,9 @@ static int perso_color[3*10*3] =
 
 // Constructor of robot application.
 
-CMainDialog::CMainDialog()
+CMainDialog::CMainDialog(CController* controller)
 {
+    m_controller = controller;
     m_app        = nullptr;
     m_eventQueue = nullptr;
     m_sound      = nullptr;
@@ -189,10 +191,10 @@ CMainDialog::CMainDialog()
 
 void CMainDialog::Create()
 {
-    m_app        = CApplication::GetInstancePointer();
+    m_app        = m_controller->GetApplication();
     m_eventQueue = m_app->GetEventQueue();
     m_sound      = m_app->GetSound();
-    m_main       = CRobotMain::GetInstancePointer();
+    m_main       = m_controller->GetRobotMain();
     m_interface  = m_main->GetInterface();
     m_camera     = m_main->GetCamera();
     m_engine     = Gfx::CEngine::GetInstancePointer();
@@ -2259,9 +2261,8 @@ bool CMainDialog::EventProcess(const Event &event)
                 break;
 
             case EVENT_INTERFACE_PLAY:
-                m_sceneRank = (m_chap[m_index]+1)*100+(m_sel[m_index]+1);
                 m_phaseTerm = m_phase;
-                m_main->ChangePhase(PHASE_LOADING);
+                m_controller->StartSP(m_sceneName, m_chap[m_index]+1, m_sel[m_index]+1);
                 break;
 
             case EVENT_INTERFACE_READ:

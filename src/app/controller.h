@@ -32,6 +32,8 @@ class CRobotMain;
 namespace Ui {
 class CMainDialog;
 }
+class CServer;
+class CClient;
 
 /**
  * \class CController
@@ -50,16 +52,39 @@ public:
     //! Return CMainDialog instance
     Ui::CMainDialog* GetMainDialog();
     
+    //! Return CClient instance
+    CClient*         GetClient();
+    //! Return CServer instance
+    CServer*         GetServer();
+    
     //! Event processing
     void ProcessEvent(Event &event);
     
     //! Start the application
     void StartApp();
+    
     //! Starts the simulation, loading the given scene
-    void StartGame(std::string cat, int chap, int lvl);
+    void StartSP(std::string cat, int chap, int lvl);
+    //! Starts multiplayer server
+    void StartMPServer(std::string cat, int chap, int lvl);
+    //! Starts multiplayer client
+    void StartMPClient(std::string server);
+    //! Stops the simulation
+    void StopGame();
+    
+    //! Is it a multiplayer game?
+    bool IsMultiplayer();
+    //! Is it a server?
+    bool IsServer();
+    //! Is it a client?
+    bool IsClient();
 
 private:
     CApplication*    m_app;
     CRobotMain*      m_main;
     Ui::CMainDialog* m_dialog;
+    
+    CServer*         m_server;
+    CClient*         m_client;
+    bool             m_multiplayer;
 };

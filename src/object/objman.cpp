@@ -66,6 +66,7 @@ bool CObjectManager::DeleteObject(CObject* instance)
 
 CObject* CObjectManager::GetObjectById(unsigned int id)
 {
+    if(m_table.find(id) == m_table.end()) return nullptr;
     return m_table[id];
 }
 

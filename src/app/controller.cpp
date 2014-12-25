@@ -20,6 +20,9 @@
 #include "app/controller.h"
 
 
+#include "net/services/client.h"
+#include "net/services/server.h"
+
 #include "object/robotmain.h"
 
 #include "ui/maindialog.h"
@@ -32,7 +35,7 @@ CController::CController(CApplication* app, bool loadProfile)
 {
     m_app = app;
     m_main = new CRobotMain(this);
-    m_dialog = new Ui::CMainDialog();
+    m_dialog = new Ui::CMainDialog(this);
     
     m_main->Create(loadProfile);
     m_dialog->Create();
@@ -40,10 +43,16 @@ CController::CController(CApplication* app, bool loadProfile)
         m_main->CreateIni();
     else
         m_main->LoadIni();
+    
+    m_server = nullptr;
+    m_client = nullptr;
+    m_multiplayer = false;
 }
 
 CController::~CController()
 {
+    StopGame();
+    
     delete m_dialog;
     m_dialog = nullptr;
     
@@ -68,20 +77,94 @@ Ui::CMainDialog* CController::GetMainDialog()
     return m_dialog;
 }
 
+CClient* CController::GetClient()
+{
+    return m_client;
+}
+
+CServer* CController::GetServer()
+{
+    return m_server;
+}
+
 void CController::StartApp()
 {
     m_main->ChangePhase(PHASE_WELCOME1);
 }
 
-void CController::StartGame(std::string cat, int chap, int lvl)
+void CController::StartSP(std::string cat, int chap, int lvl)
 {
     m_dialog->SetSceneName(cat.c_str());
     m_dialog->SetSceneRank(chap*100+lvl);
     m_main->ChangePhase(PHASE_LOADING);
+    m_multiplayer = false;
+}
+
+void CController::StartMPServer(std::string cat, int chap, int lvl)
+{
+    m_dialog->SetSceneName(cat.c_str());
+    m_dialog->SetSceneRank(chap*100+lvl);
+    m_main->ChangePhase(PHASE_LOADING);
+    m_server = new CServer();
+    m_client = nullptr;
+    m_multiplayer = true;
+}
+
+void CController::StartMPClient(std::string server)
+{
+    m_server = nullptr;
+    m_client = new CClient(server);
+    m_multiplayer = true;
+}
+
+void CController::StopGame()
+{
+    if(m_client != nullptr)
+    {
+        m_client->Stop();
+        delete m_client;
+        m_client = nullptr;
+    }
+    
+    if(m_server != nullptr)
+    {
+        m_server->Stop();
+        delete m_server;
+        m_server = nullptr;
+    }
+    m_multiplayer = false;
+}
+
+bool CController::IsMultiplayer()
+{
+    return m_multiplayer;
+}
+
+bool CController::IsServer()
+{
+    return m_server != nullptr || !m_multiplayer;
+}
+
+bool CController::IsClient()
+{
+    return m_client != nullptr || !m_multiplayer;
 }
 
 void CController::ProcessEvent(Event& event)
 {
+    if(event.type == EVENT_FRAME)
+    {
+        if(m_client != nullptr)
+        {
+            m_client->ProcessEvent(event);
+        }
+        
+        if(m_server != nullptr)
+        {
+            m_server->ProcessEvent(event);
+        }
+    }
+    
     bool passOn = m_dialog->EventProcess(event);
     if(passOn)
         m_main->ProcessEvent(event);

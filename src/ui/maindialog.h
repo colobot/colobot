@@ -31,6 +31,7 @@
 #include <vector>
 
 
+class CController;
 class CEventQueue;
 class CSoundInterface;
 
@@ -70,7 +71,7 @@ struct GamerPerso
 class CMainDialog
 {
 public:
-    CMainDialog();
+    CMainDialog(CController* controller);
     ~CMainDialog();
     
     void    Create();
@@ -182,6 +183,7 @@ protected:
     void    ChangeKey(EventType event);
 
 protected:
+    CController*      m_controller;
     CApplication*     m_app;
     CRobotMain*       m_main;
     CEventQueue*      m_eventQueue;

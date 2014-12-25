@@ -97,6 +97,12 @@ set(BASE_SOURCES
     graphics/engine/text.cpp
     graphics/engine/water.cpp
     graphics/opengl/gldevice.cpp
+    net/connections/conn.cpp
+    net/connections/connclient.cpp
+    net/connections/connserver.cpp
+    net/services/client.cpp
+    net/services/netservice.cpp
+    net/services/server.cpp
     object/auto/auto.cpp
     object/auto/autobase.cpp
     object/auto/autoconvert.cpp
@@ -203,6 +209,10 @@ set(MAIN_SOURCES
     ${RES_FILES}
 )
 
+set(DEDICATED_SERVER_SOURCES
+    app/main_server.cpp
+)
+
 
 # Libraries
 set(LIBS
@@ -216,6 +226,7 @@ set(LIBS
     ${PNG_LIBRARIES}
     ${GLEW_LIBRARY}
     ${Boost_LIBRARIES}
+    ${BOOST_ASIO_ADDITIONAL_LIBS}
     ${LIBSNDFILE_LIBRARY}
     ${OPTIONAL_LIBS}
     ${PLATFORM_LIBS}
@@ -263,6 +274,7 @@ link_directories(
 
 add_library(colobotbase STATIC ${BASE_SOURCES})
 
+
 add_executable(colobot ${MAIN_SOURCES})
 target_link_libraries(colobot colobotbase ${LIBS})
 
@@ -270,3 +282,7 @@ install(TARGETS colobot RUNTIME DESTINATION ${COLOBOT_INSTALL_BIN_DIR})
 if(NOT CBOT_STATIC)
     set_target_properties(colobot PROPERTIES INSTALL_RPATH ${COLOBOT_INSTALL_LIB_DIR})
 endif()
+
+
+add_executable(colobot_server ${DEDICATED_SERVER_SOURCES})
+target_link_libraries(colobot_server colobotbase ${LIBS})
