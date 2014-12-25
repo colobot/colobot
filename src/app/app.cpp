@@ -610,19 +610,25 @@ bool CApplication::Create()
     // Create the robot application.
     m_controller = new CController(this, !defaultValues);
 
+    if(m_runSceneName == "custom")
+    {
+        m_controller->GetRobotMain()->ChangePhase(PHASE_USER); // To load userlevel list - TODO: this is ugly
+    }
+    
     if(m_dedicatedServer)
     {
+        m_controller->GetRobotMain()->SetExitAfterMission(true);
         m_controller->StartMPServer(m_runSceneName, m_runSceneRank/100, m_runSceneRank%100);
     } else {
         if(!m_serverAddress.empty())
         {
+            m_controller->GetRobotMain()->SetExitAfterMission(true);
             m_controller->StartMPClient(m_serverAddress);
         } else {
             if(m_runSceneName.empty())
             {
                 m_controller->StartApp();
             } else {
-                m_controller->GetRobotMain()->ChangePhase(PHASE_USER); // To load userlevel list - TODO: this is ugly
                 m_controller->GetRobotMain()->SetExitAfterMission(true);
                 m_controller->StartSP(m_runSceneName, m_runSceneRank/100, m_runSceneRank%100);
             }

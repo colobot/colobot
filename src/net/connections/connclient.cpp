@@ -104,6 +104,10 @@ void CClientConnection::PacketLevelData(std::string data)
     ar & m_levelData;
     
     // Load the map now
+    if(m_mapName == "custom")
+    {
+        CController::GetInstancePointer()->GetRobotMain()->ChangePhase(PHASE_USER); // To load userlevel list - TODO: this is ugly
+    }
     CController::GetInstancePointer()->GetMainDialog()->SetSceneName(m_mapName.c_str());
     CController::GetInstancePointer()->GetMainDialog()->SetSceneRank(m_mapRank);
     CController::GetInstancePointer()->GetRobotMain()->ChangePhase(PHASE_LOADING);
