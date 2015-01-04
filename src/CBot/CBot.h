@@ -1325,6 +1325,7 @@ public:
 
     void        SetValString(const char* p);
     void        SetValInt(int val, const char* s = NULL);
+    void        SetValFloat(float val);
     CBotString    GetValString();
 
     void        Copy(CBotVar* pSrc, bool bName=true);

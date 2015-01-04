@@ -1346,6 +1346,14 @@ void CBotVarString::SetValInt(int val, const char* defnum)
     m_binit    = true;
 }
 
+void CBotVarString::SetValFloat(float val)
+{
+    char s[30];
+    snprintf(s, sizeof(s), "%f", val);
+    m_val = s;
+    m_binit    = true;
+}
+
 CBotString CBotVarString::GetValString()
 {
     if ( !m_binit )
