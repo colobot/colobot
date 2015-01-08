@@ -1702,7 +1702,9 @@ bool CScriptFunctions::rProduce(CBotVar* var, CBotVar* result, int& exception, v
     
     if (name[0] != 0)
     {
-        object->ReadProgram(0, static_cast<const char*>(name));
+        //TODO: Add %lvl% support
+        std::string name2 = std::string("ai/")+name;
+        object->ReadProgram(0, name2.c_str());
         object->RunProgram(0);
     }
     
