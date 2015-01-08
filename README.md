@@ -29,6 +29,7 @@ We provide compiled packages of most recent versions using an [automated build b
 On some Linux distributions there are also distribution packages available:
  * Debian Sid (unstable): http://packages.debian.org/sid/colobot
  * Arch Linux (AUR): https://aur.archlinux.org/packages/colobot-gold
+ * openSUSE: http://software.opensuse.org/download.html?project=games&package=colobot
 
 
 ## Compiling and running the game
@@ -77,6 +78,7 @@ Udostępniamy gotowe skompilowane paczki z ostatnich wersji używając [automaty
 Dla niektórych dystrybucji Linuksa, dostępne są pakiety danej dystrybucji:
  * Debian Sid (unstable): http://packages.debian.org/sid/colobot
  * Arch Linux (AUR): https://aur.archlinux.org/packages/colobot-gold
+ * openSUSE: http://software.opensuse.org/download.html?project=games&package=colobot
 
 
 ## Kompilacja i uruchomienie gry
