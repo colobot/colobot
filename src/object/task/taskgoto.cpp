@@ -1031,7 +1031,7 @@ Error CTaskGoto::IsEnded()
 
 CObject* CTaskGoto::SearchTarget(Math::Vector pos, float margin)
 {
-    return CObjectManager::GetInstancePointer()->FindNearest(nullptr, pos, OBJECT_NULL, margin);;
+    return CObjectManager::GetInstancePointer()->FindNearest(nullptr, pos, OBJECT_NULL, margin/g_unit);
 }
 
 // Adjusts the target as a function of the object.

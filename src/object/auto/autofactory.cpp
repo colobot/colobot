@@ -552,7 +552,26 @@ bool CAutoFactory::Read(CLevelParserLine* line)
 
 CObject* CAutoFactory::SearchFret()
 {
-    return CObjectManager::GetInstancePointer()->FindNearest(nullptr, m_fretPos, OBJECT_METAL, 8.0f/g_unit);
+    CObject*    pObj;
+    Math::Vector    oPos;
+    ObjectType  type;
+    float       dist;
+    
+    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    {
+        pObj = it.second;
+        
+        type = pObj->GetType();
+        if ( type != OBJECT_METAL )  continue;
+        if ( pObj->GetTruck() != 0 )  continue;
+        
+        oPos = pObj->GetPosition(0);
+        dist = Math::Distance(oPos, m_fretPos);
+        
+        if ( dist < 8.0f )  return pObj;
+    }
+    
+    return 0;
 }
 
 // Search if a vehicle is too close.
@@ -674,7 +693,28 @@ bool CAutoFactory::CreateVehicle()
 
 CObject* CAutoFactory::SearchVehicle()
 {    
-    return CObjectManager::GetInstancePointer()->FindNearest(nullptr, m_fretPos, m_type, 8.0f/g_unit);
+    CObject*    pObj;
+    Math::Vector    oPos;
+    ObjectType  type;
+    float       dist;
+    
+    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    {
+        pObj = it.second;
+        
+        if ( !pObj->GetLock() )  continue;
+        
+        type = pObj->GetType();
+        if ( type != m_type )  continue;
+        if ( pObj->GetTruck() != 0 )  continue;
+        
+        oPos = pObj->GetPosition(0);
+        dist = Math::Distance(oPos, m_fretPos);
+        
+        if ( dist < 8.0f )  return pObj;
+    }
+    
+    return 0;
 }
 
 // Creates all the interface when the object is selected.

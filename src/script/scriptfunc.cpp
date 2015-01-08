@@ -1186,12 +1186,12 @@ bool CScriptFunctions::rRadar(CBotVar* var, CBotVar* result, int& exception, voi
                 var = var->GetNext();
                 if ( var != 0 )
                 {
-                    minDist = var->GetValFloat()*g_unit;
+                    minDist = var->GetValFloat();
                     
                     var = var->GetNext();
                     if ( var != 0 )
                     {
-                        maxDist = var->GetValFloat()*g_unit;
+                        maxDist = var->GetValFloat();
                         
                         var = var->GetNext();
                         if ( var != 0 )

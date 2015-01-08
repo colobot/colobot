@@ -28,7 +28,7 @@
 
 #include "common/singleton.h"
 
-#include <unordered_map>
+#include <map>
 
 /**
  * \class ObjectManager
