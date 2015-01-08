@@ -42,8 +42,8 @@ If you want to help in the project, please contact us on our IRC channels or [ou
 
 ### IRC channels
 
-* [#colobot on pirc.pl](irc://pirc.pl#colobot) in Polish;
-* [#colobot on Freenode](irc://freenode.net#colobot) in English;
+* [#colobot on Freenode](irc://freenode.net#colobot) - main development channel (English);
+* [#colobot on pirc.pl](irc://pirc.pl#colobot) - Polish community channel;
 
 
 # Polski
@@ -91,5 +91,5 @@ Jeżeli chcesz pomóc w projekcie, prosimy o kontakt na naszych kanałach IRC lu
 
 ### Kanały IRC
 
-* [#colobot na pirc.pl](irc://pirc.pl#colobot) (polski);
-* [#colobot na Freenode](irc://freenode.net#colobot) (angielski);
+* [#colobot na Freenode](irc://freenode.net#colobot) - główny kanał developerski (angielski);
+* [#colobot na pirc.pl](irc://pirc.pl#colobot) - kanał polskiej społeczności;
