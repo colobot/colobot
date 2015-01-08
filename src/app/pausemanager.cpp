@@ -97,4 +97,5 @@ std::string CPauseManager::GetPauseName(PauseType pause)
         case PAUSE_PHOTO:       return "Photo mode";
         default: assert(false); // Should never happen
     }
+    return "?";
 }
