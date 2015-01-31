@@ -292,7 +292,7 @@ bool CResourceManager::Copy(const std::string& from, const std::string& to)
         std::string writeDir = PHYSFS_getWriteDir();
         try
         {
-            boost::filesystem3::copy(writeDir + "/" + CleanPath(from), writeDir + "/" + CleanPath(to));
+            fs::copy(writeDir + "/" + CleanPath(from), writeDir + "/" + CleanPath(to));
         }
         catch (std::exception & e)
         {

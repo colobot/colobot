@@ -28,8 +28,6 @@
 
 #include "CBot/CBotDll.h"
 
-#include <string>
-
 
 class CObject;
 class CScript;
