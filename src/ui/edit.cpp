@@ -25,12 +25,11 @@
 
 #include "clipboard/clipboard.h"
 
-#include "object/robotmain.h"
-
-#include "object/level/parserparam.h"
-
+#include "common/pathman.h"
 #include "common/resources/inputstream.h"
 #include "common/resources/outputstream.h"
+
+#include "object/robotmain.h"
 
 #include <string.h>
 #include <boost/algorithm/string.hpp>
@@ -788,7 +787,7 @@ void CEdit::HyperJump(std::string name, std::string marker)
     sMarker = marker;
 
     filename = name + std::string(".txt");
-    filename = CLevelParserParam::InjectLevelDir(filename, "help/%lng%");
+    filename = CPathManager::InjectLevelDir(filename, "help/%lng%");
     boost::replace_all(filename, "\\", "/"); //TODO: Fix this in files
 
     if ( ReadText(filename) )
@@ -1144,7 +1143,7 @@ void CEdit::DrawImage(Math::Point pos, std::string name, float width,
     std::string filename;
 
     filename = name + ".png";
-    filename = CLevelParserParam::InjectLevelDir(filename, "icons");
+    filename = CPathManager::InjectLevelDir(filename, "icons");
     boost::replace_all(filename, "\\", "/"); //TODO: Fix this in files
 
     m_engine->SetTexture(filename);
@@ -1434,7 +1433,7 @@ void CEdit::LoadImage(std::string name)
 {
     std::string filename;
     filename = name + ".png";
-    filename = CLevelParserParam::InjectLevelDir(filename, "icons");
+    filename = CPathManager::InjectLevelDir(filename, "icons");
     boost::replace_all(filename, "\\", "/"); //TODO: Fix this in files
     m_engine->LoadTexture(filename);
 }

@@ -72,6 +72,7 @@ set(BASE_SOURCES
     common/iman.cpp
     common/logger.cpp
     common/misc.cpp
+    common/pathman.cpp
     common/profile.cpp
     common/restext.cpp
     common/stringutils.cpp

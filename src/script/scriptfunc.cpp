@@ -22,6 +22,7 @@
 
 #include "app/app.h"
 
+#include "common/pathman.h"
 #include "common/resources/inputstream.h"
 #include "common/resources/resourcemanager.h"
 
@@ -1702,8 +1703,7 @@ bool CScriptFunctions::rProduce(CBotVar* var, CBotVar* result, int& exception, v
     
     if (name[0] != 0)
     {
-        //TODO: Add %lvl% support
-        std::string name2 = std::string("ai/")+name;
+        std::string name2 = CPathManager::InjectLevelDir(name, "ai");
         object->ReadProgram(0, name2.c_str());
         object->RunProgram(0);
     }

@@ -107,8 +107,6 @@ public:
     std::string GetValue();
     bool IsDefined();
     
-    static std::string InjectLevelDir(std::string path, const std::string defaultDir);
-    
 private:
     void ParseArray();
     void LoadArray();

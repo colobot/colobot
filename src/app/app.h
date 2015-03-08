@@ -44,6 +44,7 @@ class CController;
 class CSoundInterface;
 class CInput;
 class CObjectManager;
+class CPathManager;
 
 namespace Gfx {
 class CModelManager;
@@ -327,9 +328,6 @@ public:
 protected:
     //! Creates the window's SDL_Surface
     bool CreateVideoSurface();
-    
-    //! Loads all mods from given directory
-    void LoadModsFromDir(const std::string &dir);
 
     //! Processes the captured SDL event to Event struct
     Event       ProcessSystemEvent();
@@ -379,6 +377,8 @@ protected:
     CProfile*               m_profile;
     //! Input manager
     CInput*                 m_input;
+    //! Path manager
+    CPathManager*           m_pathManager;
 
     //! Code to return at exit
     int             m_exitCode;
@@ -435,15 +435,6 @@ protected:
     std::vector<int> m_joyAxeState;
     //! Current state of joystick buttons; may be updated from another thread
     std::vector<bool> m_joyButtonState;
-    
-    //! Path to directory with data files
-    std::string     m_dataPath;
-    
-    //! Path to directory with language files
-    std::string     m_langPath;
-    
-    //! Path to directory with save files
-    std::string     m_savePath;
    
     //@{
     //! Scene to run on startup

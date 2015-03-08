@@ -29,6 +29,7 @@
 #include "common/iman.h"
 #include "common/image.h"
 #include "common/key.h"
+#include "common/pathman.h"
 #include "common/stringutils.h"
 #include "common/resources/resourcemanager.h"
 
@@ -104,6 +105,7 @@ CApplication::CApplication()
 {
     m_private       = new ApplicationPrivate();
     m_iMan          = new CInstanceManager();
+    m_pathManager   = new CPathManager();
     m_objMan        = new CObjectManager();
     m_eventQueue    = new CEventQueue();
     m_profile       = new CProfile();
@@ -151,20 +153,6 @@ CApplication::CApplication()
 
     m_mouseMode = MOUSE_SYSTEM;
 
-    #ifdef PORTABLE
-    m_dataPath = "./data";
-    m_langPath = "./lang";
-    #else
-    m_dataPath = GetSystemUtils()->GetDataPath();
-    m_langPath = GetSystemUtils()->GetLangPath();
-	#endif
-	
-	#ifdef DEV_BUILD
-    m_savePath = "./saves";
-    #else
-    m_savePath = GetSystemUtils()->GetSaveDir();
-    #endif
-
     m_runSceneName = "";
     m_runSceneRank = 0;
 
@@ -193,6 +181,9 @@ CApplication::~CApplication()
 
     delete m_profile;
     m_profile = nullptr;
+
+    delete m_pathManager;
+    m_pathManager = nullptr;
 
     delete m_iMan;
     m_iMan = nullptr;
@@ -376,26 +367,25 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
             }
             case OPT_DATADIR:
             {
-                m_dataPath = optarg;
+                m_pathManager->SetDataPath(optarg);
                 GetLogger()->Info("Using data dir: '%s'\n", optarg);
                 break;
             }
             case OPT_LANGDIR:
             {
-                m_langPath = optarg;
+                m_pathManager->SetLangPath(optarg);
                 GetLogger()->Info("Using language dir: '%s'\n", optarg);
                 break;
             }
             case OPT_SAVEDIR:
             {
-                m_savePath = optarg;
+                m_pathManager->SetSavePath(optarg);
                 GetLogger()->Info("Using save dir: '%s'\n", optarg);
                 break;
             }
             case OPT_MOD:
             {
-                GetLogger()->Info("Loading mod: '%s'\n", optarg);
-                CResourceManager::AddLocation(optarg, true);
+                m_pathManager->AddMod(optarg);
                 break;
             }
             case OPT_RESOLUTION:
@@ -430,28 +420,12 @@ bool CApplication::Create()
 
     GetLogger()->Info("Creating CApplication\n");
 
-    boost::filesystem::path dataPath(m_dataPath);
-    if (! (boost::filesystem::exists(dataPath) && boost::filesystem::is_directory(dataPath)) )
-    {
-        GetLogger()->Error("Data directory '%s' doesn't exist or is not a directory\n", m_dataPath.c_str());
-        m_errorMessage = std::string("Could not read from data directory:\n") +
-        std::string("'") + m_dataPath + std::string("'\n") +
-        std::string("Please check your installation, or supply a valid data directory by -datadir option.");
+    m_errorMessage = m_pathManager->VerifyPaths();
+    if(!m_errorMessage.empty()) {
         m_exitCode = 1;
         return false;
     }
-
-    boost::filesystem::create_directories(m_savePath);
-    boost::filesystem::create_directories(m_savePath+"/mods");
-
-    LoadModsFromDir(m_dataPath+"/mods");
-    LoadModsFromDir(m_savePath+"/mods");
-
-    GetLogger()->Info("Data path: %s\n", m_dataPath.c_str());
-    GetLogger()->Info("Save path: %s\n", m_savePath.c_str());
-    CResourceManager::AddLocation(m_dataPath, false);
-    CResourceManager::SetSaveLocation(m_savePath);
-    CResourceManager::AddLocation(m_savePath, true);
+    m_pathManager->InitPaths();
 
     if (!GetProfile().Init())
     {
@@ -651,23 +625,6 @@ bool CApplication::CreateVideoSurface()
                                           m_deviceConfig.bpp, videoFlags);
 
     return true;
-}
-
-void CApplication::LoadModsFromDir(const std::string &dir)
-{
-    try {
-        boost::filesystem::directory_iterator iterator(dir);
-        for(; iterator != boost::filesystem::directory_iterator(); ++iterator)
-        {
-            std::string fn = iterator->path().string();
-            CLogger::GetInstancePointer()->Info("Loading mod: '%s'\n", fn.c_str());
-            CResourceManager::AddLocation(fn, false);
-        }
-    }
-    catch(std::exception &e)
-    {
-        CLogger::GetInstancePointer()->Warn("Unable to load mods from directory '%s': %s\n", dir.c_str(), e.what());
-    }
 }
 
 void CApplication::Destroy()
@@ -1712,7 +1669,7 @@ void CApplication::SetLanguage(Language language)
     
     std::locale::global(std::locale(std::locale(""), "C", std::locale::numeric));
 
-    bindtextdomain("colobot", m_langPath.c_str());
+    bindtextdomain("colobot", m_pathManager->GetLangPath().c_str());
     bind_textdomain_codeset("colobot", "UTF-8");
     textdomain("colobot");
 
