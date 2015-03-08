@@ -29,71 +29,18 @@ any of the missions.
 
 The recommended way of compiling for Windows is using Linux in a cross-compilation environment called MXE.
 This is the way our build bot service (http://colobot.info/files/compiled.php) prepares the release packages.
-You can also try to compile with MSYS/MinGW but this is more difficult.
+You can also compile directly on Windows with MSYS2/MinGW-w64 but this is a bit more difficult to set up.
 
 #### Cross-compiling using MXE
 
 MXE (M cross environment, http://mxe.cc/) is a very good cross-compiling framework, complete with a suite of libraries
 that make it extremely easy to port applications to Win32. It runs on pretty much any *nix flavor and generates generic,
 statically linked Win32 binaries. More information is available in
-[INSTALL-MXE.md](https://github.com/colobot/colobot/blob/master/INSTALL-MXE.md) file.
+[INSTALL-MXE.md](INSTALL-MXE.md) file.
 
-#### Compiling with MSYS/MinGW
+#### Compiling with MSYS2/MinGW-w64
 
-If you like challenges ;-), you can try to compile Colobot directly under MSYS/MinGW (http://www.mingw.org/wiki/MSYS).
-You need to manually compile about 20 packages and resolve many problems. Fortunately, the developers took pity on you,
-and provide a download package containing all the necessary libraries and tools.
-
-To use this package, you must first install a vanilla MSYS/MinGW environment. To do this, download and run
-mingw-get installer (http://sourceforge.net/projects/mingw/files/Installer/mingw-get-inst/).
-When installing, select **all** possible packages in the installer.
-
-Next, download the development package available at Colobot site (http://colobot.info/files/ - files named msys-devpack-*)
-and unpack the files from the archive to MinGW directory. This should provide a working environment, including CMake and
-all necessary packages. However, make sure you get the right package. There are slight changes between GCC 4.6 and 4.7,
-especially with boost library which will result in build failure or error in runtime.
-
-Once you have installed the development package, run the MSYS shell. This shell works as a hybrid *nix/Windows environment,
-so you have regular bash commands but can specify paths using Windows syntax: "C:\some\path", CRLF is the endline separator and so forth.
-CMake should automatically detect this build environment and use the Windows options to compile.
-
-To compile colobot, change the directory to where you have downloaded the source files:
-```
-  $ cd "C:\path\to\colobot\sources"
-```
-It is recommended that you create a build directory:
-```
-  $ mkdir build
-  $ cd build
-```
-Then you have to configure CMake. You should specify the following options:
-```
- $ cmake -G "MSYS Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="C:\some\directory" ..
-```
-where `C:\some\directory` is the directory you want to run colobot from. It can be a proper installation path if you want
-to install it in system, or some temporary directory like `..\colobot-temporary-install` if you just want to try the game.
-You can also skip this argument and use the default install path: `C:\Program Files\colobot`.
-Make sure you specify "MSYS Makefiles" as the CMake generator because otherwise, the default for Windows is to use MSVC nmake
-and it will not work.
-
-Then to compile:
-```
-  $ make
-```
-Everything should compile just fine. If you see any errors, it most likely means missing libraries or invalid installation.
-Warnings may occur, but are mostly harmless.
-
-Now you need to perform the installation:
-```
-  $ make install
-```
-You should get all files ready to use under the installation prefix you specified. Run `colobot.exe` and enjoy the game.
-
-As of 0.1.2-alpha, you can also create a Windows installer package using NSIS (http://nsis.sourceforge.net/). To create
-a package, make sure you have the NSIS utilities (makensis) in your system path (or set `$PATH` accordingly), and invoke:
-```
-  $ make package
-```
+See [this wiki page](http://colobot.info/wiki/dev/Compiling_GOLD_on_Windows_with_MSYS2) for details.
 
 
 ### Compiling on Linux
