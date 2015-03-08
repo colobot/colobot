@@ -3245,6 +3245,7 @@ void PrepareFilename(CBotString &filename)
         filename = filename.Mid(pos+1);  // also removes the drive letter C:
     }
     
+    boost::filesystem::create_directories(CScriptFunctions::m_filesDir);
     filename = CBotString(CScriptFunctions::m_filesDir.c_str()) + CBotString("/") + filename;
     CLogger::GetInstancePointer()->Debug("CBot accessing file '%s'\n", static_cast<const char*>(filename));
 }
