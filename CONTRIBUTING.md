@@ -4,11 +4,11 @@
 So you want to contribute to Colobot: Gold Edition? That's awesome! Before you start, read this page, it contains a lot of useful information on how to do so.
 
 ## General information
-Before you start, read more about technical details of the project. They can be found on the [dev wiki](http://colobot.info/wiki/dev) and in our [Game Design Document](http://krzysh.pl:3000/project/545e90d99e8bceed2284797e) <!-- TODO: once GDD is finished, we'll probably change this link to compiled PDF file -->
+Before you start, read more about technical details of the project. They can be found on the [dev wiki](http://colobot.info/wiki/dev) and in our [Game Design Document](http://krzysh.pl:3000/project/545e90d99e8bceed2284797e)
 
 ## Before you start coding
 * If you want to fix a bug, please first check the related [issue on GitHub's bug tracker](https://github.com/colobot/colobot/issues). If there isn't one, make it.
-* If you want to add a new feature or make any change to gameplay, please first discus it either [on the forums](http://colobot.info/forum) or in the related issue on GitHub. When your issue gets *enhancement* label (without the *(proposed)* part), that means that your suggestion got accepted and is waiting for somebody to work on it. Always wait for your suggestion to be accepted before you start writing any code.
+* If you want to add a new feature or make any change to gameplay, please first discuss it either [on the forums](http://colobot.info/forum) or in the related issue on GitHub. When your issue gets *enhancement* label (without the *(proposed)* part), that means that your suggestion got accepted and is waiting for somebody to work on it. Always wait for your suggestion to be accepted before you start writing any code.
 * Before you start, check *"Assignee"* field in the issue and read the comments to see if nobody else is working on the same issue. If somebody is assigned to it, but there was no activity for a long time, you can take it over. Also, please post a comment on the issue that you want to help us, so other people don't waste time working at that issue in the same time.
 
 ## Coding guidelines
