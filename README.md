@@ -34,8 +34,11 @@ On some Linux distributions there are also distribution packages available:
 
 ## Compiling and running the game
 
-If you want to compile colobot yourself, see [INSTALL.md](https://github.com/colobot/colobot/blob/master/INSTALL.md) file.
+If you want to compile colobot yourself, see [INSTALL.md](INSTALL.md) file.
 
+## Contributing
+
+If you want to contribute to the project, see [CONTRIBUTING.md](CONTRIBUTING.md) file. It contains a lot of useful information on how to get started.
 
 ## Contact
 
@@ -55,7 +58,7 @@ To jest oficjalne repozytorium z kodem otwartoźródłowego projektu Colobot: Go
 
 Kod źródłowy zawarty tutaj został wydany przez Epsitec -- oryginalnego twórcę gry -- na otwartej licencji (GPLv3). Kod został wydany i prawa nadane specjalnie dla społeczności ICC w marcu 2012. Od tamtej pory, zajmowaliśmy się dalszym rozwojem gry.
 
-Więcej informacji dla developerów projektu (po angielsku) można znaleźć na [wiki dla developerów](htt://colobot.info/wiki/dev/) lub (po polsku) na [naszym forum](http://colobot.info/forum/). Jednak źródłem najświeższych informacji są nasze kanały IRC (patrz niżej).
+Więcej informacji dla developerów projektu (po angielsku) można znaleźć na [wiki dla developerów](http://colobot.info/wiki/dev/) lub na [naszym forum](http://colobot.info/forum/). Jednak źródłem najświeższych informacji są nasze kanały IRC (patrz niżej).
 
 To repozytorium zawiera jedynie kod źródłowy projektu. Gra wymaga jeszcze plików danych, które są teraz udostępniane jako submoduł gita i hostowane w [osobnym repozytorium](https://github.com/colobot/colobot-data).
 
@@ -83,13 +86,15 @@ Dla niektórych dystrybucji Linuksa, dostępne są pakiety danej dystrybucji:
 
 ## Kompilacja i uruchomienie gry
 
-Jeżeli chcesz sam skompilować colobota, zobacz plik [INSTALL.md](https://github.com/colobot/colobot/blob/master/INSTALL.md) (po angielsku).
+Jeżeli chcesz sam skompilować colobota, zobacz plik [INSTALL.md](INSTALL.md) (po angielsku).
 
+## Contributing
+
+Jeśli chcesz pomóc w pracach nad projektem, zobacz plik [CONTRIBUTING.md](CONTRIBUTING.md) (po angielsku). Zawiera on wiele użytecznych informacji, które pomogą ci zacząć.
 
 ## Kontakt
 
 Jeżeli chcesz pomóc w projekcie, prosimy o kontakt na naszych kanałach IRC lub [naszym forum](http://colobot.info/forum/).
-
 
 ### Kanały IRC
 
