@@ -283,26 +283,6 @@ bool CResourceManager::Move(const std::string& from, const std::string& to)
     return false;
 }
 
-//TODO: Don't use boost::filesystem. Why doesn't PHYSFS have this?
-bool CResourceManager::Copy(const std::string& from, const std::string& to)
-{
-    if(PHYSFS_isInit())
-    {
-        bool success = true;
-        std::string writeDir = PHYSFS_getWriteDir();
-        try
-        {
-            fs::copy(writeDir + "/" + CleanPath(from), writeDir + "/" + CleanPath(to));
-        }
-        catch (std::exception & e)
-        {
-            success = false;
-        }
-        return success;
-    }
-    return false;
-}
-
 int CResourceManager::SDLClose(SDL_RWops *context)
 {
     if (CheckSDLContext(context))
