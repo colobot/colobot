@@ -1045,6 +1045,8 @@ Event CApplication::ProcessSystemEvent()
         event.key.unicode = m_private->currentEvent.key.keysym.unicode;
         event.kmodState = m_private->currentEvent.key.keysym.mod;
 
+        // Some keyboards return numerical enter keycode instead of normal enter
+        // See issue #427 for details
         if(event.key.key == KEY(KP_ENTER))
             event.key.key = KEY(RETURN);
     }
