@@ -1044,6 +1044,9 @@ Event CApplication::ProcessSystemEvent()
         event.key.key = m_private->currentEvent.key.keysym.sym;
         event.key.unicode = m_private->currentEvent.key.keysym.unicode;
         event.kmodState = m_private->currentEvent.key.keysym.mod;
+
+        if(event.key.key == KEY(KP_ENTER))
+            event.key.key = KEY(RETURN);
     }
     else if ( (m_private->currentEvent.type == SDL_MOUSEBUTTONDOWN) ||
          (m_private->currentEvent.type == SDL_MOUSEBUTTONUP) )
@@ -1212,6 +1215,8 @@ Event CApplication::CreateVirtualEvent(const Event& sourceEvent)
     {
         virtualEvent.type = EVENT_NULL;
     }
+
+    m_input->EventProcess(virtualEvent);
 
     return virtualEvent;
 }

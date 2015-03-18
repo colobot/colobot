@@ -450,7 +450,7 @@ bool CEdit::EventProcess(const Event &event)
             return true;
         }
 
-        if ( !bControl && ( event.key.key == KEY(RETURN) || event.key.key == KEY(KP_ENTER) ) )
+        if ( event.key.key == KEY(RETURN) && !bControl )
         {
             Insert('\n');
             SendModifEvent();
