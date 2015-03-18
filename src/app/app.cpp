@@ -1189,17 +1189,10 @@ Event CApplication::CreateVirtualEvent(const Event& sourceEvent)
     {
         virtualEvent.type = sourceEvent.type;
         virtualEvent.key = sourceEvent.key;
+        virtualEvent.key.key = GetVirtualKey(sourceEvent.key.key);
         virtualEvent.key.virt = true;
 
-        if (sourceEvent.key.key == KEY(LCTRL) || sourceEvent.key.key == KEY(RCTRL))
-            virtualEvent.key.key = VIRTUAL_KMOD(CTRL);
-        else if (sourceEvent.key.key == KEY(LSHIFT) || sourceEvent.key.key == KEY(RSHIFT))
-            virtualEvent.key.key = VIRTUAL_KMOD(SHIFT);
-        else if (sourceEvent.key.key == KEY(LALT) || sourceEvent.key.key == KEY(RALT))
-            virtualEvent.key.key = VIRTUAL_KMOD(ALT);
-        else if (sourceEvent.key.key == KEY(LMETA) || sourceEvent.key.key == KEY(RMETA))
-            virtualEvent.key.key = VIRTUAL_KMOD(META);
-        else
+        if(virtualEvent.key.key == sourceEvent.key.key)
             virtualEvent.type = EVENT_NULL;
     }
     else if ((sourceEvent.type == EVENT_JOY_BUTTON_DOWN) || (sourceEvent.type == EVENT_JOY_BUTTON_UP))

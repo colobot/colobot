@@ -70,6 +70,7 @@ set(BASE_SOURCES
     common/event.cpp
     common/image.cpp
     common/iman.cpp
+    common/key.cpp
     common/logger.cpp
     common/misc.cpp
     common/pathman.cpp
