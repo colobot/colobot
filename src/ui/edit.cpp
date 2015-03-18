@@ -1636,6 +1636,10 @@ bool CEdit::ReadText(std::string filename, int addSize)
                 // A part of image per line of text.
                 for ( iCount=0 ; iCount<iLines ; iCount++ )
                 {
+                    if(iIndex >= EDITIMAGEMAX) {
+                        CLogger::GetInstancePointer()->Warn("Too many images, current limit is %d image lines. This limit will be removed in the future.\n", EDITIMAGEMAX);
+                        break;
+                    }
                     m_image[iIndex].name = iName;
                     m_image[iIndex].offset = static_cast<float>(iCount/iLines);
                     m_image[iIndex].height = 1.0f/iLines;
