@@ -499,12 +499,28 @@ bool CApplication::Create()
     if(!m_headless) {
         // load settings from profile
         int iValue;
-        if ( GetProfile().GetIntProperty("Setup", "Resolution", iValue) && !m_resolutionOverride )
+        std::string sValue;
+        if ( GetProfile().GetStringProperty("Setup", "Resolution", sValue) && !m_resolutionOverride )
         {
+            std::istringstream resolution(sValue);
+            std::string ws, hs;
+            std::getline(resolution, ws, 'x');
+            std::getline(resolution, hs, 'x');
+            int w = 800, h = 600;
+            if(!ws.empty() && !hs.empty()) {
+                w = atoi(ws.c_str());
+                h = atoi(hs.c_str());
+            }
+
+            // Why not just set m_deviceConfig.size to w,h? Because this way if the resolution is no longer supported (e.g. changimg monitor) defaults will be used instead
             std::vector<Math::IntPoint> modes;
             GetVideoResolutionList(modes, true, true);
-            if (static_cast<unsigned int>(iValue) < modes.size())
-                m_deviceConfig.size = modes.at(iValue);
+            for(auto it = modes.begin(); it != modes.end(); ++it) {
+                if(it->x == w && it->y == h) {
+                    m_deviceConfig.size = *it;
+                    break;
+                }
+            }
         }
 
         if ( GetProfile().GetIntProperty("Setup", "Fullscreen", iValue) && !m_resolutionOverride )

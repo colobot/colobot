@@ -5034,12 +5034,12 @@ void CMainDialog::SetupMemorize()
         pl = static_cast<CList *>(pw->SearchControl(EVENT_LIST2));
         if ( pl != 0 )
         {
-            GetProfile().SetIntProperty("Setup", "Resolution", m_setupSelMode);
+            std::vector<Math::IntPoint> modes;
+            m_app->GetVideoResolutionList(modes, true, true);
+            std::ostringstream ss;
+            ss << modes[m_setupSelMode].x << "x" << modes[m_setupSelMode].y;
+            GetProfile().SetStringProperty("Setup", "Resolution", ss.str());
         }
-    }
-    else
-    {
-       // TODO: Default value
     }
 
     GetProfile().SetStringProperty("Setup", "KeyMap", CInput::GetInstancePointer()->SaveKeyBindings());
@@ -5261,9 +5261,26 @@ void CMainDialog::SetupRecall()
         m_bDeleteGamer = iValue;
     }
 
-    if ( GetProfile().GetIntProperty("Setup", "Resolution", iValue) )
+    if ( GetProfile().GetStringProperty("Setup", "Resolution", key) )
     {
-        m_setupSelMode = iValue;
+        std::istringstream resolution(key);
+        std::string ws, hs;
+        std::getline(resolution, ws, 'x');
+        std::getline(resolution, hs, 'x');
+        int w = 800, h = 600;
+        if(!ws.empty() && !hs.empty()) {
+            w = atoi(ws.c_str());
+            h = atoi(hs.c_str());
+        }
+
+        std::vector<Math::IntPoint> modes;
+        m_app->GetVideoResolutionList(modes, true, true);
+        for(auto it = modes.begin(); it != modes.end(); ++it) {
+            if(it->x == w && it->y == h) {
+                m_setupSelMode = it - modes.begin();
+                break;
+            }
+        }
     }
 
     if ( GetProfile().GetIntProperty("Setup", "Fullscreen", iValue) )
