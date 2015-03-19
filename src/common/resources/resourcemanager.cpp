@@ -40,8 +40,10 @@ CResourceManager::CResourceManager(const char *argv0)
 {
     if (!PHYSFS_init(argv0))
     {
-        CLogger::GetInstancePointer()->Error("Error while initializing physfs\n");
+        CLogger::GetInstancePointer()->Error("Error while initializing physfs: %s\n", PHYSFS_getLastError());
+        assert(false);
     }
+    PHYSFS_permitSymbolicLinks(1);
 }
 
 
@@ -51,7 +53,7 @@ CResourceManager::~CResourceManager()
     {
         if (!PHYSFS_deinit())
         {
-            CLogger::GetInstancePointer()->Error("Error while deinitializing physfs\n");
+            CLogger::GetInstancePointer()->Error("Error while deinitializing physfs: %s\n", PHYSFS_getLastError());
         }
     }
 }
@@ -64,43 +66,37 @@ std::string CResourceManager::CleanPath(const std::string& path)
 
 bool CResourceManager::AddLocation(const std::string &location, bool prepend)
 {
-    if (PHYSFS_isInit())
+    if (!PHYSFS_mount(location.c_str(), nullptr, prepend ? 0 : 1))
     {
-        if (!PHYSFS_mount(location.c_str(), nullptr, prepend ? 0 : 1))
-        {
-            CLogger::GetInstancePointer()->Error("Error while mounting \"%s\"\n", location.c_str());
-        }
+        CLogger::GetInstancePointer()->Error("Error while mounting \"%s\": %s\n", location.c_str(), PHYSFS_getLastError());
+        return false;
     }
 
-    return false;
+    return true;
 }
 
 
 bool CResourceManager::RemoveLocation(const std::string &location)
 {
-    if (PHYSFS_isInit())
+    if (!PHYSFS_removeFromSearchPath(location.c_str()))
     {
-        if (!PHYSFS_removeFromSearchPath(location.c_str()))
-        {
-            CLogger::GetInstancePointer()->Error("Error while unmounting \"%s\"\n", location.c_str());
-        }
+        CLogger::GetInstancePointer()->Error("Error while unmounting \"%s\": %s\n", location.c_str(), PHYSFS_getLastError());
+        return false;
     }
 
-    return false;
+    return true;
 }
 
 
 bool CResourceManager::SetSaveLocation(const std::string &location)
 {
-    if (PHYSFS_isInit())
+    if (!PHYSFS_setWriteDir(location.c_str()))
     {
-        if (!PHYSFS_setWriteDir(location.c_str()))
-        {
-            CLogger::GetInstancePointer()->Error("Error while setting save location to \"%s\"\n", location.c_str());
-        }
+        CLogger::GetInstancePointer()->Error("Error while setting save location to \"%s\": %s\n", location.c_str(), PHYSFS_getLastError());
+        return false;
     }
 
-    return false;
+    return true;
 }
 
 std::string CResourceManager::GetSaveLocation()
@@ -127,7 +123,6 @@ SDL_RWops* CResourceManager::GetSDLFileHandler(const std::string &filename)
         return nullptr;
     }
 
-    PHYSFS_permitSymbolicLinks(1);
     PHYSFS_File *file = PHYSFS_openRead(CleanPath(filename).c_str());
     if (!file)
     {
