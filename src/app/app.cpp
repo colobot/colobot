@@ -1682,8 +1682,29 @@ void CApplication::SetLanguage(Language language)
         putenv(S_LANGUAGE);
         GetLogger()->Trace("SetLanguage: Set LANGUAGE=%s in environment\n", locale.c_str());
     }
-    
-    std::locale::global(std::locale(std::locale(""), "C", std::locale::numeric));
+
+    std::setlocale(LC_ALL, ""); // Load system locale
+    std::setlocale(LC_NUMERIC, "C"); // Force numeric locale to "C" (fixes decimal point problems)
+    char* systemLocale = std::setlocale(LC_ALL, nullptr); // Get current locale configuration
+    GetLogger()->Debug("System locale: %s\n", systemLocale);
+    // Update C++ locale
+    try
+    {
+        std::locale::global(std::locale(systemLocale));
+    }
+    catch(...)
+    {
+        GetLogger()->Warn("Failed to update locale, possibly incorect system configuration. Will fallback to classic locale.\n");
+        try
+        {
+            std::locale::global(std::locale::classic());
+            std::setlocale(LC_ALL, systemLocale); // C locale might still work correctly
+        }
+        catch(...)
+        {
+            GetLogger()->Warn("Failed to set classic locale. Something is really messed up in your system configuration. Translations probably won't work.\n");
+        }
+    }
 
     bindtextdomain("colobot", m_pathManager->GetLangPath().c_str());
     bind_textdomain_codeset("colobot", "UTF-8");
