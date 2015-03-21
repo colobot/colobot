@@ -1683,9 +1683,9 @@ void CApplication::SetLanguage(Language language)
         GetLogger()->Trace("SetLanguage: Set LANGUAGE=%s in environment\n", locale.c_str());
     }
 
-    std::setlocale(LC_ALL, ""); // Load system locale
-    std::setlocale(LC_NUMERIC, "C"); // Force numeric locale to "C" (fixes decimal point problems)
-    char* systemLocale = std::setlocale(LC_ALL, nullptr); // Get current locale configuration
+    setlocale(LC_ALL, ""); // Load system locale
+    setlocale(LC_NUMERIC, "C"); // Force numeric locale to "C" (fixes decimal point problems)
+    char* systemLocale = setlocale(LC_ALL, nullptr); // Get current locale configuration
     GetLogger()->Debug("System locale: %s\n", systemLocale);
     // Update C++ locale
     try
@@ -1698,7 +1698,7 @@ void CApplication::SetLanguage(Language language)
         try
         {
             std::locale::global(std::locale::classic());
-            std::setlocale(LC_ALL, systemLocale); // C locale might still work correctly
+            setlocale(LC_ALL, systemLocale); // C locale might still work correctly
         }
         catch(...)
         {
