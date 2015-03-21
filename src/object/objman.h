@@ -61,16 +61,16 @@ public:
     //! Finds an object, like radar() in CBot
     //@{
     CObject*  Radar(CObject* pThis, ObjectType type = OBJECT_NULL, float angle = 0.0f, float focus = Math::PI*2.0f, float minDist = 0.0f, float maxDist = 1000.0f, bool furthest = false, RadarFilter filter = FILTER_NONE, bool cbotTypes = false);
-    CObject*  Radar(CObject* pThis, std::vector<ObjectType> type = {}, float angle = 0.0f, float focus = Math::PI*2.0f, float minDist = 0.0f, float maxDist = 1000.0f, bool furthest = false, RadarFilter filter = FILTER_NONE, bool cbotTypes = false);
+    CObject*  Radar(CObject* pThis, std::vector<ObjectType> type = std::vector<ObjectType>(), float angle = 0.0f, float focus = Math::PI*2.0f, float minDist = 0.0f, float maxDist = 1000.0f, bool furthest = false, RadarFilter filter = FILTER_NONE, bool cbotTypes = false);
     CObject*  Radar(CObject* pThis, Math::Vector thisPosition, float thisAngle, ObjectType type = OBJECT_NULL, float angle = 0.0f, float focus = Math::PI*2.0f, float minDist = 0.0f, float maxDist = 1000.0f, bool furthest = false, RadarFilter filter = FILTER_NONE, bool cbotTypes = false);
-    CObject*  Radar(CObject* pThis, Math::Vector thisPosition, float thisAngle, std::vector<ObjectType> type = {}, float angle = 0.0f, float focus = Math::PI*2.0f, float minDist = 0.0f, float maxDist = 1000.0f, bool furthest = false, RadarFilter filter = FILTER_NONE, bool cbotTypes = false);
+    CObject*  Radar(CObject* pThis, Math::Vector thisPosition, float thisAngle, std::vector<ObjectType> type = std::vector<ObjectType>(), float angle = 0.0f, float focus = Math::PI*2.0f, float minDist = 0.0f, float maxDist = 1000.0f, bool furthest = false, RadarFilter filter = FILTER_NONE, bool cbotTypes = false);
     //@}
     //! Returns nearest object that's closer than maxDist
     //@{
     CObject*  FindNearest(CObject* pThis, ObjectType type = OBJECT_NULL, float maxDist = 1000.0f, bool cbotTypes = false);
-    CObject*  FindNearest(CObject* pThis, std::vector<ObjectType> type = {}, float maxDist = 1000.0f, bool cbotTypes = false);
+    CObject*  FindNearest(CObject* pThis, std::vector<ObjectType> type = std::vector<ObjectType>(), float maxDist = 1000.0f, bool cbotTypes = false);
     CObject*  FindNearest(CObject* pThis, Math::Vector thisPosition, ObjectType type = OBJECT_NULL, float maxDist = 1000.0f, bool cbotTypes = false);
-    CObject*  FindNearest(CObject* pThis, Math::Vector thisPosition, std::vector<ObjectType> type = {}, float maxDist = 1000.0f, bool cbotTypes = false);
+    CObject*  FindNearest(CObject* pThis, Math::Vector thisPosition, std::vector<ObjectType> type = std::vector<ObjectType>(), float maxDist = 1000.0f, bool cbotTypes = false);
     //@}
 
 protected:
