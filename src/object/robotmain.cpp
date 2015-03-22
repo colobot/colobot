@@ -842,6 +842,11 @@ bool CRobotMain::ProcessEvent(Event &event)
                 {
                     SelectHuman();
                 }
+                if (event.key.slot == INPUT_SLOT_NEXT && ((event.kmodState & KEY_MOD(CTRL)) != 0))
+                {
+                    m_short->SelectShortcut(EVENT_OBJECT_SHORTCUT00); // switch bots <-> buildings
+                    return false;
+                }
                 if (event.key.slot == INPUT_SLOT_NEXT)
                 {
                     if (m_shortCut)
