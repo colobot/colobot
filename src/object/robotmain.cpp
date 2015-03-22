@@ -2856,6 +2856,10 @@ void CRobotMain::ScenePerso()
     
     CObjectManager::GetInstancePointer()->Flush();
 
+
+    ChangeColor();
+
+
     m_dialog->SetSceneName("perso");
     m_dialog->SetSceneRank(0);
     try {
@@ -3936,7 +3940,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             g_build |= BUILD_FLAG;
         }
 
-        if (!resetObject)
+        if (!resetObject && !fixScene)
         {
             ChangeColor();  // changes the colors of texture
             m_short->SetMode(false);  // vehicles?
