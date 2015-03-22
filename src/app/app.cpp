@@ -1065,6 +1065,13 @@ Event CApplication::ProcessSystemEvent()
         // See issue #427 for details
         if(event.key.key == KEY(KP_ENTER))
             event.key.key = KEY(RETURN);
+
+        if(event.key.key == KEY(TAB) && ((event.kmodState & KEY_MOD(ALT)) != 0))
+        {
+            GetLogger()->Debug("Minimize to taskbar\n");
+            SDL_WM_IconifyWindow();
+            event.type = EVENT_NULL;
+        }
     }
     else if ( (m_private->currentEvent.type == SDL_MOUSEBUTTONDOWN) ||
          (m_private->currentEvent.type == SDL_MOUSEBUTTONUP) )
