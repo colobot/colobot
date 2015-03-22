@@ -5850,11 +5850,6 @@ int CRobotMain::GetSceneRank()
     return m_dialog->GetSceneRank();
 }
 
-void CRobotMain::BuildScenePath(std::string &filename, char *base, int rank, bool sceneFile)
-{
-    m_dialog->BuildScenePath(filename, base, rank, sceneFile);
-}
-
 
 //! Changes on the pause mode
 void CRobotMain::ChangePause(PauseType pause)

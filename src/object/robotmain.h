@@ -293,7 +293,6 @@ public:
     float       GetPersoAngle();
     char*       GetSceneName();
     int         GetSceneRank();
-    void        BuildScenePath(std::string &filename, char *base, int rank, bool sceneFile = true);
 
     void        StartMusic();
     void        StartPauseMusic(PauseType pause);
