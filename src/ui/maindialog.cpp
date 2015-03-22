@@ -64,6 +64,7 @@
 #include <sstream>
 #include <iomanip>
 #include <vector>
+#include <boost/lexical_cast.hpp>
 
 //TODO Get rid of all sprintf's
 
@@ -3967,59 +3968,34 @@ void CMainDialog::IOReadName()
 {
     CWindow*    pw;
     CEdit*      pe;
-    std::string filename;
-    char        op[100];
-    char        op_i18n[100];
-    char        line[500];
-    char        resume[100];
+    std::string resume;
+    char        line[100];
     char        name[100];
     time_t      now;
-    int         i;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
     if ( pw == nullptr )  return;
     pe = static_cast<CEdit*>(pw->SearchControl(EVENT_INTERFACE_IONAME));
     if ( pe == nullptr )  return;
 
-    //TODO: CLevelParser
-    sprintf(resume, "%s %d", m_sceneName, m_chap[m_index]+1);
-    BuildScenePath(filename, m_sceneName, (m_chap[m_index]+1)*100);
-    sprintf(op, "Title.E");
-    sprintf(op_i18n, "Title.%c", m_app->GetLanguageChar() );
+    resume = std::string(m_sceneName) + " " + boost::lexical_cast<std::string>(m_chap[m_index]+1);
 
-    CInputStream stream;
-    stream.open(filename);
-    
-    if (stream.is_open())
+    CLevelParser* level = new CLevelParser(m_sceneName, m_chap[m_index]+1, 0);
+    try
     {
-        while (stream.getline(line, 500))
-        {
-            for ( i=0 ; i<500 ; i++ )
-            {
-                if ( line[i] == '\t' )  line[i] = ' ';  // replaces tab by space
-                if ( line[i] == '/' && line[i+1] == '/' )
-                {
-                    line[i] = 0;
-                    break;
-                }
-            }
-
-            if ( Cmd(line, op) )
-            {
-                OpString(line, "resume", resume);
-            }
-            if ( Cmd(line, op_i18n) )
-            {
-                OpString(line, "resume", resume);
-                break;
-            }
-        }
-        stream.close();
+        level->Load();
+        resume = level->Get("Title")->GetParam("resume")->AsString();
+    }
+    catch(CLevelParserException& e)
+    {
+        CLogger::GetInstancePointer()->Warn("%s\n", e.what());
     }
 
     time(&now);
     TimeToAsciiClean(now, line);
-    sprintf(name, "%s - %s %d", line, resume, m_sel[m_index]+1);
+    sprintf(name, "%s - %s %d", line, resume.c_str(), m_sel[m_index]+1);
+    delete level;
+
     pe->SetText(name);
     pe->SetCursor(strlen(name), 0);
     pe->SetFocus(true);
