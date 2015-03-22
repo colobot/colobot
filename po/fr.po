@@ -448,6 +448,10 @@ msgstr "Tour de défense"
 msgid "Delete"
 msgstr "Détruire"
 
+#, fuzzy
+msgid "Delete mark"
+msgstr "Détruire"
+
 msgid "Delete player\\Deletes the player from the list"
 msgstr "Supprimer le joueur\\Supprimer le joueur de la liste"
 

@@ -842,6 +842,9 @@ msgstr ""
 msgid "Shield radius"
 msgstr ""
 
+msgid "Delete mark"
+msgstr ""
+
 msgid "Execute the selected program"
 msgstr ""
 

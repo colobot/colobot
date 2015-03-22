@@ -447,6 +447,10 @@ msgstr "Защитная башня"
 msgid "Delete"
 msgstr "Удалить"
 
+#, fuzzy
+msgid "Delete mark"
+msgstr "Удалить"
+
 msgid "Delete player\\Deletes the player from the list"
 msgstr "Удалить игрока\\Удаление игрока из списка"
 

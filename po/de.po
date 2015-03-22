@@ -453,6 +453,10 @@ msgstr "Geschützturm"
 msgid "Delete"
 msgstr "Zerstören"
 
+#, fuzzy
+msgid "Delete mark"
+msgstr "Zerstören"
+
 msgid "Delete player\\Deletes the player from the list"
 msgstr "Spieler löschen\\Löscht den Spieler aus der Liste"
 

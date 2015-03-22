@@ -457,6 +457,9 @@ msgstr "Wieża obronna"
 msgid "Delete"
 msgstr "Usuń"
 
+msgid "Delete mark"
+msgstr "Usuń znacznik"
+
 msgid "Delete player\\Deletes the player from the list"
 msgstr "Usuń gracza\\Usuwa gracza z listy"
 
