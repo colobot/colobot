@@ -35,6 +35,10 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/filesystem.hpp>
 
+#ifdef PLATFORM_WINDOWS
+    #include "app/system_windows.h"
+#endif
+
 template<> CPathManager* CSingleton<CPathManager>::m_instance = nullptr;
 
 CPathManager::CPathManager()
@@ -96,7 +100,11 @@ const std::string& CPathManager::GetSavePath()
 
 std::string CPathManager::VerifyPaths()
 {
+    #if PLATFORM_WINDOWS
+    boost::filesystem::path dataPath(CSystemUtilsWindows::UTF8_Decode(m_dataPath));
+    #else
     boost::filesystem::path dataPath(m_dataPath);
+    #endif
     if (! (boost::filesystem::exists(dataPath) && boost::filesystem::is_directory(dataPath)) )
     {
         CLogger::GetInstancePointer()->Error("Data directory '%s' doesn't exist or is not a directory\n", m_dataPath.c_str());
@@ -105,14 +113,23 @@ std::string CPathManager::VerifyPaths()
         std::string("Please check your installation, or supply a valid data directory by -datadir option.");
     }
 
+    #if PLATFORM_WINDOWS
+    boost::filesystem::path langPath(CSystemUtilsWindows::UTF8_Decode(m_langPath));
+    #else
     boost::filesystem::path langPath(m_langPath);
+    #endif
     if (! (boost::filesystem::exists(langPath) && boost::filesystem::is_directory(langPath)) )
     {
         CLogger::GetInstancePointer()->Warn("Language path '%s' is invalid, assuming translation files not installed\n", m_langPath.c_str());
     }
 
+    #if PLATFORM_WINDOWS
+    boost::filesystem::create_directories(CSystemUtilsWindows::UTF8_Decode(m_savePath));
+    boost::filesystem::create_directories(CSystemUtilsWindows::UTF8_Decode(m_savePath+"/mods"));
+    #else
     boost::filesystem::create_directories(m_savePath);
     boost::filesystem::create_directories(m_savePath+"/mods");
+    #endif
 
     return "";
 }
@@ -132,10 +149,18 @@ void CPathManager::InitPaths()
 void CPathManager::LoadModsFromDir(const std::string &dir)
 {
     try {
+        #if PLATFORM_WINDOWS
+        boost::filesystem::directory_iterator iterator(CSystemUtilsWindows::UTF8_Decode(dir));
+        #else
         boost::filesystem::directory_iterator iterator(dir);
+        #endif
         for(; iterator != boost::filesystem::directory_iterator(); ++iterator)
         {
+            #if PLATFORM_WINDOWS
+            AddMod(CSystemUtilsWindows::UTF8_Encode(iterator->path().wstring()));
+            #else
             AddMod(iterator->path().string());
+            #endif
         }
     }
     catch(std::exception &e)

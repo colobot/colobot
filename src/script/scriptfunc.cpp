@@ -22,6 +22,7 @@
 
 #include "app/app.h"
 
+#include "common/config.h"
 #include "common/pathman.h"
 #include "common/resources/inputstream.h"
 #include "common/resources/resourcemanager.h"
@@ -48,6 +49,10 @@
 #include "sound/sound.h"
 
 #include "ui/displaytext.h"
+
+#if PLATFORM_WINDOWS
+    #include "app/system_windows.h"
+#endif
 
 
 
@@ -3245,7 +3250,11 @@ void PrepareFilename(CBotString &filename)
         filename = filename.Mid(pos+1);  // also removes the drive letter C:
     }
     
+    #if PLATFORM_WINDOWS
+    boost::filesystem::create_directories(CSystemUtilsWindows::UTF8_Decode(CScriptFunctions::m_filesDir));
+    #else
     boost::filesystem::create_directories(CScriptFunctions::m_filesDir);
+    #endif
     filename = CBotString(CScriptFunctions::m_filesDir.c_str()) + CBotString("/") + filename;
     CLogger::GetInstancePointer()->Debug("CBot accessing file '%s'\n", static_cast<const char*>(filename));
 }
