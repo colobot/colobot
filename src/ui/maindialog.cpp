@@ -3339,13 +3339,13 @@ void CMainDialog::NiceParticle(Math::Point mouse, bool bPress)
 
 // Builds the file name of a mission.
 
-void CMainDialog::BuildSceneName(std::string &filename, char *base, int rank, bool sceneFile)
+void CMainDialog::BuildScenePath(std::string &filename, char *base, int rank, bool sceneFile)
 {
     //TODO: Support for more than 9 chapters
     int chapter = rank/100;
     int new_rank = rank%100;
     
-    filename = CLevelParser::BuildSceneName(std::string(base), chapter, new_rank, sceneFile);
+    filename = CLevelParser::BuildScenePath(std::string(base), chapter, new_rank, sceneFile);
 }
 
 // Built the default descriptive name of a mission.
@@ -3983,7 +3983,7 @@ void CMainDialog::IOReadName()
 
     //TODO: CLevelParser
     sprintf(resume, "%s %d", m_sceneName, m_chap[m_index]+1);
-    BuildSceneName(filename, m_sceneName, (m_chap[m_index]+1)*100);
+    BuildScenePath(filename, m_sceneName, (m_chap[m_index]+1)*100);
     sprintf(op, "Title.E");
     sprintf(op_i18n, "Title.%c", m_app->GetLanguageChar() );
 

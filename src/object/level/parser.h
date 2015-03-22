@@ -43,8 +43,10 @@ public:
     
     ~CLevelParser();
     
+    //! Build category path
+    static std::string BuildCategoryPath(std::string category);
     //! Build level filename
-    static std::string BuildSceneName(std::string category, int chapter, int rank, bool sceneFile = true);
+    static std::string BuildScenePath(std::string category, int chapter, int rank, bool sceneFile = true);
     
     //! Check if level file exists
     bool Exists();

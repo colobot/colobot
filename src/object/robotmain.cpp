@@ -5850,9 +5850,9 @@ int CRobotMain::GetSceneRank()
     return m_dialog->GetSceneRank();
 }
 
-void CRobotMain::BuildSceneName(std::string &filename, char *base, int rank, bool sceneFile)
+void CRobotMain::BuildScenePath(std::string &filename, char *base, int rank, bool sceneFile)
 {
-    m_dialog->BuildSceneName(filename, base, rank, sceneFile);
+    m_dialog->BuildScenePath(filename, base, rank, sceneFile);
 }
 
 
