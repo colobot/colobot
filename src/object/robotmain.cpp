@@ -26,6 +26,8 @@
 #include "app/controller.h"
 #include "app/input.h"
 
+#include "clipboard/clipboard.h"
+
 #include "common/event.h"
 #include "common/global.h"
 #include "common/iman.h"
@@ -887,6 +889,15 @@ bool CRobotMain::ProcessEvent(Event &event)
                 if (event.key.slot == INPUT_SLOT_SPEED40)
                 {
                     SetSpeed(4.0f);
+                }
+                if (event.key.key == KEY(c) && ((event.kmodState & KEY_MOD(CTRL)) != 0) && m_engine->GetShowStats())
+                {
+                    std::ostringstream ss;
+                    CObject* obj = GetSelect();
+                    if(obj != nullptr) {
+                        ss << "CreateObject type=" << GetTypeObject(obj->GetType()) << " pos=" << std::fixed << std::setprecision(3) << obj->GetPosition(0).x/g_unit << ";" << obj->GetPosition(0).z/g_unit << " dir=" << (obj->GetAngleZ(0)/(Math::PI/180.0f));
+                    }
+                    widgetSetClipboardText(ss.str().c_str());
                 }
                 break;
 
