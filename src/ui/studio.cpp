@@ -125,17 +125,6 @@ bool CStudio::EventProcess(const Event &event)
         newEvent.type = EVENT_STUDIO_OK;
         m_event->AddEvent(newEvent);
     }
-    
-    if ( event.type == EVENT_KEY_DOWN )
-    {
-        if ( event.key.slot == INPUT_SLOT_ACTION &&
-             (event.kmodState & KEY_MOD(CTRL)) != 0 )
-        {
-            Event newEvent = event;
-            newEvent.type = EVENT_STUDIO_OK;
-            m_event->AddEvent(newEvent);
-        }
-    }
 
     if ( event.type == EVENT_STUDIO_EDIT )  // text modifief?
     {

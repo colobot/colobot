@@ -247,6 +247,54 @@ bool CBrain::EventProcess(const Event &event)
         action = event.type;
     }
 
+    if(event.type == EVENT_KEY_DOWN && m_object->GetSelect())
+    {
+        bool bControl = (event.kmodState & KEY_MOD(CTRL)) != 0;
+        bool bAlt = (event.kmodState & KEY_MOD(ALT)) != 0;
+        CEventQueue* queue = CApplication::GetInstancePointer()->GetEventQueue();
+
+        if(event.key.slot == INPUT_SLOT_ACTION && bControl)
+        {
+            Event newEvent = event;
+            newEvent.type = (m_studio == nullptr ? EVENT_OBJECT_PROGEDIT : EVENT_STUDIO_OK);
+            queue->AddEvent(newEvent);
+            return false;
+        }
+
+        if(event.key.slot == INPUT_SLOT_ACTION && bAlt)
+        {
+            Event newEvent = event;
+            newEvent.type = EVENT_OBJECT_PROGRUN;
+            queue->AddEvent(newEvent);
+            return false;
+        }
+
+        if(bAlt)
+        {
+            int index = GetSelScript();
+            if(event.key.slot == INPUT_SLOT_UP)
+                index--;
+            else if(event.key.slot == INPUT_SLOT_DOWN)
+                index++;
+            else if(event.key.key >= KEY(1) && event.key.key <= KEY(9))
+                index = event.key.key-KEY(1);
+            else if(event.key.key == KEY(0))
+                index = 9;
+            if(index < 0) index = 9;
+            if(index > 9) index = 0;
+
+            if(GetSelScript() != index)
+            {
+                SetSelScript(index);
+
+                Event newEvent = event;
+                newEvent.type = EVENT_OBJECT_PROGLIST;
+                queue->AddEvent(newEvent);
+                return false;
+            }
+        }
+    }
+
     if ( action == EVENT_NULL )  return true;
 
     if ( action == EVENT_UPDINTERFACE )
@@ -2461,6 +2509,23 @@ int CBrain::GetSelScript()
     if ( pl == 0 )  return -1;
 
     return pl->GetSelect();
+}
+
+// Changes selected script
+
+void CBrain::SetSelScript(int index)
+{
+    Ui::CWindow*    pw;
+    Ui::CList*      pl;
+
+    pw = static_cast< Ui::CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
+    if ( pw == 0 )  return;
+
+    pl = static_cast< Ui::CList* >(pw->SearchControl(EVENT_OBJECT_PROGLIST));
+    if ( pl == 0 )  return;
+
+    pl->SetSelect(index);
+    pl->ShowSelect(true);
 }
 
 // Blinks the running program.

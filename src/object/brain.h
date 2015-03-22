@@ -159,6 +159,7 @@ protected:
 
     void        UpdateScript(Ui::CWindow *pw);
     int         GetSelScript();
+    void        SetSelScript(int index);
     void        BlinkScript(bool bEnable);
 
     void        CheckInterface(Ui::CWindow *pw, EventType event, bool bState);
