@@ -20,16 +20,16 @@
 
 #include "object/task/taskdeletemark.h"
 
-#include "common/iman.h"
 
 #include "graphics/engine/particle.h"
 #include "graphics/engine/terrain.h"
 
+#include "object/objman.h"
+#include "object/robotmain.h"
+
 #include "math/geometry.h"
 
 #include "physics/physics.h"
-
-#include "object/robotmain.h"
 
 
 CTaskDeleteMark::CTaskDeleteMark(CObject* object) : CTask(object)
@@ -41,12 +41,10 @@ CTaskDeleteMark::~CTaskDeleteMark()
 {
 }
 
-
 // Management of an event.
-
 bool CTaskDeleteMark::EventProcess(const Event &event)
 {
-   
+    return true;
 }
 
 Error CTaskDeleteMark::Start()
@@ -59,17 +57,15 @@ Error CTaskDeleteMark::Start()
 }
 
 // Indicates whether the action is finished.
-
 Error CTaskDeleteMark::IsEnded()
 {
     if ( m_bExecuted )
-	return ERR_STOP;
+        return ERR_STOP;
     else 
-	return ERR_CONTINUE;
+        return ERR_CONTINUE;
 }
 
 // Suddenly ends the current action.
-
 bool CTaskDeleteMark::Abort()
 {
     return true;
@@ -77,34 +73,19 @@ bool CTaskDeleteMark::Abort()
 
 void CTaskDeleteMark::DeleteMark()
 {
-    ObjectType	    type;
-    CObject*        pObj;
-    Math::Vector    oPos=m_object->GetPosition(0);
-    int             i;
+    CObject* pObj = CObjectManager::GetInstancePointer()->FindNearest(m_object, {
+        OBJECT_MARKPOWER,
+        OBJECT_MARKSTONE,
+        OBJECT_MARKURANIUM,
+        OBJECT_MARKKEYa,
+        OBJECT_MARKKEYb,
+        OBJECT_MARKKEYc,
+        OBJECT_MARKKEYd
+    }, 8.0f/g_unit);
 
-    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
-
-    for ( i=0 ; i<1000000 ; i++ )
+    if(pObj != nullptr)
     {
-        pObj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
-        if ( pObj == 0 )  break;
-	
-	type = pObj->GetType();
-	
-        if ( type == OBJECT_MARKPOWER || 
-	     type == OBJECT_MARKSTONE ||
-	     type == OBJECT_MARKURANIUM ||
-	     type == OBJECT_MARKKEYa ||
-	     type == OBJECT_MARKKEYb ||
-	     type == OBJECT_MARKKEYc ||
-	     type == OBJECT_MARKKEYd )
-        {
-	    if ( Math::Distance(oPos, pObj->GetPosition(0)) < 8.0f )
-	    {
-		pObj->DeleteObject();  // removes the mark
-		delete pObj;
-		break;
-	    }
-        }     
+        pObj->DeleteObject();  // removes the mark
+        delete pObj;
     }
 }
