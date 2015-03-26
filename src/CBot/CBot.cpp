@@ -1582,7 +1582,7 @@ CBotInstr* CBotExpression::Compile(CBotToken* &p, CBotCStack* pStack)
             return NULL;
         }
 
-        CBotTypResult    type1 = pStack->GetTypResult();
+        CBotTypResult    type2 = pStack->GetTypResult();
 
         // get the variable assigned to mark
         CBotVar*    var = NULL;
@@ -1600,7 +1600,7 @@ CBotInstr* CBotExpression::Compile(CBotToken* &p, CBotCStack* pStack)
             return NULL;
         }
 
-        CBotTypResult type2 = var->GetTypResult();
+        CBotTypResult type1 = var->GetTypResult();
 
         // what types are acceptable?
         switch (OpType)
