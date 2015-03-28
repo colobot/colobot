@@ -173,7 +173,6 @@ CRobotMain::CRobotMain(CController* controller)
     m_selectObject = 0;
     m_infoUsed     = 0;
 
-    m_version      = 1;
     m_controller   = nullptr;
     m_retroStyle   = false;
     m_immediatSatCom = false;
@@ -2973,7 +2972,6 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
         strcpy(m_scriptName, scriptNameStr.c_str());
         m_scriptFile[0] = 0;
 
-        m_version             = 1;
         m_retroStyle          = false;
 
         m_missionResult       = ERR_MISSION_NOTERM;
@@ -2999,12 +2997,6 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
         for(auto& line : level->GetLines())
         {
-            if (line->GetCommand() == "MissionFile" && !resetObject)
-            {
-                m_version = line->GetParam("version")->AsInt(1);
-                continue;
-            }
-            
             if(line->GetCommand() == "Title" && !resetObject)
             {
                 strcpy(m_title, line->GetParam("text")->AsString().c_str());
@@ -3034,7 +3026,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 strcpy(m_infoFilename[SATCOM_HUSTON], line->GetParam("name")->AsPath("help/%lng%").c_str());
                 
                 m_immediatSatCom = line->GetParam("immediat")->AsBool(false);
-                if (m_version >= 2) m_beginSatCom = m_lockedSatCom = line->GetParam("lock")->AsBool(false);
+                m_beginSatCom = m_lockedSatCom = line->GetParam("lock")->AsBool(false);
                 if (m_app->GetSceneTestMode()) m_immediatSatCom = false;
                 continue;
             }
@@ -3085,13 +3077,13 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 continue;
             }
             
-            if (line->GetCommand() == "CacheAudio" && !resetObject && m_version >= 2)
+            if (line->GetCommand() == "CacheAudio" && !resetObject)
             {
                 m_sound->CacheMusic(std::string("../")+line->GetParam("filename")->AsPath("music"));
                 continue;
             }
             
-            if (line->GetCommand() == "AudioChange" && !resetObject && m_version >= 2 && m_controller == nullptr)
+            if (line->GetCommand() == "AudioChange" && !resetObject && m_controller == nullptr)
             {
                 int i = m_audioChangeTotal;
                 if (i < 10)
@@ -3116,8 +3108,12 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             
             if (line->GetCommand() == "Audio" && !resetObject && m_controller == nullptr)
             {
-                if (m_version < 2)
+                if(line->GetParam("track")->IsDefined())
                 {
+                    if(line->GetParam("filename")->IsDefined())
+                        throw new CLevelParserException("You can't use track and filename at the same time");
+
+                    CLogger::GetInstancePointer()->Warn("Using track= is deprecated. Please replace this with filename=\n");
                     int trackid = line->GetParam("track")->AsInt();
                     if (trackid != 0)
                     {
@@ -3125,34 +3121,44 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                         filenameStr << "music" << std::setfill('0') << std::setw(3) << trackid << ".ogg";
                         m_audioTrack = filenameStr.str();
                     }
-                    m_audioRepeat = line->GetParam("repeat")->AsBool(true);
+                    else
+                    {
+                        m_audioTrack = "";
+                    }
                 }
                 else
                 {
-                    if(line->GetParam("main")->IsDefined()) {
-                        m_audioTrack = std::string("../")+line->GetParam("main")->AsPath("music");
-                        m_audioRepeat = line->GetParam("mainRepeat")->AsBool(true);
-                    } else {
+                    if(line->GetParam("filename")->IsDefined())
+                    {
+                        m_audioTrack = std::string("../")+line->GetParam("filename")->AsPath("music");
+                    }
+                    else
+                    {
                         m_audioTrack = "";
                     }
-                    
-                    if(line->GetParam("satcom")->IsDefined()) {
-                        m_satcomTrack = std::string("../")+line->GetParam("satcom")->AsPath("music");
-                        m_satcomRepeat = line->GetParam("satcomRepeat")->AsBool(true);
-                    } else {
-                        m_satcomTrack = "";
-                    }
-                    
-                    if(line->GetParam("editor")->IsDefined()) {
-                        m_editorTrack = std::string("../")+line->GetParam("editor")->AsPath("music");
-                        m_editorRepeat = line->GetParam("editorRepeat")->AsBool(true);
-                    } else {
-                        m_editorTrack = "";
-                    }
                 }
-                if (m_audioTrack != "") m_sound->CacheMusic(m_audioTrack);
-                if (m_satcomTrack != "") m_sound->CacheMusic(m_satcomTrack);
-                if (m_editorTrack != "") m_sound->CacheMusic(m_editorTrack);
+                if(!m_audioTrack.empty())
+                {
+                    m_audioRepeat = line->GetParam("repeat")->AsBool(true);
+                }
+                    
+                if(line->GetParam("satcom")->IsDefined()) {
+                    m_satcomTrack = std::string("../")+line->GetParam("satcom")->AsPath("music");
+                    m_satcomRepeat = line->GetParam("satcomRepeat")->AsBool(true);
+                } else {
+                    m_satcomTrack = "";
+                }
+                
+                if(line->GetParam("editor")->IsDefined()) {
+                    m_editorTrack = std::string("../")+line->GetParam("editor")->AsPath("music");
+                    m_editorRepeat = line->GetParam("editorRepeat")->AsBool(true);
+                } else {
+                    m_editorTrack = "";
+                }
+
+                if (!m_audioTrack.empty()) m_sound->CacheMusic(m_audioTrack);
+                if (!m_satcomTrack.empty()) m_sound->CacheMusic(m_satcomTrack);
+                if (!m_editorTrack.empty()) m_sound->CacheMusic(m_editorTrack);
                 continue;
             }
             
@@ -3254,16 +3260,17 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 continue;
             }
             
-            if (((line->GetCommand() == "Global") || (m_version >= 2 && line->GetCommand() == "Mission")) && !resetObject)
+            if ((line->GetCommand() == "Global" || line->GetCommand() == "Mission") && !resetObject)
             {
+                if(line->GetCommand() == "Global")
+                    CLogger::GetInstancePointer()->Warn("Using Global is deprecated. Please use Mission instead.\n");
+
                 g_unit = line->GetParam("unitScale")->AsFloat(4.0f);
                 m_engine->SetTracePrecision(line->GetParam("traceQuality")->AsFloat(1.0f));
                 m_shortCut = line->GetParam("shortcut")->AsBool(true);
-                if (m_version >= 2)
-                {
-                    m_retroStyle = line->GetParam("retro")->AsBool(false);
-                    if (m_retroStyle) GetLogger()->Info("Retro mode enabled.\n");
-                }
+
+                m_retroStyle = line->GetParam("retro")->AsBool(false);
+                if (m_retroStyle) GetLogger()->Info("Retro mode enabled.\n");
                 continue;
             }
             
@@ -3458,7 +3465,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 continue;
             }
             
-            if (line->GetCommand() == "MissionController" && read[0] == 0 && m_version >= 2)
+            if (line->GetCommand() == "MissionController" && read[0] == 0)
             {
                 m_controller = CObjectManager::GetInstancePointer()->CreateObject(Math::Vector(0.0f, 0.0f, 0.0f), 0.0f, OBJECT_CONTROLLER, 100.0f);
                 m_controller->SetMagnifyDamage(100.0f);
@@ -3598,19 +3605,16 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                     obj->SetShield(line->GetParam("shield")->AsFloat(1.0f));
                     obj->SetMagnifyDamage(line->GetParam("magnifyDamage")->AsFloat(1.0f));
                     obj->SetClip(line->GetParam("clip")->AsBool(true));
-                    obj->SetCheckToken(m_version >= 2 ? trainer || !selectable : line->GetParam("checkToken")->AsBool(true));
+                    obj->SetCheckToken(!line->GetParam("checkToken")->IsDefined() ? trainer || !selectable : line->GetParam("checkToken")->AsBool(true));
                     // SetManual will affect bot speed
                     if (type == OBJECT_MOBILEdr)
                     {
-                        obj->SetManual(m_version >= 2 ? !trainer : line->GetParam("manual")->AsBool(false));
+                        obj->SetManual(!trainer);
                     }
                     
-                    if (m_version >= 2)
-                    {
-                        Math::Vector zoom = line->GetParam("zoom")->AsPoint(Math::Vector(0.0f, 0.0f, 0.0f));
-                        if (zoom.x != 0.0f || zoom.y != 0.0f || zoom.z != 0.0f)
-                            obj->SetZoom(0, zoom);
-                    }
+                    Math::Vector zoom = line->GetParam("zoom")->AsPoint(Math::Vector(0.0f, 0.0f, 0.0f));
+                    if (zoom.x != 0.0f || zoom.y != 0.0f || zoom.z != 0.0f)
+                        obj->SetZoom(0, zoom);
                     
                     //TODO: I don't remember what this is used for
                     CMotion* motion = obj->GetMotion();
@@ -3828,24 +3832,14 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 if (i < 10)
                 {
                     m_endTake[i].pos      = line->GetParam("pos")->AsPoint(Math::Vector(0.0f, 0.0f, 0.0f))*g_unit;
-                    m_endTake[i].dist     = line->GetParam("dist")->AsFloat(m_version < 2 ? 8.0f : 100.0f)*g_unit;
+                    m_endTake[i].dist     = line->GetParam("dist")->AsFloat(8.0f)*g_unit;
                     m_endTake[i].type     = line->GetParam("type")->AsObjectType(OBJECT_NULL);
                     m_endTake[i].min      = line->GetParam("min")->AsInt(1);
                     m_endTake[i].max      = line->GetParam("max")->AsInt(9999);
-                    if (m_version >= 2)
-                    {
-                        m_endTake[i].powermin = line->GetParam("powermin")->AsFloat(-1);
-                        m_endTake[i].powermax = line->GetParam("powermax")->AsFloat(100);
-                        m_endTake[i].tool     = line->GetParam("tool")->AsToolType(TOOL_OTHER);
-                        m_endTake[i].drive    = line->GetParam("drive")->AsDriveType(DRIVE_OTHER);
-                    }
-                    else
-                    {
-                        m_endTake[i].powermin = -1;
-                        m_endTake[i].powermax = 100;
-                        m_endTake[i].tool     = TOOL_OTHER;
-                        m_endTake[i].drive    = DRIVE_OTHER;
-                    }
+                    m_endTake[i].powermin = line->GetParam("powermin")->AsFloat(-1);
+                    m_endTake[i].powermax = line->GetParam("powermax")->AsFloat(100);
+                    m_endTake[i].tool     = line->GetParam("tool")->AsToolType(TOOL_OTHER);
+                    m_endTake[i].drive    = line->GetParam("drive")->AsDriveType(DRIVE_OTHER);
                     m_endTake[i].lost     = line->GetParam("lost")->AsInt(-1);
                     m_endTake[i].immediat = line->GetParam("immediat")->AsBool(false);
                     strcpy(m_endTake[i].message, line->GetParam("message")->AsString("").c_str()); //TODO: Really, ending mission on message()? Is this used anywhere? Do we need that?

@@ -446,7 +446,6 @@ protected:
 
     CObject*        m_controller;
 
-    int             m_version;         // Mission file version
     bool            m_retroStyle;      // Retro
     bool            m_immediatSatCom;  // SatCom immediately?
     bool            m_beginSatCom;     // messages SatCom poster?
