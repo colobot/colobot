@@ -5429,6 +5429,12 @@ void CRobotMain::UpdateAudio(bool frame)
             {
                 energyLevel = power->GetEnergy();
                 if (power->GetType() == OBJECT_ATOMIC) energyLevel *= 100;
+            } else {
+                if(obj->GetType() == OBJECT_POWER || obj->GetType() == OBJECT_ATOMIC)
+                {
+                    energyLevel = obj->GetEnergy();
+                    if (obj->GetType() == OBJECT_ATOMIC) energyLevel *= 100;
+                }
             }
             if (energyLevel < m_audioChange[t].powermin || energyLevel > m_audioChange[t].powermax)
 	            continue;
@@ -5553,6 +5559,12 @@ Error CRobotMain::CheckEndMission(bool frame)
             {
                 energyLevel = power->GetEnergy();
                 if (power->GetType() == OBJECT_ATOMIC) energyLevel *= 100;
+            } else {
+                if(obj->GetType() == OBJECT_POWER || obj->GetType() == OBJECT_ATOMIC)
+                {
+                    energyLevel = obj->GetEnergy();
+                    if (obj->GetType() == OBJECT_ATOMIC) energyLevel *= 100;
+                }
             }
             if (energyLevel < m_endTake[t].powermin || energyLevel > m_endTake[t].powermax) continue;
 
