@@ -113,6 +113,7 @@ struct EndTake
     ToolType      tool;
     DriveType     drive;
     bool          immediat;
+    bool          countTransported;
     char          message[100];
 };
 

@@ -3842,6 +3842,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                     m_endTake[i].drive    = line->GetParam("drive")->AsDriveType(DRIVE_OTHER);
                     m_endTake[i].lost     = line->GetParam("lost")->AsInt(-1);
                     m_endTake[i].immediat = line->GetParam("immediat")->AsBool(false);
+                    m_endTake[i].countTransported = line->GetParam("countTransported")->AsBool(false);
                     strcpy(m_endTake[i].message, line->GetParam("message")->AsString("").c_str()); //TODO: Really, ending mission on message()? Is this used anywhere? Do we need that?
                     m_endTakeTotal ++;
                 }
@@ -5524,6 +5525,11 @@ Error CRobotMain::CheckEndMission(bool frame)
             if (obj->GetLock()) continue;
             if (obj->GetRuin()) continue;
             if (!obj->GetEnable()) continue;
+
+            if(!m_endTake[t].countTransported)
+            {
+                if(obj->GetTruck() != nullptr) continue;
+            }
 
             ObjectType type = obj->GetType();
             if (type == OBJECT_SCRAP2 ||
