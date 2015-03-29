@@ -2125,17 +2125,12 @@ CObject* CRobotMain::DetectObject(Math::Point pos)
         {
             target = obj;
         }
-        else if ((type == OBJECT_POWER ||
-                  type == OBJECT_ATOMIC) &&
-                 obj->GetTruck() != nullptr)  // battery used?
-        {
-            target = obj->GetTruck();
-        }
-        else if (type == OBJECT_POWER ||
-                 type == OBJECT_ATOMIC)
-        {
-            target = obj;
-        }
+
+	else if (type == OBJECT_POWER || type == OBJECT_ATOMIC)
+	{
+	    target = obj->GetTruck();  // battery connected
+	    if (!target) target = obj; // standalone battery
+	}
 
         for (int j = 0; j < OBJECTMAXPART; j++)
         {
