@@ -115,6 +115,9 @@ msgid "Access to solutions\\Show program \"4: Solution\" in the exercises"
 msgstr ""
 "Lösung zugänglich\\Die Lösung ist im Programmslot \"4: Lösung\" zugänglich"
 
+msgid "Add new program"
+msgstr ""
+
 msgid "Alien Queen"
 msgstr "Insektenkönigin"
 
@@ -851,6 +854,14 @@ msgstr "Umkehr Y\\Umkehr der Kameradrehung Y-Achse"
 msgid "Mouse shadow\\Gives the mouse a shadow"
 msgstr "Schatten unter der Maus\\Ein Schatten erscheint unter der Maus"
 
+#, fuzzy
+msgid "Move selected program down"
+msgstr "Gewähltes Programm bearbeiten"
+
+#, fuzzy
+msgid "Move selected program up"
+msgstr "Gewähltes Programm bearbeiten"
+
 msgid "Mute\\No sound"
 msgstr "Kein Ton\\Keine Geräusche und Geräuschkulisse"
 
@@ -1189,6 +1200,10 @@ msgstr "Überreste einer Apollo-Mission"
 
 msgid "Remove a flag"
 msgstr "Sammelt die Fahne ein"
+
+#, fuzzy
+msgid "Remove selected program"
+msgstr "Gewähltes Programm bearbeiten"
 
 #, fuzzy
 msgid "Render distance\\Maximum visibility"

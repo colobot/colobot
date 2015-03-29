@@ -177,7 +177,12 @@ Error CTaskReset::Start(Math::Vector goal, Math::Vector angle)
     {
         m_object->SetPosition(0, goal);
         m_object->SetAngle(0, angle);
-        m_brain->RunProgram(m_object->GetResetRun());
+        Program* program = m_object->GetResetRun();
+        if(program != nullptr)
+        {
+            m_brain->AddProgram(program);
+            m_brain->RunProgram(program);
+        }
 
         m_bError = false;
         return ERR_OK;
@@ -258,7 +263,12 @@ Error CTaskReset::IsEnded()
         power->SetEnergy(power->GetCapacity());  // refueling
     }
 
-    m_brain->RunProgram(m_object->GetResetRun());
+    Program* program = m_object->GetResetRun();
+    if(program != nullptr)
+    {
+        m_brain->AddProgram(program);
+        m_brain->RunProgram(program);
+    }
     m_object->SetResetBusy(false);
     return ERR_STOP;
 }

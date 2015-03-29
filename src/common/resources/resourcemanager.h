@@ -65,6 +65,8 @@ public:
     
     //! Move file/directory
     static bool Move(const std::string &from, const std::string &to);
+    //! Remove file
+    static bool Remove(const std::string& filename);
 
 private:
     static int SDLSeek(SDL_RWops *context, int offset, int whence);

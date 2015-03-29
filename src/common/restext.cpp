@@ -372,6 +372,10 @@ void InitializeRestext()
     stringsEvent[EVENT_OBJECT_DELSEARCH]    = TR("Delete mark");
     stringsEvent[EVENT_OBJECT_PROGRUN]      = TR("Execute the selected program");
     stringsEvent[EVENT_OBJECT_PROGEDIT]     = TR("Edit the selected program");
+    stringsEvent[EVENT_OBJECT_PROGADD]      = TR("Add new program");
+    stringsEvent[EVENT_OBJECT_PROGREMOVE]   = TR("Remove selected program");
+    stringsEvent[EVENT_OBJECT_PROGMOVEUP]   = TR("Move selected program up");
+    stringsEvent[EVENT_OBJECT_PROGMOVEDOWN] = TR("Move selected program down");
     stringsEvent[EVENT_OBJECT_INFOOK]       = TR("\\SatCom on standby");
     stringsEvent[EVENT_OBJECT_DELETE]       = TR("Destroy the building");
     stringsEvent[EVENT_OBJECT_GENERGY]      = TR("Energy level");

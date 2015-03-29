@@ -33,6 +33,7 @@
 #include "physics/physics.h"
 
 #include "script/cmdtoken.h"
+#include "script/script.h"
 
 #include "ui/interface.h"
 #include "ui/window.h"
@@ -496,9 +497,9 @@ bool CAutoFactory::EventProcess(const Event &event)
                 CBrain* brain = m_vehicle->GetBrain();
                 if ( brain != nullptr )
                 {
-                    brain->SendProgram(0, const_cast<const char*>(m_program));
-                    brain->SetScriptRun(0);
-                    brain->RunProgram(0);
+                    Program* program = brain->AddProgram();
+                    program->script->SendScript(const_cast<const char*>(m_program));
+                    brain->RunProgram(program);
                 }
             }
 
@@ -643,8 +644,6 @@ bool CAutoFactory::CreateVehicle()
     CPhysics*   physics;
     Math::Vector    pos;
     float       angle;
-    char*       name;
-    int         i;
 
     angle = m_object->GetAngleY(0);
 
@@ -679,12 +678,16 @@ bool CAutoFactory::CreateVehicle()
         physics->SetFreeze(true);  // it doesn't move
     }
 
+    /* ???
+    char*       name;
+    int         i;
     for ( i=0 ; i<10 ; i++ )
     {
         name = m_main->GetNewScriptName(m_type, i);
         if ( name == 0 )  break;
         vehicle->ReadProgram(i, name);
     }
+    */
 
     return true;
 }

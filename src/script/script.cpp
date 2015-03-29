@@ -1028,7 +1028,7 @@ bool CScript::WriteScript(const char* filename)
 
     if ( m_script == nullptr )
     {
-        remove(filename);
+        CResourceManager::Remove(filename);
         return false;
     }
 

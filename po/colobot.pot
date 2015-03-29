@@ -851,6 +851,18 @@ msgstr ""
 msgid "Edit the selected program"
 msgstr ""
 
+msgid "Add new program"
+msgstr ""
+
+msgid "Remove selected program"
+msgstr ""
+
+msgid "Move selected program up"
+msgstr ""
+
+msgid "Move selected program down"
+msgstr ""
+
 msgid "\\SatCom on standby"
 msgstr ""
 

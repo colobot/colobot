@@ -32,10 +32,11 @@
 
 #include "math/all.h"
 
+#include "object/brain.h"
 #include "object/object.h"
+#include "object/objman.h"
 #include "object/robotmain.h"
 #include "object/task/taskmanager.h"
-#include "object/objman.h"
 
 #include "object/auto/auto.h"
 #include "object/auto/autofactory.h"
@@ -1709,8 +1710,13 @@ bool CScriptFunctions::rProduce(CBotVar* var, CBotVar* result, int& exception, v
     if (name[0] != 0)
     {
         std::string name2 = CPathManager::InjectLevelDir(name, "ai");
-        object->ReadProgram(0, name2.c_str());
-        object->RunProgram(0);
+        CBrain* brain = object->GetBrain();
+        if(brain != nullptr)
+        {
+            Program* program = brain->AddProgram();
+            brain->ReadProgram(program, name2.c_str());
+            brain->RunProgram(program);
+        }
     }
     
     result->SetValInt(0);  // no error

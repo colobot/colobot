@@ -32,6 +32,7 @@
 #include "graphics/engine/camera.h"
 #include "graphics/engine/engine.h"
 
+#include "object/brain.h"
 #include "object/object.h"
 
 #include "script/cbottoken.h"
@@ -542,7 +543,7 @@ void CStudio::ColorizeScript(CEdit* edit)
 
 // Starts editing a program.
 
-void CStudio::StartEditScript(CScript *script, std::string name, int rank)
+void CStudio::StartEditScript(CScript *script, std::string name, Program* program)
 {
     Math::Point     pos, dim;
     CWindow*    pw;
@@ -552,7 +553,7 @@ void CStudio::StartEditScript(CScript *script, std::string name, int rank)
     CList*      list;
 
     m_script = script;
-    m_rank   = rank;
+    m_program   = program;
 
     m_main->SetEditLock(true, true);
     m_main->SetEditFull(false);

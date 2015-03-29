@@ -110,6 +110,9 @@ msgstr "Accès à la solution\\Donne la solution"
 msgid "Access to solutions\\Show program \"4: Solution\" in the exercises"
 msgstr "Accès aux solutions\\Programme \"4: Solution\" dans les exercices"
 
+msgid "Add new program"
+msgstr ""
+
 msgid "Alien Queen"
 msgstr "Pondeuse"
 
@@ -847,6 +850,14 @@ msgstr ""
 msgid "Mouse shadow\\Gives the mouse a shadow"
 msgstr "Souris ombrée\\Jolie souris avec une ombre"
 
+#, fuzzy
+msgid "Move selected program down"
+msgstr "Édite le programme sélectionné"
+
+#, fuzzy
+msgid "Move selected program up"
+msgstr "Édite le programme sélectionné"
+
 msgid "Mute\\No sound"
 msgstr "Silencieux\\Totalement silencieux"
 
@@ -1185,6 +1196,10 @@ msgstr "Vestige d'une mission Apollo"
 
 msgid "Remove a flag"
 msgstr "Enlève un drapeau"
+
+#, fuzzy
+msgid "Remove selected program"
+msgstr "Édite le programme sélectionné"
 
 #, fuzzy
 msgid "Render distance\\Maximum visibility"

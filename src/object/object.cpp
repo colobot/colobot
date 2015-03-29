@@ -306,7 +306,7 @@ CObject::CObject()
     m_bResetBusy    = false;
     m_resetPosition = Math::Vector(0.0f, 0.0f, 0.0f);
     m_resetAngle    = Math::Vector(0.0f, 0.0f, 0.0f);
-    m_resetRun      = -1;
+    m_resetRun      = nullptr;
 
     m_cameraType = Gfx::CAM_TYPE_BACK;
     m_cameraDist = 50.0f;
@@ -1058,7 +1058,7 @@ bool CObject::Write(CLevelParserLine* line)
         line->AddParam("resetCap", new CLevelParserParam(static_cast<int>(GetResetCap())));
         line->AddParam("resetPos", new CLevelParserParam(GetResetPosition()/g_unit));
         line->AddParam("resetAngle", new CLevelParserParam(GetResetAngle()/(Math::PI/180.0f)));
-        line->AddParam("resetRun", new CLevelParserParam(GetResetRun()));
+        line->AddParam("resetRun", new CLevelParserParam(m_brain->GetProgramIndex(GetResetRun())));
     }
 
     if ( m_bVirusMode )
@@ -1145,7 +1145,7 @@ bool CObject::Read(CLevelParserLine* line)
     SetResetCap(static_cast<ResetCap>(line->GetParam("resetCap")->AsInt(0)));
     SetResetPosition(line->GetParam("resetPos")->AsPoint(Math::Vector())*g_unit);
     SetResetAngle(line->GetParam("resetAngle")->AsPoint(Math::Vector())*(Math::PI/180.0f));
-    SetResetRun(line->GetParam("resetRun")->AsInt(0));
+    SetResetRun(m_brain->GetProgram(line->GetParam("resetRun")->AsInt(-1)));
     m_bBurn = line->GetParam("burnMode")->AsBool(false);
     m_bVirusMode = line->GetParam("virusMode")->AsBool(false);
     m_virusTime = line->GetParam("virusTime")->AsFloat(0.0f);
@@ -1822,12 +1822,12 @@ Math::Vector CObject::GetResetAngle()
     return m_resetAngle;
 }
 
-int CObject::GetResetRun()
+Program* CObject::GetResetRun()
 {
     return m_resetRun;
 }
 
-void CObject::SetResetRun(int run)
+void CObject::SetResetRun(Program* run)
 {
     m_resetRun = run;
 }
@@ -5525,43 +5525,25 @@ void CObject::CreateOtherObject(ObjectType type)
 
 // Reads a program.
 
-bool CObject::ReadProgram(int rank, const char* filename)
+bool CObject::ReadProgram(Program* program, const char* filename)
 {
     if ( m_brain != 0 )
     {
-        return m_brain->ReadProgram(rank, filename);
+        return m_brain->ReadProgram(program, filename);
     }
     return false;
 }
 
 // Writes a program.
 
-bool CObject::WriteProgram(int rank, char* filename)
+bool CObject::WriteProgram(Program* program, char* filename)
 {
     if ( m_brain != 0 )
     {
-        return m_brain->WriteProgram(rank, filename);
+        return m_brain->WriteProgram(program, filename);
     }
     return false;
 }
-
-// Starts a program.
-
-bool CObject::RunProgram(int rank)
-{
-    if ( m_brain != 0 )
-    {
-        m_brain->RunProgram(rank);
-        return true;
-    }
-    if ( m_auto != 0 )
-    {
-        m_auto->Start(rank);
-        return true;
-    }
-    return false;
-}
-
 
 
 

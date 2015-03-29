@@ -115,6 +115,9 @@ msgstr ""
 msgid "Access to solutions\\Show program \"4: Solution\" in the exercises"
 msgstr "Accčs aux solutions\\Programme \"4: Solution\" dans les exercices"
 
+msgid "Add new program"
+msgstr "Dodaj nowy program"
+
 msgid "Alien Queen"
 msgstr "Królowa Obcych"
 
@@ -854,6 +857,12 @@ msgstr "Odwrócenie myszy Y\\Odwrócenie kierunków przewijania w pionie"
 msgid "Mouse shadow\\Gives the mouse a shadow"
 msgstr "Cień kursora myszy\\Dodaje cień kursorowi myszy"
 
+msgid "Move selected program down"
+msgstr "Przenieś zaznaczony program w dół"
+
+msgid "Move selected program up"
+msgstr "Przenieś zaznaczony program w górę"
+
 msgid "Mute\\No sound"
 msgstr "Cisza\\Brak dźwięków"
 
@@ -1194,6 +1203,9 @@ msgstr "Pozostałości z misji Apollo"
 
 msgid "Remove a flag"
 msgstr "Usuń flagę"
+
+msgid "Remove selected program"
+msgstr "Usuń zaznaczony program"
 
 msgid "Render distance\\Maximum visibility"
 msgstr "Zasięg renderingu\\Maksymalna widoczność"

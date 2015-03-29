@@ -293,6 +293,15 @@ bool CResourceManager::Move(const std::string& from, const std::string& to)
     return false;
 }
 
+bool CResourceManager::Remove(const std::string& filename)
+{
+    if(PHYSFS_isInit())
+    {
+        return PHYSFS_delete(filename.c_str()) != 0;
+    }
+    return false;
+}
+
 int CResourceManager::SDLClose(SDL_RWops *context)
 {
     if (CheckSDLContext(context))

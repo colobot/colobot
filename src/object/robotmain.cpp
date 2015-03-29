@@ -3471,12 +3471,11 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 m_controller->SetMagnifyDamage(100.0f);
                 m_controller->SetIgnoreBuildCheck(true);
                 CBrain* brain = m_controller->GetBrain();
-                if (brain != nullptr)
+                if (brain != nullptr && line->GetParam("script")->IsDefined())
                 {
-                    std::string name = "../"+line->GetParam("script")->AsPath("ai");
-                    if (!name.empty())
-                        brain->SetScriptName(0, const_cast<char*>(name.c_str()));
-                    brain->SetScriptRun(0);
+                    Program* program = brain->AddProgram();
+                    program->filename = "../"+line->GetParam("script")->AsPath("ai");
+                    brain->SetScriptRun(program);
                 }
                 continue;
             }
@@ -3628,6 +3627,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                     }
                     
                     int run = -1;
+                    std::map<int, Program*> loadedPrograms;
                     CBrain* brain = obj->GetBrain();
                     if (brain != nullptr)
                     {
@@ -3635,7 +3635,9 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                         {
                             std::string op = "script"+boost::lexical_cast<std::string>(i+1); // script1..script10
                             if(line->GetParam(op)->IsDefined()) {
-                                brain->SetScriptName(i, const_cast<char*>(("../"+line->GetParam(op)->AsPath("ai")).c_str()));
+                                Program* program = brain->AddProgram();
+                                program->filename = "../"+line->GetParam(op)->AsPath("ai");
+                                loadedPrograms[i] = program;
                             }
                             
                         }
@@ -3644,7 +3646,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                         if (i != 0)
                         {
                             run = i-1;
-                            brain->SetScriptRun(run);
+                            brain->SetScriptRun(loadedPrograms[run]);
                         }
                     }
                     CAuto* automat = obj->GetAuto();
@@ -3673,7 +3675,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                     
                     obj->SetResetPosition(obj->GetPosition(0));
                     obj->SetResetAngle(obj->GetAngle(0));
-                    obj->SetResetRun(run);
+                    obj->SetResetRun(loadedPrograms[run]);
                     
                     if (line->GetParam("reset")->AsBool(false))
                         obj->SetResetCap(RESET_MOVE);
@@ -4569,19 +4571,16 @@ void CRobotMain::CompileScript(bool soluce)
             CBrain* brain = obj->GetBrain();
             if (brain == nullptr) continue;
 
-            for (int j = 0; j < 10; j++)
+            for(Program* program : brain->GetPrograms())
             {
-                if (brain->GetCompile(j)) continue;
+                //? if (brain->GetCompile(j)) continue;
+                if(program->filename.empty()) continue;
 
-                std::string name = brain->GetScriptName(j);
-                if (name[0] != 0)
-                {
-                    name = "ai/"+name;
-                    if(! brain->ReadProgram(j, const_cast<char*>(name.c_str()))) {
-                        CLogger::GetInstancePointer()->Error("Unable to read script from file \"%s\"\n", name.c_str());
-                    }
-                    if (!brain->GetCompile(j)) nbError++;
+                std::string name = "ai/"+program->filename;
+                if(! brain->ReadProgram(program, const_cast<char*>(name.c_str()))) {
+                    CLogger::GetInstancePointer()->Error("Unable to read script from file \"%s\"\n", name.c_str());
                 }
+                if (!brain->GetCompile(program)) nbError++;
             }
 
             LoadOneScript(obj, nbError);
@@ -4617,10 +4616,10 @@ void CRobotMain::CompileScript(bool soluce)
         CBrain* brain = obj->GetBrain();
         if (brain == nullptr)  continue;
 
-        int run = brain->GetScriptRun();
-        if (run != -1)
+        Program* program = brain->GetScriptRun();
+        if (program != nullptr)
         {
-            brain->RunProgram(run);  // starts the program
+            brain->RunProgram(program);  // starts the program
         }
     }
 }
@@ -4642,15 +4641,20 @@ void CRobotMain::LoadOneScript(CObject *obj, int &nbError)
     char* name = m_dialog->GetSceneName();
     int rank = m_dialog->GetSceneRank();
 
-    for (int i = 0; i < BRAINMAXSCRIPT; i++)
+    for(unsigned int i = 0; i < 999; i++)
     {
-        if (brain->GetCompile(i)) continue;
+        //? if (brain->GetCompile(i)) continue;
 
         char filename[MAX_FNAME];
-        sprintf(filename, "%s/%s/%c%.3d%.3d%.1d.txt",
+        sprintf(filename, "%s/%s/%c%.3d%.3d%.3d.txt",
                     GetSavegameDir(), m_gamerName.c_str(), name[0], rank, objRank, i);
-        brain->ReadProgram(i, filename);
-        if (!brain->GetCompile(i)) nbError++;
+
+        if(CResourceManager::Exists(filename))
+        {
+            Program* program = brain->GetOrAddProgram(i);
+            brain->ReadProgram(program, filename);
+            if (!brain->GetCompile(program)) nbError++;
+        }
     }
 }
 
@@ -4670,11 +4674,15 @@ void CRobotMain::LoadFileScript(CObject *obj, const char* filename, int objRank,
     dirname = dirname.substr(0, dirname.find_last_of("/"));
     
     char fn[MAX_FNAME]; //TODO: Refactor to std::string
-    for (int i = 0; i < BRAINMAXSCRIPT; i++)
+    for(unsigned int i = 0; i < 999; i++)
     {
-        sprintf(fn, "%s/prog%.3d%.1d.txt", dirname.c_str(), objRank, i);
-        brain->ReadProgram(i, fn);
-        if (!brain->GetCompile(i)) nbError++;
+        sprintf(fn, "%s/prog%.3d%.3d.txt", dirname.c_str(), objRank, i);
+        if(CResourceManager::Exists(fn))
+        {
+            Program* program = brain->GetOrAddProgram(i);
+            brain->ReadProgram(program, fn);
+            if (!brain->GetCompile(program)) nbError++;
+        }
     }
 }
 
@@ -4707,12 +4715,21 @@ void CRobotMain::SaveOneScript(CObject *obj)
     char* name = m_dialog->GetSceneName();
     int rank = m_dialog->GetSceneRank();
 
-    for (int i = 0; i < BRAINMAXSCRIPT; i++)
+    auto programs = brain->GetPrograms();
+    // TODO: Find a better way to do that
+    for(unsigned int i = 0; i < 999; i++)
     {
         char filename[MAX_FNAME];
-        sprintf(filename, "%s/%s/%c%.3d%.3d%.1d.txt",
+        sprintf(filename, "%s/%s/%c%.3d%.3d%.3d.txt",
                     GetSavegameDir(), m_gamerName.c_str(), name[0], rank, objRank, i);
-        brain->WriteProgram(i, filename);
+        if(i < programs.size())
+        {
+            brain->WriteProgram(programs[i], filename);
+        }
+        else
+        {
+            CResourceManager::Remove(filename);
+        }
     }
 }
 
@@ -4732,10 +4749,19 @@ void CRobotMain::SaveFileScript(CObject *obj, const char* filename, int objRank)
     dirname = dirname.substr(0, dirname.find_last_of("/"));
     
     char fn[MAX_FNAME]; //TODO: Refactor to std::string
-    for (int i = 0; i < BRAINMAXSCRIPT; i++)
+    auto programs = brain->GetPrograms();
+    // TODO: Find a better way to do that
+    for(unsigned int i = 0; i < 999; i++)
     {
-        sprintf(fn, "%s/prog%.3d%.1d.txt", dirname.c_str(), objRank, i);
-        brain->WriteProgram(i, fn);
+        sprintf(fn, "%s/prog%.3d%.3d.txt", dirname.c_str(), objRank, i);
+        if(i < programs.size())
+        {
+            brain->WriteProgram(programs[i], fn);
+        }
+        else
+        {
+            CResourceManager::Remove(fn);
+        }
     }
 }
 
