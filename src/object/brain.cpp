@@ -278,8 +278,8 @@ bool CBrain::EventProcess(const Event &event)
                 index = event.key.key-KEY(1);
             else if(event.key.key == KEY(0))
                 index = 9;
-            if(index < 0) index = 9;
-            if(index > 9) index = 0;
+            if(index < 0) index = m_program.size()-1;
+            if(index > static_cast<int>(m_program.size())-1) index = 0;
 
             if(GetSelScript() != index)
             {
