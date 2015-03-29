@@ -28,7 +28,7 @@ any of the missions.
 ### Compiling on Windows
 
 The recommended way of compiling for Windows is using Linux in a cross-compilation environment called MXE.
-This is the way our build bot service (http://colobot.info/files/compiled.php) prepares the release packages.
+This is the way our build bot service (http://compiled.colobot.info/) prepares the release packages.
 You can also compile directly on Windows with MSYS2/MinGW-w64 but this is a bit more difficult to set up.
 
 #### Cross-compiling using MXE
