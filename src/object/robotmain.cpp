@@ -1933,8 +1933,11 @@ void CRobotMain::DeleteAllObjects()
     {
         CObject* obj = it.second;
 
-        obj->DeleteObject(true);  // destroys rapidly
-        delete obj;
+        if(obj != nullptr)
+        {
+            obj->DeleteObject(true);  // destroys rapidly
+            delete obj;
+        }
     }
 }
 
@@ -3844,7 +3847,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                     m_endTake[i].drive    = line->GetParam("drive")->AsDriveType(DRIVE_OTHER);
                     m_endTake[i].lost     = line->GetParam("lost")->AsInt(-1);
                     m_endTake[i].immediat = line->GetParam("immediat")->AsBool(false);
-                    m_endTake[i].countTransported = line->GetParam("countTransported")->AsBool(false);
+                    m_endTake[i].countTransported = line->GetParam("countTransported")->AsBool(true);
                     strcpy(m_endTake[i].message, line->GetParam("message")->AsString("").c_str()); //TODO: Really, ending mission on message()? Is this used anywhere? Do we need that?
                     m_endTakeTotal ++;
                 }
