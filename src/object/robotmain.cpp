@@ -1929,15 +1929,12 @@ void CRobotMain::DeleteAllObjects()
     for (int i = 0; i < MAXSHOWLIMIT; i++)
         FlushShowLimit(i);
     
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    while(CObjectManager::GetInstancePointer()->GetAllObjects().size() > 0)
     {
-        CObject* obj = it.second;
+        CObject* obj = CObjectManager::GetInstancePointer()->GetAllObjects().begin()->second;
 
-        if(obj != nullptr)
-        {
-            obj->DeleteObject(true);  // destroys rapidly
-            delete obj;
-        }
+        obj->DeleteObject(true);  // destroys rapidly
+        delete obj;
     }
 }
 
