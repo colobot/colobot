@@ -78,6 +78,7 @@ struct Program
 {
     CScript*    script;
     std::string filename;
+    bool        readOnly = false;
 };
 
 
@@ -148,6 +149,7 @@ public:
     Program*    AddProgram();
     bool        AddProgram(Program* program);
     void        RemoveProgram(Program* program);
+    Program*    CloneProgram(Program* program);
 
     Program*    GetProgram(int index);
     Program*    GetOrAddProgram(int index);

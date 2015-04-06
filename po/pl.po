@@ -400,6 +400,12 @@ msgstr "Przekroczono punkt kontrolny"
 msgid "Climb\\Increases the power of the jet"
 msgstr "W górę\\Zwiększa moc silnika"
 
+msgid "Clone program"
+msgstr "Skopiuj program"
+
+msgid "Clone selected program"
+msgstr "Skopiuj zaznaczony program"
+
 msgid "Close"
 msgstr "Zamknij"
 
@@ -1048,7 +1054,7 @@ msgid "Pause/continue"
 msgstr "Pauza/Kontynuuj"
 
 msgid "Pause\\Pause the game without opening menu"
-msgstr ""
+msgstr "Pauza\\Zatrzymaj grę bez otwierania menu"
 
 msgid "Phazer shooter"
 msgstr "Działo fazowe"
@@ -1131,6 +1137,9 @@ msgstr "Element prywatny"
 
 msgid "Private\\Private folder"
 msgstr "Prywatny\\Folder prywatny"
+
+msgid "Program cloned"
+msgstr "Program skopiowany"
 
 msgid "Program editor"
 msgstr "Edytor programu"
@@ -1486,6 +1495,9 @@ msgstr "Taka etykieta nie istnieje"
 
 msgid "This object is not a member of a class"
 msgstr "Ten obiekt nie jest członkiem klasy"
+
+msgid "This program is read-only, clone it to edit"
+msgstr "Ten program jest tylko do odczytu, skopiuj go, aby edytować"
 
 msgid "Thump (\\key action;)"
 msgstr "Uderz (\\key action;)"

@@ -70,13 +70,14 @@ public:
 
     void        StartEditScript(CScript *script, std::string name, Program* program);
     bool        StopEditScript(bool bCancel);
+    
+    void        SetInfoText(std::string text, bool bClickable);
 
 protected:
     bool        EventFrame(const Event &event);
     void        SearchToken(CEdit* edit);
     void        ColorizeScript(CEdit* edit);
     void        AdjustEditScript();
-    void        SetInfoText(std::string text, bool bClickable);
     void        ViewEditScript();
     void        UpdateFlux();
     void        UpdateButtons();

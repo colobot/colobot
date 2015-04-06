@@ -3470,6 +3470,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 {
                     Program* program = brain->AddProgram();
                     program->filename = "../"+line->GetParam("script")->AsPath("ai");
+                    program->readOnly = true;
                     brain->SetScriptRun(program);
                 }
                 continue;
@@ -3629,9 +3630,11 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                         for (int i = 0; i < 10; i++)
                         {
                             std::string op = "script"+boost::lexical_cast<std::string>(i+1); // script1..script10
+                            std::string opReadOnly = "scriptReadOnly"+boost::lexical_cast<std::string>(i+1); // scriptReadOnly1..scriptReadOnly10
                             if(line->GetParam(op)->IsDefined()) {
                                 Program* program = brain->AddProgram();
                                 program->filename = "../"+line->GetParam(op)->AsPath("ai");
+                                program->readOnly = line->GetParam(opReadOnly)->AsBool(true);
                                 loadedPrograms[i] = program;
                             }
                             

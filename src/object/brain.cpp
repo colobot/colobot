@@ -346,6 +346,27 @@ bool CBrain::EventProcess(const Event &event)
             StopEditScript(true);
             m_main->SaveOneScript(m_object);
         }
+        if( action == EVENT_STUDIO_CLONE )
+        {
+            StopEditScript(false);
+            Program* newProgram = CloneProgram(m_program[m_selScript]);
+            m_selScript = m_program.size()-1;
+            m_main->SaveOneScript(m_object);
+
+            UpdateInterface();
+            Ui::CWindow* pw = static_cast< Ui::CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
+            if ( pw != 0 )
+            {
+                UpdateScript(pw);
+            }
+            SetSelScript(m_selScript);
+
+            StartEditScript(newProgram, "");
+
+            std::string res;
+            GetResource(RES_TEXT, RT_STUDIO_CLONED, res);
+            m_studio->SetInfoText(res, false);
+        }
 
         return true;
     }
@@ -461,6 +482,25 @@ bool CBrain::EventProcess(const Event &event)
                 SetSelScript(m_selScript);
             }
         }
+
+        if( action == EVENT_OBJECT_PROGCLONE )
+        {
+            if(m_selScript < m_program.size())
+            {
+                CloneProgram(m_program[m_selScript]);
+                m_selScript = m_program.size()-1;
+                m_main->SaveOneScript(m_object);
+
+                UpdateInterface();
+                Ui::CWindow* pw = static_cast< Ui::CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
+                if ( pw != 0 )
+                {
+                    UpdateScript(pw);
+                }
+                SetSelScript(m_selScript);
+            }
+        }
+
 
         if( action == EVENT_OBJECT_PROGMOVEUP )
         {
@@ -1399,17 +1439,17 @@ bool CBrain::CreateInterface(bool bSelect)
 
             ddim.y = dim.y*0.5f;
             pos.y = oy+sy*0.0f;
-            ddim.x = dim.x*2.0f;
+            ddim.x = dim.x*1.1f;
             pos.x = ox+sx*0.0f;
             pw->CreateButton(pos, ddim, 24, EVENT_OBJECT_PROGADD);
             ddim.x = dim.x*1.0f;
-            pos.x = ox+sx*2.0f;
+            pos.x = ox+sx*1.1f;
             pw->CreateButton(pos, ddim, 25, EVENT_OBJECT_PROGREMOVE);
-            ddim.x = dim.x*1.05f;
-            pos.x = ox+sx*3.0f;
+            pos.x = ox+sx*2.1f;
+            pw->CreateButton(pos, ddim, 61, EVENT_OBJECT_PROGCLONE);
+            pos.x = ox+sx*3.1f;
             pw->CreateButton(pos, ddim, 49, EVENT_OBJECT_PROGMOVEUP);
-            ddim.x = dim.x*1.05f;
-            pos.x = ox+sx*4.05f;
+            pos.x = ox+sx*4.1f;
             pw->CreateButton(pos, ddim, 50, EVENT_OBJECT_PROGMOVEDOWN);
 
             pos.x = ox+sx*5.2f;
@@ -2270,7 +2310,8 @@ void CBrain::UpdateInterface()
     EnableInterface(pw, EVENT_OBJECT_PROGEDIT,    (m_primaryTask == 0 && !m_bTraceRecord) && m_selScript < m_program.size());
     EnableInterface(pw, EVENT_OBJECT_PROGLIST,    bEnable && !m_bTraceRecord);
     EnableInterface(pw, EVENT_OBJECT_PROGADD,     m_currentProgram == nullptr);
-    EnableInterface(pw, EVENT_OBJECT_PROGREMOVE,  m_currentProgram == nullptr);
+    EnableInterface(pw, EVENT_OBJECT_PROGREMOVE,  m_currentProgram == nullptr && m_selScript < m_program.size() && !m_program[m_selScript]->readOnly);
+    EnableInterface(pw, EVENT_OBJECT_PROGCLONE,   m_currentProgram == nullptr);
     EnableInterface(pw, EVENT_OBJECT_PROGMOVEUP,  m_currentProgram == nullptr && m_program.size() >= 2 && m_selScript > 0);
     EnableInterface(pw, EVENT_OBJECT_PROGMOVEDOWN,m_currentProgram == nullptr && m_program.size() >= 2 && m_selScript < m_program.size()-1);
     EnableInterface(pw, EVENT_OBJECT_LEFT,        bEnable);
@@ -3073,6 +3114,7 @@ Program* CBrain::AddProgram()
 {
     Program* program = new Program();
     program->script = new CScript(m_object, &m_secondaryTask);
+    program->readOnly = false;
     AddProgram(program);
     return program;
 }
@@ -3110,6 +3152,20 @@ void CBrain::RemoveProgram(Program* program)
     {
         UpdateScript(pw);
     }
+}
+
+Program* CBrain::CloneProgram(Program* program)
+{
+    Program* newprog = AddProgram();
+
+    // TODO: Is there any reason CScript doesn't have a function to get the program code directly?
+    Ui::CEdit* edit = new Ui::CEdit();
+    edit->SetMaxChar(Ui::EDITSTUDIOMAX);
+    program->script->PutScript(edit, "");
+    newprog->script->GetScript(edit);
+    delete edit;
+
+    return newprog;
 }
 
 int CBrain::GetProgramIndex(Program* program)

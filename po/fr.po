@@ -390,6 +390,13 @@ msgstr "Indicateur atteint"
 msgid "Climb\\Increases the power of the jet"
 msgstr "Monter\\Augmenter la puissance du réacteur"
 
+msgid "Clone program"
+msgstr ""
+
+#, fuzzy
+msgid "Clone selected program"
+msgstr "Édite le programme sélectionné"
+
 msgid "Close"
 msgstr "Fermer"
 
@@ -1125,6 +1132,10 @@ msgstr "Elément protégé"
 msgid "Private\\Private folder"
 msgstr "Privé\\Dossier privé"
 
+#, fuzzy
+msgid "Program cloned"
+msgstr "Programme terminé"
+
 msgid "Program editor"
 msgstr "Edition du programme"
 
@@ -1481,6 +1492,9 @@ msgstr "Cette étiquette n'existe pas"
 
 msgid "This object is not a member of a class"
 msgstr "L'objet n'est pas une instance d'une classe"
+
+msgid "This program is read-only, clone it to edit"
+msgstr ""
 
 msgid "Thump (\\key action;)"
 msgstr "Secoue (\\key action;)"

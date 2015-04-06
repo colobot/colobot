@@ -390,6 +390,13 @@ msgstr "Вы прошли контрольную точку"
 msgid "Climb\\Increases the power of the jet"
 msgstr "Взлет и подъем\\Увеличивает мощность реактивного двигателя"
 
+msgid "Clone program"
+msgstr ""
+
+#, fuzzy
+msgid "Clone selected program"
+msgstr "Изменить выбранную программу"
+
 msgid "Close"
 msgstr "Закрыть"
 
@@ -1124,6 +1131,10 @@ msgstr "Частный элемент"
 msgid "Private\\Private folder"
 msgstr "Личное\\Личная папка"
 
+#, fuzzy
+msgid "Program cloned"
+msgstr "Программа выполнена"
+
 msgid "Program editor"
 msgstr "Редактор программ"
 
@@ -1482,6 +1493,9 @@ msgstr "Эта метка не существует"
 
 msgid "This object is not a member of a class"
 msgstr "Этот объект не член класса"
+
+msgid "This program is read-only, clone it to edit"
+msgstr ""
 
 msgid "Thump (\\key action;)"
 msgstr "Удар (\\key action;)"

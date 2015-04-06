@@ -395,6 +395,13 @@ msgstr "Checkpoint erreicht"
 msgid "Climb\\Increases the power of the jet"
 msgstr "Steigen\\Leistung des Triebwerks steigern"
 
+msgid "Clone program"
+msgstr ""
+
+#, fuzzy
+msgid "Clone selected program"
+msgstr "Gewähltes Programm bearbeiten"
+
 msgid "Close"
 msgstr "Schließen"
 
@@ -1129,6 +1136,10 @@ msgstr "Geschütztes Element (private)"
 msgid "Private\\Private folder"
 msgstr "Privat\\Privater Ordner"
 
+#, fuzzy
+msgid "Program cloned"
+msgstr "Programm beendet"
+
 msgid "Program editor"
 msgstr "Programmeditor"
 
@@ -1486,6 +1497,9 @@ msgstr "Dieses Label existiert nicht"
 
 msgid "This object is not a member of a class"
 msgstr "Das Objekt ist nicht eine Instanz einer Klasse"
+
+msgid "This program is read-only, clone it to edit"
+msgstr ""
 
 msgid "Thump (\\key action;)"
 msgstr "Stampfen (\\key action;)"
