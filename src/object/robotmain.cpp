@@ -214,7 +214,7 @@ CRobotMain::CRobotMain(CController* controller)
     m_exitAfterMission = false;
     
     m_autosave = true;
-    m_autosaveInterval = 15;
+    m_autosaveInterval = 5;
     m_autosaveSlots = 3;
     m_autosaveLast = 0.0f;
 
