@@ -78,7 +78,7 @@ struct Program
 {
     CScript*    script;
     std::string filename;
-    bool        readOnly = false;
+    bool        readOnly;
 };
 
 
