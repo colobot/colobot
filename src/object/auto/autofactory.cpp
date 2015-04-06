@@ -644,6 +644,7 @@ bool CAutoFactory::CreateVehicle()
     CPhysics*   physics;
     Math::Vector    pos;
     float       angle;
+    char*       name;
 
     angle = m_object->GetAngleY(0);
 
@@ -678,16 +679,18 @@ bool CAutoFactory::CreateVehicle()
         physics->SetFreeze(true);  // it doesn't move
     }
 
-    /* ???
-    char*       name;
-    int         i;
-    for ( i=0 ; i<10 ; i++ )
+    CBrain* brain = vehicle->GetBrain();
+    if(brain != nullptr)
     {
-        name = m_main->GetNewScriptName(m_type, i);
-        if ( name == 0 )  break;
-        vehicle->ReadProgram(i, name);
+        for ( int i=0 ; ; i++ )
+        {
+            name = m_main->GetNewScriptName(m_type, i);
+            if ( name == nullptr )  break;
+            Program* prog = brain->GetOrAddProgram(i);
+            vehicle->ReadProgram(prog, name);
+            prog->readOnly = true;
+        }
     }
-    */
 
     return true;
 }

@@ -3133,11 +3133,14 @@ bool CBrain::AddProgram(Program* program)
 
     m_program.push_back(program);
 
-    UpdateInterface();
-    Ui::CWindow* pw = static_cast< Ui::CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
-    if ( pw != 0 )
+    if(m_object->GetSelect())
     {
-        UpdateScript(pw);
+        UpdateInterface();
+        Ui::CWindow* pw = static_cast< Ui::CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
+        if ( pw != 0 )
+        {
+            UpdateScript(pw);
+        }
     }
     return true;
 }
@@ -3153,11 +3156,14 @@ void CBrain::RemoveProgram(Program* program)
     program->script = nullptr;
     delete program;
 
-    UpdateInterface();
-    Ui::CWindow* pw = static_cast< Ui::CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
-    if ( pw != 0 )
+    if(m_object->GetSelect())
     {
-        UpdateScript(pw);
+        UpdateInterface();
+        Ui::CWindow* pw = static_cast< Ui::CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
+        if ( pw != 0 )
+        {
+            UpdateScript(pw);
+        }
     }
 }
 

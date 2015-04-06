@@ -4831,7 +4831,7 @@ char*  CRobotMain::GetNewScriptName(ObjectType type, int rank)
         }
     }
 
-    return 0;
+    return nullptr;
 }
 
 
