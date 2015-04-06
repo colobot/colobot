@@ -688,18 +688,20 @@ bool CRobotMain::ProcessEvent(Event &event)
     }
 
     // Management of the console.
-    if (m_phase != PHASE_NAME &&
-        !m_movie->IsExist()   &&
-        !m_movieLock && !m_editLock && !m_engine->GetPause() &&
-        event.type == EVENT_KEY_DOWN &&
+    if (event.type == EVENT_KEY_DOWN &&
         event.key.key == KEY(BACKQUOTE))  // Pause ?
     {
-        Ui::CEdit* pe = static_cast<Ui::CEdit*>(m_interface->SearchControl(EVENT_CMD));
-        if (pe == nullptr) return false;
-        pe->SetState(Ui::STATE_VISIBLE);
-        pe->SetFocus(true);
-        if (m_phase == PHASE_SIMUL) ChangePause(PAUSE_CHEAT);
-        m_cmdEdit = true;
+        if(m_phase != PHASE_NAME &&
+           !m_movie->IsExist()   &&
+           !m_movieLock && !m_editLock && !m_engine->GetPause())
+        {
+            Ui::CEdit* pe = static_cast<Ui::CEdit*>(m_interface->SearchControl(EVENT_CMD));
+            if (pe == nullptr) return false;
+            pe->SetState(Ui::STATE_VISIBLE);
+            pe->SetFocus(true);
+            if (m_phase == PHASE_SIMUL) ChangePause(PAUSE_CHEAT);
+            m_cmdEdit = true;
+        }
         return false;
     }
     if (event.type == EVENT_KEY_DOWN &&

@@ -1845,17 +1845,17 @@ bool CMainDialog::EventProcess(const Event &event)
 
         if ( m_phase == PHASE_WELCOME1 && m_phaseTime >= welcomeLength )
         {
-            ChangePhase(PHASE_WELCOME2);
+            m_main->ChangePhase(PHASE_WELCOME2);
             return true;
         }
         if ( m_phase == PHASE_WELCOME2 && m_phaseTime >= welcomeLength )
         {
-            ChangePhase(PHASE_WELCOME3);
+            m_main->ChangePhase(PHASE_WELCOME3);
             return true;
         }
         if ( m_phase == PHASE_WELCOME3 && m_phaseTime >= welcomeLength )
         {
-            ChangePhase(PHASE_NAME);
+            m_main->ChangePhase(PHASE_NAME);
             return true;
         }
 
@@ -1984,7 +1984,9 @@ bool CMainDialog::EventProcess(const Event &event)
                     //?                 StartQuit();  // would you leave?
                     m_sound->Play(SOUND_TZOING);
                     m_main->ChangePhase(PHASE_GENERIC);
+                    return false;
                 }
+                return true;
                 break;
 
             case EVENT_INTERFACE_QUIT:
@@ -2022,7 +2024,7 @@ bool CMainDialog::EventProcess(const Event &event)
                 break;
 
             default:
-                break;
+                return true;
         }
         return false;
     }
@@ -2271,7 +2273,7 @@ bool CMainDialog::EventProcess(const Event &event)
                 break;
 
             default:
-                break;
+                return true;
         }
         return false;
     }
@@ -2774,7 +2776,7 @@ bool CMainDialog::EventProcess(const Event &event)
         if ( event.type == EVENT_KEY_DOWN     ||
                 event.type == EVENT_MOUSE_BUTTON_DOWN )
         {
-            ChangePhase(PHASE_WELCOME2);
+            m_main->ChangePhase(PHASE_WELCOME2);
             return true;
         }
     }
@@ -2783,7 +2785,7 @@ bool CMainDialog::EventProcess(const Event &event)
         if ( event.type == EVENT_KEY_DOWN     ||
                 event.type == EVENT_MOUSE_BUTTON_DOWN )
         {
-            ChangePhase(PHASE_WELCOME3);
+            m_main->ChangePhase(PHASE_WELCOME3);
             return true;
         }
     }
@@ -2792,7 +2794,7 @@ bool CMainDialog::EventProcess(const Event &event)
         if ( event.type == EVENT_KEY_DOWN     ||
                 event.type == EVENT_MOUSE_BUTTON_DOWN )
         {
-            ChangePhase(PHASE_NAME);
+            m_main->ChangePhase(PHASE_NAME);
             return true;
         }
     }
