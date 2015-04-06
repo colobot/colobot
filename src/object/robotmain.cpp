@@ -3669,7 +3669,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                     }
                     
                     if (soluce && brain != nullptr && line->GetParam("soluce")->IsDefined())
-                        brain->SetSoluceName(const_cast<char*>(line->GetParam("soluce")->AsString().c_str()));
+                        brain->SetSoluceName(const_cast<char*>(line->GetParam("soluce")->AsPath("ai").c_str()));
                     
                     obj->SetResetPosition(obj->GetPosition(0));
                     obj->SetResetAngle(obj->GetAngle(0));

@@ -1884,12 +1884,6 @@ bool CEdit::WriteText(std::string filename)
 
         buffer[j++] = m_text[i];
 
-        if ( m_text[i] == '\n' )
-        {
-            buffer[j-1] = '\r';
-            buffer[j++] = '\n';  // \r\n (0x0D, 0x0A)
-        }
-
         if ( j >= 1000-1 )
         {
             stream.write(buffer, j);

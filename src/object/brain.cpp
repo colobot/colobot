@@ -2831,11 +2831,16 @@ bool CBrain::ReadSoluce(char* filename)
     Program* prog = AddProgram();
 
     if ( !ReadProgram(prog, filename) )  return false;  // load solution
+    prog->readOnly = true;
 
     for(unsigned int i = 0; i < m_program.size(); i++)
     {
+        if(m_program[i] == prog) continue;
+
+        //TODO: This is bad. It's very sensitive to things like \n vs \r\n etc.
         if ( m_program[i]->script->Compare(prog->script) )  // the same already?
         {
+            m_program[i]->readOnly = true; // Mark is as read-only
             RemoveProgram(prog);
             return false;
         }
