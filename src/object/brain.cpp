@@ -2615,7 +2615,14 @@ void CBrain::UpdateScript(Ui::CWindow *pw)
         m_program[i]->script->GetTitle(title);
         if ( title[0] != 0 )
         {
-            sprintf(name, "%d: %s", i+1, title);
+            if(!m_program[i]->readOnly)
+            {
+                sprintf(name, "%d: %s", i+1, title);
+            }
+            else
+            {
+                sprintf(name, "*%d: %s", i+1, title);
+            }
         }
 
         pl->SetItemName(i, name);
