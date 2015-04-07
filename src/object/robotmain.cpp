@@ -4911,6 +4911,15 @@ void CRobotMain::IOWriteObject(CLevelParserLine* line, CObject* obj)
         {
             line->AddParam("run", new CLevelParserParam(run+1));
         }
+
+        auto programs = brain->GetPrograms();
+        for(unsigned int i = 0; i < programs.size(); i++)
+        {
+            if(programs[i]->readOnly)
+            {
+                line->AddParam("scriptReadOnly"+boost::lexical_cast<std::string>(i+1), new CLevelParserParam(true));
+            }
+        }
     }
 }
 
@@ -5092,12 +5101,24 @@ CObject* CRobotMain::IOReadObject(CLevelParserLine *line, const char* filename, 
         CAuto* automat = obj->GetAuto();
         if (automat != nullptr)
             automat->Start(run);  // starts the film
+    }
 
-        CBrain* brain = obj->GetBrain();
-        if (brain != nullptr)
+    CBrain* brain = obj->GetBrain();
+    if (brain != nullptr)
+    {
+        if(run != -1)
         {
             Program* program = brain->GetOrAddProgram(run-1);
             brain->SetScriptRun(program);  // marks the program to be started
+        }
+
+        for(unsigned int i = 0; i <= 999; i++)
+        {
+            if(line->GetParam("scriptReadOnly"+boost::lexical_cast<std::string>(i+1))->AsBool(false))
+            {
+                Program* prog = brain->GetOrAddProgram(i);
+                prog->readOnly = true;
+            }
         }
     }
 
