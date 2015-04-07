@@ -1662,14 +1662,12 @@ bool CEdit::ReadText(std::string filename, int addSize)
                   buffer[i+6] == 'n'  &&
                   buffer[i+7] == ' '  )
         {
-            /* TODO: \button X; isn't working. Issue #232
             if ( m_bSoluce || !bInSoluce )
             {
                 m_text[j] = GetValueParam(buffer+i+8, 0);
                 m_format[j] = font|Gfx::FONT_BUTTON;
                 j ++;
             }
-            */
             i += strchr(buffer+i, ';')-(buffer+i)+1;
         }
         else if ( //m_format.size() > 0       &&
