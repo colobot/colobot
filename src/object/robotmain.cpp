@@ -4641,7 +4641,7 @@ void CRobotMain::LoadOneScript(CObject *obj, int &nbError)
     char* name = m_dialog->GetSceneName();
     int rank = m_dialog->GetSceneRank();
 
-    for(unsigned int i = 0; i < 999; i++)
+    for(unsigned int i = 0; i <= 999; i++)
     {
         //? if (brain->GetCompile(i)) continue;
 
@@ -4674,7 +4674,7 @@ void CRobotMain::LoadFileScript(CObject *obj, const char* filename, int objRank,
     dirname = dirname.substr(0, dirname.find_last_of("/"));
     
     char fn[MAX_FNAME]; //TODO: Refactor to std::string
-    for(unsigned int i = 0; i < 999; i++)
+    for(unsigned int i = 0; i <= 999; i++)
     {
         sprintf(fn, "%s/prog%.3d%.3d.txt", dirname.c_str(), objRank, i);
         if(CResourceManager::Exists(fn))
@@ -4717,7 +4717,7 @@ void CRobotMain::SaveOneScript(CObject *obj)
 
     auto programs = brain->GetPrograms();
     // TODO: Find a better way to do that
-    for(unsigned int i = 0; i < 999; i++)
+    for(unsigned int i = 0; i <= 999; i++)
     {
         char filename[MAX_FNAME];
         sprintf(filename, "%s/%s/%c%.3d%.3d%.3d.txt",
@@ -4751,7 +4751,7 @@ void CRobotMain::SaveFileScript(CObject *obj, const char* filename, int objRank)
     char fn[MAX_FNAME]; //TODO: Refactor to std::string
     auto programs = brain->GetPrograms();
     // TODO: Find a better way to do that
-    for(unsigned int i = 0; i < 999; i++)
+    for(unsigned int i = 0; i <= 999; i++)
     {
         sprintf(fn, "%s/prog%.3d%.3d.txt", dirname.c_str(), objRank, i);
         if(i < programs.size())
@@ -5092,6 +5092,13 @@ CObject* CRobotMain::IOReadObject(CLevelParserLine *line, const char* filename, 
         CAuto* automat = obj->GetAuto();
         if (automat != nullptr)
             automat->Start(run);  // starts the film
+
+        CBrain* brain = obj->GetBrain();
+        if (brain != nullptr)
+        {
+            Program* program = brain->GetOrAddProgram(run-1);
+            brain->SetScriptRun(program);  // marks the program to be started
+        }
     }
 
     return obj;
@@ -5179,6 +5186,23 @@ CObject* CRobotMain::IOReadScene(const char *filename, const char *filecbot)
         }
     }
     while (nbError > 0 && nbError != lastError);
+
+    // Starts scripts
+    for(auto it : objman->GetAllObjects())
+    {
+        CObject* obj = it.second;
+        if (obj->GetTruck() != nullptr) continue;
+        if (obj->GetDefRank() == -1) continue;
+
+        CBrain* brain = obj->GetBrain();
+        if (brain == nullptr)  continue;
+
+        Program* program = brain->GetScriptRun();
+        if (program != nullptr)
+        {
+            brain->RunProgram(program);  // starts the program
+        }
+    }
 
     // Reads the file of stacks of execution.
     FILE* file = fOpen(filecbot, "rb");
