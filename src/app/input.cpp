@@ -87,7 +87,7 @@ void CInput::EventProcess(Event& event)
     
     /* Motion vector management */
     
-    if (event.type == EVENT_KEY_DOWN)
+    if (event.type == EVENT_KEY_DOWN && !(event.kmodState & KEY_MOD(ALT) ) )
     {
         if (event.key.slot == INPUT_SLOT_UP   ) m_keyMotion.y =  1.0f;
         if (event.key.slot == INPUT_SLOT_DOWN ) m_keyMotion.y = -1.0f;
