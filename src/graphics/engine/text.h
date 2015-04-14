@@ -326,6 +326,7 @@ protected:
     void        DrawHighlight(FontHighlight hl, Math::Point pos, Math::Point size);
     void        DrawCharAndAdjustPos(UTF8Char ch, FontType font, float size, Math::Point &pos, Color color);
     void        StringToUTFCharList(const std::string &text, std::vector<UTF8Char> &chars);
+    void        StringToUTFCharList(const std::string &text, std::vector<UTF8Char> &chars, std::vector<FontMetaChar>::iterator format, std::vector<FontMetaChar>::iterator end);
 
 protected:
     CEngine*       m_engine;

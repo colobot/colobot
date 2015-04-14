@@ -32,6 +32,7 @@
 #include "graphics/engine/camera.h"
 #include "graphics/engine/engine.h"
 
+#include "object/brain.h"
 #include "object/object.h"
 
 #include "script/cbottoken.h"
@@ -124,17 +125,6 @@ bool CStudio::EventProcess(const Event &event)
         Event newEvent = event;
         newEvent.type = EVENT_STUDIO_OK;
         m_event->AddEvent(newEvent);
-    }
-    
-    if ( event.type == EVENT_KEY_DOWN )
-    {
-        if ( event.key.slot == INPUT_SLOT_ACTION &&
-             (event.kmodState & KEY_MOD(CTRL)) != 0 )
-        {
-            Event newEvent = event;
-            newEvent.type = EVENT_STUDIO_OK;
-            m_event->AddEvent(newEvent);
-        }
     }
 
     if ( event.type == EVENT_STUDIO_EDIT )  // text modifief?
@@ -553,7 +543,7 @@ void CStudio::ColorizeScript(CEdit* edit)
 
 // Starts editing a program.
 
-void CStudio::StartEditScript(CScript *script, std::string name, int rank)
+void CStudio::StartEditScript(CScript *script, std::string name, Program* program)
 {
     Math::Point     pos, dim;
     CWindow*    pw;
@@ -562,8 +552,8 @@ void CStudio::StartEditScript(CScript *script, std::string name, int rank)
     CSlider*    slider;
     CList*      list;
 
-    m_script = script;
-    m_rank   = rank;
+    m_script  = script;
+    m_program = program;
 
     m_main->SetEditLock(true, true);
     m_main->SetEditFull(false);
@@ -646,6 +636,8 @@ void CStudio::StartEditScript(CScript *script, std::string name, int rank)
 
     button = pw->CreateButton(pos, dim, -1, EVENT_STUDIO_OK);
     button->SetState(STATE_SHADOW);
+    button = pw->CreateButton(pos, dim, 61, EVENT_STUDIO_CLONE);
+    button->SetState(STATE_SHADOW);
     button = pw->CreateButton(pos, dim, -1, EVENT_STUDIO_CANCEL);
     button->SetState(STATE_SHADOW);
     button = pw->CreateButton(pos, dim, 64+23, EVENT_STUDIO_COMPILE);
@@ -656,6 +648,12 @@ void CStudio::StartEditScript(CScript *script, std::string name, int rank)
     button->SetState(STATE_SHADOW);
     button = pw->CreateButton(pos, dim, 64+29, EVENT_STUDIO_STEP);
     button->SetState(STATE_SHADOW);
+
+    if(m_program->readOnly)
+    {
+        GetResource(RES_TEXT, RT_PROGRAM_READONLY, res);
+        SetInfoText(res, false);
+    }
 
     UpdateFlux();
     UpdateButtons();
@@ -809,7 +807,18 @@ void CStudio::AdjustEditScript()
         button->SetPos(pos);
         button->SetDim(dim);
     }
-    pos.x = wpos.x+0.14f;
+    dim.x = 25.0f/480.0f;
+    dim.y = 25.0f/480.0f;
+    pos.x = wpos.x+0.01f+0.125f+0.005f;
+    button = static_cast< CButton* >(pw->SearchControl(EVENT_STUDIO_CLONE));
+    if ( button != nullptr )
+    {
+        button->SetPos(pos);
+        button->SetDim(dim);
+    }
+    dim.x = 80.0f/640.0f - 25.0f/480.0f;
+    dim.y = 25.0f/480.0f;
+    pos.x = wpos.x+0.01f+0.125f+0.005f+(25.0f/480.0f)+0.005f;
     button = static_cast< CButton* >(pw->SearchControl(EVENT_STUDIO_CANCEL));
     if ( button != nullptr )
     {
@@ -989,8 +998,8 @@ void CStudio::UpdateButtons()
     }
     else
     {
-        edit->SetIcon(0);  // standard background
-        edit->SetEditCap(true);
+        edit->SetIcon(m_program->readOnly ? 1 : 0);  // standard background
+        edit->SetEditCap(!m_program->readOnly);
         edit->SetHighlightCap(true);
     }
 
@@ -1010,6 +1019,27 @@ void CStudio::UpdateButtons()
     button = static_cast< CButton* >(pw->SearchControl(EVENT_STUDIO_STEP));
     if ( button == 0 )  return;
     button->SetState(STATE_ENABLE, (m_bRunning && !m_bRealTime && !m_script->IsContinue()));
+
+
+    button = static_cast< CButton* >(pw->SearchControl(EVENT_STUDIO_NEW));
+    if ( button == 0 )  return;
+    button->SetState(STATE_ENABLE, !m_program->readOnly);
+
+    button = static_cast< CButton* >(pw->SearchControl(EVENT_STUDIO_OPEN));
+    if ( button == 0 )  return;
+    button->SetState(STATE_ENABLE, !m_program->readOnly);
+
+    button = static_cast< CButton* >(pw->SearchControl(EVENT_STUDIO_UNDO));
+    if ( button == 0 )  return;
+    button->SetState(STATE_ENABLE, !m_program->readOnly);
+
+    button = static_cast< CButton* >(pw->SearchControl(EVENT_STUDIO_CUT));
+    if ( button == 0 )  return;
+    button->SetState(STATE_ENABLE, !m_program->readOnly);
+
+    button = static_cast< CButton* >(pw->SearchControl(EVENT_STUDIO_PASTE));
+    if ( button == 0 )  return;
+    button->SetState(STATE_ENABLE, !m_program->readOnly);
 }
 
 

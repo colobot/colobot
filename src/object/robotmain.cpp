@@ -26,6 +26,8 @@
 #include "app/controller.h"
 #include "app/input.h"
 
+#include "clipboard/clipboard.h"
+
 #include "common/event.h"
 #include "common/global.h"
 #include "common/iman.h"
@@ -171,7 +173,6 @@ CRobotMain::CRobotMain(CController* controller)
     m_selectObject = 0;
     m_infoUsed     = 0;
 
-    m_version      = 1;
     m_controller   = nullptr;
     m_retroStyle   = false;
     m_immediatSatCom = false;
@@ -213,7 +214,7 @@ CRobotMain::CRobotMain(CController* controller)
     m_exitAfterMission = false;
     
     m_autosave = true;
-    m_autosaveInterval = 15;
+    m_autosaveInterval = 5;
     m_autosaveSlots = 3;
     m_autosaveLast = 0.0f;
 
@@ -687,18 +688,20 @@ bool CRobotMain::ProcessEvent(Event &event)
     }
 
     // Management of the console.
-    if (m_phase != PHASE_NAME &&
-        !m_movie->IsExist()   &&
-        !m_movieLock && !m_editLock && !m_engine->GetPause() &&
-        event.type == EVENT_KEY_DOWN &&
+    if (event.type == EVENT_KEY_DOWN &&
         event.key.key == KEY(BACKQUOTE))  // Pause ?
     {
-        Ui::CEdit* pe = static_cast<Ui::CEdit*>(m_interface->SearchControl(EVENT_CMD));
-        if (pe == nullptr) return false;
-        pe->SetState(Ui::STATE_VISIBLE);
-        pe->SetFocus(true);
-        if (m_phase == PHASE_SIMUL) ChangePause(PAUSE_CHEAT);
-        m_cmdEdit = true;
+        if(m_phase != PHASE_NAME &&
+           !m_movie->IsExist()   &&
+           !m_movieLock && !m_editLock && !m_engine->GetPause())
+        {
+            Ui::CEdit* pe = static_cast<Ui::CEdit*>(m_interface->SearchControl(EVENT_CMD));
+            if (pe == nullptr) return false;
+            pe->SetState(Ui::STATE_VISIBLE);
+            pe->SetFocus(true);
+            if (m_phase == PHASE_SIMUL) ChangePause(PAUSE_CHEAT);
+            m_cmdEdit = true;
+        }
         return false;
     }
     if (event.type == EVENT_KEY_DOWN &&
@@ -842,6 +845,11 @@ bool CRobotMain::ProcessEvent(Event &event)
                 {
                     SelectHuman();
                 }
+                if (event.key.slot == INPUT_SLOT_NEXT && ((event.kmodState & KEY_MOD(CTRL)) != 0))
+                {
+                    m_short->SelectShortcut(EVENT_OBJECT_SHORTCUT00); // switch bots <-> buildings
+                    return false;
+                }
                 if (event.key.slot == INPUT_SLOT_NEXT)
                 {
                     if (m_shortCut)
@@ -882,6 +890,15 @@ bool CRobotMain::ProcessEvent(Event &event)
                 if (event.key.slot == INPUT_SLOT_SPEED40)
                 {
                     SetSpeed(4.0f);
+                }
+                if (event.key.key == KEY(c) && ((event.kmodState & KEY_MOD(CTRL)) != 0) && m_engine->GetShowStats())
+                {
+                    std::ostringstream ss;
+                    CObject* obj = GetSelect();
+                    if(obj != nullptr) {
+                        ss << "CreateObject type=" << GetTypeObject(obj->GetType()) << " pos=" << std::fixed << std::setprecision(3) << obj->GetPosition(0).x/g_unit << ";" << obj->GetPosition(0).z/g_unit << " dir=" << (obj->GetAngleZ(0)/(Math::PI/180.0f));
+                    }
+                    widgetSetClipboardText(ss.str().c_str());
                 }
                 break;
 
@@ -1914,9 +1931,9 @@ void CRobotMain::DeleteAllObjects()
     for (int i = 0; i < MAXSHOWLIMIT; i++)
         FlushShowLimit(i);
     
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    while(CObjectManager::GetInstancePointer()->GetAllObjects().size() > 0)
     {
-        CObject* obj = it.second;
+        CObject* obj = CObjectManager::GetInstancePointer()->GetAllObjects().begin()->second;
 
         obj->DeleteObject(true);  // destroys rapidly
         delete obj;
@@ -2110,17 +2127,12 @@ CObject* CRobotMain::DetectObject(Math::Point pos)
         {
             target = obj;
         }
-        else if ((type == OBJECT_POWER ||
-                  type == OBJECT_ATOMIC) &&
-                 obj->GetTruck() != nullptr)  // battery used?
-        {
-            target = obj->GetTruck();
-        }
-        else if (type == OBJECT_POWER ||
-                 type == OBJECT_ATOMIC)
-        {
-            target = obj;
-        }
+
+	else if (type == OBJECT_POWER || type == OBJECT_ATOMIC)
+	{
+	    target = obj->GetTruck();  // battery connected
+	    if (!target) target = obj; // standalone battery
+	}
 
         for (int j = 0; j < OBJECTMAXPART; j++)
         {
@@ -2840,6 +2852,10 @@ void CRobotMain::ScenePerso()
     
     CObjectManager::GetInstancePointer()->Flush();
 
+
+    ChangeColor();
+
+
     m_dialog->SetSceneName("perso");
     m_dialog->SetSceneRank(0);
     try {
@@ -2953,7 +2969,6 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
         strcpy(m_scriptName, scriptNameStr.c_str());
         m_scriptFile[0] = 0;
 
-        m_version             = 1;
         m_retroStyle          = false;
 
         m_missionResult       = ERR_MISSION_NOTERM;
@@ -2979,12 +2994,6 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
         for(auto& line : level->GetLines())
         {
-            if (line->GetCommand() == "MissionFile" && !resetObject)
-            {
-                m_version = line->GetParam("version")->AsInt(1);
-                continue;
-            }
-            
             if(line->GetCommand() == "Title" && !resetObject)
             {
                 strcpy(m_title, line->GetParam("text")->AsString().c_str());
@@ -3014,7 +3023,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 strcpy(m_infoFilename[SATCOM_HUSTON], line->GetParam("name")->AsPath("help/%lng%").c_str());
                 
                 m_immediatSatCom = line->GetParam("immediat")->AsBool(false);
-                if (m_version >= 2) m_beginSatCom = m_lockedSatCom = line->GetParam("lock")->AsBool(false);
+                m_beginSatCom = m_lockedSatCom = line->GetParam("lock")->AsBool(false);
                 if (m_app->GetSceneTestMode()) m_immediatSatCom = false;
                 continue;
             }
@@ -3065,13 +3074,13 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 continue;
             }
             
-            if (line->GetCommand() == "CacheAudio" && !resetObject && m_version >= 2)
+            if (line->GetCommand() == "CacheAudio" && !resetObject)
             {
                 m_sound->CacheMusic(std::string("../")+line->GetParam("filename")->AsPath("music"));
                 continue;
             }
             
-            if (line->GetCommand() == "AudioChange" && !resetObject && m_version >= 2 && m_controller == nullptr)
+            if (line->GetCommand() == "AudioChange" && !resetObject && m_controller == nullptr)
             {
                 int i = m_audioChangeTotal;
                 if (i < 10)
@@ -3096,8 +3105,12 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             
             if (line->GetCommand() == "Audio" && !resetObject && m_controller == nullptr)
             {
-                if (m_version < 2)
+                if(line->GetParam("track")->IsDefined())
                 {
+                    if(line->GetParam("filename")->IsDefined())
+                        throw new CLevelParserException("You can't use track and filename at the same time");
+
+                    CLogger::GetInstancePointer()->Warn("Using track= is deprecated. Please replace this with filename=\n");
                     int trackid = line->GetParam("track")->AsInt();
                     if (trackid != 0)
                     {
@@ -3105,34 +3118,44 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                         filenameStr << "music" << std::setfill('0') << std::setw(3) << trackid << ".ogg";
                         m_audioTrack = filenameStr.str();
                     }
-                    m_audioRepeat = line->GetParam("repeat")->AsBool(true);
+                    else
+                    {
+                        m_audioTrack = "";
+                    }
                 }
                 else
                 {
-                    if(line->GetParam("main")->IsDefined()) {
-                        m_audioTrack = std::string("../")+line->GetParam("main")->AsPath("music");
-                        m_audioRepeat = line->GetParam("mainRepeat")->AsBool(true);
-                    } else {
+                    if(line->GetParam("filename")->IsDefined())
+                    {
+                        m_audioTrack = std::string("../")+line->GetParam("filename")->AsPath("music");
+                    }
+                    else
+                    {
                         m_audioTrack = "";
                     }
-                    
-                    if(line->GetParam("satcom")->IsDefined()) {
-                        m_satcomTrack = std::string("../")+line->GetParam("satcom")->AsPath("music");
-                        m_satcomRepeat = line->GetParam("satcomRepeat")->AsBool(true);
-                    } else {
-                        m_satcomTrack = "";
-                    }
-                    
-                    if(line->GetParam("editor")->IsDefined()) {
-                        m_editorTrack = std::string("../")+line->GetParam("editor")->AsPath("music");
-                        m_editorRepeat = line->GetParam("editorRepeat")->AsBool(true);
-                    } else {
-                        m_editorTrack = "";
-                    }
                 }
-                if (m_audioTrack != "") m_sound->CacheMusic(m_audioTrack);
-                if (m_satcomTrack != "") m_sound->CacheMusic(m_satcomTrack);
-                if (m_editorTrack != "") m_sound->CacheMusic(m_editorTrack);
+                if(!m_audioTrack.empty())
+                {
+                    m_audioRepeat = line->GetParam("repeat")->AsBool(true);
+                }
+                    
+                if(line->GetParam("satcom")->IsDefined()) {
+                    m_satcomTrack = std::string("../")+line->GetParam("satcom")->AsPath("music");
+                    m_satcomRepeat = line->GetParam("satcomRepeat")->AsBool(true);
+                } else {
+                    m_satcomTrack = "";
+                }
+                
+                if(line->GetParam("editor")->IsDefined()) {
+                    m_editorTrack = std::string("../")+line->GetParam("editor")->AsPath("music");
+                    m_editorRepeat = line->GetParam("editorRepeat")->AsBool(true);
+                } else {
+                    m_editorTrack = "";
+                }
+
+                if (!m_audioTrack.empty()) m_sound->CacheMusic(m_audioTrack);
+                if (!m_satcomTrack.empty()) m_sound->CacheMusic(m_satcomTrack);
+                if (!m_editorTrack.empty()) m_sound->CacheMusic(m_editorTrack);
                 continue;
             }
             
@@ -3234,16 +3257,17 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 continue;
             }
             
-            if (((line->GetCommand() == "Global") || (m_version >= 2 && line->GetCommand() == "Mission")) && !resetObject)
+            if ((line->GetCommand() == "Global" || line->GetCommand() == "Mission") && !resetObject)
             {
+                if(line->GetCommand() == "Global")
+                    CLogger::GetInstancePointer()->Warn("Using Global is deprecated. Please use Mission instead.\n");
+
                 g_unit = line->GetParam("unitScale")->AsFloat(4.0f);
                 m_engine->SetTracePrecision(line->GetParam("traceQuality")->AsFloat(1.0f));
                 m_shortCut = line->GetParam("shortcut")->AsBool(true);
-                if (m_version >= 2)
-                {
-                    m_retroStyle = line->GetParam("retro")->AsBool(false);
-                    if (m_retroStyle) GetLogger()->Info("Retro mode enabled.\n");
-                }
+
+                m_retroStyle = line->GetParam("retro")->AsBool(false);
+                if (m_retroStyle) GetLogger()->Info("Retro mode enabled.\n");
                 continue;
             }
             
@@ -3438,18 +3462,18 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 continue;
             }
             
-            if (line->GetCommand() == "MissionController" && read[0] == 0 && m_version >= 2)
+            if (line->GetCommand() == "MissionController" && read[0] == 0)
             {
                 m_controller = CObjectManager::GetInstancePointer()->CreateObject(Math::Vector(0.0f, 0.0f, 0.0f), 0.0f, OBJECT_CONTROLLER, 100.0f);
                 m_controller->SetMagnifyDamage(100.0f);
                 m_controller->SetIgnoreBuildCheck(true);
                 CBrain* brain = m_controller->GetBrain();
-                if (brain != nullptr)
+                if (brain != nullptr && line->GetParam("script")->IsDefined())
                 {
-                    std::string name = "../"+line->GetParam("script")->AsPath("ai");
-                    if (!name.empty())
-                        brain->SetScriptName(0, const_cast<char*>(name.c_str()));
-                    brain->SetScriptRun(0);
+                    Program* program = brain->AddProgram();
+                    program->filename = "../"+line->GetParam("script")->AsPath("ai");
+                    program->readOnly = true;
+                    brain->SetScriptRun(program);
                 }
                 continue;
             }
@@ -3578,19 +3602,16 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                     obj->SetShield(line->GetParam("shield")->AsFloat(1.0f));
                     obj->SetMagnifyDamage(line->GetParam("magnifyDamage")->AsFloat(1.0f));
                     obj->SetClip(line->GetParam("clip")->AsBool(true));
-                    obj->SetCheckToken(m_version >= 2 ? trainer || !selectable : line->GetParam("checkToken")->AsBool(true));
+                    obj->SetCheckToken(!line->GetParam("checkToken")->IsDefined() ? trainer || !selectable : line->GetParam("checkToken")->AsBool(true));
                     // SetManual will affect bot speed
                     if (type == OBJECT_MOBILEdr)
                     {
-                        obj->SetManual(m_version >= 2 ? !trainer : line->GetParam("manual")->AsBool(false));
+                        obj->SetManual(!trainer);
                     }
                     
-                    if (m_version >= 2)
-                    {
-                        Math::Vector zoom = line->GetParam("zoom")->AsPoint(Math::Vector(0.0f, 0.0f, 0.0f));
-                        if (zoom.x != 0.0f || zoom.y != 0.0f || zoom.z != 0.0f)
-                            obj->SetZoom(0, zoom);
-                    }
+                    Math::Vector zoom = line->GetParam("zoom")->AsPoint(Math::Vector(0.0f, 0.0f, 0.0f));
+                    if (zoom.x != 0.0f || zoom.y != 0.0f || zoom.z != 0.0f)
+                        obj->SetZoom(0, zoom);
                     
                     //TODO: I don't remember what this is used for
                     CMotion* motion = obj->GetMotion();
@@ -3604,14 +3625,19 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                     }
                     
                     int run = -1;
+                    std::map<int, Program*> loadedPrograms;
                     CBrain* brain = obj->GetBrain();
                     if (brain != nullptr)
                     {
                         for (int i = 0; i < 10; i++)
                         {
                             std::string op = "script"+boost::lexical_cast<std::string>(i+1); // script1..script10
+                            std::string opReadOnly = "scriptReadOnly"+boost::lexical_cast<std::string>(i+1); // scriptReadOnly1..scriptReadOnly10
                             if(line->GetParam(op)->IsDefined()) {
-                                brain->SetScriptName(i, const_cast<char*>(("../"+line->GetParam(op)->AsPath("ai")).c_str()));
+                                Program* program = brain->AddProgram();
+                                program->filename = "../"+line->GetParam(op)->AsPath("ai");
+                                program->readOnly = line->GetParam(opReadOnly)->AsBool(true);
+                                loadedPrograms[i] = program;
                             }
                             
                         }
@@ -3620,7 +3646,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                         if (i != 0)
                         {
                             run = i-1;
-                            brain->SetScriptRun(run);
+                            brain->SetScriptRun(loadedPrograms[run]);
                         }
                     }
                     CAuto* automat = obj->GetAuto();
@@ -3645,11 +3671,11 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                     }
                     
                     if (soluce && brain != nullptr && line->GetParam("soluce")->IsDefined())
-                        brain->SetSoluceName(const_cast<char*>(line->GetParam("soluce")->AsString().c_str()));
+                        brain->SetSoluceName(const_cast<char*>(line->GetParam("soluce")->AsPath("ai").c_str()));
                     
                     obj->SetResetPosition(obj->GetPosition(0));
                     obj->SetResetAngle(obj->GetAngle(0));
-                    obj->SetResetRun(run);
+                    obj->SetResetRun(loadedPrograms[run]);
                     
                     if (line->GetParam("reset")->AsBool(false))
                         obj->SetResetCap(RESET_MOVE);
@@ -3808,26 +3834,17 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 if (i < 10)
                 {
                     m_endTake[i].pos      = line->GetParam("pos")->AsPoint(Math::Vector(0.0f, 0.0f, 0.0f))*g_unit;
-                    m_endTake[i].dist     = line->GetParam("dist")->AsFloat(m_version < 2 ? 8.0f : 100.0f)*g_unit;
+                    m_endTake[i].dist     = line->GetParam("dist")->AsFloat(8.0f)*g_unit;
                     m_endTake[i].type     = line->GetParam("type")->AsObjectType(OBJECT_NULL);
                     m_endTake[i].min      = line->GetParam("min")->AsInt(1);
                     m_endTake[i].max      = line->GetParam("max")->AsInt(9999);
-                    if (m_version >= 2)
-                    {
-                        m_endTake[i].powermin = line->GetParam("powermin")->AsFloat(-1);
-                        m_endTake[i].powermax = line->GetParam("powermax")->AsFloat(100);
-                        m_endTake[i].tool     = line->GetParam("tool")->AsToolType(TOOL_OTHER);
-                        m_endTake[i].drive    = line->GetParam("drive")->AsDriveType(DRIVE_OTHER);
-                    }
-                    else
-                    {
-                        m_endTake[i].powermin = -1;
-                        m_endTake[i].powermax = 100;
-                        m_endTake[i].tool     = TOOL_OTHER;
-                        m_endTake[i].drive    = DRIVE_OTHER;
-                    }
+                    m_endTake[i].powermin = line->GetParam("powermin")->AsFloat(-1);
+                    m_endTake[i].powermax = line->GetParam("powermax")->AsFloat(100);
+                    m_endTake[i].tool     = line->GetParam("tool")->AsToolType(TOOL_OTHER);
+                    m_endTake[i].drive    = line->GetParam("drive")->AsDriveType(DRIVE_OTHER);
                     m_endTake[i].lost     = line->GetParam("lost")->AsInt(-1);
                     m_endTake[i].immediat = line->GetParam("immediat")->AsBool(false);
+                    m_endTake[i].countTransported = line->GetParam("countTransported")->AsBool(true);
                     strcpy(m_endTake[i].message, line->GetParam("message")->AsString("").c_str()); //TODO: Really, ending mission on message()? Is this used anywhere? Do we need that?
                     m_endTakeTotal ++;
                 }
@@ -3920,7 +3937,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             g_build |= BUILD_FLAG;
         }
 
-        if (!resetObject)
+        if (!resetObject && !fixScene)
         {
             ChangeColor();  // changes the colors of texture
             m_short->SetMode(false);  // vehicles?
@@ -4554,19 +4571,16 @@ void CRobotMain::CompileScript(bool soluce)
             CBrain* brain = obj->GetBrain();
             if (brain == nullptr) continue;
 
-            for (int j = 0; j < 10; j++)
+            for(Program* program : brain->GetPrograms())
             {
-                if (brain->GetCompile(j)) continue;
+                //? if (brain->GetCompile(j)) continue;
+                if(program->filename.empty()) continue;
 
-                std::string name = brain->GetScriptName(j);
-                if (name[0] != 0)
-                {
-                    name = "ai/"+name;
-                    if(! brain->ReadProgram(j, const_cast<char*>(name.c_str()))) {
-                        CLogger::GetInstancePointer()->Error("Unable to read script from file \"%s\"\n", name.c_str());
-                    }
-                    if (!brain->GetCompile(j)) nbError++;
+                std::string name = "ai/"+program->filename;
+                if(! brain->ReadProgram(program, const_cast<char*>(name.c_str()))) {
+                    CLogger::GetInstancePointer()->Error("Unable to read script from file \"%s\"\n", name.c_str());
                 }
+                if (!brain->GetCompile(program)) nbError++;
             }
 
             LoadOneScript(obj, nbError);
@@ -4602,10 +4616,10 @@ void CRobotMain::CompileScript(bool soluce)
         CBrain* brain = obj->GetBrain();
         if (brain == nullptr)  continue;
 
-        int run = brain->GetScriptRun();
-        if (run != -1)
+        Program* program = brain->GetScriptRun();
+        if (program != nullptr)
         {
-            brain->RunProgram(run);  // starts the program
+            brain->RunProgram(program);  // starts the program
         }
     }
 }
@@ -4627,15 +4641,20 @@ void CRobotMain::LoadOneScript(CObject *obj, int &nbError)
     char* name = m_dialog->GetSceneName();
     int rank = m_dialog->GetSceneRank();
 
-    for (int i = 0; i < BRAINMAXSCRIPT; i++)
+    for(unsigned int i = 0; i <= 999; i++)
     {
-        if (brain->GetCompile(i)) continue;
+        //? if (brain->GetCompile(i)) continue;
 
         char filename[MAX_FNAME];
-        sprintf(filename, "%s/%s/%c%.3d%.3d%.1d.txt",
+        sprintf(filename, "%s/%s/%c%.3d%.3d%.3d.txt",
                     GetSavegameDir(), m_gamerName.c_str(), name[0], rank, objRank, i);
-        brain->ReadProgram(i, filename);
-        if (!brain->GetCompile(i)) nbError++;
+
+        if(CResourceManager::Exists(filename))
+        {
+            Program* program = brain->GetOrAddProgram(i);
+            brain->ReadProgram(program, filename);
+            if (!brain->GetCompile(program)) nbError++;
+        }
     }
 }
 
@@ -4655,11 +4674,15 @@ void CRobotMain::LoadFileScript(CObject *obj, const char* filename, int objRank,
     dirname = dirname.substr(0, dirname.find_last_of("/"));
     
     char fn[MAX_FNAME]; //TODO: Refactor to std::string
-    for (int i = 0; i < BRAINMAXSCRIPT; i++)
+    for(unsigned int i = 0; i <= 999; i++)
     {
-        sprintf(fn, "%s/prog%.3d%.1d.txt", dirname.c_str(), objRank, i);
-        brain->ReadProgram(i, fn);
-        if (!brain->GetCompile(i)) nbError++;
+        sprintf(fn, "%s/prog%.3d%.3d.txt", dirname.c_str(), objRank, i);
+        if(CResourceManager::Exists(fn))
+        {
+            Program* program = brain->GetOrAddProgram(i);
+            brain->ReadProgram(program, fn);
+            if (!brain->GetCompile(program)) nbError++;
+        }
     }
 }
 
@@ -4692,12 +4715,21 @@ void CRobotMain::SaveOneScript(CObject *obj)
     char* name = m_dialog->GetSceneName();
     int rank = m_dialog->GetSceneRank();
 
-    for (int i = 0; i < BRAINMAXSCRIPT; i++)
+    auto programs = brain->GetPrograms();
+    // TODO: Find a better way to do that
+    for(unsigned int i = 0; i <= 999; i++)
     {
         char filename[MAX_FNAME];
-        sprintf(filename, "%s/%s/%c%.3d%.3d%.1d.txt",
+        sprintf(filename, "%s/%s/%c%.3d%.3d%.3d.txt",
                     GetSavegameDir(), m_gamerName.c_str(), name[0], rank, objRank, i);
-        brain->WriteProgram(i, filename);
+        if(i < programs.size())
+        {
+            brain->WriteProgram(programs[i], filename);
+        }
+        else
+        {
+            CResourceManager::Remove(filename);
+        }
     }
 }
 
@@ -4717,10 +4749,19 @@ void CRobotMain::SaveFileScript(CObject *obj, const char* filename, int objRank)
     dirname = dirname.substr(0, dirname.find_last_of("/"));
     
     char fn[MAX_FNAME]; //TODO: Refactor to std::string
-    for (int i = 0; i < BRAINMAXSCRIPT; i++)
+    auto programs = brain->GetPrograms();
+    // TODO: Find a better way to do that
+    for(unsigned int i = 0; i <= 999; i++)
     {
-        sprintf(fn, "%s/prog%.3d%.1d.txt", dirname.c_str(), objRank, i);
-        brain->WriteProgram(i, fn);
+        sprintf(fn, "%s/prog%.3d%.3d.txt", dirname.c_str(), objRank, i);
+        if(i < programs.size())
+        {
+            brain->WriteProgram(programs[i], fn);
+        }
+        else
+        {
+            CResourceManager::Remove(fn);
+        }
     }
 }
 
@@ -4792,7 +4833,7 @@ char*  CRobotMain::GetNewScriptName(ObjectType type, int rank)
         }
     }
 
-    return 0;
+    return nullptr;
 }
 
 
@@ -4869,6 +4910,15 @@ void CRobotMain::IOWriteObject(CLevelParserLine* line, CObject* obj)
         if (run != -1)
         {
             line->AddParam("run", new CLevelParserParam(run+1));
+        }
+
+        auto programs = brain->GetPrograms();
+        for(unsigned int i = 0; i < programs.size(); i++)
+        {
+            if(programs[i]->readOnly)
+            {
+                line->AddParam("scriptReadOnly"+boost::lexical_cast<std::string>(i+1), new CLevelParserParam(true));
+            }
         }
     }
 }
@@ -5053,6 +5103,25 @@ CObject* CRobotMain::IOReadObject(CLevelParserLine *line, const char* filename, 
             automat->Start(run);  // starts the film
     }
 
+    CBrain* brain = obj->GetBrain();
+    if (brain != nullptr)
+    {
+        if(run != -1)
+        {
+            Program* program = brain->GetOrAddProgram(run-1);
+            brain->SetScriptRun(program);  // marks the program to be started
+        }
+
+        for(unsigned int i = 0; i <= 999; i++)
+        {
+            if(line->GetParam("scriptReadOnly"+boost::lexical_cast<std::string>(i+1))->AsBool(false))
+            {
+                Program* prog = brain->GetOrAddProgram(i);
+                prog->readOnly = true;
+            }
+        }
+    }
+
     return obj;
 }
 
@@ -5138,6 +5207,23 @@ CObject* CRobotMain::IOReadScene(const char *filename, const char *filecbot)
         }
     }
     while (nbError > 0 && nbError != lastError);
+
+    // Starts scripts
+    for(auto it : objman->GetAllObjects())
+    {
+        CObject* obj = it.second;
+        if (obj->GetTruck() != nullptr) continue;
+        if (obj->GetDefRank() == -1) continue;
+
+        CBrain* brain = obj->GetBrain();
+        if (brain == nullptr)  continue;
+
+        Program* program = brain->GetScriptRun();
+        if (program != nullptr)
+        {
+            brain->RunProgram(program);  // starts the program
+        }
+    }
 
     // Reads the file of stacks of execution.
     FILE* file = fOpen(filecbot, "rb");
@@ -5414,6 +5500,12 @@ void CRobotMain::UpdateAudio(bool frame)
             {
                 energyLevel = power->GetEnergy();
                 if (power->GetType() == OBJECT_ATOMIC) energyLevel *= 100;
+            } else {
+                if(obj->GetType() == OBJECT_POWER || obj->GetType() == OBJECT_ATOMIC)
+                {
+                    energyLevel = obj->GetEnergy();
+                    if (obj->GetType() == OBJECT_ATOMIC) energyLevel *= 100;
+                }
             }
             if (energyLevel < m_audioChange[t].powermin || energyLevel > m_audioChange[t].powermax)
 	            continue;
@@ -5511,6 +5603,11 @@ Error CRobotMain::CheckEndMission(bool frame)
             if (obj->GetRuin()) continue;
             if (!obj->GetEnable()) continue;
 
+            if(!m_endTake[t].countTransported)
+            {
+                if(obj->GetTruck() != nullptr) continue;
+            }
+
             ObjectType type = obj->GetType();
             if (type == OBJECT_SCRAP2 ||
                 type == OBJECT_SCRAP3 ||
@@ -5533,6 +5630,12 @@ Error CRobotMain::CheckEndMission(bool frame)
             {
                 energyLevel = power->GetEnergy();
                 if (power->GetType() == OBJECT_ATOMIC) energyLevel *= 100;
+            } else {
+                if(obj->GetType() == OBJECT_POWER || obj->GetType() == OBJECT_ATOMIC)
+                {
+                    energyLevel = obj->GetEnergy();
+                    if (obj->GetType() == OBJECT_ATOMIC) energyLevel *= 100;
+                }
             }
             if (energyLevel < m_endTake[t].powermin || energyLevel > m_endTake[t].powermax) continue;
 
@@ -5848,11 +5951,6 @@ char* CRobotMain::GetSceneName()
 int CRobotMain::GetSceneRank()
 {
     return m_dialog->GetSceneRank();
-}
-
-void CRobotMain::BuildSceneName(std::string &filename, char *base, int rank, bool sceneFile)
-{
-    m_dialog->BuildSceneName(filename, base, rank, sceneFile);
 }
 
 

@@ -350,8 +350,12 @@ float CText::GetStringWidth(std::string text, FontType font, float size)
 
 float CText::GetCharWidth(UTF8Char ch, FontType font, float size, float offset)
 {
-    // TODO: if (font == FONT_BUTTON)
-    if (font == FONT_BUTTON) return 0.0f;
+    if (font == FONT_BUTTON) {
+        Math::IntPoint windowSize = m_engine->GetWindowSize();
+        float height = GetHeight(FONT_COLOBOT, size);
+        float width = height*(static_cast<float>(windowSize.y)/windowSize.x);
+        return width;
+    }
 
     int width = 1;
     if (ch.c1 < 32 && ch.c1 >= 0)
@@ -614,15 +618,12 @@ void CText::DrawString(const std::string &text, std::vector<FontMetaChar>::itera
     unsigned int fmtIndex = 0;
 
     std::vector<UTF8Char> chars;
-    StringToUTFCharList(text, chars);
+    StringToUTFCharList(text, chars, format, end);
     for (auto it = chars.begin(); it != chars.end(); ++it)
     {
         FontType font = FONT_COLOBOT;
         if (format + fmtIndex != end)
             font = static_cast<FontType>(*(format + fmtIndex) & FONT_MASK_FONT);
-
-        // TODO: if (font == FONT_BUTTON)
-        if (font == FONT_BUTTON) continue;
 
         UTF8Char ch = *it;
 
@@ -676,6 +677,42 @@ void CText::StringToUTFCharList(const std::string &text, std::vector<UTF8Char> &
         UTF8Char ch;
 
         int len = StrUtils::Utf8CharSizeAt(text, index);
+        if (len >= 1)
+            ch.c1 = text[index];
+        if (len >= 2)
+            ch.c2 = text[index+1];
+        if (len >= 3)
+            ch.c3 = text[index+2];
+
+        index += len;
+
+        chars.push_back(ch);
+    }
+}
+
+void CText::StringToUTFCharList(const std::string &text, std::vector<UTF8Char> &chars, std::vector<FontMetaChar>::iterator format, std::vector<FontMetaChar>::iterator end)
+{
+    unsigned int index = 0;
+    unsigned int totalLength = text.length();
+    while (index < totalLength)
+    {
+        UTF8Char ch;
+
+        FontType font = FONT_COLOBOT;
+        if(format + index != end)
+            font = static_cast<FontType>(*(format + index) & FONT_MASK_FONT);
+
+        int len;
+
+        if(font == FONT_BUTTON)
+        {
+            len = 1;
+        }
+        else
+        {
+            len = StrUtils::Utf8CharSizeAt(text, index);
+        }
+
         if (len >= 1)
             ch.c1 = text[index];
         if (len >= 2)
@@ -786,57 +823,122 @@ void CText::DrawHighlight(FontHighlight hl, Math::Point pos, Math::Point size)
 
 void CText::DrawCharAndAdjustPos(UTF8Char ch, FontType font, float size, Math::Point &pos, Color color)
 {
-    // TODO: if (font == FONT_BUTTON)
-    if (font == FONT_BUTTON) return;
-
-    CachedFont* cf = GetOrOpenFont(font, size);
-
-    if (cf == nullptr)
-        return;
-
-    int width = 1;
-    if (ch.c1 > 0 && ch.c1 < 32)
+    if(font == FONT_BUTTON)
     {
-        if (ch.c1 == '\t')
-            width = m_tabSize;
+        Math::IntPoint windowSize = m_engine->GetWindowSize();
+        float height = GetHeight(FONT_COLOBOT, size);
+        float width = height*(static_cast<float>(windowSize.y)/windowSize.x);
 
-        ch = TranslateSpecialChar(ch.c1);
-    }
+        Math::Point p1(pos.x, pos.y);
+        Math::Point p2(pos.x + width, pos.y + height);
 
-    auto it = cf->cache.find(ch);
-    CharTexture tex;
-    if (it != cf->cache.end())
-    {
-        tex = (*it).second;
+        Math::Vector n(0.0f, 0.0f, -1.0f);  // normal
+
+        // For whatever reason ch.c1 is a SIGNED char, we need to fix that
+        unsigned char icon = static_cast<unsigned char>(ch.c1);
+        if ( icon >= 192 )
+        {
+            icon -= 192;
+            m_engine->SetTexture("textures/interface/text.png");
+            m_engine->SetState(ENG_RSTATE_TTEXTURE_WHITE);
+        }
+        else if ( icon >= 128 )
+        {
+            icon -= 128;
+            m_engine->SetTexture("textures/interface/button3.png");
+            m_engine->SetState(ENG_RSTATE_TTEXTURE_WHITE);
+        }
+        else if ( icon >= 64 )
+        {
+            icon -= 64;
+            m_engine->SetTexture("textures/interface/button2.png");
+            m_engine->SetState(ENG_RSTATE_TTEXTURE_WHITE);
+        }
+        else
+        {
+            m_engine->SetTexture("textures/interface/button1.png");
+            m_engine->SetState(ENG_RSTATE_TTEXTURE_WHITE);
+        }
+
+        Math::Point uv1, uv2;
+        uv1.x = (32.0f / 256.0f) * (icon%8);
+        uv1.y = (32.0f / 256.0f) * (icon/8);
+        uv2.x = (32.0f / 256.0f) + uv1.x;
+        uv2.y = (32.0f / 256.0f) + uv1.y;
+
+        float dp = 0.5f / 256.0f;
+        uv1.x += dp;
+        uv1.y += dp;
+        uv2.x -= dp;
+        uv2.y -= dp;
+
+        Vertex quad[4] =
+        {
+            Vertex(Math::Vector(p1.x, p1.y, 0.0f), n, Math::Point(uv1.x, uv2.y)),
+            Vertex(Math::Vector(p1.x, p2.y, 0.0f), n, Math::Point(uv1.x, uv1.y)),
+            Vertex(Math::Vector(p2.x, p1.y, 0.0f), n, Math::Point(uv2.x, uv2.y)),
+            Vertex(Math::Vector(p2.x, p2.y, 0.0f), n, Math::Point(uv2.x, uv1.y))
+        };
+
+        m_device->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, quad, 4, color);
+        m_engine->AddStatisticTriangle(2);
+
+        pos.x += width;
+
+        // Don't forget to restore the state!
+        m_engine->SetState(ENG_RSTATE_TEXT);
     }
     else
     {
-        tex = CreateCharTexture(ch, cf);
+        CachedFont* cf = GetOrOpenFont(font, size);
 
-        if (tex.id == 0) // invalid
+        if (cf == nullptr)
             return;
 
-        cf->cache[ch] = tex;
+        int width = 1;
+        if (ch.c1 > 0 && ch.c1 < 32)
+        {
+            if (ch.c1 == '\t')
+                width = m_tabSize;
+
+            ch = TranslateSpecialChar(ch.c1);
+        }
+
+        auto it = cf->cache.find(ch);
+        CharTexture tex;
+        if (it != cf->cache.end())
+        {
+            tex = (*it).second;
+        }
+        else
+        {
+            tex = CreateCharTexture(ch, cf);
+
+            if (tex.id == 0) // invalid
+                return;
+
+            cf->cache[ch] = tex;
+        }
+
+        Math::Point p1(pos.x, pos.y + tex.charSize.y - tex.texSize.y);
+        Math::Point p2(pos.x + tex.texSize.x, pos.y + tex.charSize.y);
+
+        Math::Vector n(0.0f, 0.0f, -1.0f);  // normal
+
+        Vertex quad[4] =
+        {
+            Vertex(Math::Vector(p1.x, p1.y, 0.0f), n, Math::Point(0.0f, 1.0f)),
+            Vertex(Math::Vector(p1.x, p2.y, 0.0f), n, Math::Point(0.0f, 0.0f)),
+            Vertex(Math::Vector(p2.x, p1.y, 0.0f), n, Math::Point(1.0f, 1.0f)),
+            Vertex(Math::Vector(p2.x, p2.y, 0.0f), n, Math::Point(1.0f, 0.0f))
+        };
+
+        m_device->SetTexture(0, tex.id);
+        m_device->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, quad, 4, color);
+        m_engine->AddStatisticTriangle(2);
+
+        pos.x += tex.charSize.x * width;
     }
-
-    Math::Point p1(pos.x, pos.y + tex.charSize.y - tex.texSize.y);
-    Math::Point p2(pos.x + tex.texSize.x, pos.y + tex.charSize.y);
-
-    Math::Vector n(0.0f, 0.0f, -1.0f);  // normal
-
-    Vertex quad[4] =
-    {
-        Vertex(Math::Vector(p1.x, p1.y, 0.0f), n, Math::Point(0.0f, 1.0f)),
-        Vertex(Math::Vector(p1.x, p2.y, 0.0f), n, Math::Point(0.0f, 0.0f)),
-        Vertex(Math::Vector(p2.x, p1.y, 0.0f), n, Math::Point(1.0f, 1.0f)),
-        Vertex(Math::Vector(p2.x, p2.y, 0.0f), n, Math::Point(1.0f, 0.0f))
-    };
-
-    m_device->SetTexture(0, tex.id);
-    m_device->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, quad, 4, color);
-    m_engine->AddStatisticTriangle(2);
-
-    pos.x += tex.charSize.x * width;
 }
 
 CachedFont* CText::GetOrOpenFont(FontType font, float size)

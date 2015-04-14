@@ -119,6 +119,9 @@ void InitializeRestext()
     stringsText[RT_STUDIO_LISTTT]    = TR("Keyword help(\\key cbot;)");
     stringsText[RT_STUDIO_COMPOK]    = TR("Compilation ok (0 errors)");
     stringsText[RT_STUDIO_PROGSTOP]  = TR("Program finished");
+    stringsText[RT_STUDIO_CLONED]    = TR("Program cloned");
+
+    stringsText[RT_PROGRAM_READONLY] = TR("This program is read-only, clone it to edit");
 
     stringsText[RT_SATCOM_LIST]      = TR("\\b;List of objects\n");
     stringsText[RT_SATCOM_BOT]       = TR("\\b;Robots\n");
@@ -369,8 +372,14 @@ void InitializeRestext()
     stringsEvent[EVENT_OBJECT_BEGSHIELD]    = TR("Extend shield (\\key action;)");
     stringsEvent[EVENT_OBJECT_ENDSHIELD]    = TR("Withdraw shield (\\key action;)");
     stringsEvent[EVENT_OBJECT_DIMSHIELD]    = TR("Shield radius");
+    stringsEvent[EVENT_OBJECT_DELSEARCH]    = TR("Delete mark");
     stringsEvent[EVENT_OBJECT_PROGRUN]      = TR("Execute the selected program");
     stringsEvent[EVENT_OBJECT_PROGEDIT]     = TR("Edit the selected program");
+    stringsEvent[EVENT_OBJECT_PROGADD]      = TR("Add new program");
+    stringsEvent[EVENT_OBJECT_PROGREMOVE]   = TR("Remove selected program");
+    stringsEvent[EVENT_OBJECT_PROGCLONE]    = TR("Clone selected program");
+    stringsEvent[EVENT_OBJECT_PROGMOVEUP]   = TR("Move selected program up");
+    stringsEvent[EVENT_OBJECT_PROGMOVEDOWN] = TR("Move selected program down");
     stringsEvent[EVENT_OBJECT_INFOOK]       = TR("\\SatCom on standby");
     stringsEvent[EVENT_OBJECT_DELETE]       = TR("Destroy the building");
     stringsEvent[EVENT_OBJECT_GENERGY]      = TR("Energy level");
@@ -428,6 +437,7 @@ void InitializeRestext()
 
     stringsEvent[EVENT_STUDIO_OK]           = TR("OK\\Close program editor and return to game");
     stringsEvent[EVENT_STUDIO_CANCEL]       = TR("Cancel\\Cancel all changes");
+    stringsEvent[EVENT_STUDIO_CLONE]        = TR("Clone program");
     stringsEvent[EVENT_STUDIO_NEW]          = TR("New");
     stringsEvent[EVENT_STUDIO_OPEN]         = TR("Open (Ctrl+o)");
     stringsEvent[EVENT_STUDIO_SAVE]         = TR("Save (Ctrl+s)");

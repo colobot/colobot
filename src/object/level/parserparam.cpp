@@ -22,6 +22,7 @@
 
 #include "app/app.h"
 #include "common/logger.h"
+#include "common/pathman.h"
 #include "common/resources/resourcemanager.h"
 #include "object/level/parser.h"
 #include "object/robotmain.h"
@@ -164,38 +165,12 @@ bool CLevelParserParam::AsBool(bool def)
 }
 
 
-std::string CLevelParserParam::InjectLevelDir(std::string path, const std::string defaultDir)
-{
-    std::string newPath = path;
-    std::string lvlDir = CLevelParser::BuildSceneName(CRobotMain::GetInstancePointer()->GetSceneName(), CRobotMain::GetInstancePointer()->GetSceneRank()/100, CRobotMain::GetInstancePointer()->GetSceneRank()%100, false);
-    boost::replace_all(newPath, "%lvl%", lvlDir);
-    std::string chapDir = CLevelParser::BuildSceneName(CRobotMain::GetInstancePointer()->GetSceneName(), CRobotMain::GetInstancePointer()->GetSceneRank()/100, 0, false);
-    boost::replace_all(newPath, "%chap%", chapDir);
-    if(newPath == path && !path.empty())
-    {
-        newPath = defaultDir + (!defaultDir.empty() ? "/" : "") + newPath;
-    }
-    
-    std::string langPath = newPath;
-    std::string langStr(1, CApplication::GetInstancePointer()->GetLanguageChar());
-    boost::replace_all(langPath, "%lng%", langStr);
-    if(CResourceManager::Exists(langPath))
-        return langPath;
-    
-    // Fallback to English if file doesn't exist
-    boost::replace_all(newPath, "%lng%", "E");
-    if(CResourceManager::Exists(newPath))
-        return newPath;
-    
-    return langPath; // Return current language file if none of the files exist
-}
-
 std::string CLevelParserParam::ToPath(std::string path, const std::string defaultDir)
 {
     if(defaultDir == "" && path.find("%lvl%") != std::string::npos)
         throw CLevelParserException("TODO: Param "+m_name+" does not yet support %lvl%! :(");
     
-    return InjectLevelDir(path, defaultDir);
+    return CPathManager::InjectLevelDir(path, defaultDir);
 }
 
 std::string CLevelParserParam::AsPath(const std::string defaultDir)
@@ -209,7 +184,7 @@ std::string CLevelParserParam::AsPath(const std::string defaultDir)
 std::string CLevelParserParam::AsPath(const std::string defaultDir, std::string def)
 {
     if(m_empty)
-        return InjectLevelDir(def, defaultDir);
+        return CPathManager::InjectLevelDir(def, defaultDir);
     
     return ToPath(AsString(def), defaultDir);
 }

@@ -117,14 +117,14 @@ std::string CSystemUtilsWindows::GetSaveDir()
 {
     std::string savegameDir;
 
-    char* envUSERPROFILE = getenv("USERPROFILE");
+    wchar_t* envUSERPROFILE = _wgetenv(L"USERPROFILE");
     if (envUSERPROFILE == NULL)
     {
-        savegameDir = "save";
+        savegameDir = "./saves";
     }
     else
     {
-        savegameDir = std::string(envUSERPROFILE) + "\\colobot";
+        savegameDir = UTF8_Encode(std::wstring(envUSERPROFILE)) + "\\colobot";
     }
     GetLogger()->Trace("Saved game files are going to %s\n", savegameDir.c_str());
 

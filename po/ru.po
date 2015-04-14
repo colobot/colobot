@@ -110,6 +110,9 @@ msgstr "Доступ к решению\\Показывает решение (п�
 msgid "Access to solutions\\Show program \"4: Solution\" in the exercises"
 msgstr "Доступ к решению\\Показывает решение \"4: Решение\" в упражнениях"
 
+msgid "Add new program"
+msgstr ""
+
 msgid "Alien Queen"
 msgstr "Королева чужих"
 
@@ -387,6 +390,13 @@ msgstr "Вы прошли контрольную точку"
 msgid "Climb\\Increases the power of the jet"
 msgstr "Взлет и подъем\\Увеличивает мощность реактивного двигателя"
 
+msgid "Clone program"
+msgstr ""
+
+#, fuzzy
+msgid "Clone selected program"
+msgstr "Изменить выбранную программу"
+
 msgid "Close"
 msgstr "Закрыть"
 
@@ -445,6 +455,10 @@ msgid "Defense tower"
 msgstr "Защитная башня"
 
 msgid "Delete"
+msgstr "Удалить"
+
+#, fuzzy
+msgid "Delete mark"
 msgstr "Удалить"
 
 msgid "Delete player\\Deletes the player from the list"
@@ -840,6 +854,14 @@ msgstr "Инверсия мыши по оси Y\\Инверсия прокрут
 msgid "Mouse shadow\\Gives the mouse a shadow"
 msgstr "Тень мыши\\Мышь отбрасывает тень"
 
+#, fuzzy
+msgid "Move selected program down"
+msgstr "Изменить выбранную программу"
+
+#, fuzzy
+msgid "Move selected program up"
+msgstr "Изменить выбранную программу"
+
 msgid "Mute\\No sound"
 msgstr "Без звука\\Без звука"
 
@@ -1109,6 +1131,10 @@ msgstr "Частный элемент"
 msgid "Private\\Private folder"
 msgstr "Личное\\Личная папка"
 
+#, fuzzy
+msgid "Program cloned"
+msgstr "Программа выполнена"
+
 msgid "Program editor"
 msgstr "Редактор программ"
 
@@ -1181,6 +1207,10 @@ msgstr "Остатки миссии Аполлон"
 
 msgid "Remove a flag"
 msgstr "Удалить флаг"
+
+#, fuzzy
+msgid "Remove selected program"
+msgstr "Изменить выбранную программу"
 
 #, fuzzy
 msgid "Render distance\\Maximum visibility"
@@ -1463,6 +1493,9 @@ msgstr "Эта метка не существует"
 
 msgid "This object is not a member of a class"
 msgstr "Этот объект не член класса"
+
+msgid "This program is read-only, clone it to edit"
+msgstr ""
 
 msgid "Thump (\\key action;)"
 msgstr "Удар (\\key action;)"

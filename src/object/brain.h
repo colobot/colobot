@@ -58,9 +58,6 @@ class CParticle;
 } /* Gfx */
 
 
-const int BRAINMAXSCRIPT = 10;
-
-
 
 enum TraceOper
 {
@@ -75,6 +72,13 @@ struct TraceRecord
 {
     TraceOper   oper;
     float       param;
+};
+
+struct Program
+{
+    CScript*    script;
+    std::string filename;
+    bool        readOnly;
 };
 
 
@@ -100,9 +104,7 @@ public:
     void        SetActivity(bool bMode);
     bool        GetActivity();
     bool        IsProgram();
-    bool        ProgramExist(int rank);
-    void        RunProgram(int rank);
-    int         FreeProgram();
+    void        RunProgram(Program* program);
     int         GetProgram();
     void        StopProgram();
     void        StopTask();
@@ -112,26 +114,25 @@ public:
     void        SetActiveVirus(bool bActive);
     bool        GetActiveVirus();
 
-    void        SetScriptRun(int rank);
-    int         GetScriptRun();
-    void        SetScriptName(int rank, char *name);
-    char*       GetScriptName(int rank);
+    void        SetScriptRun(Program* rank);
+    Program*    GetScriptRun();
     void        SetSoluceName(char *name);
     char*       GetSoluceName();
-    bool        SendProgram(int rank, const char* buffer);
 
     bool        ReadSoluce(char* filename);
-    bool        ReadProgram(int rank, const char* filename);
-    bool        GetCompile(int rank);
-    bool        WriteProgram(int rank, char* filename);
+    bool        ReadProgram(Program* program, const char* filename);
+    bool        GetCompile(Program* program);
+    bool        WriteProgram(Program* program, char* filename);
     bool        ReadStack(FILE *file);
     bool        WriteStack(FILE *file);
+    const std::vector<Program*>& GetPrograms();
 
     Error       StartTaskTake();
     Error       StartTaskManip(TaskManipOrder order, TaskManipArm arm);
     Error       StartTaskFlag(TaskFlagOrder order, int rank);
     Error       StartTaskBuild(ObjectType type);
     Error       StartTaskSearch();
+    Error       StartTaskDeleteMark();
     Error       StartTaskTerraform();
     Error       StartTaskPen(bool down, int color);
     Error       StartTaskRecover();
@@ -145,10 +146,19 @@ public:
     void        UpdateInterface(float rTime);
     void        UpdateInterface();
 
+    Program*    AddProgram();
+    bool        AddProgram(Program* program);
+    void        RemoveProgram(Program* program);
+    Program*    CloneProgram(Program* program);
+
+    Program*    GetProgram(int index);
+    Program*    GetOrAddProgram(int index);
+    int         GetProgramIndex(Program* program);
+
 protected:
     bool        EventFrame(const Event &event);
 
-    void        StartEditScript(int rank, char* name);
+    void        StartEditScript(Program* program, char* name);
     void        StopEditScript(bool bCancel);
 
     Error       EndedTask();
@@ -158,6 +168,7 @@ protected:
 
     void        UpdateScript(Ui::CWindow *pw);
     int         GetSelScript();
+    void        SetSelScript(int index);
     void        BlinkScript(bool bEnable);
 
     void        CheckInterface(Ui::CWindow *pw, EventType event, bool bState);
@@ -188,15 +199,16 @@ protected:
     CTaskManager*       m_primaryTask;
     CTaskManager*       m_secondaryTask;
 
-    CScript*            m_script[BRAINMAXSCRIPT];
-    int                 m_selScript;        // rank of the selected script
-    int                 m_program;      // rank of the executed program / ​​-1
+    std::vector<Program*> m_program;
+    Program*            m_currentProgram;
+
+    unsigned int        m_selScript;        // rank of the selected script
+
     bool                m_bActivity;
     bool                m_bBurn;
     bool                m_bActiveVirus;
 
-    int                 m_scriptRun;
-    char                m_scriptName[BRAINMAXSCRIPT][50];
+    Program*            m_scriptRun;
     char                m_soluceName[50];
 
     EventType           m_buttonAxe;

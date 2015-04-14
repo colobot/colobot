@@ -110,6 +110,9 @@ msgstr "Accès à la solution\\Donne la solution"
 msgid "Access to solutions\\Show program \"4: Solution\" in the exercises"
 msgstr "Accès aux solutions\\Programme \"4: Solution\" dans les exercices"
 
+msgid "Add new program"
+msgstr ""
+
 msgid "Alien Queen"
 msgstr "Pondeuse"
 
@@ -387,6 +390,13 @@ msgstr "Indicateur atteint"
 msgid "Climb\\Increases the power of the jet"
 msgstr "Monter\\Augmenter la puissance du réacteur"
 
+msgid "Clone program"
+msgstr ""
+
+#, fuzzy
+msgid "Clone selected program"
+msgstr "Édite le programme sélectionné"
+
 msgid "Close"
 msgstr "Fermer"
 
@@ -446,6 +456,10 @@ msgid "Defense tower"
 msgstr "Tour de défense"
 
 msgid "Delete"
+msgstr "Détruire"
+
+#, fuzzy
+msgid "Delete mark"
 msgstr "Détruire"
 
 msgid "Delete player\\Deletes the player from the list"
@@ -843,6 +857,14 @@ msgstr ""
 msgid "Mouse shadow\\Gives the mouse a shadow"
 msgstr "Souris ombrée\\Jolie souris avec une ombre"
 
+#, fuzzy
+msgid "Move selected program down"
+msgstr "Édite le programme sélectionné"
+
+#, fuzzy
+msgid "Move selected program up"
+msgstr "Édite le programme sélectionné"
+
 msgid "Mute\\No sound"
 msgstr "Silencieux\\Totalement silencieux"
 
@@ -1110,6 +1132,10 @@ msgstr "Elément protégé"
 msgid "Private\\Private folder"
 msgstr "Privé\\Dossier privé"
 
+#, fuzzy
+msgid "Program cloned"
+msgstr "Programme terminé"
+
 msgid "Program editor"
 msgstr "Edition du programme"
 
@@ -1181,6 +1207,10 @@ msgstr "Vestige d'une mission Apollo"
 
 msgid "Remove a flag"
 msgstr "Enlève un drapeau"
+
+#, fuzzy
+msgid "Remove selected program"
+msgstr "Édite le programme sélectionné"
 
 #, fuzzy
 msgid "Render distance\\Maximum visibility"
@@ -1462,6 +1492,9 @@ msgstr "Cette étiquette n'existe pas"
 
 msgid "This object is not a member of a class"
 msgstr "L'objet n'est pas une instance d'une classe"
+
+msgid "This program is read-only, clone it to edit"
+msgstr ""
 
 msgid "Thump (\\key action;)"
 msgstr "Secoue (\\key action;)"

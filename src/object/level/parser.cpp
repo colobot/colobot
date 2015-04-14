@@ -51,7 +51,7 @@ CLevelParser::CLevelParser(std::string filename)
 
 CLevelParser::CLevelParser(std::string category, int chapter, int rank)
 {
-    m_filename = BuildSceneName(category, chapter, rank);
+    m_filename = BuildScenePath(category, chapter, rank);
 }
 
 CLevelParser::~CLevelParser()
@@ -62,12 +62,27 @@ CLevelParser::~CLevelParser()
     }
 }
 
-std::string CLevelParser::BuildSceneName(std::string category, int chapter, int rank, bool sceneFile)
+std::string CLevelParser::BuildCategoryPath(std::string category)
 {
     std::ostringstream outstream;
+    outstream << "levels/";
+    if(category == "perso" || category == "win" || category == "lost")
+    {
+        outstream << "other/";
+    }
+    else
+    {
+        outstream << category << "/";
+    }
+    return outstream.str();
+}
+
+std::string CLevelParser::BuildScenePath(std::string category, int chapter, int rank, bool sceneFile)
+{
+    std::ostringstream outstream;
+    outstream << BuildCategoryPath(category);
     if(category == "custom")
     {
-        outstream << "levels/custom/";
         outstream << CRobotMain::GetInstancePointer()->GetUserLevelName(chapter);
         if(rank == 000)
         {
@@ -87,16 +102,14 @@ std::string CLevelParser::BuildSceneName(std::string category, int chapter, int 
     }
     else if(category == "perso")
     {
-        outstream << "levels/other/perso.txt";
+        outstream << "perso.txt";
     }
     else if(category == "win" || category == "lost")
     {
-        outstream << "levels/other/";
         outstream << category << std::setfill('0') << std::setw(3) << chapter*100+rank << ".txt";
     }
     else
     {
-        outstream << "levels/" << category << "/";
         outstream << "chapter" << std::setfill('0') << std::setw(3) << chapter;
         if(rank == 000)
         {

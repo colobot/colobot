@@ -70,22 +70,23 @@ bool CKey::EventProcess(const Event &event)
     if (event.type == EVENT_KEY_DOWN && m_catch)
     {
         m_catch = false;
+        unsigned int key = GetVirtualKey(event.key.key);
 
-        if (TestKey(event.key.key)) // impossible ?
+        if (TestKey(key)) // impossible ?
         {
             m_sound->Play(SOUND_TZOING);
         }
         else
         {
-            if (event.key.key == m_binding.primary || event.key.key == m_binding.secondary)
+            if (key == m_binding.primary || key == m_binding.secondary)
             {
                 m_binding.secondary = KEY_INVALID;
-                m_binding.primary = event.key.key;
+                m_binding.primary = key;
             }
             else
             {
                 m_binding.secondary = m_binding.primary;
-                m_binding.primary = event.key.key;
+                m_binding.primary = key;
             }
             m_sound->Play(SOUND_CLICK);
 

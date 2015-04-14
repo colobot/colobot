@@ -115,6 +115,9 @@ msgstr ""
 msgid "Access to solutions\\Show program \"4: Solution\" in the exercises"
 msgstr "Accčs aux solutions\\Programme \"4: Solution\" dans les exercices"
 
+msgid "Add new program"
+msgstr "Dodaj nowy program"
+
 msgid "Alien Queen"
 msgstr "Królowa Obcych"
 
@@ -397,6 +400,12 @@ msgstr "Przekroczono punkt kontrolny"
 msgid "Climb\\Increases the power of the jet"
 msgstr "W górę\\Zwiększa moc silnika"
 
+msgid "Clone program"
+msgstr "Skopiuj program"
+
+msgid "Clone selected program"
+msgstr "Skopiuj zaznaczony program"
+
 msgid "Close"
 msgstr "Zamknij"
 
@@ -456,6 +465,9 @@ msgstr "Wieża obronna"
 
 msgid "Delete"
 msgstr "Usuń"
+
+msgid "Delete mark"
+msgstr "Usuń znacznik"
 
 msgid "Delete player\\Deletes the player from the list"
 msgstr "Usuń gracza\\Usuwa gracza z listy"
@@ -851,6 +863,12 @@ msgstr "Odwrócenie myszy Y\\Odwrócenie kierunków przewijania w pionie"
 msgid "Mouse shadow\\Gives the mouse a shadow"
 msgstr "Cień kursora myszy\\Dodaje cień kursorowi myszy"
 
+msgid "Move selected program down"
+msgstr "Przenieś zaznaczony program w dół"
+
+msgid "Move selected program up"
+msgstr "Przenieś zaznaczony program w górę"
+
 msgid "Mute\\No sound"
 msgstr "Cisza\\Brak dźwięków"
 
@@ -1036,7 +1054,7 @@ msgid "Pause/continue"
 msgstr "Pauza/Kontynuuj"
 
 msgid "Pause\\Pause the game without opening menu"
-msgstr ""
+msgstr "Pauza\\Zatrzymaj grę bez otwierania menu"
 
 msgid "Phazer shooter"
 msgstr "Działo fazowe"
@@ -1120,6 +1138,9 @@ msgstr "Element prywatny"
 msgid "Private\\Private folder"
 msgstr "Prywatny\\Folder prywatny"
 
+msgid "Program cloned"
+msgstr "Program skopiowany"
+
 msgid "Program editor"
 msgstr "Edytor programu"
 
@@ -1191,6 +1212,9 @@ msgstr "Pozostałości z misji Apollo"
 
 msgid "Remove a flag"
 msgstr "Usuń flagę"
+
+msgid "Remove selected program"
+msgstr "Usuń zaznaczony program"
 
 msgid "Render distance\\Maximum visibility"
 msgstr "Zasięg renderingu\\Maksymalna widoczność"
@@ -1471,6 +1495,9 @@ msgstr "Taka etykieta nie istnieje"
 
 msgid "This object is not a member of a class"
 msgstr "Ten obiekt nie jest członkiem klasy"
+
+msgid "This program is read-only, clone it to edit"
+msgstr "Ten program jest tylko do odczytu, skopiuj go, aby edytować"
 
 msgid "Thump (\\key action;)"
 msgstr "Uderz (\\key action;)"

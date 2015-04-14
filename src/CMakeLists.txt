@@ -70,8 +70,10 @@ set(BASE_SOURCES
     common/event.cpp
     common/image.cpp
     common/iman.cpp
+    common/key.cpp
     common/logger.cpp
     common/misc.cpp
+    common/pathman.cpp
     common/profile.cpp
     common/restext.cpp
     common/stringutils.cpp
@@ -145,6 +147,7 @@ set(BASE_SOURCES
     object/task/task.cpp
     object/task/taskadvance.cpp
     object/task/taskbuild.cpp
+    object/task/taskdeletemark.cpp
     object/task/taskfire.cpp
     object/task/taskfireant.cpp
     object/task/taskflag.cpp

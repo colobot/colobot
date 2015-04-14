@@ -180,6 +180,12 @@ msgstr ""
 msgid "Program finished"
 msgstr ""
 
+msgid "Program cloned"
+msgstr ""
+
+msgid "This program is read-only, clone it to edit"
+msgstr ""
+
 msgid "\\b;List of objects\n"
 msgstr ""
 
@@ -842,10 +848,28 @@ msgstr ""
 msgid "Shield radius"
 msgstr ""
 
+msgid "Delete mark"
+msgstr ""
+
 msgid "Execute the selected program"
 msgstr ""
 
 msgid "Edit the selected program"
+msgstr ""
+
+msgid "Add new program"
+msgstr ""
+
+msgid "Remove selected program"
+msgstr ""
+
+msgid "Clone selected program"
+msgstr ""
+
+msgid "Move selected program up"
+msgstr ""
+
+msgid "Move selected program down"
 msgstr ""
 
 msgid "\\SatCom on standby"
@@ -999,6 +1023,9 @@ msgid "OK\\Close program editor and return to game"
 msgstr ""
 
 msgid "Cancel\\Cancel all changes"
+msgstr ""
+
+msgid "Clone program"
 msgstr ""
 
 msgid "Open (Ctrl+o)"

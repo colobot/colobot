@@ -29,6 +29,12 @@
 #include "common/logger.h"
 #include "common/misc.h"
 #include "common/restext.h"
+#include "common/resources/resourcemanager.h"
+
+#if PLATFORM_WINDOWS
+    #include <windows.h>
+    #include "app/system_windows.h"
+#endif
 
 
 /* Doxygen main page */
@@ -71,8 +77,6 @@ The current layout is the following:
  - src/script - link with the CBot library
 */
 
-#include "common/resources/resourcemanager.h"
-
 //! Entry point to the program
 extern "C"
 {
@@ -80,6 +84,26 @@ extern "C"
 int SDL_MAIN_FUNC(int argc, char *argv[])
 {
     CLogger logger; // single istance of logger
+
+    // Workaround for character encoding in argv on Windows
+    #if PLATFORM_WINDOWS
+    int wargc;
+    wchar_t** wargv = CommandLineToArgvW(GetCommandLineW(), &wargc);
+    if(wargv == nullptr)
+    {
+        logger.Error("CommandLineToArgvW failed\n");
+        return 1;
+    }
+    argv = new char*[wargc];
+    for(int i = 0; i < wargc; i++) {
+        std::wstring warg = wargv[i];
+        std::string arg = CSystemUtilsWindows::UTF8_Encode(warg);
+        argv[i] = new char[arg.length()+1];
+        strcpy(argv[i], arg.c_str());
+    }
+    LocalFree(wargv);
+    #endif
+
     CResourceManager manager(argv[0]);
 
     // Initialize static string arrays
@@ -128,6 +152,12 @@ int SDL_MAIN_FUNC(int argc, char *argv[])
     }
 
     logger.Info("Exiting with code %d\n", code);
+
+    #if PLATFORM_WINDOWS
+    // See the workaround above
+    delete[] argv;
+    #endif
+
     return code;
 }
 

@@ -398,7 +398,28 @@ bool CAutoConvert::Read(CLevelParserLine* line)
 
 CObject* CAutoConvert::SearchStone(ObjectType type)
 {
-    return CObjectManager::GetInstancePointer()->FindNearest(m_object, type, 5.0f/g_unit);
+    CObject*    pObj;
+    Math::Vector    cPos, oPos;
+    ObjectType  oType;
+    float       dist;
+
+    cPos = m_object->GetPosition(0);
+
+    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    {
+        pObj = it.second;
+
+        oType = pObj->GetType();
+        if ( oType != type )  continue;
+        if ( pObj->GetTruck() != 0 )  continue;
+
+        oPos = pObj->GetPosition(0);
+        dist = Math::Distance(oPos, cPos);
+
+        if ( dist <= 5.0f )  return pObj;
+    }
+
+    return 0;
 }
 
 // Search if a vehicle is too close.

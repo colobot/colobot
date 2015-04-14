@@ -42,6 +42,8 @@ class CEngine;
 class CCamera;
 };
 
+struct Program;
+
 namespace Ui {
 
 class CEdit;
@@ -66,15 +68,16 @@ public:
 
     bool        EventProcess(const Event &event);
 
-    void        StartEditScript(CScript *script, std::string name, int rank);
+    void        StartEditScript(CScript *script, std::string name, Program* program);
     bool        StopEditScript(bool bCancel);
+    
+    void        SetInfoText(std::string text, bool bClickable);
 
 protected:
     bool        EventFrame(const Event &event);
     void        SearchToken(CEdit* edit);
     void        ColorizeScript(CEdit* edit);
     void        AdjustEditScript();
-    void        SetInfoText(std::string text, bool bClickable);
     void        ViewEditScript();
     void        UpdateFlux();
     void        UpdateButtons();
@@ -104,7 +107,7 @@ protected:
     CApplication*    m_app;
     CPauseManager*   m_pause;
 
-    int         m_rank;
+    Program*    m_program;
     CScript*    m_script;
     Gfx::CameraType m_editCamera;
 

@@ -46,6 +46,7 @@ public:
     Error   StartTaskFlag(TaskFlagOrder order, int rank);
     Error   StartTaskBuild(ObjectType type);
     Error   StartTaskSearch();
+    Error   StartTaskDeleteMark();
     Error   StartTaskInfo(const char *name, float value, float power, bool bSend);
     Error   StartTaskTerraform();
     Error   StartTaskPen(bool bDown, int color);

@@ -29,6 +29,7 @@
 #include "common/iman.h"
 #include "common/image.h"
 #include "common/key.h"
+#include "common/pathman.h"
 #include "common/stringutils.h"
 #include "common/resources/resourcemanager.h"
 
@@ -104,6 +105,7 @@ CApplication::CApplication()
 {
     m_private       = new ApplicationPrivate();
     m_iMan          = new CInstanceManager();
+    m_pathManager   = new CPathManager();
     m_objMan        = new CObjectManager();
     m_eventQueue    = new CEventQueue();
     m_profile       = new CProfile();
@@ -151,20 +153,6 @@ CApplication::CApplication()
 
     m_mouseMode = MOUSE_SYSTEM;
 
-    #ifdef PORTABLE
-    m_dataPath = "./data";
-    m_langPath = "./lang";
-    #else
-    m_dataPath = GetSystemUtils()->GetDataPath();
-    m_langPath = GetSystemUtils()->GetLangPath();
-	#endif
-	
-	#ifdef DEV_BUILD
-    m_savePath = "./saves";
-    #else
-    m_savePath = GetSystemUtils()->GetSaveDir();
-    #endif
-
     m_runSceneName = "";
     m_runSceneRank = 0;
 
@@ -193,6 +181,9 @@ CApplication::~CApplication()
 
     delete m_profile;
     m_profile = nullptr;
+
+    delete m_pathManager;
+    m_pathManager = nullptr;
 
     delete m_iMan;
     m_iMan = nullptr;
@@ -376,26 +367,25 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
             }
             case OPT_DATADIR:
             {
-                m_dataPath = optarg;
+                m_pathManager->SetDataPath(optarg);
                 GetLogger()->Info("Using data dir: '%s'\n", optarg);
                 break;
             }
             case OPT_LANGDIR:
             {
-                m_langPath = optarg;
+                m_pathManager->SetLangPath(optarg);
                 GetLogger()->Info("Using language dir: '%s'\n", optarg);
                 break;
             }
             case OPT_SAVEDIR:
             {
-                m_savePath = optarg;
+                m_pathManager->SetSavePath(optarg);
                 GetLogger()->Info("Using save dir: '%s'\n", optarg);
                 break;
             }
             case OPT_MOD:
             {
-                GetLogger()->Info("Loading mod: '%s'\n", optarg);
-                CResourceManager::AddLocation(optarg, true);
+                m_pathManager->AddMod(optarg);
                 break;
             }
             case OPT_RESOLUTION:
@@ -430,28 +420,12 @@ bool CApplication::Create()
 
     GetLogger()->Info("Creating CApplication\n");
 
-    boost::filesystem::path dataPath(m_dataPath);
-    if (! (boost::filesystem::exists(dataPath) && boost::filesystem::is_directory(dataPath)) )
-    {
-        GetLogger()->Error("Data directory '%s' doesn't exist or is not a directory\n", m_dataPath.c_str());
-        m_errorMessage = std::string("Could not read from data directory:\n") +
-        std::string("'") + m_dataPath + std::string("'\n") +
-        std::string("Please check your installation, or supply a valid data directory by -datadir option.");
+    m_errorMessage = m_pathManager->VerifyPaths();
+    if(!m_errorMessage.empty()) {
         m_exitCode = 1;
         return false;
     }
-
-    boost::filesystem::create_directories(m_savePath);
-    boost::filesystem::create_directories(m_savePath+"/mods");
-
-    LoadModsFromDir(m_dataPath+"/mods");
-    LoadModsFromDir(m_savePath+"/mods");
-
-    GetLogger()->Info("Data path: %s\n", m_dataPath.c_str());
-    GetLogger()->Info("Save path: %s\n", m_savePath.c_str());
-    CResourceManager::AddLocation(m_dataPath, false);
-    CResourceManager::SetSaveLocation(m_savePath);
-    CResourceManager::AddLocation(m_savePath, true);
+    m_pathManager->InitPaths();
 
     if (!GetProfile().Init())
     {
@@ -525,12 +499,28 @@ bool CApplication::Create()
     if(!m_headless) {
         // load settings from profile
         int iValue;
-        if ( GetProfile().GetIntProperty("Setup", "Resolution", iValue) && !m_resolutionOverride )
+        std::string sValue;
+        if ( GetProfile().GetStringProperty("Setup", "Resolution", sValue) && !m_resolutionOverride )
         {
+            std::istringstream resolution(sValue);
+            std::string ws, hs;
+            std::getline(resolution, ws, 'x');
+            std::getline(resolution, hs, 'x');
+            int w = 800, h = 600;
+            if(!ws.empty() && !hs.empty()) {
+                w = atoi(ws.c_str());
+                h = atoi(hs.c_str());
+            }
+
+            // Why not just set m_deviceConfig.size to w,h? Because this way if the resolution is no longer supported (e.g. changimg monitor) defaults will be used instead
             std::vector<Math::IntPoint> modes;
             GetVideoResolutionList(modes, true, true);
-            if (static_cast<unsigned int>(iValue) < modes.size())
-                m_deviceConfig.size = modes.at(iValue);
+            for(auto it = modes.begin(); it != modes.end(); ++it) {
+                if(it->x == w && it->y == h) {
+                    m_deviceConfig.size = *it;
+                    break;
+                }
+            }
         }
 
         if ( GetProfile().GetIntProperty("Setup", "Fullscreen", iValue) && !m_resolutionOverride )
@@ -651,23 +641,6 @@ bool CApplication::CreateVideoSurface()
                                           m_deviceConfig.bpp, videoFlags);
 
     return true;
-}
-
-void CApplication::LoadModsFromDir(const std::string &dir)
-{
-    try {
-        boost::filesystem::directory_iterator iterator(dir);
-        for(; iterator != boost::filesystem::directory_iterator(); ++iterator)
-        {
-            std::string fn = iterator->path().string();
-            CLogger::GetInstancePointer()->Info("Loading mod: '%s'\n", fn.c_str());
-            CResourceManager::AddLocation(fn, false);
-        }
-    }
-    catch(std::exception &e)
-    {
-        CLogger::GetInstancePointer()->Warn("Unable to load mods from directory '%s': %s\n", dir.c_str(), e.what());
-    }
 }
 
 void CApplication::Destroy()
@@ -1087,6 +1060,18 @@ Event CApplication::ProcessSystemEvent()
         event.key.key = m_private->currentEvent.key.keysym.sym;
         event.key.unicode = m_private->currentEvent.key.keysym.unicode;
         event.kmodState = m_private->currentEvent.key.keysym.mod;
+
+        // Some keyboards return numerical enter keycode instead of normal enter
+        // See issue #427 for details
+        if(event.key.key == KEY(KP_ENTER))
+            event.key.key = KEY(RETURN);
+
+        if(event.key.key == KEY(TAB) && ((event.kmodState & KEY_MOD(ALT)) != 0))
+        {
+            GetLogger()->Debug("Minimize to taskbar\n");
+            SDL_WM_IconifyWindow();
+            event.type = EVENT_NULL;
+        }
     }
     else if ( (m_private->currentEvent.type == SDL_MOUSEBUTTONDOWN) ||
          (m_private->currentEvent.type == SDL_MOUSEBUTTONUP) )
@@ -1227,17 +1212,10 @@ Event CApplication::CreateVirtualEvent(const Event& sourceEvent)
     {
         virtualEvent.type = sourceEvent.type;
         virtualEvent.key = sourceEvent.key;
+        virtualEvent.key.key = GetVirtualKey(sourceEvent.key.key);
         virtualEvent.key.virt = true;
 
-        if (sourceEvent.key.key == KEY(LCTRL) || sourceEvent.key.key == KEY(RCTRL))
-            virtualEvent.key.key = VIRTUAL_KMOD(CTRL);
-        else if (sourceEvent.key.key == KEY(LSHIFT) || sourceEvent.key.key == KEY(RSHIFT))
-            virtualEvent.key.key = VIRTUAL_KMOD(SHIFT);
-        else if (sourceEvent.key.key == KEY(LALT) || sourceEvent.key.key == KEY(RALT))
-            virtualEvent.key.key = VIRTUAL_KMOD(ALT);
-        else if (sourceEvent.key.key == KEY(LMETA) || sourceEvent.key.key == KEY(RMETA))
-            virtualEvent.key.key = VIRTUAL_KMOD(META);
-        else
+        if(virtualEvent.key.key == sourceEvent.key.key)
             virtualEvent.type = EVENT_NULL;
     }
     else if ((sourceEvent.type == EVENT_JOY_BUTTON_DOWN) || (sourceEvent.type == EVENT_JOY_BUTTON_UP))
@@ -1255,6 +1233,8 @@ Event CApplication::CreateVirtualEvent(const Event& sourceEvent)
     {
         virtualEvent.type = EVENT_NULL;
     }
+
+    m_input->EventProcess(virtualEvent);
 
     return virtualEvent;
 }
@@ -1709,10 +1689,35 @@ void CApplication::SetLanguage(Language language)
         putenv(S_LANGUAGE);
         GetLogger()->Trace("SetLanguage: Set LANGUAGE=%s in environment\n", locale.c_str());
     }
-    
-    std::locale::global(std::locale(std::locale(""), "C", std::locale::numeric));
 
-    bindtextdomain("colobot", m_langPath.c_str());
+    char* defaultLocale = setlocale(LC_ALL, ""); // Load system locale
+    setlocale(LC_NUMERIC, "C"); // Force numeric locale to "C" (fixes decimal point problems)
+    char* systemLocale = setlocale(LC_ALL, nullptr); // Get current locale configuration
+    GetLogger()->Debug("Default system locale: %s\n", defaultLocale);
+    GetLogger()->Debug("Setting locale: %s\n", systemLocale);
+    // Update C++ locale
+    try
+    {
+        std::locale::global(std::locale(systemLocale));
+    }
+    catch(...)
+    {
+        GetLogger()->Warn("Failed to update locale, possibly incorect system configuration. Will fallback to classic locale.\n");
+        try
+        {
+            std::locale::global(std::locale::classic());
+        }
+        catch(...)
+        {
+            GetLogger()->Warn("Failed to set classic locale. Something is really messed up in your system configuration. Translations might not work.\n");
+        }
+
+        // C locale might still work correctly
+        setlocale(LC_ALL, "");
+        setlocale(LC_NUMERIC, "C");
+    }
+
+    bindtextdomain("colobot", m_pathManager->GetLangPath().c_str());
     bind_textdomain_codeset("colobot", "UTF-8");
     textdomain("colobot");
 

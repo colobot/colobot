@@ -25,12 +25,11 @@
 
 #include "clipboard/clipboard.h"
 
-#include "object/robotmain.h"
-
-#include "object/level/parserparam.h"
-
+#include "common/pathman.h"
 #include "common/resources/inputstream.h"
 #include "common/resources/outputstream.h"
+
+#include "object/robotmain.h"
 
 #include <string.h>
 #include <boost/algorithm/string.hpp>
@@ -451,7 +450,7 @@ bool CEdit::EventProcess(const Event &event)
             return true;
         }
 
-        if ( event.key.key == ( KEY(RETURN) && !bControl ) || ( KEY(KP_ENTER) && !bControl ) )
+        if ( event.key.key == KEY(RETURN) && !bControl )
         {
             Insert('\n');
             SendModifEvent();
@@ -788,7 +787,7 @@ void CEdit::HyperJump(std::string name, std::string marker)
     sMarker = marker;
 
     filename = name + std::string(".txt");
-    filename = CLevelParserParam::InjectLevelDir(filename, "help/%lng%");
+    filename = CPathManager::InjectLevelDir(filename, "help/%lng%");
     boost::replace_all(filename, "\\", "/"); //TODO: Fix this in files
 
     if ( ReadText(filename) )
@@ -1144,7 +1143,7 @@ void CEdit::DrawImage(Math::Point pos, std::string name, float width,
     std::string filename;
 
     filename = name + ".png";
-    filename = CLevelParserParam::InjectLevelDir(filename, "icons");
+    filename = CPathManager::InjectLevelDir(filename, "icons");
     boost::replace_all(filename, "\\", "/"); //TODO: Fix this in files
 
     m_engine->SetTexture(filename);
@@ -1434,7 +1433,7 @@ void CEdit::LoadImage(std::string name)
 {
     std::string filename;
     filename = name + ".png";
-    filename = CLevelParserParam::InjectLevelDir(filename, "icons");
+    filename = CPathManager::InjectLevelDir(filename, "icons");
     boost::replace_all(filename, "\\", "/"); //TODO: Fix this in files
     m_engine->LoadTexture(filename);
 }
@@ -1637,6 +1636,10 @@ bool CEdit::ReadText(std::string filename, int addSize)
                 // A part of image per line of text.
                 for ( iCount=0 ; iCount<iLines ; iCount++ )
                 {
+                    if(iIndex >= EDITIMAGEMAX) {
+                        CLogger::GetInstancePointer()->Warn("Too many images, current limit is %d image lines. This limit will be removed in the future.\n", EDITIMAGEMAX);
+                        break;
+                    }
                     m_image[iIndex].name = iName;
                     m_image[iIndex].offset = static_cast<float>(iCount/iLines);
                     m_image[iIndex].height = 1.0f/iLines;
@@ -1659,14 +1662,12 @@ bool CEdit::ReadText(std::string filename, int addSize)
                   buffer[i+6] == 'n'  &&
                   buffer[i+7] == ' '  )
         {
-            /* TODO: \button X; isn't working. Issue #232
             if ( m_bSoluce || !bInSoluce )
             {
                 m_text[j] = GetValueParam(buffer+i+8, 0);
                 m_format[j] = font|Gfx::FONT_BUTTON;
                 j ++;
             }
-            */
             i += strchr(buffer+i, ';')-(buffer+i)+1;
         }
         else if ( //m_format.size() > 0       &&
@@ -1880,12 +1881,6 @@ bool CEdit::WriteText(std::string filename)
         }
 
         buffer[j++] = m_text[i];
-
-        if ( m_text[i] == '\n' )
-        {
-            buffer[j-1] = '\r';
-            buffer[j++] = '\n';  // \r\n (0x0D, 0x0A)
-        }
 
         if ( j >= 1000-1 )
         {

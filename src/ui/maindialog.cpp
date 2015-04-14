@@ -64,6 +64,7 @@
 #include <sstream>
 #include <iomanip>
 #include <vector>
+#include <boost/lexical_cast.hpp>
 
 //TODO Get rid of all sprintf's
 
@@ -1844,17 +1845,17 @@ bool CMainDialog::EventProcess(const Event &event)
 
         if ( m_phase == PHASE_WELCOME1 && m_phaseTime >= welcomeLength )
         {
-            ChangePhase(PHASE_WELCOME2);
+            m_main->ChangePhase(PHASE_WELCOME2);
             return true;
         }
         if ( m_phase == PHASE_WELCOME2 && m_phaseTime >= welcomeLength )
         {
-            ChangePhase(PHASE_WELCOME3);
+            m_main->ChangePhase(PHASE_WELCOME3);
             return true;
         }
         if ( m_phase == PHASE_WELCOME3 && m_phaseTime >= welcomeLength )
         {
-            ChangePhase(PHASE_NAME);
+            m_main->ChangePhase(PHASE_NAME);
             return true;
         }
 
@@ -1983,7 +1984,9 @@ bool CMainDialog::EventProcess(const Event &event)
                     //?                 StartQuit();  // would you leave?
                     m_sound->Play(SOUND_TZOING);
                     m_main->ChangePhase(PHASE_GENERIC);
+                    return false;
                 }
+                return true;
                 break;
 
             case EVENT_INTERFACE_QUIT:
@@ -2021,7 +2024,7 @@ bool CMainDialog::EventProcess(const Event &event)
                 break;
 
             default:
-                break;
+                return true;
         }
         return false;
     }
@@ -2270,7 +2273,7 @@ bool CMainDialog::EventProcess(const Event &event)
                 break;
 
             default:
-                break;
+                return true;
         }
         return false;
     }
@@ -2773,7 +2776,7 @@ bool CMainDialog::EventProcess(const Event &event)
         if ( event.type == EVENT_KEY_DOWN     ||
                 event.type == EVENT_MOUSE_BUTTON_DOWN )
         {
-            ChangePhase(PHASE_WELCOME2);
+            m_main->ChangePhase(PHASE_WELCOME2);
             return true;
         }
     }
@@ -2782,7 +2785,7 @@ bool CMainDialog::EventProcess(const Event &event)
         if ( event.type == EVENT_KEY_DOWN     ||
                 event.type == EVENT_MOUSE_BUTTON_DOWN )
         {
-            ChangePhase(PHASE_WELCOME3);
+            m_main->ChangePhase(PHASE_WELCOME3);
             return true;
         }
     }
@@ -2791,7 +2794,7 @@ bool CMainDialog::EventProcess(const Event &event)
         if ( event.type == EVENT_KEY_DOWN     ||
                 event.type == EVENT_MOUSE_BUTTON_DOWN )
         {
-            ChangePhase(PHASE_NAME);
+            m_main->ChangePhase(PHASE_NAME);
             return true;
         }
     }
@@ -3339,13 +3342,13 @@ void CMainDialog::NiceParticle(Math::Point mouse, bool bPress)
 
 // Builds the file name of a mission.
 
-void CMainDialog::BuildSceneName(std::string &filename, char *base, int rank, bool sceneFile)
+void CMainDialog::BuildScenePath(std::string &filename, char *base, int rank, bool sceneFile)
 {
     //TODO: Support for more than 9 chapters
     int chapter = rank/100;
     int new_rank = rank%100;
     
-    filename = CLevelParser::BuildSceneName(std::string(base), chapter, new_rank, sceneFile);
+    filename = CLevelParser::BuildScenePath(std::string(base), chapter, new_rank, sceneFile);
 }
 
 // Built the default descriptive name of a mission.
@@ -3967,59 +3970,34 @@ void CMainDialog::IOReadName()
 {
     CWindow*    pw;
     CEdit*      pe;
-    std::string filename;
-    char        op[100];
-    char        op_i18n[100];
-    char        line[500];
-    char        resume[100];
+    std::string resume;
+    char        line[100];
     char        name[100];
     time_t      now;
-    int         i;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
     if ( pw == nullptr )  return;
     pe = static_cast<CEdit*>(pw->SearchControl(EVENT_INTERFACE_IONAME));
     if ( pe == nullptr )  return;
 
-    //TODO: CLevelParser
-    sprintf(resume, "%s %d", m_sceneName, m_chap[m_index]+1);
-    BuildSceneName(filename, m_sceneName, (m_chap[m_index]+1)*100);
-    sprintf(op, "Title.E");
-    sprintf(op_i18n, "Title.%c", m_app->GetLanguageChar() );
+    resume = std::string(m_sceneName) + " " + boost::lexical_cast<std::string>(m_chap[m_index]+1);
 
-    CInputStream stream;
-    stream.open(filename);
-    
-    if (stream.is_open())
+    CLevelParser* level = new CLevelParser(m_sceneName, m_chap[m_index]+1, 0);
+    try
     {
-        while (stream.getline(line, 500))
-        {
-            for ( i=0 ; i<500 ; i++ )
-            {
-                if ( line[i] == '\t' )  line[i] = ' ';  // replaces tab by space
-                if ( line[i] == '/' && line[i+1] == '/' )
-                {
-                    line[i] = 0;
-                    break;
-                }
-            }
-
-            if ( Cmd(line, op) )
-            {
-                OpString(line, "resume", resume);
-            }
-            if ( Cmd(line, op_i18n) )
-            {
-                OpString(line, "resume", resume);
-                break;
-            }
-        }
-        stream.close();
+        level->Load();
+        resume = level->Get("Title")->GetParam("resume")->AsString();
+    }
+    catch(CLevelParserException& e)
+    {
+        CLogger::GetInstancePointer()->Warn("%s\n", e.what());
     }
 
     time(&now);
     TimeToAsciiClean(now, line);
-    sprintf(name, "%s - %s %d", line, resume, m_sel[m_index]+1);
+    sprintf(name, "%s - %s %d", line, resume.c_str(), m_sel[m_index]+1);
+    delete level;
+
     pe->SetText(name);
     pe->SetCursor(strlen(name), 0);
     pe->SetFocus(true);
@@ -5034,12 +5012,12 @@ void CMainDialog::SetupMemorize()
         pl = static_cast<CList *>(pw->SearchControl(EVENT_LIST2));
         if ( pl != 0 )
         {
-            GetProfile().SetIntProperty("Setup", "Resolution", m_setupSelMode);
+            std::vector<Math::IntPoint> modes;
+            m_app->GetVideoResolutionList(modes, true, true);
+            std::ostringstream ss;
+            ss << modes[m_setupSelMode].x << "x" << modes[m_setupSelMode].y;
+            GetProfile().SetStringProperty("Setup", "Resolution", ss.str());
         }
-    }
-    else
-    {
-       // TODO: Default value
     }
 
     GetProfile().SetStringProperty("Setup", "KeyMap", CInput::GetInstancePointer()->SaveKeyBindings());
@@ -5261,9 +5239,26 @@ void CMainDialog::SetupRecall()
         m_bDeleteGamer = iValue;
     }
 
-    if ( GetProfile().GetIntProperty("Setup", "Resolution", iValue) )
+    if ( GetProfile().GetStringProperty("Setup", "Resolution", key) )
     {
-        m_setupSelMode = iValue;
+        std::istringstream resolution(key);
+        std::string ws, hs;
+        std::getline(resolution, ws, 'x');
+        std::getline(resolution, hs, 'x');
+        int w = 800, h = 600;
+        if(!ws.empty() && !hs.empty()) {
+            w = atoi(ws.c_str());
+            h = atoi(hs.c_str());
+        }
+
+        std::vector<Math::IntPoint> modes;
+        m_app->GetVideoResolutionList(modes, true, true);
+        for(auto it = modes.begin(); it != modes.end(); ++it) {
+            if(it->x == w && it->y == h) {
+                m_setupSelMode = it - modes.begin();
+                break;
+            }
+        }
     }
 
     if ( GetProfile().GetIntProperty("Setup", "Fullscreen", iValue) )

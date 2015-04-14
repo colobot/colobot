@@ -115,6 +115,9 @@ msgid "Access to solutions\\Show program \"4: Solution\" in the exercises"
 msgstr ""
 "Lösung zugänglich\\Die Lösung ist im Programmslot \"4: Lösung\" zugänglich"
 
+msgid "Add new program"
+msgstr ""
+
 msgid "Alien Queen"
 msgstr "Insektenkönigin"
 
@@ -392,6 +395,13 @@ msgstr "Checkpoint erreicht"
 msgid "Climb\\Increases the power of the jet"
 msgstr "Steigen\\Leistung des Triebwerks steigern"
 
+msgid "Clone program"
+msgstr ""
+
+#, fuzzy
+msgid "Clone selected program"
+msgstr "Gewähltes Programm bearbeiten"
+
 msgid "Close"
 msgstr "Schließen"
 
@@ -451,6 +461,10 @@ msgid "Defense tower"
 msgstr "Geschützturm"
 
 msgid "Delete"
+msgstr "Zerstören"
+
+#, fuzzy
+msgid "Delete mark"
 msgstr "Zerstören"
 
 msgid "Delete player\\Deletes the player from the list"
@@ -847,6 +861,14 @@ msgstr "Umkehr Y\\Umkehr der Kameradrehung Y-Achse"
 msgid "Mouse shadow\\Gives the mouse a shadow"
 msgstr "Schatten unter der Maus\\Ein Schatten erscheint unter der Maus"
 
+#, fuzzy
+msgid "Move selected program down"
+msgstr "Gewähltes Programm bearbeiten"
+
+#, fuzzy
+msgid "Move selected program up"
+msgstr "Gewähltes Programm bearbeiten"
+
 msgid "Mute\\No sound"
 msgstr "Kein Ton\\Keine Geräusche und Geräuschkulisse"
 
@@ -1114,6 +1136,10 @@ msgstr "Geschütztes Element (private)"
 msgid "Private\\Private folder"
 msgstr "Privat\\Privater Ordner"
 
+#, fuzzy
+msgid "Program cloned"
+msgstr "Programm beendet"
+
 msgid "Program editor"
 msgstr "Programmeditor"
 
@@ -1185,6 +1211,10 @@ msgstr "Überreste einer Apollo-Mission"
 
 msgid "Remove a flag"
 msgstr "Sammelt die Fahne ein"
+
+#, fuzzy
+msgid "Remove selected program"
+msgstr "Gewähltes Programm bearbeiten"
 
 #, fuzzy
 msgid "Render distance\\Maximum visibility"
@@ -1467,6 +1497,9 @@ msgstr "Dieses Label existiert nicht"
 
 msgid "This object is not a member of a class"
 msgstr "Das Objekt ist nicht eine Instanz einer Klasse"
+
+msgid "This program is read-only, clone it to edit"
+msgstr ""
 
 msgid "Thump (\\key action;)"
 msgstr "Stampfen (\\key action;)"

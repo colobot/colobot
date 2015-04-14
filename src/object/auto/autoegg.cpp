@@ -22,6 +22,7 @@
 
 #include "math/geometry.h"
 
+#include "object/brain.h"
 #include "object/objman.h"
 #include "object/level/parserline.h"
 #include "object/level/parserparam.h"
@@ -189,8 +190,13 @@ bool CAutoEgg::EventProcess(const Event &event)
             return true;
         }
         alien->SetActivity(false);
-        alien->ReadProgram(0, m_string);
-        alien->RunProgram(0);
+        CBrain* brain = alien->GetBrain();
+        if(brain != nullptr)
+        {
+            Program* program = brain->AddProgram();
+            brain->ReadProgram(program, m_string);
+            brain->RunProgram(program);
+        }
         Init();
     }
 

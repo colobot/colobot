@@ -41,6 +41,7 @@ class CRobotMain;
 class CBotVar;
 class CScript;
 class CLevelParserLine;
+struct Program;
 
 
 /**
@@ -401,9 +402,8 @@ public:
     bool        CreateRuin(Math::Vector pos, float angle, float height, ObjectType type);
     bool        CreateApollo(Math::Vector pos, float angle, ObjectType type);
 
-    bool        ReadProgram(int rank, const char* filename);
-    bool        WriteProgram(int rank, char* filename);
-    bool        RunProgram(int rank);
+    bool        ReadProgram(Program* program, const char* filename);
+    bool        WriteProgram(Program* program, char* filename);
 
     int         GetShadowLight();
     int         GetEffectLight();
@@ -471,8 +471,8 @@ public:
     Math::Vector    GetResetPosition();
     void        SetResetAngle(const Math::Vector &angle);
     Math::Vector    GetResetAngle();
-    void        SetResetRun(int run);
-    int         GetResetRun();
+    void        SetResetRun(Program* run);
+    Program*    GetResetRun();
 
     void        SetMasterParticle(int part, int parti);
     int         GetMasterParticle(int part);
@@ -765,7 +765,7 @@ protected:
     bool        m_bResetBusy;
     Math::Vector    m_resetPosition;
     Math::Vector    m_resetAngle;
-    int         m_resetRun;
+    Program*        m_resetRun;
 
     int         m_infoTotal;
     Info        m_info[OBJECTMAXINFO];

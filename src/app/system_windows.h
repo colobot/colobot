@@ -48,9 +48,9 @@ public:
 
     virtual std::string GetSaveDir() override;
 
-private:
-    std::string UTF8_Encode(const std::wstring &wstr);
-    std::wstring UTF8_Decode(const std::string &str);
+public:
+    static std::string UTF8_Encode(const std::wstring &wstr);
+    static std::wstring UTF8_Decode(const std::string &str);
 
 protected:
     long long m_counterFrequency;

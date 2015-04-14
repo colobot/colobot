@@ -58,6 +58,9 @@ enum VirtualKmod
 // So it is the same as other macros
 #define VIRTUAL_KMOD(x) VIRTUAL_KMOD_ ## x
 
+//! Converts individual codes to virtual keys if needed
+unsigned int GetVirtualKey(unsigned int key);
+
 // Virtual key code generated on joystick button presses
 // num is number of joystick button
 #define VIRTUAL_JOY(num) (SDLK_LAST + 200 + num)

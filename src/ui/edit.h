@@ -55,7 +55,7 @@ const int EDITSTUDIOMAX     = 20000;
 //! maximum total number of lines
 const int EDITLINEMAX       = 1000;
 //! maximum total number of lines with images
-const int EDITIMAGEMAX      = 50;
+const int EDITIMAGEMAX      = 100;
 //! maximum number of links
 const int EDITLINKMAX       = 100;
 //! max number of levels preserves

@@ -115,6 +115,9 @@ enum ResTextType
     RT_STUDIO_LISTTT        = 120,
     RT_STUDIO_COMPOK        = 121,
     RT_STUDIO_PROGSTOP      = 122,
+    RT_STUDIO_CLONED        = 123,
+
+    RT_PROGRAM_READONLY     = 130,
 
     RT_SATCOM_LIST          = 140,
     RT_SATCOM_BOT           = 141,

@@ -22,6 +22,8 @@
 
 #include "app/app.h"
 
+#include "common/config.h"
+#include "common/pathman.h"
 #include "common/resources/inputstream.h"
 #include "common/resources/resourcemanager.h"
 
@@ -30,10 +32,11 @@
 
 #include "math/all.h"
 
+#include "object/brain.h"
 #include "object/object.h"
+#include "object/objman.h"
 #include "object/robotmain.h"
 #include "object/task/taskmanager.h"
-#include "object/objman.h"
 
 #include "object/auto/auto.h"
 #include "object/auto/autofactory.h"
@@ -47,6 +50,10 @@
 #include "sound/sound.h"
 
 #include "ui/displaytext.h"
+
+#if PLATFORM_WINDOWS
+    #include "app/system_windows.h"
+#endif
 
 
 
@@ -1702,10 +1709,14 @@ bool CScriptFunctions::rProduce(CBotVar* var, CBotVar* result, int& exception, v
     
     if (name[0] != 0)
     {
-        //TODO: Add %lvl% support
-        std::string name2 = std::string("ai/")+name;
-        object->ReadProgram(0, name2.c_str());
-        object->RunProgram(0);
+        std::string name2 = CPathManager::InjectLevelDir(name, "ai");
+        CBrain* brain = object->GetBrain();
+        if(brain != nullptr)
+        {
+            Program* program = brain->AddProgram();
+            brain->ReadProgram(program, name2.c_str());
+            brain->RunProgram(program);
+        }
     }
     
     result->SetValInt(0);  // no error
@@ -3245,6 +3256,11 @@ void PrepareFilename(CBotString &filename)
         filename = filename.Mid(pos+1);  // also removes the drive letter C:
     }
     
+    #if PLATFORM_WINDOWS
+    boost::filesystem::create_directories(CSystemUtilsWindows::UTF8_Decode(CScriptFunctions::m_filesDir));
+    #else
+    boost::filesystem::create_directories(CScriptFunctions::m_filesDir);
+    #endif
     filename = CBotString(CScriptFunctions::m_filesDir.c_str()) + CBotString("/") + filename;
     CLogger::GetInstancePointer()->Debug("CBot accessing file '%s'\n", static_cast<const char*>(filename));
 }

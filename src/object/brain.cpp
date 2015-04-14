@@ -72,7 +72,8 @@ CBrain::CBrain(CObject* object)
     m_secondaryTask = nullptr;
     m_studio      = nullptr;
 
-    m_program = -1;
+    m_program.clear();
+    m_currentProgram = nullptr;
     m_bActivity = true;
     m_bBurn = false;
     m_bActiveVirus = false;
@@ -91,12 +92,7 @@ CBrain::CBrain(CObject* object)
     m_defaultEnter = EVENT_NULL;
     m_manipStyle   = EVENT_OBJECT_MFRONT;
 
-    for (int i=0 ; i<BRAINMAXSCRIPT ; i++ )
-    {
-        m_script[i] = 0;
-        m_scriptName[i][0] = 0;
-    }
-    m_scriptRun = -1;
+    m_scriptRun = nullptr;
     m_soluceName[0] = 0;
     m_selScript = 0;
 
@@ -108,11 +104,13 @@ CBrain::CBrain(CObject* object)
 
 CBrain::~CBrain()
 {
-    for (int i=0 ; i<BRAINMAXSCRIPT ; i++ )
+    for(auto x : m_program)
     {
-        delete m_script[i];
-        m_script[i] = nullptr;
+        delete x->script;
+        x->script = nullptr;
+        delete x;
     }
+    m_program.clear();
 
     delete m_primaryTask;
     m_primaryTask = nullptr;
@@ -247,6 +245,54 @@ bool CBrain::EventProcess(const Event &event)
         action = event.type;
     }
 
+    if(event.type == EVENT_KEY_DOWN && m_object->GetSelect())
+    {
+        bool bControl = (event.kmodState & KEY_MOD(CTRL)) != 0;
+        bool bAlt = (event.kmodState & KEY_MOD(ALT)) != 0;
+        CEventQueue* queue = CApplication::GetInstancePointer()->GetEventQueue();
+
+        if(event.key.slot == INPUT_SLOT_ACTION && bControl)
+        {
+            Event newEvent = event;
+            newEvent.type = (m_studio == nullptr ? EVENT_OBJECT_PROGEDIT : EVENT_STUDIO_OK);
+            queue->AddEvent(newEvent);
+            return false;
+        }
+
+        if(event.key.slot == INPUT_SLOT_ACTION && bAlt)
+        {
+            Event newEvent = event;
+            newEvent.type = EVENT_OBJECT_PROGRUN;
+            queue->AddEvent(newEvent);
+            return false;
+        }
+
+        if(bAlt)
+        {
+            int index = GetSelScript();
+            if(event.key.slot == INPUT_SLOT_UP)
+                index--;
+            else if(event.key.slot == INPUT_SLOT_DOWN)
+                index++;
+            else if(event.key.key >= KEY(1) && event.key.key <= KEY(9))
+                index = event.key.key-KEY(1);
+            else if(event.key.key == KEY(0))
+                index = 9;
+            if(index < 0) index = m_program.size()-1;
+            if(index > static_cast<int>(m_program.size())-1) index = 0;
+
+            if(GetSelScript() != index)
+            {
+                SetSelScript(index);
+
+                Event newEvent = event;
+                newEvent.type = EVENT_OBJECT_PROGLIST;
+                queue->AddEvent(newEvent);
+                return false;
+            }
+        }
+    }
+
     if ( action == EVENT_NULL )  return true;
 
     if ( action == EVENT_UPDINTERFACE )
@@ -266,9 +312,12 @@ bool CBrain::EventProcess(const Event &event)
 
         if ( action == EVENT_OBJECT_PROGRUN )
         {
-            if ( m_program == -1 )
+            if ( m_currentProgram == nullptr )
             {
-                RunProgram(m_selScript);
+                if(m_selScript < m_program.size())
+                {
+                    RunProgram(m_program[m_selScript]);
+                }
             }
             else
             {
@@ -278,7 +327,10 @@ bool CBrain::EventProcess(const Event &event)
         if ( action == EVENT_OBJECT_PROGSTART )
         {
             m_main->SaveOneScript(m_object);
-            RunProgram(m_selScript);
+            if(m_selScript < m_program.size())
+            {
+                RunProgram(m_program[m_selScript]);
+            }
         }
         if ( action == EVENT_OBJECT_PROGSTOP )
         {
@@ -294,11 +346,33 @@ bool CBrain::EventProcess(const Event &event)
             StopEditScript(true);
             m_main->SaveOneScript(m_object);
         }
+        if( action == EVENT_STUDIO_CLONE )
+        {
+            StopEditScript(false);
+            Program* newProgram = CloneProgram(m_program[m_selScript]);
+            m_selScript = m_program.size()-1;
+            m_main->SaveOneScript(m_object);
+
+            UpdateInterface();
+            Ui::CWindow* pw = static_cast< Ui::CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
+            if ( pw != 0 )
+            {
+                UpdateScript(pw);
+            }
+            SetSelScript(m_selScript);
+
+            StartEditScript(newProgram, "");
+
+            std::string res;
+            GetResource(RES_TEXT, RT_STUDIO_CLONED, res);
+            m_studio->SetInfoText(res, false);
+        }
+
         return true;
     }
 
     if ( !m_object->GetSelect() &&  // robot pas sélectionné  ?
-         m_program == -1        &&
+         m_currentProgram == nullptr &&
          m_primaryTask == 0     )
     {
         axeX = 0.0f;
@@ -336,7 +410,7 @@ bool CBrain::EventProcess(const Event &event)
         return true;
     }
 
-    if ( m_program != -1     &&
+    if ( m_currentProgram != nullptr     &&
          m_object->GetRuin() )
     {
         StopProgram();
@@ -356,7 +430,7 @@ bool CBrain::EventProcess(const Event &event)
         }
     }
     if ( m_primaryTask != 0 ||  // current task?
-         m_program != -1    )
+         m_currentProgram != nullptr )
     {
         if ( action == EVENT_OBJECT_PROGRUN )
         {
@@ -364,9 +438,99 @@ bool CBrain::EventProcess(const Event &event)
         }
         if ( action == EVENT_OBJECT_PROGEDIT )
         {
-            StartEditScript(m_selScript, m_main->GetScriptName());
+            if(m_selScript < m_program.size())
+            {
+                StartEditScript(m_program[m_selScript], m_main->GetScriptName());
+            }
         }
+
         if ( m_primaryTask == 0 || !m_primaryTask->IsPilot() )  return true;
+    }
+
+    if ( m_currentProgram == nullptr )
+    {
+        if( action == EVENT_OBJECT_PROGADD )
+        {
+            AddProgram();
+            m_selScript = m_program.size()-1;
+            m_main->SaveOneScript(m_object);
+
+            UpdateInterface();
+            Ui::CWindow* pw = static_cast< Ui::CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
+            if ( pw != 0 )
+            {
+                UpdateScript(pw);
+            }
+            SetSelScript(m_selScript);
+        }
+
+        if( action == EVENT_OBJECT_PROGREMOVE )
+        {
+            if(m_selScript < m_program.size())
+            {
+                RemoveProgram(m_program[m_selScript]);
+                if(m_selScript >= m_program.size())
+                    m_selScript = m_program.size()-1;
+                m_main->SaveOneScript(m_object);
+
+                UpdateInterface();
+                Ui::CWindow* pw = static_cast< Ui::CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
+                if ( pw != 0 )
+                {
+                    UpdateScript(pw);
+                }
+                SetSelScript(m_selScript);
+            }
+        }
+
+        if( action == EVENT_OBJECT_PROGCLONE )
+        {
+            if(m_selScript < m_program.size())
+            {
+                CloneProgram(m_program[m_selScript]);
+                m_selScript = m_program.size()-1;
+                m_main->SaveOneScript(m_object);
+
+                UpdateInterface();
+                Ui::CWindow* pw = static_cast< Ui::CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
+                if ( pw != 0 )
+                {
+                    UpdateScript(pw);
+                }
+                SetSelScript(m_selScript);
+            }
+        }
+
+
+        if( action == EVENT_OBJECT_PROGMOVEUP )
+        {
+            std::iter_swap(m_program.begin() + m_selScript, m_program.begin() + m_selScript - 1);
+            m_selScript--;
+            m_main->SaveOneScript(m_object);
+
+            UpdateInterface();
+            Ui::CWindow* pw = static_cast< Ui::CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
+            if ( pw != 0 )
+            {
+                UpdateScript(pw);
+            }
+            SetSelScript(m_selScript);
+        }
+
+        if( action == EVENT_OBJECT_PROGMOVEDOWN )
+        {
+            std::iter_swap(m_program.begin() + m_selScript, m_program.begin() + m_selScript + 1);
+            m_selScript++;
+            m_main->SaveOneScript(m_object);
+
+            UpdateInterface();
+            Ui::CWindow* pw = static_cast< Ui::CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
+            if ( pw != 0 )
+            {
+                UpdateScript(pw);
+            }
+            SetSelScript(m_selScript);
+        }
     }
 
     if ( action == EVENT_OBJECT_LEFT    ||
@@ -430,19 +594,25 @@ bool CBrain::EventProcess(const Event &event)
 
     if ( action == EVENT_OBJECT_PROGEDIT )
     {
-        StartEditScript(m_selScript, m_main->GetScriptName());
+        if(m_selScript < m_program.size())
+        {
+            StartEditScript(m_program[m_selScript], m_main->GetScriptName());
+        }
     }
 
     if ( action == EVENT_OBJECT_PROGRUN )
     {
         StopProgram();  // stops the current program
-        RunProgram(m_selScript);
+        if(m_selScript < m_program.size())
+        {
+            RunProgram(m_program[m_selScript]);
+        }
         UpdateInterface();
     }
 
     err = ERR_OK;
 
-    if ( m_program == -1 )
+    if ( m_currentProgram == nullptr )
     {
         if ( action == EVENT_OBJECT_HTAKE )
         {
@@ -565,6 +735,11 @@ bool CBrain::EventProcess(const Event &event)
         {
             err = StartTaskSearch();
         }
+        
+        if ( action == EVENT_OBJECT_DELSEARCH )
+	{
+	    err = StartTaskDeleteMark();
+	}
 
         if ( action == EVENT_OBJECT_TERRAFORM )
         {
@@ -773,9 +948,9 @@ bool CBrain::EventFrame(const Event &event)
     if ( !m_bActivity )  return true;  // expected if idle
     if ( EndedTask() == ERR_CONTINUE )  return true;  // expected if not finished ...
 
-    if ( m_program != -1 )  // current program?
+    if ( m_currentProgram != nullptr )  // current program?
     {
-        if ( m_script[m_program]->Continue(event) )
+        if ( m_currentProgram->script->Continue(event) )
         {
             StopProgram();
         }
@@ -799,15 +974,14 @@ void CBrain::StopProgram()
     if ( m_object->GetType() == OBJECT_HUMAN ||
          m_object->GetType() == OBJECT_TECH  )  return;
 
-    if ( m_program != -1 &&
-         m_script[m_program] != 0 )
+    if ( m_currentProgram != nullptr )
     {
-        m_script[m_program]->Stop();
+        m_currentProgram->script->Stop();
     }
 
     BlinkScript(false);  // stops flashing
 
-    m_program = -1;
+    m_currentProgram = nullptr;
 
     m_physics->SetMotorSpeedX(0.0f);
     m_physics->SetMotorSpeedY(0.0f);
@@ -854,14 +1028,11 @@ bool CBrain::IntroduceVirus()
 
     for ( i=0 ; i<50 ; i++ )
     {
-        j = rand()%BRAINMAXSCRIPT;
-        if ( m_script[j] != 0 )
+        j = rand()%m_program.size();
+        if ( m_program[j]->script->IntroduceVirus() )  // tries to introduce
         {
-            if ( m_script[j]->IntroduceVirus() )  // tries to introduce
-            {
-                m_bActiveVirus = true;  // active virus
-                return true;
-            }
+            m_bActiveVirus = true;  // active virus
+            return true;
         }
     }
     return false;
@@ -891,17 +1062,12 @@ bool CBrain::GetActiveVirus()
 
 // Start editing a program.
 
-void CBrain::StartEditScript(int rank, char* name)
+void CBrain::StartEditScript(Program* program, char* name)
 {
     CreateInterface(false);  // removes the control buttons
 
-    if ( m_script[rank] == 0 )
-    {
-        m_script[rank] = new CScript(m_object, &m_secondaryTask);
-    }
-
     m_studio = new Ui::CStudio();
-    m_studio->StartEditScript(m_script[rank], name, rank);
+    m_studio->StartEditScript(program->script, name, program);
 }
 
 // End of editing a program.
@@ -979,6 +1145,19 @@ Error CBrain::StartTaskSearch()
     UpdateInterface();
     return err;
 }
+
+// Delete mark on ground
+
+Error CBrain::StartTaskDeleteMark()
+{
+    StopTask();
+
+    m_primaryTask = new CTaskManager(m_object);
+    Error err = m_primaryTask->StartTaskDeleteMark();
+    UpdateInterface();
+    return err;
+}
+
 
 // Terraformed the ground.
 
@@ -1163,7 +1342,6 @@ void CBrain::ColorFlag(int color)
     UpdateInterface();
 }
 
-
 // Creates all the interface when the object is selected.
 
 bool CBrain::CreateInterface(bool bSelect)
@@ -1252,12 +1430,27 @@ bool CBrain::CreateInterface(bool bSelect)
         if (!(m_main->GetRetroMode()))
         {
             ddim.x = dim.x*5.1f;
-            ddim.y = dim.y*2.0f; // default => 2
+            ddim.y = dim.y*1.5f;
             pos.x = ox+sx*0.0f;
-            pos.y = oy+sy*0.0f;
+            pos.y = oy+sy*0.5f;
 
             pw->CreateList(pos, ddim, -1, EVENT_OBJECT_PROGLIST, -1.10f);
             UpdateScript(pw);
+
+            ddim.y = dim.y*0.5f;
+            pos.y = oy+sy*0.0f;
+            ddim.x = dim.x*1.1f;
+            pos.x = ox+sx*0.0f;
+            pw->CreateButton(pos, ddim, 24, EVENT_OBJECT_PROGADD);
+            ddim.x = dim.x*1.0f;
+            pos.x = ox+sx*1.1f;
+            pw->CreateButton(pos, ddim, 25, EVENT_OBJECT_PROGREMOVE);
+            pos.x = ox+sx*2.1f;
+            pw->CreateButton(pos, ddim, 61, EVENT_OBJECT_PROGCLONE);
+            pos.x = ox+sx*3.1f;
+            pw->CreateButton(pos, ddim, 49, EVENT_OBJECT_PROGMOVEUP);
+            pos.x = ox+sx*4.1f;
+            pw->CreateButton(pos, ddim, 50, EVENT_OBJECT_PROGMOVEDOWN);
 
             pos.x = ox+sx*5.2f;
             pos.y = oy+sy*1.0f;
@@ -1474,6 +1667,17 @@ bool CBrain::CreateInterface(bool bSelect)
         pos.y = oy+sy*0.5f;
         pw->CreateButton(pos, dim, 40, EVENT_OBJECT_SEARCH);
         DefaultEnter(pw, EVENT_OBJECT_SEARCH);
+	
+        if ( g_build&BUILD_GFLAT )
+        {
+            pos.x = ox+sx*9.0f;
+            pos.y = oy+sy*0.5f;
+            pw->CreateButton(pos, dim, 111, EVENT_OBJECT_GFLAT);
+        }
+	
+        pos.x = ox+sx*10.1f;
+        pos.y = oy+sy*0.5f;
+        pw->CreateButton(pos, dim, 11, EVENT_OBJECT_DELSEARCH);
     }
 
     if ( type == OBJECT_MOBILErt &&  // Terraformer?
@@ -2099,12 +2303,17 @@ void CBrain::UpdateInterface()
 
     type = m_object->GetType();
 
-    bEnable = ( m_secondaryTask == 0 && m_program == -1 );
+    bEnable = ( m_secondaryTask == 0 && m_currentProgram == nullptr );
 
-    bEnable = ( m_primaryTask == 0 && m_program == -1 );
+    bEnable = ( m_primaryTask == 0 && m_currentProgram == nullptr );
 
-    EnableInterface(pw, EVENT_OBJECT_PROGEDIT,    (m_primaryTask == 0 && !m_bTraceRecord));
+    EnableInterface(pw, EVENT_OBJECT_PROGEDIT,    (m_primaryTask == 0 && !m_bTraceRecord) && m_selScript < m_program.size());
     EnableInterface(pw, EVENT_OBJECT_PROGLIST,    bEnable && !m_bTraceRecord);
+    EnableInterface(pw, EVENT_OBJECT_PROGADD,     m_currentProgram == nullptr);
+    EnableInterface(pw, EVENT_OBJECT_PROGREMOVE,  m_currentProgram == nullptr && m_selScript < m_program.size() && !m_program[m_selScript]->readOnly);
+    EnableInterface(pw, EVENT_OBJECT_PROGCLONE,   m_currentProgram == nullptr);
+    EnableInterface(pw, EVENT_OBJECT_PROGMOVEUP,  m_currentProgram == nullptr && m_program.size() >= 2 && m_selScript > 0);
+    EnableInterface(pw, EVENT_OBJECT_PROGMOVEDOWN,m_currentProgram == nullptr && m_program.size() >= 2 && m_selScript < m_program.size()-1);
     EnableInterface(pw, EVENT_OBJECT_LEFT,        bEnable);
     EnableInterface(pw, EVENT_OBJECT_RIGHT,       bEnable);
     EnableInterface(pw, EVENT_OBJECT_UP,          bEnable);
@@ -2118,6 +2327,7 @@ void CBrain::UpdateInterface()
     EnableInterface(pw, EVENT_OBJECT_FCREATE,     bEnable);
     EnableInterface(pw, EVENT_OBJECT_FDELETE,     bEnable);
     EnableInterface(pw, EVENT_OBJECT_SEARCH,      bEnable);
+    EnableInterface(pw, EVENT_OBJECT_DELSEARCH,   bEnable);
     EnableInterface(pw, EVENT_OBJECT_TERRAFORM,   bEnable);
     EnableInterface(pw, EVENT_OBJECT_RECOVER,     bEnable);
     EnableInterface(pw, EVENT_OBJECT_FIRE,        bEnable);
@@ -2171,7 +2381,7 @@ void CBrain::UpdateInterface()
 
     if ( type == OBJECT_MOBILErs )  // shield?
     {
-        if ( (m_secondaryTask == 0 || !m_secondaryTask->IsBusy()) && m_program == -1 )
+        if ( (m_secondaryTask == 0 || !m_secondaryTask->IsBusy()) && m_currentProgram == nullptr )
         {
             EnableInterface(pw, EVENT_OBJECT_BEGSHIELD, (m_secondaryTask == 0));
             EnableInterface(pw, EVENT_OBJECT_ENDSHIELD, (m_secondaryTask != 0));
@@ -2248,31 +2458,31 @@ void CBrain::UpdateInterface()
          type == OBJECT_CONTROLLER)  // vehicle?
     {
         bRun = false;
-        if ( m_script[m_selScript] != 0 )
+        if ( m_selScript < m_program.size() )
         {
-            m_script[m_selScript]->GetTitle(title);
+            m_program[m_selScript]->script->GetTitle(title);
             if ( title[0] != 0 )
             {
                 bRun = true;
             }
         }
-        if ( !bEnable && m_program == -1 )  bRun = false;
+        if ( !bEnable && m_currentProgram == nullptr )  bRun = false;
         if ( m_bTraceRecord )  bRun = false;
         EnableInterface(pw, EVENT_OBJECT_PROGRUN, bRun);
 
         pb = static_cast< Ui::CButton* >(pw->SearchControl(EVENT_OBJECT_PROGRUN));
         if ( pb != 0 )
         {
-            pb->SetIcon(m_program==-1?21:8);  // run/stop
+            pb->SetIcon(m_currentProgram==nullptr?21:8);  // run/stop
         }
 
 //?     pb = (CButton*)pw->SearchControl(EVENT_OBJECT_PROGEDIT);
 //?     if ( pb != 0 )
 //?     {
-//?         pb->SetIcon(m_program==-1?22:40);  // edit/debug
+//?         pb->SetIcon(m_currentProgram==nullptr?22:40);  // edit/debug
 //?     }
 
-        BlinkScript(m_program != -1);  // blinks if script execution
+        BlinkScript(m_currentProgram != nullptr);  // blinks if script execution
     }
 
     if ( type == OBJECT_MOBILEfa ||
@@ -2393,21 +2603,25 @@ void CBrain::UpdateScript(Ui::CWindow *pw)
     Ui::CList*      pl;
     char        name[100];
     char        title[100];
-    int         i;
 
     pl = static_cast< Ui::CList* >(pw->SearchControl(EVENT_OBJECT_PROGLIST));
     if ( pl == 0 )  return;
 
-    for ( i=0 ; i<BRAINMAXSCRIPT ; i++ )
+    pl->Flush();
+    for ( unsigned int i = 0 ; i < m_program.size() ; i++ )
     {
         sprintf(name, "%d", i+1);
 
-        if ( m_script[i] != 0 )
+        m_program[i]->script->GetTitle(title);
+        if ( title[0] != 0 )
         {
-            m_script[i]->GetTitle(title);
-            if ( title[0] != 0 )
+            if(!m_program[i]->readOnly)
             {
                 sprintf(name, "%d: %s", i+1, title);
+            }
+            else
+            {
+                sprintf(name, "*%d: %s", i+1, title);
             }
         }
 
@@ -2432,6 +2646,23 @@ int CBrain::GetSelScript()
     if ( pl == 0 )  return -1;
 
     return pl->GetSelect();
+}
+
+// Changes selected script
+
+void CBrain::SetSelScript(int index)
+{
+    Ui::CWindow*    pw;
+    Ui::CList*      pl;
+
+    pw = static_cast< Ui::CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
+    if ( pw == 0 )  return;
+
+    pl = static_cast< Ui::CList* >(pw->SearchControl(EVENT_OBJECT_PROGLIST));
+    if ( pl == 0 )  return;
+
+    pl->SetSelect(index);
+    pl->ShowSelect(true);
 }
 
 // Blinks the running program.
@@ -2532,26 +2763,16 @@ bool CBrain::GetActivity()
 
 bool CBrain::IsProgram()
 {
-    return ( m_program != -1 );
-}
-
-// Indicates whether a program exists.
-
-bool CBrain::ProgramExist(int rank)
-{
-    return ( m_script[rank] != 0 );
+    return m_currentProgram != nullptr;
 }
 
 // Starts a program.
 
-void CBrain::RunProgram(int rank)
+void CBrain::RunProgram(Program* program)
 {
-    if ( rank < 0 )  return;
-
-    if ( m_script[rank] != 0 &&
-         m_script[rank]->Run() )
+    if ( program->script->Run() )
     {
-        m_program = rank;  // start new program
+        m_currentProgram = program;  // start new program
         BlinkScript(true);  // blink
         m_object->CreateSelectParticle();
         m_main->UpdateShortcuts();
@@ -2560,48 +2781,35 @@ void CBrain::RunProgram(int rank)
     }
 }
 
-// Returns the first free program.
-
-int CBrain::FreeProgram()
-{
-    int     i;
-
-    for ( i=0 ; i<BRAINMAXSCRIPT ; i++ )
-    {
-        if ( m_script[i] == 0 )  return i;
-    }
-    return -1;
-}
-
 
 // Returns the current program.
 
 int CBrain::GetProgram()
 {
-    return m_program;
+    if(m_currentProgram == nullptr)
+        return -1;
+
+    for(unsigned int i = 0; i < m_program.size(); i++)
+    {
+        if(m_program[i] == m_currentProgram)
+        {
+            return i;
+        }
+    }
+    return -1;
 }
 
 
 // Name management scripts to load.
 
-void CBrain::SetScriptRun(int rank)
+void CBrain::SetScriptRun(Program* program)
 {
-    m_scriptRun = rank;
+    m_scriptRun = program;
 }
 
-int CBrain::GetScriptRun()
+Program* CBrain::GetScriptRun()
 {
     return m_scriptRun;
-}
-
-void CBrain::SetScriptName(int rank, char *name)
-{
-    strcpy(m_scriptName[rank], name);
-}
-
-char* CBrain::GetScriptName(int rank)
-{
-    return m_scriptName[rank];
 }
 
 void CBrain::SetSoluceName(char *name)
@@ -2620,21 +2828,20 @@ char* CBrain::GetSoluceName()
 
 bool CBrain::ReadSoluce(char* filename)
 {
-    int     rank, i;
+    Program* prog = AddProgram();
 
-    rank = FreeProgram();
-    if ( rank == -1 )  return false;
+    if ( !ReadProgram(prog, filename) )  return false;  // load solution
+    prog->readOnly = true;
 
-    if ( !ReadProgram(rank, filename) )  return false;  // load solution
-
-    for ( i=0 ; i<BRAINMAXSCRIPT ; i++ )
+    for(unsigned int i = 0; i < m_program.size(); i++)
     {
-        if ( i == rank || m_script[i] == 0 )  continue;
+        if(m_program[i] == prog) continue;
 
-        if ( m_script[i]->Compare(m_script[rank]) )  // the same already?
+        //TODO: This is bad. It's very sensitive to things like \n vs \r\n etc.
+        if ( m_program[i]->script->Compare(prog->script) )  // the same already?
         {
-            delete m_script[rank];
-            m_script[rank] = 0;
+            m_program[i]->readOnly = true; // Mark is as read-only
+            RemoveProgram(prog);
             return false;
         }
     }
@@ -2642,61 +2849,27 @@ bool CBrain::ReadSoluce(char* filename)
     return true;
 }
 
-// Load a script from text buffer.
-
-bool CBrain::SendProgram(int rank, const char* buffer)
-{
-    if ( m_script[rank] == 0 )
-    {
-        m_script[rank] = new CScript(m_object, &m_secondaryTask);
-    }
-
-    if ( m_script[rank]->SendScript(buffer) )  return true;
-
-    delete m_script[rank];
-    m_script[rank] = 0;
-
-    return false;
-}
-
 // Load a script with a text file.
 
-bool CBrain::ReadProgram(int rank, const char* filename)
+bool CBrain::ReadProgram(Program* program, const char* filename)
 {
-    if ( m_script[rank] == 0 )
-    {
-        m_script[rank] = new CScript(m_object, &m_secondaryTask);
-    }
-
-    if ( m_script[rank]->ReadScript(filename) )  return true;
-
-    delete m_script[rank];
-    m_script[rank] = 0;
+    if ( program->script->ReadScript(filename) )  return true;
 
     return false;
 }
 
 // Indicates whether a program is compiled correctly.
 
-bool CBrain::GetCompile(int rank)
+bool CBrain::GetCompile(Program* program)
 {
-    if ( m_script[rank] == 0 )  return false;
-    return m_script[rank]->GetCompile();
+    return program->script->GetCompile();
 }
 
 // Saves a script in a text file.
 
-bool CBrain::WriteProgram(int rank, char* filename)
+bool CBrain::WriteProgram(Program* program, char* filename)
 {
-    if ( m_script[rank] == 0 )
-    {
-        m_script[rank] = new CScript(m_object, &m_secondaryTask);
-    }
-
-    if ( m_script[rank]->WriteScript(filename) )  return true;
-
-    delete m_script[rank];
-    m_script[rank] = 0;
+    if ( program->script->WriteScript(filename) )  return true;
 
     return false;
 }
@@ -2712,44 +2885,47 @@ bool CBrain::ReadStack(FILE *file)
     if ( op == 1 )  // run ?
     {
         fRead(&op, sizeof(short), 1, file);  // program rank
-        if ( op >= 0 && op < BRAINMAXSCRIPT )
+        if ( op >= 0 )
         {
-            m_program = op;  // program restarts
+            assert(op < static_cast<int>(m_program.size())); //TODO: is it good?
+
             m_selScript = op;
             BlinkScript(true);  // blink
 
-            if ( m_script[op] == 0 )
-            {
-                m_script[op] = new CScript(m_object, &m_secondaryTask);
-            }
-            if ( !m_script[op]->ReadStack(file) )  return false;
+            if ( !m_program[op]->script->ReadStack(file) )  return false;
         }
     }
 
     return true;
 }
 
-// ave the script implementation stack of a file.
+// Save the script implementation stack of a file.
 
 bool CBrain::WriteStack(FILE *file)
 {
     short       op;
 
-    if ( m_program != -1 &&  // current program?
-         m_script[m_program]->IsRunning() )
+    if ( m_currentProgram != nullptr &&  // current program?
+         m_currentProgram->script->IsRunning() )
     {
         op = 1;  // run
         fWrite(&op, sizeof(short), 1, file);
 
-        op = m_program;
+        op = GetProgram();
         fWrite(&op, sizeof(short), 1, file);
 
-        return m_script[m_program]->WriteStack(file);
+        return m_currentProgram->script->WriteStack(file);
     }
 
     op = 0;  // stop
     fWrite(&op, sizeof(short), 1, file);
     return true;
+}
+
+
+const std::vector<Program*>& CBrain::GetPrograms()
+{
+    return m_program;
 }
 
 
@@ -2879,12 +3055,8 @@ void CBrain::TraceRecordStop()
     strncat(buffer, "}\n", max-1);
     buffer[max-1] = 0;
 
-    i = m_selScript;
-    if ( m_script[i] == 0 )
-    {
-        m_script[i] = new CScript(m_object, &m_secondaryTask);
-    }
-    m_script[i]->SendScript(buffer);
+    Program* prog = AddProgram();
+    prog->script->SendScript(buffer);
     delete[] buffer;
 }
 
@@ -2950,3 +3122,101 @@ bool CBrain::TraceRecordPut(char *buffer, int max, TraceOper oper, float param)
     return true;
 }
 
+Program* CBrain::AddProgram()
+{
+    Program* program = new Program();
+    program->script = new CScript(m_object, &m_secondaryTask);
+    program->readOnly = false;
+    AddProgram(program);
+    return program;
+}
+
+bool CBrain::AddProgram(Program* program)
+{
+    if(std::find(m_program.begin(), m_program.end(), program) != m_program.end())
+        return false;
+
+    m_program.push_back(program);
+
+    if(m_object->GetSelect())
+    {
+        UpdateInterface();
+        Ui::CWindow* pw = static_cast< Ui::CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
+        if ( pw != 0 )
+        {
+            UpdateScript(pw);
+        }
+    }
+    return true;
+}
+
+void CBrain::RemoveProgram(Program* program)
+{
+    if(m_currentProgram == program)
+    {
+        StopProgram();
+    }
+    m_program.erase(std::remove(m_program.begin(), m_program.end(), program), m_program.end());
+    delete program->script;
+    program->script = nullptr;
+    delete program;
+
+    if(m_object->GetSelect())
+    {
+        UpdateInterface();
+        Ui::CWindow* pw = static_cast< Ui::CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
+        if ( pw != 0 )
+        {
+            UpdateScript(pw);
+        }
+    }
+}
+
+Program* CBrain::CloneProgram(Program* program)
+{
+    Program* newprog = AddProgram();
+
+    // TODO: Is there any reason CScript doesn't have a function to get the program code directly?
+    Ui::CEdit* edit = new Ui::CEdit();
+    edit->SetMaxChar(Ui::EDITSTUDIOMAX);
+    program->script->PutScript(edit, "");
+    newprog->script->GetScript(edit);
+    delete edit;
+
+    return newprog;
+}
+
+int CBrain::GetProgramIndex(Program* program)
+{
+    for(unsigned int i = 0; i < m_program.size(); i++)
+    {
+        if(m_program[i] == program)
+        {
+            return i;
+        }
+    }
+    return -1;
+}
+
+Program* CBrain::GetProgram(int index)
+{
+    if(index < 0 || index >= static_cast<int>(m_program.size()))
+        return nullptr;
+
+    return m_program[index];
+}
+
+Program* CBrain::GetOrAddProgram(int index)
+{
+    if(index < 0)
+        return nullptr;
+
+    if(index < static_cast<int>(m_program.size()))
+        return m_program[index];
+
+    for(int i = m_program.size(); i < index; i++)
+    {
+        AddProgram();
+    }
+    return AddProgram();
+}
