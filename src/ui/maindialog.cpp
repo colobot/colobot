@@ -74,8 +74,6 @@ const int KEY_VISIBLE = 6;      // number of visible keys redefinable
 
 const float WELCOME_LENGTH = 3.0f;
 
-const int MAX_FNAME = 255; // TODO: remove after rewrite to std::string
-
 static int perso_color[3*10*3] =
 {
     // hair:
@@ -2301,28 +2299,27 @@ bool CMainDialog::EventProcess(const Event &event)
         {
             case EVENT_INTERFACE_SETUPd:
                 m_main->ChangePhase(PHASE_SETUPd);
-                break;
+                return false;
 
             case EVENT_INTERFACE_SETUPg:
                 m_main->ChangePhase(PHASE_SETUPg);
-                break;
+                return false;
 
             case EVENT_INTERFACE_SETUPp:
                 m_main->ChangePhase(PHASE_SETUPp);
-                break;
+                return false;
 
             case EVENT_INTERFACE_SETUPc:
                 m_main->ChangePhase(PHASE_SETUPc);
-                break;
+                return false;
 
             case EVENT_INTERFACE_SETUPs:
                 m_main->ChangePhase(PHASE_SETUPs);
-                break;
+                return false;
 
             default:
-                return true;
+                break;
         }
-        return false;
     }
 
     if ( m_phase == PHASE_SETUPds ||
@@ -2350,28 +2347,27 @@ bool CMainDialog::EventProcess(const Event &event)
         {
             case EVENT_INTERFACE_SETUPd:
                 ChangePhase(PHASE_SETUPds);
-                break;
+                return false;
 
             case EVENT_INTERFACE_SETUPg:
                 ChangePhase(PHASE_SETUPgs);
-                break;
+                return false;
 
             case EVENT_INTERFACE_SETUPp:
                 ChangePhase(PHASE_SETUPps);
-                break;
+                return false;
 
             case EVENT_INTERFACE_SETUPc:
                 ChangePhase(PHASE_SETUPcs);
-                break;
+                return false;
 
             case EVENT_INTERFACE_SETUPs:
                 ChangePhase(PHASE_SETUPss);
-                break;
+                return false;
 
             default:
-                return true;
+                break;
         }
-        return false;
     }
 
     if ( m_phase == PHASE_SETUPd  ||  // setup/display ?
