@@ -2607,8 +2607,12 @@ bool CRobotMain::EventFrame(const Event &event)
         m_missionTimer += event.rTime;
     
     if(m_pause->GetPause() == PAUSE_NONE && m_autosave && m_gameTime >= m_autosaveLast+(m_autosaveInterval*60) && m_phase == PHASE_SIMUL) {
-        m_autosaveLast = m_gameTime;
-        Autosave();
+        std::string base = m_dialog->GetSceneName();
+        if(base == "missions" || base == "freemissions" || base == "custom")
+        {
+            m_autosaveLast = m_gameTime;
+            Autosave();
+        }
     }
     //CLogger::GetInstancePointer()->Debug("%f %f %d\n", m_gameTime, m_autosaveLast, m_autosaveInterval);
 
