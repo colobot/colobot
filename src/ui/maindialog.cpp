@@ -2082,8 +2082,9 @@ bool CMainDialog::EventProcess(const Event &event)
                 break;
 
             default:
-                break;
+                return true;
         }
+        return false;
     }
 
     if ( m_phase == PHASE_PERSO )
@@ -2209,8 +2210,9 @@ bool CMainDialog::EventProcess(const Event &event)
                 break;
 
             default:
-                break;
+                return true;
         }
+        return false;
     }
 
     if ( m_phase == PHASE_TRAINER ||
@@ -2320,8 +2322,9 @@ bool CMainDialog::EventProcess(const Event &event)
                 break;
 
             default:
-                break;
+                return true;
         }
+        return false;
     }
 
     if ( m_phase == PHASE_SETUPds ||
@@ -2368,8 +2371,9 @@ bool CMainDialog::EventProcess(const Event &event)
                 break;
 
             default:
-                break;
+                return true;
         }
+        return false;
     }
 
     if ( m_phase == PHASE_SETUPd  ||  // setup/display ?
@@ -2411,7 +2415,7 @@ bool CMainDialog::EventProcess(const Event &event)
                 break;
 
             default:
-                break;
+                return true;
         }
         return false;
     }
@@ -2492,7 +2496,7 @@ bool CMainDialog::EventProcess(const Event &event)
                 break;
 
             default:
-                break;
+                return true;
         }
         return false;
     }
@@ -2632,7 +2636,7 @@ bool CMainDialog::EventProcess(const Event &event)
                 break;
 
             default:
-                break;
+                return true;
         }
         return false;
     }
@@ -2661,8 +2665,9 @@ bool CMainDialog::EventProcess(const Event &event)
                 {
                     ChangeKey(event.type);
                     UpdateKey();
+                    break;
                 }
-                break;
+                return true;
         }
         return false;
     }
@@ -2689,7 +2694,7 @@ bool CMainDialog::EventProcess(const Event &event)
                 break;
 
             default:
-                break;
+                return true;
         }
         return false;
     }
@@ -2704,16 +2709,19 @@ bool CMainDialog::EventProcess(const Event &event)
                 (event.type == EVENT_KEY_DOWN && event.key.key == KEY(ESCAPE)) )
         {
             ChangePhase(m_phaseTerm);
+            return false;
         }
 
         if ( event.type == EVENT_INTERFACE_IOLIST )
         {
             IOUpdateList();
+            return false;
         }
         if ( event.type == EVENT_INTERFACE_IODELETE )
         {
             IODeleteScene();
             IOUpdateList();
+            return false;
         }
         if ( event.type == EVENT_INTERFACE_IOREAD )
         {
@@ -2721,9 +2729,10 @@ bool CMainDialog::EventProcess(const Event &event)
             {
                 m_main->ChangePhase(PHASE_LOADING);
             }
+            return false;
         }
 
-        return false;
+        return true;
     }
 
     if ( m_phase == PHASE_WRITEs ||
@@ -2739,16 +2748,19 @@ bool CMainDialog::EventProcess(const Event &event)
             m_interface->DeleteControl(EVENT_WINDOW5);
             ChangePhase(PHASE_SIMUL);
             StopSuspend();
+            return false;
         }
 
         if ( event.type == EVENT_INTERFACE_IOLIST )
         {
             IOUpdateList();
+            return false;
         }
         if ( event.type == EVENT_INTERFACE_IODELETE )
         {
             IODeleteScene();
             IOUpdateList();
+            return false;
         }
         if ( event.type == EVENT_INTERFACE_IOWRITE )
         {
@@ -2756,6 +2768,7 @@ bool CMainDialog::EventProcess(const Event &event)
             m_interface->DeleteControl(EVENT_WINDOW5);
             ChangePhase(PHASE_SIMUL);
             StopSuspend();
+            return false;
         }
         if ( event.type == EVENT_INTERFACE_IOREAD )
         {
@@ -2766,9 +2779,10 @@ bool CMainDialog::EventProcess(const Event &event)
                 StopSuspend();
                 m_main->ChangePhase(PHASE_LOADING);
             }
+            return false;
         }
 
-        return false;
+        return true;
     }
 
     if ( m_phase == PHASE_WELCOME1 )
