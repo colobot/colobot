@@ -1482,6 +1482,9 @@ msgstr "Этот класс уже существует"
 msgid "This class does not exist"
 msgstr "Этот класс не существует"
 
+msgid "This is example code that cannot be run directly"
+msgstr ""
+
 msgid "This is not a member of this class"
 msgstr "Это не член этого класса"
 

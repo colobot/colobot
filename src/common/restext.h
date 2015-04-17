@@ -118,6 +118,7 @@ enum ResTextType
     RT_STUDIO_CLONED        = 123,
 
     RT_PROGRAM_READONLY     = 130,
+    RT_PROGRAM_EXAMPLE      = 131,
 
     RT_SATCOM_LIST          = 140,
     RT_SATCOM_BOT           = 141,

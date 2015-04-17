@@ -122,6 +122,7 @@ void InitializeRestext()
     stringsText[RT_STUDIO_CLONED]    = TR("Program cloned");
 
     stringsText[RT_PROGRAM_READONLY] = TR("This program is read-only, clone it to edit");
+    stringsText[RT_PROGRAM_EXAMPLE]  = TR("This is example code that cannot be run directly");
 
     stringsText[RT_SATCOM_LIST]      = TR("\\b;List of objects\n");
     stringsText[RT_SATCOM_BOT]       = TR("\\b;Robots\n");

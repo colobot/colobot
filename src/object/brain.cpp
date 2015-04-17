@@ -2311,7 +2311,7 @@ void CBrain::UpdateInterface()
     EnableInterface(pw, EVENT_OBJECT_PROGLIST,    bEnable && !m_bTraceRecord);
     EnableInterface(pw, EVENT_OBJECT_PROGADD,     m_currentProgram == nullptr);
     EnableInterface(pw, EVENT_OBJECT_PROGREMOVE,  m_currentProgram == nullptr && m_selScript < m_program.size() && !m_program[m_selScript]->readOnly);
-    EnableInterface(pw, EVENT_OBJECT_PROGCLONE,   m_currentProgram == nullptr);
+    EnableInterface(pw, EVENT_OBJECT_PROGCLONE,   m_currentProgram == nullptr && m_selScript < m_program.size() && m_program[m_selScript]->runnable);
     EnableInterface(pw, EVENT_OBJECT_PROGMOVEUP,  m_currentProgram == nullptr && m_program.size() >= 2 && m_selScript > 0);
     EnableInterface(pw, EVENT_OBJECT_PROGMOVEDOWN,m_currentProgram == nullptr && m_program.size() >= 2 && m_selScript < m_program.size()-1);
     EnableInterface(pw, EVENT_OBJECT_LEFT,        bEnable);
@@ -2460,10 +2460,17 @@ void CBrain::UpdateInterface()
         bRun = false;
         if ( m_selScript < m_program.size() )
         {
-            m_program[m_selScript]->script->GetTitle(title);
-            if ( title[0] != 0 )
+            if(m_program[m_selScript]->runnable)
             {
-                bRun = true;
+                m_program[m_selScript]->script->GetTitle(title);
+                if ( title[0] != 0 )
+                {
+                    bRun = true;
+                }
+            }
+            else
+            {
+                bRun = false;
             }
         }
         if ( !bEnable && m_currentProgram == nullptr )  bRun = false;
@@ -3127,6 +3134,7 @@ Program* CBrain::AddProgram()
     Program* program = new Program();
     program->script = new CScript(m_object, &m_secondaryTask);
     program->readOnly = false;
+    program->runnable = true;
     AddProgram(program);
     return program;
 }

@@ -1484,6 +1484,9 @@ msgstr "Taka klasa już istnieje"
 msgid "This class does not exist"
 msgstr "Taka klasa nie istnieje"
 
+msgid "This is example code that cannot be run directly"
+msgstr "To jest przykładowy kod którego nie można uruchomić bezpośrednio"
+
 msgid "This is not a member of this class"
 msgstr "To nie jest obiekt tej klasy"
 

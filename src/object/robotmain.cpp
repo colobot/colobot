@@ -3637,10 +3637,12 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                         {
                             std::string op = "script"+boost::lexical_cast<std::string>(i+1); // script1..script10
                             std::string opReadOnly = "scriptReadOnly"+boost::lexical_cast<std::string>(i+1); // scriptReadOnly1..scriptReadOnly10
+                            std::string opRunnable = "scriptRunnable"+boost::lexical_cast<std::string>(i+1); // scriptRunnable1..scriptRunnable10
                             if(line->GetParam(op)->IsDefined()) {
                                 Program* program = brain->AddProgram();
                                 program->filename = "../"+line->GetParam(op)->AsPath("ai");
                                 program->readOnly = line->GetParam(opReadOnly)->AsBool(true);
+                                program->runnable = line->GetParam(opRunnable)->AsBool(strcmp(base, "exercises") || i+1 != 4); // TODO: I'd rather not have it hardcoded like that
                                 loadedPrograms[i] = program;
                             }
                             

@@ -186,6 +186,9 @@ msgstr ""
 msgid "This program is read-only, clone it to edit"
 msgstr ""
 
+msgid "This is example code that cannot be run directly"
+msgstr ""
+
 msgid "\\b;List of objects\n"
 msgstr ""
 

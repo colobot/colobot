@@ -649,7 +649,12 @@ void CStudio::StartEditScript(CScript *script, std::string name, Program* progra
     button = pw->CreateButton(pos, dim, 64+29, EVENT_STUDIO_STEP);
     button->SetState(STATE_SHADOW);
 
-    if(m_program->readOnly)
+    if(!m_program->runnable)
+    {
+        GetResource(RES_TEXT, RT_PROGRAM_EXAMPLE, res);
+        SetInfoText(res, false);
+    }
+    else if(m_program->readOnly)
     {
         GetResource(RES_TEXT, RT_PROGRAM_READONLY, res);
         SetInfoText(res, false);
@@ -1003,13 +1008,20 @@ void CStudio::UpdateButtons()
         edit->SetHighlightCap(true);
     }
 
+
+    button = static_cast< CButton* >(pw->SearchControl(EVENT_STUDIO_CLONE));
+    if ( button == 0 )  return;
+    button->SetState(STATE_ENABLE, m_program->runnable && !m_bRunning);
+
+
     button = static_cast< CButton* >(pw->SearchControl(EVENT_STUDIO_COMPILE));
     if ( button == 0 )  return;
-    button->SetState(STATE_ENABLE, !m_bRunning);
+    button->SetState(STATE_ENABLE, m_program->runnable && !m_bRunning);
 
     button = static_cast< CButton* >(pw->SearchControl(EVENT_STUDIO_RUN));
     if ( button == 0 )  return;
     button->SetIcon(m_bRunning?8:21);  // stop/run
+    button->SetState(STATE_ENABLE, m_program->runnable || m_bRunning);
 
     button = static_cast< CButton* >(pw->SearchControl(EVENT_STUDIO_REALTIME));
     if ( button == 0 )  return;
