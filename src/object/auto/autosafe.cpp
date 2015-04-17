@@ -574,6 +574,23 @@ void CAutoSafe::DeleteKeys()
 
 CObject* CAutoSafe::SearchVehicle()
 {
-    return CObjectManager::GetInstancePointer()->FindNearest(m_object, OBJECT_NULL, 4.0f/g_unit);
+    CObject*    pObj;
+    Math::Vector    cPos, oPos;
+    float       dist;
+
+    cPos = m_object->GetPosition(0);
+
+    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    {
+        pObj = it.second;
+
+        if ( pObj == m_object )  continue;
+        if ( pObj->GetTruck() != 0 )  continue;
+
+        oPos = pObj->GetPosition(0);
+        dist = Math::DistanceProjected(oPos, cPos);
+        if ( dist <= 4.0f )  return pObj;
+    }
+    return 0;
 }
 
