@@ -851,9 +851,6 @@ msgstr "Инверсия мыши по оси X\\Инверсия прокрут
 msgid "Mouse inversion Y\\Inversion of the scrolling direction on the Y axis"
 msgstr "Инверсия мыши по оси Y\\Инверсия прокрутки по оси Y"
 
-msgid "Mouse shadow\\Gives the mouse a shadow"
-msgstr "Тень мыши\\Мышь отбрасывает тень"
-
 #, fuzzy
 msgid "Move selected program down"
 msgstr "Изменить выбранную программу"
@@ -1820,6 +1817,9 @@ msgstr "www.epsitec.com"
 
 #~ msgid "Key word help\\More detailed help about key words"
 #~ msgstr "Помощь по командам\\Более подробная справку по командам"
+
+#~ msgid "Mouse shadow\\Gives the mouse a shadow"
+#~ msgstr "Тень мыши\\Мышь отбрасывает тень"
 
 #~ msgid "Quit\\Quit COLOBOT"
 #~ msgstr "Выход\\Выход из COLOBOT"

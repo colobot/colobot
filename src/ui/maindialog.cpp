@@ -1303,8 +1303,6 @@ void CMainDialog::ChangePhase(Phase phase)
         pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_RAIN);
         pc->SetState(STATE_SHADOW);
         pos.y -= 0.048f;
-        pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_MOUSE);
-        pc->SetState(STATE_SHADOW);
         pos.y -= 0.048f;
         pos.y -= 0.048f;
         if ( !m_bSimulSetup )
@@ -2526,16 +2524,6 @@ bool CMainDialog::EventProcess(const Event &event)
 
             case EVENT_INTERFACE_RAIN:
                 m_bRain = !m_bRain;
-                ChangeSetupButtons();
-                UpdateSetupButtons();
-                break;
-
-            case EVENT_INTERFACE_MOUSE:
-                if (m_app->GetMouseMode() == MOUSE_ENGINE)
-                    m_app->SetMouseMode(MOUSE_SYSTEM);
-                else if (m_app->GetMouseMode() == MOUSE_SYSTEM)
-                    m_app->SetMouseMode(MOUSE_ENGINE);
-
                 ChangeSetupButtons();
                 UpdateSetupButtons();
                 break;
@@ -4695,14 +4683,6 @@ void CMainDialog::UpdateSetupButtons()
         pc->SetState(STATE_CHECK, m_bRain);
     }
 
-    pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_MOUSE));
-    if ( pc != 0 )
-    {
-        /* TODO: nice mouse?
-        pc->SetState(STATE_CHECK, m_engine->GetNiceMouse());
-        pc->SetState(STATE_ENABLE, m_engine->GetNiceMouseCap());*/
-    }
-
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_EDITMODE));
     if ( pc != 0 )
     {
@@ -5082,12 +5062,6 @@ void CMainDialog::SetupRecall()
     {
         m_bRain = iValue;
     }
-
-    // TODO
-    // if ( GetProfile().GetLocalProfileInt("Setup", "NiceMouse", iValue) )
-    // {
-    //     m_engine->SetNiceMouse(iValue);
-    // }
 
     if ( GetProfile().GetIntProperty("Setup", "Soluce4", iValue) )
     {

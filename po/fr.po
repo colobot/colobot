@@ -854,9 +854,6 @@ msgid "Mouse inversion Y\\Inversion of the scrolling direction on the Y axis"
 msgstr ""
 "Inversion souris Y\\Inversion de la rotation lorsque la souris touche un bord"
 
-msgid "Mouse shadow\\Gives the mouse a shadow"
-msgstr "Souris ombrée\\Jolie souris avec une ombre"
-
 #, fuzzy
 msgid "Move selected program down"
 msgstr "Édite le programme sélectionné"
@@ -1820,6 +1817,9 @@ msgstr "www.epsitec.com"
 
 #~ msgid "Key word help\\More detailed help about key words"
 #~ msgstr "Instructions mot-clé\\Explication sur le mot-clé"
+
+#~ msgid "Mouse shadow\\Gives the mouse a shadow"
+#~ msgstr "Souris ombrée\\Jolie souris avec une ombre"
 
 #~ msgid "Quit\\Quit COLOBOT"
 #~ msgstr "Quitter\\Quitter COLOBOT"

@@ -393,9 +393,6 @@ msgstr ""
 msgid "Quake at explosions\\The screen shakes at explosions"
 msgstr ""
 
-msgid "Mouse shadow\\Gives the mouse a shadow"
-msgstr ""
-
 msgid "Automatic indent\\When program editing"
 msgstr ""
 

@@ -858,9 +858,6 @@ msgstr "Umkehr X\\Umkehr der Kameradrehung X-Achse"
 msgid "Mouse inversion Y\\Inversion of the scrolling direction on the Y axis"
 msgstr "Umkehr Y\\Umkehr der Kameradrehung Y-Achse"
 
-msgid "Mouse shadow\\Gives the mouse a shadow"
-msgstr "Schatten unter der Maus\\Ein Schatten erscheint unter der Maus"
-
 #, fuzzy
 msgid "Move selected program down"
 msgstr "Gewähltes Programm bearbeiten"
@@ -1824,6 +1821,9 @@ msgstr "www.epsitec.com"
 
 #~ msgid "Key word help\\More detailed help about key words"
 #~ msgstr "Hilfe über Begriff\\Hilfe über einen Begriff"
+
+#~ msgid "Mouse shadow\\Gives the mouse a shadow"
+#~ msgstr "Schatten unter der Maus\\Ein Schatten erscheint unter der Maus"
 
 #~ msgid "Quit\\Quit COLOBOT"
 #~ msgstr "Schließen\\COLOBOT schließen"

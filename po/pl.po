@@ -860,9 +860,6 @@ msgstr "Odwrócenie myszy X\\Odwrócenie kierunków przewijania w poziomie"
 msgid "Mouse inversion Y\\Inversion of the scrolling direction on the Y axis"
 msgstr "Odwrócenie myszy Y\\Odwrócenie kierunków przewijania w pionie"
 
-msgid "Mouse shadow\\Gives the mouse a shadow"
-msgstr "Cień kursora myszy\\Dodaje cień kursorowi myszy"
-
 msgid "Move selected program down"
 msgstr "Przenieś zaznaczony program w dół"
 
@@ -1820,6 +1817,9 @@ msgstr "www.epsitec.com"
 #~ msgid "Key word help\\More detailed help about key words"
 #~ msgstr ""
 #~ "Pomoc dot. słów kluczowych\\Dokładniejsza pomoc na temat słów kluczowych"
+
+#~ msgid "Mouse shadow\\Gives the mouse a shadow"
+#~ msgstr "Cień kursora myszy\\Dodaje cień kursorowi myszy"
 
 #~ msgid "Speed 3.0x\\Three times faster"
 #~ msgstr "Prędkość 3,0x\\Trzy razy szybciej"
