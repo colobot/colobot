@@ -627,7 +627,7 @@ bool CPyro::EventProcess(const Event &event)
     m_time += event.rTime;
     m_progress += event.rTime*m_speed;
 
-    if (m_soundChannel != -1 && m_object != 0)
+    if (m_soundChannel != -1 && m_object != nullptr)
     {
         Math::Vector pos = m_object->GetPosition(0);
         m_sound->Position(m_soundChannel, pos);
@@ -903,19 +903,22 @@ bool CPyro::EventProcess(const Event &event)
             m_particle->CreateParticle(pos, speed, dim, PARTIGLINT, 2.0f);
         }
 
-        Math::Vector angle = m_object->GetAngle(0);
-        angle.y = m_progress*20.0f;
-        angle.x = sinf(m_progress*49.0f)*0.3f;
-        angle.z = sinf(m_progress*47.0f)*0.2f;
-        m_object->SetAngle(0, angle);
-
-        Math::Vector pos = m_pos;
-        pos.y += factor;
-        m_object->SetPosition(0, pos);
-
-        if ( m_progress > 0.85f )
+        if(m_object != nullptr)
         {
-            m_object->SetZoom(0, 1.0f-(m_progress-0.85f)/0.15f);
+            Math::Vector angle = m_object->GetAngle(0);
+            angle.y = m_progress*20.0f;
+            angle.x = sinf(m_progress*49.0f)*0.3f;
+            angle.z = sinf(m_progress*47.0f)*0.2f;
+            m_object->SetAngle(0, angle);
+
+            Math::Vector pos = m_pos;
+            pos.y += factor;
+            m_object->SetPosition(0, pos);
+
+            if ( m_progress > 0.85f )
+            {
+                m_object->SetZoom(0, 1.0f-(m_progress-0.85f)/0.15f);
+            }
         }
     }
 
@@ -939,12 +942,15 @@ bool CPyro::EventProcess(const Event &event)
             m_particle->CreateParticle(pos, speed, dim, PARTIGLINT, 2.0f, 0.0f, 0.0f);
         }
 
-        Math::Vector angle = m_object->GetAngle(0);
-        angle.x = sinf(m_progress*49.0f)*0.3f*(1.0f-m_progress);
-        angle.z = sinf(m_progress*47.0f)*0.2f*(1.0f-m_progress);
-        m_object->SetAngle(0, angle);
+        if(m_object != nullptr)
+        {
+            Math::Vector angle = m_object->GetAngle(0);
+            angle.x = sinf(m_progress*49.0f)*0.3f*(1.0f-m_progress);
+            angle.z = sinf(m_progress*47.0f)*0.2f*(1.0f-m_progress);
+            m_object->SetAngle(0, angle);
 
-        m_object->SetZoom(0, m_progress);
+            m_object->SetZoom(0, m_progress);
+        }
     }
 
     if ( m_type == PT_FLDELETE )
@@ -967,13 +973,16 @@ bool CPyro::EventProcess(const Event &event)
             m_particle->CreateParticle(pos, speed, dim, PARTIGLINT, 2.0f, 0.0f, 0.5f);
         }
 
-        Math::Vector angle = m_object->GetAngle(0);
-        angle.y = m_progress*20.0f;
-        angle.x = sinf(m_progress*49.0f)*0.3f;
-        angle.z = sinf(m_progress*47.0f)*0.2f;
-        m_object->SetAngle(0, angle);
+        if(m_object != nullptr)
+        {
+            Math::Vector angle = m_object->GetAngle(0);
+            angle.y = m_progress*20.0f;
+            angle.x = sinf(m_progress*49.0f)*0.3f;
+            angle.z = sinf(m_progress*47.0f)*0.2f;
+            m_object->SetAngle(0, angle);
 
-        m_object->SetZoom(0, 1.0f-m_progress);
+            m_object->SetZoom(0, 1.0f-m_progress);
+        }
     }
 
     if ( m_type == PT_RESET )
@@ -1008,14 +1017,17 @@ bool CPyro::EventProcess(const Event &event)
                                      duration*0.9f, 0.7f);
         }
 
-        Math::Vector angle = m_object->GetResetAngle();
-        m_object->SetAngleY(0, angle.y-powf((1.0f-m_progress)*5.0f, 2.0f));
-        m_object->SetZoom(0, m_progress);
+        if(m_object != nullptr)
+        {
+            Math::Vector angle = m_object->GetResetAngle();
+            m_object->SetAngleY(0, angle.y-powf((1.0f-m_progress)*5.0f, 2.0f));
+            m_object->SetZoom(0, m_progress);
+        }
     }
 
     if ( m_type == PT_FINDING )
     {
-        if ( m_object != 0 &&
+        if ( m_object != nullptr &&
              m_lastParticle+m_engine->ParticleAdapt(0.05f) <= m_time )
         {
             m_lastParticle = m_time;
@@ -1039,7 +1051,7 @@ bool CPyro::EventProcess(const Event &event)
     }
 
     if ( (m_type == PT_BURNT || m_type == PT_BURNO) &&
-         m_object != 0 )
+         m_object != nullptr )
     {
         if ( m_lastParticle+m_engine->ParticleAdapt(0.05f) <= m_time )
         {
@@ -1103,7 +1115,8 @@ bool CPyro::EventProcess(const Event &event)
         }
     }
 
-    if ( m_type == PT_WIN )
+    if ( m_type == PT_WIN &&
+         m_object != nullptr )
     {
         if ( m_lastParticle+m_engine->ParticleAdapt(0.05f) <= m_time )
         {
@@ -1124,7 +1137,8 @@ bool CPyro::EventProcess(const Event &event)
         }
     }
 
-    if ( m_type == PT_LOST )
+    if ( m_type == PT_LOST &&
+         m_object != nullptr )
     {
         if ( m_lastParticle+m_engine->ParticleAdapt(0.10f) <= m_time )
         {
