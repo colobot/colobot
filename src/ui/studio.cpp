@@ -595,7 +595,7 @@ void CStudio::StartEditScript(CScript *script, std::string name, Program* progra
 //? if ( m_bRunning )  edit->SetEdit(false);
     edit->SetMaxChar(EDITSTUDIOMAX);
     edit->SetFontType(Gfx::FONT_COURIER);
-    edit->SetFontStretch(0.7f);
+    edit->SetFontStretch(1.0f);
     edit->SetDisplaySpec(true);
     edit->SetAutoIndent(m_engine->GetEditIndentMode());
 

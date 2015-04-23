@@ -1483,7 +1483,7 @@ bool CEdit::ReadText(std::string filename, int addSize)
     m_format.reserve(m_maxChar+1);
     for (i = 0; i <= m_maxChar+1; i++)
     {
-        m_format.push_back(0);
+        m_format.push_back(m_fontType);
     }
 
     stream.close();
@@ -1924,7 +1924,7 @@ void CEdit::SetMaxChar(int max)
     m_format.reserve(m_maxChar+1);
     for (int i = 0; i <= m_maxChar+1; i++)
     {
-        m_format.push_back(0);
+        m_format.push_back(m_fontType);
     }
 
     m_len = 0;
@@ -2120,7 +2120,7 @@ void CEdit::SetMultiFont(bool bMulti)
         m_format.reserve(m_maxChar+1);
         for (int i = 0; i <= m_maxChar+1; i++)
         {
-            m_format.push_back(0);
+            m_format.push_back(m_fontType);
         }
     }
 }
