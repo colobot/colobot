@@ -356,7 +356,7 @@ bool CScriptFunctions::rEndMission(CBotVar* var, CBotVar* result, int& exception
     Error ended;
     float delay;
     
-    ended = static_cast<Error>(var->GetValFloat());
+    ended = static_cast<Error>(static_cast<int>(var->GetValFloat())); // TODO: is this correct?!
     var = var->GetNext();
     
     delay = var->GetValFloat();
