@@ -85,7 +85,7 @@ elseif("${CMAKE_SYSTEM_NAME}" MATCHES "Darwin")
     set(PLATFORM_GNU     0)
     set(PLATFORM_MACOSX  1)
     set(PLATFORM_OTHER   0)
-    
+
     # Platform-dependent implementation of system.h
     set(SYSTEM_CPP_MODULE "system_macosx.cpp")
 
@@ -114,7 +114,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 set(CMAKE_MODULE_PATH "${colobot_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
 
 # Compiler detection
-if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU")
+if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
     execute_process(
         COMMAND ${CMAKE_CXX_COMPILER} -dumpversion OUTPUT_VARIABLE GCC_VERSION)
     if (GCC_VERSION VERSION_GREATER 4.7 OR GCC_VERSION VERSION_EQUAL 4.7)
@@ -126,12 +126,14 @@ if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU")
     else()
         message(FATAL_ERROR "${PROJECT_NAME} requires GCC 4.6 or greater.")
     endif()
-elseif("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
+elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     message(STATUS "Detected Clang compiler")
     set(CXX11_FLAGS "-std=c++11")
+elseif(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
+    message(STATUS "Detected MSVC compiler")
+    set(CXX11_FLAGS "")
 else()
-    message(FATAL_ERROR "Your C++ compiler doesn't seem to support C++11.\n"
-                        "Supported compilers at this time are GCC 4.6+ and clang.")
+    message(FATAL_ERROR "Your C++ compiler doesn't seem to be supported.")
 endif()
 
 
