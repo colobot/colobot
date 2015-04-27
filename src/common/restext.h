@@ -157,5 +157,5 @@ enum ResTextType
 void     InitializeRestext();
 
 void     SetGlobalGamerName(std::string name);
-bool     GetResource(ResType type, int num, std::string& text);
+bool     GetResource(ResType type, unsigned int num, std::string& text);
 

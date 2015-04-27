@@ -300,11 +300,14 @@ bool CEdit::EventProcess(const Event &event)
         }
     }
 
+    if (event.type == EVENT_KEY_DOWN)
+    {
+        bShift = ((event.kmodState & KEY_MOD(SHIFT)) != 0);
+        bControl = ((event.kmodState & KEY_MOD(CTRL)) != 0);
+    }
+
     if ( event.type == EVENT_KEY_DOWN && m_bFocus )
     {
-        bShift   = ( (event.kmodState & KEY_MOD(SHIFT) ) != 0 );
-        bControl = ( (event.kmodState & KEY_MOD(CTRL) ) != 0);
-
         if ( (event.key.key == KEY(x)      && !bShift &&  bControl) ||
              (event.key.key == KEY(DELETE) &&  bShift && !bControl) )
         {

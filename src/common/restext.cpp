@@ -780,7 +780,10 @@ static void PutKeyName(std::string& dst, const char* src)
             for(count = 0; src[s+5+count] != ';'; count++);
             CInput* input = CInput::GetInstancePointer();
             InputSlot key = input->SearchKeyById(std::string(&src[s+5], count));
-            dst.append(input->GetKeysString(key));
+            if (key != INPUT_SLOT_MAX)
+            {
+                dst.append(input->GetKeysString(key));
+            }
             s = s+5+count+1;
         }
 
@@ -790,7 +793,7 @@ static void PutKeyName(std::string& dst, const char* src)
 
 // Returns the translated text of a resource that needs key substitution
 
-static const char* GetResourceBase(ResType type, int num)
+static const char* GetResourceBase(ResType type, unsigned int num)
 {
     const char *str = NULL;
 
@@ -837,7 +840,7 @@ static const char* GetResourceBase(ResType type, int num)
 
 // Returns the text of a resource.
 
-bool GetResource(ResType type, int num, std::string& text)
+bool GetResource(ResType type, unsigned int num, std::string& text)
 {
     if(type != RES_KEY)
     {
@@ -854,7 +857,7 @@ bool GetResource(ResType type, int num, std::string& text)
     }
     else
     {
-        if (static_cast<unsigned int>(num) == KEY_INVALID)
+        if (num == KEY_INVALID)
             text.clear();
         else if (num == VIRTUAL_KMOD_CTRL)
             text = "Ctrl";
