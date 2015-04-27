@@ -22,6 +22,7 @@
 #include "common/logger.h"
 
 #include <stdlib.h>
+#include <unistd.h>
 
 
 void CSystemUtilsLinux::Init()
@@ -122,4 +123,9 @@ std::string CSystemUtilsLinux::GetSaveDir()
     GetLogger()->Trace("Saved game files are going to %s\n", savegameDir.c_str());
 
     return savegameDir;
+}
+
+void CSystemUtilsLinux::Usleep(int usec)
+{
+    usleep(usec);
 }

@@ -63,4 +63,5 @@ public:
     MOCK_METHOD0(GetTimeStampExactResolution, long long());
     MOCK_METHOD3(TimeStampDiff, float(SystemTimeStamp *before, SystemTimeStamp *after, SystemTimeUnit unit));
     MOCK_METHOD2(TimeStampExactDiff, long long(SystemTimeStamp *before, SystemTimeStamp *after));
+    MOCK_METHOD1(Usleep, void(int usec));
 };

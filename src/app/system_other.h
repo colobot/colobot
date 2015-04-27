@@ -48,5 +48,7 @@ public:
     virtual void GetCurrentTimeStamp(SystemTimeStamp *stamp) OVERRIDE;
     virtual long long int GetTimeStampExactResolution() OVERRIDE;
     virtual long long TimeStampExactDiff(SystemTimeStamp *before, SystemTimeStamp *after) OVERRIDE;
+
+    virtual void Usleep(int usec) OVERRIDE;
 };
 

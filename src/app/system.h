@@ -140,6 +140,9 @@ public:
 
     //! Returns the save dir location
     virtual std::string GetSaveDir();
+
+    //! Sleep for given amount of microseconds
+    virtual void Usleep(int usecs) = 0;
 };
 
 //! Global function to get CSystemUtils instance

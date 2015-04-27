@@ -40,3 +40,7 @@ long long int CSystemUtilsOther::TimeStampExactDiff(SystemTimeStamp* before, Sys
     return (after->sdlTicks - before->sdlTicks) * 1000000ll;
 }
 
+void CSystemUtilsOther::Usleep(int usec)
+{
+    SDL_Delay(usec / 1000); // close enough
+}

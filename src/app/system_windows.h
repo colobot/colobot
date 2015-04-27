@@ -48,6 +48,8 @@ public:
 
     virtual std::string GetSaveDir() OVERRIDE;
 
+    virtual void Usleep(int usec) OVERRIDE;
+
 public:
     static std::string UTF8_Encode(const std::wstring &wstr);
     static std::wstring UTF8_Decode(const std::string &str);

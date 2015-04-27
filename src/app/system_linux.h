@@ -50,6 +50,8 @@ public:
 
     virtual std::string GetSaveDir() OVERRIDE;
 
+    virtual void Usleep(int usec) OVERRIDE;
+
 private:
     bool m_zenityAvailable;
 };

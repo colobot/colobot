@@ -33,6 +33,9 @@ public:
     virtual std::string GetDataPath() OVERRIDE;
     virtual std::string GetLangPath() OVERRIDE;
     virtual std::string GetSaveDir() OVERRIDE;
+
+    virtual void Usleep(int usec) OVERRIDE;
+
 private:
     std::string m_ASPath;
     std::string m_dataPath;
