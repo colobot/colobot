@@ -85,7 +85,7 @@ elseif("${CMAKE_SYSTEM_NAME}" MATCHES "Darwin")
     set(PLATFORM_GNU     0)
     set(PLATFORM_MACOSX  1)
     set(PLATFORM_OTHER   0)
-    
+
     # Platform-dependent implementation of system.h
     set(SYSTEM_CPP_MODULE "system_macosx.cpp")
 
@@ -114,24 +114,44 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 set(CMAKE_MODULE_PATH "${colobot_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
 
 # Compiler detection
-if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU")
+if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
     execute_process(
         COMMAND ${CMAKE_CXX_COMPILER} -dumpversion OUTPUT_VARIABLE GCC_VERSION)
     if (GCC_VERSION VERSION_GREATER 4.7 OR GCC_VERSION VERSION_EQUAL 4.7)
         message(STATUS "Detected GCC version 4.7+")
         set(CXX11_FLAGS "-std=gnu++11")
+        add_definitions(-DOVERRIDE=override)
     elseif (GCC_VERSION VERSION_GREATER 4.6 OR GCC_VERSION VERSION_EQUAL 4.6)
         message(STATUS "Detected GCC version 4.6+")
-        set(CXX11_FLAGS "-std=c++0x -Doverride=")
+        set(CXX11_FLAGS "-std=c++0x")
+        add_definitions(-DOVERRIDE=)
     else()
         message(FATAL_ERROR "${PROJECT_NAME} requires GCC 4.6 or greater.")
     endif()
-elseif("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
+    set(NORMAL_CXX_FLAGS "-Wall -Wold-style-cast")
+    set(RELEASE_CXX_FLAGS "-O2")
+    set(DEBUG_CXX_FLAGS "-g -O0")
+    set(TEST_CXX_FLAGS "-pthread")
+    add_definitions(-DNOEXCEPT=noexcept)
+elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     message(STATUS "Detected Clang compiler")
     set(CXX11_FLAGS "-std=c++11")
+    set(NORMAL_CXX_FLAGS "-Wall -Wold-style-cast")
+    set(RELEASE_CXX_FLAGS "-O2")
+    set(DEBUG_CXX_FLAGS "-g -O0")
+    set(TEST_CXX_FLAGS "-pthread")
+    add_definitions(-DNOEXCEPT=noexcept)
+elseif(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
+    message(STATUS "Detected MSVC compiler")
+    set(CXX11_FLAGS "")
+    set(NORMAL_CXX_FLAGS "/wd\"4244\" /wd\"4309\" /wd\"4800\" /wd\"4996\"") # disable some useless warnings
+    set(RELEASE_CXX_FLAGS "")
+    set(DEBUG_CXX_FLAGS "")
+    set(TEST_CXX_FLAGS "")
+    add_definitions(-DNOEXCEPT=)
+    add_definitions(-DOVERRIDE=override)
 else()
-    message(FATAL_ERROR "Your C++ compiler doesn't seem to support C++11.\n"
-                        "Supported compilers at this time are GCC 4.6+ and clang.")
+    message(FATAL_ERROR "Your C++ compiler doesn't seem to be supported.")
 endif()
 
 
@@ -140,14 +160,14 @@ endif()
 # The flags are used throughout src/ and test/ subdirs
 
 # Special flags for boost
-set(Boost_FLAGS "-DBOOST_NO_SCOPED_ENUMS -DBOOST_NO_CXX11_SCOPED_ENUMS")
+add_definitions(-DBOOST_NO_SCOPED_ENUMS -DBOOST_NO_CXX11_SCOPED_ENUMS)
 
-set(COLOBOT_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wold-style-cast ${CXX11_FLAGS} ${Boost_FLAGS}")
-set(COLOBOT_CXX_FLAGS_RELEASE "-O2")
-set(COLOBOT_CXX_FLAGS_DEBUG "-g -O0")
+set(COLOBOT_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${NORMAL_CXX_FLAGS} ${CXX11_FLAGS}")
+set(COLOBOT_CXX_FLAGS_RELEASE "${RELEASE_CXX_FLAGS}")
+set(COLOBOT_CXX_FLAGS_DEBUG "${DEBUG_CXX_FLAGS}")
 
 # Flags for gtest
-set(COLOBOT_GTEST_CXX_FLAGS "-pthread")
+set(COLOBOT_GTEST_CXX_FLAGS "${TEST_CXX_FLAGS}")
 
 
 # Asserts can be enabled/disabled regardless of build type
@@ -177,7 +197,7 @@ option(INSTALL_DOCS "Install Doxygen-generated documentation" OFF)
 # Build OpenAL sound support
 option(OPENAL_SOUND "Build OpenAL sound support" ON)
 
-# Change to false in case static boost libraries are not available
+# This is useful in case you want to use static boost libraries
 option(BOOST_STATIC "Link with static boost libraries" OFF)
 
 # This is useful on Windows, if linking against standard GLEW dll fails
@@ -254,6 +274,18 @@ include("${colobot_SOURCE_DIR}/cmake/msys.cmake")
 
 
 ##
+# MSVC specific settings
+##
+set(WINGETOPT 0)
+if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
+    message(STATUS "Adding MSVC-specific options")
+
+    set(CBOT_STATIC 1) # only this works for some reason
+    set(USE_SDL_MAIN 1) # fixes SDL_main
+    set(WINGETOPT 1) # use wingetopt library
+endif()
+
+##
 # Clipboard support needs X11 libraries
 ##
 if(PLATFORM_GNU OR PLATFORM_MACOSX)
@@ -277,6 +309,15 @@ add_subdirectory(lib/clipboard)
 ##
 set(LOCALENAME_INCLUDE_DIR ${colobot_SOURCE_DIR}/lib/localename)
 add_subdirectory(lib/localename)
+
+
+##
+# Wingetopt
+##
+if(WINGETOPT)
+    set(WINGETOPT_INCLUDE_DIR ${colobot_SOURCE_DIR}/lib/wingetopt/src)
+    add_subdirectory(lib/wingetopt)
+endif()
 
 
 ##

@@ -22,19 +22,29 @@ if(OPENAL_SOUND)
     set(OPTIONAL_INCLUDES ${OPENAL_INCLUDE_DIR})
 endif()
 
+if(WINGETOPT)
+    set(OPTIONAL_LIBS ${OPTIONAL_LIBS} wingetopt)
+    set(OPTIONAL_INCLUDES ${OPTIONAL_INCLUDES} ${WINGETOPT_INCLUDE_DIR})
+endif()
+
 # Additional libraries per platform
 if(MXE) # MXE requires special treatment
     set(PLATFORM_LIBS ${MXE_LIBS})
 elseif(PLATFORM_WINDOWS)
     # because it isn't included in standard linking libraries
-    set(PLATFORM_LIBS "-lintl")
+    if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
+        find_library(LIBINTL_LIBRARY NAMES intl.lib)
+        set(PLATFORM_LIBS ${LIBINTL_LIBRARY})
+    else()
+        set(PLATFORM_LIBS "-lintl")
+    endif()
 elseif(PLATFORM_GNU)
     set(PLATFORM_LIBS "-lX11")
 elseif(PLATFORM_LINUX)
     # for clock_gettime
     set(PLATFORM_LIBS "-lrt -lX11")
 elseif(PLATFORM_MACOSX)
-    find_library(LIBINTL_LIBRARY NAMES intl libintl )
+    find_library(LIBINTL_LIBRARY NAMES intl libintl)
     set(PLATFORM_LIBS ${LIBINTL_LIBRARY} ${X11_X11_LIB})
 endif()
 
@@ -244,9 +254,9 @@ set(SYSTEM_INCLUDES
     ${Boost_INCLUDE_DIRS}
     ${LIBSNDFILE_INCLUDE_DIR}
     ${LOCALENAME_INCLUDE_DIR}
-    ${OPTIONAL_INCLUDE_DIRS}
     ${CLIPBOARD_INCLUDE_DIR}
     ${PHYSFS_INCLUDE_PATH}
+    ${OPTIONAL_INCLUDES}
 )
 
 set(COLOBOT_LOCAL_INCLUDES ${LOCAL_INCLUDES} PARENT_SCOPE)

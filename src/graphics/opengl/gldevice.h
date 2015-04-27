@@ -106,84 +106,84 @@ public:
     CGLDevice(const GLDeviceConfig &config);
     virtual ~CGLDevice();
 
-    virtual void DebugHook() override;
-    virtual void DebugLights() override;
+    virtual void DebugHook() OVERRIDE;
+    virtual void DebugLights() OVERRIDE;
 
-    virtual bool Create() override;
-    virtual void Destroy() override;
+    virtual bool Create() OVERRIDE;
+    virtual void Destroy() OVERRIDE;
 
     void ConfigChanged(const GLDeviceConfig &newConfig);
 
     void SetUseVbo(bool useVbo);
     void SetVertexBufferType(VertexBufferType type);
 
-    virtual void BeginScene() override;
-    virtual void EndScene() override;
+    virtual void BeginScene() OVERRIDE;
+    virtual void EndScene() OVERRIDE;
 
-    virtual void Clear() override;
+    virtual void Clear() OVERRIDE;
 
-    virtual void SetTransform(TransformType type, const Math::Matrix &matrix) override;
+    virtual void SetTransform(TransformType type, const Math::Matrix &matrix) OVERRIDE;
 
-    virtual void SetMaterial(const Material &material) override;
+    virtual void SetMaterial(const Material &material) OVERRIDE;
 
-    virtual int GetMaxLightCount() override;
-    virtual void SetLight(int index, const Light &light) override;
-    virtual void SetLightEnabled(int index, bool enabled) override;
+    virtual int GetMaxLightCount() OVERRIDE;
+    virtual void SetLight(int index, const Light &light) OVERRIDE;
+    virtual void SetLightEnabled(int index, bool enabled) OVERRIDE;
 
-    virtual Texture CreateTexture(CImage *image, const TextureCreateParams &params) override;
-    virtual Texture CreateTexture(ImageData *data, const TextureCreateParams &params) override;
-    virtual void DestroyTexture(const Texture &texture) override;
-    virtual void DestroyAllTextures() override;
+    virtual Texture CreateTexture(CImage *image, const TextureCreateParams &params) OVERRIDE;
+    virtual Texture CreateTexture(ImageData *data, const TextureCreateParams &params) OVERRIDE;
+    virtual void DestroyTexture(const Texture &texture) OVERRIDE;
+    virtual void DestroyAllTextures() OVERRIDE;
 
-    virtual int GetMaxTextureStageCount() override;
-    virtual void SetTexture(int index, const Texture &texture) override;
-    virtual void SetTexture(int index, unsigned int textureId) override;
-    virtual void SetTextureEnabled(int index, bool enabled) override;
+    virtual int GetMaxTextureStageCount() OVERRIDE;
+    virtual void SetTexture(int index, const Texture &texture) OVERRIDE;
+    virtual void SetTexture(int index, unsigned int textureId) OVERRIDE;
+    virtual void SetTextureEnabled(int index, bool enabled) OVERRIDE;
 
-    virtual void SetTextureStageParams(int index, const TextureStageParams &params) override;
+    virtual void SetTextureStageParams(int index, const TextureStageParams &params) OVERRIDE;
 
-    virtual void SetTextureStageWrap(int index, Gfx::TexWrapMode wrapS, Gfx::TexWrapMode wrapT) override;
+    virtual void SetTextureStageWrap(int index, Gfx::TexWrapMode wrapS, Gfx::TexWrapMode wrapT) OVERRIDE;
 
     virtual void DrawPrimitive(PrimitiveType type, const Vertex *vertices    , int vertexCount,
-                               Color color = Color(1.0f, 1.0f, 1.0f, 1.0f)) override;
+                               Color color = Color(1.0f, 1.0f, 1.0f, 1.0f)) OVERRIDE;
     virtual void DrawPrimitive(PrimitiveType type, const VertexTex2 *vertices, int vertexCount,
-                               Color color = Color(1.0f, 1.0f, 1.0f, 1.0f)) override;
-    virtual void DrawPrimitive(PrimitiveType type, const VertexCol *vertices , int vertexCount) override;
+                               Color color = Color(1.0f, 1.0f, 1.0f, 1.0f)) OVERRIDE;
+    virtual void DrawPrimitive(PrimitiveType type, const VertexCol *vertices , int vertexCount) OVERRIDE;
 
-    virtual unsigned int CreateStaticBuffer(PrimitiveType primitiveType, const Vertex* vertices, int vertexCount) override;
-    virtual unsigned int CreateStaticBuffer(PrimitiveType primitiveType, const VertexTex2* vertices, int vertexCount) override;
-    virtual unsigned int CreateStaticBuffer(PrimitiveType primitiveType, const VertexCol* vertices, int vertexCount) override;
-    virtual void UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primitiveType, const Vertex* vertices, int vertexCount) override;
-    virtual void UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primitiveType, const VertexTex2* vertices, int vertexCount) override;
-    virtual void UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primitiveType, const VertexCol* vertices, int vertexCount) override;
-    virtual void DrawStaticBuffer(unsigned int bufferId) override;
-    virtual void DestroyStaticBuffer(unsigned int bufferId) override;
+    virtual unsigned int CreateStaticBuffer(PrimitiveType primitiveType, const Vertex* vertices, int vertexCount) OVERRIDE;
+    virtual unsigned int CreateStaticBuffer(PrimitiveType primitiveType, const VertexTex2* vertices, int vertexCount) OVERRIDE;
+    virtual unsigned int CreateStaticBuffer(PrimitiveType primitiveType, const VertexCol* vertices, int vertexCount) OVERRIDE;
+    virtual void UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primitiveType, const Vertex* vertices, int vertexCount) OVERRIDE;
+    virtual void UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primitiveType, const VertexTex2* vertices, int vertexCount) OVERRIDE;
+    virtual void UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primitiveType, const VertexCol* vertices, int vertexCount) OVERRIDE;
+    virtual void DrawStaticBuffer(unsigned int bufferId) OVERRIDE;
+    virtual void DestroyStaticBuffer(unsigned int bufferId) OVERRIDE;
 
-    virtual int ComputeSphereVisibility(const Math::Vector &center, float radius) override;
+    virtual int ComputeSphereVisibility(const Math::Vector &center, float radius) OVERRIDE;
 
-    virtual void SetRenderState(RenderState state, bool enabled) override;
+    virtual void SetRenderState(RenderState state, bool enabled) OVERRIDE;
 
-    virtual void SetDepthTestFunc(CompFunc func) override;
+    virtual void SetDepthTestFunc(CompFunc func) OVERRIDE;
 
-    virtual void SetDepthBias(float factor) override;
+    virtual void SetDepthBias(float factor) OVERRIDE;
 
-    virtual void SetAlphaTestFunc(CompFunc func, float refValue) override;
+    virtual void SetAlphaTestFunc(CompFunc func, float refValue) OVERRIDE;
 
-    virtual void SetBlendFunc(BlendFunc srcBlend, BlendFunc dstBlend) override;
+    virtual void SetBlendFunc(BlendFunc srcBlend, BlendFunc dstBlend) OVERRIDE;
 
-    virtual void SetClearColor(const Color &color) override;
+    virtual void SetClearColor(const Color &color) OVERRIDE;
 
-    virtual void SetGlobalAmbient(const Color &color) override;
+    virtual void SetGlobalAmbient(const Color &color) OVERRIDE;
 
-    virtual void SetFogParams(FogMode mode, const Color &color, float start, float end, float density) override;
+    virtual void SetFogParams(FogMode mode, const Color &color, float start, float end, float density) OVERRIDE;
 
-    virtual void SetCullMode(CullMode mode) override;
+    virtual void SetCullMode(CullMode mode) OVERRIDE;
 
-    virtual void SetShadeModel(ShadeModel model) override;
+    virtual void SetShadeModel(ShadeModel model) OVERRIDE;
 
-    virtual void SetFillMode(FillMode mode)  override;
+    virtual void SetFillMode(FillMode mode)  OVERRIDE;
 
-    virtual void* GetFrameBufferPixels() const override;
+    virtual void* GetFrameBufferPixels() const OVERRIDE;
 
 private:
     //! Updates internal modelview matrix

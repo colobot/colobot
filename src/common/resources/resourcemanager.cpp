@@ -194,7 +194,7 @@ bool CResourceManager::RemoveDirectory(const std::string& directory)
             fs::remove_all(path);
             #endif
         }
-        catch (std::exception & e)
+        catch (std::exception&)
         {
             success = false;
         }
@@ -284,7 +284,7 @@ bool CResourceManager::Move(const std::string& from, const std::string& to)
             fs::rename(path_from, path_to);
             #endif
         }
-        catch (std::exception & e)
+        catch (std::exception&)
         {
             success = false;
         }

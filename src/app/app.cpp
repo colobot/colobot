@@ -52,7 +52,6 @@
 
 #include <stdlib.h>
 #include <libintl.h>
-#include <unistd.h>
 #include <getopt.h>
 #include <localename.h>
 
@@ -169,7 +168,7 @@ CApplication::~CApplication()
 {
     delete m_private;
     m_private = nullptr;
-    
+
     delete m_input;
     m_input = nullptr;
 
@@ -394,7 +393,7 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
                 std::string w, h;
                 std::getline(resolution, w, 'x');
                 std::getline(resolution, h, 'x');
-                
+
                 m_deviceConfig.size.x = atoi(w.c_str());
                 m_deviceConfig.size.y = atoi(h.c_str());
                 m_resolutionOverride = true;
@@ -539,7 +538,7 @@ bool CApplication::Create()
             m_exitCode = 4;
             return false;
         }
-        
+
         SDL_WM_SetCaption(m_windowTitle.c_str(), m_windowTitle.c_str());
     }
 
@@ -1009,7 +1008,7 @@ int CApplication::Run()
 
             if (m_lowCPU)
             {
-                usleep(20000); // should still give plenty of fps
+                GetSystemUtils()->Usleep(20000); // should still give plenty of fps
             }
         }
     }
@@ -1134,7 +1133,7 @@ Event CApplication::ProcessSystemEvent()
 
         event.active.gain = m_private->currentEvent.active.gain == 1;
     }
-    
+
     m_input->EventProcess(event);
 
     return event;

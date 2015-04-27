@@ -27,7 +27,7 @@
 
 
 
-#define ADJUST_ANGLE    false       // true -> adjusts the angles of the members
+#define ADJUST_ANGLE 0       // 1 -> adjusts the angles of the members
 
 
 #if ADJUST_ANGLE

@@ -41,7 +41,7 @@ public:
 
 private:
     // Overriden to avoid warning about hiding virtual function
-    virtual void Start(int param) override;
+    virtual void Start(int param) OVERRIDE;
 
 protected:
     float           m_force;

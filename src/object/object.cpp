@@ -89,8 +89,8 @@
 
 
 
-#define ADJUST_ONBOARD  false       // true -> adjusts the camera ONBOARD
-#define ADJUST_ARM  false           // true -> adjusts the manipulator arm
+#define ADJUST_ONBOARD  0       // 1 -> adjusts the camera ONBOARD
+#define ADJUST_ARM  0           // 1 -> adjusts the manipulator arm
 const float VIRUS_DELAY     = 60.0f;        // duration of virus infection
 const float LOSS_SHIELD     = 0.24f;        // loss of the shield by shot
 const float LOSS_SHIELD_H   = 0.10f;        // loss of the shield for humans

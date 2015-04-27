@@ -28,8 +28,8 @@
 #include "CBotDll.h"                    // public definitions
 #include "CBotToken.h"                  // token management
 
-#define    STACKRUN    true             /// \def return execution directly on a suspended routine
-#define    STACKMEM    true             /// \def preserve memory for the execution stack
+#define    STACKRUN    1                /// \def return execution directly on a suspended routine
+#define    STACKMEM    1                /// \def preserve memory for the execution stack
 #define    MAXSTACK    990              /// \def stack size reserved
 
 #define    EOX         (reinterpret_cast<CBotStack*>(-1))   /// \def tag special condition
@@ -1516,7 +1516,7 @@ extern bool ReadType(FILE* pf, CBotTypResult& type);
 
 extern float GetNumFloat( const char* p );
 
-#if    false
+#if 0
 extern void DEBUG( const char* text, int val, CBotStack* pile );
 #endif
 

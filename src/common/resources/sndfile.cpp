@@ -27,8 +27,8 @@ CSNDFile::CSNDFile(const std::string& filename)
     , m_snd_file{nullptr}
     , m_file{nullptr}
     , m_last_error{}
-    , m_snd_callbacks{SNDLength, SNDSeek, SNDRead, SNDWrite, SNDTell}
 {
+    m_snd_callbacks = { SNDLength, SNDSeek, SNDRead, SNDWrite, SNDTell };
     if (PHYSFS_isInit())
     {
         m_file = PHYSFS_openRead(filename.c_str());

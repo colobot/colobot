@@ -32,9 +32,9 @@ class CLevelParserParam;
 class CLevelParserException : public std::exception
 {
 public:
-    CLevelParserException(std::string message) noexcept;
-    virtual ~CLevelParserException() noexcept {}
-    const char* what() const noexcept;
+    CLevelParserException(std::string message) NOEXCEPT;
+    virtual ~CLevelParserException() NOEXCEPT {}
+    const char* what() const NOEXCEPT;
 
 protected:
     std::string m_message;
@@ -43,13 +43,13 @@ protected:
 class CLevelParserExceptionMissingParam : public CLevelParserException
 {
 public:
-    CLevelParserExceptionMissingParam(CLevelParserParam* thisParam) noexcept;
-    virtual ~CLevelParserExceptionMissingParam() noexcept {}
+    CLevelParserExceptionMissingParam(CLevelParserParam* thisParam) NOEXCEPT;
+    virtual ~CLevelParserExceptionMissingParam() NOEXCEPT {}
 };
 
 class CLevelParserExceptionBadParam : public CLevelParserException
 {
 public:
-    CLevelParserExceptionBadParam(CLevelParserParam* thisParam, std::string requestedType) noexcept;
-    virtual ~CLevelParserExceptionBadParam() noexcept {}
+    CLevelParserExceptionBadParam(CLevelParserParam* thisParam, std::string requestedType) NOEXCEPT;
+    virtual ~CLevelParserExceptionBadParam() NOEXCEPT {}
 };

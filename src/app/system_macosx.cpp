@@ -22,6 +22,7 @@
 #include "common/logger.h"
 
 #include <stdlib.h>
+#include <unistd.h>
 
 // MacOS-specific headers
 #include <CoreFoundation/CFBundle.h>
@@ -105,4 +106,9 @@ std::string CSystemUtilsMacOSX::GetSaveDir()
     GetLogger()->Trace("Saved game files are going to %s\n", savegameDir.c_str());
 
     return savegameDir;
+}
+
+void CSystemUtilsMacOSX::Usleep(int usec)
+{
+    usleep(usec);
 }
