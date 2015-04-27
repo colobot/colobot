@@ -144,7 +144,7 @@ elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 elseif(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
     message(STATUS "Detected MSVC compiler")
     set(CXX11_FLAGS "")
-    set(NORMAL_CXX_FLAGS "")
+    set(NORMAL_CXX_FLAGS "/wd\"4244\" /wd\"4309\" /wd\"4800\" /wd\"4996\"") # disable some useless warnings
     set(RELEASE_CXX_FLAGS "")
     set(DEBUG_CXX_FLAGS "")
     set(TEST_CXX_FLAGS "")
