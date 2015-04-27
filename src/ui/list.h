@@ -97,7 +97,7 @@ class CList : public CControl
 
     private:
         // Overridden to avoid warning about hiding the virtual function
-        virtual bool Create(Math::Point pos, Math::Point dim, int icon, EventType eventType) override;
+        virtual bool Create(Math::Point pos, Math::Point dim, int icon, EventType eventType) OVERRIDE;
 
     protected:
         CButton*    m_button[LISTMAXDISPLAY];

@@ -85,7 +85,7 @@ public:
     EventType    GetEventTypeFull();
     EventType    GetEventTypeClose();
 
-    virtual void SetName(std::string name, bool tooltip = true) override;
+    virtual void SetName(std::string name, bool tooltip = true) OVERRIDE;
 
     void        SetTrashEvent(bool bTrash);
     bool        GetTrashEvent();

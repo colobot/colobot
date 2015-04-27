@@ -43,10 +43,10 @@ class CSystemUtilsOther : public CSystemUtils
 {
 public:
     virtual void Init() {};
-    virtual SystemDialogResult SystemDialog(SystemDialogType type, const std::string& title, const std::string& message) override;
+    virtual SystemDialogResult SystemDialog(SystemDialogType type, const std::string& title, const std::string& message) OVERRIDE;
 
-    virtual void GetCurrentTimeStamp(SystemTimeStamp *stamp) override;
-    virtual long long int GetTimeStampExactResolution() override;
-    virtual long long TimeStampExactDiff(SystemTimeStamp *before, SystemTimeStamp *after) override;
+    virtual void GetCurrentTimeStamp(SystemTimeStamp *stamp) OVERRIDE;
+    virtual long long int GetTimeStampExactResolution() OVERRIDE;
+    virtual long long TimeStampExactDiff(SystemTimeStamp *before, SystemTimeStamp *after) OVERRIDE;
 };
 

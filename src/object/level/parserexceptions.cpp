@@ -24,22 +24,22 @@
 
 #include <boost/lexical_cast.hpp>
 
-CLevelParserException::CLevelParserException(std::string message) noexcept
+CLevelParserException::CLevelParserException(std::string message) NOEXCEPT
 {
     m_message = message;
 }
 
-const char* CLevelParserException::what() const noexcept
+const char* CLevelParserException::what() const NOEXCEPT
 {
     return m_message.c_str();
 }
 
-CLevelParserExceptionMissingParam::CLevelParserExceptionMissingParam(CLevelParserParam* thisParam) noexcept
+CLevelParserExceptionMissingParam::CLevelParserExceptionMissingParam(CLevelParserParam* thisParam) NOEXCEPT
 : CLevelParserException("Missing required param "+thisParam->GetName()+" (in "+thisParam->GetLine()->GetLevel()->GetFilename()+":"+boost::lexical_cast<std::string>(thisParam->GetLine()->GetLineNumber())+")")
 {
 }
 
-CLevelParserExceptionBadParam::CLevelParserExceptionBadParam(CLevelParserParam* thisParam, std::string requestedType) noexcept
+CLevelParserExceptionBadParam::CLevelParserExceptionBadParam(CLevelParserParam* thisParam, std::string requestedType) NOEXCEPT
 : CLevelParserException("Unable to parse '"+thisParam->GetValue()+"' as "+requestedType+" (param '"+thisParam->GetName()+"' in "+thisParam->GetLine()->GetLevel()->GetFilename()+":"+boost::lexical_cast<std::string>(thisParam->GetLine()->GetLineNumber())+")")
 {
 }
