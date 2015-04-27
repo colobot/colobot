@@ -274,6 +274,18 @@ include("${colobot_SOURCE_DIR}/cmake/msys.cmake")
 
 
 ##
+# MSVC specific settings
+##
+set(WINGETOPT 0)
+if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
+    message(STATUS "Adding MSVC-specific options")
+
+    set(CBOT_STATIC 1) # only this works for some reason
+    set(USE_SDL_MAIN 1) # fixes SDL_main
+    set(WINGETOPT 1) # use wingetopt library
+endif()
+
+##
 # Clipboard support needs X11 libraries
 ##
 if(PLATFORM_GNU OR PLATFORM_MACOSX)
@@ -297,6 +309,15 @@ add_subdirectory(lib/clipboard)
 ##
 set(LOCALENAME_INCLUDE_DIR ${colobot_SOURCE_DIR}/lib/localename)
 add_subdirectory(lib/localename)
+
+
+##
+# Wingetopt
+##
+if(WINGETOPT)
+    set(WINGETOPT_INCLUDE_DIR ${colobot_SOURCE_DIR}/lib/wingetopt/src)
+    add_subdirectory(lib/wingetopt)
+endif()
 
 
 ##
