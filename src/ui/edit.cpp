@@ -25,6 +25,7 @@
 
 #include "clipboard/clipboard.h"
 
+#include "common/config.h"
 #include "common/pathman.h"
 #include "common/resources/inputstream.h"
 #include "common/resources/outputstream.h"
@@ -302,8 +303,12 @@ bool CEdit::EventProcess(const Event &event)
 
     if (event.type == EVENT_KEY_DOWN)
     {
-        bShift = ((event.kmodState & KEY_MOD(SHIFT)) != 0);
-        bControl = ((event.kmodState & KEY_MOD(CTRL)) != 0);
+        bShift   = ( (event.kmodState & KEY_MOD(SHIFT) ) != 0 );
+        #if PLATFORM_MACOSX
+        bControl = ( (event.kmodState & KEY_MOD(META) ) != 0);
+        #else
+        bControl = ( (event.kmodState & KEY_MOD(CTRL) ) != 0);
+        #endif
     }
 
     if ( event.type == EVENT_KEY_DOWN && m_bFocus )
