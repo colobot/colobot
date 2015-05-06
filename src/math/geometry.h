@@ -517,7 +517,11 @@ inline Math::Vector NormalToPlane(const Math::Vector &p1, const Math::Vector &p2
  */
 inline Math::Vector SegmentPoint(const Math::Vector &p1, const Math::Vector &p2, float dist)
 {
-    return p1 + (p2 - p1) * dist;
+    Math::Vector direction = p2 - p1;
+    
+    direction.Normalize();
+
+    return p1 + direction * dist;
 }
 
 //! Returns the distance between given point and a plane

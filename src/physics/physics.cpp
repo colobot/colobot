@@ -3818,9 +3818,12 @@ void CPhysics::WheelParticle(int color, float width)
         {
             dist1 = Math::Distance(m_wheelParticlePos[0], goal1);
             if ( dist1 < step )  break;
+
             dist2 = Math::Distance(m_wheelParticlePos[1], goal2);
+
             wheel1 = Math::SegmentPoint(m_wheelParticlePos[0], goal1, step);
-            wheel2 = Math::SegmentPoint(m_wheelParticlePos[1], goal2, step*dist2/dist1);
+            wheel2 = Math::SegmentPoint(m_wheelParticlePos[1], goal2, step * dist2 / dist1);
+
             if ( m_linMotion.realSpeed.x >= 0.0f )
             {
                 m_particle->CreateWheelTrace(m_wheelParticlePos[0], m_wheelParticlePos[1], wheel1, wheel2, parti);
@@ -3829,6 +3832,7 @@ void CPhysics::WheelParticle(int color, float width)
             {
                 m_particle->CreateWheelTrace(m_wheelParticlePos[1], m_wheelParticlePos[0], wheel2, wheel1, parti);
             }
+
             m_wheelParticlePos[0] = wheel1;
             m_wheelParticlePos[1] = wheel2;
         }
