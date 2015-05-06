@@ -248,6 +248,7 @@ std::string GetHelpFilename(const char *token)
     if ( strcmp(token, "asin"          ) == 0 )  return std::string("help/") + CApplication::GetInstancePointer()->GetLanguageChar() + std::string("/cbot/expr.txt");
     if ( strcmp(token, "acos"          ) == 0 )  return std::string("help/") + CApplication::GetInstancePointer()->GetLanguageChar() + std::string("/cbot/expr.txt");
     if ( strcmp(token, "atan"          ) == 0 )  return std::string("help/") + CApplication::GetInstancePointer()->GetLanguageChar() + std::string("/cbot/expr.txt");
+    if ( strcmp(token, "atan2"         ) == 0 )  return std::string("help/") + CApplication::GetInstancePointer()->GetLanguageChar() + std::string("/cbot/expr.txt");
     if ( strcmp(token, "sqrt"          ) == 0 )  return std::string("help/") + CApplication::GetInstancePointer()->GetLanguageChar() + std::string("/cbot/expr.txt");
     if ( strcmp(token, "pow"           ) == 0 )  return std::string("help/") + CApplication::GetInstancePointer()->GetLanguageChar() + std::string("/cbot/expr.txt");
     if ( strcmp(token, "rand"          ) == 0 )  return std::string("help/") + CApplication::GetInstancePointer()->GetLanguageChar() + std::string("/cbot/expr.txt");
@@ -377,6 +378,7 @@ bool IsFunction(const char *token)
     if ( strcmp(token, "asin"         ) == 0 )  return true;
     if ( strcmp(token, "acos"         ) == 0 )  return true;
     if ( strcmp(token, "atan"         ) == 0 )  return true;
+    if ( strcmp(token, "atan2"        ) == 0 )  return true;
     if ( strcmp(token, "sqrt"         ) == 0 )  return true;
     if ( strcmp(token, "pow"          ) == 0 )  return true;
     if ( strcmp(token, "rand"         ) == 0 )  return true;
@@ -472,6 +474,7 @@ const char* GetHelpText(const char *token)
     if ( strcmp(token, "asin"      ) == 0 )  return "asin ( value );";
     if ( strcmp(token, "acos"      ) == 0 )  return "acos ( value );";
     if ( strcmp(token, "atan"      ) == 0 )  return "atan ( value );";
+    if ( strcmp(token, "atan2"     ) == 0 )  return "atan2 ( y, x );";
     if ( strcmp(token, "sqrt"      ) == 0 )  return "sqrt ( value );";
     if ( strcmp(token, "pow"       ) == 0 )  return "pow ( x, y );";
     if ( strcmp(token, "rand"      ) == 0 )  return "rand ( );";

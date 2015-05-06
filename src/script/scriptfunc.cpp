@@ -292,6 +292,18 @@ bool raTan(CBotVar* var, CBotVar* result, int& exception, void* user)
     return true;
 }
 
+// Instruction "atan2(y,x)".
+
+bool raTan2(CBotVar* var, CBotVar* result, int& exception, void* user)
+{
+    float y = var->GetValFloat();
+    var = var->GetNext();
+    float x = var->GetValFloat();
+    
+    result->SetValFloat(atan2(y, x) * 180.0f / Math::PI);
+    return true;
+}
+
 // Instruction "sqrt(value)".
 
 bool CScriptFunctions::rSqrt(CBotVar* var, CBotVar* result, int& exception, void* user)
@@ -3859,6 +3871,7 @@ void CScriptFunctions::Init()
     CBotProgram::AddFunction("asin",      raSin,      CScriptFunctions::cOneFloat);
     CBotProgram::AddFunction("acos",      raCos,      CScriptFunctions::cOneFloat);
     CBotProgram::AddFunction("atan",      raTan,      CScriptFunctions::cOneFloat);
+    CBotProgram::AddFunction("atan2",     raTan2,     CScriptFunctions::cTwoFloat);
     CBotProgram::AddFunction("sqrt",      rSqrt,      CScriptFunctions::cOneFloat);
     CBotProgram::AddFunction("pow",       rPow,       CScriptFunctions::cTwoFloat);
     CBotProgram::AddFunction("rand",      rRand,      CScriptFunctions::cNull);
