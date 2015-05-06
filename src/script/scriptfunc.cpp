@@ -56,7 +56,6 @@
 #endif
 
 
-
 // Compiling a procedure without any parameters.
 
 CBotTypResult CScriptFunctions::cNull(CBotVar* &var, void* user)
@@ -3249,8 +3248,10 @@ bool CScriptFunctions::rCameraFocus(CBotVar* var, CBotVar* result, int& exceptio
 
 // Static variables
 
-int          CScriptFunctions::m_CompteurFileOpen = 0;
-std::string  CScriptFunctions::m_filesDir;
+int                                 CScriptFunctions::m_CompteurFileOpen = 0;
+std::string                         CScriptFunctions::m_filesDir;
+std::unordered_map<int, FILE*>      CScriptFunctions::m_files;
+int                                 CScriptFunctions::m_nextFile = 1;
 
 
 
@@ -3320,10 +3321,14 @@ bool CScriptFunctions::rfconstruct (CBotVar* pThis, CBotVar* pVar, CBotVar* pRes
         if ( pFile == NULL ) { Exception = CBotErrFileOpen; return false; }
         
         m_CompteurFileOpen ++;
+
+        int fileHandle = m_nextFile++;
+
+        m_files[fileHandle] = pFile;
         
         // save the file handle
         pVar = pThis->GetItem("handle");
-        pVar->SetValInt(reinterpret_cast<long>(pFile));
+        pVar->SetValInt(fileHandle);
     }
     
     return true;
@@ -3365,12 +3370,16 @@ bool CScriptFunctions::rfdestruct (CBotVar* pThis, CBotVar* pVar, CBotVar* pResu
     
     // don't open? no problem :)
     if ( pVar->GetInit() != IS_DEF) return true;
+
+    int fileHandle = pVar->GetValInt();
     
-    FILE* pFile= reinterpret_cast<FILE*>(pVar->GetValInt());
+    FILE* pFile = m_files[fileHandle];
     fclose(pFile);
-    m_CompteurFileOpen --;
+    m_CompteurFileOpen--;
     
     pVar->SetInit(IS_NAN);
+
+    m_files.erase(fileHandle);
     
     return true;
 }
@@ -3432,8 +3441,12 @@ bool CScriptFunctions::rfopen (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, 
     m_CompteurFileOpen ++;
     
     // save file handle
+    int fileHandle = m_nextFile++;
+
+    m_files[fileHandle] = pFile;
+
     pVar = pThis->GetItem("handle");
-    pVar->SetValInt(reinterpret_cast<long>(pFile));
+    pVar->SetValInt(fileHandle);
     
     pResult->SetValInt(true);
     return true;
@@ -3472,18 +3485,22 @@ CBotTypResult CScriptFunctions::cfopen (CBotVar* pThis, CBotVar* &pVar)
 bool CScriptFunctions::rfclose (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception)
 {
     // it shouldn't be any parameters
-    if ( pVar != NULL ) return CBotErrOverParam;
+    if (pVar != NULL) { Exception = CBotErrOverParam; return false; }
     
     // retrieve the item "handle"
     pVar = pThis->GetItem("handle");
     
     if ( pVar->GetInit() != IS_DEF) { Exception = CBotErrNotOpen; return false; }
     
-    FILE* pFile= reinterpret_cast<FILE*>(pVar->GetValInt());
+    int fileHandle = pVar->GetValInt();
+
+    FILE* pFile = m_files[fileHandle];
     fclose(pFile);
-    m_CompteurFileOpen --;
+    m_CompteurFileOpen--;
     
     pVar->SetInit(IS_NAN);
+
+    m_files.erase(fileHandle);
     
     return true;
 }
@@ -3516,7 +3533,9 @@ bool CScriptFunctions::rfwrite (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult,
     
     if ( pVar->GetInit() != IS_DEF) { Exception = CBotErrNotOpen; return false; }
     
-    FILE* pFile= reinterpret_cast<FILE*>(pVar->GetValInt());
+    int fileHandle = pVar->GetValInt();
+
+    FILE* pFile = m_files[fileHandle];
     
     int res = fputs(param+CBotString("\n"), pFile);
     
@@ -3555,7 +3574,9 @@ bool CScriptFunctions::rfread (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, 
     
     if ( pVar->GetInit() != IS_DEF) { Exception = CBotErrNotOpen; return false; }
     
-    FILE* pFile= reinterpret_cast<FILE*>(pVar->GetValInt());
+    int fileHandle = pVar->GetValInt();
+
+    FILE* pFile = m_files[fileHandle];
     
     char    chaine[2000];
     int     i;
@@ -3596,7 +3617,9 @@ bool CScriptFunctions::rfeof (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, i
     
     if ( pVar->GetInit() != IS_DEF) { Exception = CBotErrNotOpen; return false; }
     
-    FILE* pFile= reinterpret_cast<FILE*>(pVar->GetValInt());
+    int fileHandle = pVar->GetValInt();
+
+    FILE* pFile = m_files[fileHandle];
     
     pResult->SetValInt( feof( pFile ) );
     

@@ -29,6 +29,7 @@
 #include "CBot/CBotDll.h"
 
 #include <string>
+#include <unordered_map>
  
 class CObject;
 class CScript;
@@ -178,4 +179,7 @@ private:
     static bool     Process(CScript* script, CBotVar* result, int &exception);
     static bool     ShouldProcessStop(Error err, int errMode);
     static CObject* SearchInfo(CScript* script, CObject* object, float power);
+
+    static std::unordered_map<int, FILE*> m_files;
+    static int m_nextFile;
 };
