@@ -346,6 +346,50 @@ bool CScriptFunctions::rAbs(CBotVar* var, CBotVar* result, int& exception, void*
     return true;
 }
 
+// Instruction "floor()"
+
+bool CScriptFunctions::rFloor(CBotVar* var, CBotVar* result, int& exception, void* user)
+{
+    float   value;
+
+    value = var->GetValFloat();
+    result->SetValFloat(floor(value));
+    return true;
+}
+
+// Instruction "ceil()"
+
+bool CScriptFunctions::rCeil(CBotVar* var, CBotVar* result, int& exception, void* user)
+{
+    float   value;
+
+    value = var->GetValFloat();
+    result->SetValFloat(ceil(value));
+    return true;
+}
+
+// Instruction "round()"
+
+bool CScriptFunctions::rRound(CBotVar* var, CBotVar* result, int& exception, void* user)
+{
+    float   value;
+
+    value = var->GetValFloat();
+    result->SetValFloat(round(value));
+    return true;
+}
+
+// Instruction "trunc()"
+
+bool CScriptFunctions::rTrunc(CBotVar* var, CBotVar* result, int& exception, void* user)
+{
+    float   value;
+
+    value = var->GetValFloat();
+    result->SetValFloat(trunc(value));
+    return true;
+}
+
 // Compilation of the instruction "endmission(result, delay)"
 
 CBotTypResult CScriptFunctions::cEndMission(CBotVar* &var, void* user)
@@ -3899,6 +3943,10 @@ void CScriptFunctions::Init()
     CBotProgram::AddFunction("pow",       rPow,       CScriptFunctions::cTwoFloat);
     CBotProgram::AddFunction("rand",      rRand,      CScriptFunctions::cNull);
     CBotProgram::AddFunction("abs",       rAbs,       CScriptFunctions::cOneFloat);
+    CBotProgram::AddFunction("floor",     rFloor,     CScriptFunctions::cOneFloat);
+    CBotProgram::AddFunction("ceil",      rCeil,      CScriptFunctions::cOneFloat);
+    CBotProgram::AddFunction("round",     rRound,     CScriptFunctions::cOneFloat);
+    CBotProgram::AddFunction("trunc",     rTrunc,     CScriptFunctions::cOneFloat);
     
     CBotProgram::AddFunction("endmission",rEndMission,CScriptFunctions::cEndMission);
     CBotProgram::AddFunction("playmusic", rPlayMusic ,CScriptFunctions::cPlayMusic);

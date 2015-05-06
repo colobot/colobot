@@ -253,6 +253,10 @@ std::string GetHelpFilename(const char *token)
     if ( strcmp(token, "pow"           ) == 0 )  return std::string("help/") + CApplication::GetInstancePointer()->GetLanguageChar() + std::string("/cbot/expr.txt");
     if ( strcmp(token, "rand"          ) == 0 )  return std::string("help/") + CApplication::GetInstancePointer()->GetLanguageChar() + std::string("/cbot/expr.txt");
     if ( strcmp(token, "abs"           ) == 0 )  return std::string("help/") + CApplication::GetInstancePointer()->GetLanguageChar() + std::string("/cbot/expr.txt");
+    if ( strcmp(token, "floor"         ) == 0 )  return std::string("help/") + CApplication::GetInstancePointer()->GetLanguageChar() + std::string("/cbot/expr.txt");
+    if ( strcmp(token, "ceil"          ) == 0 )  return std::string("help/") + CApplication::GetInstancePointer()->GetLanguageChar() + std::string("/cbot/expr.txt");
+    if ( strcmp(token, "round"         ) == 0 )  return std::string("help/") + CApplication::GetInstancePointer()->GetLanguageChar() + std::string("/cbot/expr.txt");
+    if ( strcmp(token, "trunc"         ) == 0 )  return std::string("help/") + CApplication::GetInstancePointer()->GetLanguageChar() + std::string("/cbot/expr.txt");
     if ( strcmp(token, "getbuild"      ) == 0 )  return std::string("help/") + CApplication::GetInstancePointer()->GetLanguageChar() + std::string("/cbot/getbuild.txt");
     if ( strcmp(token, "getresearchenable" ) == 0 )  return std::string("help/") + CApplication::GetInstancePointer()->GetLanguageChar() + std::string("/cbot/getresen.txt");
     if ( strcmp(token, "getresearchdone"   ) == 0 )  return std::string("help/") + CApplication::GetInstancePointer()->GetLanguageChar() + std::string("/cbot/getresdo.txt");
@@ -383,6 +387,10 @@ bool IsFunction(const char *token)
     if ( strcmp(token, "pow"          ) == 0 )  return true;
     if ( strcmp(token, "rand"         ) == 0 )  return true;
     if ( strcmp(token, "abs"          ) == 0 )  return true;
+    if ( strcmp(token, "floor"        ) == 0 )  return true;
+    if ( strcmp(token, "ceil"         ) == 0 )  return true;
+    if ( strcmp(token, "round"        ) == 0 )  return true;
+    if ( strcmp(token, "trunc"        ) == 0 )  return true;
     if ( strcmp(token, "getbuild"     ) == 0 )  return true;
     if ( strcmp(token, "getresearchenable" ) == 0 )  return true;
     if ( strcmp(token, "getresearchdone"   ) == 0 )  return true;
@@ -479,6 +487,10 @@ const char* GetHelpText(const char *token)
     if ( strcmp(token, "pow"       ) == 0 )  return "pow ( x, y );";
     if ( strcmp(token, "rand"      ) == 0 )  return "rand ( );";
     if ( strcmp(token, "abs"       ) == 0 )  return "abs ( value );";
+    if ( strcmp(token, "floor"     ) == 0 )  return "floor ( value );";
+    if ( strcmp(token, "ceil"      ) == 0 )  return "ceil ( value );";
+    if ( strcmp(token, "round"     ) == 0 )  return "round ( value );";
+    if ( strcmp(token, "trunc"     ) == 0 )  return "trunc ( value );";
     if ( strcmp(token, "getbuild"  ) == 0 )  return "getbuild ( );";
     if ( strcmp(token, "getresearchenable" ) == 0 )  return "getresearchenable ( );";
     if ( strcmp(token, "getresearchdone" ) == 0 )  return "getresearchdone ( );";

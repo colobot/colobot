@@ -84,6 +84,10 @@ private:
     static bool rPow(CBotVar* var, CBotVar* result, int& exception, void* user);
     static bool rRand(CBotVar* var, CBotVar* result, int& exception, void* user);
     static bool rAbs(CBotVar* var, CBotVar* result, int& exception, void* user);
+    static bool rFloor(CBotVar* var, CBotVar* result, int& exception, void* user);
+    static bool rCeil(CBotVar* var, CBotVar* result, int& exception, void* user);
+    static bool rRound(CBotVar* var, CBotVar* result, int& exception, void* user);
+    static bool rTrunc(CBotVar* var, CBotVar* result, int& exception, void* user);
     static bool rEndMission(CBotVar* var, CBotVar* result, int& exception, void* user);
     static bool rPlayMusic(CBotVar* var, CBotVar* result, int& exception, void* user);
     static bool rStopMusic(CBotVar* var, CBotVar* result, int& exception, void* user);
