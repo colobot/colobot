@@ -205,6 +205,8 @@ private:
     Math::Matrix m_modelviewMat;
     //! Current projection matrix
     Math::Matrix m_projectionMat;
+    //! Current texture matrix
+    Math::Matrix m_textureMat;
 
     //! The current material
     Material m_material;
@@ -247,6 +249,10 @@ private:
     bool m_multitextureAvailable;
     //! Whether to use VBOs or display lists
     bool m_vboAvailable;
+    //! Whether anisotropic filtering is available
+    bool m_anisotropyAvailable;
+    //! Maximum anisotropy level
+    int m_maxAnisotropy;
     //! Which vertex buffer type to use
     VertexBufferType m_vertexBufferType;
     //! Map of saved VBO objects

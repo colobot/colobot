@@ -19,6 +19,7 @@
 
 
 #include "graphics/opengl/gldevice.h"
+#include "graphics/engine/engine.h"
 
 #include "common/config.h"
 #include "common/image.h"
@@ -69,6 +70,8 @@ CGLDevice::CGLDevice(const GLDeviceConfig &config)
     m_multitextureAvailable = false;
     m_vboAvailable = false;
     m_vertexBufferType = VBT_DISPLAY_LIST;
+    m_anisotropyAvailable = false;
+    m_maxAnisotropy = 1;
 }
 
 
@@ -205,6 +208,23 @@ bool CGLDevice::Create()
         if (!m_multitextureAvailable)
             GetLogger()->Warn("GLEW reports multitexturing not supported - graphics quality will be degraded!\n");
 
+        // Detect support of anisotropic filtering
+        m_anisotropyAvailable = glewIsSupported("GL_EXT_texture_filter_anisotropic");
+        if(m_anisotropyAvailable)
+        {
+            // Obtain maximum anisotropy level available
+            float level;
+            glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &level);
+            m_maxAnisotropy = static_cast<int>(level);
+            
+            GetLogger()->Info("Anisotropic filtering available\n");
+            GetLogger()->Info("Maximum anisotropy: %d\n", m_maxAnisotropy);
+        }
+        else
+        {
+            GetLogger()->Info("Anisotropic filtering not available\n");
+        }
+        
         if (m_config.vboMode == VBO_MODE_ENABLE)
         {
             GetLogger()->Info("VBO enabled by override - using VBOs\n");
@@ -360,6 +380,12 @@ void CGLDevice::SetTransform(TransformType type, const Math::Matrix &matrix)
         glMatrixMode(GL_PROJECTION);
         glLoadMatrixf(m_projectionMat.Array());
     }
+    else if (type == TRANSFORM_TEXTURE)
+    {
+        m_textureMat = matrix;
+        glMatrixMode(GL_TEXTURE);
+        glLoadMatrixf(m_textureMat.Array());
+    }
     else
     {
         assert(false);
@@ -511,7 +537,7 @@ Texture CGLDevice::CreateTexture(ImageData *data, const TextureCreateParams &par
 
     if (!Math::IsPowerOfTwo(result.size.x) || !Math::IsPowerOfTwo(result.size.y))
         GetLogger()->Warn("Creating non-power-of-2 texture (%dx%d)!\n", result.size.x, result.size.y);
-
+    
     result.originalSize = result.size;
 
     // Use & enable 1st texture stage
@@ -523,31 +549,52 @@ Texture CGLDevice::CreateTexture(ImageData *data, const TextureCreateParams &par
     glGenTextures(1, &result.id);
     glBindTexture(GL_TEXTURE_2D, result.id);
 
-    // Set params
+    // Set texture parameters
+    GLint minF = 0, magF = 0;
+    int mipmapLevel = 1;
 
-    GLint minF = 0;
-    if      (params.minFilter == TEX_MIN_FILTER_NEAREST)                minF = GL_NEAREST;
-    else if (params.minFilter == TEX_MIN_FILTER_LINEAR)                 minF = GL_LINEAR;
-    else if (params.minFilter == TEX_MIN_FILTER_NEAREST_MIPMAP_NEAREST) minF = GL_NEAREST_MIPMAP_NEAREST;
-    else if (params.minFilter == TEX_MIN_FILTER_LINEAR_MIPMAP_NEAREST)  minF = GL_LINEAR_MIPMAP_NEAREST;
-    else if (params.minFilter == TEX_MIN_FILTER_NEAREST_MIPMAP_LINEAR)  minF = GL_NEAREST_MIPMAP_LINEAR;
-    else if (params.minFilter == TEX_MIN_FILTER_LINEAR_MIPMAP_LINEAR)   minF = GL_LINEAR_MIPMAP_LINEAR;
-    else  assert(false);
+    switch (params.filter)
+    {
+    case TEX_FILTER_NEAREST:
+        minF = GL_NEAREST;
+        magF = GL_NEAREST;
+        break;
+    case TEX_FILTER_BILINEAR:
+        minF = GL_LINEAR;
+        magF = GL_LINEAR;
+        break;
+    case TEX_FILTER_TRILINEAR:
+        minF = GL_LINEAR_MIPMAP_LINEAR;
+        magF = GL_LINEAR;
+        mipmapLevel = CEngine::GetInstance().GetTextureMipmapLevel();
+        break;
+    }
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, minF);
-
-    GLint magF = 0;
-    if      (params.magFilter == TEX_MAG_FILTER_NEAREST) magF = GL_NEAREST;
-    else if (params.magFilter == TEX_MAG_FILTER_LINEAR)  magF = GL_LINEAR;
-    else  assert(false);
-
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, magF);
 
+    // Set mipmap level and automatic mipmap generation if neccesary
     if (params.mipmap)
-        glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE);
+    {
+	    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
+	    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, mipmapLevel - 1);
+	    glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE);
+    }
     else
-        glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_FALSE);
+    {
+	    // Has to be set to 0 because no mipmaps are generated
+	    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
+	    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
+	    glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_FALSE);
+    }
 
+    // Set anisotropy level if available
+    if (m_anisotropyAvailable)
+    {
+	    float level = Math::Min(m_maxAnisotropy, CEngine::GetInstance().GetTextureAnisotropyLevel());
+
+	    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, level);
+    }
 
     bool convert = false;
     GLenum sourceFormat = 0;
@@ -653,7 +700,7 @@ Texture CGLDevice::CreateTexture(ImageData *data, const TextureCreateParams &par
             actualSurface = convertedSurface;
     }
 
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, actualSurface->w, actualSurface->h,
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, actualSurface->w, actualSurface->h,
                  0, sourceFormat, GL_UNSIGNED_BYTE, actualSurface->pixels);
 
     SDL_FreeSurface(convertedSurface);

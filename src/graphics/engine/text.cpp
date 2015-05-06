@@ -1014,8 +1014,7 @@ CharTexture CText::CreateCharTexture(UTF8Char ch, CachedFont* font)
 
     TextureCreateParams createParams;
     createParams.format = TEX_IMG_RGBA;
-    createParams.minFilter = TEX_MIN_FILTER_NEAREST;
-    createParams.magFilter = TEX_MAG_FILTER_NEAREST;
+    createParams.filter = TEX_FILTER_NEAREST;
     createParams.mipmap = false;
 
     Texture tex = m_device->CreateTexture(&data, createParams);

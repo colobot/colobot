@@ -1117,6 +1117,24 @@ public:
     //@}
 
     //@{
+    //! Management the texture filter mode
+    void            SetTextureFilterMode(TexFilter value);
+    TexFilter       GetTextureFilterMode();
+    //@}
+
+    //@{
+    //! Management the mipmap level for textures
+    void            SetTextureMipmapLevel(int value);
+    int             GetTextureMipmapLevel();
+    //@}
+
+    //@{
+    //! Management the anisotropy level for textures
+    void            SetTextureAnisotropyLevel(int value);
+    int             GetTextureAnisotropyLevel();
+    //@}
+
+    //@{
     //! Management mode of toto
     void            SetTotoMode(bool present);
     bool            GetTotoMode();
@@ -1414,6 +1432,10 @@ protected:
     TextureCreateParams m_defaultTexParams;
     //! Create params for terrain textures
     TextureCreateParams m_terrainTexParams;
+    //! Requested texture mipmap level
+    int m_textureMipmapLevel;
+    //! Requested texture anisotropy level
+    int m_textureAnisotropy;
 
     //! Map of loaded textures (by name)
     std::map<std::string, Texture> m_texNameMap;

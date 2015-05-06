@@ -114,6 +114,8 @@ CEngine::CEngine(CApplication *app)
     m_terrainVision = 1000.0f;
     m_gadgetQuantity = 1.0f;
     m_textureQuality = 1;
+    m_textureMipmapLevel = 1;
+    m_textureAnisotropy = 1;
     m_totoMode = true;
     m_lensMode = true;
     m_waterMode = true;
@@ -158,15 +160,34 @@ CEngine::CEngine(CApplication *app)
     m_lastFrameTime = GetSystemUtils()->CreateTimeStamp();
     m_currentFrameTime = GetSystemUtils()->CreateTimeStamp();
 
+    TexFilter filter = TEX_FILTER_BILINEAR;
+    bool mipmaps = false;
+
+    int value;
+    if (CProfile::GetInstance().GetIntProperty("Setup", "FilterMode", value))
+    {
+        if (value == 1) filter = TEX_FILTER_NEAREST;
+        else if (value == 2) filter = TEX_FILTER_BILINEAR;
+        else if (value == 3) filter = TEX_FILTER_TRILINEAR, mipmaps = true;
+    }
+
+    if (CProfile::GetInstance().GetIntProperty("Setup", "MipmapLevel", value))
+    {
+        m_textureMipmapLevel = value;
+    }
+
+    if (CProfile::GetInstance().GetIntProperty("Setup", "Anisotropy", value))
+    {
+        m_textureAnisotropy = value;
+    }
+
     m_defaultTexParams.format = TEX_IMG_AUTO;
-    m_defaultTexParams.mipmap = true;
-    m_defaultTexParams.minFilter = TEX_MIN_FILTER_LINEAR_MIPMAP_LINEAR;
-    m_defaultTexParams.magFilter = TEX_MAG_FILTER_LINEAR;
+    m_defaultTexParams.mipmap = mipmaps;
+    m_defaultTexParams.filter = filter;
 
     m_terrainTexParams.format = TEX_IMG_AUTO;
-    m_terrainTexParams.mipmap = false;
-    m_terrainTexParams.minFilter = TEX_MIN_FILTER_LINEAR;
-    m_terrainTexParams.magFilter = TEX_MAG_FILTER_LINEAR;
+    m_terrainTexParams.mipmap = mipmaps;
+    m_terrainTexParams.filter = filter;
 }
 
 CEngine::~CEngine()
@@ -282,8 +303,7 @@ bool CEngine::Create()
 
     TextureCreateParams params;
     params.format = TEX_IMG_AUTO;
-    params.minFilter = TEX_MIN_FILTER_NEAREST;
-    params.magFilter = TEX_MAG_FILTER_NEAREST;
+    params.filter = TEX_FILTER_NEAREST;
     params.mipmap = false;
     m_miceTexture = LoadTexture("textures/interface/mouse.png", params);
 
@@ -2906,6 +2926,43 @@ void CEngine::SetTextureQuality(int value)
 int CEngine::GetTextureQuality()
 {
     return m_textureQuality;
+}
+
+void CEngine::SetTextureFilterMode(TexFilter value)
+{
+    m_defaultTexParams.filter = value;
+    m_terrainTexParams.filter = value;
+}
+
+TexFilter CEngine::GetTextureFilterMode()
+{
+    return m_terrainTexParams.filter;
+}
+
+void CEngine::SetTextureMipmapLevel(int value)
+{
+    if (value < 1) value = 1;
+    if (value > 16) value = 16;
+
+    m_textureMipmapLevel = value;
+}
+
+int CEngine::GetTextureMipmapLevel()
+{
+    return m_textureMipmapLevel;
+}
+
+void CEngine::SetTextureAnisotropyLevel(int value)
+{
+    if (value < 1) value = 1;
+    if (value > 16) value = 16;
+    
+    m_textureAnisotropy = value;
+}
+
+int CEngine::GetTextureAnisotropyLevel()
+{
+    return m_textureAnisotropy;
 }
 
 void CEngine::SetTotoMode(bool present)
