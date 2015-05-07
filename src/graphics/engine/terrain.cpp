@@ -655,7 +655,7 @@ bool CTerrain::CreateMosaic(int ox, int oy, int step, int objRank,
                         p1.texCoord.y = 1.0f - offset;
 
                     if (y == brick - step)
-                        p2.texCoord.y = 0.0f - offset;
+                        p2.texCoord.y = 0.0f + offset;
 
                     if (m_useMaterials)
                     {
