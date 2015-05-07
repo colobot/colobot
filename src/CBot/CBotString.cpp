@@ -173,6 +173,10 @@ CBotString CBotString::Left(int nCount) const
 {
     char    chain[2000];
 
+    // clamp nCount to correct value
+    if(nCount < 0) nCount = 0;
+    if(nCount > m_lg) nCount = m_lg;
+
     int i;
     for (i = 0; i < m_lg && i < nCount && i < 1999; ++i)
     {
@@ -186,6 +190,10 @@ CBotString CBotString::Left(int nCount) const
 CBotString CBotString::Right(int nCount) const
 {
     char chain[2000];
+
+    // clamp nCount to correct value
+    if(nCount < 0) nCount = 0;
+    if(nCount > m_lg) nCount = m_lg;
 
     int i = m_lg - nCount;
     if ( i < 0 ) i = 0;
@@ -204,6 +212,15 @@ CBotString CBotString::Mid(int nFirst, int nCount) const
 {
     char chain[2000];
 
+    // clamps nFirst to correct value
+    if(nFirst < 0) nFirst = 0;
+    if(nFirst > m_lg) nFirst = m_lg;
+
+    // clamp nCount to correct value
+    int remaining = m_lg - nFirst;
+    if(nCount > remaining) nCount = remaining;
+    if(nCount < 0) nCount = 0;
+
     int i;
     for (i = nFirst; i < m_lg && i < 1999 && i <= nFirst + nCount; ++i)
     {
@@ -217,6 +234,10 @@ CBotString CBotString::Mid(int nFirst, int nCount) const
 CBotString CBotString::Mid(int nFirst) const
 {
     char chain[2000];
+
+    // clamp nFirst to correct value
+    if(nFirst < 0) nFirst = 0;
+    if(nFirst > m_lg) nFirst = m_lg;
 
     int i;
     for (i = nFirst; i < m_lg && i < 1999 ; ++i)
@@ -284,9 +305,14 @@ bad:;
 CBotString CBotString::Mid(int start, int lg)
 {
     CBotString res;
+
+    // clamp start to correct value
+    if (start < 0) start = 0;
     if (start >= m_lg) return res;
 
-    if ( lg < 0 ) lg = m_lg - start;
+    int remaining = m_lg - start;
+    if (lg > remaining) lg = remaining;
+    if (lg < 0) lg = 0;
 
     char* p = new char[m_lg+1];
     strcpy(p, m_ptr+start);
