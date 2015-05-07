@@ -637,21 +637,25 @@ bool CTerrain::CreateMosaic(int ox, int oy, int step, int objRank,
                     p1.coord.x -= o.coord.x;  p1.coord.z -= o.coord.z;
                     p2.coord.x -= o.coord.x;  p2.coord.z -= o.coord.z;
 
+                    // TODO: Find portable solution
+                    //float offset = 0.5f / 256.0f;      // Direct3D
+                    float offset = 0.0f;                 // OpenGL
+
                     if (x == 0)
                     {
-                        p1.texCoord.x = 0.0f+(0.5f/256.0f);
-                        p2.texCoord.x = 0.0f+(0.5f/256.0f);
+                        p1.texCoord.x = 0.0f + offset;
+                        p2.texCoord.x = 0.0f + offset;
                     }
                     if (x == brick)
                     {
-                        p1.texCoord.x = 1.0f-(0.5f/256.0f);
-                        p2.texCoord.x = 1.0f-(0.5f/256.0f);
+                        p1.texCoord.x = 1.0f - offset;
+                        p2.texCoord.x = 1.0f - offset;
                     }
                     if (y == 0)
-                        p1.texCoord.y = 1.0f-(0.5f/256.0f);
+                        p1.texCoord.y = 1.0f - offset;
 
                     if (y == brick - step)
-                        p2.texCoord.y = 0.0f+(0.5f/256.0f);
+                        p2.texCoord.y = 0.0f - offset;
 
                     if (m_useMaterials)
                     {

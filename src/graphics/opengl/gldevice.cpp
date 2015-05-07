@@ -550,7 +550,7 @@ Texture CGLDevice::CreateTexture(ImageData *data, const TextureCreateParams &par
     glBindTexture(GL_TEXTURE_2D, result.id);
 
     // Set texture parameters
-    GLint minF = 0, magF = 0;
+    GLint minF = GL_NEAREST, magF = GL_NEAREST;
     int mipmapLevel = 1;
 
     switch (params.filter)
