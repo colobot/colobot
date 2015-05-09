@@ -1677,9 +1677,9 @@ void CMainDialog::ChangePhase(Phase phase)
         pw = m_interface->CreateWindows(pos, ddim, -1, EVENT_WINDOW5);
 
         pos.x  =  80.0f/640.0f;
-        pos.y  = 240.0f/480.0f;
+        pos.y  = 190.0f/480.0f;
         ddim.x = 490.0f/640.0f;
-        ddim.y = 110.0f/480.0f;
+        ddim.y = 160.0f/480.0f;
         pe = pw->CreateEdit(pos, ddim, 0, EVENT_EDIT1);
         pe->SetGenericMode(true);
         pe->SetEditCap(false);
