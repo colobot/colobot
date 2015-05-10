@@ -29,7 +29,7 @@ any of the missions.
 
 The recommended way of compiling for Windows is using Linux in a cross-compilation environment called MXE.
 This is the way our build bot service (http://compiled.colobot.info/) prepares the release packages.
-You can also compile directly on Windows with MSYS2/MinGW-w64 but this is a bit more difficult to set up.
+You can also compile directly on Windows with MSYS2/MinGW-w64 or MSVC 2013 but this is a bit more difficult to set up.
 
 #### Cross-compiling using MXE
 
@@ -41,6 +41,10 @@ statically linked Win32 binaries. More information is available in
 #### Compiling with MSYS2/MinGW-w64
 
 See [this wiki page](http://colobot.info/wiki/dev/Compiling_GOLD_on_Windows_with_MSYS2) for details.
+
+#### Compiling with MSVC
+
+As of 0.1.5-alpha it's possible to compile binary with MSVC 2013. See [this post](http://colobot.info/forum/showthread.php?tid=595&pid=5831#pid5831) for details.
 
 
 ### Compiling on Linux
@@ -129,7 +133,7 @@ file for details.
 ### Other platforms
 
 The code isn't particularly tied to any compiler or platform, so in theory it should work on any platform provided you have
-the required libraries there.  Also, other compilers than currently supported GCC >= 4.6 and Clang may happen to work with our code.
+the required libraries there.  Also, other compilers than currently supported GCC >= 4.6, Clang and MSVC 2013 may happen to work with our code.
 If you can, please try to compile the code on your platform and let us know how it goes.
 
 
