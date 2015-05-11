@@ -299,6 +299,7 @@ bool CGLDevice::Create()
 
     // Minimal depth bias to avoid Z-fighting
     //SetDepthBias(0.001f);
+    glAlphaFunc(GL_GREATER, 0.1f);
 
     // Set just to be sure
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);

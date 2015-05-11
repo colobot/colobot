@@ -3620,6 +3620,8 @@ void CEngine::RenderShadowMap()
         {
             EngineBaseObjTexTier& p2 = p1.next[l2];
 
+            SetTexture(p2.tex1, 0);
+
             for (int l3 = 0; l3 < static_cast<int>(p2.next.size()); l3++)
             {
                 EngineBaseObjLODTier& p3 = p2.next[l3];
