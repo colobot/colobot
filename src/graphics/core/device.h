@@ -91,8 +91,7 @@ enum TransformType
 {
     TRANSFORM_WORLD,
     TRANSFORM_VIEW,
-    TRANSFORM_PROJECTION,
-    TRANSFORM_TEXTURE
+    TRANSFORM_PROJECTION
 };
 
 /**
@@ -107,7 +106,8 @@ enum RenderState
     RENDER_STATE_DEPTH_TEST,
     RENDER_STATE_DEPTH_WRITE,
     RENDER_STATE_ALPHA_TEST,
-    RENDER_STATE_CULLING
+    RENDER_STATE_CULLING,
+    RENDER_STATE_DEPTH_BIAS
 };
 
 /**
@@ -276,6 +276,8 @@ public:
     virtual Texture CreateTexture(CImage *image, const TextureCreateParams &params) = 0;
     //! Creates a texture from raw image data; image data can be freed after that
     virtual Texture CreateTexture(ImageData *data, const TextureCreateParams &params) = 0;
+    //! Creates a depth texture with specific dimensions and depth
+    virtual Texture CreateDepthTexture(int width, int height, int depth) = 0;
     //! Deletes a given texture, freeing it from video memory
     virtual void DestroyTexture(const Texture &texture) = 0;
     //! Deletes all textures created so far
@@ -295,6 +297,12 @@ public:
 
     //! Sets only the texture wrap modes (for faster than thru stage params)
     virtual void SetTextureStageWrap(int index, TexWrapMode wrapS, TexWrapMode wrapT) = 0;
+
+    //! Sets the texture coordinate generation mode for given texture unit
+    virtual void SetTextureCoordGeneration(int index, TextureGenerationParams &params) = 0;
+
+    //! Sets texture coordinate transform matrix
+    virtual void SetTextureMatrix(int index, Math::Matrix& matrix) = 0;
 
     //! Renders primitive composed of vertices with single texture
     virtual void DrawPrimitive(PrimitiveType type, const Vertex *vertices    , int vertexCount,
@@ -333,14 +341,20 @@ public:
     //! Returns a mask of frustum planes for which the test is positive
     virtual int ComputeSphereVisibility(const Math::Vector &center, float radius) = 0;
 
+    //! Changes rendering viewport
+    virtual void SetViewport(int x, int y, int width, int height) = 0;
+
     //! Enables/disables the given render state
     virtual void SetRenderState(RenderState state, bool enabled) = 0;
+
+    //! Sets the color mask
+    virtual void SetColorMask(bool red, bool green, bool blue, bool alpha) = 0;
 
     //! Sets the function of depth test
     virtual void SetDepthTestFunc(CompFunc func) = 0;
 
     //! Sets the depth bias (constant value added to Z-coords)
-    virtual void SetDepthBias(float factor) = 0;
+    virtual void SetDepthBias(float factor, float units) = 0;
 
     //! Sets the alpha test function and reference value
     virtual void SetAlphaTestFunc(CompFunc func, float refValue) = 0;
@@ -365,6 +379,9 @@ public:
 
     //! Sets the current fill mode
     virtual void SetFillMode(FillMode mode) = 0;
+
+    //! Copies content of framebuffer to texture
+    virtual void CopyFramebufferToTexture(Texture& texture, int xOffset, int yOffset, int x, int y, int width, int height) = 0;
 
     //! Returns the pixels of the entire screen
     virtual void* GetFrameBufferPixels() const = 0;

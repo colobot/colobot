@@ -67,6 +67,7 @@ public:
     
     virtual Texture CreateTexture(CImage *image, const TextureCreateParams &params);
     virtual Texture CreateTexture(ImageData *data, const TextureCreateParams &params);
+    virtual Texture CreateDepthTexture(int width, int height, int depth);
     virtual void DestroyTexture(const Texture &texture);
     virtual void DestroyAllTextures();
     
@@ -81,6 +82,8 @@ public:
     virtual TextureStageParams GetTextureStageParams(int index);
     
     virtual void SetTextureStageWrap(int index, Gfx::TexWrapMode wrapS, Gfx::TexWrapMode wrapT);
+    virtual void SetTextureCoordGeneration(int index, TextureGenerationParams &params);
+    virtual void SetTextureMatrix(int index, Math::Matrix& matrix);
     
     virtual void DrawPrimitive(PrimitiveType type, const Vertex *vertices    , int vertexCount,
                                Color color = Color(1.0f, 1.0f, 1.0f, 1.0f));
@@ -98,14 +101,18 @@ public:
     virtual void DestroyStaticBuffer(unsigned int bufferId);
     
     virtual int ComputeSphereVisibility(const Math::Vector &center, float radius);
+
+    virtual void SetViewport(int x, int y, int width, int height);
     
     virtual void SetRenderState(RenderState state, bool enabled);
     virtual bool GetRenderState(RenderState state);
+
+    virtual void SetColorMask(bool red, bool green, bool blue, bool alpha);
     
     virtual void SetDepthTestFunc(CompFunc func);
     virtual CompFunc GetDepthTestFunc();
     
-    virtual void SetDepthBias(float factor);
+    virtual void SetDepthBias(float factor, float units);
     virtual float GetDepthBias();
     
     virtual void SetAlphaTestFunc(CompFunc func, float refValue);
@@ -131,6 +138,8 @@ public:
     
     virtual void SetFillMode(FillMode mode) ;
     virtual FillMode GetFillMode();
+
+    virtual void CopyFramebufferToTexture(Texture& texture, int xOffset, int yOffset, int x, int y, int width, int height);
     
     virtual void* GetFrameBufferPixels() const;
     

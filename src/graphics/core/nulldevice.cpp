@@ -128,6 +128,13 @@ Texture CNullDevice::CreateTexture(ImageData *data, const TextureCreateParams &p
     return tex;
 }
 
+Texture CNullDevice::CreateDepthTexture(int width, int height, int depth)
+{
+    Texture tex;
+    tex.id = 1; // tex.id = 0 => invalid texture
+    return tex;
+}
+
 void CNullDevice::DestroyTexture(const Texture &texture)
 {
 }
@@ -168,6 +175,14 @@ void CNullDevice::SetTextureStageParams(int index, const TextureStageParams &par
 }
 
 void CNullDevice::SetTextureStageWrap(int index, TexWrapMode wrapS, TexWrapMode wrapT)
+{
+}
+
+void CNullDevice::SetTextureCoordGeneration(int index, TextureGenerationParams &params)
+{
+}
+
+void CNullDevice::SetTextureMatrix(int index, Math::Matrix& matrix)
 {
 }
 
@@ -230,6 +245,10 @@ int CNullDevice::ComputeSphereVisibility(const Math::Vector &center, float radiu
     return 0;
 }
 
+void CNullDevice::SetViewport(int x, int y, int width, int height)
+{
+}
+
 void CNullDevice::SetRenderState(RenderState state, bool enabled)
 {
 }
@@ -237,6 +256,10 @@ void CNullDevice::SetRenderState(RenderState state, bool enabled)
 bool CNullDevice::GetRenderState(RenderState state)
 {
     return false;
+}
+
+void CNullDevice::SetColorMask(bool red, bool green, bool blue, bool alpha)
+{
 }
 
 void CNullDevice::SetDepthTestFunc(CompFunc func)
@@ -248,7 +271,7 @@ CompFunc CNullDevice::GetDepthTestFunc()
     return COMP_FUNC_NEVER;
 }
 
-void CNullDevice::SetDepthBias(float factor)
+void CNullDevice::SetDepthBias(float factor, float units)
 {
 }
 
@@ -330,6 +353,10 @@ void CNullDevice::SetFillMode(FillMode mode)
 FillMode CNullDevice::GetFillMode()
 {
     return FILL_POINT;
+}
+
+void CNullDevice::CopyFramebufferToTexture(Texture& texture, int xOffset, int yOffset, int x, int y, int width, int height)
+{
 }
 
 void* CNullDevice::GetFrameBufferPixels() const

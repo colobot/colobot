@@ -98,6 +98,7 @@ enum TexMagFilter
 enum TexWrapMode
 {
     TEX_WRAP_CLAMP,
+    TEX_WRAP_CLAMP_TO_BORDER,
     TEX_WRAP_REPEAT
 };
 
@@ -212,6 +213,54 @@ struct TextureStageParams
         alphaArg2 = TEX_MIX_ARG_TEXTURE;
 
         wrapS = wrapT = TEX_WRAP_REPEAT;
+    }
+};
+
+/**
+* \struct TexGenMode
+* \brief Texture generation mode
+*/
+enum TexGenMode
+{
+    //! No texture generation
+    TEX_GEN_NONE,
+    //! Object linear mode
+    TEX_GEN_OBJECT_LINEAR,
+    //! Eye linear mode
+    TEX_GEN_EYE_LINEAR,
+    //! Spherical mapping mode
+    TEX_GEN_SPHERE_MAP,
+    //! Normal mapping mode
+    TEX_GEN_NORMAL_MAP,
+    //! Reflection mapping mode
+    TEX_GEN_REFLECTION_MAP
+};
+
+/**
+* \struct TextureGenerationParams
+* \brief Parameters for texture coordinate generation
+*
+* These params define the generation of texture coordinate for given texture unit.
+*/
+struct TextureGenerationParams
+{
+    struct
+    {
+        TexGenMode mode;
+        float plane[4];
+    } coords[4];
+
+    TextureGenerationParams()
+    {
+        LoadDefault();
+    }
+
+    inline void LoadDefault()
+    {
+        for (int i = 0; i < 4; i++)
+        {
+            coords[i].mode = TEX_GEN_NONE;
+        }
     }
 };
 

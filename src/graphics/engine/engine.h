@@ -1135,6 +1135,12 @@ public:
     //@}
 
     //@{
+    //! Management of shadow mapping
+    void            SetShadowMapping(bool value);
+    bool            GetShadowMapping();
+    //@}
+
+    //@{
     //! Management mode of toto
     void            SetTotoMode(bool present);
     bool            GetTotoMode();
@@ -1227,6 +1233,8 @@ public:
 protected:
     //! Prepares the interface for 3D scene
     void        Draw3DScene();
+    //! Renders shadow map
+    void        RenderShadowMap();
     //! Draw 3D object
     void        DrawObject(const EngineBaseObjDataTier& p4);
     //! Draws the user interface over the scene
@@ -1339,6 +1347,15 @@ protected:
     //! Camera angle for 3D scene
     float           m_focus;
 
+    //! Projection matrix for rendering shadow maps
+    Math::Matrix    m_shadowProjMat;
+    //! View matrix for rendering shadow maps
+    Math::Matrix    m_shadowViewMat;
+    //! Texture matrix for rendering shadow maps
+    Math::Matrix    m_shadowTextureMat;
+    //! Texture bias for sampling shadow maps
+    Math::Matrix    m_shadowBias;
+
     //! World matrix for 2D interface
     Math::Matrix    m_matWorldInterface;
     //! Projection matrix for 2D interface
@@ -1416,6 +1433,8 @@ protected:
     int             m_editIndentValue;
     float           m_tracePrecision;
 
+    Texture         m_shadowMap;
+
     //! Ranks of highlighted objects
     int             m_highlightRank[100];
     //! Highlight visible?
@@ -1436,6 +1455,10 @@ protected:
     int m_textureMipmapLevel;
     //! Requested texture anisotropy level
     int m_textureAnisotropy;
+    //! true if shadow mapping enabled
+    bool m_shadowMapping;
+    //! Override for NPOT shadow map texture
+    bool m_npotShadowMap;
 
     //! Map of loaded textures (by name)
     std::map<std::string, Texture> m_texNameMap;

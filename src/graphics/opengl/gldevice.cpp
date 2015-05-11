@@ -59,8 +59,8 @@ void GLDeviceConfig::LoadDefault()
     vboMode = VBO_MODE_AUTO;
 }
 
-
-
+GLuint textureCoordinates[] = { GL_S, GL_T, GL_R, GL_Q };
+GLuint textureCoordGen[] = { GL_TEXTURE_GEN_S, GL_TEXTURE_GEN_T, GL_TEXTURE_GEN_R, GL_TEXTURE_GEN_Q };
 
 CGLDevice::CGLDevice(const GLDeviceConfig &config)
 {
@@ -72,6 +72,9 @@ CGLDevice::CGLDevice(const GLDeviceConfig &config)
     m_vertexBufferType = VBT_DISPLAY_LIST;
     m_anisotropyAvailable = false;
     m_maxAnisotropy = 1;
+    m_glMajor = 1;
+    m_glMinor = 1;
+    m_shadowMappingSupport = SMS_NONE;
 }
 
 
@@ -204,9 +207,32 @@ bool CGLDevice::Create()
             return false;
         }
 
+        // Extract OpenGL version
+        const char *version = reinterpret_cast<const char*>(glGetString(GL_VERSION));
+        sscanf(version, "%d.%d", &m_glMajor, &m_glMinor);
+        GetLogger()->Info("OpenGL %d.%d\n", m_glMajor, m_glMinor);
+
+        // Detect multitexture support
         m_multitextureAvailable = glewIsSupported("GL_ARB_multitexture GL_ARB_texture_env_combine");
         if (!m_multitextureAvailable)
             GetLogger()->Warn("GLEW reports multitexturing not supported - graphics quality will be degraded!\n");
+
+        // Detect Shadow mapping support
+        if (m_glMajor >= 2 || m_glMinor >= 4)     // Core depth texture+shadow, OpenGL 1.4+
+        {
+            m_shadowMappingSupport = SMS_CORE;
+            GetLogger()->Info("Shadow mapping available (core)\n");
+        }
+        else if (glewIsSupported("GL_ARB_depth_texture GL_ARB_shadow"))  // ARB depth texture + shadow
+        {
+            m_shadowMappingSupport = SMS_ARB;
+            GetLogger()->Info("Shadow mapping available (ARB)\n");
+        }
+        else       // No Shadow mapping
+        {
+            m_shadowMappingSupport = SMS_NONE;
+            GetLogger()->Info("Shadow mapping not available\n");
+        }
 
         // Detect support of anisotropic filtering
         m_anisotropyAvailable = glewIsSupported("GL_EXT_texture_filter_anisotropic");
@@ -239,30 +265,24 @@ bool CGLDevice::Create()
         {
             GetLogger()->Info("Auto-detecting VBO support\n");
             
-            // extracting OpenGL version
-            const char *version = reinterpret_cast<const char*>(glGetString(GL_VERSION));
-            int major = 0, minor = 0;
-
-            sscanf(version, "%d.%d", &major, &minor);
-            
             // detecting VBO ARB extension
             bool vboARB = glewIsSupported("GL_ARB_vertex_buffer_object");
 
             // VBO is core OpenGL feature since 1.5
             // everything below 1.5 means no VBO support
-            if(major > 1 || minor > 4)
+            if (m_glMajor > 1 || m_glMinor > 4)
             {
-                GetLogger()->Info("OpenGL %d.%d, VBO supported\n", major, minor);
+                GetLogger()->Info("Core VBO supported\n", m_glMajor, m_glMinor);
                 SetVertexBufferType(VBT_VBO_CORE);
             }
             else if(vboARB)     // VBO ARB extension available
             {
-                GetLogger()->Info("OpenGL %d.%d with GL_ARB_vertex_buffer_object, VBO supported\n", major, minor);
+                GetLogger()->Info("ARB VBO supported\n");
                 SetVertexBufferType(VBT_VBO_ARB);
             }
             else                // no VBO support
             {
-                GetLogger()->Info("OpenGL %d.%d  without GL_ARB_vertex_buffer_object, VBO not supported\n", major, minor);
+                GetLogger()->Info("VBO not supported\n");
                 SetVertexBufferType(VBT_DISPLAY_LIST);
             }
         }
@@ -275,9 +295,10 @@ bool CGLDevice::Create()
 
     // To avoid problems with scaling & lighting
     glEnable(GL_RESCALE_NORMAL);
+    //glEnable(GL_NORMALIZE);        // this needs some testing
 
     // Minimal depth bias to avoid Z-fighting
-    SetDepthBias(0.001f);
+    //SetDepthBias(0.001f);
 
     // Set just to be sure
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
@@ -380,12 +401,6 @@ void CGLDevice::SetTransform(TransformType type, const Math::Matrix &matrix)
         glMatrixMode(GL_PROJECTION);
         glLoadMatrixf(m_projectionMat.Array());
     }
-    else if (type == TRANSFORM_TEXTURE)
-    {
-        m_textureMat = matrix;
-        glMatrixMode(GL_TEXTURE);
-        glLoadMatrixf(m_textureMat.Array());
-    }
     else
     {
         assert(false);
@@ -412,9 +427,9 @@ void CGLDevice::SetMaterial(const Material &material)
 {
     m_material = material;
 
-    glMaterialfv(GL_FRONT, GL_AMBIENT,  m_material.ambient.Array());
-    glMaterialfv(GL_FRONT, GL_DIFFUSE,  m_material.diffuse.Array());
-    glMaterialfv(GL_FRONT, GL_SPECULAR, m_material.specular.Array());
+    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT,  m_material.ambient.Array());
+    glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, m_material.diffuse.Array());
+    glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, m_material.specular.Array());
 }
 
 int CGLDevice::GetMaxLightCount()
@@ -715,6 +730,81 @@ Texture CGLDevice::CreateTexture(ImageData *data, const TextureCreateParams &par
     return result;
 }
 
+Texture CGLDevice::CreateDepthTexture(int width, int height, int depth)
+{
+    Texture result;
+
+    if (m_shadowMappingSupport == SMS_NONE)
+    {
+        result.id = 0;
+        return result;
+    }
+    
+    result.alpha = false;
+    result.size.x = width;
+    result.size.y = height;
+
+    // Use & enable 1st texture stage
+    if (m_multitextureAvailable)
+        glActiveTexture(GL_TEXTURE0);
+
+    glGenTextures(1, &result.id);
+    glBindTexture(GL_TEXTURE_2D, result.id);
+
+    GLuint format = GL_DEPTH_COMPONENT;
+
+    if (m_shadowMappingSupport == SMS_CORE)
+    {
+        switch (depth)
+        {
+        case 16:
+            format = GL_DEPTH_COMPONENT16;
+            break;
+        case 24:
+            format = GL_DEPTH_COMPONENT24;
+            break;
+        case 32:
+            format = GL_DEPTH_COMPONENT32;
+            break;
+        }
+
+        glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, GL_DEPTH_COMPONENT, GL_INT, nullptr);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_R_TO_TEXTURE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
+    }
+    else
+    {
+        switch (depth)
+        {
+        case 16:
+            format = GL_DEPTH_COMPONENT16_ARB;
+            break;
+        case 24:
+            format = GL_DEPTH_COMPONENT24_ARB;
+            break;
+        case 32:
+            format = GL_DEPTH_COMPONENT32_ARB;
+            break;
+        }
+
+        glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, GL_DEPTH_COMPONENT, GL_INT, nullptr);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE_ARB, GL_COMPARE_R_TO_TEXTURE_ARB);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC_ARB, GL_LEQUAL);
+    }
+
+    float color[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+    glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, color);
+
+    glBindTexture(GL_TEXTURE_2D, m_currentTextures[0].id);
+
+    return result;
+}
+
 void CGLDevice::DestroyTexture(const Texture &texture)
 {
     // Unbind the texture if in use anywhere
@@ -833,6 +923,60 @@ void CGLDevice::SetTextureStageParams(int index, const TextureStageParams &param
     UpdateTextureParams(index);
 }
 
+void CGLDevice::SetTextureCoordGeneration(int index, TextureGenerationParams &params)
+{
+    if (!m_multitextureAvailable && index != 0)
+        return;
+
+    if (m_multitextureAvailable)
+        glActiveTexture(GL_TEXTURE0 + index);
+
+    for (int i = 0; i < 4; i++)
+    {
+        GLuint texCoordGen = textureCoordGen[i];
+        GLuint texCoord = textureCoordinates[i];
+
+        if (params.coords[i].mode == TEX_GEN_NONE)
+        {
+            glDisable(texCoordGen);
+        }
+        else
+        {
+            glEnable(texCoordGen);
+
+            switch (params.coords[i].mode)
+            {
+            case TEX_GEN_OBJECT_LINEAR:
+                glTexGeni(texCoord, GL_TEXTURE_GEN_MODE, GL_OBJECT_LINEAR);
+                glTexGenfv(texCoord, GL_OBJECT_PLANE, params.coords[i].plane);
+                break;
+            case TEX_GEN_EYE_LINEAR:
+                glTexGeni(texCoord, GL_TEXTURE_GEN_MODE, GL_EYE_LINEAR);
+                glTexGenfv(texCoord, GL_EYE_PLANE, params.coords[i].plane);
+                break;
+            case TEX_GEN_SPHERE_MAP:
+                glTexGeni(texCoord, GL_TEXTURE_GEN_MODE, GL_SPHERE_MAP);
+                break;
+            case TEX_GEN_NORMAL_MAP:
+                glTexGeni(texCoord, GL_TEXTURE_GEN_MODE, GL_NORMAL_MAP);
+                break;
+            case TEX_GEN_REFLECTION_MAP:
+                glTexGeni(texCoord, GL_TEXTURE_GEN_MODE, GL_REFLECTION_MAP);
+                break;
+            }
+        }
+    }
+}
+
+void CGLDevice::SetTextureMatrix(int index, Math::Matrix& matrix)
+{
+    if (!m_multitextureAvailable && index != 0)
+        return;
+
+    glMatrixMode(GL_TEXTURE);
+    glLoadMatrixf(matrix.Array());
+}
+
 void CGLDevice::UpdateTextureParams(int index)
 {
     assert(index >= 0 && index < static_cast<int>( m_currentTextures.size() ));
@@ -851,12 +995,16 @@ void CGLDevice::UpdateTextureParams(int index)
 
     if      (params.wrapS == TEX_WRAP_CLAMP)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    else if (params.wrapS == TEX_WRAP_CLAMP_TO_BORDER)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
     else if (params.wrapS == TEX_WRAP_REPEAT)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     else  assert(false);
 
     if      (params.wrapT == TEX_WRAP_CLAMP)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    else if (params.wrapT == TEX_WRAP_CLAMP_TO_BORDER)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
     else if (params.wrapT == TEX_WRAP_REPEAT)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     else  assert(false);
@@ -987,15 +1135,19 @@ void CGLDevice::SetTextureStageWrap(int index, TexWrapMode wrapS, TexWrapMode wr
 
     if (m_multitextureAvailable)
         glActiveTexture(GL_TEXTURE0 + index);
-
+    
     if      (wrapS == TEX_WRAP_CLAMP)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    else if (wrapS == TEX_WRAP_CLAMP_TO_BORDER)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
     else if (wrapS == TEX_WRAP_REPEAT)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     else  assert(false);
 
     if      (wrapT == TEX_WRAP_CLAMP)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    else if (wrapT == TEX_WRAP_CLAMP_TO_BORDER)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
     else if (wrapT == TEX_WRAP_REPEAT)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     else  assert(false);
@@ -1546,6 +1698,11 @@ int CGLDevice::ComputeSphereVisibility(const Math::Vector &center, float radius)
     return result;
 }
 
+void CGLDevice::SetViewport(int x, int y, int width, int height)
+{
+    glViewport(x, y, width, height);
+}
+
 void CGLDevice::SetRenderState(RenderState state, bool enabled)
 {
     if (state == RENDER_STATE_DEPTH_WRITE)
@@ -1580,6 +1737,7 @@ void CGLDevice::SetRenderState(RenderState state, bool enabled)
         case RENDER_STATE_DEPTH_TEST:  flag = GL_DEPTH_TEST; break;
         case RENDER_STATE_ALPHA_TEST:  flag = GL_ALPHA_TEST; break;
         case RENDER_STATE_CULLING:     flag = GL_CULL_FACE; break;
+        case RENDER_STATE_DEPTH_BIAS:  flag = GL_POLYGON_OFFSET_FILL; break;
         default: assert(false); break;
     }
 
@@ -1623,14 +1781,19 @@ GLenum TranslateGfxCompFunc(CompFunc func)
     return 0;
 }
 
+void CGLDevice::SetColorMask(bool red, bool green, bool blue, bool alpha)
+{
+    glColorMask(red, green, blue, alpha);
+}
+
 void CGLDevice::SetDepthTestFunc(CompFunc func)
 {
     glDepthFunc(TranslateGfxCompFunc(func));
 }
 
-void CGLDevice::SetDepthBias(float factor)
+void CGLDevice::SetDepthBias(float factor, float units)
 {
-    glPolygonOffset(factor, 0.0f);
+    glPolygonOffset(factor, units);
 }
 
 void CGLDevice::SetAlphaTestFunc(CompFunc func, float refValue)
@@ -1729,6 +1892,21 @@ void CGLDevice::SetFillMode(FillMode mode)
     else if (mode == FILL_LINES) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     else if (mode == FILL_POLY)  glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     else assert(false);
+}
+
+void CGLDevice::CopyFramebufferToTexture(Texture& texture, int xOffset, int yOffset, int x, int y, int width, int height)
+{
+    if (texture.id == 0) return;
+
+    // Use & enable 1st texture stage
+    if (m_multitextureAvailable)
+        glActiveTexture(GL_TEXTURE0);
+
+    glBindTexture(GL_TEXTURE_2D, texture.id);
+    glCopyTexSubImage2D(GL_TEXTURE_2D, 0, xOffset, yOffset, x, y, width, height);
+
+    // Restore previous texture
+    glBindTexture(GL_TEXTURE_2D, m_currentTextures[0].id);
 }
 
 void* CGLDevice::GetFrameBufferPixels()const{

@@ -116,6 +116,8 @@ CEngine::CEngine(CApplication *app)
     m_textureQuality = 1;
     m_textureMipmapLevel = 1;
     m_textureAnisotropy = 1;
+    m_shadowMapping = false;
+    m_npotShadowMap = false;
     m_totoMode = true;
     m_lensMode = true;
     m_waterMode = true;
@@ -181,6 +183,12 @@ CEngine::CEngine(CApplication *app)
         m_textureAnisotropy = value;
     }
 
+    if (CProfile::GetInstance().GetIntProperty("Setup", "ShadowMapping", value))
+    {
+        m_shadowMapping = (value > 0);
+        m_npotShadowMap = (value > 1);
+    }
+
     m_defaultTexParams.format = TEX_IMG_AUTO;
     m_defaultTexParams.mipmap = mipmaps;
     m_defaultTexParams.filter = filter;
@@ -188,6 +196,13 @@ CEngine::CEngine(CApplication *app)
     m_terrainTexParams.format = TEX_IMG_AUTO;
     m_terrainTexParams.mipmap = mipmaps;
     m_terrainTexParams.filter = filter;
+
+    // Compute bias matrix for shadow mapping
+    Math::Matrix temp1, temp2;
+    Math::LoadScaleMatrix(temp1, Math::Vector(0.5f, 0.5f, 0.5f));
+    Math::LoadTranslationMatrix(temp2, Math::Vector(1.0f, 1.0f, 1.0f));
+    //m_shadowBias = Math::MultiplyMatrices(m_shadowBias, temporary);
+    m_shadowBias = Math::MultiplyMatrices(temp1, temp2);
 }
 
 CEngine::~CEngine()
@@ -2965,6 +2980,16 @@ int CEngine::GetTextureAnisotropyLevel()
     return m_textureAnisotropy;
 }
 
+void CEngine::SetShadowMapping(bool value)
+{
+    m_shadowMapping = value;
+}
+
+bool CEngine::GetShadowMapping()
+{
+    return m_shadowMapping;
+}
+
 void CEngine::SetTotoMode(bool present)
 {
     m_totoMode = present;
@@ -3165,6 +3190,9 @@ void CEngine::Render()
     // Begin the scene
     m_device->BeginScene();
 
+    if (m_shadowMapping)
+        RenderShadowMap();
+
     if (m_drawWorld)
         Draw3DScene();
 
@@ -3206,6 +3234,38 @@ void CEngine::Draw3DScene()
     // Draw terrain 
     
     m_lightMan->UpdateDeviceLights(ENG_OBJTYPE_TERRAIN);
+
+    // Enable shadow mapping
+    if (m_shadowMapping)
+    {
+        m_device->SetTextureEnabled(2, true);
+        m_device->SetTexture(2, m_shadowMap);
+        m_device->SetTextureMatrix(2, m_shadowTextureMat);
+
+        Math::Matrix identity;
+        identity.LoadIdentity();
+        m_device->SetTransform(TRANSFORM_WORLD, identity);
+        
+        TextureStageParams params;
+        params.colorOperation = TEX_MIX_OPER_MODULATE;
+        params.wrapS = TEX_WRAP_CLAMP_TO_BORDER;
+        params.wrapT = TEX_WRAP_CLAMP_TO_BORDER;
+        m_device->SetTextureStageParams(2, params);
+
+        TextureGenerationParams genParams;
+
+        for (int i = 0; i < 4; i++)
+        {
+            genParams.coords[i].mode = TEX_GEN_EYE_LINEAR;
+
+            for (int j = 0; j < 4; j++)
+            {
+                genParams.coords[i].plane[j] = (i == j ? 1.0f : 0.0f);
+            }
+        }
+
+        m_device->SetTextureCoordGeneration(2, genParams);
+    }
 
     for (int objRank = 0; objRank < static_cast<int>(m_objects.size()); objRank++)
     {
@@ -3258,6 +3318,24 @@ void CEngine::Draw3DScene()
                 }
             }
         }
+    }
+
+    // Disable shadow mapping
+    if (m_shadowMapping)
+    {
+        Math::Matrix identity;
+        identity.LoadIdentity();
+
+        m_device->SetTexture(2, 0);
+        m_device->SetTextureEnabled(2, false);
+        m_device->SetTextureMatrix(2, identity);
+
+        TextureGenerationParams params;
+
+        for (int i = 0; i < 4; i++)
+            params.coords[i].mode = TEX_GEN_NONE;
+
+        m_device->SetTextureCoordGeneration(2, params);
     }
 
         // Draws the shadows , if shadows enabled
@@ -3429,6 +3507,154 @@ void CEngine::Draw3DScene()
     if (m_lensMode) DrawForegroundImage();   // draws the foreground
 
     if (! m_overFront) DrawOverColor();      // draws the foreground color
+}
+
+void CEngine::RenderShadowMap()
+{
+    if (!m_shadowMapping) return;
+
+    m_app->StartPerformanceCounter(PCNT_RENDER_SHADOW_MAP);
+
+    m_device->Clear();
+
+    // If no shadow map texture exists, create it
+    if (m_shadowMap.id == 0)
+    {
+        int width, height;
+
+        int depth = m_app->GetInstance().GetVideoConfig().depthSize;
+
+        if (m_npotShadowMap)
+        {
+            width = height = Math::Min(m_size.x, m_size.y);
+        }
+        else
+        {
+            int min = Math::Min(m_size.x, m_size.y);
+
+            for (int i = 0; i < 16; i++)
+            {
+                if (min < (1 << i)) break;
+
+                width = height = 1 << i;
+            }
+        }
+
+        m_shadowMap = m_device->CreateDepthTexture(width, height, depth);
+
+        GetLogger()->Info("Created shadow map texture: %dx%d, depth %d\n", width, height, depth);
+    }
+
+    // change state to rendering shadow maps
+    m_device->SetColorMask(false, false, false, false);
+    //m_device->SetDepthTestFunc(COMP_FUNC_LEQUAL);
+    m_device->SetRenderState(RENDER_STATE_DEPTH_TEST, true);
+    m_device->SetRenderState(RENDER_STATE_DEPTH_WRITE, true);
+    m_device->SetRenderState(RENDER_STATE_BLENDING, false);
+    m_device->SetRenderState(RENDER_STATE_LIGHTING, false);
+    m_device->SetRenderState(RENDER_STATE_FOG, false);
+    m_device->SetRenderState(RENDER_STATE_CULLING, false);
+    m_device->SetRenderState(RENDER_STATE_ALPHA_TEST, true);
+
+    m_device->SetViewport(0, 0, m_shadowMap.size.x, m_shadowMap.size.y);
+
+    // recompute matrices
+    Math::Vector worldUp(1.0f, 0.0f, 0.0f);
+    Math::Vector dir = m_lookatPt - m_eyePt;
+    float change = Math::Max(1.0f, dir.Length() / 25.0f);
+    dir.Normalize();
+    Math::Vector pos = m_lookatPt + 40.0f * dir;
+
+    Math::Vector lightPos = pos + Math::Vector(3.0f, 30.0f, 3.0f);
+    Math::Vector lookAt = pos + Math::Vector(0.0, 100.0f, 0.0f);
+
+    float dist = 75.0f; // *change;
+
+    Math::LoadOrthoProjectionMatrix(m_shadowProjMat, -dist, dist, -dist, dist, -50.0f, 50.0f);
+    Math::LoadViewMatrix(m_shadowViewMat, lightPos, lookAt, worldUp);
+
+    Math::Matrix temporary = Math::MultiplyMatrices(m_shadowProjMat, m_shadowViewMat);
+    m_shadowTextureMat = Math::MultiplyMatrices(m_shadowBias, temporary);
+
+    m_device->SetTransform(TRANSFORM_PROJECTION, m_shadowProjMat);
+    m_device->SetTransform(TRANSFORM_VIEW, m_shadowViewMat);
+
+    m_device->SetTexture(0, 0);
+    m_device->SetTexture(1, 0);
+
+    //m_device->SetCullMode(CULL_CW);
+    //m_device->SetRenderState(RENDER_STATE_DEPTH_BIAS, true);
+    //m_device->SetDepthBias(2.0f, 4.0f);
+
+    // render objects into shadow map
+    for (int objRank = 0; objRank < static_cast<int>(m_objects.size()); objRank++)
+    {
+        if (!m_objects[objRank].used)
+            continue;
+
+        if (m_objects[objRank].type == ENG_OBJTYPE_TERRAIN)
+           continue;
+
+        //if (!m_objects[objRank].drawWorld)
+        //    continue;
+
+        m_device->SetTransform(TRANSFORM_WORLD, m_objects[objRank].transform);
+
+        // TODO: check proper object filtering
+        if (!IsVisible(objRank))
+            continue;
+
+        int baseObjRank = m_objects[objRank].baseObjRank;
+        if (baseObjRank == -1)
+            continue;
+
+        assert(baseObjRank >= 0 && baseObjRank < static_cast<int>(m_baseObjects.size()));
+
+        EngineBaseObject& p1 = m_baseObjects[baseObjRank];
+        if (!p1.used)
+            continue;
+
+        //m_lightMan->UpdateDeviceLights(m_objects[objRank].type);
+
+        for (int l2 = 0; l2 < static_cast<int>(p1.next.size()); l2++)
+        {
+            EngineBaseObjTexTier& p2 = p1.next[l2];
+
+            for (int l3 = 0; l3 < static_cast<int>(p2.next.size()); l3++)
+            {
+                EngineBaseObjLODTier& p3 = p2.next[l3];
+
+                if (!IsWithinLODLimit(m_objects[objRank].distance, p3.lodLevel))
+                    continue;
+
+                for (int l4 = 0; l4 < static_cast<int>(p3.next.size()); l4++)
+                {
+                    EngineBaseObjDataTier& p4 = p3.next[l4];
+
+                    //if (m_objects[objRank].transparency != 0.0f)  // transparent ?
+                    //    continue;
+
+                    DrawObject(p4);
+                }
+            }
+        }
+    }
+
+    m_device->SetCullMode(CULL_CCW);
+    m_device->SetRenderState(RENDER_STATE_DEPTH_BIAS, false);
+
+    // copy depth buffer to shadow map
+    m_device->CopyFramebufferToTexture(m_shadowMap, 0, 0, 0, 0, m_shadowMap.size.x, m_shadowMap.size.y);
+
+    // restore default state
+    m_device->SetViewport(0, 0, m_size.x, m_size.y);
+
+    m_device->SetColorMask(true, true, true, true);
+    m_device->Clear();
+
+    m_app->StopPerformanceCounter(PCNT_RENDER_SHADOW_MAP);
+
+    m_device->SetRenderState(RENDER_STATE_DEPTH_TEST, false);
 }
 
 void CEngine::DrawObject(const EngineBaseObjDataTier& p4)
@@ -4406,8 +4632,8 @@ void CEngine::DrawStats()
     if (!m_showStats)
         return;
 
-    float height = m_text->GetAscent(FONT_COLOBOT, 12.0f);
-    float width = 0.2f;
+    float height = m_text->GetAscent(FONT_COLOBOT, 13.0f);
+    float width = 0.25f;
 
     Math::Point pos(0.04f, 0.04f + 20 * height);
 
@@ -4510,12 +4736,19 @@ void CEngine::DrawStats()
 
     pos.y -= height;
 
+    str.str("");
+    str << "Shadow map render: " << std::fixed << std::setprecision(2) << m_app->GetPerformanceCounterData(PCNT_RENDER_SHADOW_MAP);
+    m_text->DrawText(str.str(), FONT_COLOBOT, 12.0f, pos, 1.0f, TEXT_ALIGN_LEFT, 0, Color(1.0f, 1.0f, 1.0f, 1.0f));
+
+    pos.y -= height;
+
     float otherRender = m_app->GetPerformanceCounterData(PCNT_RENDER_ALL) -
                         m_app->GetPerformanceCounterData(PCNT_RENDER_PARTICLE) -
                         m_app->GetPerformanceCounterData(PCNT_RENDER_WATER) -
                         m_app->GetPerformanceCounterData(PCNT_RENDER_TERRAIN) -
                         m_app->GetPerformanceCounterData(PCNT_RENDER_OBJECTS) -
-                        m_app->GetPerformanceCounterData(PCNT_RENDER_INTERFACE);
+                        m_app->GetPerformanceCounterData(PCNT_RENDER_INTERFACE) -
+                        m_app->GetPerformanceCounterData(PCNT_RENDER_SHADOW_MAP);
 
     str.str("");
     str << "Other render: " << std::fixed << std::setprecision(2) << otherRender;

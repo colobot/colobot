@@ -123,6 +123,7 @@ enum PerformanceCounter
     PCNT_RENDER_TERRAIN,        //! < rendering the terrain
     PCNT_RENDER_OBJECTS,        //! < rendering the 3D objects
     PCNT_RENDER_INTERFACE,      //! < rendering 2D interface
+    PCNT_RENDER_SHADOW_MAP,     //! < rendering shadow map
 
     PCNT_ALL,                   //! < all counters together
 

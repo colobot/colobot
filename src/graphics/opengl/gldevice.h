@@ -58,6 +58,13 @@ enum VertexBufferType
    VBT_VBO_ARB          //! use ARB extension VBOs
 };
 
+enum ShadowMappingSupport
+{
+    SMS_NONE,           //! No support for depth textures
+    SMS_ARB,            //! ARB extension
+    SMS_CORE            //! Core support
+};
+
 /**
  \struct GLDeviceConfig
  \brief Additional config with OpenGL-specific settings */
@@ -132,6 +139,7 @@ public:
 
     virtual Texture CreateTexture(CImage *image, const TextureCreateParams &params) OVERRIDE;
     virtual Texture CreateTexture(ImageData *data, const TextureCreateParams &params) OVERRIDE;
+    virtual Texture CreateDepthTexture(int width, int height, int depth) OVERRIDE;
     virtual void DestroyTexture(const Texture &texture) OVERRIDE;
     virtual void DestroyAllTextures() OVERRIDE;
 
@@ -143,6 +151,8 @@ public:
     virtual void SetTextureStageParams(int index, const TextureStageParams &params) OVERRIDE;
 
     virtual void SetTextureStageWrap(int index, Gfx::TexWrapMode wrapS, Gfx::TexWrapMode wrapT) OVERRIDE;
+    virtual void SetTextureCoordGeneration(int index, TextureGenerationParams &params) OVERRIDE;
+    virtual void SetTextureMatrix(int index, Math::Matrix& matrix) OVERRIDE;
 
     virtual void DrawPrimitive(PrimitiveType type, const Vertex *vertices    , int vertexCount,
                                Color color = Color(1.0f, 1.0f, 1.0f, 1.0f)) OVERRIDE;
@@ -161,11 +171,15 @@ public:
 
     virtual int ComputeSphereVisibility(const Math::Vector &center, float radius) OVERRIDE;
 
+    virtual void SetViewport(int x, int y, int width, int height) OVERRIDE;
+
     virtual void SetRenderState(RenderState state, bool enabled) OVERRIDE;
+
+    virtual void SetColorMask(bool red, bool green, bool blue, bool alpha) OVERRIDE;
 
     virtual void SetDepthTestFunc(CompFunc func) OVERRIDE;
 
-    virtual void SetDepthBias(float factor) OVERRIDE;
+    virtual void SetDepthBias(float factor, float units) OVERRIDE;
 
     virtual void SetAlphaTestFunc(CompFunc func, float refValue) OVERRIDE;
 
@@ -181,7 +195,9 @@ public:
 
     virtual void SetShadeModel(ShadeModel model) OVERRIDE;
 
-    virtual void SetFillMode(FillMode mode)  OVERRIDE;
+    virtual void SetFillMode(FillMode mode) OVERRIDE;
+
+    virtual void CopyFramebufferToTexture(Texture& texture, int xOffset, int yOffset, int x, int y, int width, int height) OVERRIDE;
 
     virtual void* GetFrameBufferPixels() const OVERRIDE;
 
@@ -205,8 +221,6 @@ private:
     Math::Matrix m_modelviewMat;
     //! Current projection matrix
     Math::Matrix m_projectionMat;
-    //! Current texture matrix
-    Math::Matrix m_textureMat;
 
     //! The current material
     Material m_material;
@@ -245,6 +259,11 @@ private:
         int vertexCount;
     };
 
+    //! Detected capabilities
+    //! OpenGL version
+    int m_glMajor, m_glMinor;
+    //! Depth texture support
+    ShadowMappingSupport m_shadowMappingSupport;
     //! Whether to use multitexturing
     bool m_multitextureAvailable;
     //! Whether to use VBOs or display lists
