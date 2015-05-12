@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see http://gnu.org/licenses
  */
+
 #include "app/app.h"
 
 #if defined(PLATFORM_WINDOWS)
@@ -26,13 +27,14 @@
     #include "app/system_other.h"
 #endif
 
-#include "app/system_mock.h"
+#include <functional>
+#include <memory>
 
 #include <gtest/gtest.h>
+#include <hippomocks.h>
 
-using testing::_;
-using testing::InSequence;
-using testing::Return;
+using namespace HippoMocks;
+namespace ph = std::placeholders;
 
 struct FakeSystemTimeStamp : public SystemTimeStamp
 {
@@ -42,11 +44,10 @@ struct FakeSystemTimeStamp : public SystemTimeStamp
     long long time;
 };
 
-
 class CApplicationWrapper : public CApplication
 {
 public:
-    virtual Event CreateUpdateEvent() OVERRIDE
+    Event CreateUpdateEvent() OVERRIDE
     {
         return CApplication::CreateUpdateEvent();
     }
@@ -55,10 +56,17 @@ public:
 class ApplicationUT : public testing::Test
 {
 protected:
-    ApplicationUT();
+    ApplicationUT() :
+        m_systemUtils(nullptr),
+        m_stampUid(0),
+        m_currentTime(0)
+    {}
 
-    virtual void SetUp() OVERRIDE;
-    virtual void TearDown() OVERRIDE;
+    ~ApplicationUT() NOEXCEPT
+    {}
+
+    void SetUp() OVERRIDE;
+    void TearDown() OVERRIDE;
 
     void NextInstant(long long diff);
 
@@ -73,41 +81,37 @@ protected:
                                long long relTimeReal, long long absTimeReal);
 
 protected:
-    CApplicationWrapper* app;
-    CSystemUtilsMock* systemUtils;
+    std::unique_ptr<CApplicationWrapper> m_app;
+    MockRepository m_mocks;
+    CSystemUtils* m_systemUtils;
 
 private:
     int m_stampUid;
     long long m_currentTime;
 };
 
-ApplicationUT::ApplicationUT()
- : m_stampUid(0)
- , m_currentTime(0)
-{}
-
 void ApplicationUT::SetUp()
 {
-    systemUtils = new CSystemUtilsMock();
+    m_systemUtils = m_mocks.Mock<CSystemUtils>();
+    CSystemUtils::ReplaceInstance(m_systemUtils);
 
-    ON_CALL(*systemUtils, CreateTimeStamp()).WillByDefault(Invoke(this, &ApplicationUT::CreateTimeStamp));
-    ON_CALL(*systemUtils, DestroyTimeStamp(_)).WillByDefault(Invoke(this, &ApplicationUT::DestroyTimeStamp));
-    ON_CALL(*systemUtils, CopyTimeStamp(_, _)).WillByDefault(Invoke(this, &ApplicationUT::CopyTimeStamp));
-    ON_CALL(*systemUtils, GetCurrentTimeStamp(_)).WillByDefault(Invoke(this, &ApplicationUT::GetCurrentTimeStamp));
-    ON_CALL(*systemUtils, TimeStampExactDiff(_, _)).WillByDefault(Invoke(this, &ApplicationUT::TimeStampExactDiff));
+    m_mocks.OnCall(m_systemUtils, CSystemUtils::GetDataPath).Return("");
+    m_mocks.OnCall(m_systemUtils, CSystemUtils::GetLangPath).Return("");
+    m_mocks.OnCall(m_systemUtils, CSystemUtils::GetSaveDir).Return("");
 
-    EXPECT_CALL(*systemUtils, CreateTimeStamp()).Times(3 + PCNT_MAX*2);
-    app = new CApplicationWrapper();
+    m_mocks.OnCall(m_systemUtils, CSystemUtils::CreateTimeStamp).Do(std::bind(&ApplicationUT::CreateTimeStamp, this));
+    m_mocks.OnCall(m_systemUtils, CSystemUtils::DestroyTimeStamp).Do(std::bind(&ApplicationUT::DestroyTimeStamp, this, ph::_1));
+    m_mocks.OnCall(m_systemUtils, CSystemUtils::CopyTimeStamp).Do(std::bind(&ApplicationUT::CopyTimeStamp, this, ph::_1, ph::_2));
+    m_mocks.OnCall(m_systemUtils, CSystemUtils::GetCurrentTimeStamp).Do(std::bind(&ApplicationUT::GetCurrentTimeStamp, this, ph::_1));
+    m_mocks.OnCall(m_systemUtils, CSystemUtils::TimeStampExactDiff).Do(std::bind(&ApplicationUT::TimeStampExactDiff, this, ph::_1, ph::_2));
+
+    m_app.reset(new CApplicationWrapper());
 }
 
 void ApplicationUT::TearDown()
 {
-    EXPECT_CALL(*systemUtils, DestroyTimeStamp(_)).Times(3 + PCNT_MAX*2);
-    delete app;
-    app = nullptr;
-
-    delete systemUtils;
-    systemUtils = nullptr;
+    m_app.reset();
+    CSystemUtils::ReplaceInstance(nullptr);
 }
 
 SystemTimeStamp* ApplicationUT::CreateTimeStamp()
@@ -144,29 +148,22 @@ void ApplicationUT::TestCreateUpdateEvent(long long relTimeExact, long long absT
                                           float relTime, float absTime,
                                           long long relTimeReal, long long absTimeReal)
 {
-    {
-        InSequence seq;
-        EXPECT_CALL(*systemUtils, CopyTimeStamp(_, _));
-        EXPECT_CALL(*systemUtils, GetCurrentTimeStamp(_));
-        EXPECT_CALL(*systemUtils, TimeStampExactDiff(_, _)).Times(2);
-    }
-
-    Event event = app->CreateUpdateEvent();
+    Event event = m_app->CreateUpdateEvent();
     EXPECT_EQ(EVENT_FRAME, event.type);
     EXPECT_FLOAT_EQ(relTime, event.rTime);
-    EXPECT_FLOAT_EQ(relTime, app->GetRelTime());
-    EXPECT_FLOAT_EQ(absTime, app->GetAbsTime());
-    EXPECT_EQ(relTimeExact, app->GetExactRelTime());
-    EXPECT_EQ(absTimeExact, app->GetExactAbsTime());
-    EXPECT_EQ(relTimeReal, app->GetRealRelTime());
-    EXPECT_EQ(absTimeReal, app->GetRealAbsTime());
+    EXPECT_FLOAT_EQ(relTime, m_app->GetRelTime());
+    EXPECT_FLOAT_EQ(absTime, m_app->GetAbsTime());
+    EXPECT_EQ(relTimeExact, m_app->GetExactRelTime());
+    EXPECT_EQ(absTimeExact, m_app->GetExactAbsTime());
+    EXPECT_EQ(relTimeReal, m_app->GetRealRelTime());
+    EXPECT_EQ(absTimeReal, m_app->GetRealAbsTime());
 }
 
 
 TEST_F(ApplicationUT, UpdateEventTimeCalculation_SimulationSuspended)
 {
-    app->SuspendSimulation();
-    Event event = app->CreateUpdateEvent();
+    m_app->SuspendSimulation();
+    Event event = m_app->CreateUpdateEvent();
     EXPECT_EQ(EVENT_NULL, event.type);
 }
 
@@ -218,20 +215,13 @@ TEST_F(ApplicationUT, UpdateEventTimeCalculation_NegativeTimeOperation)
 
     NextInstant(-1111);
 
-    {
-        InSequence seq;
-        EXPECT_CALL(*systemUtils, CopyTimeStamp(_, _));
-        EXPECT_CALL(*systemUtils, GetCurrentTimeStamp(_));
-        EXPECT_CALL(*systemUtils, TimeStampExactDiff(_, _)).Times(2);
-    }
-    Event event = app->CreateUpdateEvent();
+    Event event = m_app->CreateUpdateEvent();
     EXPECT_EQ(EVENT_NULL, event.type);
 }
 
 TEST_F(ApplicationUT, UpdateEventTimeCalculation_ChangingSimulationSpeed)
 {
-    EXPECT_CALL(*systemUtils, GetCurrentTimeStamp(_));
-    app->SetSimulationSpeed(2.0f);
+    m_app->SetSimulationSpeed(2.0f);
 
     // 1st update -- speed 2x
 
@@ -260,8 +250,7 @@ TEST_F(ApplicationUT, UpdateEventTimeCalculation_ChangingSimulationSpeed)
     TestCreateUpdateEvent(relTimeExact, absTimeExact, relTime, absTime, relTimeReal, absTimeReal);
 
     // 3rd update -- speed 4x
-    EXPECT_CALL(*systemUtils, GetCurrentTimeStamp(_));
-    app->SetSimulationSpeed(4.0f);
+    m_app->SetSimulationSpeed(4.0f);
 
     relTimeReal = 300;
     absTimeReal += relTimeReal;
@@ -275,8 +264,7 @@ TEST_F(ApplicationUT, UpdateEventTimeCalculation_ChangingSimulationSpeed)
     TestCreateUpdateEvent(relTimeExact, absTimeExact, relTime, absTime, relTimeReal, absTimeReal);
 
     // 4th update -- speed 1x
-    EXPECT_CALL(*systemUtils, GetCurrentTimeStamp(_));
-    app->SetSimulationSpeed(1.0f);
+    m_app->SetSimulationSpeed(1.0f);
 
     relTimeReal = 400;
     absTimeReal += relTimeReal;
@@ -307,7 +295,7 @@ TEST_F(ApplicationUT, UpdateEventTimeCalculation_SuspendingAndResumingSimulation
 
     // 2nd update -- simulation suspended
 
-    app->SuspendSimulation();
+    m_app->SuspendSimulation();
 
     long long suspensionTime = 5000;
 
@@ -315,12 +303,7 @@ TEST_F(ApplicationUT, UpdateEventTimeCalculation_SuspendingAndResumingSimulation
 
     // 3rd update -- simulation resumed
 
-    {
-        InSequence seq;
-        EXPECT_CALL(*systemUtils, GetCurrentTimeStamp(_));
-        EXPECT_CALL(*systemUtils, CopyTimeStamp(_, _));
-    }
-    app->ResumeSimulation();
+    m_app->ResumeSimulation();
 
     relTimeReal = 200;
     absTimeReal += relTimeReal;

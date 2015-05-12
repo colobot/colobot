@@ -41,10 +41,6 @@ template<>
 CSystemUtils* CSingleton<CSystemUtils>::m_instance = nullptr;
 
 
-CSystemUtils::CSystemUtils()
-{
-}
-
 CSystemUtils* CSystemUtils::Create()
 {
     assert(m_instance == nullptr);

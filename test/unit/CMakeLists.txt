@@ -30,14 +30,13 @@ include_directories(
 include_directories(
     SYSTEM
     ${GTEST_INCLUDE_DIR}
-    ${GMOCK_INCLUDE_DIR}
+    ${HIPPOMOCKS_INCLUDE_DIR}
     ${COLOBOT_SYSTEM_INCLUDES}
 )
 
 # Libraries
 set(LIBS
     gtest
-    gmock
     colobotbase
     ${COLOBOT_LIBS}
 )

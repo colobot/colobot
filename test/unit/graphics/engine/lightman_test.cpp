@@ -18,26 +18,31 @@
  */
 #include "graphics/engine/lightman.h"
 
-#include "app/system_mock.h"
-
-#include "graphics/core/device_mock.h"
-#include "graphics/engine/engine_mock.h"
+#include "graphics/core/device.h"
 
 #include <gtest/gtest.h>
+#include <hippomocks.h>
+
+#include <memory>
+#include <functional>
 
 using namespace Gfx;
-
-using testing::_;
-using testing::Invoke;
-using testing::Return;
+using namespace HippoMocks;
+namespace ph = std::placeholders;
 
 class LightManagerUT : public testing::Test
 {
 protected:
-    LightManagerUT()
-      : systemUtils(true)
-      , lightManager(&engine)
+    LightManagerUT() :
+        m_systemUtils(nullptr),
+        m_engine(nullptr),
+        m_device(nullptr)
     {}
+    ~LightManagerUT() NOEXCEPT
+    {}
+
+    void SetUp() OVERRIDE;
+    void TearDown() OVERRIDE;
 
     void PrepareLightTesting(int maxLights, Math::Vector eyePos);
     void CheckLightSorting(EngineObjectType objectType, const std::vector<int>& expectedLights);
@@ -46,66 +51,88 @@ protected:
                   Math::Vector pos, EngineObjectType includeType, EngineObjectType excludeType);
 
 
-    CSystemUtilsMock systemUtils;
-    CLightManager lightManager;
-    CEngineMock engine;
-    CDeviceMock device;
+    std::unique_ptr<CLightManager> m_lightManager;
+    MockRepository m_mocks;
+    CSystemUtils* m_systemUtils;
+    CEngine* m_engine;
+    CDevice* m_device;
 
 private:
-    std::vector<DynamicLight> dynamicLights;
-    std::vector<int> expectedLightTypes;
-    int maxLightsCount;
+    std::vector<DynamicLight> m_dynamicLights;
+    std::vector<int> m_expectedLightTypes;
+    int m_maxLightsCount;
 };
+
+void LightManagerUT::SetUp()
+{
+    m_systemUtils = m_mocks.Mock<CSystemUtils>();
+    CSystemUtils::ReplaceInstance(m_systemUtils);
+    m_engine = m_mocks.Mock<CEngine>();
+    m_device = m_mocks.Mock<CDevice>();
+
+    m_lightManager.reset(new CLightManager(m_engine));
+}
+
+void LightManagerUT::TearDown()
+{
+    CSystemUtils::ReplaceInstance(nullptr);
+}
 
 void LightManagerUT::PrepareLightTesting(int maxLights, Math::Vector eyePos)
 {
-    maxLightsCount = maxLights;
+    m_maxLightsCount = maxLights;
 
-    EXPECT_CALL(device, GetMaxLightCount()).WillOnce(Return(maxLights));
-    lightManager.SetDevice(&device);
+    m_mocks.OnCall(m_device, CDevice::GetMaxLightCount).Return(maxLights);
 
-    ON_CALL(device, SetLight(_, _)).WillByDefault(Invoke(this, &LightManagerUT::CheckLight));
+    m_lightManager->SetDevice(m_device);
 
-    EXPECT_CALL(engine, GetEyePt()).WillRepeatedly(Return(eyePos));
+    m_mocks.OnCall(m_device, CDevice::SetLight).Do(std::bind(&LightManagerUT::CheckLight, this, ph::_1, ph::_2));
+
+    m_mocks.OnCall(m_engine, CEngine::GetEyePt).Return(eyePos);
 }
 
 void LightManagerUT::CheckLightSorting(EngineObjectType objectType, const std::vector<int>& expectedLights)
 {
-    expectedLightTypes = expectedLights;
+    m_expectedLightTypes = expectedLights;
 
-    EXPECT_CALL(device, SetLight(_, _)).Times(expectedLights.size());
+    for (int i = 0; i < m_maxLightsCount; ++i)
+    {
+        if (i < static_cast<int>( expectedLights.size() ))
+        {
+            m_mocks.ExpectCall(m_device, CDevice::SetLight).With(i, _);
+            m_mocks.ExpectCall(m_device, CDevice::SetLightEnabled).With(i, true);
+        }
+        else
+        {
+            m_mocks.ExpectCall(m_device, CDevice::SetLightEnabled).With(i, false);
+        }
+    }
 
-    for (int i = 0; i < static_cast<int>( expectedLights.size() ); ++i)
-        EXPECT_CALL(device, SetLightEnabled(i, true));
-
-    for (int i = expectedLights.size(); i < maxLightsCount; ++i)
-        EXPECT_CALL(device, SetLightEnabled(i, false));
-
-    lightManager.UpdateDeviceLights(objectType);
+    m_lightManager->UpdateDeviceLights(objectType);
 }
 
 void LightManagerUT::CheckLight(int index, const Light& light)
 {
-    ASSERT_TRUE(index >= 0 && index < static_cast<int>( expectedLightTypes.size() ));
-    ASSERT_EQ(expectedLightTypes[index], light.type);
+    ASSERT_TRUE(index >= 0 && index < static_cast<int>( m_expectedLightTypes.size() ));
+    ASSERT_EQ(m_expectedLightTypes[index], light.type);
 }
 
 void LightManagerUT::AddLight(int type, LightPriority priority, bool used, bool enabled,
                               Math::Vector pos, EngineObjectType includeType, EngineObjectType excludeType)
 {
-    int rank = lightManager.CreateLight(priority);
+    int rank = m_lightManager->CreateLight(priority);
 
     Light light;
     light.type = static_cast<LightType>(type);
     light.position = pos;
-    lightManager.SetLight(rank, light);
+    m_lightManager->SetLight(rank, light);
 
-    lightManager.SetLightEnabled(rank, enabled);
-    lightManager.SetLightIncludeType(rank, includeType);
-    lightManager.SetLightExcludeType(rank, excludeType);
+    m_lightManager->SetLightEnabled(rank, enabled);
+    m_lightManager->SetLightIncludeType(rank, includeType);
+    m_lightManager->SetLightExcludeType(rank, excludeType);
 
     if (!used)
-        lightManager.DeleteLight(rank);
+        m_lightManager->DeleteLight(rank);
 }
 
 TEST_F(LightManagerUT, LightSorting_UnusedOrDisabledAreSkipped)

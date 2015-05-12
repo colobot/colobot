@@ -204,9 +204,8 @@ option(BOOST_STATIC "Link with static boost libraries" OFF)
 # This is useful on Windows, if linking against standard GLEW dll fails
 option(GLEW_STATIC "Link statically with GLEW" OFF)
 
-# Sometimes helpful if there are different versions of gmock/gtest installed on system vs bundled
+# Sometimes helpful if there is a different version of gtest installed on system vs bundled
 option(FORCE_BUNDLED_GTEST "Force the use of bundled gtest" OFF)
-option(FORCE_BUNDLED_GMOCK "Force the use of bundled gmock" OFF)
 
 # Default build type if not given is debug
 if(NOT DEFINED CMAKE_BUILD_TYPE)
@@ -389,22 +388,8 @@ if(TESTS)
 
     add_subdirectory(${GTEST_SRC_DIR} lib/gtest)
 
-    # Google Mock library
-    find_path(GMOCK_SRC_DIR NAMES src/gmock.cc src/gmock-all.cc PATHS /usr/src PATH_SUFFIXES gmock)
-    find_path(GMOCK_INCLUDE_DIR gmock/gmock.h PATHS /usr/include)
-    if(NOT(FORCE_BUNDLED_GMOCK) AND GMOCK_SRC_DIR AND GMOCK_INCLUDE_DIR)
-        message(STATUS "Using system gmock library in ${GMOCK_SRC_DIR}")
-
-        include_directories(${GMOCK_SRC_DIR})
-        # gmock-all.cc includes all other sources
-        add_library(gmock STATIC ${GMOCK_SRC_DIR}/src/gmock-all.cc)
-    else()
-        message(STATUS "Using bundled gmock library")
-        set(GMOCK_SRC_DIR ${colobot_SOURCE_DIR}/lib/gmock)
-        set(GMOCK_INCLUDE_DIR ${colobot_SOURCE_DIR}/lib/gmock/include)
-        add_subdirectory(${GMOCK_SRC_DIR} lib/gmock)
-    endif()
-
+    # Hippomocks library
+    set(HIPPOMOCKS_INCLUDE_DIR ${colobot_SOURCE_DIR}/lib/hippomocks)
 
     # Tests targets
     enable_testing()

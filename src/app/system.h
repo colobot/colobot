@@ -90,9 +90,6 @@ struct SystemTimeStamp;
  */
 class CSystemUtils : public CSingleton<CSystemUtils>
 {
-protected:
-    CSystemUtils();
-
 public:
     //! Creates system utils for specific platform
     static CSystemUtils* Create();

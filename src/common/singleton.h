@@ -64,8 +64,6 @@ public:
     #ifdef TESTS
     static void ReplaceInstance(T* newInstance)
     {
-        assert(newInstance != nullptr);
-        delete m_instance;
         m_instance = newInstance;
     }
     #endif
