@@ -1787,6 +1787,8 @@ void CGLDevice::SetRenderState(RenderState state, bool enabled)
         GLuint toBind = (enabled ? m_framebuffer : 0);
 
         glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, toBind);
+
+        return;
     }
 
     GLenum flag = 0;
