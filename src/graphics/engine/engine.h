@@ -1457,8 +1457,8 @@ protected:
     int m_textureAnisotropy;
     //! true if shadow mapping enabled
     bool m_shadowMapping;
-    //! Override for NPOT shadow map texture
-    bool m_npotShadowMap;
+    //! true enables offscreen shadow rendering
+    bool m_offscreenShadowRendering;
 
     //! Map of loaded textures (by name)
     std::map<std::string, Texture> m_texNameMap;

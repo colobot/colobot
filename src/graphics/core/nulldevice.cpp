@@ -355,6 +355,10 @@ FillMode CNullDevice::GetFillMode()
     return FILL_POINT;
 }
 
+void CNullDevice::InitOffscreenBuffer(int width, int height)
+{
+}
+
 void CNullDevice::CopyFramebufferToTexture(Texture& texture, int xOffset, int yOffset, int x, int y, int width, int height)
 {
 }

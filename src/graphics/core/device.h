@@ -107,7 +107,8 @@ enum RenderState
     RENDER_STATE_DEPTH_WRITE,
     RENDER_STATE_ALPHA_TEST,
     RENDER_STATE_CULLING,
-    RENDER_STATE_DEPTH_BIAS
+    RENDER_STATE_DEPTH_BIAS,
+    RENDER_STATE_OFFSCREEN_RENDERING
 };
 
 /**
@@ -379,6 +380,9 @@ public:
 
     //! Sets the current fill mode
     virtual void SetFillMode(FillMode mode) = 0;
+
+    //! Initializes offscreen buffer
+    virtual void InitOffscreenBuffer(int width, int height) = 0;
 
     //! Copies content of framebuffer to texture
     virtual void CopyFramebufferToTexture(Texture& texture, int xOffset, int yOffset, int x, int y, int width, int height) = 0;

@@ -128,6 +128,14 @@ enum TexMixArgument
 {
     //! Color from current texture
     TEX_MIX_ARG_TEXTURE,
+    //! Color from texture unit 0
+    TEX_MIX_ARG_TEXTURE_0,
+    //! Color from texture unit 1
+    TEX_MIX_ARG_TEXTURE_1,
+    //! Color from texture unit 2
+    TEX_MIX_ARG_TEXTURE_2,
+    //! Color from texture unit 3
+    TEX_MIX_ARG_TEXTURE_3,
     //! Color computed by previous texture unit (current in DirectX; previous in OpenGL)
     TEX_MIX_ARG_COMPUTED_COLOR,
     //! (Source) color of textured fragment (diffuse in DirectX; primary color in OpenGL)

@@ -75,6 +75,10 @@ CGLDevice::CGLDevice(const GLDeviceConfig &config)
     m_glMajor = 1;
     m_glMinor = 1;
     m_shadowMappingSupport = SMS_NONE;
+
+    m_framebuffer = 0;
+    m_colorBuffer = 0;
+    m_depthBuffer = 0;
 }
 
 
@@ -216,6 +220,15 @@ bool CGLDevice::Create()
         m_multitextureAvailable = glewIsSupported("GL_ARB_multitexture GL_ARB_texture_env_combine");
         if (!m_multitextureAvailable)
             GetLogger()->Warn("GLEW reports multitexturing not supported - graphics quality will be degraded!\n");
+
+        m_framebufferObject = glewIsSupported("GL_EXT_framebuffer_object");
+        if (m_framebufferObject)
+        {
+            glGetIntegerv(GL_MAX_RENDERBUFFER_SIZE_EXT, &m_maxRenderbufferSize);
+
+            GetLogger()->Info("Offscreen rendering available\n");
+            GetLogger()->Info("Maximum renderbuffer size: %d\n", m_maxRenderbufferSize);
+        }
 
         // Detect Shadow mapping support
         if (m_glMajor >= 2 || m_glMinor >= 4)     // Core depth texture+shadow, OpenGL 1.4+
@@ -1054,6 +1067,14 @@ void CGLDevice::UpdateTextureParams(int index)
     // Color arg1
     if (params.colorArg1 == TEX_MIX_ARG_TEXTURE)
         glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_RGB, GL_TEXTURE);
+    else if (params.colorArg1 == TEX_MIX_ARG_TEXTURE_0)
+        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_RGB, GL_TEXTURE0);
+    else if (params.colorArg1 == TEX_MIX_ARG_TEXTURE_1)
+        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_RGB, GL_TEXTURE1);
+    else if (params.colorArg1 == TEX_MIX_ARG_TEXTURE_2)
+        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_RGB, GL_TEXTURE2);
+    else if (params.colorArg1 == TEX_MIX_ARG_TEXTURE_3)
+        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_RGB, GL_TEXTURE3);
     else if (params.colorArg1 == TEX_MIX_ARG_COMPUTED_COLOR)
         glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_RGB, GL_PREVIOUS);
     else if (params.colorArg1 == TEX_MIX_ARG_SRC_COLOR)
@@ -1065,6 +1086,14 @@ void CGLDevice::UpdateTextureParams(int index)
     // Color arg2
     if (params.colorArg2 == TEX_MIX_ARG_TEXTURE)
         glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_RGB, GL_TEXTURE);
+    else if (params.colorArg2 == TEX_MIX_ARG_TEXTURE_0)
+        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_RGB, GL_TEXTURE0);
+    else if (params.colorArg2 == TEX_MIX_ARG_TEXTURE_1)
+        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_RGB, GL_TEXTURE1);
+    else if (params.colorArg2 == TEX_MIX_ARG_TEXTURE_2)
+        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_RGB, GL_TEXTURE2);
+    else if (params.colorArg2 == TEX_MIX_ARG_TEXTURE_3)
+        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_RGB, GL_TEXTURE3);
     else if (params.colorArg2 == TEX_MIX_ARG_COMPUTED_COLOR)
         glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_RGB, GL_PREVIOUS);
     else if (params.colorArg2 == TEX_MIX_ARG_SRC_COLOR)
@@ -1097,6 +1126,14 @@ after_tex_color:
     // Alpha arg1
     if (params.alphaArg1 == TEX_MIX_ARG_TEXTURE)
         glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_ALPHA, GL_TEXTURE);
+    else if (params.alphaArg1 == TEX_MIX_ARG_TEXTURE_0)
+        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_ALPHA, GL_TEXTURE0);
+    else if (params.alphaArg1 == TEX_MIX_ARG_TEXTURE_1)
+        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_ALPHA, GL_TEXTURE1);
+    else if (params.alphaArg1 == TEX_MIX_ARG_TEXTURE_2)
+        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_ALPHA, GL_TEXTURE2);
+    else if (params.alphaArg1 == TEX_MIX_ARG_TEXTURE_3)
+        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_ALPHA, GL_TEXTURE3);
     else if (params.alphaArg1 == TEX_MIX_ARG_COMPUTED_COLOR)
         glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_ALPHA, GL_PREVIOUS);
     else if (params.alphaArg1 == TEX_MIX_ARG_SRC_COLOR)
@@ -1108,6 +1145,14 @@ after_tex_color:
     // Alpha arg2
     if (params.alphaArg2 == TEX_MIX_ARG_TEXTURE)
         glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_ALPHA, GL_TEXTURE);
+    else if (params.alphaArg2 == TEX_MIX_ARG_TEXTURE_0)
+        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_ALPHA, GL_TEXTURE0);
+    else if (params.alphaArg2 == TEX_MIX_ARG_TEXTURE_1)
+        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_ALPHA, GL_TEXTURE1);
+    else if (params.alphaArg2 == TEX_MIX_ARG_TEXTURE_2)
+        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_ALPHA, GL_TEXTURE2);
+    else if (params.alphaArg2 == TEX_MIX_ARG_TEXTURE_3)
+        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_ALPHA, GL_TEXTURE3);
     else if (params.alphaArg2 == TEX_MIX_ARG_COMPUTED_COLOR)
         glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_ALPHA, GL_PREVIOUS);
     else if (params.alphaArg2 == TEX_MIX_ARG_SRC_COLOR)
@@ -1728,6 +1773,21 @@ void CGLDevice::SetRenderState(RenderState state, bool enabled)
 
         return;
     }
+    else if (state == RENDER_STATE_OFFSCREEN_RENDERING)
+    {
+        if (!m_framebufferObject)
+        {
+            GetLogger()->Error("Cannot enable offscreen rendering without framebuffer object!\n");
+            return;
+        }
+
+        if (m_framebuffer == 0)
+            InitOffscreenBuffer(2048, 2048);
+
+        GLuint toBind = (enabled ? m_framebuffer : 0);
+
+        glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, toBind);
+    }
 
     GLenum flag = 0;
 
@@ -1893,6 +1953,42 @@ void CGLDevice::SetFillMode(FillMode mode)
     else if (mode == FILL_LINES) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     else if (mode == FILL_POLY)  glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     else assert(false);
+}
+
+void CGLDevice::InitOffscreenBuffer(int width, int height)
+{
+    if (!m_framebufferObject) return;
+
+    width = Math::Min(width, m_maxRenderbufferSize);
+    height = Math::Min(height, m_maxRenderbufferSize);
+
+    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+
+    if (m_colorBuffer != 0)
+        glDeleteRenderbuffersEXT(1, &m_colorBuffer);
+
+    glGenRenderbuffersEXT(1, &m_colorBuffer);
+    glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, m_colorBuffer);
+    glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, GL_RGBA8, width, height);
+    glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, 0);
+
+    if (m_depthBuffer != 0)
+        glDeleteRenderbuffersEXT(1, &m_depthBuffer);
+
+    glGenRenderbuffersEXT(1, &m_depthBuffer);
+    glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, m_depthBuffer);
+    glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, GL_DEPTH_COMPONENT24, width, height);
+    glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, 0);
+
+    if (m_framebuffer == 0)
+        glGenFramebuffersEXT(1, &m_framebuffer);
+
+    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, m_framebuffer);
+    glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_RENDERBUFFER_EXT, m_colorBuffer);
+    glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, m_depthBuffer);
+    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+
+    GetLogger()->Info("Initialized offscreen buffer %dx%d\n", width, height);
 }
 
 void CGLDevice::CopyFramebufferToTexture(Texture& texture, int xOffset, int yOffset, int x, int y, int width, int height)

@@ -139,6 +139,8 @@ public:
     virtual void SetFillMode(FillMode mode) ;
     virtual FillMode GetFillMode();
 
+    virtual void InitOffscreenBuffer(int width, int height);
+
     virtual void CopyFramebufferToTexture(Texture& texture, int xOffset, int yOffset, int x, int y, int width, int height);
     
     virtual void* GetFrameBufferPixels() const;

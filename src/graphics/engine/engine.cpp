@@ -117,7 +117,7 @@ CEngine::CEngine(CApplication *app)
     m_textureMipmapLevel = 1;
     m_textureAnisotropy = 1;
     m_shadowMapping = false;
-    m_npotShadowMap = false;
+    m_offscreenShadowRendering = false;
     m_totoMode = true;
     m_lensMode = true;
     m_waterMode = true;
@@ -186,7 +186,7 @@ CEngine::CEngine(CApplication *app)
     if (CProfile::GetInstance().GetIntProperty("Setup", "ShadowMapping", value))
     {
         m_shadowMapping = (value > 0);
-        m_npotShadowMap = (value > 1);
+        m_offscreenShadowRendering = (value > 1);
     }
 
     m_defaultTexParams.format = TEX_IMG_AUTO;
@@ -3336,6 +3336,9 @@ void CEngine::Draw3DScene()
             params.coords[i].mode = TEX_GEN_NONE;
 
         m_device->SetTextureCoordGeneration(2, params);
+
+        m_device->SetTexture(3, 0);
+        m_device->SetTextureEnabled(3, false);
     }
 
         // Draws the shadows , if shadows enabled
@@ -3515,8 +3518,6 @@ void CEngine::RenderShadowMap()
 
     m_app->StartPerformanceCounter(PCNT_RENDER_SHADOW_MAP);
 
-    m_device->Clear();
-
     // If no shadow map texture exists, create it
     if (m_shadowMap.id == 0)
     {
@@ -3524,9 +3525,18 @@ void CEngine::RenderShadowMap()
 
         int depth = m_app->GetInstance().GetVideoConfig().depthSize;
 
-        if (m_npotShadowMap)
+        if (m_offscreenShadowRendering)
         {
-            width = height = Math::Min(m_size.x, m_size.y);
+            int size;
+
+            if (CProfile::GetInstance().GetIntProperty("Setup", "OffscreenBuffer", size))
+            {
+                width = height = size;
+            }
+            else
+            {
+                width = height = 2048;
+            }
         }
         else
         {
@@ -3542,12 +3552,23 @@ void CEngine::RenderShadowMap()
 
         m_shadowMap = m_device->CreateDepthTexture(width, height, depth);
 
+        if (m_offscreenShadowRendering)
+        {
+            m_device->InitOffscreenBuffer(width, height);
+        }
+
         GetLogger()->Info("Created shadow map texture: %dx%d, depth %d\n", width, height, depth);
     }
 
+    if (m_offscreenShadowRendering)
+    {
+        m_device->SetRenderState(RENDER_STATE_OFFSCREEN_RENDERING, true);
+    }
+
+    m_device->Clear();
+
     // change state to rendering shadow maps
     m_device->SetColorMask(false, false, false, false);
-    //m_device->SetDepthTestFunc(COMP_FUNC_LEQUAL);
     m_device->SetRenderState(RENDER_STATE_DEPTH_TEST, true);
     m_device->SetRenderState(RENDER_STATE_DEPTH_WRITE, true);
     m_device->SetRenderState(RENDER_STATE_BLENDING, false);
@@ -3561,16 +3582,18 @@ void CEngine::RenderShadowMap()
     // recompute matrices
     Math::Vector worldUp(1.0f, 0.0f, 0.0f);
     Math::Vector dir = m_lookatPt - m_eyePt;
-    float change = Math::Max(1.0f, dir.Length() / 25.0f);
+    float change = Math::Max(0.5f, (5.0f + dir.Length()) / 25.0f);
     dir.Normalize();
     Math::Vector pos = m_lookatPt + 40.0f * dir;
 
     Math::Vector lightPos = pos + Math::Vector(3.0f, 30.0f, 3.0f);
     Math::Vector lookAt = pos + Math::Vector(0.0, 100.0f, 0.0f);
 
-    float dist = 75.0f; // *change;
+    float dist = 75.0f * change;
 
-    Math::LoadOrthoProjectionMatrix(m_shadowProjMat, -dist, dist, -dist, dist, -50.0f, 50.0f);
+    if (m_offscreenShadowRendering) dist = 400.0f * change;
+
+    Math::LoadOrthoProjectionMatrix(m_shadowProjMat, -dist, dist, -dist, dist, -200.0f, 200.0f);
     Math::LoadViewMatrix(m_shadowViewMat, lightPos, lookAt, worldUp);
 
     Math::Matrix temporary = Math::MultiplyMatrices(m_shadowProjMat, m_shadowViewMat);
@@ -3642,11 +3665,15 @@ void CEngine::RenderShadowMap()
         }
     }
 
-    m_device->SetCullMode(CULL_CCW);
-    m_device->SetRenderState(RENDER_STATE_DEPTH_BIAS, false);
+    //m_device->SetRenderState(RENDER_STATE_DEPTH_BIAS, false);
 
     // copy depth buffer to shadow map
     m_device->CopyFramebufferToTexture(m_shadowMap, 0, 0, 0, 0, m_shadowMap.size.x, m_shadowMap.size.y);
+
+    if (m_offscreenShadowRendering)
+    {
+        m_device->SetRenderState(RENDER_STATE_OFFSCREEN_RENDERING, false);
+    }
 
     // restore default state
     m_device->SetViewport(0, 0, m_size.x, m_size.y);
