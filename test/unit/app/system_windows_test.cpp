@@ -21,23 +21,22 @@
 
 #include <gtest/gtest.h>
 
+class CSystemUtilsWindowsWrapper : public CSystemUtilsWindows
+{
+public:
+    void SetFrequency(long long frequency)
+    {
+        m_counterFrequency = frequency;
+    }
+};
+
 class SystemUtilsWindowsUT : public testing::Test
 {
 protected:
     static const long long SEC = 1000000000;
 
-    CSystemUtilsWindows m_systemUtils;
+    CSystemUtilsWindowsWrapper m_systemUtils;
 };
-
-
-TEST_F(SystemUtilsWindowsUT, TimerResolution)
-{
-    m_systemUtils.SetFrequency(SEC);
-    EXPECT_EQ(1u, m_systemUtils.GetTimeStampExactResolution());
-
-    m_systemUtils.SetFrequency(SEC/3);
-    EXPECT_EQ(3u, m_systemUtils.GetTimeStampExactResolution());
-}
 
 TEST_F(SystemUtilsWindowsUT, TimeStampDiff)
 {
