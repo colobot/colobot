@@ -87,11 +87,6 @@ void CSystemUtilsLinux::GetCurrentTimeStamp(SystemTimeStamp *stamp)
     clock_gettime(CLOCK_MONOTONIC_RAW, &stamp->clockTime);
 }
 
-long long CSystemUtilsLinux::GetTimeStampExactResolution()
-{
-    return 1ll;
-}
-
 long long CSystemUtilsLinux::TimeStampExactDiff(SystemTimeStamp *before, SystemTimeStamp *after)
 {
     return (after->clockTime.tv_nsec - before->clockTime.tv_nsec) +

@@ -115,12 +115,6 @@ public:
     //! Returns a time stamp associated with current time
     virtual void GetCurrentTimeStamp(SystemTimeStamp *stamp) = 0;
 
-    //! Returns the platform's expected time stamp resolution
-    TEST_VIRTUAL float GetTimeStampResolution(SystemTimeUnit unit = STU_SEC);
-
-    //! Returns the platform's exact (in nanosecond units) expected time stamp resolution
-    virtual long long GetTimeStampExactResolution() = 0;
-
     //! Returns a difference between two timestamps in given time unit
     /** The difference is \a after - \a before. */
     TEST_VIRTUAL float TimeStampDiff(SystemTimeStamp *before, SystemTimeStamp *after, SystemTimeUnit unit = STU_SEC);

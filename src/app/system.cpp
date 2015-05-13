@@ -157,22 +157,6 @@ void CSystemUtils::CopyTimeStamp(SystemTimeStamp *dst, SystemTimeStamp *src)
     *dst = *src;
 }
 
-float CSystemUtils::GetTimeStampResolution(SystemTimeUnit unit)
-{
-    unsigned long long exact = GetTimeStampExactResolution();
-    float result = 0.0f;
-    if (unit == STU_SEC)
-        result = exact * 1e-9;
-    else if (unit == STU_MSEC)
-        result = exact * 1e-6;
-    else if (unit == STU_USEC)
-        result = exact * 1e-3;
-    else
-        assert(false);
-
-    return result;
-}
-
 float CSystemUtils::TimeStampDiff(SystemTimeStamp *before, SystemTimeStamp *after, SystemTimeUnit unit)
 {
     long long exact = TimeStampExactDiff(before, after);

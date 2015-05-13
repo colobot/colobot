@@ -43,7 +43,6 @@ public:
     virtual SystemDialogResult SystemDialog(SystemDialogType type, const std::string& title, const std::string& message) OVERRIDE;
 
     virtual void GetCurrentTimeStamp(SystemTimeStamp *stamp) OVERRIDE;
-    virtual long long GetTimeStampExactResolution() OVERRIDE;
     virtual long long TimeStampExactDiff(SystemTimeStamp *before, SystemTimeStamp *after) OVERRIDE;
 
     virtual std::string GetSaveDir() OVERRIDE;
