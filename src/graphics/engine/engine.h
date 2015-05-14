@@ -1459,6 +1459,8 @@ protected:
     bool m_shadowMapping;
     //! true enables offscreen shadow rendering
     bool m_offscreenShadowRendering;
+    //! true enables higher quality shadows
+    bool m_qualityShadows;
 
     //! Map of loaded textures (by name)
     std::map<std::string, Texture> m_texNameMap;
