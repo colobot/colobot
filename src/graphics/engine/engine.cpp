@@ -3192,11 +3192,13 @@ void CEngine::Render()
     // Begin the scene
     m_device->BeginScene();
 
-    if (m_shadowMapping)
-        RenderShadowMap();
-
     if (m_drawWorld)
+    {
+        if (m_shadowMapping)
+            RenderShadowMap();
+
         Draw3DScene();
+    }
 
     m_app->StartPerformanceCounter(PCNT_RENDER_INTERFACE);
     DrawInterface();
@@ -3242,85 +3244,94 @@ void CEngine::Draw3DScene()
     {
         if (m_qualityShadows)
         {
-            // Texture Unit 2
-            m_device->SetTextureEnabled(2, true);
-            m_device->SetTexture(2, m_shadowMap);
-            m_device->SetTextureMatrix(2, m_shadowTextureMat);
-
-            Math::Matrix identity;
-            identity.LoadIdentity();
-            m_device->SetTransform(TRANSFORM_WORLD, identity);
-
-            float shadowBias = 0.6f;
-            float shadowUnbias = 1.0f - shadowBias;
-
-            TextureStageParams params;
-            params.colorOperation = TEX_MIX_OPER_MODULATE;
-            params.colorArg1 = TEX_MIX_ARG_TEXTURE;
-            params.colorArg2 = TEX_MIX_ARG_FACTOR;
-            params.colorOperation = TEX_MIX_OPER_DEFAULT;
-            params.factor = Color(shadowBias, shadowBias, shadowBias, 1.0f);
-            params.wrapS = TEX_WRAP_CLAMP_TO_BORDER;
-            params.wrapT = TEX_WRAP_CLAMP_TO_BORDER;
-
-            m_device->SetTextureStageParams(2, params);
-
-            TextureGenerationParams genParams;
-
-            for (int i = 0; i < 4; i++)
+            if (m_device->GetMaxTextureStageCount() < 6)
             {
-                genParams.coords[i].mode = TEX_GEN_EYE_LINEAR;
-
-                for (int j = 0; j < 4; j++)
-                {
-                    genParams.coords[i].plane[j] = (i == j ? 1.0f : 0.0f);
-                }
+                m_qualityShadows = false;
+                GetLogger()->Error("Cannot use quality shadow maps, not enough texture units\n");
+                GetLogger()->Error("Attempting to use lower quality shadow maps\n");
             }
+            else
+            {
+                // Texture Unit 2
+                m_device->SetTextureEnabled(2, true);
+                m_device->SetTexture(2, m_shadowMap);
+                m_device->SetTextureMatrix(2, m_shadowTextureMat);
 
-            m_device->SetTextureCoordGeneration(2, genParams);
+                Math::Matrix identity;
+                identity.LoadIdentity();
+                m_device->SetTransform(TRANSFORM_WORLD, identity);
 
-            // Texture Unit 3
-            m_device->SetTextureEnabled(3, true);
-            m_device->SetTexture(3, m_shadowMap);
+                float shadowBias = 0.6f;
+                float shadowUnbias = 1.0f - shadowBias;
 
-            params.LoadDefault();
-            params.colorOperation = TEX_MIX_OPER_ADD;
-            params.colorArg1 = TEX_MIX_ARG_COMPUTED_COLOR;
-            params.colorArg2 = TEX_MIX_ARG_FACTOR;
-            params.alphaOperation = TEX_MIX_OPER_DEFAULT;
-            params.factor = Color(shadowUnbias, shadowUnbias, shadowUnbias, 0.0f);
-            params.wrapS = TEX_WRAP_CLAMP_TO_BORDER;
-            params.wrapT = TEX_WRAP_CLAMP_TO_BORDER;
+                TextureStageParams params;
+                params.colorOperation = TEX_MIX_OPER_MODULATE;
+                params.colorArg1 = TEX_MIX_ARG_TEXTURE;
+                params.colorArg2 = TEX_MIX_ARG_FACTOR;
+                params.colorOperation = TEX_MIX_OPER_DEFAULT;
+                params.factor = Color(shadowBias, shadowBias, shadowBias, 1.0f);
+                params.wrapS = TEX_WRAP_CLAMP_TO_BORDER;
+                params.wrapT = TEX_WRAP_CLAMP_TO_BORDER;
 
-            m_device->SetTextureStageParams(3, params);
+                m_device->SetTextureStageParams(2, params);
 
-            // Texture Unit 4
-            m_device->SetTextureEnabled(4, true);
-            m_device->SetTexture(4, m_shadowMap);
+                TextureGenerationParams genParams;
 
-            params.LoadDefault();
-            params.colorOperation = TEX_MIX_OPER_MODULATE;
-            params.colorArg1 = TEX_MIX_ARG_COMPUTED_COLOR;
-            params.colorArg2 = TEX_MIX_ARG_SRC_COLOR;
-            params.alphaOperation = TEX_MIX_OPER_DEFAULT;
-            params.wrapS = TEX_WRAP_CLAMP_TO_BORDER;
-            params.wrapT = TEX_WRAP_CLAMP_TO_BORDER;
+                for (int i = 0; i < 4; i++)
+                {
+                    genParams.coords[i].mode = TEX_GEN_EYE_LINEAR;
 
-            m_device->SetTextureStageParams(4, params);
+                    for (int j = 0; j < 4; j++)
+                    {
+                        genParams.coords[i].plane[j] = (i == j ? 1.0f : 0.0f);
+                    }
+                }
 
-            // Texture Unit 5
-            m_device->SetTextureEnabled(5, true);
-            m_device->SetTexture(5, m_shadowMap);
+                m_device->SetTextureCoordGeneration(2, genParams);
 
-            params.LoadDefault();
-            params.colorOperation = TEX_MIX_OPER_MODULATE;
-            params.colorArg1 = TEX_MIX_ARG_COMPUTED_COLOR;
-            params.colorArg2 = TEX_MIX_ARG_TEXTURE_0;
-            params.alphaOperation = TEX_MIX_OPER_DEFAULT;
-            params.wrapS = TEX_WRAP_CLAMP_TO_BORDER;
-            params.wrapT = TEX_WRAP_CLAMP_TO_BORDER;
+                // Texture Unit 3
+                m_device->SetTextureEnabled(3, true);
+                m_device->SetTexture(3, m_shadowMap);
 
-            m_device->SetTextureStageParams(5, params);
+                params.LoadDefault();
+                params.colorOperation = TEX_MIX_OPER_ADD;
+                params.colorArg1 = TEX_MIX_ARG_COMPUTED_COLOR;
+                params.colorArg2 = TEX_MIX_ARG_FACTOR;
+                params.alphaOperation = TEX_MIX_OPER_DEFAULT;
+                params.factor = Color(shadowUnbias, shadowUnbias, shadowUnbias, 0.0f);
+                params.wrapS = TEX_WRAP_CLAMP_TO_BORDER;
+                params.wrapT = TEX_WRAP_CLAMP_TO_BORDER;
+
+                m_device->SetTextureStageParams(3, params);
+
+                // Texture Unit 4
+                m_device->SetTextureEnabled(4, true);
+                m_device->SetTexture(4, m_shadowMap);
+
+                params.LoadDefault();
+                params.colorOperation = TEX_MIX_OPER_MODULATE;
+                params.colorArg1 = TEX_MIX_ARG_COMPUTED_COLOR;
+                params.colorArg2 = TEX_MIX_ARG_SRC_COLOR;
+                params.alphaOperation = TEX_MIX_OPER_DEFAULT;
+                params.wrapS = TEX_WRAP_CLAMP_TO_BORDER;
+                params.wrapT = TEX_WRAP_CLAMP_TO_BORDER;
+
+                m_device->SetTextureStageParams(4, params);
+
+                // Texture Unit 5
+                m_device->SetTextureEnabled(5, true);
+                m_device->SetTexture(5, m_shadowMap);
+
+                params.LoadDefault();
+                params.colorOperation = TEX_MIX_OPER_MODULATE;
+                params.colorArg1 = TEX_MIX_ARG_COMPUTED_COLOR;
+                params.colorArg2 = TEX_MIX_ARG_TEXTURE_0;
+                params.alphaOperation = TEX_MIX_OPER_DEFAULT;
+                params.wrapS = TEX_WRAP_CLAMP_TO_BORDER;
+                params.wrapT = TEX_WRAP_CLAMP_TO_BORDER;
+
+                m_device->SetTextureStageParams(5, params);
+            }
         }
         else        // Simpler shadows
         {
@@ -3425,14 +3436,17 @@ void CEngine::Draw3DScene()
 
         m_device->SetTextureCoordGeneration(2, params);
 
-        m_device->SetTexture(3, 0);
-        m_device->SetTextureEnabled(3, false);
+        if (m_qualityShadows)
+        {
+            m_device->SetTexture(3, 0);
+            m_device->SetTextureEnabled(3, false);
 
-        m_device->SetTexture(4, 0);
-        m_device->SetTextureEnabled(4, false);
+            m_device->SetTexture(4, 0);
+            m_device->SetTextureEnabled(4, false);
 
-        m_device->SetTexture(5, 0);
-        m_device->SetTextureEnabled(5, false);
+            m_device->SetTexture(5, 0);
+            m_device->SetTextureEnabled(5, false);
+        }
     }
 
         // Draws the shadows , if shadows enabled
@@ -3609,6 +3623,13 @@ void CEngine::Draw3DScene()
 void CEngine::RenderShadowMap()
 {
     if (!m_shadowMapping) return;
+
+    if (m_device->GetMaxTextureStageCount() < 3)
+    {
+        m_shadowMapping = false;
+        GetLogger()->Error("Cannot use shadow maps, not enough texture units\n");
+        GetLogger()->Error("Disabling shadow mapping\n");
+    }
 
     m_app->StartPerformanceCounter(PCNT_RENDER_SHADOW_MAP);
 

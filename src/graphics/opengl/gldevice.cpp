@@ -331,6 +331,7 @@ bool CGLDevice::Create()
 
     int maxTextures = 0;
     glGetIntegerv(GL_MAX_TEXTURE_UNITS, &maxTextures);
+    GetLogger()->Info("Maximum texture units: %d\n", maxTextures);
 
     m_currentTextures    = std::vector<Texture>           (maxTextures, Texture());
     m_texturesEnabled    = std::vector<bool>              (maxTextures, false);
