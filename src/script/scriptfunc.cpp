@@ -3608,28 +3608,29 @@ CBotTypResult CScriptFunctions::cfwrite (CBotVar* pThis, CBotVar* &pVar)
 // process FILE :: readln
 
 // execution
-bool CScriptFunctions::rfread (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception)
+bool CScriptFunctions::rfread(CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception)
 {
     // it shouldn't be any parameters
-    if ( pVar != NULL ) { Exception = CBotErrOverParam; return false; }
-    
+    if (pVar != NULL) { Exception = CBotErrOverParam; return false; }
+
     // retrieve the item "handle"
     pVar = pThis->GetItem("handle");
-    
-    if ( pVar->GetInit() != IS_DEF) { Exception = CBotErrNotOpen; return false; }
-    
+
+    if (pVar->GetInit() != IS_DEF) { Exception = CBotErrNotOpen; return false; }
+
     int fileHandle = pVar->GetValInt();
 
     FILE* pFile = m_files[fileHandle];
-    
+
     char    chaine[2000];
     int     i;
-    for ( i = 0 ; i < 2000 ; i++ ) chaine[i] = 0;
-    
-    (void) fgets(chaine, 1999, pFile);
-    
-    for ( i = 0 ; i < 2000 ; i++ ) if (chaine[i] == '\n') chaine[i] = 0;
-    
+    for (i = 0; i < 2000; i++) chaine[i] = 0;
+
+    if (fgets(chaine, 1999, pFile) != nullptr)
+    {
+        for (i = 0; i < 2000; i++) if (chaine[i] == '\n') chaine[i] = 0;
+    }
+
     // if an error occurs generate an exception
     if ( ferror(pFile) ) { Exception = CBotErrRead; return false; }
     
