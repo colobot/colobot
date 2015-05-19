@@ -91,7 +91,8 @@ enum TransformType
 {
     TRANSFORM_WORLD,
     TRANSFORM_VIEW,
-    TRANSFORM_PROJECTION
+    TRANSFORM_PROJECTION,
+    TRANSFORM_SHADOW
 };
 
 /**
@@ -301,9 +302,6 @@ public:
 
     //! Sets the texture coordinate generation mode for given texture unit
     virtual void SetTextureCoordGeneration(int index, TextureGenerationParams &params) = 0;
-
-    //! Sets texture coordinate transform matrix
-    virtual void SetTextureMatrix(int index, Math::Matrix& matrix) = 0;
 
     //! Renders primitive composed of vertices with single texture
     virtual void DrawPrimitive(PrimitiveType type, const Vertex *vertices    , int vertexCount,

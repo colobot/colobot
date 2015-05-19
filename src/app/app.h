@@ -425,6 +425,9 @@ protected:
     bool            m_simulationSuspended;
     //@}
 
+    //! Graphics device to use
+    std::string     m_graphics;
+
     //! Current mode of mouse
     MouseMode       m_mouseMode;
 

@@ -2212,7 +2212,7 @@ void CEngine::SetState(int state, const Color& color)
 
     if (state & ENG_RSTATE_FOG)
         m_device->SetRenderState(RENDER_STATE_FOG, true);
-
+    
 
     bool second = m_groundSpotVisible || m_dirty;
 
@@ -3255,7 +3255,7 @@ void CEngine::Draw3DScene()
                 // Texture Unit 2
                 m_device->SetTextureEnabled(2, true);
                 m_device->SetTexture(2, m_shadowMap);
-                m_device->SetTextureMatrix(2, m_shadowTextureMat);
+                m_device->SetTransform(TRANSFORM_SHADOW, m_shadowTextureMat);
 
                 Math::Matrix identity;
                 identity.LoadIdentity();
@@ -3338,7 +3338,7 @@ void CEngine::Draw3DScene()
             // Texture Unit 2
             m_device->SetTextureEnabled(2, true);
             m_device->SetTexture(2, m_shadowMap);
-            m_device->SetTextureMatrix(2, m_shadowTextureMat);
+            m_device->SetTransform(TRANSFORM_SHADOW, m_shadowTextureMat);
 
             Math::Matrix identity;
             identity.LoadIdentity();
@@ -3427,7 +3427,7 @@ void CEngine::Draw3DScene()
 
         m_device->SetTexture(2, 0);
         m_device->SetTextureEnabled(2, false);
-        m_device->SetTextureMatrix(2, identity);
+        m_device->SetTransform(TRANSFORM_SHADOW, identity);
 
         TextureGenerationParams params;
 

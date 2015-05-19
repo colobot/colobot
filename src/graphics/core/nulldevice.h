@@ -83,7 +83,6 @@ public:
     
     virtual void SetTextureStageWrap(int index, Gfx::TexWrapMode wrapS, Gfx::TexWrapMode wrapT);
     virtual void SetTextureCoordGeneration(int index, TextureGenerationParams &params);
-    virtual void SetTextureMatrix(int index, Math::Matrix& matrix);
     
     virtual void DrawPrimitive(PrimitiveType type, const Vertex *vertices    , int vertexCount,
                                Color color = Color(1.0f, 1.0f, 1.0f, 1.0f));

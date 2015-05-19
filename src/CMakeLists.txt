@@ -110,6 +110,8 @@ set(BASE_SOURCES
     graphics/engine/text.cpp
     graphics/engine/water.cpp
     graphics/opengl/gldevice.cpp
+    graphics/opengl/gl33device.cpp
+    graphics/opengl/glutil.cpp
     object/auto/auto.cpp
     object/auto/autobase.cpp
     object/auto/autoconvert.cpp

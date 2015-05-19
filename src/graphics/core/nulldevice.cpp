@@ -182,10 +182,6 @@ void CNullDevice::SetTextureCoordGeneration(int index, TextureGenerationParams &
 {
 }
 
-void CNullDevice::SetTextureMatrix(int index, Math::Matrix& matrix)
-{
-}
-
 TextureStageParams CNullDevice::GetTextureStageParams(int index)
 {
     return TextureStageParams();

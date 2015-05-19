@@ -18,12 +18,11 @@
  */
 
 /**
- * \file graphics/opengl/gldevice.h
- * \brief OpenGL implementation - CGLDevice class
+ * \file graphics/opengl/gl33device.h
+ * \brief OpenGL 3.3 implementation - CGL33Device class
  */
 
 #pragma once
-
 
 #include "graphics/core/device.h"
 #include "graphics/opengl/glutil.h"
@@ -39,28 +38,8 @@
 namespace Gfx {
 
 /**
- \enum VertexBufferType
- \brief Specifies type of vertex buffer to use
- */
-enum VertexBufferType
-{
-   VBT_DISPLAY_LIST,    //! use display lists
-   VBT_VBO_CORE,        //! use core OpenGL 1.5 VBOs
-   VBT_VBO_ARB          //! use ARB extension VBOs
-};
-
-enum ShadowMappingSupport
-{
-    SMS_NONE,           //! No support for depth textures
-    SMS_ARB,            //! ARB extension
-    SMS_CORE            //! Core support
-};
-
-struct GLDevicePrivate;
-
-/**
-  \class CGLDevice
-  \brief Implementation of CDevice interface in OpenGL
+  \class CGL33Device
+  \brief Implementation of CDevice interface in OpenGL 3.3
 
   Provides the concrete implementation of 3D device in OpenGL.
 
@@ -69,11 +48,11 @@ struct GLDevicePrivate;
   Because of that, CGLDeviceConfig is outside the CDevice class and must be set
   in CApplication.
 */
-class CGLDevice : public CDevice
+class CGL33Device : public CDevice
 {
 public:
-    CGLDevice(const GLDeviceConfig &config);
-    virtual ~CGLDevice();
+    CGL33Device(const GLDeviceConfig &config);
+    virtual ~CGL33Device();
 
     virtual void DebugHook() OVERRIDE;
     virtual void DebugLights() OVERRIDE;
@@ -82,9 +61,6 @@ public:
     virtual void Destroy() OVERRIDE;
 
     void ConfigChanged(const GLDeviceConfig &newConfig);
-
-    void SetUseVbo(bool useVbo);
-    void SetVertexBufferType(VertexBufferType type);
 
     virtual void BeginScene() OVERRIDE;
     virtual void EndScene() OVERRIDE;
@@ -165,12 +141,12 @@ public:
     virtual void* GetFrameBufferPixels() const OVERRIDE;
 
 private:
-    //! Updates internal modelview matrix
-    void UpdateModelviewMatrix();
     //! Updates position for given light based on transformation matrices
     void UpdateLightPosition(int index);
     //! Updates the texture params for given texture stage
     void UpdateTextureParams(int index);
+    //! Updates rendering mode
+    void UpdateRenderingMode();
 
 private:
     //! Current config
@@ -214,33 +190,25 @@ private:
     };
 
     //! Info about static VBO buffers
-    struct VboObjectInfo
+    struct VertexBufferInfo
     {
         PrimitiveType primitiveType;
-        unsigned int bufferId;
+        GLuint vbo;
+        GLuint vao;
         VertexType vertexType;
         int vertexCount;
+        unsigned int size;
     };
 
     //! Detected capabilities
     //! OpenGL version
     int m_glMajor, m_glMinor;
-    //! Depth texture support
-    ShadowMappingSupport m_shadowMappingSupport;
-    //! Whether to use multitexturing
-    bool m_multitextureAvailable;
-    //! Whether to use VBOs or display lists
-    bool m_vboAvailable;
     //! Whether anisotropic filtering is available
     bool m_anisotropyAvailable;
     //! Maximum anisotropy level
     int m_maxAnisotropy;
-    //! Whether offscreen rendering is available
-    bool m_framebufferObject;
-    //! Which vertex buffer type to use
-    VertexBufferType m_vertexBufferType;
     //! Map of saved VBO objects
-    std::map<unsigned int, VboObjectInfo> m_vboObjects;
+    std::map<unsigned int, VertexBufferInfo> m_vboObjects;
     //! Last ID of VBO object
     unsigned int m_lastVboId;
 
@@ -253,8 +221,80 @@ private:
     GLuint m_depthBuffer;
     //! Maximum available renderbuffer size
     int m_maxRenderbufferSize;
+
+    //! Shader program
+    GLuint m_shaderProgram;
+
+    //! Auxilliary vertex buffers for general rendering
+    unsigned int m_vertex;
+    unsigned int m_vertexTex2;
+    unsigned int m_vertexCol;
+
+    // Uniforms
+    //! Projection matrix
+    GLint uni_ProjectionMatrix;
+    //! View matrix
+    GLint uni_ViewMatrix;
+    //! Model matrix
+    GLint uni_ModelMatrix;
+    //! Shadow matrix
+    GLint uni_ShadowMatrix;
+    //! Normal matrix
+    GLint uni_NormalMatrix;
+
+    //! Primary texture sampler
+    GLint uni_PrimaryTexture;
+    //! Secondary texture sampler
+    GLint uni_SecondaryTexture;
+    //! Shadow texture sampler
+    GLint uni_ShadowTexture;
+
+    GLint uni_PrimaryTextureEnabled;
+    GLint uni_SecondaryTextureEnabled;
+    GLint uni_ShadowTextureEnabled;
+
+    // Fog parameters
+    //! true enables fog
+    GLint uni_FogEnabled;
+    //! Fog range
+    GLint uni_FogRange;
+    //! Fog color
+    GLint uni_FogColor;
+
+    // Alpha test parameters
+    //! true enables alpha test
+    GLint uni_AlphaTestEnabled;
+    //! Alpha test reference value
+    GLint uni_AlphaReference;
+
+    // Lighting parameters
+    GLint uni_SmoothShading;
+    //! true enables lighting
+    GLint uni_LightingEnabled;
+    //! Ambient color
+    GLint uni_AmbientColor;
+    //! Diffuse color
+    GLint uni_DiffuseColor;
+    //! Specular color
+    GLint uni_SpecularColor;
+    
+    struct
+    {
+        //! true enables light
+        GLint Enabled;
+        //! Light type
+        GLint Type;
+        //! Position or direction vector
+        GLint Position;
+        //! Ambient color
+        GLint Ambient;
+        //! Diffuse color
+        GLint Diffuse;
+        //! Specular color
+        GLint Specular;
+        //! Attenuation
+        GLint Attenuation;
+    } uni_Light[8];
 };
 
-
 } // namespace Gfx
-

@@ -36,6 +36,7 @@
 #include "graphics/engine/modelmanager.h"
 #include "graphics/core/nulldevice.h"
 #include "graphics/opengl/gldevice.h"
+#include "graphics/opengl/gl33device.h"
 
 #include "object/robotmain.h"
 #include "object/objman.h"
@@ -162,6 +163,8 @@ CApplication::CApplication()
     m_language = LANGUAGE_ENV;
 
     m_lowCPU = true;
+
+    m_graphics = "opengl";
 }
 
 CApplication::~CApplication()
@@ -224,7 +227,8 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
         OPT_MOD,
         OPT_VBO,
         OPT_RESOLUTION,
-        OPT_HEADLESS
+        OPT_HEADLESS,
+        OPT_DEVICE
     };
 
     option options[] =
@@ -242,6 +246,7 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
         { "vbo", required_argument, nullptr, OPT_VBO },
         { "resolution", required_argument, nullptr, OPT_RESOLUTION },
         { "headless", no_argument, nullptr, OPT_HEADLESS },
+        { "graphics", required_argument, nullptr, OPT_DEVICE },
         { nullptr, 0, nullptr, 0}
     };
 
@@ -285,6 +290,7 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
                 GetLogger()->Message("  -vbo mode           set OpenGL VBO mode (one of: auto, enable, disable)\n");
                 GetLogger()->Message("  -resolution WxH     set resolution\n");
                 GetLogger()->Message("  -headless           headless mode - disables graphics, sound and user interaction\n");
+                GetLogger()->Message("  -graphics           changes graphics device (defaults to opengl)\n");
                 return PARSE_ARGS_HELP;
             }
             case OPT_DEBUG:
@@ -402,6 +408,11 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
             case OPT_HEADLESS:
             {
                 m_headless = true;
+                break;
+            }
+            case OPT_DEVICE:
+            {
+                m_graphics = optarg;
                 break;
             }
             default:
@@ -549,12 +560,24 @@ bool CApplication::Create()
     // Don't generate joystick events
     SDL_JoystickEventState(SDL_IGNORE);
 
-    if(!m_headless) {
+    if(!m_headless)
+    {
         // The video is ready, we can create and initalize the graphics device
-        m_device = new Gfx::CGLDevice(m_deviceConfig);
-    } else {
+        if (m_graphics == "opengl")
+            m_device = new Gfx::CGLDevice(m_deviceConfig);
+        else if (m_graphics == "gl33")
+            m_device = new Gfx::CGL33Device(m_deviceConfig);
+        else
+        {
+            m_device = new Gfx::CNullDevice();
+            GetLogger()->Error("Unknown graphics device: %s\n", m_graphics.c_str());
+        }
+    }
+    else
+    {
         m_device = new Gfx::CNullDevice();
     }
+
     if (! m_device->Create() )
     {
         m_errorMessage = std::string("Error in CDevice::Create()\n") + standardInfoMessage;
