@@ -935,8 +935,8 @@ void CGLDevice::SetTextureCoordGeneration(int index, TextureGenerationParams &pa
 
     for (int i = 0; i < 4; i++)
     {
-        GLuint texCoordGen = textureCoordGen[i];
-        GLuint texCoord = textureCoordinates[i];
+        GLuint texCoordGen = TranslateTextureCoordinateGen(i);
+        GLuint texCoord = TranslateTextureCoordinate(i);
 
         switch (params.coords[i].mode)
         {

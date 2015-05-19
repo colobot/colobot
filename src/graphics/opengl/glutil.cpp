@@ -148,4 +148,18 @@ bool InPlane(Math::Vector normal, float originPlane, Math::Vector center, float 
     return true;
 }
 
+GLenum TranslateTextureCoordinate(int index)
+{
+    assert(index >= 0 && index < 4);
+
+    return textureCoordinates[index];
+}
+
+GLenum TranslateTextureCoordinateGen(int index)
+{
+    assert(index >= 0 && index < 4);
+
+    return textureCoordGen[index];
+}
+
 }

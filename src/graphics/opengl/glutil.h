@@ -26,9 +26,6 @@
 namespace Gfx
 {
 
-GLuint textureCoordinates[];
-GLuint textureCoordGen[];
-
 /**
 \enum VBOMode
 \brief VBO autodetect/override
@@ -81,5 +78,9 @@ BlendFunc TranslateGLBlendFunc(GLenum flag);
 GLenum TranslateGfxBlendFunc(BlendFunc func);
 
 bool InPlane(Math::Vector normal, float originPlane, Math::Vector center, float radius);
+
+GLenum TranslateTextureCoordinate(int index);
+
+GLenum TranslateTextureCoordinateGen(int index);
 
 } // namespace Gfx
