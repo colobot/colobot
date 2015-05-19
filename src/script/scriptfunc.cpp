@@ -3626,7 +3626,7 @@ bool CScriptFunctions::rfread (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, 
     int     i;
     for ( i = 0 ; i < 2000 ; i++ ) chaine[i] = 0;
     
-    fgets(chaine, 1999, pFile);
+    (void) fgets(chaine, 1999, pFile);
     
     for ( i = 0 ; i < 2000 ; i++ ) if (chaine[i] == '\n') chaine[i] = 0;
     

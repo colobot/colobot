@@ -361,7 +361,8 @@ bool CBrain::EventProcess(const Event &event)
             }
             SetSelScript(m_selScript);
 
-            StartEditScript(newProgram, "");
+            char text[] = "";
+            StartEditScript(newProgram, text);
 
             std::string res;
             GetResource(RES_TEXT, RT_STUDIO_CLONED, res);

@@ -3636,7 +3636,7 @@ void CEngine::RenderShadowMap()
     // If no shadow map texture exists, create it
     if (m_shadowMap.id == 0)
     {
-        int width, height;
+        int width = 256, height = 256;
 
         int depth = m_app->GetInstance().GetVideoConfig().depthSize;
 
