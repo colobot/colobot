@@ -102,7 +102,7 @@ std::streampos CInputStreamBuffer::seekoff(std::streamoff off, std::ios_base::se
        * egtpr - end of block
        off argument is relative to way */
 
-    std::streamoff new_position;
+    std::streamoff new_position{};
 
     switch (way)
     {
