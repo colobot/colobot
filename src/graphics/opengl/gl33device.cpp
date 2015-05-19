@@ -18,9 +18,7 @@
  */
 
 #include "graphics/opengl/gl33device.h"
-#include "graphics/opengl/glutil.h"
 #include "graphics/engine/engine.h"
-#include "physfs.h"
 
 #include "common/config.h"
 #include "common/image.h"
@@ -29,10 +27,8 @@
 #include "math/geometry.h"
 
 
-// Using GLEW so only glew.h is needed
-#include <GL/glew.h>
-
 #include <SDL.h>
+#include <physfs.h>
 
 #include <cassert>
 

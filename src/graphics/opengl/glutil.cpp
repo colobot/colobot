@@ -18,9 +18,6 @@
  */
 
 #include "graphics/opengl/glutil.h"
-#include "graphics/core/device.h"
-
-#include "GL/glew.h"
 
 // Graphics module namespace
 namespace Gfx {

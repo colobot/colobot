@@ -24,10 +24,8 @@
 
 #pragma once
 
-
 #include "graphics/core/device.h"
 #include "graphics/opengl/glutil.h"
-#include "GL/glew.h"
 
 #include <string>
 #include <vector>

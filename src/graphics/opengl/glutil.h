@@ -20,7 +20,12 @@
 #pragma once
 
 #include "graphics/core/device.h"
-#include "GL/glew.h"
+
+// config.h must be included before glew.h
+#include "common/config.h"
+
+#include <GL/glew.h>
+
 
 // Graphics module namespace
 namespace Gfx

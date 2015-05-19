@@ -28,9 +28,6 @@
 #include "math/geometry.h"
 
 
-// Using GLEW so only glew.h is needed
-#include <GL/glew.h>
-
 #include <SDL.h>
 
 #include <cassert>
