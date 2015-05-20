@@ -12,6 +12,8 @@ if(TOOLS)
     add_subdirectory(tools)
 endif()
 
+add_subdirectory(graphics/opengl/shaders)
+
 
 # Optional libraries
 set(OPTIONAL_LIBS "")
