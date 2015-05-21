@@ -3239,8 +3239,435 @@ void CEngine::Draw3DScene()
     
     m_lightMan->UpdateDeviceLights(ENG_OBJTYPE_TERRAIN);
 
-    // Enable shadow mapping
-    if (m_shadowMapping)
+    UseShadowMapping(true);
+
+    for (int objRank = 0; objRank < static_cast<int>(m_objects.size()); objRank++)
+    {
+        if (! m_objects[objRank].used)
+            continue;
+
+        if (m_objects[objRank].type != ENG_OBJTYPE_TERRAIN)
+            continue;
+
+        if (! m_objects[objRank].drawWorld)
+            continue;
+
+        m_device->SetTransform(TRANSFORM_WORLD, m_objects[objRank].transform);
+
+        if (! IsVisible(objRank))
+            continue;
+
+        int baseObjRank = m_objects[objRank].baseObjRank;
+        if (baseObjRank == -1)
+            continue;
+
+        assert(baseObjRank >= 0 && baseObjRank < static_cast<int>( m_baseObjects.size() ));
+
+        EngineBaseObject& p1 = m_baseObjects[baseObjRank];
+        if (! p1.used)
+            continue;
+
+        for (int l2 = 0; l2 < static_cast<int>( p1.next.size() ); l2++)
+        {
+            EngineBaseObjTexTier& p2 = p1.next[l2];
+
+            SetTexture(p2.tex1, 0);
+            SetTexture(p2.tex2, 1);
+
+            for (int l3 = 0; l3 < static_cast<int>( p2.next.size() ); l3++)
+            {
+                EngineBaseObjLODTier& p3 = p2.next[l3];
+
+                if (! IsWithinLODLimit(m_objects[objRank].distance, p3.lodLevel))
+                    continue;
+
+                for (int l4 = 0; l4 < static_cast<int>( p3.next.size() ); l4++)
+                {
+                    EngineBaseObjDataTier& p4 = p3.next[l4];
+
+                    SetMaterial(p4.material);
+                    SetState(p4.state);
+
+                    DrawObject(p4);
+                }
+            }
+        }
+    }
+
+    UseShadowMapping(false);
+
+        // Draws the shadows , if shadows enabled
+	if (m_shadowVisible)
+        DrawShadow();
+    
+
+    m_app->StopPerformanceCounter(PCNT_RENDER_TERRAIN);
+
+    // Draw other objects (and if shadows disabled, also terrain)
+
+    m_app->StartPerformanceCounter(PCNT_RENDER_OBJECTS);
+
+    bool transparent = false;
+
+    for (int objRank = 0; objRank < static_cast<int>(m_objects.size()); objRank++)
+    {
+        if (! m_objects[objRank].used)
+            continue;
+
+        if (m_objects[objRank].type == ENG_OBJTYPE_TERRAIN)
+            continue;
+
+        if (! m_objects[objRank].drawWorld)
+            continue;
+
+        m_device->SetTransform(TRANSFORM_WORLD, m_objects[objRank].transform);
+
+        if (! IsVisible(objRank))
+            continue;
+
+        int baseObjRank = m_objects[objRank].baseObjRank;
+        if (baseObjRank == -1)
+            continue;
+
+        assert(baseObjRank >= 0 && baseObjRank < static_cast<int>( m_baseObjects.size() ));
+
+        EngineBaseObject& p1 = m_baseObjects[baseObjRank];
+        if (! p1.used)
+            continue;
+
+        m_lightMan->UpdateDeviceLights(m_objects[objRank].type);
+
+        for (int l2 = 0; l2 < static_cast<int>( p1.next.size() ); l2++)
+        {
+            EngineBaseObjTexTier& p2 = p1.next[l2];
+
+            SetTexture(p2.tex1, 0);
+            SetTexture(p2.tex2, 1);
+
+            for (int l3 = 0; l3 < static_cast<int>( p2.next.size() ); l3++)
+            {
+                EngineBaseObjLODTier& p3 = p2.next[l3];
+
+                if (! IsWithinLODLimit(m_objects[objRank].distance, p3.lodLevel))
+                    continue;
+
+                for (int l4 = 0; l4 < static_cast<int>( p3.next.size() ); l4++)
+                {
+                    EngineBaseObjDataTier& p4 = p3.next[l4];
+
+                    if (m_objects[objRank].transparency != 0.0f)  // transparent ?
+                    {
+                        transparent = true;
+                        continue;
+                    }
+
+                    SetMaterial(p4.material);
+                    SetState(p4.state);
+
+                    DrawObject(p4);
+                }
+            }
+        }
+    }
+
+    UseShadowMapping(false);
+
+    // Draw transparent objects
+
+    if (transparent)
+    {
+        int tState = ENG_RSTATE_TTEXTURE_BLACK | ENG_RSTATE_2FACE;
+        Color tColor = Color(68.0f / 255.0f, 68.0f / 255.0f, 68.0f / 255.0f, 68.0f / 255.0f);
+
+        for (int objRank = 0; objRank < static_cast<int>(m_objects.size()); objRank++)
+        {
+            if (! m_objects[objRank].used)
+                continue;
+
+            if (m_objects[objRank].type == ENG_OBJTYPE_TERRAIN)
+                continue;
+
+            if (! m_objects[objRank].drawWorld)
+                continue;
+
+            m_device->SetTransform(TRANSFORM_WORLD, m_objects[objRank].transform);
+
+            if (! IsVisible(objRank))
+                continue;
+
+            int baseObjRank = m_objects[objRank].baseObjRank;
+            if (baseObjRank == -1)
+                continue;
+
+            assert(baseObjRank >= 0 && baseObjRank < static_cast<int>( m_baseObjects.size() ));
+
+            EngineBaseObject& p1 = m_baseObjects[baseObjRank];
+            if (! p1.used)
+                continue;
+
+            m_lightMan->UpdateDeviceLights(m_objects[objRank].type);
+
+            for (int l2 = 0; l2 < static_cast<int>( p1.next.size() ); l2++)
+            {
+                EngineBaseObjTexTier& p2 = p1.next[l2];
+
+                SetTexture(p2.tex1, 0);
+                SetTexture(p2.tex2, 1);
+
+                for (int l3 = 0; l3 < static_cast<int>( p2.next.size() ); l3++)
+                {
+                    EngineBaseObjLODTier& p3 = p2.next[l3];
+
+                    if (! IsWithinLODLimit(m_objects[objRank].distance, p3.lodLevel))
+                        continue;
+
+                    for (int l4 = 0; l4 < static_cast<int>( p3.next.size() ); l4++)
+                    {
+                        EngineBaseObjDataTier& p4 = p3.next[l4];
+
+                        if (m_objects[objRank].transparency == 0.0f)
+                            continue;
+
+                        SetMaterial(p4.material);
+                        SetState(tState, tColor);
+
+                        DrawObject(p4);
+                    }
+                }
+            }
+        }
+    }
+
+    m_app->StopPerformanceCounter(PCNT_RENDER_OBJECTS);
+
+    m_lightMan->UpdateDeviceLights(ENG_OBJTYPE_TERRAIN);
+
+    if (m_debugLights)
+        m_device->DebugLights();
+
+    if (m_debugDumpLights)
+    {
+        m_debugDumpLights = false;
+        m_lightMan->DebugDumpLights();
+    }
+
+    if (m_waterMode)
+    {
+        m_app->StartPerformanceCounter(PCNT_RENDER_WATER);
+        m_water->DrawSurf(); // draws water surface
+        m_app->StopPerformanceCounter(PCNT_RENDER_WATER);
+    }
+
+    m_device->SetRenderState(RENDER_STATE_LIGHTING, false);
+
+    m_app->StartPerformanceCounter(PCNT_RENDER_PARTICLE);
+    m_particle->DrawParticle(SH_WORLD); // draws the particles of the 3D world
+    m_app->StopPerformanceCounter(PCNT_RENDER_PARTICLE);
+
+    m_device->SetRenderState(RENDER_STATE_LIGHTING, true);
+
+    m_lightning->Draw();                     // draws lightning
+
+    if (m_lensMode) DrawForegroundImage();   // draws the foreground
+
+    if (! m_overFront) DrawOverColor();      // draws the foreground color
+}
+
+void CEngine::RenderShadowMap()
+{
+    if (!m_shadowMapping) return;
+
+    if (m_device->GetMaxTextureStageCount() < 3)
+    {
+        m_shadowMapping = false;
+        GetLogger()->Error("Cannot use shadow maps, not enough texture units\n");
+        GetLogger()->Error("Disabling shadow mapping\n");
+        return;
+    }
+
+    m_app->StartPerformanceCounter(PCNT_RENDER_SHADOW_MAP);
+
+    // If no shadow map texture exists, create it
+    if (m_shadowMap.id == 0)
+    {
+        int width = 256, height = 256;
+
+        int depth = m_app->GetInstance().GetVideoConfig().depthSize;
+
+        if (m_offscreenShadowRendering)
+        {
+            int size;
+
+            if (CProfile::GetInstance().GetIntProperty("Setup", "OffscreenBuffer", size))
+            {
+                width = height = size;
+            }
+            else
+            {
+                width = height = 1024;
+            }
+        }
+        else
+        {
+            int min = Math::Min(m_size.x, m_size.y);
+
+            for (int i = 0; i < 16; i++)
+            {
+                if (min < (1 << i)) break;
+
+                width = height = 1 << i;
+            }
+        }
+
+        m_shadowMap = m_device->CreateDepthTexture(width, height, depth);
+
+        if (m_offscreenShadowRendering)
+        {
+            m_device->InitOffscreenBuffer(width, height);
+        }
+
+        GetLogger()->Info("Created shadow map texture: %dx%d, depth %d\n", width, height, depth);
+    }
+
+    if (m_offscreenShadowRendering)
+    {
+        m_device->SetRenderState(RENDER_STATE_OFFSCREEN_RENDERING, true);
+        m_device->SetRenderTexture(RENDER_TARGET_DEPTH, m_shadowMap.id);
+    }
+
+    m_device->Clear();
+
+    // change state to rendering shadow maps
+    m_device->SetColorMask(false, false, false, false);
+    m_device->SetRenderState(RENDER_STATE_DEPTH_TEST, true);
+    m_device->SetRenderState(RENDER_STATE_DEPTH_WRITE, true);
+    m_device->SetRenderState(RENDER_STATE_BLENDING, false);
+    m_device->SetRenderState(RENDER_STATE_LIGHTING, false);
+    m_device->SetRenderState(RENDER_STATE_FOG, false);
+    m_device->SetRenderState(RENDER_STATE_CULLING, false);
+    m_device->SetRenderState(RENDER_STATE_ALPHA_TEST, true);
+    m_device->SetRenderState(RENDER_STATE_DEPTH_BIAS, false);
+    m_device->SetAlphaTestFunc(COMP_FUNC_GREATER, 0.5f);
+
+    m_device->SetViewport(0, 0, m_shadowMap.size.x, m_shadowMap.size.y);
+
+    // recompute matrices
+    Math::Vector worldUp(0.0f, 1.0f, 0.0f);
+    Math::Vector lightDir = Math::Vector(1.0f, 1.0f, -1.0f);
+    Math::Vector dir = m_lookatPt - m_eyePt;
+    dir.Normalize();
+
+    float dist = 50.0f * (log(m_shadowMap.size.x) / log(2.0f) - 6.5f);
+    float depth = 800.0f;
+
+    Math::Vector pos = m_lookatPt + 0.5f * dist * dir + 0.5f * dist * Math::Vector(1.0f, 0.0f, -1.0f);
+
+    Math::Vector lightPos = pos + Math::Vector(0.0f, 30.0f, 0.0f);
+    Math::Vector lookAt = lightPos + lightDir;
+
+    lightPos.x = round(lightPos.x);
+    lightPos.y = round(lightPos.y);
+    lightPos.z = round(lightPos.z);
+
+    lookAt.x = round(lookAt.x);
+    lookAt.y = round(lookAt.y);
+    lookAt.z = round(lookAt.z);
+
+    Math::LoadOrthoProjectionMatrix(m_shadowProjMat, -dist, dist, -dist, dist, -depth, depth);
+    Math::LoadViewMatrix(m_shadowViewMat, lightPos, lookAt, worldUp);
+
+    Math::Matrix temporary = Math::MultiplyMatrices(m_shadowProjMat, m_shadowViewMat);
+    m_shadowTextureMat = Math::MultiplyMatrices(m_shadowBias, temporary);
+
+    m_device->SetTransform(TRANSFORM_PROJECTION, m_shadowProjMat);
+    m_device->SetTransform(TRANSFORM_VIEW, m_shadowViewMat);
+
+    m_device->SetTexture(0, 0);
+    m_device->SetTexture(1, 0);
+
+    // render objects into shadow map
+    for (int objRank = 0; objRank < static_cast<int>(m_objects.size()); objRank++)
+    {
+        if (!m_objects[objRank].used)
+            continue;
+
+        if (m_objects[objRank].type == ENG_OBJTYPE_TERRAIN)
+           continue;
+
+        m_device->SetTransform(TRANSFORM_WORLD, m_objects[objRank].transform);
+
+        // TODO: check proper object filtering
+        //if (!IsVisible(objRank))
+        //    continue;
+
+        int baseObjRank = m_objects[objRank].baseObjRank;
+        if (baseObjRank == -1)
+            continue;
+
+        assert(baseObjRank >= 0 && baseObjRank < static_cast<int>(m_baseObjects.size()));
+
+        EngineBaseObject& p1 = m_baseObjects[baseObjRank];
+        if (!p1.used)
+            continue;
+
+        //m_lightMan->UpdateDeviceLights(m_objects[objRank].type);
+
+        for (int l2 = 0; l2 < static_cast<int>(p1.next.size()); l2++)
+        {
+            EngineBaseObjTexTier& p2 = p1.next[l2];
+
+            SetTexture(p2.tex1, 0);
+
+            for (int l3 = 0; l3 < static_cast<int>(p2.next.size()); l3++)
+            {
+                EngineBaseObjLODTier& p3 = p2.next[l3];
+
+                if (!IsWithinLODLimit(m_objects[objRank].distance, p3.lodLevel))
+                    continue;
+
+                for (int l4 = 0; l4 < static_cast<int>(p3.next.size()); l4++)
+                {
+                    EngineBaseObjDataTier& p4 = p3.next[l4];
+
+                    if (m_objects[objRank].transparency != 0.0f)  // transparent ?
+                        continue;
+
+                    DrawObject(p4);
+                }
+            }
+        }
+    }
+
+    m_device->SetRenderState(RENDER_STATE_DEPTH_BIAS, false);
+    m_device->SetDepthBias(1.0f, 0.0f);
+    m_device->SetRenderState(RENDER_STATE_ALPHA_TEST, false);
+
+    if (m_offscreenShadowRendering)     // shadow map texture already have depth information, just unbind it
+    {
+        m_device->SetRenderTexture(RENDER_TARGET_DEPTH, 0);
+        m_device->SetRenderState(RENDER_STATE_OFFSCREEN_RENDERING, false);
+    }
+    else    // copy depth buffer to shadow map
+    {
+        m_device->CopyFramebufferToTexture(m_shadowMap, 0, 0, 0, 0, m_shadowMap.size.x, m_shadowMap.size.y);
+    }
+
+    // restore default state
+    m_device->SetViewport(0, 0, m_size.x, m_size.y);
+
+    m_device->SetColorMask(true, true, true, true);
+    m_device->Clear();
+
+    m_app->StopPerformanceCounter(PCNT_RENDER_SHADOW_MAP);
+
+    m_device->SetRenderState(RENDER_STATE_DEPTH_TEST, false);
+}
+
+void CEngine::UseShadowMapping(bool enable)
+{
+    if (!m_shadowMapping) return;
+
+    if (enable) // Enable shadow mapping
     {
         if (m_qualityShadows)
         {
@@ -3365,62 +3792,7 @@ void CEngine::Draw3DScene()
             m_device->SetTextureCoordGeneration(2, genParams);
         }
     }
-
-    for (int objRank = 0; objRank < static_cast<int>(m_objects.size()); objRank++)
-    {
-        if (! m_objects[objRank].used)
-            continue;
-
-        if (m_objects[objRank].type != ENG_OBJTYPE_TERRAIN)
-            continue;
-
-        if (! m_objects[objRank].drawWorld)
-            continue;
-
-        m_device->SetTransform(TRANSFORM_WORLD, m_objects[objRank].transform);
-
-        if (! IsVisible(objRank))
-            continue;
-
-        int baseObjRank = m_objects[objRank].baseObjRank;
-        if (baseObjRank == -1)
-            continue;
-
-        assert(baseObjRank >= 0 && baseObjRank < static_cast<int>( m_baseObjects.size() ));
-
-        EngineBaseObject& p1 = m_baseObjects[baseObjRank];
-        if (! p1.used)
-            continue;
-
-        for (int l2 = 0; l2 < static_cast<int>( p1.next.size() ); l2++)
-        {
-            EngineBaseObjTexTier& p2 = p1.next[l2];
-
-            SetTexture(p2.tex1, 0);
-            SetTexture(p2.tex2, 1);
-
-            for (int l3 = 0; l3 < static_cast<int>( p2.next.size() ); l3++)
-            {
-                EngineBaseObjLODTier& p3 = p2.next[l3];
-
-                if (! IsWithinLODLimit(m_objects[objRank].distance, p3.lodLevel))
-                    continue;
-
-                for (int l4 = 0; l4 < static_cast<int>( p3.next.size() ); l4++)
-                {
-                    EngineBaseObjDataTier& p4 = p3.next[l4];
-
-                    SetMaterial(p4.material);
-                    SetState(p4.state);
-
-                    DrawObject(p4);
-                }
-            }
-        }
-    }
-
-    // Disable shadow mapping
-    if (m_shadowMapping)
+    else  // Disable shadow mapping
     {
         Math::Matrix identity;
         identity.LoadIdentity();
@@ -3448,357 +3820,6 @@ void CEngine::Draw3DScene()
             m_device->SetTextureEnabled(5, false);
         }
     }
-
-        // Draws the shadows , if shadows enabled
-	if (m_shadowVisible)
-        DrawShadow();
-    
-
-    m_app->StopPerformanceCounter(PCNT_RENDER_TERRAIN);
-
-    // Draw other objects (and if shadows disabled, also terrain)
-
-    m_app->StartPerformanceCounter(PCNT_RENDER_OBJECTS);
-
-    bool transparent = false;
-
-    for (int objRank = 0; objRank < static_cast<int>(m_objects.size()); objRank++)
-    {
-        if (! m_objects[objRank].used)
-            continue;
-
-        if (m_objects[objRank].type == ENG_OBJTYPE_TERRAIN)
-            continue;
-
-        if (! m_objects[objRank].drawWorld)
-            continue;
-
-        m_device->SetTransform(TRANSFORM_WORLD, m_objects[objRank].transform);
-
-        if (! IsVisible(objRank))
-            continue;
-
-        int baseObjRank = m_objects[objRank].baseObjRank;
-        if (baseObjRank == -1)
-            continue;
-
-        assert(baseObjRank >= 0 && baseObjRank < static_cast<int>( m_baseObjects.size() ));
-
-        EngineBaseObject& p1 = m_baseObjects[baseObjRank];
-        if (! p1.used)
-            continue;
-
-        m_lightMan->UpdateDeviceLights(m_objects[objRank].type);
-
-        for (int l2 = 0; l2 < static_cast<int>( p1.next.size() ); l2++)
-        {
-            EngineBaseObjTexTier& p2 = p1.next[l2];
-
-            SetTexture(p2.tex1, 0);
-            SetTexture(p2.tex2, 1);
-
-            for (int l3 = 0; l3 < static_cast<int>( p2.next.size() ); l3++)
-            {
-                EngineBaseObjLODTier& p3 = p2.next[l3];
-
-                if (! IsWithinLODLimit(m_objects[objRank].distance, p3.lodLevel))
-                    continue;
-
-                for (int l4 = 0; l4 < static_cast<int>( p3.next.size() ); l4++)
-                {
-                    EngineBaseObjDataTier& p4 = p3.next[l4];
-
-                    if (m_objects[objRank].transparency != 0.0f)  // transparent ?
-                    {
-                        transparent = true;
-                        continue;
-                    }
-
-                    SetMaterial(p4.material);
-                    SetState(p4.state);
-
-                    DrawObject(p4);
-                }
-            }
-        }
-    }
-
-    // Draw transparent objects
-
-    if (transparent)
-    {
-        int tState = ENG_RSTATE_TTEXTURE_BLACK | ENG_RSTATE_2FACE;
-        Color tColor = Color(68.0f / 255.0f, 68.0f / 255.0f, 68.0f / 255.0f, 68.0f / 255.0f);
-
-        for (int objRank = 0; objRank < static_cast<int>(m_objects.size()); objRank++)
-        {
-            if (! m_objects[objRank].used)
-                continue;
-
-            if (m_objects[objRank].type == ENG_OBJTYPE_TERRAIN)
-                continue;
-
-            if (! m_objects[objRank].drawWorld)
-                continue;
-
-            m_device->SetTransform(TRANSFORM_WORLD, m_objects[objRank].transform);
-
-            if (! IsVisible(objRank))
-                continue;
-
-            int baseObjRank = m_objects[objRank].baseObjRank;
-            if (baseObjRank == -1)
-                continue;
-
-            assert(baseObjRank >= 0 && baseObjRank < static_cast<int>( m_baseObjects.size() ));
-
-            EngineBaseObject& p1 = m_baseObjects[baseObjRank];
-            if (! p1.used)
-                continue;
-
-            m_lightMan->UpdateDeviceLights(m_objects[objRank].type);
-
-            for (int l2 = 0; l2 < static_cast<int>( p1.next.size() ); l2++)
-            {
-                EngineBaseObjTexTier& p2 = p1.next[l2];
-
-                SetTexture(p2.tex1, 0);
-                SetTexture(p2.tex2, 1);
-
-                for (int l3 = 0; l3 < static_cast<int>( p2.next.size() ); l3++)
-                {
-                    EngineBaseObjLODTier& p3 = p2.next[l3];
-
-                    if (! IsWithinLODLimit(m_objects[objRank].distance, p3.lodLevel))
-                        continue;
-
-                    for (int l4 = 0; l4 < static_cast<int>( p3.next.size() ); l4++)
-                    {
-                        EngineBaseObjDataTier& p4 = p3.next[l4];
-
-                        if (m_objects[objRank].transparency == 0.0f)
-                            continue;
-
-                        SetMaterial(p4.material);
-                        SetState(tState, tColor);
-
-                        DrawObject(p4);
-                    }
-                }
-            }
-        }
-    }
-
-    m_app->StopPerformanceCounter(PCNT_RENDER_OBJECTS);
-
-    m_lightMan->UpdateDeviceLights(ENG_OBJTYPE_TERRAIN);
-
-    if (m_debugLights)
-        m_device->DebugLights();
-
-    if (m_debugDumpLights)
-    {
-        m_debugDumpLights = false;
-        m_lightMan->DebugDumpLights();
-    }
-
-    if (m_waterMode)
-    {
-        m_app->StartPerformanceCounter(PCNT_RENDER_WATER);
-        m_water->DrawSurf(); // draws water surface
-        m_app->StopPerformanceCounter(PCNT_RENDER_WATER);
-    }
-
-    m_app->StartPerformanceCounter(PCNT_RENDER_PARTICLE);
-    m_particle->DrawParticle(SH_WORLD); // draws the particles of the 3D world
-    m_app->StopPerformanceCounter(PCNT_RENDER_PARTICLE);
-
-    m_lightning->Draw();                     // draws lightning
-
-    if (m_lensMode) DrawForegroundImage();   // draws the foreground
-
-    if (! m_overFront) DrawOverColor();      // draws the foreground color
-}
-
-void CEngine::RenderShadowMap()
-{
-    if (!m_shadowMapping) return;
-
-    if (m_device->GetMaxTextureStageCount() < 3)
-    {
-        m_shadowMapping = false;
-        GetLogger()->Error("Cannot use shadow maps, not enough texture units\n");
-        GetLogger()->Error("Disabling shadow mapping\n");
-    }
-
-    m_app->StartPerformanceCounter(PCNT_RENDER_SHADOW_MAP);
-
-    // If no shadow map texture exists, create it
-    if (m_shadowMap.id == 0)
-    {
-        int width = 256, height = 256;
-
-        int depth = m_app->GetInstance().GetVideoConfig().depthSize;
-
-        if (m_offscreenShadowRendering)
-        {
-            int size;
-
-            if (CProfile::GetInstance().GetIntProperty("Setup", "OffscreenBuffer", size))
-            {
-                width = height = size;
-            }
-            else
-            {
-                width = height = 2048;
-            }
-        }
-        else
-        {
-            int min = Math::Min(m_size.x, m_size.y);
-
-            for (int i = 0; i < 16; i++)
-            {
-                if (min < (1 << i)) break;
-
-                width = height = 1 << i;
-            }
-        }
-
-        m_shadowMap = m_device->CreateDepthTexture(width, height, depth);
-
-        if (m_offscreenShadowRendering)
-        {
-            m_device->InitOffscreenBuffer(width, height);
-        }
-
-        GetLogger()->Info("Created shadow map texture: %dx%d, depth %d\n", width, height, depth);
-    }
-
-    if (m_offscreenShadowRendering)
-    {
-        m_device->SetRenderState(RENDER_STATE_OFFSCREEN_RENDERING, true);
-    }
-
-    m_device->Clear();
-
-    // change state to rendering shadow maps
-    m_device->SetColorMask(false, false, false, false);
-    m_device->SetRenderState(RENDER_STATE_DEPTH_TEST, true);
-    m_device->SetRenderState(RENDER_STATE_DEPTH_WRITE, true);
-    m_device->SetRenderState(RENDER_STATE_BLENDING, false);
-    m_device->SetRenderState(RENDER_STATE_LIGHTING, false);
-    m_device->SetRenderState(RENDER_STATE_FOG, false);
-    m_device->SetRenderState(RENDER_STATE_CULLING, false);
-    m_device->SetRenderState(RENDER_STATE_ALPHA_TEST, true);
-
-    m_device->SetViewport(0, 0, m_shadowMap.size.x, m_shadowMap.size.y);
-
-    // recompute matrices
-    Math::Vector worldUp(1.0f, 0.0f, 0.0f);
-    Math::Vector dir = m_lookatPt - m_eyePt;
-    dir.Normalize();
-    Math::Vector pos = m_lookatPt + 40.0f * dir;
-
-    Math::Vector lightPos = pos + Math::Vector(3.0f, 30.0f, 3.0f);
-    Math::Vector lookAt = pos + Math::Vector(0.0, 100.0f, 0.0f);
-
-    float dist = 75.0f;
-
-    if (m_offscreenShadowRendering) dist = 400.0f;
-
-    Math::LoadOrthoProjectionMatrix(m_shadowProjMat, -dist, dist, -dist, dist, -200.0f, 200.0f);
-    Math::LoadViewMatrix(m_shadowViewMat, lightPos, lookAt, worldUp);
-
-    Math::Matrix temporary = Math::MultiplyMatrices(m_shadowProjMat, m_shadowViewMat);
-    m_shadowTextureMat = Math::MultiplyMatrices(m_shadowBias, temporary);
-
-    m_device->SetTransform(TRANSFORM_PROJECTION, m_shadowProjMat);
-    m_device->SetTransform(TRANSFORM_VIEW, m_shadowViewMat);
-
-    m_device->SetTexture(0, 0);
-    m_device->SetTexture(1, 0);
-
-    //m_device->SetCullMode(CULL_CW);
-    //m_device->SetRenderState(RENDER_STATE_DEPTH_BIAS, true);
-    //m_device->SetDepthBias(2.0f, 4.0f);
-
-    // render objects into shadow map
-    for (int objRank = 0; objRank < static_cast<int>(m_objects.size()); objRank++)
-    {
-        if (!m_objects[objRank].used)
-            continue;
-
-        if (m_objects[objRank].type == ENG_OBJTYPE_TERRAIN)
-           continue;
-
-        //if (!m_objects[objRank].drawWorld)
-        //    continue;
-
-        m_device->SetTransform(TRANSFORM_WORLD, m_objects[objRank].transform);
-
-        // TODO: check proper object filtering
-        //if (!IsVisible(objRank))
-        //    continue;
-
-        int baseObjRank = m_objects[objRank].baseObjRank;
-        if (baseObjRank == -1)
-            continue;
-
-        assert(baseObjRank >= 0 && baseObjRank < static_cast<int>(m_baseObjects.size()));
-
-        EngineBaseObject& p1 = m_baseObjects[baseObjRank];
-        if (!p1.used)
-            continue;
-
-        //m_lightMan->UpdateDeviceLights(m_objects[objRank].type);
-
-        for (int l2 = 0; l2 < static_cast<int>(p1.next.size()); l2++)
-        {
-            EngineBaseObjTexTier& p2 = p1.next[l2];
-
-            SetTexture(p2.tex1, 0);
-
-            for (int l3 = 0; l3 < static_cast<int>(p2.next.size()); l3++)
-            {
-                EngineBaseObjLODTier& p3 = p2.next[l3];
-
-                if (!IsWithinLODLimit(m_objects[objRank].distance, p3.lodLevel))
-                    continue;
-
-                for (int l4 = 0; l4 < static_cast<int>(p3.next.size()); l4++)
-                {
-                    EngineBaseObjDataTier& p4 = p3.next[l4];
-
-                    //if (m_objects[objRank].transparency != 0.0f)  // transparent ?
-                    //    continue;
-
-                    DrawObject(p4);
-                }
-            }
-        }
-    }
-
-    //m_device->SetRenderState(RENDER_STATE_DEPTH_BIAS, false);
-    m_device->SetRenderState(RENDER_STATE_ALPHA_TEST, false);
-
-    // copy depth buffer to shadow map
-    m_device->CopyFramebufferToTexture(m_shadowMap, 0, 0, 0, 0, m_shadowMap.size.x, m_shadowMap.size.y);
-
-    if (m_offscreenShadowRendering)
-    {
-        m_device->SetRenderState(RENDER_STATE_OFFSCREEN_RENDERING, false);
-    }
-
-    // restore default state
-    m_device->SetViewport(0, 0, m_size.x, m_size.y);
-
-    m_device->SetColorMask(true, true, true, true);
-    m_device->Clear();
-
-    m_app->StopPerformanceCounter(PCNT_RENDER_SHADOW_MAP);
-
-    m_device->SetRenderState(RENDER_STATE_DEPTH_TEST, false);
 }
 
 void CEngine::DrawObject(const EngineBaseObjDataTier& p4)

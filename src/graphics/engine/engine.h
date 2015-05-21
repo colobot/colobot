@@ -1235,6 +1235,8 @@ protected:
     void        Draw3DScene();
     //! Renders shadow map
     void        RenderShadowMap();
+    //! Enables or disables shadow mapping
+    void        UseShadowMapping(bool enable);
     //! Draw 3D object
     void        DrawObject(const EngineBaseObjDataTier& p4);
     //! Draws the user interface over the scene
