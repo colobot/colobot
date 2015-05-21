@@ -54,6 +54,7 @@ CGLDevice::CGLDevice(const GLDeviceConfig &config)
     m_framebuffer = 0;
     m_colorBuffer = 0;
     m_depthBuffer = 0;
+    m_offscreenRenderingEnabled = false;
 }
 
 
@@ -1741,6 +1742,8 @@ void CGLDevice::SetRenderState(RenderState state, bool enabled)
             return;
         }
 
+        m_offscreenRenderingEnabled = enabled;
+
         if (m_framebuffer == 0)
             InitOffscreenBuffer(2048, 2048);
 
@@ -1876,6 +1879,43 @@ void CGLDevice::InitOffscreenBuffer(int width, int height)
     glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
 
     GetLogger()->Info("Initialized offscreen buffer %dx%d\n", width, height);
+}
+
+void CGLDevice::SetRenderTexture(RenderTarget target, int texture)
+{
+    if (!m_framebufferObject) return;
+    if (!m_offscreenRenderingEnabled) return;
+
+    GLenum attachment;
+    GLuint defaultBuffer;
+
+    switch (target)
+    {
+    case RENDER_TARGET_COLOR:
+        attachment = GL_COLOR_ATTACHMENT0_EXT;
+        defaultBuffer = m_colorBuffer;
+        break;
+    case RENDER_TARGET_DEPTH:
+        attachment = GL_DEPTH_ATTACHMENT_EXT;
+        defaultBuffer = m_depthBuffer;
+        break;
+    case RENDER_TARGET_STENCIL:
+        attachment = GL_STENCIL_ATTACHMENT_EXT;
+        defaultBuffer = 0;
+        break;
+    default: assert(false); break;
+    }
+
+    if (texture == 0)       // unbind texture and bind default buffer
+    {
+        glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, attachment, GL_TEXTURE_2D, 0, 0);
+        glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, attachment, GL_RENDERBUFFER_EXT, defaultBuffer);
+    }
+    else            // unbind default buffer and bind texture
+    {
+        glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, attachment, GL_RENDERBUFFER_EXT, 0);
+        glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, attachment, GL_TEXTURE_2D, texture, 0);
+    }
 }
 
 void CGLDevice::CopyFramebufferToTexture(Texture& texture, int xOffset, int yOffset, int x, int y, int width, int height)

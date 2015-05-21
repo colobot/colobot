@@ -140,6 +140,8 @@ public:
 
     virtual void InitOffscreenBuffer(int width, int height);
 
+    virtual void SetRenderTexture(RenderTarget target, int texture);
+
     virtual void CopyFramebufferToTexture(Texture& texture, int xOffset, int yOffset, int x, int y, int width, int height);
     
     virtual void* GetFrameBufferPixels() const;

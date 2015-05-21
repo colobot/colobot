@@ -355,6 +355,10 @@ void CNullDevice::InitOffscreenBuffer(int width, int height)
 {
 }
 
+void CNullDevice::SetRenderTexture(RenderTarget target, int texture)
+{
+}
+
 void CNullDevice::CopyFramebufferToTexture(Texture& texture, int xOffset, int yOffset, int x, int y, int width, int height)
 {
 }

@@ -227,6 +227,17 @@ enum FrustumPlane
 };
 
 /**
+ * \enum RenderTarget
+ * \brief Render targets for rendering to textures
+ */
+enum RenderTarget
+{
+    RENDER_TARGET_COLOR,
+    RENDER_TARGET_DEPTH,
+    RENDER_TARGET_STENCIL
+};
+
+/**
  * \class CDevice
  * \brief Abstract interface of graphics device
  *
@@ -381,6 +392,9 @@ public:
 
     //! Initializes offscreen buffer
     virtual void InitOffscreenBuffer(int width, int height) = 0;
+
+    //! Sets render target to texture
+    virtual void SetRenderTexture(RenderTarget target, int texture) = 0;
 
     //! Copies content of framebuffer to texture
     virtual void CopyFramebufferToTexture(Texture& texture, int xOffset, int yOffset, int x, int y, int width, int height) = 0;

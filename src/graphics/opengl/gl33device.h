@@ -135,6 +135,8 @@ public:
 
     virtual void InitOffscreenBuffer(int width, int height) OVERRIDE;
 
+    virtual void SetRenderTexture(RenderTarget target, int texture) OVERRIDE;
+
     virtual void CopyFramebufferToTexture(Texture& texture, int xOffset, int yOffset, int x, int y, int width, int height) OVERRIDE;
 
     virtual void* GetFrameBufferPixels() const OVERRIDE;
@@ -220,6 +222,8 @@ private:
     GLuint m_depthBuffer;
     //! Maximum available renderbuffer size
     int m_maxRenderbufferSize;
+    //! true if offscreen rendering is enabled
+    bool m_offscreenRenderingEnabled;
 
     //! Shader program
     GLuint m_shaderProgram;

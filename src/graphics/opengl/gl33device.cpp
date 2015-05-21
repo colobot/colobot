@@ -49,6 +49,7 @@ CGL33Device::CGL33Device(const GLDeviceConfig &config)
     m_framebuffer = 0;
     m_colorBuffer = 0;
     m_depthBuffer = 0;
+    m_offscreenRenderingEnabled = false;
 }
 
 
@@ -336,6 +337,9 @@ bool CGL33Device::Create()
         assert(false);
     }
 
+    glDeleteShader(vertexShader);
+    glDeleteShader(fragmentShader);
+
     glUseProgram(m_shaderProgram);
 
     // Obtain uniform locations
@@ -428,6 +432,18 @@ bool CGL33Device::Create()
 
 void CGL33Device::Destroy()
 {
+    glUseProgram(0);
+    glDeleteProgram(m_shaderProgram);
+
+    if (m_framebuffer != 0)
+    {
+        glDeleteFramebuffers(1, &m_framebuffer);
+        glDeleteRenderbuffers(1, &m_colorBuffer);
+        glDeleteRenderbuffers(1, &m_depthBuffer);
+
+        m_framebuffer = 0;
+    }
+
     // Delete the remaining textures
     // Should not be strictly necessary, but just in case
     DestroyAllTextures();
@@ -827,7 +843,7 @@ Texture CGL33Device::CreateDepthTexture(int width, int height, int depth)
     }
 
     glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, GL_DEPTH_COMPONENT, GL_INT, nullptr);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_R_TO_TEXTURE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
 
     float color[] = { 1.0f, 1.0f, 1.0f, 1.0f };
@@ -1767,6 +1783,8 @@ void CGL33Device::SetRenderState(RenderState state, bool enabled)
         if (m_framebuffer == 0)
             InitOffscreenBuffer(2048, 2048);
 
+        m_offscreenRenderingEnabled = true;
+
         GLuint toBind = (enabled ? m_framebuffer : 0);
 
         glBindFramebuffer(GL_FRAMEBUFFER, toBind);
@@ -1912,6 +1930,42 @@ void CGL33Device::InitOffscreenBuffer(int width, int height)
     glBindFramebufferEXT(GL_FRAMEBUFFER, 0);
 
     GetLogger()->Info("Initialized offscreen buffer %dx%d\n", width, height);
+}
+
+void CGL33Device::SetRenderTexture(RenderTarget target, int texture)
+{
+    if (!m_offscreenRenderingEnabled) return;
+
+    GLenum attachment;
+    GLuint defaultBuffer;
+
+    switch (target)
+    {
+    case RENDER_TARGET_COLOR:
+        attachment = GL_COLOR_ATTACHMENT0;
+        defaultBuffer = m_colorBuffer;
+        break;
+    case RENDER_TARGET_DEPTH:
+        attachment = GL_DEPTH_ATTACHMENT;
+        defaultBuffer = m_depthBuffer;
+        break;
+    case RENDER_TARGET_STENCIL:
+        attachment = GL_STENCIL_ATTACHMENT;
+        defaultBuffer = 0;
+        break;
+    default: assert(false); break;
+    }
+
+    if (texture == 0)       // unbind texture and bind default buffer
+    {
+        glFramebufferTexture2DEXT(GL_FRAMEBUFFER, attachment, GL_TEXTURE_2D, 0, 0);
+        glFramebufferRenderbufferEXT(GL_FRAMEBUFFER, attachment, GL_RENDERBUFFER, defaultBuffer);
+    }
+    else            // unbind default buffer and bind texture
+    {
+        glFramebufferRenderbuffer(GL_FRAMEBUFFER, attachment, GL_RENDERBUFFER, 0);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, attachment, GL_TEXTURE_2D, texture, 0);
+    }
 }
 
 void CGL33Device::CopyFramebufferToTexture(Texture& texture, int xOffset, int yOffset, int x, int y, int width, int height)
