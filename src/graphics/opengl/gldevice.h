@@ -225,6 +225,8 @@ private:
     int m_glMajor, m_glMinor;
     //! Depth texture support
     ShadowMappingSupport m_shadowMappingSupport;
+    //! Shadow ambient support
+    bool m_shadowAmbientSupported;
     //! Whether to use multitexturing
     bool m_multitextureAvailable;
     //! Whether to use VBOs or display lists

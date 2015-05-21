@@ -49,6 +49,7 @@ CGLDevice::CGLDevice(const GLDeviceConfig &config)
     m_glMajor = 1;
     m_glMinor = 1;
     m_shadowMappingSupport = SMS_NONE;
+    m_shadowAmbientSupported = false;
 
     m_framebuffer = 0;
     m_colorBuffer = 0;
@@ -220,6 +221,10 @@ bool CGLDevice::Create()
             m_shadowMappingSupport = SMS_NONE;
             GetLogger()->Info("Shadow mapping not available\n");
         }
+
+        m_shadowAmbientSupported = glewIsSupported("GL_ARB_shadow_ambient");
+        if (m_shadowAmbientSupported)
+            GetLogger()->Info("Shadow ambient supported\n");
 
         // Detect support of anisotropic filtering
         m_anisotropyAvailable = glewIsSupported("GL_EXT_texture_filter_anisotropic");
@@ -789,6 +794,11 @@ Texture CGLDevice::CreateDepthTexture(int width, int height, int depth)
         glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, GL_DEPTH_COMPONENT, GL_INT, nullptr);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE_ARB, GL_COMPARE_R_TO_TEXTURE_ARB);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC_ARB, GL_LEQUAL);
+    }
+
+    if (m_shadowAmbientSupported)
+    {
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FAIL_VALUE_ARB, 0.35f);
     }
 
     float color[] = { 1.0f, 1.0f, 1.0f, 1.0f };
