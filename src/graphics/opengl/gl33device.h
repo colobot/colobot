@@ -227,6 +227,8 @@ private:
 
     //! Shader program
     GLuint m_shaderProgram;
+    //! true enables per-pixel lighting
+    bool m_perPixelLighting;
 
     //! Auxilliary vertex buffers for general rendering
     unsigned int m_vertex;

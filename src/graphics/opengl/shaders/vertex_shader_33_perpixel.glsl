@@ -1,7 +1,7 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
  * Copyright (C) 2001-2014, Daniel Roux, EPSITEC SA & TerranovaTeam
- * http://epsiteс.ch; http://colobot.info; http://github.com/colobot
+ * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,8 +34,7 @@ layout(location = 4) in vec2 in_TexCoord1;
 
 out VertexData
 {
-    vec3 NormalSmooth;
-    flat vec3 NormalFlat;
+    vec3 Normal;
     vec4 Color;
     vec2 TexCoord0;
     vec2 TexCoord1;
@@ -53,8 +52,7 @@ void main()
     vec3 normal = normalize((uni_NormalMatrix * vec4(in_Normal, 0.0f)).xyz);
     
     data.Color = in_Color;
-    data.NormalSmooth = normal;
-    data.NormalFlat = normal;
+    data.Normal = normal;
     data.TexCoord0 = in_TexCoord0;
     data.TexCoord1 = in_TexCoord1;
     data.ShadowCoord = uni_ShadowMatrix * position;
