@@ -306,6 +306,8 @@ CBotString CBotString::Mid(int start, int lg)
 {
     CBotString res;
 
+    if (lg == -1) lg = 2000;
+
     // clamp start to correct value
     if (start < 0) start = 0;
     if (start >= m_lg) return res;
