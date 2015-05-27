@@ -43,6 +43,8 @@ uniform bool uni_FogEnabled;
 uniform vec2 uni_FogRange;
 uniform vec4 uni_FogColor;
 
+uniform float uni_ShadowColor;
+
 uniform bool uni_AlphaTestEnabled;
 uniform float uni_AlphaReference;
 
@@ -132,7 +134,7 @@ void main()
     
     if (uni_ShadowTextureEnabled)
     {
-        color = color * (0.35f + 0.65f * texture(uni_ShadowTexture, data.ShadowCoord.xyz));
+        color = color * mix(uni_ShadowColor, 1.0f, texture(uni_ShadowTexture, data.ShadowCoord.xyz));
     }
     
     if (uni_FogEnabled)

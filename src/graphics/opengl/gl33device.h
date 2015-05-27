@@ -131,6 +131,8 @@ public:
 
     virtual void SetShadeModel(ShadeModel model) OVERRIDE;
 
+    virtual void SetShadowColor(float value) OVERRIDE;
+
     virtual void SetFillMode(FillMode mode) OVERRIDE;
 
     virtual void InitOffscreenBuffer(int width, int height) OVERRIDE;
@@ -271,6 +273,9 @@ private:
     GLint uni_AlphaTestEnabled;
     //! Alpha test reference value
     GLint uni_AlphaReference;
+
+    //! Shadow color
+    GLint uni_ShadowColor;
 
     // Lighting parameters
     GLint uni_SmoothShading;

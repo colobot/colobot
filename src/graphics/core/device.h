@@ -387,6 +387,9 @@ public:
     //! Sets the shade model
     virtual void SetShadeModel(ShadeModel model) = 0;
 
+    //! Sets shadow color
+    virtual void SetShadowColor(float value) = 0;
+
     //! Sets the current fill mode
     virtual void SetFillMode(FillMode mode) = 0;
 

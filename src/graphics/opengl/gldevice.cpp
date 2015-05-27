@@ -1837,6 +1837,11 @@ void CGLDevice::SetShadeModel(ShadeModel model)
     else  assert(false);
 }
 
+void CGLDevice::SetShadowColor(float value)
+{
+    // doesn't do anything because it can't
+}
+
 void CGLDevice::SetFillMode(FillMode mode)
 {
     if      (mode == FILL_POINT) glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);

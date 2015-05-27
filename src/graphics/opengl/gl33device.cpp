@@ -390,6 +390,8 @@ bool CGL33Device::Create()
     uni_AlphaTestEnabled = glGetUniformLocation(m_shaderProgram, "uni_AlphaTestEnabled");
     uni_AlphaReference = glGetUniformLocation(m_shaderProgram, "uni_AlphaReference");
 
+    uni_ShadowColor = glGetUniformLocation(m_shaderProgram, "uni_ShadowColor");
+
     uni_SmoothShading = glGetUniformLocation(m_shaderProgram, "uni_SmoothShading");
     uni_LightingEnabled = glGetUniformLocation(m_shaderProgram, "uni_LightingEnabled");
 
@@ -444,6 +446,8 @@ bool CGL33Device::Create()
     glUniform1i(uni_FogEnabled, 0);
     glUniform2f(uni_FogRange, 100.0f, 200.0f);
     glUniform4f(uni_FogColor, 0.8f, 0.8f, 0.8f, 1.0f);
+
+    glUniform1f(uni_ShadowColor, 0.5f);
 
     glUniform1i(uni_AlphaTestEnabled, 0);
     glUniform1f(uni_AlphaReference, 1.0f);
@@ -1244,6 +1248,7 @@ void CGL33Device::DrawPrimitive(PrimitiveType type, const Vertex *vertices, int 
     }
     else
     {
+        CLogger::GetInstance().Debug("Resizing dynamic buffer: %d->%d\n", info.size, size);
         glBufferData(GL_ARRAY_BUFFER, size, vs, GL_STREAM_DRAW);
         info.size = size;
 
@@ -1295,6 +1300,7 @@ void CGL33Device::DrawPrimitive(PrimitiveType type, const VertexTex2 *vertices, 
     }
     else
     {
+        CLogger::GetInstance().Debug("Resizing dynamic buffer: %d->%d\n", info.size, size);
         glBufferData(GL_ARRAY_BUFFER, size, vs, GL_STREAM_DRAW);
         info.size = size;
 
@@ -1346,6 +1352,7 @@ void CGL33Device::DrawPrimitive(PrimitiveType type, const VertexCol *vertices, i
     }
     else
     {
+        CLogger::GetInstance().Debug("Resizing dynamic buffer: %d->%d\n", info.size, size);
         glBufferData(GL_ARRAY_BUFFER, size, vs, GL_STREAM_DRAW);
         info.size = size;
 
@@ -1537,6 +1544,7 @@ void CGL33Device::UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primit
 
     if (info.size < size)
     {
+        CLogger::GetInstance().Debug("Resizing static buffer: %d->%d\n", info.size, size);
         glBufferData(GL_ARRAY_BUFFER, size, vertices, GL_STATIC_DRAW);
         info.size = size;
     }
@@ -1594,6 +1602,7 @@ void CGL33Device::UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primit
 
     if (info.size < size)
     {
+        CLogger::GetInstance().Debug("Resizing static buffer: %d->%d\n", info.size, size);
         glBufferData(GL_ARRAY_BUFFER, size, vertices, GL_STATIC_DRAW);
         info.size = size;
     }
@@ -1652,6 +1661,7 @@ void CGL33Device::UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primit
 
     if (info.size < size)
     {
+        CLogger::GetInstance().Debug("Resizing static buffer: %d->%d\n", info.size, size);
         glBufferData(GL_ARRAY_BUFFER, size, vertices, GL_STATIC_DRAW);
         info.size = size;
     }
@@ -1936,6 +1946,11 @@ void CGL33Device::SetCullMode(CullMode mode)
 void CGL33Device::SetShadeModel(ShadeModel model)
 {
     glUniform1i(uni_SmoothShading, (model == SHADE_SMOOTH ? 1 : 0));
+}
+
+void CGL33Device::SetShadowColor(float value)
+{
+    glUniform1f(uni_ShadowColor, value);
 }
 
 void CGL33Device::SetFillMode(FillMode mode)

@@ -134,6 +134,8 @@ public:
     
     virtual void SetShadeModel(ShadeModel model);
     virtual ShadeModel GetShadeModel();
+
+    virtual void SetShadowColor(float value);
     
     virtual void SetFillMode(FillMode mode) ;
     virtual FillMode GetFillMode();

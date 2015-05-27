@@ -342,6 +342,10 @@ ShadeModel CNullDevice::GetShadeModel()
     return SHADE_FLAT;
 }
 
+void CNullDevice::SetShadowColor(float value)
+{
+}
+
 void CNullDevice::SetFillMode(FillMode mode)
 {
 }
