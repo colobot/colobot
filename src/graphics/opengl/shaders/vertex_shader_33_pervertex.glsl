@@ -65,30 +65,31 @@ void main()
     vec4 position = uni_ModelMatrix * in_VertexCoord;
     vec4 eyeSpace = uni_ViewMatrix * position;
     gl_Position = uni_ProjectionMatrix * eyeSpace;
-    
+    vec4 shadowCoord = uni_ShadowMatrix * position;
+
     data.Color = in_Color;
     data.TexCoord0 = in_TexCoord0;
     data.TexCoord1 = in_TexCoord1;
-    data.ShadowCoord = uni_ShadowMatrix * position;
+    data.ShadowCoord = vec4(shadowCoord.xyz / shadowCoord.w, 1.0f);
     data.Distance = abs(eyeSpace.z);
-    
+
     vec4 color = in_Color;
-    
+
     if (uni_LightingEnabled)
     {
         vec4 ambient = vec4(0.0f);
         vec4 diffuse = vec4(0.0f);
         vec4 specular = vec4(0.0f);
-        
+
+        vec3 normal = normalize((uni_NormalMatrix * vec4(in_Normal, 0.0f)).xyz);
+
         for(int i=0; i<8; i++)
         {
             if(uni_Light[i].Enabled)
             {
-                vec3 normal = (uni_NormalMatrix * vec4(in_Normal, 0.0f)).xyz;
-                
                 vec3 lightDirection = vec3(0.0f);
                 float atten;
-                
+
                 // Directional light
                 if(uni_Light[i].Position[3] == 0.0f)
                 {
@@ -100,27 +101,27 @@ void main()
                 {
                     vec3 lightDirection = normalize(uni_Light[i].Position.xyz - position.xyz);
                     float dist = distance(uni_Light[i].Position.xyz, position.xyz);
-                    
+
                     atten = 1.0f / (uni_Light[i].Attenuation.x
                             + uni_Light[i].Attenuation.y * dist
                             + uni_Light[i].Attenuation.z * dist * dist);
                 }
-                
+
                 vec3 reflectDirection = -reflect(lightDirection, normal);
-                
+
                 ambient += uni_Light[i].Ambient;
                 diffuse += atten * clamp(dot(normal, lightDirection), 0.0f, 1.0f) * uni_Light[i].Diffuse;
                 specular += atten * clamp(pow(dot(normal, lightDirection + reflectDirection), 10.0f), 0.0f, 1.0f) * uni_Light[i].Specular;
             }
         }
-        
+
         vec4 result = uni_AmbientColor * ambient
                 + uni_DiffuseColor * diffuse
                 + uni_SpecularColor * specular;
-        
+
         color.rgb = min(vec3(1.0f), result.rgb);
         color.a = 1.0f; //min(1.0f, 1.0f);
-        
+
         data.Color = color;
     }
 }

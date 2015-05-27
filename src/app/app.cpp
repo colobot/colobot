@@ -36,6 +36,7 @@
 #include "graphics/engine/modelmanager.h"
 #include "graphics/core/nulldevice.h"
 #include "graphics/opengl/gldevice.h"
+#include "graphics/opengl/gl21device.h"
 #include "graphics/opengl/gl33device.h"
 
 #include "object/robotmain.h"
@@ -565,6 +566,8 @@ bool CApplication::Create()
         // The video is ready, we can create and initalize the graphics device
         if (m_graphics == "opengl")
             m_device = new Gfx::CGLDevice(m_deviceConfig);
+        else if (m_graphics == "gl21")
+            m_device = new Gfx::CGL21Device(m_deviceConfig);
         else if (m_graphics == "gl33")
             m_device = new Gfx::CGL33Device(m_deviceConfig);
         else

@@ -176,12 +176,12 @@ CEngine::CEngine(CApplication *app)
 
     if (CProfile::GetInstance().GetIntProperty("Setup", "MipmapLevel", value))
     {
-        m_textureMipmapLevel = value;
+        SetTextureMipmapLevel(value);
     }
 
     if (CProfile::GetInstance().GetIntProperty("Setup", "Anisotropy", value))
     {
-        m_textureAnisotropy = value;
+        SetTextureAnisotropyLevel(value);
     }
 
     if (CProfile::GetInstance().GetIntProperty("Setup", "ShadowMapping", value))
@@ -189,6 +189,12 @@ CEngine::CEngine(CApplication *app)
         m_shadowMapping = (value > 0);
         m_offscreenShadowRendering = (value > 1);
         m_qualityShadows = (value > 2);
+    }
+
+    float shadowColor;
+    if (CProfile::GetInstance().GetFloatProperty("Setup", "ShadowColor", shadowColor))
+    {
+        SetShadowColor(shadowColor);
     }
 
     m_defaultTexParams.format = TEX_IMG_AUTO;
@@ -2698,6 +2704,16 @@ bool CEngine::GetShadow()
     return m_shadowVisible;
 }
 
+void CEngine::SetShadowColor(float value)
+{
+    m_shadowColor = value;
+}
+
+bool CEngine::GetShadowColor()
+{
+    return m_shadowColor;
+}
+
 void CEngine::SetDirty(bool mode)
 {
     m_dirty = mode;
@@ -3553,25 +3569,23 @@ void CEngine::RenderShadowMap()
 
     // recompute matrices
     Math::Vector worldUp(0.0f, 1.0f, 0.0f);
-    Math::Vector lightDir = Math::Vector(1.0f, 1.0f, -1.0f);
+    Math::Vector lightDir = Math::Vector(1.0f, 2.0f, -1.0f);
     Math::Vector dir = m_lookatPt - m_eyePt;
+    dir.y = 0.0f;
     dir.Normalize();
 
-    float dist = 50.0f * (log(m_shadowMap.size.x) / log(2.0f) - 6.5f);
-    float depth = 800.0f;
+    Math::Vector lightOffset = Math::Vector(1.0f, 0.0f, -1.0f);
+    lightOffset.Normalize();
 
-    Math::Vector pos = m_lookatPt + 0.5f * dist * dir + 0.5f * dist * Math::Vector(1.0f, 0.0f, -1.0f);
+    float scale = log(m_shadowMap.size.x) / log(2.0f) - 6.5f;
+    float dist = 100.0f * scale;
+    float depth = 2000.0f;
 
-    Math::Vector lightPos = pos + Math::Vector(0.0f, 30.0f, 0.0f);
-    Math::Vector lookAt = lightPos + lightDir;
+    Math::Vector pos = m_lookatPt;// +0.25f * dist * dir;// +0.25f * dist * lightOffset;
 
-    lightPos.x = round(lightPos.x);
-    lightPos.y = round(lightPos.y);
-    lightPos.z = round(lightPos.z);
+    Math::Vector lightPos = m_lookatPt + Math::Vector(0.0f, -200.0f, 0.0f);
 
-    lookAt.x = round(lookAt.x);
-    lookAt.y = round(lookAt.y);
-    lookAt.z = round(lookAt.z);
+    Math::Vector lookAt = lightPos - lightDir;
 
     Math::LoadOrthoProjectionMatrix(m_shadowProjMat, -dist, dist, -dist, dist, -depth, depth);
     Math::LoadViewMatrix(m_shadowViewMat, lightPos, lookAt, worldUp);
@@ -3581,6 +3595,11 @@ void CEngine::RenderShadowMap()
 
     m_device->SetTransform(TRANSFORM_PROJECTION, m_shadowProjMat);
     m_device->SetTransform(TRANSFORM_VIEW, m_shadowViewMat);
+
+    Math::Matrix scaleMat;
+    Math::LoadScaleMatrix(scaleMat, Math::Vector(1.0f, 1.0f, -1.0f));
+
+    m_shadowViewMat = Math::MultiplyMatrices(scaleMat, m_shadowViewMat);
 
     m_device->SetTexture(0, 0);
     m_device->SetTexture(1, 0);
@@ -3596,10 +3615,6 @@ void CEngine::RenderShadowMap()
 
         m_device->SetTransform(TRANSFORM_WORLD, m_objects[objRank].transform);
 
-        // TODO: check proper object filtering
-        //if (!IsVisible(objRank))
-        //    continue;
-
         int baseObjRank = m_objects[objRank].baseObjRank;
         if (baseObjRank == -1)
             continue;
@@ -3609,8 +3624,6 @@ void CEngine::RenderShadowMap()
         EngineBaseObject& p1 = m_baseObjects[baseObjRank];
         if (!p1.used)
             continue;
-
-        //m_lightMan->UpdateDeviceLights(m_objects[objRank].type);
 
         for (int l2 = 0; l2 < static_cast<int>(p1.next.size()); l2++)
         {
@@ -3628,9 +3641,6 @@ void CEngine::RenderShadowMap()
                 for (int l4 = 0; l4 < static_cast<int>(p3.next.size()); l4++)
                 {
                     EngineBaseObjDataTier& p4 = p3.next[l4];
-
-                    if (m_objects[objRank].transparency != 0.0f)  // transparent ?
-                        continue;
 
                     DrawObject(p4);
                 }
@@ -3669,6 +3679,8 @@ void CEngine::UseShadowMapping(bool enable)
 
     if (enable) // Enable shadow mapping
     {
+        m_device->SetShadowColor(m_shadowColor);
+
         if (m_qualityShadows)
         {
             if (m_device->GetMaxTextureStageCount() < 6)

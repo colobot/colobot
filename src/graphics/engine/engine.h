@@ -1141,6 +1141,12 @@ public:
     //@}
 
     //@{
+    //! Management of shadow mapping
+    void            SetShadowColor(float value);
+    bool            GetShadowColor();
+    //@}
+
+    //@{
     //! Management mode of toto
     void            SetTotoMode(bool present);
     bool            GetTotoMode();
@@ -1463,6 +1469,8 @@ protected:
     bool m_offscreenShadowRendering;
     //! true enables higher quality shadows
     bool m_qualityShadows;
+    //! Shadow color
+    float m_shadowColor;
 
     //! Map of loaded textures (by name)
     std::map<std::string, Texture> m_texNameMap;
