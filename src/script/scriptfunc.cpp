@@ -2628,6 +2628,18 @@ bool CScriptFunctions::rShield(CBotVar* var, CBotVar* result, int& exception, vo
     CObject*    pThis = static_cast<CObject *>(user);
     float       oper, radius;
     Error       err;
+
+    // only shielder can use shield()
+    if (pThis->GetType() != OBJECT_MOBILErs)
+    {
+        result->SetValInt(ERR_MANIP_VEH);  // return error
+        if (script->m_errMode == ERM_STOP)
+        {
+            exception = ERR_MANIP_VEH;
+            return false;
+        }
+        return true;
+    }
     
     oper = var->GetValFloat();  // 0=down, 1=up
     var = var->GetNext();
