@@ -191,9 +191,14 @@ bool CGL33Device::Create()
         sscanf(version, "%d.%d", &m_glMajor, &m_glMinor);
 
         int glVersion = 10 * m_glMajor + m_glMinor;
-        if (glVersion < 33)
+        if (glVersion < 30)
         {
-            GetLogger()->Error("OpenGL 3.3 unavailable. Game might not work at all.\n");
+            GetLogger()->Error("Your hardware does not support OpenGL 3.0+. Exiting.\n");
+            return false;
+        }
+        else if (glVersion < 33)
+        {
+            GetLogger()->Warn("Full OpenGL 3.3 unavailable. Graphics might be bugged.\n");
         }
         else
         {
@@ -272,6 +277,7 @@ bool CGL33Device::Create()
     if (file == nullptr)
     {
         CLogger::GetInstance().Error("Cannot read vertex shader code file!\n");
+        CLogger::GetInstance().Error("Missing file \"%s\"\n", filename);
         return false;
     }
 
@@ -310,6 +316,7 @@ bool CGL33Device::Create()
     if (file == nullptr)
     {
         CLogger::GetInstance().Error("Cannot read fragment shader code file!\n");
+        CLogger::GetInstance().Error("Missing file \"%s\"\n", filename);
         return false;
     }
 

@@ -190,6 +190,13 @@ bool CGL21Device::Create()
         // Extract OpenGL version
         const char *version = reinterpret_cast<const char*>(glGetString(GL_VERSION));
         sscanf(version, "%d.%d", &m_glMajor, &m_glMinor);
+
+        if (m_glMajor < 2)
+        {
+            GetLogger()->Error("Your hardware does not support OpenGL 2.0 or 2.1.");
+            return false;
+        }
+
         GetLogger()->Info("OpenGL %d.%d\n", m_glMajor, m_glMinor);
 
         m_framebufferObject = glewIsSupported("GL_EXT_framebuffer_object");
@@ -236,15 +243,13 @@ bool CGL21Device::Create()
     m_lightsEnabled = std::vector<bool> (numLights, false);
 
     int maxTextures = 0;
-    glGetIntegerv(GL_MAX_TEXTURE_UNITS, &maxTextures);
-    GetLogger()->Info("Maximum texture units: %d\n", maxTextures);
+    glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &maxTextures);
+    GetLogger()->Info("Maximum texture image units: %d\n", maxTextures);
 
     m_currentTextures    = std::vector<Texture>           (maxTextures, Texture());
     m_texturesEnabled    = std::vector<bool>              (maxTextures, false);
     m_textureStageParams = std::vector<TextureStageParams>(maxTextures, TextureStageParams());
 
-    /*
-    // Will be enabled when proper shaders are written
     int value;
     if (CProfile::GetInstance().GetIntProperty("Setup", "PerPixelLighting", value))
     {
@@ -255,18 +260,23 @@ bool CGL21Device::Create()
         CLogger::GetInstance().Info("Using per-pixel lighting\n");
     else
         CLogger::GetInstance().Info("Using per-vertex lighting\n");
-    // */
-
-    CLogger::GetInstance().Info("Using per-vertex lighting\n");
 
     // Create shader program
     GLchar source[65536];
     const GLchar *sources[] = { source };
 
-    PHYSFS_file *file = PHYSFS_openRead("shaders/vertex_shader_21_pervertex.glsl");
+    char filename[128];
+
+    if (m_perPixelLighting)
+        sprintf(filename, "shaders/vertex_shader_21_perpixel.glsl");
+    else
+        sprintf(filename, "shaders/vertex_shader_21_pervertex.glsl");
+
+    PHYSFS_file *file = PHYSFS_openRead(filename);
     if (file == nullptr)
     {
         CLogger::GetInstance().Error("Cannot read vertex shader code file!\n");
+        CLogger::GetInstance().Error("Missing file \"%s\"\n", filename);
         return false;
     }
 
@@ -296,10 +306,16 @@ bool CGL21Device::Create()
         return false;
     }
 
-    file = PHYSFS_openRead("shaders/fragment_shader_21_pervertex.glsl");
+    if (m_perPixelLighting)
+        sprintf(filename, "shaders/fragment_shader_21_perpixel.glsl");
+    else
+        sprintf(filename, "shaders/fragment_shader_21_pervertex.glsl");
+
+    file = PHYSFS_openRead(filename);
     if (file == nullptr)
     {
         CLogger::GetInstance().Error("Cannot read fragment shader code file!\n");
+        CLogger::GetInstance().Error("Missing file \"%s\"\n", filename);
         return false;
     }
 
@@ -1607,13 +1623,6 @@ void CGL21Device::SetRenderState(RenderState state, bool enabled)
         m_lighting = enabled;
 
         glUniform1i(uni_LightingEnabled, enabled ? 1 : 0);
-
-        /*
-        if (enabled)
-            glEnable(GL_LIGHTING);
-        else
-            glDisable(GL_LIGHTING);
-        // */
 
         if (enabled)
         {
