@@ -153,7 +153,7 @@ private:
     //! Updates texture status
     void UpdateTextureStatus();
     //! Binds VBO
-    inline void BindVBO(GLint vbo);
+    inline void BindVBO(GLuint vbo);
 
 private:
     //! Current config
@@ -220,7 +220,7 @@ private:
     //! Last ID of VBO object
     unsigned int m_lastVboId;
     //! Currently bound VBO
-    GLint m_currentVBO;
+    GLuint m_currentVBO;
 
     // Offscreen buffer
     //! Framebuffer object

@@ -887,7 +887,7 @@ void CGL21Device::UpdateTextureStatus()
     */
 }
 
-inline void CGL21Device::BindVBO(GLint vbo)
+inline void CGL21Device::BindVBO(GLuint vbo)
 {
     if (m_currentVBO == vbo) return;
 

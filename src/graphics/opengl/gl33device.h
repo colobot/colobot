@@ -152,9 +152,9 @@ private:
     void UpdateRenderingMode();
 
     //! Binds VBO
-    inline void BindVBO(GLint vbo);
+    inline void BindVBO(GLuint vbo);
     //! Binds VAO
-    inline void BindVAO(GLint vao);
+    inline void BindVAO(GLuint vao);
 
 private:
     //! Current config
@@ -220,9 +220,9 @@ private:
     //! Last ID of VBO object
     unsigned int m_lastVboId;
     //! Currently bound VBO
-    GLint m_currentVBO;
+    GLuint m_currentVBO;
     //! Currently bound VAO
-    GLint m_currentVAO;
+    GLuint m_currentVAO;
 
     // Offscreen buffer
     //! Framebuffer object

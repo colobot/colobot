@@ -171,8 +171,8 @@ GLint LoadShader(GLint type, const char* filename)
         return 0;
     }
 
-    char source[65536];
-    char *sources[] = { source };
+    GLchar source[65536];
+    GLchar *sources[] = { source };
     int length = PHYSFS_read(file, source, 1, 65536);
     source[length] = '\0';
 

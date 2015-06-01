@@ -1969,7 +1969,7 @@ void CGL33Device::UpdateRenderingMode()
     glUniform1i(uni_ShadowTextureEnabled, enabled ? 1 : 0);
 }
 
-inline void CGL33Device::BindVBO(GLint vbo)
+inline void CGL33Device::BindVBO(GLuint vbo)
 {
     if (m_currentVBO == vbo) return;
 
@@ -1977,7 +1977,7 @@ inline void CGL33Device::BindVBO(GLint vbo)
     m_currentVBO = vbo;
 }
 
-inline void CGL33Device::BindVAO(GLint vao)
+inline void CGL33Device::BindVAO(GLuint vao)
 {
     if (m_currentVAO == vao) return;
 
