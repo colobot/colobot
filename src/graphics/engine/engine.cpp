@@ -3310,7 +3310,8 @@ void CEngine::Draw3DScene()
         }
     }
 
-    UseShadowMapping(false);
+    if (!m_qualityShadows)
+        UseShadowMapping(false);
 
         // Draws the shadows , if shadows enabled
 	if (m_shadowVisible)
@@ -3564,6 +3565,8 @@ void CEngine::RenderShadowMap()
     m_device->SetRenderState(RENDER_STATE_ALPHA_TEST, true);
     m_device->SetRenderState(RENDER_STATE_DEPTH_BIAS, false);
     m_device->SetAlphaTestFunc(COMP_FUNC_GREATER, 0.5f);
+    m_device->SetRenderState(RENDER_STATE_DEPTH_BIAS, true);
+    m_device->SetDepthBias(2.0f, 4.0f);
 
     m_device->SetViewport(0, 0, m_shadowMap.size.x, m_shadowMap.size.y);
 
@@ -3578,28 +3581,33 @@ void CEngine::RenderShadowMap()
     lightOffset.Normalize();
 
     float scale = log(m_shadowMap.size.x) / log(2.0f) - 6.5f;
-    float dist = 100.0f * scale;
+    float dist = 75.0f * scale;
     float depth = 2000.0f;
 
     Math::Vector pos = m_lookatPt;// +0.25f * dist * dir;// +0.25f * dist * lightOffset;
 
-    Math::Vector lightPos = m_lookatPt + Math::Vector(0.0f, -200.0f, 0.0f);
+    pos.x = round(pos.x);
+    pos.y = round(pos.y);
+    pos.z = round(pos.z);
+
+    Math::Vector lightPos = pos + Math::Vector(0.0f, -200.0f, 0.0f);
 
     Math::Vector lookAt = lightPos - lightDir;
 
     Math::LoadOrthoProjectionMatrix(m_shadowProjMat, -dist, dist, -dist, dist, -depth, depth);
     Math::LoadViewMatrix(m_shadowViewMat, lightPos, lookAt, worldUp);
 
+    Math::Matrix scaleMat;
+    Math::LoadScaleMatrix(scaleMat, Math::Vector(1.0f, 1.0f, -1.0f));
+    m_shadowViewMat = Math::MultiplyMatrices(scaleMat, m_shadowViewMat);
+
     Math::Matrix temporary = Math::MultiplyMatrices(m_shadowProjMat, m_shadowViewMat);
     m_shadowTextureMat = Math::MultiplyMatrices(m_shadowBias, temporary);
 
+    m_shadowViewMat = Math::MultiplyMatrices(scaleMat, m_shadowViewMat);
+
     m_device->SetTransform(TRANSFORM_PROJECTION, m_shadowProjMat);
     m_device->SetTransform(TRANSFORM_VIEW, m_shadowViewMat);
-
-    Math::Matrix scaleMat;
-    Math::LoadScaleMatrix(scaleMat, Math::Vector(1.0f, 1.0f, -1.0f));
-
-    m_shadowViewMat = Math::MultiplyMatrices(scaleMat, m_shadowViewMat);
 
     m_device->SetTexture(0, 0);
     m_device->SetTexture(1, 0);
@@ -3649,7 +3657,7 @@ void CEngine::RenderShadowMap()
     }
 
     m_device->SetRenderState(RENDER_STATE_DEPTH_BIAS, false);
-    m_device->SetDepthBias(1.0f, 0.0f);
+    m_device->SetDepthBias(0.0f, 0.0f);
     m_device->SetRenderState(RENDER_STATE_ALPHA_TEST, false);
 
     if (m_offscreenShadowRendering)     // shadow map texture already have depth information, just unbind it
