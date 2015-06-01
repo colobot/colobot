@@ -179,7 +179,7 @@ GLint LoadShader(GLint type, const char* filename)
     PHYSFS_close(file);
 
     GLuint shader = glCreateShader(type);
-    glShaderSource(shader, 1, sources, nullptr);
+    glShaderSource(shader, 1, const_cast<const GLchar**>(sources), nullptr);
     glCompileShader(shader);
 
     GLint status;
