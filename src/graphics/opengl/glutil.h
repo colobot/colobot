@@ -88,4 +88,8 @@ GLenum TranslateTextureCoordinate(int index);
 
 GLenum TranslateTextureCoordinateGen(int index);
 
+GLint LoadShader(GLint type, const char* filename);
+
+GLint LinkProgram(int count, GLint shaders[]);
+
 } // namespace Gfx

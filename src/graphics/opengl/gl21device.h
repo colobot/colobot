@@ -152,6 +152,8 @@ private:
     void UpdateTextureParams(int index);
     //! Updates texture status
     void UpdateTextureStatus();
+    //! Binds VBO
+    inline void BindVBO(GLint vbo);
 
 private:
     //! Current config
@@ -217,6 +219,8 @@ private:
     std::map<unsigned int, VboObjectInfo> m_vboObjects;
     //! Last ID of VBO object
     unsigned int m_lastVboId;
+    //! Currently bound VBO
+    GLint m_currentVBO;
 
     // Offscreen buffer
     //! Framebuffer object
@@ -230,10 +234,11 @@ private:
     //! true if offscreen rendering enabled
     bool m_offscreenRenderingEnabled;
 
-    //! Shader program
-    GLuint m_shaderProgram;
     //! true enables per-pixel lighting
     bool m_perPixelLighting;
+
+    //! Shader program
+    GLuint m_program;
 
     // Uniforms
     //! Projection matrix

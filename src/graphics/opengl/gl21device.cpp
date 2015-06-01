@@ -261,10 +261,9 @@ bool CGL21Device::Create()
     else
         CLogger::GetInstance().Info("Using per-vertex lighting\n");
 
-    // Create shader program
-    GLchar source[65536];
-    const GLchar *sources[] = { source };
 
+    // Create normal shader program
+    GLint shaders[2];
     char filename[128];
 
     if (m_perPixelLighting)
@@ -272,146 +271,64 @@ bool CGL21Device::Create()
     else
         sprintf(filename, "shaders/vertex_shader_21_pervertex.glsl");
 
-    PHYSFS_file *file = PHYSFS_openRead(filename);
-    if (file == nullptr)
-    {
-        CLogger::GetInstance().Error("Cannot read vertex shader code file!\n");
-        CLogger::GetInstance().Error("Missing file \"%s\"\n", filename);
-        return false;
-    }
-
-    int length = PHYSFS_read(file, source, 1, 65536);
-    source[length] = '\0';
-
-    PHYSFS_close(file);
-
-    GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertexShader, 1, sources, nullptr);
-    glCompileShader(vertexShader);
-
-    GLint status;
-    glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &status);
-
-    if (status != GL_TRUE)
-    {
-        GLint len;
-        glGetShaderiv(vertexShader, GL_INFO_LOG_LENGTH, &len);
-
-        GLchar *message = new GLchar[len + 1];
-        glGetShaderInfoLog(vertexShader, len + 1, nullptr, message);
-
-        GetLogger()->Error("Vertex shader compilation error occured!\n%s\n", message);
-
-        delete[] message;
-        return false;
-    }
+    shaders[0] = LoadShader(GL_VERTEX_SHADER, filename);
+    if (shaders[0] == 0) return false;
 
     if (m_perPixelLighting)
         sprintf(filename, "shaders/fragment_shader_21_perpixel.glsl");
     else
         sprintf(filename, "shaders/fragment_shader_21_pervertex.glsl");
 
-    file = PHYSFS_openRead(filename);
-    if (file == nullptr)
-    {
-        CLogger::GetInstance().Error("Cannot read fragment shader code file!\n");
-        CLogger::GetInstance().Error("Missing file \"%s\"\n", filename);
-        return false;
-    }
+    shaders[1] = LoadShader(GL_FRAGMENT_SHADER, filename);
+    if (shaders[1] == 0) return false;
 
-    length = PHYSFS_read(file, source, 1, 65536);
-    source[length] = '\0';
+    m_program = LinkProgram(2, shaders);
+    if (m_program == 0) return false;
 
-    PHYSFS_close(file);
+    glDeleteShader(shaders[0]);
+    glDeleteShader(shaders[1]);
 
-    GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragmentShader, 1, sources, nullptr);
-    glCompileShader(fragmentShader);
-
-    glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &status);
-
-    if (status != GL_TRUE)
-    {
-        GLint len;
-        glGetShaderiv(fragmentShader, GL_INFO_LOG_LENGTH, &len);
-
-        GLchar *message = new GLchar[len + 1];
-        glGetShaderInfoLog(fragmentShader, len + 1, nullptr, message);
-
-        GetLogger()->Error("Fragment shader compilation error occured!\n%s\n", message);
-
-        delete[] message;
-        return false;
-    }
-
-    m_shaderProgram = glCreateProgram();
-    glAttachShader(m_shaderProgram, vertexShader);
-    glAttachShader(m_shaderProgram, fragmentShader);
-
-    glLinkProgram(m_shaderProgram);
-
-    glDetachShader(m_shaderProgram, vertexShader);
-    glDetachShader(m_shaderProgram, fragmentShader);
-
-    glGetProgramiv(m_shaderProgram, GL_LINK_STATUS, &status);
-
-    if (status != GL_TRUE)
-    {
-        GLint len;
-        glGetProgramiv(m_shaderProgram, GL_INFO_LOG_LENGTH, &len);
-
-        GLchar *message = new GLchar[len + 1];
-        glGetProgramInfoLog(m_shaderProgram, len + 1, nullptr, message);
-
-        GetLogger()->Error("Shader program linking error occured!\n%s\n", message);
-
-        delete[] message;
-        return false;
-    }
-
-    glDeleteShader(vertexShader);
-    glDeleteShader(fragmentShader);
-
-    glUseProgram(m_shaderProgram);
 
     // Obtain uniform locations
-    uni_ProjectionMatrix = glGetUniformLocation(m_shaderProgram, "uni_ProjectionMatrix");
-    uni_ViewMatrix = glGetUniformLocation(m_shaderProgram, "uni_ViewMatrix");
-    uni_ModelMatrix = glGetUniformLocation(m_shaderProgram, "uni_ModelMatrix");
-    uni_NormalMatrix = glGetUniformLocation(m_shaderProgram, "uni_NormalMatrix");
-    uni_ShadowMatrix = glGetUniformLocation(m_shaderProgram, "uni_ShadowMatrix");
+    uni_ProjectionMatrix = glGetUniformLocation(m_program, "uni_ProjectionMatrix");
+    uni_ViewMatrix = glGetUniformLocation(m_program, "uni_ViewMatrix");
+    uni_ModelMatrix = glGetUniformLocation(m_program, "uni_ModelMatrix");
+    uni_NormalMatrix = glGetUniformLocation(m_program, "uni_NormalMatrix");
+    uni_ShadowMatrix = glGetUniformLocation(m_program, "uni_ShadowMatrix");
 
-    uni_PrimaryTexture = glGetUniformLocation(m_shaderProgram, "uni_PrimaryTexture");
-    uni_SecondaryTexture = glGetUniformLocation(m_shaderProgram, "uni_SecondaryTexture");
-    uni_ShadowTexture = glGetUniformLocation(m_shaderProgram, "uni_ShadowTexture");
+    uni_PrimaryTexture = glGetUniformLocation(m_program, "uni_PrimaryTexture");
+    uni_SecondaryTexture = glGetUniformLocation(m_program, "uni_SecondaryTexture");
+    uni_ShadowTexture = glGetUniformLocation(m_program, "uni_ShadowTexture");
 
     for (int i = 0; i < 3; i++)
     {
         char name[64];
         sprintf(name, "uni_TextureEnabled[%d]", i);
-        uni_TextureEnabled[i] = glGetUniformLocation(m_shaderProgram, name);
+        uni_TextureEnabled[i] = glGetUniformLocation(m_program, name);
     }
 
-    uni_AlphaTestEnabled = glGetUniformLocation(m_shaderProgram, "uni_AlphaTestEnabled");
-    uni_AlphaReference = glGetUniformLocation(m_shaderProgram, "uni_AlphaReference");
+    uni_AlphaTestEnabled = glGetUniformLocation(m_program, "uni_AlphaTestEnabled");
+    uni_AlphaReference = glGetUniformLocation(m_program, "uni_AlphaReference");
 
-    uni_FogEnabled = glGetUniformLocation(m_shaderProgram, "uni_FogEnabled");
-    uni_FogRange = glGetUniformLocation(m_shaderProgram, "uni_FogRange");
-    uni_FogColor = glGetUniformLocation(m_shaderProgram, "uni_FogColor");
+    uni_FogEnabled = glGetUniformLocation(m_program, "uni_FogEnabled");
+    uni_FogRange = glGetUniformLocation(m_program, "uni_FogRange");
+    uni_FogColor = glGetUniformLocation(m_program, "uni_FogColor");
 
-    uni_ShadowColor =  glGetUniformLocation(m_shaderProgram, "uni_ShadowColor");
-    uni_LightingEnabled = glGetUniformLocation(m_shaderProgram, "uni_LightingEnabled");
+    uni_ShadowColor = glGetUniformLocation(m_program, "uni_ShadowColor");
+    uni_LightingEnabled = glGetUniformLocation(m_program, "uni_LightingEnabled");
 
     for (int i = 0; i < 8; i++)
     {
         char name[64];
         sprintf(name, "uni_LightEnabled[%d]", i);
-        uni_LightEnabled[i] = glGetUniformLocation(m_shaderProgram, name);
+        uni_LightEnabled[i] = glGetUniformLocation(m_program, name);
     }
 
     // Set default uniform values
     Math::Matrix matrix;
     matrix.LoadIdentity();
+
+    glUseProgram(m_program);
 
     glUniformMatrix4fv(uni_ProjectionMatrix, 1, GL_FALSE, matrix.Array());
     glUniformMatrix4fv(uni_ViewMatrix, 1, GL_FALSE, matrix.Array());
@@ -447,7 +364,7 @@ void CGL21Device::Destroy()
     // Delete the remaining textures
     // Should not be strictly necessary, but just in case
     glUseProgram(0);
-    glDeleteProgram(m_shaderProgram);
+    glDeleteProgram(m_program);
 
     DestroyAllTextures();
 
@@ -489,6 +406,7 @@ void CGL21Device::SetTransform(TransformType type, const Math::Matrix &matrix)
     if (type == TRANSFORM_WORLD)
     {
         m_worldMat = matrix;
+
         glUniformMatrix4fv(uni_ModelMatrix, 1, GL_FALSE, m_worldMat.Array());
 
         // normal transform
@@ -503,11 +421,13 @@ void CGL21Device::SetTransform(TransformType type, const Math::Matrix &matrix)
         Math::Matrix scale;
         Math::LoadScaleMatrix(scale, Math::Vector(1.0f, 1.0f, -1.0f));
         Math::Matrix temp = Math::MultiplyMatrices(scale, matrix);
+
         glUniformMatrix4fv(uni_ViewMatrix, 1, GL_FALSE, temp.Array());
     }
     else if (type == TRANSFORM_PROJECTION)
     {
         m_projectionMat = matrix;
+
         glUniformMatrix4fv(uni_ProjectionMatrix, 1, GL_FALSE, m_projectionMat.Array());
     }
     else if (type == TRANSFORM_SHADOW)
@@ -967,6 +887,14 @@ void CGL21Device::UpdateTextureStatus()
     */
 }
 
+inline void CGL21Device::BindVBO(GLint vbo)
+{
+    if (m_currentVBO == vbo) return;
+
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    m_currentVBO = vbo;
+}
+
 /**
   Sets the texture parameters for the given texture stage.
   If the given texture was not set (bound) yet, nothing happens.
@@ -1222,6 +1150,8 @@ void CGL21Device::SetTextureStageWrap(int index, TexWrapMode wrapS, TexWrapMode 
 void CGL21Device::DrawPrimitive(PrimitiveType type, const Vertex *vertices, int vertexCount,
                               Color color)
 {
+    BindVBO(0);
+
     Vertex* vs = const_cast<Vertex*>(vertices);
 
     glEnableClientState(GL_VERTEX_ARRAY);
@@ -1247,6 +1177,8 @@ void CGL21Device::DrawPrimitive(PrimitiveType type, const Vertex *vertices, int 
 void CGL21Device::DrawPrimitive(PrimitiveType type, const VertexTex2 *vertices, int vertexCount,
                               Color color)
 {
+    BindVBO(0);
+
     VertexTex2* vs = const_cast<VertexTex2*>(vertices);
 
     glEnableClientState(GL_VERTEX_ARRAY);
@@ -1278,6 +1210,8 @@ void CGL21Device::DrawPrimitive(PrimitiveType type, const VertexTex2 *vertices, 
 
 void CGL21Device::DrawPrimitive(PrimitiveType type, const VertexCol *vertices, int vertexCount)
 {
+    BindVBO(0);
+
     VertexCol* vs = const_cast<VertexCol*>(vertices);
 
     glEnableClientState(GL_VERTEX_ARRAY);
@@ -1304,9 +1238,8 @@ unsigned int CGL21Device::CreateStaticBuffer(PrimitiveType primitiveType, const 
     info.size = vertexCount * sizeof(Vertex);
 
     glGenBuffers(1, &info.bufferId);
-    glBindBuffer(GL_ARRAY_BUFFER, info.bufferId);
+    BindVBO(info.bufferId);
     glBufferData(GL_ARRAY_BUFFER, info.size, vertices, GL_STATIC_DRAW);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     m_vboObjects[id] = info;
 
@@ -1325,9 +1258,8 @@ unsigned int CGL21Device::CreateStaticBuffer(PrimitiveType primitiveType, const 
     info.size = vertexCount * sizeof(VertexTex2);
 
     glGenBuffers(1, &info.bufferId);
-    glBindBuffer(GL_ARRAY_BUFFER, info.bufferId);
+    BindVBO(info.bufferId);
     glBufferData(GL_ARRAY_BUFFER, info.size, vertices, GL_STATIC_DRAW);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     m_vboObjects[id] = info;
 
@@ -1346,9 +1278,8 @@ unsigned int CGL21Device::CreateStaticBuffer(PrimitiveType primitiveType, const 
     info.size = vertexCount * sizeof(VertexCol);
 
     glGenBuffers(1, &info.bufferId);
-    glBindBuffer(GL_ARRAY_BUFFER, info.bufferId);
+    BindVBO(info.bufferId);
     glBufferData(GL_ARRAY_BUFFER, info.size, vertices, GL_STATIC_DRAW);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     m_vboObjects[id] = info;
 
@@ -1368,7 +1299,7 @@ void CGL21Device::UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primit
     info.vertexType = VERTEX_TYPE_NORMAL;
     info.vertexCount = vertexCount;
 
-    glBindBuffer(GL_ARRAY_BUFFER, info.bufferId);
+    BindVBO(info.bufferId);
 
     if (info.size < newSize)
     {
@@ -1379,8 +1310,6 @@ void CGL21Device::UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primit
     {
         glBufferSubData(GL_ARRAY_BUFFER, 0, newSize, vertices);
     }
-    
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 void CGL21Device::UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primitiveType, const VertexTex2* vertices, int vertexCount)
@@ -1395,8 +1324,8 @@ void CGL21Device::UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primit
     info.vertexCount = vertexCount;
 
     int newSize = vertexCount * sizeof(VertexTex2);
-    
-    glBindBuffer(GL_ARRAY_BUFFER, info.bufferId);
+
+    BindVBO(info.bufferId);
 
     if (info.size < newSize)
     {
@@ -1407,8 +1336,6 @@ void CGL21Device::UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primit
     {
         glBufferSubData(GL_ARRAY_BUFFER, 0, newSize, vertices);
     }
-
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 void CGL21Device::UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primitiveType, const VertexCol* vertices, int vertexCount)
@@ -1424,7 +1351,7 @@ void CGL21Device::UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primit
 
     int newSize = vertexCount * sizeof(VertexCol);
 
-    glBindBuffer(GL_ARRAY_BUFFER, info.bufferId);
+    BindVBO(info.bufferId);
 
     if (info.size < newSize)
     {
@@ -1435,8 +1362,6 @@ void CGL21Device::UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primit
     {
         glBufferSubData(GL_ARRAY_BUFFER, 0, newSize, vertices);
     }
-
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 void CGL21Device::DrawStaticBuffer(unsigned int bufferId)
@@ -1446,7 +1371,7 @@ void CGL21Device::DrawStaticBuffer(unsigned int bufferId)
         return;
 
     glEnable(GL_VERTEX_ARRAY);
-    glBindBuffer(GL_ARRAY_BUFFER, (*it).second.bufferId);
+    BindVBO((*it).second.bufferId);
 
     if ((*it).second.vertexType == VERTEX_TYPE_NORMAL)
     {
@@ -1510,7 +1435,6 @@ void CGL21Device::DrawStaticBuffer(unsigned int bufferId)
         glDisableClientState(GL_COLOR_ARRAY);
     }
 
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
     glDisable(GL_VERTEX_ARRAY);
 }
 
@@ -1519,6 +1443,9 @@ void CGL21Device::DestroyStaticBuffer(unsigned int bufferId)
     auto it = m_vboObjects.find(bufferId);
     if (it == m_vboObjects.end())
         return;
+
+    if (m_currentVBO == (*it).second.bufferId)
+        BindVBO(0);
 
     glDeleteBuffers(1, &(*it).second.bufferId);
 

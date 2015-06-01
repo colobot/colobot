@@ -263,9 +263,7 @@ bool CGL33Device::Create()
         CLogger::GetInstance().Info("Using per-vertex lighting\n");
 
     // Create shader program
-    GLchar source[65536];
-    const GLchar *sources[] = { source };
-
+    GLint shaders[2];
     char filename[64];
 
     if (m_perPixelLighting)
@@ -273,105 +271,22 @@ bool CGL33Device::Create()
     else
         sprintf(filename, "shaders/vertex_shader_33_pervertex.glsl");
 
-    PHYSFS_file *file = PHYSFS_openRead(filename);
-    if (file == nullptr)
-    {
-        CLogger::GetInstance().Error("Cannot read vertex shader code file!\n");
-        CLogger::GetInstance().Error("Missing file \"%s\"\n", filename);
-        return false;
-    }
-
-    int length = PHYSFS_read(file, source, 1, 65536);
-    source[length] = '\0';
-
-    PHYSFS_close(file);
-    
-    GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertexShader, 1, sources, nullptr);
-    glCompileShader(vertexShader);
-
-    GLint status;
-    glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &status);
-
-    if (status != GL_TRUE)
-    {
-        GLint len;
-        glGetShaderiv(vertexShader, GL_INFO_LOG_LENGTH, &len);
-
-        GLchar *message = new GLchar[len + 1];
-        glGetShaderInfoLog(vertexShader, len + 1, nullptr, message);
-
-        GetLogger()->Error("Vertex shader compilation error occured!\n%s\n", message);
-
-        delete[] message;
-        return false;
-    }
+    shaders[0] = LoadShader(GL_VERTEX_SHADER, filename);
+    if (shaders[0] == 0) return false;
 
     if (m_perPixelLighting)
         sprintf(filename, "shaders/fragment_shader_33_perpixel.glsl");
     else
         sprintf(filename, "shaders/fragment_shader_33_pervertex.glsl");
 
-    file = PHYSFS_openRead(filename);
-    if (file == nullptr)
-    {
-        CLogger::GetInstance().Error("Cannot read fragment shader code file!\n");
-        CLogger::GetInstance().Error("Missing file \"%s\"\n", filename);
-        return false;
-    }
+    shaders[1] = LoadShader(GL_FRAGMENT_SHADER, filename);
+    if (shaders[1] == 0) return false;
 
-    length = PHYSFS_read(file, source, 1, 65536);
-    source[length] = '\0';
+    m_shaderProgram = LinkProgram(2, shaders);
+    if (m_shaderProgram == 0) return false;
 
-    PHYSFS_close(file);
-
-    GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragmentShader, 1, sources, nullptr);
-    glCompileShader(fragmentShader);
-
-    glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &status);
-
-    if (status != GL_TRUE)
-    {
-        GLint len;
-        glGetShaderiv(fragmentShader, GL_INFO_LOG_LENGTH, &len);
-
-        GLchar *message = new GLchar[len + 1];
-        glGetShaderInfoLog(fragmentShader, len + 1, nullptr, message);
-
-        GetLogger()->Error("Fragment shader compilation error occured!\n%s\n", message);
-
-        delete[] message;
-        return false;
-    }
-
-    m_shaderProgram = glCreateProgram();
-    glAttachShader(m_shaderProgram, vertexShader);
-    glAttachShader(m_shaderProgram, fragmentShader);
-    
-    glLinkProgram(m_shaderProgram);
-    
-    glDetachShader(m_shaderProgram, vertexShader);
-    glDetachShader(m_shaderProgram, fragmentShader);
-
-    glGetProgramiv(m_shaderProgram, GL_LINK_STATUS, &status);
-
-    if (status != GL_TRUE)
-    {
-        GLint len;
-        glGetProgramiv(m_shaderProgram, GL_INFO_LOG_LENGTH, &len);
-
-        GLchar *message = new GLchar[len + 1];
-        glGetProgramInfoLog(m_shaderProgram, len + 1, nullptr, message);
-
-        GetLogger()->Error("Shader program linking error occured!\n%s\n", message);
-
-        delete[] message;
-        return false;
-    }
-
-    glDeleteShader(vertexShader);
-    glDeleteShader(fragmentShader);
+    glDeleteShader(shaders[0]);
+    glDeleteShader(shaders[1]);
 
     glUseProgram(m_shaderProgram);
 
@@ -1245,8 +1160,8 @@ void CGL33Device::DrawPrimitive(PrimitiveType type, const Vertex *vertices, int 
 
     unsigned int size = vertexCount * sizeof(Vertex);
 
-    glBindVertexArray(info.vao);
-    glBindBuffer(GL_ARRAY_BUFFER, info.vbo);
+    BindVAO(info.vao);
+    BindVBO(info.vbo);
 
     // If needed vertex data is too large, increase the size of buffer
     if (info.size >= size)
@@ -1285,9 +1200,6 @@ void CGL33Device::DrawPrimitive(PrimitiveType type, const Vertex *vertices, int 
     UpdateRenderingMode();
 
     glDrawArrays(TranslateGfxPrimitive(type), 0, vertexCount);
-
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);
 }
 
 void CGL33Device::DrawPrimitive(PrimitiveType type, const VertexTex2 *vertices, int vertexCount, Color color)
@@ -1297,8 +1209,8 @@ void CGL33Device::DrawPrimitive(PrimitiveType type, const VertexTex2 *vertices, 
 
     unsigned int size = vertexCount * sizeof(VertexTex2);
 
-    glBindVertexArray(info.vao);
-    glBindBuffer(GL_ARRAY_BUFFER, info.vbo);
+    BindVAO(info.vao);
+    BindVBO(info.vbo);
 
     // If needed vertex data is too large, increase the size of buffer
     if (info.size >= size)
@@ -1337,9 +1249,6 @@ void CGL33Device::DrawPrimitive(PrimitiveType type, const VertexTex2 *vertices, 
     UpdateRenderingMode();
 
     glDrawArrays(TranslateGfxPrimitive(type), 0, vertexCount);
-
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);
 }
 
 void CGL33Device::DrawPrimitive(PrimitiveType type, const VertexCol *vertices, int vertexCount)
@@ -1349,8 +1258,8 @@ void CGL33Device::DrawPrimitive(PrimitiveType type, const VertexCol *vertices, i
 
     unsigned int size = vertexCount * sizeof(VertexCol);
 
-    glBindVertexArray(info.vao);
-    glBindBuffer(GL_ARRAY_BUFFER, info.vbo);
+    BindVAO(info.vao);
+    BindVBO(info.vbo);
 
     // If needed vertex data is too large, increase the size of buffer
     if (info.size >= size)
@@ -1387,9 +1296,6 @@ void CGL33Device::DrawPrimitive(PrimitiveType type, const VertexCol *vertices, i
     UpdateRenderingMode();
 
     glDrawArrays(TranslateGfxPrimitive(type), 0, vertexCount);
-
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);
 }
 
 unsigned int CGL33Device::CreateStaticBuffer(PrimitiveType primitiveType, const Vertex* vertices, int vertexCount)
@@ -1405,10 +1311,11 @@ unsigned int CGL33Device::CreateStaticBuffer(PrimitiveType primitiveType, const 
     info.size = vertexCount * sizeof(Vertex);
 
     glGenVertexArrays(1, &info.vao);
-    glBindVertexArray(info.vao);
+    BindVAO(info.vao);
 
     glGenBuffers(1, &info.vbo);
-    glBindBuffer(GL_ARRAY_BUFFER, info.vbo);
+    BindVBO(info.vbo);
+
     glBufferData(GL_ARRAY_BUFFER, info.size, vertices, GL_STATIC_DRAW);
 
     // Vertex coordinate
@@ -1431,9 +1338,6 @@ unsigned int CGL33Device::CreateStaticBuffer(PrimitiveType primitiveType, const 
     glDisableVertexAttribArray(4);
     glVertexAttrib2f(4, 0.0f, 0.0f);
 
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);
-
     m_vboObjects[id] = info;
 
     return id;
@@ -1452,10 +1356,11 @@ unsigned int CGL33Device::CreateStaticBuffer(PrimitiveType primitiveType, const 
     info.size = vertexCount * sizeof(VertexTex2);
 
     glGenVertexArrays(1, &info.vao);
-    glBindVertexArray(info.vao);
+    BindVAO(info.vao);
 
     glGenBuffers(1, &info.vbo);
-    glBindBuffer(GL_ARRAY_BUFFER, info.vbo);
+    BindVBO(info.vbo);
+
     glBufferData(GL_ARRAY_BUFFER, info.size, vertices, GL_STATIC_DRAW);
 
     // Vertex coordinate
@@ -1478,9 +1383,6 @@ unsigned int CGL33Device::CreateStaticBuffer(PrimitiveType primitiveType, const 
     glEnableVertexAttribArray(4);
     glVertexAttribPointer(4, 2, GL_FLOAT, GL_FALSE, sizeof(VertexTex2), reinterpret_cast<void*>(offsetof(VertexTex2, texCoord2)));
 
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);
-
     m_vboObjects[id] = info;
 
     return id;
@@ -1497,10 +1399,11 @@ unsigned int CGL33Device::CreateStaticBuffer(PrimitiveType primitiveType, const 
     info.size = vertexCount * sizeof(VertexCol);
 
     glGenVertexArrays(1, &info.vao);
-    glBindVertexArray(info.vao);
+    BindVAO(info.vao);
 
     glGenBuffers(1, &info.vbo);
-    glBindBuffer(GL_ARRAY_BUFFER, info.vbo);
+    BindVBO(info.vbo);
+
     glBufferData(GL_ARRAY_BUFFER, info.size, vertices, GL_STATIC_DRAW);
 
     // Vertex coordinate
@@ -1523,9 +1426,6 @@ unsigned int CGL33Device::CreateStaticBuffer(PrimitiveType primitiveType, const 
     glDisableVertexAttribArray(4);
     glVertexAttrib2f(4, 0.0f, 0.0f);
 
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);
-
     m_vboObjects[id] = info;
 
     return id;
@@ -1547,7 +1447,7 @@ void CGL33Device::UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primit
     info.vertexType = VERTEX_TYPE_NORMAL;
     info.vertexCount = vertexCount;
 
-    glBindBuffer(GL_ARRAY_BUFFER, info.vbo);
+    BindVBO(info.vbo);
 
     if (info.size < size)
     {
@@ -1562,7 +1462,7 @@ void CGL33Device::UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primit
 
     if (changed)        // Update vertex array bindings
     {
-        glBindVertexArray(info.vao);
+        BindVAO(info.vao);
 
         // Vertex coordinate
         glEnableVertexAttribArray(0);
@@ -1583,11 +1483,7 @@ void CGL33Device::UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primit
         // Texture coordinate 1
         glDisableVertexAttribArray(4);
         glVertexAttrib2f(4, 0.0f, 0.0f);
-
-        glBindVertexArray(0);
     }
-
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 void CGL33Device::UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primitiveType, const VertexTex2* vertices, int vertexCount)
@@ -1605,7 +1501,8 @@ void CGL33Device::UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primit
     info.primitiveType = primitiveType;
     info.vertexType = VERTEX_TYPE_TEX2;
     info.vertexCount = vertexCount;
-    glBindBuffer(GL_ARRAY_BUFFER, info.vbo);
+
+    BindVBO(info.vbo);
 
     if (info.size < size)
     {
@@ -1620,7 +1517,7 @@ void CGL33Device::UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primit
 
     if (changed)        // Update vertex array bindings
     {
-        glBindVertexArray(info.vao);
+        BindVAO(info.vao);
 
         // Vertex coordinate
         glEnableVertexAttribArray(0);
@@ -1641,11 +1538,7 @@ void CGL33Device::UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primit
         // Texture coordinate 1
         glEnableVertexAttribArray(4);
         glVertexAttribPointer(4, 2, GL_FLOAT, GL_FALSE, sizeof(VertexTex2), reinterpret_cast<void*>(offsetof(VertexTex2, texCoord2)));
-        
-        glBindVertexArray(0);
     }
-
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 void CGL33Device::UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primitiveType, const VertexCol* vertices, int vertexCount)
@@ -1664,7 +1557,7 @@ void CGL33Device::UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primit
     info.vertexType = VERTEX_TYPE_COL;
     info.vertexCount = vertexCount;
 
-    glBindBuffer(GL_ARRAY_BUFFER, info.vbo);
+    BindVBO(info.vbo);
 
     if (info.size < size)
     {
@@ -1679,7 +1572,7 @@ void CGL33Device::UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primit
 
     if (changed)        // Update vertex array bindings
     {
-        glBindVertexArray(info.vao);
+        BindVAO(info.vao);
 
         // Vertex coordinate
         glEnableVertexAttribArray(0);
@@ -1700,11 +1593,7 @@ void CGL33Device::UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primit
         // Texture coordinate 1
         glDisableVertexAttribArray(4);
         glVertexAttrib2f(4, 0.0f, 0.0f);
-
-        glBindVertexArray(0);
     }
-
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 void CGL33Device::DrawStaticBuffer(unsigned int bufferId)
@@ -1717,12 +1606,10 @@ void CGL33Device::DrawStaticBuffer(unsigned int bufferId)
 
     UpdateRenderingMode();
 
-    glBindVertexArray(info.vao);
+    BindVAO(info.vao);
 
     GLenum mode = TranslateGfxPrimitive(info.primitiveType);
     glDrawArrays(mode, 0, info.vertexCount);
-
-    glBindVertexArray(0);
 }
 
 void CGL33Device::DestroyStaticBuffer(unsigned int bufferId)
@@ -1732,6 +1619,11 @@ void CGL33Device::DestroyStaticBuffer(unsigned int bufferId)
         return;
 
     VertexBufferInfo &info = (*it).second;
+
+    if (m_currentVAO == info.vao)
+        BindVAO(0);
+    if (m_currentVBO == info.vbo)
+        BindVBO(0);
 
     glDeleteBuffers(1, &info.vbo);
     glDeleteVertexArrays(1, &info.vao);
@@ -1846,9 +1738,9 @@ void CGL33Device::SetRenderState(RenderState state, bool enabled)
     else if (state == RENDER_STATE_OFFSCREEN_RENDERING)
     {
         if (m_framebuffer == 0)
-            InitOffscreenBuffer(2048, 2048);
+            InitOffscreenBuffer(1024, 1024);
 
-        m_offscreenRenderingEnabled = true;
+        m_offscreenRenderingEnabled = enabled;
 
         GLuint toBind = (enabled ? m_framebuffer : 0);
 
@@ -2075,6 +1967,22 @@ void CGL33Device::UpdateRenderingMode()
 
     enabled = m_texturesEnabled[2] && m_currentTextures[2].id != 0;
     glUniform1i(uni_ShadowTextureEnabled, enabled ? 1 : 0);
+}
+
+inline void CGL33Device::BindVBO(GLint vbo)
+{
+    if (m_currentVBO == vbo) return;
+
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    m_currentVBO = vbo;
+}
+
+inline void CGL33Device::BindVAO(GLint vao)
+{
+    if (m_currentVAO == vao) return;
+
+    glBindVertexArray(vao);
+    m_currentVAO = vao;
 }
 
 } // namespace Gfx

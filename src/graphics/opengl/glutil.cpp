@@ -18,6 +18,8 @@
  */
 
 #include "graphics/opengl/glutil.h"
+#include "common/logger.h"
+#include <physfs.h>
 
 // Graphics module namespace
 namespace Gfx {
@@ -157,6 +159,82 @@ GLenum TranslateTextureCoordinateGen(int index)
     assert(index >= 0 && index < 4);
 
     return textureCoordGen[index];
+}
+
+GLint LoadShader(GLint type, const char* filename)
+{
+    PHYSFS_file *file = PHYSFS_openRead(filename);
+    if (file == nullptr)
+    {
+        CLogger::GetInstance().Error("Cannot read shader source file\n");
+        CLogger::GetInstance().Error("Missing file \"%s\"\n", filename);
+        return 0;
+    }
+
+    char source[65536];
+    char *sources[] = { source };
+    int length = PHYSFS_read(file, source, 1, 65536);
+    source[length] = '\0';
+
+    PHYSFS_close(file);
+
+    GLuint shader = glCreateShader(type);
+    glShaderSource(shader, 1, sources, nullptr);
+    glCompileShader(shader);
+
+    GLint status;
+    glGetShaderiv(shader, GL_COMPILE_STATUS, &status);
+
+    if (status != GL_TRUE)
+    {
+        GLint len;
+        glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &len);
+
+        GLchar *message = new GLchar[len + 1];
+        glGetShaderInfoLog(shader, len + 1, nullptr, message);
+
+        GetLogger()->Error("Shader compilation error occured!\n%s\n", message);
+
+        delete[] message;
+        glDeleteShader(shader);
+        return 0;
+    }
+
+    return shader;
+}
+
+GLint LinkProgram(int count, GLint shaders[])
+{
+    GLint program = glCreateProgram();
+
+    for (int i = 0; i < count; i++)
+        glAttachShader(program, shaders[i]);
+
+    glLinkProgram(program);
+
+    for (int i = 0; i < count; i++)
+        glDetachShader(program, shaders[i]);
+
+    GLint status;
+    glGetProgramiv(program, GL_LINK_STATUS, &status);
+
+    if (status != GL_TRUE)
+    {
+        GLint len;
+        glGetProgramiv(program, GL_INFO_LOG_LENGTH, &len);
+
+        GLchar *message = new GLchar[len + 1];
+        glGetProgramInfoLog(program, len + 1, nullptr, message);
+
+        GetLogger()->Error("Shader program linking error occured!\n%s\n", message);
+
+        delete[] message;
+        glDeleteProgram(program);
+
+        return 0;
+    }
+
+    return program;
 }
 
 }

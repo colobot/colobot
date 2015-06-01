@@ -151,6 +151,11 @@ private:
     //! Updates rendering mode
     void UpdateRenderingMode();
 
+    //! Binds VBO
+    inline void BindVBO(GLint vbo);
+    //! Binds VAO
+    inline void BindVAO(GLint vao);
+
 private:
     //! Current config
     GLDeviceConfig m_config;
@@ -214,6 +219,10 @@ private:
     std::map<unsigned int, VertexBufferInfo> m_vboObjects;
     //! Last ID of VBO object
     unsigned int m_lastVboId;
+    //! Currently bound VBO
+    GLint m_currentVBO;
+    //! Currently bound VAO
+    GLint m_currentVAO;
 
     // Offscreen buffer
     //! Framebuffer object
