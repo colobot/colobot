@@ -10,10 +10,10 @@ msgstr ""
 "PO-Revision-Date: 2014-07-28 09:27+0200\n"
 "Last-Translator: krzys_h <krzys_h@interia.pl>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: de\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Pootle 2.5.1.1\n"
 "X-Language: de_DE\n"
@@ -491,9 +491,6 @@ msgstr "Einstampfer"
 msgid "Details\\Visual quality of 3D objects"
 msgstr "Details\\Detailliertheit der Objekte in 3D"
 
-msgid "Developed by :"
-msgstr "Entwickelt von:"
-
 msgid "Device\\Driver and resolution settings"
 msgstr "Bildschirm\\Driver und Bildschirmauflösung"
 
@@ -661,6 +658,9 @@ msgstr "Spiel\\Gameplay Einstellungen"
 
 msgid "Gantry crane"
 msgstr "Träger"
+
+msgid "Gold Edition development by:"
+msgstr "Goldausgabe Entwicklung von:"
 
 msgid "Goto: destination occupied"
 msgstr "Ziel ist schon besetzt"
@@ -1036,6 +1036,9 @@ msgstr "Orgastoff"
 
 msgid "Origin of last message\\Shows where the last message was sent from"
 msgstr "Ort der Meldung\\Zeigt den Ort, von dem die letzte Meldung stammt"
+
+msgid "Original game developed by:"
+msgstr "Ursprünglichen Spiel entwickelt von:"
 
 msgid "Parameters missing "
 msgstr "Nicht genug Parameter"
@@ -1813,6 +1816,9 @@ msgstr "\\b;Liste der Roboter\n"
 msgid "\\c; (none)\\n;\n"
 msgstr "\\c; (keine)\\n;\n"
 
+msgid "www.colobot.info"
+msgstr ""
+
 msgid "www.epsitec.com"
 msgstr "www.epsitec.com"
 
@@ -1821,6 +1827,9 @@ msgstr "www.epsitec.com"
 
 #~ msgid "COLOBOT"
 #~ msgstr "COLOBOT"
+
+#~ msgid "Developed by :"
+#~ msgstr "Entwickelt von:"
 
 #~ msgid "Key word help\\More detailed help about key words"
 #~ msgstr "Hilfe über Begriff\\Hilfe über einen Begriff"

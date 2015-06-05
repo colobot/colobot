@@ -10,10 +10,10 @@ msgstr ""
 "PO-Revision-Date: 2014-07-10 15:30+0200\n"
 "Last-Translator: krzys_h <krzys_h@interia.pl>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: pl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: pl\n"
 "Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
 "|| n%100>=20) ? 1 : 2);\n"
 "X-Generator: Pootle 2.5.1.1\n"
@@ -493,9 +493,6 @@ msgstr "Destroyer"
 msgid "Details\\Visual quality of 3D objects"
 msgstr "Szczegóły\\Jakość wizualna obiektów 3D"
 
-msgid "Developed by :"
-msgstr "Twórcy:"
-
 msgid "Device\\Driver and resolution settings"
 msgstr "Urządzenie\\Ustawienia sterownika i rozdzielczości"
 
@@ -662,6 +659,9 @@ msgstr "Gra\\Ustawienia gry"
 
 msgid "Gantry crane"
 msgstr "Żuraw przesuwalny"
+
+msgid "Gold Edition development by:"
+msgstr "Twórcy Złotej Edycji:"
 
 msgid "Goto: destination occupied"
 msgstr "Goto: miejsce docelowe zajęte"
@@ -1037,6 +1037,9 @@ msgstr "Materia organiczna"
 msgid "Origin of last message\\Shows where the last message was sent from"
 msgstr ""
 "Miejsce nadania wiadomości\\Pokazuje skąd została wysłana ostatnia wiadomość"
+
+msgid "Original game developed by:"
+msgstr "Twórcy oryginalnej gry:"
 
 msgid "Parameters missing "
 msgstr "Brak wymaganego parametru"
@@ -1810,6 +1813,9 @@ msgstr "\\b;Roboty\n"
 
 msgid "\\c; (none)\\n;\n"
 msgstr "\\c; (brak)\\n;\n"
+
+msgid "www.colobot.info"
+msgstr ""
 
 msgid "www.epsitec.com"
 msgstr "www.epsitec.com"

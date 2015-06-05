@@ -141,10 +141,10 @@ void InitializeRestext()
     stringsText[RT_IO_PRIVATE]       = TR("Private\\Private folder");
     stringsText[RT_IO_PUBLIC]        = TR("Public\\Common folder");
 
-    stringsText[RT_GENERIC_DEV1]     = TR("Developed by :");
+    stringsText[RT_GENERIC_DEV1]     = TR("Original game developed by:");
     stringsText[RT_GENERIC_DEV2]     = TR("www.epsitec.com");
-    stringsText[RT_GENERIC_EDIT1]    = TR(" ");
-    stringsText[RT_GENERIC_EDIT2]    = TR(" ");
+    stringsText[RT_GENERIC_EDIT1]    = TR("Gold Edition development by:");
+    stringsText[RT_GENERIC_EDIT2]    = TR("www.colobot.info");
 
     stringsText[RT_INTERFACE_REC]    = TR("Recorder");
 

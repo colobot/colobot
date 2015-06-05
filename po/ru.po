@@ -10,10 +10,10 @@ msgstr ""
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: ru\n"
 "X-Generator: Translate Toolkit 1.11.0\n"
 "X-Language: ru_RU\n"
 "X-Source-Language: en_US\n"
@@ -485,9 +485,6 @@ msgstr "Уничтожитель"
 msgid "Details\\Visual quality of 3D objects"
 msgstr "Детали\\Визуальное качество 3D-объектов"
 
-msgid "Developed by :"
-msgstr "Разработка :"
-
 msgid "Device\\Driver and resolution settings"
 msgstr "Устройство\\Драйвер и настройки разрешения"
 
@@ -655,6 +652,9 @@ msgstr "Игра\\Настройки игры"
 
 msgid "Gantry crane"
 msgstr "Козловой кран"
+
+msgid "Gold Edition development by:"
+msgstr "\"Золотое издание\" было разработано:"
 
 msgid "Goto: destination occupied"
 msgstr "Перейти: место занято"
@@ -1031,6 +1031,9 @@ msgid "Origin of last message\\Shows where the last message was sent from"
 msgstr ""
 "Источник сообщения\\Показывает место, откуда было отправлено последнеее "
 "сообщение"
+
+msgid "Original game developed by:"
+msgstr "Оригинальная игра была разработана:"
 
 msgid "Parameters missing "
 msgstr "Отсутствуют параметры "
@@ -1809,6 +1812,9 @@ msgstr "\\b;Роботы\n"
 msgid "\\c; (none)\\n;\n"
 msgstr "\\c; (нет)\\n;\n"
 
+msgid "www.colobot.info"
+msgstr ""
+
 msgid "www.epsitec.com"
 msgstr "www.epsitec.com"
 
@@ -1817,6 +1823,9 @@ msgstr "www.epsitec.com"
 
 #~ msgid "COLOBOT"
 #~ msgstr "КОЛОБОТ"
+
+#~ msgid "Developed by :"
+#~ msgstr "Разработка :"
 
 #~ msgid "Key word help\\More detailed help about key words"
 #~ msgstr "Помощь по командам\\Более подробная справку по командам"

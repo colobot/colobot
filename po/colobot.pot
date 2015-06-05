@@ -237,10 +237,16 @@ msgstr ""
 msgid "Public\\Common folder"
 msgstr ""
 
-msgid "Developed by :"
+msgid "Original game developed by:"
 msgstr ""
 
 msgid "www.epsitec.com"
+msgstr ""
+
+msgid "Gold Edition development by:"
+msgstr ""
+
+msgid "www.colobot.info"
 msgstr ""
 
 msgid " "
