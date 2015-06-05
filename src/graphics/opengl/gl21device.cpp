@@ -350,6 +350,8 @@ bool CGL21Device::Create()
     glUniform2f(uni_FogRange, 100.0f, 200.0f);
     glUniform4f(uni_FogColor, 0.8f, 0.8f, 0.8f, 1.0f);
 
+    glUniform1f(uni_ShadowColor, 0.5f);
+
     glUniform1i(uni_LightingEnabled, 0);
     for (int i = 0; i < 8; i++)
         glUniform1i(uni_LightEnabled[i], 0);
