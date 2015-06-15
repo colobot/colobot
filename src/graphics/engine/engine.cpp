@@ -119,6 +119,7 @@ CEngine::CEngine(CApplication *app)
     m_shadowMapping = false;
     m_offscreenShadowRendering = false;
     m_qualityShadows = false;
+    m_shadowRange = 0.0f;
     m_totoMode = true;
     m_lensMode = true;
     m_waterMode = true;
@@ -174,27 +175,11 @@ CEngine::CEngine(CApplication *app)
         else if (value == 3) filter = TEX_FILTER_TRILINEAR, mipmaps = true;
     }
 
-    if (CProfile::GetInstance().GetIntProperty("Setup", "MipmapLevel", value))
-    {
-        SetTextureMipmapLevel(value);
-    }
-
-    if (CProfile::GetInstance().GetIntProperty("Setup", "Anisotropy", value))
-    {
-        SetTextureAnisotropyLevel(value);
-    }
-
     if (CProfile::GetInstance().GetIntProperty("Setup", "ShadowMapping", value))
     {
         m_shadowMapping = (value > 0);
         m_offscreenShadowRendering = (value > 1);
         m_qualityShadows = (value > 2);
-    }
-
-    float shadowColor;
-    if (CProfile::GetInstance().GetFloatProperty("Setup", "ShadowColor", shadowColor))
-    {
-        SetShadowColor(shadowColor);
     }
 
     m_defaultTexParams.format = TEX_IMG_AUTO;
@@ -2714,6 +2699,16 @@ bool CEngine::GetShadowColor()
     return m_shadowColor;
 }
 
+void CEngine::SetShadowRange(float value)
+{
+    m_shadowRange = value;
+}
+
+bool CEngine::GetShadowRange()
+{
+    return m_shadowRange;
+}
+
 void CEngine::SetDirty(bool mode)
 {
     m_dirty = mode;
@@ -3566,7 +3561,7 @@ void CEngine::RenderShadowMap()
     m_device->SetRenderState(RENDER_STATE_DEPTH_BIAS, false);
     m_device->SetAlphaTestFunc(COMP_FUNC_GREATER, 0.5f);
     m_device->SetRenderState(RENDER_STATE_DEPTH_BIAS, true);
-    m_device->SetDepthBias(2.0f, 4.0f);
+    m_device->SetDepthBias(1.5f, 16.0f);
 
     m_device->SetViewport(0, 0, m_shadowMap.size.x, m_shadowMap.size.y);
 
@@ -3577,25 +3572,25 @@ void CEngine::RenderShadowMap()
     dir.y = 0.0f;
     dir.Normalize();
 
-    Math::Vector lightOffset = Math::Vector(1.0f, 0.0f, -1.0f);
-    lightOffset.Normalize();
+    float dist = m_shadowRange;
+    float depth = 400.0f;
 
-    float scale = log(m_shadowMap.size.x) / log(2.0f) - 6.5f;
-    float dist = 75.0f * scale;
-    float depth = 2000.0f;
+    if (dist < 0.5f)
+    {
+        float scale = log(m_shadowMap.size.x) / log(2.0f) - 6.5f;
+        dist = 75.0f * scale;
+    }
 
-    Math::Vector pos = m_lookatPt;// +0.25f * dist * dir;// +0.25f * dist * lightOffset;
+    Math::Vector pos = m_lookatPt + 0.25f * dist * dir;
 
     pos.x = round(pos.x);
     pos.y = round(pos.y);
     pos.z = round(pos.z);
 
-    Math::Vector lightPos = pos + Math::Vector(0.0f, -200.0f, 0.0f);
-
-    Math::Vector lookAt = lightPos - lightDir;
+    Math::Vector lookAt = pos - lightDir;
 
     Math::LoadOrthoProjectionMatrix(m_shadowProjMat, -dist, dist, -dist, dist, -depth, depth);
-    Math::LoadViewMatrix(m_shadowViewMat, lightPos, lookAt, worldUp);
+    Math::LoadViewMatrix(m_shadowViewMat, pos, lookAt, worldUp);
 
     Math::Matrix scaleMat;
     Math::LoadScaleMatrix(scaleMat, Math::Vector(1.0f, 1.0f, -1.0f));

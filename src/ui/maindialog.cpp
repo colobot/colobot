@@ -4988,11 +4988,13 @@ void CMainDialog::SetupMemorize()
     GetProfile().SetIntProperty("Setup", "EditIndentMode", m_engine->GetEditIndentMode());
     GetProfile().SetIntProperty("Setup", "EditIndentValue", m_engine->GetEditIndentValue());
 
+    GetProfile().SetIntProperty("Setup", "MipmapLevel", m_engine->GetTextureMipmapLevel());
+    GetProfile().SetIntProperty("Setup", "Anisotropy", m_engine->GetTextureAnisotropyLevel());
+    GetProfile().SetFloatProperty("Setup", "ShadowColor", m_engine->GetShadowColor());
+    GetProfile().SetFloatProperty("Setup", "ShadowRange", m_engine->GetShadowRange());
+
     /* screen setup */
-    if (m_setupFull)
-        GetProfile().SetIntProperty("Setup", "Fullscreen", 1);
-    else
-        GetProfile().SetIntProperty("Setup", "Fullscreen", 0);
+    GetProfile().SetIntProperty("Setup", "Fullscreen", m_setupFull ? 1 : 0);
 
     CList *pl;
     CWindow *pw;
@@ -5248,6 +5250,26 @@ void CMainDialog::SetupRecall()
     if ( GetProfile().GetIntProperty("Setup", "Fullscreen", iValue) )
     {
         m_setupFull = (iValue == 1);
+    }
+
+    if ( GetProfile().GetIntProperty("Setup", "MipmapLevel", iValue))
+    {
+        m_engine->SetTextureMipmapLevel(iValue);
+    }
+
+    if (GetProfile().GetIntProperty("Setup", "Anisotropy", iValue))
+    {
+        m_engine->SetTextureAnisotropyLevel(iValue);
+    }
+
+    if (GetProfile().GetFloatProperty("Setup", "ShadowColor", fValue))
+    {
+        m_engine->SetShadowColor(fValue);
+    }
+
+    if (GetProfile().GetFloatProperty("Setup", "ShadowRange", fValue))
+    {
+        m_engine->SetShadowRange(fValue);
     }
 }
 

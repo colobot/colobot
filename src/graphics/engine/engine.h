@@ -1141,9 +1141,15 @@ public:
     //@}
 
     //@{
-    //! Management of shadow mapping
+    //! Management of shadow color
     void            SetShadowColor(float value);
     bool            GetShadowColor();
+    //@}
+
+    //@{
+    //! Management of shadow range
+    void            SetShadowRange(float value);
+    bool            GetShadowRange();
     //@}
 
     //@{
@@ -1471,6 +1477,8 @@ protected:
     bool m_qualityShadows;
     //! Shadow color
     float m_shadowColor;
+    //! Shadow range
+    float m_shadowRange;
 
     //! Map of loaded textures (by name)
     std::map<std::string, Texture> m_texNameMap;
