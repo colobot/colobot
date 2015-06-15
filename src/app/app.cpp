@@ -35,9 +35,7 @@
 
 #include "graphics/engine/modelmanager.h"
 #include "graphics/core/nulldevice.h"
-#include "graphics/opengl/gldevice.h"
-#include "graphics/opengl/gl21device.h"
-#include "graphics/opengl/gl33device.h"
+#include "graphics/opengl/glutil.h"
 
 #include "object/robotmain.h"
 #include "object/objman.h"
@@ -563,14 +561,9 @@ bool CApplication::Create()
 
     if(!m_headless)
     {
-        // The video is ready, we can create and initalize the graphics device
-        if (m_graphics == "opengl")
-            m_device = new Gfx::CGLDevice(m_deviceConfig);
-        else if (m_graphics == "gl21")
-            m_device = new Gfx::CGL21Device(m_deviceConfig);
-        else if (m_graphics == "gl33")
-            m_device = new Gfx::CGL33Device(m_deviceConfig);
-        else
+        m_device = Gfx::CreateDevice(m_deviceConfig, m_graphics.c_str());
+
+        if (m_device == nullptr)
         {
             m_device = new Gfx::CNullDevice();
             GetLogger()->Error("Unknown graphics device: %s\n", m_graphics.c_str());

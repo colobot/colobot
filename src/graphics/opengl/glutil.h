@@ -47,20 +47,6 @@ enum VBOMode
 \brief Additional config with OpenGL-specific settings */
 struct GLDeviceConfig : public DeviceConfig
 {
-    //! Size of red channel in bits
-    int redSize;
-    //! Size of green channel in bits
-    int greenSize;
-    //! Size of blue channel in bits
-    int blueSize;
-    //! Size of alpha channel in bits
-    int alphaSize;
-    //! Color depth in bits
-    int depthSize;
-
-    //! Force hardware acceleration (video mode set will fail on lack of hw accel)
-    bool hardwareAccel;
-
     //! VBO override/autodetect
     VBOMode vboMode;
 
@@ -70,6 +56,13 @@ struct GLDeviceConfig : public DeviceConfig
     //! Loads the default values
     void LoadDefault();
 };
+
+//! Creates OpenGL device
+CDevice* CreateDevice(const GLDeviceConfig &config, const char *name);
+
+//! Returns OpenGL version as one number.
+// First digit is major part, second digit is minor part.
+int GetOpenGLVersion();
 
 //! Translate Gfx primitive type to OpenGL primitive type
 GLenum TranslateGfxPrimitive(PrimitiveType type);

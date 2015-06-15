@@ -65,6 +65,20 @@ struct DeviceConfig
     //! No window frame (also set with full screen)
     bool noFrame;
 
+    //! Size of red channel in bits
+    int redSize;
+    //! Size of green channel in bits
+    int greenSize;
+    //! Size of blue channel in bits
+    int blueSize;
+    //! Size of alpha channel in bits
+    int alphaSize;
+    //! Color depth in bits
+    int depthSize;
+
+    //! Force hardware acceleration (video mode set will fail on lack of hw accel)
+    bool hardwareAccel;
+
     //! Constructor calls LoadDefault()
     DeviceConfig() { LoadDefault(); }
 
@@ -77,6 +91,14 @@ struct DeviceConfig
         resizeable = true;
         doubleBuf = true;
         noFrame = false;
+
+        hardwareAccel = true;
+
+        redSize = 8;
+        blueSize = 8;
+        greenSize = 8;
+        alphaSize = 8;
+        depthSize = 24;
     }
 };
 
