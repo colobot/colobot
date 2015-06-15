@@ -23,6 +23,7 @@
 #include "graphics/opengl/gl33device.h"
 #include "common/logger.h"
 #include <physfs.h>
+#include <cstring>
 
 // Graphics module namespace
 namespace Gfx {
@@ -45,12 +46,12 @@ void GLDeviceConfig::LoadDefault()
 CDevice* CreateDevice(const GLDeviceConfig &config, const char *name)
 {
     if (name == nullptr) return nullptr;
-    else if (strcmp(name, "default") == 0) return new CGLDevice(config);
-    else if (strcmp(name, "opengl") == 0) return new CGLDevice(config);
-    else if (strcmp(name, "gl14") == 0) return new CGLDevice(config);
-    else if (strcmp(name, "gl21") == 0) return new CGL21Device(config);
-    else if (strcmp(name, "gl33") == 0) return new CGL33Device(config);
-    else if (strcmp(name, "auto") == 0)
+    else if (std::strcmp(name, "default") == 0) return new CGLDevice(config);
+    else if (std::strcmp(name, "opengl") == 0) return new CGLDevice(config);
+    else if (std::strcmp(name, "gl14") == 0) return new CGLDevice(config);
+    else if (std::strcmp(name, "gl21") == 0) return new CGL21Device(config);
+    else if (std::strcmp(name, "gl33") == 0) return new CGL33Device(config);
+    else if (std::strcmp(name, "auto") == 0)
     {
         int version = GetOpenGLVersion();
 
@@ -58,7 +59,8 @@ CDevice* CreateDevice(const GLDeviceConfig &config, const char *name)
         else if (version >= 21) return new CGL21Device(config);
         else return new CGLDevice(config);
     }
-    else return nullptr;
+
+    return nullptr;
 }
 
 int GetOpenGLVersion()
