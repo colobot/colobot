@@ -4599,7 +4599,7 @@ void CMainDialog::ChangeDisplay()
     std::vector<Math::IntPoint> modes;
     m_app->GetVideoResolutionList(modes, true, true);
     
-    Gfx::GLDeviceConfig config = m_app->GetVideoConfig();
+    Gfx::DeviceConfig config = m_app->GetVideoConfig();
     config.size = modes[m_setupSelMode];
     config.fullScreen = bFull;
     m_app->ChangeVideoConfig(config);
