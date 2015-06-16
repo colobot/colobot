@@ -46,6 +46,8 @@ public:
     
     virtual bool Create();
     virtual void Destroy();
+
+    virtual void ConfigChanged(const DeviceConfig &newConfig);
     
     virtual void BeginScene();
     virtual void EndScene();

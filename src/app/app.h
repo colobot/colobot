@@ -31,7 +31,6 @@
 
 #include "graphics/core/device.h"
 #include "graphics/engine/engine.h"
-#include "graphics/opengl/gldevice.h"
 
 
 #include <string>
@@ -223,10 +222,10 @@ public:
                                             bool fullScreen, bool resizeable) const;
 
     //! Returns the current video mode
-    Gfx::GLDeviceConfig GetVideoConfig() const;
+    Gfx::DeviceConfig GetVideoConfig() const;
 
     //! Change the video mode to given mode
-    bool        ChangeVideoConfig(const Gfx::GLDeviceConfig &newConfig);
+    bool        ChangeVideoConfig(const Gfx::DeviceConfig &newConfig);
 
     //! Suspends animation (time will not be updated)
     void        SuspendSimulation();
@@ -394,9 +393,9 @@ protected:
     std::string     m_errorMessage;
 
     //! Current configuration of OpenGL display device
-    Gfx::GLDeviceConfig m_deviceConfig;
+    Gfx::DeviceConfig m_deviceConfig;
     //! Previous configuration of OpenGL display device
-    Gfx::GLDeviceConfig m_lastDeviceConfig;
+    Gfx::DeviceConfig m_lastDeviceConfig;
 
     //! Text set as window title
     std::string     m_windowTitle;

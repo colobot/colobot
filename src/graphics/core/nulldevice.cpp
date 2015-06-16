@@ -57,6 +57,10 @@ void CNullDevice::Destroy()
 {
 }
 
+void CNullDevice::ConfigChanged(const DeviceConfig &newConfig)
+{
+}
+
 void CNullDevice::BeginScene()
 {
 }

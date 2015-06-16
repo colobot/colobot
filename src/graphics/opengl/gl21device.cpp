@@ -38,7 +38,7 @@
 // Graphics module namespace
 namespace Gfx {
 
-CGL21Device::CGL21Device(const GLDeviceConfig &config)
+CGL21Device::CGL21Device(const DeviceConfig &config)
 {
     m_config = config;
     m_lighting = false;
@@ -378,7 +378,7 @@ void CGL21Device::Destroy()
     m_textureStageParams.clear();
 }
 
-void CGL21Device::ConfigChanged(const GLDeviceConfig& newConfig)
+void CGL21Device::ConfigChanged(const DeviceConfig& newConfig)
 {
     m_config = newConfig;
 

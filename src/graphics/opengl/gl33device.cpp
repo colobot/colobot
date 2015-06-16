@@ -37,7 +37,7 @@
 // Graphics module namespace
 namespace Gfx {
 
-CGL33Device::CGL33Device(const GLDeviceConfig &config)
+CGL33Device::CGL33Device(const DeviceConfig &config)
 {
     m_config = config;
     m_lighting = false;
@@ -408,7 +408,7 @@ void CGL33Device::Destroy()
     m_textureStageParams.clear();
 }
 
-void CGL33Device::ConfigChanged(const GLDeviceConfig& newConfig)
+void CGL33Device::ConfigChanged(const DeviceConfig& newConfig)
 {
     m_config = newConfig;
 

@@ -31,34 +31,8 @@
 namespace Gfx
 {
 
-/**
-\enum VBOMode
-\brief VBO autodetect/override
-*/
-enum VBOMode
-{
-    VBO_MODE_ENABLE,  //! < override: enable
-    VBO_MODE_DISABLE, //! < override: disable
-    VBO_MODE_AUTO     //! < autodetect
-};
-
-/**
-\struct GLDeviceConfig
-\brief Additional config with OpenGL-specific settings */
-struct GLDeviceConfig : public DeviceConfig
-{
-    //! VBO override/autodetect
-    VBOMode vboMode;
-
-    //! Constructor calls LoadDefaults()
-    GLDeviceConfig();
-
-    //! Loads the default values
-    void LoadDefault();
-};
-
 //! Creates OpenGL device
-CDevice* CreateDevice(const GLDeviceConfig &config, const char *name);
+CDevice* CreateDevice(const DeviceConfig &config, const char *name);
 
 //! Returns OpenGL version as one number.
 // First digit is major part, second digit is minor part.

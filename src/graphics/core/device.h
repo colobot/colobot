@@ -286,6 +286,9 @@ public:
     //! Destroys the device, releasing every acquired resource
     virtual void Destroy() = 0;
 
+    //! Changes configuration
+    virtual void ConfigChanged(const DeviceConfig &newConfig) = 0;
+
     //! Begins drawing the 3D scene
     virtual void BeginScene() = 0;
     //! Ends drawing the 3D scene

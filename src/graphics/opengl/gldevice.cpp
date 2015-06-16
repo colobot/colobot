@@ -36,7 +36,7 @@
 // Graphics module namespace
 namespace Gfx {
 
-CGLDevice::CGLDevice(const GLDeviceConfig &config)
+CGLDevice::CGLDevice(const DeviceConfig &config)
 {
     m_config = config;
     m_lighting = false;
@@ -244,40 +244,27 @@ bool CGLDevice::Create()
             GetLogger()->Info("Anisotropic filtering not available\n");
         }
         
-        if (m_config.vboMode == VBO_MODE_ENABLE)
-        {
-            GetLogger()->Info("VBO enabled by override - using VBOs\n");
-            SetVertexBufferType(VBT_VBO_CORE);
-        }
-        else if (m_config.vboMode == VBO_MODE_DISABLE)
-        {
-            GetLogger()->Info("VBO disabled by override - using display lists\n");
-            SetVertexBufferType(VBT_DISPLAY_LIST);
-        }
-        else
-        {
-            GetLogger()->Info("Auto-detecting VBO support\n");
-            
-            // detecting VBO ARB extension
-            bool vboARB = glewIsSupported("GL_ARB_vertex_buffer_object");
+        GetLogger()->Info("Auto-detecting VBO support\n");
 
-            // VBO is core OpenGL feature since 1.5
-            // everything below 1.5 means no VBO support
-            if (m_glMajor > 1 || m_glMinor > 4)
-            {
-                GetLogger()->Info("Core VBO supported\n", m_glMajor, m_glMinor);
-                SetVertexBufferType(VBT_VBO_CORE);
-            }
-            else if(vboARB)     // VBO ARB extension available
-            {
-                GetLogger()->Info("ARB VBO supported\n");
-                SetVertexBufferType(VBT_VBO_ARB);
-            }
-            else                // no VBO support
-            {
-                GetLogger()->Info("VBO not supported\n");
-                SetVertexBufferType(VBT_DISPLAY_LIST);
-            }
+        // detecting VBO ARB extension
+        bool vboARB = glewIsSupported("GL_ARB_vertex_buffer_object");
+
+        // VBO is core OpenGL feature since 1.5
+        // everything below 1.5 means no VBO support
+        if (m_glMajor > 1 || m_glMinor > 4)
+        {
+            GetLogger()->Info("Core VBO supported\n", m_glMajor, m_glMinor);
+            m_vertexBufferType = VBT_VBO_CORE;
+        }
+        else if(vboARB)     // VBO ARB extension available
+        {
+            GetLogger()->Info("ARB VBO supported\n");
+            m_vertexBufferType = VBT_VBO_ARB;
+        }
+        else                // no VBO support
+        {
+            GetLogger()->Info("VBO not supported\n");
+            m_vertexBufferType = VBT_DISPLAY_LIST;
         }
     }
 
@@ -336,7 +323,7 @@ void CGLDevice::Destroy()
     m_textureStageParams.clear();
 }
 
-void CGLDevice::ConfigChanged(const GLDeviceConfig& newConfig)
+void CGLDevice::ConfigChanged(const DeviceConfig& newConfig)
 {
     m_config = newConfig;
 
@@ -344,18 +331,6 @@ void CGLDevice::ConfigChanged(const GLDeviceConfig& newConfig)
     m_lighting = false;
     Destroy();
     Create();
-}
-
-void CGLDevice::SetUseVbo(bool vboAvailable)
-{
-    m_vboAvailable = vboAvailable;
-    m_vertexBufferType = vboAvailable ? VBT_VBO_CORE : VBT_DISPLAY_LIST;
-}
-
-void CGLDevice::SetVertexBufferType(VertexBufferType type)
-{
-    m_vertexBufferType = type;
-    m_vboAvailable = (type != VBT_DISPLAY_LIST);
 }
 
 void CGLDevice::BeginScene()

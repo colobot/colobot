@@ -70,7 +70,7 @@ struct GLDevicePrivate;
 class CGLDevice : public CDevice
 {
 public:
-    CGLDevice(const GLDeviceConfig &config);
+    CGLDevice(const DeviceConfig &config);
     virtual ~CGLDevice();
 
     virtual void DebugHook() OVERRIDE;
@@ -79,10 +79,7 @@ public:
     virtual bool Create() OVERRIDE;
     virtual void Destroy() OVERRIDE;
 
-    void ConfigChanged(const GLDeviceConfig &newConfig);
-
-    void SetUseVbo(bool useVbo);
-    void SetVertexBufferType(VertexBufferType type);
+    virtual void ConfigChanged(const DeviceConfig &newConfig) OVERRIDE;
 
     virtual void BeginScene() OVERRIDE;
     virtual void EndScene() OVERRIDE;
@@ -176,7 +173,7 @@ private:
 
 private:
     //! Current config
-    GLDeviceConfig m_config;
+    DeviceConfig m_config;
 
     //! Current world matrix
     Math::Matrix m_worldMat;

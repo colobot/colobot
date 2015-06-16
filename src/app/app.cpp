@@ -224,7 +224,6 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
         OPT_DATADIR,
         OPT_SAVEDIR,
         OPT_MOD,
-        OPT_VBO,
         OPT_RESOLUTION,
         OPT_HEADLESS,
         OPT_DEVICE
@@ -242,7 +241,6 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
         { "datadir", required_argument, nullptr, OPT_DATADIR },
         { "savedir", required_argument, nullptr, OPT_SAVEDIR },
         { "mod", required_argument, nullptr, OPT_MOD },
-        { "vbo", required_argument, nullptr, OPT_VBO },
         { "resolution", required_argument, nullptr, OPT_RESOLUTION },
         { "headless", no_argument, nullptr, OPT_HEADLESS },
         { "graphics", required_argument, nullptr, OPT_DEVICE },
@@ -286,7 +284,6 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
                 GetLogger()->Message("  -datadir path       set custom data directory path\n");
                 GetLogger()->Message("  -savedir path       set custom save directory path (must be writable)\n");
                 GetLogger()->Message("  -mod path           load datadir mod from given path\n");
-                GetLogger()->Message("  -vbo mode           set OpenGL VBO mode (one of: auto, enable, disable)\n");
                 GetLogger()->Message("  -resolution WxH     set resolution\n");
                 GetLogger()->Message("  -headless           headless mode - disables graphics, sound and user interaction\n");
                 GetLogger()->Message("  -graphics           changes graphics device (defaults to opengl)\n");
@@ -349,24 +346,6 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
 
                 GetLogger()->Info("Using language %s\n", optarg);
                 m_language = language;
-                break;
-            }
-            case OPT_VBO:
-            {
-                std::string vbo;
-                vbo = optarg;
-                if (vbo == "auto")
-                    m_deviceConfig.vboMode = Gfx::VBO_MODE_AUTO;
-                else if (vbo == "enable")
-                    m_deviceConfig.vboMode = Gfx::VBO_MODE_ENABLE;
-                else if (vbo == "disable")
-                    m_deviceConfig.vboMode = Gfx::VBO_MODE_DISABLE;
-                else
-                {
-                    GetLogger()->Error("Invalid vbo mode: '%s'\n", optarg);
-                    return PARSE_ARGS_FAIL;
-                }
-
                 break;
             }
             case OPT_DATADIR:
@@ -718,7 +697,7 @@ bool CApplication::IsRestarting()
     return m_restart;
 }
 
-bool CApplication::ChangeVideoConfig(const Gfx::GLDeviceConfig &newConfig)
+bool CApplication::ChangeVideoConfig(const Gfx::DeviceConfig &newConfig)
 {
     static bool restore = false;
 
@@ -765,7 +744,7 @@ bool CApplication::ChangeVideoConfig(const Gfx::GLDeviceConfig &newConfig)
         }
     }
 
-    ( static_cast<Gfx::CGLDevice*>(m_device) )->ConfigChanged(m_deviceConfig);
+    m_device->ConfigChanged(m_deviceConfig);
 
     m_engine->ResetAfterDeviceChanged();
     m_controller->GetRobotMain()->ResetAfterDeviceChanged();
@@ -1060,7 +1039,7 @@ Event CApplication::ProcessSystemEvent()
     }
     else if (m_private->currentEvent.type == SDL_VIDEORESIZE)
     {
-        Gfx::GLDeviceConfig newConfig = m_deviceConfig;
+        Gfx::DeviceConfig newConfig = m_deviceConfig;
         newConfig.size.x = m_private->currentEvent.resize.w;
         newConfig.size.y = m_private->currentEvent.resize.h;
         if (newConfig.size != m_deviceConfig.size)
@@ -1384,7 +1363,7 @@ long long CApplication::GetRealRelTime() const
     return m_realRelTime;
 }
 
-Gfx::GLDeviceConfig CApplication::GetVideoConfig() const
+Gfx::DeviceConfig CApplication::GetVideoConfig() const
 {
     return m_deviceConfig;
 }

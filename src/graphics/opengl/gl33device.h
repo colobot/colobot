@@ -50,7 +50,7 @@ namespace Gfx {
 class CGL33Device : public CDevice
 {
 public:
-    CGL33Device(const GLDeviceConfig &config);
+    CGL33Device(const DeviceConfig &config);
     virtual ~CGL33Device();
 
     virtual void DebugHook() OVERRIDE;
@@ -59,7 +59,7 @@ public:
     virtual bool Create() OVERRIDE;
     virtual void Destroy() OVERRIDE;
 
-    void ConfigChanged(const GLDeviceConfig &newConfig);
+    virtual void ConfigChanged(const DeviceConfig &newConfig) OVERRIDE;
 
     virtual void BeginScene() OVERRIDE;
     virtual void EndScene() OVERRIDE;
@@ -158,7 +158,7 @@ private:
 
 private:
     //! Current config
-    GLDeviceConfig m_config;
+    DeviceConfig m_config;
 
     //! Current world matrix
     Math::Matrix m_worldMat;

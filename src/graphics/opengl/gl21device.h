@@ -52,7 +52,7 @@ struct GLDevicePrivate;
 class CGL21Device : public CDevice
 {
 public:
-    CGL21Device(const GLDeviceConfig &config);
+    CGL21Device(const DeviceConfig &config);
     virtual ~CGL21Device();
 
     virtual void DebugHook() OVERRIDE;
@@ -61,7 +61,7 @@ public:
     virtual bool Create() OVERRIDE;
     virtual void Destroy() OVERRIDE;
 
-    void ConfigChanged(const GLDeviceConfig &newConfig);
+    virtual void ConfigChanged(const DeviceConfig &newConfig) OVERRIDE;
 
     virtual void BeginScene() OVERRIDE;
     virtual void EndScene() OVERRIDE;
@@ -157,7 +157,7 @@ private:
 
 private:
     //! Current config
-    GLDeviceConfig m_config;
+    DeviceConfig m_config;
 
     //! Current world matrix
     Math::Matrix m_worldMat;

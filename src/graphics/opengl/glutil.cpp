@@ -28,22 +28,10 @@
 // Graphics module namespace
 namespace Gfx {
 
-GLDeviceConfig::GLDeviceConfig()
-{
-    LoadDefault();
-}
-
 GLuint textureCoordinates[] = { GL_S, GL_T, GL_R, GL_Q };
 GLuint textureCoordGen[] = { GL_TEXTURE_GEN_S, GL_TEXTURE_GEN_T, GL_TEXTURE_GEN_R, GL_TEXTURE_GEN_Q };
 
-void GLDeviceConfig::LoadDefault()
-{
-    DeviceConfig::LoadDefault();
-
-    vboMode = VBO_MODE_AUTO;
-}
-
-CDevice* CreateDevice(const GLDeviceConfig &config, const char *name)
+CDevice* CreateDevice(const DeviceConfig &config, const char *name)
 {
     if (name == nullptr) return nullptr;
     else if (std::strcmp(name, "default") == 0) return new CGLDevice(config);
