@@ -24,11 +24,35 @@
 
 #pragma once
 
-#include "object/object.h"
-
 #include "common/singleton.h"
 
+#include "math/const.h"
+#include "math/vector.h"
+
+#include "object/object_type.h"
+
 #include <map>
+#include <vector>
+#include <memory>
+
+namespace Gfx {
+class CEngine;
+class CModelManager;
+class CParticle;
+class CTerrain;
+} // namespace Gfx
+
+class CObject;
+class CRobotMain;
+class CObjectFactory;
+
+enum RadarFilter
+{
+    FILTER_NONE        = 0,
+    FILTER_ONLYLANDING = 1,
+    FILTER_ONLYFLYING  = 2,
+};
+
 
 /**
  * \class ObjectManager
@@ -37,7 +61,11 @@
 class CObjectManager : public CSingleton<CObjectManager>
 {
 public:
-    CObjectManager();
+    CObjectManager(Gfx::CEngine* engine,
+                   Gfx::CTerrain* terrain,
+                   Gfx::CModelManager* modelManager,
+                   Gfx::CParticle* particle,
+                   CRobotMain* main);
     virtual ~CObjectManager();
 
     //! Registers new object
@@ -52,8 +80,7 @@ public:
     const std::map<unsigned int, CObject*>& GetAllObjects();
     //! Removes all objects
     void      Flush();
-    
-    
+
     //! Creates an object
     CObject*  CreateObject(Math::Vector pos, float angle, ObjectType type, float power = -1.f, float zoom = 1.f, float height = 0.f, bool trainer = false, bool toy = false, int option = 0);
     //! Destroys an object
@@ -75,5 +102,6 @@ public:
 
 protected:
     std::map<unsigned int, CObject*> m_table;
+    std::unique_ptr<CObjectFactory> m_objectFactory;
 };
 

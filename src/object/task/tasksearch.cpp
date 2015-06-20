@@ -25,10 +25,10 @@
 
 #include "math/geometry.h"
 
-#include "physics/physics.h"
-
 #include "object/objman.h"
 #include "object/robotmain.h"
+
+#include "physics/physics.h"
 
 
 // Object's constructor.
@@ -235,21 +235,15 @@ bool CTaskSearch::Abort()
 
 bool CTaskSearch::CreateMark()
 {
-    CObject*        fret;
-    ObjectType      type;
-    Math::Matrix*   mat;
-    Math::Vector    pos;
-    Gfx::TerrainRes res;
-    Error           info;
-
-    mat = m_object->GetWorldMatrix(0);
-    pos = Math::Vector(7.5f, 0.0f, 0.0f);
+    Math::Matrix* mat = m_object->GetWorldMatrix(0);
+    Math::Vector pos = Math::Vector(7.5f, 0.0f, 0.0f);
     pos = Math::Transform(*mat, pos);  // sensor position
 
-    res = m_terrain->GetResource(pos);
+    Gfx::TerrainRes res = m_terrain->GetResource(pos);
     if ( res == Gfx::TR_NULL )  return false;
 
-    type = OBJECT_NULL;
+    ObjectType type = OBJECT_NULL;
+    Error info = ERR_OK;
     if ( res == Gfx::TR_STONE )
     {
         type = OBJECT_MARKSTONE;
@@ -289,13 +283,7 @@ bool CTaskSearch::CreateMark()
 
 //? DeleteMark(type);
 
-    fret = new CObject();
-    if ( !fret->CreateResource(pos, 0.0f, type) )
-    {
-        delete fret;
-        m_main->DisplayError(ERR_TOOMANY, m_object);
-        return false;
-    }
+    CObjectManager::GetInstancePointer()->CreateObject(pos, 0.0f, type);
 
     m_main->DisplayError(info, pos, 5.0f, 50.0f);  // displays the message
 

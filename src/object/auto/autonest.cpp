@@ -180,14 +180,7 @@ bool CAutoNest::SearchFree(Math::Vector pos)
 
 void CAutoNest::CreateFret(Math::Vector pos, float angle, ObjectType type)
 {
-    CObject*    fret;
-
-    fret = new CObject();
-    if ( !fret->CreateResource(pos, angle, type) )
-    {
-        delete fret;
-        return;
-    }
+    CObject* fret = CObjectManager::GetInstancePointer()->CreateObject(pos, angle, type);
     fret->SetLock(true);  // not usable
     fret->SetZoom(0, 0.0f);
 }

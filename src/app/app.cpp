@@ -105,14 +105,12 @@ CApplication::CApplication()
     m_private       = new ApplicationPrivate();
     m_iMan          = new CInstanceManager();
     m_pathManager   = new CPathManager();
-    m_objMan        = new CObjectManager();
     m_eventQueue    = new CEventQueue();
     m_profile       = new CProfile();
     m_input         = new CInput();
 
     m_engine        = nullptr;
     m_device        = nullptr;
-    m_modelManager  = nullptr;
     m_controller    = nullptr;
     m_sound         = nullptr;
 
@@ -173,9 +171,6 @@ CApplication::~CApplication()
 
     delete m_input;
     m_input = nullptr;
-
-    delete m_objMan;
-    m_objMan = nullptr;
 
     delete m_eventQueue;
     m_eventQueue = nullptr;
@@ -572,9 +567,6 @@ bool CApplication::Create()
         return false;
     }
 
-    // Create model manager
-    m_modelManager = new Gfx::CModelManager(m_engine);
-
     // Create the robot application.
     m_controller = new CController(this, !defaultValues);
 
@@ -649,9 +641,6 @@ void CApplication::Destroy()
 
     delete m_sound;
     m_sound = nullptr;
-
-    delete m_modelManager;
-    m_modelManager = nullptr;
 
     if (m_engine != nullptr)
     {

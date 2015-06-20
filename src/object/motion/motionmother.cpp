@@ -67,10 +67,9 @@ void CMotionMother::DeleteObject(bool bAll)
 
 // Creates a vehicle traveling any lands on the ground.
 
-bool CMotionMother::Create(Math::Vector pos, float angle, ObjectType type,
-                          float power)
+void CMotionMother::Create(Math::Vector pos, float angle, ObjectType type,
+                          float power, Gfx::CModelManager* modelManager)
 {
-    Gfx::CModelManager* modelManager = Gfx::CModelManager::GetInstancePointer();
     int rank;
 
     m_object->SetType(type);
@@ -252,8 +251,6 @@ bool CMotionMother::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetPosition(0, pos);  // to display the shadows immediately
 
     m_engine->LoadAllTextures();
-
-    return true;
 }
 
 // Creates the physics of the object.

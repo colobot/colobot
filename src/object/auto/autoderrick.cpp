@@ -518,15 +518,7 @@ bool CAutoDerrick::SearchFree(Math::Vector pos)
 void CAutoDerrick::CreateFret(Math::Vector pos, float angle, ObjectType type,
                               float height)
 {
-    CObject*        fret;
-
-    fret = new CObject();
-    if ( !fret->CreateResource(pos, angle, type) )
-    {
-        delete fret;
-        m_main->DisplayError(ERR_TOOMANY, m_object);
-        return;
-    }
+    CObject* fret = CObjectManager::GetInstancePointer()->CreateObject(pos, angle, type);
     fret->SetLock(true);  // object not yet usable
 
     if ( m_object->GetResetCap() == RESET_MOVE )

@@ -47,8 +47,8 @@ void CMotionDummy::DeleteObject(bool bAll)
 
 // Creates a Dummy traveling any lands on the ground.
 
-bool CMotionDummy::Create(Math::Vector pos, float angle, ObjectType type,
-                          float power)
+void CMotionDummy::Create(Math::Vector pos, float angle, ObjectType type,
+                          float power, Gfx::CModelManager*)
 {
     m_object->SetType(type);
 
@@ -81,7 +81,5 @@ bool CMotionDummy::Create(Math::Vector pos, float angle, ObjectType type,
     m_physics->SetCirMotionY(MO_ADVACCEL,  2.0f);
     m_physics->SetCirMotionY(MO_RECACCEL,  2.0f);
     m_physics->SetCirMotionY(MO_STOACCEL,  2.0f);
-
-    return true;
 }
 

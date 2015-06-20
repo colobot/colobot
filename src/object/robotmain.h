@@ -79,6 +79,7 @@ class CEventQueue;
 class CSoundInterface;
 class CLevelParserLine;
 class CInput;
+class CObjectManager;
 
 namespace Gfx {
 class CEngine;
@@ -395,6 +396,7 @@ protected:
 protected:
     CController*        m_ctrl;
     CApplication*       m_app;
+    CObjectManager*     m_objMan;
     CEventQueue*        m_eventQueue;
     CMainMovie*         m_movie;
     Gfx::CEngine*       m_engine;
@@ -403,6 +405,7 @@ protected:
     Gfx::CCloud*        m_cloud;
     Gfx::CLightning*    m_lightning;
     Gfx::CPlanet*       m_planet;
+    Gfx::CModelManager* m_modelManager;
     Gfx::CLightManager* m_lightMan;
     Gfx::CTerrain*      m_terrain;
     Gfx::CCamera*       m_camera;

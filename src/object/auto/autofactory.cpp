@@ -639,16 +639,9 @@ bool CAutoFactory::NearestVehicle()
 
 bool CAutoFactory::CreateVehicle()
 {
-    CObject*    vehicle;
-    Math::Matrix*   mat;
-    CPhysics*   physics;
-    Math::Vector    pos;
-    float       angle;
-    char*       name;
+    float angle = m_object->GetAngleY(0);
 
-    angle = m_object->GetAngleY(0);
-
-    mat = m_object->GetWorldMatrix(0);
+    Math::Vector pos;
     if ( m_type == OBJECT_MOBILErt ||
          m_type == OBJECT_MOBILErc ||
          m_type == OBJECT_MOBILErr ||
@@ -660,21 +653,16 @@ bool CAutoFactory::CreateVehicle()
     {
         pos = Math::Vector(4.0f, 0.0f, 0.0f);
     }
+    Math::Matrix* mat = m_object->GetWorldMatrix(0);
     pos = Transform(*mat, pos);
 
-    vehicle = new CObject();
-    if ( !vehicle->CreateVehicle(pos, angle, m_type, -1.0f, false, false) )
-    {
-        delete vehicle;
-        m_main->DisplayError(ERR_TOOMANY, m_object);
-        return false;
-    }
+    CObject* vehicle = CObjectManager::GetInstancePointer()->CreateObject(pos, angle, m_type);
     vehicle->UpdateMapping();
     vehicle->SetLock(true);  // not usable
     vehicle->SetRange(30.0f);
 
-    physics = vehicle->GetPhysics();
-    if ( physics != 0 )
+    CPhysics* physics = vehicle->GetPhysics();
+    if ( physics != nullptr )
     {
         physics->SetFreeze(true);  // it doesn't move
     }
@@ -684,7 +672,7 @@ bool CAutoFactory::CreateVehicle()
     {
         for ( int i=0 ; ; i++ )
         {
-            name = m_main->GetNewScriptName(m_type, i);
+            char* name = m_main->GetNewScriptName(m_type, i);
             if ( name == nullptr )  break;
             Program* prog = brain->GetOrAddProgram(i);
             vehicle->ReadProgram(prog, name);

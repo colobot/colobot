@@ -65,13 +65,6 @@ CMotion::~CMotion()
 {
 }
 
-// Deletes the object.
-
-void CMotion::DeleteObject(bool bAll)
-{
-}
-
-
 void CMotion::SetPhysics(CPhysics* physics)
 {
     m_physics = physics;
@@ -80,14 +73,6 @@ void CMotion::SetPhysics(CPhysics* physics)
 void CMotion::SetBrain(CBrain* brain)
 {
     m_brain = brain;
-}
-
-
-// Creates.
-
-bool CMotion::Create(Math::Vector pos, float angle, ObjectType type, float power)
-{
-    return true;
 }
 
 // Management of an event.

@@ -51,7 +51,7 @@ class CModelFile;
  * its own and unique base engine object. This is especially useful
  * for models where the geometry must be altered.
  */
-class CModelManager : public CSingleton<CModelManager>
+class CModelManager
 {
 public:
     CModelManager(CEngine* engine);

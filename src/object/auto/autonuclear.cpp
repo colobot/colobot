@@ -392,20 +392,11 @@ bool CAutoNuclear::SearchVehicle()
 
 void CAutoNuclear::CreatePower()
 {
-    CObject*        power;
-    Math::Vector        pos;
-    float           angle;
+    Math::Vector pos = m_object->GetPosition(0);
+    float angle = m_object->GetAngleY(0);
 
-    pos = m_object->GetPosition(0);
-    angle = m_object->GetAngleY(0);
-
-    power = new CObject();
-    if ( !power->CreateResource(pos, angle, OBJECT_ATOMIC) )
-    {
-        delete power;
-        m_main->DisplayError(ERR_TOOMANY, m_object);
-        return;
-    }
+    float powerLevel = 1.0f;
+    CObject* power = CObjectManager::GetInstancePointer()->CreateObject(pos, angle, OBJECT_ATOMIC, powerLevel);
 
     power->SetTruck(m_object);
     power->SetPosition(0, Math::Vector(22.0f, 3.0f, 0.0f));

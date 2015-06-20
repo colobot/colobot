@@ -80,10 +80,9 @@ void CMotionToto::DeleteObject(bool bAll)
 
 // Creates a vehicle traveling any lands on the ground.
 
-bool CMotionToto::Create(Math::Vector pos, float angle, ObjectType type,
-                         float power)
+void CMotionToto::Create(Math::Vector pos, float angle, ObjectType type,
+                         float power, Gfx::CModelManager* modelManager)
 {
-    Gfx::CModelManager* modelManager = Gfx::CModelManager::GetInstancePointer();
     int             rank;
 
 
@@ -180,8 +179,6 @@ bool CMotionToto::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetPosition(0, pos);  // to display the shadows immediately
 
     m_engine->LoadAllTextures();
-
-    return true;
 }
 
 

@@ -27,8 +27,6 @@
 
 #include <cstdio>
 
-template<> Gfx::CModelManager* CSingleton<Gfx::CModelManager>::m_instance = nullptr;
-
 namespace Gfx {
 
 CModelManager::CModelManager(CEngine* engine)

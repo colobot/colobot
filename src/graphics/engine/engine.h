@@ -48,6 +48,7 @@
 #include <vector>
 #include <map>
 #include <set>
+#include <memory>
 
 
 class CApplication;
@@ -61,6 +62,7 @@ namespace Gfx {
 
 
 class CDevice;
+class CModelManager;
 class CLightManager;
 class CText;
 class CParticle;
@@ -694,6 +696,7 @@ public:
 
     //! Returns the text rendering engine
     CText*          GetText();
+    CModelManager*  GetModelManager();
     //! Returns the light manager
     CLightManager*  GetLightManager();
     //! Returns the particle manager
@@ -1328,6 +1331,7 @@ protected:
     CApplication*     m_app;
     CSoundInterface*  m_sound;
     CDevice*          m_device;
+    std::unique_ptr<CModelManager> m_modelManager;
     CText*            m_text;
     CLightManager*    m_lightMan;
     CParticle*        m_particle;

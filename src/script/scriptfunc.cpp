@@ -1675,48 +1675,46 @@ CBotTypResult CScriptFunctions::cProduce(CBotVar* &var, void* user)
 bool CScriptFunctions::rProduce(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
     CScript*    script = (static_cast<CObject *>(user))->GetRunScript();
-    CObject*    object;
     CObject*    me = (static_cast<CObject *>(user));
-    CBotString  cbs;
-    const char* name;
-    Math::Vector    pos;
-    float       angle;
-    ObjectType  type;
-    float       power;
-    
+    const char* name = "";
+    Math::Vector pos;
+    float       angle = 0.0f;
+    ObjectType  type = OBJECT_NULL;
+    float       power = 0.0f;
+
     if ( var->GetType() <= CBotTypDouble )
     {
         type = static_cast<ObjectType>(var->GetValInt());
         var = var->GetNext();
-        
+
         pos = me->GetPosition(0);
-        
+
         Math::Vector rotation = me->GetAngle(0) + me->GetInclinaison();
         angle = rotation.y;
-        
-        if( var != 0 )
+
+        if( var != nullptr )
             power = var->GetValFloat();
         else
             power = -1.0f;
-        
+
         name = "";
     }
     else
     {
         if ( !GetPoint(var, exception, pos) )  return true;
-        
+
         angle = var->GetValFloat()*Math::PI/180.0f;
         var = var->GetNext();
-        
+
         type = static_cast<ObjectType>(var->GetValInt());
         var = var->GetNext();
-        
-        if ( var != 0 )
+
+        if ( var != nullptr )
         {
-            cbs = var->GetValString();
+            CBotString cbs = var->GetValString();
             name = cbs;
             var = var->GetNext();
-            if ( var != 0 )
+            if ( var != nullptr )
             {
                 power = var->GetValFloat();
             }
@@ -1731,30 +1729,24 @@ bool CScriptFunctions::rProduce(CBotVar* var, CBotVar* result, int& exception, v
             power = -1.0f;
         }
     }
-    
+
+    CObject* object = nullptr;
+
     if ( type == OBJECT_ANT    ||
         type == OBJECT_SPIDER ||
         type == OBJECT_BEE    ||
         type == OBJECT_WORM   )
     {
-        CObject*    egg;
-        
-        object = new CObject();
-        if ( !object->CreateInsect(pos, angle, type) )
-        {
-            delete object;
-            result->SetValInt(1);  // error
-            return true;
-        }
-        
-        egg = new CObject();
-        if ( !egg->CreateResource(pos, angle, OBJECT_EGG, 0.0f) )
-        {
-            delete egg;
-        }
+        CObject* object = CObjectManager::GetInstancePointer()->CreateObject(pos, angle, type);
+        CObjectManager::GetInstancePointer()->CreateObject(pos, angle, OBJECT_EGG, 0.0f);
         object->SetActivity(false);
-    } else {
-        if ((type == OBJECT_POWER || type == OBJECT_ATOMIC) && power == -1.0f) power = 1.0f;
+    }
+    else
+    {
+        if ((type == OBJECT_POWER || type == OBJECT_ATOMIC) && power == -1.0f)
+        {
+            power = 1.0f;
+        }
         object = CObjectManager::GetInstancePointer()->CreateObject(pos, angle, type, power);
         if ( object == nullptr )
         {
@@ -1763,7 +1755,7 @@ bool CScriptFunctions::rProduce(CBotVar* var, CBotVar* result, int& exception, v
         }
         script->m_main->CreateShortcuts();
     }
-    
+
     if (name[0] != 0)
     {
         std::string name2 = CPathManager::InjectLevelDir(name, "ai");
@@ -1775,7 +1767,7 @@ bool CScriptFunctions::rProduce(CBotVar* var, CBotVar* result, int& exception, v
             brain->RunProgram(program);
         }
     }
-    
+
     result->SetValInt(0);  // no error
     return true;
 }

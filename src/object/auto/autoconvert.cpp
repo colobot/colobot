@@ -492,20 +492,10 @@ bool CAutoConvert::SearchVehicle()
 
 void CAutoConvert::CreateMetal()
 {
-    Math::Vector        pos;
-    float           angle;
-    CObject*        fret;
+    Math::Vector pos = m_object->GetPosition(0);
+    float angle = m_object->GetAngleY(0);
 
-    pos = m_object->GetPosition(0);
-    angle = m_object->GetAngleY(0);
-
-    fret = new CObject();
-    if ( !fret->CreateResource(pos, angle, OBJECT_METAL) )
-    {
-        delete fret;
-        m_main->DisplayError(ERR_TOOMANY, m_object);
-        return;
-    }
+    CObject* fret = CObjectManager::GetInstancePointer()->CreateObject(pos, angle, OBJECT_METAL);
 
     if ( m_bResetDelete )
     {

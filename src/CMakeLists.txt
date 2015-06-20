@@ -158,6 +158,7 @@ set(BASE_SOURCES
     object/motion/motionvehicle.cpp
     object/motion/motionworm.cpp
     object/object.cpp
+    object/object_factory.cpp
     object/robotmain.cpp
     object/objman.cpp
     object/task/task.cpp

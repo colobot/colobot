@@ -359,16 +359,12 @@ protected:
     //! Instance manager
     // TODO: to be removed
     CInstanceManager*       m_iMan;
-    //! Object manager
-    CObjectManager*         m_objMan;
     //! Global event queue
     CEventQueue*            m_eventQueue;
     //! Graphics engine
     Gfx::CEngine*           m_engine;
     //! Graphics device
     Gfx::CDevice*           m_device;
-    //! 3D models manager
-    Gfx::CModelManager*     m_modelManager;
     //! Sound subsystem
     CSoundInterface*        m_sound;
     //! Game controller - game engine and UI
