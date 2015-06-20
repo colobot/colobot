@@ -28,7 +28,7 @@
 
 #include "physics/physics.h"
 
-#include "object/objman.h"
+#include "object/object_manager.h"
 #include "object/robotmain.h"
 
 

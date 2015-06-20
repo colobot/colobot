@@ -26,7 +26,7 @@
 #include "graphics/engine/pyro.h"
 #include "graphics/engine/water.h"
 
-#include "object/objman.h"
+#include "object/object_manager.h"
 #include "object/motion/motionhuman.h"
 
 #include "physics/physics.h"

@@ -32,7 +32,7 @@
 
 #include "object/object.h"
 #include "object/robotmain.h"
-#include "object/objman.h"
+#include "object/object_manager.h"
 
 #include "object/auto/autopara.h"
 

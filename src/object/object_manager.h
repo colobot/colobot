@@ -18,7 +18,7 @@
  */
 
 /**
- * \file object/objman.h
+ * \file object/object_manager.h
  * \brief Object manager
  */
 

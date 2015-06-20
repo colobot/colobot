@@ -25,7 +25,7 @@
 
 #include "math/geometry.h"
 
-#include "object/objman.h"
+#include "object/object_manager.h"
 
 #include "ui/interface.h"
 #include "ui/gauge.h"

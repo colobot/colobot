@@ -34,7 +34,7 @@
 
 #include "object/brain.h"
 #include "object/object.h"
-#include "object/objman.h"
+#include "object/object_manager.h"
 #include "object/robotmain.h"
 #include "object/task/taskmanager.h"
 

@@ -64,7 +64,7 @@
 #include "object/motion/motionhuman.h"
 #include "object/motion/motiontoto.h"
 #include "object/object.h"
-#include "object/objman.h"
+#include "object/object_manager.h"
 #include "object/task/task.h"
 #include "object/task/taskbuild.h"
 #include "object/task/taskmanip.h"

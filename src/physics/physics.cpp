@@ -35,7 +35,7 @@
 #include "math/geometry.h"
 
 #include "object/brain.h"
-#include "object/objman.h"
+#include "object/object_manager.h"
 #include "object/robotmain.h"
 #include "object/motion/motion.h"
 #include "object/motion/motionhuman.h"

@@ -22,7 +22,7 @@
 
 #include "graphics/engine/terrain.h"
 
-#include "object/objman.h"
+#include "object/object_manager.h"
 #include "object/level/parserline.h"
 #include "object/level/parserparam.h"
 

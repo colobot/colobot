@@ -22,7 +22,7 @@
 
 #include "app/app.h"
 
-#include "object/objman.h"
+#include "object/object_manager.h"
 
 
 namespace Ui {

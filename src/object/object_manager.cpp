@@ -17,7 +17,7 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-#include "object/objman.h"
+#include "object/object_manager.h"
 
 
 #include "math/all.h"

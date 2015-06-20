@@ -29,7 +29,7 @@
 
 #include "math/geometry.h"
 
-#include "object/objman.h"
+#include "object/object_manager.h"
 #include "object/robotmain.h"
 
 #include "physics/physics.h"

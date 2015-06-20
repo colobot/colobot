@@ -20,7 +20,7 @@
 
 #include "ui/target.h"
 
-#include "object/objman.h"
+#include "object/object_manager.h"
 
 
 namespace Ui {
