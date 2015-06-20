@@ -182,6 +182,8 @@ CEngine::CEngine(CApplication *app)
         m_qualityShadows = (value > 2);
     }
 
+    m_shadowColor = 0.5f;
+
     m_defaultTexParams.format = TEX_IMG_AUTO;
     m_defaultTexParams.mipmap = mipmaps;
     m_defaultTexParams.filter = filter;
