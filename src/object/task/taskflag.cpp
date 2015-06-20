@@ -185,15 +185,7 @@ int CTaskFlag::CountObject(ObjectType type)
 
 Error CTaskFlag::CreateFlag(int rank)
 {
-    CObject*      pObj;
-    CObject*      pNew;
-    Gfx::CPyro*   pyro;
-    Math::Matrix* mat;
-    Math::Vector  pos;
-    float         dist;
-    int           i;
-
-    ObjectType  table[5] =
+    ObjectType table[5] =
     {
         OBJECT_FLAGb,
         OBJECT_FLAGr,
@@ -202,35 +194,31 @@ Error CTaskFlag::CreateFlag(int rank)
         OBJECT_FLAGv,
     };
 
-    mat = m_object->GetWorldMatrix(0);
-    pos = Transform(*mat, Math::Vector(4.0f, 0.0f, 0.0f));
+    Math::Matrix* mat = m_object->GetWorldMatrix(0);
+    Math::Vector pos = Transform(*mat, Math::Vector(4.0f, 0.0f, 0.0f));
 
-    pObj = SearchNearest(pos, OBJECT_NULL);
-    if ( pObj != 0 )
+    CObject* pObj = SearchNearest(pos, OBJECT_NULL);
+    if ( pObj != nullptr )
     {
-        dist = Math::Distance(pos, pObj->GetPosition(0));
+        float dist = Math::Distance(pos, pObj->GetPosition(0));
         if ( dist < 10.0f )
         {
             return ERR_FLAG_PROXY;
         }
     }
 
-    i = rank;
-    if ( CountObject(table[i]) >= 5 )
+    ObjectType type = table[rank];
+    if ( CountObject(type) >= 5 )
     {
         return ERR_FLAG_CREATE;
     }
 
-    pNew = new CObject();
-    if ( !pNew->CreateFlag(pos, 0.0f, table[i]) )
-    {
-        delete pNew;
-        return ERR_TOOMANY;
-    }
+    float angle = 0.0f;
+    CObject* pNew = CObjectManager::GetInstancePointer()->CreateObject(pos, angle, type);
     //pNew->SetZoom(0, 0.0f);
 
     m_sound->Play(SOUND_WAYPOINT, pos);
-    pyro = new Gfx::CPyro();
+    Gfx::CPyro* pyro = new Gfx::CPyro();
     pyro->Create(Gfx::PT_FLCREATE, pNew);
 
     return ERR_OK;

@@ -302,16 +302,7 @@ Error CTaskRecover::IsEnded()
 
     if ( m_phase == TRP_DOWN )
     {
-        m_metal = new CObject();
-        if ( !m_metal->CreateResource(m_recoverPos, 0.0f, OBJECT_METAL) )
-        {
-            delete m_metal;
-            m_metal = 0;
-            Abort();
-            m_bError = true;
-            m_main->DisplayError(ERR_TOOMANY, m_object);
-            return ERR_STOP;
-        }
+        m_metal = CObjectManager::GetInstancePointer()->CreateObject(m_recoverPos, 0.0f, OBJECT_METAL);
         m_metal->SetLock(true);  // metal not yet usable
         m_metal->SetZoom(0, 0.0f);
 

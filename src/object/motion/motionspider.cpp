@@ -68,8 +68,8 @@ void CMotionSpider::DeleteObject(bool bAll)
 
 // Creates a vehicle traveling any lands on the ground.
 
-bool CMotionSpider::Create(Math::Vector pos, float angle, ObjectType type,
-                           float power)
+void CMotionSpider::Create(Math::Vector pos, float angle, ObjectType type,
+                           float power, Gfx::CModelManager* modelManager)
 {
     int         rank, i, j, parent;
     char        name[50];
@@ -97,8 +97,6 @@ bool CMotionSpider::Create(Math::Vector pos, float angle, ObjectType type,
          0.0f,   0.0f,  -2.0f,
          0.0f,   0.0f,  -2.0f,
     };
-
-    Gfx::CModelManager* modelManager = Gfx::CModelManager::GetInstancePointer();
 
     m_object->SetType(type);
 
@@ -191,8 +189,6 @@ bool CMotionSpider::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetPosition(0, pos);  // to display the shadows immediately
 
     m_engine->LoadAllTextures();
-
-    return true;
 }
 
 // Creates the physics of the object.

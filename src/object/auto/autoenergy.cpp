@@ -458,20 +458,10 @@ bool CAutoEnergy::SearchVehicle()
 
 void CAutoEnergy::CreatePower()
 {
-    CObject*        power;
-    Math::Vector        pos;
-    float           angle;
-
-    pos = m_object->GetPosition(0);
-    angle = m_object->GetAngleY(0);
-
-    power = new CObject();
-    if ( !power->CreateResource(pos, angle, OBJECT_POWER) )
-    {
-        delete power;
-        m_main->DisplayError(ERR_TOOMANY, m_object);
-        return;
-    }
+    Math::Vector pos = m_object->GetPosition(0);
+    float angle = m_object->GetAngleY(0);
+    float powerLevel = 1.0f;
+    CObject* power = CObjectManager::GetInstancePointer()->CreateObject(pos, angle, OBJECT_POWER, powerLevel);
     power->SetLock(true);  // battery not yet usable
 
     pos = power->GetPosition(0);

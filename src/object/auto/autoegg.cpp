@@ -166,8 +166,6 @@ void CAutoEgg::Start(int param)
 
 bool CAutoEgg::EventProcess(const Event &event)
 {
-    CObject*    alien;
-
     CAuto::EventProcess(event);
 
     if ( m_engine->GetPause() )  return true;
@@ -180,15 +178,10 @@ bool CAutoEgg::EventProcess(const Event &event)
         m_progress += event.rTime*m_speed;
         if ( m_progress < 1.0f )  return true;
 
-        alien = new CObject();
-        if ( !alien->CreateInsect(m_object->GetPosition(0), m_object->GetAngleY(0), m_type) )
-        {
-            delete alien;
-            m_phase    = AEP_DELAY;
-            m_progress = 0.0f;
-            m_speed    = 1.0f/2.0f;
-            return true;
-        }
+        Math::Vector pos = m_object->GetPosition(0);
+        float angle = m_object->GetAngleY(0);
+        CObject* alien = CObjectManager::GetInstancePointer()->CreateObject(pos, angle, m_type);
+
         alien->SetActivity(false);
         CBrain* brain = alien->GetBrain();
         if(brain != nullptr)
@@ -200,8 +193,8 @@ bool CAutoEgg::EventProcess(const Event &event)
         Init();
     }
 
-    alien = SearchAlien();
-    if ( alien == 0 )  return true;
+    CObject* alien = SearchAlien();
+    if ( alien == nullptr )  return true;
     alien->SetActivity(false);
 
     m_progress += event.rTime*m_speed;

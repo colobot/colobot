@@ -32,6 +32,7 @@
 #include "graphics/engine/cloud.h"
 #include "graphics/engine/lightman.h"
 #include "graphics/engine/lightning.h"
+#include "graphics/engine/modelmanager.h"
 #include "graphics/engine/particle.h"
 #include "graphics/engine/planet.h"
 #include "graphics/engine/pyro.h"
@@ -229,6 +230,11 @@ CDevice* CEngine::GetDevice()
     return m_device;
 }
 
+CModelManager* CEngine::GetModelManager()
+{
+    return m_modelManager.get();
+}
+
 CText* CEngine::GetText()
 {
     return m_text;
@@ -278,6 +284,7 @@ bool CEngine::Create()
 {
     m_size = m_app->GetVideoConfig().size;
 
+    m_modelManager.reset(new CModelManager(this));
     m_lightMan   = new CLightManager(this);
     m_text       = new CText(this);
     m_particle   = new CParticle(this);
@@ -324,7 +331,7 @@ bool CEngine::Create()
 void CEngine::Destroy()
 {
     m_text->Destroy();
-    
+
     delete m_pause;
     m_pause = nullptr;
 

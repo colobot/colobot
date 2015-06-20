@@ -96,13 +96,11 @@ Error CMotionHuman::SetAction(int action, float time)
 
 // Creates cosmonaut on the ground.
 
-bool CMotionHuman::Create(Math::Vector pos, float angle, ObjectType type,
-                          float power)
+void CMotionHuman::Create(Math::Vector pos, float angle, ObjectType type,
+                          float power, Gfx::CModelManager* modelManager)
 {
     char        filename[100];
     int         rank, option, face, glasses;
-
-    Gfx::CModelManager* modelManager = Gfx::CModelManager::GetInstancePointer();
 
     m_object->SetType(type);
     option = m_object->GetOption();
@@ -132,7 +130,7 @@ bool CMotionHuman::Create(Math::Vector pos, float angle, ObjectType type,
 
         m_engine->LoadAllTextures();
 
-        return true;
+        return;
     }
 
     // Creates the main base.
@@ -327,8 +325,6 @@ bool CMotionHuman::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetPosition(0, pos);  // to display the shadows immediately
 
     m_engine->LoadAllTextures();
-
-    return true;
 }
 
 // Creates the physical object.

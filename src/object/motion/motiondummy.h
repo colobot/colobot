@@ -31,6 +31,6 @@ public:
     ~CMotionDummy();
 
     void        DeleteObject(bool bAll=false);
-    bool        Create(Math::Vector pos, float angle, ObjectType type, float power);
+    void        Create(Math::Vector pos, float angle, ObjectType type, float power, Gfx::CModelManager* modelManager);
 };
 

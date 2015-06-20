@@ -78,13 +78,8 @@ CTaskBuild::~CTaskBuild()
 
 bool CTaskBuild::CreateBuilding(Math::Vector pos, float angle)
 {
-    m_building = new CObject();
-    if ( !m_building->CreateBuilding(pos, angle, 0.0f, m_type, 0.0f) )
-    {
-        delete m_building;
-        m_building = 0;
-        return false;
-    }
+    float power = 0.0f;
+    m_building = CObjectManager::GetInstancePointer()->CreateObject(pos, angle, m_type, power);
     m_building->UpdateMapping();
     m_building->SetLock(true);  // not yet usable
 

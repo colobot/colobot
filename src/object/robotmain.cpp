@@ -128,10 +128,13 @@ CRobotMain::CRobotMain(CController* controller)
     m_ctrl       = controller;
     m_app        = nullptr;
 
+    m_objMan     = nullptr;
+
     m_eventQueue = nullptr;
     m_sound      = nullptr;
 
     m_engine     = nullptr;
+    m_modelManager = nullptr;
     m_lightMan   = nullptr;
     m_particle   = nullptr;
     m_water      = nullptr;
@@ -153,7 +156,7 @@ CRobotMain::CRobotMain(CController* controller)
 
     m_time = 0.0f;
     m_gameTime = 0.0f;
-    
+
     m_missionTimerEnabled = false;
     m_missionTimerStarted = false;
     m_missionTimer = 0.0f;
@@ -245,6 +248,7 @@ void CRobotMain::Create(bool loadProfile)
     m_sound      = m_app->GetSound();
     
     m_engine     = Gfx::CEngine::GetInstancePointer();
+    m_modelManager = m_engine->GetModelManager();
     m_lightMan   = m_engine->GetLightManager();
     m_particle   = m_engine->GetParticle();
     m_water      = m_engine->GetWater();
@@ -263,7 +267,13 @@ void CRobotMain::Create(bool loadProfile)
     m_short       = new Ui::CMainShort();
     m_map         = new Ui::CMainMap();
     m_displayInfo = nullptr;
-    
+
+    m_objMan = new CObjectManager(m_engine,
+                                  m_terrain,
+                                  m_modelManager,
+                                  m_particle,
+                                  this);
+
     m_engine->SetTerrain(m_terrain);
     
     m_engine->SetMovieLock(m_movieLock);
@@ -341,7 +351,10 @@ CRobotMain::~CRobotMain()
 
     delete m_map;
     m_map = nullptr;
-    
+
+    delete m_objMan;
+    m_objMan = nullptr;
+
     m_dialog = nullptr;
     m_input = nullptr;
     m_pause = nullptr;
@@ -457,7 +470,7 @@ void CRobotMain::ChangePhase(Phase phase)
     m_engine->SetRankView(0);
     m_terrain->FlushRelief();
     m_engine->DeleteAllObjects();
-    Gfx::CModelManager::GetInstancePointer()->DeleteAllModelCopies();
+    m_modelManager->DeleteAllModelCopies();
     m_engine->SetWaterAddColor(Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f));
     m_engine->SetBackground("");
     m_engine->SetBackForce(false);
@@ -489,8 +502,8 @@ void CRobotMain::ChangePhase(Phase phase)
     iMan->Flush(CLASS_PHYSICS);
     iMan->Flush(CLASS_BRAIN);
     iMan->Flush(CLASS_PYRO);
-    
-    CObjectManager::GetInstancePointer()->Flush();
+
+    m_objMan->Flush();
 
     Math::Point dim, pos;
 
@@ -1703,7 +1716,7 @@ void CRobotMain::StartDisplayVisit(EventType event)
     }
 
     Math::Vector goal = m_displayText->GetVisitGoal(event);
-    m_visitArrow = CObjectManager::GetInstancePointer()->CreateObject(goal, 0.0f, OBJECT_SHOW, -1.0f, 1.0f, 10.0f);
+    m_visitArrow = m_objMan->CreateObject(goal, 0.0f, OBJECT_SHOW, -1.0f, 1.0f, 10.0f);
 
     m_visitPos = m_visitArrow->GetPosition(0);
     m_visitPosArrow = m_visitPos;
@@ -1799,7 +1812,7 @@ CObject* CRobotMain::GetSelectObject()
 CObject* CRobotMain::DeselectAll()
 {
     CObject* prev = nullptr;
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for(auto it : m_objMan->GetAllObjects())
     {
         CObject* obj = it.second;
 
@@ -1931,9 +1944,9 @@ void CRobotMain::DeleteAllObjects()
     for (int i = 0; i < MAXSHOWLIMIT; i++)
         FlushShowLimit(i);
     
-    while(CObjectManager::GetInstancePointer()->GetAllObjects().size() > 0)
+    while(m_objMan->GetAllObjects().size() > 0)
     {
-        CObject* obj = CObjectManager::GetInstancePointer()->GetAllObjects().begin()->second;
+        CObject* obj = m_objMan->GetAllObjects().begin()->second;
 
         obj->DeleteObject(true);  // destroys rapidly
         delete obj;
@@ -1949,13 +1962,13 @@ void CRobotMain::SelectHuman()
 //! Returns the object human
 CObject* CRobotMain::SearchHuman()
 {
-    return CObjectManager::GetInstancePointer()->FindNearest(nullptr, OBJECT_HUMAN);
+    return m_objMan->FindNearest(nullptr, OBJECT_HUMAN);
 }
 
 //! Returns the object toto
 CObject* CRobotMain::SearchToto()
 {
-    return CObjectManager::GetInstancePointer()->FindNearest(nullptr, OBJECT_TOTO);
+    return m_objMan->FindNearest(nullptr, OBJECT_TOTO);
 }
 
 //! Returns the nearest selectable object from a given position
@@ -1963,7 +1976,7 @@ CObject* CRobotMain::SearchNearest(Math::Vector pos, CObject* exclu)
 {
     float min = 100000.0f;
     CObject* best = 0;
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for(auto it : m_objMan->GetAllObjects())
     {
         CObject* obj = it.second;
 
@@ -1987,7 +2000,7 @@ CObject* CRobotMain::SearchNearest(Math::Vector pos, CObject* exclu)
 //! Returns the selected object
 CObject* CRobotMain::GetSelect()
 {
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for(auto it : m_objMan->GetAllObjects())
     {
         CObject* obj = it.second;
 
@@ -1999,7 +2012,7 @@ CObject* CRobotMain::GetSelect()
 
 CObject* CRobotMain::SearchObject(ObjectType type)
 {
-    return CObjectManager::GetInstancePointer()->FindNearest(nullptr, type);
+    return m_objMan->FindNearest(nullptr, type);
 }
 
 //! Detects the object aimed by the mouse
@@ -2007,7 +2020,7 @@ CObject* CRobotMain::DetectObject(Math::Point pos)
 {
     int objRank = m_engine->DetectObject(pos);
     
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for(auto it : m_objMan->GetAllObjects())
     {
         CObject* obj = it.second;
 
@@ -2247,7 +2260,7 @@ void CRobotMain::HiliteClear()
     int rank = -1;
     m_engine->SetHighlightRank(&rank);  // nothing more selected
     
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for(auto it : m_objMan->GetAllObjects())
     {
         CObject* obj = it.second;
 
@@ -2407,7 +2420,7 @@ void CRobotMain::HelpObject()
 //! Change the mode of the camera
 void CRobotMain::ChangeCamera()
 {
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for(auto it : m_objMan->GetAllObjects())
     {
         CObject* obj = it.second;
 
@@ -2552,7 +2565,7 @@ void CRobotMain::RemoteCamera(float pan, float zoom, float rTime)
 //! Cancels the current movie
 void CRobotMain::AbortMovie()
 {
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for(auto it : m_objMan->GetAllObjects())
     {
         CObject* obj = it.second;
 
@@ -2812,7 +2825,7 @@ bool CRobotMain::EventObject(const Event &event)
 
     m_resetCreate = false;
     
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for(auto it : m_objMan->GetAllObjects())
     {
         CObject* obj = it.second;
 
@@ -2843,7 +2856,7 @@ void CRobotMain::ScenePerso()
     DeleteAllObjects();  // removes all the current 3D Scene
     m_terrain->FlushRelief();
     m_engine->DeleteAllObjects();
-    Gfx::CModelManager::GetInstancePointer()->DeleteAllModelCopies();
+    m_modelManager->DeleteAllModelCopies();
     m_terrain->FlushBuildingLevel();
     m_terrain->FlushFlyingLimit();
     m_lightMan->FlushLights();
@@ -2854,7 +2867,7 @@ void CRobotMain::ScenePerso()
     iMan->Flush(CLASS_BRAIN);
     iMan->Flush(CLASS_PYRO);
     
-    CObjectManager::GetInstancePointer()->Flush();
+    m_objMan->Flush();
 
 
     ChangeColor();
@@ -3468,7 +3481,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             
             if (line->GetCommand() == "MissionController" && read[0] == 0)
             {
-                m_controller = CObjectManager::GetInstancePointer()->CreateObject(Math::Vector(0.0f, 0.0f, 0.0f), 0.0f, OBJECT_CONTROLLER, 100.0f);
+                m_controller = m_objMan->CreateObject(Math::Vector(0.0f, 0.0f, 0.0f), 0.0f, OBJECT_CONTROLLER, 100.0f);
                 m_controller->SetMagnifyDamage(100.0f);
                 m_controller->SetIgnoreBuildCheck(true);
                 CBrain* brain = m_controller->GetBrain();
@@ -3523,7 +3536,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 Math::Vector pos = line->GetParam("pos")->AsPoint()*g_unit;
                 float dirAngle = line->GetParam("dir")->AsFloat(0.0f)*Math::PI;
                 bool trainer;
-                CObject* obj = CObjectManager::GetInstancePointer()->CreateObject(
+                CObject* obj = m_objMan->CreateObject(
                     pos, dirAngle,
                     type,
                     line->GetParam("power")->AsFloat(1.0f),
@@ -4211,7 +4224,7 @@ bool CRobotMain::TestGadgetQuantity(int rank)
 float CRobotMain::SearchNearestObject(Math::Vector center, CObject *exclu)
 {
     float min = 100000.0f;
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for(auto it : m_objMan->GetAllObjects())
     {
         CObject* obj = it.second;
 
@@ -4361,7 +4374,7 @@ void CRobotMain::ShowDropZone(CObject* metal, CObject* truck)
     // Calculates the maximum radius possible depending on other items.
     float oMax = 30.0f;  // radius to build the biggest building
     float tMax;
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for(auto it : m_objMan->GetAllObjects())
     {
         CObject* obj = it.second;
 
@@ -4695,7 +4708,7 @@ void CRobotMain::LoadFileScript(CObject *obj, const char* filename, int objRank,
 //! Saves all programs of all the robots
 void CRobotMain::SaveAllScript()
 {
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for(auto it : m_objMan->GetAllObjects())
     {
         CObject* obj = it.second;
 
@@ -4848,7 +4861,7 @@ bool CRobotMain::IsBusy()
 {
     if (CScriptFunctions::m_CompteurFileOpen > 0) return true;
     
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for(auto it : m_objMan->GetAllObjects())
     {
         CObject* obj = it.second;
 
@@ -4979,7 +4992,7 @@ bool CRobotMain::IOWriteScene(const char *filename, const char *filecbot, char *
     }
     
     int objRank = 0;
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for(auto it : m_objMan->GetAllObjects())
     {
         CObject* obj = it.second;
 
@@ -5030,7 +5043,7 @@ bool CRobotMain::IOWriteScene(const char *filename, const char *filecbot, char *
     fWrite(&version, sizeof(long), 1, file);  // version of CBOT
 
     objRank = 0;
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for(auto it : m_objMan->GetAllObjects())
     {
         CObject* obj = it.second;
 
@@ -5063,7 +5076,7 @@ CObject* CRobotMain::IOReadObject(CLevelParserLine *line, const char* filename, 
     bool toy = line->GetParam("toy")->AsBool(false);
     int option = line->GetParam("option")->AsInt(0);
 
-    CObject* obj = CObjectManager::GetInstancePointer()->CreateObject(pos, dir.y, type, 0.0f, 1.0f, 0.0f, trainer, toy, option);
+    CObject* obj = m_objMan->CreateObject(pos, dir.y, type, 0.0f, 1.0f, 0.0f, trainer, toy, option);
     obj->SetDefRank(objRank);
     obj->SetPosition(0, pos);
     obj->SetAngle(0, dir);
@@ -5433,7 +5446,7 @@ void CRobotMain::ResetCreate()
     iMan->Flush(CLASS_BRAIN);
     iMan->Flush(CLASS_PYRO);
     
-    CObjectManager::GetInstancePointer()->Flush();
+    m_objMan->Flush();
 
     m_camera->SetType(Gfx::CAM_TYPE_DIALOG);
 
@@ -5442,7 +5455,7 @@ void CRobotMain::ResetCreate()
 
         if (!GetNiceReset()) return;
         
-        for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+        for(auto it : m_objMan->GetAllObjects())
         {
             CObject* obj = it.second;
 
@@ -5474,7 +5487,7 @@ void CRobotMain::UpdateAudio(bool frame)
         Math::Vector oPos;
 
         int nb = 0;
-        for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+        for(auto it : m_objMan->GetAllObjects())
         {
             CObject* obj = it.second;
 
@@ -5599,7 +5612,7 @@ Error CRobotMain::CheckEndMission(bool frame)
         Math::Vector oPos;
 
         int nb = 0;
-        for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+        for(auto it : m_objMan->GetAllObjects())
         {
             CObject* obj = it.second;
 
@@ -5879,7 +5892,7 @@ bool CRobotMain::GetRadar()
     if (m_cheatRadar)
         return true;
     
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for(auto it : m_objMan->GetAllObjects())
     {
         CObject* obj = it.second;
 

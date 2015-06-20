@@ -42,7 +42,7 @@ public:
     ~CMotionToto();
 
     void    DeleteObject(bool bAll=false);
-    bool    Create(Math::Vector pos, float angle, ObjectType type, float power);
+    void    Create(Math::Vector pos, float angle, ObjectType type, float power, Gfx::CModelManager* modelManager);
     bool    EventProcess(const Event &event);
     Error   SetAction(int action, float time=0.2f);
     void    SetLinkType(ObjectType type);
