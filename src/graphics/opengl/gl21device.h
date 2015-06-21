@@ -137,13 +137,15 @@ public:
 
     virtual void SetFillMode(FillMode mode) OVERRIDE;
 
-    virtual void InitOffscreenBuffer(int width, int height) OVERRIDE;
-
-    virtual void SetRenderTexture(RenderTarget target, int texture) OVERRIDE;
-
     virtual void CopyFramebufferToTexture(Texture& texture, int xOffset, int yOffset, int x, int y, int width, int height) OVERRIDE;
 
     virtual void* GetFrameBufferPixels() const OVERRIDE;
+
+    virtual CFramebuffer* GetFramebuffer(std::string name) OVERRIDE;
+
+    virtual CFramebuffer* CreateFramebuffer(std::string name, const FramebufferParams& params) OVERRIDE;
+
+    virtual void DeleteFramebuffer(std::string name) OVERRIDE;
 
 private:
     //! Updates position for given light based on transformation matrices
@@ -188,6 +190,9 @@ private:
     //! Set of all created textures
     std::set<Texture> m_allTextures;
 
+    //! Map of framebuffers
+    std::map<std::string, CFramebuffer*> m_framebuffers;
+
     //! Type of vertex structure
     enum VertexType
     {
@@ -215,24 +220,14 @@ private:
     int m_maxAnisotropy;
     //! Whether offscreen rendering is available
     bool m_framebufferObject;
+    //! Framebuffer support
+    FramebufferSupport m_framebufferSupport;
     //! Map of saved VBO objects
     std::map<unsigned int, VboObjectInfo> m_vboObjects;
     //! Last ID of VBO object
     unsigned int m_lastVboId;
     //! Currently bound VBO
     GLuint m_currentVBO;
-
-    // Offscreen buffer
-    //! Framebuffer object
-    GLuint m_framebuffer;
-    //! Color renderbuffer
-    GLuint m_colorBuffer;
-    //! Depth renderbuffer
-    GLuint m_depthBuffer;
-    //! Maximum available renderbuffer size
-    int m_maxRenderbufferSize;
-    //! true if offscreen rendering enabled
-    bool m_offscreenRenderingEnabled;
 
     //! true enables per-pixel lighting
     bool m_perPixelLighting;

@@ -3527,6 +3527,24 @@ void CEngine::RenderShadowMap()
             {
                 width = height = 1024;
             }
+
+            FramebufferParams params;
+            params.width = params.height = width;
+            params.depth = depth;
+            params.depthTexture = true;
+
+            CFramebuffer *framebuffer = m_device->CreateFramebuffer("shadow", params);
+            if (framebuffer == nullptr)
+            {
+                GetLogger()->Error("Could not create framebuffer, disabling shadows\n");
+                m_shadowMapping = false;
+                m_offscreenShadowRendering = false;
+                m_qualityShadows = false;
+                return;
+            }
+
+            m_shadowMap.id = framebuffer->GetDepthTexture();
+            m_shadowMap.size = Math::IntPoint(width, height);
         }
         else
         {
@@ -3538,13 +3556,8 @@ void CEngine::RenderShadowMap()
 
                 width = height = 1 << i;
             }
-        }
 
-        m_shadowMap = m_device->CreateDepthTexture(width, height, depth);
-
-        if (m_offscreenShadowRendering)
-        {
-            m_device->InitOffscreenBuffer(width, height);
+            m_shadowMap = m_device->CreateDepthTexture(width, height, depth);
         }
 
         GetLogger()->Info("Created shadow map texture: %dx%d, depth %d\n", width, height, depth);
@@ -3552,8 +3565,7 @@ void CEngine::RenderShadowMap()
 
     if (m_offscreenShadowRendering)
     {
-        m_device->SetRenderState(RENDER_STATE_OFFSCREEN_RENDERING, true);
-        m_device->SetRenderTexture(RENDER_TARGET_DEPTH, m_shadowMap.id);
+        m_device->GetFramebuffer("shadow")->Bind();
     }
 
     m_device->Clear();
@@ -3666,8 +3678,7 @@ void CEngine::RenderShadowMap()
 
     if (m_offscreenShadowRendering)     // shadow map texture already have depth information, just unbind it
     {
-        m_device->SetRenderTexture(RENDER_TARGET_DEPTH, 0);
-        m_device->SetRenderState(RENDER_STATE_OFFSCREEN_RENDERING, false);
+        m_device->GetFramebuffer("shadow")->Unbind();
     }
     else    // copy depth buffer to shadow map
     {

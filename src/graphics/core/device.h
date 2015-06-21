@@ -30,6 +30,7 @@
 #include "graphics/core/material.h"
 #include "graphics/core/texture.h"
 #include "graphics/core/vertex.h"
+#include "graphics/core/framebuffer.h"
 
 #include "math/intpoint.h"
 #include "math/matrix.h"
@@ -75,6 +76,8 @@ struct DeviceConfig
     int alphaSize;
     //! Color depth in bits
     int depthSize;
+    //! Stencil depth in bits
+    int stencilSize;
 
     //! Force hardware acceleration (video mode set will fail on lack of hw accel)
     bool hardwareAccel;
@@ -99,6 +102,7 @@ struct DeviceConfig
         greenSize = 8;
         alphaSize = 8;
         depthSize = 24;
+        stencilSize = 8;
     }
 };
 
@@ -131,7 +135,6 @@ enum RenderState
     RENDER_STATE_ALPHA_TEST,
     RENDER_STATE_CULLING,
     RENDER_STATE_DEPTH_BIAS,
-    RENDER_STATE_OFFSCREEN_RENDERING
 };
 
 /**
@@ -418,17 +421,20 @@ public:
     //! Sets the current fill mode
     virtual void SetFillMode(FillMode mode) = 0;
 
-    //! Initializes offscreen buffer
-    virtual void InitOffscreenBuffer(int width, int height) = 0;
-
-    //! Sets render target to texture
-    virtual void SetRenderTexture(RenderTarget target, int texture) = 0;
-
     //! Copies content of framebuffer to texture
     virtual void CopyFramebufferToTexture(Texture& texture, int xOffset, int yOffset, int x, int y, int width, int height) = 0;
 
     //! Returns the pixels of the entire screen
     virtual void* GetFrameBufferPixels() const = 0;
+
+    //! Returns framebuffer with given name or nullptr if it doesn't exist
+    virtual CFramebuffer* GetFramebuffer(std::string name) = 0;
+
+    //! Creates new framebuffer with given name or nullptr if it's not possible
+    virtual CFramebuffer* CreateFramebuffer(std::string name, const FramebufferParams& params) = 0;
+
+    //! Deletes framebuffer
+    virtual void DeleteFramebuffer(std::string name) = 0;
 };
 
 

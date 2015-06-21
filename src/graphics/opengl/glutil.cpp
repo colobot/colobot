@@ -31,6 +31,14 @@ namespace Gfx {
 GLuint textureCoordinates[] = { GL_S, GL_T, GL_R, GL_Q };
 GLuint textureCoordGen[] = { GL_TEXTURE_GEN_S, GL_TEXTURE_GEN_T, GL_TEXTURE_GEN_R, GL_TEXTURE_GEN_Q };
 
+FramebufferSupport DetectFramebufferSupport()
+{
+    if (GetOpenGLVersion() >= 30) return FBS_ARB;
+    if (glewIsSupported("GL_ARB_framebuffer_object")) return FBS_ARB;
+    if (glewIsSupported("GL_EXT_framebuffer_object")) return FBS_EXT;
+    return FBS_NONE;
+}
+
 CDevice* CreateDevice(const DeviceConfig &config, const char *name)
 {
     if (name == nullptr) return nullptr;

@@ -142,13 +142,15 @@ public:
     virtual void SetFillMode(FillMode mode) ;
     virtual FillMode GetFillMode();
 
-    virtual void InitOffscreenBuffer(int width, int height);
-
-    virtual void SetRenderTexture(RenderTarget target, int texture);
-
     virtual void CopyFramebufferToTexture(Texture& texture, int xOffset, int yOffset, int x, int y, int width, int height);
     
     virtual void* GetFrameBufferPixels() const;
+
+    virtual CFramebuffer* GetFramebuffer(std::string name);
+
+    virtual CFramebuffer* CreateFramebuffer(std::string name, const FramebufferParams& params);
+
+    virtual void DeleteFramebuffer(std::string name);
     
 private:
     Math::Matrix m_matrix;

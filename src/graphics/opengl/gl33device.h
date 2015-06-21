@@ -26,6 +26,7 @@
 
 #include "graphics/core/device.h"
 #include "graphics/opengl/glutil.h"
+#include "graphics/opengl/glframebuffer.h"
 
 #include <string>
 #include <vector>
@@ -135,13 +136,15 @@ public:
 
     virtual void SetFillMode(FillMode mode) OVERRIDE;
 
-    virtual void InitOffscreenBuffer(int width, int height) OVERRIDE;
-
-    virtual void SetRenderTexture(RenderTarget target, int texture) OVERRIDE;
-
     virtual void CopyFramebufferToTexture(Texture& texture, int xOffset, int yOffset, int x, int y, int width, int height) OVERRIDE;
 
     virtual void* GetFrameBufferPixels() const OVERRIDE;
+
+    virtual CFramebuffer* GetFramebuffer(std::string name) OVERRIDE;
+
+    virtual CFramebuffer* CreateFramebuffer(std::string name, const FramebufferParams& params) OVERRIDE;
+
+    virtual void DeleteFramebuffer(std::string name) OVERRIDE;
 
 private:
     //! Updates position for given light based on transformation matrices
@@ -224,17 +227,8 @@ private:
     //! Currently bound VAO
     GLuint m_currentVAO;
 
-    // Offscreen buffer
-    //! Framebuffer object
-    GLuint m_framebuffer;
-    //! Color renderbuffer
-    GLuint m_colorBuffer;
-    //! Depth renderbuffer
-    GLuint m_depthBuffer;
-    //! Maximum available renderbuffer size
-    int m_maxRenderbufferSize;
-    //! true if offscreen rendering is enabled
-    bool m_offscreenRenderingEnabled;
+    //! Map of framebuffers
+    std::map<std::string, CFramebuffer*> m_framebuffers;
 
     //! Shader program
     GLuint m_shaderProgram;

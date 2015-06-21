@@ -18,6 +18,7 @@
  */
 
 #include "graphics/opengl/gl33device.h"
+#include "graphics/opengl/glframebuffer.h"
 #include "graphics/engine/engine.h"
 
 #include "common/config.h"
@@ -46,11 +47,6 @@ CGL33Device::CGL33Device(const DeviceConfig &config)
     m_maxAnisotropy = 1;
     m_glMajor = 1;
     m_glMinor = 1;
-
-    m_framebuffer = 0;
-    m_colorBuffer = 0;
-    m_depthBuffer = 0;
-    m_offscreenRenderingEnabled = false;
 
     m_perPixelLighting = false;
 }
@@ -205,9 +201,6 @@ bool CGL33Device::Create()
             GetLogger()->Info("OpenGL %d.%d\n", m_glMajor, m_glMinor);
         }
 
-        glGetIntegerv(GL_MAX_RENDERBUFFER_SIZE, &m_maxRenderbufferSize);
-        GetLogger()->Info("Maximum renderbuffer size: %d\n", m_maxRenderbufferSize);
-
         // Detect support of anisotropic filtering
         m_anisotropyAvailable = glewIsSupported("GL_EXT_texture_filter_anisotropic");
         if(m_anisotropyAvailable)
@@ -248,8 +241,6 @@ bool CGL33Device::Create()
     m_vertex = CreateStaticBuffer(PRIMITIVE_POINTS, static_cast<Vertex*>(nullptr), 1);
     m_vertexTex2 = CreateStaticBuffer(PRIMITIVE_POINTS, static_cast<VertexTex2*>(nullptr), 1);
     m_vertexCol = CreateStaticBuffer(PRIMITIVE_POINTS, static_cast<VertexCol*>(nullptr), 1);
-
-    GetLogger()->Info("CDevice created successfully\n");
 
     int value;
     if (CProfile::GetInstance().GetIntProperty("Setup", "PerPixelLighting", value))
@@ -379,22 +370,34 @@ bool CGL33Device::Create()
     for (int i = 0; i < 8; i++)
         glUniform1i(uni_Light[i].Enabled, 0);
 
+    // create default framebuffer object
+    FramebufferParams framebufferParams;
+
+    framebufferParams.width = m_config.size.x;
+    framebufferParams.height = m_config.size.y;
+    framebufferParams.depth = m_config.depthSize;
+
+    m_framebuffers["default"] = new CDefaultFramebuffer(framebufferParams);
+
+    GetLogger()->Info("CDevice created successfully\n");
+
     return true;
 }
 
 void CGL33Device::Destroy()
 {
+    // delete shader program
     glUseProgram(0);
     glDeleteProgram(m_shaderProgram);
 
-    if (m_framebuffer != 0)
+    // delete framebuffers
+    for (std::map<std::string, CFramebuffer*>::iterator i = m_framebuffers.begin(); i != m_framebuffers.end(); i++)
     {
-        glDeleteFramebuffers(1, &m_framebuffer);
-        glDeleteRenderbuffers(1, &m_colorBuffer);
-        glDeleteRenderbuffers(1, &m_depthBuffer);
-
-        m_framebuffer = 0;
+        i->second->Destroy();
+        delete i->second;
     }
+
+    m_framebuffers.clear();
 
     // Delete the remaining textures
     // Should not be strictly necessary, but just in case
@@ -1443,6 +1446,8 @@ void CGL33Device::UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primit
 
     bool changed = (info.vertexType != VERTEX_TYPE_NORMAL) || (size > info.size);
 
+    if (info.vertexType != VERTEX_TYPE_NORMAL) CLogger::GetInstance().Debug("Changing static buffer type\n");
+
     info.primitiveType = primitiveType;
     info.vertexType = VERTEX_TYPE_NORMAL;
     info.vertexCount = vertexCount;
@@ -1498,6 +1503,8 @@ void CGL33Device::UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primit
 
     bool changed = (info.vertexType != VERTEX_TYPE_TEX2) || (size > info.size);
 
+    if (info.vertexType != VERTEX_TYPE_TEX2) CLogger::GetInstance().Debug("Changing static buffer type\n");
+
     info.primitiveType = primitiveType;
     info.vertexType = VERTEX_TYPE_TEX2;
     info.vertexCount = vertexCount;
@@ -1551,7 +1558,9 @@ void CGL33Device::UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primit
 
     unsigned int size = vertexCount * sizeof(VertexCol);
 
-    bool changed = (info.vertexType != VERTEX_TYPE_TEX2) || (size > info.size);
+    bool changed = (info.vertexType != VERTEX_TYPE_COL) || (size > info.size);
+
+    if (info.vertexType != VERTEX_TYPE_NORMAL) CLogger::GetInstance().Debug("Changing static buffer type\n");
 
     info.primitiveType = primitiveType;
     info.vertexType = VERTEX_TYPE_COL;
@@ -1735,19 +1744,6 @@ void CGL33Device::SetRenderState(RenderState state, bool enabled)
 
         return;
     }
-    else if (state == RENDER_STATE_OFFSCREEN_RENDERING)
-    {
-        if (m_framebuffer == 0)
-            InitOffscreenBuffer(1024, 1024);
-
-        m_offscreenRenderingEnabled = enabled;
-
-        GLuint toBind = (enabled ? m_framebuffer : 0);
-
-        glBindFramebuffer(GL_FRAMEBUFFER, toBind);
-
-        return;
-    }
     else if (state == RENDER_STATE_FOG)
     {
         glUniform1i(uni_FogEnabled, enabled ? 1 : 0);
@@ -1860,76 +1856,6 @@ void CGL33Device::SetFillMode(FillMode mode)
     else assert(false);
 }
 
-void CGL33Device::InitOffscreenBuffer(int width, int height)
-{
-    width = Math::Min(width, m_maxRenderbufferSize);
-    height = Math::Min(height, m_maxRenderbufferSize);
-
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-    if (m_colorBuffer != 0)
-        glDeleteRenderbuffers(1, &m_colorBuffer);
-
-    glGenRenderbuffers(1, &m_colorBuffer);
-    glBindRenderbuffer(GL_RENDERBUFFER, m_colorBuffer);
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_RGBA8, width, height);
-    glBindRenderbuffer(GL_RENDERBUFFER, 0);
-
-    if (m_depthBuffer != 0)
-        glDeleteRenderbuffers(1, &m_depthBuffer);
-
-    glGenRenderbuffers(1, &m_depthBuffer);
-    glBindRenderbuffer(GL_RENDERBUFFER, m_depthBuffer);
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, width, height);
-    glBindRenderbuffer(GL_RENDERBUFFER, 0);
-
-    if (m_framebuffer == 0)
-        glGenFramebuffers(1, &m_framebuffer);
-
-    glBindFramebuffer(GL_FRAMEBUFFER, m_framebuffer);
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, m_colorBuffer);
-    glFramebufferRenderbufferEXT(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, m_depthBuffer);
-    glBindFramebufferEXT(GL_FRAMEBUFFER, 0);
-
-    GetLogger()->Info("Initialized offscreen buffer %dx%d\n", width, height);
-}
-
-void CGL33Device::SetRenderTexture(RenderTarget target, int texture)
-{
-    if (!m_offscreenRenderingEnabled) return;
-
-    GLenum attachment;
-    GLuint defaultBuffer;
-
-    switch (target)
-    {
-    case RENDER_TARGET_COLOR:
-        attachment = GL_COLOR_ATTACHMENT0;
-        defaultBuffer = m_colorBuffer;
-        break;
-    case RENDER_TARGET_DEPTH:
-        attachment = GL_DEPTH_ATTACHMENT;
-        defaultBuffer = m_depthBuffer;
-        break;
-    case RENDER_TARGET_STENCIL:
-        attachment = GL_STENCIL_ATTACHMENT;
-        defaultBuffer = 0;
-        break;
-    default: assert(false); break;
-    }
-
-    if (texture == 0)       // unbind texture and bind default buffer
-    {
-        glFramebufferTexture2DEXT(GL_FRAMEBUFFER, attachment, GL_TEXTURE_2D, 0, 0);
-        glFramebufferRenderbufferEXT(GL_FRAMEBUFFER, attachment, GL_RENDERBUFFER, defaultBuffer);
-    }
-    else            // unbind default buffer and bind texture
-    {
-        glFramebufferRenderbuffer(GL_FRAMEBUFFER, attachment, GL_RENDERBUFFER, 0);
-        glFramebufferTexture2D(GL_FRAMEBUFFER, attachment, GL_TEXTURE_2D, texture, 0);
-    }
-}
-
 void CGL33Device::CopyFramebufferToTexture(Texture& texture, int xOffset, int yOffset, int x, int y, int width, int height)
 {
     if (texture.id == 0) return;
@@ -1955,6 +1881,47 @@ void* CGL33Device::GetFrameBufferPixels() const
         p[i] |= 0xFF000000;
 
     return static_cast<void*>(p);
+}
+
+CFramebuffer* CGL33Device::GetFramebuffer(std::string name)
+{
+    if (m_framebuffers.find(name) != m_framebuffers.end())
+        return m_framebuffers[name];
+    else
+        return nullptr;
+}
+
+CFramebuffer* CGL33Device::CreateFramebuffer(std::string name, const FramebufferParams& params)
+{
+    // existing framebuffer was found
+    if (m_framebuffers.find(name) != m_framebuffers.end())
+    {
+        return nullptr;
+    }
+    else
+    {
+        CGLFramebuffer* framebuffer = new CGLFramebuffer(params);
+        framebuffer->Create();
+
+        m_framebuffers[name] = framebuffer;
+        return framebuffer;
+    }
+}
+
+void CGL33Device::DeleteFramebuffer(std::string name)
+{
+    // can't delete default framebuffer
+    if (name == "default") return;
+
+    auto position = m_framebuffers.find(name);
+
+    if (position != m_framebuffers.end())
+    {
+        position->second->Destroy();
+        delete position->second;
+
+        m_framebuffers.erase(position);
+    }
 }
 
 void CGL33Device::UpdateRenderingMode()

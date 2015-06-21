@@ -31,6 +31,15 @@
 namespace Gfx
 {
 
+enum FramebufferSupport
+{
+    FBS_NONE,
+    FBS_EXT,
+    FBS_ARB,
+};
+
+FramebufferSupport DetectFramebufferSupport();
+
 //! Creates OpenGL device
 CDevice* CreateDevice(const DeviceConfig &config, const char *name);
 

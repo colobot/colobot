@@ -359,14 +359,6 @@ FillMode CNullDevice::GetFillMode()
     return FILL_POINT;
 }
 
-void CNullDevice::InitOffscreenBuffer(int width, int height)
-{
-}
-
-void CNullDevice::SetRenderTexture(RenderTarget target, int texture)
-{
-}
-
 void CNullDevice::CopyFramebufferToTexture(Texture& texture, int xOffset, int yOffset, int x, int y, int width, int height)
 {
 }
@@ -376,6 +368,19 @@ void* CNullDevice::GetFrameBufferPixels() const
     return nullptr;
 }
 
+CFramebuffer* CNullDevice::GetFramebuffer(std::string name)
+{
+    return nullptr;
+}
+
+CFramebuffer* CNullDevice::CreateFramebuffer(std::string name, const FramebufferParams& params)
+{
+    return nullptr;
+}
+
+void CNullDevice::DeleteFramebuffer(std::string name)
+{
+}
 
 } // namespace Gfx
 

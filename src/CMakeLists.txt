@@ -98,6 +98,7 @@ set(BASE_SOURCES
     common/resources/sndfile.cpp
     graphics/core/color.cpp
     graphics/core/nulldevice.cpp
+    graphics/core/framebuffer.cpp
     graphics/engine/camera.cpp
     graphics/engine/cloud.cpp
     graphics/engine/engine.cpp
@@ -115,6 +116,7 @@ set(BASE_SOURCES
     graphics/opengl/gl21device.cpp
     graphics/opengl/gl33device.cpp
     graphics/opengl/glutil.cpp
+    graphics/opengl/glframebuffer.cpp
     object/auto/auto.cpp
     object/auto/autobase.cpp
     object/auto/autoconvert.cpp

@@ -19,6 +19,7 @@
 
 
 #include "graphics/opengl/gl21device.h"
+#include "graphics/opengl/glframebuffer.h"
 #include "graphics/engine/engine.h"
 
 #include "common/config.h"
@@ -47,11 +48,6 @@ CGL21Device::CGL21Device(const DeviceConfig &config)
     m_maxAnisotropy = 1;
     m_glMajor = 1;
     m_glMinor = 1;
-
-    m_framebuffer = 0;
-    m_colorBuffer = 0;
-    m_depthBuffer = 0;
-    m_offscreenRenderingEnabled = false;
 
     m_perPixelLighting = false;
 }
@@ -198,15 +194,6 @@ bool CGL21Device::Create()
         }
 
         GetLogger()->Info("OpenGL %d.%d\n", m_glMajor, m_glMinor);
-
-        m_framebufferObject = glewIsSupported("GL_EXT_framebuffer_object");
-        if (m_framebufferObject)
-        {
-            glGetIntegerv(GL_MAX_RENDERBUFFER_SIZE_EXT, &m_maxRenderbufferSize);
-
-            GetLogger()->Info("Offscreen rendering available\n");
-            GetLogger()->Info("Maximum renderbuffer size: %d\n", m_maxRenderbufferSize);
-        }
 
         // Detect support of anisotropic filtering
         m_anisotropyAvailable = glewIsSupported("GL_EXT_texture_filter_anisotropic");
@@ -356,6 +343,19 @@ bool CGL21Device::Create()
     for (int i = 0; i < 8; i++)
         glUniform1i(uni_LightEnabled[i], 0);
 
+    // create default framebuffer object
+    FramebufferParams framebufferParams;
+    
+    framebufferParams.width = m_config.size.x;
+    framebufferParams.height = m_config.size.y;
+    framebufferParams.depth = m_config.depthSize;
+
+    m_framebuffers["default"] = new CDefaultFramebuffer(framebufferParams);
+
+    m_framebufferSupport = DetectFramebufferSupport();
+    if (m_framebufferSupport != FBS_NONE)
+        GetLogger()->Debug("Framebuffer supported\n");
+    
     GetLogger()->Info("CDevice created successfully\n");
 
     return true;
@@ -367,6 +367,15 @@ void CGL21Device::Destroy()
     // Should not be strictly necessary, but just in case
     glUseProgram(0);
     glDeleteProgram(m_program);
+
+    // delete framebuffers
+    for (std::map<std::string, CFramebuffer*>::iterator i = m_framebuffers.begin(); i != m_framebuffers.end(); i++)
+    {
+        i->second->Destroy();
+        delete i->second;
+    }
+
+    m_framebuffers.clear();
 
     DestroyAllTextures();
 
@@ -1561,25 +1570,6 @@ void CGL21Device::SetRenderState(RenderState state, bool enabled)
 
         return;
     }
-    else if (state == RENDER_STATE_OFFSCREEN_RENDERING)
-    {
-        if (!m_framebufferObject)
-        {
-            GetLogger()->Error("Cannot enable offscreen rendering without framebuffer object!\n");
-            return;
-        }
-
-        m_offscreenRenderingEnabled = enabled;
-
-        if (m_framebuffer == 0)
-            InitOffscreenBuffer(2048, 2048);
-
-        GLuint toBind = (enabled ? m_framebuffer : 0);
-
-        glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, toBind);
-
-        return;
-    }
     else if (state == RENDER_STATE_ALPHA_TEST)
     {
         glUniform1i(uni_AlphaTestEnabled, enabled ? 1 : 0);
@@ -1693,79 +1683,6 @@ void CGL21Device::SetFillMode(FillMode mode)
     else assert(false);
 }
 
-void CGL21Device::InitOffscreenBuffer(int width, int height)
-{
-    if (!m_framebufferObject) return;
-
-    width = Math::Min(width, m_maxRenderbufferSize);
-    height = Math::Min(height, m_maxRenderbufferSize);
-
-    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
-
-    if (m_colorBuffer != 0)
-        glDeleteRenderbuffersEXT(1, &m_colorBuffer);
-
-    glGenRenderbuffersEXT(1, &m_colorBuffer);
-    glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, m_colorBuffer);
-    glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, GL_RGBA8, width, height);
-    glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, 0);
-
-    if (m_depthBuffer != 0)
-        glDeleteRenderbuffersEXT(1, &m_depthBuffer);
-
-    glGenRenderbuffersEXT(1, &m_depthBuffer);
-    glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, m_depthBuffer);
-    glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, GL_DEPTH_COMPONENT24, width, height);
-    glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, 0);
-
-    if (m_framebuffer == 0)
-        glGenFramebuffersEXT(1, &m_framebuffer);
-
-    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, m_framebuffer);
-    glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_RENDERBUFFER_EXT, m_colorBuffer);
-    glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, m_depthBuffer);
-    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
-
-    GetLogger()->Info("Initialized offscreen buffer %dx%d\n", width, height);
-}
-
-void CGL21Device::SetRenderTexture(RenderTarget target, int texture)
-{
-    if (!m_framebufferObject) return;
-    if (!m_offscreenRenderingEnabled) return;
-
-    GLenum attachment;
-    GLuint defaultBuffer;
-
-    switch (target)
-    {
-    case RENDER_TARGET_COLOR:
-        attachment = GL_COLOR_ATTACHMENT0_EXT;
-        defaultBuffer = m_colorBuffer;
-        break;
-    case RENDER_TARGET_DEPTH:
-        attachment = GL_DEPTH_ATTACHMENT_EXT;
-        defaultBuffer = m_depthBuffer;
-        break;
-    case RENDER_TARGET_STENCIL:
-        attachment = GL_STENCIL_ATTACHMENT_EXT;
-        defaultBuffer = 0;
-        break;
-    default: assert(false); break;
-    }
-
-    if (texture == 0)       // unbind texture and bind default buffer
-    {
-        glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, attachment, GL_TEXTURE_2D, 0, 0);
-        glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, attachment, GL_RENDERBUFFER_EXT, defaultBuffer);
-    }
-    else            // unbind default buffer and bind texture
-    {
-        glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, attachment, GL_RENDERBUFFER_EXT, 0);
-        glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, attachment, GL_TEXTURE_2D, texture, 0);
-    }
-}
-
 void CGL21Device::CopyFramebufferToTexture(Texture& texture, int xOffset, int yOffset, int x, int y, int width, int height)
 {
     if (texture.id == 0) return;
@@ -1792,6 +1709,55 @@ void* CGL21Device::GetFrameBufferPixels()const{
         p[i] |= 0xFF000000;
 
     return static_cast<void*>(p);
+}
+
+CFramebuffer* CGL21Device::GetFramebuffer(std::string name)
+{
+    if (m_framebuffers.find(name) != m_framebuffers.end())
+        return m_framebuffers[name];
+    else
+        return nullptr;
+}
+
+CFramebuffer* CGL21Device::CreateFramebuffer(std::string name, const FramebufferParams& params)
+{
+    // existing framebuffer was found
+    if (m_framebuffers.find(name) != m_framebuffers.end())
+    {
+        return nullptr;
+    }
+    else
+    {
+        CFramebuffer *framebuffer;
+
+        if (m_framebufferSupport == FBS_ARB)
+            framebuffer = new CGLFramebuffer(params);
+        else if (m_framebufferSupport == FBS_EXT)
+            framebuffer = new CGLFramebufferEXT(params);
+        else
+            return nullptr;
+
+        framebuffer->Create();
+
+        m_framebuffers[name] = framebuffer;
+        return framebuffer;
+    }
+}
+
+void CGL21Device::DeleteFramebuffer(std::string name)
+{
+    // can't delete default framebuffer
+    if (name == "default") return;
+
+    auto position = m_framebuffers.find(name);
+
+    if (position != m_framebuffers.end())
+    {
+        position->second->Destroy();
+        delete position->second;
+
+        m_framebuffers.erase(position);
+    }
 }
 
 } // namespace Gfx
