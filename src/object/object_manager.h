@@ -54,6 +54,59 @@ enum RadarFilter
 };
 
 using CObjectMap = std::map<int, std::unique_ptr<CObject>>;
+using CObjectMapCIt = std::map<int, std::unique_ptr<CObject>>::const_iterator;
+
+class CObjectIteratorProxy
+{
+public:
+    inline CObject* operator*()
+    {
+        return m_it->second.get();
+    }
+
+    inline void operator++()
+    {
+        ++m_it;
+    }
+
+    inline bool operator!=(const CObjectIteratorProxy& other)
+    {
+        return m_it != other.m_it;
+    }
+
+private:
+    friend class CObjectContainerProxy;
+
+    CObjectIteratorProxy(CObjectMapCIt it)
+     : m_it(it)
+    {}
+
+private:
+    CObjectMapCIt m_it;
+};
+
+class CObjectContainerProxy
+{
+public:
+    inline CObjectIteratorProxy begin() const
+    {
+        return CObjectIteratorProxy(m_map.begin());
+    }
+    inline CObjectIteratorProxy end() const
+    {
+        return CObjectIteratorProxy(m_map.end());
+    }
+
+private:
+    friend class CObjectManager;
+
+    inline CObjectContainerProxy(const CObjectMap& map)
+     : m_map(map)
+    {}
+
+private:
+    const CObjectMap& m_map;
+};
 
 /**
  * \class ObjectManager
@@ -89,13 +142,13 @@ public:
     //! Finds object by id (CObject::GetID())
     CObject*  GetObjectById(unsigned int id);
 
-    //! Gets object by id in range <0; number of objects - 1)
+    //! Gets object by id in range <0; number of objects - 1>
     CObject*  GetObjectByRank(unsigned int id);
 
     //! Returns all objects
-    inline const CObjectMap& GetAllObjects()
+    inline CObjectContainerProxy GetAllObjects()
     {
-        return m_table;
+        return CObjectContainerProxy(m_objects);
     }
 
     //! Finds an object, like radar() in CBot
@@ -164,7 +217,7 @@ public:
     //@}
 
 protected:
-    CObjectMap m_table;
+    CObjectMap m_objects;
     std::unique_ptr<CObjectFactory> m_objectFactory;
     int m_nextId;
 };

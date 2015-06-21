@@ -548,7 +548,6 @@ bool CTaskBuild::Abort()
 
 Error CTaskBuild::FlatFloor()
 {
-    CObject     *pObj;
     ObjectType  type;
     Math::Vector    center, pos, oPos, bPos;
     Math::Point     c, p;
@@ -589,9 +588,8 @@ Error CTaskBuild::FlatFloor()
 
     max = 100000.0f;
     bBase = false;
-    for(auto& it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for (CObject* pObj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = it.second.get();
         if ( !pObj->GetActif() )  continue;  // inactive?
         if ( pObj->GetTruck() != 0 )  continue;  // object transported?
         if ( pObj == m_metal )  continue;
@@ -635,9 +633,8 @@ Error CTaskBuild::FlatFloor()
     }
 
     max = 100000.0f;
-    for(auto& it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for (CObject* pObj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = it.second.get();
         if ( !pObj->GetActif() )  continue;  // inactive?
         if ( pObj->GetTruck() != 0 )  continue;  // object transported?
         if ( pObj == m_metal )  continue;
@@ -691,7 +688,7 @@ Error CTaskBuild::FlatFloor()
 CObject* CTaskBuild::SearchMetalObject(float &angle, float dMin, float dMax,
                                        float aLimit, Error &err)
 {
-    CObject     *pObj, *pBest;
+    CObject     *pBest;
     Math::Vector    iPos, oPos;
     ObjectType  type;
     float       min, iAngle, a, aa, aBest, distance, magic;
@@ -704,9 +701,8 @@ CObject* CTaskBuild::SearchMetalObject(float &angle, float dMin, float dMax,
     min = 1000000.0f;
     pBest = 0;
     bMetal = false;
-    for(auto& it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for (CObject* pObj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = it.second.get();
         if ( !pObj->GetActif() )  continue;  // objet inactive?
         if ( pObj->GetTruck() != 0 )  continue;  // object transported?
 
@@ -759,9 +755,8 @@ void CTaskBuild::DeleteMark(Math::Vector pos, float radius)
 {
     std::vector<CObject*> objectsToDelete;
 
-    for(auto& it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        CObject* obj = it.second.get();
         ObjectType type = obj->GetType();
         if ( type != OBJECT_MARKSTONE   &&
              type != OBJECT_MARKURANIUM &&

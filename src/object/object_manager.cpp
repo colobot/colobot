@@ -54,10 +54,10 @@ bool CObjectManager::DeleteObject(CObject* instance)
 
     instance->DeleteObject();
 
-    auto it = m_table.find(instance->GetID());
-    if (it != m_table.end())
+    auto it = m_objects.find(instance->GetID());
+    if (it != m_objects.end())
     {
-        m_table.erase(it);
+        m_objects.erase(it);
         return true;
     }
 
@@ -66,27 +66,27 @@ bool CObjectManager::DeleteObject(CObject* instance)
 
 void CObjectManager::DeleteAllObjects()
 {
-    for (auto& it : m_table)
+    for (auto& it : m_objects)
     {
         bool all = true;
         it.second->DeleteObject(all);
     }
 
-    m_table.clear();
+    m_objects.clear();
 
     m_nextId = 0;
 }
 
 CObject* CObjectManager::GetObjectById(unsigned int id)
 {
-    if(m_table.count(id) == 0) return nullptr;
-    return m_table[id].get();
+    if(m_objects.count(id) == 0) return nullptr;
+    return m_objects[id].get();
 }
 
 CObject* CObjectManager::GetObjectByRank(unsigned int id)
 {
-    if(id >= m_table.size()) return nullptr;
-    auto it = m_table.begin();
+    if(id >= m_objects.size()) return nullptr;
+    auto it = m_objects.begin();
     for(unsigned int i = 0; i < id; i++, ++it);
     return it->second.get();
 }
@@ -108,7 +108,7 @@ CObject* CObjectManager::CreateObject(Math::Vector pos,
         m_nextId++;
     }
 
-    assert(m_table.find(id) == m_table.end());
+    assert(m_objects.find(id) == m_objects.end());
 
     ObjectCreateParams params;
     params.pos = pos;
@@ -125,7 +125,7 @@ CObject* CObjectManager::CreateObject(Math::Vector pos,
     auto objectUPtr = m_objectFactory->CreateObject(params);
     CObject* objectPtr = objectUPtr.get();
 
-    m_table[id] = std::move(objectUPtr);
+    m_objects[id] = std::move(objectUPtr);
 
     return objectPtr;
 }
@@ -180,7 +180,7 @@ CObject* CObjectManager::Radar(CObject* pThis, Math::Vector thisPosition, float 
     if ( !furthest )  best = 100000.0f;
     else              best = 0.0f;
     pBest = nullptr;
-    for ( auto it = m_table.begin() ; it != m_table.end() ; ++it )
+    for ( auto it = m_objects.begin() ; it != m_objects.end() ; ++it )
     {
         pObj = it->second.get();
         if ( pObj == pThis )  continue; // pThis may be nullptr but it doesn't matter

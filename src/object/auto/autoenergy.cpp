@@ -394,18 +394,11 @@ CObject* CAutoEnergy::SearchMetal()
 
 bool CAutoEnergy::SearchVehicle()
 {
-    CObject*    pObj;
-    Math::Vector    cPos, oPos;
-    ObjectType  type;
-    float       oRadius, dist;
+    Math::Vector cPos = m_object->GetPosition(0);
 
-    cPos = m_object->GetPosition(0);
-    
-    for(auto& it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = it.second.get();
-
-        type = pObj->GetType();
+        ObjectType type = obj->GetType();
         if ( type != OBJECT_HUMAN    &&
              type != OBJECT_MOBILEfa &&
              type != OBJECT_MOBILEta &&
@@ -440,8 +433,10 @@ bool CAutoEnergy::SearchVehicle()
              type != OBJECT_BEE      &&
              type != OBJECT_WORM     )  continue;
 
-        if ( !pObj->GetCrashSphere(0, oPos, oRadius) )  continue;
-        dist = Math::Distance(oPos, cPos)-oRadius;
+        Math::Vector oPos;
+        float oRadius = 0.0f;
+        if ( !obj->GetCrashSphere(0, oPos, oRadius) )  continue;
+        float dist = Math::Distance(oPos, cPos)-oRadius;
 
         if ( dist < 10.0f )  return true;
     }
@@ -468,30 +463,24 @@ void CAutoEnergy::CreatePower()
 
 CObject* CAutoEnergy::SearchPower()
 {
-    CObject*    pObj;
-    Math::Vector    cPos, oPos;
-    ObjectType  type;
+    Math::Vector cPos = m_object->GetPosition(0);
 
-    cPos = m_object->GetPosition(0);
-    
-    for(auto& it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = it.second.get();
+        if ( !obj->GetLock() )  continue;
 
-        if ( !pObj->GetLock() )  continue;
-
-        type = pObj->GetType();
+        ObjectType  type = obj->GetType();
         if ( type != OBJECT_POWER )  continue;
 
-        oPos = pObj->GetPosition(0);
+        Math::Vector oPos = obj->GetPosition(0);
         if ( oPos.x == cPos.x &&
              oPos.z == cPos.z )
         {
-            return pObj;
+            return obj;
         }
     }
 
-    return 0;
+    return nullptr;
 }
 
 

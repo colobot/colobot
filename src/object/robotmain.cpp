@@ -1806,9 +1806,8 @@ CObject* CRobotMain::GetSelectObject()
 CObject* CRobotMain::DeselectAll()
 {
     CObject* prev = nullptr;
-    for(auto& it : m_objMan->GetAllObjects())
+    for (CObject* obj : m_objMan->GetAllObjects())
     {
-        CObject* obj = it.second.get();
         if (obj->GetSelect()) prev = obj;
         obj->SetSelect(false);
     }
@@ -1962,9 +1961,8 @@ CObject* CRobotMain::SearchNearest(Math::Vector pos, CObject* exclu)
 {
     float min = 100000.0f;
     CObject* best = 0;
-    for(auto& it : m_objMan->GetAllObjects())
+    for (CObject* obj : m_objMan->GetAllObjects())
     {
-        CObject* obj = it.second.get();
         if (obj == exclu) continue;
         if (!IsSelectable(obj)) continue;
 
@@ -1985,9 +1983,8 @@ CObject* CRobotMain::SearchNearest(Math::Vector pos, CObject* exclu)
 //! Returns the selected object
 CObject* CRobotMain::GetSelect()
 {
-    for(auto& it : m_objMan->GetAllObjects())
+    for (CObject* obj : m_objMan->GetAllObjects())
     {
-        CObject* obj = it.second.get();
         if (obj->GetSelect())
             return obj;
     }
@@ -2003,11 +2000,9 @@ CObject* CRobotMain::SearchObject(ObjectType type)
 CObject* CRobotMain::DetectObject(Math::Point pos)
 {
     int objRank = m_engine->DetectObject(pos);
-    
-    for(auto& it : m_objMan->GetAllObjects())
-    {
-        CObject* obj = it.second.get();
 
+    for (CObject* obj : m_objMan->GetAllObjects())
+    {
         if (!obj->GetActif()) continue;
         CObject* truck = obj->GetTruck();
         if (truck != nullptr) if (!truck->GetActif()) continue;
@@ -2243,11 +2238,9 @@ void CRobotMain::HiliteClear()
 
     int rank = -1;
     m_engine->SetHighlightRank(&rank);  // nothing more selected
-    
-    for(auto& it : m_objMan->GetAllObjects())
-    {
-        CObject* obj = it.second.get();
 
+    for (CObject* obj : m_objMan->GetAllObjects())
+    {
         obj->SetHilite(false);
         m_map->SetHighlight(0);
         m_short->SetHighlight(0);
@@ -2404,9 +2397,8 @@ void CRobotMain::HelpObject()
 //! Change the mode of the camera
 void CRobotMain::ChangeCamera()
 {
-    for(auto& it : m_objMan->GetAllObjects())
+    for (CObject* obj : m_objMan->GetAllObjects())
     {
-        CObject* obj = it.second.get();
         if (obj->GetSelect())
         {
             if (obj->GetCameraLock()) return;
@@ -2548,9 +2540,8 @@ void CRobotMain::RemoteCamera(float pan, float zoom, float rTime)
 //! Cancels the current movie
 void CRobotMain::AbortMovie()
 {
-    for(auto& it : m_objMan->GetAllObjects())
+    for (CObject* obj : m_objMan->GetAllObjects())
     {
-        CObject* obj = it.second.get();
         CAuto* automat = obj->GetAuto();
         if (automat != 0)
             automat->Abort();
@@ -2635,9 +2626,8 @@ bool CRobotMain::EventFrame(const Event &event)
     if (!m_freePhoto)
     {
         // Advances all the robots, but not toto.
-        for(auto& it : m_objMan->GetAllObjects())
+        for (CObject* obj : m_objMan->GetAllObjects())
         {
-            CObject* obj = it.second.get();
             if (pm != nullptr) pm->UpdateObject(obj);
             if (obj->GetTruck() != nullptr)  continue;
             ObjectType type = obj->GetType();
@@ -2647,9 +2637,8 @@ bool CRobotMain::EventFrame(const Event &event)
                 obj->EventProcess(event);
         }
         // Advances all objects transported by robots.
-        for(auto& it : m_objMan->GetAllObjects())
+        for (CObject* obj : m_objMan->GetAllObjects())
         {
-            CObject* obj = it.second.get();
             if (obj->GetTruck() == nullptr) continue;
             obj->EventProcess(event);
         }
@@ -2806,11 +2795,9 @@ bool CRobotMain::EventObject(const Event &event)
     if (m_freePhoto) return true;
 
     m_resetCreate = false;
-    
-    for(auto& it : m_objMan->GetAllObjects())
-    {
-        CObject* obj = it.second.get();
 
+    for (CObject* obj : m_objMan->GetAllObjects())
+    {
         obj->EventProcess(event);
     }
 
@@ -4203,9 +4190,8 @@ bool CRobotMain::TestGadgetQuantity(int rank)
 float CRobotMain::SearchNearestObject(Math::Vector center, CObject *exclu)
 {
     float min = 100000.0f;
-    for(auto& it : m_objMan->GetAllObjects())
+    for (CObject* obj : m_objMan->GetAllObjects())
     {
-        CObject* obj = it.second.get();
         if (!obj->GetActif()) continue;  // inactive?
         if (obj->GetTruck() != nullptr) continue;  // object carries?
         if (obj == exclu)  continue;
@@ -4352,9 +4338,8 @@ void CRobotMain::ShowDropZone(CObject* metal, CObject* truck)
     // Calculates the maximum radius possible depending on other items.
     float oMax = 30.0f;  // radius to build the biggest building
     float tMax;
-    for(auto& it : m_objMan->GetAllObjects())
+    for (CObject* obj : m_objMan->GetAllObjects())
     {
-        CObject* obj = it.second.get();
         if (!obj->GetActif()) continue;  // inactive?
         if (obj->GetTruck() != nullptr) continue;  // object carried?
         if (obj == metal) continue;
@@ -4557,9 +4542,8 @@ void CRobotMain::CompileScript(bool soluce)
     {
         lastError = nbError;
         nbError = 0;
-        for(auto& it : m_objMan->GetAllObjects())
+        for (CObject* obj : m_objMan->GetAllObjects())
         {
-            CObject* obj = it.second.get();
             if (obj->GetTruck() != nullptr) continue;
 
             CBrain* brain = obj->GetBrain();
@@ -4585,9 +4569,8 @@ void CRobotMain::CompileScript(bool soluce)
     // Load all solutions.
     if (soluce)
     {
-        for(auto& it : m_objMan->GetAllObjects())
+        for (CObject* obj : m_objMan->GetAllObjects())
         {
-            CObject* obj = it.second.get();
             if (obj->GetTruck() != 0)  continue;
 
             CBrain* brain = obj->GetBrain();
@@ -4602,9 +4585,8 @@ void CRobotMain::CompileScript(bool soluce)
     }
 
     // Start all programs according to the command "run".
-    for(auto& it : m_objMan->GetAllObjects())
+    for (CObject* obj : m_objMan->GetAllObjects())
     {
-        CObject* obj = it.second.get();
         if (obj->GetTruck() != nullptr) continue;
 
         CBrain* brain = obj->GetBrain();
@@ -4683,9 +4665,8 @@ void CRobotMain::LoadFileScript(CObject *obj, const char* filename, int objRank,
 //! Saves all programs of all the robots
 void CRobotMain::SaveAllScript()
 {
-    for(auto& it : m_objMan->GetAllObjects())
+    for (CObject* obj : m_objMan->GetAllObjects())
     {
-        CObject* obj = it.second.get();
         SaveOneScript(obj);
     }
 }
@@ -4834,11 +4815,9 @@ char*  CRobotMain::GetNewScriptName(ObjectType type, int rank)
 bool CRobotMain::IsBusy()
 {
     if (CScriptFunctions::m_CompteurFileOpen > 0) return true;
-    
-    for(auto& it : m_objMan->GetAllObjects())
-    {
-        CObject* obj = it.second.get();
 
+    for (CObject* obj : m_objMan->GetAllObjects())
+    {
         CBrain* brain = obj->GetBrain();
         if (brain != nullptr)
         {
@@ -4969,9 +4948,8 @@ bool CRobotMain::IOWriteScene(const char *filename, const char *filecbot, char *
 
     
     int objRank = 0;
-    for(auto& it : m_objMan->GetAllObjects())
+    for (CObject* obj : m_objMan->GetAllObjects())
     {
-        CObject* obj = it.second.get();
         if (obj->GetType() == OBJECT_TOTO) continue;
         if (obj->GetType() == OBJECT_FIX) continue;
         if (obj->GetTruck() != nullptr) continue;
@@ -5020,9 +4998,8 @@ bool CRobotMain::IOWriteScene(const char *filename, const char *filecbot, char *
     fWrite(&version, sizeof(long), 1, file);  // version of CBOT
 
     objRank = 0;
-    for(auto& it : m_objMan->GetAllObjects())
+    for (CObject* obj : m_objMan->GetAllObjects())
     {
-        CObject* obj = it.second.get();
         if (obj->GetType() == OBJECT_TOTO) continue;
         if (obj->GetType() == OBJECT_FIX) continue;
         if (obj->GetTruck() != nullptr) continue;
@@ -5186,9 +5163,8 @@ CObject* CRobotMain::IOReadScene(const char *filename, const char *filecbot)
     {
         lastError = nbError;
         nbError = 0;
-        for(auto& it : m_objMan->GetAllObjects())
+        for (CObject* obj : m_objMan->GetAllObjects())
         {
-            CObject* obj = it.second.get();
             if (obj->GetTruck() != nullptr) continue;
 
             objRank = obj->GetDefRank();
@@ -5200,9 +5176,8 @@ CObject* CRobotMain::IOReadScene(const char *filename, const char *filecbot)
     while (nbError > 0 && nbError != lastError);
 
     // Starts scripts
-    for(auto& it : m_objMan->GetAllObjects())
+    for (CObject* obj : m_objMan->GetAllObjects())
     {
-        CObject* obj = it.second.get();
         if (obj->GetTruck() != nullptr) continue;
         if (obj->GetDefRank() == -1) continue;
 
@@ -5228,9 +5203,8 @@ CObject* CRobotMain::IOReadScene(const char *filename, const char *filecbot)
             if (version == CBotProgram::GetVersion())
             {
                 objRank = 0;
-                for(auto& it : m_objMan->GetAllObjects())
+                for (CObject* obj : m_objMan->GetAllObjects())
                 {
-                    CObject* obj = it.second.get();
                     if (obj->GetType() == OBJECT_TOTO) continue;
                     if (obj->GetType() == OBJECT_FIX) continue;
                     if (obj->GetTruck() != nullptr) continue;
@@ -5423,11 +5397,9 @@ void CRobotMain::ResetCreate()
         CreateScene(m_dialog->GetSceneSoluce(), false, true);
 
         if (!GetNiceReset()) return;
-        
-        for(auto& it : m_objMan->GetAllObjects())
-        {
-            CObject* obj = it.second.get();
 
+        for (CObject* obj : m_objMan->GetAllObjects())
+        {
             ResetCap cap = obj->GetResetCap();
             if (cap == RESET_NONE) continue;
 
@@ -5456,9 +5428,8 @@ void CRobotMain::UpdateAudio(bool frame)
         Math::Vector oPos;
 
         int nb = 0;
-        for(auto& it : m_objMan->GetAllObjects())
+        for (CObject* obj : m_objMan->GetAllObjects())
         {
-            CObject* obj = it.second.get();
             // Do not use GetActif () because an invisible worm (underground)
             // should be regarded as existing here!
             if (obj->GetLock()) continue;
@@ -5580,9 +5551,8 @@ Error CRobotMain::CheckEndMission(bool frame)
         Math::Vector oPos;
 
         int nb = 0;
-        for(auto& it : m_objMan->GetAllObjects())
+        for (CObject* obj : m_objMan->GetAllObjects())
         {
-            CObject* obj = it.second.get();
             // Do not use GetActif () because an invisible worm (underground)
             // should be regarded as existing here!
             if (obj->GetLock()) continue;
@@ -5858,11 +5828,9 @@ bool CRobotMain::GetRadar()
 {
     if (m_cheatRadar)
         return true;
-    
-    for(auto& it : m_objMan->GetAllObjects())
-    {
-        CObject* obj = it.second.get();
 
+    for (CObject* obj : m_objMan->GetAllObjects())
+    {
         ObjectType type = obj->GetType();
         if (type == OBJECT_RADAR && !obj->GetLock())
             return true;

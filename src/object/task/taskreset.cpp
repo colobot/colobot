@@ -278,18 +278,11 @@ Error CTaskReset::IsEnded()
 
 bool CTaskReset::SearchVehicle()
 {
-    CObject*    pObj;
-    Math::Vector    oPos;
-    ObjectType  type;
-    float       oRadius, dist;
-    
-    for (auto& it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = it.second.get();
+        if ( obj == m_object )  continue;
 
-        if ( pObj == m_object )  continue;
-
-        type = pObj->GetType();
+        ObjectType type = obj->GetType();
         if ( type != OBJECT_HUMAN    &&
              type != OBJECT_TECH     &&
              type != OBJECT_MOBILEfa &&
@@ -325,8 +318,10 @@ bool CTaskReset::SearchVehicle()
              type != OBJECT_BEE      &&
              type != OBJECT_WORM     )  continue;
 
-        if ( !pObj->GetCrashSphere(0, oPos, oRadius) )  continue;
-        dist = Math::Distance(oPos, m_goal)-oRadius;
+        Math::Vector oPos;
+        float oRadius = 0.0f;
+        if ( !obj->GetCrashSphere(0, oPos, oRadius) )  continue;
+        float dist = Math::Distance(oPos, m_goal)-oRadius;
 
         if ( dist < 5.0f )  return true;
     }

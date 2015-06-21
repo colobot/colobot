@@ -225,20 +225,13 @@ bool CAutoMush::EventProcess(const Event &event)
 
 bool CAutoMush::SearchTarget()
 {
-    CObject*    pObj;
-    Math::Vector    iPos, oPos;
-    ObjectType  type;
-    float       dist;
+    Math::Vector iPos = m_object->GetPosition(0);
 
-    iPos = m_object->GetPosition(0);
-    
-    for(auto& it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = it.second.get();
+        if ( obj->GetLock() )  continue;
 
-        if ( pObj->GetLock() )  continue;
-
-        type = pObj->GetType();
+        ObjectType type = obj->GetType();
         if ( type != OBJECT_MOBILEfa &&
              type != OBJECT_MOBILEta &&
              type != OBJECT_MOBILEwa &&
@@ -282,8 +275,8 @@ bool CAutoMush::SearchTarget()
              type != OBJECT_PARA     &&
              type != OBJECT_HUMAN    )  continue;
 
-        oPos = pObj->GetPosition(0);
-        dist = Math::Distance(oPos, iPos);
+       Math::Vector oPos = obj->GetPosition(0);
+        float dist = Math::Distance(oPos, iPos);
         if ( dist < 50.0f )  return true;
     }
 

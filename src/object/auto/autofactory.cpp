@@ -547,25 +547,18 @@ bool CAutoFactory::Read(CLevelParserLine* line)
 
 CObject* CAutoFactory::SearchFret()
 {
-    CObject*    pObj;
-    Math::Vector    oPos;
-    ObjectType  type;
-    float       dist;
-    
-    for(auto& it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = it.second.get();
-        
-        type = pObj->GetType();
+        ObjectType type = obj->GetType();
         if ( type != OBJECT_METAL )  continue;
-        if ( pObj->GetTruck() != 0 )  continue;
-        
-        oPos = pObj->GetPosition(0);
-        dist = Math::Distance(oPos, m_fretPos);
-        
-        if ( dist < 8.0f )  return pObj;
+        if ( obj->GetTruck() != nullptr )  continue;
+
+        Math::Vector oPos = obj->GetPosition(0);
+        float dist = Math::Distance(oPos, m_fretPos);
+
+        if ( dist < 8.0f )  return obj;
     }
-    
+
     return 0;
 }
 
@@ -573,18 +566,11 @@ CObject* CAutoFactory::SearchFret()
 
 bool CAutoFactory::NearestVehicle()
 {
-    CObject*    pObj;
-    Math::Vector    cPos, oPos;
-    ObjectType  type;
-    float       oRadius, dist;
+    Math::Vector cPos = m_object->GetPosition(0);
 
-    cPos = m_object->GetPosition(0);
-    
-    for(auto& it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = it.second.get();
-
-        type = pObj->GetType();
+        ObjectType type = obj->GetType();
         if ( type != OBJECT_HUMAN    &&
              type != OBJECT_MOBILEfa &&
              type != OBJECT_MOBILEta &&
@@ -619,8 +605,10 @@ bool CAutoFactory::NearestVehicle()
              type != OBJECT_BEE      &&
              type != OBJECT_WORM     )  continue;
 
-        if ( !pObj->GetCrashSphere(0, oPos, oRadius) )  continue;
-        dist = Math::Distance(oPos, cPos)-oRadius;
+        Math::Vector oPos;
+        float oRadius = 0.0f;
+        if ( !obj->GetCrashSphere(0, oPos, oRadius) )  continue;
+        float dist = Math::Distance(oPos, cPos)-oRadius;
 
         if ( dist < 10.0f )  return true;
     }
@@ -680,29 +668,22 @@ bool CAutoFactory::CreateVehicle()
 // Seeking the vehicle during manufacture.
 
 CObject* CAutoFactory::SearchVehicle()
-{    
-    CObject*    pObj;
-    Math::Vector    oPos;
-    ObjectType  type;
-    float       dist;
-    
-    for(auto& it : CObjectManager::GetInstancePointer()->GetAllObjects())
+{
+    for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = it.second.get();
-        
-        if ( !pObj->GetLock() )  continue;
-        
-        type = pObj->GetType();
+        if ( !obj->GetLock() )  continue;
+
+        ObjectType  type = obj->GetType();
         if ( type != m_type )  continue;
-        if ( pObj->GetTruck() != 0 )  continue;
-        
-        oPos = pObj->GetPosition(0);
-        dist = Math::Distance(oPos, m_fretPos);
-        
-        if ( dist < 8.0f )  return pObj;
+        if ( obj->GetTruck() != nullptr )  continue;
+
+        Math::Vector oPos = obj->GetPosition(0);
+        float dist = Math::Distance(oPos, m_fretPos);
+
+        if ( dist < 8.0f )  return obj;
     }
-    
-    return 0;
+
+    return nullptr;
 }
 
 // Creates all the interface when the object is selected.

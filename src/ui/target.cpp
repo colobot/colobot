@@ -185,22 +185,16 @@ bool CTarget::GetTooltip(Math::Point pos, std::string &name)
 
 CObject* CTarget::DetectFriendObject(Math::Point pos)
 {
-    ObjectType  type;
-    CObject     *pObj, *pTarget;
-    int         objRank, j, rank;
+    int objRank = m_engine->DetectObject(pos);
 
-    objRank = m_engine->DetectObject(pos);
-    
-    for(auto& it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = it.second.get();
+        if ( !obj->GetActif() )  continue;
+        if ( obj->GetProxyActivate() )  continue;
+        if ( obj->GetSelect() )  continue;
 
-        if ( !pObj->GetActif() )  continue;
-        if ( pObj->GetProxyActivate() )  continue;
-        if ( pObj->GetSelect() )  continue;
-
-        pTarget = 0;
-        type = pObj->GetType();
+        CObject* target = nullptr;
+        ObjectType type = obj->GetType();
         if ( type == OBJECT_DERRICK      ||
              type == OBJECT_FACTORY      ||
              type == OBJECT_REPAIR       ||
@@ -247,29 +241,29 @@ CObject* CTarget::DetectFriendObject(Math::Point pos)
              type == OBJECT_MOBILEit     ||
              type == OBJECT_MOBILEdr     )
         {
-            pTarget = pObj;
+            target = obj;
         }
         else if ( (type == OBJECT_POWER  ||
                   type == OBJECT_ATOMIC ) &&
-             pObj->GetTruck() != 0 )  // battery used?
+             obj->GetTruck() != nullptr )  // battery used?
         {
-            pTarget = pObj->GetTruck();
-            if ( pTarget->GetType() == OBJECT_MOBILEtg )
+            target = obj->GetTruck();
+            if ( target->GetType() == OBJECT_MOBILEtg )
             {
-                pTarget = 0;
+                target = nullptr;
             }
         }
 
-        for ( j=0 ; j<OBJECTMAXPART ; j++ )
+        for (int j=0 ; j<OBJECTMAXPART ; j++ )
         {
-            rank = pObj->GetObjectRank(j);
+            int rank = obj->GetObjectRank(j);
             if ( rank == -1 )  continue;
             if ( rank != objRank )  continue;
-            return pTarget;
+            return target;
         }
     }
 
-    return 0;
+    return nullptr;
 }
 
 }

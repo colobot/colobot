@@ -2211,14 +2211,12 @@ void CPyro::FallStart()
 CObject* CPyro::FallSearchBeeExplo()
 {
     Math::Vector iPos;
-    float iRadius;
+    float iRadius = 0.0f;
     m_object->GetCrashSphere(0, iPos, iRadius);
-    
-    for(auto& it : CObjectManager::GetInstancePointer()->GetAllObjects())
-    {
-        CObject*  pObj = it.second.get();
 
-        ObjectType oType = pObj->GetType();
+    for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
+    {
+        ObjectType oType = obj->GetType();
         if ( oType != OBJECT_HUMAN    &&
              oType != OBJECT_MOBILEfa &&
              oType != OBJECT_MOBILEta &&
@@ -2268,40 +2266,41 @@ CObject* CPyro::FallSearchBeeExplo()
              oType != OBJECT_POWER    &&
              oType != OBJECT_ATOMIC   )  continue;
 
-        if ( pObj->GetTruck() != 0 )  continue;  // object transported?
+        if ( obj->GetTruck() != nullptr )  continue;  // object transported?
 
-        Math::Vector oPos = pObj->GetPosition(0);
+        Math::Vector oPos = obj->GetPosition(0);
 
-        float distance;
-
-        float shieldRadius = pObj->GetShieldRadius();
+        float shieldRadius = obj->GetShieldRadius();
         if ( shieldRadius > 0.0f )
         {
-            distance = Math::Distance(oPos, iPos);
-            if (distance <= shieldRadius) return pObj;
+            float distance = Math::Distance(oPos, iPos);
+            if (distance <= shieldRadius)
+                return obj;
         }
 
         if ( oType == OBJECT_BASE )
         {
-            distance = Math::Distance(oPos, iPos);
-            if (distance < 25.0f) return pObj;
+            float distance = Math::Distance(oPos, iPos);
+            if (distance < 25.0f)
+                return obj;
         }
 
         // Test the center of the object, which is necessary for objects
         // that have no sphere in the center (station).
-        distance = Math::Distance(oPos, iPos)-4.0f;
-        if (distance < 5.0f) return pObj;
+        float distance = Math::Distance(oPos, iPos)-4.0f;
+        if (distance < 5.0f)
+            return obj;
 
         // Test with all spheres of the object.
         Math::Vector ooPos;
-        float ooRadius;
+        float ooRadius = 0.0f;
         int j = 0;
-        while (pObj->GetCrashSphere(j++, ooPos, ooRadius))
+        while (obj->GetCrashSphere(j++, ooPos, ooRadius))
         {
             distance = Math::Distance(ooPos, iPos);
             if (distance <= iRadius+ooRadius)
             {
-                return pObj;
+                return obj;
             }
         }
     }

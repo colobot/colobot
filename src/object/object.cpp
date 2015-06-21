@@ -347,8 +347,6 @@ CObject::~CObject()
 
 void CObject::DeleteObject(bool bAll)
 {
-    CObject*    pObj;
-    Gfx::CPyro* pPyro;
     if ( m_botVar != 0 )
     {
         m_botVar->SetUserPtr(OBJECTDELETED);
@@ -361,12 +359,10 @@ void CObject::DeleteObject(bool bAll)
 
     
     CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
-    
-    for(auto& it : CObjectManager::GetInstancePointer()->GetAllObjects())
-    {
-        pObj = it.second.get();
 
-        pObj->DeleteDeselList(this);
+    for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
+    {
+        obj->DeleteDeselList(this);
     }
 
     if ( !bAll )
@@ -379,25 +375,25 @@ void CObject::DeleteObject(bool bAll)
               type == Gfx::CAM_TYPE_ONBOARD) &&
              m_camera->GetControllingObject() == this )
         {
-            pObj = m_main->SearchNearest(GetPosition(0), this);
-            if ( pObj == 0 )
+            obj = m_main->SearchNearest(GetPosition(0), this);
+            if ( obj == 0 )
             {
                 m_camera->SetControllingObject(0);
                 m_camera->SetType(Gfx::CAM_TYPE_FREE);
             }
             else
             {
-                m_camera->SetControllingObject(pObj);
+                m_camera->SetControllingObject(obj);
                 m_camera->SetType(Gfx::CAM_TYPE_BACK);
             }
         }
 #endif
         for (int i=0 ; i<1000000 ; i++ )
         {
-            pPyro = static_cast<Gfx::CPyro*>(iMan->SearchInstance(CLASS_PYRO, i));
-            if ( pPyro == 0 )  break;
+            Gfx::CPyro* pyro = static_cast<Gfx::CPyro*>(iMan->SearchInstance(CLASS_PYRO, i));
+            if ( pyro == nullptr )  break;
 
-            pPyro->CutObjectLink(this);  // the object no longer exists
+            pyro->CutObjectLink(this);  // the object no longer exists
         }
 
         if ( m_bSelect )

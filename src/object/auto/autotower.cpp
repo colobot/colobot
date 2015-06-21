@@ -267,53 +267,47 @@ bool CAutoTower::EventProcess(const Event &event)
 
 CObject* CAutoTower::SearchTarget(Math::Vector &impact)
 {
-    CObject*    pObj;
-    CObject*    pBest = 0;
-    CPhysics*   physics;
-    Math::Vector    iPos, oPos;
-    ObjectType  oType;
-    float       distance, min, radius, speed;
+    Math::Vector iPos = m_object->GetPosition(0);
+    float min = 1000000.0f;
 
-    iPos = m_object->GetPosition(0);
-    min = 1000000.0f;
-    
-    for(auto& it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    CObject* best = nullptr;
+    for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = it.second.get();
-
-        oType = pObj->GetType();
+        ObjectType oType = obj->GetType();
         if ( oType != OBJECT_MOTHER &&
              oType != OBJECT_ANT    &&
              oType != OBJECT_SPIDER &&
              oType != OBJECT_BEE    &&
              oType != OBJECT_WORM   )  continue;
 
-        if ( !pObj->GetActif() )  continue;  // inactive?
+        if ( !obj->GetActif() )  continue;  // inactive?
 
 //?     if ( g_researchDone & RESEARCH_QUICK )
         if ( false )
         {
-            physics = pObj->GetPhysics();
-            if ( physics != 0 )
+            CPhysics* physics = obj->GetPhysics();
+            if ( physics != nullptr )
             {
-                speed = fabs(physics->GetLinMotionX(MO_REASPEED));
+                float speed = fabs(physics->GetLinMotionX(MO_REASPEED));
                 if ( speed > 20.0f )  continue;  // moving too fast?
             }
         }
 
-        if ( !pObj->GetCrashSphere(0, oPos, radius) )  continue;
-        distance = Math::Distance(oPos, iPos);
+        Math::Vector oPos;
+        float radius = 0.0f;
+        if ( !obj->GetCrashSphere(0, oPos, radius) )  continue;
+        float distance = Math::Distance(oPos, iPos);
         if ( distance > TOWER_SCOPE )  continue;  // too far
         if ( distance < min )
         {
             min = distance;
-            pBest = pObj;
+            best = obj;
         }
     }
-    if ( pBest == 0 )  return 0;
+    if ( best == nullptr )  return nullptr;
 
-    impact = pBest->GetPosition(0);
-    return pBest;
+    impact = best->GetPosition(0);
+    return best;
 }
 
 

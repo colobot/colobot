@@ -339,7 +339,6 @@ bool CTaskTerraform::Abort()
 
 bool CTaskTerraform::Terraform()
 {
-    CObject*    pObj;
     CBrain*     brain;
     CMotion*    motion;
     Gfx::CPyro* pyro;
@@ -349,11 +348,9 @@ bool CTaskTerraform::Terraform()
     m_camera->StartEffect(Gfx::CAM_EFFECT_TERRAFORM, m_terraPos, 1.0f);
 
     m_sound->Play(SOUND_THUMP, m_terraPos);
-    
-    for(auto& it : CObjectManager::GetInstancePointer()->GetAllObjects())
-    {
-        pObj = it.second.get();
 
+    for (CObject* pObj : CObjectManager::GetInstancePointer()->GetAllObjects())
+    {
         type = pObj->GetType();
         if ( type == OBJECT_NULL )  continue;
 

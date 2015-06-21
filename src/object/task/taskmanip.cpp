@@ -724,7 +724,7 @@ bool CTaskManip::Abort()
 
 CObject* CTaskManip::SearchTakeUnderObject(Math::Vector &pos, float dLimit)
 {
-    CObject     *pObj, *pBest;
+    CObject    *pBest;
     Math::Vector    iPos, oPos;
     ObjectType  type;
     float       min, distance;
@@ -733,9 +733,8 @@ CObject* CTaskManip::SearchTakeUnderObject(Math::Vector &pos, float dLimit)
 
     min = 1000000.0f;
     pBest = 0;
-    for(auto& it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for (CObject* pObj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = it.second.get();
         type = pObj->GetType();
 
         if ( type != OBJECT_FRET    &&
@@ -777,7 +776,7 @@ CObject* CTaskManip::SearchTakeUnderObject(Math::Vector &pos, float dLimit)
 CObject* CTaskManip::SearchTakeFrontObject(bool bAdvance, Math::Vector &pos,
                                            float &distance, float &angle)
 {
-    CObject     *pObj, *pBest;
+    CObject     *pBest;
     Math::Vector    iPos, oPos;
     ObjectType  type;
     float       min, iAngle, bAngle, aLimit, dLimit, f;
@@ -801,9 +800,8 @@ CObject* CTaskManip::SearchTakeFrontObject(bool bAdvance, Math::Vector &pos,
     min = 1000000.0f;
     pBest = 0;
     bAngle = 0.0f;
-    for(auto& it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for (CObject* pObj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = it.second.get();
         type = pObj->GetType();
 
         if ( type != OBJECT_FRET    &&
@@ -866,7 +864,7 @@ CObject* CTaskManip::SearchTakeFrontObject(bool bAdvance, Math::Vector &pos,
 CObject* CTaskManip::SearchTakeBackObject(bool bAdvance, Math::Vector &pos,
                                           float &distance, float &angle)
 {
-    CObject     *pObj, *pBest;
+    CObject     *pBest;
     Math::Vector    iPos, oPos;
     ObjectType  type;
     float       min, iAngle, bAngle, aLimit, dLimit, f;
@@ -889,9 +887,8 @@ CObject* CTaskManip::SearchTakeBackObject(bool bAdvance, Math::Vector &pos,
     min = 1000000.0f;
     pBest = 0;
     bAngle = 0.0f;
-    for(auto& it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for (CObject* pObj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = it.second.get();
         type = pObj->GetType();
 
         if ( type != OBJECT_FRET    &&
@@ -956,7 +953,6 @@ CObject* CTaskManip::SearchOtherObject(bool bAdvance, Math::Vector &pos,
                                        float &height)
 {
     Character*  character;
-    CObject*    pObj;
     CObject*    pPower;
     Math::Matrix*   mat;
     Math::Vector    iPos, oPos;
@@ -982,11 +978,9 @@ CObject* CTaskManip::SearchOtherObject(bool bAdvance, Math::Vector &pos,
         aLimit = 7.0f*Math::PI/180.0f;
         dLimit = MARGIN_FRIEND;
     }
-    
-    for(auto& it : CObjectManager::GetInstancePointer()->GetAllObjects())
-    {
-        pObj = it.second.get();
 
+    for (CObject* pObj : CObjectManager::GetInstancePointer()->GetAllObjects())
+    {
         if ( pObj == m_object )  continue;  // yourself?
 
         type = pObj->GetType();
@@ -1329,25 +1323,19 @@ bool CTaskManip::TruckDeposeObject()
 
 bool CTaskManip::IsFreeDeposeObject(Math::Vector pos)
 {
-    CObject*    pObj;
-    Math::Matrix*   mat;
-    Math::Vector    iPos, oPos;
-    float       oRadius;
-    int         j;
+    Math::Matrix* mat = m_object->GetWorldMatrix(0);
+    Math::Vector iPos = Transform(*mat, pos);
 
-    mat = m_object->GetWorldMatrix(0);
-    iPos = Transform(*mat, pos);
-    
-    for(auto& it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = it.second.get();
+        if ( obj == m_object )  continue;
+        if ( !obj->GetActif() )  continue;  // inactive?
+        if ( obj->GetTruck() != nullptr )  continue;  // object transported?
 
-        if ( pObj == m_object )  continue;
-        if ( !pObj->GetActif() )  continue;  // inactive?
-        if ( pObj->GetTruck() != 0 )  continue;  // object transported?
-
-        j = 0;
-        while ( pObj->GetCrashSphere(j++, oPos, oRadius) )
+        Math::Vector oPos;
+        float oRadius = 0.0f;
+        int j = 0;
+        while ( obj->GetCrashSphere(j++, oPos, oRadius) )
         {
             if ( Math::Distance(iPos, oPos)-(oRadius+1.0f) < 2.0f )
             {

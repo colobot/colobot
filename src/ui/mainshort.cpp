@@ -94,7 +94,6 @@ static EventType table_sc_em[20] =
 
 bool CMainShort::CreateShortcuts()
 {
-    CObject*    pObj;
     CControl*   pc;
     ObjectType  type;
     Math::Point     pos, dim;
@@ -137,11 +136,9 @@ bool CMainShort::CreateShortcuts()
     pos.x += dim.x*1.2f;
     m_shortcuts[rank] = 0;
     rank ++;
-    
-    for(auto& it : CObjectManager::GetInstancePointer()->GetAllObjects())
-    {
-        pObj = it.second.get();
 
+    for (CObject* pObj : CObjectManager::GetInstancePointer()->GetAllObjects())
+    {
         if ( !pObj->GetActif() )  continue;
         if ( !pObj->GetSelectable() )  continue;
         if ( pObj->GetProxyActivate() )  continue;

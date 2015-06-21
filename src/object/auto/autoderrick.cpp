@@ -461,47 +461,35 @@ bool CAutoDerrick::Read(CLevelParserLine* line)
 
 CObject* CAutoDerrick::SearchFret()
 {
-    CObject*    pObj;
-    Math::Vector    oPos;
-    ObjectType  type;
-    
-    for(auto& it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = it.second.get();
-
-        type = pObj->GetType();
+        ObjectType type = obj->GetType();
         if ( type == OBJECT_DERRICK )  continue;
 
-        oPos = pObj->GetPosition(0);
+            Math::Vector oPos = obj->GetPosition(0);
 
         if ( oPos.x == m_fretPos.x &&
-             oPos.z == m_fretPos.z )  return pObj;
+             oPos.z == m_fretPos.z )  return obj;
     }
 
-    return 0;
+    return nullptr;
 }
 
 // Seeks if a site is free.
 
 bool CAutoDerrick::SearchFree(Math::Vector pos)
 {
-    CObject*    pObj;
-    Math::Vector    sPos;
-    ObjectType  type;
-    float       sRadius, distance;
-    int         j;
-    
-    for(auto& it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = it.second.get();
-
-        type = pObj->GetType();
+        ObjectType type = obj->GetType();
         if ( type == OBJECT_DERRICK )  continue;
 
-        j = 0;
-        while ( pObj->GetCrashSphere(j++, sPos, sRadius) )
+        int j = 0;
+        Math::Vector sPos;
+        float sRadius = 0.0f;
+        while ( obj->GetCrashSphere(j++, sPos, sRadius) )
         {
-            distance = Math::Distance(sPos, pos);
+            float distance = Math::Distance(sPos, pos);
             distance -= sRadius;
             if ( distance < 2.0f )  return false;  // location occupied
         }

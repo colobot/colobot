@@ -234,19 +234,11 @@ bool CAutoRepair::CreateInterface(bool bSelect)
 
 CObject* CAutoRepair::SearchVehicle()
 {
-    CObject*    pObj;
-    CPhysics*   physics;
-    Math::Vector    sPos, oPos;
-    ObjectType  type;
-    float       dist;
+    Math::Vector sPos = m_object->GetPosition(0);
 
-    sPos = m_object->GetPosition(0);
-    
-    for(auto& it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = it.second.get();
-
-        type = pObj->GetType();
+        ObjectType type = obj->GetType();
         if ( type != OBJECT_MOBILEfa &&
              type != OBJECT_MOBILEta &&
              type != OBJECT_MOBILEwa &&
@@ -275,15 +267,15 @@ CObject* CAutoRepair::SearchVehicle()
              type != OBJECT_MOBILEit &&
              type != OBJECT_MOBILEdr )  continue;
 
-        physics = pObj->GetPhysics();
-        if ( physics != 0 && !physics->GetLand() )  continue;  // in flight?
+        CPhysics* physics = obj->GetPhysics();
+        if ( physics != nullptr && !physics->GetLand() )  continue;  // in flight?
 
-        oPos = pObj->GetPosition(0);
-        dist = Math::Distance(oPos, sPos);
-        if ( dist <= 5.0f )  return pObj;
+        Math::Vector oPos = obj->GetPosition(0);
+        float dist = Math::Distance(oPos, sPos);
+        if ( dist <= 5.0f )  return obj;
     }
 
-    return 0;
+    return nullptr;
 }
 
 

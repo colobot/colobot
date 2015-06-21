@@ -150,18 +150,12 @@ CObject* CTaskFlag::SearchNearest(Math::Vector pos, ObjectType type)
 
 int CTaskFlag::CountObject(ObjectType type)
 {
-    ObjectType  oType;
-    CObject     *pObj;
-    Math::Vector    oPos;
-    int         count;
-
-    count = 0;
-    for (auto& it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    int count = 0;
+    for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = it.second.get();
-        if ( !pObj->GetEnable() )  continue;
+        if ( !obj->GetEnable() )  continue;
 
-        oType = pObj->GetType();
+        ObjectType  oType = obj->GetType();
         if ( type == OBJECT_NULL )
         {
             if ( oType != OBJECT_FLAGb &&
