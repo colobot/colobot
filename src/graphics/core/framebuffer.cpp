@@ -22,8 +22,6 @@
 * \brief Abstract representation of framebuffer and offscreen buffers
 */
 
-#pragma once
-
 #include "graphics/core/framebuffer.h"
 
 namespace Gfx {
@@ -31,17 +29,14 @@ namespace Gfx {
 CDefaultFramebuffer::CDefaultFramebuffer(const FramebufferParams& params)
     : m_width(params.width), m_height(params.height), m_depth(params.depth)
 {
-    
 }
 
 void CDefaultFramebuffer::Create()
 {
-    
 }
 
 void CDefaultFramebuffer::Destroy()
 {
-    
 }
 
 bool CDefaultFramebuffer::IsDefault()
@@ -88,13 +83,11 @@ int CDefaultFramebuffer::GetDepthTexture()
 //! Binds this framebuffer to context
 void CDefaultFramebuffer::Bind()
 {
-    
 }
 
 //! Unbinds this framebuffer from context
 void CDefaultFramebuffer::Unbind()
 {
-    
 }
 
 } // end of Gfx

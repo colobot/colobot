@@ -78,6 +78,8 @@ struct FramebufferParams
 class CFramebuffer
 {
 public:
+    virtual ~CFramebuffer() {}
+
     //! Creates this framebuffer
     virtual void Create() = 0;
 
