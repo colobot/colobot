@@ -43,7 +43,7 @@
 #include "object/motion/motion.h"
 #include "object/motion/motionvehicle.h"
 #include "object/robotmain.h"
-#include "object/objman.h"
+#include "object/object_manager.h"
 #include "object/level/parserline.h"
 #include "object/level/parserparam.h"
 #include "object/level/parserexceptions.h"
@@ -189,7 +189,8 @@ void uObject(CBotVar* botThis, void* user)
 
 // Object's constructor.
 
-CObject::CObject()
+CObject::CObject(int id)
+ : m_id(id)
 {
     m_app         = CApplication::GetInstancePointer();
     m_sound       = m_app->GetSound();
@@ -207,7 +208,6 @@ CObject::CObject()
     m_runScript   = nullptr;
 
     m_type = OBJECT_FIX;
-    m_id = ++g_id;
     m_option = 0;
     m_name[0] = 0;
     m_partiReactor  = -1;
@@ -315,8 +315,6 @@ CObject::CObject()
     m_botVar = CBotVar::Create("", CBotTypResult(CBotTypClass, "object"));
     m_botVar->SetUserPtr(this);
     m_botVar->SetIdent(m_id);
-
-    CObjectManager::GetInstancePointer()->AddObject(this);
 }
 
 // Object's destructor.
@@ -338,8 +336,6 @@ CObject::~CObject()
     m_motion = nullptr;
     delete m_auto;
     m_auto = nullptr;
-    
-    CObjectManager::GetInstancePointer()->DeleteObject(this);
 
     m_app = nullptr;
 }
@@ -351,9 +347,6 @@ CObject::~CObject()
 
 void CObject::DeleteObject(bool bAll)
 {
-    CObject*    pObj;
-    Gfx::CPyro* pPyro;
-
     if ( m_botVar != 0 )
     {
         m_botVar->SetUserPtr(OBJECTDELETED);
@@ -363,14 +356,13 @@ void CObject::DeleteObject(bool bAll)
     {
         m_camera->SetControllingObject(0);
     }
+
     
     CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
-    
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
-    {
-        pObj = it.second;
 
-        pObj->DeleteDeselList(this);
+    for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
+    {
+        obj->DeleteDeselList(this);
     }
 
     if ( !bAll )
@@ -383,25 +375,25 @@ void CObject::DeleteObject(bool bAll)
               type == Gfx::CAM_TYPE_ONBOARD) &&
              m_camera->GetControllingObject() == this )
         {
-            pObj = m_main->SearchNearest(GetPosition(0), this);
-            if ( pObj == 0 )
+            obj = m_main->SearchNearest(GetPosition(0), this);
+            if ( obj == 0 )
             {
                 m_camera->SetControllingObject(0);
                 m_camera->SetType(Gfx::CAM_TYPE_FREE);
             }
             else
             {
-                m_camera->SetControllingObject(pObj);
+                m_camera->SetControllingObject(obj);
                 m_camera->SetType(Gfx::CAM_TYPE_BACK);
             }
         }
 #endif
         for (int i=0 ; i<1000000 ; i++ )
         {
-            pPyro = static_cast<Gfx::CPyro*>(iMan->SearchInstance(CLASS_PYRO, i));
-            if ( pPyro == 0 )  break;
+            Gfx::CPyro* pyro = static_cast<Gfx::CPyro*>(iMan->SearchInstance(CLASS_PYRO, i));
+            if ( pyro == nullptr )  break;
 
-            pPyro->CutObjectLink(this);  // the object no longer exists
+            pyro->CutObjectLink(this);  // the object no longer exists
         }
 
         if ( m_bSelect )
@@ -941,19 +933,6 @@ void CObject::SetOption(int option)
 int CObject::GetOption()
 {
     return m_option;
-}
-
-
-// Management of the unique identifier of an object.
-
-void CObject::SetID(int id)
-{
-    m_id = id;
-
-    if ( m_botVar != 0 )
-    {
-        m_botVar->SetIdent(m_id);
-    }
 }
 
 int CObject::GetID()

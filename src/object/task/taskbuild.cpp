@@ -30,7 +30,7 @@
 
 #include "object/auto/auto.h"
 #include "object/motion/motionhuman.h"
-#include "object/objman.h"
+#include "object/object_manager.h"
 #include "object/robotmain.h"
 
 #include "physics/physics.h"
@@ -474,9 +474,8 @@ Error CTaskBuild::IsEnded()
 
         DeleteMark(m_metal->GetPosition(0), 20.0f);
 
-        m_metal->DeleteObject();  // removes the metal
-        delete m_metal;
-        m_metal = 0;
+        CObjectManager::GetInstancePointer()->DeleteObject(m_metal);
+        m_metal = nullptr;
 
         m_building->SetZoom(0, 1.0f);
         m_building->SetCirVibration(Math::Vector(0.0f, 0.0f, 0.0f));
@@ -549,7 +548,6 @@ bool CTaskBuild::Abort()
 
 Error CTaskBuild::FlatFloor()
 {
-    CObject     *pObj;
     ObjectType  type;
     Math::Vector    center, pos, oPos, bPos;
     Math::Point     c, p;
@@ -590,10 +588,8 @@ Error CTaskBuild::FlatFloor()
 
     max = 100000.0f;
     bBase = false;
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for (CObject* pObj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = it.second;
-
         if ( !pObj->GetActif() )  continue;  // inactive?
         if ( pObj->GetTruck() != 0 )  continue;  // object transported?
         if ( pObj == m_metal )  continue;
@@ -637,10 +633,8 @@ Error CTaskBuild::FlatFloor()
     }
 
     max = 100000.0f;
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for (CObject* pObj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = it.second;
-
         if ( !pObj->GetActif() )  continue;  // inactive?
         if ( pObj->GetTruck() != 0 )  continue;  // object transported?
         if ( pObj == m_metal )  continue;
@@ -694,7 +688,7 @@ Error CTaskBuild::FlatFloor()
 CObject* CTaskBuild::SearchMetalObject(float &angle, float dMin, float dMax,
                                        float aLimit, Error &err)
 {
-    CObject     *pObj, *pBest;
+    CObject     *pBest;
     Math::Vector    iPos, oPos;
     ObjectType  type;
     float       min, iAngle, a, aa, aBest, distance, magic;
@@ -707,10 +701,8 @@ CObject* CTaskBuild::SearchMetalObject(float &angle, float dMin, float dMax,
     min = 1000000.0f;
     pBest = 0;
     bMetal = false;
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for (CObject* pObj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = it.second;
-
         if ( !pObj->GetActif() )  continue;  // objet inactive?
         if ( pObj->GetTruck() != 0 )  continue;  // object transported?
 
@@ -761,16 +753,11 @@ CObject* CTaskBuild::SearchMetalObject(float &angle, float dMin, float dMax,
 
 void CTaskBuild::DeleteMark(Math::Vector pos, float radius)
 {
-    CObject*    pObj;
-    Math::Vector    oPos;
-    ObjectType  type;
-    float       distance;
-    
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
-    {
-        pObj = it.second;
+    std::vector<CObject*> objectsToDelete;
 
-        type = pObj->GetType();
+    for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
+    {
+        ObjectType type = obj->GetType();
         if ( type != OBJECT_MARKSTONE   &&
              type != OBJECT_MARKURANIUM &&
              type != OBJECT_MARKKEYa    &&
@@ -779,13 +766,17 @@ void CTaskBuild::DeleteMark(Math::Vector pos, float radius)
              type != OBJECT_MARKKEYd    &&
              type != OBJECT_MARKPOWER   )  continue;
 
-        oPos = pObj->GetPosition(0);
-        distance = Math::Distance(oPos, pos);
+        Math::Vector oPos = obj->GetPosition(0);
+        float distance = Math::Distance(oPos, pos);
         if ( distance <= radius )
         {
-            pObj->DeleteObject();  // removes the mark
-            delete pObj;
+            objectsToDelete.push_back(obj);
         }
+    }
+
+    for (CObject* obj : objectsToDelete)
+    {
+        CObjectManager::GetInstancePointer()->DeleteObject(obj);
     }
 }
 

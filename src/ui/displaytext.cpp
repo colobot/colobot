@@ -29,7 +29,7 @@
 #include "graphics/engine/engine.h"
 
 #include "object/object.h"
-#include "object/objman.h"
+#include "object/object_manager.h"
 #include "object/motion/motion.h"
 #include "object/motion/motiontoto.h"
 

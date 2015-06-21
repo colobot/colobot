@@ -29,7 +29,7 @@
 
 #include "math/geometry.h"
 
-#include "object/objman.h"
+#include "object/object_manager.h"
 #include "object/robotmain.h"
 
 #include "physics/physics.h"
@@ -1237,35 +1237,28 @@ void CAutoBase::UpdateInterface()
 
 // Freeze or frees all cargo.
 
-void CAutoBase::FreezeCargo(bool bFreeze)
+void CAutoBase::FreezeCargo(bool freeze)
 {
-    CObject*    pObj;
-    CPhysics*   physics;
-    Math::Vector    oPos;
-    float       dist;
-    
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = it.second;
+        obj->SetCargo(false);
 
-        pObj->SetCargo(false);
+        if ( obj == m_object )  continue;  // yourself?
+        if ( obj->GetTruck() != nullptr )  continue;  // transport object?
 
-        if ( pObj == m_object )  continue;  // yourself?
-        if ( pObj->GetTruck() != 0 )  continue;  // transport object?
-
-        oPos = pObj->GetPosition(0);
-        dist = Math::DistanceProjected(m_pos, oPos);
+        Math::Vector oPos = obj->GetPosition(0);
+        float dist = Math::DistanceProjected(m_pos, oPos);
         if ( dist < 32.0f )
         {
-            if ( bFreeze )
+            if ( freeze )
             {
-                pObj->SetCargo(true);
+                obj->SetCargo(true);
             }
 
-            physics = pObj->GetPhysics();
-            if ( physics != 0 )
+            CPhysics* physics = obj->GetPhysics();
+            if ( physics != nullptr )
             {
-                physics->SetFreeze(bFreeze);
+                physics->SetFreeze(freeze);
             }
         }
     }
@@ -1275,23 +1268,18 @@ void CAutoBase::FreezeCargo(bool bFreeze)
 
 void CAutoBase::MoveCargo()
 {
-    CObject*    pObj;
-    Math::Vector    oPos, sPos;
+    Math::Vector sPos = m_object->GetPosition(0);
 
-    sPos = m_object->GetPosition(0);
-    
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = it.second;
+        if ( !obj->GetCargo() )  continue;
 
-        if ( !pObj->GetCargo() )  continue;
-
-        oPos = pObj->GetPosition(0);
+        Math::Vector oPos = obj->GetPosition(0);
         oPos.y = sPos.y+30.0f;
-        oPos.y += pObj->GetCharacter()->height;
+        oPos.y += obj->GetCharacter()->height;
         oPos.x += sPos.x-m_lastPos.x;
         oPos.z += sPos.z-m_lastPos.z;
-        pObj->SetPosition(0, oPos);
+        obj->SetPosition(0, oPos);
     }
 
     m_lastPos = sPos;
@@ -1302,26 +1290,20 @@ void CAutoBase::MoveCargo()
 
 Error CAutoBase::CheckCloseDoor()
 {
-    CObject*    pObj;
-    Math::Vector    oPos;
-    ObjectType  type;
-    float       oRad, dist;
-    int         j;
-    
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = it.second;
+        if ( obj == m_object )  continue;  // yourself?
+        if ( !obj->GetActif() )  continue;  // inactive?
 
-        if ( pObj == m_object )  continue;  // yourself?
-        if ( !pObj->GetActif() )  continue;  // inactive?
-
-        type = pObj->GetType();
+        ObjectType type = obj->GetType();
         if ( type == OBJECT_PORTICO )  continue;
 
-        j = 0;
-        while ( pObj->GetCrashSphere(j++, oPos, oRad) )
+        int j = 0;
+        Math::Vector oPos;
+        float oRad = 0.0f;
+        while ( obj->GetCrashSphere(j++, oPos, oRad) )
         {
-            dist = Math::DistanceProjected(m_pos, oPos);
+            float dist = Math::DistanceProjected(m_pos, oPos);
             if ( dist+oRad > 32.0f &&
                  dist-oRad < 72.0f )
             {

@@ -22,7 +22,7 @@
 
 #include "math/geometry.h"
 
-#include "object/objman.h"
+#include "object/object_manager.h"
 
 #include "ui/interface.h"
 #include "ui/window.h"
@@ -264,23 +264,16 @@ void CAutoRadar::UpdateInterface()
 
 bool CAutoRadar::SearchEnemy(Math::Vector &pos)
 {
-    CObject*    pObj;
-    CObject*    pBest = 0;
-    Math::Vector    iPos, oPos;
-    ObjectType  oType;
-    float       distance, min;
-
-    iPos = m_object->GetPosition(0);
-    min = 1000000.0f;
+    Math::Vector iPos = m_object->GetPosition(0);
+    float min = 1000000.0f;
     m_totalDetect = 0;
-    
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+
+    CObject* best = nullptr;
+    for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = it.second;
+        if ( !obj->GetActif() )  continue;
 
-        if ( !pObj->GetActif() )  continue;
-
-        oType = pObj->GetType();
+        ObjectType oType = obj->GetType();
         if ( oType != OBJECT_ANT    &&
              oType != OBJECT_SPIDER &&
              oType != OBJECT_BEE    &&
@@ -289,19 +282,19 @@ bool CAutoRadar::SearchEnemy(Math::Vector &pos)
 
         m_totalDetect ++;
 
-        oPos = pObj->GetPosition(0);
-        distance = Math::Distance(oPos, iPos);
+        Math::Vector oPos = obj->GetPosition(0);
+        float distance = Math::Distance(oPos, iPos);
         if ( distance < min )
         {
             min = distance;
-            pBest = pObj;
+            best = obj;
         }
     }
 
     UpdateInterface();
 
-    if ( pBest == 0 )  return false;
-    pos = pBest->GetPosition(0);
+    if ( best == nullptr )  return false;
+    pos = best->GetPosition(0);
     return true;
 }
 

@@ -25,7 +25,7 @@
 
 #include "math/geometry.h"
 
-#include "object/objman.h"
+#include "object/object_manager.h"
 #include "object/robotmain.h"
 
 #include "physics/physics.h"
@@ -294,9 +294,10 @@ bool CTaskSearch::CreateMark()
 
 void CTaskSearch::DeleteMark(ObjectType type)
 {
-    CObject*    pObj;
-    pObj = CObjectManager::GetInstancePointer()->FindNearest(nullptr, type);
-    pObj->DeleteObject();
-    delete pObj;
+    CObject* obj = CObjectManager::GetInstancePointer()->FindNearest(nullptr, type);
+    if (obj != nullptr)
+    {
+        CObjectManager::GetInstancePointer()->DeleteObject(obj);
+    }
 }
 

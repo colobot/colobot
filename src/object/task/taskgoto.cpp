@@ -29,7 +29,7 @@
 
 #include "math/geometry.h"
 
-#include "object/objman.h"
+#include "object/object_manager.h"
 
 #include "physics/physics.h"
 
@@ -499,20 +499,13 @@ bool CTaskGoto::EventProcess(const Event &event)
 
 CObject* CTaskGoto::WormSearch(Math::Vector &impact)
 {
-    CObject*    pObj;
-    CObject*    pBest = 0;
-    Math::Vector    iPos, oPos;
-    ObjectType  oType;
-    float       distance, min, radius;
+    Math::Vector iPos = m_object->GetPosition(0);
+    float min = 1000000.0f;
 
-    iPos = m_object->GetPosition(0);
-    min = 1000000.0f;
-    
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    CObject* best = nullptr;
+    for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = it.second;
-
-        oType = pObj->GetType();
+        ObjectType oType = obj->GetType();
         if ( oType != OBJECT_MOBILEfa &&
              oType != OBJECT_MOBILEta &&
              oType != OBJECT_MOBILEwa &&
@@ -557,20 +550,22 @@ CObject* CTaskGoto::WormSearch(Math::Vector &impact)
              oType != OBJECT_SAFE     &&
              oType != OBJECT_HUSTON   )  continue;
 
-        if ( pObj->GetVirusMode() )  continue;  // object infected?
+        if ( obj->GetVirusMode() )  continue;  // object infected?
 
-        if ( !pObj->GetCrashSphere(0, oPos, radius) )  continue;
-        distance = Math::DistanceProjected(oPos, iPos);
+        Math::Vector oPos;
+        float radius = 0.0f;
+        if ( !obj->GetCrashSphere(0, oPos, radius) )  continue;
+        float distance = Math::DistanceProjected(oPos, iPos);
         if ( distance < min )
         {
             min = distance;
-            pBest = pObj;
+            best = obj;
         }
     }
-    if ( pBest == 0 )  return 0;
+    if ( best == nullptr )  return nullptr;
 
-    impact = pBest->GetPosition(0);
-    return pBest;
+    impact = best->GetPosition(0);
+    return best;
 }
 
 // Contaminate objects near the worm.
@@ -1150,22 +1145,18 @@ bool CTaskGoto::AdjustTarget(CObject* pObj, Math::Vector &pos, float &distance)
 
 bool CTaskGoto::AdjustBuilding(Math::Vector &pos, float margin, float &distance)
 {
-    CObject*    pObj;
-    Math::Vector    oPos;
-    float       dist, suppl;
-    
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = it.second;
+        if ( !obj->GetActif() )  continue;
+        if ( obj->GetTruck() != nullptr )  continue;  // object transported?
 
-        if ( !pObj->GetActif() )  continue;
-        if ( pObj->GetTruck() != 0 )  continue;  // object transported?
-
-        if ( !GetHotPoint(pObj, oPos, false, 0.0f, suppl) )  continue;
-        dist = Math::DistanceProjected(pos, oPos);
+        Math::Vector oPos;
+        float suppl = 0.0f;
+        if ( !GetHotPoint(obj, oPos, false, 0.0f, suppl) )  continue;
+        float dist = Math::DistanceProjected(pos, oPos);
         if ( dist <= margin )
         {
-            GetHotPoint(pObj, pos, true, distance, suppl);
+            GetHotPoint(obj, pos, true, distance, suppl);
             distance += suppl;
             return true;
         }
@@ -1314,10 +1305,8 @@ bool CTaskGoto::LeakSearch(Math::Vector &pos, float &delay)
 
     min = 100000.0f;
     bRadius = 0.0f;
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for (CObject* pObj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = it.second;
-
         if ( pObj == m_object )  continue;
         if ( !pObj->GetActif() )  continue;
         if ( pObj->GetTruck() != 0 )  continue;  // object transported?
@@ -1407,7 +1396,6 @@ void CTaskGoto::ComputeRepulse(Math::Point &dir)
     ObjectType  iType, oType;
     Math::Vector    iPos, oPos;
     Math::Point     repulse;
-    CObject     *pObj;
     float       gDist, add, addi, fac, dist, iRadius, oRadius;
     int         j;
     bool        bAlien;
@@ -1493,11 +1481,9 @@ void CTaskGoto::ComputeRepulse(Math::Point &dir)
     {
         bAlien = true;
     }
-    
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
-    {
-        pObj = it.second;
 
+    for (CObject* pObj : CObjectManager::GetInstancePointer()->GetAllObjects())
+    {
         if ( pObj == m_object )  continue;
         if ( pObj->GetTruck() != 0 )  continue;
 
@@ -1575,7 +1561,6 @@ void CTaskGoto::ComputeFlyingRepulse(float &dir)
 {
     ObjectType  oType;
     Math::Vector    iPos, oPos;
-    CObject     *pObj;
     float       add, fac, dist, iRadius, oRadius, repulse;
     int         j;
 
@@ -1584,11 +1569,9 @@ void CTaskGoto::ComputeFlyingRepulse(float &dir)
     add = 0.0f;
     fac = 1.5f;
     dir = 0.0f;
-    
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
-    {
-        pObj = it.second;
 
+    for (CObject* pObj : CObjectManager::GetInstancePointer()->GetAllObjects())
+    {
         if ( pObj == m_object )  continue;
         if ( pObj->GetTruck() != 0 )  continue;
 
@@ -1890,18 +1873,15 @@ bool CTaskGoto::BitmapTestLine(const Math::Vector &start, const Math::Vector &go
 
 void CTaskGoto::BitmapObject()
 {
-    CObject     *pObj;
     ObjectType  type;
     Math::Vector    iPos, oPos;
     float       iRadius, oRadius, h;
     int         j;
 
     m_object->GetCrashSphere(0, iPos, iRadius);
-    
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
-    {
-        pObj = it.second;
 
+    for (CObject* pObj : CObjectManager::GetInstancePointer()->GetAllObjects())
+    {
         type = pObj->GetType();
 
         if ( pObj == m_object )  continue;

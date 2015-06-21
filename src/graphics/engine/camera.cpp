@@ -31,7 +31,7 @@
 #include "math/geometry.h"
 
 #include "object/object.h"
-#include "object/objman.h"
+#include "object/object_manager.h"
 #include "object/robotmain.h"
 
 #include "physics/physics.h"
@@ -243,10 +243,8 @@ void CCamera::SetType(CameraType type)
 
     if ( (m_type == CAM_TYPE_BACK) && m_transparency )
     {
-        for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+        for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
         {
-            CObject* obj = it.second;
-
             if (obj->GetTruck())
                 continue;  // battery or cargo?
 
@@ -889,11 +887,9 @@ bool CCamera::IsCollisionBack(Math::Vector &eye, Math::Vector lookat)
     max.z = Math::Max(m_actualEye.z, m_actualLookat.z);
 
     m_transparency = false;
-    
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
-    {
-        CObject* obj = it.second;
 
+    for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
+    {
         if (obj->GetTruck()) continue;  // battery or cargo?
 
         SetTransparency(obj, 0.0f);  // opaque object
@@ -966,10 +962,8 @@ bool CCamera::IsCollisionBack(Math::Vector &eye, Math::Vector lookat)
 
 bool CCamera::IsCollisionFix(Math::Vector &eye, Math::Vector lookat)
 {
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        CObject* obj = it.second;
-
         if (obj == m_cameraObj) continue;
 
         ObjectType type = obj->GetType();

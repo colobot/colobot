@@ -33,7 +33,7 @@
 #include "math/geometry.h"
 
 #include "object/object.h"
-#include "object/objman.h"
+#include "object/object_manager.h"
 #include "object/robotmain.h"
 
 #include <cstring>
@@ -3658,10 +3658,8 @@ CObject* CParticle::SearchObjectGun(Math::Vector old, Math::Vector pos,
 
     CObject* best = 0;
     bool shield = false;
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        CObject* obj = it.second;
-
         if (!obj->GetActif()) continue;  // inactive?
         if (obj == father) continue;
 
@@ -3782,11 +3780,9 @@ CObject* CParticle::SearchObjectRay(Math::Vector pos, Math::Vector goal,
     box2.x += min;
     box2.y += min;
     box2.z += min;
-    
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
-    {
-        CObject* obj = it.second;
 
+    for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
+    {
         if (!obj->GetActif()) continue;  // inactive?
         if (obj == father) continue;
 

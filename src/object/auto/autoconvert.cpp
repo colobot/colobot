@@ -22,7 +22,7 @@
 
 #include "math/geometry.h"
 
-#include "object/objman.h"
+#include "object/object_manager.h"
 #include "object/level/parserline.h"
 #include "object/level/parserparam.h"
 
@@ -54,17 +54,14 @@ CAutoConvert::~CAutoConvert()
 
 // Destroys the object.
 
-void CAutoConvert::DeleteObject(bool bAll)
+void CAutoConvert::DeleteObject(bool all)
 {
-    CObject*    fret;
-
-    if ( !bAll )
+    if ( !all )
     {
-        fret = SearchStone(OBJECT_STONE);
-        if ( fret != 0 )
+        CObject* fret = SearchStone(OBJECT_STONE);
+        if ( fret != nullptr )
         {
-            fret->DeleteObject();  // destroy the stone
-            delete fret;
+            CObjectManager::GetInstancePointer()->DeleteObject(fret);
         }
     }
 
@@ -75,7 +72,7 @@ void CAutoConvert::DeleteObject(bool bAll)
         m_soundChannel = -1;
     }
 
-    CAuto::DeleteObject(bAll);
+    CAuto::DeleteObject(all);
 }
 
 
@@ -233,11 +230,11 @@ bool CAutoConvert::EventProcess(const Event &event)
             m_object->SetAngleY(3, Math::PI);
 
             fret = SearchStone(OBJECT_STONE);
-            if ( fret != 0 )
+            if ( fret != nullptr )
             {
                 m_bResetDelete = ( fret->GetResetCap() != RESET_NONE );
-                fret->DeleteObject();  // destroy the stone
-                delete fret;
+
+                CObjectManager::GetInstancePointer()->DeleteObject(fret);
             }
 
             CreateMetal();  // Create the metal
@@ -398,46 +395,32 @@ bool CAutoConvert::Read(CLevelParserLine* line)
 
 CObject* CAutoConvert::SearchStone(ObjectType type)
 {
-    CObject*    pObj;
-    Math::Vector    cPos, oPos;
-    ObjectType  oType;
-    float       dist;
+    Math::Vector cPos = m_object->GetPosition(0);
 
-    cPos = m_object->GetPosition(0);
-
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = it.second;
-
-        oType = pObj->GetType();
+        ObjectType oType = obj->GetType();
         if ( oType != type )  continue;
-        if ( pObj->GetTruck() != 0 )  continue;
+        if ( obj->GetTruck() != nullptr )  continue;
 
-        oPos = pObj->GetPosition(0);
-        dist = Math::Distance(oPos, cPos);
+        Math::Vector oPos = obj->GetPosition(0);
+        float dist = Math::Distance(oPos, cPos);
 
-        if ( dist <= 5.0f )  return pObj;
+        if ( dist <= 5.0f )  return obj;
     }
 
-    return 0;
+    return nullptr;
 }
 
 // Search if a vehicle is too close.
 
 bool CAutoConvert::SearchVehicle()
 {
-    CObject*    pObj;
-    Math::Vector    cPos, oPos;
-    ObjectType  type;
-    float       oRadius, dist;
+    Math::Vector cPos = m_object->GetPosition(0);
 
-    cPos = m_object->GetPosition(0);
-    
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = it.second;
-
-        type = pObj->GetType();
+        ObjectType type = obj->GetType();
         if ( type != OBJECT_HUMAN    &&
              type != OBJECT_MOBILEfa &&
              type != OBJECT_MOBILEta &&
@@ -479,8 +462,10 @@ bool CAutoConvert::SearchVehicle()
              type != OBJECT_BEE      &&
              type != OBJECT_WORM     )  continue;
 
-        if ( !pObj->GetCrashSphere(0, oPos, oRadius) )  continue;
-        dist = Math::Distance(oPos, cPos)-oRadius;
+        Math::Vector oPos;
+        float oRadius = 0.0f;
+        if ( !obj->GetCrashSphere(0, oPos, oRadius) )  continue;
+        float dist = Math::Distance(oPos, cPos)-oRadius;
 
         if ( dist < 8.0f )  return true;
     }

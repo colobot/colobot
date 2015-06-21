@@ -26,7 +26,7 @@
 #include "math/geometry.h"
 
 #include "object/motion/motionhuman.h"
-#include "object/objman.h"
+#include "object/object_manager.h"
 #include "object/robotmain.h"
 
 #include "physics/physics.h"
@@ -299,7 +299,7 @@ bool CTaskTake::Abort()
 CObject* CTaskTake::SearchTakeObject(float &angle,
                                      float dLimit, float aLimit)
 {
-    CObject     *pObj, *pBest;
+    CObject     *pBest;
     Math::Vector    iPos, oPos;
     ObjectType  type;
     float       min, iAngle, bAngle, a, distance;
@@ -311,10 +311,8 @@ CObject* CTaskTake::SearchTakeObject(float &angle,
     min = 1000000.0f;
     pBest = 0;
     bAngle = 0.0f;
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for (CObject* pObj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = it.second;
-
         type = pObj->GetType();
 
         if ( type != OBJECT_FRET    &&
@@ -364,7 +362,6 @@ CObject* CTaskTake::SearchFriendObject(float &angle,
                                        float dLimit, float aLimit)
 {
     Character*  character;
-    CObject*    pObj;
     CObject*    pPower;
     Math::Matrix*   mat;
     Math::Vector    iPos, oPos;
@@ -374,11 +371,9 @@ CObject* CTaskTake::SearchFriendObject(float &angle,
     if ( !m_object->GetCrashSphere(0, iPos, iRad) )  return 0;
     iAngle = m_object->GetAngleY(0);
     iAngle = Math::NormAngle(iAngle);  // 0..2*Math::PI
-    
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
-    {
-        pObj = it.second;
 
+    for (CObject* pObj : CObjectManager::GetInstancePointer()->GetAllObjects())
+    {
         if ( pObj == m_object )  continue;  // yourself?
 
         type = pObj->GetType();
@@ -560,7 +555,6 @@ bool CTaskTake::TruckDeposeObject()
 
 bool CTaskTake::IsFreeDeposeObject(Math::Vector pos)
 {
-    CObject*    pObj;
     Math::Matrix*   mat;
     Math::Vector    iPos, oPos;
     float       oRadius;
@@ -568,11 +562,9 @@ bool CTaskTake::IsFreeDeposeObject(Math::Vector pos)
 
     mat = m_object->GetWorldMatrix(0);
     iPos = Transform(*mat, pos);
-    
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
-    {
-        pObj = it.second;
 
+    for (CObject* pObj : CObjectManager::GetInstancePointer()->GetAllObjects())
+    {
         if ( pObj == m_object )  continue;
         if ( !pObj->GetActif() )  continue;  // inactive?
         if ( pObj->GetTruck() != 0 )  continue;  // object transported?

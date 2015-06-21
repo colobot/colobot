@@ -25,7 +25,7 @@
 
 #include "math/geometry.h"
 
-#include "object/objman.h"
+#include "object/object_manager.h"
 
 #include "ui/interface.h"
 #include "ui/gauge.h"
@@ -241,18 +241,11 @@ bool CAutoStation::EventProcess(const Event &event)
 
 CObject* CAutoStation::SearchVehicle()
 {
-    CObject*    pObj;
-    Math::Vector    sPos, oPos;
-    ObjectType  type;
-    float       dist;
+    Math::Vector sPos = m_object->GetPosition(0);
 
-    sPos = m_object->GetPosition(0);
-    
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = it.second;
-
-        type = pObj->GetType();
+        ObjectType type = obj->GetType();
         if ( type != OBJECT_HUMAN    &&
              type != OBJECT_MOBILEfa &&
              type != OBJECT_MOBILEta &&
@@ -281,9 +274,9 @@ CObject* CAutoStation::SearchVehicle()
              type != OBJECT_MOBILEit &&
              type != OBJECT_MOBILEdr )  continue;
 
-        oPos = pObj->GetPosition(0);
-        dist = Math::Distance(oPos, sPos);
-        if ( dist <= 5.0f )  return pObj;
+        Math::Vector oPos = obj->GetPosition(0);
+        float dist = Math::Distance(oPos, sPos);
+        if ( dist <= 5.0f )  return obj;
     }
 
     return 0;

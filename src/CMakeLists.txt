@@ -162,7 +162,7 @@ set(BASE_SOURCES
     object/object.cpp
     object/object_factory.cpp
     object/robotmain.cpp
-    object/objman.cpp
+    object/object_manager.cpp
     object/task/task.cpp
     object/task/taskadvance.cpp
     object/task/taskbuild.cpp

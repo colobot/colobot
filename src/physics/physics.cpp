@@ -35,7 +35,7 @@
 #include "math/geometry.h"
 
 #include "object/brain.h"
-#include "object/objman.h"
+#include "object/object_manager.h"
 #include "object/robotmain.h"
 #include "object/motion/motion.h"
 #include "object/motion/motionhuman.h"
@@ -2507,7 +2507,6 @@ void CPhysics::FloorAngle(const Math::Vector &pos, Math::Vector &angle)
 
 int CPhysics::ObjectAdapt(const Math::Vector &pos, const Math::Vector &angle)
 {
-    CObject*        pObj;
     Gfx::CPyro*     pyro;
     CPhysics*       ph;
     Math::Matrix    matRotate;
@@ -2526,11 +2525,8 @@ int CPhysics::ObjectAdapt(const Math::Vector &pos, const Math::Vector &angle)
     iPos = iiPos + (pos - m_object->GetPosition(0));
     iType = m_object->GetType();
 
-    
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for (CObject* pObj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = it.second;
-
         if ( pObj == m_object )  continue;  // yourself?
         if ( pObj->GetTruck() != 0 )  continue;  // object transported?
         if ( !pObj->GetEnable() )  continue;  // inactive?

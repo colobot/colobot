@@ -20,7 +20,7 @@
 
 #include "object/auto/autodestroyer.h"
 
-#include "object/objman.h"
+#include "object/object_manager.h"
 #include "object/level/parserline.h"
 #include "object/level/parserparam.h"
 
@@ -272,18 +272,11 @@ bool CAutoDestroyer::CreateInterface(bool bSelect)
 
 CObject* CAutoDestroyer::SearchPlastic()
 {
-    CObject*    pObj;
-    Math::Vector    sPos, oPos;
-    ObjectType  type;
-    float       dist;
+    Math::Vector sPos = m_object->GetPosition(0);
 
-    sPos = m_object->GetPosition(0);
-    
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = it.second;
-
-        type = pObj->GetType();
+        ObjectType type = obj->GetType();
         //if ( type != OBJECT_SCRAP4 &&
         //     type != OBJECT_SCRAP5 )  continue;
         if ( type != OBJECT_FRET     &&
@@ -334,9 +327,9 @@ CObject* CAutoDestroyer::SearchPlastic()
              type != OBJECT_WORM      ) continue;
 
 
-        oPos = pObj->GetPosition(0);
-        dist = Math::Distance(oPos, sPos);
-        if ( dist <= 5.0f )  return pObj;
+        Math::Vector oPos = obj->GetPosition(0);
+        float dist = Math::Distance(oPos, sPos);
+        if ( dist <= 5.0f )  return obj;
     }
 
     return nullptr;

@@ -231,7 +231,6 @@ enum ResearchType
 
 
 // TODO: move to CRobotMain
-extern long     g_id;                   // unique identifier
 extern int      g_build;                // constructible buildings
 extern int      g_researchDone;         // research done
 extern long     g_researchEnable;       // research available

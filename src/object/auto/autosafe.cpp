@@ -22,7 +22,7 @@
 
 #include "math/geometry.h"
 
-#include "object/objman.h"
+#include "object/object_manager.h"
 #include "object/robotmain.h"
 #include "object/level/parserline.h"
 #include "object/level/parserparam.h"
@@ -68,13 +68,10 @@ CAutoSafe::~CAutoSafe()
 
 void CAutoSafe::DeleteObject(bool bAll)
 {
-    CObject*    pObj;
-
-    pObj = SearchVehicle();
-    if ( pObj != 0 )
+    CObject* obj = SearchVehicle();
+    if ( obj != nullptr )
     {
-        pObj->DeleteObject();
-        delete pObj;
+        CObjectManager::GetInstancePointer()->DeleteObject(obj);
     }
 
     if ( m_channelSound != -1 )
@@ -388,38 +385,32 @@ bool CAutoSafe::Read(CLevelParserLine* line)
 
 int CAutoSafe::CountKeys()
 {
-    CObject*    pObj;
-    Math::Vector    cPos, oPos;
-    Math::Point     rot;
-    ObjectType  oType;
-    float       dist, angle, limit = 0.0f, cAngle, oAngle = 0.0f;
-    int         i, index;
+    Math::Vector cPos = m_object->GetPosition(0);
+    float cAngle = m_object->GetAngleY(0);
 
-    cPos   = m_object->GetPosition(0);
-    cAngle = m_object->GetAngleY(0);
-
-    for ( index=0 ; index<4 ; index++ )
+    for (int index = 0; index < 4; index++)
     {
         m_bKey[index] = false;
         m_keyPos[index] = cPos;
     }
-    
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+
+    for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = it.second;
+        if ( obj->GetTruck() != nullptr )  continue;
 
-        if ( pObj->GetTruck() != 0 )  continue;
-
-        oType = pObj->GetType();
+        ObjectType  oType = obj->GetType();
         if ( oType != OBJECT_KEYa &&
              oType != OBJECT_KEYb &&
              oType != OBJECT_KEYc &&
              oType != OBJECT_KEYd )  continue;
 
-        oPos = pObj->GetPosition(0);
-        dist = Math::DistanceProjected(oPos, cPos);
+        Math::Vector oPos = obj->GetPosition(0);
+        float dist = Math::DistanceProjected(oPos, cPos);
         if ( dist > 20.0f )  continue;
 
+        float limit = 0.0f;
+        float oAngle = 0.0f;
+        int index = 0;
         if ( oType == OBJECT_KEYa )
         {
             limit  = Math::PI*1.0f;
@@ -445,23 +436,23 @@ int CAutoSafe::CountKeys()
             index  = 3;
         }
 
-        angle = Math::RotateAngle(oPos.x-cPos.x, oPos.z-cPos.z)+cAngle;
+        float angle = Math::RotateAngle(oPos.x-cPos.x, oPos.z-cPos.z)+cAngle;
         if ( !Math::TestAngle(angle, limit-8.0f*Math::PI/180.0f, limit+8.0f*Math::PI/180.0f) )  continue;
 
         // Key changes the shape of the base.
-        rot = Math::RotatePoint(Math::Point(cPos.x, cPos.z), limit-cAngle, Math::Point(cPos.x+16.0f, cPos.z));
+        Math::Point rot = Math::RotatePoint(Math::Point(cPos.x, cPos.z), limit-cAngle, Math::Point(cPos.x+16.0f, cPos.z));
         oPos.x = rot.x;
         oPos.z = rot.y;
         oPos.y = cPos.y+1.0f;
-        pObj->SetPosition(0, oPos);
-        pObj->SetAngleY(0, oAngle+cAngle);
+        obj->SetPosition(0, oPos);
+        obj->SetAngleY(0, oAngle+cAngle);
         m_keyPos[index] = oPos;
 
         m_bKey[index] = true;
     }
 
-    i = 0;
-    for ( index=0 ; index<4 ; index++ )
+    int i = 0;
+    for (int index = 0; index < 4; index++)
     {
         if ( m_bKey[index] )  i++;
     }
@@ -472,30 +463,23 @@ int CAutoSafe::CountKeys()
 
 void CAutoSafe::LockKeys()
 {
-    CObject*    pObj;
-    Math::Vector    cPos, oPos;
-    ObjectType  oType;
-    float       dist;
+    Math::Vector cPos = m_object->GetPosition(0);
 
-    cPos = m_object->GetPosition(0);
-    
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = it.second;
-
-        oType = pObj->GetType();
-        if ( pObj->GetTruck() != 0 )  continue;
+        ObjectType oType = obj->GetType();
+        if ( obj->GetTruck() != nullptr )  continue;
 
         if ( oType != OBJECT_KEYa &&
              oType != OBJECT_KEYb &&
              oType != OBJECT_KEYc &&
              oType != OBJECT_KEYd )  continue;
 
-        oPos = pObj->GetPosition(0);
-        dist = Math::DistanceProjected(oPos, cPos);
+        Math::Vector oPos = obj->GetPosition(0);
+        float dist = Math::DistanceProjected(oPos, cPos);
         if ( dist > 20.0f )  continue;
 
-        pObj->SetLock(true);
+        obj->SetLock(true);
     }
 }
 
@@ -503,31 +487,24 @@ void CAutoSafe::LockKeys()
 
 void CAutoSafe::DownKeys(float progress)
 {
-    CObject*    pObj;
-    Math::Vector    cPos, oPos;
-    ObjectType  oType;
-    float       dist;
+    Math::Vector cPos = m_object->GetPosition(0);
 
-    cPos = m_object->GetPosition(0);
-    
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = it.second;
-
-        oType = pObj->GetType();
-        if ( pObj->GetTruck() != 0 )  continue;
+        ObjectType oType = obj->GetType();
+        if ( obj->GetTruck() != nullptr )  continue;
 
         if ( oType != OBJECT_KEYa &&
              oType != OBJECT_KEYb &&
              oType != OBJECT_KEYc &&
              oType != OBJECT_KEYd )  continue;
 
-        oPos = pObj->GetPosition(0);
-        dist = Math::DistanceProjected(oPos, cPos);
+        Math::Vector oPos = obj->GetPosition(0);
+        float dist = Math::DistanceProjected(oPos, cPos);
         if ( dist > 20.0f )  continue;
 
         oPos.y = cPos.y+1.0f-progress*2.2f;
-        pObj->SetPosition(0, oPos);
+        obj->SetPosition(0, oPos);
     }
 }
 
@@ -535,62 +512,49 @@ void CAutoSafe::DownKeys(float progress)
 
 void CAutoSafe::DeleteKeys()
 {
-    CObject*    pObj;
-    Math::Vector    cPos, oPos;
-    ObjectType  oType;
-    float       dist;
-    bool        bDelete;
+    Math::Vector cPos = m_object->GetPosition(0);
 
-    cPos = m_object->GetPosition(0);
-
+    bool haveDeleted = false;
     do
     {
-        bDelete = false;
-        for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+        haveDeleted = false;
+        for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
         {
-            pObj = it.second;
-
-            oType = pObj->GetType();
-            if ( pObj->GetTruck() != 0 )  continue;
+            ObjectType oType = obj->GetType();
+            if ( obj->GetTruck() != nullptr )  continue;
 
             if ( oType != OBJECT_KEYa &&
                  oType != OBJECT_KEYb &&
                  oType != OBJECT_KEYc &&
                  oType != OBJECT_KEYd )  continue;
 
-            oPos = pObj->GetPosition(0);
-            dist = Math::DistanceProjected(oPos, cPos);
+            Math::Vector oPos = obj->GetPosition(0);
+            float dist = Math::DistanceProjected(oPos, cPos);
             if ( dist > 20.0f )  continue;
 
-            pObj->DeleteObject();
-            delete pObj;
-            bDelete = true;
+            CObjectManager::GetInstancePointer()->DeleteObject(obj);
+
+            haveDeleted = true;
         }
     }
-    while ( bDelete );
+    while ( haveDeleted );
 }
 
 // Seeking a vehicle in the safe.
 
 CObject* CAutoSafe::SearchVehicle()
 {
-    CObject*    pObj;
-    Math::Vector    cPos, oPos;
-    float       dist;
+    Math::Vector cPos = m_object->GetPosition(0);
 
-    cPos = m_object->GetPosition(0);
-
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = it.second;
+        if ( obj == m_object )  continue;
+        if ( obj->GetTruck() != nullptr )  continue;
 
-        if ( pObj == m_object )  continue;
-        if ( pObj->GetTruck() != 0 )  continue;
-
-        oPos = pObj->GetPosition(0);
-        dist = Math::DistanceProjected(oPos, cPos);
-        if ( dist <= 4.0f )  return pObj;
+        Math::Vector oPos = obj->GetPosition(0);
+        float dist = Math::DistanceProjected(oPos, cPos);
+        if ( dist <= 4.0f )  return obj;
     }
-    return 0;
+    return nullptr;
 }
 

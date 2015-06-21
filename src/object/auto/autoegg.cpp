@@ -23,7 +23,7 @@
 #include "math/geometry.h"
 
 #include "object/brain.h"
-#include "object/objman.h"
+#include "object/object_manager.h"
 #include "object/level/parserline.h"
 #include "object/level/parserparam.h"
 
@@ -55,16 +55,14 @@ CAutoEgg::~CAutoEgg()
 
 // Destroys the object.
 
-void CAutoEgg::DeleteObject(bool bAll)
+void CAutoEgg::DeleteObject(bool all)
 {
-    CObject*    alien;
+    CAuto::DeleteObject(all);
 
-    CAuto::DeleteObject(bAll);
-
-    if ( !bAll )
+    if ( !all )
     {
-        alien = SearchAlien();
-        if ( alien != 0 )
+        CObject* alien = SearchAlien();
+        if ( alien != nullptr )
         {
             // Probably the intended action
             // Original code: ( alien->GetZoom(0) == 1.0f )
@@ -75,8 +73,7 @@ void CAutoEgg::DeleteObject(bool bAll)
             }
             else
             {
-                alien->DeleteObject();
-                delete alien;
+                CObjectManager::GetInstancePointer()->DeleteObject(alien);
             }
         }
     }
@@ -274,36 +271,28 @@ Error CAutoEgg::GetError()
 
 CObject* CAutoEgg::SearchAlien()
 {
-    CObject*    pObj;
-    CObject*    pBest;
-    Math::Vector    cPos, oPos;
-    ObjectType  type;
-    float       dist, min;
-
-    cPos = m_object->GetPosition(0);
-    min = 100000.0f;
-    pBest = 0;
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    Math::Vector cPos = m_object->GetPosition(0);
+    float min = 100000.0f;
+    CObject* best = nullptr;
+    for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = it.second;
+        if ( obj->GetTruck() != nullptr )  continue;
 
-        if ( pObj->GetTruck() != 0 )  continue;
-
-        type = pObj->GetType();
+        ObjectType type = obj->GetType();
         if ( type != OBJECT_ANT    &&
              type != OBJECT_BEE    &&
              type != OBJECT_SPIDER &&
              type != OBJECT_WORM   )  continue;
 
-        oPos = pObj->GetPosition(0);
-        dist = Math::DistanceProjected(oPos, cPos);
+        Math::Vector oPos = obj->GetPosition(0);
+        float dist = Math::DistanceProjected(oPos, cPos);
         if ( dist < 8.0f && dist < min )
         {
             min = dist;
-            pBest = pObj;
+            best = obj;
         }
     }
-    return pBest;
+    return best;
 }
 
 

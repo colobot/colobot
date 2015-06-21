@@ -24,7 +24,7 @@
 
 #include "math/geometry.h"
 
-#include "object/objman.h"
+#include "object/object_manager.h"
 #include "object/level/parserline.h"
 #include "object/level/parserparam.h"
 
@@ -61,17 +61,14 @@ CAutoDerrick::~CAutoDerrick()
 
 // Destroys the object.
 
-void CAutoDerrick::DeleteObject(bool bAll)
+void CAutoDerrick::DeleteObject(bool all)
 {
-    CObject*    fret;
-
-    if ( !bAll )
+    if ( !all )
     {
-        fret = SearchFret();
-        if ( fret != 0 && fret->GetLock() )
+        CObject* fret = SearchFret();
+        if ( fret != nullptr && fret->GetLock() )
         {
-            fret->DeleteObject();
-            delete fret;
+            CObjectManager::GetInstancePointer()->DeleteObject(fret);
         }
     }
 
@@ -82,7 +79,7 @@ void CAutoDerrick::DeleteObject(bool bAll)
         m_soundChannel = -1;
     }
 
-    CAuto::DeleteObject(bAll);
+    CAuto::DeleteObject(all);
 }
 
 
@@ -464,47 +461,35 @@ bool CAutoDerrick::Read(CLevelParserLine* line)
 
 CObject* CAutoDerrick::SearchFret()
 {
-    CObject*    pObj;
-    Math::Vector    oPos;
-    ObjectType  type;
-    
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = it.second;
-
-        type = pObj->GetType();
+        ObjectType type = obj->GetType();
         if ( type == OBJECT_DERRICK )  continue;
 
-        oPos = pObj->GetPosition(0);
+            Math::Vector oPos = obj->GetPosition(0);
 
         if ( oPos.x == m_fretPos.x &&
-             oPos.z == m_fretPos.z )  return pObj;
+             oPos.z == m_fretPos.z )  return obj;
     }
 
-    return 0;
+    return nullptr;
 }
 
 // Seeks if a site is free.
 
 bool CAutoDerrick::SearchFree(Math::Vector pos)
 {
-    CObject*    pObj;
-    Math::Vector    sPos;
-    ObjectType  type;
-    float       sRadius, distance;
-    int         j;
-    
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = it.second;
-
-        type = pObj->GetType();
+        ObjectType type = obj->GetType();
         if ( type == OBJECT_DERRICK )  continue;
 
-        j = 0;
-        while ( pObj->GetCrashSphere(j++, sPos, sRadius) )
+        int j = 0;
+        Math::Vector sPos;
+        float sRadius = 0.0f;
+        while ( obj->GetCrashSphere(j++, sPos, sRadius) )
         {
-            distance = Math::Distance(sPos, pos);
+            float distance = Math::Distance(sPos, pos);
             distance -= sRadius;
             if ( distance < 2.0f )  return false;  // location occupied
         }

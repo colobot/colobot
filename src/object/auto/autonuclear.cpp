@@ -22,7 +22,7 @@
 
 #include "math/geometry.h"
 
-#include "object/objman.h"
+#include "object/object_manager.h"
 #include "object/level/parserline.h"
 #include "object/level/parserparam.h"
 
@@ -57,17 +57,14 @@ CAutoNuclear::~CAutoNuclear()
 
 // Destroys the object.
 
-void CAutoNuclear::DeleteObject(bool bAll)
+void CAutoNuclear::DeleteObject(bool all)
 {
-    CObject*    fret;
-
-    if ( !bAll )
+    if ( !all )
     {
-        fret = SearchUranium();
-        if ( fret != 0 )
+        CObject* fret = SearchUranium();
+        if ( fret != nullptr )
         {
-            fret->DeleteObject();  // destroys the metal
-            delete fret;
+            CObjectManager::GetInstancePointer()->DeleteObject(fret);
         }
     }
 
@@ -78,7 +75,7 @@ void CAutoNuclear::DeleteObject(bool bAll)
         m_channelSound = -1;
     }
 
-    CAuto::DeleteObject(bAll);
+    CAuto::DeleteObject(all);
 }
 
 
@@ -231,11 +228,10 @@ bool CAutoNuclear::EventProcess(const Event &event)
         else
         {
             fret = SearchUranium();
-            if ( fret != 0 )
+            if ( fret != nullptr )
             {
-                fret->DeleteObject();  // destroyed uranium
-                delete fret;
-                m_object->SetPower(0);
+                CObjectManager::GetInstancePointer()->DeleteObject(fret);
+                m_object->SetPower(nullptr);
             }
 
             CreatePower();  // creates the atomic cell
@@ -335,16 +331,9 @@ CObject* CAutoNuclear::SearchUranium()
 
 bool CAutoNuclear::SearchVehicle()
 {
-    CObject*    pObj;
-    Math::Vector    oPos;
-    ObjectType  type;
-    float       oRadius, dist;
-    
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = it.second;
-
-        type = pObj->GetType();
+        ObjectType type = obj->GetType();
         if ( type != OBJECT_HUMAN    &&
              type != OBJECT_MOBILEfa &&
              type != OBJECT_MOBILEta &&
@@ -379,8 +368,10 @@ bool CAutoNuclear::SearchVehicle()
              type != OBJECT_BEE      &&
              type != OBJECT_WORM     )  continue;
 
-        if ( !pObj->GetCrashSphere(0, oPos, oRadius) )  continue;
-        dist = Math::Distance(oPos, m_pos)-oRadius;
+        Math::Vector oPos;
+        float oRadius = 0.0f;
+        if ( !obj->GetCrashSphere(0, oPos, oRadius) )  continue;
+        float dist = Math::Distance(oPos, m_pos)-oRadius;
 
         if ( dist < 10.0f )  return true;
     }

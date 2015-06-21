@@ -26,7 +26,7 @@
 #include "graphics/engine/pyro.h"
 #include "graphics/engine/water.h"
 
-#include "object/objman.h"
+#include "object/object_manager.h"
 #include "object/motion/motionhuman.h"
 
 #include "physics/physics.h"
@@ -150,19 +150,12 @@ CObject* CTaskFlag::SearchNearest(Math::Vector pos, ObjectType type)
 
 int CTaskFlag::CountObject(ObjectType type)
 {
-    ObjectType  oType;
-    CObject     *pObj;
-    Math::Vector    oPos;
-    int         count;
-
-    count = 0;
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    int count = 0;
+    for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = it.second;
+        if ( !obj->GetEnable() )  continue;
 
-        if ( !pObj->GetEnable() )  continue;
-
-        oType = pObj->GetType();
+        ObjectType  oType = obj->GetType();
         if ( type == OBJECT_NULL )
         {
             if ( oType != OBJECT_FLAGb &&

@@ -24,7 +24,7 @@
 #include "graphics/engine/particle.h"
 #include "graphics/engine/terrain.h"
 
-#include "object/objman.h"
+#include "object/object_manager.h"
 #include "object/robotmain.h"
 
 #include "math/geometry.h"
@@ -73,7 +73,7 @@ bool CTaskDeleteMark::Abort()
 
 void CTaskDeleteMark::DeleteMark()
 {
-    CObject* pObj = CObjectManager::GetInstancePointer()->FindNearest(m_object, {
+    CObject* obj = CObjectManager::GetInstancePointer()->FindNearest(m_object, {
         OBJECT_MARKPOWER,
         OBJECT_MARKSTONE,
         OBJECT_MARKURANIUM,
@@ -83,9 +83,8 @@ void CTaskDeleteMark::DeleteMark()
         OBJECT_MARKKEYd
     }, 8.0f/g_unit);
 
-    if(pObj != nullptr)
+    if (obj != nullptr)
     {
-        pObj->DeleteObject();  // removes the mark
-        delete pObj;
+        CObjectManager::GetInstancePointer()->DeleteObject(obj);
     }
 }

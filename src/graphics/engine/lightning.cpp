@@ -32,7 +32,7 @@
 
 #include "object/object.h"
 #include "object/robotmain.h"
-#include "object/objman.h"
+#include "object/object_manager.h"
 
 #include "object/auto/autopara.h"
 
@@ -317,10 +317,8 @@ CObject* CLightning::SearchObject(Math::Vector pos)
     // Seeking the object closest to the point of impact of lightning.
     CObject* bestObj = 0;
     float min = 100000.0f;
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        CObject* obj = it.second;
-
         if (!obj->GetActif()) continue;  // inactive object?
         if (obj->GetTruck() != nullptr) continue;  // object transported?
 

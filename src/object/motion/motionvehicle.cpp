@@ -29,6 +29,7 @@
 #include "math/geometry.h"
 
 #include "object/brain.h"
+#include "object/object_manager.h"
 
 #include "physics/physics.h"
 
@@ -94,7 +95,6 @@ void CMotionVehicle::DeleteObject(bool bAll)
 void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
                             float power, Gfx::CModelManager* modelManager)
 {
-    CObject*        pPower;
     int             rank, i, j, parent;
     Gfx::Color      color;
     char            name[50];
@@ -925,27 +925,21 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         color.a = 0.0f;
         m_object->CreateEffectLight(20.0f, color);
 
-        // Creates the battery.
-        pPower = new CObject();
-        pPower->SetType(power<=1.0f?OBJECT_POWER:OBJECT_ATOMIC);
+        CObject* powerCell = nullptr;
+        Math::Vector powerCellPos = m_object->GetCharacter()->posPower;
+        float powerCellAngle = 0.0f;
+        if (power <= 1.0f)
+        {
+            powerCell = CObjectManager::GetInstancePointer()->CreateObject(powerCellPos, powerCellAngle, OBJECT_POWER, power);
+        }
+        else
+        {
+            powerCell = CObjectManager::GetInstancePointer()->CreateObject(powerCellPos, powerCellAngle, OBJECT_ATOMIC, power / 100.0f);
+        }
 
-        rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
-        pPower->SetObjectRank(0, rank);
-        pPower->CreateShadowCircle(1.5f, 1.0f); //create a shadow for battary
-
-        if ( power <= 1.0f )  modelManager->AddModelCopy("power.mod", false, rank);
-        else                  modelManager->AddModelCopy("atomic.mod", false, rank);
-
-        pPower->SetPosition(0, m_object->GetCharacter()->posPower);
-        pPower->CreateCrashSphere(Math::Vector(0.0f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f);
-        pPower->SetGlobalSphere(Math::Vector(0.0f, 1.0f, 0.0f), 1.5f);
-
-        pPower->SetTruck(m_object);
-        m_object->SetPower(pPower);
-
-        if ( power <= 1.0f )  pPower->SetEnergy(power);
-        else                  pPower->SetEnergy(power/100.0f);
+        powerCell->SetPosition(0, powerCellPos);
+        powerCell->SetTruck(m_object);
+        m_object->SetPower(powerCell);
     }
 
     pos = m_object->GetPosition(0);

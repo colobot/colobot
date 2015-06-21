@@ -25,7 +25,7 @@
 #include "math/geometry.h"
 
 #include "object/brain.h"
-#include "object/objman.h"
+#include "object/object_manager.h"
 #include "object/robotmain.h"
 #include "object/level/parserline.h"
 #include "object/level/parserparam.h"
@@ -62,25 +62,20 @@ CAutoFactory::~CAutoFactory()
 
 // Destroys the object.
 
-void CAutoFactory::DeleteObject(bool bAll)
+void CAutoFactory::DeleteObject(bool all)
 {
-    CObject*    fret;
-    CObject*    vehicle;
-
-    if ( !bAll )
+    if ( !all )
     {
-        fret = SearchFret();  // transform metal?
-        if ( fret != 0 )
+        CObject* fret = SearchFret();  // transform metal?
+        if ( fret != nullptr )
         {
-            fret->DeleteObject();  // destroys the metal
-            delete fret;
+            CObjectManager::GetInstancePointer()->DeleteObject(fret);
         }
 
-        vehicle = SearchVehicle();
-        if ( vehicle != 0 )
+        CObject* vehicle = SearchVehicle();
+        if ( vehicle != nullptr )
         {
-            vehicle->DeleteObject();  // destroys the vehicle
-            delete vehicle;
+            CObjectManager::GetInstancePointer()->DeleteObject(vehicle);
         }
     }
 
@@ -91,7 +86,7 @@ void CAutoFactory::DeleteObject(bool bAll)
         m_channelSound = -1;
     }
 
-    CAuto::DeleteObject(bAll);
+    CAuto::DeleteObject(all);
 }
 
 
@@ -387,10 +382,9 @@ bool CAutoFactory::EventProcess(const Event &event)
             SoundManip(2.0f, 1.0f, 1.2f);
 
             fret = SearchFret();  // transform metal?
-            if ( fret != 0 )
+            if ( fret != nullptr )
             {
-                fret->DeleteObject();  // removes the metal
-                delete fret;
+                CObjectManager::GetInstancePointer()->DeleteObject(fret);
             }
 
             m_vehicle = vehicle = SearchVehicle();
@@ -553,25 +547,18 @@ bool CAutoFactory::Read(CLevelParserLine* line)
 
 CObject* CAutoFactory::SearchFret()
 {
-    CObject*    pObj;
-    Math::Vector    oPos;
-    ObjectType  type;
-    float       dist;
-    
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = it.second;
-        
-        type = pObj->GetType();
+        ObjectType type = obj->GetType();
         if ( type != OBJECT_METAL )  continue;
-        if ( pObj->GetTruck() != 0 )  continue;
-        
-        oPos = pObj->GetPosition(0);
-        dist = Math::Distance(oPos, m_fretPos);
-        
-        if ( dist < 8.0f )  return pObj;
+        if ( obj->GetTruck() != nullptr )  continue;
+
+        Math::Vector oPos = obj->GetPosition(0);
+        float dist = Math::Distance(oPos, m_fretPos);
+
+        if ( dist < 8.0f )  return obj;
     }
-    
+
     return 0;
 }
 
@@ -579,18 +566,11 @@ CObject* CAutoFactory::SearchFret()
 
 bool CAutoFactory::NearestVehicle()
 {
-    CObject*    pObj;
-    Math::Vector    cPos, oPos;
-    ObjectType  type;
-    float       oRadius, dist;
+    Math::Vector cPos = m_object->GetPosition(0);
 
-    cPos = m_object->GetPosition(0);
-    
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = it.second;
-
-        type = pObj->GetType();
+        ObjectType type = obj->GetType();
         if ( type != OBJECT_HUMAN    &&
              type != OBJECT_MOBILEfa &&
              type != OBJECT_MOBILEta &&
@@ -625,8 +605,10 @@ bool CAutoFactory::NearestVehicle()
              type != OBJECT_BEE      &&
              type != OBJECT_WORM     )  continue;
 
-        if ( !pObj->GetCrashSphere(0, oPos, oRadius) )  continue;
-        dist = Math::Distance(oPos, cPos)-oRadius;
+        Math::Vector oPos;
+        float oRadius = 0.0f;
+        if ( !obj->GetCrashSphere(0, oPos, oRadius) )  continue;
+        float dist = Math::Distance(oPos, cPos)-oRadius;
 
         if ( dist < 10.0f )  return true;
     }
@@ -686,29 +668,22 @@ bool CAutoFactory::CreateVehicle()
 // Seeking the vehicle during manufacture.
 
 CObject* CAutoFactory::SearchVehicle()
-{    
-    CObject*    pObj;
-    Math::Vector    oPos;
-    ObjectType  type;
-    float       dist;
-    
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+{
+    for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = it.second;
-        
-        if ( !pObj->GetLock() )  continue;
-        
-        type = pObj->GetType();
+        if ( !obj->GetLock() )  continue;
+
+        ObjectType  type = obj->GetType();
         if ( type != m_type )  continue;
-        if ( pObj->GetTruck() != 0 )  continue;
-        
-        oPos = pObj->GetPosition(0);
-        dist = Math::Distance(oPos, m_fretPos);
-        
-        if ( dist < 8.0f )  return pObj;
+        if ( obj->GetTruck() != nullptr )  continue;
+
+        Math::Vector oPos = obj->GetPosition(0);
+        float dist = Math::Distance(oPos, m_fretPos);
+
+        if ( dist < 8.0f )  return obj;
     }
-    
-    return 0;
+
+    return nullptr;
 }
 
 // Creates all the interface when the object is selected.

@@ -23,7 +23,7 @@
 
 #include "math/geometry.h"
 
-#include "object/objman.h"
+#include "object/object_manager.h"
 #include "object/level/parserline.h"
 #include "object/level/parserparam.h"
 
@@ -243,42 +243,35 @@ Error CAutoPara::GetError()
 
 void CAutoPara::ChargeObject(float rTime)
 {
-    CObject*    pObj;
-    CObject*    power;
-    Math::Vector    sPos, oPos;
-    float       dist, energy;
+    Math::Vector sPos = m_object->GetPosition(0);
 
-    sPos = m_object->GetPosition(0);
-    
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = it.second;
-
-        oPos = pObj->GetPosition(0);
-        dist = Math::Distance(oPos, sPos);
+        Math::Vector oPos = obj->GetPosition(0);
+        float dist = Math::Distance(oPos, sPos);
         if ( dist > 20.0f )  continue;
 
-        if ( pObj->GetTruck() == 0 && pObj->GetType() == OBJECT_POWER )
+        if ( obj->GetTruck() == nullptr && obj->GetType() == OBJECT_POWER )
         {
-            energy = pObj->GetEnergy();
+            float energy = obj->GetEnergy();
             energy += rTime/2.0f;
             if ( energy > 1.0f )  energy = 1.0f;
-            pObj->SetEnergy(energy);
+            obj->SetEnergy(energy);
         }
 
-        power = pObj->GetPower();
-        if ( power != 0 && power->GetType() == OBJECT_POWER )
+        CObject* power = obj->GetPower();
+        if ( power != nullptr && power->GetType() == OBJECT_POWER )
         {
-            energy = power->GetEnergy();
+            float energy = power->GetEnergy();
             energy += rTime/2.0f;
             if ( energy > 1.0f )  energy = 1.0f;
             power->SetEnergy(energy);
         }
 
-        power = pObj->GetFret();
-        if ( power != 0 && power->GetType() == OBJECT_POWER )
+        power = obj->GetFret();
+        if ( power != nullptr && power->GetType() == OBJECT_POWER )
         {
-            energy = power->GetEnergy();
+            float energy = power->GetEnergy();
             energy += rTime/2.0f;
             if ( energy > 1.0f )  energy = 1.0f;
             power->SetEnergy(energy);

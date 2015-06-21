@@ -77,11 +77,9 @@ CObjectFactory::CObjectFactory(Gfx::CEngine* engine,
    , m_main(main)
 {}
 
-CObject* CObjectFactory::CreateObject(Math::Vector pos, float angle, ObjectType type,
-                                      float power, float zoom, float height,
-                                      bool trainer, bool toy, int option)
+CObjectUPtr CObjectFactory::CreateObject(const ObjectCreateParams& params)
 {
-    switch (type)
+    switch (params.type)
     {
         case OBJECT_NULL:
             return nullptr;
@@ -109,7 +107,7 @@ CObject* CObjectFactory::CreateObject(Math::Vector pos, float angle, ObjectType 
         case OBJECT_TARGET2:
         case OBJECT_START:
         case OBJECT_END:
-            return CreateBuilding(pos, angle, height, type, power);
+            return CreateBuilding(params);
 
         case OBJECT_FRET:
         case OBJECT_STONE:
@@ -142,20 +140,20 @@ CObject* CObjectFactory::CreateObject(Math::Vector pos, float angle, ObjectType 
         case OBJECT_MARKKEYc:
         case OBJECT_MARKKEYd:
         case OBJECT_EGG:
-            return CreateResource(pos, angle, type, power);
+            return CreateResource(params);
 
         case OBJECT_FLAGb:
         case OBJECT_FLAGr:
         case OBJECT_FLAGg:
         case OBJECT_FLAGy:
         case OBJECT_FLAGv:
-            return CreateFlag(pos, angle, type);
+            return CreateFlag(params);
 
         case OBJECT_BARRIER0:
         case OBJECT_BARRIER1:
         case OBJECT_BARRIER2:
         case OBJECT_BARRIER3:
-            return CreateBarrier(pos, angle, height, type);
+            return CreateBarrier(params);
 
         case OBJECT_PLANT0:
         case OBJECT_PLANT1:
@@ -183,11 +181,11 @@ CObject* CObjectFactory::CreateObject(Math::Vector pos, float angle, ObjectType 
         case OBJECT_TREE3:
         case OBJECT_TREE4:
         case OBJECT_TREE5:
-            return CreatePlant(pos, angle, height, type);
+            return CreatePlant(params);
 
         case OBJECT_MUSHROOM1:
         case OBJECT_MUSHROOM2:
-            return CreateMushroom(pos, angle, height, type);
+            return CreateMushroom(params);
 
         case OBJECT_TEEN0:
         case OBJECT_TEEN1:
@@ -234,13 +232,13 @@ CObject* CObjectFactory::CreateObject(Math::Vector pos, float angle, ObjectType 
         case OBJECT_TEEN42:
         case OBJECT_TEEN43:
         case OBJECT_TEEN44:
-            return CreateTeen(pos, angle, zoom, height, type, option);
+            return CreateTeen(params);
 
         case OBJECT_QUARTZ0:
         case OBJECT_QUARTZ1:
         case OBJECT_QUARTZ2:
         case OBJECT_QUARTZ3:
-            return CreateQuartz(pos, angle, height, type);
+            return CreateQuartz(params);
 
         case OBJECT_ROOT0:
         case OBJECT_ROOT1:
@@ -248,10 +246,10 @@ CObject* CObjectFactory::CreateObject(Math::Vector pos, float angle, ObjectType 
         case OBJECT_ROOT3:
         case OBJECT_ROOT4:
         case OBJECT_ROOT5:
-            return CreateRoot(pos, angle, height, type);
+            return CreateRoot(params);
 
         case OBJECT_HOME1:
-            return CreateHome(pos, angle, height, type);
+            return CreateHome(params);
 
         case OBJECT_RUINmobilew1:
         case OBJECT_RUINmobilew2:
@@ -266,20 +264,20 @@ CObject* CObjectFactory::CreateObject(Math::Vector pos, float angle, ObjectType 
         case OBJECT_RUINconvert:
         case OBJECT_RUINbase:
         case OBJECT_RUINhead:
-            return CreateRuin(pos, angle, height, type);
+            return CreateRuin(params);
 
         case OBJECT_APOLLO1:
         case OBJECT_APOLLO3:
         case OBJECT_APOLLO4:
         case OBJECT_APOLLO5:
-            return CreateApollo(pos, angle, type);
+            return CreateApollo(params);
 
         case OBJECT_MOTHER:
         case OBJECT_ANT:
         case OBJECT_SPIDER:
         case OBJECT_BEE:
         case OBJECT_WORM:
-            return CreateInsect(pos, angle, type);  // no eggs
+            return CreateInsect(params);  // no eggs
 
         case OBJECT_HUMAN:
         case OBJECT_TECH:
@@ -312,7 +310,7 @@ CObject* CObjectFactory::CreateObject(Math::Vector pos, float angle, ObjectType 
         case OBJECT_MOBILEit:
         case OBJECT_MOBILEdr:
         case OBJECT_APOLLO2:
-            return CreateVehicle(pos, angle, type, power, trainer, toy, option);
+            return CreateVehicle(params);
 
         default:
             break;
@@ -323,9 +321,15 @@ CObject* CObjectFactory::CreateObject(Math::Vector pos, float angle, ObjectType 
 
 // Creates a building laying on the ground.
 
-CObject* CObjectFactory::CreateBuilding(Math::Vector pos, float angle, float height, ObjectType type, float power)
+CObjectUPtr CObjectFactory::CreateBuilding(const ObjectCreateParams& params)
 {
-    CObject* obj = new CObject();
+    Math::Vector pos = params.pos;
+    float angle = params.angle;
+    float height = params.height;
+    ObjectType type = params.type;
+    float power = params.power;
+
+    CObjectUPtr obj(new CObject(params.id));
 
     obj->SetType(type);
 
@@ -1124,7 +1128,7 @@ CObject* CObjectFactory::CreateBuilding(Math::Vector pos, float angle, float hei
         pPower->obj->CreateCrashSphere(Math::Vector(0.0f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f);
         pPower->obj->SetGlobalSphere(Math::Vector(0.0f, 1.0f, 0.0f), 1.5f);
 
-        pPower->SetTruck(obj);
+        pPower->SetTruck(obj.get());
         SetPower(pPower);
 
         if ( power <= 1.0f )  pPower->obj->SetEnergy(power);
@@ -1136,7 +1140,7 @@ CObject* CObjectFactory::CreateBuilding(Math::Vector pos, float angle, float hei
     pos.y += height;
     obj->SetPosition(0, pos);  // to display the shadows immediately
 
-    AddObjectAuto(obj);
+    AddObjectAuto(obj.get());
     m_engine->LoadAllTextures();
 
     return obj;
@@ -1144,9 +1148,14 @@ CObject* CObjectFactory::CreateBuilding(Math::Vector pos, float angle, float hei
 
 // Creates a small resource set on the ground.
 
-CObject* CObjectFactory::CreateResource(Math::Vector pos, float angle, ObjectType type, float power)
+CObjectUPtr CObjectFactory::CreateResource(const ObjectCreateParams& params)
 {
-    CObject* obj = new CObject();
+    Math::Vector pos = params.pos;
+    float angle = params.angle;
+    ObjectType type = params.type;
+    float power = params.power;
+
+    CObjectUPtr obj(new CObject(params.id));
 
     obj->SetType(type);
 
@@ -1242,10 +1251,11 @@ CObject* CObjectFactory::CreateResource(Math::Vector pos, float angle, ObjectTyp
         obj->CreateCrashSphere(Math::Vector(0.0f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f);
         obj->SetGlobalSphere(Math::Vector(0.0f, 1.0f, 0.0f), 1.5f);
     }
+
     obj->CreateShadowCircle(radius, 1.0f);
 
     obj->SetFloorHeight(0.0f);
-    AddObjectAuto(obj);
+    AddObjectAuto(obj.get());
     m_engine->LoadAllTextures();
     obj->FloorAdjust();
 
@@ -1258,9 +1268,13 @@ CObject* CObjectFactory::CreateResource(Math::Vector pos, float angle, ObjectTyp
 
 // Creates a flag placed on the ground.
 
-CObject* CObjectFactory::CreateFlag(Math::Vector pos, float angle, ObjectType type)
+CObjectUPtr CObjectFactory::CreateFlag(const ObjectCreateParams& params)
 {
-    CObject* obj = new CObject();
+    Math::Vector pos = params.pos;
+    float angle = params.angle;
+    ObjectType type = params.type;
+
+    CObjectUPtr obj(new CObject(params.id));
 
     obj->SetType(type);
 
@@ -1302,7 +1316,7 @@ CObject* CObjectFactory::CreateFlag(Math::Vector pos, float angle, ObjectType ty
     obj->CreateShadowCircle(2.0f, 0.3f);
 
     obj->SetFloorHeight(0.0f);
-    AddObjectAuto(obj);
+    AddObjectAuto(obj.get());
     m_engine->LoadAllTextures();
     obj->FloorAdjust();
 
@@ -1314,9 +1328,14 @@ CObject* CObjectFactory::CreateFlag(Math::Vector pos, float angle, ObjectType ty
 
 // Creates a barrier placed on the ground.
 
-CObject* CObjectFactory::CreateBarrier(Math::Vector pos, float angle, float height, ObjectType type)
+CObjectUPtr CObjectFactory::CreateBarrier(const ObjectCreateParams& params)
 {
-    CObject* obj = new CObject();
+    Math::Vector pos = params.pos;
+    float angle = params.angle;
+    float height = params.height;
+    ObjectType type = params.type;
+
+    CObjectUPtr obj(new CObject(params.id));
 
     obj->SetType(type);
 
@@ -1394,7 +1413,7 @@ CObject* CObjectFactory::CreateBarrier(Math::Vector pos, float angle, float heig
     obj->SetPosition(0, pos);  // to display the shadows immediately
 
     obj->SetFloorHeight(0.0f);
-    AddObjectAuto(obj);
+    AddObjectAuto(obj.get());
     obj->FloorAdjust();
 
     pos = obj->GetPosition(0);
@@ -1406,9 +1425,14 @@ CObject* CObjectFactory::CreateBarrier(Math::Vector pos, float angle, float heig
 
 // Creates a plant placed on the ground.
 
-CObject* CObjectFactory::CreatePlant(Math::Vector pos, float angle, float height, ObjectType type)
+CObjectUPtr CObjectFactory::CreatePlant(const ObjectCreateParams& params)
 {
-    CObject* obj = new CObject();
+    Math::Vector pos = params.pos;
+    float angle = params.angle;
+    float height = params.height;
+    ObjectType type = params.type;
+
+    CObjectUPtr obj(new CObject(params.id));
 
     obj->SetType(type);
 
@@ -1631,7 +1655,7 @@ CObject* CObjectFactory::CreatePlant(Math::Vector pos, float angle, float height
     obj->SetPosition(0, pos);  // to display the shadows immediately
 
     obj->SetFloorHeight(0.0f);
-    AddObjectAuto(obj);
+    AddObjectAuto(obj.get());
 
     pos = obj->GetPosition(0);
     pos.y += height;
@@ -1642,9 +1666,14 @@ CObject* CObjectFactory::CreatePlant(Math::Vector pos, float angle, float height
 
 // Creates a mushroom placed on the ground.
 
-CObject* CObjectFactory::CreateMushroom(Math::Vector pos, float angle, float height, ObjectType type)
+CObjectUPtr CObjectFactory::CreateMushroom(const ObjectCreateParams& params)
 {
-    CObject* obj = new CObject();
+    Math::Vector pos = params.pos;
+    float angle = params.angle;
+    float height = params.height;
+    ObjectType type = params.type;
+
+    CObjectUPtr obj(new CObject(params.id));
 
     obj->SetType(type);
 
@@ -1684,7 +1713,7 @@ CObject* CObjectFactory::CreateMushroom(Math::Vector pos, float angle, float hei
     obj->SetPosition(0, pos);  // to display the shadows immediately
 
     obj->SetFloorHeight(0.0f);
-    AddObjectAuto(obj);
+    AddObjectAuto(obj.get());
 
     pos = obj->GetPosition(0);
     pos.y += height;
@@ -1695,9 +1724,16 @@ CObject* CObjectFactory::CreateMushroom(Math::Vector pos, float angle, float hei
 
 // Creates a toy placed on the ground.
 
-CObject* CObjectFactory::CreateTeen(Math::Vector pos, float angle, float zoom, float height, ObjectType type, int option)
+CObjectUPtr CObjectFactory::CreateTeen(const ObjectCreateParams& params)
 {
-    CObject* obj = new CObject();
+    Math::Vector pos = params.pos;
+    float angle = params.angle;
+    float zoom = params.zoom;
+    float height = params.height;
+    ObjectType type = params.type;
+    int option = params.option;
+
+    CObjectUPtr obj(new CObject(params.id));
 
     obj->SetType(type);
     obj->SetOption(option);
@@ -2511,7 +2547,7 @@ CObject* CObjectFactory::CreateTeen(Math::Vector pos, float angle, float zoom, f
         obj->FloorAdjust();
     }
 
-    AddObjectAuto(obj);
+    AddObjectAuto(obj.get());
 
     pos = obj->GetPosition(0);
     pos.y += height;
@@ -2522,9 +2558,14 @@ CObject* CObjectFactory::CreateTeen(Math::Vector pos, float angle, float zoom, f
 
 // Creates a crystal placed on the ground.
 
-CObject* CObjectFactory::CreateQuartz(Math::Vector pos, float angle, float height, ObjectType type)
+CObjectUPtr CObjectFactory::CreateQuartz(const ObjectCreateParams& params)
 {
-    CObject* obj = new CObject();
+    Math::Vector pos = params.pos;
+    float angle = params.angle;
+    float height = params.height;
+    ObjectType type = params.type;
+
+    CObjectUPtr obj(new CObject(params.id));
 
     obj->SetType(type);
 
@@ -2589,7 +2630,7 @@ CObject* CObjectFactory::CreateQuartz(Math::Vector pos, float angle, float heigh
     obj->SetPosition(0, pos);  // to display the shadows immediately
 
     obj->SetFloorHeight(0.0f);
-    AddObjectAuto(obj);
+    AddObjectAuto(obj.get());
 
     pos = obj->GetPosition(0);
     pos.y += height;
@@ -2623,10 +2664,14 @@ CObject* CObjectFactory::CreateQuartz(Math::Vector pos, float angle, float heigh
 }
 
 // Creates a root placed on the ground.
-
-CObject* CObjectFactory::CreateRoot(Math::Vector pos, float angle, float height, ObjectType type)
+CObjectUPtr CObjectFactory::CreateRoot(const ObjectCreateParams& params)
 {
-    CObject* obj = new CObject();
+    Math::Vector pos = params.pos;
+    float angle = params.angle;
+    float height = params.height;
+    ObjectType type = params.type;
+
+    CObjectUPtr obj(new CObject(params.id));
 
     obj->SetType(type);
 
@@ -2776,7 +2821,7 @@ CObject* CObjectFactory::CreateRoot(Math::Vector pos, float angle, float height,
     obj->SetPosition(0, pos);  // to display the shadows immediately
 
     obj->SetFloorHeight(0.0f);
-    AddObjectAuto(obj);
+    AddObjectAuto(obj.get());
 
     pos = obj->GetPosition(0);
     pos.y += height;
@@ -2786,10 +2831,14 @@ CObject* CObjectFactory::CreateRoot(Math::Vector pos, float angle, float height,
 }
 
 // Creates a small home.
-
-CObject* CObjectFactory::CreateHome(Math::Vector pos, float angle, float height, ObjectType type)
+CObjectUPtr CObjectFactory::CreateHome(const ObjectCreateParams& params)
 {
-    CObject* obj = new CObject();
+    Math::Vector pos = params.pos;
+    float angle = params.angle;
+    float height = params.height;
+    ObjectType type = params.type;
+
+    CObjectUPtr obj(new CObject(params.id));
 
     obj->SetType(type);
 
@@ -2812,7 +2861,7 @@ CObject* CObjectFactory::CreateHome(Math::Vector pos, float angle, float height,
     obj->SetPosition(0, pos);  // to display the shadows immediately
 
     obj->SetFloorHeight(0.0f);
-    AddObjectAuto(obj);
+    AddObjectAuto(obj.get());
 
     pos = obj->GetPosition(0);
     pos.y += height;
@@ -2822,10 +2871,14 @@ CObject* CObjectFactory::CreateHome(Math::Vector pos, float angle, float height,
 }
 
 // Creates ruin placed on the ground.
-
-CObject* CObjectFactory::CreateRuin(Math::Vector pos, float angle, float height, ObjectType type)
+CObjectUPtr CObjectFactory::CreateRuin(const ObjectCreateParams& params)
 {
-    CObject* obj = new CObject();
+    Math::Vector pos = params.pos;
+    float angle = params.angle;
+    float height = params.height;
+    ObjectType type = params.type;
+
+    CObjectUPtr obj(new CObject(params.id));
 
     obj->SetType(type);
 
@@ -3078,7 +3131,7 @@ CObject* CObjectFactory::CreateRuin(Math::Vector pos, float angle, float height,
     obj->SetPosition(0, pos);  //to display the shadows immediately
 
     obj->SetFloorHeight(0.0f);
-    AddObjectAuto(obj);
+    AddObjectAuto(obj.get());
 
     if ( type != OBJECT_RUINfactory &&
          type != OBJECT_RUINconvert &&
@@ -3234,9 +3287,13 @@ CObject* CObjectFactory::CreateRuin(Math::Vector pos, float angle, float height,
 
 // Creates a gadget apollo.
 
-CObject* CObjectFactory::CreateApollo(Math::Vector pos, float angle, ObjectType type)
+CObjectUPtr CObjectFactory::CreateApollo(const ObjectCreateParams& params)
 {
-    CObject* obj = new CObject();
+    Math::Vector pos = params.pos;
+    float angle = params.angle;
+    ObjectType type = params.type;
+
+    CObjectUPtr obj(new CObject(params.id));
 
     obj->SetType(type);
 
@@ -3399,7 +3456,7 @@ CObject* CObjectFactory::CreateApollo(Math::Vector pos, float angle, ObjectType 
         obj->CreateShadowCircle(3.0f, 0.7f);
     }
 
-    AddObjectAuto(obj);
+    AddObjectAuto(obj.get());
 
     pos = obj->GetPosition(0);
     obj->SetPosition(0, pos);  // to display the shadows immediately
@@ -3409,16 +3466,24 @@ CObject* CObjectFactory::CreateApollo(Math::Vector pos, float angle, ObjectType 
 
 // Creates a vehicle traveling any pose on the floor.
 
-CObject* CObjectFactory::CreateVehicle(Math::Vector pos, float angle, ObjectType type, float power, bool trainer, bool toy, int option)
+CObjectUPtr CObjectFactory::CreateVehicle(const ObjectCreateParams& params)
 {
-    CObject* obj = new CObject();
+    Math::Vector pos = params.pos;
+    float angle = params.angle;
+    ObjectType type = params.type;
+    float power = params.power;
+    bool trainer = params.trainer;
+    bool toy = params.toy;
+    int option = params.option;
+
+    CObjectUPtr obj(new CObject(params.id));
 
     obj->SetType(type);
     obj->SetOption(option);
 
     if ( type == OBJECT_TOTO )
     {
-        CMotion* motion = new CMotionToto(obj);
+        CMotion* motion = new CMotionToto(obj.get());
         motion->Create(pos, angle, type, 1.0f, m_modelManager);
         obj->SetMotion(motion);
         return obj;
@@ -3436,8 +3501,8 @@ CObject* CObjectFactory::CreateVehicle(Math::Vector pos, float angle, ObjectType
 
     obj->SetToy(toy);
 
-    CPhysics* physics = new CPhysics(obj);
-    CBrain* brain = new CBrain(obj);
+    CPhysics* physics = new CPhysics(obj.get());
+    CBrain* brain = new CBrain(obj.get());
 
     physics->SetBrain(brain);
     brain->SetPhysics(physics);
@@ -3481,15 +3546,15 @@ CObject* CObjectFactory::CreateVehicle(Math::Vector pos, float angle, ObjectType
     if ( type == OBJECT_HUMAN ||
          type == OBJECT_TECH  )
     {
-        motion = new CMotionHuman(obj);
+        motion = new CMotionHuman(obj.get());
     }
     else if ( type == OBJECT_CONTROLLER )
     {
-        motion = new CMotionDummy(obj); //dummy object
+        motion = new CMotionDummy(obj.get()); //dummy object
     }
     else
     {
-        motion = new CMotionVehicle(obj);
+        motion = new CMotionVehicle(obj.get());
     }
 
     physics->SetMotion(motion);
@@ -3505,14 +3570,18 @@ CObject* CObjectFactory::CreateVehicle(Math::Vector pos, float angle, ObjectType
 
 // Creates an insect lands on any ground.
 
-CObject* CObjectFactory::CreateInsect(Math::Vector pos, float angle, ObjectType type)
+CObjectUPtr CObjectFactory::CreateInsect(const ObjectCreateParams& params)
 {
-    CObject* obj = new CObject();
+    Math::Vector pos = params.pos;
+    float angle = params.angle;
+    ObjectType type = params.type;
+
+    CObjectUPtr obj(new CObject(params.id));
 
     obj->SetType(type);
 
-    CPhysics* physics = new CPhysics(obj);
-    CBrain* brain = new CBrain(obj);
+    CPhysics* physics = new CPhysics(obj.get());
+    CBrain* brain = new CBrain(obj.get());
 
     physics->SetBrain(brain);
     brain->SetPhysics(physics);
@@ -3523,23 +3592,23 @@ CObject* CObjectFactory::CreateInsect(Math::Vector pos, float angle, ObjectType 
     CMotion* motion = nullptr;
     if ( type == OBJECT_MOTHER )
     {
-        motion = new CMotionMother(obj);
+        motion = new CMotionMother(obj.get());
     }
     if ( type == OBJECT_ANT )
     {
-        motion = new CMotionAnt(obj);
+        motion = new CMotionAnt(obj.get());
     }
     if ( type == OBJECT_SPIDER )
     {
-        motion = new CMotionSpider(obj);
+        motion = new CMotionSpider(obj.get());
     }
     if ( type == OBJECT_BEE )
     {
-        motion = new CMotionBee(obj);
+        motion = new CMotionBee(obj.get());
     }
     if ( type == OBJECT_WORM )
     {
-        motion = new CMotionWorm(obj);
+        motion = new CMotionWorm(obj.get());
     }
 
     physics->SetMotion(motion);

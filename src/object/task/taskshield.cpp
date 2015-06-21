@@ -27,7 +27,7 @@
 #include "math/geometry.h"
 
 #include "object/brain.h"
-#include "object/objman.h"
+#include "object/object_manager.h"
 #include "object/robotmain.h"
 
 #include "physics/physics.h"
@@ -551,30 +551,23 @@ bool CTaskShield::CreateLight(Math::Vector pos)
 
 void CTaskShield::IncreaseShield()
 {
-    ObjectType  type;
-    CObject*    pObj;
-    Math::Vector    oPos;
-    float       dist, shield;
-    
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = it.second;
-
-        type = pObj->GetType();
+        ObjectType type = obj->GetType();
         if ( type == OBJECT_MOTHER ||
              type == OBJECT_ANT    ||
              type == OBJECT_SPIDER ||
              type == OBJECT_BEE    ||
              type == OBJECT_WORM   )  continue;
 
-        oPos = pObj->GetPosition(0);
-        dist = Math::Distance(oPos, m_shieldPos);
+        Math::Vector oPos = obj->GetPosition(0);
+        float dist = Math::Distance(oPos, m_shieldPos);
         if ( dist <= GetRadius()+10.0f )
         {
-            shield = pObj->GetShield();
+            float shield = obj->GetShield();
             shield += 0.1f;
             if ( shield > 1.0f )  shield = 1.0f;
-            pObj->SetShield(shield);
+            obj->SetShield(shield);
         }
     }
 }

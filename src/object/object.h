@@ -135,11 +135,18 @@ enum ResetCap
 
 class CObject
 {
+    friend class CObjectFactory;
+    friend class CObjectManager;
+protected:
+    CObject(int id);
+    void        DeleteObject(bool bAll=false);
+
 public:
-    CObject();
+    CObject(const CObject&) = delete;
+    CObject& operator=(const CObject&) = delete;
+
     ~CObject();
 
-    void        DeleteObject(bool bAll=false);
     void        Simplify();
     bool        ExploObject(ExploType type, float force, float decay=1.0f);
 
@@ -157,7 +164,6 @@ public:
     void        SetOption(int option);
     int         GetOption();
 
-    void        SetID(int id);
     int         GetID();
 
     bool        Write(CLevelParserLine* line);
@@ -446,7 +452,7 @@ protected:
     CScript*            m_runScript;
 
     ObjectType  m_type;             // OBJECT_*
-    int     m_id;               // unique identifier
+    const int     m_id;               // unique identifier
     char        m_name[50];         // name of the object
     Character   m_character;            // characteristic
     int     m_option;           // option

@@ -25,6 +25,7 @@
 
 #include "math/geometry.h"
 
+#include "object/object_manager.h"
 #include "object/robotmain.h"
 #include "object/level/parserline.h"
 #include "object/level/parserparam.h"
@@ -366,11 +367,10 @@ bool CAutoLabo::EventProcess(const Event &event)
             UpdateInterface();
 
             power = m_object->GetPower();
-            if ( power != 0 )
+            if ( power != nullptr )
             {
-                m_object->SetPower(0);
-                power->DeleteObject();  // destroys the ball
-                delete power;
+                m_object->SetPower(nullptr);
+                CObjectManager::GetInstancePointer()->DeleteObject(power);
             }
 
             m_main->DisplayError(INFO_LABO, m_object);

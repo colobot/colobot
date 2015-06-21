@@ -31,7 +31,7 @@
 
 #include "math/geometry.h"
 
-#include "object/objman.h"
+#include "object/object_manager.h"
 #include "object/robotmain.h"
 #include "object/motion/motionhuman.h"
 
@@ -1372,18 +1372,16 @@ void CPyro::DeleteObject(bool primary, bool secondary)
          type != OBJECT_ENERGY )
     {
         CObject* sub = m_object->GetPower();
-        if ( sub != 0 )
+        if ( sub != nullptr )
         {
-            sub->DeleteObject();  // removes the battery
-            delete sub;
-            m_object->SetPower(0);
+            CObjectManager::GetInstancePointer()->DeleteObject(sub);
+            m_object->SetPower(nullptr);
         }
 
         sub = m_object->GetFret();
-        if ( sub != 0 )
+        if ( sub != nullptr )
         {
-            sub->DeleteObject();  // removes the object transported
-            delete sub;
+            CObjectManager::GetInstancePointer()->DeleteObject(sub);
             m_object->SetFret(nullptr);
         }
     }
@@ -1391,7 +1389,7 @@ void CPyro::DeleteObject(bool primary, bool secondary)
     if (primary)
     {
         CObject* truck = m_object->GetTruck();
-        if ( truck != 0 )  // object carries?
+        if ( truck != nullptr )  // object carries?
         {
             if (truck->GetPower() == m_object)
                 truck->SetPower(nullptr);
@@ -1400,9 +1398,7 @@ void CPyro::DeleteObject(bool primary, bool secondary)
                 truck->SetFret(nullptr);
         }
 
-        CObject* sub = m_object;
-        sub->DeleteObject();  // removes the object (*)
-        delete sub;
+        CObjectManager::GetInstancePointer()->DeleteObject(m_object);
         m_object = nullptr;
     }
 }
@@ -2215,14 +2211,12 @@ void CPyro::FallStart()
 CObject* CPyro::FallSearchBeeExplo()
 {
     Math::Vector iPos;
-    float iRadius;
+    float iRadius = 0.0f;
     m_object->GetCrashSphere(0, iPos, iRadius);
-    
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
-    {
-        CObject* pObj = it.second;
 
-        ObjectType oType = pObj->GetType();
+    for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
+    {
+        ObjectType oType = obj->GetType();
         if ( oType != OBJECT_HUMAN    &&
              oType != OBJECT_MOBILEfa &&
              oType != OBJECT_MOBILEta &&
@@ -2272,40 +2266,41 @@ CObject* CPyro::FallSearchBeeExplo()
              oType != OBJECT_POWER    &&
              oType != OBJECT_ATOMIC   )  continue;
 
-        if ( pObj->GetTruck() != 0 )  continue;  // object transported?
+        if ( obj->GetTruck() != nullptr )  continue;  // object transported?
 
-        Math::Vector oPos = pObj->GetPosition(0);
+        Math::Vector oPos = obj->GetPosition(0);
 
-        float distance;
-
-        float shieldRadius = pObj->GetShieldRadius();
+        float shieldRadius = obj->GetShieldRadius();
         if ( shieldRadius > 0.0f )
         {
-            distance = Math::Distance(oPos, iPos);
-            if (distance <= shieldRadius) return pObj;
+            float distance = Math::Distance(oPos, iPos);
+            if (distance <= shieldRadius)
+                return obj;
         }
 
         if ( oType == OBJECT_BASE )
         {
-            distance = Math::Distance(oPos, iPos);
-            if (distance < 25.0f) return pObj;
+            float distance = Math::Distance(oPos, iPos);
+            if (distance < 25.0f)
+                return obj;
         }
 
         // Test the center of the object, which is necessary for objects
         // that have no sphere in the center (station).
-        distance = Math::Distance(oPos, iPos)-4.0f;
-        if (distance < 5.0f) return pObj;
+        float distance = Math::Distance(oPos, iPos)-4.0f;
+        if (distance < 5.0f)
+            return obj;
 
         // Test with all spheres of the object.
         Math::Vector ooPos;
-        float ooRadius;
+        float ooRadius = 0.0f;
         int j = 0;
-        while (pObj->GetCrashSphere(j++, ooPos, ooRadius))
+        while (obj->GetCrashSphere(j++, ooPos, ooRadius))
         {
             distance = Math::Distance(ooPos, iPos);
             if (distance <= iRadius+ooRadius)
             {
-                return pObj;
+                return obj;
             }
         }
     }
