@@ -1294,7 +1294,7 @@ bool CTaskGoto::GetHotPoint(CObject *pObj, Math::Vector &pos,
 
 bool CTaskGoto::LeakSearch(Math::Vector &pos, float &delay)
 {
-    CObject     *pObj, *pObstacle = nullptr;
+    CObject     *pObstacle = nullptr;
     Math::Vector    iPos, oPos, bPos;
     float       iRadius, oRadius, bRadius, dist, min, dir;
     int         j;

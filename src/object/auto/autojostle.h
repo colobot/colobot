@@ -32,16 +32,16 @@ public:
     CAutoJostle(CObject* object);
     ~CAutoJostle();
 
-    void        DeleteObject(bool bAll=false);
+    void        DeleteObject(bool bAll=false) OVERRIDE;
 
-    void        Init();
+    void        Init() OVERRIDE;
     void        Start(int param, float force);
-    bool        EventProcess(const Event &event);
-    Error       IsEnded();
+    bool        EventProcess(const Event &event) OVERRIDE;
+    Error       IsEnded() OVERRIDE;
 
 private:
     // Overriden to avoid warning about hiding virtual function
-    virtual void Start(int param) OVERRIDE;
+    void Start(int param) OVERRIDE;
 
 protected:
     float           m_force;

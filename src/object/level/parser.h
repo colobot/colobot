@@ -30,6 +30,7 @@
 
 #include <string>
 #include <vector>
+#include <memory>
 
 class CLevelParser
 {
@@ -40,33 +41,35 @@ public:
     CLevelParser(std::string filename);
     //! Load given level
     CLevelParser(std::string category, int chapter, int rank);
-    
-    ~CLevelParser();
-    
+
     //! Build category path
     static std::string BuildCategoryPath(std::string category);
     //! Build level filename
     static std::string BuildScenePath(std::string category, int chapter, int rank, bool sceneFile = true);
-    
+
     //! Check if level file exists
     bool Exists();
     //! Load file
     void Load();
     //! Save file
     void Save();
-    
+
     //! Get filename
     const std::string& GetFilename();
-    
+
     //! Get all lines from file
-    std::vector<CLevelParserLine*> GetLines();
+    inline const std::vector<CLevelParserLineUPtr>& GetLines()
+    {
+        return m_lines;
+    }
+
     //! Insert new line to file
-    void AddLine(CLevelParserLine* line);
-    
+    void AddLine(CLevelParserLineUPtr line);
+
     //! Find first line with given command
     CLevelParserLine* Get(std::string command);
-    
+
 private:
     std::string m_filename;
-    std::vector<CLevelParserLine*> m_lines;
+    std::vector<CLevelParserLineUPtr> m_lines;
 };

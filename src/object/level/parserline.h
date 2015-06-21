@@ -24,37 +24,41 @@
 
 #pragma once
 
+#include "object/level/parserparam.h"
+
 #include <string>
 #include <map>
+#include <memory>
 
 class CLevelParser;
-class CLevelParserParam;
+class CLevelParserLine;
+using CLevelParserLineUPtr = std::unique_ptr<CLevelParserLine>;
 
 class CLevelParserLine
 {
 public:
     CLevelParserLine(int lineNumber, std::string command);
     CLevelParserLine(std::string command);
-    ~CLevelParserLine();
-    
+
     //! Get line number
     int GetLineNumber();
-    
+
     //! Get CLevelParser this line is part of
     CLevelParser* GetLevel();
     //! Set CLevelParser this line is part of
     void SetLevel(CLevelParser* level);
-    
+
     std::string GetCommand();
     void SetCommand(std::string command);
-    
+
     CLevelParserParam* GetParam(std::string name);
-    void AddParam(std::string name, CLevelParserParam* value);
-    const std::map<std::string, CLevelParserParam*>& GetParams();
-    
+    void AddParam(std::string name, CLevelParserParamUPtr value);
+
+    friend std::ostream& operator<<(std::ostream& str, const CLevelParserLine& line);
+
 private:
     CLevelParser* m_level;
     int m_lineNumber;
     std::string m_command;
-    std::map<std::string, CLevelParserParam*> m_params;
+    std::map<std::string, CLevelParserParamUPtr> m_params;
 };

@@ -353,12 +353,12 @@ Error CAutoDestroyer::GetError()
 bool CAutoDestroyer::Write(CLevelParserLine* line)
 {
     if ( m_phase == ADEP_WAIT )  return false;
-    
-    line->AddParam("aExist", new CLevelParserParam(true));
+
+    line->AddParam("aExist", CLevelParserParamUPtr{new CLevelParserParam(true)});
     CAuto::Write(line);
-    line->AddParam("aPhase", new CLevelParserParam(static_cast<int>(m_phase)));
-    line->AddParam("aProgress", new CLevelParserParam(m_progress));
-    line->AddParam("aSpeed", new CLevelParserParam(m_speed));
+    line->AddParam("aPhase", CLevelParserParamUPtr{new CLevelParserParam(static_cast<int>(m_phase))});
+    line->AddParam("aProgress", CLevelParserParamUPtr{new CLevelParserParam(m_progress)});
+    line->AddParam("aSpeed", CLevelParserParamUPtr{new CLevelParserParam(m_speed)});
 
     return true;
 }

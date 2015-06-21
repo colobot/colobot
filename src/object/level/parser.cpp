@@ -34,6 +34,7 @@
 #include <exception>
 #include <sstream>
 #include <iomanip>
+#include <set>
 
 #include <boost/algorithm/string/trim.hpp>
 #include <boost/algorithm/string/replace.hpp>
@@ -54,19 +55,11 @@ CLevelParser::CLevelParser(std::string category, int chapter, int rank)
     m_filename = BuildScenePath(category, chapter, rank);
 }
 
-CLevelParser::~CLevelParser()
-{
-    for(auto line : m_lines)
-    {
-        delete line;
-    }
-}
-
 std::string CLevelParser::BuildCategoryPath(std::string category)
 {
     std::ostringstream outstream;
     outstream << "levels/";
-    if(category == "perso" || category == "win" || category == "lost")
+    if (category == "perso" || category == "win" || category == "lost")
     {
         outstream << "other/";
     }
@@ -81,12 +74,12 @@ std::string CLevelParser::BuildScenePath(std::string category, int chapter, int 
 {
     std::ostringstream outstream;
     outstream << BuildCategoryPath(category);
-    if(category == "custom")
+    if (category == "custom")
     {
         outstream << CRobotMain::GetInstancePointer()->GetUserLevelName(chapter);
-        if(rank == 000)
+        if (rank == 000)
         {
-            if(sceneFile)
+            if (sceneFile)
             {
                 outstream << "/chaptertitle.txt";
             }
@@ -94,26 +87,26 @@ std::string CLevelParser::BuildScenePath(std::string category, int chapter, int 
         else
         {
             outstream << "/level" << std::setfill('0') << std::setw(3) << rank;
-            if(sceneFile)
+            if (sceneFile)
             {
                 outstream << "/scene.txt";
             }
         }
     }
-    else if(category == "perso")
+    else if (category == "perso")
     {
         outstream << "perso.txt";
     }
-    else if(category == "win" || category == "lost")
+    else if (category == "win" || category == "lost")
     {
-        outstream << category << std::setfill('0') << std::setw(3) << chapter*100+rank << ".txt";
+        outstream << category << std::setfill('0') << std::setw(3) << chapter*100 + rank << ".txt";
     }
     else
     {
         outstream << "chapter" << std::setfill('0') << std::setw(3) << chapter;
-        if(rank == 000)
+        if (rank == 000)
         {
-            if(sceneFile)
+            if (sceneFile)
             {
                 outstream << "/chaptertitle.txt";
             }
@@ -121,7 +114,7 @@ std::string CLevelParser::BuildScenePath(std::string category, int chapter, int 
         else
         {
             outstream << "/level" << std::setfill('0') << std::setw(3) << rank;
-            if(sceneFile)
+            if (sceneFile)
             {
                 outstream << "/scene.txt";
             }
@@ -139,97 +132,124 @@ void CLevelParser::Load()
 {
     CInputStream file;
     file.open(m_filename);
-    if(!file.is_open())
-        throw CLevelParserException("Failed to open file: "+m_filename);
-    
+    if (!file.is_open())
+        throw CLevelParserException("Failed to open file: " + m_filename);
+
     char lang = CApplication::GetInstancePointer()->GetLanguageChar();
-    
+
     std::string line;
     int lineNumber = 0;
-    std::map<std::string, CLevelParserLine*> translatableLines;
-    while(getline(file,line))
+    std::set<std::string> translatableLines;
+    while (getline(file, line))
     {
         lineNumber++;
-        
+
         boost::replace_all(line, "\t", " "); // replace tab by space
-        
+
         // ignore comments
         std::size_t comment = line.find("//");
-        if(comment != std::string::npos)
+        if (comment != std::string::npos)
             line = line.substr(0, comment);
-        
+
         boost::algorithm::trim(line);
-        
+
         std::size_t pos = line.find_first_of(" \t\n");
         std::string command = line.substr(0, pos);
-        if(pos != std::string::npos) {
-            line = line.substr(pos+1);
+        if (pos != std::string::npos)
+        {
+            line = line.substr(pos + 1);
             boost::algorithm::trim(line);
-        } else {
+        }
+        else
+        {
             line = "";
         }
-        if(command.empty()) continue;
-        
-        CLevelParserLine* parserLine = new CLevelParserLine(lineNumber, command);
-        
-        std::string baseCommand = command;
-        if(command[command.length()-2] == '.') {
-            baseCommand = command.substr(0, command.length()-2);
-            if(command[command.length()-1] == 'E' && translatableLines[baseCommand] == nullptr) {
-                parserLine->SetCommand(baseCommand);
-                translatableLines[baseCommand] = parserLine;
-            } else if(command[command.length()-1] == lang) {
-                if(translatableLines[baseCommand] != nullptr) {
-                    m_lines.erase(std::remove(m_lines.begin(), m_lines.end(), translatableLines[baseCommand]), m_lines.end());
-                    delete translatableLines[baseCommand];
+
+        if (command.empty())
+            continue;
+
+        CLevelParserLineUPtr parserLine{new CLevelParserLine(lineNumber, command)};
+
+        if (command.length() > 2 && command[command.length() - 2] == '.')
+        {
+            std::string baseCommand = command.substr(0, command.length() - 2);
+            parserLine->SetCommand(baseCommand);
+
+            char languageChar = command[command.length() - 1];
+            if (languageChar == 'E' && translatableLines.count(baseCommand) == 0)
+            {
+                translatableLines.insert(baseCommand);
+            }
+            else if (languageChar == lang)
+            {
+                if (translatableLines.count(baseCommand) > 0)
+                {
+                    auto it = std::remove_if(
+                        m_lines.begin(),
+                        m_lines.end(),
+                        [&baseCommand](const CLevelParserLineUPtr& line)
+                        {
+                            return line->GetCommand() == baseCommand;
+                        });
+                    m_lines.erase(it, m_lines.end());
                 }
-                parserLine->SetCommand(baseCommand);
-                translatableLines[baseCommand] = parserLine;
-            } else {
-                delete parserLine;
+
+                translatableLines.insert(baseCommand);
+            }
+            else
+            {
                 continue;
             }
         }
-        
-        while(!line.empty()) {
+
+        while (!line.empty())
+        {
             pos = line.find_first_of("=");
             std::string paramName = line.substr(0, pos);
             boost::algorithm::trim(paramName);
-            line = line.substr(pos+1);
+            line = line.substr(pos + 1);
             boost::algorithm::trim(line);
-            
-            if(line[0] == '\"') {
+
+            if (line[0] == '\"')
+            {
                 pos = line.find_first_of("\"", 1);
-                if(pos == std::string::npos)
-                    throw CLevelParserException("Unclosed \" in "+m_filename+":"+boost::lexical_cast<std::string>(lineNumber));
-            } else if(line[0] == '\'') {
+                if (pos == std::string::npos)
+                    throw CLevelParserException("Unclosed \" in " + m_filename + ":" + boost::lexical_cast<std::string>(lineNumber));
+            }
+            else if (line[0] == '\'')
+            {
                 pos = line.find_first_of("'", 1);
-                if(pos == std::string::npos)
-                    throw CLevelParserException("Unclosed ' in "+m_filename+":"+boost::lexical_cast<std::string>(lineNumber));
-            } else {
+                if (pos == std::string::npos)
+                    throw CLevelParserException("Unclosed ' in " + m_filename + ":" + boost::lexical_cast<std::string>(lineNumber));
+            }
+            else
+            {
                 pos = line.find_first_of("=");
-                if(pos != std::string::npos) {
+                if (pos != std::string::npos)
+                {
                     std::size_t pos2 = line.find_last_of(" \t\n", line.find_last_not_of(" \t\n", pos-1));
-                    if(pos2 != std::string::npos)
+                    if (pos2 != std::string::npos)
                         pos = pos2;
-                } else {
+                }
+                else
+                {
                     pos = line.length()-1;
                 }
             }
-            std::string paramValue = line.substr(0, pos+1);
+            std::string paramValue = line.substr(0, pos + 1);
             boost::algorithm::trim(paramValue);
-            
-            parserLine->AddParam(paramName, new CLevelParserParam(paramName, paramValue));
-            
-            if(pos == std::string::npos)
+
+            parserLine->AddParam(paramName, CLevelParserParamUPtr{new CLevelParserParam(paramName, paramValue)});
+
+            if (pos == std::string::npos)
                 break;
-            line = line.substr(pos+1);
+            line = line.substr(pos + 1);
             boost::algorithm::trim(line);
         }
-        
-        AddLine(parserLine);
+
+        AddLine(std::move(parserLine));
     }
-    
+
     file.close();
 }
 
@@ -237,17 +257,14 @@ void CLevelParser::Save()
 {
     COutputStream file;
     file.open(m_filename);
-    if(!file.is_open())
-        throw CLevelParserException("Failed to open file: "+m_filename);
-    
-    for(CLevelParserLine* line : m_lines) {
-        file << line->GetCommand();
-        for(auto param : line->GetParams()) {
-            file << " " << param.first << "=" << param.second->GetValue();
-        }
-        file << "\n";
+    if (!file.is_open())
+        throw CLevelParserException("Failed to open file: " + m_filename);
+
+    for (auto& line : m_lines)
+    {
+        file << line.get() << "\n";
     }
-    
+
     file.close();
 }
 
@@ -256,22 +273,18 @@ const std::string& CLevelParser::GetFilename()
     return m_filename;
 }
 
-std::vector<CLevelParserLine*> CLevelParser::GetLines()
-{
-    return m_lines;
-}
-
-void CLevelParser::AddLine(CLevelParserLine* line)
+void CLevelParser::AddLine(CLevelParserLineUPtr line)
 {
     line->SetLevel(this);
-    m_lines.push_back(line);
+    m_lines.push_back(std::move(line));
 }
 
 CLevelParserLine* CLevelParser::Get(std::string command)
 {
-    for(auto& line : m_lines) {
-        if(line->GetCommand() == command)
-            return line;
+    for (auto& line : m_lines)
+    {
+        if (line->GetCommand() == command)
+            return line.get();
     }
-    throw CLevelParserException("Command not found: "+command);
+    throw CLevelParserException("Command not found: " + command);
 }

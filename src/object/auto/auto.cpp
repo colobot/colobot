@@ -424,11 +424,11 @@ void CAuto::SetMotor(bool bMotor)
 
 bool CAuto::Write(CLevelParserLine* line)
 {
-    line->AddParam("aType", new CLevelParserParam(m_type));
-    line->AddParam("aBusy", new CLevelParserParam(m_bBusy));
-    line->AddParam("aTime", new CLevelParserParam(m_time));
-    line->AddParam("aProgressTime", new CLevelParserParam(m_progressTime));
-    line->AddParam("aProgressTotal", new CLevelParserParam(m_progressTotal));
+    line->AddParam("aType", CLevelParserParamUPtr{new CLevelParserParam(m_type)});
+    line->AddParam("aBusy", CLevelParserParamUPtr{new CLevelParserParam(m_bBusy)});
+    line->AddParam("aTime", CLevelParserParamUPtr{new CLevelParserParam(m_time)});
+    line->AddParam("aProgressTime", CLevelParserParamUPtr{new CLevelParserParam(m_progressTime)});
+    line->AddParam("aProgressTotal", CLevelParserParamUPtr{new CLevelParserParam(m_progressTotal)});
 
     return false;
 }

@@ -357,7 +357,7 @@ void CObject::DeleteObject(bool bAll)
         m_camera->SetControllingObject(0);
     }
 
-    
+
     CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
 
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
@@ -950,69 +950,69 @@ bool CObject::Write(CLevelParserLine* line)
     float       value;
     int         i;
 
-    line->AddParam("camera", new CLevelParserParam(GetCameraType()));
+    line->AddParam("camera", CLevelParserParamUPtr{new CLevelParserParam(GetCameraType())});
 
     if ( GetCameraLock() )
-        line->AddParam("cameraLock", new CLevelParserParam(GetCameraLock()));
+        line->AddParam("cameraLock", CLevelParserParamUPtr{new CLevelParserParam(GetCameraLock())});
 
     if ( GetEnergy() != 0.0f )
-        line->AddParam("energy", new CLevelParserParam(GetEnergy()));
+        line->AddParam("energy", CLevelParserParamUPtr{new CLevelParserParam(GetEnergy())});
 
     if ( GetCapacity() != 1.0f )
-        line->AddParam("capacity", new CLevelParserParam(GetCapacity()));
-    
+        line->AddParam("capacity", CLevelParserParamUPtr{new CLevelParserParam(GetCapacity())});
+
     if ( GetShield() != 1.0f )
-        line->AddParam("shield", new CLevelParserParam(GetShield()));
+        line->AddParam("shield", CLevelParserParamUPtr{new CLevelParserParam(GetShield())});
 
     if ( GetRange() != 1.0f )
-        line->AddParam("range", new CLevelParserParam(GetRange()));
-    
+        line->AddParam("range", CLevelParserParamUPtr{new CLevelParserParam(GetRange())});
+
     if ( !GetSelectable() )
-        line->AddParam("selectable", new CLevelParserParam(GetSelectable()));
+        line->AddParam("selectable", CLevelParserParamUPtr{new CLevelParserParam(GetSelectable())});
 
     if ( !GetEnable() )
-        line->AddParam("enable", new CLevelParserParam(GetEnable()));
+        line->AddParam("enable", CLevelParserParamUPtr{new CLevelParserParam(GetEnable())});
 
     if ( GetFixed() )
-        line->AddParam("fixed", new CLevelParserParam(GetFixed()));
+        line->AddParam("fixed", CLevelParserParamUPtr{new CLevelParserParam(GetFixed())});
 
     if ( !GetClip() )
-        line->AddParam("clip", new CLevelParserParam(GetClip()));
+        line->AddParam("clip", CLevelParserParamUPtr{new CLevelParserParam(GetClip())});
 
     if ( GetLock() )
-        line->AddParam("lock", new CLevelParserParam(GetLock()));
+        line->AddParam("lock", CLevelParserParamUPtr{new CLevelParserParam(GetLock())});
 
     if ( GetProxyActivate() )
     {
-        line->AddParam("proxyActivate", new CLevelParserParam(GetProxyActivate()));
-        line->AddParam("proxyDistance", new CLevelParserParam(GetProxyDistance()/g_unit));
+        line->AddParam("proxyActivate", CLevelParserParamUPtr{new CLevelParserParam(GetProxyActivate())});
+        line->AddParam("proxyDistance", CLevelParserParamUPtr{new CLevelParserParam(GetProxyDistance()/g_unit)});
     }
 
     if ( GetMagnifyDamage() != 1.0f )
-        line->AddParam("magnifyDamage", new CLevelParserParam(GetMagnifyDamage()));
+        line->AddParam("magnifyDamage", CLevelParserParamUPtr{new CLevelParserParam(GetMagnifyDamage())});
 
     if ( GetGunGoalV() != 0.0f )
-        line->AddParam("aimV", new CLevelParserParam(GetGunGoalV()));
-    
+        line->AddParam("aimV", CLevelParserParamUPtr{new CLevelParserParam(GetGunGoalV())});
+
     if ( GetGunGoalH() != 0.0f )
-        line->AddParam("aimH", new CLevelParserParam(GetGunGoalH()));
+        line->AddParam("aimH", CLevelParserParamUPtr{new CLevelParserParam(GetGunGoalH())});
 
     if ( GetParam() != 0.0f )
-        line->AddParam("param", new CLevelParserParam(GetParam()));
+        line->AddParam("param", CLevelParserParamUPtr{new CLevelParserParam(GetParam())});
 
     if ( GetResetCap() != 0 )
     {
-        line->AddParam("resetCap", new CLevelParserParam(static_cast<int>(GetResetCap())));
-        line->AddParam("resetPos", new CLevelParserParam(GetResetPosition()/g_unit));
-        line->AddParam("resetAngle", new CLevelParserParam(GetResetAngle()/(Math::PI/180.0f)));
-        line->AddParam("resetRun", new CLevelParserParam(m_brain->GetProgramIndex(GetResetRun())));
+        line->AddParam("resetCap", CLevelParserParamUPtr{new CLevelParserParam(static_cast<int>(GetResetCap()))});
+        line->AddParam("resetPos", CLevelParserParamUPtr{new CLevelParserParam(GetResetPosition()/g_unit)});
+        line->AddParam("resetAngle", CLevelParserParamUPtr{new CLevelParserParam(GetResetAngle()/(Math::PI/180.0f))});
+        line->AddParam("resetRun", CLevelParserParamUPtr{new CLevelParserParam(m_brain->GetProgramIndex(GetResetRun()))});
     }
 
     if ( m_bVirusMode )
-        line->AddParam("virusMode", new CLevelParserParam(m_bVirusMode));
+        line->AddParam("virusMode", CLevelParserParamUPtr{new CLevelParserParam(m_bVirusMode)});
 
     if ( m_virusTime != 0.0f )
-        line->AddParam("virusTime", new CLevelParserParam(m_virusTime));
+        line->AddParam("virusTime", CLevelParserParamUPtr{new CLevelParserParam(m_virusTime)});
 
     // Puts information in terminal (OBJECT_INFO).
     for ( i=0 ; i<m_infoTotal ; i++ )
@@ -1020,20 +1020,20 @@ bool CObject::Write(CLevelParserLine* line)
         info = GetInfo(i);
         if ( info.name[0] == 0 )  break;
 
-        line->AddParam("info"+boost::lexical_cast<std::string>(i+1), new CLevelParserParam(std::string(info.name)+"="+boost::lexical_cast<std::string>(info.value)));
+        line->AddParam("info"+boost::lexical_cast<std::string>(i+1), CLevelParserParamUPtr{new CLevelParserParam(std::string(info.name)+"="+boost::lexical_cast<std::string>(info.value))});
     }
 
     // Sets the parameters of the command line.
-    std::vector<CLevelParserParam*> cmdline;
+    CLevelParserParamVec cmdline;
     for ( i=0 ; i<OBJECTMAXCMDLINE ; i++ )
     {
         value = GetCmdLine(i);
         if ( std::isnan(value) )  break;
 
-        cmdline.push_back(new CLevelParserParam(value));
+        cmdline.push_back(CLevelParserParamUPtr{new CLevelParserParam(value)});
     }
-    if(cmdline.size() > 0)
-        line->AddParam("cmdline", new CLevelParserParam(cmdline));
+    if (cmdline.size() > 0)
+        line->AddParam("cmdline", CLevelParserParamUPtr{new CLevelParserParam(std::move(cmdline))});
 
     if ( m_motion != nullptr )
     {
@@ -1101,30 +1101,33 @@ bool CObject::Read(CLevelParserLine* line)
     for ( i=0 ; i<OBJECTMAXINFO ; i++ )
     {
         std::string op = std::string("info")+boost::lexical_cast<std::string>(i+1);
-        if(!line->GetParam(op)->IsDefined()) break;
+        if (!line->GetParam(op)->IsDefined()) break;
         std::string text = line->GetParam(op)->AsString();
-        
+
         std::size_t p = text.find_first_of("=");
-        if(p == std::string::npos) 
+        if (p == std::string::npos)
             throw CLevelParserExceptionBadParam(line->GetParam(op), "info");
         Info info;
         strcpy(info.name, text.substr(0, p).c_str());
-        try {
+        try
+        {
             info.value = boost::lexical_cast<float>(text.substr(p+1).c_str());
         }
-        catch(...)
+        catch (...)
         {
             throw CLevelParserExceptionBadParam(line->GetParam(op), "info.value (float)");
         }
-        
+
         SetInfo(i, info);
     }
 
     // Sets the parameters of the command line.
     i = 0;
-    if(line->GetParam("cmdline")->IsDefined()) {
-        for(auto& p : line->GetParam("cmdline")->AsArray()) {
-            if(i >= OBJECTMAXCMDLINE) break;
+    if (line->GetParam("cmdline")->IsDefined())
+    {
+        for (auto& p : line->GetParam("cmdline")->AsArray())
+        {
+            if (i >= OBJECTMAXCMDLINE) break;
             SetCmdLine(i, p->AsFloat());
             i++;
         }
@@ -3905,35 +3908,36 @@ void CObject::SetTraceWidth(float width)
 
 DriveType CObject::GetDriveFromObject(ObjectType type)
 {
-    switch(type) {
+    switch(type)
+    {
         case OBJECT_MOBILEwt:
         case OBJECT_MOBILEwa:
         case OBJECT_MOBILEwc:
         case OBJECT_MOBILEwi:
         case OBJECT_MOBILEws:
             return DRIVE_WHEELED;
-            
+
         case OBJECT_MOBILEtt:
         case OBJECT_MOBILEta:
         case OBJECT_MOBILEtc:
         case OBJECT_MOBILEti:
         case OBJECT_MOBILEts:
             return DRIVE_TRACKED;
-            
+
         case OBJECT_MOBILEft:
         case OBJECT_MOBILEfa:
         case OBJECT_MOBILEfc:
         case OBJECT_MOBILEfi:
         case OBJECT_MOBILEfs:
             return DRIVE_WINGED;
-            
+
         case OBJECT_MOBILEit:
         case OBJECT_MOBILEia:
         case OBJECT_MOBILEic:
         case OBJECT_MOBILEii:
         case OBJECT_MOBILEis:
             return DRIVE_LEGGED;
-            
+
         default:
             return DRIVE_OTHER;
     }
@@ -3941,31 +3945,32 @@ DriveType CObject::GetDriveFromObject(ObjectType type)
 
 ToolType CObject::GetToolFromObject(ObjectType type)
 {
-    switch(type) {
+    switch(type)
+    {
         case OBJECT_MOBILEwa:
         case OBJECT_MOBILEta:
         case OBJECT_MOBILEfa:
         case OBJECT_MOBILEia:
             return TOOL_GRABBER;
-            
+
         case OBJECT_MOBILEws:
         case OBJECT_MOBILEts:
         case OBJECT_MOBILEfs:
         case OBJECT_MOBILEis:
             return TOOL_SNIFFER;
-            
+
         case OBJECT_MOBILEwc:
         case OBJECT_MOBILEtc:
         case OBJECT_MOBILEfc:
         case OBJECT_MOBILEic:
             return TOOL_SHOOTER;
-            
+
         case OBJECT_MOBILEwi:
         case OBJECT_MOBILEti:
         case OBJECT_MOBILEfi:
         case OBJECT_MOBILEii:
             return TOOL_ORGASHOOTER;
-            
+
         default:
             return TOOL_OTHER;
     }

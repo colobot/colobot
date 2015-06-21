@@ -19,7 +19,6 @@
 
 #include "object/level/parserline.h"
 
-
 #include "object/level/parser.h"
 #include "common/logger.h"
 
@@ -33,14 +32,6 @@ CLevelParserLine::CLevelParserLine(int lineNumber, std::string command)
 {
     m_command = command;
     m_lineNumber = lineNumber;
-}
-
-CLevelParserLine::~CLevelParserLine()
-{
-    for(auto param : m_params)
-    {
-        delete param.second;
-    }
 }
 
 int CLevelParserLine::GetLineNumber()
@@ -70,21 +61,31 @@ void CLevelParserLine::SetCommand(std::string command)
 
 CLevelParserParam* CLevelParserLine::GetParam(std::string name)
 {
-    if(m_params[name] == nullptr) {
-        CLevelParserParam* param = new CLevelParserParam(name, true);
-        param->SetLine(this);
-        m_params[name] = param;
+    auto it = m_params.find(name);
+    if (it != m_params.end())
+    {
+        return it->second.get();
     }
-    return m_params[name];
+
+    CLevelParserParamUPtr paramUPtr(new CLevelParserParam(name, true));
+    paramUPtr->SetLine(this);
+    CLevelParserParam* paramPtr = paramUPtr.get();
+    m_params.insert(std::make_pair(name, std::move(paramUPtr)));
+    return paramPtr;
 }
 
-void CLevelParserLine::AddParam(std::string name, CLevelParserParam* value)
+void CLevelParserLine::AddParam(std::string name, CLevelParserParamUPtr value)
 {
     value->SetLine(this);
-    m_params[name] = value;
+    m_params.insert(std::make_pair(name, std::move(value)));
 }
 
-const std::map<std::string, CLevelParserParam*>& CLevelParserLine::GetParams()
+std::ostream& operator<<(std::ostream& str, const CLevelParserLine& line)
 {
-    return m_params;
+    str << line.m_command;
+    for (const auto& param : line.m_params)
+    {
+        str << " " << param.first << "=" << param.second->GetValue();
+    }
+    return str;
 }

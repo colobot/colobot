@@ -24,15 +24,23 @@
 
 #pragma once
 
-#include <object/object.h>
-#include <graphics/core/color.h>
-#include <graphics/engine/water.h>
-#include <graphics/engine/pyro.h>
-#include <math/point.h>
+#include "graphics/core/color.h"
+#include "graphics/engine/water.h"
+#include "graphics/engine/pyro.h"
+
+#include "math/point.h"
+
+#include "object/object.h"
 
 #include <string>
+#include <vector>
+#include <memory>
 
 class CLevelParserLine;
+
+class CLevelParserParam;
+using CLevelParserParamUPtr = std::unique_ptr<CLevelParserParam>;
+using CLevelParserParamVec = std::vector<CLevelParserParamUPtr>;
 
 class CLevelParserParam
 {
@@ -48,15 +56,13 @@ public:
     CLevelParserParam(Math::Vector value);
     CLevelParserParam(ObjectType value);
     CLevelParserParam(Gfx::CameraType value);
-    CLevelParserParam(const std::vector<CLevelParserParam*>& value);
+    CLevelParserParam(CLevelParserParamVec&& array);
     //@}
     //! Create param from string
     CLevelParserParam(std::string name, std::string value);
     //! Create empty parser param
     CLevelParserParam(std::string name, bool empty);
-    
-    ~CLevelParserParam();
-    
+
     //! Get value (throws exception if not found or unable to process)
     //@{
     int AsInt();
@@ -75,9 +81,9 @@ public:
     int AsResearchFlag();
     Gfx::PyroType AsPyroType();
     Gfx::CameraType AsCameraType();
-    const std::vector<CLevelParserParam*>& AsArray();
+    const CLevelParserParamVec& AsArray();
     //@}
-    
+
     //! Get value (returns default if not found, throws exception if unable to process)
     //@{
     int AsInt(int def);
@@ -97,23 +103,23 @@ public:
     Gfx::PyroType AsPyroType(Gfx::PyroType def);
     Gfx::CameraType AsCameraType(Gfx::CameraType def);
     //@}
-    
+
     //! Set line this param is part of
     void SetLine(CLevelParserLine* line);
     //! Get line this param is part of
     CLevelParserLine* GetLine();
-    
+
     std::string GetName();
     std::string GetValue();
     bool IsDefined();
-    
+
 private:
     void ParseArray();
     void LoadArray();
-    
+
     template<typename T> T Cast(std::string value, std::string requestedType);
     template<typename T> T Cast(std::string requestedType);
-    
+
     std::string ToPath(std::string path, const std::string defaultDir);
     ObjectType ToObjectType(std::string value);
     DriveType ToDriveType(std::string value);
@@ -124,14 +130,15 @@ private:
     int ToResearchFlag(std::string value);
     Gfx::PyroType ToPyroType(std::string value);
     Gfx::CameraType ToCameraType(std::string value);
-    
+
     const std::string FromObjectType(ObjectType value);
     const std::string FromCameraType(Gfx::CameraType value);
-    
+
 private:
-    CLevelParserLine* m_line;
-    bool m_empty;
+    CLevelParserLine* m_line = nullptr;
+    bool m_empty = false;
     std::string m_name;
     std::string m_value;
-    std::vector<CLevelParserParam*> m_array;
+    CLevelParserParamVec m_array;
 };
+

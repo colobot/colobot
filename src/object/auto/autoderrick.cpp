@@ -430,12 +430,12 @@ bool CAutoDerrick::CreateInterface(bool bSelect)
 bool CAutoDerrick::Write(CLevelParserLine* line)
 {
     if ( m_phase == ADP_WAIT )  return false;
-    
-    line->AddParam("aExist", new CLevelParserParam(true));
+
+    line->AddParam("aExist", CLevelParserParamUPtr{new CLevelParserParam(true)});
     CAuto::Write(line);
-    line->AddParam("aPhase", new CLevelParserParam(static_cast<int>(m_phase)));
-    line->AddParam("aProgress", new CLevelParserParam(m_progress));
-    line->AddParam("aSpeed", new CLevelParserParam(m_speed));
+    line->AddParam("aPhase", CLevelParserParamUPtr{new CLevelParserParam(static_cast<int>(m_phase))});
+    line->AddParam("aProgress", CLevelParserParamUPtr{new CLevelParserParam(m_progress)});
+    line->AddParam("aSpeed", CLevelParserParamUPtr{new CLevelParserParam(m_speed)});
 
     return true;
 }
@@ -524,7 +524,7 @@ bool CAutoDerrick::ExistKey()
          m_type != OBJECT_KEYb &&
          m_type != OBJECT_KEYc &&
          m_type != OBJECT_KEYd )  return false;
-    
+
     return CObjectManager::GetInstancePointer()->FindNearest(nullptr, m_type) != nullptr;
 }
 

@@ -568,13 +568,13 @@ void CAutoResearch::FireStopUpdate(float progress, bool bLightOn)
 bool CAutoResearch::Write(CLevelParserLine* line)
 {
     if ( m_phase == ALP_WAIT )  return false;
-    
-    line->AddParam("aExist", new CLevelParserParam(true));
+
+    line->AddParam("aExist", CLevelParserParamUPtr{new CLevelParserParam(true)});
     CAuto::Write(line);
-    line->AddParam("aPhase", new CLevelParserParam(static_cast<int>(m_phase)));
-    line->AddParam("aProgress", new CLevelParserParam(m_progress));
-    line->AddParam("aSpeed", new CLevelParserParam(m_speed));
-    line->AddParam("aResearch", new CLevelParserParam(static_cast<int>(m_research)));
+    line->AddParam("aPhase", CLevelParserParamUPtr{new CLevelParserParam(static_cast<int>(m_phase))});
+    line->AddParam("aProgress", CLevelParserParamUPtr{new CLevelParserParam(m_progress)});
+    line->AddParam("aSpeed", CLevelParserParamUPtr{new CLevelParserParam(m_speed)});
+    line->AddParam("aResearch", CLevelParserParamUPtr{new CLevelParserParam(static_cast<int>(m_research))});
 
     return true;
 }

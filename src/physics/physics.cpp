@@ -175,12 +175,12 @@ PhysicsType CPhysics::GetType()
 
 bool CPhysics::Write(CLevelParserLine* line)
 {
-    line->AddParam("motor", new CLevelParserParam(m_motorSpeed));
+    line->AddParam("motor", CLevelParserParamUPtr{new CLevelParserParam(m_motorSpeed)});
 
     if ( m_type == TYPE_FLYING )
     {
-        line->AddParam("reactorRange", new CLevelParserParam(GetReactorRange()));
-        line->AddParam("land", new CLevelParserParam(GetLand()));
+        line->AddParam("reactorRange", CLevelParserParamUPtr{new CLevelParserParam(GetReactorRange())});
+        line->AddParam("land", CLevelParserParamUPtr{new CLevelParserParam(GetLand())});
     }
 
     return true;

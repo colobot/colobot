@@ -301,15 +301,15 @@ CObject* CAutoEgg::SearchAlien()
 bool CAutoEgg::Write(CLevelParserLine* line)
 {
     if ( m_phase == AEP_NULL )  return false;
-    
-    line->AddParam("aExist", new CLevelParserParam(true));
+
+    line->AddParam("aExist", CLevelParserParamUPtr{new CLevelParserParam(true)});
     CAuto::Write(line);
-    line->AddParam("aPhase", new CLevelParserParam(static_cast<int>(m_phase)));
-    line->AddParam("aProgress", new CLevelParserParam(m_progress));
-    line->AddParam("aSpeed", new CLevelParserParam(m_speed));
-    line->AddParam("aParamType", new CLevelParserParam(m_type));
-    line->AddParam("aParamValue1", new CLevelParserParam(m_value));
-    line->AddParam("aParamString", new CLevelParserParam(std::string(m_string)));
+    line->AddParam("aPhase", CLevelParserParamUPtr{new CLevelParserParam(static_cast<int>(m_phase))});
+    line->AddParam("aProgress", CLevelParserParamUPtr{new CLevelParserParam(m_progress)});
+    line->AddParam("aSpeed", CLevelParserParamUPtr{new CLevelParserParam(m_speed)});
+    line->AddParam("aParamType", CLevelParserParamUPtr{new CLevelParserParam(m_type)});
+    line->AddParam("aParamValue1", CLevelParserParamUPtr{new CLevelParserParam(m_value)});
+    line->AddParam("aParamString", CLevelParserParamUPtr{new CLevelParserParam(std::string(m_string))});
 
     return true;
 }

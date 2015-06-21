@@ -171,11 +171,11 @@ void CBrain::SetMotion(CMotion* motion)
 
 bool CBrain::Write(CLevelParserLine* line)
 {
-    line->AddParam("bVirusActive", new CLevelParserParam(m_bActiveVirus));
-    
+    line->AddParam("bVirusActive", CLevelParserParamUPtr{new CLevelParserParam(m_bActiveVirus)});
+
     if ( m_object->GetType() == OBJECT_MOBILErs )
     {
-        line->AddParam("bShieldActive", new CLevelParserParam(m_secondaryTask != nullptr));
+        line->AddParam("bShieldActive", CLevelParserParamUPtr{new CLevelParserParam(m_secondaryTask != nullptr)});
     }
 
     return true;
@@ -736,11 +736,11 @@ bool CBrain::EventProcess(const Event &event)
         {
             err = StartTaskSearch();
         }
-        
+
         if ( action == EVENT_OBJECT_DELSEARCH )
-	{
-	    err = StartTaskDeleteMark();
-	}
+        {
+            err = StartTaskDeleteMark();
+        }
 
         if ( action == EVENT_OBJECT_TERRAFORM )
         {

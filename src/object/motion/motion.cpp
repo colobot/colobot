@@ -161,10 +161,10 @@ float CMotion::GetParam(int rank)
 bool CMotion::Write(CLevelParserLine* line)
 {
     if ( m_actionType == -1 )  return false;
-    
-    line->AddParam("mType", new CLevelParserParam(m_actionType));
-    line->AddParam("mTime", new CLevelParserParam(m_actionTime));
-    line->AddParam("mProgress", new CLevelParserParam(m_progress));
+
+    line->AddParam("mType", CLevelParserParamUPtr{new CLevelParserParam(m_actionType)});
+    line->AddParam("mTime", CLevelParserParamUPtr{new CLevelParserParam(m_actionTime)});
+    line->AddParam("mProgress", CLevelParserParamUPtr{new CLevelParserParam(m_progress)});
 
     return false;
 }

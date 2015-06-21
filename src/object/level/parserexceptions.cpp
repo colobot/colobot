@@ -19,14 +19,13 @@
 
 #include "object/level/parserexceptions.h"
 
-
 #include "object/level/parser.h"
 
 #include <boost/lexical_cast.hpp>
 
 CLevelParserException::CLevelParserException(std::string message) NOEXCEPT
+ : m_message(message)
 {
-    m_message = message;
 }
 
 const char* CLevelParserException::what() const NOEXCEPT
@@ -34,12 +33,29 @@ const char* CLevelParserException::what() const NOEXCEPT
     return m_message.c_str();
 }
 
+std::string formatMissingParamError(CLevelParserParam* thisParam) NOEXCEPT
+{
+    auto paramName = thisParam->GetName();
+    auto lineNumber = boost::lexical_cast<std::string>(thisParam->GetLine()->GetLineNumber());
+    auto fileName = thisParam->GetLine()->GetLevel()->GetFilename();
+    return "Missing required param '" + paramName + "' (in " + fileName + ":" + lineNumber + ")";
+}
+
 CLevelParserExceptionMissingParam::CLevelParserExceptionMissingParam(CLevelParserParam* thisParam) NOEXCEPT
-: CLevelParserException("Missing required param "+thisParam->GetName()+" (in "+thisParam->GetLine()->GetLevel()->GetFilename()+":"+boost::lexical_cast<std::string>(thisParam->GetLine()->GetLineNumber())+")")
+: CLevelParserException(formatMissingParamError(thisParam))
 {
 }
 
+std::string formatBadParamError(CLevelParserParam* thisParam, std::string requestedType) NOEXCEPT
+{
+    auto paramName = thisParam->GetName();
+    auto paramValue = thisParam->GetValue();
+    auto lineNumber = boost::lexical_cast<std::string>(thisParam->GetLine()->GetLineNumber());
+    auto fileName = thisParam->GetLine()->GetLevel()->GetFilename();
+    return "Unable to parse '" + paramValue + "' as " + requestedType + " (param '" + paramName + "' in " + fileName + ":" + lineNumber + ")";
+}
+
 CLevelParserExceptionBadParam::CLevelParserExceptionBadParam(CLevelParserParam* thisParam, std::string requestedType) NOEXCEPT
-: CLevelParserException("Unable to parse '"+thisParam->GetValue()+"' as "+requestedType+" (param '"+thisParam->GetName()+"' in "+thisParam->GetLine()->GetLevel()->GetFilename()+":"+boost::lexical_cast<std::string>(thisParam->GetLine()->GetLineNumber())+")")
+: CLevelParserException(formatBadParamError(thisParam, requestedType))
 {
 }

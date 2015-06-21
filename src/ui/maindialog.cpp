@@ -197,7 +197,7 @@ void CMainDialog::Create()
     m_engine     = Gfx::CEngine::GetInstancePointer();
     m_particle   = m_engine->GetParticle();
     m_pause      = CPauseManager::GetInstancePointer();
-    
+
     m_setupFull = m_app->GetVideoConfig().fullScreen;
 }
 
@@ -269,7 +269,7 @@ void CMainDialog::ChangePhase(Phase phase)
         ddim.x = 0.30f;
         ddim.y = 0.30f;
         pw->CreateGroup(pos, ddim, 4, EVENT_INTERFACE_GLINTr);  // blue corner
-        
+
         ddim.x = 0.20f;
         ddim.y = dim.y*2.4f;
         pos.x = 0.40f;
@@ -289,7 +289,7 @@ void CMainDialog::ChangePhase(Phase phase)
         pos.y = oy+sy*1.9f;
         pg = pw->CreateGroup(pos, ddim, 26, EVENT_LABEL1);  // red
         pg->SetState(STATE_SHADOW);
-        
+
         ddim.x = 0.18f;
         ddim.y = dim.y*1;
         pos.x = 0.41f;
@@ -332,19 +332,22 @@ void CMainDialog::ChangePhase(Phase phase)
             ddim.x = 0.09f;
             pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_USER);
             pb->SetState(STATE_SHADOW);
-            
-            try {
-                CLevelParser* level = new CLevelParser("levels/custom/config.txt");
-                if(level->Exists()) {
-                    level->Load();
-                    CLevelParserLine* line = level->Get("Button");
-                    if(line->GetParam("name")->IsDefined())
+
+            try
+            {
+                CLevelParser levelParser("levels/custom/config.txt");
+                if (levelParser.Exists())
+                {
+                    levelParser.Load();
+                    CLevelParserLine* line = levelParser.Get("Button");
+                    if (line->GetParam("name")->IsDefined())
                         pb->SetName(line->GetParam("name")->AsString());
-                    if(line->GetParam("tooltip")->IsDefined())
+                    if (line->GetParam("tooltip")->IsDefined())
                         pb->SetTooltip(line->GetParam("tooltip")->AsString());
                 }
             }
-            catch(CLevelParserException& e) {
+            catch (CLevelParserException& e)
+            {
                 CLogger::GetInstancePointer()->Error("Failed loading userlevel button name: %s\n", e.what());
             }
         }
@@ -1063,7 +1066,7 @@ void CMainDialog::ChangePhase(Phase phase)
         pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_FULL);
         pc->SetState(STATE_SHADOW);
         pc->SetState(STATE_CHECK, m_setupFull);
-        
+
         #if !PLATFORM_LINUX
         ddim.x = 0.9f;
         ddim.y = 0.1f;
@@ -1211,7 +1214,7 @@ void CMainDialog::ChangePhase(Phase phase)
         ddim.y = dim.y*1;
         pos.x = ox+sx*10;
         pos.y = oy+sy*2;
-        
+
         pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_MIN);
         pb->SetState(STATE_SHADOW);
         pos.x += ddim.x;
@@ -1234,7 +1237,7 @@ void CMainDialog::ChangePhase(Phase phase)
         //?     pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_TOTO);
         //?     pc->SetState(STATE_SHADOW);
         //?     pos.y -= 0.048f;
-        
+
         pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_MOVIES);
         pc->SetState(STATE_SHADOW);
         pos.y -= 0.048f;
@@ -1257,7 +1260,7 @@ void CMainDialog::ChangePhase(Phase phase)
         pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_AUTOSAVE_ENABLE);
         pc->SetState(STATE_SHADOW);
         pos.y -= 0.048f;
-        
+
         pos.y -= ddim.y;
         ddim.x = dim.x*2.5f;
         psl = pw->CreateSlider(pos, ddim, -1, EVENT_INTERFACE_AUTOSAVE_INTERVAL);
@@ -1279,8 +1282,8 @@ void CMainDialog::ChangePhase(Phase phase)
         pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL1, name);
         pl->SetTextAlign(Gfx::TEXT_ALIGN_LEFT);
         pos.y -= ddim.y/2;
-        
-        
+
+
         //?     pos.y -= 0.048f;
         //?     pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_NICERST);
         //?     pc->SetState(STATE_SHADOW);
@@ -1717,7 +1720,7 @@ void CMainDialog::ChangePhase(Phase phase)
         pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL4, name);
         pl->SetFontType(Gfx::FONT_COURIER);
         pl->SetFontSize(Gfx::FONT_SIZE_SMALL);
-        
+
         pos.x  = 306.0f/640.0f;
         pos.y  =  17.0f/480.0f;
         ddim.x =  30.0f/640.0f;
@@ -1859,7 +1862,7 @@ bool CMainDialog::EventProcess(const Event &event)
         {
             m_shotDelay --;
             if ( m_shotDelay == 0 )
-            {   
+            {
                 Math::IntPoint windowSize = m_engine->GetWindowSize();
 
                 m_engine->WriteScreenShot(m_shotName, windowSize.x, windowSize.y);
@@ -2601,19 +2604,19 @@ bool CMainDialog::EventProcess(const Event &event)
                 ChangeSetupButtons();
                 UpdateSetupButtons();
                 break;
-                
+
             case EVENT_INTERFACE_AUTOSAVE_ENABLE:
                 m_bAutosave = !m_bAutosave;
                 m_main->SetAutosave(m_bAutosave);
                 ChangeSetupButtons();
                 UpdateSetupButtons();
                 break;
-            
+
             case EVENT_INTERFACE_AUTOSAVE_INTERVAL:
                 ChangeSetupButtons();
                 UpdateSetupButtons();
                 break;
-                
+
             case EVENT_INTERFACE_AUTOSAVE_SLOTS:
                 ChangeSetupButtons();
                 UpdateSetupButtons();
@@ -2645,7 +2648,7 @@ bool CMainDialog::EventProcess(const Event &event)
                 break;
 
             default:
-                if(event.type >= EVENT_INTERFACE_KEY && event.type <= EVENT_INTERFACE_KEY_END)
+                if (event.type >= EVENT_INTERFACE_KEY && event.type <= EVENT_INTERFACE_KEY_END)
                 {
                     ChangeKey(event.type);
                     UpdateKey();
@@ -3345,7 +3348,7 @@ void CMainDialog::BuildScenePath(std::string &filename, char *base, int rank, bo
     //TODO: Support for more than 9 chapters
     int chapter = rank/100;
     int new_rank = rank%100;
-    
+
     filename = CLevelParser::BuildScenePath(std::string(base), chapter, new_rank, sceneFile);
 }
 
@@ -3980,13 +3983,13 @@ void CMainDialog::IOReadName()
 
     resume = std::string(m_sceneName) + " " + boost::lexical_cast<std::string>(m_chap[m_index]+1);
 
-    CLevelParser* level = new CLevelParser(m_sceneName, m_chap[m_index]+1, 0);
+    CLevelParser levelParser(m_sceneName, m_chap[m_index]+1, 0);
     try
     {
-        level->Load();
-        resume = level->Get("Title")->GetParam("resume")->AsString();
+        levelParser.Load();
+        resume = levelParser.Get("Title")->GetParam("resume")->AsString();
     }
-    catch(CLevelParserException& e)
+    catch (CLevelParserException& e)
     {
         CLogger::GetInstancePointer()->Warn("%s\n", e.what());
     }
@@ -3994,7 +3997,6 @@ void CMainDialog::IOReadName()
     time(&now);
     TimeToAsciiClean(now, line);
     sprintf(name, "%s - %s %d", line, resume.c_str(), m_sel[m_index]+1);
-    delete level;
 
     pe->SetText(name);
     pe->SetCursor(strlen(name), 0);
@@ -4018,7 +4020,7 @@ void CMainDialog::IOReadList()
 
     auto saveDirs = CResourceManager::ListDirectories(userSaveDir);
     //std::sort(saveDirs.begin(), saveDirs.end());
-    
+
     std::map<int, std::string> sortedSaveDirs;
     std::map<int, std::string> names;
 
@@ -4027,15 +4029,14 @@ void CMainDialog::IOReadList()
         std::string savegameFile = userSaveDir + "/" + dir + "/" + "data.sav";
         if (CResourceManager::Exists(savegameFile))
         {
-            CLevelParser* level = new CLevelParser(savegameFile);
-            level->Load();
-            int time = level->Get("Created")->GetParam("date")->AsInt();
+            CLevelParser levelParser(savegameFile);
+            levelParser.Load();
+            int time = levelParser.Get("Created")->GetParam("date")->AsInt();
             sortedSaveDirs[time] = userSaveDir + "/" + dir;
-            names[time] = level->Get("Title")->GetParam("text")->AsString();
-            delete level;
+            names[time] = levelParser.Get("Title")->GetParam("text")->AsString();
         }
     }
-    
+
     for (auto dir : sortedSaveDirs)
     {
         pl->SetItemName(m_saveList.size(), names[dir.first].c_str());
@@ -4052,10 +4053,10 @@ void CMainDialog::IOReadList()
 
     pl->SetSelect(m_saveList.size());
     pl->ShowSelect(false);  // shows the selected columns
-    
+
     unsigned int i;
     std::string  screenName;
-    
+
     for ( i=0; i < m_saveList.size(); i++ )
     {
         screenName = "textures/../" + m_saveList.at(i) + "/screen.png";
@@ -4197,7 +4198,7 @@ bool CMainDialog::IOWriteScene()
     m_main->IOWriteScene(savegameFileName.c_str(), fileCBot.c_str(), info);
 
     MakeSaveScreenshot(dir + "/screen.png");
-    
+
     return true;
 }
 
@@ -4229,17 +4230,17 @@ bool CMainDialog::IOReadScene()
     std::string fileName = m_saveList.at(sel) + "/" + "data.sav";
     std::string fileCbot = CResourceManager::GetSaveLocation()+"/"+m_saveList.at(sel) + "/" + "cbot.run";
 
-    CLevelParser* level = new CLevelParser(fileName);
-    level->Load();
-    
-    CLevelParserLine* line = level->Get("Mission");
+    CLevelParser levelParser(fileName);
+    levelParser.Load();
+
+    CLevelParserLine* line = levelParser.Get("Mission");
     strcpy(m_sceneName, line->GetParam("base")->AsString().c_str());
     m_sceneRank = line->GetParam("rank")->AsInt();
-    
-    if(std::string(m_sceneName) == "custom")
+
+    if (std::string(m_sceneName) == "custom")
     {
         m_sceneRank = m_sceneRank%100;
-        
+
         std::string dir = line->GetParam("dir")->AsString();
         for ( i=0 ; i<m_userTotal ; i++ )
         {
@@ -4251,12 +4252,9 @@ bool CMainDialog::IOReadScene()
         }
         if ( m_sceneRank/100 == 0 )
         {
-            delete level;
             return false;
         }
     }
-    
-    delete level;
 
     m_chap[m_index] = (m_sceneRank / 100)-1;
     m_sel[m_index]  = (m_sceneRank % 100)-1;
@@ -4331,14 +4329,14 @@ void CMainDialog::UpdateSceneChap(int &chap)
 
         for ( j=0 ; j<m_userTotal ; j++ )
         {
-            try {
-                CLevelParser* level = new CLevelParser("custom", j+1, 0);
-                level->Load();
-                pl->SetItemName(j, level->Get("Title")->GetParam("text")->AsString().c_str());
+            try
+            {
+                CLevelParser levelParser("custom", j+1, 0);
+                levelParser.Load();
+                pl->SetItemName(j, levelParser.Get("Title")->GetParam("text")->AsString().c_str());
                 pl->SetEnable(j, true);
-                delete level;
             }
-            catch(CLevelParserException& e)
+            catch (CLevelParserException& e)
             {
                 pl->SetItemName(j, (std::string("[ERROR]: ")+e.what()).c_str());
                 pl->SetEnable(j, false);
@@ -4349,17 +4347,18 @@ void CMainDialog::UpdateSceneChap(int &chap)
     {
         for ( j=0 ; j<9 ; j++ )
         {
-            CLevelParser* level = new CLevelParser(m_sceneName, j+1, 0);
-            if(!level->Exists())
+            CLevelParser levelParser(m_sceneName, j+1, 0);
+            if (!levelParser.Exists())
                 break;
-            try {
-                level->Load();
-                sprintf(line, "%d: %s", j+1, level->Get("Title")->GetParam("text")->AsString().c_str());
+            try
+            {
+                levelParser.Load();
+                sprintf(line, "%d: %s", j+1, levelParser.Get("Title")->GetParam("text")->AsString().c_str());
             }
-            catch(CLevelParserException& e) {
+            catch (CLevelParserException& e)
+            {
                 sprintf(line, "%s", (std::string("[ERROR]: ")+e.what()).c_str());
             }
-            delete level;
 
             bPassed = GetGamerInfoPassed((j+1)*100);
             pl->SetItemName(j, line);
@@ -4405,28 +4404,32 @@ void CMainDialog::UpdateSceneList(int chap, int &sel)
     if ( pl == 0 )  return;
 
     pl->Flush();
-    
-    if(chap < 0) return;
+
+    if (chap < 0) return;
 
     bool readAll = true;
     for ( j=0 ; j<99 ; j++ )
     {
-        CLevelParser* level = new CLevelParser(m_sceneName, chap+1, j+1);
-        if(!level->Exists()) {
+        CLevelParser levelParser(m_sceneName, chap+1, j+1);
+        if (!levelParser.Exists())
+        {
             readAll = true;
             break;
-        } else {
-            if(!readAll)
+        }
+        else
+        {
+            if (!readAll)
                 break;
         }
-        try {
-            level->Load();
-            sprintf(line, "%d: %s", j+1, level->Get("Title")->GetParam("text")->AsString().c_str());
+        try
+        {
+            levelParser.Load();
+            sprintf(line, "%d: %s", j+1, levelParser.Get("Title")->GetParam("text")->AsString().c_str());
         }
-        catch(CLevelParserException& e) {
+        catch (CLevelParserException& e)
+        {
             sprintf(line, "%s", (std::string("[ERROR]: ")+e.what()).c_str());
         }
-        delete level;
 
         bPassed = GetGamerInfoPassed((chap+1)*100+(j+1));
         pl->SetItemName(j, line);
@@ -4439,7 +4442,7 @@ void CMainDialog::UpdateSceneList(int chap, int &sel)
         }
     }
 
-    if(readAll)
+    if (readAll)
     {
         m_maxList = j;
     }
@@ -4526,15 +4529,16 @@ void CMainDialog::UpdateSceneResume(int rank)
             m_bSceneSoluce = false;
         }
     }
-    
-    if(rank<100) return;
-    
-    try {
-        CLevelParser* level = new CLevelParser(m_sceneName, rank/100, rank%100);
-        level->Load();
-        pe->SetText(level->Get("Resume")->GetParam("text")->AsString().c_str());
+
+    if (rank<100) return;
+
+    try
+    {
+        CLevelParser levelParser(m_sceneName, rank/100, rank%100);
+        levelParser.Load();
+        pe->SetText(levelParser.Get("Resume")->GetParam("text")->AsString().c_str());
     }
-    catch(CLevelParserException& e)
+    catch (CLevelParserException& e)
     {
         pe->SetText((std::string("[ERROR]: ")+e.what()).c_str());
     }
@@ -4588,9 +4592,9 @@ void CMainDialog::ChangeDisplay()
     if ( pc == 0 )  return;
     bFull = pc->TestState(STATE_CHECK);
     m_setupFull = bFull;
-    
+
     SetupMemorize();
-    
+
     #if !PLATFORM_LINUX
     // Windows causes problems, so we'll restart the game
     // Mac OS was not tested so let's restart just to be sure
@@ -4598,7 +4602,7 @@ void CMainDialog::ChangeDisplay()
     #else
     std::vector<Math::IntPoint> modes;
     m_app->GetVideoResolutionList(modes, true, true);
-    
+
     Gfx::DeviceConfig config = m_app->GetVideoConfig();
     config.size = modes[m_setupSelMode];
     config.fullScreen = bFull;
@@ -4744,21 +4748,21 @@ void CMainDialog::UpdateSetupButtons()
     {
         pc->SetState(STATE_CHECK, m_bBlood);
     }
-    
+
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_AUTOSAVE_ENABLE));
     if ( pc != 0 )
     {
         pc->SetState(STATE_CHECK, m_bAutosave);
     }
-    
+
     ps = static_cast<CSlider*>(pw->SearchControl(EVENT_INTERFACE_AUTOSAVE_INTERVAL));
     if ( ps != 0 )
     {
         ps->SetState(STATE_ENABLE, m_bAutosave);
         ps->SetVisibleValue(m_main->GetAutosaveInterval());
-        
+
     }
-    
+
     ps = static_cast<CSlider*>(pw->SearchControl(EVENT_INTERFACE_AUTOSAVE_SLOTS));
     if ( ps != 0 )
     {
@@ -4930,14 +4934,14 @@ void CMainDialog::ChangeSetupButtons()
         value = ps->GetVisibleValue();
         m_sound->SetMusicVolume(static_cast<int>(value));
     }
-    
+
     ps = static_cast<CSlider*>(pw->SearchControl(EVENT_INTERFACE_AUTOSAVE_INTERVAL));
     if ( ps != 0 )
     {
         value = ps->GetVisibleValue();
         m_main->SetAutosaveInterval(static_cast<int>(value));
     }
-    
+
     ps = static_cast<CSlider*>(pw->SearchControl(EVENT_INTERFACE_AUTOSAVE_SLOTS));
     if ( ps != 0 )
     {
@@ -5108,22 +5112,22 @@ void CMainDialog::SetupRecall()
     {
         m_bBlood = iValue;
     }
-    
+
     if ( GetProfile().GetIntProperty("Setup", "Autosave", iValue) )
     {
         m_bAutosave = iValue;
     }
-    
+
     if ( GetProfile().GetIntProperty("Setup", "AutosaveInterval", iValue) )
     {
         m_main->SetAutosaveInterval(iValue);
     }
-    
+
     if ( GetProfile().GetIntProperty("Setup", "AutosaveSlots", iValue) )
     {
         m_main->SetAutosaveSlots(iValue);
     }
-    
+
     if ( GetProfile().GetIntProperty("Setup", "GroundShadow", iValue) )
     {
         m_engine->SetShadow(iValue);
@@ -5232,15 +5236,18 @@ void CMainDialog::SetupRecall()
         std::getline(resolution, ws, 'x');
         std::getline(resolution, hs, 'x');
         int w = 800, h = 600;
-        if(!ws.empty() && !hs.empty()) {
+        if (!ws.empty() && !hs.empty())
+        {
             w = atoi(ws.c_str());
             h = atoi(hs.c_str());
         }
 
         std::vector<Math::IntPoint> modes;
         m_app->GetVideoResolutionList(modes, true, true);
-        for(auto it = modes.begin(); it != modes.end(); ++it) {
-            if(it->x == w && it->y == h) {
+        for (auto it = modes.begin(); it != modes.end(); ++it)
+        {
+            if (it->x == w && it->y == h)
+            {
                 m_setupSelMode = it - modes.begin();
                 break;
             }
@@ -5959,24 +5966,26 @@ bool CMainDialog::GetHimselfDamage()
 
 void CMainDialog::WriteGamerPerso(char *gamer)
 {
-    try {
-        CLevelParser* perso = new CLevelParser(GetSavegameDir()+"/"+gamer+"/face.gam");
-        CLevelParserLine* line;
-        
-        line = new CLevelParserLine("Head");
-        line->AddParam("face", new CLevelParserParam(m_perso.face));
-        line->AddParam("glasses", new CLevelParserParam(m_perso.glasses));
-        line->AddParam("hair", new CLevelParserParam(m_perso.colorHair));
-        perso->AddLine(line);
-        
-        line = new CLevelParserLine("Body");
-        line->AddParam("combi", new CLevelParserParam(m_perso.colorCombi));
-        line->AddParam("band", new CLevelParserParam(m_perso.colorBand));
-        perso->AddLine(line);
+    try
+    {
+        CLevelParser persoParser(GetSavegameDir()+"/"+gamer+"/face.gam");
+        CLevelParserLineUPtr line;
 
-        perso->Save();
-        delete perso;
-    } catch(CLevelParserException& e) {
+        line.reset(new CLevelParserLine("Head"));
+        line->AddParam("face", CLevelParserParamUPtr{new CLevelParserParam(m_perso.face)});
+        line->AddParam("glasses", CLevelParserParamUPtr{new CLevelParserParam(m_perso.glasses)});
+        line->AddParam("hair", CLevelParserParamUPtr{new CLevelParserParam(m_perso.colorHair)});
+        persoParser.AddLine(std::move(line));
+
+        line.reset(new CLevelParserLine("Body"));
+        line->AddParam("combi", CLevelParserParamUPtr{new CLevelParserParam(m_perso.colorCombi)});
+        line->AddParam("band", CLevelParserParamUPtr{new CLevelParserParam(m_perso.colorBand)});
+        persoParser.AddLine(std::move(line));
+
+        persoParser.Save();
+    }
+    catch (CLevelParserException& e)
+    {
         CLogger::GetInstancePointer()->Error("Unable to write personalized player apperance: %s\n", e.what());
     }
 }
@@ -5987,26 +5996,27 @@ void CMainDialog::ReadGamerPerso(char *gamer)
 {
     m_perso.face = 0;
     DefPerso();
-    
-    if(!CResourceManager::Exists(GetSavegameDir()+"/"+gamer+"/face.gam"))
+
+    if (!CResourceManager::Exists(GetSavegameDir()+"/"+gamer+"/face.gam"))
         return;
 
-    try {
-        CLevelParser* perso = new CLevelParser(GetSavegameDir()+"/"+gamer+"/face.gam");
-        perso->Load();
+    try
+    {
+        CLevelParser persoParser(GetSavegameDir()+"/"+gamer+"/face.gam");
+        persoParser.Load();
         CLevelParserLine* line;
-        
-        line = perso->Get("Head");
+
+        line = persoParser.Get("Head");
         m_perso.face = line->GetParam("face")->AsInt();
         m_perso.glasses = line->GetParam("glasses")->AsInt();
         m_perso.colorHair = line->GetParam("hair")->AsColor();
-        
-        line = perso->Get("Body");
+
+        line = persoParser.Get("Body");
         m_perso.colorCombi = line->GetParam("combi")->AsColor();
         m_perso.colorBand = line->GetParam("band")->AsColor();
-
-        delete perso;
-    } catch(CLevelParserException& e) {
+    }
+    catch (CLevelParserException& e)
+    {
         CLogger::GetInstancePointer()->Error("Unable to read personalized player apperance: %s\n", e.what());
     }
 }
@@ -6078,30 +6088,31 @@ bool CMainDialog::ReadGamerInfo()
         m_sceneInfo[i].bPassed = false;
     }
 
-    if(!CResourceManager::Exists(GetSavegameDir()+"/"+m_main->GetGamerName()+"/"+m_sceneName+".gam"))
+    if (!CResourceManager::Exists(GetSavegameDir()+"/"+m_main->GetGamerName()+"/"+m_sceneName+".gam"))
         return false;
-    
+
     CInputStream file;
     file.open(GetSavegameDir()+"/"+m_main->GetGamerName()+"/"+m_sceneName+".gam");
-    if(!file.is_open()) {
+    if (!file.is_open())
+    {
         CLogger::GetInstancePointer()->Error("Unable to read list of finished missions\n");
         return false;
     }
-    
+
     std::getline(file, line);
     sscanf(line.c_str(), "CurrentChapter=%d CurrentSel=%d\n", &chap, &i);
     m_chap[m_index] = chap-1;
     m_sel[m_index]  = i-1;
 
-    while(!file.eof())
+    while (!file.eof())
     {
         std::getline(file, line);
-	
-	if(line == "")
-	{
-	    break;
-	}
-	
+
+        if (line == "")
+        {
+            break;
+        }
+
         sscanf(line.c_str(), "Chapter %d: Scene %d: numTry=%d passed=%d\n",
                 &chap, &i, &numTry, &passed);
 
@@ -6125,7 +6136,8 @@ bool CMainDialog::WriteGamerInfo()
 
     COutputStream file;
     file.open(GetSavegameDir()+"/"+m_main->GetGamerName()+"/"+m_sceneName+".gam");
-    if(!file.is_open()) {
+    if (!file.is_open())
+    {
         CLogger::GetInstancePointer()->Error("Unable to read list of finished missions\n");
         return false;
     }

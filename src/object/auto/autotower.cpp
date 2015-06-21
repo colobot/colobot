@@ -482,17 +482,17 @@ void CAutoTower::UpdateInterface(float rTime)
 bool CAutoTower::Write(CLevelParserLine* line)
 {
     if ( m_phase == ATP_WAIT )  return false;
-    
-    line->AddParam("aExist", new CLevelParserParam(true));
+
+    line->AddParam("aExist", CLevelParserParamUPtr{new CLevelParserParam(true)});
     CAuto::Write(line);
-    line->AddParam("aPhase", new CLevelParserParam(static_cast<int>(m_phase)));
-    line->AddParam("aProgress", new CLevelParserParam(m_progress));
-    line->AddParam("aSpeed", new CLevelParserParam(m_speed));
-    line->AddParam("aTargetPos", new CLevelParserParam(m_targetPos));
-    line->AddParam("aAngleYactual", new CLevelParserParam(m_angleYactual));
-    line->AddParam("aAngleZactual", new CLevelParserParam(m_angleZactual));
-    line->AddParam("aAngleYfinal", new CLevelParserParam(m_angleYfinal));
-    line->AddParam("aAngleZfinal", new CLevelParserParam(m_angleZfinal));
+    line->AddParam("aPhase", CLevelParserParamUPtr{new CLevelParserParam(static_cast<int>(m_phase))});
+    line->AddParam("aProgress", CLevelParserParamUPtr{new CLevelParserParam(m_progress)});
+    line->AddParam("aSpeed", CLevelParserParamUPtr{new CLevelParserParam(m_speed)});
+    line->AddParam("aTargetPos", CLevelParserParamUPtr{new CLevelParserParam(m_targetPos)});
+    line->AddParam("aAngleYactual", CLevelParserParamUPtr{new CLevelParserParam(m_angleYactual)});
+    line->AddParam("aAngleZactual", CLevelParserParamUPtr{new CLevelParserParam(m_angleZactual)});
+    line->AddParam("aAngleYfinal", CLevelParserParamUPtr{new CLevelParserParam(m_angleYfinal)});
+    line->AddParam("aAngleZfinal", CLevelParserParamUPtr{new CLevelParserParam(m_angleZfinal)});
 
     return true;
 }
