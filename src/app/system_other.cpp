@@ -20,6 +20,10 @@
 #include "app/system_other.h"
 
 
+void CSystemUtilsOther::Init()
+{
+}
+
 SystemDialogResult CSystemUtilsOther::SystemDialog(SystemDialogType type, const std::string& title, const std::string& message)
 {
     return ConsoleSystemDialog(type, title, message);

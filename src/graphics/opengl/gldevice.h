@@ -242,8 +242,6 @@ private:
     bool m_anisotropyAvailable;
     //! Maximum anisotropy level
     int m_maxAnisotropy;
-    //! Whether offscreen rendering is available
-    bool m_framebufferObject;
     //! Framebuffer support
     FramebufferSupport m_framebufferSupport;
     //! Which vertex buffer type to use

@@ -42,7 +42,7 @@ struct SystemTimeStamp
 class CSystemUtilsOther : public CSystemUtils
 {
 public:
-    virtual void Init() {};
+    virtual void Init() OVERRIDE;
     virtual SystemDialogResult SystemDialog(SystemDialogType type, const std::string& title, const std::string& message) OVERRIDE;
 
     virtual void GetCurrentTimeStamp(SystemTimeStamp *stamp) OVERRIDE;

@@ -47,15 +47,15 @@ class CList : public CControl
 
         bool        Create(Math::Point pos, Math::Point dim, int icon, EventType eventMsg, float expand);
 
-        void        SetPos(Math::Point pos);
-        void        SetDim(Math::Point dim);
+        void        SetPos(Math::Point pos) OVERRIDE;
+        void        SetDim(Math::Point dim) OVERRIDE;
 
-        bool        SetState(int state, bool bState);
-        bool        SetState(int state);
-        bool        ClearState(int state);
+        bool        SetState(int state, bool bState) OVERRIDE;
+        bool        SetState(int state) OVERRIDE;
+        bool        ClearState(int state) OVERRIDE;
 
-        bool        EventProcess(const Event &event);
-        void        Draw();
+        bool        EventProcess(const Event &event) OVERRIDE;
+        void        Draw() OVERRIDE;
 
         void        Flush();
 

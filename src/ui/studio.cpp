@@ -59,9 +59,6 @@
 #include <stdio.h>
 
 
-const int MAX_FNAME = 255;
-
-
 namespace Ui {
 
 
