@@ -112,6 +112,9 @@ public:
 
     //! Unbinds this framebuffer from context
     virtual void Unbind() = 0;
+
+    //! Copies content of color buffer to screen
+    virtual void CopyToScreen(int fromX, int fromY, int fromWidth, int fromHeight, int toX, int toY, int toWidth, int toHeight) = 0;
 };
 
 
@@ -161,6 +164,9 @@ public:
 
     //! Unbinds this framebuffer from context
     virtual void Unbind() OVERRIDE;
+
+    //! Copies content of color buffer to screen
+    virtual void CopyToScreen(int fromX, int fromY, int fromWidth, int fromHeight, int toX, int toY, int toWidth, int toHeight) OVERRIDE;
 };
 
 } // end of Gfx

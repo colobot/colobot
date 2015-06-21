@@ -121,6 +121,8 @@ CEngine::CEngine(CApplication *app)
     m_offscreenShadowRendering = false;
     m_qualityShadows = false;
     m_shadowRange = 0.0f;
+    m_multisample = 1;
+
     m_totoMode = true;
     m_lensMode = true;
     m_waterMode = true;
@@ -181,6 +183,12 @@ CEngine::CEngine(CApplication *app)
         m_shadowMapping = (value > 0);
         m_offscreenShadowRendering = (value > 1);
         m_qualityShadows = (value > 2);
+    }
+
+    int samples;
+    if (GetProfile().GetIntProperty("Setup", "MSAA", samples))
+    {
+        m_multisample = samples;
     }
 
     m_shadowColor = 0.5f;
@@ -2718,6 +2726,16 @@ bool CEngine::GetShadowRange()
     return m_shadowRange;
 }
 
+void CEngine::SetMultiSample(int value)
+{
+    m_multisample = value;
+}
+
+bool CEngine::GetMultiSample()
+{
+    return m_multisample;
+}
+
 void CEngine::SetDirty(bool mode)
 {
     m_dirty = mode;
@@ -3209,16 +3227,15 @@ void CEngine::Render()
 
     m_device->SetClearColor(color);
 
+    // Render shadow map
+    if (m_drawWorld && m_shadowMapping)
+        RenderShadowMap();
+
     // Begin the scene
     m_device->BeginScene();
 
     if (m_drawWorld)
-    {
-        if (m_shadowMapping)
-            RenderShadowMap();
-
         Draw3DScene();
-    }
 
     m_app->StartPerformanceCounter(PCNT_RENDER_INTERFACE);
     DrawInterface();
@@ -3230,6 +3247,28 @@ void CEngine::Render()
 
 void CEngine::Draw3DScene()
 {
+    if (m_multisample > 1)
+    {
+        CFramebuffer* framebuffer = m_device->GetFramebuffer("multisample");
+
+        if (framebuffer == nullptr)
+        {
+            CFramebuffer* screen = m_device->GetFramebuffer("default");
+
+            FramebufferParams params;
+            params.width = screen->GetWidth();
+            params.height = screen->GetHeight();
+            params.depth = 24;
+            params.samples = m_multisample;
+
+            framebuffer = m_device->CreateFramebuffer("multisample", params);
+        }
+
+        framebuffer->Bind();
+
+        m_device->Clear();
+    }
+
     if (m_groundSpotVisible)
         UpdateGroundSpotTextures();
 
@@ -3492,6 +3531,19 @@ void CEngine::Draw3DScene()
     if (m_lensMode) DrawForegroundImage();   // draws the foreground
 
     if (! m_overFront) DrawOverColor();      // draws the foreground color
+
+    if (m_multisample > 1)
+    {
+        CFramebuffer* framebuffer = m_device->GetFramebuffer("multisample");
+        framebuffer->Unbind();
+
+        CFramebuffer* screen = m_device->GetFramebuffer("default");
+
+        int width = screen->GetWidth();
+        int height = screen->GetHeight();
+
+        framebuffer->CopyToScreen(0, 0, width, height, 0, 0, width, height);
+    }
 }
 
 void CEngine::RenderShadowMap()

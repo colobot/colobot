@@ -246,6 +246,16 @@ void CGLFramebuffer::Unbind()
     m_currentFBO = 0;
 }
 
+void CGLFramebuffer::CopyToScreen(int fromX, int fromY, int fromWidth, int fromHeight, int toX, int toY, int toWidth, int toHeight)
+{
+    glBindFramebuffer(GL_READ_FRAMEBUFFER, m_fbo);
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+
+    glBlitFramebuffer(fromX, fromY, fromX + fromWidth, fromY + fromHeight, toX, toY, toX + toWidth, toY + toHeight, GL_COLOR_BUFFER_BIT, GL_LINEAR);
+
+    glBindFramebuffer(GL_FRAMEBUFFER, m_currentFBO);
+}
+
 // CGLFramebufferEXT
 GLuint CGLFramebufferEXT::m_currentFBO = 0;
 
@@ -466,6 +476,16 @@ void CGLFramebufferEXT::Unbind()
 {
     glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
     m_currentFBO = 0;
+}
+
+void CGLFramebufferEXT::CopyToScreen(int fromX, int fromY, int fromWidth, int fromHeight, int toX, int toY, int toWidth, int toHeight)
+{
+    glBindFramebufferEXT(GL_READ_FRAMEBUFFER_EXT, m_fbo);
+    glBindFramebufferEXT(GL_DRAW_FRAMEBUFFER_EXT, 0);
+
+    glBlitFramebufferEXT(fromX, fromY, fromX + fromWidth, fromY + fromHeight, toX, toY, toX + toWidth, toY + toHeight, GL_COLOR_BUFFER_BIT, GL_LINEAR);
+
+    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, m_currentFBO);
 }
 
 } // end of Gfx

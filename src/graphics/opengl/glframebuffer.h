@@ -70,6 +70,8 @@ public:
     virtual void Bind() OVERRIDE;
 
     virtual void Unbind() OVERRIDE;
+
+    virtual void CopyToScreen(int fromX, int fromY, int fromWidth, int fromHeight, int toX, int toY, int toWidth, int toHeight) OVERRIDE;
 };
 
 /**
@@ -118,6 +120,8 @@ public:
     virtual void Bind() OVERRIDE;
 
     virtual void Unbind() OVERRIDE;
+
+    virtual void CopyToScreen(int fromX, int fromY, int fromWidth, int fromHeight, int toX, int toY, int toWidth, int toHeight) OVERRIDE;
 };
 
 } // end of Gfx

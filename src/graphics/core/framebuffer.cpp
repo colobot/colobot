@@ -90,4 +90,8 @@ void CDefaultFramebuffer::Unbind()
 {
 }
 
+void CDefaultFramebuffer::CopyToScreen(int fromX, int fromY, int fromWidth, int fromHeight, int toX, int toY, int toWidth, int toHeight)
+{
+}
+
 } // end of Gfx

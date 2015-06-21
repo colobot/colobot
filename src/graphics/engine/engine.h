@@ -1156,6 +1156,12 @@ public:
     //@}
 
     //@{
+    //! Management of shadow range
+    void            SetMultiSample(int value);
+    bool            GetMultiSample();
+    //@}
+
+    //@{
     //! Management mode of toto
     void            SetTotoMode(bool present);
     bool            GetTotoMode();
@@ -1483,6 +1489,8 @@ protected:
     float m_shadowColor;
     //! Shadow range
     float m_shadowRange;
+    //! Number of samples for multisample rendering
+    int m_multisample;
 
     //! Map of loaded textures (by name)
     std::map<std::string, Texture> m_texNameMap;
