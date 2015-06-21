@@ -508,9 +508,9 @@ CObject* CTaskGoto::WormSearch(Math::Vector &impact)
     iPos = m_object->GetPosition(0);
     min = 1000000.0f;
     
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for(auto& it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = it.second;
+        pObj = it.second.get();
 
         oType = pObj->GetType();
         if ( oType != OBJECT_MOBILEfa &&
@@ -1154,9 +1154,9 @@ bool CTaskGoto::AdjustBuilding(Math::Vector &pos, float margin, float &distance)
     Math::Vector    oPos;
     float       dist, suppl;
     
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for(auto& it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = it.second;
+        pObj = it.second.get();
 
         if ( !pObj->GetActif() )  continue;
         if ( pObj->GetTruck() != 0 )  continue;  // object transported?
@@ -1314,10 +1314,9 @@ bool CTaskGoto::LeakSearch(Math::Vector &pos, float &delay)
 
     min = 100000.0f;
     bRadius = 0.0f;
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for(auto& it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = it.second;
-
+        pObj = it.second.get();
         if ( pObj == m_object )  continue;
         if ( !pObj->GetActif() )  continue;
         if ( pObj->GetTruck() != 0 )  continue;  // object transported?
@@ -1494,9 +1493,9 @@ void CTaskGoto::ComputeRepulse(Math::Point &dir)
         bAlien = true;
     }
     
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for(auto& it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = it.second;
+        pObj = it.second.get();
 
         if ( pObj == m_object )  continue;
         if ( pObj->GetTruck() != 0 )  continue;
@@ -1585,9 +1584,9 @@ void CTaskGoto::ComputeFlyingRepulse(float &dir)
     fac = 1.5f;
     dir = 0.0f;
     
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for(auto& it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = it.second;
+        pObj = it.second.get();
 
         if ( pObj == m_object )  continue;
         if ( pObj->GetTruck() != 0 )  continue;
@@ -1898,9 +1897,9 @@ void CTaskGoto::BitmapObject()
 
     m_object->GetCrashSphere(0, iPos, iRadius);
     
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for(auto& it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = it.second;
+        pObj = it.second.get();
 
         type = pObj->GetType();
 

@@ -277,9 +277,9 @@ CObject* CAutoTower::SearchTarget(Math::Vector &impact)
     iPos = m_object->GetPosition(0);
     min = 1000000.0f;
     
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for(auto& it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = it.second;
+        pObj = it.second.get();
 
         oType = pObj->GetType();
         if ( oType != OBJECT_MOTHER &&

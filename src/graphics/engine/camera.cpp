@@ -243,10 +243,9 @@ void CCamera::SetType(CameraType type)
 
     if ( (m_type == CAM_TYPE_BACK) && m_transparency )
     {
-        for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+        for(auto& it : CObjectManager::GetInstancePointer()->GetAllObjects())
         {
-            CObject* obj = it.second;
-
+            CObject* obj = it.second.get();
             if (obj->GetTruck())
                 continue;  // battery or cargo?
 
@@ -890,9 +889,9 @@ bool CCamera::IsCollisionBack(Math::Vector &eye, Math::Vector lookat)
 
     m_transparency = false;
     
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for(auto& it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        CObject* obj = it.second;
+        CObject* obj = it.second.get();
 
         if (obj->GetTruck()) continue;  // battery or cargo?
 
@@ -966,10 +965,9 @@ bool CCamera::IsCollisionBack(Math::Vector &eye, Math::Vector lookat)
 
 bool CCamera::IsCollisionFix(Math::Vector &eye, Math::Vector lookat)
 {
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for(auto& it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        CObject* obj = it.second;
-
+        CObject* obj = it.second.get();
         if (obj == m_cameraObj) continue;
 
         ObjectType type = obj->GetType();

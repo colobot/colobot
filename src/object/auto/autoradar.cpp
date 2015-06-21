@@ -274,9 +274,9 @@ bool CAutoRadar::SearchEnemy(Math::Vector &pos)
     min = 1000000.0f;
     m_totalDetect = 0;
     
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for(auto& it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = it.second;
+        pObj = it.second.get();
 
         if ( !pObj->GetActif() )  continue;
 

@@ -1041,12 +1041,10 @@ CBotTypResult CScriptFunctions::cDelete(CBotVar* &var, void* user)
 
 bool CScriptFunctions::rDelete(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-    CObject*    pObj;
-    int         rank;
     int         exploType = 0;
     float       force = 1.0f;
-    
-    rank = var->GetValInt();
+
+    int rank = var->GetValInt();
     var->GetNext();
     if ( var != 0 )
     {
@@ -1057,9 +1055,9 @@ bool CScriptFunctions::rDelete(CBotVar* var, CBotVar* result, int& exception, vo
             force = var->GetValFloat();
         }
     }
-    
-    pObj = static_cast<CObject*>(CObjectManager::GetInstancePointer()->GetObjectById(rank));
-    if ( pObj == 0 )
+
+    CObject* obj = CObjectManager::GetInstancePointer()->GetObjectById(rank);
+    if ( obj == nullptr )
     {
         return true;
     }
@@ -1067,11 +1065,11 @@ bool CScriptFunctions::rDelete(CBotVar* var, CBotVar* result, int& exception, vo
     {
         if ( exploType )
         {
-            pObj->ExploObject(static_cast<ExploType>(exploType), force);
+            obj->ExploObject(static_cast<ExploType>(exploType), force);
         }
         else
         {
-            pObj->DeleteObject(false);
+            CObjectManager::GetInstancePointer()->DeleteObject(obj);
         }
     }
     return true;

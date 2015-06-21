@@ -1372,18 +1372,16 @@ void CPyro::DeleteObject(bool primary, bool secondary)
          type != OBJECT_ENERGY )
     {
         CObject* sub = m_object->GetPower();
-        if ( sub != 0 )
+        if ( sub != nullptr )
         {
-            sub->DeleteObject();  // removes the battery
-            delete sub;
-            m_object->SetPower(0);
+            CObjectManager::GetInstancePointer()->DeleteObject(sub);
+            m_object->SetPower(nullptr);
         }
 
         sub = m_object->GetFret();
-        if ( sub != 0 )
+        if ( sub != nullptr )
         {
-            sub->DeleteObject();  // removes the object transported
-            delete sub;
+            CObjectManager::GetInstancePointer()->DeleteObject(sub);
             m_object->SetFret(nullptr);
         }
     }
@@ -1391,7 +1389,7 @@ void CPyro::DeleteObject(bool primary, bool secondary)
     if (primary)
     {
         CObject* truck = m_object->GetTruck();
-        if ( truck != 0 )  // object carries?
+        if ( truck != nullptr )  // object carries?
         {
             if (truck->GetPower() == m_object)
                 truck->SetPower(nullptr);
@@ -1400,9 +1398,7 @@ void CPyro::DeleteObject(bool primary, bool secondary)
                 truck->SetFret(nullptr);
         }
 
-        CObject* sub = m_object;
-        sub->DeleteObject();  // removes the object (*)
-        delete sub;
+        CObjectManager::GetInstancePointer()->DeleteObject(m_object);
         m_object = nullptr;
     }
 }
@@ -2218,9 +2214,9 @@ CObject* CPyro::FallSearchBeeExplo()
     float iRadius;
     m_object->GetCrashSphere(0, iPos, iRadius);
     
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for(auto& it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        CObject* pObj = it.second;
+        CObject*  pObj = it.second.get();
 
         ObjectType oType = pObj->GetType();
         if ( oType != OBJECT_HUMAN    &&

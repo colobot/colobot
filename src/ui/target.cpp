@@ -191,9 +191,9 @@ CObject* CTarget::DetectFriendObject(Math::Point pos)
 
     objRank = m_engine->DetectObject(pos);
     
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for(auto& it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = it.second;
+        pObj = it.second.get();
 
         if ( !pObj->GetActif() )  continue;
         if ( pObj->GetProxyActivate() )  continue;
@@ -268,6 +268,7 @@ CObject* CTarget::DetectFriendObject(Math::Point pos)
             return pTarget;
         }
     }
+
     return 0;
 }
 

@@ -350,9 +350,9 @@ bool CTaskTerraform::Terraform()
 
     m_sound->Play(SOUND_THUMP, m_terraPos);
     
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for(auto& it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = it.second;
+        pObj = it.second.get();
 
         type = pObj->GetType();
         if ( type == OBJECT_NULL )  continue;

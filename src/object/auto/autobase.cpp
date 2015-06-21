@@ -1244,9 +1244,9 @@ void CAutoBase::FreezeCargo(bool bFreeze)
     Math::Vector    oPos;
     float       dist;
     
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for(auto& it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = it.second;
+        pObj = it.second.get();
 
         pObj->SetCargo(false);
 
@@ -1280,9 +1280,9 @@ void CAutoBase::MoveCargo()
 
     sPos = m_object->GetPosition(0);
     
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for(auto& it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = it.second;
+        pObj = it.second.get();
 
         if ( !pObj->GetCargo() )  continue;
 
@@ -1308,9 +1308,9 @@ Error CAutoBase::CheckCloseDoor()
     float       oRad, dist;
     int         j;
     
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for(auto& it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = it.second;
+        pObj = it.second.get();
 
         if ( pObj == m_object )  continue;  // yourself?
         if ( !pObj->GetActif() )  continue;  // inactive?

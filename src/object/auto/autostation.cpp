@@ -247,10 +247,10 @@ CObject* CAutoStation::SearchVehicle()
     float       dist;
 
     sPos = m_object->GetPosition(0);
-    
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+
+    for(auto& it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = it.second;
+        pObj = it.second.get();
 
         type = pObj->GetType();
         if ( type != OBJECT_HUMAN    &&

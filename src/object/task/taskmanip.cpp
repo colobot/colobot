@@ -733,10 +733,9 @@ CObject* CTaskManip::SearchTakeUnderObject(Math::Vector &pos, float dLimit)
 
     min = 1000000.0f;
     pBest = 0;
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for(auto& it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = it.second;
-
+        pObj = it.second.get();
         type = pObj->GetType();
 
         if ( type != OBJECT_FRET    &&
@@ -802,10 +801,9 @@ CObject* CTaskManip::SearchTakeFrontObject(bool bAdvance, Math::Vector &pos,
     min = 1000000.0f;
     pBest = 0;
     bAngle = 0.0f;
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for(auto& it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = it.second;
-
+        pObj = it.second.get();
         type = pObj->GetType();
 
         if ( type != OBJECT_FRET    &&
@@ -891,10 +889,9 @@ CObject* CTaskManip::SearchTakeBackObject(bool bAdvance, Math::Vector &pos,
     min = 1000000.0f;
     pBest = 0;
     bAngle = 0.0f;
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for(auto& it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = it.second;
-
+        pObj = it.second.get();
         type = pObj->GetType();
 
         if ( type != OBJECT_FRET    &&
@@ -986,9 +983,9 @@ CObject* CTaskManip::SearchOtherObject(bool bAdvance, Math::Vector &pos,
         dLimit = MARGIN_FRIEND;
     }
     
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for(auto& it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = it.second;
+        pObj = it.second.get();
 
         if ( pObj == m_object )  continue;  // yourself?
 
@@ -1341,9 +1338,9 @@ bool CTaskManip::IsFreeDeposeObject(Math::Vector pos)
     mat = m_object->GetWorldMatrix(0);
     iPos = Transform(*mat, pos);
     
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for(auto& it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = it.second;
+        pObj = it.second.get();
 
         if ( pObj == m_object )  continue;
         if ( !pObj->GetActif() )  continue;  // inactive?

@@ -232,9 +232,9 @@ bool CAutoMush::SearchTarget()
 
     iPos = m_object->GetPosition(0);
     
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for(auto& it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = it.second;
+        pObj = it.second.get();
 
         if ( pObj->GetLock() )  continue;
 

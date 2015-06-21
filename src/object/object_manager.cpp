@@ -40,6 +40,7 @@ CObjectManager::CObjectManager(Gfx::CEngine* engine,
                                Gfx::CParticle* particle,
                                CRobotMain* main)
   : m_objectFactory(new CObjectFactory(engine, terrain, modelManager, particle, main))
+  , m_nextId(0)
 {
 }
 
@@ -47,33 +48,39 @@ CObjectManager::~CObjectManager()
 {
 }
 
-bool CObjectManager::AddObject(CObject* instance)
-{
-    assert(instance != nullptr);
-    assert(m_table[instance->GetID()] == nullptr);
-    m_table[instance->GetID()] = instance;
-    return true;
-}
-
 bool CObjectManager::DeleteObject(CObject* instance)
 {
     assert(instance != nullptr);
-    for(auto it = m_table.begin(); it != m_table.end(); ++it)
+
+    instance->DeleteObject();
+
+    auto it = m_table.find(instance->GetID());
+    if (it != m_table.end())
     {
-        if(it->second == instance)
-        {
-            m_table.erase(it);
-            return true;
-        }
+        m_table.erase(it);
+        return true;
     }
 
     return false;
 }
 
+void CObjectManager::DeleteAllObjects()
+{
+    for (auto& it : m_table)
+    {
+        bool all = true;
+        it.second->DeleteObject(all);
+    }
+
+    m_table.clear();
+
+    m_nextId = 0;
+}
+
 CObject* CObjectManager::GetObjectById(unsigned int id)
 {
     if(m_table.count(id) == 0) return nullptr;
-    return m_table[id];
+    return m_table[id].get();
 }
 
 CObject* CObjectManager::GetObjectByRank(unsigned int id)
@@ -81,32 +88,46 @@ CObject* CObjectManager::GetObjectByRank(unsigned int id)
     if(id >= m_table.size()) return nullptr;
     auto it = m_table.begin();
     for(unsigned int i = 0; i < id; i++, ++it);
-    return it->second;
+    return it->second.get();
 }
 
-const std::map<unsigned int, CObject*>& CObjectManager::GetAllObjects()
+CObject* CObjectManager::CreateObject(Math::Vector pos,
+                                      float angle,
+                                      ObjectType type,
+                                      float power,
+                                      float zoom,
+                                      float height,
+                                      bool trainer,
+                                      bool toy,
+                                      int option,
+                                      int id)
 {
-    return m_table;
-}
+    if (id < 0)
+    {
+        id = m_nextId;
+        m_nextId++;
+    }
 
-void CObjectManager::Flush()
-{
-    m_table.clear();
-}
+    assert(m_table.find(id) == m_table.end());
 
-CObject* CObjectManager::CreateObject(Math::Vector pos, float angle, ObjectType type,
-                                      float power, float zoom, float height,
-                                      bool trainer, bool toy, int option)
-{
-    return m_objectFactory->CreateObject(pos, angle, type, power, zoom, height, trainer, toy, option);
-}
+    ObjectCreateParams params;
+    params.pos = pos;
+    params.angle = angle;
+    params.type = type;
+    params.power = power;
+    params.zoom = zoom;
+    params.height = height;
+    params.trainer = trainer;
+    params.toy = toy;
+    params.option = option;
+    params.id = id;
 
-bool CObjectManager::DestroyObject(int id)
-{
-    CObject* obj = GetObjectById(id);
-    if(obj == nullptr) return false;
-    delete obj; // Destructor calls CObjectManager::DeleteObject
-    return true;
+    auto objectUPtr = m_objectFactory->CreateObject(params);
+    CObject* objectPtr = objectUPtr.get();
+
+    m_table[id] = std::move(objectUPtr);
+
+    return objectPtr;
 }
 
 CObject* CObjectManager::Radar(CObject* pThis, ObjectType type, float angle, float focus, float minDist, float maxDist, bool furthest, RadarFilter filter, bool cbotTypes)
@@ -161,7 +182,7 @@ CObject* CObjectManager::Radar(CObject* pThis, Math::Vector thisPosition, float 
     pBest = nullptr;
     for ( auto it = m_table.begin() ; it != m_table.end() ; ++it )
     {
-        pObj = it->second;
+        pObj = it->second.get();
         if ( pObj == pThis )  continue; // pThis may be nullptr but it doesn't matter
         
         if ( pObj->GetTruck() != 0 )  continue;  // object transported?

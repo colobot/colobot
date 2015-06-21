@@ -57,17 +57,14 @@ CAutoNuclear::~CAutoNuclear()
 
 // Destroys the object.
 
-void CAutoNuclear::DeleteObject(bool bAll)
+void CAutoNuclear::DeleteObject(bool all)
 {
-    CObject*    fret;
-
-    if ( !bAll )
+    if ( !all )
     {
-        fret = SearchUranium();
-        if ( fret != 0 )
+        CObject* fret = SearchUranium();
+        if ( fret != nullptr )
         {
-            fret->DeleteObject();  // destroys the metal
-            delete fret;
+            CObjectManager::GetInstancePointer()->DeleteObject(fret);
         }
     }
 
@@ -78,7 +75,7 @@ void CAutoNuclear::DeleteObject(bool bAll)
         m_channelSound = -1;
     }
 
-    CAuto::DeleteObject(bAll);
+    CAuto::DeleteObject(all);
 }
 
 
@@ -231,11 +228,10 @@ bool CAutoNuclear::EventProcess(const Event &event)
         else
         {
             fret = SearchUranium();
-            if ( fret != 0 )
+            if ( fret != nullptr )
             {
-                fret->DeleteObject();  // destroyed uranium
-                delete fret;
-                m_object->SetPower(0);
+                CObjectManager::GetInstancePointer()->DeleteObject(fret);
+                m_object->SetPower(nullptr);
             }
 
             CreatePower();  // creates the atomic cell
@@ -340,9 +336,9 @@ bool CAutoNuclear::SearchVehicle()
     ObjectType  type;
     float       oRadius, dist;
     
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for(auto& it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = it.second;
+        pObj = it.second.get();
 
         type = pObj->GetType();
         if ( type != OBJECT_HUMAN    &&

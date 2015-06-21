@@ -2527,10 +2527,9 @@ int CPhysics::ObjectAdapt(const Math::Vector &pos, const Math::Vector &angle)
     iType = m_object->GetType();
 
     
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for(auto &it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = it.second;
-
+        pObj = it.second.get();
         if ( pObj == m_object )  continue;  // yourself?
         if ( pObj->GetTruck() != 0 )  continue;  // object transported?
         if ( !pObj->GetEnable() )  continue;  // inactive?

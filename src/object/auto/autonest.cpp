@@ -48,21 +48,18 @@ CAutoNest::~CAutoNest()
 
 // Destroys the object.
 
-void CAutoNest::DeleteObject(bool bAll)
+void CAutoNest::DeleteObject(bool all)
 {
-    CObject*    fret;
-
-    if ( !bAll )
+    if ( !all )
     {
-        fret = SearchFret();
-        if ( fret != 0 )
+        CObject* fret = SearchFret();
+        if ( fret != nullptr )
         {
-            fret->DeleteObject();
-            delete fret;
+            CObjectManager::GetInstancePointer()->DeleteObject(fret);
         }
     }
 
-    CAuto::DeleteObject(bAll);
+    CAuto::DeleteObject(all);
 }
 
 
@@ -157,9 +154,9 @@ bool CAutoNest::SearchFree(Math::Vector pos)
     float       sRadius, distance;
     int         j;
     
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for(auto& it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = it.second;
+        pObj = it.second.get();
 
         type = pObj->GetType();
         if ( type == OBJECT_NEST )  continue;
@@ -193,9 +190,9 @@ CObject* CAutoNest::SearchFret()
     Math::Vector    oPos;
     ObjectType  type;
     
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for(auto& it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = it.second;
+        pObj = it.second.get();
 
         if ( !pObj->GetLock() )  continue;
 

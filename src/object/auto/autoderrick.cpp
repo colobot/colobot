@@ -61,17 +61,14 @@ CAutoDerrick::~CAutoDerrick()
 
 // Destroys the object.
 
-void CAutoDerrick::DeleteObject(bool bAll)
+void CAutoDerrick::DeleteObject(bool all)
 {
-    CObject*    fret;
-
-    if ( !bAll )
+    if ( !all )
     {
-        fret = SearchFret();
-        if ( fret != 0 && fret->GetLock() )
+        CObject* fret = SearchFret();
+        if ( fret != nullptr && fret->GetLock() )
         {
-            fret->DeleteObject();
-            delete fret;
+            CObjectManager::GetInstancePointer()->DeleteObject(fret);
         }
     }
 
@@ -82,7 +79,7 @@ void CAutoDerrick::DeleteObject(bool bAll)
         m_soundChannel = -1;
     }
 
-    CAuto::DeleteObject(bAll);
+    CAuto::DeleteObject(all);
 }
 
 
@@ -468,9 +465,9 @@ CObject* CAutoDerrick::SearchFret()
     Math::Vector    oPos;
     ObjectType  type;
     
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for(auto& it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = it.second;
+        pObj = it.second.get();
 
         type = pObj->GetType();
         if ( type == OBJECT_DERRICK )  continue;
@@ -494,9 +491,9 @@ bool CAutoDerrick::SearchFree(Math::Vector pos)
     float       sRadius, distance;
     int         j;
     
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for(auto& it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = it.second;
+        pObj = it.second.get();
 
         type = pObj->GetType();
         if ( type == OBJECT_DERRICK )  continue;

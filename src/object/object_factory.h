@@ -40,6 +40,22 @@ class CTerrain;
 class CObject;
 class CRobotMain;
 
+using CObjectUPtr = std::unique_ptr<CObject>;
+
+struct ObjectCreateParams
+{
+    Math::Vector pos;
+    float angle;
+    ObjectType type;
+    float power;
+    float zoom;
+    float height;
+    bool trainer;
+    bool toy;
+    int option;
+    int id;
+};
+
 class CObjectFactory
 {
 public:
@@ -49,26 +65,23 @@ public:
                    Gfx::CParticle* particle,
                    CRobotMain* main);
 
-    CObject* CreateObject(Math::Vector pos, float angle, ObjectType type,
-                          float power, float zoom, float height,
-                          bool trainer, bool toy, int option);
-
-    CObject* CreateBuilding(Math::Vector pos, float angle, float height, ObjectType type, float power=1.0f);
-    CObject* CreateResource(Math::Vector pos, float angle, ObjectType type, float power=1.0f);
-    CObject* CreateVehicle(Math::Vector pos, float angle, ObjectType type, float power, bool trainer, bool toy, int option);
-    CObject* CreateInsect(Math::Vector pos, float angle, ObjectType type);
-    CObject* CreateFlag(Math::Vector pos, float angle, ObjectType type);
-    CObject* CreateBarrier(Math::Vector pos, float angle, float height, ObjectType type);
-    CObject* CreatePlant(Math::Vector pos, float angle, float height, ObjectType type);
-    CObject* CreateMushroom(Math::Vector pos, float angle, float height, ObjectType type);
-    CObject* CreateTeen(Math::Vector pos, float angle, float zoom, float height, ObjectType type, int option);
-    CObject* CreateQuartz(Math::Vector pos, float angle, float height, ObjectType type);
-    CObject* CreateRoot(Math::Vector pos, float angle, float height, ObjectType type);
-    CObject* CreateHome(Math::Vector pos, float angle, float height, ObjectType type);
-    CObject* CreateRuin(Math::Vector pos, float angle, float height, ObjectType type);
-    CObject* CreateApollo(Math::Vector pos, float angle, ObjectType type);
+    CObjectUPtr CreateObject(const ObjectCreateParams& params);
 
 private:
+    CObjectUPtr CreateBuilding(const ObjectCreateParams& params);
+    CObjectUPtr CreateResource(const ObjectCreateParams& params);
+    CObjectUPtr CreateVehicle(const ObjectCreateParams& params);
+    CObjectUPtr CreateInsect(const ObjectCreateParams& params);
+    CObjectUPtr CreateFlag(const ObjectCreateParams& params);
+    CObjectUPtr CreateBarrier(const ObjectCreateParams& params);
+    CObjectUPtr CreatePlant(const ObjectCreateParams& params);
+    CObjectUPtr CreateMushroom(const ObjectCreateParams& params);
+    CObjectUPtr CreateTeen(const ObjectCreateParams& params);
+    CObjectUPtr CreateQuartz(const ObjectCreateParams& params);
+    CObjectUPtr CreateRoot(const ObjectCreateParams& params);
+    CObjectUPtr CreateHome(const ObjectCreateParams& params);
+    CObjectUPtr CreateRuin(const ObjectCreateParams& params);
+    CObjectUPtr CreateApollo(const ObjectCreateParams& params);
     void AddObjectAuto(CObject* obj);
 
 private:

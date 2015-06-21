@@ -55,16 +55,14 @@ CAutoEgg::~CAutoEgg()
 
 // Destroys the object.
 
-void CAutoEgg::DeleteObject(bool bAll)
+void CAutoEgg::DeleteObject(bool all)
 {
-    CObject*    alien;
+    CAuto::DeleteObject(all);
 
-    CAuto::DeleteObject(bAll);
-
-    if ( !bAll )
+    if ( !all )
     {
-        alien = SearchAlien();
-        if ( alien != 0 )
+        CObject* alien = SearchAlien();
+        if ( alien != nullptr )
         {
             // Probably the intended action
             // Original code: ( alien->GetZoom(0) == 1.0f )
@@ -75,8 +73,7 @@ void CAutoEgg::DeleteObject(bool bAll)
             }
             else
             {
-                alien->DeleteObject();
-                delete alien;
+                CObjectManager::GetInstancePointer()->DeleteObject(alien);
             }
         }
     }
@@ -283,9 +280,9 @@ CObject* CAutoEgg::SearchAlien()
     cPos = m_object->GetPosition(0);
     min = 100000.0f;
     pBest = 0;
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for(auto& it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = it.second;
+        pObj = it.second.get();
 
         if ( pObj->GetTruck() != 0 )  continue;
 

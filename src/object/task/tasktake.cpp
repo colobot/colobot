@@ -311,10 +311,9 @@ CObject* CTaskTake::SearchTakeObject(float &angle,
     min = 1000000.0f;
     pBest = 0;
     bAngle = 0.0f;
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for(auto& it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = it.second;
-
+        pObj = it.second.get();
         type = pObj->GetType();
 
         if ( type != OBJECT_FRET    &&
@@ -375,9 +374,9 @@ CObject* CTaskTake::SearchFriendObject(float &angle,
     iAngle = m_object->GetAngleY(0);
     iAngle = Math::NormAngle(iAngle);  // 0..2*Math::PI
     
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for(auto& it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = it.second;
+        pObj = it.second.get();
 
         if ( pObj == m_object )  continue;  // yourself?
 
@@ -569,9 +568,9 @@ bool CTaskTake::IsFreeDeposeObject(Math::Vector pos)
     mat = m_object->GetWorldMatrix(0);
     iPos = Transform(*mat, pos);
     
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for(auto& it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = it.second;
+        pObj = it.second.get();
 
         if ( pObj == m_object )  continue;
         if ( !pObj->GetActif() )  continue;  // inactive?

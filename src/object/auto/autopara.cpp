@@ -250,9 +250,9 @@ void CAutoPara::ChargeObject(float rTime)
 
     sPos = m_object->GetPosition(0);
     
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for(auto& it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = it.second;
+        pObj = it.second.get();
 
         oPos = pObj->GetPosition(0);
         dist = Math::Distance(oPos, sPos);

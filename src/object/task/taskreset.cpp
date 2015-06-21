@@ -283,9 +283,9 @@ bool CTaskReset::SearchVehicle()
     ObjectType  type;
     float       oRadius, dist;
     
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for (auto& it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = it.second;
+        pObj = it.second.get();
 
         if ( pObj == m_object )  continue;
 

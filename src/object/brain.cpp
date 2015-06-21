@@ -28,6 +28,7 @@
 #include "graphics/core/color.h"
 #include "graphics/engine/terrain.h"
 
+#include "object/object_manager.h"
 #include "object/motion/motion.h"
 #include "object/task/taskmanager.h"
 #include "object/level/parserline.h"
@@ -130,7 +131,7 @@ CBrain::~CBrain()
 
 // Destroys the object.
 
-void CBrain::DeleteObject(bool bAll)
+void CBrain::DeleteObject(bool all)
 {
     if ( m_soundChannelAlarm != -1 )
     {
@@ -139,13 +140,12 @@ void CBrain::DeleteObject(bool bAll)
         m_soundChannelAlarm = -1;
     }
 
-    if ( !bAll )
+    if ( !all )
     {
-        if ( m_beeBullet != 0 )
+        if ( m_beeBullet != nullptr )
         {
-            m_beeBullet->DeleteObject();
-            delete m_beeBullet;
-            m_beeBullet = 0;
+            CObjectManager::GetInstancePointer()->DeleteObject(m_beeBullet);
+            m_beeBullet = nullptr;
         }
     }
 

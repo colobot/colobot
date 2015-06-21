@@ -68,13 +68,10 @@ CAutoSafe::~CAutoSafe()
 
 void CAutoSafe::DeleteObject(bool bAll)
 {
-    CObject*    pObj;
-
-    pObj = SearchVehicle();
-    if ( pObj != 0 )
+    CObject* obj = SearchVehicle();
+    if ( obj != nullptr )
     {
-        pObj->DeleteObject();
-        delete pObj;
+        CObjectManager::GetInstancePointer()->DeleteObject(obj);
     }
 
     if ( m_channelSound != -1 )
@@ -403,10 +400,10 @@ int CAutoSafe::CountKeys()
         m_bKey[index] = false;
         m_keyPos[index] = cPos;
     }
-    
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+
+    for(auto& it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = it.second;
+        pObj = it.second.get();
 
         if ( pObj->GetTruck() != 0 )  continue;
 
@@ -479,9 +476,9 @@ void CAutoSafe::LockKeys()
 
     cPos = m_object->GetPosition(0);
     
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for(auto& it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = it.second;
+        pObj = it.second.get();
 
         oType = pObj->GetType();
         if ( pObj->GetTruck() != 0 )  continue;
@@ -510,9 +507,9 @@ void CAutoSafe::DownKeys(float progress)
 
     cPos = m_object->GetPosition(0);
     
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for(auto& it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = it.second;
+        pObj = it.second.get();
 
         oType = pObj->GetType();
         if ( pObj->GetTruck() != 0 )  continue;
@@ -535,39 +532,34 @@ void CAutoSafe::DownKeys(float progress)
 
 void CAutoSafe::DeleteKeys()
 {
-    CObject*    pObj;
-    Math::Vector    cPos, oPos;
-    ObjectType  oType;
-    float       dist;
-    bool        bDelete;
+    Math::Vector cPos = m_object->GetPosition(0);
 
-    cPos = m_object->GetPosition(0);
-
+    bool haveDeleted = false;
     do
     {
-        bDelete = false;
-        for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+        haveDeleted = false;
+        for(auto& it : CObjectManager::GetInstancePointer()->GetAllObjects())
         {
-            pObj = it.second;
+            CObject* obj = it.second.get();
 
-            oType = pObj->GetType();
-            if ( pObj->GetTruck() != 0 )  continue;
+            ObjectType oType = obj->GetType();
+            if ( obj->GetTruck() != nullptr )  continue;
 
             if ( oType != OBJECT_KEYa &&
                  oType != OBJECT_KEYb &&
                  oType != OBJECT_KEYc &&
                  oType != OBJECT_KEYd )  continue;
 
-            oPos = pObj->GetPosition(0);
-            dist = Math::DistanceProjected(oPos, cPos);
+            Math::Vector oPos = obj->GetPosition(0);
+            float dist = Math::DistanceProjected(oPos, cPos);
             if ( dist > 20.0f )  continue;
 
-            pObj->DeleteObject();
-            delete pObj;
-            bDelete = true;
+            CObjectManager::GetInstancePointer()->DeleteObject(obj);
+
+            haveDeleted = true;
         }
     }
-    while ( bDelete );
+    while ( haveDeleted );
 }
 
 // Seeking a vehicle in the safe.
@@ -580,9 +572,9 @@ CObject* CAutoSafe::SearchVehicle()
 
     cPos = m_object->GetPosition(0);
 
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for(auto& it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = it.second;
+        pObj = it.second.get();
 
         if ( pObj == m_object )  continue;
         if ( pObj->GetTruck() != 0 )  continue;

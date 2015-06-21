@@ -61,34 +61,30 @@ CAutoEnergy::~CAutoEnergy()
 
 // Destroys the object.
 
-void CAutoEnergy::DeleteObject(bool bAll)
+void CAutoEnergy::DeleteObject(bool all)
 {
-    CObject*    fret;
-
     if ( m_partiSphere != -1 )
     {
         m_particle->DeleteParticle(m_partiSphere);
         m_partiSphere = -1;
     }
 
-    if ( !bAll )
+    if ( !all )
     {
-        fret = SearchMetal();
-        if ( fret != 0 )
+        CObject* fret = SearchMetal();
+        if ( fret != nullptr )
         {
-            fret->DeleteObject();  // destroys the metal
-            delete fret;
+            CObjectManager::GetInstancePointer()->DeleteObject(fret);
         }
 
         fret = SearchPower();
-        if ( fret != 0 )
+        if ( fret != nullptr )
         {
-            fret->DeleteObject();  // destroys the cell
-            delete fret;
+            CObjectManager::GetInstancePointer()->DeleteObject(fret);
         }
     }
 
-    CAuto::DeleteObject(bAll);
+    CAuto::DeleteObject(all);
 }
 
 
@@ -312,11 +308,10 @@ bool CAutoEnergy::EventProcess(const Event &event)
         else
         {
             fret = SearchMetal();
-            if ( fret != 0 )
+            if ( fret != nullptr )
             {
-                m_object->SetPower(0);
-                fret->DeleteObject();  // destroys the metal
-                delete fret;
+                m_object->SetPower(nullptr);
+                CObjectManager::GetInstancePointer()->DeleteObject(fret);
             }
 
             fret = SearchPower();
@@ -406,9 +401,9 @@ bool CAutoEnergy::SearchVehicle()
 
     cPos = m_object->GetPosition(0);
     
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for(auto& it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = it.second;
+        pObj = it.second.get();
 
         type = pObj->GetType();
         if ( type != OBJECT_HUMAN    &&
@@ -479,9 +474,9 @@ CObject* CAutoEnergy::SearchPower()
 
     cPos = m_object->GetPosition(0);
     
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for(auto& it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = it.second;
+        pObj = it.second.get();
 
         if ( !pObj->GetLock() )  continue;
 

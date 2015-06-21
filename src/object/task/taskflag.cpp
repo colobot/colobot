@@ -156,10 +156,9 @@ int CTaskFlag::CountObject(ObjectType type)
     int         count;
 
     count = 0;
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for (auto& it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = it.second;
-
+        pObj = it.second.get();
         if ( !pObj->GetEnable() )  continue;
 
         oType = pObj->GetType();

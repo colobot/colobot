@@ -54,17 +54,14 @@ CAutoConvert::~CAutoConvert()
 
 // Destroys the object.
 
-void CAutoConvert::DeleteObject(bool bAll)
+void CAutoConvert::DeleteObject(bool all)
 {
-    CObject*    fret;
-
-    if ( !bAll )
+    if ( !all )
     {
-        fret = SearchStone(OBJECT_STONE);
-        if ( fret != 0 )
+        CObject* fret = SearchStone(OBJECT_STONE);
+        if ( fret != nullptr )
         {
-            fret->DeleteObject();  // destroy the stone
-            delete fret;
+            CObjectManager::GetInstancePointer()->DeleteObject(fret);
         }
     }
 
@@ -75,7 +72,7 @@ void CAutoConvert::DeleteObject(bool bAll)
         m_soundChannel = -1;
     }
 
-    CAuto::DeleteObject(bAll);
+    CAuto::DeleteObject(all);
 }
 
 
@@ -233,11 +230,11 @@ bool CAutoConvert::EventProcess(const Event &event)
             m_object->SetAngleY(3, Math::PI);
 
             fret = SearchStone(OBJECT_STONE);
-            if ( fret != 0 )
+            if ( fret != nullptr )
             {
                 m_bResetDelete = ( fret->GetResetCap() != RESET_NONE );
-                fret->DeleteObject();  // destroy the stone
-                delete fret;
+
+                CObjectManager::GetInstancePointer()->DeleteObject(fret);
             }
 
             CreateMetal();  // Create the metal
@@ -405,9 +402,9 @@ CObject* CAutoConvert::SearchStone(ObjectType type)
 
     cPos = m_object->GetPosition(0);
 
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for(auto& it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = it.second;
+        pObj = it.second.get();
 
         oType = pObj->GetType();
         if ( oType != type )  continue;
@@ -433,9 +430,9 @@ bool CAutoConvert::SearchVehicle()
 
     cPos = m_object->GetPosition(0);
     
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for(auto& it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = it.second;
+        pObj = it.second.get();
 
         type = pObj->GetType();
         if ( type != OBJECT_HUMAN    &&

@@ -328,9 +328,8 @@ Error CTaskRecover::IsEnded()
     {
         m_metal->SetZoom(0, 1.0f);
 
-        m_ruin->DeleteObject();  // destroys the ruin
-        delete m_ruin;
-        m_ruin = 0;
+        CObjectManager::GetInstancePointer()->DeleteObject(m_ruin);
+        m_ruin = nullptr;
 
         m_soundChannel = -1;
 

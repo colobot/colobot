@@ -138,9 +138,9 @@ bool CMainShort::CreateShortcuts()
     m_shortcuts[rank] = 0;
     rank ++;
     
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for(auto& it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = it.second;
+        pObj = it.second.get();
 
         if ( !pObj->GetActif() )  continue;
         if ( !pObj->GetSelectable() )  continue;

@@ -189,7 +189,8 @@ void uObject(CBotVar* botThis, void* user)
 
 // Object's constructor.
 
-CObject::CObject()
+CObject::CObject(int id)
+ : m_id(id)
 {
     m_app         = CApplication::GetInstancePointer();
     m_sound       = m_app->GetSound();
@@ -207,7 +208,6 @@ CObject::CObject()
     m_runScript   = nullptr;
 
     m_type = OBJECT_FIX;
-    m_id = ++g_id;
     m_option = 0;
     m_name[0] = 0;
     m_partiReactor  = -1;
@@ -315,8 +315,6 @@ CObject::CObject()
     m_botVar = CBotVar::Create("", CBotTypResult(CBotTypClass, "object"));
     m_botVar->SetUserPtr(this);
     m_botVar->SetIdent(m_id);
-
-    CObjectManager::GetInstancePointer()->AddObject(this);
 }
 
 // Object's destructor.
@@ -338,8 +336,6 @@ CObject::~CObject()
     m_motion = nullptr;
     delete m_auto;
     m_auto = nullptr;
-    
-    CObjectManager::GetInstancePointer()->DeleteObject(this);
 
     m_app = nullptr;
 }
@@ -353,7 +349,6 @@ void CObject::DeleteObject(bool bAll)
 {
     CObject*    pObj;
     Gfx::CPyro* pPyro;
-
     if ( m_botVar != 0 )
     {
         m_botVar->SetUserPtr(OBJECTDELETED);
@@ -363,12 +358,13 @@ void CObject::DeleteObject(bool bAll)
     {
         m_camera->SetControllingObject(0);
     }
+
     
     CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
     
-    for(auto it : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for(auto& it : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        pObj = it.second;
+        pObj = it.second.get();
 
         pObj->DeleteDeselList(this);
     }
@@ -941,19 +937,6 @@ void CObject::SetOption(int option)
 int CObject::GetOption()
 {
     return m_option;
-}
-
-
-// Management of the unique identifier of an object.
-
-void CObject::SetID(int id)
-{
-    m_id = id;
-
-    if ( m_botVar != 0 )
-    {
-        m_botVar->SetIdent(m_id);
-    }
 }
 
 int CObject::GetID()
