@@ -937,6 +937,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
             powerCell = CObjectManager::GetInstancePointer()->CreateObject(powerCellPos, powerCellAngle, OBJECT_ATOMIC, power / 100.0f);
         }
 
+        powerCell->SetPosition(0, powerCellPos);
         powerCell->SetTruck(m_object);
         m_object->SetPower(powerCell);
     }
