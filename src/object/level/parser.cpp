@@ -262,7 +262,7 @@ void CLevelParser::Save()
 
     for (auto& line : m_lines)
     {
-        file << line.get() << "\n";
+        file << *(line.get()) << "\n";
     }
 
     file.close();
