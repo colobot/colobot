@@ -25,9 +25,12 @@
 #pragma once
 
 
+#include "graphics/engine/camera.h"
 #include "graphics/engine/water.h"
 #include "graphics/engine/engine.h"
-#include "graphics/engine/pyro.h"
+#include "graphics/engine/pyro_type.h"
+
+#include "object/object.h"
 
 
 

@@ -26,7 +26,7 @@
 
 #include "graphics/core/color.h"
 #include "graphics/engine/water.h"
-#include "graphics/engine/pyro.h"
+#include "graphics/engine/pyro_type.h"
 
 #include "math/point.h"
 

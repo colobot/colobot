@@ -37,7 +37,6 @@
 #include <vector>
 
 
-class CInstanceManager;
 class CEventQueue;
 class CController;
 class CSoundInterface;
@@ -151,7 +150,7 @@ struct ApplicationPrivate;
  *
  * \section Creation Creation of other main objects
  *
- * The class creates the only instance of CInstanceManager, CEventQueue, CEngine,
+ * The class creates the only instance of CEventQueue, CEngine,
  * CRobotMain and CSoundInterface classes.
  *
  * \section Window Window management
@@ -356,9 +355,6 @@ protected:
 protected:
     //! Private (SDL-dependent data)
     ApplicationPrivate*     m_private;
-    //! Instance manager
-    // TODO: to be removed
-    CInstanceManager*       m_iMan;
     //! Global event queue
     CEventQueue*            m_eventQueue;
     //! Graphics engine

@@ -82,7 +82,6 @@ set(BASE_SOURCES
     app/system_other.cpp
     common/event.cpp
     common/image.cpp
-    common/iman.cpp
     common/key.cpp
     common/logger.cpp
     common/misc.cpp
@@ -109,6 +108,7 @@ set(BASE_SOURCES
     graphics/engine/particle.cpp
     graphics/engine/planet.cpp
     graphics/engine/pyro.cpp
+    graphics/engine/pyro_manager.cpp
     graphics/engine/terrain.cpp
     graphics/engine/text.cpp
     graphics/engine/water.cpp

@@ -20,6 +20,8 @@
 
 #include "object/auto/autodestroyer.h"
 
+#include "graphics/engine/pyro_manager.h"
+
 #include "object/object_manager.h"
 #include "object/level/parserline.h"
 #include "object/level/parserparam.h"
@@ -110,7 +112,6 @@ Error CAutoDestroyer::StartAction(int param)
 bool CAutoDestroyer::EventProcess(const Event &event)
 {
     CObject*        scrap;
-    Gfx::CPyro*     pyro;
     Math::Vector    pos, speed;
     Math::Point     dim;
     Ui::CWindow*    pw;
@@ -168,8 +169,7 @@ bool CAutoDestroyer::EventProcess(const Event &event)
             scrap = SearchPlastic();
             if ( scrap != nullptr )
             {
-                pyro = new Gfx::CPyro();
-                pyro->Create(Gfx::PT_FRAGT, scrap);
+                m_engine->GetPyroManager()->Create(Gfx::PT_FRAGT, scrap);
             }
             m_bExplo = true;
         }

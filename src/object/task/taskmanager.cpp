@@ -22,8 +22,6 @@
 
 #include "object/task/taskmanager.h"
 
-#include "common/iman.h"
-
 #include "object/task/taskwait.h"
 #include "object/task/taskadvance.h"
 #include "object/task/taskturn.h"

@@ -23,14 +23,13 @@
 #include "math/geometry.h"
 
 #include "graphics/engine/particle.h"
-#include "graphics/engine/pyro.h"
+#include "graphics/engine/pyro_manager.h"
 #include "graphics/engine/water.h"
 
 #include "object/object_manager.h"
 #include "object/motion/motionhuman.h"
 
 #include "physics/physics.h"
-#include <boost/concept_check.hpp>
 
 
 
@@ -211,8 +210,7 @@ Error CTaskFlag::CreateFlag(int rank)
     //pNew->SetZoom(0, 0.0f);
 
     m_sound->Play(SOUND_WAYPOINT, pos);
-    Gfx::CPyro* pyro = new Gfx::CPyro();
-    pyro->Create(Gfx::PT_FLCREATE, pNew);
+    m_engine->GetPyroManager()->Create(Gfx::PT_FLCREATE, pNew);
 
     return ERR_OK;
 }
@@ -222,7 +220,6 @@ Error CTaskFlag::CreateFlag(int rank)
 Error CTaskFlag::DeleteFlag()
 {
     CObject*     pObj;
-    Gfx::CPyro*  pyro;
     Math::Vector iPos, oPos;
     float        iAngle, angle, aLimit, dist;
 
@@ -250,8 +247,8 @@ Error CTaskFlag::DeleteFlag()
     }
 
     m_sound->Play(SOUND_WAYPOINT, iPos);
-    pyro = new Gfx::CPyro();
-    pyro->Create(Gfx::PT_FLDELETE, pObj);
+
+    m_engine->GetPyroManager()->Create(Gfx::PT_FLDELETE, pObj);
 
     return ERR_OK;
 }

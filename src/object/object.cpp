@@ -25,14 +25,13 @@
 #include "app/app.h"
 
 #include "common/global.h"
-#include "common/iman.h"
 #include "common/restext.h"
 
 #include "graphics/engine/lightman.h"
 #include "graphics/engine/lightning.h"
 #include "graphics/engine/modelmanager.h"
 #include "graphics/engine/particle.h"
-#include "graphics/engine/pyro.h"
+#include "graphics/engine/pyro_manager.h"
 #include "graphics/engine/terrain.h"
 
 #include "math/geometry.h"
@@ -201,10 +200,6 @@ CObject::CObject(int id)
     m_main        = CRobotMain::GetInstancePointer();
     m_terrain     = m_main->GetTerrain();
     m_camera      = m_main->GetCamera();
-    m_physics     = nullptr;
-    m_brain       = nullptr;
-    m_motion      = nullptr;
-    m_auto        = nullptr;
     m_runScript   = nullptr;
 
     m_type = OBJECT_FIX;
@@ -321,23 +316,12 @@ CObject::CObject(int id)
 
 CObject::~CObject()
 {
-    if ( m_botVar != 0 )
+    if ( m_botVar != nullptr )
     {
         m_botVar->SetUserPtr(OBJECTDELETED);
         delete m_botVar;
         m_botVar = nullptr;
     }
-
-    delete m_physics;
-    m_physics = nullptr;
-    delete m_brain;
-    m_brain = nullptr;
-    delete m_motion;
-    m_motion = nullptr;
-    delete m_auto;
-    m_auto = nullptr;
-
-    m_app = nullptr;
 }
 
 
@@ -356,9 +340,6 @@ void CObject::DeleteObject(bool bAll)
     {
         m_camera->SetControllingObject(0);
     }
-
-
-    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
 
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
@@ -388,13 +369,7 @@ void CObject::DeleteObject(bool bAll)
             }
         }
 #endif
-        for (int i=0 ; i<1000000 ; i++ )
-        {
-            Gfx::CPyro* pyro = static_cast<Gfx::CPyro*>(iMan->SearchInstance(CLASS_PYRO, i));
-            if ( pyro == nullptr )  break;
-
-            pyro->CutObjectLink(this);  // the object no longer exists
-        }
+        m_engine->GetPyroManager()->CutObjectLink(this);
 
         if ( m_bSelect )
         {
@@ -445,22 +420,22 @@ void CObject::DeleteObject(bool bAll)
         m_effectLight = -1;
     }
 
-    if ( m_physics != 0 )
+    if ( m_physics != nullptr )
     {
         m_physics->DeleteObject(bAll);
     }
 
-    if ( m_brain != 0 )
+    if ( m_brain != nullptr )
     {
         m_brain->DeleteObject(bAll);
     }
 
-    if ( m_motion != 0 )
+    if ( m_motion != nullptr )
     {
         m_motion->DeleteObject(bAll);
     }
 
-    if ( m_auto != 0 )
+    if ( m_auto != nullptr )
     {
         m_auto->DeleteObject(bAll);
     }
@@ -493,38 +468,34 @@ void CObject::DeleteObject(bool bAll)
 
 void CObject::Simplify()
 {
-    if ( m_brain != 0 )
+    if ( m_brain != nullptr )
     {
         m_brain->StopProgram();
     }
     m_main->SaveOneScript(this);
 
-    if ( m_physics != 0 )
+    if ( m_physics != nullptr )
     {
         m_physics->DeleteObject();
-        delete m_physics;
-        m_physics = 0;
+        m_physics.reset();
     }
 
-    if ( m_brain != 0 )
+    if ( m_brain != nullptr )
     {
         m_brain->DeleteObject();
-        delete m_brain;
-        m_brain = 0;
+        m_brain.reset();
     }
 
-    if ( m_motion != 0 )
+    if ( m_motion != nullptr )
     {
         m_motion->DeleteObject();
-        delete m_motion;
-        m_motion = 0;
+        m_motion.reset();
     }
 
-    if ( m_auto != 0 )
+    if ( m_auto != nullptr )
     {
         m_auto->DeleteObject();
-        delete m_auto;
-        m_auto = 0;
+        m_auto.reset();
     }
 
     m_main->CreateShortcuts();
@@ -538,7 +509,6 @@ void CObject::Simplify()
 bool CObject::ExploObject(ExploType type, float force, float decay)
 {
     Gfx::PyroType    pyroType;
-    Gfx::CPyro*      pyro;
     float       loss, shield;
 
     if ( type == EXPLO_BURN )
@@ -722,12 +692,11 @@ bool CObject::ExploObject(ExploType type, float force, float decay)
         loss = 1.0f;
     }
 
-    pyro = new Gfx::CPyro();
-    pyro->Create(pyroType, this, loss);
+    m_engine->GetPyroManager()->Create(pyroType, this, loss);
 
     if ( shield == 0.0f )  // dead?
     {
-        if ( m_brain != 0 )
+        if ( m_brain != nullptr )
         {
             m_brain->StopProgram();
         }
@@ -1335,7 +1304,7 @@ void CObject::SetFloorHeight(float height)
     pos = m_objectPart[0].position;
     m_terrain->AdjustToFloor(pos);
 
-    if ( m_physics != 0 )
+    if ( m_physics != nullptr )
     {
         m_physics->SetLand(height == 0.0f);
         m_physics->SetMotor(height != 0.0f);
@@ -1444,7 +1413,7 @@ void CObject::SetPosition(int part, const Math::Vector &pos)
         m_terrain->AdjustToFloor(shPos, true);
         m_engine->SetObjectShadowPos(rank, shPos);
 
-        if ( m_physics != 0 && m_physics->GetType() == TYPE_FLYING )
+        if ( m_physics != nullptr && m_physics->GetType() == TYPE_FLYING )
         {
             height = pos.y-shPos.y;
         }
@@ -2084,7 +2053,7 @@ bool CObject::CreateShadowCircle(float radius, float intensity,
 
 bool CObject::ReadProgram(Program* program, const char* filename)
 {
-    if ( m_brain != 0 )
+    if ( m_brain != nullptr )
     {
         return m_brain->ReadProgram(program, filename);
     }
@@ -2095,7 +2064,7 @@ bool CObject::ReadProgram(Program* program, const char* filename)
 
 bool CObject::WriteProgram(Program* program, char* filename)
 {
-    if ( m_brain != 0 )
+    if ( m_brain != nullptr )
     {
         return m_brain->WriteProgram(program, filename);
     }
@@ -2393,7 +2362,7 @@ bool CObject::EventProcess(const Event &event)
 #endif
     }
 
-    if ( m_physics != 0 )
+    if ( m_physics != nullptr )
     {
         if ( !m_physics->EventProcess(event) )  // object destroyed?
         {
@@ -2409,7 +2378,7 @@ bool CObject::EventProcess(const Event &event)
         }
     }
 
-    if ( m_auto != 0 )
+    if ( m_auto != nullptr )
     {
         m_auto->EventProcess(event);
 
@@ -2417,12 +2386,11 @@ bool CObject::EventProcess(const Event &event)
              m_auto->IsEnded() != ERR_CONTINUE )
         {
             m_auto->DeleteObject();
-            delete m_auto;
-            m_auto = 0;
+            m_auto.reset();
         }
     }
 
-    if ( m_motion != 0 )
+    if ( m_motion != nullptr )
     {
         m_motion->EventProcess(event);
     }
@@ -2460,19 +2428,14 @@ bool CObject::EventFrame(const Event &event)
 
     if ( m_bProxyActivate )  // active if it is near?
     {
-        Gfx::CPyro*      pyro;
-        Math::Vector    eye;
-        float       dist;
-
-        eye = m_engine->GetLookatPt();
-        dist = Math::Distance(eye, GetPosition(0));
+        Math::Vector eye = m_engine->GetLookatPt();
+        float dist = Math::Distance(eye, GetPosition(0));
         if ( dist < m_proxyDistance )
         {
             m_bProxyActivate = false;
             m_main->CreateShortcuts();
             m_sound->Play(SOUND_FINDING);
-            pyro = new Gfx::CPyro();
-            pyro->Create(Gfx::PT_FINDING, this, 0.0f);
+            m_engine->GetPyroManager()->Create(Gfx::PT_FINDING, this, 0.0f);
             m_main->DisplayError(INFO_FINDING, this);
         }
     }
@@ -2694,7 +2657,7 @@ void CObject::SetViewFromHere(Math::Vector &eye, float &dirH, float &dirV,
 
     // Camera tilts when turning.
     upVec = Math::Vector(0.0f, 1.0f, 0.0f);
-    if ( m_physics != 0 )
+    if ( m_physics != nullptr )
     {
         if ( m_physics->GetLand() )  // on ground?
         {
@@ -2935,17 +2898,17 @@ bool CObject::JostleObject(float force)
          m_type == OBJECT_FLAGy ||
          m_type == OBJECT_FLAGv )  // flag?
     {
-        if ( m_auto == 0 )  return false;
+        if ( m_auto == nullptr )  return false;
 
         m_auto->Start(1);
     }
     else
     {
-        if ( m_auto != 0 )  return false;
+        if ( m_auto != nullptr )  return false;
 
-        m_auto = new CAutoJostle(this);
-        CAutoJostle* pa = static_cast<CAutoJostle*>(m_auto);
-        pa->Start(0, force);
+        std::unique_ptr<CAutoJostle> autoJostle{new CAutoJostle(this)};
+        autoJostle->Start(0, force);
+        m_auto = std::move(autoJostle);
     }
 
     return true;
@@ -3000,7 +2963,7 @@ void CObject::SetVirusMode(bool bEnable)
     m_bVirusMode = bEnable;
     m_virusTime = 0.0f;
 
-    if ( m_bVirusMode && m_brain != 0 )
+    if ( m_bVirusMode && m_brain != nullptr )
     {
         if ( !m_brain->IntroduceVirus() )  // tries to infect
         {
@@ -3093,12 +3056,12 @@ void CObject::SetSelect(bool bMode, bool bDisplayError)
 
     m_bSelect = bMode;
 
-    if ( m_physics != 0 )
+    if ( m_physics != nullptr )
     {
         m_physics->CreateInterface(m_bSelect);
     }
 
-    if ( m_auto != 0 )
+    if ( m_auto != nullptr )
     {
         m_auto->CreateInterface(m_bSelect);
     }
@@ -3112,11 +3075,11 @@ void CObject::SetSelect(bool bMode, bool bDisplayError)
     }
 
     err = ERR_OK;
-    if ( m_physics != 0 )
+    if ( m_physics != nullptr )
     {
         err = m_physics->GetError();
     }
-    if ( m_auto != 0 )
+    if ( m_auto != nullptr )
     {
         err = m_auto->GetError();
     }
@@ -3154,7 +3117,7 @@ bool CObject::GetSelectable()
 
 void CObject::SetActivity(bool bMode)
 {
-    if ( m_brain != 0 )
+    if ( m_brain != nullptr )
     {
         m_brain->SetActivity(bMode);
     }
@@ -3162,7 +3125,7 @@ void CObject::SetActivity(bool bMode)
 
 bool CObject::GetActivity()
 {
-    if ( m_brain != 0 )
+    if ( m_brain != nullptr )
     {
         return m_brain->GetActivity();
     }
@@ -3340,7 +3303,7 @@ void CObject::SetDead(bool bDead)
 {
     m_bDead = bDead;
 
-    if ( bDead && m_brain != 0 )
+    if ( bDead && m_brain != nullptr )
     {
         m_brain->StopProgram();  // stops the current task
     }
@@ -3475,7 +3438,7 @@ void CObject::SetShowLimitRadius(float radius)
 
 bool CObject::IsProgram()
 {
-    if ( m_brain == 0 )  return false;
+    if ( m_brain == nullptr )  return false;
     return m_brain->IsProgram();
 }
 
@@ -3718,48 +3681,48 @@ CBotVar* CObject::GetBotVar()
 
 CPhysics* CObject::GetPhysics()
 {
-    return m_physics;
+    return m_physics.get();
 }
 
-void CObject::SetPhysics(CPhysics* physics)
+void CObject::SetPhysics(std::unique_ptr<CPhysics> physics)
 {
-    m_physics = physics;
+    m_physics = std::move(physics);
 }
 
 // Returns the brain associated to the object.
 
 CBrain* CObject::GetBrain()
 {
-    return m_brain;
+    return m_brain.get();
 }
 
-void CObject::SetBrain(CBrain* brain)
+void CObject::SetBrain(std::unique_ptr<CBrain> brain)
 {
-    m_brain = brain;
+    m_brain = std::move(brain);
 }
 
 // Returns the movement associated to the object.
 
 CMotion* CObject::GetMotion()
 {
-    return m_motion;
+    return m_motion.get();
 }
 
-void CObject::SetMotion(CMotion* motion)
+void CObject::SetMotion(std::unique_ptr<CMotion> motion)
 {
-    m_motion = motion;
+    m_motion = std::move(motion);
 }
 
 // Returns the controller associated to the object.
 
 CAuto* CObject::GetAuto()
 {
-    return m_auto;
+    return m_auto.get();
 }
 
-void CObject::SetAuto(CAuto* automat)
+void CObject::SetAuto(std::unique_ptr<CAuto> automat)
 {
-    m_auto = automat;
+    m_auto = std::move(automat);
 }
 
 
@@ -3837,7 +3800,7 @@ void CObject::DeleteDeselList(CObject* pObj)
 bool CObject::GetTraceDown()
 {
     if (m_motion == nullptr) return false;
-    CMotionVehicle* mv = dynamic_cast<CMotionVehicle*>(m_motion);
+    CMotionVehicle* mv = dynamic_cast<CMotionVehicle*>(m_motion.get());
     if (mv == nullptr)
     {
         GetLogger()->Trace("GetTraceDown() invalid m_motion class!\n");
@@ -3849,7 +3812,7 @@ bool CObject::GetTraceDown()
 void CObject::SetTraceDown(bool bDown)
 {
     if (m_motion == nullptr) return;
-    CMotionVehicle* mv = dynamic_cast<CMotionVehicle*>(m_motion);
+    CMotionVehicle* mv = dynamic_cast<CMotionVehicle*>(m_motion.get());
     if (mv == nullptr)
     {
         GetLogger()->Trace("SetTraceDown() invalid m_motion class!\n");
@@ -3861,7 +3824,7 @@ void CObject::SetTraceDown(bool bDown)
 int CObject::GetTraceColor()
 {
     if (m_motion == nullptr) return 0;
-    CMotionVehicle* mv = dynamic_cast<CMotionVehicle*>(m_motion);
+    CMotionVehicle* mv = dynamic_cast<CMotionVehicle*>(m_motion.get());
     if (mv == nullptr)
     {
         GetLogger()->Trace("GetTraceColor() invalid m_motion class!\n");
@@ -3873,7 +3836,7 @@ int CObject::GetTraceColor()
 void CObject::SetTraceColor(int color)
 {
     if (m_motion == nullptr) return;
-    CMotionVehicle* mv = dynamic_cast<CMotionVehicle*>(m_motion);
+    CMotionVehicle* mv = dynamic_cast<CMotionVehicle*>(m_motion.get());
     if (mv == nullptr)
     {
         GetLogger()->Trace("SetTraceColor() invalid m_motion class!\n");
@@ -3885,7 +3848,7 @@ void CObject::SetTraceColor(int color)
 float CObject::GetTraceWidth()
 {
     if (m_motion == nullptr) return 0.0f;
-    CMotionVehicle* mv = dynamic_cast<CMotionVehicle*>(m_motion);
+    CMotionVehicle* mv = dynamic_cast<CMotionVehicle*>(m_motion.get());
     if (mv == nullptr)
     {
         GetLogger()->Trace("GetTraceWidth() invalid m_motion class!\n");
@@ -3897,7 +3860,7 @@ float CObject::GetTraceWidth()
 void CObject::SetTraceWidth(float width)
 {
     if (m_motion == nullptr) return;
-    CMotionVehicle* mv = dynamic_cast<CMotionVehicle*>(m_motion);
+    CMotionVehicle* mv = dynamic_cast<CMotionVehicle*>(m_motion.get());
     if (mv == nullptr)
     {
         GetLogger()->Trace("SetTraceWidth() invalid m_motion class!\n");

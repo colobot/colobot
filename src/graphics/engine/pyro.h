@@ -28,9 +28,10 @@
 #include "common/event.h"
 #include "common/global.h"
 
-#include "graphics/engine/engine.h"
+#include "graphics/core/color.h"
+#include "graphics/engine/pyro_type.h"
 
-#include "object/object.h"
+#include "object/object_type.h"
 
 
 class CObject;
@@ -46,40 +47,7 @@ class CTerrain;
 class CCamera;
 class CParticle;
 class CLight;
-
-
-/**
- * \enum PyroType
- * \brief Type of pyro effect
- */
-enum PyroType
-{
-    PT_NULL     = 0,
-    PT_FRAGT    = 1,        //! < fragmentation of technical object
-    PT_FRAGO    = 2,        //! < fragmentation of organic object
-    PT_FRAGW    = 4,        //! < fragmentation of object under water
-    PT_EXPLOT   = 5,        //! < explosion of technical object
-    PT_EXPLOO   = 6,        //! < explosion of organic object
-    PT_EXPLOW   = 8,        //! < explosion of object under water
-    PT_SHOTT    = 9,        //! < hit technical object
-    PT_SHOTH    = 10,       //! < hit human
-    PT_SHOTM    = 11,       //! < hit queen
-    PT_SHOTW    = 12,       //! < hit under water
-    PT_EGG      = 13,       //! < break the egg
-    PT_BURNT    = 14,       //! < burning of technical object
-    PT_BURNO    = 15,       //! < burning of organic object
-    PT_SPIDER   = 16,       //! < spider explosion
-    PT_FALL     = 17,       //! < cargo falling
-    PT_WPCHECK  = 18,       //! < indicator reaches
-    PT_FLCREATE = 19,       //! < flag create
-    PT_FLDELETE = 20,       //! < flag destroy
-    PT_RESET    = 21,       //! < reset position of the object
-    PT_WIN      = 22,       //! < fireworks
-    PT_LOST     = 23,       //! < black smoke
-    PT_DEADG    = 24,       //! < shooting death
-    PT_DEADW    = 25,       //! < drowning death
-    PT_FINDING  = 26,       //! < object discovered
-};
+class CLightManager;
 
 
 struct PyroBurnPart
@@ -107,14 +75,17 @@ struct PyroLightOper
  */
 class CPyro
 {
-public:
-    CPyro();
-    ~CPyro();
+protected:
+    friend class CPyroManager;
 
+    CPyro();
     //! Creates pyrotechnic effect
-    bool        Create(PyroType type, CObject* obj, float force=1.0f);
+    bool        Create(PyroType type, CObject* obj, float force);
     //! Destroys the object
     void        DeleteObject();
+
+public:
+    ~CPyro();
 
     //! Indicates whether the pyrotechnic effect is complete
     Error       IsEnded();

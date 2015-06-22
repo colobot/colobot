@@ -3483,9 +3483,9 @@ CObjectUPtr CObjectFactory::CreateVehicle(const ObjectCreateParams& params)
 
     if ( type == OBJECT_TOTO )
     {
-        CMotion* motion = new CMotionToto(obj.get());
+        std::unique_ptr<CMotion> motion{new CMotionToto(obj.get())};
         motion->Create(pos, angle, type, 1.0f, m_modelManager);
-        obj->SetMotion(motion);
+        obj->SetMotion(std::move(motion));
         return obj;
     }
 
@@ -3500,15 +3500,6 @@ CObjectUPtr CObjectFactory::CreateVehicle(const ObjectCreateParams& params)
     }
 
     obj->SetToy(toy);
-
-    CPhysics* physics = new CPhysics(obj.get());
-    CBrain* brain = new CBrain(obj.get());
-
-    physics->SetBrain(brain);
-    brain->SetPhysics(physics);
-
-    obj->SetPhysics(physics);
-    obj->SetBrain(brain);
 
     float showLimitRadius = 0.0f;
 #if 0
@@ -3541,29 +3532,36 @@ CObjectUPtr CObjectFactory::CreateVehicle(const ObjectCreateParams& params)
     }
     obj->SetShowLimitRadius(showLimitRadius);
 
-    CMotion* motion = nullptr;
+    std::unique_ptr<CPhysics> physics{new CPhysics(obj.get())};
+    std::unique_ptr<CBrain> brain{new CBrain(obj.get())};
+    std::unique_ptr<CMotion> motion;
 
     if ( type == OBJECT_HUMAN ||
          type == OBJECT_TECH  )
     {
-        motion = new CMotionHuman(obj.get());
+        motion.reset(new CMotionHuman(obj.get()));
     }
     else if ( type == OBJECT_CONTROLLER )
     {
-        motion = new CMotionDummy(obj.get()); //dummy object
+        motion.reset(new CMotionDummy(obj.get())); //dummy object
     }
     else
     {
-        motion = new CMotionVehicle(obj.get());
+        motion.reset(new CMotionVehicle(obj.get()));
     }
 
-    physics->SetMotion(motion);
-    brain->SetMotion(motion);
-    motion->SetPhysics(physics);
-    motion->SetBrain(brain);
+    brain->SetMotion(motion.get());
+    brain->SetPhysics(physics.get());
+    motion->SetBrain(brain.get());
+    motion->SetPhysics(physics.get());
+    physics->SetBrain(brain.get());
+    physics->SetMotion(motion.get());
+
     motion->Create(pos, angle, type, power, m_modelManager);
 
-    obj->SetMotion(motion);
+    obj->SetBrain(std::move(brain));
+    obj->SetMotion(std::move(motion));
+    obj->SetPhysics(std::move(physics));
 
     return obj;
 }
@@ -3580,45 +3578,44 @@ CObjectUPtr CObjectFactory::CreateInsect(const ObjectCreateParams& params)
 
     obj->SetType(type);
 
-    CPhysics* physics = new CPhysics(obj.get());
-    CBrain* brain = new CBrain(obj.get());
+    std::unique_ptr<CPhysics> physics{new CPhysics(obj.get())};
+    std::unique_ptr<CBrain> brain{new CBrain(obj.get())};
 
-    physics->SetBrain(brain);
-    brain->SetPhysics(physics);
-
-    obj->SetPhysics(physics);
-    obj->SetBrain(brain);
-
-    CMotion* motion = nullptr;
+    std::unique_ptr<CMotion> motion;
     if ( type == OBJECT_MOTHER )
     {
-        motion = new CMotionMother(obj.get());
+        motion.reset(new CMotionMother(obj.get()));
     }
     if ( type == OBJECT_ANT )
     {
-        motion = new CMotionAnt(obj.get());
+        motion.reset(new CMotionAnt(obj.get()));
     }
     if ( type == OBJECT_SPIDER )
     {
-        motion = new CMotionSpider(obj.get());
+        motion.reset(new CMotionSpider(obj.get()));
     }
     if ( type == OBJECT_BEE )
     {
-        motion = new CMotionBee(obj.get());
+        motion.reset(new CMotionBee(obj.get()));
     }
     if ( type == OBJECT_WORM )
     {
-        motion = new CMotionWorm(obj.get());
+        motion.reset(new CMotionWorm(obj.get()));
     }
+    assert(motion != nullptr);
 
-    physics->SetMotion(motion);
-    brain->SetMotion(motion);
-    motion->SetPhysics(physics);
-    motion->SetBrain(brain);
+    physics->SetBrain(brain.get());
+    physics->SetMotion(motion.get());
+    brain->SetMotion(motion.get());
+    brain->SetPhysics(physics.get());
+    motion->SetBrain(brain.get());
+    motion->SetPhysics(physics.get());
 
     motion->Create(pos, angle, type, 0.0f, m_modelManager);
 
-    obj->SetMotion(motion);
+    obj->SetMotion(std::move(motion));
+    obj->SetPhysics(std::move(physics));
+    obj->SetBrain(std::move(brain));
 
     return obj;
 }
@@ -3627,97 +3624,97 @@ CObjectUPtr CObjectFactory::CreateInsect(const ObjectCreateParams& params)
 
 void CObjectFactory::AddObjectAuto(CObject* obj)
 {
-    CAuto* objAuto = nullptr;
+    std::unique_ptr<CAuto> objAuto;
 
     auto type = obj->GetType();
 
     if ( type == OBJECT_BASE )
     {
-        objAuto = new CAutoBase(obj);
+        objAuto.reset(new CAutoBase(obj));
     }
     if ( type == OBJECT_PORTICO )
     {
-        objAuto = new CAutoPortico(obj);
+        objAuto.reset(new CAutoPortico(obj));
     }
     if ( type == OBJECT_DERRICK )
     {
-        objAuto = new CAutoDerrick(obj);
+        objAuto.reset(new CAutoDerrick(obj));
     }
     if ( type == OBJECT_FACTORY )
     {
-        objAuto = new CAutoFactory(obj);
+        objAuto.reset(new CAutoFactory(obj));
     }
     if ( type == OBJECT_REPAIR )
     {
-        objAuto = new CAutoRepair(obj);
+        objAuto.reset(new CAutoRepair(obj));
     }
     if ( type == OBJECT_DESTROYER )
     {
-        objAuto = new CAutoDestroyer(obj);
+        objAuto.reset(new CAutoDestroyer(obj));
     }
     if ( type == OBJECT_STATION )
     {
-        objAuto = new CAutoStation(obj);
+        objAuto.reset(new CAutoStation(obj));
     }
     if ( type == OBJECT_CONVERT )
     {
-        objAuto = new CAutoConvert(obj);
+        objAuto.reset(new CAutoConvert(obj));
     }
     if ( type == OBJECT_TOWER )
     {
-        objAuto = new CAutoTower(obj);
+        objAuto.reset(new CAutoTower(obj));
     }
     if ( type == OBJECT_RESEARCH )
     {
-        objAuto = new CAutoResearch(obj);
+        objAuto.reset(new CAutoResearch(obj));
     }
     if ( type == OBJECT_RADAR )
     {
-        objAuto = new CAutoRadar(obj);
+        objAuto.reset(new CAutoRadar(obj));
     }
     if ( type == OBJECT_INFO )
     {
-        objAuto = new CAutoInfo(obj);
+        objAuto.reset(new CAutoInfo(obj));
     }
     if ( type == OBJECT_ENERGY )
     {
-        objAuto = new CAutoEnergy(obj);
+        objAuto.reset(new CAutoEnergy(obj));
     }
     if ( type == OBJECT_LABO )
     {
-        objAuto = new CAutoLabo(obj);
+        objAuto.reset(new CAutoLabo(obj));
     }
     if ( type == OBJECT_NUCLEAR )
     {
-        objAuto = new CAutoNuclear(obj);
+        objAuto.reset(new CAutoNuclear(obj));
     }
     if ( type == OBJECT_PARA )
     {
-        objAuto = new CAutoPara(obj);
+        objAuto.reset(new CAutoPara(obj));
     }
     if ( type == OBJECT_SAFE )
     {
-        objAuto = new CAutoSafe(obj);
+        objAuto.reset(new CAutoSafe(obj));
     }
     if ( type == OBJECT_HUSTON )
     {
-        objAuto = new CAutoHuston(obj);
+        objAuto.reset(new CAutoHuston(obj));
     }
     if ( type == OBJECT_EGG )
     {
-        objAuto = new CAutoEgg(obj);
+        objAuto.reset(new CAutoEgg(obj));
     }
     if ( type == OBJECT_NEST )
     {
-        objAuto = new CAutoNest(obj);
+        objAuto.reset(new CAutoNest(obj));
     }
     if ( type == OBJECT_ROOT5 )
     {
-        objAuto = new CAutoRoot(obj);
+        objAuto.reset(new CAutoRoot(obj));
     }
     if ( type == OBJECT_MUSHROOM2 )
     {
-        objAuto = new CAutoMush(obj);
+        objAuto.reset(new CAutoMush(obj));
     }
     if ( type == OBJECT_FLAGb ||
          type == OBJECT_FLAGr ||
@@ -3725,18 +3722,18 @@ void CObjectFactory::AddObjectAuto(CObject* obj)
          type == OBJECT_FLAGy ||
          type == OBJECT_FLAGv )
     {
-        objAuto = new CAutoFlag(obj);
+        objAuto.reset(new CAutoFlag(obj));
     }
     if ( type == OBJECT_TEEN36 ||  // trunk?
          type == OBJECT_TEEN37 ||  // boat?
          type == OBJECT_TEEN38 )   // fan?
     {
-        objAuto = new CAutoKid(obj);
+        objAuto.reset(new CAutoKid(obj));
     }
 
     if (objAuto != nullptr)
     {
-        obj->SetAuto(objAuto);
         objAuto->Init();
+        obj->SetAuto(std::move(objAuto));
     }
 }

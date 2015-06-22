@@ -35,7 +35,7 @@
 #include "graphics/engine/modelmanager.h"
 #include "graphics/engine/particle.h"
 #include "graphics/engine/planet.h"
-#include "graphics/engine/pyro.h"
+#include "graphics/engine/pyro_manager.h"
 #include "graphics/engine/terrain.h"
 #include "graphics/engine/text.h"
 #include "graphics/engine/water.h"
@@ -245,6 +245,11 @@ CModelManager* CEngine::GetModelManager()
     return m_modelManager.get();
 }
 
+CPyroManager* CEngine::GetPyroManager()
+{
+    return m_pyroManager.get();
+}
+
 CText* CEngine::GetText()
 {
     return m_text;
@@ -295,6 +300,7 @@ bool CEngine::Create()
     m_size = m_app->GetVideoConfig().size;
 
     m_modelManager.reset(new CModelManager(this));
+    m_pyroManager.reset(new CPyroManager());
     m_lightMan   = new CLightManager(this);
     m_text       = new CText(this);
     m_particle   = new CParticle(this);
@@ -374,7 +380,7 @@ void CEngine::ResetAfterDeviceChanged()
     m_text->FlushCache();
 
     FlushTextureCache();
-    
+
     LoadAllTextures();
 }
 
@@ -489,7 +495,7 @@ bool CEngine::WriteScreenShot(const std::string& fileName, int width, int height
     else{
        GetLogger()->Error("%s!\n",img.GetError().c_str());
        return false;
-    }   
+    }
 }
 
 bool CEngine::GetPause()
@@ -2220,7 +2226,7 @@ void CEngine::SetState(int state, const Color& color)
 
     if (state & ENG_RSTATE_FOG)
         m_device->SetRenderState(RENDER_STATE_FOG, true);
-    
+
 
     bool second = m_groundSpotVisible || m_dirty;
 
@@ -3011,7 +3017,7 @@ void CEngine::SetTextureAnisotropyLevel(int value)
 {
     if (value < 1) value = 1;
     if (value > 16) value = 16;
-    
+
     m_textureAnisotropy = value;
 }
 
@@ -3294,8 +3300,8 @@ void CEngine::Draw3DScene()
 
     m_app->StartPerformanceCounter(PCNT_RENDER_TERRAIN);
 
-    // Draw terrain 
-    
+    // Draw terrain
+
     m_lightMan->UpdateDeviceLights(ENG_OBJTYPE_TERRAIN);
 
     UseShadowMapping(true);
@@ -3359,7 +3365,7 @@ void CEngine::Draw3DScene()
         // Draws the shadows , if shadows enabled
 	if (m_shadowVisible)
         DrawShadow();
-    
+
 
     m_app->StopPerformanceCounter(PCNT_RENDER_TERRAIN);
 
@@ -5017,17 +5023,17 @@ void CEngine::DrawStats()
     pos.y -= height;
 
     m_text->DrawText(m_fpsText, FONT_COLOBOT, 12.0f, pos, 1.0f, TEXT_ALIGN_LEFT, 0, Color(1.0f, 1.0f, 1.0f, 1.0f));
-    
-    
+
+
     pos.y -= height;
     pos.y -= height;
-    
+
     str.str("");
     str << "Position x: " << std::fixed << std::setprecision(2) << m_statisticPos.x/g_unit;
     m_text->DrawText(str.str(), FONT_COLOBOT, 12.0f, pos, 1.0f, TEXT_ALIGN_LEFT, 0, Color(1.0f, 1.0f, 1.0f, 1.0f));
-    
+
     pos.y -= height;
-    
+
     str.str("");
     str << "Position y: " << std::fixed << std::setprecision(2) << m_statisticPos.z/g_unit;
     m_text->DrawText(str.str(), FONT_COLOBOT, 12.0f, pos, 1.0f, TEXT_ALIGN_LEFT, 0, Color(1.0f, 1.0f, 1.0f, 1.0f));
@@ -5036,7 +5042,7 @@ void CEngine::DrawStats()
 void CEngine::DrawTimer()
 {
     SetState(ENG_RSTATE_TEXT);
-    
+
     Math::Point pos(0.98f, 0.98f-m_text->GetAscent(FONT_COLOBOT, 15.0f));
     m_text->DrawText(m_timerText, FONT_COLOBOT, 15.0f, pos, 1.0f, TEXT_ALIGN_RIGHT, 0, Color(1.0f, 1.0f, 1.0f, 1.0f));
 }

@@ -21,7 +21,6 @@
 #include "common/config.h"
 #include "common/logger.h"
 #include "common/image.h"
-#include "common/iman.h"
 
 #include "graphics/opengl/gldevice.h"
 
@@ -29,7 +28,6 @@
 
 #include <SDL.h>
 #include <SDL_image.h>
-#include <unistd.h>
 
 #include <iostream>
 #include <map>

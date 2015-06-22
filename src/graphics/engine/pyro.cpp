@@ -22,7 +22,6 @@
 
 #include "app/app.h"
 
-#include "common/iman.h"
 #include "common/logger.h"
 
 #include "graphics/engine/lightman.h"
@@ -42,8 +41,6 @@ namespace Gfx {
 
 CPyro::CPyro()
 {
-    CInstanceManager::GetInstancePointer()->AddInstance(CLASS_PYRO, this, 100);
-
     m_engine      = CEngine::GetInstancePointer();
     m_main        = CRobotMain::GetInstancePointer();
     m_terrain     = m_main->GetTerrain();
@@ -62,7 +59,6 @@ CPyro::CPyro()
 
 CPyro::~CPyro()
 {
-    CInstanceManager::GetInstancePointer()->DeleteInstance(CLASS_PYRO, this);
 }
 
 void CPyro::DeleteObject()

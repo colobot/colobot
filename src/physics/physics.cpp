@@ -28,7 +28,7 @@
 #include "graphics/engine/camera.h"
 #include "graphics/engine/engine.h"
 #include "graphics/engine/lightman.h"
-#include "graphics/engine/pyro.h"
+#include "graphics/engine/pyro_manager.h"
 #include "graphics/engine/terrain.h"
 #include "graphics/engine/water.h"
 
@@ -2507,7 +2507,6 @@ void CPhysics::FloorAngle(const Math::Vector &pos, Math::Vector &angle)
 
 int CPhysics::ObjectAdapt(const Math::Vector &pos, const Math::Vector &angle)
 {
-    Gfx::CPyro*     pyro;
     CPhysics*       ph;
     Math::Matrix    matRotate;
     Math::Vector    iPos, oPos, iiPos, oAngle, oSpeed;
@@ -2584,8 +2583,7 @@ int CPhysics::ObjectAdapt(const Math::Vector &pos, const Math::Vector &angle)
             if ( distance < 4.0f )
             {
                 m_sound->Play(SOUND_WAYPOINT, m_object->GetPosition(0));
-                pyro = new Gfx::CPyro();
-                pyro->Create(Gfx::PT_WPCHECK, pObj);
+                m_engine->GetPyroManager()->Create(Gfx::PT_WPCHECK, pObj);
             }
         }
 
@@ -2596,8 +2594,7 @@ int CPhysics::ObjectAdapt(const Math::Vector &pos, const Math::Vector &angle)
             if ( distance < 10.0f*1.5f )
             {
                 m_sound->Play(SOUND_WAYPOINT, m_object->GetPosition(0));
-                pyro = new Gfx::CPyro();
-                pyro->Create(Gfx::PT_WPCHECK, pObj);
+                m_engine->GetPyroManager()->Create(Gfx::PT_WPCHECK, pObj);
             }
         }
 
@@ -2748,8 +2745,6 @@ bool CPhysics::JostleObject(CObject* pObj, float force)
 bool CPhysics::ExploOther(ObjectType iType,
                           CObject *pObj, ObjectType oType, float force)
 {
-    Gfx::CPyro* pyro;
-
     if ( !pObj->GetEnable() )  return true;
 
     JostleObject(pObj, 1.0f);  // shakes the object
@@ -2758,24 +2753,21 @@ bool CPhysics::ExploOther(ObjectType iType,
          (oType == OBJECT_FRET  ||
           oType == OBJECT_METAL ) )
     {
-        pyro = new Gfx::CPyro();
-        pyro->Create(Gfx::PT_EXPLOT, pObj);  // total destruction
+        m_engine->GetPyroManager()->Create(Gfx::PT_EXPLOT, pObj);  // total destruction
     }
 
     if ( force > 50.0f &&
          (oType == OBJECT_POWER   ||
           oType == OBJECT_ATOMIC  ) )
     {
-        pyro = new Gfx::CPyro();
-        pyro->Create(Gfx::PT_FRAGT, pObj);  // total destruction
+        m_engine->GetPyroManager()->Create(Gfx::PT_FRAGT, pObj);  // total destruction
     }
 
     if ( force > 25.0f &&
          (oType == OBJECT_STONE   ||
           oType == OBJECT_URANIUM ) )
     {
-        pyro = new Gfx::CPyro();
-        pyro->Create(Gfx::PT_FRAGT, pObj);  // total destruction
+        m_engine->GetPyroManager()->Create(Gfx::PT_FRAGT, pObj);  // total destruction
     }
 
     if ( force > 25.0f &&
@@ -2835,15 +2827,13 @@ bool CPhysics::ExploOther(ObjectType iType,
          (oType == OBJECT_MOBILEtg ||
           oType == OBJECT_TNT      ) )
     {
-        pyro = new Gfx::CPyro();
-        pyro->Create(Gfx::PT_FRAGT, pObj);  // total destruction
+        m_engine->GetPyroManager()->Create(Gfx::PT_FRAGT, pObj);  // total destruction
     }
 
     if ( force > 0.0f &&
          oType == OBJECT_BOMB )
     {
-        pyro = new Gfx::CPyro();
-        pyro->Create(Gfx::PT_FRAGT, pObj);  // total destruction
+        m_engine->GetPyroManager()->Create(Gfx::PT_FRAGT, pObj);  // total destruction
     }
 
     return false;
@@ -2856,23 +2846,22 @@ bool CPhysics::ExploOther(ObjectType iType,
 
 int CPhysics::ExploHimself(ObjectType iType, ObjectType oType, float force)
 {
-    Gfx::PyroType    type;
-    Gfx::CPyro*      pyro;
 
     if ( force > 10.0f &&
          (oType == OBJECT_TNT      ||
           oType == OBJECT_MOBILEtg ) )
     {
+        Gfx::PyroType type;
         if ( iType == OBJECT_HUMAN )  type = Gfx::PT_DEADG;
         else                          type = Gfx::PT_EXPLOT;
-        pyro = new Gfx::CPyro();
-        pyro->Create(type, m_object);  // total destruction
+        m_engine->GetPyroManager()->Create(type, m_object);  // total destruction
         return 2;
     }
 
     if ( force > 0.0f &&
          oType == OBJECT_BOMB )
     {
+        Gfx::PyroType type;
         if ( iType == OBJECT_HUMAN )
         {
             type = Gfx::PT_DEADG;
@@ -2887,8 +2876,7 @@ int CPhysics::ExploHimself(ObjectType iType, ObjectType oType, float force)
         {
             type = Gfx::PT_EXPLOT;
         }
-        pyro = new Gfx::CPyro();
-        pyro->Create(type, m_object);  // total destruction
+        m_engine->GetPyroManager()->Create(type, m_object);  // total destruction
         return 2;
     }
 

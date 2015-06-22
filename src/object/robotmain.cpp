@@ -30,7 +30,6 @@
 
 #include "common/event.h"
 #include "common/global.h"
-#include "common/iman.h"
 #include "common/logger.h"
 #include "common/misc.h"
 #include "common/profile.h"
@@ -48,7 +47,7 @@
 #include "graphics/engine/modelmanager.h"
 #include "graphics/engine/particle.h"
 #include "graphics/engine/planet.h"
-#include "graphics/engine/pyro.h"
+#include "graphics/engine/pyro_manager.h"
 #include "graphics/engine/terrain.h"
 #include "graphics/engine/text.h"
 #include "graphics/engine/water.h"
@@ -495,11 +494,6 @@ void CRobotMain::ChangePhase(Phase phase)
     m_cameraPan  = 0.0f;
     m_cameraZoom = 0.0f;
     m_shortCut = true;
-
-    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
-    iMan->Flush(CLASS_PHYSICS);
-    iMan->Flush(CLASS_BRAIN);
-    iMan->Flush(CLASS_PYRO);
 
     Math::Point dim, pos;
 
@@ -1917,17 +1911,7 @@ bool CRobotMain::DeselectObject()
 //! Quickly removes all objects
 void CRobotMain::DeleteAllObjects()
 {
-    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
-
-    // Removes all pyrotechnic effects in progress.
-    while (true)
-    {
-        Gfx::CPyro* pyro = static_cast<Gfx::CPyro*>(iMan->SearchInstance(CLASS_PYRO, 0));
-        if (pyro == nullptr) break;
-
-        pyro->DeleteObject();
-        delete pyro;
-    }
+    m_engine->GetPyroManager()->DeleteAll();
 
     // Removes the arrow.
     if (m_visitArrow != nullptr)
@@ -2219,8 +2203,7 @@ bool CRobotMain::DeleteObject()
     CObject* obj = GetSelect();
     if (obj == nullptr) return false;
 
-    Gfx::CPyro* pyro = new Gfx::CPyro();
-    pyro->Create(Gfx::PT_FRAGT, obj);
+    m_engine->GetPyroManager()->Create(Gfx::PT_FRAGT, obj);
 
     obj->SetSelect(false);  // deselects the object
     m_camera->SetType(Gfx::CAM_TYPE_EXPLO);
@@ -2623,9 +2606,6 @@ bool CRobotMain::EventFrame(const Event &event)
         if (pm != nullptr) pm->FlushObject();
     }
 
-
-    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
-
     CObject* toto = nullptr;
     if (!m_freePhoto)
     {
@@ -2647,19 +2627,7 @@ bool CRobotMain::EventFrame(const Event &event)
             obj->EventProcess(event);
         }
 
-        // Advances pyrotechnic effects.
-        for (int i = 0; i < 1000000; i++)
-        {
-            Gfx::CPyro* pyro = static_cast<Gfx::CPyro*>(iMan->SearchInstance(CLASS_PYRO, i));
-            if (pyro == nullptr) break;
-
-            pyro->EventProcess(event);
-            if (pyro->IsEnded() != ERR_CONTINUE)
-            {
-                pyro->DeleteObject();
-                delete pyro;
-            }
-        }
+        m_engine->GetPyroManager()->EventProcess(event);
     }
 
     // The camera follows the object, because its position
@@ -2834,11 +2802,6 @@ void CRobotMain::ScenePerso()
     m_terrain->FlushFlyingLimit();
     m_lightMan->FlushLights();
     m_particle->FlushParticle();
-
-    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
-    iMan->Flush(CLASS_PHYSICS);
-    iMan->Flush(CLASS_BRAIN);
-    iMan->Flush(CLASS_PYRO);
 
 
     ChangeColor();
@@ -3558,8 +3521,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                     Gfx::PyroType pType = line->GetParam("pyro")->AsPyroType(Gfx::PT_NULL);
                     if (pType != Gfx::PT_NULL)
                     {
-                        Gfx::CPyro* pyro = new Gfx::CPyro();
-                        pyro->Create(pType, obj);
+                        m_engine->GetPyroManager()->Create(pType, obj);
                     }
 
                     // Puts information in terminal (OBJECT_INFO).
@@ -5416,11 +5378,6 @@ void CRobotMain::ResetCreate()
     m_particle->FlushParticle();
     m_terrain->FlushBuildingLevel();
 
-    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
-    iMan->Flush(CLASS_PHYSICS);
-    iMan->Flush(CLASS_BRAIN);
-    iMan->Flush(CLASS_PYRO);
-
     m_camera->SetType(Gfx::CAM_TYPE_DIALOG);
 
     try
@@ -5434,8 +5391,7 @@ void CRobotMain::ResetCreate()
             ResetCap cap = obj->GetResetCap();
             if (cap == RESET_NONE) continue;
 
-            Gfx::CPyro* pyro = new Gfx::CPyro();
-            pyro->Create(Gfx::PT_RESET, obj);
+            m_engine->GetPyroManager()->Create(Gfx::PT_RESET, obj);
         }
     }
     catch (const CLevelParserException& e)

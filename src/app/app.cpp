@@ -26,7 +26,6 @@
 #include "app/system.h"
 
 #include "common/logger.h"
-#include "common/iman.h"
 #include "common/image.h"
 #include "common/key.h"
 #include "common/pathman.h"
@@ -103,7 +102,6 @@ struct ApplicationPrivate
 CApplication::CApplication()
 {
     m_private       = new ApplicationPrivate();
-    m_iMan          = new CInstanceManager();
     m_pathManager   = new CPathManager();
     m_eventQueue    = new CEventQueue();
     m_profile       = new CProfile();
@@ -180,9 +178,6 @@ CApplication::~CApplication()
 
     delete m_pathManager;
     m_pathManager = nullptr;
-
-    delete m_iMan;
-    m_iMan = nullptr;
 
     GetSystemUtils()->DestroyTimeStamp(m_baseTimeStamp);
     GetSystemUtils()->DestroyTimeStamp(m_curTimeStamp);

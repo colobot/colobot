@@ -21,7 +21,7 @@
 #include "object/task/taskmanip.h"
 
 #include "graphics/engine/terrain.h"
-#include "graphics/engine/pyro.h"
+#include "graphics/engine/pyro_manager.h"
 
 #include "math/geometry.h"
 
@@ -291,7 +291,6 @@ Error CTaskManip::Start(TaskManipOrder order, TaskManipArm arm)
 {
     ObjectType   type;
     CObject      *front, *other, *power;
-    Gfx::CPyro   *pyro;
     float        iAngle, dist, len;
     float        fDist, fAngle, oDist, oAngle, oHeight;
     Math::Vector pos, fPos, oPos;
@@ -342,8 +341,7 @@ Error CTaskManip::Start(TaskManipOrder order, TaskManipArm arm)
             pos.y += 2.0f;
             m_object->SetPosition(0, pos);  // against the top of jump
 
-            pyro = new Gfx::CPyro();
-            pyro->Create(Gfx::PT_FALL, other);  // the ball falls
+            m_engine->GetPyroManager()->Create(Gfx::PT_FALL, other);  // the ball falls
         }
 
         m_bBee = true;

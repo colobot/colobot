@@ -26,7 +26,6 @@
 
 
 #include "app/system.h"
-#include "app/pausemanager.h"
 
 #include "common/event.h"
 #include "common/singleton.h"
@@ -55,6 +54,7 @@ class CApplication;
 class CObject;
 class CSoundInterface;
 class CImage;
+class CPauseManager;
 
 
 // Graphics module namespace
@@ -71,6 +71,7 @@ class CCloud;
 class CLightning;
 class CPlanet;
 class CTerrain;
+class CPyroManager;
 
 
 /**
@@ -697,6 +698,7 @@ public:
     //! Returns the text rendering engine
     CText*          GetText();
     CModelManager*  GetModelManager();
+    CPyroManager*   GetPyroManager();
     //! Returns the light manager
     CLightManager*  GetLightManager();
     //! Returns the particle manager
@@ -1347,6 +1349,7 @@ protected:
     CPlanet*          m_planet;
     CTerrain*         m_terrain;
     CPauseManager*    m_pause;
+    std::unique_ptr<CPyroManager> m_pyroManager;
 
     //! Last encountered error
     std::string     m_error;
@@ -1524,7 +1527,7 @@ protected:
 
     bool            m_debugLights;
     bool            m_debugDumpLights;
-    
+
     std::string     m_timerText;
 };
 

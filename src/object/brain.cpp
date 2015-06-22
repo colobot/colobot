@@ -22,7 +22,6 @@
 
 #include "app/app.h"
 
-#include "common/iman.h"
 #include "common/misc.h"
 
 #include "graphics/core/color.h"
@@ -56,8 +55,6 @@ const int MAXTRACERECORD = 1000;
 
 CBrain::CBrain(CObject* object)
 {
-    CInstanceManager::GetInstancePointer()->AddInstance(CLASS_BRAIN, this, 100);
-
     m_object      = object;
     m_engine      = Gfx::CEngine::GetInstancePointer();
     m_water       = m_engine->GetWater();
@@ -124,8 +121,6 @@ CBrain::~CBrain()
 
     delete[] m_traceRecordBuffer;
     m_traceRecordBuffer = nullptr;
-
-    CInstanceManager::GetInstancePointer()->DeleteInstance(CLASS_BRAIN, this);
 }
 
 

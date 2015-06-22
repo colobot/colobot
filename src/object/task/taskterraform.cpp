@@ -22,7 +22,7 @@
 
 #include "object/task/taskterraform.h"
 
-#include "graphics/engine/pyro.h"
+#include "graphics/engine/pyro_manager.h"
 #include "graphics/engine/particle.h"
 #include "graphics/engine/terrain.h"
 
@@ -341,7 +341,6 @@ bool CTaskTerraform::Terraform()
 {
     CBrain*     brain;
     CMotion*    motion;
-    Gfx::CPyro* pyro;
     ObjectType  type;
     float       dist;
 
@@ -359,8 +358,7 @@ bool CTaskTerraform::Terraform()
             dist = Math::Distance(m_terraPos, pObj->GetPosition(0));
             if ( dist > 20.0f )  continue;
 
-            pyro = new Gfx::CPyro();
-            pyro->Create(Gfx::PT_FRAGT, pObj);
+            m_engine->GetPyroManager()->Create(Gfx::PT_FRAGT, pObj);
         }
         else
         {

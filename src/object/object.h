@@ -137,9 +137,15 @@ class CObject
 {
     friend class CObjectFactory;
     friend class CObjectManager;
+
 protected:
     CObject(int id);
+
     void        DeleteObject(bool bAll=false);
+    void        SetPhysics(std::unique_ptr<CPhysics> physics);
+    void        SetBrain(std::unique_ptr<CBrain> brain);
+    void        SetMotion(std::unique_ptr<CMotion> motion);
+    void        SetAuto(std::unique_ptr<CAuto> automat);
 
 public:
     CObject(const CObject&) = delete;
@@ -389,13 +395,9 @@ public:
     CScript*    GetRunScript();
     CBotVar*    GetBotVar();
     CPhysics*   GetPhysics();
-    void        SetPhysics(CPhysics* physics);
     CBrain*     GetBrain();
-    void        SetBrain(CBrain* brain);
     CMotion*    GetMotion();
-    void        SetMotion(CMotion* motion);
     CAuto*      GetAuto();
-    void        SetAuto(CAuto* automat);
 
     void        SetDefRank(int rank);
     int         GetDefRank();
@@ -442,10 +444,10 @@ protected:
     Gfx::CWater*        m_water;
     Gfx::CCamera*       m_camera;
     Gfx::CParticle*     m_particle;
-    CPhysics*           m_physics;
-    CBrain*             m_brain;
-    CMotion*            m_motion;
-    CAuto*              m_auto;
+    std::unique_ptr<CPhysics> m_physics;
+    std::unique_ptr<CBrain> m_brain;
+    std::unique_ptr<CMotion> m_motion;
+    std::unique_ptr<CAuto> m_auto;
     CRobotMain*         m_main;
     CSoundInterface*    m_sound;
     CBotVar*            m_botVar;

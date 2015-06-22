@@ -20,6 +20,8 @@
 
 #include "object/auto/autoegg.h"
 
+#include "graphics/engine/pyro_manager.h"
+
 #include "math/geometry.h"
 
 #include "object/brain.h"
@@ -214,7 +216,6 @@ bool CAutoEgg::EventProcess(const Event &event)
 Error CAutoEgg::IsEnded()
 {
     CObject*    alien;
-    Gfx::CPyro*      pyro;
 
     if ( m_phase == AEP_DELAY )
     {
@@ -237,8 +238,7 @@ Error CAutoEgg::IsEnded()
     {
         if ( m_progress < 1.0f )  return ERR_CONTINUE;
 
-        pyro = new Gfx::CPyro();
-        pyro->Create(Gfx::PT_EGG, m_object);  // exploding egg
+        m_engine->GetPyroManager()->Create(Gfx::PT_EGG, m_object);  // exploding egg
 
         alien->SetZoom(0, 1.0f);  // this is a big boy now
 

@@ -20,7 +20,7 @@
 
 #include "object/task/taskspiderexplo.h"
 
-#include "graphics/engine/pyro.h"
+#include "graphics/engine/pyro_manager.h"
 
 #include "object/motion/motionspider.h"
 
@@ -82,8 +82,6 @@ Error CTaskSpiderExplo::Start()
 
 Error CTaskSpiderExplo::IsEnded()
 {
-    Gfx::CPyro* pyro;
-
     if ( m_engine->GetPause() )  return ERR_CONTINUE;
 
     if ( m_bError )
@@ -94,8 +92,7 @@ Error CTaskSpiderExplo::IsEnded()
 
     if ( m_time < 1.0f )  return ERR_CONTINUE;
 
-    pyro = new Gfx::CPyro();
-    pyro->Create(Gfx::PT_SPIDER, m_object);  // the spider explodes (suicide)
+    m_engine->GetPyroManager()->Create(Gfx::PT_SPIDER, m_object);  // the spider explodes (suicide)
 
     Abort();
     return ERR_STOP;
