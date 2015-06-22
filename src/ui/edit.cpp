@@ -1649,7 +1649,7 @@ bool CEdit::ReadText(std::string filename, int addSize)
                         break;
                     }
                     m_image[iIndex].name = iName;
-                    m_image[iIndex].offset = static_cast<float>(iCount/iLines);
+                    m_image[iIndex].offset = static_cast<float>(iCount) / static_cast<float>(iLines);
                     m_image[iIndex].height = 1.0f/iLines;
                     m_image[iIndex].width = iWidth*0.75f;
 
