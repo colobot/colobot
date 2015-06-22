@@ -3240,8 +3240,12 @@ void CEngine::Render()
     // Begin the scene
     m_device->BeginScene();
 
+    UseMSAA(true);
+
     if (m_drawWorld)
         Draw3DScene();
+
+    UseMSAA(false);
 
     m_app->StartPerformanceCounter(PCNT_RENDER_INTERFACE);
     DrawInterface();
@@ -3253,28 +3257,6 @@ void CEngine::Render()
 
 void CEngine::Draw3DScene()
 {
-    if (m_multisample > 1)
-    {
-        CFramebuffer* framebuffer = m_device->GetFramebuffer("multisample");
-
-        if (framebuffer == nullptr)
-        {
-            CFramebuffer* screen = m_device->GetFramebuffer("default");
-
-            FramebufferParams params;
-            params.width = screen->GetWidth();
-            params.height = screen->GetHeight();
-            params.depth = 24;
-            params.samples = m_multisample;
-
-            framebuffer = m_device->CreateFramebuffer("multisample", params);
-        }
-
-        framebuffer->Bind();
-
-        m_device->Clear();
-    }
-
     if (m_groundSpotVisible)
         UpdateGroundSpotTextures();
 
@@ -3537,19 +3519,6 @@ void CEngine::Draw3DScene()
     if (m_lensMode) DrawForegroundImage();   // draws the foreground
 
     if (! m_overFront) DrawOverColor();      // draws the foreground color
-
-    if (m_multisample > 1)
-    {
-        CFramebuffer* framebuffer = m_device->GetFramebuffer("multisample");
-        framebuffer->Unbind();
-
-        CFramebuffer* screen = m_device->GetFramebuffer("default");
-
-        int width = screen->GetWidth();
-        int height = screen->GetHeight();
-
-        framebuffer->CopyToScreen(0, 0, width, height, 0, 0, width, height);
-    }
 }
 
 void CEngine::RenderShadowMap()
@@ -3911,6 +3880,54 @@ void CEngine::UseShadowMapping(bool enable)
 
             m_device->SetTexture(5, 0);
             m_device->SetTextureEnabled(5, false);
+        }
+    }
+}
+
+void CEngine::UseMSAA(bool enable)
+{
+    if (m_multisample < 2) return;
+
+    if (enable)
+    {
+        if (m_multisample > 1)
+        {
+            CFramebuffer* framebuffer = m_device->GetFramebuffer("multisample");
+
+            if (framebuffer == nullptr)
+            {
+                CFramebuffer* screen = m_device->GetFramebuffer("default");
+
+                FramebufferParams params;
+                params.width = screen->GetWidth();
+                params.height = screen->GetHeight();
+                params.depth = 24;
+                params.samples = m_multisample;
+
+                framebuffer = m_device->CreateFramebuffer("multisample", params);
+            }
+
+            framebuffer->Bind();
+
+            m_device->SetRenderState(RENDER_STATE_DEPTH_TEST, true);
+            m_device->SetRenderState(RENDER_STATE_DEPTH_WRITE, true);
+
+            m_device->Clear();
+        }
+    }
+    else
+    {
+        if (m_multisample > 1)
+        {
+            CFramebuffer* framebuffer = m_device->GetFramebuffer("multisample");
+            framebuffer->Unbind();
+
+            CFramebuffer* screen = m_device->GetFramebuffer("default");
+
+            int width = screen->GetWidth();
+            int height = screen->GetHeight();
+
+            framebuffer->CopyToScreen(0, 0, width, height, 0, 0, width, height);
         }
     }
 }
