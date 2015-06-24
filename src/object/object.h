@@ -53,17 +53,6 @@ const int OBJECTMAXDESELLIST    = 10;
 const int OBJECTMAXINFO         = 10;
 const int OBJECTMAXCMDLINE      = 20;
 
-
-enum ObjectMaterial
-{
-    OM_METAL   = 0,    // metal
-    OM_PLASTIC = 1,    // plastic
-    OM_HUMAN   = 2,    // cosmonaut
-    OM_ANIMAL  = 3,    // insect
-    OM_VEGETAL = 4,    // plant
-    OM_MINERAL = 5,    // stone
-};
-
 enum DriveType
 {
     DRIVE_OTHER = 0,
@@ -305,8 +294,6 @@ public:
     void        SetTransparency(float value);
     float       GetTransparency();
 
-    ObjectMaterial GetMaterial();
-
     void        SetGadget(bool bMode);
     bool        GetGadget();
 
@@ -476,7 +463,6 @@ protected:
     float       m_shield;           // shield
     float       m_range;            // flight range
     float       m_transparency;         // transparency (0..1)
-    int     m_material;         // matter(0..n)
     float       m_aTime;
     float       m_shotTime;         // time since last shot
     bool        m_bVirusMode;           // virus activated/triggered

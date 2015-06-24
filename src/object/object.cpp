@@ -90,7 +90,6 @@ void uObject(CBotVar* botThis, void* user)
     ObjectType  type;
     Math::Vector    pos;
     float       value;
-    int         iValue;
 
     if ( object == 0 )  return;
 
@@ -160,11 +159,6 @@ void uObject(CBotVar* botThis, void* user)
     pVar = pVar->GetNext();  // "lifeTime"
     value = object->GetAbsTime();
     pVar->SetValFloat(value);
-
-    // Updates the material of the object.
-    pVar = pVar->GetNext();  // "material"
-    iValue = object->GetMaterial();
-    pVar->SetValInt(iValue);
 
     // Updates the type of battery.
     pVar = pVar->GetNext();  // "energyCell"
@@ -2826,25 +2820,6 @@ void CObject::SetTransparency(float value)
 float CObject::GetTransparency()
 {
     return m_transparency;
-}
-
-
-// Management of the object matter.
-
-ObjectMaterial CObject::GetMaterial()
-{
-    if ( m_type == OBJECT_HUMAN )
-    {
-        return OM_HUMAN;
-    }
-
-    if ( m_type == OBJECT_SCRAP4 ||
-         m_type == OBJECT_SCRAP5 )
-    {
-        return OM_HUMAN;
-    }
-
-    return OM_METAL;
 }
 
 

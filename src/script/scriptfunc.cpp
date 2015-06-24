@@ -92,11 +92,11 @@ CBotTypResult CScriptFunctions::cTwoFloat(CBotVar* &var, void* user)
     if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
     if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
     var = var->GetNext();
-    
+
     if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
     if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
     var = var->GetNext();
-    
+
     if ( var != 0 )  return CBotTypResult(CBotErrOverParam);
     return CBotTypResult(CBotTypFloat);
 }
@@ -106,7 +106,7 @@ CBotTypResult CScriptFunctions::cTwoFloat(CBotVar* &var, void* user)
 CBotTypResult CScriptFunctions::cPoint(CBotVar* &var, void* user)
 {
     if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
-    
+
     if ( var->GetType() <= CBotTypDouble )
     {
         var = var->GetNext();
@@ -118,14 +118,14 @@ CBotTypResult CScriptFunctions::cPoint(CBotVar* &var, void* user)
         //?     var = var->GetNext();
         return CBotTypResult(0);
     }
-    
+
     if ( var->GetType() == CBotTypClass )
     {
         if ( !var->IsElemOfClass("point") )  return CBotTypResult(CBotErrBadParam);
         var = var->GetNext();
         return CBotTypResult(0);
     }
-    
+
     return CBotTypResult(CBotErrBadParam);
 }
 
@@ -134,10 +134,10 @@ CBotTypResult CScriptFunctions::cPoint(CBotVar* &var, void* user)
 CBotTypResult CScriptFunctions::cOnePoint(CBotVar* &var, void* user)
 {
     CBotTypResult   ret;
-    
+
     ret = cPoint(var, user);
     if ( ret.GetType() != 0 )  return ret;
-    
+
     if ( var != 0 )  return CBotTypResult(CBotErrOverParam);
     return CBotTypResult(CBotTypFloat);
 }
@@ -185,15 +185,15 @@ bool FindList(CBotVar* array, int type)
 bool GetPoint(CBotVar* &var, int& exception, Math::Vector& pos)
 {
     CBotVar     *pX, *pY, *pZ;
-    
+
     if ( var->GetType() <= CBotTypDouble )
     {
         pos.x = var->GetValFloat()*g_unit;
         var = var->GetNext();
-        
+
         pos.z = var->GetValFloat()*g_unit;
         var = var->GetNext();
-        
+
         pos.y = 0.0f;
     }
     else
@@ -204,21 +204,21 @@ bool GetPoint(CBotVar* &var, int& exception, Math::Vector& pos)
             exception = CBotErrUndefItem;  return true;
         }
         pos.x = pX->GetValFloat()*g_unit;
-        
+
         pY = var->GetItem("y");
         if ( pY == NULL )
         {
             exception = CBotErrUndefItem;  return true;
         }
         pos.z = pY->GetValFloat()*g_unit;  // attention y -> z !
-        
+
         pZ = var->GetItem("z");
         if ( pZ == NULL )
         {
             exception = CBotErrUndefItem;  return true;
         }
         pos.y = pZ->GetValFloat()*g_unit;  // attention z -> y !
-        
+
         var = var->GetNext();
     }
     return true;
@@ -230,7 +230,7 @@ bool GetPoint(CBotVar* &var, int& exception, Math::Vector& pos)
 bool CScriptFunctions::rSin(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
     float   value;
-    
+
     value = var->GetValFloat();
     result->SetValFloat(sinf(value*Math::PI/180.0f));
     return true;
@@ -241,7 +241,7 @@ bool CScriptFunctions::rSin(CBotVar* var, CBotVar* result, int& exception, void*
 bool CScriptFunctions::rCos(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
     float   value;
-    
+
     value = var->GetValFloat();
     result->SetValFloat(cosf(value*Math::PI/180.0f));
     return true;
@@ -252,7 +252,7 @@ bool CScriptFunctions::rCos(CBotVar* var, CBotVar* result, int& exception, void*
 bool CScriptFunctions::rTan(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
     float   value;
-    
+
     value = var->GetValFloat();
     result->SetValFloat(tanf(value*Math::PI/180.0f));
     return true;
@@ -263,7 +263,7 @@ bool CScriptFunctions::rTan(CBotVar* var, CBotVar* result, int& exception, void*
 bool raSin(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
     float   value;
-    
+
     value = var->GetValFloat();
     result->SetValFloat(asinf(value)*180.0f/Math::PI);
     return true;
@@ -274,7 +274,7 @@ bool raSin(CBotVar* var, CBotVar* result, int& exception, void* user)
 bool raCos(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
     float   value;
-    
+
     value = var->GetValFloat();
     result->SetValFloat(acosf(value)*180.0f/Math::PI);
     return true;
@@ -285,7 +285,7 @@ bool raCos(CBotVar* var, CBotVar* result, int& exception, void* user)
 bool raTan(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
     float   value;
-    
+
     value = var->GetValFloat();
     result->SetValFloat(atanf(value)*180.0f/Math::PI);
     return true;
@@ -298,7 +298,7 @@ bool raTan2(CBotVar* var, CBotVar* result, int& exception, void* user)
     float y = var->GetValFloat();
     var = var->GetNext();
     float x = var->GetValFloat();
-    
+
     result->SetValFloat(atan2(y, x) * 180.0f / Math::PI);
     return true;
 }
@@ -308,7 +308,7 @@ bool raTan2(CBotVar* var, CBotVar* result, int& exception, void* user)
 bool CScriptFunctions::rSqrt(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
     float   value;
-    
+
     value = var->GetValFloat();
     result->SetValFloat(sqrtf(value));
     return true;
@@ -319,7 +319,7 @@ bool CScriptFunctions::rSqrt(CBotVar* var, CBotVar* result, int& exception, void
 bool CScriptFunctions::rPow(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
     float   x, y;
-    
+
     x = var->GetValFloat();
     var = var->GetNext();
     y = var->GetValFloat();
@@ -340,7 +340,7 @@ bool CScriptFunctions::rRand(CBotVar* var, CBotVar* result, int& exception, void
 bool CScriptFunctions::rAbs(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
     float   value;
-    
+
     value = var->GetValFloat();
     result->SetValFloat(fabs(value));
     return true;
@@ -410,12 +410,12 @@ bool CScriptFunctions::rEndMission(CBotVar* var, CBotVar* result, int& exception
 {
     Error ended;
     float delay;
-    
+
     ended = static_cast<Error>(static_cast<int>(var->GetValFloat())); // TODO: is this correct?!
     var = var->GetNext();
-    
+
     delay = var->GetValFloat();
-    
+
     CRobotMain::GetInstancePointer()->SetEndMission(ended, delay);
     return true;
 }
@@ -441,13 +441,13 @@ bool CScriptFunctions::rPlayMusic(CBotVar* var, CBotVar* result, int& exception,
     std::string filename;
     CBotString cbs;
     bool repeat;
-    
+
     cbs = var->GetValString();
     filename = std::string(cbs);
     var = var->GetNext();
-    
+
     repeat = var->GetValInt();
-    
+
     CApplication::GetInstancePointer()->GetSound()->StopMusic();
     CApplication::GetInstancePointer()->GetSound()->PlayMusic(filename, repeat);
     return true;
@@ -520,7 +520,7 @@ CBotTypResult CScriptFunctions::cGetObject(CBotVar* &var, void* user)
     if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
     var = var->GetNext();
     if ( var != 0 )  return CBotTypResult(CBotErrOverParam);
-    
+
     return CBotTypResult(CBotTypPointer, "object");
 }
 
@@ -530,9 +530,9 @@ bool CScriptFunctions::rGetObjectById(CBotVar* var, CBotVar* result, int& except
 {
     CObject*    pObj;
     int         rank;
-    
+
     rank = var->GetValInt();
-    
+
     pObj = static_cast<CObject*>(CObjectManager::GetInstancePointer()->GetObjectById(rank));
     if ( pObj == 0 )
     {
@@ -551,9 +551,9 @@ bool CScriptFunctions::rGetObject(CBotVar* var, CBotVar* result, int& exception,
 {
     CObject*    pObj;
     int         rank;
-    
+
     rank = var->GetValInt();
-    
+
     pObj = CObjectManager::GetInstancePointer()->GetObjectByRank(rank);
     if ( pObj == nullptr )
     {
@@ -574,19 +574,19 @@ bool CScriptFunctions::rProgFunc(CBotVar* var, CBotVar* result, int& exception, 
     CBotString  cbs;
     const char* funcname;
     std::string program;
-    
+
     cbs = var->GetValString();
     funcname = cbs;
-    
+
     //TODO: Translation :)
     program  = "extern void object::Auto()\n{\n\t\n\t//Automatically generated by progfunc(\"";
     program += funcname;
     program += "\");\n\t";
     program += funcname;
     program += "();\n\t\n}\n";
-    
+
     result->SetValString(program.c_str());
-    
+
     return true;
 }
 
@@ -602,7 +602,7 @@ CBotTypResult CScriptFunctions::cBusy(CBotVar* thisclass, CBotVar* &var)
 bool CScriptFunctions::rBusy(CBotVar* thisclass, CBotVar* var, CBotVar* result, int& exception)
 {
     exception = 0;
-    
+
     CBotVar* classVars = thisclass->GetItemList();  // "category"
     classVars = classVars->GetNext();  // "position"
     classVars = classVars->GetNext();  // "orientation"
@@ -613,19 +613,18 @@ bool CScriptFunctions::rBusy(CBotVar* thisclass, CBotVar* var, CBotVar* result, 
     classVars = classVars->GetNext();  // "temperature"
     classVars = classVars->GetNext();  // "altitude"
     classVars = classVars->GetNext();  // "lifeTime"
-    classVars = classVars->GetNext();  // "material"
     classVars = classVars->GetNext();  // "energyCell"
     classVars = classVars->GetNext();  // "load"
     classVars = classVars->GetNext();  // "id"
     int rank = classVars->GetValInt();
     CObject* obj = CObjectManager::GetInstancePointer()->GetObjectById(rank);
     CAuto* automat = obj->GetAuto();
-    
+
     if ( automat != nullptr )
         result->SetValInt(automat->GetBusy());
     else
         exception = ERR_WRONG_OBJ;
-    
+
     return true;
 }
 
@@ -633,7 +632,7 @@ bool CScriptFunctions::rDestroy(CBotVar* thisclass, CBotVar* var, CBotVar* resul
 {
     exception = 0;
     Error err;
-    
+
     CBotVar* classVars = thisclass->GetItemList();  // "category"
     ObjectType thisType = static_cast<ObjectType>(classVars->GetValInt());
     classVars = classVars->GetNext();  // "position"
@@ -645,20 +644,19 @@ bool CScriptFunctions::rDestroy(CBotVar* thisclass, CBotVar* var, CBotVar* resul
     classVars = classVars->GetNext();  // "temperature"
     classVars = classVars->GetNext();  // "altitude"
     classVars = classVars->GetNext();  // "lifeTime"
-    classVars = classVars->GetNext();  // "material"
     classVars = classVars->GetNext();  // "energyCell"
     classVars = classVars->GetNext();  // "load"
     classVars = classVars->GetNext();  // "id"
     int rank = classVars->GetValInt();
     CObject* obj = CObjectManager::GetInstancePointer()->GetObjectById(rank);
     CAuto* automat = obj->GetAuto();
-    
+
     if ( thisType == OBJECT_DESTROYER )
     {
         err = automat->StartAction(0);
     } else
         err = ERR_WRONG_OBJ;
-    
+
     if ( err != ERR_OK )
     {
         result->SetValInt(err);  // return error
@@ -670,7 +668,7 @@ bool CScriptFunctions::rDestroy(CBotVar* thisclass, CBotVar* var, CBotVar* resul
         }
         return true;
     }
-    
+
     return true;
 }
 
@@ -696,9 +694,9 @@ CBotTypResult CScriptFunctions::cFactory(CBotVar* thisclass, CBotVar* &var)
 bool CScriptFunctions::rFactory(CBotVar* thisclass, CBotVar* var, CBotVar* result, int& exception)
 {
     Error       err;
-    
+
     exception = 0;
-    
+
     ObjectType type = static_cast<ObjectType>(var->GetValInt());
     var = var->GetNext();
     CBotString cbs;
@@ -710,7 +708,7 @@ bool CScriptFunctions::rFactory(CBotVar* thisclass, CBotVar* var, CBotVar* resul
     }
     else
         program = "";
-    
+
     CBotVar* classVars = thisclass->GetItemList();  // "category"
     ObjectType thisType = static_cast<ObjectType>(classVars->GetValInt());
     classVars = classVars->GetNext();  // "position"
@@ -722,7 +720,6 @@ bool CScriptFunctions::rFactory(CBotVar* thisclass, CBotVar* var, CBotVar* resul
     classVars = classVars->GetNext();  // "temperature"
     classVars = classVars->GetNext();  // "altitude"
     classVars = classVars->GetNext();  // "lifeTime"
-    classVars = classVars->GetNext();  // "material"
     classVars = classVars->GetNext();  // "energyCell"
     classVars = classVars->GetNext();  // "load"
     classVars = classVars->GetNext();  // "id"
@@ -734,7 +731,7 @@ bool CScriptFunctions::rFactory(CBotVar* thisclass, CBotVar* var, CBotVar* resul
         CLogger::GetInstancePointer()->Error("in object.factory() - factory is nullptr");
         return false;
     }
-    
+
     if ( thisType == OBJECT_FACTORY )
     {
         CAutoFactory* automat = static_cast<CAutoFactory*>(factory->GetAuto());
@@ -744,9 +741,9 @@ bool CScriptFunctions::rFactory(CBotVar* thisclass, CBotVar* var, CBotVar* resul
             CLogger::GetInstancePointer()->Error("in object.factory() - automat is nullptr");
             return false;
         }
-        
+
         bool bEnable = false;
-        
+
         if ( type == OBJECT_MOBILEwa )
         {
             bEnable = true;
@@ -763,7 +760,7 @@ bool CScriptFunctions::rFactory(CBotVar* thisclass, CBotVar* var, CBotVar* resul
         {
             bEnable = g_researchDone&RESEARCH_iPAW;
         }
-        
+
         if ( type == OBJECT_MOBILEws )
         {
             bEnable = g_researchDone&RESEARCH_SNIFFER;
@@ -783,7 +780,7 @@ bool CScriptFunctions::rFactory(CBotVar* thisclass, CBotVar* var, CBotVar* resul
             bEnable = ( (g_researchDone&RESEARCH_SNIFFER) &&
             (g_researchDone&RESEARCH_iPAW)    );
         }
-        
+
         if ( type == OBJECT_MOBILEwc )
         {
             bEnable = g_researchDone&RESEARCH_CANON;
@@ -803,7 +800,7 @@ bool CScriptFunctions::rFactory(CBotVar* thisclass, CBotVar* var, CBotVar* resul
             bEnable = ( (g_researchDone&RESEARCH_CANON) &&
             (g_researchDone&RESEARCH_iPAW)  );
         }
-        
+
         if ( type == OBJECT_MOBILEwi )
         {
             bEnable = g_researchDone&RESEARCH_iGUN;
@@ -823,7 +820,7 @@ bool CScriptFunctions::rFactory(CBotVar* thisclass, CBotVar* var, CBotVar* resul
             bEnable = ( (g_researchDone&RESEARCH_iGUN) &&
             (g_researchDone&RESEARCH_iPAW) );
         }
-        
+
         if ( type == OBJECT_MOBILErt )
         {
             bEnable = ( (g_researchDone&RESEARCH_THUMP) &&
@@ -844,12 +841,12 @@ bool CScriptFunctions::rFactory(CBotVar* thisclass, CBotVar* var, CBotVar* resul
             bEnable = ( (g_researchDone&RESEARCH_SHIELD) &&
             (g_researchDone&RESEARCH_TANK)   );
         }
-        
+
         if ( type == OBJECT_MOBILEsa )
         {
             bEnable = g_researchDone&RESEARCH_SUBM;
         }
-        
+
         if ( bEnable )
         {
             if ( automat != nullptr )
@@ -865,7 +862,7 @@ bool CScriptFunctions::rFactory(CBotVar* thisclass, CBotVar* var, CBotVar* resul
     }
     else
         err = ERR_WRONG_OBJ;
-    
+
     if ( err != ERR_OK )
     {
         result->SetValInt(err);  // return error
@@ -877,7 +874,7 @@ bool CScriptFunctions::rFactory(CBotVar* thisclass, CBotVar* var, CBotVar* resul
         }
         return true;
     }
-    
+
     return true;
 }
 
@@ -886,11 +883,11 @@ bool CScriptFunctions::rFactory(CBotVar* thisclass, CBotVar* var, CBotVar* resul
 bool CScriptFunctions::rResearch(CBotVar* thisclass, CBotVar* var, CBotVar* result, int& exception)
 {
     Error       err;
-    
+
     exception = 0;
-    
+
     ResearchType type = static_cast<ResearchType>(var->GetValInt());
-    
+
     CBotVar* classVars = thisclass->GetItemList();  // "category"
     ObjectType thisType = static_cast<ObjectType>(classVars->GetValInt());
     classVars = classVars->GetNext();  // "position"
@@ -902,14 +899,13 @@ bool CScriptFunctions::rResearch(CBotVar* thisclass, CBotVar* var, CBotVar* resu
     classVars = classVars->GetNext();  // "temperature"
     classVars = classVars->GetNext();  // "altitude"
     classVars = classVars->GetNext();  // "lifeTime"
-    classVars = classVars->GetNext();  // "material"
     classVars = classVars->GetNext();  // "energyCell"
     classVars = classVars->GetNext();  // "load"
     classVars = classVars->GetNext();  // "id"
     int rank = classVars->GetValInt();
     CObject* center = CObjectManager::GetInstancePointer()->GetObjectById(rank);
     CAuto* automat = center->GetAuto();
-    
+
     if ( thisType == OBJECT_RESEARCH ||
         thisType == OBJECT_LABO      )
     {
@@ -947,7 +943,7 @@ bool CScriptFunctions::rResearch(CBotVar* thisclass, CBotVar* var, CBotVar* resu
     }
     else
         err = ERR_WRONG_OBJ;
-    
+
     if ( err != ERR_OK )
     {
         result->SetValInt(err);  // return error
@@ -959,7 +955,7 @@ bool CScriptFunctions::rResearch(CBotVar* thisclass, CBotVar* var, CBotVar* resu
         }
         return true;
     }
-    
+
     return true;
 }
 
@@ -968,9 +964,9 @@ bool CScriptFunctions::rResearch(CBotVar* thisclass, CBotVar* var, CBotVar* resu
 bool CScriptFunctions::rTakeOff(CBotVar* thisclass, CBotVar* var, CBotVar* result, int& exception)
 {
     Error       err;
-    
+
     exception = 0;
-    
+
     CBotVar* classVars = thisclass->GetItemList();  // "category"
     ObjectType thisType = static_cast<ObjectType>(classVars->GetValInt());
     classVars = classVars->GetNext();  // "position"
@@ -982,20 +978,19 @@ bool CScriptFunctions::rTakeOff(CBotVar* thisclass, CBotVar* var, CBotVar* resul
     classVars = classVars->GetNext();  // "temperature"
     classVars = classVars->GetNext();  // "altitude"
     classVars = classVars->GetNext();  // "lifeTime"
-    classVars = classVars->GetNext();  // "material"
     classVars = classVars->GetNext();  // "energyCell"
     classVars = classVars->GetNext();  // "load"
     classVars = classVars->GetNext();  // "id"
     int rank = classVars->GetValInt();
     CObject* center = CObjectManager::GetInstancePointer()->GetObjectById(rank);
     CAuto* automat = center->GetAuto();
-    
+
     if ( thisType == OBJECT_BASE )
     {
         err = (static_cast<CAutoBase*>(automat))->TakeOff(false);
     } else
         err = ERR_WRONG_OBJ;
-    
+
     if ( err != ERR_OK )
     {
         result->SetValInt(err);  // return error
@@ -1007,7 +1002,7 @@ bool CScriptFunctions::rTakeOff(CBotVar* thisclass, CBotVar* var, CBotVar* resul
         }
         return true;
     }
-    
+
     return true;
 }
 
@@ -1016,24 +1011,24 @@ bool CScriptFunctions::rTakeOff(CBotVar* thisclass, CBotVar* var, CBotVar* resul
 CBotTypResult CScriptFunctions::cDelete(CBotVar* &var, void* user)
 {
     if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
-    
+
     if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
     var = var->GetNext();
-    
+
     if ( var != 0 )
     {
         if ( var->GetType() != CBotTypInt ) return CBotTypResult(CBotErrBadNum);
         var = var->GetNext();
-        
+
         if ( var != 0 )
         {
             if ( var->GetType() > CBotTypDouble ) return CBotTypResult(CBotErrBadNum);
             var = var->GetNext();
         }
     }
-    
+
     if ( var != 0 )  return CBotTypResult(CBotErrOverParam);
-    
+
     return CBotTypResult(CBotTypFloat);
 }
 
@@ -1083,7 +1078,7 @@ CBotTypResult CScriptFunctions::cSearch(CBotVar* &var, void* user)
 {
     CBotVar*        array;
     CBotTypResult   ret;
-    
+
     if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
     if ( var->GetType() == CBotTypArrayPointer )
     {
@@ -1099,7 +1094,7 @@ CBotTypResult CScriptFunctions::cSearch(CBotVar* &var, void* user)
         if ( ret.GetType() != 0 )  return ret;
         if ( var != 0 )  return CBotTypResult(CBotErrOverParam);
     }
-    
+
     return CBotTypResult(CBotTypPointer, "object");
 }
 
@@ -1113,7 +1108,7 @@ bool CScriptFunctions::rSearch(CBotVar* var, CBotVar* result, int& exception, vo
     Math::Vector    pos, oPos;
     bool        bArray;
     int         type;
-    
+
     if ( var->GetType() == CBotTypArrayPointer )
     {
         array = var->GetItemList();
@@ -1131,7 +1126,7 @@ bool CScriptFunctions::rSearch(CBotVar* var, CBotVar* result, int& exception, vo
     } else {
         pos = pThis->GetPosition(0);
     }
-    
+
     std::vector<ObjectType> type_v;
     if(bArray)
     {
@@ -1146,9 +1141,9 @@ bool CScriptFunctions::rSearch(CBotVar* var, CBotVar* result, int& exception, vo
             type_v.push_back(static_cast<ObjectType>(type));
         }
     }
-    
+
     pBest = CObjectManager::GetInstancePointer()->Radar(pThis, pos, 0.0f, type_v, 0.0f, Math::PI*2.0f, 0.0f, 1000.0f, false, FILTER_NONE, true);
-    
+
     if ( pBest == 0 )
     {
         result->SetPointer(0);
@@ -1166,7 +1161,7 @@ bool CScriptFunctions::rSearch(CBotVar* var, CBotVar* result, int& exception, vo
 CBotTypResult CScriptFunctions::cRadar(CBotVar* &var, void* user)
 {
     CBotVar*    array;
-    
+
     if ( var == 0 )  return CBotTypResult(CBotTypPointer, "object");
     if ( var->GetType() == CBotTypArrayPointer )
     {
@@ -1210,7 +1205,7 @@ bool CScriptFunctions::rRadar(CBotVar* var, CBotVar* result, int& exception, voi
     float       minDist, maxDist, sens, angle, focus;
     int         type;
     bool        bArray = false;
-    
+
     type    = OBJECT_NULL;
     array   = 0;
     angle   = 0.0f;
@@ -1219,7 +1214,7 @@ bool CScriptFunctions::rRadar(CBotVar* var, CBotVar* result, int& exception, voi
     maxDist = 1000.0f*g_unit;
     sens    = 1.0f;
     filter  = FILTER_NONE;
-    
+
     if ( var != 0 )
     {
         if ( var->GetType() == CBotTypArrayPointer )
@@ -1232,32 +1227,32 @@ bool CScriptFunctions::rRadar(CBotVar* var, CBotVar* result, int& exception, voi
             type = var->GetValInt();
             bArray = false;
         }
-        
+
         var = var->GetNext();
         if ( var != 0 )
         {
             angle = -var->GetValFloat()*Math::PI/180.0f;
-            
+
             var = var->GetNext();
             if ( var != 0 )
             {
                 focus = var->GetValFloat()*Math::PI/180.0f;
-                
+
                 var = var->GetNext();
                 if ( var != 0 )
                 {
                     minDist = var->GetValFloat();
-                    
+
                     var = var->GetNext();
                     if ( var != 0 )
                     {
                         maxDist = var->GetValFloat();
-                        
+
                         var = var->GetNext();
                         if ( var != 0 )
                         {
                             sens = var->GetValFloat();
-                            
+
                             var = var->GetNext();
                             if ( var != 0 )
                             {
@@ -1269,7 +1264,7 @@ bool CScriptFunctions::rRadar(CBotVar* var, CBotVar* result, int& exception, voi
             }
         }
     }
-    
+
     std::vector<ObjectType> type_v;
     if(bArray)
     {
@@ -1284,9 +1279,9 @@ bool CScriptFunctions::rRadar(CBotVar* var, CBotVar* result, int& exception, voi
             type_v.push_back(static_cast<ObjectType>(type));
         }
     }
-    
+
     pBest = CObjectManager::GetInstancePointer()->Radar(pThis, type_v, angle, focus, minDist, maxDist, sens < 0, filter, true); //TODO: why is "sens" done like that?
-    
+
     if ( pBest == nullptr )
     {
         result->SetPointer(0);
@@ -1304,15 +1299,15 @@ bool CScriptFunctions::rRadar(CBotVar* var, CBotVar* result, int& exception, voi
 bool CScriptFunctions::Process(CScript* script, CBotVar* result, int &exception)
 {
     Error       err;
-    
+
     err = script->m_primaryTask->IsEnded();
     if ( err != ERR_CONTINUE )  // task terminated?
     {
         delete script->m_primaryTask;
         script->m_primaryTask = 0;
-        
+
         script->m_bContinue = false;
-        
+
         if ( err == ERR_STOP )  err = ERR_OK;
         result->SetValInt(err);  // indicates the error or ok
         if ( ShouldProcessStop(err, script->m_errMode) )
@@ -1322,7 +1317,7 @@ bool CScriptFunctions::Process(CScript* script, CBotVar* result, int &exception)
         }
         return true;  // it's all over
     }
-    
+
     script->m_primaryTask->EventProcess(script->m_event);
     script->m_bContinue = true;
     return false;  // not done
@@ -1336,10 +1331,10 @@ bool CScriptFunctions::ShouldProcessStop(Error err, int errMode)
     // aim impossible  - not a real error
     if ( err == ERR_AIM_IMPOSSIBLE )
         return false;
-    
+
     if ( err != ERR_OK && errMode == ERM_STOP )
         return true;
-    
+
     return false;
 }
 
@@ -1366,14 +1361,14 @@ bool CScriptFunctions::rDetect(CBotVar* var, CBotVar* result, int& exception, vo
     int         type;
     bool        bArray = false;
     Error       err;
-    
+
     exception = 0;
-    
+
     if ( script->m_primaryTask == 0 )  // no task in progress?
     {
         type    = OBJECT_NULL;
         array   = 0;
-        
+
         if ( var != 0 )
         {
             if ( var->GetType() == CBotTypArrayPointer )
@@ -1387,7 +1382,7 @@ bool CScriptFunctions::rDetect(CBotVar* var, CBotVar* result, int& exception, vo
                 bArray = false;
             }
         }
-        
+
         std::vector<ObjectType> type_v;
         if(bArray)
         {
@@ -1402,11 +1397,11 @@ bool CScriptFunctions::rDetect(CBotVar* var, CBotVar* result, int& exception, vo
                 type_v.push_back(static_cast<ObjectType>(type));
             }
         }
-        
+
         pBest = CObjectManager::GetInstancePointer()->Radar(pThis, type_v, 0.0f, 45.0f*Math::PI/180.0f, 0.0f, 20.0f, false, FILTER_NONE, true);
-        
+
         pThis->StartDetectEffect(pBest, pBest != nullptr);
-        
+
         if ( pBest == 0 )
         {
             script->m_returnValue = 0.0f;
@@ -1415,7 +1410,7 @@ bool CScriptFunctions::rDetect(CBotVar* var, CBotVar* result, int& exception, vo
         {
             script->m_returnValue = 1.0f;
         }
-        
+
         script->m_primaryTask = new CTaskManager(script->m_object);
         err = script->m_primaryTask->StartTaskWait(0.3f);
         if ( err != ERR_OK )
@@ -1442,12 +1437,12 @@ bool CScriptFunctions::rDetect(CBotVar* var, CBotVar* result, int& exception, vo
 CBotTypResult CScriptFunctions::cDirection(CBotVar* &var, void* user)
 {
     CBotTypResult   ret;
-    
+
     if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
     ret = cPoint(var, user);
     if ( ret.GetType() != 0 )  return ret;
     if ( var != 0 )  return CBotTypResult(CBotErrOverParam);
-    
+
     return CBotTypResult(CBotTypFloat);
 }
 
@@ -1458,14 +1453,14 @@ bool CScriptFunctions::rDirection(CBotVar* var, CBotVar* result, int& exception,
     CObject*        pThis = static_cast<CObject *>(user);
     Math::Vector    iPos, oPos;
     float           a, g;
-    
+
     if ( !GetPoint(var, exception, oPos) )  return true;
-    
+
     iPos = pThis->GetPosition(0);
-    
+
     a = pThis->GetAngleY(0);
     g = Math::RotateAngle(oPos.x-iPos.x, iPos.z-oPos.z);  // CW !
-    
+
     result->SetValFloat(-Math::Direction(a, g)*180.0f/Math::PI);
     return true;
 }
@@ -1488,9 +1483,9 @@ bool CScriptFunctions::rCanBuild(CBotVar* var, CBotVar* result, int& exception, 
 {
     ObjectType category  = static_cast<ObjectType>(var->GetValInt()); //get category parameter
     exception = 0;
-    
+
     bool can = false;
-    
+
     if ( (category == OBJECT_DERRICK   && (g_build & BUILD_DERRICK))   ||
         (category == OBJECT_FACTORY   && (g_build & BUILD_FACTORY))   ||
         (category == OBJECT_STATION   && (g_build & BUILD_STATION))   ||
@@ -1506,7 +1501,7 @@ bool CScriptFunctions::rCanBuild(CBotVar* var, CBotVar* result, int& exception, 
         (category == OBJECT_PARA      && (g_build & BUILD_PARA))      ||
         (category == OBJECT_DESTROYER && (g_build & BUILD_DESTROYER)))
     {
-        
+
         // if we want to build not researched one
         if ( (category == OBJECT_TOWER   && !(g_researchDone & RESEARCH_TOWER)) ||
             (category == OBJECT_NUCLEAR && !(g_researchDone & RESEARCH_ATOMIC))
@@ -1518,12 +1513,12 @@ bool CScriptFunctions::rCanBuild(CBotVar* var, CBotVar* result, int& exception, 
         {
             can = true;
         }
-        
+
     }
-    
+
     result->SetValInt(can);
-    
-    
+
+
     return true;
 }
 
@@ -1537,11 +1532,11 @@ bool CScriptFunctions::rBuild(CBotVar* var, CBotVar* result, int& exception, voi
     ObjectType  oType;
     ObjectType  category;
     Error       err = ERR_BUILD_DISABLED;
-    
+
     exception = 0;
-    
+
     oType = pThis->GetType();
-    
+
     if ( oType != OBJECT_MOBILEfa &&  // allowed only for grabber bots && humans
         oType != OBJECT_MOBILEta &&
         oType != OBJECT_MOBILEwa &&
@@ -1569,7 +1564,7 @@ bool CScriptFunctions::rBuild(CBotVar* var, CBotVar* result, int& exception, voi
             (category == OBJECT_PARA      && (g_build & BUILD_PARA))      ||
             (category == OBJECT_DESTROYER && (g_build & BUILD_DESTROYER)))
         {
-            
+
             // if we want to build not researched one
             if ( (category == OBJECT_TOWER   && !(g_researchDone & RESEARCH_TOWER)) ||
                 (category == OBJECT_NUCLEAR && !(g_researchDone & RESEARCH_ATOMIC))
@@ -1581,17 +1576,17 @@ bool CScriptFunctions::rBuild(CBotVar* var, CBotVar* result, int& exception, voi
             {
                 err = ERR_OK;
             }
-            
+
         }
-        
+
         if (pThis->GetIgnoreBuildCheck())
             err = ERR_OK;
-        
+
         if (err == ERR_OK && script->m_primaryTask == 0) // if we can build and no task is present
         {
             script->m_primaryTask = new CTaskManager(script->m_object);
             err = script->m_primaryTask->StartTaskBuild(category);
-            
+
             if (err != ERR_OK)
             {
                 delete script->m_primaryTask;
@@ -1602,7 +1597,7 @@ bool CScriptFunctions::rBuild(CBotVar* var, CBotVar* result, int& exception, voi
         // without creating new task. I think, there was a problem with previous version in release configuration
         // It did not init error variable in this situation, and code tried to use variable with trash inside
     }
-    
+
     if ( err != ERR_OK )
     {
         result->SetValInt(err);  // return error
@@ -1613,9 +1608,9 @@ bool CScriptFunctions::rBuild(CBotVar* var, CBotVar* result, int& exception, voi
         }
         return true;
     }
-    
+
     return Process(script, result, exception);
-    
+
 }
 
 // Compilation of the instruction "produce(pos, angle, type[, scriptName[, power]])"
@@ -1624,9 +1619,9 @@ bool CScriptFunctions::rBuild(CBotVar* var, CBotVar* result, int& exception, voi
 CBotTypResult CScriptFunctions::cProduce(CBotVar* &var, void* user)
 {
     CBotTypResult   ret;
-    
+
     if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
-    
+
     if ( var->GetType() <= CBotTypDouble )
     {
         var = var->GetNext();
@@ -1640,20 +1635,20 @@ CBotTypResult CScriptFunctions::cProduce(CBotVar* &var, void* user)
     {
         ret = cPoint(var, user);
         if ( ret.GetType() != 0 )  return ret;
-        
+
         if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
         if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
         var = var->GetNext();
-        
+
         if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
         if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
         var = var->GetNext();
-        
+
         if ( var != 0 )
         {
             if ( var->GetType() != CBotTypString )  return CBotTypResult(CBotErrBadString);
             var = var->GetNext();
-            
+
             if ( var != 0 )
             {
                 if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
@@ -1661,9 +1656,9 @@ CBotTypResult CScriptFunctions::cProduce(CBotVar* &var, void* user)
             }
         }
     }
-    
+
     if ( var != 0 )  return CBotTypResult(CBotErrOverParam);
-    
+
     return CBotTypResult(CBotTypFloat);
 }
 
@@ -1776,17 +1771,17 @@ bool CScriptFunctions::rProduce(CBotVar* var, CBotVar* result, int& exception, v
 CBotTypResult CScriptFunctions::cDistance(CBotVar* &var, void* user)
 {
     CBotTypResult   ret;
-    
+
     if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
     ret = cPoint(var, user);
     if ( ret.GetType() != 0 )  return ret;
-    
+
     if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
     ret = cPoint(var, user);
     if ( ret.GetType() != 0 )  return ret;
-    
+
     if ( var != 0 )  return CBotTypResult(CBotErrOverParam);
-    
+
     return CBotTypResult(CBotTypFloat);
 }
 
@@ -1796,10 +1791,10 @@ bool CScriptFunctions::rDistance(CBotVar* var, CBotVar* result, int& exception, 
 {
     Math::Vector    p1, p2;
     float       value;
-    
+
     if ( !GetPoint(var, exception, p1) )  return true;
     if ( !GetPoint(var, exception, p2) )  return true;
-    
+
     value = Math::Distance(p1, p2);
     result->SetValFloat(value/g_unit);
     return true;
@@ -1811,10 +1806,10 @@ bool CScriptFunctions::rDistance2d(CBotVar* var, CBotVar* result, int& exception
 {
     Math::Vector    p1, p2;
     float       value;
-    
+
     if ( !GetPoint(var, exception, p1) )  return true;
     if ( !GetPoint(var, exception, p2) )  return true;
-    
+
     value = Math::DistanceProjected(p1, p2);
     result->SetValFloat(value/g_unit);
     return true;
@@ -1826,23 +1821,23 @@ bool CScriptFunctions::rDistance2d(CBotVar* var, CBotVar* result, int& exception
 CBotTypResult CScriptFunctions::cSpace(CBotVar* &var, void* user)
 {
     CBotTypResult   ret;
-    
+
     if ( var == 0 )  return CBotTypResult(CBotTypIntrinsic, "point");
     ret = cPoint(var, user);
     if ( ret.GetType() != 0 )  return ret;
-    
+
     if ( var == 0 )  return CBotTypResult(CBotTypIntrinsic, "point");
     if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
     var = var->GetNext();
-    
+
     if ( var == 0 )  return CBotTypResult(CBotTypIntrinsic, "point");
     if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
     var = var->GetNext();
-    
+
     if ( var == 0 )  return CBotTypResult(CBotTypIntrinsic, "point");
     if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
     var = var->GetNext();
-    
+
     if ( var != 0 )  return CBotTypResult(CBotErrOverParam);
     return CBotTypResult(CBotTypIntrinsic, "point");
 }
@@ -1856,11 +1851,11 @@ bool CScriptFunctions::rSpace(CBotVar* var, CBotVar* result, int& exception, voi
     CBotVar*    pSub;
     Math::Vector    center;
     float       rMin, rMax, dist;
-    
+
     rMin = 10.0f*g_unit;
     rMax = 50.0f*g_unit;
     dist =  4.0f*g_unit;
-    
+
     if ( var == 0 )
     {
         center = pThis->GetPosition(0);
@@ -1868,17 +1863,17 @@ bool CScriptFunctions::rSpace(CBotVar* var, CBotVar* result, int& exception, voi
     else
     {
         if ( !GetPoint(var, exception, center) )  return true;
-        
+
         if ( var != 0 )
         {
             rMin = var->GetValFloat()*g_unit;
             var = var->GetNext();
-            
+
             if ( var != 0 )
             {
                 rMax = var->GetValFloat()*g_unit;
                 var = var->GetNext();
-                
+
                 if ( var != 0 )
                 {
                     dist = var->GetValFloat()*g_unit;
@@ -1888,7 +1883,7 @@ bool CScriptFunctions::rSpace(CBotVar* var, CBotVar* result, int& exception, voi
         }
     }
     script->m_main->FreeSpace(center, rMin, rMax, dist, pThis);
-    
+
     if ( result != 0 )
     {
         pSub = result->GetItemList();
@@ -1910,17 +1905,17 @@ bool CScriptFunctions::rSpace(CBotVar* var, CBotVar* result, int& exception, voi
 CBotTypResult CScriptFunctions::cFlatGround(CBotVar* &var, void* user)
 {
     CBotTypResult   ret;
-    
+
     if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
     ret = cPoint(var, user);
     if ( ret.GetType() != 0 )  return ret;
-    
+
     if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
     if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
     var = var->GetNext();
-    
+
     if ( var != 0 )  return CBotTypResult(CBotErrOverParam);
-    
+
     return CBotTypResult(CBotTypFloat);
 }
 
@@ -1932,14 +1927,14 @@ bool CScriptFunctions::rFlatGround(CBotVar* var, CBotVar* result, int& exception
     CObject*    pThis = static_cast<CObject *>(user);
     Math::Vector    center;
     float       rMax, dist;
-    
+
     if ( !GetPoint(var, exception, center) )  return true;
     rMax = var->GetValFloat()*g_unit;
     var = var->GetNext();
-    
+
     dist = script->m_main->GetFlatZoneRadius(center, rMax, pThis);
     result->SetValFloat(dist/g_unit);
-    
+
     return true;
 }
 
@@ -1951,9 +1946,9 @@ bool CScriptFunctions::rWait(CBotVar* var, CBotVar* result, int& exception, void
     CScript*    script = (static_cast<CObject *>(user))->GetRunScript();
     float       value;
     Error       err;
-    
+
     exception = 0;
-    
+
     if ( script->m_primaryTask == 0 )  // no task in progress?
     {
         script->m_primaryTask = new CTaskManager(script->m_object);
@@ -1982,9 +1977,9 @@ bool CScriptFunctions::rMove(CBotVar* var, CBotVar* result, int& exception, void
     CScript*    script = (static_cast<CObject *>(user))->GetRunScript();
     float       value;
     Error       err;
-    
+
     exception = 0;
-    
+
     if ( script->m_primaryTask == 0 )  // no task in progress?
     {
         script->m_primaryTask = new CTaskManager(script->m_object);
@@ -2013,9 +2008,9 @@ bool CScriptFunctions::rTurn(CBotVar* var, CBotVar* result, int& exception, void
     CScript*    script = (static_cast<CObject *>(user))->GetRunScript();
     float       value;
     Error       err;
-    
+
     exception = 0;
-    
+
     if ( script->m_primaryTask == 0 )  // no task in progress?
     {
         script->m_primaryTask = new CTaskManager(script->m_object);
@@ -2042,23 +2037,23 @@ bool CScriptFunctions::rTurn(CBotVar* var, CBotVar* result, int& exception, void
 CBotTypResult CScriptFunctions::cGoto(CBotVar* &var, void* user)
 {
     CBotTypResult   ret;
-    
+
     if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
     ret = cPoint(var, user);
     if ( ret.GetType() != 0 )  return ret;
-    
+
     if ( var == 0 )  return CBotTypResult(CBotTypFloat);
     if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
     var = var->GetNext();
-    
+
     if ( var == 0 )  return CBotTypResult(CBotTypFloat);
     if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
     var = var->GetNext();
-    
+
     if ( var == 0 )  return CBotTypResult(CBotTypFloat);
     if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
     var = var->GetNext();
-    
+
     if ( var == 0 )  return CBotTypResult(CBotTypFloat);
     return CBotTypResult(CBotErrOverParam);
 }
@@ -2073,27 +2068,27 @@ bool CScriptFunctions::rGoto(CBotVar* var, CBotVar* result, int& exception, void
     TaskGotoCrash   crash;
     float           altitude;
     Error           err;
-    
+
     exception = 0;
-    
+
     if ( script->m_primaryTask == 0 )  // no task in progress?
     {
         script->m_primaryTask = new CTaskManager(script->m_object);
         if ( !GetPoint(var, exception, pos) )  return true;
-        
+
         goal  = TGG_DEFAULT;
         crash = TGC_DEFAULT;
         altitude = 0.0f*g_unit;
-        
+
         if ( var != 0 )
         {
             altitude = var->GetValFloat()*g_unit;
-            
+
             var = var->GetNext();
             if ( var != 0 )
             {
                 goal = static_cast<TaskGotoGoal>(var->GetValInt());
-                
+
                 var = var->GetNext();
                 if ( var != 0 )
                 {
@@ -2101,7 +2096,7 @@ bool CScriptFunctions::rGoto(CBotVar* var, CBotVar* result, int& exception, void
                 }
             }
         }
-        
+
         err = script->m_primaryTask->StartTaskGoto(pos, altitude, goal, crash);
         if ( err != ERR_OK )
         {
@@ -2139,9 +2134,9 @@ bool CScriptFunctions::rGrab(CBotVar* var, CBotVar* result, int& exception, void
     ObjectType  oType;
     TaskManipArm type;
     Error       err;
-    
+
     exception = 0;
-    
+
     if ( script->m_primaryTask == 0 )  // no task in progress?
     {
         script->m_primaryTask = new CTaskManager(script->m_object);
@@ -2153,7 +2148,7 @@ bool CScriptFunctions::rGrab(CBotVar* var, CBotVar* result, int& exception, void
         {
             type = static_cast<TaskManipArm>(var->GetValInt());
         }
-        
+
         oType = pThis->GetType();
         if ( oType == OBJECT_HUMAN ||
             oType == OBJECT_TECH  )
@@ -2164,7 +2159,7 @@ bool CScriptFunctions::rGrab(CBotVar* var, CBotVar* result, int& exception, void
         {
             err = script->m_primaryTask->StartTaskManip(TMO_GRAB, type);
         }
-        
+
         if ( err != ERR_OK )
         {
             delete script->m_primaryTask;
@@ -2190,15 +2185,15 @@ bool CScriptFunctions::rDrop(CBotVar* var, CBotVar* result, int& exception, void
     ObjectType  oType;
     TaskManipArm type;
     Error       err;
-    
+
     exception = 0;
-    
+
     if ( script->m_primaryTask == 0 )  // no task in progress?
     {
         script->m_primaryTask = new CTaskManager(script->m_object);
         if ( var == 0 )  type = TMA_FFRONT;
         else             type = static_cast<TaskManipArm>(var->GetValInt());
-        
+
         oType = pThis->GetType();
         if ( oType == OBJECT_HUMAN ||
             oType == OBJECT_TECH  )
@@ -2209,7 +2204,7 @@ bool CScriptFunctions::rDrop(CBotVar* var, CBotVar* result, int& exception, void
         {
             err = script->m_primaryTask->StartTaskManip(TMO_DROP, type);
         }
-        
+
         if ( err != ERR_OK )
         {
             delete script->m_primaryTask;
@@ -2232,9 +2227,9 @@ bool CScriptFunctions::rSniff(CBotVar* var, CBotVar* result, int& exception, voi
 {
     CScript*    script = (static_cast<CObject *>(user))->GetRunScript();
     Error       err;
-    
+
     exception = 0;
-    
+
     if ( script->m_primaryTask == 0 )  // no task in progress?
     {
         script->m_primaryTask = new CTaskManager(script->m_object);
@@ -2262,11 +2257,11 @@ CBotTypResult CScriptFunctions::cReceive(CBotVar* &var, void* user)
     if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
     if ( var->GetType() != CBotTypString )  return CBotTypResult(CBotErrBadString);
     var = var->GetNext();
-    
+
     if ( var == 0 )  return CBotTypResult(CBotTypFloat);
     if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
     var = var->GetNext();
-    
+
     if ( var != 0 )  return CBotTypResult(CBotErrOverParam);
     return CBotTypResult(CBotTypFloat);
 }
@@ -2281,24 +2276,24 @@ bool CScriptFunctions::rReceive(CBotVar* var, CBotVar* result, int& exception, v
     Error       err;
     const char* p;
     float       value, power;
-    
+
     exception = 0;
-    
+
     if ( script->m_primaryTask == 0 )  // no task in progress?
     {
         script->m_primaryTask = new CTaskManager(script->m_object);
-        
+
         cbs = var->GetValString();
         p = cbs;
         var = var->GetNext();
-        
+
         power = 10.0f*g_unit;
         if ( var != 0 )
         {
             power = var->GetValFloat()*g_unit;
             var = var->GetNext();
         }
-        
+
         err = script->m_primaryTask->StartTaskInfo(static_cast<const char*>(p), 0.0f, power, false);
         if ( err != ERR_OK )
         {
@@ -2309,7 +2304,7 @@ bool CScriptFunctions::rReceive(CBotVar* var, CBotVar* result, int& exception, v
         }
     }
     if ( !Process(script, result, exception) )  return false;  // not finished
-    
+
     value = pThis->GetInfoReturn();
     if ( value == NAN )
     {
@@ -2329,15 +2324,15 @@ CBotTypResult CScriptFunctions::cSend(CBotVar* &var, void* user)
     if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
     if ( var->GetType() != CBotTypString )  return CBotTypResult(CBotErrBadString);
     var = var->GetNext();
-    
+
     if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
     if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
     var = var->GetNext();
-    
+
     if ( var == 0 )  return CBotTypResult(CBotTypFloat);
     if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
     var = var->GetNext();
-    
+
     if ( var != 0 )  return CBotTypResult(CBotErrOverParam);
     return CBotTypResult(CBotTypFloat);
 }
@@ -2351,27 +2346,27 @@ bool CScriptFunctions::rSend(CBotVar* var, CBotVar* result, int& exception, void
     Error       err;
     const char* p;
     float       value, power;
-    
+
     exception = 0;
-    
+
     if ( script->m_primaryTask == 0 )  // no task in progress?
     {
         script->m_primaryTask = new CTaskManager(script->m_object);
-        
+
         cbs = var->GetValString();
         p = cbs;
         var = var->GetNext();
-        
+
         value = var->GetValFloat();
         var = var->GetNext();
-        
+
         power = 10.0f*g_unit;
         if ( var != 0 )
         {
             power = var->GetValFloat()*g_unit;
             var = var->GetNext();
         }
-        
+
         err = script->m_primaryTask->StartTaskInfo(static_cast<const char*>(p), value, power, true);
         if ( err != ERR_OK )
         {
@@ -2395,16 +2390,16 @@ CObject* CScriptFunctions::SearchInfo(CScript* script, CObject* object, float po
 {
     CObject     *pBest;
     Math::Vector    iPos, oPos;
-    
+
     iPos = object->GetPosition(0);
     pBest = CObjectManager::GetInstancePointer()->Radar(object, OBJECT_INFO);
     if(pBest == nullptr)
         return nullptr;
     oPos = object->GetPosition(0);
-    
+
     if(Math::DistanceProjected(iPos, oPos) > power)
         return nullptr;
-    
+
     return pBest;
 }
 
@@ -2415,11 +2410,11 @@ CBotTypResult CScriptFunctions::cDeleteInfo(CBotVar* &var, void* user)
     if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
     if ( var->GetType() != CBotTypString )  return CBotTypResult(CBotErrBadString);
     var = var->GetNext();
-    
+
     if ( var == 0 )  return CBotTypResult(CBotTypFloat);
     if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
     var = var->GetNext();
-    
+
     if ( var != 0 )  return CBotTypResult(CBotErrOverParam);
     return CBotTypResult(CBotTypFloat);
 }
@@ -2436,27 +2431,27 @@ bool CScriptFunctions::rDeleteInfo(CBotVar* var, CBotVar* result, int& exception
     const char* p;
     float       power;
     int         i, total;
-    
+
     exception = 0;
-    
+
     cbs = var->GetValString();
     p = cbs;
     var = var->GetNext();
-    
+
     power = 10.0f*g_unit;
     if ( var != 0 )
     {
         power = var->GetValFloat()*g_unit;
         var = var->GetNext();
     }
-    
+
     pInfo = SearchInfo(script, pThis, power);
     if ( pInfo == 0 )
     {
         result->SetValFloat(0.0f);  // false
         return true;
     }
-    
+
     total = pInfo->GetInfoTotal();
     for ( i=0 ; i<total ; i++ )
     {
@@ -2479,11 +2474,11 @@ CBotTypResult CScriptFunctions::cTestInfo(CBotVar* &var, void* user)
     if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
     if ( var->GetType() != CBotTypString )  return CBotTypResult(CBotErrBadString);
     var = var->GetNext();
-    
+
     if ( var == 0 )  return CBotTypResult(CBotTypBoolean);
     if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
     var = var->GetNext();
-    
+
     if ( var != 0 )  return CBotTypResult(CBotErrOverParam);
     return CBotTypResult(CBotTypBoolean);
 }
@@ -2500,27 +2495,27 @@ bool CScriptFunctions::rTestInfo(CBotVar* var, CBotVar* result, int& exception, 
     const char* p;
     float       power;
     int         i, total;
-    
+
     exception = 0;
-    
+
     cbs = var->GetValString();
     p = cbs;
     var = var->GetNext();
-    
+
     power = 10.0f*g_unit;
     if ( var != 0 )
     {
         power = var->GetValFloat()*g_unit;
         var = var->GetNext();
     }
-    
+
     pInfo = SearchInfo(script, pThis, power);
     if ( pInfo == 0 )
     {
         result->SetValInt(false);
         return true;
     }
-    
+
     total = pInfo->GetInfoTotal();
     for ( i=0 ; i<total ; i++ )
     {
@@ -2541,9 +2536,9 @@ bool CScriptFunctions::rThump(CBotVar* var, CBotVar* result, int& exception, voi
 {
     CScript*    script = (static_cast<CObject *>(user))->GetRunScript();
     Error       err;
-    
+
     exception = 0;
-    
+
     if ( script->m_primaryTask == 0 )  // no task in progress?
     {
         script->m_primaryTask = new CTaskManager(script->m_object);
@@ -2570,9 +2565,9 @@ bool CScriptFunctions::rRecycle(CBotVar* var, CBotVar* result, int& exception, v
 {
     CScript*    script = (static_cast<CObject *>(user))->GetRunScript();
     Error       err;
-    
+
     exception = 0;
-    
+
     if ( script->m_primaryTask == 0 )  // no task in progress?
     {
         script->m_primaryTask = new CTaskManager(script->m_object);
@@ -2600,13 +2595,13 @@ CBotTypResult CScriptFunctions::cShield(CBotVar* &var, void* user)
     if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
     if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
     var = var->GetNext();
-    
+
     if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
     if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
     var = var->GetNext();
-    
+
     if ( var != 0 )  return CBotTypResult(CBotErrOverParam);
-    
+
     return CBotTypResult(CBotTypFloat);
 }
 
@@ -2630,15 +2625,15 @@ bool CScriptFunctions::rShield(CBotVar* var, CBotVar* result, int& exception, vo
         }
         return true;
     }
-    
+
     oper = var->GetValFloat();  // 0=down, 1=up
     var = var->GetNext();
-    
+
     radius = var->GetValFloat();
     if ( radius < 10.0f )  radius = 10.0f;
     if ( radius > 25.0f )  radius = 25.0f;
     radius = (radius-10.0f)/15.0f;
-    
+
     if ( *script->m_secondaryTask == 0 )  // shield folds?
     {
         if ( oper == 0.0f )  // down?
@@ -2648,7 +2643,7 @@ bool CScriptFunctions::rShield(CBotVar* var, CBotVar* result, int& exception, vo
         else    // up ?
         {
             pThis->SetParam(radius);
-            
+
             *script->m_secondaryTask = new CTaskManager(script->m_object);
             err = (*script->m_secondaryTask)->StartTaskShield(TSM_UP, 1000.0f);
             if ( err != ERR_OK )
@@ -2672,7 +2667,7 @@ bool CScriptFunctions::rShield(CBotVar* var, CBotVar* result, int& exception, vo
             (*script->m_secondaryTask)->StartTaskShield(TSM_UPDATE, 0.0f);
         }
     }
-    
+
     return true;
 }
 
@@ -2682,9 +2677,9 @@ CBotTypResult CScriptFunctions::cFire(CBotVar* &var, void* user)
 {
     CObject*    pThis = static_cast<CObject *>(user);
     ObjectType  type;
-    
+
     type = pThis->GetType();
-    
+
     if ( type == OBJECT_ANT )
     {
         if ( var == 0 ) return CBotTypResult(CBotErrLowParam);
@@ -2718,15 +2713,15 @@ bool CScriptFunctions::rFire(CBotVar* var, CBotVar* result, int& exception, void
     Math::Vector    impact;
     Error       err;
     ObjectType  type;
-    
+
     exception = 0;
-    
+
     if ( script->m_primaryTask == 0 )  // no task in progress?
     {
         script->m_primaryTask = new CTaskManager(script->m_object);
-        
+
         type = pThis->GetType();
-        
+
         if ( type == OBJECT_ANT )
         {
             if ( !GetPoint(var, exception, impact) )  return true;
@@ -2744,7 +2739,7 @@ bool CScriptFunctions::rFire(CBotVar* var, CBotVar* result, int& exception, void
             if ( delay < 0.0f ) delay = -delay;
             err = script->m_primaryTask->StartTaskFire(delay);
         }
-        
+
         if ( err != ERR_OK )
         {
             delete script->m_primaryTask;
@@ -2763,13 +2758,13 @@ CBotTypResult CScriptFunctions::cAim(CBotVar* &var, void* user)
     if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
     if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
     var = var->GetNext();
-    
+
     if ( var == 0 )  return CBotTypResult(CBotTypFloat);
     if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
     var = var->GetNext();
-    
+
     if ( var != 0 )  return CBotTypResult(CBotErrOverParam);
-    
+
     return CBotTypResult(CBotTypFloat);
 }
 
@@ -2780,9 +2775,9 @@ bool CScriptFunctions::rAim(CBotVar* var, CBotVar* result, int& exception, void*
     CScript*    script = (static_cast<CObject *>(user))->GetRunScript();
     float       x, y;
     Error       err;
-    
+
     exception = 0;
-    
+
     if ( script->m_primaryTask == 0 )  // no task in progress?
     {
         script->m_primaryTask = new CTaskManager(script->m_object);
@@ -2812,13 +2807,13 @@ CBotTypResult CScriptFunctions::cMotor(CBotVar* &var, void* user)
     if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
     if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
     var = var->GetNext();
-    
+
     if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
     if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
     var = var->GetNext();
-    
+
     if ( var != 0 )  return CBotTypResult(CBotErrOverParam);
-    
+
     return CBotTypResult(CBotTypFloat);
 }
 
@@ -2829,28 +2824,28 @@ bool CScriptFunctions::rMotor(CBotVar* var, CBotVar* result, int& exception, voi
     CObject*    pThis = static_cast<CObject *>(user);
     CPhysics*   physics = (static_cast<CObject *>(user))->GetPhysics();
     float       left, right, speed, turn;
-    
+
     left = var->GetValFloat();
     var = var->GetNext();
     right = var->GetValFloat();
-    
+
     speed = (left+right)/2.0f;
     if ( speed < -1.0f )  speed = -1.0f;
     if ( speed >  1.0f )  speed =  1.0f;
-    
+
     turn = left-right;
     if ( turn < -1.0f )  turn = -1.0f;
     if ( turn >  1.0f )  turn =  1.0f;
-    
+
     if ( pThis->GetFixed() )  // ant on the back?
     {
         speed = 0.0f;
         turn  = 0.0f;
     }
-    
+
     physics->SetMotorSpeedX(speed);  // forward/backward
     physics->SetMotorSpeedZ(turn);  // turns
-    
+
     return true;
 }
 
@@ -2860,12 +2855,12 @@ bool CScriptFunctions::rJet(CBotVar* var, CBotVar* result, int& exception, void*
 {
     CPhysics*   physics = (static_cast<CObject *>(user))->GetPhysics();
     float       value;
-    
+
     value = var->GetValFloat();
     if( value > 1.0f ) value = 1.0f;
-    
+
     physics->SetMotorSpeedY(value);
-    
+
     return true;
 }
 
@@ -2874,11 +2869,11 @@ bool CScriptFunctions::rJet(CBotVar* var, CBotVar* result, int& exception, void*
 CBotTypResult CScriptFunctions::cTopo(CBotVar* &var, void* user)
 {
     CBotTypResult   ret;
-    
+
     if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
     ret = CScriptFunctions::cPoint(var, user);
     if ( ret.GetType() != 0 )  return ret;
-    
+
     if ( var == 0 )  return CBotTypResult(CBotTypFloat);
     return CBotTypResult(CBotErrOverParam);
 }
@@ -2890,11 +2885,11 @@ bool CScriptFunctions::rTopo(CBotVar* var, CBotVar* result, int& exception, void
     CScript*    script = (static_cast<CObject *>(user))->GetRunScript();
     Math::Vector    pos;
     float       level;
-    
+
     exception = 0;
-    
+
     if ( !GetPoint(var, exception, pos) )  return true;
-    
+
     level = script->m_terrain->GetFloorLevel(pos);
     level -= script->m_water->GetLevel();
     result->SetValFloat(level/g_unit);
@@ -2909,11 +2904,11 @@ CBotTypResult CScriptFunctions::cMessage(CBotVar* &var, void* user)
     if ( var->GetType() != CBotTypString &&
         var->GetType() >  CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
     var = var->GetNext();
-    
+
     if ( var == 0 )  return CBotTypResult(CBotTypFloat);
     if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
     var = var->GetNext();
-    
+
     if ( var == 0 )  return CBotTypResult(CBotTypFloat);
     return CBotTypResult(CBotErrOverParam);
 }
@@ -2926,20 +2921,20 @@ bool CScriptFunctions::rMessage(CBotVar* var, CBotVar* result, int& exception, v
     CBotString  cbs;
     const char* p;
     Ui::TextType    type;
-    
+
     cbs = var->GetValString();
     p = cbs;
-    
+
     type = Ui::TT_MESSAGE;
     var = var->GetNext();
     if ( var != 0 )
     {
         type = static_cast<Ui::TextType>(var->GetValInt());
     }
-    
+
     script->m_main->GetDisplayText()->DisplayText(p, script->m_object, 10.0f, type);
     script->m_main->CheckEndMessage(p);
-    
+
     return true;
 }
 
@@ -2950,11 +2945,11 @@ bool CScriptFunctions::rCmdline(CBotVar* var, CBotVar* result, int& exception, v
     CObject*    pThis = static_cast<CObject *>(user);
     float       value;
     int         rank;
-    
+
     rank = var->GetValInt();
     value = pThis->GetCmdLine(rank);
     result->SetValFloat(value);
-    
+
     return true;
 }
 
@@ -2964,10 +2959,10 @@ bool CScriptFunctions::rIsMovie(CBotVar* var, CBotVar* result, int& exception, v
 {
     CScript*    script = (static_cast<CObject *>(user))->GetRunScript();
     float       value;
-    
+
     value = script->m_main->GetMovieLock()?1.0f:0.0f;
     result->SetValFloat(value);
-    
+
     return true;
 }
 
@@ -2977,12 +2972,12 @@ bool CScriptFunctions::rErrMode(CBotVar* var, CBotVar* result, int& exception, v
 {
     CScript*    script = (static_cast<CObject *>(user))->GetRunScript();
     int         value;
-    
+
     value = var->GetValInt();
     if ( value < 0 )  value = 0;
     if ( value > 1 )  value = 1;
     script->m_errMode = value;
-    
+
     return true;
 }
 
@@ -2992,12 +2987,12 @@ bool CScriptFunctions::rIPF(CBotVar* var, CBotVar* result, int& exception, void*
 {
     CScript*    script = (static_cast<CObject *>(user))->GetRunScript();
     int         value;
-    
+
     value = var->GetValInt();
     if ( value <     1 )  value =     1;
     if ( value > 10000 )  value = 10000;
     script->m_ipf = value;
-    
+
     return true;
 }
 
@@ -3007,7 +3002,7 @@ bool CScriptFunctions::rAbsTime(CBotVar* var, CBotVar* result, int& exception, v
 {
     CScript*    script = (static_cast<CObject *>(user))->GetRunScript();
     float       value;
-    
+
     value = script->m_main->GetGameTime();
     result->SetValFloat(value);
     return true;
@@ -3019,25 +3014,25 @@ bool CScriptFunctions::rAbsTime(CBotVar* var, CBotVar* result, int& exception, v
 void PrepareFilename(CBotString &filename, const char *dir)
 {
     int         pos;
-    
+
     pos = filename.ReverseFind('\\');
     if ( pos > 0 )
     {
         filename = filename.Mid(pos+1);  // removes folders
     }
-    
+
     pos = filename.ReverseFind('/');
     if ( pos > 0 )
     {
         filename = filename.Mid(pos+1);  // also those with /
     }
-    
+
     pos = filename.ReverseFind(':');
     if ( pos > 0 )
     {
         filename = filename.Mid(pos+1);  // also removes the drive letter C:
     }
-    
+
     filename = CBotString(dir) + CBotString("\\") + filename;
 }
 
@@ -3049,7 +3044,7 @@ bool CScriptFunctions::rDeleteFile(CBotVar* var, CBotVar* result, int& exception
     CBotString  cbs;
     const char* filename;
     const char* dir;
-    
+
     cbs = var->GetValString();
     dir = script->m_main->GetFilesDir();
     PrepareFilename(cbs, dir);
@@ -3065,11 +3060,11 @@ CBotTypResult CScriptFunctions::cPenDown(CBotVar* &var, void* user)
     if ( var == 0 )  return CBotTypResult(CBotTypFloat);
     if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
     var = var->GetNext();
-    
+
     if ( var == 0 )  return CBotTypResult(CBotTypFloat);
     if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
     var = var->GetNext();
-    
+
     if ( var == 0 )  return CBotTypResult(CBotTypFloat);
     return CBotTypResult(CBotErrOverParam);
 }
@@ -3083,11 +3078,11 @@ bool CScriptFunctions::rPenDown(CBotVar* var, CBotVar* result, int& exception, v
     int         color;
     float       width;
     Error       err;
-    
+
     if ( pThis->GetType() == OBJECT_MOBILEdr )
     {
         exception = 0;
-        
+
         if ( script->m_primaryTask == 0 )  // no task in progress?
         {
             if ( var != 0 )
@@ -3096,7 +3091,7 @@ bool CScriptFunctions::rPenDown(CBotVar* var, CBotVar* result, int& exception, v
                 if ( color <  0 )  color =  0;
                 if ( color > 17 )  color = 17;
                 pThis->SetTraceColor(color);
-                
+
                 var = var->GetNext();
                 if ( var != 0 )
                 {
@@ -3107,7 +3102,7 @@ bool CScriptFunctions::rPenDown(CBotVar* var, CBotVar* result, int& exception, v
                 }
             }
             pThis->SetTraceDown(true);
-            
+
             script->m_primaryTask = new CTaskManager(script->m_object);
             err = script->m_primaryTask->StartTaskPen(pThis->GetTraceDown(), pThis->GetTraceColor());
             if ( err != ERR_OK )
@@ -3133,7 +3128,7 @@ bool CScriptFunctions::rPenDown(CBotVar* var, CBotVar* result, int& exception, v
             if ( color <  0 )  color =  0;
             if ( color > 17 )  color = 17;
             pThis->SetTraceColor(color);
-            
+
             var = var->GetNext();
             if ( var != 0 )
             {
@@ -3144,7 +3139,7 @@ bool CScriptFunctions::rPenDown(CBotVar* var, CBotVar* result, int& exception, v
             }
         }
         pThis->SetTraceDown(true);
-        
+
         return true;
     }
 }
@@ -3156,15 +3151,15 @@ bool CScriptFunctions::rPenUp(CBotVar* var, CBotVar* result, int& exception, voi
     CScript*    script = (static_cast<CObject *>(user))->GetRunScript();
     CObject*    pThis = static_cast<CObject *>(user);
     Error       err;
-    
+
     if ( pThis->GetType() == OBJECT_MOBILEdr )
     {
         exception = 0;
-        
+
         if ( script->m_primaryTask == 0 )  // no task in progress?
         {
             pThis->SetTraceDown(false);
-            
+
             script->m_primaryTask = new CTaskManager(script->m_object);
             err = script->m_primaryTask->StartTaskPen(pThis->GetTraceDown(), pThis->GetTraceColor());
             if ( err != ERR_OK )
@@ -3197,18 +3192,18 @@ bool CScriptFunctions::rPenColor(CBotVar* var, CBotVar* result, int& exception, 
     CObject*    pThis = static_cast<CObject *>(user);
     int         color;
     Error       err;
-    
+
     if ( pThis->GetType() == OBJECT_MOBILEdr )
     {
         exception = 0;
-        
+
         if ( script->m_primaryTask == 0 )  // no task in progress?
         {
             color = var->GetValInt();
             if ( color <  0 )  color =  0;
             if ( color > 17 )  color = 17;
             pThis->SetTraceColor(color);
-            
+
             script->m_primaryTask = new CTaskManager(script->m_object);
             err = script->m_primaryTask->StartTaskPen(pThis->GetTraceDown(), pThis->GetTraceColor());
             if ( err != ERR_OK )
@@ -3232,7 +3227,7 @@ bool CScriptFunctions::rPenColor(CBotVar* var, CBotVar* result, int& exception, 
         if ( color <  0 )  color =  0;
         if ( color > 17 )  color = 17;
         pThis->SetTraceColor(color);
-        
+
         return true;
     }
 }
@@ -3243,7 +3238,7 @@ bool CScriptFunctions::rPenWidth(CBotVar* var, CBotVar* result, int& exception, 
 {
     CObject*    pThis = static_cast<CObject *>(user);
     float       width;
-    
+
     width = var->GetValFloat();
     if ( width < 0.1f )  width = 0.1f;
     if ( width > 1.0f )  width = 1.0f;
@@ -3258,7 +3253,7 @@ CBotTypResult CScriptFunctions::cOneObject(CBotVar* &var, void* user)
     if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
     var = var->GetNext();
     if ( var == 0 )  return CBotTypResult(CBotTypFloat);
-    
+
     return CBotTypResult(CBotErrOverParam);
 }
 
@@ -3267,7 +3262,7 @@ CBotTypResult CScriptFunctions::cOneObject(CBotVar* &var, void* user)
 bool CScriptFunctions::rCameraFocus(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
     CScript* script = (static_cast<CObject *>(user))->GetRunScript();
-    
+
     CBotVar* classVars = var->GetItemList();  // "category"
     classVars = classVars->GetNext();  // "position"
     classVars = classVars->GetNext();  // "orientation"
@@ -3278,15 +3273,14 @@ bool CScriptFunctions::rCameraFocus(CBotVar* var, CBotVar* result, int& exceptio
     classVars = classVars->GetNext();  // "temperature"
     classVars = classVars->GetNext();  // "altitude"
     classVars = classVars->GetNext();  // "lifeTime"
-    classVars = classVars->GetNext();  // "material"
     classVars = classVars->GetNext();  // "energyCell"
     classVars = classVars->GetNext();  // "load"
     classVars = classVars->GetNext();  // "id"
     int rank = classVars->GetValInt();
     CObject* object = CObjectManager::GetInstancePointer()->GetObjectById(rank);
-    
+
     script->m_main->SelectObject(object, false);
-    
+
     result->SetValInt(ERR_OK);
     exception = ERR_OK;
     return true;
@@ -3310,13 +3304,13 @@ void PrepareFilename(CBotString &filename)
     {
         filename = filename.Mid(pos+1);  // Remove files with /
     }
-    
+
     pos = filename.ReverseFind(':');
     if ( pos > 0 )
     {
         filename = filename.Mid(pos+1);  // also removes the drive letter C:
     }
-    
+
     #if PLATFORM_WINDOWS
     boost::filesystem::create_directories(CSystemUtilsWindows::UTF8_Decode(CScriptFunctions::m_filesDir));
     #else
@@ -3334,16 +3328,16 @@ void PrepareFilename(CBotString &filename)
 bool CScriptFunctions::rfconstruct (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception)
 {
     CBotString  mode;
-    
+
     // accepts no parameters
     if ( pVar == NULL ) return true;
-    
+
     // must be a character string
     if ( pVar->GetType() != CBotTypString ) { Exception = CBotErrBadString; return false; }
-    
+
     CBotString  filename = pVar->GetValString();
     PrepareFilename(filename);
-    
+
     // there may be a second parameter
     pVar = pVar->GetNext();
     if ( pVar != NULL )
@@ -3351,32 +3345,32 @@ bool CScriptFunctions::rfconstruct (CBotVar* pThis, CBotVar* pVar, CBotVar* pRes
         // recover mode
         mode = pVar->GetValString();
         if ( mode != "r" && mode != "w" ) { Exception = CBotErrBadParam; return false; }
-        
+
         // no third parameter
         if ( pVar->GetNext() != NULL ) { Exception = CBotErrOverParam; return false; }
     }
-    
+
     // saves the file name
     pVar = pThis->GetItem("filename");
     pVar->SetValString(filename);
-    
+
     if ( ! mode.IsEmpty() )
     {
         // opens the requested file
         FILE*   pFile = fopen( filename, mode );
         if ( pFile == NULL ) { Exception = CBotErrFileOpen; return false; }
-        
+
         m_CompteurFileOpen ++;
 
         int fileHandle = m_nextFile++;
 
         m_files[fileHandle] = pFile;
-        
+
         // save the file handle
         pVar = pThis->GetItem("handle");
         pVar->SetValInt(fileHandle);
     }
-    
+
     return true;
 }
 
@@ -3385,11 +3379,11 @@ CBotTypResult CScriptFunctions::cfconstruct (CBotVar* pThis, CBotVar* &pVar)
 {
     // accepts no parameters
     if ( pVar == NULL ) return CBotTypResult( 0 );
-    
+
     // must be a character string
     if ( pVar->GetType() != CBotTypString )
         return CBotTypResult( CBotErrBadString );
-    
+
     // there may be a second parameter
     pVar = pVar->GetNext();
     if ( pVar != NULL )
@@ -3400,7 +3394,7 @@ CBotTypResult CScriptFunctions::cfconstruct (CBotVar* pThis, CBotVar* &pVar)
         // no third parameter
         if ( pVar->GetNext() != NULL ) return CBotTypResult( CBotErrOverParam );
     }
-    
+
     // the result is void (constructor)
     return CBotTypResult( 0 );
 }
@@ -3413,20 +3407,20 @@ bool CScriptFunctions::rfdestruct (CBotVar* pThis, CBotVar* pVar, CBotVar* pResu
 {
     // retrieve the item "handle"
     pVar = pThis->GetItem("handle");
-    
+
     // don't open? no problem :)
     if ( pVar->GetInit() != IS_DEF) return true;
 
     int fileHandle = pVar->GetValInt();
-    
+
     FILE* pFile = m_files[fileHandle];
     fclose(pFile);
     m_CompteurFileOpen--;
-    
+
     pVar->SetInit(IS_NAN);
 
     m_files.erase(fileHandle);
-    
+
     return true;
 }
 
@@ -3439,43 +3433,43 @@ bool CScriptFunctions::rfopen (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, 
 {
     // there must be a parameter
     if ( pVar == NULL ) { Exception = CBotErrLowParam; return false; }
-    
+
     // which must be a character string
     if ( pVar->GetType() != CBotTypString ) { Exception = CBotErrBadString; return false; }
-    
+
     // There may be a second parameter
     if ( pVar->GetNext() != NULL )
     {
         // if the first parameter is the file name
         CBotString  filename = pVar->GetValString();
         PrepareFilename(filename);
-        
+
         // saves the file name
         CBotVar* pVar2 = pThis->GetItem("filename");
         pVar2->SetValString(filename);
-        
+
         // next parameter is the mode
         pVar = pVar -> GetNext();
     }
-    
+
     CBotString  mode = pVar->GetValString();
     if ( mode != "r" && mode != "w" ) { Exception = CBotErrBadParam; return false; }
-    
+
     // no third parameter
     if ( pVar->GetNext() != NULL ) { Exception = CBotErrOverParam; return false; }
-    
+
     // retrieve the item "handle"
     pVar = pThis->GetItem("handle");
-    
+
     // which must not be initialized
     if ( pVar->GetInit() == IS_DEF) { Exception = CBotErrFileOpen; return false; }
-    
+
     // file contains the name
     pVar = pThis->GetItem("filename");
     CBotString  filename = pVar->GetValString();
-    
+
     PrepareFilename(filename);  // if the name was h.filename attribute = "...";
-    
+
     // opens the requested file
     FILE*   pFile = fopen( filename, mode );
     if ( pFile == NULL )
@@ -3483,9 +3477,9 @@ bool CScriptFunctions::rfopen (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, 
         pResult->SetValInt(false);
         return true;
     }
-    
+
     m_CompteurFileOpen ++;
-    
+
     // save file handle
     int fileHandle = m_nextFile++;
 
@@ -3493,7 +3487,7 @@ bool CScriptFunctions::rfopen (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, 
 
     pVar = pThis->GetItem("handle");
     pVar->SetValInt(fileHandle);
-    
+
     pResult->SetValInt(true);
     return true;
 }
@@ -3503,11 +3497,11 @@ CBotTypResult CScriptFunctions::cfopen (CBotVar* pThis, CBotVar* &pVar)
 {
     // there must be a parameter
     if ( pVar == NULL ) return CBotTypResult( CBotErrLowParam );
-    
+
     // which must be a string
     if ( pVar->GetType() != CBotTypString )
         return CBotTypResult( CBotErrBadString );
-    
+
     // there may be a second parameter
     pVar = pVar->GetNext();
     if ( pVar != NULL )
@@ -3515,11 +3509,11 @@ CBotTypResult CScriptFunctions::cfopen (CBotVar* pThis, CBotVar* &pVar)
         // which must be a string
         if ( pVar->GetType() != CBotTypString )
             return CBotTypResult( CBotErrBadString );
-        
+
         // no third parameter
         if ( pVar->GetNext() != NULL ) return CBotTypResult( CBotErrOverParam );
     }
-    
+
     // the result is bool
     return CBotTypResult(CBotTypBoolean);
 }
@@ -3532,22 +3526,22 @@ bool CScriptFunctions::rfclose (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult,
 {
     // it shouldn't be any parameters
     if (pVar != NULL) { Exception = CBotErrOverParam; return false; }
-    
+
     // retrieve the item "handle"
     pVar = pThis->GetItem("handle");
-    
+
     if ( pVar->GetInit() != IS_DEF) { Exception = CBotErrNotOpen; return false; }
-    
+
     int fileHandle = pVar->GetValInt();
 
     FILE* pFile = m_files[fileHandle];
     fclose(pFile);
     m_CompteurFileOpen--;
-    
+
     pVar->SetInit(IS_NAN);
 
     m_files.erase(fileHandle);
-    
+
     return true;
 }
 
@@ -3556,7 +3550,7 @@ CBotTypResult CScriptFunctions::cfclose (CBotVar* pThis, CBotVar* &pVar)
 {
     // it shouldn't be any parameters
     if ( pVar != NULL ) return CBotTypResult( CBotErrOverParam );
-    
+
     // function returns a result "void"
     return CBotTypResult( 0 );
 }
@@ -3568,26 +3562,26 @@ bool CScriptFunctions::rfwrite (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult,
 {
     // there must be a parameter
     if ( pVar == NULL ) { Exception = CBotErrLowParam; return false; }
-    
+
     // which must be a character string
     if ( pVar->GetType() != CBotTypString ) { Exception = CBotErrBadString; return false; }
-    
+
     CBotString param = pVar->GetValString();
-    
+
     // retrieve the item "handle"
     pVar = pThis->GetItem("handle");
-    
+
     if ( pVar->GetInit() != IS_DEF) { Exception = CBotErrNotOpen; return false; }
-    
+
     int fileHandle = pVar->GetValInt();
 
     FILE* pFile = m_files[fileHandle];
-    
+
     int res = fputs(param+CBotString("\n"), pFile);
-    
+
     // if an error occurs generate an exception
     if ( res < 0 ) { Exception = CBotErrWrite; return false; }
-    
+
     return true;
 }
 
@@ -3596,13 +3590,13 @@ CBotTypResult CScriptFunctions::cfwrite (CBotVar* pThis, CBotVar* &pVar)
 {
     // there must be a parameter
     if ( pVar == NULL ) return CBotTypResult( CBotErrLowParam );
-    
+
     // which must be a character string
     if ( pVar->GetType() != CBotTypString ) return CBotTypResult( CBotErrBadString );
-    
+
     // no other parameter
     if ( pVar->GetNext() != NULL ) return CBotTypResult( CBotErrOverParam );
-    
+
     // the function returns a void result
     return CBotTypResult( 0 );
 }
@@ -3635,9 +3629,9 @@ bool CScriptFunctions::rfread(CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, i
 
     // if an error occurs generate an exception
     if ( ferror(pFile) ) { Exception = CBotErrRead; return false; }
-    
+
     pResult->SetValString( chaine );
-    
+
     return true;
 }
 
@@ -3646,7 +3640,7 @@ CBotTypResult CScriptFunctions::cfread (CBotVar* pThis, CBotVar* &pVar)
 {
     // it should not be any parameter
     if ( pVar != NULL ) return CBotTypResult( CBotErrOverParam );
-    
+
     // function returns a result "string"
     return CBotTypResult( CBotTypString );
 }
@@ -3658,18 +3652,18 @@ bool CScriptFunctions::rfeof (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, i
 {
     // it should not be any parameter
     if ( pVar != NULL ) { Exception = CBotErrOverParam; return false; }
-    
+
     // retrieve the item "handle"
     pVar = pThis->GetItem("handle");
-    
+
     if ( pVar->GetInit() != IS_DEF) { Exception = CBotErrNotOpen; return false; }
-    
+
     int fileHandle = pVar->GetValInt();
 
     FILE* pFile = m_files[fileHandle];
-    
+
     pResult->SetValInt( feof( pFile ) );
-    
+
     return true;
 }
 
@@ -3678,7 +3672,7 @@ CBotTypResult CScriptFunctions::cfeof (CBotVar* pThis, CBotVar* &pVar)
 {
     // it shouldn't be any parameter
     if ( pVar != NULL ) return CBotTypResult( CBotErrOverParam );
-    
+
     // the function returns a boolean result
     return CBotTypResult( CBotTypBoolean );
 }
@@ -3688,28 +3682,28 @@ CBotTypResult CScriptFunctions::cfeof (CBotVar* pThis, CBotVar* &pVar)
 CBotTypResult CScriptFunctions::cPointConstructor(CBotVar* pThis, CBotVar* &var)
 {
     if ( !pThis->IsElemOfClass("point") )  return CBotTypResult(CBotErrBadNum);
-    
+
     if ( var == NULL )  return CBotTypResult(0);  // ok if no parameter
-    
+
     // First parameter (x):
     if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
     var = var->GetNext();
-    
+
     // Second parameter (y):
     if ( var == NULL )  return CBotTypResult(CBotErrLowParam);
     if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
     var = var->GetNext();
-    
+
     // Third parameter (z):
     if ( var == NULL )  // only 2 parameters?
     {
         return CBotTypResult(0);  // this function returns void
     }
-    
+
     if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
     var = var->GetNext();
     if ( var != NULL )  return CBotTypResult(CBotErrOverParam);
-    
+
     return CBotTypResult(0);  // this function returns void
 }
 
@@ -3718,14 +3712,14 @@ CBotTypResult CScriptFunctions::cPointConstructor(CBotVar* pThis, CBotVar* &var)
 bool CScriptFunctions::rPointConstructor(CBotVar* pThis, CBotVar* var, CBotVar* pResult, int& Exception)
 {
     CBotVar     *pX, *pY, *pZ;
-    
+
     if ( var == NULL )  return true;  // constructor with no parameters is ok
-    
+
     if ( var->GetType() > CBotTypDouble )
     {
         Exception = CBotErrBadNum;  return false;
     }
-    
+
     pX = pThis->GetItem("x");
     if ( pX == NULL )
     {
@@ -3733,17 +3727,17 @@ bool CScriptFunctions::rPointConstructor(CBotVar* pThis, CBotVar* var, CBotVar* 
     }
     pX->SetValFloat( var->GetValFloat() );
     var = var->GetNext();
-    
+
     if ( var == NULL )
     {
         Exception = CBotErrLowParam;  return false;
     }
-    
+
     if ( var->GetType() > CBotTypDouble )
     {
         Exception = CBotErrBadNum;  return false;
     }
-    
+
     pY = pThis->GetItem("y");
     if ( pY == NULL )
     {
@@ -3751,12 +3745,12 @@ bool CScriptFunctions::rPointConstructor(CBotVar* pThis, CBotVar* var, CBotVar* 
     }
     pY->SetValFloat( var->GetValFloat() );
     var = var->GetNext();
-    
+
     if ( var == NULL )
     {
         return true;  // ok with only two parameters
     }
-    
+
     pZ = pThis->GetItem("z");
     if ( pZ == NULL )
     {
@@ -3764,12 +3758,12 @@ bool CScriptFunctions::rPointConstructor(CBotVar* pThis, CBotVar* var, CBotVar* 
     }
     pZ->SetValFloat( var->GetValFloat() );
     var = var->GetNext();
-    
+
     if ( var != NULL )
     {
         Exception = CBotErrOverParam;  return false;
     }
-    
+
     return  true;  // no interruption
 }
 
@@ -3782,19 +3776,19 @@ void CScriptFunctions::Init()
 {
     CBotProgram::SetTimer(100);
     CBotProgram::Init();
-    
+
     for (int i = 0; i < OBJECT_MAX; i++)
     {
         ObjectType type = static_cast<ObjectType>(i);
         const char* token = GetObjectName(type);
         if (token[0] != 0)
             CBotProgram::DefineNum(token, type);
-        
+
         token = GetObjectAlias(type);
         if (token[0] != 0)
             CBotProgram::DefineNum(token, type);
     }
-    
+
     CBotProgram::DefineNum("White",      0);
     CBotProgram::DefineNum("Black",      1);
     CBotProgram::DefineNum("Gray",       2);
@@ -3813,33 +3807,30 @@ void CScriptFunctions::Init()
     CBotProgram::DefineNum("LightBlue",  15);
     CBotProgram::DefineNum("BlackArrow", 16);
     CBotProgram::DefineNum("RedArrow",   17);
-    
-    CBotProgram::DefineNum("Metal",   OM_METAL);
-    CBotProgram::DefineNum("Plastic", OM_PLASTIC);
-    
+
     CBotProgram::DefineNum("InFront",    TMA_FFRONT);
     CBotProgram::DefineNum("Behind",     TMA_FBACK);
     CBotProgram::DefineNum("EnergyCell", TMA_POWER);
-    
+
     CBotProgram::DefineNum("DisplayError",   Ui::TT_ERROR);
     CBotProgram::DefineNum("DisplayWarning", Ui::TT_WARNING);
     CBotProgram::DefineNum("DisplayInfo",    Ui::TT_INFO);
     CBotProgram::DefineNum("DisplayMessage", Ui::TT_MESSAGE);
-    
+
     CBotProgram::DefineNum("FilterNone",        FILTER_NONE);
     CBotProgram::DefineNum("FilterOnlyLanding", FILTER_ONLYLANDING);
     CBotProgram::DefineNum("FilterOnlyFliying", FILTER_ONLYFLYING);
-    
+
     CBotProgram::DefineNum("ExploNone",  0);
     CBotProgram::DefineNum("ExploBoum",  EXPLO_BOUM);
     CBotProgram::DefineNum("ExploBurn",  EXPLO_BURN);
     CBotProgram::DefineNum("ExploWater", EXPLO_WATER);
-    
+
     CBotProgram::DefineNum("ResultNotEnded",  ERR_MISSION_NOTERM);
     CBotProgram::DefineNum("ResultLost",      INFO_LOST);
     CBotProgram::DefineNum("ResultLostQuick", INFO_LOSTq);
     CBotProgram::DefineNum("ResultWin",       ERR_OK);
-    
+
     CBotProgram::DefineNum("BuildBotFactory",       BUILD_FACTORY);
     CBotProgram::DefineNum("BuildDerrick",          BUILD_DERRICK);
     CBotProgram::DefineNum("BuildConverter",        BUILD_CONVERT);
@@ -3856,7 +3847,7 @@ void CScriptFunctions::Init()
     CBotProgram::DefineNum("BuildDestroyer",        BUILD_DESTROYER);
     CBotProgram::DefineNum("FlatGround",            BUILD_GFLAT);
     CBotProgram::DefineNum("UseFlags",              BUILD_FLAG);
-    
+
     CBotProgram::DefineNum("ResearchTracked",       RESEARCH_TANK);
     CBotProgram::DefineNum("ResearchWinged",        RESEARCH_FLY);
     CBotProgram::DefineNum("ResearchShooter",       RESEARCH_CANON);
@@ -3870,18 +3861,18 @@ void CScriptFunctions::Init()
     CBotProgram::DefineNum("ResearchRecycler",      RESEARCH_RECYCLER);
     CBotProgram::DefineNum("ResearchSubber",        RESEARCH_SUBM);
     CBotProgram::DefineNum("ResearchSniffer",       RESEARCH_SNIFFER);
-    
+
     CBotProgram::DefineNum("PolskiPortalColobota", 1337);
-    
+
     CBotClass* bc;
-    
+
     // Add the class Point.
     bc = new CBotClass("point", NULL, true);  // intrinsic class
     bc->AddItem("x", CBotTypFloat);
     bc->AddItem("y", CBotTypFloat);
     bc->AddItem("z", CBotTypFloat);
     bc->AddFunction("point", CScriptFunctions::rPointConstructor, CScriptFunctions::cPointConstructor);
-    
+
     // Adds the class Object.
     bc = new CBotClass("object", NULL);
     bc->AddItem("category",    CBotTypResult(CBotTypInt), PR_READ);
@@ -3894,7 +3885,6 @@ void CScriptFunctions::Init()
     bc->AddItem("temperature", CBotTypResult(CBotTypFloat), PR_READ);
     bc->AddItem("altitude",    CBotTypResult(CBotTypFloat), PR_READ);
     bc->AddItem("lifeTime",    CBotTypResult(CBotTypFloat), PR_READ);
-    bc->AddItem("material",    CBotTypResult(CBotTypInt), PR_READ);
     bc->AddItem("energyCell",  CBotTypResult(CBotTypPointer, "object"), PR_READ);
     bc->AddItem("load",        CBotTypResult(CBotTypPointer, "object"), PR_READ);
     bc->AddItem("id",          CBotTypResult(CBotTypInt), PR_READ);
@@ -3903,7 +3893,7 @@ void CScriptFunctions::Init()
     bc->AddFunction("research", CScriptFunctions::rResearch, CScriptFunctions::cClassOneFloat);
     bc->AddFunction("takeoff",  CScriptFunctions::rTakeOff,  CScriptFunctions::cClassNull);
     bc->AddFunction("destroy",  CScriptFunctions::rDestroy,  CScriptFunctions::cClassNull);
-    
+
     // InitClassFILE:
     // create a class for file management
     // the use is as follows:
@@ -3911,30 +3901,30 @@ void CScriptFunctions::Init()
     // canal.open( "r" );   // open for read
     // s = canal.readln( ); // reads a line
     // canal.close();   // close the file
-    
+
     // create the class FILE
     bc    = new CBotClass("file", NULL);
     // adds the component ".filename"
     bc->AddItem("filename", CBotTypString);
     // adds the component ".handle"
     bc->AddItem("handle", CBotTypInt, PR_PRIVATE);
-    
+
     // define a constructor and a destructor
     bc->AddFunction("file", CScriptFunctions::rfconstruct, CScriptFunctions::cfconstruct );
     bc->AddFunction("~file", CScriptFunctions::rfdestruct, NULL );
-    
+
     // end of the methods associated
     bc->AddFunction("open", CScriptFunctions::rfopen, CScriptFunctions::cfopen );
     bc->AddFunction("close", CScriptFunctions::rfclose, CScriptFunctions::cfclose );
     bc->AddFunction("writeln", CScriptFunctions::rfwrite, CScriptFunctions::cfwrite );
     bc->AddFunction("readln", CScriptFunctions::rfread, CScriptFunctions::cfread );
     bc->AddFunction("eof", CScriptFunctions::rfeof, CScriptFunctions::cfeof );
-    
+
     //m_pFuncFile = new CBotProgram( );
     //CBotStringArray ListFonctions;
     //m_pFuncFile->Compile( "public file openfile(string name, string mode) {return new file(name, mode);}", ListFonctions);
     //m_pFuncFile->SetIdent(-2);  // restoreState in special identifier for this function
-    
+
     CBotProgram::AddFunction("sin",       rSin,       CScriptFunctions::cOneFloat);
     CBotProgram::AddFunction("cos",       rCos,       CScriptFunctions::cOneFloat);
     CBotProgram::AddFunction("tan",       rTan,       CScriptFunctions::cOneFloat);
@@ -3950,18 +3940,18 @@ void CScriptFunctions::Init()
     CBotProgram::AddFunction("ceil",      rCeil,      CScriptFunctions::cOneFloat);
     CBotProgram::AddFunction("round",     rRound,     CScriptFunctions::cOneFloat);
     CBotProgram::AddFunction("trunc",     rTrunc,     CScriptFunctions::cOneFloat);
-    
+
     CBotProgram::AddFunction("endmission",rEndMission,CScriptFunctions::cEndMission);
     CBotProgram::AddFunction("playmusic", rPlayMusic ,CScriptFunctions::cPlayMusic);
     CBotProgram::AddFunction("stopmusic", rStopMusic ,CScriptFunctions::cNull);
-    
+
     CBotProgram::AddFunction("getbuild",          rGetBuild,          CScriptFunctions::cNull);
     CBotProgram::AddFunction("getresearchenable", rGetResearchEnable, CScriptFunctions::cNull);
     CBotProgram::AddFunction("getresearchdone",   rGetResearchDone,   CScriptFunctions::cNull);
     CBotProgram::AddFunction("setbuild",          rSetBuild,          CScriptFunctions::cOneFloat);
     CBotProgram::AddFunction("setresearchenable", rSetResearchEnable, CScriptFunctions::cOneFloat);
     CBotProgram::AddFunction("setresearchdone",   rSetResearchDone,   CScriptFunctions::cOneFloat);
-    
+
     CBotProgram::AddFunction("progfunc",  rProgFunc,  CScriptFunctions::cStringString);
     CBotProgram::AddFunction("retobject", rGetObject, CScriptFunctions::cGetObject);
     CBotProgram::AddFunction("retobjectbyid", rGetObjectById, CScriptFunctions::cGetObject);
@@ -4005,9 +3995,9 @@ void CScriptFunctions::Init()
     CBotProgram::AddFunction("penup",     rPenUp,     CScriptFunctions::cNull);
     CBotProgram::AddFunction("pencolor",  rPenColor,  CScriptFunctions::cOneFloat);
     CBotProgram::AddFunction("penwidth",  rPenWidth,  CScriptFunctions::cOneFloat);
-    
+
     CBotProgram::AddFunction("camerafocus", rCameraFocus, CScriptFunctions::cOneObject);
-    
+
     CBotProgram::AddFunction("canbuild", rCanBuild, CScriptFunctions::cCanBuild);
     CBotProgram::AddFunction("build", rBuild, CScriptFunctions::cOneFloat);
 }
