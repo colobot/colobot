@@ -3238,6 +3238,8 @@ void CEngine::Render()
         RenderShadowMap();
 
     // Begin the scene
+    m_device->SetRenderState(RENDER_STATE_DEPTH_WRITE, true);
+
     m_device->BeginScene();
 
     UseMSAA(true);
@@ -3257,6 +3259,8 @@ void CEngine::Render()
 
 void CEngine::Draw3DScene()
 {
+    m_device->SetRenderState(RENDER_STATE_DEPTH_TEST, false);
+
     if (m_groundSpotVisible)
         UpdateGroundSpotTextures();
 
