@@ -60,7 +60,7 @@ public:
     ~CWindow();
 
     void        Flush();
-    bool        Create(Math::Point pos, Math::Point dim, int icon, EventType eventMsg) OVERRIDE;
+    bool        Create(Math::Point pos, Math::Point dim, int icon, EventType eventMsg) override;
     CButton*    CreateButton(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
     CColor*     CreateColor(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
     CCheck*     CreateCheck(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
@@ -85,13 +85,13 @@ public:
     EventType    GetEventTypeFull();
     EventType    GetEventTypeClose();
 
-    virtual void SetName(std::string name, bool tooltip = true) OVERRIDE;
+    virtual void SetName(std::string name, bool tooltip = true) override;
 
     void        SetTrashEvent(bool bTrash);
     bool        GetTrashEvent();
 
-    void        SetPos(Math::Point pos) OVERRIDE;
-    void        SetDim(Math::Point dim) OVERRIDE;
+    void        SetPos(Math::Point pos) override;
+    void        SetDim(Math::Point dim) override;
 
     void        SetMinDim(Math::Point dim);
     void        SetMaxDim(Math::Point dim);
@@ -114,11 +114,11 @@ public:
     void        SetFixed(bool bFix);
     bool        GetFixed();
 
-    bool        GetTooltip(Math::Point pos, std::string &name) OVERRIDE;
+    bool        GetTooltip(Math::Point pos, std::string &name) override;
 
-    bool        EventProcess(const Event &event) OVERRIDE;
+    bool        EventProcess(const Event &event) override;
 
-    void        Draw() OVERRIDE;
+    void        Draw() override;
 
 protected:
     int         BorderDetect(Math::Point pos);

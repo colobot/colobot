@@ -40,16 +40,16 @@ struct SystemTimeStamp
 class CSystemUtilsLinux : public CSystemUtils
 {
 public:
-    virtual void Init() OVERRIDE;
+    virtual void Init() override;
 
-    virtual SystemDialogResult SystemDialog(SystemDialogType type, const std::string& title, const std::string& message) OVERRIDE;
+    virtual SystemDialogResult SystemDialog(SystemDialogType type, const std::string& title, const std::string& message) override;
 
-    virtual void GetCurrentTimeStamp(SystemTimeStamp *stamp) OVERRIDE;
-    virtual long long TimeStampExactDiff(SystemTimeStamp *before, SystemTimeStamp *after) OVERRIDE;
+    virtual void GetCurrentTimeStamp(SystemTimeStamp *stamp) override;
+    virtual long long TimeStampExactDiff(SystemTimeStamp *before, SystemTimeStamp *after) override;
 
-    virtual std::string GetSaveDir() OVERRIDE;
+    virtual std::string GetSaveDir() override;
 
-    virtual void Usleep(int usec) OVERRIDE;
+    virtual void Usleep(int usec) override;
 
 private:
     bool m_zenityAvailable;

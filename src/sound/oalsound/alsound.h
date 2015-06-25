@@ -50,40 +50,40 @@ public:
     ALSound();
     ~ALSound();
 
-    bool Create() OVERRIDE;
-    bool Cache(Sound, const std::string &) OVERRIDE;
-    bool CacheMusic(const std::string &) OVERRIDE;
-    bool IsCached(Sound) OVERRIDE;
-    bool IsCachedMusic(const std::string &) OVERRIDE;
+    bool Create() override;
+    bool Cache(Sound, const std::string &) override;
+    bool CacheMusic(const std::string &) override;
+    bool IsCached(Sound) override;
+    bool IsCachedMusic(const std::string &) override;
 
-    bool GetEnable() OVERRIDE;
+    bool GetEnable() override;
 
-    void SetAudioVolume(int volume) OVERRIDE;
-    int GetAudioVolume() OVERRIDE;
-    void SetMusicVolume(int volume) OVERRIDE;
-    int GetMusicVolume() OVERRIDE;
+    void SetAudioVolume(int volume) override;
+    int GetAudioVolume() override;
+    void SetMusicVolume(int volume) override;
+    int GetMusicVolume() override;
 
-    void SetListener(const Math::Vector &eye, const Math::Vector &lookat) OVERRIDE;
-    void FrameMove(float rTime) OVERRIDE;
+    void SetListener(const Math::Vector &eye, const Math::Vector &lookat) override;
+    void FrameMove(float rTime) override;
 
-    int Play(Sound sound, float amplitude=1.0f, float frequency=1.0f, bool bLoop = false) OVERRIDE;
-    int Play(Sound sound, const Math::Vector &pos, float amplitude=1.0f, float frequency=1.0f, bool bLoop = false) OVERRIDE;
-    bool FlushEnvelope(int channel) OVERRIDE;
-    bool AddEnvelope(int channel, float amplitude, float frequency, float time, SoundNext oper) OVERRIDE;
-    bool Position(int channel, const Math::Vector &pos) OVERRIDE;
-    bool Frequency(int channel, float frequency) OVERRIDE;
-    bool Stop(int channel) OVERRIDE;
-    bool StopAll() OVERRIDE;
-    bool MuteAll(bool bMute) OVERRIDE;
+    int Play(Sound sound, float amplitude=1.0f, float frequency=1.0f, bool bLoop = false) override;
+    int Play(Sound sound, const Math::Vector &pos, float amplitude=1.0f, float frequency=1.0f, bool bLoop = false) override;
+    bool FlushEnvelope(int channel) override;
+    bool AddEnvelope(int channel, float amplitude, float frequency, float time, SoundNext oper) override;
+    bool Position(int channel, const Math::Vector &pos) override;
+    bool Frequency(int channel, float frequency) override;
+    bool Stop(int channel) override;
+    bool StopAll() override;
+    bool MuteAll(bool bMute) override;
 
-    bool PlayMusic(int rank, bool bRepeat, float fadeTime=2.0f) OVERRIDE;
-    bool PlayMusic(const std::string &filename, bool bRepeat, float fadeTime=2.0f) OVERRIDE;
-    bool RestartMusic() OVERRIDE;
-    void SuspendMusic() OVERRIDE;
-    void StopMusic(float fadeTime=2.0f) OVERRIDE;
-    bool IsPlayingMusic() OVERRIDE;
-    bool PlayPauseMusic(const std::string &filename, bool repeat) OVERRIDE;
-    void StopPauseMusic() OVERRIDE;
+    bool PlayMusic(int rank, bool bRepeat, float fadeTime=2.0f) override;
+    bool PlayMusic(const std::string &filename, bool bRepeat, float fadeTime=2.0f) override;
+    bool RestartMusic() override;
+    void SuspendMusic() override;
+    void StopMusic(float fadeTime=2.0f) override;
+    bool IsPlayingMusic() override;
+    bool PlayPauseMusic(const std::string &filename, bool repeat) override;
+    void StopPauseMusic() override;
 
 private:
     void CleanUp();

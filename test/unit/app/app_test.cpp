@@ -47,7 +47,7 @@ struct FakeSystemTimeStamp : public SystemTimeStamp
 class CApplicationWrapper : public CApplication
 {
 public:
-    Event CreateUpdateEvent() OVERRIDE
+    Event CreateUpdateEvent() override
     {
         return CApplication::CreateUpdateEvent();
     }
@@ -65,8 +65,8 @@ protected:
     ~ApplicationUT() NOEXCEPT
     {}
 
-    void SetUp() OVERRIDE;
-    void TearDown() OVERRIDE;
+    void SetUp() override;
+    void TearDown() override;
 
     void NextInstant(long long diff);
 

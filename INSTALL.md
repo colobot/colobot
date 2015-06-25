@@ -53,7 +53,7 @@ Since there are so many Linux flavors, it is difficult to write generic instruct
 you will need to compile colobot.
 
 You will need:
- * recent compiler (GCC >= 4.6 or a newer clang) since we are using some features of C++11
+ * recent compiler (GCC >= 4.7, or Clang >= 3.1) since we are using some features of C++11
  * CMake >= 2.8
  * Boost >= 1.51 (header files + components: filesystem and regex)
  * SDL >= 1.2.10
@@ -103,7 +103,7 @@ Now to configure CMake:
 ```
 where `/some/prefix` is installation prefix where you want to put the game files. It could be a proper installation directory
 if you want to install colobot in the system or simply temporary directory like `/tmp/colobot-temporary-install` if you just want to try it.
-You can also use clang as the compiler. In that case, before issuing cmake, set the following variables:
+You can also use Clang as the compiler. In that case, before issuing cmake, set the following variables:
 ```
   $ export CC=clang CXX=clang++
 ```
@@ -133,7 +133,7 @@ file for details.
 ### Other platforms
 
 The code isn't particularly tied to any compiler or platform, so in theory it should work on any platform provided you have
-the required libraries there.  Also, other compilers than currently supported GCC >= 4.6, Clang and MSVC 2013 may happen to work with our code.
+the required libraries there.  Also, other compilers than currently supported (GCC >= 4.7, Clang >= 3.1 and MSVC 2013) may happen to work with our code.
 If you can, please try to compile the code on your platform and let us know how it goes.
 
 

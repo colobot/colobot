@@ -47,15 +47,15 @@ class CList : public CControl
 
         bool        Create(Math::Point pos, Math::Point dim, int icon, EventType eventMsg, float expand);
 
-        void        SetPos(Math::Point pos) OVERRIDE;
-        void        SetDim(Math::Point dim) OVERRIDE;
+        void        SetPos(Math::Point pos) override;
+        void        SetDim(Math::Point dim) override;
 
-        bool        SetState(int state, bool bState) OVERRIDE;
-        bool        SetState(int state) OVERRIDE;
-        bool        ClearState(int state) OVERRIDE;
+        bool        SetState(int state, bool bState) override;
+        bool        SetState(int state) override;
+        bool        ClearState(int state) override;
 
-        bool        EventProcess(const Event &event) OVERRIDE;
-        void        Draw() OVERRIDE;
+        bool        EventProcess(const Event &event) override;
+        void        Draw() override;
 
         void        Flush();
 
@@ -97,7 +97,7 @@ class CList : public CControl
 
     private:
         // Overridden to avoid warning about hiding the virtual function
-        virtual bool Create(Math::Point pos, Math::Point dim, int icon, EventType eventType) OVERRIDE;
+        virtual bool Create(Math::Point pos, Math::Point dim, int icon, EventType eventType) override;
 
     protected:
         CButton*    m_button[LISTMAXDISPLAY];

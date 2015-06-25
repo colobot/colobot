@@ -41,8 +41,8 @@ protected:
     ~LightManagerUT() NOEXCEPT
     {}
 
-    void SetUp() OVERRIDE;
-    void TearDown() OVERRIDE;
+    void SetUp() override;
+    void TearDown() override;
 
     void PrepareLightTesting(int maxLights, Math::Vector eyePos);
     void CheckLightSorting(EngineObjectType objectType, const std::vector<int>& expectedLights);
