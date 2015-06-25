@@ -24,11 +24,12 @@
 
 #pragma once
 
-#include "common/event.h"
-#include "common/singleton.h"
+#include <memory>
+#include <string>
 
 class CApplication;
 class CRobotMain;
+struct Event;
 namespace Ui {
 class CMainDialog;
 }
@@ -37,29 +38,29 @@ class CMainDialog;
  * \class CController
  * \brief Entry point into CRobotMain and CMainDialog
  */
-class CController : public CSingleton<CController>
+class CController
 {
 public:
     CController(CApplication* app, bool loadProfile = true);
     ~CController();
-    
+
     //! Return CApplication instance
     CApplication*    GetApplication();
     //! Return CRobotMain instance
     CRobotMain*      GetRobotMain();
     //! Return CMainDialog instance
     Ui::CMainDialog* GetMainDialog();
-    
+
     //! Event processing
     void ProcessEvent(Event &event);
-    
+
     //! Start the application
     void StartApp();
     //! Starts the simulation, loading the given scene
     void StartGame(std::string cat, int chap, int lvl);
 
 private:
-    CApplication*    m_app;
-    CRobotMain*      m_main;
-    Ui::CMainDialog* m_dialog;
+    CApplication* m_app;
+    std::unique_ptr<CRobotMain> m_main;
+    std::unique_ptr<Ui::CMainDialog> m_dialog;
 };

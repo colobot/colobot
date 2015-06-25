@@ -210,7 +210,7 @@ public:
 
     //! Cleans up before exit
     void        Destroy();
-    
+
     //! Restart
     void        Restart();
     //! Should we restart after app quits?
@@ -321,7 +321,7 @@ public:
     void        StopPerformanceCounter(PerformanceCounter counter);
     float       GetPerformanceCounterData(PerformanceCounter counter) const;
     //@}
-    
+
     bool        GetSceneTestMode();
 
 protected:
@@ -354,23 +354,23 @@ protected:
 
 protected:
     //! Private (SDL-dependent data)
-    ApplicationPrivate*     m_private;
+    std::unique_ptr<ApplicationPrivate> m_private;
     //! Global event queue
-    CEventQueue*            m_eventQueue;
+    std::unique_ptr<CEventQueue> m_eventQueue;
     //! Graphics engine
-    Gfx::CEngine*           m_engine;
+    std::unique_ptr<Gfx::CEngine> m_engine;
     //! Graphics device
-    Gfx::CDevice*           m_device;
+    std::unique_ptr<Gfx::CDevice> m_device;
     //! Sound subsystem
-    CSoundInterface*        m_sound;
+    std::unique_ptr<CSoundInterface> m_sound;
     //! Game controller - game engine and UI
-    CController*            m_controller;
+    std::unique_ptr<CController> m_controller;
     //! Profile (INI) reader/writer
-    CProfile*               m_profile;
+    std::unique_ptr<CProfile> m_profile;
     //! Input manager
-    CInput*                 m_input;
+    std::unique_ptr<CInput> m_input;
     //! Path manager
-    CPathManager*           m_pathManager;
+    std::unique_ptr<CPathManager> m_pathManager;
 
     //! Code to return at exit
     int             m_exitCode;
@@ -430,13 +430,13 @@ protected:
     std::vector<int> m_joyAxeState;
     //! Current state of joystick buttons; may be updated from another thread
     std::vector<bool> m_joyButtonState;
-   
+
     //@{
     //! Scene to run on startup
     std::string     m_runSceneName;
     int             m_runSceneRank;
     //@}
-    
+
     //! Scene test mode
     bool            m_sceneTest;
 
@@ -445,10 +445,10 @@ protected:
 
     //! Low cpu mode
     bool            m_lowCPU;
-    
+
     //! Screen resoultion overriden by commandline
     bool            m_resolutionOverride;
-    
+
     //! Headles mode
     bool            m_headless;
 };

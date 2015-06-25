@@ -39,21 +39,20 @@ FramebufferSupport DetectFramebufferSupport()
     return FBS_NONE;
 }
 
-CDevice* CreateDevice(const DeviceConfig &config, const char *name)
+std::unique_ptr<CDevice> CreateDevice(const DeviceConfig &config, const std::string& name)
 {
-    if (name == nullptr) return nullptr;
-    else if (std::strcmp(name, "default") == 0) return new CGLDevice(config);
-    else if (std::strcmp(name, "opengl") == 0) return new CGLDevice(config);
-    else if (std::strcmp(name, "gl14") == 0) return new CGLDevice(config);
-    else if (std::strcmp(name, "gl21") == 0) return new CGL21Device(config);
-    else if (std::strcmp(name, "gl33") == 0) return new CGL33Device(config);
-    else if (std::strcmp(name, "auto") == 0)
+    if      (name == "default") return std::unique_ptr<CDevice>{new CGLDevice(config)};
+    else if (name == "opengl")  return std::unique_ptr<CDevice>{new CGLDevice(config)};
+    else if (name == "gl14")    return std::unique_ptr<CDevice>{new CGLDevice(config)};
+    else if (name == "gl21")    return std::unique_ptr<CDevice>{new CGL21Device(config)};
+    else if (name == "gl33")    return std::unique_ptr<CDevice>{new CGL33Device(config)};
+    else if (name == "auto")
     {
         int version = GetOpenGLVersion();
 
-        if (version >= 33) return new CGL33Device(config);
-        else if (version >= 21) return new CGL21Device(config);
-        else return new CGLDevice(config);
+             if (version >= 33) return std::unique_ptr<CDevice>{new CGL33Device(config)};
+        else if (version >= 21) return std::unique_ptr<CDevice>{new CGL21Device(config)};
+        else                    return std::unique_ptr<CDevice>{new CGLDevice(config)};
     }
 
     return nullptr;

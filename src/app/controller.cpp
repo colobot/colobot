@@ -25,15 +25,12 @@
 #include "ui/maindialog.h"
 
 
-template<> CController* CSingleton<CController>::m_instance = nullptr;
-
 
 CController::CController(CApplication* app, bool loadProfile)
+ : m_app(app)
+ , m_main(new CRobotMain(this))
+ , m_dialog(new Ui::CMainDialog())
 {
-    m_app = app;
-    m_main = new CRobotMain(this);
-    m_dialog = new Ui::CMainDialog();
-    
     m_main->Create(loadProfile);
     m_dialog->Create();
     if (!loadProfile)
@@ -44,13 +41,6 @@ CController::CController(CApplication* app, bool loadProfile)
 
 CController::~CController()
 {
-    delete m_dialog;
-    m_dialog = nullptr;
-    
-    delete m_main;
-    m_main = nullptr;
-    
-    m_app = nullptr;
 }
 
 CApplication* CController::GetApplication()
@@ -60,12 +50,12 @@ CApplication* CController::GetApplication()
 
 CRobotMain* CController::GetRobotMain()
 {
-    return m_main;
+    return m_main.get();
 }
 
 Ui::CMainDialog* CController::GetMainDialog()
 {
-    return m_dialog;
+    return m_dialog.get();
 }
 
 void CController::StartApp()
@@ -83,6 +73,6 @@ void CController::StartGame(std::string cat, int chap, int lvl)
 void CController::ProcessEvent(Event& event)
 {
     bool passOn = m_dialog->EventProcess(event);
-    if(passOn)
+    if (passOn)
         m_main->ProcessEvent(event);
 }

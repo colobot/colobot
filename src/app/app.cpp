@@ -100,18 +100,12 @@ struct ApplicationPrivate
 
 
 CApplication::CApplication()
+ : m_private(new ApplicationPrivate())
+ , m_eventQueue(new CEventQueue())
+ , m_profile(new CProfile())
+ , m_input(new CInput())
+ , m_pathManager(new CPathManager())
 {
-    m_private       = new ApplicationPrivate();
-    m_pathManager   = new CPathManager();
-    m_eventQueue    = new CEventQueue();
-    m_profile       = new CProfile();
-    m_input         = new CInput();
-
-    m_engine        = nullptr;
-    m_device        = nullptr;
-    m_controller    = nullptr;
-    m_sound         = nullptr;
-
     m_exitCode      = 0;
     m_active        = false;
     m_debugModes    = 0;
@@ -164,21 +158,6 @@ CApplication::CApplication()
 
 CApplication::~CApplication()
 {
-    delete m_private;
-    m_private = nullptr;
-
-    delete m_input;
-    m_input = nullptr;
-
-    delete m_eventQueue;
-    m_eventQueue = nullptr;
-
-    delete m_profile;
-    m_profile = nullptr;
-
-    delete m_pathManager;
-    m_pathManager = nullptr;
-
     GetSystemUtils()->DestroyTimeStamp(m_baseTimeStamp);
     GetSystemUtils()->DestroyTimeStamp(m_curTimeStamp);
     GetSystemUtils()->DestroyTimeStamp(m_lastTimeStamp);
@@ -192,12 +171,12 @@ CApplication::~CApplication()
 
 CEventQueue* CApplication::GetEventQueue()
 {
-    return m_eventQueue;
+    return m_eventQueue.get();
 }
 
 CSoundInterface* CApplication::GetSound()
 {
-    return m_sound;
+    return m_sound.get();
 }
 
 ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
@@ -399,7 +378,8 @@ bool CApplication::Create()
     GetLogger()->Info("Creating CApplication\n");
 
     m_errorMessage = m_pathManager->VerifyPaths();
-    if(!m_errorMessage.empty()) {
+    if (!m_errorMessage.empty())
+    {
         m_exitCode = 1;
         return false;
     }
@@ -425,10 +405,13 @@ bool CApplication::Create()
 
     //Create the sound instance.
     #ifdef OPENAL_SOUND
-    if(!m_headless) {
-        m_sound = static_cast<CSoundInterface *>(new ALSound());
-    } else {
-        m_sound = new CSoundInterface();
+    if (!m_headless)
+    {
+        m_sound.reset(new ALSound());
+    }
+    else
+    {
+        m_sound.reset(new CSoundInterface());
     }
     #else
     GetLogger()->Info("No sound support.\n");
@@ -474,7 +457,8 @@ bool CApplication::Create()
         return false;
     }
 
-    if(!m_headless) {
+    if (!m_headless)
+    {
         // load settings from profile
         int iValue;
         std::string sValue;
@@ -485,7 +469,7 @@ bool CApplication::Create()
             std::getline(resolution, ws, 'x');
             std::getline(resolution, hs, 'x');
             int w = 800, h = 600;
-            if(!ws.empty() && !hs.empty()) {
+            if (!ws.empty() && !hs.empty()) {
                 w = atoi(ws.c_str());
                 h = atoi(hs.c_str());
             }
@@ -494,7 +478,7 @@ bool CApplication::Create()
             std::vector<Math::IntPoint> modes;
             GetVideoResolutionList(modes, true, true);
             for(auto it = modes.begin(); it != modes.end(); ++it) {
-                if(it->x == w && it->y == h) {
+                if (it->x == w && it->y == h) {
                     m_deviceConfig.size = *it;
                     break;
                 }
@@ -528,19 +512,19 @@ bool CApplication::Create()
     // Don't generate joystick events
     SDL_JoystickEventState(SDL_IGNORE);
 
-    if(!m_headless)
+    if (!m_headless)
     {
         m_device = Gfx::CreateDevice(m_deviceConfig, m_graphics.c_str());
 
         if (m_device == nullptr)
         {
-            m_device = new Gfx::CNullDevice();
+            m_device.reset(new Gfx::CNullDevice());
             GetLogger()->Error("Unknown graphics device: %s\n", m_graphics.c_str());
         }
     }
     else
     {
-        m_device = new Gfx::CNullDevice();
+        m_device.reset(new Gfx::CNullDevice());
     }
 
     if (! m_device->Create() )
@@ -551,9 +535,9 @@ bool CApplication::Create()
     }
 
     // Create the 3D engine
-    m_engine = new Gfx::CEngine(this);
+    m_engine.reset(new Gfx::CEngine(this));
 
-    m_engine->SetDevice(m_device);
+    m_engine->SetDevice(m_device.get());
 
     if (! m_engine->Create() )
     {
@@ -563,11 +547,12 @@ bool CApplication::Create()
     }
 
     // Create the robot application.
-    m_controller = new CController(this, !defaultValues);
+    m_controller.reset(new CController(this, !defaultValues));
 
     if (m_runSceneName.empty())
         m_controller->StartApp();
-    else {
+    else
+    {
         m_controller->GetRobotMain()->ChangePhase(PHASE_USER); // To load userlevel list - TODO: this is ugly
         m_controller->GetRobotMain()->SetExitAfterMission(true);
         m_controller->StartGame(m_runSceneName, m_runSceneRank/100, m_runSceneRank%100);
@@ -631,26 +616,21 @@ void CApplication::Destroy()
 {
     m_joystickEnabled = false;
 
-    delete m_controller;
-    m_controller = nullptr;
-
-    delete m_sound;
-    m_sound = nullptr;
+    m_controller.reset();
+    m_sound.reset();
 
     if (m_engine != nullptr)
     {
         m_engine->Destroy();
 
-        delete m_engine;
-        m_engine = nullptr;
+        m_engine.reset();
     }
 
     if (m_device != nullptr)
     {
         m_device->Destroy();
 
-        delete m_device;
-        m_device = nullptr;
+        m_device.reset();
     }
 
     if (m_private->joystick != nullptr)
@@ -1044,10 +1024,10 @@ Event CApplication::ProcessSystemEvent()
 
         // Some keyboards return numerical enter keycode instead of normal enter
         // See issue #427 for details
-        if(event.key.key == KEY(KP_ENTER))
+        if (event.key.key == KEY(KP_ENTER))
             event.key.key = KEY(RETURN);
 
-        if(event.key.key == KEY(TAB) && ((event.kmodState & KEY_MOD(ALT)) != 0))
+        if (event.key.key == KEY(TAB) && ((event.kmodState & KEY_MOD(ALT)) != 0))
         {
             GetLogger()->Debug("Minimize to taskbar\n");
             SDL_WM_IconifyWindow();
@@ -1196,7 +1176,7 @@ Event CApplication::CreateVirtualEvent(const Event& sourceEvent)
         virtualEvent.key.key = GetVirtualKey(sourceEvent.key.key);
         virtualEvent.key.virt = true;
 
-        if(virtualEvent.key.key == sourceEvent.key.key)
+        if (virtualEvent.key.key == sourceEvent.key.key)
             virtualEvent.type = EVENT_NULL;
     }
     else if ((sourceEvent.type == EVENT_JOY_BUTTON_DOWN) || (sourceEvent.type == EVENT_JOY_BUTTON_UP))
@@ -1681,14 +1661,14 @@ void CApplication::SetLanguage(Language language)
     {
         std::locale::global(std::locale(systemLocale));
     }
-    catch(...)
+    catch (...)
     {
         GetLogger()->Warn("Failed to update locale, possibly incorect system configuration. Will fallback to classic locale.\n");
         try
         {
             std::locale::global(std::locale::classic());
         }
-        catch(...)
+        catch (...)
         {
             GetLogger()->Warn("Failed to set classic locale. Something is really messed up in your system configuration. Translations might not work.\n");
         }

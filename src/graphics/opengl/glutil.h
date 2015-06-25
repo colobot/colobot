@@ -26,6 +26,8 @@
 
 #include <GL/glew.h>
 
+#include <memory>
+
 
 // Graphics module namespace
 namespace Gfx
@@ -41,7 +43,7 @@ enum FramebufferSupport
 FramebufferSupport DetectFramebufferSupport();
 
 //! Creates OpenGL device
-CDevice* CreateDevice(const DeviceConfig &config, const char *name);
+std::unique_ptr<CDevice> CreateDevice(const DeviceConfig &config, const std::string& name);
 
 //! Returns OpenGL version as one number.
 // First digit is major part, second digit is minor part.
