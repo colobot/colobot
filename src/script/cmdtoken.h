@@ -30,7 +30,9 @@
 #include "graphics/engine/engine.h"
 #include "graphics/engine/pyro_type.h"
 
-#include "object/object.h"
+#include "object/drive_type.h"
+#include "object/object_type.h"
+#include "object/tool_type.h"
 
 
 

@@ -22,6 +22,9 @@
 
 #include "common/global.h"
 
+#include "object/drive_type.h"
+#include "object/tool_type.h"
+
 #include <string.h>
 #include <cstdio>
 
@@ -57,14 +60,14 @@ bool Cmd(char *line, const char *token)
     char*   p;
 
     line = SkipSpace(line);
-    
+
     p = strstr(line, token);
     if(p != line) return false;  // command at the beginning?
-    
+
     unsigned int len = 0;
     for(char* x = p; *x != 0 && *x != ' ' && *x != '\t' && *x != '\n'; x++, len++);
     if(len != strlen(token)) return false; // ends with space?
-    
+
     return true;
 }
 
@@ -757,24 +760,24 @@ DriveType GetDrive(char *line, int rank)
     char*   p;
 
     p = SearchArg(line, rank);
-    if ( *p == 0 )  return DRIVE_OTHER;
+    if ( *p == 0 )  return DriveType::Other;
 
-    if ( Cmd(p, "Wheeled" ) )  return DRIVE_WHEELED;
-    if ( Cmd(p, "Tracked" ) )  return DRIVE_TRACKED;
-    if ( Cmd(p, "Winged"  ) )  return DRIVE_WINGED;
-    if ( Cmd(p, "Legged"  ) )  return DRIVE_LEGGED;
+    if ( Cmd(p, "Wheeled" ) )  return DriveType::Wheeled;
+    if ( Cmd(p, "Tracked" ) )  return DriveType::Tracked;
+    if ( Cmd(p, "Winged"  ) )  return DriveType::Winged;
+    if ( Cmd(p, "Legged"  ) )  return DriveType::Legged;
 
-    return DRIVE_OTHER;
+    return DriveType::Other;
 }
 
 // Returns the name of a drive.
 
 const char* GetDrive(DriveType type)
 {
-    if ( type == DRIVE_WHEELED )  return "Wheeled";
-    if ( type == DRIVE_TRACKED )  return "Tracked";
-    if ( type == DRIVE_WINGED  )  return "Winged";
-    if ( type == DRIVE_LEGGED  )  return "Legged";
+    if ( type == DriveType::Wheeled )  return "Wheeled";
+    if ( type == DriveType::Tracked )  return "Tracked";
+    if ( type == DriveType::Winged  )  return "Winged";
+    if ( type == DriveType::Legged  )  return "Legged";
     return "Other";
 }
 
@@ -785,24 +788,24 @@ ToolType GetTool(char *line, int rank)
     char*   p;
 
     p = SearchArg(line, rank);
-    if ( *p == 0 )  return TOOL_OTHER;
+    if ( *p == 0 )  return ToolType::Other;
 
-    if ( Cmd(p, "Grabber"     ) )  return TOOL_GRABBER;
-    if ( Cmd(p, "Sniffer"     ) )  return TOOL_SNIFFER;
-    if ( Cmd(p, "Shooter"     ) )  return TOOL_SHOOTER;
-    if ( Cmd(p, "OrgaShooter" ) )  return TOOL_ORGASHOOTER;
+    if ( Cmd(p, "Grabber"     ) )  return ToolType::Grabber;
+    if ( Cmd(p, "Sniffer"     ) )  return ToolType::Sniffer;
+    if ( Cmd(p, "Shooter"     ) )  return ToolType::Shooter;
+    if ( Cmd(p, "OrgaShooter" ) )  return ToolType::OrganicShooter;
 
-    return TOOL_OTHER;
+    return ToolType::Other;
 }
 
 // Returns the name of a tool.
 
 const char* GetTool(ToolType type)
 {
-    if ( type == TOOL_GRABBER     )  return "Grabber";
-    if ( type == TOOL_SNIFFER     )  return "Sniffer";
-    if ( type == TOOL_SHOOTER     )  return "Shooter";
-    if ( type == TOOL_ORGASHOOTER )  return "OrgaShooter";
+    if ( type == ToolType::Grabber     )  return "Grabber";
+    if ( type == ToolType::Sniffer     )  return "Sniffer";
+    if ( type == ToolType::Shooter     )  return "Shooter";
+    if ( type == ToolType::OrganicShooter )  return "OrgaShooter";
     return "Other";
 }
 
@@ -898,7 +901,7 @@ Gfx::CameraType OpCamera(char *line, const char *op)
 DriveType OpDrive(char *line, const char *op)
 {
     line = SearchOp(line, op);
-    if ( *line == 0 )  return DRIVE_OTHER;
+    if ( *line == 0 )  return DriveType::Other;
     return GetDrive(line, 0);
 }
 
@@ -907,7 +910,7 @@ DriveType OpDrive(char *line, const char *op)
 ToolType OpTool(char *line, const char *op)
 {
     line = SearchOp(line, op);
-    if ( *line == 0 )  return TOOL_OTHER;
+    if ( *line == 0 )  return ToolType::Other;
     return GetTool(line, 0);
 }
 

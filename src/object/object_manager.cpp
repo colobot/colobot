@@ -79,15 +79,15 @@ void CObjectManager::DeleteAllObjects()
 
 CObject* CObjectManager::GetObjectById(unsigned int id)
 {
-    if(m_objects.count(id) == 0) return nullptr;
+    if (m_objects.count(id) == 0) return nullptr;
     return m_objects[id].get();
 }
 
 CObject* CObjectManager::GetObjectByRank(unsigned int id)
 {
-    if(id >= m_objects.size()) return nullptr;
+    if (id >= m_objects.size()) return nullptr;
     auto it = m_objects.begin();
-    for(unsigned int i = 0; i < id; i++, ++it);
+    for (unsigned int i = 0; i < id; i++, ++it);
     return it->second.get();
 }
 
@@ -133,7 +133,7 @@ CObject* CObjectManager::CreateObject(Math::Vector pos,
 CObject* CObjectManager::Radar(CObject* pThis, ObjectType type, float angle, float focus, float minDist, float maxDist, bool furthest, RadarFilter filter, bool cbotTypes)
 {
     std::vector<ObjectType> types;
-    if(type != OBJECT_NULL)
+    if (type != OBJECT_NULL)
         types.push_back(type);
     return Radar(pThis, types, angle, focus, minDist, maxDist, furthest, filter, cbotTypes);
 }
@@ -142,12 +142,14 @@ CObject* CObjectManager::Radar(CObject* pThis, std::vector<ObjectType> type, flo
 {
     Math::Vector iPos;
     float iAngle;
-    if(pThis != nullptr)
+    if (pThis != nullptr)
     {
         iPos   = pThis->GetPosition(0);
         iAngle = pThis->GetAngleY(0);
         iAngle = Math::NormAngle(iAngle);  // 0..2*Math::PI
-    } else {
+    }
+    else
+    {
         iPos   = Math::Vector();
         iAngle = 0.0f;
     }
@@ -157,7 +159,7 @@ CObject* CObjectManager::Radar(CObject* pThis, std::vector<ObjectType> type, flo
 CObject* CObjectManager::Radar(CObject* pThis, Math::Vector thisPosition, float thisAngle, ObjectType type, float angle, float focus, float minDist, float maxDist, bool furthest, RadarFilter filter, bool cbotTypes)
 {
     std::vector<ObjectType> types;
-    if(type != OBJECT_NULL)
+    if (type != OBJECT_NULL)
         types.push_back(type);
     return Radar(pThis, thisPosition, thisAngle, types, angle, focus, minDist, maxDist, furthest, filter, cbotTypes);
 }
@@ -169,14 +171,14 @@ CObject* CObjectManager::Radar(CObject* pThis, Math::Vector thisPosition, float 
     Math::Vector    iPos, oPos;
     float       best, iAngle, d, a;
     ObjectType  oType;
-    
+
     minDist *= g_unit;
     maxDist *= g_unit;
-    
+
     iPos   = thisPosition;
     iAngle = thisAngle+angle;
     iAngle = Math::NormAngle(iAngle);  // 0..2*Math::PI
-    
+
     if ( !furthest )  best = 100000.0f;
     else              best = 0.0f;
     pBest = nullptr;
@@ -184,15 +186,16 @@ CObject* CObjectManager::Radar(CObject* pThis, Math::Vector thisPosition, float 
     {
         pObj = it->second.get();
         if ( pObj == pThis )  continue; // pThis may be nullptr but it doesn't matter
-        
+
         if ( pObj->GetTruck() != 0 )  continue;  // object transported?
-        if ( !pObj->GetActif() )  continue;
+        if ( !pObj->GetActive() )  continue;
         if ( pObj->GetProxyActivate() )  continue;
-        
+
         oType = pObj->GetType();
         if ( oType == OBJECT_TOTO || oType == OBJECT_CONTROLLER )  continue;
-        
-        if(cbotTypes) {
+
+        if (cbotTypes)
+        {
             // TODO: handle this differently (new class describing types? CObjectType::GetBaseType()?)
             if ( oType == OBJECT_RUINmobilew2 ||
                 oType == OBJECT_RUINmobilet1 ||
@@ -202,7 +205,7 @@ CObject* CObjectManager::Radar(CObject* pThis, Math::Vector thisPosition, float 
             {
                 oType = OBJECT_RUINmobilew1;  // any ruin
             }
-            
+
             if ( oType == OBJECT_SCRAP2 ||
                 oType == OBJECT_SCRAP3 ||
                 oType == OBJECT_SCRAP4 ||
@@ -210,7 +213,7 @@ CObject* CObjectManager::Radar(CObject* pThis, Math::Vector thisPosition, float 
             {
                 oType = OBJECT_SCRAP1;  // any waste
             }
-            
+
             if ( oType == OBJECT_BARRIER2 ||
                 oType == OBJECT_BARRIER3 )  // barriers?
             {
@@ -218,7 +221,7 @@ CObject* CObjectManager::Radar(CObject* pThis, Math::Vector thisPosition, float 
             }
             // END OF TODO
         }
-        
+
         if ( filter == FILTER_ONLYLANDING )
         {
             physics = pObj->GetPhysics();
@@ -229,13 +232,13 @@ CObject* CObjectManager::Radar(CObject* pThis, Math::Vector thisPosition, float 
             physics = pObj->GetPhysics();
             if ( physics != nullptr && physics->GetLand() )  continue;
         }
-        
+
         if ( std::find(type.begin(), type.end(), oType) == type.end() && type.size() > 0 )  continue;
-        
+
         oPos = pObj->GetPosition(0);
         d = Math::DistanceProjected(iPos, oPos);
         if ( d < minDist || d > maxDist )  continue;  // too close or too far?
-        
+
         a = Math::RotateAngle(oPos.x-iPos.x, iPos.z-oPos.z);  // CW !
         if ( Math::TestAngle(a, iAngle-focus/2.0f, iAngle+focus/2.0f) || focus >= Math::PI*2.0f )
         {
@@ -247,7 +250,7 @@ CObject* CObjectManager::Radar(CObject* pThis, Math::Vector thisPosition, float 
             }
         }
     }
-    
+
     return pBest;
 }
 

@@ -589,7 +589,7 @@ bool CMotionAnt::EventFrame(const Event &event)
         dir.x = 0.0f;
         dir.y = 0.0f;
         dir.z = Math::PropAngle(0, -50, prog);
-        SetInclinaison(dir);
+        SetTilt(dir);
         m_object->SetAngleZ(1, Math::PropAngle(0,  65, prog));  // head
         m_object->SetAngleZ(2, Math::PropAngle(0, -95, prog));  // tail
     }
@@ -613,7 +613,7 @@ bool CMotionAnt::EventFrame(const Event &event)
         dir.x = 0.0f;
         dir.y = 0.0f;
         dir.z = Math::PropAngle(0, -50, prog);
-        SetInclinaison(dir);
+        SetTilt(dir);
         m_object->SetAngleZ(1, Math::PropAngle(0,  65, prog));  // head
         m_object->SetAngleZ(2, Math::PropAngle(0, -95, prog));  // tail
     }
@@ -624,7 +624,7 @@ bool CMotionAnt::EventFrame(const Event &event)
         dir = Math::Vector(0.0f, -1.5f, 0.0f);
         SetLinVibration(dir);
         dir = Math::Vector(0.0f, 0.0f, 0.0f);
-        SetInclinaison(dir);
+        SetTilt(dir);
 
         time = event.rTime*1.0f;
         m_object->SetAngleZ(1, Math::Smooth(m_object->GetAngleZ(1), 0.0f, time));  // head
@@ -635,7 +635,7 @@ bool CMotionAnt::EventFrame(const Event &event)
         dir = Math::Vector(0.0f, 0.0f, 0.0f);
         SetLinVibration(dir);
         SetCirVibration(dir);
-        SetInclinaison(dir);
+        SetTilt(dir);
     }
     else if ( m_actionType == MAS_BACK1 )  // starts on the back?
     {
@@ -672,7 +672,7 @@ bool CMotionAnt::EventFrame(const Event &event)
         SetCirVibration(dir);
 
         dir = Math::Vector(0.0f, 0.0f, 0.0f);
-        SetInclinaison(dir);
+        SetTilt(dir);
 
         if ( m_progress >= 1.0f )
         {
@@ -716,7 +716,7 @@ bool CMotionAnt::EventFrame(const Event &event)
                 sinf(m_armTimeAbs*23.0f)*0.03f;
         SetCirVibration(dir);
         dir = Math::Vector(0.0f, 0.0f, 0.0f);
-        SetInclinaison(dir);
+        SetTilt(dir);
 
         m_object->SetAngleY(1, sinf(m_armTimeAbs*8.0f)*0.7f);  // head
         m_object->SetAngleY(2, cosf(m_armTimeAbs*8.0f)*0.7f);  // tail
@@ -763,7 +763,7 @@ bool CMotionAnt::EventFrame(const Event &event)
         SetCirVibration(dir);
 
         dir = Math::Vector(0.0f, 0.0f, 0.0f);
-        SetInclinaison(dir);
+        SetTilt(dir);
 
         if ( m_progress >= 1.0f )
         {
@@ -783,7 +783,7 @@ bool CMotionAnt::EventFrame(const Event &event)
 
             dir = Math::Vector(0.0f, 0.0f, 0.0f);
             SetLinVibration(dir);
-            SetInclinaison(dir);
+            SetTilt(dir);
         }
         else
         {
@@ -798,7 +798,7 @@ bool CMotionAnt::EventFrame(const Event &event)
             dir.z = sinf(s)*0.1f;
 
             dir.y = 0.0f;
-            SetInclinaison(dir);
+            SetTilt(dir);
 
             m_object->SetAngleZ(2, -sinf(a)*0.3f);  // tail
 

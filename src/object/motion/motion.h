@@ -70,8 +70,8 @@ public:
     virtual Math::Vector    GetLinVibration();
     virtual void            SetCirVibration(Math::Vector dir);
     virtual Math::Vector    GetCirVibration();
-    virtual void            SetInclinaison(Math::Vector dir);
-    virtual Math::Vector    GetInclinaison();
+    virtual void            SetTilt(Math::Vector dir);
+    virtual Math::Vector    GetTilt();
 
 protected:
     CApplication*       m_app;

@@ -1065,7 +1065,7 @@ void CPhysics::EffectUpdate(float aTime, float rTime)
 
     vibLin = m_motion->GetLinVibration();
     vibCir = m_motion->GetCirVibration();
-    incl   = m_motion->GetInclinaison();
+    incl   = m_motion->GetTilt();
 
     if ( type == OBJECT_HUMAN ||  // human?
          type == OBJECT_TECH  )
@@ -1114,7 +1114,7 @@ void CPhysics::EffectUpdate(float aTime, float rTime)
 
             m_motion->SetLinVibration(vibLin);
             m_motion->SetCirVibration(vibCir);
-            m_motion->SetInclinaison(incl);
+            m_motion->SetTilt(incl);
         }
         else if ( m_bSwim )  // swimming?
         {
@@ -1171,14 +1171,14 @@ void CPhysics::EffectUpdate(float aTime, float rTime)
 
             m_motion->SetLinVibration(vibLin);
             m_motion->SetCirVibration(vibCir);
-            m_motion->SetInclinaison(incl);
+            m_motion->SetTilt(incl);
         }
         else
         {
             m_motion->SetLinVibration(Math::Vector(0.0f, 0.0f, 0.0f));
 
 //?         m_motion->SetCirVibration(Math::Vector(0.0f, 0.0f, 0.0f));
-//?         m_motion->SetInclinaison(Math::Vector(0.0f, 0.0f, 0.0f));
+//?         m_motion->SetTilt(Math::Vector(0.0f, 0.0f, 0.0f));
         }
     }
 
@@ -1218,7 +1218,7 @@ void CPhysics::EffectUpdate(float aTime, float rTime)
         }
         if ( bOnBoard )  incl.z *= 0.1f;
         if ( type == OBJECT_APOLLO2 )  incl.z *= 0.25f;
-        m_object->SetInclinaison(incl);
+        m_object->SetTilt(incl);
 
         vibLin.x = 0.0f;
         vibLin.z = 0.0f;
@@ -1237,7 +1237,7 @@ void CPhysics::EffectUpdate(float aTime, float rTime)
         {
             m_motion->SetLinVibration(Math::Vector(0.0f, 0.0f, 0.0f));
             m_motion->SetCirVibration(Math::Vector(0.0f, 0.0f, 0.0f));
-            m_motion->SetInclinaison(Math::Vector(0.0f, 0.0f, 0.0f));
+            m_motion->SetTilt(Math::Vector(0.0f, 0.0f, 0.0f));
         }
         else    // in flight?
         {
@@ -1286,7 +1286,7 @@ void CPhysics::EffectUpdate(float aTime, float rTime)
 
             m_motion->SetLinVibration(vibLin);
             m_motion->SetCirVibration(vibCir);
-            m_motion->SetInclinaison(incl);
+            m_motion->SetTilt(incl);
         }
     }
 
@@ -1338,7 +1338,7 @@ void CPhysics::EffectUpdate(float aTime, float rTime)
 
             m_motion->SetLinVibration(vibLin);
             m_motion->SetCirVibration(vibCir);
-            m_motion->SetInclinaison(incl);
+            m_motion->SetTilt(incl);
         }
     }
 }
@@ -1613,7 +1613,7 @@ bool CPhysics::EventFrame(const Event &event)
     if ( m_bLand && m_fallingHeight != 0.0f ) // if fell
     {
         float force = (m_fallingHeight - m_object->GetPosition(0).y) * m_fallDamageFraction;
-        m_object->ExploObject(EXPLO_BOUM, force);
+        m_object->ExplodeObject(ExplosionType::Bang, force);
         m_fallingHeight = 0.0f;
     }
 
@@ -1635,7 +1635,7 @@ void CPhysics::SoundMotor(float rTime)
 
     if ( type == OBJECT_MOTHER )
     {
-        if ( m_lastSoundInsect <= 0.0f && m_object->GetActif() )
+        if ( m_lastSoundInsect <= 0.0f && m_object->GetActive() )
         {
             m_sound->Play(SOUND_INSECTm, m_object->GetPosition(0));
             if ( m_bMotor )  m_lastSoundInsect = 0.4f+Math::Rand()*2.5f;
@@ -1653,7 +1653,7 @@ void CPhysics::SoundMotor(float rTime)
                 m_lastSoundInsect = 0.4f+Math::Rand()*0.6f;
             }
         }
-        else if ( m_object->GetActif() )
+        else if ( m_object->GetActive() )
         {
             if ( m_lastSoundInsect <= 0.0f )
             {
@@ -1665,7 +1665,7 @@ void CPhysics::SoundMotor(float rTime)
     }
     else if ( type == OBJECT_BEE )
     {
-        if ( m_object->GetActif() )
+        if ( m_object->GetActive() )
         {
             if ( m_lastSoundInsect <= 0.0f )
             {
@@ -1685,7 +1685,7 @@ void CPhysics::SoundMotor(float rTime)
     }
     else if ( type == OBJECT_WORM )
     {
-        if ( m_object->GetActif() )
+        if ( m_object->GetActive() )
         {
             if ( m_lastSoundInsect <= 0.0f )
             {
@@ -1714,7 +1714,7 @@ void CPhysics::SoundMotor(float rTime)
                 m_lastSoundInsect = 0.4f+Math::Rand()*0.6f;
             }
         }
-        else if ( m_object->GetActif() )
+        else if ( m_object->GetActive() )
         {
             if ( m_lastSoundInsect <= 0.0f )
             {
@@ -1728,7 +1728,7 @@ void CPhysics::SoundMotor(float rTime)
     {
         if ( m_type == TYPE_ROLLING )
         {
-            if ( m_bMotor && m_object->GetActif() )
+            if ( m_bMotor && m_object->GetActive() )
             {
                 SoundMotorFull(rTime, type);  // full diet
             }
@@ -1756,7 +1756,7 @@ void CPhysics::SoundMotor(float rTime)
         if ( m_type == TYPE_FLYING )
         {
             if ( m_bMotor && !m_bSwim &&
-                 m_object->GetActif() && !m_object->GetDead() )
+                 m_object->GetActive() && !m_object->GetDead() )
             {
                 SoundReactorFull(rTime, type);  // full diet
             }
@@ -1820,7 +1820,7 @@ void CPhysics::WaterFrame(float aTime, float rTime)
     if ( type == OBJECT_TOTO )  return;
     if ( type == OBJECT_NULL )  return;
 
-    if ( !m_object->GetActif() )  return;
+    if ( !m_object->GetActive() )  return;
     if ( m_object->GetResetBusy() )  return;  // reset in progress?
 
     if ( m_water->GetLava()      ||
@@ -1853,7 +1853,7 @@ void CPhysics::WaterFrame(float aTime, float rTime)
          type == OBJECT_MOBILEdr ||
          type == OBJECT_APOLLO2  )  // vehicle not underwater?
     {
-        m_object->ExploObject(EXPLO_WATER, 1.0f);  // starts explosion
+        m_object->ExplodeObject(ExplosionType::Water, 1.0f);  // starts explosion
     }
 }
 
@@ -2545,7 +2545,7 @@ int CPhysics::ObjectAdapt(const Math::Vector &pos, const Math::Vector &angle)
         if ( iType == OBJECT_MOTHER && oType == OBJECT_EGG    )  continue;
         if ( iType == OBJECT_EGG    && oType == OBJECT_MOTHER )  continue;
 
-        pObj->GetJotlerSphere(oPos, oRad);
+        pObj->GetJostlingSphere(oPos, oRad);
         if ( oRad > 0.0f )
         {
             JostleObject(pObj, iPos, iRad, oPos, oRad);
@@ -2727,7 +2727,7 @@ bool CPhysics::JostleObject(CObject* pObj, float force)
     Math::Vector    oPos;
     float       oRad;
 
-    pObj->GetJotlerSphere(oPos, oRad);
+    pObj->GetJostlingSphere(oPos, oRad);
     if ( oRad <= 0.0f )  return false;
 
     if ( m_soundTimeJostle >= 0.20f )
@@ -2788,7 +2788,7 @@ bool CPhysics::ExploOther(ObjectType iType,
           oType == OBJECT_SAFE     ||
           oType == OBJECT_HUSTON   ) )  // building?
     {
-        pObj->ExploObject(EXPLO_BOUM, force/400.0f);
+        pObj->ExplodeObject(ExplosionType::Bang, force/400.0f);
     }
 
     if ( force > 25.0f &&
@@ -2820,7 +2820,7 @@ bool CPhysics::ExploOther(ObjectType iType,
           oType == OBJECT_MOBILEdr ||
           oType == OBJECT_APOLLO2  ) )  // vehicle?
     {
-        pObj->ExploObject(EXPLO_BOUM, force/200.0f);
+        pObj->ExplodeObject(ExplosionType::Bang, force/200.0f);
     }
 
     if ( force > 10.0f &&
@@ -2957,7 +2957,7 @@ int CPhysics::ExploHimself(ObjectType iType, ObjectType oType, float force)
             force /= 200.0f;
         }
 
-        if ( m_object->ExploObject(EXPLO_BOUM, force) )  return 2;
+        if ( m_object->ExplodeObject(ExplosionType::Bang, force) )  return 2;
     }
 
     return 1;

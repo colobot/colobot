@@ -31,6 +31,8 @@
 #include "graphics/engine/particle.h"
 
 #include "object/object.h"
+#include "object/drive_type.h"
+#include "object/tool_type.h"
 #include "object/mainmovie.h"
 
 #include "app/pausemanager.h"
@@ -175,7 +177,7 @@ class CRobotMain : public CSingleton<CRobotMain>
 public:
     CRobotMain(CController* controller);
     virtual ~CRobotMain();
-    
+
     void Create(bool loadProfile = true);
 
     Gfx::CCamera* GetCamera();
@@ -185,7 +187,7 @@ public:
 
     void        CreateIni();
     void        LoadIni();
-    
+
     void        ResetAfterDeviceChanged();
 
     void        ChangePhase(Phase phase);
@@ -341,18 +343,18 @@ public:
 
     void        DisplayError(Error err, CObject* pObj, float time=10.0f);
     void        DisplayError(Error err, Math::Vector goal, float height=15.0f, float dist=60.0f, float time=10.0f);
-    
+
     std::string& GetUserLevelName(int id);
-    
+
     void        StartMissionTimer();
-    
+
     void        SetAutosave(bool enable);
     bool        GetAutosave();
     void        SetAutosaveInterval(int interval);
     int         GetAutosaveInterval();
     void        SetAutosaveSlots(int slots);
     int         GetAutosaveSlots();
-    
+
     //! Enable mode where completing mission closes the game
     void        SetExitAfterMission(bool exit);
 
@@ -388,7 +390,7 @@ protected:
     void        ExecuteCmd(char *cmd);
     bool        TestGadgetQuantity(int rank);
     void        UpdateSpeedLabel();
-    
+
     int         AutosaveRotate(bool freeOne);
     void        Autosave();
 
@@ -484,7 +486,7 @@ protected:
     int             m_endingWinRank;
     int             m_endingLostRank;
     bool            m_winTerminate;
-    
+
     bool            m_exitAfterMission;
 
     float           m_fontSize;
@@ -541,11 +543,11 @@ protected:
     Gfx::Color      m_colorRefWater;
     Gfx::Color      m_colorNewWater;
     float           m_colorShiftWater;
-    
+
     bool            m_missionTimerEnabled;
     bool            m_missionTimerStarted;
     float           m_missionTimer;
-    
+
     bool            m_autosave;
     int             m_autosaveInterval;
     int             m_autosaveSlots;

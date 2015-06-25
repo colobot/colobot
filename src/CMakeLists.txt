@@ -87,17 +87,17 @@ set(BASE_SOURCES
     common/misc.cpp
     common/pathman.cpp
     common/profile.cpp
+    common/resources/inputstream.cpp
+    common/resources/inputstreambuffer.cpp
+    common/resources/outputstream.cpp
+    common/resources/outputstreambuffer.cpp
+    common/resources/resourcemanager.cpp
+    common/resources/sndfile.cpp
     common/restext.cpp
     common/stringutils.cpp
-    common/resources/resourcemanager.cpp
-    common/resources/inputstreambuffer.cpp
-    common/resources/outputstreambuffer.cpp
-    common/resources/inputstream.cpp
-    common/resources/outputstream.cpp
-    common/resources/sndfile.cpp
     graphics/core/color.cpp
-    graphics/core/nulldevice.cpp
     graphics/core/framebuffer.cpp
+    graphics/core/nulldevice.cpp
     graphics/engine/camera.cpp
     graphics/engine/cloud.cpp
     graphics/engine/engine.cpp
@@ -112,11 +112,11 @@ set(BASE_SOURCES
     graphics/engine/terrain.cpp
     graphics/engine/text.cpp
     graphics/engine/water.cpp
-    graphics/opengl/gldevice.cpp
     graphics/opengl/gl21device.cpp
     graphics/opengl/gl33device.cpp
-    graphics/opengl/glutil.cpp
+    graphics/opengl/gldevice.cpp
     graphics/opengl/glframebuffer.cpp
+    graphics/opengl/glutil.cpp
     object/auto/auto.cpp
     object/auto/autobase.cpp
     object/auto/autoconvert.cpp
@@ -144,10 +144,11 @@ set(BASE_SOURCES
     object/auto/autostation.cpp
     object/auto/autotower.cpp
     object/brain.cpp
+    object/drive_type.cpp
     object/level/parser.cpp
+    object/level/parserexceptions.cpp
     object/level/parserline.cpp
     object/level/parserparam.cpp
-    object/level/parserexceptions.cpp
     object/mainmovie.cpp
     object/motion/motion.cpp
     object/motion/motionant.cpp
@@ -161,8 +162,8 @@ set(BASE_SOURCES
     object/motion/motionworm.cpp
     object/object.cpp
     object/object_factory.cpp
-    object/robotmain.cpp
     object/object_manager.cpp
+    object/robotmain.cpp
     object/task/task.cpp
     object/task/taskadvance.cpp
     object/task/taskbuild.cpp
@@ -185,6 +186,7 @@ set(BASE_SOURCES
     object/task/taskterraform.cpp
     object/task/taskturn.cpp
     object/task/taskwait.cpp
+    object/tool_type.cpp
     physics/physics.cpp
     script/cbottoken.cpp
     script/cmdtoken.cpp

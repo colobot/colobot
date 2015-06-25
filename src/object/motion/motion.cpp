@@ -112,11 +112,11 @@ bool CMotion::EventProcess(const Event &event)
     dir.z = Math::Smooth(dir.z, m_cirVibration.z, time);
     m_object->SetCirVibration(dir);
 
-    dir = m_object->GetInclinaison();
+    dir = m_object->GetTilt();
     dir.x = Math::Smooth(dir.x, m_inclinaison.x, time);
     dir.y = Math::Smooth(dir.y, m_inclinaison.y, time);
     dir.z = Math::Smooth(dir.z, m_inclinaison.z, time);
-    m_object->SetInclinaison(dir);
+    m_object->SetTilt(dir);
 
     return true;
 }
@@ -207,12 +207,12 @@ Math::Vector CMotion::GetCirVibration()
 
 // Getes the tilt.
 
-void CMotion::SetInclinaison(Math::Vector dir)
+void CMotion::SetTilt(Math::Vector dir)
 {
     m_inclinaison = dir;
 }
 
-Math::Vector CMotion::GetInclinaison()
+Math::Vector CMotion::GetTilt()
 {
     return m_inclinaison;
 }

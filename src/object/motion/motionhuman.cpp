@@ -1178,11 +1178,11 @@ bool CMotionHuman::EventFrame(const Event &event)
         dir.x = 0.0f;
         dir.y = (Math::Rand()-0.5f)/3.0f;
         dir.z = -0.1f;  // slightly leaning forward
-        actual = m_object->GetInclinaison();
+        actual = m_object->GetTilt();
         dir.x = Math::Smooth(actual.x, dir.x, time);
         dir.y = Math::Smooth(actual.y, dir.y, time);
         dir.z = Math::Smooth(actual.z, dir.z, time);
-        m_object->SetInclinaison(dir);
+        m_object->SetTilt(dir);
     }
     else if ( m_actionType == MHS_TAKE      ||  // carrying?
               m_actionType == MHS_TAKEOTHER )   // flag?
@@ -1202,11 +1202,11 @@ bool CMotionHuman::EventFrame(const Event &event)
         dir.x = 0.0f;
         dir.y = 0.0f;
         dir.z = -0.2f;
-        actual = m_object->GetInclinaison();
+        actual = m_object->GetTilt();
         dir.x = Math::Smooth(actual.x, dir.x, time);
         dir.y = Math::Smooth(actual.y, dir.y, time);
         dir.z = Math::Smooth(actual.z, dir.z, time);
-        m_object->SetInclinaison(dir);
+        m_object->SetTilt(dir);
     }
     else if ( m_actionType == MHS_TAKEHIGH )   // carrying?
     {
@@ -1225,11 +1225,11 @@ bool CMotionHuman::EventFrame(const Event &event)
         dir.x = 0.0f;
         dir.y = 0.0f;
         dir.z = -0.2f;
-        actual = m_object->GetInclinaison();
+        actual = m_object->GetTilt();
         dir.x = Math::Smooth(actual.x, dir.x, time);
         dir.y = Math::Smooth(actual.y, dir.y, time);
         dir.z = Math::Smooth(actual.z, dir.z, time);
-        m_object->SetInclinaison(dir);
+        m_object->SetTilt(dir);
     }
     else if ( m_actionType == MHS_FLAG )   // flag?
     {
@@ -1248,11 +1248,11 @@ bool CMotionHuman::EventFrame(const Event &event)
         dir.x = 0.0f;
         dir.y = 0.0f;
         dir.z = -0.4f;
-        actual = m_object->GetInclinaison();
+        actual = m_object->GetTilt();
         dir.x = Math::Smooth(actual.x, dir.x, time);
         dir.y = Math::Smooth(actual.y, dir.y, time);
         dir.z = Math::Smooth(actual.z, dir.z, time);
-        m_object->SetInclinaison(dir);
+        m_object->SetTilt(dir);
     }
     else if ( m_actionType == MHS_DEADg )   // shooting death (falls)?
     {
@@ -1298,11 +1298,11 @@ bool CMotionHuman::EventFrame(const Event &event)
         dir.x = 0.0f;
         dir.y = 0.0f;
         dir.z = -(20.0f*Math::PI/180.0f)*prog;
-        actual = m_object->GetInclinaison();
+        actual = m_object->GetTilt();
         dir.x = Math::Smooth(actual.x, dir.x, time);
         dir.y = Math::Smooth(actual.y, dir.y, time);
         dir.z = Math::Smooth(actual.z, dir.z, time);
-        m_object->SetInclinaison(dir);
+        m_object->SetTilt(dir);
     }
     else if ( m_actionType == MHS_DEADg2 )   // shooting death (knees)?
     {
@@ -1325,11 +1325,11 @@ bool CMotionHuman::EventFrame(const Event &event)
         dir.x = 0.0f;
         dir.y = 0.0f;
         dir.z = -(20.0f*Math::PI/180.0f);
-        actual = m_object->GetInclinaison();
+        actual = m_object->GetTilt();
         dir.x = Math::Smooth(actual.x, dir.x, time);
         dir.y = Math::Smooth(actual.y, dir.y, time);
         dir.z = Math::Smooth(actual.z, dir.z, time);
-        m_object->SetInclinaison(dir);
+        m_object->SetTilt(dir);
     }
     else if ( m_actionType == MHS_DEADg3 )   // shooting death (face down)?
     {
@@ -1369,11 +1369,11 @@ bool CMotionHuman::EventFrame(const Event &event)
         dir.z = -((20.0f*Math::PI/180.0f)+(70.0f*Math::PI/180.0f)*prog);
         dir.x = 0.0f;
         dir.y = 0.0f;
-        actual = m_object->GetInclinaison();
+        actual = m_object->GetTilt();
         dir.x = Math::Smooth(actual.x, dir.x, time);
         dir.y = Math::Smooth(actual.y, dir.y, time);
         dir.z = Math::Smooth(actual.z, dir.z, time);
-        m_object->SetInclinaison(dir);
+        m_object->SetTilt(dir);
     }
     else if ( m_actionType == MHS_DEADg4 )   // shooting death (face down)?
     {
@@ -1396,11 +1396,11 @@ bool CMotionHuman::EventFrame(const Event &event)
         dir.z = -((20.0f*Math::PI/180.0f)+(70.0f*Math::PI/180.0f));
         dir.x = 0.0f;
         dir.y = 0.0f;
-        actual = m_object->GetInclinaison();
+        actual = m_object->GetTilt();
         dir.x = Math::Smooth(actual.x, dir.x, time);
         dir.y = Math::Smooth(actual.y, dir.y, time);
         dir.z = Math::Smooth(actual.z, dir.z, time);
-        m_object->SetInclinaison(dir);
+        m_object->SetTilt(dir);
     }
     else if ( m_actionType == MHS_DEADw )   // drowned?
     {
@@ -1434,11 +1434,11 @@ bool CMotionHuman::EventFrame(const Event &event)
         dir.z = -(90.0f*Math::PI/180.0f)*prog;
         dir.x = Math::Rand()*0.3f*deadFactor;
         dir.y = Math::Rand()*0.3f*deadFactor;
-        actual = m_object->GetInclinaison();
+        actual = m_object->GetTilt();
         dir.x = Math::Smooth(actual.x, dir.x, time);
         dir.y = Math::Smooth(actual.y, dir.y, time);
         dir.z = Math::Smooth(actual.z, dir.z, time);
-        m_object->SetInclinaison(dir);
+        m_object->SetTilt(dir);
 
         m_object->SetCirVibration(Math::Vector(0.0f, 0.0f, 0.0f));
     }
@@ -1450,8 +1450,8 @@ bool CMotionHuman::EventFrame(const Event &event)
         dir.x = time*2.0f;
         dir.y = sinf(m_time*0.8f)*0.8f;
         dir.z = sinf(m_time*0.6f)*0.5f;
-        m_object->SetInclinaison(dir);
-        SetInclinaison(dir);
+        m_object->SetTilt(dir);
+        SetTilt(dir);
 
 //?     dir.x = -(sinf(time*0.05f+Math::PI*1.5f)+1.0f)*100.0f;
         // original code: Math::Min(time/30.0f) (?) changed to time/30.0f
@@ -1478,7 +1478,7 @@ bool CMotionHuman::EventFrame(const Event &event)
     {
         SetCirVibration(Math::Vector(0.0f, 0.0f, 0.0f));
         SetLinVibration(Math::Vector(0.0f, 0.0f, 0.0f));
-        SetInclinaison(Math::Vector(0.0f, 0.0f, 0.0f));
+        SetTilt(Math::Vector(0.0f, 0.0f, 0.0f));
     }
     else
     {
@@ -1509,13 +1509,13 @@ bool CMotionHuman::EventFrame(const Event &event)
             if ( s < 0.0f )  s *= 0.5f;
             dir.z = -s*0.7f;
 
-            actual = m_object->GetInclinaison();
+            actual = m_object->GetTilt();
             dir.x = Math::Smooth(actual.x, dir.x, time);
             dir.y = Math::Smooth(actual.y, dir.y, time);
             dir.z = Math::Smooth(actual.z, dir.z, time);
             if ( bOnBoard )  dir *= 0.3f;
-            m_object->SetInclinaison(dir);
-            SetInclinaison(dir);
+            m_object->SetTilt(dir);
+            SetTilt(dir);
 
             if ( action == MH_MARCH )   // walking?
             {

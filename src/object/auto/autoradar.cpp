@@ -271,7 +271,7 @@ bool CAutoRadar::SearchEnemy(Math::Vector &pos)
     CObject* best = nullptr;
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        if ( !obj->GetActif() )  continue;
+        if ( !obj->GetActive() )  continue;
 
         ObjectType oType = obj->GetType();
         if ( oType != OBJECT_ANT    &&

@@ -250,10 +250,12 @@ Gfx::Color CLevelParserParam::AsColor()
 
     ParseArray();
 
-    if (m_array.size() == 3) { //RGB
+    if (m_array.size() == 3) //RGB
+    {
         return Gfx::Color(m_array[0]->AsFloat(), m_array[1]->AsFloat(), m_array[2]->AsFloat());
     }
-    else if (m_array.size() == 4) { //RGBA
+    else if (m_array.size() == 4) //RGBA
+    {
         return Gfx::Color(m_array[0]->AsFloat(), m_array[1]->AsFloat(), m_array[2]->AsFloat(), m_array[3]->AsFloat());
     }
     else
@@ -277,10 +279,12 @@ Math::Vector CLevelParserParam::AsPoint()
 
     ParseArray();
 
-    if (m_array.size() == 2) { //XZ
+    if (m_array.size() == 2) //XZ
+    {
         return Math::Vector(m_array[0]->AsFloat(), 0.0f, m_array[1]->AsFloat());
     }
-    else if (m_array.size() == 3) { //XYZ
+    else if (m_array.size() == 3) //XYZ
+    {
         return Math::Vector(m_array[0]->AsFloat(), m_array[1]->AsFloat(), m_array[2]->AsFloat());
     }
     else
@@ -719,11 +723,11 @@ ObjectType CLevelParserParam::AsObjectType(ObjectType def)
 
 DriveType CLevelParserParam::ToDriveType(std::string value)
 {
-    if (value == "Wheeled") return DRIVE_WHEELED;
-    if (value == "Tracked") return DRIVE_TRACKED;
-    if (value == "Winged" ) return DRIVE_WINGED;
-    if (value == "Legged" ) return DRIVE_LEGGED;
-    if (value == "Other"  ) return DRIVE_OTHER;
+    if (value == "Wheeled") return DriveType::Wheeled;
+    if (value == "Tracked") return DriveType::Tracked;
+    if (value == "Winged" ) return DriveType::Winged;
+    if (value == "Legged" ) return DriveType::Legged;
+    if (value == "Other"  ) return DriveType::Other;
     return static_cast<DriveType>(Cast<int>(value, "drive"));
 }
 
@@ -744,11 +748,11 @@ DriveType CLevelParserParam::AsDriveType(DriveType def)
 
 ToolType CLevelParserParam::ToToolType(std::string value)
 {
-    if (value == "Grabber"    ) return TOOL_GRABBER;
-    if (value == "Shiffer"    ) return TOOL_SNIFFER;
-    if (value == "Shooter"    ) return TOOL_SHOOTER;
-    if (value == "OrgaShooter") return TOOL_ORGASHOOTER;
-    if (value == "Other"      ) return TOOL_OTHER;
+    if (value == "Grabber"    ) return ToolType::Grabber;
+    if (value == "Sniffer"    ) return ToolType::Sniffer;
+    if (value == "Shooter"    ) return ToolType::Shooter;
+    if (value == "OrgaShooter") return ToolType::OrganicShooter;
+    if (value == "Other"      ) return ToolType::Other;
     return static_cast<ToolType>(Cast<int>(value, "tool"));
 }
 

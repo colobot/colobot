@@ -542,7 +542,7 @@ bool CMotionSpider::EventFrame(const Event &event)
         SetCirVibration(dir);
         dir = Math::Vector(0.0f, 0.0f, 0.0f);
         SetLinVibration(dir);
-        SetInclinaison(dir);
+        SetTilt(dir);
 
         time = event.rTime*1.0f;
         m_object->SetAngleZ(1, Math::Smooth(m_object->GetAngleZ(1), 0.0f, time));  // head
@@ -552,7 +552,7 @@ bool CMotionSpider::EventFrame(const Event &event)
         dir = Math::Vector(0.0f, 0.0f, 0.0f);
         SetLinVibration(dir);
         SetCirVibration(dir);
-        SetInclinaison(dir);
+        SetTilt(dir);
     }
     else if ( m_actionType == MSS_EXPLO )  // exploded?
     {
@@ -600,7 +600,7 @@ bool CMotionSpider::EventFrame(const Event &event)
         SetCirVibration(dir);
 
         dir = Math::Vector(0.0f, 0.0f, 0.0f);
-        SetInclinaison(dir);
+        SetTilt(dir);
 
         if ( m_progress >= 1.0f )
         {
@@ -644,7 +644,7 @@ bool CMotionSpider::EventFrame(const Event &event)
                 sinf(m_armTimeAbs*15.0f)*0.03f;
         SetCirVibration(dir);
         dir = Math::Vector(0.0f, 0.0f, 0.0f);
-        SetInclinaison(dir);
+        SetTilt(dir);
 
         m_object->SetAngleY(1, sinf(m_armTimeAbs*5.0f)*0.05f);  // tail
         m_object->SetAngleY(2, cosf(m_armTimeAbs*5.0f)*0.20f);  // head
@@ -691,7 +691,7 @@ bool CMotionSpider::EventFrame(const Event &event)
         SetCirVibration(dir);
 
         dir = Math::Vector(0.0f, 0.0f, 0.0f);
-        SetInclinaison(dir);
+        SetTilt(dir);
 
         if ( m_progress >= 1.0f )
         {
@@ -704,7 +704,7 @@ bool CMotionSpider::EventFrame(const Event &event)
         if ( bStop )
         {
             dir = Math::Vector(0.0f, 0.0f, 0.0f);
-            SetInclinaison(dir);
+            SetTilt(dir);
         }
         else
         {
@@ -719,7 +719,7 @@ bool CMotionSpider::EventFrame(const Event &event)
             dir.z = sinf(s)*0.1f;
 
             dir.y = 0.0f;
-            SetInclinaison(dir);
+            SetTilt(dir);
         }
 
         dir = Math::Vector(0.0f, 0.0f, 0.0f);

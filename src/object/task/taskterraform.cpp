@@ -126,7 +126,7 @@ bool CTaskTerraform::EventProcess(const Event &event)
     {
         dir.z = -atanf((pos.y/2.0f)/9.0f);
     }
-    m_object->SetInclinaison(dir);
+    m_object->SetTilt(dir);
 
     if ( m_time-m_lastParticle >= m_engine->ParticleAdapt(0.05f) )
     {
@@ -320,7 +320,7 @@ bool CTaskTerraform::Abort()
     }
 
     m_object->SetPosition(2, Math::Vector(9.0f, 4.0f, 0.0f));
-    m_object->SetInclinaison(Math::Vector(0.0f, 0.0f, 0.0f));
+    m_object->SetTilt(Math::Vector(0.0f, 0.0f, 0.0f));
     m_object->SetCirVibration(Math::Vector(0.0f, 0.0f, 0.0f));
     m_object->SetZoom(0, 1.0f);
 

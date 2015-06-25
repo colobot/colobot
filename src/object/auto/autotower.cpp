@@ -280,7 +280,7 @@ CObject* CAutoTower::SearchTarget(Math::Vector &impact)
              oType != OBJECT_BEE    &&
              oType != OBJECT_WORM   )  continue;
 
-        if ( !obj->GetActif() )  continue;  // inactive?
+        if ( !obj->GetActive() )  continue;  // inactive?
 
 //?     if ( g_researchDone & RESEARCH_QUICK )
         if ( false )

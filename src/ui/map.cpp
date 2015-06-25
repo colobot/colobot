@@ -331,7 +331,9 @@ void CMap::Draw()
         uv2.x = 0.5f + (m_offset.x + (m_half / m_zoom)) / (m_half * 2.0f);
         uv2.y = 0.5f - (m_offset.y - (m_half / m_zoom)) / (m_half * 2.0f);
         DrawVertex(uv1, uv2, 0.97f);  // drawing the map
-    } else {   // still image?
+    }
+    else // still image?
+    {
         std::string texFilename = m_fixImage;
         texFilename = "textures/"+texFilename;
         m_engine->LoadTexture(texFilename.c_str());
@@ -1154,7 +1156,7 @@ void CMap::UpdateObject(CObject* pObj)
     if ( !m_bEnable )  return;
     if ( m_totalFix >= m_totalMove )  return;  // full table?
 
-    if ( !pObj->GetActif() )  return;
+    if ( !pObj->GetActive() )  return;
     if ( !pObj->GetSelectable() )  return;
     if ( pObj->GetProxyActivate() )  return;
     if ( pObj->GetTruck() != 0 )  return;

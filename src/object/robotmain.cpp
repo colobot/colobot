@@ -1991,9 +1991,9 @@ CObject* CRobotMain::DetectObject(Math::Point pos)
 
     for (CObject* obj : m_objMan->GetAllObjects())
     {
-        if (!obj->GetActif()) continue;
+        if (!obj->GetActive()) continue;
         CObject* truck = obj->GetTruck();
-        if (truck != nullptr && !truck->GetActif()) continue;
+        if (truck != nullptr && !truck->GetActive()) continue;
         if (obj->GetProxyActivate()) continue;
 
         CObject* target = nullptr;
@@ -3045,8 +3045,8 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                     m_audioChange[i].max      = line->GetParam("max")->AsInt(9999);
                     m_audioChange[i].powermin = line->GetParam("powermin")->AsFloat(-1);
                     m_audioChange[i].powermax = line->GetParam("powermax")->AsFloat(100);
-                    m_audioChange[i].tool     = line->GetParam("tool")->AsToolType(TOOL_OTHER);
-                    m_audioChange[i].drive    = line->GetParam("drive")->AsDriveType(DRIVE_OTHER);
+                    m_audioChange[i].tool     = line->GetParam("tool")->AsToolType(ToolType::Other);
+                    m_audioChange[i].drive    = line->GetParam("drive")->AsDriveType(DriveType::Other);
                     strcpy(m_audioChange[i].music, (std::string("../")+line->GetParam("filename")->AsPath("music")).c_str());
                     m_audioChange[i].repeat   = line->GetParam("repeat")->AsBool(true);
                     m_audioChange[i].changed  = false;
@@ -3812,8 +3812,8 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                     m_endTake[i].max      = line->GetParam("max")->AsInt(9999);
                     m_endTake[i].powermin = line->GetParam("powermin")->AsFloat(-1);
                     m_endTake[i].powermax = line->GetParam("powermax")->AsFloat(100);
-                    m_endTake[i].tool     = line->GetParam("tool")->AsToolType(TOOL_OTHER);
-                    m_endTake[i].drive    = line->GetParam("drive")->AsDriveType(DRIVE_OTHER);
+                    m_endTake[i].tool     = line->GetParam("tool")->AsToolType(ToolType::Other);
+                    m_endTake[i].drive    = line->GetParam("drive")->AsDriveType(DriveType::Other);
                     m_endTake[i].lost     = line->GetParam("lost")->AsInt(-1);
                     m_endTake[i].immediat = line->GetParam("immediat")->AsBool(false);
                     m_endTake[i].countTransported = line->GetParam("countTransported")->AsBool(true);
@@ -4181,7 +4181,7 @@ float CRobotMain::SearchNearestObject(Math::Vector center, CObject *exclu)
     float min = 100000.0f;
     for (CObject* obj : m_objMan->GetAllObjects())
     {
-        if (!obj->GetActif()) continue;  // inactive?
+        if (!obj->GetActive()) continue;  // inactive?
         if (obj->GetTruck() != nullptr) continue;  // object carries?
         if (obj == exclu)  continue;
 
@@ -4329,7 +4329,7 @@ void CRobotMain::ShowDropZone(CObject* metal, CObject* truck)
     float tMax;
     for (CObject* obj : m_objMan->GetAllObjects())
     {
-        if (!obj->GetActif()) continue;  // inactive?
+        if (!obj->GetActive()) continue;  // inactive?
         if (obj->GetTruck() != nullptr) continue;  // object carried?
         if (obj == metal) continue;
         if (obj == truck) continue;
@@ -4945,7 +4945,7 @@ bool CRobotMain::IOWriteScene(const char *filename, const char *filecbot, char *
         if (obj->GetTruck() != nullptr) continue;
         if (obj->GetBurn()) continue;
         if (obj->GetDead()) continue;
-        if (obj->GetExplo()) continue;
+        if (obj->IsExploding()) continue;
 
         CObject* power = obj->GetPower();
         CObject* fret  = obj->GetFret();
@@ -5417,7 +5417,7 @@ void CRobotMain::UpdateAudio(bool frame)
         int nb = 0;
         for (CObject* obj : m_objMan->GetAllObjects())
         {
-            // Do not use GetActif () because an invisible worm (underground)
+            // Do not use GetActive () because an invisible worm (underground)
             // should be regarded as existing here!
             if (obj->GetLock()) continue;
             if (obj->GetRuin()) continue;
@@ -5432,17 +5432,17 @@ void CRobotMain::UpdateAudio(bool frame)
                 type = OBJECT_SCRAP1;
             }
 
-            ToolType tool = CObject::GetToolFromObject(type);
-            DriveType drive = CObject::GetDriveFromObject(type);
-            if (m_audioChange[t].tool != TOOL_OTHER &&
+            ToolType tool = GetToolFromObject(type);
+            DriveType drive = GetDriveFromObject(type);
+            if (m_audioChange[t].tool != ToolType::Other &&
                 tool != m_audioChange[t].tool)
                 continue;
-            if (m_audioChange[t].drive != DRIVE_OTHER &&
+            if (m_audioChange[t].drive != DriveType::Other &&
                 drive != m_audioChange[t].drive)
                 continue;
 
-            if (m_audioChange[t].tool == TOOL_OTHER &&
-                m_audioChange[t].drive == DRIVE_OTHER &&
+            if (m_audioChange[t].tool == ToolType::Other &&
+                m_audioChange[t].drive == DriveType::Other &&
                 type != m_audioChange[t].type)
                 continue;
 
@@ -5551,7 +5551,7 @@ Error CRobotMain::CheckEndMission(bool frame)
         int nb = 0;
         for (CObject* obj : m_objMan->GetAllObjects())
         {
-            // Do not use GetActif () because an invisible worm (underground)
+            // Do not use GetActive () because an invisible worm (underground)
             // should be regarded as existing here!
             if (obj->GetLock()) continue;
             if (obj->GetRuin()) continue;
@@ -5571,18 +5571,18 @@ Error CRobotMain::CheckEndMission(bool frame)
                 type = OBJECT_SCRAP1;
             }
 
-            ToolType tool = CObject::GetToolFromObject(type);
-            DriveType drive = CObject::GetDriveFromObject(type);
-            if (m_endTake[t].tool != TOOL_OTHER &&
+            ToolType tool = GetToolFromObject(type);
+            DriveType drive = GetDriveFromObject(type);
+            if (m_endTake[t].tool != ToolType::Other &&
                 tool != m_endTake[t].tool)
                 continue;
 
-            if (m_endTake[t].drive != DRIVE_OTHER &&
+            if (m_endTake[t].drive != DriveType::Other &&
                 drive != m_endTake[t].drive)
                 continue;
 
-            if (m_endTake[t].tool == TOOL_OTHER &&
-                m_endTake[t].drive == DRIVE_OTHER &&
+            if (m_endTake[t].tool == ToolType::Other &&
+                m_endTake[t].drive == DriveType::Other &&
                 type != m_endTake[t].type)
                 continue;
 

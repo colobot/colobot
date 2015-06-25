@@ -123,7 +123,7 @@ public:
     bool        ReadSoluce(char* filename);
     bool        ReadProgram(Program* program, const char* filename);
     bool        GetCompile(Program* program);
-    bool        WriteProgram(Program* program, char* filename);
+    bool        WriteProgram(Program* program, const char* filename);
     bool        ReadStack(FILE *file);
     bool        WriteStack(FILE *file);
     const std::vector<Program*>& GetPrograms();

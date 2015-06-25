@@ -51,6 +51,7 @@
 
 #include "ui/displaytext.h"
 
+
 #if PLATFORM_WINDOWS
     #include "app/system_windows.h"
 #endif
@@ -652,16 +653,15 @@ bool CScriptFunctions::rDestroy(CBotVar* thisclass, CBotVar* var, CBotVar* resul
     CAuto* automat = obj->GetAuto();
 
     if ( thisType == OBJECT_DESTROYER )
-    {
         err = automat->StartAction(0);
-    } else
+    else
         err = ERR_WRONG_OBJ;
 
     if ( err != ERR_OK )
     {
         result->SetValInt(err);  // return error
         //TODO:        if ( script->m_errMode == ERM_STOP )
-        if( true )
+        if ( true )
         {
             exception = err;
             return false;
@@ -725,7 +725,8 @@ bool CScriptFunctions::rFactory(CBotVar* thisclass, CBotVar* var, CBotVar* resul
     classVars = classVars->GetNext();  // "id"
     int rank = classVars->GetValInt();
     CObject* factory = CObjectManager::GetInstancePointer()->GetObjectById(rank);
-    if (factory == nullptr) {
+    if (factory == nullptr)
+    {
         exception = ERR_GENERIC;
         result->SetValInt(ERR_GENERIC);
         CLogger::GetInstancePointer()->Error("in object.factory() - factory is nullptr");
@@ -735,7 +736,8 @@ bool CScriptFunctions::rFactory(CBotVar* thisclass, CBotVar* var, CBotVar* resul
     if ( thisType == OBJECT_FACTORY )
     {
         CAutoFactory* automat = static_cast<CAutoFactory*>(factory->GetAuto());
-        if(automat == nullptr) {
+        if (automat == nullptr)
+        {
             exception = ERR_GENERIC;
             result->SetValInt(ERR_GENERIC);
             CLogger::GetInstancePointer()->Error("in object.factory() - automat is nullptr");
@@ -867,7 +869,7 @@ bool CScriptFunctions::rFactory(CBotVar* thisclass, CBotVar* var, CBotVar* resul
     {
         result->SetValInt(err);  // return error
         //TODO:        if ( script->m_errMode == ERM_STOP )
-        if( true )
+        if ( true )
         {
             exception = err;
             return false;
@@ -948,7 +950,7 @@ bool CScriptFunctions::rResearch(CBotVar* thisclass, CBotVar* var, CBotVar* resu
     {
         result->SetValInt(err);  // return error
         //TODO:        if ( script->m_errMode == ERM_STOP )
-        if( true )
+        if ( true )
         {
             exception = err;
             return false;
@@ -986,16 +988,15 @@ bool CScriptFunctions::rTakeOff(CBotVar* thisclass, CBotVar* var, CBotVar* resul
     CAuto* automat = center->GetAuto();
 
     if ( thisType == OBJECT_BASE )
-    {
         err = (static_cast<CAutoBase*>(automat))->TakeOff(false);
-    } else
+    else
         err = ERR_WRONG_OBJ;
 
     if ( err != ERR_OK )
     {
         result->SetValInt(err);  // return error
         //TODO:        if ( script->m_errMode == ERM_STOP )
-        if( true )
+        if ( true )
         {
             exception = err;
             return false;
@@ -1060,7 +1061,7 @@ bool CScriptFunctions::rDelete(CBotVar* var, CBotVar* result, int& exception, vo
     {
         if ( exploType )
         {
-            obj->ExploObject(static_cast<ExploType>(exploType), force);
+            obj->ExplodeObject(static_cast<ExplosionType>(exploType), force);
         }
         else
         {
@@ -1123,20 +1124,24 @@ bool CScriptFunctions::rSearch(CBotVar* var, CBotVar* result, int& exception, vo
     if ( var != 0 )
     {
         if ( !GetPoint(var, exception, pos) )  return true;
-    } else {
+    }
+    else
+    {
         pos = pThis->GetPosition(0);
     }
 
     std::vector<ObjectType> type_v;
-    if(bArray)
+    if (bArray)
     {
         while ( array != 0 )
         {
             type_v.push_back(static_cast<ObjectType>(array->GetValInt()));
             array = array->GetNext();
         }
-    } else {
-        if(type != OBJECT_NULL)
+    }
+    else
+    {
+        if (type != OBJECT_NULL)
         {
             type_v.push_back(static_cast<ObjectType>(type));
         }
@@ -1266,15 +1271,17 @@ bool CScriptFunctions::rRadar(CBotVar* var, CBotVar* result, int& exception, voi
     }
 
     std::vector<ObjectType> type_v;
-    if(bArray)
+    if (bArray)
     {
         while ( array != 0 )
         {
             type_v.push_back(static_cast<ObjectType>(array->GetValInt()));
             array = array->GetNext();
         }
-    } else {
-        if(type != OBJECT_NULL)
+    }
+    else
+    {
+        if (type != OBJECT_NULL)
         {
             type_v.push_back(static_cast<ObjectType>(type));
         }
@@ -1384,15 +1391,17 @@ bool CScriptFunctions::rDetect(CBotVar* var, CBotVar* result, int& exception, vo
         }
 
         std::vector<ObjectType> type_v;
-        if(bArray)
+        if (bArray)
         {
             while ( array != 0 )
             {
                 type_v.push_back(static_cast<ObjectType>(array->GetValInt()));
                 array = array->GetNext();
             }
-        } else {
-            if(type != OBJECT_NULL)
+        }
+        else
+        {
+            if (type != OBJECT_NULL)
             {
                 type_v.push_back(static_cast<ObjectType>(type));
             }
@@ -1625,7 +1634,7 @@ CBotTypResult CScriptFunctions::cProduce(CBotVar* &var, void* user)
     if ( var->GetType() <= CBotTypDouble )
     {
         var = var->GetNext();
-        if( var != 0 )
+        if ( var != 0 )
         {
             if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
             var = var->GetNext();
@@ -1682,10 +1691,10 @@ bool CScriptFunctions::rProduce(CBotVar* var, CBotVar* result, int& exception, v
 
         pos = me->GetPosition(0);
 
-        Math::Vector rotation = me->GetAngle(0) + me->GetInclinaison();
+        Math::Vector rotation = me->GetAngle(0) + me->GetTilt();
         angle = rotation.y;
 
-        if( var != nullptr )
+        if ( var != nullptr )
             power = var->GetValFloat();
         else
             power = -1.0f;
@@ -1753,7 +1762,7 @@ bool CScriptFunctions::rProduce(CBotVar* var, CBotVar* result, int& exception, v
     {
         std::string name2 = CPathManager::InjectLevelDir(name, "ai");
         CBrain* brain = object->GetBrain();
-        if(brain != nullptr)
+        if (brain != nullptr)
         {
             Program* program = brain->AddProgram();
             brain->ReadProgram(program, name2.c_str());
@@ -2393,11 +2402,11 @@ CObject* CScriptFunctions::SearchInfo(CScript* script, CObject* object, float po
 
     iPos = object->GetPosition(0);
     pBest = CObjectManager::GetInstancePointer()->Radar(object, OBJECT_INFO);
-    if(pBest == nullptr)
+    if (pBest == nullptr)
         return nullptr;
     oPos = object->GetPosition(0);
 
-    if(Math::DistanceProjected(iPos, oPos) > power)
+    if (Math::DistanceProjected(iPos, oPos) > power)
         return nullptr;
 
     return pBest;
@@ -2857,7 +2866,7 @@ bool CScriptFunctions::rJet(CBotVar* var, CBotVar* result, int& exception, void*
     float       value;
 
     value = var->GetValFloat();
-    if( value > 1.0f ) value = 1.0f;
+    if ( value > 1.0f ) value = 1.0f;
 
     physics->SetMotorSpeedY(value);
 
@@ -3822,9 +3831,9 @@ void CScriptFunctions::Init()
     CBotProgram::DefineNum("FilterOnlyFliying", FILTER_ONLYFLYING);
 
     CBotProgram::DefineNum("ExploNone",  0);
-    CBotProgram::DefineNum("ExploBoum",  EXPLO_BOUM);
-    CBotProgram::DefineNum("ExploBurn",  EXPLO_BURN);
-    CBotProgram::DefineNum("ExploWater", EXPLO_WATER);
+    CBotProgram::DefineNum("ExploBoum",  static_cast<long>(ExplosionType::Bang));
+    CBotProgram::DefineNum("ExploBurn",  static_cast<long>(ExplosionType::Burn));
+    CBotProgram::DefineNum("ExploWater", static_cast<long>(ExplosionType::Water));
 
     CBotProgram::DefineNum("ResultNotEnded",  ERR_MISSION_NOTERM);
     CBotProgram::DefineNum("ResultLost",      INFO_LOST);

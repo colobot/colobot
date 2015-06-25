@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2014, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2015, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsiteс.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -17,27 +17,17 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-/**
- * \file script/cbottoken.h
- * \brief Functions to parse some CBot-related tokens
- */
-
 #pragma once
-
 
 #include "object/object_type.h"
 
-#include <string>
+enum class ToolType : unsigned int
+{
+    Other = 0,
+    Grabber,
+    Sniffer,
+    Shooter,
+    OrganicShooter,
+};
 
-
-
-// Procedures.
-
-extern const char* GetObjectName(ObjectType type);
-extern const char* GetObjectAlias(ObjectType type);
-extern std::string GetHelpFilename(ObjectType type);
-extern std::string GetHelpFilename(const char *token);
-extern bool IsType(const char *token);
-extern bool IsFunction(const char *token);
-extern const char* GetHelpText(const char *token);
-
+ToolType GetToolFromObject(ObjectType type);

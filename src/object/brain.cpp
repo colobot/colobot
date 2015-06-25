@@ -1663,14 +1663,14 @@ bool CBrain::CreateInterface(bool bSelect)
         pos.y = oy+sy*0.5f;
         pw->CreateButton(pos, dim, 40, EVENT_OBJECT_SEARCH);
         DefaultEnter(pw, EVENT_OBJECT_SEARCH);
-	
+
         if ( g_build&BUILD_GFLAT )
         {
             pos.x = ox+sx*9.0f;
             pos.y = oy+sy*0.5f;
             pw->CreateButton(pos, dim, 111, EVENT_OBJECT_GFLAT);
         }
-	
+
         pos.x = ox+sx*10.1f;
         pos.y = oy+sy*0.5f;
         pw->CreateButton(pos, dim, 11, EVENT_OBJECT_DELSEARCH);
@@ -2870,7 +2870,7 @@ bool CBrain::GetCompile(Program* program)
 
 // Saves a script in a text file.
 
-bool CBrain::WriteProgram(Program* program, char* filename)
+bool CBrain::WriteProgram(Program* program, const char* filename)
 {
     if ( program->script->WriteScript(filename) )  return true;
 

@@ -1327,7 +1327,7 @@ bool CTaskManip::IsFreeDeposeObject(Math::Vector pos)
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
         if ( obj == m_object )  continue;
-        if ( !obj->GetActif() )  continue;  // inactive?
+        if ( !obj->GetActive() )  continue;  // inactive?
         if ( obj->GetTruck() != nullptr )  continue;  // object transported?
 
         Math::Vector oPos;

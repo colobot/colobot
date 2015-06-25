@@ -125,7 +125,7 @@ void uObject(CBotVar* botThis, void* user)
 
     // Updates the angle.
     pos = object->GetAngle(0);
-    pos += object->GetInclinaison();
+    pos += object->GetTilt();
     pVar = pVar->GetNext();  // "orientation"
     pVar->SetValFloat(360.0f-Math::Mod(pos.y*180.0f/Math::PI, 360.0f));
     pVar = pVar->GetNext();  // "pitch"
@@ -198,7 +198,7 @@ CObject::CObject(int id)
 
     m_type = OBJECT_FIX;
     m_option = 0;
-    m_name[0] = 0;
+    m_name = "";
     m_partiReactor  = -1;
     m_shadowLight   = -1;
     m_effectLight   = -1;
@@ -223,7 +223,6 @@ CObject::CObject(int id)
     m_bCheckToken = true;
     m_bVisible = true;
     m_bEnable = true;
-    m_bGadget = false;
     m_bProxyActivate = false;
     m_bTrainer = false;
     m_bToy = false;
@@ -292,8 +291,8 @@ CObject::CObject(int id)
     FlushCrashShere();
     m_globalSpherePos = Math::Vector(0.0f, 0.0f, 0.0f);
     m_globalSphereRadius = 0.0f;
-    m_jotlerSpherePos = Math::Vector(0.0f, 0.0f, 0.0f);
-    m_jotlerSphereRadius = 0.0f;
+    m_jostlingSpherePos = Math::Vector(0.0f, 0.0f, 0.0f);
+    m_jostlingSphereRadius = 0.0f;
 
     CBotClass* bc = CBotClass::Find("object");
     if ( bc != 0 )
@@ -500,12 +499,12 @@ void CObject::Simplify()
 // If false is returned, the object is still screwed.
 // If true is returned, the object is destroyed.
 
-bool CObject::ExploObject(ExploType type, float force, float decay)
+bool CObject::ExplodeObject(ExplosionType type, float force, float decay)
 {
     Gfx::PyroType    pyroType;
     float       loss, shield;
 
-    if ( type == EXPLO_BURN )
+    if ( type == ExplosionType::Bang )
     {
         if ( m_type == OBJECT_MOBILEtg ||
              m_type == OBJECT_TEEN28    ||  // cylinder?
@@ -521,13 +520,13 @@ bool CObject::ExploObject(ExploType type, float force, float decay)
              m_type == OBJECT_BULLET   ||
              m_type == OBJECT_EGG      )  // object that isn't burning?
         {
-            type = EXPLO_BOUM;
+            type = ExplosionType::Bang;
             force = 1.0f;
             decay = 1.0f;
         }
     }
 
-    if ( type == EXPLO_BOUM )
+    if ( type == ExplosionType::Bang )
     {
         if ( m_shotTime < 0.5f )  return false;
         m_shotTime = 0.0f;
@@ -566,7 +565,7 @@ bool CObject::ExploObject(ExploType type, float force, float decay)
 
     if ( shield > 0.0f )  // not dead yet?
     {
-        if ( type == EXPLO_WATER )
+        if ( type == ExplosionType::Water )
         {
             if ( m_type == OBJECT_HUMAN )
             {
@@ -595,7 +594,7 @@ bool CObject::ExploObject(ExploType type, float force, float decay)
     }
     else    // completely dead?
     {
-        if ( type == EXPLO_BURN )  // burning?
+        if ( type == ExplosionType::Burn )  // burning?
         {
             if ( m_type == OBJECT_MOTHER ||
                  m_type == OBJECT_ANT    ||
@@ -618,7 +617,7 @@ bool CObject::ExploObject(ExploType type, float force, float decay)
             }
             SetVirusMode(false);
         }
-        else if ( type == EXPLO_WATER )
+        else if ( type == ExplosionType::Water )
         {
             if ( m_type == OBJECT_HUMAN )
             {
@@ -845,7 +844,7 @@ void CObject::SetObjectParent(int part, int parent)
 void CObject::SetType(ObjectType type)
 {
     m_type = type;
-    strcpy(m_name, GetObjectName(m_type));
+    m_name = GetObjectName(m_type);
 
     if ( m_type == OBJECT_MOBILErs )
     {
@@ -880,9 +879,9 @@ ObjectType CObject::GetType()
     return m_type;
 }
 
-char* CObject::GetName()
+const char* CObject::GetName()
 {
-    return m_name;
+    return m_name.c_str();
 }
 
 
@@ -1186,7 +1185,7 @@ bool CObject::GetCrashSphere(int rank, Math::Vector &pos, float &radius)
     // Returns to the sphere collisions,
     // which ignores the inclination of the vehicle.
     // This is necessary to collisions with vehicles,
-    // so as not to reflect SetInclinaison, for example.
+    // so as not to reflect SetTilt, for example.
     // The sphere must necessarily have a center (0, y, 0).
     if ( rank == 0 && m_crashSphereUsed == 1 &&
          m_crashSpherePos[0].x == 0.0f &&
@@ -1259,18 +1258,18 @@ void CObject::GetGlobalSphere(Math::Vector &pos, float &radius)
 
 // Specifies the sphere of jostling, relative to the object.
 
-void CObject::SetJotlerSphere(Math::Vector pos, float radius)
+void CObject::SetJostlingSphere(Math::Vector pos, float radius)
 {
-    m_jotlerSpherePos    = pos;
-    m_jotlerSphereRadius = radius;
+    m_jostlingSpherePos    = pos;
+    m_jostlingSphereRadius = radius;
 }
 
 // Specifies the sphere of jostling, in the world.
 
-void CObject::GetJotlerSphere(Math::Vector &pos, float &radius)
+void CObject::GetJostlingSphere(Math::Vector &pos, float &radius)
 {
-    pos = Math::Transform(m_objectPart[0].matWorld, m_jotlerSpherePos);
-    radius = m_jotlerSphereRadius;
+    pos = Math::Transform(m_objectPart[0].matWorld, m_jostlingSpherePos);
+    radius = m_jostlingSphereRadius;
 }
 
 
@@ -1371,7 +1370,7 @@ Math::Vector CObject::GetCirVibration()
 
 // Getes the inclination.
 
-void CObject::SetInclinaison(Math::Vector dir)
+void CObject::SetTilt(Math::Vector dir)
 {
     if ( m_inclinaison.x != dir.x ||
          m_inclinaison.y != dir.y ||
@@ -1382,7 +1381,7 @@ void CObject::SetInclinaison(Math::Vector dir)
     }
 }
 
-Math::Vector CObject::GetInclinaison()
+Math::Vector CObject::GetTilt()
 {
     return m_inclinaison;
 }
@@ -1805,19 +1804,7 @@ void CObject::SetTruckPart(int part)
     m_truckLink = part;
 }
 
-int CObject::GetTruckPart()
-{
-    return m_truckLink;
-}
-
-
 // Management of user information.
-
-void CObject::InfoFlush()
-{
-    m_infoTotal = 0;
-    m_bInfoUpdate = true;
-}
 
 void CObject::DeleteInfo(int rank)
 {
@@ -1893,16 +1880,6 @@ float CObject::GetCmdLine(int rank)
 Math::Matrix* CObject::GetRotateMatrix(int part)
 {
     return &m_objectPart[part].matRotate;
-}
-
-Math::Matrix* CObject::GetTranslateMatrix(int part)
-{
-    return &m_objectPart[part].matTranslate;
-}
-
-Math::Matrix* CObject::GetTransformMatrix(int part)
-{
-    return &m_objectPart[part].matTransform;
 }
 
 Math::Matrix* CObject::GetWorldMatrix(int part)
@@ -2056,7 +2033,7 @@ bool CObject::ReadProgram(Program* program, const char* filename)
 
 // Writes a program.
 
-bool CObject::WriteProgram(Program* program, char* filename)
+bool CObject::WriteProgram(Program* program, const char* filename)
 {
     if ( m_brain != nullptr )
     {
@@ -2680,11 +2657,6 @@ void CObject::SetViewFromHere(Math::Vector &eye, float &dirH, float &dirV,
 
 // Management of features.
 
-void CObject::SetCharacter(Character* character)
-{
-    memcpy(&m_character, character, sizeof(Character));
-}
-
 void CObject::GetCharacter(Character* character)
 {
     memcpy(character, &m_character, sizeof(Character));
@@ -2816,25 +2788,6 @@ void CObject::SetTransparency(float value)
         }
     }
 }
-
-float CObject::GetTransparency()
-{
-    return m_transparency;
-}
-
-
-// Indicates whether the gadget is a nonessential.
-
-void CObject::SetGadget(bool bMode)
-{
-    m_bGadget = bMode;
-}
-
-bool CObject::GetGadget()
-{
-    return m_bGadget;
-}
-
 
 // Indicates whether an object is stationary (ant on the back).
 
@@ -3017,11 +2970,6 @@ void CObject::SetHilite(bool bMode)
     }
 }
 
-bool CObject::GetHilite()
-{
-    return m_bHilite;
-}
-
 
 // Indicates whether the object is selected or not.
 
@@ -3132,11 +3080,6 @@ void CObject::SetVisible(bool bVisible)
     m_bVisible = bVisible;
 }
 
-bool CObject::GetVisible()
-{
-    return m_bVisible;
-}
-
 
 // Management mode of operation of an object.
 // An inactive object is an object destroyed, nonexistent.
@@ -3232,12 +3175,12 @@ bool CObject::GetIgnoreBuildCheck()
 // Management of the mode "current explosion" of an object.
 // An object in this mode is not saving.
 
-void CObject::SetExplo(bool bExplo)
+void CObject::SetExploding(bool bExplo)
 {
     m_bExplo = bExplo;
 }
 
-bool CObject::GetExplo()
+bool CObject::IsExploding()
 {
     return m_bExplo;
 }
@@ -3300,7 +3243,7 @@ bool CObject::GetRuin()
     return m_bBurn|m_bFlat;
 }
 
-bool CObject::GetActif()
+bool CObject::GetActive()
 {
     return !m_bLock && !m_bBurn && !m_bFlat && m_bVisible && m_bEnable;
 }
@@ -3842,74 +3785,4 @@ void CObject::SetTraceWidth(float width)
         return;
     }
     mv->SetTraceWidth(width);
-}
-
-DriveType CObject::GetDriveFromObject(ObjectType type)
-{
-    switch(type)
-    {
-        case OBJECT_MOBILEwt:
-        case OBJECT_MOBILEwa:
-        case OBJECT_MOBILEwc:
-        case OBJECT_MOBILEwi:
-        case OBJECT_MOBILEws:
-            return DRIVE_WHEELED;
-
-        case OBJECT_MOBILEtt:
-        case OBJECT_MOBILEta:
-        case OBJECT_MOBILEtc:
-        case OBJECT_MOBILEti:
-        case OBJECT_MOBILEts:
-            return DRIVE_TRACKED;
-
-        case OBJECT_MOBILEft:
-        case OBJECT_MOBILEfa:
-        case OBJECT_MOBILEfc:
-        case OBJECT_MOBILEfi:
-        case OBJECT_MOBILEfs:
-            return DRIVE_WINGED;
-
-        case OBJECT_MOBILEit:
-        case OBJECT_MOBILEia:
-        case OBJECT_MOBILEic:
-        case OBJECT_MOBILEii:
-        case OBJECT_MOBILEis:
-            return DRIVE_LEGGED;
-
-        default:
-            return DRIVE_OTHER;
-    }
-}
-
-ToolType CObject::GetToolFromObject(ObjectType type)
-{
-    switch(type)
-    {
-        case OBJECT_MOBILEwa:
-        case OBJECT_MOBILEta:
-        case OBJECT_MOBILEfa:
-        case OBJECT_MOBILEia:
-            return TOOL_GRABBER;
-
-        case OBJECT_MOBILEws:
-        case OBJECT_MOBILEts:
-        case OBJECT_MOBILEfs:
-        case OBJECT_MOBILEis:
-            return TOOL_SNIFFER;
-
-        case OBJECT_MOBILEwc:
-        case OBJECT_MOBILEtc:
-        case OBJECT_MOBILEfc:
-        case OBJECT_MOBILEic:
-            return TOOL_SHOOTER;
-
-        case OBJECT_MOBILEwi:
-        case OBJECT_MOBILEti:
-        case OBJECT_MOBILEfi:
-        case OBJECT_MOBILEii:
-            return TOOL_ORGASHOOTER;
-
-        default:
-            return TOOL_OTHER;
-    }
 }

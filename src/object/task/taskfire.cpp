@@ -240,7 +240,7 @@ bool CTaskFire::EventProcess(const Event &event)
         {
             dir.z = (Math::PI*0.04f)*(1.0f-(m_progress-0.9f)*10.0f);
         }
-        m_object->SetInclinaison(dir);
+        m_object->SetTilt(dir);
 
         vib.x = (Math::Rand()-0.5f)*0.01f;
         vib.y = (Math::Rand()-0.5f)*0.02f;
@@ -367,7 +367,7 @@ Error CTaskFire::IsEnded()
 
 bool CTaskFire::Abort()
 {
-    m_object->SetInclinaison(Math::Vector(0.0f, 0.0f, 0.0f));
+    m_object->SetTilt(Math::Vector(0.0f, 0.0f, 0.0f));
     m_object->SetCirVibration(Math::Vector(0.0f, 0.0f, 0.0f));
     m_object->SetLinVibration(Math::Vector(0.0f, 0.0f, 0.0f));
 

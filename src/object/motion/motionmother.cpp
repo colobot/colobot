@@ -30,7 +30,7 @@
 #include <stdio.h>
 
 
-#define ADJUST_ANGLE 0	                // 1 -> adjusts the angles of the members
+#define ADJUST_ANGLE 0                  // 1 -> adjusts the angles of the members
 const float START_TIME = 1000.0f;       // beginning of the relative time
 
 
@@ -454,7 +454,7 @@ bool CMotionMother::EventFrame(const Event &event)
         dir.z = sinf(s)*0.05f;
 
         dir.y = 0.0f;
-        m_object->SetInclinaison(dir);
+        m_object->SetTilt(dir);
 
         a = Math::Mod(m_armMember-0.1f, 1.0f);
         if ( a < 0.33f )

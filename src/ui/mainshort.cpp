@@ -139,7 +139,7 @@ bool CMainShort::CreateShortcuts()
 
     for (CObject* pObj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        if ( !pObj->GetActif() )  continue;
+        if ( !pObj->GetActive() )  continue;
         if ( !pObj->GetSelectable() )  continue;
         if ( pObj->GetProxyActivate() )  continue;
 

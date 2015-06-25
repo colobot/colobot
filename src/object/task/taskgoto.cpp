@@ -1147,7 +1147,7 @@ bool CTaskGoto::AdjustBuilding(Math::Vector &pos, float margin, float &distance)
 {
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        if ( !obj->GetActif() )  continue;
+        if ( !obj->GetActive() )  continue;
         if ( obj->GetTruck() != nullptr )  continue;  // object transported?
 
         Math::Vector oPos;
@@ -1308,7 +1308,7 @@ bool CTaskGoto::LeakSearch(Math::Vector &pos, float &delay)
     for (CObject* pObj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
         if ( pObj == m_object )  continue;
-        if ( !pObj->GetActif() )  continue;
+        if ( !pObj->GetActive() )  continue;
         if ( pObj->GetTruck() != 0 )  continue;  // object transported?
 
         j = 0;

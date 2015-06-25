@@ -32,6 +32,7 @@
 
 #include "sound/sound.h"
 
+#include <string>
 
 class CApplication;
 class CPhysics;
@@ -46,43 +47,24 @@ class CLevelParserLine;
 struct Program;
 
 // The father of all parts must always be the part number zero!
-
 const int OBJECTMAXPART         = 40;
 const int MAXCRASHSPHERE        = 40;
 const int OBJECTMAXDESELLIST    = 10;
 const int OBJECTMAXINFO         = 10;
 const int OBJECTMAXCMDLINE      = 20;
 
-enum DriveType
-{
-    DRIVE_OTHER = 0,
-    DRIVE_WHEELED,
-    DRIVE_TRACKED,
-    DRIVE_WINGED,
-    DRIVE_LEGGED,
-};
-
-enum ToolType
-{
-    TOOL_OTHER = 0,
-    TOOL_GRABBER,
-    TOOL_SNIFFER,
-    TOOL_SHOOTER,
-    TOOL_ORGASHOOTER,
-};
-
 struct ObjectPart
 {
-    char         bUsed;
+    bool         bUsed;
     int          object;         // number of the object in CEngine
     int          parentPart;     // number of father part
     int          masterParti;        // master canal of the particle
     Math::Vector position;
     Math::Vector angle;
     Math::Vector zoom;
-    char         bTranslate;
-    char         bRotate;
-    char         bZoom;
+    bool         bTranslate;
+    bool         bRotate;
+    bool         bZoom;
     Math::Matrix matTranslate;
     Math::Matrix matRotate;
     Math::Matrix matTransform;
@@ -105,11 +87,11 @@ struct Info
     float value;          // value of the information
 };
 
-enum ExploType
+enum class ExplosionType
 {
-    EXPLO_BOUM  = 1,
-    EXPLO_BURN  = 2,
-    EXPLO_WATER = 3,
+    Bang  = 1,
+    Burn  = 2,
+    Water = 3,
 };
 
 enum ResetCap
@@ -135,6 +117,11 @@ protected:
     void        SetBrain(std::unique_ptr<CBrain> brain);
     void        SetMotion(std::unique_ptr<CMotion> motion);
     void        SetAuto(std::unique_ptr<CAuto> automat);
+    void        SetShowLimitRadius(float radius);
+    void        SetCapacity(float capacity);
+    float       GetProxyDistance();
+    void        SetOption(int option);
+    void        SetJostlingSphere(Math::Vector pos, float radius);
 
 public:
     CObject(const CObject&) = delete;
@@ -143,7 +130,7 @@ public:
     ~CObject();
 
     void        Simplify();
-    bool        ExploObject(ExploType type, float force, float decay=1.0f);
+    bool        ExplodeObject(ExplosionType type, float force, float decay=1.0f);
 
     bool        EventProcess(const Event &event);
     void        UpdateMapping();
@@ -153,10 +140,9 @@ public:
     void        SetObjectRank(int part, int objRank);
     int         GetObjectRank(int part);
     void        SetObjectParent(int part, int parent);
-    void        SetType(ObjectType type);
     ObjectType  GetType();
-    char*       GetName();
-    void        SetOption(int option);
+    void        SetType(ObjectType type);
+    const char* GetName();
     int         GetOption();
 
     int         GetID();
@@ -168,7 +154,7 @@ public:
     void        SetDrawFront(bool bDraw);
 
     bool        ReadProgram(Program* program, const char* filename);
-    bool        WriteProgram(Program* program, char* filename);
+    bool        WriteProgram(Program* program, const char* filename);
 
     int         GetShadowLight();
     int         GetEffectLight();
@@ -182,8 +168,7 @@ public:
     void        DeleteCrashSphere(int rank);
     void        SetGlobalSphere(Math::Vector pos, float radius);
     void        GetGlobalSphere(Math::Vector &pos, float &radius);
-    void        SetJotlerSphere(Math::Vector pos, float radius);
-    void        GetJotlerSphere(Math::Vector &pos, float &radius);
+    void        GetJostlingSphere(Math::Vector &pos, float &radius);
     void        SetShieldRadius(float radius);
     float       GetShieldRadius();
 
@@ -194,8 +179,8 @@ public:
     Math::Vector    GetLinVibration();
     void        SetCirVibration(Math::Vector dir);
     Math::Vector    GetCirVibration();
-    void        SetInclinaison(Math::Vector dir);
-    Math::Vector    GetInclinaison();
+    void        SetTilt(Math::Vector dir);
+    Math::Vector    GetTilt();
 
     void        SetPosition(int part, const Math::Vector &pos);
     Math::Vector    GetPosition(int part);
@@ -249,9 +234,7 @@ public:
     void        SetTruck(CObject* truck);
     CObject*    GetTruck();
     void        SetTruckPart(int part);
-    int         GetTruckPart();
 
-    void        InfoFlush();
     void        DeleteInfo(int rank);
     void        SetInfo(int rank, Info info);
     Info        GetInfo(int rank);
@@ -265,15 +248,12 @@ public:
     float       GetCmdLine(int rank);
 
     Math::Matrix*   GetRotateMatrix(int part);
-    Math::Matrix*   GetTranslateMatrix(int part);
-    Math::Matrix*   GetTransformMatrix(int part);
     Math::Matrix*   GetWorldMatrix(int part);
 
     void        SetViewFromHere(Math::Vector &eye, float &dirH, float &dirV,
                                 Math::Vector &lookat, Math::Vector &upVec,
                                 Gfx::CameraType type);
 
-    void        SetCharacter(Character* character);
     void        GetCharacter(Character* character);
     Character*  GetCharacter();
 
@@ -282,7 +262,6 @@ public:
     void        SetEnergy(float level);
     float       GetEnergy();
 
-    void        SetCapacity(float capacity);
     float       GetCapacity();
 
     void        SetShield(float level);
@@ -292,10 +271,6 @@ public:
     float       GetRange();
 
     void        SetTransparency(float value);
-    float       GetTransparency();
-
-    void        SetGadget(bool bMode);
-    bool        GetGadget();
 
     void        SetFixed(bool bFixed);
     bool        GetFixed();
@@ -319,7 +294,6 @@ public:
     bool        GetCameraLock();
 
     void        SetHilite(bool bMode);
-    bool        GetHilite();
 
     void        SetSelect(bool bMode, bool bDisplayError=true);
     bool        GetSelect(bool bReal=false);
@@ -331,7 +305,6 @@ public:
     bool        GetActivity();
 
     void        SetVisible(bool bVisible);
-    bool        GetVisible();
 
     void        SetEnable(bool bEnable);
     bool        GetEnable();
@@ -342,19 +315,18 @@ public:
     void        SetProxyActivate(bool bActivate);
     bool        GetProxyActivate();
     void        SetProxyDistance(float distance);
-    float       GetProxyDistance();
 
     void        SetMagnifyDamage(float factor);
     float       GetMagnifyDamage();
 
     void        SetParam(float value);
     float       GetParam();
-    
+
     void        SetIgnoreBuildCheck(bool bIgnoreBuildCheck);
     bool        GetIgnoreBuildCheck();
 
-    void        SetExplo(bool bExplo);
-    bool        GetExplo();
+    void        SetExploding(bool bExplo);
+    bool        IsExploding();
     void        SetLock(bool bLock);
     bool        GetLock();
     void        SetCargo(bool bCargo);
@@ -364,7 +336,7 @@ public:
     void        SetDead(bool bDead);
     bool        GetDead();
     bool        GetRuin();
-    bool        GetActif();
+    bool        GetActive();
 
     void        SetGunGoalV(float gunGoal);
     void        SetGunGoalH(float gunGoal);
@@ -373,7 +345,6 @@ public:
 
     bool        StartShowLimit();
     void        StopShowLimit();
-    void        SetShowLimitRadius(float radius);
 
     bool        IsProgram();
     void        CreateSelectParticle();
@@ -408,9 +379,6 @@ public:
     float       GetTraceWidth();
     void        SetTraceWidth(float width);
 
-    static DriveType GetDriveFromObject(ObjectType type);
-    static ToolType  GetToolFromObject(ObjectType type);
-
 protected:
     bool        EventFrame(const Event &event);
     void        VirusFrame(float rTime);
@@ -442,7 +410,7 @@ protected:
 
     ObjectType  m_type;             // OBJECT_*
     const int     m_id;               // unique identifier
-    char        m_name[50];         // name of the object
+    std::string  m_name;         // name of the object
     Character   m_character;            // characteristic
     int     m_option;           // option
     int     m_partiReactor;         // number of the particle of the reactor
@@ -508,8 +476,8 @@ protected:
     Sound       m_crashSphereSound[MAXCRASHSPHERE];
     Math::Vector    m_globalSpherePos;
     float       m_globalSphereRadius;
-    Math::Vector    m_jotlerSpherePos;
-    float       m_jotlerSphereRadius;
+    Math::Vector    m_jostlingSpherePos;
+    float       m_jostlingSphereRadius;
     float       m_shieldRadius;
 
     int         m_totalPart;

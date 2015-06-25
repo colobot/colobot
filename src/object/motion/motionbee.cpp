@@ -30,7 +30,7 @@
 #include <stdio.h>
 
 
-#define ADJUST_ANGLE 0	                // 1 -> adjusts the angles of the members
+#define ADJUST_ANGLE 0                  // 1 -> adjusts the angles of the members
 const float START_TIME = 1000.0f;       // beginning of the relative time
 
 
@@ -541,7 +541,7 @@ bool CMotionBee::EventFrame(const Event &event)
             dir.z = sinf(s)*0.1f;
 
             dir.y = 0.0f;
-            m_object->SetInclinaison(dir);
+            m_object->SetTilt(dir);
 
             m_object->SetAngleZ(2, -sinf(a)*0.3f);  // tail
 

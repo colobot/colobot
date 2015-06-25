@@ -1784,7 +1784,7 @@ bool CMotionVehicle::EventFrameInsect(const Event &event)
         dir.y = 0.0f;
 
         if ( bOnBoard )  dir *= 0.6f;
-        SetInclinaison(dir);
+        SetTilt(dir);
     }
 
     return true;

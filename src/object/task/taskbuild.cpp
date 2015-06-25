@@ -590,7 +590,7 @@ Error CTaskBuild::FlatFloor()
     bBase = false;
     for (CObject* pObj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        if ( !pObj->GetActif() )  continue;  // inactive?
+        if ( !pObj->GetActive() )  continue;  // inactive?
         if ( pObj->GetTruck() != 0 )  continue;  // object transported?
         if ( pObj == m_metal )  continue;
         if ( pObj == m_object )  continue;
@@ -635,7 +635,7 @@ Error CTaskBuild::FlatFloor()
     max = 100000.0f;
     for (CObject* pObj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        if ( !pObj->GetActif() )  continue;  // inactive?
+        if ( !pObj->GetActive() )  continue;  // inactive?
         if ( pObj->GetTruck() != 0 )  continue;  // object transported?
         if ( pObj == m_metal )  continue;
         if ( pObj == m_object )  continue;
@@ -703,7 +703,7 @@ CObject* CTaskBuild::SearchMetalObject(float &angle, float dMin, float dMax,
     bMetal = false;
     for (CObject* pObj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        if ( !pObj->GetActif() )  continue;  // objet inactive?
+        if ( !pObj->GetActive() )  continue;  // objet inactive?
         if ( pObj->GetTruck() != 0 )  continue;  // object transported?
 
         type = pObj->GetType();

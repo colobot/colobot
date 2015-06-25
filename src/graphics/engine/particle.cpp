@@ -991,9 +991,9 @@ void CParticle::FrameParticle(float rTime)
             if (object != nullptr)
             {
                 if (object->GetType() == OBJECT_MOTHER)
-                    object->ExploObject(EXPLO_BOUM, 0.1f);
+                    object->ExplodeObject(ExplosionType::Bang, 0.1f);
                 else
-                    object->ExploObject(EXPLO_BOUM, 0.0f, GetDecay(object->GetType()));
+                    object->ExplodeObject(ExplosionType::Bang, 0.0f, GetDecay(object->GetType()));
             }
 
             m_particle[i].zoom = 1.0f-(m_particle[i].time-m_particle[i].duration);
@@ -1194,7 +1194,7 @@ void CParticle::FrameParticle(float rTime)
                 m_particle[i].goal = m_particle[i].pos;
                 if (object != nullptr)
                 {
-                    object->ExploObject(EXPLO_BURN, 0.0f, GetDecay(object->GetType()));
+                    object->ExplodeObject(ExplosionType::Burn, 0.0f, GetDecay(object->GetType()));
 
                     m_exploGunCounter++;
 
@@ -1275,7 +1275,7 @@ void CParticle::FrameParticle(float rTime)
                         if (object->GetType() != OBJECT_HUMAN)
                             Play(SOUND_TOUCH, m_particle[i].pos, 1.0f);
 
-                        object->ExploObject(EXPLO_BOUM, 0.0f);  // starts explosion
+                        object->ExplodeObject(ExplosionType::Bang, 0.0f);  // starts explosion
                     }
                 }
             }
@@ -1317,7 +1317,7 @@ void CParticle::FrameParticle(float rTime)
                     }
                     else
                     {
-                        object->ExploObject(EXPLO_BURN, 1.0f);  // starts explosion
+                        object->ExplodeObject(ExplosionType::Burn, 1.0f);  // starts explosion
                     }
                 }
             }
@@ -1373,7 +1373,7 @@ void CParticle::FrameParticle(float rTime)
                 m_particle[i].goal = m_particle[i].pos;
                 if (object != nullptr)
                 {
-                    object->ExploObject(EXPLO_BOUM, 0.0f, GetDecay(object->GetType()));
+                    object->ExplodeObject(ExplosionType::Bang, 0.0f, GetDecay(object->GetType()));
 
                     m_exploGunCounter ++;
 
@@ -2508,7 +2508,7 @@ void CParticle::FrameParticle(float rTime)
                 CObject* object = SearchObjectRay(m_particle[i].pos, m_particle[i].goal,
                                          m_particle[i].type, m_particle[i].objFather);
                 if (object != nullptr)
-                    object->ExploObject(EXPLO_BOUM, 0.0f);
+                    object->ExplodeObject(ExplosionType::Bang, 0.0f);
             }
 
             ts.x = 0.00f;
@@ -3659,7 +3659,7 @@ CObject* CParticle::SearchObjectGun(Math::Vector old, Math::Vector pos,
     bool shield = false;
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        if (!obj->GetActif()) continue;  // inactive?
+        if (!obj->GetActive()) continue;  // inactive?
         if (obj == father) continue;
 
         ObjectType oType = obj->GetType();
@@ -3782,7 +3782,7 @@ CObject* CParticle::SearchObjectRay(Math::Vector pos, Math::Vector goal,
 
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        if (!obj->GetActif()) continue;  // inactive?
+        if (!obj->GetActive()) continue;  // inactive?
         if (obj == father) continue;
 
         ObjectType oType = obj->GetType();

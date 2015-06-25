@@ -31,8 +31,8 @@
 #include "math/geometry.h"
 
 #include "object/object.h"
-#include "object/robotmain.h"
 #include "object/object_manager.h"
+#include "object/robotmain.h"
 
 #include "object/auto/autopara.h"
 
@@ -118,7 +118,7 @@ bool CLightning::EventFrame(const Event &event)
                 }
                 else
                 {
-                    obj->ExploObject(EXPLO_BOUM, 1.0f);
+                    obj->ExplodeObject(ExplosionType::Bang, 1.0f);
                 }
             }
 
@@ -319,7 +319,7 @@ CObject* CLightning::SearchObject(Math::Vector pos)
     float min = 100000.0f;
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        if (!obj->GetActif()) continue;  // inactive object?
+        if (!obj->GetActive()) continue;  // inactive object?
         if (obj->GetTruck() != nullptr) continue;  // object transported?
 
         ObjectType type = obj->GetType();

@@ -1293,7 +1293,7 @@ Error CAutoBase::CheckCloseDoor()
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
         if ( obj == m_object )  continue;  // yourself?
-        if ( !obj->GetActif() )  continue;  // inactive?
+        if ( !obj->GetActive() )  continue;  // inactive?
 
         ObjectType type = obj->GetType();
         if ( type == OBJECT_PORTICO )  continue;
@@ -1381,7 +1381,7 @@ Error CAutoBase::TakeOff(bool printMsg)
     Event           newEvent;
     Math::Vector    pos;
     Error           err;
-	
+
     err = CheckCloseDoor();
     if ( err != ERR_OK )
     {

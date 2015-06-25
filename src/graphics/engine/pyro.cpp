@@ -1548,7 +1548,7 @@ void CPyro::ExploStart()
 
     m_object->Simplify();
     m_object->SetLock(true);  // ruin not usable yet
-    m_object->SetExplo(true);  // being destroyed
+    m_object->SetExploding(true);  // being destroyed
     m_object->FlatParent();
 
     if ( m_object->GetSelect() )
@@ -2335,7 +2335,7 @@ void CPyro::FallProgress(float rTime)
             {
                 if (floor)  // reaches the ground?
                 {
-                    m_object->ExploObject(EXPLO_BOUM, 0.0f);  // start explosion
+                    m_object->ExplodeObject(ExplosionType::Bang, 0.0f);  // start explosion
                 }
             }
             else
@@ -2350,13 +2350,13 @@ void CPyro::FallProgress(float rTime)
                 }
                 else
                 {
-                    if (obj->ExploObject(EXPLO_BOUM, 1.0f))  // start explosion
+                    if (obj->ExplodeObject(ExplosionType::Bang, 1.0f))  // start explosion
                     {
                         DeleteObject(true, true);  // removes the ball
                     }
                     else
                     {
-                        m_object->ExploObject(EXPLO_BOUM, 0.0f);  // start explosion
+                        m_object->ExplodeObject(ExplosionType::Bang, 0.0f);  // start explosion
                     }
                 }
             }
