@@ -1,6 +1,6 @@
 language: cpp
 compiler:
-  - gcc
+#  - gcc
   - clang
 script: mkdir build; cd build; cmake .. -DCMAKE_VERBOSE_MAKEFILE=ON -DOPENAL_SOUND=1 -DTESTS=1 && make all doc test && DESTDIR=. make install
 before_install:
