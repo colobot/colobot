@@ -642,6 +642,7 @@ bool CAutoFactory::CreateVehicle()
     vehicle->UpdateMapping();
     vehicle->SetLock(true);  // not usable
     vehicle->SetRange(30.0f);
+    vehicle->SetTeam(m_object->GetTeam());
 
     CPhysics* physics = vehicle->GetPhysics();
     if ( physics != nullptr )

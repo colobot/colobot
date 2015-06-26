@@ -547,8 +547,9 @@ bool CBrain::EventProcess(const Event &event)
     axeY = event.motionInput.y;
     axeZ = event.motionInput.z;
 
-    if ( !m_main->GetTrainerPilot() &&
-         m_object->GetTrainer()     )  // drive vehicle?
+    if ( (!m_main->GetTrainerPilot() &&
+          m_object->GetTrainer()) ||
+         !m_main->CanPlayerInteract() )  // drive vehicle?
     {
         axeX = 0.0f;
         axeY = 0.0f;
@@ -1423,7 +1424,7 @@ bool CBrain::CreateInterface(bool bSelect)
          type == OBJECT_WORM     ||
          type == OBJECT_CONTROLLER)  // vehicle?
     {
-        if (!(m_main->GetRetroMode()))
+        if (m_main->GetMissionType() != MISSION_RETRO)
         {
             ddim.x = dim.x*5.1f;
             ddim.y = dim.y*1.5f;
@@ -2299,17 +2300,15 @@ void CBrain::UpdateInterface()
 
     type = m_object->GetType();
 
-    bEnable = ( m_secondaryTask == 0 && m_currentProgram == nullptr );
+    bEnable = ( m_primaryTask == 0 && m_currentProgram == nullptr ) && m_main->CanPlayerInteract();
 
-    bEnable = ( m_primaryTask == 0 && m_currentProgram == nullptr );
-
-    EnableInterface(pw, EVENT_OBJECT_PROGEDIT,    (m_primaryTask == 0 && !m_bTraceRecord) && m_selScript < m_program.size());
+    EnableInterface(pw, EVENT_OBJECT_PROGEDIT,    (m_primaryTask == 0 && !m_bTraceRecord) && m_selScript < m_program.size() && m_main->CanPlayerInteract());
     EnableInterface(pw, EVENT_OBJECT_PROGLIST,    bEnable && !m_bTraceRecord);
-    EnableInterface(pw, EVENT_OBJECT_PROGADD,     m_currentProgram == nullptr);
-    EnableInterface(pw, EVENT_OBJECT_PROGREMOVE,  m_currentProgram == nullptr && m_selScript < m_program.size() && !m_program[m_selScript]->readOnly);
-    EnableInterface(pw, EVENT_OBJECT_PROGCLONE,   m_currentProgram == nullptr && m_selScript < m_program.size() && m_program[m_selScript]->runnable);
-    EnableInterface(pw, EVENT_OBJECT_PROGMOVEUP,  m_currentProgram == nullptr && m_program.size() >= 2 && m_selScript > 0);
-    EnableInterface(pw, EVENT_OBJECT_PROGMOVEDOWN,m_currentProgram == nullptr && m_program.size() >= 2 && m_selScript < m_program.size()-1);
+    EnableInterface(pw, EVENT_OBJECT_PROGADD,     m_currentProgram == nullptr && m_main->CanPlayerInteract());
+    EnableInterface(pw, EVENT_OBJECT_PROGREMOVE,  m_currentProgram == nullptr && m_selScript < m_program.size() && !m_program[m_selScript]->readOnly && m_main->CanPlayerInteract());
+    EnableInterface(pw, EVENT_OBJECT_PROGCLONE,   m_currentProgram == nullptr && m_selScript < m_program.size() && m_program[m_selScript]->runnable && m_main->CanPlayerInteract());
+    EnableInterface(pw, EVENT_OBJECT_PROGMOVEUP,  m_currentProgram == nullptr && m_program.size() >= 2 && m_selScript > 0 && m_main->CanPlayerInteract());
+    EnableInterface(pw, EVENT_OBJECT_PROGMOVEDOWN,m_currentProgram == nullptr && m_program.size() >= 2 && m_selScript < m_program.size()-1 && m_main->CanPlayerInteract());
     EnableInterface(pw, EVENT_OBJECT_LEFT,        bEnable);
     EnableInterface(pw, EVENT_OBJECT_RIGHT,       bEnable);
     EnableInterface(pw, EVENT_OBJECT_UP,          bEnable);
@@ -2379,8 +2378,8 @@ void CBrain::UpdateInterface()
     {
         if ( (m_secondaryTask == 0 || !m_secondaryTask->IsBusy()) && m_currentProgram == nullptr )
         {
-            EnableInterface(pw, EVENT_OBJECT_BEGSHIELD, (m_secondaryTask == 0));
-            EnableInterface(pw, EVENT_OBJECT_ENDSHIELD, (m_secondaryTask != 0));
+            EnableInterface(pw, EVENT_OBJECT_BEGSHIELD, (m_secondaryTask == 0) && m_main->CanPlayerInteract());
+            EnableInterface(pw, EVENT_OBJECT_ENDSHIELD, (m_secondaryTask != 0) && m_main->CanPlayerInteract());
             DefaultEnter   (pw, EVENT_OBJECT_BEGSHIELD, (m_secondaryTask == 0));
             DefaultEnter   (pw, EVENT_OBJECT_ENDSHIELD, (m_secondaryTask != 0));
         }
@@ -2404,8 +2403,8 @@ void CBrain::UpdateInterface()
     {
         if ( m_object->GetFret() != 0 )  bFly = false;  // if holder -> not fly
     }
-    EnableInterface(pw, EVENT_OBJECT_GASUP,   bFly);
-    EnableInterface(pw, EVENT_OBJECT_GASDOWN, bFly);
+    EnableInterface(pw, EVENT_OBJECT_GASUP,   bFly && m_main->CanPlayerInteract());
+    EnableInterface(pw, EVENT_OBJECT_GASDOWN, bFly && m_main->CanPlayerInteract());
     if ( m_object->GetTrainer() )  // Training?
     {
         DeadInterface(pw, EVENT_OBJECT_GASUP,   false);
@@ -2471,7 +2470,7 @@ void CBrain::UpdateInterface()
         }
         if ( !bEnable && m_currentProgram == nullptr )  bRun = false;
         if ( m_bTraceRecord )  bRun = false;
-        EnableInterface(pw, EVENT_OBJECT_PROGRUN, bRun);
+        EnableInterface(pw, EVENT_OBJECT_PROGRUN, bRun && m_main->CanPlayerInteract());
 
         pb = static_cast< Ui::CButton* >(pw->SearchControl(EVENT_OBJECT_PROGRUN));
         if ( pb != 0 )

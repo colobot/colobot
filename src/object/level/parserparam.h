@@ -34,6 +34,7 @@
 #include "object/drive_type.h"
 #include "object/object_type.h"
 #include "object/tool_type.h"
+#include "object/mission_type.h"
 
 #include <string>
 #include <vector>
@@ -84,6 +85,7 @@ public:
     int AsResearchFlag();
     Gfx::PyroType AsPyroType();
     Gfx::CameraType AsCameraType();
+    MissionType AsMissionType();
     const CLevelParserParamVec& AsArray();
     //@}
 
@@ -105,6 +107,7 @@ public:
     int AsResearchFlag(int def);
     Gfx::PyroType AsPyroType(Gfx::PyroType def);
     Gfx::CameraType AsCameraType(Gfx::CameraType def);
+    MissionType AsMissionType(MissionType def);
     //@}
 
     //! Set line this param is part of
@@ -133,6 +136,7 @@ private:
     int ToResearchFlag(std::string value);
     Gfx::PyroType ToPyroType(std::string value);
     Gfx::CameraType ToCameraType(std::string value);
+    MissionType ToMissionType(std::string value);
 
     const std::string FromObjectType(ObjectType value);
     const std::string FromCameraType(Gfx::CameraType value);

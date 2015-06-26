@@ -127,7 +127,8 @@ bool CMainShort::CreateShortcuts()
           m_engine->GetPause()) )  // hangs during edition?
     {
         m_interface->CreateShortcut(pos, dim, 6, EVENT_OBJECT_EDITLOCK);
-        return true;
+        if(!m_engine->GetPause())
+            return true;
     }
 
     rank = 0;

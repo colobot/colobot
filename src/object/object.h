@@ -278,6 +278,9 @@ public:
     void        SetClip(bool bClip);
     bool        GetClip();
 
+    void        SetTeam(int team);
+    int         GetTeam();
+
     bool        JostleObject(float force);
 
     void        StartDetectEffect(CObject *target, bool bFound);
@@ -468,6 +471,7 @@ protected:
     float       m_magnifyDamage;
     float       m_proxyDistance;
     float       m_param;
+    int         m_team;
 
     int         m_crashSphereUsed;  // number of spheres used
     Math::Vector    m_crashSpherePos[MAXCRASHSPHERE];

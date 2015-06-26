@@ -175,7 +175,7 @@ CRobotMain::CRobotMain(CController* controller)
     m_infoUsed     = 0;
 
     m_controller   = nullptr;
-    m_retroStyle   = false;
+    m_missionType  = MISSION_NORMAL;
     m_immediatSatCom = false;
     m_beginSatCom  = false;
     m_lockedSatCom = false;
@@ -187,6 +187,9 @@ CRobotMain::CRobotMain(CController* controller)
     m_freePhoto    = false;
     m_selectInsect = false;
     m_showSoluce   = false;
+
+    m_codeBattleInit = false;
+    m_codeBattleStarted = false;
 
     #if DEV_BUILD
     m_showAll      = true; // for development
@@ -1871,7 +1874,7 @@ bool CRobotMain::SelectObject(CObject* obj, bool displayError)
     if (m_camera->GetType() == Gfx::CAM_TYPE_VISIT)
         StopDisplayVisit();
 
-    if (m_movieLock || m_editLock || m_pause->GetPause()) return false;
+    if (m_movieLock || m_editLock) return false;
     if (m_movie->IsExist()) return false;
     if (obj == nullptr || !IsSelectable(obj)) return false;
 
@@ -2695,7 +2698,7 @@ bool CRobotMain::EventFrame(const Event &event)
             {
                 dim.x = 32.0f/640.0f;
                 dim.y = 32.0f/480.0f;
-                pos.x = 20.0f/640.0f;
+                pos.x = (640.0f-24.0f)/640.0f;
                 pos.y = (480.0f-24.0f)/480.0f;
 
                 float zoom = 1.0f+sinf(m_time*6.0f)*0.1f;  // 0.9 .. 1.1
@@ -2756,6 +2759,17 @@ bool CRobotMain::EventFrame(const Event &event)
         {
             m_displayText->DisplayError(INFO_WRITEOK, Math::Vector(0.0f,0.0f,0.0f));
         }
+    }
+
+    if(!m_codeBattleInit) {
+        // NOTE: It's important to do this AFTER the first update event finished processing
+        //       because otherwise all robot parts are misplaced
+        ChangePause(PAUSE_USER);
+        m_codeBattleInit = true; // Will start on resume
+    }
+    if(!m_codeBattleStarted && m_pause->GetPause() == PAUSE_NONE) {
+        m_codeBattleStarted = true;
+        m_eventQueue->AddEvent(Event(EVENT_UPDINTERFACE));
     }
 
     return true;
@@ -2920,9 +2934,11 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
         strcpy(m_scriptName, scriptNameStr.c_str());
         m_scriptFile[0] = 0;
 
-        m_retroStyle          = false;
+        m_missionType   = MISSION_NORMAL;
+        m_codeBattleInit = false;
+        m_codeBattleStarted = false;
 
-        m_missionResult       = ERR_MISSION_NOTERM;
+        m_missionResult = ERR_MISSION_NOTERM;
     }
 
     //NOTE: Reset timer always, even when only resetting object positions
@@ -3228,8 +3244,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 m_engine->SetTracePrecision(line->GetParam("traceQuality")->AsFloat(1.0f));
                 m_shortCut = line->GetParam("shortcut")->AsBool(true);
 
-                m_retroStyle = line->GetParam("retro")->AsBool(false);
-                if (m_retroStyle) GetLogger()->Info("Retro mode enabled.\n");
+                m_missionType = line->GetParam("type")->AsMissionType(MISSION_NORMAL);
                 continue;
             }
 
@@ -3570,6 +3585,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                     obj->SetRange(line->GetParam("range")->AsFloat(30.0f));
                     obj->SetShield(line->GetParam("shield")->AsFloat(1.0f));
                     obj->SetMagnifyDamage(line->GetParam("magnifyDamage")->AsFloat(1.0f));
+                    obj->SetTeam(line->GetParam("team")->AsInt(0));
                     obj->SetClip(line->GetParam("clip")->AsBool(true));
                     obj->SetCheckToken(!line->GetParam("checkToken")->IsDefined() ? trainer || !selectable : line->GetParam("checkToken")->AsBool(true));
                     // SetManual will affect bot speed
@@ -5862,9 +5878,9 @@ const char* CRobotMain::GetFilesDir()
     return m_dialog->GetFilesDir().c_str();
 }
 
-bool CRobotMain::GetRetroMode()
+MissionType CRobotMain::GetMissionType()
 {
-    return m_retroStyle;
+    return m_missionType;
 }
 
 //! Change the player's name
@@ -6276,4 +6292,12 @@ void CRobotMain::Autosave()
 void CRobotMain::SetExitAfterMission(bool exit)
 {
     m_exitAfterMission = exit;
+}
+
+bool CRobotMain::CanPlayerInteract()
+{
+    if(GetMissionType() == MISSION_CODE_BATTLE) {
+        return !m_codeBattleStarted;
+    }
+    return true;
 }

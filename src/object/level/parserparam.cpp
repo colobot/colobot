@@ -958,6 +958,28 @@ Gfx::CameraType CLevelParserParam::AsCameraType(Gfx::CameraType def)
     return AsCameraType();
 }
 
+MissionType CLevelParserParam::ToMissionType(std::string value)
+{
+    if (value == "NORMAL"     ) return MISSION_NORMAL;
+    if (value == "RETRO"      ) return MISSION_RETRO;
+    if (value == "CODE_BATTLE") return MISSION_CODE_BATTLE;
+    return static_cast<MissionType>(Cast<int>(value, "MissionType"));
+}
+
+MissionType CLevelParserParam::AsMissionType()
+{
+    if (m_empty)
+        throw CLevelParserExceptionMissingParam(this);
+    return ToMissionType(m_value);
+}
+
+MissionType CLevelParserParam::AsMissionType(MissionType def)
+{
+    if (m_empty)
+        return def;
+    return AsMissionType();
+}
+
 
 void CLevelParserParam::ParseArray()
 {

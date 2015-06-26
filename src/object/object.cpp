@@ -251,6 +251,7 @@ CObject::CObject(int id)
     m_magnifyDamage = 1.0f;
     m_proxyDistance = 60.0f;
     m_param = 0.0f;
+    m_team = 0;
 
     memset(&m_character, 0, sizeof(m_character));
     m_character.wheelFront = 1.0f;
@@ -953,6 +954,9 @@ bool CObject::Write(CLevelParserLine* line)
     if ( GetMagnifyDamage() != 1.0f )
         line->AddParam("magnifyDamage", CLevelParserParamUPtr{new CLevelParserParam(GetMagnifyDamage())});
 
+    if ( GetTeam() != 0 )
+        line->AddParam("team", CLevelParserParamUPtr{new CLevelParserParam(GetTeam())});
+
     if ( GetGunGoalV() != 0.0f )
         line->AddParam("aimV", CLevelParserParamUPtr{new CLevelParserParam(GetGunGoalV())});
 
@@ -1048,6 +1052,7 @@ bool CObject::Read(CLevelParserLine* line)
     SetProxyDistance(line->GetParam("proxyDistance")->AsFloat(15.0f)*g_unit);
     SetRange(line->GetParam("range")->AsFloat(30.0f));
     SetMagnifyDamage(line->GetParam("magnifyDamage")->AsFloat(1.0f));
+    SetTeam(line->GetParam("team")->AsInt(0));
     SetGunGoalV(line->GetParam("aimV")->AsFloat(0.0f));
     SetGunGoalH(line->GetParam("aimH")->AsFloat(0.0f));
     SetParam(line->GetParam("param")->AsFloat(0.0f));
@@ -2815,6 +2820,18 @@ bool CObject::GetClip()
 }
 
 
+// Controls object team
+
+void CObject::SetTeam(int team)
+{
+    m_team = team;
+}
+
+int CObject::GetTeam()
+{
+    return m_team;
+}
+
 
 // Pushes an object.
 
@@ -3379,7 +3396,7 @@ void CObject::CreateSelectParticle()
         }
     }
 
-    if ( m_bSelect || IsProgram() || m_main->GetRetroMode() )
+    if ( m_bSelect || IsProgram() || m_main->GetMissionType() == MISSION_RETRO )
     {
         // Creates particles lens for the headlights.
         if ( m_type == OBJECT_MOBILEfa ||
@@ -3433,7 +3450,7 @@ void CObject::UpdateSelectParticle()
     float       angle;
     int         i;
 
-    if ( !m_bSelect && !IsProgram() && !m_main->GetRetroMode() )  return;
+    if ( !m_bSelect && !IsProgram() && m_main->GetMissionType() != MISSION_RETRO )  return;
 
     dim[0].x = 1.0f;
     dim[1].x = 1.0f;
@@ -3557,7 +3574,7 @@ void CObject::UpdateSelectParticle()
     zoom[3] = 1.0f;
 
     if ( ( IsProgram() ||  // current program?
-         m_main->GetRetroMode() ) && // Retro mode?
+         m_main->GetMissionType() == MISSION_RETRO ) && // Retro mode?
          Math::Mod(m_aTime, 0.7f) < 0.3f )
     {
         zoom[0] = 0.0f;  // blinks
@@ -3663,6 +3680,9 @@ int  CObject::GetDefRank()
 bool CObject::GetTooltipName(std::string& name)
 {
     GetResource(RES_OBJECT, m_type, name);
+    if(GetTeam() != 0) {
+        name += " [team "+boost::lexical_cast<std::string>(GetTeam())+"]"; //TODO: better way to display this
+    }
     return !name.empty();
 }
 

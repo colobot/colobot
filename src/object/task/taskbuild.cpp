@@ -82,6 +82,7 @@ bool CTaskBuild::CreateBuilding(Math::Vector pos, float angle)
     m_building = CObjectManager::GetInstancePointer()->CreateObject(pos, angle, m_type, power);
     m_building->UpdateMapping();
     m_building->SetLock(true);  // not yet usable
+    m_building->SetTeam(m_object->GetTeam());
 
     if ( m_type == OBJECT_DERRICK  )  m_buildingHeight = 35.0f;
     if ( m_type == OBJECT_FACTORY  )  m_buildingHeight = 28.0f;

@@ -34,6 +34,7 @@
 #include "object/drive_type.h"
 #include "object/tool_type.h"
 #include "object/mainmovie.h"
+#include "object/mission_type.h"
 
 #include "app/pausemanager.h"
 
@@ -287,7 +288,7 @@ public:
     const char* GetSavegameDir();
     const char* GetPublicDir();
     const char* GetFilesDir();
-    bool        GetRetroMode();
+    MissionType GetMissionType();
 
     void        SetGamerName(const char *name);
     char*       GetGamerName();
@@ -357,6 +358,9 @@ public:
 
     //! Enable mode where completing mission closes the game
     void        SetExitAfterMission(bool exit);
+
+    //! Returns true if player can interact with things manually
+    bool        CanPlayerInteract();
 
 protected:
     bool        EventFrame(const Event &event);
@@ -452,7 +456,7 @@ protected:
 
     CObject*        m_controller;
 
-    bool            m_retroStyle;      // Retro
+    MissionType     m_missionType;
     bool            m_immediatSatCom;  // SatCom immediately?
     bool            m_beginSatCom;     // messages SatCom poster?
     bool            m_lockedSatCom;    // SatCom locked?
@@ -488,6 +492,9 @@ protected:
     bool            m_winTerminate;
 
     bool            m_exitAfterMission;
+
+    bool            m_codeBattleInit;
+    bool            m_codeBattleStarted;
 
     float           m_fontSize;
     Math::Point     m_windowPos;

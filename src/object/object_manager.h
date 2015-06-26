@@ -145,6 +145,9 @@ public:
     //! Gets object by id in range <0; number of objects - 1>
     CObject*  GetObjectByRank(unsigned int id);
 
+    //! Gets all objects of given team
+    std::vector<CObject*> GetObjectsOfTeam(int team);
+
     //! Returns all objects
     inline CObjectContainerProxy GetAllObjects()
     {

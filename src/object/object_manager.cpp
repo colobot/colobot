@@ -130,6 +130,19 @@ CObject* CObjectManager::CreateObject(Math::Vector pos,
     return objectPtr;
 }
 
+std::vector<CObject*> CObjectManager::GetObjectsOfTeam(int team)
+{
+    std::vector<CObject*> result;
+    for (CObject* object : GetAllObjects())
+    {
+        if (object->GetTeam() == team)
+        {
+            result.push_back(object);
+        }
+    }
+    return result;
+}
+
 CObject* CObjectManager::Radar(CObject* pThis, ObjectType type, float angle, float focus, float minDist, float maxDist, bool furthest, RadarFilter filter, bool cbotTypes)
 {
     std::vector<ObjectType> types;
