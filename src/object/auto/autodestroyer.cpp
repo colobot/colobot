@@ -169,7 +169,8 @@ bool CAutoDestroyer::EventProcess(const Event &event)
             scrap = SearchPlastic();
             if ( scrap != nullptr )
             {
-                m_engine->GetPyroManager()->Create(Gfx::PT_FRAGT, scrap);
+                //m_engine->GetPyroManager()->Create(Gfx::PT_FRAGT, scrap);
+                scrap->ExplodeObject(ExplosionType::Bang, std::numeric_limits<float>::infinity());
             }
             m_bExplo = true;
         }

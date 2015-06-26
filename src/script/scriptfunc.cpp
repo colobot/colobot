@@ -1038,7 +1038,7 @@ CBotTypResult CScriptFunctions::cDelete(CBotVar* &var, void* user)
 bool CScriptFunctions::rDelete(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
     int         exploType = 0;
-    float       force = 1.0f;
+    float       force = std::numeric_limits<float>::infinity();
 
     int rank = var->GetValInt();
     var->GetNext();
