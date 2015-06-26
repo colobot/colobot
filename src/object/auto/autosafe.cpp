@@ -133,7 +133,7 @@ bool CAutoSafe::EventProcess(const Event &event)
 
     EventProgress(event.rTime);
 
-    if ( !m_bLock )
+    if ( !m_bLock && CRobotMain::GetInstancePointer()->GetGameTime() < 1.0f )
     {
         pObj = SearchVehicle();
         if ( pObj != 0 )
