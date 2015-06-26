@@ -842,9 +842,8 @@ void CGL21Device::SetTexture(int index, const Texture &texture)
     glBindTexture(GL_TEXTURE_2D, texture.id);
 
     // Params need to be updated for the new bound texture
-    UpdateTextureParams(index);
-
     UpdateTextureStatus();
+    UpdateTextureParams(index);
 }
 
 void CGL21Device::SetTexture(int index, unsigned int textureId)
@@ -861,9 +860,8 @@ void CGL21Device::SetTexture(int index, unsigned int textureId)
     glBindTexture(GL_TEXTURE_2D, textureId);
 
     // Params need to be updated for the new bound texture
-    UpdateTextureParams(index);
-
     UpdateTextureStatus();
+    UpdateTextureParams(index);
 }
 
 void CGL21Device::SetTextureEnabled(int index, bool enabled)
@@ -879,12 +877,13 @@ void CGL21Device::SetTextureEnabled(int index, bool enabled)
 
     glUniform1i(uni_TextureEnabled[index], enabled ? 1 : 0);
 
-    //UpdateTextureStatus();
+    UpdateTextureStatus();
 }
 
 void CGL21Device::UpdateTextureStatus()
 {
-    glUniform1i(uni_TextureEnabled[0], m_currentTextures[0].id != 0 ? 1 : 0);
+    bool enabled = m_texturesEnabled[0] && (m_currentTextures[0].id != 0);
+    glUniform1i(uni_TextureEnabled[0], enabled ? 1 : 0);
 
     /*
     bool enabled = m_texturesEnabled[0] && m_currentTextures[0].id != 0;
