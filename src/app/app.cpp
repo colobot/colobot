@@ -217,6 +217,7 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
     };
 
     opterr = 0;
+    optind = 1;
 
     int c = 0;
     int index = -1;
