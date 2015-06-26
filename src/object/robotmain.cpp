@@ -3183,7 +3183,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             {
                 std::string path = "";
                 if (line->GetParam("image")->IsDefined())
-                    path = "../ " + line->GetParam("image")->AsPath("textures");
+                    path = "../" + line->GetParam("image")->AsPath("textures");
                 m_engine->SetBackground(path.c_str(),
                                         line->GetParam("up")->AsColor(Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f)),
                                         line->GetParam("down")->AsColor(Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f)),
