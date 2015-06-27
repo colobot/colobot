@@ -2761,15 +2761,21 @@ bool CRobotMain::EventFrame(const Event &event)
         }
     }
 
-    if(!m_codeBattleInit) {
-        // NOTE: It's important to do this AFTER the first update event finished processing
-        //       because otherwise all robot parts are misplaced
-        ChangePause(PAUSE_USER);
-        m_codeBattleInit = true; // Will start on resume
-    }
-    if(!m_codeBattleStarted && m_pause->GetPause() == PAUSE_NONE) {
-        m_codeBattleStarted = true;
-        m_eventQueue->AddEvent(Event(EVENT_UPDINTERFACE));
+    if (GetMissionType() == MISSION_CODE_BATTLE)
+    {
+        if (!m_codeBattleInit)
+        {
+            // NOTE: It's important to do this AFTER the first update event finished processing
+            //       because otherwise all robot parts are misplaced
+            ChangePause(PAUSE_USER);
+            m_codeBattleInit = true; // Will start on resume
+        }
+
+        if (!m_codeBattleStarted && m_pause->GetPause() == PAUSE_NONE)
+        {
+            m_codeBattleStarted = true;
+            m_eventQueue->AddEvent(Event(EVENT_UPDINTERFACE));
+        }
     }
 
     return true;
