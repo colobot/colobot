@@ -68,6 +68,7 @@
 #include "object/task/taskbuild.h"
 #include "object/task/taskmanip.h"
 #include "object/level/parser.h"
+#include "object/subclass/exchange_post.h"
 
 #include "physics/physics.h"
 
@@ -3545,26 +3546,10 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                         m_engine->GetPyroManager()->Create(pType, obj);
                     }
 
-                    // Puts information in terminal (OBJECT_INFO).
-                    for (int i = 0; i < OBJECTMAXINFO; i++)
+                    if (type == OBJECT_INFO)
                     {
-                        std::string op = "info" + boost::lexical_cast<std::string>(i+1);
-                        if (!line->GetParam(op)->IsDefined()) break;
-                        std::string text = line->GetParam(op)->AsString();
-                        std::size_t p = text.find_first_of("=");
-                        if (p == std::string::npos)
-                            throw CLevelParserExceptionBadParam(line->GetParam(op), "info");
-                        Info info;
-                        strcpy(info.name, text.substr(0, p).c_str());
-                        try
-                        {
-                            info.value = boost::lexical_cast<float>(text.substr(p+1).c_str());
-                        }
-                        catch (...)
-                        {
-                            throw CLevelParserExceptionBadParam(line->GetParam(op), "info.value (float)");
-                        }
-                        obj->SetInfo(i, info);
+                        CExchangePost* exchangePost = static_cast<CExchangePost*>(obj);
+                        exchangePost->ReadInfo(line.get());
                     }
 
                     // Sets the parameters of the command line.

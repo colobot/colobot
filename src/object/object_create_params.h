@@ -17,35 +17,22 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-/**
- * \file object/level/parserexceptions.h
- * \brief Exceptions that could be thrown in level parser
- */
-
 #pragma once
 
-#include <stdexcept>
-#include <string>
+#include "math/vector.h"
 
-class CLevelParserParam;
+#include "object/object_type.h"
 
-class CLevelParserException : public std::runtime_error
+struct ObjectCreateParams
 {
-public:
-    CLevelParserException(const std::string& message) NOEXCEPT
-        : std::runtime_error(message) {}
-};
-
-class CLevelParserExceptionMissingParam : public CLevelParserException
-{
-public:
-    CLevelParserExceptionMissingParam(CLevelParserParam* thisParam) NOEXCEPT;
-    virtual ~CLevelParserExceptionMissingParam() NOEXCEPT {}
-};
-
-class CLevelParserExceptionBadParam : public CLevelParserException
-{
-public:
-    CLevelParserExceptionBadParam(CLevelParserParam* thisParam, std::string requestedType) NOEXCEPT;
-    virtual ~CLevelParserExceptionBadParam() NOEXCEPT {}
+    Math::Vector pos;
+    float angle;
+    ObjectType type;
+    float power;
+    float zoom;
+    float height;
+    bool trainer;
+    bool toy;
+    int option;
+    int id;
 };

@@ -50,7 +50,6 @@ struct Program;
 const int OBJECTMAXPART         = 40;
 const int MAXCRASHSPHERE        = 40;
 const int OBJECTMAXDESELLIST    = 10;
-const int OBJECTMAXINFO         = 10;
 const int OBJECTMAXCMDLINE      = 20;
 
 struct ObjectPart
@@ -79,12 +78,6 @@ struct Character
     float        wheelRight;     // position Z of the right wheels
     float        height;         // normal height on top of ground
     Math::Vector posPower;       // position of the battery
-};
-
-struct Info
-{
-    char  name[20];       // name of the information
-    float value;          // value of the information
 };
 
 enum class ExplosionType
@@ -127,7 +120,7 @@ public:
     CObject(const CObject&) = delete;
     CObject& operator=(const CObject&) = delete;
 
-    ~CObject();
+    virtual ~CObject();
 
     void        Simplify();
     bool        ExplodeObject(ExplosionType type, float force, float decay=1.0f);
@@ -147,8 +140,8 @@ public:
 
     int         GetID();
 
-    bool        Write(CLevelParserLine* line);
-    bool        Read(CLevelParserLine* line);
+    virtual void Write(CLevelParserLine* line);
+    virtual void Read(CLevelParserLine* line);
 
     void        SetDrawWorld(bool bDraw);
     void        SetDrawFront(bool bDraw);
@@ -234,15 +227,6 @@ public:
     void        SetTruck(CObject* truck);
     CObject*    GetTruck();
     void        SetTruckPart(int part);
-
-    void        DeleteInfo(int rank);
-    void        SetInfo(int rank, Info info);
-    Info        GetInfo(int rank);
-    int         GetInfoTotal();
-    void        SetInfoReturn(float value);
-    float       GetInfoReturn();
-    void        SetInfoUpdate(bool bUpdate);
-    bool        GetInfoUpdate();
 
     bool        SetCmdLine(int rank, float value);
     float       GetCmdLine(int rank);
@@ -375,6 +359,12 @@ public:
 
     void        FlatParent();
 
+    // TODO: move to more appropriate place
+    //! Set value to be returned by receive() CBOT function
+    void SetInfoReturn(float value);
+    //! Return value to be returned by receive() CBOT function
+    float GetInfoReturn();
+
     bool        GetTraceDown();
     void        SetTraceDown(bool bDown);
     int         GetTraceColor();
@@ -498,10 +488,7 @@ protected:
     Math::Vector    m_resetAngle;
     Program*        m_resetRun;
 
-    int         m_infoTotal;
-    Info        m_info[OBJECTMAXINFO];
-    float       m_infoReturn;
-    bool        m_bInfoUpdate;
+    float m_infoReturn;
 
     float       m_cmdLine[OBJECTMAXCMDLINE];
 };

@@ -25,6 +25,7 @@
 #include "graphics/engine/lightning.h"
 
 #include "object/brain.h"
+#include "object/object_create_params.h"
 #include "object/robotmain.h"
 #include "object/auto/autobase.h"
 #include "object/auto/autoconvert.h"
@@ -35,7 +36,6 @@
 #include "object/auto/autofactory.h"
 #include "object/auto/autoflag.h"
 #include "object/auto/autohuston.h"
-#include "object/auto/autoinfo.h"
 #include "object/auto/autojostle.h"
 #include "object/auto/autokid.h"
 #include "object/auto/autolabo.h"
@@ -60,6 +60,7 @@
 #include "object/motion/motiontoto.h"
 #include "object/motion/motionvehicle.h"
 #include "object/motion/motionworm.h"
+#include "object/subclass/exchange_post.h"
 
 #include "math/geometry.h"
 
@@ -84,6 +85,9 @@ CObjectUPtr CObjectFactory::CreateObject(const ObjectCreateParams& params)
         case OBJECT_NULL:
             return nullptr;
 
+        case OBJECT_INFO:
+            return CExchangePost::Create(params, m_modelManager, m_engine);
+
         case OBJECT_PORTICO:
         case OBJECT_BASE:
         case OBJECT_DERRICK:
@@ -96,7 +100,6 @@ CObjectUPtr CObjectFactory::CreateObject(const ObjectCreateParams& params)
         case OBJECT_NEST:
         case OBJECT_RESEARCH:
         case OBJECT_RADAR:
-        case OBJECT_INFO:
         case OBJECT_ENERGY:
         case OBJECT_LABO:
         case OBJECT_NUCLEAR:
@@ -600,46 +603,6 @@ CObjectUPtr CObjectFactory::CreateBuilding(const ObjectCreateParams& params)
         obj->CreateCrashSphere(Math::Vector(0.0f,  3.0f, 0.0f), 6.0f, SOUND_BOUMm, 0.45f);
         obj->CreateCrashSphere(Math::Vector(0.0f, 11.0f, 0.0f), 6.0f, SOUND_BOUMm, 0.45f);
         obj->SetGlobalSphere(Math::Vector(0.0f, 7.0f, 0.0f), 7.0f);
-
-        obj->CreateShadowCircle(8.0f, 1.0f);
-    }
-
-    if ( type == OBJECT_INFO )
-    {
-        m_modelManager->AddModelReference("info1.mod", false, rank);
-        obj->SetPosition(0, pos);
-        obj->SetAngleY(0, angle);
-        obj->SetFloorHeight(0.0f);
-
-        rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
-        obj->SetObjectRank(1, rank);
-        obj->SetObjectParent(1, 0);
-        m_modelManager->AddModelReference("info2.mod", false, rank);
-        obj->SetPosition(1, Math::Vector(0.0f, 5.0f, 0.0f));
-
-        for (int i=0 ; i<3 ; i++ )
-        {
-            rank = m_engine->CreateObject();
-            m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
-            obj->SetObjectRank(2+i*2, rank);
-            obj->SetObjectParent(2+i*2, 1);
-            m_modelManager->AddModelReference("info3.mod", false, rank);
-            obj->SetPosition(2+i*2, Math::Vector(0.0f, 4.5f, 0.0f));
-
-            rank = m_engine->CreateObject();
-            m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
-            obj->SetObjectRank(3+i*2, rank);
-            obj->SetObjectParent(3+i*2, 2+i*2);
-            m_modelManager->AddModelReference("radar4.mod", false, rank);
-            obj->SetPosition(3+i*2, Math::Vector(0.0f, 0.0f, -4.0f));
-
-            obj->SetAngleY(2+i*2, 2.0f*Math::PI/3.0f*i);
-        }
-
-        obj->CreateCrashSphere(Math::Vector(0.0f,  3.0f, 0.0f), 6.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(0.0f, 11.0f, 0.0f), 6.0f, SOUND_BOUMm, 0.45f);
-        obj->SetGlobalSphere(Math::Vector(0.0f, 5.0f, 0.0f), 6.0f);
 
         obj->CreateShadowCircle(8.0f, 1.0f);
     }
@@ -3671,10 +3634,6 @@ void CObjectFactory::AddObjectAuto(CObject* obj)
     if ( type == OBJECT_RADAR )
     {
         objAuto.reset(new CAutoRadar(obj));
-    }
-    if ( type == OBJECT_INFO )
-    {
-        objAuto.reset(new CAutoInfo(obj));
     }
     if ( type == OBJECT_ENERGY )
     {

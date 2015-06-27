@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2014, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2015, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsiteс.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -17,34 +17,22 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// taskinfo.h
-
 #pragma once
 
+#include <stdexcept>
 
-#include "object/task/task.h"
+#include <boost/regex.hpp>
 
-class CExchangePost;
+namespace RegexUtils {
 
-class CTaskInfo : public CTask
+class AssertRegexMatchError : public std::runtime_error
 {
 public:
-    CTaskInfo(CObject* object);
-    ~CTaskInfo();
-
-    bool        EventProcess(const Event &event) override;
-
-    Error       Start(const char *name, float value, float power, bool send);
-    Error       IsEnded() override;
-    bool        Abort() override;
-
-protected:
-    CExchangePost* FindExchangePost(float power);
-
-protected:
-    float           m_progress;
-    float           m_speed;
-    float           m_time;
-    bool            m_error;
+    explicit AssertRegexMatchError(const std::string& text,
+                                   const std::string& pattern) NOEXCEPT;
 };
 
+//! Match string with regex and return list of matches; throw exception on mismatch
+boost::smatch AssertRegexMatch(const std::string& text, const std::string& pattern);
+
+} // namespace RegexUtils

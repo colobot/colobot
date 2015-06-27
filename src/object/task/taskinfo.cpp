@@ -23,7 +23,7 @@
 #include "graphics/engine/particle.h"
 
 #include "object/object_manager.h"
-#include "object/auto/autoinfo.h"
+#include "object/subclass/exchange_post.h"
 
 #include <string.h>
 
@@ -32,6 +32,10 @@
 // Object's constructor.
 
 CTaskInfo::CTaskInfo(CObject* object) : CTask(object)
+    , m_progress(0.0f)
+    , m_speed(0.0f)
+    , m_time(0.0f)
+    , m_error(false)
 {
 }
 
@@ -46,9 +50,9 @@ CTaskInfo::~CTaskInfo()
 
 bool CTaskInfo::EventProcess(const Event &event)
 {
-    if ( m_engine->GetPause() )  return true;
-    if ( event.type != EVENT_FRAME )  return true;
-    if ( m_bError )  return false;
+    if (m_engine->GetPause())  return true;
+    if (event.type != EVENT_FRAME)  return true;
+    if (m_error)  return false;
 
     m_progress += event.rTime*m_speed;  // other advance
     m_time += event.rTime;
@@ -59,89 +63,50 @@ bool CTaskInfo::EventProcess(const Event &event)
 
 // Assigns the goal was achieved.
 
-Error CTaskInfo::Start(const char *name, float value, float power, bool bSend)
+Error CTaskInfo::Start(const char *name, float value, float power, bool send)
 {
-    CObject*    pInfo;
-    CAutoInfo*  pAuto;
-    Math::Vector    pos, goal;
-    Info        info;
-    int         i, total, op;
-
-    m_bError = true;
+    m_error = true;
     m_object->SetInfoReturn(NAN);
 
-    pInfo = SearchInfo(power);  // seeks terminal
-    if ( pInfo == 0 )
+    CExchangePost* exchangePost = FindExchangePost(power);
+    if (exchangePost == nullptr)
     {
         return ERR_INFO_NULL;
     }
 
-    pAuto = static_cast<CAutoInfo*>(pInfo->GetAuto());
-    if ( pAuto == 0 )
+    int op = 1;  // transmission impossible
+    if (send)  // send?
     {
-        return ERR_INFO_NULL;
-    }
-
-    op = 1;  // transmission impossible
-    if ( bSend )  // send?
-    {
-        total = pInfo->GetInfoTotal();
-        for ( i=0 ; i<total ; i++ )
-        {
-            info = pInfo->GetInfo(i);
-            if ( strcmp(info.name, name) == 0 )
-            {
-                info.value = value;
-                pInfo->SetInfo(i, info);
-                break;
-            }
-        }
-        if ( i == total )
-        {
-            if ( total < OBJECTMAXINFO )
-            {
-                strcpy(info.name, name);
-                info.value = value;
-                pInfo->SetInfo(total, info);
-                op = 2;  // start of reception (for terminal)
-            }
-        }
-        else
+        bool infoValueSet = exchangePost->SetInfo(name, value);
+        if (infoValueSet)
         {
             op = 2;  // start of reception (for terminal)
         }
     }
     else    // receive?
     {
-        total = pInfo->GetInfoTotal();
-        for ( i=0 ; i<total ; i++ )
+        auto infoValue = exchangePost->GetInfoValue(name);
+        if (infoValue != boost::none)
         {
-            info = pInfo->GetInfo(i);
-            if ( strcmp(info.name, name) == 0 )
-            {
-                m_object->SetInfoReturn(info.value);
-                break;
-            }
-        }
-        if ( i < total )
-        {
+            m_object->SetInfoReturn(*infoValue);
             op = 0;  // beginning of transmission (for terminal)
         }
     }
 
-    pAuto->Start(op);
+    exchangePost->GetAuto()->Start(op);
 
-    if ( op == 0 )  // transmission?
+    Math::Vector pos, goal;
+    if (op == 0)  // transmission?
     {
-        pos = pInfo->GetPosition(0);
+        pos = exchangePost->GetPosition(0);
         pos.y += 9.5f;
         goal = m_object->GetPosition(0);
         goal.y += 4.0f;
         m_particle->CreateRay(pos, goal, Gfx::PARTIRAY3, Math::Point(2.0f, 2.0f), 1.0f);
     }
-    if ( op == 2 )  // reception?
+    if (op == 2)  // reception?
     {
-        goal = pInfo->GetPosition(0);
+        goal = exchangePost->GetPosition(0);
         goal.y += 9.5f;
         pos = m_object->GetPosition(0);
         pos.y += 4.0f;
@@ -149,10 +114,10 @@ Error CTaskInfo::Start(const char *name, float value, float power, bool bSend)
     }
 
     m_progress = 0.0f;
-    m_speed    = 1.0f/1.0f;
+    m_speed    = 1.0f;
     m_time     = 0.0f;
 
-    m_bError = false;  // ok
+    m_error = false;  // ok
 
     return ERR_OK;
 }
@@ -161,10 +126,10 @@ Error CTaskInfo::Start(const char *name, float value, float power, bool bSend)
 
 Error CTaskInfo::IsEnded()
 {
-    if ( m_engine->GetPause() )  return ERR_CONTINUE;
-    if ( m_bError )  return ERR_STOP;
+    if (m_engine->GetPause())  return ERR_CONTINUE;
+    if (m_error)  return ERR_STOP;
 
-    if ( m_progress < 1.0f )  return ERR_CONTINUE;
+    if (m_progress < 1.0f)  return ERR_CONTINUE;
     m_progress = 0.0f;
 
     Abort();
@@ -181,8 +146,9 @@ bool CTaskInfo::Abort()
 
 // Seeks the nearest information terminal.
 
-CObject* CTaskInfo::SearchInfo(float power)
+CExchangePost* CTaskInfo::FindExchangePost(float power)
 {
-    return CObjectManager::GetInstancePointer()->FindNearest(m_object, OBJECT_INFO, power/g_unit);
+    return dynamic_cast<CExchangePost*>(
+        CObjectManager::GetInstancePointer()->FindNearest(m_object, OBJECT_INFO, power/g_unit));
 }
 

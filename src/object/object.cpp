@@ -251,6 +251,7 @@ CObject::CObject(int id)
     m_magnifyDamage = 1.0f;
     m_proxyDistance = 60.0f;
     m_param = 0.0f;
+    m_infoReturn = NAN;
     m_team = 0;
 
     memset(&m_character, 0, sizeof(m_character));
@@ -268,10 +269,6 @@ CObject::CObject(int id)
     m_cameraType = Gfx::CAM_TYPE_BACK;
     m_cameraDist = 50.0f;
     m_bCameraLock = false;
-
-    m_infoTotal = 0;
-    m_infoReturn = NAN;
-    m_bInfoUpdate = false;
 
     for (int i=0 ; i<OBJECTMAXPART ; i++ )
     {
@@ -906,10 +903,9 @@ int CObject::GetID()
 
 // Saves all the parameters of the object.
 
-bool CObject::Write(CLevelParserLine* line)
+void CObject::Write(CLevelParserLine* line)
 {
     Math::Vector    pos;
-    Info        info;
     float       value;
     int         i;
 
@@ -980,15 +976,6 @@ bool CObject::Write(CLevelParserLine* line)
     if ( m_virusTime != 0.0f )
         line->AddParam("virusTime", CLevelParserParamUPtr{new CLevelParserParam(m_virusTime)});
 
-    // Puts information in terminal (OBJECT_INFO).
-    for ( i=0 ; i<m_infoTotal ; i++ )
-    {
-        info = GetInfo(i);
-        if ( info.name[0] == 0 )  break;
-
-        line->AddParam("info"+boost::lexical_cast<std::string>(i+1), CLevelParserParamUPtr{new CLevelParserParam(std::string(info.name)+"="+boost::lexical_cast<std::string>(info.value))});
-    }
-
     // Sets the parameters of the command line.
     CLevelParserParamVec cmdline;
     for ( i=0 ; i<OBJECTMAXCMDLINE ; i++ )
@@ -1020,19 +1007,15 @@ bool CObject::Write(CLevelParserLine* line)
     {
         m_auto->Write(line);
     }
-
-    return true;
 }
 
 // Returns all parameters of the object.
 
-bool CObject::Read(CLevelParserLine* line)
+void CObject::Read(CLevelParserLine* line)
 {
     Math::Vector    pos, dir;
-    Gfx::CameraType cType;
-    int             i;
 
-    cType = line->GetParam("camera")->AsCameraType(Gfx::CAM_TYPE_NULL);
+    Gfx::CameraType cType = line->GetParam("camera")->AsCameraType(Gfx::CAM_TYPE_NULL);
     if ( cType != Gfx::CAM_TYPE_NULL )
     {
         SetCameraType(cType);
@@ -1064,34 +1047,10 @@ bool CObject::Read(CLevelParserLine* line)
     m_bVirusMode = line->GetParam("virusMode")->AsBool(false);
     m_virusTime = line->GetParam("virusTime")->AsFloat(0.0f);
 
-    // Puts information in terminal (OBJECT_INFO).
-    for ( i=0 ; i<OBJECTMAXINFO ; i++ )
-    {
-        std::string op = std::string("info")+boost::lexical_cast<std::string>(i+1);
-        if (!line->GetParam(op)->IsDefined()) break;
-        std::string text = line->GetParam(op)->AsString();
-
-        std::size_t p = text.find_first_of("=");
-        if (p == std::string::npos)
-            throw CLevelParserExceptionBadParam(line->GetParam(op), "info");
-        Info info;
-        strcpy(info.name, text.substr(0, p).c_str());
-        try
-        {
-            info.value = boost::lexical_cast<float>(text.substr(p+1).c_str());
-        }
-        catch (...)
-        {
-            throw CLevelParserExceptionBadParam(line->GetParam(op), "info.value (float)");
-        }
-
-        SetInfo(i, info);
-    }
-
     // Sets the parameters of the command line.
-    i = 0;
     if (line->GetParam("cmdline")->IsDefined())
     {
+        int i = 0;
         for (auto& p : line->GetParam("cmdline")->AsArray())
         {
             if (i >= OBJECTMAXCMDLINE) break;
@@ -1119,8 +1078,6 @@ bool CObject::Read(CLevelParserLine* line)
     {
         m_auto->Read(line);
     }
-
-    return true;
 }
 
 
@@ -1809,42 +1766,6 @@ void CObject::SetTruckPart(int part)
     m_truckLink = part;
 }
 
-// Management of user information.
-
-void CObject::DeleteInfo(int rank)
-{
-    int     i;
-
-    if ( rank < 0 || rank >= m_infoTotal )  return;
-
-    for ( i=rank ; i<m_infoTotal-1 ; i++ )
-    {
-        m_info[i] = m_info[i+1];
-    }
-    m_infoTotal --;
-    m_bInfoUpdate = true;
-}
-
-void CObject::SetInfo(int rank, Info info)
-{
-    if ( rank < 0 || rank >= OBJECTMAXINFO )  return;
-    m_info[rank] = info;
-
-    if ( rank+1 > m_infoTotal )  m_infoTotal = rank+1;
-    m_bInfoUpdate = true;
-}
-
-Info CObject::GetInfo(int rank)
-{
-    if ( rank < 0 || rank >= OBJECTMAXINFO )  rank = 0;
-    return m_info[rank];
-}
-
-int CObject::GetInfoTotal()
-{
-    return m_infoTotal;
-}
-
 void CObject::SetInfoReturn(float value)
 {
     m_infoReturn = value;
@@ -1854,17 +1775,6 @@ float CObject::GetInfoReturn()
 {
     return m_infoReturn;
 }
-
-void CObject::SetInfoUpdate(bool bUpdate)
-{
-    m_bInfoUpdate = bUpdate;
-}
-
-bool CObject::GetInfoUpdate()
-{
-    return m_bInfoUpdate;
-}
-
 
 bool CObject::SetCmdLine(int rank, float value)
 {

@@ -23,17 +23,8 @@
 
 #include <boost/lexical_cast.hpp>
 
-CLevelParserException::CLevelParserException(std::string message) NOEXCEPT
- : m_message(message)
-{
-}
 
-const char* CLevelParserException::what() const NOEXCEPT
-{
-    return m_message.c_str();
-}
-
-std::string formatMissingParamError(CLevelParserParam* thisParam) NOEXCEPT
+std::string FormatMissingParamError(CLevelParserParam* thisParam) NOEXCEPT
 {
     auto paramName = thisParam->GetName();
     auto lineNumber = boost::lexical_cast<std::string>(thisParam->GetLine()->GetLineNumber());
@@ -42,11 +33,11 @@ std::string formatMissingParamError(CLevelParserParam* thisParam) NOEXCEPT
 }
 
 CLevelParserExceptionMissingParam::CLevelParserExceptionMissingParam(CLevelParserParam* thisParam) NOEXCEPT
-: CLevelParserException(formatMissingParamError(thisParam))
+: CLevelParserException(FormatMissingParamError(thisParam))
 {
 }
 
-std::string formatBadParamError(CLevelParserParam* thisParam, std::string requestedType) NOEXCEPT
+std::string FormatBadParamError(CLevelParserParam* thisParam, std::string requestedType) NOEXCEPT
 {
     auto paramName = thisParam->GetName();
     auto paramValue = thisParam->GetValue();
@@ -56,6 +47,6 @@ std::string formatBadParamError(CLevelParserParam* thisParam, std::string reques
 }
 
 CLevelParserExceptionBadParam::CLevelParserExceptionBadParam(CLevelParserParam* thisParam, std::string requestedType) NOEXCEPT
-: CLevelParserException(formatBadParamError(thisParam, requestedType))
+: CLevelParserException(FormatBadParamError(thisParam, requestedType))
 {
 }

@@ -87,6 +87,7 @@ set(BASE_SOURCES
     common/misc.cpp
     common/pathman.cpp
     common/profile.cpp
+    common/regex_utils.cpp
     common/resources/inputstream.cpp
     common/resources/inputstreambuffer.cpp
     common/resources/outputstream.cpp
@@ -127,7 +128,6 @@ set(BASE_SOURCES
     object/auto/autofactory.cpp
     object/auto/autoflag.cpp
     object/auto/autohuston.cpp
-    object/auto/autoinfo.cpp
     object/auto/autojostle.cpp
     object/auto/autokid.cpp
     object/auto/autolabo.cpp
@@ -187,6 +187,7 @@ set(BASE_SOURCES
     object/task/taskturn.cpp
     object/task/taskwait.cpp
     object/tool_type.cpp
+    object/subclass/exchange_post.cpp
     physics/physics.cpp
     script/cbottoken.cpp
     script/cmdtoken.cpp

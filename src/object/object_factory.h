@@ -39,22 +39,9 @@ class CTerrain;
 
 class CObject;
 class CRobotMain;
+struct ObjectCreateParams;
 
 using CObjectUPtr = std::unique_ptr<CObject>;
-
-struct ObjectCreateParams
-{
-    Math::Vector pos;
-    float angle;
-    ObjectType type;
-    float power;
-    float zoom;
-    float height;
-    bool trainer;
-    bool toy;
-    int option;
-    int id;
-};
 
 class CObjectFactory
 {

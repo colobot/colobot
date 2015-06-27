@@ -37,6 +37,7 @@
 #include "object/object_manager.h"
 #include "object/robotmain.h"
 #include "object/task/taskmanager.h"
+#include "object/subclass/exchange_post.h"
 
 #include "object/auto/auto.h"
 #include "object/auto/autofactory.h"
@@ -2395,24 +2396,13 @@ bool CScriptFunctions::rSend(CBotVar* var, CBotVar* result, int& exception, void
 
 // Seeks the nearest information terminal.
 
-CObject* CScriptFunctions::SearchInfo(CScript* script, CObject* object, float power)
+CExchangePost* CScriptFunctions::FindExchangePost(CObject* object, float power)
 {
-    CObject     *pBest;
-    Math::Vector    iPos, oPos;
-
-    iPos = object->GetPosition(0);
-    pBest = CObjectManager::GetInstancePointer()->Radar(object, OBJECT_INFO);
-    if (pBest == nullptr)
-        return nullptr;
-    oPos = object->GetPosition(0);
-
-    if (Math::DistanceProjected(iPos, oPos) > power)
-        return nullptr;
-
-    return pBest;
+    CObject* exchangePost = CObjectManager::GetInstancePointer()->FindNearest(object, OBJECT_INFO, power/g_unit);
+    return dynamic_cast<CExchangePost*>(exchangePost);
 }
 
-// Compilation of the instruction "deleteinfo(nom, power)".
+// Compilation of the instruction "deleteinfo(name, power)".
 
 CBotTypResult CScriptFunctions::cDeleteInfo(CBotVar* &var, void* user)
 {
@@ -2420,59 +2410,43 @@ CBotTypResult CScriptFunctions::cDeleteInfo(CBotVar* &var, void* user)
     if ( var->GetType() != CBotTypString )  return CBotTypResult(CBotErrBadString);
     var = var->GetNext();
 
-    if ( var == 0 )  return CBotTypResult(CBotTypFloat);
+    if ( var == 0 )  return CBotTypResult(CBotTypBoolean);
     if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
     var = var->GetNext();
 
     if ( var != 0 )  return CBotTypResult(CBotErrOverParam);
-    return CBotTypResult(CBotTypFloat);
+    return CBotTypResult(CBotTypBoolean);
 }
 
-// Instruction "deleteinfo(nom, power)".
+// Instruction "deleteinfo(name, power)".
 
 bool CScriptFunctions::rDeleteInfo(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-    CScript*    script = (static_cast<CObject *>(user))->GetRunScript();
-    CObject*    pThis = static_cast<CObject *>(user);
-    CObject*    pInfo;
-    CBotString  cbs;
-    Info        info;
-    const char* p;
-    float       power;
-    int         i, total;
+    CObject* pThis = static_cast<CObject *>(user);
 
     exception = 0;
 
-    cbs = var->GetValString();
-    p = cbs;
+    CBotString infoNameCbs = var->GetValString();
+    std::string infoName = std::string(static_cast<const char*>(infoNameCbs));
     var = var->GetNext();
 
-    power = 10.0f*g_unit;
-    if ( var != 0 )
+    float power = 10.0f*g_unit;
+    if (var != nullptr)
     {
         power = var->GetValFloat()*g_unit;
         var = var->GetNext();
     }
 
-    pInfo = SearchInfo(script, pThis, power);
-    if ( pInfo == 0 )
+    CExchangePost* exchangePost = FindExchangePost(pThis, power);
+    if (exchangePost == nullptr)
     {
-        result->SetValFloat(0.0f);  // false
+        result->SetValInt(false);
         return true;
     }
 
-    total = pInfo->GetInfoTotal();
-    for ( i=0 ; i<total ; i++ )
-    {
-        info = pInfo->GetInfo(i);
-        if ( strcmp(info.name, p) == 0 )
-        {
-            pInfo->DeleteInfo(i);
-            result->SetValFloat(1.0f);  // true
-            return true;
-        }
-    }
-    result->SetValFloat(0.0f);  // false
+    bool infoDeleted = exchangePost->DeleteInfo(infoName);
+    result->SetValInt(infoDeleted);
+
     return true;
 }
 
@@ -2492,50 +2466,34 @@ CBotTypResult CScriptFunctions::cTestInfo(CBotVar* &var, void* user)
     return CBotTypResult(CBotTypBoolean);
 }
 
-// Instruction "testinfo(nom, power)".
+// Instruction "testinfo(name, power)".
 
 bool CScriptFunctions::rTestInfo(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-    CScript*    script = (static_cast<CObject *>(user))->GetRunScript();
-    CObject*    pThis = static_cast<CObject *>(user);
-    CObject*    pInfo;
-    CBotString  cbs;
-    Info        info;
-    const char* p;
-    float       power;
-    int         i, total;
+    CObject* pThis = static_cast<CObject *>(user);
 
     exception = 0;
 
-    cbs = var->GetValString();
-    p = cbs;
+    CBotString infoNameCbs = var->GetValString();
+    std::string infoName = std::string(static_cast<const char*>(infoNameCbs));
     var = var->GetNext();
 
-    power = 10.0f*g_unit;
-    if ( var != 0 )
+    float power = 10.0f*g_unit;
+    if (var != nullptr)
     {
         power = var->GetValFloat()*g_unit;
         var = var->GetNext();
     }
 
-    pInfo = SearchInfo(script, pThis, power);
-    if ( pInfo == 0 )
+    CExchangePost* exchangePost = FindExchangePost(pThis, power);
+    if (exchangePost == nullptr)
     {
         result->SetValInt(false);
         return true;
     }
 
-    total = pInfo->GetInfoTotal();
-    for ( i=0 ; i<total ; i++ )
-    {
-        info = pInfo->GetInfo(i);
-        if ( strcmp(info.name, p) == 0 )
-        {
-            result->SetValInt(true);
-            return true;
-        }
-    }
-    result->SetValInt(false);
+    bool foundInfo = exchangePost->HasInfo(infoName);
+    result->SetValInt(foundInfo);
     return true;
 }
 

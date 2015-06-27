@@ -30,9 +30,10 @@
 
 #include <string>
 #include <unordered_map>
- 
+
 class CObject;
 class CScript;
+class CExchangePost;
 
 
 class CScriptFunctions
@@ -75,8 +76,8 @@ private:
     static CBotTypResult cOnePoint(CBotVar* &var, void* user);
     static CBotTypResult cPoint(CBotVar* &var, void* user);
     static CBotTypResult cOneObject(CBotVar* &var, void* user);
-    
-    
+
+
     static bool rSin(CBotVar* var, CBotVar* result, int& exception, void* user);
     static bool rCos(CBotVar* var, CBotVar* result, int& exception, void* user);
     static bool rTan(CBotVar* var, CBotVar* result, int& exception, void* user);
@@ -144,20 +145,20 @@ private:
     static bool rPenColor(CBotVar* var, CBotVar* result, int& exception, void* user);
     static bool rPenWidth(CBotVar* var, CBotVar* result, int& exception, void* user);
     static bool rCameraFocus(CBotVar* var, CBotVar* result, int& exception, void* user);
-    
-    
+
+
     static CBotTypResult cBusy(CBotVar* thisclass, CBotVar* &var);
     static CBotTypResult cFactory(CBotVar* thisclass, CBotVar* &var);
     static CBotTypResult cClassNull(CBotVar* thisclass, CBotVar* &var);
     static CBotTypResult cClassOneFloat(CBotVar* thisclass, CBotVar* &var);
-    
+
     static bool rBusy(CBotVar* thisclass, CBotVar* var, CBotVar* result, int& exception);
     static bool rFactory(CBotVar* thisclass, CBotVar* var, CBotVar* result, int& exception);
     static bool rResearch(CBotVar* thisclass, CBotVar* var, CBotVar* result, int& exception);
     static bool rTakeOff(CBotVar* thisclass, CBotVar* var, CBotVar* result, int& exception);
     static bool rDestroy(CBotVar* thisclass, CBotVar* var, CBotVar* result, int& exception);
-    
-    
+
+
     static CBotTypResult cfconstruct (CBotVar* pThis, CBotVar* &pVar);
     static CBotTypResult cfopen (CBotVar* pThis, CBotVar* &pVar);
     static CBotTypResult cfclose (CBotVar* pThis, CBotVar* &pVar);
@@ -171,18 +172,18 @@ private:
     static bool rfwrite (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception);
     static bool rfread (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception);
     static bool rfeof (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception);
-    
+
     static CBotTypResult cPointConstructor(CBotVar* pThis, CBotVar* &var);
     static bool rPointConstructor(CBotVar* pThis, CBotVar* var, CBotVar* pResult, int& Exception);
-    
+
 public:
     static int m_CompteurFileOpen;
     static std::string m_filesDir;
-    
+
 private:
     static bool     Process(CScript* script, CBotVar* result, int &exception);
     static bool     ShouldProcessStop(Error err, int errMode);
-    static CObject* SearchInfo(CScript* script, CObject* object, float power);
+    static CExchangePost* FindExchangePost(CObject* object, float power);
 
     static std::unordered_map<int, FILE*> m_files;
     static int m_nextFile;
