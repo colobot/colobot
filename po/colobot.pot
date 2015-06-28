@@ -411,7 +411,7 @@ msgstr ""
 msgid "Access to solutions\\Show program \"4: Solution\" in the exercises"
 msgstr ""
 
-msgid "Blood\\Display blood when the astronaut or the alien queen is hit"
+msgid "Blood\\Display blood when the astronaut is hit"
 msgstr ""
 
 msgid "Autosave\\Enables autosave"

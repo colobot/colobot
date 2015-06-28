@@ -209,7 +209,7 @@ void InitializeRestext()
     stringsEvent[EVENT_INTERFACE_EDITMODE]  = TR("Automatic indent\\When program editing");
     stringsEvent[EVENT_INTERFACE_EDITVALUE] = TR("Big indent\\Indent 2 or 4 spaces per level defined by braces");
     stringsEvent[EVENT_INTERFACE_SOLUCE4]   = TR("Access to solutions\\Show program \"4: Solution\" in the exercises");
-    stringsEvent[EVENT_INTERFACE_BLOOD]     = TR("Blood\\Display blood when the astronaut or the alien queen is hit");
+    stringsEvent[EVENT_INTERFACE_BLOOD]     = TR("Blood\\Display blood when the astronaut is hit");
     stringsEvent[EVENT_INTERFACE_AUTOSAVE_ENABLE]   = TR("Autosave\\Enables autosave");
     stringsEvent[EVENT_INTERFACE_AUTOSAVE_INTERVAL] = TR("Autosave interval\\How often your game will autosave");
     stringsEvent[EVENT_INTERFACE_AUTOSAVE_SLOTS]    = TR("Autosave slots\\How many autosave slots you'll have");
