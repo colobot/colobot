@@ -463,6 +463,12 @@ bool CApplication::Create()
         // load settings from profile
         int iValue;
         std::string sValue;
+
+        // GetVideoResolutionList() has to be called here because it is responsible
+        // for list of resolutions in options menu, not calling it results in empty list
+        std::vector<Math::IntPoint> modes;
+        GetVideoResolutionList(modes, true, true);
+
         if ( GetProfile().GetStringProperty("Setup", "Resolution", sValue) && !m_resolutionOverride )
         {
             std::istringstream resolution(sValue);
@@ -476,8 +482,6 @@ bool CApplication::Create()
             }
 
             // Why not just set m_deviceConfig.size to w,h? Because this way if the resolution is no longer supported (e.g. changimg monitor) defaults will be used instead
-            std::vector<Math::IntPoint> modes;
-            GetVideoResolutionList(modes, true, true);
             for(auto it = modes.begin(); it != modes.end(); ++it) {
                 if (it->x == w && it->y == h) {
                     m_deviceConfig.size = *it;
