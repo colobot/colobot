@@ -1244,7 +1244,7 @@ void CAutoBase::FreezeCargo(bool freeze)
         obj->SetSpaceshipCargo(false);
 
         if ( obj == m_object )  continue;  // yourself?
-        if ( obj->GetTruck() != nullptr )  continue;  // transport object?
+        if ( obj->GetTransporter() != nullptr )  continue;  // transport object?
 
         Math::Vector oPos = obj->GetPosition(0);
         float dist = Math::DistanceProjected(m_pos, oPos);

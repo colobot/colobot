@@ -346,7 +346,7 @@ Error CTaskBuild::Start(ObjectType type)
     if ( speed.x != 0.0f ||
          speed.z != 0.0f )  return ERR_BUILD_MOTOR;
 
-    if ( m_object->GetFret() != 0 )  return ERR_MANIP_BUSY;
+    if ( m_object->GetCargo() != 0 )  return ERR_MANIP_BUSY;
 
     m_metal = SearchMetalObject(oAngle, 2.0f, 100.0f, Math::PI*0.25f, err);
     if ( err == ERR_BUILD_METALNEAR && m_metal != 0 )
@@ -592,7 +592,7 @@ Error CTaskBuild::FlatFloor()
     for (CObject* pObj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
         if ( !pObj->GetActive() )  continue;  // inactive?
-        if ( pObj->GetTruck() != 0 )  continue;  // object transported?
+        if ( pObj->GetTransporter() != 0 )  continue;  // object transported?
         if ( pObj == m_metal )  continue;
         if ( pObj == m_object )  continue;
 
@@ -637,7 +637,7 @@ Error CTaskBuild::FlatFloor()
     for (CObject* pObj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
         if ( !pObj->GetActive() )  continue;  // inactive?
-        if ( pObj->GetTruck() != 0 )  continue;  // object transported?
+        if ( pObj->GetTransporter() != 0 )  continue;  // object transported?
         if ( pObj == m_metal )  continue;
         if ( pObj == m_object )  continue;
 
@@ -705,7 +705,7 @@ CObject* CTaskBuild::SearchMetalObject(float &angle, float dMin, float dMax,
     for (CObject* pObj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
         if ( !pObj->GetActive() )  continue;  // objet inactive?
-        if ( pObj->GetTruck() != 0 )  continue;  // object transported?
+        if ( pObj->GetTransporter() != 0 )  continue;  // object transported?
 
         type = pObj->GetType();
         if ( type != OBJECT_METAL )  continue;

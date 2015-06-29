@@ -57,8 +57,8 @@ public:
 protected:
     CObject*    SearchTakeObject(float &angle, float dLimit, float aLimit);
     CObject*    SearchFriendObject(float &angle, float dLimit, float aLimit);
-    bool        TruckTakeObject();
-    bool        TruckDeposeObject();
+    bool        TransporterTakeObject();
+    bool        TransporterDeposeObject();
     bool        IsFreeDeposeObject(Math::Vector pos);
 
 protected:
@@ -74,6 +74,6 @@ protected:
     bool            m_bError;
     bool            m_bTurn;
     float           m_angle;
-    ObjectType      m_fretType;
+    ObjectType      m_cargoType;
 };
 

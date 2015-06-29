@@ -62,7 +62,7 @@ protected:
     void        UpdateInterface();
     void        UpdateButton(Ui::CWindow *pw, EventType event, bool bBusy);
 
-    CObject*    SearchFret();
+    CObject*    SearchCargo();
     bool        NearestVehicle();
     bool        CreateVehicle();
     CObject*    SearchVehicle();
@@ -74,7 +74,7 @@ protected:
     float               m_progress;
     float               m_speed;
     float               m_lastParticle;
-    Math::Vector        m_fretPos;
+    Math::Vector        m_cargoPos;
     int                 m_channelSound;
 
     CObject*            m_vehicle;

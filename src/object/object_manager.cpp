@@ -201,7 +201,7 @@ CObject* CObjectManager::Radar(CObject* pThis, Math::Vector thisPosition, float 
         pObj = it->second.get();
         if ( pObj == pThis )  continue; // pThis may be nullptr but it doesn't matter
 
-        if ( pObj->GetTruck() != 0 )  continue;  // object transported?
+        if ( pObj->GetTransporter() != 0 )  continue;  // object transported?
         if ( !pObj->GetActive() )  continue;
         if ( pObj->GetProxyActivate() )  continue;
 

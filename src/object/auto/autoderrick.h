@@ -55,9 +55,9 @@ public:
     bool        Read(CLevelParserLine* line);
 
 protected:
-    CObject*    SearchFret();
+    CObject*    SearchCargo();
     bool        SearchFree(Math::Vector pos);
-    void        CreateFret(Math::Vector pos, float angle, ObjectType type, float height);
+    void        CreateCargo(Math::Vector pos, float angle, ObjectType type, float height);
     bool        ExistKey();
 
 protected:
@@ -67,7 +67,7 @@ protected:
     float               m_timeVirus;
     float               m_lastParticle;
     float               m_lastTrack;
-    Math::Vector            m_fretPos;
+    Math::Vector            m_cargoPos;
     int                 m_soundChannel;
     bool                m_bSoundFall;
 };

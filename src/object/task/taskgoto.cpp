@@ -144,7 +144,7 @@ bool CTaskGoto::EventProcess(const Event &event)
 
         pos = m_object->GetPosition(0);
 
-        if ( m_bmFretObject == 0 )
+        if ( m_bmCargoObject == 0 )
         {
             goal = m_goal;
             dist = 0.0f;
@@ -153,7 +153,7 @@ bool CTaskGoto::EventProcess(const Event &event)
         {
             goal = m_goalObject;
             dist = TAKE_DIST+2.0f;
-            if ( m_bmFretObject->GetType() == OBJECT_BASE )  dist = 12.0f;
+            if ( m_bmCargoObject->GetType() == OBJECT_BASE )  dist = 12.0f;
         }
 
         ret = BeamSearch(pos, goal, dist);
@@ -647,7 +647,7 @@ Error CTaskGoto::Start(Math::Vector goal, float altitude,
     m_phase = TGP_ADVANCE;
     m_error = ERR_OK;
     m_try = 0;
-    m_bmFretObject = 0;
+    m_bmCargoObject = 0;
     m_bmFinalMove = 0.0f;
 
     pos = m_object->GetPosition(0);
@@ -715,7 +715,7 @@ Error CTaskGoto::Start(Math::Vector goal, float altitude,
                 dist = 4.0f;
                 if ( AdjustTarget(target, m_goal, dist) )
                 {
-                    m_bmFretObject = target;  // cargo on the ground
+                    m_bmCargoObject = target;  // cargo on the ground
                 }
                 else
                 {
@@ -737,7 +737,7 @@ Error CTaskGoto::Start(Math::Vector goal, float altitude,
 
         BeamStart();
 
-        if ( m_bmFretObject == 0 )
+        if ( m_bmCargoObject == 0 )
         {
             x = static_cast<int>((m_goal.x+1600.0f)/BM_DIM_STEP);
             y = static_cast<int>((m_goal.z+1600.0f)/BM_DIM_STEP);
@@ -1148,7 +1148,7 @@ bool CTaskGoto::AdjustBuilding(Math::Vector &pos, float margin, float &distance)
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
         if ( !obj->GetActive() )  continue;
-        if ( obj->GetTruck() != nullptr )  continue;  // object transported?
+        if ( obj->GetTransporter() != nullptr )  continue;  // object transported?
 
         Math::Vector oPos;
         float suppl = 0.0f;
@@ -1309,7 +1309,7 @@ bool CTaskGoto::LeakSearch(Math::Vector &pos, float &delay)
     {
         if ( pObj == m_object )  continue;
         if ( !pObj->GetActive() )  continue;
-        if ( pObj->GetTruck() != 0 )  continue;  // object transported?
+        if ( pObj->GetTransporter() != 0 )  continue;  // object transported?
 
         j = 0;
         while ( pObj->GetCrashSphere(j++, oPos, oRadius) )
@@ -1366,7 +1366,7 @@ void CTaskGoto::ComputeRepulse(Math::Point &dir)
         if ( pObj == 0 )  break;
 
         if ( pObj == m_object )  continue;
-        if ( pObj->GetTruck() != 0 )  continue;
+        if ( pObj->GetTransporter() != 0 )  continue;
 
         oPos = pObj->GetPosition(0);
         dist = Math::Distance(oPos, m_goalObject);
@@ -1485,7 +1485,7 @@ void CTaskGoto::ComputeRepulse(Math::Point &dir)
     for (CObject* pObj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
         if ( pObj == m_object )  continue;
-        if ( pObj->GetTruck() != 0 )  continue;
+        if ( pObj->GetTransporter() != 0 )  continue;
 
         oType = pObj->GetType();
 
@@ -1573,7 +1573,7 @@ void CTaskGoto::ComputeFlyingRepulse(float &dir)
     for (CObject* pObj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
         if ( pObj == m_object )  continue;
-        if ( pObj->GetTruck() != 0 )  continue;
+        if ( pObj->GetTransporter() != 0 )  continue;
 
         oType = pObj->GetType();
 
@@ -1885,8 +1885,8 @@ void CTaskGoto::BitmapObject()
         type = pObj->GetType();
 
         if ( pObj == m_object )  continue;
-        if ( pObj == m_bmFretObject )  continue;
-        if ( pObj->GetTruck() != 0 )  continue;
+        if ( pObj == m_bmCargoObject )  continue;
+        if ( pObj->GetTransporter() != 0 )  continue;
 
         h = m_terrain->GetFloorLevel(pObj->GetPosition(0), false);
         if ( m_physics->GetType() == TYPE_FLYING && m_altitude > 0.0f )

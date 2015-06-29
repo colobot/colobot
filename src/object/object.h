@@ -218,11 +218,11 @@ public:
 
     void        SetPower(CObject* power);
     CObject*    GetPower();
-    void        SetFret(CObject* fret);
-    CObject*    GetFret();
-    void        SetTruck(CObject* truck);
-    CObject*    GetTruck();
-    void        SetTruckPart(int part);
+    void        SetCargo(CObject* cargo);
+    CObject*    GetCargo();
+    void        SetTransporter(CObject* transporter);
+    CObject*    GetTransporter();
+    void        SetTransporterPart(int part);
 
     bool        SetCmdLine(int rank, float value);
     float       GetCmdLine(int rank);
@@ -400,9 +400,9 @@ protected:
     Math::Vector    m_cirVibration;         // circular vibration
     Math::Vector    m_tilt;          // tilt
     CObject*    m_power;            // battery used by the vehicle
-    CObject*    m_fret;             // object transported
-    CObject*    m_truck;            // object with the latter
-    int     m_truckLink;            // part
+    CObject*    m_cargo;             // object transported
+    CObject*    m_transporter;            // object with the latter
+    int     m_transporterLink;            // part
     float       m_energy;           // energy contained (if battery)
     float       m_lastEnergy;
     float       m_capacity;         // capacity (if battery)

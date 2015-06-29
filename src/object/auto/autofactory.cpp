@@ -66,10 +66,10 @@ void CAutoFactory::DeleteObject(bool all)
 {
     if ( !all )
     {
-        CObject* fret = SearchFret();  // transform metal?
-        if ( fret != nullptr )
+        CObject* cargo = SearchCargo();  // transform metal?
+        if ( cargo != nullptr )
         {
-            CObjectManager::GetInstancePointer()->DeleteObject(fret);
+            CObjectManager::GetInstancePointer()->DeleteObject(cargo);
         }
 
         CObject* vehicle = SearchVehicle();
@@ -101,7 +101,7 @@ void CAutoFactory::Init()
     m_time = 0.0f;
     m_lastParticle = 0.0f;
 
-    m_fretPos = m_object->GetPosition(0);
+    m_cargoPos = m_object->GetPosition(0);
 
     m_program = nullptr;
 
@@ -113,7 +113,7 @@ void CAutoFactory::Init()
 
 Error CAutoFactory::StartAction(int param)
 {
-    CObject*   fret;
+    CObject*   cargo;
     ObjectType type = static_cast<ObjectType>(param);
 
     if ( type != OBJECT_NULL )
@@ -125,8 +125,8 @@ Error CAutoFactory::StartAction(int param)
 
         m_type = type;
 
-        fret = SearchFret();  // transform metal?
-        if ( fret == 0 )
+        cargo = SearchCargo();  // transform metal?
+        if ( cargo == 0 )
         {
             return ERR_FACTORY_NULL;
         }
@@ -139,7 +139,7 @@ Error CAutoFactory::StartAction(int param)
         InitProgressTotal(3.0f+2.0f+15.0f+2.0f+3.0f);
         UpdateInterface();
 
-        fret->SetLock(true);  // usable metal
+        cargo->SetLock(true);  // usable metal
         SoundManip(3.0f, 1.0f, 0.5f);
 
         m_phase    = AFP_CLOSE_S;
@@ -165,7 +165,7 @@ void CAutoFactory::SetProgram(const char* program)
 bool CAutoFactory::EventProcess(const Event &event)
 {
     ObjectType  type;
-    CObject*    fret;
+    CObject*    cargo;
     CObject*    vehicle;
     Math::Matrix*   mat;
     CPhysics*   physics;
@@ -296,10 +296,10 @@ bool CAutoFactory::EventProcess(const Event &event)
         {
             if ( !CreateVehicle() )
             {
-                fret = SearchFret();  // transform metal?
-                if ( fret != 0 )
+                cargo = SearchCargo();  // transform metal?
+                if ( cargo != 0 )
                 {
-                    fret->SetLock(false);  // metal usable again
+                    cargo->SetLock(false);  // metal usable again
                 }
 
                 if ( m_channelSound != -1 )
@@ -339,10 +339,10 @@ bool CAutoFactory::EventProcess(const Event &event)
                 vehicle->SetZoom(0, m_progress);
             }
 
-            fret = SearchFret();  // transform metal?
-            if ( fret != 0 )
+            cargo = SearchCargo();  // transform metal?
+            if ( cargo != 0 )
             {
-                fret->SetZoom(0, 1.0f-m_progress);
+                cargo->SetZoom(0, 1.0f-m_progress);
             }
 
             if ( m_lastParticle+m_engine->ParticleAdapt(0.05f) <= m_time )
@@ -350,7 +350,7 @@ bool CAutoFactory::EventProcess(const Event &event)
                 m_lastParticle = m_time;
 
 #if 0
-                pos = m_fretPos;
+                pos = m_cargoPos;
                 pos.x += (Math::Rand()-0.5f)*20.0f;
                 pos.z += (Math::Rand()-0.5f)*20.0f;
                 pos.y += 1.0f;
@@ -381,10 +381,10 @@ bool CAutoFactory::EventProcess(const Event &event)
             m_main->DisplayError(INFO_FACTORY, m_object);
             SoundManip(2.0f, 1.0f, 1.2f);
 
-            fret = SearchFret();  // transform metal?
-            if ( fret != nullptr )
+            cargo = SearchCargo();  // transform metal?
+            if ( cargo != nullptr )
             {
-                CObjectManager::GetInstancePointer()->DeleteObject(fret);
+                CObjectManager::GetInstancePointer()->DeleteObject(cargo);
             }
 
             m_vehicle = vehicle = SearchVehicle();
@@ -425,7 +425,7 @@ bool CAutoFactory::EventProcess(const Event &event)
             {
                 m_lastParticle = m_time;
 
-                pos = m_fretPos;
+                pos = m_cargoPos;
                 pos.x += (Math::Rand()-0.5f)*10.0f;
                 pos.z += (Math::Rand()-0.5f)*10.0f;
                 pos.y += Math::Rand()*10.0f;
@@ -468,7 +468,7 @@ bool CAutoFactory::EventProcess(const Event &event)
             {
                 m_lastParticle = m_time;
 
-                pos = m_fretPos;
+                pos = m_cargoPos;
                 pos.x += (Math::Rand()-0.5f)*10.0f;
                 pos.z += (Math::Rand()-0.5f)*10.0f;
                 pos.y += Math::Rand()*10.0f;
@@ -537,7 +537,7 @@ bool CAutoFactory::Read(CLevelParserLine* line)
     m_speed = line->GetParam("aSpeed")->AsFloat(1.0f);
 
     m_lastParticle = 0.0f;
-    m_fretPos = m_object->GetPosition(0);
+    m_cargoPos = m_object->GetPosition(0);
 
     return true;
 }
@@ -545,16 +545,16 @@ bool CAutoFactory::Read(CLevelParserLine* line)
 
 //Seeks the cargo.
 
-CObject* CAutoFactory::SearchFret()
+CObject* CAutoFactory::SearchCargo()
 {
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
         ObjectType type = obj->GetType();
         if ( type != OBJECT_METAL )  continue;
-        if ( obj->GetTruck() != nullptr )  continue;
+        if ( obj->GetTransporter() != nullptr )  continue;
 
         Math::Vector oPos = obj->GetPosition(0);
-        float dist = Math::Distance(oPos, m_fretPos);
+        float dist = Math::Distance(oPos, m_cargoPos);
 
         if ( dist < 8.0f )  return obj;
     }
@@ -676,10 +676,10 @@ CObject* CAutoFactory::SearchVehicle()
 
         ObjectType  type = obj->GetType();
         if ( type != m_type )  continue;
-        if ( obj->GetTruck() != nullptr )  continue;
+        if ( obj->GetTransporter() != nullptr )  continue;
 
         Math::Vector oPos = obj->GetPosition(0);
-        float dist = Math::Distance(oPos, m_fretPos);
+        float dist = Math::Distance(oPos, m_cargoPos);
 
         if ( dist < 8.0f )  return obj;
     }

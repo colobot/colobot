@@ -51,14 +51,14 @@ public:
 
 protected:
     bool        SearchFree(Math::Vector pos);
-    void        CreateFret(Math::Vector pos, float angle, ObjectType type);
-    CObject*    SearchFret();
+    void        CreateCargo(Math::Vector pos, float angle, ObjectType type);
+    CObject*    SearchCargo();
 
 protected:
     AutoNestPhase   m_phase;
     float           m_progress;
     float           m_speed;
     float           m_lastParticle;
-    Math::Vector    m_fretPos;
+    Math::Vector    m_cargoPos;
 };
 

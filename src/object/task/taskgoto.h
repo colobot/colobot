@@ -145,7 +145,7 @@ protected:
     Math::Vector        m_bmPoints[MAXPOINTS+2];
     char            m_bmIter[MAXPOINTS+2];
     int             m_bmIterCounter;
-    CObject*        m_bmFretObject;
+    CObject*        m_bmCargoObject;
     float           m_bmFinalMove;  // final advance distance
     float           m_bmFinalDist;  // effective distance to advance
     Math::Vector        m_bmFinalPos;   // initial position before advance

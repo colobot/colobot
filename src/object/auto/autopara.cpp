@@ -251,7 +251,7 @@ void CAutoPara::ChargeObject(float rTime)
         float dist = Math::Distance(oPos, sPos);
         if ( dist > 20.0f )  continue;
 
-        if ( obj->GetTruck() == nullptr && obj->GetType() == OBJECT_POWER )
+        if ( obj->GetTransporter() == nullptr && obj->GetType() == OBJECT_POWER )
         {
             float energy = obj->GetEnergy();
             energy += rTime/2.0f;
@@ -268,7 +268,7 @@ void CAutoPara::ChargeObject(float rTime)
             power->SetEnergy(energy);
         }
 
-        power = obj->GetFret();
+        power = obj->GetCargo();
         if ( power != nullptr && power->GetType() == OBJECT_POWER )
         {
             float energy = power->GetEnergy();

@@ -436,7 +436,7 @@ bool CMotionBee::EventFrame(const Event &event)
     action = MB_MARCH;  // flying
 
     m_actionType = -1;
-    if ( m_object->GetFret() != 0 )  m_actionType = MBS_HOLD;  // carries the ball
+    if ( m_object->GetCargo() != 0 )  m_actionType = MBS_HOLD;  // carries the ball
 
     if ( m_object->GetRuin() )  // destroyed?
     {

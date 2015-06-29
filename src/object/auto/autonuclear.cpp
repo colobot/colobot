@@ -61,10 +61,10 @@ void CAutoNuclear::DeleteObject(bool all)
 {
     if ( !all )
     {
-        CObject* fret = SearchUranium();
-        if ( fret != nullptr )
+        CObject* cargo = SearchUranium();
+        if ( cargo != nullptr )
         {
-            CObjectManager::GetInstancePointer()->DeleteObject(fret);
+            CObjectManager::GetInstancePointer()->DeleteObject(cargo);
         }
     }
 
@@ -104,7 +104,7 @@ void CAutoNuclear::Init()
 
 bool CAutoNuclear::EventProcess(const Event &event)
 {
-    CObject*    fret;
+    CObject*    cargo;
     Math::Matrix*   mat;
     Math::Vector    pos, goal, speed;
     Math::Point     dim, rot;
@@ -134,8 +134,8 @@ bool CAutoNuclear::EventProcess(const Event &event)
     {
         if ( m_progress >= 1.0f )
         {
-            fret = SearchUranium();  // transform uranium?
-            if ( fret == 0 || SearchVehicle() )
+            cargo = SearchUranium();  // transform uranium?
+            if ( cargo == 0 || SearchVehicle() )
             {
                 m_phase    = ANUP_WAIT;  // still waiting ...
                 m_progress = 0.0f;
@@ -143,7 +143,7 @@ bool CAutoNuclear::EventProcess(const Event &event)
             }
             else
             {
-                fret->SetLock(true);  // usable uranium
+                cargo->SetLock(true);  // usable uranium
 
                 SetBusy(true);
                 InitProgressTotal(1.5f+NUCLEAR_DELAY+1.5f);
@@ -227,10 +227,10 @@ bool CAutoNuclear::EventProcess(const Event &event)
         }
         else
         {
-            fret = SearchUranium();
-            if ( fret != nullptr )
+            cargo = SearchUranium();
+            if ( cargo != nullptr )
             {
-                CObjectManager::GetInstancePointer()->DeleteObject(fret);
+                CObjectManager::GetInstancePointer()->DeleteObject(cargo);
                 m_object->SetPower(nullptr);
             }
 
@@ -389,7 +389,7 @@ void CAutoNuclear::CreatePower()
     float powerLevel = 1.0f;
     CObject* power = CObjectManager::GetInstancePointer()->CreateObject(pos, angle, OBJECT_ATOMIC, powerLevel);
 
-    power->SetTruck(m_object);
+    power->SetTransporter(m_object);
     power->SetPosition(0, Math::Vector(22.0f, 3.0f, 0.0f));
     m_object->SetPower(power);
 }

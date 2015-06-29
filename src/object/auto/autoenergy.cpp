@@ -71,16 +71,16 @@ void CAutoEnergy::DeleteObject(bool all)
 
     if ( !all )
     {
-        CObject* fret = SearchMetal();
-        if ( fret != nullptr )
+        CObject* cargo = SearchMetal();
+        if ( cargo != nullptr )
         {
-            CObjectManager::GetInstancePointer()->DeleteObject(fret);
+            CObjectManager::GetInstancePointer()->DeleteObject(cargo);
         }
 
-        fret = SearchPower();
-        if ( fret != nullptr )
+        cargo = SearchPower();
+        if ( cargo != nullptr )
         {
-            CObjectManager::GetInstancePointer()->DeleteObject(fret);
+            CObjectManager::GetInstancePointer()->DeleteObject(cargo);
         }
     }
 
@@ -109,7 +109,7 @@ void CAutoEnergy::Init()
 
 bool CAutoEnergy::EventProcess(const Event &event)
 {
-    CObject*    fret;
+    CObject*    cargo;
     Math::Vector    pos, ppos, speed;
     Math::Point     dim, c, p;
     Gfx::TerrainRes  res;
@@ -162,10 +162,10 @@ bool CAutoEnergy::EventProcess(const Event &event)
         if ( m_progress >= 1.0f )
         {
             bGO = false;
-            fret = SearchMetal();  // transform metal?
-            if ( fret != 0 )
+            cargo = SearchMetal();  // transform metal?
+            if ( cargo != 0 )
             {
-                if ( fret->GetType() == OBJECT_METAL )
+                if ( cargo->GetType() == OBJECT_METAL )
                 {
                     if ( big > ENERGY_POWER )  bGO = true;
                 }
@@ -177,9 +177,9 @@ bool CAutoEnergy::EventProcess(const Event &event)
 
             if ( bGO )
             {
-                if ( fret->GetType() == OBJECT_METAL )
+                if ( cargo->GetType() == OBJECT_METAL )
                 {
-                    fret->SetLock(true);  // usable metal
+                    cargo->SetLock(true);  // usable metal
                     CreatePower();  // creates the battery
                 }
 
@@ -245,10 +245,10 @@ bool CAutoEnergy::EventProcess(const Event &event)
     {
         if ( m_progress < 1.0f )
         {
-            fret = SearchMetal();
-            if ( fret != 0 )
+            cargo = SearchMetal();
+            if ( cargo != 0 )
             {
-                if ( fret->GetType() == OBJECT_METAL )
+                if ( cargo->GetType() == OBJECT_METAL )
                 {
                     big -= event.rTime/ENERGY_DELAY*ENERGY_POWER;
                 }
@@ -256,13 +256,13 @@ bool CAutoEnergy::EventProcess(const Event &event)
                 {
                     big += event.rTime/ENERGY_DELAY*0.25f;
                 }
-                fret->SetZoom(0, 1.0f-m_progress);
+                cargo->SetZoom(0, 1.0f-m_progress);
             }
 
-            fret = SearchPower();
-            if ( fret != 0 )
+            cargo = SearchPower();
+            if ( cargo != 0 )
             {
-                fret->SetZoom(0, m_progress);
+                cargo->SetZoom(0, m_progress);
             }
 
             if ( m_lastParticle+m_engine->ParticleAdapt(0.10f) <= m_time )
@@ -307,21 +307,21 @@ bool CAutoEnergy::EventProcess(const Event &event)
         }
         else
         {
-            fret = SearchMetal();
-            if ( fret != nullptr )
+            cargo = SearchMetal();
+            if ( cargo != nullptr )
             {
                 m_object->SetPower(nullptr);
-                CObjectManager::GetInstancePointer()->DeleteObject(fret);
+                CObjectManager::GetInstancePointer()->DeleteObject(cargo);
             }
 
-            fret = SearchPower();
-            if ( fret != 0 )
+            cargo = SearchPower();
+            if ( cargo != 0 )
             {
-                fret->SetZoom(0, 1.0f);
-                fret->SetLock(false);  // usable battery
-                fret->SetTruck(m_object);
-                fret->SetPosition(0, Math::Vector(0.0f, 3.0f, 0.0f));
-                m_object->SetPower(fret);
+                cargo->SetZoom(0, 1.0f);
+                cargo->SetLock(false);  // usable battery
+                cargo->SetTransporter(m_object);
+                cargo->SetPosition(0, Math::Vector(0.0f, 3.0f, 0.0f));
+                m_object->SetPower(cargo);
 
                 m_main->DisplayError(INFO_ENERGY, m_object);
             }

@@ -46,13 +46,13 @@ void SetTransparency(CObject* obj, float value)
 {
     obj->SetTransparency(value);
 
-    CObject *fret = obj->GetFret();
-    if (fret != NULL)
-        fret->SetTransparency(value);
+    CObject *cargo = obj->GetCargo();
+    if (cargo != NULL)
+        cargo->SetTransparency(value);
 
-    fret = obj->GetPower();
-    if (fret != NULL)
-        fret->SetTransparency(value);
+    cargo = obj->GetPower();
+    if (cargo != NULL)
+        cargo->SetTransparency(value);
 }
 
 
@@ -245,7 +245,7 @@ void CCamera::SetType(CameraType type)
     {
         for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
         {
-            if (obj->GetTruck())
+            if (obj->GetTransporter())
                 continue;  // battery or cargo?
 
             SetTransparency(obj, 0.0f);  // opaque object
@@ -890,7 +890,7 @@ bool CCamera::IsCollisionBack(Math::Vector &eye, Math::Vector lookat)
 
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        if (obj->GetTruck()) continue;  // battery or cargo?
+        if (obj->GetTransporter()) continue;  // battery or cargo?
 
         SetTransparency(obj, 0.0f);  // opaque object
 

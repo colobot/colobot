@@ -65,10 +65,10 @@ void CAutoDerrick::DeleteObject(bool all)
 {
     if ( !all )
     {
-        CObject* fret = SearchFret();
-        if ( fret != nullptr && fret->GetLock() )
+        CObject* cargo = SearchCargo();
+        if ( cargo != nullptr && cargo->GetLock() )
         {
-            CObjectManager::GetInstancePointer()->DeleteObject(fret);
+            CObjectManager::GetInstancePointer()->DeleteObject(cargo);
         }
     }
 
@@ -129,7 +129,7 @@ void CAutoDerrick::Init()
     mat = m_object->GetWorldMatrix(0);
     pos = Math::Transform(*mat, pos);
     m_terrain->AdjustToFloor(pos);
-    m_fretPos = pos;
+    m_cargoPos = pos;
 }
 
 
@@ -137,7 +137,7 @@ void CAutoDerrick::Init()
 
 bool CAutoDerrick::EventProcess(const Event &event)
 {
-    CObject*    fret;
+    CObject*    cargo;
     Math::Vector    pos, speed;
     Math::Point     dim;
     float       angle, duration, factor;
@@ -309,10 +309,10 @@ bool CAutoDerrick::EventProcess(const Event &event)
     {
         if ( m_progress == 0.0f )
         {
-            if ( SearchFree(m_fretPos) )
+            if ( SearchFree(m_cargoPos) )
             {
                 angle = m_object->GetAngleY(0);
-                CreateFret(m_fretPos, angle, m_type, 16.0f);
+                CreateCargo(m_cargoPos, angle, m_type, 16.0f);
             }
             else
             {
@@ -323,9 +323,9 @@ bool CAutoDerrick::EventProcess(const Event &event)
             }
         }
 
-        fret = SearchFret();
+        cargo = SearchCargo();
 
-        if ( fret != 0 &&
+        if ( cargo != 0 &&
              m_progress <= 0.5f &&
              m_lastParticle+m_engine->ParticleAdapt(0.1f) <= m_time )
         {
@@ -333,7 +333,7 @@ bool CAutoDerrick::EventProcess(const Event &event)
 
             if ( m_progress < 0.3f )
             {
-                pos = fret->GetPosition(0);
+                pos = cargo->GetPosition(0);
                 pos.x += (Math::Rand()-0.5f)*5.0f;
                 pos.z += (Math::Rand()-0.5f)*5.0f;
                 pos.y += (Math::Rand()-0.5f)*5.0f;
@@ -344,7 +344,7 @@ bool CAutoDerrick::EventProcess(const Event &event)
             }
             else
             {
-                pos = fret->GetPosition(0);
+                pos = cargo->GetPosition(0);
                 pos.x += (Math::Rand()-0.5f)*5.0f;
                 pos.z += (Math::Rand()-0.5f)*5.0f;
                 pos.y += Math::Rand()*2.5f;
@@ -357,21 +357,21 @@ bool CAutoDerrick::EventProcess(const Event &event)
 
         if ( m_progress < 1.0f )
         {
-            if ( fret != 0 )
+            if ( cargo != 0 )
             {
-                pos = fret->GetPosition(0);
+                pos = cargo->GetPosition(0);
                 pos.y -= event.rTime*20.0f;  // grave
-                if ( !m_bSoundFall && pos.y < m_fretPos.y )
+                if ( !m_bSoundFall && pos.y < m_cargoPos.y )
                 {
-                    m_sound->Play(SOUND_BOUM, m_fretPos);
+                    m_sound->Play(SOUND_BOUM, m_cargoPos);
                     m_bSoundFall = true;
                 }
-                if ( pos.y < m_fretPos.y )
+                if ( pos.y < m_cargoPos.y )
                 {
-                    pos.y = m_fretPos.y;
-                    fret->SetLock(false);  // object usable
+                    pos.y = m_cargoPos.y;
+                    cargo->SetLock(false);  // object usable
                 }
-                fret->SetPosition(0, pos);
+                cargo->SetPosition(0, pos);
             }
         }
         else
@@ -459,7 +459,7 @@ bool CAutoDerrick::Read(CLevelParserLine* line)
 
 // Seeks the subject cargo.
 
-CObject* CAutoDerrick::SearchFret()
+CObject* CAutoDerrick::SearchCargo()
 {
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
@@ -468,8 +468,8 @@ CObject* CAutoDerrick::SearchFret()
 
             Math::Vector oPos = obj->GetPosition(0);
 
-        if ( oPos.x == m_fretPos.x &&
-             oPos.z == m_fretPos.z )  return obj;
+        if ( oPos.x == m_cargoPos.x &&
+             oPos.z == m_cargoPos.z )  return obj;
     }
 
     return nullptr;
@@ -500,20 +500,20 @@ bool CAutoDerrick::SearchFree(Math::Vector pos)
 
 // Create a transportable object.
 
-void CAutoDerrick::CreateFret(Math::Vector pos, float angle, ObjectType type,
+void CAutoDerrick::CreateCargo(Math::Vector pos, float angle, ObjectType type,
                               float height)
 {
-    CObject* fret = CObjectManager::GetInstancePointer()->CreateObject(pos, angle, type);
-    fret->SetLock(true);  // object not yet usable
+    CObject* cargo = CObjectManager::GetInstancePointer()->CreateObject(pos, angle, type);
+    cargo->SetLock(true);  // object not yet usable
 
     if ( m_object->GetResetCap() == RESET_MOVE )
     {
-        fret->SetResetCap(RESET_DELETE);
+        cargo->SetResetCap(RESET_DELETE);
     }
 
-    pos = fret->GetPosition(0);
+    pos = cargo->GetPosition(0);
     pos.y += height;
-    fret->SetPosition(0, pos);
+    cargo->SetPosition(0, pos);
 }
 
 // Look if there is already a key.

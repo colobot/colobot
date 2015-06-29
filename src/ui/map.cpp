@@ -1159,7 +1159,7 @@ void CMap::UpdateObject(CObject* pObj)
     if ( !pObj->GetActive() )  return;
     if ( !pObj->GetSelectable() )  return;
     if ( pObj->GetProxyActivate() )  return;
-    if ( pObj->GetTruck() != 0 )  return;
+    if ( pObj->GetTransporter() != 0 )  return;
 
     type = pObj->GetType();
     pos  = pObj->GetPosition(0);

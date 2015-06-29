@@ -58,10 +58,10 @@ void CAutoConvert::DeleteObject(bool all)
 {
     if ( !all )
     {
-        CObject* fret = SearchStone(OBJECT_STONE);
-        if ( fret != nullptr )
+        CObject* cargo = SearchStone(OBJECT_STONE);
+        if ( cargo != nullptr )
         {
-            CObjectManager::GetInstancePointer()->DeleteObject(fret);
+            CObjectManager::GetInstancePointer()->DeleteObject(cargo);
         }
     }
 
@@ -95,7 +95,7 @@ void CAutoConvert::Init()
 
 bool CAutoConvert::EventProcess(const Event &event)
 {
-    CObject*    fret;
+    CObject*    cargo;
     Math::Vector    pos, speed;
     Math::Point     dim, c, p;
     float       angle;
@@ -133,8 +133,8 @@ bool CAutoConvert::EventProcess(const Event &event)
     {
         if ( m_progress >= 1.0f )
         {
-            fret = SearchStone(OBJECT_STONE);  // Has stone transformed?
-            if ( fret == 0 || SearchVehicle() )
+            cargo = SearchStone(OBJECT_STONE);  // Has stone transformed?
+            if ( cargo == 0 || SearchVehicle() )
             {
                 m_phase    = ACP_WAIT;  // still waiting ...
                 m_progress = 0.0f;
@@ -142,7 +142,7 @@ bool CAutoConvert::EventProcess(const Event &event)
             }
             else
             {
-                fret->SetLock(true);  // stone usable
+                cargo->SetLock(true);  // stone usable
 
                 SetBusy(true);
                 InitProgressTotal(3.0f+10.0f+1.5f);
@@ -229,12 +229,12 @@ bool CAutoConvert::EventProcess(const Event &event)
             m_object->SetAngleY(2, 0.0f);
             m_object->SetAngleY(3, Math::PI);
 
-            fret = SearchStone(OBJECT_STONE);
-            if ( fret != nullptr )
+            cargo = SearchStone(OBJECT_STONE);
+            if ( cargo != nullptr )
             {
-                m_bResetDelete = ( fret->GetResetCap() != RESET_NONE );
+                m_bResetDelete = ( cargo->GetResetCap() != RESET_NONE );
 
-                CObjectManager::GetInstancePointer()->DeleteObject(fret);
+                CObjectManager::GetInstancePointer()->DeleteObject(cargo);
             }
 
             CreateMetal();  // Create the metal
@@ -401,7 +401,7 @@ CObject* CAutoConvert::SearchStone(ObjectType type)
     {
         ObjectType oType = obj->GetType();
         if ( oType != type )  continue;
-        if ( obj->GetTruck() != nullptr )  continue;
+        if ( obj->GetTransporter() != nullptr )  continue;
 
         Math::Vector oPos = obj->GetPosition(0);
         float dist = Math::Distance(oPos, cPos);
@@ -480,11 +480,11 @@ void CAutoConvert::CreateMetal()
     Math::Vector pos = m_object->GetPosition(0);
     float angle = m_object->GetAngleY(0);
 
-    CObject* fret = CObjectManager::GetInstancePointer()->CreateObject(pos, angle, OBJECT_METAL);
+    CObject* cargo = CObjectManager::GetInstancePointer()->CreateObject(pos, angle, OBJECT_METAL);
 
     if ( m_bResetDelete )
     {
-        fret->SetResetCap(RESET_DELETE);
+        cargo->SetResetCap(RESET_DELETE);
     }
 
     m_main->DisplayError(INFO_CONVERT, m_object);

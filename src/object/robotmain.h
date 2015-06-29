@@ -308,7 +308,7 @@ public:
     bool        FreeSpace(Math::Vector &center, float minRadius, float maxRadius, float space, CObject *exclu);
     float       GetFlatZoneRadius(Math::Vector center, float maxRadius, CObject *exclu);
     void        HideDropZone(CObject* metal);
-    void        ShowDropZone(CObject* metal, CObject* truck);
+    void        ShowDropZone(CObject* metal, CObject* transporter);
     void        FlushShowLimit(int i);
     void        SetShowLimit(int i, Gfx::ParticleType parti, CObject *pObj, Math::Vector pos,
                              float radius, float duration=SHOWLIMITTIME);

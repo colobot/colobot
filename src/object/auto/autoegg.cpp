@@ -276,7 +276,7 @@ CObject* CAutoEgg::SearchAlien()
     CObject* best = nullptr;
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        if ( obj->GetTruck() != nullptr )  continue;
+        if ( obj->GetTransporter() != nullptr )  continue;
 
         ObjectType type = obj->GetType();
         if ( type != OBJECT_ANT    &&

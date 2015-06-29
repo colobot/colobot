@@ -317,22 +317,22 @@ Error CTaskManip::Start(TaskManipOrder order, TaskManipArm arm)
     type = m_object->GetType();
     if ( type == OBJECT_BEE )  // bee?
     {
-        if ( m_object->GetFret() == 0 )
+        if ( m_object->GetCargo() == 0 )
         {
             if ( !m_physics->GetLand() )  return ERR_MANIP_FLY;
 
             other = SearchTakeUnderObject(m_targetPos, MARGIN_BEE);
             if ( other == 0 )  return ERR_MANIP_NIL;
-            m_object->SetFret(other);  // takes the ball
-            other->SetTruck(m_object);
-            other->SetTruckPart(0);  // taken with the base
+            m_object->SetCargo(other);  // takes the ball
+            other->SetTransporter(m_object);
+            other->SetTransporterPart(0);  // taken with the base
             other->SetPosition(0, Math::Vector(0.0f, -3.0f, 0.0f));
         }
         else
         {
-            other = m_object->GetFret();  // other = ball
-            m_object->SetFret(0);  // lick the ball
-            other->SetTruck(0);
+            other = m_object->GetCargo();  // other = ball
+            m_object->SetCargo(0);  // lick the ball
+            other->SetTransporter(0);
             pos = m_object->GetPosition(0);
             pos.y -= 3.0f;
             other->SetPosition(0, pos);
@@ -354,7 +354,7 @@ Error CTaskManip::Start(TaskManipOrder order, TaskManipArm arm)
 
     if ( m_arm == TMA_GRAB )  // takes immediately?
     {
-        TruckTakeObject();
+        TransporterTakeObject();
         Abort();
         return ERR_OK;
     }
@@ -384,7 +384,7 @@ Error CTaskManip::Start(TaskManipOrder order, TaskManipArm arm)
 
     if ( order == TMO_AUTO )
     {
-        if ( m_object->GetFret() == 0 )
+        if ( m_object->GetCargo() == 0 )
         {
             m_order = TMO_GRAB;
         }
@@ -398,11 +398,11 @@ Error CTaskManip::Start(TaskManipOrder order, TaskManipArm arm)
         m_order = order;
     }
 
-    if ( m_order == TMO_GRAB && m_object->GetFret() != 0 )
+    if ( m_order == TMO_GRAB && m_object->GetCargo() != 0 )
     {
         return ERR_MANIP_BUSY;
     }
-    if ( m_order == TMO_DROP && m_object->GetFret() == 0 )
+    if ( m_order == TMO_DROP && m_object->GetCargo() == 0 )
     {
         return ERR_MANIP_EMPTY;
     }
@@ -498,7 +498,7 @@ Error CTaskManip::Start(TaskManipOrder order, TaskManipArm arm)
         if ( m_timeLimit < 0.5f )  m_timeLimit = 0.5f;
     }
 
-    if ( m_object->GetFret() == 0 )  // not carrying anything?
+    if ( m_object->GetCargo() == 0 )  // not carrying anything?
     {
         m_hand = TMH_OPEN;  // open clamp
     }
@@ -534,7 +534,7 @@ Error CTaskManip::Start(TaskManipOrder order, TaskManipArm arm)
 
 Error CTaskManip::IsEnded()
 {
-    CObject*    fret;
+    CObject*    cargo;
     Math::Vector    pos;
     float       angle, dist;
     int         i;
@@ -622,8 +622,8 @@ Error CTaskManip::IsEnded()
         if ( m_step == 2 )
         {
             if ( m_bSubm )  m_speed = 1.0f/1.5f;
-            if ( !TruckTakeObject() &&
-                 m_object->GetFret() == 0 )
+            if ( !TransporterTakeObject() &&
+                 m_object->GetCargo() == 0 )
             {
                 m_hand = TMH_OPEN;  // reopens the clamp
                 m_arm = TMA_NEUTRAL;
@@ -634,8 +634,8 @@ Error CTaskManip::IsEnded()
             {
                 if ( (m_arm == TMA_OTHER ||
                       m_arm == TMA_POWER ) &&
-                     (m_fretType == OBJECT_POWER  ||
-                      m_fretType == OBJECT_ATOMIC ) )
+                     (m_cargoType == OBJECT_POWER  ||
+                      m_cargoType == OBJECT_ATOMIC ) )
                 {
                     m_sound->Play(SOUND_POWEROFF, m_object->GetPosition(0));
                 }
@@ -652,19 +652,19 @@ Error CTaskManip::IsEnded()
         if ( m_step == 1 )
         {
             if ( m_bSubm )  m_speed = 1.0f/0.7f;
-            fret = m_object->GetFret();
-            if ( TruckDeposeObject() )
+            cargo = m_object->GetCargo();
+            if ( TransporterDeposeObject() )
             {
                 if ( (m_arm == TMA_OTHER ||
                       m_arm == TMA_POWER ) &&
-                     (m_fretType == OBJECT_POWER  ||
-                      m_fretType == OBJECT_ATOMIC ) )
+                     (m_cargoType == OBJECT_POWER  ||
+                      m_cargoType == OBJECT_ATOMIC ) )
                 {
                     m_sound->Play(SOUND_POWERON, m_object->GetPosition(0));
                 }
-                if ( fret != 0 && m_fretType == OBJECT_METAL && m_arm == TMA_FFRONT )
+                if ( cargo != 0 && m_cargoType == OBJECT_METAL && m_arm == TMA_FFRONT )
                 {
-                    m_main->ShowDropZone(fret, m_object);  // shows buildable area
+                    m_main->ShowDropZone(cargo, m_object);  // shows buildable area
                 }
                 m_hand = TMH_OPEN;  // opens the clamp to deposit
                 SoundManip(1.0f/m_speed, 0.8f, 1.5f);
@@ -692,7 +692,7 @@ bool CTaskManip::Abort()
 {
     int     i;
 
-    if ( m_object->GetFret() == 0 )  // not carrying anything?
+    if ( m_object->GetCargo() == 0 )  // not carrying anything?
     {
         m_hand = TMH_OPEN;  // open clamp
         m_arm = TMA_NEUTRAL;
@@ -749,7 +749,7 @@ CObject* CTaskManip::SearchTakeUnderObject(Math::Vector &pos, float dLimit)
              type != OBJECT_KEYd    &&
              type != OBJECT_TNT     )  continue;
 
-        if ( pObj->GetTruck() != 0 )  continue;  // object transported?
+        if ( pObj->GetTransporter() != 0 )  continue;  // object transported?
         if ( pObj->GetLock() )  continue;
         if ( pObj->GetZoomY(0) != 1.0f )  continue;
 
@@ -821,7 +821,7 @@ CObject* CTaskManip::SearchTakeFrontObject(bool bAdvance, Math::Vector &pos,
              type != OBJECT_SCRAP4  &&
              type != OBJECT_SCRAP5  )  continue;
 
-        if ( pObj->GetTruck() != 0 )  continue;  // object transported?
+        if ( pObj->GetTransporter() != 0 )  continue;  // object transported?
         if ( pObj->GetLock() )  continue;
         if ( pObj->GetZoomY(0) != 1.0f )  continue;
 
@@ -908,7 +908,7 @@ CObject* CTaskManip::SearchTakeBackObject(bool bAdvance, Math::Vector &pos,
              type != OBJECT_SCRAP4  &&
              type != OBJECT_SCRAP5  )  continue;
 
-        if ( pObj->GetTruck() != 0 )  continue;  // object transported?
+        if ( pObj->GetTransporter() != 0 )  continue;  // object transported?
         if ( pObj->GetLock() )  continue;
         if ( pObj->GetZoomY(0) != 1.0f )  continue;
 
@@ -1077,9 +1077,9 @@ CObject* CTaskManip::SearchOtherObject(bool bAdvance, Math::Vector &pos,
 
 // Takes the object placed in front.
 
-bool CTaskManip::TruckTakeObject()
+bool CTaskManip::TransporterTakeObject()
 {
-    CObject*    fret;
+    CObject*    cargo;
     CObject*    other;
     Math::Matrix    matRotate;
     Math::Vector    pos;
@@ -1087,112 +1087,112 @@ bool CTaskManip::TruckTakeObject()
 
     if ( m_arm == TMA_GRAB )  // takes immediately?
     {
-        fret = m_object->GetFret();
-        if ( fret == 0 )  return false;  // nothing to take?
-        m_fretType = fret->GetType();
+        cargo = m_object->GetCargo();
+        if ( cargo == 0 )  return false;  // nothing to take?
+        m_cargoType = cargo->GetType();
 
         if ( m_object->GetType() == OBJECT_HUMAN ||
              m_object->GetType() == OBJECT_TECH  )
         {
-            fret->SetTruck(m_object);
-            fret->SetTruckPart(4);  // takes with the hand
+            cargo->SetTransporter(m_object);
+            cargo->SetTransporterPart(4);  // takes with the hand
 
-            fret->SetPosition(0, Math::Vector(1.7f, -0.5f, 1.1f));
-            fret->SetAngleY(0, 0.1f);
-            fret->SetAngleX(0, 0.0f);
-            fret->SetAngleZ(0, 0.8f);
+            cargo->SetPosition(0, Math::Vector(1.7f, -0.5f, 1.1f));
+            cargo->SetAngleY(0, 0.1f);
+            cargo->SetAngleX(0, 0.0f);
+            cargo->SetAngleZ(0, 0.8f);
         }
         else if ( m_bSubm )
         {
-            fret->SetTruck(m_object);
-            fret->SetTruckPart(2);  // takes with the right claw
+            cargo->SetTransporter(m_object);
+            cargo->SetTransporterPart(2);  // takes with the right claw
 
             pos = Math::Vector(1.1f, -1.0f, 1.0f);  // relative
-            fret->SetPosition(0, pos);
-            fret->SetAngleX(0, 0.0f);
-            fret->SetAngleY(0, 0.0f);
-            fret->SetAngleZ(0, 0.0f);
+            cargo->SetPosition(0, pos);
+            cargo->SetAngleX(0, 0.0f);
+            cargo->SetAngleY(0, 0.0f);
+            cargo->SetAngleZ(0, 0.0f);
         }
         else
         {
-            fret->SetTruck(m_object);
-            fret->SetTruckPart(3);  // takes with the hand
+            cargo->SetTransporter(m_object);
+            cargo->SetTransporterPart(3);  // takes with the hand
 
             pos = Math::Vector(4.7f, 0.0f, 0.0f);  // relative to the hand (lem4)
-            fret->SetPosition(0, pos);
-            fret->SetAngleX(0, 0.0f);
-            fret->SetAngleZ(0, Math::PI/2.0f);
-            fret->SetAngleY(0, 0.0f);
+            cargo->SetPosition(0, pos);
+            cargo->SetAngleX(0, 0.0f);
+            cargo->SetAngleZ(0, Math::PI/2.0f);
+            cargo->SetAngleY(0, 0.0f);
         }
 
-        m_object->SetFret(fret);  // takes
+        m_object->SetCargo(cargo);  // takes
     }
 
     if ( m_arm == TMA_FFRONT )  // takes on the ground in front?
     {
-        fret = SearchTakeFrontObject(false, pos, dist, angle);
-        if ( fret == 0 )  return false;  // nothing to take?
-        m_fretType = fret->GetType();
+        cargo = SearchTakeFrontObject(false, pos, dist, angle);
+        if ( cargo == 0 )  return false;  // nothing to take?
+        m_cargoType = cargo->GetType();
 
         if ( m_bSubm )
         {
-            fret->SetTruck(m_object);
-            fret->SetTruckPart(2);  // takes with the right claw
+            cargo->SetTransporter(m_object);
+            cargo->SetTransporterPart(2);  // takes with the right claw
 
             pos = Math::Vector(1.1f, -1.0f, 1.0f);  // relative
-            fret->SetPosition(0, pos);
-            fret->SetAngleX(0, 0.0f);
-            fret->SetAngleY(0, 0.0f);
-            fret->SetAngleZ(0, 0.0f);
+            cargo->SetPosition(0, pos);
+            cargo->SetAngleX(0, 0.0f);
+            cargo->SetAngleY(0, 0.0f);
+            cargo->SetAngleZ(0, 0.0f);
         }
         else
         {
-            fret->SetTruck(m_object);
-            fret->SetTruckPart(3);  // takes with the hand
+            cargo->SetTransporter(m_object);
+            cargo->SetTransporterPart(3);  // takes with the hand
 
             pos = Math::Vector(4.7f, 0.0f, 0.0f);  // relative to the hand (lem4)
-            fret->SetPosition(0, pos);
-            fret->SetAngleX(0, 0.0f);
-            fret->SetAngleZ(0, Math::PI/2.0f);
-            fret->SetAngleY(0, 0.0f);
+            cargo->SetPosition(0, pos);
+            cargo->SetAngleX(0, 0.0f);
+            cargo->SetAngleZ(0, Math::PI/2.0f);
+            cargo->SetAngleY(0, 0.0f);
         }
 
-        m_object->SetFret(fret);  // takes
+        m_object->SetCargo(cargo);  // takes
     }
 
     if ( m_arm == TMA_FBACK )  // takes on the ground behind?
     {
-        fret = SearchTakeBackObject(false, pos, dist, angle);
-        if ( fret == 0 )  return false;  // nothing to take?
-        m_fretType = fret->GetType();
+        cargo = SearchTakeBackObject(false, pos, dist, angle);
+        if ( cargo == 0 )  return false;  // nothing to take?
+        m_cargoType = cargo->GetType();
 
-        fret->SetTruck(m_object);
-        fret->SetTruckPart(3);  // takes with the hand
+        cargo->SetTransporter(m_object);
+        cargo->SetTransporterPart(3);  // takes with the hand
 
         pos = Math::Vector(4.7f, 0.0f, 0.0f);  // relative to the hand (lem4)
-        fret->SetPosition(0, pos);
-        fret->SetAngleX(0, 0.0f);
-        fret->SetAngleZ(0, Math::PI/2.0f);
-        fret->SetAngleY(0, 0.0f);
+        cargo->SetPosition(0, pos);
+        cargo->SetAngleX(0, 0.0f);
+        cargo->SetAngleZ(0, Math::PI/2.0f);
+        cargo->SetAngleY(0, 0.0f);
 
-        m_object->SetFret(fret);  // takes
+        m_object->SetCargo(cargo);  // takes
     }
 
     if ( m_arm == TMA_POWER )  // takes battery in the back?
     {
-        fret = m_object->GetPower();
-        if ( fret == 0 )  return false;  // no battery?
-        m_fretType = fret->GetType();
+        cargo = m_object->GetPower();
+        if ( cargo == 0 )  return false;  // no battery?
+        m_cargoType = cargo->GetType();
 
         pos = Math::Vector(4.7f, 0.0f, 0.0f);  // relative to the hand (lem4)
-        fret->SetPosition(0, pos);
-        fret->SetAngleX(0, 0.0f);
-        fret->SetAngleZ(0, Math::PI/2.0f);
-        fret->SetAngleY(0, 0.0f);
-        fret->SetTruckPart(3);  // takes with the hand
+        cargo->SetPosition(0, pos);
+        cargo->SetAngleX(0, 0.0f);
+        cargo->SetAngleZ(0, Math::PI/2.0f);
+        cargo->SetAngleY(0, 0.0f);
+        cargo->SetTransporterPart(3);  // takes with the hand
 
         m_object->SetPower(0);
-        m_object->SetFret(fret);  // takes
+        m_object->SetCargo(cargo);  // takes
     }
 
     if ( m_arm == TMA_OTHER )  // battery takes from friend?
@@ -1200,21 +1200,21 @@ bool CTaskManip::TruckTakeObject()
         other = SearchOtherObject(false, pos, dist, angle, m_height);
         if ( other == 0 )  return false;
 
-        fret = other->GetPower();
-        if ( fret == 0 )  return false;  // the other does not have a battery?
-        m_fretType = fret->GetType();
+        cargo = other->GetPower();
+        if ( cargo == 0 )  return false;  // the other does not have a battery?
+        m_cargoType = cargo->GetType();
 
         other->SetPower(0);
-        fret->SetTruck(m_object);
-        fret->SetTruckPart(3);  // takes with the hand
+        cargo->SetTransporter(m_object);
+        cargo->SetTransporterPart(3);  // takes with the hand
 
         pos = Math::Vector(4.7f, 0.0f, 0.0f);  // relative to the hand (lem4)
-        fret->SetPosition(0, pos);
-        fret->SetAngleX(0, 0.0f);
-        fret->SetAngleZ(0, Math::PI/2.0f);
-        fret->SetAngleY(0, 0.0f);
+        cargo->SetPosition(0, pos);
+        cargo->SetAngleX(0, 0.0f);
+        cargo->SetAngleZ(0, Math::PI/2.0f);
+        cargo->SetAngleY(0, 0.0f);
 
-        m_object->SetFret(fret);  // takes
+        m_object->SetCargo(cargo);  // takes
     }
 
     return true;
@@ -1222,10 +1222,10 @@ bool CTaskManip::TruckTakeObject()
 
 // Deposes the object taken.
 
-bool CTaskManip::TruckDeposeObject()
+bool CTaskManip::TransporterDeposeObject()
 {
     Character*  character;
-    CObject*    fret;
+    CObject*    cargo;
     CObject*    other;
     Math::Matrix*   mat;
     Math::Vector    pos;
@@ -1233,60 +1233,60 @@ bool CTaskManip::TruckDeposeObject()
 
     if ( m_arm == TMA_FFRONT )  // deposits on the ground in front?
     {
-        fret = m_object->GetFret();
-        if ( fret == 0 )  return false;  // nothing transported?
-        m_fretType = fret->GetType();
+        cargo = m_object->GetCargo();
+        if ( cargo == 0 )  return false;  // nothing transported?
+        m_cargoType = cargo->GetType();
 
-        mat = fret->GetWorldMatrix(0);
+        mat = cargo->GetWorldMatrix(0);
         pos = Transform(*mat, Math::Vector(0.0f, 1.0f, 0.0f));
         m_terrain->AdjustToFloor(pos);
-        fret->SetPosition(0, pos);
-        fret->SetAngleY(0, m_object->GetAngleY(0)+Math::PI/2.0f);
-        fret->SetAngleX(0, 0.0f);
-        fret->SetAngleZ(0, 0.0f);
-        fret->FloorAdjust();  // plate well on the ground
+        cargo->SetPosition(0, pos);
+        cargo->SetAngleY(0, m_object->GetAngleY(0)+Math::PI/2.0f);
+        cargo->SetAngleX(0, 0.0f);
+        cargo->SetAngleZ(0, 0.0f);
+        cargo->FloorAdjust();  // plate well on the ground
 
-        fret->SetTruck(0);
-        m_object->SetFret(0);  // deposit
+        cargo->SetTransporter(0);
+        m_object->SetCargo(0);  // deposit
     }
 
     if ( m_arm == TMA_FBACK )  // deposited on the ground behind?
     {
-        fret = m_object->GetFret();
-        if ( fret == 0 )  return false;  // nothing transported?
-        m_fretType = fret->GetType();
+        cargo = m_object->GetCargo();
+        if ( cargo == 0 )  return false;  // nothing transported?
+        m_cargoType = cargo->GetType();
 
-        mat = fret->GetWorldMatrix(0);
+        mat = cargo->GetWorldMatrix(0);
         pos = Transform(*mat, Math::Vector(0.0f, 1.0f, 0.0f));
         m_terrain->AdjustToFloor(pos);
-        fret->SetPosition(0, pos);
-        fret->SetAngleY(0, m_object->GetAngleY(0)+Math::PI/2.0f);
-        fret->SetAngleX(0, 0.0f);
-        fret->SetAngleZ(0, 0.0f);
+        cargo->SetPosition(0, pos);
+        cargo->SetAngleY(0, m_object->GetAngleY(0)+Math::PI/2.0f);
+        cargo->SetAngleX(0, 0.0f);
+        cargo->SetAngleZ(0, 0.0f);
 
-        fret->SetTruck(0);
-        m_object->SetFret(0);  // deposit
+        cargo->SetTransporter(0);
+        m_object->SetCargo(0);  // deposit
     }
 
     if ( m_arm == TMA_POWER )  // deposits battery in the back?
     {
-        fret = m_object->GetFret();
-        if ( fret == 0 )  return false;  // nothing transported?
-        m_fretType = fret->GetType();
+        cargo = m_object->GetCargo();
+        if ( cargo == 0 )  return false;  // nothing transported?
+        m_cargoType = cargo->GetType();
 
         if ( m_object->GetPower() != 0 )  return false;
 
-        fret->SetTruck(m_object);
-        fret->SetTruckPart(0);  // carried by the base
+        cargo->SetTransporter(m_object);
+        cargo->SetTransporterPart(0);  // carried by the base
 
         character = m_object->GetCharacter();
-        fret->SetPosition(0, character->posPower);
-        fret->SetAngleY(0, 0.0f);
-        fret->SetAngleX(0, 0.0f);
-        fret->SetAngleZ(0, 0.0f);
+        cargo->SetPosition(0, character->posPower);
+        cargo->SetAngleY(0, 0.0f);
+        cargo->SetAngleX(0, 0.0f);
+        cargo->SetAngleZ(0, 0.0f);
 
-        m_object->SetPower(fret);  // uses
-        m_object->SetFret(0);
+        m_object->SetPower(cargo);  // uses
+        m_object->SetCargo(0);
     }
 
     if ( m_arm == TMA_OTHER )  // deposits battery on friend?
@@ -1294,24 +1294,24 @@ bool CTaskManip::TruckDeposeObject()
         other = SearchOtherObject(false, pos, dist, angle, m_height);
         if ( other == 0 )  return false;
 
-        fret = other->GetPower();
-        if ( fret != 0 )  return false;  // the other already has a battery?
+        cargo = other->GetPower();
+        if ( cargo != 0 )  return false;  // the other already has a battery?
 
-        fret = m_object->GetFret();
-        if ( fret == 0 )  return false;
-        m_fretType = fret->GetType();
+        cargo = m_object->GetCargo();
+        if ( cargo == 0 )  return false;
+        m_cargoType = cargo->GetType();
 
-        other->SetPower(fret);
-        fret->SetTruck(other);
+        other->SetPower(cargo);
+        cargo->SetTransporter(other);
 
         character = other->GetCharacter();
-        fret->SetPosition(0, character->posPower);
-        fret->SetAngleY(0, 0.0f);
-        fret->SetAngleX(0, 0.0f);
-        fret->SetAngleZ(0, 0.0f);
-        fret->SetTruckPart(0);  // carried by the base
+        cargo->SetPosition(0, character->posPower);
+        cargo->SetAngleY(0, 0.0f);
+        cargo->SetAngleX(0, 0.0f);
+        cargo->SetAngleZ(0, 0.0f);
+        cargo->SetTransporterPart(0);  // carried by the base
 
-        m_object->SetFret(0);  // deposit
+        m_object->SetCargo(0);  // deposit
     }
 
     return true;
@@ -1328,7 +1328,7 @@ bool CTaskManip::IsFreeDeposeObject(Math::Vector pos)
     {
         if ( obj == m_object )  continue;
         if ( !obj->GetActive() )  continue;  // inactive?
-        if ( obj->GetTruck() != nullptr )  continue;  // object transported?
+        if ( obj->GetTransporter() != nullptr )  continue;  // object transported?
 
         Math::Vector oPos;
         float oRadius = 0.0f;

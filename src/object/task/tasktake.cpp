@@ -112,7 +112,7 @@ Error CTaskTake::Start()
 
     m_physics->SetMotorSpeed(Math::Vector(0.0f, 0.0f, 0.0f));
 
-    if ( m_object->GetFret() == 0 )
+    if ( m_object->GetCargo() == 0 )
     {
         m_order = TTO_TAKE;
     }
@@ -192,7 +192,7 @@ Error CTaskTake::Start()
 
 Error CTaskTake::IsEnded()
 {
-    CObject*    fret;
+    CObject*    cargo;
     float       angle;
 
     if ( m_engine->GetPause() )  return ERR_CONTINUE;
@@ -238,11 +238,11 @@ Error CTaskTake::IsEnded()
     {
         if ( m_step == 1 )
         {
-            if ( TruckTakeObject() )
+            if ( TransporterTakeObject() )
             {
                 if ( m_arm == TTA_FRIEND &&
-                     (m_fretType == OBJECT_POWER  ||
-                      m_fretType == OBJECT_ATOMIC ) )
+                     (m_cargoType == OBJECT_POWER  ||
+                      m_cargoType == OBJECT_ATOMIC ) )
                 {
                     m_sound->Play(SOUND_POWEROFF, m_object->GetPosition(0));
                 }
@@ -259,17 +259,17 @@ Error CTaskTake::IsEnded()
     {
         if ( m_step == 1 )
         {
-            fret = m_object->GetFret();
-            TruckDeposeObject();
+            cargo = m_object->GetCargo();
+            TransporterDeposeObject();
             if ( m_arm == TTA_FRIEND &&
-                 (m_fretType == OBJECT_POWER  ||
-                  m_fretType == OBJECT_ATOMIC ) )
+                 (m_cargoType == OBJECT_POWER  ||
+                  m_cargoType == OBJECT_ATOMIC ) )
             {
                 m_sound->Play(SOUND_POWERON, m_object->GetPosition(0));
             }
-            if ( fret != 0 && m_fretType == OBJECT_METAL && m_arm == TTA_FFRONT )
+            if ( cargo != 0 && m_cargoType == OBJECT_METAL && m_arm == TTA_FFRONT )
             {
-                m_main->ShowDropZone(fret, m_object);  // shows buildable area
+                m_main->ShowDropZone(cargo, m_object);  // shows buildable area
             }
             m_motion->SetAction(-1);  // gets up
             m_progress = 0.0f;
@@ -329,7 +329,7 @@ CObject* CTaskTake::SearchTakeObject(float &angle,
              type != OBJECT_KEYd    &&
              type != OBJECT_TNT     )  continue;
 
-        if ( pObj->GetTruck() != 0 )  continue;  // object transported?
+        if ( pObj->GetTransporter() != 0 )  continue;  // object transported?
         if ( pObj->GetLock() )  continue;
         if ( pObj->GetZoomY(0) != 1.0f )  continue;
 
@@ -442,30 +442,30 @@ CObject* CTaskTake::SearchFriendObject(float &angle,
 
 // Takes the object in front.
 
-bool CTaskTake::TruckTakeObject()
+bool CTaskTake::TransporterTakeObject()
 {
-    CObject*     fret;
+    CObject*     cargo;
     CObject*     other;
     Math::Matrix matRotate;
     float        angle;
 
     if ( m_arm == TTA_FFRONT )  // takes on the ground in front?
     {
-//?     fret = SearchTakeObject(angle, 1.5f, Math::PI*0.04f);
-        fret = SearchTakeObject(angle, 1.5f, Math::PI*0.15f);  //OK 1.9
-        if ( fret == 0 )  return false;  // rien � prendre ?
-        m_fretType = fret->GetType();
+//?     cargo = SearchTakeObject(angle, 1.5f, Math::PI*0.04f);
+        cargo = SearchTakeObject(angle, 1.5f, Math::PI*0.15f);  //OK 1.9
+        if ( cargo == 0 )  return false;  // rien � prendre ?
+        m_cargoType = cargo->GetType();
 
-        fret->SetTruck(m_object);
-        fret->SetTruckPart(4);  // takes with the hand
+        cargo->SetTransporter(m_object);
+        cargo->SetTransporterPart(4);  // takes with the hand
 
-//?     fret->SetPosition(0, Math::Vector(2.2f, -1.0f, 1.1f));
-        fret->SetPosition(0, Math::Vector(1.7f, -0.5f, 1.1f));
-        fret->SetAngleY(0, 0.1f);
-        fret->SetAngleX(0, 0.0f);
-        fret->SetAngleZ(0, 0.8f);
+//?     cargo->SetPosition(0, Math::Vector(2.2f, -1.0f, 1.1f));
+        cargo->SetPosition(0, Math::Vector(1.7f, -0.5f, 1.1f));
+        cargo->SetAngleY(0, 0.1f);
+        cargo->SetAngleX(0, 0.0f);
+        cargo->SetAngleZ(0, 0.8f);
 
-        m_object->SetFret(fret);  // takes
+        m_object->SetCargo(cargo);  // takes
     }
 
     if ( m_arm == TTA_FRIEND )  // takes friend's battery?
@@ -473,21 +473,21 @@ bool CTaskTake::TruckTakeObject()
         other = SearchFriendObject(angle, 1.5f, Math::PI*0.04f);
         if ( other == 0 )  return false;
 
-        fret = other->GetPower();
-        if ( fret == 0 )  return false;  // the other does not have a battery?
-        m_fretType = fret->GetType();
+        cargo = other->GetPower();
+        if ( cargo == 0 )  return false;  // the other does not have a battery?
+        m_cargoType = cargo->GetType();
 
         other->SetPower(0);
-        fret->SetTruck(m_object);
-        fret->SetTruckPart(4);  // takes with the hand
+        cargo->SetTransporter(m_object);
+        cargo->SetTransporterPart(4);  // takes with the hand
 
-//?     fret->SetPosition(0, Math::Vector(2.2f, -1.0f, 1.1f));
-        fret->SetPosition(0, Math::Vector(1.7f, -0.5f, 1.1f));
-        fret->SetAngleY(0, 0.1f);
-        fret->SetAngleX(0, 0.0f);
-        fret->SetAngleZ(0, 0.8f);
+//?     cargo->SetPosition(0, Math::Vector(2.2f, -1.0f, 1.1f));
+        cargo->SetPosition(0, Math::Vector(1.7f, -0.5f, 1.1f));
+        cargo->SetAngleY(0, 0.1f);
+        cargo->SetAngleX(0, 0.0f);
+        cargo->SetAngleZ(0, 0.8f);
 
-        m_object->SetFret(fret);  // takes
+        m_object->SetCargo(cargo);  // takes
     }
 
     return true;
@@ -495,10 +495,10 @@ bool CTaskTake::TruckTakeObject()
 
 // Deposes the object taken.
 
-bool CTaskTake::TruckDeposeObject()
+bool CTaskTake::TransporterDeposeObject()
 {
     Character*  character;
-    CObject*    fret;
+    CObject*    cargo;
     CObject*    other;
     Math::Matrix*   mat;
     Math::Vector    pos;
@@ -506,21 +506,21 @@ bool CTaskTake::TruckDeposeObject()
 
     if ( m_arm == TTA_FFRONT )  // deposes on the ground in front?
     {
-        fret = m_object->GetFret();
-        if ( fret == 0 )  return false;  // does nothing?
-        m_fretType = fret->GetType();
+        cargo = m_object->GetCargo();
+        if ( cargo == 0 )  return false;  // does nothing?
+        m_cargoType = cargo->GetType();
 
-        mat = fret->GetWorldMatrix(0);
+        mat = cargo->GetWorldMatrix(0);
         pos = Transform(*mat, Math::Vector(-0.5f, 1.0f, 0.0f));
         m_terrain->AdjustToFloor(pos);
-        fret->SetPosition(0, pos);
-        fret->SetAngleY(0, m_object->GetAngleY(0)+Math::PI/2.0f);
-        fret->SetAngleX(0, 0.0f);
-        fret->SetAngleZ(0, 0.0f);
-        fret->FloorAdjust();  // plate well on the ground
+        cargo->SetPosition(0, pos);
+        cargo->SetAngleY(0, m_object->GetAngleY(0)+Math::PI/2.0f);
+        cargo->SetAngleX(0, 0.0f);
+        cargo->SetAngleZ(0, 0.0f);
+        cargo->FloorAdjust();  // plate well on the ground
 
-        fret->SetTruck(0);
-        m_object->SetFret(0);  // deposit
+        cargo->SetTransporter(0);
+        m_object->SetCargo(0);  // deposit
     }
 
     if ( m_arm == TTA_FRIEND )  // deposes battery on friends?
@@ -528,24 +528,24 @@ bool CTaskTake::TruckDeposeObject()
         other = SearchFriendObject(angle, 1.5f, Math::PI*0.04f);
         if ( other == 0 )  return false;
 
-        fret = other->GetPower();
-        if ( fret != 0 )  return false;  // the other already has a battery?
+        cargo = other->GetPower();
+        if ( cargo != 0 )  return false;  // the other already has a battery?
 
-        fret = m_object->GetFret();
-        if ( fret == 0 )  return false;
-        m_fretType = fret->GetType();
+        cargo = m_object->GetCargo();
+        if ( cargo == 0 )  return false;
+        m_cargoType = cargo->GetType();
 
-        other->SetPower(fret);
-        fret->SetTruck(other);
+        other->SetPower(cargo);
+        cargo->SetTransporter(other);
 
         character = other->GetCharacter();
-        fret->SetPosition(0, character->posPower);
-        fret->SetAngleY(0, 0.0f);
-        fret->SetAngleX(0, 0.0f);
-        fret->SetAngleZ(0, 0.0f);
-        fret->SetTruckPart(0);  // carried by the base
+        cargo->SetPosition(0, character->posPower);
+        cargo->SetAngleY(0, 0.0f);
+        cargo->SetAngleX(0, 0.0f);
+        cargo->SetAngleZ(0, 0.0f);
+        cargo->SetTransporterPart(0);  // carried by the base
 
-        m_object->SetFret(0);  // deposit
+        m_object->SetCargo(0);  // deposit
     }
 
     return true;
@@ -567,7 +567,7 @@ bool CTaskTake::IsFreeDeposeObject(Math::Vector pos)
     {
         if ( pObj == m_object )  continue;
         if ( !pObj->GetActive() )  continue;  // inactive?
-        if ( pObj->GetTruck() != 0 )  continue;  // object transported?
+        if ( pObj->GetTransporter() != 0 )  continue;  // object transported?
 
         j = 0;
         while ( pObj->GetCrashSphere(j++, oPos, oRadius) )

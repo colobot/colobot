@@ -1091,7 +1091,7 @@ CObjectUPtr CObjectFactory::CreateBuilding(const ObjectCreateParams& params)
         pPower->obj->CreateCrashSphere(Math::Vector(0.0f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f);
         pPower->obj->SetGlobalSphere(Math::Vector(0.0f, 1.0f, 0.0f), 1.5f);
 
-        pPower->SetTruck(obj.get());
+        pPower->SetTransporter(obj.get());
         SetPower(pPower);
 
         if ( power <= 1.0f )  pPower->obj->SetEnergy(power);

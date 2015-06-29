@@ -72,8 +72,8 @@ protected:
     CObject*    SearchTakeFrontObject(bool bAdvance, Math::Vector &pos, float &distance, float &angle);
     CObject*    SearchTakeBackObject(bool bAdvance, Math::Vector &pos, float &distance, float &angle);
     CObject*    SearchOtherObject(bool bAdvance, Math::Vector &pos, float &distance, float &angle, float &height);
-    bool        TruckTakeObject();
-    bool        TruckDeposeObject();
+    bool        TransporterTakeObject();
+    bool        TransporterDeposeObject();
     bool        IsFreeDeposeObject(Math::Vector pos);
     void        SoundManip(float time, float amplitude=1.0f, float frequency=1.0f);
 
@@ -97,6 +97,6 @@ protected:
     float           m_move;
     Math::Vector        m_targetPos;
     float           m_timeLimit;
-    ObjectType      m_fretType;
+    ObjectType      m_cargoType;
 };
 

@@ -1996,8 +1996,8 @@ CObject* CRobotMain::DetectObject(Math::Point pos)
     for (CObject* obj : m_objMan->GetAllObjects())
     {
         if (!obj->GetActive()) continue;
-        CObject* truck = obj->GetTruck();
-        if (truck != nullptr && !truck->GetActive()) continue;
+        CObject* transporter = obj->GetTransporter();
+        if (transporter != nullptr && !transporter->GetActive()) continue;
         if (obj->GetProxyActivate()) continue;
 
         CObject* target = nullptr;
@@ -2113,7 +2113,7 @@ CObject* CRobotMain::DetectObject(Math::Point pos)
         }
         else if (type == OBJECT_POWER || type == OBJECT_ATOMIC)
         {
-            target = obj->GetTruck();  // battery connected
+            target = obj->GetTransporter();  // battery connected
             if (!target) target = obj; // standalone battery
         }
 
@@ -2617,7 +2617,7 @@ bool CRobotMain::EventFrame(const Event &event)
         for (CObject* obj : m_objMan->GetAllObjects())
         {
             if (pm != nullptr) pm->UpdateObject(obj);
-            if (obj->GetTruck() != nullptr)  continue;
+            if (obj->GetTransporter() != nullptr)  continue;
             ObjectType type = obj->GetType();
             if (type == OBJECT_TOTO)
                 toto = obj;
@@ -2627,7 +2627,7 @@ bool CRobotMain::EventFrame(const Event &event)
         // Advances all objects transported by robots.
         for (CObject* obj : m_objMan->GetAllObjects())
         {
-            if (obj->GetTruck() == nullptr) continue;
+            if (obj->GetTransporter() == nullptr) continue;
             obj->EventProcess(event);
         }
 
@@ -4189,7 +4189,7 @@ float CRobotMain::SearchNearestObject(Math::Vector center, CObject *exclu)
     for (CObject* obj : m_objMan->GetAllObjects())
     {
         if (!obj->GetActive()) continue;  // inactive?
-        if (obj->GetTruck() != nullptr) continue;  // object carries?
+        if (obj->GetTransporter() != nullptr) continue;  // object carries?
         if (obj == exclu)  continue;
 
         ObjectType type = obj->GetType();
@@ -4325,7 +4325,7 @@ void CRobotMain::HideDropZone(CObject* metal)
 }
 
 //! Shows the buildable area when a cube of metal is deposited
-void CRobotMain::ShowDropZone(CObject* metal, CObject* truck)
+void CRobotMain::ShowDropZone(CObject* metal, CObject* transporter)
 {
     if (metal == nullptr) return;
 
@@ -4337,9 +4337,9 @@ void CRobotMain::ShowDropZone(CObject* metal, CObject* truck)
     for (CObject* obj : m_objMan->GetAllObjects())
     {
         if (!obj->GetActive()) continue;  // inactive?
-        if (obj->GetTruck() != nullptr) continue;  // object carried?
+        if (obj->GetTransporter() != nullptr) continue;  // object carried?
         if (obj == metal) continue;
-        if (obj == truck) continue;
+        if (obj == transporter) continue;
 
         Math::Vector oPos;
         float oRadius;
@@ -4540,7 +4540,7 @@ void CRobotMain::CompileScript(bool soluce)
         nbError = 0;
         for (CObject* obj : m_objMan->GetAllObjects())
         {
-            if (obj->GetTruck() != nullptr) continue;
+            if (obj->GetTransporter() != nullptr) continue;
 
             CBrain* brain = obj->GetBrain();
             if (brain == nullptr) continue;
@@ -4568,7 +4568,7 @@ void CRobotMain::CompileScript(bool soluce)
     {
         for (CObject* obj : m_objMan->GetAllObjects())
         {
-            if (obj->GetTruck() != 0)  continue;
+            if (obj->GetTransporter() != 0)  continue;
 
             CBrain* brain = obj->GetBrain();
             if (brain == 0)  continue;
@@ -4584,7 +4584,7 @@ void CRobotMain::CompileScript(bool soluce)
     // Start all programs according to the command "run".
     for (CObject* obj : m_objMan->GetAllObjects())
     {
-        if (obj->GetTruck() != nullptr) continue;
+        if (obj->GetTransporter() != nullptr) continue;
 
         CBrain* brain = obj->GetBrain();
         if (brain == nullptr)  continue;
@@ -4949,18 +4949,18 @@ bool CRobotMain::IOWriteScene(const char *filename, const char *filecbot, char *
     {
         if (obj->GetType() == OBJECT_TOTO) continue;
         if (obj->GetType() == OBJECT_FIX) continue;
-        if (obj->GetTruck() != nullptr) continue;
+        if (obj->GetTransporter() != nullptr) continue;
         if (obj->GetBurn()) continue;
         if (obj->GetDead()) continue;
         if (obj->IsExploding()) continue;
 
         CObject* power = obj->GetPower();
-        CObject* fret  = obj->GetFret();
+        CObject* cargo  = obj->GetCargo();
 
-        if (fret != nullptr)  // object transported?
+        if (cargo != nullptr)  // object transported?
         {
             line.reset(new CLevelParserLine("CreateFret"));
-            IOWriteObject(line.get(), fret);
+            IOWriteObject(line.get(), cargo);
             levelParser.AddLine(std::move(line));
         }
 
@@ -5002,7 +5002,7 @@ bool CRobotMain::IOWriteScene(const char *filename, const char *filecbot, char *
     {
         if (obj->GetType() == OBJECT_TOTO) continue;
         if (obj->GetType() == OBJECT_FIX) continue;
-        if (obj->GetTruck() != nullptr) continue;
+        if (obj->GetTransporter() != nullptr) continue;
         if (obj->GetBurn()) continue;
         if (obj->GetDead()) continue;
 
@@ -5102,7 +5102,7 @@ CObject* CRobotMain::IOReadScene(const char *filename, const char *filecbot)
     levelParser.Load();
 
     m_base = nullptr;
-    CObject* fret   = nullptr;
+    CObject* cargo   = nullptr;
     CObject* power  = nullptr;
     CObject* sel    = nullptr;
     int objRank = 0;
@@ -5124,7 +5124,7 @@ CObject* CRobotMain::IOReadScene(const char *filename, const char *filecbot)
         }
 
         if (line->GetCommand() == "CreateFret")
-            fret = IOReadObject(line.get(), filename, -1);
+            cargo = IOReadObject(line.get(), filename, -1);
 
         if (line->GetCommand() == "CreatePower")
             power = IOReadObject(line.get(), filename, -1);
@@ -5136,9 +5136,9 @@ CObject* CRobotMain::IOReadScene(const char *filename, const char *filecbot)
             if (line->GetParam("select")->AsBool(false))
                 sel = obj;
 
-            if (fret != nullptr)
+            if (cargo != nullptr)
             {
-                obj->SetFret(fret);
+                obj->SetCargo(cargo);
                 CTaskManip* task = new CTaskManip(obj);
                 task->Start(TMO_AUTO, TMA_GRAB);  // holds the object!
                 delete task;
@@ -5147,10 +5147,10 @@ CObject* CRobotMain::IOReadScene(const char *filename, const char *filecbot)
             if (power != nullptr)
             {
                 obj->SetPower(power);
-                power->SetTruck(obj);
+                power->SetTransporter(obj);
             }
 
-            fret  = nullptr;
+            cargo  = nullptr;
             power = nullptr;
         }
     }
@@ -5164,7 +5164,7 @@ CObject* CRobotMain::IOReadScene(const char *filename, const char *filecbot)
         nbError = 0;
         for (CObject* obj : m_objMan->GetAllObjects())
         {
-            if (obj->GetTruck() != nullptr) continue;
+            if (obj->GetTransporter() != nullptr) continue;
 
             objRank = obj->GetDefRank();
             if (objRank == -1) continue;
@@ -5177,7 +5177,7 @@ CObject* CRobotMain::IOReadScene(const char *filename, const char *filecbot)
     // Starts scripts
     for (CObject* obj : m_objMan->GetAllObjects())
     {
-        if (obj->GetTruck() != nullptr) continue;
+        if (obj->GetTransporter() != nullptr) continue;
         if (obj->GetDefRank() == -1) continue;
 
         CBrain* brain = obj->GetBrain();
@@ -5206,7 +5206,7 @@ CObject* CRobotMain::IOReadScene(const char *filename, const char *filecbot)
                 {
                     if (obj->GetType() == OBJECT_TOTO) continue;
                     if (obj->GetType() == OBJECT_FIX) continue;
-                    if (obj->GetTruck() != nullptr) continue;
+                    if (obj->GetTransporter() != nullptr) continue;
                     if (obj->GetBurn()) continue;
                     if (obj->GetDead()) continue;
 
@@ -5277,7 +5277,7 @@ void CRobotMain::ResetObject()
 // TODO: ?
 #if 0
     CObject*    obj;
-    CObject*    truck;
+    CObject*    transporter;
     CAuto*      objAuto;
     CBrain*     brain;
     CPyro*      pyro;
@@ -5313,11 +5313,11 @@ void CRobotMain::ResetObject()
 
         if ( cap == RESET_DELETE )
         {
-            truck = obj->GetTruck();
-            if ( truck != 0 )
+            transporter = obj->GetTransporter();
+            if ( transporter != 0 )
             {
-                truck->SetFret(0);
-                obj->SetTruck(0);
+                transporter->SetCargo(0);
+                obj->SetTransporter(0);
             }
             obj->DeleteObject();
             delete obj;
@@ -5471,10 +5471,10 @@ void CRobotMain::UpdateAudio(bool frame)
             if (energyLevel < m_audioChange[t].powermin || energyLevel > m_audioChange[t].powermax)
                 continue;
 
-            if (obj->GetTruck() == 0)
+            if (obj->GetTransporter() == 0)
                 oPos = obj->GetPosition(0);
             else
-                oPos = obj->GetTruck()->GetPosition(0);
+                oPos = obj->GetTransporter()->GetPosition(0);
 
             oPos.y = 0.0f;
 
@@ -5566,7 +5566,7 @@ Error CRobotMain::CheckEndMission(bool frame)
 
             if (!m_endTake[t].countTransported)
             {
-                if (obj->GetTruck() != nullptr) continue;
+                if (obj->GetTransporter() != nullptr) continue;
             }
 
             ObjectType type = obj->GetType();
@@ -5610,10 +5610,10 @@ Error CRobotMain::CheckEndMission(bool frame)
             }
             if (energyLevel < m_endTake[t].powermin || energyLevel > m_endTake[t].powermax) continue;
 
-            if (obj->GetTruck() == 0)
+            if (obj->GetTransporter() == 0)
                 oPos = obj->GetPosition(0);
             else
-                oPos = obj->GetTruck()->GetPosition(0);
+                oPos = obj->GetTransporter()->GetPosition(0);
 
             oPos.y = 0.0f;
 

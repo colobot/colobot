@@ -739,7 +739,7 @@ bool CMotionHuman::EventFrame(const Event &event)
         s = 0.0f;
     }
 
-    if ( m_object->GetFret() != 0 )  // carries something?
+    if ( m_object->GetCargo() != 0 )  // carries something?
     {
         s *= 1.3f;
     }
@@ -771,7 +771,7 @@ bool CMotionHuman::EventFrame(const Event &event)
         s = 0.0f;
     }
 
-    if ( m_object->GetFret() != 0 )  // carries something?
+    if ( m_object->GetCargo() != 0 )  // carries something?
     {
         s *= 1.3f;
     }
@@ -836,7 +836,7 @@ bool CMotionHuman::EventFrame(const Event &event)
             else
             {
                 action = MH_MARCH;  // walking
-                if ( m_object->GetFret() != 0 )  action = MH_MARCHTAKE;  // take walking
+                if ( m_object->GetCargo() != 0 )  action = MH_MARCHTAKE;  // take walking
                 rTime[0] = rTime[1] = m_armMember;
                 lTime[0] = lTime[1] = m_armMember+0.5f;
             }
@@ -875,7 +875,7 @@ bool CMotionHuman::EventFrame(const Event &event)
     armAction = action;
     legAction = action;
 
-    if ( m_object->GetFret() != 0 )  // carries something?
+    if ( m_object->GetCargo() != 0 )  // carries something?
     {
         armAction = MH_MARCHTAKE;  // take walking
     }
@@ -989,7 +989,7 @@ bool CMotionHuman::EventFrame(const Event &event)
         aa = 0.5f;
         if ( i%2 == 0 )  // arm?
         {
-            if ( m_object->GetFret() == 0 )   // does nothing?
+            if ( m_object->GetCargo() == 0 )   // does nothing?
             {
                 aa = 2.0f;  // moves a lot
             }
@@ -1620,7 +1620,7 @@ bool CMotionHuman::EventFrame(const Event &event)
 
         float speedX = m_physics->GetLinMotionX(MO_REASPEED);
 
-        if ( m_object->GetFret() == 0 )
+        if ( m_object->GetCargo() == 0 )
         {
             if ( speedX > 0.0f )  synchro = 0.21f;  // synchro forward
             else                 synchro = 0.29f;  // synchro backward
@@ -1637,7 +1637,7 @@ bool CMotionHuman::EventFrame(const Event &event)
         {
             volume[0] = 0.5f;
             freq[0] = 1.0f;
-            if ( m_object->GetFret() != 0 )
+            if ( m_object->GetCargo() != 0 )
             {
 //?             volume[0] *= 2.0f;
                 freq[0] = 0.7f;

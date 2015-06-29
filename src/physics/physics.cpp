@@ -810,7 +810,7 @@ void CPhysics::MotorUpdate(float aTime, float rTime)
               type == OBJECT_TECH  )
     {
         power = 0;
-        if ( m_object->GetFret() != 0 &&  // carries something?
+        if ( m_object->GetCargo() != 0 &&  // carries something?
              !m_object->IsSpaceshipCargo() )
         {
             motorSpeed.x *= 0.7f;  // forward more slowly
@@ -825,7 +825,7 @@ void CPhysics::MotorUpdate(float aTime, float rTime)
                 motorSpeed.z *= 0.5f;
                 motorSpeed.y *= 0.5f;
 
-                if ( m_object->GetFret() != 0 )  // carries something?
+                if ( m_object->GetCargo() != 0 )  // carries something?
                 {
                     motorSpeed.x *= 0.2f;
                     motorSpeed.z *= 0.9f;
@@ -1780,7 +1780,7 @@ void CPhysics::WaterFrame(float aTime, float rTime)
 
     level = m_water->GetLevel();
     if ( level == 0.0f )  return;  // no water?
-    if ( m_object->GetTruck() != 0 )  return;  // object transported?
+    if ( m_object->GetTransporter() != 0 )  return;  // object transported?
 
     // Management of flames into the lava.
     pos = m_object->GetPosition(0);
@@ -2529,7 +2529,7 @@ int CPhysics::ObjectAdapt(const Math::Vector &pos, const Math::Vector &angle)
     for (CObject* pObj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
         if ( pObj == m_object )  continue;  // yourself?
-        if ( pObj->GetTruck() != 0 )  continue;  // object transported?
+        if ( pObj->GetTransporter() != 0 )  continue;  // object transported?
         if ( !pObj->GetEnable() )  continue;  // inactive?
         if ( pObj->GetRuin() )  continue;  // is burning or exploding?
         if ( pObj->GetDead() )  continue;  // dead man?
@@ -3039,15 +3039,15 @@ void CPhysics::FrameParticle(float aTime, float rTime)
 void CPhysics::PowerParticle(float factor, bool bBreak)
 {
     Character*  character;
-    CObject*    fret;
+    CObject*    cargo;
     Math::Matrix*   mat;
     Math::Vector    pos, ppos, eye, speed;
     Math::Point     dim;
     bool        bCarryPower;
 
     bCarryPower = false;
-    fret = m_object->GetFret();
-    if ( fret != 0 && fret->GetType() == OBJECT_POWER &&
+    cargo = m_object->GetCargo();
+    if ( cargo != 0 && cargo->GetType() == OBJECT_POWER &&
          m_object->GetAngleZ(1) == ARM_STOCK_ANGLE1 )
     {
         bCarryPower = true;  // carries a battery

@@ -92,7 +92,7 @@ Error CAutoDestroyer::StartAction(int param)
         if ( m_phase == ADEP_WAIT )
         {
             scrap->SetLock(true);  // usable waste
-//?         scrap->SetTruck(m_object);  // usable waste
+//?         scrap->SetTransporter(m_object);  // usable waste
 
             m_sound->Play(SOUND_PSHHH2, m_object->GetPosition(0), 1.0f, 1.0f);
 

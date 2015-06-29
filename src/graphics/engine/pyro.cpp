@@ -1374,24 +1374,24 @@ void CPyro::DeleteObject(bool primary, bool secondary)
             m_object->SetPower(nullptr);
         }
 
-        sub = m_object->GetFret();
+        sub = m_object->GetCargo();
         if ( sub != nullptr )
         {
             CObjectManager::GetInstancePointer()->DeleteObject(sub);
-            m_object->SetFret(nullptr);
+            m_object->SetCargo(nullptr);
         }
     }
 
     if (primary)
     {
-        CObject* truck = m_object->GetTruck();
-        if ( truck != nullptr )  // object carries?
+        CObject* transporter = m_object->GetTransporter();
+        if ( transporter != nullptr )  // object carries?
         {
-            if (truck->GetPower() == m_object)
-                truck->SetPower(nullptr);
+            if (transporter->GetPower() == m_object)
+                transporter->SetPower(nullptr);
 
-            if (truck->GetFret() == m_object)
-                truck->SetFret(nullptr);
+            if (transporter->GetCargo() == m_object)
+                transporter->SetCargo(nullptr);
         }
 
         CObjectManager::GetInstancePointer()->DeleteObject(m_object);
@@ -2262,7 +2262,7 @@ CObject* CPyro::FallSearchBeeExplo()
              oType != OBJECT_POWER    &&
              oType != OBJECT_ATOMIC   )  continue;
 
-        if ( obj->GetTruck() != nullptr )  continue;  // object transported?
+        if ( obj->GetTransporter() != nullptr )  continue;  // object transported?
 
         Math::Vector oPos = obj->GetPosition(0);
 

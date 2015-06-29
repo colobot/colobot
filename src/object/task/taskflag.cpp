@@ -85,7 +85,7 @@ Error CTaskFlag::Start(TaskFlagOrder order, int rank)
     if ( speed.x != 0.0f ||
          speed.z != 0.0f )  return ERR_FLAG_MOTOR;
 
-    if ( m_object->GetFret() != 0 )  return ERR_FLAG_BUSY;
+    if ( m_object->GetCargo() != 0 )  return ERR_FLAG_BUSY;
 
     if ( order == TFL_CREATE )
     {

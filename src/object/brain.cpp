@@ -2394,7 +2394,7 @@ void CBrain::UpdateInterface()
     bFly = bEnable;
     if ( bFly && (type == OBJECT_HUMAN || type == OBJECT_TECH) )
     {
-        if ( m_object->GetFret() != 0 )  bFly = false;  // if holder -> not fly
+        if ( m_object->GetCargo() != 0 )  bFly = false;  // if holder -> not fly
     }
     EnableInterface(pw, EVENT_OBJECT_GASUP,   bFly && m_main->CanPlayerInteract());
     EnableInterface(pw, EVENT_OBJECT_GASDOWN, bFly && m_main->CanPlayerInteract());

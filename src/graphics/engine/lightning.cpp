@@ -320,7 +320,7 @@ CObject* CLightning::SearchObject(Math::Vector pos)
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
         if (!obj->GetActive()) continue;  // inactive object?
-        if (obj->GetTruck() != nullptr) continue;  // object transported?
+        if (obj->GetTransporter() != nullptr) continue;  // object transported?
 
         ObjectType type = obj->GetType();
         if ( type == OBJECT_BASE ||

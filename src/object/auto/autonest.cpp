@@ -52,10 +52,10 @@ void CAutoNest::DeleteObject(bool all)
 {
     if ( !all )
     {
-        CObject* fret = SearchFret();
-        if ( fret != nullptr )
+        CObject* cargo = SearchCargo();
+        if ( cargo != nullptr )
         {
-            CObjectManager::GetInstancePointer()->DeleteObject(fret);
+            CObjectManager::GetInstancePointer()->DeleteObject(cargo);
         }
     }
 
@@ -78,7 +78,7 @@ void CAutoNest::Init()
 
     pos = m_object->GetPosition(0);
     m_terrain->AdjustToFloor(pos);
-    m_fretPos = pos;
+    m_cargoPos = pos;
 }
 
 
@@ -86,7 +86,7 @@ void CAutoNest::Init()
 
 bool CAutoNest::EventProcess(const Event &event)
 {
-    CObject*    fret;
+    CObject*    cargo;
 
     CAuto::EventProcess(event);
 
@@ -99,7 +99,7 @@ bool CAutoNest::EventProcess(const Event &event)
     {
         if ( m_progress >= 1.0f )
         {
-            if ( !SearchFree(m_fretPos) )
+            if ( !SearchFree(m_cargoPos) )
             {
                 m_phase    = ANP_WAIT;
                 m_progress = 0.0f;
@@ -107,7 +107,7 @@ bool CAutoNest::EventProcess(const Event &event)
             }
             else
             {
-                CreateFret(m_fretPos, 0.0f, OBJECT_BULLET);
+                CreateCargo(m_cargoPos, 0.0f, OBJECT_BULLET);
                 m_phase    = ANP_BIRTH;
                 m_progress = 0.0f;
                 m_speed    = 1.0f/5.0f;
@@ -117,21 +117,21 @@ bool CAutoNest::EventProcess(const Event &event)
 
     if ( m_phase == ANP_BIRTH )
     {
-        fret = SearchFret();
+        cargo = SearchCargo();
 
         if ( m_progress < 1.0f )
         {
-            if ( fret != 0 )
+            if ( cargo != 0 )
             {
-                fret->SetZoom(0, m_progress);
+                cargo->SetZoom(0, m_progress);
             }
         }
         else
         {
-            if ( fret != 0 )
+            if ( cargo != 0 )
             {
-                fret->SetZoom(0, 1.0f);
-                fret->SetLock(false);
+                cargo->SetZoom(0, 1.0f);
+                cargo->SetLock(false);
             }
 
             m_phase    = ANP_WAIT;
@@ -169,16 +169,16 @@ bool CAutoNest::SearchFree(Math::Vector pos)
 
 // Create a transportable object.
 
-void CAutoNest::CreateFret(Math::Vector pos, float angle, ObjectType type)
+void CAutoNest::CreateCargo(Math::Vector pos, float angle, ObjectType type)
 {
-    CObject* fret = CObjectManager::GetInstancePointer()->CreateObject(pos, angle, type);
-    fret->SetLock(true);  // not usable
-    fret->SetZoom(0, 0.0f);
+    CObject* cargo = CObjectManager::GetInstancePointer()->CreateObject(pos, angle, type);
+    cargo->SetLock(true);  // not usable
+    cargo->SetZoom(0, 0.0f);
 }
 
 // Looking for the ball during manufacture.
 
-CObject* CAutoNest::SearchFret()
+CObject* CAutoNest::SearchCargo()
 {
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
@@ -188,8 +188,8 @@ CObject* CAutoNest::SearchFret()
         if ( type != OBJECT_BULLET )  continue;
 
         Math::Vector oPos = obj->GetPosition(0);
-        if ( oPos.x == m_fretPos.x &&
-             oPos.z == m_fretPos.z )
+        if ( oPos.x == m_cargoPos.x &&
+             oPos.z == m_cargoPos.z )
         {
             return obj;
         }

@@ -396,7 +396,7 @@ int CAutoSafe::CountKeys()
 
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        if ( obj->GetTruck() != nullptr )  continue;
+        if ( obj->GetTransporter() != nullptr )  continue;
 
         ObjectType  oType = obj->GetType();
         if ( oType != OBJECT_KEYa &&
@@ -468,7 +468,7 @@ void CAutoSafe::LockKeys()
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
         ObjectType oType = obj->GetType();
-        if ( obj->GetTruck() != nullptr )  continue;
+        if ( obj->GetTransporter() != nullptr )  continue;
 
         if ( oType != OBJECT_KEYa &&
              oType != OBJECT_KEYb &&
@@ -492,7 +492,7 @@ void CAutoSafe::DownKeys(float progress)
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
         ObjectType oType = obj->GetType();
-        if ( obj->GetTruck() != nullptr )  continue;
+        if ( obj->GetTransporter() != nullptr )  continue;
 
         if ( oType != OBJECT_KEYa &&
              oType != OBJECT_KEYb &&
@@ -521,7 +521,7 @@ void CAutoSafe::DeleteKeys()
         for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
         {
             ObjectType oType = obj->GetType();
-            if ( obj->GetTruck() != nullptr )  continue;
+            if ( obj->GetTransporter() != nullptr )  continue;
 
             if ( oType != OBJECT_KEYa &&
                  oType != OBJECT_KEYb &&
@@ -549,7 +549,7 @@ CObject* CAutoSafe::SearchVehicle()
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
         if ( obj == m_object )  continue;
-        if ( obj->GetTruck() != nullptr )  continue;
+        if ( obj->GetTransporter() != nullptr )  continue;
 
         Math::Vector oPos = obj->GetPosition(0);
         float dist = Math::DistanceProjected(oPos, cPos);

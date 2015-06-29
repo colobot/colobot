@@ -163,14 +163,14 @@ bool CTaskReset::EventProcess(const Event &event)
 
 Error CTaskReset::Start(Math::Vector goal, Math::Vector angle)
 {
-    CObject*    fret;
+    CObject*    cargo;
     int     i;
 
-    fret = m_object->GetFret();
-    if ( fret != 0 && fret->GetResetCap() == RESET_MOVE )
+    cargo = m_object->GetCargo();
+    if ( cargo != 0 && cargo->GetResetCap() == RESET_MOVE )
     {
-        fret->SetTruck(0);
-        m_object->SetFret(0);  // does nothing
+        cargo->SetTransporter(0);
+        m_object->SetCargo(0);  // does nothing
     }
 
     if ( !m_main->GetNiceReset() )  // quick return?

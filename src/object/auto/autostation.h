@@ -52,7 +52,7 @@ protected:
     float           m_lastUpdateTime;
     float           m_lastParticle;
     int             m_soundChannel;
-    Math::Vector        m_fretPos;
+    Math::Vector        m_cargoPos;
     bool            m_bLastVirus;
     float           m_energyVirus;
 };

@@ -84,7 +84,7 @@ void uObject(CBotVar* botThis, void* user)
 {
     CObject*    object = static_cast<CObject*>(user);
     CObject*    power;
-    CObject*    fret;
+    CObject*    cargo;
     CPhysics*   physics;
     CBotVar     *pVar, *pSub;
     ObjectType  type;
@@ -102,7 +102,7 @@ void uObject(CBotVar* botThis, void* user)
 
     // Updates the position of the object.
     pVar = pVar->GetNext();  // "position"
-    if ( object->GetTruck() == 0 )
+    if ( object->GetTransporter() == 0 )
     {
         pos = object->GetPosition(0);
         float waterLevel = Gfx::CEngine::GetInstancePointer()->GetWater()->GetLevel();
@@ -169,9 +169,9 @@ void uObject(CBotVar* botThis, void* user)
 
     // Updates the transported object's type.
     pVar = pVar->GetNext();  // "load"
-    fret = object->GetFret();
-    if ( fret == 0 )  pVar->SetPointer(0);
-    else              pVar->SetPointer(fret->GetBotVar());
+    cargo = object->GetCargo();
+    if ( cargo == 0 )  pVar->SetPointer(0);
+    else              pVar->SetPointer(cargo->GetBotVar());
 
     pVar = pVar->GetNext();  // "id"
     value = object->GetID();
@@ -205,9 +205,9 @@ CObject::CObject(int id)
     m_tilt   = Math::Vector(0.0f, 0.0f, 0.0f);
 
     m_power = 0;
-    m_fret  = 0;
-    m_truck = 0;
-    m_truckLink = 0;
+    m_cargo  = 0;
+    m_transporter = 0;
+    m_transporterLink = 0;
     m_energy   = 1.0f;
     m_capacity = 1.0f;
     m_shield   = 1.0f;
@@ -483,7 +483,7 @@ void CObject::Simplify()
 }
 
 
-// Detonates an object, when struck by a shot.
+// Detonates an object, when stransporter by a shot.
 // If false is returned, the object is still screwed.
 // If true is returned, the object is destroyed.
 
@@ -1677,36 +1677,36 @@ CObject* CObject::GetPower()
 
 // Management of the object transport.
 
-void CObject::SetFret(CObject* fret)
+void CObject::SetCargo(CObject* cargo)
 {
-    m_fret = fret;
+    m_cargo = cargo;
 }
 
-CObject* CObject::GetFret()
+CObject* CObject::GetCargo()
 {
-    return m_fret;
+    return m_cargo;
 }
 
-// Management of the object "truck" that transports it.
+// Management of the object "transporter" that transports it.
 
-void CObject::SetTruck(CObject* truck)
+void CObject::SetTransporter(CObject* transporter)
 {
-    m_truck = truck;
+    m_transporter = transporter;
 
     // Invisible shadow if the object is transported.
-    m_engine->SetObjectShadowHide(m_objectPart[0].object, (m_truck != 0));
+    m_engine->SetObjectShadowHide(m_objectPart[0].object, (m_transporter != 0));
 }
 
-CObject* CObject::GetTruck()
+CObject* CObject::GetTransporter()
 {
-    return m_truck;
+    return m_transporter;
 }
 
 // Management of the conveying portion.
 
-void CObject::SetTruckPart(int part)
+void CObject::SetTransporterPart(int part)
 {
-    m_truckLink = part;
+    m_transporterLink = part;
 }
 
 void CObject::SetInfoReturn(float value)
@@ -1912,7 +1912,7 @@ bool CObject::UpdateTransformObject(int part, bool bForceUpdate)
     bool        bModif = false;
     int         parent;
 
-    if ( m_truck != 0 )  // transported by truck?
+    if ( m_transporter != 0 )  // transported by transporter?
     {
         m_objectPart[part].bTranslate = true;
         m_objectPart[part].bRotate = true;
@@ -1971,11 +1971,11 @@ bool CObject::UpdateTransformObject(int part, bool bForceUpdate)
     {
         parent = m_objectPart[part].parentPart;
 
-        if ( part == 0 && m_truck != 0 )  // transported by a truck?
+        if ( part == 0 && m_transporter != 0 )  // transported by a transporter?
         {
-            Math::Matrix*   matWorldTruck;
-            matWorldTruck = m_truck->GetWorldMatrix(m_truckLink);
-            m_objectPart[part].matWorld = Math::MultiplyMatrices(*matWorldTruck,
+            Math::Matrix*   matWorldTransporter;
+            matWorldTransporter = m_transporter->GetWorldMatrix(m_transporterLink);
+            m_objectPart[part].matWorld = Math::MultiplyMatrices(*matWorldTransporter,
                                                                  m_objectPart[part].matTransform);
         }
         else

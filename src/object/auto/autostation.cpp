@@ -151,7 +151,7 @@ bool CAutoStation::EventProcess(const Event &event)
                 big -= add/4.0f;  // discharge the large battery
             }
 
-            power = vehicle->GetFret();
+            power = vehicle->GetCargo();
             if ( power != 0 && power->GetType() == OBJECT_POWER )
             {
                 energy = power->GetEnergy();
