@@ -69,7 +69,6 @@ public:
 
 private:
     std::vector<ExchangePostInfo> m_infoList;
-    float m_infoReturn;
     bool m_infoUpdate;
 };
 

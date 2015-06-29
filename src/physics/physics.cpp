@@ -38,6 +38,7 @@
 #include "object/object_manager.h"
 #include "object/robotmain.h"
 #include "object/motion/motion.h"
+#include "object/motion/motionvehicle.h"
 #include "object/motion/motionhuman.h"
 #include "object/task/task.h"
 #include "object/level/parserline.h"
@@ -810,7 +811,7 @@ void CPhysics::MotorUpdate(float aTime, float rTime)
     {
         power = 0;
         if ( m_object->GetFret() != 0 &&  // carries something?
-             !m_object->GetCargo() )
+             !m_object->IsSpaceshipCargo() )
         {
             motorSpeed.x *= 0.7f;  // forward more slowly
             motorSpeed.z *= 0.5f;
@@ -2431,9 +2432,10 @@ void CPhysics::FloorAdapt(float aTime, float rTime,
 
     if ( m_floorHeight == 0.0f )  // ground plate?
     {
-        if ( m_object->GetTraceDown() )
+        CMotionVehicle* motionVehicle = dynamic_cast<CMotionVehicle*>(m_motion);
+        if (motionVehicle != nullptr && motionVehicle->GetTraceDown())
         {
-            WheelParticle(m_object->GetTraceColor(), m_object->GetTraceWidth()*g_unit);
+            WheelParticle(motionVehicle->GetTraceColor(), motionVehicle->GetTraceWidth()*g_unit);
         }
         else
         {

@@ -2231,7 +2231,7 @@ void CRobotMain::HiliteClear()
 
     for (CObject* obj : m_objMan->GetAllObjects())
     {
-        obj->SetHilite(false);
+        obj->SetHighlight(false);
         m_map->SetHighlight(0);
         m_short->SetHighlight(0);
     }
@@ -2290,7 +2290,7 @@ void CRobotMain::HiliteObject(Math::Point pos)
 
         if (IsSelectable(obj))
         {
-            obj->SetHilite(true);
+            obj->SetHighlight(true);
             m_map->SetHighlight(obj);
             m_short->SetHighlight(obj);
             m_hilite = true;
@@ -4811,7 +4811,7 @@ char*  CRobotMain::GetNewScriptName(ObjectType type, int rank)
 //! Seeks if an object occupies in a spot, to prevent a backup of the game
 bool CRobotMain::IsBusy()
 {
-    if (CScriptFunctions::m_CompteurFileOpen > 0) return true;
+    if (CScriptFunctions::m_numberOfOpenFiles > 0) return true;
 
     for (CObject* obj : m_objMan->GetAllObjects())
     {

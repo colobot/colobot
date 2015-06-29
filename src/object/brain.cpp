@@ -29,6 +29,7 @@
 
 #include "object/object_manager.h"
 #include "object/motion/motion.h"
+#include "object/motion/motionvehicle.h"
 #include "object/task/taskmanager.h"
 #include "object/level/parserline.h"
 #include "object/level/parserparam.h"
@@ -791,56 +792,39 @@ bool CBrain::EventProcess(const Event &event)
 
         if ( action == EVENT_OBJECT_PEN0 )  // up
         {
-            err = StartTaskPen(false, m_object->GetTraceColor());
-            m_object->SetTraceDown(false);
+            err = StartTaskPen(false);
         }
         if ( action == EVENT_OBJECT_PEN1 )  // black
         {
             err = StartTaskPen(true, 1);
-            m_object->SetTraceDown(true);
-            m_object->SetTraceColor(1);
         }
         if ( action == EVENT_OBJECT_PEN2 )  // yellow
         {
             err = StartTaskPen(true, 8);
-            m_object->SetTraceDown(true);
-            m_object->SetTraceColor(8);
         }
         if ( action == EVENT_OBJECT_PEN3 )  // orange
         {
             err = StartTaskPen(true, 7);
-            m_object->SetTraceDown(true);
-            m_object->SetTraceColor(7);
         }
         if ( action == EVENT_OBJECT_PEN4 )  // red
         {
             err = StartTaskPen(true, 4);
-            m_object->SetTraceDown(true);
-            m_object->SetTraceColor(4);
         }
         if ( action == EVENT_OBJECT_PEN5 )  // violet
         {
             err = StartTaskPen(true, 6);
-            m_object->SetTraceDown(true);
-            m_object->SetTraceColor(6);
         }
         if ( action == EVENT_OBJECT_PEN6 )  // blue
         {
             err = StartTaskPen(true, 14);
-            m_object->SetTraceDown(true);
-            m_object->SetTraceColor(14);
         }
         if ( action == EVENT_OBJECT_PEN7 )  // green
         {
             err = StartTaskPen(true, 12);
-            m_object->SetTraceDown(true);
-            m_object->SetTraceColor(12);
         }
         if ( action == EVENT_OBJECT_PEN8 )  // brown
         {
             err = StartTaskPen(true, 10);
-            m_object->SetTraceDown(true);
-            m_object->SetTraceColor(10);
         }
 
         if ( action == EVENT_OBJECT_REC )  // registered?
@@ -1172,6 +1156,15 @@ Error CBrain::StartTaskTerraform()
 
 Error CBrain::StartTaskPen(bool down, int color)
 {
+    auto motionVehicle = dynamic_cast<CMotionVehicle*>(m_motion);
+    assert(motionVehicle != nullptr);
+
+    if (color == -1)
+        color = motionVehicle->GetTraceColor();
+
+    motionVehicle->SetTraceDown(down);
+    motionVehicle->SetTraceColor(color);
+
     m_physics->SetMotorSpeedX(0.0f);
     m_physics->SetMotorSpeedY(0.0f);
     m_physics->SetMotorSpeedZ(0.0f);
@@ -2497,7 +2490,8 @@ void CBrain::UpdateInterface()
         CheckInterface(pw, EVENT_OBJECT_MFRONT, m_manipStyle==EVENT_OBJECT_MFRONT);
     }
 
-    if ( m_object->GetTraceDown() )
+    CMotionVehicle* motionVehicle = dynamic_cast<CMotionVehicle*>(m_motion);
+    if (motionVehicle != nullptr && motionVehicle->GetTraceDown())
     {
         pb = static_cast< Ui::CButton* >(pw->SearchControl(EVENT_OBJECT_PEN0));
         if ( pb != 0 )
@@ -2505,7 +2499,7 @@ void CBrain::UpdateInterface()
             pb->ClearState(Ui::STATE_CHECK);
         }
 
-        color = m_object->GetTraceColor();
+        color = motionVehicle->GetTraceColor();
         pc = static_cast< Ui::CColor* >(pw->SearchControl(EVENT_OBJECT_PEN1));
         if ( pc != 0 )
         {
@@ -2936,14 +2930,17 @@ const std::vector<Program*>& CBrain::GetPrograms()
 
 void CBrain::TraceRecordStart()
 {
+    CMotionVehicle* motionVehicle = dynamic_cast<CMotionVehicle*>(m_motion);
+    assert(motionVehicle != nullptr);
+
     m_traceOper = TO_STOP;
 
     m_tracePos = m_object->GetPosition(0);
     m_traceAngle = m_object->GetAngleY(0);
 
-    if ( m_object->GetTraceDown() )  // pencil down?
+    if ( motionVehicle->GetTraceDown() )  // pencil down?
     {
-        m_traceColor = m_object->GetTraceColor();
+        m_traceColor = motionVehicle->GetTraceColor();
     }
     else    // pen up?
     {
@@ -2964,6 +2961,9 @@ void CBrain::TraceRecordFrame()
     float       angle, len, speed;
     int         color;
 
+    CMotionVehicle* motionVehicle = dynamic_cast<CMotionVehicle*>(m_motion);
+    assert(motionVehicle != nullptr);
+
     speed = m_physics->GetLinMotionX(MO_REASPEED);
     if ( speed > 0.0f )  oper = TO_ADVANCE;
     if ( speed < 0.0f )  oper = TO_RECEDE;
@@ -2971,9 +2971,9 @@ void CBrain::TraceRecordFrame()
     speed = m_physics->GetCirMotionY(MO_REASPEED);
     if ( speed != 0.0f )  oper = TO_TURN;
 
-    if ( m_object->GetTraceDown() )  // pencil down?
+    if ( motionVehicle->GetTraceDown() )  // pencil down?
     {
-        color = m_object->GetTraceColor();
+        color = motionVehicle->GetTraceColor();
     }
     else    // pen up?
     {

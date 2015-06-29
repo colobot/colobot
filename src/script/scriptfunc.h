@@ -177,7 +177,7 @@ private:
     static bool rPointConstructor(CBotVar* pThis, CBotVar* var, CBotVar* pResult, int& Exception);
 
 public:
-    static int m_CompteurFileOpen;
+    static int m_numberOfOpenFiles;
     static std::string m_filesDir;
 
 private:

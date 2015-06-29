@@ -105,7 +105,8 @@ void uObject(CBotVar* botThis, void* user)
     if ( object->GetTruck() == 0 )
     {
         pos = object->GetPosition(0);
-        pos.y -= object->GetWaterLevel();  // relative to sea level!
+        float waterLevel = Gfx::CEngine::GetInstancePointer()->GetWater()->GetLevel();
+        pos.y -= waterLevel;  // relative to sea level!
         pSub = pVar->GetItemList();  // "x"
         pSub->SetValFloat(pos.x/g_unit);
         pSub = pSub->GetNext();  // "y"
@@ -185,11 +186,9 @@ void uObject(CBotVar* botThis, void* user)
 CObject::CObject(int id)
  : m_id(id)
 {
-    m_app         = CApplication::GetInstancePointer();
-    m_sound       = m_app->GetSound();
+    m_sound       = CApplication::GetInstancePointer()->GetSound();
     m_engine      = Gfx::CEngine::GetInstancePointer();
     m_lightMan    = m_engine->GetLightManager();
-    m_water       = m_engine->GetWater();
     m_particle    = m_engine->GetParticle();
     m_main        = CRobotMain::GetInstancePointer();
     m_terrain     = m_main->GetTerrain();
@@ -199,13 +198,11 @@ CObject::CObject(int id)
     m_type = OBJECT_FIX;
     m_option = 0;
     m_name = "";
-    m_partiReactor  = -1;
     m_shadowLight   = -1;
     m_effectLight   = -1;
     m_linVibration  = Math::Vector(0.0f, 0.0f, 0.0f);
     m_cirVibration  = Math::Vector(0.0f, 0.0f, 0.0f);
-    m_inclinaison   = Math::Vector(0.0f, 0.0f, 0.0f);
-    m_lastParticle = 0.0f;
+    m_tilt   = Math::Vector(0.0f, 0.0f, 0.0f);
 
     m_power = 0;
     m_fret  = 0;
@@ -217,7 +214,6 @@ CObject::CObject(int id)
     m_range    = 0.0f;
     m_transparency = 0.0f;
     m_lastEnergy = 999.9f;
-    m_bHilite = false;
     m_bSelect = false;
     m_bSelectable = true;
     m_bCheckToken = true;
@@ -392,12 +388,6 @@ void CObject::DeleteObject(bool bAll)
     }
 
     m_type = OBJECT_NULL;  // invalid object until complete destruction
-
-    if ( m_partiReactor != -1 )
-    {
-        m_particle->DeleteParticle(m_partiReactor);
-        m_partiReactor = -1;
-    }
 
     if ( m_shadowLight != -1 )
     {
@@ -757,24 +747,6 @@ void CObject::InitPart(int part)
     m_objectPart[part].masterParti = -1;
 }
 
-// Creates a new part, and returns its number.
-// Returns -1 on error.
-
-int CObject::CreatePart()
-{
-    int     i;
-
-    for ( i=0 ; i<OBJECTMAXPART ; i++ )
-    {
-        if ( m_objectPart[i].bUsed )  continue;
-
-        InitPart(i);
-        UpdateTotalPart();
-        return i;
-    }
-    return -1;
-}
-
 // Removes part.
 
 void CObject::DeletePart(int part)
@@ -959,9 +931,6 @@ void CObject::Write(CLevelParserLine* line)
     if ( GetGunGoalH() != 0.0f )
         line->AddParam("aimH", CLevelParserParamUPtr{new CLevelParserParam(GetGunGoalH())});
 
-    if ( GetParam() != 0.0f )
-        line->AddParam("param", CLevelParserParamUPtr{new CLevelParserParam(GetParam())});
-
     if ( GetResetCap() != 0 )
     {
         line->AddParam("resetCap", CLevelParserParamUPtr{new CLevelParserParam(static_cast<int>(GetResetCap()))});
@@ -1038,7 +1007,6 @@ void CObject::Read(CLevelParserLine* line)
     SetTeam(line->GetParam("team")->AsInt(0));
     SetGunGoalV(line->GetParam("aimV")->AsFloat(0.0f));
     SetGunGoalH(line->GetParam("aimH")->AsFloat(0.0f));
-    SetParam(line->GetParam("param")->AsFloat(0.0f));
     SetResetCap(static_cast<ResetCap>(line->GetParam("resetCap")->AsInt(0)));
     SetResetPosition(line->GetParam("resetPos")->AsPoint(Math::Vector())*g_unit);
     SetResetAngle(line->GetParam("resetAngle")->AsPoint(Math::Vector())*(Math::PI/180.0f));
@@ -1182,22 +1150,6 @@ float CObject::GetCrashSphereHardness(int rank)
     return m_crashSphereHardness[rank];
 }
 
-// Deletes a sphere.
-
-void CObject::DeleteCrashSphere(int rank)
-{
-    int     i;
-
-    if ( rank < 0 || rank >= m_crashSphereUsed )  return;
-
-    for ( i=rank+1 ; i<MAXCRASHSPHERE ; i++ )
-    {
-        m_crashSpherePos[i-1]    = m_crashSpherePos[i];
-        m_crashSphereRadius[i-1] = m_crashSphereRadius[i];
-    }
-    m_crashSphereUsed --;
-}
-
 // Specifies the global sphere, relative to the object.
 
 void CObject::SetGlobalSphere(Math::Vector pos, float radius)
@@ -1334,18 +1286,18 @@ Math::Vector CObject::GetCirVibration()
 
 void CObject::SetTilt(Math::Vector dir)
 {
-    if ( m_inclinaison.x != dir.x ||
-         m_inclinaison.y != dir.y ||
-         m_inclinaison.z != dir.z )
+    if ( m_tilt.x != dir.x ||
+         m_tilt.y != dir.y ||
+         m_tilt.z != dir.z )
     {
-        m_inclinaison = dir;
+        m_tilt = dir;
         m_objectPart[0].bRotate = true;
     }
 }
 
 Math::Vector CObject::GetTilt()
 {
-    return m_inclinaison;
+    return m_tilt;
 }
 
 
@@ -1611,15 +1563,6 @@ float CObject::GetZoomZ(int part)
 {
     return m_objectPart[part].zoom.z;
 }
-
-
-// Returns the water level.
-
-float CObject::GetWaterLevel()
-{
-    return m_water->GetLevel();
-}
-
 
 void CObject::SetTrainer(bool bEnable)
 {
@@ -1985,7 +1928,7 @@ bool CObject::UpdateTransformObject(int part, bool bForceUpdate)
     if ( part == 0 )  // main part?
     {
         position += m_linVibration;
-        angle    += m_cirVibration+m_inclinaison;
+        angle    += m_cirVibration+m_tilt;
     }
 
     if ( m_objectPart[part].bTranslate ||
@@ -2874,17 +2817,14 @@ bool CObject::GetCameraLock()
 
 // Management of the demonstration of the object.
 
-void CObject::SetHilite(bool bMode)
+void CObject::SetHighlight(bool mode)
 {
-    int     list[OBJECTMAXPART+1];
-    int     i, j;
-
-    m_bHilite = bMode;
-
-    if ( m_bHilite )
+    if (mode)
     {
-        j = 0;
-        for ( i=0 ; i<m_totalPart ; i++ )
+        int list[OBJECTMAXPART+1];
+
+        int j = 0;
+        for (int i = 0; i < m_totalPart; i++)
         {
             if ( m_objectPart[i].bUsed )
             {
@@ -3071,8 +3011,6 @@ float CObject::GetParam()
 {
     return m_param;
 }
-
-
 // Management of the mode "blocked" of an object.
 // For example, a cube of titanium is blocked while it is used to make something,
 // or a vehicle is blocked as its construction is not finished.
@@ -3115,12 +3053,12 @@ bool CObject::IsExploding()
 
 // Mode management "cargo ship" during movies.
 
-void CObject::SetCargo(bool bCargo)
+void CObject::SetSpaceshipCargo(bool bCargo)
 {
     m_bCargo = bCargo;
 }
 
-bool CObject::GetCargo()
+bool CObject::IsSpaceshipCargo()
 {
     return m_bCargo;
 }
@@ -3641,78 +3579,3 @@ void CObject::DeleteDeselList(CObject* pObj)
     m_totalDesectList = j;
 }
 
-
-
-// Management of the state of the pencil drawing robot.
-
-bool CObject::GetTraceDown()
-{
-    if (m_motion == nullptr) return false;
-    CMotionVehicle* mv = dynamic_cast<CMotionVehicle*>(m_motion.get());
-    if (mv == nullptr)
-    {
-        GetLogger()->Trace("GetTraceDown() invalid m_motion class!\n");
-        return false;
-    }
-    return mv->GetTraceDown();
-}
-
-void CObject::SetTraceDown(bool bDown)
-{
-    if (m_motion == nullptr) return;
-    CMotionVehicle* mv = dynamic_cast<CMotionVehicle*>(m_motion.get());
-    if (mv == nullptr)
-    {
-        GetLogger()->Trace("SetTraceDown() invalid m_motion class!\n");
-        return;
-    }
-    mv->SetTraceDown(bDown);
-}
-
-int CObject::GetTraceColor()
-{
-    if (m_motion == nullptr) return 0;
-    CMotionVehicle* mv = dynamic_cast<CMotionVehicle*>(m_motion.get());
-    if (mv == nullptr)
-    {
-        GetLogger()->Trace("GetTraceColor() invalid m_motion class!\n");
-        return 0;
-    }
-    return mv->GetTraceColor();
-}
-
-void CObject::SetTraceColor(int color)
-{
-    if (m_motion == nullptr) return;
-    CMotionVehicle* mv = dynamic_cast<CMotionVehicle*>(m_motion.get());
-    if (mv == nullptr)
-    {
-        GetLogger()->Trace("SetTraceColor() invalid m_motion class!\n");
-        return;
-    }
-    mv->SetTraceColor(color);
-}
-
-float CObject::GetTraceWidth()
-{
-    if (m_motion == nullptr) return 0.0f;
-    CMotionVehicle* mv = dynamic_cast<CMotionVehicle*>(m_motion.get());
-    if (mv == nullptr)
-    {
-        GetLogger()->Trace("GetTraceWidth() invalid m_motion class!\n");
-        return 0.0f;
-    }
-    return mv->GetTraceWidth();
-}
-
-void CObject::SetTraceWidth(float width)
-{
-    if (m_motion == nullptr) return;
-    CMotionVehicle* mv = dynamic_cast<CMotionVehicle*>(m_motion.get());
-    if (mv == nullptr)
-    {
-        GetLogger()->Trace("SetTraceWidth() invalid m_motion class!\n");
-        return;
-    }
-    mv->SetTraceWidth(width);
-}

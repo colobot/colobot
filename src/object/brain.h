@@ -135,7 +135,6 @@ public:
     Error       StartTaskSearch();
     Error       StartTaskDeleteMark();
     Error       StartTaskTerraform();
-    Error       StartTaskPen(bool down, int color);
     Error       StartTaskRecover();
     Error       StartTaskShield(TaskShieldMode mode);
     Error       StartTaskFire(float delay);
@@ -157,6 +156,8 @@ public:
     int         GetProgramIndex(Program* program);
 
 protected:
+    Error       StartTaskPen(bool down, int color = -1);
+
     bool        EventFrame(const Event &event);
 
     void        StartEditScript(Program* program, char* name);

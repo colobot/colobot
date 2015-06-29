@@ -103,6 +103,7 @@ class CObject
     friend class CObjectManager;
 
 protected:
+
     CObject(int id);
 
     void        DeleteObject(bool bAll=false);
@@ -128,7 +129,6 @@ public:
     bool        EventProcess(const Event &event);
     void        UpdateMapping();
 
-    int         CreatePart();
     void        DeletePart(int part);
     void        SetObjectRank(int part, int objRank);
     int         GetObjectRank(int part);
@@ -137,7 +137,6 @@ public:
     void        SetType(ObjectType type);
     const char* GetName();
     int         GetOption();
-
     int         GetID();
 
     virtual void Write(CLevelParserLine* line);
@@ -158,7 +157,6 @@ public:
     bool        GetCrashSphere(int rank, Math::Vector &pos, float &radius);
     float       GetCrashSphereHardness(int rank);
     Sound       GetCrashSphereSound(int rank);
-    void        DeleteCrashSphere(int rank);
     void        SetGlobalSphere(Math::Vector pos, float radius);
     void        GetGlobalSphere(Math::Vector &pos, float &radius);
     void        GetJostlingSphere(Math::Vector &pos, float &radius);
@@ -194,8 +192,6 @@ public:
     float       GetZoomY(int part);
     void        SetZoomZ(int part, float zoom);
     float       GetZoomZ(int part);
-
-    float       GetWaterLevel();
 
     void        SetTrainer(bool bEnable);
     bool        GetTrainer();
@@ -280,7 +276,7 @@ public:
     void        SetCameraLock(bool bLock);
     bool        GetCameraLock();
 
-    void        SetHilite(bool bMode);
+    void        SetHighlight(bool mode);
 
     void        SetSelect(bool bMode, bool bDisplayError=true);
     bool        GetSelect(bool bReal=false);
@@ -308,7 +304,6 @@ public:
 
     void        SetParam(float value);
     float       GetParam();
-
     void        SetIgnoreBuildCheck(bool bIgnoreBuildCheck);
     bool        GetIgnoreBuildCheck();
 
@@ -316,8 +311,8 @@ public:
     bool        IsExploding();
     void        SetLock(bool bLock);
     bool        GetLock();
-    void        SetCargo(bool bCargo);
-    bool        GetCargo();
+    void        SetSpaceshipCargo(bool bCargo);
+    bool        IsSpaceshipCargo();
     void        SetBurn(bool bBurn);
     bool        GetBurn();
     void        SetDead(bool bDead);
@@ -365,13 +360,6 @@ public:
     //! Return value to be returned by receive() CBOT function
     float GetInfoReturn();
 
-    bool        GetTraceDown();
-    void        SetTraceDown(bool bDown);
-    int         GetTraceColor();
-    void        SetTraceColor(int color);
-    float       GetTraceWidth();
-    void        SetTraceWidth(float width);
-
 protected:
     bool        EventFrame(const Event &event);
     void        VirusFrame(float rTime);
@@ -385,11 +373,9 @@ protected:
     void        UpdateSelectParticle();
 
 protected:
-    CApplication*       m_app;
     Gfx::CEngine*       m_engine;
     Gfx::CLightManager* m_lightMan;
     Gfx::CTerrain*      m_terrain;
-    Gfx::CWater*        m_water;
     Gfx::CCamera*       m_camera;
     Gfx::CParticle*     m_particle;
     std::unique_ptr<CPhysics> m_physics;
@@ -406,14 +392,13 @@ protected:
     std::string  m_name;         // name of the object
     Character   m_character;            // characteristic
     int     m_option;           // option
-    int     m_partiReactor;         // number of the particle of the reactor
     int     m_shadowLight;          // number of light from the shadows
     float       m_shadowHeight;         // height of light from the shadows
     int     m_effectLight;          // number of light effects
     float       m_effectHeight;         // height of light effects
     Math::Vector    m_linVibration;         // linear vibration
     Math::Vector    m_cirVibration;         // circular vibration
-    Math::Vector    m_inclinaison;          // tilt
+    Math::Vector    m_tilt;          // tilt
     CObject*    m_power;            // battery used by the vehicle
     CObject*    m_fret;             // object transported
     CObject*    m_truck;            // object with the latter
@@ -429,15 +414,12 @@ protected:
     bool        m_bVirusMode;           // virus activated/triggered
     float       m_virusTime;            // lifetime of the virus
     float       m_lastVirusParticle;
-    float       m_lastParticle;
-    bool        m_bHilite;
     bool        m_bSelect;          // object selected
     bool        m_bSelectable;          // selectable object
     bool        m_bCheckToken;          // object with audited tokens
     bool        m_bVisible;         // object active but undetectable
     bool        m_bEnable;          // dead object
     bool        m_bProxyActivate;       // active object so close
-    bool        m_bGadget;          // object nonessential
     bool        m_bLock;
     bool        m_bExplo;
     bool        m_bCargo;

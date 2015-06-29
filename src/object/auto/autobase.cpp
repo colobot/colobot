@@ -1241,7 +1241,7 @@ void CAutoBase::FreezeCargo(bool freeze)
 {
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        obj->SetCargo(false);
+        obj->SetSpaceshipCargo(false);
 
         if ( obj == m_object )  continue;  // yourself?
         if ( obj->GetTruck() != nullptr )  continue;  // transport object?
@@ -1252,7 +1252,7 @@ void CAutoBase::FreezeCargo(bool freeze)
         {
             if ( freeze )
             {
-                obj->SetCargo(true);
+                obj->SetSpaceshipCargo(true);
             }
 
             CPhysics* physics = obj->GetPhysics();
@@ -1272,7 +1272,7 @@ void CAutoBase::MoveCargo()
 
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        if ( !obj->GetCargo() )  continue;
+        if ( !obj->IsSpaceshipCargo() )  continue;
 
         Math::Vector oPos = obj->GetPosition(0);
         oPos.y = sPos.y+30.0f;

@@ -43,6 +43,8 @@
 #include "object/auto/autofactory.h"
 #include "object/auto/autobase.h"
 
+#include "object/motion/motionvehicle.h"
+
 #include "physics/physics.h"
 
 #include "script/cbottoken.h"
@@ -2610,7 +2612,6 @@ bool CScriptFunctions::rShield(CBotVar* var, CBotVar* result, int& exception, vo
         else    // up ?
         {
             pThis->SetParam(radius);
-
             *script->m_secondaryTask = new CTaskManager(script->m_object);
             err = (*script->m_secondaryTask)->StartTaskShield(TSM_UP, 1000.0f);
             if ( err != ERR_OK )
@@ -2692,7 +2693,8 @@ bool CScriptFunctions::rFire(CBotVar* var, CBotVar* result, int& exception, void
         if ( type == OBJECT_ANT )
         {
             if ( !GetPoint(var, exception, impact) )  return true;
-            impact.y += pThis->GetWaterLevel();
+            float waterLevel = Gfx::CEngine::GetInstancePointer()->GetWater()->GetLevel();
+            impact.y += waterLevel;
             err = script->m_primaryTask->StartTaskFireAnt(impact);
         }
         else if ( type == OBJECT_SPIDER )
@@ -3046,6 +3048,9 @@ bool CScriptFunctions::rPenDown(CBotVar* var, CBotVar* result, int& exception, v
     float       width;
     Error       err;
 
+    CMotionVehicle* motionVehicle = dynamic_cast<CMotionVehicle*>(pThis->GetMotion());
+    assert(motionVehicle != nullptr);
+
     if ( pThis->GetType() == OBJECT_MOBILEdr )
     {
         exception = 0;
@@ -3057,7 +3062,7 @@ bool CScriptFunctions::rPenDown(CBotVar* var, CBotVar* result, int& exception, v
                 color = var->GetValInt();
                 if ( color <  0 )  color =  0;
                 if ( color > 17 )  color = 17;
-                pThis->SetTraceColor(color);
+                motionVehicle->SetTraceColor(color);
 
                 var = var->GetNext();
                 if ( var != 0 )
@@ -3065,13 +3070,13 @@ bool CScriptFunctions::rPenDown(CBotVar* var, CBotVar* result, int& exception, v
                     width = var->GetValFloat();
                     if ( width < 0.1f )  width = 0.1f;
                     if ( width > 1.0f )  width = 1.0f;
-                    pThis->SetTraceWidth(width);
+                    motionVehicle->SetTraceWidth(width);
                 }
             }
-            pThis->SetTraceDown(true);
+            motionVehicle->SetTraceDown(true);
 
             script->m_primaryTask = new CTaskManager(script->m_object);
-            err = script->m_primaryTask->StartTaskPen(pThis->GetTraceDown(), pThis->GetTraceColor());
+            err = script->m_primaryTask->StartTaskPen(motionVehicle->GetTraceDown(), motionVehicle->GetTraceColor());
             if ( err != ERR_OK )
             {
                 delete script->m_primaryTask;
@@ -3094,7 +3099,7 @@ bool CScriptFunctions::rPenDown(CBotVar* var, CBotVar* result, int& exception, v
             color = var->GetValInt();
             if ( color <  0 )  color =  0;
             if ( color > 17 )  color = 17;
-            pThis->SetTraceColor(color);
+            motionVehicle->SetTraceColor(color);
 
             var = var->GetNext();
             if ( var != 0 )
@@ -3102,10 +3107,10 @@ bool CScriptFunctions::rPenDown(CBotVar* var, CBotVar* result, int& exception, v
                 width = var->GetValFloat();
                 if ( width < 0.1f )  width = 0.1f;
                 if ( width > 1.0f )  width = 1.0f;
-                pThis->SetTraceWidth(width);
+                motionVehicle->SetTraceWidth(width);
             }
         }
-        pThis->SetTraceDown(true);
+        motionVehicle->SetTraceDown(true);
 
         return true;
     }
@@ -3119,16 +3124,19 @@ bool CScriptFunctions::rPenUp(CBotVar* var, CBotVar* result, int& exception, voi
     CObject*    pThis = static_cast<CObject *>(user);
     Error       err;
 
+    CMotionVehicle* motionVehicle = dynamic_cast<CMotionVehicle*>(pThis->GetMotion());
+    assert(motionVehicle != nullptr);
+
     if ( pThis->GetType() == OBJECT_MOBILEdr )
     {
         exception = 0;
 
         if ( script->m_primaryTask == 0 )  // no task in progress?
         {
-            pThis->SetTraceDown(false);
+            motionVehicle->SetTraceDown(false);
 
             script->m_primaryTask = new CTaskManager(script->m_object);
-            err = script->m_primaryTask->StartTaskPen(pThis->GetTraceDown(), pThis->GetTraceColor());
+            err = script->m_primaryTask->StartTaskPen(motionVehicle->GetTraceDown(), motionVehicle->GetTraceColor());
             if ( err != ERR_OK )
             {
                 delete script->m_primaryTask;
@@ -3146,7 +3154,7 @@ bool CScriptFunctions::rPenUp(CBotVar* var, CBotVar* result, int& exception, voi
     }
     else
     {
-        pThis->SetTraceDown(false);
+        motionVehicle->SetTraceDown(false);
         return true;
     }
 }
@@ -3160,6 +3168,9 @@ bool CScriptFunctions::rPenColor(CBotVar* var, CBotVar* result, int& exception, 
     int         color;
     Error       err;
 
+    CMotionVehicle* motionVehicle = dynamic_cast<CMotionVehicle*>(pThis->GetMotion());
+    assert(motionVehicle != nullptr);
+
     if ( pThis->GetType() == OBJECT_MOBILEdr )
     {
         exception = 0;
@@ -3169,10 +3180,10 @@ bool CScriptFunctions::rPenColor(CBotVar* var, CBotVar* result, int& exception, 
             color = var->GetValInt();
             if ( color <  0 )  color =  0;
             if ( color > 17 )  color = 17;
-            pThis->SetTraceColor(color);
+            motionVehicle->SetTraceColor(color);
 
             script->m_primaryTask = new CTaskManager(script->m_object);
-            err = script->m_primaryTask->StartTaskPen(pThis->GetTraceDown(), pThis->GetTraceColor());
+            err = script->m_primaryTask->StartTaskPen(motionVehicle->GetTraceDown(), motionVehicle->GetTraceColor());
             if ( err != ERR_OK )
             {
                 delete script->m_primaryTask;
@@ -3193,7 +3204,7 @@ bool CScriptFunctions::rPenColor(CBotVar* var, CBotVar* result, int& exception, 
         color = var->GetValInt();
         if ( color <  0 )  color =  0;
         if ( color > 17 )  color = 17;
-        pThis->SetTraceColor(color);
+        motionVehicle->SetTraceColor(color);
 
         return true;
     }
@@ -3206,10 +3217,13 @@ bool CScriptFunctions::rPenWidth(CBotVar* var, CBotVar* result, int& exception, 
     CObject*    pThis = static_cast<CObject *>(user);
     float       width;
 
+    CMotionVehicle* motionVehicle = dynamic_cast<CMotionVehicle*>(pThis->GetMotion());
+    assert(motionVehicle != nullptr);
+
     width = var->GetValFloat();
     if ( width < 0.1f )  width = 0.1f;
     if ( width > 1.0f )  width = 1.0f;
-    pThis->SetTraceWidth(width);
+    motionVehicle->SetTraceWidth(width);
     return true;
 }
 
@@ -3255,7 +3269,7 @@ bool CScriptFunctions::rCameraFocus(CBotVar* var, CBotVar* result, int& exceptio
 
 // Static variables
 
-int                                 CScriptFunctions::m_CompteurFileOpen = 0;
+int                                 CScriptFunctions::m_numberOfOpenFiles = 0;
 std::string                         CScriptFunctions::m_filesDir;
 std::unordered_map<int, FILE*>      CScriptFunctions::m_files;
 int                                 CScriptFunctions::m_nextFile = 1;
@@ -3327,7 +3341,7 @@ bool CScriptFunctions::rfconstruct (CBotVar* pThis, CBotVar* pVar, CBotVar* pRes
         FILE*   pFile = fopen( filename, mode );
         if ( pFile == NULL ) { Exception = CBotErrFileOpen; return false; }
 
-        m_CompteurFileOpen ++;
+        m_numberOfOpenFiles ++;
 
         int fileHandle = m_nextFile++;
 
@@ -3382,7 +3396,7 @@ bool CScriptFunctions::rfdestruct (CBotVar* pThis, CBotVar* pVar, CBotVar* pResu
 
     FILE* pFile = m_files[fileHandle];
     fclose(pFile);
-    m_CompteurFileOpen--;
+    m_numberOfOpenFiles--;
 
     pVar->SetInit(IS_NAN);
 
@@ -3445,7 +3459,7 @@ bool CScriptFunctions::rfopen (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, 
         return true;
     }
 
-    m_CompteurFileOpen ++;
+    m_numberOfOpenFiles ++;
 
     // save file handle
     int fileHandle = m_nextFile++;
@@ -3503,7 +3517,7 @@ bool CScriptFunctions::rfclose (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult,
 
     FILE* pFile = m_files[fileHandle];
     fclose(pFile);
-    m_CompteurFileOpen--;
+    m_numberOfOpenFiles--;
 
     pVar->SetInit(IS_NAN);
 
