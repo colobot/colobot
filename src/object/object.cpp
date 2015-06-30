@@ -483,7 +483,7 @@ void CObject::Simplify()
 }
 
 
-// Detonates an object, when stransporter by a shot.
+// Detonates an object, when struck by a shot.
 // If false is returned, the object is still screwed.
 // If true is returned, the object is destroyed.
 
