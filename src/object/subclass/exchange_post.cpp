@@ -38,7 +38,7 @@
 
 
 CExchangePost::CExchangePost(int id)
-    : CObject(id)
+    : COldObject(id)
     , m_infoUpdate(false)
 {
     m_type = OBJECT_INFO;
@@ -187,7 +187,7 @@ void CExchangePost::SetInfoUpdate(bool update)
 
 void CExchangePost::Write(CLevelParserLine* line)
 {
-    CObject::Write(line);
+    COldObject::Write(line);
 
     int i = 0;
     for (const auto& info : m_infoList)
@@ -204,7 +204,7 @@ void CExchangePost::Write(CLevelParserLine* line)
 
 void CExchangePost::Read(CLevelParserLine* line)
 {
-    CObject::Read(line);
+    COldObject::Read(line);
 
     ReadInfo(line);
 }

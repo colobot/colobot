@@ -20,6 +20,7 @@
 
 #include "ui/target.h"
 
+#include "object/old_object.h"
 #include "object/object_manager.h"
 
 

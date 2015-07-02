@@ -25,6 +25,7 @@
 #include "object/object.h"
 #include "object/object_create_params.h"
 #include "object/object_factory.h"
+#include "object/old_object.h"
 #include "object/auto/auto.h"
 
 #include "physics/physics.h"
@@ -53,7 +54,10 @@ bool CObjectManager::DeleteObject(CObject* instance)
 {
     assert(instance != nullptr);
 
-    instance->DeleteObject();
+    // TODO: temporarily...
+    auto oldObj = dynamic_cast<COldObject*>(instance);
+    if (oldObj != nullptr)
+        oldObj->DeleteObject();
 
     auto it = m_objects.find(instance->GetID());
     if (it != m_objects.end())
@@ -69,8 +73,13 @@ void CObjectManager::DeleteAllObjects()
 {
     for (auto& it : m_objects)
     {
-        bool all = true;
-        it.second->DeleteObject(all);
+        // TODO: temporarily...
+        auto oldObj = dynamic_cast<COldObject*>(it.second.get());
+        if (oldObj != nullptr)
+        {
+            bool all = true;
+            oldObj->DeleteObject(all);
+        }
     }
 
     m_objects.clear();

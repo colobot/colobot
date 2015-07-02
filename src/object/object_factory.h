@@ -38,6 +38,7 @@ class CTerrain;
 } // namespace Gfx
 
 class CObject;
+class COldObject;
 class CRobotMain;
 struct ObjectCreateParams;
 
@@ -69,7 +70,7 @@ private:
     CObjectUPtr CreateHome(const ObjectCreateParams& params);
     CObjectUPtr CreateRuin(const ObjectCreateParams& params);
     CObjectUPtr CreateApollo(const ObjectCreateParams& params);
-    void AddObjectAuto(CObject* obj);
+    void AddObjectAuto(COldObject* obj);
 
 private:
     Gfx::CEngine* m_engine;

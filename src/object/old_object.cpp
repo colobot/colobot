@@ -18,7 +18,7 @@
  */
 
 
-#include "object/object.h"
+#include "object/old_object.h"
 
 #include "CBot/CBotDll.h"
 
@@ -183,8 +183,9 @@ void uObject(CBotVar* botThis, void* user)
 
 // Object's constructor.
 
-CObject::CObject(int id)
- : m_id(id)
+COldObject::COldObject(int id)
+    : CObject(id, OBJECT_NULL)
+    , CInteractiveObject(m_implementedInterfaces)
 {
     m_sound       = CApplication::GetInstancePointer()->GetSound();
     m_engine      = Gfx::CEngine::GetInstancePointer();
@@ -301,7 +302,7 @@ CObject::CObject(int id)
 
 // Object's destructor.
 
-CObject::~CObject()
+COldObject::~COldObject()
 {
     if ( m_botVar != nullptr )
     {
@@ -316,7 +317,7 @@ CObject::~CObject()
 // If bAll = true, it does not help,
 // because all objects in the scene are quickly destroyed!
 
-void CObject::DeleteObject(bool bAll)
+void COldObject::DeleteObject(bool bAll)
 {
     if ( m_botVar != 0 )
     {
@@ -447,7 +448,7 @@ void CObject::DeleteObject(bool bAll)
 
 // Simplifies a object (he was the brain, among others).
 
-void CObject::Simplify()
+void COldObject::Simplify()
 {
     if ( m_brain != nullptr )
     {
@@ -487,7 +488,7 @@ void CObject::Simplify()
 // If false is returned, the object is still screwed.
 // If true is returned, the object is destroyed.
 
-bool CObject::ExplodeObject(ExplosionType type, float force, float decay)
+bool COldObject::ExplodeObject(ExplosionType type, float force, float decay)
 {
     Gfx::PyroType    pyroType;
     float       loss, shield;
@@ -723,7 +724,7 @@ bool CObject::ExplodeObject(ExplosionType type, float force, float decay)
 
 // Initializes a new part.
 
-void CObject::InitPart(int part)
+void COldObject::InitPart(int part)
 {
     m_objectPart[part].bUsed      = true;
     m_objectPart[part].object     = -1;
@@ -749,7 +750,7 @@ void CObject::InitPart(int part)
 
 // Removes part.
 
-void CObject::DeletePart(int part)
+void COldObject::DeletePart(int part)
 {
     if ( !m_objectPart[part].bUsed )  return;
 
@@ -764,7 +765,7 @@ void CObject::DeletePart(int part)
     UpdateTotalPart();
 }
 
-void CObject::UpdateTotalPart()
+void COldObject::UpdateTotalPart()
 {
     int     i;
 
@@ -781,7 +782,7 @@ void CObject::UpdateTotalPart()
 
 // Specifies the number of the object of a part.
 
-void CObject::SetObjectRank(int part, int objRank)
+void COldObject::SetObjectRank(int part, int objRank)
 {
     if ( !m_objectPart[part].bUsed )  // object not created?
     {
@@ -793,7 +794,7 @@ void CObject::SetObjectRank(int part, int objRank)
 
 // Returns the number of part.
 
-int CObject::GetObjectRank(int part)
+int COldObject::GetObjectRank(int part)
 {
     if ( !m_objectPart[part].bUsed )  return -1;
     return m_objectPart[part].object;
@@ -803,7 +804,7 @@ int CObject::GetObjectRank(int part)
 // Reminder: Part 0 is always the father of all
 // and therefore the main part (eg the chassis of a car).
 
-void CObject::SetObjectParent(int part, int parent)
+void COldObject::SetObjectParent(int part, int parent)
 {
     m_objectPart[part].parentPart = parent;
 }
@@ -811,7 +812,7 @@ void CObject::SetObjectParent(int part, int parent)
 
 // Specifies the type of the object.
 
-void CObject::SetType(ObjectType type)
+void COldObject::SetType(ObjectType type)
 {
     m_type = type;
     m_name = GetObjectName(m_type);
@@ -844,38 +845,27 @@ void CObject::SetType(ObjectType type)
     }
 }
 
-ObjectType CObject::GetType()
-{
-    return m_type;
-}
-
-const char* CObject::GetName()
+const char* COldObject::GetName()
 {
     return m_name.c_str();
 }
 
-
 // Choosing the option to use.
 
-void CObject::SetOption(int option)
+void COldObject::SetOption(int option)
 {
     m_option = option;
 }
 
-int CObject::GetOption()
+int COldObject::GetOption()
 {
     return m_option;
-}
-
-int CObject::GetID()
-{
-    return m_id;
 }
 
 
 // Saves all the parameters of the object.
 
-void CObject::Write(CLevelParserLine* line)
+void COldObject::Write(CLevelParserLine* line)
 {
     Math::Vector    pos;
     float       value;
@@ -980,7 +970,7 @@ void CObject::Write(CLevelParserLine* line)
 
 // Returns all parameters of the object.
 
-void CObject::Read(CLevelParserLine* line)
+void COldObject::Read(CLevelParserLine* line)
 {
     Math::Vector    pos, dir;
 
@@ -1052,7 +1042,7 @@ void CObject::Read(CLevelParserLine* line)
 
 // Seeking the nth son of a father.
 
-int CObject::SearchDescendant(int parent, int n)
+int COldObject::SearchDescendant(int parent, int n)
 {
     int     i;
 
@@ -1071,14 +1061,14 @@ int CObject::SearchDescendant(int parent, int n)
 
 // Removes all spheres used for collisions.
 
-void CObject::FlushCrashShere()
+void COldObject::FlushCrashShere()
 {
     m_crashSphereUsed = 0;
 }
 
 // Adds a new sphere.
 
-int CObject::CreateCrashSphere(Math::Vector pos, float radius, Sound sound,
+int COldObject::CreateCrashSphere(Math::Vector pos, float radius, Sound sound,
                                float hardness)
 {
     float   zoom;
@@ -1095,7 +1085,7 @@ int CObject::CreateCrashSphere(Math::Vector pos, float radius, Sound sound,
 
 // Returns the number of spheres.
 
-int CObject::GetCrashSphereTotal()
+int COldObject::GetCrashSphereTotal()
 {
     return m_crashSphereUsed;
 }
@@ -1103,7 +1093,7 @@ int CObject::GetCrashSphereTotal()
 // Returns a sphere for collisions.
 // The position is absolute in the world.
 
-bool CObject::GetCrashSphere(int rank, Math::Vector &pos, float &radius)
+bool COldObject::GetCrashSphere(int rank, Math::Vector &pos, float &radius)
 {
     if ( rank < 0 || rank >= m_crashSphereUsed )
     {
@@ -1138,21 +1128,21 @@ bool CObject::GetCrashSphere(int rank, Math::Vector &pos, float &radius)
 
 // Returns the hardness of a sphere.
 
-Sound CObject::GetCrashSphereSound(int rank)
+Sound COldObject::GetCrashSphereSound(int rank)
 {
     return m_crashSphereSound[rank];
 }
 
 // Returns the hardness of a sphere.
 
-float CObject::GetCrashSphereHardness(int rank)
+float COldObject::GetCrashSphereHardness(int rank)
 {
     return m_crashSphereHardness[rank];
 }
 
 // Specifies the global sphere, relative to the object.
 
-void CObject::SetGlobalSphere(Math::Vector pos, float radius)
+void COldObject::SetGlobalSphere(Math::Vector pos, float radius)
 {
     float   zoom;
 
@@ -1163,7 +1153,7 @@ void CObject::SetGlobalSphere(Math::Vector pos, float radius)
 
 // Returns the global sphere, in the world.
 
-void CObject::GetGlobalSphere(Math::Vector &pos, float &radius)
+void COldObject::GetGlobalSphere(Math::Vector &pos, float &radius)
 {
     pos = Math::Transform(m_objectPart[0].matWorld, m_globalSpherePos);
     radius = m_globalSphereRadius;
@@ -1172,7 +1162,7 @@ void CObject::GetGlobalSphere(Math::Vector &pos, float &radius)
 
 // Specifies the sphere of jostling, relative to the object.
 
-void CObject::SetJostlingSphere(Math::Vector pos, float radius)
+void COldObject::SetJostlingSphere(Math::Vector pos, float radius)
 {
     m_jostlingSpherePos    = pos;
     m_jostlingSphereRadius = radius;
@@ -1180,7 +1170,7 @@ void CObject::SetJostlingSphere(Math::Vector pos, float radius)
 
 // Specifies the sphere of jostling, in the world.
 
-void CObject::GetJostlingSphere(Math::Vector &pos, float &radius)
+void COldObject::GetJostlingSphere(Math::Vector &pos, float &radius)
 {
     pos = Math::Transform(m_objectPart[0].matWorld, m_jostlingSpherePos);
     radius = m_jostlingSphereRadius;
@@ -1189,14 +1179,14 @@ void CObject::GetJostlingSphere(Math::Vector &pos, float &radius)
 
 // Specifies the radius of the shield.
 
-void CObject::SetShieldRadius(float radius)
+void COldObject::SetShieldRadius(float radius)
 {
     m_shieldRadius = radius;
 }
 
 // Returns the radius of the shield.
 
-float CObject::GetShieldRadius()
+float COldObject::GetShieldRadius()
 {
     return m_shieldRadius;
 }
@@ -1204,7 +1194,7 @@ float CObject::GetShieldRadius()
 
 // Positioning an object on a certain height, above the ground.
 
-void CObject::SetFloorHeight(float height)
+void COldObject::SetFloorHeight(float height)
 {
     Math::Vector    pos;
 
@@ -1223,7 +1213,7 @@ void CObject::SetFloorHeight(float height)
 
 // Adjust the inclination of an object laying on the ground.
 
-void CObject::FloorAdjust()
+void COldObject::FloorAdjust()
 {
     Math::Vector        pos, n;
     Math::Point         nn;
@@ -1248,7 +1238,7 @@ void CObject::FloorAdjust()
 
 // Getes the linear vibration.
 
-void CObject::SetLinVibration(Math::Vector dir)
+void COldObject::SetLinVibration(Math::Vector dir)
 {
     if ( m_linVibration.x != dir.x ||
          m_linVibration.y != dir.y ||
@@ -1259,14 +1249,14 @@ void CObject::SetLinVibration(Math::Vector dir)
     }
 }
 
-Math::Vector CObject::GetLinVibration()
+Math::Vector COldObject::GetLinVibration()
 {
     return m_linVibration;
 }
 
 // Getes the circular vibration.
 
-void CObject::SetCirVibration(Math::Vector dir)
+void COldObject::SetCirVibration(Math::Vector dir)
 {
     if ( m_cirVibration.x != dir.x ||
          m_cirVibration.y != dir.y ||
@@ -1277,14 +1267,14 @@ void CObject::SetCirVibration(Math::Vector dir)
     }
 }
 
-Math::Vector CObject::GetCirVibration()
+Math::Vector COldObject::GetCirVibration()
 {
     return m_cirVibration;
 }
 
 // Getes the inclination.
 
-void CObject::SetTilt(Math::Vector dir)
+void COldObject::SetTilt(Math::Vector dir)
 {
     if ( m_tilt.x != dir.x ||
          m_tilt.y != dir.y ||
@@ -1295,7 +1285,7 @@ void CObject::SetTilt(Math::Vector dir)
     }
 }
 
-Math::Vector CObject::GetTilt()
+Math::Vector COldObject::GetTilt()
 {
     return m_tilt;
 }
@@ -1303,7 +1293,7 @@ Math::Vector CObject::GetTilt()
 
 // Getes the position of center of the object.
 
-void CObject::SetPosition(int part, const Math::Vector &pos)
+void COldObject::SetPosition(int part, const Math::Vector &pos)
 {
     Math::Vector    shPos, n[20], norm;
     float       height, radius;
@@ -1422,14 +1412,14 @@ void CObject::SetPosition(int part, const Math::Vector &pos)
     }
 }
 
-Math::Vector CObject::GetPosition(int part)
+Math::Vector COldObject::GetPosition(int part)
 {
     return m_objectPart[part].position;
 }
 
 // Getes the rotation around three axis.
 
-void CObject::SetAngle(int part, const Math::Vector &angle)
+void COldObject::SetAngle(int part, const Math::Vector &angle)
 {
     m_objectPart[part].angle = angle;
     m_objectPart[part].bRotate = true;  // it will recalculate the matrices
@@ -1440,14 +1430,14 @@ void CObject::SetAngle(int part, const Math::Vector &angle)
     }
 }
 
-Math::Vector CObject::GetAngle(int part)
+Math::Vector COldObject::GetAngle(int part)
 {
     return m_objectPart[part].angle;
 }
 
 // Getes the rotation about the axis Y.
 
-void CObject::SetAngleY(int part, float angle)
+void COldObject::SetAngleY(int part, float angle)
 {
     m_objectPart[part].angle.y = angle;
     m_objectPart[part].bRotate = true;  // it will recalculate the matrices
@@ -1460,7 +1450,7 @@ void CObject::SetAngleY(int part, float angle)
 
 // Getes the rotation about the axis X.
 
-void CObject::SetAngleX(int part, float angle)
+void COldObject::SetAngleX(int part, float angle)
 {
     m_objectPart[part].angle.x = angle;
     m_objectPart[part].bRotate = true;  // it will recalculate the matrices
@@ -1468,23 +1458,23 @@ void CObject::SetAngleX(int part, float angle)
 
 // Getes the rotation about the axis Z.
 
-void CObject::SetAngleZ(int part, float angle)
+void COldObject::SetAngleZ(int part, float angle)
 {
     m_objectPart[part].angle.z = angle;
     m_objectPart[part].bRotate = true;  //it will recalculate the matrices
 }
 
-float CObject::GetAngleY(int part)
+float COldObject::GetAngleY(int part)
 {
     return m_objectPart[part].angle.y;
 }
 
-float CObject::GetAngleX(int part)
+float COldObject::GetAngleX(int part)
 {
     return m_objectPart[part].angle.x;
 }
 
-float CObject::GetAngleZ(int part)
+float COldObject::GetAngleZ(int part)
 {
     return m_objectPart[part].angle.z;
 }
@@ -1492,7 +1482,7 @@ float CObject::GetAngleZ(int part)
 
 // Getes the global zoom.
 
-void CObject::SetZoom(int part, float zoom)
+void COldObject::SetZoom(int part, float zoom)
 {
     m_objectPart[part].bTranslate = true;  // it will recalculate the matrices
     m_objectPart[part].zoom.x = zoom;
@@ -1504,7 +1494,7 @@ void CObject::SetZoom(int part, float zoom)
                                  m_objectPart[part].zoom.z != 1.0f );
 }
 
-void CObject::SetZoom(int part, Math::Vector zoom)
+void COldObject::SetZoom(int part, Math::Vector zoom)
 {
     m_objectPart[part].bTranslate = true;  // it will recalculate the matrices
     m_objectPart[part].zoom = zoom;
@@ -1514,12 +1504,12 @@ void CObject::SetZoom(int part, Math::Vector zoom)
                                  m_objectPart[part].zoom.z != 1.0f );
 }
 
-Math::Vector CObject::GetZoom(int part)
+Math::Vector COldObject::GetZoom(int part)
 {
     return m_objectPart[part].zoom;
 }
 
-void CObject::SetZoomX(int part, float zoom)
+void COldObject::SetZoomX(int part, float zoom)
 {
     m_objectPart[part].bTranslate = true;  // it will recalculate the matrices
     m_objectPart[part].zoom.x = zoom;
@@ -1529,7 +1519,7 @@ void CObject::SetZoomX(int part, float zoom)
                                  m_objectPart[part].zoom.z != 1.0f );
 }
 
-void CObject::SetZoomY(int part, float zoom)
+void COldObject::SetZoomY(int part, float zoom)
 {
     m_objectPart[part].bTranslate = true;  // it will recalculate the matrices
     m_objectPart[part].zoom.y = zoom;
@@ -1539,7 +1529,7 @@ void CObject::SetZoomY(int part, float zoom)
                                  m_objectPart[part].zoom.z != 1.0f );
 }
 
-void CObject::SetZoomZ(int part, float zoom)
+void COldObject::SetZoomZ(int part, float zoom)
 {
     m_objectPart[part].bTranslate = true;  // it will recalculate the matrices
     m_objectPart[part].zoom.z = zoom;
@@ -1549,22 +1539,22 @@ void CObject::SetZoomZ(int part, float zoom)
                                  m_objectPart[part].zoom.z != 1.0f );
 }
 
-float CObject::GetZoomX(int part)
+float COldObject::GetZoomX(int part)
 {
     return m_objectPart[part].zoom.x;
 }
 
-float CObject::GetZoomY(int part)
+float COldObject::GetZoomY(int part)
 {
     return m_objectPart[part].zoom.y;
 }
 
-float CObject::GetZoomZ(int part)
+float COldObject::GetZoomZ(int part)
 {
     return m_objectPart[part].zoom.z;
 }
 
-void CObject::SetTrainer(bool bEnable)
+void COldObject::SetTrainer(bool bEnable)
 {
     m_bTrainer = bEnable;
 
@@ -1574,77 +1564,77 @@ void CObject::SetTrainer(bool bEnable)
     }
 }
 
-bool CObject::GetTrainer()
+bool COldObject::GetTrainer()
 {
     return m_bTrainer;
 }
 
-void CObject::SetToy(bool bEnable)
+void COldObject::SetToy(bool bEnable)
 {
     m_bToy = bEnable;
 }
 
-bool CObject::GetToy()
+bool COldObject::GetToy()
 {
     return m_bToy;
 }
 
-void CObject::SetManual(bool bManual)
+void COldObject::SetManual(bool bManual)
 {
     m_bManual = bManual;
 }
 
-bool CObject::GetManual()
+bool COldObject::GetManual()
 {
     return m_bManual;
 }
 
-void CObject::SetResetCap(ResetCap cap)
+void COldObject::SetResetCap(ResetCap cap)
 {
     m_resetCap = cap;
 }
 
-ResetCap CObject::GetResetCap()
+ResetCap COldObject::GetResetCap()
 {
     return m_resetCap;
 }
 
-void CObject::SetResetBusy(bool bBusy)
+void COldObject::SetResetBusy(bool bBusy)
 {
     m_bResetBusy = bBusy;
 }
 
-bool CObject::GetResetBusy()
+bool COldObject::GetResetBusy()
 {
     return m_bResetBusy;
 }
 
-void CObject::SetResetPosition(const Math::Vector &pos)
+void COldObject::SetResetPosition(const Math::Vector &pos)
 {
     m_resetPosition = pos;
 }
 
-Math::Vector CObject::GetResetPosition()
+Math::Vector COldObject::GetResetPosition()
 {
     return m_resetPosition;
 }
 
-void CObject::SetResetAngle(const Math::Vector &angle)
+void COldObject::SetResetAngle(const Math::Vector &angle)
 {
     m_resetAngle = angle;
 }
 
-Math::Vector CObject::GetResetAngle()
+Math::Vector COldObject::GetResetAngle()
 {
     return m_resetAngle;
 }
 
-Program* CObject::GetResetRun()
+Program* COldObject::GetResetRun()
 {
     return m_resetRun;
 }
 
-void CObject::SetResetRun(Program* run)
+void COldObject::SetResetRun(Program* run)
 {
     m_resetRun = run;
 }
@@ -1652,12 +1642,12 @@ void CObject::SetResetRun(Program* run)
 
 // Management of the particle master.
 
-void CObject::SetMasterParticle(int part, int parti)
+void COldObject::SetMasterParticle(int part, int parti)
 {
     m_objectPart[part].masterParti = parti;
 }
 
-int CObject::GetMasterParticle(int part)
+int COldObject::GetMasterParticle(int part)
 {
     return m_objectPart[part].masterParti;
 }
@@ -1665,31 +1655,31 @@ int CObject::GetMasterParticle(int part)
 
 // Management of the stack transport.
 
-void CObject::SetPower(CObject* power)
+void COldObject::SetPower(CObject* power)
 {
     m_power = power;
 }
 
-CObject* CObject::GetPower()
+CObject* COldObject::GetPower()
 {
     return m_power;
 }
 
 // Management of the object transport.
 
-void CObject::SetCargo(CObject* cargo)
+void COldObject::SetCargo(CObject* cargo)
 {
     m_cargo = cargo;
 }
 
-CObject* CObject::GetCargo()
+CObject* COldObject::GetCargo()
 {
     return m_cargo;
 }
 
 // Management of the object "transporter" that transports it.
 
-void CObject::SetTransporter(CObject* transporter)
+void COldObject::SetTransporter(CObject* transporter)
 {
     m_transporter = transporter;
 
@@ -1697,36 +1687,36 @@ void CObject::SetTransporter(CObject* transporter)
     m_engine->SetObjectShadowHide(m_objectPart[0].object, (m_transporter != 0));
 }
 
-CObject* CObject::GetTransporter()
+CObject* COldObject::GetTransporter()
 {
     return m_transporter;
 }
 
 // Management of the conveying portion.
 
-void CObject::SetTransporterPart(int part)
+void COldObject::SetTransporterPart(int part)
 {
     m_transporterLink = part;
 }
 
-void CObject::SetInfoReturn(float value)
+void COldObject::SetInfoReturn(float value)
 {
     m_infoReturn = value;
 }
 
-float CObject::GetInfoReturn()
+float COldObject::GetInfoReturn()
 {
     return m_infoReturn;
 }
 
-bool CObject::SetCmdLine(int rank, float value)
+bool COldObject::SetCmdLine(int rank, float value)
 {
     if ( rank < 0 || rank >= OBJECTMAXCMDLINE )  return false;
     m_cmdLine[rank] = value;
     return true;
 }
 
-float CObject::GetCmdLine(int rank)
+float COldObject::GetCmdLine(int rank)
 {
     if ( rank < 0 || rank >= OBJECTMAXCMDLINE )  return 0.0f;
     return m_cmdLine[rank];
@@ -1735,12 +1725,12 @@ float CObject::GetCmdLine(int rank)
 
 // Returns matrices of an object portion.
 
-Math::Matrix* CObject::GetRotateMatrix(int part)
+Math::Matrix* COldObject::GetRotateMatrix(int part)
 {
     return &m_objectPart[part].matRotate;
 }
 
-Math::Matrix* CObject::GetWorldMatrix(int part)
+Math::Matrix* COldObject::GetWorldMatrix(int part)
 {
     if ( m_objectPart[0].bTranslate ||
          m_objectPart[0].bRotate    )
@@ -1754,7 +1744,7 @@ Math::Matrix* CObject::GetWorldMatrix(int part)
 
 // Indicates whether the object should be drawn below the interface.
 
-void CObject::SetDrawWorld(bool bDraw)
+void COldObject::SetDrawWorld(bool bDraw)
 {
     int     i;
 
@@ -1769,7 +1759,7 @@ void CObject::SetDrawWorld(bool bDraw)
 
 // Indicates whether the object should be drawn over the interface.
 
-void CObject::SetDrawFront(bool bDraw)
+void COldObject::SetDrawFront(bool bDraw)
 {
     int     i;
 
@@ -1784,7 +1774,7 @@ void CObject::SetDrawFront(bool bDraw)
 
 // Creates shade under a vehicle as a negative light.
 
-bool CObject::CreateShadowLight(float height, Gfx::Color color)
+bool COldObject::CreateShadowLight(float height, Gfx::Color color)
 {
     if ( !m_engine->GetLightMode() )  return true;
 
@@ -1816,14 +1806,14 @@ bool CObject::CreateShadowLight(float height, Gfx::Color color)
 
 // Returns the number of negative light shade.
 
-int CObject::GetShadowLight()
+int COldObject::GetShadowLight()
 {
     return m_shadowLight;
 }
 
 // Creates light for the effects of a vehicle.
 
-bool CObject::CreateEffectLight(float height, Gfx::Color color)
+bool COldObject::CreateEffectLight(float height, Gfx::Color color)
 {
     if ( !m_engine->GetLightMode() )  return true;
 
@@ -1851,14 +1841,14 @@ bool CObject::CreateEffectLight(float height, Gfx::Color color)
 
 // Returns the number of light effects.
 
-int CObject::GetEffectLight()
+int COldObject::GetEffectLight()
 {
     return m_effectLight;
 }
 
 // Creates the circular shadow underneath a vehicle.
 
-bool CObject::CreateShadowCircle(float radius, float intensity,
+bool COldObject::CreateShadowCircle(float radius, float intensity,
                                  Gfx::EngineShadowType type)
 {
     float   zoom;
@@ -1880,7 +1870,7 @@ bool CObject::CreateShadowCircle(float radius, float intensity,
 
 // Reads a program.
 
-bool CObject::ReadProgram(Program* program, const char* filename)
+bool COldObject::ReadProgram(Program* program, const char* filename)
 {
     if ( m_brain != nullptr )
     {
@@ -1891,7 +1881,7 @@ bool CObject::ReadProgram(Program* program, const char* filename)
 
 // Writes a program.
 
-bool CObject::WriteProgram(Program* program, const char* filename)
+bool COldObject::WriteProgram(Program* program, const char* filename)
 {
     if ( m_brain != nullptr )
     {
@@ -1906,7 +1896,7 @@ bool CObject::WriteProgram(Program* program, const char* filename)
 // Returns true if the matrix has changed.
 // The rotations occur in the order Y, Z and X.
 
-bool CObject::UpdateTransformObject(int part, bool bForceUpdate)
+bool COldObject::UpdateTransformObject(int part, bool bForceUpdate)
 {
     Math::Vector    position, angle, eye;
     bool        bModif = false;
@@ -2009,7 +1999,7 @@ bool CObject::UpdateTransformObject(int part, bool bForceUpdate)
 // Assume a maximum of 4 degrees of freedom.
 // Appropriate, for example, to a body, an arm, forearm, hand and fingers.
 
-bool CObject::UpdateTransformObject()
+bool COldObject::UpdateTransformObject()
 {
     bool    bUpdate1, bUpdate2, bUpdate3, bUpdate4;
     int     level1, level2, level3, level4, rank;
@@ -2071,7 +2061,7 @@ bool CObject::UpdateTransformObject()
 // Puts all the progeny flat (there is more than fathers).
 // This allows for debris independently from each other in all directions.
 
-void CObject::FlatParent()
+void COldObject::FlatParent()
 {
     int     i;
 
@@ -2099,7 +2089,7 @@ void CObject::FlatParent()
 
 // Updates the mapping of the texture of the pile.
 
-void CObject::UpdateEnergyMapping()
+void COldObject::UpdateEnergyMapping()
 {
     if (Math::IsEqual(m_energy, m_lastEnergy, 0.01f))
         return;
@@ -2149,7 +2139,7 @@ void CObject::UpdateEnergyMapping()
 
 // Manual action.
 
-bool CObject::EventProcess(const Event &event)
+bool COldObject::EventProcess(const Event &event)
 {
     if ( event.type == EVENT_KEY_DOWN )
     {
@@ -2235,7 +2225,7 @@ bool CObject::EventProcess(const Event &event)
 
 // Animates the object.
 
-bool CObject::EventFrame(const Event &event)
+bool COldObject::EventFrame(const Event &event)
 {
     if ( m_type == OBJECT_HUMAN && m_main->GetMainMovie() == MM_SATCOMopen )
     {
@@ -2274,7 +2264,7 @@ bool CObject::EventFrame(const Event &event)
 
 // Updates the mapping of the object.
 
-void CObject::UpdateMapping()
+void COldObject::UpdateMapping()
 {
     if ( m_type == OBJECT_POWER   ||
          m_type == OBJECT_ATOMIC  ||
@@ -2288,7 +2278,7 @@ void CObject::UpdateMapping()
 
 // Management of viruses.
 
-void CObject::VirusFrame(float rTime)
+void COldObject::VirusFrame(float rTime)
 {
     Gfx::ParticleType   type;
     Math::Vector        pos, speed;
@@ -2334,7 +2324,7 @@ void CObject::VirusFrame(float rTime)
 
 // Management particles mistresses.
 
-void CObject::PartiFrame(float rTime)
+void COldObject::PartiFrame(float rTime)
 {
     Math::Vector    pos, angle, factor;
     int         i, channel;
@@ -2374,7 +2364,7 @@ void CObject::PartiFrame(float rTime)
 // Changes the perspective to view if it was like in the vehicle,
 // or behind the vehicle.
 
-void CObject::SetViewFromHere(Math::Vector &eye, float &dirH, float &dirV,
+void COldObject::SetViewFromHere(Math::Vector &eye, float &dirH, float &dirV,
                               Math::Vector  &lookat, Math::Vector &upVec,
                               Gfx::CameraType type)
 {
@@ -2515,12 +2505,12 @@ void CObject::SetViewFromHere(Math::Vector &eye, float &dirH, float &dirV,
 
 // Management of features.
 
-void CObject::GetCharacter(Character* character)
+void COldObject::GetCharacter(Character* character)
 {
     memcpy(character, &m_character, sizeof(Character));
 }
 
-Character* CObject::GetCharacter()
+Character* COldObject::GetCharacter()
 {
     return &m_character;
 }
@@ -2528,7 +2518,7 @@ Character* CObject::GetCharacter()
 
 // Returns the absolute time.
 
-float CObject::GetAbsTime()
+float COldObject::GetAbsTime()
 {
     return m_aTime;
 }
@@ -2537,14 +2527,14 @@ float CObject::GetAbsTime()
 // Management of energy contained in a battery.
 // Single subject possesses the battery energy, but not the vehicle that carries the battery!
 
-void CObject::SetEnergy(float level)
+void COldObject::SetEnergy(float level)
 {
     if ( level < 0.0f )  level = 0.0f;
     if ( level > 1.0f )  level = 1.0f;
     m_energy = level;
 }
 
-float CObject::GetEnergy()
+float COldObject::GetEnergy()
 {
     if ( m_type != OBJECT_POWER   &&
          m_type != OBJECT_ATOMIC  &&
@@ -2558,12 +2548,12 @@ float CObject::GetEnergy()
 // Single subject possesses a battery capacity,
 // but not the vehicle that carries the battery!
 
-void CObject::SetCapacity(float capacity)
+void COldObject::SetCapacity(float capacity)
 {
     m_capacity = capacity;
 }
 
-float CObject::GetCapacity()
+float COldObject::GetCapacity()
 {
     return m_capacity;
 }
@@ -2571,12 +2561,12 @@ float CObject::GetCapacity()
 
 // Management of the shield.
 
-void CObject::SetShield(float level)
+void COldObject::SetShield(float level)
 {
     m_shield = level;
 }
 
-float CObject::GetShield()
+float COldObject::GetShield()
 {
     if ( m_type == OBJECT_FRET     ||
          m_type == OBJECT_STONE    ||
@@ -2614,12 +2604,12 @@ float CObject::GetShield()
 
 // Management of flight range (zero = infinity).
 
-void CObject::SetRange(float delay)
+void COldObject::SetRange(float delay)
 {
     m_range = delay;
 }
 
-float CObject::GetRange()
+float COldObject::GetRange()
 {
     return m_range;
 }
@@ -2627,7 +2617,7 @@ float CObject::GetRange()
 
 // Management of transparency of the object.
 
-void CObject::SetTransparency(float value)
+void COldObject::SetTransparency(float value)
 {
     int     i;
 
@@ -2649,12 +2639,12 @@ void CObject::SetTransparency(float value)
 
 // Indicates whether an object is stationary (ant on the back).
 
-void CObject::SetFixed(bool bFixed)
+void COldObject::SetFixed(bool bFixed)
 {
     m_bFixed = bFixed;
 }
 
-bool CObject::GetFixed()
+bool COldObject::GetFixed()
 {
     return m_bFixed;
 }
@@ -2662,12 +2652,12 @@ bool CObject::GetFixed()
 
 // Indicates whether an object is subjected to clipping (obstacles).
 
-void CObject::SetClip(bool bClip)
+void COldObject::SetClip(bool bClip)
 {
     m_bClip = bClip;
 }
 
-bool CObject::GetClip()
+bool COldObject::GetClip()
 {
     return m_bClip;
 }
@@ -2675,12 +2665,12 @@ bool CObject::GetClip()
 
 // Controls object team
 
-void CObject::SetTeam(int team)
+void COldObject::SetTeam(int team)
 {
     m_team = team;
 }
 
-int CObject::GetTeam()
+int COldObject::GetTeam()
 {
     return m_team;
 }
@@ -2688,7 +2678,7 @@ int CObject::GetTeam()
 
 // Pushes an object.
 
-bool CObject::JostleObject(float force)
+bool COldObject::JostleObject(float force)
 {
     if ( m_type == OBJECT_FLAGb ||
          m_type == OBJECT_FLAGr ||
@@ -2715,7 +2705,7 @@ bool CObject::JostleObject(float force)
 
 // Beginning of the effect when the instruction "detect" is used.
 
-void CObject::StartDetectEffect(CObject *target, bool bFound)
+void COldObject::StartDetectEffect(CObject *target, bool bFound)
 {
     Math::Matrix*   mat;
     Math::Vector    pos, goal;
@@ -2756,7 +2746,7 @@ void CObject::StartDetectEffect(CObject *target, bool bFound)
 
 // Management of time from which a virus is active.
 
-void CObject::SetVirusMode(bool bEnable)
+void COldObject::SetVirusMode(bool bEnable)
 {
     m_bVirusMode = bEnable;
     m_virusTime = 0.0f;
@@ -2770,12 +2760,12 @@ void CObject::SetVirusMode(bool bEnable)
     }
 }
 
-bool CObject::GetVirusMode()
+bool COldObject::GetVirusMode()
 {
     return m_bVirusMode;
 }
 
-float CObject::GetVirusTime()
+float COldObject::GetVirusTime()
 {
     return m_virusTime;
 }
@@ -2783,32 +2773,32 @@ float CObject::GetVirusTime()
 
 // Management mode of the camera.
 
-void CObject::SetCameraType(Gfx::CameraType type)
+void COldObject::SetCameraType(Gfx::CameraType type)
 {
     m_cameraType = type;
 }
 
-Gfx::CameraType CObject::GetCameraType()
+Gfx::CameraType COldObject::GetCameraType()
 {
     return m_cameraType;
 }
 
-void CObject::SetCameraDist(float dist)
+void COldObject::SetCameraDist(float dist)
 {
     m_cameraDist = dist;
 }
 
-float CObject::GetCameraDist()
+float COldObject::GetCameraDist()
 {
     return m_cameraDist;
 }
 
-void CObject::SetCameraLock(bool bLock)
+void COldObject::SetCameraLock(bool bLock)
 {
     m_bCameraLock = bLock;
 }
 
-bool CObject::GetCameraLock()
+bool COldObject::GetCameraLock()
 {
     return m_bCameraLock;
 }
@@ -2817,7 +2807,7 @@ bool CObject::GetCameraLock()
 
 // Management of the demonstration of the object.
 
-void CObject::SetHighlight(bool mode)
+void COldObject::SetHighlight(bool mode)
 {
     if (mode)
     {
@@ -2840,7 +2830,7 @@ void CObject::SetHighlight(bool mode)
 
 // Indicates whether the object is selected or not.
 
-void CObject::SetSelect(bool bMode, bool bDisplayError)
+void COldObject::SetSelect(bool bMode, bool bDisplayError)
 {
     Error       err;
 
@@ -2881,7 +2871,7 @@ void CObject::SetSelect(bool bMode, bool bDisplayError)
 
 // Indicates whether the object is selected or not.
 
-bool CObject::GetSelect(bool bReal)
+bool COldObject::GetSelect(bool bReal)
 {
     if ( !bReal && m_main->GetFixScene() )  return false;
     return m_bSelect;
@@ -2890,14 +2880,14 @@ bool CObject::GetSelect(bool bReal)
 
 // Indicates whether the object is selectable or not.
 
-void CObject::SetSelectable(bool bMode)
+void COldObject::SetSelectable(bool bMode)
 {
     m_bSelectable = bMode;
 }
 
 // Indicates whether the object is selecionnable or not.
 
-bool CObject::GetSelectable()
+bool COldObject::GetSelectable()
 {
     return m_bSelectable;
 }
@@ -2905,7 +2895,7 @@ bool CObject::GetSelectable()
 
 // Management of the activities of an object.
 
-void CObject::SetActivity(bool bMode)
+void COldObject::SetActivity(bool bMode)
 {
     if ( m_brain != nullptr )
     {
@@ -2913,7 +2903,7 @@ void CObject::SetActivity(bool bMode)
     }
 }
 
-bool CObject::GetActivity()
+bool COldObject::GetActivity()
 {
     if ( m_brain != nullptr )
     {
@@ -2925,14 +2915,14 @@ bool CObject::GetActivity()
 
 // Indicates if necessary to check the tokens of the object.
 
-void CObject::SetCheckToken(bool bMode)
+void COldObject::SetCheckToken(bool bMode)
 {
     m_bCheckToken = bMode;
 }
 
 // Indicates if necessary to check the tokens of the object.
 
-bool CObject::GetCheckToken()
+bool COldObject::GetCheckToken()
 {
     return m_bCheckToken;
 }
@@ -2942,7 +2932,7 @@ bool CObject::GetCheckToken()
 // The object is not hidden or visually disabled, but ignores detections!
 // For example: underground worm.
 
-void CObject::SetVisible(bool bVisible)
+void COldObject::SetVisible(bool bVisible)
 {
     m_bVisible = bVisible;
 }
@@ -2953,12 +2943,12 @@ void CObject::SetVisible(bool bVisible)
 // This mode is used for objects "resetables"
 // during training to simulate destruction.
 
-void CObject::SetEnable(bool bEnable)
+void COldObject::SetEnable(bool bEnable)
 {
     m_bEnable = bEnable;
 }
 
-bool CObject::GetEnable()
+bool COldObject::GetEnable()
 {
     return m_bEnable;
 }
@@ -2966,22 +2956,22 @@ bool CObject::GetEnable()
 
 // Management mode or an object is only active when you're close.
 
-void CObject::SetProxyActivate(bool bActivate)
+void COldObject::SetProxyActivate(bool bActivate)
 {
     m_bProxyActivate = bActivate;
 }
 
-bool CObject::GetProxyActivate()
+bool COldObject::GetProxyActivate()
 {
     return m_bProxyActivate;
 }
 
-void CObject::SetProxyDistance(float distance)
+void COldObject::SetProxyDistance(float distance)
 {
     m_proxyDistance = distance;
 }
 
-float CObject::GetProxyDistance()
+float COldObject::GetProxyDistance()
 {
     return m_proxyDistance;
 }
@@ -2989,12 +2979,12 @@ float CObject::GetProxyDistance()
 
 // Management of the method of increasing damage.
 
-void CObject::SetMagnifyDamage(float factor)
+void COldObject::SetMagnifyDamage(float factor)
 {
     m_magnifyDamage = factor;
 }
 
-float CObject::GetMagnifyDamage()
+float COldObject::GetMagnifyDamage()
 {
     return m_magnifyDamage;
 }
@@ -3002,12 +2992,12 @@ float CObject::GetMagnifyDamage()
 
 // Management of free parameter.
 
-void CObject::SetParam(float value)
+void COldObject::SetParam(float value)
 {
     m_param = value;
 }
 
-float CObject::GetParam()
+float COldObject::GetParam()
 {
     return m_param;
 }
@@ -3015,24 +3005,24 @@ float CObject::GetParam()
 // For example, a cube of titanium is blocked while it is used to make something,
 // or a vehicle is blocked as its construction is not finished.
 
-void CObject::SetLock(bool bLock)
+void COldObject::SetLock(bool bLock)
 {
     m_bLock = bLock;
 }
 
-bool CObject::GetLock()
+bool COldObject::GetLock()
 {
     return m_bLock;
 }
 
 // Ignore checks in build() function
 
-void CObject::SetIgnoreBuildCheck(bool bIgnoreBuildCheck)
+void COldObject::SetIgnoreBuildCheck(bool bIgnoreBuildCheck)
 {
     m_bIgnoreBuildCheck = bIgnoreBuildCheck;
 }
 
-bool CObject::GetIgnoreBuildCheck()
+bool COldObject::GetIgnoreBuildCheck()
 {
     return m_bIgnoreBuildCheck;
 }
@@ -3040,12 +3030,12 @@ bool CObject::GetIgnoreBuildCheck()
 // Management of the mode "current explosion" of an object.
 // An object in this mode is not saving.
 
-void CObject::SetExploding(bool bExplo)
+void COldObject::SetExploding(bool bExplo)
 {
     m_bExplo = bExplo;
 }
 
-bool CObject::IsExploding()
+bool COldObject::IsExploding()
 {
     return m_bExplo;
 }
@@ -3053,12 +3043,12 @@ bool CObject::IsExploding()
 
 // Mode management "cargo ship" during movies.
 
-void CObject::SetSpaceshipCargo(bool bCargo)
+void COldObject::SetSpaceshipCargo(bool bCargo)
 {
     m_bCargo = bCargo;
 }
 
-bool CObject::IsSpaceshipCargo()
+bool COldObject::IsSpaceshipCargo()
 {
     return m_bCargo;
 }
@@ -3066,7 +3056,7 @@ bool CObject::IsSpaceshipCargo()
 
 // Management of the HS mode of an object.
 
-void CObject::SetBurn(bool bBurn)
+void COldObject::SetBurn(bool bBurn)
 {
     m_bBurn = bBurn;
 
@@ -3077,12 +3067,12 @@ void CObject::SetBurn(bool bBurn)
 //? }
 }
 
-bool CObject::GetBurn()
+bool COldObject::GetBurn()
 {
     return m_bBurn;
 }
 
-void CObject::SetDead(bool bDead)
+void COldObject::SetDead(bool bDead)
 {
     m_bDead = bDead;
 
@@ -3098,17 +3088,17 @@ void CObject::SetDead(bool bDead)
 //? }
 }
 
-bool CObject::GetDead()
+bool COldObject::GetDead()
 {
     return m_bDead;
 }
 
-bool CObject::GetRuin()
+bool COldObject::GetRuin()
 {
     return m_bBurn|m_bFlat;
 }
 
-bool CObject::GetActive()
+bool COldObject::GetActive()
 {
     return !m_bLock && !m_bBurn && !m_bFlat && m_bVisible && m_bEnable;
 }
@@ -3116,7 +3106,7 @@ bool CObject::GetActive()
 
 // Management of the point of aim.
 
-void CObject::SetGunGoalV(float gunGoal)
+void COldObject::SetGunGoalV(float gunGoal)
 {
     if ( m_type == OBJECT_MOBILEfc ||
          m_type == OBJECT_MOBILEtc ||
@@ -3150,7 +3140,7 @@ void CObject::SetGunGoalV(float gunGoal)
     m_gunGoalV = gunGoal;
 }
 
-void CObject::SetGunGoalH(float gunGoal)
+void COldObject::SetGunGoalH(float gunGoal)
 {
     if ( m_type == OBJECT_MOBILEfc ||
          m_type == OBJECT_MOBILEtc ||
@@ -3184,12 +3174,12 @@ void CObject::SetGunGoalH(float gunGoal)
     m_gunGoalH = gunGoal;
 }
 
-float CObject::GetGunGoalV()
+float COldObject::GetGunGoalV()
 {
     return m_gunGoalV;
 }
 
-float CObject::GetGunGoalH()
+float COldObject::GetGunGoalH()
 {
     return m_gunGoalH;
 }
@@ -3198,7 +3188,7 @@ float CObject::GetGunGoalH()
 
 // Shows the limits of the object.
 
-bool CObject::StartShowLimit()
+bool COldObject::StartShowLimit()
 {
     if ( m_showLimitRadius == 0.0f )  return false;
 
@@ -3207,19 +3197,19 @@ bool CObject::StartShowLimit()
     return true;
 }
 
-void CObject::StopShowLimit()
+void COldObject::StopShowLimit()
 {
     m_bShowLimit = false;
 }
 
-void CObject::SetShowLimitRadius(float radius)
+void COldObject::SetShowLimitRadius(float radius)
 {
     m_showLimitRadius = radius;
 }
 
 // Indicates whether a program is under execution.
 
-bool CObject::IsProgram()
+bool COldObject::IsProgram()
 {
     if ( m_brain == nullptr )  return false;
     return m_brain->IsProgram();
@@ -3228,7 +3218,7 @@ bool CObject::IsProgram()
 
 // Creates or removes particles associated to the object.
 
-void CObject::CreateSelectParticle()
+void COldObject::CreateSelectParticle()
 {
     Math::Vector    pos, speed;
     Math::Point     dim;
@@ -3290,7 +3280,7 @@ void CObject::CreateSelectParticle()
 
 // Updates the particles associated to the object.
 
-void CObject::UpdateSelectParticle()
+void COldObject::UpdateSelectParticle()
 {
     Math::Vector    pos[4];
     Math::Point     dim[4];
@@ -3443,67 +3433,67 @@ void CObject::UpdateSelectParticle()
 
 // Getes the pointer to the current script execution.
 
-void CObject::SetRunScript(CScript* script)
+void COldObject::SetRunScript(CScript* script)
 {
     m_runScript = script;
 }
 
-CScript* CObject::GetRunScript()
+CScript* COldObject::GetRunScript()
 {
     return m_runScript;
 }
 
 // Returns the variables of "this" for CBOT.
 
-CBotVar* CObject::GetBotVar()
+CBotVar* COldObject::GetBotVar()
 {
     return m_botVar;
 }
 
 // Returns the physics associated to the object.
 
-CPhysics* CObject::GetPhysics()
+CPhysics* COldObject::GetPhysics()
 {
     return m_physics.get();
 }
 
-void CObject::SetPhysics(std::unique_ptr<CPhysics> physics)
+void COldObject::SetPhysics(std::unique_ptr<CPhysics> physics)
 {
     m_physics = std::move(physics);
 }
 
 // Returns the brain associated to the object.
 
-CBrain* CObject::GetBrain()
+CBrain* COldObject::GetBrain()
 {
     return m_brain.get();
 }
 
-void CObject::SetBrain(std::unique_ptr<CBrain> brain)
+void COldObject::SetBrain(std::unique_ptr<CBrain> brain)
 {
     m_brain = std::move(brain);
 }
 
 // Returns the movement associated to the object.
 
-CMotion* CObject::GetMotion()
+CMotion* COldObject::GetMotion()
 {
     return m_motion.get();
 }
 
-void CObject::SetMotion(std::unique_ptr<CMotion> motion)
+void COldObject::SetMotion(std::unique_ptr<CMotion> motion)
 {
     m_motion = std::move(motion);
 }
 
 // Returns the controller associated to the object.
 
-CAuto* CObject::GetAuto()
+CAuto* COldObject::GetAuto()
 {
     return m_auto.get();
 }
 
-void CObject::SetAuto(std::unique_ptr<CAuto> automat)
+void COldObject::SetAuto(std::unique_ptr<CAuto> automat)
 {
     m_auto = std::move(automat);
 }
@@ -3512,12 +3502,12 @@ void CObject::SetAuto(std::unique_ptr<CAuto> automat)
 
 // Management of the position in the file definition.
 
-void CObject::SetDefRank(int rank)
+void COldObject::SetDefRank(int rank)
 {
     m_defRank = rank;
 }
 
-int  CObject::GetDefRank()
+int  COldObject::GetDefRank()
 {
     return m_defRank;
 }
@@ -3525,7 +3515,7 @@ int  CObject::GetDefRank()
 
 // Getes the object name for the tooltip.
 
-bool CObject::GetTooltipName(std::string& name)
+bool COldObject::GetTooltipName(std::string& name)
 {
     GetResource(RES_OBJECT, m_type, name);
     if(GetTeam() != 0) {
@@ -3537,7 +3527,7 @@ bool CObject::GetTooltipName(std::string& name)
 
 // Adds the object previously selected in the list.
 
-void CObject::AddDeselList(CObject* pObj)
+void COldObject::AddDeselList(CObject* pObj)
 {
     int     i;
 
@@ -3555,7 +3545,7 @@ void CObject::AddDeselList(CObject* pObj)
 
 // Removes the previously selected object in the list.
 
-CObject* CObject::SubDeselList()
+CObject* COldObject::SubDeselList()
 {
     if ( m_totalDesectList == 0 )  return 0;
 
@@ -3564,7 +3554,7 @@ CObject* CObject::SubDeselList()
 
 // Removes an object reference if it is in the list.
 
-void CObject::DeleteDeselList(CObject* pObj)
+void COldObject::DeleteDeselList(CObject* pObj)
 {
     int     i, j;
 

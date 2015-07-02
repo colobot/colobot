@@ -20,7 +20,7 @@
 
 #pragma once
 
-#include "object/object.h"
+#include "object/old_object.h"
 #include "object/auto/auto.h"
 
 #include <string>
@@ -41,7 +41,7 @@ class CModelManager;
 class CEngine;
 }
 
-class CExchangePost : public CObject
+class CExchangePost : public COldObject
 {
 public:
     CExchangePost(int id);

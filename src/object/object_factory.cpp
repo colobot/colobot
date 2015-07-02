@@ -24,6 +24,7 @@
 #include "graphics/engine/terrain.h"
 #include "graphics/engine/lightning.h"
 
+#include "object/old_object.h"
 #include "object/brain.h"
 #include "object/object_create_params.h"
 #include "object/robotmain.h"
@@ -65,6 +66,8 @@
 #include "math/geometry.h"
 
 #include "physics/physics.h"
+
+using COldObjectUPtr = std::unique_ptr<COldObject>;
 
 CObjectFactory::CObjectFactory(Gfx::CEngine* engine,
                                Gfx::CTerrain* terrain,
@@ -332,7 +335,7 @@ CObjectUPtr CObjectFactory::CreateBuilding(const ObjectCreateParams& params)
     ObjectType type = params.type;
     float power = params.power;
 
-    CObjectUPtr obj(new CObject(params.id));
+    COldObjectUPtr obj{new COldObject(params.id)};
 
     obj->SetType(type);
 
@@ -1106,7 +1109,7 @@ CObjectUPtr CObjectFactory::CreateBuilding(const ObjectCreateParams& params)
     AddObjectAuto(obj.get());
     m_engine->LoadAllTextures();
 
-    return obj;
+    return std::move(obj);
 }
 
 // Creates a small resource set on the ground.
@@ -1118,7 +1121,7 @@ CObjectUPtr CObjectFactory::CreateResource(const ObjectCreateParams& params)
     ObjectType type = params.type;
     float power = params.power;
 
-    CObjectUPtr obj(new CObject(params.id));
+    COldObjectUPtr obj{new COldObject(params.id)};
 
     obj->SetType(type);
 
@@ -1173,7 +1176,7 @@ CObjectUPtr CObjectFactory::CreateResource(const ObjectCreateParams& params)
 
     if ( type == OBJECT_SHOW )  // remains in the air?
     {
-        return obj;
+        return std::move(obj);
     }
 
     float radius = 1.5f;
@@ -1226,7 +1229,7 @@ CObjectUPtr CObjectFactory::CreateResource(const ObjectCreateParams& params)
     pos.y += height;
     obj->SetPosition(0, pos);  // to display the shadows immediately
 
-    return obj;
+    return std::move(obj);
 }
 
 // Creates a flag placed on the ground.
@@ -1237,7 +1240,7 @@ CObjectUPtr CObjectFactory::CreateFlag(const ObjectCreateParams& params)
     float angle = params.angle;
     ObjectType type = params.type;
 
-    CObjectUPtr obj(new CObject(params.id));
+    COldObjectUPtr obj{new COldObject(params.id)};
 
     obj->SetType(type);
 
@@ -1286,7 +1289,7 @@ CObjectUPtr CObjectFactory::CreateFlag(const ObjectCreateParams& params)
     pos = obj->GetPosition(0);
     obj->SetPosition(0, pos);  // to display the shadows immediately
 
-    return obj;
+    return std::move(obj);
 }
 
 // Creates a barrier placed on the ground.
@@ -1298,7 +1301,7 @@ CObjectUPtr CObjectFactory::CreateBarrier(const ObjectCreateParams& params)
     float height = params.height;
     ObjectType type = params.type;
 
-    CObjectUPtr obj(new CObject(params.id));
+    COldObjectUPtr obj{new COldObject(params.id)};
 
     obj->SetType(type);
 
@@ -1383,7 +1386,7 @@ CObjectUPtr CObjectFactory::CreateBarrier(const ObjectCreateParams& params)
     pos.y += height;
     obj->SetPosition(0, pos);
 
-    return obj;
+    return std::move(obj);
 }
 
 // Creates a plant placed on the ground.
@@ -1395,7 +1398,7 @@ CObjectUPtr CObjectFactory::CreatePlant(const ObjectCreateParams& params)
     float height = params.height;
     ObjectType type = params.type;
 
-    CObjectUPtr obj(new CObject(params.id));
+    COldObjectUPtr obj{new COldObject(params.id)};
 
     obj->SetType(type);
 
@@ -1624,7 +1627,7 @@ CObjectUPtr CObjectFactory::CreatePlant(const ObjectCreateParams& params)
     pos.y += height;
     obj->SetPosition(0, pos);
 
-    return obj;
+    return std::move(obj);
 }
 
 // Creates a mushroom placed on the ground.
@@ -1636,7 +1639,7 @@ CObjectUPtr CObjectFactory::CreateMushroom(const ObjectCreateParams& params)
     float height = params.height;
     ObjectType type = params.type;
 
-    CObjectUPtr obj(new CObject(params.id));
+    COldObjectUPtr obj{new COldObject(params.id)};
 
     obj->SetType(type);
 
@@ -1682,7 +1685,7 @@ CObjectUPtr CObjectFactory::CreateMushroom(const ObjectCreateParams& params)
     pos.y += height;
     obj->SetPosition(0, pos);
 
-    return obj;
+    return std::move(obj);
 }
 
 // Creates a toy placed on the ground.
@@ -1696,7 +1699,7 @@ CObjectUPtr CObjectFactory::CreateTeen(const ObjectCreateParams& params)
     ObjectType type = params.type;
     int option = params.option;
 
-    CObjectUPtr obj(new CObject(params.id));
+    COldObjectUPtr obj{new COldObject(params.id)};
 
     obj->SetType(type);
     obj->SetOption(option);
@@ -2516,7 +2519,7 @@ CObjectUPtr CObjectFactory::CreateTeen(const ObjectCreateParams& params)
     pos.y += height;
     obj->SetPosition(0, pos);
 
-    return obj;
+    return std::move(obj);
 }
 
 // Creates a crystal placed on the ground.
@@ -2528,7 +2531,7 @@ CObjectUPtr CObjectFactory::CreateQuartz(const ObjectCreateParams& params)
     float height = params.height;
     ObjectType type = params.type;
 
-    CObjectUPtr obj(new CObject(params.id));
+    COldObjectUPtr obj{new COldObject(params.id)};
 
     obj->SetType(type);
 
@@ -2623,7 +2626,7 @@ CObjectUPtr CObjectFactory::CreateQuartz(const ObjectCreateParams& params)
     m_particle->CreateParticle(pos, pos, Math::Point(2.0f, 2.0f), Gfx::PARTIQUARTZ, 0.7f+Math::Rand()*0.7f, radius, 0.0f);
     m_particle->CreateParticle(pos, pos, Math::Point(2.0f, 2.0f), Gfx::PARTIQUARTZ, 0.7f+Math::Rand()*0.7f, radius, 0.0f);
 
-    return obj;
+    return std::move(obj);
 }
 
 // Creates a root placed on the ground.
@@ -2634,7 +2637,7 @@ CObjectUPtr CObjectFactory::CreateRoot(const ObjectCreateParams& params)
     float height = params.height;
     ObjectType type = params.type;
 
-    CObjectUPtr obj(new CObject(params.id));
+    COldObjectUPtr obj{new COldObject(params.id)};
 
     obj->SetType(type);
 
@@ -2790,7 +2793,7 @@ CObjectUPtr CObjectFactory::CreateRoot(const ObjectCreateParams& params)
     pos.y += height;
     obj->SetPosition(0, pos);
 
-    return obj;
+    return std::move(obj);
 }
 
 // Creates a small home.
@@ -2801,7 +2804,7 @@ CObjectUPtr CObjectFactory::CreateHome(const ObjectCreateParams& params)
     float height = params.height;
     ObjectType type = params.type;
 
-    CObjectUPtr obj(new CObject(params.id));
+    COldObjectUPtr obj{new COldObject(params.id)};
 
     obj->SetType(type);
 
@@ -2830,7 +2833,7 @@ CObjectUPtr CObjectFactory::CreateHome(const ObjectCreateParams& params)
     pos.y += height;
     obj->SetPosition(0, pos);
 
-    return obj;
+    return std::move(obj);
 }
 
 // Creates ruin placed on the ground.
@@ -2841,7 +2844,7 @@ CObjectUPtr CObjectFactory::CreateRuin(const ObjectCreateParams& params)
     float height = params.height;
     ObjectType type = params.type;
 
-    CObjectUPtr obj(new CObject(params.id));
+    COldObjectUPtr obj{new COldObject(params.id)};
 
     obj->SetType(type);
 
@@ -3245,7 +3248,7 @@ CObjectUPtr CObjectFactory::CreateRuin(const ObjectCreateParams& params)
         obj->SetAngleX(0, angle);
     }
 
-    return obj;
+    return std::move(obj);
 }
 
 // Creates a gadget apollo.
@@ -3256,7 +3259,7 @@ CObjectUPtr CObjectFactory::CreateApollo(const ObjectCreateParams& params)
     float angle = params.angle;
     ObjectType type = params.type;
 
-    CObjectUPtr obj(new CObject(params.id));
+    COldObjectUPtr obj{new COldObject(params.id)};
 
     obj->SetType(type);
 
@@ -3424,7 +3427,7 @@ CObjectUPtr CObjectFactory::CreateApollo(const ObjectCreateParams& params)
     pos = obj->GetPosition(0);
     obj->SetPosition(0, pos);  // to display the shadows immediately
 
-    return obj;
+    return std::move(obj);
 }
 
 // Creates a vehicle traveling any pose on the floor.
@@ -3439,7 +3442,7 @@ CObjectUPtr CObjectFactory::CreateVehicle(const ObjectCreateParams& params)
     bool toy = params.toy;
     int option = params.option;
 
-    CObjectUPtr obj(new CObject(params.id));
+    COldObjectUPtr obj{new COldObject(params.id)};
 
     obj->SetType(type);
     obj->SetOption(option);
@@ -3449,7 +3452,7 @@ CObjectUPtr CObjectFactory::CreateVehicle(const ObjectCreateParams& params)
         std::unique_ptr<CMotion> motion{new CMotionToto(obj.get())};
         motion->Create(pos, angle, type, 1.0f, m_modelManager);
         obj->SetMotion(std::move(motion));
-        return obj;
+        return std::move(obj);
     }
 
     if ( type == OBJECT_HUMAN ||
@@ -3526,7 +3529,7 @@ CObjectUPtr CObjectFactory::CreateVehicle(const ObjectCreateParams& params)
     obj->SetMotion(std::move(motion));
     obj->SetPhysics(std::move(physics));
 
-    return obj;
+    return std::move(obj);
 }
 
 // Creates an insect lands on any ground.
@@ -3537,7 +3540,7 @@ CObjectUPtr CObjectFactory::CreateInsect(const ObjectCreateParams& params)
     float angle = params.angle;
     ObjectType type = params.type;
 
-    CObjectUPtr obj(new CObject(params.id));
+    COldObjectUPtr obj{new COldObject(params.id)};
 
     obj->SetType(type);
 
@@ -3580,12 +3583,12 @@ CObjectUPtr CObjectFactory::CreateInsect(const ObjectCreateParams& params)
     obj->SetPhysics(std::move(physics));
     obj->SetBrain(std::move(brain));
 
-    return obj;
+    return std::move(obj);
 }
 
 // Creates all sub-objects for managing the object.
 
-void CObjectFactory::AddObjectAuto(CObject* obj)
+void CObjectFactory::AddObjectAuto(COldObject* obj)
 {
     std::unique_ptr<CAuto> objAuto;
 

@@ -2616,19 +2616,25 @@ bool CRobotMain::EventFrame(const Event &event)
         // Advances all the robots, but not toto.
         for (CObject* obj : m_objMan->GetAllObjects())
         {
-            if (pm != nullptr) pm->UpdateObject(obj);
-            if (obj->GetTransporter() != nullptr)  continue;
-            ObjectType type = obj->GetType();
-            if (type == OBJECT_TOTO)
+            if (pm != nullptr)
+                pm->UpdateObject(obj);
+
+            if (obj->GetTransporter() != nullptr)
+                continue;
+
+            if (obj->GetType() == OBJECT_TOTO)
                 toto = obj;
-            else
-                obj->EventProcess(event);
+            else if (obj->Implements(ObjectInterfaceType::Interactive))
+                dynamic_cast<CInteractiveObject*>(obj)->EventProcess(event);
         }
         // Advances all objects transported by robots.
         for (CObject* obj : m_objMan->GetAllObjects())
         {
-            if (obj->GetTransporter() == nullptr) continue;
-            obj->EventProcess(event);
+            if (obj->GetTransporter() == nullptr)
+                continue;
+
+            if (obj->Implements(ObjectInterfaceType::Interactive))
+                dynamic_cast<CInteractiveObject*>(obj)->EventProcess(event);
         }
 
         m_engine->GetPyroManager()->EventProcess(event);
@@ -2652,7 +2658,7 @@ bool CRobotMain::EventFrame(const Event &event)
 
     // Advances toto following the camera, because its position depends on the camera.
     if (toto != nullptr)
-        toto->EventProcess(event);
+        dynamic_cast<CInteractiveObject*>(toto)->EventProcess(event);
 
     HiliteFrame(event.rTime);
 
@@ -2791,7 +2797,10 @@ bool CRobotMain::EventObject(const Event &event)
 
     for (CObject* obj : m_objMan->GetAllObjects())
     {
-        obj->EventProcess(event);
+        if (obj->Implements(ObjectInterfaceType::Interactive))
+        {
+            dynamic_cast<CInteractiveObject*>(obj)->EventProcess(event);
+        }
     }
 
     if (m_resetCreate)
