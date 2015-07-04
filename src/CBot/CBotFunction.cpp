@@ -245,7 +245,7 @@ CBotFunction* CBotFunction::Compile(CBotToken* &p, CBotCStack* pStack, CBotFunct
                 {
                     // return "this" known
                     CBotVar* pThis = CBotVar::Create("this", CBotTypResult( CBotTypClass, func->m_MasterClass ));
-                    pThis->SetInit(2);
+                    pThis->SetInit(CBotVar::InitType::IS_POINTER);
 //                  pThis->SetUniqNum(func->m_nThisIdent = -2); //CBotVar::NextUniqNum() will not
                     pThis->SetUniqNum(-2);
                     pStk->AddVar(pThis);
@@ -392,18 +392,18 @@ bool CBotFunction::Execute(CBotVar** ppVars, CBotStack* &pj, CBotVar* pInstance)
     if ( pile->GetState() == 1 && !m_MasterClass.IsEmpty() )
     {
         // makes "this" known
-        CBotVar* pThis ;
+        CBotVar* pThis = nullptr;
         if ( pInstance == NULL )
         {
             pThis = CBotVar::Create("this", CBotTypResult( CBotTypClass, m_MasterClass ));
-            pThis->SetInit(2);
         }
         else
         {
             pThis = CBotVar::Create("this", CBotTypResult( CBotTypPointer, m_MasterClass ));
             pThis->SetPointer(pInstance);
-            pThis->SetInit(2);
         }
+        assert(pThis);
+        pThis->SetInit(CBotVar::InitType::IS_POINTER);
 
 //      pThis->SetUniqNum(m_nThisIdent);
         pThis->SetUniqNum(-2);
@@ -447,7 +447,7 @@ void CBotFunction::RestoreState(CBotVar** ppVars, CBotStack* &pj, CBotVar* pInst
     if ( !m_MasterClass.IsEmpty() )
     {
         CBotVar* pThis = pile->FindVar("this");
-        pThis->SetInit(2);
+        pThis->SetInit(CBotVar::InitType::IS_POINTER);
         pThis->SetUniqNum(-2);
     }
 
@@ -662,18 +662,17 @@ int CBotFunction::DoCall(long& nIdent, const char* name, CBotVar** ppVars, CBotS
                 if ( pInstance == NULL )
                 {
                     pThis = CBotVar::Create("this", CBotTypResult( CBotTypClass, pt->m_MasterClass ));
-                    pThis->SetInit(2);
                 }
                 else
                 {
                     pThis = CBotVar::Create("this", CBotTypResult( CBotTypPointer, pt->m_MasterClass ));
                     pThis->SetPointer(pInstance);
-                    pThis->SetInit(2);
                 }
+                assert(pThis);
+                pThis->SetInit(CBotVar::InitType::IS_POINTER);
 
                 pThis->SetUniqNum(-2);
                 pStk1->AddVar(pThis);
-
             }
 
             // initializes the variables as parameters
@@ -741,7 +740,7 @@ void CBotFunction::RestoreCall(long& nIdent, const char* name, CBotVar** ppVars,
 //                CBotVar* pInstance = m_pProg->m_pInstance;
                 // make "this" known
                 CBotVar* pThis = pStk1->FindVar("this");
-                pThis->SetInit(2);
+                pThis->SetInit(CBotVar::InitType::IS_POINTER);
                 pThis->SetUniqNum(-2);
             }
         }
@@ -986,7 +985,7 @@ CBotDefParam* CBotDefParam::Compile(CBotToken* &p, CBotCStack* pStack)
                     if ( type.Eq(CBotTypArrayPointer) ) type.SetType(CBotTypArrayBody);
                     CBotVar*    var = CBotVar::Create(pp->GetString(), type);       // creates the variable
 //                  if ( pClass ) var->SetClass(pClass);
-                    var->SetInit(2);                                    // mark initialized
+                    var->SetInit(CBotVar::InitType::IS_POINTER);                                    // mark initialized
                     param->m_nIdent = CBotVar::NextUniqNum();
                     var->SetUniqNum(param->m_nIdent);
                     pStack->AddVar(var);                                // place on the stack
@@ -1537,7 +1536,10 @@ bool CBotClass::CompileDefItem(CBotToken* &p, CBotCStack* pStack, bool bSecond)
                         while (pv != NULL)
                         {
                             CBotVar* pcopy = CBotVar::Create(pv);
-                            pcopy->SetInit(!bConstructor || pv->IsStatic());
+                            CBotVar::InitType initType = CBotVar::InitType::UNDEF;
+                            if (!bConstructor || pv->IsStatic())
+                                initType = CBotVar::InitType::DEF;
+                            pcopy->SetInit(initType);
                             pcopy->SetUniqNum(pv->GetUniqNum());
                             pile->AddVar(pcopy);
                             pv = pv->GetNext();

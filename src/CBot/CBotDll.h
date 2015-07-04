@@ -547,11 +547,6 @@ bool rMean(CBotVar* pVar, CBotVar* pResult, int& Exception)
 // may be useful to the outside of the module
 // ( it is currently not expected to be able to create these objects in outer )
 
-// results of GetInit()
-#define    IS_UNDEF    0        // undefined variable
-#define IS_DEF        1        // variable defined
-#define    IS_NAN        999        // variable defined as not a number
-
 // variable type SetPrivate / IsPrivate
 #define PR_PUBLIC    0        // public variable
 #define    PR_READ        1        // read only
@@ -560,6 +555,10 @@ bool rMean(CBotVar* pVar, CBotVar* pResult, int& Exception)
 
 class CBotVar
 {
+public:
+    // results of GetInit()
+    enum class InitType : int { UNDEF = 0, DEF = 1, IS_POINTER = 2, IS_NAN = 999 };
+
 protected:
     CBotToken*        m_token;                    // the corresponding token
 
@@ -571,7 +570,7 @@ protected:
 
     CBotTypResult    m_type;                        // type of value
 
-    int                m_binit;                    // not initialized?
+    InitType         m_binit;                    // not initialized?
     CBotVarClass*    m_pMyThis;                    // ^ corresponding this element
     void*            m_pUserPtr;                    // ^user data if necessary
     bool            m_bStatic;                    // static element (in class)
@@ -635,9 +634,11 @@ virtual                ~CBotVar( );                        // destructor
     CBotToken*        GetToken();
     void            SetType(CBotTypResult& type);
 
-    void            SetInit(int bInit);            // is the variable in the state IS_UNDEF, IS_DEF, IS_NAN
-
-    int                GetInit();                    // gives the state of the variable
+    void            SetInit(InitType initKind);            // is the variable in the state IS_UNDEF, IS_DEF, IS_NAN
+    InitType        GetInit() const;                    // gives the state of the variable
+    bool InitUndefined() const { return GetInit() == InitType::UNDEF; }
+    bool InitDefined() const { return GetInit() == InitType::DEF; }
+    bool InitNAN() const { return GetInit() == InitType::IS_NAN; }
 
     void            SetStatic(bool bStatic);
     bool            IsStatic();

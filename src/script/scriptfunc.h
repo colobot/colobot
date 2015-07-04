@@ -185,6 +185,7 @@ private:
     static bool     ShouldProcessStop(Error err, int errMode);
     static CExchangePost* FindExchangePost(CObject* object, float power);
 
-    static std::unordered_map<int, FILE*> m_files;
+    typedef std::unordered_map<int, FILE*> FilesMap;
+    static FilesMap m_files;
     static int m_nextFile;
 };

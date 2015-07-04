@@ -459,7 +459,7 @@ bool CBotListInstr::Execute(CBotStack* &pj)
         if (!p->Execute(pile)) return false;
         p = p->GetNext();
         if (p == NULL) break;
-        if (!pile->IncState()) ;//return false;                    // ready for next
+        (void)pile->IncState();                                  // ready for next
     }
 
     return pj->Return(pile);
@@ -1036,7 +1036,7 @@ CBotInstr* CBotInt::Compile(CBotToken* &p, CBotCStack* pStack, bool cont, bool n
 
         {
             CBotVar*    var = CBotVar::Create(vartoken, CBotTypInt);// create the variable (evaluated after the assignment)
-            var->SetInit(inst->m_expr != NULL);     // if initialized with assignment
+            var->SetInit(inst->m_expr != nullptr ? CBotVar::InitType::DEF : CBotVar::InitType::UNDEF);     // if initialized with assignment
             var->SetUniqNum( //set it with a unique number
                 (static_cast<CBotLeftExprVar*>(inst->m_var))->m_nIdent = CBotVar::NextUniqNum());
             pStack->AddVar(var);    // place it on the stack
@@ -1184,7 +1184,7 @@ CBotInstr* CBotBoolean::Compile(CBotToken* &p, CBotCStack* pStack, bool cont, bo
         }
 
         var = CBotVar::Create(vartoken, CBotTypBoolean);// create the variable (evaluated after the assignment)
-        var->SetInit(inst->m_expr != NULL);
+        var->SetInit(inst->m_expr != nullptr ? CBotVar::InitType::DEF : CBotVar::InitType::UNDEF);
         var->SetUniqNum(
             (static_cast<CBotLeftExprVar*>(inst->m_var))->m_nIdent = CBotVar::NextUniqNum());
         pStack->AddVar(var);
@@ -1330,7 +1330,7 @@ CBotInstr* CBotFloat::Compile(CBotToken* &p, CBotCStack* pStack, bool cont, bool
         }
 
         var = CBotVar::Create(vartoken, CBotTypFloat);
-        var->SetInit(inst->m_expr != NULL);
+        var->SetInit(inst->m_expr != nullptr ? CBotVar::InitType::DEF : CBotVar::InitType::UNDEF);
         var->SetUniqNum(
             (static_cast<CBotLeftExprVar*>(inst->m_var))->m_nIdent = CBotVar::NextUniqNum());
         pStack->AddVar(var);
@@ -1461,7 +1461,7 @@ CBotInstr* CBotIString::Compile(CBotToken* &p, CBotCStack* pStack, bool cont, bo
         }
 
         CBotVar*    var = CBotVar::Create(vartoken, CBotTypString);
-        var->SetInit(inst->m_expr != NULL);
+        var->SetInit(inst->m_expr != nullptr ? CBotVar::InitType::DEF : CBotVar::InitType::UNDEF);
         var->SetUniqNum(
             (static_cast<CBotLeftExprVar*>(inst->m_var))->m_nIdent = CBotVar::NextUniqNum());
         pStack->AddVar(var);
@@ -1593,7 +1593,7 @@ CBotInstr* CBotExpression::Compile(CBotToken* &p, CBotCStack* pStack)
             return NULL;
         }
 
-        if (OpType != ID_ASS && var->GetInit() != IS_DEF)
+        if (OpType != ID_ASS && !var->InitDefined())
         {
             pStack->SetError(TX_NOTINIT, pp);
             delete inst;
@@ -1614,10 +1614,10 @@ CBotInstr* CBotExpression::Compile(CBotToken* &p, CBotCStack* pStack)
                 CBotClass*    c2 = type2.GetClass();
                 if (!c1->IsChildOf(c2)) type2.SetType(-1);
 //-                if (!type1.Eq(CBotTypClass)) var->SetPointer(pStack->GetVar()->GetPointer());*/
-                var->SetInit(2);
+                var->SetInit(CBotVar::InitType::IS_POINTER);
             }
             else
-                var->SetInit(true);
+                var->SetInit(CBotVar::InitType::DEF);
 
             break;
         case ID_ASSADD:
@@ -1666,7 +1666,7 @@ bool CBotExpression::Execute(CBotStack* &pj)
 
     CBotStack*  pile1 = pile;
 
-    bool        IsInit = true;
+    CBotVar::InitType initKind = CBotVar::InitType::DEF;
     CBotVar*    result = NULL;
 
     // must be done before any indexes (stack can be changed)
@@ -1691,12 +1691,12 @@ bool CBotExpression::Execute(CBotStack* &pj)
         if (m_token.GetType() != ID_ASS)
         {
             pVar = pile1->GetVar();     // recovers if interrupted
-            IsInit = pVar->GetInit();
-            if (IsInit == IS_NAN)
+            initKind = pVar->GetInit();
+            if (initKind == CBotVar::InitType::IS_NAN)
             {
                 pile2->SetError(TX_OPNAN, m_leftop->GetToken());
                 return pj->Return(pile2);
-             }
+            }
             result = CBotVar::Create("", pVar->GetTypResult(2));
         }
 
@@ -1717,13 +1717,13 @@ bool CBotExpression::Execute(CBotStack* &pj)
             pile2->SetVar(result);
             break;
         case ID_ASSDIV:
-            if (IsInit &&
+            if (initKind != CBotVar::InitType::UNDEF &&
                 result->Div(pile1->GetVar(), pile2->GetVar()))
                 pile2->SetError(TX_DIVZERO, &m_token);
             pile2->SetVar(result);
             break;
         case ID_ASSMODULO:
-            if (IsInit &&
+            if (initKind != CBotVar::InitType::UNDEF &&
                 result->Modulo(pile1->GetVar(), pile2->GetVar()))
                 pile2->SetError(TX_DIVZERO, &m_token);
             pile2->SetVar(result);
@@ -1755,7 +1755,7 @@ bool CBotExpression::Execute(CBotStack* &pj)
         default:
             assert(0);
         }
-        if (!IsInit)
+        if (initKind == CBotVar::InitType::UNDEF)
             pile2->SetError(TX_NOTINIT, m_leftop->GetToken());
 
         pile1->IncState();
@@ -2020,7 +2020,7 @@ CBotInstr* CBotParExpr::Compile(CBotToken* &p, CBotCStack* pStack)
         CBotInstr* inst = new CBotExprNan ();
         inst->SetToken(pp);
         CBotVar* var = CBotVar::Create("", CBotTypInt);
-        var->SetInit(IS_NAN);
+        var->SetInit(CBotVar::InitType::IS_NAN);
         pStk->SetVar(var);
         return pStack->Return(inst, pStk);
     }
@@ -2075,12 +2075,12 @@ bool CBotPostIncExpr::Execute(CBotStack* &pj)
     CBotStack* pile3 = pile2->AddStack(this);
     if (pile3->IfStep()) return false;
 
-    if (var1->GetInit() == IS_NAN)
+    if (var1->InitNAN())
     {
         pile1->SetError(TX_OPNAN, &m_token);
     }
 
-    if (var1->GetInit() != IS_DEF)
+    if (!var1->InitDefined())
     {
         pile1->SetError(TX_NOTINIT, &m_token);
     }
@@ -2118,13 +2118,13 @@ bool CBotPreIncExpr::Execute(CBotStack* &pj)
         // pile2 is modified on return
         if (!(static_cast<CBotExprVar*>(m_Instr))->ExecuteVar(var1, pile2, NULL, true)) return false;
 
-        if (var1->GetInit() == IS_NAN)
+        if (var1->InitNAN())
         {
             pile->SetError(TX_OPNAN, &m_token);
             return pj->Return(pile);    // operation performed
         }
 
-        if (var1->GetInit() != IS_DEF)
+        if (!var1->InitDefined())
         {
             pile->SetError(TX_NOTINIT, &m_token);
             return pj->Return(pile);    // operation performed
@@ -2996,7 +2996,7 @@ bool CBotExprNull::Execute(CBotStack* &pj)
     if (pile->IfStep()) return false;
     CBotVar*    var = CBotVar::Create(static_cast<CBotToken*>(NULL), CBotTypNullPointer);
 
-    var->SetInit(true);         // null pointer valid
+    var->SetInit(CBotVar::InitType::DEF);         // null pointer valid
     pile->SetVar(var);          // place on the stack
     return pj->Return(pile);    // forwards below
 }
@@ -3028,7 +3028,7 @@ bool CBotExprNan::Execute(CBotStack* &pj)
     if (pile->IfStep()) return false;
     CBotVar*    var = CBotVar::Create(static_cast<CBotToken*>(NULL), CBotTypInt);
 
-    var->SetInit(IS_NAN);       // nan
+    var->SetInit(CBotVar::InitType::IS_NAN);       // nan
     pile->SetVar(var);          // put on the stack
     return pj->Return(pile);    // forward below
 }
@@ -3256,7 +3256,7 @@ bool CBotExprVar::Execute(CBotStack* &pj)
         return pj->Return(pile1);
     }
 
-    if (pVar->GetInit() == IS_UNDEF)
+    if (pVar->InitUndefined())
     {
         CBotToken* pt = &m_token;
         while (pt->GetNext() != NULL) pt = pt->GetNext();
@@ -3684,7 +3684,7 @@ CBotInstr* CBotNew::Compile(CBotToken* &p, CBotCStack* pStack)
 
         // if there is no constructor, and no parameters either, it's ok
         if (typ == TX_UNDEFCALL && inst->m_Parameters == NULL) typ = 0;
-        pVar->SetInit(true);    // mark the instance as init
+        pVar->SetInit(CBotVar::InitType::DEF);    // mark the instance as init
 
         if (typ>20)
         {

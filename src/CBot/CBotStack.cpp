@@ -933,7 +933,7 @@ bool CBotVar::Save0State(FILE* pf)
     if (!WriteWord(pf, 100+m_mPrivate))return false;        // private variable?
     if (!WriteWord(pf, m_bStatic))return false;                // static variable?
     if (!WriteWord(pf, m_type.GetType()))return false;        // saves the type (always non-zero)
-    if (!WriteWord(pf, m_binit))return false;                // variable defined?
+    if (!WriteWord(pf, static_cast<unsigned short>(m_binit))) return false;                // variable defined?
     return WriteString(pf, m_token->GetString());            // and variable name
 }
 
@@ -978,6 +978,32 @@ bool CBotVarClass::Save1State(FILE* pf)
     return SaveVar(pf, m_pVar);                                // content of the object
 }
 
+namespace
+{
+bool ParseInitType(int rawInitType, CBotVar::InitType* initType)
+{
+    switch (rawInitType)
+    {
+    case static_cast<int>(CBotVar::InitType::UNDEF):
+        *initType = CBotVar::InitType::UNDEF;
+        break;
+    case static_cast<int>(CBotVar::InitType::DEF):
+        *initType = CBotVar::InitType::DEF;
+        break;
+    case static_cast<int>(CBotVar::InitType::IS_POINTER):
+        *initType = CBotVar::InitType::IS_POINTER;
+        break;
+    case static_cast<int>(CBotVar::InitType::IS_NAN):
+        *initType = CBotVar::InitType::IS_NAN;
+        break;
+    default:
+        *initType = CBotVar::InitType::UNDEF;
+        return false;
+    }
+    return true;
+}
+}
+
 bool CBotVar::RestoreState(FILE* pf, CBotVar* &pVar)
 {
     unsigned short        w, wi, prv, st;
@@ -1012,8 +1038,8 @@ bool CBotVar::RestoreState(FILE* pf, CBotVar* &pVar)
 
         if ( w == CBotTypClass ) w = CBotTypIntrinsic;            // necessarily intrinsic
 
-        if (!ReadWord(pf, wi)) return false;                    // init ?
-
+        CBotVar::InitType initType = CBotVar::InitType::UNDEF;
+        if (!ReadWord(pf, wi) || !ParseInitType(wi, &initType)) return false;                    // init ?
         if (!ReadString(pf, name)) return false;                // variable name
 
         CBotToken token(name, CBotString());
@@ -1105,7 +1131,7 @@ bool CBotVar::RestoreState(FILE* pf, CBotVar* &pVar)
         if ( pPrev != NULL ) pPrev->m_next = pNew;
         if ( pVar == NULL  ) pVar = pNew;
 
-        pNew->m_binit = wi;        //        pNew->SetInit(wi);
+        pNew->m_binit = initType;        //        pNew->SetInit(wi);
         pNew->SetStatic(st);
         pNew->SetPrivate(prv-100);
         pPrev = pNew;
