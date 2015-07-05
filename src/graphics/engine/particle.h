@@ -365,7 +365,7 @@ protected:
     //! Seeks if an object collided with a ray
     CObject*    SearchObjectRay(Math::Vector pos, Math::Vector goal, ParticleType type, CObject *father);
     //! Sounded one
-    void        Play(Sound sound, Math::Vector pos, float amplitude);
+    void        Play(SoundType sound, Math::Vector pos, float amplitude);
     //! Moves a drag; returns true if the drag is finished
     bool        TrackMove(int i, Math::Vector pos, float progress);
     //! Draws a drag

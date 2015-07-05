@@ -103,11 +103,11 @@ public:
     int         GetEffectLight() override;
 
     void        FlushCrashShere() override;
-    int         CreateCrashSphere(Math::Vector pos, float radius, Sound sound, float hardness=0.45f) override;
+    int         CreateCrashSphere(Math::Vector pos, float radius, SoundType sound, float hardness=0.45f) override;
     int         GetCrashSphereTotal() override;
     bool        GetCrashSphere(int rank, Math::Vector &pos, float &radius) override;
     float       GetCrashSphereHardness(int rank) override;
-    Sound       GetCrashSphereSound(int rank) override;
+    SoundType   GetCrashSphereSound(int rank) override;
     void        SetGlobalSphere(Math::Vector pos, float radius) override;
     void        GetGlobalSphere(Math::Vector &pos, float &radius) override;
     void        GetJostlingSphere(Math::Vector &pos, float &radius) override;
@@ -395,7 +395,7 @@ protected:
     Math::Vector    m_crashSpherePos[MAXCRASHSPHERE];
     float       m_crashSphereRadius[MAXCRASHSPHERE];
     float       m_crashSphereHardness[MAXCRASHSPHERE];
-    Sound       m_crashSphereSound[MAXCRASHSPHERE];
+    SoundType    m_crashSphereSound[MAXCRASHSPHERE];
     Math::Vector    m_globalSpherePos;
     float       m_globalSphereRadius;
     Math::Vector    m_jostlingSpherePos;

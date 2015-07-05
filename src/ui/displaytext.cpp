@@ -196,7 +196,7 @@ void CDisplayText::DisplayText(const char *text, Math::Vector goal, float height
     Ui::CGroup*     group;
     Ui::CLabel*     label;
     Math::Point     pos, ppos, dim;
-    Sound       sound;
+    SoundType   sound;
     float       hLine, hBox;
     int         nLine, icon, i;
 

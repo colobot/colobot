@@ -192,7 +192,7 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
          type == PT_EXPLOT ||
          type == PT_EXPLOW )
     {
-        Sound sound;
+        SoundType sound;
         if ( m_power )
         {
             sound = SOUND_EXPLOp;

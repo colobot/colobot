@@ -1615,7 +1615,7 @@ bool CMotionHuman::EventFrame(const Event &event)
     if ( legAction == MH_MARCH     ||
          legAction == MH_MARCHTAKE )
     {
-        Sound   sound[2];
+        SoundType   sound[2];
         float   synchro, volume[2], freq[2], hard;
 
         float speedX = m_physics->GetLinMotionX(MO_REASPEED);

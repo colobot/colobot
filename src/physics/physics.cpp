@@ -1862,7 +1862,7 @@ void CPhysics::WaterFrame(float aTime, float rTime)
 
 void CPhysics::SoundMotorFull(float rTime, ObjectType type)
 {
-    Sound       sound;
+    SoundType   sound;
     float       amplitude, time, freq;
 
     if ( type == OBJECT_MOBILEia ||
@@ -1976,7 +1976,7 @@ void CPhysics::SoundMotorSlow(float rTime, ObjectType type)
     Math::Matrix*   mat;
     Math::Vector    pos, speed;
     Math::Point     dim;
-    Sound       sound;
+    SoundType       sound;
     float       amplitude;
     int         i, max;
 
@@ -2129,7 +2129,7 @@ void CPhysics::SoundMotorStop(float rTime, ObjectType type)
 
 void CPhysics::SoundReactorFull(float rTime, ObjectType type)
 {
-    Sound       sound;
+    SoundType      sound;
     Math::Matrix*   mat;
     Math::Vector    pos, speed;
     Math::Point     dim;
@@ -2512,7 +2512,7 @@ int CPhysics::ObjectAdapt(const Math::Vector &pos, const Math::Vector &angle)
     CPhysics*       ph;
     Math::Matrix    matRotate;
     Math::Vector    iPos, oPos, iiPos, oAngle, oSpeed;
-    Sound           sound;
+    SoundType           sound;
     float           iRad, oRad, distance, force, volume;
     int             j, colType;
     ObjectType      iType, oType;

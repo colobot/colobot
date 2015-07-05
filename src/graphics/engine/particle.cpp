@@ -3814,7 +3814,7 @@ CObject* CParticle::SearchObjectRay(Math::Vector pos, Math::Vector goal,
     return nullptr;
 }
 
-void CParticle::Play(Sound sound, Math::Vector pos, float amplitude)
+void CParticle::Play(SoundType sound, Math::Vector pos, float amplitude)
 {
     if (m_sound == nullptr)
         m_sound = CApplication::GetInstancePointer()->GetSound();

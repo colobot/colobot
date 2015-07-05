@@ -43,7 +43,7 @@ Buffer::~Buffer()
 }
 
 
-bool Buffer::LoadFromFile(std::string filename, Sound sound)
+bool Buffer::LoadFromFile(std::string filename, SoundType sound)
 {
     m_sound = sound;
     GetLogger()->Debug("Loading audio file: %s\n", filename.c_str());
@@ -88,7 +88,7 @@ bool Buffer::LoadFromFile(std::string filename, Sound sound)
 }
 
 
-Sound Buffer::GetSoundType()
+SoundType Buffer::GetSoundType()
 {
     return m_sound;
 }

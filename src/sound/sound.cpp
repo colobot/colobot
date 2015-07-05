@@ -49,7 +49,7 @@ void CSoundInterface::CacheAll()
     {
         std::stringstream filename;
         filename << "sounds/sound" << std::setfill('0') << std::setw(3) << i << ".wav";
-        if ( !Cache(static_cast<Sound>(i), filename.str()) )
+        if ( !Cache(static_cast<SoundType>(i), filename.str()) )
             GetLogger()->Warn("Unable to load audio: %s\n", filename.str().c_str());
     }
 }
@@ -62,22 +62,22 @@ void CSoundInterface::AddMusicFiles()
     CacheMusic("music011.ogg");
 }
 
-bool CSoundInterface::Cache(Sound bSound, const std::string &bFile)
+bool CSoundInterface::Cache(SoundType sound, const std::string &file)
 {
     return true;
 }
 
-bool CSoundInterface::CacheMusic(const std::string &bFile)
+bool CSoundInterface::CacheMusic(const std::string &file)
 {
     return true;
 }
 
-bool CSoundInterface::IsCached(Sound bSound)
+bool CSoundInterface::IsCached(SoundType sound)
 {
     return false;
 }
 
-bool CSoundInterface::IsCachedMusic(const std::string& bFile)
+bool CSoundInterface::IsCachedMusic(const std::string& file)
 {
     return false;
 }
@@ -113,12 +113,12 @@ void CSoundInterface::FrameMove(float rTime)
 {
 }
 
-int CSoundInterface::Play(Sound sound, float amplitude, float frequency, bool bLoop)
+int CSoundInterface::Play(SoundType sound, float amplitude, float frequency, bool loop)
 {
     return 0;
 }
 
-int CSoundInterface::Play(Sound sound, const Math::Vector &pos, float amplitude, float frequency, bool bLoop)
+int CSoundInterface::Play(SoundType sound, const Math::Vector &pos, float amplitude, float frequency, bool loop)
 {
     return 0;
 }
@@ -158,12 +158,12 @@ bool CSoundInterface::MuteAll(bool bMute)
     return true;
 }
 
-bool CSoundInterface::PlayMusic(int rank, bool bRepeat, float fadeTime)
+bool CSoundInterface::PlayMusic(int rank, bool repeat, float fadeTime)
 {
     return true;
 }
 
-bool CSoundInterface::PlayMusic(const std::string &filename, bool bRepeat, float fadeTime)
+bool CSoundInterface::PlayMusic(const std::string &filename, bool repeat, float fadeTime)
 {
     return true;
 }

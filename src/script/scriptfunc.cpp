@@ -23,6 +23,7 @@
 #include "app/app.h"
 
 #include "common/config.h"
+#include "common/logger.h"
 #include "common/pathman.h"
 #include "common/resources/inputstream.h"
 #include "common/resources/resourcemanager.h"

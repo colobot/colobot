@@ -24,6 +24,7 @@
 
 #include "app/app.h"
 
+#include "common/logger.h"
 #include "common/resources/resourcemanager.h"
 
 #include "common/event.h"
@@ -646,12 +647,12 @@ void CStudio::StartEditScript(CScript *script, std::string name, Program* progra
     button = pw->CreateButton(pos, dim, 64+29, EVENT_STUDIO_STEP);
     button->SetState(STATE_SHADOW);
 
-    if(!m_program->runnable)
+    if (!m_program->runnable)
     {
         GetResource(RES_TEXT, RT_PROGRAM_EXAMPLE, res);
         SetInfoText(res, false);
     }
-    else if(m_program->readOnly)
+    else if (m_program->readOnly)
     {
         GetResource(RES_TEXT, RT_PROGRAM_READONLY, res);
         SetInfoText(res, false);
@@ -1159,7 +1160,7 @@ void CStudio::StartDialog(StudioDialog type)
         UpdateDialogList();
         UpdateDialogPublic();
         UpdateDialogAction();
-        
+
         if ( m_dialog == SD_SAVE )
         {
             SetFilenameField(pe, m_script->GetFilename());
@@ -1437,10 +1438,12 @@ void CStudio::UpdateChangeList()
 void CStudio::SetFilenameField(CEdit* edit, const std::string& filename)
 {
     std::string name = filename;
-    if(name.length() > static_cast<unsigned int>(edit->GetMaxChar())) {
-        if(name.substr(name.length()-4) == ".txt")
+    if (name.length() > static_cast<unsigned int>(edit->GetMaxChar()))
+    {
+        if (name.substr(name.length()-4) == ".txt")
             name = name.substr(0, name.length()-4);
-        if(name.length() > static_cast<unsigned int>(edit->GetMaxChar())) {
+        if (name.length() > static_cast<unsigned int>(edit->GetMaxChar()))
+        {
             CLogger::GetInstancePointer()->Warn("Tried to load too long filename!\n");
             name = name.substr(0, edit->GetMaxChar());  // truncates according to max length
         }
@@ -1555,11 +1558,12 @@ void CStudio::UpdateDialogList()
     if ( pl == nullptr )  return;
     pl->Flush();
 
-    if(!CResourceManager::DirectoryExists(SearchDirectory(false)))
+    if (!CResourceManager::DirectoryExists(SearchDirectory(false)))
         return;
-    
+
     std::vector<std::string> programs = CResourceManager::ListFiles(SearchDirectory(false));
-    for(auto& prog : programs) {
+    for (auto& prog : programs)
+    {
         std::ostringstream temp;
         TimeToAscii(CResourceManager::GetLastModificationTime(SearchDirectory(false) + prog), time);
         temp << prog << '\t' << CResourceManager::GetFileSize(SearchDirectory(false) + prog) << "  \t" << time;
@@ -1583,7 +1587,7 @@ std::string CStudio::SearchDirectory(bool bCreate)
 
     if ( bCreate )
     {
-        if(!CResourceManager::DirectoryExists(dir))
+        if (!CResourceManager::DirectoryExists(dir))
             CResourceManager::CreateDirectory(dir);
     }
     return dir;
@@ -1657,7 +1661,7 @@ bool CStudio::WriteProgram()
     if ( pw == nullptr )  return false;
     pe = static_cast< CEdit* >(pw->SearchControl(EVENT_STUDIO_EDIT));
     if ( pe == nullptr )  return false;
-    
+
     if ( !pe->WriteText(std::string(dir)) )  return false;
 
     m_script->SetFilename(filename);

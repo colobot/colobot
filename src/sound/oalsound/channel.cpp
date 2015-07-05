@@ -84,7 +84,7 @@ bool Channel::Pause()
     {
         return false;
     }
-    
+
     alSourcePause(m_source);
     if (alCheck())
     {
@@ -262,7 +262,7 @@ void Channel::ResetOper()
 }
 
 
-Sound Channel::GetSoundType()
+SoundType Channel::GetSoundType()
 {
     if (!m_ready || m_buffer == nullptr)
     {

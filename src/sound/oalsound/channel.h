@@ -95,7 +95,7 @@ public:
 
     void AddOper(SoundOper);
     void ResetOper();
-    Sound GetSoundType();
+    SoundType GetSoundType();
     void SetLoop(bool);
     void Mute(bool);
     bool IsMuted();

@@ -195,6 +195,7 @@ set(BASE_SOURCES
     script/script.cpp
     script/scriptfunc.cpp
     sound/sound.cpp
+    sound/sound_type.cpp
     ui/button.cpp
     ui/check.cpp
     ui/color.cpp

@@ -38,7 +38,8 @@
 #include <al.h>
 
 
-struct OldMusic {
+struct OldMusic
+{
     Channel* music;
     float fadeTime;
     float currentTime;
@@ -51,9 +52,9 @@ public:
     ~ALSound();
 
     bool Create() override;
-    bool Cache(Sound, const std::string &) override;
+    bool Cache(SoundType, const std::string &) override;
     bool CacheMusic(const std::string &) override;
-    bool IsCached(Sound) override;
+    bool IsCached(SoundType) override;
     bool IsCachedMusic(const std::string &) override;
 
     bool GetEnable() override;
@@ -66,18 +67,18 @@ public:
     void SetListener(const Math::Vector &eye, const Math::Vector &lookat) override;
     void FrameMove(float rTime) override;
 
-    int Play(Sound sound, float amplitude=1.0f, float frequency=1.0f, bool bLoop = false) override;
-    int Play(Sound sound, const Math::Vector &pos, float amplitude=1.0f, float frequency=1.0f, bool bLoop = false) override;
+    int Play(SoundType sound, float amplitude=1.0f, float frequency=1.0f, bool loop = false) override;
+    int Play(SoundType sound, const Math::Vector &pos, float amplitude=1.0f, float frequency=1.0f, bool loop = false) override;
     bool FlushEnvelope(int channel) override;
     bool AddEnvelope(int channel, float amplitude, float frequency, float time, SoundNext oper) override;
     bool Position(int channel, const Math::Vector &pos) override;
     bool Frequency(int channel, float frequency) override;
     bool Stop(int channel) override;
     bool StopAll() override;
-    bool MuteAll(bool bMute) override;
+    bool MuteAll(bool mute) override;
 
-    bool PlayMusic(int rank, bool bRepeat, float fadeTime=2.0f) override;
-    bool PlayMusic(const std::string &filename, bool bRepeat, float fadeTime=2.0f) override;
+    bool PlayMusic(int rank, bool repeat, float fadeTime=2.0f) override;
+    bool PlayMusic(const std::string &filename, bool repeat, float fadeTime=2.0f) override;
     bool RestartMusic() override;
     void SuspendMusic() override;
     void StopMusic(float fadeTime=2.0f) override;
@@ -87,8 +88,8 @@ public:
 
 private:
     void CleanUp();
-    int GetPriority(Sound);
-    bool SearchFreeBuffer(Sound sound, int &channel, bool &bAlreadyLoaded);
+    int GetPriority(SoundType);
+    bool SearchFreeBuffer(SoundType sound, int &channel, bool &alreadyLoaded);
     bool CheckChannel(int &channel);
 
     bool m_enabled;
@@ -97,7 +98,7 @@ private:
     unsigned int m_channels_limit;
     ALCdevice* m_device;
     ALCcontext* m_context;
-    std::map<Sound, Buffer*> m_sounds;
+    std::map<SoundType, Buffer*> m_sounds;
     std::map<std::string, Buffer*> m_music;
     std::map<int, Channel*> m_channels;
     Channel *m_currentMusic;

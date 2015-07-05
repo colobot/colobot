@@ -824,7 +824,7 @@ bool CMotionToto::EventFrame(const Event &event)
 
 Error CMotionToto::SetAction(int action, float time)
 {
-    Sound   sound;
+    SoundType   sound;
 
     CMotion::SetAction(action, time);
 

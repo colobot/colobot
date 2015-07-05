@@ -26,6 +26,7 @@
 #include "clipboard/clipboard.h"
 
 #include "common/config.h"
+#include "common/logger.h"
 #include "common/pathman.h"
 #include "common/resources/inputstream.h"
 #include "common/resources/outputstream.h"
@@ -1458,10 +1459,10 @@ bool CEdit::ReadText(std::string filename, int addSize)
     bool        bInSoluce, bBOL;
 
     if ( filename == "" )  return false;
-    
+
     CInputStream stream;
     stream.open(filename);
-    
+
     if (!stream.is_open())
     {
         CLogger::GetInstancePointer()->Error("Failed to load text file %s\n", filename.c_str());
@@ -1644,7 +1645,8 @@ bool CEdit::ReadText(std::string filename, int addSize)
                 // A part of image per line of text.
                 for ( iCount=0 ; iCount<iLines ; iCount++ )
                 {
-                    if(iIndex >= EDITIMAGEMAX) {
+                    if (iIndex >= EDITIMAGEMAX)
+                    {
                         CLogger::GetInstancePointer()->Warn("Too many images, current limit is %d image lines. This limit will be removed in the future.\n", EDITIMAGEMAX);
                         break;
                     }
@@ -1792,7 +1794,7 @@ bool CEdit::ReadText(std::string filename, int addSize)
                   buffer[i+4] == ' '  )
         {
             int count;
-            for(count = 0; buffer[i+5+count] != ';'; count++);
+            for (count = 0; buffer[i+5+count] != ';'; count++);
             if ( m_bSoluce || !bInSoluce ) //TODO: ???
             {
                 CInput* input = CInput::GetInstancePointer();
@@ -1814,7 +1816,9 @@ bool CEdit::ReadText(std::string filename, int addSize)
                     m_text[j] = ' ';
                     m_format[j] = font;
                     j ++;
-                } else {
+                }
+                else
+                {
                     m_text[j] = '?';
                     m_format[j] = font;
                     j ++;
@@ -1860,10 +1864,10 @@ bool CEdit::WriteText(std::string filename)
     float       iDim = 0.0f;
 
     if ( filename[0] == 0 )  return false;
-    
+
     COutputStream stream;
     stream.open(filename);
-    
+
     if (!stream.is_open())
     {
         return false;

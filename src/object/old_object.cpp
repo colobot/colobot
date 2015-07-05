@@ -1072,7 +1072,7 @@ void COldObject::FlushCrashShere()
 
 // Adds a new sphere.
 
-int COldObject::CreateCrashSphere(Math::Vector pos, float radius, Sound sound,
+int COldObject::CreateCrashSphere(Math::Vector pos, float radius, SoundType sound,
                                float hardness)
 {
     float   zoom;
@@ -1132,7 +1132,7 @@ bool COldObject::GetCrashSphere(int rank, Math::Vector &pos, float &radius)
 
 // Returns the hardness of a sphere.
 
-Sound COldObject::GetCrashSphereSound(int rank)
+SoundType COldObject::GetCrashSphereSound(int rank)
 {
     return m_crashSphereSound[rank];
 }

@@ -27,6 +27,7 @@
 #include "object/object_interface_type.h"
 #include "object/old_object_interface.h"
 
+
 /**
  * \class CObject
  * \brief Base class for all 3D in-game objects
@@ -77,6 +78,7 @@ public:
     virtual void Write(CLevelParserLine* line) = 0;
     //! Reads object properties from line in level file
     virtual void Read(CLevelParserLine* line) = 0;
+
 
     //! Check if object implements the given type of interface
     inline bool Implements(ObjectInterfaceType type) const

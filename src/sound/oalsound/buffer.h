@@ -42,16 +42,16 @@ public:
     Buffer();
     ~Buffer();
 
-    bool LoadFromFile(std::string, Sound);
+    bool LoadFromFile(std::string, SoundType);
     bool IsLoaded();
 
-    Sound GetSoundType();
+    SoundType GetSoundType();
     ALuint GetBuffer();
     float GetDuration();
 
 private:
     ALuint m_buffer;
-    Sound m_sound;
+    SoundType m_sound;
     bool m_loaded;
     float m_duration;
 };

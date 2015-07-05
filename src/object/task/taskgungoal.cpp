@@ -22,7 +22,7 @@
 
 #include "object/object.h"
 
-
+#include "sound/sound.h"
 
 
 // Object's constructor.

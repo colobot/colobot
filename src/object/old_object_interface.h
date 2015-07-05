@@ -30,7 +30,7 @@
 
 #include "object/object_type.h"
 
-#include "sound/sound.h"
+#include "sound/sound_type.h"
 
 #include <string>
 
@@ -99,11 +99,11 @@ public:
     virtual int         GetEffectLight() = 0;
 
     virtual void        FlushCrashShere() = 0;
-    virtual int         CreateCrashSphere(Math::Vector pos, float radius, Sound sound, float hardness=0.45f) = 0;
+    virtual int         CreateCrashSphere(Math::Vector pos, float radius, SoundType sound, float hardness=0.45f) = 0;
     virtual int         GetCrashSphereTotal() = 0;
     virtual bool        GetCrashSphere(int rank, Math::Vector &pos, float &radius) = 0;
     virtual float       GetCrashSphereHardness(int rank) = 0;
-    virtual Sound       GetCrashSphereSound(int rank) = 0;
+    virtual SoundType   GetCrashSphereSound(int rank) = 0;
     virtual void        SetGlobalSphere(Math::Vector pos, float radius) = 0;
     virtual void        GetGlobalSphere(Math::Vector &pos, float &radius) = 0;
     virtual void        GetJostlingSphere(Math::Vector &pos, float &radius) = 0;
