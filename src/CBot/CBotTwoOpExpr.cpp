@@ -25,6 +25,14 @@
 
 #include <cassert>
 
+namespace
+{
+bool VarIsNAN(const CBotVar* var)
+{
+    return var->GetInit() > CBotVar::InitType::DEF;
+}
+}
+
 // various constructors
 
 CBotTwoOpExpr::CBotTwoOpExpr()
@@ -288,7 +296,7 @@ CBotInstr* CBotTwoOpExpr::Compile(CBotToken* &p, CBotCStack* pStack, int* pOpera
 
 bool IsNan(CBotVar* left, CBotVar* right, int* err = NULL)
 {
-    if ( left ->GetInit() > IS_DEF || right->GetInit() > IS_DEF )
+    if ( VarIsNAN(left) || VarIsNAN(right) )
     {
         if ( err != NULL ) *err = TX_OPNAN ;
         return true;

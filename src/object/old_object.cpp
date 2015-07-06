@@ -117,11 +117,11 @@ void uObject(CBotVar* botThis, void* user)
     else    // object transported?
     {
         pSub = pVar->GetItemList();  // "x"
-        pSub->SetInit(IS_NAN);
+        pSub->SetInit(CBotVar::InitType::IS_NAN);
         pSub = pSub->GetNext();  // "y"
-        pSub->SetInit(IS_NAN);
+        pSub->SetInit(CBotVar::InitType::IS_NAN);
         pSub = pSub->GetNext();  // "z"
-        pSub->SetInit(IS_NAN);
+        pSub->SetInit(CBotVar::InitType::IS_NAN);
     }
 
     // Updates the angle.

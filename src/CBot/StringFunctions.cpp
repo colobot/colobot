@@ -323,7 +323,7 @@ bool rStrFind( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
     // puts the result on the stack
     int res = s.Find(s2);
     pResult->SetValInt( res );
-    if ( res < 0 ) pResult->SetInit( IS_NAN );
+    if ( res < 0 ) pResult->SetInit( CBotVar::InitType::IS_NAN );
     return true;
 }
 

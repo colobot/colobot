@@ -605,7 +605,7 @@ CBotInstr* CBotClassInst::Compile(CBotToken* &p, CBotCStack* pStack, CBotClass* 
                 var->SetPointer( pvar );                    // variable already declared instance pointer
                 delete pvar;                                // removes the second pointer
             }
-            var->SetInit(true);                         // marks the pointer as init
+            var->SetInit(CBotVar::InitType::DEF);                         // marks the pointer as init
         }
         else if (inst->m_hasParams)
         {
@@ -617,7 +617,7 @@ CBotInstr* CBotClassInst::Compile(CBotToken* &p, CBotCStack* pStack, CBotClass* 
                 var->SetPointer( pvar );                    // variable already declared instance pointer
                 delete pvar;                                // removes the second pointer
             }
-            var->SetInit(2);                            // marks the pointer as init
+            var->SetInit(CBotVar::InitType::IS_POINTER);                            // marks the pointer as init
         }
 suite:
         if (IsOfType(p,  ID_COMMA))                         // several chained definitions
@@ -704,7 +704,7 @@ bool CBotClassInst::Execute(CBotStack* &pj)
                 pInstance = (static_cast<CBotVarPointer*>(pile->GetVar()))->GetPointer();    // value for the assignment
                 pThis->SetPointer(pInstance);
             }
-            pThis->SetInit(true);
+            pThis->SetInit(CBotVar::InitType::DEF);
         }
 
         else if ( m_hasParams )
@@ -757,7 +757,7 @@ bool CBotClassInst::Execute(CBotStack* &pj)
                                          pThis, ppVars,
                                          pResult, pile2, GetToken())) return false; // interrupt
 
-            pThis->SetInit(true);
+            pThis->SetInit(CBotVar::InitType::DEF);
             pThis->ConstructorSet();        // indicates that the constructor has been called
             pile->Return(pile2);                                // releases a piece of stack
 

@@ -2311,16 +2311,16 @@ bool CScriptFunctions::rReceive(CBotVar* var, CBotVar* result, int& exception, v
         {
             delete script->m_primaryTask;
             script->m_primaryTask = 0;
-            result->SetInit(IS_NAN);
+            result->SetInit(CBotVar::InitType::IS_NAN);
             return true;
         }
     }
     if ( !Process(script, result, exception) )  return false;  // not finished
 
     value = pThis->GetInfoReturn();
-    if ( value == NAN )
+    if ( std::isnan(value) )
     {
-        result->SetInit(IS_NAN);
+        result->SetInit(CBotVar::InitType::IS_NAN);
     }
     else
     {
@@ -3390,7 +3390,7 @@ bool CScriptFunctions::rfdestruct (CBotVar* pThis, CBotVar* pVar, CBotVar* pResu
     pVar = pThis->GetItem("handle");
 
     // don't open? no problem :)
-    if ( pVar->GetInit() != IS_DEF) return true;
+    if ( pVar->IsDefined()) return true;
 
     int fileHandle = pVar->GetValInt();
 
@@ -3398,7 +3398,7 @@ bool CScriptFunctions::rfdestruct (CBotVar* pThis, CBotVar* pVar, CBotVar* pResu
     fclose(pFile);
     m_numberOfOpenFiles--;
 
-    pVar->SetInit(IS_NAN);
+    pVar->SetInit(CBotVar::InitType::IS_NAN);
 
     m_files.erase(fileHandle);
 
@@ -3443,7 +3443,7 @@ bool CScriptFunctions::rfopen (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, 
     pVar = pThis->GetItem("handle");
 
     // which must not be initialized
-    if ( pVar->GetInit() == IS_DEF) { Exception = CBotErrFileOpen; return false; }
+    if ( pVar->IsDefined()) { Exception = CBotErrFileOpen; return false; }
 
     // file contains the name
     pVar = pThis->GetItem("filename");
@@ -3511,17 +3511,24 @@ bool CScriptFunctions::rfclose (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult,
     // retrieve the item "handle"
     pVar = pThis->GetItem("handle");
 
-    if ( pVar->GetInit() != IS_DEF) { Exception = CBotErrNotOpen; return false; }
+    if ( !pVar->IsDefined()) { Exception = CBotErrNotOpen; return false; }
 
     int fileHandle = pVar->GetValInt();
 
-    FILE* pFile = m_files[fileHandle];
-    fclose(pFile);
+    const auto handleIter = m_files.find(fileHandle);
+    if (handleIter == m_files.end())
+    {
+        Exception = CBotErrNotOpen;
+        return false;
+    }
+
+    assert(handleIter->second);
+    fclose(handleIter->second);
     m_numberOfOpenFiles--;
 
-    pVar->SetInit(IS_NAN);
+    pVar->SetInit(CBotVar::InitType::IS_NAN);
 
-    m_files.erase(fileHandle);
+    m_files.erase(handleIter);
 
     return true;
 }
@@ -3552,13 +3559,18 @@ bool CScriptFunctions::rfwrite (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult,
     // retrieve the item "handle"
     pVar = pThis->GetItem("handle");
 
-    if ( pVar->GetInit() != IS_DEF) { Exception = CBotErrNotOpen; return false; }
+    if ( !pVar->IsDefined()) { Exception = CBotErrNotOpen; return false; }
 
     int fileHandle = pVar->GetValInt();
 
-    FILE* pFile = m_files[fileHandle];
+    const auto handleIter = m_files.find(fileHandle);
+    if (handleIter == m_files.end())
+    {
+        Exception = CBotErrNotOpen;
+        return false;
+    }
 
-    int res = fputs(param+CBotString("\n"), pFile);
+    int res = fputs(param+CBotString("\n"), handleIter->second);
 
     // if an error occurs generate an exception
     if ( res < 0 ) { Exception = CBotErrWrite; return false; }
@@ -3593,23 +3605,28 @@ bool CScriptFunctions::rfread(CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, i
     // retrieve the item "handle"
     pVar = pThis->GetItem("handle");
 
-    if (pVar->GetInit() != IS_DEF) { Exception = CBotErrNotOpen; return false; }
+    if (!pVar->IsDefined()) { Exception = CBotErrNotOpen; return false; }
 
     int fileHandle = pVar->GetValInt();
 
-    FILE* pFile = m_files[fileHandle];
-
+    const auto handleIter = m_files.find(fileHandle);
+    if (handleIter == m_files.end())
+    {
+        Exception = CBotErrNotOpen;
+        return false;
+    }
+    
     char    chaine[2000];
     int     i;
     for (i = 0; i < 2000; i++) chaine[i] = 0;
 
-    if (fgets(chaine, 1999, pFile) != nullptr)
+    if (fgets(chaine, 1999, handleIter->second) != nullptr)
     {
         for (i = 0; i < 2000; i++) if (chaine[i] == '\n') chaine[i] = 0;
     }
 
     // if an error occurs generate an exception
-    if ( ferror(pFile) ) { Exception = CBotErrRead; return false; }
+    if ( ferror(handleIter->second) ) { Exception = CBotErrRead; return false; }
 
     pResult->SetValString( chaine );
 
@@ -3637,13 +3654,18 @@ bool CScriptFunctions::rfeof (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, i
     // retrieve the item "handle"
     pVar = pThis->GetItem("handle");
 
-    if ( pVar->GetInit() != IS_DEF) { Exception = CBotErrNotOpen; return false; }
+    if ( !pVar->IsDefined()) { Exception = CBotErrNotOpen; return false; }
 
     int fileHandle = pVar->GetValInt();
 
-    FILE* pFile = m_files[fileHandle];
+    const auto handleIter = m_files.find(fileHandle);
+    if (handleIter == m_files.end())
+    {
+        Exception = CBotErrNotOpen;
+        return false;
+    }
 
-    pResult->SetValInt( feof( pFile ) );
+    pResult->SetValInt( feof(handleIter->second) );
 
     return true;
 }

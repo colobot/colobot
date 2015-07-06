@@ -39,7 +39,7 @@ CBotVar::CBotVar( )
     m_InitExpr = NULL;
     m_LimExpr = NULL;
     m_type  = -1;
-    m_binit = false;
+    m_binit = InitType::UNDEF;
     m_ident = 0;
     m_bStatic = false;
     m_mPrivate = 0;
@@ -54,7 +54,7 @@ CBotVarInt::CBotVarInt( const CBotToken* name )
     m_InitExpr = NULL;
     m_LimExpr = NULL;
     m_type  = CBotTypInt;
-    m_binit = false;
+    m_binit = InitType::UNDEF;
     m_bStatic = false;
     m_mPrivate = 0;
 
@@ -70,7 +70,7 @@ CBotVarFloat::CBotVarFloat( const CBotToken* name )
     m_InitExpr = NULL;
     m_LimExpr = NULL;
     m_type  = CBotTypFloat;
-    m_binit = false;
+    m_binit = InitType::UNDEF;
     m_bStatic = false;
     m_mPrivate = 0;
 
@@ -86,7 +86,7 @@ CBotVarString::CBotVarString( const CBotToken* name )
     m_InitExpr = NULL;
     m_LimExpr = NULL;
     m_type  = CBotTypString;
-    m_binit = false;
+    m_binit = InitType::UNDEF;
     m_bStatic = false;
     m_mPrivate = 0;
 
@@ -102,7 +102,7 @@ CBotVarBoolean::CBotVarBoolean( const CBotToken* name )
     m_InitExpr = NULL;
     m_LimExpr = NULL;
     m_type        = CBotTypBoolean;
-    m_binit        = false;
+    m_binit        = InitType::UNDEF;
     m_bStatic = false;
     m_mPrivate = 0;
 
@@ -145,7 +145,7 @@ void CBotVarClass::InitCBotVarClass( const CBotToken* name, CBotTypResult& type 
 
     m_pClass    = NULL;
     m_pParent    = NULL;
-    m_binit        = false;
+    m_binit        = InitType::UNDEF;
     m_bStatic    = false;
     m_mPrivate    = 0;
     m_bConstructor = false;
@@ -470,20 +470,19 @@ void CBotVar::SetType(CBotTypResult& type)
     m_type = type;
 }
 
-
-int CBotVar::GetInit()
+CBotVar::InitType CBotVar::GetInit() const
 {
-    if (  m_type.Eq(CBotTypClass) ) return IS_DEF;        // always set!
+    if ( m_type.Eq(CBotTypClass) ) return InitType::DEF;        // always set!
 
-    return    m_binit;
+    return m_binit;
 }
 
-void CBotVar::SetInit(int bInit)
+void CBotVar::SetInit(CBotVar::InitType bInit)
 {
     m_binit = bInit;
-    if ( bInit == 2 ) m_binit = IS_DEF;                    // cas spécial
+    if ( bInit == CBotVar::InitType::IS_POINTER ) m_binit = CBotVar::InitType::DEF;                    // cas spécial
 
-    if ( m_type.Eq(CBotTypPointer) && bInit == 2 )
+    if ( m_type.Eq(CBotTypPointer) && bInit == CBotVar::InitType::IS_POINTER )
     {
         CBotVarClass* instance = GetPointer();
         if ( instance == NULL )
@@ -492,7 +491,7 @@ void CBotVar::SetInit(int bInit)
 //            instance->SetClass((static_cast<CBotVarPointer*>(this))->m_pClass);
             SetPointer(instance);
         }
-        instance->SetInit(1);
+        instance->SetInit(CBotVar::InitType::DEF);
     }
 
     if ( m_type.Eq(CBotTypClass) || m_type.Eq(CBotTypIntrinsic) )
@@ -867,7 +866,7 @@ void CBotVarInt::Copy(CBotVar* pSrc, bool bName)
 void CBotVarInt::SetValInt(int val, const char* defnum)
 {
     m_val = val;
-    m_binit    = true;
+    m_binit    = CBotVar::InitType::DEF;
     m_defnum = defnum;
 }
 
@@ -876,7 +875,7 @@ void CBotVarInt::SetValInt(int val, const char* defnum)
 void CBotVarInt::SetValFloat(float val)
 {
     m_val = static_cast<int>(val);
-    m_binit    = true;
+    m_binit    = CBotVar::InitType::DEF;
 }
 
 int CBotVarInt::GetValInt()
@@ -895,12 +894,13 @@ CBotString CBotVarInt::GetValString()
 
     CBotString res;
 
-    if ( !m_binit )
+    if ( m_binit == CBotVar::InitType::UNDEF )
     {
         res.LoadString(TX_UNDEF);
         return res;
     }
-    if ( m_binit == IS_NAN )
+ 
+    if ( m_binit == CBotVar::InitType::IS_NAN )
     {
         res.LoadString(TX_NAN);
         return res;
@@ -917,13 +917,13 @@ CBotString CBotVarInt::GetValString()
 void CBotVarInt::Mul(CBotVar* left, CBotVar* right)
 {
     m_val = left->GetValInt() * right->GetValInt();
-    m_binit = true;
+    m_binit = CBotVar::InitType::DEF;
 }
 
 void CBotVarInt::Power(CBotVar* left, CBotVar* right)
 {
     m_val = static_cast<int>( pow( static_cast<double>( left->GetValInt()) , static_cast<double>( left->GetValInt()) ));
-    m_binit = true;
+    m_binit = CBotVar::InitType::DEF;
 }
 
 int CBotVarInt::Div(CBotVar* left, CBotVar* right)
@@ -932,7 +932,7 @@ int CBotVarInt::Div(CBotVar* left, CBotVar* right)
     if ( r != 0 )
     {
         m_val = left->GetValInt() / r;
-        m_binit = true;
+        m_binit = CBotVar::InitType::DEF;
     }
     return ( r == 0 ? TX_DIVZERO : 0 );
 }
@@ -943,7 +943,7 @@ int CBotVarInt::Modulo(CBotVar* left, CBotVar* right)
     if ( r != 0 )
     {
         m_val = left->GetValInt() % r;
-        m_binit = true;
+        m_binit = CBotVar::InitType::DEF;
     }
     return ( r == 0 ? TX_DIVZERO : 0 );
 }
@@ -951,43 +951,43 @@ int CBotVarInt::Modulo(CBotVar* left, CBotVar* right)
 void CBotVarInt::Add(CBotVar* left, CBotVar* right)
 {
     m_val = left->GetValInt() + right->GetValInt();
-    m_binit = true;
+    m_binit = CBotVar::InitType::DEF;
 }
 
 void CBotVarInt::Sub(CBotVar* left, CBotVar* right)
 {
         m_val = left->GetValInt() - right->GetValInt();
-        m_binit = true;
+        m_binit = CBotVar::InitType::DEF;
 }
 
 void CBotVarInt::XOr(CBotVar* left, CBotVar* right)
 {
     m_val = left->GetValInt() ^ right->GetValInt();
-    m_binit = true;
+    m_binit = CBotVar::InitType::DEF;
 }
 
 void CBotVarInt::And(CBotVar* left, CBotVar* right)
 {
     m_val = left->GetValInt() & right->GetValInt();
-    m_binit = true;
+    m_binit = CBotVar::InitType::DEF;
 }
 
 void CBotVarInt::Or(CBotVar* left, CBotVar* right)
 {
     m_val = left->GetValInt() | right->GetValInt();
-    m_binit = true;
+    m_binit = CBotVar::InitType::DEF;
 }
 
 void CBotVarInt::SL(CBotVar* left, CBotVar* right)
 {
     m_val = left->GetValInt() << right->GetValInt();
-    m_binit = true;
+    m_binit = CBotVar::InitType::DEF;
 }
 
 void CBotVarInt::ASR(CBotVar* left, CBotVar* right)
 {
     m_val = left->GetValInt() >> right->GetValInt();
-    m_binit = true;
+    m_binit = CBotVar::InitType::DEF;
 }
 
 void CBotVarInt::SR(CBotVar* left, CBotVar* right)
@@ -996,7 +996,7 @@ void CBotVarInt::SR(CBotVar* left, CBotVar* right)
     int shift  = right->GetValInt();
     if (shift>=1) source &= 0x7fffffff;
     m_val = source >> shift;
-    m_binit = true;
+    m_binit = CBotVar::InitType::DEF;
 }
 
 void CBotVarInt::Neg()
@@ -1078,13 +1078,13 @@ void CBotVarFloat::Copy(CBotVar* pSrc, bool bName)
 void CBotVarFloat::SetValInt(int val, const char* s)
 {
     m_val = static_cast<float>(val);
-    m_binit    = true;
+    m_binit    = CBotVar::InitType::DEF;
 }
 
 void CBotVarFloat::SetValFloat(float val)
 {
     m_val = val;
-    m_binit    = true;
+    m_binit    = CBotVar::InitType::DEF;
 }
 
 int CBotVarFloat::GetValInt()
@@ -1101,12 +1101,12 @@ CBotString CBotVarFloat::GetValString()
 {
     CBotString res;
 
-    if ( !m_binit )
+    if ( m_binit == CBotVar::InitType::UNDEF )
     {
         res.LoadString(TX_UNDEF);
         return res;
     }
-    if ( m_binit == IS_NAN )
+    if ( m_binit == CBotVar::InitType::IS_NAN )
     {
         res.LoadString(TX_NAN);
         return res;
@@ -1123,13 +1123,13 @@ CBotString CBotVarFloat::GetValString()
 void CBotVarFloat::Mul(CBotVar* left, CBotVar* right)
 {
     m_val = left->GetValFloat() * right->GetValFloat();
-    m_binit = true;
+    m_binit = CBotVar::InitType::DEF;
 }
 
 void CBotVarFloat::Power(CBotVar* left, CBotVar* right)
 {
     m_val = static_cast<float>(pow( left->GetValFloat() , right->GetValFloat() ));
-    m_binit = true;
+    m_binit = CBotVar::InitType::DEF;
 }
 
 int CBotVarFloat::Div(CBotVar* left, CBotVar* right)
@@ -1138,7 +1138,7 @@ int CBotVarFloat::Div(CBotVar* left, CBotVar* right)
     if ( r != 0 )
     {
         m_val = left->GetValFloat() / r;
-        m_binit = true;
+        m_binit = CBotVar::InitType::DEF;
     }
     return ( r == 0 ? TX_DIVZERO : 0 );
 }
@@ -1149,7 +1149,7 @@ int CBotVarFloat::Modulo(CBotVar* left, CBotVar* right)
     if ( r != 0 )
     {
         m_val = static_cast<float>(fmod( left->GetValFloat() , r ));
-        m_binit = true;
+        m_binit = CBotVar::InitType::DEF;
     }
     return ( r == 0 ? TX_DIVZERO : 0 );
 }
@@ -1157,13 +1157,13 @@ int CBotVarFloat::Modulo(CBotVar* left, CBotVar* right)
 void CBotVarFloat::Add(CBotVar* left, CBotVar* right)
 {
     m_val = left->GetValFloat() + right->GetValFloat();
-    m_binit = true;
+    m_binit = CBotVar::InitType::DEF;
 }
 
 void CBotVarFloat::Sub(CBotVar* left, CBotVar* right)
 {
-        m_val = left->GetValFloat() - right->GetValFloat();
-        m_binit = true;
+    m_val = left->GetValFloat() - right->GetValFloat();
+    m_binit = CBotVar::InitType::DEF;
 }
 
 void CBotVarFloat::Neg()
@@ -1239,13 +1239,13 @@ void CBotVarBoolean::Copy(CBotVar* pSrc, bool bName)
 void CBotVarBoolean::SetValInt(int val, const char* s)
 {
     m_val = static_cast<bool>(val);
-    m_binit    = true;
+    m_binit    = CBotVar::InitType::DEF;
 }
 
 void CBotVarBoolean::SetValFloat(float val)
 {
     m_val = static_cast<bool>(val);
-    m_binit    = true;
+    m_binit    = CBotVar::InitType::DEF;
 }
 
 int CBotVarBoolean::GetValInt()
@@ -1264,12 +1264,12 @@ CBotString CBotVarBoolean::GetValString()
 
     CBotString res;
 
-    if ( !m_binit )
+    if ( m_binit == CBotVar::InitType::UNDEF )
     {
         res.LoadString(TX_UNDEF);
         return res;
     }
-    if ( m_binit == IS_NAN )
+    if ( m_binit == CBotVar::InitType::IS_NAN )
     {
         res.LoadString(TX_NAN);
         return res;
@@ -1282,18 +1282,18 @@ CBotString CBotVarBoolean::GetValString()
 void CBotVarBoolean::And(CBotVar* left, CBotVar* right)
 {
     m_val = left->GetValInt() && right->GetValInt();
-    m_binit = true;
+    m_binit = CBotVar::InitType::DEF;
 }
 void CBotVarBoolean::Or(CBotVar* left, CBotVar* right)
 {
     m_val = left->GetValInt() || right->GetValInt();
-    m_binit = true;
+    m_binit = CBotVar::InitType::DEF;
 }
 
 void CBotVarBoolean::XOr(CBotVar* left, CBotVar* right)
 {
     m_val = left->GetValInt() ^ right->GetValInt();
-    m_binit = true;
+    m_binit = CBotVar::InitType::DEF;
 }
 
 void CBotVarBoolean::Not()
@@ -1335,18 +1335,18 @@ void CBotVarString::Copy(CBotVar* pSrc, bool bName)
 void CBotVarString::SetValString(const char* p)
 {
     m_val = p;
-    m_binit    = true;
+    m_binit    = CBotVar::InitType::DEF;
 }
 
 CBotString CBotVarString::GetValString()
 {
-    if ( !m_binit )
+    if ( m_binit == CBotVar::InitType::UNDEF )
     {
         CBotString res;
         res.LoadString(TX_UNDEF);
         return res;
     }
-    if ( m_binit == IS_NAN )
+    if ( m_binit == CBotVar::InitType::IS_NAN )
     {
         CBotString res;
         res.LoadString(TX_NAN);
@@ -1360,7 +1360,7 @@ CBotString CBotVarString::GetValString()
 void CBotVarString::Add(CBotVar* left, CBotVar* right)
 {
     m_val = left->GetValString() + right->GetValString();
-    m_binit = true;
+    m_binit = CBotVar::InitType::DEF;
 }
 
 bool CBotVarString::Eq(CBotVar* left, CBotVar* right)
@@ -1782,7 +1782,7 @@ CBotVarArray::CBotVarArray(const CBotToken* name, CBotTypResult& type )
 
     m_type        = type;
     m_type.SetType(CBotTypArrayPointer);
-    m_binit        = false;
+    m_binit        = CBotVar::InitType::UNDEF;
 
     m_pInstance    = NULL;                        // the list of the array elements
 }
@@ -1818,7 +1818,7 @@ void CBotVarArray::Copy(CBotVar* pSrc, bool bName)
 
 void CBotVarArray::SetPointer(CBotVar* pVarClass)
 {
-    m_binit = true;                            // init, even on a null pointer
+    m_binit = CBotVar::InitType::DEF;         // init, even on a null pointer
 
     if ( m_pInstance == pVarClass) return;    // Special, not decrement and reincrement
                                             // because the decrement can destroy the object
@@ -1897,7 +1897,7 @@ CBotVarPointer::CBotVarPointer(const CBotToken* name, CBotTypResult& type )
     m_type        = type;
     if ( !type.Eq(CBotTypNullPointer) )
         m_type.SetType(CBotTypPointer);                    // anyway, this is a pointer
-    m_binit        = false;
+    m_binit        = CBotVar::InitType::UNDEF;
     m_pClass    = NULL;
     m_pVarClass = NULL;                                    // will be defined by a SetPointer()
 
@@ -1958,7 +1958,7 @@ void CBotVarPointer::ConstructorSet()
 
 void CBotVarPointer::SetPointer(CBotVar* pVarClass)
 {
-    m_binit = true;                            // init, even on a null pointer
+    m_binit = CBotVar::InitType::DEF;                            // init, even on a null pointer
 
     if ( m_pVarClass == pVarClass) return;    // special, not decrement and reincrement
                                             // because the decrement can destroy the object
