@@ -634,11 +634,11 @@ virtual                ~CBotVar( );                        // destructor
     CBotToken*        GetToken();
     void            SetType(CBotTypResult& type);
 
-    void            SetInit(InitType initKind);            // is the variable in the state IS_UNDEF, IS_DEF, IS_NAN
-    InitType        GetInit() const;                    // gives the state of the variable
-    bool InitUndefined() const { return GetInit() == InitType::UNDEF; }
-    bool InitDefined() const { return GetInit() == InitType::DEF; }
-    bool InitNAN() const { return GetInit() == InitType::IS_NAN; }
+    void            SetInit(InitType initType);            // is the variable in the state UNDEF, DEF, NAN
+    InitType        GetInit() const;                       // gives the state of the variable
+    bool IsUndefined() const { return GetInit() == InitType::UNDEF; }
+    bool IsDefined() const { return GetInit() == InitType::DEF; }
+    bool IsNAN() const { return GetInit() == InitType::IS_NAN; }
 
     void            SetStatic(bool bStatic);
     bool            IsStatic();

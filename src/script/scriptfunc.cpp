@@ -3390,7 +3390,7 @@ bool CScriptFunctions::rfdestruct (CBotVar* pThis, CBotVar* pVar, CBotVar* pResu
     pVar = pThis->GetItem("handle");
 
     // don't open? no problem :)
-    if ( pVar->InitDefined()) return true;
+    if ( pVar->IsDefined()) return true;
 
     int fileHandle = pVar->GetValInt();
 
@@ -3443,7 +3443,7 @@ bool CScriptFunctions::rfopen (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, 
     pVar = pThis->GetItem("handle");
 
     // which must not be initialized
-    if ( pVar->InitDefined()) { Exception = CBotErrFileOpen; return false; }
+    if ( pVar->IsDefined()) { Exception = CBotErrFileOpen; return false; }
 
     // file contains the name
     pVar = pThis->GetItem("filename");
@@ -3511,11 +3511,11 @@ bool CScriptFunctions::rfclose (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult,
     // retrieve the item "handle"
     pVar = pThis->GetItem("handle");
 
-    if ( !pVar->InitDefined()) { Exception = CBotErrNotOpen; return false; }
+    if ( !pVar->IsDefined()) { Exception = CBotErrNotOpen; return false; }
 
     int fileHandle = pVar->GetValInt();
 
-    const FilesMap::const_iterator handleIter = m_files.find(fileHandle);
+    const auto handleIter = m_files.find(fileHandle);
     if (handleIter == m_files.end())
     {
         Exception = CBotErrNotOpen;
@@ -3559,11 +3559,11 @@ bool CScriptFunctions::rfwrite (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult,
     // retrieve the item "handle"
     pVar = pThis->GetItem("handle");
 
-    if ( !pVar->InitDefined()) { Exception = CBotErrNotOpen; return false; }
+    if ( !pVar->IsDefined()) { Exception = CBotErrNotOpen; return false; }
 
     int fileHandle = pVar->GetValInt();
 
-    const FilesMap::const_iterator handleIter = m_files.find(fileHandle);
+    const auto handleIter = m_files.find(fileHandle);
     if (handleIter == m_files.end())
     {
         Exception = CBotErrNotOpen;
@@ -3605,11 +3605,11 @@ bool CScriptFunctions::rfread(CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, i
     // retrieve the item "handle"
     pVar = pThis->GetItem("handle");
 
-    if (!pVar->InitDefined()) { Exception = CBotErrNotOpen; return false; }
+    if (!pVar->IsDefined()) { Exception = CBotErrNotOpen; return false; }
 
     int fileHandle = pVar->GetValInt();
 
-    const FilesMap::const_iterator handleIter = m_files.find(fileHandle);
+    const auto handleIter = m_files.find(fileHandle);
     if (handleIter == m_files.end())
     {
         Exception = CBotErrNotOpen;
@@ -3654,11 +3654,11 @@ bool CScriptFunctions::rfeof (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, i
     // retrieve the item "handle"
     pVar = pThis->GetItem("handle");
 
-    if ( !pVar->InitDefined()) { Exception = CBotErrNotOpen; return false; }
+    if ( !pVar->IsDefined()) { Exception = CBotErrNotOpen; return false; }
 
     int fileHandle = pVar->GetValInt();
 
-    const FilesMap::const_iterator handleIter = m_files.find(fileHandle);
+    const auto handleIter = m_files.find(fileHandle);
     if (handleIter == m_files.end())
     {
         Exception = CBotErrNotOpen;

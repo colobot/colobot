@@ -1593,7 +1593,7 @@ CBotInstr* CBotExpression::Compile(CBotToken* &p, CBotCStack* pStack)
             return NULL;
         }
 
-        if (OpType != ID_ASS && !var->InitDefined())
+        if (OpType != ID_ASS && !var->IsDefined())
         {
             pStack->SetError(TX_NOTINIT, pp);
             delete inst;
@@ -2075,12 +2075,12 @@ bool CBotPostIncExpr::Execute(CBotStack* &pj)
     CBotStack* pile3 = pile2->AddStack(this);
     if (pile3->IfStep()) return false;
 
-    if (var1->InitNAN())
+    if (var1->IsNAN())
     {
         pile1->SetError(TX_OPNAN, &m_token);
     }
 
-    if (!var1->InitDefined())
+    if (!var1->IsDefined())
     {
         pile1->SetError(TX_NOTINIT, &m_token);
     }
@@ -2118,13 +2118,13 @@ bool CBotPreIncExpr::Execute(CBotStack* &pj)
         // pile2 is modified on return
         if (!(static_cast<CBotExprVar*>(m_Instr))->ExecuteVar(var1, pile2, NULL, true)) return false;
 
-        if (var1->InitNAN())
+        if (var1->IsNAN())
         {
             pile->SetError(TX_OPNAN, &m_token);
             return pj->Return(pile);    // operation performed
         }
 
-        if (!var1->InitDefined())
+        if (!var1->IsDefined())
         {
             pile->SetError(TX_NOTINIT, &m_token);
             return pj->Return(pile);    // operation performed
@@ -3256,7 +3256,7 @@ bool CBotExprVar::Execute(CBotStack* &pj)
         return pj->Return(pile1);
     }
 
-    if (pVar->InitUndefined())
+    if (pVar->IsUndefined())
     {
         CBotToken* pt = &m_token;
         while (pt->GetNext() != NULL) pt = pt->GetNext();

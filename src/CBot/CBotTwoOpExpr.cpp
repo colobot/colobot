@@ -29,9 +29,7 @@ namespace
 {
 bool VarIsNAN(const CBotVar* var)
 {
-    const CBotVar::InitType initType = var->GetInit();
-    return initType != CBotVar::InitType::IS_NAN
-           && initType != CBotVar::InitType::IS_POINTER;
+    return var->GetInit() > CBotVar::InitType::DEF;
 }
 }
 
