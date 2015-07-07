@@ -1062,7 +1062,7 @@ bool CScriptFunctions::rDelete(CBotVar* var, CBotVar* result, int& exception, vo
     }
     else
     {
-        if ( exploType )
+        if ( exploType != 0 )
         {
             obj->ExplodeObject(static_cast<ExplosionType>(exploType), force);
         }
@@ -3821,12 +3821,15 @@ void CScriptFunctions::Init()
 
     CBotProgram::DefineNum("FilterNone",        FILTER_NONE);
     CBotProgram::DefineNum("FilterOnlyLanding", FILTER_ONLYLANDING);
-    CBotProgram::DefineNum("FilterOnlyFliying", FILTER_ONLYFLYING);
+    CBotProgram::DefineNum("FilterOnlyFlying",  FILTER_ONLYFLYING);
+    CBotProgram::DefineNum("FilterFriendly",    FILTER_FRIENDLY);
+    CBotProgram::DefineNum("FilterEnemy",       FILTER_ENEMY);
+    CBotProgram::DefineNum("FilterNeutral",     FILTER_NEUTRAL);
 
-    CBotProgram::DefineNum("ExploNone",  0);
-    CBotProgram::DefineNum("ExploBoum",  static_cast<long>(ExplosionType::Bang));
-    CBotProgram::DefineNum("ExploBurn",  static_cast<long>(ExplosionType::Burn));
-    CBotProgram::DefineNum("ExploWater", static_cast<long>(ExplosionType::Water));
+    CBotProgram::DefineNum("ExplosionNone",  0);
+    CBotProgram::DefineNum("ExplosionBang",  static_cast<int>(ExplosionType::Bang));
+    CBotProgram::DefineNum("ExplosionBurn",  static_cast<int>(ExplosionType::Burn));
+    CBotProgram::DefineNum("ExplosionWater", static_cast<int>(ExplosionType::Water));
 
     CBotProgram::DefineNum("ResultNotEnded",  ERR_MISSION_NOTERM);
     CBotProgram::DefineNum("ResultLost",      INFO_LOST);

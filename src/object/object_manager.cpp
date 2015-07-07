@@ -228,6 +228,10 @@ CObject* CObjectManager::Radar(CObject* pThis, Math::Vector thisPosition, float 
     iAngle = thisAngle+angle;
     iAngle = Math::NormAngle(iAngle);  // 0..2*Math::PI
 
+    int filter_team = filter & 0xFF;
+    RadarFilter filter_flying = static_cast<RadarFilter>(filter & (FILTER_ONLYLANDING | FILTER_ONLYFLYING));
+    RadarFilter filter_enemy = static_cast<RadarFilter>(filter & (FILTER_FRIENDLY | FILTER_ENEMY | FILTER_NEUTRAL));
+
     if ( !furthest )  best = 100000.0f;
     else              best = 0.0f;
     pBest = nullptr;
@@ -271,15 +275,27 @@ CObject* CObjectManager::Radar(CObject* pThis, Math::Vector thisPosition, float 
             // END OF TODO
         }
 
-        if ( filter == FILTER_ONLYLANDING )
+        if ( filter_flying == FILTER_ONLYLANDING )
         {
             physics = pObj->GetPhysics();
             if ( physics != nullptr && !physics->GetLand() )  continue;
         }
-        if ( filter == FILTER_ONLYFLYING )
+        if ( filter_flying == FILTER_ONLYFLYING )
         {
             physics = pObj->GetPhysics();
             if ( physics != nullptr && physics->GetLand() )  continue;
+        }
+
+        if ( filter_team != 0 && pObj->GetTeam() != filter_team )
+            continue;
+
+        if( pThis != nullptr )
+        {
+            RadarFilter enemy = FILTER_NONE;
+            if ( pObj->GetTeam() == 0 ) enemy = static_cast<RadarFilter>(enemy | FILTER_NEUTRAL);
+            if ( pObj->GetTeam() == pThis->GetTeam() ) enemy = static_cast<RadarFilter>(enemy | FILTER_FRIENDLY);
+            if ( pObj->GetTeam() != pThis->GetTeam() ) enemy = static_cast<RadarFilter>(enemy | FILTER_ENEMY);
+            if ( filter_enemy != 0 && (filter_enemy & enemy) == 0 ) continue;
         }
 
         if ( std::find(type.begin(), type.end(), oType) == type.end() && type.size() > 0 )  continue;
