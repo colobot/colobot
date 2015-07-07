@@ -36,6 +36,7 @@ void CSceneCondition::Read(CLevelParserLine* line)
     this->tool     = line->GetParam("tool")->AsToolType(ToolType::Other);
     this->drive    = line->GetParam("drive")->AsDriveType(DriveType::Other);
     this->countTransported = line->GetParam("countTransported")->AsBool(true);
+    this->team     = line->GetParam("team")->AsInt(0);
 
     this->min      = line->GetParam("min")->AsInt(1);
     this->max      = line->GetParam("max")->AsInt(9999);
@@ -88,6 +89,10 @@ int CSceneCondition::CountObjects()
             this->type != OBJECT_NULL)
             continue;
 
+        if ((this->team > 0 && obj->GetTeam() != this->team) ||
+            (this->team < 0 && obj->GetTeam() == -(this->team)))
+            continue;
+
         float energyLevel = -1;
         CObject* power = obj->GetPower();
         if (power != nullptr)
@@ -128,6 +133,7 @@ bool CSceneCondition::Check()
 void CSceneEndCondition::Read(CLevelParserLine* line)
 {
     CSceneCondition::Read(line);
+    this->winTeam  = line->GetParam("winTeam")->AsInt(0);
     this->lost     = line->GetParam("lost")->AsInt(-1);
     this->immediat = line->GetParam("immediat")->AsBool(false);
 }

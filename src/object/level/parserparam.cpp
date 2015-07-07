@@ -303,7 +303,7 @@ Math::Vector CLevelParserParam::AsPoint(Math::Vector def)
 
 ObjectType CLevelParserParam::ToObjectType(std::string value)
 {
-    if (value == "All"               ) return OBJECT_NULL;
+    if (value == "Any"               ) return OBJECT_NULL; // For use in type= in ending conditions
     if (value == "Portico"           ) return OBJECT_PORTICO;
     if (value == "SpaceShip"         ) return OBJECT_BASE;
     if (value == "PracticeBot"       ) return OBJECT_MOBILEwt;

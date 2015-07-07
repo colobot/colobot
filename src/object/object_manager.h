@@ -148,6 +148,13 @@ public:
     //! Gets all objects of given team
     std::vector<CObject*> GetObjectsOfTeam(int team);
 
+    //! Checks if any of team's objects exist
+    bool TeamExists(int team);
+
+    //! Destroy all objects of team
+    // TODO: This should be probably moved to separate class
+    void DestroyTeam(int team);
+
     //! Returns all objects
     inline CObjectContainerProxy GetAllObjects()
     {

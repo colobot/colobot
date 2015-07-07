@@ -5416,19 +5416,87 @@ void CRobotMain::SetEndMission(Error result, float delay)
     }
 }
 
+Error CRobotMain::CheckEndMissionForGroup(std::vector<CSceneEndCondition*>& endTakes)
+{
+    Error finalResult = ERR_OK;
+    for (CSceneEndCondition* endTake : endTakes)
+    {
+        Error result = endTake->GetMissionResult();
+        if(result != ERR_OK || endTake->immediat) {
+            if(finalResult != INFO_LOST && finalResult != INFO_LOSTq)
+                finalResult = result;
+        }
+    }
+    return finalResult;
+}
+
 //! Checks if the mission is over
 Error CRobotMain::CheckEndMission(bool frame)
 {
     // Process EndMissionTake, unless we are using MissionController
     if (m_controller == nullptr)
     {
-        m_missionResult = ERR_OK;
-        for (std::unique_ptr<CSceneEndCondition>& endTake : m_endTake)
-        {
-            Error result = endTake->GetMissionResult();
-            if(result != ERR_OK || endTake->immediat) {
-                m_missionResult = result;
-                break;
+        // Sort end conditions by teams
+        std::map<int, std::vector<CSceneEndCondition*>> teams;
+        for (std::unique_ptr<CSceneEndCondition>& endTake : m_endTake) {
+            teams[endTake->winTeam].push_back(endTake.get());
+        }
+
+        int teamCount = 0;
+        bool usesTeamConditions = false;
+        for(auto it : teams) {
+            int team = it.first;
+            if(team == 0) continue;
+            usesTeamConditions = true;
+            if(!m_objMan->TeamExists(team)) continue;
+            teamCount++;
+        }
+
+        if(!usesTeamConditions) {
+            m_missionResult = CheckEndMissionForGroup(teams[0]);
+        } else {
+            // Special handling for teams
+            m_missionResult = ERR_MISSION_NOTERM;
+
+            if(teamCount == 0) {
+                CLogger::GetInstancePointer()->Info("All teams died, mission ended with failure\n");
+                m_missionResult = INFO_LOST;
+            } else {
+                for(auto it : teams) {
+                    int team = it.first;
+                    if(team == 0) continue;
+                    if(!m_objMan->TeamExists(team)) continue;
+
+                    Error result = CheckEndMissionForGroup(it.second);
+                    if(result == INFO_LOST || result == INFO_LOSTq) {
+                        CLogger::GetInstancePointer()->Info("Team %d lost\n", team);
+                        m_displayText->DisplayText(("<<< Team "+boost::lexical_cast<std::string>(team)+" lost! >>>").c_str(), Math::Vector(0.0f,0.0f,0.0f), 15.0f, 60.0f, 10.0f, Ui::TT_ERROR);
+                        
+                        m_displayText->SetEnable(false); // To prevent "bot destroyed" messages
+                        m_objMan->DestroyTeam(team);
+                        m_displayText->SetEnable(true);
+                    } else if(result == ERR_OK) {
+                        if (m_winDelay == 0.0f)
+                        {
+                            CLogger::GetInstancePointer()->Info("Team %d won\n", team);
+
+                            m_displayText->DisplayText(("<<< Team "+boost::lexical_cast<std::string>(team)+" won the game >>>").c_str(), Math::Vector(0.0f,0.0f,0.0f));
+                            if (m_missionTimerEnabled && m_missionTimerStarted)
+                            {
+                                CLogger::GetInstancePointer()->Info("Mission time: %s\n", TimeFormat(m_missionTimer).c_str());
+                                m_displayText->DisplayText(("Time: " + TimeFormat(m_missionTimer)).c_str(), Math::Vector(0.0f,0.0f,0.0f));
+                            }
+                            m_missionTimerEnabled = m_missionTimerStarted = false;
+                            m_winDelay  = m_endTakeWinDelay;  // wins in two seconds
+                            m_lostDelay = 0.0f;
+                            if (m_exitAfterMission)
+                                m_eventQueue->AddEvent(Event(EVENT_QUIT));
+                            m_displayText->SetEnable(false);
+                        }
+                        m_missionResult = ERR_OK;
+                        return ERR_OK;
+                    }
+                }
             }
         }
 

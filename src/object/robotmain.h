@@ -200,6 +200,7 @@ public:
     void        UpdateAudio(bool frame);
     void        SetEndMission(Error result, float delay);
     Error       CheckEndMission(bool frame);
+    Error       CheckEndMissionForGroup(std::vector<CSceneEndCondition*>& endTakes);
     int         GetObligatoryToken();
     char*       GetObligatoryToken(int i);
     int         IsObligatoryToken(const char* token);

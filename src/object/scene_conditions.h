@@ -49,6 +49,7 @@ public:
     ToolType      tool = ToolType::Other;
     DriveType     drive = DriveType::Other;
     bool          countTransported = true;
+    int           team = 0;
 
     int           min = 1;        // wins if >
     int           max = 9999;     // wins if <
@@ -71,6 +72,8 @@ protected:
 class CSceneEndCondition : public CSceneCondition
 {
 public:
+    int winTeam = 0;
+
     int lost = -1; // lost if <=
 
     bool immediat = false;

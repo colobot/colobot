@@ -153,6 +153,32 @@ std::vector<CObject*> CObjectManager::GetObjectsOfTeam(int team)
     return result;
 }
 
+bool CObjectManager::TeamExists(int team)
+{
+    if(team == 0) return true;
+
+    for (CObject* object : GetAllObjects())
+    {
+        if (!object->GetActive())
+            continue;
+
+        if (object->GetTeam() == team)
+            return true;
+    }
+    return false;
+}
+
+void CObjectManager::DestroyTeam(int team)
+{
+    assert(team != 0);
+
+    for (CObject* object : GetAllObjects())
+    {
+        if (object->GetTeam() == team)
+            object->ExplodeObject(ExplosionType::Bang, 1.0f);
+    }
+}
+
 CObject* CObjectManager::Radar(CObject* pThis, ObjectType type, float angle, float focus, float minDist, float maxDist, bool furthest, RadarFilter filter, bool cbotTypes)
 {
     std::vector<ObjectType> types;
