@@ -193,6 +193,8 @@ CRobotMain::CRobotMain(CController* controller)
     m_codeBattleInit = false;
     m_codeBattleStarted = false;
 
+    m_teamNames.clear();
+
     #if DEV_BUILD
     m_showAll      = true; // for development
     #else
@@ -2954,6 +2956,8 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
         m_codeBattleInit = false;
         m_codeBattleStarted = false;
 
+        m_teamNames.clear();
+
         m_missionResult = ERR_MISSION_NOTERM;
     }
 
@@ -3056,6 +3060,14 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 {
                     m_missionTimerStarted = true;
                 }
+                continue;
+            }
+
+            if (line->GetCommand() == "TeamName")
+            {
+                int team = line->GetParam("team")->AsInt();
+                std::string name = line->GetParam("name")->AsString();
+                m_teamNames[team] = name;
                 continue;
             }
 
@@ -6155,4 +6167,11 @@ bool CRobotMain::CanPlayerInteract()
         return !m_codeBattleStarted;
     }
     return true;
+}
+
+const std::string NO_TEAM_NAME = "Team";
+const std::string& CRobotMain::GetTeamName(int id)
+{
+    if(m_teamNames.count(id) == 0) return NO_TEAM_NAME;
+    return m_teamNames[id];
 }

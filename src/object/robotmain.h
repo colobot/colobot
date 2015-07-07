@@ -329,6 +329,9 @@ public:
     //! Returns true if player can interact with things manually
     bool        CanPlayerInteract();
 
+    //! Returns team name for the given team id
+    const std::string& GetTeamName(int id);
+
 protected:
     bool        EventFrame(const Event &event);
     bool        EventObject(const Event &event);
@@ -462,6 +465,8 @@ protected:
 
     bool            m_codeBattleInit;
     bool            m_codeBattleStarted;
+
+    std::map<int, std::string> m_teamNames;
 
     float           m_fontSize;
     Math::Point     m_windowPos;

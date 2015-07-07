@@ -3523,7 +3523,7 @@ bool COldObject::GetTooltipName(std::string& name)
 {
     GetResource(RES_OBJECT, m_type, name);
     if(GetTeam() != 0) {
-        name += " [team "+boost::lexical_cast<std::string>(GetTeam())+"]"; //TODO: better way to display this
+        name += " ["+CRobotMain::GetInstancePointer()->GetTeamName(GetTeam())+" ("+boost::lexical_cast<std::string>(GetTeam())+")]";
     }
     return !name.empty();
 }
