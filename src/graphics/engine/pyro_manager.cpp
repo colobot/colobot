@@ -61,7 +61,11 @@ void Gfx::CPyroManager::EventProcess(const Event& event)
     while (it != m_pyros.end())
     {
         (*it)->EventProcess(event);
-        if ((*it)->IsEnded())
+        if ((*it)->IsEnded() == ERR_CONTINUE)
+        {
+            ++it;
+        }
+        else
         {
             (*it)->DeleteObject();
             it = m_pyros.erase(it);
