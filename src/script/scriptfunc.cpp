@@ -3790,6 +3790,7 @@ void CScriptFunctions::Init()
         if (token[0] != 0)
             CBotProgram::DefineNum(token, type);
     }
+    CBotProgram::DefineNum("Any", OBJECT_NULL);
 
     CBotProgram::DefineNum("White",      0);
     CBotProgram::DefineNum("Black",      1);
