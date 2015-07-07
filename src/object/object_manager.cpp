@@ -293,8 +293,8 @@ CObject* CObjectManager::Radar(CObject* pThis, Math::Vector thisPosition, float 
         {
             RadarFilter enemy = FILTER_NONE;
             if ( pObj->GetTeam() == 0 ) enemy = static_cast<RadarFilter>(enemy | FILTER_NEUTRAL);
-            if ( pObj->GetTeam() == pThis->GetTeam() ) enemy = static_cast<RadarFilter>(enemy | FILTER_FRIENDLY);
-            if ( pObj->GetTeam() != pThis->GetTeam() ) enemy = static_cast<RadarFilter>(enemy | FILTER_ENEMY);
+            if ( pObj->GetTeam() != 0 && pObj->GetTeam() == pThis->GetTeam() ) enemy = static_cast<RadarFilter>(enemy | FILTER_FRIENDLY);
+            if ( pObj->GetTeam() != 0 && pObj->GetTeam() != pThis->GetTeam() ) enemy = static_cast<RadarFilter>(enemy | FILTER_ENEMY);
             if ( filter_enemy != 0 && (filter_enemy & enemy) == 0 ) continue;
         }
 
