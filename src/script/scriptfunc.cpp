@@ -2902,7 +2902,6 @@ bool CScriptFunctions::rMessage(CBotVar* var, CBotVar* result, int& exception, v
     }
 
     script->m_main->GetDisplayText()->DisplayText(p, script->m_object, 10.0f, type);
-    script->m_main->CheckEndMessage(p);
 
     return true;
 }

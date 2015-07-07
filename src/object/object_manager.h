@@ -109,7 +109,7 @@ private:
 };
 
 /**
- * \class ObjectManager
+ * \class CObjectManager
  * \brief Manages CObject instances
  */
 class CObjectManager : public CSingleton<CObjectManager>

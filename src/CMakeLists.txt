@@ -164,6 +164,7 @@ set(BASE_SOURCES
     object/object_manager.cpp
     object/old_object.cpp
     object/robotmain.cpp
+    object/scene_conditions.cpp
     object/task/task.cpp
     object/task/taskadvance.cpp
     object/task/taskbuild.cpp

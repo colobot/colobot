@@ -1,0 +1,102 @@
+/*
+ * This file is part of the Colobot: Gold Edition source code
+ * Copyright (C) 2001-2015, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * http://epsiteс.ch; http://colobot.info; http://github.com/colobot
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see http://gnu.org/licenses
+ */
+
+/**
+ * \file object/scene_conditions.h
+ * \brief Classes for managing conditions in scene files
+ */
+
+#pragma once
+
+#include "common/global.h"
+
+#include "math/vector.h"
+
+#include "object/object_type.h"
+#include "object/tool_type.h"
+#include "object/drive_type.h"
+
+class CLevelParserLine;
+
+/**
+ * \class CSceneCondition
+ * \brief Base scene condition structure
+ */
+class CSceneCondition
+{
+public:
+    Math::Vector  pos = Math::Vector(0.0f, 0.0f, 0.0f)*g_unit;
+    float         dist = 8.0f*g_unit;
+    ObjectType    type = OBJECT_NULL;
+    float         powermin = -1;  // wins if energy cell >=
+    float         powermax = 100; // wins if energy cell <=
+    ToolType      tool = ToolType::Other;
+    DriveType     drive = DriveType::Other;
+    bool          countTransported = true;
+
+    int           min = 1;        // wins if >
+    int           max = 9999;     // wins if <
+
+    //! Read from line in scene file
+    virtual void Read(CLevelParserLine* line);
+
+    //! Checks if this condition is met
+    bool Check();
+
+protected:
+    //! Count all object matching the conditions
+    int CountObjects();
+};
+
+/**
+ * \class CSceneEndCondition
+ * \brief Scene end condition
+ */
+class CSceneEndCondition : public CSceneCondition
+{
+public:
+    int lost = -1; // lost if <=
+
+    bool immediat = false;
+
+    //! Read from line in scene file
+    virtual void Read(CLevelParserLine* line);
+
+    //! Checks if lost condition is met
+    bool CheckLost();
+
+    //! Get mission result
+    Error GetMissionResult();
+};
+
+/**
+ * \class CAudioChangeCondition
+ * \brief Audio change condition
+ */
+class CAudioChangeCondition : public CSceneCondition
+{
+public:
+    std::string music = "";
+    bool repeat = true;
+
+    bool changed = false;
+
+    //! Read from line in scene file
+    virtual void Read(CLevelParserLine* line);
+};

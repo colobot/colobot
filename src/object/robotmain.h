@@ -83,6 +83,8 @@ class CSoundInterface;
 class CLevelParserLine;
 class CInput;
 class CObjectManager;
+class CSceneEndCondition;
+class CAudioChangeCondition;
 
 namespace Gfx {
 class CEngine;
@@ -102,41 +104,6 @@ class CInterface;
 class CDisplayText;
 class CDisplayInfo;
 }
-
-
-struct EndTake
-{
-    Math::Vector  pos;
-    float         dist;
-    ObjectType    type;
-    int           min;        // wins if >
-    int           max;        // wins if <
-    int           lost;       // lost if <=
-    float         powermin;   // wins if energy cell >=
-    float         powermax;   // wins if energy cell <=
-    ToolType      tool;
-    DriveType     drive;
-    bool          immediat;
-    bool          countTransported;
-    char          message[100];
-};
-
-struct AudioChange
-{
-    Math::Vector  pos;
-    float         dist;
-    ObjectType    type;
-    int           min;        // change if >
-    int           max;        // change if <
-    float         powermin;   // change if energy cell >=
-    float         powermax;   // change if energy cell <=
-    ToolType      tool;
-    DriveType     drive;
-    char          music[100];
-    bool          repeat;
-    bool          changed;
-};
-
 
 const int MAXNEWSCRIPTNAME = 20;
 
@@ -233,7 +200,6 @@ public:
     void        UpdateAudio(bool frame);
     void        SetEndMission(Error result, float delay);
     Error       CheckEndMission(bool frame);
-    void        CheckEndMessage(const char* message);
     int         GetObligatoryToken();
     char*       GetObligatoryToken(int i);
     int         IsObligatoryToken(const char* token);
@@ -517,15 +483,13 @@ protected:
     Math::Vector    m_visitPos;
     Math::Vector    m_visitPosArrow;
 
-    int             m_endTakeTotal;
-    EndTake         m_endTake[10];
+    std::vector<std::unique_ptr<CSceneEndCondition>> m_endTake;
     long            m_endTakeResearch;
     bool            m_endTakeNever;
     float           m_endTakeWinDelay;
     float           m_endTakeLostDelay;
 
-    int             m_audioChangeTotal;
-    AudioChange     m_audioChange[10];
+    std::vector<std::unique_ptr<CAudioChangeCondition>> m_audioChange;
 
     int             m_obligatoryTotal;
     char            m_obligatoryToken[100][20];

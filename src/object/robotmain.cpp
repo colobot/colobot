@@ -64,6 +64,7 @@
 #include "object/motion/motiontoto.h"
 #include "object/object.h"
 #include "object/object_manager.h"
+#include "object/scene_conditions.h"
 #include "object/task/task.h"
 #include "object/task/taskbuild.h"
 #include "object/task/taskmanip.h"
@@ -2894,8 +2895,8 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
         m_lockedSatCom = false;
         m_endingWinRank   = 0;
         m_endingLostRank  = 0;
-        m_audioChangeTotal = 0;
-        m_endTakeTotal = 0;
+        m_audioChange.clear();
+        m_endTake.clear();
         m_endTakeResearch = 0;
         m_endTakeNever = false;
         m_endTakeWinDelay = 2.0f;
@@ -3067,24 +3068,10 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
             if (line->GetCommand() == "AudioChange" && !resetObject && m_controller == nullptr)
             {
-                int i = m_audioChangeTotal;
-                if (i < 10)
-                {
-                    m_audioChange[i].pos      = line->GetParam("pos")->AsPoint(Math::Vector(0.0f, 0.0f, 0.0f))*g_unit;
-                    m_audioChange[i].dist     = line->GetParam("dist")->AsFloat(1000.0f)*g_unit;
-                    m_audioChange[i].type     = line->GetParam("type")->AsObjectType(OBJECT_NULL);
-                    m_audioChange[i].min      = line->GetParam("min")->AsInt(1);
-                    m_audioChange[i].max      = line->GetParam("max")->AsInt(9999);
-                    m_audioChange[i].powermin = line->GetParam("powermin")->AsFloat(-1);
-                    m_audioChange[i].powermax = line->GetParam("powermax")->AsFloat(100);
-                    m_audioChange[i].tool     = line->GetParam("tool")->AsToolType(ToolType::Other);
-                    m_audioChange[i].drive    = line->GetParam("drive")->AsDriveType(DriveType::Other);
-                    strcpy(m_audioChange[i].music, (std::string("../")+line->GetParam("filename")->AsPath("music")).c_str());
-                    m_audioChange[i].repeat   = line->GetParam("repeat")->AsBool(true);
-                    m_audioChange[i].changed  = false;
-                    m_sound->CacheMusic(m_audioChange[i].music);
-                    m_audioChangeTotal ++;
-                }
+                auto audioChange = std::unique_ptr<CAudioChangeCondition>{new CAudioChangeCondition()};
+                audioChange->Read(line.get());
+                m_sound->CacheMusic(audioChange->music);
+                m_audioChange.push_back(std::move(audioChange));
                 continue;
             }
 
@@ -3818,24 +3805,9 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
             if (line->GetCommand() == "EndMissionTake" && !resetObject && m_controller == nullptr)
             {
-                int i = m_endTakeTotal;
-                if (i < 10)
-                {
-                    m_endTake[i].pos      = line->GetParam("pos")->AsPoint(Math::Vector(0.0f, 0.0f, 0.0f))*g_unit;
-                    m_endTake[i].dist     = line->GetParam("dist")->AsFloat(8.0f)*g_unit;
-                    m_endTake[i].type     = line->GetParam("type")->AsObjectType(OBJECT_NULL);
-                    m_endTake[i].min      = line->GetParam("min")->AsInt(1);
-                    m_endTake[i].max      = line->GetParam("max")->AsInt(9999);
-                    m_endTake[i].powermin = line->GetParam("powermin")->AsFloat(-1);
-                    m_endTake[i].powermax = line->GetParam("powermax")->AsFloat(100);
-                    m_endTake[i].tool     = line->GetParam("tool")->AsToolType(ToolType::Other);
-                    m_endTake[i].drive    = line->GetParam("drive")->AsDriveType(DriveType::Other);
-                    m_endTake[i].lost     = line->GetParam("lost")->AsInt(-1);
-                    m_endTake[i].immediat = line->GetParam("immediat")->AsBool(false);
-                    m_endTake[i].countTransported = line->GetParam("countTransported")->AsBool(true);
-                    strcpy(m_endTake[i].message, line->GetParam("message")->AsString("").c_str()); //TODO: Really, ending mission on message()? Is this used anywhere? Do we need that?
-                    m_endTakeTotal ++;
-                }
+                auto endTake = std::unique_ptr<CSceneEndCondition>{new CSceneEndCondition()};
+                endTake->Read(line.get());
+                m_endTake.push_back(std::move(endTake));
                 continue;
             }
             if (line->GetCommand() == "EndMissionDelay" && !resetObject && m_controller == nullptr)
@@ -5421,82 +5393,15 @@ void CRobotMain::ResetCreate()
 //! Updates the audiotracks
 void CRobotMain::UpdateAudio(bool frame)
 {
-    for (int t = 0; t < m_audioChangeTotal; t++)
+    for(std::unique_ptr<CAudioChangeCondition>& audioChange : m_audioChange)
     {
-        if (m_audioChange[t].changed) continue;
+        if (audioChange->changed) continue;
 
-        Math::Vector bPos = m_audioChange[t].pos;
-        bPos.y = 0.0f;
-
-        Math::Vector oPos;
-
-        int nb = 0;
-        for (CObject* obj : m_objMan->GetAllObjects())
+        if (audioChange->Check())
         {
-            // Do not use GetActive () because an invisible worm (underground)
-            // should be regarded as existing here!
-            if (obj->GetLock()) continue;
-            if (obj->GetRuin()) continue;
-            if (!obj->GetEnable()) continue;
-
-            ObjectType type = obj->GetType();
-            if (type == OBJECT_SCRAP2 ||
-                type == OBJECT_SCRAP3 ||
-                type == OBJECT_SCRAP4 ||
-                type == OBJECT_SCRAP5)  // wastes?
-            {
-                type = OBJECT_SCRAP1;
-            }
-
-            ToolType tool = GetToolFromObject(type);
-            DriveType drive = GetDriveFromObject(type);
-            if (m_audioChange[t].tool != ToolType::Other &&
-                tool != m_audioChange[t].tool)
-                continue;
-            if (m_audioChange[t].drive != DriveType::Other &&
-                drive != m_audioChange[t].drive)
-                continue;
-
-            if (m_audioChange[t].tool == ToolType::Other &&
-                m_audioChange[t].drive == DriveType::Other &&
-                type != m_audioChange[t].type)
-                continue;
-
-            float energyLevel = -1;
-            CObject* power = obj->GetPower();
-            if (power != nullptr)
-            {
-                energyLevel = power->GetEnergy();
-                if (power->GetType() == OBJECT_ATOMIC) energyLevel *= 100;
-            }
-            else
-            {
-                if (obj->GetType() == OBJECT_POWER || obj->GetType() == OBJECT_ATOMIC)
-                {
-                    energyLevel = obj->GetEnergy();
-                    if (obj->GetType() == OBJECT_ATOMIC) energyLevel *= 100;
-                }
-            }
-            if (energyLevel < m_audioChange[t].powermin || energyLevel > m_audioChange[t].powermax)
-                continue;
-
-            if (obj->GetTransporter() == 0)
-                oPos = obj->GetPosition(0);
-            else
-                oPos = obj->GetTransporter()->GetPosition(0);
-
-            oPos.y = 0.0f;
-
-            if (Math::DistanceProjected(oPos, bPos) <= m_audioChange[t].dist)
-                nb ++;
-        }
-
-        if (nb >= m_audioChange[t].min &&
-            nb <= m_audioChange[t].max)
-        {
-            CLogger::GetInstancePointer()->Info("Changing music to \"%s\"\n", m_audioChange[t].music);
-            m_sound->PlayMusic(std::string(m_audioChange[t].music), m_audioChange[t].repeat);
-            m_audioChange[t].changed = true;
+            CLogger::GetInstancePointer()->Info("Changing music to \"%s\"\n", audioChange->music.c_str());
+            m_sound->PlayMusic(audioChange->music, audioChange->repeat);
+            audioChange->changed = true;
         }
     }
 }
@@ -5514,29 +5419,80 @@ void CRobotMain::SetEndMission(Error result, float delay)
 //! Checks if the mission is over
 Error CRobotMain::CheckEndMission(bool frame)
 {
-    if (m_controller != nullptr)
+    // Process EndMissionTake, unless we are using MissionController
+    if (m_controller == nullptr)
     {
-        if (m_missionResult == INFO_LOST) //mission lost?
+        m_missionResult = ERR_OK;
+        for (std::unique_ptr<CSceneEndCondition>& endTake : m_endTake)
+        {
+            Error result = endTake->GetMissionResult();
+            if(result != ERR_OK || endTake->immediat) {
+                m_missionResult = result;
+                break;
+            }
+        }
+
+        if (m_missionResult != INFO_LOST && m_missionResult != INFO_LOSTq)
+        {
+            if (m_endTakeResearch != 0)
+            {
+                if (m_endTakeResearch != (m_endTakeResearch&g_researchDone))
+                {
+                    m_missionResult = ERR_MISSION_NOTERM;
+                }
+            }
+        }
+
+        if(m_missionResult == ERR_OK && m_endTakeNever) m_missionResult = ERR_MISSION_NOTERM;
+    }
+
+    // Take action depending on m_missionResult
+
+    if(m_missionResult == INFO_LOSTq)
+    {
+        if (m_lostDelay == 0.0f)
+        {
+            m_lostDelay = 0.1f;  // lost immediately
+            m_winDelay  = 0.0f;
+        }
+        m_missionTimerEnabled = m_missionTimerStarted = false;
+        m_displayText->SetEnable(false);
+        if (m_exitAfterMission)
+            m_eventQueue->AddEvent(Event(EVENT_QUIT));
+        return INFO_LOSTq;
+    }
+
+    if(m_missionResult == INFO_LOST)
+    {
+        if (m_lostDelay == 0.0f)
         {
             m_displayText->DisplayError(INFO_LOST, Math::Vector(0.0f,0.0f,0.0f));
-            m_missionTimerEnabled = m_missionTimerStarted = false;
-            m_winDelay = 0.0f;
-            if (m_lostDelay == 0) m_lostDelay = m_endTakeLostDelay;
-            m_displayText->SetEnable(false);
-            if (m_exitAfterMission)
-                m_eventQueue->AddEvent(Event(EVENT_QUIT));
+            m_lostDelay = m_endTakeLostDelay;  // lost in 6 seconds
+            m_winDelay  = 0.0f;
         }
-        if (m_missionResult == INFO_LOSTq) //mission lost?
+        m_missionTimerEnabled = m_missionTimerStarted = false;
+        m_displayText->SetEnable(false);
+        if (m_exitAfterMission)
+            m_eventQueue->AddEvent(Event(EVENT_QUIT));
+        return INFO_LOST;
+    }
+
+    if (m_missionResult == ERR_OK)
+    {
+        if (m_endTakeWinDelay == -1.0f)
         {
+            m_winDelay  = 1.0f;  // wins in one second
+            m_lostDelay = 0.0f;
             m_missionTimerEnabled = m_missionTimerStarted = false;
-            m_winDelay = 0.0f;
-            if (m_lostDelay == 0) m_lostDelay = 0.1f;
             m_displayText->SetEnable(false);
             if (m_exitAfterMission)
                 m_eventQueue->AddEvent(Event(EVENT_QUIT));
+            return ERR_OK;  // mission ended
         }
+
         if (frame && m_base != nullptr && m_base->GetSelectable()) return ERR_MISSION_NOTERM;
-        if (m_missionResult == ERR_OK) //mission win?
+
+        if (m_winDelay == 0.0f)
         {
             m_displayText->DisplayError(INFO_WIN, Math::Vector(0.0f,0.0f,0.0f));
             if (m_missionTimerEnabled && m_missionTimerStarted)
@@ -5545,196 +5501,18 @@ Error CRobotMain::CheckEndMission(bool frame)
                 m_displayText->DisplayText(("Time: " + TimeFormat(m_missionTimer)).c_str(), Math::Vector(0.0f,0.0f,0.0f));
             }
             m_missionTimerEnabled = m_missionTimerStarted = false;
-            if (m_winDelay == 0) m_winDelay = m_endTakeWinDelay;
+            m_winDelay  = m_endTakeWinDelay;  // wins in two seconds
             m_lostDelay = 0.0f;
-            m_displayText->SetEnable(false);
-            if (m_exitAfterMission)
-                m_eventQueue->AddEvent(Event(EVENT_QUIT));
         }
-        if (m_missionResult == ERR_MISSION_NOTERM) m_displayText->SetEnable(true);
-        return m_missionResult;
-    }
-
-    for (int t = 0; t < m_endTakeTotal; t++)
-    {
-        if (m_endTake[t].message[0] != 0) continue;
-
-        Math::Vector bPos = m_endTake[t].pos;
-        bPos.y = 0.0f;
-
-        Math::Vector oPos;
-
-        int nb = 0;
-        for (CObject* obj : m_objMan->GetAllObjects())
-        {
-            // Do not use GetActive () because an invisible worm (underground)
-            // should be regarded as existing here!
-            if (obj->GetLock()) continue;
-            if (obj->GetRuin()) continue;
-            if (!obj->GetEnable()) continue;
-
-            if (!m_endTake[t].countTransported)
-            {
-                if (obj->GetTransporter() != nullptr) continue;
-            }
-
-            ObjectType type = obj->GetType();
-            if (type == OBJECT_SCRAP2 ||
-                type == OBJECT_SCRAP3 ||
-                type == OBJECT_SCRAP4 ||
-                type == OBJECT_SCRAP5)  // wastes?
-            {
-                type = OBJECT_SCRAP1;
-            }
-
-            ToolType tool = GetToolFromObject(type);
-            DriveType drive = GetDriveFromObject(type);
-            if (m_endTake[t].tool != ToolType::Other &&
-                tool != m_endTake[t].tool)
-                continue;
-
-            if (m_endTake[t].drive != DriveType::Other &&
-                drive != m_endTake[t].drive)
-                continue;
-
-            if (m_endTake[t].tool == ToolType::Other &&
-                m_endTake[t].drive == DriveType::Other &&
-                type != m_endTake[t].type)
-                continue;
-
-            float energyLevel = -1;
-            CObject* power = obj->GetPower();
-            if (power != nullptr)
-            {
-                energyLevel = power->GetEnergy();
-                if (power->GetType() == OBJECT_ATOMIC) energyLevel *= 100;
-            }
-            else
-            {
-                if (obj->GetType() == OBJECT_POWER || obj->GetType() == OBJECT_ATOMIC)
-                {
-                    energyLevel = obj->GetEnergy();
-                    if (obj->GetType() == OBJECT_ATOMIC) energyLevel *= 100;
-                }
-            }
-            if (energyLevel < m_endTake[t].powermin || energyLevel > m_endTake[t].powermax) continue;
-
-            if (obj->GetTransporter() == 0)
-                oPos = obj->GetPosition(0);
-            else
-                oPos = obj->GetTransporter()->GetPosition(0);
-
-            oPos.y = 0.0f;
-
-            if (Math::DistanceProjected(oPos, bPos) <= m_endTake[t].dist)
-                nb ++;
-        }
-
-        if (nb <= m_endTake[t].lost)
-        {
-            if (m_endTake[t].type == OBJECT_HUMAN)
-            {
-                if (m_lostDelay == 0.0f)
-                {
-                    m_lostDelay = 0.1f;  // lost immediately
-                    m_winDelay  = 0.0f;
-                }
-                m_missionTimerEnabled = m_missionTimerStarted = false;
-                m_displayText->SetEnable(false);
-                if (m_exitAfterMission)
-                    m_eventQueue->AddEvent(Event(EVENT_QUIT));
-                return INFO_LOSTq;
-            }
-            else
-            {
-                if (m_lostDelay == 0.0f)
-                {
-                    m_displayText->DisplayError(INFO_LOST, Math::Vector(0.0f,0.0f,0.0f));
-                    m_lostDelay = m_endTakeLostDelay;  // lost in 6 seconds
-                    m_winDelay  = 0.0f;
-                }
-                m_missionTimerEnabled = m_missionTimerStarted = false;
-                m_displayText->SetEnable(false);
-                if (m_exitAfterMission)
-                    m_eventQueue->AddEvent(Event(EVENT_QUIT));
-                return INFO_LOST;
-            }
-        }
-        if (nb < m_endTake[t].min ||
-            nb > m_endTake[t].max ||
-            m_endTakeNever        )
-        {
-            m_displayText->SetEnable(true);
-            return ERR_MISSION_NOTERM;
-        }
-        if (m_endTake[t].immediat)
-        {
-            if (m_winDelay == 0.0f)
-            {
-                m_winDelay  = m_endTakeWinDelay;  // wins in x seconds
-                m_lostDelay = 0.0f;
-            }
-            m_missionTimerEnabled = m_missionTimerStarted = false;
-            m_displayText->SetEnable(false);
-            if (m_exitAfterMission)
-                m_eventQueue->AddEvent(Event(EVENT_QUIT));
-            return ERR_OK;  // mission ended
-        }
-    }
-
-    if (m_endTakeResearch != 0)
-    {
-        if (m_endTakeResearch != (m_endTakeResearch&g_researchDone))
-        {
-            m_displayText->SetEnable(true);
-            return ERR_MISSION_NOTERM;
-        }
-    }
-
-    if (m_endTakeWinDelay == -1.0f)
-    {
-        m_winDelay  = 1.0f;  // wins in one second
-        m_lostDelay = 0.0f;
-        m_missionTimerEnabled = m_missionTimerStarted = false;
-        m_displayText->SetEnable(false);
         if (m_exitAfterMission)
             m_eventQueue->AddEvent(Event(EVENT_QUIT));
+        m_displayText->SetEnable(false);
         return ERR_OK;  // mission ended
     }
-
-    if (frame && m_base != nullptr && m_base->GetSelectable()) return ERR_MISSION_NOTERM;
-
-    if (m_winDelay == 0.0f)
+    else
     {
-        m_displayText->DisplayError(INFO_WIN, Math::Vector(0.0f,0.0f,0.0f));
-        if (m_missionTimerEnabled && m_missionTimerStarted)
-        {
-            CLogger::GetInstancePointer()->Info("Mission time: %s\n", TimeFormat(m_missionTimer).c_str());
-            m_displayText->DisplayText(("Time: " + TimeFormat(m_missionTimer)).c_str(), Math::Vector(0.0f,0.0f,0.0f));
-        }
-        m_missionTimerEnabled = m_missionTimerStarted = false;
-        m_winDelay  = m_endTakeWinDelay;  // wins in two seconds
-        m_lostDelay = 0.0f;
-    }
-    if (m_exitAfterMission)
-        m_eventQueue->AddEvent(Event(EVENT_QUIT));
-    m_displayText->SetEnable(false);
-    return ERR_OK;  // mission ended
-}
-
-//! Checks if the mission is finished after displaying a message
-void CRobotMain::CheckEndMessage(const char* message)
-{
-    for (int t = 0; t < m_endTakeTotal; t++)
-    {
-        if (m_endTake[t].message[0] == 0) continue;
-
-        if (strcmp(m_endTake[t].message, message) == 0)
-        {
-            m_displayText->DisplayError(INFO_WIN, Math::Vector(0.0f,0.0f,0.0f));
-            m_winDelay  = m_endTakeWinDelay;  // wins in 2 seconds
-            m_lostDelay = 0.0f;
-        }
+        m_displayText->SetEnable(true);
+        return ERR_MISSION_NOTERM;
     }
 }
 
