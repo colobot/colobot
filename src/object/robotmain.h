@@ -486,7 +486,6 @@ protected:
 
     std::vector<std::unique_ptr<CSceneEndCondition>> m_endTake;
     long            m_endTakeResearch;
-    bool            m_endTakeNever;
     float           m_endTakeWinDelay;
     float           m_endTakeLostDelay;
 

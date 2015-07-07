@@ -2898,7 +2898,6 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
         m_audioChange.clear();
         m_endTake.clear();
         m_endTakeResearch = 0;
-        m_endTakeNever = false;
         m_endTakeWinDelay = 2.0f;
         m_endTakeLostDelay = 2.0f;
         m_obligatoryTotal = 0;
@@ -3819,11 +3818,6 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             if (line->GetCommand() == "EndMissionResearch" && !resetObject && m_controller == nullptr) //TODO: Is this used anywhere?
             {
                 m_endTakeResearch |= line->GetParam("type")->AsResearchFlag();
-                continue;
-            }
-            if (line->GetCommand() == "EndMissionNever" && !resetObject && m_controller == nullptr)
-            {
-                m_endTakeNever = true;
                 continue;
             }
 
@@ -5419,14 +5413,20 @@ void CRobotMain::SetEndMission(Error result, float delay)
 Error CRobotMain::CheckEndMissionForGroup(std::vector<CSceneEndCondition*>& endTakes)
 {
     Error finalResult = ERR_OK;
+    bool hasWinningConditions = false;
     for (CSceneEndCondition* endTake : endTakes)
     {
         Error result = endTake->GetMissionResult();
-        if(result != ERR_OK || endTake->immediat) {
-            if(finalResult != INFO_LOST && finalResult != INFO_LOSTq)
+        if (endTake->lost < 0)
+            hasWinningConditions = true;
+
+        if (result != ERR_OK || endTake->immediat)
+        {
+            if (finalResult != INFO_LOST && finalResult != INFO_LOSTq)
                 finalResult = result;
         }
     }
+    if (finalResult == ERR_OK && !hasWinningConditions) finalResult = ERR_MISSION_NOTERM;
     return finalResult;
 }
 
@@ -5438,13 +5438,15 @@ Error CRobotMain::CheckEndMission(bool frame)
     {
         // Sort end conditions by teams
         std::map<int, std::vector<CSceneEndCondition*>> teams;
-        for (std::unique_ptr<CSceneEndCondition>& endTake : m_endTake) {
+        for (std::unique_ptr<CSceneEndCondition>& endTake : m_endTake)
+        {
             teams[endTake->winTeam].push_back(endTake.get());
         }
 
         int teamCount = 0;
         bool usesTeamConditions = false;
-        for(auto it : teams) {
+        for (auto it : teams)
+        {
             int team = it.first;
             if(team == 0) continue;
             usesTeamConditions = true;
@@ -5452,30 +5454,39 @@ Error CRobotMain::CheckEndMission(bool frame)
             teamCount++;
         }
 
-        if(!usesTeamConditions) {
+        if (!usesTeamConditions)
+        {
             m_missionResult = CheckEndMissionForGroup(teams[0]);
-        } else {
+        }
+        else
+        {
             // Special handling for teams
             m_missionResult = ERR_MISSION_NOTERM;
 
-            if(teamCount == 0) {
+            if (teamCount == 0) {
                 CLogger::GetInstancePointer()->Info("All teams died, mission ended with failure\n");
                 m_missionResult = INFO_LOST;
-            } else {
-                for(auto it : teams) {
+            }
+            else
+            {
+                for (auto it : teams)
+                {
                     int team = it.first;
-                    if(team == 0) continue;
-                    if(!m_objMan->TeamExists(team)) continue;
+                    if (team == 0) continue;
+                    if (!m_objMan->TeamExists(team)) continue;
 
                     Error result = CheckEndMissionForGroup(it.second);
-                    if(result == INFO_LOST || result == INFO_LOSTq) {
+                    if (result == INFO_LOST || result == INFO_LOSTq)
+                    {
                         CLogger::GetInstancePointer()->Info("Team %d lost\n", team);
                         m_displayText->DisplayText(("<<< Team "+boost::lexical_cast<std::string>(team)+" lost! >>>").c_str(), Math::Vector(0.0f,0.0f,0.0f), 15.0f, 60.0f, 10.0f, Ui::TT_ERROR);
                         
                         m_displayText->SetEnable(false); // To prevent "bot destroyed" messages
                         m_objMan->DestroyTeam(team);
                         m_displayText->SetEnable(true);
-                    } else if(result == ERR_OK) {
+                    }
+                    else if(result == ERR_OK)
+                    {
                         if (m_winDelay == 0.0f)
                         {
                             CLogger::GetInstancePointer()->Info("Team %d won\n", team);
@@ -5510,8 +5521,6 @@ Error CRobotMain::CheckEndMission(bool frame)
                 }
             }
         }
-
-        if(m_missionResult == ERR_OK && m_endTakeNever) m_missionResult = ERR_MISSION_NOTERM;
     }
 
     // Take action depending on m_missionResult
