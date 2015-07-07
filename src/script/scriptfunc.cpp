@@ -3890,6 +3890,7 @@ void CScriptFunctions::Init()
     bc->AddItem("energyCell",  CBotTypResult(CBotTypPointer, "object"), PR_READ);
     bc->AddItem("load",        CBotTypResult(CBotTypPointer, "object"), PR_READ);
     bc->AddItem("id",          CBotTypResult(CBotTypInt), PR_READ);
+    bc->AddItem("team",        CBotTypResult(CBotTypInt), PR_READ);
     bc->AddFunction("busy",     CScriptFunctions::rBusy,     CScriptFunctions::cBusy);
     bc->AddFunction("factory",  CScriptFunctions::rFactory,  CScriptFunctions::cFactory);
     bc->AddFunction("research", CScriptFunctions::rResearch, CScriptFunctions::cClassOneFloat);

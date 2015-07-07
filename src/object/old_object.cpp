@@ -176,6 +176,10 @@ void uObject(CBotVar* botThis, void* user)
     pVar = pVar->GetNext();  // "id"
     value = object->GetID();
     pVar->SetValInt(value);
+
+    pVar = pVar->GetNext();  // "team"
+    value = object->GetTeam();
+    pVar->SetValInt(value);
 }
 
 
