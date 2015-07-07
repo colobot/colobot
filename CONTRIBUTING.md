@@ -4,7 +4,7 @@
 So you want to contribute to Colobot: Gold Edition? That's awesome! Before you start, read this page, it contains a lot of useful information on how to do so.
 
 ## General information
-Before you start, read more about technical details of the project. They can be found on the [dev wiki](http://colobot.info/wiki/dev) and in our [Game Design Document](http://krzysh.pl:3000/project/545e90d99e8bceed2284797e)
+Before you start, read more about technical details of the project. They can be found on the [dev wiki](http://colobot.info/wiki/dev) and in our [Game Design Document](http://compiled.colobot.info/jenkins/job/colobot-gold-gdd/lastSuccessfulBuild/artifact/Colobot_Gold_Edition-Game_Design_Document.pdf) ([live editor](http://krzysh.pl:3000/project/545e90d99e8bceed2284797e))
 
 ## Before you start coding
 * If you want to fix a bug, please first check the related [issue on GitHub's bug tracker](https://github.com/colobot/colobot/issues). If there isn't one, make it.
