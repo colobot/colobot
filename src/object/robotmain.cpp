@@ -3249,10 +3249,10 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 continue;
             }
 
-            if ((line->GetCommand() == "Global" || line->GetCommand() == "Mission") && !resetObject)
+            if ((line->GetCommand() == "Global" || line->GetCommand() == "Level") && !resetObject)
             {
                 if (line->GetCommand() == "Global")
-                    CLogger::GetInstancePointer()->Warn("Using Global is deprecated. Please use Mission instead.\n");
+                    CLogger::GetInstancePointer()->Warn("Using Global is deprecated. Please use Level instead.\n");
 
                 g_unit = line->GetParam("unitScale")->AsFloat(4.0f);
                 m_engine->SetTracePrecision(line->GetParam("traceQuality")->AsFloat(1.0f));
@@ -3459,7 +3459,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 continue;
             }
 
-            if (line->GetCommand() == "MissionController" && read[0] == 0)
+            if (line->GetCommand() == "LevelController" && read[0] == 0)
             {
                 m_controller = m_objMan->CreateObject(Math::Vector(0.0f, 0.0f, 0.0f), 0.0f, OBJECT_CONTROLLER, 100.0f);
                 m_controller->SetMagnifyDamage(100.0f);
