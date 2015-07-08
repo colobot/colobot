@@ -48,14 +48,14 @@ class CObjectFactory;
 
 enum RadarFilter
 {
-    FILTER_NONE        = (0b00000000) << 8,
+    FILTER_NONE        = 0,
 
-    FILTER_ONLYLANDING = (0b00000001) << 8,
-    FILTER_ONLYFLYING  = (0b00000010) << 8,
+    FILTER_ONLYLANDING = 1 << (8+0),
+    FILTER_ONLYFLYING  = 1 << (8+1),
 
-    FILTER_FRIENDLY    = (0b00000100) << 8,
-    FILTER_ENEMY       = (0b00001000) << 8,
-    FILTER_NEUTRAL     = (0b00010000) << 8,
+    FILTER_FRIENDLY    = 1 << (8+2),
+    FILTER_ENEMY       = 1 << (8+3),
+    FILTER_NEUTRAL     = 1 << (8+4),
 };
 
 using CObjectMap = std::map<int, std::unique_ptr<CObject>>;
