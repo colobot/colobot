@@ -396,8 +396,13 @@ protected:
     CInput*             m_input;
 
 
+    //! Time since level start, including pause and intro movie
     float           m_time;
+    //! Playing time since level start
     float           m_gameTime;
+    //! Playing time since level start, not dependent on simulation speed
+    float           m_gameTimeAbsolute;
+    
     float           m_winDelay;
     float           m_lostDelay;
     bool            m_fixScene;        // scene fixed, no interraction

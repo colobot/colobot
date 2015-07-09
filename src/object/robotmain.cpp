@@ -156,6 +156,7 @@ CRobotMain::CRobotMain(CController* controller)
 
     m_time = 0.0f;
     m_gameTime = 0.0f;
+    m_gameTimeAbsolute = 0.0f;
 
     m_missionTimerEnabled = false;
     m_missionTimerStarted = false;
@@ -2573,7 +2574,10 @@ void CRobotMain::InitEye()
 bool CRobotMain::EventFrame(const Event &event)
 {
     m_time += event.rTime;
-    if (!m_movieLock && m_pause->GetPause() == PAUSE_NONE) m_gameTime += event.rTime;
+    if (!m_movieLock && m_pause->GetPause() == PAUSE_NONE) {
+        m_gameTime += event.rTime;
+        m_gameTimeAbsolute += m_app->GetRealRelTime() / 1e9f;
+    }
 
     if (!m_immediatSatCom && !m_beginSatCom &&
          m_gameTime > 0.1f && m_phase == PHASE_SIMUL)
@@ -2585,16 +2589,15 @@ bool CRobotMain::EventFrame(const Event &event)
     if (!m_movieLock && m_pause->GetPause() == PAUSE_NONE && m_missionTimerStarted)
         m_missionTimer += event.rTime;
 
-    if (m_pause->GetPause() == PAUSE_NONE && m_autosave && m_gameTime >= m_autosaveLast+(m_autosaveInterval*60) && m_phase == PHASE_SIMUL)
+    if (m_pause->GetPause() == PAUSE_NONE && m_autosave && m_gameTimeAbsolute >= m_autosaveLast+(m_autosaveInterval*60) && m_phase == PHASE_SIMUL)
     {
         std::string base = m_dialog->GetSceneName();
         if (base == "missions" || base == "freemissions" || base == "custom")
         {
-            m_autosaveLast = m_gameTime;
+            m_autosaveLast = m_gameTimeAbsolute;
             Autosave();
         }
     }
-    //CLogger::GetInstancePointer()->Debug("%f %f %d\n", m_gameTime, m_autosaveLast, m_autosaveInterval);
 
     m_water->EventProcess(event);
     m_cloud->EventProcess(event);
@@ -3919,6 +3922,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
         m_input->ResetKeyStates();
         m_time = 0.0f;
         m_gameTime = 0.0f;
+        m_gameTimeAbsolute = 0.0f;
         m_autosaveLast = 0.0f;
         m_infoUsed = 0;
 
@@ -6043,7 +6047,7 @@ void CRobotMain::StartMissionTimer()
 void CRobotMain::SetAutosave(bool enable)
 {
     m_autosave = enable;
-    m_autosaveLast = m_gameTime;
+    m_autosaveLast = m_gameTimeAbsolute;
     AutosaveRotate(false);
 }
 
@@ -6055,7 +6059,7 @@ bool CRobotMain::GetAutosave()
 void CRobotMain::SetAutosaveInterval(int interval)
 {
     m_autosaveInterval = interval;
-    m_autosaveLast = m_gameTime;
+    m_autosaveLast = m_gameTimeAbsolute;
 }
 
 int CRobotMain::GetAutosaveInterval()
