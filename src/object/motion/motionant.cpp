@@ -22,7 +22,7 @@
 
 #include "app/app.h"
 
-#include "graphics/engine/modelmanager.h"
+#include "graphics/engine/oldmodelmanager.h"
 #include "graphics/engine/particle.h"
 
 #include "physics/physics.h"
@@ -69,7 +69,7 @@ void CMotionAnt::DeleteObject(bool bAll)
 // Creates a vehicle poses some rolling on the floor.
 
 void CMotionAnt::Create(Math::Vector pos, float angle, ObjectType type,
-                        float power, Gfx::CModelManager* modelManager)
+                        float power, Gfx::COldModelManager* modelManager)
 {
     int rank;
 

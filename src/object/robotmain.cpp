@@ -44,7 +44,7 @@
 #include "graphics/engine/engine.h"
 #include "graphics/engine/lightman.h"
 #include "graphics/engine/lightning.h"
-#include "graphics/engine/modelmanager.h"
+#include "graphics/engine/oldmodelmanager.h"
 #include "graphics/engine/particle.h"
 #include "graphics/engine/planet.h"
 #include "graphics/engine/pyro_manager.h"

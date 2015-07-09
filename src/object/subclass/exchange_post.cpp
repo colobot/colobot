@@ -21,7 +21,7 @@
 
 #include "common/regex_utils.h"
 
-#include "graphics/engine/modelmanager.h"
+#include "graphics/engine/oldmodelmanager.h"
 
 #include "object/object_create_params.h"
 #include "object/level/parserline.h"
@@ -46,7 +46,7 @@ CExchangePost::CExchangePost(int id)
 
 std::unique_ptr<CExchangePost> CExchangePost::Create(
     const ObjectCreateParams& params,
-    Gfx::CModelManager* modelManager,
+    Gfx::COldModelManager* modelManager,
     Gfx::CEngine* engine)
 {
     std::unique_ptr<CExchangePost> obj{new CExchangePost(params.id)};

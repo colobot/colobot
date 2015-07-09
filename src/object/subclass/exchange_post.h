@@ -37,7 +37,7 @@ struct ExchangePostInfo
 struct ObjectCreateParams;
 
 namespace Gfx {
-class CModelManager;
+class COldModelManager;
 class CEngine;
 }
 
@@ -48,7 +48,7 @@ public:
 
     static std::unique_ptr<CExchangePost> Create(
         const ObjectCreateParams& params,
-        Gfx::CModelManager* modelManager,
+        Gfx::COldModelManager* modelManager,
         Gfx::CEngine* engine);
 
     static int GetMaximumInfoListSize();

@@ -29,7 +29,6 @@
 
 #include "graphics/engine/lightman.h"
 #include "graphics/engine/lightning.h"
-#include "graphics/engine/modelmanager.h"
 #include "graphics/engine/particle.h"
 #include "graphics/engine/pyro_manager.h"
 #include "graphics/engine/terrain.h"
@@ -2129,15 +2128,10 @@ void COldObject::UpdateEnergyMapping()
     float au = (s-i)/(b-a);
     float bu = s-b*(s-i)/(b-a);
 
-    Gfx::LODLevel lodLevels[3] = { Gfx::LOD_High, Gfx::LOD_Medium, Gfx::LOD_Low };
-
-    for (int j = 0; j < 3; j++)
-    {
-        m_engine->ChangeTextureMapping(m_objectPart[0].object,
-                                       mat, Gfx::ENG_RSTATE_PART3, "objects/lemt.png", "",
-                                       lodLevels[j], Gfx::ENG_TEX_MAPPING_1Y,
-                                       au, bu, 1.0f, 0.0f);
-    }
+    m_engine->ChangeTextureMapping(m_objectPart[0].object,
+                                   mat, Gfx::ENG_RSTATE_PART3, "objects/lemt.png", "",
+                                   Gfx::ENG_TEX_MAPPING_1Y,
+                                   au, bu, 1.0f, 0.0f);
 }
 
 

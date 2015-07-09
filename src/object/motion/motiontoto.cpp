@@ -24,7 +24,7 @@
 
 #include "math/geometry.h"
 
-#include "graphics/engine/modelmanager.h"
+#include "graphics/engine/oldmodelmanager.h"
 #include "graphics/engine/terrain.h"
 #include "graphics/engine/water.h"
 
@@ -79,7 +79,7 @@ void CMotionToto::DeleteObject(bool bAll)
 // Creates a vehicle traveling any lands on the ground.
 
 void CMotionToto::Create(Math::Vector pos, float angle, ObjectType type,
-                         float power, Gfx::CModelManager* modelManager)
+                         float power, Gfx::COldModelManager* modelManager)
 {
     int             rank;
 

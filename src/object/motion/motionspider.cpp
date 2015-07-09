@@ -22,7 +22,7 @@
 
 #include "app/app.h"
 
-#include "graphics/engine/modelmanager.h"
+#include "graphics/engine/oldmodelmanager.h"
 #include "graphics/engine/particle.h"
 
 #include "physics/physics.h"
@@ -69,7 +69,7 @@ void CMotionSpider::DeleteObject(bool bAll)
 // Creates a vehicle traveling any lands on the ground.
 
 void CMotionSpider::Create(Math::Vector pos, float angle, ObjectType type,
-                           float power, Gfx::CModelManager* modelManager)
+                           float power, Gfx::COldModelManager* modelManager)
 {
     int         rank, i, j, parent;
     char        name[50];

@@ -70,7 +70,7 @@ T ReadBinary(std::istream &istr)
 /**
  * false is 0; true is 1.
  */
-void WriteBinaryBool(float value, std::ostream &ostr)
+inline void WriteBinaryBool(float value, std::ostream &ostr)
 {
     unsigned char v = value ? 1 : 0;
     IOUtils::WriteBinary<1, unsigned char>(v, ostr);
@@ -80,7 +80,7 @@ void WriteBinaryBool(float value, std::ostream &ostr)
 /**
  * 0 is false; other values are true.
  */
-bool ReadBinaryBool(std::istream &istr)
+inline bool ReadBinaryBool(std::istream &istr)
 {
     int v = IOUtils::ReadBinary<1, unsigned char>(istr);
     return v != 0;
@@ -91,7 +91,7 @@ bool ReadBinaryBool(std::istream &istr)
  * Write order is little-endian
  * NOTE: code is probably not portable as there are platforms with other float representations.
  */
-void WriteBinaryFloat(float value, std::ostream &ostr)
+inline void WriteBinaryFloat(float value, std::ostream &ostr)
 {
     union { float fValue; unsigned int iValue; } u;
     memset(&u, 0, sizeof(u));
@@ -104,7 +104,7 @@ void WriteBinaryFloat(float value, std::ostream &ostr)
  * Read order is little-endian
  * NOTE: code is probably not portable as there are platforms with other float representations.
  */
-float ReadBinaryFloat(std::istream &istr)
+inline float ReadBinaryFloat(std::istream &istr)
 {
     union { float fValue; unsigned int iValue; } u;
     memset(&u, 0, sizeof(u));

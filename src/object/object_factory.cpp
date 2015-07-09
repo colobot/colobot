@@ -20,7 +20,7 @@
 #include "object/object_factory.h"
 
 #include "graphics/engine/engine.h"
-#include "graphics/engine/modelmanager.h"
+#include "graphics/engine/oldmodelmanager.h"
 #include "graphics/engine/terrain.h"
 #include "graphics/engine/lightning.h"
 
@@ -71,7 +71,7 @@ using COldObjectUPtr = std::unique_ptr<COldObject>;
 
 CObjectFactory::CObjectFactory(Gfx::CEngine* engine,
                                Gfx::CTerrain* terrain,
-                               Gfx::CModelManager* modelManager,
+                               Gfx::COldModelManager* modelManager,
                                Gfx::CParticle* particle,
                                CRobotMain* main)
    : m_engine(engine)

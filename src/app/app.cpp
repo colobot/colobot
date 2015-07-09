@@ -32,7 +32,6 @@
 #include "common/stringutils.h"
 #include "common/resources/resourcemanager.h"
 
-#include "graphics/engine/modelmanager.h"
 #include "graphics/core/nulldevice.h"
 #include "graphics/opengl/glutil.h"
 

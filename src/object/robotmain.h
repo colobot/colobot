@@ -381,7 +381,7 @@ protected:
     Gfx::CCloud*        m_cloud;
     Gfx::CLightning*    m_lightning;
     Gfx::CPlanet*       m_planet;
-    Gfx::CModelManager* m_modelManager;
+    Gfx::COldModelManager* m_modelManager;
     Gfx::CLightManager* m_lightMan;
     Gfx::CTerrain*      m_terrain;
     Gfx::CCamera*       m_camera;

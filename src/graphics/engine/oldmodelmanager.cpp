@@ -17,45 +17,57 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-#include "graphics/engine/modelmanager.h"
+#include "graphics/engine/oldmodelmanager.h"
 
 #include "app/app.h"
 
 #include "common/logger.h"
+#include "common/resources/inputstream.h"
 
 #include "graphics/engine/engine.h"
+
+#include "graphics/model/model_input.h"
+#include "graphics/model/model_io_exception.h"
 
 #include <cstdio>
 
 namespace Gfx {
 
-CModelManager::CModelManager(CEngine* engine)
+COldModelManager::COldModelManager(CEngine* engine)
 {
     m_engine = engine;
 }
 
-CModelManager::~CModelManager()
+COldModelManager::~COldModelManager()
 {
 }
 
-bool CModelManager::LoadModel(const std::string& fileName, bool mirrored)
+bool COldModelManager::LoadModel(const std::string& fileName, bool mirrored)
 {
     GetLogger()->Debug("Loading model '%s'\n", fileName.c_str());
 
-    CModelFile modelFile;
-
-    if (CApplication::GetInstance().IsDebugModeActive(DEBUG_MODELS))
-        modelFile.SetPrintDebugInfo(true);
-
-    if (!modelFile.ReadModel("models/" + fileName))
+    CModel model;
+    try
     {
-        GetLogger()->Error("Loading model '%s' failed\n", fileName.c_str());
+        CInputStream stream;
+        stream.open("models/" + fileName);
+        if (!stream.is_open())
+            throw CModelIOException(std::string("Could not open file '") + fileName + "'");
+
+        model = ModelInput::Read(stream, ModelFormat::Old);
+    }
+    catch (const CModelIOException& e)
+    {
+        GetLogger()->Error("Loading model '%s' failed: %s\n", fileName.c_str(), e.what());
         return false;
     }
 
+    CModelMesh* mesh = model.GetMesh("main");
+    assert(mesh != nullptr);
+
     ModelInfo modelInfo;
     modelInfo.baseObjRank = m_engine->CreateBaseObject();
-    modelInfo.triangles = modelFile.GetTriangles();
+    modelInfo.triangles = mesh->GetTriangles();
 
     if (mirrored)
         Mirror(modelInfo.triangles);
@@ -65,41 +77,37 @@ bool CModelManager::LoadModel(const std::string& fileName, bool mirrored)
 
     std::vector<VertexTex2> vs(3, VertexTex2());
 
-    for (int i = 0; i < static_cast<int>( modelInfo.triangles.size() ); i++)
+    for (const auto& triangle : modelInfo.triangles)
     {
-        int state = modelInfo.triangles[i].state;
-        std::string tex1Name = "objects/"+modelInfo.triangles[i].tex1Name;
-        if(modelInfo.triangles[i].tex1Name.empty())
-            tex1Name.clear();
-        std::string tex2Name = modelInfo.triangles[i].tex2Name;
+        vs[0] = triangle.p1;
+        vs[1] = triangle.p2;
+        vs[2] = triangle.p3;
 
-        if (modelInfo.triangles[i].variableTex2)
-        {
-            state |= ENG_RSTATE_DUAL_BLACK;
+        Material material;
+        material.ambient = triangle.ambient;
+        material.diffuse = triangle.diffuse;
+        material.specular = triangle.specular;
 
-            /*TODO: This seems to be not used by Colobot
-            if (texNum >= 1 && texNum <= 10)
-                state |= ENG_RSTATE_DUAL_BLACK;
+        int state = GetEngineState(triangle);
 
-            if (texNum >= 11 && texNum <= 20)
-                state |= ENG_RSTATE_DUAL_WHITE;*/
+        std::string tex1Name;
+        if (!triangle.tex1Name.empty())
+            tex1Name = "objects/" + triangle.tex1Name;
+
+        std::string tex2Name;
+        if (triangle.variableTex2)
             tex2Name = m_engine->GetSecondTexture();
-        }
-
-        vs[0] = modelInfo.triangles[i].p1;
-        vs[1] = modelInfo.triangles[i].p2;
-        vs[2] = modelInfo.triangles[i].p3;
+        else
+            tex2Name = triangle.tex2Name;
 
         m_engine->AddBaseObjTriangles(modelInfo.baseObjRank, vs, ENG_TRIANGLE_TYPE_TRIANGLES,
-                                      modelInfo.triangles[i].material, state,
-                                      tex1Name, tex2Name,
-                                      modelInfo.triangles[i].lodLevel, false);
+                                      material, state, tex1Name, tex2Name, false);
     }
 
     return true;
 }
 
-bool CModelManager::AddModelReference(const std::string& fileName, bool mirrored, int objRank)
+bool COldModelManager::AddModelReference(const std::string& fileName, bool mirrored, int objRank)
 {
     auto it = m_models.find(FileInfo(fileName, mirrored));
     if (it == m_models.end())
@@ -115,7 +123,7 @@ bool CModelManager::AddModelReference(const std::string& fileName, bool mirrored
     return true;
 }
 
-bool CModelManager::AddModelCopy(const std::string& fileName, bool mirrored, int objRank)
+bool COldModelManager::AddModelCopy(const std::string& fileName, bool mirrored, int objRank)
 {
     auto it = m_models.find(FileInfo(fileName, mirrored));
     if (it == m_models.end())
@@ -135,12 +143,12 @@ bool CModelManager::AddModelCopy(const std::string& fileName, bool mirrored, int
     return true;
 }
 
-bool CModelManager::IsModelLoaded(const std::string& fileName, bool mirrored)
+bool COldModelManager::IsModelLoaded(const std::string& fileName, bool mirrored)
 {
     return m_models.count(FileInfo(fileName, mirrored)) > 0;
 }
 
-int CModelManager::GetModelBaseObjRank(const std::string& fileName, bool mirrored)
+int COldModelManager::GetModelBaseObjRank(const std::string& fileName, bool mirrored)
 {
     auto it = m_models.find(FileInfo(fileName, mirrored));
     if (it == m_models.end())
@@ -149,7 +157,7 @@ int CModelManager::GetModelBaseObjRank(const std::string& fileName, bool mirrore
     return (*it).second.baseObjRank;
 }
 
-void CModelManager::DeleteAllModelCopies()
+void COldModelManager::DeleteAllModelCopies()
 {
     for (int baseObjRank : m_copiesBaseRanks)
     {
@@ -159,7 +167,7 @@ void CModelManager::DeleteAllModelCopies()
     m_copiesBaseRanks.clear();
 }
 
-void CModelManager::UnloadModel(const std::string& fileName, bool mirrored)
+void COldModelManager::UnloadModel(const std::string& fileName, bool mirrored)
 {
     auto it = m_models.find(FileInfo(fileName, mirrored));
     if (it == m_models.end())
@@ -170,7 +178,7 @@ void CModelManager::UnloadModel(const std::string& fileName, bool mirrored)
     m_models.erase(it);
 }
 
-void CModelManager::UnloadAllModels()
+void COldModelManager::UnloadAllModels()
 {
     for (auto& mf : m_models)
         m_engine->DeleteBaseObject(mf.second.baseObjRank);
@@ -178,7 +186,7 @@ void CModelManager::UnloadAllModels()
     m_models.clear();
 }
 
-void CModelManager::Mirror(std::vector<ModelTriangle>& triangles)
+void COldModelManager::Mirror(std::vector<ModelTriangle>& triangles)
 {
     for (int i = 0; i < static_cast<int>( triangles.size() ); i++)
     {
@@ -196,28 +204,54 @@ void CModelManager::Mirror(std::vector<ModelTriangle>& triangles)
     }
 }
 
-float CModelManager::GetHeight(std::vector<ModelTriangle>& triangles, Math::Vector pos)
+int COldModelManager::GetEngineState(const ModelTriangle& triangle)
 {
-    const float limit = 5.0f;
+    int state = 0;
 
-    for (int i = 0; i < static_cast<int>( triangles.size() ); i++)
+    if (!triangle.tex2Name.empty() || triangle.variableTex2)
+        state |= ENG_RSTATE_DUAL_BLACK;
+
+    switch (triangle.transparentMode)
     {
-        if ( fabs(pos.x - triangles[i].p1.coord.x) < limit &&
-             fabs(pos.z - triangles[i].p1.coord.z) < limit )
-            return triangles[i].p1.coord.y;
+        case ModelTransparentMode::None:
+            break;
 
-        if ( fabs(pos.x - triangles[i].p2.coord.x) < limit &&
-             fabs(pos.z - triangles[i].p2.coord.z) < limit )
-            return triangles[i].p2.coord.y;
+        case ModelTransparentMode::AlphaChannel:
+            state |= ENG_RSTATE_ALPHA;
+            break;
 
-        if ( fabs(pos.x - triangles[i].p3.coord.x) < limit &&
-             fabs(pos.z - triangles[i].p3.coord.z) < limit )
-            return triangles[i].p3.coord.y;
+        case ModelTransparentMode::MapBlackToAlpha:
+            state |= ENG_RSTATE_TTEXTURE_BLACK;
+            break;
+
+        case ModelTransparentMode::MapWhiteToAlpha:
+            state |= ENG_RSTATE_TTEXTURE_WHITE;
+            break;
     }
 
-    return 0.0f;
-}
+    switch (triangle.specialMark)
+    {
+        case ModelSpecialMark::None:
+            break;
 
+        case ModelSpecialMark::Part1:
+            state |= ENG_RSTATE_PART1;
+            break;
+
+        case ModelSpecialMark::Part2:
+            state |= ENG_RSTATE_PART2;
+            break;
+
+        case ModelSpecialMark::Part3:
+            state |= ENG_RSTATE_PART3;
+            break;
+    }
+
+    if (triangle.doubleSided)
+        state |= ENG_RSTATE_2FACE;
+
+    return state;
+}
 
 }
 

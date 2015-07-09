@@ -17,10 +17,16 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 #include "common/logger.h"
-#include "graphics/engine/modelfile.h"
+
+#include "graphics/model/model_input.h"
+#include "graphics/model/model_output.h"
+#include "graphics/model/model_io_exception.h"
 
 #include <iostream>
+#include <fstream>
 #include <map>
+
+using namespace Gfx;
 
 
 bool EndsWith(std::string const &fullString, std::string const &ending)
@@ -151,18 +157,6 @@ bool ParseArgs(int argc, char *argv[])
     return true;
 }
 
-std::ostream& operator<<(std::ostream& stream, Gfx::LODLevel lodLevel)
-{
-    switch (lodLevel)
-    {
-        case Gfx::LOD_Constant: stream << "constant"; break;
-        case Gfx::LOD_High:     stream << "high";     break;
-        case Gfx::LOD_Medium:   stream << "medium";   break;
-        case Gfx::LOD_Low:      stream << "low";      break;
-    }
-    return stream;
-}
-
 template<typename T>
 void PrintStats(const std::map<T, int>& stats, int total)
 {
@@ -170,6 +164,57 @@ void PrintStats(const std::map<T, int>& stats, int total)
     {
         std::cerr << "   " << (*it).first << " : " << (*it).second << " / " << total << std::endl;
     }
+}
+
+void DumpInfo(const CModel& model)
+{
+    const CModelMesh* mesh = model.GetMesh("main");
+    if (mesh == nullptr)
+    {
+        std::cerr << "Main mesh not found!" << std::endl;
+        return;
+    }
+
+    Math::Vector bboxMin( Math::HUGE_NUM,  Math::HUGE_NUM,  Math::HUGE_NUM);
+    Math::Vector bboxMax(-Math::HUGE_NUM, -Math::HUGE_NUM, -Math::HUGE_NUM);
+
+    std::map<std::string, int> texs1, texs2;
+    std::map<int, int> states;
+    int variableTexs2 = 0;
+
+    for (const ModelTriangle& t : mesh->GetTriangles())
+    {
+        bboxMin.x = Math::Min(t.p1.coord.x, t.p2.coord.x, t.p3.coord.x, bboxMin.x);
+        bboxMin.y = Math::Min(t.p1.coord.y, t.p2.coord.y, t.p3.coord.y, bboxMin.y);
+        bboxMin.z = Math::Min(t.p1.coord.z, t.p2.coord.z, t.p3.coord.z, bboxMin.z);
+
+        bboxMax.x = Math::Max(t.p1.coord.x, t.p2.coord.x, t.p3.coord.x, bboxMax.x);
+        bboxMax.y = Math::Max(t.p1.coord.y, t.p2.coord.y, t.p3.coord.y, bboxMax.y);
+        bboxMax.z = Math::Max(t.p1.coord.z, t.p2.coord.z, t.p3.coord.z, bboxMax.z);
+
+        texs1[t.tex1Name] += 1;
+        if (! t.tex2Name.empty())
+            texs2[t.tex2Name] += 1;
+        if (t.variableTex2)
+            variableTexs2 += 1;
+    }
+
+    int total = mesh->GetTriangleCount();
+
+    std::cerr << "---- Info ----" << std::endl;
+    std::cerr << "Total triangles: " << total;
+    std::cerr << std::endl;
+    std::cerr << "Bounding box:" << std::endl;
+    std::cerr << " bboxMin: [" << bboxMin.x << ", " << bboxMin.y << ", " << bboxMin.z << "]" << std::endl;
+    std::cerr << " bboxMax: [" << bboxMax.x << ", " << bboxMax.y << ", " << bboxMax.z << "]" << std::endl;
+    std::cerr << std::endl;
+    std::cerr << "Textures:" << std::endl;
+    std::cerr << " tex1:" << std::endl;
+    PrintStats(texs1, total);
+    std::cerr << " tex2:" << std::endl;
+    PrintStats(texs2, total);
+    std::cerr << " variable tex2: " << variableTexs2 << " / " << total << std::endl;
+    std::cerr << std::endl;
 }
 
 int main(int argc, char *argv[])
@@ -186,112 +231,71 @@ int main(int argc, char *argv[])
     if (ARGS.usage)
         return 0;
 
-    Gfx::CModelFile model;
-
-    bool ok = true;
+    ModelFormat inputFormat = ModelFormat::Old;
 
     if (ARGS.inputFormat == "old")
-    {
-        ok = model.ReadModel(ARGS.inputFile);
-    }
+        inputFormat = ModelFormat::Old;
     else if (ARGS.inputFormat == "new_bin")
-    {
-        ok = model.ReadBinaryModel(ARGS.inputFile);
-    }
+        inputFormat = ModelFormat::Binary;
     else if (ARGS.inputFormat == "new_txt")
-    {
-        ok = model.ReadTextModel(ARGS.inputFile);
-    }
+        inputFormat = ModelFormat::Text;
     else
     {
-        std::cerr << "Invalid input format" << std::endl;
+        std::cerr << "Invalid input format: " << ARGS.inputFormat << std::endl;
         return 1;
     }
 
-    if (!ok)
+    CModel model;
+
+    try
     {
-        std::cerr << "Reading input model failed" << std::endl;
+        std::ifstream stream;
+        stream.open(ARGS.inputFile, std::ios_base::in | std::ios_base::binary);
+        if (!stream.good())
+            throw CModelIOException(std::string("Could not open file: ") + ARGS.inputFile);
+
+        model = ModelInput::Read(stream, inputFormat);
+    }
+    catch (const CModelIOException& e)
+    {
+        std::cerr << "Reading input model failed with error:" << std::endl;
+        std::cerr << e.what() << std::endl;
         return 1;
     }
 
     if (ARGS.dumpInfo)
     {
-        const std::vector<Gfx::ModelTriangle>& triangles = model.GetTriangles();
-
-        Math::Vector bboxMin( Math::HUGE_NUM,  Math::HUGE_NUM,  Math::HUGE_NUM);
-        Math::Vector bboxMax(-Math::HUGE_NUM, -Math::HUGE_NUM, -Math::HUGE_NUM);
-
-        std::map<std::string, int> texs1, texs2;
-        std::map<int, int> states;
-        std::map<Gfx::LODLevel, int> lodLevels;
-        int variableTexs2 = 0;
-
-        for (int i = 0; i < static_cast<int>( triangles.size() ); ++i)
-        {
-            const Gfx::ModelTriangle& t = triangles[i];
-
-            bboxMin.x = Math::Min(t.p1.coord.x, t.p2.coord.x, t.p3.coord.x, bboxMin.x);
-            bboxMin.y = Math::Min(t.p1.coord.y, t.p2.coord.y, t.p3.coord.y, bboxMin.y);
-            bboxMin.z = Math::Min(t.p1.coord.z, t.p2.coord.z, t.p3.coord.z, bboxMin.z);
-
-            bboxMax.x = Math::Max(t.p1.coord.x, t.p2.coord.x, t.p3.coord.x, bboxMax.x);
-            bboxMax.y = Math::Max(t.p1.coord.y, t.p2.coord.y, t.p3.coord.y, bboxMax.y);
-            bboxMax.z = Math::Max(t.p1.coord.z, t.p2.coord.z, t.p3.coord.z, bboxMax.z);
-
-            texs1[t.tex1Name] += 1;
-            if (! t.tex2Name.empty())
-                texs2[t.tex2Name] += 1;
-            if (t.variableTex2)
-                variableTexs2 += 1;
-            states[t.state] += 1;
-
-            lodLevels[t.lodLevel] += 1;
-        }
-
-        std::cerr << "---- Info ----" << std::endl;
-        std::cerr << "Total triangles: " << triangles.size();
-        std::cerr << std::endl;
-        std::cerr << "Bounding box:" << std::endl;
-        std::cerr << " bboxMin: [" << bboxMin.x << ", " << bboxMin.y << ", " << bboxMin.z << "]" << std::endl;
-        std::cerr << " bboxMax: [" << bboxMax.x << ", " << bboxMax.y << ", " << bboxMax.z << "]" << std::endl;
-        std::cerr << std::endl;
-        std::cerr << "Textures:" << std::endl;
-        std::cerr << " tex1:" << std::endl;
-        PrintStats(texs1, triangles.size());
-        std::cerr << " tex2:" << std::endl;
-        PrintStats(texs2, triangles.size());
-        std::cerr << " variable tex2: " << variableTexs2 << " / " << triangles.size() << std::endl;
-        std::cerr << std::endl;
-        std::cerr << "States:" << std::endl;
-        PrintStats(states, triangles.size());
-        std::cerr << std::endl;
-        std::cerr << "LOD:" << std::endl;
-        PrintStats(lodLevels, triangles.size());
+        DumpInfo(model);
 
         return 0;
     }
 
+    ModelFormat outputFormat = ModelFormat::Old;
+
     if (ARGS.outputFormat == "old")
-    {
-        ok = model.WriteModel(ARGS.outputFile);
-    }
+        outputFormat = ModelFormat::Old;
     else if (ARGS.outputFormat == "new_bin")
-    {
-        ok = model.WriteBinaryModel(ARGS.outputFile);
-    }
+        outputFormat = ModelFormat::Binary;
     else if (ARGS.outputFormat == "new_txt")
-    {
-        ok = model.WriteTextModel(ARGS.outputFile);
-    }
+        outputFormat = ModelFormat::Text;
     else
     {
-        std::cerr << "Invalid output format" << std::endl;
+        std::cerr << "Invalid output format: " << ARGS.outputFormat << std::endl;
         return 1;
     }
 
-    if (!ok)
+    try
     {
-        std::cerr << "Writing output model failed" << std::endl;
+        std::ofstream stream;
+        stream.open(ARGS.outputFile, std::ios_base::out | std::ios_base::binary);
+        if (!stream.good())
+            throw CModelIOException(std::string("Could not open file: ") + ARGS.inputFile);
+        ModelOutput::Write(model, stream, outputFormat);
+    }
+    catch (const CModelIOException& e)
+    {
+        std::cerr << "Writing output model failed with error:" << std::endl;
+        std::cerr << e.what() << std::endl;
         return 1;
     }
 

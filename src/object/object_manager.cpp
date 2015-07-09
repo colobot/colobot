@@ -38,7 +38,7 @@ template<> CObjectManager* CSingleton<CObjectManager>::m_instance = nullptr;
 
 CObjectManager::CObjectManager(Gfx::CEngine* engine,
                                Gfx::CTerrain* terrain,
-                               Gfx::CModelManager* modelManager,
+                               Gfx::COldModelManager* modelManager,
                                Gfx::CParticle* particle,
                                CRobotMain* main)
   : m_objectFactory(new CObjectFactory(engine, terrain, modelManager, particle, main))

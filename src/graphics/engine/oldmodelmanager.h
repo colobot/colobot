@@ -21,7 +21,7 @@
 
 #include "common/singleton.h"
 
-#include "graphics/engine/modelfile.h"
+#include "graphics/model/model_triangle.h"
 
 #include <string>
 #include <vector>
@@ -33,7 +33,7 @@ class CEngine;
 class CModelFile;
 
 /**
- * \class CModelManager
+ * \class COldModelManager
  * \brief Manager for static models
  *
  * The manager allows for loading models as static objects and adding
@@ -51,11 +51,11 @@ class CModelFile;
  * its own and unique base engine object. This is especially useful
  * for models where the geometry must be altered.
  */
-class CModelManager
+class COldModelManager
 {
 public:
-    CModelManager(CEngine* engine);
-    ~CModelManager();
+    COldModelManager(CEngine* engine);
+    ~COldModelManager();
 
     //! Loads a model from given file
     bool LoadModel(const std::string& fileName, bool mirrored);
@@ -81,11 +81,11 @@ public:
     void UnloadAllModels();
 
 protected:
-    //! Returns the height of model -- closest point to X and Z coords of \a pos
-    float GetHeight(std::vector<ModelTriangle>& triangles, Math::Vector pos);
-
     //! Mirrors the model along the Z axis
     void Mirror(std::vector<ModelTriangle>& triangles);
+
+    //! Converts from model to engine rendering state
+    int GetEngineState(const ModelTriangle& triangle);
 
 private:
     struct ModelInfo

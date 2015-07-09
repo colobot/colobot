@@ -716,7 +716,7 @@ bool CTerrain::CreateMosaic(int ox, int oy, int step, int objRank,
                     buffer.vertices.push_back(p2);
                 }
 
-                m_engine->AddBaseObjQuick(baseObjRank, buffer, texName1, texName2, LOD_Constant, true);
+                m_engine->AddBaseObjQuick(baseObjRank, buffer, texName1, texName2, true);
             }
         }
     }

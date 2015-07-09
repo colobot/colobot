@@ -55,7 +55,7 @@ public:
     void    SetBrain(CBrain* brain);
 
     virtual void            DeleteObject(bool bAll=false) = 0;
-    virtual void            Create(Math::Vector pos, float angle, ObjectType type, float power, Gfx::CModelManager* modelManager) = 0;
+    virtual void            Create(Math::Vector pos, float angle, ObjectType type, float power, Gfx::COldModelManager* modelManager) = 0;
     virtual bool            EventProcess(const Event &event);
     virtual Error           SetAction(int action, float time=0.2f);
     virtual int             GetAction();

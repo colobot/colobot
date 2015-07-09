@@ -22,7 +22,7 @@
 
 #include "app/app.h"
 
-#include "graphics/engine/modelmanager.h"
+#include "graphics/engine/oldmodelmanager.h"
 #include "graphics/engine/particle.h"
 #include "graphics/engine/terrain.h"
 
@@ -93,7 +93,7 @@ void CMotionVehicle::DeleteObject(bool bAll)
 // Creates a vehicle traveling any lands on the ground.
 
 void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
-                            float power, Gfx::CModelManager* modelManager)
+                            float power, Gfx::COldModelManager* modelManager)
 {
     int             rank, i, j, parent;
     Gfx::Color      color;
@@ -1881,25 +1881,22 @@ void CMotionVehicle::UpdateTrackMapping(float left, float right, ObjectType type
     if (type == OBJECT_MOBILEdr)
     {
         m_engine->TrackTextureMapping(rRank, mat, Gfx::ENG_RSTATE_PART1, "objects/drawer.png", "",
-                                      Gfx::LOD_Constant, Gfx::ENG_TEX_MAPPING_X,
+                                      Gfx::ENG_TEX_MAPPING_X,
                                       right, 1.0f, 8.0f, 192.0f, 256.0f);
 
         m_engine->TrackTextureMapping(lRank, mat, Gfx::ENG_RSTATE_PART2, "objects/drawer.png", "",
-                                      Gfx::LOD_Constant, Gfx::ENG_TEX_MAPPING_X,
+                                      Gfx::ENG_TEX_MAPPING_X,
                                       left, 1.0f, 8.0f, 192.0f, 256.0f);
     }
     else
     {
-        for (int i = 0; i < 2; i++)
-        {
             m_engine->TrackTextureMapping(rRank, mat, Gfx::ENG_RSTATE_PART1, "objects/lemt.png", "",
-                                          (i == 0) ? Gfx::LOD_High : Gfx::LOD_Medium, Gfx::ENG_TEX_MAPPING_X,
-                                          right, 1.0f, 8.0f, 192.0f, 256.0f);
+                                      Gfx::ENG_TEX_MAPPING_X,
+                                      right, 1.0f, 8.0f, 192.0f, 256.0f);
 
-            m_engine->TrackTextureMapping(lRank, mat, Gfx::ENG_RSTATE_PART2, "objects/lemt.png", "",
-                                          (i == 0) ? Gfx::LOD_High : Gfx::LOD_Medium, Gfx::ENG_TEX_MAPPING_X,
-                                          left, 1.0f, 8.0f, 192.0f, 256.0f);
-        }
+        m_engine->TrackTextureMapping(lRank, mat, Gfx::ENG_RSTATE_PART2, "lemt.png", "",
+                                      Gfx::ENG_TEX_MAPPING_X,
+                                      left, 1.0f, 8.0f, 192.0f, 256.0f);
     }
 
 }

@@ -104,8 +104,7 @@ set(BASE_SOURCES
     graphics/engine/engine.cpp
     graphics/engine/lightman.cpp
     graphics/engine/lightning.cpp
-    graphics/engine/modelfile.cpp
-    graphics/engine/modelmanager.cpp
+    graphics/engine/oldmodelmanager.cpp
     graphics/engine/particle.cpp
     graphics/engine/planet.cpp
     graphics/engine/pyro.cpp
@@ -118,6 +117,11 @@ set(BASE_SOURCES
     graphics/opengl/gldevice.cpp
     graphics/opengl/glframebuffer.cpp
     graphics/opengl/glutil.cpp
+    graphics/model/model.cpp
+    graphics/model/model_input.cpp
+    graphics/model/model_manager.cpp
+    graphics/model/model_mesh.cpp
+    graphics/model/model_output.cpp
     object/auto/auto.cpp
     object/auto/autobase.cpp
     object/auto/autoconvert.cpp

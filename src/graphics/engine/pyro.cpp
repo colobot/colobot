@@ -1427,17 +1427,8 @@ void CPyro::CreateTriangle(CObject* obj, ObjectType oType, int part)
         percent = 0.50f;
     }
 
-    LODLevel lodLevel = LOD_High;
-
-    if (oType == OBJECT_MOTHER ||
-        oType == OBJECT_TEEN28 ||
-        oType == OBJECT_TEEN31)
-    {
-        lodLevel = LOD_Constant;
-    }
-
     std::vector<EngineTriangle> buffer;
-    total = m_engine->GetPartialTriangles(objRank, lodLevel, percent, 100, buffer);
+    total = m_engine->GetPartialTriangles(objRank, percent, 100, buffer);
 
     for (int i = 0; i < total; i++)
     {

@@ -33,7 +33,7 @@ public:
     ~CMotionMother();
 
     void    DeleteObject(bool bAll=false);
-    void    Create(Math::Vector pos, float angle, ObjectType type, float power, Gfx::CModelManager* modelManager);
+    void    Create(Math::Vector pos, float angle, ObjectType type, float power, Gfx::COldModelManager* modelManager);
     bool    EventProcess(const Event &event);
 
 protected:

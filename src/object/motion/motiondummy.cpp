@@ -20,7 +20,7 @@
 
 #include "object/motion/motiondummy.h"
 #include "physics/physics.h"
-#include "graphics/engine/modelmanager.h"
+#include "graphics/engine/oldmodelmanager.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -48,7 +48,7 @@ void CMotionDummy::DeleteObject(bool bAll)
 // Creates a Dummy traveling any lands on the ground.
 
 void CMotionDummy::Create(Math::Vector pos, float angle, ObjectType type,
-                          float power, Gfx::CModelManager*)
+                          float power, Gfx::COldModelManager*)
 {
     m_object->SetType(type);
 
