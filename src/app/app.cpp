@@ -516,6 +516,23 @@ bool CApplication::Create()
     // Don't generate joystick events
     SDL_JoystickEventState(SDL_IGNORE);
 
+    // Report joystick list to log, since we still don't have a GUI for them so you have to set the ID manually in the config
+    auto joysticks = GetJoystickList();
+    bool first = true;
+    for (const auto& joystick : joysticks)
+    {
+        if (first)
+        {
+            ChangeJoystick(joystick);
+            first = false;
+        }
+        GetLogger()->Info("Detected joystick: %s [ID %d]\n", joystick.name.c_str(), joystick.index);
+    }
+    if (first)
+    {
+        GetLogger()->Info("No joysticks detected\n");
+    }
+
     if (!m_headless)
     {
         m_device = Gfx::CreateDevice(m_deviceConfig, m_graphics.c_str());
@@ -725,6 +742,8 @@ bool CApplication::OpenJoystick()
     if ( (m_joystick.index < 0) || (m_joystick.index >= SDL_NumJoysticks()) )
         return false;
 
+    GetLogger()->Info("Opening joystick %d\n", m_joystick.index);
+
     m_private->joystick = SDL_JoystickOpen(m_joystick.index);
     if (m_private->joystick == nullptr)
         return false;
@@ -746,6 +765,8 @@ void CApplication::CloseJoystick()
 {
     // Timer will remove itself automatically
 
+    GetLogger()->Info("Closing joystick\n");
+
     SDL_JoystickClose(m_private->joystick);
     m_private->joystick = nullptr;
 }
@@ -754,6 +775,8 @@ bool CApplication::ChangeJoystick(const JoystickDevice &newJoystick)
 {
     if ( (newJoystick.index < 0) || (newJoystick.index >= SDL_NumJoysticks()) )
         return false;
+
+    m_joystick = newJoystick;
 
     if (m_private->joystick != nullptr)
         CloseJoystick();

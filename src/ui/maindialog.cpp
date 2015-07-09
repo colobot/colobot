@@ -4821,6 +4821,7 @@ void CMainDialog::UpdateSetupButtons()
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_JOYSTICK));
     if ( pc != 0 )
     {
+        pc->SetState(STATE_ENABLE, m_app->GetJoystick().index >= 0);
         pc->SetState(STATE_CHECK, m_app->GetJoystickEnabled());
     }
 
@@ -4981,6 +4982,7 @@ void CMainDialog::SetupMemorize()
     GetProfile().SetIntProperty("Setup", "SkyMode", m_engine->GetSkyMode());
     GetProfile().SetIntProperty("Setup", "PlanetMode", m_engine->GetPlanetMode());
     GetProfile().SetIntProperty("Setup", "LightMode", m_engine->GetLightMode());
+    GetProfile().SetIntProperty("Setup", "UseJoystick", m_app->GetJoystickEnabled() ? m_app->GetJoystick().index : -1);
     GetProfile().SetFloatProperty("Setup", "ParticleDensity", m_engine->GetParticleDensity());
     GetProfile().SetFloatProperty("Setup", "ClippingDistance", m_engine->GetClippingDistance());
     GetProfile().SetFloatProperty("Setup", "ObjectDetail", m_engine->GetObjectDetail());
@@ -5168,11 +5170,26 @@ void CMainDialog::SetupRecall()
     {
         m_engine->SetLightMode(iValue);
     }
-    // TODO
-    // if ( GetProfile().GetLocalProfileInt("Setup", "UseJoystick", iValue) )
-    // {
-    //     m_engine->SetJoystick(iValue);
-    // }
+
+    if ( GetProfile().GetIntProperty("Setup", "UseJoystick", iValue) )
+    {
+        if(iValue >= 0)
+        {
+            auto joysticks = m_app->GetJoystickList();
+            for(const auto& joystick : joysticks)
+            {
+                if (joystick.index == iValue)
+                {
+                    m_app->ChangeJoystick(joystick);
+                    m_app->SetJoystickEnabled(true);
+                }
+            }
+        }
+        else
+        {
+            m_app->SetJoystickEnabled(false);
+        }
+    }
 
     if ( GetProfile().GetFloatProperty("Setup", "ParticleDensity", fValue) )
     {
