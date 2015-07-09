@@ -99,7 +99,7 @@ void ModelInput::ReadBinaryModel(CModel &model, std::istream &stream)
     else if (version == 3)
         ReadBinaryModelV3(model, stream);
     else
-        throw CModelIOException(std::string("Unexpected version number: ") + std::to_string(version));
+        throw CModelIOException(std::string("Unexpected version number: ") + boost::lexical_cast<std::string>(version));
 }
 
 void ModelInput::ReadBinaryModelV1AndV2(CModel &model, std::istream &stream)
@@ -186,7 +186,7 @@ void ModelInput::ReadTextModel(CModel &model, std::istream &stream)
     else if (version == 3)
         ReadTextModelV3(model, stream);
     else
-        throw CModelIOException(std::string("Unexpected version number: ") + std::to_string(version));
+        throw CModelIOException(std::string("Unexpected version number: ") + boost::lexical_cast<std::string>(version));
 }
 
 void ModelInput::ReadTextModelV1AndV2(CModel &model, std::istream &stream)
