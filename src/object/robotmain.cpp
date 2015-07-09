@@ -3612,7 +3612,8 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                     CBrain* brain = obj->GetBrain();
                     if (brain != nullptr)
                     {
-                        for (int i = 0; i < 10; i++)
+                        bool allFilled = true;
+                        for (int i = 0; i < 10 || allFilled; i++)
                         {
                             std::string op = "script" + boost::lexical_cast<std::string>(i+1); // script1..script10
                             std::string opReadOnly = "scriptReadOnly" + boost::lexical_cast<std::string>(i+1); // scriptReadOnly1..scriptReadOnly10
@@ -3625,7 +3626,10 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                                 program->runnable = line->GetParam(opRunnable)->AsBool(strcmp(base, "exercises") || i+1 != 4); // TODO: I'd rather not have it hardcoded like that
                                 loadedPrograms[i] = program;
                             }
-
+                            else
+                            {
+                                allFilled = false;
+                            }
                         }
 
                         int i = line->GetParam("run")->AsInt(0);
