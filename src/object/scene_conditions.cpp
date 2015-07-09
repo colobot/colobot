@@ -90,7 +90,7 @@ int CSceneCondition::CountObjects()
             continue;
 
         if ((this->team > 0 && obj->GetTeam() != this->team) ||
-            (this->team < 0 && obj->GetTeam() == -(this->team)))
+            (this->team < 0 && (obj->GetTeam() == -(this->team) || obj->GetTeam() == 0)))
             continue;
 
         float energyLevel = -1;
