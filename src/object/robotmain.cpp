@@ -3623,7 +3623,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                                 Program* program = brain->AddProgram();
                                 program->filename = "../" + line->GetParam(op)->AsPath("ai");
                                 program->readOnly = line->GetParam(opReadOnly)->AsBool(true);
-                                program->runnable = line->GetParam(opRunnable)->AsBool(strcmp(base, "exercises") || i+1 != 4); // TODO: I'd rather not have it hardcoded like that
+                                program->runnable = line->GetParam(opRunnable)->AsBool(true);
                                 loadedPrograms[i] = program;
                             }
                             else
