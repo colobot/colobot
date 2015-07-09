@@ -255,9 +255,12 @@ bool CTaskBuild::EventProcess(const Event &event)
         {
             m_metal->SetLock(false);  // usable again
             m_motion->SetAction(-1);
-            m_object->SetObjectParent(14, 0);
-            m_object->SetPosition(14, Math::Vector(-1.5f, 0.3f, -1.35f));
-            m_object->SetAngleZ(14, Math::PI);
+            if (m_object->GetType() == OBJECT_HUMAN)
+            {
+                m_object->SetObjectParent(14, 0);
+                m_object->SetPosition(14, Math::Vector(-1.5f, 0.3f, -1.35f));
+                m_object->SetAngleZ(14, Math::PI);
+            }
             m_camera->FlushEffect();
             Abort();
             m_bError = true;
@@ -299,7 +302,23 @@ bool CTaskBuild::EventProcess(const Event &event)
         m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIFIRE);
 
         pos = Math::Vector(0.0f, 0.5f, 0.0f);
-        mat = m_object->GetWorldMatrix(14);
+        switch(m_object->GetType())
+        {
+            case OBJECT_HUMAN:
+                mat = m_object->GetWorldMatrix(14);
+                break;
+
+            case OBJECT_MOBILEfa:
+            case OBJECT_MOBILEta:
+            case OBJECT_MOBILEwa:
+            case OBJECT_MOBILEia:
+                mat = m_object->GetWorldMatrix(3);
+                break;
+
+            default:
+                mat = m_object->GetWorldMatrix(0);
+                break;
+        }
         pos = Transform(*mat, pos);
         speed = m_metal->GetPosition(0);
         speed.x += (Math::Rand()-0.5f)*5.0f;
@@ -444,9 +463,12 @@ Error CTaskBuild::IsEnded()
         if ( m_progress < 1.0f )  return ERR_CONTINUE;
 
         m_motion->SetAction(MHS_FIRE);  // shooting position
-        m_object->SetObjectParent(14, 4);
-        m_object->SetPosition(14, Math::Vector(0.6f, 0.1f, 0.3f));
-        m_object->SetAngleZ(14, 0.0f);
+        if (m_object->GetType() == OBJECT_HUMAN)
+        {
+            m_object->SetObjectParent(14, 4);
+            m_object->SetPosition(14, Math::Vector(0.6f, 0.1f, 0.3f));
+            m_object->SetAngleZ(14, 0.0f);
+        }
 
         m_phase = TBP_PREP;
         m_speed = 1.0f/1.0f;
@@ -501,9 +523,12 @@ Error CTaskBuild::IsEnded()
         if ( m_progress < 1.0f )  return ERR_CONTINUE;
 
         m_motion->SetAction(-1);
-        m_object->SetObjectParent(14, 0);
-        m_object->SetPosition(14, Math::Vector(-1.5f, 0.3f, -1.35f));
-        m_object->SetAngleZ(14, Math::PI);
+        if (m_object->GetType() == OBJECT_HUMAN)
+        {
+            m_object->SetObjectParent(14, 0);
+            m_object->SetPosition(14, Math::Vector(-1.5f, 0.3f, -1.35f));
+            m_object->SetAngleZ(14, Math::PI);
+        }
 
         if ( m_type == OBJECT_FACTORY  ||
              m_type == OBJECT_RESEARCH ||
