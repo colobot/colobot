@@ -4922,9 +4922,9 @@ void CEngine::DrawStats()
 
     VertexCol vertex[4] =
     {
-        VertexCol(Math::Vector(pos.x        , pos.y - 20 * height, 0.0f), black),
+        VertexCol(Math::Vector(pos.x        , pos.y - 21 * height, 0.0f), black),
         VertexCol(Math::Vector(pos.x        , pos.y + height, 0.0f), black),
-        VertexCol(Math::Vector(pos.x + width, pos.y - 20 * height, 0.0f), black),
+        VertexCol(Math::Vector(pos.x + width, pos.y - 21 * height, 0.0f), black),
         VertexCol(Math::Vector(pos.x + width, pos.y + height, 0.0f), black)
     };
 
