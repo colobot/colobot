@@ -575,7 +575,7 @@ bool CTaskBuild::Abort()
 Error CTaskBuild::FlatFloor()
 {
     ObjectType  type;
-    Math::Vector    center, pos, oPos, bPos;
+    Math::Vector    center, pos, bPos;
     Math::Point     c, p;
     float       radius, max, oRadius, bRadius = 0.0f, angle, dist;
     int         j;
@@ -624,21 +624,23 @@ Error CTaskBuild::FlatFloor()
         type = pObj->GetType();
         if ( type == OBJECT_BASE )
         {
-            oPos = pObj->GetPosition(0);
+            Math::Vector oPos = pObj->GetPosition(0);
             dist = Math::Distance(center, oPos)-80.0f;
             if ( dist < max )
             {
                 max = dist;
                 bPos = oPos;
-                bRadius = oRadius;
+                bRadius = 0.0f;
                 bBase = true;
             }
         }
         else
         {
-            j = 0;
-            while ( pObj->GetCrashSphere(j++, oPos, oRadius) )
+            for (const auto& crashSphere : pObj->GetAllCrashSpheres())
             {
+                Math::Vector oPos = crashSphere.sphere.pos;
+                float oRadius = crashSphere.sphere.radius;
+
                 dist = Math::Distance(center, oPos)-oRadius;
                 if ( dist < max )
                 {
@@ -686,9 +688,11 @@ Error CTaskBuild::FlatFloor()
              type == OBJECT_SAFE     ||
              type == OBJECT_HUSTON   )  // building?
         {
-            j = 0;
-            while ( pObj->GetCrashSphere(j++, oPos, oRadius) )
+            for (const auto& crashSphere : pObj->GetAllCrashSpheres())
             {
+                Math::Vector oPos = crashSphere.sphere.pos;
+                float oRadius = crashSphere.sphere.radius;
+
                 dist = Math::Distance(center, oPos)-oRadius;
                 if ( dist < max )
                 {

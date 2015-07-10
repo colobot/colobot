@@ -240,7 +240,7 @@ bool CAutoSafe::EventProcess(const Event &event)
                 m_main->CreateShortcuts();
             }
 
-            m_object->FlushCrashShere();
+            m_object->DeleteAllCrashSpheres();
             m_object->SetGlobalSphere(Math::Vector(0.0f, 0.0f, 0.0f), 0.0f);
 
             m_sound->Play(SOUND_FINDING, m_object->GetPosition(0));

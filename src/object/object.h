@@ -24,6 +24,7 @@
 
 #pragma once
 
+#include "object/crash_sphere.h"
 #include "object/object_interface_type.h"
 #include "object/old_object_interface.h"
 
@@ -49,19 +50,13 @@ class CObject : public COldObjectInterface
 {
 protected:
     //! Constructor only accessible to subclasses
-    CObject(int id, ObjectType type)
-        : m_id(id)
-        , m_type(type)
-    {
-        m_implementedInterfaces.fill(false);
-    }
+    CObject(int id, ObjectType type);
 
 public:
     CObject(const CObject&) = delete;
     CObject& operator=(const CObject&) = delete;
 
-    virtual ~CObject()
-    {}
+    virtual ~CObject();
 
     //! Returns object type
     inline ObjectType  GetType() const
@@ -86,9 +81,27 @@ public:
         return m_implementedInterfaces[static_cast<int>(type)];
     }
 
+    //! Adds a new crash sphere
+    /** Crash sphere position is given in object coordinates */
+    void AddCrashSphere(const CrashSphere& crashSphere);
+    //! Returns total number of crash spheres
+    int GetCrashSphereCount();
+    //! Returns the first crash sphere (assumes it exists)
+    /** Crash sphere position is returned in world coordinates */
+    CrashSphere GetFirstCrashSphere();
+    //! Returns all crash spheres
+    /** Crash sphere position is returned in world coordinates */
+    std::vector<CrashSphere> GetAllCrashSpheres();
+    //! Removes all crash spheres
+    void DeleteAllCrashSpheres();
+
+protected:
+    //! Transform crash sphere by object's world matrix
+    virtual void TransformCrashSphere(Math::Sphere& crashSphere) = 0;
+
 protected:
     const int m_id; //!< unique identifier
     ObjectType m_type; //!< object type
-    std::string m_name; //!< object class name
-    ObjectInterfaceTypes m_implementedInterfaces; //! interfaces that the object implements
+    ObjectInterfaceTypes m_implementedInterfaces; //!< interfaces that the object implements
+    std::vector<CrashSphere> m_crashSpheres; //!< crash spheres
 };

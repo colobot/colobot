@@ -368,12 +368,11 @@ bool CAutoNuclear::SearchVehicle()
              type != OBJECT_BEE      &&
              type != OBJECT_WORM     )  continue;
 
-        Math::Vector oPos;
-        float oRadius = 0.0f;
-        if ( !obj->GetCrashSphere(0, oPos, oRadius) )  continue;
-        float dist = Math::Distance(oPos, m_pos)-oRadius;
+        if (obj->GetCrashSphereCount() == 0) continue;
 
-        if ( dist < 10.0f )  return true;
+        auto crashSphere = obj->GetFirstCrashSphere();
+        if (Math::DistanceToSphere(m_pos, crashSphere.sphere) < 10.0f)
+            return true;
     }
 
     return false;

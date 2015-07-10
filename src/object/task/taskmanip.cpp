@@ -953,16 +953,18 @@ CObject* CTaskManip::SearchOtherObject(bool bAdvance, Math::Vector &pos,
     Character*  character;
     CObject*    pPower;
     Math::Matrix*   mat;
-    Math::Vector    iPos, oPos;
     ObjectType  type, powerType;
-    float       iAngle, iRad, oAngle, oLimit, aLimit, dLimit;
+    float       iAngle, oAngle, oLimit, aLimit, dLimit;
 
     distance = 1000000.0f;
     angle = 0.0f;
 
     if ( m_bSubm )  return 0;  // impossible with the submarine
 
-    if ( !m_object->GetCrashSphere(0, iPos, iRad) )  return 0;
+    if (m_object->GetCrashSphereCount() == 0) return 0;
+
+    Math::Vector iPos = m_object->GetFirstCrashSphere().sphere.pos;
+
     iAngle = m_object->GetAngleY(0);
     iAngle = Math::NormAngle(iAngle);  // 0..2*Math::PI
 
@@ -1027,7 +1029,7 @@ CObject* CTaskManip::SearchOtherObject(bool bAdvance, Math::Vector &pos,
 
         mat = pObj->GetWorldMatrix(0);
         character = pObj->GetCharacter();
-        oPos = Transform(*mat, character->posPower);
+        Math::Vector oPos = Transform(*mat, character->posPower);
 
         oAngle = pObj->GetAngleY(0);
         if ( type == OBJECT_TOWER    ||
@@ -1330,12 +1332,9 @@ bool CTaskManip::IsFreeDeposeObject(Math::Vector pos)
         if ( !obj->GetActive() )  continue;  // inactive?
         if ( obj->GetTransporter() != nullptr )  continue;  // object transported?
 
-        Math::Vector oPos;
-        float oRadius = 0.0f;
-        int j = 0;
-        while ( obj->GetCrashSphere(j++, oPos, oRadius) )
+        for (const auto& crashSphere : obj->GetAllCrashSpheres())
         {
-            if ( Math::Distance(iPos, oPos)-(oRadius+1.0f) < 2.0f )
+            if ( Math::Distance(iPos, crashSphere.sphere.pos)-(crashSphere.sphere.radius+1.0f) < 2.0f )
             {
                 return false;  // location occupied
             }

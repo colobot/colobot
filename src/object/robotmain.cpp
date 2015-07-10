@@ -4212,11 +4212,11 @@ float CRobotMain::SearchNearestObject(Math::Vector center, CObject *exclu)
             min = Math::Min(min, dist);
         }
 
-        int j = 0;
-        Math::Vector oPos;
-        float oRadius;
-        while (obj->GetCrashSphere(j++, oPos, oRadius))
+        for (const auto& crashSphere : obj->GetAllCrashSpheres())
         {
+            Math::Vector oPos = crashSphere.sphere.pos;
+            float oRadius = crashSphere.sphere.radius;
+
             float dist = Math::Distance(center, oPos)-oRadius;
             if (dist < 0.0f) dist = 0.0f;
             min = Math::Min(min, dist);
@@ -4348,10 +4348,9 @@ void CRobotMain::ShowDropZone(CObject* metal, CObject* transporter)
         }
         else
         {
-            int j = 0;
-            while (obj->GetCrashSphere(j++, oPos, oRadius))
+            for (const auto& crashSphere : obj->GetAllCrashSpheres())
             {
-                float dist = Math::Distance(center, oPos)-oRadius;
+                float dist = Math::Distance(center, crashSphere.sphere.pos)-crashSphere.sphere.radius;
                 oMax = Math::Min(oMax, dist);
             }
         }
@@ -4375,10 +4374,9 @@ void CRobotMain::ShowDropZone(CObject* metal, CObject* transporter)
              type == OBJECT_SAFE     ||
              type == OBJECT_HUSTON   )  // building?
         {
-            int j = 0;
-            while (obj->GetCrashSphere(j++, oPos, oRadius))
+            for (const auto& crashSphere : obj->GetAllCrashSpheres())
             {
-                float dist = Math::Distance(center, oPos)-oRadius-BUILDMARGIN;
+                float dist = Math::Distance(center, crashSphere.sphere.pos)-crashSphere.sphere.radius-BUILDMARGIN;
                 oMax = Math::Min(oMax, dist);
             }
         }

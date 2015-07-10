@@ -86,14 +86,9 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
 
     DisplayError(type, obj);  // displays eventual messages
 
+    for (const auto& crashSphere : obj->GetAllCrashSpheres())
     {
-        int i = 0;
-        // Copies all spheres of the object.
-        for (; i < 50; i++)
-        {
-            if ( !obj->GetCrashSphere(i, m_crashSpherePos[i], m_crashSphereRadius[i]) )  break;
-        }
-        m_crashSphereUsed = i;
+        m_crashSpheres.push_back(crashSphere.sphere);
     }
 
     // Calculates the size of the effect.
@@ -641,18 +636,19 @@ bool CPyro::EventProcess(const Event &event)
     {
         m_lastParticle = m_time;
 
-        if ( m_crashSphereUsed > 0 )
+        if (m_crashSpheres.size() > 0)
         {
-            int i = rand()%m_crashSphereUsed;
-            Math::Vector pos = m_crashSpherePos[i];
-            pos.x += (Math::Rand()-0.5f)*m_crashSphereRadius[i]*2.0f;
-            pos.z += (Math::Rand()-0.5f)*m_crashSphereRadius[i]*2.0f;
+            int i = rand() % m_crashSpheres.size();
+            Math::Vector pos = m_crashSpheres[i].pos;
+            float radius = m_crashSpheres[i].radius;
+            pos.x += (Math::Rand()-0.5f)*radius*2.0f;
+            pos.z += (Math::Rand()-0.5f)*radius*2.0f;
             Math::Vector speed;
-            speed.x = (Math::Rand()-0.5f)*m_crashSphereRadius[i]*0.5f;
-            speed.z = (Math::Rand()-0.5f)*m_crashSphereRadius[i]*0.5f;
-            speed.y = Math::Rand()*m_crashSphereRadius[i]*1.0f;
+            speed.x = (Math::Rand()-0.5f)*radius*0.5f;
+            speed.z = (Math::Rand()-0.5f)*radius*0.5f;
+            speed.y = Math::Rand()*radius*1.0f;
             Math::Point dim;
-            dim.x = Math::Rand()*m_crashSphereRadius[i]*0.5f+m_crashSphereRadius[i]*0.75f*m_force;
+            dim.x = Math::Rand()*radius*0.5f+radius*0.75f*m_force;
             dim.y = dim.x;
             m_particle->CreateParticle(pos, speed, dim, PARTISMOKE1, 3.0f);
         }
@@ -723,16 +719,17 @@ bool CPyro::EventProcess(const Event &event)
     {
         m_lastParticle = m_time;
 
-        if ( m_crashSphereUsed > 0 )
+        if (m_crashSpheres.size() > 0)
         {
-            int i = rand()%m_crashSphereUsed;
-            Math::Vector pos = m_crashSpherePos[i];
-            pos.x += (Math::Rand()-0.5f)*m_crashSphereRadius[i]*2.0f;
-            pos.z += (Math::Rand()-0.5f)*m_crashSphereRadius[i]*2.0f;
+            int i = rand() % m_crashSpheres.size();
+            Math::Vector pos = m_crashSpheres[i].pos;
+            float radius = m_crashSpheres[i].radius;
+            pos.x += (Math::Rand()-0.5f)*radius*2.0f;
+            pos.z += (Math::Rand()-0.5f)*radius*2.0f;
             Math::Vector speed;
-            speed.x = (Math::Rand()-0.5f)*m_crashSphereRadius[i]*0.5f;
-            speed.z = (Math::Rand()-0.5f)*m_crashSphereRadius[i]*0.5f;
-            speed.y = Math::Rand()*m_crashSphereRadius[i]*1.0f;
+            speed.x = (Math::Rand()-0.5f)*radius*0.5f;
+            speed.z = (Math::Rand()-0.5f)*radius*0.5f;
+            speed.y = Math::Rand()*radius*1.0f;
             Math::Point dim;
             dim.x = 1.0f*m_force;
             dim.y = dim.x;
@@ -2198,9 +2195,7 @@ void CPyro::FallStart()
 
 CObject* CPyro::FallSearchBeeExplo()
 {
-    Math::Vector iPos;
-    float iRadius = 0.0f;
-    m_object->GetCrashSphere(0, iPos, iRadius);
+    auto bulletCrashSphere = m_object->GetFirstCrashSphere();
 
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
@@ -2261,32 +2256,28 @@ CObject* CPyro::FallSearchBeeExplo()
         float shieldRadius = obj->GetShieldRadius();
         if ( shieldRadius > 0.0f )
         {
-            float distance = Math::Distance(oPos, iPos);
+            float distance = Math::Distance(oPos, bulletCrashSphere.sphere.pos);
             if (distance <= shieldRadius)
                 return obj;
         }
 
         if ( oType == OBJECT_BASE )
         {
-            float distance = Math::Distance(oPos, iPos);
+            float distance = Math::Distance(oPos, bulletCrashSphere.sphere.pos);
             if (distance < 25.0f)
                 return obj;
         }
 
         // Test the center of the object, which is necessary for objects
         // that have no sphere in the center (station).
-        float distance = Math::Distance(oPos, iPos)-4.0f;
+        float distance = Math::Distance(oPos, bulletCrashSphere.sphere.pos)-4.0f;
         if (distance < 5.0f)
             return obj;
 
         // Test with all spheres of the object.
-        Math::Vector ooPos;
-        float ooRadius = 0.0f;
-        int j = 0;
-        while (obj->GetCrashSphere(j++, ooPos, ooRadius))
+        for (const auto& objCrashSphere : obj->GetAllCrashSpheres())
         {
-            distance = Math::Distance(ooPos, iPos);
-            if (distance <= iRadius+ooRadius)
+            if (Math::DistanceBetweenSpheres(objCrashSphere.sphere, bulletCrashSphere.sphere) <= 0.0f)
             {
                 return obj;
             }

@@ -293,9 +293,9 @@ CObject* CAutoTower::SearchTarget(Math::Vector &impact)
             }
         }
 
-        Math::Vector oPos;
-        float radius = 0.0f;
-        if ( !obj->GetCrashSphere(0, oPos, radius) )  continue;
+        if (obj->GetCrashSphereCount() == 0) continue;
+
+        Math::Vector oPos = obj->GetFirstCrashSphere().sphere.pos;
         float distance = Math::Distance(oPos, iPos);
         if ( distance > TOWER_SCOPE )  continue;  // too far
         if ( distance < min )

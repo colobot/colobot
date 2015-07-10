@@ -3742,11 +3742,11 @@ CObject* CParticle::SearchObjectGun(Math::Vector old, Math::Vector pos,
         if (dist < min)
             best = obj;
 
-        // Test with all spheres of the object.
-        int j = 0;
-        float oRadius;
-        while (obj->GetCrashSphere(j++, oPos, oRadius))
+        for (const auto& crashSphere : obj->GetAllCrashSpheres())
         {
+            oPos = crashSphere.sphere.pos;
+            float oRadius = crashSphere.sphere.radius;
+
             if ( oPos.x+oRadius < box1.x || oPos.x-oRadius > box2.x ||  // outside the box?
                  oPos.y+oRadius < box1.y || oPos.y-oRadius > box2.y ||
                  oPos.z+oRadius < box1.z || oPos.z-oRadius > box2.z )  continue;

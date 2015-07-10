@@ -286,7 +286,7 @@ COldObject::COldObject(int id)
         m_cmdLine[i] = NAN;
     }
 
-    FlushCrashShere();
+    DeleteAllCrashSpheres();
     m_globalSpherePos = Math::Vector(0.0f, 0.0f, 0.0f);
     m_globalSphereRadius = 0.0f;
     m_jostlingSpherePos = Math::Vector(0.0f, 0.0f, 0.0f);
@@ -1061,86 +1061,30 @@ int COldObject::SearchDescendant(int parent, int n)
     return -1;
 }
 
-
-// Removes all spheres used for collisions.
-
-void COldObject::FlushCrashShere()
+void COldObject::TransformCrashSphere(Math::Sphere& crashSphere)
 {
-    m_crashSphereUsed = 0;
-}
-
-// Adds a new sphere.
-
-int COldObject::CreateCrashSphere(Math::Vector pos, float radius, SoundType sound,
-                               float hardness)
-{
-    float   zoom;
-
-    if ( m_crashSphereUsed >= MAXCRASHSPHERE )  return -1;
-
-    zoom = GetZoomX(0);
-    m_crashSpherePos[m_crashSphereUsed] = pos;
-    m_crashSphereRadius[m_crashSphereUsed] = radius*zoom;
-    m_crashSphereHardness[m_crashSphereUsed] = hardness;
-    m_crashSphereSound[m_crashSphereUsed] = sound;
-    return m_crashSphereUsed++;
-}
-
-// Returns the number of spheres.
-
-int COldObject::GetCrashSphereTotal()
-{
-    return m_crashSphereUsed;
-}
-
-// Returns a sphere for collisions.
-// The position is absolute in the world.
-
-bool COldObject::GetCrashSphere(int rank, Math::Vector &pos, float &radius)
-{
-    if ( rank < 0 || rank >= m_crashSphereUsed )
-    {
-        pos = m_objectPart[0].position;
-        radius = 0.0f;
-        return false;
-    }
+    crashSphere.radius *= GetZoomX(0);
 
     // Returns to the sphere collisions,
-    // which ignores the inclination of the vehicle.
+    // which ignores the tilt of the vehicle.
     // This is necessary to collisions with vehicles,
     // so as not to reflect SetTilt, for example.
     // The sphere must necessarily have a center (0, y, 0).
-    if ( rank == 0 && m_crashSphereUsed == 1 &&
-         m_crashSpherePos[0].x == 0.0f &&
-         m_crashSpherePos[0].z == 0.0f )
+    if (m_crashSpheres.size() == 1 &&
+        crashSphere.pos.x == 0.0f &&
+        crashSphere.pos.z == 0.0f )
     {
-        pos = m_objectPart[0].position + m_crashSpherePos[0];
-        radius = m_crashSphereRadius[0];
-        return true;
+        crashSphere.pos += m_objectPart[0].position;
+        return;
     }
 
-    if ( m_objectPart[0].bTranslate ||
-         m_objectPart[0].bRotate    )
+    if (m_objectPart[0].bTranslate ||
+        m_objectPart[0].bRotate)
     {
         UpdateTransformObject();
     }
-    pos = Math::Transform(m_objectPart[0].matWorld, m_crashSpherePos[rank]);
-    radius = m_crashSphereRadius[rank];
-    return true;
-}
 
-// Returns the hardness of a sphere.
-
-SoundType COldObject::GetCrashSphereSound(int rank)
-{
-    return m_crashSphereSound[rank];
-}
-
-// Returns the hardness of a sphere.
-
-float COldObject::GetCrashSphereHardness(int rank)
-{
-    return m_crashSphereHardness[rank];
+    crashSphere.pos = Math::Transform(m_objectPart[0].matWorld, crashSphere.pos);
 }
 
 // Specifies the global sphere, relative to the object.

@@ -29,7 +29,6 @@
 
 // The father of all parts must always be the part number zero!
 const int OBJECTMAXPART         = 40;
-const int MAXCRASHSPHERE        = 40;
 const int OBJECTMAXDESELLIST    = 10;
 const int OBJECTMAXCMDLINE      = 20;
 
@@ -102,12 +101,6 @@ public:
     int         GetShadowLight() override;
     int         GetEffectLight() override;
 
-    void        FlushCrashShere() override;
-    int         CreateCrashSphere(Math::Vector pos, float radius, SoundType sound, float hardness=0.45f) override;
-    int         GetCrashSphereTotal() override;
-    bool        GetCrashSphere(int rank, Math::Vector &pos, float &radius) override;
-    float       GetCrashSphereHardness(int rank) override;
-    SoundType   GetCrashSphereSound(int rank) override;
     void        SetGlobalSphere(Math::Vector pos, float radius) override;
     void        GetGlobalSphere(Math::Vector &pos, float &radius) override;
     void        GetJostlingSphere(Math::Vector &pos, float &radius) override;
@@ -319,6 +312,7 @@ protected:
     bool        UpdateTransformObject(int part, bool bForceUpdate);
     bool        UpdateTransformObject();
     void        UpdateSelectParticle();
+    void        TransformCrashSphere(Math::Sphere &crashSphere) override;
 
 protected:
     Gfx::CEngine*       m_engine;
@@ -391,11 +385,6 @@ protected:
     float       m_param;
     int         m_team;
 
-    int         m_crashSphereUsed;  // number of spheres used
-    Math::Vector    m_crashSpherePos[MAXCRASHSPHERE];
-    float       m_crashSphereRadius[MAXCRASHSPHERE];
-    float       m_crashSphereHardness[MAXCRASHSPHERE];
-    SoundType    m_crashSphereSound[MAXCRASHSPHERE];
     Math::Vector    m_globalSpherePos;
     float       m_globalSphereRadius;
     Math::Vector    m_jostlingSpherePos;

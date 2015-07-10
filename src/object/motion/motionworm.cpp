@@ -97,7 +97,7 @@ void CMotionWorm::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetAngleY(0, angle);
 
     // A vehicle must have a obligatory collision with a sphere of center (0, y, 0) (see GetCrashSphere).
-    m_object->CreateCrashSphere(Math::Vector(0.0f, 0.0f, 0.0f), 4.0f, SOUND_BOUM, 0.20f);
+    m_object->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 0.0f, 0.0f), 4.0f, SOUND_BOUM, 0.20f));
     m_object->SetGlobalSphere(Math::Vector(0.0f, 0.0f, 0.0f), 5.0f);
 
     px = 1.0f+WORM_PART/2;

@@ -552,11 +552,11 @@ CObject* CTaskGoto::WormSearch(Math::Vector &impact)
 
         if ( obj->GetVirusMode() )  continue;  // object infected?
 
-        Math::Vector oPos;
-        float radius = 0.0f;
-        if ( !obj->GetCrashSphere(0, oPos, radius) )  continue;
+        if (obj->GetCrashSphereCount() == 0) continue;
+
+        Math::Vector oPos = obj->GetFirstCrashSphere().sphere.pos;
         float distance = Math::DistanceProjected(oPos, iPos);
-        if ( distance < min )
+        if (distance < min)
         {
             min = distance;
             best = obj;
@@ -1294,50 +1294,44 @@ bool CTaskGoto::GetHotPoint(CObject *pObj, Math::Vector &pos,
 
 bool CTaskGoto::LeakSearch(Math::Vector &pos, float &delay)
 {
-    CObject     *pObstacle = nullptr;
-    Math::Vector    iPos, oPos, bPos;
-    float       iRadius, oRadius, bRadius, dist, min, dir;
-    int         j;
+    if (!m_physics->GetLand())  return false;  // in flight?
 
-    if ( !m_physics->GetLand() )  return false;  // in flight?
+    Math::Sphere crashSphere = m_object->GetFirstCrashSphere().sphere;
 
-    m_object->GetCrashSphere(0, iPos, iRadius);
-
-    min = 100000.0f;
-    bRadius = 0.0f;
-    for (CObject* pObj : CObjectManager::GetInstancePointer()->GetAllObjects())
+    float min = 100000.0f;
+    CObject* obstacle = nullptr;
+    Math::Sphere obstacleCrashSphere;
+    for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        if ( pObj == m_object )  continue;
-        if ( !pObj->GetActive() )  continue;
-        if ( pObj->GetTransporter() != 0 )  continue;  // object transported?
+        if ( obj == m_object )  continue;
+        if ( !obj->GetActive() )  continue;
+        if ( obj->GetTransporter() != nullptr )  continue;  // object transported?
 
-        j = 0;
-        while ( pObj->GetCrashSphere(j++, oPos, oRadius) )
+        for (const auto& objCrashSphere : obj->GetAllCrashSpheres())
         {
-            dist = Math::DistanceProjected(oPos, iPos);
-            if ( dist < min )
+            float dist = Math::DistanceProjected(crashSphere.pos, objCrashSphere.sphere.pos);
+            if (dist < min)
             {
                 min = dist;
-                bPos = oPos;
-                bRadius = oRadius;
-                pObstacle = pObj;
+                obstacleCrashSphere = objCrashSphere.sphere;
+                obstacle = obj;
             }
         }
     }
-    if ( min > iRadius+bRadius+4.0f )  return false;
+    if (min > crashSphere.radius + obstacleCrashSphere.radius + 4.0f)  return false;
 
     m_bLeakRecede = false;
 
-    dist = 4.0f;
-    dir  = 1.0f;
-    if ( pObstacle->GetType() == OBJECT_FACTORY )
+    float dist = 4.0f;
+    float dir  = 1.0f;
+    if (obstacle->GetType() == OBJECT_FACTORY)
     {
         dist = 16.0f;
         dir  = -1.0f;
         m_bLeakRecede = true;  // simply recoils
     }
 
-    pos = bPos;
+    pos = obstacleCrashSphere.pos;
     delay = m_physics->GetLinTimeLength(dist, dir);
     return true;
 }
@@ -1394,10 +1388,8 @@ void CTaskGoto::ComputeRepulse(Math::Point &dir)
     }
 #else
     ObjectType  iType, oType;
-    Math::Vector    iPos, oPos;
     Math::Point     repulse;
-    float       gDist, add, addi, fac, dist, iRadius, oRadius;
-    int         j;
+    float       gDist, add, addi, fac, dist;
     bool        bAlien;
 
     dir.x = 0.0f;
@@ -1407,7 +1399,10 @@ void CTaskGoto::ComputeRepulse(Math::Point &dir)
     iType = m_object->GetType();
     if ( iType == OBJECT_WORM || iType == OBJECT_CONTROLLER )  return;
 
-    m_object->GetCrashSphere(0, iPos, iRadius);
+    auto firstCrashSphere = m_object->GetFirstCrashSphere();
+    Math::Vector iPos = firstCrashSphere.sphere.pos;
+    float iRadius = firstCrashSphere.sphere.radius;
+
     gDist = Math::Distance(iPos, m_goal);
 
     add = m_physics->GetLinStopLength()*1.1f;  // braking distance
@@ -1524,9 +1519,11 @@ void CTaskGoto::ComputeRepulse(Math::Point &dir)
             addi = 2.0f;  // between wasps, do not annoy too much
         }
 
-        j = 0;
-        while ( pObj->GetCrashSphere(j++, oPos, oRadius) )
+        for (const auto& crashSphere : pObj->GetAllCrashSpheres())
         {
+            Math::Vector oPos = crashSphere.sphere.pos;
+            float oRadius = crashSphere.sphere.radius;
+
             if ( oPos.y-oRadius > iPos.y+iRadius )  continue;
             if ( oPos.y+oRadius < iPos.y-iRadius )  continue;
 
@@ -1559,34 +1556,33 @@ void CTaskGoto::ComputeRepulse(Math::Point &dir)
 
 void CTaskGoto::ComputeFlyingRepulse(float &dir)
 {
-    ObjectType  oType;
-    Math::Vector    iPos, oPos;
-    float       add, fac, dist, iRadius, oRadius, repulse;
-    int         j;
+    auto firstCrashSphere = m_object->GetFirstCrashSphere();
+    Math::Vector iPos = firstCrashSphere.sphere.pos;
+    float iRadius = firstCrashSphere.sphere.radius;
 
-    m_object->GetCrashSphere(0, iPos, iRadius);
-
-    add = 0.0f;
-    fac = 1.5f;
+    float add = 0.0f;
+    float fac = 1.5f;
     dir = 0.0f;
 
     for (CObject* pObj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
         if ( pObj == m_object )  continue;
-        if ( pObj->GetTransporter() != 0 )  continue;
+        if ( pObj->GetTransporter() != nullptr )  continue;
 
-        oType = pObj->GetType();
+        ObjectType oType = pObj->GetType();
 
         if ( oType == OBJECT_WORM )  continue;
 
-        j = 0;
-        while ( pObj->GetCrashSphere(j++, oPos, oRadius) )
+        for (const auto& crashSphere : pObj->GetAllCrashSpheres())
         {
+            Math::Vector oPos = crashSphere.sphere.pos;
+            float oRadius = crashSphere.sphere.radius;
+
             oRadius += iRadius+add;
-            dist = Math::DistanceProjected(oPos, iPos);
+            float dist = Math::DistanceProjected(oPos, iPos);
             if ( dist <= oRadius )
             {
-                repulse = iPos.y-oPos.y;
+                float repulse = iPos.y-oPos.y;
 
                 dist = powf(dist/oRadius, fac);
                 dist = 0.2f-0.2f*dist;
@@ -1873,30 +1869,28 @@ bool CTaskGoto::BitmapTestLine(const Math::Vector &start, const Math::Vector &go
 
 void CTaskGoto::BitmapObject()
 {
-    ObjectType  type;
-    Math::Vector    iPos, oPos;
-    float       iRadius, oRadius, h;
-    int         j;
-
-    m_object->GetCrashSphere(0, iPos, iRadius);
+    auto firstCrashSphere = m_object->GetFirstCrashSphere();
+    float iRadius = firstCrashSphere.sphere.radius;
 
     for (CObject* pObj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        type = pObj->GetType();
+        ObjectType type = pObj->GetType();
 
         if ( pObj == m_object )  continue;
         if ( pObj == m_bmCargoObject )  continue;
         if ( pObj->GetTransporter() != 0 )  continue;
 
-        h = m_terrain->GetFloorLevel(pObj->GetPosition(0), false);
+        float h = m_terrain->GetFloorLevel(pObj->GetPosition(0), false);
         if ( m_physics->GetType() == TYPE_FLYING && m_altitude > 0.0f )
         {
             h += m_altitude;
         }
 
-        j = 0;
-        while ( pObj->GetCrashSphere(j++, oPos, oRadius) )
+        for (const auto& crashSphere : pObj->GetAllCrashSpheres())
         {
+            Math::Vector oPos = crashSphere.sphere.pos;
+            float oRadius = crashSphere.sphere.radius;
+
             if ( m_physics->GetType() == TYPE_FLYING && m_altitude > 0.0f )  // flying?
             {
                 if ( oPos.y-oRadius > h+8.0f ||

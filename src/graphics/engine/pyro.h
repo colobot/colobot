@@ -31,8 +31,11 @@
 #include "graphics/core/color.h"
 #include "graphics/engine/pyro_type.h"
 
+#include "math/sphere.h"
+
 #include "object/object_type.h"
 
+#include <vector>
 
 class CObject;
 class CRobotMain;
@@ -180,9 +183,7 @@ protected:
     float           m_fallBulletTime;
     bool            m_fallEnding;
 
-    int             m_crashSphereUsed;  // number of spheres used
-    Math::Vector    m_crashSpherePos[50];
-    float           m_crashSphereRadius[50];
+    std::vector<Math::Sphere> m_crashSpheres;
 };
 
 

@@ -84,7 +84,7 @@ void CMotionMother::Create(Math::Vector pos, float angle, ObjectType type,
 
     // A vehicle must have a obligatory collision
     //with a sphere of center (0, y, 0) (see GetCrashSphere).
-    m_object->CreateCrashSphere(Math::Vector(0.0f, 0.0f, 0.0f), 20.0f, SOUND_BOUM, 0.20f);
+    m_object->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 0.0f, 0.0f), 20.0f, SOUND_BOUM, 0.20f));
     m_object->SetGlobalSphere(Math::Vector(-2.0f, 10.0f, 0.0f), 25.0f);
 
     // Creates the head.

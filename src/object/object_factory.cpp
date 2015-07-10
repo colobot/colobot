@@ -437,17 +437,17 @@ CObjectUPtr CObjectFactory::CreateBuilding(const ObjectCreateParams& params)
         m_modelManager->AddModelReference("portico7.mod", false, rank);
         obj->SetPosition(11, Math::Vector(0.0f, 4.5f, 1.9f));
 
-        obj->CreateCrashSphere(Math::Vector(  0.0f, 28.0f,   0.0f), 45.5f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector( 27.0f, 10.0f, -42.0f), 15.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(  0.0f, 10.0f, -42.0f), 15.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(-27.0f, 10.0f, -42.0f), 15.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector( 27.0f, 10.0f,  42.0f), 15.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(  0.0f, 10.0f,  42.0f), 15.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(-27.0f, 10.0f,  42.0f), 15.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(-32.0f, 45.0f, -32.0f), 10.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(-32.0f, 45.0f,  32.0f), 10.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector( 32.0f, 45.0f, -32.0f), 10.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector( 32.0f, 45.0f,  32.0f), 10.0f, SOUND_BOUMm, 0.45f);
+        obj->AddCrashSphere(CrashSphere(Math::Vector(  0.0f, 28.0f,   0.0f), 45.5f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 27.0f, 10.0f, -42.0f), 15.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(  0.0f, 10.0f, -42.0f), 15.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-27.0f, 10.0f, -42.0f), 15.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 27.0f, 10.0f,  42.0f), 15.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(  0.0f, 10.0f,  42.0f), 15.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-27.0f, 10.0f,  42.0f), 15.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-32.0f, 45.0f, -32.0f), 10.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-32.0f, 45.0f,  32.0f), 10.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 32.0f, 45.0f, -32.0f), 10.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 32.0f, 45.0f,  32.0f), 10.0f, SOUND_BOUMm, 0.45f));
         obj->SetGlobalSphere(Math::Vector(0.0f, 35.0f, 0.0f), 50.0f);
 
         obj->CreateShadowCircle(50.0f, 1.0f);
@@ -493,23 +493,23 @@ CObjectUPtr CObjectFactory::CreateBuilding(const ObjectCreateParams& params)
         obj->SetObjectParent(9, 0);
         m_modelManager->AddModelReference("base3.mod", false, rank); // central pillar
 
-        obj->CreateCrashSphere(Math::Vector(  0.0f, 33.0f,   0.0f),  2.5f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(  0.0f, 39.0f,   0.0f),  2.5f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(  0.0f, 45.0f,   0.0f),  2.5f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(  0.0f, 51.0f,   0.0f),  2.5f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(  0.0f, 57.0f,   0.0f),  2.5f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(  0.0f, 63.0f,   0.0f),  2.5f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(  0.0f, 69.0f,   0.0f),  2.5f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(  0.0f, 82.0f,   0.0f),  8.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector( 18.0f, 94.0f,   0.0f), 10.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(-18.0f, 94.0f,   0.0f), 10.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(  0.0f, 94.0f,  18.0f), 10.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(  0.0f, 94.0f, -18.0f), 10.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector( 13.0f, 94.0f,  13.0f), 10.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(-13.0f, 94.0f,  13.0f), 10.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector( 13.0f, 94.0f, -13.0f), 10.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(-13.0f, 94.0f, -13.0f), 10.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(  0.0f,104.0f,   0.0f), 14.0f, SOUND_BOUMm, 0.45f);
+        obj->AddCrashSphere(CrashSphere(Math::Vector(  0.0f, 33.0f,   0.0f),  2.5f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(  0.0f, 39.0f,   0.0f),  2.5f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(  0.0f, 45.0f,   0.0f),  2.5f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(  0.0f, 51.0f,   0.0f),  2.5f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(  0.0f, 57.0f,   0.0f),  2.5f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(  0.0f, 63.0f,   0.0f),  2.5f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(  0.0f, 69.0f,   0.0f),  2.5f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(  0.0f, 82.0f,   0.0f),  8.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 18.0f, 94.0f,   0.0f), 10.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-18.0f, 94.0f,   0.0f), 10.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(  0.0f, 94.0f,  18.0f), 10.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(  0.0f, 94.0f, -18.0f), 10.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 13.0f, 94.0f,  13.0f), 10.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-13.0f, 94.0f,  13.0f), 10.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 13.0f, 94.0f, -13.0f), 10.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-13.0f, 94.0f, -13.0f), 10.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(  0.0f,104.0f,   0.0f), 14.0f, SOUND_BOUMm, 0.45f));
 
         obj->SetGlobalSphere(Math::Vector(0.0f, 45.0f, 0.0f), 10.0f);
 
@@ -532,11 +532,11 @@ CObjectUPtr CObjectFactory::CreateBuilding(const ObjectCreateParams& params)
         obj->SetObjectParent(1, 0);
         m_modelManager->AddModelReference("derrick2.mod", false, rank);
 
-        obj->CreateCrashSphere(Math::Vector(0.0f,  0.0f, 0.0f), 6.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(0.0f, 10.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(0.0f, 17.0f, 0.0f), 6.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(0.0f, 26.0f, 0.0f), 3.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(7.0f, 17.0f, 0.0f), 3.0f, SOUND_BOUMm, 0.45f);
+        obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f,  0.0f, 0.0f), 6.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 10.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 17.0f, 0.0f), 6.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 26.0f, 0.0f), 3.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(7.0f, 17.0f, 0.0f), 3.0f, SOUND_BOUMm, 0.45f));
         obj->SetGlobalSphere(Math::Vector(0.0f, 10.0f, 0.0f), 10.0f);
 
         obj->CreateShadowCircle(10.0f, 0.4f);
@@ -564,9 +564,9 @@ CObjectUPtr CObjectFactory::CreateBuilding(const ObjectCreateParams& params)
         obj->SetPosition(2, Math::Vector(0.0f, 4.0f, 0.0f));
         obj->SetAngleZ(2, 35.0f*Math::PI/180.0f);
 
-        obj->CreateCrashSphere(Math::Vector(0.0f,  0.0f, 0.0f), 9.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(0.0f,  6.0f, 0.0f), 9.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(0.0f, 14.0f, 0.0f), 7.0f, SOUND_BOUMm, 0.45f);
+        obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f,  0.0f, 0.0f), 9.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f,  6.0f, 0.0f), 9.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 14.0f, 0.0f), 7.0f, SOUND_BOUMm, 0.45f));
         obj->SetGlobalSphere(Math::Vector(0.0f, 8.0f, 0.0f), 12.0f);
 
         obj->GetCharacter()->posPower = Math::Vector(7.5f, 3.0f, 0.0f);
@@ -603,8 +603,8 @@ CObjectUPtr CObjectFactory::CreateBuilding(const ObjectCreateParams& params)
         m_modelManager->AddModelReference("radar4.mod", false, rank);
         obj->SetPosition(3, Math::Vector(0.0f, 4.5f, 1.9f));
 
-        obj->CreateCrashSphere(Math::Vector(0.0f,  3.0f, 0.0f), 6.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(0.0f, 11.0f, 0.0f), 6.0f, SOUND_BOUMm, 0.45f);
+        obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f,  3.0f, 0.0f), 6.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 11.0f, 0.0f), 6.0f, SOUND_BOUMm, 0.45f));
         obj->SetGlobalSphere(Math::Vector(0.0f, 7.0f, 0.0f), 7.0f);
 
         obj->CreateShadowCircle(8.0f, 1.0f);
@@ -617,9 +617,9 @@ CObjectUPtr CObjectFactory::CreateBuilding(const ObjectCreateParams& params)
         obj->SetAngleY(0, angle);
         obj->SetFloorHeight(0.0f);
 
-        obj->CreateCrashSphere(Math::Vector(-2.0f, 13.0f, 0.0f), 6.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(-7.0f,  3.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector( 0.0f,  1.0f, 0.0f), 1.5f, SOUND_BOUMm, 0.45f);
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-2.0f, 13.0f, 0.0f), 6.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-7.0f,  3.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 0.0f,  1.0f, 0.0f), 1.5f, SOUND_BOUMm, 0.45f));
         obj->SetGlobalSphere(Math::Vector(-7.0f, 5.0f, 0.0f), 5.0f);
 
         obj->GetCharacter()->posPower = Math::Vector(0.0f, 3.0f, 0.0f);
@@ -676,11 +676,11 @@ CObjectUPtr CObjectFactory::CreateBuilding(const ObjectCreateParams& params)
         obj->SetAngleZ(5, 80.0f*Math::PI/180.0f);
         obj->SetAngleY(5, -Math::PI*2.0f/3.0f);
 
-        obj->CreateCrashSphere(Math::Vector(  0.0f,  1.0f,  0.0f), 1.5f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(  0.0f, 11.0f,  0.0f), 4.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(-10.0f, 10.0f,  0.0f), 4.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(-12.0f,  3.0f,  3.0f), 4.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(-12.0f,  3.0f, -3.0f), 4.0f, SOUND_BOUMm, 0.45f);
+        obj->AddCrashSphere(CrashSphere(Math::Vector(  0.0f,  1.0f,  0.0f), 1.5f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(  0.0f, 11.0f,  0.0f), 4.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-10.0f, 10.0f,  0.0f), 4.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-12.0f,  3.0f,  3.0f), 4.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-12.0f,  3.0f, -3.0f), 4.0f, SOUND_BOUMm, 0.45f));
         obj->SetGlobalSphere(Math::Vector(-10.0f, 5.0f, 0.0f), 7.0f);
 
         obj->GetCharacter()->posPower = Math::Vector(0.0f, 3.0f, 0.0f);
@@ -720,26 +720,26 @@ CObjectUPtr CObjectFactory::CreateBuilding(const ObjectCreateParams& params)
         for (int i=0 ; i<2 ; i++ )
         {
             float s = static_cast<float>(i*2-1);
-            obj->CreateCrashSphere(Math::Vector(-10.0f,  2.0f, 11.0f*s), 4.0f, SOUND_BOUMm, 0.45f);
-            obj->CreateCrashSphere(Math::Vector( -3.0f,  2.0f, 11.0f*s), 4.0f, SOUND_BOUMm, 0.45f);
-            obj->CreateCrashSphere(Math::Vector(  3.0f,  2.0f, 11.0f*s), 4.0f, SOUND_BOUMm, 0.45f);
-            obj->CreateCrashSphere(Math::Vector( 10.0f,  2.0f, 11.0f*s), 4.0f, SOUND_BOUMm, 0.45f);
-            obj->CreateCrashSphere(Math::Vector(-10.0f,  9.0f, 11.0f*s), 4.0f, SOUND_BOUMm, 0.45f);
-            obj->CreateCrashSphere(Math::Vector( -3.0f,  9.0f, 11.0f*s), 4.0f, SOUND_BOUMm, 0.45f);
-            obj->CreateCrashSphere(Math::Vector(  3.0f,  9.0f, 11.0f*s), 4.0f, SOUND_BOUMm, 0.45f);
-            obj->CreateCrashSphere(Math::Vector( 10.0f,  9.0f, 11.0f*s), 4.0f, SOUND_BOUMm, 0.45f);
-            obj->CreateCrashSphere(Math::Vector(-10.0f, 16.0f, 11.0f*s), 4.0f, SOUND_BOUMm, 0.45f);
-            obj->CreateCrashSphere(Math::Vector( -3.0f, 16.0f, 11.0f*s), 4.0f, SOUND_BOUMm, 0.45f);
-            obj->CreateCrashSphere(Math::Vector(  3.0f, 16.0f, 11.0f*s), 4.0f, SOUND_BOUMm, 0.45f);
-            obj->CreateCrashSphere(Math::Vector( 10.0f, 16.0f, 11.0f*s), 4.0f, SOUND_BOUMm, 0.45f);
-            obj->CreateCrashSphere(Math::Vector(-10.0f, 16.0f,  4.0f*s), 4.0f, SOUND_BOUMm, 0.45f);
-            obj->CreateCrashSphere(Math::Vector( -3.0f, 16.0f,  4.0f*s), 4.0f, SOUND_BOUMm, 0.45f);
-            obj->CreateCrashSphere(Math::Vector(  3.0f, 16.0f,  4.0f*s), 4.0f, SOUND_BOUMm, 0.45f);
-            obj->CreateCrashSphere(Math::Vector( 10.0f, 16.0f,  4.0f*s), 4.0f, SOUND_BOUMm, 0.45f);
-            obj->CreateCrashSphere(Math::Vector(-10.0f,  2.0f,  4.0f*s), 4.0f, SOUND_BOUMm, 0.45f);
-            obj->CreateCrashSphere(Math::Vector(-10.0f,  9.0f,  4.0f*s), 4.0f, SOUND_BOUMm, 0.45f);
+            obj->AddCrashSphere(CrashSphere(Math::Vector(-10.0f,  2.0f, 11.0f*s), 4.0f, SOUND_BOUMm, 0.45f));
+            obj->AddCrashSphere(CrashSphere(Math::Vector( -3.0f,  2.0f, 11.0f*s), 4.0f, SOUND_BOUMm, 0.45f));
+            obj->AddCrashSphere(CrashSphere(Math::Vector(  3.0f,  2.0f, 11.0f*s), 4.0f, SOUND_BOUMm, 0.45f));
+            obj->AddCrashSphere(CrashSphere(Math::Vector( 10.0f,  2.0f, 11.0f*s), 4.0f, SOUND_BOUMm, 0.45f));
+            obj->AddCrashSphere(CrashSphere(Math::Vector(-10.0f,  9.0f, 11.0f*s), 4.0f, SOUND_BOUMm, 0.45f));
+            obj->AddCrashSphere(CrashSphere(Math::Vector( -3.0f,  9.0f, 11.0f*s), 4.0f, SOUND_BOUMm, 0.45f));
+            obj->AddCrashSphere(CrashSphere(Math::Vector(  3.0f,  9.0f, 11.0f*s), 4.0f, SOUND_BOUMm, 0.45f));
+            obj->AddCrashSphere(CrashSphere(Math::Vector( 10.0f,  9.0f, 11.0f*s), 4.0f, SOUND_BOUMm, 0.45f));
+            obj->AddCrashSphere(CrashSphere(Math::Vector(-10.0f, 16.0f, 11.0f*s), 4.0f, SOUND_BOUMm, 0.45f));
+            obj->AddCrashSphere(CrashSphere(Math::Vector( -3.0f, 16.0f, 11.0f*s), 4.0f, SOUND_BOUMm, 0.45f));
+            obj->AddCrashSphere(CrashSphere(Math::Vector(  3.0f, 16.0f, 11.0f*s), 4.0f, SOUND_BOUMm, 0.45f));
+            obj->AddCrashSphere(CrashSphere(Math::Vector( 10.0f, 16.0f, 11.0f*s), 4.0f, SOUND_BOUMm, 0.45f));
+            obj->AddCrashSphere(CrashSphere(Math::Vector(-10.0f, 16.0f,  4.0f*s), 4.0f, SOUND_BOUMm, 0.45f));
+            obj->AddCrashSphere(CrashSphere(Math::Vector( -3.0f, 16.0f,  4.0f*s), 4.0f, SOUND_BOUMm, 0.45f));
+            obj->AddCrashSphere(CrashSphere(Math::Vector(  3.0f, 16.0f,  4.0f*s), 4.0f, SOUND_BOUMm, 0.45f));
+            obj->AddCrashSphere(CrashSphere(Math::Vector( 10.0f, 16.0f,  4.0f*s), 4.0f, SOUND_BOUMm, 0.45f));
+            obj->AddCrashSphere(CrashSphere(Math::Vector(-10.0f,  2.0f,  4.0f*s), 4.0f, SOUND_BOUMm, 0.45f));
+            obj->AddCrashSphere(CrashSphere(Math::Vector(-10.0f,  9.0f,  4.0f*s), 4.0f, SOUND_BOUMm, 0.45f));
         }
-        obj->CreateCrashSphere(Math::Vector(-10.0f, 21.0f, -4.0f), 3.0f, SOUND_BOUMm, 0.45f);
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-10.0f, 21.0f, -4.0f), 3.0f, SOUND_BOUMm, 0.45f));
         obj->SetGlobalSphere(Math::Vector(0.0f, 10.0f, 0.0f), 18.0f);
 
         obj->CreateShadowCircle(24.0f, 0.3f);
@@ -762,10 +762,10 @@ CObjectUPtr CObjectFactory::CreateBuilding(const ObjectCreateParams& params)
 
         m_terrain->AddBuildingLevel(pos, 7.0f, 9.0f, 1.0f, 0.5f);
 
-        obj->CreateCrashSphere(Math::Vector(-11.0f,  0.0f,  4.0f), 5.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(-11.0f,  0.0f,  0.0f), 5.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(-11.0f,  0.0f, -4.0f), 5.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(-11.0f, 10.0f,  0.0f), 5.0f, SOUND_BOUMm, 0.45f);
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-11.0f,  0.0f,  4.0f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-11.0f,  0.0f,  0.0f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-11.0f,  0.0f, -4.0f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-11.0f, 10.0f,  0.0f), 5.0f, SOUND_BOUMm, 0.45f));
         obj->SetGlobalSphere(Math::Vector(-11.0f, 13.0f, 0.0f), 15.0f);
     }
 
@@ -785,10 +785,10 @@ CObjectUPtr CObjectFactory::CreateBuilding(const ObjectCreateParams& params)
 
         m_terrain->AddBuildingLevel(pos, 7.0f, 9.0f, 1.0f, 0.5f);
 
-        obj->CreateCrashSphere(Math::Vector(-3.5f, 0.0f, -13.5f), 4.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector( 3.5f, 0.0f, -13.5f), 4.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(-3.5f, 0.0f,  13.5f), 4.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector( 3.5f, 0.0f,  13.5f), 4.0f, SOUND_BOUMm, 0.45f);
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-3.5f, 0.0f, -13.5f), 4.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 3.5f, 0.0f, -13.5f), 4.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-3.5f, 0.0f,  13.5f), 4.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 3.5f, 0.0f,  13.5f), 4.0f, SOUND_BOUMm, 0.45f));
 
         obj->CreateShadowCircle(19.0f, 1.0f);
     }
@@ -802,8 +802,8 @@ CObjectUPtr CObjectFactory::CreateBuilding(const ObjectCreateParams& params)
 
         m_terrain->AddBuildingLevel(pos, 7.0f, 9.0f, 1.0f, 0.5f);
 
-        obj->CreateCrashSphere(Math::Vector(-15.0f, 2.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(-15.0f, 6.0f, 0.0f), 4.0f, SOUND_BOUMm, 0.45f);
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-15.0f, 2.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-15.0f, 6.0f, 0.0f), 4.0f, SOUND_BOUMm, 0.45f));
         obj->SetGlobalSphere(Math::Vector(-15.0f, 5.0f, 0.0f), 6.0f);
 
         obj->SetEnergy(power);
@@ -842,10 +842,10 @@ CObjectUPtr CObjectFactory::CreateBuilding(const ObjectCreateParams& params)
 
         m_terrain->AddBuildingLevel(pos, 7.0f, 9.0f, 1.0f, 0.5f);
 
-        obj->CreateCrashSphere(Math::Vector(-10.0f,  2.0f,  4.0f), 5.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(-10.0f,  2.0f, -4.0f), 5.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(-10.0f,  9.0f,  0.0f), 6.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(  0.0f, 14.0f,  0.0f), 1.5f, SOUND_BOUMm, 0.45f);
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-10.0f,  2.0f,  4.0f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-10.0f,  2.0f, -4.0f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-10.0f,  9.0f,  0.0f), 6.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(  0.0f, 14.0f,  0.0f), 1.5f, SOUND_BOUMm, 0.45f));
         obj->SetGlobalSphere(Math::Vector(-3.0f, 8.0f, 0.0f), 14.0f);
     }
 
@@ -872,10 +872,10 @@ CObjectUPtr CObjectFactory::CreateBuilding(const ObjectCreateParams& params)
         obj->SetPosition(2, Math::Vector(4.5f, 0.0f, 0.0f));
         obj->SetAngleZ(2, 0.0f);
 
-        obj->CreateCrashSphere(Math::Vector(0.0f,  0.0f, 0.0f), 6.5f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(0.0f,  8.0f, 0.0f), 4.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(0.0f, 15.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(0.0f, 24.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
+        obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f,  0.0f, 0.0f), 6.5f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f,  8.0f, 0.0f), 4.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 15.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 24.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f));
         obj->SetGlobalSphere(Math::Vector(0.0f, 5.0f, 0.0f), 7.0f);
 
         obj->GetCharacter()->posPower = Math::Vector(5.0f, 3.0f, 0.0f);
@@ -899,9 +899,9 @@ CObjectUPtr CObjectFactory::CreateBuilding(const ObjectCreateParams& params)
         obj->SetPosition(1, Math::Vector(20.0f, 10.0f, 0.0f));
         obj->SetAngleZ(1, 135.0f*Math::PI/180.0f);
 
-        obj->CreateCrashSphere(Math::Vector( 0.0f,  0.0f, 0.0f), 19.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector( 0.0f, 24.0f, 0.0f), 15.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(22.0f,  1.0f, 0.0f),  1.5f, SOUND_BOUMm, 0.45f);
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 0.0f,  0.0f, 0.0f), 19.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 0.0f, 24.0f, 0.0f), 15.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(22.0f,  1.0f, 0.0f),  1.5f, SOUND_BOUMm, 0.45f));
         obj->SetGlobalSphere(Math::Vector(0.0f, 17.0f, 0.0f), 26.0f);
 
         obj->GetCharacter()->posPower = Math::Vector(22.0f, 3.0f, 0.0f);
@@ -918,16 +918,16 @@ CObjectUPtr CObjectFactory::CreateBuilding(const ObjectCreateParams& params)
 
         m_terrain->AddBuildingLevel(pos, 16.0f, 18.0f, 1.0f, 0.5f);
 
-        obj->CreateCrashSphere(Math::Vector( 13.0f,  3.0f,  13.0f),  3.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector( 11.0f, 15.0f,  11.0f),  2.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(-13.0f,  3.0f,  13.0f),  3.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(-11.0f, 15.0f, -11.0f),  2.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector( 13.0f,  3.0f, -13.0f),  3.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector( 11.0f, 15.0f, -11.0f),  2.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(-13.0f,  3.0f, -13.0f),  3.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(-11.0f, 15.0f, -11.0f),  2.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(  0.0f, 26.0f,   0.0f),  9.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(  0.0f, 54.0f,   0.0f), 14.0f, SOUND_BOUMm, 0.45f);
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 13.0f,  3.0f,  13.0f),  3.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 11.0f, 15.0f,  11.0f),  2.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-13.0f,  3.0f,  13.0f),  3.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-11.0f, 15.0f, -11.0f),  2.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 13.0f,  3.0f, -13.0f),  3.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 11.0f, 15.0f, -11.0f),  2.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-13.0f,  3.0f, -13.0f),  3.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-11.0f, 15.0f, -11.0f),  2.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(  0.0f, 26.0f,   0.0f),  9.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(  0.0f, 54.0f,   0.0f), 14.0f, SOUND_BOUMm, 0.45f));
         obj->SetGlobalSphere(Math::Vector(0.0f, 10.0f, 0.0f), 20.0f);
 
         obj->CreateShadowCircle(21.0f, 1.0f);
@@ -957,7 +957,7 @@ CObjectUPtr CObjectFactory::CreateBuilding(const ObjectCreateParams& params)
 
         m_terrain->AddBuildingLevel(pos, 18.0f, 20.0f, 1.0f, 0.5f);
 
-        obj->CreateCrashSphere(Math::Vector(0.0f, 1.0f, 0.0f), 13.0f, SOUND_BOUMm, 0.45f);
+        obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 1.0f, 0.0f), 13.0f, SOUND_BOUMm, 0.45f));
         obj->SetGlobalSphere(Math::Vector(0.0f, 1.0f, 0.0f), 13.0f);
 
         obj->CreateShadowCircle(23.0f, 1.0f);
@@ -986,22 +986,22 @@ CObjectUPtr CObjectFactory::CreateBuilding(const ObjectCreateParams& params)
         m_modelManager->AddModelReference("huston3.mod", false, rank);
         obj->SetPosition(2, Math::Vector(0.0f, 4.5f, 1.9f));
 
-        obj->CreateCrashSphere(Math::Vector( 15.0f,  6.0f, -53.0f), 16.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(-15.0f,  6.0f, -53.0f), 16.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector( 15.0f,  6.0f, -26.0f), 16.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(-15.0f,  6.0f, -26.0f), 16.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector( 15.0f,  6.0f,   0.0f), 16.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(-15.0f,  6.0f,   0.0f), 16.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector( 15.0f,  6.0f,  26.0f), 16.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(-15.0f,  6.0f,  26.0f), 16.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector( 15.0f,  6.0f,  53.0f), 16.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(-15.0f,  6.0f,  53.0f), 16.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(  0.0f, 27.0f,  30.0f), 12.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(  0.0f, 45.0f,  30.0f), 14.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector( 26.0f,  4.0f, -61.0f),  5.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(-26.0f,  4.0f, -61.0f),  5.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector( 26.0f,  4.0f,  61.0f),  5.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(-26.0f,  4.0f,  61.0f),  5.0f, SOUND_BOUMm, 0.45f);
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 15.0f,  6.0f, -53.0f), 16.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-15.0f,  6.0f, -53.0f), 16.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 15.0f,  6.0f, -26.0f), 16.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-15.0f,  6.0f, -26.0f), 16.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 15.0f,  6.0f,   0.0f), 16.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-15.0f,  6.0f,   0.0f), 16.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 15.0f,  6.0f,  26.0f), 16.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-15.0f,  6.0f,  26.0f), 16.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 15.0f,  6.0f,  53.0f), 16.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-15.0f,  6.0f,  53.0f), 16.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(  0.0f, 27.0f,  30.0f), 12.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(  0.0f, 45.0f,  30.0f), 14.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 26.0f,  4.0f, -61.0f),  5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-26.0f,  4.0f, -61.0f),  5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 26.0f,  4.0f,  61.0f),  5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-26.0f,  4.0f,  61.0f),  5.0f, SOUND_BOUMm, 0.45f));
     }
 
     if ( type == OBJECT_TARGET1 )
@@ -1012,23 +1012,23 @@ CObjectUPtr CObjectFactory::CreateBuilding(const ObjectCreateParams& params)
         obj->SetZoom(0, 1.5f);
         obj->SetFloorHeight(0.0f);
 
-        obj->CreateCrashSphere(Math::Vector(  0.0f, 50.0f+14.0f, 0.0f),  3.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector( -7.0f, 50.0f+12.0f, 0.0f),  3.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(  7.0f, 50.0f+12.0f, 0.0f),  3.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(-12.0f, 50.0f+ 7.0f, 0.0f),  3.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector( 12.0f, 50.0f+ 7.0f, 0.0f),  3.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(-14.0f, 50.0f+ 0.0f, 0.0f),  3.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector( 14.0f, 50.0f+ 0.0f, 0.0f),  3.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(-12.0f, 50.0f- 7.0f, 0.0f),  3.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector( 12.0f, 50.0f- 7.0f, 0.0f),  3.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector( -7.0f, 50.0f-12.0f, 0.0f),  3.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(  7.0f, 50.0f-12.0f, 0.0f),  3.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(  0.0f, 50.0f-14.0f, 0.0f),  3.0f, SOUND_BOUMm, 0.45f);
+        obj->AddCrashSphere(CrashSphere(Math::Vector(  0.0f, 50.0f+14.0f, 0.0f),  3.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( -7.0f, 50.0f+12.0f, 0.0f),  3.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(  7.0f, 50.0f+12.0f, 0.0f),  3.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-12.0f, 50.0f+ 7.0f, 0.0f),  3.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 12.0f, 50.0f+ 7.0f, 0.0f),  3.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-14.0f, 50.0f+ 0.0f, 0.0f),  3.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 14.0f, 50.0f+ 0.0f, 0.0f),  3.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-12.0f, 50.0f- 7.0f, 0.0f),  3.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 12.0f, 50.0f- 7.0f, 0.0f),  3.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( -7.0f, 50.0f-12.0f, 0.0f),  3.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(  7.0f, 50.0f-12.0f, 0.0f),  3.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(  0.0f, 50.0f-14.0f, 0.0f),  3.0f, SOUND_BOUMm, 0.45f));
 
-        obj->CreateCrashSphere(Math::Vector(0.0f, 30.0f, 0.0f), 2.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(0.0f, 24.0f, 0.0f), 3.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(0.0f, 16.0f, 0.0f), 4.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(0.0f,  4.0f, 0.0f), 8.0f, SOUND_BOUMm, 0.45f);
+        obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 30.0f, 0.0f), 2.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 24.0f, 0.0f), 3.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 16.0f, 0.0f), 4.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f,  4.0f, 0.0f), 8.0f, SOUND_BOUMm, 0.45f));
 
         obj->CreateShadowCircle(15.0f, 1.0f);
     }
@@ -1091,7 +1091,7 @@ CObjectUPtr CObjectFactory::CreateBuilding(const ObjectCreateParams& params)
         else                  m_modelManager->AddModelReference("atomic.mod", false, rank);
 
         pPower->obj->SetPosition(0, GetCharacter()->posPower);
-        pPower->obj->CreateCrashSphere(Math::Vector(0.0f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f);
+        pPower->obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f));
         pPower->obj->SetGlobalSphere(Math::Vector(0.0f, 1.0f, 0.0f), 1.5f);
 
         pPower->SetTransporter(obj.get());
@@ -1194,19 +1194,19 @@ CObjectUPtr CObjectFactory::CreateResource(const ObjectCreateParams& params)
     }
     else if ( type == OBJECT_EGG )
     {
-        obj->CreateCrashSphere(Math::Vector(-1.0f, 2.8f, 0.0f), 3.0f, SOUND_BOUMm, 0.45f);
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-1.0f, 2.8f, 0.0f), 3.0f, SOUND_BOUMm, 0.45f));
         obj->SetGlobalSphere(Math::Vector(0.0f, 5.0f, 0.0f), 10.0f);
         radius = 3.0f;
     }
     else if ( type == OBJECT_BOMB )
     {
-        obj->CreateCrashSphere(Math::Vector(0.0f, 0.0f, 0.0f), 3.0f, SOUND_BOUMm, 0.45f);
+        obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 0.0f, 0.0f), 3.0f, SOUND_BOUMm, 0.45f));
         obj->SetGlobalSphere(Math::Vector(0.0f, 0.0f, 0.0f), 3.0f);
         radius = 3.0f;
     }
     else if ( type == OBJECT_BAG )
     {
-        obj->CreateCrashSphere(Math::Vector(0.0f, 0.0f, 0.0f), 4.0f, SOUND_BOUMm, 0.45f);
+        obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 0.0f, 0.0f), 4.0f, SOUND_BOUMm, 0.45f));
         obj->SetGlobalSphere(Math::Vector(0.0f, 0.0f, 0.0f), 4.0f);
         obj->SetZoom(0, 1.5f);
         radius =  5.0f;
@@ -1214,7 +1214,7 @@ CObjectUPtr CObjectFactory::CreateResource(const ObjectCreateParams& params)
     }
     else
     {
-        obj->CreateCrashSphere(Math::Vector(0.0f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f);
+        obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f));
         obj->SetGlobalSphere(Math::Vector(0.0f, 1.0f, 0.0f), 1.5f);
     }
 
@@ -1314,9 +1314,9 @@ CObjectUPtr CObjectFactory::CreateBarrier(const ObjectCreateParams& params)
         obj->SetPosition(0, pos);
         obj->SetAngleY(0, angle);
 
-        obj->CreateCrashSphere(Math::Vector( 3.5f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector( 0.0f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(-3.5f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f);
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 3.5f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 0.0f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-3.5f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f));
 
         obj->CreateShadowCircle(6.0f, 0.5f, Gfx::ENG_SHADOW_WORM);
     }
@@ -1330,11 +1330,11 @@ CObjectUPtr CObjectFactory::CreateBarrier(const ObjectCreateParams& params)
         obj->SetPosition(0, pos);
         obj->SetAngleY(0, angle);
 
-        obj->CreateCrashSphere(Math::Vector( 8.5f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector( 3.5f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector( 0.0f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(-3.5f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(-8.5f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f);
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 8.5f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 3.5f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 0.0f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-3.5f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-8.5f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f));
 
         obj->CreateShadowCircle(12.0f, 0.5f, Gfx::ENG_SHADOW_WORM);
     }
@@ -1348,11 +1348,11 @@ CObjectUPtr CObjectFactory::CreateBarrier(const ObjectCreateParams& params)
         obj->SetPosition(0, pos);
         obj->SetAngleY(0, angle);
 
-        obj->CreateCrashSphere(Math::Vector( 8.5f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector( 3.5f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector( 0.0f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(-3.5f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(-8.5f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f);
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 8.5f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 3.5f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 0.0f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-3.5f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-8.5f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f));
 
         obj->CreateShadowCircle(12.0f, 0.8f, Gfx::ENG_SHADOW_WORM);
     }
@@ -1366,11 +1366,11 @@ CObjectUPtr CObjectFactory::CreateBarrier(const ObjectCreateParams& params)
         obj->SetPosition(0, pos);
         obj->SetAngleY(0, angle);
 
-        obj->CreateCrashSphere(Math::Vector( 8.5f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector( 3.5f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector( 0.0f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(-3.5f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(-8.5f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f);
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 8.5f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 3.5f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 0.0f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-3.5f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-8.5f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f));
 
         obj->CreateShadowCircle(10.0f, 0.5f, Gfx::ENG_SHADOW_WORM);
     }
@@ -1421,7 +1421,7 @@ CObjectUPtr CObjectFactory::CreatePlant(const ObjectCreateParams& params)
 
         height -= 2.0f;
 
-        obj->CreateCrashSphere(Math::Vector(0.0f, 0.0f, 0.0f), 4.0f, SOUND_BOUM, 0.10f);
+        obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 0.0f, 0.0f), 4.0f, SOUND_BOUM, 0.10f));
         obj->SetGlobalSphere(Math::Vector(0.0f, 3.0f, 0.0f), 6.0f);
         obj->SetJostlingSphere(Math::Vector(0.0f, 0.0f, 0.0f), 8.0f);
 
@@ -1441,7 +1441,7 @@ CObjectUPtr CObjectFactory::CreatePlant(const ObjectCreateParams& params)
         obj->SetPosition(0, pos);
         obj->SetAngleY(0, angle);
 
-//?     obj->CreateCrashSphere(Math::Vector(0.0f, 0.0f, 0.0f), 3.0f, SOUND_BOUM, 0.10f);
+//?     obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 0.0f, 0.0f), 3.0f, SOUND_BOUM, 0.10f));
         obj->SetJostlingSphere(Math::Vector(0.0f, 0.0f, 0.0f), 4.0f);
 
         obj->CreateShadowCircle(5.0f, 0.3f);
@@ -1458,8 +1458,8 @@ CObjectUPtr CObjectFactory::CreatePlant(const ObjectCreateParams& params)
         obj->SetPosition(0, pos);
         obj->SetAngleY(0, angle);
 
-        obj->CreateCrashSphere(Math::Vector(0.0f,  2.0f, 0.0f), 4.0f, SOUND_BOUM, 0.10f);
-        obj->CreateCrashSphere(Math::Vector(0.0f, 10.0f, 0.0f), 4.0f, SOUND_BOUM, 0.10f);
+        obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f,  2.0f, 0.0f), 4.0f, SOUND_BOUM, 0.10f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 10.0f, 0.0f), 4.0f, SOUND_BOUM, 0.10f));
 
         obj->CreateShadowCircle(10.0f, 0.5f);
     }
@@ -1481,7 +1481,7 @@ CObjectUPtr CObjectFactory::CreatePlant(const ObjectCreateParams& params)
         obj->SetPosition(0, pos);
         obj->SetAngleY(0, angle);
 
-        obj->CreateCrashSphere(Math::Vector(0.0f, 12.0f, 0.0f), 5.0f, SOUND_BOUM, 0.10f);
+        obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 12.0f, 0.0f), 5.0f, SOUND_BOUM, 0.10f));
         obj->SetGlobalSphere(Math::Vector(0.0f, 6.0f, 0.0f), 6.0f);
         obj->SetJostlingSphere(Math::Vector(0.0f, 4.0f, 0.0f), 8.0f);
 
@@ -1507,7 +1507,7 @@ CObjectUPtr CObjectFactory::CreatePlant(const ObjectCreateParams& params)
 
         if ( type != OBJECT_PLANT19 )
         {
-            obj->CreateCrashSphere(Math::Vector(0.0f, 0.0f, 0.0f), 4.0f, SOUND_BOUM, 0.10f);
+            obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 0.0f, 0.0f), 4.0f, SOUND_BOUM, 0.10f));
             obj->SetGlobalSphere(Math::Vector(0.0f, 3.0f, 0.0f), 6.0f);
         }
         obj->SetJostlingSphere(Math::Vector(0.0f, 0.0f, 0.0f), 8.0f);
@@ -1524,10 +1524,10 @@ CObjectUPtr CObjectFactory::CreatePlant(const ObjectCreateParams& params)
         obj->SetPosition(0, pos);
         obj->SetAngleY(0, angle);
 
-        obj->CreateCrashSphere(Math::Vector( 0.0f,  3.0f, 2.0f), 3.0f, SOUND_BOUMs, 0.20f);
-        obj->CreateCrashSphere(Math::Vector(-1.0f, 10.0f, 1.0f), 2.0f, SOUND_BOUMs, 0.20f);
-        obj->CreateCrashSphere(Math::Vector( 0.0f, 17.0f, 0.0f), 2.0f, SOUND_BOUMs, 0.20f);
-        obj->CreateCrashSphere(Math::Vector( 1.0f, 27.0f, 0.0f), 2.0f, SOUND_BOUMs, 0.20f);
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 0.0f,  3.0f, 2.0f), 3.0f, SOUND_BOUMs, 0.20f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-1.0f, 10.0f, 1.0f), 2.0f, SOUND_BOUMs, 0.20f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 0.0f, 17.0f, 0.0f), 2.0f, SOUND_BOUMs, 0.20f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 1.0f, 27.0f, 0.0f), 2.0f, SOUND_BOUMs, 0.20f));
 
         obj->CreateShadowCircle(8.0f, 0.5f);
     }
@@ -1541,11 +1541,11 @@ CObjectUPtr CObjectFactory::CreatePlant(const ObjectCreateParams& params)
         obj->SetPosition(0, pos);
         obj->SetAngleY(0, angle);
 
-        obj->CreateCrashSphere(Math::Vector( 0.0f,  3.0f, 2.0f), 3.0f, SOUND_BOUMs, 0.20f);
-        obj->CreateCrashSphere(Math::Vector(-2.0f, 11.0f, 1.0f), 2.0f, SOUND_BOUMs, 0.20f);
-        obj->CreateCrashSphere(Math::Vector(-2.0f, 19.0f, 2.0f), 2.0f, SOUND_BOUMs, 0.20f);
-        obj->CreateCrashSphere(Math::Vector( 2.0f, 26.0f, 0.0f), 2.0f, SOUND_BOUMs, 0.20f);
-        obj->CreateCrashSphere(Math::Vector( 2.0f, 34.0f,-2.0f), 2.0f, SOUND_BOUMs, 0.20f);
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 0.0f,  3.0f, 2.0f), 3.0f, SOUND_BOUMs, 0.20f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-2.0f, 11.0f, 1.0f), 2.0f, SOUND_BOUMs, 0.20f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-2.0f, 19.0f, 2.0f), 2.0f, SOUND_BOUMs, 0.20f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 2.0f, 26.0f, 0.0f), 2.0f, SOUND_BOUMs, 0.20f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 2.0f, 34.0f,-2.0f), 2.0f, SOUND_BOUMs, 0.20f));
 
         obj->CreateShadowCircle(8.0f, 0.5f);
     }
@@ -1559,11 +1559,11 @@ CObjectUPtr CObjectFactory::CreatePlant(const ObjectCreateParams& params)
         obj->SetPosition(0, pos);
         obj->SetAngleY(0, angle);
 
-        obj->CreateCrashSphere(Math::Vector( 0.0f,  3.0f, 1.0f), 3.0f, SOUND_BOUMs, 0.20f);
-        obj->CreateCrashSphere(Math::Vector(-2.0f, 10.0f, 1.0f), 2.0f, SOUND_BOUMs, 0.20f);
-        obj->CreateCrashSphere(Math::Vector(-2.0f, 19.0f, 2.0f), 2.0f, SOUND_BOUMs, 0.20f);
-        obj->CreateCrashSphere(Math::Vector( 2.0f, 25.0f, 0.0f), 2.0f, SOUND_BOUMs, 0.20f);
-        obj->CreateCrashSphere(Math::Vector( 3.0f, 32.0f,-2.0f), 2.0f, SOUND_BOUMs, 0.20f);
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 0.0f,  3.0f, 1.0f), 3.0f, SOUND_BOUMs, 0.20f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-2.0f, 10.0f, 1.0f), 2.0f, SOUND_BOUMs, 0.20f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-2.0f, 19.0f, 2.0f), 2.0f, SOUND_BOUMs, 0.20f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 2.0f, 25.0f, 0.0f), 2.0f, SOUND_BOUMs, 0.20f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 3.0f, 32.0f,-2.0f), 2.0f, SOUND_BOUMs, 0.20f));
 
         obj->CreateShadowCircle(8.0f, 0.5f);
     }
@@ -1577,10 +1577,10 @@ CObjectUPtr CObjectFactory::CreatePlant(const ObjectCreateParams& params)
         obj->SetPosition(0, pos);
         obj->SetAngleY(0, angle);
 
-        obj->CreateCrashSphere(Math::Vector(-2.0f,  3.0f, 2.0f), 3.0f, SOUND_BOUMs, 0.20f);
-        obj->CreateCrashSphere(Math::Vector(-3.0f,  9.0f, 1.0f), 2.0f, SOUND_BOUMs, 0.20f);
-        obj->CreateCrashSphere(Math::Vector( 0.0f, 18.0f, 0.0f), 2.0f, SOUND_BOUMs, 0.20f);
-        obj->CreateCrashSphere(Math::Vector( 0.0f, 27.0f, 7.0f), 2.0f, SOUND_BOUMs, 0.20f);
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-2.0f,  3.0f, 2.0f), 3.0f, SOUND_BOUMs, 0.20f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-3.0f,  9.0f, 1.0f), 2.0f, SOUND_BOUMs, 0.20f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 0.0f, 18.0f, 0.0f), 2.0f, SOUND_BOUMs, 0.20f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 0.0f, 27.0f, 7.0f), 2.0f, SOUND_BOUMs, 0.20f));
 
         obj->CreateShadowCircle(8.0f, 0.5f);
     }
@@ -1594,9 +1594,9 @@ CObjectUPtr CObjectFactory::CreatePlant(const ObjectCreateParams& params)
         obj->SetPosition(0, pos);
         obj->SetAngleY(0, angle);
 
-        obj->CreateCrashSphere(Math::Vector(0.0f, 10.0f, 0.0f), 10.0f, SOUND_BOUMs, 0.20f);
-        obj->CreateCrashSphere(Math::Vector(0.0f, 21.0f, 0.0f),  8.0f, SOUND_BOUMs, 0.20f);
-        obj->CreateCrashSphere(Math::Vector(0.0f, 32.0f, 0.0f),  7.0f, SOUND_BOUMs, 0.20f);
+        obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 10.0f, 0.0f), 10.0f, SOUND_BOUMs, 0.20f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 21.0f, 0.0f),  8.0f, SOUND_BOUMs, 0.20f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 32.0f, 0.0f),  7.0f, SOUND_BOUMs, 0.20f));
 
         obj->CreateShadowCircle(8.0f, 0.5f);
     }
@@ -1610,9 +1610,9 @@ CObjectUPtr CObjectFactory::CreatePlant(const ObjectCreateParams& params)
         obj->SetPosition(0, pos);
         obj->SetAngleY(0, angle);
 
-        obj->CreateCrashSphere(Math::Vector(  0.0f, 5.0f,-10.0f), 25.0f, SOUND_BOUMs, 0.20f);
-        obj->CreateCrashSphere(Math::Vector(-65.0f, 5.0f, 65.0f), 20.0f, SOUND_BOUMs, 0.20f);
-        obj->CreateCrashSphere(Math::Vector( 38.0f, 5.0f, 21.0f), 18.0f, SOUND_BOUMs, 0.20f);
+        obj->AddCrashSphere(CrashSphere(Math::Vector(  0.0f, 5.0f,-10.0f), 25.0f, SOUND_BOUMs, 0.20f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-65.0f, 5.0f, 65.0f), 20.0f, SOUND_BOUMs, 0.20f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 38.0f, 5.0f, 21.0f), 18.0f, SOUND_BOUMs, 0.20f));
 
         obj->CreateShadowCircle(50.0f, 0.5f);
     }
@@ -1652,7 +1652,7 @@ CObjectUPtr CObjectFactory::CreateMushroom(const ObjectCreateParams& params)
         obj->SetPosition(0, pos);
         obj->SetAngleY(0, angle);
 
-        obj->CreateCrashSphere(Math::Vector(0.0f, 4.0f, 0.0f), 3.0f, SOUND_BOUM, 0.10f);
+        obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 4.0f, 0.0f), 3.0f, SOUND_BOUM, 0.10f));
         obj->SetGlobalSphere(Math::Vector(0.0f, 3.0f, 0.0f), 5.5f);
         obj->SetJostlingSphere(Math::Vector(0.0f, 3.0f, 0.0f), 5.5f);
 
@@ -1668,7 +1668,7 @@ CObjectUPtr CObjectFactory::CreateMushroom(const ObjectCreateParams& params)
         obj->SetPosition(0, pos);
         obj->SetAngleY(0, angle);
 
-        obj->CreateCrashSphere(Math::Vector(0.0f, 5.0f, 0.0f), 3.0f, SOUND_BOUM, 0.10f);
+        obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 5.0f, 0.0f), 3.0f, SOUND_BOUM, 0.10f));
         obj->SetGlobalSphere(Math::Vector(0.0f, 4.0f, 0.0f), 5.5f);
         obj->SetJostlingSphere(Math::Vector(0.0f, 4.0f, 0.0f), 5.5f);
 
@@ -1717,11 +1717,11 @@ CObjectUPtr CObjectFactory::CreateTeen(const ObjectCreateParams& params)
         obj->SetAngleY(0, angle);
         obj->SetZoom(0, zoom);
 
-        obj->CreateCrashSphere(Math::Vector( 5.0f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector( 2.5f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector( 0.0f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(-2.5f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(-5.0f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f);
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 5.0f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 2.5f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 0.0f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-2.5f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-5.0f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f));
 
         obj->CreateShadowCircle(5.0f, 0.8f*fShadow, Gfx::ENG_SHADOW_WORM);
     }
@@ -1736,13 +1736,13 @@ CObjectUPtr CObjectFactory::CreateTeen(const ObjectCreateParams& params)
         obj->SetAngleY(0, angle);
         obj->SetZoom(0, zoom);
 
-        obj->CreateCrashSphere(Math::Vector( 6.0f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector( 4.0f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector( 2.0f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector( 0.0f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(-2.0f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(-4.0f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(-6.0f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f);
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 6.0f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 4.0f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 2.0f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 0.0f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-2.0f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-4.0f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-6.0f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f));
 
         obj->CreateShadowCircle(6.0f, 0.8f*fShadow, Gfx::ENG_SHADOW_WORM);
     }
@@ -1757,13 +1757,13 @@ CObjectUPtr CObjectFactory::CreateTeen(const ObjectCreateParams& params)
         obj->SetAngleY(0, angle);
         obj->SetZoom(0, zoom);
 
-        obj->CreateCrashSphere(Math::Vector( 7.0f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector( 4.7f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector( 2.3f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector( 0.0f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(-2.3f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(-4.7f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(-7.0f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f);
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 7.0f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 4.7f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 2.3f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 0.0f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-2.3f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-4.7f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-7.0f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f));
 
         obj->CreateShadowCircle(6.0f, 0.8f*fShadow, Gfx::ENG_SHADOW_WORM);
     }
@@ -1779,7 +1779,7 @@ CObjectUPtr CObjectFactory::CreateTeen(const ObjectCreateParams& params)
         obj->SetAngleY(0, angle);
         obj->SetZoom(0, zoom);
 
-        obj->CreateCrashSphere(Math::Vector( 0.0f, 4.0f, 0.0f), 4.0f, SOUND_BOUMm, 0.45f);
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 0.0f, 4.0f, 0.0f), 4.0f, SOUND_BOUMm, 0.45f));
         obj->SetGlobalSphere(Math::Vector(0.0f, 4.0f, 0.0f), 4.0f);
         obj->CreateShadowCircle(6.0f, 0.5f*fShadow);
     }
@@ -1794,13 +1794,13 @@ CObjectUPtr CObjectFactory::CreateTeen(const ObjectCreateParams& params)
         obj->SetAngleY(0, angle);
         obj->SetZoom(0, zoom);
 
-        obj->CreateCrashSphere(Math::Vector(-9.0f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(-6.0f, 1.0f, 0.0f), 1.1f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(-3.0f, 1.0f, 0.0f), 1.2f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector( 0.0f, 1.0f, 0.0f), 1.3f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector( 5.1f, 1.0f,-1.3f), 2.6f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector( 8.0f, 1.0f, 2.2f), 2.3f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector( 9.4f, 1.0f,-2.0f), 2.0f, SOUND_BOUMm, 0.45f);
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-9.0f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-6.0f, 1.0f, 0.0f), 1.1f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-3.0f, 1.0f, 0.0f), 1.2f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 0.0f, 1.0f, 0.0f), 1.3f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 5.1f, 1.0f,-1.3f), 2.6f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 8.0f, 1.0f, 2.2f), 2.3f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 9.4f, 1.0f,-2.0f), 2.0f, SOUND_BOUMm, 0.45f));
 
         obj->CreateShadowCircle(10.0f, 0.5f*fShadow, Gfx::ENG_SHADOW_WORM);
     }
@@ -1831,12 +1831,12 @@ CObjectUPtr CObjectFactory::CreateTeen(const ObjectCreateParams& params)
         obj->SetAngleY(0, angle);
         obj->SetZoom(0, zoom);
 
-        obj->CreateCrashSphere(Math::Vector(-5.0f, 3.0f, 7.5f), 5.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector( 4.5f, 3.0f, 7.5f), 5.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(-5.0f, 3.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector( 4.5f, 3.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(-5.0f, 3.0f,-7.5f), 5.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector( 4.5f, 3.0f,-7.5f), 5.0f, SOUND_BOUMm, 0.45f);
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-5.0f, 3.0f, 7.5f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 4.5f, 3.0f, 7.5f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-5.0f, 3.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 4.5f, 3.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-5.0f, 3.0f,-7.5f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 4.5f, 3.0f,-7.5f), 5.0f, SOUND_BOUMm, 0.45f));
 
         obj->CreateShadowCircle(20.0f, 0.2f*fShadow);
     }
@@ -1851,12 +1851,12 @@ CObjectUPtr CObjectFactory::CreateTeen(const ObjectCreateParams& params)
         obj->SetAngleY(0, angle);
         obj->SetZoom(0, zoom);
 
-        obj->CreateCrashSphere(Math::Vector(-5.0f, 3.0f, 7.5f), 5.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector( 4.5f, 3.0f, 7.5f), 5.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(-5.0f, 3.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector( 4.5f, 3.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(-5.0f, 3.0f,-7.5f), 5.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector( 4.5f, 3.0f,-7.5f), 5.0f, SOUND_BOUMm, 0.45f);
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-5.0f, 3.0f, 7.5f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 4.5f, 3.0f, 7.5f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-5.0f, 3.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 4.5f, 3.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-5.0f, 3.0f,-7.5f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 4.5f, 3.0f,-7.5f), 5.0f, SOUND_BOUMm, 0.45f));
 
         obj->CreateShadowCircle(20.0f, 0.2f*fShadow);
     }
@@ -1871,12 +1871,12 @@ CObjectUPtr CObjectFactory::CreateTeen(const ObjectCreateParams& params)
         obj->SetAngleY(0, angle);
         obj->SetZoom(0, zoom);
 
-        obj->CreateCrashSphere(Math::Vector(-5.0f, 3.0f, 7.5f), 5.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector( 4.5f, 3.0f, 7.5f), 5.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(-5.0f, 3.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector( 4.5f, 3.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(-5.0f, 3.0f,-7.5f), 5.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector( 4.5f, 3.0f,-7.5f), 5.0f, SOUND_BOUMm, 0.45f);
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-5.0f, 3.0f, 7.5f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 4.5f, 3.0f, 7.5f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-5.0f, 3.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 4.5f, 3.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-5.0f, 3.0f,-7.5f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 4.5f, 3.0f,-7.5f), 5.0f, SOUND_BOUMm, 0.45f));
 
         obj->SetGlobalSphere(Math::Vector(0.0f, 10.0f, 0.0f), 12.0f);
         obj->CreateShadowCircle(20.0f, 0.2f*fShadow);
@@ -1892,12 +1892,12 @@ CObjectUPtr CObjectFactory::CreateTeen(const ObjectCreateParams& params)
         obj->SetAngleY(0, angle);
         obj->SetZoom(0, zoom);
 
-        obj->CreateCrashSphere(Math::Vector(-5.0f, 3.0f, 7.5f), 5.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector( 4.5f, 3.0f, 7.5f), 5.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(-5.0f, 3.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector( 4.5f, 3.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(-5.0f, 3.0f,-7.5f), 5.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector( 4.5f, 3.0f,-7.5f), 5.0f, SOUND_BOUMm, 0.45f);
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-5.0f, 3.0f, 7.5f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 4.5f, 3.0f, 7.5f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-5.0f, 3.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 4.5f, 3.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-5.0f, 3.0f,-7.5f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 4.5f, 3.0f,-7.5f), 5.0f, SOUND_BOUMm, 0.45f));
 
         obj->SetGlobalSphere(Math::Vector(0.0f, 10.0f, 0.0f), 12.0f);
         obj->CreateShadowCircle(20.0f, 0.2f*fShadow);
@@ -1913,16 +1913,16 @@ CObjectUPtr CObjectFactory::CreateTeen(const ObjectCreateParams& params)
         obj->SetAngleY(0, angle);
         obj->SetZoom(0, zoom);
 
-        obj->CreateCrashSphere(Math::Vector(-26.0f, 3.0f, 0.0f), 6.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(-15.0f, 3.0f,-4.0f), 6.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(-15.0f, 3.0f, 5.0f), 6.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector( -4.0f, 3.0f,-4.0f), 6.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector( -4.0f, 3.0f, 5.0f), 6.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(  6.0f, 3.0f,-4.0f), 6.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(  6.0f, 3.0f, 4.0f), 6.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector( 14.0f, 3.0f,-3.0f), 6.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector( 14.0f, 3.0f, 2.0f), 6.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector( 24.0f, 3.0f, 5.0f), 6.0f, SOUND_BOUMm, 0.45f);
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-26.0f, 3.0f, 0.0f), 6.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-15.0f, 3.0f,-4.0f), 6.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-15.0f, 3.0f, 5.0f), 6.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( -4.0f, 3.0f,-4.0f), 6.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( -4.0f, 3.0f, 5.0f), 6.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(  6.0f, 3.0f,-4.0f), 6.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(  6.0f, 3.0f, 4.0f), 6.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 14.0f, 3.0f,-3.0f), 6.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 14.0f, 3.0f, 2.0f), 6.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 24.0f, 3.0f, 5.0f), 6.0f, SOUND_BOUMm, 0.45f));
 
         obj->SetGlobalSphere(Math::Vector(0.0f, 6.0f, 0.0f), 20.0f);
         obj->CreateShadowCircle(40.0f, 0.2f*fShadow);
@@ -1963,7 +1963,7 @@ CObjectUPtr CObjectFactory::CreateTeen(const ObjectCreateParams& params)
         obj->SetAngleY(0, angle);
         obj->SetZoom(0, zoom);
 
-        obj->CreateCrashSphere(Math::Vector( 0.0f, 4.0f, 0.0f), 4.0f, SOUND_BOUMm, 0.45f);
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 0.0f, 4.0f, 0.0f), 4.0f, SOUND_BOUMm, 0.45f));
         obj->SetGlobalSphere(Math::Vector(0.0f, 9.0f, 0.0f), 5.0f);
         obj->CreateShadowCircle(4.5f, 1.0f*fShadow);
     }
@@ -1978,15 +1978,15 @@ CObjectUPtr CObjectFactory::CreateTeen(const ObjectCreateParams& params)
         obj->SetAngleY(0, angle);
         obj->SetZoom(0, zoom);
 
-        obj->CreateCrashSphere(Math::Vector(-10.0f, 4.0f,-7.0f), 5.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(  0.0f, 4.0f,-7.0f), 5.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector( 10.0f, 4.0f,-7.0f), 5.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(-10.0f, 4.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(  0.0f, 4.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector( 10.0f, 4.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(-10.0f, 4.0f, 7.0f), 5.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(  0.0f, 4.0f, 7.0f), 5.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector( 10.0f, 4.0f, 7.0f), 5.0f, SOUND_BOUMm, 0.45f);
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-10.0f, 4.0f,-7.0f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(  0.0f, 4.0f,-7.0f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 10.0f, 4.0f,-7.0f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-10.0f, 4.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(  0.0f, 4.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 10.0f, 4.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-10.0f, 4.0f, 7.0f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(  0.0f, 4.0f, 7.0f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 10.0f, 4.0f, 7.0f), 5.0f, SOUND_BOUMm, 0.45f));
 
         obj->SetGlobalSphere(Math::Vector(0.0f, 5.0f, 0.0f), 15.0f);
         obj->CreateShadowCircle(20.0f, 1.0f*fShadow);
@@ -2002,15 +2002,15 @@ CObjectUPtr CObjectFactory::CreateTeen(const ObjectCreateParams& params)
         obj->SetAngleY(0, angle);
         obj->SetZoom(0, zoom);
 
-        obj->CreateCrashSphere(Math::Vector(-10.0f, 4.0f,-7.0f), 5.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(  0.0f, 4.0f,-7.0f), 5.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector( 10.0f, 4.0f,-7.0f), 5.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(-10.0f, 4.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(  0.0f, 4.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector( 10.0f, 4.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(-10.0f, 4.0f, 7.0f), 5.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(  0.0f, 4.0f, 7.0f), 5.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector( 10.0f, 4.0f, 7.0f), 5.0f, SOUND_BOUMm, 0.45f);
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-10.0f, 4.0f,-7.0f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(  0.0f, 4.0f,-7.0f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 10.0f, 4.0f,-7.0f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-10.0f, 4.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(  0.0f, 4.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 10.0f, 4.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-10.0f, 4.0f, 7.0f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(  0.0f, 4.0f, 7.0f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 10.0f, 4.0f, 7.0f), 5.0f, SOUND_BOUMm, 0.45f));
 
         obj->SetGlobalSphere(Math::Vector(0.0f, 5.0f, 0.0f), 15.0f);
         obj->CreateShadowCircle(20.0f, 1.0f*fShadow);
@@ -2026,15 +2026,15 @@ CObjectUPtr CObjectFactory::CreateTeen(const ObjectCreateParams& params)
         obj->SetAngleY(0, angle);
         obj->SetZoom(0, zoom);
 
-        obj->CreateCrashSphere(Math::Vector(-10.0f, 4.0f,-7.0f), 5.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(  0.0f, 4.0f,-7.0f), 5.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector( 10.0f, 4.0f,-7.0f), 5.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(-10.0f, 4.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(  0.0f, 4.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector( 10.0f, 4.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(-10.0f, 4.0f, 7.0f), 5.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(  0.0f, 4.0f, 7.0f), 5.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector( 10.0f, 4.0f, 7.0f), 5.0f, SOUND_BOUMm, 0.45f);
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-10.0f, 4.0f,-7.0f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(  0.0f, 4.0f,-7.0f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 10.0f, 4.0f,-7.0f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-10.0f, 4.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(  0.0f, 4.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 10.0f, 4.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-10.0f, 4.0f, 7.0f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(  0.0f, 4.0f, 7.0f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 10.0f, 4.0f, 7.0f), 5.0f, SOUND_BOUMm, 0.45f));
 
         obj->SetGlobalSphere(Math::Vector(0.0f, 5.0f, 0.0f), 15.0f);
         obj->CreateShadowCircle(20.0f, 1.0f*fShadow);
@@ -2050,8 +2050,8 @@ CObjectUPtr CObjectFactory::CreateTeen(const ObjectCreateParams& params)
         obj->SetAngleY(0, angle);
         obj->SetZoom(0, zoom);
 
-        obj->CreateCrashSphere(Math::Vector(-8.0f, 4.0f, 0.0f), 12.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector( 8.0f, 4.0f, 0.0f), 12.0f, SOUND_BOUMm, 0.45f);
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-8.0f, 4.0f, 0.0f), 12.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 8.0f, 4.0f, 0.0f), 12.0f, SOUND_BOUMm, 0.45f));
 
         obj->SetGlobalSphere(Math::Vector(0.0f, 13.0f, 0.0f), 20.0f);
         obj->CreateShadowCircle(18.0f, 1.0f*fShadow);
@@ -2067,7 +2067,7 @@ CObjectUPtr CObjectFactory::CreateTeen(const ObjectCreateParams& params)
         obj->SetAngleY(0, angle);
         obj->SetZoom(0, zoom);
 
-        obj->CreateCrashSphere(Math::Vector( 0.0f, 31.0f, 0.0f), 31.0f, SOUND_BOUMm, 0.45f);
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 0.0f, 31.0f, 0.0f), 31.0f, SOUND_BOUMm, 0.45f));
         obj->SetGlobalSphere(Math::Vector(0.0f, 31.0f, 0.0f), 31.0f);
         obj->CreateShadowCircle(24.0f, 0.5f*fShadow);
     }
@@ -2082,7 +2082,7 @@ CObjectUPtr CObjectFactory::CreateTeen(const ObjectCreateParams& params)
         obj->SetAngleY(0, angle);
         obj->SetZoom(0, zoom);
 
-        obj->CreateCrashSphere(Math::Vector( 0.0f, 31.0f, 0.0f), 31.0f, SOUND_BOUMm, 0.45f);
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 0.0f, 31.0f, 0.0f), 31.0f, SOUND_BOUMm, 0.45f));
         obj->SetGlobalSphere(Math::Vector(0.0f, 31.0f, 0.0f), 31.0f);
         obj->CreateShadowCircle(24.0f, 0.5f*fShadow);
     }
@@ -2097,7 +2097,7 @@ CObjectUPtr CObjectFactory::CreateTeen(const ObjectCreateParams& params)
         obj->SetAngleY(0, angle);
         obj->SetZoom(0, zoom);
 
-        obj->CreateCrashSphere(Math::Vector( 0.0f, 10.0f, 0.0f), 32.0f, SOUND_BOUMm, 0.45f);
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 0.0f, 10.0f, 0.0f), 32.0f, SOUND_BOUMm, 0.45f));
         obj->SetGlobalSphere(Math::Vector(0.0f, 10.0f, 0.0f), 32.0f);
         obj->CreateShadowCircle(33.0f, 1.0f*fShadow);
     }
@@ -2112,14 +2112,14 @@ CObjectUPtr CObjectFactory::CreateTeen(const ObjectCreateParams& params)
         obj->SetAngleY(0, angle);
         obj->SetZoom(0, zoom);
 
-        obj->CreateCrashSphere(Math::Vector(-175.0f, 0.0f,  -5.0f), 4.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(-175.0f, 0.0f, -35.0f), 4.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector( -55.0f, 0.0f,  -5.0f), 4.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector( -55.0f, 0.0f, -35.0f), 4.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector( -37.0f, 0.0f,  -5.0f), 4.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector( -37.0f, 0.0f, -35.0f), 4.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(  83.0f, 0.0f,  -5.0f), 4.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(  83.0f, 0.0f, -35.0f), 4.0f, SOUND_BOUMm, 0.45f);
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-175.0f, 0.0f,  -5.0f), 4.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-175.0f, 0.0f, -35.0f), 4.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( -55.0f, 0.0f,  -5.0f), 4.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( -55.0f, 0.0f, -35.0f), 4.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( -37.0f, 0.0f,  -5.0f), 4.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( -37.0f, 0.0f, -35.0f), 4.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(  83.0f, 0.0f,  -5.0f), 4.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(  83.0f, 0.0f, -35.0f), 4.0f, SOUND_BOUMm, 0.45f));
     }
 
     if ( type == OBJECT_TEEN21 )  // wall with window
@@ -2143,10 +2143,10 @@ CObjectUPtr CObjectFactory::CreateTeen(const ObjectCreateParams& params)
         obj->SetAngleY(0, angle);
         obj->SetZoom(0, zoom);
 
-        obj->CreateCrashSphere(Math::Vector(-135.0f, 0.0f,  -5.0f), 4.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(-135.0f, 0.0f, -35.0f), 4.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector( -15.0f, 0.0f,  -5.0f), 4.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector( -15.0f, 0.0f, -35.0f), 4.0f, SOUND_BOUMm, 0.45f);
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-135.0f, 0.0f,  -5.0f), 4.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-135.0f, 0.0f, -35.0f), 4.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( -15.0f, 0.0f,  -5.0f), 4.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( -15.0f, 0.0f, -35.0f), 4.0f, SOUND_BOUMm, 0.45f));
     }
 
     if ( type == OBJECT_TEEN23 )  // skateboard on wheels
@@ -2161,16 +2161,16 @@ CObjectUPtr CObjectFactory::CreateTeen(const ObjectCreateParams& params)
 
         if ( option == 1 )  // passage under the prohibited skateboard?
         {
-            obj->CreateCrashSphere(Math::Vector(-10.0f, 2.0f, 0.0f), 11.0f, SOUND_BOUMm, 0.45f);
-            obj->CreateCrashSphere(Math::Vector( 10.0f, 2.0f, 0.0f), 11.0f, SOUND_BOUMm, 0.45f);
+            obj->AddCrashSphere(CrashSphere(Math::Vector(-10.0f, 2.0f, 0.0f), 11.0f, SOUND_BOUMm, 0.45f));
+            obj->AddCrashSphere(CrashSphere(Math::Vector( 10.0f, 2.0f, 0.0f), 11.0f, SOUND_BOUMm, 0.45f));
         }
 
-        obj->CreateCrashSphere(Math::Vector(-23.0f, 2.0f, 7.0f), 3.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(-23.0f, 2.0f, 0.0f), 3.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(-23.0f, 2.0f,-7.0f), 3.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector( 23.0f, 2.0f, 7.0f), 3.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector( 23.0f, 2.0f, 0.0f), 3.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector( 23.0f, 2.0f,-7.0f), 3.0f, SOUND_BOUMm, 0.45f);
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-23.0f, 2.0f, 7.0f), 3.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-23.0f, 2.0f, 0.0f), 3.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-23.0f, 2.0f,-7.0f), 3.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 23.0f, 2.0f, 7.0f), 3.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 23.0f, 2.0f, 0.0f), 3.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 23.0f, 2.0f,-7.0f), 3.0f, SOUND_BOUMm, 0.45f));
 
         obj->CreateShadowCircle(35.0f, 0.8f*fShadow, Gfx::ENG_SHADOW_WORM);
     }
@@ -2185,8 +2185,8 @@ CObjectUPtr CObjectFactory::CreateTeen(const ObjectCreateParams& params)
         obj->SetAngleY(0, angle);
         obj->SetZoom(0, zoom);
 
-        obj->CreateCrashSphere(Math::Vector(-12.0f, 0.0f, -3.0f), 3.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(-12.0f, 0.0f,  3.0f), 3.0f, SOUND_BOUMm, 0.45f);
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-12.0f, 0.0f, -3.0f), 3.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-12.0f, 0.0f,  3.0f), 3.0f, SOUND_BOUMm, 0.45f));
         obj->CreateShadowCircle(20.0f, 0.2f*fShadow);
     }
 
@@ -2200,8 +2200,8 @@ CObjectUPtr CObjectFactory::CreateTeen(const ObjectCreateParams& params)
         obj->SetAngleY(0, angle);
         obj->SetZoom(0, zoom);
 
-        obj->CreateCrashSphere(Math::Vector(-12.0f, 0.0f, -3.0f), 3.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(-12.0f, 0.0f,  3.0f), 3.0f, SOUND_BOUMm, 0.45f);
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-12.0f, 0.0f, -3.0f), 3.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-12.0f, 0.0f,  3.0f), 3.0f, SOUND_BOUMm, 0.45f));
         obj->CreateShadowCircle(20.0f, 0.2f*fShadow);
     }
 
@@ -2239,7 +2239,7 @@ CObjectUPtr CObjectFactory::CreateTeen(const ObjectCreateParams& params)
         obj->SetAngleY(0, angle);
         obj->SetZoom(0, zoom);
 
-        obj->CreateCrashSphere(Math::Vector(0.0f, 0.0f, 0.0f), 4.0f, SOUND_BOUM, 0.10f);
+        obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 0.0f, 0.0f), 4.0f, SOUND_BOUM, 0.10f));
         obj->CreateShadowCircle(40.0f, 0.5f);
     }
 
@@ -2254,7 +2254,7 @@ CObjectUPtr CObjectFactory::CreateTeen(const ObjectCreateParams& params)
         obj->SetAngleY(0, angle);
         obj->SetZoom(0, zoom);
 
-        obj->CreateCrashSphere(Math::Vector(0.0f, 2.0f, 0.0f), 5.0f, SOUND_BOUM, 0.10f);
+        obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 2.0f, 0.0f), 5.0f, SOUND_BOUM, 0.10f));
         obj->CreateShadowCircle(7.0f, 0.6f*fShadow);
     }
 
@@ -2280,7 +2280,7 @@ CObjectUPtr CObjectFactory::CreateTeen(const ObjectCreateParams& params)
         obj->SetAngleY(0, angle);
         obj->SetZoom(0, zoom);
 
-        obj->CreateCrashSphere(Math::Vector(0.0f, 4.0f, 0.0f), 15.0f, SOUND_BOUM, 0.10f);
+        obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 4.0f, 0.0f), 15.0f, SOUND_BOUM, 0.10f));
         obj->SetGlobalSphere(Math::Vector(0.0f, 15.0f, 0.0f), 17.0f);
         obj->CreateShadowCircle(20.0f, 1.0f*fShadow);
     }
@@ -2295,9 +2295,9 @@ CObjectUPtr CObjectFactory::CreateTeen(const ObjectCreateParams& params)
         obj->SetAngleY(0, angle);
         obj->SetZoom(0, zoom);
 
-        obj->CreateCrashSphere(Math::Vector(-10.0f, 2.0f, 0.0f), 5.0f, SOUND_BOUM, 0.10f);
-        obj->CreateCrashSphere(Math::Vector(  0.0f, 2.0f, 0.0f), 6.0f, SOUND_BOUM, 0.10f);
-        obj->CreateCrashSphere(Math::Vector(  9.0f, 4.0f, 1.0f), 6.0f, SOUND_BOUM, 0.10f);
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-10.0f, 2.0f, 0.0f), 5.0f, SOUND_BOUM, 0.10f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(  0.0f, 2.0f, 0.0f), 6.0f, SOUND_BOUM, 0.10f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(  9.0f, 4.0f, 1.0f), 6.0f, SOUND_BOUM, 0.10f));
 
         obj->SetGlobalSphere(Math::Vector(0.0f, 0.0f, 0.0f), 10.0f);
         obj->CreateShadowCircle(16.0f, 0.6f*fShadow);
@@ -2313,10 +2313,10 @@ CObjectUPtr CObjectFactory::CreateTeen(const ObjectCreateParams& params)
         obj->SetAngleY(0, angle);
         obj->SetZoom(0, zoom);
 
-        obj->CreateCrashSphere(Math::Vector( 17.5f, 1.0f,  17.5f), 3.5f, SOUND_BOUM, 0.10f);
-        obj->CreateCrashSphere(Math::Vector( 17.5f, 1.0f, -17.5f), 3.5f, SOUND_BOUM, 0.10f);
-        obj->CreateCrashSphere(Math::Vector(-17.5f, 1.0f,  17.5f), 3.5f, SOUND_BOUM, 0.10f);
-        obj->CreateCrashSphere(Math::Vector(-17.5f, 1.0f, -17.5f), 3.5f, SOUND_BOUM, 0.10f);
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 17.5f, 1.0f,  17.5f), 3.5f, SOUND_BOUM, 0.10f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 17.5f, 1.0f, -17.5f), 3.5f, SOUND_BOUM, 0.10f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-17.5f, 1.0f,  17.5f), 3.5f, SOUND_BOUM, 0.10f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-17.5f, 1.0f, -17.5f), 3.5f, SOUND_BOUM, 0.10f));
         obj->SetGlobalSphere(Math::Vector(0.0f, 0.0f, 0.0f), 26.0f);
         obj->CreateShadowCircle(35.0f, 0.3f*fShadow);
     }
@@ -2331,7 +2331,7 @@ CObjectUPtr CObjectFactory::CreateTeen(const ObjectCreateParams& params)
         obj->SetAngleY(0, angle);
         obj->SetZoom(0, zoom);
 
-        obj->CreateCrashSphere(Math::Vector(0.0f, 2.0f, 0.0f), 4.0f, SOUND_BOUM, 0.10f);
+        obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 2.0f, 0.0f), 4.0f, SOUND_BOUM, 0.10f));
         obj->CreateShadowCircle(10.0f, 0.3f*fShadow);
     }
 
@@ -2345,7 +2345,7 @@ CObjectUPtr CObjectFactory::CreateTeen(const ObjectCreateParams& params)
         obj->SetAngleY(0, angle);
         obj->SetZoom(0, zoom);
 
-        obj->CreateCrashSphere(Math::Vector(0.0f, 2.0f, 0.0f), 4.0f, SOUND_BOUM, 0.10f);
+        obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 2.0f, 0.0f), 4.0f, SOUND_BOUM, 0.10f));
         obj->CreateShadowCircle(3.0f, 1.0f*fShadow);
     }
 
@@ -2359,11 +2359,11 @@ CObjectUPtr CObjectFactory::CreateTeen(const ObjectCreateParams& params)
         obj->SetAngleY(0, angle);
         obj->SetZoom(0, zoom);
 
-        obj->CreateCrashSphere(Math::Vector(-40.0f, 5.0f, 0.0f), 10.0f, SOUND_BOUM, 0.10f);
-        obj->CreateCrashSphere(Math::Vector(-20.0f, 5.0f, 0.0f), 10.0f, SOUND_BOUM, 0.10f);
-        obj->CreateCrashSphere(Math::Vector(  0.0f, 5.0f, 0.0f), 10.0f, SOUND_BOUM, 0.10f);
-        obj->CreateCrashSphere(Math::Vector( 20.0f, 5.0f, 0.0f), 10.0f, SOUND_BOUM, 0.10f);
-        obj->CreateCrashSphere(Math::Vector( 40.0f, 5.0f, 0.0f), 10.0f, SOUND_BOUM, 0.10f);
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-40.0f, 5.0f, 0.0f), 10.0f, SOUND_BOUM, 0.10f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-20.0f, 5.0f, 0.0f), 10.0f, SOUND_BOUM, 0.10f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(  0.0f, 5.0f, 0.0f), 10.0f, SOUND_BOUM, 0.10f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 20.0f, 5.0f, 0.0f), 10.0f, SOUND_BOUM, 0.10f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 40.0f, 5.0f, 0.0f), 10.0f, SOUND_BOUM, 0.10f));
         obj->CreateShadowCircle(40.0f, 0.8f*fShadow, Gfx::ENG_SHADOW_WORM);
     }
 
@@ -2415,7 +2415,7 @@ CObjectUPtr CObjectFactory::CreateTeen(const ObjectCreateParams& params)
         m_modelManager->AddModelReference("teen38c.mod", false, rank);  // propeller
         obj->SetPosition(2, Math::Vector(0.0f, 0.0f, 0.0f));
 
-        obj->CreateCrashSphere(Math::Vector(0.0f, 2.0f, 0.0f), 10.0f, SOUND_BOUM, 0.10f);
+        obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 2.0f, 0.0f), 10.0f, SOUND_BOUM, 0.10f));
         obj->SetGlobalSphere(Math::Vector(0.0f, 2.0f, 0.0f), 10.0f);
         obj->CreateShadowCircle(15.0f, 0.5f*fShadow);
     }
@@ -2430,7 +2430,7 @@ CObjectUPtr CObjectFactory::CreateTeen(const ObjectCreateParams& params)
         obj->SetAngleY(0, angle);
         obj->SetZoom(0, zoom);
 
-        obj->CreateCrashSphere(Math::Vector(0.0f, 2.0f, 0.0f), 8.5f, SOUND_BOUM, 0.10f);
+        obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 2.0f, 0.0f), 8.5f, SOUND_BOUM, 0.10f));
         obj->SetGlobalSphere(Math::Vector(0.0f, 2.0f, 0.0f), 8.5f);
         obj->CreateShadowCircle(10.0f, 1.0f*fShadow);
     }
@@ -2445,7 +2445,7 @@ CObjectUPtr CObjectFactory::CreateTeen(const ObjectCreateParams& params)
         obj->SetAngleY(0, angle);
         obj->SetZoom(0, zoom);
 
-        obj->CreateCrashSphere(Math::Vector(0.0f, 5.0f, 0.0f), 11.0f, SOUND_BOUM, 0.10f);
+        obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 5.0f, 0.0f), 11.0f, SOUND_BOUM, 0.10f));
         obj->SetGlobalSphere(Math::Vector(0.0f, 14.0f, 0.0f), 15.0f);
         obj->CreateShadowCircle(15.0f, 0.7f*fShadow);
     }
@@ -2471,7 +2471,7 @@ CObjectUPtr CObjectFactory::CreateTeen(const ObjectCreateParams& params)
         obj->SetAngleY(0, angle);
         obj->SetZoom(0, zoom);
 
-        obj->CreateCrashSphere(Math::Vector(0.0f, 2.0f, 0.0f), 2.0f, SOUND_BOUM, 0.10f);
+        obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 2.0f, 0.0f), 2.0f, SOUND_BOUM, 0.10f));
         obj->CreateShadowCircle(15.0f, 0.4f*fShadow);
     }
 
@@ -2485,7 +2485,7 @@ CObjectUPtr CObjectFactory::CreateTeen(const ObjectCreateParams& params)
         obj->SetAngleY(0, angle);
         obj->SetZoom(0, zoom);
 
-        obj->CreateCrashSphere(Math::Vector(0.0f, 2.0f, 0.0f), 2.0f, SOUND_BOUM, 0.10f);
+        obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 2.0f, 0.0f), 2.0f, SOUND_BOUM, 0.10f));
         obj->CreateShadowCircle(15.0f, 0.4f*fShadow);
     }
 
@@ -2499,7 +2499,7 @@ CObjectUPtr CObjectFactory::CreateTeen(const ObjectCreateParams& params)
         obj->SetAngleY(0, angle);
         obj->SetZoom(0, zoom);
 
-        obj->CreateCrashSphere(Math::Vector(0.0f, 10.0f, 0.0f), 55.0f, SOUND_BOUM, 0.10f);
+        obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 10.0f, 0.0f), 55.0f, SOUND_BOUM, 0.10f));
         obj->SetGlobalSphere(Math::Vector(0.0f, 10.0f, 0.0f), 55.0f);
         obj->CreateShadowCircle(55.0f, 1.0f*fShadow);
     }
@@ -2544,7 +2544,7 @@ CObjectUPtr CObjectFactory::CreateQuartz(const ObjectCreateParams& params)
         obj->SetPosition(0, pos);
         obj->SetAngleY(0, angle);
 
-        obj->CreateCrashSphere(Math::Vector(0.0f, 2.0f, 0.0f), 3.5f, SOUND_BOUMm, 0.45f);
+        obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 2.0f, 0.0f), 3.5f, SOUND_BOUMm, 0.45f));
         obj->SetGlobalSphere(Math::Vector(0.0f, 2.0f, 0.0f), 3.5f);
 
         obj->CreateShadowCircle(4.0f, 0.5f);
@@ -2558,7 +2558,7 @@ CObjectUPtr CObjectFactory::CreateQuartz(const ObjectCreateParams& params)
         obj->SetPosition(0, pos);
         obj->SetAngleY(0, angle);
 
-        obj->CreateCrashSphere(Math::Vector(0.0f, 4.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
+        obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 4.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f));
         obj->SetGlobalSphere(Math::Vector(0.0f, 4.0f, 0.0f), 5.0f);
 
         obj->CreateShadowCircle(5.0f, 0.5f);
@@ -2572,7 +2572,7 @@ CObjectUPtr CObjectFactory::CreateQuartz(const ObjectCreateParams& params)
         obj->SetPosition(0, pos);
         obj->SetAngleY(0, angle);
 
-        obj->CreateCrashSphere(Math::Vector(0.0f, 6.0f, 0.0f), 6.0f, SOUND_BOUMm, 0.45f);
+        obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 6.0f, 0.0f), 6.0f, SOUND_BOUMm, 0.45f));
         obj->SetGlobalSphere(Math::Vector(0.0f, 6.0f, 0.0f), 6.0f);
 
         obj->CreateShadowCircle(6.0f, 0.5f);
@@ -2586,7 +2586,7 @@ CObjectUPtr CObjectFactory::CreateQuartz(const ObjectCreateParams& params)
         obj->SetPosition(0, pos);
         obj->SetAngleY(0, angle);
 
-        obj->CreateCrashSphere(Math::Vector(0.0f, 10.0f, 0.0f), 10.0f, SOUND_BOUMm, 0.45f);
+        obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 10.0f, 0.0f), 10.0f, SOUND_BOUMm, 0.45f));
         obj->SetGlobalSphere(Math::Vector(0.0f, 10.0f, 0.0f), 10.0f);
 
         obj->CreateShadowCircle(10.0f, 0.5f);
@@ -2651,13 +2651,13 @@ CObjectUPtr CObjectFactory::CreateRoot(const ObjectCreateParams& params)
         obj->SetAngleY(0, angle);
         obj->SetZoom(0, 2.0f);
 
-        obj->CreateCrashSphere(Math::Vector(-5.0f,  1.0f,  0.0f), 2.0f, SOUND_BOUMv, 0.15f);
-        obj->CreateCrashSphere(Math::Vector( 4.0f,  1.0f,  2.0f), 2.0f, SOUND_BOUMv, 0.15f);
-        obj->CreateCrashSphere(Math::Vector( 4.0f,  1.0f, -3.0f), 2.0f, SOUND_BOUMv, 0.15f);
-        obj->CreateCrashSphere(Math::Vector( 2.0f,  5.0f, -1.0f), 1.5f, SOUND_BOUMv, 0.15f);
-        obj->CreateCrashSphere(Math::Vector(-4.0f,  5.0f, -1.0f), 1.0f, SOUND_BOUMv, 0.15f);
-        obj->CreateCrashSphere(Math::Vector(-2.0f,  8.0f, -0.5f), 1.0f, SOUND_BOUMv, 0.15f);
-        obj->CreateCrashSphere(Math::Vector( 0.0f, 10.0f, -0.5f), 1.0f, SOUND_BOUMv, 0.15f);
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-5.0f,  1.0f,  0.0f), 2.0f, SOUND_BOUMv, 0.15f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 4.0f,  1.0f,  2.0f), 2.0f, SOUND_BOUMv, 0.15f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 4.0f,  1.0f, -3.0f), 2.0f, SOUND_BOUMv, 0.15f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 2.0f,  5.0f, -1.0f), 1.5f, SOUND_BOUMv, 0.15f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-4.0f,  5.0f, -1.0f), 1.0f, SOUND_BOUMv, 0.15f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-2.0f,  8.0f, -0.5f), 1.0f, SOUND_BOUMv, 0.15f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 0.0f, 10.0f, -0.5f), 1.0f, SOUND_BOUMv, 0.15f));
 //?     obj->SetGlobalSphere(Math::Vector(0.0f, 6.0f, 0.0f), 11.0f);
 
         obj->CreateShadowCircle(16.0f, 0.5f);
@@ -2672,13 +2672,13 @@ CObjectUPtr CObjectFactory::CreateRoot(const ObjectCreateParams& params)
         obj->SetAngleY(0, angle);
         obj->SetZoom(0, 2.0f);
 
-        obj->CreateCrashSphere(Math::Vector(-4.0f,  1.0f,  1.0f), 2.0f, SOUND_BOUMv, 0.15f);
-        obj->CreateCrashSphere(Math::Vector( 0.0f,  1.0f,  2.0f), 1.5f, SOUND_BOUMv, 0.15f);
-        obj->CreateCrashSphere(Math::Vector( 3.0f,  1.0f, -2.0f), 2.0f, SOUND_BOUMv, 0.15f);
-        obj->CreateCrashSphere(Math::Vector(-2.0f,  5.0f,  1.0f), 1.0f, SOUND_BOUMv, 0.15f);
-        obj->CreateCrashSphere(Math::Vector( 2.0f,  5.0f,  0.0f), 1.0f, SOUND_BOUMv, 0.15f);
-        obj->CreateCrashSphere(Math::Vector( 0.0f,  8.0f,  1.0f), 1.0f, SOUND_BOUMv, 0.15f);
-        obj->CreateCrashSphere(Math::Vector( 0.0f, 12.0f,  1.0f), 1.0f, SOUND_BOUMv, 0.15f);
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-4.0f,  1.0f,  1.0f), 2.0f, SOUND_BOUMv, 0.15f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 0.0f,  1.0f,  2.0f), 1.5f, SOUND_BOUMv, 0.15f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 3.0f,  1.0f, -2.0f), 2.0f, SOUND_BOUMv, 0.15f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-2.0f,  5.0f,  1.0f), 1.0f, SOUND_BOUMv, 0.15f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 2.0f,  5.0f,  0.0f), 1.0f, SOUND_BOUMv, 0.15f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 0.0f,  8.0f,  1.0f), 1.0f, SOUND_BOUMv, 0.15f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 0.0f, 12.0f,  1.0f), 1.0f, SOUND_BOUMv, 0.15f));
 //?     obj->SetGlobalSphere(Math::Vector(0.0f, 6.0f, 0.0f), 12.0f);
 
         obj->CreateShadowCircle(16.0f, 0.5f);
@@ -2693,12 +2693,12 @@ CObjectUPtr CObjectFactory::CreateRoot(const ObjectCreateParams& params)
         obj->SetAngleY(0, angle);
         obj->SetZoom(0, 2.0f);
 
-        obj->CreateCrashSphere(Math::Vector(-3.0f,  1.0f,  0.5f), 2.0f, SOUND_BOUMv, 0.15f);
-        obj->CreateCrashSphere(Math::Vector( 3.0f,  1.0f, -1.0f), 2.0f, SOUND_BOUMv, 0.15f);
-        obj->CreateCrashSphere(Math::Vector(-1.0f,  4.5f,  0.0f), 1.0f, SOUND_BOUMv, 0.15f);
-        obj->CreateCrashSphere(Math::Vector( 3.0f,  7.0f,  1.0f), 1.0f, SOUND_BOUMv, 0.15f);
-        obj->CreateCrashSphere(Math::Vector( 0.0f,  7.0f, -1.0f), 1.0f, SOUND_BOUMv, 0.15f);
-        obj->CreateCrashSphere(Math::Vector( 4.0f, 11.0f,  1.0f), 1.0f, SOUND_BOUMv, 0.15f);
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-3.0f,  1.0f,  0.5f), 2.0f, SOUND_BOUMv, 0.15f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 3.0f,  1.0f, -1.0f), 2.0f, SOUND_BOUMv, 0.15f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-1.0f,  4.5f,  0.0f), 1.0f, SOUND_BOUMv, 0.15f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 3.0f,  7.0f,  1.0f), 1.0f, SOUND_BOUMv, 0.15f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 0.0f,  7.0f, -1.0f), 1.0f, SOUND_BOUMv, 0.15f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 4.0f, 11.0f,  1.0f), 1.0f, SOUND_BOUMv, 0.15f));
 //?     obj->SetGlobalSphere(Math::Vector(0.0f, 6.0f, 0.0f), 10.0f);
 
         obj->CreateShadowCircle(16.0f, 0.5f);
@@ -2713,14 +2713,14 @@ CObjectUPtr CObjectFactory::CreateRoot(const ObjectCreateParams& params)
         obj->SetAngleY(0, angle);
         obj->SetZoom(0, 2.0f);
 
-        obj->CreateCrashSphere(Math::Vector(-4.0f,  1.0f,  1.0f), 3.0f, SOUND_BOUMv, 0.15f);
-        obj->CreateCrashSphere(Math::Vector( 4.0f,  1.0f, -3.0f), 3.0f, SOUND_BOUMv, 0.15f);
-        obj->CreateCrashSphere(Math::Vector( 6.0f,  1.0f,  4.0f), 3.0f, SOUND_BOUMv, 0.15f);
-        obj->CreateCrashSphere(Math::Vector(-2.5f,  7.0f,  2.0f), 2.0f, SOUND_BOUMv, 0.15f);
-        obj->CreateCrashSphere(Math::Vector( 4.0f,  7.0f,  2.0f), 2.0f, SOUND_BOUMv, 0.15f);
-        obj->CreateCrashSphere(Math::Vector( 3.0f,  6.0f, -1.0f), 1.0f, SOUND_BOUMv, 0.15f);
-        obj->CreateCrashSphere(Math::Vector( 0.0f, 12.0f,  0.0f), 2.0f, SOUND_BOUMv, 0.15f);
-        obj->CreateCrashSphere(Math::Vector( 1.0f, 16.0f,  0.0f), 1.0f, SOUND_BOUMv, 0.15f);
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-4.0f,  1.0f,  1.0f), 3.0f, SOUND_BOUMv, 0.15f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 4.0f,  1.0f, -3.0f), 3.0f, SOUND_BOUMv, 0.15f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 6.0f,  1.0f,  4.0f), 3.0f, SOUND_BOUMv, 0.15f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-2.5f,  7.0f,  2.0f), 2.0f, SOUND_BOUMv, 0.15f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 4.0f,  7.0f,  2.0f), 2.0f, SOUND_BOUMv, 0.15f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 3.0f,  6.0f, -1.0f), 1.0f, SOUND_BOUMv, 0.15f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 0.0f, 12.0f,  0.0f), 2.0f, SOUND_BOUMv, 0.15f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 1.0f, 16.0f,  0.0f), 1.0f, SOUND_BOUMv, 0.15f));
 //?     obj->SetGlobalSphere(Math::Vector(0.0f, 10.0f, 0.0f), 14.0f);
 
         obj->CreateShadowCircle(22.0f, 0.5f);
@@ -2735,16 +2735,16 @@ CObjectUPtr CObjectFactory::CreateRoot(const ObjectCreateParams& params)
         obj->SetAngleY(0, angle);
         obj->SetZoom(0, 2.0f);
 
-        obj->CreateCrashSphere(Math::Vector( -7.0f,  2.0f,  3.0f), 4.0f, SOUND_BOUMv, 0.15f);
-        obj->CreateCrashSphere(Math::Vector(  5.0f,  2.0f, -6.0f), 4.0f, SOUND_BOUMv, 0.15f);
-        obj->CreateCrashSphere(Math::Vector(  6.0f,  2.0f,  6.0f), 3.0f, SOUND_BOUMv, 0.15f);
-        obj->CreateCrashSphere(Math::Vector(-11.0f,  1.0f, -2.0f), 2.0f, SOUND_BOUMv, 0.15f);
-        obj->CreateCrashSphere(Math::Vector(  1.0f,  1.0f, -7.0f), 2.0f, SOUND_BOUMv, 0.15f);
-        obj->CreateCrashSphere(Math::Vector( -4.0f, 10.0f,  3.0f), 2.0f, SOUND_BOUMv, 0.15f);
-        obj->CreateCrashSphere(Math::Vector(  1.0f, 11.0f,  7.0f), 2.0f, SOUND_BOUMv, 0.15f);
-        obj->CreateCrashSphere(Math::Vector(  3.0f, 11.0f, -3.0f), 2.0f, SOUND_BOUMv, 0.15f);
-        obj->CreateCrashSphere(Math::Vector( -3.0f, 17.0f,  1.0f), 2.0f, SOUND_BOUMv, 0.15f);
-        obj->CreateCrashSphere(Math::Vector( -3.0f, 23.0f, -1.0f), 2.0f, SOUND_BOUMv, 0.15f);
+        obj->AddCrashSphere(CrashSphere(Math::Vector( -7.0f,  2.0f,  3.0f), 4.0f, SOUND_BOUMv, 0.15f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(  5.0f,  2.0f, -6.0f), 4.0f, SOUND_BOUMv, 0.15f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(  6.0f,  2.0f,  6.0f), 3.0f, SOUND_BOUMv, 0.15f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-11.0f,  1.0f, -2.0f), 2.0f, SOUND_BOUMv, 0.15f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(  1.0f,  1.0f, -7.0f), 2.0f, SOUND_BOUMv, 0.15f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( -4.0f, 10.0f,  3.0f), 2.0f, SOUND_BOUMv, 0.15f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(  1.0f, 11.0f,  7.0f), 2.0f, SOUND_BOUMv, 0.15f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(  3.0f, 11.0f, -3.0f), 2.0f, SOUND_BOUMv, 0.15f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( -3.0f, 17.0f,  1.0f), 2.0f, SOUND_BOUMv, 0.15f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( -3.0f, 23.0f, -1.0f), 2.0f, SOUND_BOUMv, 0.15f));
 //?     obj->SetGlobalSphere(Math::Vector(0.0f, 12.0f, 0.0f), 20.0f);
 
         obj->CreateShadowCircle(30.0f, 0.5f);
@@ -2768,16 +2768,16 @@ CObjectUPtr CObjectFactory::CreateRoot(const ObjectCreateParams& params)
         obj->SetAngleX(1, -30.0f*Math::PI/180.0f);
         obj->SetAngleZ(1,  20.0f*Math::PI/180.0f);
 
-        obj->CreateCrashSphere(Math::Vector( -7.0f,  2.0f,  3.0f), 4.0f, SOUND_BOUMv, 0.15f);
-        obj->CreateCrashSphere(Math::Vector(  5.0f,  2.0f, -6.0f), 4.0f, SOUND_BOUMv, 0.15f);
-        obj->CreateCrashSphere(Math::Vector(  6.0f,  2.0f,  6.0f), 3.0f, SOUND_BOUMv, 0.15f);
-        obj->CreateCrashSphere(Math::Vector(-11.0f,  1.0f, -2.0f), 2.0f, SOUND_BOUMv, 0.15f);
-        obj->CreateCrashSphere(Math::Vector(  1.0f,  1.0f, -7.0f), 2.0f, SOUND_BOUMv, 0.15f);
-        obj->CreateCrashSphere(Math::Vector( -4.0f, 10.0f,  3.0f), 2.0f, SOUND_BOUMv, 0.15f);
-        obj->CreateCrashSphere(Math::Vector(  1.0f, 11.0f,  7.0f), 2.0f, SOUND_BOUMv, 0.15f);
-        obj->CreateCrashSphere(Math::Vector(  3.0f, 11.0f, -3.0f), 2.0f, SOUND_BOUMv, 0.15f);
-        obj->CreateCrashSphere(Math::Vector( -3.0f, 17.0f,  1.0f), 2.0f, SOUND_BOUMv, 0.15f);
-        obj->CreateCrashSphere(Math::Vector( -3.0f, 23.0f, -1.0f), 2.0f, SOUND_BOUMv, 0.15f);
+        obj->AddCrashSphere(CrashSphere(Math::Vector( -7.0f,  2.0f,  3.0f), 4.0f, SOUND_BOUMv, 0.15f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(  5.0f,  2.0f, -6.0f), 4.0f, SOUND_BOUMv, 0.15f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(  6.0f,  2.0f,  6.0f), 3.0f, SOUND_BOUMv, 0.15f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-11.0f,  1.0f, -2.0f), 2.0f, SOUND_BOUMv, 0.15f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(  1.0f,  1.0f, -7.0f), 2.0f, SOUND_BOUMv, 0.15f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( -4.0f, 10.0f,  3.0f), 2.0f, SOUND_BOUMv, 0.15f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(  1.0f, 11.0f,  7.0f), 2.0f, SOUND_BOUMv, 0.15f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(  3.0f, 11.0f, -3.0f), 2.0f, SOUND_BOUMv, 0.15f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( -3.0f, 17.0f,  1.0f), 2.0f, SOUND_BOUMv, 0.15f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( -3.0f, 23.0f, -1.0f), 2.0f, SOUND_BOUMv, 0.15f));
 //?     obj->SetGlobalSphere(Math::Vector(0.0f, 12.0f, 0.0f), 20.0f);
 
         obj->CreateShadowCircle(30.0f, 0.5f);
@@ -2818,7 +2818,7 @@ CObjectUPtr CObjectFactory::CreateHome(const ObjectCreateParams& params)
         obj->SetAngleY(0, angle);
         obj->SetZoom(0, 1.3f);
 
-        obj->CreateCrashSphere(Math::Vector(0.0f, 5.0f, 0.0f), 10.0f, SOUND_BOUMs, 0.25f);
+        obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 5.0f, 0.0f), 10.0f, SOUND_BOUMs, 0.25f));
 //?     obj->SetGlobalSphere(Math::Vector(0.0f, 6.0f, 0.0f), 11.0f);
         obj->CreateShadowCircle(16.0f, 0.5f);
     }
@@ -2920,7 +2920,7 @@ CObjectUPtr CObjectFactory::CreateRuin(const ObjectCreateParams& params)
         obj->SetAngleY(9, Math::PI-0.2f);
         obj->SetAngleX(9, 0.2f);
 
-        obj->CreateCrashSphere(Math::Vector(0.0f, 2.8f, 0.0f), 3.0f, SOUND_BOUMm, 0.45f);
+        obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 2.8f, 0.0f), 3.0f, SOUND_BOUMm, 0.45f));
 //?     obj->SetGlobalSphere(Math::Vector(0.0f, 5.0f, 0.0f), 10.0f);
 
         obj->CreateShadowCircle(4.0f, 1.0f);
@@ -2952,7 +2952,7 @@ CObjectUPtr CObjectFactory::CreateRuin(const ObjectCreateParams& params)
         obj->SetAngleY(9, Math::PI+0.3f);
         obj->SetAngleX(9, -0.3f);
 
-        obj->CreateCrashSphere(Math::Vector(0.0f, 2.8f, 0.0f), 3.0f, SOUND_BOUMm, 0.45f);
+        obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 2.8f, 0.0f), 3.0f, SOUND_BOUMm, 0.45f));
 //?     obj->SetGlobalSphere(Math::Vector(0.0f, 5.0f, 0.0f), 10.0f);
 
         obj->CreateShadowCircle(4.0f, 1.0f);
@@ -2973,7 +2973,7 @@ CObjectUPtr CObjectFactory::CreateRuin(const ObjectCreateParams& params)
         obj->SetAngleY(1, -0.4f);
         obj->SetAngleZ(1, -0.1f);
 
-        obj->CreateCrashSphere(Math::Vector(1.0f, 2.8f, -1.0f), 5.0f, SOUND_BOUMm, 0.45f);
+        obj->AddCrashSphere(CrashSphere(Math::Vector(1.0f, 2.8f, -1.0f), 5.0f, SOUND_BOUMm, 0.45f));
 //?     obj->SetGlobalSphere(Math::Vector(1.0f, 5.0f, -1.0f), 10.0f);
 
         obj->CreateShadowCircle(5.0f, 1.0f);
@@ -2981,7 +2981,7 @@ CObjectUPtr CObjectFactory::CreateRuin(const ObjectCreateParams& params)
 
     if ( type == OBJECT_RUINmobilet2 )  // vehicle have caterpillars?
     {
-        obj->CreateCrashSphere(Math::Vector(0.0f, 2.8f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
+        obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 2.8f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f));
 //?     obj->SetGlobalSphere(Math::Vector(0.0f, 5.0f, 0.0f), 10.0f);
 
         obj->CreateShadowCircle(5.0f, 1.0f);
@@ -2989,7 +2989,7 @@ CObjectUPtr CObjectFactory::CreateRuin(const ObjectCreateParams& params)
 
     if ( type == OBJECT_RUINmobiler1 )  // vehicle skating?
     {
-        obj->CreateCrashSphere(Math::Vector(1.0f, 2.8f, -1.0f), 5.0f, SOUND_BOUMm, 0.45f);
+        obj->AddCrashSphere(CrashSphere(Math::Vector(1.0f, 2.8f, -1.0f), 5.0f, SOUND_BOUMm, 0.45f));
         obj->SetGlobalSphere(Math::Vector(1.0f, 5.0f, -1.0f), 10.0f);
 
         obj->CreateShadowCircle(5.0f, 1.0f);
@@ -2997,7 +2997,7 @@ CObjectUPtr CObjectFactory::CreateRuin(const ObjectCreateParams& params)
 
     if ( type == OBJECT_RUINmobiler2 )  // vehicle skating?
     {
-        obj->CreateCrashSphere(Math::Vector(0.0f, 1.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
+        obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 1.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f));
         obj->SetGlobalSphere(Math::Vector(0.0f, 5.0f, 0.0f), 10.0f);
 
         obj->CreateShadowCircle(6.0f, 1.0f);
@@ -3005,15 +3005,15 @@ CObjectUPtr CObjectFactory::CreateRuin(const ObjectCreateParams& params)
 
     if ( type == OBJECT_RUINfactory )  // factory ?
     {
-        obj->CreateCrashSphere(Math::Vector(  9.0f,  1.0f, -11.0f), 5.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(  0.0f,  2.0f, -11.0f), 4.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(-10.0f,  4.0f, -10.0f), 5.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(-12.0f, 11.0f,  -4.0f), 3.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(-10.0f,  4.0f,  -2.0f), 3.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(-11.0f,  8.0f,   3.0f), 3.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(-11.0f,  2.0f,   4.0f), 3.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(-11.0f,  2.0f,  10.0f), 3.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector( -4.0f,  0.0f,  10.0f), 3.0f, SOUND_BOUMm, 0.45f);
+        obj->AddCrashSphere(CrashSphere(Math::Vector(  9.0f,  1.0f, -11.0f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(  0.0f,  2.0f, -11.0f), 4.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-10.0f,  4.0f, -10.0f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-12.0f, 11.0f,  -4.0f), 3.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-10.0f,  4.0f,  -2.0f), 3.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-11.0f,  8.0f,   3.0f), 3.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-11.0f,  2.0f,   4.0f), 3.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-11.0f,  2.0f,  10.0f), 3.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( -4.0f,  0.0f,  10.0f), 3.0f, SOUND_BOUMm, 0.45f));
         obj->SetGlobalSphere(Math::Vector(0.0f, 0.0f, 0.0f), 18.0f);
 
         obj->CreateShadowCircle(20.0f, 0.7f);
@@ -3021,7 +3021,7 @@ CObjectUPtr CObjectFactory::CreateRuin(const ObjectCreateParams& params)
 
     if ( type == OBJECT_RUINdoor )  // converter holder?
     {
-        obj->CreateCrashSphere(Math::Vector(0.0f, 0.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
+        obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 0.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f));
 //?     obj->SetGlobalSphere(Math::Vector(0.0f, 0.0f, 0.0f), 6.0f);
 
         obj->CreateShadowCircle(6.0f, 1.0f);
@@ -3029,7 +3029,7 @@ CObjectUPtr CObjectFactory::CreateRuin(const ObjectCreateParams& params)
 
     if ( type == OBJECT_RUINsupport )  // radar holder?
     {
-        obj->CreateCrashSphere(Math::Vector(0.0f, 0.0f, 0.0f), 3.0f, SOUND_BOUMm, 0.45f);
+        obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 0.0f, 0.0f), 3.0f, SOUND_BOUMm, 0.45f));
 //?     obj->SetGlobalSphere(Math::Vector(0.0f, 0.0f, 0.0f), 4.0f);
 
         obj->CreateShadowCircle(3.0f, 1.0f);
@@ -3037,7 +3037,7 @@ CObjectUPtr CObjectFactory::CreateRuin(const ObjectCreateParams& params)
 
     if ( type == OBJECT_RUINradar )  // radar base?
     {
-        obj->CreateCrashSphere(Math::Vector(0.0f, 0.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
+        obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 0.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f));
 //?     obj->SetGlobalSphere(Math::Vector(0.0f, 0.0f, 0.0f), 6.0f);
 
         obj->CreateShadowCircle(6.0f, 1.0f);
@@ -3047,28 +3047,28 @@ CObjectUPtr CObjectFactory::CreateRuin(const ObjectCreateParams& params)
     {
         m_terrain->AddBuildingLevel(pos, 7.0f, 9.0f, 1.0f, 0.5f);
 
-        obj->CreateCrashSphere(Math::Vector(-10.0f,  0.0f,  4.0f), 5.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(-10.0f,  0.0f, -4.0f), 5.0f, SOUND_BOUMm, 0.45f);
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-10.0f,  0.0f,  4.0f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-10.0f,  0.0f, -4.0f), 5.0f, SOUND_BOUMm, 0.45f));
 //?     obj->SetGlobalSphere(Math::Vector(-3.0f, 0.0f, 0.0f), 14.0f);
     }
 
     if ( type == OBJECT_RUINbase )  // base?
     {
-        obj->CreateCrashSphere(Math::Vector(  0.0f, 15.0f,   0.0f),28.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector( 17.0f,  6.0f,  42.0f), 6.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector( 17.0f, 17.0f,  42.0f), 4.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(-17.0f,  6.0f,  42.0f), 6.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(-17.0f, 17.0f,  42.0f), 4.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(-42.0f,  6.0f,  17.0f), 6.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(-42.0f, 17.0f,  17.0f), 4.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(-42.0f,  6.0f, -17.0f), 6.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(-42.0f, 17.0f, -17.0f), 4.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(-17.0f,  6.0f, -42.0f), 6.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(-17.0f, 10.0f, -42.0f), 4.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector( 15.0f, 13.0f, -34.0f), 3.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector( 31.0f, 15.0f, -13.0f), 3.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector( 21.0f,  8.0f, -39.0f), 5.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector( 26.0f,  8.0f, -33.0f), 5.0f, SOUND_BOUMm, 0.45f);
+        obj->AddCrashSphere(CrashSphere(Math::Vector(  0.0f, 15.0f,   0.0f),28.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 17.0f,  6.0f,  42.0f), 6.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 17.0f, 17.0f,  42.0f), 4.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-17.0f,  6.0f,  42.0f), 6.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-17.0f, 17.0f,  42.0f), 4.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-42.0f,  6.0f,  17.0f), 6.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-42.0f, 17.0f,  17.0f), 4.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-42.0f,  6.0f, -17.0f), 6.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-42.0f, 17.0f, -17.0f), 4.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-17.0f,  6.0f, -42.0f), 6.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-17.0f, 10.0f, -42.0f), 4.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 15.0f, 13.0f, -34.0f), 3.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 31.0f, 15.0f, -13.0f), 3.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 21.0f,  8.0f, -39.0f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 26.0f,  8.0f, -33.0f), 5.0f, SOUND_BOUMm, 0.45f));
         obj->SetGlobalSphere(Math::Vector(0.0f, 0.0f, 0.0f), 48.0f);
 
         obj->CreateShadowCircle(40.0f, 1.0f);
@@ -3076,18 +3076,18 @@ CObjectUPtr CObjectFactory::CreateRuin(const ObjectCreateParams& params)
 
     if ( type == OBJECT_RUINhead )  // base cap?
     {
-        obj->CreateCrashSphere(Math::Vector(  0.0f, 13.0f,   0.0f),20.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(  0.0f, -8.0f,   0.0f), 5.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(  0.0f,-16.0f,   0.0f), 3.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(  0.0f,-22.0f,   0.0f), 3.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(-21.0f,  7.0f,   9.0f), 8.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector( -9.0f,  7.0f,  21.0f), 8.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector( 21.0f,  7.0f,   9.0f), 8.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(  9.0f,  7.0f,  21.0f), 8.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(-21.0f,  7.0f,  -9.0f), 8.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector( -9.0f,  7.0f, -21.0f), 8.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector( 21.0f,  7.0f,  -9.0f), 8.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(  9.0f,  7.0f, -21.0f), 8.0f, SOUND_BOUMm, 0.45f);
+        obj->AddCrashSphere(CrashSphere(Math::Vector(  0.0f, 13.0f,   0.0f),20.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(  0.0f, -8.0f,   0.0f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(  0.0f,-16.0f,   0.0f), 3.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(  0.0f,-22.0f,   0.0f), 3.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-21.0f,  7.0f,   9.0f), 8.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( -9.0f,  7.0f,  21.0f), 8.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 21.0f,  7.0f,   9.0f), 8.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(  9.0f,  7.0f,  21.0f), 8.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-21.0f,  7.0f,  -9.0f), 8.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( -9.0f,  7.0f, -21.0f), 8.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 21.0f,  7.0f,  -9.0f), 8.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(  9.0f,  7.0f, -21.0f), 8.0f, SOUND_BOUMm, 0.45f));
         obj->SetGlobalSphere(Math::Vector(0.0f, 0.0f, 0.0f), 35.0f);
 
         obj->CreateShadowCircle(30.0f, 1.0f);
@@ -3292,11 +3292,11 @@ CObjectUPtr CObjectFactory::CreateApollo(const ObjectCreateParams& params)
 
 //?     m_terrain->AddBuildingLevel(pos, 10.0f, 13.0f, 12.0f, 0.0f);
 
-        obj->CreateCrashSphere(Math::Vector(  0.0f, 4.0f,   0.0f), 9.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector( 11.0f, 5.0f,   0.0f), 3.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(-11.0f, 5.0f,   0.0f), 3.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(  0.0f, 5.0f, -11.0f), 3.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(  0.0f, 5.0f,  11.0f), 3.0f, SOUND_BOUMm, 0.45f);
+        obj->AddCrashSphere(CrashSphere(Math::Vector(  0.0f, 4.0f,   0.0f), 9.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 11.0f, 5.0f,   0.0f), 3.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-11.0f, 5.0f,   0.0f), 3.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(  0.0f, 5.0f, -11.0f), 3.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(  0.0f, 5.0f,  11.0f), 3.0f, SOUND_BOUMm, 0.45f));
 
         obj->SetGlobalSphere(Math::Vector(0.0f, 4.0f, 0.0f), 9.0f);
 
@@ -3360,9 +3360,9 @@ CObjectUPtr CObjectFactory::CreateApollo(const ObjectCreateParams& params)
         obj->SetPosition(6, Math::Vector(5.5f, 2.8f, -2.0f));
         obj->SetAngleY(6, 30.0f*Math::PI/180.0f);
 
-        obj->CreateCrashSphere(Math::Vector( 3.0f, 2.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector(-3.0f, 2.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
-        obj->CreateCrashSphere(Math::Vector( 7.0f, 9.0f, 2.0f), 2.0f, SOUND_BOUMm, 0.20f);
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 3.0f, 2.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(-3.0f, 2.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector( 7.0f, 9.0f, 2.0f), 2.0f, SOUND_BOUMm, 0.20f));
 
         obj->CreateShadowCircle(7.0f, 0.8f);
 
@@ -3393,7 +3393,7 @@ CObjectUPtr CObjectFactory::CreateApollo(const ObjectCreateParams& params)
         obj->SetAngleY(0, angle);
         obj->SetFloorHeight(0.0f);
 
-        obj->CreateCrashSphere(Math::Vector(0.0f, 2.0f, 0.0f), 2.0f, SOUND_BOUMm, 0.45f);
+        obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 2.0f, 0.0f), 2.0f, SOUND_BOUMm, 0.45f));
         obj->CreateShadowCircle(5.0f, 0.8f);
 
         obj->FloorAdjust();
@@ -3418,7 +3418,7 @@ CObjectUPtr CObjectFactory::CreateApollo(const ObjectCreateParams& params)
         obj->SetAngleY(1, -120.0f*Math::PI/180.0f);
         obj->SetAngleZ(1,   45.0f*Math::PI/180.0f);
 
-        obj->CreateCrashSphere(Math::Vector(0.0f, 4.0f, 0.0f), 3.0f, SOUND_BOUMm, 0.35f);
+        obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 4.0f, 0.0f), 3.0f, SOUND_BOUMm, 0.35f));
         obj->CreateShadowCircle(3.0f, 0.7f);
     }
 

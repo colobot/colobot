@@ -1298,11 +1298,10 @@ Error CAutoBase::CheckCloseDoor()
         ObjectType type = obj->GetType();
         if ( type == OBJECT_PORTICO )  continue;
 
-        int j = 0;
-        Math::Vector oPos;
-        float oRad = 0.0f;
-        while ( obj->GetCrashSphere(j++, oPos, oRad) )
+        for (const auto& crashSphere : obj->GetAllCrashSpheres())
         {
+            Math::Vector oPos = crashSphere.sphere.pos;
+            float oRad = crashSphere.sphere.radius;
             float dist = Math::DistanceProjected(m_pos, oPos);
             if ( dist+oRad > 32.0f &&
                  dist-oRad < 72.0f )

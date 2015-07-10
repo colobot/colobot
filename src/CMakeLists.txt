@@ -164,6 +164,7 @@ set(BASE_SOURCES
     object/motion/motiontoto.cpp
     object/motion/motionvehicle.cpp
     object/motion/motionworm.cpp
+    object/object.cpp
     object/object_factory.cpp
     object/object_manager.cpp
     object/old_object.cpp

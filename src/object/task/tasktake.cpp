@@ -364,11 +364,15 @@ CObject* CTaskTake::SearchFriendObject(float &angle,
     Character*  character;
     CObject*    pPower;
     Math::Matrix*   mat;
-    Math::Vector    iPos, oPos;
     ObjectType  type, powerType;
-    float       iAngle, iRad, distance;
+    float       iAngle, distance;
 
-    if ( !m_object->GetCrashSphere(0, iPos, iRad) )  return 0;
+    if (m_object->GetCrashSphereCount() == 0) return 0;
+
+    auto crashSphere = m_object->GetFirstCrashSphere();
+    Math::Vector iPos = crashSphere.sphere.pos;
+    float iRad = crashSphere.sphere.radius;
+
     iAngle = m_object->GetAngleY(0);
     iAngle = Math::NormAngle(iAngle);  // 0..2*Math::PI
 
@@ -422,7 +426,7 @@ CObject* CTaskTake::SearchFriendObject(float &angle,
 
         mat = pObj->GetWorldMatrix(0);
         character = pObj->GetCharacter();
-        oPos = Transform(*mat, character->posPower);
+        Math::Vector oPos = Transform(*mat, character->posPower);
 
         distance = fabs(Math::Distance(oPos, iPos) - (iRad+1.0f));
         if ( distance <= dLimit )
@@ -555,13 +559,8 @@ bool CTaskTake::TransporterDeposeObject()
 
 bool CTaskTake::IsFreeDeposeObject(Math::Vector pos)
 {
-    Math::Matrix*   mat;
-    Math::Vector    iPos, oPos;
-    float       oRadius;
-    int         j;
-
-    mat = m_object->GetWorldMatrix(0);
-    iPos = Transform(*mat, pos);
+    Math::Matrix* mat = m_object->GetWorldMatrix(0);
+    Math::Vector iPos = Transform(*mat, pos);
 
     for (CObject* pObj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
@@ -569,10 +568,9 @@ bool CTaskTake::IsFreeDeposeObject(Math::Vector pos)
         if ( !pObj->GetActive() )  continue;  // inactive?
         if ( pObj->GetTransporter() != 0 )  continue;  // object transported?
 
-        j = 0;
-        while ( pObj->GetCrashSphere(j++, oPos, oRadius) )
+        for (const auto& crashSphere : pObj->GetAllCrashSpheres())
         {
-            if ( Math::Distance(iPos, oPos)-(oRadius+1.0f) < 1.0f )
+            if ( Math::Distance(iPos, crashSphere.sphere.pos)-(crashSphere.sphere.radius+1.0f) < 1.0f )
             {
                 return false;  // location occupied
             }

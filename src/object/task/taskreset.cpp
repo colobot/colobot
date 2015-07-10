@@ -318,12 +318,11 @@ bool CTaskReset::SearchVehicle()
              type != OBJECT_BEE      &&
              type != OBJECT_WORM     )  continue;
 
-        Math::Vector oPos;
-        float oRadius = 0.0f;
-        if ( !obj->GetCrashSphere(0, oPos, oRadius) )  continue;
-        float dist = Math::Distance(oPos, m_goal)-oRadius;
+        if (obj->GetCrashSphereCount() == 0) continue;
 
-        if ( dist < 5.0f )  return true;
+        auto crashSphere = obj->GetFirstCrashSphere();
+        if (Math::DistanceToSphere(m_goal, crashSphere.sphere) < 5.0f)
+            return true;
     }
 
     return false;

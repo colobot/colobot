@@ -86,8 +86,8 @@ std::unique_ptr<CExchangePost> CExchangePost::Create(
         obj->SetAngleY(2+i*2, 2.0f*Math::PI/3.0f*i);
     }
 
-    obj->CreateCrashSphere(Math::Vector(0.0f,  3.0f, 0.0f), 6.0f, SOUND_BOUMm, 0.45f);
-    obj->CreateCrashSphere(Math::Vector(0.0f, 11.0f, 0.0f), 6.0f, SOUND_BOUMm, 0.45f);
+    obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f,  3.0f, 0.0f), 6.0f, SOUND_BOUMm, 0.45f));
+    obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 11.0f, 0.0f), 6.0f, SOUND_BOUMm, 0.45f));
     obj->SetGlobalSphere(Math::Vector(0.0f, 5.0f, 0.0f), 6.0f);
 
     obj->CreateShadowCircle(8.0f, 1.0f);

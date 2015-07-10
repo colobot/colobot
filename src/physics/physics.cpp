@@ -2511,10 +2511,9 @@ int CPhysics::ObjectAdapt(const Math::Vector &pos, const Math::Vector &angle)
 {
     CPhysics*       ph;
     Math::Matrix    matRotate;
-    Math::Vector    iPos, oPos, iiPos, oAngle, oSpeed;
-    SoundType           sound;
-    float           iRad, oRad, distance, force, volume;
-    int             j, colType;
+    Math::Vector    iPos, oAngle, oSpeed;
+    float           distance, force, volume;
+    int             colType;
     ObjectType      iType, oType;
 
     if ( m_object->GetRuin() )  return 0;  // is burning or exploding?
@@ -2522,7 +2521,10 @@ int CPhysics::ObjectAdapt(const Math::Vector &pos, const Math::Vector &angle)
 
     // iiPos = sphere center is the old position.
     // iPos  = sphere center has the new position.
-    m_object->GetCrashSphere(0, iiPos, iRad);
+    auto firstCrashSphere = m_object->GetFirstCrashSphere();
+    Math::Vector iiPos = firstCrashSphere.sphere.pos;
+    float iRad = firstCrashSphere.sphere.radius;
+
     iPos = iiPos + (pos - m_object->GetPosition(0));
     iType = m_object->GetType();
 
@@ -2547,10 +2549,12 @@ int CPhysics::ObjectAdapt(const Math::Vector &pos, const Math::Vector &angle)
         if ( iType == OBJECT_MOTHER && oType == OBJECT_EGG    )  continue;
         if ( iType == OBJECT_EGG    && oType == OBJECT_MOTHER )  continue;
 
-        pObj->GetJostlingSphere(oPos, oRad);
-        if ( oRad > 0.0f )
+        Math::Vector jostlingSpherePos;
+        float jostlingSphereRadius = 0.0f;
+        pObj->GetJostlingSphere(jostlingSpherePos, jostlingSphereRadius);
+        if ( jostlingSphereRadius > 0.0f )
         {
-            JostleObject(pObj, iPos, iRad, oPos, oRad);
+            JostleObject(pObj, iPos, iRad, jostlingSpherePos, jostlingSphereRadius);
         }
 
         if ( iType == OBJECT_MOTHER ||
@@ -2580,7 +2584,7 @@ int CPhysics::ObjectAdapt(const Math::Vector &pos, const Math::Vector &angle)
             !m_object->GetResetBusy() &&
              m_object->GetTrainer()   )  // driving vehicle?
         {
-            oPos = pObj->GetPosition(0);
+            Math::Vector oPos = pObj->GetPosition(0);
             distance = Math::DistanceProjected(oPos, iPos);
             if ( distance < 4.0f )
             {
@@ -2591,7 +2595,7 @@ int CPhysics::ObjectAdapt(const Math::Vector &pos, const Math::Vector &angle)
 
         if ( oType == OBJECT_TARGET2 )
         {
-            oPos = pObj->GetPosition(0);
+            Math::Vector oPos = pObj->GetPosition(0);
             distance = Math::Distance(oPos, iPos);
             if ( distance < 10.0f*1.5f )
             {
@@ -2600,9 +2604,11 @@ int CPhysics::ObjectAdapt(const Math::Vector &pos, const Math::Vector &angle)
             }
         }
 
-        j = 0;
-        while ( pObj->GetCrashSphere(j++, oPos, oRad) )
+        for (const auto& crashSphere : pObj->GetAllCrashSpheres())
         {
+            Math::Vector oPos = crashSphere.sphere.pos;
+            float oRad = crashSphere.sphere.radius;
+
             if ( iType == OBJECT_MOTHER && oRad <= 1.2f )  continue;
             if ( iType == OBJECT_ANT    && oRad <= 1.2f )  continue;
             if ( iType == OBJECT_SPIDER && oRad <= 1.2f )  continue;
@@ -2618,11 +2624,10 @@ int CPhysics::ObjectAdapt(const Math::Vector &pos, const Math::Vector &angle)
                     m_bCollision = true;
                     m_bObstacle = true;
 
-                    sound = pObj->GetCrashSphereSound(j-1);
-                    if ( sound != SOUND_CLICK )
+                    if (crashSphere.sound != SOUND_CLICK)
                     {
                         force = fabs(m_linMotion.realSpeed.x);
-                        force *= pObj->GetCrashSphereHardness(j-1)*2.0f;
+                        force *= crashSphere.hardness*2.0f;
                         if ( ExploOther(iType, pObj, oType, force) )  continue;
                         colType = ExploHimself(iType, oType, force);
                         if ( colType == 2 )  return 2;  // destroyed?
@@ -2630,12 +2635,12 @@ int CPhysics::ObjectAdapt(const Math::Vector &pos, const Math::Vector &angle)
                     }
 
                     force = m_linMotion.realSpeed.Length();
-                    force *= pObj->GetCrashSphereHardness(j-1);
+                    force *= crashSphere.hardness;
                     volume = fabs(force*0.05f);
                     if ( volume > 1.0f )  volume = 1.0f;
-                    if ( sound != SOUND_CLICK )
+                    if ( crashSphere.sound != SOUND_CLICK )
                     {
-                        m_sound->Play(sound, m_object->GetPosition(0), volume);
+                        m_sound->Play(crashSphere.sound, m_object->GetPosition(0), volume);
                     }
                     if ( iType == OBJECT_HUMAN && volume > 0.5f )
                     {

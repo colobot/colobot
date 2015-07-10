@@ -484,11 +484,11 @@ bool CAutoDerrick::SearchFree(Math::Vector pos)
         ObjectType type = obj->GetType();
         if ( type == OBJECT_DERRICK )  continue;
 
-        int j = 0;
-        Math::Vector sPos;
-        float sRadius = 0.0f;
-        while ( obj->GetCrashSphere(j++, sPos, sRadius) )
+        for (const auto& crashSphere : obj->GetAllCrashSpheres())
         {
+            Math::Vector sPos = crashSphere.sphere.pos;
+            float sRadius = crashSphere.sphere.radius;
+
             float distance = Math::Distance(sPos, pos);
             distance -= sRadius;
             if ( distance < 2.0f )  return false;  // location occupied
