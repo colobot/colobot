@@ -781,7 +781,10 @@ bool CApplication::ChangeJoystick(const JoystickDevice &newJoystick)
     if (m_private->joystick != nullptr)
         CloseJoystick();
 
-    return OpenJoystick();
+    if (m_joystickEnabled)
+        return OpenJoystick();
+    else
+        return true;
 }
 
 Uint32 JoystickTimerCallback(Uint32 interval, void *)
