@@ -249,9 +249,6 @@ msgstr ""
 msgid "www.colobot.info"
 msgstr ""
 
-msgid " "
-msgstr ""
-
 msgid "Recorder"
 msgstr ""
 
@@ -494,6 +491,9 @@ msgid "Speed 3.0x\\Triple speed"
 msgstr ""
 
 msgid "Speed 4.0x\\Quadruple speed"
+msgstr ""
+
+msgid "Speed 6.0x\\Sextuple speed"
 msgstr ""
 
 msgid "Camera up\\Increase camera angle while visiting message origin"

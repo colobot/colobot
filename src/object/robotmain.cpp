@@ -903,6 +903,10 @@ bool CRobotMain::ProcessEvent(Event &event)
                 {
                     SetSpeed(4.0f);
                 }
+                if (event.key.slot == INPUT_SLOT_SPEED60)
+                {
+                    SetSpeed(6.0f);
+                }
                 if (event.key.key == KEY(c) && ((event.kmodState & KEY_MOD(CTRL)) != 0) && m_engine->GetShowStats())
                 {
                     CObject* obj = GetSelect();

@@ -20,9 +20,6 @@ msgstr ""
 "X-Source-Language: en_US\n"
 "X-POOTLE-MTIME: 1406536037.000000\n"
 
-msgid " "
-msgstr " "
-
 msgid " Challenges in the chapter:"
 msgstr " Liste der Challenges des Kapitels:"
 
@@ -1402,6 +1399,10 @@ msgstr "Geschwindigkeit 2.0x\\Spielgeschwindigkeit doppelt so schnell"
 msgid "Speed 4.0x\\Quadruple speed"
 msgstr "Geschwindigkeit 2.0x\\Spielgeschwindigkeit doppelt so schnell"
 
+#, fuzzy
+msgid "Speed 6.0x\\Sextuple speed"
+msgstr "Geschwindigkeit 2.0x\\Spielgeschwindigkeit doppelt so schnell"
+
 msgid "Spider"
 msgstr "Spinne"
 
@@ -1821,6 +1822,9 @@ msgstr ""
 
 msgid "www.epsitec.com"
 msgstr "www.epsitec.com"
+
+#~ msgid " "
+#~ msgstr " "
 
 #~ msgid "3D sound\\3D positioning of the sound"
 #~ msgstr "3D-Geräusche\\Orten der Geräusche im Raum"

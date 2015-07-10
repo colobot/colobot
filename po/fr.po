@@ -16,9 +16,6 @@ msgstr ""
 "X-Language: fr_FR\n"
 "X-Source-Language: en_US\n"
 
-msgid " "
-msgstr " "
-
 msgid " Challenges in the chapter:"
 msgstr " Liste des défis du chapitre :"
 
@@ -1398,6 +1395,10 @@ msgstr "Vitesse 2.0x\\Deux fois plus rapide"
 msgid "Speed 4.0x\\Quadruple speed"
 msgstr "Vitesse 2.0x\\Deux fois plus rapide"
 
+#, fuzzy
+msgid "Speed 6.0x\\Sextuple speed"
+msgstr "Vitesse 2.0x\\Deux fois plus rapide"
+
 msgid "Spider"
 msgstr "Araignée"
 
@@ -1817,6 +1818,9 @@ msgstr ""
 
 msgid "www.epsitec.com"
 msgstr "www.epsitec.com"
+
+#~ msgid " "
+#~ msgstr " "
 
 #~ msgid "3D sound\\3D positioning of the sound"
 #~ msgstr "Bruitages 3D\\Positionnement sonore dans l'espace"

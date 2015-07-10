@@ -21,9 +21,6 @@ msgstr ""
 "X-Source-Language: en_US\n"
 "X-POOTLE-MTIME: 1405002617.000000\n"
 
-msgid " "
-msgstr " "
-
 msgid " Challenges in the chapter:"
 msgstr " Wyzwania w tym rozdziale:"
 
@@ -1398,6 +1395,9 @@ msgstr "Prędkość 3,0x\\Trzy razy szybciej"
 msgid "Speed 4.0x\\Quadruple speed"
 msgstr "Prędkość 4,0x\\Cztery razy szybciej"
 
+msgid "Speed 6.0x\\Sextuple speed"
+msgstr "Prędkość 6,0x\\Sześć razy szybciej"
+
 msgid "Spider"
 msgstr "Pająk"
 
@@ -1829,6 +1829,3 @@ msgstr "www.epsitec.com"
 
 #~ msgid "Mouse shadow\\Gives the mouse a shadow"
 #~ msgstr "Cień kursora myszy\\Dodaje cień kursorowi myszy"
-
-#~ msgid "Speed 3.0x\\Three times faster"
-#~ msgstr "Prędkość 3,0x\\Trzy razy szybciej"

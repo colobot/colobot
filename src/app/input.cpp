@@ -215,6 +215,7 @@ void CInput::SetDefaultInputBindings()
     m_inputBindings[INPUT_SLOT_SPEED20].primary   = KEY(F6);
     m_inputBindings[INPUT_SLOT_SPEED30].primary   = KEY(F7);
     m_inputBindings[INPUT_SLOT_SPEED40].primary   = KEY(F8);
+    m_inputBindings[INPUT_SLOT_SPEED60].primary   = KEY(F9);
     m_inputBindings[INPUT_SLOT_CAMERA_UP].primary   = KEY(PAGEUP);
     m_inputBindings[INPUT_SLOT_CAMERA_DOWN].primary = KEY(PAGEDOWN);
     m_inputBindings[INPUT_SLOT_PAUSE].primary       = KEY(PAUSE);
@@ -296,6 +297,7 @@ static std::map<InputSlot, std::string> keyTable =
     { INPUT_SLOT_SPEED20,  "speed20" },
     { INPUT_SLOT_SPEED30,  "speed30" },
     { INPUT_SLOT_SPEED40,  "speed40" },
+    { INPUT_SLOT_SPEED60,  "speed60" },
     { INPUT_SLOT_CAMERA_UP,   "camup"   },
     { INPUT_SLOT_CAMERA_DOWN, "camdown" },
     { INPUT_SLOT_PAUSE,    "pause" },
