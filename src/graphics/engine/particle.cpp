@@ -108,9 +108,7 @@ bool IsAlien(ObjectType type)
              type == OBJECT_NEST     ||
              type == OBJECT_BULLET   ||
              type == OBJECT_EGG      ||
-             type == OBJECT_MOBILEtg ||
-             type == OBJECT_TEEN28   ||
-             type == OBJECT_TEEN31   );
+             type == OBJECT_MOBILEtg );
 }
 
 //! Returns the damping factor for friendly fire
@@ -3791,8 +3789,6 @@ CObject* CParticle::SearchObjectRay(Math::Vector pos, Math::Vector goal,
 
         if ( type  == PARTIRAY1       &&
              oType != OBJECT_MOBILEtg &&
-             oType != OBJECT_TEEN28   &&
-             oType != OBJECT_TEEN31   &&
              oType != OBJECT_ANT      &&
              oType != OBJECT_SPIDER   &&
              oType != OBJECT_BEE      &&

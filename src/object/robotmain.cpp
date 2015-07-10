@@ -3491,24 +3491,12 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                         type <= OBJECT_PLANT19 ) ||
                         (type >= OBJECT_TREE0   &&
                         type <= OBJECT_TREE5   ) ||
-                        (type >= OBJECT_TEEN0   &&
-                        type <= OBJECT_TEEN44  ) ||
                         (type >= OBJECT_QUARTZ0 &&
                         type <= OBJECT_QUARTZ3 ) ||
                         (type >= OBJECT_ROOT0   &&
                         type <= OBJECT_ROOT4   ) )  // not ROOT5!
                     {
-                        if ( type != OBJECT_TEEN11 &&  // lamp?
-                            type != OBJECT_TEEN12 &&  // coke?
-                            type != OBJECT_TEEN20 &&  // wall?
-                            type != OBJECT_TEEN21 &&  // wall?
-                            type != OBJECT_TEEN22 &&  // wall?
-                            type != OBJECT_TEEN26 &&  // lamp?
-                            type != OBJECT_TEEN28 &&  // bottle?
-                            type != OBJECT_TEEN34 )   // stone?
-                        {
-                            gadget = 1;
-                        }
+                        gadget = 1;
                     }
                 }
                 if (gadget != 0)  // is this a gadget?

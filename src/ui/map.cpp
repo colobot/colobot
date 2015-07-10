@@ -604,18 +604,6 @@ void CMap::DrawObject(Math::Point pos, float dir, ObjectType type, MapColor colo
         dim.x *= 1.4f;
         dim.y *= 1.4f;
     }
-    if ( type == OBJECT_TEEN28 )  // bottle?
-    {
-        dim.x *= 3.0f;
-        dim.y *= 3.0f;
-        bHilite = true;
-    }
-    if ( type == OBJECT_TEEN34 )  // stone?
-    {
-        dim.x *= 2.0f;
-        dim.y *= 2.0f;
-        bHilite = true;
-    }
 
     if ( color == MAPCOLOR_MOVE && bSelect )
     {
@@ -865,8 +853,6 @@ void CMap::DrawObjectIcon(Math::Point pos, Math::Point dim, MapColor color,
         if ( type == OBJECT_SPIDER   )  icon = 31;
         if ( type == OBJECT_BEE      )  icon = 31;
         if ( type == OBJECT_WORM     )  icon = 31;
-        if ( type == OBJECT_TEEN28    )  icon = 48;  // bottle
-        if ( type == OBJECT_TEEN34    )  icon = 48;  // stone
         if ( icon == -1 )  return;
 
         m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_WHITE);
@@ -1196,9 +1182,7 @@ void CMap::UpdateObject(CObject* pObj)
          type == OBJECT_HUSTON   ||
          type == OBJECT_TARGET1  ||
          type == OBJECT_START    ||
-         type == OBJECT_END      ||  // stationary object?
-         type == OBJECT_TEEN28    ||  // bottle?
-         type == OBJECT_TEEN34    )   // stone?
+         type == OBJECT_END      )  // stationary object?
     {
         color = MAPCOLOR_FIX;
     }
@@ -1275,13 +1259,7 @@ void CMap::UpdateObject(CObject* pObj)
 
     if ( m_fixImage[0] != 0 && !m_bDebug )  // map with still image?
     {
-        if ( (type == OBJECT_TEEN28 ||
-              type == OBJECT_TEEN34 ) &&
-             m_mode == 0 )  return;
-
-        if ( type != OBJECT_TEEN28 &&
-             type != OBJECT_TEEN34 &&
-             color != MAPCOLOR_MOVE )  return;
+        if ( color != MAPCOLOR_MOVE )  return;
     }
 
     if ( pObj->GetSelect() )

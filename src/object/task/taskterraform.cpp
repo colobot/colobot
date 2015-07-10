@@ -353,8 +353,11 @@ bool CTaskTerraform::Terraform()
         type = pObj->GetType();
         if ( type == OBJECT_NULL )  continue;
 
-        if ( type == OBJECT_TEEN34 )  // stone?
+        if ( false )
         {
+            // This was used by Ceebot-Teen to destroy objects hit by the Thumper
+            // The old Teen objects are removed, but this code might be reused at some point, e.g. to add destruction of resources like empty batteries
+            
             dist = Math::Distance(m_terraPos, pObj->GetPosition(0));
             if ( dist > 20.0f )  continue;
 

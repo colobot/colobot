@@ -499,7 +499,6 @@ bool COldObject::ExplodeObject(ExplosionType type, float force, float decay)
     if ( type == ExplosionType::Bang )
     {
         if ( m_type == OBJECT_MOBILEtg ||
-             m_type == OBJECT_TEEN28    ||  // cylinder?
              m_type == OBJECT_METAL    ||
              m_type == OBJECT_POWER    ||
              m_type == OBJECT_ATOMIC   ||
@@ -662,9 +661,7 @@ bool COldObject::ExplodeObject(ExplosionType type, float force, float decay)
             {
                 pyroType = Gfx::PT_FRAGT;
             }
-            else if ( m_type == OBJECT_MOBILEtg ||
-                      m_type == OBJECT_TEEN28    ||  // cylinder?
-                      m_type == OBJECT_TEEN31    )   // basket?
+            else if ( m_type == OBJECT_MOBILEtg )
             {
                 pyroType = Gfx::PT_FRAGT;
             }
@@ -2521,7 +2518,6 @@ float COldObject::GetShield()
          m_type == OBJECT_KEYc     ||
          m_type == OBJECT_KEYd     ||
          m_type == OBJECT_TNT      ||
-         m_type == OBJECT_TEEN31    ||  // basket?
          m_type == OBJECT_SCRAP1   ||
          m_type == OBJECT_SCRAP2   ||
          m_type == OBJECT_SCRAP3   ||
