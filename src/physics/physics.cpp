@@ -43,6 +43,7 @@
 #include "object/task/task.h"
 #include "object/level/parserline.h"
 #include "object/level/parserparam.h"
+#include "object/interface/carrier_object.h"
 #include "object/interface/jostleable_object.h"
 #include "object/interface/transportable_object.h"
 
@@ -811,7 +812,7 @@ void CPhysics::MotorUpdate(float aTime, float rTime)
               type == OBJECT_TECH  )
     {
         power = 0;
-        if ( m_object->GetCargo() != 0 &&  // carries something?
+        if (IsObjectCarryingCargo(m_object)&&  // carries something?
              !m_object->IsSpaceshipCargo() )
         {
             motorSpeed.x *= 0.7f;  // forward more slowly
@@ -826,7 +827,7 @@ void CPhysics::MotorUpdate(float aTime, float rTime)
                 motorSpeed.z *= 0.5f;
                 motorSpeed.y *= 0.5f;
 
-                if ( m_object->GetCargo() != 0 )  // carries something?
+                if (IsObjectCarryingCargo(m_object))  // carries something?
                 {
                     motorSpeed.x *= 0.2f;
                     motorSpeed.z *= 0.9f;
@@ -3039,18 +3040,20 @@ void CPhysics::FrameParticle(float aTime, float rTime)
 void CPhysics::PowerParticle(float factor, bool bBreak)
 {
     Character*  character;
-    CObject*    cargo;
     Math::Matrix*   mat;
     Math::Vector    pos, ppos, eye, speed;
     Math::Point     dim;
     bool        bCarryPower;
 
     bCarryPower = false;
-    cargo = m_object->GetCargo();
-    if ( cargo != 0 && cargo->GetType() == OBJECT_POWER &&
-         m_object->GetAngleZ(1) == ARM_STOCK_ANGLE1 )
+    if (m_object->Implements(ObjectInterfaceType::Carrier))
     {
-        bCarryPower = true;  // carries a battery
+        CObject* cargo = dynamic_cast<CCarrierObject*>(m_object)->GetCargo();
+        if ( cargo != nullptr && cargo->GetType() == OBJECT_POWER &&
+            m_object->GetAngleZ(1) == ARM_STOCK_ANGLE1 )
+        {
+            bCarryPower = true;  // carries a battery
+        }
     }
 
     mat = m_object->GetWorldMatrix(0);

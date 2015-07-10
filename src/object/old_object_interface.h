@@ -158,8 +158,6 @@ public:
 
     virtual void        SetPower(CObject* power) = 0;
     virtual CObject*    GetPower() = 0;
-    virtual void        SetCargo(CObject* cargo) = 0;
-    virtual CObject*    GetCargo() = 0;
 
     virtual void        SetCmdLine(unsigned int rank, float value) = 0;
     virtual float       GetCmdLine(unsigned int rank) = 0;

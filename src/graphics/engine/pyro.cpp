@@ -1364,11 +1364,15 @@ void CPyro::DeleteObject(bool primary, bool secondary)
             m_object->SetPower(nullptr);
         }
 
-        sub = m_object->GetCargo();
-        if ( sub != nullptr )
+        if (m_object->Implements(ObjectInterfaceType::Carrier))
         {
-            CObjectManager::GetInstancePointer()->DeleteObject(sub);
-            m_object->SetCargo(nullptr);
+            CCarrierObject* carrierObject = dynamic_cast<CCarrierObject*>(m_object);
+            sub = carrierObject->GetCargo();
+            if (sub != nullptr)
+            {
+                CObjectManager::GetInstancePointer()->DeleteObject(sub);
+                carrierObject->SetCargo(nullptr);
+            }
         }
     }
 
@@ -1383,8 +1387,12 @@ void CPyro::DeleteObject(bool primary, bool secondary)
                 if (transporter->GetPower() == m_object)
                     transporter->SetPower(nullptr);
 
-                if (transporter->GetCargo() == m_object)
-                    transporter->SetCargo(nullptr);
+                if (transporter->Implements(ObjectInterfaceType::Carrier))
+                {
+                    CCarrierObject* carrier = dynamic_cast<CCarrierObject*>(transporter);
+                    if (carrier->GetCargo() == m_object)
+                        carrier->SetCargo(nullptr);
+                }
             }
         }
 

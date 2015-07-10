@@ -26,6 +26,7 @@
 
 #include "object/object.h"
 
+#include "object/interface/carrier_object.h"
 #include "object/interface/interactive_object.h"
 #include "object/interface/jostleable_object.h"
 #include "object/interface/programmable_object.h"
@@ -58,7 +59,8 @@ class COldObject : public CObject,
                    public CInteractiveObject,
                    public CTransportableObject,
                    public CProgrammableObject,
-                   public CJostleableObject
+                   public CJostleableObject,
+                   public CCarrierObject
 {
     friend class CObjectFactory;
     friend class CObjectManager;

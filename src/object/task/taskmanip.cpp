@@ -27,6 +27,7 @@
 
 #include "object/object_manager.h"
 #include "object/robotmain.h"
+#include "object/interface/carrier_object.h"
 #include "object/interface/transportable_object.h"
 
 #include "physics/physics.h"
@@ -50,6 +51,9 @@ CTaskManip::CTaskManip(CObject* object) : CTask(object)
 {
     m_arm  = TMA_NEUTRAL;
     m_hand = TMH_OPEN;
+
+    assert(m_object->Implements(ObjectInterfaceType::Carrier));
+    m_carrier = dynamic_cast<CCarrierObject*>(m_object);
 }
 
 // Object's destructor.
@@ -318,22 +322,22 @@ Error CTaskManip::Start(TaskManipOrder order, TaskManipArm arm)
     type = m_object->GetType();
     if ( type == OBJECT_BEE )  // bee?
     {
-        if ( m_object->GetCargo() == 0 )
+        if ( m_carrier->GetCargo() == 0 )
         {
             if ( !m_physics->GetLand() )  return ERR_MANIP_FLY;
 
             other = SearchTakeUnderObject(m_targetPos, MARGIN_BEE);
             if ( other == 0 )  return ERR_MANIP_NIL;
 
-            m_object->SetCargo(other);  // takes the ball
+            m_carrier->SetCargo(other);  // takes the ball
             dynamic_cast<CTransportableObject*>(other)->SetTransporter(m_object);
             dynamic_cast<CTransportableObject*>(other)->SetTransporterPart(0);  // taken with the base
             other->SetPosition(0, Math::Vector(0.0f, -3.0f, 0.0f));
         }
         else
         {
-            other = m_object->GetCargo();  // other = ball
-            m_object->SetCargo(0);  // lick the ball
+            other = m_carrier->GetCargo();  // other = ball
+            m_carrier->SetCargo(0);  // lick the ball
             dynamic_cast<CTransportableObject*>(other)->SetTransporter(0);
             pos = m_object->GetPosition(0);
             pos.y -= 3.0f;
@@ -386,7 +390,7 @@ Error CTaskManip::Start(TaskManipOrder order, TaskManipArm arm)
 
     if ( order == TMO_AUTO )
     {
-        if ( m_object->GetCargo() == 0 )
+        if ( m_carrier->GetCargo() == 0 )
         {
             m_order = TMO_GRAB;
         }
@@ -400,11 +404,11 @@ Error CTaskManip::Start(TaskManipOrder order, TaskManipArm arm)
         m_order = order;
     }
 
-    if ( m_order == TMO_GRAB && m_object->GetCargo() != 0 )
+    if ( m_order == TMO_GRAB && m_carrier->GetCargo() != 0 )
     {
         return ERR_MANIP_BUSY;
     }
-    if ( m_order == TMO_DROP && m_object->GetCargo() == 0 )
+    if ( m_order == TMO_DROP && m_carrier->GetCargo() == 0 )
     {
         return ERR_MANIP_EMPTY;
     }
@@ -500,7 +504,7 @@ Error CTaskManip::Start(TaskManipOrder order, TaskManipArm arm)
         if ( m_timeLimit < 0.5f )  m_timeLimit = 0.5f;
     }
 
-    if ( m_object->GetCargo() == 0 )  // not carrying anything?
+    if ( m_carrier->GetCargo() == 0 )  // not carrying anything?
     {
         m_hand = TMH_OPEN;  // open clamp
     }
@@ -625,7 +629,7 @@ Error CTaskManip::IsEnded()
         {
             if ( m_bSubm )  m_speed = 1.0f/1.5f;
             if ( !TransporterTakeObject() &&
-                 m_object->GetCargo() == 0 )
+                 m_carrier->GetCargo() == 0 )
             {
                 m_hand = TMH_OPEN;  // reopens the clamp
                 m_arm = TMA_NEUTRAL;
@@ -654,7 +658,7 @@ Error CTaskManip::IsEnded()
         if ( m_step == 1 )
         {
             if ( m_bSubm )  m_speed = 1.0f/0.7f;
-            cargo = m_object->GetCargo();
+            cargo = m_carrier->GetCargo();
             if ( TransporterDeposeObject() )
             {
                 if ( (m_arm == TMA_OTHER ||
@@ -694,7 +698,7 @@ bool CTaskManip::Abort()
 {
     int     i;
 
-    if ( m_object->GetCargo() == 0 )  // not carrying anything?
+    if ( m_carrier->GetCargo() == 0 )  // not carrying anything?
     {
         m_hand = TMH_OPEN;  // open clamp
         m_arm = TMA_NEUTRAL;
@@ -1091,7 +1095,7 @@ bool CTaskManip::TransporterTakeObject()
 
     if ( m_arm == TMA_GRAB )  // takes immediately?
     {
-        cargo = m_object->GetCargo();
+        cargo = m_carrier->GetCargo();
         if ( cargo == 0 )  return false;  // nothing to take?
         m_cargoType = cargo->GetType();
 
@@ -1129,7 +1133,7 @@ bool CTaskManip::TransporterTakeObject()
             cargo->SetAngleY(0, 0.0f);
         }
 
-        m_object->SetCargo(cargo);  // takes
+        m_carrier->SetCargo(cargo);  // takes
     }
 
     if ( m_arm == TMA_FFRONT )  // takes on the ground in front?
@@ -1161,7 +1165,7 @@ bool CTaskManip::TransporterTakeObject()
             cargo->SetAngleY(0, 0.0f);
         }
 
-        m_object->SetCargo(cargo);  // takes
+        m_carrier->SetCargo(cargo);  // takes
     }
 
     if ( m_arm == TMA_FBACK )  // takes on the ground behind?
@@ -1179,7 +1183,7 @@ bool CTaskManip::TransporterTakeObject()
         cargo->SetAngleZ(0, Math::PI/2.0f);
         cargo->SetAngleY(0, 0.0f);
 
-        m_object->SetCargo(cargo);  // takes
+        m_carrier->SetCargo(cargo);  // takes
     }
 
     if ( m_arm == TMA_POWER )  // takes battery in the back?
@@ -1196,7 +1200,7 @@ bool CTaskManip::TransporterTakeObject()
         dynamic_cast<CTransportableObject*>(cargo)->SetTransporterPart(3);  // takes with the hand
 
         m_object->SetPower(0);
-        m_object->SetCargo(cargo);  // takes
+        m_carrier->SetCargo(cargo);  // takes
     }
 
     if ( m_arm == TMA_OTHER )  // battery takes from friend?
@@ -1218,7 +1222,7 @@ bool CTaskManip::TransporterTakeObject()
         cargo->SetAngleZ(0, Math::PI/2.0f);
         cargo->SetAngleY(0, 0.0f);
 
-        m_object->SetCargo(cargo);  // takes
+        m_carrier->SetCargo(cargo);  // takes
     }
 
     return true;
@@ -1237,7 +1241,7 @@ bool CTaskManip::TransporterDeposeObject()
 
     if ( m_arm == TMA_FFRONT )  // deposits on the ground in front?
     {
-        cargo = m_object->GetCargo();
+        cargo = m_carrier->GetCargo();
         if ( cargo == 0 )  return false;  // nothing transported?
         m_cargoType = cargo->GetType();
 
@@ -1251,12 +1255,12 @@ bool CTaskManip::TransporterDeposeObject()
         cargo->FloorAdjust();  // plate well on the ground
 
         dynamic_cast<CTransportableObject*>(cargo)->SetTransporter(0);
-        m_object->SetCargo(0);  // deposit
+        m_carrier->SetCargo(0);  // deposit
     }
 
     if ( m_arm == TMA_FBACK )  // deposited on the ground behind?
     {
-        cargo = m_object->GetCargo();
+        cargo = m_carrier->GetCargo();
         if ( cargo == 0 )  return false;  // nothing transported?
         m_cargoType = cargo->GetType();
 
@@ -1269,12 +1273,12 @@ bool CTaskManip::TransporterDeposeObject()
         cargo->SetAngleZ(0, 0.0f);
 
         dynamic_cast<CTransportableObject*>(cargo)->SetTransporter(0);
-        m_object->SetCargo(0);  // deposit
+        m_carrier->SetCargo(0);  // deposit
     }
 
     if ( m_arm == TMA_POWER )  // deposits battery in the back?
     {
-        cargo = m_object->GetCargo();
+        cargo = m_carrier->GetCargo();
         if ( cargo == 0 )  return false;  // nothing transported?
         m_cargoType = cargo->GetType();
 
@@ -1290,7 +1294,7 @@ bool CTaskManip::TransporterDeposeObject()
         cargo->SetAngleZ(0, 0.0f);
 
         m_object->SetPower(cargo);  // uses
-        m_object->SetCargo(0);
+        m_carrier->SetCargo(0);
     }
 
     if ( m_arm == TMA_OTHER )  // deposits battery on friend?
@@ -1301,7 +1305,7 @@ bool CTaskManip::TransporterDeposeObject()
         cargo = other->GetPower();
         if ( cargo != 0 )  return false;  // the other already has a battery?
 
-        cargo = m_object->GetCargo();
+        cargo = m_carrier->GetCargo();
         if ( cargo == 0 )  return false;
         m_cargoType = cargo->GetType();
 
@@ -1315,7 +1319,7 @@ bool CTaskManip::TransporterDeposeObject()
         cargo->SetAngleZ(0, 0.0f);
         dynamic_cast<CTransportableObject*>(cargo)->SetTransporterPart(0);  // carried by the base
 
-        m_object->SetCargo(0);  // deposit
+        m_carrier->SetCargo(0);  // deposit
     }
 
     return true;

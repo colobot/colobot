@@ -28,6 +28,7 @@
 
 #include "object/object_manager.h"
 #include "object/motion/motionhuman.h"
+#include "object/interface/carrier_object.h"
 
 #include "physics/physics.h"
 
@@ -85,7 +86,7 @@ Error CTaskFlag::Start(TaskFlagOrder order, int rank)
     if ( speed.x != 0.0f ||
          speed.z != 0.0f )  return ERR_FLAG_MOTOR;
 
-    if ( m_object->GetCargo() != 0 )  return ERR_FLAG_BUSY;
+    if (IsObjectCarryingCargo(m_object))  return ERR_FLAG_BUSY;
 
     if ( order == TFL_CREATE )
     {

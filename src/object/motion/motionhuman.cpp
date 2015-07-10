@@ -29,6 +29,7 @@
 #include "math/geometry.h"
 
 #include "object/robotmain.h"
+#include "object/interface/carrier_object.h"
 
 #include "physics/physics.h"
 
@@ -739,7 +740,7 @@ bool CMotionHuman::EventFrame(const Event &event)
         s = 0.0f;
     }
 
-    if ( m_object->GetCargo() != 0 )  // carries something?
+    if (IsObjectCarryingCargo(m_object))  // carries something?
     {
         s *= 1.3f;
     }
@@ -771,7 +772,7 @@ bool CMotionHuman::EventFrame(const Event &event)
         s = 0.0f;
     }
 
-    if ( m_object->GetCargo() != 0 )  // carries something?
+    if (IsObjectCarryingCargo(m_object))  // carries something?
     {
         s *= 1.3f;
     }
@@ -836,7 +837,7 @@ bool CMotionHuman::EventFrame(const Event &event)
             else
             {
                 action = MH_MARCH;  // walking
-                if ( m_object->GetCargo() != 0 )  action = MH_MARCHTAKE;  // take walking
+                if (IsObjectCarryingCargo(m_object))  action = MH_MARCHTAKE;  // take walking
                 rTime[0] = rTime[1] = m_armMember;
                 lTime[0] = lTime[1] = m_armMember+0.5f;
             }
@@ -875,7 +876,7 @@ bool CMotionHuman::EventFrame(const Event &event)
     armAction = action;
     legAction = action;
 
-    if ( m_object->GetCargo() != 0 )  // carries something?
+    if (IsObjectCarryingCargo(m_object))  // carries something?
     {
         armAction = MH_MARCHTAKE;  // take walking
     }
@@ -989,7 +990,7 @@ bool CMotionHuman::EventFrame(const Event &event)
         aa = 0.5f;
         if ( i%2 == 0 )  // arm?
         {
-            if ( m_object->GetCargo() == 0 )   // does nothing?
+            if (! IsObjectCarryingCargo(m_object))
             {
                 aa = 2.0f;  // moves a lot
             }
@@ -1620,15 +1621,15 @@ bool CMotionHuman::EventFrame(const Event &event)
 
         float speedX = m_physics->GetLinMotionX(MO_REASPEED);
 
-        if ( m_object->GetCargo() == 0 )
-        {
-            if ( speedX > 0.0f )  synchro = 0.21f;  // synchro forward
-            else                 synchro = 0.29f;  // synchro backward
-        }
-        else
+        if (IsObjectCarryingCargo(m_object))
         {
             if ( speedX > 0.0f )  synchro = 0.15f;  // synchro forward
             else                 synchro = 0.35f;  // synchro backward
+        }
+        else
+        {
+            if ( speedX > 0.0f )  synchro = 0.21f;  // synchro forward
+            else                 synchro = 0.29f;  // synchro backward
         }
         time = rTime[1]+synchro;
 
@@ -1637,7 +1638,7 @@ bool CMotionHuman::EventFrame(const Event &event)
         {
             volume[0] = 0.5f;
             freq[0] = 1.0f;
-            if ( m_object->GetCargo() != 0 )
+            if (IsObjectCarryingCargo(m_object))
             {
 //?             volume[0] *= 2.0f;
                 freq[0] = 0.7f;

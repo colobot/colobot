@@ -36,6 +36,7 @@ enum class ObjectInterfaceType
     Transportable, //!< objects that can be carried by robots or astronaut
     Programmable, //!< objects that can be programmed in CBOT
     Jostleable, //!< object that can be jostled
+    Carrier, //!< object that can carry other objects
     Max //!< maximum value (for getting number of items in enum)
 };
 

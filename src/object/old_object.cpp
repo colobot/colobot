@@ -82,7 +82,6 @@ void uObject(CBotVar* botThis, void* user)
 {
     CObject*    object = static_cast<CObject*>(user);
     CObject*    power;
-    CObject*    cargo;
     CPhysics*   physics;
     CBotVar     *pVar, *pSub;
     ObjectType  type;
@@ -167,9 +166,12 @@ void uObject(CBotVar* botThis, void* user)
 
     // Updates the transported object's type.
     pVar = pVar->GetNext();  // "load"
-    cargo = object->GetCargo();
-    if ( cargo == 0 )  pVar->SetPointer(0);
-    else              pVar->SetPointer(cargo->GetBotVar());
+    if (object->Implements(ObjectInterfaceType::Carrier))
+    {
+        CObject* cargo = dynamic_cast<CCarrierObject*>(object)->GetCargo();
+        if (cargo == nullptr)  pVar->SetPointer(0);
+        else                   pVar->SetPointer(cargo->GetBotVar());
+    }
 
     pVar = pVar->GetNext();  // "id"
     value = object->GetID();
@@ -191,6 +193,7 @@ COldObject::COldObject(int id)
     , CTransportableObject(m_implementedInterfaces)
     , CProgrammableObject(m_implementedInterfaces)
     , CJostleableObject(m_implementedInterfaces)
+    , CCarrierObject(m_implementedInterfaces)
 {
     // A bit of a hack since CBrain is set externally in SetBrain()
     m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Programmable)] = false;

@@ -23,6 +23,7 @@
 #include "object/brain.h"
 #include "object/object_manager.h"
 #include "object/robotmain.h"
+#include "object/interface/carrier_object.h"
 #include "object/interface/transportable_object.h"
 
 
@@ -164,14 +165,16 @@ bool CTaskReset::EventProcess(const Event &event)
 
 Error CTaskReset::Start(Math::Vector goal, Math::Vector angle)
 {
-    CObject*    cargo;
-    int     i;
-
-    cargo = m_object->GetCargo();
-    if ( cargo != nullptr && cargo->GetResetCap() == RESET_MOVE )
+    if (m_object->Implements(ObjectInterfaceType::Carrier))
     {
-        dynamic_cast<CTransportableObject*>(cargo)->SetTransporter(0);
-        m_object->SetCargo(0);  // does nothing
+        CCarrierObject* carrier = dynamic_cast<CCarrierObject*>(m_object);
+        CObject* cargo = carrier->GetCargo();
+        if ( cargo != nullptr && cargo->GetResetCap() == RESET_MOVE )
+        {
+            assert(cargo->Implements(ObjectInterfaceType::Transportable));
+            dynamic_cast<CTransportableObject*>(cargo)->SetTransporter(nullptr);
+            carrier->SetCargo(nullptr);  // does nothing
+        }
     }
 
     if ( !m_main->GetNiceReset() )  // quick return?
@@ -208,7 +211,7 @@ Error CTaskReset::Start(Math::Vector goal, Math::Vector angle)
 
     m_object->SetResetBusy(true);
 
-    i = m_sound->Play(SOUND_GGG, m_begin, 1.0f, 2.0f, true);
+    int i = m_sound->Play(SOUND_GGG, m_begin, 1.0f, 2.0f, true);
     m_sound->AddEnvelope(i, 0.0f, 0.5f, RESET_DELAY_ZOOM, SOPER_STOP);
 
     m_bError = false;

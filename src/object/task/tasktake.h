@@ -26,6 +26,8 @@
 #include "object/object.h"
 
 
+class CCarrierObject;
+
 
 enum TaskTakeOrder
 {
@@ -62,9 +64,7 @@ protected:
     bool        IsFreeDeposeObject(Math::Vector pos);
 
 protected:
-    //TODO this is same member as in base class, probable should be deleted
-    Gfx::CTerrain*  m_terrain;
-
+    CCarrierObject* m_carrier;
     TaskTakeOrder   m_order;
     TaskTakeArm     m_arm;
     int             m_step;

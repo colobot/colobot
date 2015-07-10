@@ -26,6 +26,7 @@
 #include "math/geometry.h"
 
 #include "object/object_manager.h"
+#include "object/interface/carrier_object.h"
 
 #include "ui/interface.h"
 #include "ui/gauge.h"
@@ -151,17 +152,20 @@ bool CAutoPowerStation::EventProcess(const Event &event)
                 big -= add/4.0f;  // discharge the large battery
             }
 
-            power = vehicle->GetCargo();
-            if ( power != 0 && power->GetType() == OBJECT_POWER )
+            if (vehicle->Implements(ObjectInterfaceType::Carrier))
             {
-                energy = power->GetEnergy();
-                add = event.rTime*0.2f;
-                if ( add > big*4.0f )  add = big*4.0f;
-                if ( add > 1.0f-energy )  add = 1.0f-energy;
-                energy += add;  // Charging the battery
-                power->SetEnergy(energy);
-                if ( energy < freq )  freq = energy;
-                big -= add/4.0f;  // discharge the large battery
+                power = dynamic_cast<CCarrierObject*>(vehicle)->GetCargo();
+                if ( power != nullptr && power->GetType() == OBJECT_POWER )
+                {
+                    energy = power->GetEnergy();
+                    add = event.rTime*0.2f;
+                    if ( add > big*4.0f )  add = big*4.0f;
+                    if ( add > 1.0f-energy )  add = 1.0f-energy;
+                    energy += add;  // Charging the battery
+                    power->SetEnergy(energy);
+                    if ( energy < freq )  freq = energy;
+                    big -= add/4.0f;  // discharge the large battery
+                }
             }
         }
     }

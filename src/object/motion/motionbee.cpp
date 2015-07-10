@@ -24,6 +24,8 @@
 
 #include "graphics/engine/oldmodelmanager.h"
 
+#include "object/interface/carrier_object.h"
+
 #include "physics/physics.h"
 
 
@@ -436,7 +438,7 @@ bool CMotionBee::EventFrame(const Event &event)
     action = MB_MARCH;  // flying
 
     m_actionType = -1;
-    if ( m_object->GetCargo() != 0 )  m_actionType = MBS_HOLD;  // carries the ball
+    if (IsObjectCarryingCargo(m_object))  m_actionType = MBS_HOLD;  // carries the ball
 
     if ( m_object->GetRuin() )  // destroyed?
     {

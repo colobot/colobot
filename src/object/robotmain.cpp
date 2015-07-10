@@ -4941,16 +4941,18 @@ bool CRobotMain::IOWriteScene(const char *filename, const char *filecbot, char *
         if (obj->GetDead()) continue;
         if (obj->IsExploding()) continue;
 
-        CObject* power = obj->GetPower();
-        CObject* cargo  = obj->GetCargo();
-
-        if (cargo != nullptr)  // object transported?
+        if (obj->Implements(ObjectInterfaceType::Carrier))
         {
-            line.reset(new CLevelParserLine("CreateFret"));
-            IOWriteObject(line.get(), cargo);
-            levelParser.AddLine(std::move(line));
+            CObject* cargo = dynamic_cast<CCarrierObject*>(obj)->GetCargo();
+            if (cargo != nullptr)  // object transported?
+            {
+                line.reset(new CLevelParserLine("CreateFret"));
+                IOWriteObject(line.get(), cargo);
+                levelParser.AddLine(std::move(line));
+            }
         }
 
+        CObject* power = obj->GetPower();
         if (power != nullptr) // battery transported?
         {
             line.reset(new CLevelParserLine("CreatePower"));
@@ -5091,8 +5093,7 @@ CObject* CRobotMain::IOReadScene(const char *filename, const char *filecbot)
     levelParser.Load();
 
     m_base = nullptr;
-    CObject* cargo   = nullptr;
-    CObject* power  = nullptr;
+
     CObject* sel    = nullptr;
     int objRank = 0;
     for (auto& line : levelParser.GetLines())
@@ -5112,9 +5113,11 @@ CObject* CRobotMain::IOReadScene(const char *filename, const char *filecbot)
             m_lightning->SetStatus(sleep, delay, magnetic, progress);
         }
 
+        CObject* cargo = nullptr;
         if (line->GetCommand() == "CreateFret")
             cargo = IOReadObject(line.get(), filename, -1);
 
+        CObject* power = nullptr;
         if (line->GetCommand() == "CreatePower")
             power = IOReadObject(line.get(), filename, -1);
 
@@ -5127,7 +5130,8 @@ CObject* CRobotMain::IOReadScene(const char *filename, const char *filecbot)
 
             if (cargo != nullptr)
             {
-                obj->SetCargo(cargo);
+                assert(obj->Implements(ObjectInterfaceType::Carrier)); // TODO: exception?
+                dynamic_cast<CCarrierObject*>(obj)->SetCargo(cargo);
                 CTaskManip* task = new CTaskManip(obj);
                 task->Start(TMO_AUTO, TMA_GRAB);  // holds the object!
                 delete task;
@@ -5138,9 +5142,6 @@ CObject* CRobotMain::IOReadScene(const char *filename, const char *filecbot)
                 obj->SetPower(power);
                 dynamic_cast<CTransportableObject*>(power)->SetTransporter(obj);
             }
-
-            cargo  = nullptr;
-            power = nullptr;
         }
     }
 

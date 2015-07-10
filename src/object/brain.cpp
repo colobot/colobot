@@ -33,6 +33,7 @@
 #include "object/task/taskmanager.h"
 #include "object/level/parserline.h"
 #include "object/level/parserparam.h"
+#include "object/interface/carrier_object.h"
 
 #include "physics/physics.h"
 
@@ -2393,7 +2394,8 @@ void CBrain::UpdateInterface()
     bFly = bEnable;
     if ( bFly && (type == OBJECT_HUMAN || type == OBJECT_TECH) )
     {
-        if ( m_object->GetCargo() != 0 )  bFly = false;  // if holder -> not fly
+        if (m_object->Implements(ObjectInterfaceType::Carrier) && dynamic_cast<CCarrierObject*>(m_object)->IsCarryingCargo())
+            bFly = false;
     }
     EnableInterface(pw, EVENT_OBJECT_GASUP,   bFly && m_main->CanPlayerInteract());
     EnableInterface(pw, EVENT_OBJECT_GASDOWN, bFly && m_main->CanPlayerInteract());

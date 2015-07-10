@@ -28,6 +28,8 @@
 
 
 
+class CCarrierObject;
+
 enum TaskManipOrder
 {
     TMO_AUTO    = 0,    // deposits or takes automatically
@@ -78,6 +80,7 @@ protected:
     void        SoundManip(float time, float amplitude=1.0f, float frequency=1.0f);
 
 protected:
+    CCarrierObject* m_carrier;
     TaskManipOrder  m_order;
     TaskManipArm    m_arm;
     TaskManipHand   m_hand;

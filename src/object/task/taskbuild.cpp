@@ -32,6 +32,7 @@
 #include "object/motion/motionhuman.h"
 #include "object/object_manager.h"
 #include "object/robotmain.h"
+#include "object/interface/carrier_object.h"
 #include "object/interface/transportable_object.h"
 
 #include "physics/physics.h"
@@ -366,7 +367,7 @@ Error CTaskBuild::Start(ObjectType type)
     if ( speed.x != 0.0f ||
          speed.z != 0.0f )  return ERR_BUILD_MOTOR;
 
-    if ( m_object->GetCargo() != 0 )  return ERR_MANIP_BUSY;
+    if (IsObjectCarryingCargo(m_object))  return ERR_MANIP_BUSY;
 
     m_metal = SearchMetalObject(oAngle, 2.0f, 100.0f, Math::PI*0.25f, err);
     if ( err == ERR_BUILD_METALNEAR && m_metal != 0 )

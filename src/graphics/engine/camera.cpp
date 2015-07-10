@@ -33,6 +33,7 @@
 #include "object/object.h"
 #include "object/object_manager.h"
 #include "object/robotmain.h"
+#include "object/interface/carrier_object.h"
 #include "object/interface/transportable_object.h"
 
 #include "physics/physics.h"
@@ -47,13 +48,16 @@ void SetTransparency(CObject* obj, float value)
 {
     obj->SetTransparency(value);
 
-    CObject *cargo = obj->GetCargo();
-    if (cargo != NULL)
-        cargo->SetTransparency(value);
+    if (obj->Implements(ObjectInterfaceType::Carrier))
+    {
+        CObject* cargo = dynamic_cast<CCarrierObject*>(obj)->GetCargo();
+        if (cargo != nullptr)
+            cargo->SetTransparency(value);
+    }
 
-    cargo = obj->GetPower();
-    if (cargo != NULL)
-        cargo->SetTransparency(value);
+    CObject* power = obj->GetPower();
+    if (power != nullptr)
+        power->SetTransparency(value);
 }
 
 
