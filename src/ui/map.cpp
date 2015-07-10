@@ -22,6 +22,8 @@
 
 #include "common/image.h"
 
+#include "object/interface/transportable_object.h"
+
 #include <string.h>
 
 
@@ -1145,7 +1147,7 @@ void CMap::UpdateObject(CObject* pObj)
     if ( !pObj->GetActive() )  return;
     if ( !pObj->GetSelectable() )  return;
     if ( pObj->GetProxyActivate() )  return;
-    if ( pObj->GetTransporter() != 0 )  return;
+    if (IsObjectBeingTransported(pObj))  return;
 
     type = pObj->GetType();
     pos  = pObj->GetPosition(0);

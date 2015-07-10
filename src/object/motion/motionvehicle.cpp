@@ -30,6 +30,7 @@
 
 #include "object/brain.h"
 #include "object/object_manager.h"
+#include "object/interface/transportable_object.h"
 
 #include "physics/physics.h"
 
@@ -939,7 +940,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
 
         powerCell->SetPosition(0, powerCellPos);
         powerCell->SetAngle(0, Math::Vector(0.0f, powerCellAngle, 0.0f));
-        powerCell->SetTransporter(m_object);
+        dynamic_cast<CTransportableObject*>(powerCell)->SetTransporter(m_object);
         m_object->SetPower(powerCell);
     }
 

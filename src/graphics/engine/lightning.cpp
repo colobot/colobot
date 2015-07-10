@@ -33,6 +33,7 @@
 #include "object/object.h"
 #include "object/object_manager.h"
 #include "object/robotmain.h"
+#include "object/interface/transportable_object.h"
 
 #include "object/auto/autopowercaptor.h"
 
@@ -320,7 +321,8 @@ CObject* CLightning::SearchObject(Math::Vector pos)
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
         if (!obj->GetActive()) continue;  // inactive object?
-        if (obj->GetTransporter() != nullptr) continue;  // object transported?
+
+        if (IsObjectBeingTransported(obj)) continue;
 
         ObjectType type = obj->GetType();
         if ( type == OBJECT_BASE ||

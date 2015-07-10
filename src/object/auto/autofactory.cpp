@@ -29,6 +29,7 @@
 #include "object/robotmain.h"
 #include "object/level/parserline.h"
 #include "object/level/parserparam.h"
+#include "object/interface/transportable_object.h"
 
 #include "physics/physics.h"
 
@@ -550,7 +551,7 @@ CObject* CAutoFactory::SearchCargo()
     {
         ObjectType type = obj->GetType();
         if ( type != OBJECT_METAL )  continue;
-        if ( obj->GetTransporter() != nullptr )  continue;
+        if (IsObjectBeingTransported(obj))  continue;
 
         Math::Vector oPos = obj->GetPosition(0);
         float dist = Math::Distance(oPos, m_cargoPos);
@@ -674,7 +675,7 @@ CObject* CAutoFactory::SearchVehicle()
 
         ObjectType  type = obj->GetType();
         if ( type != m_type )  continue;
-        if ( obj->GetTransporter() != nullptr )  continue;
+        if (IsObjectBeingTransported(obj))  continue;
 
         Math::Vector oPos = obj->GetPosition(0);
         float dist = Math::Distance(oPos, m_cargoPos);

@@ -25,9 +25,9 @@
 #include "math/geometry.h"
 
 #include "object/object_manager.h"
+#include "object/interface/transportable_object.h"
 #include "object/level/parserline.h"
 #include "object/level/parserparam.h"
-
 
 #include "ui/interface.h"
 #include "ui/gauge.h"
@@ -314,11 +314,11 @@ bool CAutoPowerPlant::EventProcess(const Event &event)
             }
 
             cargo = SearchPower();
-            if ( cargo != 0 )
+            if ( cargo != nullptr )
             {
                 cargo->SetZoom(0, 1.0f);
                 cargo->SetLock(false);  // usable battery
-                cargo->SetTransporter(m_object);
+                dynamic_cast<CTransportableObject*>(cargo)->SetTransporter(m_object);
                 cargo->SetPosition(0, Math::Vector(0.0f, 3.0f, 0.0f));
                 m_object->SetPower(cargo);
 

@@ -25,6 +25,7 @@
 #include "object/level/parserline.h"
 #include "object/object_manager.h"
 #include "object/object.h"
+#include "object/interface/transportable_object.h"
 
 void CSceneCondition::Read(CLevelParserLine* line)
 {
@@ -60,7 +61,7 @@ int CSceneCondition::CountObjects()
 
         if (!this->countTransported)
         {
-            if (obj->GetTransporter() != nullptr) continue;
+            if (IsObjectBeingTransported(obj)) continue;
         }
 
         // TODO: I really hate those fragments that hardcode subcategories into one in random places in code, we should refactor that at some point
@@ -110,10 +111,10 @@ int CSceneCondition::CountObjects()
         }
         if (energyLevel < this->powermin || energyLevel > this->powermax) continue;
 
-        if (obj->GetTransporter() == 0)
-            oPos = obj->GetPosition(0);
+        if (IsObjectBeingTransported(obj))
+            oPos = dynamic_cast<CTransportableObject*>(obj)->GetTransporter()->GetPosition(0);
         else
-            oPos = obj->GetTransporter()->GetPosition(0);
+            oPos = obj->GetPosition(0);
 
         oPos.y = 0.0f;
 

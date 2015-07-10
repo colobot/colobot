@@ -26,6 +26,7 @@
 
 #include "object/brain.h"
 #include "object/object_manager.h"
+#include "object/interface/transportable_object.h"
 #include "object/level/parserline.h"
 #include "object/level/parserparam.h"
 
@@ -275,7 +276,7 @@ CObject* CAutoEgg::SearchAlien()
     CObject* best = nullptr;
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        if ( obj->GetTransporter() != nullptr )  continue;
+        if (IsObjectBeingTransported(obj))  continue;
 
         ObjectType type = obj->GetType();
         if ( type != OBJECT_ANT    &&

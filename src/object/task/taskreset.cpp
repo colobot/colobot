@@ -23,6 +23,7 @@
 #include "object/brain.h"
 #include "object/object_manager.h"
 #include "object/robotmain.h"
+#include "object/interface/transportable_object.h"
 
 
 
@@ -167,9 +168,9 @@ Error CTaskReset::Start(Math::Vector goal, Math::Vector angle)
     int     i;
 
     cargo = m_object->GetCargo();
-    if ( cargo != 0 && cargo->GetResetCap() == RESET_MOVE )
+    if ( cargo != nullptr && cargo->GetResetCap() == RESET_MOVE )
     {
-        cargo->SetTransporter(0);
+        dynamic_cast<CTransportableObject*>(cargo)->SetTransporter(0);
         m_object->SetCargo(0);  // does nothing
     }
 

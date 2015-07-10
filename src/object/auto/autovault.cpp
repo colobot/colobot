@@ -26,7 +26,7 @@
 #include "object/robotmain.h"
 #include "object/level/parserline.h"
 #include "object/level/parserparam.h"
-
+#include "object/interface/transportable_object.h"
 
 #include "ui/interface.h"
 #include "ui/window.h"
@@ -395,7 +395,7 @@ int CAutoVault::CountKeys()
 
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        if ( obj->GetTransporter() != nullptr )  continue;
+        if (IsObjectBeingTransported(obj))  continue;
 
         ObjectType  oType = obj->GetType();
         if ( oType != OBJECT_KEYa &&
@@ -467,7 +467,7 @@ void CAutoVault::LockKeys()
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
         ObjectType oType = obj->GetType();
-        if ( obj->GetTransporter() != nullptr )  continue;
+        if (IsObjectBeingTransported(obj))  continue;
 
         if ( oType != OBJECT_KEYa &&
              oType != OBJECT_KEYb &&
@@ -491,7 +491,7 @@ void CAutoVault::DownKeys(float progress)
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
         ObjectType oType = obj->GetType();
-        if ( obj->GetTransporter() != nullptr )  continue;
+        if (IsObjectBeingTransported(obj))  continue;
 
         if ( oType != OBJECT_KEYa &&
              oType != OBJECT_KEYb &&
@@ -520,7 +520,7 @@ void CAutoVault::DeleteKeys()
         for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
         {
             ObjectType oType = obj->GetType();
-            if ( obj->GetTransporter() != nullptr )  continue;
+            if (IsObjectBeingTransported(obj))  continue;
 
             if ( oType != OBJECT_KEYa &&
                  oType != OBJECT_KEYb &&
@@ -548,7 +548,7 @@ CObject* CAutoVault::SearchVehicle()
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
         if ( obj == m_object )  continue;
-        if ( obj->GetTransporter() != nullptr )  continue;
+        if (IsObjectBeingTransported(obj))  continue;
 
         Math::Vector oPos = obj->GetPosition(0);
         float dist = Math::DistanceProjected(oPos, cPos);

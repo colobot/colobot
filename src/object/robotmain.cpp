@@ -2004,7 +2004,11 @@ CObject* CRobotMain::DetectObject(Math::Point pos)
     for (CObject* obj : m_objMan->GetAllObjects())
     {
         if (!obj->GetActive()) continue;
-        CObject* transporter = obj->GetTransporter();
+
+        CObject* transporter = nullptr;
+        if (obj->Implements(ObjectInterfaceType::Transportable))
+            transporter = dynamic_cast<CTransportableObject*>(obj)->GetTransporter();
+
         if (transporter != nullptr && !transporter->GetActive()) continue;
         if (obj->GetProxyActivate()) continue;
 
@@ -2121,7 +2125,7 @@ CObject* CRobotMain::DetectObject(Math::Point pos)
         }
         else if (type == OBJECT_POWER || type == OBJECT_ATOMIC)
         {
-            target = obj->GetTransporter();  // battery connected
+            target = dynamic_cast<CTransportableObject*>(obj)->GetTransporter();  // battery connected
             if (!target) target = obj; // standalone battery
         }
 
@@ -2629,7 +2633,7 @@ bool CRobotMain::EventFrame(const Event &event)
             if (pm != nullptr)
                 pm->UpdateObject(obj);
 
-            if (obj->GetTransporter() != nullptr)
+            if (IsObjectBeingTransported(obj))
                 continue;
 
             if (obj->GetType() == OBJECT_TOTO)
@@ -2640,7 +2644,7 @@ bool CRobotMain::EventFrame(const Event &event)
         // Advances all objects transported by robots.
         for (CObject* obj : m_objMan->GetAllObjects())
         {
-            if (obj->GetTransporter() == nullptr)
+            if (! IsObjectBeingTransported(obj))
                 continue;
 
             if (obj->Implements(ObjectInterfaceType::Interactive))
@@ -4176,7 +4180,8 @@ float CRobotMain::SearchNearestObject(Math::Vector center, CObject *exclu)
     for (CObject* obj : m_objMan->GetAllObjects())
     {
         if (!obj->GetActive()) continue;  // inactive?
-        if (obj->GetTransporter() != nullptr) continue;  // object carries?
+        if (IsObjectBeingTransported(obj)) continue;
+
         if (obj == exclu)  continue;
 
         ObjectType type = obj->GetType();
@@ -4324,7 +4329,8 @@ void CRobotMain::ShowDropZone(CObject* metal, CObject* transporter)
     for (CObject* obj : m_objMan->GetAllObjects())
     {
         if (!obj->GetActive()) continue;  // inactive?
-        if (obj->GetTransporter() != nullptr) continue;  // object carried?
+        if (IsObjectBeingTransported(obj)) continue;
+
         if (obj == metal) continue;
         if (obj == transporter) continue;
 
@@ -4524,7 +4530,7 @@ void CRobotMain::CompileScript(bool soluce)
         nbError = 0;
         for (CObject* obj : m_objMan->GetAllObjects())
         {
-            if (obj->GetTransporter() != nullptr) continue;
+            if (IsObjectBeingTransported(obj)) continue;
 
             CBrain* brain = obj->GetBrain();
             if (brain == nullptr) continue;
@@ -4552,7 +4558,7 @@ void CRobotMain::CompileScript(bool soluce)
     {
         for (CObject* obj : m_objMan->GetAllObjects())
         {
-            if (obj->GetTransporter() != 0)  continue;
+            if (IsObjectBeingTransported(obj)) continue;
 
             CBrain* brain = obj->GetBrain();
             if (brain == 0)  continue;
@@ -4568,7 +4574,7 @@ void CRobotMain::CompileScript(bool soluce)
     // Start all programs according to the command "run".
     for (CObject* obj : m_objMan->GetAllObjects())
     {
-        if (obj->GetTransporter() != nullptr) continue;
+        if (IsObjectBeingTransported(obj)) continue;
 
         CBrain* brain = obj->GetBrain();
         if (brain == nullptr)  continue;
@@ -4933,7 +4939,7 @@ bool CRobotMain::IOWriteScene(const char *filename, const char *filecbot, char *
     {
         if (obj->GetType() == OBJECT_TOTO) continue;
         if (obj->GetType() == OBJECT_FIX) continue;
-        if (obj->GetTransporter() != nullptr) continue;
+        if (IsObjectBeingTransported(obj)) continue;
         if (obj->GetBurn()) continue;
         if (obj->GetDead()) continue;
         if (obj->IsExploding()) continue;
@@ -4986,7 +4992,8 @@ bool CRobotMain::IOWriteScene(const char *filename, const char *filecbot, char *
     {
         if (obj->GetType() == OBJECT_TOTO) continue;
         if (obj->GetType() == OBJECT_FIX) continue;
-        if (obj->GetTransporter() != nullptr) continue;
+        if (IsObjectBeingTransported(obj)) continue;
+
         if (obj->GetBurn()) continue;
         if (obj->GetDead()) continue;
 
@@ -5131,7 +5138,7 @@ CObject* CRobotMain::IOReadScene(const char *filename, const char *filecbot)
             if (power != nullptr)
             {
                 obj->SetPower(power);
-                power->SetTransporter(obj);
+                dynamic_cast<CTransportableObject*>(power)->SetTransporter(obj);
             }
 
             cargo  = nullptr;
@@ -5148,7 +5155,7 @@ CObject* CRobotMain::IOReadScene(const char *filename, const char *filecbot)
         nbError = 0;
         for (CObject* obj : m_objMan->GetAllObjects())
         {
-            if (obj->GetTransporter() != nullptr) continue;
+            if (IsObjectBeingTransported(obj)) continue;
 
             objRank = obj->GetDefRank();
             if (objRank == -1) continue;
@@ -5161,7 +5168,7 @@ CObject* CRobotMain::IOReadScene(const char *filename, const char *filecbot)
     // Starts scripts
     for (CObject* obj : m_objMan->GetAllObjects())
     {
-        if (obj->GetTransporter() != nullptr) continue;
+        if (IsObjectBeingTransported(obj)) continue;
         if (obj->GetDefRank() == -1) continue;
 
         CBrain* brain = obj->GetBrain();
@@ -5190,7 +5197,7 @@ CObject* CRobotMain::IOReadScene(const char *filename, const char *filecbot)
                 {
                     if (obj->GetType() == OBJECT_TOTO) continue;
                     if (obj->GetType() == OBJECT_FIX) continue;
-                    if (obj->GetTransporter() != nullptr) continue;
+                    if (IsObjectBeingTransported(obj)) continue;
                     if (obj->GetBurn()) continue;
                     if (obj->GetDead()) continue;
 

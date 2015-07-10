@@ -21,6 +21,7 @@
 #include <stdio.h>
 
 #include "object/auto/autobase.h"
+#include "object/interface/transportable_object.h"
 
 #include "graphics/engine/terrain.h"
 #include "graphics/engine/cloud.h"
@@ -1244,7 +1245,7 @@ void CAutoBase::FreezeCargo(bool freeze)
         obj->SetSpaceshipCargo(false);
 
         if ( obj == m_object )  continue;  // yourself?
-        if ( obj->GetTransporter() != nullptr )  continue;  // transport object?
+        if (IsObjectBeingTransported(obj)) continue;
 
         Math::Vector oPos = obj->GetPosition(0);
         float dist = Math::DistanceProjected(m_pos, oPos);

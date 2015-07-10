@@ -100,7 +100,16 @@ void uObject(CBotVar* botThis, void* user)
 
     // Updates the position of the object.
     pVar = pVar->GetNext();  // "position"
-    if ( object->GetTransporter() == 0 )
+    if (IsObjectBeingTransported(object))
+    {
+        pSub = pVar->GetItemList();  // "x"
+        pSub->SetInit(CBotVar::InitType::IS_NAN);
+        pSub = pSub->GetNext();  // "y"
+        pSub->SetInit(CBotVar::InitType::IS_NAN);
+        pSub = pSub->GetNext();  // "z"
+        pSub->SetInit(CBotVar::InitType::IS_NAN);
+    }
+    else
     {
         pos = object->GetPosition(0);
         float waterLevel = Gfx::CEngine::GetInstancePointer()->GetWater()->GetLevel();
@@ -111,15 +120,6 @@ void uObject(CBotVar* botThis, void* user)
         pSub->SetValFloat(pos.z/g_unit);
         pSub = pSub->GetNext();  // "z"
         pSub->SetValFloat(pos.y/g_unit);
-    }
-    else    // object transported?
-    {
-        pSub = pVar->GetItemList();  // "x"
-        pSub->SetInit(CBotVar::InitType::IS_NAN);
-        pSub = pSub->GetNext();  // "y"
-        pSub->SetInit(CBotVar::InitType::IS_NAN);
-        pSub = pSub->GetNext();  // "z"
-        pSub->SetInit(CBotVar::InitType::IS_NAN);
     }
 
     // Updates the angle.
@@ -188,6 +188,7 @@ void uObject(CBotVar* botThis, void* user)
 COldObject::COldObject(int id)
     : CObject(id, OBJECT_NULL)
     , CInteractiveObject(m_implementedInterfaces)
+    , CTransportableObject(m_implementedInterfaces)
 {
     m_sound       = CApplication::GetInstancePointer()->GetSound();
     m_engine      = Gfx::CEngine::GetInstancePointer();

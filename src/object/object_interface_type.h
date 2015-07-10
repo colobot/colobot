@@ -33,6 +33,7 @@
 enum class ObjectInterfaceType
 {
     Interactive, //!< interactive objects can process events from event loop
+    Transportable, //!< objects that can be carried by robots or astronaut
     Max //!< maximum value (for getting number of items in enum)
 };
 

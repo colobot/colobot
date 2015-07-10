@@ -246,9 +246,9 @@ CObject* CTarget::DetectFriendObject(Math::Point pos)
         }
         else if ( (type == OBJECT_POWER  ||
                   type == OBJECT_ATOMIC ) &&
-             obj->GetTransporter() != nullptr )  // battery used?
+             IsObjectBeingTransported(obj) )  // battery used?
         {
-            target = obj->GetTransporter();
+            target = dynamic_cast<CTransportableObject*>(obj)->GetTransporter();
             if ( target->GetType() == OBJECT_MOBILEtg )
             {
                 target = nullptr;

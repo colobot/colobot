@@ -43,6 +43,7 @@
 #include "object/task/task.h"
 #include "object/level/parserline.h"
 #include "object/level/parserparam.h"
+#include "object/interface/transportable_object.h"
 
 
 #include <cstring>
@@ -1779,7 +1780,7 @@ void CPhysics::WaterFrame(float aTime, float rTime)
 
     level = m_water->GetLevel();
     if ( level == 0.0f )  return;  // no water?
-    if ( m_object->GetTransporter() != 0 )  return;  // object transported?
+    if (IsObjectBeingTransported(m_object))  return;
 
     // Management of flames into the lava.
     pos = m_object->GetPosition(0);
@@ -2530,7 +2531,7 @@ int CPhysics::ObjectAdapt(const Math::Vector &pos, const Math::Vector &angle)
     for (CObject* pObj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
         if ( pObj == m_object )  continue;  // yourself?
-        if ( pObj->GetTransporter() != 0 )  continue;  // object transported?
+        if (IsObjectBeingTransported(pObj))  continue;
         if ( !pObj->GetEnable() )  continue;  // inactive?
         if ( pObj->GetRuin() )  continue;  // is burning or exploding?
         if ( pObj->GetDead() )  continue;  // dead man?

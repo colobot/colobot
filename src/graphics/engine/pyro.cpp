@@ -1374,14 +1374,18 @@ void CPyro::DeleteObject(bool primary, bool secondary)
 
     if (primary)
     {
-        CObject* transporter = m_object->GetTransporter();
-        if ( transporter != nullptr )  // object carries?
+        if (m_object->Implements(ObjectInterfaceType::Transportable))
         {
-            if (transporter->GetPower() == m_object)
-                transporter->SetPower(nullptr);
+            // TODO: this should be handled in the object's destructor
+            CObject* transporter = dynamic_cast<CTransportableObject*>(m_object)->GetTransporter();
+            if (transporter != nullptr)
+            {
+                if (transporter->GetPower() == m_object)
+                    transporter->SetPower(nullptr);
 
-            if (transporter->GetCargo() == m_object)
-                transporter->SetCargo(nullptr);
+                if (transporter->GetCargo() == m_object)
+                    transporter->SetCargo(nullptr);
+            }
         }
 
         CObjectManager::GetInstancePointer()->DeleteObject(m_object);
@@ -2226,7 +2230,7 @@ CObject* CPyro::FallSearchBeeExplo()
              oType != OBJECT_POWER    &&
              oType != OBJECT_ATOMIC   )  continue;
 
-        if ( obj->GetTransporter() != nullptr )  continue;  // object transported?
+        if (IsObjectBeingTransported(obj)) continue;
 
         Math::Vector oPos = obj->GetPosition(0);
 

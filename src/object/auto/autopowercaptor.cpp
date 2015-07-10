@@ -26,7 +26,7 @@
 #include "object/object_manager.h"
 #include "object/level/parserline.h"
 #include "object/level/parserparam.h"
-
+#include "object/interface/transportable_object.h"
 
 #include "ui/interface.h"
 #include "ui/window.h"
@@ -250,7 +250,7 @@ void CAutoPowerCaptor::ChargeObject(float rTime)
         float dist = Math::Distance(oPos, sPos);
         if ( dist > 20.0f )  continue;
 
-        if ( obj->GetTransporter() == nullptr && obj->GetType() == OBJECT_POWER )
+        if (! IsObjectBeingTransported(obj) && obj->GetType() == OBJECT_POWER )
         {
             float energy = obj->GetEnergy();
             energy += rTime/2.0f;

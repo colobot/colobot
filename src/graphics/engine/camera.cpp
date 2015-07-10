@@ -33,6 +33,7 @@
 #include "object/object.h"
 #include "object/object_manager.h"
 #include "object/robotmain.h"
+#include "object/interface/transportable_object.h"
 
 #include "physics/physics.h"
 
@@ -64,7 +65,7 @@ CCamera::CCamera()
 
     m_main    = CRobotMain::GetInstancePointer();
     m_terrain = m_main->GetTerrain();
-    
+
     m_input   = CInput::GetInstancePointer();
 
     m_type      = CAM_TYPE_FREE;
@@ -245,8 +246,8 @@ void CCamera::SetType(CameraType type)
     {
         for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
         {
-            if (obj->GetTransporter())
-                continue;  // battery or cargo?
+            if (IsObjectBeingTransported(obj))
+                continue;
 
             SetTransparency(obj, 0.0f);  // opaque object
         }
@@ -890,7 +891,8 @@ bool CCamera::IsCollisionBack(Math::Vector &eye, Math::Vector lookat)
 
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        if (obj->GetTransporter()) continue;  // battery or cargo?
+        if (IsObjectBeingTransported(obj))
+            continue;
 
         SetTransparency(obj, 0.0f);  // opaque object
 

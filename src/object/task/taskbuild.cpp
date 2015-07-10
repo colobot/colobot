@@ -32,6 +32,7 @@
 #include "object/motion/motionhuman.h"
 #include "object/object_manager.h"
 #include "object/robotmain.h"
+#include "object/interface/transportable_object.h"
 
 #include "physics/physics.h"
 
@@ -616,7 +617,7 @@ Error CTaskBuild::FlatFloor()
     for (CObject* pObj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
         if ( !pObj->GetActive() )  continue;  // inactive?
-        if ( pObj->GetTransporter() != 0 )  continue;  // object transported?
+        if (IsObjectBeingTransported(pObj))  continue;
         if ( pObj == m_metal )  continue;
         if ( pObj == m_object )  continue;
 
@@ -663,7 +664,7 @@ Error CTaskBuild::FlatFloor()
     for (CObject* pObj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
         if ( !pObj->GetActive() )  continue;  // inactive?
-        if ( pObj->GetTransporter() != 0 )  continue;  // object transported?
+        if (IsObjectBeingTransported(pObj))  continue;
         if ( pObj == m_metal )  continue;
         if ( pObj == m_object )  continue;
 
@@ -733,7 +734,7 @@ CObject* CTaskBuild::SearchMetalObject(float &angle, float dMin, float dMax,
     for (CObject* pObj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
         if ( !pObj->GetActive() )  continue;  // objet inactive?
-        if ( pObj->GetTransporter() != 0 )  continue;  // object transported?
+        if (IsObjectBeingTransported(pObj))  continue;
 
         type = pObj->GetType();
         if ( type != OBJECT_METAL )  continue;

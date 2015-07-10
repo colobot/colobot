@@ -24,8 +24,10 @@
 
 #pragma once
 
-#include "object/interactive_object.h"
 #include "object/object.h"
+
+#include "object/interface/interactive_object.h"
+#include "object/interface/transportable_object.h"
 
 // The father of all parts must always be the part number zero!
 const int OBJECTMAXPART         = 40;
@@ -50,7 +52,9 @@ struct ObjectPart
 };
 
 
-class COldObject : public CObject, public CInteractiveObject
+class COldObject : public CObject,
+                   public CInteractiveObject,
+                   public CTransportableObject
 {
     friend class CObjectFactory;
     friend class CObjectManager;

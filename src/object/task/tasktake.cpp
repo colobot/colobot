@@ -28,6 +28,7 @@
 #include "object/motion/motionhuman.h"
 #include "object/object_manager.h"
 #include "object/robotmain.h"
+#include "object/interface/transportable_object.h"
 
 #include "physics/physics.h"
 
@@ -329,7 +330,7 @@ CObject* CTaskTake::SearchTakeObject(float &angle,
              type != OBJECT_KEYd    &&
              type != OBJECT_TNT     )  continue;
 
-        if ( pObj->GetTransporter() != 0 )  continue;  // object transported?
+        if (IsObjectBeingTransported(pObj))  continue;
         if ( pObj->GetLock() )  continue;
         if ( pObj->GetZoomY(0) != 1.0f )  continue;
 
@@ -460,8 +461,8 @@ bool CTaskTake::TransporterTakeObject()
         if ( cargo == 0 )  return false;  // rien � prendre ?
         m_cargoType = cargo->GetType();
 
-        cargo->SetTransporter(m_object);
-        cargo->SetTransporterPart(4);  // takes with the hand
+        dynamic_cast<CTransportableObject*>(cargo)->SetTransporter(m_object);
+        dynamic_cast<CTransportableObject*>(cargo)->SetTransporterPart(4);  // takes with the hand
 
 //?     cargo->SetPosition(0, Math::Vector(2.2f, -1.0f, 1.1f));
         cargo->SetPosition(0, Math::Vector(1.7f, -0.5f, 1.1f));
@@ -482,8 +483,8 @@ bool CTaskTake::TransporterTakeObject()
         m_cargoType = cargo->GetType();
 
         other->SetPower(0);
-        cargo->SetTransporter(m_object);
-        cargo->SetTransporterPart(4);  // takes with the hand
+        dynamic_cast<CTransportableObject*>(cargo)->SetTransporter(m_object);
+        dynamic_cast<CTransportableObject*>(cargo)->SetTransporterPart(4);  // takes with the hand
 
 //?     cargo->SetPosition(0, Math::Vector(2.2f, -1.0f, 1.1f));
         cargo->SetPosition(0, Math::Vector(1.7f, -0.5f, 1.1f));
@@ -523,7 +524,7 @@ bool CTaskTake::TransporterDeposeObject()
         cargo->SetAngleZ(0, 0.0f);
         cargo->FloorAdjust();  // plate well on the ground
 
-        cargo->SetTransporter(0);
+        dynamic_cast<CTransportableObject*>(cargo)->SetTransporter(0);
         m_object->SetCargo(0);  // deposit
     }
 
@@ -540,14 +541,14 @@ bool CTaskTake::TransporterDeposeObject()
         m_cargoType = cargo->GetType();
 
         other->SetPower(cargo);
-        cargo->SetTransporter(other);
+        dynamic_cast<CTransportableObject*>(cargo)->SetTransporter(other);
 
         character = other->GetCharacter();
         cargo->SetPosition(0, character->posPower);
         cargo->SetAngleY(0, 0.0f);
         cargo->SetAngleX(0, 0.0f);
         cargo->SetAngleZ(0, 0.0f);
-        cargo->SetTransporterPart(0);  // carried by the base
+        dynamic_cast<CTransportableObject*>(cargo)->SetTransporterPart(0);  // carried by the base
 
         m_object->SetCargo(0);  // deposit
     }
@@ -566,7 +567,7 @@ bool CTaskTake::IsFreeDeposeObject(Math::Vector pos)
     {
         if ( pObj == m_object )  continue;
         if ( !pObj->GetActive() )  continue;  // inactive?
-        if ( pObj->GetTransporter() != 0 )  continue;  // object transported?
+        if (IsObjectBeingTransported(pObj))  continue;
 
         for (const auto& crashSphere : pObj->GetAllCrashSpheres())
         {

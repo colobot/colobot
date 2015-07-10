@@ -27,6 +27,7 @@
 
 #include "object/object_manager.h"
 #include "object/robotmain.h"
+#include "object/interface/transportable_object.h"
 
 #include "physics/physics.h"
 
@@ -323,16 +324,17 @@ Error CTaskManip::Start(TaskManipOrder order, TaskManipArm arm)
 
             other = SearchTakeUnderObject(m_targetPos, MARGIN_BEE);
             if ( other == 0 )  return ERR_MANIP_NIL;
+
             m_object->SetCargo(other);  // takes the ball
-            other->SetTransporter(m_object);
-            other->SetTransporterPart(0);  // taken with the base
+            dynamic_cast<CTransportableObject*>(other)->SetTransporter(m_object);
+            dynamic_cast<CTransportableObject*>(other)->SetTransporterPart(0);  // taken with the base
             other->SetPosition(0, Math::Vector(0.0f, -3.0f, 0.0f));
         }
         else
         {
             other = m_object->GetCargo();  // other = ball
             m_object->SetCargo(0);  // lick the ball
-            other->SetTransporter(0);
+            dynamic_cast<CTransportableObject*>(other)->SetTransporter(0);
             pos = m_object->GetPosition(0);
             pos.y -= 3.0f;
             other->SetPosition(0, pos);
@@ -749,7 +751,7 @@ CObject* CTaskManip::SearchTakeUnderObject(Math::Vector &pos, float dLimit)
              type != OBJECT_KEYd    &&
              type != OBJECT_TNT     )  continue;
 
-        if ( pObj->GetTransporter() != 0 )  continue;  // object transported?
+        if (IsObjectBeingTransported(pObj))  continue;
         if ( pObj->GetLock() )  continue;
         if ( pObj->GetZoomY(0) != 1.0f )  continue;
 
@@ -821,7 +823,7 @@ CObject* CTaskManip::SearchTakeFrontObject(bool bAdvance, Math::Vector &pos,
              type != OBJECT_SCRAP4  &&
              type != OBJECT_SCRAP5  )  continue;
 
-        if ( pObj->GetTransporter() != 0 )  continue;  // object transported?
+        if (IsObjectBeingTransported(pObj))  continue;
         if ( pObj->GetLock() )  continue;
         if ( pObj->GetZoomY(0) != 1.0f )  continue;
 
@@ -908,7 +910,7 @@ CObject* CTaskManip::SearchTakeBackObject(bool bAdvance, Math::Vector &pos,
              type != OBJECT_SCRAP4  &&
              type != OBJECT_SCRAP5  )  continue;
 
-        if ( pObj->GetTransporter() != 0 )  continue;  // object transported?
+        if (IsObjectBeingTransported(pObj))  continue;
         if ( pObj->GetLock() )  continue;
         if ( pObj->GetZoomY(0) != 1.0f )  continue;
 
@@ -1096,8 +1098,8 @@ bool CTaskManip::TransporterTakeObject()
         if ( m_object->GetType() == OBJECT_HUMAN ||
              m_object->GetType() == OBJECT_TECH  )
         {
-            cargo->SetTransporter(m_object);
-            cargo->SetTransporterPart(4);  // takes with the hand
+            dynamic_cast<CTransportableObject*>(cargo)->SetTransporter(m_object);
+            dynamic_cast<CTransportableObject*>(cargo)->SetTransporterPart(4);  // takes with the hand
 
             cargo->SetPosition(0, Math::Vector(1.7f, -0.5f, 1.1f));
             cargo->SetAngleY(0, 0.1f);
@@ -1106,8 +1108,8 @@ bool CTaskManip::TransporterTakeObject()
         }
         else if ( m_bSubm )
         {
-            cargo->SetTransporter(m_object);
-            cargo->SetTransporterPart(2);  // takes with the right claw
+            dynamic_cast<CTransportableObject*>(cargo)->SetTransporter(m_object);
+            dynamic_cast<CTransportableObject*>(cargo)->SetTransporterPart(2);  // takes with the right claw
 
             pos = Math::Vector(1.1f, -1.0f, 1.0f);  // relative
             cargo->SetPosition(0, pos);
@@ -1117,8 +1119,8 @@ bool CTaskManip::TransporterTakeObject()
         }
         else
         {
-            cargo->SetTransporter(m_object);
-            cargo->SetTransporterPart(3);  // takes with the hand
+            dynamic_cast<CTransportableObject*>(cargo)->SetTransporter(m_object);
+            dynamic_cast<CTransportableObject*>(cargo)->SetTransporterPart(3);  // takes with the hand
 
             pos = Math::Vector(4.7f, 0.0f, 0.0f);  // relative to the hand (lem4)
             cargo->SetPosition(0, pos);
@@ -1138,8 +1140,8 @@ bool CTaskManip::TransporterTakeObject()
 
         if ( m_bSubm )
         {
-            cargo->SetTransporter(m_object);
-            cargo->SetTransporterPart(2);  // takes with the right claw
+            dynamic_cast<CTransportableObject*>(cargo)->SetTransporter(m_object);
+            dynamic_cast<CTransportableObject*>(cargo)->SetTransporterPart(2);  // takes with the right claw
 
             pos = Math::Vector(1.1f, -1.0f, 1.0f);  // relative
             cargo->SetPosition(0, pos);
@@ -1149,8 +1151,8 @@ bool CTaskManip::TransporterTakeObject()
         }
         else
         {
-            cargo->SetTransporter(m_object);
-            cargo->SetTransporterPart(3);  // takes with the hand
+            dynamic_cast<CTransportableObject*>(cargo)->SetTransporter(m_object);
+            dynamic_cast<CTransportableObject*>(cargo)->SetTransporterPart(3);  // takes with the hand
 
             pos = Math::Vector(4.7f, 0.0f, 0.0f);  // relative to the hand (lem4)
             cargo->SetPosition(0, pos);
@@ -1168,8 +1170,8 @@ bool CTaskManip::TransporterTakeObject()
         if ( cargo == 0 )  return false;  // nothing to take?
         m_cargoType = cargo->GetType();
 
-        cargo->SetTransporter(m_object);
-        cargo->SetTransporterPart(3);  // takes with the hand
+        dynamic_cast<CTransportableObject*>(cargo)->SetTransporter(m_object);
+        dynamic_cast<CTransportableObject*>(cargo)->SetTransporterPart(3);  // takes with the hand
 
         pos = Math::Vector(4.7f, 0.0f, 0.0f);  // relative to the hand (lem4)
         cargo->SetPosition(0, pos);
@@ -1191,7 +1193,7 @@ bool CTaskManip::TransporterTakeObject()
         cargo->SetAngleX(0, 0.0f);
         cargo->SetAngleZ(0, Math::PI/2.0f);
         cargo->SetAngleY(0, 0.0f);
-        cargo->SetTransporterPart(3);  // takes with the hand
+        dynamic_cast<CTransportableObject*>(cargo)->SetTransporterPart(3);  // takes with the hand
 
         m_object->SetPower(0);
         m_object->SetCargo(cargo);  // takes
@@ -1207,8 +1209,8 @@ bool CTaskManip::TransporterTakeObject()
         m_cargoType = cargo->GetType();
 
         other->SetPower(0);
-        cargo->SetTransporter(m_object);
-        cargo->SetTransporterPart(3);  // takes with the hand
+        dynamic_cast<CTransportableObject*>(cargo)->SetTransporter(m_object);
+        dynamic_cast<CTransportableObject*>(cargo)->SetTransporterPart(3);  // takes with the hand
 
         pos = Math::Vector(4.7f, 0.0f, 0.0f);  // relative to the hand (lem4)
         cargo->SetPosition(0, pos);
@@ -1248,7 +1250,7 @@ bool CTaskManip::TransporterDeposeObject()
         cargo->SetAngleZ(0, 0.0f);
         cargo->FloorAdjust();  // plate well on the ground
 
-        cargo->SetTransporter(0);
+        dynamic_cast<CTransportableObject*>(cargo)->SetTransporter(0);
         m_object->SetCargo(0);  // deposit
     }
 
@@ -1266,7 +1268,7 @@ bool CTaskManip::TransporterDeposeObject()
         cargo->SetAngleX(0, 0.0f);
         cargo->SetAngleZ(0, 0.0f);
 
-        cargo->SetTransporter(0);
+        dynamic_cast<CTransportableObject*>(cargo)->SetTransporter(0);
         m_object->SetCargo(0);  // deposit
     }
 
@@ -1278,8 +1280,8 @@ bool CTaskManip::TransporterDeposeObject()
 
         if ( m_object->GetPower() != 0 )  return false;
 
-        cargo->SetTransporter(m_object);
-        cargo->SetTransporterPart(0);  // carried by the base
+        dynamic_cast<CTransportableObject*>(cargo)->SetTransporter(m_object);
+        dynamic_cast<CTransportableObject*>(cargo)->SetTransporterPart(0);  // carried by the base
 
         character = m_object->GetCharacter();
         cargo->SetPosition(0, character->posPower);
@@ -1304,14 +1306,14 @@ bool CTaskManip::TransporterDeposeObject()
         m_cargoType = cargo->GetType();
 
         other->SetPower(cargo);
-        cargo->SetTransporter(other);
+        dynamic_cast<CTransportableObject*>(cargo)->SetTransporter(other);
 
         character = other->GetCharacter();
         cargo->SetPosition(0, character->posPower);
         cargo->SetAngleY(0, 0.0f);
         cargo->SetAngleX(0, 0.0f);
         cargo->SetAngleZ(0, 0.0f);
-        cargo->SetTransporterPart(0);  // carried by the base
+        dynamic_cast<CTransportableObject*>(cargo)->SetTransporterPart(0);  // carried by the base
 
         m_object->SetCargo(0);  // deposit
     }
@@ -1330,7 +1332,7 @@ bool CTaskManip::IsFreeDeposeObject(Math::Vector pos)
     {
         if ( obj == m_object )  continue;
         if ( !obj->GetActive() )  continue;  // inactive?
-        if ( obj->GetTransporter() != nullptr )  continue;  // object transported?
+        if (IsObjectBeingTransported(obj))  continue;
 
         for (const auto& crashSphere : obj->GetAllCrashSpheres())
         {

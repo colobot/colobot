@@ -30,6 +30,7 @@
 #include "math/geometry.h"
 
 #include "object/object_manager.h"
+#include "object/interface/transportable_object.h"
 
 #include "physics/physics.h"
 
@@ -1148,7 +1149,7 @@ bool CTaskGoto::AdjustBuilding(Math::Vector &pos, float margin, float &distance)
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
         if ( !obj->GetActive() )  continue;
-        if ( obj->GetTransporter() != nullptr )  continue;  // object transported?
+        if (IsObjectBeingTransported(obj))  continue;
 
         Math::Vector oPos;
         float suppl = 0.0f;
@@ -1305,7 +1306,7 @@ bool CTaskGoto::LeakSearch(Math::Vector &pos, float &delay)
     {
         if ( obj == m_object )  continue;
         if ( !obj->GetActive() )  continue;
-        if ( obj->GetTransporter() != nullptr )  continue;  // object transported?
+        if (IsObjectBeingTransported(obj))  continue;
 
         for (const auto& objCrashSphere : obj->GetAllCrashSpheres())
         {
@@ -1360,7 +1361,7 @@ void CTaskGoto::ComputeRepulse(Math::Point &dir)
         if ( pObj == 0 )  break;
 
         if ( pObj == m_object )  continue;
-        if ( pObj->GetTransporter() != 0 )  continue;
+        if (IsObjectBeingTransported(pObj))  continue;
 
         oPos = pObj->GetPosition(0);
         dist = Math::Distance(oPos, m_goalObject);
@@ -1480,7 +1481,7 @@ void CTaskGoto::ComputeRepulse(Math::Point &dir)
     for (CObject* pObj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
         if ( pObj == m_object )  continue;
-        if ( pObj->GetTransporter() != 0 )  continue;
+        if (IsObjectBeingTransported(pObj))  continue;
 
         oType = pObj->GetType();
 
@@ -1567,7 +1568,7 @@ void CTaskGoto::ComputeFlyingRepulse(float &dir)
     for (CObject* pObj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
         if ( pObj == m_object )  continue;
-        if ( pObj->GetTransporter() != nullptr )  continue;
+        if (IsObjectBeingTransported(pObj))  continue;
 
         ObjectType oType = pObj->GetType();
 
@@ -1878,7 +1879,7 @@ void CTaskGoto::BitmapObject()
 
         if ( pObj == m_object )  continue;
         if ( pObj == m_bmCargoObject )  continue;
-        if ( pObj->GetTransporter() != 0 )  continue;
+        if (IsObjectBeingTransported(pObj))  continue;
 
         float h = m_terrain->GetFloorLevel(pObj->GetPosition(0), false);
         if ( m_physics->GetType() == TYPE_FLYING && m_altitude > 0.0f )

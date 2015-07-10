@@ -25,7 +25,7 @@
 #include "object/object_manager.h"
 #include "object/level/parserline.h"
 #include "object/level/parserparam.h"
-
+#include "object/interface/transportable_object.h"
 
 #include "ui/interface.h"
 #include "ui/window.h"
@@ -387,7 +387,7 @@ void CAutoNuclearPlant::CreatePower()
     float powerLevel = 1.0f;
     CObject* power = CObjectManager::GetInstancePointer()->CreateObject(pos, angle, OBJECT_ATOMIC, powerLevel);
 
-    power->SetTransporter(m_object);
+    dynamic_cast<CTransportableObject*>(power)->SetTransporter(m_object);
     power->SetPosition(0, Math::Vector(22.0f, 3.0f, 0.0f));
     m_object->SetPower(power);
 }
