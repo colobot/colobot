@@ -27,6 +27,7 @@
 #include "object/level/parserline.h"
 #include "object/level/parserparam.h"
 #include "object/interface/carrier_object.h"
+#include "object/interface/powered_object.h"
 #include "object/interface/transportable_object.h"
 
 #include "ui/interface.h"
@@ -259,18 +260,21 @@ void CAutoPowerCaptor::ChargeObject(float rTime)
             obj->SetEnergy(energy);
         }
 
-        CObject* power = obj->GetPower();
-        if ( power != nullptr && power->GetType() == OBJECT_POWER )
+        if (obj->Implements(ObjectInterfaceType::Powered))
         {
-            float energy = power->GetEnergy();
-            energy += rTime/2.0f;
-            if ( energy > 1.0f )  energy = 1.0f;
-            power->SetEnergy(energy);
+            CObject* power = dynamic_cast<CPoweredObject*>(obj)->GetPower();
+            if ( power != nullptr && power->GetType() == OBJECT_POWER )
+            {
+                float energy = power->GetEnergy();
+                energy += rTime/2.0f;
+                if ( energy > 1.0f )  energy = 1.0f;
+                power->SetEnergy(energy);
+            }
         }
 
         if (obj->Implements(ObjectInterfaceType::Carrier))
         {
-            power = dynamic_cast<CCarrierObject*>(obj)->GetCargo();
+            CObject* power = dynamic_cast<CCarrierObject*>(obj)->GetCargo();
             if ( power != nullptr && power->GetType() == OBJECT_POWER )
             {
                 float energy = power->GetEnergy();

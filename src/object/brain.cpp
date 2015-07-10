@@ -34,6 +34,7 @@
 #include "object/level/parserline.h"
 #include "object/level/parserparam.h"
 #include "object/interface/carrier_object.h"
+#include "object/interface/powered_object.h"
 
 #include "physics/physics.h"
 
@@ -2079,14 +2080,12 @@ void CBrain::UpdateInterface(float rTime)
 {
     Ui::CWindow*    pw;
     Ui::CButton*    pb;
-    Ui::CGauge*     pg;
     Ui::CCompass*   pc;
     Ui::CGroup*     pgr;
     Ui::CTarget*    ptg;
-    CObject*        power;
     Math::Vector    pos, hPos;
     Math::Point     ppos;
-    float       energy, limit, angle, range;
+    float       angle, range;
     int         icon;
     bool        bOnBoard;
 
@@ -2108,19 +2107,20 @@ void CBrain::UpdateInterface(float rTime)
     pw = static_cast< Ui::CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
     if ( pw == 0 )  return;
 
-    pg = static_cast< Ui::CGauge* >(pw->SearchControl(EVENT_OBJECT_GENERGY));
-    if ( pg != 0 )
+    Ui::CGauge* pg = static_cast< Ui::CGauge* >(pw->SearchControl(EVENT_OBJECT_GENERGY));
+    if (pg != nullptr)
     {
-        power = m_object->GetPower();
-        if ( power == 0 )
+        float energy = 0.0f;
+        float limit = 0.0f;
+
+        if (m_object->Implements(ObjectInterfaceType::Powered))
         {
-            energy = 0.0f;
-            limit = 0.0f;
-        }
-        else
-        {
-            energy = power->GetEnergy();
-            limit = energy*power->GetCapacity();
+            CObject* power = dynamic_cast<CPoweredObject*>(m_object)->GetPower();
+            if (power != nullptr)
+            {
+                energy = power->GetEnergy();
+                limit = energy*power->GetCapacity();
+            }
         }
         icon = 0;  // red/green
 

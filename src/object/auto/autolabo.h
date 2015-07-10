@@ -25,6 +25,7 @@
 #include "object/auto/auto.h"
 
 
+class CPoweredObject;
 
 enum AutoLaboPhase
 {
@@ -66,6 +67,7 @@ protected:
     void        SoundManip(float time, float amplitude, float frequency);
 
 protected:
+    CPoweredObject*     m_poweredObject;
     AutoLaboPhase       m_phase;
     float               m_progress;
     float               m_speed;

@@ -24,6 +24,7 @@
 #include "object/object_manager.h"
 #include "object/robotmain.h"
 #include "object/interface/carrier_object.h"
+#include "object/interface/powered_object.h"
 #include "object/interface/transportable_object.h"
 
 
@@ -222,10 +223,6 @@ Error CTaskReset::Start(Math::Vector goal, Math::Vector angle)
 
 Error CTaskReset::IsEnded()
 {
-    CObject*    power;
-    float       dist;
-    int         i;
-
     if ( !m_main->GetNiceReset() )  // quick return?
     {
         return ERR_STOP;
@@ -237,7 +234,7 @@ Error CTaskReset::IsEnded()
 
     if ( m_phase == TRSP_ZOUT )
     {
-        dist = Math::Distance(m_begin, m_goal);
+        float dist = Math::Distance(m_begin, m_goal);
         m_phase = TRSP_MOVE;
         m_speed = 1.0f/(dist*RESET_DELAY_MOVE/100.0f);
         m_progress = 0.0f;
@@ -249,7 +246,7 @@ Error CTaskReset::IsEnded()
         m_object->SetPosition(0, m_goal);
         m_object->SetAngle(0, m_angle);
 
-        i = m_sound->Play(SOUND_GGG, m_goal, 1.0f, 0.5f, true);
+        int i = m_sound->Play(SOUND_GGG, m_goal, 1.0f, 0.5f, true);
         m_sound->AddEnvelope(i, 0.0f, 2.0f, RESET_DELAY_ZOOM, SOPER_STOP);
 
         m_phase = TRSP_ZIN;
@@ -261,14 +258,17 @@ Error CTaskReset::IsEnded()
     m_object->SetAngle(0, m_angle);
     m_object->SetZoom(0, 1.0f);
 
-    power = m_object->GetPower();
-    if ( power != 0 )
+    if (m_object->Implements(ObjectInterfaceType::Powered))
     {
-        power->SetEnergy(power->GetCapacity());  // refueling
+        CObject* power = dynamic_cast<CPoweredObject*>(m_object)->GetPower();
+        if (power != nullptr)
+        {
+            power->SetEnergy(power->GetCapacity());  // refueling
+        }
     }
 
     Program* program = m_object->GetResetRun();
-    if(program != nullptr)
+    if (program != nullptr)
     {
         m_brain->AddProgram(program);
         m_brain->RunProgram(program);

@@ -120,8 +120,12 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
     m_lightRank = -1;
 
     // Seeking the position of the battery.
-    CObject* power = obj->GetPower();
-    if ( power == nullptr )
+
+    CObject* power = nullptr;
+    if (obj->Implements(ObjectInterfaceType::Powered))
+        power = dynamic_cast<CPoweredObject*>(obj)->GetPower();
+
+    if (power == nullptr)
     {
         m_power = false;
     }
@@ -133,6 +137,7 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
         Math::Matrix* mat = obj->GetWorldMatrix(0);
         m_posPower = Math::Transform(*mat, pos);
     }
+
     if ( oType == OBJECT_POWER   ||
          oType == OBJECT_ATOMIC  ||
          oType == OBJECT_URANIUM ||
@@ -1357,17 +1362,21 @@ void CPyro::DeleteObject(bool primary, bool secondary)
          type != OBJECT_NUCLEAR &&
          type != OBJECT_ENERGY )
     {
-        CObject* sub = m_object->GetPower();
-        if ( sub != nullptr )
+        if (m_object->Implements(ObjectInterfaceType::Powered))
         {
-            CObjectManager::GetInstancePointer()->DeleteObject(sub);
-            m_object->SetPower(nullptr);
+            CPoweredObject* poweredObject = dynamic_cast<CPoweredObject*>(m_object);
+            CObject* sub = poweredObject->GetPower();
+            if (sub != nullptr)
+            {
+                CObjectManager::GetInstancePointer()->DeleteObject(sub);
+                poweredObject->SetPower(nullptr);
+            }
         }
 
         if (m_object->Implements(ObjectInterfaceType::Carrier))
         {
             CCarrierObject* carrierObject = dynamic_cast<CCarrierObject*>(m_object);
-            sub = carrierObject->GetCargo();
+            CObject* sub = carrierObject->GetCargo();
             if (sub != nullptr)
             {
                 CObjectManager::GetInstancePointer()->DeleteObject(sub);
@@ -1384,8 +1393,12 @@ void CPyro::DeleteObject(bool primary, bool secondary)
             CObject* transporter = dynamic_cast<CTransportableObject*>(m_object)->GetTransporter();
             if (transporter != nullptr)
             {
-                if (transporter->GetPower() == m_object)
-                    transporter->SetPower(nullptr);
+                if (transporter->Implements(ObjectInterfaceType::Powered))
+                {
+                    CPoweredObject* powered = dynamic_cast<CPoweredObject*>(transporter);
+                    if (powered->GetPower() == m_object)
+                        powered->SetPower(nullptr);
+                }
 
                 if (transporter->Implements(ObjectInterfaceType::Carrier))
                 {
@@ -2106,9 +2119,12 @@ void CPyro::BurnProgress()
         m_object->SetAngle(m_burnPart[i].part, pos);
     }
 
-    CObject* sub = m_object->GetPower();
-    if (sub != nullptr)  // is there a battery?
-        sub->SetZoomY(0, 1.0f - m_progress);  // complete flattening
+    if (m_object->Implements(ObjectInterfaceType::Powered))
+    {
+        CObject* sub = dynamic_cast<CPoweredObject*>(m_object)->GetPower();
+        if (sub != nullptr)  // is there a battery?
+            sub->SetZoomY(0, 1.0f - m_progress);  // complete flattening
+    }
 }
 
 bool CPyro::BurnIsKeepPart(int part)

@@ -29,6 +29,7 @@
 #include "object/object_manager.h"
 #include "object/robotmain.h"
 #include "object/interface/carrier_object.h"
+#include "object/interface/powered_object.h"
 #include "object/interface/transportable_object.h"
 
 #include "physics/physics.h"
@@ -43,7 +44,10 @@ CTaskTake::CTaskTake(CObject* object) : CTask(object)
     m_arm  = TTA_NEUTRAL;
 
     assert(m_object->Implements(ObjectInterfaceType::Carrier));
-    m_carrier = dynamic_cast<CCarrierObject*>(m_object);
+    m_carrierObject = dynamic_cast<CCarrierObject*>(m_object);
+
+    assert(m_object->Implements(ObjectInterfaceType::Powered));
+    m_poweredObject = dynamic_cast<CPoweredObject*>(m_object);
 }
 
 // Object's destructor.
@@ -87,35 +91,30 @@ bool CTaskTake::EventProcess(const Event &event)
 
 Error CTaskTake::Start()
 {
-    ObjectType  type;
-    CObject*    other;
-    float       iAngle, oAngle, h;
-    Math::Vector    pos;
-
     m_height   = 0.0f;
     m_step     = 0;
     m_progress = 0.0f;
 
-    iAngle = m_object->GetAngleY(0);
+    float iAngle = m_object->GetAngleY(0);
     iAngle = Math::NormAngle(iAngle);  // 0..2*Math::PI
-    oAngle = iAngle;
+    float oAngle = iAngle;
 
     m_bError = true;  // operation impossible
     if ( !m_physics->GetLand() )
     {
-        pos = m_object->GetPosition(0);
-        h = m_water->GetLevel(m_object);
+        Math::Vector pos = m_object->GetPosition(0);
+        float h = m_water->GetLevel(m_object);
         if ( pos.y < h )  return ERR_MANIP_WATER;  // impossible under water
         return ERR_MANIP_FLY;
     }
 
-    type = m_object->GetType();
+    ObjectType type = m_object->GetType();
     if ( type != OBJECT_HUMAN &&
          type != OBJECT_TECH  )  return ERR_MANIP_VEH;
 
     m_physics->SetMotorSpeed(Math::Vector(0.0f, 0.0f, 0.0f));
 
-    if (m_carrier->IsCarryingCargo())
+    if (m_carrierObject->IsCarryingCargo())
         m_order = TTO_DEPOSE;
     else
         m_order = TTO_TAKE;
@@ -123,14 +122,16 @@ Error CTaskTake::Start()
 
     if ( m_order == TTO_TAKE )
     {
-        pos = m_object->GetPosition(0);
-        h = m_water->GetLevel(m_object);
+        Math::Vector pos = m_object->GetPosition(0);
+        float h = m_water->GetLevel(m_object);
         if ( pos.y < h )  return ERR_MANIP_WATER;  // impossible under water
 
-        other = SearchFriendObject(oAngle, 1.5f, Math::PI*0.50f);
-        if ( other != 0 && other->GetPower() != 0 )
+        CObject* other = SearchFriendObject(oAngle, 1.5f, Math::PI*0.50f);
+        if (other != nullptr) assert(other->Implements(ObjectInterfaceType::Powered));
+
+        if (other != nullptr && dynamic_cast<CPoweredObject*>(other)->GetPower() != nullptr)
         {
-            type = other->GetPower()->GetType();
+            type = dynamic_cast<CPoweredObject*>(other)->GetPower()->GetType();
             if ( type == OBJECT_URANIUM )  return ERR_MANIP_RADIO;
             if ( type != OBJECT_FRET    &&
                  type != OBJECT_STONE   &&
@@ -150,7 +151,7 @@ Error CTaskTake::Start()
         else
         {
             other = SearchTakeObject(oAngle, 1.5f, Math::PI*0.45f);
-            if ( other == 0 )  return ERR_MANIP_NIL;
+            if ( other == nullptr )  return ERR_MANIP_NIL;
             type = other->GetType();
             if ( type == OBJECT_URANIUM )  return ERR_MANIP_RADIO;
 //?         m_camera->StartCentering(m_object, Math::PI*0.3f, 99.9f, 0.0f, 0.8f);
@@ -165,8 +166,10 @@ Error CTaskTake::Start()
 //?     if ( speed.x != 0.0f ||
 //?          speed.z != 0.0f )  return ERR_MANIP_MOTOR;
 
-        other = SearchFriendObject(oAngle, 1.5f, Math::PI*0.50f);
-        if ( other != 0 && other->GetPower() == 0 )
+        CObject* other = SearchFriendObject(oAngle, 1.5f, Math::PI*0.50f);
+        if (other != nullptr) assert(other->Implements(ObjectInterfaceType::Powered));
+
+        if (other != nullptr && dynamic_cast<CPoweredObject*>(other)->GetPower() == nullptr )
         {
 //?         m_camera->StartCentering(m_object, Math::PI*0.3f, -Math::PI*0.1f, 0.0f, 0.8f);
             m_arm = TTA_FRIEND;
@@ -192,15 +195,12 @@ Error CTaskTake::Start()
 
 Error CTaskTake::IsEnded()
 {
-    CObject*    cargo;
-    float       angle;
-
     if ( m_engine->GetPause() )  return ERR_CONTINUE;
     if ( m_bError )  return ERR_STOP;
 
     if ( m_bTurn )  // preliminary rotation?
     {
-        angle = m_object->GetAngleY(0);
+        float angle = m_object->GetAngleY(0);
         angle = Math::NormAngle(angle);  // 0..2*Math::PI
 
         if ( Math::TestAngle(angle, m_angle-Math::PI*0.01f, m_angle+Math::PI*0.01f) )
@@ -259,7 +259,7 @@ Error CTaskTake::IsEnded()
     {
         if ( m_step == 1 )
         {
-            cargo = m_carrier->GetCargo();
+            CObject* cargo = m_carrierObject->GetCargo();
             TransporterDeposeObject();
             if ( m_arm == TTA_FRIEND &&
                  (m_cargoType == OBJECT_POWER  ||
@@ -267,7 +267,7 @@ Error CTaskTake::IsEnded()
             {
                 m_sound->Play(SOUND_POWERON, m_object->GetPosition(0));
             }
-            if ( cargo != 0 && m_cargoType == OBJECT_METAL && m_arm == TTA_FFRONT )
+            if ( cargo != nullptr && m_cargoType == OBJECT_METAL && m_arm == TTA_FFRONT )
             {
                 m_main->ShowDropZone(cargo, m_object);  // shows buildable area
             }
@@ -361,26 +361,20 @@ CObject* CTaskTake::SearchTakeObject(float &angle,
 CObject* CTaskTake::SearchFriendObject(float &angle,
                                        float dLimit, float aLimit)
 {
-    Character*  character;
-    CObject*    pPower;
-    Math::Matrix*   mat;
-    ObjectType  type, powerType;
-    float       iAngle, distance;
-
     if (m_object->GetCrashSphereCount() == 0) return 0;
 
     auto crashSphere = m_object->GetFirstCrashSphere();
     Math::Vector iPos = crashSphere.sphere.pos;
     float iRad = crashSphere.sphere.radius;
 
-    iAngle = m_object->GetAngleY(0);
+    float iAngle = m_object->GetAngleY(0);
     iAngle = Math::NormAngle(iAngle);  // 0..2*Math::PI
 
     for (CObject* pObj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
         if ( pObj == m_object )  continue;  // yourself?
 
-        type = pObj->GetType();
+        ObjectType type = pObj->GetType();
         if ( type != OBJECT_MOBILEfa &&
              type != OBJECT_MOBILEta &&
              type != OBJECT_MOBILEwa &&
@@ -413,22 +407,24 @@ CObject* CTaskTake::SearchFriendObject(float &angle,
              type != OBJECT_LABO     &&
              type != OBJECT_NUCLEAR  )  continue;
 
-        pPower = pObj->GetPower();
-        if ( pPower != 0 )
-        {
-            if ( pPower->GetLock() )  continue;
-            if ( pPower->GetZoomY(0) != 1.0f )  continue;
+        assert(pObj->Implements(ObjectInterfaceType::Powered));
 
-            powerType = pPower->GetType();
+        CObject* power = dynamic_cast<CPoweredObject*>(pObj)->GetPower();
+        if (power != nullptr)
+        {
+            if ( power->GetLock() )  continue;
+            if ( power->GetZoomY(0) != 1.0f )  continue;
+
+            ObjectType powerType = power->GetType();
             if ( powerType == OBJECT_NULL ||
                  powerType == OBJECT_FIX  )  continue;
         }
 
-        mat = pObj->GetWorldMatrix(0);
-        character = pObj->GetCharacter();
+        Math::Matrix* mat = pObj->GetWorldMatrix(0);
+        Character* character = pObj->GetCharacter();
         Math::Vector oPos = Transform(*mat, character->posPower);
 
-        distance = fabs(Math::Distance(oPos, iPos) - (iRad+1.0f));
+        float distance = fabs(Math::Distance(oPos, iPos) - (iRad+1.0f));
         if ( distance <= dLimit )
         {
             angle = Math::RotateAngle(oPos.x-iPos.x, iPos.z-oPos.z);  // CW !
@@ -448,16 +444,14 @@ CObject* CTaskTake::SearchFriendObject(float &angle,
 
 bool CTaskTake::TransporterTakeObject()
 {
-    CObject*     cargo;
-    CObject*     other;
-    Math::Matrix matRotate;
-    float        angle;
-
-    if ( m_arm == TTA_FFRONT )  // takes on the ground in front?
+    if (m_arm == TTA_FFRONT)  // takes on the ground in front?
     {
 //?     cargo = SearchTakeObject(angle, 1.5f, Math::PI*0.04f);
-        cargo = SearchTakeObject(angle, 1.5f, Math::PI*0.15f);  //OK 1.9
-        if ( cargo == 0 )  return false;  // rien � prendre ?
+        float angle = 0.0f;
+        CObject* cargo = SearchTakeObject(angle, 1.5f, Math::PI*0.15f);  //OK 1.9
+        if (cargo == nullptr)  return false;  // rien � prendre ?
+        assert(cargo->Implements(ObjectInterfaceType::Transportable));
+
         m_cargoType = cargo->GetType();
 
         dynamic_cast<CTransportableObject*>(cargo)->SetTransporter(m_object);
@@ -469,19 +463,23 @@ bool CTaskTake::TransporterTakeObject()
         cargo->SetAngleX(0, 0.0f);
         cargo->SetAngleZ(0, 0.8f);
 
-        m_carrier->SetCargo(cargo);  // takes
+        m_carrierObject->SetCargo(cargo);  // takes
     }
 
-    if ( m_arm == TTA_FRIEND )  // takes friend's battery?
+    if (m_arm == TTA_FRIEND)  // takes friend's battery?
     {
-        other = SearchFriendObject(angle, 1.5f, Math::PI*0.04f);
-        if ( other == 0 )  return false;
+        float angle = 0.0f;
+        CObject* other = SearchFriendObject(angle, 1.5f, Math::PI*0.04f);
+        if (other == nullptr)  return false;
+        assert(other->Implements(ObjectInterfaceType::Powered));
 
-        cargo = other->GetPower();
-        if ( cargo == 0 )  return false;  // the other does not have a battery?
+        CObject* cargo = dynamic_cast<CPoweredObject*>(other)->GetPower();
+        if (cargo == nullptr)  return false;  // the other does not have a battery?
+        assert(cargo->Implements(ObjectInterfaceType::Transportable));
+
         m_cargoType = cargo->GetType();
 
-        other->SetPower(0);
+        dynamic_cast<CPoweredObject*>(other)->SetPower(nullptr);
         dynamic_cast<CTransportableObject*>(cargo)->SetTransporter(m_object);
         dynamic_cast<CTransportableObject*>(cargo)->SetTransporterPart(4);  // takes with the hand
 
@@ -491,7 +489,7 @@ bool CTaskTake::TransporterTakeObject()
         cargo->SetAngleX(0, 0.0f);
         cargo->SetAngleZ(0, 0.8f);
 
-        m_carrier->SetCargo(cargo);  // takes
+        m_carrierObject->SetCargo(cargo);  // takes
     }
 
     return true;
@@ -501,21 +499,16 @@ bool CTaskTake::TransporterTakeObject()
 
 bool CTaskTake::TransporterDeposeObject()
 {
-    Character*  character;
-    CObject*    cargo;
-    CObject*    other;
-    Math::Matrix*   mat;
-    Math::Vector    pos;
-    float       angle;
-
     if ( m_arm == TTA_FFRONT )  // deposes on the ground in front?
     {
-        cargo = m_carrier->GetCargo();
-        if ( cargo == 0 )  return false;  // does nothing?
+        CObject* cargo = m_carrierObject->GetCargo();
+        if (cargo == nullptr)  return false;  // does nothing?
+        assert(cargo->Implements(ObjectInterfaceType::Transportable));
+
         m_cargoType = cargo->GetType();
 
-        mat = cargo->GetWorldMatrix(0);
-        pos = Transform(*mat, Math::Vector(-0.5f, 1.0f, 0.0f));
+        Math::Matrix* mat = cargo->GetWorldMatrix(0);
+        Math::Vector pos = Transform(*mat, Math::Vector(-0.5f, 1.0f, 0.0f));
         m_terrain->AdjustToFloor(pos);
         cargo->SetPosition(0, pos);
         cargo->SetAngleY(0, m_object->GetAngleY(0)+Math::PI/2.0f);
@@ -523,33 +516,36 @@ bool CTaskTake::TransporterDeposeObject()
         cargo->SetAngleZ(0, 0.0f);
         cargo->FloorAdjust();  // plate well on the ground
 
-        dynamic_cast<CTransportableObject*>(cargo)->SetTransporter(0);
-        m_carrier->SetCargo(0);  // deposit
+        dynamic_cast<CTransportableObject*>(cargo)->SetTransporter(nullptr);
+        m_carrierObject->SetCargo(nullptr);  // deposit
     }
 
     if ( m_arm == TTA_FRIEND )  // deposes battery on friends?
     {
-        other = SearchFriendObject(angle, 1.5f, Math::PI*0.04f);
-        if ( other == 0 )  return false;
+        float angle = 0.0f;
+        CObject* other = SearchFriendObject(angle, 1.5f, Math::PI*0.04f);
+        if (other == nullptr)  return false;
+        assert(other->Implements(ObjectInterfaceType::Powered));
 
-        cargo = other->GetPower();
-        if ( cargo != 0 )  return false;  // the other already has a battery?
+        CObject* cargo = dynamic_cast<CPoweredObject*>(other)->GetPower();
+        if (cargo != nullptr)  return false;  // the other already has a battery?
+        assert(cargo->Implements(ObjectInterfaceType::Transportable));
 
-        cargo = m_carrier->GetCargo();
-        if ( cargo == 0 )  return false;
+        cargo = m_carrierObject->GetCargo();
+        if (cargo == nullptr)  return false;
         m_cargoType = cargo->GetType();
 
-        other->SetPower(cargo);
+        dynamic_cast<CPoweredObject*>(other)->SetPower(cargo);
         dynamic_cast<CTransportableObject*>(cargo)->SetTransporter(other);
 
-        character = other->GetCharacter();
+        Character* character = other->GetCharacter();
         cargo->SetPosition(0, character->posPower);
         cargo->SetAngleY(0, 0.0f);
         cargo->SetAngleX(0, 0.0f);
         cargo->SetAngleZ(0, 0.0f);
         dynamic_cast<CTransportableObject*>(cargo)->SetTransporterPart(0);  // carried by the base
 
-        m_carrier->SetCargo(0);  // deposit
+        m_carrierObject->SetCargo(nullptr);  // deposit
     }
 
     return true;

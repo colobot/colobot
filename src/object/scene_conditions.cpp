@@ -25,6 +25,7 @@
 #include "object/level/parserline.h"
 #include "object/object_manager.h"
 #include "object/object.h"
+#include "object/interface/powered_object.h"
 #include "object/interface/transportable_object.h"
 
 void CSceneCondition::Read(CLevelParserLine* line)
@@ -95,7 +96,10 @@ int CSceneCondition::CountObjects()
             continue;
 
         float energyLevel = -1;
-        CObject* power = obj->GetPower();
+        CObject* power = nullptr;
+        if (obj->Implements(ObjectInterfaceType::Powered))
+            power = dynamic_cast<CPoweredObject*>(obj)->GetPower();
+
         if (power != nullptr)
         {
             energyLevel = power->GetEnergy();

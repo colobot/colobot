@@ -30,6 +30,7 @@
 
 #include "object/object_manager.h"
 #include "object/robotmain.h"
+#include "object/interface/powered_object.h"
 
 
 const float ENERGY_RECOVER  = 0.25f;        // energy consumed by recovery
@@ -56,7 +57,6 @@ CTaskRecover::~CTaskRecover()
 
 bool CTaskRecover::EventProcess(const Event &event)
 {
-    CObject*    power;
     Math::Vector    pos, speed;
     Math::Point     dim;
     float       a, g, cirSpeed, angle, energy, dist, linSpeed;
@@ -103,8 +103,9 @@ bool CTaskRecover::EventProcess(const Event &event)
 
     if ( m_phase == TRP_OPER )
     {
-        power = m_object->GetPower();
-        if ( power != 0 )
+        assert(m_object->Implements(ObjectInterfaceType::Powered));
+        CObject* power = dynamic_cast<CPoweredObject*>(m_object)->GetPower();
+        if (power != nullptr)
         {
             energy = power->GetEnergy();
             energy -= event.rTime * ENERGY_RECOVER / power->GetCapacity() * m_speed;
@@ -177,26 +178,21 @@ bool CTaskRecover::EventProcess(const Event &event)
 
 Error CTaskRecover::Start()
 {
-    CObject*    power;
-    Math::Matrix*   mat;
-    Math::Vector    pos, iPos, oPos;
-    float       energy;
-
-    ObjectType  type;
-
     m_bError = true;  // operation impossible
     if ( !m_physics->GetLand() )  return ERR_RECOVER_VEH;
 
-    type = m_object->GetType();
+    ObjectType type = m_object->GetType();
     if ( type != OBJECT_MOBILErr )  return ERR_RECOVER_VEH;
 
-    power = m_object->GetPower();
-    if ( power == 0 )  return ERR_RECOVER_ENERGY;
-    energy = power->GetEnergy();
+    assert(m_object->Implements(ObjectInterfaceType::Powered));
+    CObject* power = dynamic_cast<CPoweredObject*>(m_object)->GetPower();
+    if (power == nullptr)  return ERR_RECOVER_ENERGY;
+
+    float energy = power->GetEnergy();
     if ( energy < ENERGY_RECOVER/power->GetCapacity()+0.05f )  return ERR_RECOVER_ENERGY;
 
-    mat = m_object->GetWorldMatrix(0);
-    pos = Math::Vector(RECOVER_DIST, 3.3f, 0.0f);
+    Math::Matrix* mat = m_object->GetWorldMatrix(0);
+    Math::Vector pos = Math::Vector(RECOVER_DIST, 3.3f, 0.0f);
     pos = Transform(*mat, pos);  // position in front
     m_recoverPos = pos;
 
@@ -204,8 +200,8 @@ Error CTaskRecover::Start()
     if ( m_ruin == 0 )  return ERR_RECOVER_NULL;
     m_ruin->SetLock(true);  // ruin no longer usable
 
-    iPos = m_object->GetPosition(0);
-    oPos = m_ruin->GetPosition(0);
+    Math::Vector iPos = m_object->GetPosition(0);
+    Math::Vector oPos = m_ruin->GetPosition(0);
     m_angle = Math::RotateAngle(oPos.x-iPos.x, iPos.z-oPos.z);  // CW !
 
     m_metal = 0;

@@ -1264,9 +1264,12 @@ void CRobotMain::ExecuteCmd(char *cmd)
             CObject* object = GetSelect();
             if (object != nullptr)
             {
-                CObject* power = object->GetPower();
-                if (power != nullptr)
-                    power->SetEnergy(1.0f);
+                if (object->Implements(ObjectInterfaceType::Powered))
+                {
+                    CObject* power = dynamic_cast<CPoweredObject*>(object)->GetPower();
+                    if (power != nullptr)
+                        power->SetEnergy(1.0f);
+                }
 
                 object->SetShield(1.0f);
                 CPhysics* physics = object->GetPhysics();
@@ -1279,11 +1282,15 @@ void CRobotMain::ExecuteCmd(char *cmd)
         if (strcmp(cmd, "fullenergy") == 0)
         {
             CObject* object = GetSelect();
+
             if (object != nullptr)
             {
-                CObject* power = object->GetPower();
-                if (power != nullptr)
-                    power->SetEnergy(1.0f);
+                if (object->Implements(ObjectInterfaceType::Powered))
+                {
+                    CObject* power = dynamic_cast<CPoweredObject*>(object)->GetPower();
+                    if (power != nullptr)
+                        power->SetEnergy(1.0f);
+                }
             }
             return;
         }
@@ -4952,12 +4959,15 @@ bool CRobotMain::IOWriteScene(const char *filename, const char *filecbot, char *
             }
         }
 
-        CObject* power = obj->GetPower();
-        if (power != nullptr) // battery transported?
+        if (obj->Implements(ObjectInterfaceType::Powered))
         {
-            line.reset(new CLevelParserLine("CreatePower"));
-            IOWriteObject(line.get(), power);
-            levelParser.AddLine(std::move(line));
+            CObject* power = dynamic_cast<CPoweredObject*>(obj)->GetPower();
+            if (power != nullptr) // battery transported?
+            {
+                line.reset(new CLevelParserLine("CreatePower"));
+                IOWriteObject(line.get(), power);
+                levelParser.AddLine(std::move(line));
+            }
         }
 
 
@@ -5139,7 +5149,9 @@ CObject* CRobotMain::IOReadScene(const char *filename, const char *filecbot)
 
             if (power != nullptr)
             {
-                obj->SetPower(power);
+                assert(obj->Implements(ObjectInterfaceType::Powered));
+                dynamic_cast<CPoweredObject*>(obj)->SetPower(power);
+                assert(power->Implements(ObjectInterfaceType::Transportable));
                 dynamic_cast<CTransportableObject*>(power)->SetTransporter(obj);
             }
         }

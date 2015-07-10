@@ -37,6 +37,7 @@ enum class ObjectInterfaceType
     Programmable, //!< objects that can be programmed in CBOT
     Jostleable, //!< object that can be jostled
     Carrier, //!< object that can carry other objects
+    Powered, //!< object powered with power cell
     Max //!< maximum value (for getting number of items in enum)
 };
 

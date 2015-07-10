@@ -25,6 +25,7 @@
 #include "object/object_manager.h"
 #include "object/level/parserline.h"
 #include "object/level/parserparam.h"
+#include "object/interface/powered_object.h"
 
 #include "physics/physics.h"
 
@@ -45,9 +46,7 @@ const float ENERGY_FIRE     = 0.125f;   // energy consumed by fire
 
 CAutoTower::CAutoTower(CObject* object) : CAuto(object)
 {
-    int     i;
-
-    for ( i=0 ; i<4 ; i++ )
+    for (int i = 0; i < 4; i++)
     {
         m_partiStop[i] = -1;
     }
@@ -56,6 +55,9 @@ CAutoTower::CAutoTower(CObject* object) : CAuto(object)
     m_phase = ATP_WAIT;  // paused until the first Init ()
     m_time = 0.0f;
     m_lastUpdateTime = 0.0f;
+
+    assert(m_object->Implements(ObjectInterfaceType::Powered));
+    m_poweredObject = dynamic_cast<CPoweredObject*>(m_object);
 }
 
 // Object's destructor.
@@ -132,7 +134,7 @@ bool CAutoTower::EventProcess(const Event &event)
         if ( m_progress < 1.0f )
         {
             energy = 0.0f;
-            power = m_object->GetPower();
+            power = m_poweredObject->GetPower();
             if ( power != 0 )
             {
                 energy = power->GetEnergy()*power->GetCapacity();
@@ -172,7 +174,7 @@ bool CAutoTower::EventProcess(const Event &event)
         else
         {
             energy = 0.0f;
-            power = m_object->GetPower();
+            power = m_poweredObject->GetPower();
             if ( power != 0 )
             {
                 energy = power->GetEnergy()*power->GetCapacity();
@@ -225,7 +227,7 @@ bool CAutoTower::EventProcess(const Event &event)
             m_object->SetAngleY(1, m_angleYfinal);
             m_object->SetAngleZ(2, m_angleZfinal);
 
-            power = m_object->GetPower();
+            power = m_poweredObject->GetPower();
             if ( power != 0 )
             {
                 energy = power->GetEnergy();
@@ -314,14 +316,12 @@ CObject* CAutoTower::SearchTarget(Math::Vector &impact)
 
 Error CAutoTower::GetError()
 {
-    CObject*    power;
-
     if ( m_object->GetVirusMode() )
     {
         return ERR_BAT_VIRUS;
     }
 
-    power = m_object->GetPower();
+    CObject* power = m_poweredObject->GetPower();
     if ( power == nullptr )
     {
         return ERR_TOWER_POWER;  // no battery
@@ -447,11 +447,6 @@ bool CAutoTower::CreateInterface(bool bSelect)
 
 void CAutoTower::UpdateInterface(float rTime)
 {
-    Ui::CWindow*    pw;
-    Ui::CGauge*     pg;
-    CObject*    power;
-    float       energy;
-
     CAuto::UpdateInterface(rTime);
 
     if ( m_time < m_lastUpdateTime+0.1f )  return;
@@ -459,18 +454,13 @@ void CAutoTower::UpdateInterface(float rTime)
 
     if ( !m_object->GetSelect() )  return;
 
-    pw = static_cast< Ui::CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
+    Ui::CWindow* pw = static_cast< Ui::CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
     if ( pw == 0 )  return;
 
-    pg = static_cast< Ui::CGauge* >(pw->SearchControl(EVENT_OBJECT_GENERGY));
+    Ui::CGauge*pg = static_cast< Ui::CGauge* >(pw->SearchControl(EVENT_OBJECT_GENERGY));
     if ( pg != 0 )
     {
-        energy = 0.0f;
-        power = m_object->GetPower();
-        if ( power != 0 )
-        {
-            energy = power->GetEnergy();
-        }
+        float energy = GetObjectEnergy(m_object);
         pg->SetLevel(energy);
     }
 }

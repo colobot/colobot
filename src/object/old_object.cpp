@@ -81,7 +81,6 @@ static float debug_arm3 = 0.0f;
 void uObject(CBotVar* botThis, void* user)
 {
     CObject*    object = static_cast<CObject*>(user);
-    CObject*    power;
     CPhysics*   physics;
     CBotVar     *pVar, *pSub;
     ObjectType  type;
@@ -160,9 +159,12 @@ void uObject(CBotVar* botThis, void* user)
 
     // Updates the type of battery.
     pVar = pVar->GetNext();  // "energyCell"
-    power = object->GetPower();
-    if ( power == 0 )  pVar->SetPointer(0);
-    else               pVar->SetPointer(power->GetBotVar());
+    if (object->Implements(ObjectInterfaceType::Powered))
+    {
+        CObject* power = dynamic_cast<CPoweredObject*>(object)->GetPower();
+        if (power == nullptr)  pVar->SetPointer(0);
+        else                   pVar->SetPointer(power->GetBotVar());
+    }
 
     // Updates the transported object's type.
     pVar = pVar->GetNext();  // "load"
@@ -194,6 +196,7 @@ COldObject::COldObject(int id)
     , CProgrammableObject(m_implementedInterfaces)
     , CJostleableObject(m_implementedInterfaces)
     , CCarrierObject(m_implementedInterfaces)
+    , CPoweredObject(m_implementedInterfaces)
 {
     // A bit of a hack since CBrain is set externally in SetBrain()
     m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Programmable)] = false;

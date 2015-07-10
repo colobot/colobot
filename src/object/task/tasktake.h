@@ -27,6 +27,7 @@
 
 
 class CCarrierObject;
+class CPoweredObject;
 
 
 enum TaskTakeOrder
@@ -64,7 +65,8 @@ protected:
     bool        IsFreeDeposeObject(Math::Vector pos);
 
 protected:
-    CCarrierObject* m_carrier;
+    CCarrierObject* m_carrierObject;
+    CPoweredObject* m_poweredObject;
     TaskTakeOrder   m_order;
     TaskTakeArm     m_arm;
     int             m_step;

@@ -29,7 +29,7 @@
 #include "object/robotmain.h"
 #include "object/level/parserline.h"
 #include "object/level/parserparam.h"
-
+#include "object/interface/powered_object.h"
 
 #include "ui/interface.h"
 #include "ui/window.h"
@@ -57,6 +57,9 @@ CAutoLabo::CAutoLabo(CObject* object) : CAuto(object)
 
     m_soundChannel = -1;
     Init();
+
+    assert(m_object->Implements(ObjectInterfaceType::Powered));
+    m_poweredObject = dynamic_cast<CPoweredObject*>(m_object);
 }
 
 // Object's destructor.
@@ -118,8 +121,6 @@ void CAutoLabo::Init()
 
 Error CAutoLabo::StartAction(int param)
 {
-    CObject* power;
-
     if ( m_phase != ALAP_WAIT )
     {
         return ERR_GENERIC;
@@ -132,8 +133,8 @@ Error CAutoLabo::StartAction(int param)
         return ERR_LABO_ALREADY;
     }
 
-    power = m_object->GetPower();
-    if ( power == 0 )
+    CObject* power = m_poweredObject->GetPower();
+    if (power == nullptr)
     {
         return ERR_LABO_NULL;
     }
@@ -304,7 +305,7 @@ bool CAutoLabo::EventProcess(const Event &event)
     {
         if ( m_progress < 1.0f )
         {
-            power = m_object->GetPower();
+            power = m_poweredObject->GetPower();
             if ( power != 0 )
             {
                 power->SetZoom(0, 1.0f-m_progress);
@@ -365,10 +366,10 @@ bool CAutoLabo::EventProcess(const Event &event)
             m_eventQueue->AddEvent(newEvent);
             UpdateInterface();
 
-            power = m_object->GetPower();
+            power = m_poweredObject->GetPower();
             if ( power != nullptr )
             {
-                m_object->SetPower(nullptr);
+                m_poweredObject->SetPower(nullptr);
                 CObjectManager::GetInstancePointer()->DeleteObject(power);
             }
 
@@ -451,17 +452,14 @@ bool CAutoLabo::EventProcess(const Event &event)
 
 Error CAutoLabo::GetError()
 {
-    CObject*    pObj;
-    ObjectType  type;
-
     if ( m_object->GetVirusMode() )
     {
         return ERR_BAT_VIRUS;
     }
 
-    pObj = m_object->GetPower();
-    if ( pObj == 0 )  return ERR_LABO_NULL;
-    type = pObj->GetType();
+    CObject* obj = m_poweredObject->GetPower();
+    if (obj == nullptr)  return ERR_LABO_NULL;
+    ObjectType type = obj->GetType();
     if ( type != OBJECT_BULLET )  return ERR_LABO_BAD;
 
     return ERR_OK;

@@ -45,6 +45,7 @@
 #include "object/level/parserparam.h"
 #include "object/interface/carrier_object.h"
 #include "object/interface/jostleable_object.h"
+#include "object/interface/powered_object.h"
 #include "object/interface/transportable_object.h"
 
 
@@ -785,7 +786,7 @@ bool CPhysics::EventProcess(const Event &event)
 void CPhysics::MotorUpdate(float aTime, float rTime)
 {
     ObjectType  type;
-    CObject*    power;
+    CObject*    power = nullptr;
     Math::Vector    pos, motorSpeed;
     float       energy, speed, factor, h;
 
@@ -806,12 +807,12 @@ void CPhysics::MotorUpdate(float aTime, float rTime)
          type == OBJECT_MOBILEdr ||
          type == OBJECT_CONTROLLER)
     {
-        power = 0;
+        power = nullptr;
     }
     else if ( type == OBJECT_HUMAN ||
               type == OBJECT_TECH  )
     {
-        power = 0;
+        power = nullptr;
         if (IsObjectCarryingCargo(m_object)&&  // carries something?
              !m_object->IsSpaceshipCargo() )
         {
@@ -844,21 +845,24 @@ void CPhysics::MotorUpdate(float aTime, float rTime)
     }
     else
     {
-        power = m_object->GetPower();  // searches for the object battery uses
-        if ( power == 0 || power->GetEnergy() == 0.0f )  // no battery or flat?
+        if (m_object->Implements(ObjectInterfaceType::Powered))
         {
-            motorSpeed.x =  0.0f;
-            motorSpeed.z =  0.0f;
-            if ( m_bFreeze || m_bLand )
+            power = dynamic_cast<CPoweredObject*>(m_object)->GetPower();  // searches for the object battery uses
+            if ( power == nullptr || power->GetEnergy() == 0.0f )  // no battery or flat?
             {
-                motorSpeed.y = 0.0f;  // immobile
+                motorSpeed.x =  0.0f;
+                motorSpeed.z =  0.0f;
+                if ( m_bFreeze || m_bLand )
+                {
+                    motorSpeed.y = 0.0f;  // immobile
+                }
+                else
+                {
+                    motorSpeed.y = -1.0f;  // grave
+                    SetFalling();
+                }
+                SetMotor(false);
             }
-            else
-            {
-                motorSpeed.y = -1.0f;  // grave
-                SetFalling();
-            }
-            SetMotor(false);
         }
     }
 
@@ -1020,7 +1024,7 @@ void CPhysics::MotorUpdate(float aTime, float rTime)
         }
     }
 
-    if ( power != 0 )  // battery transported?
+    if ( power != nullptr )  // battery transported?
     {
         factor = 1.0f;
         if ( type == OBJECT_MOBILEia ||
@@ -1629,9 +1633,7 @@ bool CPhysics::EventFrame(const Event &event)
 
 void CPhysics::SoundMotor(float rTime)
 {
-    CObject*    power;
     ObjectType  type;
-    float       energy;
 
     m_lastSoundInsect -= rTime;
     type = m_object->GetType();
@@ -1737,12 +1739,7 @@ void CPhysics::SoundMotor(float rTime)
             }
             else
             {
-                energy = 0.0f;
-                power = m_object->GetPower();
-                if ( power != 0 )
-                {
-                    energy = power->GetEnergy();
-                }
+                float energy = GetObjectEnergy(m_object);
 
                 if ( m_object->GetSelect() &&
                      energy != 0.0f        )
@@ -2242,15 +2239,7 @@ void CPhysics::SoundReactorFull(float rTime, ObjectType type)
 
 void CPhysics::SoundReactorStop(float rTime, ObjectType type)
 {
-    CObject*    power;
-    float       energy;
-
-    energy = 0.0f;
-    power = m_object->GetPower();
-    if ( power != 0 )
-    {
-        energy = power->GetEnergy();
-    }
+    float energy = GetObjectEnergy(m_object);
 
     if ( m_soundChannel != -1 )  // engine is running?
     {
@@ -2976,8 +2965,7 @@ int CPhysics::ExploHimself(ObjectType iType, ObjectType oType, float force)
 void CPhysics::FrameParticle(float aTime, float rTime)
 {
     Math::Vector    pos;
-    CObject*    power;
-    float       energy/*, intensity*/;
+    /*float       intensity;*/
     int         effectLight;
     //bool        bFlash;
 
@@ -2987,12 +2975,7 @@ void CPhysics::FrameParticle(float aTime, float rTime)
 
     //bFlash = false;
 
-    energy = 0.0f;
-    power = m_object->GetPower();
-    if ( power != 0 )
-    {
-        energy = power->GetEnergy();
-    }
+    float energy = GetObjectEnergy(m_object);
 
     if ( energy != m_lastEnergy )  // change the energy level?
     {
@@ -3853,10 +3836,7 @@ void CPhysics::CreateInterface(bool bSelect)
 
 Error CPhysics::GetError()
 {
-    ObjectType  type;
-    CObject*    power;
-
-    type = m_object->GetType();
+    ObjectType type = m_object->GetType();
     if ( type == OBJECT_HUMAN    ||
          type == OBJECT_TECH     ||
          type == OBJECT_MOTHER   ||
@@ -3872,14 +3852,17 @@ Error CPhysics::GetError()
         return ERR_VEH_VIRUS;
     }
 
-    power = m_object->GetPower();  // searches for the object battery used
-    if ( power == 0 )
+    if (m_object->Implements(ObjectInterfaceType::Powered))
     {
-        return ERR_VEH_POWER;
-    }
-    else
-    {
-        if ( power->GetEnergy() == 0.0f )  return ERR_VEH_ENERGY;
+        CObject* power = dynamic_cast<CPoweredObject*>(m_object)->GetPower();  // searches for the object battery used
+        if (power == nullptr)
+        {
+            return ERR_VEH_POWER;
+        }
+        else
+        {
+            if ( power->GetEnergy() == 0.0f )  return ERR_VEH_ENERGY;
+        }
     }
 
     return ERR_OK;

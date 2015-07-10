@@ -24,6 +24,8 @@
 
 #include "math/geometry.h"
 
+#include "object/interface/powered_object.h"
+
 #include "physics/physics.h"
 
 
@@ -57,7 +59,6 @@ CTaskFire::~CTaskFire()
 
 bool CTaskFire::EventProcess(const Event &event)
 {
-    CObject*    power;
     CPhysics*   physics;
     Math::Matrix*   mat;
     Math::Vector    pos, speed, dir, vib;
@@ -74,8 +75,9 @@ bool CTaskFire::EventProcess(const Event &event)
     m_lastSound -= event.rTime;
     m_progress += event.rTime*m_speed;
 
-    power = m_object->GetPower();
-    if ( power != 0 )
+    assert(m_object->Implements(ObjectInterfaceType::Powered));
+    CObject* power = dynamic_cast<CPoweredObject*>(m_object)->GetPower();
+    if (power != nullptr)
     {
         energy = power->GetEnergy();
              if ( m_bOrganic )  fire = ENERGY_FIREi;
@@ -267,7 +269,6 @@ bool CTaskFire::EventProcess(const Event &event)
 
 Error CTaskFire::Start(float delay)
 {
-    CObject*    power;
     Math::Vector    pos, goal, speed;
     float       energy, fire;
     ObjectType  type;
@@ -309,8 +310,10 @@ Error CTaskFire::Start(float delay)
     }
     m_delay = delay;
 
-    power = m_object->GetPower();
-    if ( power == 0 )  return ERR_FIRE_ENERGY;
+    assert(m_object->Implements(ObjectInterfaceType::Powered));
+    CObject* power = dynamic_cast<CPoweredObject*>(m_object)->GetPower();
+    if (power == nullptr)  return ERR_FIRE_ENERGY;
+
     energy = power->GetEnergy();
          if ( m_bOrganic )  fire = m_delay*ENERGY_FIREi;
     else if ( m_bRay     )  fire = m_delay*ENERGY_FIREr;

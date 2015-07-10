@@ -29,6 +29,7 @@
 
 
 class CCarrierObject;
+class CPoweredObject;
 
 enum TaskManipOrder
 {
@@ -80,7 +81,8 @@ protected:
     void        SoundManip(float time, float amplitude=1.0f, float frequency=1.0f);
 
 protected:
-    CCarrierObject* m_carrier;
+    CCarrierObject* m_carrierObject;
+    CPoweredObject* m_poweredObject;
     TaskManipOrder  m_order;
     TaskManipArm    m_arm;
     TaskManipHand   m_hand;

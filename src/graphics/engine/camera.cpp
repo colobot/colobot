@@ -34,6 +34,7 @@
 #include "object/object_manager.h"
 #include "object/robotmain.h"
 #include "object/interface/carrier_object.h"
+#include "object/interface/powered_object.h"
 #include "object/interface/transportable_object.h"
 
 #include "physics/physics.h"
@@ -55,9 +56,12 @@ void SetTransparency(CObject* obj, float value)
             cargo->SetTransparency(value);
     }
 
-    CObject* power = obj->GetPower();
-    if (power != nullptr)
-        power->SetTransparency(value);
+    if (obj->Implements(ObjectInterfaceType::Powered))
+    {
+        CObject* power = dynamic_cast<CPoweredObject*>(obj)->GetPower();
+        if (power != nullptr)
+            power->SetTransparency(value);
+    }
 }
 
 

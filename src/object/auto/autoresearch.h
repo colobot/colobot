@@ -25,6 +25,7 @@
 #include "object/auto/auto.h"
 
 
+class CPoweredObject;
 
 enum AutoResearchPhase
 {
@@ -60,6 +61,7 @@ protected:
     void        FireStopUpdate(float progress, bool bLightOn);
 
 protected:
+    CPoweredObject*     m_poweredObject;
     AutoResearchPhase   m_phase;
     float               m_progress;
     float               m_speed;

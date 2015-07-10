@@ -27,6 +27,7 @@
 #include "math/vector.h"
 
 
+class CPoweredObject;
 
 enum TaskTerraPhase
 {
@@ -54,6 +55,7 @@ protected:
     bool        Terraform();
 
 protected:
+    CPoweredObject* m_poweredObject;
     TaskTerraPhase  m_phase;
     float           m_progress;
     float           m_speed;

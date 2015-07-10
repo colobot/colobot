@@ -27,7 +27,7 @@
 #include "object/robotmain.h"
 #include "object/level/parserline.h"
 #include "object/level/parserparam.h"
-
+#include "object/interface/powered_object.h"
 
 #include "ui/interface.h"
 #include "ui/gauge.h"
@@ -45,15 +45,16 @@ const float SEARCH_TIME = 30.0f;        // duration of a research
 
 CAutoResearch::CAutoResearch(CObject* object) : CAuto(object)
 {
-    int     i;
-
-    for ( i=0 ; i<6 ; i++ )
+    for (int i = 0; i < 6; i++)
     {
         m_partiStop[i] = -1;
     }
     m_channelSound = -1;
 
     Init();
+
+    assert(m_object->Implements(ObjectInterfaceType::Powered));
+    m_poweredObject = dynamic_cast<CPoweredObject*>(m_object);
 }
 
 // Object's destructor.
@@ -98,9 +99,6 @@ void CAutoResearch::Init()
 
 Error CAutoResearch::StartAction(int param)
 {
-    CObject* power;
-    float    time;
-
     if ( m_phase != ALP_WAIT )
     {
         return ERR_GENERIC;
@@ -113,8 +111,8 @@ Error CAutoResearch::StartAction(int param)
         return ERR_RESEARCH_ALREADY;
     }
 
-    power = m_object->GetPower();
-    if ( power == 0 )
+    CObject* power = m_poweredObject->GetPower();
+    if (power == nullptr)
     {
         return ERR_RESEARCH_POWER;
     }
@@ -127,7 +125,7 @@ Error CAutoResearch::StartAction(int param)
         return ERR_RESEARCH_ENERGY;
     }
 
-    time = SEARCH_TIME;
+    float time = SEARCH_TIME;
     if ( m_research == RESEARCH_TANK   )  time *= 0.3f;
     if ( m_research == RESEARCH_FLY    )  time *= 0.3f;
     if ( m_research == RESEARCH_ATOMIC )  time *= 2.0f;
@@ -220,7 +218,7 @@ bool CAutoResearch::EventProcess(const Event &event)
         FireStopUpdate(m_progress, true);  // flashes
         if ( m_progress < 1.0f )
         {
-            power = m_object->GetPower();
+            power = m_poweredObject->GetPower();
             if ( power == 0 )  // more battery?
             {
                 SetBusy(false);
@@ -292,8 +290,6 @@ bool CAutoResearch::EventProcess(const Event &event)
 
 Error CAutoResearch::GetError()
 {
-    CObject*    power;
-
     if ( m_phase == ALP_SEARCH )
     {
         return ERR_OK;
@@ -304,7 +300,7 @@ Error CAutoResearch::GetError()
         return ERR_BAT_VIRUS;
     }
 
-    power = m_object->GetPower();
+    CObject* power = m_poweredObject->GetPower();
     if ( power == 0 )
     {
         return ERR_RESEARCH_POWER;
@@ -439,11 +435,6 @@ void CAutoResearch::UpdateInterface()
 
 void CAutoResearch::UpdateInterface(float rTime)
 {
-    Ui::CWindow*    pw;
-    Ui::CGauge*     pg;
-    CObject*    power;
-    float       energy;
-
     CAuto::UpdateInterface(rTime);
 
     if ( m_time < m_lastUpdateTime+0.1f )  return;
@@ -451,18 +442,13 @@ void CAutoResearch::UpdateInterface(float rTime)
 
     if ( !m_object->GetSelect() )  return;
 
-    pw = static_cast< Ui::CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
-    if ( pw == 0 )  return;
+    Ui::CWindow* pw = static_cast< Ui::CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
+    if ( pw == nullptr )  return;
 
-    pg = static_cast< Ui::CGauge* >(pw->SearchControl(EVENT_OBJECT_GENERGY));
-    if ( pg != 0 )
+    Ui::CGauge* pg = static_cast< Ui::CGauge* >(pw->SearchControl(EVENT_OBJECT_GENERGY));
+    if ( pg != nullptr )
     {
-        energy = 0.0f;
-        power = m_object->GetPower();
-        if ( power != 0 )
-        {
-            energy = power->GetEnergy();
-        }
+        float energy = GetObjectEnergy(m_object);
         pg->SetLevel(energy);
     }
 }

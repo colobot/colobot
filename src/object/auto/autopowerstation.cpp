@@ -27,6 +27,7 @@
 
 #include "object/object_manager.h"
 #include "object/interface/carrier_object.h"
+#include "object/interface/powered_object.h"
 
 #include "ui/interface.h"
 #include "ui/gauge.h"
@@ -82,14 +83,6 @@ void CAutoPowerStation::Init()
 
 bool CAutoPowerStation::EventProcess(const Event &event)
 {
-    Math::Matrix*   mat;
-    Math::Vector    pos, ppos, speed;
-    Math::Point     dim;
-    CObject*    vehicle;
-    CObject*    power;
-    Gfx::TerrainRes  res;
-    float       big, energy, used, add, freq;
-
     CAuto::EventProcess(event);
 
     if ( m_engine->GetPause() )  return true;
@@ -124,41 +117,44 @@ bool CAutoPowerStation::EventProcess(const Event &event)
 
     UpdateInterface(event.rTime);
 
-    big = m_object->GetEnergy();
+    float big = m_object->GetEnergy();
 
-    res = m_terrain->GetResource(m_object->GetPosition(0));
+    Gfx::TerrainRes res = m_terrain->GetResource(m_object->GetPosition(0));
     if ( res == Gfx::TR_POWER )
     {
         big += event.rTime*0.01f;  // recharges the large battery
     }
 
-    used = big;
-    freq = 1.0f;
-    if ( big > 0.0f )
+    float used = big;
+    float freq = 1.0f;
+    if (big > 0.0f)
     {
-        vehicle = SearchVehicle();
-        if ( vehicle != 0 )
+        CObject* vehicle = SearchVehicle();
+        if (vehicle != nullptr)
         {
-            power = vehicle->GetPower();
-            if ( power != 0 && power->GetCapacity() == 1.0f )
+            if (vehicle->Implements(ObjectInterfaceType::Powered))
             {
-                energy = power->GetEnergy();
-                add = event.rTime*0.2f;
-                if ( add > big*4.0f )  add = big*4.0f;
-                if ( add > 1.0f-energy )  add = 1.0f-energy;
-                energy += add;  // Charging the battery
-                power->SetEnergy(energy);
-                if ( energy < freq )  freq = energy;
-                big -= add/4.0f;  // discharge the large battery
+                CObject* power = dynamic_cast<CPoweredObject*>(vehicle)->GetPower();
+                if ( power != nullptr && power->GetCapacity() == 1.0f )
+                {
+                    float energy = power->GetEnergy();
+                    float add = event.rTime*0.2f;
+                    if ( add > big*4.0f )  add = big*4.0f;
+                    if ( add > 1.0f-energy )  add = 1.0f-energy;
+                    energy += add;  // Charging the battery
+                    power->SetEnergy(energy);
+                    if ( energy < freq )  freq = energy;
+                    big -= add/4.0f;  // discharge the large battery
+                }
             }
 
             if (vehicle->Implements(ObjectInterfaceType::Carrier))
             {
-                power = dynamic_cast<CCarrierObject*>(vehicle)->GetCargo();
-                if ( power != nullptr && power->GetType() == OBJECT_POWER )
+                CObject* power = dynamic_cast<CCarrierObject*>(vehicle)->GetCargo();
+                if (power != nullptr && power->GetType() == OBJECT_POWER)
                 {
-                    energy = power->GetEnergy();
-                    add = event.rTime*0.2f;
+                    float energy = power->GetEnergy();
+                    float add = event.rTime*0.2f;
                     if ( add > big*4.0f )  add = big*4.0f;
                     if ( add > 1.0f-energy )  add = 1.0f-energy;
                     energy += add;  // Charging the battery
@@ -195,7 +191,10 @@ bool CAutoPowerStation::EventProcess(const Event &event)
     {
         m_lastParticle = m_time;
 
-        mat = m_object->GetWorldMatrix(0);
+        Math::Vector    pos, ppos, speed;
+        Math::Point     dim;
+
+        Math::Matrix* mat = m_object->GetWorldMatrix(0);
         pos = Math::Vector(-15.0f, 7.0f, 0.0f);  // battery position
         pos = Math::Transform(*mat, pos);
         speed.x = (Math::Rand()-0.5f)*20.0f;

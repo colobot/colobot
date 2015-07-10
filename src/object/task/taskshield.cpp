@@ -29,6 +29,7 @@
 #include "object/brain.h"
 #include "object/object_manager.h"
 #include "object/robotmain.h"
+#include "object/interface/powered_object.h"
 
 #include "physics/physics.h"
 
@@ -45,6 +46,9 @@ CTaskShield::CTaskShield(CObject* object) : CTask(object)
     m_rankSphere = -1;
     m_soundChannel = -1;
     m_effectLight = -1;
+
+    assert(m_object->Implements(ObjectInterfaceType::Powered));
+    m_poweredObject = dynamic_cast<CPoweredObject*>(m_object);
 }
 
 // Object's destructor.
@@ -108,8 +112,8 @@ bool CTaskShield::EventProcess(const Event &event)
     {
         energy = (1.0f/ENERGY_TIME)*event.rTime;
         energy *= GetRadius()/RADIUS_SHIELD_MAX;
-        power = m_object->GetPower();
-        if ( power != 0 )
+        power = m_poweredObject->GetPower();
+        if (power != nullptr)
         {
             power->SetEnergy(power->GetEnergy()-energy/power->GetCapacity());
         }
@@ -231,12 +235,6 @@ bool CTaskShield::EventProcess(const Event &event)
 
 Error CTaskShield::Start(TaskShieldMode mode, float delay)
 {
-    CObject*    power;
-    Math::Matrix*   mat;
-    Math::Vector    pos, iPos, oPos, speed;
-    ObjectType  type;
-    float       energy;
-
     if ( mode == TSM_DOWN )
     {
         return Stop();
@@ -254,20 +252,20 @@ Error CTaskShield::Start(TaskShieldMode mode, float delay)
     if ( mode == TSM_START )
     {
         Math::Point dim;
-        
+
         m_object->SetShieldRadius(GetRadius());
-        
-        mat = m_object->GetWorldMatrix(0);
-        pos = Math::Vector(7.0f, 15.0f, 0.0f);
+
+        Math::Matrix* mat = m_object->GetWorldMatrix(0);
+        Math::Vector pos = Math::Vector(7.0f, 15.0f, 0.0f);
         pos = Transform(*mat, pos);  // sphere position
         m_shieldPos = pos;
-        
+
         pos = m_shieldPos;
-        speed = Math::Vector(0.0f, 0.0f, 0.0f);
+        Math::Vector speed = Math::Vector(0.0f, 0.0f, 0.0f);
         dim.x = GetRadius();
         dim.y = dim.x;
         m_rankSphere = m_particle->CreateParticle(pos, speed, dim, Gfx::PARTISPHERE3, 2.0f, 0.0f, 0.0f);
-        
+
         m_phase = TS_SHIELD;
         m_progress = 0.0f;
         m_speed = 1.0f/999.9f;
@@ -277,29 +275,29 @@ Error CTaskShield::Start(TaskShieldMode mode, float delay)
         m_lastRay = 0.0f;
         m_lastIncrease = 0.0f;
         m_energyUsed = 0.0f;
-        
+
         m_bError = false;  // ok
-        
+
         if ( m_object->GetSelect() )
         {
             m_brain->UpdateInterface();
         }
         return ERR_OK;
     }
-    
-    type = m_object->GetType();
+
+    ObjectType type = m_object->GetType();
     if ( type != OBJECT_MOBILErs )  return ERR_SHIELD_VEH;
 
     m_bError = true;  // operation impossible
     if ( !m_physics->GetLand() )  return ERR_SHIELD_VEH;
 
-    power = m_object->GetPower();
-    if ( power == 0 )  return ERR_SHIELD_ENERGY;
-    energy = power->GetEnergy();
+    CObject* power = m_poweredObject->GetPower();
+    if (power == nullptr)  return ERR_SHIELD_ENERGY;
+    float energy = power->GetEnergy();
     if ( energy == 0.0f )  return ERR_SHIELD_ENERGY;
 
-    mat = m_object->GetWorldMatrix(0);
-    pos = Math::Vector(7.0f, 15.0f, 0.0f);
+    Math::Matrix* mat = m_object->GetWorldMatrix(0);
+    Math::Vector pos = Math::Vector(7.0f, 15.0f, 0.0f);
     pos = Transform(*mat, pos);  // sphere position
     m_shieldPos = pos;
 
@@ -382,7 +380,7 @@ Error CTaskShield::IsEnded()
     {
         m_object->SetShieldRadius(GetRadius());
 
-        power = m_object->GetPower();
+        power = m_poweredObject->GetPower();
         if ( power == 0 )
         {
             energy = 0.0f;

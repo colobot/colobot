@@ -25,6 +25,7 @@
 #include "math/geometry.h"
 
 #include "object/object_manager.h"
+#include "object/interface/powered_object.h"
 #include "object/interface/transportable_object.h"
 #include "object/level/parserline.h"
 #include "object/level/parserparam.h"
@@ -49,6 +50,9 @@ CAutoPowerPlant::CAutoPowerPlant(CObject* object) : CAuto(object)
 {
     m_partiSphere = -1;
     Init();
+
+    assert(m_object->Implements(ObjectInterfaceType::Powered));
+    m_poweredObject = dynamic_cast<CPoweredObject*>(m_object);
 }
 
 // Object's destructor.
@@ -309,18 +313,20 @@ bool CAutoPowerPlant::EventProcess(const Event &event)
             cargo = SearchMetal();
             if ( cargo != nullptr )
             {
-                m_object->SetPower(nullptr);
+                m_poweredObject->SetPower(nullptr);
                 CObjectManager::GetInstancePointer()->DeleteObject(cargo);
             }
 
             cargo = SearchPower();
-            if ( cargo != nullptr )
+            if (cargo != nullptr)
             {
+                assert(cargo->Implements(ObjectInterfaceType::Transportable));
+
                 cargo->SetZoom(0, 1.0f);
                 cargo->SetLock(false);  // usable battery
                 dynamic_cast<CTransportableObject*>(cargo)->SetTransporter(m_object);
                 cargo->SetPosition(0, Math::Vector(0.0f, 3.0f, 0.0f));
-                m_object->SetPower(cargo);
+                m_poweredObject->SetPower(cargo);
 
                 m_main->DisplayError(INFO_ENERGY, m_object);
             }
@@ -374,19 +380,16 @@ bool CAutoPowerPlant::EventProcess(const Event &event)
 
 CObject* CAutoPowerPlant::SearchMetal()
 {
-    CObject*    pObj;
-    ObjectType  type;
+    CObject* obj = m_poweredObject->GetPower();
+    if ( obj == nullptr )  return nullptr;
 
-    pObj = m_object->GetPower();
-    if ( pObj == 0 )  return 0;
-
-    type = pObj->GetType();
+    ObjectType type = obj->GetType();
     if ( type == OBJECT_METAL  ||
          type == OBJECT_SCRAP1 ||
          type == OBJECT_SCRAP2 ||
-         type == OBJECT_SCRAP3 )  return pObj;
+         type == OBJECT_SCRAP3 )  return obj;
 
-    return 0;
+    return nullptr;
 }
 
 // Search if a vehicle is too close.
@@ -486,10 +489,6 @@ CObject* CAutoPowerPlant::SearchPower()
 
 Error CAutoPowerPlant::GetError()
 {
-    CObject*    pObj;
-    ObjectType  type;
-    Gfx::TerrainRes  res;
-
     if ( m_object->GetVirusMode() )
     {
         return ERR_BAT_VIRUS;
@@ -498,14 +497,14 @@ Error CAutoPowerPlant::GetError()
     if ( m_phase != AENP_WAIT  &&
          m_phase != AENP_BLITZ )  return ERR_OK;
 
-    res = m_terrain->GetResource(m_object->GetPosition(0));
+    Gfx::TerrainRes res = m_terrain->GetResource(m_object->GetPosition(0));
     if ( res != Gfx::TR_POWER )  return ERR_ENERGY_NULL;
 
     if ( m_object->GetEnergy() < POWERPLANT_POWER )  return ERR_ENERGY_LOW;
 
-    pObj = m_object->GetPower();
-    if ( pObj == 0 )  return ERR_ENERGY_EMPTY;
-    type = pObj->GetType();
+    CObject* obj = m_poweredObject->GetPower();
+    if (obj == nullptr)  return ERR_ENERGY_EMPTY;
+    ObjectType type = obj->GetType();
     if ( type == OBJECT_POWER )  return ERR_OK;
     if ( type != OBJECT_METAL  &&
          type != OBJECT_SCRAP1 &&

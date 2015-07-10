@@ -30,6 +30,7 @@
 
 #include "object/brain.h"
 #include "object/object_manager.h"
+#include "object/interface/powered_object.h"
 #include "object/interface/transportable_object.h"
 
 #include "physics/physics.h"
@@ -937,11 +938,13 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         {
             powerCell = CObjectManager::GetInstancePointer()->CreateObject(powerCellPos, powerCellAngle, OBJECT_ATOMIC, power / 100.0f);
         }
+        assert(powerCell->Implements(ObjectInterfaceType::Transportable));
 
         powerCell->SetPosition(0, powerCellPos);
         powerCell->SetAngle(0, Math::Vector(0.0f, powerCellAngle, 0.0f));
         dynamic_cast<CTransportableObject*>(powerCell)->SetTransporter(m_object);
-        m_object->SetPower(powerCell);
+        assert(m_object->Implements(ObjectInterfaceType::Powered));
+        dynamic_cast<CPoweredObject*>(m_object)->SetPower(powerCell);
     }
 
     pos = m_object->GetPosition(0);
@@ -1796,10 +1799,9 @@ bool CMotionVehicle::EventFrameInsect(const Event &event)
 
 bool CMotionVehicle::EventFrameCanoni(const Event &event)
 {
-    CObject*    power;
     Math::Vector    pos, speed;
     Math::Point     dim;
-    float       zoom, angle, energy, factor;
+    float       zoom, angle, factor;
     bool        bOnBoard = false;
 
     m_canonTime += event.rTime;
@@ -1810,16 +1812,8 @@ bool CMotionVehicle::EventFrameCanoni(const Event &event)
         bOnBoard = true;
     }
 
-    power = m_object->GetPower();
-    if ( power == 0 )
-    {
-        energy = 0.0f;
-    }
-    else
-    {
-        energy = power->GetEnergy();
-    }
-    if ( energy == 0.0f )  return true;
+    float energy = GetObjectEnergy(m_object);
+    if (energy == 0.0f)  return true;
 
     factor = 0.5f+energy*0.5f;
     if ( bOnBoard )  factor *= 0.8f;

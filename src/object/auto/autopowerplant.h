@@ -25,6 +25,8 @@
 #include "object/auto/auto.h"
 
 
+class CPoweredObject;
+
 
 enum AutoPowerPlantPhase
 {
@@ -63,6 +65,7 @@ protected:
     CObject*    SearchPower();
 
 protected:
+    CPoweredObject* m_poweredObject;
     AutoPowerPlantPhase     m_phase;
     float               m_progress;
     float               m_speed;
