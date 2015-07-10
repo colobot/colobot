@@ -4337,7 +4337,6 @@ void CRobotMain::ShowDropZone(CObject* metal, CObject* transporter)
         if (obj == transporter) continue;
 
         Math::Vector oPos;
-        float oRadius;
 
         ObjectType type = obj->GetType();
         if (type == OBJECT_BASE)
