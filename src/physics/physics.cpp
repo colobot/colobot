@@ -2523,6 +2523,9 @@ int CPhysics::ObjectAdapt(const Math::Vector &pos, const Math::Vector &angle)
 
     // iiPos = sphere center is the old position.
     // iPos  = sphere center has the new position.
+    if (m_object->GetCrashSphereCount() < 1)
+        return 0;
+
     auto firstCrashSphere = m_object->GetFirstCrashSphere();
     Math::Vector iiPos = firstCrashSphere.sphere.pos;
     float iRad = firstCrashSphere.sphere.radius;
