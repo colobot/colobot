@@ -30,6 +30,7 @@
 
 
 #include <sstream>
+#include <boost/lexical_cast.hpp>
 
 
 template<> CInput* CSingleton<CInput>::m_instance = nullptr;
@@ -313,6 +314,15 @@ void CInput::SaveKeyBindings()
 
         CProfile::GetInstancePointer()->SetStringProperty("Keybindings", keyTable[static_cast<InputSlot>(i)], key.str());
     }
+
+    for (int i = 0; i < JOY_AXIS_SLOT_MAX; i++)
+    {
+        JoyAxisBinding b = GetJoyAxisBinding(static_cast<JoyAxisSlot>(i));
+
+        CProfile::GetInstancePointer()->SetIntProperty("Setup", "JoystickAxisBinding"+boost::lexical_cast<std::string>(i), b.axis);
+        CProfile::GetInstancePointer()->SetIntProperty("Setup", "JoystickAxisInvert"+boost::lexical_cast<std::string>(i), b.invert);
+    }
+    CProfile::GetInstancePointer()->SetFloatProperty("Setup", "JoystickDeadzone", GetJoystickDeadzone());
 }
 
 void CInput::LoadKeyBindings()
@@ -333,6 +343,23 @@ void CInput::LoadKeyBindings()
 
         SetInputBinding(static_cast<InputSlot>(i), b);
     }
+
+    for (int i = 0; i < JOY_AXIS_SLOT_MAX; i++)
+    {
+        JoyAxisBinding b;
+
+        if (!CProfile::GetInstancePointer()->GetIntProperty("Setup", "JoystickAxisBinding"+boost::lexical_cast<std::string>(i), b.axis))
+            continue;
+
+        int x = 0;
+        CProfile::GetInstancePointer()->GetIntProperty("Setup", "JoystickAxisInvert"+boost::lexical_cast<std::string>(i), x); // If doesn't exist, use default (0)
+        b.invert = (x != 0);
+
+        SetJoyAxisBinding(static_cast<JoyAxisSlot>(i), b);
+    }
+    float deadzone;
+    if (CProfile::GetInstancePointer()->GetFloatProperty("Setup", "JoystickDeadzone", deadzone))
+        SetJoystickDeadzone(deadzone);
 }
 
 InputSlot CInput::SearchKeyById(std::string id)

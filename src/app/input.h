@@ -97,7 +97,7 @@ public:
     Math::Point GetMousePos() const;
     
     
-    //! Sets the default input bindings (key and axes)
+    //! Sets the default input bindings (keys and joystick axes)
     void        SetDefaultInputBindings();
     
     //! Management of input bindings
@@ -130,7 +130,7 @@ public:
     //! Seeks a InputSlot by id. Returns INPUT_SLOT_MAX if not found
     InputSlot   SearchKeyById(std::string name);
     
-    //! Returns string describing keys to pressed
+    //! Returns string describing keys to be pressed
     //@{
     std::string GetKeysString(InputBinding binding);
     std::string GetKeysString(InputSlot slot);
