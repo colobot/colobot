@@ -36,7 +36,6 @@
 
 #include "physics/physics.h"
 
-#include "script/cmdtoken.h"
 #include "script/script.h"
 
 #include "sound/sound.h"

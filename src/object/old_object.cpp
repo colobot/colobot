@@ -49,7 +49,6 @@
 #include "physics/physics.h"
 
 #include "script/cbottoken.h"
-#include "script/cmdtoken.h"
 
 #include <boost/lexical_cast.hpp>
 

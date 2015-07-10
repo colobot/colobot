@@ -44,7 +44,6 @@
 #include "object/level/parserline.h"
 #include "object/level/parserparam.h"
 
-#include "script/cmdtoken.h"
 
 #include <cstring>
 #include <cstdio>

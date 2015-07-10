@@ -195,7 +195,6 @@ set(BASE_SOURCES
     object/subclass/exchange_post.cpp
     physics/physics.cpp
     script/cbottoken.cpp
-    script/cmdtoken.cpp
     script/script.cpp
     script/scriptfunc.cpp
     sound/sound.cpp

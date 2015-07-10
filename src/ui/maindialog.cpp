@@ -41,7 +41,6 @@
 
 #include "object/robotmain.h"
 
-#include "script/cmdtoken.h"
 #include "sound/sound.h"
 
 #include "ui/interface.h"

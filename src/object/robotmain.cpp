@@ -74,7 +74,6 @@
 #include "physics/physics.h"
 
 #include "script/cbottoken.h"
-#include "script/cmdtoken.h"
 #include "script/script.h"
 #include "script/scriptfunc.h"
 
@@ -907,13 +906,18 @@ bool CRobotMain::ProcessEvent(Event &event)
                 }
                 if (event.key.key == KEY(c) && ((event.kmodState & KEY_MOD(CTRL)) != 0) && m_engine->GetShowStats())
                 {
-                    std::ostringstream ss;
                     CObject* obj = GetSelect();
                     if (obj != nullptr)
                     {
-                        ss << "CreateObject type=" << GetTypeObject(obj->GetType()) << " pos=" << std::fixed << std::setprecision(3) << obj->GetPosition(0).x/g_unit << ";" << obj->GetPosition(0).z/g_unit << " dir=" << (obj->GetAngleZ(0)/(Math::PI/180.0f));
+                        CLevelParserLine* line = new CLevelParserLine("CreateObject");
+                        line->AddParam("type", CLevelParserParamUPtr{new CLevelParserParam(obj->GetType())});
+                        line->AddParam("pos", CLevelParserParamUPtr{new CLevelParserParam(obj->GetPosition(0))});
+                        line->AddParam("dir", CLevelParserParamUPtr{new CLevelParserParam(obj->GetAngleZ(0)/(Math::PI/180.0f))});
+
+                        std::stringstream ss;
+                        ss << *line;
+                        widgetSetClipboardText(ss.str().c_str());
                     }
-                    widgetSetClipboardText(ss.str().c_str());
                 }
                 break;
 

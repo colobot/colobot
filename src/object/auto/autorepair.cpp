@@ -26,7 +26,6 @@
 
 #include "physics/physics.h"
 
-#include "script/cmdtoken.h"
 
 #include "ui/interface.h"
 #include "ui/window.h"

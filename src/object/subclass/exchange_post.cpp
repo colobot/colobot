@@ -28,7 +28,6 @@
 #include "object/level/parserparam.h"
 #include "object/level/parserexceptions.h"
 
-#include "script/cmdtoken.h"
 
 #include "ui/interface.h"
 #include "ui/list.h"

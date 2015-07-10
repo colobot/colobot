@@ -26,7 +26,6 @@
 #include "object/level/parserline.h"
 #include "object/level/parserparam.h"
 
-#include "script/cmdtoken.h"
 
 #include "ui/interface.h"
 #include "ui/window.h"
