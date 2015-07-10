@@ -280,10 +280,7 @@ COldObject::COldObject(int id)
         m_partiSel[i] = -1;
     }
 
-    for (int i=0 ; i<OBJECTMAXCMDLINE ; i++ )
-    {
-        m_cmdLine[i] = NAN;
-    }
+    m_cmdLine.clear();
 
     DeleteAllCrashSpheres();
     m_globalSpherePos = Math::Vector(0.0f, 0.0f, 0.0f);
@@ -867,8 +864,6 @@ int COldObject::GetOption()
 void COldObject::Write(CLevelParserLine* line)
 {
     Math::Vector    pos;
-    float       value;
-    int         i;
 
     line->AddParam("camera", CLevelParserParamUPtr{new CLevelParserParam(GetCameraType())});
 
@@ -936,11 +931,8 @@ void COldObject::Write(CLevelParserLine* line)
 
     // Sets the parameters of the command line.
     CLevelParserParamVec cmdline;
-    for ( i=0 ; i<OBJECTMAXCMDLINE ; i++ )
+    for(float value : m_cmdLine)
     {
-        value = GetCmdLine(i);
-        if ( std::isnan(value) )  break;
-
         cmdline.push_back(CLevelParserParamUPtr{new CLevelParserParam(value)});
     }
     if (cmdline.size() > 0)
@@ -1010,7 +1002,6 @@ void COldObject::Read(CLevelParserLine* line)
         int i = 0;
         for (auto& p : line->GetParam("cmdline")->AsArray())
         {
-            if (i >= OBJECTMAXCMDLINE) break;
             SetCmdLine(i, p->AsFloat());
             i++;
         }
@@ -1652,16 +1643,26 @@ float COldObject::GetInfoReturn()
     return m_infoReturn;
 }
 
-bool COldObject::SetCmdLine(int rank, float value)
+void COldObject::SetCmdLine(unsigned int rank, float value)
 {
-    if ( rank < 0 || rank >= OBJECTMAXCMDLINE )  return false;
-    m_cmdLine[rank] = value;
-    return true;
+    if (rank == m_cmdLine.size())
+    {
+        m_cmdLine.push_back(value);
+    }
+    else if (rank < m_cmdLine.size())
+    {
+        m_cmdLine[rank] = value;
+    }
+    else
+    {
+        // should never happen
+        assert(false);
+    }
 }
 
-float COldObject::GetCmdLine(int rank)
+float COldObject::GetCmdLine(unsigned int rank)
 {
-    if ( rank < 0 || rank >= OBJECTMAXCMDLINE )  return 0.0f;
+    if ( rank >= m_cmdLine.size() )  return 0.0f;
     return m_cmdLine[rank];
 }
 

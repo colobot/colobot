@@ -3558,7 +3558,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                     if (line->GetParam("cmdline")->IsDefined())
                     {
                         const auto& cmdline = line->GetParam("cmdline")->AsArray();
-                        for (unsigned int i = 0; i < OBJECTMAXCMDLINE && i < cmdline.size(); i++) //TODO: get rid of the limit
+                        for (unsigned int i = 0; i < cmdline.size(); i++)
                         {
                             obj->SetCmdLine(i, cmdline[i]->AsFloat());
                         }

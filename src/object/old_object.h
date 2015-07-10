@@ -30,7 +30,6 @@
 // The father of all parts must always be the part number zero!
 const int OBJECTMAXPART         = 40;
 const int OBJECTMAXDESELLIST    = 10;
-const int OBJECTMAXCMDLINE      = 20;
 
 struct ObjectPart
 {
@@ -168,8 +167,8 @@ public:
     CObject*    GetTransporter() override;
     void        SetTransporterPart(int part) override;
 
-    bool        SetCmdLine(int rank, float value) override;
-    float       GetCmdLine(int rank) override;
+    void        SetCmdLine(unsigned int rank, float value) override;
+    float       GetCmdLine(unsigned int rank) override;
 
     Math::Matrix*   GetRotateMatrix(int part) override;
     Math::Matrix*   GetWorldMatrix(int part) override;
@@ -407,5 +406,5 @@ protected:
 
     float m_infoReturn;
 
-    float       m_cmdLine[OBJECTMAXCMDLINE];
+    std::vector<float> m_cmdLine;
 };

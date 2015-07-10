@@ -165,8 +165,8 @@ public:
     virtual CObject*    GetTransporter() = 0;
     virtual void        SetTransporterPart(int part) = 0;
 
-    virtual bool        SetCmdLine(int rank, float value) = 0;
-    virtual float       GetCmdLine(int rank) = 0;
+    virtual void        SetCmdLine(unsigned int rank, float value) = 0;
+    virtual float       GetCmdLine(unsigned int rank) = 0;
 
     virtual Math::Matrix*   GetRotateMatrix(int part) = 0;
     virtual Math::Matrix*   GetWorldMatrix(int part) = 0;
