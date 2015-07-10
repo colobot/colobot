@@ -1372,9 +1372,8 @@ msgstr "Космический корабль"
 msgid "Spaceship ruin"
 msgstr "Обломки корабля"
 
-#, fuzzy
 msgid "Speed 0.5x\\Half speed"
-msgstr "Скорость 1.0х\\Нормальная скорость"
+msgstr "Скорость 0.5х\\В два раза медленнее"
 
 msgid "Speed 1.0x\\Normal speed"
 msgstr "Скорость 1.0х\\Нормальная скорость"
@@ -1383,22 +1382,19 @@ msgid "Speed 1.5x\\1.5 times faster"
 msgstr "Скорость 1.5х\\В полтора раза быстрее"
 
 msgid "Speed 2.0x\\Double speed"
-msgstr "Скорость 2.0х\\В два раза скорость"
+msgstr "Скорость 2.0х\\В два раза быстрее"
 
-#, fuzzy
 msgid "Speed 3.0x\\Triple speed"
-msgstr "Скорость 2.0х\\В два раза скорость"
+msgstr "Скорость 3.0х\\В три раза быстрее"
 
-#, fuzzy
 msgid "Speed 4.0x\\Quadruple speed"
-msgstr "Скорость 2.0х\\В два раза скорость"
+msgstr "Скорость 4.0х\\В четыре раза быстрее"
 
-#, fuzzy
 msgid "Speed 6.0x\\Sextuple speed"
-msgstr "Скорость 2.0х\\В два раза скорость"
+msgstr "Скорость 6.0х\\В шесть раз быстрее"
 
 msgid "Spider"
-msgstr "Маук"
+msgstr "Паук"
 
 msgid "Spider fatally wounded"
 msgstr "Паук смертельно ранен"
