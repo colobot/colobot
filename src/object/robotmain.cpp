@@ -5437,10 +5437,20 @@ Error CRobotMain::CheckEndMissionForGroup(std::vector<CSceneEndCondition*>& endT
         if (endTake->lost < 0)
             hasWinningConditions = true;
 
-        if (result != ERR_OK || endTake->immediat)
+        if (result == ERR_OK && endTake->immediat)
         {
-            if (finalResult != INFO_LOST && finalResult != INFO_LOSTq)
-                finalResult = result;
+            hasWinningConditions = true;
+            finalResult = result;
+            break;
+        }
+
+        if (result != ERR_OK)
+        {
+            finalResult = result;
+            if (finalResult == INFO_LOST || finalResult == INFO_LOSTq)
+            {
+                break;
+            }
         }
     }
     if (finalResult == ERR_OK && !hasWinningConditions) finalResult = ERR_MISSION_NOTERM;
@@ -5450,6 +5460,7 @@ Error CRobotMain::CheckEndMissionForGroup(std::vector<CSceneEndCondition*>& endT
 //! Checks if the mission is over
 Error CRobotMain::CheckEndMission(bool frame)
 {
+    bool isImmediat = false;
     // Process EndMissionTake, unless we are using MissionController
     if (m_controller == nullptr)
     {
@@ -5458,6 +5469,8 @@ Error CRobotMain::CheckEndMission(bool frame)
         for (std::unique_ptr<CSceneEndCondition>& endTake : m_endTake)
         {
             teams[endTake->winTeam].push_back(endTake.get());
+            if(endTake->immediat)
+                isImmediat = true;
         }
 
         int teamCount = 0;
@@ -5584,7 +5597,7 @@ Error CRobotMain::CheckEndMission(bool frame)
             return ERR_OK;  // mission ended
         }
 
-        if (frame && m_base != nullptr && m_base->GetSelectable()) return ERR_MISSION_NOTERM;
+        if (frame && m_base != nullptr && m_base->GetSelectable() && !isImmediat) return ERR_MISSION_NOTERM;
 
         if (m_winDelay == 0.0f)
         {
