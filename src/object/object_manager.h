@@ -43,7 +43,6 @@ class CTerrain;
 } // namespace Gfx
 
 class CObject;
-class CRobotMain;
 class CObjectFactory;
 
 enum RadarFilter
@@ -123,8 +122,7 @@ public:
     CObjectManager(Gfx::CEngine* engine,
                    Gfx::CTerrain* terrain,
                    Gfx::COldModelManager* modelManager,
-                   Gfx::CParticle* particle,
-                   CRobotMain* main);
+                   Gfx::CParticle* particle);
     virtual ~CObjectManager();
 
     //! Creates an object

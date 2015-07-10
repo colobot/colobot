@@ -71,13 +71,11 @@ using COldObjectUPtr = std::unique_ptr<COldObject>;
 CObjectFactory::CObjectFactory(Gfx::CEngine* engine,
                                Gfx::CTerrain* terrain,
                                Gfx::COldModelManager* modelManager,
-                               Gfx::CParticle* particle,
-                               CRobotMain* main)
+                               Gfx::CParticle* particle)
    : m_engine(engine)
    , m_terrain(terrain)
    , m_modelManager(modelManager)
    , m_particle(particle)
-   , m_main(main)
 {}
 
 CObjectUPtr CObjectFactory::CreateObject(const ObjectCreateParams& params)

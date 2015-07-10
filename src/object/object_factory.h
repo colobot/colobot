@@ -39,7 +39,6 @@ class CTerrain;
 
 class CObject;
 class COldObject;
-class CRobotMain;
 struct ObjectCreateParams;
 
 using CObjectUPtr = std::unique_ptr<CObject>;
@@ -50,8 +49,7 @@ public:
     CObjectFactory(Gfx::CEngine* engine,
                    Gfx::CTerrain* terrain,
                    Gfx::COldModelManager* modelManager,
-                   Gfx::CParticle* particle,
-                   CRobotMain* main);
+                   Gfx::CParticle* particle);
 
     CObjectUPtr CreateObject(const ObjectCreateParams& params);
 
@@ -76,5 +74,4 @@ private:
     Gfx::CTerrain* m_terrain;
     Gfx::COldModelManager* m_modelManager;
     Gfx::CParticle* m_particle;
-    CRobotMain* m_main;
 };

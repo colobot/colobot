@@ -275,8 +275,7 @@ void CRobotMain::Create(bool loadProfile)
     m_objMan = new CObjectManager(m_engine,
                                   m_terrain,
                                   m_modelManager,
-                                  m_particle,
-                                  this);
+                                  m_particle);
 
     m_engine->SetTerrain(m_terrain);
 
