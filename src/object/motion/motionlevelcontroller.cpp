@@ -18,7 +18,7 @@
  */
 
 
-#include "object/motion/motiondummy.h"
+#include "object/motion/motionlevelcontroller.h"
 #include "physics/physics.h"
 #include "graphics/engine/oldmodelmanager.h"
 
@@ -27,27 +27,27 @@
 
 // Object's constructor.
 
-CMotionDummy::CMotionDummy(CObject* object) : CMotion(object)
+CMotionLevelController::CMotionLevelController(CObject* object) : CMotion(object)
 {
 }
 
 // Object's destructor.
 
-CMotionDummy::~CMotionDummy()
+CMotionLevelController::~CMotionLevelController()
 {
 }
 
 
 // Removes an object.
 
-void CMotionDummy::DeleteObject(bool bAll)
+void CMotionLevelController::DeleteObject(bool bAll)
 {
 }
 
 
-// Creates a Dummy traveling any lands on the ground.
+// Creates a LevelController motion
 
-void CMotionDummy::Create(Math::Vector pos, float angle, ObjectType type,
+void CMotionLevelController::Create(Math::Vector pos, float angle, ObjectType type,
                           float power, Gfx::COldModelManager*)
 {
     m_object->SetType(type);

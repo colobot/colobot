@@ -18,7 +18,7 @@
  */
 
 
-#include "object/auto/autonuclear.h"
+#include "object/auto/autonuclearplant.h"
 
 #include "math/geometry.h"
 
@@ -34,14 +34,14 @@
 #include <string.h>
 
 
-const float NUCLEAR_DELAY = 30.0f;  // duration of the generation
+const float NUCLEARPLANT_DELAY = 30.0f;  // duration of the generation
 
 
 
 
 // Object's constructor.
 
-CAutoNuclear::CAutoNuclear(CObject* object) : CAuto(object)
+CAutoNuclearPlant::CAutoNuclearPlant(CObject* object) : CAuto(object)
 {
     m_channelSound = -1;
     Init();
@@ -49,14 +49,14 @@ CAutoNuclear::CAutoNuclear(CObject* object) : CAuto(object)
 
 // Object's destructor.
 
-CAutoNuclear::~CAutoNuclear()
+CAutoNuclearPlant::~CAutoNuclearPlant()
 {
 }
 
 
 // Destroys the object.
 
-void CAutoNuclear::DeleteObject(bool all)
+void CAutoNuclearPlant::DeleteObject(bool all)
 {
     if ( !all )
     {
@@ -80,7 +80,7 @@ void CAutoNuclear::DeleteObject(bool all)
 
 // Initialize the object.
 
-void CAutoNuclear::Init()
+void CAutoNuclearPlant::Init()
 {
     Math::Matrix*   mat;
 
@@ -101,7 +101,7 @@ void CAutoNuclear::Init()
 
 // Management of an event.
 
-bool CAutoNuclear::EventProcess(const Event &event)
+bool CAutoNuclearPlant::EventProcess(const Event &event)
 {
     CObject*    cargo;
     Math::Matrix*   mat;
@@ -145,7 +145,7 @@ bool CAutoNuclear::EventProcess(const Event &event)
                 cargo->SetLock(true);  // usable uranium
 
                 SetBusy(true);
-                InitProgressTotal(1.5f+NUCLEAR_DELAY+1.5f);
+                InitProgressTotal(1.5f+NUCLEARPLANT_DELAY+1.5f);
                 UpdateInterface();
 
                 m_sound->Play(SOUND_OPEN, m_object->GetPosition(0), 1.0f, 1.4f);
@@ -187,12 +187,12 @@ bool CAutoNuclear::EventProcess(const Event &event)
             m_sound->Play(SOUND_CLOSE, m_object->GetPosition(0), 1.0f, 1.0f);
 
             m_channelSound = m_sound->Play(SOUND_NUCLEAR, m_object->GetPosition(0), 1.0f, 0.1f, true);
-            m_sound->AddEnvelope(m_channelSound, 1.0f, 1.0f, NUCLEAR_DELAY-1.0f, SOPER_CONTINUE);
+            m_sound->AddEnvelope(m_channelSound, 1.0f, 1.0f, NUCLEARPLANT_DELAY-1.0f, SOPER_CONTINUE);
             m_sound->AddEnvelope(m_channelSound, 0.0f, 1.0f, 2.0f, SOPER_STOP);
 
             m_phase    = ANUP_GENERATE;
             m_progress = 0.0f;
-            m_speed    = 1.0f/NUCLEAR_DELAY;
+            m_speed    = 1.0f/NUCLEARPLANT_DELAY;
         }
     }
 
@@ -286,7 +286,7 @@ bool CAutoNuclear::EventProcess(const Event &event)
 
 // Creates all the interface when the object is selected.
 
-bool CAutoNuclear::CreateInterface(bool bSelect)
+bool CAutoNuclearPlant::CreateInterface(bool bSelect)
 {
     Ui::CWindow*    pw;
     Math::Point     pos, ddim;
@@ -316,7 +316,7 @@ bool CAutoNuclear::CreateInterface(bool bSelect)
 
 // Seeking the uranium.
 
-CObject* CAutoNuclear::SearchUranium()
+CObject* CAutoNuclearPlant::SearchUranium()
 {
     CObject*    pObj;
 
@@ -328,7 +328,7 @@ CObject* CAutoNuclear::SearchUranium()
 
 // Seeks if a vehicle is too close.
 
-bool CAutoNuclear::SearchVehicle()
+bool CAutoNuclearPlant::SearchVehicle()
 {
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
@@ -379,7 +379,7 @@ bool CAutoNuclear::SearchVehicle()
 
 // Creates an object stack.
 
-void CAutoNuclear::CreatePower()
+void CAutoNuclearPlant::CreatePower()
 {
     Math::Vector pos = m_object->GetPosition(0);
     float angle = m_object->GetAngleY(0);
@@ -395,7 +395,7 @@ void CAutoNuclear::CreatePower()
 
 // Returns an error due the state of the automation.
 
-Error CAutoNuclear::GetError()
+Error CAutoNuclearPlant::GetError()
 {
     CObject*    pObj;
     ObjectType  type;
@@ -424,7 +424,7 @@ Error CAutoNuclear::GetError()
 
 // Saves all parameters of the controller.
 
-bool CAutoNuclear::Write(CLevelParserLine* line)
+bool CAutoNuclearPlant::Write(CLevelParserLine* line)
 {
     if ( m_phase == ANUP_STOP ||
          m_phase == ANUP_WAIT )  return false;
@@ -440,12 +440,12 @@ bool CAutoNuclear::Write(CLevelParserLine* line)
 
 // Restores all parameters of the controller.
 
-bool CAutoNuclear::Read(CLevelParserLine* line)
+bool CAutoNuclearPlant::Read(CLevelParserLine* line)
 {
     if ( !line->GetParam("aExist")->AsBool(false) )  return false;
 
     CAuto::Read(line);
-    m_phase = static_cast< AutoNuclearPhase >(line->GetParam("aPhase")->AsInt(ANUP_WAIT));
+    m_phase = static_cast< AutoNuclearPlantPhase >(line->GetParam("aPhase")->AsInt(ANUP_WAIT));
     m_progress = line->GetParam("aProgress")->AsFloat(0.0f);
     m_speed = line->GetParam("aSpeed")->AsFloat(1.0f);
 

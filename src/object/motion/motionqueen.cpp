@@ -18,7 +18,7 @@
  */
 
 
-#include "object/motion/motionmother.h"
+#include "object/motion/motionqueen.h"
 
 #include "app/app.h"
 
@@ -37,7 +37,7 @@ const float START_TIME = 1000.0f;       // beginning of the relative time
 
 // Object's constructor.
 
-CMotionMother::CMotionMother(CObject* object) : CMotion(object)
+CMotionQueen::CMotionQueen(CObject* object) : CMotion(object)
 {
     m_armMember      = START_TIME;
     m_armTimeAbs     = START_TIME;
@@ -53,21 +53,21 @@ CMotionMother::CMotionMother(CObject* object) : CMotion(object)
 
 // Object's destructor.
 
-CMotionMother::~CMotionMother()
+CMotionQueen::~CMotionQueen()
 {
 }
 
 
 // Removes an object.
 
-void CMotionMother::DeleteObject(bool bAll)
+void CMotionQueen::DeleteObject(bool bAll)
 {
 }
 
 
 // Creates a vehicle traveling any lands on the ground.
 
-void CMotionMother::Create(Math::Vector pos, float angle, ObjectType type,
+void CMotionQueen::Create(Math::Vector pos, float angle, ObjectType type,
                           float power, Gfx::COldModelManager* modelManager)
 {
     int rank;
@@ -255,7 +255,7 @@ void CMotionMother::Create(Math::Vector pos, float angle, ObjectType type,
 
 // Creates the physics of the object.
 
-void CMotionMother::CreatePhysics()
+void CMotionQueen::CreatePhysics()
 {
     Character*  character;
     int         i;
@@ -311,7 +311,7 @@ void CMotionMother::CreatePhysics()
 
 // Management of an event.
 
-bool CMotionMother::EventProcess(const Event &event)
+bool CMotionQueen::EventProcess(const Event &event)
 {
     CMotion::EventProcess(event);
 
@@ -355,7 +355,7 @@ bool CMotionMother::EventProcess(const Event &event)
 
 // Management of an event.
 
-bool CMotionMother::EventFrame(const Event &event)
+bool CMotionQueen::EventFrame(const Event &event)
 {
     Math::Vector    dir;
     float       s, a, prog;

@@ -34,7 +34,7 @@
 #include "object/object_manager.h"
 #include "object/robotmain.h"
 
-#include "object/auto/autopara.h"
+#include "object/auto/autopowercaptor.h"
 
 
 // Graphics module namespace
@@ -110,7 +110,7 @@ bool CLightning::EventFrame(const Event &event)
                 }
                 else if (type == OBJECT_PARA)
                 {
-                    CAutoPara* automat = static_cast<CAutoPara*>(obj->GetAuto());
+                    CAutoPowerCaptor* automat = static_cast<CAutoPowerCaptor*>(obj->GetAuto());
                     if (automat != nullptr)
                         automat->StartLightning();
 

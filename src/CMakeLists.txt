@@ -128,23 +128,23 @@ set(BASE_SOURCES
     object/auto/autoderrick.cpp
     object/auto/autodestroyer.cpp
     object/auto/autoegg.cpp
-    object/auto/autoenergy.cpp
+    object/auto/autopowerplant.cpp
     object/auto/autofactory.cpp
     object/auto/autoflag.cpp
-    object/auto/autohuston.cpp
+    object/auto/autohouston.cpp
     object/auto/autojostle.cpp
     object/auto/autolabo.cpp
     object/auto/automush.cpp
     object/auto/autonest.cpp
-    object/auto/autonuclear.cpp
-    object/auto/autopara.cpp
+    object/auto/autonuclearplant.cpp
+    object/auto/autopowercaptor.cpp
     object/auto/autoportico.cpp
     object/auto/autoradar.cpp
     object/auto/autorepair.cpp
     object/auto/autoresearch.cpp
     object/auto/autoroot.cpp
-    object/auto/autosafe.cpp
-    object/auto/autostation.cpp
+    object/auto/autovault.cpp
+    object/auto/autopowerstation.cpp
     object/auto/autotower.cpp
     object/brain.cpp
     object/drive_type.cpp
@@ -156,9 +156,9 @@ set(BASE_SOURCES
     object/motion/motion.cpp
     object/motion/motionant.cpp
     object/motion/motionbee.cpp
-    object/motion/motiondummy.cpp
+    object/motion/motionlevelcontroller.cpp
     object/motion/motionhuman.cpp
-    object/motion/motionmother.cpp
+    object/motion/motionqueen.cpp
     object/motion/motionspider.cpp
     object/motion/motiontoto.cpp
     object/motion/motionvehicle.cpp

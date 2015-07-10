@@ -17,7 +17,7 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// autostation.h
+// autopowerstation.h
 
 #pragma once
 
@@ -26,11 +26,11 @@
 
 
 
-class CAutoStation : public CAuto
+class CAutoPowerStation : public CAuto
 {
 public:
-    CAutoStation(CObject* object);
-    ~CAutoStation();
+    CAutoPowerStation(CObject* object);
+    ~CAutoPowerStation();
 
     void        DeleteObject(bool bAll=false);
 

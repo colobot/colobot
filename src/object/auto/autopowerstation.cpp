@@ -18,7 +18,7 @@
  */
 
 
-#include "object/auto/autostation.h"
+#include "object/auto/autopowerstation.h"
 
 #include "graphics/engine/particle.h"
 #include "graphics/engine/terrain.h"
@@ -36,21 +36,21 @@
 
 // Object's constructor.
 
-CAutoStation::CAutoStation(CObject* object) : CAuto(object)
+CAutoPowerStation::CAutoPowerStation(CObject* object) : CAuto(object)
 {
     Init();
 }
 
 // Object's destructor.
 
-CAutoStation::~CAutoStation()
+CAutoPowerStation::~CAutoPowerStation()
 {
 }
 
 
 // Destroys the object.
 
-void CAutoStation::DeleteObject(bool bAll)
+void CAutoPowerStation::DeleteObject(bool bAll)
 {
     if ( m_soundChannel != -1 )
     {
@@ -64,7 +64,7 @@ void CAutoStation::DeleteObject(bool bAll)
 
 // Initialize the object.
 
-void CAutoStation::Init()
+void CAutoPowerStation::Init()
 {
     m_time = 0.0f;
     m_timeVirus = 0.0f;
@@ -79,7 +79,7 @@ void CAutoStation::Init()
 
 // Management of an event.
 
-bool CAutoStation::EventProcess(const Event &event)
+bool CAutoPowerStation::EventProcess(const Event &event)
 {
     Math::Matrix*   mat;
     Math::Vector    pos, ppos, speed;
@@ -239,7 +239,7 @@ bool CAutoStation::EventProcess(const Event &event)
 
 // Seeking the vehicle on the station.
 
-CObject* CAutoStation::SearchVehicle()
+CObject* CAutoPowerStation::SearchVehicle()
 {
     Math::Vector sPos = m_object->GetPosition(0);
 
@@ -285,7 +285,7 @@ CObject* CAutoStation::SearchVehicle()
 
 // Returns an error due the state of the automation.
 
-Error CAutoStation::GetError()
+Error CAutoPowerStation::GetError()
 {
     Gfx::TerrainRes  res;
 
@@ -303,7 +303,7 @@ Error CAutoStation::GetError()
 
 // Crée toute l'interface lorsque l'objet est sélectionné .
 
-bool CAutoStation::CreateInterface(bool bSelect)
+bool CAutoPowerStation::CreateInterface(bool bSelect)
 {
     Ui::CWindow*    pw;
     Math::Point     pos, ddim;
@@ -339,7 +339,7 @@ bool CAutoStation::CreateInterface(bool bSelect)
 // Updates the state of all buttons on the interface,
 // following the time that elapses ...
 
-void CAutoStation::UpdateInterface(float rTime)
+void CAutoPowerStation::UpdateInterface(float rTime)
 {
     Ui::CWindow*    pw;
     Ui::CGauge*     pg;

@@ -18,7 +18,7 @@
  */
 
 
-#include "object/auto/autohuston.h"
+#include "object/auto/autohouston.h"
 
 #include "ui/interface.h"
 #include "ui/window.h"
@@ -28,7 +28,7 @@
 
 // Object's constructor.
 
-CAutoHuston::CAutoHuston(CObject* object) : CAuto(object)
+CAutoHouston::CAutoHouston(CObject* object) : CAuto(object)
 {
     Math::Vector    pos;
     int         i;
@@ -169,14 +169,14 @@ CAutoHuston::CAutoHuston(CObject* object) : CAuto(object)
 
 // Object's destructor.
 
-CAutoHuston::~CAutoHuston()
+CAutoHouston::~CAutoHouston()
 {
 }
 
 
 // Destroys the object.
 
-void CAutoHuston::DeleteObject(bool bAll)
+void CAutoHouston::DeleteObject(bool bAll)
 {
     CAuto::DeleteObject(bAll);
 }
@@ -184,7 +184,7 @@ void CAutoHuston::DeleteObject(bool bAll)
 
 // Initialize the object.
 
-void CAutoHuston::Init()
+void CAutoHouston::Init()
 {
     m_time = 0.0f;
 
@@ -195,14 +195,14 @@ void CAutoHuston::Init()
 
 // Start the object.
 
-void CAutoHuston::Start(int param)
+void CAutoHouston::Start(int param)
 {
 }
 
 
 // Management of an event.
 
-bool CAutoHuston::EventProcess(const Event &event)
+bool CAutoHouston::EventProcess(const Event &event)
 {
     Math::Vector    speed;
     Math::Point     dim;
@@ -251,7 +251,7 @@ bool CAutoHuston::EventProcess(const Event &event)
 
 // Stops the controller.
 
-bool CAutoHuston::Abort()
+bool CAutoHouston::Abort()
 {
     return true;
 }
@@ -259,7 +259,7 @@ bool CAutoHuston::Abort()
 
 // Creates all the interface when the object is selected.
 
-bool CAutoHuston::CreateInterface(bool bSelect)
+bool CAutoHouston::CreateInterface(bool bSelect)
 {
     Ui::CWindow*    pw;
     Math::Point     pos, ddim;
@@ -289,7 +289,7 @@ bool CAutoHuston::CreateInterface(bool bSelect)
 
 // Returns an error due to state of the automation.
 
-Error CAutoHuston::GetError()
+Error CAutoHouston::GetError()
 {
     return ERR_OK;
 }

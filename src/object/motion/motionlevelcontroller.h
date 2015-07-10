@@ -17,41 +17,20 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// motionmother.h
+// motionlevelcontroller.h
 
 #pragma once
 
 
 #include "object/motion/motion.h"
 
-
-
-class CMotionMother : public CMotion
+class CMotionLevelController : public CMotion
 {
 public:
-    CMotionMother(CObject* object);
-    ~CMotionMother();
+    CMotionLevelController(CObject* object);
+    ~CMotionLevelController();
 
-    void    DeleteObject(bool bAll=false);
-    void    Create(Math::Vector pos, float angle, ObjectType type, float power, Gfx::COldModelManager* modelManager);
-    bool    EventProcess(const Event &event);
-
-protected:
-    void    CreatePhysics();
-    bool    EventFrame(const Event &event);
-
-protected:
-    float       m_armMember;
-    float       m_armTimeAbs;
-    float       m_armTimeMarch;
-    float       m_armTimeAction;
-    short       m_armAngles[3*3*3*3*10];
-    int         m_armTimeIndex;
-    int         m_armPartIndex;
-    int         m_armMemberIndex;
-    int         m_armLastAction;
-    int         m_specAction;
-    float       m_specTime;
-    bool        m_bArmStop;
+    void        DeleteObject(bool bAll=false);
+    void        Create(Math::Vector pos, float angle, ObjectType type, float power, Gfx::COldModelManager* modelManager);
 };
 

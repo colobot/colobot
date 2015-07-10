@@ -17,20 +17,52 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// motiondummy.h
+// autohouston.h
 
 #pragma once
 
 
-#include "object/motion/motion.h"
+#include "object/auto/auto.h"
+#include "graphics/engine/particle.h"
 
-class CMotionDummy : public CMotion
+
+
+struct HustonLens
+{
+    int                 parti;
+    Gfx::ParticleType   type;
+    Math::Vector        pos;
+    float               dim;
+    float               total;
+    float               off;
+};
+
+
+const int HUSTONMAXLENS = 20;
+
+
+class CAutoHouston : public CAuto
 {
 public:
-    CMotionDummy(CObject* object);
-    ~CMotionDummy();
+    CAutoHouston(CObject* object);
+    ~CAutoHouston();
 
     void        DeleteObject(bool bAll=false);
-    void        Create(Math::Vector pos, float angle, ObjectType type, float power, Gfx::COldModelManager* modelManager);
+
+    void        Init();
+    void        Start(int param);
+    bool        EventProcess(const Event &event);
+    bool        Abort();
+    Error       GetError();
+
+    bool        CreateInterface(bool bSelect);
+
+protected:
+
+protected:
+    float       m_progress;
+    float       m_speed;
+    HustonLens  m_lens[HUSTONMAXLENS];
+    int         m_lensTotal;
 };
 

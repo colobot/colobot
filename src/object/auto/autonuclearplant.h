@@ -17,7 +17,7 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// autosafe.h
+// autonuclearplant.h
 
 #pragma once
 
@@ -26,20 +26,22 @@
 
 
 
-enum AutoSafePhase
+enum AutoNuclearPlantPhase
 {
-    ASAP_WAIT       = 1,
-    ASAP_OPEN       = 2,
-    ASAP_FINISH     = 3,
+    ANUP_STOP       = 1,
+    ANUP_WAIT       = 2,
+    ANUP_CLOSE      = 3,
+    ANUP_GENERATE   = 4,
+    ANUP_OPEN       = 5,
 };
 
 
 
-class CAutoSafe : public CAuto
+class CAutoNuclearPlant : public CAuto
 {
 public:
-    CAutoSafe(CObject* object);
-    ~CAutoSafe();
+    CAutoNuclearPlant(CObject* object);
+    ~CAutoNuclearPlant();
 
     void        DeleteObject(bool bAll=false);
 
@@ -53,25 +55,17 @@ public:
     bool        Read(CLevelParserLine* line);
 
 protected:
-    int         CountKeys();
-    void        LockKeys();
-    void        DownKeys(float progress);
-    void        DeleteKeys();
-    CObject*    SearchVehicle();
+    CObject*    SearchUranium();
+    bool        SearchVehicle();
+    void        CreatePower();
 
 protected:
-    AutoSafePhase   m_phase;
-    float           m_progress;
-    float           m_speed;
-    float           m_timeVirus;
-    float           m_lastParticle;
-    int             m_channelSound;
-    bool            m_bLock;
-    int             m_countKeys;
-    float           m_actualAngle;
-    float           m_finalAngle;
-    bool            m_bKey[4];
-    Math::Vector        m_keyPos[4];
-    int             m_keyParti[4];
+    AutoNuclearPlantPhase    m_phase;
+    float               m_progress;
+    float               m_speed;
+    float               m_timeVirus;
+    float               m_lastParticle;
+    Math::Vector            m_pos;
+    int                 m_channelSound;
 };
 

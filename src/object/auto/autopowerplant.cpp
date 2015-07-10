@@ -18,7 +18,7 @@
  */
 
 
-#include "object/auto/autoenergy.h"
+#include "object/auto/autopowerplant.h"
 
 #include "graphics/engine/terrain.h"
 
@@ -37,15 +37,15 @@
 #include <string.h>
 
 
-const float ENERGY_POWER    =  0.4f;    // Necessary energy for a battery
-const float ENERGY_DELAY    = 12.0f;    // processing time
+const float POWERPLANT_POWER    =  0.4f;    // Necessary energy for a battery
+const float POWERPLANT_DELAY    = 12.0f;    // processing time
 
 
 
 
 // Object's constructor.
 
-CAutoEnergy::CAutoEnergy(CObject* object) : CAuto(object)
+CAutoPowerPlant::CAutoPowerPlant(CObject* object) : CAuto(object)
 {
     m_partiSphere = -1;
     Init();
@@ -53,14 +53,14 @@ CAutoEnergy::CAutoEnergy(CObject* object) : CAuto(object)
 
 // Object's destructor.
 
-CAutoEnergy::~CAutoEnergy()
+CAutoPowerPlant::~CAutoPowerPlant()
 {
 }
 
 
 // Destroys the object.
 
-void CAutoEnergy::DeleteObject(bool all)
+void CAutoPowerPlant::DeleteObject(bool all)
 {
     if ( m_partiSphere != -1 )
     {
@@ -89,7 +89,7 @@ void CAutoEnergy::DeleteObject(bool all)
 
 // Initialize the object.
 
-void CAutoEnergy::Init()
+void CAutoPowerPlant::Init()
 {
     m_time = 0.0f;
     m_timeVirus = 0.0f;
@@ -106,7 +106,7 @@ void CAutoEnergy::Init()
 
 // Management of an event.
 
-bool CAutoEnergy::EventProcess(const Event &event)
+bool CAutoPowerPlant::EventProcess(const Event &event)
 {
     CObject*    cargo;
     Math::Vector    pos, ppos, speed;
@@ -166,7 +166,7 @@ bool CAutoEnergy::EventProcess(const Event &event)
             {
                 if ( cargo->GetType() == OBJECT_METAL )
                 {
-                    if ( big > ENERGY_POWER )  bGO = true;
+                    if ( big > POWERPLANT_POWER )  bGO = true;
                 }
                 else
                 {
@@ -183,7 +183,7 @@ bool CAutoEnergy::EventProcess(const Event &event)
                 }
 
                 SetBusy(true);
-                InitProgressTotal(ENERGY_DELAY);
+                InitProgressTotal(POWERPLANT_DELAY);
                 CAuto::UpdateInterface();
 
                 pos = m_object->GetPosition(0);
@@ -191,11 +191,11 @@ bool CAutoEnergy::EventProcess(const Event &event)
                 speed = Math::Vector(0.0f, 0.0f, 0.0f);
                 dim.x = 3.0f;
                 dim.y = dim.x;
-                m_partiSphere = m_particle->CreateParticle(pos, speed, dim, Gfx::PARTISPHERE1, ENERGY_DELAY, 0.0f, 0.0f);
+                m_partiSphere = m_particle->CreateParticle(pos, speed, dim, Gfx::PARTISPHERE1, POWERPLANT_DELAY, 0.0f, 0.0f);
 
                 m_phase    = AENP_CREATE;
                 m_progress = 0.0f;
-                m_speed    = 1.0f/ENERGY_DELAY;
+                m_speed    = 1.0f/POWERPLANT_DELAY;
             }
             else
             {
@@ -249,11 +249,11 @@ bool CAutoEnergy::EventProcess(const Event &event)
             {
                 if ( cargo->GetType() == OBJECT_METAL )
                 {
-                    big -= event.rTime/ENERGY_DELAY*ENERGY_POWER;
+                    big -= event.rTime/POWERPLANT_DELAY*POWERPLANT_POWER;
                 }
                 else
                 {
-                    big += event.rTime/ENERGY_DELAY*0.25f;
+                    big += event.rTime/POWERPLANT_DELAY*0.25f;
                 }
                 cargo->SetZoom(0, 1.0f-m_progress);
             }
@@ -372,7 +372,7 @@ bool CAutoEnergy::EventProcess(const Event &event)
 
 // Seeking the metal object.
 
-CObject* CAutoEnergy::SearchMetal()
+CObject* CAutoPowerPlant::SearchMetal()
 {
     CObject*    pObj;
     ObjectType  type;
@@ -391,7 +391,7 @@ CObject* CAutoEnergy::SearchMetal()
 
 // Search if a vehicle is too close.
 
-bool CAutoEnergy::SearchVehicle()
+bool CAutoPowerPlant::SearchVehicle()
 {
     Math::Vector cPos = m_object->GetPosition(0);
 
@@ -444,7 +444,7 @@ bool CAutoEnergy::SearchVehicle()
 
 // Create a cell.
 
-void CAutoEnergy::CreatePower()
+void CAutoPowerPlant::CreatePower()
 {
     Math::Vector pos = m_object->GetPosition(0);
     float angle = m_object->GetAngleY(0);
@@ -459,7 +459,7 @@ void CAutoEnergy::CreatePower()
 
 // Seeking the battery during manufacture.
 
-CObject* CAutoEnergy::SearchPower()
+CObject* CAutoPowerPlant::SearchPower()
 {
     Math::Vector cPos = m_object->GetPosition(0);
 
@@ -484,7 +484,7 @@ CObject* CAutoEnergy::SearchPower()
 
 // Returns an error due the state of the automation.
 
-Error CAutoEnergy::GetError()
+Error CAutoPowerPlant::GetError()
 {
     CObject*    pObj;
     ObjectType  type;
@@ -501,7 +501,7 @@ Error CAutoEnergy::GetError()
     res = m_terrain->GetResource(m_object->GetPosition(0));
     if ( res != Gfx::TR_POWER )  return ERR_ENERGY_NULL;
 
-    if ( m_object->GetEnergy() < ENERGY_POWER )  return ERR_ENERGY_LOW;
+    if ( m_object->GetEnergy() < POWERPLANT_POWER )  return ERR_ENERGY_LOW;
 
     pObj = m_object->GetPower();
     if ( pObj == 0 )  return ERR_ENERGY_EMPTY;
@@ -518,7 +518,7 @@ Error CAutoEnergy::GetError()
 
 // Creates all the interface when the object is selected.
 
-bool CAutoEnergy::CreateInterface(bool bSelect)
+bool CAutoPowerPlant::CreateInterface(bool bSelect)
 {
     Ui::CWindow*    pw;
     Math::Point     pos, ddim;
@@ -554,7 +554,7 @@ bool CAutoEnergy::CreateInterface(bool bSelect)
 // Updates the state of all buttons on the interface,
 // following the time that elapses ...
 
-void CAutoEnergy::UpdateInterface(float rTime)
+void CAutoPowerPlant::UpdateInterface(float rTime)
 {
     Ui::CWindow*    pw;
     Ui::CGauge*     pg;
@@ -579,7 +579,7 @@ void CAutoEnergy::UpdateInterface(float rTime)
 
 // Saves all parameters of the controller.
 
-bool CAutoEnergy::Write(CLevelParserLine* line)
+bool CAutoPowerPlant::Write(CLevelParserLine* line)
 {
     if ( m_phase == AENP_STOP ||
          m_phase == AENP_WAIT )  return false;
@@ -595,12 +595,12 @@ bool CAutoEnergy::Write(CLevelParserLine* line)
 
 // Restores all parameters of the controller.
 
-bool CAutoEnergy::Read(CLevelParserLine* line)
+bool CAutoPowerPlant::Read(CLevelParserLine* line)
 {
     if ( !line->GetParam("aExist")->AsBool(false) )  return false;
 
     CAuto::Read(line);
-    m_phase = static_cast< AutoEnergyPhase >(line->GetParam("aPhase")->AsInt(AENP_WAIT));
+    m_phase = static_cast< AutoPowerPlantPhase >(line->GetParam("aPhase")->AsInt(AENP_WAIT));
     m_progress = line->GetParam("aProgress")->AsFloat(0.0f);
     m_speed = line->GetParam("aSpeed")->AsFloat(1.0f);
 

@@ -18,7 +18,7 @@
  */
 
 
-#include "object/auto/autosafe.h"
+#include "object/auto/autovault.h"
 
 #include "math/geometry.h"
 
@@ -40,7 +40,7 @@ const float OPEN_DELAY  = 8.0f; // duration of opening
 
 // Object's constructor.
 
-CAutoSafe::CAutoSafe(CObject* object) : CAuto(object)
+CAutoVault::CAutoVault(CObject* object) : CAuto(object)
 {
     int     i;
 
@@ -58,14 +58,14 @@ CAutoSafe::CAutoSafe(CObject* object) : CAuto(object)
 
 // Object's destructor.
 
-CAutoSafe::~CAutoSafe()
+CAutoVault::~CAutoVault()
 {
 }
 
 
 // Destroys the object.
 
-void CAutoSafe::DeleteObject(bool bAll)
+void CAutoVault::DeleteObject(bool bAll)
 {
     CObject* obj = SearchVehicle();
     if ( obj != nullptr )
@@ -86,7 +86,7 @@ void CAutoSafe::DeleteObject(bool bAll)
 
 // Initialize the object.
 
-void CAutoSafe::Init()
+void CAutoVault::Init()
 {
     m_time = 0.0f;
     m_timeVirus = 0.0f;
@@ -106,7 +106,7 @@ void CAutoSafe::Init()
 
 // Management of an event.
 
-bool CAutoSafe::EventProcess(const Event &event)
+bool CAutoVault::EventProcess(const Event &event)
 {
     CObject*    pObj;
     Math::Vector    pos, speed;
@@ -308,7 +308,7 @@ bool CAutoSafe::EventProcess(const Event &event)
 
 // Creates all the interface when the object is selected.
 
-bool CAutoSafe::CreateInterface(bool bSelect)
+bool CAutoVault::CreateInterface(bool bSelect)
 {
     Ui::CWindow*    pw;
     Math::Point     pos, ddim;
@@ -338,7 +338,7 @@ bool CAutoSafe::CreateInterface(bool bSelect)
 
 // Returns an error due the state of the automation.
 
-Error CAutoSafe::GetError()
+Error CAutoVault::GetError()
 {
     if ( m_object->GetVirusMode() )
     {
@@ -350,7 +350,7 @@ Error CAutoSafe::GetError()
 
 // Saves all parameters of the controller.
 
-bool CAutoSafe::Write(CLevelParserLine* line)
+bool CAutoVault::Write(CLevelParserLine* line)
 {
     if ( m_phase == ASAP_WAIT )  return false;
 
@@ -365,12 +365,12 @@ bool CAutoSafe::Write(CLevelParserLine* line)
 
 // Restores all parameters of the controller.
 
-bool CAutoSafe::Read(CLevelParserLine* line)
+bool CAutoVault::Read(CLevelParserLine* line)
 {
     if ( !line->GetParam("aExist")->AsBool(false) )  return false;
 
     CAuto::Read(line);
-    m_phase = static_cast< AutoSafePhase >(line->GetParam("aPhase")->AsInt(ASAP_WAIT));
+    m_phase = static_cast< AutoVaultPhase >(line->GetParam("aPhase")->AsInt(ASAP_WAIT));
     m_progress = line->GetParam("aProgress")->AsFloat(0.0f);
     m_speed = line->GetParam("aSpeed")->AsFloat(1.0f);
 
@@ -382,7 +382,7 @@ bool CAutoSafe::Read(CLevelParserLine* line)
 
 // Counts the number of keys
 
-int CAutoSafe::CountKeys()
+int CAutoVault::CountKeys()
 {
     Math::Vector cPos = m_object->GetPosition(0);
     float cAngle = m_object->GetAngleY(0);
@@ -460,7 +460,7 @@ int CAutoSafe::CountKeys()
 
 // Blocks all keys.
 
-void CAutoSafe::LockKeys()
+void CAutoVault::LockKeys()
 {
     Math::Vector cPos = m_object->GetPosition(0);
 
@@ -484,7 +484,7 @@ void CAutoSafe::LockKeys()
 
 // Sent down all the keys.
 
-void CAutoSafe::DownKeys(float progress)
+void CAutoVault::DownKeys(float progress)
 {
     Math::Vector cPos = m_object->GetPosition(0);
 
@@ -509,7 +509,7 @@ void CAutoSafe::DownKeys(float progress)
 
 // Delete all the keys.
 
-void CAutoSafe::DeleteKeys()
+void CAutoVault::DeleteKeys()
 {
     Math::Vector cPos = m_object->GetPosition(0);
 
@@ -541,7 +541,7 @@ void CAutoSafe::DeleteKeys()
 
 // Seeking a vehicle in the safe.
 
-CObject* CAutoSafe::SearchVehicle()
+CObject* CAutoVault::SearchVehicle()
 {
     Math::Vector cPos = m_object->GetPosition(0);
 

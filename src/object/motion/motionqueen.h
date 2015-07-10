@@ -17,52 +17,41 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// autopara.h
+// motionqueen.h
 
 #pragma once
 
 
-#include "object/auto/auto.h"
+#include "object/motion/motion.h"
 
 
 
-enum AutoParaPhase
-{
-    APAP_WAIT       = 1,
-    APAP_LIGHTNING  = 2,
-    APAP_CHARGE     = 3,
-};
-
-
-
-class CAutoPara : public CAuto
+class CMotionQueen : public CMotion
 {
 public:
-    CAutoPara(CObject* object);
-    ~CAutoPara();
+    CMotionQueen(CObject* object);
+    ~CMotionQueen();
 
-    void        DeleteObject(bool bAll=false);
-
-    void        Init();
-    bool        EventProcess(const Event &event);
-    Error       GetError();
-    void        StartLightning();
-
-    bool        CreateInterface(bool bSelect);
-
-    bool        Write(CLevelParserLine* line);
-    bool        Read(CLevelParserLine* line);
+    void    DeleteObject(bool bAll=false);
+    void    Create(Math::Vector pos, float angle, ObjectType type, float power, Gfx::COldModelManager* modelManager);
+    bool    EventProcess(const Event &event);
 
 protected:
-    void        ChargeObject(float rTime);
+    void    CreatePhysics();
+    bool    EventFrame(const Event &event);
 
 protected:
-    AutoParaPhase   m_phase;
-    float           m_progress;
-    float           m_speed;
-    float           m_timeVirus;
-    float           m_lastParticle;
-    Math::Vector        m_pos;
-    int             m_channelSound;
+    float       m_armMember;
+    float       m_armTimeAbs;
+    float       m_armTimeMarch;
+    float       m_armTimeAction;
+    short       m_armAngles[3*3*3*3*10];
+    int         m_armTimeIndex;
+    int         m_armPartIndex;
+    int         m_armMemberIndex;
+    int         m_armLastAction;
+    int         m_specAction;
+    float       m_specTime;
+    bool        m_bArmStop;
 };
 

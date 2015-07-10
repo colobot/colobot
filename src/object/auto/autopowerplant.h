@@ -17,52 +17,58 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// autohuston.h
+// autopowerplant.h
 
 #pragma once
 
 
 #include "object/auto/auto.h"
-#include "graphics/engine/particle.h"
 
 
 
-struct HustonLens
+enum AutoPowerPlantPhase
 {
-    int                 parti;
-    Gfx::ParticleType   type;
-    Math::Vector        pos;
-    float               dim;
-    float               total;
-    float               off;
+    AENP_STOP       = 1,
+    AENP_WAIT       = 2,
+    AENP_BLITZ      = 3,
+    AENP_CREATE     = 4,
+    AENP_SMOKE      = 5,
 };
 
 
-const int HUSTONMAXLENS = 20;
 
-
-class CAutoHuston : public CAuto
+class CAutoPowerPlant : public CAuto
 {
 public:
-    CAutoHuston(CObject* object);
-    ~CAutoHuston();
+    CAutoPowerPlant(CObject* object);
+    ~CAutoPowerPlant();
 
     void        DeleteObject(bool bAll=false);
 
     void        Init();
-    void        Start(int param);
     bool        EventProcess(const Event &event);
-    bool        Abort();
     Error       GetError();
 
     bool        CreateInterface(bool bSelect);
 
-protected:
+    bool        Write(CLevelParserLine* line);
+    bool        Read(CLevelParserLine* line);
 
 protected:
-    float       m_progress;
-    float       m_speed;
-    HustonLens  m_lens[HUSTONMAXLENS];
-    int         m_lensTotal;
+    void        UpdateInterface(float rTime);
+
+    CObject*    SearchMetal();
+    bool        SearchVehicle();
+    void        CreatePower();
+    CObject*    SearchPower();
+
+protected:
+    AutoPowerPlantPhase     m_phase;
+    float               m_progress;
+    float               m_speed;
+    float               m_timeVirus;
+    float               m_lastUpdateTime;
+    float               m_lastParticle;
+    int                 m_partiSphere;
 };
 

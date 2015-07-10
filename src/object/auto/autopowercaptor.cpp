@@ -18,7 +18,7 @@
  */
 
 
-#include "object/auto/autopara.h"
+#include "object/auto/autopowercaptor.h"
 
 
 #include "math/geometry.h"
@@ -38,7 +38,7 @@
 
 // Object's constructor.
 
-CAutoPara::CAutoPara(CObject* object) : CAuto(object)
+CAutoPowerCaptor::CAutoPowerCaptor(CObject* object) : CAuto(object)
 {
     m_channelSound = -1;
     Init();
@@ -46,14 +46,14 @@ CAutoPara::CAutoPara(CObject* object) : CAuto(object)
 
 // Object's destructor.
 
-CAutoPara::~CAutoPara()
+CAutoPowerCaptor::~CAutoPowerCaptor()
 {
 }
 
 
 // Destroys the object.
 
-void CAutoPara::DeleteObject(bool bAll)
+void CAutoPowerCaptor::DeleteObject(bool bAll)
 {
     if ( m_channelSound != -1 )
     {
@@ -68,7 +68,7 @@ void CAutoPara::DeleteObject(bool bAll)
 
 // Initialize the object.
 
-void CAutoPara::Init()
+void CAutoPowerCaptor::Init()
 {
     Math::Matrix*   mat;
 
@@ -89,7 +89,7 @@ void CAutoPara::Init()
 
 // Reception of lightning.
 
-void CAutoPara::StartLightning()
+void CAutoPowerCaptor::StartLightning()
 {
     m_phase    = APAP_LIGHTNING;
     m_progress = 0.0f;
@@ -99,7 +99,7 @@ void CAutoPara::StartLightning()
 
 // Management of an event.
 
-bool CAutoPara::EventProcess(const Event &event)
+bool CAutoPowerCaptor::EventProcess(const Event &event)
 {
     Math::Vector    pos, speed;
     Math::Point     dim;
@@ -192,7 +192,7 @@ bool CAutoPara::EventProcess(const Event &event)
 
 // Creates all the interface when the object is selected.
 
-bool CAutoPara::CreateInterface(bool bSelect)
+bool CAutoPowerCaptor::CreateInterface(bool bSelect)
 {
     Ui::CWindow*    pw;
     Math::Point     pos, ddim;
@@ -228,7 +228,7 @@ bool CAutoPara::CreateInterface(bool bSelect)
 
 // Returns an error due the state of the automation.
 
-Error CAutoPara::GetError()
+Error CAutoPowerCaptor::GetError()
 {
     if ( m_object->GetVirusMode() )
     {
@@ -240,7 +240,7 @@ Error CAutoPara::GetError()
 
 // Load all objects under the lightning rod.
 
-void CAutoPara::ChargeObject(float rTime)
+void CAutoPowerCaptor::ChargeObject(float rTime)
 {
     Math::Vector sPos = m_object->GetPosition(0);
 
@@ -281,7 +281,7 @@ void CAutoPara::ChargeObject(float rTime)
 
 // Saves all parameters of the controller.
 
-bool CAutoPara::Write(CLevelParserLine* line)
+bool CAutoPowerCaptor::Write(CLevelParserLine* line)
 {
     if ( m_phase == APAP_WAIT )  return false;
 
@@ -296,12 +296,12 @@ bool CAutoPara::Write(CLevelParserLine* line)
 
 // Restores all parameters of the controller.
 
-bool CAutoPara::Read(CLevelParserLine* line)
+bool CAutoPowerCaptor::Read(CLevelParserLine* line)
 {
     if ( !line->GetParam("aExist")->AsBool(false) )  return false;
 
     CAuto::Read(line);
-    m_phase = static_cast< AutoParaPhase >(line->GetParam("aPhase")->AsInt(APAP_WAIT));
+    m_phase = static_cast< AutoPowerCaptorPhase >(line->GetParam("aPhase")->AsInt(APAP_WAIT));
     m_progress = line->GetParam("aProgress")->AsFloat(0.0f);
     m_speed = line->GetParam("aSpeed")->AsFloat(1.0f);
 

@@ -17,7 +17,7 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// autoenergy.h
+// autopowercaptor.h
 
 #pragma once
 
@@ -26,28 +26,27 @@
 
 
 
-enum AutoEnergyPhase
+enum AutoPowerCaptorPhase
 {
-    AENP_STOP       = 1,
-    AENP_WAIT       = 2,
-    AENP_BLITZ      = 3,
-    AENP_CREATE     = 4,
-    AENP_SMOKE      = 5,
+    APAP_WAIT       = 1,
+    APAP_LIGHTNING  = 2,
+    APAP_CHARGE     = 3,
 };
 
 
 
-class CAutoEnergy : public CAuto
+class CAutoPowerCaptor : public CAuto
 {
 public:
-    CAutoEnergy(CObject* object);
-    ~CAutoEnergy();
+    CAutoPowerCaptor(CObject* object);
+    ~CAutoPowerCaptor();
 
     void        DeleteObject(bool bAll=false);
 
     void        Init();
     bool        EventProcess(const Event &event);
     Error       GetError();
+    void        StartLightning();
 
     bool        CreateInterface(bool bSelect);
 
@@ -55,20 +54,15 @@ public:
     bool        Read(CLevelParserLine* line);
 
 protected:
-    void        UpdateInterface(float rTime);
-
-    CObject*    SearchMetal();
-    bool        SearchVehicle();
-    void        CreatePower();
-    CObject*    SearchPower();
+    void        ChargeObject(float rTime);
 
 protected:
-    AutoEnergyPhase     m_phase;
-    float               m_progress;
-    float               m_speed;
-    float               m_timeVirus;
-    float               m_lastUpdateTime;
-    float               m_lastParticle;
-    int                 m_partiSphere;
+    AutoPowerCaptorPhase   m_phase;
+    float           m_progress;
+    float           m_speed;
+    float           m_timeVirus;
+    float           m_lastParticle;
+    Math::Vector        m_pos;
+    int             m_channelSound;
 };
 

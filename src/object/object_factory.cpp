@@ -33,29 +33,29 @@
 #include "object/auto/autoderrick.h"
 #include "object/auto/autodestroyer.h"
 #include "object/auto/autoegg.h"
-#include "object/auto/autoenergy.h"
+#include "object/auto/autopowerplant.h"
 #include "object/auto/autofactory.h"
 #include "object/auto/autoflag.h"
-#include "object/auto/autohuston.h"
+#include "object/auto/autohouston.h"
 #include "object/auto/autojostle.h"
 #include "object/auto/autolabo.h"
 #include "object/auto/automush.h"
 #include "object/auto/autonest.h"
-#include "object/auto/autonuclear.h"
-#include "object/auto/autopara.h"
+#include "object/auto/autonuclearplant.h"
+#include "object/auto/autopowercaptor.h"
 #include "object/auto/autoportico.h"
 #include "object/auto/autoradar.h"
 #include "object/auto/autorepair.h"
 #include "object/auto/autoresearch.h"
 #include "object/auto/autoroot.h"
-#include "object/auto/autosafe.h"
-#include "object/auto/autostation.h"
+#include "object/auto/autovault.h"
+#include "object/auto/autopowerstation.h"
 #include "object/auto/autotower.h"
 #include "object/motion/motionant.h"
 #include "object/motion/motionbee.h"
-#include "object/motion/motiondummy.h"
+#include "object/motion/motionlevelcontroller.h"
 #include "object/motion/motionhuman.h"
-#include "object/motion/motionmother.h"
+#include "object/motion/motionqueen.h"
 #include "object/motion/motionspider.h"
 #include "object/motion/motiontoto.h"
 #include "object/motion/motionvehicle.h"
@@ -2627,7 +2627,7 @@ CObjectUPtr CObjectFactory::CreateVehicle(const ObjectCreateParams& params)
     }
     else if ( type == OBJECT_CONTROLLER )
     {
-        motion.reset(new CMotionDummy(obj.get())); //dummy object
+        motion.reset(new CMotionLevelController(obj.get())); //dummy object
     }
     else
     {
@@ -2668,7 +2668,7 @@ CObjectUPtr CObjectFactory::CreateInsect(const ObjectCreateParams& params)
     std::unique_ptr<CMotion> motion;
     if ( type == OBJECT_MOTHER )
     {
-        motion.reset(new CMotionMother(obj.get()));
+        motion.reset(new CMotionQueen(obj.get()));
     }
     if ( type == OBJECT_ANT )
     {
@@ -2738,7 +2738,7 @@ void CObjectFactory::AddObjectAuto(COldObject* obj)
     }
     if ( type == OBJECT_STATION )
     {
-        objAuto.reset(new CAutoStation(obj));
+        objAuto.reset(new CAutoPowerStation(obj));
     }
     if ( type == OBJECT_CONVERT )
     {
@@ -2758,7 +2758,7 @@ void CObjectFactory::AddObjectAuto(COldObject* obj)
     }
     if ( type == OBJECT_ENERGY )
     {
-        objAuto.reset(new CAutoEnergy(obj));
+        objAuto.reset(new CAutoPowerPlant(obj));
     }
     if ( type == OBJECT_LABO )
     {
@@ -2766,19 +2766,19 @@ void CObjectFactory::AddObjectAuto(COldObject* obj)
     }
     if ( type == OBJECT_NUCLEAR )
     {
-        objAuto.reset(new CAutoNuclear(obj));
+        objAuto.reset(new CAutoNuclearPlant(obj));
     }
     if ( type == OBJECT_PARA )
     {
-        objAuto.reset(new CAutoPara(obj));
+        objAuto.reset(new CAutoPowerCaptor(obj));
     }
     if ( type == OBJECT_SAFE )
     {
-        objAuto.reset(new CAutoSafe(obj));
+        objAuto.reset(new CAutoVault(obj));
     }
     if ( type == OBJECT_HUSTON )
     {
-        objAuto.reset(new CAutoHuston(obj));
+        objAuto.reset(new CAutoHouston(obj));
     }
     if ( type == OBJECT_EGG )
     {
