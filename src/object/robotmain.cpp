@@ -1396,21 +1396,10 @@ void CRobotMain::ExecuteCmd(char *cmd)
         return;
     }
 
-    if (strcmp(cmd, "speed4") == 0)
+    float speed;
+    if (sscanf(cmd, "speed %f", &speed) > 0)
     {
-        SetSpeed(4.0f);
-        UpdateSpeedLabel();
-        return;
-    }
-    if (strcmp(cmd, "speed8") == 0)
-    {
-        SetSpeed(8.0f);
-        UpdateSpeedLabel();
-        return;
-    }
-    if (strcmp(cmd, "crazy") == 0)
-    {
-        SetSpeed(1000.0f);
+        SetSpeed(speed);
         UpdateSpeedLabel();
         return;
     }
