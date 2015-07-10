@@ -21,6 +21,7 @@
 
 
 #include "common/logger.h"
+#include "common/profile.h"
 #include "common/restext.h"
 
 #include "graphics/engine/engine.h"
@@ -269,32 +270,6 @@ InputSlot CInput::FindBinding(unsigned int key)
     return INPUT_SLOT_MAX;
 }
 
-std::string CInput::SaveKeyBindings()
-{
-    std::stringstream key;
-    for (int i = 0; i < INPUT_SLOT_MAX; i++)
-    {
-        InputBinding b = GetInputBinding(static_cast<InputSlot>(i));
-        
-        key << b.primary << " ";
-        key << b.secondary << "  ";
-    }
-    return key.str();
-}
-
-void CInput::LoadKeyBindings(std::string keys)
-{
-    std::stringstream skey;
-    skey.str(keys);
-    for (int i = 0; i < INPUT_SLOT_MAX; i++)
-    {
-        InputBinding b;
-        skey >> b.primary;
-        skey >> b.secondary;
-        SetInputBinding(static_cast<InputSlot>(i), b);
-    }
-}
-
 static std::map<InputSlot, std::string> keyTable =
 {
     { INPUT_SLOT_LEFT,     "left"    },
@@ -322,7 +297,43 @@ static std::map<InputSlot, std::string> keyTable =
     { INPUT_SLOT_SPEED40,  "speed40" },
     { INPUT_SLOT_CAMERA_UP,   "camup"   },
     { INPUT_SLOT_CAMERA_DOWN, "camdown" },
+    { INPUT_SLOT_PAUSE,    "pause" },
 };
+
+void CInput::SaveKeyBindings()
+{
+    std::stringstream key;
+    for (int i = 0; i < INPUT_SLOT_MAX; i++)
+    {
+        InputBinding b = GetInputBinding(static_cast<InputSlot>(i));
+ 
+        key.clear();
+        key.str("");
+        key << b.primary << " " << b.secondary;
+
+        CProfile::GetInstancePointer()->SetStringProperty("Keybindings", keyTable[static_cast<InputSlot>(i)], key.str());
+    }
+}
+
+void CInput::LoadKeyBindings()
+{
+    std::stringstream skey;
+    std::string keys;
+    for (int i = 0; i < INPUT_SLOT_MAX; i++)
+    {
+        InputBinding b;
+
+        if (!CProfile::GetInstancePointer()->GetStringProperty("Keybindings", keyTable[static_cast<InputSlot>(i)], keys))
+            continue;
+        skey.clear();
+        skey.str(keys);
+
+        skey >> b.primary;
+        skey >> b.secondary;
+
+        SetInputBinding(static_cast<InputSlot>(i), b);
+    }
+}
 
 InputSlot CInput::SearchKeyById(std::string id)
 {

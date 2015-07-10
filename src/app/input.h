@@ -121,10 +121,10 @@ public:
     //! Get binding slot for given key
     InputSlot   FindBinding(unsigned int key);
     
-    //! Saving/loading key bindings to string (for storing in colobot.ini)
+    //! Saving/loading key bindings to colobot.ini
     //@{
-    std::string SaveKeyBindings();
-    void        LoadKeyBindings(std::string keys);
+    void        SaveKeyBindings();
+    void        LoadKeyBindings();
     //@}
     
     //! Seeks a InputSlot by id. Returns INPUT_SLOT_MAX if not found

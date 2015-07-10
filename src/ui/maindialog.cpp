@@ -5018,7 +5018,7 @@ void CMainDialog::SetupMemorize()
         }
     }
 
-    GetProfile().SetStringProperty("Setup", "KeyMap", CInput::GetInstancePointer()->SaveKeyBindings());
+    CInput::GetInstancePointer()->SaveKeyBindings();
 
     GetProfile().SetIntProperty("Setup", "DeleteGamer", m_bDeleteGamer);
 }
@@ -5236,10 +5236,7 @@ void CMainDialog::SetupRecall()
         m_engine->SetEditIndentValue(iValue);
     }
 
-    if (GetProfile().GetStringProperty("Setup", "KeyMap", key))
-    {
-        CInput::GetInstancePointer()->LoadKeyBindings(key);
-    }
+    CInput::GetInstancePointer()->LoadKeyBindings();
 
     if ( GetProfile().GetIntProperty("Setup", "DeleteGamer", iValue) )
     {
