@@ -27,6 +27,7 @@
 #include "object/object.h"
 
 #include "object/interface/interactive_object.h"
+#include "object/interface/jostleable_object.h"
 #include "object/interface/programmable_object.h"
 #include "object/interface/transportable_object.h"
 
@@ -56,7 +57,8 @@ struct ObjectPart
 class COldObject : public CObject,
                    public CInteractiveObject,
                    public CTransportableObject,
-                   public CProgrammableObject
+                   public CProgrammableObject,
+                   public CJostleableObject
 {
     friend class CObjectFactory;
     friend class CObjectManager;
@@ -74,7 +76,7 @@ protected:
     void        SetCapacity(float capacity);
     float       GetProxyDistance();
     void        SetOption(int option);
-    void        SetJostlingSphere(Math::Vector pos, float radius);
+    void        SetJostlingSphere(const Math::Sphere& sphere);
 
 
 public:
@@ -108,7 +110,6 @@ public:
 
     void        SetGlobalSphere(Math::Vector pos, float radius) override;
     void        GetGlobalSphere(Math::Vector &pos, float &radius) override;
-    void        GetJostlingSphere(Math::Vector &pos, float &radius) override;
     void        SetShieldRadius(float radius) override;
     float       GetShieldRadius() override;
 
@@ -210,6 +211,7 @@ public:
     void        SetTeam(int team) override;
     int         GetTeam() override;
 
+    Math::Sphere GetJostlingSphere() const override;
     bool        JostleObject(float force) override;
 
     void        StartDetectEffect(CObject *target, bool bFound) override;
@@ -392,8 +394,7 @@ protected:
 
     Math::Vector    m_globalSpherePos;
     float       m_globalSphereRadius;
-    Math::Vector    m_jostlingSpherePos;
-    float       m_jostlingSphereRadius;
+    Math::Sphere m_jostlingSphere;
     float       m_shieldRadius;
 
     int         m_totalPart;

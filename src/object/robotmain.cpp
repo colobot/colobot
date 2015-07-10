@@ -5506,7 +5506,7 @@ Error CRobotMain::CheckEndMission(bool frame)
                     {
                         CLogger::GetInstancePointer()->Info("Team %d lost\n", team);
                         m_displayText->DisplayText(("<<< Team "+boost::lexical_cast<std::string>(team)+" lost! >>>").c_str(), Math::Vector(0.0f,0.0f,0.0f), 15.0f, 60.0f, 10.0f, Ui::TT_ERROR);
-                        
+
                         m_displayText->SetEnable(false); // To prevent "bot destroyed" messages
                         m_objMan->DestroyTeam(team);
                         m_displayText->SetEnable(true);

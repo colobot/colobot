@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2015, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2014, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsiteс.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -17,26 +17,28 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-/**
- * \file object/object_interface_type.h
- * \brief ObjectInterfaceType enum
- */
-
 #pragma once
 
-#include <array>
+#include "object/object_interface_type.h"
+
+#include "math/sphere.h"
+
+struct Event;
 
 /**
- * \enum ObjectInterfaceType
- * \brief Type of interface that an object implements
+ * \class CJostleableObject
+ * \brief Interface for objects that can be jostled
  */
-enum class ObjectInterfaceType
+class CJostleableObject
 {
-    Interactive, //!< interactive objects can process events from event loop
-    Transportable, //!< objects that can be carried by robots or astronaut
-    Programmable, //!< objects that can be programmed in CBOT
-    Jostleable, //!< object that can be jostled
-    Max //!< maximum value (for getting number of items in enum)
-};
+public:
+    explicit CJostleableObject(ObjectInterfaceTypes& types)
+    {
+        types[static_cast<int>(ObjectInterfaceType::Jostleable)] = true;
+    }
+    virtual ~CJostleableObject()
+    {}
 
-using ObjectInterfaceTypes = std::array<bool, static_cast<size_t>(ObjectInterfaceType::Max)>;
+    virtual Math::Sphere GetJostlingSphere() const = 0;
+    virtual bool JostleObject(float force) = 0;
+};

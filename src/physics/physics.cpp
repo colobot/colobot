@@ -43,6 +43,7 @@
 #include "object/task/task.h"
 #include "object/level/parserline.h"
 #include "object/level/parserparam.h"
+#include "object/interface/jostleable_object.h"
 #include "object/interface/transportable_object.h"
 
 
@@ -2549,12 +2550,9 @@ int CPhysics::ObjectAdapt(const Math::Vector &pos, const Math::Vector &angle)
         if ( iType == OBJECT_MOTHER && oType == OBJECT_EGG    )  continue;
         if ( iType == OBJECT_EGG    && oType == OBJECT_MOTHER )  continue;
 
-        Math::Vector jostlingSpherePos;
-        float jostlingSphereRadius = 0.0f;
-        pObj->GetJostlingSphere(jostlingSpherePos, jostlingSphereRadius);
-        if ( jostlingSphereRadius > 0.0f )
+        if (pObj->Implements(ObjectInterfaceType::Jostleable))
         {
-            JostleObject(pObj, iPos, iRad, jostlingSpherePos, jostlingSphereRadius);
+            JostleObject(dynamic_cast<CJostleableObject*>(pObj), iPos, iRad);
         }
 
         if ( iType == OBJECT_MOTHER ||
@@ -2699,23 +2697,21 @@ int CPhysics::ObjectAdapt(const Math::Vector &pos, const Math::Vector &angle)
 
 // Shakes an object.
 
-bool CPhysics::JostleObject(CObject* pObj, Math::Vector iPos, float iRad,
-                            Math::Vector oPos, float oRad)
+bool CPhysics::JostleObject(CJostleableObject* pObj, Math::Vector iPos, float iRad)
 {
-    Math::Vector    speed;
-    float       distance, force, d, f;
+    Math::Sphere jostlingSphere = pObj->GetJostlingSphere();
 
-    distance = Math::Distance(oPos, iPos);
-    if ( distance >= iRad+oRad )  return false;
+    float distance = Math::Distance(jostlingSphere.pos, iPos);
+    if ( distance >= iRad+jostlingSphere.radius)  return false;
 
-    d = (iRad+oRad)/2.0f;
-    f = (distance-d)/d;  // 0 = off, 1 = near
+    float d = (iRad+jostlingSphere.radius)/2.0f;
+    float f = (distance-d)/d;  // 0 = off, 1 = near
     if ( f < 0.0f )  f = 0.0f;
     if ( f > 1.0f )  f = 1.0f;
 
-    speed = m_linMotion.realSpeed;
+    Math::Vector speed = m_linMotion.realSpeed;
     speed.y = 0.0f;
-    force = speed.Length()*f*0.05f;
+    float force = speed.Length()*f*0.05f;
     if ( force > 1.0f )  force = 1.0f;
 
     if ( m_soundTimeJostle >= 0.20f )
@@ -2731,11 +2727,10 @@ bool CPhysics::JostleObject(CObject* pObj, Math::Vector iPos, float iRad,
 
 bool CPhysics::JostleObject(CObject* pObj, float force)
 {
-    Math::Vector    oPos;
-    float       oRad;
+    if (! pObj->Implements(ObjectInterfaceType::Jostleable))
+        return false;
 
-    pObj->GetJostlingSphere(oPos, oRad);
-    if ( oRad <= 0.0f )  return false;
+    CJostleableObject* jostleableObject = dynamic_cast<CJostleableObject*>(pObj);
 
     if ( m_soundTimeJostle >= 0.20f )
     {
@@ -2743,7 +2738,7 @@ bool CPhysics::JostleObject(CObject* pObj, float force)
         m_sound->Play(SOUND_JOSTLE, pObj->GetPosition(0), force);
     }
 
-    return pObj->JostleObject(force);
+    return jostleableObject->JostleObject(force);
 }
 
 // Effects of the explosion on the object buffers.

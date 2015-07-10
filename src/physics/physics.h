@@ -37,6 +37,7 @@ class CBrain;
 class CMotion;
 class CSoundInterface;
 class CLevelParserLine;
+class CJostleableObject;
 
 namespace Gfx {
 class CCamera;
@@ -192,7 +193,7 @@ protected:
     void        FloorAdapt(float aTime, float rTime, Math::Vector &pos, Math::Vector &angle);
     void        FloorAngle(const Math::Vector &pos, Math::Vector &angle);
     int         ObjectAdapt(const Math::Vector &pos, const Math::Vector &angle);
-    bool        JostleObject(CObject* pObj, Math::Vector iPos, float iRad, Math::Vector oPos, float oRad);
+    bool        JostleObject(CJostleableObject* pObj, Math::Vector iPos, float iRad);
     bool        JostleObject(CObject* pObj, float force);
     bool        ExploOther(ObjectType iType, CObject *pObj, ObjectType oType, float force);
     int         ExploHimself(ObjectType iType, ObjectType oType, float force);

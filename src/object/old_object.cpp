@@ -190,9 +190,12 @@ COldObject::COldObject(int id)
     , CInteractiveObject(m_implementedInterfaces)
     , CTransportableObject(m_implementedInterfaces)
     , CProgrammableObject(m_implementedInterfaces)
+    , CJostleableObject(m_implementedInterfaces)
 {
     // A bit of a hack since CBrain is set externally in SetBrain()
     m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Programmable)] = false;
+    // Another hack
+    m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Jostleable)] = false;
 
     m_sound       = CApplication::GetInstancePointer()->GetSound();
     m_engine      = Gfx::CEngine::GetInstancePointer();
@@ -290,8 +293,6 @@ COldObject::COldObject(int id)
     DeleteAllCrashSpheres();
     m_globalSpherePos = Math::Vector(0.0f, 0.0f, 0.0f);
     m_globalSphereRadius = 0.0f;
-    m_jostlingSpherePos = Math::Vector(0.0f, 0.0f, 0.0f);
-    m_jostlingSphereRadius = 0.0f;
 
     CBotClass* bc = CBotClass::Find("object");
     if ( bc != 0 )
@@ -1103,18 +1104,19 @@ void COldObject::GetGlobalSphere(Math::Vector &pos, float &radius)
 
 // Specifies the sphere of jostling, relative to the object.
 
-void COldObject::SetJostlingSphere(Math::Vector pos, float radius)
+void COldObject::SetJostlingSphere(const Math::Sphere& jostlingSphere)
 {
-    m_jostlingSpherePos    = pos;
-    m_jostlingSphereRadius = radius;
+    m_jostlingSphere = jostlingSphere;
+    m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Jostleable)] = true;
 }
 
 // Specifies the sphere of jostling, in the world.
 
-void COldObject::GetJostlingSphere(Math::Vector &pos, float &radius)
+Math::Sphere COldObject::GetJostlingSphere() const
 {
-    pos = Math::Transform(m_objectPart[0].matWorld, m_jostlingSpherePos);
-    radius = m_jostlingSphereRadius;
+    Math::Sphere transformedJostlingSphere = m_jostlingSphere;
+    transformedJostlingSphere.pos = Math::Transform(m_objectPart[0].matWorld, transformedJostlingSphere.pos);
+    return transformedJostlingSphere;
 }
 
 

@@ -100,7 +100,6 @@ public:
 
     virtual void        SetGlobalSphere(Math::Vector pos, float radius) = 0;
     virtual void        GetGlobalSphere(Math::Vector &pos, float &radius) = 0;
-    virtual void        GetJostlingSphere(Math::Vector &pos, float &radius) = 0;
     virtual void        SetShieldRadius(float radius) = 0;
     virtual float       GetShieldRadius() = 0;
 
@@ -198,8 +197,6 @@ public:
 
     virtual void        SetTeam(int team) = 0;
     virtual int         GetTeam() = 0;
-
-    virtual bool        JostleObject(float force) = 0;
 
     virtual void        StartDetectEffect(CObject *target, bool bFound) = 0;
 

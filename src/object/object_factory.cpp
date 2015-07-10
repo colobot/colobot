@@ -1228,7 +1228,7 @@ CObjectUPtr CObjectFactory::CreateFlag(const ObjectCreateParams& params)
         else           obj->SetPosition(1+i, Math::Vector(0.79f, 0.0f, 0.0f));
     }
 
-    obj->SetJostlingSphere(Math::Vector(0.0f, 4.0f, 0.0f), 1.0f);
+    obj->SetJostlingSphere(Math::Sphere(Math::Vector(0.0f, 4.0f, 0.0f), 1.0f));
     obj->CreateShadowCircle(2.0f, 0.3f);
 
     obj->SetFloorHeight(0.0f);
@@ -1373,7 +1373,7 @@ CObjectUPtr CObjectFactory::CreatePlant(const ObjectCreateParams& params)
 
         obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 0.0f, 0.0f), 4.0f, SOUND_BOUM, 0.10f));
         obj->SetGlobalSphere(Math::Vector(0.0f, 3.0f, 0.0f), 6.0f);
-        obj->SetJostlingSphere(Math::Vector(0.0f, 0.0f, 0.0f), 8.0f);
+        obj->SetJostlingSphere(Math::Sphere(Math::Vector(0.0f, 0.0f, 0.0f), 8.0f));
 
         obj->CreateShadowCircle(8.0f, 0.5f);
     }
@@ -1392,7 +1392,7 @@ CObjectUPtr CObjectFactory::CreatePlant(const ObjectCreateParams& params)
         obj->SetAngleY(0, angle);
 
 //?     obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 0.0f, 0.0f), 3.0f, SOUND_BOUM, 0.10f));
-        obj->SetJostlingSphere(Math::Vector(0.0f, 0.0f, 0.0f), 4.0f);
+        obj->SetJostlingSphere(Math::Sphere(Math::Vector(0.0f, 0.0f, 0.0f), 4.0f));
 
         obj->CreateShadowCircle(5.0f, 0.3f);
     }
@@ -1433,7 +1433,7 @@ CObjectUPtr CObjectFactory::CreatePlant(const ObjectCreateParams& params)
 
         obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 12.0f, 0.0f), 5.0f, SOUND_BOUM, 0.10f));
         obj->SetGlobalSphere(Math::Vector(0.0f, 6.0f, 0.0f), 6.0f);
-        obj->SetJostlingSphere(Math::Vector(0.0f, 4.0f, 0.0f), 8.0f);
+        obj->SetJostlingSphere(Math::Sphere(Math::Vector(0.0f, 4.0f, 0.0f), 8.0f));
 
         obj->CreateShadowCircle(8.0f, 0.3f);
     }
@@ -1460,7 +1460,7 @@ CObjectUPtr CObjectFactory::CreatePlant(const ObjectCreateParams& params)
             obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 0.0f, 0.0f), 4.0f, SOUND_BOUM, 0.10f));
             obj->SetGlobalSphere(Math::Vector(0.0f, 3.0f, 0.0f), 6.0f);
         }
-        obj->SetJostlingSphere(Math::Vector(0.0f, 0.0f, 0.0f), 8.0f);
+        obj->SetJostlingSphere(Math::Sphere(Math::Vector(0.0f, 0.0f, 0.0f), 8.0f));
 
         obj->CreateShadowCircle(8.0f, 0.5f);
     }
@@ -1604,7 +1604,7 @@ CObjectUPtr CObjectFactory::CreateMushroom(const ObjectCreateParams& params)
 
         obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 4.0f, 0.0f), 3.0f, SOUND_BOUM, 0.10f));
         obj->SetGlobalSphere(Math::Vector(0.0f, 3.0f, 0.0f), 5.5f);
-        obj->SetJostlingSphere(Math::Vector(0.0f, 3.0f, 0.0f), 5.5f);
+        obj->SetJostlingSphere(Math::Sphere(Math::Vector(0.0f, 3.0f, 0.0f), 5.5f));
 
         obj->CreateShadowCircle(6.0f, 0.5f);
     }
@@ -1620,7 +1620,7 @@ CObjectUPtr CObjectFactory::CreateMushroom(const ObjectCreateParams& params)
 
         obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 5.0f, 0.0f), 3.0f, SOUND_BOUM, 0.10f));
         obj->SetGlobalSphere(Math::Vector(0.0f, 4.0f, 0.0f), 5.5f);
-        obj->SetJostlingSphere(Math::Vector(0.0f, 4.0f, 0.0f), 5.5f);
+        obj->SetJostlingSphere(Math::Sphere(Math::Vector(0.0f, 4.0f, 0.0f), 5.5f));
 
         obj->CreateShadowCircle(5.0f, 0.5f);
     }
@@ -2495,7 +2495,7 @@ CObjectUPtr CObjectFactory::CreateApollo(const ObjectCreateParams& params)
         obj->SetAngleY(0, angle);
         obj->SetFloorHeight(0.0f);
 
-        obj->SetJostlingSphere(Math::Vector(0.0f, 4.0f, 0.0f), 1.0f);
+        obj->SetJostlingSphere(Math::Sphere(Math::Vector(0.0f, 4.0f, 0.0f), 1.0f));
         obj->CreateShadowCircle(2.0f, 0.3f);
     }
 
