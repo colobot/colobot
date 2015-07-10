@@ -26,6 +26,7 @@
 
 #include "object/brain.h"
 #include "object/object_manager.h"
+#include "object/interface/programmable_object.h"
 #include "object/interface/transportable_object.h"
 #include "object/level/parserline.h"
 #include "object/level/parserparam.h"
@@ -182,9 +183,11 @@ bool CAutoEgg::EventProcess(const Event &event)
         CObject* alien = CObjectManager::GetInstancePointer()->CreateObject(pos, angle, m_type);
 
         alien->SetActivity(false);
-        CBrain* brain = alien->GetBrain();
-        if(brain != nullptr)
+
+        if (alien->Implements(ObjectInterfaceType::Programmable))
         {
+            CBrain* brain = dynamic_cast<CProgrammableObject*>(alien)->GetBrain();
+
             Program* program = brain->AddProgram();
             brain->ReadProgram(program, m_string);
             brain->RunProgram(program);

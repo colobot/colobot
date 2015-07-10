@@ -273,7 +273,6 @@ public:
     virtual CScript*    GetRunScript() = 0;
     virtual CBotVar*    GetBotVar() = 0;
     virtual CPhysics*   GetPhysics() = 0;
-    virtual CBrain*     GetBrain() = 0;
     virtual CMotion*    GetMotion() = 0;
     virtual CAuto*      GetAuto() = 0;
 

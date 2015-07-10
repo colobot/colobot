@@ -189,7 +189,11 @@ COldObject::COldObject(int id)
     : CObject(id, OBJECT_NULL)
     , CInteractiveObject(m_implementedInterfaces)
     , CTransportableObject(m_implementedInterfaces)
+    , CProgrammableObject(m_implementedInterfaces)
 {
+    // A bit of a hack since CBrain is set externally in SetBrain()
+    m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Programmable)] = false;
+
     m_sound       = CApplication::GetInstancePointer()->GetSound();
     m_engine      = Gfx::CEngine::GetInstancePointer();
     m_lightMan    = m_engine->GetLightManager();
@@ -450,6 +454,8 @@ void COldObject::DeleteObject(bool bAll)
 
 void COldObject::Simplify()
 {
+    m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Programmable)] = false;
+
     if ( m_brain != nullptr )
     {
         m_brain->StopProgram();
@@ -3410,6 +3416,7 @@ CBrain* COldObject::GetBrain()
 
 void COldObject::SetBrain(std::unique_ptr<CBrain> brain)
 {
+    m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Programmable)] = true;
     m_brain = std::move(brain);
 }
 

@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2015, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2014, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsiteс.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -17,25 +17,32 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-/**
- * \file object/object_interface_type.h
- * \brief ObjectInterfaceType enum
- */
-
 #pragma once
 
-#include <array>
+#include "object/object_interface_type.h"
+
+class CBrain;
 
 /**
- * \enum ObjectInterfaceType
- * \brief Type of interface that an object implements
+ * \class CProgrammableObject
+ * \brief Interface for programmable objects
+ *
+ * Programmable objects can be programmed in CBOT
  */
-enum class ObjectInterfaceType
+class CProgrammableObject
 {
-    Interactive, //!< interactive objects can process events from event loop
-    Transportable, //!< objects that can be carried by robots or astronaut
-    Programmable, //!< objects that can be programmed in CBOT
-    Max //!< maximum value (for getting number of items in enum)
-};
+public:
+    explicit CProgrammableObject(ObjectInterfaceTypes& types)
+    {
+        types[static_cast<int>(ObjectInterfaceType::Programmable)] = true;
+    }
+    virtual ~CProgrammableObject()
+    {}
 
-using ObjectInterfaceTypes = std::array<bool, static_cast<size_t>(ObjectInterfaceType::Max)>;
+    //! Returns CBrain
+    /** If only the object implements ObjectInterfaceType::Programmable,
+     *  returned object will always be non-null*/
+    virtual CBrain* GetBrain() = 0;
+
+    // TODO: CBrain interface can actually be moved here
+};

@@ -27,6 +27,7 @@
 #include "object/object.h"
 
 #include "object/interface/interactive_object.h"
+#include "object/interface/programmable_object.h"
 #include "object/interface/transportable_object.h"
 
 // The father of all parts must always be the part number zero!
@@ -54,7 +55,8 @@ struct ObjectPart
 
 class COldObject : public CObject,
                    public CInteractiveObject,
-                   public CTransportableObject
+                   public CTransportableObject,
+                   public CProgrammableObject
 {
     friend class CObjectFactory;
     friend class CObjectManager;

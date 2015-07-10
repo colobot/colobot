@@ -1765,9 +1765,9 @@ bool CScriptFunctions::rProduce(CBotVar* var, CBotVar* result, int& exception, v
     if (name[0] != 0)
     {
         std::string name2 = CPathManager::InjectLevelDir(name, "ai");
-        CBrain* brain = object->GetBrain();
-        if (brain != nullptr)
+        if (object->Implements(ObjectInterfaceType::Programmable))
         {
+            CBrain* brain = dynamic_cast<CProgrammableObject*>(object)->GetBrain();
             Program* program = brain->AddProgram();
             brain->ReadProgram(program, name2.c_str());
             brain->RunProgram(program);

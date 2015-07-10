@@ -29,6 +29,7 @@
 #include "object/robotmain.h"
 #include "object/level/parserline.h"
 #include "object/level/parserparam.h"
+#include "object/interface/programmable_object.h"
 #include "object/interface/transportable_object.h"
 
 #include "physics/physics.h"
@@ -488,9 +489,10 @@ bool CAutoFactory::EventProcess(const Event &event)
 
             if ( m_program != nullptr )
             {
-                CBrain* brain = m_vehicle->GetBrain();
-                if ( brain != nullptr )
+                if (m_vehicle->Implements(ObjectInterfaceType::Programmable))
                 {
+                    CBrain* brain = dynamic_cast<CProgrammableObject*>(m_vehicle)->GetBrain();
+
                     Program* program = brain->AddProgram();
                     program->script->SendScript(const_cast<const char*>(m_program));
                     brain->RunProgram(program);
@@ -649,9 +651,9 @@ bool CAutoFactory::CreateVehicle()
         physics->SetFreeze(true);  // it doesn't move
     }
 
-    CBrain* brain = vehicle->GetBrain();
-    if(brain != nullptr)
+    if (vehicle->Implements(ObjectInterfaceType::Programmable))
     {
+        CBrain* brain = dynamic_cast<CProgrammableObject*>(vehicle)->GetBrain();
         for ( int i=0 ; ; i++ )
         {
             char* name = m_main->GetNewScriptName(m_type, i);

@@ -33,6 +33,7 @@
 #include "object/robotmain.h"
 #include "object/motion/motionant.h"
 #include "object/motion/motionspider.h"
+#include "object/interface/programmable_object.h"
 
 #include "physics/physics.h"
 
@@ -339,7 +340,6 @@ bool CTaskTerraform::Abort()
 
 bool CTaskTerraform::Terraform()
 {
-    CBrain*     brain;
     CMotion*    motion;
     ObjectType  type;
     float       dist;
@@ -357,7 +357,7 @@ bool CTaskTerraform::Terraform()
         {
             // This was used by Ceebot-Teen to destroy objects hit by the Thumper
             // The old Teen objects are removed, but this code might be reused at some point, e.g. to add destruction of resources like empty batteries
-            
+
             dist = Math::Distance(m_terraPos, pObj->GetPosition(0));
             if ( dist > 20.0f )  continue;
 
@@ -373,15 +373,17 @@ bool CTaskTerraform::Terraform()
 
             if ( type == OBJECT_ANT )
             {
-                brain = pObj->GetBrain();
-                if ( brain != 0 )  brain->StopTask();
+                if (pObj->Implements(ObjectInterfaceType::Programmable))
+                    dynamic_cast<CProgrammableObject*>(pObj)->GetBrain()->StopTask();
+
                 motion->SetAction(MAS_BACK1, 0.8f+Math::Rand()*0.3f);
                 pObj->SetFixed(true);  // not moving
             }
             if ( type == OBJECT_SPIDER )
             {
-                brain = pObj->GetBrain();
-                if ( brain != 0 )  brain->StopTask();
+                if (pObj->Implements(ObjectInterfaceType::Programmable))
+                    dynamic_cast<CProgrammableObject*>(pObj)->GetBrain()->StopTask();
+
                 motion->SetAction(MSS_BACK1, 0.8f+Math::Rand()*0.3f);
                 pObj->SetFixed(true);  // not moving
             }

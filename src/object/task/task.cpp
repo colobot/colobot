@@ -24,6 +24,7 @@
 
 #include "object/object.h"
 #include "object/robotmain.h"
+#include "object/interface/programmable_object.h"
 
 
 // Object's constructor.
@@ -41,7 +42,11 @@ CTask::CTask(CObject* object)
 
     m_object      = object;
     m_physics     = m_object->GetPhysics();
-    m_brain       = m_object->GetBrain();
+    m_brain       = nullptr;
+    if (object->Implements(ObjectInterfaceType::Programmable))
+    {
+        m_brain = dynamic_cast<CProgrammableObject*>(m_object)->GetBrain();
+    }
     m_motion      = m_object->GetMotion();
 }
 
