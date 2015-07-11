@@ -4545,6 +4545,15 @@ void CMainDialog::UpdateSceneResume(int rank)
 
 // Updates the list of modes.
 
+int GCD(int a, int b) {
+    return (b == 0) ? a : GCD(b, a%b);
+}
+Math::IntPoint AspectRatio(Math::IntPoint resolution)
+{
+    int gcd = GCD(resolution.x, resolution.y);
+    return Math::IntPoint(static_cast<float>(resolution.x) / gcd, static_cast<float>(resolution.y) / gcd);
+}
+
 void CMainDialog::UpdateDisplayMode()
 {
     CWindow*    pw;
@@ -4563,7 +4572,8 @@ void CMainDialog::UpdateDisplayMode()
     for (Math::IntPoint mode : modes)
     {
         mode_text.str("");
-        mode_text << mode.x << "x" << mode.y;
+        Math::IntPoint aspect = AspectRatio(mode);
+        mode_text << mode.x << "x" << mode.y << " [" << aspect.x << ":" << aspect.y << "]";
         pl->SetItemName(i++, mode_text.str().c_str());
     }
 
