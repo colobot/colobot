@@ -163,7 +163,7 @@ void COldObjectInterface::SetPosition(int part, const Math::Vector &pos)
     throw std::logic_error("SetPosition: not implemented!");
 }
 
-Math::Vector COldObjectInterface::GetPosition(int part)
+Math::Vector COldObjectInterface::GetPosition(int part) const
 {
     throw std::logic_error("GetPosition: not implemented!");
 }
@@ -173,7 +173,7 @@ void COldObjectInterface::SetAngle(int part, const Math::Vector &angle)
     throw std::logic_error("SetAngle: not implemented!");
 }
 
-Math::Vector COldObjectInterface::GetAngle(int part)
+Math::Vector COldObjectInterface::GetAngle(int part) const
 {
     throw std::logic_error("GetAngle: not implemented!");
 }
@@ -218,7 +218,7 @@ void COldObjectInterface::SetZoom(int part, Math::Vector zoom)
     throw std::logic_error("SetZoom: not implemented!");
 }
 
-Math::Vector COldObjectInterface::GetZoom(int part)
+Math::Vector COldObjectInterface::GetZoom(int part) const
 {
     throw std::logic_error("GetZoom: not implemented!");
 }
@@ -646,7 +646,9 @@ void COldObjectInterface::SetExploding(bool bExplo)
 
 bool COldObjectInterface::IsExploding()
 {
-    throw std::logic_error("IsExploding: not implemented!");
+    // TODO: temporary hack
+    return false;
+    //throw std::logic_error("IsExploding: not implemented!");
 }
 
 void COldObjectInterface::SetLock(bool bLock)
@@ -663,12 +665,16 @@ bool COldObjectInterface::GetLock()
 
 void COldObjectInterface::SetSpaceshipCargo(bool bCargo)
 {
-    throw std::logic_error("SetSpaceshipCargo: not implemented!");
+    // TODO: temporary hack
+    return;
+    //throw std::logic_error("SetSpaceshipCargo: not implemented!");
 }
 
 bool COldObjectInterface::IsSpaceshipCargo()
 {
-    throw std::logic_error("IsSpaceshipCargo: not implemented!");
+    // TODO: temporary hack
+    return false;
+    //throw std::logic_error("IsSpaceshipCargo: not implemented!");
 }
 
 void COldObjectInterface::SetBurn(bool bBurn)
@@ -678,7 +684,9 @@ void COldObjectInterface::SetBurn(bool bBurn)
 
 bool COldObjectInterface::GetBurn()
 {
-    throw std::logic_error("GetBurn: not implemented!");
+    // TODO: temporary hack
+    return false;
+    //throw std::logic_error("GetBurn: not implemented!");
 }
 
 void COldObjectInterface::SetDead(bool bDead)

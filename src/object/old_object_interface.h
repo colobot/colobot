@@ -112,9 +112,9 @@ public:
     virtual Math::Vector    GetTilt();
 
     virtual void        SetPosition(int part, const Math::Vector &pos);
-    virtual Math::Vector    GetPosition(int part);
+    virtual Math::Vector    GetPosition(int part) const;
     virtual void        SetAngle(int part, const Math::Vector &angle);
-    virtual Math::Vector    GetAngle(int part);
+    virtual Math::Vector    GetAngle(int part) const;
     virtual void        SetAngleY(int part, float angle);
     virtual void        SetAngleX(int part, float angle);
     virtual void        SetAngleZ(int part, float angle);
@@ -123,7 +123,7 @@ public:
     virtual float       GetAngleZ(int part);
     virtual void        SetZoom(int part, float zoom);
     virtual void        SetZoom(int part, Math::Vector zoom);
-    virtual Math::Vector    GetZoom(int part);
+    virtual Math::Vector    GetZoom(int part) const;
     virtual void        SetZoomX(int part, float zoom);
     virtual float       GetZoomX(int part);
     virtual void        SetZoomY(int part, float zoom);

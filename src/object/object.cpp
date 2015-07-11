@@ -6,6 +6,9 @@
 CObject::CObject(int id, ObjectType type)
     : m_id(id)
     , m_type(type)
+    , m_position(0.0f, 0.0f, 0.0f)
+    , m_rotation(0.0f, 0.0f, 0.0f)
+    , m_scale(1.0f, 1.0f, 1.0f)
 {
     m_implementedInterfaces.fill(false);
 }
@@ -50,6 +53,21 @@ std::vector<CrashSphere> CObject::GetAllCrashSpheres()
     }
 
     return allCrashSpheres;
+}
+
+Math::Vector CObject::GetPosition() const
+{
+    return m_position;
+}
+
+Math::Vector CObject::GetRotation() const
+{
+    return m_rotation;
+}
+
+Math::Vector CObject::GetScale() const
+{
+    return m_scale;
 }
 
 int CObject::GetCrashSphereCount()

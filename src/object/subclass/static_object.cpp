@@ -48,6 +48,9 @@ CStaticObject::CStaticObject(int id,
     const Gfx::CModelMesh* mesh = model.GetMesh("main");
     assert(mesh != nullptr);
 
+    m_position = position;
+    m_rotation.y = angleY;
+
     Math::Matrix worldMatrix = ComputeWorldMatrix(position, angleY);
     m_meshHandle = m_engine->AddStaticMesh(key, mesh, worldMatrix);
 

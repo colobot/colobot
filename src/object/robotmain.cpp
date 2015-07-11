@@ -2546,9 +2546,12 @@ void CRobotMain::AbortMovie()
 {
     for (CObject* obj : m_objMan->GetAllObjects())
     {
-        CAuto* automat = obj->GetAuto();
-        if (automat != 0)
-            automat->Abort();
+        if (obj->Implements(ObjectInterfaceType::Old))
+        {
+            CAuto* automat = obj->GetAuto();
+            if (automat != 0)
+                automat->Abort();
+        }
     }
 
     m_app->SetMouseMode(MOUSE_ENGINE);
@@ -4831,38 +4834,42 @@ void CRobotMain::IOWriteObject(CLevelParserLine* line, CObject* obj)
 
     line->AddParam("type", CLevelParserParamUPtr{new CLevelParserParam(obj->GetType())});
     line->AddParam("id", CLevelParserParamUPtr{new CLevelParserParam(obj->GetID())});
-    line->AddParam("pos", CLevelParserParamUPtr{new CLevelParserParam(obj->GetPosition(0)/g_unit)});
-    line->AddParam("angle", CLevelParserParamUPtr{new CLevelParserParam(obj->GetAngle(0)/(Math::PI/180.0f))});
-    line->AddParam("zoom", CLevelParserParamUPtr{new CLevelParserParam(obj->GetZoom(0))});
+    line->AddParam("pos", CLevelParserParamUPtr{new CLevelParserParam(obj->GetPosition()/g_unit)});
+    line->AddParam("angle", CLevelParserParamUPtr{new CLevelParserParam(obj->GetRotation() * Math::RAD_TO_DEG)});
+    line->AddParam("zoom", CLevelParserParamUPtr{new CLevelParserParam(obj->GetScale())});
 
-    Math::Vector pos;
-    for (int i = 1; i < OBJECTMAXPART; i++)
+    if (obj->Implements(ObjectInterfaceType::Old))
     {
-        if (obj->GetObjectRank(i) == -1) continue;
-
-        pos = obj->GetPosition(i);
-        if (pos.x != 0.0f || pos.y != 0.0f || pos.z != 0.0f)
+        Math::Vector pos;
+        for (int i = 1; i < OBJECTMAXPART; i++)
         {
-            pos /= g_unit;
-            line->AddParam("p" + boost::lexical_cast<std::string>(i), CLevelParserParamUPtr{new CLevelParserParam(pos)});
+            if (obj->GetObjectRank(i) == -1) continue;
+
+            pos = obj->GetPosition(i);
+            if (pos.x != 0.0f || pos.y != 0.0f || pos.z != 0.0f)
+            {
+                pos /= g_unit;
+                line->AddParam("p" + boost::lexical_cast<std::string>(i), CLevelParserParamUPtr{new CLevelParserParam(pos)});
+            }
+
+            pos = obj->GetAngle(i);
+            if (pos.x != 0.0f || pos.y != 0.0f || pos.z != 0.0f)
+            {
+                pos /= (Math::PI/180.0f);
+                line->AddParam("a" + boost::lexical_cast<std::string>(i), CLevelParserParamUPtr{new CLevelParserParam(pos)});
+            }
+
+            pos = obj->GetZoom(i);
+            if (pos.x != 1.0f || pos.y != 1.0f || pos.z != 1.0f)
+            {
+                line->AddParam("z" + boost::lexical_cast<std::string>(i), CLevelParserParamUPtr{new CLevelParserParam(pos)});
+            }
         }
 
-        pos = obj->GetAngle(i);
-        if (pos.x != 0.0f || pos.y != 0.0f || pos.z != 0.0f)
-        {
-            pos /= (Math::PI/180.0f);
-            line->AddParam("a" + boost::lexical_cast<std::string>(i), CLevelParserParamUPtr{new CLevelParserParam(pos)});
-        }
-
-        pos = obj->GetZoom(i);
-        if (pos.x != 1.0f || pos.y != 1.0f || pos.z != 1.0f)
-        {
-            line->AddParam("z" + boost::lexical_cast<std::string>(i), CLevelParserParamUPtr{new CLevelParserParam(pos)});
-        }
+        line->AddParam("trainer", CLevelParserParamUPtr{new CLevelParserParam(obj->GetTrainer())});
+        line->AddParam("option", CLevelParserParamUPtr{new CLevelParserParam(obj->GetOption())});
     }
 
-    line->AddParam("trainer", CLevelParserParamUPtr{new CLevelParserParam(obj->GetTrainer())});
-    line->AddParam("option", CLevelParserParamUPtr{new CLevelParserParam(obj->GetOption())});
     if (obj == m_infoObject)
         line->AddParam("select", CLevelParserParamUPtr{new CLevelParserParam(1)});
 
@@ -5036,33 +5043,37 @@ CObject* CRobotMain::IOReadObject(CLevelParserLine *line, const char* filename, 
     int option = line->GetParam("option")->AsInt(0);
 
     CObject* obj = m_objMan->CreateObject(pos, dir.y, type, 0.0f, 1.0f, 0.0f, trainer, toy, option, id);
-    obj->SetDefRank(objRank);
-    obj->SetPosition(0, pos);
-    obj->SetAngle(0, dir);
 
-    if (zoom.x != 0.0f || zoom.y != 0.0f || zoom.z != 0.0f)
-        obj->SetZoom(0, zoom);
-
-    for (int i = 1; i < OBJECTMAXPART; i++)
+    if (obj->Implements(ObjectInterfaceType::Old))
     {
-        if (obj->GetObjectRank(i) == -1) continue;
+        obj->SetDefRank(objRank);
+        obj->SetPosition(0, pos);
+        obj->SetAngle(0, dir);
 
-        pos = line->GetParam(std::string("p")+boost::lexical_cast<std::string>(i))->AsPoint(Math::Vector());
-        if (pos.x != 0.0f || pos.y != 0.0f || pos.z != 0.0f)
-        {
-            obj->SetPosition(i, pos*g_unit);
-        }
-
-        dir = line->GetParam(std::string("a")+boost::lexical_cast<std::string>(i))->AsPoint(Math::Vector());
-        if (dir.x != 0.0f || dir.y != 0.0f || dir.z != 0.0f)
-        {
-            obj->SetAngle(i, dir*(Math::PI/180.0f));
-        }
-
-        zoom = line->GetParam(std::string("z")+boost::lexical_cast<std::string>(i))->AsPoint(Math::Vector());
         if (zoom.x != 0.0f || zoom.y != 0.0f || zoom.z != 0.0f)
+            obj->SetZoom(0, zoom);
+
+        for (int i = 1; i < OBJECTMAXPART; i++)
         {
-            obj->SetZoom(i, zoom);
+            if (obj->GetObjectRank(i) == -1) continue;
+
+            pos = line->GetParam(std::string("p")+boost::lexical_cast<std::string>(i))->AsPoint(Math::Vector());
+            if (pos.x != 0.0f || pos.y != 0.0f || pos.z != 0.0f)
+            {
+                obj->SetPosition(i, pos*g_unit);
+            }
+
+            dir = line->GetParam(std::string("a")+boost::lexical_cast<std::string>(i))->AsPoint(Math::Vector());
+            if (dir.x != 0.0f || dir.y != 0.0f || dir.z != 0.0f)
+            {
+                obj->SetAngle(i, dir*(Math::PI/180.0f));
+            }
+
+            zoom = line->GetParam(std::string("z")+boost::lexical_cast<std::string>(i))->AsPoint(Math::Vector());
+            if (zoom.x != 0.0f || zoom.y != 0.0f || zoom.z != 0.0f)
+            {
+                obj->SetZoom(i, zoom);
+            }
         }
     }
 
@@ -5173,10 +5184,13 @@ CObject* CRobotMain::IOReadScene(const char *filename, const char *filecbot)
         {
             if (IsObjectBeingTransported(obj)) continue;
 
-            objRank = obj->GetDefRank();
-            if (objRank == -1) continue;
+            if (obj->Implements(ObjectInterfaceType::Programmable))
+            {
+                objRank = obj->GetDefRank();
+                if (objRank == -1) continue;
 
-            LoadFileScript(obj, filename, objRank, nbError);
+                LoadFileScript(obj, filename, objRank, nbError);
+            }
         }
     }
     while (nbError > 0 && nbError != lastError);

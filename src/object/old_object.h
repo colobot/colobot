@@ -126,9 +126,9 @@ public:
     Math::Vector    GetTilt() override;
 
     void        SetPosition(int part, const Math::Vector &pos) override;
-    Math::Vector    GetPosition(int part) override;
+    Math::Vector    GetPosition(int part) const override;
     void        SetAngle(int part, const Math::Vector &angle) override;
-    Math::Vector    GetAngle(int part) override;
+    Math::Vector    GetAngle(int part) const override;
     void        SetAngleY(int part, float angle) override;
     void        SetAngleX(int part, float angle) override;
     void        SetAngleZ(int part, float angle) override;
@@ -137,7 +137,7 @@ public:
     float       GetAngleZ(int part) override;
     void        SetZoom(int part, float zoom) override;
     void        SetZoom(int part, Math::Vector zoom) override;
-    Math::Vector    GetZoom(int part) override;
+    Math::Vector    GetZoom(int part) const override;
     void        SetZoomX(int part, float zoom) override;
     float       GetZoomX(int part) override;
     void        SetZoomY(int part, float zoom) override;
@@ -309,6 +309,10 @@ public:
 
     void SetInfoReturn(float value) override;
     float GetInfoReturn() override;
+
+    Math::Vector GetPosition() const override;
+    Math::Vector GetRotation() const override;
+    Math::Vector GetScale() const override;
 
 protected:
     bool        EventFrame(const Event &event);

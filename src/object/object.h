@@ -85,6 +85,14 @@ public:
         return m_implementedInterfaces[static_cast<int>(type)];
     }
 
+    //! Returns current object's position
+    virtual Math::Vector GetPosition() const;
+    using COldObjectInterface::GetPosition;
+    //! Returns current object's rotation (Euler angles)
+    virtual Math::Vector GetRotation() const;
+    //! Returns current object's scale
+    virtual Math::Vector GetScale() const;
+
     //! Sets crash spheres for object
     void SetCrashSpheres(const std::vector<Gfx::ModelCrashSphere>& crashSpheres);
     //! Adds a new crash sphere
@@ -120,6 +128,9 @@ protected:
     const int m_id; //!< unique identifier
     ObjectType m_type; //!< object type
     ObjectInterfaceTypes m_implementedInterfaces; //!< interfaces that the object implements
+    Math::Vector m_position;
+    Math::Vector m_rotation;
+    Math::Vector m_scale;
     std::vector<CrashSphere> m_crashSpheres; //!< crash spheres
     Math::Sphere m_cameraCollisionSphere;
 };

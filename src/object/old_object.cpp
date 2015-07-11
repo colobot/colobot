@@ -1274,7 +1274,7 @@ void COldObject::SetPosition(int part, const Math::Vector &pos)
     }
 }
 
-Math::Vector COldObject::GetPosition(int part)
+Math::Vector COldObject::GetPosition(int part) const
 {
     return m_objectPart[part].position;
 }
@@ -1292,7 +1292,7 @@ void COldObject::SetAngle(int part, const Math::Vector &angle)
     }
 }
 
-Math::Vector COldObject::GetAngle(int part)
+Math::Vector COldObject::GetAngle(int part) const
 {
     return m_objectPart[part].angle;
 }
@@ -1366,7 +1366,7 @@ void COldObject::SetZoom(int part, Math::Vector zoom)
                                  m_objectPart[part].zoom.z != 1.0f );
 }
 
-Math::Vector COldObject::GetZoom(int part)
+Math::Vector COldObject::GetZoom(int part) const
 {
     return m_objectPart[part].zoom;
 }
@@ -3432,4 +3432,20 @@ void COldObject::DeleteDeselList(CObject* pObj)
     }
     m_totalDesectList = j;
 }
+
+Math::Vector COldObject::GetPosition() const
+{
+    return GetPosition(0);
+}
+
+Math::Vector COldObject::GetRotation() const
+{
+    return GetAngle(0);
+}
+
+Math::Vector COldObject::GetScale() const
+{
+    return GetZoom(0);
+}
+
 

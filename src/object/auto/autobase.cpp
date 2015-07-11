@@ -1247,7 +1247,7 @@ void CAutoBase::FreezeCargo(bool freeze)
         if ( obj == m_object )  continue;  // yourself?
         if (IsObjectBeingTransported(obj)) continue;
 
-        Math::Vector oPos = obj->GetPosition(0);
+        Math::Vector oPos = obj->GetPosition();
         float dist = Math::DistanceProjected(m_pos, oPos);
         if ( dist < 32.0f )
         {

@@ -212,38 +212,50 @@ std::string ModelOutput::VectorToString(const Math::Vector& vector)
 
 std::string ModelOutput::TransparentModeToString(ModelTransparentMode mode)
 {
+    std::string str;
     switch (mode)
     {
         case ModelTransparentMode::None:
-            return "none";
+            str = "none";
+            break;
 
         case ModelTransparentMode::AlphaChannel:
-            return "alpha";
+            str = "alpha";
+            break;
 
         case ModelTransparentMode::MapBlackToAlpha:
-            return "map_black";
+            str = "map_black";
+            break;
 
         case ModelTransparentMode::MapWhiteToAlpha:
-            return "map_white";
+            str = "map_white";
+            break;
     }
+    return str;
 }
 
 std::string ModelOutput::SpecialMarkToString(ModelSpecialMark specialMark)
 {
+    std::string str;
     switch (specialMark)
     {
         case ModelSpecialMark::None:
-            return "none";
+            str = "none";
+            break;
 
         case ModelSpecialMark::Part1:
-            return "part1";
+            str = "part1";
+            break;
 
         case ModelSpecialMark::Part2:
-            return "part2";
+            str = "part2";
+            break;
 
         case ModelSpecialMark::Part3:
-            return "part3";
+            str = "part3";
+            break;
     }
+    return str;
 }
 
 void ModelOutput::WriteBinaryModel(const CModel& model, std::ostream &stream)
