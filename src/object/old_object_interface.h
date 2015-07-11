@@ -98,8 +98,6 @@ public:
     virtual int         GetShadowLight() = 0;
     virtual int         GetEffectLight() = 0;
 
-    virtual void        SetGlobalSphere(Math::Vector pos, float radius) = 0;
-    virtual void        GetGlobalSphere(Math::Vector &pos, float &radius) = 0;
     virtual void        SetShieldRadius(float radius) = 0;
     virtual float       GetShieldRadius() = 0;
 

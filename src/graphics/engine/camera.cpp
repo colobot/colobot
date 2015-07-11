@@ -934,9 +934,9 @@ bool CCamera::IsCollisionBack(Math::Vector &eye, Math::Vector lookat)
              oType == OBJECT_BEE    ||
              oType == OBJECT_WORM   )  continue;
 
-        Math::Vector oPos;
-        float oRadius = 0.0f;
-        obj->GetGlobalSphere(oPos, oRadius);
+        Math::Sphere objSphere = obj->GetCameraCollisionSphere();
+        Math::Vector oPos = objSphere.pos;
+        float oRadius = objSphere.radius;
         if ( oRadius <= 2.0f )  continue;  // ignores small objects
 
         if ( oPos.x+oRadius < min.x ||
@@ -995,9 +995,9 @@ bool CCamera::IsCollisionFix(Math::Vector &eye, Math::Vector lookat)
              type == OBJECT_BEE     ||
              type == OBJECT_WORM )  continue;
 
-        Math::Vector objPos;
-        float objRadius = 0.0f;
-        obj->GetGlobalSphere(objPos, objRadius);
+        Math::Sphere objSphere = obj->GetCameraCollisionSphere();
+        Math::Vector objPos = objSphere.pos;
+        float objRadius = objSphere.radius;
         if (objRadius == 0.0f) continue;
 
         float dist = Math::Distance(eye, objPos);

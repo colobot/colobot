@@ -95,13 +95,22 @@ public:
     //! Removes all crash spheres
     void DeleteAllCrashSpheres();
 
+    //! Returns sphere used to test for camera collisions
+    Math::Sphere GetCameraCollisionSphere();
+    //! Sets sphere used to test for camera collisions
+    // TODO: remove from here once no longer necessary
+    void SetCameraCollisionSphere(const Math::Sphere& sphere);
+
 protected:
     //! Transform crash sphere by object's world matrix
     virtual void TransformCrashSphere(Math::Sphere& crashSphere) = 0;
+    //! Transform crash sphere by object's world matrix
+    virtual void TransformCameraCollisionSphere(Math::Sphere& collisionSphere) = 0;
 
 protected:
     const int m_id; //!< unique identifier
     ObjectType m_type; //!< object type
     ObjectInterfaceTypes m_implementedInterfaces; //!< interfaces that the object implements
     std::vector<CrashSphere> m_crashSpheres; //!< crash spheres
+    Math::Sphere m_cameraCollisionSphere;
 };

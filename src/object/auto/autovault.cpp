@@ -240,7 +240,7 @@ bool CAutoVault::EventProcess(const Event &event)
             }
 
             m_object->DeleteAllCrashSpheres();
-            m_object->SetGlobalSphere(Math::Vector(0.0f, 0.0f, 0.0f), 0.0f);
+            m_object->SetCameraCollisionSphere(Math::Sphere(Math::Vector(0.0f, 0.0f, 0.0f), 0.0f));
 
             m_sound->Play(SOUND_FINDING, m_object->GetPosition(0));
 

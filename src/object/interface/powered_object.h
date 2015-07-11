@@ -27,6 +27,10 @@ class CObject;
 /**
  * \class CPoweredObject
  * \brief Interface for objects powered using power cells
+ *
+ * TODO: It currently includes objects that take other objects as input
+ *       and convert them, for example PowerPlant.
+ *       We should create a dedicated interface for such uses.
  */
 class CPoweredObject
 {

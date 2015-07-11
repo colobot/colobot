@@ -297,8 +297,6 @@ COldObject::COldObject(int id)
     m_cmdLine.clear();
 
     DeleteAllCrashSpheres();
-    m_globalSpherePos = Math::Vector(0.0f, 0.0f, 0.0f);
-    m_globalSphereRadius = 0.0f;
 
     CBotClass* bc = CBotClass::Find("object");
     if ( bc != 0 )
@@ -1088,23 +1086,10 @@ void COldObject::TransformCrashSphere(Math::Sphere& crashSphere)
     crashSphere.pos = Math::Transform(m_objectPart[0].matWorld, crashSphere.pos);
 }
 
-// Specifies the global sphere, relative to the object.
-
-void COldObject::SetGlobalSphere(Math::Vector pos, float radius)
+void COldObject::TransformCameraCollisionSphere(Math::Sphere& collisionSphere)
 {
-    float   zoom;
-
-    zoom = GetZoomX(0);
-    m_globalSpherePos    = pos;
-    m_globalSphereRadius = radius*zoom;
-}
-
-// Returns the global sphere, in the world.
-
-void COldObject::GetGlobalSphere(Math::Vector &pos, float &radius)
-{
-    pos = Math::Transform(m_objectPart[0].matWorld, m_globalSpherePos);
-    radius = m_globalSphereRadius;
+    collisionSphere.pos = Math::Transform(m_objectPart[0].matWorld, collisionSphere.pos);
+    collisionSphere.radius *= GetZoomX(0);
 }
 
 

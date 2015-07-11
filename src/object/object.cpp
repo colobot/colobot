@@ -48,3 +48,16 @@ void CObject::DeleteAllCrashSpheres()
 {
     m_crashSpheres.clear();
 }
+
+void CObject::SetCameraCollisionSphere(const Math::Sphere& sphere)
+{
+    m_cameraCollisionSphere = sphere;
+}
+
+Math::Sphere CObject::GetCameraCollisionSphere()
+{
+    Math::Sphere transformedSphere = m_cameraCollisionSphere;
+    TransformCrashSphere(transformedSphere);
+    return transformedSphere;
+}
+

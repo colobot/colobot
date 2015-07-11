@@ -194,17 +194,17 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         type == OBJECT_MOBILErs)
     {
         m_object->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 4.0f, 0.0f), 6.5f, SOUND_BOUMm, 0.45f));
-        m_object->SetGlobalSphere(Math::Vector(0.0f, 3.0f, 0.0f), 7.0f);
+        m_object->SetCameraCollisionSphere(Math::Sphere(Math::Vector(0.0f, 3.0f, 0.0f), 7.0f));
     }
     else if (type == OBJECT_MOBILEsa)
     {
         m_object->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 3.0f, 0.0f), 4.5f, SOUND_BOUMm, 0.45f));
-        m_object->SetGlobalSphere(Math::Vector(0.0f, 3.0f, 0.0f), 6.0f);
+        m_object->SetCameraCollisionSphere(Math::Sphere(Math::Vector(0.0f, 3.0f, 0.0f), 6.0f));
     }
     else if (type == OBJECT_MOBILEdr)
     {
         m_object->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 3.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f));
-        m_object->SetGlobalSphere(Math::Vector(0.0f, 3.0f, 0.0f), 7.0f);
+        m_object->SetCameraCollisionSphere(Math::Sphere(Math::Vector(0.0f, 3.0f, 0.0f), 7.0f));
     }
     else if (type == OBJECT_APOLLO2)
     {
@@ -213,7 +213,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
     else
     {
         m_object->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 3.0f, 0.0f), 4.5f, SOUND_BOUMm, 0.45f));
-        m_object->SetGlobalSphere(Math::Vector(0.0f, 4.0f, 0.0f), 6.0f);
+        m_object->SetCameraCollisionSphere(Math::Sphere(Math::Vector(0.0f, 4.0f, 0.0f), 6.0f));
     }
 
     if (type == OBJECT_MOBILEfa ||

@@ -112,8 +112,6 @@ public:
     int         GetShadowLight() override;
     int         GetEffectLight() override;
 
-    void        SetGlobalSphere(Math::Vector pos, float radius) override;
-    void        GetGlobalSphere(Math::Vector &pos, float &radius) override;
     void        SetShieldRadius(float radius) override;
     float       GetShieldRadius() override;
 
@@ -324,6 +322,7 @@ protected:
     bool        UpdateTransformObject();
     void        UpdateSelectParticle();
     void        TransformCrashSphere(Math::Sphere &crashSphere) override;
+    void TransformCameraCollisionSphere(Math::Sphere& collisionSphere) override;
 
 protected:
     Gfx::CEngine*       m_engine;
@@ -396,8 +395,6 @@ protected:
     float       m_param;
     int         m_team;
 
-    Math::Vector    m_globalSpherePos;
-    float       m_globalSphereRadius;
     Math::Sphere m_jostlingSphere;
     float       m_shieldRadius;
 

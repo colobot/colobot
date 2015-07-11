@@ -87,7 +87,7 @@ std::unique_ptr<CExchangePost> CExchangePost::Create(
 
     obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f,  3.0f, 0.0f), 6.0f, SOUND_BOUMm, 0.45f));
     obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 11.0f, 0.0f), 6.0f, SOUND_BOUMm, 0.45f));
-    obj->SetGlobalSphere(Math::Vector(0.0f, 5.0f, 0.0f), 6.0f);
+    obj->SetCameraCollisionSphere(Math::Sphere(Math::Vector(0.0f, 5.0f, 0.0f), 6.0f));
 
     obj->CreateShadowCircle(8.0f, 1.0f);
 

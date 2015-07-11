@@ -111,7 +111,7 @@ void CMotionSpider::Create(Math::Vector pos, float angle, ObjectType type,
     // A vehicle must have a obligatory collision
     // with a sphere of center (0, y, 0) (see GetCrashSphere).
     m_object->AddCrashSphere(CrashSphere(Math::Vector(0.0f, -2.0f, 0.0f), 4.0f, SOUND_BOUM, 0.20f));
-    m_object->SetGlobalSphere(Math::Vector(-0.5f, 1.0f, 0.0f), 4.0f);
+    m_object->SetCameraCollisionSphere(Math::Sphere(Math::Vector(-0.5f, 1.0f, 0.0f), 4.0f));
 
     // Creates the abdomen.
     rank = m_engine->CreateObject();
