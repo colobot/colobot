@@ -1,3 +1,22 @@
+/*
+ * This file is part of the Colobot: Gold Edition source code
+ * Copyright (C) 2001-2015, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * http://epsiteс.ch; http://colobot.info; http://github.com/colobot
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see http://gnu.org/licenses
+ */
+
 #include "graphics/model/model_output.h"
 
 #include "common/ioutils.h"
@@ -15,6 +34,14 @@ namespace Gfx {
 namespace ModelOutput
 {
     void WriteTextModel(const CModel& model, std::ostream &stream);
+    void WriteTextHeader(const ModelHeaderV3& header, std::ostream &stream);
+    void WriteCrashSphere(const ModelCrashSphere& crashSphere, std::ostream &stream);
+    void WriteShadowSpot(const ModelShadowSpot& shadowSpot, std::ostream &stream);
+    void WriteCameraCollisionSphere(const Math::Sphere& sphere, std::ostream &stream);
+    void WriteTextMesh(const CModelMesh* mesh, const std::string& meshName, std::ostream &stream);
+    std::string VectorToString(const Math::Vector& vector);
+    std::string TransparentModeToString(ModelTransparentMode mode);
+    std::string SpecialMarkToString(ModelSpecialMark specialMark);
 
     void WriteBinaryModel(const CModel& model, std::ostream &stream);
 
@@ -64,38 +91,94 @@ void ModelOutput::Write(const CModel& model, std::ostream &stream, ModelFormat f
 
 void ModelOutput::WriteTextModel(const CModel& model, std::ostream &stream)
 {
-    const CModelMesh* mesh = model.GetMesh("main");
-    if (mesh == nullptr)
-        throw CModelIOException("No main mesh found in model");
+    ModelHeaderV3 header;
+    header.version = 3;
+    header.totalCrashSpheres = model.GetCrashSphereCount();
+    header.hasShadowSpot = model.HasShadowSpot();
+    header.hasCameraCollisionSphere = model.HasCameraCollisionSphere();
+    header.totalMeshes = model.GetMeshCount();
+    WriteTextHeader(header, stream);
 
-    ModelHeaderV1AndV2 header;
+    stream << "# MODEL PROPERTIES" << std::endl;
 
-    header.version = 2;
-    header.totalTriangles = mesh->GetTriangleCount();
+    for (const auto& crashSphere : model.GetCrashSpheres())
+        WriteCrashSphere(crashSphere, stream);
 
+    if (model.HasShadowSpot())
+        WriteShadowSpot(model.GetShadowSpot(), stream);
+
+    if (model.HasCameraCollisionSphere())
+        WriteCameraCollisionSphere(model.GetCameraCollisionSphere(), stream);
+
+    stream << std::endl;
+
+    for (const std::string& meshName : model.GetMeshNames())
+    {
+        const CModelMesh* mesh = model.GetMesh(meshName);
+        assert(mesh != nullptr);
+        WriteTextMesh(mesh, meshName, stream);
+    }
+}
+
+void ModelOutput::WriteTextHeader(const ModelHeaderV3& header, std::ostream &stream)
+{
     stream << "# Colobot text model" << std::endl;
     stream << std::endl;
     stream << "### HEAD" << std::endl;
     stream << "version " << header.version << std::endl;
-    stream << "total_triangles " << header.totalTriangles << std::endl;
+    stream << "total_crash_spheres " << header.totalCrashSpheres << std::endl;
+    stream << "has_shadow_spot " << (header.hasShadowSpot ? "Y" : "N") << std::endl;
+    stream << "has_camera_collision_sphere " << (header.hasCameraCollisionSphere ? "Y" : "N") << std::endl;
+    stream << "total_meshes " << header.totalMeshes << std::endl;
     stream << std::endl;
-    stream << "### TRIANGLES" << std::endl;
+}
 
-    for (const ModelTriangle& triangle : mesh->GetTriangles())
+void ModelOutput::WriteCrashSphere(const ModelCrashSphere& crashSphere, std::ostream &stream)
+{
+    stream << "crash_sphere";
+    stream << " pos"
+           << " " << crashSphere.position.x
+           << " " << crashSphere.position.y
+           << " " << crashSphere.position.z;
+    stream << " rad " << crashSphere.radius;
+    stream << " sound " << crashSphere.sound;
+    stream << " hard " << crashSphere.hardness;
+    stream << std::endl;
+}
+
+void ModelOutput::WriteShadowSpot(const ModelShadowSpot& shadowSpot, std::ostream &stream)
+{
+    stream << "shadow_spot";
+    stream << " rad " << shadowSpot.radius;
+    stream << " int " << shadowSpot.intensity;
+    stream << std::endl;
+}
+
+void ModelOutput::WriteCameraCollisionSphere(const Math::Sphere& sphere, std::ostream &stream)
+{
+    stream << "camera_collision_sphere ";
+    stream << " pos "
+           << sphere.pos.x
+           << sphere.pos.y
+           << sphere.pos.z;
+    stream << " rad " << sphere.radius;
+    stream << std::endl;
+}
+
+void ModelOutput::WriteTextMesh(const CModelMesh* mesh, const std::string& meshName, std::ostream &stream)
+{
+    stream << "### MESH" << std::endl;
+    stream << "mesh " << meshName << std::endl;
+    stream << "position " << VectorToString(mesh->GetPosition()) << std::endl;
+    stream << "rotation " << VectorToString(mesh->GetRotation()) << std::endl;
+    stream << "scale " << VectorToString(mesh->GetScale()) << std::endl;
+    stream << "parent " << mesh->GetParent() << std::endl;
+    stream << "total_triangles " << mesh->GetTriangleCount() << std::endl;
+    stream << std::endl;
+
+    stream << "### MESH TRIANGLES" << std::endl;
+    for (const ModelTriangle& t : mesh->GetTriangles())
     {
-        ModelTriangleV1AndV2 t;
-
-        t.p1 = triangle.p1;
-        t.p2 = triangle.p2;
-        t.p3 = triangle.p3;
-        t.material.ambient = triangle.ambient;
-        t.material.diffuse = triangle.diffuse;
-        t.material.specular = triangle.specular;
-        t.tex1Name = triangle.tex1Name;
-        t.tex2Name = triangle.tex2Name;
-        t.variableTex2 = triangle.variableTex2;
-        t.state = ConvertToOldState(triangle);
-
         stream << "p1 ";
         WriteTextVertexTex2(t.p1, stream);
         stream << "p2 ";
@@ -103,14 +186,63 @@ void ModelOutput::WriteTextModel(const CModel& model, std::ostream &stream)
         stream << "p3 ";
         WriteTextVertexTex2(t.p3, stream);
         stream << "mat ";
-        WriteTextMaterial(t.material, stream);
+        Material material;
+        material.ambient = t.ambient;
+        material.diffuse = t.diffuse;
+        material.specular = t.specular;
+        WriteTextMaterial(material, stream);
 
         stream << "tex1 " << t.tex1Name << std::endl;
         stream << "tex2 " << t.tex2Name << std::endl;
         stream << "var_tex2 " << (t.variableTex2 ? 'Y' : 'N') << std::endl;
-        stream << "state " << t.state << std::endl;
+        stream << "trans_mode " << TransparentModeToString(t.transparentMode) << std::endl;
+        stream << "mark " << SpecialMarkToString(t.specialMark) << std::endl;
+        stream << "dbl_side " << (t.doubleSided ? 'Y' : 'N') << std::endl;
 
         stream << std::endl;
+    }
+}
+
+std::string ModelOutput::VectorToString(const Math::Vector& vector)
+{
+    std::ostringstream str;
+    str << vector.x << " " << vector.y << " " << vector.z;
+    return str.str();
+}
+
+std::string ModelOutput::TransparentModeToString(ModelTransparentMode mode)
+{
+    switch (mode)
+    {
+        case ModelTransparentMode::None:
+            return "none";
+
+        case ModelTransparentMode::AlphaChannel:
+            return "alpha";
+
+        case ModelTransparentMode::MapBlackToAlpha:
+            return "map_black";
+
+        case ModelTransparentMode::MapWhiteToAlpha:
+            return "map_white";
+    }
+}
+
+std::string ModelOutput::SpecialMarkToString(ModelSpecialMark specialMark)
+{
+    switch (specialMark)
+    {
+        case ModelSpecialMark::None:
+            return "none";
+
+        case ModelSpecialMark::Part1:
+            return "part1";
+
+        case ModelSpecialMark::Part2:
+            return "part2";
+
+        case ModelSpecialMark::Part3:
+            return "part3";
     }
 }
 

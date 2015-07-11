@@ -76,212 +76,210 @@ class COldObjectInterface
 public:
     virtual ~COldObjectInterface() {}
 
-    virtual void        Simplify() = 0;
-    virtual bool        ExplodeObject(ExplosionType type, float force, float decay=1.0f) = 0;
+    virtual void        Simplify();
+    virtual bool        ExplodeObject(ExplosionType type, float force, float decay=1.0f);
 
-    virtual void        UpdateMapping() = 0;
+    virtual void        UpdateMapping();
 
-    virtual void        DeletePart(int part) = 0;
-    virtual void        SetObjectRank(int part, int objRank) = 0;
-    virtual int         GetObjectRank(int part) = 0;
-    virtual void        SetObjectParent(int part, int parent) = 0;
-    virtual void        SetType(ObjectType type) = 0;
-    virtual const char* GetName() = 0;
-    virtual int         GetOption() = 0;
+    virtual void        DeletePart(int part);
+    virtual void        SetObjectRank(int part, int objRank);
+    virtual int         GetObjectRank(int part);
+    virtual void        SetObjectParent(int part, int parent);
+    virtual void        SetType(ObjectType type);
+    virtual const char* GetName();
+    virtual int         GetOption();
 
-    virtual void        SetDrawWorld(bool bDraw) = 0;
-    virtual void        SetDrawFront(bool bDraw) = 0;
+    virtual void        SetDrawWorld(bool bDraw);
+    virtual void        SetDrawFront(bool bDraw);
 
-    virtual bool        ReadProgram(Program* program, const char* filename) = 0;
-    virtual bool        WriteProgram(Program* program, const char* filename) = 0;
+    virtual bool        ReadProgram(Program* program, const char* filename);
+    virtual bool        WriteProgram(Program* program, const char* filename);
 
-    virtual int         GetShadowLight() = 0;
-    virtual int         GetEffectLight() = 0;
+    virtual int         GetShadowLight();
+    virtual int         GetEffectLight();
 
-    virtual void        SetShieldRadius(float radius) = 0;
-    virtual float       GetShieldRadius() = 0;
+    virtual void        SetShieldRadius(float radius);
+    virtual float       GetShieldRadius();
 
-    virtual void        SetFloorHeight(float height) = 0;
-    virtual void        FloorAdjust() = 0;
+    virtual void        SetFloorHeight(float height);
+    virtual void        FloorAdjust();
 
-    virtual void        SetLinVibration(Math::Vector dir) = 0;
-    virtual Math::Vector    GetLinVibration() = 0;
-    virtual void        SetCirVibration(Math::Vector dir) = 0;
-    virtual Math::Vector    GetCirVibration() = 0;
-    virtual void        SetTilt(Math::Vector dir) = 0;
-    virtual Math::Vector    GetTilt() = 0;
+    virtual void        SetLinVibration(Math::Vector dir);
+    virtual Math::Vector    GetLinVibration();
+    virtual void        SetCirVibration(Math::Vector dir);
+    virtual Math::Vector    GetCirVibration();
+    virtual void        SetTilt(Math::Vector dir);
+    virtual Math::Vector    GetTilt();
 
-    virtual void        SetPosition(int part, const Math::Vector &pos) = 0;
-    virtual Math::Vector    GetPosition(int part) = 0;
-    virtual void        SetAngle(int part, const Math::Vector &angle) = 0;
-    virtual Math::Vector    GetAngle(int part) = 0;
-    virtual void        SetAngleY(int part, float angle) = 0;
-    virtual void        SetAngleX(int part, float angle) = 0;
-    virtual void        SetAngleZ(int part, float angle) = 0;
-    virtual float       GetAngleY(int part) = 0;
-    virtual float       GetAngleX(int part) = 0;
-    virtual float       GetAngleZ(int part) = 0;
-    virtual void        SetZoom(int part, float zoom) = 0;
-    virtual void        SetZoom(int part, Math::Vector zoom) = 0;
-    virtual Math::Vector    GetZoom(int part) = 0;
-    virtual void        SetZoomX(int part, float zoom) = 0;
-    virtual float       GetZoomX(int part) = 0;
-    virtual void        SetZoomY(int part, float zoom) = 0;
-    virtual float       GetZoomY(int part) = 0;
-    virtual void        SetZoomZ(int part, float zoom) = 0;
-    virtual float       GetZoomZ(int part) = 0;
+    virtual void        SetPosition(int part, const Math::Vector &pos);
+    virtual Math::Vector    GetPosition(int part);
+    virtual void        SetAngle(int part, const Math::Vector &angle);
+    virtual Math::Vector    GetAngle(int part);
+    virtual void        SetAngleY(int part, float angle);
+    virtual void        SetAngleX(int part, float angle);
+    virtual void        SetAngleZ(int part, float angle);
+    virtual float       GetAngleY(int part);
+    virtual float       GetAngleX(int part);
+    virtual float       GetAngleZ(int part);
+    virtual void        SetZoom(int part, float zoom);
+    virtual void        SetZoom(int part, Math::Vector zoom);
+    virtual Math::Vector    GetZoom(int part);
+    virtual void        SetZoomX(int part, float zoom);
+    virtual float       GetZoomX(int part);
+    virtual void        SetZoomY(int part, float zoom);
+    virtual float       GetZoomY(int part);
+    virtual void        SetZoomZ(int part, float zoom);
+    virtual float       GetZoomZ(int part);
 
-    virtual void        SetTrainer(bool bEnable) = 0;
-    virtual bool        GetTrainer() = 0;
+    virtual void        SetTrainer(bool bEnable);
+    virtual bool        GetTrainer();
 
-    virtual void        SetToy(bool bEnable) = 0;
-    virtual bool        GetToy() = 0;
+    virtual void        SetToy(bool bEnable);
+    virtual bool        GetToy();
 
-    virtual void        SetManual(bool bManual) = 0;
-    virtual bool        GetManual() = 0;
+    virtual void        SetManual(bool bManual);
+    virtual bool        GetManual();
 
-    virtual void        SetResetCap(ResetCap cap) = 0;
-    virtual ResetCap    GetResetCap() = 0;
-    virtual void        SetResetBusy(bool bBusy) = 0;
-    virtual bool        GetResetBusy() = 0;
-    virtual void        SetResetPosition(const Math::Vector &pos) = 0;
-    virtual Math::Vector    GetResetPosition() = 0;
-    virtual void        SetResetAngle(const Math::Vector &angle) = 0;
-    virtual Math::Vector    GetResetAngle() = 0;
-    virtual void        SetResetRun(Program* run) = 0;
-    virtual Program*    GetResetRun() = 0;
+    virtual void        SetResetCap(ResetCap cap);
+    virtual ResetCap    GetResetCap();
+    virtual void        SetResetBusy(bool bBusy);
+    virtual bool        GetResetBusy();
+    virtual void        SetResetPosition(const Math::Vector &pos);
+    virtual Math::Vector    GetResetPosition();
+    virtual void        SetResetAngle(const Math::Vector &angle);
+    virtual Math::Vector    GetResetAngle();
+    virtual void        SetResetRun(Program* run);
+    virtual Program*    GetResetRun();
 
-    virtual void        SetMasterParticle(int part, int parti) = 0;
-    virtual int         GetMasterParticle(int part) = 0;
+    virtual void        SetMasterParticle(int part, int parti);
+    virtual int         GetMasterParticle(int part);
 
-    virtual void        SetCmdLine(unsigned int rank, float value) = 0;
-    virtual float       GetCmdLine(unsigned int rank) = 0;
+    virtual void        SetCmdLine(unsigned int rank, float value);
+    virtual float       GetCmdLine(unsigned int rank);
 
-    virtual Math::Matrix*   GetRotateMatrix(int part) = 0;
-    virtual Math::Matrix*   GetWorldMatrix(int part) = 0;
+    virtual Math::Matrix*   GetRotateMatrix(int part);
+    virtual Math::Matrix*   GetWorldMatrix(int part);
 
     virtual void        SetViewFromHere(Math::Vector &eye, float &dirH, float &dirV,
                                 Math::Vector &lookat, Math::Vector &upVec,
-                                Gfx::CameraType type) = 0;
+                                Gfx::CameraType type);
 
-    virtual void        GetCharacter(Character* character) = 0;
-    virtual Character*  GetCharacter() = 0;
+    virtual void        GetCharacter(Character* character);
+    virtual Character*  GetCharacter();
 
-    virtual float       GetAbsTime() = 0;
+    virtual float       GetAbsTime();
 
-    virtual void        SetEnergy(float level) = 0;
-    virtual float       GetEnergy() = 0;
+    virtual void        SetEnergy(float level);
+    virtual float       GetEnergy();
 
-    virtual float       GetCapacity() = 0;
+    virtual float       GetCapacity();
 
-    virtual void        SetShield(float level) = 0;
-    virtual float       GetShield() = 0;
+    virtual void        SetShield(float level);
+    virtual float       GetShield();
 
-    virtual void        SetRange(float delay) = 0;
-    virtual float       GetRange() = 0;
+    virtual void        SetRange(float delay);
+    virtual float       GetRange();
 
-    virtual void        SetTransparency(float value) = 0;
+    virtual void        SetFixed(bool bFixed);
+    virtual bool        GetFixed();
 
-    virtual void        SetFixed(bool bFixed) = 0;
-    virtual bool        GetFixed() = 0;
+    virtual void        SetClip(bool bClip);
+    virtual bool        GetClip();
 
-    virtual void        SetClip(bool bClip) = 0;
-    virtual bool        GetClip() = 0;
+    virtual void        SetTeam(int team);
+    virtual int         GetTeam();
 
-    virtual void        SetTeam(int team) = 0;
-    virtual int         GetTeam() = 0;
+    virtual void        StartDetectEffect(CObject *target, bool bFound);
 
-    virtual void        StartDetectEffect(CObject *target, bool bFound) = 0;
+    virtual void        SetVirusMode(bool bEnable);
+    virtual bool        GetVirusMode();
+    virtual float       GetVirusTime();
 
-    virtual void        SetVirusMode(bool bEnable) = 0;
-    virtual bool        GetVirusMode() = 0;
-    virtual float       GetVirusTime() = 0;
+    virtual void        SetCameraType(Gfx::CameraType type);
+    virtual Gfx::CameraType  GetCameraType();
+    virtual void        SetCameraDist(float dist);
+    virtual float       GetCameraDist();
+    virtual void        SetCameraLock(bool bLock);
+    virtual bool        GetCameraLock();
 
-    virtual void        SetCameraType(Gfx::CameraType type) = 0;
-    virtual Gfx::CameraType  GetCameraType() = 0;
-    virtual void        SetCameraDist(float dist) = 0;
-    virtual float       GetCameraDist() = 0;
-    virtual void        SetCameraLock(bool bLock) = 0;
-    virtual bool        GetCameraLock() = 0;
+    virtual void        SetHighlight(bool mode);
 
-    virtual void        SetHighlight(bool mode) = 0;
+    virtual void        SetSelect(bool bMode, bool bDisplayError=true);
+    virtual bool        GetSelect(bool bReal=false);
 
-    virtual void        SetSelect(bool bMode, bool bDisplayError=true) = 0;
-    virtual bool        GetSelect(bool bReal=false) = 0;
+    virtual void        SetSelectable(bool bMode);
+    virtual bool        GetSelectable();
 
-    virtual void        SetSelectable(bool bMode) = 0;
-    virtual bool        GetSelectable() = 0;
+    virtual void        SetActivity(bool bMode);
+    virtual bool        GetActivity();
 
-    virtual void        SetActivity(bool bMode) = 0;
-    virtual bool        GetActivity() = 0;
+    virtual void        SetVisible(bool bVisible);
 
-    virtual void        SetVisible(bool bVisible) = 0;
+    virtual void        SetEnable(bool bEnable);
+    virtual bool        GetEnable();
 
-    virtual void        SetEnable(bool bEnable) = 0;
-    virtual bool        GetEnable() = 0;
+    virtual void        SetCheckToken(bool bMode);
+    virtual bool        GetCheckToken();
 
-    virtual void        SetCheckToken(bool bMode) = 0;
-    virtual bool        GetCheckToken() = 0;
+    virtual void        SetProxyActivate(bool bActivate);
+    virtual bool        GetProxyActivate();
+    virtual void        SetProxyDistance(float distance);
 
-    virtual void        SetProxyActivate(bool bActivate) = 0;
-    virtual bool        GetProxyActivate() = 0;
-    virtual void        SetProxyDistance(float distance) = 0;
+    virtual void        SetMagnifyDamage(float factor);
+    virtual float       GetMagnifyDamage();
 
-    virtual void        SetMagnifyDamage(float factor) = 0;
-    virtual float       GetMagnifyDamage() = 0;
+    virtual void        SetParam(float value);
+    virtual float       GetParam();
+    virtual void        SetIgnoreBuildCheck(bool bIgnoreBuildCheck);
+    virtual bool        GetIgnoreBuildCheck();
 
-    virtual void        SetParam(float value) = 0;
-    virtual float       GetParam() = 0;
-    virtual void        SetIgnoreBuildCheck(bool bIgnoreBuildCheck) = 0;
-    virtual bool        GetIgnoreBuildCheck() = 0;
+    virtual void        SetExploding(bool bExplo);
+    virtual bool        IsExploding();
+    virtual void        SetLock(bool bLock);
+    virtual bool        GetLock();
+    virtual void        SetSpaceshipCargo(bool bCargo);
+    virtual bool        IsSpaceshipCargo();
+    virtual void        SetBurn(bool bBurn);
+    virtual bool        GetBurn();
+    virtual void        SetDead(bool bDead);
+    virtual bool        GetDead();
+    virtual bool        GetRuin();
+    virtual bool        GetActive();
 
-    virtual void        SetExploding(bool bExplo) = 0;
-    virtual bool        IsExploding() = 0;
-    virtual void        SetLock(bool bLock) = 0;
-    virtual bool        GetLock() = 0;
-    virtual void        SetSpaceshipCargo(bool bCargo) = 0;
-    virtual bool        IsSpaceshipCargo() = 0;
-    virtual void        SetBurn(bool bBurn) = 0;
-    virtual bool        GetBurn() = 0;
-    virtual void        SetDead(bool bDead) = 0;
-    virtual bool        GetDead() = 0;
-    virtual bool        GetRuin() = 0;
-    virtual bool        GetActive() = 0;
+    virtual void        SetGunGoalV(float gunGoal);
+    virtual void        SetGunGoalH(float gunGoal);
+    virtual float       GetGunGoalV();
+    virtual float       GetGunGoalH();
 
-    virtual void        SetGunGoalV(float gunGoal) = 0;
-    virtual void        SetGunGoalH(float gunGoal) = 0;
-    virtual float       GetGunGoalV() = 0;
-    virtual float       GetGunGoalH() = 0;
+    virtual bool        StartShowLimit();
+    virtual void        StopShowLimit();
 
-    virtual bool        StartShowLimit() = 0;
-    virtual void        StopShowLimit() = 0;
+    virtual bool        IsProgram();
+    virtual void        CreateSelectParticle();
 
-    virtual bool        IsProgram() = 0;
-    virtual void        CreateSelectParticle() = 0;
+    virtual void        SetRunScript(CScript* script);
+    virtual CScript*    GetRunScript();
+    virtual CBotVar*    GetBotVar();
+    virtual CPhysics*   GetPhysics();
+    virtual CMotion*    GetMotion();
+    virtual CAuto*      GetAuto();
 
-    virtual void        SetRunScript(CScript* script) = 0;
-    virtual CScript*    GetRunScript() = 0;
-    virtual CBotVar*    GetBotVar() = 0;
-    virtual CPhysics*   GetPhysics() = 0;
-    virtual CMotion*    GetMotion() = 0;
-    virtual CAuto*      GetAuto() = 0;
+    virtual void        SetDefRank(int rank);
+    virtual int         GetDefRank();
 
-    virtual void        SetDefRank(int rank) = 0;
-    virtual int         GetDefRank() = 0;
+    virtual bool        GetTooltipName(std::string& name);
 
-    virtual bool        GetTooltipName(std::string& name) = 0;
+    virtual void        AddDeselList(CObject* pObj);
+    virtual CObject*    SubDeselList();
+    virtual void        DeleteDeselList(CObject* pObj);
 
-    virtual void        AddDeselList(CObject* pObj) = 0;
-    virtual CObject*    SubDeselList() = 0;
-    virtual void        DeleteDeselList(CObject* pObj) = 0;
+    virtual bool        CreateShadowCircle(float radius, float intensity, Gfx::EngineShadowType type = Gfx::ENG_SHADOW_NORM);
+    virtual bool        CreateShadowLight(float height, Gfx::Color color);
+    virtual bool        CreateEffectLight(float height, Gfx::Color color);
 
-    virtual bool        CreateShadowCircle(float radius, float intensity, Gfx::EngineShadowType type = Gfx::ENG_SHADOW_NORM) = 0;
-    virtual bool        CreateShadowLight(float height, Gfx::Color color) = 0;
-    virtual bool        CreateEffectLight(float height, Gfx::Color color) = 0;
+    virtual void        FlatParent();
 
-    virtual void        FlatParent() = 0;
-
-    virtual void SetInfoReturn(float value) = 0;
-    virtual float GetInfoReturn() = 0;
+    virtual void SetInfoReturn(float value);
+    virtual float GetInfoReturn();
 };
 

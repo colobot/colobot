@@ -203,6 +203,8 @@ COldObject::COldObject(int id)
     // Another hack
     m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Jostleable)] = false;
 
+    m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Old)] = true;
+
     m_sound       = CApplication::GetInstancePointer()->GetSound();
     m_engine      = Gfx::CEngine::GetInstancePointer();
     m_lightMan    = m_engine->GetLightManager();
@@ -941,6 +943,8 @@ void COldObject::Write(CLevelParserLine* line)
     if ( m_virusTime != 0.0f )
         line->AddParam("virusTime", CLevelParserParamUPtr{new CLevelParserParam(m_virusTime)});
 
+    line->AddParam("ignoreBuildCheck", CLevelParserParamUPtr{new CLevelParserParam(GetIgnoreBuildCheck())});
+
     // Sets the parameters of the command line.
     CLevelParserParamVec cmdline;
     for(float value : m_cmdLine)
@@ -975,14 +979,13 @@ void COldObject::Write(CLevelParserLine* line)
 
 void COldObject::Read(CLevelParserLine* line)
 {
-    Math::Vector    pos, dir;
-
     Gfx::CameraType cType = line->GetParam("camera")->AsCameraType(Gfx::CAM_TYPE_NULL);
     if ( cType != Gfx::CAM_TYPE_NULL )
     {
         SetCameraType(cType);
     }
 
+    SetCameraDist(line->GetParam("cameraDist")->AsFloat(50.0f));
     SetCameraLock(line->GetParam("cameraLock")->AsBool(false));
     SetEnergy(line->GetParam("energy")->AsFloat(0.0f));
     SetCapacity(line->GetParam("capacity")->AsFloat(1.0f));
@@ -1000,6 +1003,7 @@ void COldObject::Read(CLevelParserLine* line)
     SetTeam(line->GetParam("team")->AsInt(0));
     SetGunGoalV(line->GetParam("aimV")->AsFloat(0.0f));
     SetGunGoalH(line->GetParam("aimH")->AsFloat(0.0f));
+
     SetResetCap(static_cast<ResetCap>(line->GetParam("resetCap")->AsInt(0)));
     SetResetPosition(line->GetParam("resetPos")->AsPoint(Math::Vector())*g_unit);
     SetResetAngle(line->GetParam("resetAngle")->AsPoint(Math::Vector())*(Math::PI/180.0f));
@@ -1007,6 +1011,7 @@ void COldObject::Read(CLevelParserLine* line)
     m_bBurn = line->GetParam("burnMode")->AsBool(false);
     m_bVirusMode = line->GetParam("virusMode")->AsBool(false);
     m_virusTime = line->GetParam("virusTime")->AsFloat(0.0f);
+    SetIgnoreBuildCheck(line->GetParam("ignoreBuildCheck")->AsBool(false));
 
     // Sets the parameters of the command line.
     if (line->GetParam("cmdline")->IsDefined())
@@ -1028,7 +1033,6 @@ void COldObject::Read(CLevelParserLine* line)
     {
         m_brain->Read(line);
     }
-
     if ( m_physics != nullptr )
     {
         m_physics->Read(line);
@@ -1229,114 +1233,38 @@ Math::Vector COldObject::GetTilt()
 
 void COldObject::SetPosition(int part, const Math::Vector &pos)
 {
-    Math::Vector    shPos, n[20], norm;
-    float       height, radius;
-    int         rank, i, j;
-
     m_objectPart[part].position = pos;
     m_objectPart[part].bTranslate = true;  // it will recalculate the matrices
 
     if ( part == 0 && !m_bFlat )  // main part?
     {
-        rank = m_objectPart[0].object;
+        int rank = m_objectPart[0].object;
 
-        shPos = pos;
+        Math::Vector shPos = pos;
         m_terrain->AdjustToFloor(shPos, true);
         m_engine->SetObjectShadowPos(rank, shPos);
 
+        float height = 0.0f;
         if ( m_physics != nullptr && m_physics->GetType() == TYPE_FLYING )
         {
             height = pos.y-shPos.y;
         }
-        else
-        {
-            height = 0.0f;
-        }
         m_engine->SetObjectShadowHeight(rank, height);
 
-        // Calculating the normal to the ground in nine strategic locations,
-        // then perform a weighted average (the dots in the center are more important).
-        radius = m_engine->GetObjectShadowRadius(rank);
-        i = 0;
-
-        m_terrain->GetNormal(norm, pos);
-        n[i++] = norm;
-        n[i++] = norm;
-        n[i++] = norm;
-
-        shPos = pos;
-        shPos.x += radius*0.6f;
-        shPos.z += radius*0.6f;
-        m_terrain->GetNormal(norm, shPos);
-        n[i++] = norm;
-        n[i++] = norm;
-
-        shPos = pos;
-        shPos.x -= radius*0.6f;
-        shPos.z += radius*0.6f;
-        m_terrain->GetNormal(norm, shPos);
-        n[i++] = norm;
-        n[i++] = norm;
-
-        shPos = pos;
-        shPos.x += radius*0.6f;
-        shPos.z -= radius*0.6f;
-        m_terrain->GetNormal(norm, shPos);
-        n[i++] = norm;
-        n[i++] = norm;
-
-        shPos = pos;
-        shPos.x -= radius*0.6f;
-        shPos.z -= radius*0.6f;
-        m_terrain->GetNormal(norm, shPos);
-        n[i++] = norm;
-        n[i++] = norm;
-
-        shPos = pos;
-        shPos.x += radius;
-        shPos.z += radius;
-        m_terrain->GetNormal(norm, shPos);
-        n[i++] = norm;
-
-        shPos = pos;
-        shPos.x -= radius;
-        shPos.z += radius;
-        m_terrain->GetNormal(norm, shPos);
-        n[i++] = norm;
-
-        shPos = pos;
-        shPos.x += radius;
-        shPos.z -= radius;
-        m_terrain->GetNormal(norm, shPos);
-        n[i++] = norm;
-
-        shPos = pos;
-        shPos.x -= radius;
-        shPos.z -= radius;
-        m_terrain->GetNormal(norm, shPos);
-        n[i++] = norm;
-
-        norm.LoadZero();
-        for ( j=0 ; j<i ; j++ )
-        {
-            norm += n[j];
-        }
-        norm /= static_cast<float>(i);  // average vector
-
-        m_engine->SetObjectShadowNormal(rank, norm);
+        m_engine->UpdateObjectShadowNormal(rank);
 
         if ( m_shadowLight != -1 )
         {
-            shPos = pos;
-            shPos.y += m_shadowHeight;
-            m_lightMan->SetLightPos(m_shadowLight, shPos);
+            Math::Vector lightPos = pos;
+            lightPos.y += m_shadowHeight;
+            m_lightMan->SetLightPos(m_shadowLight, lightPos);
         }
 
         if ( m_effectLight != -1 )
         {
-            shPos = pos;
-            shPos.y += m_effectHeight;
-            m_lightMan->SetLightPos(m_effectLight, shPos);
+            Math::Vector lightPos = pos;
+            lightPos.y += m_effectHeight;
+            m_lightMan->SetLightPos(m_effectLight, lightPos);
         }
 
         if ( m_bShowLimit )
@@ -3437,8 +3365,6 @@ void COldObject::SetAuto(std::unique_ptr<CAuto> automat)
     m_auto = std::move(automat);
 }
 
-
-
 // Management of the position in the file definition.
 
 void COldObject::SetDefRank(int rank)
@@ -3450,7 +3376,6 @@ int  COldObject::GetDefRank()
 {
     return m_defRank;
 }
-
 
 // Getes the object name for the tooltip.
 

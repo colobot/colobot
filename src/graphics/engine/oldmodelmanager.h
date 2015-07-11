@@ -84,9 +84,6 @@ protected:
     //! Mirrors the model along the Z axis
     void Mirror(std::vector<ModelTriangle>& triangles);
 
-    //! Converts from model to engine rendering state
-    int GetEngineState(const ModelTriangle& triangle);
-
 private:
     struct ModelInfo
     {

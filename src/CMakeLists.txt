@@ -167,6 +167,7 @@ set(BASE_SOURCES
     object/object_factory.cpp
     object/object_manager.cpp
     object/old_object.cpp
+    object/old_object_interface.cpp
     object/robotmain.cpp
     object/scene_conditions.cpp
     object/task/task.cpp
@@ -193,6 +194,7 @@ set(BASE_SOURCES
     object/task/taskwait.cpp
     object/tool_type.cpp
     object/subclass/exchange_post.cpp
+    object/subclass/static_object.cpp
     physics/physics.cpp
     script/cbottoken.cpp
     script/script.cpp

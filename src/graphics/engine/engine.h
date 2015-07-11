@@ -24,10 +24,8 @@
 
 #pragma once
 
-
 #include "app/system.h"
 
-#include "common/event.h"
 #include "common/singleton.h"
 
 #include "graphics/core/color.h"
@@ -46,6 +44,7 @@
 #include <map>
 #include <set>
 #include <memory>
+#include <unordered_map>
 
 
 class CApplication;
@@ -53,6 +52,7 @@ class CObject;
 class CSoundInterface;
 class CImage;
 class CPauseManager;
+struct Event;
 
 
 // Graphics module namespace
@@ -70,6 +70,9 @@ class CLightning;
 class CPlanet;
 class CTerrain;
 class CPyroManager;
+class CModelMesh;
+struct ModelShadowSpot;
+struct ModelTriangle;
 
 
 /**
@@ -765,12 +768,37 @@ public:
     void            AddStatisticTriangle(int nb);
     //! Returns the number of triangles in current frame
     int             GetStatisticTriangle();
-    
+
     //! Sets the coordinates to display in stats window
     void            SetStatisticPos(Math::Vector pos);
-    
+
     //! Sets text to display as mission timer
     void            SetTimerDisplay(const std::string& text);
+
+
+    /* *************** New mesh interface *************** */
+    //! Add new instance of static mesh
+    /**
+     * Static meshes never change their geometry or texture mapping,
+     * so specific instances can share mesh data.
+     *
+     * @param mesh mesh data
+     * @param key key unique per object class
+     * @return mesh instance handle
+     */
+    int AddStaticMesh(const std::string& key, const Gfx::CModelMesh* mesh, const Math::Matrix& worldMatrix);
+
+    //! Removes given static mesh
+    void DeleteStaticMesh(int meshHandle);
+
+    //! Adds a shadow spot to mesh
+    void AddStaticMeshShadowSpot(int meshHandle, const Gfx::ModelShadowSpot& shadowSpot);
+
+    //! Returns static mesh world matrix
+    const Math::Matrix& GetStaticMeshWorldMatrix(int meshHandle);
+
+    //! Sets transparency for static mesh
+    void SetStaticMeshTransparency(int meshHandle, float value);
 
 
     /* *************** Object management *************** */
@@ -788,11 +816,7 @@ public:
     void            CopyBaseObject(int sourceBaseObjRank, int destBaseObjRank);
 
     //! Adds triangles to given object with the specified params
-    void            AddBaseObjTriangles(int baseObjRank, const std::vector<VertexTex2>& vertices,
-                                        EngineTriangleType triangleType,
-                                        const Material& material, int state,
-                                        std::string tex1Name, std::string tex2Name,
-                                        bool globalUpdate);
+    void AddBaseObjTriangles(int baseObjRank, const std::vector<Gfx::ModelTriangle>& triangles);
 
     //! Adds a tier 4 engine object directly
     void            AddBaseObjQuick(int baseObjRank, const EngineBaseObjDataTier& buffer,
@@ -880,12 +904,11 @@ public:
     void            SetObjectShadowHide(int objRank, bool hide);
     void            SetObjectShadowType(int objRank, EngineShadowType type);
     void            SetObjectShadowPos(int objRank, const Math::Vector& pos);
-    void            SetObjectShadowNormal(int objRank, const Math::Vector& normal);
     void            SetObjectShadowAngle(int objRank, float angle);
     void            SetObjectShadowRadius(int objRank, float radius);
     void            SetObjectShadowIntensity(int objRank, float intensity);
     void            SetObjectShadowHeight(int objRank, float height);
-    float           GetObjectShadowRadius(int objRank);
+    void            UpdateObjectShadowNormal(int objRank);
     //@}
 
     //! Lists the ranks of objects and subobjects selected
@@ -1314,6 +1337,12 @@ protected:
     //! Updates static buffers of changed objects
     void        UpdateStaticBuffers();
 
+    void            AddBaseObjTriangles(int baseObjRank, const std::vector<VertexTex2>& vertices,
+                                        const Material& material, int state,
+                                        std::string tex1Name, std::string tex2Name);
+
+    int GetEngineState(const ModelTriangle& triangle);
+
 protected:
     CApplication*     m_app;
     CSoundInterface*  m_sound;
@@ -1509,6 +1538,8 @@ protected:
     bool            m_debugDumpLights;
 
     std::string     m_timerText;
+
+    std::unordered_map<std::string, int> m_staticMeshBaseObjects;
 };
 
 

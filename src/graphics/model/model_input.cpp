@@ -1,3 +1,22 @@
+/*
+ * This file is part of the Colobot: Gold Edition source code
+ * Copyright (C) 2001-2015, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * http://epsiteс.ch; http://colobot.info; http://github.com/colobot
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see http://gnu.org/licenses
+ */
+
 #include "graphics/model/model_input.h"
 
 #include "common/ioutils.h"
@@ -20,7 +39,10 @@ namespace ModelInput
 {
     void ReadTextModel(CModel &model, std::istream &stream);
     void ReadTextModelV1AndV2(CModel &model, std::istream &stream);
+
     void ReadTextModelV3(CModel &model, std::istream &stream);
+    ModelHeaderV3 ReadTextHeader(std::istream &stream);
+    CModelMesh ReadTextMesh(std::istream &stream);
 
     void ReadBinaryModel(CModel &model, std::istream &stream);
     void ReadBinaryModelV1AndV2(CModel &model, std::istream &stream);
@@ -36,8 +58,15 @@ namespace ModelInput
     Material ReadBinaryMaterial(std::istream& stream);
 
     std::string ReadLineString(std::istream& stream, const std::string& prefix);
+    void ReadValuePrefix(std::istream& stream, const std::string& prefix);
     VertexTex2 ParseVertexTex2(const std::string& text);
-    Material ParseTextMaterial(const std::string& text);
+    Material ParseMaterial(const std::string& text);
+    Math::Vector ParseVector(const std::string& text);
+    ModelCrashSphere ParseCrashSphere(const std::string& text);
+    ModelShadowSpot ParseShadowSpot(const std::string& text);
+    Math::Sphere ParseCameraCollisionSphere(const std::string& text);
+    ModelTransparentMode ParseTransparentMode(const std::string& text);
+    ModelSpecialMark ParseSpecialMark(const std::string& text);
 
     void ConvertOldTex1Name(ModelTriangle& triangle, const char* tex1Name);
     void ConvertFromOldRenderState(ModelTriangle& triangle, int state);
@@ -217,7 +246,7 @@ void ModelInput::ReadTextModelV1AndV2(CModel &model, std::istream &stream)
         t.p3 = ParseVertexTex2(p3Text);
 
         std::string matText = ReadLineString(stream, "mat");
-        t.material = ParseTextMaterial(matText);
+        t.material = ParseMaterial(matText);
 
         t.tex1Name = ReadLineString(stream, "tex1");
         t.tex2Name = ReadLineString(stream, "tex2");
@@ -253,7 +282,94 @@ void ModelInput::ReadTextModelV1AndV2(CModel &model, std::istream &stream)
 
 void ModelInput::ReadTextModelV3(CModel &model, std::istream &stream)
 {
-    // TODO...
+    ModelHeaderV3 header;
+
+    try
+    {
+        header = ReadTextHeader(stream);
+    }
+    catch (const std::exception& e)
+    {
+        throw CModelIOException(std::string("Error reading model header: ") + e.what());
+    }
+
+    for (int i = 0; i < header.totalCrashSpheres; ++i)
+    {
+        auto crashSphere = ParseCrashSphere(ReadLineString(stream, "crash_sphere"));
+        model.AddCrashSphere(crashSphere);
+    }
+
+    if (header.hasShadowSpot)
+    {
+        auto shadowSpot = ParseShadowSpot(ReadLineString(stream, "shadow_spot"));
+        model.SetShadowSpot(shadowSpot);
+    }
+
+    if (header.hasCameraCollisionSphere)
+    {
+        auto sphere = ParseCameraCollisionSphere(ReadLineString(stream, "camera_collision_sphere"));
+        model.SetCameraCollisionSphere(sphere);
+    }
+
+    for (int i = 0; i < header.totalMeshes; ++i)
+    {
+        std::string meshName = ReadLineString(stream, "mesh");
+        CModelMesh mesh = ReadTextMesh(stream);
+        model.AddMesh(meshName, std::move(mesh));
+    }
+}
+
+ModelHeaderV3 ModelInput::ReadTextHeader(std::istream &stream)
+{
+    ModelHeaderV3 header;
+    header.version = boost::lexical_cast<int>(ReadLineString(stream, "version"));
+    header.totalCrashSpheres = boost::lexical_cast<int>(ReadLineString(stream, "total_crash_spheres"));
+    header.hasShadowSpot = ReadLineString(stream, "has_shadow_spot") == std::string("Y");
+    header.hasCameraCollisionSphere = ReadLineString(stream, "has_camera_collision_sphere") == std::string("Y");
+    header.totalMeshes = boost::lexical_cast<int>(ReadLineString(stream, "total_meshes"));
+    return header;
+}
+
+CModelMesh ModelInput::ReadTextMesh(std::istream& stream)
+{
+    CModelMesh mesh;
+
+    mesh.SetPosition(ParseVector(ReadLineString(stream, "position")));
+    mesh.SetRotation(ParseVector(ReadLineString(stream, "rotation")));
+    mesh.SetScale(ParseVector(ReadLineString(stream, "scale")));
+    mesh.SetParent(ReadLineString(stream, "parent"));
+
+    int totalTriangles = boost::lexical_cast<int>(ReadLineString(stream, "total_triangles"));
+
+    for (int i = 0; i < totalTriangles; ++i)
+    {
+        ModelTriangleV3 t;
+
+        std::string p1Text = ReadLineString(stream, "p1");
+        t.p1 = ParseVertexTex2(p1Text);
+        std::string p2Text = ReadLineString(stream, "p2");
+        t.p2 = ParseVertexTex2(p2Text);
+        std::string p3Text = ReadLineString(stream, "p3");
+        t.p3 = ParseVertexTex2(p3Text);
+
+        std::string matText = ReadLineString(stream, "mat");
+        Material mat = ParseMaterial(matText);
+        t.ambient = mat.ambient;
+        t.diffuse = mat.diffuse;
+        t.specular = mat.specular;
+
+        t.tex1Name = ReadLineString(stream, "tex1");
+        t.tex2Name = ReadLineString(stream, "tex2");
+        t.variableTex2 = ReadLineString(stream, "var_tex2") == std::string("Y");
+
+        t.transparentMode = ParseTransparentMode(ReadLineString(stream, "trans_mode"));
+        t.specialMark = ParseSpecialMark(ReadLineString(stream, "mark"));
+        t.doubleSided = ReadLineString(stream, "dbl_side") == std::string("Y");
+
+        mesh.AddTriangle(t);
+    }
+
+    return mesh;
 }
 
 void ModelInput::ReadOldModel(CModel &model, std::istream &stream)
@@ -592,6 +708,14 @@ std::string ModelInput::ReadLineString(std::istream& stream, const std::string& 
     return value;
 }
 
+void ModelInput::ReadValuePrefix(std::istream& stream, const std::string& expectedPrefix)
+{
+    std::string prefix;
+    stream >> prefix;
+    if (prefix != expectedPrefix)
+        throw CModelIOException(std::string("Unexpected prefix: '") + prefix + "', expected was: '" + expectedPrefix + "'");
+}
+
 VertexTex2 ModelInput::ParseVertexTex2(const std::string& text)
 {
     VertexTex2 vertex;
@@ -599,72 +723,145 @@ VertexTex2 ModelInput::ParseVertexTex2(const std::string& text)
     std::stringstream stream;
     stream.str(text);
 
-    std::string prefix;
-
-    stream >> prefix;
-    if (prefix != "c")
-        throw CModelIOException(std::string("Unexpected prefix: '") + prefix + "'");
-
+    ReadValuePrefix(stream, "c");
     stream >> vertex.coord.x >> vertex.coord.y >> vertex.coord.z;
 
-    stream >> prefix;
-    if (prefix != "n")
-        throw CModelIOException(std::string("Unexpected prefix: '") + prefix + "'");
-
+    ReadValuePrefix(stream, "n");
     stream >> vertex.normal.x >> vertex.normal.y >> vertex.normal.z;
 
-    stream >> prefix;
-    if (prefix != "t1")
-        throw CModelIOException(std::string("Unexpected prefix: '") + prefix + "'");
-
+    ReadValuePrefix(stream, "t1");
     stream >> vertex.texCoord.x >> vertex.texCoord.y;
 
-    stream >> prefix;
-    if (prefix != "t2")
-        throw CModelIOException(std::string("Unexpected prefix: '") + prefix + "'");
-
+    ReadValuePrefix(stream, "t2");
     stream >> vertex.texCoord2.x >> vertex.texCoord2.y;
 
     return vertex;
 }
 
-Material ModelInput::ParseTextMaterial(const std::string& text)
+Material ModelInput::ParseMaterial(const std::string& text)
 {
     Material material;
 
     std::stringstream stream;
     stream.str(text);
 
-    std::string prefix;
-
-    stream >> prefix;
-    if (prefix != "dif")
-        throw CModelIOException(std::string("Unexpected prefix: '") + prefix + "'");
-
+    ReadValuePrefix(stream, "dif");
     stream >> material.diffuse.r
            >> material.diffuse.g
            >> material.diffuse.b
            >> material.diffuse.a;
 
-    stream >> prefix;
-    if (prefix != "amb")
-        throw CModelIOException(std::string("Unexpected prefix: '") + prefix + "'");
-
+    ReadValuePrefix(stream, "amb");
     stream >> material.ambient.r
            >> material.ambient.g
            >> material.ambient.b
            >> material.ambient.a;
 
-    stream >> prefix;
-    if (prefix != "spc")
-        throw CModelIOException(std::string("Unexpected prefix: '") + prefix + "'");
-
+    ReadValuePrefix(stream, "spc");
     stream >> material.specular.r
            >> material.specular.g
            >> material.specular.b
            >> material.specular.a;
 
     return material;
+}
+
+Math::Vector ModelInput::ParseVector(const std::string& text)
+{
+    Math::Vector vector;
+
+    std::stringstream stream;
+    stream.str(text);
+
+    stream >> vector.x >> vector.y >> vector.z;
+
+    return vector;
+}
+
+ModelCrashSphere ModelInput::ParseCrashSphere(const std::string& text)
+{
+    ModelCrashSphere crashSphere;
+
+    std::stringstream stream;
+    stream.str(text);
+
+    ReadValuePrefix(stream, "pos");
+    stream >> crashSphere.position.x
+           >> crashSphere.position.y
+           >> crashSphere.position.z;
+
+    ReadValuePrefix(stream, "rad");
+    stream >> crashSphere.radius;
+
+    ReadValuePrefix(stream, "sound");
+    stream >> crashSphere.sound;
+
+    ReadValuePrefix(stream, "hard");
+    stream >> crashSphere.hardness;
+
+    return crashSphere;
+}
+
+ModelShadowSpot ModelInput::ParseShadowSpot(const std::string& text)
+{
+    ModelShadowSpot shadowSpot;
+
+    std::stringstream stream;
+    stream.str(text);
+
+    ReadValuePrefix(stream, "rad");
+    stream >> shadowSpot.radius;
+
+    ReadValuePrefix(stream, "int");
+    stream >> shadowSpot.intensity;
+
+    return shadowSpot;
+}
+
+Math::Sphere ModelInput::ParseCameraCollisionSphere(const std::string& text)
+{
+    Math::Sphere sphere;
+
+    std::stringstream stream;
+    stream.str(text);
+
+    ReadValuePrefix(stream, "pos");
+    stream >> sphere.pos.x
+           >> sphere.pos.y
+           >> sphere.pos.z;
+
+    ReadValuePrefix(stream, "rad");
+    stream >> sphere.radius;
+
+    return sphere;
+}
+
+ModelTransparentMode ModelInput::ParseTransparentMode(const std::string& text)
+{
+    if (text == "none")
+        return ModelTransparentMode::None;
+    else if (text == "alpha")
+        return ModelTransparentMode::AlphaChannel;
+    else if (text == "map_black")
+        return ModelTransparentMode::MapBlackToAlpha;
+    else if (text == "map_white")
+        return ModelTransparentMode::MapWhiteToAlpha;
+    else
+        throw CModelIOException(std::string("Unexpected transparent mode: '") + text + "'");
+}
+
+ModelSpecialMark ModelInput::ParseSpecialMark(const std::string& text)
+{
+    if (text == "none")
+        return ModelSpecialMark::None;
+    else if (text == "part1")
+        return ModelSpecialMark::Part1;
+    else if (text == "part2")
+        return ModelSpecialMark::Part2;
+    else if (text == "part3")
+        return ModelSpecialMark::Part3;
+    else
+        throw CModelIOException(std::string("Unexpected special mark: '") + text + "'");
 }
 
 } // namespace Gfx

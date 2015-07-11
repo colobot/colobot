@@ -24,6 +24,7 @@
 
 #include "object/object.h"
 #include "object/object_create_params.h"
+#include "object/object_create_exception.h"
 #include "object/object_factory.h"
 #include "object/old_object.h"
 #include "object/auto/auto.h"
@@ -38,9 +39,10 @@ template<> CObjectManager* CSingleton<CObjectManager>::m_instance = nullptr;
 
 CObjectManager::CObjectManager(Gfx::CEngine* engine,
                                Gfx::CTerrain* terrain,
-                               Gfx::COldModelManager* modelManager,
+                               Gfx::COldModelManager* oldModelManager,
+                               Gfx::CModelManager* modelManager,
                                Gfx::CParticle* particle)
-  : m_objectFactory(new CObjectFactory(engine, terrain, modelManager, particle))
+  : m_objectFactory(new CObjectFactory(engine, terrain, oldModelManager, modelManager, particle))
   , m_nextId(0)
 {
 }
@@ -132,6 +134,10 @@ CObject* CObjectManager::CreateObject(Math::Vector pos,
     params.id = id;
 
     auto objectUPtr = m_objectFactory->CreateObject(params);
+
+    if (objectUPtr == nullptr)
+        throw CObjectCreateException("Something went wrong in CObjectFactory", type);
+
     CObject* objectPtr = objectUPtr.get();
 
     m_objects[id] = std::move(objectUPtr);

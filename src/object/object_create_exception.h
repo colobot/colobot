@@ -17,35 +17,22 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-#include "graphics/model/model_manager.h"
+#pragma once
 
-#include "common/resources/inputstream.h"
+#include "object/object_type.h"
 
-#include "graphics/model/model_input.h"
-#include "graphics/model/model_io_exception.h"
+#include <stdexcept>
+#include <boost/lexical_cast.hpp>
 
-namespace Gfx {
-
-CModel& CModelManager::GetModel(const std::string& modelName)
+class CObjectCreateException : public std::runtime_error
 {
-    auto it = m_models.find(modelName);
-    if (it != m_models.end())
-        return it->second;
-
-    CInputStream stream;
-    stream.open("models-new/" + modelName + ".txt");
-    if (!stream.is_open())
-        throw CModelIOException(std::string("Could not open file '") + modelName + "'");
-
-    CModel model = ModelInput::Read(stream, ModelFormat::Text);
-    m_models[modelName] = model;
-
-    return m_models[modelName];
-}
-
-void CModelManager::ClearCache()
-{
-    m_models.clear();
-}
-
-} // namespace Gfx
+public:
+    explicit CObjectCreateException(const std::string& error, ObjectType type)
+        : std::runtime_error("Error creating object type " + boost::lexical_cast<std::string>(type))
+    {}
+    explicit CObjectCreateException(const std::string& error, ObjectType type, const std::string& modelName)
+        : std::runtime_error("Error creating object type " +
+                              boost::lexical_cast<std::string>(type) +
+                              " from model " + modelName + ": " + error)
+    {}
+};

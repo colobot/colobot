@@ -24,7 +24,7 @@
 
 #pragma once
 
-
+#include "common/event.h"
 #include "common/global.h"
 #include "common/singleton.h"
 #include "common/profile.h"

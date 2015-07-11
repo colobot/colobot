@@ -24,6 +24,8 @@
 
 #pragma once
 
+#include <functional>
+
 /**
  * \enum ObjectType
  * \brief Type of game object
@@ -190,4 +192,12 @@ enum ObjectType
     OBJECT_HOME1            = 910,  //! < Home
 
     OBJECT_MAX              = 1000  //! < number of values
+};
+
+struct ObjectTypeHash
+{
+    inline std::size_t operator()(ObjectType t) const
+    {
+        return std::hash<int>()(t);
+    }
 };

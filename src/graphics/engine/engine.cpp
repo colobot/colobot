@@ -40,6 +40,9 @@
 #include "graphics/engine/text.h"
 #include "graphics/engine/water.h"
 
+#include "graphics/model/model_mesh.h"
+#include "graphics/model/model_shadow_spot.h"
+
 #include "math/geometry.h"
 
 #include "sound/sound.h"
@@ -706,45 +709,33 @@ void CEngine::CopyBaseObject(int sourceBaseObjRank, int destBaseObjRank)
 }
 
 void CEngine::AddBaseObjTriangles(int baseObjRank, const std::vector<VertexTex2>& vertices,
-                                  EngineTriangleType triangleType,
                                   const Material& material, int state,
-                                  std::string tex1Name, std::string tex2Name,
-                                  bool globalUpdate)
+                                  std::string tex1Name, std::string tex2Name)
 {
     assert(baseObjRank >= 0 && baseObjRank < static_cast<int>( m_baseObjects.size() ));
 
     EngineBaseObject&      p1 = m_baseObjects[baseObjRank];
     EngineBaseObjTexTier&  p2 = AddLevel2(p1, tex1Name, tex2Name);
-    EngineBaseObjDataTier& p3 = AddLevel3(p2, triangleType, material, state);
+    EngineBaseObjDataTier& p3 = AddLevel3(p2, ENG_TRIANGLE_TYPE_TRIANGLES, material, state);
 
     p3.vertices.insert(p3.vertices.end(), vertices.begin(), vertices.end());
 
     p3.updateStaticBuffer = true;
     m_updateStaticBuffers = true;
 
-    if (globalUpdate)
+    for (int i = 0; i < static_cast<int>( vertices.size() ); i++)
     {
-        m_updateGeometry = true;
-    }
-    else
-    {
-        for (int i = 0; i < static_cast<int>( vertices.size() ); i++)
-        {
-            p1.bboxMin.x = Math::Min(vertices[i].coord.x, p1.bboxMin.x);
-            p1.bboxMin.y = Math::Min(vertices[i].coord.y, p1.bboxMin.y);
-            p1.bboxMin.z = Math::Min(vertices[i].coord.z, p1.bboxMin.z);
-            p1.bboxMax.x = Math::Max(vertices[i].coord.x, p1.bboxMax.x);
-            p1.bboxMax.y = Math::Max(vertices[i].coord.y, p1.bboxMax.y);
-            p1.bboxMax.z = Math::Max(vertices[i].coord.z, p1.bboxMax.z);
-        }
-
-        p1.radius = Math::Max(p1.bboxMin.Length(), p1.bboxMax.Length());
+        p1.bboxMin.x = Math::Min(vertices[i].coord.x, p1.bboxMin.x);
+        p1.bboxMin.y = Math::Min(vertices[i].coord.y, p1.bboxMin.y);
+        p1.bboxMin.z = Math::Min(vertices[i].coord.z, p1.bboxMin.z);
+        p1.bboxMax.x = Math::Max(vertices[i].coord.x, p1.bboxMax.x);
+        p1.bboxMax.y = Math::Max(vertices[i].coord.y, p1.bboxMax.y);
+        p1.bboxMax.z = Math::Max(vertices[i].coord.z, p1.bboxMax.z);
     }
 
-    if (triangleType == ENG_TRIANGLE_TYPE_TRIANGLES)
-        p1.totalTriangles += vertices.size() / 3;
-    else
-        p1.totalTriangles += vertices.size() - 2;
+    p1.radius = Math::Max(p1.bboxMin.Length(), p1.bboxMax.Length());
+
+    p1.totalTriangles += vertices.size() / 3;
 }
 
 void CEngine::AddBaseObjQuick(int baseObjRank, const EngineBaseObjDataTier& buffer,
@@ -1386,19 +1377,6 @@ void CEngine::SetObjectShadowPos(int objRank, const Math::Vector& pos)
     m_shadows[shadowRank].pos = pos;
 }
 
-void CEngine::SetObjectShadowNormal(int objRank, const Math::Vector& normal)
-{
-    assert(objRank >= 0 && objRank < static_cast<int>( m_objects.size() ));
-
-    int shadowRank = m_objects[objRank].shadowRank;
-    if (shadowRank == -1)
-        return;
-
-    assert(shadowRank >= 0 && shadowRank < static_cast<int>( m_shadows.size() ));
-
-    m_shadows[shadowRank].normal = normal;
-}
-
 void CEngine::SetObjectShadowAngle(int objRank, float angle)
 {
     assert(objRank >= 0 && objRank < static_cast<int>( m_objects.size() ));
@@ -1449,19 +1427,6 @@ void CEngine::SetObjectShadowHeight(int objRank, float height)
     assert(shadowRank >= 0 && shadowRank < static_cast<int>( m_shadows.size() ));
 
     m_shadows[shadowRank].height = height;
-}
-
-float CEngine::GetObjectShadowRadius(int objRank)
-{
-    assert(objRank >= 0 && objRank < static_cast<int>( m_objects.size() ));
-
-    int shadowRank = m_objects[objRank].shadowRank;
-    if (shadowRank == -1)
-        return 0.0f;
-
-    assert(shadowRank >= 0 && shadowRank < static_cast<int>( m_shadows.size() ));
-
-    return m_shadows[shadowRank].radius;
 }
 
 bool CEngine::GetHighlight(Math::Point &p1, Math::Point &p2)
@@ -3233,7 +3198,7 @@ void CEngine::Draw3DScene()
         UseShadowMapping(false);
 
         // Draws the shadows , if shadows enabled
-	if (m_shadowVisible)
+    if (m_shadowVisible)
         DrawShadow();
 
 
@@ -4943,6 +4908,229 @@ void CEngine::DrawTimer()
     m_text->DrawText(m_timerText, FONT_COLOBOT, 15.0f, pos, 1.0f, TEXT_ALIGN_RIGHT, 0, Color(1.0f, 1.0f, 1.0f, 1.0f));
 }
 
+void CEngine::AddBaseObjTriangles(int baseObjRank, const std::vector<Gfx::ModelTriangle>& triangles)
+{
+    std::vector<VertexTex2> vs(3, VertexTex2());
+
+    for (const auto& triangle : triangles)
+    {
+        vs[0] = triangle.p1;
+        vs[1] = triangle.p2;
+        vs[2] = triangle.p3;
+
+        Material material;
+        material.ambient = triangle.ambient;
+        material.diffuse = triangle.diffuse;
+        material.specular = triangle.specular;
+
+        int state = GetEngineState(triangle);
+
+        std::string tex1Name;
+        if (!triangle.tex1Name.empty())
+            tex1Name = "objects/" + triangle.tex1Name;
+
+        std::string tex2Name;
+        if (triangle.variableTex2)
+            tex2Name = GetSecondTexture();
+        else
+            tex2Name = triangle.tex2Name;
+
+        AddBaseObjTriangles(baseObjRank, vs, material, state, tex1Name, tex2Name);
+    }
+}
+
+int CEngine::GetEngineState(const ModelTriangle& triangle)
+{
+    int state = 0;
+
+    if (!triangle.tex2Name.empty() || triangle.variableTex2)
+        state |= ENG_RSTATE_DUAL_BLACK;
+
+    switch (triangle.transparentMode)
+    {
+        case ModelTransparentMode::None:
+            break;
+
+        case ModelTransparentMode::AlphaChannel:
+            state |= ENG_RSTATE_ALPHA;
+            break;
+
+        case ModelTransparentMode::MapBlackToAlpha:
+            state |= ENG_RSTATE_TTEXTURE_BLACK;
+            break;
+
+        case ModelTransparentMode::MapWhiteToAlpha:
+            state |= ENG_RSTATE_TTEXTURE_WHITE;
+            break;
+    }
+
+    switch (triangle.specialMark)
+    {
+        case ModelSpecialMark::None:
+            break;
+
+        case ModelSpecialMark::Part1:
+            state |= ENG_RSTATE_PART1;
+            break;
+
+        case ModelSpecialMark::Part2:
+            state |= ENG_RSTATE_PART2;
+            break;
+
+        case ModelSpecialMark::Part3:
+            state |= ENG_RSTATE_PART3;
+            break;
+    }
+
+    if (triangle.doubleSided)
+        state |= ENG_RSTATE_2FACE;
+
+    return state;
+}
+
+void CEngine::UpdateObjectShadowNormal(int rank)
+{
+    assert(rank >= 0 && rank < static_cast<int>( m_objects.size() ));
+
+    int shadowRank = m_objects[rank].shadowRank;
+    if (shadowRank == -1)
+        return;
+
+    assert(shadowRank >= 0 && shadowRank < static_cast<int>( m_shadows.size() ));
+
+    // Calculating the normal to the ground in nine strategic locations,
+    // then perform a weighted average (the dots in the center are more important).
+
+    Math::Vector pos = m_shadows[shadowRank].pos;
+    float radius = m_shadows[shadowRank].radius;
+
+    Math::Vector n[20];
+    Math::Vector norm;
+    int i = 0;
+
+    m_terrain->GetNormal(norm, pos);
+    n[i++] = norm;
+    n[i++] = norm;
+    n[i++] = norm;
+
+    Math::Vector shPos = pos;
+    shPos.x += radius*0.6f;
+    shPos.z += radius*0.6f;
+    m_terrain->GetNormal(norm, shPos);
+    n[i++] = norm;
+    n[i++] = norm;
+
+    shPos = pos;
+    shPos.x -= radius*0.6f;
+    shPos.z += radius*0.6f;
+    m_terrain->GetNormal(norm, shPos);
+    n[i++] = norm;
+    n[i++] = norm;
+
+    shPos = pos;
+    shPos.x += radius*0.6f;
+    shPos.z -= radius*0.6f;
+    m_terrain->GetNormal(norm, shPos);
+    n[i++] = norm;
+    n[i++] = norm;
+
+    shPos = pos;
+    shPos.x -= radius*0.6f;
+    shPos.z -= radius*0.6f;
+    m_terrain->GetNormal(norm, shPos);
+    n[i++] = norm;
+    n[i++] = norm;
+
+    shPos = pos;
+    shPos.x += radius;
+    shPos.z += radius;
+    m_terrain->GetNormal(norm, shPos);
+    n[i++] = norm;
+
+    shPos = pos;
+    shPos.x -= radius;
+    shPos.z += radius;
+    m_terrain->GetNormal(norm, shPos);
+    n[i++] = norm;
+
+    shPos = pos;
+    shPos.x += radius;
+    shPos.z -= radius;
+    m_terrain->GetNormal(norm, shPos);
+    n[i++] = norm;
+
+    shPos = pos;
+    shPos.x -= radius;
+    shPos.z -= radius;
+    m_terrain->GetNormal(norm, shPos);
+    n[i++] = norm;
+
+    norm.LoadZero();
+    for (int j = 0; j < i; j++)
+    {
+        norm += n[j];
+    }
+    norm /= static_cast<float>(i);  // average vector
+
+    m_shadows[shadowRank].normal = norm;
+}
+
+int CEngine::AddStaticMesh(const std::string& key, const CModelMesh* mesh, const Math::Matrix& worldMatrix)
+{
+    int baseObjRank = -1;
+
+    auto it = m_staticMeshBaseObjects.find(key);
+    if (it == m_staticMeshBaseObjects.end())
+    {
+        baseObjRank = CreateBaseObject();
+        AddBaseObjTriangles(baseObjRank, mesh->GetTriangles());
+        m_staticMeshBaseObjects[key] = baseObjRank;
+    }
+    else
+    {
+        baseObjRank = it->second;
+    }
+
+    int objRank = CreateObject();
+    SetObjectBaseRank(objRank, baseObjRank);
+    SetObjectTransform(objRank, worldMatrix);
+    SetObjectType(objRank, ENG_OBJTYPE_FIX);
+
+    return objRank;
+}
+
+void CEngine::AddStaticMeshShadowSpot(int meshHandle, const ModelShadowSpot& shadowSpot)
+{
+    int objRank = meshHandle;
+
+    CreateShadow(objRank);
+    SetObjectShadowRadius(objRank, shadowSpot.radius);
+    SetObjectShadowIntensity(objRank, shadowSpot.intensity);
+    SetObjectShadowType(objRank, ENG_SHADOW_NORM);
+    SetObjectShadowHeight(objRank, 0.0f);
+    SetObjectShadowAngle(objRank, 0.0f);
+    UpdateObjectShadowNormal(objRank);
+}
+
+void CEngine::DeleteStaticMesh(int meshHandle)
+{
+    int objRank = meshHandle;
+
+    DeleteShadow(objRank);
+    DeleteObject(objRank);
+}
+
+const Math::Matrix& CEngine::GetStaticMeshWorldMatrix(int meshHandle)
+{
+    int objRank = meshHandle;
+    return m_objects[objRank].transform;
+}
+
+void CEngine::SetStaticMeshTransparency(int meshHandle, float value)
+{
+    int objRank = meshHandle;
+    SetObjectTransparency(objRank, value);
+}
 
 } // namespace Gfx
 

@@ -51,6 +51,7 @@
 #include "graphics/engine/terrain.h"
 #include "graphics/engine/text.h"
 #include "graphics/engine/water.h"
+#include "graphics/model/model_manager.h"
 
 #include "math/const.h"
 #include "math/geometry.h"
@@ -133,7 +134,8 @@ CRobotMain::CRobotMain(CController* controller)
     m_sound      = nullptr;
 
     m_engine     = nullptr;
-    m_modelManager = nullptr;
+    m_oldModelManager = nullptr;
+    m_modelManager = std::unique_ptr<Gfx::CModelManager>(new Gfx::CModelManager());
     m_lightMan   = nullptr;
     m_particle   = nullptr;
     m_water      = nullptr;
@@ -252,7 +254,7 @@ void CRobotMain::Create(bool loadProfile)
     m_sound      = m_app->GetSound();
 
     m_engine     = Gfx::CEngine::GetInstancePointer();
-    m_modelManager = m_engine->GetModelManager();
+    m_oldModelManager = m_engine->GetModelManager();
     m_lightMan   = m_engine->GetLightManager();
     m_particle   = m_engine->GetParticle();
     m_water      = m_engine->GetWater();
@@ -274,7 +276,8 @@ void CRobotMain::Create(bool loadProfile)
 
     m_objMan = new CObjectManager(m_engine,
                                   m_terrain,
-                                  m_modelManager,
+                                  m_oldModelManager,
+                                  m_modelManager.get(),
                                   m_particle);
 
     m_engine->SetTerrain(m_terrain);
@@ -473,7 +476,7 @@ void CRobotMain::ChangePhase(Phase phase)
     m_engine->SetRankView(0);
     m_terrain->FlushRelief();
     m_engine->DeleteAllObjects();
-    m_modelManager->DeleteAllModelCopies();
+    m_oldModelManager->DeleteAllModelCopies();
     m_engine->SetWaterAddColor(Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f));
     m_engine->SetBackground("");
     m_engine->SetBackForce(false);
@@ -2840,7 +2843,7 @@ void CRobotMain::ScenePerso()
     DeleteAllObjects();  // removes all the current 3D Scene
     m_terrain->FlushRelief();
     m_engine->DeleteAllObjects();
-    m_modelManager->DeleteAllModelCopies();
+    m_oldModelManager->DeleteAllModelCopies();
     m_terrain->FlushBuildingLevel();
     m_terrain->FlushFlyingLimit();
     m_lightMan->FlushLights();
@@ -3535,11 +3538,18 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                     if (m_phase == PHASE_LOST) motion->SetAction(MHS_LOST, 0.5f);
                 }
 
-                if (obj != nullptr)
+                if (obj->Implements(ObjectInterfaceType::Old)) // TODO: temporary hack
                 {
-                    obj->SetDefRank(rankObj);
+                    obj->SetDefRank(rankObj); // TODO: do we really need this?
 
-                    if (type == OBJECT_BASE) m_base = obj;
+                    if (type == OBJECT_BASE)
+                        m_base = obj;
+
+                    if (line->GetParam("select")->AsBool(false))
+                        sel = obj;
+
+                    // TODO: everything below should go to CObject::Read() function
+                    // In fact, we could give CLevelParserLine as parameter to CreateObject() in the first place
 
                     Gfx::CameraType cType = line->GetParam("camera")->AsCameraType(Gfx::CAM_TYPE_NULL);
                     if (cType != Gfx::CAM_TYPE_NULL)
@@ -3570,11 +3580,6 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                         }
                     }
 
-                    if (line->GetParam("select")->AsBool(false))
-                    {
-                        sel = obj;
-                    }
-
                     bool selectable = line->GetParam("selectable")->AsBool(true);
                     obj->SetSelectable(selectable);
                     obj->SetIgnoreBuildCheck(line->GetParam("ignoreBuildCheck")->AsBool(false));
@@ -3597,14 +3602,17 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                     if (zoom.x != 0.0f || zoom.y != 0.0f || zoom.z != 0.0f)
                         obj->SetZoom(0, zoom);
 
-                    //TODO: I don't remember what this is used for
-                    CMotion* motion = obj->GetMotion();
-                    if (motion != nullptr && line->GetParam("param")->IsDefined())
+                    // only used in AlienWorm lines
+                    if (type == OBJECT_WORM)
                     {
-                        const auto& p = line->GetParam("param")->AsArray();
-                        for (unsigned int i = 0; i < 10 && i < p.size(); i++)
+                        CMotion* motion = obj->GetMotion();
+                        if (motion != nullptr && line->GetParam("param")->IsDefined())
                         {
-                            motion->SetParam(i, p[i]->AsFloat());
+                            const auto& p = line->GetParam("param")->AsArray();
+                            for (unsigned int i = 0; i < 10 && i < p.size(); i++)
+                            {
+                                motion->SetParam(i, p[i]->AsFloat());
+                            }
                         }
                     }
 
@@ -3669,7 +3677,6 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                     obj->SetResetPosition(obj->GetPosition(0));
                     obj->SetResetAngle(obj->GetAngle(0));
                     obj->SetResetRun(loadedPrograms[run]);
-
                     if (line->GetParam("reset")->AsBool(false))
                         obj->SetResetCap(RESET_MOVE);
                 }
@@ -4855,7 +4862,6 @@ void CRobotMain::IOWriteObject(CLevelParserLine* line, CObject* obj)
     }
 
     line->AddParam("trainer", CLevelParserParamUPtr{new CLevelParserParam(obj->GetTrainer())});
-    line->AddParam("ignoreBuildCheck", CLevelParserParamUPtr{new CLevelParserParam(obj->GetIgnoreBuildCheck())});
     line->AddParam("option", CLevelParserParamUPtr{new CLevelParserParam(obj->GetOption())});
     if (obj == m_infoObject)
         line->AddParam("select", CLevelParserParamUPtr{new CLevelParserParam(1)});
@@ -5033,7 +5039,6 @@ CObject* CRobotMain::IOReadObject(CLevelParserLine *line, const char* filename, 
     obj->SetDefRank(objRank);
     obj->SetPosition(0, pos);
     obj->SetAngle(0, dir);
-    obj->SetIgnoreBuildCheck(line->GetParam("ignoreBuildCheck")->AsBool(false));
 
     if (zoom.x != 0.0f || zoom.y != 0.0f || zoom.z != 0.0f)
         obj->SetZoom(0, zoom);

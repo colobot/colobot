@@ -1,5 +1,8 @@
 #include "object/object.h"
 
+#include "graphics/model/model_crash_sphere.h"
+
+
 CObject::CObject(int id, ObjectType type)
     : m_id(id)
     , m_type(type)
@@ -9,6 +12,16 @@ CObject::CObject(int id, ObjectType type)
 
 CObject::~CObject()
 {
+}
+
+void CObject::SetCrashSpheres(const std::vector<Gfx::ModelCrashSphere>& crashSpheres)
+{
+    for (const auto& crashSphere : crashSpheres)
+    {
+        SoundType sound = ParseSoundType(crashSphere.sound);
+        CrashSphere objectCrashSphere(crashSphere.position, crashSphere.radius, sound, crashSphere.hardness);
+        AddCrashSphere(objectCrashSphere);
+    }
 }
 
 void CObject::AddCrashSphere(const CrashSphere& crashSphere)

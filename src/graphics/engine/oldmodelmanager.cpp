@@ -75,34 +75,7 @@ bool COldModelManager::LoadModel(const std::string& fileName, bool mirrored)
     FileInfo fileInfo(fileName, mirrored);
     m_models[fileInfo] = modelInfo;
 
-    std::vector<VertexTex2> vs(3, VertexTex2());
-
-    for (const auto& triangle : modelInfo.triangles)
-    {
-        vs[0] = triangle.p1;
-        vs[1] = triangle.p2;
-        vs[2] = triangle.p3;
-
-        Material material;
-        material.ambient = triangle.ambient;
-        material.diffuse = triangle.diffuse;
-        material.specular = triangle.specular;
-
-        int state = GetEngineState(triangle);
-
-        std::string tex1Name;
-        if (!triangle.tex1Name.empty())
-            tex1Name = "objects/" + triangle.tex1Name;
-
-        std::string tex2Name;
-        if (triangle.variableTex2)
-            tex2Name = m_engine->GetSecondTexture();
-        else
-            tex2Name = triangle.tex2Name;
-
-        m_engine->AddBaseObjTriangles(modelInfo.baseObjRank, vs, ENG_TRIANGLE_TYPE_TRIANGLES,
-                                      material, state, tex1Name, tex2Name, false);
-    }
+    m_engine->AddBaseObjTriangles(modelInfo.baseObjRank, modelInfo.triangles);
 
     return true;
 }
@@ -202,55 +175,6 @@ void COldModelManager::Mirror(std::vector<ModelTriangle>& triangles)
         triangles[i].p2.normal.z = -triangles[i].p2.normal.z;
         triangles[i].p3.normal.z = -triangles[i].p3.normal.z;
     }
-}
-
-int COldModelManager::GetEngineState(const ModelTriangle& triangle)
-{
-    int state = 0;
-
-    if (!triangle.tex2Name.empty() || triangle.variableTex2)
-        state |= ENG_RSTATE_DUAL_BLACK;
-
-    switch (triangle.transparentMode)
-    {
-        case ModelTransparentMode::None:
-            break;
-
-        case ModelTransparentMode::AlphaChannel:
-            state |= ENG_RSTATE_ALPHA;
-            break;
-
-        case ModelTransparentMode::MapBlackToAlpha:
-            state |= ENG_RSTATE_TTEXTURE_BLACK;
-            break;
-
-        case ModelTransparentMode::MapWhiteToAlpha:
-            state |= ENG_RSTATE_TTEXTURE_WHITE;
-            break;
-    }
-
-    switch (triangle.specialMark)
-    {
-        case ModelSpecialMark::None:
-            break;
-
-        case ModelSpecialMark::Part1:
-            state |= ENG_RSTATE_PART1;
-            break;
-
-        case ModelSpecialMark::Part2:
-            state |= ENG_RSTATE_PART2;
-            break;
-
-        case ModelSpecialMark::Part3:
-            state |= ENG_RSTATE_PART3;
-            break;
-    }
-
-    if (triangle.doubleSided)
-        state |= ENG_RSTATE_2FACE;
-
-    return state;
 }
 
 }

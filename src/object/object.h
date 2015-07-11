@@ -28,6 +28,11 @@
 #include "object/object_interface_type.h"
 #include "object/old_object_interface.h"
 
+#include <vector>
+
+namespace Gfx {
+struct ModelCrashSphere;
+} // namespace Gfx
 
 /**
  * \class CObject
@@ -74,13 +79,14 @@ public:
     //! Reads object properties from line in level file
     virtual void Read(CLevelParserLine* line) = 0;
 
-
     //! Check if object implements the given type of interface
     inline bool Implements(ObjectInterfaceType type) const
     {
         return m_implementedInterfaces[static_cast<int>(type)];
     }
 
+    //! Sets crash spheres for object
+    void SetCrashSpheres(const std::vector<Gfx::ModelCrashSphere>& crashSpheres);
     //! Adds a new crash sphere
     /** Crash sphere position is given in object coordinates */
     void AddCrashSphere(const CrashSphere& crashSphere);
@@ -100,6 +106,9 @@ public:
     //! Sets sphere used to test for camera collisions
     // TODO: remove from here once no longer necessary
     void SetCameraCollisionSphere(const Math::Sphere& sphere);
+
+    //! Sets the transparency of object
+    virtual void SetTransparency(float value) = 0;
 
 protected:
     //! Transform crash sphere by object's world matrix

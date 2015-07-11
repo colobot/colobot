@@ -38,6 +38,7 @@ enum class ObjectInterfaceType
     Jostleable, //!< object that can be jostled
     Carrier, //!< object that can carry other objects
     Powered, //!< object powered with power cell
+    Old, //!< old objects, TODO: remove once no longer necessary
     Max //!< maximum value (for getting number of items in enum)
 };
 

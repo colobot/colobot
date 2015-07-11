@@ -33,6 +33,7 @@
 namespace Gfx {
 class CEngine;
 class COldModelManager;
+class CModelManager;
 class CParticle;
 class CTerrain;
 } // namespace Gfx
@@ -48,7 +49,8 @@ class CObjectFactory
 public:
     CObjectFactory(Gfx::CEngine* engine,
                    Gfx::CTerrain* terrain,
-                   Gfx::COldModelManager* modelManager,
+                   Gfx::COldModelManager* oldModelManager,
+                   Gfx::CModelManager* modelManager,
                    Gfx::CParticle* particle);
 
     CObjectUPtr CreateObject(const ObjectCreateParams& params);
@@ -72,6 +74,7 @@ private:
 private:
     Gfx::CEngine* m_engine;
     Gfx::CTerrain* m_terrain;
-    Gfx::COldModelManager* m_modelManager;
+    Gfx::COldModelManager* m_oldModelManager;
+    Gfx::CModelManager* m_modelManager;
     Gfx::CParticle* m_particle;
 };

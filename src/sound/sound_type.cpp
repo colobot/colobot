@@ -114,7 +114,7 @@ const std::unordered_map<std::string, SoundType> SOUND_STRINGS =
 
 } // anonymous namespace
 
-SoundType StringToSound(const std::string& str)
+SoundType ParseSoundType(const std::string& str)
 {
     auto it = SOUND_STRINGS.find(str);
     if (it == SOUND_STRINGS.end())

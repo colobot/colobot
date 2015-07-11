@@ -37,6 +37,7 @@
 
 namespace Gfx {
 class CEngine;
+class CModelManager;
 class COldModelManager;
 class CParticle;
 class CTerrain;
@@ -121,7 +122,8 @@ class CObjectManager : public CSingleton<CObjectManager>
 public:
     CObjectManager(Gfx::CEngine* engine,
                    Gfx::CTerrain* terrain,
-                   Gfx::COldModelManager* modelManager,
+                   Gfx::COldModelManager* oldModelManager,
+                   Gfx::CModelManager* modelManager,
                    Gfx::CParticle* particle);
     virtual ~CObjectManager();
 
