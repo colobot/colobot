@@ -341,7 +341,7 @@ std::string GetHelpFilename(const char *token)
     if ( strcmp(token, "open"          ) == 0 )  helpfile = "cbot/open";
     if ( strcmp(token, "close"         ) == 0 )  helpfile = "cbot/close";
     if ( strcmp(token, "writeln"       ) == 0 )  helpfile = "cbot/writeln";
-    if ( strcmp(token, "readln "       ) == 0 )  helpfile = "cbot/readln";
+    if ( strcmp(token, "readln"        ) == 0 )  helpfile = "cbot/readln";
     if ( strcmp(token, "eof"           ) == 0 )  helpfile = "cbot/eof";
     if ( strcmp(token, "deletefile"    ) == 0 )  helpfile = "cbot/deletef";
     if ( strcmp(token, "openfile"      ) == 0 )  helpfile = "cbot/openfile";
