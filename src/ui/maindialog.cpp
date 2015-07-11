@@ -1628,7 +1628,7 @@ void CMainDialog::ChangePhase(Phase phase)
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
-                true);
+                true, true);
         m_engine->SetBackForce(true);
     }
     if ( m_phase == PHASE_WELCOME2 )
@@ -1647,7 +1647,7 @@ void CMainDialog::ChangePhase(Phase phase)
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
-                true);
+                true, true);
         m_engine->SetBackForce(true);
     }
     if ( m_phase == PHASE_WELCOME3 )
@@ -1666,7 +1666,7 @@ void CMainDialog::ChangePhase(Phase phase)
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
-                true);
+                true, true);
         m_engine->SetBackForce(true);
     }
 

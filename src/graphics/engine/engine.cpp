@@ -2745,7 +2745,7 @@ float CEngine::GetFogStart(int rank)
 }
 
 void CEngine::SetBackground(const std::string& name, Color up, Color down,
-                            Color cloudUp, Color cloudDown, bool full)
+                            Color cloudUp, Color cloudDown, bool full, bool scale)
 {
     if (m_backgroundTex.Valid())
     {
@@ -2759,6 +2759,7 @@ void CEngine::SetBackground(const std::string& name, Color up, Color down,
     m_backgroundCloudUp   = cloudUp;
     m_backgroundCloudDown = cloudDown;
     m_backgroundFull      = full;
+    m_backgroundScale     = scale;
 
     if (! m_backgroundName.empty())
     {
@@ -2769,7 +2770,7 @@ void CEngine::SetBackground(const std::string& name, Color up, Color down,
 }
 
 void CEngine::GetBackground(std::string& name, Color& up, Color& down,
-                            Color& cloudUp, Color& cloudDown, bool &full)
+                            Color& cloudUp, Color& cloudDown, bool &full, bool &scale)
 {
     name      = m_backgroundName;
     up        = m_backgroundColorUp;
@@ -2777,6 +2778,7 @@ void CEngine::GetBackground(std::string& name, Color& up, Color& down,
     cloudUp   = m_backgroundCloudUp;
     cloudDown = m_backgroundCloudDown;
     full      = m_backgroundFull;
+    scale     = m_backgroundScale;
 }
 
 void CEngine::SetForegroundName(const std::string& name)
@@ -4492,6 +4494,30 @@ void CEngine::DrawBackgroundImage()
 
     u2 *= backgroundScale.x;
     v2 *= backgroundScale.y;
+
+    if (m_backgroundScale)
+    {
+        Math::Point scale;
+        scale.x = static_cast<float>(m_size.x) / static_cast<float>(m_backgroundTex.originalSize.x);
+        scale.y = static_cast<float>(m_size.y) / static_cast<float>(m_backgroundTex.originalSize.y);
+        if (scale.x > scale.y) {
+            scale.y /= scale.x;
+            scale.x = 1;
+        }
+        else
+        {
+            scale.x /= scale.y;
+            scale.y = 1;
+        }
+        float margin_u = (1-scale.x)/2;
+        float margin_v = (1-scale.y)/2;
+        margin_u *= backgroundScale.x;
+        margin_v *= backgroundScale.y;
+        u1 += margin_u;
+        v1 += margin_v;
+        u2 -= margin_u;
+        v2 -= margin_v;
+    }
 
     SetTexture(m_backgroundTex);
     SetState(ENG_RSTATE_OPAQUE_TEXTURE | ENG_RSTATE_WRAP);

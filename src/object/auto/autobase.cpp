@@ -1342,8 +1342,8 @@ void CAutoBase::BeginTransit()
     m_engine->SetDeepView(2000.0f);  // we see very far
     m_engine->ApplyChange();
 
-    bool full;
-    m_engine->GetBackground(m_bgName, m_bgUp, m_bgDown, m_bgCloudUp, m_bgCloudDown, full);
+    bool full, scale;
+    m_engine->GetBackground(m_bgName, m_bgUp, m_bgDown, m_bgCloudUp, m_bgCloudDown, full, scale);
     m_engine->DeleteTexture(m_bgName);
 
     m_engine->SetBackground(m_bgBack, Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),

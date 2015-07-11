@@ -1057,10 +1057,10 @@ public:
     //! Management of the background image to use
     void            SetBackground(const std::string& name, Color up = Color(), Color down = Color(),
                                   Color cloudUp = Color(), Color cloudDown = Color(),
-                                  bool full = false);
+                                  bool full = false, bool scale = false);
     void            GetBackground(std::string& name, Color& up, Color& down,
                                   Color& cloudUp, Color& cloudDown,
-                                  bool& full);
+                                  bool& full, bool& scale);
     //@}
 
     //! Specifies the name of foreground texture
@@ -1408,6 +1408,7 @@ protected:
     bool            m_firstGroundSpot;
     std::string     m_secondTex;
     bool            m_backgroundFull;
+    bool            m_backgroundScale;
     std::string     m_backgroundName;
     Texture         m_backgroundTex;
     Color           m_backgroundColorUp;
