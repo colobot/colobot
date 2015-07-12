@@ -55,6 +55,9 @@ bool CObjectManager::DeleteObject(CObject* instance)
 {
     assert(instance != nullptr);
 
+    if (m_objectsIteratingUserCount > 0)
+        throw std::logic_error("Trying to delete object while holding iterators to objects map!");
+
     // TODO: temporarily...
     auto oldObj = dynamic_cast<COldObject*>(instance);
     if (oldObj != nullptr)
@@ -198,7 +201,7 @@ CObject* CObjectManager::Radar(CObject* pThis, std::vector<ObjectType> type, flo
     float iAngle;
     if (pThis != nullptr)
     {
-        iPos   = pThis->GetPosition(0);
+        iPos   = pThis->GetPosition();
         iAngle = pThis->GetAngleY(0);
         iAngle = Math::NormAngle(iAngle);  // 0..2*Math::PI
     }
@@ -305,7 +308,7 @@ CObject* CObjectManager::Radar(CObject* pThis, Math::Vector thisPosition, float 
 
         if ( std::find(type.begin(), type.end(), oType) == type.end() && type.size() > 0 )  continue;
 
-        oPos = pObj->GetPosition(0);
+        oPos = pObj->GetPosition();
         d = Math::DistanceProjected(iPos, oPos);
         if ( d < minDist || d > maxDist )  continue;  // too close or too far?
 

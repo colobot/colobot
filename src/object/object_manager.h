@@ -92,7 +92,22 @@ private:
 
 class CObjectContainerProxy
 {
+private:
+    friend class CObjectManager;
+
+    inline CObjectContainerProxy(const CObjectMap& map, int& userCount)
+     : m_map(map)
+     , m_mapUserCount(userCount)
+    {
+        m_mapUserCount++;
+    }
+
 public:
+    inline ~CObjectContainerProxy()
+    {
+        m_mapUserCount--;
+    }
+
     inline CObjectIteratorProxy begin() const
     {
         return CObjectIteratorProxy(m_map.begin());
@@ -103,14 +118,8 @@ public:
     }
 
 private:
-    friend class CObjectManager;
-
-    inline CObjectContainerProxy(const CObjectMap& map)
-     : m_map(map)
-    {}
-
-private:
     const CObjectMap& m_map;
+    int& m_mapUserCount;
 };
 
 /**
@@ -163,7 +172,7 @@ public:
     //! Returns all objects
     inline CObjectContainerProxy GetAllObjects()
     {
-        return CObjectContainerProxy(m_objects);
+        return CObjectContainerProxy(m_objects, m_objectsIteratingUserCount);
     }
 
     //! Finds an object, like radar() in CBot
@@ -233,6 +242,7 @@ public:
 
 protected:
     CObjectMap m_objects;
+    int m_objectsIteratingUserCount;
     std::unique_ptr<CObjectFactory> m_objectFactory;
     int m_nextId;
 };
