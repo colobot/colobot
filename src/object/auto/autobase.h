@@ -24,6 +24,8 @@
 
 #include "object/auto/auto.h"
 
+#include "graphics/core/color.h"
+
 
 
 enum AutoBaseParam
@@ -67,7 +69,7 @@ enum AutoBasePhase
 class CAutoBase : public CAuto
 {
 public:
-    CAutoBase(CObject* object);
+    CAutoBase(COldObject* object);
     ~CAutoBase();
 
     void        DeleteObject(bool bAll=false);
@@ -79,8 +81,8 @@ public:
     Error       GetError();
 
     bool        CreateInterface(bool bSelect);
-    
-    Error		TakeOff(bool printMsg);
+
+    Error       TakeOff(bool printMsg);
 
 protected:
     void        UpdateInterface();

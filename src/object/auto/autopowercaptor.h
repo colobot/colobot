@@ -38,7 +38,7 @@ enum AutoPowerCaptorPhase
 class CAutoPowerCaptor : public CAuto
 {
 public:
-    CAutoPowerCaptor(CObject* object);
+    CAutoPowerCaptor(COldObject* object);
     ~CAutoPowerCaptor();
 
     void        DeleteObject(bool bAll=false);

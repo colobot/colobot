@@ -20,26 +20,22 @@
 
 #include "object/auto/auto.h"
 
-
 #include "app/app.h"
 
 #include "common/event.h"
 
 #include "object/level/parserline.h"
 #include "object/level/parserparam.h"
-
+#include "object/old_object.h"
 
 #include "ui/interface.h"
 #include "ui/gauge.h"
 #include "ui/window.h"
 
-#include <stdio.h>
-#include <string.h>
-
 
 // Object's constructor.
 
-CAuto::CAuto(CObject* object)
+CAuto::CAuto(COldObject* object)
 {
     m_object      = object;
     m_engine      = Gfx::CEngine::GetInstancePointer();

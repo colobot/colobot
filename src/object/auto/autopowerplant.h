@@ -25,7 +25,7 @@
 #include "object/auto/auto.h"
 
 
-class CPoweredObject;
+class CObject;
 
 
 enum AutoPowerPlantPhase
@@ -42,7 +42,7 @@ enum AutoPowerPlantPhase
 class CAutoPowerPlant : public CAuto
 {
 public:
-    CAutoPowerPlant(CObject* object);
+    CAutoPowerPlant(COldObject* object);
     ~CAutoPowerPlant();
 
     void        DeleteObject(bool bAll=false);
@@ -65,7 +65,6 @@ protected:
     CObject*    SearchPower();
 
 protected:
-    CPoweredObject* m_poweredObject;
     AutoPowerPlantPhase     m_phase;
     float               m_progress;
     float               m_speed;

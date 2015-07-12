@@ -26,23 +26,19 @@
 
 #include "object/brain.h"
 #include "object/object_manager.h"
+#include "object/old_object.h"
 #include "object/interface/programmable_object.h"
 #include "object/interface/transportable_object.h"
 #include "object/level/parserline.h"
 #include "object/level/parserparam.h"
 
 
-#include <stdio.h>
-#include <string.h>
-
-
 // Object's constructor.
 
-CAutoEgg::CAutoEgg(CObject* object) : CAuto(object)
+CAutoEgg::CAutoEgg(COldObject* object) : CAuto(object)
 {
     m_type = OBJECT_NULL;
     m_value = 0.0f;
-    m_string[0] = 0;
 
     m_param = 0;
     m_phase = AEP_NULL;
@@ -138,11 +134,9 @@ bool CAutoEgg::SetValue(int rank, float value)
     return true;
 }
 
-// Getes the string.
-
 bool CAutoEgg::SetString(char *string)
 {
-    strcpy(m_string, string);
+    m_alienProgramName = string;
     return true;
 }
 
@@ -189,7 +183,7 @@ bool CAutoEgg::EventProcess(const Event &event)
             CBrain* brain = dynamic_cast<CProgrammableObject*>(alien)->GetBrain();
 
             Program* program = brain->AddProgram();
-            brain->ReadProgram(program, m_string);
+            brain->ReadProgram(program, m_alienProgramName.c_str());
             brain->RunProgram(program);
         }
         Init();
@@ -312,7 +306,7 @@ bool CAutoEgg::Write(CLevelParserLine* line)
     line->AddParam("aSpeed", CLevelParserParamUPtr{new CLevelParserParam(m_speed)});
     line->AddParam("aParamType", CLevelParserParamUPtr{new CLevelParserParam(m_type)});
     line->AddParam("aParamValue1", CLevelParserParamUPtr{new CLevelParserParam(m_value)});
-    line->AddParam("aParamString", CLevelParserParamUPtr{new CLevelParserParam(std::string(m_string))});
+    line->AddParam("aParamString", CLevelParserParamUPtr{new CLevelParserParam(m_alienProgramName)});
 
     return true;
 }
@@ -329,7 +323,7 @@ bool CAutoEgg::Read(CLevelParserLine* line)
     m_speed = line->GetParam("aSpeed")->AsFloat(1.0f);
     m_type = line->GetParam("aParamType")->AsObjectType(OBJECT_NULL);
     m_value = line->GetParam("aParamValue1")->AsFloat(0.0f);
-    strcpy(m_string, line->GetParam("aParamString")->AsString("").c_str());
+    m_alienProgramName = line->GetParam("aParamString")->AsString("");
 
     return true;
 }

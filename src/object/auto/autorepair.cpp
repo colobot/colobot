@@ -21,22 +21,20 @@
 #include "object/auto/autorepair.h"
 
 #include "object/object_manager.h"
+#include "object/old_object.h"
 #include "object/level/parserline.h"
 #include "object/level/parserparam.h"
 
 #include "physics/physics.h"
 
-
 #include "ui/interface.h"
 #include "ui/window.h"
 
-#include <stdio.h>
-#include <string.h>
 
 
 // Object's constructor.
 
-CAutoRepair::CAutoRepair(CObject* object) : CAuto(object)
+CAutoRepair::CAutoRepair(COldObject* object) : CAuto(object)
 {
     Init();
     m_phase = ARP_WAIT;  // paused until the first Init ()

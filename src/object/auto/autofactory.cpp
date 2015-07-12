@@ -25,6 +25,7 @@
 #include "math/geometry.h"
 
 #include "object/brain.h"
+#include "object/old_object.h"
 #include "object/object_manager.h"
 #include "object/robotmain.h"
 #include "object/level/parserline.h"
@@ -39,14 +40,11 @@
 #include "ui/interface.h"
 #include "ui/window.h"
 
-#include <stdio.h>
-#include <string.h>
-
 
 
 // Object's constructor.
 
-CAutoFactory::CAutoFactory(CObject* object) : CAuto(object)
+CAutoFactory::CAutoFactory(COldObject* object) : CAuto(object)
 {
     Init();
     m_type  = OBJECT_MOBILEws;

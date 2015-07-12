@@ -23,6 +23,7 @@
 #include "math/geometry.h"
 
 #include "object/object_manager.h"
+#include "object/old_object.h"
 #include "object/level/parserline.h"
 #include "object/level/parserparam.h"
 #include "object/interface/powered_object.h"
@@ -30,9 +31,6 @@
 
 #include "ui/interface.h"
 #include "ui/window.h"
-
-#include <stdio.h>
-#include <string.h>
 
 
 const float NUCLEARPLANT_DELAY = 30.0f;  // duration of the generation
@@ -42,13 +40,12 @@ const float NUCLEARPLANT_DELAY = 30.0f;  // duration of the generation
 
 // Object's constructor.
 
-CAutoNuclearPlant::CAutoNuclearPlant(CObject* object) : CAuto(object)
+CAutoNuclearPlant::CAutoNuclearPlant(COldObject* object) : CAuto(object)
 {
     m_channelSound = -1;
     Init();
 
     assert(m_object->Implements(ObjectInterfaceType::Powered));
-    m_poweredObject = dynamic_cast<CPoweredObject*>(m_object);
 }
 
 // Object's destructor.
@@ -234,7 +231,7 @@ bool CAutoNuclearPlant::EventProcess(const Event &event)
             if ( cargo != nullptr )
             {
                 CObjectManager::GetInstancePointer()->DeleteObject(cargo);
-                m_poweredObject->SetPower(nullptr);
+                m_object->SetPower(nullptr);
             }
 
             CreatePower();  // creates the atomic cell
@@ -322,7 +319,7 @@ bool CAutoNuclearPlant::CreateInterface(bool bSelect)
 
 CObject* CAutoNuclearPlant::SearchUranium()
 {
-    CObject* obj = m_poweredObject->GetPower();
+    CObject* obj = m_object->GetPower();
     if (obj == nullptr) return nullptr;
     if (obj->GetType() == OBJECT_URANIUM) return obj;
     return nullptr;
@@ -391,7 +388,7 @@ void CAutoNuclearPlant::CreatePower()
 
     dynamic_cast<CTransportableObject*>(power)->SetTransporter(m_object);
     power->SetPosition(0, Math::Vector(22.0f, 3.0f, 0.0f));
-    m_poweredObject->SetPower(power);
+    m_object->SetPower(power);
 }
 
 
@@ -411,7 +408,7 @@ Error CAutoNuclearPlant::GetError()
 
 //? if ( m_object->GetEnergy() < ENERGY_POWER )  return ERR_NUCLEAR_LOW;
 
-    CObject* obj = m_poweredObject->GetPower();
+    CObject* obj = m_object->GetPower();
     if ( obj == nullptr )  return ERR_NUCLEAR_EMPTY;
     if ( obj->GetLock() )  return ERR_OK;
     ObjectType type = obj->GetType();

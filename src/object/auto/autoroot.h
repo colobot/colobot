@@ -29,7 +29,7 @@
 class CAutoRoot : public CAuto
 {
 public:
-    CAutoRoot(CObject* object);
+    CAutoRoot(COldObject* object);
     ~CAutoRoot();
 
     void        DeleteObject(bool bAll=false);

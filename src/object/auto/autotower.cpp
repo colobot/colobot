@@ -23,19 +23,16 @@
 #include "math/geometry.h"
 
 #include "object/object_manager.h"
+#include "object/old_object.h"
 #include "object/level/parserline.h"
 #include "object/level/parserparam.h"
 #include "object/interface/powered_object.h"
 
 #include "physics/physics.h"
 
-
 #include "ui/interface.h"
 #include "ui/window.h"
 #include "ui/gauge.h"
-
-#include <stdio.h>
-#include <string.h>
 
 
 const float TOWER_SCOPE     = 200.0f;   // range of beam
@@ -44,7 +41,7 @@ const float ENERGY_FIRE     = 0.125f;   // energy consumed by fire
 
 // Object's constructor.
 
-CAutoTower::CAutoTower(CObject* object) : CAuto(object)
+CAutoTower::CAutoTower(COldObject* object) : CAuto(object)
 {
     for (int i = 0; i < 4; i++)
     {
@@ -57,7 +54,6 @@ CAutoTower::CAutoTower(CObject* object) : CAuto(object)
     m_lastUpdateTime = 0.0f;
 
     assert(m_object->Implements(ObjectInterfaceType::Powered));
-    m_poweredObject = dynamic_cast<CPoweredObject*>(m_object);
 }
 
 // Object's destructor.
@@ -134,7 +130,7 @@ bool CAutoTower::EventProcess(const Event &event)
         if ( m_progress < 1.0f )
         {
             energy = 0.0f;
-            power = m_poweredObject->GetPower();
+            power = m_object->GetPower();
             if ( power != 0 )
             {
                 energy = power->GetEnergy()*power->GetCapacity();
@@ -174,7 +170,7 @@ bool CAutoTower::EventProcess(const Event &event)
         else
         {
             energy = 0.0f;
-            power = m_poweredObject->GetPower();
+            power = m_object->GetPower();
             if ( power != 0 )
             {
                 energy = power->GetEnergy()*power->GetCapacity();
@@ -227,7 +223,7 @@ bool CAutoTower::EventProcess(const Event &event)
             m_object->SetAngleY(1, m_angleYfinal);
             m_object->SetAngleZ(2, m_angleZfinal);
 
-            power = m_poweredObject->GetPower();
+            power = m_object->GetPower();
             if ( power != 0 )
             {
                 energy = power->GetEnergy();
@@ -321,7 +317,7 @@ Error CAutoTower::GetError()
         return ERR_BAT_VIRUS;
     }
 
-    CObject* power = m_poweredObject->GetPower();
+    CObject* power = m_object->GetPower();
     if ( power == nullptr )
     {
         return ERR_TOWER_POWER;  // no battery

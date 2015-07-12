@@ -22,13 +22,16 @@
 #pragma once
 
 
+#include "common/event.h"
 #include "common/global.h"
-#include "object/object.h"
+
+#include "object/object_type.h"
 
 
 class CRobotMain;
 class CSoundInterface;
 class CLevelParserLine;
+class COldObject;
 
 namespace Ui {
 class CInterface;
@@ -46,13 +49,14 @@ class CCloud;
 class CCamera;
 class CPlanet;
 class CLightning;
+class CTerrain;
 } /* Gfx */
 
 
 class CAuto
 {
 public:
-    CAuto(CObject* object);
+    CAuto(COldObject* object);
     virtual ~CAuto();
 
     virtual void    DeleteObject(bool bAll=false);
@@ -103,7 +107,7 @@ protected:
     Gfx::CCamera*       m_camera;
     Ui::CInterface*     m_interface;
     CRobotMain*         m_main;
-    CObject*            m_object;
+    COldObject*         m_object;
     CSoundInterface*    m_sound;
 
     ObjectType  m_type;

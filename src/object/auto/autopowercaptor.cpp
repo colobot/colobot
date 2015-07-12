@@ -24,6 +24,7 @@
 #include "math/geometry.h"
 
 #include "object/object_manager.h"
+#include "object/old_object.h"
 #include "object/level/parserline.h"
 #include "object/level/parserparam.h"
 #include "object/interface/carrier_object.h"
@@ -33,14 +34,11 @@
 #include "ui/interface.h"
 #include "ui/window.h"
 
-#include <stdio.h>
-#include <string.h>
-
 
 
 // Object's constructor.
 
-CAutoPowerCaptor::CAutoPowerCaptor(CObject* object) : CAuto(object)
+CAutoPowerCaptor::CAutoPowerCaptor(COldObject* object) : CAuto(object)
 {
     m_channelSound = -1;
     Init();

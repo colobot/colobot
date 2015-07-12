@@ -20,12 +20,12 @@
 
 #include "object/auto/autojostle.h"
 
-#include <stdio.h>
+#include "object/old_object.h"
 
 
 // Object's constructor.
 
-CAutoJostle::CAutoJostle(CObject* object) : CAuto(object)
+CAutoJostle::CAutoJostle(COldObject* object) : CAuto(object)
 {
     Init();
 }

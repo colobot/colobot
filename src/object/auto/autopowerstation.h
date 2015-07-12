@@ -24,12 +24,13 @@
 
 #include "object/auto/auto.h"
 
+class CObject;
 
 
 class CAutoPowerStation : public CAuto
 {
 public:
-    CAutoPowerStation(CObject* object);
+    CAutoPowerStation(COldObject* object);
     ~CAutoPowerStation();
 
     void        DeleteObject(bool bAll=false);

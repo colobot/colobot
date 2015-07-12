@@ -25,7 +25,7 @@
 #include "object/auto/auto.h"
 
 
-class CPoweredObject;
+class CObject;
 
 enum AutoTowerPhase
 {
@@ -41,7 +41,7 @@ enum AutoTowerPhase
 class CAutoTower : public CAuto
 {
 public:
-    CAutoTower(CObject* object);
+    CAutoTower(COldObject* object);
     ~CAutoTower();
 
     void        DeleteObject(bool bAll=false);
@@ -62,7 +62,6 @@ protected:
     void        FireStopUpdate(float progress, bool bLightOn);
 
 protected:
-    CPoweredObject* m_poweredObject;
     AutoTowerPhase  m_phase;
     float           m_progress;
     float           m_speed;

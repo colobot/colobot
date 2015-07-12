@@ -22,9 +22,7 @@
 
 
 #include "object/robotmain.h"
-
-#include <stdio.h>
-#include <string.h>
+#include "object/old_object.h"
 
 
 const int PARAM_DEPOSE = 2;     // run=2 -> deposits the spaceship
@@ -57,7 +55,7 @@ float Progress(float a, float b, float progress)
 
 // Object's constructor.
 
-CAutoPortico::CAutoPortico(CObject* object) : CAuto(object)
+CAutoPortico::CAutoPortico(COldObject* object) : CAuto(object)
 {
     Init();
     m_phase = APOP_WAIT;
@@ -398,10 +396,7 @@ Error CAutoPortico::GetError()
 
 void CAutoPortico::UpdateTrackMapping(float left, float right)
 {
-    Gfx::Material   mat;
-    int             rank;
-
-    memset( &mat, 0, sizeof(Gfx::Material));
+    Gfx::Material mat;
     mat.diffuse.r = 1.0f;
     mat.diffuse.g = 1.0f;
     mat.diffuse.b = 1.0f;  // blank
@@ -409,7 +404,7 @@ void CAutoPortico::UpdateTrackMapping(float left, float right)
     mat.ambient.g = 0.5f;
     mat.ambient.b = 0.5f;
 
-    rank = m_object->GetObjectRank(0);
+    int rank = m_object->GetObjectRank(0);
 
     m_engine->TrackTextureMapping(rank, mat, Gfx::ENG_RSTATE_PART1, "objects/lemt.png", "",
                                   Gfx::ENG_TEX_MAPPING_X,

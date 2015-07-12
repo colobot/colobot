@@ -25,6 +25,7 @@
 #include "object/auto/auto.h"
 
 
+class CObject;
 
 enum AutoRepairPhase
 {
@@ -40,7 +41,7 @@ enum AutoRepairPhase
 class CAutoRepair : public CAuto
 {
 public:
-    CAutoRepair(CObject* object);
+    CAutoRepair(COldObject* object);
     ~CAutoRepair();
 
     void        DeleteObject(bool bAll=false);

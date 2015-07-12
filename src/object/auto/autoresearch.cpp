@@ -25,6 +25,7 @@
 #include "math/geometry.h"
 
 #include "object/robotmain.h"
+#include "object/old_object.h"
 #include "object/level/parserline.h"
 #include "object/level/parserparam.h"
 #include "object/interface/powered_object.h"
@@ -33,9 +34,6 @@
 #include "ui/gauge.h"
 #include "ui/window.h"
 
-#include <stdio.h>
-#include <string.h>
-
 
 const float SEARCH_TIME = 30.0f;        // duration of a research
 
@@ -43,7 +41,7 @@ const float SEARCH_TIME = 30.0f;        // duration of a research
 
 // Object's constructor.
 
-CAutoResearch::CAutoResearch(CObject* object) : CAuto(object)
+CAutoResearch::CAutoResearch(COldObject* object) : CAuto(object)
 {
     for (int i = 0; i < 6; i++)
     {
@@ -54,7 +52,6 @@ CAutoResearch::CAutoResearch(CObject* object) : CAuto(object)
     Init();
 
     assert(m_object->Implements(ObjectInterfaceType::Powered));
-    m_poweredObject = dynamic_cast<CPoweredObject*>(m_object);
 }
 
 // Object's destructor.
@@ -111,7 +108,7 @@ Error CAutoResearch::StartAction(int param)
         return ERR_RESEARCH_ALREADY;
     }
 
-    CObject* power = m_poweredObject->GetPower();
+    CObject* power = m_object->GetPower();
     if (power == nullptr)
     {
         return ERR_RESEARCH_POWER;
@@ -218,7 +215,7 @@ bool CAutoResearch::EventProcess(const Event &event)
         FireStopUpdate(m_progress, true);  // flashes
         if ( m_progress < 1.0f )
         {
-            power = m_poweredObject->GetPower();
+            power = m_object->GetPower();
             if ( power == 0 )  // more battery?
             {
                 SetBusy(false);
@@ -300,7 +297,7 @@ Error CAutoResearch::GetError()
         return ERR_BAT_VIRUS;
     }
 
-    CObject* power = m_poweredObject->GetPower();
+    CObject* power = m_object->GetPower();
     if ( power == 0 )
     {
         return ERR_RESEARCH_POWER;

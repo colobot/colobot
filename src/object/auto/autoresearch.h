@@ -25,8 +25,6 @@
 #include "object/auto/auto.h"
 
 
-class CPoweredObject;
-
 enum AutoResearchPhase
 {
     ALP_WAIT        = 1,
@@ -38,7 +36,7 @@ enum AutoResearchPhase
 class CAutoResearch : public CAuto
 {
 public:
-    CAutoResearch(CObject* object);
+    CAutoResearch(COldObject* object);
     ~CAutoResearch();
 
     void        DeleteObject(bool bAll=false);
@@ -61,7 +59,6 @@ protected:
     void        FireStopUpdate(float progress, bool bLightOn);
 
 protected:
-    CPoweredObject*     m_poweredObject;
     AutoResearchPhase   m_phase;
     float               m_progress;
     float               m_speed;

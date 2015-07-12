@@ -25,6 +25,7 @@
 #include "math/geometry.h"
 
 #include "object/object_manager.h"
+#include "object/old_object.h"
 #include "object/interface/powered_object.h"
 #include "object/interface/transportable_object.h"
 #include "object/level/parserline.h"
@@ -33,9 +34,6 @@
 #include "ui/interface.h"
 #include "ui/gauge.h"
 #include "ui/window.h"
-
-#include <stdio.h>
-#include <string.h>
 
 
 const float POWERPLANT_POWER    =  0.4f;    // Necessary energy for a battery
@@ -46,13 +44,12 @@ const float POWERPLANT_DELAY    = 12.0f;    // processing time
 
 // Object's constructor.
 
-CAutoPowerPlant::CAutoPowerPlant(CObject* object) : CAuto(object)
+CAutoPowerPlant::CAutoPowerPlant(COldObject* object) : CAuto(object)
 {
     m_partiSphere = -1;
     Init();
 
     assert(m_object->Implements(ObjectInterfaceType::Powered));
-    m_poweredObject = dynamic_cast<CPoweredObject*>(m_object);
 }
 
 // Object's destructor.
@@ -313,7 +310,7 @@ bool CAutoPowerPlant::EventProcess(const Event &event)
             cargo = SearchMetal();
             if ( cargo != nullptr )
             {
-                m_poweredObject->SetPower(nullptr);
+                m_object->SetPower(nullptr);
                 CObjectManager::GetInstancePointer()->DeleteObject(cargo);
             }
 
@@ -326,7 +323,7 @@ bool CAutoPowerPlant::EventProcess(const Event &event)
                 cargo->SetLock(false);  // usable battery
                 dynamic_cast<CTransportableObject*>(cargo)->SetTransporter(m_object);
                 cargo->SetPosition(0, Math::Vector(0.0f, 3.0f, 0.0f));
-                m_poweredObject->SetPower(cargo);
+                m_object->SetPower(cargo);
 
                 m_main->DisplayError(INFO_ENERGY, m_object);
             }
@@ -380,7 +377,7 @@ bool CAutoPowerPlant::EventProcess(const Event &event)
 
 CObject* CAutoPowerPlant::SearchMetal()
 {
-    CObject* obj = m_poweredObject->GetPower();
+    CObject* obj = m_object->GetPower();
     if ( obj == nullptr )  return nullptr;
 
     ObjectType type = obj->GetType();
@@ -502,7 +499,7 @@ Error CAutoPowerPlant::GetError()
 
     if ( m_object->GetEnergy() < POWERPLANT_POWER )  return ERR_ENERGY_LOW;
 
-    CObject* obj = m_poweredObject->GetPower();
+    CObject* obj = m_object->GetPower();
     if (obj == nullptr)  return ERR_ENERGY_EMPTY;
     ObjectType type = obj->GetType();
     if ( type == OBJECT_POWER )  return ERR_OK;

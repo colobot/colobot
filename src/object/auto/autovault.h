@@ -25,6 +25,7 @@
 #include "object/auto/auto.h"
 
 
+class CObject;
 
 enum AutoVaultPhase
 {
@@ -38,7 +39,7 @@ enum AutoVaultPhase
 class CAutoVault : public CAuto
 {
 public:
-    CAutoVault(CObject* object);
+    CAutoVault(COldObject* object);
     ~CAutoVault();
 
     void        DeleteObject(bool bAll=false);

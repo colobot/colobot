@@ -25,6 +25,7 @@
 #include "object/auto/auto.h"
 
 
+class CObject;
 
 enum AutoConvertPhase
 {
@@ -40,7 +41,7 @@ enum AutoConvertPhase
 class CAutoConvert : public CAuto
 {
 public:
-    CAutoConvert(CObject* object);
+    CAutoConvert(COldObject* object);
     ~CAutoConvert();
 
     void        DeleteObject(bool bAll=false);

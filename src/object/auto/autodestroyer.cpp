@@ -23,20 +23,18 @@
 #include "graphics/engine/pyro_manager.h"
 
 #include "object/object_manager.h"
+#include "object/old_object.h"
 #include "object/level/parserline.h"
 #include "object/level/parserparam.h"
-
 
 #include "ui/interface.h"
 #include "ui/window.h"
 
-#include <stdio.h>
-#include <string.h>
 
 
 // Object's constructor.
 
-CAutoDestroyer::CAutoDestroyer(CObject* object) : CAuto(object)
+CAutoDestroyer::CAutoDestroyer(COldObject* object) : CAuto(object)
 {
     Init();
     m_phase = ADEP_WAIT;  // paused until the first Init ()

@@ -42,7 +42,7 @@ enum AutoPorticoPhase
 class CAutoPortico : public CAuto
 {
 public:
-    CAutoPortico(CObject* object);
+    CAutoPortico(COldObject* object);
     ~CAutoPortico();
 
     void        DeleteObject(bool bAll=false);

@@ -20,15 +20,15 @@
 
 #include "object/auto/autohouston.h"
 
+#include "object/old_object.h"
+
 #include "ui/interface.h"
 #include "ui/window.h"
-
-#include <stdio.h>
 
 
 // Object's constructor.
 
-CAutoHouston::CAutoHouston(CObject* object) : CAuto(object)
+CAutoHouston::CAutoHouston(COldObject* object) : CAuto(object)
 {
     Math::Vector    pos;
     int         i;

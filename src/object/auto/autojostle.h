@@ -29,7 +29,7 @@
 class CAutoJostle : public CAuto
 {
 public:
-    CAutoJostle(CObject* object);
+    CAutoJostle(COldObject* object);
     ~CAutoJostle();
 
     void        DeleteObject(bool bAll=false) override;

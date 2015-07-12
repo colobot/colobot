@@ -20,10 +20,11 @@
 
 #include "object/auto/autoflag.h"
 
-#include "math/geometry.h"
 #include "graphics/engine/terrain.h"
 
-#include <stdio.h>
+#include "math/geometry.h"
+
+#include "object/old_object.h"
 
 
 
@@ -39,7 +40,7 @@ static float g_flag3 = 2.00f;
 
 // Object's constructor.
 
-CAutoFlag::CAutoFlag(CObject* object) : CAuto(object)
+CAutoFlag::CAutoFlag(COldObject* object) : CAuto(object)
 {
     Init();
 }

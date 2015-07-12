@@ -25,15 +25,13 @@
 #include "math/geometry.h"
 
 #include "object/object_manager.h"
+#include "object/old_object.h"
 #include "object/level/parserline.h"
 #include "object/level/parserparam.h"
-
 
 #include "ui/interface.h"
 #include "ui/window.h"
 
-#include <stdio.h>
-#include <string.h>
 
 
 const float DERRICK_DELAY   = 10.0f;    // duration of the extraction
@@ -44,7 +42,7 @@ const float DERRICK_DELAYu  = 30.0f;    // same, but for uranium
 
 // Object's constructor.
 
-CAutoDerrick::CAutoDerrick(CObject* object) : CAuto(object)
+CAutoDerrick::CAutoDerrick(COldObject* object) : CAuto(object)
 {
     Init();
     m_phase = ADP_WAIT;  // paused until the first Init ()

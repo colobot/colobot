@@ -25,6 +25,8 @@
 #include "object/auto/auto.h"
 
 
+class CObject;
+
 
 enum AutoDestroyerPhase
 {
@@ -39,7 +41,7 @@ enum AutoDestroyerPhase
 class CAutoDestroyer : public CAuto
 {
 public:
-    CAutoDestroyer(CObject* object);
+    CAutoDestroyer(COldObject* object);
     ~CAutoDestroyer();
 
     void        DeleteObject(bool bAll=false);

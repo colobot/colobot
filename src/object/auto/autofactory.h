@@ -24,7 +24,7 @@
 
 #include "object/auto/auto.h"
 
-
+class CObject;
 
 enum AutoFactoryPhase
 {
@@ -42,7 +42,7 @@ enum AutoFactoryPhase
 class CAutoFactory : public CAuto
 {
 public:
-    CAutoFactory(CObject* object);
+    CAutoFactory(COldObject* object);
     ~CAutoFactory();
 
     void        DeleteObject(bool bAll=false);

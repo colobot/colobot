@@ -26,6 +26,7 @@
 #include "math/geometry.h"
 
 #include "object/object_manager.h"
+#include "object/old_object.h"
 #include "object/interface/carrier_object.h"
 #include "object/interface/powered_object.h"
 
@@ -33,12 +34,11 @@
 #include "ui/gauge.h"
 #include "ui/window.h"
 
-#include <stdio.h>
 
 
 // Object's constructor.
 
-CAutoPowerStation::CAutoPowerStation(CObject* object) : CAuto(object)
+CAutoPowerStation::CAutoPowerStation(COldObject* object) : CAuto(object)
 {
     Init();
 }

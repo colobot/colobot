@@ -21,18 +21,15 @@
 #include "object/auto/automush.h"
 
 #include "object/object_manager.h"
+#include "object/old_object.h"
 #include "object/level/parserline.h"
 #include "object/level/parserparam.h"
 
 
 
-#include <stdio.h>
-#include <string.h>
-
-
 // Object's constructor.
 
-CAutoMush::CAutoMush(CObject* object) : CAuto(object)
+CAutoMush::CAutoMush(COldObject* object) : CAuto(object)
 {
     Init();
 }

@@ -23,17 +23,17 @@
 #include "math/geometry.h"
 
 #include "object/object_manager.h"
+#include "object/old_object.h"
 
 #include "ui/interface.h"
 #include "ui/window.h"
 #include "ui/gauge.h"
 
-#include <stdio.h>
 
 
 // Object's constructor.
 
-CAutoRadar::CAutoRadar(CObject* object) : CAuto(object)
+CAutoRadar::CAutoRadar(COldObject* object) : CAuto(object)
 {
     Init();
     m_phase = ARAP_WAIT;

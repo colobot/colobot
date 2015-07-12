@@ -29,7 +29,7 @@
 class CAutoFlag : public CAuto
 {
 public:
-    CAutoFlag(CObject* object);
+    CAutoFlag(COldObject* object);
     ~CAutoFlag();
 
     void        DeleteObject(bool bAll=false);

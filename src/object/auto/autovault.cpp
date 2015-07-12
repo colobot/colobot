@@ -23,6 +23,7 @@
 #include "math/geometry.h"
 
 #include "object/object_manager.h"
+#include "object/old_object.h"
 #include "object/robotmain.h"
 #include "object/level/parserline.h"
 #include "object/level/parserparam.h"
@@ -31,20 +32,15 @@
 #include "ui/interface.h"
 #include "ui/window.h"
 
-#include <stdio.h>
-#include <string.h>
-
 
 const float OPEN_DELAY  = 8.0f; // duration of opening
 
 
 // Object's constructor.
 
-CAutoVault::CAutoVault(CObject* object) : CAuto(object)
+CAutoVault::CAutoVault(COldObject* object) : CAuto(object)
 {
-    int     i;
-
-    for ( i=0 ; i<4 ; i++ )
+    for (int i = 0; i < 4; i++)
     {
         m_bKey[i] = false;
         m_keyParti[i] = -1;

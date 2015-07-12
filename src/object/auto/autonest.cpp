@@ -23,17 +23,14 @@
 #include "graphics/engine/terrain.h"
 
 #include "object/object_manager.h"
+#include "object/old_object.h"
 #include "object/level/parserline.h"
 #include "object/level/parserparam.h"
 
 
-#include <stdio.h>
-#include <string.h>
-
-
 // Object's constructor.
 
-CAutoNest::CAutoNest(CObject* object) : CAuto(object)
+CAutoNest::CAutoNest(COldObject* object) : CAuto(object)
 {
     Init();
 }

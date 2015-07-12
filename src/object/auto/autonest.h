@@ -25,6 +25,7 @@
 #include "object/auto/auto.h"
 
 
+class CObject;
 
 enum AutoNestPhase
 {
@@ -37,7 +38,7 @@ enum AutoNestPhase
 class CAutoNest : public CAuto
 {
 public:
-    CAutoNest(CObject* object);
+    CAutoNest(COldObject* object);
     ~CAutoNest();
 
     void        DeleteObject(bool bAll=false);

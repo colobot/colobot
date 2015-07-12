@@ -25,6 +25,7 @@
 #include "object/auto/auto.h"
 
 
+class CObject;
 
 enum AutoDerrickPhase
 {
@@ -40,7 +41,7 @@ enum AutoDerrickPhase
 class CAutoDerrick : public CAuto
 {
 public:
-    CAutoDerrick(CObject* object);
+    CAutoDerrick(COldObject* object);
     ~CAutoDerrick();
 
     void        DeleteObject(bool bAll=false);

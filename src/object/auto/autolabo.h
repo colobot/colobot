@@ -44,7 +44,7 @@ enum AutoLaboPhase
 class CAutoLabo : public CAuto
 {
 public:
-    CAutoLabo(CObject* object);
+    CAutoLabo(COldObject* object);
     ~CAutoLabo();
 
     void        DeleteObject(bool bAll=false);
@@ -67,7 +67,6 @@ protected:
     void        SoundManip(float time, float amplitude, float frequency);
 
 protected:
-    CPoweredObject*     m_poweredObject;
     AutoLaboPhase       m_phase;
     float               m_progress;
     float               m_speed;

@@ -25,6 +25,8 @@
 #include "object/auto/auto.h"
 
 
+class CObject;
+
 enum AutoEggPhase
 {
     AEP_NULL    = 0,
@@ -39,23 +41,25 @@ enum AutoEggPhase
 class CAutoEgg : public CAuto
 {
 public:
-    CAutoEgg(CObject* object);
+    CAutoEgg(COldObject* object);
     ~CAutoEgg();
 
-    void        DeleteObject(bool bAll=false);
+    void        DeleteObject(bool bAll=false) override;
 
-    void        Init();
-    void        Start(int param);
-    bool        EventProcess(const Event &event);
-    Error       IsEnded();
-    Error       GetError();
+    void        Init() override;
+    void        Start(int param) override;
+    bool        EventProcess(const Event &event) override;
+    Error       IsEnded() override;
+    Error       GetError() override;
 
-    bool        SetType(ObjectType type);
-    bool        SetValue(int rank, float value);
-    bool        SetString(char *string);
+    bool        SetType(ObjectType type) override;
+    bool        SetValue(int rank, float value) override;
+    //! Sets program which will be run by created aliens
+    // TODO: rename to be more meanigful
+    bool        SetString(char* string) override;
 
-    bool        Write(CLevelParserLine* line);
-    bool        Read(CLevelParserLine* line);
+    bool        Write(CLevelParserLine* line) override;
+    bool        Read(CLevelParserLine* line) override;
 
 protected:
     CObject*    SearchAlien();
@@ -63,7 +67,7 @@ protected:
 protected:
     ObjectType      m_type;
     float           m_value;
-    char            m_string[100];
+    std::string     m_alienProgramName;
     int             m_param;
     AutoEggPhase    m_phase;
     float           m_progress;

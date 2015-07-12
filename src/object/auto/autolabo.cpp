@@ -26,6 +26,7 @@
 #include "math/geometry.h"
 
 #include "object/object_manager.h"
+#include "object/old_object.h"
 #include "object/robotmain.h"
 #include "object/level/parserline.h"
 #include "object/level/parserparam.h"
@@ -34,8 +35,6 @@
 #include "ui/interface.h"
 #include "ui/window.h"
 
-#include <stdio.h>
-#include <string.h>
 
 
 const float LABO_DELAY = 20.0f; // duration of the analysis
@@ -45,11 +44,9 @@ const float LABO_DELAY = 20.0f; // duration of the analysis
 
 // Object's constructor.
 
-CAutoLabo::CAutoLabo(CObject* object) : CAuto(object)
+CAutoLabo::CAutoLabo(COldObject* object) : CAuto(object)
 {
-    int     i;
-
-    for ( i=0 ; i<3 ; i++ )
+    for (int i = 0; i < 3; i++)
     {
         m_partiRank[i] = -1;
     }
@@ -59,7 +56,6 @@ CAutoLabo::CAutoLabo(CObject* object) : CAuto(object)
     Init();
 
     assert(m_object->Implements(ObjectInterfaceType::Powered));
-    m_poweredObject = dynamic_cast<CPoweredObject*>(m_object);
 }
 
 // Object's destructor.
@@ -73,9 +69,7 @@ CAutoLabo::~CAutoLabo()
 
 void CAutoLabo::DeleteObject(bool bAll)
 {
-    int     i;
-
-    for ( i=0 ; i<3 ; i++ )
+    for (int i = 0; i < 3; i++)
     {
         if ( m_partiRank[i] != -1 )
         {
@@ -133,7 +127,7 @@ Error CAutoLabo::StartAction(int param)
         return ERR_LABO_ALREADY;
     }
 
-    CObject* power = m_poweredObject->GetPower();
+    CObject* power = m_object->GetPower();
     if (power == nullptr)
     {
         return ERR_LABO_NULL;
@@ -305,7 +299,7 @@ bool CAutoLabo::EventProcess(const Event &event)
     {
         if ( m_progress < 1.0f )
         {
-            power = m_poweredObject->GetPower();
+            power = m_object->GetPower();
             if ( power != 0 )
             {
                 power->SetZoom(0, 1.0f-m_progress);
@@ -366,10 +360,10 @@ bool CAutoLabo::EventProcess(const Event &event)
             m_eventQueue->AddEvent(newEvent);
             UpdateInterface();
 
-            power = m_poweredObject->GetPower();
+            power = m_object->GetPower();
             if ( power != nullptr )
             {
-                m_poweredObject->SetPower(nullptr);
+                m_object->SetPower(nullptr);
                 CObjectManager::GetInstancePointer()->DeleteObject(power);
             }
 
@@ -457,7 +451,7 @@ Error CAutoLabo::GetError()
         return ERR_BAT_VIRUS;
     }
 
-    CObject* obj = m_poweredObject->GetPower();
+    CObject* obj = m_object->GetPower();
     if (obj == nullptr)  return ERR_LABO_NULL;
     ObjectType type = obj->GetType();
     if ( type != OBJECT_BULLET )  return ERR_LABO_BAD;

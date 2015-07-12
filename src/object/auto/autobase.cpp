@@ -31,6 +31,7 @@
 #include "math/geometry.h"
 
 #include "object/object_manager.h"
+#include "object/old_object.h"
 #include "object/robotmain.h"
 
 #include "physics/physics.h"
@@ -54,7 +55,7 @@ const float BASE_TRANSIT_TIME       = 15.0f;    // transit duration
 
 // Object's constructor.
 
-CAutoBase::CAutoBase(CObject* object) : CAuto(object)
+CAutoBase::CAutoBase(COldObject* object) : CAuto(object)
 {
     m_fogStart = m_engine->GetFogStart();
     m_deepView = m_engine->GetDeepView();

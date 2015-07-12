@@ -40,7 +40,7 @@ enum AutoMushPhase
 class CAutoMush : public CAuto
 {
 public:
-    CAutoMush(CObject* object);
+    CAutoMush(COldObject* object);
     ~CAutoMush();
 
     void        DeleteObject(bool bAll=false);
