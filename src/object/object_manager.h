@@ -66,28 +66,33 @@ class CObjectIteratorProxy
 public:
     inline CObject* operator*()
     {
-        return m_it->second.get();
+        return m_currentIt->second.get();
     }
 
     inline void operator++()
     {
-        ++m_it;
+        do
+        {
+            ++m_currentIt;
+        } while (m_currentIt != m_endIt && m_currentIt->second == nullptr);
     }
 
     inline bool operator!=(const CObjectIteratorProxy& other)
     {
-        return m_it != other.m_it;
+        return m_currentIt != other.m_currentIt;
     }
 
 private:
     friend class CObjectContainerProxy;
 
-    CObjectIteratorProxy(CObjectMapCIt it)
-     : m_it(it)
+    CObjectIteratorProxy(CObjectMapCIt currentIt, CObjectMapCIt endIt)
+     : m_currentIt(currentIt)
+     , m_endIt(endIt)
     {}
 
 private:
-    CObjectMapCIt m_it;
+    CObjectMapCIt m_currentIt;
+    CObjectMapCIt m_endIt;
 };
 
 class CObjectContainerProxy
@@ -95,31 +100,22 @@ class CObjectContainerProxy
 private:
     friend class CObjectManager;
 
-    inline CObjectContainerProxy(const CObjectMap& map, int& userCount)
+    inline CObjectContainerProxy(const CObjectMap& map)
      : m_map(map)
-     , m_mapUserCount(userCount)
-    {
-        m_mapUserCount++;
-    }
+    {}
 
 public:
-    inline ~CObjectContainerProxy()
-    {
-        m_mapUserCount--;
-    }
-
     inline CObjectIteratorProxy begin() const
     {
-        return CObjectIteratorProxy(m_map.begin());
+        return CObjectIteratorProxy(m_map.begin(), m_map.end());
     }
     inline CObjectIteratorProxy end() const
     {
-        return CObjectIteratorProxy(m_map.end());
+        return CObjectIteratorProxy(m_map.end(), m_map.end());
     }
 
 private:
     const CObjectMap& m_map;
-    int& m_mapUserCount;
 };
 
 /**
@@ -172,7 +168,10 @@ public:
     //! Returns all objects
     inline CObjectContainerProxy GetAllObjects()
     {
-        return CObjectContainerProxy(m_objects, m_objectsIteratingUserCount);
+        if (m_shouldCleanRemovedObjects)
+            CleanRemovedObjects();
+
+        return CObjectContainerProxy(m_objects);
     }
 
     //! Finds an object, like radar() in CBot
@@ -240,9 +239,12 @@ public:
                           bool cbotTypes = false);
     //@}
 
-protected:
+private:
+    void CleanRemovedObjects();
+
+private:
     CObjectMap m_objects;
-    int m_objectsIteratingUserCount;
     std::unique_ptr<CObjectFactory> m_objectFactory;
     int m_nextId;
+    bool m_shouldCleanRemovedObjects;
 };

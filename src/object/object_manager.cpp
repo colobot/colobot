@@ -44,6 +44,7 @@ CObjectManager::CObjectManager(Gfx::CEngine* engine,
                                Gfx::CParticle* particle)
   : m_objectFactory(new CObjectFactory(engine, terrain, oldModelManager, modelManager, particle))
   , m_nextId(0)
+  , m_shouldCleanRemovedObjects(false)
 {
 }
 
@@ -55,9 +56,6 @@ bool CObjectManager::DeleteObject(CObject* instance)
 {
     assert(instance != nullptr);
 
-    if (m_objectsIteratingUserCount > 0)
-        throw std::logic_error("Trying to delete object while holding iterators to objects map!");
-
     // TODO: temporarily...
     auto oldObj = dynamic_cast<COldObject*>(instance);
     if (oldObj != nullptr)
@@ -66,11 +64,24 @@ bool CObjectManager::DeleteObject(CObject* instance)
     auto it = m_objects.find(instance->GetID());
     if (it != m_objects.end())
     {
-        m_objects.erase(it);
+        it->second.reset();
+        m_shouldCleanRemovedObjects = true;
         return true;
     }
 
     return false;
+}
+
+void CObjectManager::CleanRemovedObjects()
+{
+    auto it = m_objects.begin();
+    if (it != m_objects.end())
+    {
+        if (it->second == nullptr)
+            it = m_objects.erase(it);
+    }
+
+    m_shouldCleanRemovedObjects = false;
 }
 
 void CObjectManager::DeleteAllObjects()
