@@ -28,6 +28,7 @@
 #include "graphics/engine/terrain.h"
 #include "graphics/engine/water.h"
 
+#include "object/old_object.h"
 #include "object/robotmain.h"
 
 
@@ -39,7 +40,7 @@
 
 // Object's constructor.
 
-CMotionToto::CMotionToto(CObject* object) : CMotion(object)
+CMotionToto::CMotionToto(COldObject* object) : CMotion(object)
 {
     m_time = 0.0f;
     m_bDisplayInfo = false;

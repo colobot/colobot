@@ -43,7 +43,7 @@ enum MotionBeeSpecialAction
 class CMotionBee : public CMotion
 {
 public:
-    CMotionBee(CObject* object);
+    CMotionBee(COldObject* object);
     ~CMotionBee();
 
     void    DeleteObject(bool bAll=false);

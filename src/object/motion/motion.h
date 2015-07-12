@@ -25,8 +25,7 @@
 #include "common/event.h"
 #include "common/global.h"
 
-#include "object/object.h"
-
+#include "object/object_type.h"
 
 namespace Gfx {
 class CEngine;
@@ -34,12 +33,13 @@ class CParticle;
 class CTerrain;
 class CWater;
 class CCamera;
+class COldModelManager;
 }
 
 class CApplication;
 class CBrain;
 class CPhysics;
-class CObject;
+class COldObject;
 class CRobotMain;
 class CSoundInterface;
 class CLevelParserLine;
@@ -48,7 +48,7 @@ class CLevelParserLine;
 class CMotion
 {
 public:
-    CMotion(CObject* object);
+    CMotion(COldObject* object);
     virtual ~CMotion();
 
     void    SetPhysics(CPhysics* physics);
@@ -80,7 +80,7 @@ protected:
     Gfx::CTerrain*      m_terrain;
     Gfx::CWater*        m_water;
     Gfx::CCamera*       m_camera;
-    CObject*            m_object;
+    COldObject*         m_object;
     CBrain*             m_brain;
     CPhysics*           m_physics;
     CRobotMain*         m_main;

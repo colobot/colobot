@@ -30,6 +30,7 @@
 
 #include "object/brain.h"
 #include "object/object_manager.h"
+#include "object/old_object.h"
 #include "object/interface/powered_object.h"
 #include "object/interface/transportable_object.h"
 
@@ -44,15 +45,13 @@
 
 // Object's constructor.
 
-CMotionVehicle::CMotionVehicle(CObject* object) : CMotion(object)
+CMotionVehicle::CMotionVehicle(COldObject* object) : CMotion(object)
 {
-    int     i;
-
-    for ( i=0 ; i<4 ; i++ )
+    for (int i = 0; i < 4; i++)
     {
         m_wheelTurn[i] = 0.0f;
     }
-    for ( i=0 ; i<3 ; i++ )
+    for (int i = 0; i < 3; i++)
     {
         m_flyPaw[i] = 0.0f;
     }
@@ -944,7 +943,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         powerCell->SetAngle(0, Math::Vector(0.0f, powerCellAngle, 0.0f));
         dynamic_cast<CTransportableObject*>(powerCell)->SetTransporter(m_object);
         assert(m_object->Implements(ObjectInterfaceType::Powered));
-        dynamic_cast<CPoweredObject*>(m_object)->SetPower(powerCell);
+        m_object->SetPower(powerCell);
     }
 
     pos = m_object->GetPosition();

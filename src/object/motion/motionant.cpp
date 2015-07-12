@@ -25,6 +25,8 @@
 #include "graphics/engine/oldmodelmanager.h"
 #include "graphics/engine/particle.h"
 
+#include "object/old_object.h"
+
 #include "physics/physics.h"
 
 
@@ -38,7 +40,7 @@ const float START_TIME = 1000.0f;       // beginning of the relative time
 
 // Object's constructor.
 
-CMotionAnt::CMotionAnt(CObject* object) : CMotion(object)
+CMotionAnt::CMotionAnt(COldObject* object) : CMotion(object)
 {
     m_armMember      = START_TIME;
     m_armTimeAbs     = START_TIME;

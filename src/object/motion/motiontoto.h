@@ -38,7 +38,7 @@ enum MotionTotoAction
 class CMotionToto : public CMotion
 {
 public:
-    CMotionToto(CObject* object);
+    CMotionToto(COldObject* object);
     ~CMotionToto();
 
     void    DeleteObject(bool bAll=false);

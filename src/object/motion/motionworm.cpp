@@ -28,6 +28,8 @@
 
 #include "math/geometry.h"
 
+#include "object/old_object.h"
+
 #include "physics/physics.h"
 
 
@@ -45,7 +47,7 @@ const int WORM_PART = 7;        // number of parts of a worm
 
 // Object's constructor.
 
-CMotionWorm::CMotionWorm(CObject* object) : CMotion(object)
+CMotionWorm::CMotionWorm(COldObject* object) : CMotion(object)
 {
     m_timeUp         = 18.0f;
     m_timeDown       = 18.0f;

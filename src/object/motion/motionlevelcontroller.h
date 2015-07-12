@@ -27,7 +27,7 @@
 class CMotionLevelController : public CMotion
 {
 public:
-    CMotionLevelController(CObject* object);
+    CMotionLevelController(COldObject* object);
     ~CMotionLevelController();
 
     void        DeleteObject(bool bAll=false);

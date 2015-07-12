@@ -19,15 +19,16 @@
 
 
 #include "object/motion/motionlevelcontroller.h"
-#include "physics/physics.h"
+
 #include "graphics/engine/oldmodelmanager.h"
 
-#include <stdio.h>
-#include <string.h>
+#include "object/old_object.h"
+
+#include "physics/physics.h"
 
 // Object's constructor.
 
-CMotionLevelController::CMotionLevelController(CObject* object) : CMotion(object)
+CMotionLevelController::CMotionLevelController(COldObject* object) : CMotion(object)
 {
 }
 

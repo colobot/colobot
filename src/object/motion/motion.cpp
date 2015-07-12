@@ -23,6 +23,7 @@
 #include "app/app.h"
 
 #include "object/robotmain.h"
+#include "object/old_object.h"
 #include "object/level/parserline.h"
 #include "object/level/parserparam.h"
 
@@ -34,7 +35,7 @@
 
 // Object's constructor.
 
-CMotion::CMotion(CObject* object)
+CMotion::CMotion(COldObject* object)
 {
     m_app       = CApplication::GetInstancePointer();
     m_sound     = m_app->GetSound();

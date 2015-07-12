@@ -29,7 +29,7 @@
 class CMotionQueen : public CMotion
 {
 public:
-    CMotionQueen(CObject* object);
+    CMotionQueen(COldObject* object);
     ~CMotionQueen();
 
     void    DeleteObject(bool bAll=false);

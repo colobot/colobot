@@ -29,7 +29,7 @@
 class CMotionVehicle : public CMotion
 {
 public:
-    CMotionVehicle(CObject* object);
+    CMotionVehicle(COldObject* object);
     ~CMotionVehicle();
 
     void        DeleteObject(bool bAll=false);

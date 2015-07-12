@@ -29,7 +29,7 @@
 class CMotionWorm : public CMotion
 {
 public:
-    CMotionWorm(CObject* object);
+    CMotionWorm(COldObject* object);
     ~CMotionWorm();
 
     void    DeleteObject(bool bAll=false);

@@ -28,6 +28,7 @@
 
 #include "math/geometry.h"
 
+#include "object/old_object.h"
 #include "object/robotmain.h"
 #include "object/interface/carrier_object.h"
 
@@ -47,7 +48,7 @@ const float START_TIME = 1000.0f;       // beginning of the relative time
 
 // Object's constructor.
 
-CMotionHuman::CMotionHuman(CObject* object) : CMotion(object)
+CMotionHuman::CMotionHuman(COldObject* object) : CMotion(object)
 {
     m_partiReactor   = -1;
     m_armMember      = START_TIME;

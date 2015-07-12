@@ -24,7 +24,7 @@
 
 #include "graphics/engine/oldmodelmanager.h"
 
-#include "object/interface/carrier_object.h"
+#include "object/old_object.h"
 
 #include "physics/physics.h"
 
@@ -39,7 +39,7 @@ const float START_TIME = 1000.0f;       // beginning of the relative time
 
 // Object's constructor.
 
-CMotionBee::CMotionBee(CObject* object) : CMotion(object)
+CMotionBee::CMotionBee(COldObject* object) : CMotion(object)
 {
     m_armMember      = START_TIME;
     m_armTimeAbs     = START_TIME;

@@ -49,7 +49,7 @@ enum MotionAntSpecialAction
 class CMotionAnt : public CMotion
 {
 public:
-    CMotionAnt(CObject* object);
+    CMotionAnt(COldObject* object);
     ~CMotionAnt();
 
     void    DeleteObject(bool bAll=false);

@@ -61,7 +61,7 @@ enum MotionHumanSpecialAction
 class CMotionHuman : public CMotion
 {
 public:
-    CMotionHuman(CObject* object);
+    CMotionHuman(COldObject* object);
     ~CMotionHuman();
 
     void    DeleteObject(bool bAll=false);
