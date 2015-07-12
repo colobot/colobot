@@ -460,7 +460,7 @@ Error CTaskManip::Start(TaskManipOrder order, TaskManipArm arm)
         if ( m_arm == TMA_FFRONT )
         {
             other = SearchOtherObject(true, oPos, oDist, oAngle, oHeight);
-            if (other != nullptr && ObjectHasPowerCell(other))
+            if (other != nullptr && !ObjectHasPowerCell(other))
             {
                 m_targetPos = oPos;
                 m_angle = oAngle;
