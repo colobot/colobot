@@ -30,21 +30,9 @@ bool COldObjectInterface::ExplodeObject(ExplosionType type, float force, float d
     throw std::logic_error("ExplodeObject: not implemented!");
 }
 
-
-void COldObjectInterface::UpdateMapping()
-{
-    throw std::logic_error("UpdateMapping: not implemented!");
-}
-
-
 void COldObjectInterface::DeletePart(int part)
 {
     throw std::logic_error("DeletePart: not implemented!");
-}
-
-void COldObjectInterface::SetObjectRank(int part, int objRank)
-{
-    throw std::logic_error("SetObjectRank: not implemented!");
 }
 
 int COldObjectInterface::GetObjectRank(int part)
@@ -52,19 +40,9 @@ int COldObjectInterface::GetObjectRank(int part)
     throw std::logic_error("GetObjectRank: not implemented!");
 }
 
-void COldObjectInterface::SetObjectParent(int part, int parent)
-{
-    throw std::logic_error("SetObjectParent: not implemented!");
-}
-
 void COldObjectInterface::SetType(ObjectType type)
 {
     throw std::logic_error("SetType: not implemented!");
-}
-
-const char* COldObjectInterface::GetName()
-{
-    throw std::logic_error("GetName: not implemented!");
 }
 
 int COldObjectInterface::GetOption()
@@ -72,42 +50,9 @@ int COldObjectInterface::GetOption()
     throw std::logic_error("GetOption: not implemented!");
 }
 
-
-void COldObjectInterface::SetDrawWorld(bool bDraw)
-{
-    throw std::logic_error("SetDrawWorld: not implemented!");
-}
-
 void COldObjectInterface::SetDrawFront(bool bDraw)
 {
     throw std::logic_error("SetDrawFront: not implemented!");
-}
-
-
-bool COldObjectInterface::ReadProgram(Program* program, const char* filename)
-{
-    throw std::logic_error("ReadProgram: not implemented!");
-}
-
-bool COldObjectInterface::WriteProgram(Program* program, const char* filename)
-{
-    throw std::logic_error("WriteProgram: not implemented!");
-}
-
-
-int COldObjectInterface::GetShadowLight()
-{
-    throw std::logic_error("GetShadowLight: not implemented!");
-}
-
-int COldObjectInterface::GetEffectLight()
-{
-    throw std::logic_error("GetEffectLight: not implemented!");
-}
-
-void COldObjectInterface::SetShieldRadius(float radius)
-{
-    throw std::logic_error("SetShieldRadius: not implemented!");
 }
 
 float COldObjectInterface::GetShieldRadius()
@@ -115,11 +60,6 @@ float COldObjectInterface::GetShieldRadius()
     throw std::logic_error("GetShieldRadius: not implemented!");
 }
 
-
-void COldObjectInterface::SetFloorHeight(float height)
-{
-    throw std::logic_error("SetFloorHeight: not implemented!");
-}
 
 void COldObjectInterface::FloorAdjust()
 {
@@ -132,32 +72,15 @@ void COldObjectInterface::SetLinVibration(Math::Vector dir)
     throw std::logic_error("SetLinVibration: not implemented!");
 }
 
-Math::Vector COldObjectInterface::GetLinVibration()
-{
-    throw std::logic_error("GetLinVibration: not implemented!");
-}
-
 void COldObjectInterface::SetCirVibration(Math::Vector dir)
 {
     throw std::logic_error("SetCirVibration: not implemented!");
-}
-
-Math::Vector COldObjectInterface::GetCirVibration()
-{
-    throw std::logic_error("GetCirVibration: not implemented!");
-}
-
-void COldObjectInterface::SetTilt(Math::Vector dir)
-{
-    throw std::logic_error("SetTilt: not implemented!");
 }
 
 Math::Vector COldObjectInterface::GetTilt()
 {
     throw std::logic_error("GetTilt: not implemented!");
 }
-
-
 void COldObjectInterface::SetPosition(int part, const Math::Vector &pos)
 {
     throw std::logic_error("SetPosition: not implemented!");
@@ -264,29 +187,6 @@ bool COldObjectInterface::GetTrainer()
     throw std::logic_error("GetTrainer: not implemented!");
 }
 
-
-void COldObjectInterface::SetToy(bool bEnable)
-{
-    throw std::logic_error("SetToy: not implemented!");
-}
-
-bool COldObjectInterface::GetToy()
-{
-    throw std::logic_error("GetToy: not implemented!");
-}
-
-
-void COldObjectInterface::SetManual(bool bManual)
-{
-    throw std::logic_error("SetManual: not implemented!");
-}
-
-bool COldObjectInterface::GetManual()
-{
-    throw std::logic_error("GetManual: not implemented!");
-}
-
-
 void COldObjectInterface::SetResetCap(ResetCap cap)
 {
     throw std::logic_error("SetResetCap: not implemented!");
@@ -297,29 +197,9 @@ ResetCap COldObjectInterface::GetResetCap()
     throw std::logic_error("GetResetCap: not implemented!");
 }
 
-void COldObjectInterface::SetResetBusy(bool bBusy)
-{
-    throw std::logic_error("SetResetBusy: not implemented!");
-}
-
-bool COldObjectInterface::GetResetBusy()
-{
-    throw std::logic_error("GetResetBusy: not implemented!");
-}
-
-void COldObjectInterface::SetResetPosition(const Math::Vector &pos)
-{
-    throw std::logic_error("SetResetPosition: not implemented!");
-}
-
 Math::Vector COldObjectInterface::GetResetPosition()
 {
     throw std::logic_error("GetResetPosition: not implemented!");
-}
-
-void COldObjectInterface::SetResetAngle(const Math::Vector &angle)
-{
-    throw std::logic_error("SetResetAngle: not implemented!");
 }
 
 Math::Vector COldObjectInterface::GetResetAngle()
@@ -327,41 +207,19 @@ Math::Vector COldObjectInterface::GetResetAngle()
     throw std::logic_error("GetResetAngle: not implemented!");
 }
 
-void COldObjectInterface::SetResetRun(Program* run)
-{
-    throw std::logic_error("SetResetRun: not implemented!");
-}
-
 Program* COldObjectInterface::GetResetRun()
 {
     throw std::logic_error("GetResetRun: not implemented!");
 }
-
 
 void COldObjectInterface::SetMasterParticle(int part, int parti)
 {
     throw std::logic_error("SetMasterParticle: not implemented!");
 }
 
-int COldObjectInterface::GetMasterParticle(int part)
-{
-    throw std::logic_error("GetMasterParticle: not implemented!");
-}
-
-void COldObjectInterface::SetCmdLine(unsigned int rank, float value)
-{
-    throw std::logic_error("SetCmdLine: not implemented!");
-}
-
 float COldObjectInterface::GetCmdLine(unsigned int rank)
 {
     throw std::logic_error("GetCmdLine: not implemented!");
-}
-
-
-Math::Matrix* COldObjectInterface::GetRotateMatrix(int part)
-{
-    throw std::logic_error("GetRotateMatrix: not implemented!");
 }
 
 Math::Matrix* COldObjectInterface::GetWorldMatrix(int part)
@@ -376,22 +234,10 @@ void COldObjectInterface::SetViewFromHere(Math::Vector &eye, float &dirH, float 
     throw std::logic_error("SetViewFromHere: not implemented!");
 }
 
-void COldObjectInterface::GetCharacter(Character* character)
-{
-    throw std::logic_error("GetCharacter: not implemented!");
-}
-
 Character* COldObjectInterface::GetCharacter()
 {
     throw std::logic_error("GetCharacter: not implemented!");
 }
-
-
-float COldObjectInterface::GetAbsTime()
-{
-    throw std::logic_error("GetAbsTime: not implemented!");
-}
-
 
 void COldObjectInterface::SetEnergy(float level)
 {
@@ -408,7 +254,6 @@ float COldObjectInterface::GetCapacity()
 {
     throw std::logic_error("GetCapacity: not implemented!");
 }
-
 
 void COldObjectInterface::SetShield(float level)
 {
@@ -451,8 +296,6 @@ bool COldObjectInterface::GetClip()
 {
     throw std::logic_error("GetClip: not implemented!");
 }
-
-
 void COldObjectInterface::SetTeam(int team)
 {
     throw std::logic_error("SetTeam: not implemented!");
@@ -463,12 +306,10 @@ int COldObjectInterface::GetTeam()
     throw std::logic_error("GetTeam: not implemented!");
 }
 
-
 void COldObjectInterface::StartDetectEffect(CObject *target, bool bFound)
 {
     throw std::logic_error("StartDetectEffect: not implemented!");
 }
-
 
 void COldObjectInterface::SetVirusMode(bool bEnable)
 {
@@ -479,12 +320,6 @@ bool COldObjectInterface::GetVirusMode()
 {
     throw std::logic_error("GetVirusMode: not implemented!");
 }
-
-float COldObjectInterface::GetVirusTime()
-{
-    throw std::logic_error("GetVirusTime: not implemented!");
-}
-
 
 void COldObjectInterface::SetCameraType(Gfx::CameraType type)
 {
@@ -538,17 +373,10 @@ bool COldObjectInterface::GetSelect(bool bReal)
     //throw std::logic_error("GetSelect: not implemented!");
 }
 
-
-void COldObjectInterface::SetSelectable(bool bMode)
-{
-    throw std::logic_error("SetSelectable: not implemented!");
-}
-
 bool COldObjectInterface::GetSelectable()
 {
     throw std::logic_error("GetSelectable: not implemented!");
 }
-
 
 void COldObjectInterface::SetActivity(bool bMode)
 {
@@ -558,12 +386,6 @@ void COldObjectInterface::SetActivity(bool bMode)
 bool COldObjectInterface::GetActivity()
 {
     throw std::logic_error("GetActivity: not implemented!");
-}
-
-
-void COldObjectInterface::SetVisible(bool bVisible)
-{
-    throw std::logic_error("SetVisible: not implemented!");
 }
 
 
@@ -580,17 +402,6 @@ bool COldObjectInterface::GetEnable()
 }
 
 
-void COldObjectInterface::SetCheckToken(bool bMode)
-{
-    throw std::logic_error("SetCheckToken: not implemented!");
-}
-
-bool COldObjectInterface::GetCheckToken()
-{
-    throw std::logic_error("GetCheckToken: not implemented!");
-}
-
-
 void COldObjectInterface::SetProxyActivate(bool bActivate)
 {
     throw std::logic_error("SetProxyActivate: not implemented!");
@@ -599,11 +410,6 @@ void COldObjectInterface::SetProxyActivate(bool bActivate)
 bool COldObjectInterface::GetProxyActivate()
 {
     throw std::logic_error("GetProxyActivate: not implemented!");
-}
-
-void COldObjectInterface::SetProxyDistance(float distance)
-{
-    throw std::logic_error("SetProxyDistance: not implemented!");
 }
 
 
@@ -627,7 +433,6 @@ float COldObjectInterface::GetParam()
 {
     throw std::logic_error("GetParam: not implemented!");
 }
-
 void COldObjectInterface::SetIgnoreBuildCheck(bool bIgnoreBuildCheck)
 {
     throw std::logic_error("SetIgnoreBuildCheck: not implemented!");
@@ -661,20 +466,6 @@ bool COldObjectInterface::GetLock()
     // TODO: temporary hack
     return false;
     //throw std::logic_error("GetLock: not implemented!");
-}
-
-void COldObjectInterface::SetSpaceshipCargo(bool bCargo)
-{
-    // TODO: temporary hack
-    return;
-    //throw std::logic_error("SetSpaceshipCargo: not implemented!");
-}
-
-bool COldObjectInterface::IsSpaceshipCargo()
-{
-    // TODO: temporary hack
-    return false;
-    //throw std::logic_error("IsSpaceshipCargo: not implemented!");
 }
 
 void COldObjectInterface::SetBurn(bool bBurn)
@@ -715,28 +506,6 @@ bool COldObjectInterface::GetActive()
     //throw std::logic_error("GetActive: not implemented!");
 }
 
-
-void COldObjectInterface::SetGunGoalV(float gunGoal)
-{
-    throw std::logic_error("SetGunGoalV: not implemented!");
-}
-
-void COldObjectInterface::SetGunGoalH(float gunGoal)
-{
-    throw std::logic_error("SetGunGoalH: not implemented!");
-}
-
-float COldObjectInterface::GetGunGoalV()
-{
-    throw std::logic_error("GetGunGoalV: not implemented!");
-}
-
-float COldObjectInterface::GetGunGoalH()
-{
-    throw std::logic_error("GetGunGoalH: not implemented!");
-}
-
-
 bool COldObjectInterface::StartShowLimit()
 {
     throw std::logic_error("StartShowLimit: not implemented!");
@@ -753,17 +522,6 @@ bool COldObjectInterface::IsProgram()
     throw std::logic_error("IsProgram: not implemented!");
 }
 
-void COldObjectInterface::CreateSelectParticle()
-{
-    throw std::logic_error("CreateSelectParticle: not implemented!");
-}
-
-
-void COldObjectInterface::SetRunScript(CScript* script)
-{
-    throw std::logic_error("SetRunScript: not implemented!");
-}
-
 CScript* COldObjectInterface::GetRunScript()
 {
     throw std::logic_error("GetRunScript: not implemented!");
@@ -773,7 +531,6 @@ CBotVar* COldObjectInterface::GetBotVar()
 {
     throw std::logic_error("GetBotVar: not implemented!");
 }
-
 CPhysics* COldObjectInterface::GetPhysics()
 {
     throw std::logic_error("GetPhysics: not implemented!");
@@ -824,36 +581,12 @@ void COldObjectInterface::DeleteDeselList(CObject* pObj)
     //throw std::logic_error("DeleteDeselList: not implemented!");
 }
 
-
-bool COldObjectInterface::CreateShadowCircle(float radius, float intensity, Gfx::EngineShadowType type)
-{
-    throw std::logic_error("CreateShadowCircle: not implemented!");
-}
-
-bool COldObjectInterface::CreateShadowLight(float height, Gfx::Color color)
-{
-    throw std::logic_error("CreateShadowLight: not implemented!");
-}
-
-bool COldObjectInterface::CreateEffectLight(float height, Gfx::Color color)
-{
-    throw std::logic_error("CreateEffectLight: not implemented!");
-}
-
-
 void COldObjectInterface::FlatParent()
 {
     throw std::logic_error("FlatParent: not implemented!");
-}
-
-
-void COldObjectInterface::SetInfoReturn(float value)
-{
-    throw std::logic_error("SetInfoReturn: not implemented!");
 }
 
 float COldObjectInterface::GetInfoReturn()
 {
     throw std::logic_error("GetInfoReturn: not implemented!");
 }
-

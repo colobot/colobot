@@ -1074,6 +1074,8 @@ CObjectUPtr CObjectFactory::CreateBuilding(const ObjectCreateParams& params)
     AddObjectAuto(obj.get());
     m_engine->LoadAllTextures();
 
+    obj->UpdateMapping();
+
     return std::move(obj);
 }
 

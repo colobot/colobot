@@ -638,7 +638,7 @@ bool CAutoFactory::CreateVehicle()
     pos = Transform(*mat, pos);
 
     CObject* vehicle = CObjectManager::GetInstancePointer()->CreateObject(pos, angle, m_type);
-    vehicle->UpdateMapping();
+
     vehicle->SetLock(true);  // not usable
     vehicle->SetRange(30.0f);
     vehicle->SetTeam(m_object->GetTeam());
@@ -657,7 +657,7 @@ bool CAutoFactory::CreateVehicle()
             char* name = m_main->GetNewScriptName(m_type, i);
             if ( name == nullptr )  break;
             Program* prog = brain->GetOrAddProgram(i);
-            vehicle->ReadProgram(prog, name);
+            brain->ReadProgram(prog, name);
             prog->readOnly = true;
         }
     }

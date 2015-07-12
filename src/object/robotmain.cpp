@@ -1275,6 +1275,7 @@ void CRobotMain::ExecuteCmd(char *cmd)
                 }
 
                 object->SetShield(1.0f);
+
                 CPhysics* physics = object->GetPhysics();
                 if (physics != nullptr)
                     physics->SetReactorRange(1.0f);
@@ -3543,33 +3544,35 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
                 if (obj->Implements(ObjectInterfaceType::Old)) // TODO: temporary hack
                 {
-                    obj->SetDefRank(rankObj); // TODO: do we really need this?
+                    COldObject* oldObj = dynamic_cast<COldObject*>(obj);
+
+                    oldObj->SetDefRank(rankObj); // TODO: do we really need this?
 
                     if (type == OBJECT_BASE)
-                        m_base = obj;
+                        m_base = oldObj;
 
                     if (line->GetParam("select")->AsBool(false))
-                        sel = obj;
+                        sel = oldObj;
 
                     // TODO: everything below should go to CObject::Read() function
                     // In fact, we could give CLevelParserLine as parameter to CreateObject() in the first place
 
                     Gfx::CameraType cType = line->GetParam("camera")->AsCameraType(Gfx::CAM_TYPE_NULL);
                     if (cType != Gfx::CAM_TYPE_NULL)
-                        obj->SetCameraType(cType);
+                        oldObj->SetCameraType(cType);
 
-                    obj->SetCameraDist(line->GetParam("cameraDist")->AsFloat(50.0f));
-                    obj->SetCameraLock(line->GetParam("cameraLock")->AsBool(false));
+                    oldObj->SetCameraDist(line->GetParam("cameraDist")->AsFloat(50.0f));
+                    oldObj->SetCameraLock(line->GetParam("cameraLock")->AsBool(false));
 
                     Gfx::PyroType pType = line->GetParam("pyro")->AsPyroType(Gfx::PT_NULL);
                     if (pType != Gfx::PT_NULL)
                     {
-                        m_engine->GetPyroManager()->Create(pType, obj);
+                        m_engine->GetPyroManager()->Create(pType, oldObj);
                     }
 
                     if (type == OBJECT_INFO)
                     {
-                        CExchangePost* exchangePost = static_cast<CExchangePost*>(obj);
+                        CExchangePost* exchangePost = static_cast<CExchangePost*>(oldObj);
                         exchangePost->ReadInfo(line.get());
                     }
 
@@ -3579,36 +3582,36 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                         const auto& cmdline = line->GetParam("cmdline")->AsArray();
                         for (unsigned int i = 0; i < cmdline.size(); i++)
                         {
-                            obj->SetCmdLine(i, cmdline[i]->AsFloat());
+                            oldObj->SetCmdLine(i, cmdline[i]->AsFloat());
                         }
                     }
 
                     bool selectable = line->GetParam("selectable")->AsBool(true);
-                    obj->SetSelectable(selectable);
-                    obj->SetIgnoreBuildCheck(line->GetParam("ignoreBuildCheck")->AsBool(false));
-                    obj->SetEnable(line->GetParam("enable")->AsBool(true));
-                    obj->SetProxyActivate(line->GetParam("proxyActivate")->AsBool(false));
-                    obj->SetProxyDistance(line->GetParam("proxyDistance")->AsFloat(15.0f)*g_unit);
-                    obj->SetRange(line->GetParam("range")->AsFloat(30.0f));
-                    obj->SetShield(line->GetParam("shield")->AsFloat(1.0f));
-                    obj->SetMagnifyDamage(line->GetParam("magnifyDamage")->AsFloat(1.0f));
-                    obj->SetTeam(line->GetParam("team")->AsInt(0));
-                    obj->SetClip(line->GetParam("clip")->AsBool(true));
-                    obj->SetCheckToken(!line->GetParam("checkToken")->IsDefined() ? trainer || !selectable : line->GetParam("checkToken")->AsBool(true));
+                    oldObj->SetSelectable(selectable);
+                    oldObj->SetIgnoreBuildCheck(line->GetParam("ignoreBuildCheck")->AsBool(false));
+                    oldObj->SetEnable(line->GetParam("enable")->AsBool(true));
+                    oldObj->SetProxyActivate(line->GetParam("proxyActivate")->AsBool(false));
+                    oldObj->SetProxyDistance(line->GetParam("proxyDistance")->AsFloat(15.0f)*g_unit);
+                    oldObj->SetRange(line->GetParam("range")->AsFloat(30.0f));
+                    oldObj->SetShield(line->GetParam("shield")->AsFloat(1.0f));
+                    oldObj->SetMagnifyDamage(line->GetParam("magnifyDamage")->AsFloat(1.0f));
+                    oldObj->SetTeam(line->GetParam("team")->AsInt(0));
+                    oldObj->SetClip(line->GetParam("clip")->AsBool(true));
+                    oldObj->SetCheckToken(!line->GetParam("checkToken")->IsDefined() ? trainer || !selectable : line->GetParam("checkToken")->AsBool(true));
                     // SetManual will affect bot speed
                     if (type == OBJECT_MOBILEdr)
                     {
-                        obj->SetManual(!trainer);
+                        oldObj->SetManual(!trainer);
                     }
 
                     Math::Vector zoom = line->GetParam("zoom")->AsPoint(Math::Vector(0.0f, 0.0f, 0.0f));
                     if (zoom.x != 0.0f || zoom.y != 0.0f || zoom.z != 0.0f)
-                        obj->SetZoom(0, zoom);
+                        oldObj->SetZoom(0, zoom);
 
                     // only used in AlienWorm lines
                     if (type == OBJECT_WORM)
                     {
-                        CMotion* motion = obj->GetMotion();
+                        CMotion* motion = oldObj->GetMotion();
                         if (motion != nullptr && line->GetParam("param")->IsDefined())
                         {
                             const auto& p = line->GetParam("param")->AsArray();
@@ -3621,9 +3624,9 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
                     int run = -1;
                     std::map<int, Program*> loadedPrograms;
-                    if (obj->Implements(ObjectInterfaceType::Programmable))
+                    if (oldObj->Implements(ObjectInterfaceType::Programmable))
                     {
-                        CBrain* brain = dynamic_cast<CProgrammableObject*>(obj)->GetBrain();
+                        CBrain* brain = dynamic_cast<CProgrammableObject*>(oldObj)->GetBrain();
 
                         bool allFilled = true;
                         for (int i = 0; i < 10 || allFilled; i++)
@@ -3652,7 +3655,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                             brain->SetScriptRun(loadedPrograms[run]);
                         }
                     }
-                    CAuto* automat = obj->GetAuto();
+                    CAuto* automat = oldObj->GetAuto();
                     if (automat != nullptr)
                     {
                         type = line->GetParam("autoType")->AsObjectType(OBJECT_NULL);
@@ -3673,15 +3676,15 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                         }
                     }
 
-                    if (soluce && obj->Implements(ObjectInterfaceType::Programmable) && line->GetParam("soluce")->IsDefined())
-                        dynamic_cast<CProgrammableObject*>(obj)->GetBrain()
+                    if (soluce && oldObj->Implements(ObjectInterfaceType::Programmable) && line->GetParam("soluce")->IsDefined())
+                        dynamic_cast<CProgrammableObject*>(oldObj)->GetBrain()
                             ->SetSoluceName(const_cast<char*>(line->GetParam("soluce")->AsPath("ai").c_str()));
 
-                    obj->SetResetPosition(obj->GetPosition());
-                    obj->SetResetAngle(obj->GetRotation());
-                    obj->SetResetRun(loadedPrograms[run]);
+                    oldObj->SetResetPosition(oldObj->GetPosition());
+                    oldObj->SetResetAngle(oldObj->GetRotation());
+                    oldObj->SetResetRun(loadedPrograms[run]);
                     if (line->GetParam("reset")->AsBool(false))
-                        obj->SetResetCap(RESET_MOVE);
+                        oldObj->SetResetCap(RESET_MOVE);
                 }
 
                 rankObj ++;

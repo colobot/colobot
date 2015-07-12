@@ -26,7 +26,9 @@
 
 #include "graphics/core/color.h"
 
+#include <set>
 
+class CObject;
 
 enum AutoBaseParam
 {
@@ -115,5 +117,6 @@ protected:
     Gfx::Color      m_bgDown;
     Gfx::Color      m_bgCloudUp;
     Gfx::Color      m_bgCloudDown;
+    std::set<CObject*> m_cargoObjects;
 };
 

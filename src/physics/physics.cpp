@@ -808,7 +808,7 @@ void CPhysics::MotorUpdate(float aTime, float rTime)
     {
         power = nullptr;
         if (IsObjectCarryingCargo(m_object)&&  // carries something?
-             !m_object->IsSpaceshipCargo() )
+             !m_bFreeze )
         {
             motorSpeed.x *= 0.7f;  // forward more slowly
             motorSpeed.z *= 0.5f;

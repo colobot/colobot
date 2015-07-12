@@ -113,6 +113,7 @@ void CAutoEgg::Init()
         alien->SetZoom(0, 0.01f);  // invisible !
     }
     alien->SetLock(true);
+
     alien->SetActivity(false);
 }
 

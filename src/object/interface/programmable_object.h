@@ -44,5 +44,6 @@ public:
      *  returned object will always be non-null*/
     virtual CBrain* GetBrain() = 0;
 
+
     // TODO: CBrain interface can actually be moved here
 };

@@ -139,6 +139,7 @@ bool CAutoRepair::EventProcess(const Event &event)
     if ( m_phase == ARP_REPAIR )
     {
         vehicle = SearchVehicle();
+
         if ( m_progress < 1.0f ||
              (vehicle != 0 && vehicle->GetShield() < 1.0f) )
         {

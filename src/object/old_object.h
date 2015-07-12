@@ -90,39 +90,35 @@ public:
     bool        ExplodeObject(ExplosionType type, float force, float decay=1.0f) override;
 
     bool EventProcess(const Event& event) override;
-    void        UpdateMapping() override;
+    void        UpdateMapping();
 
     void        DeletePart(int part) override;
-    void        SetObjectRank(int part, int objRank) override;
+    void        SetObjectRank(int part, int objRank);
     int         GetObjectRank(int part) override;
-    void        SetObjectParent(int part, int parent) override;
+    void        SetObjectParent(int part, int parent);
     void        SetType(ObjectType type) override;
-    const char* GetName() override;
+    const char* GetName();
     int         GetOption() override;
 
     void        Write(CLevelParserLine* line) override;
     void        Read(CLevelParserLine* line) override;
 
-    void        SetDrawWorld(bool bDraw) override;
     void        SetDrawFront(bool bDraw) override;
 
-    bool        ReadProgram(Program* program, const char* filename) override;
-    bool        WriteProgram(Program* program, const char* filename) override;
+    int         GetShadowLight();
+    int         GetEffectLight();
 
-    int         GetShadowLight() override;
-    int         GetEffectLight() override;
-
-    void        SetShieldRadius(float radius) override;
+    void        SetShieldRadius(float radius);
     float       GetShieldRadius() override;
 
-    void        SetFloorHeight(float height) override;
+    void        SetFloorHeight(float height);
     void        FloorAdjust() override;
 
     void        SetLinVibration(Math::Vector dir) override;
-    Math::Vector    GetLinVibration() override;
+    Math::Vector    GetLinVibration();
     void        SetCirVibration(Math::Vector dir) override;
-    Math::Vector    GetCirVibration() override;
-    void        SetTilt(Math::Vector dir) override;
+    Math::Vector    GetCirVibration();
+    void        SetTilt(Math::Vector dir);
     Math::Vector    GetTilt() override;
 
     void        SetPosition(int part, const Math::Vector &pos) override;
@@ -148,25 +144,24 @@ public:
     void        SetTrainer(bool bEnable) override;
     bool        GetTrainer() override;
 
-    void        SetToy(bool bEnable) override;
-    bool        GetToy() override;
+    void        SetToy(bool bEnable);
+    bool        GetToy();
 
-    void        SetManual(bool bManual) override;
-    bool        GetManual() override;
+    void        SetManual(bool bManual);
+    bool        GetManual();
 
     void        SetResetCap(ResetCap cap) override;
     ResetCap    GetResetCap() override;
-    void        SetResetBusy(bool bBusy) override;
-    bool        GetResetBusy() override;
-    void        SetResetPosition(const Math::Vector &pos) override;
+    void        SetResetBusy(bool bBusy);
+    bool        GetResetBusy();
+    void        SetResetPosition(const Math::Vector &pos);
     Math::Vector    GetResetPosition() override;
-    void        SetResetAngle(const Math::Vector &angle) override;
+    void        SetResetAngle(const Math::Vector &angle);
     Math::Vector    GetResetAngle() override;
-    void        SetResetRun(Program* run) override;
+    void        SetResetRun(Program* run);
     Program*    GetResetRun() override;
 
     void        SetMasterParticle(int part, int parti) override;
-    int         GetMasterParticle(int part) override;
 
     void        SetPower(CObject* power) override;
     CObject*    GetPower() override;
@@ -176,20 +171,19 @@ public:
     CObject*    GetTransporter() override;
     void        SetTransporterPart(int part) override;
 
-    void        SetCmdLine(unsigned int rank, float value) override;
+    void        SetCmdLine(unsigned int rank, float value);
     float       GetCmdLine(unsigned int rank) override;
 
-    Math::Matrix*   GetRotateMatrix(int part) override;
+    Math::Matrix*   GetRotateMatrix(int part);
     Math::Matrix*   GetWorldMatrix(int part) override;
 
     void        SetViewFromHere(Math::Vector &eye, float &dirH, float &dirV,
                                 Math::Vector &lookat, Math::Vector &upVec,
                                 Gfx::CameraType type) override;
 
-    void        GetCharacter(Character* character) override;
     Character*  GetCharacter() override;
 
-    float       GetAbsTime() override;
+    float       GetAbsTime();
 
     void        SetEnergy(float level) override;
     float       GetEnergy() override;
@@ -220,7 +214,6 @@ public:
 
     void        SetVirusMode(bool bEnable) override;
     bool        GetVirusMode() override;
-    float       GetVirusTime() override;
 
     void        SetCameraType(Gfx::CameraType type) override;
     Gfx::CameraType  GetCameraType() override;
@@ -234,23 +227,23 @@ public:
     void        SetSelect(bool bMode, bool bDisplayError=true) override;
     bool        GetSelect(bool bReal=false) override;
 
-    void        SetSelectable(bool bMode) override;
+    void        SetSelectable(bool bMode);
     bool        GetSelectable() override;
 
     void        SetActivity(bool bMode) override;
     bool        GetActivity() override;
 
-    void        SetVisible(bool bVisible) override;
+    void        SetVisible(bool bVisible);
 
     void        SetEnable(bool bEnable) override;
     bool        GetEnable() override;
 
-    void        SetCheckToken(bool bMode) override;
-    bool        GetCheckToken() override;
+    void        SetCheckToken(bool bMode);
+    bool        GetCheckToken();
 
     void        SetProxyActivate(bool bActivate) override;
     bool        GetProxyActivate() override;
-    void        SetProxyDistance(float distance) override;
+    void        SetProxyDistance(float distance);
 
     void        SetMagnifyDamage(float factor) override;
     float       GetMagnifyDamage() override;
@@ -264,8 +257,6 @@ public:
     bool        IsExploding() override;
     void        SetLock(bool bLock) override;
     bool        GetLock() override;
-    void        SetSpaceshipCargo(bool bCargo) override;
-    bool        IsSpaceshipCargo() override;
     void        SetBurn(bool bBurn) override;
     bool        GetBurn() override;
     void        SetDead(bool bDead) override;
@@ -273,18 +264,18 @@ public:
     bool        GetRuin() override;
     bool        GetActive() override;
 
-    void        SetGunGoalV(float gunGoal) override;
-    void        SetGunGoalH(float gunGoal) override;
-    float       GetGunGoalV() override;
-    float       GetGunGoalH() override;
+    void        SetGunGoalV(float gunGoal);
+    void        SetGunGoalH(float gunGoal);
+    float       GetGunGoalV();
+    float       GetGunGoalH();
 
     bool        StartShowLimit() override;
     void        StopShowLimit() override;
 
     bool        IsProgram() override;
-    void        CreateSelectParticle() override;
+    void        CreateSelectParticle();
 
-    void        SetRunScript(CScript* script) override;
+    void        SetRunScript(CScript* script);
     CScript*    GetRunScript() override;
     CBotVar*    GetBotVar() override;
     CPhysics*   GetPhysics() override;
@@ -301,13 +292,13 @@ public:
     CObject*    SubDeselList() override;
     void        DeleteDeselList(CObject* pObj) override;
 
-    bool        CreateShadowCircle(float radius, float intensity, Gfx::EngineShadowType type = Gfx::ENG_SHADOW_NORM) override;
-    bool        CreateShadowLight(float height, Gfx::Color color) override;
-    bool        CreateEffectLight(float height, Gfx::Color color) override;
+    bool        CreateShadowCircle(float radius, float intensity, Gfx::EngineShadowType type = Gfx::ENG_SHADOW_NORM);
+    bool        CreateShadowLight(float height, Gfx::Color color);
+    bool        CreateEffectLight(float height, Gfx::Color color);
 
     void        FlatParent() override;
 
-    void SetInfoReturn(float value) override;
+    void SetInfoReturn(float value);
     float GetInfoReturn() override;
 
     Math::Vector GetPosition() const override;

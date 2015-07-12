@@ -80,14 +80,16 @@ static float debug_arm3 = 0.0f;
 
 void uObject(CBotVar* botThis, void* user)
 {
-    CObject*    object = static_cast<CObject*>(user);
     CPhysics*   physics;
     CBotVar     *pVar, *pSub;
     ObjectType  type;
     Math::Vector    pos;
     float       value;
 
-    if ( object == 0 )  return;
+    if ( user == nullptr )  return;
+
+    assert(static_cast<CObject*>(user)->Implements(ObjectInterfaceType::Old));
+    COldObject* object = static_cast<COldObject*>(user);
 
     physics = object->GetPhysics();
 
@@ -162,8 +164,14 @@ void uObject(CBotVar* botThis, void* user)
     if (object->Implements(ObjectInterfaceType::Powered))
     {
         CObject* power = dynamic_cast<CPoweredObject*>(object)->GetPower();
-        if (power == nullptr)  pVar->SetPointer(0);
-        else                   pVar->SetPointer(power->GetBotVar());
+        if (power == nullptr)
+        {
+            pVar->SetPointer(nullptr);
+        }
+        else if (power->Implements(ObjectInterfaceType::Old))
+        {
+            pVar->SetPointer(dynamic_cast<COldObject*>(power)->GetBotVar());
+        }
     }
 
     // Updates the transported object's type.
@@ -171,8 +179,14 @@ void uObject(CBotVar* botThis, void* user)
     if (object->Implements(ObjectInterfaceType::Carrier))
     {
         CObject* cargo = dynamic_cast<CCarrierObject*>(object)->GetCargo();
-        if (cargo == nullptr)  pVar->SetPointer(0);
-        else                   pVar->SetPointer(cargo->GetBotVar());
+        if (cargo == nullptr)
+        {
+            pVar->SetPointer(nullptr);
+        }
+        else if (cargo->Implements(ObjectInterfaceType::Old))
+        {
+            pVar->SetPointer(dynamic_cast<COldObject*>(cargo)->GetBotVar());
+        }
     }
 
     pVar = pVar->GetNext();  // "id"
@@ -902,6 +916,7 @@ void COldObject::Write(CLevelParserLine* line)
     if ( !GetEnable() )
         line->AddParam("enable", CLevelParserParamUPtr{new CLevelParserParam(GetEnable())});
 
+    // TODO: doesn't seem to be used
     if ( GetFixed() )
         line->AddParam("fixed", CLevelParserParamUPtr{new CLevelParserParam(GetFixed())});
 
@@ -1509,11 +1524,6 @@ void COldObject::SetMasterParticle(int part, int parti)
     m_objectPart[part].masterParti = parti;
 }
 
-int COldObject::GetMasterParticle(int part)
-{
-    return m_objectPart[part].masterParti;
-}
-
 
 // Management of the stack transport.
 
@@ -1613,21 +1623,6 @@ Math::Matrix* COldObject::GetWorldMatrix(int part)
     return &m_objectPart[part].matWorld;
 }
 
-
-// Indicates whether the object should be drawn below the interface.
-
-void COldObject::SetDrawWorld(bool bDraw)
-{
-    int     i;
-
-    for ( i=0 ; i<OBJECTMAXPART ; i++ )
-    {
-        if ( m_objectPart[i].bUsed )
-        {
-            m_engine->SetObjectDrawWorld(m_objectPart[i].object, bDraw);
-        }
-    }
-}
 
 // Indicates whether the object should be drawn over the interface.
 
@@ -1739,30 +1734,6 @@ bool COldObject::CreateShadowCircle(float radius, float intensity,
 
     return true;
 }
-
-// Reads a program.
-
-bool COldObject::ReadProgram(Program* program, const char* filename)
-{
-    if ( m_brain != nullptr )
-    {
-        return m_brain->ReadProgram(program, filename);
-    }
-    return false;
-}
-
-// Writes a program.
-
-bool COldObject::WriteProgram(Program* program, const char* filename)
-{
-    if ( m_brain != nullptr )
-    {
-        return m_brain->WriteProgram(program, filename);
-    }
-    return false;
-}
-
-
 
 // Calculates the matrix for transforming the object.
 // Returns true if the matrix has changed.
@@ -2372,11 +2343,6 @@ void COldObject::SetViewFromHere(Math::Vector &eye, float &dirH, float &dirV,
 
 // Management of features.
 
-void COldObject::GetCharacter(Character* character)
-{
-    memcpy(character, &m_character, sizeof(Character));
-}
-
 Character* COldObject::GetCharacter()
 {
     return &m_character;
@@ -2629,11 +2595,6 @@ void COldObject::SetVirusMode(bool bEnable)
 bool COldObject::GetVirusMode()
 {
     return m_bVirusMode;
-}
-
-float COldObject::GetVirusTime()
-{
-    return m_virusTime;
 }
 
 
@@ -2905,20 +2866,6 @@ bool COldObject::IsExploding()
 {
     return m_bExplo;
 }
-
-
-// Mode management "cargo ship" during movies.
-
-void COldObject::SetSpaceshipCargo(bool bCargo)
-{
-    m_bCargo = bCargo;
-}
-
-bool COldObject::IsSpaceshipCargo()
-{
-    return m_bCargo;
-}
-
 
 // Management of the HS mode of an object.
 

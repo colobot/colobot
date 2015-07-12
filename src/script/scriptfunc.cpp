@@ -547,6 +547,7 @@ bool CScriptFunctions::rGetObjectById(CBotVar* var, CBotVar* result, int& except
     {
         result->SetPointer(pObj->GetBotVar());
     }
+
     return true;
 }
 
@@ -1161,6 +1162,7 @@ bool CScriptFunctions::rSearch(CBotVar* var, CBotVar* result, int& exception, vo
     {
         result->SetPointer(pBest->GetBotVar());
     }
+
     return true;
 }
 

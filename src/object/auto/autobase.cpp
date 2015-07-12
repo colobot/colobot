@@ -18,8 +18,6 @@
  */
 
 
-#include <stdio.h>
-
 #include "object/auto/autobase.h"
 #include "object/interface/transportable_object.h"
 
@@ -1241,10 +1239,9 @@ void CAutoBase::UpdateInterface()
 
 void CAutoBase::FreezeCargo(bool freeze)
 {
+    m_cargoObjects.clear();
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        obj->SetSpaceshipCargo(false);
-
         if ( obj == m_object )  continue;  // yourself?
         if (IsObjectBeingTransported(obj)) continue;
 
@@ -1252,11 +1249,7 @@ void CAutoBase::FreezeCargo(bool freeze)
         float dist = Math::DistanceProjected(m_pos, oPos);
         if ( dist < 32.0f )
         {
-            if ( freeze )
-            {
-                obj->SetSpaceshipCargo(true);
-            }
-
+            m_cargoObjects.insert(obj);
             CPhysics* physics = obj->GetPhysics();
             if ( physics != nullptr )
             {
@@ -1272,10 +1265,8 @@ void CAutoBase::MoveCargo()
 {
     Math::Vector sPos = m_object->GetPosition();
 
-    for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
+    for (CObject* obj : m_cargoObjects)
     {
-        if ( !obj->IsSpaceshipCargo() )  continue;
-
         Math::Vector oPos = obj->GetPosition();
         oPos.y = sPos.y+30.0f;
         oPos.y += obj->GetCharacter()->height;

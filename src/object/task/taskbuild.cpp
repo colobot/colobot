@@ -83,7 +83,6 @@ bool CTaskBuild::CreateBuilding(Math::Vector pos, float angle)
 {
     float power = 0.0f;
     m_building = CObjectManager::GetInstancePointer()->CreateObject(pos, angle, m_type, power);
-    m_building->UpdateMapping();
     m_building->SetLock(true);  // not yet usable
     m_building->SetTeam(m_object->GetTeam());
 
