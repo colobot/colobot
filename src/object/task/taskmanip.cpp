@@ -336,11 +336,11 @@ Error CTaskManip::Start(TaskManipOrder order, TaskManipArm arm)
 
             m_carrierObject->SetCargo(nullptr);  // lick the ball
             dynamic_cast<CTransportableObject*>(other)->SetTransporter(nullptr);
-            pos = m_object->GetPosition(0);
+            pos = m_object->GetPosition();
             pos.y -= 3.0f;
             other->SetPosition(0, pos);
 
-            pos = m_object->GetPosition(0);
+            pos = m_object->GetPosition();
             pos.y += 2.0f;
             m_object->SetPosition(0, pos);  // against the top of jump
 
@@ -485,7 +485,7 @@ Error CTaskManip::Start(TaskManipOrder order, TaskManipArm arm)
         }
     }
 
-    dist = Math::Distance(m_object->GetPosition(0), m_targetPos);
+    dist = Math::Distance(m_object->GetPosition(), m_targetPos);
     len = dist-TAKE_DIST;
     if ( m_arm == TMA_OTHER ) len -= TAKE_DIST_OTHER;
     if ( len < 0.0f )  len = 0.0f;
@@ -572,7 +572,7 @@ Error CTaskManip::IsEnded()
         if ( m_timeLimit <= 0.0f )
         {
 //OK 1.9
-            dist = Math::Distance(m_object->GetPosition(0), m_targetPos);
+            dist = Math::Distance(m_object->GetPosition(), m_targetPos);
             if ( dist <= m_advanceLength + 2.0f )
             {
                 m_move = 0.0f;  // advance ended
@@ -590,7 +590,7 @@ Error CTaskManip::IsEnded()
             }
         }
 
-        dist = Math::Distance(m_object->GetPosition(0), m_targetPos);
+        dist = Math::Distance(m_object->GetPosition(), m_targetPos);
         if ( dist <= m_advanceLength )
         {
             m_move = 0.0f;  // advance ended
@@ -640,7 +640,7 @@ Error CTaskManip::IsEnded()
                      (m_cargoType == OBJECT_POWER  ||
                       m_cargoType == OBJECT_ATOMIC ) )
                 {
-                    m_sound->Play(SOUND_POWEROFF, m_object->GetPosition(0));
+                    m_sound->Play(SOUND_POWEROFF, m_object->GetPosition());
                 }
                 m_arm = TMA_STOCK;
                 InitAngle();
@@ -663,7 +663,7 @@ Error CTaskManip::IsEnded()
                      (m_cargoType == OBJECT_POWER  ||
                       m_cargoType == OBJECT_ATOMIC ) )
                 {
-                    m_sound->Play(SOUND_POWERON, m_object->GetPosition(0));
+                    m_sound->Play(SOUND_POWERON, m_object->GetPosition());
                 }
                 if (cargo != nullptr && m_cargoType == OBJECT_METAL && m_arm == TMA_FFRONT)
                 {
@@ -728,7 +728,7 @@ CObject* CTaskManip::SearchTakeUnderObject(Math::Vector &pos, float dLimit)
     ObjectType  type;
     float       min, distance;
 
-    iPos   = m_object->GetPosition(0);
+    iPos   = m_object->GetPosition();
 
     min = 1000000.0f;
     pBest = 0;
@@ -754,7 +754,7 @@ CObject* CTaskManip::SearchTakeUnderObject(Math::Vector &pos, float dLimit)
         if ( pObj->GetLock() )  continue;
         if ( pObj->GetZoomY(0) != 1.0f )  continue;
 
-        oPos = pObj->GetPosition(0);
+        oPos = pObj->GetPosition();
         distance = Math::Distance(oPos, iPos);
         if ( distance <= dLimit &&
              distance < min     )
@@ -765,7 +765,7 @@ CObject* CTaskManip::SearchTakeUnderObject(Math::Vector &pos, float dLimit)
     }
     if ( pBest != 0 )
     {
-        pos = pBest->GetPosition(0);
+        pos = pBest->GetPosition();
     }
     return pBest;
 }
@@ -780,7 +780,7 @@ CObject* CTaskManip::SearchTakeFrontObject(bool bAdvance, Math::Vector &pos,
     ObjectType  type;
     float       min, iAngle, bAngle, aLimit, dLimit, f;
 
-    iPos   = m_object->GetPosition(0);
+    iPos   = m_object->GetPosition();
     iAngle = m_object->GetAngleY(0);
     iAngle = Math::NormAngle(iAngle);  // 0..2*Math::PI
 
@@ -826,7 +826,7 @@ CObject* CTaskManip::SearchTakeFrontObject(bool bAdvance, Math::Vector &pos,
         if ( pObj->GetLock() )  continue;
         if ( pObj->GetZoomY(0) != 1.0f )  continue;
 
-        oPos = pObj->GetPosition(0);
+        oPos = pObj->GetPosition();
         distance = fabs(Math::Distance(oPos, iPos)-TAKE_DIST);
         f = 1.0f-distance/50.0f;
         if ( f < 0.5f )  f = 0.5f;
@@ -851,7 +851,7 @@ CObject* CTaskManip::SearchTakeFrontObject(bool bAdvance, Math::Vector &pos,
     }
     else
     {
-        pos = pBest->GetPosition(0);
+        pos = pBest->GetPosition();
         distance = min;
         angle = bAngle;
     }
@@ -868,7 +868,7 @@ CObject* CTaskManip::SearchTakeBackObject(bool bAdvance, Math::Vector &pos,
     ObjectType  type;
     float       min, iAngle, bAngle, aLimit, dLimit, f;
 
-    iPos   = m_object->GetPosition(0);
+    iPos   = m_object->GetPosition();
     iAngle = m_object->GetAngleY(0)+Math::PI;
     iAngle = Math::NormAngle(iAngle);  // 0..2*Math::PI
 
@@ -913,7 +913,7 @@ CObject* CTaskManip::SearchTakeBackObject(bool bAdvance, Math::Vector &pos,
         if ( pObj->GetLock() )  continue;
         if ( pObj->GetZoomY(0) != 1.0f )  continue;
 
-        oPos = pObj->GetPosition(0);
+        oPos = pObj->GetPosition();
         distance = fabs(Math::Distance(oPos, iPos)-TAKE_DIST);
         f = 1.0f-distance/50.0f;
         if ( f < 0.5f )  f = 0.5f;
@@ -938,7 +938,7 @@ CObject* CTaskManip::SearchTakeBackObject(bool bAdvance, Math::Vector &pos,
     }
     else
     {
-        pos = pBest->GetPosition(0);
+        pos = pBest->GetPosition();
         distance = min;
         angle = bAngle;
     }
@@ -1364,7 +1364,7 @@ bool CTaskManip::IsFreeDeposeObject(Math::Vector pos)
 
 void CTaskManip::SoundManip(float time, float amplitude, float frequency)
 {
-    int i = m_sound->Play(SOUND_MANIP, m_object->GetPosition(0), 0.0f, 0.3f*frequency, true);
+    int i = m_sound->Play(SOUND_MANIP, m_object->GetPosition(), 0.0f, 0.3f*frequency, true);
     m_sound->AddEnvelope(i, 0.5f*amplitude, 1.0f*frequency, 0.1f, SOPER_CONTINUE);
     m_sound->AddEnvelope(i, 0.5f*amplitude, 1.0f*frequency, time-0.1f, SOPER_CONTINUE);
     m_sound->AddEnvelope(i, 0.0f, 0.3f*frequency, 0.1f, SOPER_STOP);

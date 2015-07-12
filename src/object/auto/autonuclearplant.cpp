@@ -152,7 +152,7 @@ bool CAutoNuclearPlant::EventProcess(const Event &event)
                 InitProgressTotal(1.5f+NUCLEARPLANT_DELAY+1.5f);
                 UpdateInterface();
 
-                m_sound->Play(SOUND_OPEN, m_object->GetPosition(0), 1.0f, 1.4f);
+                m_sound->Play(SOUND_OPEN, m_object->GetPosition(), 1.0f, 1.4f);
 
                 m_phase    = ANUP_CLOSE;
                 m_progress = 0.0f;
@@ -188,9 +188,9 @@ bool CAutoNuclearPlant::EventProcess(const Event &event)
                 m_particle->CreateParticle(pos, speed, dim, Gfx::PARTICRASH);
             }
 
-            m_sound->Play(SOUND_CLOSE, m_object->GetPosition(0), 1.0f, 1.0f);
+            m_sound->Play(SOUND_CLOSE, m_object->GetPosition(), 1.0f, 1.0f);
 
-            m_channelSound = m_sound->Play(SOUND_NUCLEAR, m_object->GetPosition(0), 1.0f, 0.1f, true);
+            m_channelSound = m_sound->Play(SOUND_NUCLEAR, m_object->GetPosition(), 1.0f, 0.1f, true);
             m_sound->AddEnvelope(m_channelSound, 1.0f, 1.0f, NUCLEARPLANT_DELAY-1.0f, SOPER_CONTINUE);
             m_sound->AddEnvelope(m_channelSound, 0.0f, 1.0f, 2.0f, SOPER_STOP);
 
@@ -208,7 +208,7 @@ bool CAutoNuclearPlant::EventProcess(const Event &event)
             {
                 m_lastParticle = m_time;
 
-                pos = m_object->GetPosition(0);
+                pos = m_object->GetPosition();
                 pos.y += 30.0f;
                 pos.x += (Math::Rand()-0.5f)*6.0f;
                 pos.z += (Math::Rand()-0.5f)*6.0f;
@@ -254,7 +254,7 @@ bool CAutoNuclearPlant::EventProcess(const Event &event)
                 m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIBLUE, Math::Rand()*5.0f+5.0f, 0.0f, 0.0f);
             }
 
-            m_sound->Play(SOUND_OPEN, m_object->GetPosition(0), 1.0f, 1.4f);
+            m_sound->Play(SOUND_OPEN, m_object->GetPosition(), 1.0f, 1.4f);
 
             m_phase    = ANUP_OPEN;
             m_progress = 0.0f;
@@ -383,7 +383,7 @@ bool CAutoNuclearPlant::SearchVehicle()
 
 void CAutoNuclearPlant::CreatePower()
 {
-    Math::Vector pos = m_object->GetPosition(0);
+    Math::Vector pos = m_object->GetPosition();
     float angle = m_object->GetAngleY(0);
 
     float powerLevel = 1.0f;
@@ -406,7 +406,7 @@ Error CAutoNuclearPlant::GetError()
         return ERR_BAT_VIRUS;
     }
 
-//? res = m_terrain->GetResource(m_object->GetPosition(0));
+//? res = m_terrain->GetResource(m_object->GetPosition());
 //? if ( res != TR_POWER )  return ERR_NUCLEAR_NULL;
 
 //? if ( m_object->GetEnergy() < ENERGY_POWER )  return ERR_NUCLEAR_LOW;

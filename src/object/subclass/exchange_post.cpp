@@ -91,7 +91,7 @@ std::unique_ptr<CExchangePost> CExchangePost::Create(
 
     obj->CreateShadowCircle(8.0f, 1.0f);
 
-    Math::Vector pos = obj->GetPosition(0);
+    Math::Vector pos = obj->GetPosition();
     pos.y += params.height;
     obj->SetPosition(0, pos);  // to display the shadows immediately
 
@@ -298,7 +298,7 @@ void CAutoInfo::Start(int param)
     }
 
     m_lastParticle = 0;
-    m_goal = m_object->GetPosition(0);
+    m_goal = m_object->GetPosition();
 
     Math::Vector    pos, speed;
     Math::Point     dim;

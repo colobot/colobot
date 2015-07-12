@@ -101,7 +101,7 @@ bool CLightning::EventFrame(const Event &event)
             }
             else
             {
-                m_pos = obj->GetPosition(0);
+                m_pos = obj->GetPosition();
                 m_terrain->AdjustToFloor(m_pos, true);
 
                 ObjectType type = obj->GetType();
@@ -329,7 +329,7 @@ CObject* CLightning::SearchObject(Math::Vector pos)
              type == OBJECT_PARA )  // building a lightning effect?
         {
             paraObj.push_back(obj);
-            paraObjPos.push_back(obj->GetPosition(0));
+            paraObjPos.push_back(obj->GetPosition());
         }
 
         float detect = 0.0f;
@@ -390,7 +390,7 @@ CObject* CLightning::SearchObject(Math::Vector pos)
         }
         if (detect == 0.0f) continue;
 
-        Math::Vector oPos = obj->GetPosition(0);
+        Math::Vector oPos = obj->GetPosition();
         float dist = Math::DistanceProjected(oPos, pos);
         if (dist > detect) continue;
         if (dist < min)
@@ -404,7 +404,7 @@ CObject* CLightning::SearchObject(Math::Vector pos)
         return nullptr;  // nothing found
 
     // Under the protection of a lightning conductor?
-    Math::Vector oPos = bestObj->GetPosition(0);
+    Math::Vector oPos = bestObj->GetPosition();
     for (int i = paraObj.size()-1; i >= 0; i--)
     {
         float dist = Math::DistanceProjected(oPos, paraObjPos[i]);

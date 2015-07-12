@@ -119,7 +119,7 @@ bool CAutoPowerStation::EventProcess(const Event &event)
 
     float big = m_object->GetEnergy();
 
-    Gfx::TerrainRes res = m_terrain->GetResource(m_object->GetPosition(0));
+    Gfx::TerrainRes res = m_terrain->GetResource(m_object->GetPosition());
     if ( res == Gfx::TR_POWER )
     {
         big += event.rTime*0.01f;  // recharges the large battery
@@ -172,7 +172,7 @@ bool CAutoPowerStation::EventProcess(const Event &event)
         freq = 1.0f+3.0f*freq;
         if ( m_soundChannel == -1 )
         {
-            m_soundChannel = m_sound->Play(SOUND_STATION, m_object->GetPosition(0),
+            m_soundChannel = m_sound->Play(SOUND_STATION, m_object->GetPosition(),
                                            0.3f, freq, true);
         }
         m_sound->Frequency(m_soundChannel, freq);
@@ -244,7 +244,7 @@ bool CAutoPowerStation::EventProcess(const Event &event)
 
 CObject* CAutoPowerStation::SearchVehicle()
 {
-    Math::Vector sPos = m_object->GetPosition(0);
+    Math::Vector sPos = m_object->GetPosition();
 
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
@@ -277,7 +277,7 @@ CObject* CAutoPowerStation::SearchVehicle()
              type != OBJECT_MOBILEit &&
              type != OBJECT_MOBILEdr )  continue;
 
-        Math::Vector oPos = obj->GetPosition(0);
+        Math::Vector oPos = obj->GetPosition();
         float dist = Math::Distance(oPos, sPos);
         if ( dist <= 5.0f )  return obj;
     }
@@ -297,7 +297,7 @@ Error CAutoPowerStation::GetError()
         return ERR_BAT_VIRUS;
     }
 
-    res = m_terrain->GetResource(m_object->GetPosition(0));
+    res = m_terrain->GetResource(m_object->GetPosition());
     if ( res != Gfx::TR_POWER )  return ERR_STATION_NULL;
 
     return ERR_OK;

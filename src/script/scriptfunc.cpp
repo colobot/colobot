@@ -1131,7 +1131,7 @@ bool CScriptFunctions::rSearch(CBotVar* var, CBotVar* result, int& exception, vo
     }
     else
     {
-        pos = pThis->GetPosition(0);
+        pos = pThis->GetPosition();
     }
 
     std::vector<ObjectType> type_v;
@@ -1469,7 +1469,7 @@ bool CScriptFunctions::rDirection(CBotVar* var, CBotVar* result, int& exception,
 
     if ( !GetPoint(var, exception, oPos) )  return true;
 
-    iPos = pThis->GetPosition(0);
+    iPos = pThis->GetPosition();
 
     a = pThis->GetAngleY(0);
     g = Math::RotateAngle(oPos.x-iPos.x, iPos.z-oPos.z);  // CW !
@@ -1693,9 +1693,9 @@ bool CScriptFunctions::rProduce(CBotVar* var, CBotVar* result, int& exception, v
         type = static_cast<ObjectType>(var->GetValInt());
         var = var->GetNext();
 
-        pos = me->GetPosition(0);
+        pos = me->GetPosition();
 
-        Math::Vector rotation = me->GetAngle(0) + me->GetTilt();
+        Math::Vector rotation = me->GetRotation() + me->GetTilt();
         angle = rotation.y;
 
         if ( var != nullptr )
@@ -1871,7 +1871,7 @@ bool CScriptFunctions::rSpace(CBotVar* var, CBotVar* result, int& exception, voi
 
     if ( var == 0 )
     {
-        center = pThis->GetPosition(0);
+        center = pThis->GetPosition();
     }
     else
     {

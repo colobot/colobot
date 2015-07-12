@@ -102,7 +102,7 @@ Error CTaskTake::Start()
     m_bError = true;  // operation impossible
     if ( !m_physics->GetLand() )
     {
-        Math::Vector pos = m_object->GetPosition(0);
+        Math::Vector pos = m_object->GetPosition();
         float h = m_water->GetLevel(m_object);
         if ( pos.y < h )  return ERR_MANIP_WATER;  // impossible under water
         return ERR_MANIP_FLY;
@@ -122,7 +122,7 @@ Error CTaskTake::Start()
 
     if ( m_order == TTO_TAKE )
     {
-        Math::Vector pos = m_object->GetPosition(0);
+        Math::Vector pos = m_object->GetPosition();
         float h = m_water->GetLevel(m_object);
         if ( pos.y < h )  return ERR_MANIP_WATER;  // impossible under water
 
@@ -244,7 +244,7 @@ Error CTaskTake::IsEnded()
                      (m_cargoType == OBJECT_POWER  ||
                       m_cargoType == OBJECT_ATOMIC ) )
                 {
-                    m_sound->Play(SOUND_POWEROFF, m_object->GetPosition(0));
+                    m_sound->Play(SOUND_POWEROFF, m_object->GetPosition());
                 }
             }
             m_motion->SetAction(MHS_UPRIGHT, 0.4f);  // gets up
@@ -265,7 +265,7 @@ Error CTaskTake::IsEnded()
                  (m_cargoType == OBJECT_POWER  ||
                   m_cargoType == OBJECT_ATOMIC ) )
             {
-                m_sound->Play(SOUND_POWERON, m_object->GetPosition(0));
+                m_sound->Play(SOUND_POWERON, m_object->GetPosition());
             }
             if ( cargo != nullptr && m_cargoType == OBJECT_METAL && m_arm == TTA_FFRONT )
             {
@@ -304,7 +304,7 @@ CObject* CTaskTake::SearchTakeObject(float &angle,
     ObjectType  type;
     float       min, iAngle, bAngle, a, distance;
 
-    iPos   = m_object->GetPosition(0);
+    iPos   = m_object->GetPosition();
     iAngle = m_object->GetAngleY(0);
     iAngle = Math::NormAngle(iAngle);  // 0..2*Math::PI
 
@@ -333,7 +333,7 @@ CObject* CTaskTake::SearchTakeObject(float &angle,
         if ( pObj->GetLock() )  continue;
         if ( pObj->GetZoomY(0) != 1.0f )  continue;
 
-        oPos = pObj->GetPosition(0);
+        oPos = pObj->GetPosition();
         distance = Math::Distance(oPos, iPos);
         if ( distance >= 4.0f-dLimit &&
              distance <= 4.0f+dLimit )

@@ -83,7 +83,7 @@ bool CTaskTerraform::EventProcess(const Event &event)
     {
         if ( m_soundChannel == -1 )
         {
-            m_soundChannel = m_sound->Play(SOUND_GGG, m_object->GetPosition(0), 1.0f, 0.5f, true);
+            m_soundChannel = m_sound->Play(SOUND_GGG, m_object->GetPosition(), 1.0f, 0.5f, true);
             m_sound->AddEnvelope(m_soundChannel, 1.0f, 2.0f, 4.0f, SOPER_CONTINUE);
             m_sound->AddEnvelope(m_soundChannel, 0.0f, 0.5f, 0.5f, SOPER_STOP);
         }
@@ -165,7 +165,7 @@ bool CTaskTerraform::EventProcess(const Event &event)
             speed.z = Math::Rand()*2.0f;
             speed.y = 2.5f+Math::Rand()*1.0f;
             speed = Math::Transform(*mat, speed);
-            speed -= m_object->GetPosition(0);
+            speed -= m_object->GetPosition();
             dim.x = Math::Rand()*1.0f+1.0f;
             dim.y = dim.x;
             m_particle->CreateParticle(pos, speed, dim, Gfx::PARTISMOKE1, 3.0f);
@@ -179,7 +179,7 @@ bool CTaskTerraform::EventProcess(const Event &event)
             speed.z = -Math::Rand()*2.0f;
             speed.y = 2.5f+Math::Rand()*1.0f;
             speed = Math::Transform(*mat, speed);
-            speed -= m_object->GetPosition(0);
+            speed -= m_object->GetPosition();
             dim.x = Math::Rand()*1.0f+1.0f;
             dim.y = dim.x;
             m_particle->CreateParticle(pos, speed, dim, Gfx::PARTISMOKE1, 3.0f);
@@ -362,7 +362,7 @@ bool CTaskTerraform::Terraform()
             // This was used by Ceebot-Teen to destroy objects hit by the Thumper
             // The old Teen objects are removed, but this code might be reused at some point, e.g. to add destruction of resources like empty batteries
 
-            dist = Math::Distance(m_terraPos, pObj->GetPosition(0));
+            dist = Math::Distance(m_terraPos, pObj->GetPosition());
             if ( dist > 20.0f )  continue;
 
             m_engine->GetPyroManager()->Create(Gfx::PT_FRAGT, pObj);
@@ -372,7 +372,7 @@ bool CTaskTerraform::Terraform()
             motion = pObj->GetMotion();
             if ( motion == 0 )  continue;
 
-            dist = Math::Distance(m_terraPos, pObj->GetPosition(0));
+            dist = Math::Distance(m_terraPos, pObj->GetPosition());
             if ( dist > ACTION_RADIUS )  continue;
 
             if ( type == OBJECT_ANT )

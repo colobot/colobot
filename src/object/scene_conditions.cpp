@@ -116,9 +116,9 @@ int CSceneCondition::CountObjects()
         if (energyLevel < this->powermin || energyLevel > this->powermax) continue;
 
         if (IsObjectBeingTransported(obj))
-            oPos = dynamic_cast<CTransportableObject*>(obj)->GetTransporter()->GetPosition(0);
+            oPos = dynamic_cast<CTransportableObject*>(obj)->GetTransporter()->GetPosition();
         else
-            oPos = obj->GetPosition(0);
+            oPos = obj->GetPosition();
 
         oPos.y = 0.0f;
 

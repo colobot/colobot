@@ -77,7 +77,7 @@ Error CTaskFlag::Start(TaskFlagOrder order, int rank)
     m_bError = true;  // operation impossible
     if ( !m_physics->GetLand() )
     {
-        pos = m_object->GetPosition(0);
+        pos = m_object->GetPosition();
         if ( pos.y < m_water->GetLevel() )  return ERR_FLAG_WATER;
         return ERR_FLAG_FLY;
     }
@@ -193,7 +193,7 @@ Error CTaskFlag::CreateFlag(int rank)
     CObject* pObj = SearchNearest(pos, OBJECT_NULL);
     if ( pObj != nullptr )
     {
-        float dist = Math::Distance(pos, pObj->GetPosition(0));
+        float dist = Math::Distance(pos, pObj->GetPosition());
         if ( dist < 10.0f )
         {
             return ERR_FLAG_PROXY;
@@ -224,7 +224,7 @@ Error CTaskFlag::DeleteFlag()
     Math::Vector iPos, oPos;
     float        iAngle, angle, aLimit, dist;
 
-    iPos = m_object->GetPosition(0);
+    iPos = m_object->GetPosition();
     iAngle = m_object->GetAngleY(0);
     iAngle = Math::NormAngle(iAngle);  // 0..2*Math::PI
 
@@ -233,13 +233,13 @@ Error CTaskFlag::DeleteFlag()
     {
         return ERR_FLAG_DELETE;
     }
-    dist = Math::Distance(iPos, pObj->GetPosition(0));
+    dist = Math::Distance(iPos, pObj->GetPosition());
     if ( dist > 10.0f )
     {
         return ERR_FLAG_DELETE;
     }
 
-    oPos = pObj->GetPosition(0);
+    oPos = pObj->GetPosition();
     angle = Math::RotateAngle(oPos.x-iPos.x, iPos.z-oPos.z);  // CW !
     aLimit = 45.0f*Math::PI/180.0f;
     if ( !Math::TestAngle(angle, iAngle-aLimit, iAngle+aLimit) )

@@ -134,7 +134,7 @@ Error CAutoResearch::StartAction(int param)
     InitProgressTotal(time);
     UpdateInterface();
 
-    m_channelSound = m_sound->Play(SOUND_RESEARCH, m_object->GetPosition(0), 0.0f, 1.0f, true);
+    m_channelSound = m_sound->Play(SOUND_RESEARCH, m_object->GetPosition(), 0.0f, 1.0f, true);
     m_sound->AddEnvelope(m_channelSound, 1.0f, 1.0f,      2.0f, SOPER_CONTINUE);
     m_sound->AddEnvelope(m_channelSound, 1.0f, 1.0f, time-4.0f, SOPER_CONTINUE);
     m_sound->AddEnvelope(m_channelSound, 0.0f, 1.0f,      2.0f, SOPER_STOP);
@@ -235,7 +235,7 @@ bool CAutoResearch::EventProcess(const Event &event)
             {
                 m_lastParticle = m_time;
 
-                pos = m_object->GetPosition(0);
+                pos = m_object->GetPosition();
                 pos.x += (Math::Rand()-0.5f)*6.0f;
                 pos.z += (Math::Rand()-0.5f)*6.0f;
                 pos.y += 11.0f;

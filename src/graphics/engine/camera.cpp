@@ -1384,7 +1384,7 @@ bool CCamera::EventFrameBack(const Event &event)
 
     if (m_cameraObj != NULL)
     {
-        Math::Vector lookatPt = m_cameraObj->GetPosition(0);
+        Math::Vector lookatPt = m_cameraObj->GetPosition();
              if (type == OBJECT_BASE ) lookatPt.y += 40.0f;
         else if (type == OBJECT_HUMAN) lookatPt.y +=  1.0f;
         else if (type == OBJECT_TECH ) lookatPt.y +=  1.0f;
@@ -1485,7 +1485,7 @@ bool CCamera::EventFrameFix(const Event &event)
 
     if (m_cameraObj != NULL)
     {
-        Math::Vector lookatPt = m_cameraObj->GetPosition(0);
+        Math::Vector lookatPt = m_cameraObj->GetPosition();
 
         float h = m_fixDirectionH + m_remotePan;
         float v = m_fixDirectionV;

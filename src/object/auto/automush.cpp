@@ -126,7 +126,7 @@ bool CAutoMush::EventProcess(const Event &event)
         }
         else
         {
-            m_sound->Play(SOUND_MUSHROOM, m_object->GetPosition(0));
+            m_sound->Play(SOUND_MUSHROOM, m_object->GetPosition());
 
             m_phase    = AMP_FIRE;
             m_progress = 0.0f;
@@ -147,7 +147,7 @@ bool CAutoMush::EventProcess(const Event &event)
 
                 for ( i=0 ; i<10 ; i++ )
                 {
-                    pos = m_object->GetPosition(0);
+                    pos = m_object->GetPosition();
                     pos.y += 5.0f;
                     speed.x = (Math::Rand()-0.5f)*200.0f;
                     speed.z = (Math::Rand()-0.5f)*200.0f;
@@ -175,7 +175,7 @@ bool CAutoMush::EventProcess(const Event &event)
             {
                 m_lastParticle = m_time;
 
-                pos = m_object->GetPosition(0);
+                pos = m_object->GetPosition();
                 pos.y += 5.0f;
                 speed.x = (Math::Rand()-0.5f)*4.0f;
                 speed.z = (Math::Rand()-0.5f)*4.0f;
@@ -224,7 +224,7 @@ bool CAutoMush::EventProcess(const Event &event)
 
 bool CAutoMush::SearchTarget()
 {
-    Math::Vector iPos = m_object->GetPosition(0);
+    Math::Vector iPos = m_object->GetPosition();
 
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
@@ -274,7 +274,7 @@ bool CAutoMush::SearchTarget()
              type != OBJECT_PARA     &&
              type != OBJECT_HUMAN    )  continue;
 
-       Math::Vector oPos = obj->GetPosition(0);
+       Math::Vector oPos = obj->GetPosition();
         float dist = Math::Distance(oPos, iPos);
         if ( dist < 50.0f )  return true;
     }

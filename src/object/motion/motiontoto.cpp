@@ -173,7 +173,7 @@ void CMotionToto::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetZoom(0, 0.5f);  // is little
     m_object->SetFloorHeight(0.0f);
 
-    pos = m_object->GetPosition(0);
+    pos = m_object->GetPosition();
     m_object->SetPosition(0, pos);  // to display the shadows immediately
 
     m_engine->LoadAllTextures();
@@ -267,7 +267,7 @@ bool CMotionToto::EventFrame(const Event &event)
 
     if ( bHidden )
     {
-        nPos = m_object->GetPosition(0);
+        nPos = m_object->GetPosition();
         m_terrain->AdjustToFloor(nPos, true);
         nPos.y -= 100.0f;  // hidden under the ground!
         m_object->SetPosition(0, nPos);
@@ -379,7 +379,7 @@ bool CMotionToto::EventFrame(const Event &event)
                     m_clownRadius = 0.0f;
                     m_clownDelay  = 2.0f+Math::Rand()*2.0f;
                 }
-                pos = m_object->GetPosition(0);
+                pos = m_object->GetPosition();
                 if ( pos.y < m_water->GetLevel() )  // underwater?
                 {
                     m_clownRadius /= 1.5f;
@@ -417,7 +417,7 @@ bool CMotionToto::EventFrame(const Event &event)
         }
         else
         {
-            aPos = m_object->GetPosition(0);
+            aPos = m_object->GetPosition();
             if ( m_actionType == -1 )
             {
                 level = 4.0f;
@@ -712,7 +712,7 @@ bool CMotionToto::EventFrame(const Event &event)
         if ( m_bDisplayInfo )  sheet = Gfx::SH_FRONT;
         else                   sheet = Gfx::SH_WORLD;
 
-        pos = m_object->GetPosition(0);
+        pos = m_object->GetPosition();
         if ( !m_bDisplayInfo             &&
              pos.y < m_water->GetLevel() )  // underwater?
         {
@@ -810,7 +810,7 @@ bool CMotionToto::EventFrame(const Event &event)
     // Move the sound.
     if ( m_soundChannel != -1 )
     {
-        if ( !m_sound->Position(m_soundChannel, m_object->GetPosition(0)) )
+        if ( !m_sound->Position(m_soundChannel, m_object->GetPosition()) )
         {
             m_soundChannel = -1;
         }
@@ -838,7 +838,7 @@ Error CMotionToto::SetAction(int action, float time)
 
     if ( sound != SOUND_CLICK )
     {
-        m_soundChannel = m_sound->Play(sound, m_object->GetPosition(0));
+        m_soundChannel = m_sound->Play(sound, m_object->GetPosition());
     }
 
     return ERR_OK;

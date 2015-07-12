@@ -136,7 +136,7 @@ void CMotionWorm::Create(Math::Vector pos, float angle, ObjectType type,
     CreatePhysics();
     m_object->SetFloorHeight(0.0f);
 
-    pos = m_object->GetPosition(0);
+    pos = m_object->GetPosition();
     m_object->SetPosition(0, pos);  // to display the shadows immediately
 
     m_engine->LoadAllTextures();
@@ -277,9 +277,9 @@ bool CMotionWorm::EventFrame(const Event &event)
     }
     m_object->SetVisible(under!=WORM_PART+2);
 
-    if ( !m_engine->IsVisiblePoint(m_object->GetPosition(0)) )  return true;
+    if ( !m_engine->IsVisiblePoint(m_object->GetPosition()) )  return true;
 
-    pos = m_object->GetPosition(0);
+    pos = m_object->GetPosition();
     floor = m_terrain->GetFloorLevel(pos, true);
 
     mat = m_object->GetWorldMatrix(0);

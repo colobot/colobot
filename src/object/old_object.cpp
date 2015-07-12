@@ -109,7 +109,7 @@ void uObject(CBotVar* botThis, void* user)
     }
     else
     {
-        pos = object->GetPosition(0);
+        pos = object->GetPosition();
         float waterLevel = Gfx::CEngine::GetInstancePointer()->GetWater()->GetLevel();
         pos.y -= waterLevel;  // relative to sea level!
         pSub = pVar->GetItemList();  // "x"
@@ -121,7 +121,7 @@ void uObject(CBotVar* botThis, void* user)
     }
 
     // Updates the angle.
-    pos = object->GetAngle(0);
+    pos = object->GetRotation();
     pos += object->GetTilt();
     pVar = pVar->GetNext();  // "orientation"
     pVar->SetValFloat(360.0f-Math::Mod(pos.y*180.0f/Math::PI, 360.0f));
@@ -355,7 +355,7 @@ void COldObject::DeleteObject(bool bAll)
               type == Gfx::CAM_TYPE_ONBOARD) &&
              m_camera->GetControllingObject() == this )
         {
-            obj = m_main->SearchNearest(GetPosition(0), this);
+            obj = m_main->SearchNearest(GetPosition(), this);
             if ( obj == 0 )
             {
                 m_camera->SetControllingObject(0);
@@ -395,7 +395,7 @@ void COldObject::DeleteObject(bool bAll)
              m_type == OBJECT_START    ||
              m_type == OBJECT_END      )  // building?
         {
-            m_terrain->DeleteBuildingLevel(GetPosition(0));  // flattens the field
+            m_terrain->DeleteBuildingLevel(GetPosition());  // flattens the field
         }
     }
 
@@ -1157,7 +1157,7 @@ void COldObject::FloorAdjust()
     Math::Point         nn;
     float           a;
 
-    pos = GetPosition(0);
+    pos = GetPosition();
     if ( m_terrain->GetNormal(n, pos) )
     {
 #if 0
@@ -1650,7 +1650,7 @@ bool COldObject::CreateShadowLight(float height, Gfx::Color color)
 {
     if ( !m_engine->GetLightMode() )  return true;
 
-    Math::Vector pos = GetPosition(0);
+    Math::Vector pos = GetPosition();
     m_shadowHeight = height;
 
     Gfx::Light light;
@@ -2115,7 +2115,7 @@ bool COldObject::EventFrame(const Event &event)
     if ( m_bProxyActivate )  // active if it is near?
     {
         Math::Vector eye = m_engine->GetLookatPt();
-        float dist = Math::Distance(eye, GetPosition(0));
+        float dist = Math::Distance(eye, GetPosition());
         if ( dist < m_proxyDistance )
         {
             m_bProxyActivate = false;
@@ -2176,7 +2176,7 @@ void COldObject::VirusFrame(float rTime)
         if ( r == 8 )  type = Gfx::PARTIVIRUS9;
         if ( r == 9 )  type = Gfx::PARTIVIRUS10;
 
-        pos = GetPosition(0);
+        pos = GetPosition();
         pos.x += (Math::Rand()-0.5f)*10.0f;
         pos.z += (Math::Rand()-0.5f)*10.0f;
         speed.x = (Math::Rand()-0.5f)*2.0f;
@@ -2586,7 +2586,7 @@ void COldObject::StartDetectEffect(CObject *target, bool bFound)
     }
     else
     {
-        goal = target->GetPosition(0);
+        goal = target->GetPosition();
         goal.y += 3.0f;
         goal = Math::SegmentPoint(pos, goal, Math::Distance(pos, goal)-3.0f);
     }
@@ -2597,7 +2597,7 @@ void COldObject::StartDetectEffect(CObject *target, bool bFound)
 
     if ( target != 0 )
     {
-        goal = target->GetPosition(0);
+        goal = target->GetPosition();
         goal.y += 3.0f;
         goal = Math::SegmentPoint(pos, goal, Math::Distance(pos, goal)-1.0f);
         dim.x = 6.0f;
@@ -3058,7 +3058,7 @@ bool COldObject::StartShowLimit()
 {
     if ( m_showLimitRadius == 0.0f )  return false;
 
-    m_main->SetShowLimit(0, Gfx::PARTILIMIT1, this, GetPosition(0), m_showLimitRadius);
+    m_main->SetShowLimit(0, Gfx::PARTILIMIT1, this, GetPosition(), m_showLimitRadius);
     m_bShowLimit = true;
     return true;
 }

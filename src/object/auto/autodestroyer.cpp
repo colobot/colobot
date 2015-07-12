@@ -93,7 +93,7 @@ Error CAutoDestroyer::StartAction(int param)
             scrap->SetLock(true);  // usable waste
 //?         scrap->SetTransporter(m_object);  // usable waste
 
-            m_sound->Play(SOUND_PSHHH2, m_object->GetPosition(0), 1.0f, 1.0f);
+            m_sound->Play(SOUND_PSHHH2, m_object->GetPosition(), 1.0f, 1.0f);
 
             m_phase    = ADEP_DOWN;
             m_progress = 0.0f;
@@ -183,7 +183,7 @@ bool CAutoDestroyer::EventProcess(const Event &event)
         else
         {
             m_object->SetPosition(1, Math::Vector(0.0f, -10.0f, 0.0f));
-            m_sound->Play(SOUND_REPAIR, m_object->GetPosition(0));
+            m_sound->Play(SOUND_REPAIR, m_object->GetPosition());
 
             m_phase    = ADEP_REPAIR;
             m_progress = 0.0f;
@@ -198,7 +198,7 @@ bool CAutoDestroyer::EventProcess(const Event &event)
         }
         else
         {
-            m_sound->Play(SOUND_OPEN, m_object->GetPosition(0), 1.0f, 0.8f);
+            m_sound->Play(SOUND_OPEN, m_object->GetPosition(), 1.0f, 0.8f);
 
             m_phase    = ADEP_UP;
             m_progress = 0.0f;
@@ -272,7 +272,7 @@ bool CAutoDestroyer::CreateInterface(bool bSelect)
 
 CObject* CAutoDestroyer::SearchPlastic()
 {
-    Math::Vector sPos = m_object->GetPosition(0);
+    Math::Vector sPos = m_object->GetPosition();
 
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
@@ -327,7 +327,7 @@ CObject* CAutoDestroyer::SearchPlastic()
              type != OBJECT_WORM      ) continue;
 
 
-        Math::Vector oPos = obj->GetPosition(0);
+        Math::Vector oPos = obj->GetPosition();
         float dist = Math::Distance(oPos, sPos);
         if ( dist <= 5.0f )  return obj;
     }

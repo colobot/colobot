@@ -100,7 +100,7 @@ Error CTaskFireAnt::Start(Math::Vector impact)
 
     m_physics->SetMotorSpeed(Math::Vector(0.0f, 0.0f, 0.0f));
 
-    pos = m_object->GetPosition(0);
+    pos = m_object->GetPosition();
     m_angle = Math::RotateAngle(m_impact.x-pos.x, pos.z-m_impact.z);  // CW !
 
     m_phase = TFA_TURN;

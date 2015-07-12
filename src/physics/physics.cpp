@@ -883,7 +883,7 @@ void CPhysics::MotorUpdate(float aTime, float rTime)
 
     if ( m_type == TYPE_FLYING && !m_bLand && motorSpeed.y > 0.0f )
     {
-        pos = m_object->GetPosition(0);
+        pos = m_object->GetPosition();
         h = m_terrain->GetFlyingLimit(pos, type==OBJECT_BEE);
         h += m_object->GetCharacter()->height;
         if ( pos.y > h-40.0f )  // almost at the top?
@@ -909,7 +909,7 @@ void CPhysics::MotorUpdate(float aTime, float rTime)
                 m_reactorRange = 1.0f;
                 if ( m_bLowLevel && m_object->GetSelect() )  // beep cool?
                 {
-                    m_sound->Play(SOUND_INFO, m_object->GetPosition(0), 1.0f, 2.0f);
+                    m_sound->Play(SOUND_INFO, m_object->GetPosition(), 1.0f, 2.0f);
                     m_bLowLevel = false;
                 }
             }
@@ -999,7 +999,7 @@ void CPhysics::MotorUpdate(float aTime, float rTime)
         m_linMotion.motorAccel.x = m_linMotion.stopAccel.x*factor;
         m_cirMotion.motorAccel.y = m_cirMotion.stopAccel.y*factor;
 
-        pos = m_object->GetPosition(0);
+        pos = m_object->GetPosition();
         h = m_terrain->GetFlyingLimit(pos, type==OBJECT_BEE);
         h += m_object->GetCharacter()->height;
         if ( motorSpeed.y > 0.0f && m_reactorRange > 0.1f && pos.y < h )
@@ -1058,7 +1058,7 @@ void CPhysics::EffectUpdate(float aTime, float rTime)
     ObjectType  type;
     bool        bOnBoard;
 
-    if ( !m_engine->IsVisiblePoint(m_object->GetPosition(0)) )  return;
+    if ( !m_engine->IsVisiblePoint(m_object->GetPosition()) )  return;
 
     type = m_object->GetType();
     character = m_object->GetCharacter();
@@ -1497,8 +1497,8 @@ bool CPhysics::EventFrame(const Event &event)
     EffectUpdate(m_time, event.rTime);
     WaterFrame(m_time, event.rTime);
 
-    iPos   = pos   = m_object->GetPosition(0);
-    iAngle = angle = m_object->GetAngle(0);
+    iPos   = pos   = m_object->GetPosition();
+    iAngle = angle = m_object->GetRotation();
 
     // Accelerate is the descent, brake is the ascent.
     if ( m_bFreeze || m_object->GetDead() )
@@ -1619,7 +1619,7 @@ bool CPhysics::EventFrame(const Event &event)
 
     if ( m_bLand && m_fallingHeight != 0.0f ) // if fell
     {
-        float force = (m_fallingHeight - m_object->GetPosition(0).y) * m_fallDamageFraction;
+        float force = (m_fallingHeight - m_object->GetPosition().y) * m_fallDamageFraction;
         m_object->ExplodeObject(ExplosionType::Bang, force);
         m_fallingHeight = 0.0f;
     }
@@ -1642,7 +1642,7 @@ void CPhysics::SoundMotor(float rTime)
     {
         if ( m_lastSoundInsect <= 0.0f && m_object->GetActive() )
         {
-            m_sound->Play(SOUND_INSECTm, m_object->GetPosition(0));
+            m_sound->Play(SOUND_INSECTm, m_object->GetPosition());
             if ( m_bMotor )  m_lastSoundInsect = 0.4f+Math::Rand()*2.5f;
             else             m_lastSoundInsect = 1.5f+Math::Rand()*4.0f;
         }
@@ -1654,7 +1654,7 @@ void CPhysics::SoundMotor(float rTime)
         {
             if ( m_lastSoundInsect <= 0.0f )
             {
-                m_sound->Play(SOUND_INSECTa, m_object->GetPosition(0), 1.0f, 1.5f+Math::Rand()*0.5f);
+                m_sound->Play(SOUND_INSECTa, m_object->GetPosition(), 1.0f, 1.5f+Math::Rand()*0.5f);
                 m_lastSoundInsect = 0.4f+Math::Rand()*0.6f;
             }
         }
@@ -1662,7 +1662,7 @@ void CPhysics::SoundMotor(float rTime)
         {
             if ( m_lastSoundInsect <= 0.0f )
             {
-                m_sound->Play(SOUND_INSECTa, m_object->GetPosition(0));
+                m_sound->Play(SOUND_INSECTa, m_object->GetPosition());
                 if ( m_bMotor )  m_lastSoundInsect = 0.4f+Math::Rand()*2.5f;
                 else             m_lastSoundInsect = 1.5f+Math::Rand()*4.0f;
             }
@@ -1674,7 +1674,7 @@ void CPhysics::SoundMotor(float rTime)
         {
             if ( m_lastSoundInsect <= 0.0f )
             {
-                m_sound->Play(SOUND_INSECTb, m_object->GetPosition(0));
+                m_sound->Play(SOUND_INSECTb, m_object->GetPosition());
                 if ( m_bMotor )  m_lastSoundInsect = 0.4f+Math::Rand()*2.5f;
                 else             m_lastSoundInsect = 1.5f+Math::Rand()*4.0f;
             }
@@ -1683,7 +1683,7 @@ void CPhysics::SoundMotor(float rTime)
         {
             if ( m_lastSoundInsect <= 0.0f )
             {
-                m_sound->Play(SOUND_INSECTb, m_object->GetPosition(0), 1.0f, 1.5f+Math::Rand()*0.5f);
+                m_sound->Play(SOUND_INSECTb, m_object->GetPosition(), 1.0f, 1.5f+Math::Rand()*0.5f);
                 m_lastSoundInsect = 0.3f+Math::Rand()*0.5f;
             }
         }
@@ -1694,7 +1694,7 @@ void CPhysics::SoundMotor(float rTime)
         {
             if ( m_lastSoundInsect <= 0.0f )
             {
-                m_sound->Play(SOUND_INSECTw, m_object->GetPosition(0));
+                m_sound->Play(SOUND_INSECTw, m_object->GetPosition());
                 if ( m_bMotor )  m_lastSoundInsect = 0.4f+Math::Rand()*2.5f;
                 else             m_lastSoundInsect = 1.5f+Math::Rand()*4.0f;
             }
@@ -1703,7 +1703,7 @@ void CPhysics::SoundMotor(float rTime)
         {
             if ( m_lastSoundInsect <= 0.0f )
             {
-                m_sound->Play(SOUND_INSECTw, m_object->GetPosition(0), 1.0f, 1.5f+Math::Rand()*0.5f);
+                m_sound->Play(SOUND_INSECTw, m_object->GetPosition(), 1.0f, 1.5f+Math::Rand()*0.5f);
                 m_lastSoundInsect = 0.2f+Math::Rand()*0.2f;
             }
         }
@@ -1715,7 +1715,7 @@ void CPhysics::SoundMotor(float rTime)
         {
             if ( m_lastSoundInsect <= 0.0f )
             {
-                m_sound->Play(SOUND_INSECTs, m_object->GetPosition(0), 1.0f, 1.5f+Math::Rand()*0.5f);
+                m_sound->Play(SOUND_INSECTs, m_object->GetPosition(), 1.0f, 1.5f+Math::Rand()*0.5f);
                 m_lastSoundInsect = 0.4f+Math::Rand()*0.6f;
             }
         }
@@ -1723,7 +1723,7 @@ void CPhysics::SoundMotor(float rTime)
         {
             if ( m_lastSoundInsect <= 0.0f )
             {
-                m_sound->Play(SOUND_INSECTs, m_object->GetPosition(0));
+                m_sound->Play(SOUND_INSECTs, m_object->GetPosition());
                 if ( m_bMotor )  m_lastSoundInsect = 0.4f+Math::Rand()*2.5f;
                 else             m_lastSoundInsect = 1.5f+Math::Rand()*4.0f;
             }
@@ -1782,7 +1782,7 @@ void CPhysics::WaterFrame(float aTime, float rTime)
     if (IsObjectBeingTransported(m_object))  return;
 
     // Management of flames into the lava.
-    pos = m_object->GetPosition(0);
+    pos = m_object->GetPosition();
     if ( m_water->GetLava() &&
          pos.y-m_object->GetCharacter()->height <= level )
     {
@@ -1790,7 +1790,7 @@ void CPhysics::WaterFrame(float aTime, float rTime)
         {
             m_lastFlameParticle = aTime;
 
-            pos = m_object->GetPosition(0);
+            pos = m_object->GetPosition();
             pos.x += (Math::Rand()-0.5f)*3.0f;
             pos.z += (Math::Rand()-0.5f)*3.0f;
             speed.x = 0.0f;
@@ -1800,7 +1800,7 @@ void CPhysics::WaterFrame(float aTime, float rTime)
             dim.y = dim.x;
             m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIFLAME, 2.0f, 0.0f, 0.2f);
 
-            pos = m_object->GetPosition(0);
+            pos = m_object->GetPosition();
             pos.y -= 2.0f;
             pos.x += (Math::Rand()-0.5f)*5.0f;
             pos.z += (Math::Rand()-0.5f)*5.0f;
@@ -1813,7 +1813,7 @@ void CPhysics::WaterFrame(float aTime, float rTime)
         }
     }
 
-    pos = m_object->GetPosition(0);
+    pos = m_object->GetPosition();
     if ( pos.y >= m_water->GetLevel(m_object) )  return;  // out of water?
 
     type = m_object->GetType();
@@ -1871,13 +1871,13 @@ void CPhysics::SoundMotorFull(float rTime, ObjectType type)
     {
         if ( m_soundChannel == -1 )
         {
-            m_soundChannel = m_sound->Play(SOUND_MOTORi, m_object->GetPosition(0), 0.0f, 1.0f, true);
+            m_soundChannel = m_sound->Play(SOUND_MOTORi, m_object->GetPosition(), 0.0f, 1.0f, true);
             m_sound->AddEnvelope(m_soundChannel, 1.0f, 1.0f, 0.2f, SOPER_CONTINUE);
             m_sound->AddEnvelope(m_soundChannel, 1.0f, 1.0f, 1.0f, SOPER_LOOP);
         }
         else
         {
-            m_sound->Position(m_soundChannel, m_object->GetPosition(0));
+            m_sound->Position(m_soundChannel, m_object->GetPosition());
         }
 
         freq = 1.0f+m_linMotion.terrainSpeed.x/50.0f;
@@ -1944,13 +1944,13 @@ void CPhysics::SoundMotorFull(float rTime, ObjectType type)
 
     if ( m_soundChannel == -1 )
     {
-        m_soundChannel = m_sound->Play(sound, m_object->GetPosition(0), 0.0f, 0.5f, true);
+        m_soundChannel = m_sound->Play(sound, m_object->GetPosition(), 0.0f, 0.5f, true);
         m_sound->AddEnvelope(m_soundChannel, amplitude, freq, time, SOPER_CONTINUE);
         m_sound->AddEnvelope(m_soundChannel, amplitude, freq, 1.0f, SOPER_LOOP);
     }
     else
     {
-        m_sound->Position(m_soundChannel, m_object->GetPosition(0));
+        m_sound->Position(m_soundChannel, m_object->GetPosition());
 
         if ( m_bSoundSlow )  // in slow motion?
         {
@@ -2038,13 +2038,13 @@ void CPhysics::SoundMotorSlow(float rTime, ObjectType type)
 
     if ( m_soundChannel == -1 )
     {
-        m_soundChannel = m_sound->Play(sound, m_object->GetPosition(0), 0.0f, 0.25f, true);
+        m_soundChannel = m_sound->Play(sound, m_object->GetPosition(), 0.0f, 0.25f, true);
         m_sound->AddEnvelope(m_soundChannel, amplitude, 0.5f, 0.2f, SOPER_CONTINUE);
         m_sound->AddEnvelope(m_soundChannel, amplitude, 0.5f, 1.0f, SOPER_LOOP);
     }
     else
     {
-        m_sound->Position(m_soundChannel, m_object->GetPosition(0));
+        m_sound->Position(m_soundChannel, m_object->GetPosition());
 
         if ( !m_bSoundSlow )  // full power?
         {
@@ -2066,8 +2066,8 @@ void CPhysics::SoundMotorSlow(float rTime, ObjectType type)
         {
             amplitude = 0.5f-m_soundTimePshhh*0.08f;
             if ( amplitude > 1.0f )  amplitude = 1.0f;
-//?         m_sound->Play(SOUND_PSHHH, m_object->GetPosition(0), amplitude);
-            m_sound->Play(SOUND_PSHHH, m_object->GetPosition(0), 1.0f);
+//?         m_sound->Play(SOUND_PSHHH, m_object->GetPosition(), amplitude);
+            m_sound->Play(SOUND_PSHHH, m_object->GetPosition(), 1.0f);
 
             m_soundTimePshhh = 4.0f+4.0f*Math::Rand();
 
@@ -2156,13 +2156,13 @@ void CPhysics::SoundReactorFull(float rTime, ObjectType type)
                 sound = SOUND_FLY;
             }
 
-            m_soundChannel = m_sound->Play(sound, m_object->GetPosition(0), 0.0f, 1.0f, true);
+            m_soundChannel = m_sound->Play(sound, m_object->GetPosition(), 0.0f, 1.0f, true);
             m_sound->AddEnvelope(m_soundChannel, 1.0f, 1.0f, 0.6f, SOPER_CONTINUE);
             m_sound->AddEnvelope(m_soundChannel, 1.0f, 1.0f, 1.0f, SOPER_LOOP);
         }
         else
         {
-            m_sound->Position(m_soundChannel, m_object->GetPosition(0));
+            m_sound->Position(m_soundChannel, m_object->GetPosition());
         }
 
         freq = 1.0f + m_linMotion.realSpeed.y/100.0f;
@@ -2181,8 +2181,8 @@ void CPhysics::SoundReactorFull(float rTime, ObjectType type)
         if ( m_timeReactorFail <= m_time )
         {
             freq = 1.0f+Math::Rand()*0.5f;
-            m_sound->Play(SOUND_FLYf, m_object->GetPosition(0), 1.0f, freq);
-            m_camera->StartEffect(Gfx::CAM_EFFECT_PET, m_object->GetPosition(0), 1.0f);
+            m_sound->Play(SOUND_FLYf, m_object->GetPosition(), 1.0f, freq);
+            m_camera->StartEffect(Gfx::CAM_EFFECT_PET, m_object->GetPosition(), 1.0f);
 
             for ( i=0 ; i<5 ; i++ )
             {
@@ -2266,11 +2266,11 @@ void CPhysics::SoundReactorStop(float rTime, ObjectType type)
         {
             if ( m_soundChannelSlide == -1 )
             {
-                m_soundChannelSlide = m_sound->Play(SOUND_SLIDE, m_object->GetPosition(0), 0.0f, 1.0f, true);
+                m_soundChannelSlide = m_sound->Play(SOUND_SLIDE, m_object->GetPosition(), 0.0f, 1.0f, true);
                 m_sound->AddEnvelope(m_soundChannelSlide, 0.5f, 1.0f, 0.3f, SOPER_CONTINUE);
                 m_sound->AddEnvelope(m_soundChannelSlide, 0.5f, 1.0f, 1.0f, SOPER_LOOP);
             }
-            m_sound->Position(m_soundChannelSlide, m_object->GetPosition(0));
+            m_sound->Position(m_soundChannelSlide, m_object->GetPosition());
         }
         else
         {
@@ -2349,7 +2349,7 @@ void CPhysics::FloorAdapt(float aTime, float rTime,
                         m_soundTimeBoum = aTime;
                     }
 
-//?                 pos = m_object->GetPosition(0);  // gives position before collision
+//?                 pos = m_object->GetPosition();  // gives position before collision
                 }
             }
         }
@@ -2519,7 +2519,7 @@ int CPhysics::ObjectAdapt(const Math::Vector &pos, const Math::Vector &angle)
     Math::Vector iiPos = firstCrashSphere.sphere.pos;
     float iRad = firstCrashSphere.sphere.radius;
 
-    iPos = iiPos + (pos - m_object->GetPosition(0));
+    iPos = iiPos + (pos - m_object->GetPosition());
     iType = m_object->GetType();
 
     for (CObject* pObj : CObjectManager::GetInstancePointer()->GetAllObjects())
@@ -2575,22 +2575,22 @@ int CPhysics::ObjectAdapt(const Math::Vector &pos, const Math::Vector &angle)
             !m_object->GetResetBusy() &&
              m_object->GetTrainer()   )  // driving vehicle?
         {
-            Math::Vector oPos = pObj->GetPosition(0);
+            Math::Vector oPos = pObj->GetPosition();
             distance = Math::DistanceProjected(oPos, iPos);
             if ( distance < 4.0f )
             {
-                m_sound->Play(SOUND_WAYPOINT, m_object->GetPosition(0));
+                m_sound->Play(SOUND_WAYPOINT, m_object->GetPosition());
                 m_engine->GetPyroManager()->Create(Gfx::PT_WPCHECK, pObj);
             }
         }
 
         if ( oType == OBJECT_TARGET2 )
         {
-            Math::Vector oPos = pObj->GetPosition(0);
+            Math::Vector oPos = pObj->GetPosition();
             distance = Math::Distance(oPos, iPos);
             if ( distance < 10.0f*1.5f )
             {
-                m_sound->Play(SOUND_WAYPOINT, m_object->GetPosition(0));
+                m_sound->Play(SOUND_WAYPOINT, m_object->GetPosition());
                 m_engine->GetPyroManager()->Create(Gfx::PT_WPCHECK, pObj);
             }
         }
@@ -2631,11 +2631,11 @@ int CPhysics::ObjectAdapt(const Math::Vector &pos, const Math::Vector &angle)
                     if ( volume > 1.0f )  volume = 1.0f;
                     if ( crashSphere.sound != SOUND_CLICK )
                     {
-                        m_sound->Play(crashSphere.sound, m_object->GetPosition(0), volume);
+                        m_sound->Play(crashSphere.sound, m_object->GetPosition(), volume);
                     }
                     if ( iType == OBJECT_HUMAN && volume > 0.5f )
                     {
-                        m_sound->Play(SOUND_AIE, m_object->GetPosition(0), volume);
+                        m_sound->Play(SOUND_AIE, m_object->GetPosition(), volume);
                     }
 
                     if ( m_repeatCollision > 0 )
@@ -2660,7 +2660,7 @@ int CPhysics::ObjectAdapt(const Math::Vector &pos, const Math::Vector &angle)
                     ph = pObj->GetPhysics();
                     if ( ph != 0 )
                     {
-                        oAngle = pObj->GetAngle(0);
+                        oAngle = pObj->GetRotation();
                         oSpeed = Normalize(oPos-iPos)*force;
                         Math::LoadRotationXZYMatrix(matRotate, -oAngle);
                         oSpeed = Transform(matRotate, oSpeed);
@@ -2728,7 +2728,7 @@ bool CPhysics::JostleObject(CObject* pObj, float force)
     if ( m_soundTimeJostle >= 0.20f )
     {
         m_soundTimeJostle = 0.0f;
-        m_sound->Play(SOUND_JOSTLE, pObj->GetPosition(0), force);
+        m_sound->Play(SOUND_JOSTLE, pObj->GetPosition(), force);
     }
 
     return jostleableObject->JostleObject(force);
@@ -3095,7 +3095,7 @@ void CPhysics::CrashParticle(float crash)
 
     if ( crash < 0.2f )  return;
 
-    pos = m_object->GetPosition(0);
+    pos = m_object->GetPosition();
     m_camera->StartEffect(Gfx::CAM_EFFECT_CRASH, pos, crash);
 
 //? max = (int)(crash*50.0f);
@@ -3156,7 +3156,7 @@ void CPhysics::MotorParticle(float aTime, float rTime)
             nb = static_cast<int>(20.0f-(20.0f/delay)*m_timeUnderWater);
             for ( i=0 ; i<nb ; i++ )
             {
-                pos = m_object->GetPosition(0);
+                pos = m_object->GetPosition();
                 pos.x += (Math::Rand()-0.5f)*4.0f;
                 pos.y += (Math::Rand()-0.5f)*4.0f;
                 pos.z += (Math::Rand()-0.5f)*4.0f;
@@ -3171,7 +3171,7 @@ void CPhysics::MotorParticle(float aTime, float rTime)
     }
 
     level = m_water->GetLevel();
-    pos = m_object->GetPosition(0);
+    pos = m_object->GetPosition();
     if ( type == OBJECT_HUMAN )  pos.y -= 2.0f;
     if ( pos.y < level )  // underwater?
     {
@@ -3195,7 +3195,7 @@ void CPhysics::MotorParticle(float aTime, float rTime)
             nb = static_cast<int>(8.0f*m_absorbWater);
             for ( i=0 ; i<nb ; i++ )
             {
-                pos = m_object->GetPosition(0);
+                pos = m_object->GetPosition();
                 if ( type == OBJECT_HUMAN )  pos.y -= Math::Rand()*2.0f;
                 else                         pos.y += Math::Rand()*2.0f;
                 pos.x += (Math::Rand()-0.5f)*2.0f;
@@ -3542,7 +3542,7 @@ void CPhysics::MotorParticle(float aTime, float rTime)
         if ( aTime-m_lastSoundWater > 1.5f )
         {
             m_lastSoundWater = aTime;
-            m_sound->Play(SOUND_BLUP, m_object->GetPosition(0), 0.5f+Math::Rand()*0.5f);
+            m_sound->Play(SOUND_BLUP, m_object->GetPosition(), 0.5f+Math::Rand()*0.5f);
         }
     }
 
@@ -3568,7 +3568,7 @@ void CPhysics::MotorParticle(float aTime, float rTime)
         if ( aTime-m_lastSoundWater > 1.5f )
         {
             m_lastSoundWater = aTime;
-            m_sound->Play(SOUND_BLUP, m_object->GetPosition(0), 0.5f+Math::Rand()*0.5f);
+            m_sound->Play(SOUND_BLUP, m_object->GetPosition(), 0.5f+Math::Rand()*0.5f);
         }
     }
 
@@ -3683,7 +3683,7 @@ void CPhysics::WaterParticle(float aTime, Math::Vector pos, ObjectType type,
             force *= 1.3f;  // a robot is heavier
         }
 
-        pos = m_object->GetPosition(0);
+        pos = m_object->GetPosition();
         pos.y = m_water->GetLevel()-1.0f;
         dim.x = 2.0f*force;  // height
         dim.y = diam;  // diameter
@@ -3734,7 +3734,7 @@ void CPhysics::WaterParticle(float aTime, Math::Vector pos, ObjectType type,
     force = (advance+turn)*0.16f;
     if ( force < 0.001f )  return;
 
-    pos = m_object->GetPosition(0);
+    pos = m_object->GetPosition();
     pos.y = level+0.1f;
     if ( advance == 0 )
     {
@@ -3871,7 +3871,7 @@ Error CPhysics::GetError()
 void CPhysics::SetFalling()
 {
     if (m_fallingHeight == 0.0f && m_floorHeight >= m_minFallingHeight)
-        m_fallingHeight = m_object->GetPosition(0).y;
+        m_fallingHeight = m_object->GetPosition().y;
 }
 
 float CPhysics::GetFallingHeight()

@@ -87,7 +87,7 @@ public:
 
     //! Returns current object's position
     virtual Math::Vector GetPosition() const;
-    using COldObjectInterface::GetPosition;
+    using COldObjectInterface::GetPosition; // temporarily
     //! Returns current object's rotation (Euler angles)
     virtual Math::Vector GetRotation() const;
     //! Returns current object's scale

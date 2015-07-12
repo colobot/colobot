@@ -93,7 +93,7 @@ bool CTaskRecover::EventProcess(const Event &event)
 
     if ( m_phase == TRP_MOVE )  // preliminary forward/backward?
     {
-        dist = Math::Distance(m_object->GetPosition(0), m_ruin->GetPosition(0));
+        dist = Math::Distance(m_object->GetPosition(), m_ruin->GetPosition());
         linSpeed = 0.0f;
         if ( dist > RECOVER_DIST )  linSpeed =  1.0f;
         if ( dist < RECOVER_DIST )  linSpeed = -1.0f;
@@ -200,8 +200,8 @@ Error CTaskRecover::Start()
     if ( m_ruin == 0 )  return ERR_RECOVER_NULL;
     m_ruin->SetLock(true);  // ruin no longer usable
 
-    Math::Vector iPos = m_object->GetPosition(0);
-    Math::Vector oPos = m_ruin->GetPosition(0);
+    Math::Vector iPos = m_object->GetPosition();
+    Math::Vector oPos = m_ruin->GetPosition();
     m_angle = Math::RotateAngle(oPos.x-iPos.x, iPos.z-oPos.z);  // CW !
 
     m_metal = 0;
@@ -240,7 +240,7 @@ Error CTaskRecover::IsEnded()
         {
             m_physics->SetMotorSpeedZ(0.0f);
 
-            dist = Math::Distance(m_object->GetPosition(0), m_ruin->GetPosition(0));
+            dist = Math::Distance(m_object->GetPosition(), m_ruin->GetPosition());
             if ( dist > RECOVER_DIST )
             {
                 time = m_physics->GetLinTimeLength(dist-RECOVER_DIST, 1.0f);
@@ -259,7 +259,7 @@ Error CTaskRecover::IsEnded()
 
     if ( m_phase == TRP_MOVE )  // preliminary advance?
     {
-        dist = Math::Distance(m_object->GetPosition(0), m_ruin->GetPosition(0));
+        dist = Math::Distance(m_object->GetPosition(), m_ruin->GetPosition());
 
         if ( dist >= RECOVER_DIST-1.0f &&
              dist <= RECOVER_DIST+1.0f )
@@ -271,7 +271,7 @@ Error CTaskRecover::IsEnded()
             pos = Transform(*mat, pos);  // position in front
             m_recoverPos = pos;
 
-            i = m_sound->Play(SOUND_MANIP, m_object->GetPosition(0), 0.0f, 0.9f, true);
+            i = m_sound->Play(SOUND_MANIP, m_object->GetPosition(), 0.0f, 0.9f, true);
             m_sound->AddEnvelope(i, 1.0f, 1.5f, 0.3f, SOPER_CONTINUE);
             m_sound->AddEnvelope(i, 1.0f, 1.5f, 1.0f, SOPER_CONTINUE);
             m_sound->AddEnvelope(i, 0.0f, 0.9f, 0.3f, SOPER_STOP);
@@ -310,7 +310,7 @@ Error CTaskRecover::IsEnded()
         m_particle->CreateRay(pos, goal, Gfx::PARTIRAY2,
                                Math::Point(2.0f, 2.0f), 8.0f);
 
-        m_soundChannel = m_sound->Play(SOUND_RECOVER, m_ruin->GetPosition(0), 0.0f, 1.0f, true);
+        m_soundChannel = m_sound->Play(SOUND_RECOVER, m_ruin->GetPosition(), 0.0f, 1.0f, true);
         m_sound->AddEnvelope(m_soundChannel, 0.6f, 1.0f, 2.0f, SOPER_CONTINUE);
         m_sound->AddEnvelope(m_soundChannel, 0.6f, 1.0f, 4.0f, SOPER_CONTINUE);
         m_sound->AddEnvelope(m_soundChannel, 0.0f, 0.7f, 2.0f, SOPER_STOP);
@@ -329,7 +329,7 @@ Error CTaskRecover::IsEnded()
 
         m_soundChannel = -1;
 
-        i = m_sound->Play(SOUND_MANIP, m_object->GetPosition(0), 0.0f, 0.9f, true);
+        i = m_sound->Play(SOUND_MANIP, m_object->GetPosition(), 0.0f, 0.9f, true);
         m_sound->AddEnvelope(i, 1.0f, 1.5f, 0.3f, SOPER_CONTINUE);
         m_sound->AddEnvelope(i, 1.0f, 1.5f, 1.0f, SOPER_CONTINUE);
         m_sound->AddEnvelope(i, 0.0f, 0.9f, 0.3f, SOPER_STOP);

@@ -2764,7 +2764,7 @@ void CParticle::DrawParticleTriangle(int i)
 
     CObject* object = m_particle[i].objLink;
     if (object != nullptr)
-        pos += object->GetPosition(0);
+        pos += object->GetPosition();
 
     Math::Vector angle;
     angle.x = -Math::RotateAngle(Math::DistanceProjected(pos, eye), pos.y-eye.y);
@@ -2834,7 +2834,7 @@ void CParticle::DrawParticleNorm(int i)
 
         CObject* object = m_particle[i].objLink;
         if (object != nullptr)
-            pos += object->GetPosition(0);
+            pos += object->GetPosition();
 
         Math::Vector angle;
         angle.x = -Math::RotateAngle(Math::DistanceProjected(pos, eye), pos.y-eye.y);
@@ -2889,7 +2889,7 @@ void CParticle::DrawParticleFlat(int i)
 
     CObject* object = m_particle[i].objLink;
     if (object != nullptr)
-        pos += object->GetPosition(0);
+        pos += object->GetPosition();
 
     Math::Vector angle;
     angle.x = Math::PI/2.0f;
@@ -2978,7 +2978,7 @@ void CParticle::DrawParticleFog(int i)
 
     CObject* object = m_particle[i].objLink;
     if (object != nullptr)
-        pos += object->GetPosition(0);
+        pos += object->GetPosition();
 
     Math::Vector angle;
     angle.x = Math::PI/2.0f;
@@ -3041,7 +3041,7 @@ void CParticle::DrawParticleRay(int i)
 
     CObject* object = m_particle[i].objLink;
     if (object != nullptr)
-        pos += object->GetPosition(0);
+        pos += object->GetPosition();
 
     float a = Math::RotateAngle(Math::Point(pos.x,pos.z), Math::Point(goal.x,goal.z), Math::Point(eye.x,eye.z));
     bool left = (a < Math::PI);
@@ -3715,7 +3715,7 @@ CObject* CParticle::SearchObjectGun(Math::Vector old, Math::Vector pos,
             continue;
         }
 
-        Math::Vector oPos = obj->GetPosition(0);
+        Math::Vector oPos = obj->GetPosition();
 
         if ( type == PARTIGUN2 ||  // shooting insect?
              type == PARTIGUN3 )   // suiciding spider?
@@ -3796,7 +3796,7 @@ CObject* CParticle::SearchObjectRay(Math::Vector pos, Math::Vector goal,
              oType != OBJECT_MOTHER   &&
              oType != OBJECT_NEST     )  continue;
 
-        Math::Vector oPos = obj->GetPosition(0);
+        Math::Vector oPos = obj->GetPosition();
 
         if ( oPos.x < box1.x || oPos.x > box2.x ||  // outside the box?
              oPos.y < box1.y || oPos.y > box2.y ||

@@ -873,7 +873,7 @@ bool CBrain::EventProcess(const Event &event)
         {
             Math::Vector    p1, p2;
             float       h;
-            p1 = m_object->GetPosition(0);
+            p1 = m_object->GetPosition();
             h = m_terrain->GetFloorLevel(p1);
             p2 = p1;
             p1.x -= 20.0f;
@@ -886,7 +886,7 @@ bool CBrain::EventProcess(const Event &event)
         {
             Math::Vector    p1, p2;
             float       h;
-            p1 = m_object->GetPosition(0);
+            p1 = m_object->GetPosition();
             h = m_terrain->GetFloorLevel(p1);
             p2 = p1;
             p1.x -= 20.0f;
@@ -916,7 +916,7 @@ bool CBrain::EventFrame(const Event &event)
 
     if ( m_soundChannelAlarm != -1 )
     {
-        m_sound->Position(m_soundChannelAlarm, m_object->GetPosition(0));
+        m_sound->Position(m_soundChannelAlarm, m_object->GetPosition());
     }
 
     if ( m_studio != 0 )  // current edition?
@@ -1306,13 +1306,13 @@ void CBrain::GroundFlat()
     if ( !m_physics->GetLand() )
     {
         err = ERR_FLAG_FLY;
-        pos = m_object->GetPosition(0);
+        pos = m_object->GetPosition();
         if ( pos.y < m_water->GetLevel() )  err = ERR_FLAG_WATER;
         m_main->DisplayError(err, m_object);
         return;
     }
 
-    pos = m_object->GetPosition(0);
+    pos = m_object->GetPosition();
     m_terrain->ShowFlatGround(pos);
     m_sound->Play(SOUND_GFLAT, pos);
 
@@ -2162,7 +2162,7 @@ void CBrain::UpdateInterface(float rTime)
             }
             if ( m_soundChannelAlarm == -1 )
             {
-                m_soundChannelAlarm = m_sound->Play(SOUND_ALARMt, m_object->GetPosition(0), 0.0f, 0.1f, true);
+                m_soundChannelAlarm = m_sound->Play(SOUND_ALARMt, m_object->GetPosition(), 0.0f, 0.1f, true);
                 m_sound->AddEnvelope(m_soundChannelAlarm, 1.0f, 1.0f, 1.0f, SOPER_CONTINUE);
                 m_sound->AddEnvelope(m_soundChannelAlarm, 1.0f, 1.0f, 1.0f, SOPER_LOOP);
             }
@@ -2936,7 +2936,7 @@ void CBrain::TraceRecordStart()
 
     m_traceOper = TO_STOP;
 
-    m_tracePos = m_object->GetPosition(0);
+    m_tracePos = m_object->GetPosition();
     m_traceAngle = m_object->GetAngleY(0);
 
     if ( motionVehicle->GetTraceDown() )  // pencil down?
@@ -2987,7 +2987,7 @@ void CBrain::TraceRecordFrame()
         if ( m_traceOper == TO_ADVANCE ||
              m_traceOper == TO_RECEDE  )
         {
-            pos = m_object->GetPosition(0);
+            pos = m_object->GetPosition();
             len = Math::DistanceProjected(pos, m_tracePos);
             TraceRecordOper(m_traceOper, len);
         }
@@ -3003,7 +3003,7 @@ void CBrain::TraceRecordFrame()
         }
 
         m_traceOper = oper;
-        m_tracePos = m_object->GetPosition(0);
+        m_tracePos = m_object->GetPosition();
         m_traceAngle = m_object->GetAngleY(0);
         m_traceColor = color;
     }

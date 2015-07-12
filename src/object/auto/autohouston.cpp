@@ -38,7 +38,7 @@ CAutoHouston::CAutoHouston(CObject* object) : CAuto(object)
         m_lens[i].parti = -1;
     }
 
-    pos = m_object->GetPosition(0);
+    pos = m_object->GetPosition();
     m_lens[0].type = Gfx::PARTISELR;
     m_lens[1].type = Gfx::PARTISELR;
     m_lens[2].type = Gfx::PARTISELR;

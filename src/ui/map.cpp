@@ -1150,7 +1150,7 @@ void CMap::UpdateObject(CObject* pObj)
     if (IsObjectBeingTransported(pObj))  return;
 
     type = pObj->GetType();
-    pos  = pObj->GetPosition(0);
+    pos  = pObj->GetPosition();
     dir  = -(pObj->GetAngleY(0)+Math::PI/2.0f);
 
     if ( m_angle != 0.0f )

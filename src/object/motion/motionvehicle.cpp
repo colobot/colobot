@@ -947,7 +947,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         dynamic_cast<CPoweredObject*>(m_object)->SetPower(powerCell);
     }
 
-    pos = m_object->GetPosition(0);
+    pos = m_object->GetPosition();
     m_object->SetPosition(0, pos);  //to display the shadows immediately
 
     m_engine->LoadAllTextures();
@@ -1267,7 +1267,7 @@ bool CMotionVehicle::EventFrame(const Event &event)
     float       back, front, dist, radius, limit[2];
 
     if ( m_engine->GetPause() )  return true;
-    if ( !m_engine->IsVisiblePoint(m_object->GetPosition(0)) )  return true;
+    if ( !m_engine->IsVisiblePoint(m_object->GetPosition()) )  return true;
 
     type = m_object->GetType();
 
@@ -1328,8 +1328,8 @@ bool CMotionVehicle::EventFrame(const Event &event)
             m_object->SetAngleY(13, m_object->GetAngleY(9)+(m_wheelTurn[3]-m_object->GetAngleY(9))*event.rTime*8.0f+Math::PI);
         }
 
-        pos = m_object->GetPosition(0);
-        angle = m_object->GetAngle(0);
+        pos = m_object->GetPosition();
+        angle = m_object->GetRotation();
         if ( pos.x   != m_wheelLastPos.x   ||
              pos.y   != m_wheelLastPos.y   ||
              pos.z   != m_wheelLastPos.z   ||
@@ -1456,8 +1456,8 @@ bool CMotionVehicle::EventFrame(const Event &event)
 
         UpdateTrackMapping(m_posTrackLeft, m_posTrackRight, type);
 
-        pos = m_object->GetPosition(0);
-        angle = m_object->GetAngle(0);
+        pos = m_object->GetPosition();
+        angle = m_object->GetRotation();
         if ( pos.x   != m_wheelLastPos.x   ||
              pos.y   != m_wheelLastPos.y   ||
              pos.z   != m_wheelLastPos.z   ||
@@ -1592,8 +1592,8 @@ bool CMotionVehicle::EventFrameFly(const Event &event)
     float       hope[3], actual, final, h, a;
     int         i;
 
-    pos = m_object->GetPosition(0);
-    angle = m_object->GetAngle(0);
+    pos = m_object->GetPosition();
+    angle = m_object->GetRotation();
     if ( m_bFlyFix                     &&
          pos.x   == m_wheelLastPos.x   &&
          pos.y   == m_wheelLastPos.y   &&
@@ -1843,7 +1843,7 @@ bool CMotionVehicle::EventFrameCanoni(const Event &event)
     {
         m_lastTimeCanon = m_engine->ParticuleAdapt(0.5f+Math::Rand()*0.5f);
 
-        pos = m_object->GetPosition(0);
+        pos = m_object->GetPosition();
         pos.y += 8.0f;
         speed.y = 7.0f+Math::Rand()*3.0f;
         speed.x = (Math::Rand()-0.5f)*2.0f;

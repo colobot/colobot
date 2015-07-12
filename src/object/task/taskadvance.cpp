@@ -70,7 +70,7 @@ Error CTaskAdvance::Start(float length)
     m_direction = (length>=0.0f)?1.0f:-1.0f;
     m_totalLength = fabs(length);
     m_advanceLength = m_physics->GetLinLength(length);
-    m_startPos = m_object->GetPosition(0);
+    m_startPos = m_object->GetPosition();
     m_lastDist = 0.0f;
     m_fixTime = 0.0f;
 
@@ -105,7 +105,7 @@ Error CTaskAdvance::IsEnded()
         return ERR_MOVE_IMPOSSIBLE;
     }
 
-    pos = m_object->GetPosition(0);
+    pos = m_object->GetPosition();
     length = Math::DistanceProjected(pos, m_startPos);
 
     if ( length > m_lastDist )  // forward?

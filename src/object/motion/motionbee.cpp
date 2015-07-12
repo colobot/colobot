@@ -272,7 +272,7 @@ void CMotionBee::Create(Math::Vector pos, float angle, ObjectType type,
     CreatePhysics();
     m_object->SetFloorHeight(0.0f);
 
-    pos = m_object->GetPosition(0);
+    pos = m_object->GetPosition();
     m_object->SetPosition(0, pos);  // to display the shadows immediately
 
     m_engine->LoadAllTextures();
@@ -413,7 +413,7 @@ bool CMotionBee::EventFrame(const Event &event)
     bool            bStop;
 
     if ( m_engine->GetPause() )  return true;
-    if ( !m_engine->IsVisiblePoint(m_object->GetPosition(0)) )  return true;
+    if ( !m_engine->IsVisiblePoint(m_object->GetPosition()) )  return true;
 
     s =     m_physics->GetLinMotionX(MO_MOTSPEED)*0.30f;
     a = fabs(m_physics->GetCirMotionY(MO_MOTSPEED)*2.00f);
@@ -599,7 +599,7 @@ bool CMotionBee::EventFrame(const Event &event)
     m_object->SetAngleY(1, sinf(m_armTimeAbs*2.1f)*0.50f);  // head
 
 #if 0
-    h = m_terrain->GetFloorHeight(GetPosition(0));
+    h = m_terrain->GetFloorHeight(GetPosition());
     radius = 4.0f+h/4.0f;
     color.r = 0.3f+h/80.0f;
     color.g = color.r;

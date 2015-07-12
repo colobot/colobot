@@ -98,17 +98,17 @@ Error CTaskInfo::Start(const char *name, float value, float power, bool send)
     Math::Vector pos, goal;
     if (op == 0)  // transmission?
     {
-        pos = exchangePost->GetPosition(0);
+        pos = exchangePost->GetPosition();
         pos.y += 9.5f;
-        goal = m_object->GetPosition(0);
+        goal = m_object->GetPosition();
         goal.y += 4.0f;
         m_particle->CreateRay(pos, goal, Gfx::PARTIRAY3, Math::Point(2.0f, 2.0f), 1.0f);
     }
     if (op == 2)  // reception?
     {
-        goal = exchangePost->GetPosition(0);
+        goal = exchangePost->GetPosition();
         goal.y += 9.5f;
-        pos = m_object->GetPosition(0);
+        pos = m_object->GetPosition();
         pos.y += 4.0f;
         m_particle->CreateRay(pos, goal, Gfx::PARTIRAY3, Math::Point(2.0f, 2.0f), 1.0f);
     }

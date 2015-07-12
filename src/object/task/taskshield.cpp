@@ -558,7 +558,7 @@ void CTaskShield::IncreaseShield()
              type == OBJECT_BEE    ||
              type == OBJECT_WORM   )  continue;
 
-        Math::Vector oPos = obj->GetPosition(0);
+        Math::Vector oPos = obj->GetPosition();
         float dist = Math::Distance(oPos, m_shieldPos);
         if ( dist <= GetRadius()+10.0f )
         {

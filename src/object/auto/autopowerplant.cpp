@@ -136,7 +136,7 @@ bool CAutoPowerPlant::EventProcess(const Event &event)
             if ( m_lastParticle+m_engine->ParticleAdapt(0.05f) <= m_time )
             {
                 m_lastParticle = m_time;
-                pos = m_object->GetPosition(0);
+                pos = m_object->GetPosition();
                 pos.y += 10.0f;
                 speed.x = (Math::Rand()-0.5f)*10.0f;
                 speed.z = (Math::Rand()-0.5f)*10.0f;
@@ -154,7 +154,7 @@ bool CAutoPowerPlant::EventProcess(const Event &event)
 
     big = m_object->GetEnergy();
 
-    res = m_terrain->GetResource(m_object->GetPosition(0));
+    res = m_terrain->GetResource(m_object->GetPosition());
     if ( res == Gfx::TR_POWER )
     {
         big += event.rTime*0.01f;  // recharges the big pile
@@ -190,7 +190,7 @@ bool CAutoPowerPlant::EventProcess(const Event &event)
                 InitProgressTotal(POWERPLANT_DELAY);
                 CAuto::UpdateInterface();
 
-                pos = m_object->GetPosition(0);
+                pos = m_object->GetPosition();
                 pos.y += 4.0f;
                 speed = Math::Vector(0.0f, 0.0f, 0.0f);
                 dim.x = 3.0f;
@@ -226,7 +226,7 @@ bool CAutoPowerPlant::EventProcess(const Event &event)
             if ( m_lastParticle+m_engine->ParticleAdapt(0.05f) <= m_time )
             {
                 m_lastParticle = m_time;
-                pos = m_object->GetPosition(0);
+                pos = m_object->GetPosition();
                 pos.y += 10.0f;
                 speed.x = (Math::Rand()-0.5f)*1.0f;
                 speed.z = (Math::Rand()-0.5f)*1.0f;
@@ -272,7 +272,7 @@ bool CAutoPowerPlant::EventProcess(const Event &event)
             {
                 m_lastParticle = m_time;
 
-                pos = m_object->GetPosition(0);
+                pos = m_object->GetPosition();
                 c.x = pos.x;
                 c.y = pos.z;
                 p.x = c.x;
@@ -286,7 +286,7 @@ bool CAutoPowerPlant::EventProcess(const Event &event)
                 dim.y = dim.x;
                 m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIGLINT, 1.0f, 0.0f, 0.0f);
 
-                pos = m_object->GetPosition(0);
+                pos = m_object->GetPosition();
                 pos.y += 3.0f;
                 speed.x = (Math::Rand()-0.5f)*30.0f;
                 speed.z = (Math::Rand()-0.5f)*30.0f;
@@ -295,7 +295,7 @@ bool CAutoPowerPlant::EventProcess(const Event &event)
                 dim.y = dim.x;
                 m_particle->CreateTrack(pos, speed, dim, Gfx::PARTITRACK2, 2.0f, 50.0f, 1.2f, 1.2f);
 
-                pos = m_object->GetPosition(0);
+                pos = m_object->GetPosition();
                 pos.y += 10.0f;
                 speed.x = (Math::Rand()-0.5f)*1.5f;
                 speed.z = (Math::Rand()-0.5f)*1.5f;
@@ -304,7 +304,7 @@ bool CAutoPowerPlant::EventProcess(const Event &event)
                 dim.y = dim.x;
                 m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIFIREZ, 1.0f, 0.0f, 0.0f);
 
-                m_sound->Play(SOUND_ENERGY, m_object->GetPosition(0),
+                m_sound->Play(SOUND_ENERGY, m_object->GetPosition(),
                               1.0f, 1.0f+Math::Rand()*1.5f);
             }
         }
@@ -348,7 +348,7 @@ bool CAutoPowerPlant::EventProcess(const Event &event)
             {
                 m_lastParticle = m_time;
 
-                pos = m_object->GetPosition(0);
+                pos = m_object->GetPosition();
                 pos.y += 17.0f;
                 pos.x += (Math::Rand()-0.5f)*3.0f;
                 pos.z += (Math::Rand()-0.5f)*3.0f;
@@ -396,7 +396,7 @@ CObject* CAutoPowerPlant::SearchMetal()
 
 bool CAutoPowerPlant::SearchVehicle()
 {
-    Math::Vector cPos = m_object->GetPosition(0);
+    Math::Vector cPos = m_object->GetPosition();
 
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
@@ -449,13 +449,13 @@ bool CAutoPowerPlant::SearchVehicle()
 
 void CAutoPowerPlant::CreatePower()
 {
-    Math::Vector pos = m_object->GetPosition(0);
+    Math::Vector pos = m_object->GetPosition();
     float angle = m_object->GetAngleY(0);
     float powerLevel = 1.0f;
     CObject* power = CObjectManager::GetInstancePointer()->CreateObject(pos, angle, OBJECT_POWER, powerLevel);
     power->SetLock(true);  // battery not yet usable
 
-    pos = power->GetPosition(0);
+    pos = power->GetPosition();
     pos.y += 3.0f;
     power->SetPosition(0, pos);
 }
@@ -464,7 +464,7 @@ void CAutoPowerPlant::CreatePower()
 
 CObject* CAutoPowerPlant::SearchPower()
 {
-    Math::Vector cPos = m_object->GetPosition(0);
+    Math::Vector cPos = m_object->GetPosition();
 
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
@@ -473,7 +473,7 @@ CObject* CAutoPowerPlant::SearchPower()
         ObjectType  type = obj->GetType();
         if ( type != OBJECT_POWER )  continue;
 
-        Math::Vector oPos = obj->GetPosition(0);
+        Math::Vector oPos = obj->GetPosition();
         if ( oPos.x == cPos.x &&
              oPos.z == cPos.z )
         {
@@ -497,7 +497,7 @@ Error CAutoPowerPlant::GetError()
     if ( m_phase != AENP_WAIT  &&
          m_phase != AENP_BLITZ )  return ERR_OK;
 
-    Gfx::TerrainRes res = m_terrain->GetResource(m_object->GetPosition(0));
+    Gfx::TerrainRes res = m_terrain->GetResource(m_object->GetPosition());
     if ( res != Gfx::TR_POWER )  return ERR_ENERGY_NULL;
 
     if ( m_object->GetEnergy() < POWERPLANT_POWER )  return ERR_ENERGY_LOW;

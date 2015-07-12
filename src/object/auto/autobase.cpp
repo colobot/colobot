@@ -94,7 +94,7 @@ void CAutoBase::Init()
     m_lastParticle = 0.0f;
     m_lastMotorParticle = 0.0f;
 
-    m_pos = m_object->GetPosition(0);
+    m_pos = m_object->GetPosition();
     m_lastPos = m_pos;
 
     m_phase    = ABP_WAIT;
@@ -132,7 +132,7 @@ bool CAutoBase::EventProcess(const Event &event)
     if ( m_engine->GetPause() )  return true;
 
 begin:
-    iPos = m_object->GetPosition(0);
+    iPos = m_object->GetPosition();
 
     if ( m_phase == ABP_START )
     {
@@ -207,7 +207,7 @@ begin:
             m_camera->SetScriptEye(pos);
             m_posSound = pos;
 
-            pos = m_object->GetPosition(0);
+            pos = m_object->GetPosition();
             pos.y += 300.0f+50.0f;
             m_camera->SetScriptLookat(pos);
 
@@ -228,7 +228,7 @@ begin:
 
         if ( m_param == PARAM_PORTICO )  // gate on the porch?
         {
-            pos = m_object->GetPosition(0);
+            pos = m_object->GetPosition();
             m_finalPos = pos;
             pos.z += BASE_PORTICO_TIME_MOVE*5.0f;  // back
             pos.y += 10.0f;  // rises (the gate)
@@ -251,7 +251,7 @@ begin:
             m_speed    = 1.0f/BASE_TRANSIT_TIME;
 
             m_object->SetAngleZ(0, -Math::PI/2.0f);
-            pos = m_object->GetPosition(0);
+            pos = m_object->GetPosition();
             pos.y += 10000.0f;  // in space
             m_finalPos = pos;
             m_object->SetPosition(0, pos);
@@ -348,7 +348,7 @@ begin:
             pos.y += 10.0f;
             m_camera->SetScriptEye(pos);
 
-            pos = m_object->GetPosition(0);
+            pos = m_object->GetPosition();
             pos.y += 50.0f;
             m_camera->SetScriptLookat(pos);
 
@@ -376,7 +376,7 @@ begin:
                 }
 
                 // Particles are ejected from the jet engine.
-                pos = m_object->GetPosition(0);
+                pos = m_object->GetPosition();
                 pos.y += 6.0f;
                 h = m_terrain->GetHeightToFloor(pos)/300.0f;
                 speed.x = (Math::Rand()-0.5f)*(80.0f-50.0f*h);
@@ -596,7 +596,7 @@ begin:
                     m_camera->SetType(pObj->GetCameraType());
                     m_camera->SetDist(pObj->GetCameraDist());
                 }
-                m_sound->Play(SOUND_BOUM, m_object->GetPosition(0));
+                m_sound->Play(SOUND_BOUM, m_object->GetPosition());
                 m_soundChannel = -1;
 
                 m_engine->SetFogStart(m_fogStart);
@@ -677,7 +677,7 @@ begin:
                 time = Math::Rand()*1.0f+1.0f;
                 m_particle->CreateParticle(pos, speed, dim, Gfx::PARTICRASH, time);
             }
-            m_sound->Play(SOUND_BOUM, m_object->GetPosition(0));
+            m_sound->Play(SOUND_BOUM, m_object->GetPosition());
 
             m_soundChannel = -1;
             m_bOpen    = false;
@@ -709,7 +709,7 @@ begin:
                 m_lastParticle = m_time;
 
                 // Particles are ejected from the reactor.
-                pos = m_object->GetPosition(0);
+                pos = m_object->GetPosition();
                 pos.y += 6.0f;
                 speed.x = (Math::Rand()-0.5f)*160.0f;
                 speed.z = (Math::Rand()-0.5f)*160.0f;
@@ -751,7 +751,7 @@ begin:
             pos.y += 10.0f;
             m_camera->SetScriptEye(pos);
 
-            pos = m_object->GetPosition(0);
+            pos = m_object->GetPosition();
             pos.y += 50.0f;
             m_camera->SetScriptLookat(pos);
 
@@ -779,7 +779,7 @@ begin:
                 }
 
                 // Particles are ejected from the reactor.
-                pos = m_object->GetPosition(0);
+                pos = m_object->GetPosition();
                 pos.y += 6.0f;
                 speed.x = (Math::Rand()-0.5f)*40.0f;
                 speed.z = (Math::Rand()-0.5f)*40.0f;
@@ -791,7 +791,7 @@ begin:
                 m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIGAS, 2.0f, 10.0f, 2.0f);
 
                 // Black smoke from the reactor.
-                pos = m_object->GetPosition(0);
+                pos = m_object->GetPosition();
                 pos.y += 3.0f;
                 speed.x = (Math::Rand()-0.5f)*10.0f*(4.0f-m_progress*3.0f);
                 speed.z = (Math::Rand()-0.5f)*10.0f*(4.0f-m_progress*3.0f);
@@ -817,7 +817,7 @@ begin:
     {
         if ( m_progress < 1.0f )
         {
-            pos = m_object->GetPosition(0);
+            pos = m_object->GetPosition();
             pos.z -= event.rTime*5.0f;
             m_object->SetPosition(0, pos);
             MoveCargo();  // all cargo moves
@@ -844,7 +844,7 @@ begin:
     {
         if ( m_progress < 1.0f )
         {
-            pos = m_object->GetPosition(0);
+            pos = m_object->GetPosition();
             pos.y -= event.rTime*(10.0f/BASE_PORTICO_TIME_DOWN);
             m_object->SetPosition(0, pos);
             MoveCargo();  // all cargo moves
@@ -900,7 +900,7 @@ begin:
     {
         if ( m_progress < 1.0f )
         {
-            pos = m_object->GetPosition(0);
+            pos = m_object->GetPosition();
             pos.x += event.rTime*(2000.0f/BASE_TRANSIT_TIME);
             m_object->SetPosition(0, pos);
             pos.x += 60.0f;
@@ -941,7 +941,7 @@ begin:
             }
             else
             {
-                pos = m_object->GetPosition(0);
+                pos = m_object->GetPosition();
                 if ( m_phase == ABP_TRANSIT_MOVE )
                 {
                     vSpeed = (pos.x-iPos.x)/event.rTime;
@@ -1269,13 +1269,13 @@ void CAutoBase::FreezeCargo(bool freeze)
 
 void CAutoBase::MoveCargo()
 {
-    Math::Vector sPos = m_object->GetPosition(0);
+    Math::Vector sPos = m_object->GetPosition();
 
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
         if ( !obj->IsSpaceshipCargo() )  continue;
 
-        Math::Vector oPos = obj->GetPosition(0);
+        Math::Vector oPos = obj->GetPosition();
         oPos.y = sPos.y+30.0f;
         oPos.y += obj->GetCharacter()->height;
         oPos.x += sPos.x-m_lastPos.x;
@@ -1412,7 +1412,7 @@ Error CAutoBase::TakeOff(bool printMsg)
     m_camera->SetScriptEye(pos);
     m_posSound = pos;
 
-    pos = m_object->GetPosition(0);
+    pos = m_object->GetPosition();
     pos.y += 50.0f;
     m_camera->SetScriptLookat(pos);
 

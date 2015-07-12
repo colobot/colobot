@@ -136,7 +136,7 @@ bool CAutoPowerCaptor::EventProcess(const Event &event)
 
                 for ( i=0 ; i<10 ; i++ )
                 {
-                    pos = m_object->GetPosition(0);
+                    pos = m_object->GetPosition();
                     pos.x += (Math::Rand()-0.5f)*m_progress*40.0f;
                     pos.z += (Math::Rand()-0.5f)*m_progress*40.0f;
                     pos.y += 50.0f-m_progress*50.0f;
@@ -167,7 +167,7 @@ bool CAutoPowerCaptor::EventProcess(const Event &event)
 
                 for ( i=0 ; i<2 ; i++ )
                 {
-                    pos = m_object->GetPosition(0);
+                    pos = m_object->GetPosition();
                     pos.y += 16.0f;
                     speed.x = (Math::Rand()-0.5f)*10.0f;
                     speed.z = (Math::Rand()-0.5f)*10.0f;
@@ -244,11 +244,11 @@ Error CAutoPowerCaptor::GetError()
 
 void CAutoPowerCaptor::ChargeObject(float rTime)
 {
-    Math::Vector sPos = m_object->GetPosition(0);
+    Math::Vector sPos = m_object->GetPosition();
 
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        Math::Vector oPos = obj->GetPosition(0);
+        Math::Vector oPos = obj->GetPosition();
         float dist = Math::Distance(oPos, sPos);
         if ( dist > 20.0f )  continue;
 

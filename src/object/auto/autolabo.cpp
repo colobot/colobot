@@ -268,7 +268,7 @@ bool CAutoLabo::EventProcess(const Event &event)
         {
             m_object->SetAngleZ(1, 0.0f);
 
-            goal = m_object->GetPosition(0);
+            goal = m_object->GetPosition();
             goal.y += 3.0f;
             pos = goal;
             pos.x -= 4.0f;
@@ -281,13 +281,13 @@ bool CAutoLabo::EventProcess(const Event &event)
                                                         LABO_DELAY);
             }
 
-            m_soundChannel = m_sound->Play(SOUND_LABO, m_object->GetPosition(0), 0.0f, 0.25f, true);
+            m_soundChannel = m_sound->Play(SOUND_LABO, m_object->GetPosition(), 0.0f, 0.25f, true);
             m_sound->AddEnvelope(m_soundChannel, 1.0f, 0.60f, 2.0f, SOPER_CONTINUE);
             m_sound->AddEnvelope(m_soundChannel, 1.0f, 2.00f, 8.0f, SOPER_CONTINUE);
             m_sound->AddEnvelope(m_soundChannel, 1.0f, 0.60f, 8.0f, SOPER_CONTINUE);
             m_sound->AddEnvelope(m_soundChannel, 0.0f, 0.25f, 2.0f, SOPER_STOP);
 
-            pos = m_object->GetPosition(0);
+            pos = m_object->GetPosition();
             pos.y += 4.0f;
             speed = Math::Vector(0.0f, 0.0f, 0.0f);
             dim.x = 4.0f;
@@ -326,7 +326,7 @@ bool CAutoLabo::EventProcess(const Event &event)
             for ( i=0 ; i<3 ; i++ )
             {
                 rot = Math::RotatePoint(-angle, -4.0f);
-                pos = m_object->GetPosition(0);
+                pos = m_object->GetPosition();
                 pos.x += rot.x;
                 pos.z += rot.y;
                 pos.y += 3.0f+4.0f;;
@@ -342,7 +342,7 @@ bool CAutoLabo::EventProcess(const Event &event)
                 if ( m_progress > 0.25f &&
                      m_progress < 0.80f )
                 {
-                    pos = m_object->GetPosition(0);
+                    pos = m_object->GetPosition();
                     pos.y += 3.0f;
                     pos.x += (Math::Rand()-0.5f)*2.0f;
                     pos.z += (Math::Rand()-0.5f)*2.0f;
@@ -576,7 +576,7 @@ void CAutoLabo::SoundManip(float time, float amplitude, float frequency)
 {
     int     i;
 
-    i = m_sound->Play(SOUND_MANIP, m_object->GetPosition(0), 0.0f, 0.3f*frequency, true);
+    i = m_sound->Play(SOUND_MANIP, m_object->GetPosition(), 0.0f, 0.3f*frequency, true);
     m_sound->AddEnvelope(i, 0.5f*amplitude, 1.0f*frequency, 0.1f, SOPER_CONTINUE);
     m_sound->AddEnvelope(i, 0.5f*amplitude, 1.0f*frequency, time-0.1f, SOPER_CONTINUE);
     m_sound->AddEnvelope(i, 0.0f, 0.3f*frequency, 0.1f, SOPER_STOP);

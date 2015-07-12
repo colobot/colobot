@@ -118,7 +118,7 @@ void CDisplayText::DisplayError(Error err, CObject* pObj, float time)
 
     if ( pObj == 0 )  return;
 
-    pos = pObj->GetPosition(0);
+    pos = pObj->GetPosition();
     h = GetIdealHeight(pObj);
     d = GetIdealDist(pObj);
     DisplayError(err, pos, h, d, time);
@@ -178,7 +178,7 @@ void CDisplayText::DisplayText(const char *text, CObject* pObj,
 
     if ( pObj == 0 )  return;
 
-    pos = pObj->GetPosition(0);
+    pos = pObj->GetPosition();
     h = GetIdealHeight(pObj);
     d = GetIdealDist(pObj);
     DisplayText(text, pos, h, d, time, type);

@@ -102,7 +102,7 @@ void CAutoFactory::Init()
     m_time = 0.0f;
     m_lastParticle = 0.0f;
 
-    m_cargoPos = m_object->GetPosition(0);
+    m_cargoPos = m_object->GetPosition();
 
     m_program = nullptr;
 
@@ -280,7 +280,7 @@ bool CAutoFactory::EventProcess(const Event &event)
                 m_object->SetAngleZ(10+i, 0.0f);
             }
 
-            m_channelSound = m_sound->Play(SOUND_FACTORY, m_object->GetPosition(0), 0.0f, 1.0f, true);
+            m_channelSound = m_sound->Play(SOUND_FACTORY, m_object->GetPosition(), 0.0f, 1.0f, true);
             m_sound->AddEnvelope(m_channelSound, 1.0f, 1.0f,  2.0f, SOPER_CONTINUE);
             m_sound->AddEnvelope(m_channelSound, 1.0f, 1.0f, 11.0f, SOPER_CONTINUE);
             m_sound->AddEnvelope(m_channelSound, 0.0f, 1.0f,  2.0f, SOPER_STOP);
@@ -539,7 +539,7 @@ bool CAutoFactory::Read(CLevelParserLine* line)
     m_speed = line->GetParam("aSpeed")->AsFloat(1.0f);
 
     m_lastParticle = 0.0f;
-    m_cargoPos = m_object->GetPosition(0);
+    m_cargoPos = m_object->GetPosition();
 
     return true;
 }
@@ -555,7 +555,7 @@ CObject* CAutoFactory::SearchCargo()
         if ( type != OBJECT_METAL )  continue;
         if (IsObjectBeingTransported(obj))  continue;
 
-        Math::Vector oPos = obj->GetPosition(0);
+        Math::Vector oPos = obj->GetPosition();
         float dist = Math::Distance(oPos, m_cargoPos);
 
         if ( dist < 8.0f )  return obj;
@@ -568,7 +568,7 @@ CObject* CAutoFactory::SearchCargo()
 
 bool CAutoFactory::NearestVehicle()
 {
-    Math::Vector cPos = m_object->GetPosition(0);
+    Math::Vector cPos = m_object->GetPosition();
 
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
@@ -679,7 +679,7 @@ CObject* CAutoFactory::SearchVehicle()
         if ( type != m_type )  continue;
         if (IsObjectBeingTransported(obj))  continue;
 
-        Math::Vector oPos = obj->GetPosition(0);
+        Math::Vector oPos = obj->GetPosition();
         float dist = Math::Distance(oPos, m_cargoPos);
 
         if ( dist < 8.0f )  return obj;
@@ -931,7 +931,7 @@ void CAutoFactory::SoundManip(float time, float amplitude, float frequency)
 {
     int     i;
 
-    i = m_sound->Play(SOUND_MANIP, m_object->GetPosition(0), 0.0f, 0.3f*frequency, true);
+    i = m_sound->Play(SOUND_MANIP, m_object->GetPosition(), 0.0f, 0.3f*frequency, true);
     m_sound->AddEnvelope(i, 0.5f*amplitude, 1.0f*frequency, 0.1f, SOPER_CONTINUE);
     m_sound->AddEnvelope(i, 0.5f*amplitude, 1.0f*frequency, time-0.1f, SOPER_CONTINUE);
     m_sound->AddEnvelope(i, 0.0f, 0.3f*frequency, 0.1f, SOPER_STOP);

@@ -322,7 +322,7 @@ void CMotionHuman::Create(Math::Vector pos, float angle, ObjectType type,
     CreatePhysics(type);
     m_object->SetFloorHeight(0.0f);
 
-    pos = m_object->GetPosition(0);
+    pos = m_object->GetPosition();
     m_object->SetPosition(0, pos);  // to display the shadows immediately
 
     m_engine->LoadAllTextures();
@@ -884,7 +884,7 @@ bool CMotionHuman::EventFrame(const Event &event)
     if ( m_physics->GetLand() )  // on the ground?
     {
         a = m_object->GetAngleY(0);
-        pos = m_object->GetPosition(0);
+        pos = m_object->GetPosition();
         m_terrain->AdjustToFloor(pos);
 
         pf.x = pos.x+cosf(a+Math::PI*1.5f)*0.7f;
@@ -1271,7 +1271,7 @@ bool CMotionHuman::EventFrame(const Event &event)
 
             for ( i=0 ; i<10 ; i++ )
             {
-                pos = m_object->GetPosition(0);
+                pos = m_object->GetPosition();
                 pos.x += (Math::Rand()-0.5f)*4.0f;
                 pos.z += (Math::Rand()-0.5f)*4.0f;
                 m_terrain->AdjustToFloor(pos);
@@ -1280,7 +1280,7 @@ bool CMotionHuman::EventFrame(const Event &event)
                 dim.y = dim.x;
                 m_particle->CreateParticle(pos, speed, dim, Gfx::PARTICRASH, 2.0f, 0.0f, 0.0f);
             }
-            m_sound->Play(SOUND_BOUMv, m_object->GetPosition(0));
+            m_sound->Play(SOUND_BOUMv, m_object->GetPosition());
 
             SetAction(MHS_DEADg2, 1.0f);  // expects knees
         }
@@ -1341,7 +1341,7 @@ bool CMotionHuman::EventFrame(const Event &event)
 
             for ( i=0 ; i<20 ; i++ )
             {
-                pos = m_object->GetPosition(0);
+                pos = m_object->GetPosition();
                 pos.x += (Math::Rand()-0.5f)*8.0f;
                 pos.z += (Math::Rand()-0.5f)*8.0f;
                 m_terrain->AdjustToFloor(pos);
@@ -1350,7 +1350,7 @@ bool CMotionHuman::EventFrame(const Event &event)
                 dim.y = dim.x;
                 m_particle->CreateParticle(pos, speed, dim, Gfx::PARTICRASH, 2.0f, 0.0f, 0.0f);
             }
-            m_sound->Play(SOUND_BOUMv, m_object->GetPosition(0));
+            m_sound->Play(SOUND_BOUMv, m_object->GetPosition());
 
             SetAction(MHS_DEADg4, 3.0f);  // expects face down
         }
@@ -1405,7 +1405,7 @@ bool CMotionHuman::EventFrame(const Event &event)
     }
     else if ( m_actionType == MHS_DEADw )   // drowned?
     {
-        pos = m_object->GetPosition(0);
+        pos = m_object->GetPosition();
         level = m_water->GetLevel()-0.5f;
         if ( pos.y < level )
         {
@@ -1648,7 +1648,7 @@ bool CMotionHuman::EventFrame(const Event &event)
             sound[0] = SOUND_CLICK;
             sound[1] = SOUND_CLICK;
 
-            pos = m_object->GetPosition(0);
+            pos = m_object->GetPosition();
 
             level = m_water->GetLevel();
             if ( pos.y <= level+3.0f )  // underwater?
@@ -1705,7 +1705,7 @@ bool CMotionHuman::EventFrame(const Event &event)
         if ( fabs(m_lastSoundMarch-time) > 0.9f &&
              Math::Mod(time, 1.0f) < 0.1f )
         {
-            m_sound->Play(SOUND_SWIM, m_object->GetPosition(0), 0.5f);
+            m_sound->Play(SOUND_SWIM, m_object->GetPosition(), 0.5f);
             m_lastSoundMarch = time;
         }
     }
@@ -1715,7 +1715,7 @@ bool CMotionHuman::EventFrame(const Event &event)
          m_object->GetSelect()  &&
          m_object->GetOption() == 0 )  // helmet?
     {
-        m_sound->Play(SOUND_HUMAN1, m_object->GetPosition(0), (0.5f+m_tired*0.2f));
+        m_sound->Play(SOUND_HUMAN1, m_object->GetPosition(), (0.5f+m_tired*0.2f));
         m_lastSoundHhh = (4.0f-m_tired*2.5f)+(4.0f-m_tired*2.5f)*Math::Rand();
     }
 

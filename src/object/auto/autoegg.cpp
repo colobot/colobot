@@ -68,7 +68,7 @@ void CAutoEgg::DeleteObject(bool all)
         if ( alien != nullptr )
         {
             // Probably the intended action
-            // Original code: ( alien->GetZoom(0) == 1.0f )
+            // Original code: ( alien->GetScale() == 1.0f )
             if ( alien->GetZoomY(0) == 1.0f )
             {
                 alien->SetLock(false);
@@ -178,7 +178,7 @@ bool CAutoEgg::EventProcess(const Event &event)
         m_progress += event.rTime*m_speed;
         if ( m_progress < 1.0f )  return true;
 
-        Math::Vector pos = m_object->GetPosition(0);
+        Math::Vector pos = m_object->GetPosition();
         float angle = m_object->GetAngleY(0);
         CObject* alien = CObjectManager::GetInstancePointer()->CreateObject(pos, angle, m_type);
 
@@ -274,7 +274,7 @@ Error CAutoEgg::GetError()
 
 CObject* CAutoEgg::SearchAlien()
 {
-    Math::Vector cPos = m_object->GetPosition(0);
+    Math::Vector cPos = m_object->GetPosition();
     float min = 100000.0f;
     CObject* best = nullptr;
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
@@ -287,7 +287,7 @@ CObject* CAutoEgg::SearchAlien()
              type != OBJECT_SPIDER &&
              type != OBJECT_WORM   )  continue;
 
-        Math::Vector oPos = obj->GetPosition(0);
+        Math::Vector oPos = obj->GetPosition();
         float dist = Math::DistanceProjected(oPos, cPos);
         if ( dist < 8.0f && dist < min )
         {

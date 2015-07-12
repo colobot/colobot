@@ -127,7 +127,7 @@ bool CAutoRadar::EventProcess(const Event &event)
             }
             else
             {
-                pos = m_object->GetPosition(0);
+                pos = m_object->GetPosition();
                 m_start = m_object->GetAngleY(1);
                 m_angle = m_start-Math::NormAngle(m_start)+Math::PI*2.0f;
                 m_angle += Math::RotateAngle(pos.x-ePos.x, ePos.z-pos.z);
@@ -149,7 +149,7 @@ bool CAutoRadar::EventProcess(const Event &event)
         }
         else
         {
-            m_sound->Play(SOUND_RADAR, m_object->GetPosition(0));
+            m_sound->Play(SOUND_RADAR, m_object->GetPosition());
 
             m_phase    = ARAP_SINUS;
             m_progress = 0.0f;
@@ -264,7 +264,7 @@ void CAutoRadar::UpdateInterface()
 
 bool CAutoRadar::SearchEnemy(Math::Vector &pos)
 {
-    Math::Vector iPos = m_object->GetPosition(0);
+    Math::Vector iPos = m_object->GetPosition();
     float min = 1000000.0f;
     m_totalDetect = 0;
 
@@ -282,7 +282,7 @@ bool CAutoRadar::SearchEnemy(Math::Vector &pos)
 
         m_totalDetect ++;
 
-        Math::Vector oPos = obj->GetPosition(0);
+        Math::Vector oPos = obj->GetPosition();
         float distance = Math::Distance(oPos, iPos);
         if ( distance < min )
         {
@@ -294,7 +294,7 @@ bool CAutoRadar::SearchEnemy(Math::Vector &pos)
     UpdateInterface();
 
     if ( best == nullptr )  return false;
-    pos = best->GetPosition(0);
+    pos = best->GetPosition();
     return true;
 }
 

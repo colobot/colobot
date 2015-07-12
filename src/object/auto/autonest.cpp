@@ -75,7 +75,7 @@ void CAutoNest::Init()
     m_time     = 0.0f;
     m_lastParticle = 0.0f;
 
-    pos = m_object->GetPosition(0);
+    pos = m_object->GetPosition();
     m_terrain->AdjustToFloor(pos);
     m_cargoPos = pos;
 }
@@ -186,7 +186,7 @@ CObject* CAutoNest::SearchCargo()
         ObjectType type = obj->GetType();
         if ( type != OBJECT_BULLET )  continue;
 
-        Math::Vector oPos = obj->GetPosition(0);
+        Math::Vector oPos = obj->GetPosition();
         if ( oPos.x == m_cargoPos.x &&
              oPos.z == m_cargoPos.z )
         {

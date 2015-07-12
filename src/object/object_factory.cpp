@@ -1067,7 +1067,7 @@ CObjectUPtr CObjectFactory::CreateBuilding(const ObjectCreateParams& params)
     }
 #endif
 
-    pos = obj->GetPosition(0);
+    pos = obj->GetPosition();
     pos.y += height;
     obj->SetPosition(0, pos);  // to display the shadows immediately
 
@@ -1190,7 +1190,7 @@ CObjectUPtr CObjectFactory::CreateResource(const ObjectCreateParams& params)
     m_engine->LoadAllTextures();
     obj->FloorAdjust();
 
-    pos = obj->GetPosition(0);
+    pos = obj->GetPosition();
     pos.y += height;
     obj->SetPosition(0, pos);  // to display the shadows immediately
 
@@ -1251,7 +1251,7 @@ CObjectUPtr CObjectFactory::CreateFlag(const ObjectCreateParams& params)
     m_engine->LoadAllTextures();
     obj->FloorAdjust();
 
-    pos = obj->GetPosition(0);
+    pos = obj->GetPosition();
     obj->SetPosition(0, pos);  // to display the shadows immediately
 
     return std::move(obj);
@@ -1340,14 +1340,14 @@ CObjectUPtr CObjectFactory::CreateBarrier(const ObjectCreateParams& params)
         obj->CreateShadowCircle(10.0f, 0.5f, Gfx::ENG_SHADOW_WORM);
     }
 
-    pos = obj->GetPosition(0);
+    pos = obj->GetPosition();
     obj->SetPosition(0, pos);  // to display the shadows immediately
 
     obj->SetFloorHeight(0.0f);
     AddObjectAuto(obj.get());
     obj->FloorAdjust();
 
-    pos = obj->GetPosition(0);
+    pos = obj->GetPosition();
     pos.y += height;
     obj->SetPosition(0, pos);
 
@@ -1565,13 +1565,13 @@ CObjectUPtr CObjectFactory::CreatePlant(const ObjectCreateParams& params)
         obj->CreateShadowCircle(50.0f, 0.5f);
     }
 
-    pos = obj->GetPosition(0);
+    pos = obj->GetPosition();
     obj->SetPosition(0, pos);  // to display the shadows immediately
 
     obj->SetFloorHeight(0.0f);
     AddObjectAuto(obj.get());
 
-    pos = obj->GetPosition(0);
+    pos = obj->GetPosition();
     pos.y += height;
     obj->SetPosition(0, pos);
 
@@ -1623,13 +1623,13 @@ CObjectUPtr CObjectFactory::CreateMushroom(const ObjectCreateParams& params)
         obj->CreateShadowCircle(5.0f, 0.5f);
     }
 
-    pos = obj->GetPosition(0);
+    pos = obj->GetPosition();
     obj->SetPosition(0, pos);  // to display the shadows immediately
 
     obj->SetFloorHeight(0.0f);
     AddObjectAuto(obj.get());
 
-    pos = obj->GetPosition(0);
+    pos = obj->GetPosition();
     pos.y += height;
     obj->SetPosition(0, pos);
 
@@ -1706,13 +1706,13 @@ CObjectUPtr CObjectFactory::CreateQuartz(const ObjectCreateParams& params)
         obj->CreateShadowCircle(10.0f, 0.5f);
     }
 
-    pos = obj->GetPosition(0);
+    pos = obj->GetPosition();
     obj->SetPosition(0, pos);  // to display the shadows immediately
 
     obj->SetFloorHeight(0.0f);
     AddObjectAuto(obj.get());
 
-    pos = obj->GetPosition(0);
+    pos = obj->GetPosition();
     pos.y += height;
     obj->SetPosition(0, pos);
 
@@ -1897,13 +1897,13 @@ CObjectUPtr CObjectFactory::CreateRoot(const ObjectCreateParams& params)
         obj->CreateShadowCircle(30.0f, 0.5f);
     }
 
-    pos = obj->GetPosition(0);
+    pos = obj->GetPosition();
     obj->SetPosition(0, pos);  // to display the shadows immediately
 
     obj->SetFloorHeight(0.0f);
     AddObjectAuto(obj.get());
 
-    pos = obj->GetPosition(0);
+    pos = obj->GetPosition();
     pos.y += height;
     obj->SetPosition(0, pos);
 
@@ -1937,13 +1937,13 @@ CObjectUPtr CObjectFactory::CreateHome(const ObjectCreateParams& params)
         obj->CreateShadowCircle(16.0f, 0.5f);
     }
 
-    pos = obj->GetPosition(0);
+    pos = obj->GetPosition();
     obj->SetPosition(0, pos);  // to display the shadows immediately
 
     obj->SetFloorHeight(0.0f);
     AddObjectAuto(obj.get());
 
-    pos = obj->GetPosition(0);
+    pos = obj->GetPosition();
     pos.y += height;
     obj->SetPosition(0, pos);
 
@@ -2207,7 +2207,7 @@ CObjectUPtr CObjectFactory::CreateRuin(const ObjectCreateParams& params)
         obj->CreateShadowCircle(30.0f, 1.0f);
     }
 
-    pos = obj->GetPosition(0);
+    pos = obj->GetPosition();
     obj->SetPosition(0, pos);  //to display the shadows immediately
 
     obj->SetFloorHeight(0.0f);
@@ -2220,13 +2220,13 @@ CObjectUPtr CObjectFactory::CreateRuin(const ObjectCreateParams& params)
         obj->FloorAdjust();
     }
 
-    pos = obj->GetPosition(0);
+    pos = obj->GetPosition();
     pos.y += height;
     obj->SetPosition(0, pos);  //to display the shadows immediately
 
     if ( type == OBJECT_RUINmobilew1 )
     {
-        pos = obj->GetPosition(0);
+        pos = obj->GetPosition();
         pos.y -= 0.5f;
         obj->SetPosition(0, pos);
 
@@ -2236,7 +2236,7 @@ CObjectUPtr CObjectFactory::CreateRuin(const ObjectCreateParams& params)
 
     if ( type == OBJECT_RUINmobilew2 )
     {
-        pos = obj->GetPosition(0);
+        pos = obj->GetPosition();
         pos.y -= 1.5f;
         obj->SetPosition(0, pos);
 
@@ -2249,7 +2249,7 @@ CObjectUPtr CObjectFactory::CreateRuin(const ObjectCreateParams& params)
 
     if ( type == OBJECT_RUINmobilet1 )
     {
-        pos = obj->GetPosition(0);
+        pos = obj->GetPosition();
         pos.y -= 0.9f;
         obj->SetPosition(0, pos);
 
@@ -2259,7 +2259,7 @@ CObjectUPtr CObjectFactory::CreateRuin(const ObjectCreateParams& params)
 
     if ( type == OBJECT_RUINmobilet2 )
     {
-        pos = obj->GetPosition(0);
+        pos = obj->GetPosition();
         pos.y -= 1.5f;
         obj->SetPosition(0, pos);
 
@@ -2272,7 +2272,7 @@ CObjectUPtr CObjectFactory::CreateRuin(const ObjectCreateParams& params)
 
     if ( type == OBJECT_RUINmobiler1 )
     {
-        pos = obj->GetPosition(0);
+        pos = obj->GetPosition();
         pos.y += 4.0f;
         obj->SetPosition(0, pos);
 
@@ -2285,7 +2285,7 @@ CObjectUPtr CObjectFactory::CreateRuin(const ObjectCreateParams& params)
 
     if ( type == OBJECT_RUINmobiler2 )
     {
-        pos = obj->GetPosition(0);
+        pos = obj->GetPosition();
         pos.y += 2.0f;
         obj->SetPosition(0, pos);
 
@@ -2298,7 +2298,7 @@ CObjectUPtr CObjectFactory::CreateRuin(const ObjectCreateParams& params)
 
     if ( type == OBJECT_RUINdoor )
     {
-        pos = obj->GetPosition(0);
+        pos = obj->GetPosition();
         pos.y -= 0.5f;
         obj->SetPosition(0, pos);
 
@@ -2308,7 +2308,7 @@ CObjectUPtr CObjectFactory::CreateRuin(const ObjectCreateParams& params)
 
     if ( type == OBJECT_RUINsupport )
     {
-        pos = obj->GetPosition(0);
+        pos = obj->GetPosition();
         pos.y += 0.5f;
         obj->SetPosition(0, pos);
 
@@ -2324,7 +2324,7 @@ CObjectUPtr CObjectFactory::CreateRuin(const ObjectCreateParams& params)
 
     if ( type == OBJECT_RUINradar )
     {
-        pos = obj->GetPosition(0);
+        pos = obj->GetPosition();
         pos.y -= 0.5f;
         obj->SetPosition(0, pos);
 
@@ -2337,14 +2337,14 @@ CObjectUPtr CObjectFactory::CreateRuin(const ObjectCreateParams& params)
 
     if ( type == OBJECT_RUINconvert )
     {
-        pos = obj->GetPosition(0);
+        pos = obj->GetPosition();
         pos.y -= 1.0f;
         obj->SetPosition(0, pos);
     }
 
     if ( type == OBJECT_RUINbase )
     {
-        pos = obj->GetPosition(0);
+        pos = obj->GetPosition();
         pos.y -= 1.0f;
         obj->SetPosition(0, pos);
 
@@ -2354,7 +2354,7 @@ CObjectUPtr CObjectFactory::CreateRuin(const ObjectCreateParams& params)
 
     if ( type == OBJECT_RUINhead )
     {
-        pos = obj->GetPosition(0);
+        pos = obj->GetPosition();
         pos.y += 8.0f;
         obj->SetPosition(0, pos);
 
@@ -2538,7 +2538,7 @@ CObjectUPtr CObjectFactory::CreateApollo(const ObjectCreateParams& params)
 
     AddObjectAuto(obj.get());
 
-    pos = obj->GetPosition(0);
+    pos = obj->GetPosition();
     obj->SetPosition(0, pos);  // to display the shadows immediately
 
     return std::move(obj);

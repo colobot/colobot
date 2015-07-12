@@ -917,7 +917,7 @@ bool CRobotMain::ProcessEvent(Event &event)
                     {
                         CLevelParserLine* line = new CLevelParserLine("CreateObject");
                         line->AddParam("type", CLevelParserParamUPtr{new CLevelParserParam(obj->GetType())});
-                        line->AddParam("pos", CLevelParserParamUPtr{new CLevelParserParam(obj->GetPosition(0))});
+                        line->AddParam("pos", CLevelParserParamUPtr{new CLevelParserParam(obj->GetPosition())});
                         line->AddParam("dir", CLevelParserParamUPtr{new CLevelParserParam(obj->GetAngleZ(0)/(Math::PI/180.0f))});
 
                         std::stringstream ss;
@@ -1725,7 +1725,7 @@ void CRobotMain::StartDisplayVisit(EventType event)
     Math::Vector goal = m_displayText->GetVisitGoal(event);
     m_visitArrow = m_objMan->CreateObject(goal, 0.0f, OBJECT_SHOW, -1.0f, 1.0f, 10.0f);
 
-    m_visitPos = m_visitArrow->GetPosition(0);
+    m_visitPos = m_visitArrow->GetPosition();
     m_visitPosArrow = m_visitPos;
     m_visitPosArrow.y += m_displayText->GetVisitHeight(event);
     m_visitArrow->SetPosition(0, m_visitPosArrow);
@@ -1971,7 +1971,7 @@ CObject* CRobotMain::SearchNearest(Math::Vector pos, CObject* exclu)
         ObjectType type = obj->GetType();
         if (type == OBJECT_TOTO) continue;
 
-        Math::Vector oPos = obj->GetPosition(0);
+        Math::Vector oPos = obj->GetPosition();
         float dist = Math::DistanceProjected(oPos, pos);
         if (dist < min)
         {
@@ -2567,7 +2567,7 @@ void CRobotMain::UpdateInfoText()
         CObject* obj = GetSelect();
         if (obj != nullptr)
         {
-            Math::Vector pos = obj->GetPosition(0);
+            Math::Vector pos = obj->GetPosition();
             m_engine->SetStatisticPos(pos);
         }
     }
@@ -3677,8 +3677,8 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                         dynamic_cast<CProgrammableObject*>(obj)->GetBrain()
                             ->SetSoluceName(const_cast<char*>(line->GetParam("soluce")->AsPath("ai").c_str()));
 
-                    obj->SetResetPosition(obj->GetPosition(0));
-                    obj->SetResetAngle(obj->GetAngle(0));
+                    obj->SetResetPosition(obj->GetPosition());
+                    obj->SetResetAngle(obj->GetRotation());
                     obj->SetResetRun(loadedPrograms[run]);
                     if (line->GetParam("reset")->AsBool(false))
                         obj->SetResetCap(RESET_MOVE);
@@ -3960,7 +3960,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
         if (read[0] != 0 && sel != 0)  // loading file?
         {
-            Math::Vector pos = sel->GetPosition(0);
+            Math::Vector pos = sel->GetPosition();
             m_camera->Init(pos, pos, 0.0f);
             m_camera->FixCamera();
 
@@ -4202,7 +4202,7 @@ float CRobotMain::SearchNearestObject(Math::Vector center, CObject *exclu)
 
         if (type == OBJECT_BASE)
         {
-            Math::Vector oPos = obj->GetPosition(0);
+            Math::Vector oPos = obj->GetPosition();
             if (oPos.x != center.x ||
                 oPos.z != center.z)
             {
@@ -4217,7 +4217,7 @@ float CRobotMain::SearchNearestObject(Math::Vector center, CObject *exclu)
             type == OBJECT_REPAIR    ||
             type == OBJECT_DESTROYER)
         {
-            Math::Vector oPos = obj->GetPosition(0);
+            Math::Vector oPos = obj->GetPosition();
             float dist = Math::Distance(center, oPos)-8.0f;
             if (dist < 0.0f) dist = 0.0f;
             min = Math::Min(min, dist);
@@ -4335,7 +4335,7 @@ void CRobotMain::ShowDropZone(CObject* metal, CObject* transporter)
 {
     if (metal == nullptr) return;
 
-    Math::Vector center = metal->GetPosition(0);
+    Math::Vector center = metal->GetPosition();
 
     // Calculates the maximum radius possible depending on other items.
     float oMax = 30.0f;  // radius to build the biggest building
@@ -4353,7 +4353,7 @@ void CRobotMain::ShowDropZone(CObject* metal, CObject* transporter)
         ObjectType type = obj->GetType();
         if (type == OBJECT_BASE)
         {
-            oPos = obj->GetPosition(0);
+            oPos = obj->GetPosition();
             float dist = Math::Distance(center, oPos)-80.0f;
             oMax = Math::Min(oMax, dist);
         }
@@ -5359,8 +5359,8 @@ void CRobotMain::ResetObject()
                 pos   = obj->GetResetPosition();
                 angle = obj->GetResetAngle();
 
-                if ( pos   == obj->GetPosition(0) &&
-                     angle == obj->GetAngle(0)    )  continue;
+                if ( pos   == obj->GetPosition() &&
+                     angle == obj->GetRotation()    )  continue;
                 brain->StartTaskReset(pos, angle);
                 continue;
             }
@@ -5371,8 +5371,8 @@ void CRobotMain::ResetObject()
         pos   = obj->GetResetPosition();
         angle = obj->GetResetAngle();
 
-        if ( pos   == obj->GetPosition(0) &&
-             angle == obj->GetAngle(0)    )  continue;
+        if ( pos   == obj->GetPosition() &&
+             angle == obj->GetRotation()    )  continue;
 
         pyro = new CPyro();
         pyro->Create(PT_RESET, obj);

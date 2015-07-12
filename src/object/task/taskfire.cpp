@@ -258,7 +258,7 @@ bool CTaskFire::EventProcess(const Event &event)
     if ( m_bRay && m_lastSound <= 0.0f )
     {
         m_lastSound = Math::Rand()*0.4f+0.4f;
-        m_sound->Play(SOUND_FIREp, m_object->GetPosition(0));
+        m_sound->Play(SOUND_FIREp, m_object->GetPosition());
     }
 
     return true;
@@ -331,7 +331,7 @@ Error CTaskFire::Start(float delay)
 
     if ( m_bOrganic )
     {
-        m_soundChannel = m_sound->Play(SOUND_FIREi, m_object->GetPosition(0), 1.0f, 1.0f, true);
+        m_soundChannel = m_sound->Play(SOUND_FIREi, m_object->GetPosition(), 1.0f, 1.0f, true);
         if ( m_soundChannel != -1 )
         {
             m_sound->AddEnvelope(m_soundChannel, 1.0f, 1.0f, m_delay, SOPER_CONTINUE);
@@ -343,7 +343,7 @@ Error CTaskFire::Start(float delay)
     }
     else
     {
-        m_soundChannel = m_sound->Play(SOUND_FIRE, m_object->GetPosition(0), 1.0f, 1.0f, true);
+        m_soundChannel = m_sound->Play(SOUND_FIRE, m_object->GetPosition(), 1.0f, 1.0f, true);
         if ( m_soundChannel != -1 )
         {
             m_sound->AddEnvelope(m_soundChannel, 1.0f, 1.0f, m_delay, SOPER_CONTINUE);

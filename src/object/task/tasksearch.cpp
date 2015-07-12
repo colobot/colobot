@@ -153,7 +153,7 @@ Error CTaskSearch::Start()
 
     m_camera->StartCentering(m_object, Math::PI*0.50f, 99.9f, 0.0f, 1.0f);
 
-    i = m_sound->Play(SOUND_MANIP, m_object->GetPosition(0), 0.0f, 0.3f, true);
+    i = m_sound->Play(SOUND_MANIP, m_object->GetPosition(), 0.0f, 0.3f, true);
     m_sound->AddEnvelope(i, 0.5f, 1.0f, 0.1f, SOPER_CONTINUE);
     m_sound->AddEnvelope(i, 0.5f, 1.0f, 0.9f, SOPER_CONTINUE);
     m_sound->AddEnvelope(i, 0.0f, 0.3f, 0.1f, SOPER_STOP);
@@ -186,7 +186,7 @@ Error CTaskSearch::IsEnded()
 
     if ( m_phase == TSP_DOWN )
     {
-        m_sound->Play(SOUND_REPAIR, m_object->GetPosition(0));
+        m_sound->Play(SOUND_REPAIR, m_object->GetPosition());
 
         m_phase = TSP_SEARCH;
         m_speed = 1.0f/4.0f;
@@ -200,7 +200,7 @@ Error CTaskSearch::IsEnded()
         m_hand  = TSH_UP;
         InitAngle();
 
-        i = m_sound->Play(SOUND_MANIP, m_object->GetPosition(0), 0.0f, 0.3f, true);
+        i = m_sound->Play(SOUND_MANIP, m_object->GetPosition(), 0.0f, 0.3f, true);
         m_sound->AddEnvelope(i, 0.5f, 1.0f, 0.1f, SOPER_CONTINUE);
         m_sound->AddEnvelope(i, 0.5f, 1.0f, 0.9f, SOPER_CONTINUE);
         m_sound->AddEnvelope(i, 0.0f, 0.3f, 0.1f, SOPER_STOP);

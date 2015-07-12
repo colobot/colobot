@@ -109,7 +109,7 @@ void CAutoPortico::Start(int param)
 {
     Math::Vector    pos;
 
-    pos = m_object->GetPosition(0);
+    pos = m_object->GetPosition();
     m_finalPos = pos;
     pos.z += PORTICO_TIME_MOVE*5.0f;  // back to start
     m_object->SetPosition(0, pos);
@@ -147,9 +147,9 @@ bool CAutoPortico::EventProcess(const Event &event)
     {
         if ( m_param == PARAM_DEPOSE )  // deposits the ship?
         {
-            m_startPos = m_object->GetPosition(0);
+            m_startPos = m_object->GetPosition();
 
-            m_soundChannel = m_sound->Play(SOUND_MOTORr, m_object->GetPosition(0), 0.0f, 0.3f, true);
+            m_soundChannel = m_sound->Play(SOUND_MOTORr, m_object->GetPosition(), 0.0f, 0.3f, true);
             m_sound->AddEnvelope(m_soundChannel, 0.5f, 0.6f, 0.5f, SOPER_CONTINUE);
             m_sound->AddEnvelope(m_soundChannel, 0.5f, 0.6f, PORTICO_TIME_MOVE-0.5f, SOPER_CONTINUE);
             m_sound->AddEnvelope(m_soundChannel, 0.0f, 0.3f, 0.5f, SOPER_STOP);
@@ -168,7 +168,7 @@ bool CAutoPortico::EventProcess(const Event &event)
             pos.z += -200.0f;
             m_camera->SetScriptEye(pos);
 
-            pos = m_object->GetPosition(0);
+            pos = m_object->GetPosition();
             pos.x +=   0.0f;
             pos.y +=  10.0f;
             pos.z += -40.0f;
@@ -198,7 +198,7 @@ bool CAutoPortico::EventProcess(const Event &event)
     {
         if ( m_progress < 1.0f )
         {
-            pos = m_object->GetPosition(0);
+            pos = m_object->GetPosition();
             pos.z -= event.rTime*5.0f;  // advance
             m_object->SetPosition(0, pos);
 
@@ -217,7 +217,7 @@ bool CAutoPortico::EventProcess(const Event &event)
     {
         if ( m_progress >= 1.0f )
         {
-            m_soundChannel = m_sound->Play(SOUND_MANIP, m_object->GetPosition(0), 0.0f, 0.3f, true);
+            m_soundChannel = m_sound->Play(SOUND_MANIP, m_object->GetPosition(), 0.0f, 0.3f, true);
             m_sound->AddEnvelope(m_soundChannel, 0.3f, 0.5f, 1.0f, SOPER_CONTINUE);
             m_sound->AddEnvelope(m_soundChannel, 0.3f, 0.6f, PORTICO_TIME_DOWN-1.5f, SOPER_CONTINUE);
             m_sound->AddEnvelope(m_soundChannel, 0.0f, 0.3f, 1.0f, SOPER_STOP);
@@ -254,12 +254,12 @@ bool CAutoPortico::EventProcess(const Event &event)
     {
         if ( m_progress >= 1.0f )
         {
-            m_soundChannel = m_sound->Play(SOUND_MANIP, m_object->GetPosition(0), 0.0f, 0.5f, true);
+            m_soundChannel = m_sound->Play(SOUND_MANIP, m_object->GetPosition(), 0.0f, 0.5f, true);
             m_sound->AddEnvelope(m_soundChannel, 0.5f, 1.0f, 0.5f, SOPER_CONTINUE);
             m_sound->AddEnvelope(m_soundChannel, 0.5f, 1.0f, PORTICO_TIME_OPEN/2.0f-0.5f, SOPER_CONTINUE);
             m_sound->AddEnvelope(m_soundChannel, 0.0f, 0.5f, 0.5f, SOPER_STOP);
 
-            m_soundChannel = m_sound->Play(SOUND_MOTORr, m_object->GetPosition(0), 0.0f, 0.3f, true);
+            m_soundChannel = m_sound->Play(SOUND_MOTORr, m_object->GetPosition(), 0.0f, 0.3f, true);
             m_sound->AddEnvelope(m_soundChannel, 0.5f, 0.6f, 0.5f, SOPER_CONTINUE);
             m_sound->AddEnvelope(m_soundChannel, 0.5f, 0.6f, PORTICO_TIME_OPEN-0.5f, SOPER_CONTINUE);
             m_sound->AddEnvelope(m_soundChannel, 0.0f, 0.3f, 0.5f, SOPER_STOP);
@@ -274,7 +274,7 @@ bool CAutoPortico::EventProcess(const Event &event)
     {
         if ( m_progress < 1.0f )
         {
-            pos = m_object->GetPosition(0);
+            pos = m_object->GetPosition();
             pos.z += event.rTime*5.3f;  // back
             m_object->SetPosition(0, pos);
 
@@ -320,7 +320,7 @@ bool CAutoPortico::EventProcess(const Event &event)
 
     if ( m_soundChannel != -1 )
     {
-//?     m_sound->Position(m_soundChannel, m_object->GetPosition(0));
+//?     m_sound->Position(m_soundChannel, m_object->GetPosition());
         pos = m_engine->GetEyePt();
         m_sound->Position(m_soundChannel, pos);
     }
@@ -339,7 +339,7 @@ bool CAutoPortico::EventProcess(const Event &event)
             m_camera->SetScriptEye(pos);
         }
 
-        pos = m_object->GetPosition(0);
+        pos = m_object->GetPosition();
         pos.x +=   0.0f;
         pos.y +=  10.0f;
         pos.z += -40.0f;

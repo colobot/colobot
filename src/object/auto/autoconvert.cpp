@@ -147,7 +147,7 @@ bool CAutoConvert::EventProcess(const Event &event)
                 InitProgressTotal(3.0f+10.0f+1.5f);
                 UpdateInterface();
 
-                m_sound->Play(SOUND_OPEN, m_object->GetPosition(0), 1.0f, 1.0f);
+                m_sound->Play(SOUND_OPEN, m_object->GetPosition(), 1.0f, 1.0f);
                 m_bSoundClose = false;
 
                 m_phase    = ACP_CLOSE;
@@ -164,7 +164,7 @@ bool CAutoConvert::EventProcess(const Event &event)
             if ( m_progress >= 0.8f && !m_bSoundClose )
             {
                 m_bSoundClose = true;
-                m_sound->Play(SOUND_CLOSE, m_object->GetPosition(0), 1.0f, 0.8f);
+                m_sound->Play(SOUND_CLOSE, m_object->GetPosition(), 1.0f, 0.8f);
             }
             angle = -Math::PI*0.35f*(1.0f-Math::Bounce(m_progress, 0.85f, 0.05f));
             m_object->SetAngleX(2, angle);
@@ -175,7 +175,7 @@ bool CAutoConvert::EventProcess(const Event &event)
             m_object->SetAngleX(2, 0.0f);
             m_object->SetAngleX(3, 0.0f);
 
-            m_soundChannel = m_sound->Play(SOUND_CONVERT, m_object->GetPosition(0), 0.0f, 0.25f, true);
+            m_soundChannel = m_sound->Play(SOUND_CONVERT, m_object->GetPosition(), 0.0f, 0.25f, true);
             m_sound->AddEnvelope(m_soundChannel, 1.0f, 0.25f, 0.5f, SOPER_CONTINUE);
             m_sound->AddEnvelope(m_soundChannel, 1.0f, 1.00f, 4.5f, SOPER_CONTINUE);
             m_sound->AddEnvelope(m_soundChannel, 1.0f, 0.25f, 4.5f, SOPER_CONTINUE);
@@ -207,7 +207,7 @@ bool CAutoConvert::EventProcess(const Event &event)
             {
                 m_lastParticle = m_time;
 
-                pos = m_object->GetPosition(0);
+                pos = m_object->GetPosition();
                 c.x = pos.x;
                 c.y = pos.z;
                 p.x = c.x;
@@ -237,7 +237,7 @@ bool CAutoConvert::EventProcess(const Event &event)
             }
 
             CreateMetal();  // Create the metal
-            m_sound->Play(SOUND_OPEN, m_object->GetPosition(0), 1.0f, 1.5f);
+            m_sound->Play(SOUND_OPEN, m_object->GetPosition(), 1.0f, 1.5f);
 
             m_phase    = ACP_OPEN;
             m_progress = 0.0f;
@@ -258,7 +258,7 @@ bool CAutoConvert::EventProcess(const Event &event)
             {
                 m_lastParticle = m_time;
 
-                pos = m_object->GetPosition(0);
+                pos = m_object->GetPosition();
                 pos.x += (Math::Rand()-0.5f)*6.0f;
                 pos.z += (Math::Rand()-0.5f)*6.0f;
                 pos.y += Math::Rand()*4.0f;
@@ -394,7 +394,7 @@ bool CAutoConvert::Read(CLevelParserLine* line)
 
 CObject* CAutoConvert::SearchStone(ObjectType type)
 {
-    Math::Vector cPos = m_object->GetPosition(0);
+    Math::Vector cPos = m_object->GetPosition();
 
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
@@ -402,7 +402,7 @@ CObject* CAutoConvert::SearchStone(ObjectType type)
         if ( oType != type )  continue;
         if (IsObjectBeingTransported(obj)) continue;
 
-        Math::Vector oPos = obj->GetPosition(0);
+        Math::Vector oPos = obj->GetPosition();
         float dist = Math::Distance(oPos, cPos);
 
         if ( dist <= 5.0f )  return obj;
@@ -415,7 +415,7 @@ CObject* CAutoConvert::SearchStone(ObjectType type)
 
 bool CAutoConvert::SearchVehicle()
 {
-    Math::Vector cPos = m_object->GetPosition(0);
+    Math::Vector cPos = m_object->GetPosition();
 
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
@@ -475,7 +475,7 @@ bool CAutoConvert::SearchVehicle()
 
 void CAutoConvert::CreateMetal()
 {
-    Math::Vector pos = m_object->GetPosition(0);
+    Math::Vector pos = m_object->GetPosition();
     float angle = m_object->GetAngleY(0);
 
     CObject* cargo = CObjectManager::GetInstancePointer()->CreateObject(pos, angle, OBJECT_METAL);

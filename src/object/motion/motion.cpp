@@ -89,7 +89,7 @@ bool CMotion::EventProcess(const Event &event)
     m_progress += event.rTime*m_actionTime;
     if ( m_progress > 1.0f )  m_progress = 1.0f;  // (*)
 
-    pos = m_object->GetPosition(0);
+    pos = m_object->GetPosition();
     if ( pos.y < m_water->GetLevel(m_object) )  // underwater?
     {
         time = event.rTime*3.0f;  // everything is slower

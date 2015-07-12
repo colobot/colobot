@@ -90,7 +90,7 @@ void CAutoDerrick::Init()
     Math::Vector    pos;
     Gfx::TerrainRes  res;
 
-    pos = m_object->GetPosition(0);
+    pos = m_object->GetPosition();
     res = m_terrain->GetResource(pos);
 
     if ( res == Gfx::TR_STONE   ||
@@ -178,7 +178,7 @@ bool CAutoDerrick::EventProcess(const Event &event)
             {
                 factor = 1.0f;
             }
-            m_soundChannel = m_sound->Play(SOUND_DERRICK, m_object->GetPosition(0), 1.0f, 0.5f, true);
+            m_soundChannel = m_sound->Play(SOUND_DERRICK, m_object->GetPosition(), 1.0f, 0.5f, true);
             m_sound->AddEnvelope(m_soundChannel, 1.0f, 0.5f, 4.0f*factor, SOPER_CONTINUE);
             m_sound->AddEnvelope(m_soundChannel, 1.0f, 0.3f, 6.0f*factor, SOPER_CONTINUE);
             m_sound->AddEnvelope(m_soundChannel, 1.0f, 0.5f, 1.0f, SOPER_CONTINUE);
@@ -190,7 +190,7 @@ bool CAutoDerrick::EventProcess(const Event &event)
         {
             m_lastParticle = m_time;
 
-            pos = m_object->GetPosition(0);
+            pos = m_object->GetPosition();
             speed.x = (Math::Rand()-0.5f)*10.0f;
             speed.z = (Math::Rand()-0.5f)*10.0f;
             speed.y = Math::Rand()*5.0f;
@@ -204,7 +204,7 @@ bool CAutoDerrick::EventProcess(const Event &event)
         {
             m_lastTrack = m_time;
 
-            pos = m_object->GetPosition(0);
+            pos = m_object->GetPosition();
             speed.x = (Math::Rand()-0.5f)*12.0f;
             speed.z = (Math::Rand()-0.5f)*12.0f;
             speed.y = Math::Rand()*10.0f+10.0f;
@@ -243,7 +243,7 @@ bool CAutoDerrick::EventProcess(const Event &event)
         {
             m_lastParticle = m_time;
 
-            pos = m_object->GetPosition(0);
+            pos = m_object->GetPosition();
             speed.x = (Math::Rand()-0.5f)*10.0f;
             speed.z = (Math::Rand()-0.5f)*10.0f;
             speed.y = Math::Rand()*5.0f;
@@ -257,7 +257,7 @@ bool CAutoDerrick::EventProcess(const Event &event)
         {
             m_lastTrack = m_time;
 
-            pos = m_object->GetPosition(0);
+            pos = m_object->GetPosition();
             speed.x = (Math::Rand()-0.5f)*12.0f;
             speed.z = (Math::Rand()-0.5f)*12.0f;
             speed.y = Math::Rand()*10.0f+10.0f;
@@ -332,7 +332,7 @@ bool CAutoDerrick::EventProcess(const Event &event)
 
             if ( m_progress < 0.3f )
             {
-                pos = cargo->GetPosition(0);
+                pos = cargo->GetPosition();
                 pos.x += (Math::Rand()-0.5f)*5.0f;
                 pos.z += (Math::Rand()-0.5f)*5.0f;
                 pos.y += (Math::Rand()-0.5f)*5.0f;
@@ -343,7 +343,7 @@ bool CAutoDerrick::EventProcess(const Event &event)
             }
             else
             {
-                pos = cargo->GetPosition(0);
+                pos = cargo->GetPosition();
                 pos.x += (Math::Rand()-0.5f)*5.0f;
                 pos.z += (Math::Rand()-0.5f)*5.0f;
                 pos.y += Math::Rand()*2.5f;
@@ -358,7 +358,7 @@ bool CAutoDerrick::EventProcess(const Event &event)
         {
             if ( cargo != 0 )
             {
-                pos = cargo->GetPosition(0);
+                pos = cargo->GetPosition();
                 pos.y -= event.rTime*20.0f;  // grave
                 if ( !m_bSoundFall && pos.y < m_cargoPos.y )
                 {
@@ -465,7 +465,7 @@ CObject* CAutoDerrick::SearchCargo()
         ObjectType type = obj->GetType();
         if ( type == OBJECT_DERRICK )  continue;
 
-            Math::Vector oPos = obj->GetPosition(0);
+            Math::Vector oPos = obj->GetPosition();
 
         if ( oPos.x == m_cargoPos.x &&
              oPos.z == m_cargoPos.z )  return obj;
@@ -510,7 +510,7 @@ void CAutoDerrick::CreateCargo(Math::Vector pos, float angle, ObjectType type,
         cargo->SetResetCap(RESET_DELETE);
     }
 
-    pos = cargo->GetPosition(0);
+    pos = cargo->GetPosition();
     pos.y += height;
     cargo->SetPosition(0, pos);
 }

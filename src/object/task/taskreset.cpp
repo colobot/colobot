@@ -193,7 +193,7 @@ Error CTaskReset::Start(Math::Vector goal, Math::Vector angle)
         return ERR_OK;
     }
 
-    m_begin = m_object->GetPosition(0);
+    m_begin = m_object->GetPosition();
     m_goal = goal;
     m_angle = angle;
 

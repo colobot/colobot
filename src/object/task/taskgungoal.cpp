@@ -114,7 +114,7 @@ Error CTaskGunGoal::Start(float dirV, float dirH)
     if ( m_finalDirV != m_initialDirV ||
          m_finalDirH != m_initialDirH )
     {
-        i = m_sound->Play(SOUND_MANIP, m_object->GetPosition(0), 0.3f, 1.5f, true);
+        i = m_sound->Play(SOUND_MANIP, m_object->GetPosition(), 0.3f, 1.5f, true);
         m_sound->AddEnvelope(i, 0.3f, 1.5f, 1.0f/m_speed, SOPER_STOP);
     }
 

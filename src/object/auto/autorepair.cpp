@@ -111,7 +111,7 @@ bool CAutoRepair::EventProcess(const Event &event)
             }
             else
             {
-                m_sound->Play(SOUND_OPEN, m_object->GetPosition(0), 1.0f, 0.8f);
+                m_sound->Play(SOUND_OPEN, m_object->GetPosition(), 1.0f, 0.8f);
 
                 m_phase    = ARP_DOWN;
                 m_progress = 0.0f;
@@ -130,7 +130,7 @@ bool CAutoRepair::EventProcess(const Event &event)
         else
         {
             m_object->SetAngleZ(1, 0.0f);
-            m_sound->Play(SOUND_REPAIR, m_object->GetPosition(0));
+            m_sound->Play(SOUND_REPAIR, m_object->GetPosition());
 
             m_phase    = ARP_REPAIR;
             m_progress = 0.0f;
@@ -156,7 +156,7 @@ bool CAutoRepair::EventProcess(const Event &event)
             {
                 m_lastParticle = m_time;
 
-                pos = m_object->GetPosition(0);
+                pos = m_object->GetPosition();
                 pos.x += (Math::Rand()-0.5f)*5.0f;
                 pos.z += (Math::Rand()-0.5f)*5.0f;
                 pos.y += 1.0f;
@@ -170,7 +170,7 @@ bool CAutoRepair::EventProcess(const Event &event)
         }
         else
         {
-            m_sound->Play(SOUND_OPEN, m_object->GetPosition(0), 1.0f, 0.8f);
+            m_sound->Play(SOUND_OPEN, m_object->GetPosition(), 1.0f, 0.8f);
 
             m_phase    = ARP_UP;
             m_progress = 0.0f;
@@ -233,7 +233,7 @@ bool CAutoRepair::CreateInterface(bool bSelect)
 
 CObject* CAutoRepair::SearchVehicle()
 {
-    Math::Vector sPos = m_object->GetPosition(0);
+    Math::Vector sPos = m_object->GetPosition();
 
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
@@ -269,7 +269,7 @@ CObject* CAutoRepair::SearchVehicle()
         CPhysics* physics = obj->GetPhysics();
         if ( physics != nullptr && !physics->GetLand() )  continue;  // in flight?
 
-        Math::Vector oPos = obj->GetPosition(0);
+        Math::Vector oPos = obj->GetPosition();
         float dist = Math::Distance(oPos, sPos);
         if ( dist <= 5.0f )  return obj;
     }

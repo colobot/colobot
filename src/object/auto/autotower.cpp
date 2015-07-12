@@ -193,7 +193,7 @@ bool CAutoTower::EventProcess(const Event &event)
             }
             else
             {
-                pos = m_object->GetPosition(0);
+                pos = m_object->GetPosition();
                 pos.y += 24.5f;
                 m_angleYfinal = Math::RotateAngle(m_targetPos.x-pos.x, pos.z-m_targetPos.z);  // CW !
                 m_angleYfinal += Math::PI*2.0f;
@@ -235,7 +235,7 @@ bool CAutoTower::EventProcess(const Event &event)
                 power->SetEnergy(energy);
             }
 
-            m_sound->Play(SOUND_GGG, m_object->GetPosition(0));
+            m_sound->Play(SOUND_GGG, m_object->GetPosition());
 
             m_phase    = ATP_FIRE;
             m_progress = 0.0f;
@@ -247,7 +247,7 @@ bool CAutoTower::EventProcess(const Event &event)
     {
         if ( m_progress == 0.0f )
         {
-            pos = m_object->GetPosition(0);
+            pos = m_object->GetPosition();
             pos.y += 24.5f;
             m_particle->CreateRay(pos, m_targetPos, Gfx::PARTIRAY1,
                                    Math::Point(5.0f, 5.0f), 1.5f);
@@ -268,7 +268,7 @@ bool CAutoTower::EventProcess(const Event &event)
 
 CObject* CAutoTower::SearchTarget(Math::Vector &impact)
 {
-    Math::Vector iPos = m_object->GetPosition(0);
+    Math::Vector iPos = m_object->GetPosition();
     float min = 1000000.0f;
 
     CObject* best = nullptr;
@@ -307,7 +307,7 @@ CObject* CAutoTower::SearchTarget(Math::Vector &impact)
     }
     if ( best == nullptr )  return nullptr;
 
-    impact = best->GetPosition(0);
+    impact = best->GetPosition();
     return best;
 }
 

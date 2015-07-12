@@ -82,7 +82,7 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
 
     Math::Vector min, max;
     m_engine->GetObjectBBox(objRank, min, max);
-    Math::Vector pos = obj->GetPosition(0);
+    Math::Vector pos = obj->GetPosition();
 
     DisplayError(type, obj);  // displays eventual messages
 
@@ -132,7 +132,7 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
     else
     {
         m_power = true;
-        pos = power->GetPosition(0);
+        pos = power->GetPosition();
         pos.y += 1.0f;
         Math::Matrix* mat = obj->GetWorldMatrix(0);
         m_posPower = Math::Transform(*mat, pos);
@@ -618,7 +618,7 @@ bool CPyro::EventProcess(const Event &event)
 
     if (m_soundChannel != -1 && m_object != nullptr)
     {
-        Math::Vector pos = m_object->GetPosition(0);
+        Math::Vector pos = m_object->GetPosition();
         m_sound->Position(m_soundChannel, pos);
 
         if (m_lightRank != -1)
@@ -896,7 +896,7 @@ bool CPyro::EventProcess(const Event &event)
 
         if(m_object != nullptr)
         {
-            Math::Vector angle = m_object->GetAngle(0);
+            Math::Vector angle = m_object->GetRotation();
             angle.y = m_progress*20.0f;
             angle.x = sinf(m_progress*49.0f)*0.3f;
             angle.z = sinf(m_progress*47.0f)*0.2f;
@@ -935,7 +935,7 @@ bool CPyro::EventProcess(const Event &event)
 
         if(m_object != nullptr)
         {
-            Math::Vector angle = m_object->GetAngle(0);
+            Math::Vector angle = m_object->GetRotation();
             angle.x = sinf(m_progress*49.0f)*0.3f*(1.0f-m_progress);
             angle.z = sinf(m_progress*47.0f)*0.2f*(1.0f-m_progress);
             m_object->SetAngle(0, angle);
@@ -966,7 +966,7 @@ bool CPyro::EventProcess(const Event &event)
 
         if(m_object != nullptr)
         {
-            Math::Vector angle = m_object->GetAngle(0);
+            Math::Vector angle = m_object->GetRotation();
             angle.y = m_progress*20.0f;
             angle.x = sinf(m_progress*49.0f)*0.3f;
             angle.z = sinf(m_progress*47.0f)*0.2f;
@@ -1050,7 +1050,7 @@ bool CPyro::EventProcess(const Event &event)
 
             float factor = m_size/25.0f;  // 1 = standard size
 
-            Math::Vector pos = m_object->GetPosition(0);
+            Math::Vector pos = m_object->GetPosition();
             pos.y -= m_object->GetCharacter()->height;
             pos.x += (Math::Rand()-0.5f)*(4.0f+8.0f*m_progress)*factor;
             pos.z += (Math::Rand()-0.5f)*(4.0f+8.0f*m_progress)*factor;
@@ -1063,7 +1063,7 @@ bool CPyro::EventProcess(const Event &event)
             dim.y = dim.x;
             m_particle->CreateParticle(pos, speed, dim, PARTIFLAME, 2.0f, 0.0f, 0.2f);
 
-            pos = m_object->GetPosition(0);
+            pos = m_object->GetPosition();
             pos.y -= m_object->GetCharacter()->height;
             pos.x += (Math::Rand()-0.5f)*(2.0f+4.0f*m_progress)*factor;
             pos.z += (Math::Rand()-0.5f)*(2.0f+4.0f*m_progress)*factor;
@@ -1074,7 +1074,7 @@ bool CPyro::EventProcess(const Event &event)
             dim.y = dim.x;
             m_particle->CreateParticle(pos, speed, dim, PARTIFLAME, 2.0f, 0.0f, 0.2f);
 
-            pos = m_object->GetPosition(0);
+            pos = m_object->GetPosition();
             pos.y -= 2.0f;
             pos.x += (Math::Rand()-0.5f)*5.0f*factor;
             pos.z += (Math::Rand()-0.5f)*5.0f*factor;
@@ -1113,7 +1113,7 @@ bool CPyro::EventProcess(const Event &event)
         {
             m_lastParticle = m_time;
 
-            Math::Vector pos = m_object->GetPosition(0);
+            Math::Vector pos = m_object->GetPosition();
             pos.y += 1.5f;
             Math::Vector speed;
             speed.x = (Math::Rand()-0.5f)*10.0f;
@@ -1135,7 +1135,7 @@ bool CPyro::EventProcess(const Event &event)
         {
             m_lastParticle = m_time;
 
-            Math::Vector pos = m_object->GetPosition(0);
+            Math::Vector pos = m_object->GetPosition();
             pos.y -= 2.0f;
             pos.x += (Math::Rand()-0.5f)*10.0f;
             pos.z += (Math::Rand()-0.5f)*10.0f;
@@ -1306,7 +1306,7 @@ void CPyro::DisplayError(PyroType type, CObject* obj)
              oType == OBJECT_END      )
         {
             err = ERR_DELETEBUILDING;
-            m_main->DisplayError(err, obj->GetPosition(0), 5.0f);
+            m_main->DisplayError(err, obj->GetPosition(), 5.0f);
             return;
         }
 
@@ -1350,7 +1350,7 @@ void CPyro::DeleteObject(bool primary, bool secondary)
     if (m_object->GetResetCap() == RESET_MOVE)  // resettable object?
     {
         m_object->SetEnable(false);  // object cache and inactive
-        Math::Vector pos = m_object->GetPosition(0);
+        Math::Vector pos = m_object->GetPosition();
         pos.y = -100.0f;
         m_object->SetPosition(0, pos);
         return;
@@ -1548,7 +1548,7 @@ void CPyro::ExploStart()
 {
     m_burnType = m_object->GetType();
 
-    Math::Vector oPos = m_object->GetPosition(0);
+    Math::Vector oPos = m_object->GetPosition();
     m_burnFall = m_terrain->GetHeightToFloor(oPos, true);
 
     m_object->Simplify();
@@ -1621,7 +1621,7 @@ void CPyro::BurnStart()
 {
     m_burnType = m_object->GetType();
 
-    Math::Vector oPos = m_object->GetPosition(0);
+    Math::Vector oPos = m_object->GetPosition();
     m_burnFall = m_terrain->GetHeightToFloor(oPos, true);
 
     m_object->Simplify();
@@ -2191,7 +2191,7 @@ void CPyro::FallStart()
 {
     m_object->SetBurn(true);  // usable
 
-    Math::Vector pos = m_object->GetPosition(0);
+    Math::Vector pos = m_object->GetPosition();
     m_fallFloor = m_terrain->GetFloorLevel(pos);
     m_fallSpeed = 0.0f;
     m_fallBulletTime = 0.0f;
@@ -2256,7 +2256,7 @@ CObject* CPyro::FallSearchBeeExplo()
 
         if (IsObjectBeingTransported(obj)) continue;
 
-        Math::Vector oPos = obj->GetPosition(0);
+        Math::Vector oPos = obj->GetPosition();
 
         float shieldRadius = obj->GetShieldRadius();
         if ( shieldRadius > 0.0f )
@@ -2298,7 +2298,7 @@ void CPyro::FallProgress(float rTime)
 
     m_fallSpeed += rTime*50.0f;  // v2 = v1 + a*dt
     Math::Vector pos;
-    pos = m_object->GetPosition(0);
+    pos = m_object->GetPosition();
     pos.y -= m_fallSpeed*rTime;  // dd -= v2*dt
 
     bool floor = false;
@@ -2361,7 +2361,7 @@ Error CPyro::FallIsEnded()
 {
     if (m_fallEnding || m_object == 0) return ERR_STOP;
 
-    Math::Vector pos = m_object->GetPosition(0);
+    Math::Vector pos = m_object->GetPosition();
     if (pos.y > m_fallFloor) return ERR_CONTINUE;
 
     m_sound->Play(SOUND_BOUM, pos);

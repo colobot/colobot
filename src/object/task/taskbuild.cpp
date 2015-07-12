@@ -103,7 +103,7 @@ bool CTaskBuild::CreateBuilding(Math::Vector pos, float angle)
     if ( m_type == OBJECT_HUSTON   )  m_buildingHeight = 45.0f;
     m_buildingHeight *= 0.25f;
 
-    m_buildingPos = m_building->GetPosition(0);
+    m_buildingPos = m_building->GetPosition();
     m_buildingPos.y -= m_buildingHeight;
     m_building->SetPosition(0, m_buildingPos);
     return true;
@@ -121,7 +121,7 @@ void CTaskBuild::CreateLight()
 
     if ( !m_engine->GetLightMode() )  return;
 
-    center = m_metal->GetPosition(0);
+    center = m_metal->GetPosition();
 
     angle = 0;
     for ( i=0 ; i<TBMAXLIGHT ; i++ )
@@ -218,7 +218,7 @@ bool CTaskBuild::EventProcess(const Event &event)
 
     if ( m_phase == TBP_MOVE )  // preliminary forward/backward?
     {
-        dist = Math::Distance(m_object->GetPosition(0), m_metal->GetPosition(0));
+        dist = Math::Distance(m_object->GetPosition(), m_metal->GetPosition());
         linSpeed = 0.0f;
         if ( dist > 30.0f )  linSpeed =  1.0f;
         if ( dist < 30.0f )  linSpeed = -1.0f;
@@ -251,7 +251,7 @@ bool CTaskBuild::EventProcess(const Event &event)
     {
         m_bBuild = true;
 
-        pos = m_metal->GetPosition(0);
+        pos = m_metal->GetPosition();
         a   = m_object->GetAngleY(0);
         if ( !CreateBuilding(pos, a+Math::PI) )
         {
@@ -266,7 +266,7 @@ bool CTaskBuild::EventProcess(const Event &event)
             m_camera->FlushEffect();
             Abort();
             m_bError = true;
-            m_main->DisplayError(ERR_TOOMANY, m_object->GetPosition(0));
+            m_main->DisplayError(ERR_TOOMANY, m_object->GetPosition());
             return false;
         }
         CreateLight();
@@ -295,7 +295,7 @@ bool CTaskBuild::EventProcess(const Event &event)
     {
         m_lastParticle = m_time;
 
-        pos = m_metal->GetPosition(0);
+        pos = m_metal->GetPosition();
         speed.x = (Math::Rand()-0.5f)*20.0f;
         speed.z = (Math::Rand()-0.5f)*20.0f;
         speed.y = Math::Rand()*10.0f;
@@ -322,7 +322,7 @@ bool CTaskBuild::EventProcess(const Event &event)
                 break;
         }
         pos = Transform(*mat, pos);
-        speed = m_metal->GetPosition(0);
+        speed = m_metal->GetPosition();
         speed.x += (Math::Rand()-0.5f)*5.0f;
         speed.z += (Math::Rand()-0.5f)*5.0f;
         speed -= pos;
@@ -332,7 +332,7 @@ bool CTaskBuild::EventProcess(const Event &event)
 
         if ( Math::Rand() < 0.3f )
         {
-            m_sound->Play(SOUND_BUILD, m_object->GetPosition(0), 0.5f, 1.0f*Math::Rand()*1.5f);
+            m_sound->Play(SOUND_BUILD, m_object->GetPosition(), 0.5f, 1.0f*Math::Rand()*1.5f);
         }
     }
 
@@ -358,7 +358,7 @@ Error CTaskBuild::Start(ObjectType type)
 
     m_bError = true;  // operation impossible
 
-    pos = m_object->GetPosition(0);
+    pos = m_object->GetPosition();
     if ( pos.y < m_water->GetLevel() )  return ERR_BUILD_WATER;
 
     if ( !m_physics->GetLand() )  return ERR_BUILD_FLY;
@@ -387,9 +387,9 @@ Error CTaskBuild::Start(ObjectType type)
     m_phase = TBP_TURN;  // rotation necessary preliminary
     m_angleY = oAngle;  // angle was reached
 
-    pv = m_object->GetPosition(0);
+    pv = m_object->GetPosition();
     pv.y += 8.3f;
-    pm = m_metal->GetPosition(0);
+    pm = m_metal->GetPosition();
     m_angleZ = Math::RotateAngle(Math::DistanceProjected(pv, pm), fabs(pv.y-pm.y));
 
     m_physics->SetFreeze(true);  // it does not move
@@ -418,7 +418,7 @@ Error CTaskBuild::IsEnded()
         {
             m_physics->SetMotorSpeedZ(0.0f);
 
-            dist = Math::Distance(m_object->GetPosition(0), m_metal->GetPosition(0));
+            dist = Math::Distance(m_object->GetPosition(), m_metal->GetPosition());
             if ( dist > 30.0f )
             {
                 time = m_physics->GetLinTimeLength(dist-30.0f, 1.0f);
@@ -437,7 +437,7 @@ Error CTaskBuild::IsEnded()
 
     if ( m_phase == TBP_MOVE )  // preliminary forward/backward?
     {
-        dist = Math::Distance(m_object->GetPosition(0), m_metal->GetPosition(0));
+        dist = Math::Distance(m_object->GetPosition(), m_metal->GetPosition());
 
         if ( dist >= 25.0f && dist <= 35.0f )
         {
@@ -481,12 +481,12 @@ Error CTaskBuild::IsEnded()
     {
         if ( m_progress < 1.0f )  return ERR_CONTINUE;
 
-        m_soundChannel = m_sound->Play(SOUND_TREMBLE, m_object->GetPosition(0), 0.0f, 1.0f, true);
+        m_soundChannel = m_sound->Play(SOUND_TREMBLE, m_object->GetPosition(), 0.0f, 1.0f, true);
         m_sound->AddEnvelope(m_soundChannel, 0.7f, 1.0f, 1.0f, SOPER_CONTINUE);
         m_sound->AddEnvelope(m_soundChannel, 0.7f, 1.5f, 7.0f, SOPER_CONTINUE);
         m_sound->AddEnvelope(m_soundChannel, 0.0f, 1.5f, 2.0f, SOPER_STOP);
 
-        m_camera->StartEffect(Gfx::CAM_EFFECT_VIBRATION, m_metal->GetPosition(0), 1.0f);
+        m_camera->StartEffect(Gfx::CAM_EFFECT_VIBRATION, m_metal->GetPosition(), 1.0f);
 
         m_phase = TBP_BUILD;
         m_speed = 1.0f/10.f;  // duration of 10s
@@ -497,7 +497,7 @@ Error CTaskBuild::IsEnded()
     {
         if ( m_progress < 1.0f )  return ERR_CONTINUE;
 
-        DeleteMark(m_metal->GetPosition(0), 20.0f);
+        DeleteMark(m_metal->GetPosition(), 20.0f);
 
         CObjectManager::GetInstancePointer()->DeleteObject(m_metal);
         m_metal = nullptr;
@@ -599,7 +599,7 @@ Error CTaskBuild::FlatFloor()
     if ( m_type == OBJECT_DESTROYER)  radius = 20.0f;
     //if ( radius == 0.0f )  return ERR_GENERIC;
 
-    center = m_metal->GetPosition(0);
+    center = m_metal->GetPosition();
     angle = m_terrain->GetFineSlope(center);
     bLittleFlat = ( angle < Gfx::TERRAIN_FLATLIMIT);
 
@@ -625,7 +625,7 @@ Error CTaskBuild::FlatFloor()
         type = pObj->GetType();
         if ( type == OBJECT_BASE )
         {
-            Math::Vector oPos = pObj->GetPosition(0);
+            Math::Vector oPos = pObj->GetPosition();
             dist = Math::Distance(center, oPos)-80.0f;
             if ( dist < max )
             {
@@ -725,7 +725,7 @@ CObject* CTaskBuild::SearchMetalObject(float &angle, float dMin, float dMax,
     float       min, iAngle, a, aa, aBest, distance, magic;
     bool        bMetal;
 
-    iPos   = m_object->GetPosition(0);
+    iPos   = m_object->GetPosition();
     iAngle = m_object->GetAngleY(0);
     iAngle = Math::NormAngle(iAngle);  // 0..2*Math::PI
 
@@ -742,7 +742,7 @@ CObject* CTaskBuild::SearchMetalObject(float &angle, float dMin, float dMax,
 
         bMetal = true;  // metal exists
 
-        oPos = pObj->GetPosition(0);
+        oPos = pObj->GetPosition();
         distance = Math::Distance(oPos, iPos);
         a = Math::RotateAngle(oPos.x-iPos.x, iPos.z-oPos.z);  // CW!
 
@@ -797,7 +797,7 @@ void CTaskBuild::DeleteMark(Math::Vector pos, float radius)
              type != OBJECT_MARKKEYd    &&
              type != OBJECT_MARKPOWER   )  continue;
 
-        Math::Vector oPos = obj->GetPosition(0);
+        Math::Vector oPos = obj->GetPosition();
         float distance = Math::Distance(oPos, pos);
         if ( distance <= radius )
         {
