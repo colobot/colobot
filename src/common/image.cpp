@@ -104,6 +104,7 @@ bool PNGSaveSurface(const char *filename, SDL_Surface *surf)
     /* Initializing png structures and callbacks */
     png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, nullptr, PNGUserError, nullptr);
     if (png_ptr == nullptr)
+        fclose(fp);
         return false;
 
     info_ptr = png_create_info_struct(png_ptr);
@@ -111,6 +112,7 @@ bool PNGSaveSurface(const char *filename, SDL_Surface *surf)
     {
         png_destroy_write_struct(&png_ptr, static_cast<png_infopp>(nullptr));
         PNG_ERROR = "png_create_info_struct() error!";
+        fclose(fp);
         return false;
     }
 
