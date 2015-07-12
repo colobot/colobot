@@ -20,9 +20,9 @@
 
 #pragma once
 
-
 #include "object/task/task.h"
-#include "object/object.h"
+
+#include "object/object_type.h"
 
 #include "math/vector.h"
 

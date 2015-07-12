@@ -23,7 +23,6 @@
 
 
 #include "object/task/task.h"
-#include "object/object.h"
 
 
 class CTaskDeleteMark : public CTask

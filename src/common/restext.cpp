@@ -31,7 +31,7 @@
 
 #include "CBot/resource.h"
 
-#include "object/object.h"
+#include "object/object_type.h"
 #include "object/robotmain.h"
 
 #include <libintl.h>

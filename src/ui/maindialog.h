@@ -23,6 +23,7 @@
 
 
 #include "graphics/core/color.h"
+#include "graphics/engine/camera.h"
 
 #include "object/robotmain.h"
 
@@ -72,7 +73,7 @@ class CMainDialog
 public:
     CMainDialog();
     ~CMainDialog();
-    
+
     void    Create();
 
     bool    EventProcess(const Event &event);
@@ -139,9 +140,9 @@ public:
 
     void    AllMissionUpdate();
     void    ShowSoluceUpdate();
-    
+
     std::string& GetUserLevelName(int id);
-    
+
     void    MakeSaveScreenshot(const std::string& name);
 
 protected:

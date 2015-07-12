@@ -22,7 +22,6 @@
 #pragma once
 
 
-#include "object/object.h"
 #include "object/task/task.h"
 #include "object/task/taskmanip.h"
 #include "object/task/taskgoto.h"

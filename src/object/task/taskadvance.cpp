@@ -20,7 +20,11 @@
 
 #include "object/task/taskadvance.h"
 
+#include "graphics/engine/engine.h"
+
 #include "math/geometry.h"
+
+#include "object/object.h"
 
 #include "object/old_object.h"
 #include "physics/physics.h"

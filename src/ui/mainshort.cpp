@@ -23,6 +23,7 @@
 #include "app/app.h"
 
 #include "object/object_manager.h"
+#include "object/object.h"
 
 
 namespace Ui {

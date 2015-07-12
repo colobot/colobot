@@ -30,15 +30,13 @@
 
 #include "graphics/engine/particle.h"
 
-#include "object/object.h"
+#include "object/object_type.h"
 #include "object/drive_type.h"
 #include "object/tool_type.h"
 #include "object/mainmovie.h"
 #include "object/mission_type.h"
 
 #include "app/pausemanager.h"
-
-#include <stdio.h>
 
 enum Phase
 {
@@ -404,7 +402,7 @@ protected:
     float           m_gameTime;
     //! Playing time since level start, not dependent on simulation speed
     float           m_gameTimeAbsolute;
-    
+
     float           m_winDelay;
     float           m_lostDelay;
     bool            m_fixScene;        // scene fixed, no interraction

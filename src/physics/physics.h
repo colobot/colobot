@@ -27,9 +27,9 @@
 
 #include "common/global.h"
 
-#include "object/object.h"
-
 #include "math/vector.h"
+
+#include "object/object_type.h"
 
 
 class CObject;
@@ -39,6 +39,7 @@ class CMotion;
 class CSoundInterface;
 class CLevelParserLine;
 class CJostleableObject;
+struct Event;
 
 namespace Gfx {
 class CCamera;
@@ -47,6 +48,7 @@ class CLight;
 class CParticle;
 class CTerrain;
 class CWater;
+class CLightManager;
 }
 
 

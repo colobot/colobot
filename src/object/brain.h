@@ -28,11 +28,11 @@
 #include "common/event.h"
 #include "common/misc.h"
 
-#include "object/object.h"
 #include "object/task/taskmanip.h"
 #include "object/task/taskflag.h"
 #include "object/task/taskshield.h"
 
+#include <vector>
 
 class COldObject;
 class CPhysics;

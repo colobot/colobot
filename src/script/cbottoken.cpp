@@ -20,7 +20,7 @@
 
 #include "script/cbottoken.h"
 
-#include "object/object.h"
+#include "object/object_type.h"
 #include "app/app.h"
 
 #include <string.h>
@@ -226,7 +226,7 @@ std::string GetHelpFilename(ObjectType type)
 std::string GetHelpFilename(const char *token)
 {
     std::string helpfile = "";
-    
+
     if ( strcmp(token, "if"            ) == 0 )  helpfile = "cbot/if";
     if ( strcmp(token, "else"          ) == 0 )  helpfile = "cbot/if";
     if ( strcmp(token, "for"           ) == 0 )  helpfile = "cbot/for";

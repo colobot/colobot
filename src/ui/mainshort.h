@@ -25,8 +25,6 @@
 
 #include "math/point.h"
 
-#include "object/object.h"
-
 #include "graphics/engine/engine.h"
 
 #include "ui/interface.h"

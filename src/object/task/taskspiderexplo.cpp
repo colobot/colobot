@@ -20,6 +20,7 @@
 
 #include "object/task/taskspiderexplo.h"
 
+#include "graphics/engine/engine.h"
 #include "graphics/engine/pyro_manager.h"
 
 #include "object/motion/motionspider.h"

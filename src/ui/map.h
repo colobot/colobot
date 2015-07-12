@@ -34,7 +34,6 @@
 
 #include "math/geometry.h"
 
-#include "object/object.h"
 #include "object/robotmain.h"
 
 
