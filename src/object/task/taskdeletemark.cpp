@@ -24,6 +24,7 @@
 #include "graphics/engine/particle.h"
 #include "graphics/engine/terrain.h"
 
+#include "object/old_object.h"
 #include "object/object_manager.h"
 #include "object/robotmain.h"
 
@@ -32,7 +33,7 @@
 #include "physics/physics.h"
 
 
-CTaskDeleteMark::CTaskDeleteMark(CObject* object) : CTask(object)
+CTaskDeleteMark::CTaskDeleteMark(COldObject* object) : CTask(object)
 {
     m_bExecuted = false;
 }
@@ -50,9 +51,9 @@ bool CTaskDeleteMark::EventProcess(const Event &event)
 Error CTaskDeleteMark::Start()
 {
     DeleteMark();
-    
+
     m_bExecuted = true;
-    
+
     return ERR_OK;
 }
 
@@ -61,7 +62,7 @@ Error CTaskDeleteMark::IsEnded()
 {
     if ( m_bExecuted )
         return ERR_STOP;
-    else 
+    else
         return ERR_CONTINUE;
 }
 

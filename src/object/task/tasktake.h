@@ -26,9 +26,7 @@
 #include "object/object.h"
 
 
-class CCarrierObject;
-class CPoweredObject;
-
+class CObject;
 
 enum TaskTakeOrder
 {
@@ -48,7 +46,7 @@ enum TaskTakeArm
 class CTaskTake : public CTask
 {
 public:
-    CTaskTake(CObject* object);
+    CTaskTake(COldObject* object);
     ~CTaskTake();
 
     bool        EventProcess(const Event &event);
@@ -65,8 +63,6 @@ protected:
     bool        IsFreeDeposeObject(Math::Vector pos);
 
 protected:
-    CCarrierObject* m_carrierObject;
-    CPoweredObject* m_poweredObject;
     TaskTakeOrder   m_order;
     TaskTakeArm     m_arm;
     int             m_step;

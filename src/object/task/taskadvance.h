@@ -31,7 +31,7 @@
 class CTaskAdvance : public CTask
 {
 public:
-    CTaskAdvance(CObject* object);
+    CTaskAdvance(COldObject* object);
     ~CTaskAdvance();
 
     bool    EventProcess(const Event &event);

@@ -18,8 +18,6 @@
  */
 
 
-#include <stdio.h>
-
 #include "object/task/taskmanager.h"
 
 #include "object/task/taskwait.h"
@@ -39,12 +37,12 @@
 #include "object/task/taskspiderexplo.h"
 #include "object/task/taskreset.h"
 
-
+#include "object/old_object.h"
 
 
 // Object's constructor.
 
-CTaskManager::CTaskManager(CObject* object)
+CTaskManager::CTaskManager(COldObject* object)
 {
     m_task = nullptr;
     m_object = object;

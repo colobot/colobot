@@ -18,8 +18,6 @@
  */
 
 
-#include <stdio.h>
-
 #include "object/task/taskrecover.h"
 
 #include "graphics/engine/particle.h"
@@ -28,6 +26,7 @@
 
 #include "physics/physics.h"
 
+#include "object/old_object.h"
 #include "object/object_manager.h"
 #include "object/robotmain.h"
 #include "object/interface/powered_object.h"
@@ -40,7 +39,7 @@ const float RECOVER_DIST    = 11.8f;
 
 // Object's constructor.
 
-CTaskRecover::CTaskRecover(CObject* object) : CTask(object)
+CTaskRecover::CTaskRecover(COldObject* object) : CTask(object)
 {
     m_ruin = 0;
     m_soundChannel = -1;

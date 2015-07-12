@@ -17,9 +17,6 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-
-#include <stdio.h>
-
 #include "object/task/taskterraform.h"
 
 #include "graphics/engine/pyro_manager.h"
@@ -28,6 +25,7 @@
 
 #include "math/geometry.h"
 
+#include "object/old_object.h"
 #include "object/brain.h"
 #include "object/object_manager.h"
 #include "object/robotmain.h"
@@ -46,13 +44,12 @@ const float ACTION_RADIUS   = 400.0f;
 
 // Object's constructor.
 
-CTaskTerraform::CTaskTerraform(CObject* object) : CTask(object)
+CTaskTerraform::CTaskTerraform(COldObject* object) : CTask(object)
 {
     m_lastParticle = 0.0f;
     m_soundChannel = -1;
 
     assert(m_object->Implements(ObjectInterfaceType::Powered));
-    m_poweredObject = dynamic_cast<CPoweredObject*>(object);
 }
 
 // Object's destructor.
@@ -95,7 +92,7 @@ bool CTaskTerraform::EventProcess(const Event &event)
 
         m_object->SetZoom(0, 1.0f+m_progress*0.2f);
 
-        power = m_poweredObject->GetPower();
+        power = m_object->GetPower();
         if (power != nullptr)
         {
             power->SetZoom(0, 1.0f+m_progress*1.0f);
@@ -207,7 +204,7 @@ Error CTaskTerraform::Start()
     type = m_object->GetType();
     if ( type != OBJECT_MOBILErt )  return ERR_TERRA_VEH;
 
-    power = m_poweredObject->GetPower();
+    power = m_object->GetPower();
     if ( power == 0 )  return ERR_TERRA_ENERGY;
     energy = power->GetEnergy();
     if ( energy < ENERGY_TERRA/power->GetCapacity()+0.05f )  return ERR_TERRA_ENERGY;
@@ -263,7 +260,7 @@ Error CTaskTerraform::IsEnded()
         m_object->SetCirVibration(Math::Vector(0.0f, 0.0f, 0.0f));
         m_object->SetZoom(0, 1.0f);
 
-        power = m_poweredObject->GetPower();
+        power = m_object->GetPower();
         if (power != nullptr)
         {
             power->SetZoom(0, 1.0f);
@@ -329,7 +326,7 @@ bool CTaskTerraform::Abort()
     m_object->SetCirVibration(Math::Vector(0.0f, 0.0f, 0.0f));
     m_object->SetZoom(0, 1.0f);
 
-    power = m_poweredObject->GetPower();
+    power = m_object->GetPower();
     if (power != nullptr)
     {
         power->SetZoom(0, 1.0f);

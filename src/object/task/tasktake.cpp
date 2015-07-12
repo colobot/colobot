@@ -25,6 +25,7 @@
 
 #include "math/geometry.h"
 
+#include "object/old_object.h"
 #include "object/motion/motionhuman.h"
 #include "object/object_manager.h"
 #include "object/robotmain.h"
@@ -39,15 +40,12 @@
 
 // Object's constructor.
 
-CTaskTake::CTaskTake(CObject* object) : CTask(object)
+CTaskTake::CTaskTake(COldObject* object) : CTask(object)
 {
     m_arm  = TTA_NEUTRAL;
 
     assert(m_object->Implements(ObjectInterfaceType::Carrier));
-    m_carrierObject = dynamic_cast<CCarrierObject*>(m_object);
-
     assert(m_object->Implements(ObjectInterfaceType::Powered));
-    m_poweredObject = dynamic_cast<CPoweredObject*>(m_object);
 }
 
 // Object's destructor.
@@ -114,7 +112,7 @@ Error CTaskTake::Start()
 
     m_physics->SetMotorSpeed(Math::Vector(0.0f, 0.0f, 0.0f));
 
-    if (m_carrierObject->IsCarryingCargo())
+    if (m_object->IsCarryingCargo())
         m_order = TTO_DEPOSE;
     else
         m_order = TTO_TAKE;
@@ -259,7 +257,7 @@ Error CTaskTake::IsEnded()
     {
         if ( m_step == 1 )
         {
-            CObject* cargo = m_carrierObject->GetCargo();
+            CObject* cargo = m_object->GetCargo();
             TransporterDeposeObject();
             if ( m_arm == TTA_FRIEND &&
                  (m_cargoType == OBJECT_POWER  ||
@@ -463,7 +461,7 @@ bool CTaskTake::TransporterTakeObject()
         cargo->SetAngleX(0, 0.0f);
         cargo->SetAngleZ(0, 0.8f);
 
-        m_carrierObject->SetCargo(cargo);  // takes
+        m_object->SetCargo(cargo);  // takes
     }
 
     if (m_arm == TTA_FRIEND)  // takes friend's battery?
@@ -489,7 +487,7 @@ bool CTaskTake::TransporterTakeObject()
         cargo->SetAngleX(0, 0.0f);
         cargo->SetAngleZ(0, 0.8f);
 
-        m_carrierObject->SetCargo(cargo);  // takes
+        m_object->SetCargo(cargo);  // takes
     }
 
     return true;
@@ -501,7 +499,7 @@ bool CTaskTake::TransporterDeposeObject()
 {
     if ( m_arm == TTA_FFRONT )  // deposes on the ground in front?
     {
-        CObject* cargo = m_carrierObject->GetCargo();
+        CObject* cargo = m_object->GetCargo();
         if (cargo == nullptr)  return false;  // does nothing?
         assert(cargo->Implements(ObjectInterfaceType::Transportable));
 
@@ -517,7 +515,7 @@ bool CTaskTake::TransporterDeposeObject()
         cargo->FloorAdjust();  // plate well on the ground
 
         dynamic_cast<CTransportableObject*>(cargo)->SetTransporter(nullptr);
-        m_carrierObject->SetCargo(nullptr);  // deposit
+        m_object->SetCargo(nullptr);  // deposit
     }
 
     if ( m_arm == TTA_FRIEND )  // deposes battery on friends?
@@ -530,7 +528,7 @@ bool CTaskTake::TransporterDeposeObject()
         CObject* cargo = dynamic_cast<CPoweredObject*>(other)->GetPower();
         if (cargo != nullptr)  return false;  // the other already has a battery?
 
-        cargo = m_carrierObject->GetCargo();
+        cargo = m_object->GetCargo();
         if (cargo == nullptr)  return false;
         assert(cargo->Implements(ObjectInterfaceType::Transportable));
         m_cargoType = cargo->GetType();
@@ -545,7 +543,7 @@ bool CTaskTake::TransporterDeposeObject()
         cargo->SetAngleZ(0, 0.0f);
         dynamic_cast<CTransportableObject*>(cargo)->SetTransporterPart(0);  // carried by the base
 
-        m_carrierObject->SetCargo(nullptr);  // deposit
+        m_object->SetCargo(nullptr);  // deposit
     }
 
     return true;

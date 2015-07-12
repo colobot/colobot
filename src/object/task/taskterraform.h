@@ -27,8 +27,6 @@
 #include "math/vector.h"
 
 
-class CPoweredObject;
-
 enum TaskTerraPhase
 {
     TTP_CHARGE  = 1,    // charge of energy
@@ -42,7 +40,7 @@ enum TaskTerraPhase
 class CTaskTerraform : public CTask
 {
 public:
-    CTaskTerraform(CObject* object);
+    CTaskTerraform(COldObject* object);
     ~CTaskTerraform();
 
     bool        EventProcess(const Event &event);
@@ -55,7 +53,6 @@ protected:
     bool        Terraform();
 
 protected:
-    CPoweredObject* m_poweredObject;
     TaskTerraPhase  m_phase;
     float           m_progress;
     float           m_speed;

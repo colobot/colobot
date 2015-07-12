@@ -22,9 +22,11 @@
 
 #include "graphics/engine/engine.h"
 
+#include "object/old_object.h"
+
 // Object's constructor.
 
-CTaskWait::CTaskWait(CObject* object) : CTask(object)
+CTaskWait::CTaskWait(COldObject* object) : CTask(object)
 {
 }
 

@@ -29,7 +29,7 @@
 class CTaskFire : public CTask
 {
 public:
-    CTaskFire(CObject* object);
+    CTaskFire(COldObject* object);
     ~CTaskFire();
 
     bool        EventProcess(const Event &event);

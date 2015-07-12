@@ -23,6 +23,7 @@
 #include "graphics/engine/pyro_manager.h"
 
 #include "object/motion/motionspider.h"
+#include "object/old_object.h"
 
 #include "physics/physics.h"
 
@@ -31,7 +32,7 @@
 
 // Object's constructor.
 
-CTaskSpiderExplo::CTaskSpiderExplo(CObject* object) : CTask(object)
+CTaskSpiderExplo::CTaskSpiderExplo(COldObject* object) : CTask(object)
 {
     m_time = 0.0f;
     m_bError = false;

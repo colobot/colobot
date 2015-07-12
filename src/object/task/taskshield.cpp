@@ -27,6 +27,7 @@
 #include "math/geometry.h"
 
 #include "object/brain.h"
+#include "object/old_object.h"
 #include "object/object_manager.h"
 #include "object/robotmain.h"
 #include "object/interface/powered_object.h"
@@ -41,14 +42,13 @@ const float ENERGY_TIME = 20.0f;        // maximum duration if full battery
 
 // Object's constructor.
 
-CTaskShield::CTaskShield(CObject* object) : CTask(object)
+CTaskShield::CTaskShield(COldObject* object) : CTask(object)
 {
     m_rankSphere = -1;
     m_soundChannel = -1;
     m_effectLight = -1;
 
     assert(m_object->Implements(ObjectInterfaceType::Powered));
-    m_poweredObject = dynamic_cast<CPoweredObject*>(m_object);
 }
 
 // Object's destructor.
@@ -112,7 +112,7 @@ bool CTaskShield::EventProcess(const Event &event)
     {
         energy = (1.0f/ENERGY_TIME)*event.rTime;
         energy *= GetRadius()/RADIUS_SHIELD_MAX;
-        power = m_poweredObject->GetPower();
+        power = m_object->GetPower();
         if (power != nullptr)
         {
             power->SetEnergy(power->GetEnergy()-energy/power->GetCapacity());
@@ -291,7 +291,7 @@ Error CTaskShield::Start(TaskShieldMode mode, float delay)
     m_bError = true;  // operation impossible
     if ( !m_physics->GetLand() )  return ERR_SHIELD_VEH;
 
-    CObject* power = m_poweredObject->GetPower();
+    CObject* power = m_object->GetPower();
     if (power == nullptr)  return ERR_SHIELD_ENERGY;
     float energy = power->GetEnergy();
     if ( energy == 0.0f )  return ERR_SHIELD_ENERGY;
@@ -380,7 +380,7 @@ Error CTaskShield::IsEnded()
     {
         m_object->SetShieldRadius(GetRadius());
 
-        power = m_poweredObject->GetPower();
+        power = m_object->GetPower();
         if ( power == 0 )
         {
             energy = 0.0f;

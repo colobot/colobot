@@ -31,7 +31,7 @@
 class CBrain;
 class CPhysics;
 class CMotion;
-class CObject;
+class COldObject;
 class CRobotMain;
 class CSoundInterface;
 
@@ -64,7 +64,7 @@ const float ARM_STOCK_ANGLE3 = -70.0f*Math::PI/180.0f;
 class CTask
 {
 public:
-    CTask(CObject* object);
+    CTask(COldObject* object);
     virtual ~CTask();
 
     virtual bool    EventProcess(const Event &event);
@@ -82,7 +82,7 @@ protected:
     CMotion*            m_motion;
     CBrain*             m_brain;
     CPhysics*           m_physics;
-    CObject*            m_object;
+    COldObject*         m_object;
     CRobotMain*         m_main;
     CSoundInterface*    m_sound;
 };

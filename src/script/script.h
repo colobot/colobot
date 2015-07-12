@@ -32,7 +32,7 @@
 #include "CBot/CBotDll.h"
 
 
-class CObject;
+class COldObject;
 class CTaskManager;
 class CRobotMain;
 class CPauseManager;
@@ -59,7 +59,7 @@ class CScript
 {
 friend class CScriptFunctions;
 public:
-    CScript(CObject* object, CTaskManager** secondaryTask);
+    CScript(COldObject* object, CTaskManager** secondaryTask);
     ~CScript();
 
     void        PutScript(Ui::CEdit* edit, const char* name);
@@ -108,7 +108,7 @@ protected:
     Gfx::CWater*        m_water;
     CTaskManager*       m_primaryTask;
     CTaskManager**      m_secondaryTask;
-    CObject*            m_object;
+    COldObject*            m_object;
     CPauseManager*      m_pause;
 
     int     m_ipf;          // number of instructions/second

@@ -27,6 +27,7 @@
 #include "math/vector.h"
 
 
+class CObject;
 
 const float BUILDMARGIN = 16.0f;
 const int TBMAXLIGHT    = 4;
@@ -48,7 +49,7 @@ enum TaskBuildPhase
 class CTaskBuild : public CTask
 {
 public:
-    CTaskBuild(CObject* object);
+    CTaskBuild(COldObject* object);
     ~CTaskBuild();
 
     bool        EventProcess(const Event &event);

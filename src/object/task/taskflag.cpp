@@ -26,6 +26,7 @@
 #include "graphics/engine/pyro_manager.h"
 #include "graphics/engine/water.h"
 
+#include "object/old_object.h"
 #include "object/object_manager.h"
 #include "object/motion/motionhuman.h"
 #include "object/interface/carrier_object.h"
@@ -38,7 +39,7 @@
 
 // Object's constructor.
 
-CTaskFlag::CTaskFlag(CObject* object) : CTask(object)
+CTaskFlag::CTaskFlag(COldObject* object) : CTask(object)
 {
 }
 

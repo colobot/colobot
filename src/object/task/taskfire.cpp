@@ -24,7 +24,7 @@
 
 #include "math/geometry.h"
 
-#include "object/interface/powered_object.h"
+#include "object/old_object.h"
 
 #include "physics/physics.h"
 
@@ -37,9 +37,11 @@ const float ENERGY_FIREi    = (0.10f/2.5f); // energy consumed/organic
 
 // Object's constructor.
 
-CTaskFire::CTaskFire(CObject* object) : CTask(object)
+CTaskFire::CTaskFire(COldObject* object) : CTask(object)
 {
     m_soundChannel = -1;
+
+    assert(m_object->Implements(ObjectInterfaceType::Powered));
 }
 
 // Object's destructor.
@@ -75,8 +77,7 @@ bool CTaskFire::EventProcess(const Event &event)
     m_lastSound -= event.rTime;
     m_progress += event.rTime*m_speed;
 
-    assert(m_object->Implements(ObjectInterfaceType::Powered));
-    CObject* power = dynamic_cast<CPoweredObject*>(m_object)->GetPower();
+    CObject* power = m_object->GetPower();
     if (power != nullptr)
     {
         energy = power->GetEnergy();

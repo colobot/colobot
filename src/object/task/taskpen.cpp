@@ -22,7 +22,7 @@
 
 #include "graphics/engine/particle.h"
 
-#include "object/object.h"
+#include "object/old_object.h"
 
 #include "math/geometry.h"
 
@@ -30,7 +30,7 @@
 
 // Object's constructor.
 
-CTaskPen::CTaskPen(CObject* object) : CTask(object)
+CTaskPen::CTaskPen(COldObject* object) : CTask(object)
 {
 }
 

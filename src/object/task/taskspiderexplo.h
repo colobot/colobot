@@ -29,7 +29,7 @@
 class CTaskSpiderExplo : public CTask
 {
 public:
-    CTaskSpiderExplo(CObject* object);
+    CTaskSpiderExplo(COldObject* object);
     ~CTaskSpiderExplo();
 
     bool        EventProcess(const Event &event);

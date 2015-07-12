@@ -29,7 +29,7 @@
 class CTaskTurn : public CTask
 {
 public:
-    CTaskTurn(CObject* object);
+    CTaskTurn(COldObject* object);
     ~CTaskTurn();
 
     bool    EventProcess(const Event &event);

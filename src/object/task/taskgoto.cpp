@@ -18,8 +18,6 @@
  */
 
 
-#include <stdio.h>
-
 #include "object/task/taskgoto.h"
 
 #include "common/event.h"
@@ -29,6 +27,7 @@
 
 #include "math/geometry.h"
 
+#include "object/old_object.h"
 #include "object/object_manager.h"
 #include "object/interface/transportable_object.h"
 
@@ -51,7 +50,7 @@ const float SAFETY_MARGIN   = 0.5f;     // Smallest distance between two objects
 
 // Object's constructor.
 
-CTaskGoto::CTaskGoto(CObject* object) : CTask(object)
+CTaskGoto::CTaskGoto(COldObject* object) : CTask(object)
 {
     m_bmArray = 0;
 }

@@ -22,14 +22,14 @@
 
 #include "app/app.h"
 
-#include "object/object.h"
+#include "object/old_object.h"
 #include "object/robotmain.h"
 #include "object/interface/programmable_object.h"
 
 
 // Object's constructor.
 
-CTask::CTask(CObject* object)
+CTask::CTask(COldObject* object)
 {
     m_sound       = CApplication::GetInstancePointer()->GetSound();
     m_engine      = Gfx::CEngine::GetInstancePointer();

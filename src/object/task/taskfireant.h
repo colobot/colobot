@@ -41,7 +41,7 @@ enum TaskFireAnt
 class CTaskFireAnt : public CTask
 {
 public:
-    CTaskFireAnt(CObject* object);
+    CTaskFireAnt(COldObject* object);
     ~CTaskFireAnt();
 
     bool    EventProcess(const Event &event);

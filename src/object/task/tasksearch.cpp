@@ -25,6 +25,7 @@
 
 #include "math/geometry.h"
 
+#include "object/old_object.h"
 #include "object/object_manager.h"
 #include "object/robotmain.h"
 
@@ -33,7 +34,7 @@
 
 // Object's constructor.
 
-CTaskSearch::CTaskSearch(CObject* object) : CTask(object)
+CTaskSearch::CTaskSearch(COldObject* object) : CTask(object)
 {
     m_hand = TSH_UP;
 }

@@ -26,7 +26,7 @@
 
 #include "math/vector.h"
 
-
+class CObject;
 
 enum TaskRecoverPhase
 {
@@ -42,7 +42,7 @@ enum TaskRecoverPhase
 class CTaskRecover : public CTask
 {
 public:
-    CTaskRecover(CObject* object);
+    CTaskRecover(COldObject* object);
     ~CTaskRecover();
 
     bool        EventProcess(const Event &event);

@@ -31,7 +31,7 @@
 
 // Object's constructor.
 
-CTaskInfo::CTaskInfo(CObject* object) : CTask(object)
+CTaskInfo::CTaskInfo(COldObject* object) : CTask(object)
     , m_progress(0.0f)
     , m_speed(0.0f)
     , m_time(0.0f)

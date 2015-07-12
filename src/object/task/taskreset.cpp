@@ -21,6 +21,7 @@
 #include "object/task/taskreset.h"
 
 #include "object/brain.h"
+#include "object/old_object.h"
 #include "object/object_manager.h"
 #include "object/robotmain.h"
 #include "object/interface/carrier_object.h"
@@ -37,7 +38,7 @@ const float RESET_DELAY_MOVE = 0.7f;
 
 // Object's constructor.
 
-CTaskReset::CTaskReset(CObject* object) : CTask(object)
+CTaskReset::CTaskReset(COldObject* object) : CTask(object)
 {
 }
 

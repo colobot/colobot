@@ -29,7 +29,7 @@
 class CTaskGunGoal : public CTask
 {
 public:
-    CTaskGunGoal(CObject* object);
+    CTaskGunGoal(COldObject* object);
     ~CTaskGunGoal();
 
     bool        EventProcess(const Event &event);

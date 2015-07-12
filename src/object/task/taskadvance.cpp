@@ -22,6 +22,7 @@
 
 #include "math/geometry.h"
 
+#include "object/old_object.h"
 #include "physics/physics.h"
 
 
@@ -29,7 +30,7 @@
 
 // Object's constructor.
 
-CTaskAdvance::CTaskAdvance(CObject* object) : CTask(object)
+CTaskAdvance::CTaskAdvance(COldObject* object) : CTask(object)
 {
 }
 

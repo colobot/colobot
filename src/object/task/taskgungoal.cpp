@@ -20,14 +20,14 @@
 
 #include "object/task/taskgungoal.h"
 
-#include "object/object.h"
+#include "object/old_object.h"
 
 #include "sound/sound.h"
 
 
 // Object's constructor.
 
-CTaskGunGoal::CTaskGunGoal(CObject* object) : CTask(object)
+CTaskGunGoal::CTaskGunGoal(COldObject* object) : CTask(object)
 {
     m_aimImpossible = false;
 }

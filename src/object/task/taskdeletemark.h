@@ -29,7 +29,7 @@
 class CTaskDeleteMark : public CTask
 {
 public:
-    CTaskDeleteMark(CObject* object);
+    CTaskDeleteMark(COldObject* object);
     ~CTaskDeleteMark();
 
     bool        EventProcess(const Event &event);

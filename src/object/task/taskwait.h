@@ -29,7 +29,7 @@
 class CTaskWait : public CTask
 {
 public:
-    CTaskWait(CObject* object);
+    CTaskWait(COldObject* object);
     ~CTaskWait();
 
     bool    EventProcess(const Event &event);

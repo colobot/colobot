@@ -5157,8 +5157,9 @@ CObject* CRobotMain::IOReadScene(const char *filename, const char *filecbot)
             if (cargo != nullptr)
             {
                 assert(obj->Implements(ObjectInterfaceType::Carrier)); // TODO: exception?
+                assert(obj->Implements(ObjectInterfaceType::Old));
                 dynamic_cast<CCarrierObject*>(obj)->SetCargo(cargo);
-                CTaskManip* task = new CTaskManip(obj);
+                CTaskManip* task = new CTaskManip(dynamic_cast<COldObject*>(obj));
                 task->Start(TMO_AUTO, TMA_GRAB);  // holds the object!
                 delete task;
             }

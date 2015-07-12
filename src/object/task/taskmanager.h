@@ -34,7 +34,7 @@
 class CTaskManager
 {
 public:
-    CTaskManager(CObject* object);
+    CTaskManager(COldObject* object);
     ~CTaskManager();
 
     Error   StartTaskWait(float time);
@@ -66,7 +66,7 @@ public:
 
 protected:
     CTask*          m_task;
-    CObject*        m_object;
+    COldObject*        m_object;
     bool            m_bPilot;
 };
 

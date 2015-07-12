@@ -27,9 +27,9 @@
 #include "math/vector.h"
 
 
+class CObject;
 
 const int MAXPOINTS = 500;
-
 
 
 enum TaskGotoGoal
@@ -76,7 +76,7 @@ enum TaskGotoPhase
 class CTaskGoto : public CTask
 {
 public:
-    CTaskGoto(CObject* object);
+    CTaskGoto(COldObject* object);
     ~CTaskGoto();
 
     bool        EventProcess(const Event &event);

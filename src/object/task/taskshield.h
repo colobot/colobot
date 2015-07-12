@@ -26,7 +26,6 @@
 
 #include "math/vector.h"
 
-class CPoweredObject;
 
 const float RADIUS_SHIELD_MIN = 40.0f;      // minimum radius of the protected zone
 const float RADIUS_SHIELD_MAX = 100.0f;     // maximum radius of the protected zone
@@ -55,7 +54,7 @@ enum TaskShieldMode
 class CTaskShield : public CTask
 {
 public:
-    CTaskShield(CObject* object);
+    CTaskShield(COldObject* object);
     ~CTaskShield();
 
     bool        EventProcess(const Event &event);
@@ -72,7 +71,6 @@ protected:
     float       GetRadius();
 
 protected:
-    CPoweredObject* m_poweredObject;
     TaskShieldPhase m_phase;
     float           m_progress;
     float           m_speed;

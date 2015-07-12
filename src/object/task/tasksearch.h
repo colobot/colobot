@@ -45,7 +45,7 @@ enum TaskSearchPhase
 class CTaskSearch : public CTask
 {
 public:
-    CTaskSearch(CObject* object);
+    CTaskSearch(COldObject* object);
     ~CTaskSearch();
 
     bool        EventProcess(const Event &event);

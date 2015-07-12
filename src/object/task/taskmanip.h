@@ -28,8 +28,7 @@
 
 
 
-class CCarrierObject;
-class CPoweredObject;
+class CObject;
 
 enum TaskManipOrder
 {
@@ -60,7 +59,7 @@ enum TaskManipHand
 class CTaskManip : public CTask
 {
 public:
-    CTaskManip(CObject* object);
+    CTaskManip(COldObject* object);
     ~CTaskManip();
 
     bool        EventProcess(const Event &event);
@@ -81,8 +80,6 @@ protected:
     void        SoundManip(float time, float amplitude=1.0f, float frequency=1.0f);
 
 protected:
-    CCarrierObject* m_carrierObject;
-    CPoweredObject* m_poweredObject;
     TaskManipOrder  m_order;
     TaskManipArm    m_arm;
     TaskManipHand   m_hand;

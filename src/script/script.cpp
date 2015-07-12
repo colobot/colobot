@@ -32,6 +32,7 @@
 #include "graphics/engine/engine.h"
 #include "graphics/engine/text.h"
 
+#include "object/old_object.h"
 #include "object/task/taskmanager.h"
 #include "object/robotmain.h"
 
@@ -49,7 +50,7 @@ const int CBOT_IPF = 100;       // CBOT: default number of instructions / frame
 
 // Object's constructor.
 
-CScript::CScript(CObject* object, CTaskManager** secondaryTask)
+CScript::CScript(COldObject* object, CTaskManager** secondaryTask)
 {
     m_engine        = Gfx::CEngine::GetInstancePointer();
     m_main          = CRobotMain::GetInstancePointer();
@@ -59,10 +60,10 @@ CScript::CScript(CObject* object, CTaskManager** secondaryTask)
     m_object        = object;
     m_primaryTask   = nullptr;
     m_secondaryTask = secondaryTask;
-    
+
     m_interface = m_main->GetInterface();
     m_pause = CPauseManager::GetInstancePointer();
-    
+
     m_ipf = CBOT_IPF;
     m_errMode = ERM_STOP;
     m_len = 0;
@@ -345,7 +346,7 @@ bool CScript::Run()
     if( m_botProg == 0 )  return false;
     if ( m_script == nullptr || m_len == 0 )  return false;
     if ( m_mainFunction[0] == 0 ) return false;
-    
+
     if ( !m_botProg->Start(m_mainFunction) )  return false;
 
     m_object->SetRunScript(this);

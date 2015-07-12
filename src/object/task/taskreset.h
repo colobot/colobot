@@ -23,6 +23,7 @@
 
 
 #include "object/task/task.h"
+
 #include "math/vector.h"
 
 
@@ -39,7 +40,7 @@ enum TaskResetPhase
 class CTaskReset : public CTask
 {
 public:
-    CTaskReset(CObject* object);
+    CTaskReset(COldObject* object);
     ~CTaskReset();
 
     bool    EventProcess(const Event &event);

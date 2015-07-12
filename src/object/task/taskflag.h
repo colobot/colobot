@@ -27,6 +27,7 @@
 #include "math/vector.h"
 
 
+class CObject;
 
 enum TaskFlagOrder
 {
@@ -39,7 +40,7 @@ enum TaskFlagOrder
 class CTaskFlag : public CTask
 {
 public:
-    CTaskFlag(CObject* object);
+    CTaskFlag(COldObject* object);
     ~CTaskFlag();
 
     bool        EventProcess(const Event &event);

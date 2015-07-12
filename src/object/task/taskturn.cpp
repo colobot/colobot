@@ -23,12 +23,13 @@
 #include "graphics/engine/terrain.h"
 #include "physics/physics.h"
 
+#include "object/old_object.h"
 #include "object/robotmain.h"
 
 
 // Object's constructor.
 
-CTaskTurn::CTaskTurn(CObject* object) : CTask(object)
+CTaskTurn::CTaskTurn(COldObject* object) : CTask(object)
 {
 }
 

@@ -29,7 +29,7 @@ class CExchangePost;
 class CTaskInfo : public CTask
 {
 public:
-    CTaskInfo(CObject* object);
+    CTaskInfo(COldObject* object);
     ~CTaskInfo();
 
     bool        EventProcess(const Event &event) override;

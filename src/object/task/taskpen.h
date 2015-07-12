@@ -39,7 +39,7 @@ enum TaskPenPhase
 class CTaskPen : public CTask
 {
 public:
-    CTaskPen(CObject* object);
+    CTaskPen(COldObject* object);
     ~CTaskPen();
 
     bool        EventProcess(const Event &event);
