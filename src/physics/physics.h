@@ -33,6 +33,7 @@
 
 
 class CObject;
+class COldObject;
 class CBrain;
 class CMotion;
 class CSoundInterface;
@@ -99,7 +100,7 @@ struct Motion
 class CPhysics
 {
 public:
-    CPhysics(CObject* object);
+    CPhysics(COldObject* object);
     ~CPhysics();
 
     void        DeleteObject(bool bAll=false);
@@ -212,7 +213,7 @@ protected:
     Gfx::CTerrain*      m_terrain;
     Gfx::CWater*        m_water;
     Gfx::CCamera*       m_camera;
-    CObject*            m_object;
+    COldObject*         m_object;
     CBrain*             m_brain;
     CMotion*            m_motion;
     CSoundInterface*    m_sound;

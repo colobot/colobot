@@ -34,7 +34,7 @@
 #include "object/task/taskshield.h"
 
 
-class CObject;
+class COldObject;
 class CPhysics;
 class CMotion;
 class CTaskManager;
@@ -87,7 +87,7 @@ struct Program
 class CBrain
 {
 public:
-    CBrain(CObject* object);
+    CBrain(COldObject* object);
     ~CBrain();
 
     void        DeleteObject(bool bAll=false);
@@ -190,7 +190,7 @@ protected:
     Gfx::CWater*        m_water;
     Gfx::CCamera*       m_camera;
     Gfx::CParticle*     m_particle;
-    CObject*            m_object;
+    COldObject*         m_object;
     CPhysics*           m_physics;
     CMotion*            m_motion;
     Ui::CInterface*     m_interface;

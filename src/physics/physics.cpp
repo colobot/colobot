@@ -43,14 +43,11 @@
 #include "object/task/task.h"
 #include "object/level/parserline.h"
 #include "object/level/parserparam.h"
+#include "object/old_object.h"
 #include "object/interface/carrier_object.h"
 #include "object/interface/jostleable_object.h"
 #include "object/interface/powered_object.h"
 #include "object/interface/transportable_object.h"
-
-
-#include <cstring>
-#include <cstdio>
 
 
 
@@ -63,7 +60,7 @@ const float LANDING_ACCELh  = 1.5f;
 
 // Object's constructor.
 
-CPhysics::CPhysics(CObject* object)
+CPhysics::CPhysics(COldObject* object)
 {
     m_object    = object;
     m_engine    = Gfx::CEngine::GetInstancePointer();
@@ -119,16 +116,13 @@ CPhysics::CPhysics(CObject* object)
     m_fallingHeight = 0.0f;
     m_minFallingHeight = 20.0f;
     m_fallDamageFraction = 0.007f;
-
-    memset(&m_linMotion, 0, sizeof(Motion));
-    memset(&m_cirMotion, 0,sizeof(Motion));
 }
 
 // Object's destructor.
 
 CPhysics::~CPhysics()
 {
-    }
+}
 
 
 // Destroys the object.

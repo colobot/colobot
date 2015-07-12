@@ -27,6 +27,7 @@
 #include "graphics/core/color.h"
 #include "graphics/engine/terrain.h"
 
+#include "object/old_object.h"
 #include "object/object_manager.h"
 #include "object/motion/motion.h"
 #include "object/motion/motionvehicle.h"
@@ -55,7 +56,7 @@ const int MAXTRACERECORD = 1000;
 
 // Object's constructor.
 
-CBrain::CBrain(CObject* object)
+CBrain::CBrain(COldObject* object)
 {
     m_object      = object;
     m_engine      = Gfx::CEngine::GetInstancePointer();
