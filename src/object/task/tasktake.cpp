@@ -529,10 +529,10 @@ bool CTaskTake::TransporterDeposeObject()
 
         CObject* cargo = dynamic_cast<CPoweredObject*>(other)->GetPower();
         if (cargo != nullptr)  return false;  // the other already has a battery?
-        assert(cargo->Implements(ObjectInterfaceType::Transportable));
 
         cargo = m_carrierObject->GetCargo();
         if (cargo == nullptr)  return false;
+        assert(cargo->Implements(ObjectInterfaceType::Transportable));
         m_cargoType = cargo->GetType();
 
         dynamic_cast<CPoweredObject*>(other)->SetPower(cargo);
