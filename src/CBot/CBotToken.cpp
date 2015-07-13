@@ -246,6 +246,17 @@ CBotToken*  CBotToken::NextToken(char* &program, int& error, bool first)
         mot = c;                            // built the word
         c   = *(program++);                 // next character
 
+        // special case for destructors
+        if ( mot[0] == '~')
+        {
+            while (c != 0 && !CharInList(c, sep1))
+            {
+                mot += c;
+                c = *(program++);
+            }
+            stop = true;
+        }
+
         // special case for strings
         if ( mot[0] == '\"' )
         {
