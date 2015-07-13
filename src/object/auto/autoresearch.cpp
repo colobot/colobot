@@ -103,7 +103,7 @@ Error CAutoResearch::StartAction(int param)
 
     m_research = static_cast<ResearchType>(param);
 
-    if ( m_main->IsResearchDone(m_research) )
+    if ( m_main->IsResearchDone(m_research, m_object->GetTeam()) )
     {
         return ERR_RESEARCH_ALREADY;
     }
@@ -246,7 +246,7 @@ bool CAutoResearch::EventProcess(const Event &event)
         }
         else
         {
-            m_main->MarkResearchDone(m_research);  // research done
+            m_main->MarkResearchDone(m_research, m_object->GetTeam());  // research done
 
             m_eventQueue->AddEvent(Event(EVENT_UPDINTERFACE));
             UpdateInterface();
@@ -464,14 +464,14 @@ void CAutoResearch::OkayButton(Ui::CWindow *pw, EventType event)
 
 bool CAutoResearch::TestResearch(EventType event)
 {
-    if ( event == EVENT_OBJECT_RTANK   )  return m_main->IsResearchDone(RESEARCH_TANK);
-    if ( event == EVENT_OBJECT_RFLY    )  return m_main->IsResearchDone(RESEARCH_FLY);
-    if ( event == EVENT_OBJECT_RTHUMP  )  return m_main->IsResearchDone(RESEARCH_THUMP);
-    if ( event == EVENT_OBJECT_RCANON  )  return m_main->IsResearchDone(RESEARCH_CANON);
-    if ( event == EVENT_OBJECT_RTOWER  )  return m_main->IsResearchDone(RESEARCH_TOWER);
-    if ( event == EVENT_OBJECT_RPHAZER )  return m_main->IsResearchDone(RESEARCH_PHAZER);
-    if ( event == EVENT_OBJECT_RSHIELD )  return m_main->IsResearchDone(RESEARCH_SHIELD);
-    if ( event == EVENT_OBJECT_RATOMIC )  return m_main->IsResearchDone(RESEARCH_ATOMIC);
+    if ( event == EVENT_OBJECT_RTANK   )  return m_main->IsResearchDone(RESEARCH_TANK, m_object->GetTeam());
+    if ( event == EVENT_OBJECT_RFLY    )  return m_main->IsResearchDone(RESEARCH_FLY, m_object->GetTeam());
+    if ( event == EVENT_OBJECT_RTHUMP  )  return m_main->IsResearchDone(RESEARCH_THUMP, m_object->GetTeam());
+    if ( event == EVENT_OBJECT_RCANON  )  return m_main->IsResearchDone(RESEARCH_CANON, m_object->GetTeam());
+    if ( event == EVENT_OBJECT_RTOWER  )  return m_main->IsResearchDone(RESEARCH_TOWER, m_object->GetTeam());
+    if ( event == EVENT_OBJECT_RPHAZER )  return m_main->IsResearchDone(RESEARCH_PHAZER, m_object->GetTeam());
+    if ( event == EVENT_OBJECT_RSHIELD )  return m_main->IsResearchDone(RESEARCH_SHIELD, m_object->GetTeam());
+    if ( event == EVENT_OBJECT_RATOMIC )  return m_main->IsResearchDone(RESEARCH_ATOMIC, m_object->GetTeam());
 
     return false;
 }

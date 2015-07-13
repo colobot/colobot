@@ -122,7 +122,7 @@ Error CAutoLabo::StartAction(int param)
 
     m_research = static_cast<ResearchType>(param);
 
-    if ( m_main->IsResearchDone(m_research) )
+    if ( m_main->IsResearchDone(m_research, m_object->GetTeam()) )
     {
         return ERR_LABO_ALREADY;
     }
@@ -352,7 +352,7 @@ bool CAutoLabo::EventProcess(const Event &event)
         }
         else
         {
-            m_main->MarkResearchDone(m_research);  // research done
+            m_main->MarkResearchDone(m_research, m_object->GetTeam());  // research done
 
             m_eventQueue->AddEvent(Event(EVENT_UPDINTERFACE));
             UpdateInterface();
@@ -538,8 +538,8 @@ void CAutoLabo::OkayButton(Ui::CWindow *pw, EventType event)
 
 bool CAutoLabo::TestResearch(EventType event)
 {
-    if ( event == EVENT_OBJECT_RiPAW )  return m_main->IsResearchDone(RESEARCH_iPAW);
-    if ( event == EVENT_OBJECT_RiGUN )  return m_main->IsResearchDone(RESEARCH_iGUN);
+    if ( event == EVENT_OBJECT_RiPAW )  return m_main->IsResearchDone(RESEARCH_iPAW, m_object->GetTeam());
+    if ( event == EVENT_OBJECT_RiGUN )  return m_main->IsResearchDone(RESEARCH_iGUN, m_object->GetTeam());
 
     return m_main;
 }

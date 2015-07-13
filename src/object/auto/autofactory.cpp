@@ -823,7 +823,7 @@ void CAutoFactory::UpdateInterface()
 void CAutoFactory::UpdateButton(Ui::CWindow *pw, EventType event, bool bBusy)
 {
     EnableInterface(pw, event, !bBusy);
-    DeadInterface(pw, event, m_main->CanFactory(ObjectTypeFromFactoryButton(event)));
+    DeadInterface(pw, event, m_main->CanFactory(ObjectTypeFromFactoryButton(event), m_object->GetTeam()));
 }
 
 // Plays the sound of the manipulator arm.

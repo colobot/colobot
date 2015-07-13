@@ -343,8 +343,8 @@ public:
     //@}
     //! Get/set done researches
     //@{
-    int         GetDoneResearch();
-    void        SetDoneResearch(int doneResearch);
+    int         GetDoneResearch(int team);
+    void        SetDoneResearch(int doneResearch, int team);
     //@}
 
     //! Returns true if the given building is enabled
@@ -355,20 +355,20 @@ public:
     //! Returns true if the given research is enabled
     bool        IsResearchEnabled(ResearchType type);
     //! Returns true if the given research is done
-    bool        IsResearchDone(ResearchType type);
+    bool        IsResearchDone(ResearchType type, int team);
     //! Marks research as done
-    void        MarkResearchDone(ResearchType type);
+    void        MarkResearchDone(ResearchType type, int team);
 
     //! Retruns true if all requirements to build this object are met (EnableBuild + DoneResearch)
     //@{
-    bool        CanBuild(ObjectType type);
-    Error       CanBuildError(ObjectType type);
+    bool        CanBuild(ObjectType type, int team);
+    Error       CanBuildError(ObjectType type, int team);
     //@}
 
     //! Retruns true if all requirements to create this object in BotFactory are met (DoneResearch)
     //@{
-    bool        CanFactory(ObjectType type);
-    Error       CanFactoryError(ObjectType type);
+    bool        CanFactory(ObjectType type, int team);
+    Error       CanFactoryError(ObjectType type, int team);
     //@}
 
 protected:
@@ -548,12 +548,17 @@ protected:
 
     std::string     m_gamerName;
 
-    int             m_build;            // constructible buildings
-    int             m_researchDone;     // research done
-    long            m_researchEnable;   // research available
+    //! Enabled buildings
+    int             m_build;
+    //! Available researches
+    long            m_researchEnable;
+    //! Done researches for each team
+    std::map<int, int>  m_researchDone;
 
-    int             m_freeBuild;        // constructible buildings
-    int             m_freeResearch;     // researches possible
+    //! Buildings unlocked for free game
+    int             m_freeBuild;
+    //! Researches unlocked for free game
+    int             m_freeResearch;
 
     Error           m_missionResult;
 

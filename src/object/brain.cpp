@@ -573,7 +573,7 @@ bool CBrain::EventProcess(const Event &event)
         axeY *= 0.5f;
     }
 
-    if ( !m_main->IsResearchDone(RESEARCH_FLY) )
+    if ( !m_main->IsResearchDone(RESEARCH_FLY, m_object->GetTeam()) )
     {
         axeZ = -1.0f;  // tomb
     }
@@ -1540,72 +1540,72 @@ bool CBrain::CreateInterface(bool bSelect)
         pos.x = ox+sx*0.0f;
         pos.y = oy+sy*1.0f;
         pw->CreateButton(pos, ddim, 128+35, EVENT_OBJECT_BRESEARCH);
-        DeadInterface(pw, EVENT_OBJECT_BRESEARCH, m_main->CanBuild(OBJECT_RESEARCH));
+        DeadInterface(pw, EVENT_OBJECT_BRESEARCH, m_main->CanBuild(OBJECT_RESEARCH, m_object->GetTeam()));
 
         pos.x = ox+sx*0.9f;
         pos.y = oy+sy*1.0f;
         pw->CreateButton(pos, ddim, 128+32, EVENT_OBJECT_BFACTORY);
-        DeadInterface(pw, EVENT_OBJECT_BFACTORY, m_main->CanBuild(OBJECT_FACTORY));
+        DeadInterface(pw, EVENT_OBJECT_BFACTORY, m_main->CanBuild(OBJECT_FACTORY, m_object->GetTeam()));
 
         pos.x = ox+sx*1.8f;
         pos.y = oy+sy*1.0f;
         pw->CreateButton(pos, ddim, 128+34, EVENT_OBJECT_BCONVERT);
-        DeadInterface(pw, EVENT_OBJECT_BCONVERT, m_main->CanBuild(OBJECT_CONVERT));
+        DeadInterface(pw, EVENT_OBJECT_BCONVERT, m_main->CanBuild(OBJECT_CONVERT, m_object->GetTeam()));
 
         pos.x = ox+sx*2.7f;
         pos.y = oy+sy*1.0f;
         pw->CreateButton(pos, ddim, 128+36, EVENT_OBJECT_BSTATION);
-        DeadInterface(pw, EVENT_OBJECT_BSTATION, m_main->CanBuild(OBJECT_STATION));
+        DeadInterface(pw, EVENT_OBJECT_BSTATION, m_main->CanBuild(OBJECT_STATION, m_object->GetTeam()));
 
         pos.x = ox+sx*3.6f;
         pos.y = oy+sy*1.0f;
         pw->CreateButton(pos, ddim, 128+40, EVENT_OBJECT_BRADAR);
-        DeadInterface(pw, EVENT_OBJECT_BRADAR, m_main->CanBuild(OBJECT_RADAR));
+        DeadInterface(pw, EVENT_OBJECT_BRADAR, m_main->CanBuild(OBJECT_RADAR, m_object->GetTeam()));
 
         pos.x = ox+sx*4.5f;
         pos.y = oy+sy*1.0f;
         pw->CreateButton(pos, ddim, 128+41, EVENT_OBJECT_BREPAIR);
-        DeadInterface(pw, EVENT_OBJECT_BREPAIR, m_main->CanBuild(OBJECT_REPAIR));
+        DeadInterface(pw, EVENT_OBJECT_BREPAIR, m_main->CanBuild(OBJECT_REPAIR, m_object->GetTeam()));
 
         pos.x = ox+sx*5.4f;
         pos.y = oy+sy*1.0f;
         pw->CreateButton(pos, ddim, 128+44, EVENT_OBJECT_BINFO);
-        DeadInterface(pw, EVENT_OBJECT_BINFO, m_main->CanBuild(OBJECT_INFO));
+        DeadInterface(pw, EVENT_OBJECT_BINFO, m_main->CanBuild(OBJECT_INFO, m_object->GetTeam()));
 
         pos.x = ox+sx*0.0f;
         pos.y = oy+sy*0.1f;
         pw->CreateButton(pos, ddim, 128+37, EVENT_OBJECT_BTOWER);
-        DeadInterface(pw, EVENT_OBJECT_BTOWER, m_main->CanBuild(OBJECT_TOWER));
+        DeadInterface(pw, EVENT_OBJECT_BTOWER, m_main->CanBuild(OBJECT_TOWER, m_object->GetTeam()));
 
         pos.x = ox+sx*0.9f;
         pos.y = oy+sy*0.1f;
         pw->CreateButton(pos, ddim, 128+39, EVENT_OBJECT_BENERGY);
-        DeadInterface(pw, EVENT_OBJECT_BENERGY, m_main->CanBuild(OBJECT_ENERGY));
+        DeadInterface(pw, EVENT_OBJECT_BENERGY, m_main->CanBuild(OBJECT_ENERGY, m_object->GetTeam()));
 
         pos.x = ox+sx*1.8f;
         pos.y = oy+sy*0.1f;
         pw->CreateButton(pos, ddim, 128+33, EVENT_OBJECT_BDERRICK);
-        DeadInterface(pw, EVENT_OBJECT_BDERRICK, m_main->CanBuild(OBJECT_DERRICK));
+        DeadInterface(pw, EVENT_OBJECT_BDERRICK, m_main->CanBuild(OBJECT_DERRICK, m_object->GetTeam()));
 
         pos.x = ox+sx*2.7f;
         pos.y = oy+sy*0.1f;
         pw->CreateButton(pos, ddim, 128+42, EVENT_OBJECT_BNUCLEAR);
-        DeadInterface(pw, EVENT_OBJECT_BNUCLEAR, m_main->CanBuild(OBJECT_NUCLEAR));
+        DeadInterface(pw, EVENT_OBJECT_BNUCLEAR, m_main->CanBuild(OBJECT_NUCLEAR, m_object->GetTeam()));
 
         pos.x = ox+sx*3.6f;
         pos.y = oy+sy*0.1f;
         pw->CreateButton(pos, ddim, 128+38, EVENT_OBJECT_BLABO);
-        DeadInterface(pw, EVENT_OBJECT_BLABO, m_main->CanBuild(OBJECT_LABO));
+        DeadInterface(pw, EVENT_OBJECT_BLABO, m_main->CanBuild(OBJECT_LABO, m_object->GetTeam()));
 
         pos.x = ox+sx*4.5f;
         pos.y = oy+sy*0.1f;
         pw->CreateButton(pos, ddim, 128+46, EVENT_OBJECT_BPARA);
-        DeadInterface(pw, EVENT_OBJECT_BPARA, m_main->CanBuild(OBJECT_PARA));
+        DeadInterface(pw, EVENT_OBJECT_BPARA, m_main->CanBuild(OBJECT_PARA, m_object->GetTeam()));
 
         pos.x = ox+sx*5.4f;
         pos.y = oy+sy*0.1f;
         pw->CreateButton(pos, ddim, 128+41, EVENT_OBJECT_BDESTROYER);
-        DeadInterface(pw, EVENT_OBJECT_BDESTROYER, m_main->CanBuild(OBJECT_DESTROYER));
+        DeadInterface(pw, EVENT_OBJECT_BDESTROYER, m_main->CanBuild(OBJECT_DESTROYER, m_object->GetTeam()));
 
         if ( m_main->IsBuildingEnabled(BUILD_GFLAT) )
         {
@@ -2403,8 +2403,8 @@ void CBrain::UpdateInterface()
     }
     else
     {
-        DeadInterface(pw, EVENT_OBJECT_GASUP,   m_main->IsResearchDone(RESEARCH_FLY));
-        DeadInterface(pw, EVENT_OBJECT_GASDOWN, m_main->IsResearchDone(RESEARCH_FLY));
+        DeadInterface(pw, EVENT_OBJECT_GASUP,   m_main->IsResearchDone(RESEARCH_FLY, m_object->GetTeam()));
+        DeadInterface(pw, EVENT_OBJECT_GASDOWN, m_main->IsResearchDone(RESEARCH_FLY, m_object->GetTeam()));
     }
 
     if ( type == OBJECT_HUMAN    ||

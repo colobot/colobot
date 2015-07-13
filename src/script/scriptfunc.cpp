@@ -486,7 +486,7 @@ bool CScriptFunctions::rGetResearchEnable(CBotVar* var, CBotVar* result, int& ex
 
 bool CScriptFunctions::rGetResearchDone(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-    result->SetValInt(CRobotMain::GetInstancePointer()->GetDoneResearch());
+    result->SetValInt(CRobotMain::GetInstancePointer()->GetDoneResearch(0));
     return true;
 }
 
@@ -512,7 +512,7 @@ bool CScriptFunctions::rSetResearchEnable(CBotVar* var, CBotVar* result, int& ex
 
 bool CScriptFunctions::rSetResearchDone(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-    CRobotMain::GetInstancePointer()->SetDoneResearch(var->GetValInt());
+    CRobotMain::GetInstancePointer()->SetDoneResearch(var->GetValInt(), 0);
     CApplication::GetInstancePointer()->GetEventQueue()->AddEvent(Event(EVENT_UPDINTERFACE));
     return true;
 }
@@ -749,7 +749,7 @@ bool CScriptFunctions::rFactory(CBotVar* thisclass, CBotVar* var, CBotVar* resul
             return false;
         }
 
-        err = CRobotMain::GetInstancePointer()->CanFactoryError(type);
+        err = CRobotMain::GetInstancePointer()->CanFactoryError(type, factory->GetTeam());
 
         if ( err == ERR_OK )
         {
@@ -1391,10 +1391,11 @@ CBotTypResult CScriptFunctions::cCanBuild(CBotVar* &var, void* user)
 
 bool CScriptFunctions::rCanBuild(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
+    CObject* pThis = static_cast<CObject *>(user);
     ObjectType category  = static_cast<ObjectType>(var->GetValInt()); //get category parameter
     exception = 0;
 
-    result->SetValInt(CRobotMain::GetInstancePointer()->CanBuild(category));
+    result->SetValInt(CRobotMain::GetInstancePointer()->CanBuild(category, pThis->GetTeam()));
     return true;
 }
 
@@ -1403,8 +1404,8 @@ bool CScriptFunctions::rCanBuild(CBotVar* var, CBotVar* result, int& exception, 
 
 bool CScriptFunctions::rBuild(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-    CScript*    script = (static_cast<CObject *>(user))->GetRunScript();
     CObject*    pThis = static_cast<CObject *>(user);
+    CScript*    script = pThis->GetRunScript();
     ObjectType  oType;
     ObjectType  category;
     Error       err;
@@ -1425,7 +1426,7 @@ bool CScriptFunctions::rBuild(CBotVar* var, CBotVar* result, int& exception, voi
     else
     {
         category = static_cast<ObjectType>(var->GetValInt()); // get category parameter
-        err = CRobotMain::GetInstancePointer()->CanBuildError(category);
+        err = CRobotMain::GetInstancePointer()->CanBuildError(category, pThis->GetTeam());
 
         if (pThis->GetIgnoreBuildCheck())
             err = ERR_OK;
