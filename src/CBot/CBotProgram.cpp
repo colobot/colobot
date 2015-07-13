@@ -863,7 +863,7 @@ bool CBotCall::Run(CBotStack* pStack)
 ///////////////////////////////////////////////////////////////////////////////////////
 
 CBotCallMethode::CBotCallMethode(const char* name,
-                   bool rExec (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception),
+                   bool rExec (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception, void* user),
                    CBotTypResult rCompile (CBotVar* pThis, CBotVar* &pVar))
 {
     m_name       = name;
@@ -948,7 +948,7 @@ int CBotCallMethode::DoCall(long& nIdent, const char* name, CBotVar* pThis, CBot
             // then calls the routine external to the module
 
             int         Exception = 0;
-            int res = pt->m_rExec(pThis, pVar, pResult, Exception);
+            int res = pt->m_rExec(pThis, pVar, pResult, Exception, pStack->GetPUser());
             pStack->SetVar(pResult);
 
             if (res == false)
@@ -979,7 +979,7 @@ int CBotCallMethode::DoCall(long& nIdent, const char* name, CBotVar* pThis, CBot
             CBotVar*    pVarToDelete = pVar;
 
             int         Exception = 0;
-            int res = pt->m_rExec(pThis, pVar, pResult, Exception);
+            int res = pt->m_rExec(pThis, pVar, pResult, Exception, pStack->GetPUser());
             pStack->SetVar(pResult);
 
             if (res == false)
@@ -1114,4 +1114,3 @@ void CBotProgram::Free()
     CBotCall ::Free() ;
     CBotClass::Free() ;
 }
-

@@ -807,7 +807,7 @@ public:
                     ~CBotClass( );                            // destructor
 
     bool            AddFunction(const char* name,
-                                bool rExec (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception),
+                                bool rExec (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception, void* user),
                                 CBotTypResult rCompile (CBotVar* pThis, CBotVar* &pVar));
     //                this call allows to add as external (**)
     //                new method used by the objects of this class
@@ -1117,4 +1117,3 @@ bool rDoGoto( CBotVar* pVar, CBotVar* pResult, int& exception )
 }
 
 #endif
-

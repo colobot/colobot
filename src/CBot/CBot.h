@@ -1579,7 +1579,7 @@ class CBotCallMethode
 {
 private:
     CBotString    m_name;
-    bool        (*m_rExec) (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception);
+    bool        (*m_rExec) (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception, void* user);
     CBotTypResult
                 (*m_rComp) (CBotVar* pThis, CBotVar* &pVar);
     CBotCallMethode*    m_next;
@@ -1588,7 +1588,7 @@ private:
 
 public:
                 CBotCallMethode(const char* name,
-                         bool rExec (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception),
+                         bool rExec (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception, void* user),
                          CBotTypResult rCompile (CBotVar* pThis, CBotVar* &pVar));
                 ~CBotCallMethode();
 
@@ -1698,4 +1698,3 @@ public:
 
     bool            GetPosition(int& start, int& stop, CBotGet modestart, CBotGet modestop);
 };
-

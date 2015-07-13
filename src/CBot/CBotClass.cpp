@@ -295,7 +295,7 @@ CBotClass* CBotClass::Find(const char* name)
 }
 
 bool CBotClass::AddFunction(const char* name,
-                                bool rExec (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception),
+                                bool rExec (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception, void* user),
                                 CBotTypResult rCompile (CBotVar* pThis, CBotVar* &pVar))
 {
     // stores pointers to the two functions
@@ -882,4 +882,3 @@ bool CBotClass::CheckCall(CBotToken* &pToken, CBotDefParam* pParam)
 
     return false;
 }
-

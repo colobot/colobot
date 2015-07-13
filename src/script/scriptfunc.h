@@ -152,11 +152,11 @@ private:
     static CBotTypResult cClassNull(CBotVar* thisclass, CBotVar* &var);
     static CBotTypResult cClassOneFloat(CBotVar* thisclass, CBotVar* &var);
 
-    static bool rBusy(CBotVar* thisclass, CBotVar* var, CBotVar* result, int& exception);
-    static bool rFactory(CBotVar* thisclass, CBotVar* var, CBotVar* result, int& exception);
-    static bool rResearch(CBotVar* thisclass, CBotVar* var, CBotVar* result, int& exception);
-    static bool rTakeOff(CBotVar* thisclass, CBotVar* var, CBotVar* result, int& exception);
-    static bool rDestroy(CBotVar* thisclass, CBotVar* var, CBotVar* result, int& exception);
+    static bool rBusy(CBotVar* thisclass, CBotVar* var, CBotVar* result, int& exception, void* user);
+    static bool rFactory(CBotVar* thisclass, CBotVar* var, CBotVar* result, int& exception, void* user);
+    static bool rResearch(CBotVar* thisclass, CBotVar* var, CBotVar* result, int& exception, void* user);
+    static bool rTakeOff(CBotVar* thisclass, CBotVar* var, CBotVar* result, int& exception, void* user);
+    static bool rDestroy(CBotVar* thisclass, CBotVar* var, CBotVar* result, int& exception, void* user);
 
 
     static CBotTypResult cfconstruct (CBotVar* pThis, CBotVar* &pVar);
@@ -165,16 +165,16 @@ private:
     static CBotTypResult cfwrite (CBotVar* pThis, CBotVar* &pVar);
     static CBotTypResult cfread (CBotVar* pThis, CBotVar* &pVar);
     static CBotTypResult cfeof (CBotVar* pThis, CBotVar* &pVar);
-    static bool rfconstruct (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception);
-    static bool rfdestruct (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception);
-    static bool rfopen (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception);
-    static bool rfclose (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception);
-    static bool rfwrite (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception);
-    static bool rfread (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception);
-    static bool rfeof (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception);
+    static bool rfconstruct (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception, void* user);
+    static bool rfdestruct (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception, void* user);
+    static bool rfopen (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception, void* user);
+    static bool rfclose (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception, void* user);
+    static bool rfwrite (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception, void* user);
+    static bool rfread (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception, void* user);
+    static bool rfeof (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception, void* user);
 
     static CBotTypResult cPointConstructor(CBotVar* pThis, CBotVar* &var);
-    static bool rPointConstructor(CBotVar* pThis, CBotVar* var, CBotVar* pResult, int& Exception);
+    static bool rPointConstructor(CBotVar* pThis, CBotVar* var, CBotVar* pResult, int& Exception, void* user);
 
 public:
     static int m_numberOfOpenFiles;

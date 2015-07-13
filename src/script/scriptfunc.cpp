@@ -605,7 +605,7 @@ CBotTypResult CScriptFunctions::cBusy(CBotVar* thisclass, CBotVar* &var)
 
 // Instruction "object.busy()"
 
-bool CScriptFunctions::rBusy(CBotVar* thisclass, CBotVar* var, CBotVar* result, int& exception)
+bool CScriptFunctions::rBusy(CBotVar* thisclass, CBotVar* var, CBotVar* result, int& exception, void* user)
 {
     exception = 0;
 
@@ -634,7 +634,7 @@ bool CScriptFunctions::rBusy(CBotVar* thisclass, CBotVar* var, CBotVar* result, 
     return true;
 }
 
-bool CScriptFunctions::rDestroy(CBotVar* thisclass, CBotVar* var, CBotVar* result, int& exception)
+bool CScriptFunctions::rDestroy(CBotVar* thisclass, CBotVar* var, CBotVar* result, int& exception, void* user)
 {
     exception = 0;
     Error err;
@@ -696,8 +696,12 @@ CBotTypResult CScriptFunctions::cFactory(CBotVar* thisclass, CBotVar* &var)
 
 // Instruction "object.factory(cat, program)"
 
-bool CScriptFunctions::rFactory(CBotVar* thisclass, CBotVar* var, CBotVar* result, int& exception)
+bool CScriptFunctions::rFactory(CBotVar* thisclass, CBotVar* var, CBotVar* result, int& exception, void* user)
 {
+    CObject*    pThis = static_cast<CObject *>(user);
+    assert(pThis != nullptr);
+    printf("Executing factory() as team %d\n", pThis->GetTeam());
+
     Error       err;
 
     exception = 0;
@@ -782,7 +786,7 @@ bool CScriptFunctions::rFactory(CBotVar* thisclass, CBotVar* var, CBotVar* resul
 
 // Instruction "object.research(type)"
 
-bool CScriptFunctions::rResearch(CBotVar* thisclass, CBotVar* var, CBotVar* result, int& exception)
+bool CScriptFunctions::rResearch(CBotVar* thisclass, CBotVar* var, CBotVar* result, int& exception, void* user)
 {
     Error       err;
 
@@ -863,7 +867,7 @@ bool CScriptFunctions::rResearch(CBotVar* thisclass, CBotVar* var, CBotVar* resu
 
 // Instruction "object.takeoff()"
 
-bool CScriptFunctions::rTakeOff(CBotVar* thisclass, CBotVar* var, CBotVar* result, int& exception)
+bool CScriptFunctions::rTakeOff(CBotVar* thisclass, CBotVar* var, CBotVar* result, int& exception, void* user)
 {
     Error       err;
 
@@ -3142,7 +3146,7 @@ void PrepareFilename(CBotString &filename)
 // get the filename as a parameter
 
 // execution
-bool CScriptFunctions::rfconstruct (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception)
+bool CScriptFunctions::rfconstruct (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception, void* user)
 {
     CBotString  mode;
 
@@ -3220,7 +3224,7 @@ CBotTypResult CScriptFunctions::cfconstruct (CBotVar* pThis, CBotVar* &pVar)
 // destructor of the class
 
 // execution
-bool CScriptFunctions::rfdestruct (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception)
+bool CScriptFunctions::rfdestruct (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception, void* user)
 {
     // retrieve the item "handle"
     pVar = pThis->GetItem("handle");
@@ -3246,7 +3250,7 @@ bool CScriptFunctions::rfdestruct (CBotVar* pThis, CBotVar* pVar, CBotVar* pResu
 // get the r/w mode as a parameter
 
 // execution
-bool CScriptFunctions::rfopen (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception)
+bool CScriptFunctions::rfopen (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception, void* user)
 {
     // there must be a parameter
     if ( pVar == NULL ) { Exception = CBotErrLowParam; return false; }
@@ -3339,7 +3343,7 @@ CBotTypResult CScriptFunctions::cfopen (CBotVar* pThis, CBotVar* &pVar)
 // process FILE :: close
 
 // execeution
-bool CScriptFunctions::rfclose (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception)
+bool CScriptFunctions::rfclose (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception, void* user)
 {
     // it shouldn't be any parameters
     if (pVar != NULL) { Exception = CBotErrOverParam; return false; }
@@ -3382,7 +3386,7 @@ CBotTypResult CScriptFunctions::cfclose (CBotVar* pThis, CBotVar* &pVar)
 // process FILE :: writeln
 
 // execution
-bool CScriptFunctions::rfwrite (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception)
+bool CScriptFunctions::rfwrite (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception, void* user)
 {
     // there must be a parameter
     if ( pVar == NULL ) { Exception = CBotErrLowParam; return false; }
@@ -3433,7 +3437,7 @@ CBotTypResult CScriptFunctions::cfwrite (CBotVar* pThis, CBotVar* &pVar)
 // process FILE :: readln
 
 // execution
-bool CScriptFunctions::rfread(CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception)
+bool CScriptFunctions::rfread(CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception, void* user)
 {
     // it shouldn't be any parameters
     if (pVar != NULL) { Exception = CBotErrOverParam; return false; }
@@ -3482,7 +3486,7 @@ CBotTypResult CScriptFunctions::cfread (CBotVar* pThis, CBotVar* &pVar)
 
 
 // execution
-bool CScriptFunctions::rfeof (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception)
+bool CScriptFunctions::rfeof (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception, void* user)
 {
     // it should not be any parameter
     if ( pVar != NULL ) { Exception = CBotErrOverParam; return false; }
@@ -3548,7 +3552,7 @@ CBotTypResult CScriptFunctions::cPointConstructor(CBotVar* pThis, CBotVar* &var)
 
 //Execution of the class "point".
 
-bool CScriptFunctions::rPointConstructor(CBotVar* pThis, CBotVar* var, CBotVar* pResult, int& Exception)
+bool CScriptFunctions::rPointConstructor(CBotVar* pThis, CBotVar* var, CBotVar* pResult, int& Exception, void* user)
 {
     CBotVar     *pX, *pY, *pZ;
 
