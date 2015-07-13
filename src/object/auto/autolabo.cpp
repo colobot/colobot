@@ -122,7 +122,7 @@ Error CAutoLabo::StartAction(int param)
 
     m_research = static_cast<ResearchType>(param);
 
-    if ( g_researchDone & m_research )
+    if ( m_main->IsResearchDone(m_research) )
     {
         return ERR_LABO_ALREADY;
     }
@@ -352,12 +352,9 @@ bool CAutoLabo::EventProcess(const Event &event)
         }
         else
         {
-            g_researchDone |= m_research;  // research done
+            m_main->MarkResearchDone(m_research);  // research done
 
-            m_main->WriteFreeParam();
-
-            Event newEvent(EVENT_UPDINTERFACE);
-            m_eventQueue->AddEvent(newEvent);
+            m_eventQueue->AddEvent(Event(EVENT_UPDINTERFACE));
             UpdateInterface();
 
             power = m_object->GetPower();
@@ -514,8 +511,8 @@ void CAutoLabo::UpdateInterface()
     pw = static_cast< Ui::CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
     if ( pw == 0 )  return;
 
-    DeadInterface(pw, EVENT_OBJECT_RiPAW, g_researchEnable&RESEARCH_iPAW);
-    DeadInterface(pw, EVENT_OBJECT_RiGUN, g_researchEnable&RESEARCH_iGUN);
+    DeadInterface(pw, EVENT_OBJECT_RiPAW, m_main->IsResearchEnabled(RESEARCH_iPAW));
+    DeadInterface(pw, EVENT_OBJECT_RiGUN, m_main->IsResearchEnabled(RESEARCH_iGUN));
 
     OkayButton(pw, EVENT_OBJECT_RiPAW);
     OkayButton(pw, EVENT_OBJECT_RiGUN);
@@ -541,27 +538,10 @@ void CAutoLabo::OkayButton(Ui::CWindow *pw, EventType event)
 
 bool CAutoLabo::TestResearch(EventType event)
 {
-    if ( event == EVENT_OBJECT_RiPAW )  return (g_researchDone & RESEARCH_iPAW);
-    if ( event == EVENT_OBJECT_RiGUN )  return (g_researchDone & RESEARCH_iGUN);
+    if ( event == EVENT_OBJECT_RiPAW )  return m_main->IsResearchDone(RESEARCH_iPAW);
+    if ( event == EVENT_OBJECT_RiGUN )  return m_main->IsResearchDone(RESEARCH_iGUN);
 
-    return false;
-}
-
-// Indicates a search as made.
-
-void CAutoLabo::SetResearch(EventType event)
-{
-
-
-    if ( event == EVENT_OBJECT_RiPAW )  g_researchDone |= RESEARCH_iPAW;
-    if ( event == EVENT_OBJECT_RiGUN )  g_researchDone |= RESEARCH_iGUN;
-
-    m_main->WriteFreeParam();
-
-    Event   newEvent(EVENT_UPDINTERFACE);
-//    m_eventQueue->MakeEvent(newEvent, EVENT_UPDINTERFACE);
-    m_eventQueue->AddEvent(newEvent);
-    UpdateInterface();
+    return m_main;
 }
 
 // Plays the sound of the manipulator arm.
@@ -609,4 +589,3 @@ bool CAutoLabo::Read(CLevelParserLine* line)
 
     return true;
 }
-

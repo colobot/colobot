@@ -158,6 +158,32 @@ void CAutoFactory::SetProgram(const char* program)
     strcpy(m_program, program);
 }
 
+ObjectType ObjectTypeFromFactoryButton(EventType eventType)
+{
+    if ( eventType == EVENT_OBJECT_FACTORYwa )  return OBJECT_MOBILEwa;
+    if ( eventType == EVENT_OBJECT_FACTORYta )  return OBJECT_MOBILEta;
+    if ( eventType == EVENT_OBJECT_FACTORYfa )  return OBJECT_MOBILEfa;
+    if ( eventType == EVENT_OBJECT_FACTORYia )  return OBJECT_MOBILEia;
+    if ( eventType == EVENT_OBJECT_FACTORYws )  return OBJECT_MOBILEws;
+    if ( eventType == EVENT_OBJECT_FACTORYts )  return OBJECT_MOBILEts;
+    if ( eventType == EVENT_OBJECT_FACTORYfs )  return OBJECT_MOBILEfs;
+    if ( eventType == EVENT_OBJECT_FACTORYis )  return OBJECT_MOBILEis;
+    if ( eventType == EVENT_OBJECT_FACTORYwc )  return OBJECT_MOBILEwc;
+    if ( eventType == EVENT_OBJECT_FACTORYtc )  return OBJECT_MOBILEtc;
+    if ( eventType == EVENT_OBJECT_FACTORYfc )  return OBJECT_MOBILEfc;
+    if ( eventType == EVENT_OBJECT_FACTORYic )  return OBJECT_MOBILEic;
+    if ( eventType == EVENT_OBJECT_FACTORYwi )  return OBJECT_MOBILEwi;
+    if ( eventType == EVENT_OBJECT_FACTORYti )  return OBJECT_MOBILEti;
+    if ( eventType == EVENT_OBJECT_FACTORYfi )  return OBJECT_MOBILEfi;
+    if ( eventType == EVENT_OBJECT_FACTORYii )  return OBJECT_MOBILEii;
+    if ( eventType == EVENT_OBJECT_FACTORYrt )  return OBJECT_MOBILErt;
+    if ( eventType == EVENT_OBJECT_FACTORYrc )  return OBJECT_MOBILErc;
+    if ( eventType == EVENT_OBJECT_FACTORYrr )  return OBJECT_MOBILErr;
+    if ( eventType == EVENT_OBJECT_FACTORYrs )  return OBJECT_MOBILErs;
+    if ( eventType == EVENT_OBJECT_FACTORYsa )  return OBJECT_MOBILEsa;
+
+    return OBJECT_NULL;
+}
 
 // Management of an event.
 
@@ -184,28 +210,7 @@ bool CAutoFactory::EventProcess(const Event &event)
             CreateInterface(true);
         }
 
-        type = OBJECT_NULL;
-        if ( event.type == EVENT_OBJECT_FACTORYwa )  type = OBJECT_MOBILEwa;
-        if ( event.type == EVENT_OBJECT_FACTORYta )  type = OBJECT_MOBILEta;
-        if ( event.type == EVENT_OBJECT_FACTORYfa )  type = OBJECT_MOBILEfa;
-        if ( event.type == EVENT_OBJECT_FACTORYia )  type = OBJECT_MOBILEia;
-        if ( event.type == EVENT_OBJECT_FACTORYws )  type = OBJECT_MOBILEws;
-        if ( event.type == EVENT_OBJECT_FACTORYts )  type = OBJECT_MOBILEts;
-        if ( event.type == EVENT_OBJECT_FACTORYfs )  type = OBJECT_MOBILEfs;
-        if ( event.type == EVENT_OBJECT_FACTORYis )  type = OBJECT_MOBILEis;
-        if ( event.type == EVENT_OBJECT_FACTORYwc )  type = OBJECT_MOBILEwc;
-        if ( event.type == EVENT_OBJECT_FACTORYtc )  type = OBJECT_MOBILEtc;
-        if ( event.type == EVENT_OBJECT_FACTORYfc )  type = OBJECT_MOBILEfc;
-        if ( event.type == EVENT_OBJECT_FACTORYic )  type = OBJECT_MOBILEic;
-        if ( event.type == EVENT_OBJECT_FACTORYwi )  type = OBJECT_MOBILEwi;
-        if ( event.type == EVENT_OBJECT_FACTORYti )  type = OBJECT_MOBILEti;
-        if ( event.type == EVENT_OBJECT_FACTORYfi )  type = OBJECT_MOBILEfi;
-        if ( event.type == EVENT_OBJECT_FACTORYii )  type = OBJECT_MOBILEii;
-        if ( event.type == EVENT_OBJECT_FACTORYrt )  type = OBJECT_MOBILErt;
-        if ( event.type == EVENT_OBJECT_FACTORYrc )  type = OBJECT_MOBILErc;
-        if ( event.type == EVENT_OBJECT_FACTORYrr )  type = OBJECT_MOBILErr;
-        if ( event.type == EVENT_OBJECT_FACTORYrs )  type = OBJECT_MOBILErs;
-        if ( event.type == EVENT_OBJECT_FACTORYsa )  type = OBJECT_MOBILEsa;
+        type = ObjectTypeFromFactoryButton(event.type);
 
         Error err = StartAction(type);
         if( err != ERR_OK && err != ERR_GENERIC )
@@ -817,110 +822,8 @@ void CAutoFactory::UpdateInterface()
 
 void CAutoFactory::UpdateButton(Ui::CWindow *pw, EventType event, bool bBusy)
 {
-    bool        bEnable = true;
-
     EnableInterface(pw, event, !bBusy);
-
-    if ( event == EVENT_OBJECT_FACTORYta )
-    {
-        bEnable = g_researchDone&RESEARCH_TANK;
-    }
-    if ( event == EVENT_OBJECT_FACTORYfa )
-    {
-        bEnable = g_researchDone&RESEARCH_FLY;
-    }
-    if ( event == EVENT_OBJECT_FACTORYia )
-    {
-        bEnable = g_researchDone&RESEARCH_iPAW;
-    }
-
-    if ( event == EVENT_OBJECT_FACTORYws )
-    {
-        bEnable = g_researchDone&RESEARCH_SNIFFER;
-    }
-    if ( event == EVENT_OBJECT_FACTORYts )
-    {
-        bEnable = ( (g_researchDone&RESEARCH_SNIFFER) &&
-                    (g_researchDone&RESEARCH_TANK)    );
-    }
-    if ( event == EVENT_OBJECT_FACTORYfs )
-    {
-        bEnable = ( (g_researchDone&RESEARCH_SNIFFER) &&
-                    (g_researchDone&RESEARCH_FLY)     );
-    }
-    if ( event == EVENT_OBJECT_FACTORYis )
-    {
-        bEnable = ( (g_researchDone&RESEARCH_SNIFFER) &&
-                    (g_researchDone&RESEARCH_iPAW)    );
-    }
-
-    if ( event == EVENT_OBJECT_FACTORYwc )
-    {
-        bEnable = g_researchDone&RESEARCH_CANON;
-    }
-    if ( event == EVENT_OBJECT_FACTORYtc )
-    {
-        bEnable = ( (g_researchDone&RESEARCH_CANON) &&
-                    (g_researchDone&RESEARCH_TANK)  );
-    }
-    if ( event == EVENT_OBJECT_FACTORYfc )
-    {
-        bEnable = ( (g_researchDone&RESEARCH_CANON) &&
-                    (g_researchDone&RESEARCH_FLY)   );
-    }
-    if ( event == EVENT_OBJECT_FACTORYic )
-    {
-        bEnable = ( (g_researchDone&RESEARCH_CANON) &&
-                    (g_researchDone&RESEARCH_iPAW)  );
-    }
-
-    if ( event == EVENT_OBJECT_FACTORYwi )
-    {
-        bEnable = g_researchDone&RESEARCH_iGUN;
-    }
-    if ( event == EVENT_OBJECT_FACTORYti )
-    {
-        bEnable = ( (g_researchDone&RESEARCH_iGUN) &&
-                    (g_researchDone&RESEARCH_TANK) );
-    }
-    if ( event == EVENT_OBJECT_FACTORYfi )
-    {
-        bEnable = ( (g_researchDone&RESEARCH_iGUN) &&
-                    (g_researchDone&RESEARCH_FLY)  );
-    }
-    if ( event == EVENT_OBJECT_FACTORYii )
-    {
-        bEnable = ( (g_researchDone&RESEARCH_iGUN) &&
-                    (g_researchDone&RESEARCH_iPAW) );
-    }
-
-    if ( event == EVENT_OBJECT_FACTORYrt )
-    {
-        bEnable = ( (g_researchDone&RESEARCH_THUMP) &&
-                    (g_researchDone&RESEARCH_TANK)  );
-    }
-    if ( event == EVENT_OBJECT_FACTORYrc )
-    {
-        bEnable = ( (g_researchDone&RESEARCH_PHAZER) &&
-                    (g_researchDone&RESEARCH_TANK)   );
-    }
-    if ( event == EVENT_OBJECT_FACTORYrr )
-    {
-        bEnable = ( (g_researchDone&RESEARCH_RECYCLER) &&
-                    (g_researchDone&RESEARCH_TANK)     );
-    }
-    if ( event == EVENT_OBJECT_FACTORYrs )
-    {
-        bEnable = ( (g_researchDone&RESEARCH_SHIELD) &&
-                    (g_researchDone&RESEARCH_TANK)   );
-    }
-
-    if ( event == EVENT_OBJECT_FACTORYsa )
-    {
-        bEnable = g_researchDone&RESEARCH_SUBM;
-    }
-
-    DeadInterface(pw, event, bEnable);
+    DeadInterface(pw, event, m_main->CanFactory(ObjectTypeFromFactoryButton(event)));
 }
 
 // Plays the sound of the manipulator arm.
@@ -934,4 +837,3 @@ void CAutoFactory::SoundManip(float time, float amplitude, float frequency)
     m_sound->AddEnvelope(i, 0.5f*amplitude, 1.0f*frequency, time-0.1f, SOPER_CONTINUE);
     m_sound->AddEnvelope(i, 0.0f, 0.3f*frequency, 0.1f, SOPER_STOP);
 }
-

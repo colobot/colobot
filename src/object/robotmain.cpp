@@ -113,9 +113,6 @@ const float UNIT = 4.0f;
 
 // Global variables.
 
-int     g_build;            // constructible buildings
-int     g_researchDone;         // research done
-long    g_researchEnable;       // research available
 float   g_unit;             // conversion factor
 
 
@@ -231,9 +228,9 @@ CRobotMain::CRobotMain(CController* controller)
     m_cameraPan  = 0.0f;
     m_cameraZoom = 0.0f;
 
-    g_build = 0;
-    g_researchDone = 0;  // no research done
-    g_researchEnable = 0;
+    m_build = 0;
+    m_researchDone = 0;  // no research done
+    m_researchEnable = 0;
     g_unit = UNIT;
 
     m_gamerName = "";
@@ -1124,7 +1121,7 @@ void CRobotMain::ExecuteCmd(char *cmd)
 
         if (strcmp(cmd, "fly") == 0)
         {
-            g_researchDone |= RESEARCH_FLY;
+            m_researchDone |= RESEARCH_FLY;
 
             m_eventQueue->AddEvent(Event(EVENT_UPDINTERFACE));
             return;
@@ -1132,7 +1129,7 @@ void CRobotMain::ExecuteCmd(char *cmd)
 
         if (strcmp(cmd, "allresearch") == 0)
         {
-            g_researchDone = -1;  // all research are done
+            m_researchDone = -1;  // all research are done
 
             m_eventQueue->AddEvent(Event(EVENT_UPDINTERFACE));
             return;
@@ -1140,7 +1137,7 @@ void CRobotMain::ExecuteCmd(char *cmd)
 
         if (strcmp(cmd, "allbuildings") == 0)
         {
-            g_build = -1;  // all buildings are available
+            m_build = -1;  // all buildings are available
 
             m_eventQueue->AddEvent(Event(EVENT_UPDINTERFACE));
             return;
@@ -1148,8 +1145,8 @@ void CRobotMain::ExecuteCmd(char *cmd)
 
         if (strcmp(cmd, "all") == 0)
         {
-            g_researchDone = -1;  // all research are done
-            g_build = -1;  // all buildings are available
+            m_researchDone = -1;  // all research are done
+            m_build = -1;  // all buildings are available
 
             m_eventQueue->AddEvent(Event(EVENT_UPDINTERFACE));
             return;
@@ -2896,9 +2893,9 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
     if (!resetObject)
     {
-        g_build = 0;
-        g_researchDone = 0;  // no research done
-        g_researchEnable = 0;
+        m_build = 0;
+        m_researchDone = 0;  // no research done
+        m_researchEnable = 0;
 
         FlushDisplayInfo();
         m_terrain->FlushMaterials();
@@ -3877,19 +3874,19 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
             if (line->GetCommand() == "EnableBuild" && !resetObject)
             {
-                g_build |= line->GetParam("type")->AsBuildFlag();
+                m_build |= line->GetParam("type")->AsBuildFlag();
                 continue;
             }
 
             if (line->GetCommand() == "EnableResearch" && !resetObject)
             {
-                g_researchEnable |= line->GetParam("type")->AsResearchFlag();
+                m_researchEnable |= line->GetParam("type")->AsResearchFlag();
                 continue;
             }
 
             if (line->GetCommand() == "DoneResearch" && read[0] == 0 && !resetObject) // not loading file?
             {
-                g_researchDone |= line->GetParam("type")->AsResearchFlag();
+                m_researchDone |= line->GetParam("type")->AsResearchFlag();
                 continue;
             }
 
@@ -3913,14 +3910,14 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
         if (strcmp(base, "freemissions") == 0 && !resetObject)  // free play?
         {
-            g_researchDone = m_freeResearch;
+            m_researchDone = m_freeResearch;
 
-            g_build = m_freeBuild;
-            g_build &= ~BUILD_RESEARCH;
-            g_build &= ~BUILD_LABO;
-            g_build |= BUILD_FACTORY;
-            g_build |= BUILD_GFLAT;
-            g_build |= BUILD_FLAG;
+            m_build = m_freeBuild;
+            m_build &= ~BUILD_RESEARCH;
+            m_build &= ~BUILD_LABO;
+            m_build |= BUILD_FACTORY;
+            m_build |= BUILD_GFLAT;
+            m_build |= BUILD_FLAG;
         }
 
         if (!resetObject && !fixScene)
@@ -4939,7 +4936,7 @@ bool CRobotMain::IOWriteScene(const char *filename, const char *filecbot, char *
     levelParser.AddLine(std::move(line));
 
     line.reset(new CLevelParserLine("DoneResearch"));
-    line->AddParam("bits", CLevelParserParamUPtr{new CLevelParserParam(static_cast<int>(g_researchDone))});
+    line->AddParam("bits", CLevelParserParamUPtr{new CLevelParserParam(static_cast<int>(m_researchDone))});
     levelParser.AddLine(std::move(line));
 
     float sleep, delay, magnetic, progress;
@@ -5131,7 +5128,7 @@ CObject* CRobotMain::IOReadScene(const char *filename, const char *filecbot)
             m_map->ZoomMap(line->GetParam("zoom")->AsFloat());
 
         if (line->GetCommand() == "DoneResearch")
-            g_researchDone = line->GetParam("bits")->AsInt();
+            m_researchDone = line->GetParam("bits")->AsInt();
 
         if (line->GetCommand() == "BlitzMode")
         {
@@ -5249,8 +5246,8 @@ CObject* CRobotMain::IOReadScene(const char *filename, const char *filecbot)
 //! Writes the global parameters for free play
 void CRobotMain::WriteFreeParam()
 {
-    m_freeResearch |= g_researchDone;
-    m_freeBuild    |= g_build;
+    m_freeResearch |= m_researchDone;
+    m_freeBuild    |= m_build;
 
     if (m_gamerName == "") return;
 
@@ -5577,7 +5574,7 @@ Error CRobotMain::CheckEndMission(bool frame)
         {
             if (m_endTakeResearch != 0)
             {
-                if (m_endTakeResearch != (m_endTakeResearch&g_researchDone))
+                if (m_endTakeResearch != (m_endTakeResearch&m_researchDone))
                 {
                     m_missionResult = ERR_MISSION_NOTERM;
                 }
@@ -6224,4 +6221,120 @@ const std::string& CRobotMain::GetTeamName(int id)
 {
     if(m_teamNames.count(id) == 0) return NO_TEAM_NAME;
     return m_teamNames[id];
+}
+
+
+int CRobotMain::GetEnableBuild()
+{
+    return m_build;
+}
+
+void CRobotMain::SetEnableBuild(int enableBuild)
+{
+    m_build = enableBuild;
+}
+
+int CRobotMain::GetEnableResearch()
+{
+    return m_researchEnable;
+}
+
+void CRobotMain::SetEnableResearch(int enableResearch)
+{
+    m_researchEnable = enableResearch;
+}
+
+int CRobotMain::GetDoneResearch()
+{
+    return m_researchDone;
+}
+
+void CRobotMain::SetDoneResearch(int doneResearch)
+{
+    m_researchDone = doneResearch;
+}
+
+
+bool CRobotMain::IsBuildingEnabled(BuildType type)
+{
+    return (m_build & type) != 0;
+}
+
+bool CRobotMain::IsBuildingEnabled(ObjectType type)
+{
+    if(type == OBJECT_DERRICK) return IsBuildingEnabled(BUILD_DERRICK);
+    if(type == OBJECT_FACTORY) return IsBuildingEnabled(BUILD_FACTORY);
+    if(type == OBJECT_STATION) return IsBuildingEnabled(BUILD_STATION);
+    if(type == OBJECT_CONVERT) return IsBuildingEnabled(BUILD_CONVERT);
+    if(type == OBJECT_REPAIR) return IsBuildingEnabled(BUILD_REPAIR);
+    if(type == OBJECT_TOWER) return IsBuildingEnabled(BUILD_TOWER);
+    if(type == OBJECT_RESEARCH) return IsBuildingEnabled(BUILD_RESEARCH);
+    if(type == OBJECT_RADAR) return IsBuildingEnabled(BUILD_RADAR);
+    if(type == OBJECT_ENERGY) return IsBuildingEnabled(BUILD_ENERGY);
+    if(type == OBJECT_LABO) return IsBuildingEnabled(BUILD_LABO);
+    if(type == OBJECT_NUCLEAR) return IsBuildingEnabled(BUILD_NUCLEAR);
+    if(type == OBJECT_INFO) return IsBuildingEnabled(BUILD_INFO);
+    if(type == OBJECT_PARA) return IsBuildingEnabled(BUILD_PARA);
+    if(type == OBJECT_DESTROYER) return IsBuildingEnabled(BUILD_DESTROYER);
+
+    return true;
+}
+
+bool CRobotMain::IsResearchEnabled(ResearchType type)
+{
+    return (m_researchEnable & type) != 0;
+}
+
+bool CRobotMain::IsResearchDone(ResearchType type)
+{
+    return (m_researchDone & type) != 0;
+}
+
+void CRobotMain::MarkResearchDone(ResearchType type)
+{
+    m_researchDone |= type;
+    WriteFreeParam();
+}
+
+Error CRobotMain::CanBuildError(ObjectType type)
+{
+    if(!IsBuildingEnabled(type)) return ERR_BUILD_DISABLED;
+
+    if(type == OBJECT_TOWER && !IsResearchDone(RESEARCH_TOWER)) return ERR_BUILD_RESEARCH;
+    if(type == OBJECT_ATOMIC && !IsResearchDone(RESEARCH_ATOMIC)) return ERR_BUILD_RESEARCH;
+
+    return ERR_OK;
+}
+
+bool CRobotMain::CanBuild(ObjectType type)
+{
+    return CanBuildError(type) == ERR_OK;
+}
+
+Error CRobotMain::CanFactoryError(ObjectType type)
+{
+    ToolType tool = GetToolFromObject(type);
+    DriveType drive = GetDriveFromObject(type);
+
+    if (tool == ToolType::Sniffer        && !IsResearchDone(RESEARCH_SNIFFER) ) return ERR_BUILD_RESEARCH;
+    if (tool == ToolType::Shooter        && !IsResearchDone(RESEARCH_CANON)   ) return ERR_BUILD_RESEARCH;
+    if (tool == ToolType::OrganicShooter && !IsResearchDone(RESEARCH_iGUN)    ) return ERR_BUILD_RESEARCH;
+
+    if (drive == DriveType::Tracked      && !IsResearchDone(RESEARCH_TANK)    ) return ERR_BUILD_RESEARCH;
+    if (drive == DriveType::Winged       && !IsResearchDone(RESEARCH_FLY)     ) return ERR_BUILD_RESEARCH;
+    if (drive == DriveType::Legged       && !IsResearchDone(RESEARCH_iPAW)    ) return ERR_BUILD_RESEARCH;
+    if (drive == DriveType::BigTracked   && !IsResearchDone(RESEARCH_TANK)    ) return ERR_BUILD_RESEARCH; // NOTE: Subber is not BigTracked! It currently counts as Other
+
+    if (type == OBJECT_MOBILErt          && !IsResearchDone(RESEARCH_THUMP)   ) return ERR_BUILD_RESEARCH;
+    if (type == OBJECT_MOBILErc          && !IsResearchDone(RESEARCH_PHAZER)  ) return ERR_BUILD_RESEARCH;
+    if (type == OBJECT_MOBILErr          && !IsResearchDone(RESEARCH_RECYCLER)) return ERR_BUILD_RESEARCH;
+    if (type == OBJECT_MOBILErs          && !IsResearchDone(RESEARCH_SHIELD)  ) return ERR_BUILD_RESEARCH;
+    if (type == OBJECT_MOBILEsa          && !IsResearchDone(RESEARCH_SUBM)    ) return ERR_BUILD_DISABLED; // Can be only researched manually in Scene file
+
+    return ERR_OK;
+}
+
+bool CRobotMain::CanFactory(ObjectType type)
+{
+    return CanFactoryError(type) == ERR_OK;
 }

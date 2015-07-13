@@ -63,7 +63,6 @@ protected:
     void        UpdateInterface();
     void        OkayButton(Ui::CWindow *pw, EventType event);
     bool        TestResearch(EventType event);
-    void        SetResearch(EventType event);
     void        SoundManip(float time, float amplitude, float frequency);
 
 protected:
@@ -77,4 +76,3 @@ protected:
     int                 m_partiSphere;
     int                 m_soundChannel;
 };
-

@@ -51,6 +51,13 @@ DriveType GetDriveFromObject(ObjectType type)
         case OBJECT_MOBILEis:
             return DriveType::Legged;
 
+        case OBJECT_MOBILErt:
+        case OBJECT_MOBILErc:
+        case OBJECT_MOBILErr:
+        case OBJECT_MOBILErs:
+            // NOTE: Subber is not BigTracked!
+            return DriveType::BigTracked;
+
         default:
             return DriveType::Other;
     }

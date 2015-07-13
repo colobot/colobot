@@ -103,7 +103,7 @@ Error CAutoResearch::StartAction(int param)
 
     m_research = static_cast<ResearchType>(param);
 
-    if ( g_researchDone & m_research )
+    if ( m_main->IsResearchDone(m_research) )
     {
         return ERR_RESEARCH_ALREADY;
     }
@@ -246,12 +246,9 @@ bool CAutoResearch::EventProcess(const Event &event)
         }
         else
         {
-            g_researchDone |= m_research;  // research done
+            m_main->MarkResearchDone(m_research);  // research done
 
-            m_main->WriteFreeParam();
-
-            Event newEvent(EVENT_UPDINTERFACE);
-            m_eventQueue->AddEvent(newEvent);
+            m_eventQueue->AddEvent(Event(EVENT_UPDINTERFACE));
             UpdateInterface();
 
             m_main->DisplayError(INFO_RESEARCH, m_object);
@@ -399,14 +396,14 @@ void CAutoResearch::UpdateInterface()
     pw = static_cast< Ui::CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
     if ( pw == 0 )  return;
 
-    DeadInterface(pw, EVENT_OBJECT_RTANK,   g_researchEnable&RESEARCH_TANK);
-    DeadInterface(pw, EVENT_OBJECT_RFLY,    g_researchEnable&RESEARCH_FLY);
-    DeadInterface(pw, EVENT_OBJECT_RTHUMP,  g_researchEnable&RESEARCH_THUMP);
-    DeadInterface(pw, EVENT_OBJECT_RCANON,  g_researchEnable&RESEARCH_CANON);
-    DeadInterface(pw, EVENT_OBJECT_RTOWER,  g_researchEnable&RESEARCH_TOWER);
-    DeadInterface(pw, EVENT_OBJECT_RPHAZER, g_researchEnable&RESEARCH_PHAZER);
-    DeadInterface(pw, EVENT_OBJECT_RSHIELD, g_researchEnable&RESEARCH_SHIELD);
-    DeadInterface(pw, EVENT_OBJECT_RATOMIC, g_researchEnable&RESEARCH_ATOMIC);
+    DeadInterface(pw, EVENT_OBJECT_RTANK,   m_main->IsResearchEnabled(RESEARCH_TANK));
+    DeadInterface(pw, EVENT_OBJECT_RFLY,    m_main->IsResearchEnabled(RESEARCH_FLY));
+    DeadInterface(pw, EVENT_OBJECT_RTHUMP,  m_main->IsResearchEnabled(RESEARCH_THUMP));
+    DeadInterface(pw, EVENT_OBJECT_RCANON,  m_main->IsResearchEnabled(RESEARCH_CANON));
+    DeadInterface(pw, EVENT_OBJECT_RTOWER,  m_main->IsResearchEnabled(RESEARCH_TOWER));
+    DeadInterface(pw, EVENT_OBJECT_RPHAZER, m_main->IsResearchEnabled(RESEARCH_PHAZER));
+    DeadInterface(pw, EVENT_OBJECT_RSHIELD, m_main->IsResearchEnabled(RESEARCH_SHIELD));
+    DeadInterface(pw, EVENT_OBJECT_RATOMIC, m_main->IsResearchEnabled(RESEARCH_ATOMIC));
 
     OkayButton(pw, EVENT_OBJECT_RTANK);
     OkayButton(pw, EVENT_OBJECT_RFLY);
@@ -467,14 +464,14 @@ void CAutoResearch::OkayButton(Ui::CWindow *pw, EventType event)
 
 bool CAutoResearch::TestResearch(EventType event)
 {
-    if ( event == EVENT_OBJECT_RTANK   )  return (g_researchDone & RESEARCH_TANK  );
-    if ( event == EVENT_OBJECT_RFLY    )  return (g_researchDone & RESEARCH_FLY   );
-    if ( event == EVENT_OBJECT_RTHUMP  )  return (g_researchDone & RESEARCH_THUMP );
-    if ( event == EVENT_OBJECT_RCANON  )  return (g_researchDone & RESEARCH_CANON );
-    if ( event == EVENT_OBJECT_RTOWER  )  return (g_researchDone & RESEARCH_TOWER );
-    if ( event == EVENT_OBJECT_RPHAZER )  return (g_researchDone & RESEARCH_PHAZER  );
-    if ( event == EVENT_OBJECT_RSHIELD )  return (g_researchDone & RESEARCH_SHIELD);
-    if ( event == EVENT_OBJECT_RATOMIC )  return (g_researchDone & RESEARCH_ATOMIC);
+    if ( event == EVENT_OBJECT_RTANK   )  return m_main->IsResearchDone(RESEARCH_TANK);
+    if ( event == EVENT_OBJECT_RFLY    )  return m_main->IsResearchDone(RESEARCH_FLY);
+    if ( event == EVENT_OBJECT_RTHUMP  )  return m_main->IsResearchDone(RESEARCH_THUMP);
+    if ( event == EVENT_OBJECT_RCANON  )  return m_main->IsResearchDone(RESEARCH_CANON);
+    if ( event == EVENT_OBJECT_RTOWER  )  return m_main->IsResearchDone(RESEARCH_TOWER);
+    if ( event == EVENT_OBJECT_RPHAZER )  return m_main->IsResearchDone(RESEARCH_PHAZER);
+    if ( event == EVENT_OBJECT_RSHIELD )  return m_main->IsResearchDone(RESEARCH_SHIELD);
+    if ( event == EVENT_OBJECT_RATOMIC )  return m_main->IsResearchDone(RESEARCH_ATOMIC);
 
     return false;
 }
@@ -578,4 +575,3 @@ bool CAutoResearch::Read(CLevelParserLine* line)
 
     return true;
 }
-

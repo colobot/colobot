@@ -638,6 +638,7 @@ DriveType CLevelParserParam::ToDriveType(std::string value)
     if (value == "Tracked") return DriveType::Tracked;
     if (value == "Winged" ) return DriveType::Winged;
     if (value == "Legged" ) return DriveType::Legged;
+    if (value == "BigTracked") return DriveType::BigTracked;
     if (value == "Other"  ) return DriveType::Other;
     return static_cast<DriveType>(Cast<int>(value, "drive"));
 }

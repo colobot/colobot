@@ -470,7 +470,7 @@ bool CScriptFunctions::rStopMusic(CBotVar* var, CBotVar* result, int& exception,
 
 bool CScriptFunctions::rGetBuild(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-    result->SetValInt(g_build);
+    result->SetValInt(CRobotMain::GetInstancePointer()->GetEnableBuild());
     return true;
 }
 
@@ -478,7 +478,7 @@ bool CScriptFunctions::rGetBuild(CBotVar* var, CBotVar* result, int& exception, 
 
 bool CScriptFunctions::rGetResearchEnable(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-    result->SetValInt(g_researchEnable);
+    result->SetValInt(CRobotMain::GetInstancePointer()->GetEnableResearch());
     return true;
 }
 
@@ -486,7 +486,7 @@ bool CScriptFunctions::rGetResearchEnable(CBotVar* var, CBotVar* result, int& ex
 
 bool CScriptFunctions::rGetResearchDone(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-    result->SetValInt(g_researchDone);
+    result->SetValInt(CRobotMain::GetInstancePointer()->GetDoneResearch());
     return true;
 }
 
@@ -494,7 +494,7 @@ bool CScriptFunctions::rGetResearchDone(CBotVar* var, CBotVar* result, int& exce
 
 bool CScriptFunctions::rSetBuild(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-    g_build = var->GetValInt();
+    CRobotMain::GetInstancePointer()->SetEnableBuild(var->GetValInt());
     CApplication::GetInstancePointer()->GetEventQueue()->AddEvent(Event(EVENT_UPDINTERFACE));
     return true;
 }
@@ -503,7 +503,7 @@ bool CScriptFunctions::rSetBuild(CBotVar* var, CBotVar* result, int& exception, 
 
 bool CScriptFunctions::rSetResearchEnable(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-    g_researchEnable = var->GetValInt();
+    CRobotMain::GetInstancePointer()->SetEnableResearch(var->GetValInt());
     CApplication::GetInstancePointer()->GetEventQueue()->AddEvent(Event(EVENT_UPDINTERFACE));
     return true;
 }
@@ -512,7 +512,7 @@ bool CScriptFunctions::rSetResearchEnable(CBotVar* var, CBotVar* result, int& ex
 
 bool CScriptFunctions::rSetResearchDone(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-    g_researchDone = var->GetValInt();
+    CRobotMain::GetInstancePointer()->SetDoneResearch(var->GetValInt());
     CApplication::GetInstancePointer()->GetEventQueue()->AddEvent(Event(EVENT_UPDINTERFACE));
     return true;
 }
@@ -749,112 +749,9 @@ bool CScriptFunctions::rFactory(CBotVar* thisclass, CBotVar* var, CBotVar* resul
             return false;
         }
 
-        bool bEnable = false;
+        err = CRobotMain::GetInstancePointer()->CanFactoryError(type);
 
-        if ( type == OBJECT_MOBILEwa )
-        {
-            bEnable = true;
-        }
-        if ( type == OBJECT_MOBILEta )
-        {
-            bEnable = g_researchDone&RESEARCH_TANK;
-        }
-        if ( type == OBJECT_MOBILEfa )
-        {
-            bEnable = g_researchDone&RESEARCH_FLY;
-        }
-        if ( type == OBJECT_MOBILEia )
-        {
-            bEnable = g_researchDone&RESEARCH_iPAW;
-        }
-
-        if ( type == OBJECT_MOBILEws )
-        {
-            bEnable = g_researchDone&RESEARCH_SNIFFER;
-        }
-        if ( type == OBJECT_MOBILEts )
-        {
-            bEnable = ( (g_researchDone&RESEARCH_SNIFFER) &&
-            (g_researchDone&RESEARCH_TANK)    );
-        }
-        if ( type == OBJECT_MOBILEfs )
-        {
-            bEnable = ( (g_researchDone&RESEARCH_SNIFFER) &&
-            (g_researchDone&RESEARCH_FLY)     );
-        }
-        if ( type == OBJECT_MOBILEis )
-        {
-            bEnable = ( (g_researchDone&RESEARCH_SNIFFER) &&
-            (g_researchDone&RESEARCH_iPAW)    );
-        }
-
-        if ( type == OBJECT_MOBILEwc )
-        {
-            bEnable = g_researchDone&RESEARCH_CANON;
-        }
-        if ( type == OBJECT_MOBILEtc )
-        {
-            bEnable = ( (g_researchDone&RESEARCH_CANON) &&
-            (g_researchDone&RESEARCH_TANK)  );
-        }
-        if ( type == OBJECT_MOBILEfc )
-        {
-            bEnable = ( (g_researchDone&RESEARCH_CANON) &&
-            (g_researchDone&RESEARCH_FLY)   );
-        }
-        if ( type == OBJECT_MOBILEic )
-        {
-            bEnable = ( (g_researchDone&RESEARCH_CANON) &&
-            (g_researchDone&RESEARCH_iPAW)  );
-        }
-
-        if ( type == OBJECT_MOBILEwi )
-        {
-            bEnable = g_researchDone&RESEARCH_iGUN;
-        }
-        if ( type == OBJECT_MOBILEti )
-        {
-            bEnable = ( (g_researchDone&RESEARCH_iGUN) &&
-            (g_researchDone&RESEARCH_TANK) );
-        }
-        if ( type == OBJECT_MOBILEfi )
-        {
-            bEnable = ( (g_researchDone&RESEARCH_iGUN) &&
-            (g_researchDone&RESEARCH_FLY)  );
-        }
-        if ( type == OBJECT_MOBILEii )
-        {
-            bEnable = ( (g_researchDone&RESEARCH_iGUN) &&
-            (g_researchDone&RESEARCH_iPAW) );
-        }
-
-        if ( type == OBJECT_MOBILErt )
-        {
-            bEnable = ( (g_researchDone&RESEARCH_THUMP) &&
-            (g_researchDone&RESEARCH_TANK)  );
-        }
-        if ( type == OBJECT_MOBILErc )
-        {
-            bEnable = ( (g_researchDone&RESEARCH_PHAZER) &&
-            (g_researchDone&RESEARCH_TANK)   );
-        }
-        if ( type == OBJECT_MOBILErr )
-        {
-            bEnable = ( (g_researchDone&RESEARCH_RECYCLER) &&
-            (g_researchDone&RESEARCH_TANK)     );
-        }
-        if ( type == OBJECT_MOBILErs )
-        {
-            bEnable = ( (g_researchDone&RESEARCH_SHIELD) &&
-            (g_researchDone&RESEARCH_TANK)   );
-        }
-
-        if ( type == OBJECT_MOBILEsa )
-        {
-            bEnable = g_researchDone&RESEARCH_SUBM;
-        }
-
-        if ( bEnable )
+        if ( err == ERR_OK )
         {
             if ( automat != nullptr )
             {
@@ -864,8 +761,6 @@ bool CScriptFunctions::rFactory(CBotVar* thisclass, CBotVar* var, CBotVar* resul
             else
                 err = ERR_GENERIC;
         }
-        else
-            err = ERR_BUILD_DISABLED;
     }
     else
         err = ERR_WRONG_OBJ;
@@ -914,11 +809,11 @@ bool CScriptFunctions::rResearch(CBotVar* thisclass, CBotVar* var, CBotVar* resu
     CAuto* automat = center->GetAuto();
 
     if ( thisType == OBJECT_RESEARCH ||
-        thisType == OBJECT_LABO      )
+         thisType == OBJECT_LABO      )
     {
         bool ok = false;
         if ( type == RESEARCH_iPAW       ||
-            type == RESEARCH_iGUN        )
+             type == RESEARCH_iGUN        )
         {
             if ( thisType != OBJECT_LABO )
                 err = ERR_WRONG_OBJ;
@@ -934,7 +829,7 @@ bool CScriptFunctions::rResearch(CBotVar* thisclass, CBotVar* var, CBotVar* resu
         }
         if ( ok )
         {
-            bool bEnable = ( g_researchEnable & type );
+            bool bEnable = CRobotMain::GetInstancePointer()->IsResearchEnabled(type);
             if ( bEnable )
             {
                 if ( automat != nullptr )
@@ -1499,41 +1394,7 @@ bool CScriptFunctions::rCanBuild(CBotVar* var, CBotVar* result, int& exception, 
     ObjectType category  = static_cast<ObjectType>(var->GetValInt()); //get category parameter
     exception = 0;
 
-    bool can = false;
-
-    if ( (category == OBJECT_DERRICK   && (g_build & BUILD_DERRICK))   ||
-        (category == OBJECT_FACTORY   && (g_build & BUILD_FACTORY))   ||
-        (category == OBJECT_STATION   && (g_build & BUILD_STATION))   ||
-        (category == OBJECT_CONVERT   && (g_build & BUILD_CONVERT))   ||
-        (category == OBJECT_REPAIR    && (g_build & BUILD_REPAIR))    ||
-        (category == OBJECT_TOWER     && (g_build & BUILD_TOWER))     ||
-        (category == OBJECT_RESEARCH  && (g_build & BUILD_RESEARCH))  ||
-        (category == OBJECT_RADAR     && (g_build & BUILD_RADAR))     ||
-        (category == OBJECT_ENERGY    && (g_build & BUILD_ENERGY))    ||
-        (category == OBJECT_LABO      && (g_build & BUILD_LABO))      ||
-        (category == OBJECT_NUCLEAR   && (g_build & BUILD_NUCLEAR))   ||
-        (category == OBJECT_INFO      && (g_build & BUILD_INFO))      ||
-        (category == OBJECT_PARA      && (g_build & BUILD_PARA))      ||
-        (category == OBJECT_DESTROYER && (g_build & BUILD_DESTROYER)))
-    {
-
-        // if we want to build not researched one
-        if ( (category == OBJECT_TOWER   && !(g_researchDone & RESEARCH_TOWER)) ||
-            (category == OBJECT_NUCLEAR && !(g_researchDone & RESEARCH_ATOMIC))
-        )
-        {
-            can = false;
-        }
-        else
-        {
-            can = true;
-        }
-
-    }
-
-    result->SetValInt(can);
-
-
+    result->SetValInt(CRobotMain::GetInstancePointer()->CanBuild(category));
     return true;
 }
 
@@ -1546,53 +1407,25 @@ bool CScriptFunctions::rBuild(CBotVar* var, CBotVar* result, int& exception, voi
     CObject*    pThis = static_cast<CObject *>(user);
     ObjectType  oType;
     ObjectType  category;
-    Error       err = ERR_BUILD_DISABLED;
+    Error       err;
 
     exception = 0;
 
     oType = pThis->GetType();
 
     if ( oType != OBJECT_MOBILEfa &&  // allowed only for grabber bots && humans
-        oType != OBJECT_MOBILEta &&
-        oType != OBJECT_MOBILEwa &&
-        oType != OBJECT_MOBILEia &&
-        oType != OBJECT_HUMAN &&
-        oType != OBJECT_TECH)
+         oType != OBJECT_MOBILEta &&
+         oType != OBJECT_MOBILEwa &&
+         oType != OBJECT_MOBILEia &&
+         oType != OBJECT_HUMAN    &&
+         oType != OBJECT_TECH      )
     {
         err = ERR_MANIP_VEH; // Wrong object
     }
     else
     {
         category = static_cast<ObjectType>(var->GetValInt()); // get category parameter
-        if ( (category == OBJECT_DERRICK   && (g_build & BUILD_DERRICK))   ||
-            (category == OBJECT_FACTORY   && (g_build & BUILD_FACTORY))   ||
-            (category == OBJECT_STATION   && (g_build & BUILD_STATION))   ||
-            (category == OBJECT_CONVERT   && (g_build & BUILD_CONVERT))   ||
-            (category == OBJECT_REPAIR    && (g_build & BUILD_REPAIR))    ||
-            (category == OBJECT_TOWER     && (g_build & BUILD_TOWER))     ||
-            (category == OBJECT_RESEARCH  && (g_build & BUILD_RESEARCH))  ||
-            (category == OBJECT_RADAR     && (g_build & BUILD_RADAR))     ||
-            (category == OBJECT_ENERGY    && (g_build & BUILD_ENERGY))    ||
-            (category == OBJECT_LABO      && (g_build & BUILD_LABO))      ||
-            (category == OBJECT_NUCLEAR   && (g_build & BUILD_NUCLEAR))   ||
-            (category == OBJECT_INFO      && (g_build & BUILD_INFO))      ||
-            (category == OBJECT_PARA      && (g_build & BUILD_PARA))      ||
-            (category == OBJECT_DESTROYER && (g_build & BUILD_DESTROYER)))
-        {
-
-            // if we want to build not researched one
-            if ( (category == OBJECT_TOWER   && !(g_researchDone & RESEARCH_TOWER)) ||
-                (category == OBJECT_NUCLEAR && !(g_researchDone & RESEARCH_ATOMIC))
-            )
-            {
-                err = ERR_BUILD_RESEARCH;
-            }
-            else
-            {
-                err = ERR_OK;
-            }
-
-        }
+        err = CRobotMain::GetInstancePointer()->CanBuildError(category);
 
         if (pThis->GetIgnoreBuildCheck())
             err = ERR_OK;
@@ -3617,7 +3450,7 @@ bool CScriptFunctions::rfread(CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, i
         Exception = CBotErrNotOpen;
         return false;
     }
-    
+
     char    chaine[2000];
     int     i;
     for (i = 0; i < 2000; i++) chaine[i] = 0;

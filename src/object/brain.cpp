@@ -573,7 +573,7 @@ bool CBrain::EventProcess(const Event &event)
         axeY *= 0.5f;
     }
 
-    if ( (g_researchDone&RESEARCH_FLY) == 0 )
+    if ( !m_main->IsResearchDone(RESEARCH_FLY) )
     {
         axeZ = -1.0f;  // tomb
     }
@@ -1540,85 +1540,81 @@ bool CBrain::CreateInterface(bool bSelect)
         pos.x = ox+sx*0.0f;
         pos.y = oy+sy*1.0f;
         pw->CreateButton(pos, ddim, 128+35, EVENT_OBJECT_BRESEARCH);
-        DeadInterface(pw, EVENT_OBJECT_BRESEARCH, g_build&BUILD_RESEARCH);
+        DeadInterface(pw, EVENT_OBJECT_BRESEARCH, m_main->CanBuild(OBJECT_RESEARCH));
 
         pos.x = ox+sx*0.9f;
         pos.y = oy+sy*1.0f;
         pw->CreateButton(pos, ddim, 128+32, EVENT_OBJECT_BFACTORY);
-        DeadInterface(pw, EVENT_OBJECT_BFACTORY, g_build&BUILD_FACTORY);
+        DeadInterface(pw, EVENT_OBJECT_BFACTORY, m_main->CanBuild(OBJECT_FACTORY));
 
         pos.x = ox+sx*1.8f;
         pos.y = oy+sy*1.0f;
         pw->CreateButton(pos, ddim, 128+34, EVENT_OBJECT_BCONVERT);
-        DeadInterface(pw, EVENT_OBJECT_BCONVERT, g_build&BUILD_CONVERT);
+        DeadInterface(pw, EVENT_OBJECT_BCONVERT, m_main->CanBuild(OBJECT_CONVERT));
 
         pos.x = ox+sx*2.7f;
         pos.y = oy+sy*1.0f;
         pw->CreateButton(pos, ddim, 128+36, EVENT_OBJECT_BSTATION);
-        DeadInterface(pw, EVENT_OBJECT_BSTATION, g_build&BUILD_STATION);
+        DeadInterface(pw, EVENT_OBJECT_BSTATION, m_main->CanBuild(OBJECT_STATION));
 
         pos.x = ox+sx*3.6f;
         pos.y = oy+sy*1.0f;
         pw->CreateButton(pos, ddim, 128+40, EVENT_OBJECT_BRADAR);
-        DeadInterface(pw, EVENT_OBJECT_BRADAR, g_build&BUILD_RADAR);
+        DeadInterface(pw, EVENT_OBJECT_BRADAR, m_main->CanBuild(OBJECT_RADAR));
 
         pos.x = ox+sx*4.5f;
         pos.y = oy+sy*1.0f;
         pw->CreateButton(pos, ddim, 128+41, EVENT_OBJECT_BREPAIR);
-        DeadInterface(pw, EVENT_OBJECT_BREPAIR, g_build&BUILD_REPAIR);
+        DeadInterface(pw, EVENT_OBJECT_BREPAIR, m_main->CanBuild(OBJECT_REPAIR));
 
         pos.x = ox+sx*5.4f;
         pos.y = oy+sy*1.0f;
         pw->CreateButton(pos, ddim, 128+44, EVENT_OBJECT_BINFO);
-        DeadInterface(pw, EVENT_OBJECT_BINFO, g_build&BUILD_INFO);
+        DeadInterface(pw, EVENT_OBJECT_BINFO, m_main->CanBuild(OBJECT_INFO));
 
         pos.x = ox+sx*0.0f;
         pos.y = oy+sy*0.1f;
         pw->CreateButton(pos, ddim, 128+37, EVENT_OBJECT_BTOWER);
-        DeadInterface(pw, EVENT_OBJECT_BTOWER,
-                      (g_build&BUILD_TOWER) &&
-                      (g_researchDone & RESEARCH_TOWER));
+        DeadInterface(pw, EVENT_OBJECT_BTOWER, m_main->CanBuild(OBJECT_TOWER));
 
         pos.x = ox+sx*0.9f;
         pos.y = oy+sy*0.1f;
         pw->CreateButton(pos, ddim, 128+39, EVENT_OBJECT_BENERGY);
-        DeadInterface(pw, EVENT_OBJECT_BENERGY, g_build&BUILD_ENERGY);
+        DeadInterface(pw, EVENT_OBJECT_BENERGY, m_main->CanBuild(OBJECT_ENERGY));
 
         pos.x = ox+sx*1.8f;
         pos.y = oy+sy*0.1f;
         pw->CreateButton(pos, ddim, 128+33, EVENT_OBJECT_BDERRICK);
-        DeadInterface(pw, EVENT_OBJECT_BDERRICK, g_build&BUILD_DERRICK);
+        DeadInterface(pw, EVENT_OBJECT_BDERRICK, m_main->CanBuild(OBJECT_DERRICK));
 
         pos.x = ox+sx*2.7f;
         pos.y = oy+sy*0.1f;
         pw->CreateButton(pos, ddim, 128+42, EVENT_OBJECT_BNUCLEAR);
-        DeadInterface(pw, EVENT_OBJECT_BNUCLEAR,
-                      (g_build&BUILD_NUCLEAR) &&
-                      (g_researchDone & RESEARCH_ATOMIC));
+        DeadInterface(pw, EVENT_OBJECT_BNUCLEAR, m_main->CanBuild(OBJECT_NUCLEAR));
 
         pos.x = ox+sx*3.6f;
         pos.y = oy+sy*0.1f;
         pw->CreateButton(pos, ddim, 128+38, EVENT_OBJECT_BLABO);
-        DeadInterface(pw, EVENT_OBJECT_BLABO, g_build&BUILD_LABO);
+        DeadInterface(pw, EVENT_OBJECT_BLABO, m_main->CanBuild(OBJECT_LABO));
 
         pos.x = ox+sx*4.5f;
         pos.y = oy+sy*0.1f;
         pw->CreateButton(pos, ddim, 128+46, EVENT_OBJECT_BPARA);
-        DeadInterface(pw, EVENT_OBJECT_BPARA, g_build&BUILD_PARA);
+        DeadInterface(pw, EVENT_OBJECT_BPARA, m_main->CanBuild(OBJECT_PARA));
 
         pos.x = ox+sx*5.4f;
         pos.y = oy+sy*0.1f;
         pw->CreateButton(pos, ddim, 128+41, EVENT_OBJECT_BDESTROYER);
-        DeadInterface(pw, EVENT_OBJECT_BDESTROYER, g_build&BUILD_DESTROYER);
+        DeadInterface(pw, EVENT_OBJECT_BDESTROYER, m_main->CanBuild(OBJECT_DESTROYER));
 
-        if ( g_build&BUILD_GFLAT )
+        if ( m_main->IsBuildingEnabled(BUILD_GFLAT) )
         {
             pos.x = ox+sx*9.0f;
             pos.y = oy+sy*0.5f;
             pw->CreateButton(pos, dim, 64+47, EVENT_OBJECT_GFLAT);
         }
 
-        if ( g_build&BUILD_FLAG )
+        if ( m_main->IsBuildingEnabled(BUILD_FLAG) )
         {
             pos.x = ox+sx*10.1f;
             pos.y = oy+sy*0.5f;
@@ -1660,7 +1656,7 @@ bool CBrain::CreateInterface(bool bSelect)
         pw->CreateButton(pos, dim, 40, EVENT_OBJECT_SEARCH);
         DefaultEnter(pw, EVENT_OBJECT_SEARCH);
 
-        if ( g_build&BUILD_GFLAT )
+        if ( m_main->IsBuildingEnabled(BUILD_GFLAT) )
         {
             pos.x = ox+sx*9.0f;
             pos.y = oy+sy*0.5f;
@@ -2407,8 +2403,8 @@ void CBrain::UpdateInterface()
     }
     else
     {
-        DeadInterface(pw, EVENT_OBJECT_GASUP,   g_researchDone&RESEARCH_FLY);
-        DeadInterface(pw, EVENT_OBJECT_GASDOWN, g_researchDone&RESEARCH_FLY);
+        DeadInterface(pw, EVENT_OBJECT_GASUP,   m_main->IsResearchDone(RESEARCH_FLY));
+        DeadInterface(pw, EVENT_OBJECT_GASDOWN, m_main->IsResearchDone(RESEARCH_FLY));
     }
 
     if ( type == OBJECT_HUMAN    ||

@@ -331,6 +331,46 @@ public:
     //! Returns team name for the given team id
     const std::string& GetTeamName(int id);
 
+    //! Get/set enabled buildings
+    //@{
+    int         GetEnableBuild();
+    void        SetEnableBuild(int enableBuild);
+    //@}
+    //! Get/set enabled researches
+    //@{
+    int         GetEnableResearch();
+    void        SetEnableResearch(int enableResearch);
+    //@}
+    //! Get/set done researches
+    //@{
+    int         GetDoneResearch();
+    void        SetDoneResearch(int doneResearch);
+    //@}
+
+    //! Returns true if the given building is enabled
+    //@{
+    bool        IsBuildingEnabled(BuildType type);
+    bool        IsBuildingEnabled(ObjectType type);
+    //@}
+    //! Returns true if the given research is enabled
+    bool        IsResearchEnabled(ResearchType type);
+    //! Returns true if the given research is done
+    bool        IsResearchDone(ResearchType type);
+    //! Marks research as done
+    void        MarkResearchDone(ResearchType type);
+
+    //! Retruns true if all requirements to build this object are met (EnableBuild + DoneResearch)
+    //@{
+    bool        CanBuild(ObjectType type);
+    Error       CanBuildError(ObjectType type);
+    //@}
+
+    //! Retruns true if all requirements to create this object in BotFactory are met (DoneResearch)
+    //@{
+    bool        CanFactory(ObjectType type);
+    Error       CanFactoryError(ObjectType type);
+    //@}
+
 protected:
     bool        EventFrame(const Event &event);
     bool        EventObject(const Event &event);
@@ -508,6 +548,10 @@ protected:
 
     std::string     m_gamerName;
 
+    int             m_build;            // constructible buildings
+    int             m_researchDone;     // research done
+    long            m_researchEnable;   // research available
+
     int             m_freeBuild;        // constructible buildings
     int             m_freeResearch;     // researches possible
 
@@ -534,4 +578,3 @@ protected:
     int             m_autosaveSlots;
     float           m_autosaveLast;
 };
-
