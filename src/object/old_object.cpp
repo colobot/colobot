@@ -938,7 +938,7 @@ void COldObject::Write(CLevelParserLine* line)
     if ( GetGunGoalH() != 0.0f )
         line->AddParam("aimH", CLevelParserParamUPtr{new CLevelParserParam(GetGunGoalH())});
 
-    if ( GetAnimateOnReset() != 0 )
+    if ( GetAnimateOnReset() )
     {
         line->AddParam("resetCap", CLevelParserParamUPtr{new CLevelParserParam(GetAnimateOnReset())});
     }
