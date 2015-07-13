@@ -187,16 +187,6 @@ bool COldObjectInterface::GetTrainer()
     throw std::logic_error("GetTrainer: not implemented!");
 }
 
-void COldObjectInterface::SetResetCap(ResetCap cap)
-{
-    throw std::logic_error("SetResetCap: not implemented!");
-}
-
-ResetCap COldObjectInterface::GetResetCap()
-{
-    throw std::logic_error("GetResetCap: not implemented!");
-}
-
 void COldObjectInterface::SetMasterParticle(int part, int parti)
 {
     throw std::logic_error("SetMasterParticle: not implemented!");

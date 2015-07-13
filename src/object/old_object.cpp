@@ -289,8 +289,6 @@ COldObject::COldObject(int id)
     m_character.wheelLeft  = 1.0f;
     m_character.wheelRight = 1.0f;
 
-    m_resetCap      = RESET_NONE;
-
     m_cameraType = Gfx::CAM_TYPE_BACK;
     m_cameraDist = 50.0f;
     m_bCameraLock = false;
@@ -940,9 +938,9 @@ void COldObject::Write(CLevelParserLine* line)
     if ( GetGunGoalH() != 0.0f )
         line->AddParam("aimH", CLevelParserParamUPtr{new CLevelParserParam(GetGunGoalH())});
 
-    if ( GetResetCap() != 0 )
+    if ( GetAnimateOnReset() != 0 )
     {
-        line->AddParam("resetCap", CLevelParserParamUPtr{new CLevelParserParam(static_cast<int>(GetResetCap()))});
+        line->AddParam("resetCap", CLevelParserParamUPtr{new CLevelParserParam(GetAnimateOnReset())});
     }
 
     if ( m_bVirusMode )
@@ -1012,7 +1010,7 @@ void COldObject::Read(CLevelParserLine* line)
     SetGunGoalV(line->GetParam("aimV")->AsFloat(0.0f));
     SetGunGoalH(line->GetParam("aimH")->AsFloat(0.0f));
 
-    SetResetCap(static_cast<ResetCap>(line->GetParam("resetCap")->AsInt(0)));
+    SetAnimateOnReset(line->GetParam("resetCap")->AsBool(false));
     m_bBurn = line->GetParam("burnMode")->AsBool(false);
     m_bVirusMode = line->GetParam("virusMode")->AsBool(false);
     m_virusTime = line->GetParam("virusTime")->AsFloat(0.0f);
@@ -1454,16 +1452,6 @@ void COldObject::SetManual(bool bManual)
 bool COldObject::GetManual()
 {
     return m_bManual;
-}
-
-void COldObject::SetResetCap(ResetCap cap)
-{
-    m_resetCap = cap;
-}
-
-ResetCap COldObject::GetResetCap()
-{
-    return m_resetCap;
 }
 
 // Management of the particle master.

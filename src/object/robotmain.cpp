@@ -3680,7 +3680,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                             ->SetSoluceName(const_cast<char*>(line->GetParam("soluce")->AsPath("ai").c_str()));
 
                     if (line->GetParam("reset")->AsBool(false))
-                        oldObj->SetResetCap(RESET_MOVE);
+                        oldObj->SetAnimateOnReset(true);
                 }
 
                 rankObj ++;
@@ -5325,10 +5325,10 @@ void CRobotMain::ResetCreate()
 
         for (CObject* obj : m_objMan->GetAllObjects())
         {
-            ResetCap cap = obj->GetResetCap();
-            if (cap == RESET_NONE) continue;
-
-            m_engine->GetPyroManager()->Create(Gfx::PT_RESET, obj);
+            if (obj->GetAnimateOnReset())
+            {
+                m_engine->GetPyroManager()->Create(Gfx::PT_RESET, obj);
+            }
         }
     }
     catch (const CLevelParserException& e)

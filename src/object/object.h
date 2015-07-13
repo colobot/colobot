@@ -118,6 +118,11 @@ public:
     //! Sets the transparency of object
     virtual void SetTransparency(float value) = 0;
 
+    //! Sets flag controlling animation effect on level reset
+    void SetAnimateOnReset(bool animateOnReset);
+    //! Returns flag controlling animation effect on level reset
+    bool GetAnimateOnReset();
+
 protected:
     //! Transform crash sphere by object's world matrix
     virtual void TransformCrashSphere(Math::Sphere& crashSphere) = 0;
@@ -133,4 +138,5 @@ protected:
     Math::Vector m_scale;
     std::vector<CrashSphere> m_crashSpheres; //!< crash spheres
     Math::Sphere m_cameraCollisionSphere;
+    bool m_animateOnReset;
 };

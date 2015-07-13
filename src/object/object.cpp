@@ -9,6 +9,7 @@ CObject::CObject(int id, ObjectType type)
     , m_position(0.0f, 0.0f, 0.0f)
     , m_rotation(0.0f, 0.0f, 0.0f)
     , m_scale(1.0f, 1.0f, 1.0f)
+    , m_animateOnReset(false)
 {
     m_implementedInterfaces.fill(false);
 }
@@ -91,4 +92,15 @@ Math::Sphere CObject::GetCameraCollisionSphere()
     TransformCrashSphere(transformedSphere);
     return transformedSphere;
 }
+
+bool CObject::GetAnimateOnReset()
+{
+    return m_animateOnReset;
+}
+
+void CObject::SetAnimateOnReset(bool animateOnReset)
+{
+    m_animateOnReset = animateOnReset;
+}
+
 

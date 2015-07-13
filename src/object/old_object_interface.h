@@ -64,12 +64,6 @@ enum class ExplosionType
     Water = 3,
 };
 
-enum ResetCap
-{
-    RESET_NONE   = 0,
-    RESET_MOVE   = 1
-};
-
 class COldObjectInterface
 {
 public:
@@ -117,9 +111,6 @@ public:
 
     virtual void        SetTrainer(bool bEnable);
     virtual bool        GetTrainer();
-
-    virtual ResetCap    GetResetCap();
-    virtual void        SetResetCap(ResetCap resetCap);
 
     virtual void        SetMasterParticle(int part, int parti);
 

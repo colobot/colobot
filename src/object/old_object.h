@@ -150,9 +150,6 @@ public:
     void        SetManual(bool bManual);
     bool        GetManual();
 
-    void        SetResetCap(ResetCap cap) override;
-    ResetCap    GetResetCap() override;
-
     void        SetMasterParticle(int part, int parti) override;
 
     void        SetPower(CObject* power) override;
@@ -392,12 +389,6 @@ protected:
     CObject*    m_objectDeselectList[OBJECTMAXDESELLIST];
 
     int         m_partiSel[4];
-
-    ResetCap    m_resetCap;
-    bool        m_bResetBusy;
-    Math::Vector    m_resetPosition;
-    Math::Vector    m_resetAngle;
-    Program*        m_resetRun;
 
     float m_infoReturn;
 
