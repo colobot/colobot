@@ -135,7 +135,7 @@ Error CTaskAdvance::IsEnded()
         if ( length != 0.0f )
         {
             pos = m_startPos+((pos-m_startPos)*m_totalLength/length);
-            m_object->SetPosition(0, pos);
+            m_object->SetPosition(pos);
         }
         return ERR_STOP;
     }

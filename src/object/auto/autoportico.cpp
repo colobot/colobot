@@ -110,10 +110,10 @@ void CAutoPortico::Start(int param)
     pos = m_object->GetPosition();
     m_finalPos = pos;
     pos.z += PORTICO_TIME_MOVE*5.0f;  // back to start
-    m_object->SetPosition(0, pos);
+    m_object->SetPosition(pos);
     m_finalPos.z += PORTICO_TIME_OPEN*5.3f;
 
-    m_object->SetPosition(1, Math::Vector(0.0f, PORTICO_POSa, 0.0f));
+    m_object->SetPartPosition(1, Math::Vector(0.0f, PORTICO_POSa, 0.0f));
     m_object->SetAngleY(2,  PORTICO_ANGLE1a);
     m_object->SetAngleY(3,  PORTICO_ANGLE2a);
     m_object->SetAngleY(4,  PORTICO_ANGLE3a);
@@ -198,7 +198,7 @@ bool CAutoPortico::EventProcess(const Event &event)
         {
             pos = m_object->GetPosition();
             pos.z -= event.rTime*5.0f;  // advance
-            m_object->SetPosition(0, pos);
+            m_object->SetPosition(pos);
 
             m_posTrack += event.rTime*0.5f;
             UpdateTrackMapping(m_posTrack, m_posTrack);
@@ -233,14 +233,14 @@ bool CAutoPortico::EventProcess(const Event &event)
             pos.x = 0.0f;
             pos.y = Progress(PORTICO_POSa, PORTICO_POSb, m_progress);
             pos.z = 0.0f;
-            m_object->SetPosition(1, pos);
+            m_object->SetPartPosition(1, pos);
         }
         else
         {
             pos.x = 0.0f;
             pos.y = PORTICO_POSb;
             pos.z = 0.0f;
-            m_object->SetPosition(1, pos);
+            m_object->SetPartPosition(1, pos);
 
             m_phase    = APOP_WAIT2;
             m_progress = 0.0f;
@@ -274,7 +274,7 @@ bool CAutoPortico::EventProcess(const Event &event)
         {
             pos = m_object->GetPosition();
             pos.z += event.rTime*5.3f;  // back
-            m_object->SetPosition(0, pos);
+            m_object->SetPosition(pos);
 
             m_posTrack -= event.rTime*1.0f;
             UpdateTrackMapping(m_posTrack, m_posTrack);
@@ -353,8 +353,8 @@ bool CAutoPortico::Abort()
 {
     CObject*    pObj;
 
-    m_object->SetPosition(0, m_finalPos);
-    m_object->SetPosition(1, Math::Vector(0.0f, PORTICO_POSb, 0.0f));
+    m_object->SetPosition(m_finalPos);
+    m_object->SetPartPosition(1, Math::Vector(0.0f, PORTICO_POSb, 0.0f));
     m_object->SetAngleY(2,  PORTICO_ANGLE1b);
     m_object->SetAngleY(3,  PORTICO_ANGLE2b);
     m_object->SetAngleY(4,  PORTICO_ANGLE3b);

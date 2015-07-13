@@ -81,15 +81,6 @@ Math::Vector COldObjectInterface::GetTilt()
 {
     throw std::logic_error("GetTilt: not implemented!");
 }
-void COldObjectInterface::SetPosition(int part, const Math::Vector &pos)
-{
-    throw std::logic_error("SetPosition: not implemented!");
-}
-
-Math::Vector COldObjectInterface::GetPosition(int part) const
-{
-    throw std::logic_error("GetPosition: not implemented!");
-}
 
 void COldObjectInterface::SetAngle(int part, const Math::Vector &angle)
 {

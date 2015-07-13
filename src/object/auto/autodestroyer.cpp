@@ -176,11 +176,11 @@ bool CAutoDestroyer::EventProcess(const Event &event)
         {
             pos = Math::Vector(0.0f, -10.0f, 0.0f);
             pos.y = -Math::Bounce(m_progress, 0.3f)*10.0f;
-            m_object->SetPosition(1, pos);
+            m_object->SetPartPosition(1, pos);
         }
         else
         {
-            m_object->SetPosition(1, Math::Vector(0.0f, -10.0f, 0.0f));
+            m_object->SetPartPosition(1, Math::Vector(0.0f, -10.0f, 0.0f));
             m_sound->Play(SOUND_REPAIR, m_object->GetPosition());
 
             m_phase    = ADEP_REPAIR;
@@ -210,11 +210,11 @@ bool CAutoDestroyer::EventProcess(const Event &event)
         {
             pos = Math::Vector(0.0f, -10.0f, 0.0f);
             pos.y = -(1.0f-m_progress)*10.0f;
-            m_object->SetPosition(1, pos);
+            m_object->SetPartPosition(1, pos);
         }
         else
         {
-            m_object->SetPosition(1, Math::Vector(0.0f, 0.0f, 0.0f));
+            m_object->SetPartPosition(1, Math::Vector(0.0f, 0.0f, 0.0f));
 
             m_phase    = ADEP_WAIT;
             m_progress = 0.0f;

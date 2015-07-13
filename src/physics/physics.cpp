@@ -1001,7 +1001,7 @@ void CPhysics::MotorUpdate(float aTime, float rTime)
             m_bLand = false;  // take off
             SetMotor(true);
             pos.y += 0.05f;  // small initial height (startup)
-            m_object->SetPosition(0, pos);
+            m_object->SetPosition(pos);
         }
     }
 
@@ -1605,7 +1605,7 @@ bool CPhysics::EventFrame(const Event &event)
          newpos.y != pos.y ||
          newpos.z != pos.z )
     {
-        m_object->SetPosition(0, newpos);
+        m_object->SetPosition(newpos);
     }
 
     MotorParticle(m_time, event.rTime);

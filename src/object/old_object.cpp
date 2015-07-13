@@ -1234,7 +1234,7 @@ Math::Vector COldObject::GetTilt()
 
 // Getes the position of center of the object.
 
-void COldObject::SetPosition(int part, const Math::Vector &pos)
+void COldObject::SetPartPosition(int part, const Math::Vector &pos)
 {
     m_objectPart[part].position = pos;
     m_objectPart[part].bTranslate = true;  // it will recalculate the matrices
@@ -1277,7 +1277,7 @@ void COldObject::SetPosition(int part, const Math::Vector &pos)
     }
 }
 
-Math::Vector COldObject::GetPosition(int part) const
+Math::Vector COldObject::GetPartPosition(int part) const
 {
     return m_objectPart[part].position;
 }
@@ -2117,7 +2117,7 @@ void COldObject::PartiFrame(float rTime)
             continue;
         }
 
-        SetPosition(i, pos);
+        SetPartPosition(i, pos);
 
         // Each song spins differently.
         switch( i%5 )
@@ -3319,7 +3319,12 @@ void COldObject::DeleteDeselList(CObject* pObj)
 
 Math::Vector COldObject::GetPosition() const
 {
-    return GetPosition(0);
+    return GetPartPosition(0);
+}
+
+void COldObject::SetPosition(const Math::Vector& pos)
+{
+    SetPartPosition(0, pos);
 }
 
 Math::Vector COldObject::GetRotation() const

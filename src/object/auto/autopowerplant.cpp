@@ -322,7 +322,7 @@ bool CAutoPowerPlant::EventProcess(const Event &event)
                 cargo->SetZoom(0, 1.0f);
                 cargo->SetLock(false);  // usable battery
                 dynamic_cast<CTransportableObject*>(cargo)->SetTransporter(m_object);
-                cargo->SetPosition(0, Math::Vector(0.0f, 3.0f, 0.0f));
+                cargo->SetPosition(Math::Vector(0.0f, 3.0f, 0.0f));
                 m_object->SetPower(cargo);
 
                 m_main->DisplayError(INFO_ENERGY, m_object);
@@ -454,7 +454,7 @@ void CAutoPowerPlant::CreatePower()
 
     pos = power->GetPosition();
     pos.y += 3.0f;
-    power->SetPosition(0, pos);
+    power->SetPosition(pos);
 }
 
 // Seeking the battery during manufacture.

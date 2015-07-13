@@ -152,8 +152,8 @@ begin:
                 m_object->SetAngleZ(1+i, Math::PI/2.0f-124.0f*Math::PI/180.0f);
                 m_object->SetAngleX(10+i, -10.0f*Math::PI/180.0f);
                 m_object->SetAngleX(18+i,  10.0f*Math::PI/180.0f);
-                m_object->SetPosition(10+i, Math::Vector(23.5f, 0.0f, -11.5f));
-                m_object->SetPosition(18+i, Math::Vector(23.5f, 0.0f,  11.5f));
+                m_object->SetPartPosition(10+i, Math::Vector(23.5f, 0.0f, -11.5f));
+                m_object->SetPartPosition(18+i, Math::Vector(23.5f, 0.0f,  11.5f));
             }
 
             pObj = m_main->GetSelectObject();
@@ -183,8 +183,8 @@ begin:
                 m_object->SetAngleZ(1+i, Math::PI/2.0f-124.0f*Math::PI/180.0f);
                 m_object->SetAngleX(10+i, -10.0f*Math::PI/180.0f);
                 m_object->SetAngleX(18+i,  10.0f*Math::PI/180.0f);
-                m_object->SetPosition(10+i, Math::Vector(23.5f, 0.0f, -11.5f));
-                m_object->SetPosition(18+i, Math::Vector(23.5f, 0.0f,  11.5f));
+                m_object->SetPartPosition(10+i, Math::Vector(23.5f, 0.0f, -11.5f));
+                m_object->SetPartPosition(18+i, Math::Vector(23.5f, 0.0f,  11.5f));
             }
         }
 
@@ -231,7 +231,7 @@ begin:
             m_finalPos = pos;
             pos.z += BASE_PORTICO_TIME_MOVE*5.0f;  // back
             pos.y += 10.0f;  // rises (the gate)
-            m_object->SetPosition(0, pos);
+            m_object->SetPosition(pos);
             MoveCargo();  // all cargo moves
 
             m_phase    = ABP_PORTICO_MOVE;
@@ -253,7 +253,7 @@ begin:
             pos = m_object->GetPosition();
             pos.y += 10000.0f;  // in space
             m_finalPos = pos;
-            m_object->SetPosition(0, pos);
+            m_object->SetPosition(pos);
 
             m_main->SetMovieLock(true);  // blocks everything until the end of the landing
             m_bMotor = true;  // lights the jet engine
@@ -328,7 +328,7 @@ begin:
         {
             pos = m_pos;
             pos.y += powf(1.0f-m_progress, 2.0f)*300.0f;
-            m_object->SetPosition(0, pos);
+            m_object->SetPosition(pos);
             MoveCargo();  // all cargo moves
 
             vibCir.z = sinf(m_time*Math::PI* 2.01f)*(Math::PI/150.0f)+
@@ -405,7 +405,7 @@ begin:
         {
             m_bMotor = false;  // put out the reactor
 
-            m_object->SetPosition(0, m_pos);  // setting down
+            m_object->SetPosition(m_pos);  // setting down
             m_object->SetCirVibration(Math::Vector(0.0f, 0.0f, 0.0f));
             MoveCargo();  // all cargo moves
 
@@ -536,8 +536,8 @@ begin:
             len = 7.0f-m_progress*(7.0f+11.5f);
             for ( i=0 ; i<8 ; i++ )
             {
-                m_object->SetPosition(10+i, Math::Vector(23.5f, 0.0f,  len));
-                m_object->SetPosition(18+i, Math::Vector(23.5f, 0.0f, -len));
+                m_object->SetPartPosition(10+i, Math::Vector(23.5f, 0.0f,  len));
+                m_object->SetPartPosition(18+i, Math::Vector(23.5f, 0.0f, -len));
                 m_object->SetAngleX(10+i, -10.0f*Math::PI/180.0f*m_progress);
                 m_object->SetAngleX(18+i,  10.0f*Math::PI/180.0f*m_progress);
             }
@@ -561,8 +561,8 @@ begin:
         {
             for ( i=0 ; i<8 ; i++ )
             {
-                m_object->SetPosition(10+i, Math::Vector(23.5f, 0.0f, -11.5f));
-                m_object->SetPosition(18+i, Math::Vector(23.5f, 0.0f,  11.5f));
+                m_object->SetPartPosition(10+i, Math::Vector(23.5f, 0.0f, -11.5f));
+                m_object->SetPartPosition(18+i, Math::Vector(23.5f, 0.0f,  11.5f));
                 m_object->SetAngleX(10+i, -10.0f*Math::PI/180.0f);
                 m_object->SetAngleX(18+i,  10.0f*Math::PI/180.0f);
             }
@@ -615,8 +615,8 @@ begin:
             len = 7.0f-(1.0f-m_progress)*(7.0f+11.5f);
             for ( i=0 ; i<8 ; i++ )
             {
-                m_object->SetPosition(10+i, Math::Vector(23.5f, 0.0f,  len));
-                m_object->SetPosition(18+i, Math::Vector(23.5f, 0.0f, -len));
+                m_object->SetPartPosition(10+i, Math::Vector(23.5f, 0.0f,  len));
+                m_object->SetPartPosition(18+i, Math::Vector(23.5f, 0.0f, -len));
                 m_object->SetAngleX(10+i, -10.0f*Math::PI/180.0f*(1.0f-m_progress));
                 m_object->SetAngleX(18+i,  10.0f*Math::PI/180.0f*(1.0f-m_progress));
             }
@@ -625,8 +625,8 @@ begin:
         {
             for ( i=0 ; i<8 ; i++ )
             {
-                m_object->SetPosition(10+i, Math::Vector(23.5f, 0.0f,  7.0f));
-                m_object->SetPosition(18+i, Math::Vector(23.5f, 0.0f, -7.0f));
+                m_object->SetPartPosition(10+i, Math::Vector(23.5f, 0.0f,  7.0f));
+                m_object->SetPartPosition(18+i, Math::Vector(23.5f, 0.0f, -7.0f));
                 m_object->SetAngleX(10+i, 0.0f);
                 m_object->SetAngleX(18+i, 0.0f);
             }
@@ -736,7 +736,7 @@ begin:
         {
             pos = m_pos;
             pos.y += powf(m_progress, 2.0f)*600.0f;
-            m_object->SetPosition(0, pos);
+            m_object->SetPosition(pos);
             MoveCargo();  // all cargo moves
 
             vibCir.z = sinf(m_time*Math::PI*19.01f)*(Math::PI/400.0f);
@@ -818,7 +818,7 @@ begin:
         {
             pos = m_object->GetPosition();
             pos.z -= event.rTime*5.0f;
-            m_object->SetPosition(0, pos);
+            m_object->SetPosition(pos);
             MoveCargo();  // all cargo moves
         }
         else
@@ -845,7 +845,7 @@ begin:
         {
             pos = m_object->GetPosition();
             pos.y -= event.rTime*(10.0f/BASE_PORTICO_TIME_DOWN);
-            m_object->SetPosition(0, pos);
+            m_object->SetPosition(pos);
             MoveCargo();  // all cargo moves
         }
         else
@@ -901,7 +901,7 @@ begin:
         {
             pos = m_object->GetPosition();
             pos.x += event.rTime*(2000.0f/BASE_TRANSIT_TIME);
-            m_object->SetPosition(0, pos);
+            m_object->SetPosition(pos);
             pos.x += 60.0f;
             m_camera->SetScriptLookat(pos);
         }
@@ -1079,7 +1079,7 @@ bool CAutoBase::Abort()
 
     if ( m_param == PARAM_PORTICO )  // gate on the porch?
     {
-        m_object->SetPosition(0, m_finalPos);
+        m_object->SetPosition(m_finalPos);
         MoveCargo();  // all cargo moves
 
         for ( i=0 ; i<8 ; i++ )
@@ -1087,8 +1087,8 @@ bool CAutoBase::Abort()
             m_object->SetAngleZ(1+i, Math::PI/2.0f-124.0f*Math::PI/180.0f);
             m_object->SetAngleX(10+i, -10.0f*Math::PI/180.0f);
             m_object->SetAngleX(18+i,  10.0f*Math::PI/180.0f);
-            m_object->SetPosition(10+i, Math::Vector(23.5f, 0.0f, -11.5f));
-            m_object->SetPosition(18+i, Math::Vector(23.5f, 0.0f,  11.5f));
+            m_object->SetPartPosition(10+i, Math::Vector(23.5f, 0.0f, -11.5f));
+            m_object->SetPartPosition(18+i, Math::Vector(23.5f, 0.0f,  11.5f));
         }
     }
     else
@@ -1101,7 +1101,7 @@ bool CAutoBase::Abort()
             m_bMotor = false;  // put out the jet engine
             m_bOpen = true;
 
-            m_object->SetPosition(0, m_pos);  // setting down
+            m_object->SetPosition(m_pos);  // setting down
             m_object->SetCirVibration(Math::Vector(0.0f, 0.0f, 0.0f));
             MoveCargo();  // all cargo moves
             for ( i=0 ; i<8 ; i++ )
@@ -1109,8 +1109,8 @@ bool CAutoBase::Abort()
                 m_object->SetAngleZ(1+i, Math::PI/2.0f-124.0f*Math::PI/180.0f);
                 m_object->SetAngleX(10+i, -10.0f*Math::PI/180.0f);
                 m_object->SetAngleX(18+i,  10.0f*Math::PI/180.0f);
-                m_object->SetPosition(10+i, Math::Vector(23.5f, 0.0f, -11.5f));
-                m_object->SetPosition(18+i, Math::Vector(23.5f, 0.0f,  11.5f));
+                m_object->SetPartPosition(10+i, Math::Vector(23.5f, 0.0f, -11.5f));
+                m_object->SetPartPosition(18+i, Math::Vector(23.5f, 0.0f,  11.5f));
             }
 
             m_main->SetMovieLock(false);  // you can play!
@@ -1272,7 +1272,7 @@ void CAutoBase::MoveCargo()
         oPos.y += obj->GetCharacter()->height;
         oPos.x += sPos.x-m_lastPos.x;
         oPos.z += sPos.z-m_lastPos.z;
-        obj->SetPosition(0, oPos);
+        obj->SetPosition(oPos);
     }
 
     m_lastPos = sPos;

@@ -157,7 +157,7 @@ bool CAutoDerrick::EventProcess(const Event &event)
             pos.x = 0.0f;
             pos.z = 0.0f;
             pos.y = -2.0f*Math::Rand();
-            m_object->SetPosition(1, pos);  // up / down the drill
+            m_object->SetPartPosition(1, pos);  // up / down the drill
 
             m_object->SetAngleY(1, Math::Rand()*0.5f);  // rotates the drill
         }
@@ -220,7 +220,7 @@ bool CAutoDerrick::EventProcess(const Event &event)
             pos.x = 0.0f;
             pos.z = 0.0f;
             pos.y = -m_progress*16.0f;
-            m_object->SetPosition(1, pos);  // down the drill
+            m_object->SetPartPosition(1, pos);  // down the drill
 
             angle = m_object->GetAngleY(1);
             angle += event.rTime*8.0f;
@@ -273,7 +273,7 @@ bool CAutoDerrick::EventProcess(const Event &event)
             pos.x = 0.0f;
             pos.z = 0.0f;
             pos.y = -(1.0f-m_progress)*16.0f;
-            m_object->SetPosition(1, pos);  // back the drill
+            m_object->SetPartPosition(1, pos);  // back the drill
 
             angle = m_object->GetAngleY(1);
             angle -= event.rTime*2.0f;
@@ -368,7 +368,7 @@ bool CAutoDerrick::EventProcess(const Event &event)
                     pos.y = m_cargoPos.y;
                     cargo->SetLock(false);  // object usable
                 }
-                cargo->SetPosition(0, pos);
+                cargo->SetPosition(pos);
             }
         }
         else
@@ -505,7 +505,7 @@ void CAutoDerrick::CreateCargo(Math::Vector pos, float angle, ObjectType type,
 
     pos = cargo->GetPosition();
     pos.y += height;
-    cargo->SetPosition(0, pos);
+    cargo->SetPosition(pos);
 }
 
 // Look if there is already a key.

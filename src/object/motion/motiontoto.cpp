@@ -92,7 +92,7 @@ void CMotionToto::Create(Math::Vector pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_VEHICLE);  // this is a moving object
     m_object->SetObjectRank(0, rank);
     modelManager->AddModelReference("toto1.mod", false, rank);
-    m_object->SetPosition(0, pos);
+    m_object->SetPosition(pos);
     m_object->SetAngleY(0, angle);
 
     // Creates mouth.
@@ -101,7 +101,7 @@ void CMotionToto::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetObjectRank(1, rank);
     m_object->SetObjectParent(1, 0);
     modelManager->AddModelReference("toto2.mod", false, rank);
-    m_object->SetPosition(1, Math::Vector(1.00f, 0.17f, 0.00f));
+    m_object->SetPartPosition(1, Math::Vector(1.00f, 0.17f, 0.00f));
 
     // Creates the left eye.
     rank = m_engine->CreateObject();
@@ -109,7 +109,7 @@ void CMotionToto::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetObjectRank(2, rank);
     m_object->SetObjectParent(2, 0);
     modelManager->AddModelReference("toto3.mod", true, rank);
-    m_object->SetPosition(2, Math::Vector(0.85f, 1.04f, 0.25f));
+    m_object->SetPartPosition(2, Math::Vector(0.85f, 1.04f, 0.25f));
     m_object->SetAngleY(2, -20.0f*Math::PI/180.0f);
 
     // Creates the right eye.
@@ -118,7 +118,7 @@ void CMotionToto::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetObjectRank(3, rank);
     m_object->SetObjectParent(3, 0);
     modelManager->AddModelReference("toto3.mod", false, rank);
-    m_object->SetPosition(3, Math::Vector(0.85f, 1.04f, -0.25f));
+    m_object->SetPartPosition(3, Math::Vector(0.85f, 1.04f, -0.25f));
     m_object->SetAngleY(3, 20.0f*Math::PI/180.0f);
 
     // Creates left antenna.
@@ -127,7 +127,7 @@ void CMotionToto::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetObjectRank(4, rank);
     m_object->SetObjectParent(4, 0);
     modelManager->AddModelReference("toto4.mod", false, rank);
-    m_object->SetPosition(4, Math::Vector(0.0f, 1.9f, 0.3f));
+    m_object->SetPartPosition(4, Math::Vector(0.0f, 1.9f, 0.3f));
     m_object->SetAngleX(4, 30.0f*Math::PI/180.0f);
 
     rank = m_engine->CreateObject();
@@ -135,7 +135,7 @@ void CMotionToto::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetObjectRank(5, rank);
     m_object->SetObjectParent(5, 4);
     modelManager->AddModelReference("toto4.mod", false, rank);
-    m_object->SetPosition(5, Math::Vector(0.0f, 0.67f, 0.0f));
+    m_object->SetPartPosition(5, Math::Vector(0.0f, 0.67f, 0.0f));
     m_object->SetAngleX(5, 30.0f*Math::PI/180.0f);
 
     rank = m_engine->CreateObject();
@@ -143,7 +143,7 @@ void CMotionToto::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetObjectRank(6, rank);
     m_object->SetObjectParent(6, 5);
     modelManager->AddModelReference("toto5.mod", false, rank);
-    m_object->SetPosition(6, Math::Vector(0.0f, 0.70f, 0.0f));
+    m_object->SetPartPosition(6, Math::Vector(0.0f, 0.70f, 0.0f));
     m_object->SetAngleX(6, 30.0f*Math::PI/180.0f);
 
     // Creates right antenna.
@@ -152,7 +152,7 @@ void CMotionToto::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetObjectRank(7, rank);
     m_object->SetObjectParent(7, 0);
     modelManager->AddModelReference("toto4.mod", false, rank);
-    m_object->SetPosition(7, Math::Vector(0.0f, 1.9f, -0.3f));
+    m_object->SetPartPosition(7, Math::Vector(0.0f, 1.9f, -0.3f));
     m_object->SetAngleX(7, -30.0f*Math::PI/180.0f);
 
     rank = m_engine->CreateObject();
@@ -160,7 +160,7 @@ void CMotionToto::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetObjectRank(8, rank);
     m_object->SetObjectParent(8, 7);
     modelManager->AddModelReference("toto4.mod", false, rank);
-    m_object->SetPosition(8, Math::Vector(0.0f, 0.67f, 0.0f));
+    m_object->SetPartPosition(8, Math::Vector(0.0f, 0.67f, 0.0f));
     m_object->SetAngleX(8, -30.0f*Math::PI/180.0f);
 
     rank = m_engine->CreateObject();
@@ -168,14 +168,14 @@ void CMotionToto::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetObjectRank(9, rank);
     m_object->SetObjectParent(9, 8);
     modelManager->AddModelReference("toto5.mod", false, rank);
-    m_object->SetPosition(9, Math::Vector(0.0f, 0.70f, 0.0f));
+    m_object->SetPartPosition(9, Math::Vector(0.0f, 0.70f, 0.0f));
     m_object->SetAngleX(9, -30.0f*Math::PI/180.0f);
 
     m_object->SetZoom(0, 0.5f);  // is little
     m_object->SetFloorHeight(0.0f);
 
     pos = m_object->GetPosition();
-    m_object->SetPosition(0, pos);  // to display the shadows immediately
+    m_object->SetPosition(pos);  // to display the shadows immediately
 
     m_engine->LoadAllTextures();
 }
@@ -271,7 +271,7 @@ bool CMotionToto::EventFrame(const Event &event)
         nPos = m_object->GetPosition();
         m_terrain->AdjustToFloor(nPos, true);
         nPos.y -= 100.0f;  // hidden under the ground!
-        m_object->SetPosition(0, nPos);
+        m_object->SetPosition(nPos);
         return true;
     }
 
@@ -572,7 +572,7 @@ bool CMotionToto::EventFrame(const Event &event)
         }
         nPos.y -= vibLin.y;
     }
-    m_object->SetPosition(0, nPos);
+    m_object->SetPosition(nPos);
     m_object->SetAngleY(0, nAngle);
 
     SetLinVibration(vibLin);

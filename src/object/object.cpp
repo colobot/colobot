@@ -61,6 +61,11 @@ Math::Vector CObject::GetPosition() const
     return m_position;
 }
 
+void CObject::SetPosition(const Math::Vector& pos)
+{
+    // TODO: provide default implementation...
+}
+
 Math::Vector CObject::GetRotation() const
 {
     return m_rotation;

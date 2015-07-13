@@ -109,7 +109,7 @@ bool CTaskTerraform::EventProcess(const Event &event)
         pos.x = 9.0f;
         pos.y = 4.0f-m_progress*5.8f;
         pos.z = 0.0f;
-        m_object->SetPosition(2, pos);
+        m_object->SetPartPosition(2, pos);
     }
 
     if ( m_phase == TTP_UP )
@@ -117,13 +117,13 @@ bool CTaskTerraform::EventProcess(const Event &event)
         pos.x = 9.0f;
         pos.y = 4.0f-(1.0f-m_progress)*5.8f;
         pos.z = 0.0f;
-        m_object->SetPosition(2, pos);
+        m_object->SetPartPosition(2, pos);
     }
 
     dir.x = 0.0f;
     dir.y = 0.0f;
     dir.z = 0.0f;
-    pos = m_object->GetPosition(2);
+    pos = m_object->GetPartPosition(2);
     if ( pos.y < 0.0f )
     {
         dir.z = -atanf((pos.y/2.0f)/9.0f);
@@ -321,7 +321,7 @@ bool CTaskTerraform::Abort()
         m_soundChannel = -1;
     }
 
-    m_object->SetPosition(2, Math::Vector(9.0f, 4.0f, 0.0f));
+    m_object->SetPartPosition(2, Math::Vector(9.0f, 4.0f, 0.0f));
     m_object->SetTilt(Math::Vector(0.0f, 0.0f, 0.0f));
     m_object->SetCirVibration(Math::Vector(0.0f, 0.0f, 0.0f));
     m_object->SetZoom(0, 1.0f);

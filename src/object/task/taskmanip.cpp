@@ -115,50 +115,50 @@ bool CTaskManip::EventProcess(const Event &event)
         {
             if ( m_step == 0 )  // fall?
             {
-                pos = m_object->GetPosition(1);
+                pos = m_object->GetPartPosition(1);
                 pos.y = 3.0f-progress*2.0f;
-                m_object->SetPosition(1, pos);
+                m_object->SetPartPosition(1, pos);
             }
             if ( m_step == 1 )  // farm?
             {
-                pos = m_object->GetPosition(2);
+                pos = m_object->GetPartPosition(2);
                 pos.z = -1.5f+progress*0.5f;
-                m_object->SetPosition(2, pos);
+                m_object->SetPartPosition(2, pos);
 
-                pos = m_object->GetPosition(3);
+                pos = m_object->GetPartPosition(3);
                 pos.z = 1.5f-progress*0.5f;
-                m_object->SetPosition(3, pos);
+                m_object->SetPartPosition(3, pos);
             }
             if ( m_step == 2 )  // up?
             {
-                pos = m_object->GetPosition(1);
+                pos = m_object->GetPartPosition(1);
                 pos.y = 3.0f-(1.0f-progress)*2.0f;
-                m_object->SetPosition(1, pos);
+                m_object->SetPartPosition(1, pos);
             }
         }
         else
         {
             if ( m_step == 0 )  // fall?
             {
-                pos = m_object->GetPosition(1);
+                pos = m_object->GetPartPosition(1);
                 pos.y = 3.0f-progress*2.0f;
-                m_object->SetPosition(1, pos);
+                m_object->SetPartPosition(1, pos);
             }
             if ( m_step == 1 )  // farm?
             {
-                pos = m_object->GetPosition(2);
+                pos = m_object->GetPartPosition(2);
                 pos.z = -1.5f+(1.0f-progress)*0.5f;
-                m_object->SetPosition(2, pos);
+                m_object->SetPartPosition(2, pos);
 
-                pos = m_object->GetPosition(3);
+                pos = m_object->GetPartPosition(3);
                 pos.z = 1.5f-(1.0f-progress)*0.5f;
-                m_object->SetPosition(3, pos);
+                m_object->SetPartPosition(3, pos);
             }
             if ( m_step == 2 )  // up?
             {
-                pos = m_object->GetPosition(1);
+                pos = m_object->GetPartPosition(1);
                 pos.y = 3.0f-(1.0f-progress)*2.0f;
-                m_object->SetPosition(1, pos);
+                m_object->SetPartPosition(1, pos);
             }
         }
     }
@@ -325,7 +325,7 @@ Error CTaskManip::Start(TaskManipOrder order, TaskManipArm arm)
             m_object->SetCargo(other);  // takes the ball
             dynamic_cast<CTransportableObject*>(other)->SetTransporter(m_object);
             dynamic_cast<CTransportableObject*>(other)->SetTransporterPart(0);  // taken with the base
-            other->SetPosition(0, Math::Vector(0.0f, -3.0f, 0.0f));
+            other->SetPosition(Math::Vector(0.0f, -3.0f, 0.0f));
         }
         else
         {
@@ -336,11 +336,11 @@ Error CTaskManip::Start(TaskManipOrder order, TaskManipArm arm)
             dynamic_cast<CTransportableObject*>(other)->SetTransporter(nullptr);
             pos = m_object->GetPosition();
             pos.y -= 3.0f;
-            other->SetPosition(0, pos);
+            other->SetPosition(pos);
 
             pos = m_object->GetPosition();
             pos.y += 2.0f;
-            m_object->SetPosition(0, pos);  // against the top of jump
+            m_object->SetPosition(pos);  // against the top of jump
 
             m_engine->GetPyroManager()->Create(Gfx::PT_FALL, other);  // the ball falls
         }
@@ -1094,7 +1094,7 @@ bool CTaskManip::TransporterTakeObject()
             dynamic_cast<CTransportableObject*>(cargo)->SetTransporter(m_object);
             dynamic_cast<CTransportableObject*>(cargo)->SetTransporterPart(4);  // takes with the hand
 
-            cargo->SetPosition(0, Math::Vector(1.7f, -0.5f, 1.1f));
+            cargo->SetPosition(Math::Vector(1.7f, -0.5f, 1.1f));
             cargo->SetAngleY(0, 0.1f);
             cargo->SetAngleX(0, 0.0f);
             cargo->SetAngleZ(0, 0.8f);
@@ -1105,7 +1105,7 @@ bool CTaskManip::TransporterTakeObject()
             dynamic_cast<CTransportableObject*>(cargo)->SetTransporterPart(2);  // takes with the right claw
 
             Math::Vector pos = Math::Vector(1.1f, -1.0f, 1.0f);  // relative
-            cargo->SetPosition(0, pos);
+            cargo->SetPosition(pos);
             cargo->SetAngleX(0, 0.0f);
             cargo->SetAngleY(0, 0.0f);
             cargo->SetAngleZ(0, 0.0f);
@@ -1116,7 +1116,7 @@ bool CTaskManip::TransporterTakeObject()
             dynamic_cast<CTransportableObject*>(cargo)->SetTransporterPart(3);  // takes with the hand
 
             Math::Vector pos = Math::Vector(4.7f, 0.0f, 0.0f);  // relative to the hand (lem4)
-            cargo->SetPosition(0, pos);
+            cargo->SetPosition(pos);
             cargo->SetAngleX(0, 0.0f);
             cargo->SetAngleZ(0, Math::PI/2.0f);
             cargo->SetAngleY(0, 0.0f);
@@ -1141,7 +1141,7 @@ bool CTaskManip::TransporterTakeObject()
             dynamic_cast<CTransportableObject*>(cargo)->SetTransporterPart(2);  // takes with the right claw
 
             pos = Math::Vector(1.1f, -1.0f, 1.0f);  // relative
-            cargo->SetPosition(0, pos);
+            cargo->SetPosition(pos);
             cargo->SetAngleX(0, 0.0f);
             cargo->SetAngleY(0, 0.0f);
             cargo->SetAngleZ(0, 0.0f);
@@ -1152,7 +1152,7 @@ bool CTaskManip::TransporterTakeObject()
             dynamic_cast<CTransportableObject*>(cargo)->SetTransporterPart(3);  // takes with the hand
 
             pos = Math::Vector(4.7f, 0.0f, 0.0f);  // relative to the hand (lem4)
-            cargo->SetPosition(0, pos);
+            cargo->SetPosition(pos);
             cargo->SetAngleX(0, 0.0f);
             cargo->SetAngleZ(0, Math::PI/2.0f);
             cargo->SetAngleY(0, 0.0f);
@@ -1175,7 +1175,7 @@ bool CTaskManip::TransporterTakeObject()
         dynamic_cast<CTransportableObject*>(cargo)->SetTransporterPart(3);  // takes with the hand
 
         pos = Math::Vector(4.7f, 0.0f, 0.0f);  // relative to the hand (lem4)
-        cargo->SetPosition(0, pos);
+        cargo->SetPosition(pos);
         cargo->SetAngleX(0, 0.0f);
         cargo->SetAngleZ(0, Math::PI/2.0f);
         cargo->SetAngleY(0, 0.0f);
@@ -1192,7 +1192,7 @@ bool CTaskManip::TransporterTakeObject()
         m_cargoType = cargo->GetType();
 
         Math::Vector pos = Math::Vector(4.7f, 0.0f, 0.0f);  // relative to the hand (lem4)
-        cargo->SetPosition(0, pos);
+        cargo->SetPosition(pos);
         cargo->SetAngleX(0, 0.0f);
         cargo->SetAngleZ(0, Math::PI/2.0f);
         cargo->SetAngleY(0, 0.0f);
@@ -1221,7 +1221,7 @@ bool CTaskManip::TransporterTakeObject()
         dynamic_cast<CTransportableObject*>(cargo)->SetTransporterPart(3);  // takes with the hand
 
         pos = Math::Vector(4.7f, 0.0f, 0.0f);  // relative to the hand (lem4)
-        cargo->SetPosition(0, pos);
+        cargo->SetPosition(pos);
         cargo->SetAngleX(0, 0.0f);
         cargo->SetAngleZ(0, Math::PI/2.0f);
         cargo->SetAngleY(0, 0.0f);
@@ -1247,7 +1247,7 @@ bool CTaskManip::TransporterDeposeObject()
         Math::Matrix* mat = cargo->GetWorldMatrix(0);
         Math::Vector pos = Transform(*mat, Math::Vector(0.0f, 1.0f, 0.0f));
         m_terrain->AdjustToFloor(pos);
-        cargo->SetPosition(0, pos);
+        cargo->SetPosition(pos);
         cargo->SetAngleY(0, m_object->GetAngleY(0)+Math::PI/2.0f);
         cargo->SetAngleX(0, 0.0f);
         cargo->SetAngleZ(0, 0.0f);
@@ -1268,7 +1268,7 @@ bool CTaskManip::TransporterDeposeObject()
         Math::Matrix* mat = cargo->GetWorldMatrix(0);
         Math::Vector pos = Transform(*mat, Math::Vector(0.0f, 1.0f, 0.0f));
         m_terrain->AdjustToFloor(pos);
-        cargo->SetPosition(0, pos);
+        cargo->SetPosition(pos);
         cargo->SetAngleY(0, m_object->GetAngleY(0)+Math::PI/2.0f);
         cargo->SetAngleX(0, 0.0f);
         cargo->SetAngleZ(0, 0.0f);
@@ -1291,7 +1291,7 @@ bool CTaskManip::TransporterDeposeObject()
         dynamic_cast<CTransportableObject*>(cargo)->SetTransporterPart(0);  // carried by the base
 
         Character* character = m_object->GetCharacter();
-        cargo->SetPosition(0, character->posPower);
+        cargo->SetPosition(character->posPower);
         cargo->SetAngleY(0, 0.0f);
         cargo->SetAngleX(0, 0.0f);
         cargo->SetAngleZ(0, 0.0f);
@@ -1322,7 +1322,7 @@ bool CTaskManip::TransporterDeposeObject()
         dynamic_cast<CTransportableObject*>(cargo)->SetTransporter(other);
 
         Character* character = other->GetCharacter();
-        cargo->SetPosition(0, character->posPower);
+        cargo->SetPosition(character->posPower);
         cargo->SetAngleY(0, 0.0f);
         cargo->SetAngleX(0, 0.0f);
         cargo->SetAngleZ(0, 0.0f);

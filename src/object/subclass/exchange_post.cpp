@@ -55,7 +55,7 @@ std::unique_ptr<CExchangePost> CExchangePost::Create(
     obj->SetObjectRank(0, rank);
 
     modelManager->AddModelReference("info1.mod", false, rank);
-    obj->SetPosition(0, params.pos);
+    obj->SetPosition(params.pos);
     obj->SetAngleY(0, params.angle);
     obj->SetFloorHeight(0.0f);
 
@@ -64,7 +64,7 @@ std::unique_ptr<CExchangePost> CExchangePost::Create(
     obj->SetObjectRank(1, rank);
     obj->SetObjectParent(1, 0);
     modelManager->AddModelReference("info2.mod", false, rank);
-    obj->SetPosition(1, Math::Vector(0.0f, 5.0f, 0.0f));
+    obj->SetPartPosition(1, Math::Vector(0.0f, 5.0f, 0.0f));
 
     for (int i = 0; i < 3; ++i)
     {
@@ -73,14 +73,14 @@ std::unique_ptr<CExchangePost> CExchangePost::Create(
         obj->SetObjectRank(2+i*2, rank);
         obj->SetObjectParent(2+i*2, 1);
         modelManager->AddModelReference("info3.mod", false, rank);
-        obj->SetPosition(2+i*2, Math::Vector(0.0f, 4.5f, 0.0f));
+        obj->SetPartPosition(2+i*2, Math::Vector(0.0f, 4.5f, 0.0f));
 
         rank = engine->CreateObject();
         engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         obj->SetObjectRank(3+i*2, rank);
         obj->SetObjectParent(3+i*2, 2+i*2);
         modelManager->AddModelReference("radar4.mod", false, rank);
-        obj->SetPosition(3+i*2, Math::Vector(0.0f, 0.0f, -4.0f));
+        obj->SetPartPosition(3+i*2, Math::Vector(0.0f, 0.0f, -4.0f));
 
         obj->SetAngleY(2+i*2, 2.0f*Math::PI/3.0f*i);
     }
@@ -93,7 +93,7 @@ std::unique_ptr<CExchangePost> CExchangePost::Create(
 
     Math::Vector pos = obj->GetPosition();
     pos.y += params.height;
-    obj->SetPosition(0, pos);  // to display the shadows immediately
+    obj->SetPosition(pos);  // to display the shadows immediately
 
     std::unique_ptr<CAutoInfo> objAuto{new CAutoInfo(obj.get())};
     objAuto->Init();

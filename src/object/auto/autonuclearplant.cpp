@@ -387,7 +387,7 @@ void CAutoNuclearPlant::CreatePower()
     CObject* power = CObjectManager::GetInstancePointer()->CreateObject(pos, angle, OBJECT_ATOMIC, powerLevel);
 
     dynamic_cast<CTransportableObject*>(power)->SetTransporter(m_object);
-    power->SetPosition(0, Math::Vector(22.0f, 3.0f, 0.0f));
+    power->SetPosition(Math::Vector(22.0f, 3.0f, 0.0f));
     m_object->SetPower(power);
 }
 

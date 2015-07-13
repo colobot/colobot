@@ -439,7 +439,7 @@ int CAutoVault::CountKeys()
         oPos.x = rot.x;
         oPos.z = rot.y;
         oPos.y = cPos.y+1.0f;
-        obj->SetPosition(0, oPos);
+        obj->SetPosition(oPos);
         obj->SetAngleY(0, oAngle+cAngle);
         m_keyPos[index] = oPos;
 
@@ -499,7 +499,7 @@ void CAutoVault::DownKeys(float progress)
         if ( dist > 20.0f )  continue;
 
         oPos.y = cPos.y+1.0f-progress*2.2f;
-        obj->SetPosition(0, oPos);
+        obj->SetPosition(oPos);
     }
 }
 

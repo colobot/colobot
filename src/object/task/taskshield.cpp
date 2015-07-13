@@ -97,7 +97,7 @@ bool CTaskShield::EventProcess(const Event &event)
         pos.x = 7.0f;
         pos.y = 4.5f+Math::Bounce(m_progress)*3.0f;
         pos.z = 0.0f;
-        m_object->SetPosition(2, pos);
+        m_object->SetPartPosition(2, pos);
     }
 
     if ( m_phase == TS_UP2 )
@@ -105,7 +105,7 @@ bool CTaskShield::EventProcess(const Event &event)
         pos.x = 0.0f;
         pos.y = 1.0f+Math::Bounce(m_progress)*3.0f;
         pos.z = 0.0f;
-        m_object->SetPosition(3, pos);
+        m_object->SetPartPosition(3, pos);
     }
 
     if ( m_phase == TS_SHIELD )
@@ -215,7 +215,7 @@ bool CTaskShield::EventProcess(const Event &event)
         pos.x = 0.0f;
         pos.y = 1.0f+(1.0f-Math::Bounce(m_progress))*3.0f;
         pos.z = 0.0f;
-        m_object->SetPosition(3, pos);
+        m_object->SetPartPosition(3, pos);
     }
 
     if ( m_phase == TS_DOWN2 )
@@ -223,7 +223,7 @@ bool CTaskShield::EventProcess(const Event &event)
         pos.x = 7.0f;
         pos.y = 4.5f+(1.0f-Math::Bounce(m_progress))*3.0f;
         pos.z = 0.0f;
-        m_object->SetPosition(2, pos);
+        m_object->SetPartPosition(2, pos);
     }
 
     return true;
@@ -405,7 +405,7 @@ Error CTaskShield::IsEnded()
         pos.x = 7.0f;
         pos.y = 4.5f+3.0f;
         pos.z = 0.0f;
-        m_object->SetPosition(2, pos);
+        m_object->SetPartPosition(2, pos);
 
         m_sound->Play(SOUND_PSHHH2, m_shieldPos, 1.0f, 1.0f);
 
@@ -419,7 +419,7 @@ Error CTaskShield::IsEnded()
         pos.x = 0.0f;
         pos.y = 1.0f+3.0f;
         pos.z = 0.0f;
-        m_object->SetPosition(3, pos);
+        m_object->SetPartPosition(3, pos);
 
         m_object->SetShieldRadius(GetRadius());
 
@@ -484,12 +484,12 @@ bool CTaskShield::Abort()
     pos.x = 7.0f;
     pos.y = 4.5f;
     pos.z = 0.0f;
-    m_object->SetPosition(2, pos);
+    m_object->SetPartPosition(2, pos);
 
     pos.x = 0.0f;
     pos.y = 1.0f;
     pos.z = 0.0f;
-    m_object->SetPosition(3, pos);
+    m_object->SetPartPosition(3, pos);
 
     if ( m_soundChannel != -1 )
     {

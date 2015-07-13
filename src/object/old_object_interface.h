@@ -89,8 +89,6 @@ public:
 
     virtual Math::Vector    GetTilt();
 
-    virtual void        SetPosition(int part, const Math::Vector &pos);
-    virtual Math::Vector    GetPosition(int part) const;
     virtual void        SetAngle(int part, const Math::Vector &angle);
     virtual Math::Vector    GetAngle(int part) const;
     virtual void        SetAngleY(int part, float angle);

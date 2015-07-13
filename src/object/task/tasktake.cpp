@@ -455,8 +455,8 @@ bool CTaskTake::TransporterTakeObject()
         dynamic_cast<CTransportableObject*>(cargo)->SetTransporter(m_object);
         dynamic_cast<CTransportableObject*>(cargo)->SetTransporterPart(4);  // takes with the hand
 
-//?     cargo->SetPosition(0, Math::Vector(2.2f, -1.0f, 1.1f));
-        cargo->SetPosition(0, Math::Vector(1.7f, -0.5f, 1.1f));
+//?     cargo->SetPosition(Math::Vector(2.2f, -1.0f, 1.1f));
+        cargo->SetPosition(Math::Vector(1.7f, -0.5f, 1.1f));
         cargo->SetAngleY(0, 0.1f);
         cargo->SetAngleX(0, 0.0f);
         cargo->SetAngleZ(0, 0.8f);
@@ -481,8 +481,8 @@ bool CTaskTake::TransporterTakeObject()
         dynamic_cast<CTransportableObject*>(cargo)->SetTransporter(m_object);
         dynamic_cast<CTransportableObject*>(cargo)->SetTransporterPart(4);  // takes with the hand
 
-//?     cargo->SetPosition(0, Math::Vector(2.2f, -1.0f, 1.1f));
-        cargo->SetPosition(0, Math::Vector(1.7f, -0.5f, 1.1f));
+//?     cargo->SetPosition(Math::Vector(2.2f, -1.0f, 1.1f));
+        cargo->SetPosition(Math::Vector(1.7f, -0.5f, 1.1f));
         cargo->SetAngleY(0, 0.1f);
         cargo->SetAngleX(0, 0.0f);
         cargo->SetAngleZ(0, 0.8f);
@@ -508,7 +508,7 @@ bool CTaskTake::TransporterDeposeObject()
         Math::Matrix* mat = cargo->GetWorldMatrix(0);
         Math::Vector pos = Transform(*mat, Math::Vector(-0.5f, 1.0f, 0.0f));
         m_terrain->AdjustToFloor(pos);
-        cargo->SetPosition(0, pos);
+        cargo->SetPosition(pos);
         cargo->SetAngleY(0, m_object->GetAngleY(0)+Math::PI/2.0f);
         cargo->SetAngleX(0, 0.0f);
         cargo->SetAngleZ(0, 0.0f);
@@ -537,7 +537,7 @@ bool CTaskTake::TransporterDeposeObject()
         dynamic_cast<CTransportableObject*>(cargo)->SetTransporter(other);
 
         Character* character = other->GetCharacter();
-        cargo->SetPosition(0, character->posPower);
+        cargo->SetPosition(character->posPower);
         cargo->SetAngleY(0, 0.0f);
         cargo->SetAngleX(0, 0.0f);
         cargo->SetAngleZ(0, 0.0f);

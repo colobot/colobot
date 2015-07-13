@@ -68,9 +68,9 @@ bool CTaskPen::EventProcess(const Event &event)
     if ( m_phase == TPP_UP )  // back the pencil
     {
         i = AngleToRank(m_object->GetAngleY(1));
-        pos = m_object->GetPosition(10+i);
+        pos = m_object->GetPartPosition(10+i);
         pos.y = -3.2f*(1.0f-m_progress);
-        m_object->SetPosition(10+i, pos);
+        m_object->SetPartPosition(10+i, pos);
     }
 
     if ( m_phase == TPP_TURN )  // turns the carousel?
@@ -111,7 +111,7 @@ bool CTaskPen::EventProcess(const Event &event)
         }
 
         i = AngleToRank(m_object->GetAngleY(1));
-        pos = m_object->GetPosition(10+i);
+        pos = m_object->GetPartPosition(10+i);
         if ( m_timeDown == 0.0f )
         {
             pos.y = 0.0f;
@@ -120,7 +120,7 @@ bool CTaskPen::EventProcess(const Event &event)
         {
             pos.y = -3.2f*Math::Bounce(Math::Min(m_progress*1.8f, 1.0f));
         }
-        m_object->SetPosition(10+i, pos);
+        m_object->SetPartPosition(10+i, pos);
     }
 
     return true;
@@ -147,7 +147,7 @@ Error CTaskPen::Start(bool bDown, TraceColor color)
     m_newAngle = ColorToAngle(color);
 
     i = AngleToRank(m_oldAngle);
-    pos = m_object->GetPosition(10+i);
+    pos = m_object->GetPartPosition(10+i);
 
     if ( pos.y == 0.0f )  // pencil at the top?
     {

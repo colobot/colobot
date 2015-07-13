@@ -105,7 +105,7 @@ bool CTaskBuild::CreateBuilding(Math::Vector pos, float angle)
 
     m_buildingPos = m_building->GetPosition();
     m_buildingPos.y -= m_buildingHeight;
-    m_building->SetPosition(0, m_buildingPos);
+    m_building->SetPosition(m_buildingPos);
     return true;
 }
 
@@ -260,7 +260,7 @@ bool CTaskBuild::EventProcess(const Event &event)
             if (m_object->GetType() == OBJECT_HUMAN)
             {
                 m_object->SetObjectParent(14, 0);
-                m_object->SetPosition(14, Math::Vector(-1.5f, 0.3f, -1.35f));
+                m_object->SetPartPosition(14, Math::Vector(-1.5f, 0.3f, -1.35f));
                 m_object->SetAngleZ(14, Math::PI);
             }
             m_camera->FlushEffect();
@@ -274,7 +274,7 @@ bool CTaskBuild::EventProcess(const Event &event)
 
     pos = m_buildingPos;
     pos.y += m_buildingHeight*m_progress;
-    m_building->SetPosition(0, pos);  // the building rises
+    m_building->SetPosition(pos);  // the building rises
 
     m_building->SetZoom(0, m_progress*0.75f+0.25f);
     m_metal->SetZoom(0, 1.0f-m_progress);
@@ -468,7 +468,7 @@ Error CTaskBuild::IsEnded()
         if (m_object->GetType() == OBJECT_HUMAN)
         {
             m_object->SetObjectParent(14, 4);
-            m_object->SetPosition(14, Math::Vector(0.6f, 0.1f, 0.3f));
+            m_object->SetPartPosition(14, Math::Vector(0.6f, 0.1f, 0.3f));
             m_object->SetAngleZ(14, 0.0f);
         }
 
@@ -528,7 +528,7 @@ Error CTaskBuild::IsEnded()
         if (m_object->GetType() == OBJECT_HUMAN)
         {
             m_object->SetObjectParent(14, 0);
-            m_object->SetPosition(14, Math::Vector(-1.5f, 0.3f, -1.35f));
+            m_object->SetPartPosition(14, Math::Vector(-1.5f, 0.3f, -1.35f));
             m_object->SetAngleZ(14, Math::PI);
         }
 

@@ -1728,7 +1728,7 @@ void CRobotMain::StartDisplayVisit(EventType event)
     m_visitPos = m_visitArrow->GetPosition();
     m_visitPosArrow = m_visitPos;
     m_visitPosArrow.y += m_displayText->GetVisitHeight(event);
-    m_visitArrow->SetPosition(0, m_visitPosArrow);
+    m_visitArrow->SetPosition(m_visitPosArrow);
 
     m_visitTime = 0.0;
     m_visitParticle = 0.0f;
@@ -1751,7 +1751,7 @@ void CRobotMain::FrameVisit(float rTime)
 
     Math::Vector pos = m_visitPosArrow;
     pos.y += 1.5f+sinf(m_visitTime*4.0f)*4.0f;
-    m_visitArrow->SetPosition(0, pos);
+    m_visitArrow->SetPosition(pos);
     m_visitArrow->SetAngleY(0, m_visitTime*2.0f);
 
     // Manages the particles "arrows".
@@ -4857,26 +4857,28 @@ void CRobotMain::IOWriteObject(CLevelParserLine* line, CObject* obj)
 
     if (obj->Implements(ObjectInterfaceType::Old))
     {
+        COldObject* oldObj = dynamic_cast<COldObject*>(obj);
+
         Math::Vector pos;
         for (int i = 1; i < OBJECTMAXPART; i++)
         {
-            if (obj->GetObjectRank(i) == -1) continue;
+            if (oldObj->GetObjectRank(i) == -1) continue;
 
-            pos = obj->GetPosition(i);
+            pos = oldObj->GetPartPosition(i);
             if (pos.x != 0.0f || pos.y != 0.0f || pos.z != 0.0f)
             {
                 pos /= g_unit;
                 line->AddParam("p" + boost::lexical_cast<std::string>(i), CLevelParserParamUPtr{new CLevelParserParam(pos)});
             }
 
-            pos = obj->GetAngle(i);
+            pos = oldObj->GetAngle(i);
             if (pos.x != 0.0f || pos.y != 0.0f || pos.z != 0.0f)
             {
                 pos /= (Math::PI/180.0f);
                 line->AddParam("a" + boost::lexical_cast<std::string>(i), CLevelParserParamUPtr{new CLevelParserParam(pos)});
             }
 
-            pos = obj->GetZoom(i);
+            pos = oldObj->GetZoom(i);
             if (pos.x != 1.0f || pos.y != 1.0f || pos.z != 1.0f)
             {
                 line->AddParam("z" + boost::lexical_cast<std::string>(i), CLevelParserParamUPtr{new CLevelParserParam(pos)});
@@ -5063,33 +5065,35 @@ CObject* CRobotMain::IOReadObject(CLevelParserLine *line, const char* filename, 
 
     if (obj->Implements(ObjectInterfaceType::Old))
     {
-        obj->SetDefRank(objRank);
-        obj->SetPosition(0, pos);
-        obj->SetAngle(0, dir);
+        COldObject* oldObj = dynamic_cast<COldObject*>(obj);
+
+        oldObj->SetDefRank(objRank);
+        oldObj->SetPosition(pos);
+        oldObj->SetAngle(0, dir);
 
         if (zoom.x != 0.0f || zoom.y != 0.0f || zoom.z != 0.0f)
-            obj->SetZoom(0, zoom);
+            oldObj->SetZoom(0, zoom);
 
         for (int i = 1; i < OBJECTMAXPART; i++)
         {
-            if (obj->GetObjectRank(i) == -1) continue;
+            if (oldObj->GetObjectRank(i) == -1) continue;
 
             pos = line->GetParam(std::string("p")+boost::lexical_cast<std::string>(i))->AsPoint(Math::Vector());
             if (pos.x != 0.0f || pos.y != 0.0f || pos.z != 0.0f)
             {
-                obj->SetPosition(i, pos*g_unit);
+                oldObj->SetPartPosition(i, pos*g_unit);
             }
 
             dir = line->GetParam(std::string("a")+boost::lexical_cast<std::string>(i))->AsPoint(Math::Vector());
             if (dir.x != 0.0f || dir.y != 0.0f || dir.z != 0.0f)
             {
-                obj->SetAngle(i, dir*(Math::PI/180.0f));
+                oldObj->SetAngle(i, dir*(Math::PI/180.0f));
             }
 
             zoom = line->GetParam(std::string("z")+boost::lexical_cast<std::string>(i))->AsPoint(Math::Vector());
             if (zoom.x != 0.0f || zoom.y != 0.0f || zoom.z != 0.0f)
             {
-                obj->SetZoom(i, zoom);
+                oldObj->SetZoom(i, zoom);
             }
         }
     }

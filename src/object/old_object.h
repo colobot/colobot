@@ -121,8 +121,8 @@ public:
     void        SetTilt(Math::Vector dir);
     Math::Vector    GetTilt() override;
 
-    void        SetPosition(int part, const Math::Vector &pos) override;
-    Math::Vector    GetPosition(int part) const override;
+    void        SetPartPosition(int part, const Math::Vector &pos);
+    Math::Vector    GetPartPosition(int part) const;
     void        SetAngle(int part, const Math::Vector &angle) override;
     Math::Vector    GetAngle(int part) const override;
     void        SetAngleY(int part, float angle) override;
@@ -290,6 +290,7 @@ public:
     void SetInfoReturn(float value);
     float GetInfoReturn() override;
 
+    void SetPosition(const Math::Vector& pos) override;
     Math::Vector GetPosition() const override;
     Math::Vector GetRotation() const override;
     Math::Vector GetScale() const override;

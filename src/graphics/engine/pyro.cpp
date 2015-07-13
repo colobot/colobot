@@ -904,7 +904,7 @@ bool CPyro::EventProcess(const Event &event)
 
             Math::Vector pos = m_pos;
             pos.y += factor;
-            m_object->SetPosition(0, pos);
+            m_object->SetPosition(pos);
 
             if ( m_progress > 0.85f )
             {
@@ -1570,7 +1570,9 @@ void CPyro::ExploStart()
             m_engine->ChangeSecondTexture(objRank, "dirty04.png");
         }
 
-        Math::Vector pos = m_object->GetPosition(i);
+        // TODO: temporary hack (hopefully)
+        assert(m_object->Implements(ObjectInterfaceType::Old));
+        Math::Vector pos = dynamic_cast<COldObject*>(m_object)->GetPartPosition(i);
 
         Math::Vector speed;
         float weight;
@@ -2084,7 +2086,11 @@ void CPyro::BurnAddPart(int part, Math::Vector pos, Math::Vector angle)
 {
     int i = m_burnPartTotal;
     m_burnPart[i].part = part;
-    m_burnPart[i].initialPos = m_object->GetPosition(part);
+
+    // TODO: temporary hack (hopefully)
+    assert(m_object->Implements(ObjectInterfaceType::Old));
+    m_burnPart[i].initialPos = dynamic_cast<COldObject*>(m_object)->GetPartPosition(part);
+
     m_burnPart[i].finalPos = m_burnPart[i].initialPos+pos;
     m_burnPart[i].initialAngle = m_object->GetAngle(part);
     m_burnPart[i].finalAngle = m_burnPart[i].initialAngle+angle;
@@ -2103,7 +2109,10 @@ void CPyro::BurnProgress()
             if ( h > m_burnFall )  h = m_burnFall;
             pos.y -= h;
         }
-        m_object->SetPosition(m_burnPart[i].part, pos);
+
+        // TODO: temporary hack (hopefully)
+        assert(m_object->Implements(ObjectInterfaceType::Old));
+        dynamic_cast<COldObject*>(m_object)->SetPartPosition(m_burnPart[i].part, pos);
 
         pos = m_burnPart[i].initialAngle + m_progress*(m_burnPart[i].finalAngle-m_burnPart[i].initialAngle);
         m_object->SetAngle(m_burnPart[i].part, pos);
@@ -2298,7 +2307,7 @@ void CPyro::FallProgress(float rTime)
         pos.y = m_fallFloor;
         floor = true;
     }
-    m_object->SetPosition(0, pos);
+    m_object->SetPosition(pos);
 
     if (m_object->GetType() == OBJECT_BULLET)
     {

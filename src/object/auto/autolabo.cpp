@@ -238,11 +238,11 @@ bool CAutoLabo::EventProcess(const Event &event)
             pos.x = -9.0f;
             pos.y =  3.0f+m_progress*10.0f;
             pos.z =  0.0f;
-            m_object->SetPosition(1, pos);
+            m_object->SetPartPosition(1, pos);
         }
         else
         {
-            m_object->SetPosition(1, Math::Vector(-9.0f, 13.0f, 0.0f));
+            m_object->SetPartPosition(1, Math::Vector(-9.0f, 13.0f, 0.0f));
 
             SoundManip(1.5f, 1.0f, 0.5f);
             m_phase    = ALAP_OPEN3;
@@ -398,11 +398,11 @@ bool CAutoLabo::EventProcess(const Event &event)
             pos.x = -9.0f;
             pos.y =  3.0f+(1.0f-m_progress)*10.0f;;
             pos.z =  0.0f;
-            m_object->SetPosition(1, pos);
+            m_object->SetPartPosition(1, pos);
         }
         else
         {
-            m_object->SetPosition(1, Math::Vector(-9.0f, 3.0f, 0.0f));
+            m_object->SetPartPosition(1, Math::Vector(-9.0f, 3.0f, 0.0f));
 
             SoundManip(1.0f, 1.0f, 1.0f);
             m_phase    = ALAP_CLOSE3;

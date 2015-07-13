@@ -85,12 +85,16 @@ public:
         return m_implementedInterfaces[static_cast<int>(type)];
     }
 
-    //! Returns current object's position
+    //! Returns object's position
     virtual Math::Vector GetPosition() const;
-    using COldObjectInterface::GetPosition; // temporarily
-    //! Returns current object's rotation (Euler angles)
+    //! Sets object's position
+    virtual void SetPosition(const Math::Vector& pos);
+
+    //! Returns object's rotation (Euler angles)
+    /** Angles are given in radians */
     virtual Math::Vector GetRotation() const;
-    //! Returns current object's scale
+
+    //! Returns object's scale
     virtual Math::Vector GetScale() const;
 
     //! Sets crash spheres for object

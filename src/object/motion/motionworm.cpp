@@ -95,7 +95,7 @@ void CMotionWorm::Create(Math::Vector pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_VEHICLE);  // this is a moving object
     m_object->SetObjectRank(0, rank);
     // This is an "empty" object, without triangles
-    m_object->SetPosition(0, pos);
+    m_object->SetPosition(pos);
     m_object->SetAngleY(0, angle);
 
     // A vehicle must have a obligatory collision with a sphere of center (0, y, 0) (see GetCrashSphere).
@@ -110,7 +110,7 @@ void CMotionWorm::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetObjectRank(1, rank);
     m_object->SetObjectParent(1, 0);
     modelManager->AddModelReference("worm1.mod", false, rank);
-    m_object->SetPosition(1, Math::Vector(px, 0.0f, 0.0f));
+    m_object->SetPartPosition(1, Math::Vector(px, 0.0f, 0.0f));
     px -= 1.0f;
 
     // Creates the body.
@@ -121,7 +121,7 @@ void CMotionWorm::Create(Math::Vector pos, float angle, ObjectType type,
         m_object->SetObjectRank(2+i, rank);
         m_object->SetObjectParent(2+i, 0);
         modelManager->AddModelReference("worm2.mod", false, rank);
-        m_object->SetPosition(2+i, Math::Vector(px, 0.0f, 0.0f));
+        m_object->SetPartPosition(2+i, Math::Vector(px, 0.0f, 0.0f));
         px -= 1.0f;
     }
 
@@ -131,7 +131,7 @@ void CMotionWorm::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetObjectRank(2+WORM_PART, rank);
     m_object->SetObjectParent(2+WORM_PART, 0);
     modelManager->AddModelReference("worm3.mod", false, rank);
-    m_object->SetPosition(2+WORM_PART, Math::Vector(px, 0.0f, 0.0f));
+    m_object->SetPartPosition(2+WORM_PART, Math::Vector(px, 0.0f, 0.0f));
 
     m_object->CreateShadowCircle(0.0f, 1.0f, Gfx::ENG_SHADOW_WORM);
 
@@ -139,7 +139,7 @@ void CMotionWorm::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetFloorHeight(0.0f);
 
     pos = m_object->GetPosition();
-    m_object->SetPosition(0, pos);  // to display the shadows immediately
+    m_object->SetPosition(pos);  // to display the shadows immediately
 
     m_engine->LoadAllTextures();
 }
@@ -311,7 +311,7 @@ bool CMotionWorm::EventFrame(const Event &event)
 
         p = Transform(*mat, pos);
         pos.y += m_terrain->GetFloorLevel(p, true)-floor;
-        m_object->SetPosition(i+1, pos);
+        m_object->SetPartPosition(i+1, pos);
 
         zoom = Math::Mod(m_armTimeAbs*0.5f+100.0f-i*0.1f, 2.0f);
         if ( zoom > 1.0f )  zoom = 2.0f-zoom;
@@ -340,8 +340,8 @@ bool CMotionWorm::EventFrame(const Event &event)
 
     for ( i=0 ; i<WORM_PART+1 ; i++ )
     {
-        pos  = m_object->GetPosition(i+2);
-        pos -= m_object->GetPosition(i+1);
+        pos  = m_object->GetPartPosition(i+2);
+        pos -= m_object->GetPartPosition(i+1);
 
         angle.z = -Math::RotateAngle(Math::Point(pos.x, pos.z).Length(), pos.y);
         angle.y = Math::PI-Math::RotateAngle(pos.x, pos.z);

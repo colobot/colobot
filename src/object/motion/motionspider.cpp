@@ -107,7 +107,7 @@ void CMotionSpider::Create(Math::Vector pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_VEHICLE);  // this is a moving object
     m_object->SetObjectRank(0, rank);
     // This is an "empty" object, without triangles
-    m_object->SetPosition(0, pos);
+    m_object->SetPosition(pos);
     m_object->SetAngleY(0, angle);
 
     // A vehicle must have a obligatory collision
@@ -121,7 +121,7 @@ void CMotionSpider::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetObjectRank(1, rank);
     m_object->SetObjectParent(1, 0);
     modelManager->AddModelReference("spider1.mod", false, rank);
-    m_object->SetPosition(1, Math::Vector(1.0f, 0.0f, 0.0f));
+    m_object->SetPartPosition(1, Math::Vector(1.0f, 0.0f, 0.0f));
 
     // Creates the head.
     rank = m_engine->CreateObject();
@@ -129,7 +129,7 @@ void CMotionSpider::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetObjectRank(2, rank);
     m_object->SetObjectParent(2, 0);
     modelManager->AddModelReference("spider2.mod", false, rank);
-    m_object->SetPosition(2, Math::Vector(1.0f, 0.0f, 0.0f));
+    m_object->SetPartPosition(2, Math::Vector(1.0f, 0.0f, 0.0f));
 
     // Creates legs.
     for ( i=0 ; i<4 ; i++ )
@@ -149,7 +149,7 @@ void CMotionSpider::Create(Math::Vector pos, float angle, ObjectType type,
             pos.x = table[i*12+j*3+0];
             pos.y = table[i*12+j*3+1];
             pos.z = table[i*12+j*3+2];
-            m_object->SetPosition(3+i*4+j, pos);
+            m_object->SetPartPosition(3+i*4+j, pos);
 
             // Creates the left leg.
             rank = m_engine->CreateObject();
@@ -162,7 +162,7 @@ void CMotionSpider::Create(Math::Vector pos, float angle, ObjectType type,
             pos.x =  table[i*12+j*3+0];
             pos.y =  table[i*12+j*3+1];
             pos.z = -table[i*12+j*3+2];
-            m_object->SetPosition(19+i*4+j, pos);
+            m_object->SetPartPosition(19+i*4+j, pos);
         }
     }
 
@@ -172,7 +172,7 @@ void CMotionSpider::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetObjectRank(35, rank);
     m_object->SetObjectParent(35, 1);
     modelManager->AddModelReference("spider7.mod", false, rank);
-    m_object->SetPosition(35, Math::Vector(0.0f, 0.0f, -0.3f));
+    m_object->SetPartPosition(35, Math::Vector(0.0f, 0.0f, -0.3f));
 
     // Creates the left mandible.
     rank = m_engine->CreateObject();
@@ -180,7 +180,7 @@ void CMotionSpider::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetObjectRank(36, rank);
     m_object->SetObjectParent(36, 1);
     modelManager->AddModelReference("spider7.mod", true, rank);
-    m_object->SetPosition(36, Math::Vector(0.0f, 0.0f, 0.3f));
+    m_object->SetPartPosition(36, Math::Vector(0.0f, 0.0f, 0.3f));
 
     m_object->CreateShadowCircle(4.0f, 0.5f);
 
@@ -188,7 +188,7 @@ void CMotionSpider::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetFloorHeight(0.0f);
 
     pos = m_object->GetPosition();
-    m_object->SetPosition(0, pos);  // to display the shadows immediately
+    m_object->SetPosition(pos);  // to display the shadows immediately
 
     m_engine->LoadAllTextures();
 }
