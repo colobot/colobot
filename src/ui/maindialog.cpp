@@ -1303,6 +1303,8 @@ void CMainDialog::ChangePhase(Phase phase)
         pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_RAIN);
         pc->SetState(STATE_SHADOW);
         pos.y -= 0.048f;
+        pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_MOUSE);
+        pc->SetState(STATE_SHADOW);
         pos.y -= 0.048f;
         pos.y -= 0.048f;
         if ( !m_bSimulSetup )
@@ -2522,6 +2524,16 @@ bool CMainDialog::EventProcess(const Event &event)
 
             case EVENT_INTERFACE_RAIN:
                 m_bRain = !m_bRain;
+                ChangeSetupButtons();
+                UpdateSetupButtons();
+                break;
+
+            case EVENT_INTERFACE_MOUSE:
+                if (m_app->GetMouseMode() == MOUSE_SYSTEM)
+                    m_app->SetMouseMode(MOUSE_ENGINE);
+                else
+                    m_app->SetMouseMode(MOUSE_SYSTEM);
+
                 ChangeSetupButtons();
                 UpdateSetupButtons();
                 break;
@@ -4692,6 +4704,12 @@ void CMainDialog::UpdateSetupButtons()
         pc->SetState(STATE_CHECK, m_bRain);
     }
 
+    pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_MOUSE));
+    if ( pc != 0 )
+    {
+        pc->SetState(STATE_CHECK, m_app->GetMouseMode() == MOUSE_SYSTEM);
+    }
+
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_EDITMODE));
     if ( pc != 0 )
     {
@@ -5002,6 +5020,7 @@ void CMainDialog::SetupMemorize()
     GetProfile().SetIntProperty("Setup", "MusicVolume", m_sound->GetMusicVolume());
     GetProfile().SetIntProperty("Setup", "EditIndentMode", m_engine->GetEditIndentMode());
     GetProfile().SetIntProperty("Setup", "EditIndentValue", m_engine->GetEditIndentValue());
+    GetProfile().SetIntProperty("Setup", "SystemMouse", m_app->GetMouseMode() == MOUSE_SYSTEM);
 
     GetProfile().SetIntProperty("Setup", "MipmapLevel", m_engine->GetTextureMipmapLevel());
     GetProfile().SetIntProperty("Setup", "Anisotropy", m_engine->GetTextureAnisotropyLevel());
@@ -5074,6 +5093,11 @@ void CMainDialog::SetupRecall()
     if ( GetProfile().GetIntProperty("Setup", "InterfaceGlint", iValue) )
     {
         m_bRain = iValue;
+    }
+
+    if ( GetProfile().GetIntProperty("Setup", "SystemMouse", iValue) )
+    {
+        m_app->SetMouseMode(iValue ? MOUSE_SYSTEM : MOUSE_ENGINE);
     }
 
     if ( GetProfile().GetIntProperty("Setup", "Soluce4", iValue) )

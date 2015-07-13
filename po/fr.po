@@ -1448,6 +1448,9 @@ msgstr "Sac de survie"
 msgid "Switch bots <-> buildings"
 msgstr "Permute robots <-> bâtiments"
 
+msgid "System mouse\\Use system mouse cursor"
+msgstr ""
+
 msgid "Take off to finish the mission"
 msgstr "Décolle pour terminer la mission"
 

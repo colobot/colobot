@@ -1449,6 +1449,9 @@ msgstr "Zestaw przetrwania"
 msgid "Switch bots <-> buildings"
 msgstr "Przełącz roboty <-> budynki"
 
+msgid "System mouse\\Use system mouse cursor"
+msgstr "Systemowy kursor\\Użyj systemowego kursora myszy"
+
 msgid "Take off to finish the mission"
 msgstr "Odleć, aby zakończyć misję"
 
