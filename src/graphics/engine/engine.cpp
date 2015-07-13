@@ -301,6 +301,7 @@ void CEngine::SetTerrain(CTerrain* terrain)
 bool CEngine::Create()
 {
     m_size = m_app->GetVideoConfig().size;
+    m_mouseSize = Math::Point(0.04f, 0.04f * (m_size.x / m_size.y));
 
     m_modelManager.reset(new COldModelManager(this));
     m_pyroManager.reset(new CPyroManager());
@@ -379,6 +380,7 @@ void CEngine::Destroy()
 void CEngine::ResetAfterDeviceChanged()
 {
     m_size = m_app->GetVideoConfig().size;
+    m_mouseSize = Math::Point(0.04f, 0.04f * (m_size.x / m_size.y));
 
     m_text->FlushCache();
 
