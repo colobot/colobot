@@ -238,7 +238,7 @@ protected:
     bool            m_bRain;            // rain in the interface?
     bool            m_bSoluce4;         // solutions in program 4?
     bool            m_bMovies;          // cinematics?
-    bool            m_bNiceReset;           // for CTaskReset
+    bool            m_bNiceReset;           // for reset animation
     bool            m_bHimselfDamage;       // for shots
     bool            m_bCameraScroll;        // for CCamera
     bool            m_bCameraInvertX;       // for CCamera

@@ -1815,7 +1815,6 @@ void CPhysics::WaterFrame(float aTime, float rTime)
     if ( type == OBJECT_NULL )  return;
 
     if ( !m_object->GetActive() )  return;
-    if ( m_object->GetResetBusy() )  return;  // reset in progress?
 
     if ( m_water->GetLava()      ||
          (type == OBJECT_HUMAN   &&
@@ -2566,7 +2565,6 @@ int CPhysics::ObjectAdapt(const Math::Vector &pos, const Math::Vector &angle)
 
         if ( oType == OBJECT_WAYPOINT &&
              pObj->GetEnable()        &&
-            !m_object->GetResetBusy() &&
              m_object->GetTrainer()   )  // driving vehicle?
         {
             Math::Vector oPos = pObj->GetPosition();

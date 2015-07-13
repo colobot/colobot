@@ -503,11 +503,6 @@ void CAutoDerrick::CreateCargo(Math::Vector pos, float angle, ObjectType type,
     CObject* cargo = CObjectManager::GetInstancePointer()->CreateObject(pos, angle, type);
     cargo->SetLock(true);  // object not yet usable
 
-    if ( m_object->GetResetCap() == RESET_MOVE )
-    {
-        cargo->SetResetCap(RESET_DELETE);
-    }
-
     pos = cargo->GetPosition();
     pos.y += height;
     cargo->SetPosition(0, pos);

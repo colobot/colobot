@@ -55,7 +55,6 @@ public:
     Error   StartTaskFireAnt(Math::Vector impact);
     Error   StartTaskGunGoal(float dirV, float dirH);
     Error   StartTaskSpiderExplo();
-    Error   StartTaskReset(Math::Vector goal, Math::Vector angle);
 
     bool    EventProcess(const Event &event);
     Error   IsEnded();

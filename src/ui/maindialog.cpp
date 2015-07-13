@@ -5993,7 +5993,7 @@ bool CMainDialog::GetMovies()
     return m_bMovies;
 }
 
-// IWhether to make an animation in CTaskReset.
+// Whether to make an animation on reset.
 
 bool CMainDialog::GetNiceReset()
 {

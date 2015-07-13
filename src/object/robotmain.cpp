@@ -3679,9 +3679,6 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                         dynamic_cast<CProgrammableObject*>(oldObj)->GetBrain()
                             ->SetSoluceName(const_cast<char*>(line->GetParam("soluce")->AsPath("ai").c_str()));
 
-                    oldObj->SetResetPosition(oldObj->GetPosition());
-                    oldObj->SetResetAngle(oldObj->GetRotation());
-                    oldObj->SetResetRun(loadedPrograms[run]);
                     if (line->GetParam("reset")->AsBool(false))
                         oldObj->SetResetCap(RESET_MOVE);
                 }
@@ -5297,98 +5294,8 @@ void CRobotMain::ReadFreeParam()
 //! Resets all objects to their original position
 void CRobotMain::ResetObject()
 {
-// TODO: ?
-#if 0
-    CObject*    obj;
-    CObject*    transporter;
-    CAuto*      objAuto;
-    CBrain*     brain;
-    CPyro*      pyro;
-    ResetCap    cap;
-    Math::Vector    pos, angle;
-    int         i;
-
-    CInstanceManager* iMan = CInstanceManager::GetInstancePointer();
-
-    // Removes all pyrotechnic effects in progress.
-    while ( true )
-    {
-        pyro = static_cast<CPyro*>(iMan->SearchInstance(CLASS_PYRO, 0));
-        if ( pyro == 0 )  break;
-
-        pyro->DeleteObject();
-        delete pyro;
-    }
-
-    // Removes all bullets in progress.
-    m_particle->DeleteParticle(PARTIGUN1);
-    m_particle->DeleteParticle(PARTIGUN2);
-    m_particle->DeleteParticle(PARTIGUN3);
-    m_particle->DeleteParticle(PARTIGUN4);
-
-    for ( i=0 ; i<1000000 ; i++ )
-    {
-        obj = static_cast<CObject*>(iMan->SearchInstance(CLASS_OBJECT, i));
-        if ( obj == 0 )  break;
-
-        cap = obj->GetResetCap();
-        if ( cap == RESET_NONE )  continue;
-
-        if ( cap == RESET_DELETE )
-        {
-            transporter = obj->GetTransporter();
-            if ( transporter != 0 )
-            {
-                transporter->SetCargo(0);
-                obj->SetTransporter(0);
-            }
-            obj->DeleteObject();
-            delete obj;
-            i --;
-            continue;
-        }
-
-        objAuto = obj->GetAuto();
-        if ( objAuto != 0 )
-        {
-            objAuto->Abort();
-        }
-
-        if ( obj->GetEnable() )  // object still active?
-        {
-            brain = obj->GetBrain();
-            if ( brain != 0 )
-            {
-                pos   = obj->GetResetPosition();
-                angle = obj->GetResetAngle();
-
-                if ( pos   == obj->GetPosition() &&
-                     angle == obj->GetRotation()    )  continue;
-                brain->StartTaskReset(pos, angle);
-                continue;
-            }
-        }
-
-        obj->SetEnable(true);  // active again
-
-        pos   = obj->GetResetPosition();
-        angle = obj->GetResetAngle();
-
-        if ( pos   == obj->GetPosition() &&
-             angle == obj->GetRotation()    )  continue;
-
-        pyro = new CPyro();
-        pyro->Create(PT_RESET, obj);
-
-        brain = obj->GetBrain();
-        if ( brain != 0 )
-        {
-            brain->RunProgram(obj->GetResetRun());
-        }
-    }
-#else
+    // schedule reset during next frame
     m_resetCreate = true;
-#endif
 }
 
 //! Resets all objects to their original position

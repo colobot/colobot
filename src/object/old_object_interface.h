@@ -67,8 +67,7 @@ enum class ExplosionType
 enum ResetCap
 {
     RESET_NONE   = 0,
-    RESET_MOVE   = 1,
-    RESET_DELETE = 2,
+    RESET_MOVE   = 1
 };
 
 class COldObjectInterface
@@ -121,9 +120,6 @@ public:
 
     virtual ResetCap    GetResetCap();
     virtual void        SetResetCap(ResetCap resetCap);
-    virtual Math::Vector    GetResetPosition();
-    virtual Math::Vector    GetResetAngle();
-    virtual Program*    GetResetRun();
 
     virtual void        SetMasterParticle(int part, int parti);
 

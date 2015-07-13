@@ -38,7 +38,6 @@ CAutoConvert::CAutoConvert(COldObject* object) : CAuto(object)
 {
     Init();
     m_phase = ACP_STOP;
-    m_bResetDelete = false;
     m_soundChannel = -1;
 }
 
@@ -229,8 +228,6 @@ bool CAutoConvert::EventProcess(const Event &event)
             cargo = SearchStone(OBJECT_STONE);
             if ( cargo != nullptr )
             {
-                m_bResetDelete = ( cargo->GetResetCap() != RESET_NONE );
-
                 CObjectManager::GetInstancePointer()->DeleteObject(cargo);
             }
 
@@ -476,12 +473,7 @@ void CAutoConvert::CreateMetal()
     Math::Vector pos = m_object->GetPosition();
     float angle = m_object->GetAngleY(0);
 
-    CObject* cargo = CObjectManager::GetInstancePointer()->CreateObject(pos, angle, OBJECT_METAL);
-
-    if ( m_bResetDelete )
-    {
-        cargo->SetResetCap(RESET_DELETE);
-    }
+    CObjectManager::GetInstancePointer()->CreateObject(pos, angle, OBJECT_METAL);
 
     m_main->DisplayError(INFO_CONVERT, m_object);
 }

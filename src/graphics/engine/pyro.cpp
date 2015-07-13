@@ -56,6 +56,8 @@ CPyro::CPyro()
     m_lightRank = -1;
     m_soundChannel = -1;
     LightOperFlush();
+
+    m_resetAngle = 0.0f;
 }
 
 CPyro::~CPyro()
@@ -341,9 +343,7 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
     if ( m_type == PT_RESET )
     {
         m_speed = 1.0f/2.0f;
-        m_object->SetPosition(0, m_object->GetResetPosition());
-        m_object->SetAngle(0, m_object->GetResetAngle());
-        m_object->SetZoom(0, 0.0f);
+        m_resetAngle = m_object->GetAngleY(0);
     }
     if ( m_type == PT_FINDING )
     {
@@ -1010,8 +1010,8 @@ bool CPyro::EventProcess(const Event &event)
 
         if(m_object != nullptr)
         {
-            Math::Vector angle = m_object->GetResetAngle();
-            m_object->SetAngleY(0, angle.y-powf((1.0f-m_progress)*5.0f, 2.0f));
+            float angle = m_resetAngle;
+            m_object->SetAngleY(0, angle-powf((1.0f-m_progress)*5.0f, 2.0f));
             m_object->SetZoom(0, m_progress);
         }
     }
@@ -1216,8 +1216,7 @@ Error CPyro::IsEnded()
 
     if ( m_type == PT_RESET )
     {
-        m_object->SetPosition(0, m_object->GetResetPosition());
-        m_object->SetAngle(0, m_object->GetResetAngle());
+        m_object->SetAngleY(0, m_resetAngle);
         m_object->SetZoom(0, 1.0f);
     }
 
@@ -1346,15 +1345,6 @@ void CPyro::CreateLight(Math::Vector pos, float height)
 void CPyro::DeleteObject(bool primary, bool secondary)
 {
     if (m_object == nullptr) return;
-
-    if (m_object->GetResetCap() == RESET_MOVE)  // resettable object?
-    {
-        m_object->SetEnable(false);  // object cache and inactive
-        Math::Vector pos = m_object->GetPosition();
-        pos.y = -100.0f;
-        m_object->SetPosition(0, pos);
-        return;
-    }
 
     ObjectType type = m_object->GetType();
     if ( secondary              &&

@@ -290,10 +290,6 @@ COldObject::COldObject(int id)
     m_character.wheelRight = 1.0f;
 
     m_resetCap      = RESET_NONE;
-    m_bResetBusy    = false;
-    m_resetPosition = Math::Vector(0.0f, 0.0f, 0.0f);
-    m_resetAngle    = Math::Vector(0.0f, 0.0f, 0.0f);
-    m_resetRun      = nullptr;
 
     m_cameraType = Gfx::CAM_TYPE_BACK;
     m_cameraDist = 50.0f;
@@ -947,9 +943,6 @@ void COldObject::Write(CLevelParserLine* line)
     if ( GetResetCap() != 0 )
     {
         line->AddParam("resetCap", CLevelParserParamUPtr{new CLevelParserParam(static_cast<int>(GetResetCap()))});
-        line->AddParam("resetPos", CLevelParserParamUPtr{new CLevelParserParam(GetResetPosition()/g_unit)});
-        line->AddParam("resetAngle", CLevelParserParamUPtr{new CLevelParserParam(GetResetAngle()/(Math::PI/180.0f))});
-        line->AddParam("resetRun", CLevelParserParamUPtr{new CLevelParserParam(m_brain->GetProgramIndex(GetResetRun()))});
     }
 
     if ( m_bVirusMode )
@@ -1020,9 +1013,6 @@ void COldObject::Read(CLevelParserLine* line)
     SetGunGoalH(line->GetParam("aimH")->AsFloat(0.0f));
 
     SetResetCap(static_cast<ResetCap>(line->GetParam("resetCap")->AsInt(0)));
-    SetResetPosition(line->GetParam("resetPos")->AsPoint(Math::Vector())*g_unit);
-    SetResetAngle(line->GetParam("resetAngle")->AsPoint(Math::Vector())*(Math::PI/180.0f));
-    SetResetRun(m_brain->GetProgram(line->GetParam("resetRun")->AsInt(-1)));
     m_bBurn = line->GetParam("burnMode")->AsBool(false);
     m_bVirusMode = line->GetParam("virusMode")->AsBool(false);
     m_virusTime = line->GetParam("virusTime")->AsFloat(0.0f);
@@ -1475,47 +1465,6 @@ ResetCap COldObject::GetResetCap()
 {
     return m_resetCap;
 }
-
-void COldObject::SetResetBusy(bool bBusy)
-{
-    m_bResetBusy = bBusy;
-}
-
-bool COldObject::GetResetBusy()
-{
-    return m_bResetBusy;
-}
-
-void COldObject::SetResetPosition(const Math::Vector &pos)
-{
-    m_resetPosition = pos;
-}
-
-Math::Vector COldObject::GetResetPosition()
-{
-    return m_resetPosition;
-}
-
-void COldObject::SetResetAngle(const Math::Vector &angle)
-{
-    m_resetAngle = angle;
-}
-
-Math::Vector COldObject::GetResetAngle()
-{
-    return m_resetAngle;
-}
-
-Program* COldObject::GetResetRun()
-{
-    return m_resetRun;
-}
-
-void COldObject::SetResetRun(Program* run)
-{
-    m_resetRun = run;
-}
-
 
 // Management of the particle master.
 

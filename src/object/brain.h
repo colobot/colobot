@@ -141,7 +141,6 @@ public:
     Error       StartTaskFireAnt(Math::Vector impact);
     Error       StartTaskSpiderExplo();
     Error       StartTaskGunGoal(float dirV, float dirH);
-    Error       StartTaskReset(Math::Vector goal, Math::Vector angle);
 
     void        UpdateInterface(float rTime);
     void        UpdateInterface();

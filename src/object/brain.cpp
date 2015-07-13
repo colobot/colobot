@@ -1251,18 +1251,6 @@ Error CBrain::StartTaskGunGoal(float dirV, float dirH)
     return err;
 }
 
-// Reset.
-
-Error CBrain::StartTaskReset(Math::Vector goal, Math::Vector angle)
-{
-    StopTask();
-
-    m_primaryTask = new CTaskManager(m_object);
-    Error err = m_primaryTask->StartTaskReset(goal, angle);
-    UpdateInterface();
-    return err;
-}
-
 // Completes the task when the time came.
 
 Error CBrain::EndedTask()

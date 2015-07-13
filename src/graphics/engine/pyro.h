@@ -184,6 +184,7 @@ protected:
     bool            m_fallEnding;
 
     std::vector<Math::Sphere> m_crashSpheres;
+    float           m_resetAngle;
 };
 
 

@@ -67,7 +67,6 @@ protected:
     float               m_speed;
     float               m_timeVirus;
     float               m_lastParticle;
-    bool                m_bResetDelete;
     bool                m_bSoundClose;
     int                 m_soundChannel;
 };

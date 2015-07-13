@@ -184,7 +184,6 @@ set(BASE_SOURCES
     object/task/taskmanip.cpp
     object/task/taskpen.cpp
     object/task/taskrecover.cpp
-    object/task/taskreset.cpp
     object/task/tasksearch.cpp
     object/task/taskshield.cpp
     object/task/taskspiderexplo.cpp

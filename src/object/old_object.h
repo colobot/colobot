@@ -152,14 +152,6 @@ public:
 
     void        SetResetCap(ResetCap cap) override;
     ResetCap    GetResetCap() override;
-    void        SetResetBusy(bool bBusy);
-    bool        GetResetBusy();
-    void        SetResetPosition(const Math::Vector &pos);
-    Math::Vector    GetResetPosition() override;
-    void        SetResetAngle(const Math::Vector &angle);
-    Math::Vector    GetResetAngle() override;
-    void        SetResetRun(Program* run);
-    Program*    GetResetRun() override;
 
     void        SetMasterParticle(int part, int parti) override;
 

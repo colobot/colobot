@@ -35,7 +35,6 @@
 #include "object/task/taskfireant.h"
 #include "object/task/taskgungoal.h"
 #include "object/task/taskspiderexplo.h"
-#include "object/task/taskreset.h"
 
 #include "object/old_object.h"
 
@@ -219,17 +218,6 @@ Error CTaskManager::StartTaskSpiderExplo()
     m_task = new CTaskSpiderExplo(m_object);
     return (static_cast<CTaskSpiderExplo*>(m_task))->Start();
 }
-
-// Reset.
-
-Error CTaskManager::StartTaskReset(Math::Vector goal, Math::Vector angle)
-{
-    m_task = new CTaskReset(m_object);
-    return (static_cast<CTaskReset*>(m_task))->Start(goal, angle);
-}
-
-
-
 
 
 // Management of an event.

@@ -197,21 +197,6 @@ ResetCap COldObjectInterface::GetResetCap()
     throw std::logic_error("GetResetCap: not implemented!");
 }
 
-Math::Vector COldObjectInterface::GetResetPosition()
-{
-    throw std::logic_error("GetResetPosition: not implemented!");
-}
-
-Math::Vector COldObjectInterface::GetResetAngle()
-{
-    throw std::logic_error("GetResetAngle: not implemented!");
-}
-
-Program* COldObjectInterface::GetResetRun()
-{
-    throw std::logic_error("GetResetRun: not implemented!");
-}
-
 void COldObjectInterface::SetMasterParticle(int part, int parti)
 {
     throw std::logic_error("SetMasterParticle: not implemented!");

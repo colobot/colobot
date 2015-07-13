@@ -195,7 +195,6 @@ public:
     bool        DeleteObject();
 
     void        ResetObject();
-    void        ResetCreate();
     void        UpdateAudio(bool frame);
     void        SetEndMission(Error result, float delay);
     Error       CheckEndMission(bool frame);
@@ -377,6 +376,7 @@ protected:
     void        InitEye();
 
     void        CreateScene(bool soluce, bool fixScene, bool resetObject);
+    void        ResetCreate();
 
     Math::Vector LookatPoint(Math::Vector eye, float angleH, float angleV, float length);
     int         CreateLight(Math::Vector direction, Gfx::Color color);
