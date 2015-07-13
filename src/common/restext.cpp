@@ -653,6 +653,7 @@ void InitializeRestext()
     stringsErr[ERR_DELETEMOBILE]    = TR("Bot destroyed");
     stringsErr[ERR_DELETEBUILDING]  = TR("Building destroyed");
     stringsErr[ERR_TOOMANY]         = TR("Can not create this; there are too many objects");
+    stringsErr[ERR_ENEMY_OBJECT]    = TR("Unable to control enemy objects");
     stringsErr[ERR_OBLIGATORYTOKEN] = TR("\"%s\" missing in this exercise");
     stringsErr[ERR_PROHIBITEDTOKEN] = TR("Do not use in this exercise");
 
@@ -883,4 +884,3 @@ bool GetResource(ResType type, unsigned int num, std::string& text)
         return true;
     }
 }
-

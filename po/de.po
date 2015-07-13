@@ -1583,6 +1583,9 @@ msgstr "Drehung nach rechts\\Steuer rechts"
 msgid "Type declaration missing"
 msgstr "Hier muss ein Variablentyp stehen"
 
+msgid "Unable to control enemy objects"
+msgstr ""
+
 msgid "Undo (Ctrl+z)"
 msgstr "Widerrufen (Ctrl+z)"
 

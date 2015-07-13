@@ -416,7 +416,7 @@ bool CScriptFunctions::rEndMission(CBotVar* var, CBotVar* result, int& exception
     Error ended;
     float delay;
 
-    ended = static_cast<Error>(static_cast<int>(var->GetValFloat())); // TODO: is this correct?!
+    ended = static_cast<Error>(var->GetValInt());
     var = var->GetNext();
 
     delay = var->GetValFloat();
@@ -486,7 +486,8 @@ bool CScriptFunctions::rGetResearchEnable(CBotVar* var, CBotVar* result, int& ex
 
 bool CScriptFunctions::rGetResearchDone(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-    result->SetValInt(CRobotMain::GetInstancePointer()->GetDoneResearch(0));
+    CObject* pThis = static_cast<CObject*>(user);
+    result->SetValInt(CRobotMain::GetInstancePointer()->GetDoneResearch(pThis->GetTeam()));
     return true;
 }
 
@@ -512,7 +513,8 @@ bool CScriptFunctions::rSetResearchEnable(CBotVar* var, CBotVar* result, int& ex
 
 bool CScriptFunctions::rSetResearchDone(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-    CRobotMain::GetInstancePointer()->SetDoneResearch(var->GetValInt(), 0);
+    CObject* pThis = static_cast<CObject*>(user);
+    CRobotMain::GetInstancePointer()->SetDoneResearch(var->GetValInt(), pThis->GetTeam());
     CApplication::GetInstancePointer()->GetEventQueue()->AddEvent(Event(EVENT_UPDINTERFACE));
     return true;
 }
@@ -607,6 +609,8 @@ CBotTypResult CScriptFunctions::cBusy(CBotVar* thisclass, CBotVar* &var)
 
 bool CScriptFunctions::rBusy(CBotVar* thisclass, CBotVar* var, CBotVar* result, int& exception, void* user)
 {
+    CObject*    pThis = static_cast<CObject *>(user);
+
     exception = 0;
 
     CBotVar* classVars = thisclass->GetItemList();  // "category"
@@ -626,6 +630,13 @@ bool CScriptFunctions::rBusy(CBotVar* thisclass, CBotVar* var, CBotVar* result, 
     CObject* obj = CObjectManager::GetInstancePointer()->GetObjectById(rank);
     CAuto* automat = obj->GetAuto();
 
+    if ( pThis->GetTeam() != obj->GetTeam() && obj->GetTeam() != 0 )
+    {
+        exception = ERR_ENEMY_OBJECT;
+        result->SetValInt(ERR_ENEMY_OBJECT);
+        return false;
+    }
+
     if ( automat != nullptr )
         result->SetValInt(automat->GetBusy());
     else
@@ -636,6 +647,9 @@ bool CScriptFunctions::rBusy(CBotVar* thisclass, CBotVar* var, CBotVar* result, 
 
 bool CScriptFunctions::rDestroy(CBotVar* thisclass, CBotVar* var, CBotVar* result, int& exception, void* user)
 {
+    CObject*    pThis = static_cast<CObject *>(user);
+    CScript*    script = pThis->GetRunScript();
+
     exception = 0;
     Error err;
 
@@ -657,6 +671,13 @@ bool CScriptFunctions::rDestroy(CBotVar* thisclass, CBotVar* var, CBotVar* resul
     CObject* obj = CObjectManager::GetInstancePointer()->GetObjectById(rank);
     CAuto* automat = obj->GetAuto();
 
+    if ( pThis->GetTeam() != obj->GetTeam() && obj->GetTeam() != 0 )
+    {
+        exception = ERR_ENEMY_OBJECT;
+        result->SetValInt(ERR_ENEMY_OBJECT);
+        return false;
+    }
+
     if ( thisType == OBJECT_DESTROYER )
         err = automat->StartAction(0);
     else
@@ -665,8 +686,7 @@ bool CScriptFunctions::rDestroy(CBotVar* thisclass, CBotVar* var, CBotVar* resul
     if ( err != ERR_OK )
     {
         result->SetValInt(err);  // return error
-        //TODO:        if ( script->m_errMode == ERM_STOP )
-        if ( true )
+        if ( script->m_errMode == ERM_STOP )
         {
             exception = err;
             return false;
@@ -699,8 +719,7 @@ CBotTypResult CScriptFunctions::cFactory(CBotVar* thisclass, CBotVar* &var)
 bool CScriptFunctions::rFactory(CBotVar* thisclass, CBotVar* var, CBotVar* result, int& exception, void* user)
 {
     CObject*    pThis = static_cast<CObject *>(user);
-    assert(pThis != nullptr);
-    printf("Executing factory() as team %d\n", pThis->GetTeam());
+    CScript*    script = pThis->GetRunScript();
 
     Error       err;
 
@@ -742,6 +761,13 @@ bool CScriptFunctions::rFactory(CBotVar* thisclass, CBotVar* var, CBotVar* resul
         return false;
     }
 
+    if ( pThis->GetTeam() != factory->GetTeam() && factory->GetTeam() != 0 )
+    {
+        exception = ERR_ENEMY_OBJECT;
+        result->SetValInt(ERR_ENEMY_OBJECT);
+        return false;
+    }
+
     if ( thisType == OBJECT_FACTORY )
     {
         CAutoFactory* automat = static_cast<CAutoFactory*>(factory->GetAuto());
@@ -772,8 +798,7 @@ bool CScriptFunctions::rFactory(CBotVar* thisclass, CBotVar* var, CBotVar* resul
     if ( err != ERR_OK )
     {
         result->SetValInt(err);  // return error
-        //TODO:        if ( script->m_errMode == ERM_STOP )
-        if ( true )
+        if ( script->m_errMode == ERM_STOP )
         {
             exception = err;
             return false;
@@ -788,6 +813,9 @@ bool CScriptFunctions::rFactory(CBotVar* thisclass, CBotVar* var, CBotVar* resul
 
 bool CScriptFunctions::rResearch(CBotVar* thisclass, CBotVar* var, CBotVar* result, int& exception, void* user)
 {
+    CObject*    pThis = static_cast<CObject *>(user);
+    CScript*    script = pThis->GetRunScript();
+
     Error       err;
 
     exception = 0;
@@ -811,6 +839,13 @@ bool CScriptFunctions::rResearch(CBotVar* thisclass, CBotVar* var, CBotVar* resu
     int rank = classVars->GetValInt();
     CObject* center = CObjectManager::GetInstancePointer()->GetObjectById(rank);
     CAuto* automat = center->GetAuto();
+
+    if ( pThis->GetTeam() != center->GetTeam() && center->GetTeam() != 0 )
+    {
+        exception = ERR_ENEMY_OBJECT;
+        result->SetValInt(ERR_ENEMY_OBJECT);
+        return false;
+    }
 
     if ( thisType == OBJECT_RESEARCH ||
          thisType == OBJECT_LABO      )
@@ -853,8 +888,7 @@ bool CScriptFunctions::rResearch(CBotVar* thisclass, CBotVar* var, CBotVar* resu
     if ( err != ERR_OK )
     {
         result->SetValInt(err);  // return error
-        //TODO:        if ( script->m_errMode == ERM_STOP )
-        if ( true )
+        if( script->m_errMode == ERM_STOP )
         {
             exception = err;
             return false;
@@ -869,6 +903,9 @@ bool CScriptFunctions::rResearch(CBotVar* thisclass, CBotVar* var, CBotVar* resu
 
 bool CScriptFunctions::rTakeOff(CBotVar* thisclass, CBotVar* var, CBotVar* result, int& exception, void* user)
 {
+    CObject*    pThis = static_cast<CObject *>(user);
+    CScript*    script = pThis->GetRunScript();
+
     Error       err;
 
     exception = 0;
@@ -891,6 +928,13 @@ bool CScriptFunctions::rTakeOff(CBotVar* thisclass, CBotVar* var, CBotVar* resul
     CObject* center = CObjectManager::GetInstancePointer()->GetObjectById(rank);
     CAuto* automat = center->GetAuto();
 
+    if ( pThis->GetTeam() != center->GetTeam() && center->GetTeam() != 0 )
+    {
+        exception = ERR_ENEMY_OBJECT;
+        result->SetValInt(ERR_ENEMY_OBJECT);
+        return false;
+    }
+
     if ( thisType == OBJECT_BASE )
         err = (static_cast<CAutoBase*>(automat))->TakeOff(false);
     else
@@ -899,8 +943,7 @@ bool CScriptFunctions::rTakeOff(CBotVar* thisclass, CBotVar* var, CBotVar* resul
     if ( err != ERR_OK )
     {
         result->SetValInt(err);  // return error
-        //TODO:        if ( script->m_errMode == ERM_STOP )
-        if ( true )
+        if ( script->m_errMode == ERM_STOP )
         {
             exception = err;
             return false;

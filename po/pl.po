@@ -1580,6 +1580,9 @@ msgstr "Obróć w prawo\\Obraca robota w prawo"
 msgid "Type declaration missing"
 msgstr "Brak deklaracji typu"
 
+msgid "Unable to control enemy objects"
+msgstr "Nie można kontrolować wrogich obiektów"
+
 msgid "Undo (Ctrl+z)"
 msgstr "Cofnij (Ctrl+Z)"
 

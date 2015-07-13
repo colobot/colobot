@@ -1530,6 +1530,9 @@ msgstr ""
 msgid "Can not create this; there are too many objects"
 msgstr ""
 
+msgid "Unable to control enemy objects"
+msgstr ""
+
 #, c-format
 msgid "\"%s\" missing in this exercise"
 msgstr ""

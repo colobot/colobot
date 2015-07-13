@@ -124,6 +124,7 @@ enum Error
     ERR_DELETEMOBILE      = 700,      //! <  vehicle destroyed
     ERR_DELETEBUILDING    = 701,      //! <  building destroyed
     ERR_TOOMANY           = 702,      //! <  too many objects
+    ERR_ENEMY_OBJECT      = 703,      //! <  can't control enemy object
     ERR_OBLIGATORYTOKEN   = 800,      //! <  compulsory instruction missing
     ERR_PROHIBITEDTOKEN   = 801,      //! <  instruction prohibited
     ERR_AIM_IMPOSSIBLE    = 900,      //! <  cannot aim at specified angle(s)
@@ -136,7 +137,7 @@ enum Error
     INFO_LABO             = 10005,    //! <  analysis ended
     INFO_ENERGY           = 10006,    //! <  battery available
     INFO_NUCLEAR          = 10007,    //! <  nuclear battery available
-    INFO_FINDING          = 10008,    //! <  nuclear battery available
+    INFO_FINDING          = 10008,    //! <  useful object found
     INFO_MARKPOWER        = 10020,    //! <  location for station found
     INFO_MARKURANIUM      = 10021,    //! <  location for derrick found
     INFO_MARKSTONE        = 10022,    //! <  location for derrick found

@@ -1578,6 +1578,9 @@ msgstr "Tourner à droite\\Moteur à droite"
 msgid "Type declaration missing"
 msgstr "Déclaration de type attendu"
 
+msgid "Unable to control enemy objects"
+msgstr ""
+
 msgid "Undo (Ctrl+z)"
 msgstr "Annuler (Ctrl+z)"
 
