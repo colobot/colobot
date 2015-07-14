@@ -510,8 +510,8 @@ void CRobotMain::ChangePhase(Phase phase)
     // Creates and hide the command console.
     dim.x = 200.0f/640.0f;
     dim.y =  18.0f/480.0f;
-    pos.x =  50.0f/640.0f;
-    pos.y = 452.0f/480.0f;
+    pos.x =  20.0f/640.0f;
+    pos.y = 100.0f/480.0f;
     Ui::CEdit* pe = static_cast<Ui::CEdit*>(m_interface->CreateEdit(pos, dim, 0, EVENT_CMD));
     if (pe == nullptr) return;
     pe->ClearState(Ui::STATE_VISIBLE);
@@ -704,7 +704,7 @@ bool CRobotMain::ProcessEvent(Event &event)
     {
         if (m_phase != PHASE_NAME &&
            !m_movie->IsExist()   &&
-           !m_movieLock && !m_editLock && !m_engine->GetPause())
+           !m_movieLock && !m_editLock)
         {
             Ui::CEdit* pe = static_cast<Ui::CEdit*>(m_interface->SearchControl(EVENT_CMD));
             if (pe == nullptr) return false;
@@ -1197,8 +1197,8 @@ void CRobotMain::ExecuteCmd(char *cmd)
             if (m_freePhoto)
             {
                 m_camera->SetType(Gfx::CAM_TYPE_FREE);
-                ChangePause(PAUSE_PHOTO);
                 DeselectAll();  // removes the control buttons
+                ChangePause(PAUSE_PHOTO);
                 m_map->ShowMap(false);
                 m_displayText->HideText(true);
             }
