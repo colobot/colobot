@@ -572,7 +572,7 @@ void CRobotMain::ChangePhase(Phase phase)
             m_sound->StopMusic(0.0f);
             if (m_base == nullptr || loading) StartMusic();
         }
-        catch (const CLevelParserException& e)
+        catch (const std::runtime_error& e)
         {
             CLogger::GetInstancePointer()->Error("An error occured while trying to load a level\n");
             CLogger::GetInstancePointer()->Error("%s\n", e.what());
@@ -619,7 +619,7 @@ void CRobotMain::ChangePhase(Phase phase)
                 }
                 StartMusic();
             }
-            catch (const CLevelParserException& e)
+            catch (const std::runtime_error& e)
             {
                 CLogger::GetInstancePointer()->Error("An error occured while trying to load win scene\n");
                 CLogger::GetInstancePointer()->Error("%s\n", e.what());
@@ -652,7 +652,7 @@ void CRobotMain::ChangePhase(Phase phase)
 
                 StartMusic();
             }
-            catch (const CLevelParserException& e)
+            catch (const std::runtime_error& e)
             {
                 CLogger::GetInstancePointer()->Error("An error occured while trying to load lost scene\n");
                 CLogger::GetInstancePointer()->Error("%s\n", e.what());
@@ -2862,7 +2862,7 @@ void CRobotMain::ScenePerso()
     {
         CreateScene(false, true, false);  // sets scene
     }
-    catch (const CLevelParserException& e)
+    catch (const std::runtime_error& e)
     {
         CLogger::GetInstancePointer()->Error("An error occured while trying to load apperance scene\n");
         CLogger::GetInstancePointer()->Error("%s\n", e.what());
@@ -3540,8 +3540,16 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 }
                 catch (const CObjectCreateException& e)
                 {
-                    GetLogger()->Error("Error loading level object: %s\n", e.what());
-                    continue;
+                    if (gadget)
+                    {
+                        GetLogger()->Warn("Error loading decorative object: %s\n", e.what());
+                        continue;
+                    }
+                    else
+                    {
+                        GetLogger()->Error("Error loading level object: %s\n", e.what());
+                        throw;
+                    }
                 }
 
                 if (m_fixScene && type == OBJECT_HUMAN)
@@ -5341,7 +5349,7 @@ void CRobotMain::ResetCreate()
             }
         }
     }
-    catch (const CLevelParserException& e)
+    catch (const std::runtime_error& e)
     {
         CLogger::GetInstancePointer()->Error("An error occured while trying to reset scene\n");
         CLogger::GetInstancePointer()->Error("%s\n", e.what());
