@@ -36,6 +36,7 @@
 #include "object/brain.h"
 #include "object/object.h"
 #include "object/object_manager.h"
+#include "object/trace_color.h"
 #include "object/robotmain.h"
 #include "object/task/taskmanager.h"
 #include "object/subclass/exchange_post.h"
@@ -1642,6 +1643,11 @@ bool CScriptFunctions::rProduce(CBotVar* var, CBotVar* result, int& exception, v
             result->SetValInt(1);  // error
             return true;
         }
+        if(type == OBJECT_MOBILEdr)
+        {
+            assert(object->Implements(ObjectInterfaceType::Old)); // TODO: temporary hack
+            dynamic_cast<COldObject*>(object)->SetManual(true);
+        }
         script->m_main->CreateShortcuts();
     }
 
@@ -2934,30 +2940,30 @@ bool CScriptFunctions::rPenDown(CBotVar* var, CBotVar* result, int& exception, v
     CMotionVehicle* motionVehicle = dynamic_cast<CMotionVehicle*>(pThis->GetMotion());
     assert(motionVehicle != nullptr);
 
+    exception = 0;
+
+    if ( var != 0 )
+    {
+        color = var->GetValInt();
+        if ( color <  0 )  color =  0;
+        if ( color > static_cast<int>(TraceColor::Max) )  color = static_cast<int>(TraceColor::Max);
+        motionVehicle->SetTraceColor(static_cast<TraceColor>(color));
+
+        var = var->GetNext();
+        if ( var != 0 )
+        {
+            width = var->GetValFloat();
+            if ( width < 0.1f )  width = 0.1f;
+            if ( width > 1.0f )  width = 1.0f;
+            motionVehicle->SetTraceWidth(width);
+        }
+    }
+    motionVehicle->SetTraceDown(true);
+
     if ( pThis->GetType() == OBJECT_MOBILEdr )
     {
-        exception = 0;
-
         if ( script->m_primaryTask == 0 )  // no task in progress?
         {
-            if ( var != 0 )
-            {
-                color = var->GetValInt();
-                if ( color <  0 )  color =  0;
-                if ( color > 17 )  color = 17;
-                motionVehicle->SetTraceColor(color);
-
-                var = var->GetNext();
-                if ( var != 0 )
-                {
-                    width = var->GetValFloat();
-                    if ( width < 0.1f )  width = 0.1f;
-                    if ( width > 1.0f )  width = 1.0f;
-                    motionVehicle->SetTraceWidth(width);
-                }
-            }
-            motionVehicle->SetTraceDown(true);
-
             script->m_primaryTask = new CTaskManager(script->m_object);
             err = script->m_primaryTask->StartTaskPen(motionVehicle->GetTraceDown(), motionVehicle->GetTraceColor());
             if ( err != ERR_OK )
@@ -2977,24 +2983,6 @@ bool CScriptFunctions::rPenDown(CBotVar* var, CBotVar* result, int& exception, v
     }
     else
     {
-        if ( var != 0 )
-        {
-            color = var->GetValInt();
-            if ( color <  0 )  color =  0;
-            if ( color > 17 )  color = 17;
-            motionVehicle->SetTraceColor(color);
-
-            var = var->GetNext();
-            if ( var != 0 )
-            {
-                width = var->GetValFloat();
-                if ( width < 0.1f )  width = 0.1f;
-                if ( width > 1.0f )  width = 1.0f;
-                motionVehicle->SetTraceWidth(width);
-            }
-        }
-        motionVehicle->SetTraceDown(true);
-
         return true;
     }
 }
@@ -3010,10 +2998,12 @@ bool CScriptFunctions::rPenUp(CBotVar* var, CBotVar* result, int& exception, voi
     CMotionVehicle* motionVehicle = dynamic_cast<CMotionVehicle*>(pThis->GetMotion());
     assert(motionVehicle != nullptr);
 
+    exception = 0;
+
+    motionVehicle->SetTraceDown(false);
+
     if ( pThis->GetType() == OBJECT_MOBILEdr )
     {
-        exception = 0;
-
         if ( script->m_primaryTask == 0 )  // no task in progress?
         {
             motionVehicle->SetTraceDown(false);
@@ -3037,7 +3027,6 @@ bool CScriptFunctions::rPenUp(CBotVar* var, CBotVar* result, int& exception, voi
     }
     else
     {
-        motionVehicle->SetTraceDown(false);
         return true;
     }
 }
@@ -3054,17 +3043,17 @@ bool CScriptFunctions::rPenColor(CBotVar* var, CBotVar* result, int& exception, 
     CMotionVehicle* motionVehicle = dynamic_cast<CMotionVehicle*>(pThis->GetMotion());
     assert(motionVehicle != nullptr);
 
+    exception = 0;
+
+    color = var->GetValInt();
+    if ( color <  0 )  color =  0;
+    if ( color > static_cast<int>(TraceColor::Max) )  color = static_cast<int>(TraceColor::Max);
+    motionVehicle->SetTraceColor(static_cast<TraceColor>(color));
+
     if ( pThis->GetType() == OBJECT_MOBILEdr )
     {
-        exception = 0;
-
         if ( script->m_primaryTask == 0 )  // no task in progress?
         {
-            color = var->GetValInt();
-            if ( color <  0 )  color =  0;
-            if ( color > 17 )  color = 17;
-            motionVehicle->SetTraceColor(color);
-
             script->m_primaryTask = new CTaskManager(script->m_object);
             err = script->m_primaryTask->StartTaskPen(motionVehicle->GetTraceDown(), motionVehicle->GetTraceColor());
             if ( err != ERR_OK )
@@ -3084,11 +3073,6 @@ bool CScriptFunctions::rPenColor(CBotVar* var, CBotVar* result, int& exception, 
     }
     else
     {
-        color = var->GetValInt();
-        if ( color <  0 )  color =  0;
-        if ( color > 17 )  color = 17;
-        motionVehicle->SetTraceColor(color);
-
         return true;
     }
 }
@@ -3676,24 +3660,11 @@ void CScriptFunctions::Init()
     }
     CBotProgram::DefineNum("Any", OBJECT_NULL);
 
-    CBotProgram::DefineNum("White",      0);
-    CBotProgram::DefineNum("Black",      1);
-    CBotProgram::DefineNum("Gray",       2);
-    CBotProgram::DefineNum("LightGray",  3);
-    CBotProgram::DefineNum("Red",        4);
-    CBotProgram::DefineNum("Pink",       5);
-    CBotProgram::DefineNum("Purple",     6);
-    CBotProgram::DefineNum("Orange",     7);
-    CBotProgram::DefineNum("Yellow",     8);
-    CBotProgram::DefineNum("Beige",      9);
-    CBotProgram::DefineNum("Brown",      10);
-    CBotProgram::DefineNum("Skin",       11);
-    CBotProgram::DefineNum("Green",      12);
-    CBotProgram::DefineNum("LightGreen", 13);
-    CBotProgram::DefineNum("Blue",       14);
-    CBotProgram::DefineNum("LightBlue",  15);
-    CBotProgram::DefineNum("BlackArrow", 16);
-    CBotProgram::DefineNum("RedArrow",   17);
+    for (int i = 0; i < static_cast<int>(TraceColor::Max); i++)
+    {
+        TraceColor color = static_cast<TraceColor>(i);
+        CBotProgram::DefineNum(TraceColorName(color).c_str(), static_cast<int>(color));
+    }
 
     CBotProgram::DefineNum("InFront",    TMA_FFRONT);
     CBotProgram::DefineNum("Behind",     TMA_FBACK);

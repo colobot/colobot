@@ -68,7 +68,7 @@ CMotionVehicle::CMotionVehicle(COldObject* object) : CMotion(object)
     m_bFlyFix = false;
 
     m_bTraceDown = false;
-    m_traceColor = 1;  // black
+    m_traceColor = TraceColor::Black;  // black
     m_traceWidth = 0.5f;
 }
 
@@ -1909,12 +1909,12 @@ void CMotionVehicle::SetTraceDown(bool bDown)
     m_bTraceDown = bDown;
 }
 
-int CMotionVehicle::GetTraceColor()
+TraceColor CMotionVehicle::GetTraceColor()
 {
     return m_traceColor;
 }
 
-void CMotionVehicle::SetTraceColor(int color)
+void CMotionVehicle::SetTraceColor(TraceColor color)
 {
     m_traceColor = color;
 }
@@ -1928,4 +1928,3 @@ void CMotionVehicle::SetTraceWidth(float width)
 {
     m_traceWidth = width;
 }
-

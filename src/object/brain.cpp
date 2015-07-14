@@ -798,35 +798,35 @@ bool CBrain::EventProcess(const Event &event)
         }
         if ( action == EVENT_OBJECT_PEN1 )  // black
         {
-            err = StartTaskPen(true, 1);
+            err = StartTaskPen(true, TraceColor::Black);
         }
         if ( action == EVENT_OBJECT_PEN2 )  // yellow
         {
-            err = StartTaskPen(true, 8);
+            err = StartTaskPen(true, TraceColor::Yellow);
         }
         if ( action == EVENT_OBJECT_PEN3 )  // orange
         {
-            err = StartTaskPen(true, 7);
+            err = StartTaskPen(true, TraceColor::Orange);
         }
         if ( action == EVENT_OBJECT_PEN4 )  // red
         {
-            err = StartTaskPen(true, 4);
+            err = StartTaskPen(true, TraceColor::Red);
         }
         if ( action == EVENT_OBJECT_PEN5 )  // violet
         {
-            err = StartTaskPen(true, 6);
+            err = StartTaskPen(true, TraceColor::Purple);
         }
         if ( action == EVENT_OBJECT_PEN6 )  // blue
         {
-            err = StartTaskPen(true, 14);
+            err = StartTaskPen(true, TraceColor::Blue);
         }
         if ( action == EVENT_OBJECT_PEN7 )  // green
         {
-            err = StartTaskPen(true, 12);
+            err = StartTaskPen(true, TraceColor::Green);
         }
         if ( action == EVENT_OBJECT_PEN8 )  // brown
         {
-            err = StartTaskPen(true, 10);
+            err = StartTaskPen(true, TraceColor::Brown);
         }
 
         if ( action == EVENT_OBJECT_REC )  // registered?
@@ -1156,12 +1156,12 @@ Error CBrain::StartTaskTerraform()
 
 // Change pencil.
 
-Error CBrain::StartTaskPen(bool down, int color)
+Error CBrain::StartTaskPen(bool down, TraceColor color)
 {
     auto motionVehicle = dynamic_cast<CMotionVehicle*>(m_motion);
     assert(motionVehicle != nullptr);
 
-    if (color == -1)
+    if (color == TraceColor::Default)
         color = motionVehicle->GetTraceColor();
 
     motionVehicle->SetTraceDown(down);
@@ -2267,7 +2267,6 @@ void CBrain::UpdateInterface()
     Ui::CButton*    pb;
     Ui::CSlider*    ps;
     Ui::CColor*     pc;
-    int         color;
     bool        bEnable, bFly, bRun;
     char        title[100];
 
@@ -2485,46 +2484,46 @@ void CBrain::UpdateInterface()
             pb->ClearState(Ui::STATE_CHECK);
         }
 
-        color = motionVehicle->GetTraceColor();
+        TraceColor color = motionVehicle->GetTraceColor();
         pc = static_cast< Ui::CColor* >(pw->SearchControl(EVENT_OBJECT_PEN1));
         if ( pc != 0 )
         {
-            pc->SetState(Ui::STATE_CHECK, color==1);
+            pc->SetState(Ui::STATE_CHECK, color == TraceColor::Black);
         }
         pc = static_cast< Ui::CColor* >(pw->SearchControl(EVENT_OBJECT_PEN2));
         if ( pc != 0 )
         {
-            pc->SetState(Ui::STATE_CHECK, color==8);
+            pc->SetState(Ui::STATE_CHECK, color == TraceColor::Yellow);
         }
         pc = static_cast< Ui::CColor* >(pw->SearchControl(EVENT_OBJECT_PEN3));
         if ( pc != 0 )
         {
-            pc->SetState(Ui::STATE_CHECK, color==7);
+            pc->SetState(Ui::STATE_CHECK, color == TraceColor::Orange);
         }
         pc = static_cast< Ui::CColor* >(pw->SearchControl(EVENT_OBJECT_PEN4));
         if ( pc != 0 )
         {
-            pc->SetState(Ui::STATE_CHECK, color==4);
+            pc->SetState(Ui::STATE_CHECK, color == TraceColor::Red);
         }
         pc = static_cast< Ui::CColor* >(pw->SearchControl(EVENT_OBJECT_PEN5));
         if ( pc != 0 )
         {
-            pc->SetState(Ui::STATE_CHECK, color==6);
+            pc->SetState(Ui::STATE_CHECK, color == TraceColor::Purple);
         }
         pc = static_cast< Ui::CColor* >(pw->SearchControl(EVENT_OBJECT_PEN6));
         if ( pc != 0 )
         {
-            pc->SetState(Ui::STATE_CHECK, color==14);
+            pc->SetState(Ui::STATE_CHECK, color == TraceColor::Blue);
         }
         pc = static_cast< Ui::CColor* >(pw->SearchControl(EVENT_OBJECT_PEN7));
         if ( pc != 0 )
         {
-            pc->SetState(Ui::STATE_CHECK, color==12);
+            pc->SetState(Ui::STATE_CHECK, color == TraceColor::Green);
         }
         pc = static_cast< Ui::CColor* >(pw->SearchControl(EVENT_OBJECT_PEN8));
         if ( pc != 0 )
         {
-            pc->SetState(Ui::STATE_CHECK, color==10);
+            pc->SetState(Ui::STATE_CHECK, color == TraceColor::Brown);
         }
     }
     else
@@ -2930,7 +2929,7 @@ void CBrain::TraceRecordStart()
     }
     else    // pen up?
     {
-        m_traceColor = -1;
+        m_traceColor = TraceColor::Default;
     }
 
     delete[] m_traceRecordBuffer;
@@ -2945,7 +2944,6 @@ void CBrain::TraceRecordFrame()
     TraceOper   oper = TO_STOP;
     Math::Vector    pos;
     float       angle, len, speed;
-    int         color;
 
     CMotionVehicle* motionVehicle = dynamic_cast<CMotionVehicle*>(m_motion);
     assert(motionVehicle != nullptr);
@@ -2957,13 +2955,10 @@ void CBrain::TraceRecordFrame()
     speed = m_physics->GetCirMotionY(MO_REASPEED);
     if ( speed != 0.0f )  oper = TO_TURN;
 
+    TraceColor color = TraceColor::Default;
     if ( motionVehicle->GetTraceDown() )  // pencil down?
     {
         color = motionVehicle->GetTraceColor();
-    }
-    else    // pen up?
-    {
-        color = -1;
     }
 
     if ( oper != m_traceOper ||

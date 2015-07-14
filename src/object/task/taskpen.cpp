@@ -129,7 +129,7 @@ bool CTaskPen::EventProcess(const Event &event)
 
 // Assigns the goal has achieved.
 
-Error CTaskPen::Start(bool bDown, int color)
+Error CTaskPen::Start(bool bDown, TraceColor color)
 {
     Math::Vector    pos;
     Math::Matrix*   mat;
@@ -262,26 +262,28 @@ int CTaskPen::AngleToRank(float angle)
 
 // Converting a color to the angle of carousel of pencils.
 
-float CTaskPen::ColorToAngle(int color)
+float CTaskPen::ColorToAngle(TraceColor color)
 {
     return -45.0f*Math::PI/180.0f*ColorToRank(color);
 }
 
 // Converting a color number to the pencil (0 .. 7).
 
-int CTaskPen::ColorToRank(int color)
+int CTaskPen::ColorToRank(TraceColor color)
 {
-    if ( color ==  8 )  return 1;  // yellow
-    if ( color ==  7 )  return 2;  // orange
-    if ( color ==  5 )  return 2;  // pink
-    if ( color ==  4 )  return 3;  // red
-    if ( color ==  6 )  return 4;  // purple
-    if ( color == 14 )  return 5;  // blue
-    if ( color == 15 )  return 5;  // light blue
-    if ( color == 12 )  return 6;  // green
-    if ( color == 13 )  return 6;  // light green
-    if ( color == 10 )  return 7;  // brown
-    if ( color ==  9 )  return 7;  // beige
+    if ( color == TraceColor::Yellow     )  return 1;  // yellow
+    if ( color == TraceColor::Orange     )  return 2;  // orange
+    if ( color == TraceColor::Pink       )  return 2;  // pink
+    if ( color == TraceColor::Red        )  return 3;  // red
+    if ( color == TraceColor::Purple     )  return 4;  // purple
+    if ( color == TraceColor::Blue       )  return 5;  // blue
+    if ( color == TraceColor::LightBlue  )  return 5;  // light blue
+    if ( color == TraceColor::Green      )  return 6;  // green
+    if ( color == TraceColor::LightGreen )  return 6;  // light green
+    if ( color == TraceColor::Brown      )  return 7;  // brown
+    if ( color == TraceColor::Beige      )  return 7;  // beige
+
+    if ( color == TraceColor::RedArrow   )  return 3;  // red
+
     return 0;  // black
 }
-

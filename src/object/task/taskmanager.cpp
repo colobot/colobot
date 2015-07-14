@@ -156,7 +156,7 @@ Error CTaskManager::StartTaskTerraform()
 
 // Changes the pencil.
 
-Error CTaskManager::StartTaskPen(bool bDown, int color)
+Error CTaskManager::StartTaskPen(bool bDown, TraceColor color)
 {
     m_task = new CTaskPen(m_object);
     return (static_cast<CTaskPen*>(m_task))->Start(bDown, color);
@@ -263,4 +263,3 @@ bool CTaskManager::Abort()
     if ( m_task == 0 )  return false;
     return m_task->Abort();
 }
-

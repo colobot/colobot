@@ -23,6 +23,7 @@
 
 
 #include "object/task/task.h"
+#include "object/trace_color.h"
 #include "math/vector.h"
 
 
@@ -44,15 +45,15 @@ public:
 
     bool        EventProcess(const Event &event);
 
-    Error       Start(bool bDown, int color);
+    Error       Start(bool bDown, TraceColor color);
     Error       IsEnded();
     bool        Abort();
 
 protected:
     void        SoundManip(float time, float amplitude, float frequency);
     int         AngleToRank(float angle);
-    float       ColorToAngle(int color);
-    int         ColorToRank(int color);
+    float       ColorToAngle(TraceColor color);
+    int         ColorToRank(TraceColor color);
 
 protected:
     bool            m_bError;
@@ -68,4 +69,3 @@ protected:
     float           m_newAngle;
     float           m_timeDown;
 };
-

@@ -2423,7 +2423,7 @@ void CPhysics::FloorAdapt(float aTime, float rTime,
         }
         else
         {
-            WheelParticle(-1, 0.0f);
+            WheelParticle(TraceColor::Default, 0.0f);
         }
     }
 
@@ -3748,7 +3748,7 @@ void CPhysics::WaterParticle(float aTime, Math::Vector pos, ObjectType type,
 
 // Creates the trace under the robot.
 
-void CPhysics::WheelParticle(int color, float width)
+void CPhysics::WheelParticle(TraceColor color, float width)
 {
     Math::Matrix*       mat;
     Math::Vector        goal1, goal2, wheel1, wheel2;
@@ -3758,11 +3758,11 @@ void CPhysics::WheelParticle(int color, float width)
     mat = m_object->GetWorldMatrix(0);
 
     // Draw a trace on the ground.
-    if ( color >= 0 && color <= 17 )
+    if ( color != TraceColor::Default )
     {
-        parti = static_cast<Gfx::ParticleType>(Gfx::PARTITRACE0+color);
+        parti = static_cast<Gfx::ParticleType>(Gfx::PARTITRACE0+static_cast<int>(color));
         step = 2.0f;
-        if ( color >= 16 )  step = 4.0f;  // arrow?
+        if ( static_cast<int>(color) >= static_cast<int>(TraceColor::RedArrow) )  step = 4.0f;  // arrow?
         step /= m_engine->GetTracePrecision();
 
         goal1.x = step/2.0f;
@@ -3892,4 +3892,3 @@ float CPhysics::GetFallDamageFraction()
 {
     return m_fallDamageFraction;
 }
-

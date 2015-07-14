@@ -30,6 +30,7 @@
 #include "math/vector.h"
 
 #include "object/object_type.h"
+#include "object/trace_color.h"
 
 
 class CObject;
@@ -205,7 +206,7 @@ protected:
     void        CrashParticle(float crash);
     void        MotorParticle(float aTime, float rTime);
     void        WaterParticle(float aTime, Math::Vector pos, ObjectType type, float floor, float advance, float turn);
-    void        WheelParticle(int color, float width);
+    void        WheelParticle(TraceColor color, float width);
     void        SetFalling();
 
 protected:
@@ -268,4 +269,3 @@ protected:
     float       m_fallDamageFraction;
     float       m_minFallingHeight;
 };
-

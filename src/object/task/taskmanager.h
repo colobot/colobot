@@ -27,6 +27,7 @@
 #include "object/task/taskgoto.h"
 #include "object/task/taskshield.h"
 #include "object/task/taskflag.h"
+#include "object/trace_color.h"
 
 
 
@@ -48,7 +49,7 @@ public:
     Error   StartTaskDeleteMark();
     Error   StartTaskInfo(const char *name, float value, float power, bool bSend);
     Error   StartTaskTerraform();
-    Error   StartTaskPen(bool bDown, int color);
+    Error   StartTaskPen(bool bDown, TraceColor color);
     Error   StartTaskRecover();
     Error   StartTaskShield(TaskShieldMode mode, float delay);
     Error   StartTaskFire(float delay);
@@ -67,4 +68,3 @@ protected:
     COldObject*        m_object;
     bool            m_bPilot;
 };
-

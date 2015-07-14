@@ -17,12 +17,11 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// motionvehicle.h
-
 #pragma once
 
 
 #include "object/motion/motion.h"
+#include "object/trace_color.h"
 
 
 
@@ -38,8 +37,8 @@ public:
 
     bool        GetTraceDown();
     void        SetTraceDown(bool bDown);
-    int         GetTraceColor();
-    void        SetTraceColor(int color);
+    TraceColor  GetTraceColor();
+    void        SetTraceColor(TraceColor color);
     float       GetTraceWidth();
     void        SetTraceWidth(float width);
 
@@ -66,7 +65,6 @@ protected:
     Math::Vector    m_posKey;
     bool        m_bFlyFix;
     bool        m_bTraceDown;
-    int         m_traceColor;
+    TraceColor  m_traceColor;
     float       m_traceWidth;
 };
-

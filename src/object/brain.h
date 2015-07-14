@@ -31,6 +31,7 @@
 #include "object/task/taskmanip.h"
 #include "object/task/taskflag.h"
 #include "object/task/taskshield.h"
+#include "object/trace_color.h"
 
 #include <vector>
 
@@ -155,7 +156,7 @@ public:
     int         GetProgramIndex(Program* program);
 
 protected:
-    Error       StartTaskPen(bool down, int color = -1);
+    Error       StartTaskPen(bool down, TraceColor color = TraceColor::Default);
 
     bool        EventFrame(const Event &event);
 
@@ -236,8 +237,7 @@ protected:
     TraceOper           m_traceOper;
     Math::Vector        m_tracePos;
     float               m_traceAngle;
-    int                 m_traceColor;
+    TraceColor          m_traceColor;
     int                 m_traceRecordIndex;
     TraceRecord*        m_traceRecordBuffer;
 };
-

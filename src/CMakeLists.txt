@@ -192,6 +192,7 @@ set(BASE_SOURCES
     object/task/taskturn.cpp
     object/task/taskwait.cpp
     object/tool_type.cpp
+    object/trace_color.cpp
     object/subclass/exchange_post.cpp
     object/subclass/static_object.cpp
     physics/physics.cpp
