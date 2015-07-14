@@ -265,7 +265,6 @@ CObject* CObjectManager::Radar(CObject* pThis, Math::Vector thisPosition, float 
         if ( pObj->GetProxyActivate() )  continue;
 
         oType = pObj->GetType();
-        if ( oType == OBJECT_TOTO || oType == OBJECT_CONTROLLER )  continue;
 
         if (cbotTypes)
         {
@@ -295,6 +294,10 @@ CObject* CObjectManager::Radar(CObject* pThis, Math::Vector thisPosition, float 
             // END OF TODO
         }
 
+        if ( std::find(type.begin(), type.end(), oType) == type.end() && type.size() > 0 )  continue;
+
+        if ( (oType == OBJECT_TOTO || oType == OBJECT_CONTROLLER) && type.size() == 0 )  continue; // allow OBJECT_TOTO and OBJECT_CONTROLLER only if explicitly asked in type parameter
+
         if ( filter_flying == FILTER_ONLYLANDING )
         {
             physics = pObj->GetPhysics();
@@ -317,8 +320,6 @@ CObject* CObjectManager::Radar(CObject* pThis, Math::Vector thisPosition, float 
             if ( pObj->GetTeam() != 0 && pObj->GetTeam() != pThis->GetTeam() ) enemy = static_cast<RadarFilter>(enemy | FILTER_ENEMY);
             if ( filter_enemy != 0 && (filter_enemy & enemy) == 0 ) continue;
         }
-
-        if ( std::find(type.begin(), type.end(), oType) == type.end() && type.size() > 0 )  continue;
 
         oPos = pObj->GetPosition();
         d = Math::DistanceProjected(iPos, oPos);
