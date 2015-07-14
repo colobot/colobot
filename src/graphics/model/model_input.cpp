@@ -689,6 +689,7 @@ std::string ModelInput::ReadLineString(std::istream& stream, const std::string& 
             throw CModelIOException("Unexpected EOF");
 
         std::getline(stream, line);
+        boost::trim_right(line);
         if (!line.empty() && line[0] != '#')
             break;
     }
