@@ -69,20 +69,19 @@ enum ParticleType
     PARTIFIRE       = 9,        //! < fireball shrinks
     PARTIFIREZ      = 10,       //! < fireball grows
     PARTIBLUE       = 11,       //! < blue ball
-    PARTISELY       = 12,       //! < yellow selection
-    PARTISELR       = 13,       //! < red selection
-    PARTIGUN1       = 18,       //! < a bullet (fireball)
+    PARTISELY       = 12,       //! < yellow robot lights
+    PARTISELR       = 13,       //! < red robot lights
+    PARTIGUN1       = 18,       //! < bullet 1 (fireball)
     PARTIGUN2       = 19,       //! < bullet 2 (ant)
     PARTIGUN3       = 20,       //! < bullet 3 (spider)
     PARTIGUN4       = 21,       //! < bullet 4 (orgaball)
     PARTIFRAG       = 22,       //! < triangular fragment
-    PARTIQUEUE      = 23,       //! < inflamed tail
+    PARTIQUEUE      = 23,       //! < inflamed tail (TODO: unused?)
     PARTIORGANIC1   = 24,       //! < organic ball mother
     PARTIORGANIC2   = 25,       //! < organic ball daughter
     PARTISMOKE1     = 26,       //! < black smoke
     PARTISMOKE2     = 27,       //! < black smoke
     PARTISMOKE3     = 28,       //! < black smoke
-    PARTISMOKE4     = 29,       //! < black smoke
     PARTIBLOOD      = 30,       //! < human blood
     PARTIBLOODM     = 31,       //! < blood laying
     PARTIVAPOR      = 32,       //! < steam
@@ -98,17 +97,16 @@ enum ParticleType
     PARTIVIRUS10    = 42,       //! < virus 10
     PARTIRAY1       = 43,       //! < ray 1 (turn)
     PARTIRAY2       = 44,       //! < ray 2 (electric arc)
-    PARTIRAY3       = 45,       //! < ray 3
-    PARTIRAY4       = 46,       //! < ray 4
+    PARTIRAY3       = 45,       //! < ray 3 (ExchangePost)
     PARTIFLAME      = 47,       //! < flame
     PARTIBUBBLE     = 48,       //! < bubble
     PARTIFLIC       = 49,       //! < circles in the water
     PARTIEJECT      = 50,       //! < ejection from the reactor
     PARTISCRAPS     = 51,       //! < waste from the reactor
-    PARTITOTO       = 52,       //! < reactor of tot
-    PARTIERROR      = 53,       //! < toto says no
-    PARTIWARNING    = 54,       //! < foo says blah
-    PARTIINFO       = 54,       //! < toto says yes
+    PARTITOTO       = 52,       //! < Robby's reactor
+    PARTIERROR      = 53,       //! < Robby says no
+    PARTIWARNING    = 54,       //! < Robby says blah
+    PARTIINFO       = 54,       //! < Robby says yes
     PARTIQUARTZ     = 55,       //! < reflection crystal
     PARTISPHERE0    = 56,       //! < explosion sphere
     PARTISPHERE1    = 57,       //! < energy sphere
@@ -117,9 +115,6 @@ enum ParticleType
     PARTISPHERE4    = 60,       //! < information sphere (emit)
     PARTISPHERE5    = 61,       //! < botanical sphere (gravity root)
     PARTISPHERE6    = 62,       //! < information sphere (receive)
-    PARTISPHERE7    = 63,       //! < sphere
-    PARTISPHERE8    = 64,       //! < sphere
-    PARTISPHERE9    = 65,       //! < sphere
     PARTIGUNDEL     = 66,       //! < bullet destroyed by shield
     PARTIPART       = 67,       //! < object part
     PARTITRACK1     = 68,       //! < drag 1
@@ -133,15 +128,7 @@ enum ParticleType
     PARTITRACK9     = 76,       //! < drag 9
     PARTITRACK10    = 77,       //! < drag 10
     PARTITRACK11    = 78,       //! < drag 11
-    PARTITRACK12    = 79,       //! < drag 12
-    PARTITRACK13    = 80,       //! < drag 13
-    PARTITRACK14    = 81,       //! < drag 14
-    PARTITRACK15    = 82,       //! < drag 15
-    PARTITRACK16    = 83,       //! < drag 16
-    PARTITRACK17    = 84,       //! < drag 17
-    PARTITRACK18    = 85,       //! < drag 18
-    PARTITRACK19    = 86,       //! < drag 19
-    PARTITRACK20    = 87,       //! < drag 20
+    PARTITRACK12    = 79,       //! < drag 12 (TODO: unused?)
     PARTIGLINTb     = 88,       //! < blue reflection
     PARTIGLINTr     = 89,       //! < red reflection
     PARTILENS1      = 90,       //! < brilliance 1 (orange)
@@ -155,10 +142,6 @@ enum ParticleType
     PARTIRECOVER    = 98,       //! < blue ball recycler
     PARTIROOT       = 100,      //! < gravity root smoke
     PARTIPLOUF0     = 101,      //! < splash
-    PARTIPLOUF1     = 102,      //! < splash
-    PARTIPLOUF2     = 103,      //! < splash
-    PARTIPLOUF3     = 104,      //! < splash
-    PARTIPLOUF4     = 105,      //! < splash
     PARTIDROP       = 106,      //! < drop
     PARTIFOG0       = 107,      //! < fog 0
     PARTIFOG1       = 108,      //! < fog 1
@@ -168,12 +151,9 @@ enum ParticleType
     PARTIFOG5       = 112,      //! < fog 5
     PARTIFOG6       = 113,      //! < fog 6
     PARTIFOG7       = 114,      //! < fog 7
-    PARTIFOG8       = 115,      //! < fog 8
-    PARTIFOG9       = 116,      //! < fog 9
     PARTILIMIT1     = 117,      //! < shows the limits 1
     PARTILIMIT2     = 118,      //! < shows the limits 2
     PARTILIMIT3     = 119,      //! < shows the limits 3
-    PARTILIMIT4     = 120,      //! < shows the limits 4
     PARTIWATER      = 121,      //! < drop of water
     PARTIEXPLOG1    = 122,      //! < ball explosion 1
     PARTIEXPLOG2    = 123,      //! < ball explosion 2
@@ -196,8 +176,6 @@ enum ParticleType
     PARTITRACE15    = 155,      //! < trace
     PARTITRACE16    = 156,      //! < trace
     PARTITRACE17    = 157,      //! < trace
-    PARTITRACE18    = 158,      //! < trace
-    PARTITRACE19    = 159,      //! < trace
 };
 
 enum ParticlePhase
@@ -397,4 +375,3 @@ protected:
 
 
 } // namespace Gfx
-

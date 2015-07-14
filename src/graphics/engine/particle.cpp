@@ -269,7 +269,6 @@ int CParticle::CreateParticle(Math::Vector pos, Math::Vector speed, Math::Point 
          type == PARTILIMIT1   ||
          type == PARTILIMIT2   ||
          type == PARTILIMIT3   ||
-         type == PARTILIMIT4   ||
          type == PARTIEXPLOG1  ||
          type == PARTIEXPLOG2  )
     {
@@ -374,7 +373,7 @@ int CParticle::CreateParticle(Math::Vector pos, Math::Vector speed, Math::Point 
             }
 
             if ( type >= PARTIFOG0 &&
-                 type <= PARTIFOG9 )
+                 type <= PARTIFOG7 )
             {
                 if (m_fogTotal < MAXPARTIFOG)
                 m_fog[m_fogTotal++] = i;
@@ -548,8 +547,7 @@ int CParticle::CreateRay(Math::Vector pos, Math::Vector goal,
     int t = -1;
     if ( type == PARTIRAY1 ||
          type == PARTIRAY2 ||
-         type == PARTIRAY3 ||
-         type == PARTIRAY4 )
+         type == PARTIRAY3 )
     {
         t = 3;  // effect02
     }
@@ -1622,7 +1620,7 @@ void CParticle::FrameParticle(float rTime)
         // Decreases the intensity if the camera
         // is almost at the same height (fog was eye level).
         if ( m_particle[i].type >= PARTIFOG0 &&
-             m_particle[i].type <= PARTIFOG9 )
+             m_particle[i].type <= PARTIFOG7 )
         {
             float h = 10.0f;
 
@@ -3608,17 +3606,16 @@ void CParticle::DrawParticle(int sheet)
                 DrawParticleFlat(i);
             }
             else if ( m_particle[i].type >= PARTIFOG0 &&
-                      m_particle[i].type <= PARTIFOG9 )
+                      m_particle[i].type <= PARTIFOG7 )
             {
                 DrawParticleFog(i);
             }
             else if ( m_particle[i].type >= PARTISPHERE0 &&
-                      m_particle[i].type <= PARTISPHERE9 )  // sphere?
+                      m_particle[i].type <= PARTISPHERE6 )  // sphere?
             {
                 DrawParticleSphere(i);
             }
-            else if ( m_particle[i].type >= PARTIPLOUF0 &&
-                      m_particle[i].type <= PARTIPLOUF4 )  // cylinder?
+            else if ( m_particle[i].type >= PARTIPLOUF0 )  // cylinder?
             {
                 DrawParticleCylinder(i);
             }
@@ -3905,4 +3902,3 @@ bool CParticle::WriteWheelTrace(const char *filename, int width, int height,
 }
 
 } // namespace Gfx
-
