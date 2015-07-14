@@ -514,7 +514,7 @@ bool COldObject::ExplodeObject(ExplosionType type, float force, float decay)
     Gfx::PyroType    pyroType;
     float       loss, shield;
 
-    if ( type == ExplosionType::Bang )
+    if ( type == ExplosionType::Burn )
     {
         if ( m_type == OBJECT_MOBILEtg ||
              m_type == OBJECT_METAL    ||
