@@ -19,6 +19,7 @@
 
 #include "graphics/model/model_manager.h"
 
+#include "common/logger.h"
 #include "common/resources/inputstream.h"
 
 #include "graphics/model/model_input.h"
@@ -32,8 +33,12 @@ CModel& CModelManager::GetModel(const std::string& modelName)
     if (it != m_models.end())
         return it->second;
 
+    std::string modelFile = "models-new/" + modelName + ".txt";
+
+    GetLogger()->Debug("Loading new model: %s\n", modelFile.c_str());
+
     CInputStream stream;
-    stream.open("models-new/" + modelName + ".txt");
+    stream.open(modelFile.c_str());
     if (!stream.is_open())
         throw CModelIOException(std::string("Could not open file '") + modelName + "'");
 

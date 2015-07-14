@@ -64,6 +64,7 @@
 #include "object/motion/motionhuman.h"
 #include "object/motion/motiontoto.h"
 #include "object/object.h"
+#include "object/object_create_exception.h"
 #include "object/object_manager.h"
 #include "object/scene_conditions.h"
 #include "object/task/task.h"
@@ -3523,16 +3524,25 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 Math::Vector pos = line->GetParam("pos")->AsPoint()*g_unit;
                 float dirAngle = line->GetParam("dir")->AsFloat(0.0f)*Math::PI;
                 bool trainer;
-                CObject* obj = m_objMan->CreateObject(
-                    pos, dirAngle,
-                    type,
-                    line->GetParam("power")->AsFloat(1.0f),
-                    line->GetParam("z")->AsFloat(1.0f),
-                    line->GetParam("h")->AsFloat(0.0f),
-                    trainer = line->GetParam("trainer")->AsBool(false),
-                    line->GetParam("toy")->AsBool(false),
-                    line->GetParam("option")->AsInt(0)
-                );
+                CObject* obj = nullptr;
+                try
+                {
+                        obj = m_objMan->CreateObject(
+                        pos, dirAngle,
+                        type,
+                        line->GetParam("power")->AsFloat(1.0f),
+                        line->GetParam("z")->AsFloat(1.0f),
+                        line->GetParam("h")->AsFloat(0.0f),
+                        trainer = line->GetParam("trainer")->AsBool(false),
+                        line->GetParam("toy")->AsBool(false),
+                        line->GetParam("option")->AsInt(0)
+                    );
+                }
+                catch (const CObjectCreateException& e)
+                {
+                    GetLogger()->Error("Error loading level object: %s\n", e.what());
+                    continue;
+                }
 
                 if (m_fixScene && type == OBJECT_HUMAN)
                 {
