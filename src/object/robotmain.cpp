@@ -283,6 +283,8 @@ void CRobotMain::Create(bool loadProfile)
 
     m_engine->SetMovieLock(m_movieLock);
 
+    m_app->SetMouseMode(MOUSE_ENGINE);
+
     m_movie->Flush();
 
     FlushDisplayInfo();
@@ -660,11 +662,6 @@ void CRobotMain::ChangePhase(Phase phase)
             }
         }
     }
-
-    if (m_phase == PHASE_LOADING)
-        m_app->SetMouseMode(MOUSE_NONE);
-    else
-        m_app->SetMouseMode(MOUSE_ENGINE);
 
     m_engine->LoadAllTextures();
 }
@@ -2553,8 +2550,6 @@ void CRobotMain::AbortMovie()
                 automat->Abort();
         }
     }
-
-    m_app->SetMouseMode(MOUSE_ENGINE);
 }
 
 
@@ -5857,11 +5852,6 @@ void CRobotMain::SetMovieLock(bool lock)
     CreateShortcuts();
     m_map->ShowMap(!m_movieLock && m_mapShow);
     if (m_movieLock) HiliteClear();
-
-    if (m_movieLock)
-        m_app->SetMouseMode(MOUSE_NONE);
-    else
-        m_app->SetMouseMode(MOUSE_ENGINE);
 }
 
 bool CRobotMain::GetMovieLock()
