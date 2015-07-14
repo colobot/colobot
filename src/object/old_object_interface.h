@@ -189,10 +189,6 @@ public:
 
     virtual bool        GetTooltipName(std::string& name);
 
-    virtual void        AddDeselList(CObject* pObj);
-    virtual CObject*    SubDeselList();
-    virtual void        DeleteDeselList(CObject* pObj);
-
     virtual void        FlatParent();
 
     virtual float GetInfoReturn();

@@ -1552,7 +1552,7 @@ void CPyro::ExploStart()
         m_camera->SetType(CAM_TYPE_EXPLO);
         m_main->DeselectAll();
     }
-    m_object->DeleteDeselList(m_object);
+    m_main->RemoveFromSelectionHistory(m_object);
 
     for (int i = 0; i < OBJECTMAXPART; i++)
     {
@@ -1625,7 +1625,7 @@ void CPyro::BurnStart()
         m_camera->SetType(CAM_TYPE_EXPLO);
         m_main->DeselectAll();
     }
-    m_object->DeleteDeselList(m_object);
+    m_main->RemoveFromSelectionHistory(m_object);
 
     for (int i = 0; i < OBJECTMAXPART; i++)
     {

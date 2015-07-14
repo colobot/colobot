@@ -35,7 +35,6 @@
 
 // The father of all parts must always be the part number zero!
 const int OBJECTMAXPART         = 40;
-const int OBJECTMAXDESELLIST    = 10;
 
 struct ObjectPart
 {
@@ -279,10 +278,6 @@ public:
 
     bool        GetTooltipName(std::string& name) override;
 
-    void        AddDeselList(CObject* pObj) override;
-    CObject*    SubDeselList() override;
-    void        DeleteDeselList(CObject* pObj) override;
-
     bool        CreateShadowCircle(float radius, float intensity, Gfx::EngineShadowType type = Gfx::ENG_SHADOW_NORM);
     bool        CreateShadowLight(float height, Gfx::Color color);
     bool        CreateEffectLight(float height, Gfx::Color color);
@@ -392,9 +387,6 @@ protected:
 
     int         m_totalPart;
     ObjectPart  m_objectPart[OBJECTMAXPART];
-
-    int         m_totalDesectList;
-    CObject*    m_objectDeselectList[OBJECTMAXDESELLIST];
 
     int         m_partiSel[4];
 

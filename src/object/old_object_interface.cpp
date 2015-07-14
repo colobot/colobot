@@ -443,24 +443,6 @@ bool COldObjectInterface::GetTooltipName(std::string& name)
     throw std::logic_error("GetTooltipName: not implemented!");
 }
 
-
-void COldObjectInterface::AddDeselList(CObject* pObj)
-{
-    throw std::logic_error("AddDeselList: not implemented!");
-}
-
-CObject* COldObjectInterface::SubDeselList()
-{
-    throw std::logic_error("SubDeselList: not implemented!");
-}
-
-void COldObjectInterface::DeleteDeselList(CObject* pObj)
-{
-    // TODO: temporary hack
-    return;
-    //throw std::logic_error("DeleteDeselList: not implemented!");
-}
-
 void COldObjectInterface::FlatParent()
 {
     throw std::logic_error("FlatParent: not implemented!");

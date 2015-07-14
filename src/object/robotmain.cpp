@@ -1167,7 +1167,7 @@ void CRobotMain::ExecuteCmd(char *cmd)
 
                 CObject* prev = DeselectAll();
                 if (prev != nullptr && prev != m_controller)
-                   m_controller->AddDeselList(prev);
+                    PushToSelectionHistory(prev);
 
                 SelectOneObject(m_controller, true);
                 m_short->UpdateShortcuts();
@@ -1889,7 +1889,7 @@ bool CRobotMain::SelectObject(CObject* obj, bool displayError)
     CObject* prev = DeselectAll();
 
     if (prev != nullptr && prev != obj)
-       obj->AddDeselList(prev);
+       PushToSelectionHistory(prev);
 
     SelectOneObject(obj, displayError);
     m_short->UpdateShortcuts();
@@ -1899,14 +1899,9 @@ bool CRobotMain::SelectObject(CObject* obj, bool displayError)
 //! Deselects the selected object
 bool CRobotMain::DeselectObject()
 {
-    CObject* obj = nullptr;
-    CObject* prev = DeselectAll();
+    DeselectAll();
 
-    if (prev == nullptr)
-        obj = SearchHuman();
-    else
-        obj = prev->SubDeselList();
-
+    CObject* obj = PopFromSelectionHistory();
     if (obj == nullptr)
         obj = SearchHuman();
 
@@ -2223,7 +2218,7 @@ bool CRobotMain::DeleteObject()
     obj->SetSelect(false);  // deselects the object
     m_camera->SetType(Gfx::CAM_TYPE_EXPLO);
     DeselectAll();
-    obj->DeleteDeselList(obj);
+    RemoveFromSelectionHistory(obj);
 
     return true;
 }
@@ -6274,3 +6269,32 @@ bool CRobotMain::CanFactory(ObjectType type, int team)
 {
     return CanFactoryError(type, team) == ERR_OK;
 }
+
+void CRobotMain::PushToSelectionHistory(CObject* obj)
+{
+    if (!m_selectionHistory.empty() && m_selectionHistory.back() == obj)
+        return; // already in history
+
+    m_selectionHistory.push_back(obj);
+
+    if (m_selectionHistory.size() > 50) // to avoid infinite growth
+        m_selectionHistory.pop_front();
+}
+
+CObject* CRobotMain::PopFromSelectionHistory()
+{
+    if (m_selectionHistory.empty())
+        return nullptr;
+
+    CObject* obj = m_selectionHistory.back();
+    m_selectionHistory.pop_back();
+    return obj;
+}
+
+void CRobotMain::RemoveFromSelectionHistory(CObject* object)
+{
+    auto it = std::remove_if(m_selectionHistory.begin(), m_selectionHistory.end(),
+                             [object](const CObject* obj) { return obj == object; });
+    m_selectionHistory.erase(it, m_selectionHistory.end());
+}
+

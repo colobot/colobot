@@ -265,7 +265,6 @@ COldObject::COldObject(int id)
     m_bVirusMode = false;
     m_virusTime = 0.0f;
     m_lastVirusParticle = 0.0f;
-    m_totalDesectList = 0;
     m_bLock  = false;
     m_bIgnoreBuildCheck = false;
     m_bExplo = false;
@@ -347,11 +346,7 @@ void COldObject::DeleteObject(bool bAll)
     {
         m_camera->SetControllingObject(0);
     }
-
-    for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
-    {
-        obj->DeleteDeselList(this);
-    }
+    m_main->RemoveFromSelectionHistory(this);
 
     if ( !bAll )
     {
@@ -711,7 +706,7 @@ bool COldObject::ExplodeObject(ExplosionType type, float force, float decay)
         m_camera->SetType(Gfx::CAM_TYPE_EXPLO);
         m_main->DeselectAll();
     }
-    DeleteDeselList(this);
+    m_main->RemoveFromSelectionHistory(this);
 
     if ( m_botVar != 0 )
     {
@@ -3270,51 +3265,6 @@ bool COldObject::GetTooltipName(std::string& name)
         name += " ["+CRobotMain::GetInstancePointer()->GetTeamName(GetTeam())+" ("+boost::lexical_cast<std::string>(GetTeam())+")]";
     }
     return !name.empty();
-}
-
-
-// Adds the object previously selected in the list.
-
-void COldObject::AddDeselList(CObject* pObj)
-{
-    int     i;
-
-    if ( m_totalDesectList >= OBJECTMAXDESELLIST )
-    {
-        for ( i=0 ; i<OBJECTMAXDESELLIST-1 ; i++ )
-        {
-            m_objectDeselectList[i] = m_objectDeselectList[i+1];
-        }
-        m_totalDesectList --;
-    }
-
-    m_objectDeselectList[m_totalDesectList++] = pObj;
-}
-
-// Removes the previously selected object in the list.
-
-CObject* COldObject::SubDeselList()
-{
-    if ( m_totalDesectList == 0 )  return 0;
-
-    return m_objectDeselectList[--m_totalDesectList];
-}
-
-// Removes an object reference if it is in the list.
-
-void COldObject::DeleteDeselList(CObject* pObj)
-{
-    int     i, j;
-
-    j = 0;
-    for ( i=0 ; i<m_totalDesectList ; i++ )
-    {
-        if ( m_objectDeselectList[i] != pObj )
-        {
-            m_objectDeselectList[j++] = m_objectDeselectList[i];
-        }
-    }
-    m_totalDesectList = j;
 }
 
 Math::Vector COldObject::GetPosition() const

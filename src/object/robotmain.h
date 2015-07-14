@@ -38,6 +38,8 @@
 
 #include "app/pausemanager.h"
 
+#include <deque>
+
 enum Phase
 {
     PHASE_INIT,
@@ -370,6 +372,8 @@ public:
     Error       CanFactoryError(ObjectType type, int team);
     //@}
 
+    void        RemoveFromSelectionHistory(CObject* object);
+
 protected:
     bool        EventFrame(const Event &event);
     bool        EventObject(const Event &event);
@@ -406,6 +410,8 @@ protected:
 
     int         AutosaveRotate(bool freeOne);
     void        Autosave();
+    void        PushToSelectionHistory(CObject* obj);
+    CObject*    PopFromSelectionHistory();
 
 
 protected:
@@ -582,4 +588,6 @@ protected:
     int             m_autosaveInterval;
     int             m_autosaveSlots;
     float           m_autosaveLast;
+
+    std::deque<CObject*> m_selectionHistory;
 };
