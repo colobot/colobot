@@ -914,7 +914,7 @@ bool CRobotMain::ProcessEvent(Event &event)
                         CLevelParserLine* line = new CLevelParserLine("CreateObject");
                         line->AddParam("type", CLevelParserParamUPtr{new CLevelParserParam(obj->GetType())});
                         line->AddParam("pos", CLevelParserParamUPtr{new CLevelParserParam(obj->GetPosition())});
-                        line->AddParam("dir", CLevelParserParamUPtr{new CLevelParserParam(obj->GetAngleZ(0)/(Math::PI/180.0f))});
+                        line->AddParam("dir", CLevelParserParamUPtr{new CLevelParserParam(obj->GetRotationZ()/(Math::PI/180.0f))});
 
                         std::stringstream ss;
                         ss << *line;
@@ -1749,7 +1749,7 @@ void CRobotMain::FrameVisit(float rTime)
     Math::Vector pos = m_visitPosArrow;
     pos.y += 1.5f+sinf(m_visitTime*4.0f)*4.0f;
     m_visitArrow->SetPosition(pos);
-    m_visitArrow->SetAngleY(0, m_visitTime*2.0f);
+    m_visitArrow->SetRotationY(m_visitTime*2.0f);
 
     // Manages the particles "arrows".
     m_visitParticle -= rTime;
@@ -3618,7 +3618,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
                     Math::Vector zoom = line->GetParam("zoom")->AsPoint(Math::Vector(0.0f, 0.0f, 0.0f));
                     if (zoom.x != 0.0f || zoom.y != 0.0f || zoom.z != 0.0f)
-                        oldObj->SetZoom(0, zoom);
+                        oldObj->SetScale(zoom);
 
                     // only used in AlienWorm lines
                     if (type == OBJECT_WORM)
@@ -4854,29 +4854,28 @@ void CRobotMain::IOWriteObject(CLevelParserLine* line, CObject* obj)
     {
         COldObject* oldObj = dynamic_cast<COldObject*>(obj);
 
-        Math::Vector pos;
         for (int i = 1; i < OBJECTMAXPART; i++)
         {
             if (oldObj->GetObjectRank(i) == -1) continue;
 
-            pos = oldObj->GetPartPosition(i);
+            Math::Vector pos = oldObj->GetPartPosition(i);
             if (pos.x != 0.0f || pos.y != 0.0f || pos.z != 0.0f)
             {
                 pos /= g_unit;
                 line->AddParam("p" + boost::lexical_cast<std::string>(i), CLevelParserParamUPtr{new CLevelParserParam(pos)});
             }
 
-            pos = oldObj->GetAngle(i);
-            if (pos.x != 0.0f || pos.y != 0.0f || pos.z != 0.0f)
+            Math::Vector rot = oldObj->GetPartRotation(i);
+            if (rot.x != 0.0f || rot.y != 0.0f || rot.z != 0.0f)
             {
-                pos /= (Math::PI/180.0f);
-                line->AddParam("a" + boost::lexical_cast<std::string>(i), CLevelParserParamUPtr{new CLevelParserParam(pos)});
+                rot /= (Math::PI/180.0f);
+                line->AddParam("a" + boost::lexical_cast<std::string>(i), CLevelParserParamUPtr{new CLevelParserParam(rot)});
             }
 
-            pos = oldObj->GetZoom(i);
-            if (pos.x != 1.0f || pos.y != 1.0f || pos.z != 1.0f)
+            Math::Vector scale = oldObj->GetPartScale(i);
+            if (scale.x != 1.0f || scale.y != 1.0f || scale.z != 1.0f)
             {
-                line->AddParam("z" + boost::lexical_cast<std::string>(i), CLevelParserParamUPtr{new CLevelParserParam(pos)});
+                line->AddParam("z" + boost::lexical_cast<std::string>(i), CLevelParserParamUPtr{new CLevelParserParam(scale)});
             }
         }
 
@@ -5064,10 +5063,10 @@ CObject* CRobotMain::IOReadObject(CLevelParserLine *line, const char* filename, 
 
         oldObj->SetDefRank(objRank);
         oldObj->SetPosition(pos);
-        oldObj->SetAngle(0, dir);
+        oldObj->SetRotation(dir);
 
         if (zoom.x != 0.0f || zoom.y != 0.0f || zoom.z != 0.0f)
-            oldObj->SetZoom(0, zoom);
+            oldObj->SetScale(zoom);
 
         for (int i = 1; i < OBJECTMAXPART; i++)
         {
@@ -5082,13 +5081,13 @@ CObject* CRobotMain::IOReadObject(CLevelParserLine *line, const char* filename, 
             dir = line->GetParam(std::string("a")+boost::lexical_cast<std::string>(i))->AsPoint(Math::Vector());
             if (dir.x != 0.0f || dir.y != 0.0f || dir.z != 0.0f)
             {
-                oldObj->SetAngle(i, dir*(Math::PI/180.0f));
+                oldObj->SetPartRotation(i, dir*(Math::PI/180.0f));
             }
 
             zoom = line->GetParam(std::string("z")+boost::lexical_cast<std::string>(i))->AsPoint(Math::Vector());
             if (zoom.x != 0.0f || zoom.y != 0.0f || zoom.z != 0.0f)
             {
-                oldObj->SetZoom(i, zoom);
+                oldObj->SetPartScale(i, zoom);
             }
         }
     }

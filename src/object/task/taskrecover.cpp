@@ -66,7 +66,7 @@ bool CTaskRecover::EventProcess(const Event &event)
 
     if ( m_phase == TRP_TURN )  // preliminary rotation?
     {
-        a = m_object->GetAngleY(0);
+        a = m_object->GetRotationY();
         g = m_angle;
         cirSpeed = Math::Direction(a, g)*1.0f;
         if ( cirSpeed >  1.0f )  cirSpeed =  1.0f;
@@ -82,12 +82,12 @@ bool CTaskRecover::EventProcess(const Event &event)
     if ( m_phase == TRP_DOWN )
     {
         angle = Math::PropAngle(126, -10, m_progress);
-        m_object->SetAngleZ(2, angle);
-        m_object->SetAngleZ(4, angle);
+        m_object->SetPartRotationZ(2, angle);
+        m_object->SetPartRotationZ(4, angle);
 
         angle = Math::PropAngle(-144, 0, m_progress);
-        m_object->SetAngleZ(3, angle);
-        m_object->SetAngleZ(5, angle);
+        m_object->SetPartRotationZ(3, angle);
+        m_object->SetPartRotationZ(5, angle);
     }
 
     if ( m_phase == TRP_MOVE )  // preliminary forward/backward?
@@ -119,12 +119,12 @@ bool CTaskRecover::EventProcess(const Event &event)
 
         if ( m_progress >= 0.75f )
         {
-            m_ruin->SetZoom(0, 1.0f-(m_progress-0.75f)/0.25f);
+            m_ruin->SetScale(1.0f-(m_progress-0.75f)/0.25f);
         }
 
         if ( m_progress > 0.5f && m_progress < 0.8f )
         {
-            m_metal->SetZoom(0, (m_progress-0.5f)/0.3f);
+            m_metal->SetScale((m_progress-0.5f)/0.3f);
         }
 
         if ( m_lastParticle+m_engine->ParticleAdapt(0.02f) <= m_time )
@@ -147,12 +147,12 @@ bool CTaskRecover::EventProcess(const Event &event)
     if ( m_phase == TRP_UP )
     {
         angle = Math::PropAngle(-10, 126, m_progress);
-        m_object->SetAngleZ(2, angle);
-        m_object->SetAngleZ(4, angle);
+        m_object->SetPartRotationZ(2, angle);
+        m_object->SetPartRotationZ(4, angle);
 
         angle = Math::PropAngle(0, -144, m_progress);
-        m_object->SetAngleZ(3, angle);
-        m_object->SetAngleZ(5, angle);
+        m_object->SetPartRotationZ(3, angle);
+        m_object->SetPartRotationZ(5, angle);
 
         if ( m_lastParticle+m_engine->ParticleAdapt(0.02f) <= m_time )
         {
@@ -232,7 +232,7 @@ Error CTaskRecover::IsEnded()
 
     if ( m_phase == TRP_TURN )  // preliminary rotation?
     {
-        angle = m_object->GetAngleY(0);
+        angle = m_object->GetRotationY();
         angle = Math::NormAngle(angle);  // 0..2*Math::PI
 
         if ( Math::TestAngle(angle, m_angle-Math::PI*0.01f, m_angle+Math::PI*0.01f) )
@@ -299,7 +299,7 @@ Error CTaskRecover::IsEnded()
     {
         m_metal = CObjectManager::GetInstancePointer()->CreateObject(m_recoverPos, 0.0f, OBJECT_METAL);
         m_metal->SetLock(true);  // metal not yet usable
-        m_metal->SetZoom(0, 0.0f);
+        m_metal->SetScale(0.0f);
 
         mat = m_object->GetWorldMatrix(0);
         pos = Math::Vector(RECOVER_DIST, 3.1f, 3.9f);
@@ -321,7 +321,7 @@ Error CTaskRecover::IsEnded()
 
     if ( m_phase == TRP_OPER )
     {
-        m_metal->SetZoom(0, 1.0f);
+        m_metal->SetScale(1.0f);
 
         CObjectManager::GetInstancePointer()->DeleteObject(m_ruin);
         m_ruin = nullptr;
@@ -348,10 +348,10 @@ Error CTaskRecover::IsEnded()
 
 bool CTaskRecover::Abort()
 {
-    m_object->SetAngleZ(2,  126.0f*Math::PI/180.0f);
-    m_object->SetAngleZ(4,  126.0f*Math::PI/180.0f);
-    m_object->SetAngleZ(3, -144.0f*Math::PI/180.0f);
-    m_object->SetAngleZ(5, -144.0f*Math::PI/180.0f);  // rest
+    m_object->SetPartRotationZ(2,  126.0f*Math::PI/180.0f);
+    m_object->SetPartRotationZ(4,  126.0f*Math::PI/180.0f);
+    m_object->SetPartRotationZ(3, -144.0f*Math::PI/180.0f);
+    m_object->SetPartRotationZ(5, -144.0f*Math::PI/180.0f);  // rest
 
     if ( m_soundChannel != -1 )
     {

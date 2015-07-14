@@ -114,12 +114,12 @@ void CAutoPortico::Start(int param)
     m_finalPos.z += PORTICO_TIME_OPEN*5.3f;
 
     m_object->SetPartPosition(1, Math::Vector(0.0f, PORTICO_POSa, 0.0f));
-    m_object->SetAngleY(2,  PORTICO_ANGLE1a);
-    m_object->SetAngleY(3,  PORTICO_ANGLE2a);
-    m_object->SetAngleY(4,  PORTICO_ANGLE3a);
-    m_object->SetAngleY(5, -PORTICO_ANGLE1a);
-    m_object->SetAngleY(6, -PORTICO_ANGLE2a);
-    m_object->SetAngleY(7, -PORTICO_ANGLE3a);
+    m_object->SetPartRotationY(2,  PORTICO_ANGLE1a);
+    m_object->SetPartRotationY(3,  PORTICO_ANGLE2a);
+    m_object->SetPartRotationY(4,  PORTICO_ANGLE3a);
+    m_object->SetPartRotationY(5, -PORTICO_ANGLE1a);
+    m_object->SetPartRotationY(6, -PORTICO_ANGLE2a);
+    m_object->SetPartRotationY(7, -PORTICO_ANGLE3a);
 
     m_phase    = APOP_START;
     m_progress = 0.0f;
@@ -177,14 +177,14 @@ bool CAutoPortico::EventProcess(const Event &event)
     }
 
     angle = -m_time*1.0f;
-    m_object->SetAngleY(8, angle);  // rotates the radar right
+    m_object->SetPartRotationY(8, angle);  // rotates the radar right
     angle = sinf(m_time*4.0f)*0.3f;
-    m_object->SetAngleX(9, angle);
+    m_object->SetPartRotationX(9, angle);
 
     angle = -m_time*1.0f+Math::PI/2.3f;
-    m_object->SetAngleY(10, angle);  // turns the left side radar
+    m_object->SetPartRotationY(10, angle);  // turns the left side radar
     angle = sinf(m_time*4.0f)*0.3f;
-    m_object->SetAngleX(11, angle);
+    m_object->SetPartRotationX(11, angle);
 
     if ( event.type != EVENT_FRAME )  return true;
     if ( m_phase == APOP_WAIT )  return true;
@@ -282,23 +282,23 @@ bool CAutoPortico::EventProcess(const Event &event)
             if ( m_progress < 0.5f )
             {
                 angle = Progress(PORTICO_ANGLE1a, PORTICO_ANGLE1b, m_progress/0.5f);
-                m_object->SetAngleY(2,  angle);
-                m_object->SetAngleY(5, -angle);
+                m_object->SetPartRotationY(2,  angle);
+                m_object->SetPartRotationY(5, -angle);
                 angle = Progress(PORTICO_ANGLE2a, PORTICO_ANGLE2b, m_progress/0.5f);
-                m_object->SetAngleY(3,  angle);
-                m_object->SetAngleY(6, -angle);
+                m_object->SetPartRotationY(3,  angle);
+                m_object->SetPartRotationY(6, -angle);
                 angle = Progress(PORTICO_ANGLE3a, PORTICO_ANGLE3b, m_progress/0.5f);
-                m_object->SetAngleY(4,  angle);
-                m_object->SetAngleY(7, -angle);
+                m_object->SetPartRotationY(4,  angle);
+                m_object->SetPartRotationY(7, -angle);
             }
             else
             {
-                m_object->SetAngleY(2,  PORTICO_ANGLE1b);
-                m_object->SetAngleY(3,  PORTICO_ANGLE2b);
-                m_object->SetAngleY(4,  PORTICO_ANGLE3b);
-                m_object->SetAngleY(5, -PORTICO_ANGLE1b);
-                m_object->SetAngleY(6, -PORTICO_ANGLE2b);
-                m_object->SetAngleY(7, -PORTICO_ANGLE3b);
+                m_object->SetPartRotationY(2,  PORTICO_ANGLE1b);
+                m_object->SetPartRotationY(3,  PORTICO_ANGLE2b);
+                m_object->SetPartRotationY(4,  PORTICO_ANGLE3b);
+                m_object->SetPartRotationY(5, -PORTICO_ANGLE1b);
+                m_object->SetPartRotationY(6, -PORTICO_ANGLE2b);
+                m_object->SetPartRotationY(7, -PORTICO_ANGLE3b);
             }
         }
         else
@@ -355,12 +355,12 @@ bool CAutoPortico::Abort()
 
     m_object->SetPosition(m_finalPos);
     m_object->SetPartPosition(1, Math::Vector(0.0f, PORTICO_POSb, 0.0f));
-    m_object->SetAngleY(2,  PORTICO_ANGLE1b);
-    m_object->SetAngleY(3,  PORTICO_ANGLE2b);
-    m_object->SetAngleY(4,  PORTICO_ANGLE3b);
-    m_object->SetAngleY(5, -PORTICO_ANGLE1b);
-    m_object->SetAngleY(6, -PORTICO_ANGLE2b);
-    m_object->SetAngleY(7, -PORTICO_ANGLE3b);
+    m_object->SetPartRotationY(2,  PORTICO_ANGLE1b);
+    m_object->SetPartRotationY(3,  PORTICO_ANGLE2b);
+    m_object->SetPartRotationY(4,  PORTICO_ANGLE3b);
+    m_object->SetPartRotationY(5, -PORTICO_ANGLE1b);
+    m_object->SetPartRotationY(6, -PORTICO_ANGLE2b);
+    m_object->SetPartRotationY(7, -PORTICO_ANGLE3b);
 
     m_main->SetMovieLock(false);  // you can play!
 

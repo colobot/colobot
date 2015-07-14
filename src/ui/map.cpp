@@ -1151,7 +1151,7 @@ void CMap::UpdateObject(CObject* pObj)
 
     type = pObj->GetType();
     pos  = pObj->GetPosition();
-    dir  = -(pObj->GetAngleY(0)+Math::PI/2.0f);
+    dir  = -(pObj->GetRotationY()+Math::PI/2.0f);
 
     if ( m_angle != 0.0f )
     {

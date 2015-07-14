@@ -214,15 +214,15 @@ bool CAutoLabo::EventProcess(const Event &event)
         if ( m_progress < 1.0f )
         {
             angle = 80.0f-(35.0f*m_progress);
-            m_object->SetAngleZ(3, angle*Math::PI/180.0f);
-            m_object->SetAngleZ(4, angle*Math::PI/180.0f);
-            m_object->SetAngleZ(5, angle*Math::PI/180.0f);
+            m_object->SetPartRotationZ(3, angle*Math::PI/180.0f);
+            m_object->SetPartRotationZ(4, angle*Math::PI/180.0f);
+            m_object->SetPartRotationZ(5, angle*Math::PI/180.0f);
         }
         else
         {
-            m_object->SetAngleZ(3, 45.0f*Math::PI/180.0f);
-            m_object->SetAngleZ(4, 45.0f*Math::PI/180.0f);
-            m_object->SetAngleZ(5, 45.0f*Math::PI/180.0f);
+            m_object->SetPartRotationZ(3, 45.0f*Math::PI/180.0f);
+            m_object->SetPartRotationZ(4, 45.0f*Math::PI/180.0f);
+            m_object->SetPartRotationZ(5, 45.0f*Math::PI/180.0f);
 
             SoundManip(1.5f, 1.0f, 0.7f);
             m_phase    = ALAP_OPEN2;
@@ -256,11 +256,11 @@ bool CAutoLabo::EventProcess(const Event &event)
         if ( m_progress < 1.0f )
         {
             angle = (1.0f-m_progress)*Math::PI/2.0f;
-            m_object->SetAngleZ(1, angle);
+            m_object->SetPartRotationZ(1, angle);
         }
         else
         {
-            m_object->SetAngleZ(1, 0.0f);
+            m_object->SetPartRotationZ(1, 0.0f);
 
             goal = m_object->GetPosition();
             goal.y += 3.0f;
@@ -302,10 +302,10 @@ bool CAutoLabo::EventProcess(const Event &event)
             power = m_object->GetPower();
             if ( power != 0 )
             {
-                power->SetZoom(0, 1.0f-m_progress);
+                power->SetScale(1.0f-m_progress);
             }
 
-            angle = m_object->GetAngleY(2);
+            angle = m_object->GetPartRotationY(2);
             if ( m_progress < 0.5f )
             {
                 angle -= event.rTime*m_progress*20.0f;
@@ -314,9 +314,9 @@ bool CAutoLabo::EventProcess(const Event &event)
             {
                 angle -= event.rTime*(20.0f-m_progress*20.0f);
             }
-            m_object->SetAngleY(2, angle);  // rotates the analyzer
+            m_object->SetPartRotationY(2, angle);  // rotates the analyzer
 
-            angle += m_object->GetAngleY(0);
+            angle += m_object->GetRotationY();
             for ( i=0 ; i<3 ; i++ )
             {
                 rot = Math::RotatePoint(-angle, -4.0f);
@@ -378,11 +378,11 @@ bool CAutoLabo::EventProcess(const Event &event)
         if ( m_progress < 1.0f )
         {
             angle = m_progress*Math::PI/2.0f;
-            m_object->SetAngleZ(1, angle);
+            m_object->SetPartRotationZ(1, angle);
         }
         else
         {
-            m_object->SetAngleZ(1, Math::PI/2.0f);
+            m_object->SetPartRotationZ(1, Math::PI/2.0f);
 
             SoundManip(1.5f, 1.0f, 0.7f);
             m_phase    = ALAP_CLOSE2;
@@ -416,15 +416,15 @@ bool CAutoLabo::EventProcess(const Event &event)
         if ( m_progress < 1.0f )
         {
             angle = 45.0f+(35.0f*m_progress);
-            m_object->SetAngleZ(3, angle*Math::PI/180.0f);
-            m_object->SetAngleZ(4, angle*Math::PI/180.0f);
-            m_object->SetAngleZ(5, angle*Math::PI/180.0f);
+            m_object->SetPartRotationZ(3, angle*Math::PI/180.0f);
+            m_object->SetPartRotationZ(4, angle*Math::PI/180.0f);
+            m_object->SetPartRotationZ(5, angle*Math::PI/180.0f);
         }
         else
         {
-            m_object->SetAngleZ(3, 80.0f*Math::PI/180.0f);
-            m_object->SetAngleZ(4, 80.0f*Math::PI/180.0f);
-            m_object->SetAngleZ(5, 80.0f*Math::PI/180.0f);
+            m_object->SetPartRotationZ(3, 80.0f*Math::PI/180.0f);
+            m_object->SetPartRotationZ(4, 80.0f*Math::PI/180.0f);
+            m_object->SetPartRotationZ(5, 80.0f*Math::PI/180.0f);
 
             SetBusy(false);
             UpdateInterface();

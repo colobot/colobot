@@ -214,9 +214,9 @@ bool CAutoHouston::EventProcess(const Event &event)
     if ( m_engine->GetPause() )  return true;
 
     angle = -m_time*1.0f;
-    m_object->SetAngleY(1, angle);  // rotates the radar
+    m_object->SetPartRotationY(1, angle);  // rotates the radar
     angle = sinf(m_time*4.0f)*0.3f;
-    m_object->SetAngleX(2, angle);
+    m_object->SetPartRotationX(2, angle);
 
     if ( event.type != EVENT_FRAME )  return true;
 

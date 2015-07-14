@@ -148,7 +148,7 @@ void CMotionHuman::Create(Math::Vector pos, float angle, ObjectType type,
         modelManager->AddModelReference("human1v.mod", false, rank);
 
     m_object->SetPosition(pos);
-    m_object->SetAngleY(0, angle);
+    m_object->SetRotationY(angle);
 
     // A vehicle must have an obligatory collision with a sphere of center (0, y, 0) (see GetCrashSphere).
     m_object->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 0.0f, 0.0f), 2.0f, SOUND_AIE, 0.20f));
@@ -185,7 +185,7 @@ void CMotionHuman::Create(Math::Vector pos, float angle, ObjectType type,
     if (option == 1 ||  // head without helmet?
         option == 2)    // without a backpack?
     {
-        m_object->SetZoom(1, Math::Vector(1.0f, 1.05f, 1.0f));
+        m_object->SetPartScale(1, Math::Vector(1.0f, 1.05f, 1.0f));
     }
 
     // Creates the glasses.
@@ -207,7 +207,7 @@ void CMotionHuman::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetObjectParent(2, 0);
     modelManager->AddModelReference("human3.mod", false, rank);
     m_object->SetPartPosition(2, Math::Vector(0.0f, 2.3f, -1.2f));
-    m_object->SetAngle(2, Math::Vector(90.0f*Math::PI/180.0f, 90.0f*Math::PI/180.0f, -50.0f*Math::PI/180.0f));
+    m_object->SetPartRotation(2, Math::Vector(90.0f*Math::PI/180.0f, 90.0f*Math::PI/180.0f, -50.0f*Math::PI/180.0f));
 
     // Creates the right forearm.
     rank = m_engine->CreateObject();
@@ -216,7 +216,7 @@ void CMotionHuman::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetObjectParent(3, 2);
     modelManager->AddModelReference("human4r.mod", false, rank);
     m_object->SetPartPosition(3, Math::Vector(1.3f, 0.0f, 0.0f));
-    m_object->SetAngle(3, Math::Vector(0.0f*Math::PI/180.0f, -20.0f*Math::PI/180.0f, 0.0f*Math::PI/180.0f));
+    m_object->SetPartRotation(3, Math::Vector(0.0f*Math::PI/180.0f, -20.0f*Math::PI/180.0f, 0.0f*Math::PI/180.0f));
 
     // Creates right hand.
     rank = m_engine->CreateObject();
@@ -233,7 +233,7 @@ void CMotionHuman::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetObjectParent(5, 0);
     modelManager->AddModelReference("human6.mod", false, rank);
     m_object->SetPartPosition(5, Math::Vector(0.0f, 0.0f, -0.7f));
-    m_object->SetAngle(5, Math::Vector(10.0f*Math::PI/180.0f, 0.0f*Math::PI/180.0f, 5.0f*Math::PI/180.0f));
+    m_object->SetPartRotation(5, Math::Vector(10.0f*Math::PI/180.0f, 0.0f*Math::PI/180.0f, 5.0f*Math::PI/180.0f));
 
     // Creates the right leg.
     rank = m_engine->CreateObject();
@@ -242,7 +242,7 @@ void CMotionHuman::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetObjectParent(6, 5);
     modelManager->AddModelReference("human7.mod", false, rank);
     m_object->SetPartPosition(6, Math::Vector(0.0f, -1.5f, 0.0f));
-    m_object->SetAngle(6, Math::Vector(0.0f*Math::PI/180.0f, 0.0f*Math::PI/180.0f, -10.0f*Math::PI/180.0f));
+    m_object->SetPartRotation(6, Math::Vector(0.0f*Math::PI/180.0f, 0.0f*Math::PI/180.0f, -10.0f*Math::PI/180.0f));
 
     // Creates the right foot.
     rank = m_engine->CreateObject();
@@ -251,7 +251,7 @@ void CMotionHuman::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetObjectParent(7, 6);
     modelManager->AddModelReference("human8.mod", false, rank);
     m_object->SetPartPosition(7, Math::Vector(0.0f, -1.5f, 0.0f));
-    m_object->SetAngle(7, Math::Vector(-10.0f*Math::PI/180.0f, 5.0f*Math::PI/180.0f, 5.0f*Math::PI/180.0f));
+    m_object->SetPartRotation(7, Math::Vector(-10.0f*Math::PI/180.0f, 5.0f*Math::PI/180.0f, 5.0f*Math::PI/180.0f));
 
     // Creates the left arm.
     rank = m_engine->CreateObject();
@@ -260,7 +260,7 @@ void CMotionHuman::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetObjectParent(8, 0);
     modelManager->AddModelReference("human3.mod", true, rank);
     m_object->SetPartPosition(8, Math::Vector(0.0f, 2.3f, 1.2f));
-    m_object->SetAngle(8, Math::Vector(-90.0f*Math::PI/180.0f, -90.0f*Math::PI/180.0f, -50.0f*Math::PI/180.0f));
+    m_object->SetPartRotation(8, Math::Vector(-90.0f*Math::PI/180.0f, -90.0f*Math::PI/180.0f, -50.0f*Math::PI/180.0f));
 
     // Creates the left forearm.
     rank = m_engine->CreateObject();
@@ -269,7 +269,7 @@ void CMotionHuman::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetObjectParent(9, 8);
     modelManager->AddModelReference("human4l.mod", true, rank);
     m_object->SetPartPosition(9, Math::Vector(1.3f, 0.0f, 0.0f));
-    m_object->SetAngle(9, Math::Vector(0.0f*Math::PI/180.0f, 20.0f*Math::PI/180.0f, 0.0f*Math::PI/180.0f));
+    m_object->SetPartRotation(9, Math::Vector(0.0f*Math::PI/180.0f, 20.0f*Math::PI/180.0f, 0.0f*Math::PI/180.0f));
 
     // Creates left hand.
     rank = m_engine->CreateObject();
@@ -286,7 +286,7 @@ void CMotionHuman::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetObjectParent(11, 0);
     modelManager->AddModelReference("human6.mod", true, rank);
     m_object->SetPartPosition(11, Math::Vector(0.0f, 0.0f, 0.7f));
-    m_object->SetAngle(11, Math::Vector(-10.0f*Math::PI/180.0f, 0.0f*Math::PI/180.0f, 5.0f*Math::PI/180.0f));
+    m_object->SetPartRotation(11, Math::Vector(-10.0f*Math::PI/180.0f, 0.0f*Math::PI/180.0f, 5.0f*Math::PI/180.0f));
 
     // Creates the left leg.
     rank = m_engine->CreateObject();
@@ -295,7 +295,7 @@ void CMotionHuman::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetObjectParent(12, 11);
     modelManager->AddModelReference("human7.mod", true, rank);
     m_object->SetPartPosition(12, Math::Vector(0.0f, -1.5f, 0.0f));
-    m_object->SetAngle(12, Math::Vector(0.0f*Math::PI/180.0f, 0.0f*Math::PI/180.0f, -10.0f*Math::PI/180.0f));
+    m_object->SetPartRotation(12, Math::Vector(0.0f*Math::PI/180.0f, 0.0f*Math::PI/180.0f, -10.0f*Math::PI/180.0f));
 
     // Creates the left foot.
     rank = m_engine->CreateObject();
@@ -304,7 +304,7 @@ void CMotionHuman::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetObjectParent(13, 12);
     modelManager->AddModelReference("human8.mod", true, rank);
     m_object->SetPartPosition(13, Math::Vector(0.0f, -1.5f, 0.0f));
-    m_object->SetAngle(13, Math::Vector(10.0f*Math::PI/180.0f, -5.0f*Math::PI/180.0f, 5.0f*Math::PI/180.0f));
+    m_object->SetPartRotation(13, Math::Vector(10.0f*Math::PI/180.0f, -5.0f*Math::PI/180.0f, 5.0f*Math::PI/180.0f));
 
     // Creates the neutron gun.
     if ( option != 2 )  // with backpack?
@@ -315,7 +315,7 @@ void CMotionHuman::Create(Math::Vector pos, float angle, ObjectType type,
         m_object->SetObjectParent(14, 0);
         modelManager->AddModelReference("human9.mod", false, rank);
         m_object->SetPartPosition(14, Math::Vector(-1.5f, 0.3f, -1.35f));
-        m_object->SetAngleZ(14, Math::PI);
+        m_object->SetPartRotationZ(14, Math::PI);
     }
 
     m_object->CreateShadowCircle(2.0f, 0.8f);
@@ -884,7 +884,7 @@ bool CMotionHuman::EventFrame(const Event &event)
 
     if ( m_physics->GetLand() )  // on the ground?
     {
-        a = m_object->GetAngleY(0);
+        a = m_object->GetRotationY();
         pos = m_object->GetPosition();
         m_terrain->AdjustToFloor(pos);
 
@@ -1116,27 +1116,27 @@ bool CMotionHuman::EventFrame(const Event &event)
 
         if ( i < 2 )  // right member (0..1) ?
         {
-            m_object->SetAngleX(2+3*i+0, Math::Smooth(m_object->GetAngleX(2+3*i+0), Math::PropAngle(tSt[0], tNd[0], prog), time));
-            m_object->SetAngleY(2+3*i+0, Math::Smooth(m_object->GetAngleY(2+3*i+0), Math::PropAngle(tSt[1], tNd[1], prog), time));
-            m_object->SetAngleZ(2+3*i+0, Math::Smooth(m_object->GetAngleZ(2+3*i+0), Math::PropAngle(tSt[2], tNd[2], prog), time));
-            m_object->SetAngleX(2+3*i+1, Math::Smooth(m_object->GetAngleX(2+3*i+1), Math::PropAngle(tSt[3], tNd[3], prog), time));
-            m_object->SetAngleY(2+3*i+1, Math::Smooth(m_object->GetAngleY(2+3*i+1), Math::PropAngle(tSt[4], tNd[4], prog), time));
-            m_object->SetAngleZ(2+3*i+1, Math::Smooth(m_object->GetAngleZ(2+3*i+1), Math::PropAngle(tSt[5], tNd[5], prog), time));
-            m_object->SetAngleX(2+3*i+2, Math::Smooth(m_object->GetAngleX(2+3*i+2), Math::PropAngle(tSt[6], tNd[6], prog), time));
-            m_object->SetAngleY(2+3*i+2, Math::Smooth(m_object->GetAngleY(2+3*i+2), Math::PropAngle(tSt[7], tNd[7], prog), time));
-            m_object->SetAngleZ(2+3*i+2, Math::Smooth(m_object->GetAngleZ(2+3*i+2), Math::PropAngle(tSt[8], tNd[8], prog), time));
+            m_object->SetPartRotationX(2+3*i+0, Math::Smooth(m_object->GetPartRotationX(2+3*i+0), Math::PropAngle(tSt[0], tNd[0], prog), time));
+            m_object->SetPartRotationY(2+3*i+0, Math::Smooth(m_object->GetPartRotationY(2+3*i+0), Math::PropAngle(tSt[1], tNd[1], prog), time));
+            m_object->SetPartRotationZ(2+3*i+0, Math::Smooth(m_object->GetPartRotationZ(2+3*i+0), Math::PropAngle(tSt[2], tNd[2], prog), time));
+            m_object->SetPartRotationX(2+3*i+1, Math::Smooth(m_object->GetPartRotationX(2+3*i+1), Math::PropAngle(tSt[3], tNd[3], prog), time));
+            m_object->SetPartRotationY(2+3*i+1, Math::Smooth(m_object->GetPartRotationY(2+3*i+1), Math::PropAngle(tSt[4], tNd[4], prog), time));
+            m_object->SetPartRotationZ(2+3*i+1, Math::Smooth(m_object->GetPartRotationZ(2+3*i+1), Math::PropAngle(tSt[5], tNd[5], prog), time));
+            m_object->SetPartRotationX(2+3*i+2, Math::Smooth(m_object->GetPartRotationX(2+3*i+2), Math::PropAngle(tSt[6], tNd[6], prog), time));
+            m_object->SetPartRotationY(2+3*i+2, Math::Smooth(m_object->GetPartRotationY(2+3*i+2), Math::PropAngle(tSt[7], tNd[7], prog), time));
+            m_object->SetPartRotationZ(2+3*i+2, Math::Smooth(m_object->GetPartRotationZ(2+3*i+2), Math::PropAngle(tSt[8], tNd[8], prog), time));
         }
         else    // left member (2..3) ?
         {
-            m_object->SetAngleX(2+3*i+0, Math::Smooth(m_object->GetAngleX(2+3*i+0), Math::PropAngle(-tSt[0], -tNd[0], prog), time));
-            m_object->SetAngleY(2+3*i+0, Math::Smooth(m_object->GetAngleY(2+3*i+0), Math::PropAngle(-tSt[1], -tNd[1], prog), time));
-            m_object->SetAngleZ(2+3*i+0, Math::Smooth(m_object->GetAngleZ(2+3*i+0), Math::PropAngle( tSt[2],  tNd[2], prog), time));
-            m_object->SetAngleX(2+3*i+1, Math::Smooth(m_object->GetAngleX(2+3*i+1), Math::PropAngle(-tSt[3], -tNd[3], prog), time));
-            m_object->SetAngleY(2+3*i+1, Math::Smooth(m_object->GetAngleY(2+3*i+1), Math::PropAngle(-tSt[4], -tNd[4], prog), time));
-            m_object->SetAngleZ(2+3*i+1, Math::Smooth(m_object->GetAngleZ(2+3*i+1), Math::PropAngle( tSt[5],  tNd[5], prog), time));
-            m_object->SetAngleX(2+3*i+2, Math::Smooth(m_object->GetAngleX(2+3*i+2), Math::PropAngle(-tSt[6], -tNd[6], prog), time));
-            m_object->SetAngleY(2+3*i+2, Math::Smooth(m_object->GetAngleY(2+3*i+2), Math::PropAngle(-tSt[7], -tNd[7], prog), time));
-            m_object->SetAngleZ(2+3*i+2, Math::Smooth(m_object->GetAngleZ(2+3*i+2), Math::PropAngle( tSt[8],  tNd[8], prog), time));
+            m_object->SetPartRotationX(2+3*i+0, Math::Smooth(m_object->GetPartRotationX(2+3*i+0), Math::PropAngle(-tSt[0], -tNd[0], prog), time));
+            m_object->SetPartRotationY(2+3*i+0, Math::Smooth(m_object->GetPartRotationY(2+3*i+0), Math::PropAngle(-tSt[1], -tNd[1], prog), time));
+            m_object->SetPartRotationZ(2+3*i+0, Math::Smooth(m_object->GetPartRotationZ(2+3*i+0), Math::PropAngle( tSt[2],  tNd[2], prog), time));
+            m_object->SetPartRotationX(2+3*i+1, Math::Smooth(m_object->GetPartRotationX(2+3*i+1), Math::PropAngle(-tSt[3], -tNd[3], prog), time));
+            m_object->SetPartRotationY(2+3*i+1, Math::Smooth(m_object->GetPartRotationY(2+3*i+1), Math::PropAngle(-tSt[4], -tNd[4], prog), time));
+            m_object->SetPartRotationZ(2+3*i+1, Math::Smooth(m_object->GetPartRotationZ(2+3*i+1), Math::PropAngle( tSt[5],  tNd[5], prog), time));
+            m_object->SetPartRotationX(2+3*i+2, Math::Smooth(m_object->GetPartRotationX(2+3*i+2), Math::PropAngle(-tSt[6], -tNd[6], prog), time));
+            m_object->SetPartRotationY(2+3*i+2, Math::Smooth(m_object->GetPartRotationY(2+3*i+2), Math::PropAngle(-tSt[7], -tNd[7], prog), time));
+            m_object->SetPartRotationZ(2+3*i+2, Math::Smooth(m_object->GetPartRotationZ(2+3*i+2), Math::PropAngle( tSt[8],  tNd[8], prog), time));
         }
     }
 
@@ -1151,14 +1151,14 @@ bool CMotionHuman::EventFrame(const Event &event)
 
     // calculates the height lowering as a function
     // of the position of the legs.
-    hr = 1.5f*(1.0f-cosf(m_object->GetAngleZ(5))) +
-         1.5f*(1.0f-cosf(m_object->GetAngleZ(5)+m_object->GetAngleZ(6)));
-    a = 1.0f*sinf(m_object->GetAngleZ(5)+m_object->GetAngleZ(6)+m_object->GetAngleZ(7));
+    hr = 1.5f*(1.0f-cosf(m_object->GetPartRotationZ(5))) +
+         1.5f*(1.0f-cosf(m_object->GetPartRotationZ(5)+m_object->GetPartRotationZ(6)));
+    a = 1.0f*sinf(m_object->GetPartRotationZ(5)+m_object->GetPartRotationZ(6)+m_object->GetPartRotationZ(7));
     if ( a < 0.0f )  hr += a;
 
-    hl = 1.5f*(1.0f-cosf(m_object->GetAngleZ(11))) +
-         1.5f*(1.0f-cosf(m_object->GetAngleZ(11)+m_object->GetAngleZ(12)));
-    a = 1.0f*sinf(m_object->GetAngleZ(11)+m_object->GetAngleZ(12)+m_object->GetAngleZ(13));
+    hl = 1.5f*(1.0f-cosf(m_object->GetPartRotationZ(11))) +
+         1.5f*(1.0f-cosf(m_object->GetPartRotationZ(11)+m_object->GetPartRotationZ(12)));
+    a = 1.0f*sinf(m_object->GetPartRotationZ(11)+m_object->GetPartRotationZ(12)+m_object->GetPartRotationZ(13));
     if ( a < 0.0f )  hl += a;
 
     hr = Math::Min(hr, hl);
@@ -1523,7 +1523,7 @@ bool CMotionHuman::EventFrame(const Event &event)
             {
                 p2.x = 0.0f;
                 p2.y = sinf(Math::Mod(rTime[0]+0.5f, 1.0f)*Math::PI*2.0f)*0.5f;
-                p2 = Math::RotatePoint(-m_object->GetAngleY(0), p2);
+                p2 = Math::RotatePoint(-m_object->GetRotationY(), p2);
                 dir.x = p2.x;
                 dir.z = p2.y;
                 dir.y = sinf(Math::Mod(rTime[0]*2.0f, 1.0f)*Math::PI*2.0f)*0.3f;
@@ -1532,7 +1532,7 @@ bool CMotionHuman::EventFrame(const Event &event)
             {
                 p2.x = 0.0f;
                 p2.y = sinf(Math::Mod(rTime[0]+0.5f, 1.0f)*Math::PI*2.0f)*0.25f;
-                p2 = Math::RotatePoint(-m_object->GetAngleY(0), p2);
+                p2 = Math::RotatePoint(-m_object->GetRotationY(), p2);
                 dir.x = p2.x;
                 dir.z = p2.y;
                 dir.y = sinf(Math::Mod(rTime[0]*2.0f, 1.0f)*Math::PI*2.0f)*0.05f-0.3f;
@@ -1571,46 +1571,46 @@ bool CMotionHuman::EventFrame(const Event &event)
     if ( m_actionType == MHS_TAKE ||  // takes?
          m_actionType == MHS_FLAG )   // takes?
     {
-        m_object->SetAngleZ(1, Math::Smooth(m_object->GetAngleZ(1), sinf(m_armTimeAbs*1.0f)*0.2f-0.6f, event.rTime*5.0f));
-        m_object->SetAngleX(1, sinf(m_armTimeAbs*1.1f)*0.1f);
-        m_object->SetAngleY(1, Math::Smooth(m_object->GetAngleY(1), sinf(m_armTimeAbs*1.3f)*0.2f+rot*0.3f, event.rTime*5.0f));
+        m_object->SetPartRotationZ(1, Math::Smooth(m_object->GetPartRotationZ(1), sinf(m_armTimeAbs*1.0f)*0.2f-0.6f, event.rTime*5.0f));
+        m_object->SetPartRotationX(1, sinf(m_armTimeAbs*1.1f)*0.1f);
+        m_object->SetPartRotationY(1, Math::Smooth(m_object->GetPartRotationY(1), sinf(m_armTimeAbs*1.3f)*0.2f+rot*0.3f, event.rTime*5.0f));
     }
     else if ( m_actionType == MHS_TAKEOTHER ||  // takes?
               m_actionType == MHS_TAKEHIGH  )   // takes?
     {
-        m_object->SetAngleZ(1, Math::Smooth(m_object->GetAngleZ(1), sinf(m_armTimeAbs*1.0f)*0.2f-0.3f, event.rTime*5.0f));
-        m_object->SetAngleX(1, sinf(m_armTimeAbs*1.1f)*0.1f);
-        m_object->SetAngleY(1, Math::Smooth(m_object->GetAngleY(1), sinf(m_armTimeAbs*1.3f)*0.2f+rot*0.3f, event.rTime*5.0f));
+        m_object->SetPartRotationZ(1, Math::Smooth(m_object->GetPartRotationZ(1), sinf(m_armTimeAbs*1.0f)*0.2f-0.3f, event.rTime*5.0f));
+        m_object->SetPartRotationX(1, sinf(m_armTimeAbs*1.1f)*0.1f);
+        m_object->SetPartRotationY(1, Math::Smooth(m_object->GetPartRotationY(1), sinf(m_armTimeAbs*1.3f)*0.2f+rot*0.3f, event.rTime*5.0f));
     }
     else if ( m_actionType == MHS_WIN )   // win
     {
         float   factor = 0.6f+(sinf(m_armTimeAbs*0.5f)*0.40f);
-        m_object->SetAngleZ(1, sinf(m_armTimeAbs*5.0f)*0.20f*factor);
-        m_object->SetAngleX(1, sinf(m_armTimeAbs*0.6f)*0.10f);
-        m_object->SetAngleY(1, sinf(m_armTimeAbs*1.5f)*0.15f);
+        m_object->SetPartRotationZ(1, sinf(m_armTimeAbs*5.0f)*0.20f*factor);
+        m_object->SetPartRotationX(1, sinf(m_armTimeAbs*0.6f)*0.10f);
+        m_object->SetPartRotationY(1, sinf(m_armTimeAbs*1.5f)*0.15f);
     }
     else if ( m_actionType == MHS_LOST )   // lost?
     {
         float   factor = 0.6f+(sinf(m_armTimeAbs*0.5f)*0.40f);
-        m_object->SetAngleZ(1, sinf(m_armTimeAbs*0.6f)*0.10f);
-        m_object->SetAngleX(1, sinf(m_armTimeAbs*0.7f)*0.10f);
-        m_object->SetAngleY(1, sinf(m_armTimeAbs*3.0f)*0.30f*factor);
+        m_object->SetPartRotationZ(1, sinf(m_armTimeAbs*0.6f)*0.10f);
+        m_object->SetPartRotationX(1, sinf(m_armTimeAbs*0.7f)*0.10f);
+        m_object->SetPartRotationY(1, sinf(m_armTimeAbs*3.0f)*0.30f*factor);
     }
     else if ( m_object->GetDead() )  // dead?
     {
     }
     else
     {
-        m_object->SetAngleZ(1, Math::Smooth(m_object->GetAngleZ(1), sinf(m_armTimeAbs*1.0f)*0.2f, event.rTime*5.0f));
-        m_object->SetAngleX(1, sinf(m_armTimeAbs*1.1f)*0.1f);
-        m_object->SetAngleY(1, Math::Smooth(m_object->GetAngleY(1), sinf(m_armTimeAbs*1.3f)*0.2f+rot*0.3f, event.rTime*5.0f));
+        m_object->SetPartRotationZ(1, Math::Smooth(m_object->GetPartRotationZ(1), sinf(m_armTimeAbs*1.0f)*0.2f, event.rTime*5.0f));
+        m_object->SetPartRotationX(1, sinf(m_armTimeAbs*1.1f)*0.1f);
+        m_object->SetPartRotationY(1, Math::Smooth(m_object->GetPartRotationY(1), sinf(m_armTimeAbs*1.3f)*0.2f+rot*0.3f, event.rTime*5.0f));
     }
 
     if ( bOnBoard )
     {
-        m_object->SetAngleZ(1, 0.0f);
-        m_object->SetAngleX(1, 0.0f);
-        m_object->SetAngleY(1, 0.0f);
+        m_object->SetPartRotationZ(1, 0.0f);
+        m_object->SetPartRotationX(1, 0.0f);
+        m_object->SetPartRotationY(1, 0.0f);
     }
 
     // Steps sound effects.

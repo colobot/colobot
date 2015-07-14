@@ -196,21 +196,21 @@ bool CAutoMush::EventProcess(const Event &event)
         dir.z = cosf(m_time*Math::PI*4.0f);
 
         angle = sinf(m_time*10.0f)*factor*0.04f;
-        m_object->SetAngleX(0, angle*dir.z);
-        m_object->SetAngleZ(0, angle*dir.x);
+        m_object->SetRotationX(angle*dir.z);
+        m_object->SetRotationZ(angle*dir.x);
 
         zoom = 1.0f+sinf(m_time*8.0f)*factor*0.06f;
-        m_object->SetZoomX(0, zoom*size);
+        m_object->SetScaleX(zoom*size);
         zoom = 1.0f+sinf(m_time*5.0f)*factor*0.06f;
-        m_object->SetZoomY(0, zoom*size);
+        m_object->SetScaleY(zoom*size);
         zoom = 1.0f+sinf(m_time*7.0f)*factor*0.06f;
-        m_object->SetZoomZ(0, zoom*size);
+        m_object->SetScaleZ(zoom*size);
     }
     else
     {
-        m_object->SetAngleX(0, 0.0f);
-        m_object->SetAngleZ(0, 0.0f);
-        m_object->SetZoom(0, Math::Vector(1.0f, 1.0f, 1.0f));
+        m_object->SetRotationX(0.0f);
+        m_object->SetRotationZ(0.0f);
+        m_object->SetScale(Math::Vector(1.0f, 1.0f, 1.0f));
     }
 
     return true;

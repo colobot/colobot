@@ -81,7 +81,7 @@ void CMotionBee::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetObjectRank(0, rank);
     modelManager->AddModelReference("bee1.mod", false, rank);
     m_object->SetPosition(pos);
-    m_object->SetAngleY(0, angle);
+    m_object->SetRotationY(angle);
 
     // A vehicle must have an obligatory collision
     // with a sphere of center (0, y, 0) (see GetCrashSphere).
@@ -183,7 +183,7 @@ void CMotionBee::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetObjectParent(12, 0);
     modelManager->AddModelReference("ant4.mod", false, rank);
     m_object->SetPartPosition(12, Math::Vector(-0.3f, -0.1f, 0.2f));
-    m_object->SetAngleY(12, Math::PI);
+    m_object->SetPartRotationY(12, Math::PI);
 
     // Creates a left-back leg.
     rank = m_engine->CreateObject();
@@ -208,7 +208,7 @@ void CMotionBee::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetObjectParent(15, 0);
     modelManager->AddModelReference("ant4.mod", false, rank);
     m_object->SetPartPosition(15, Math::Vector(0.3f, -0.1f, 0.4f));
-    m_object->SetAngleY(15, Math::PI);
+    m_object->SetPartRotationY(15, Math::PI);
 
     // Creates two middle-left legs.
     rank = m_engine->CreateObject();
@@ -233,7 +233,7 @@ void CMotionBee::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetObjectParent(18, 0);
     modelManager->AddModelReference("ant4.mod", false, rank);
     m_object->SetPartPosition(18, Math::Vector(1.0f, -0.1f, 0.7f));
-    m_object->SetAngleY(18, Math::PI);
+    m_object->SetPartRotationY(18, Math::PI);
 
     // Creates front-left leg.
     rank = m_engine->CreateObject();
@@ -488,27 +488,27 @@ bool CMotionBee::EventFrame(const Event &event)
 
         if ( i < 3 )  // right leg (1..3) ?
         {
-            m_object->SetAngleX(3+3*i+0, Math::PropAngle(m_armAngles[st+ 0], m_armAngles[nd+ 0], prog));
-            m_object->SetAngleY(3+3*i+0, Math::PropAngle(m_armAngles[st+ 1], m_armAngles[nd+ 1], prog));
-            m_object->SetAngleZ(3+3*i+0, Math::PropAngle(m_armAngles[st+ 2], m_armAngles[nd+ 2], prog));
-            m_object->SetAngleX(3+3*i+1, Math::PropAngle(m_armAngles[st+ 9], m_armAngles[nd+ 9], prog));
-            m_object->SetAngleY(3+3*i+1, Math::PropAngle(m_armAngles[st+10], m_armAngles[nd+10], prog));
-            m_object->SetAngleZ(3+3*i+1, Math::PropAngle(m_armAngles[st+11], m_armAngles[nd+11], prog));
-            m_object->SetAngleX(3+3*i+2, Math::PropAngle(m_armAngles[st+18], m_armAngles[nd+18], prog));
-            m_object->SetAngleY(3+3*i+2, Math::PropAngle(m_armAngles[st+19], m_armAngles[nd+19], prog));
-            m_object->SetAngleZ(3+3*i+2, Math::PropAngle(m_armAngles[st+20], m_armAngles[nd+20], prog));
+            m_object->SetPartRotationX(3+3*i+0, Math::PropAngle(m_armAngles[st+ 0], m_armAngles[nd+ 0], prog));
+            m_object->SetPartRotationY(3+3*i+0, Math::PropAngle(m_armAngles[st+ 1], m_armAngles[nd+ 1], prog));
+            m_object->SetPartRotationZ(3+3*i+0, Math::PropAngle(m_armAngles[st+ 2], m_armAngles[nd+ 2], prog));
+            m_object->SetPartRotationX(3+3*i+1, Math::PropAngle(m_armAngles[st+ 9], m_armAngles[nd+ 9], prog));
+            m_object->SetPartRotationY(3+3*i+1, Math::PropAngle(m_armAngles[st+10], m_armAngles[nd+10], prog));
+            m_object->SetPartRotationZ(3+3*i+1, Math::PropAngle(m_armAngles[st+11], m_armAngles[nd+11], prog));
+            m_object->SetPartRotationX(3+3*i+2, Math::PropAngle(m_armAngles[st+18], m_armAngles[nd+18], prog));
+            m_object->SetPartRotationY(3+3*i+2, Math::PropAngle(m_armAngles[st+19], m_armAngles[nd+19], prog));
+            m_object->SetPartRotationZ(3+3*i+2, Math::PropAngle(m_armAngles[st+20], m_armAngles[nd+20], prog));
         }
         else    // left leg(4..6) ?
         {
-            m_object->SetAngleX(3+3*i+0, Math::PropAngle(   -m_armAngles[st+ 0],    -m_armAngles[nd+ 0], prog));
-            m_object->SetAngleY(3+3*i+0, Math::PropAngle(180-m_armAngles[st+ 1], 180-m_armAngles[nd+ 1], prog));
-            m_object->SetAngleZ(3+3*i+0, Math::PropAngle(   -m_armAngles[st+ 2],    -m_armAngles[nd+ 2], prog));
-            m_object->SetAngleX(3+3*i+1, Math::PropAngle(    m_armAngles[st+ 9],     m_armAngles[nd+ 9], prog));
-            m_object->SetAngleY(3+3*i+1, Math::PropAngle(   -m_armAngles[st+10],    -m_armAngles[nd+10], prog));
-            m_object->SetAngleZ(3+3*i+1, Math::PropAngle(   -m_armAngles[st+11],    -m_armAngles[nd+11], prog));
-            m_object->SetAngleX(3+3*i+2, Math::PropAngle(    m_armAngles[st+18],     m_armAngles[nd+18], prog));
-            m_object->SetAngleY(3+3*i+2, Math::PropAngle(   -m_armAngles[st+19],    -m_armAngles[nd+19], prog));
-            m_object->SetAngleZ(3+3*i+2, Math::PropAngle(   -m_armAngles[st+20],    -m_armAngles[nd+20], prog));
+            m_object->SetPartRotationX(3+3*i+0, Math::PropAngle(   -m_armAngles[st+ 0],    -m_armAngles[nd+ 0], prog));
+            m_object->SetPartRotationY(3+3*i+0, Math::PropAngle(180-m_armAngles[st+ 1], 180-m_armAngles[nd+ 1], prog));
+            m_object->SetPartRotationZ(3+3*i+0, Math::PropAngle(   -m_armAngles[st+ 2],    -m_armAngles[nd+ 2], prog));
+            m_object->SetPartRotationX(3+3*i+1, Math::PropAngle(    m_armAngles[st+ 9],     m_armAngles[nd+ 9], prog));
+            m_object->SetPartRotationY(3+3*i+1, Math::PropAngle(   -m_armAngles[st+10],    -m_armAngles[nd+10], prog));
+            m_object->SetPartRotationZ(3+3*i+1, Math::PropAngle(   -m_armAngles[st+11],    -m_armAngles[nd+11], prog));
+            m_object->SetPartRotationX(3+3*i+2, Math::PropAngle(    m_armAngles[st+18],     m_armAngles[nd+18], prog));
+            m_object->SetPartRotationY(3+3*i+2, Math::PropAngle(   -m_armAngles[st+19],    -m_armAngles[nd+19], prog));
+            m_object->SetPartRotationZ(3+3*i+2, Math::PropAngle(   -m_armAngles[st+20],    -m_armAngles[nd+20], prog));
         }
     }
 
@@ -528,7 +528,7 @@ bool CMotionBee::EventFrame(const Event &event)
         }
         else if ( bStop || m_object->GetBurn() )
         {
-            m_object->SetAngleZ(2, sinf(m_armTimeAbs*1.7f)*0.15f+0.35f);  // tail
+            m_object->SetPartRotationZ(2, sinf(m_armTimeAbs*1.7f)*0.15f+0.35f);  // tail
         }
         else
         {
@@ -545,7 +545,7 @@ bool CMotionBee::EventFrame(const Event &event)
             dir.y = 0.0f;
             m_object->SetTilt(dir);
 
-            m_object->SetAngleZ(2, -sinf(a)*0.3f);  // tail
+            m_object->SetPartRotationZ(2, -sinf(a)*0.3f);  // tail
 
             a = Math::Mod(m_armMember-0.1f, 1.0f);
             if ( a < 0.33f )
@@ -578,25 +578,25 @@ bool CMotionBee::EventFrame(const Event &event)
 
 #if 0
     a = Math::Rand()*Math::PI/2.0f*prog;
-    m_object->SetAngleX(21, a);  // right wing
+    m_object->SetPartRotationX(21, a);  // right wing
     a = -Math::Rand()*Math::PI/4.0f*prog;
-    m_object->SetAngleY(21, a);
+    m_object->SetPartRotationY(21, a);
 
     a = -Math::Rand()*Math::PI/2.0f*prog;
-    m_object->SetAngleX(22, a);  // left wing
+    m_object->SetPartRotationX(22, a);  // left wing
     a = Math::Rand()*Math::PI/4.0f*prog;
-    m_object->SetAngleY(22, a);
+    m_object->SetPartRotationY(22, a);
 #else
-    m_object->SetAngleX(21, (sinf(m_armTimeAbs*30.0f)+1.0f)*(Math::PI/4.0f)*prog);
-    m_object->SetAngleY(21, -Math::Rand()*Math::PI/6.0f*prog);
+    m_object->SetPartRotationX(21, (sinf(m_armTimeAbs*30.0f)+1.0f)*(Math::PI/4.0f)*prog);
+    m_object->SetPartRotationY(21, -Math::Rand()*Math::PI/6.0f*prog);
 
-    m_object->SetAngleX(22, -(sinf(m_armTimeAbs*30.0f)+1.0f)*(Math::PI/4.0f)*prog);
-    m_object->SetAngleY(22, Math::Rand()*Math::PI/6.0f*prog);
+    m_object->SetPartRotationX(22, -(sinf(m_armTimeAbs*30.0f)+1.0f)*(Math::PI/4.0f)*prog);
+    m_object->SetPartRotationY(22, Math::Rand()*Math::PI/6.0f*prog);
 #endif
 
-    m_object->SetAngleZ(1, sinf(m_armTimeAbs*1.4f)*0.20f);  // head
-    m_object->SetAngleX(1, sinf(m_armTimeAbs*1.9f)*0.10f);  // head
-    m_object->SetAngleY(1, sinf(m_armTimeAbs*2.1f)*0.50f);  // head
+    m_object->SetPartRotationZ(1, sinf(m_armTimeAbs*1.4f)*0.20f);  // head
+    m_object->SetPartRotationX(1, sinf(m_armTimeAbs*1.9f)*0.10f);  // head
+    m_object->SetPartRotationY(1, sinf(m_armTimeAbs*2.1f)*0.50f);  // head
 
 #if 0
     h = m_terrain->GetFloorHeight(GetPosition());

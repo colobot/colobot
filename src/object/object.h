@@ -93,9 +93,36 @@ public:
     //! Returns object's rotation (Euler angles)
     /** Angles are given in radians */
     virtual Math::Vector GetRotation() const;
+    //! Sets object's rotation (Euler angles)
+    /** Angles are given in radians */
+    virtual void SetRotation(const Math::Vector& rotation);
+
+    //!@{
+    //! Shortcuts for rotation components
+    void SetRotationX(float angle);
+    void SetRotationY(float angle);
+    void SetRotationZ(float angle);
+    float GetRotationX();
+    float GetRotationY();
+    float GetRotationZ();
+    //!@}
 
     //! Returns object's scale
     virtual Math::Vector GetScale() const;
+    //! Sets objects's scale
+    virtual void SetScale(const Math::Vector& scale);
+    //! Sets objects's scale (uniform value)
+    void SetScale(float scale);
+
+    //!@{
+    //! Shortcuts for scale components
+    void SetScaleX(float angle);
+    void SetScaleY(float angle);
+    void SetScaleZ(float angle);
+    float GetScaleX();
+    float GetScaleY();
+    float GetScaleZ();
+    //!@}
 
     //! Sets crash spheres for object
     void SetCrashSpheres(const std::vector<Gfx::ModelCrashSphere>& crashSpheres);

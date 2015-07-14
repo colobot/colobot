@@ -209,7 +209,7 @@ Error CTaskFlag::CreateFlag(int rank)
 
     float angle = 0.0f;
     CObject* pNew = CObjectManager::GetInstancePointer()->CreateObject(pos, angle, type);
-    //pNew->SetZoom(0, 0.0f);
+    //pNew->SetScale(0.0f);
 
     m_sound->Play(SOUND_WAYPOINT, pos);
     m_engine->GetPyroManager()->Create(Gfx::PT_FLCREATE, pNew);
@@ -226,7 +226,7 @@ Error CTaskFlag::DeleteFlag()
     float        iAngle, angle, aLimit, dist;
 
     iPos = m_object->GetPosition();
-    iAngle = m_object->GetAngleY(0);
+    iAngle = m_object->GetRotationY();
     iAngle = Math::NormAngle(iAngle);  // 0..2*Math::PI
 
     pObj = SearchNearest(iPos, OBJECT_NULL);

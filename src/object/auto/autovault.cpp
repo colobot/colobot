@@ -269,8 +269,8 @@ bool CAutoVault::EventProcess(const Event &event)
             m_actualAngle -= (105.0f*Math::PI/180.0f)*event.rTime/OPEN_DELAY;
             if ( m_actualAngle < m_finalAngle )  m_actualAngle = m_finalAngle;
         }
-        m_object->SetAngleZ(1,  m_actualAngle);
-        m_object->SetAngleZ(2, -m_actualAngle);
+        m_object->SetPartRotationZ(1,  m_actualAngle);
+        m_object->SetPartRotationZ(2, -m_actualAngle);
     }
 
     // Blinks the keys.
@@ -381,7 +381,7 @@ bool CAutoVault::Read(CLevelParserLine* line)
 int CAutoVault::CountKeys()
 {
     Math::Vector cPos = m_object->GetPosition();
-    float cAngle = m_object->GetAngleY(0);
+    float cAngle = m_object->GetRotationY();
 
     for (int index = 0; index < 4; index++)
     {
@@ -440,7 +440,7 @@ int CAutoVault::CountKeys()
         oPos.z = rot.y;
         oPos.y = cPos.y+1.0f;
         obj->SetPosition(oPos);
-        obj->SetAngleY(0, oAngle+cAngle);
+        obj->SetRotationY(oAngle+cAngle);
         m_keyPos[index] = oPos;
 
         m_bKey[index] = true;

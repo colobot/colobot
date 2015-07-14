@@ -163,11 +163,11 @@ bool CAutoNuclearPlant::EventProcess(const Event &event)
         if ( m_progress < 1.0f )
         {
             angle = (1.0f-m_progress)*(135.0f*Math::PI/180.0f);
-            m_object->SetAngleZ(1, angle);
+            m_object->SetPartRotationZ(1, angle);
         }
         else
         {
-            m_object->SetAngleZ(1, 0.0f);
+            m_object->SetPartRotationZ(1, 0.0f);
 
             mat = m_object->GetWorldMatrix(0);
             max = static_cast< int >(10.0f*m_engine->GetParticleDensity());
@@ -264,11 +264,11 @@ bool CAutoNuclearPlant::EventProcess(const Event &event)
         if ( m_progress < 1.0f )
         {
             angle = m_progress*(135.0f*Math::PI/180.0f);
-            m_object->SetAngleZ(1, angle);
+            m_object->SetPartRotationZ(1, angle);
         }
         else
         {
-            m_object->SetAngleZ(1, 135.0f*Math::PI/180.0f);
+            m_object->SetPartRotationZ(1, 135.0f*Math::PI/180.0f);
 
             SetBusy(false);
             UpdateInterface();
@@ -381,7 +381,7 @@ bool CAutoNuclearPlant::SearchVehicle()
 void CAutoNuclearPlant::CreatePower()
 {
     Math::Vector pos = m_object->GetPosition();
-    float angle = m_object->GetAngleY(0);
+    float angle = m_object->GetRotationY();
 
     float powerLevel = 1.0f;
     CObject* power = CObjectManager::GetInstancePointer()->CreateObject(pos, angle, OBJECT_ATOMIC, powerLevel);

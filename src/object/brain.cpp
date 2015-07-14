@@ -2169,7 +2169,7 @@ void CBrain::UpdateInterface(float rTime)
     pc = static_cast< Ui::CCompass* >(pw->SearchControl(EVENT_OBJECT_COMPASS));
     if ( pc != 0 )
     {
-        angle = -(m_object->GetAngleY(0)+Math::PI/2.0f);
+        angle = -(m_object->GetRotationY()+Math::PI/2.0f);
         pc->SetDirection(angle);
 
         pc->SetState(Ui::STATE_VISIBLE, m_main->GetShowMap());
@@ -2921,7 +2921,7 @@ void CBrain::TraceRecordStart()
     m_traceOper = TO_STOP;
 
     m_tracePos = m_object->GetPosition();
-    m_traceAngle = m_object->GetAngleY(0);
+    m_traceAngle = m_object->GetRotationY();
 
     if ( motionVehicle->GetTraceDown() )  // pencil down?
     {
@@ -2973,7 +2973,7 @@ void CBrain::TraceRecordFrame()
         }
         if ( m_traceOper == TO_TURN )
         {
-            angle = m_object->GetAngleY(0)-m_traceAngle;
+            angle = m_object->GetRotationY()-m_traceAngle;
             TraceRecordOper(m_traceOper, angle);
         }
 
@@ -2984,7 +2984,7 @@ void CBrain::TraceRecordFrame()
 
         m_traceOper = oper;
         m_tracePos = m_object->GetPosition();
-        m_traceAngle = m_object->GetAngleY(0);
+        m_traceAngle = m_object->GetRotationY();
         m_traceColor = color;
     }
 }

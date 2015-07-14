@@ -206,7 +206,7 @@ bool CTaskBuild::EventProcess(const Event &event)
 
     if ( m_phase == TBP_TURN )  // preliminary rotation?
     {
-        a = m_object->GetAngleY(0);
+        a = m_object->GetRotationY();
         g = m_angleY;
         cirSpeed = Math::Direction(a, g)*1.0f;
         if ( cirSpeed >  1.0f )  cirSpeed =  1.0f;
@@ -252,7 +252,7 @@ bool CTaskBuild::EventProcess(const Event &event)
         m_bBuild = true;
 
         pos = m_metal->GetPosition();
-        a   = m_object->GetAngleY(0);
+        a   = m_object->GetRotationY();
         if ( !CreateBuilding(pos, a+Math::PI) )
         {
             m_metal->SetLock(false);  // usable again
@@ -261,7 +261,7 @@ bool CTaskBuild::EventProcess(const Event &event)
             {
                 m_object->SetObjectParent(14, 0);
                 m_object->SetPartPosition(14, Math::Vector(-1.5f, 0.3f, -1.35f));
-                m_object->SetAngleZ(14, Math::PI);
+                m_object->SetPartRotationZ(14, Math::PI);
             }
             m_camera->FlushEffect();
             Abort();
@@ -276,8 +276,8 @@ bool CTaskBuild::EventProcess(const Event &event)
     pos.y += m_buildingHeight*m_progress;
     m_building->SetPosition(pos);  // the building rises
 
-    m_building->SetZoom(0, m_progress*0.75f+0.25f);
-    m_metal->SetZoom(0, 1.0f-m_progress);
+    m_building->SetScale(m_progress*0.75f+0.25f);
+    m_metal->SetScale(1.0f-m_progress);
 
     a = (2.0f-2.0f*m_progress);
     if ( a > 1.0f )  a = 1.0f;
@@ -352,7 +352,7 @@ Error CTaskBuild::Start(ObjectType type)
     m_lastParticle = 0.0f;
     m_progress = 0.0f;
 
-    iAngle = m_object->GetAngleY(0);
+    iAngle = m_object->GetRotationY();
     iAngle = Math::NormAngle(iAngle);  // 0..2*Math::PI
     oAngle = iAngle;
 
@@ -411,7 +411,7 @@ Error CTaskBuild::IsEnded()
 
     if ( m_phase == TBP_TURN )  // preliminary rotation?
     {
-        angle = m_object->GetAngleY(0);
+        angle = m_object->GetRotationY();
         angle = Math::NormAngle(angle);  // 0..2*Math::PI
 
         if ( Math::TestAngle(angle, m_angleY-Math::PI*0.01f, m_angleY+Math::PI*0.01f) )
@@ -469,7 +469,7 @@ Error CTaskBuild::IsEnded()
         {
             m_object->SetObjectParent(14, 4);
             m_object->SetPartPosition(14, Math::Vector(0.6f, 0.1f, 0.3f));
-            m_object->SetAngleZ(14, 0.0f);
+            m_object->SetPartRotationZ(14, 0.0f);
         }
 
         m_phase = TBP_PREP;
@@ -502,7 +502,7 @@ Error CTaskBuild::IsEnded()
         CObjectManager::GetInstancePointer()->DeleteObject(m_metal);
         m_metal = nullptr;
 
-        m_building->SetZoom(0, 1.0f);
+        m_building->SetScale(1.0f);
         m_building->SetCirVibration(Math::Vector(0.0f, 0.0f, 0.0f));
         m_building->SetLock(false);  // building usable
         m_main->CreateShortcuts();
@@ -529,7 +529,7 @@ Error CTaskBuild::IsEnded()
         {
             m_object->SetObjectParent(14, 0);
             m_object->SetPartPosition(14, Math::Vector(-1.5f, 0.3f, -1.35f));
-            m_object->SetAngleZ(14, Math::PI);
+            m_object->SetPartRotationZ(14, Math::PI);
         }
 
         if ( m_type == OBJECT_FACTORY  ||
@@ -726,7 +726,7 @@ CObject* CTaskBuild::SearchMetalObject(float &angle, float dMin, float dMax,
     bool        bMetal;
 
     iPos   = m_object->GetPosition();
-    iAngle = m_object->GetAngleY(0);
+    iAngle = m_object->GetRotationY();
     iAngle = Math::NormAngle(iAngle);  // 0..2*Math::PI
 
     min = 1000000.0f;

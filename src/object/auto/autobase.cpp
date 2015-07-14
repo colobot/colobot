@@ -149,9 +149,9 @@ begin:
 
             for ( i=0 ; i<8 ; i++ )
             {
-                m_object->SetAngleZ(1+i, Math::PI/2.0f-124.0f*Math::PI/180.0f);
-                m_object->SetAngleX(10+i, -10.0f*Math::PI/180.0f);
-                m_object->SetAngleX(18+i,  10.0f*Math::PI/180.0f);
+                m_object->SetPartRotationZ(1+i, Math::PI/2.0f-124.0f*Math::PI/180.0f);
+                m_object->SetPartRotationX(10+i, -10.0f*Math::PI/180.0f);
+                m_object->SetPartRotationX(18+i,  10.0f*Math::PI/180.0f);
                 m_object->SetPartPosition(10+i, Math::Vector(23.5f, 0.0f, -11.5f));
                 m_object->SetPartPosition(18+i, Math::Vector(23.5f, 0.0f,  11.5f));
             }
@@ -180,9 +180,9 @@ begin:
 
             for ( i=0 ; i<8 ; i++ )
             {
-                m_object->SetAngleZ(1+i, Math::PI/2.0f-124.0f*Math::PI/180.0f);
-                m_object->SetAngleX(10+i, -10.0f*Math::PI/180.0f);
-                m_object->SetAngleX(18+i,  10.0f*Math::PI/180.0f);
+                m_object->SetPartRotationZ(1+i, Math::PI/2.0f-124.0f*Math::PI/180.0f);
+                m_object->SetPartRotationX(10+i, -10.0f*Math::PI/180.0f);
+                m_object->SetPartRotationX(18+i,  10.0f*Math::PI/180.0f);
                 m_object->SetPartPosition(10+i, Math::Vector(23.5f, 0.0f, -11.5f));
                 m_object->SetPartPosition(18+i, Math::Vector(23.5f, 0.0f,  11.5f));
             }
@@ -249,7 +249,7 @@ begin:
             m_progress = 0.0f;
             m_speed    = 1.0f/BASE_TRANSIT_TIME;
 
-            m_object->SetAngleZ(0, -Math::PI/2.0f);
+            m_object->SetRotationZ(-Math::PI/2.0f);
             pos = m_object->GetPosition();
             pos.y += 10000.0f;  // in space
             m_finalPos = pos;
@@ -477,7 +477,7 @@ begin:
             angle = -m_progress*124.0f*Math::PI/180.0f;
             for ( i=0 ; i<8 ; i++ )
             {
-                m_object->SetAngleZ(1+i, Math::PI/2.0f+angle);
+                m_object->SetPartRotationZ(1+i, Math::PI/2.0f+angle);
             }
 
             if ( m_param != PARAM_PORTICO )
@@ -499,7 +499,7 @@ begin:
         {
             for ( i=0 ; i<8 ; i++ )
             {
-                m_object->SetAngleZ(1+i, Math::PI/2.0f-124.0f*Math::PI/180.0f);
+                m_object->SetPartRotationZ(1+i, Math::PI/2.0f-124.0f*Math::PI/180.0f);
             }
 
             // Clash the doors with the ground.
@@ -538,8 +538,8 @@ begin:
             {
                 m_object->SetPartPosition(10+i, Math::Vector(23.5f, 0.0f,  len));
                 m_object->SetPartPosition(18+i, Math::Vector(23.5f, 0.0f, -len));
-                m_object->SetAngleX(10+i, -10.0f*Math::PI/180.0f*m_progress);
-                m_object->SetAngleX(18+i,  10.0f*Math::PI/180.0f*m_progress);
+                m_object->SetPartRotationX(10+i, -10.0f*Math::PI/180.0f*m_progress);
+                m_object->SetPartRotationX(18+i,  10.0f*Math::PI/180.0f*m_progress);
             }
 
             if ( m_param != PARAM_PORTICO )
@@ -563,8 +563,8 @@ begin:
             {
                 m_object->SetPartPosition(10+i, Math::Vector(23.5f, 0.0f, -11.5f));
                 m_object->SetPartPosition(18+i, Math::Vector(23.5f, 0.0f,  11.5f));
-                m_object->SetAngleX(10+i, -10.0f*Math::PI/180.0f);
-                m_object->SetAngleX(18+i,  10.0f*Math::PI/180.0f);
+                m_object->SetPartRotationX(10+i, -10.0f*Math::PI/180.0f);
+                m_object->SetPartRotationX(18+i,  10.0f*Math::PI/180.0f);
             }
 
             m_phase    = ABP_LDWAIT;
@@ -617,8 +617,8 @@ begin:
             {
                 m_object->SetPartPosition(10+i, Math::Vector(23.5f, 0.0f,  len));
                 m_object->SetPartPosition(18+i, Math::Vector(23.5f, 0.0f, -len));
-                m_object->SetAngleX(10+i, -10.0f*Math::PI/180.0f*(1.0f-m_progress));
-                m_object->SetAngleX(18+i,  10.0f*Math::PI/180.0f*(1.0f-m_progress));
+                m_object->SetPartRotationX(10+i, -10.0f*Math::PI/180.0f*(1.0f-m_progress));
+                m_object->SetPartRotationX(18+i,  10.0f*Math::PI/180.0f*(1.0f-m_progress));
             }
         }
         else
@@ -627,8 +627,8 @@ begin:
             {
                 m_object->SetPartPosition(10+i, Math::Vector(23.5f, 0.0f,  7.0f));
                 m_object->SetPartPosition(18+i, Math::Vector(23.5f, 0.0f, -7.0f));
-                m_object->SetAngleX(10+i, 0.0f);
-                m_object->SetAngleX(18+i, 0.0f);
+                m_object->SetPartRotationX(10+i, 0.0f);
+                m_object->SetPartRotationX(18+i, 0.0f);
             }
 
             m_soundChannel = m_sound->Play(SOUND_MANIP, m_posSound, 0.0f, 0.3f, true);
@@ -649,14 +649,14 @@ begin:
             angle = -(1.0f-m_progress)*124.0f*Math::PI/180.0f;
             for ( i=0 ; i<8 ; i++ )
             {
-                m_object->SetAngleZ(1+i, Math::PI/2.0f+angle);
+                m_object->SetPartRotationZ(1+i, Math::PI/2.0f+angle);
             }
         }
         else
         {
             for ( i=0 ; i<8 ; i++ )
             {
-                m_object->SetAngleZ(1+i, Math::PI/2.0f);
+                m_object->SetPartRotationZ(1+i, Math::PI/2.0f);
             }
             m_bMotor = true;  // lights the jet engine
 
@@ -907,7 +907,7 @@ begin:
         }
         else
         {
-            m_object->SetAngleZ(0, 0.0f);
+            m_object->SetRotationZ(0.0f);
 
             m_param = PARAM_LANDING;
             m_phase    = ABP_START;
@@ -1059,7 +1059,7 @@ bool CAutoBase::Abort()
 
     if ( m_phase == ABP_TRANSIT_MOVE )  // transit ?
     {
-        m_object->SetAngleZ(0, 0.0f);
+        m_object->SetRotationZ(0.0f);
 
         m_param = PARAM_LANDING;
         m_phase    = ABP_START;
@@ -1084,9 +1084,9 @@ bool CAutoBase::Abort()
 
         for ( i=0 ; i<8 ; i++ )
         {
-            m_object->SetAngleZ(1+i, Math::PI/2.0f-124.0f*Math::PI/180.0f);
-            m_object->SetAngleX(10+i, -10.0f*Math::PI/180.0f);
-            m_object->SetAngleX(18+i,  10.0f*Math::PI/180.0f);
+            m_object->SetPartRotationZ(1+i, Math::PI/2.0f-124.0f*Math::PI/180.0f);
+            m_object->SetPartRotationX(10+i, -10.0f*Math::PI/180.0f);
+            m_object->SetPartRotationX(18+i,  10.0f*Math::PI/180.0f);
             m_object->SetPartPosition(10+i, Math::Vector(23.5f, 0.0f, -11.5f));
             m_object->SetPartPosition(18+i, Math::Vector(23.5f, 0.0f,  11.5f));
         }
@@ -1106,9 +1106,9 @@ bool CAutoBase::Abort()
             MoveCargo();  // all cargo moves
             for ( i=0 ; i<8 ; i++ )
             {
-                m_object->SetAngleZ(1+i, Math::PI/2.0f-124.0f*Math::PI/180.0f);
-                m_object->SetAngleX(10+i, -10.0f*Math::PI/180.0f);
-                m_object->SetAngleX(18+i,  10.0f*Math::PI/180.0f);
+                m_object->SetPartRotationZ(1+i, Math::PI/2.0f-124.0f*Math::PI/180.0f);
+                m_object->SetPartRotationX(10+i, -10.0f*Math::PI/180.0f);
+                m_object->SetPartRotationX(18+i,  10.0f*Math::PI/180.0f);
                 m_object->SetPartPosition(10+i, Math::Vector(23.5f, 0.0f, -11.5f));
                 m_object->SetPartPosition(18+i, Math::Vector(23.5f, 0.0f,  11.5f));
             }
@@ -1141,7 +1141,7 @@ bool CAutoBase::Abort()
         }
     }
 
-    m_object->SetAngleZ(0, 0.0f);
+    m_object->SetRotationZ(0.0f);
     FreezeCargo(false);  // frees all cargo
 
     if ( m_soundChannel != -1 )

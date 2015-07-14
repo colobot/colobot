@@ -68,7 +68,7 @@ bool CTaskFireAnt::EventProcess(const Event &event)
 
     if ( m_phase == TFA_TURN )  // preliminary rotation?
     {
-        a = m_object->GetAngleY(0);
+        a = m_object->GetRotationY();
         g = m_angle;
         cirSpeed = Math::Direction(a, g)*2.0f;
         if ( cirSpeed >  2.0f )  cirSpeed =  2.0f;
@@ -131,7 +131,7 @@ Error CTaskFireAnt::IsEnded()
 
     if ( m_phase == TFA_TURN )  // rotation ?
     {
-        angle = m_object->GetAngleY(0);
+        angle = m_object->GetRotationY();
         angle = Math::NormAngle(angle);  // 0..2*Math::PI
         if ( !Math::TestAngle(angle, m_angle-Math::PI*0.05f, m_angle+Math::PI*0.05f) )  return ERR_CONTINUE;
 

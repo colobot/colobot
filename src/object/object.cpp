@@ -71,9 +71,96 @@ Math::Vector CObject::GetRotation() const
     return m_rotation;
 }
 
+void CObject::SetRotation(const Math::Vector& rotation)
+{
+    // TODO: provide default implementation...
+}
+
+void CObject::SetRotationX(float angle)
+{
+    Math::Vector rotation = GetRotation();
+    rotation.x = angle;
+    return SetRotation(rotation);
+}
+
+void CObject::SetRotationY(float angle)
+{
+    Math::Vector rotation = GetRotation();
+    rotation.y = angle;
+    return SetRotation(rotation);
+}
+
+void CObject::SetRotationZ(float angle)
+{
+    Math::Vector rotation = GetRotation();
+    rotation.z = angle;
+    return SetRotation(rotation);
+}
+
+float CObject::GetRotationX()
+{
+    return GetRotation().x;
+}
+
+float CObject::GetRotationY()
+{
+    return GetRotation().y;
+}
+
+float CObject::GetRotationZ()
+{
+    return GetRotation().z;
+}
+
 Math::Vector CObject::GetScale() const
 {
     return m_scale;
+}
+
+void CObject::SetScale(const Math::Vector& scale)
+{
+    // TODO: provide default implementation...
+}
+
+void CObject::SetScale(float scale)
+{
+    SetScale(Math::Vector(scale, scale, scale));
+}
+
+void CObject::SetScaleX(float angle)
+{
+    Math::Vector scale = GetScale();
+    scale.x = angle;
+    return SetScale(scale);
+}
+
+void CObject::SetScaleY(float angle)
+{
+    Math::Vector scale = GetScale();
+    scale.y = angle;
+    return SetScale(scale);
+}
+
+void CObject::SetScaleZ(float angle)
+{
+    Math::Vector scale = GetScale();
+    scale.z = angle;
+    return SetScale(scale);
+}
+
+float CObject::GetScaleX()
+{
+    return GetScale().x;
+}
+
+float CObject::GetScaleY()
+{
+    return GetScale().y;
+}
+
+float CObject::GetScaleZ()
+{
+    return GetScale().z;
 }
 
 int CObject::GetCrashSphereCount()

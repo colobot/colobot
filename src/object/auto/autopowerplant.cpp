@@ -256,13 +256,13 @@ bool CAutoPowerPlant::EventProcess(const Event &event)
                 {
                     big += event.rTime/POWERPLANT_DELAY*0.25f;
                 }
-                cargo->SetZoom(0, 1.0f-m_progress);
+                cargo->SetScale(1.0f-m_progress);
             }
 
             cargo = SearchPower();
             if ( cargo != 0 )
             {
-                cargo->SetZoom(0, m_progress);
+                cargo->SetScale(m_progress);
             }
 
             if ( m_lastParticle+m_engine->ParticleAdapt(0.10f) <= m_time )
@@ -319,7 +319,7 @@ bool CAutoPowerPlant::EventProcess(const Event &event)
             {
                 assert(cargo->Implements(ObjectInterfaceType::Transportable));
 
-                cargo->SetZoom(0, 1.0f);
+                cargo->SetScale(1.0f);
                 cargo->SetLock(false);  // usable battery
                 dynamic_cast<CTransportableObject*>(cargo)->SetTransporter(m_object);
                 cargo->SetPosition(Math::Vector(0.0f, 3.0f, 0.0f));
@@ -447,7 +447,7 @@ bool CAutoPowerPlant::SearchVehicle()
 void CAutoPowerPlant::CreatePower()
 {
     Math::Vector pos = m_object->GetPosition();
-    float angle = m_object->GetAngleY(0);
+    float angle = m_object->GetRotationY();
     float powerLevel = 1.0f;
     CObject* power = CObjectManager::GetInstancePointer()->CreateObject(pos, angle, OBJECT_POWER, powerLevel);
     power->SetLock(true);  // battery not yet usable

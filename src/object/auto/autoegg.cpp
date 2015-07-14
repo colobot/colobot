@@ -65,7 +65,7 @@ void CAutoEgg::DeleteObject(bool all)
         {
             // Probably the intended action
             // Original code: ( alien->GetScale() == 1.0f )
-            if ( alien->GetZoomY(0) == 1.0f )
+            if ( alien->GetScaleY() == 1.0f )
             {
                 alien->SetLock(false);
                 alien->SetActivity(true);  // the insect is active
@@ -106,11 +106,11 @@ void CAutoEgg::Init()
          m_type == OBJECT_SPIDER ||
          m_type == OBJECT_BEE    )
     {
-        alien->SetZoom(0, 0.2f);
+        alien->SetScale(0.2f);
     }
     if ( m_type == OBJECT_WORM )
     {
-        alien->SetZoom(0, 0.01f);  // invisible !
+        alien->SetScale(0.01f);  // invisible !
     }
     alien->SetLock(true);
 
@@ -174,7 +174,7 @@ bool CAutoEgg::EventProcess(const Event &event)
         if ( m_progress < 1.0f )  return true;
 
         Math::Vector pos = m_object->GetPosition();
-        float angle = m_object->GetAngleY(0);
+        float angle = m_object->GetRotationY();
         CObject* alien = CObjectManager::GetInstancePointer()->CreateObject(pos, angle, m_type);
 
         alien->SetActivity(false);
@@ -202,7 +202,7 @@ bool CAutoEgg::EventProcess(const Event &event)
              m_type == OBJECT_SPIDER ||
              m_type == OBJECT_BEE    )
         {
-            alien->SetZoom(0, 0.2f+m_progress*0.8f);  // Others push
+            alien->SetScale(0.2f+m_progress*0.8f);  // Others push
         }
     }
 
@@ -238,7 +238,7 @@ Error CAutoEgg::IsEnded()
 
         m_engine->GetPyroManager()->Create(Gfx::PT_EGG, m_object);  // exploding egg
 
-        alien->SetZoom(0, 1.0f);  // this is a big boy now
+        alien->SetScale(1.0f);  // this is a big boy now
 
         m_phase    = AEP_WAIT;
         m_progress = 0.0f;

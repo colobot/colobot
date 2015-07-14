@@ -82,7 +82,7 @@ void CMotionQueen::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetObjectRank(0, rank);
     modelManager->AddModelReference("mother1.mod", false, rank);
     m_object->SetPosition(pos);
-    m_object->SetAngleY(0, angle);
+    m_object->SetRotationY(angle);
 
     // A vehicle must have a obligatory collision
     //with a sphere of center (0, y, 0) (see GetCrashSphere).
@@ -152,7 +152,7 @@ void CMotionQueen::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetObjectParent(8, 0);
     modelManager->AddModelReference("mother3.mod", false, rank);
     m_object->SetPartPosition(8, Math::Vector(-5.0f, -1.0f, 12.0f));
-    m_object->SetAngleY(8, Math::PI);
+    m_object->SetPartRotationY(8, Math::PI);
 
     // Creates a left-back foot.
     rank = m_engine->CreateObject();
@@ -169,7 +169,7 @@ void CMotionQueen::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetObjectParent(10, 0);
     modelManager->AddModelReference("mother3.mod", false, rank);
     m_object->SetPartPosition(10, Math::Vector(3.5f, -1.0f, 12.0f));
-    m_object->SetAngleY(10, Math::PI);
+    m_object->SetPartRotationY(10, Math::PI);
 
     // Creates a middle-left foot.
     rank = m_engine->CreateObject();
@@ -186,7 +186,7 @@ void CMotionQueen::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetObjectParent(12, 0);
     modelManager->AddModelReference("mother3.mod", false, rank);
     m_object->SetPartPosition(12, Math::Vector(10.0f, -1.0f, 10.0f));
-    m_object->SetAngleY(12, Math::PI);
+    m_object->SetPartRotationY(12, Math::PI);
 
     // Creates a left-front foot.
     rank = m_engine->CreateObject();
@@ -233,7 +233,7 @@ void CMotionQueen::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetObjectParent(18, 1);
     modelManager->AddModelReference("mother7.mod", false, rank);
     m_object->SetPartPosition(18, Math::Vector(-4.0f, -3.5f, -8.0f));
-    m_object->SetZoomX(18, 1.2f);
+    m_object->SetPartScaleX(18, 1.2f);
 
     // Creates the left claw.
     rank = m_engine->CreateObject();
@@ -242,7 +242,7 @@ void CMotionQueen::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetObjectParent(19, 1);
     modelManager->AddModelReference("mother7.mod", true, rank);
     m_object->SetPartPosition(19, Math::Vector(-4.0f, -3.5f, 8.0f));
-    m_object->SetZoomX(19, 1.2f);
+    m_object->SetPartScaleX(19, 1.2f);
 
     m_object->CreateShadowCircle(18.0f, 0.8f);
 
@@ -416,21 +416,21 @@ bool CMotionQueen::EventFrame(const Event &event)
         nd = nd*27+(i%3)*3;
         if ( i < 3 )  // right leg (1..3) ?
         {
-            m_object->SetAngleX(2+2*i+0, Math::PropAngle(m_armAngles[st+ 0], m_armAngles[nd+ 0], prog));
-            m_object->SetAngleY(2+2*i+0, Math::PropAngle(m_armAngles[st+ 1], m_armAngles[nd+ 1], prog));
-            m_object->SetAngleZ(2+2*i+0, Math::PropAngle(m_armAngles[st+ 2], m_armAngles[nd+ 2], prog));
-            m_object->SetAngleX(2+2*i+1, Math::PropAngle(m_armAngles[st+ 9], m_armAngles[nd+ 9], prog));
-            m_object->SetAngleY(2+2*i+1, Math::PropAngle(m_armAngles[st+10], m_armAngles[nd+10], prog));
-            m_object->SetAngleZ(2+2*i+1, Math::PropAngle(m_armAngles[st+11], m_armAngles[nd+11], prog));
+            m_object->SetPartRotationX(2+2*i+0, Math::PropAngle(m_armAngles[st+ 0], m_armAngles[nd+ 0], prog));
+            m_object->SetPartRotationY(2+2*i+0, Math::PropAngle(m_armAngles[st+ 1], m_armAngles[nd+ 1], prog));
+            m_object->SetPartRotationZ(2+2*i+0, Math::PropAngle(m_armAngles[st+ 2], m_armAngles[nd+ 2], prog));
+            m_object->SetPartRotationX(2+2*i+1, Math::PropAngle(m_armAngles[st+ 9], m_armAngles[nd+ 9], prog));
+            m_object->SetPartRotationY(2+2*i+1, Math::PropAngle(m_armAngles[st+10], m_armAngles[nd+10], prog));
+            m_object->SetPartRotationZ(2+2*i+1, Math::PropAngle(m_armAngles[st+11], m_armAngles[nd+11], prog));
         }
         else    // left leg (4..6) ?
         {
-            m_object->SetAngleX(2+2*i+0, Math::PropAngle(    m_armAngles[st+ 0],     m_armAngles[nd+ 0], prog));
-            m_object->SetAngleY(2+2*i+0, Math::PropAngle(180-m_armAngles[st+ 1], 180-m_armAngles[nd+ 1], prog));
-            m_object->SetAngleZ(2+2*i+0, Math::PropAngle(   -m_armAngles[st+ 2],    -m_armAngles[nd+ 2], prog));
-            m_object->SetAngleX(2+2*i+1, Math::PropAngle(    m_armAngles[st+ 9],     m_armAngles[nd+ 9], prog));
-            m_object->SetAngleY(2+2*i+1, Math::PropAngle(   -m_armAngles[st+10],    -m_armAngles[nd+10], prog));
-            m_object->SetAngleZ(2+2*i+1, Math::PropAngle(   -m_armAngles[st+11],    -m_armAngles[nd+11], prog));
+            m_object->SetPartRotationX(2+2*i+0, Math::PropAngle(    m_armAngles[st+ 0],     m_armAngles[nd+ 0], prog));
+            m_object->SetPartRotationY(2+2*i+0, Math::PropAngle(180-m_armAngles[st+ 1], 180-m_armAngles[nd+ 1], prog));
+            m_object->SetPartRotationZ(2+2*i+0, Math::PropAngle(   -m_armAngles[st+ 2],    -m_armAngles[nd+ 2], prog));
+            m_object->SetPartRotationX(2+2*i+1, Math::PropAngle(    m_armAngles[st+ 9],     m_armAngles[nd+ 9], prog));
+            m_object->SetPartRotationY(2+2*i+1, Math::PropAngle(   -m_armAngles[st+10],    -m_armAngles[nd+10], prog));
+            m_object->SetPartRotationZ(2+2*i+1, Math::PropAngle(   -m_armAngles[st+11],    -m_armAngles[nd+11], prog));
         }
     }
 
@@ -476,21 +476,21 @@ bool CMotionQueen::EventFrame(const Event &event)
         m_object->SetLinVibration(dir);
     }
 
-    m_object->SetAngleZ(1, sinf(m_armTimeAbs*0.5f)*0.20f);  // head
-    m_object->SetAngleX(1, sinf(m_armTimeAbs*0.6f)*0.10f);  // head
-    m_object->SetAngleY(1, sinf(m_armTimeAbs*0.7f)*0.20f);  // head
+    m_object->SetPartRotationZ(1, sinf(m_armTimeAbs*0.5f)*0.20f);  // head
+    m_object->SetPartRotationX(1, sinf(m_armTimeAbs*0.6f)*0.10f);  // head
+    m_object->SetPartRotationY(1, sinf(m_armTimeAbs*0.7f)*0.20f);  // head
 
-    m_object->SetAngleZ(14,  0.50f);
-    m_object->SetAngleZ(16,  0.50f);
-    m_object->SetAngleY(14,  0.80f+sinf(m_armTimeAbs*1.1f)*0.53f);  // right antenna
-    m_object->SetAngleY(15,  0.70f-sinf(m_armTimeAbs*1.7f)*0.43f);
-    m_object->SetAngleY(16, -0.80f+sinf(m_armTimeAbs*0.9f)*0.53f);  // left antenna
-    m_object->SetAngleY(17, -0.70f-sinf(m_armTimeAbs*1.3f)*0.43f);
+    m_object->SetPartRotationZ(14,  0.50f);
+    m_object->SetPartRotationZ(16,  0.50f);
+    m_object->SetPartRotationY(14,  0.80f+sinf(m_armTimeAbs*1.1f)*0.53f);  // right antenna
+    m_object->SetPartRotationY(15,  0.70f-sinf(m_armTimeAbs*1.7f)*0.43f);
+    m_object->SetPartRotationY(16, -0.80f+sinf(m_armTimeAbs*0.9f)*0.53f);  // left antenna
+    m_object->SetPartRotationY(17, -0.70f-sinf(m_armTimeAbs*1.3f)*0.43f);
 
-    m_object->SetAngleY(18, sinf(m_armTimeAbs*1.1f)*0.20f);  // right claw
-    m_object->SetAngleZ(18, -0.20f);
-    m_object->SetAngleY(19, sinf(m_armTimeAbs*0.9f)*0.20f);  // left claw
-    m_object->SetAngleZ(19, -0.20f);
+    m_object->SetPartRotationY(18, sinf(m_armTimeAbs*1.1f)*0.20f);  // right claw
+    m_object->SetPartRotationZ(18, -0.20f);
+    m_object->SetPartRotationY(19, sinf(m_armTimeAbs*0.9f)*0.20f);  // left claw
+    m_object->SetPartRotationZ(19, -0.20f);
 
     return true;
 }

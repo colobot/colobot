@@ -213,7 +213,7 @@ CObject* CObjectManager::Radar(CObject* pThis, std::vector<ObjectType> type, flo
     if (pThis != nullptr)
     {
         iPos   = pThis->GetPosition();
-        iAngle = pThis->GetAngleY(0);
+        iAngle = pThis->GetRotationY();
         iAngle = Math::NormAngle(iAngle);  // 0..2*Math::PI
     }
     else

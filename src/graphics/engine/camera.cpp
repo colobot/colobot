@@ -953,7 +953,7 @@ bool CCamera::IsCollisionBack(Math::Vector &eye, Math::Vector lookat)
         if ( oType == OBJECT_FACTORY )
         {
             float angle = Math::RotateAngle(m_actualEye.x-oPos.x, oPos.z-m_actualEye.z);  // CW !
-            angle = Math::Direction(angle, obj->GetAngleY(0));
+            angle = Math::Direction(angle, obj->GetRotationY());
             if ( fabs(angle) < 30.0f*Math::PI/180.0f )  continue;  // in the gate?
         }
 
@@ -1390,7 +1390,7 @@ bool CCamera::EventFrameBack(const Event &event)
         else if (type == OBJECT_TECH ) lookatPt.y +=  1.0f;
         else                           lookatPt.y +=  4.0f;
 
-        float h = -m_cameraObj->GetAngleY(0);  // angle vehicle / building
+        float h = -m_cameraObj->GetRotationY();  // angle vehicle / building
 
         if ( type == OBJECT_DERRICK  ||
              type == OBJECT_FACTORY  ||

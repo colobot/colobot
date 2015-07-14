@@ -70,7 +70,7 @@ bool CTaskSearch::EventProcess(const Event &event)
         {
             angle = (m_finalAngle[i]-m_initialAngle[i])*m_progress;
             angle += m_initialAngle[i];
-            m_object->SetAngleZ(i+1, angle);
+            m_object->SetPartRotationZ(i+1, angle);
         }
     }
 
@@ -116,7 +116,7 @@ void CTaskSearch::InitAngle()
 
     for ( i=0 ; i<3 ; i++ )
     {
-        m_initialAngle[i] = m_object->GetAngleZ(i+1);
+        m_initialAngle[i] = m_object->GetPartRotationZ(i+1);
     }
 }
 
@@ -181,7 +181,7 @@ Error CTaskSearch::IsEnded()
     {
         for ( i=0 ; i<3 ; i++ )
         {
-            m_object->SetAngleZ(i+1, m_finalAngle[i]);
+            m_object->SetPartRotationZ(i+1, m_finalAngle[i]);
         }
     }
 
@@ -223,7 +223,7 @@ bool CTaskSearch::Abort()
     InitAngle();
     for (int i = 0; i < 3; i++)
     {
-        m_object->SetAngleZ(i+1, m_finalAngle[i]);
+        m_object->SetPartRotationZ(i+1, m_finalAngle[i]);
     }
 
     m_camera->StopCentering(m_object, 2.0f);

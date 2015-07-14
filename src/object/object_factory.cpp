@@ -312,7 +312,7 @@ CObjectUPtr CObjectFactory::CreateBuilding(const ObjectCreateParams& params)
     {
         m_oldModelManager->AddModelReference("portico1.mod", false, rank);
         obj->SetPosition(pos);
-        obj->SetAngleY(0, angle);
+        obj->SetRotationY(angle);
         obj->SetFloorHeight(0.0f);
 
         rank = m_engine->CreateObject();
@@ -328,7 +328,7 @@ CObjectUPtr CObjectFactory::CreateBuilding(const ObjectCreateParams& params)
         obj->SetObjectParent(2, 1);
         m_oldModelManager->AddModelReference("portico3.mod", false, rank);
         obj->SetPartPosition(2, Math::Vector(0.0f, 0.0f, -33.0f));
-        obj->SetAngleY(2, 45.0f*Math::PI/180.0f);
+        obj->SetPartRotationY(2, 45.0f*Math::PI/180.0f);
 
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
@@ -336,7 +336,7 @@ CObjectUPtr CObjectFactory::CreateBuilding(const ObjectCreateParams& params)
         obj->SetObjectParent(3, 2);
         m_oldModelManager->AddModelReference("portico4.mod", false, rank);
         obj->SetPartPosition(3, Math::Vector(50.0f, 0.0f, 0.0f));
-        obj->SetAngleY(3, -60.0f*Math::PI/180.0f);
+        obj->SetPartRotationY(3, -60.0f*Math::PI/180.0f);
 
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
@@ -344,7 +344,7 @@ CObjectUPtr CObjectFactory::CreateBuilding(const ObjectCreateParams& params)
         obj->SetObjectParent(4, 3);
         m_oldModelManager->AddModelReference("portico5.mod", false, rank);
         obj->SetPartPosition(4, Math::Vector(35.0f, 0.0f, 0.0f));
-        obj->SetAngleY(4, -55.0f*Math::PI/180.0f);
+        obj->SetPartRotationY(4, -55.0f*Math::PI/180.0f);
 
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
@@ -352,7 +352,7 @@ CObjectUPtr CObjectFactory::CreateBuilding(const ObjectCreateParams& params)
         obj->SetObjectParent(5, 1);
         m_oldModelManager->AddModelReference("portico3.mod", false, rank);
         obj->SetPartPosition(5, Math::Vector(0.0f, 0.0f, 33.0f));
-        obj->SetAngleY(5, -45.0f*Math::PI/180.0f);
+        obj->SetPartRotationY(5, -45.0f*Math::PI/180.0f);
 
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
@@ -360,7 +360,7 @@ CObjectUPtr CObjectFactory::CreateBuilding(const ObjectCreateParams& params)
         obj->SetObjectParent(6, 5);
         m_oldModelManager->AddModelReference("portico4.mod", false, rank);
         obj->SetPartPosition(6, Math::Vector(50.0f, 0.0f, 0.0f));
-        obj->SetAngleY(6, 60.0f*Math::PI/180.0f);
+        obj->SetPartRotationY(6, 60.0f*Math::PI/180.0f);
 
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
@@ -368,7 +368,7 @@ CObjectUPtr CObjectFactory::CreateBuilding(const ObjectCreateParams& params)
         obj->SetObjectParent(7, 6);
         m_oldModelManager->AddModelReference("portico5.mod", false, rank);
         obj->SetPartPosition(7, Math::Vector(35.0f, 0.0f, 0.0f));
-        obj->SetAngleY(7, 55.0f*Math::PI/180.0f);
+        obj->SetPartRotationY(7, 55.0f*Math::PI/180.0f);
 
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
@@ -376,8 +376,8 @@ CObjectUPtr CObjectFactory::CreateBuilding(const ObjectCreateParams& params)
         obj->SetObjectParent(8, 0);
         m_oldModelManager->AddModelReference("portico6.mod", false, rank);
         obj->SetPartPosition(8, Math::Vector(-35.0f, 50.0f, -35.0f));
-        obj->SetAngleY(8, -Math::PI/2.0f);
-        obj->SetZoom(8, 2.0f);
+        obj->SetPartRotationY(8, -Math::PI/2.0f);
+        obj->SetPartScale(8, 2.0f);
 
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
@@ -392,8 +392,8 @@ CObjectUPtr CObjectFactory::CreateBuilding(const ObjectCreateParams& params)
         obj->SetObjectParent(10, 0);
         m_oldModelManager->AddModelReference("portico6.mod", false, rank);
         obj->SetPartPosition(10, Math::Vector(-35.0f, 50.0f, 35.0f));
-        obj->SetAngleY(10, -Math::PI/2.0f);
-        obj->SetZoom(10, 2.0f);
+        obj->SetPartRotationY(10, -Math::PI/2.0f);
+        obj->SetPartScale(10, 2.0f);
 
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
@@ -422,7 +422,7 @@ CObjectUPtr CObjectFactory::CreateBuilding(const ObjectCreateParams& params)
     {
         m_oldModelManager->AddModelReference("base1.mod", false, rank);
         obj->SetPosition(pos);
-        obj->SetAngleY(0, angle);
+        obj->SetRotationY(angle);
         obj->SetFloorHeight(0.0f);
 
         for (int i=0 ; i<8 ; i++ )
@@ -434,8 +434,8 @@ CObjectUPtr CObjectFactory::CreateBuilding(const ObjectCreateParams& params)
             m_oldModelManager->AddModelReference("base2.mod", false, rank);
             Math::Point p = Math::RotatePoint(-Math::PI/4.0f*i, 27.8f);
             obj->SetPartPosition(1+i, Math::Vector(p.x, 30.0f, p.y));
-            obj->SetAngleY(1+i, Math::PI/4.0f*i);
-            obj->SetAngleZ(1+i, Math::PI/2.0f);
+            obj->SetPartRotationY(1+i, Math::PI/4.0f*i);
+            obj->SetPartRotationZ(1+i, Math::PI/2.0f);
 
             rank = m_engine->CreateObject();
             m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
@@ -488,7 +488,7 @@ CObjectUPtr CObjectFactory::CreateBuilding(const ObjectCreateParams& params)
     {
         m_oldModelManager->AddModelReference("derrick1.mod", false, rank);
         obj->SetPosition(pos);
-        obj->SetAngleY(0, angle);
+        obj->SetRotationY(angle);
         obj->SetFloorHeight(0.0f);
 
         rank = m_engine->CreateObject();
@@ -511,7 +511,7 @@ CObjectUPtr CObjectFactory::CreateBuilding(const ObjectCreateParams& params)
     {
         m_oldModelManager->AddModelReference("search1.mod", false, rank);
         obj->SetPosition(pos);
-        obj->SetAngleY(0, angle);
+        obj->SetRotationY(angle);
         obj->SetFloorHeight(0.0f);
 
         rank = m_engine->CreateObject();
@@ -527,7 +527,7 @@ CObjectUPtr CObjectFactory::CreateBuilding(const ObjectCreateParams& params)
         obj->SetObjectParent(2, 1);
         m_oldModelManager->AddModelReference("search3.mod", false, rank);
         obj->SetPartPosition(2, Math::Vector(0.0f, 4.0f, 0.0f));
-        obj->SetAngleZ(2, 35.0f*Math::PI/180.0f);
+        obj->SetPartRotationZ(2, 35.0f*Math::PI/180.0f);
 
         obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f,  0.0f, 0.0f), 9.0f, SOUND_BOUMm, 0.45f));
         obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f,  6.0f, 0.0f), 9.0f, SOUND_BOUMm, 0.45f));
@@ -543,7 +543,7 @@ CObjectUPtr CObjectFactory::CreateBuilding(const ObjectCreateParams& params)
     {
         m_oldModelManager->AddModelReference("radar1.mod", false, rank);
         obj->SetPosition(pos);
-        obj->SetAngleY(0, angle);
+        obj->SetRotationY(angle);
         obj->SetFloorHeight(0.0f);
 
         rank = m_engine->CreateObject();
@@ -559,7 +559,7 @@ CObjectUPtr CObjectFactory::CreateBuilding(const ObjectCreateParams& params)
         obj->SetObjectParent(2, 0);
         m_oldModelManager->AddModelReference("radar3.mod", false, rank);
         obj->SetPartPosition(2, Math::Vector(0.0f, 11.0f, 0.0f));
-        obj->SetAngleY(2, -Math::PI/2.0f);
+        obj->SetPartRotationY(2, -Math::PI/2.0f);
 
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
@@ -579,7 +579,7 @@ CObjectUPtr CObjectFactory::CreateBuilding(const ObjectCreateParams& params)
     {
         m_oldModelManager->AddModelCopy("energy.mod", false, rank);
         obj->SetPosition(pos);
-        obj->SetAngleY(0, angle);
+        obj->SetRotationY(angle);
         obj->SetFloorHeight(0.0f);
 
         obj->AddCrashSphere(CrashSphere(Math::Vector(-2.0f, 13.0f, 0.0f), 6.0f, SOUND_BOUMm, 0.45f));
@@ -597,7 +597,7 @@ CObjectUPtr CObjectFactory::CreateBuilding(const ObjectCreateParams& params)
     {
         m_oldModelManager->AddModelReference("labo1.mod", false, rank);
         obj->SetPosition(pos);
-        obj->SetAngleY(0, angle);
+        obj->SetRotationY(angle);
         obj->SetFloorHeight(0.0f);
 
         rank = m_engine->CreateObject();
@@ -606,7 +606,7 @@ CObjectUPtr CObjectFactory::CreateBuilding(const ObjectCreateParams& params)
         obj->SetObjectParent(1, 0);
         m_oldModelManager->AddModelReference("labo2.mod", false, rank);
         obj->SetPartPosition(1, Math::Vector(-9.0f, 3.0f, 0.0f));
-        obj->SetAngleZ(1, Math::PI/2.0f);
+        obj->SetPartRotationZ(1, Math::PI/2.0f);
 
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
@@ -621,7 +621,7 @@ CObjectUPtr CObjectFactory::CreateBuilding(const ObjectCreateParams& params)
         obj->SetObjectParent(3, 2);
         m_oldModelManager->AddModelReference("labo4.mod", false, rank);
         obj->SetPartPosition(3, Math::Vector(0.0f, 0.0f, 0.0f));
-        obj->SetAngleZ(3, 80.0f*Math::PI/180.0f);
+        obj->SetPartRotationZ(3, 80.0f*Math::PI/180.0f);
 
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
@@ -629,8 +629,8 @@ CObjectUPtr CObjectFactory::CreateBuilding(const ObjectCreateParams& params)
         obj->SetObjectParent(4, 2);
         m_oldModelManager->AddModelReference("labo4.mod", false, rank);
         obj->SetPartPosition(4, Math::Vector(0.0f, 0.0f, 0.0f));
-        obj->SetAngleZ(4, 80.0f*Math::PI/180.0f);
-        obj->SetAngleY(4, Math::PI*2.0f/3.0f);
+        obj->SetPartRotationZ(4, 80.0f*Math::PI/180.0f);
+        obj->SetPartRotationY(4, Math::PI*2.0f/3.0f);
 
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
@@ -638,8 +638,8 @@ CObjectUPtr CObjectFactory::CreateBuilding(const ObjectCreateParams& params)
         obj->SetObjectParent(5, 2);
         m_oldModelManager->AddModelReference("labo4.mod", false, rank);
         obj->SetPartPosition(5, Math::Vector(0.0f, 0.0f, 0.0f));
-        obj->SetAngleZ(5, 80.0f*Math::PI/180.0f);
-        obj->SetAngleY(5, -Math::PI*2.0f/3.0f);
+        obj->SetPartRotationZ(5, 80.0f*Math::PI/180.0f);
+        obj->SetPartRotationY(5, -Math::PI*2.0f/3.0f);
 
         obj->AddCrashSphere(CrashSphere(Math::Vector(  0.0f,  1.0f,  0.0f), 1.5f, SOUND_BOUMm, 0.45f));
         obj->AddCrashSphere(CrashSphere(Math::Vector(  0.0f, 11.0f,  0.0f), 4.0f, SOUND_BOUMm, 0.45f));
@@ -657,7 +657,7 @@ CObjectUPtr CObjectFactory::CreateBuilding(const ObjectCreateParams& params)
     {
         m_oldModelManager->AddModelReference("factory1.mod", false, rank);
         obj->SetPosition(pos);
-        obj->SetAngleY(0, angle);
+        obj->SetRotationY(angle);
         obj->SetFloorHeight(0.0f);
 
         for (int i=0 ; i<9 ; i++ )
@@ -668,8 +668,8 @@ CObjectUPtr CObjectFactory::CreateBuilding(const ObjectCreateParams& params)
             obj->SetObjectParent(1+i, 0);
             m_oldModelManager->AddModelReference("factory2.mod", false, rank);
             obj->SetPartPosition(1+i, Math::Vector(10.0f, 2.0f*i, 10.0f));
-            obj->SetAngleZ(1+i, Math::PI/2.0f);
-            obj->SetZoomZ(1+i, 0.30f);
+            obj->SetPartRotationZ(1+i, Math::PI/2.0f);
+            obj->SetPartScaleZ(1+i, 0.30f);
 
             rank = m_engine->CreateObject();
             m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
@@ -677,9 +677,9 @@ CObjectUPtr CObjectFactory::CreateBuilding(const ObjectCreateParams& params)
             obj->SetObjectParent(10+i, 0);
             m_oldModelManager->AddModelReference("factory2.mod", false, rank);
             obj->SetPartPosition(10+i, Math::Vector(10.0f, 2.0f*i, -10.0f));
-            obj->SetAngleZ(10+i, -Math::PI/2.0f);
-            obj->SetAngleY(10+i, Math::PI);
-            obj->SetZoomZ(10+i, 0.30f);
+            obj->SetPartRotationZ(10+i, -Math::PI/2.0f);
+            obj->SetPartRotationY(10+i, Math::PI);
+            obj->SetPartScaleZ(10+i, 0.30f);
         }
 
         for (int i=0 ; i<2 ; i++ )
@@ -714,7 +714,7 @@ CObjectUPtr CObjectFactory::CreateBuilding(const ObjectCreateParams& params)
     {
         m_oldModelManager->AddModelReference("repair1.mod", false, rank);
         obj->SetPosition(pos);
-        obj->SetAngleY(0, angle);
+        obj->SetRotationY(angle);
         obj->SetFloorHeight(0.0f);
 
         rank = m_engine->CreateObject();
@@ -723,7 +723,7 @@ CObjectUPtr CObjectFactory::CreateBuilding(const ObjectCreateParams& params)
         obj->SetObjectParent(1, 0);
         m_oldModelManager->AddModelReference("repair2.mod", false, rank);
         obj->SetPartPosition(1, Math::Vector(-11.0f, 13.5f, 0.0f));
-        obj->SetAngleZ(1, Math::PI/2.0f);
+        obj->SetPartRotationZ(1, Math::PI/2.0f);
 
         m_terrain->AddBuildingLevel(pos, 7.0f, 9.0f, 1.0f, 0.5f);
 
@@ -738,7 +738,7 @@ CObjectUPtr CObjectFactory::CreateBuilding(const ObjectCreateParams& params)
     {
         m_oldModelManager->AddModelReference("destroy1.mod", false, rank);
         obj->SetPosition(pos);
-        obj->SetAngleY(0, angle);
+        obj->SetRotationY(angle);
         obj->SetFloorHeight(0.0f);
 
         rank = m_engine->CreateObject();
@@ -762,7 +762,7 @@ CObjectUPtr CObjectFactory::CreateBuilding(const ObjectCreateParams& params)
     {
         m_oldModelManager->AddModelCopy("station.mod", false, rank);
         obj->SetPosition(pos);
-        obj->SetAngleY(0, angle);
+        obj->SetRotationY(angle);
         obj->SetFloorHeight(0.0f);
 
         m_terrain->AddBuildingLevel(pos, 7.0f, 9.0f, 1.0f, 0.5f);
@@ -778,7 +778,7 @@ CObjectUPtr CObjectFactory::CreateBuilding(const ObjectCreateParams& params)
     {
         m_oldModelManager->AddModelReference("convert1.mod", false, rank);
         obj->SetPosition(pos);
-        obj->SetAngleY(0, angle);
+        obj->SetRotationY(angle);
         obj->SetFloorHeight(0.0f);
 
         rank = m_engine->CreateObject();
@@ -794,7 +794,7 @@ CObjectUPtr CObjectFactory::CreateBuilding(const ObjectCreateParams& params)
         obj->SetObjectParent(2, 0);
         m_oldModelManager->AddModelReference("convert3.mod", false, rank);
         obj->SetPartPosition(2, Math::Vector(0.0f, 11.5f, 0.0f));
-        obj->SetAngleX(2, -Math::PI*0.35f);
+        obj->SetPartRotationX(2, -Math::PI*0.35f);
 
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
@@ -802,8 +802,8 @@ CObjectUPtr CObjectFactory::CreateBuilding(const ObjectCreateParams& params)
         obj->SetObjectParent(3, 0);
         m_oldModelManager->AddModelReference("convert3.mod", false, rank);
         obj->SetPartPosition(3, Math::Vector(0.0f, 11.5f, 0.0f));
-        obj->SetAngleY(3, Math::PI);
-        obj->SetAngleX(3, -Math::PI*0.35f);
+        obj->SetPartRotationY(3, Math::PI);
+        obj->SetPartRotationX(3, -Math::PI*0.35f);
 
         m_terrain->AddBuildingLevel(pos, 7.0f, 9.0f, 1.0f, 0.5f);
 
@@ -818,7 +818,7 @@ CObjectUPtr CObjectFactory::CreateBuilding(const ObjectCreateParams& params)
     {
         m_oldModelManager->AddModelReference("tower.mod", false, rank);
         obj->SetPosition(pos);
-        obj->SetAngleY(0, angle);
+        obj->SetRotationY(angle);
         obj->SetFloorHeight(0.0f);
 
         rank = m_engine->CreateObject();
@@ -827,7 +827,7 @@ CObjectUPtr CObjectFactory::CreateBuilding(const ObjectCreateParams& params)
         obj->SetObjectParent(1, 0);
         m_oldModelManager->AddModelReference("roller2c.mod", false, rank);
         obj->SetPartPosition(1, Math::Vector(0.0f, 20.0f, 0.0f));
-        obj->SetAngleZ(1, Math::PI/2.0f);
+        obj->SetPartRotationZ(1, Math::PI/2.0f);
 
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
@@ -835,7 +835,7 @@ CObjectUPtr CObjectFactory::CreateBuilding(const ObjectCreateParams& params)
         obj->SetObjectParent(2, 1);
         m_oldModelManager->AddModelReference("roller3c.mod", false, rank);
         obj->SetPartPosition(2, Math::Vector(4.5f, 0.0f, 0.0f));
-        obj->SetAngleZ(2, 0.0f);
+        obj->SetPartRotationZ(2, 0.0f);
 
         obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f,  0.0f, 0.0f), 6.5f, SOUND_BOUMm, 0.45f));
         obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f,  8.0f, 0.0f), 4.0f, SOUND_BOUMm, 0.45f));
@@ -853,7 +853,7 @@ CObjectUPtr CObjectFactory::CreateBuilding(const ObjectCreateParams& params)
     {
         m_oldModelManager->AddModelReference("nuclear1.mod", false, rank);
         obj->SetPosition(pos);
-        obj->SetAngleY(0, angle);
+        obj->SetRotationY(angle);
         obj->SetFloorHeight(0.0f);
 
         rank = m_engine->CreateObject();
@@ -862,7 +862,7 @@ CObjectUPtr CObjectFactory::CreateBuilding(const ObjectCreateParams& params)
         obj->SetObjectParent(1, 0);
         m_oldModelManager->AddModelReference("nuclear2.mod", false, rank);
         obj->SetPartPosition(1, Math::Vector(20.0f, 10.0f, 0.0f));
-        obj->SetAngleZ(1, 135.0f*Math::PI/180.0f);
+        obj->SetPartRotationZ(1, 135.0f*Math::PI/180.0f);
 
         obj->AddCrashSphere(CrashSphere(Math::Vector( 0.0f,  0.0f, 0.0f), 19.0f, SOUND_BOUMm, 0.45f));
         obj->AddCrashSphere(CrashSphere(Math::Vector( 0.0f, 24.0f, 0.0f), 15.0f, SOUND_BOUMm, 0.45f));
@@ -878,7 +878,7 @@ CObjectUPtr CObjectFactory::CreateBuilding(const ObjectCreateParams& params)
     {
         m_oldModelManager->AddModelReference("para.mod", false, rank);
         obj->SetPosition(pos);
-        obj->SetAngleY(0, angle);
+        obj->SetRotationY(angle);
         obj->SetFloorHeight(0.0f);
 
         m_terrain->AddBuildingLevel(pos, 16.0f, 18.0f, 1.0f, 0.5f);
@@ -903,7 +903,7 @@ CObjectUPtr CObjectFactory::CreateBuilding(const ObjectCreateParams& params)
     {
         m_oldModelManager->AddModelReference("safe1.mod", false, rank);
         obj->SetPosition(pos);
-        obj->SetAngleY(0, angle);
+        obj->SetRotationY(angle);
         obj->SetFloorHeight(0.0f);
 
         rank = m_engine->CreateObject();
@@ -911,14 +911,14 @@ CObjectUPtr CObjectFactory::CreateBuilding(const ObjectCreateParams& params)
         obj->SetObjectRank(1, rank);
         obj->SetObjectParent(1, 0);
         m_oldModelManager->AddModelReference("safe2.mod", false, rank);
-        obj->SetZoom(1, 1.05f);
+        obj->SetPartScale(1, 1.05f);
 
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         obj->SetObjectRank(2, rank);
         obj->SetObjectParent(2, 0);
         m_oldModelManager->AddModelReference("safe3.mod", false, rank);
-        obj->SetZoom(2, 1.05f);
+        obj->SetPartScale(2, 1.05f);
 
         m_terrain->AddBuildingLevel(pos, 18.0f, 20.0f, 1.0f, 0.5f);
 
@@ -932,7 +932,7 @@ CObjectUPtr CObjectFactory::CreateBuilding(const ObjectCreateParams& params)
     {
         m_oldModelManager->AddModelReference("huston1.mod", false, rank);
         obj->SetPosition(pos);
-        obj->SetAngleY(0, angle);
+        obj->SetRotationY(angle);
         obj->SetFloorHeight(0.0f);
 
         rank = m_engine->CreateObject();
@@ -941,8 +941,8 @@ CObjectUPtr CObjectFactory::CreateBuilding(const ObjectCreateParams& params)
         obj->SetObjectParent(1, 0);
         m_oldModelManager->AddModelReference("huston2.mod", false, rank);
         obj->SetPartPosition(1, Math::Vector(0.0f, 39.0f, 30.0f));
-        obj->SetAngleY(1, -Math::PI/2.0f);
-        obj->SetZoom(1, 3.0f);
+        obj->SetPartRotationY(1, -Math::PI/2.0f);
+        obj->SetPartScale(1, 3.0f);
 
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
@@ -973,8 +973,8 @@ CObjectUPtr CObjectFactory::CreateBuilding(const ObjectCreateParams& params)
     {
         m_oldModelManager->AddModelReference("target1.mod", false, rank);
         obj->SetPosition(pos);
-        obj->SetAngleY(0, angle);
-        obj->SetZoom(0, 1.5f);
+        obj->SetRotationY(angle);
+        obj->SetScale(1.5f);
         obj->SetFloorHeight(0.0f);
 
         obj->AddCrashSphere(CrashSphere(Math::Vector(  0.0f, 50.0f+14.0f, 0.0f),  3.0f, SOUND_BOUMm, 0.45f));
@@ -1002,7 +1002,7 @@ CObjectUPtr CObjectFactory::CreateBuilding(const ObjectCreateParams& params)
     {
         m_oldModelManager->AddModelReference("target2.mod", false, rank);
         obj->SetPosition(pos);
-        obj->SetAngleY(0, angle);
+        obj->SetRotationY(angle);
         obj->SetFloorHeight(0.0f);
 
         height += 50.0f*1.5f;
@@ -1012,7 +1012,7 @@ CObjectUPtr CObjectFactory::CreateBuilding(const ObjectCreateParams& params)
     {
         m_oldModelManager->AddModelReference("nest.mod", false, rank);
         obj->SetPosition(pos);
-        obj->SetAngleY(0, angle);
+        obj->SetRotationY(angle);
         obj->SetFloorHeight(0.0f);
 
         m_terrain->AddBuildingLevel(pos, 3.0f, 5.0f, 1.0f, 0.5f);
@@ -1024,7 +1024,7 @@ CObjectUPtr CObjectFactory::CreateBuilding(const ObjectCreateParams& params)
     {
         m_oldModelManager->AddModelReference("start.mod", false, rank);
         obj->SetPosition(pos);
-        obj->SetAngleY(0, angle);
+        obj->SetRotationY(angle);
         obj->SetFloorHeight(0.0f);
 
         m_terrain->AddBuildingLevel(pos, 7.0f, 9.0f, 1.0f, 0.5f);
@@ -1034,7 +1034,7 @@ CObjectUPtr CObjectFactory::CreateBuilding(const ObjectCreateParams& params)
     {
         m_oldModelManager->AddModelReference("end.mod", false, rank);
         obj->SetPosition(pos);
-        obj->SetAngleY(0, angle);
+        obj->SetRotationY(angle);
         obj->SetFloorHeight(0.0f);
 
         m_terrain->AddBuildingLevel(pos, 7.0f, 9.0f, 1.0f, 0.5f);
@@ -1139,7 +1139,7 @@ CObjectUPtr CObjectFactory::CreateResource(const ObjectCreateParams& params)
     }
 
     obj->SetPosition(pos);
-    obj->SetAngleY(0, angle);
+    obj->SetRotationY(angle);
 
     if ( type == OBJECT_SHOW )  // remains in the air?
     {
@@ -1175,7 +1175,7 @@ CObjectUPtr CObjectFactory::CreateResource(const ObjectCreateParams& params)
     {
         obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 0.0f, 0.0f), 4.0f, SOUND_BOUMm, 0.45f));
         obj->SetCameraCollisionSphere(Math::Sphere(Math::Vector(0.0f, 0.0f, 0.0f), 4.0f));
-        obj->SetZoom(0, 1.5f);
+        obj->SetScale(1.5f);
         radius =  5.0f;
         height = -1.4f;
     }
@@ -1225,7 +1225,7 @@ CObjectUPtr CObjectFactory::CreateFlag(const ObjectCreateParams& params)
     obj->SetObjectRank(0, rank);
     m_oldModelManager->AddModelReference(name, false, rank);
     obj->SetPosition(pos);
-    obj->SetAngleY(0, angle);
+    obj->SetRotationY(angle);
 
     name = "";
     if ( type == OBJECT_FLAGb )  name = "flag2b.mod";
@@ -1279,7 +1279,7 @@ CObjectUPtr CObjectFactory::CreateBarrier(const ObjectCreateParams& params)
         obj->SetObjectRank(0, rank);
         m_oldModelManager->AddModelReference("barrier0.mod", false, rank);
         obj->SetPosition(pos);
-        obj->SetAngleY(0, angle);
+        obj->SetRotationY(angle);
 
         obj->AddCrashSphere(CrashSphere(Math::Vector( 3.5f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f));
         obj->AddCrashSphere(CrashSphere(Math::Vector( 0.0f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f));
@@ -1295,7 +1295,7 @@ CObjectUPtr CObjectFactory::CreateBarrier(const ObjectCreateParams& params)
         obj->SetObjectRank(0, rank);
         m_oldModelManager->AddModelReference("barrier1.mod", false, rank);
         obj->SetPosition(pos);
-        obj->SetAngleY(0, angle);
+        obj->SetRotationY(angle);
 
         obj->AddCrashSphere(CrashSphere(Math::Vector( 8.5f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f));
         obj->AddCrashSphere(CrashSphere(Math::Vector( 3.5f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f));
@@ -1313,7 +1313,7 @@ CObjectUPtr CObjectFactory::CreateBarrier(const ObjectCreateParams& params)
         obj->SetObjectRank(0, rank);
         m_oldModelManager->AddModelReference("barrier2.mod", false, rank);
         obj->SetPosition(pos);
-        obj->SetAngleY(0, angle);
+        obj->SetRotationY(angle);
 
         obj->AddCrashSphere(CrashSphere(Math::Vector( 8.5f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f));
         obj->AddCrashSphere(CrashSphere(Math::Vector( 3.5f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f));
@@ -1331,7 +1331,7 @@ CObjectUPtr CObjectFactory::CreateBarrier(const ObjectCreateParams& params)
         obj->SetObjectRank(0, rank);
         m_oldModelManager->AddModelReference("barrier3.mod", false, rank);
         obj->SetPosition(pos);
-        obj->SetAngleY(0, angle);
+        obj->SetRotationY(angle);
 
         obj->AddCrashSphere(CrashSphere(Math::Vector( 8.5f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f));
         obj->AddCrashSphere(CrashSphere(Math::Vector( 3.5f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f));
@@ -1384,7 +1384,7 @@ CObjectUPtr CObjectFactory::CreatePlant(const ObjectCreateParams& params)
         if ( type == OBJECT_PLANT3 )  m_oldModelManager->AddModelReference("plant3.mod", false, rank);
         if ( type == OBJECT_PLANT4 )  m_oldModelManager->AddModelReference("plant4.mod", false, rank);
         obj->SetPosition(pos);
-        obj->SetAngleY(0, angle);
+        obj->SetRotationY(angle);
 
         height -= 2.0f;
 
@@ -1406,7 +1406,7 @@ CObjectUPtr CObjectFactory::CreatePlant(const ObjectCreateParams& params)
         if ( type == OBJECT_PLANT6 )  m_oldModelManager->AddModelReference("plant6.mod", false, rank);
         if ( type == OBJECT_PLANT7 )  m_oldModelManager->AddModelReference("plant7.mod", false, rank);
         obj->SetPosition(pos);
-        obj->SetAngleY(0, angle);
+        obj->SetRotationY(angle);
 
 //?     obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 0.0f, 0.0f), 3.0f, SOUND_BOUM, 0.10f));
         obj->SetJostlingSphere(Math::Sphere(Math::Vector(0.0f, 0.0f, 0.0f), 4.0f));
@@ -1423,7 +1423,7 @@ CObjectUPtr CObjectFactory::CreatePlant(const ObjectCreateParams& params)
         if ( type == OBJECT_PLANT8 )  m_oldModelManager->AddModelReference("plant8.mod", false, rank);
         if ( type == OBJECT_PLANT9 )  m_oldModelManager->AddModelReference("plant9.mod", false, rank);
         obj->SetPosition(pos);
-        obj->SetAngleY(0, angle);
+        obj->SetRotationY(angle);
 
         obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f,  2.0f, 0.0f), 4.0f, SOUND_BOUM, 0.10f));
         obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 10.0f, 0.0f), 4.0f, SOUND_BOUM, 0.10f));
@@ -1446,7 +1446,7 @@ CObjectUPtr CObjectFactory::CreatePlant(const ObjectCreateParams& params)
         if ( type == OBJECT_PLANT13 )  m_oldModelManager->AddModelReference("plant13.mod", false, rank);
         if ( type == OBJECT_PLANT14 )  m_oldModelManager->AddModelReference("plant14.mod", false, rank);
         obj->SetPosition(pos);
-        obj->SetAngleY(0, angle);
+        obj->SetRotationY(angle);
 
         obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 12.0f, 0.0f), 5.0f, SOUND_BOUM, 0.10f));
         obj->SetCameraCollisionSphere(Math::Sphere(Math::Vector(0.0f, 6.0f, 0.0f), 6.0f));
@@ -1470,7 +1470,7 @@ CObjectUPtr CObjectFactory::CreatePlant(const ObjectCreateParams& params)
         if ( type == OBJECT_PLANT18 )  m_oldModelManager->AddModelReference("plant18.mod", false, rank);
         if ( type == OBJECT_PLANT19 )  m_oldModelManager->AddModelReference("plant19.mod", false, rank);
         obj->SetPosition(pos);
-        obj->SetAngleY(0, angle);
+        obj->SetRotationY(angle);
 
         if ( type != OBJECT_PLANT19 )
         {
@@ -1489,7 +1489,7 @@ CObjectUPtr CObjectFactory::CreatePlant(const ObjectCreateParams& params)
         obj->SetObjectRank(0, rank);
         m_oldModelManager->AddModelReference("tree1.mod", false, rank);
         obj->SetPosition(pos);
-        obj->SetAngleY(0, angle);
+        obj->SetRotationY(angle);
 
         obj->AddCrashSphere(CrashSphere(Math::Vector( 0.0f,  3.0f, 2.0f), 3.0f, SOUND_BOUMs, 0.20f));
         obj->AddCrashSphere(CrashSphere(Math::Vector(-2.0f, 11.0f, 1.0f), 2.0f, SOUND_BOUMs, 0.20f));
@@ -1507,7 +1507,7 @@ CObjectUPtr CObjectFactory::CreatePlant(const ObjectCreateParams& params)
         obj->SetObjectRank(0, rank);
         m_oldModelManager->AddModelReference("tree2.mod", false, rank);
         obj->SetPosition(pos);
-        obj->SetAngleY(0, angle);
+        obj->SetRotationY(angle);
 
         obj->AddCrashSphere(CrashSphere(Math::Vector( 0.0f,  3.0f, 1.0f), 3.0f, SOUND_BOUMs, 0.20f));
         obj->AddCrashSphere(CrashSphere(Math::Vector(-2.0f, 10.0f, 1.0f), 2.0f, SOUND_BOUMs, 0.20f));
@@ -1525,7 +1525,7 @@ CObjectUPtr CObjectFactory::CreatePlant(const ObjectCreateParams& params)
         obj->SetObjectRank(0, rank);
         m_oldModelManager->AddModelReference("tree3.mod", false, rank);
         obj->SetPosition(pos);
-        obj->SetAngleY(0, angle);
+        obj->SetRotationY(angle);
 
         obj->AddCrashSphere(CrashSphere(Math::Vector(-2.0f,  3.0f, 2.0f), 3.0f, SOUND_BOUMs, 0.20f));
         obj->AddCrashSphere(CrashSphere(Math::Vector(-3.0f,  9.0f, 1.0f), 2.0f, SOUND_BOUMs, 0.20f));
@@ -1542,7 +1542,7 @@ CObjectUPtr CObjectFactory::CreatePlant(const ObjectCreateParams& params)
         obj->SetObjectRank(0, rank);
         m_oldModelManager->AddModelReference("tree4.mod", false, rank);
         obj->SetPosition(pos);
-        obj->SetAngleY(0, angle);
+        obj->SetRotationY(angle);
 
         obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 10.0f, 0.0f), 10.0f, SOUND_BOUMs, 0.20f));
         obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 21.0f, 0.0f),  8.0f, SOUND_BOUMs, 0.20f));
@@ -1558,7 +1558,7 @@ CObjectUPtr CObjectFactory::CreatePlant(const ObjectCreateParams& params)
         obj->SetObjectRank(0, rank);
         m_oldModelManager->AddModelReference("tree5.mod", false, rank);
         obj->SetPosition(pos);
-        obj->SetAngleY(0, angle);
+        obj->SetRotationY(angle);
 
         obj->AddCrashSphere(CrashSphere(Math::Vector(  0.0f, 5.0f,-10.0f), 25.0f, SOUND_BOUMs, 0.20f));
         obj->AddCrashSphere(CrashSphere(Math::Vector(-65.0f, 5.0f, 65.0f), 20.0f, SOUND_BOUMs, 0.20f));
@@ -1600,7 +1600,7 @@ CObjectUPtr CObjectFactory::CreateMushroom(const ObjectCreateParams& params)
         obj->SetObjectRank(0, rank);
         m_oldModelManager->AddModelReference("mush1.mod", false, rank);
         obj->SetPosition(pos);
-        obj->SetAngleY(0, angle);
+        obj->SetRotationY(angle);
 
         obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 4.0f, 0.0f), 3.0f, SOUND_BOUM, 0.10f));
         obj->SetCameraCollisionSphere(Math::Sphere(Math::Vector(0.0f, 3.0f, 0.0f), 5.5f));
@@ -1616,7 +1616,7 @@ CObjectUPtr CObjectFactory::CreateMushroom(const ObjectCreateParams& params)
         obj->SetObjectRank(0, rank);
         m_oldModelManager->AddModelReference("mush2.mod", false, rank);
         obj->SetPosition(pos);
-        obj->SetAngleY(0, angle);
+        obj->SetRotationY(angle);
 
         obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 5.0f, 0.0f), 3.0f, SOUND_BOUM, 0.10f));
         obj->SetCameraCollisionSphere(Math::Sphere(Math::Vector(0.0f, 4.0f, 0.0f), 5.5f));
@@ -1658,7 +1658,7 @@ CObjectUPtr CObjectFactory::CreateQuartz(const ObjectCreateParams& params)
         obj->SetObjectRank(0, rank);
         m_oldModelManager->AddModelReference("quartz0.mod", false, rank);
         obj->SetPosition(pos);
-        obj->SetAngleY(0, angle);
+        obj->SetRotationY(angle);
 
         obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 2.0f, 0.0f), 3.5f, SOUND_BOUMm, 0.45f));
         obj->SetCameraCollisionSphere(Math::Sphere(Math::Vector(0.0f, 2.0f, 0.0f), 3.5f));
@@ -1672,7 +1672,7 @@ CObjectUPtr CObjectFactory::CreateQuartz(const ObjectCreateParams& params)
         obj->SetObjectRank(0, rank);
         m_oldModelManager->AddModelReference("quartz1.mod", false, rank);
         obj->SetPosition(pos);
-        obj->SetAngleY(0, angle);
+        obj->SetRotationY(angle);
 
         obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 4.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f));
         obj->SetCameraCollisionSphere(Math::Sphere(Math::Vector(0.0f, 4.0f, 0.0f), 5.0f));
@@ -1686,7 +1686,7 @@ CObjectUPtr CObjectFactory::CreateQuartz(const ObjectCreateParams& params)
         obj->SetObjectRank(0, rank);
         m_oldModelManager->AddModelReference("quartz2.mod", false, rank);
         obj->SetPosition(pos);
-        obj->SetAngleY(0, angle);
+        obj->SetRotationY(angle);
 
         obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 6.0f, 0.0f), 6.0f, SOUND_BOUMm, 0.45f));
         obj->SetCameraCollisionSphere(Math::Sphere(Math::Vector(0.0f, 6.0f, 0.0f), 6.0f));
@@ -1700,7 +1700,7 @@ CObjectUPtr CObjectFactory::CreateQuartz(const ObjectCreateParams& params)
         obj->SetObjectRank(0, rank);
         m_oldModelManager->AddModelReference("quartz3.mod", false, rank);
         obj->SetPosition(pos);
-        obj->SetAngleY(0, angle);
+        obj->SetRotationY(angle);
 
         obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 10.0f, 0.0f), 10.0f, SOUND_BOUMm, 0.45f));
         obj->SetCameraCollisionSphere(Math::Sphere(Math::Vector(0.0f, 10.0f, 0.0f), 10.0f));
@@ -1764,8 +1764,8 @@ CObjectUPtr CObjectFactory::CreateRoot(const ObjectCreateParams& params)
         obj->SetObjectRank(0, rank);
         m_oldModelManager->AddModelReference("root0.mod", false, rank);
         obj->SetPosition(pos);
-        obj->SetAngleY(0, angle);
-        obj->SetZoom(0, 2.0f);
+        obj->SetRotationY(angle);
+        obj->SetScale(2.0f);
 
         obj->AddCrashSphere(CrashSphere(Math::Vector(-5.0f,  1.0f,  0.0f), 2.0f, SOUND_BOUMv, 0.15f));
         obj->AddCrashSphere(CrashSphere(Math::Vector( 4.0f,  1.0f,  2.0f), 2.0f, SOUND_BOUMv, 0.15f));
@@ -1785,8 +1785,8 @@ CObjectUPtr CObjectFactory::CreateRoot(const ObjectCreateParams& params)
         obj->SetObjectRank(0, rank);
         m_oldModelManager->AddModelReference("root1.mod", false, rank);
         obj->SetPosition(pos);
-        obj->SetAngleY(0, angle);
-        obj->SetZoom(0, 2.0f);
+        obj->SetRotationY(angle);
+        obj->SetScale(2.0f);
 
         obj->AddCrashSphere(CrashSphere(Math::Vector(-4.0f,  1.0f,  1.0f), 2.0f, SOUND_BOUMv, 0.15f));
         obj->AddCrashSphere(CrashSphere(Math::Vector( 0.0f,  1.0f,  2.0f), 1.5f, SOUND_BOUMv, 0.15f));
@@ -1806,8 +1806,8 @@ CObjectUPtr CObjectFactory::CreateRoot(const ObjectCreateParams& params)
         obj->SetObjectRank(0, rank);
         m_oldModelManager->AddModelReference("root2.mod", false, rank);
         obj->SetPosition(pos);
-        obj->SetAngleY(0, angle);
-        obj->SetZoom(0, 2.0f);
+        obj->SetRotationY(angle);
+        obj->SetScale(2.0f);
 
         obj->AddCrashSphere(CrashSphere(Math::Vector(-3.0f,  1.0f,  0.5f), 2.0f, SOUND_BOUMv, 0.15f));
         obj->AddCrashSphere(CrashSphere(Math::Vector( 3.0f,  1.0f, -1.0f), 2.0f, SOUND_BOUMv, 0.15f));
@@ -1826,8 +1826,8 @@ CObjectUPtr CObjectFactory::CreateRoot(const ObjectCreateParams& params)
         obj->SetObjectRank(0, rank);
         m_oldModelManager->AddModelReference("root3.mod", false, rank);
         obj->SetPosition(pos);
-        obj->SetAngleY(0, angle);
-        obj->SetZoom(0, 2.0f);
+        obj->SetRotationY(angle);
+        obj->SetScale(2.0f);
 
         obj->AddCrashSphere(CrashSphere(Math::Vector(-4.0f,  1.0f,  1.0f), 3.0f, SOUND_BOUMv, 0.15f));
         obj->AddCrashSphere(CrashSphere(Math::Vector( 4.0f,  1.0f, -3.0f), 3.0f, SOUND_BOUMv, 0.15f));
@@ -1848,8 +1848,8 @@ CObjectUPtr CObjectFactory::CreateRoot(const ObjectCreateParams& params)
         obj->SetObjectRank(0, rank);
         m_oldModelManager->AddModelReference("root4.mod", false, rank);
         obj->SetPosition(pos);
-        obj->SetAngleY(0, angle);
-        obj->SetZoom(0, 2.0f);
+        obj->SetRotationY(angle);
+        obj->SetScale(2.0f);
 
         obj->AddCrashSphere(CrashSphere(Math::Vector( -7.0f,  2.0f,  3.0f), 4.0f, SOUND_BOUMv, 0.15f));
         obj->AddCrashSphere(CrashSphere(Math::Vector(  5.0f,  2.0f, -6.0f), 4.0f, SOUND_BOUMv, 0.15f));
@@ -1872,8 +1872,8 @@ CObjectUPtr CObjectFactory::CreateRoot(const ObjectCreateParams& params)
         obj->SetObjectRank(0, rank);
         m_oldModelManager->AddModelReference("root4.mod", false, rank);
         obj->SetPosition(pos);
-        obj->SetAngleY(0, angle);
-        obj->SetZoom(0, 2.0f);
+        obj->SetRotationY(angle);
+        obj->SetScale(2.0f);
 
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
@@ -1881,8 +1881,8 @@ CObjectUPtr CObjectFactory::CreateRoot(const ObjectCreateParams& params)
         obj->SetObjectParent(1, 0);
         m_oldModelManager->AddModelReference("root5.mod", false, rank);
         obj->SetPartPosition(1, Math::Vector(-5.0f, 28.0f, -4.0f));
-        obj->SetAngleX(1, -30.0f*Math::PI/180.0f);
-        obj->SetAngleZ(1,  20.0f*Math::PI/180.0f);
+        obj->SetPartRotationX(1, -30.0f*Math::PI/180.0f);
+        obj->SetPartRotationZ(1,  20.0f*Math::PI/180.0f);
 
         obj->AddCrashSphere(CrashSphere(Math::Vector( -7.0f,  2.0f,  3.0f), 4.0f, SOUND_BOUMv, 0.15f));
         obj->AddCrashSphere(CrashSphere(Math::Vector(  5.0f,  2.0f, -6.0f), 4.0f, SOUND_BOUMv, 0.15f));
@@ -1931,8 +1931,8 @@ CObjectUPtr CObjectFactory::CreateHome(const ObjectCreateParams& params)
         obj->SetObjectRank(0, rank);
         m_oldModelManager->AddModelReference("home1.mod", false, rank);
         obj->SetPosition(pos);
-        obj->SetAngleY(0, angle);
-        obj->SetZoom(0, 1.3f);
+        obj->SetRotationY(angle);
+        obj->SetScale(1.3f);
 
         obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 5.0f, 0.0f), 10.0f, SOUND_BOUMs, 0.25f));
 //?     obj->SetCameraCollisionSphere(Math::Sphere(Math::Vector(0.0f, 6.0f, 0.0f), 11.0f));
@@ -1986,7 +1986,7 @@ CObjectUPtr CObjectFactory::CreateRuin(const ObjectCreateParams& params)
     m_oldModelManager->AddModelReference(name, false, rank);
 
     obj->SetPosition(pos);
-    obj->SetAngleY(0, angle);
+    obj->SetRotationY(angle);
 
     if ( type == OBJECT_RUINmobilew1 )  // vehicle had wheels?
     {
@@ -1999,7 +1999,7 @@ CObjectUPtr CObjectFactory::CreateRuin(const ObjectCreateParams& params)
         m_oldModelManager->AddModelReference("ruin1w.mod", false, rank);
 
         obj->SetPartPosition(6, Math::Vector(-3.0f, 1.8f, -4.0f));
-        obj->SetAngleX(6, -Math::PI/2.0f);
+        obj->SetPartRotationX(6, -Math::PI/2.0f);
 
         // Creates the left-back wheel.
         rank = m_engine->CreateObject();
@@ -2010,8 +2010,8 @@ CObjectUPtr CObjectFactory::CreateRuin(const ObjectCreateParams& params)
         m_oldModelManager->AddModelReference("ruin1w.mod", false, rank);
 
         obj->SetPartPosition(7, Math::Vector(-3.0f, 1.0f, 3.0f));
-        obj->SetAngleY(7, Math::PI-0.3f);
-        obj->SetAngleX(7, -0.3f);
+        obj->SetPartRotationY(7, Math::PI-0.3f);
+        obj->SetPartRotationX(7, -0.3f);
 
         // Creates the right-front wheel.
         rank = m_engine->CreateObject();
@@ -2022,7 +2022,7 @@ CObjectUPtr CObjectFactory::CreateRuin(const ObjectCreateParams& params)
         m_oldModelManager->AddModelReference("ruin1w.mod", false, rank);
 
         obj->SetPartPosition(8, Math::Vector(2.0f, 1.6f, -3.0f));
-        obj->SetAngleY(8, 0.3f);
+        obj->SetPartRotationY(8, 0.3f);
 
         // Creates the left-front wheel.
         rank = m_engine->CreateObject();
@@ -2033,8 +2033,8 @@ CObjectUPtr CObjectFactory::CreateRuin(const ObjectCreateParams& params)
         m_oldModelManager->AddModelReference("ruin1w.mod", false, rank);
 
         obj->SetPartPosition(9, Math::Vector(2.0f, 1.0f, 3.0f));
-        obj->SetAngleY(9, Math::PI-0.2f);
-        obj->SetAngleX(9, 0.2f);
+        obj->SetPartRotationY(9, Math::PI-0.2f);
+        obj->SetPartRotationX(9, 0.2f);
 
         obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 2.8f, 0.0f), 3.0f, SOUND_BOUMm, 0.45f));
 //?     obj->SetCameraCollisionSphere(Math::Sphere(Math::Vector(0.0f, 5.0f, 0.0f), 10.0f));
@@ -2053,8 +2053,8 @@ CObjectUPtr CObjectFactory::CreateRuin(const ObjectCreateParams& params)
         m_oldModelManager->AddModelReference("ruin1w.mod", false, rank);
 
         obj->SetPartPosition(7, Math::Vector(-3.0f, 1.0f, 3.0f));
-        obj->SetAngleY(7, Math::PI+0.3f);
-        obj->SetAngleX(7, 0.4f);
+        obj->SetPartRotationY(7, Math::PI+0.3f);
+        obj->SetPartRotationX(7, 0.4f);
 
         // Creates the left-front wheel.
         rank = m_engine->CreateObject();
@@ -2065,8 +2065,8 @@ CObjectUPtr CObjectFactory::CreateRuin(const ObjectCreateParams& params)
         m_oldModelManager->AddModelReference("ruin1w.mod", false, rank);
 
         obj->SetPartPosition(9, Math::Vector(2.0f, 1.0f, 3.0f));
-        obj->SetAngleY(9, Math::PI+0.3f);
-        obj->SetAngleX(9, -0.3f);
+        obj->SetPartRotationY(9, Math::PI+0.3f);
+        obj->SetPartRotationX(9, -0.3f);
 
         obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 2.8f, 0.0f), 3.0f, SOUND_BOUMm, 0.45f));
 //?     obj->SetCameraCollisionSphere(Math::Sphere(Math::Vector(0.0f, 5.0f, 0.0f), 10.0f));
@@ -2085,9 +2085,9 @@ CObjectUPtr CObjectFactory::CreateRuin(const ObjectCreateParams& params)
         m_oldModelManager->AddModelReference("ruin2c.mod", false, rank);
 
         obj->SetPartPosition(1, Math::Vector(3.0f, 5.0f, -2.5f));
-        obj->SetAngleX(1, -Math::PI*0.85f);
-        obj->SetAngleY(1, -0.4f);
-        obj->SetAngleZ(1, -0.1f);
+        obj->SetPartRotationX(1, -Math::PI*0.85f);
+        obj->SetPartRotationY(1, -0.4f);
+        obj->SetPartRotationZ(1, -0.1f);
 
         obj->AddCrashSphere(CrashSphere(Math::Vector(1.0f, 2.8f, -1.0f), 5.0f, SOUND_BOUMm, 0.45f));
 //?     obj->SetCameraCollisionSphere(Math::Sphere(Math::Vector(1.0f, 5.0f, -1.0f), 10.0f));
@@ -2232,8 +2232,8 @@ CObjectUPtr CObjectFactory::CreateRuin(const ObjectCreateParams& params)
         pos.y -= 0.5f;
         obj->SetPosition(pos);
 
-        angle = obj->GetAngleX(0)-0.1f;
-        obj->SetAngleX(0, angle);
+        angle = obj->GetRotationX()-0.1f;
+        obj->SetRotationX(angle);
     }
 
     if ( type == OBJECT_RUINmobilew2 )
@@ -2242,11 +2242,11 @@ CObjectUPtr CObjectFactory::CreateRuin(const ObjectCreateParams& params)
         pos.y -= 1.5f;
         obj->SetPosition(pos);
 
-        angle = obj->GetAngleX(0)-0.9f;
-        obj->SetAngleX(0, angle);
+        angle = obj->GetRotationX()-0.9f;
+        obj->SetRotationX(angle);
 
-        angle = obj->GetAngleZ(0)-0.1f;
-        obj->SetAngleZ(0, angle);
+        angle = obj->GetRotationZ()-0.1f;
+        obj->SetRotationZ(angle);
     }
 
     if ( type == OBJECT_RUINmobilet1 )
@@ -2255,8 +2255,8 @@ CObjectUPtr CObjectFactory::CreateRuin(const ObjectCreateParams& params)
         pos.y -= 0.9f;
         obj->SetPosition(pos);
 
-        angle = obj->GetAngleX(0)-0.3f;
-        obj->SetAngleX(0, angle);
+        angle = obj->GetRotationX()-0.3f;
+        obj->SetRotationX(angle);
     }
 
     if ( type == OBJECT_RUINmobilet2 )
@@ -2265,11 +2265,11 @@ CObjectUPtr CObjectFactory::CreateRuin(const ObjectCreateParams& params)
         pos.y -= 1.5f;
         obj->SetPosition(pos);
 
-        angle = obj->GetAngleX(0)-0.3f;
-        obj->SetAngleX(0, angle);
+        angle = obj->GetRotationX()-0.3f;
+        obj->SetRotationX(angle);
 
-        angle = obj->GetAngleZ(0)+0.8f;
-        obj->SetAngleZ(0, angle);
+        angle = obj->GetRotationZ()+0.8f;
+        obj->SetRotationZ(angle);
     }
 
     if ( type == OBJECT_RUINmobiler1 )
@@ -2278,11 +2278,11 @@ CObjectUPtr CObjectFactory::CreateRuin(const ObjectCreateParams& params)
         pos.y += 4.0f;
         obj->SetPosition(pos);
 
-        angle = obj->GetAngleX(0)-Math::PI*0.6f;
-        obj->SetAngleX(0, angle);
+        angle = obj->GetRotationX()-Math::PI*0.6f;
+        obj->SetRotationX(angle);
 
-        angle = obj->GetAngleZ(0)-0.2f;
-        obj->SetAngleZ(0, angle);
+        angle = obj->GetRotationZ()-0.2f;
+        obj->SetRotationZ(angle);
     }
 
     if ( type == OBJECT_RUINmobiler2 )
@@ -2291,11 +2291,11 @@ CObjectUPtr CObjectFactory::CreateRuin(const ObjectCreateParams& params)
         pos.y += 2.0f;
         obj->SetPosition(pos);
 
-        angle = obj->GetAngleX(0)-0.1f;
-        obj->SetAngleX(0, angle);
+        angle = obj->GetRotationX()-0.1f;
+        obj->SetRotationX(angle);
 
-        angle = obj->GetAngleZ(0)-0.3f;
-        obj->SetAngleZ(0, angle);
+        angle = obj->GetRotationZ()-0.3f;
+        obj->SetRotationZ(angle);
     }
 
     if ( type == OBJECT_RUINdoor )
@@ -2304,8 +2304,8 @@ CObjectUPtr CObjectFactory::CreateRuin(const ObjectCreateParams& params)
         pos.y -= 0.5f;
         obj->SetPosition(pos);
 
-        angle = obj->GetAngleZ(0)-0.1f;
-        obj->SetAngleZ(0, angle);
+        angle = obj->GetRotationZ()-0.1f;
+        obj->SetRotationZ(angle);
     }
 
     if ( type == OBJECT_RUINsupport )
@@ -2314,14 +2314,14 @@ CObjectUPtr CObjectFactory::CreateRuin(const ObjectCreateParams& params)
         pos.y += 0.5f;
         obj->SetPosition(pos);
 
-//?     angle = GetAngleY(0)+0.1f;
-//?     obj->SetAngleY(0, angle);
+//?     angle = GetRotationY()+0.1f;
+//?     obj->SetRotationY(angle);
 
-        angle = obj->GetAngleX(0)+0.1f;
-        obj->SetAngleX(0, angle);
+        angle = obj->GetRotationX()+0.1f;
+        obj->SetRotationX(angle);
 
-        angle = obj->GetAngleZ(0)+0.1f;
-        obj->SetAngleZ(0, angle);
+        angle = obj->GetRotationZ()+0.1f;
+        obj->SetRotationZ(angle);
     }
 
     if ( type == OBJECT_RUINradar )
@@ -2330,11 +2330,11 @@ CObjectUPtr CObjectFactory::CreateRuin(const ObjectCreateParams& params)
         pos.y -= 0.5f;
         obj->SetPosition(pos);
 
-        angle = obj->GetAngleX(0)+0.15f;
-        obj->SetAngleX(0, angle);
+        angle = obj->GetRotationX()+0.15f;
+        obj->SetRotationX(angle);
 
-        angle = obj->GetAngleZ(0)+0.1f;
-        obj->SetAngleZ(0, angle);
+        angle = obj->GetRotationZ()+0.1f;
+        obj->SetRotationZ(angle);
     }
 
     if ( type == OBJECT_RUINconvert )
@@ -2350,8 +2350,8 @@ CObjectUPtr CObjectFactory::CreateRuin(const ObjectCreateParams& params)
         pos.y -= 1.0f;
         obj->SetPosition(pos);
 
-        angle = obj->GetAngleX(0)+0.15f;
-        obj->SetAngleX(0, angle);
+        angle = obj->GetRotationX()+0.15f;
+        obj->SetRotationX(angle);
     }
 
     if ( type == OBJECT_RUINhead )
@@ -2360,8 +2360,8 @@ CObjectUPtr CObjectFactory::CreateRuin(const ObjectCreateParams& params)
         pos.y += 8.0f;
         obj->SetPosition(pos);
 
-        angle = obj->GetAngleX(0)+Math::PI*0.4f;
-        obj->SetAngleX(0, angle);
+        angle = obj->GetRotationX()+Math::PI*0.4f;
+        obj->SetRotationX(angle);
     }
 
     return std::move(obj);
@@ -2386,8 +2386,8 @@ CObjectUPtr CObjectFactory::CreateApollo(const ObjectCreateParams& params)
         obj->SetObjectRank(0, rank);
         m_oldModelManager->AddModelReference("apollol1.mod", false, rank);
         obj->SetPosition(pos);
-        obj->SetAngleY(0, angle);
-        obj->SetZoom(0, 1.2f);
+        obj->SetRotationY(angle);
+        obj->SetScale(1.2f);
         obj->SetFloorHeight(0.0f);
 
         for (int i=0 ; i<4 ; i++ )  // creates feet
@@ -2397,7 +2397,7 @@ CObjectUPtr CObjectFactory::CreateApollo(const ObjectCreateParams& params)
             obj->SetObjectRank(i+1, rank);
             obj->SetObjectParent(i+1, 0);
             m_oldModelManager->AddModelReference("apollol2.mod", false, rank);
-            obj->SetAngleY(i+1, Math::PI/2.0f*i);
+            obj->SetPartRotationY(i+1, Math::PI/2.0f*i);
         }
 
         rank = m_engine->CreateObject();
@@ -2426,7 +2426,7 @@ CObjectUPtr CObjectFactory::CreateApollo(const ObjectCreateParams& params)
         obj->SetObjectRank(0, rank);
         m_oldModelManager->AddModelReference("apolloj1.mod", false, rank);
         obj->SetPosition(pos);
-        obj->SetAngleY(0, angle);
+        obj->SetRotationY(angle);
         obj->SetFloorHeight(0.0f);
 
         // Wheels.
@@ -2465,8 +2465,8 @@ CObjectUPtr CObjectFactory::CreateApollo(const ObjectCreateParams& params)
         obj->SetObjectParent(5, 0);
         m_oldModelManager->AddModelReference("apolloj2.mod", false, rank);  // antenna
         obj->SetPartPosition(5, Math::Vector(5.5f, 8.8f, 2.0f));
-        obj->SetAngleY(5, -120.0f*Math::PI/180.0f);
-        obj->SetAngleZ(5,   45.0f*Math::PI/180.0f);
+        obj->SetPartRotationY(5, -120.0f*Math::PI/180.0f);
+        obj->SetPartRotationZ(5,   45.0f*Math::PI/180.0f);
 
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
@@ -2474,7 +2474,7 @@ CObjectUPtr CObjectFactory::CreateApollo(const ObjectCreateParams& params)
         obj->SetObjectParent(6, 0);
         m_oldModelManager->AddModelReference("apolloj3.mod", false, rank);  // camera
         obj->SetPartPosition(6, Math::Vector(5.5f, 2.8f, -2.0f));
-        obj->SetAngleY(6, 30.0f*Math::PI/180.0f);
+        obj->SetPartRotationY(6, 30.0f*Math::PI/180.0f);
 
         obj->AddCrashSphere(CrashSphere(Math::Vector( 3.0f, 2.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f));
         obj->AddCrashSphere(CrashSphere(Math::Vector(-3.0f, 2.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f));
@@ -2492,7 +2492,7 @@ CObjectUPtr CObjectFactory::CreateApollo(const ObjectCreateParams& params)
         obj->SetObjectRank(0, rank);
         m_oldModelManager->AddModelReference("apollof.mod", false, rank);
         obj->SetPosition(pos);
-        obj->SetAngleY(0, angle);
+        obj->SetRotationY(angle);
         obj->SetFloorHeight(0.0f);
 
         obj->SetJostlingSphere(Math::Sphere(Math::Vector(0.0f, 4.0f, 0.0f), 1.0f));
@@ -2506,7 +2506,7 @@ CObjectUPtr CObjectFactory::CreateApollo(const ObjectCreateParams& params)
         obj->SetObjectRank(0, rank);
         m_oldModelManager->AddModelReference("apollom.mod", false, rank);
         obj->SetPosition(pos);
-        obj->SetAngleY(0, angle);
+        obj->SetRotationY(angle);
         obj->SetFloorHeight(0.0f);
 
         obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 2.0f, 0.0f), 2.0f, SOUND_BOUMm, 0.45f));
@@ -2522,7 +2522,7 @@ CObjectUPtr CObjectFactory::CreateApollo(const ObjectCreateParams& params)
         obj->SetObjectRank(0, rank);
         m_oldModelManager->AddModelReference("apolloa.mod", false, rank);
         obj->SetPosition(pos);
-        obj->SetAngleY(0, angle);
+        obj->SetRotationY(angle);
         obj->SetFloorHeight(0.0f);
 
         rank = m_engine->CreateObject();
@@ -2531,8 +2531,8 @@ CObjectUPtr CObjectFactory::CreateApollo(const ObjectCreateParams& params)
         obj->SetObjectParent(1, 0);
         m_oldModelManager->AddModelReference("apolloj2.mod", false, rank);  // antenna
         obj->SetPartPosition(1, Math::Vector(0.0f, 5.0f, 0.0f));
-        obj->SetAngleY(1, -120.0f*Math::PI/180.0f);
-        obj->SetAngleZ(1,   45.0f*Math::PI/180.0f);
+        obj->SetPartRotationY(1, -120.0f*Math::PI/180.0f);
+        obj->SetPartRotationZ(1,   45.0f*Math::PI/180.0f);
 
         obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 4.0f, 0.0f), 3.0f, SOUND_BOUMm, 0.35f));
         obj->CreateShadowCircle(3.0f, 0.7f);

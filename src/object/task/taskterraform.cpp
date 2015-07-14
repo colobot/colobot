@@ -90,12 +90,12 @@ bool CTaskTerraform::EventProcess(const Event &event)
         dir.z = 0.0f;
         m_object->SetCirVibration(dir);
 
-        m_object->SetZoom(0, 1.0f+m_progress*0.2f);
+        m_object->SetScale(1.0f+m_progress*0.2f);
 
         power = m_object->GetPower();
         if (power != nullptr)
         {
-            power->SetZoom(0, 1.0f+m_progress*1.0f);
+            power->SetScale(1.0f+m_progress*1.0f);
 
             energy = power->GetEnergy();
             energy -= event.rTime*ENERGY_TERRA/power->GetCapacity()/4.0f;
@@ -258,12 +258,12 @@ Error CTaskTerraform::IsEnded()
         Terraform();  // changes the terrain.
 
         m_object->SetCirVibration(Math::Vector(0.0f, 0.0f, 0.0f));
-        m_object->SetZoom(0, 1.0f);
+        m_object->SetScale(1.0f);
 
         power = m_object->GetPower();
         if (power != nullptr)
         {
-            power->SetZoom(0, 1.0f);
+            power->SetScale(1.0f);
         }
 
         max= static_cast<int>(50.0f*m_engine->GetParticleDensity());
@@ -324,12 +324,12 @@ bool CTaskTerraform::Abort()
     m_object->SetPartPosition(2, Math::Vector(9.0f, 4.0f, 0.0f));
     m_object->SetTilt(Math::Vector(0.0f, 0.0f, 0.0f));
     m_object->SetCirVibration(Math::Vector(0.0f, 0.0f, 0.0f));
-    m_object->SetZoom(0, 1.0f);
+    m_object->SetScale(1.0f);
 
     power = m_object->GetPower();
     if (power != nullptr)
     {
-        power->SetZoom(0, 1.0f);
+        power->SetScale(1.0f);
     }
 
     m_camera->StopCentering(m_object, 2.0f);

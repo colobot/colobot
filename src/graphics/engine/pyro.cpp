@@ -343,7 +343,7 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
     if ( m_type == PT_RESET )
     {
         m_speed = 1.0f/2.0f;
-        m_resetAngle = m_object->GetAngleY(0);
+        m_resetAngle = m_object->GetRotationY();
     }
     if ( m_type == PT_FINDING )
     {
@@ -900,7 +900,7 @@ bool CPyro::EventProcess(const Event &event)
             angle.y = m_progress*20.0f;
             angle.x = sinf(m_progress*49.0f)*0.3f;
             angle.z = sinf(m_progress*47.0f)*0.2f;
-            m_object->SetAngle(0, angle);
+            m_object->SetRotation(angle);
 
             Math::Vector pos = m_pos;
             pos.y += factor;
@@ -908,7 +908,7 @@ bool CPyro::EventProcess(const Event &event)
 
             if ( m_progress > 0.85f )
             {
-                m_object->SetZoom(0, 1.0f-(m_progress-0.85f)/0.15f);
+                m_object->SetScale(1.0f-(m_progress-0.85f)/0.15f);
             }
         }
     }
@@ -938,9 +938,9 @@ bool CPyro::EventProcess(const Event &event)
             Math::Vector angle = m_object->GetRotation();
             angle.x = sinf(m_progress*49.0f)*0.3f*(1.0f-m_progress);
             angle.z = sinf(m_progress*47.0f)*0.2f*(1.0f-m_progress);
-            m_object->SetAngle(0, angle);
+            m_object->SetRotation(angle);
 
-            m_object->SetZoom(0, m_progress);
+            m_object->SetScale(m_progress);
         }
     }
 
@@ -970,9 +970,9 @@ bool CPyro::EventProcess(const Event &event)
             angle.y = m_progress*20.0f;
             angle.x = sinf(m_progress*49.0f)*0.3f;
             angle.z = sinf(m_progress*47.0f)*0.2f;
-            m_object->SetAngle(0, angle);
+            m_object->SetRotation(angle);
 
-            m_object->SetZoom(0, 1.0f-m_progress);
+            m_object->SetScale(1.0f-m_progress);
         }
     }
 
@@ -1011,8 +1011,8 @@ bool CPyro::EventProcess(const Event &event)
         if(m_object != nullptr)
         {
             float angle = m_resetAngle;
-            m_object->SetAngleY(0, angle-powf((1.0f-m_progress)*5.0f, 2.0f));
-            m_object->SetZoom(0, m_progress);
+            m_object->SetRotationY(angle-powf((1.0f-m_progress)*5.0f, 2.0f));
+            m_object->SetScale(m_progress);
         }
     }
 
@@ -1100,7 +1100,7 @@ bool CPyro::EventProcess(const Event &event)
             {
                 float prog = (m_progress-0.8f)/0.2f;  // 0..1
                 speed.y = -prog*6.0f;  // sinks into the ground
-                m_object->SetZoom(0, 1.0f-prog*0.5f);
+                m_object->SetScale(1.0f-prog*0.5f);
             }
             m_object->SetLinVibration(speed);
         }
@@ -1209,15 +1209,15 @@ Error CPyro::IsEnded()
 
     if ( m_type == PT_FLCREATE )
     {
-        m_object->SetAngleX(0, 0.0f);
-        m_object->SetAngleZ(0, 0.0f);
-        m_object->SetZoom(0, 1.0f);
+        m_object->SetRotationX(0.0f);
+        m_object->SetRotationZ(0.0f);
+        m_object->SetScale(1.0f);
     }
 
     if ( m_type == PT_RESET )
     {
-        m_object->SetAngleY(0, m_resetAngle);
-        m_object->SetZoom(0, 1.0f);
+        m_object->SetRotationY(m_resetAngle);
+        m_object->SetScale(1.0f);
     }
 
     if ( m_lightRank != -1 )
@@ -2084,15 +2084,15 @@ void CPyro::BurnStart()
 
 void CPyro::BurnAddPart(int part, Math::Vector pos, Math::Vector angle)
 {
-    int i = m_burnPartTotal;
-    m_burnPart[i].part = part;
-
     // TODO: temporary hack (hopefully)
     assert(m_object->Implements(ObjectInterfaceType::Old));
-    m_burnPart[i].initialPos = dynamic_cast<COldObject*>(m_object)->GetPartPosition(part);
+    COldObject* oldObj = dynamic_cast<COldObject*>(m_object);
 
+    int i = m_burnPartTotal;
+    m_burnPart[i].part = part;
+    m_burnPart[i].initialPos = oldObj->GetPartPosition(part);
     m_burnPart[i].finalPos = m_burnPart[i].initialPos+pos;
-    m_burnPart[i].initialAngle = m_object->GetAngle(part);
+    m_burnPart[i].initialAngle = oldObj->GetPartRotation(part);
     m_burnPart[i].finalAngle = m_burnPart[i].initialAngle+angle;
 
     m_burnPartTotal++;
@@ -2112,17 +2112,19 @@ void CPyro::BurnProgress()
 
         // TODO: temporary hack (hopefully)
         assert(m_object->Implements(ObjectInterfaceType::Old));
-        dynamic_cast<COldObject*>(m_object)->SetPartPosition(m_burnPart[i].part, pos);
+        COldObject* oldObj = dynamic_cast<COldObject*>(m_object);
+
+        oldObj->SetPartPosition(m_burnPart[i].part, pos);
 
         pos = m_burnPart[i].initialAngle + m_progress*(m_burnPart[i].finalAngle-m_burnPart[i].initialAngle);
-        m_object->SetAngle(m_burnPart[i].part, pos);
+        oldObj->SetPartRotation(m_burnPart[i].part, pos);
     }
 
     if (m_object->Implements(ObjectInterfaceType::Powered))
     {
         CObject* sub = dynamic_cast<CPoweredObject*>(m_object)->GetPower();
         if (sub != nullptr)  // is there a battery?
-            sub->SetZoomY(0, 1.0f - m_progress);  // complete flattening
+            sub->SetScaleY(1.0f - m_progress);  // complete flattening
     }
 }
 

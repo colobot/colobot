@@ -88,9 +88,9 @@ bool CAutoRoot::EventProcess(const Event &event)
     if ( m_engine->GetPause() )  return true;
     if ( event.type != EVENT_FRAME )  return true;
 
-    m_object->SetZoomX(1, 1.0f+sinf(m_time*2.0f)*0.2f);
-    m_object->SetZoomY(1, 1.0f+sinf(m_time*2.3f)*0.2f);
-    m_object->SetZoomZ(1, 1.0f+sinf(m_time*2.7f)*0.2f);
+    m_object->SetPartScaleX(1, 1.0f+sinf(m_time*2.0f)*0.2f);
+    m_object->SetPartScaleY(1, 1.0f+sinf(m_time*2.3f)*0.2f);
+    m_object->SetPartScaleZ(1, 1.0f+sinf(m_time*2.7f)*0.2f);
 
     if ( m_lastParticle+m_engine->ParticleAdapt(0.10f) <= m_time )
     {

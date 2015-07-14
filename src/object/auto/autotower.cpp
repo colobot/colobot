@@ -109,11 +109,11 @@ bool CAutoTower::EventProcess(const Event &event)
         {
             m_timeVirus = 0.1f+Math::Rand()*0.3f;
 
-            angle = m_object->GetAngleY(1);
+            angle = m_object->GetPartRotationY(1);
             angle += Math::Rand()*0.5f;
-            m_object->SetAngleY(1, angle);
+            m_object->SetPartRotationY(1, angle);
 
-            m_object->SetAngleZ(2, Math::Rand()*0.5f);
+            m_object->SetPartRotationZ(2, Math::Rand()*0.5f);
         }
         return true;
     }
@@ -158,14 +158,14 @@ bool CAutoTower::EventProcess(const Event &event)
             quick = 1.0f;
 //?         if ( g_researchDone & RESEARCH_QUICK )  quick = 3.0f;
 
-            angle = m_object->GetAngleY(1);
+            angle = m_object->GetPartRotationY(1);
             angle -= event.rTime*quick*2.0f;
-            m_object->SetAngleY(1, angle);
+            m_object->SetPartRotationY(1, angle);
 
-            angle = m_object->GetAngleZ(2);
+            angle = m_object->GetPartRotationZ(2);
             angle += event.rTime*quick*0.5f;
             if ( angle > 0.0f )  angle = 0.0f;
-            m_object->SetAngleZ(2, angle);
+            m_object->SetPartRotationZ(2, angle);
         }
         else
         {
@@ -193,12 +193,12 @@ bool CAutoTower::EventProcess(const Event &event)
                 pos.y += 24.5f;
                 m_angleYfinal = Math::RotateAngle(m_targetPos.x-pos.x, pos.z-m_targetPos.z);  // CW !
                 m_angleYfinal += Math::PI*2.0f;
-                m_angleYfinal -= m_object->GetAngleY(0);
-                m_angleYactual = Math::NormAngle(m_object->GetAngleY(1));
+                m_angleYfinal -= m_object->GetRotationY();
+                m_angleYactual = Math::NormAngle(m_object->GetPartRotationY(1));
 
                 m_angleZfinal = -Math::PI/2.0f;
                 m_angleZfinal -= Math::RotateAngle(Math::DistanceProjected(m_targetPos, pos), pos.y-m_targetPos.y);  // CW !
-                m_angleZactual = m_object->GetAngleZ(2);
+                m_angleZactual = m_object->GetPartRotationZ(2);
 
                 m_phase    = ATP_TURN;
                 m_progress = 0.0f;
@@ -213,15 +213,15 @@ bool CAutoTower::EventProcess(const Event &event)
         if ( m_progress < 1.0f )
         {
             angle = m_angleYactual+(m_angleYfinal-m_angleYactual)*m_progress;
-            m_object->SetAngleY(1, angle);
+            m_object->SetPartRotationY(1, angle);
 
             angle = m_angleZactual+(m_angleZfinal-m_angleZactual)*m_progress;
-            m_object->SetAngleZ(2, angle);
+            m_object->SetPartRotationZ(2, angle);
         }
         else
         {
-            m_object->SetAngleY(1, m_angleYfinal);
-            m_object->SetAngleZ(2, m_angleZfinal);
+            m_object->SetPartRotationY(1, m_angleYfinal);
+            m_object->SetPartRotationZ(2, m_angleZfinal);
 
             power = m_object->GetPower();
             if ( power != 0 )

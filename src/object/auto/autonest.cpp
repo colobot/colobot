@@ -119,14 +119,14 @@ bool CAutoNest::EventProcess(const Event &event)
         {
             if ( cargo != 0 )
             {
-                cargo->SetZoom(0, m_progress);
+                cargo->SetScale(m_progress);
             }
         }
         else
         {
             if ( cargo != 0 )
             {
-                cargo->SetZoom(0, 1.0f);
+                cargo->SetScale(1.0f);
                 cargo->SetLock(false);
             }
 
@@ -169,7 +169,7 @@ void CAutoNest::CreateCargo(Math::Vector pos, float angle, ObjectType type)
 {
     CObject* cargo = CObjectManager::GetInstancePointer()->CreateObject(pos, angle, type);
     cargo->SetLock(true);  // not usable
-    cargo->SetZoom(0, 0.0f);
+    cargo->SetScale(0.0f);
 }
 
 // Looking for the ball during manufacture.

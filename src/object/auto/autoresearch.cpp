@@ -199,10 +199,10 @@ bool CAutoResearch::EventProcess(const Event &event)
     EventProgress(event.rTime);
 
     angle = m_time*0.1f;
-    m_object->SetAngleY(1, angle);  // rotates the antenna
+    m_object->SetPartRotationY(1, angle);  // rotates the antenna
 
     angle = (30.0f+sinf(m_time*0.3f)*20.0f)*Math::PI/180.0f;
-    m_object->SetAngleZ(2, angle);  // directs the antenna
+    m_object->SetPartRotationZ(2, angle);  // directs the antenna
 
     if ( m_phase == ALP_WAIT )
     {

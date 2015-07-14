@@ -92,15 +92,15 @@ bool CAutoRadar::EventProcess(const Event &event)
         {
             m_timeVirus = 0.1f+Math::Rand()*0.3f;
 
-            angle = m_object->GetAngleY(1);
+            angle = m_object->GetPartRotationY(1);
             angle += (Math::Rand()-0.2f)*0.5f;
-            m_object->SetAngleY(1, angle);
+            m_object->SetPartRotationY(1, angle);
 
-            angle = m_object->GetAngleY(2);
+            angle = m_object->GetPartRotationY(2);
             angle += (Math::Rand()-0.8f)*1.0f;
-            m_object->SetAngleY(2, angle);
+            m_object->SetPartRotationY(2, angle);
 
-            m_object->SetAngleX(3, (Math::Rand()-0.5f)*0.3f);
+            m_object->SetPartRotationX(3, (Math::Rand()-0.5f)*0.3f);
 
             m_totalDetect = static_cast< int >(Math::Rand()*10.0f);
             UpdateInterface();
@@ -113,9 +113,9 @@ bool CAutoRadar::EventProcess(const Event &event)
         if ( m_progress < 1.0f )
         {
             speed = Math::Min(10.0f, m_progress*50.0f);
-            angle = m_object->GetAngleY(1);
+            angle = m_object->GetPartRotationY(1);
             angle += event.rTime*speed;
-            m_object->SetAngleY(1, angle);
+            m_object->SetPartRotationY(1, angle);
         }
         else
         {
@@ -128,10 +128,10 @@ bool CAutoRadar::EventProcess(const Event &event)
             else
             {
                 pos = m_object->GetPosition();
-                m_start = m_object->GetAngleY(1);
+                m_start = m_object->GetPartRotationY(1);
                 m_angle = m_start-Math::NormAngle(m_start)+Math::PI*2.0f;
                 m_angle += Math::RotateAngle(pos.x-ePos.x, ePos.z-pos.z);
-                m_angle += Math::PI-m_object->GetAngleY(0);
+                m_angle += Math::PI-m_object->GetRotationY();
 
                 m_phase    = ARAP_SHOW;
                 m_progress = 0.0f;
@@ -145,7 +145,7 @@ bool CAutoRadar::EventProcess(const Event &event)
         if ( m_progress < 1.0f )
         {
             angle = m_start + (m_angle-m_start)*m_progress;
-            m_object->SetAngleY(1, angle);
+            m_object->SetPartRotationY(1, angle);
         }
         else
         {
@@ -166,7 +166,7 @@ bool CAutoRadar::EventProcess(const Event &event)
             freq = 16.0f*(prog+1.0f);
             ampl = 0.2f-prog*0.2f;
             angle = m_angle + sinf(m_time*freq)*ampl;
-            m_object->SetAngleY(1, angle);
+            m_object->SetPartRotationY(1, angle);
         }
         else
         {
@@ -177,10 +177,10 @@ bool CAutoRadar::EventProcess(const Event &event)
     }
 
     angle = -m_aTime*2.0f;
-    m_object->SetAngleY(2, angle);
+    m_object->SetPartRotationY(2, angle);
 
     angle = sinf(m_aTime*4.0f)*0.3f;
-    m_object->SetAngleX(3, angle);
+    m_object->SetPartRotationX(3, angle);
 
     return true;
 }

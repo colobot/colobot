@@ -123,23 +123,25 @@ public:
 
     void        SetPartPosition(int part, const Math::Vector &pos);
     Math::Vector    GetPartPosition(int part) const;
-    void        SetAngle(int part, const Math::Vector &angle) override;
-    Math::Vector    GetAngle(int part) const override;
-    void        SetAngleY(int part, float angle) override;
-    void        SetAngleX(int part, float angle) override;
-    void        SetAngleZ(int part, float angle) override;
-    float       GetAngleY(int part) override;
-    float       GetAngleX(int part) override;
-    float       GetAngleZ(int part) override;
-    void        SetZoom(int part, float zoom) override;
-    void        SetZoom(int part, Math::Vector zoom) override;
-    Math::Vector    GetZoom(int part) const override;
-    void        SetZoomX(int part, float zoom) override;
-    float       GetZoomX(int part) override;
-    void        SetZoomY(int part, float zoom) override;
-    float       GetZoomY(int part) override;
-    void        SetZoomZ(int part, float zoom) override;
-    float       GetZoomZ(int part) override;
+
+    void        SetPartRotation(int part, const Math::Vector &angle);
+    Math::Vector    GetPartRotation(int part) const;
+    void        SetPartRotationY(int part, float angle);
+    void        SetPartRotationX(int part, float angle);
+    void        SetPartRotationZ(int part, float angle);
+    float       GetPartRotationY(int part);
+    float       GetPartRotationX(int part);
+    float       GetPartRotationZ(int part);
+
+    void        SetPartScale(int part, float zoom);
+    void        SetPartScale(int part, Math::Vector zoom);
+    Math::Vector    GetPartScale(int part) const;
+    void        SetPartScaleX(int part, float zoom);
+    float       GetPartScaleX(int part);
+    void        SetPartScaleY(int part, float zoom);
+    float       GetPartScaleY(int part);
+    void        SetPartScaleZ(int part, float zoom);
+    float       GetPartScaleZ(int part);
 
     void        SetTrainer(bool bEnable) override;
     bool        GetTrainer() override;
@@ -292,7 +294,12 @@ public:
 
     void SetPosition(const Math::Vector& pos) override;
     Math::Vector GetPosition() const override;
+
+    void SetRotation(const Math::Vector& rotation) override;
     Math::Vector GetRotation() const override;
+
+    using CObject::SetScale; // SetScale(float) version
+    void SetScale(const Math::Vector& scale) override;
     Math::Vector GetScale() const override;
 
 protected:

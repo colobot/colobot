@@ -56,7 +56,7 @@ std::unique_ptr<CExchangePost> CExchangePost::Create(
 
     modelManager->AddModelReference("info1.mod", false, rank);
     obj->SetPosition(params.pos);
-    obj->SetAngleY(0, params.angle);
+    obj->SetRotationY(params.angle);
     obj->SetFloorHeight(0.0f);
 
     rank = engine->CreateObject();
@@ -82,7 +82,7 @@ std::unique_ptr<CExchangePost> CExchangePost::Create(
         modelManager->AddModelReference("radar4.mod", false, rank);
         obj->SetPartPosition(3+i*2, Math::Vector(0.0f, 0.0f, -4.0f));
 
-        obj->SetAngleY(2+i*2, 2.0f*Math::PI/3.0f*i);
+        obj->SetPartRotationY(2+i*2, 2.0f*Math::PI/3.0f*i);
     }
 
     obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f,  3.0f, 0.0f), 6.0f, SOUND_BOUMm, 0.45f));
@@ -346,17 +346,17 @@ bool CAutoInfo::EventProcess(const Event &event)
         {
             m_timeVirus = 0.1f+Math::Rand()*0.3f;
 
-            float angle = m_exchangePost->GetAngleY(1);
+            float angle = m_exchangePost->GetPartRotationY(1);
             angle += Math::Rand()*0.3f;
-            m_exchangePost->SetAngleY(1, angle);
+            m_exchangePost->SetPartRotationY(1, angle);
 
-            m_exchangePost->SetAngleX(2, (Math::Rand()-0.5f)*0.3f);
-            m_exchangePost->SetAngleX(4, (Math::Rand()-0.5f)*0.3f);
-            m_exchangePost->SetAngleX(6, (Math::Rand()-0.5f)*0.3f);
+            m_exchangePost->SetPartRotationX(2, (Math::Rand()-0.5f)*0.3f);
+            m_exchangePost->SetPartRotationX(4, (Math::Rand()-0.5f)*0.3f);
+            m_exchangePost->SetPartRotationX(6, (Math::Rand()-0.5f)*0.3f);
 
-            m_exchangePost->SetAngleZ(2, (Math::Rand()-0.5f)*0.3f);
-            m_exchangePost->SetAngleZ(4, (Math::Rand()-0.5f)*0.3f);
-            m_exchangePost->SetAngleZ(6, (Math::Rand()-0.5f)*0.3f);
+            m_exchangePost->SetPartRotationZ(2, (Math::Rand()-0.5f)*0.3f);
+            m_exchangePost->SetPartRotationZ(4, (Math::Rand()-0.5f)*0.3f);
+            m_exchangePost->SetPartRotationZ(6, (Math::Rand()-0.5f)*0.3f);
 
             UpdateListVirus();
         }
@@ -411,21 +411,21 @@ bool CAutoInfo::EventProcess(const Event &event)
         {
             m_progress += rTime*m_speed;
 
-            m_exchangePost->SetAngleZ(2, m_progress*2.0f*Math::PI);
-            m_exchangePost->SetAngleZ(4, m_progress*2.0f*Math::PI);
-            m_exchangePost->SetAngleZ(6, m_progress*2.0f*Math::PI);
+            m_exchangePost->SetPartRotationZ(2, m_progress*2.0f*Math::PI);
+            m_exchangePost->SetPartRotationZ(4, m_progress*2.0f*Math::PI);
+            m_exchangePost->SetPartRotationZ(6, m_progress*2.0f*Math::PI);
         }
         else
         {
             m_phase = Phase::Wait;
 
-            m_exchangePost->SetAngleX(2, 0.0f);
-            m_exchangePost->SetAngleX(4, 0.0f);
-            m_exchangePost->SetAngleX(6, 0.0f);
+            m_exchangePost->SetPartRotationX(2, 0.0f);
+            m_exchangePost->SetPartRotationX(4, 0.0f);
+            m_exchangePost->SetPartRotationX(6, 0.0f);
 
-            m_exchangePost->SetAngleZ(2, 0.0f);
-            m_exchangePost->SetAngleZ(4, 0.0f);
-            m_exchangePost->SetAngleZ(6, 0.0f);
+            m_exchangePost->SetPartRotationZ(2, 0.0f);
+            m_exchangePost->SetPartRotationZ(4, 0.0f);
+            m_exchangePost->SetPartRotationZ(6, 0.0f);
         }
     }
 
@@ -458,21 +458,21 @@ bool CAutoInfo::EventProcess(const Event &event)
         {
             m_progress += rTime*m_speed;
 
-            m_exchangePost->SetAngleZ(2, m_progress*2.0f*Math::PI);
-            m_exchangePost->SetAngleZ(4, m_progress*2.0f*Math::PI);
-            m_exchangePost->SetAngleZ(6, m_progress*2.0f*Math::PI);
+            m_exchangePost->SetPartRotationZ(2, m_progress*2.0f*Math::PI);
+            m_exchangePost->SetPartRotationZ(4, m_progress*2.0f*Math::PI);
+            m_exchangePost->SetPartRotationZ(6, m_progress*2.0f*Math::PI);
         }
         else
         {
             m_phase = Phase::Wait;
 
-            m_exchangePost->SetAngleX(2, 0.0f);
-            m_exchangePost->SetAngleX(4, 0.0f);
-            m_exchangePost->SetAngleX(6, 0.0f);
+            m_exchangePost->SetPartRotationX(2, 0.0f);
+            m_exchangePost->SetPartRotationX(4, 0.0f);
+            m_exchangePost->SetPartRotationX(6, 0.0f);
 
-            m_exchangePost->SetAngleZ(2, 0.0f);
-            m_exchangePost->SetAngleZ(4, 0.0f);
-            m_exchangePost->SetAngleZ(6, 0.0f);
+            m_exchangePost->SetPartRotationZ(2, 0.0f);
+            m_exchangePost->SetPartRotationZ(4, 0.0f);
+            m_exchangePost->SetPartRotationZ(6, 0.0f);
         }
     }
 
@@ -509,35 +509,35 @@ bool CAutoInfo::EventProcess(const Event &event)
             {
                 angle = 1.0f-(m_progress-0.5f)/0.5f;
             }
-            m_exchangePost->SetAngleX(2, angle*0.5f);
-            m_exchangePost->SetAngleX(4, angle*0.5f);
-            m_exchangePost->SetAngleX(6, angle*0.5f);
+            m_exchangePost->SetPartRotationX(2, angle*0.5f);
+            m_exchangePost->SetPartRotationX(4, angle*0.5f);
+            m_exchangePost->SetPartRotationX(6, angle*0.5f);
 
-            m_exchangePost->SetAngleZ(2, (Math::Rand()-0.5f)*0.2f);
-            m_exchangePost->SetAngleZ(4, (Math::Rand()-0.5f)*0.2f);
-            m_exchangePost->SetAngleZ(6, (Math::Rand()-0.5f)*0.2f);
+            m_exchangePost->SetPartRotationZ(2, (Math::Rand()-0.5f)*0.2f);
+            m_exchangePost->SetPartRotationZ(4, (Math::Rand()-0.5f)*0.2f);
+            m_exchangePost->SetPartRotationZ(6, (Math::Rand()-0.5f)*0.2f);
         }
         else
         {
             m_phase = Phase::Wait;
 
-            m_exchangePost->SetAngleX(2, 0.0f);
-            m_exchangePost->SetAngleX(4, 0.0f);
-            m_exchangePost->SetAngleX(6, 0.0f);
+            m_exchangePost->SetPartRotationX(2, 0.0f);
+            m_exchangePost->SetPartRotationX(4, 0.0f);
+            m_exchangePost->SetPartRotationX(6, 0.0f);
 
-            m_exchangePost->SetAngleZ(2, 0.0f);
-            m_exchangePost->SetAngleZ(4, 0.0f);
-            m_exchangePost->SetAngleZ(6, 0.0f);
+            m_exchangePost->SetPartRotationZ(2, 0.0f);
+            m_exchangePost->SetPartRotationZ(4, 0.0f);
+            m_exchangePost->SetPartRotationZ(6, 0.0f);
         }
     }
 
-    float angle = m_exchangePost->GetAngleY(1);
+    float angle = m_exchangePost->GetPartRotationY(1);
     angle += rTime*0.5f;
-    m_exchangePost->SetAngleY(1, angle);
+    m_exchangePost->SetPartRotationY(1, angle);
 
-    m_exchangePost->SetAngleX(3, sinf(m_time*6.0f+Math::PI*0.0f/3.0f)*0.3f);
-    m_exchangePost->SetAngleX(5, sinf(m_time*6.0f+Math::PI*2.0f/3.0f)*0.3f);
-    m_exchangePost->SetAngleX(7, sinf(m_time*6.0f+Math::PI*4.0f/3.0f)*0.3f);
+    m_exchangePost->SetPartRotationX(3, sinf(m_time*6.0f+Math::PI*0.0f/3.0f)*0.3f);
+    m_exchangePost->SetPartRotationX(5, sinf(m_time*6.0f+Math::PI*2.0f/3.0f)*0.3f);
+    m_exchangePost->SetPartRotationX(7, sinf(m_time*6.0f+Math::PI*4.0f/3.0f)*0.3f);
 
     return true;
 }

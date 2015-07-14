@@ -1416,7 +1416,7 @@ bool CScriptFunctions::rDirection(CBotVar* var, CBotVar* result, int& exception,
 
     iPos = pThis->GetPosition();
 
-    a = pThis->GetAngleY(0);
+    a = pThis->GetRotationY();
     g = Math::RotateAngle(oPos.x-iPos.x, iPos.z-oPos.z);  // CW !
 
     result->SetValFloat(-Math::Direction(a, g)*180.0f/Math::PI);

@@ -183,7 +183,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
     }
 
     m_object->SetPosition(pos);
-    m_object->SetAngleY(0, angle);
+    m_object->SetRotationY(angle);
 
     // A vehicle must have a obligatory collision
     // with a sphere of center (0, y, 0) (see GetCrashSphere).
@@ -227,7 +227,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_object->SetObjectParent(1, 0);
         modelManager->AddModelReference("lem2.mod", false, rank);
         m_object->SetPartPosition(1, Math::Vector(0.0f, 5.3f, 0.0f));
-        m_object->SetAngleZ(1, ARM_NEUTRAL_ANGLE1);
+        m_object->SetPartRotationZ(1, ARM_NEUTRAL_ANGLE1);
 
         // Creates the forearm.
         rank = m_engine->CreateObject();
@@ -236,7 +236,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_object->SetObjectParent(2, 1);
         modelManager->AddModelReference("lem3.mod", false, rank);
         m_object->SetPartPosition(2, Math::Vector(5.0f, 0.0f, 0.0f));
-        m_object->SetAngleZ(2, ARM_NEUTRAL_ANGLE2);
+        m_object->SetPartRotationZ(2, ARM_NEUTRAL_ANGLE2);
 
         // Creates the hand.
         rank = m_engine->CreateObject();
@@ -245,8 +245,8 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_object->SetObjectParent(3, 2);
         modelManager->AddModelReference("lem4.mod", false, rank);
         m_object->SetPartPosition(3, Math::Vector(3.5f, 0.0f, 0.0f));
-        m_object->SetAngleZ(3, ARM_NEUTRAL_ANGLE3);
-        m_object->SetAngleX(3, Math::PI/2.0f);
+        m_object->SetPartRotationZ(3, ARM_NEUTRAL_ANGLE3);
+        m_object->SetPartRotationX(3, Math::PI/2.0f);
 
         // Creates the close clamp.
         rank = m_engine->CreateObject();
@@ -255,7 +255,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_object->SetObjectParent(4, 3);
         modelManager->AddModelReference("lem5.mod", false, rank);
         m_object->SetPartPosition(4, Math::Vector(1.5f, 0.0f, 0.0f));
-        m_object->SetAngleZ(4, -Math::PI*0.10f);
+        m_object->SetPartRotationZ(4, -Math::PI*0.10f);
 
         // Creates the remote clamp.
         rank = m_engine->CreateObject();
@@ -264,7 +264,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_object->SetObjectParent(5, 3);
         modelManager->AddModelReference("lem6.mod", false, rank);
         m_object->SetPartPosition(5, Math::Vector(1.5f, 0.0f, 0.0f));
-        m_object->SetAngleZ(5, Math::PI*0.10f);
+        m_object->SetPartRotationZ(5, Math::PI*0.10f);
     }
 
     if (type == OBJECT_MOBILEfs ||
@@ -279,7 +279,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_object->SetObjectParent(1, 0);
         modelManager->AddModelReference("lem2.mod", false, rank);
         m_object->SetPartPosition(1, Math::Vector(0.0f, 5.3f, 0.0f));
-        m_object->SetAngleZ(1, 110.0f*Math::PI/180.0f);
+        m_object->SetPartRotationZ(1, 110.0f*Math::PI/180.0f);
 
         // Creates the forearm.
         rank = m_engine->CreateObject();
@@ -288,7 +288,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_object->SetObjectParent(2, 1);
         modelManager->AddModelReference("lem3.mod", false, rank);
         m_object->SetPartPosition(2, Math::Vector(5.0f, 0.0f, 0.0f));
-        m_object->SetAngleZ(2, -110.0f*Math::PI/180.0f);
+        m_object->SetPartRotationZ(2, -110.0f*Math::PI/180.0f);
 
         // Creates the sensor.
         rank = m_engine->CreateObject();
@@ -297,7 +297,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_object->SetObjectParent(3, 2);
         modelManager->AddModelReference("lem4s.mod", false, rank);
         m_object->SetPartPosition(3, Math::Vector(3.5f, 0.0f, 0.0f));
-        m_object->SetAngleZ(3, -65.0f*Math::PI/180.0f);
+        m_object->SetPartRotationZ(3, -65.0f*Math::PI/180.0f);
     }
 
     if (type == OBJECT_MOBILEfc ||
@@ -313,7 +313,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         modelManager->AddModelReference("canon.mod", false, rank);
 //?     m_object->SetPartPosition(1, Math::Vector(0.0f, 5.3f, 0.0f));
         m_object->SetPartPosition(1, Math::Vector(0.0f, 5.3f, 0.0f));
-        m_object->SetAngleZ(1, 0.0f);
+        m_object->SetPartRotationZ(1, 0.0f);
     }
 
     if (type == OBJECT_MOBILEfi ||
@@ -328,7 +328,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_object->SetObjectParent(1, 0);
         modelManager->AddModelReference("canoni1.mod", false, rank);
         m_object->SetPartPosition(1, Math::Vector(0.0f, 5.3f, 0.0f));
-        m_object->SetAngleZ(1, 0.0f);
+        m_object->SetPartRotationZ(1, 0.0f);
 
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
@@ -336,7 +336,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_object->SetObjectParent(2, 1);
         modelManager->AddModelReference("canoni2.mod", false, rank);
         m_object->SetPartPosition(2, Math::Vector(0.0f, 2.5f, 0.0f));
-        m_object->SetAngleZ(2, 0.0f);
+        m_object->SetPartRotationZ(2, 0.0f);
     }
 
     if (type == OBJECT_MOBILEwa ||
@@ -360,7 +360,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_object->SetObjectParent(7, 0);
         modelManager->AddModelReference("lem2w.mod", false, rank);
         m_object->SetPartPosition(7, Math::Vector(-3.0f, 1.0f, 3.0f));
-        m_object->SetAngleY(7, Math::PI);
+        m_object->SetPartRotationY(7, Math::PI);
 
         // Creates the right-front wheel.
         rank = m_engine->CreateObject();
@@ -377,7 +377,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_object->SetObjectParent(9, 0);
         modelManager->AddModelReference("lem2w.mod", false, rank);
         m_object->SetPartPosition(9, Math::Vector(2.0f, 1.0f, 3.0f));
-        m_object->SetAngleY(9, Math::PI);
+        m_object->SetPartRotationY(9, Math::PI);
     }
 
     if (type == OBJECT_MOBILEtg)
@@ -397,7 +397,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_object->SetObjectParent(7, 0);
         modelManager->AddModelReference("lem2w.mod", false, rank);
         m_object->SetPartPosition(7, Math::Vector(-2.0f, 1.0f, 3.0f));
-        m_object->SetAngleY(7, Math::PI);
+        m_object->SetPartRotationY(7, Math::PI);
 
         // Creates the right-front wheel.
         rank = m_engine->CreateObject();
@@ -414,7 +414,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_object->SetObjectParent(9, 0);
         modelManager->AddModelReference("lem2w.mod", false, rank);
         m_object->SetPartPosition(9, Math::Vector(3.0f, 1.0f, 3.0f));
-        m_object->SetAngleY(9, Math::PI);
+        m_object->SetPartRotationY(9, Math::PI);
     }
 
     if (type == OBJECT_MOBILEta ||
@@ -520,7 +520,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_object->SetObjectParent(7, 0);
         modelManager->AddModelReference("lem2f.mod", false, rank);
         m_object->SetPartPosition(7, Math::Vector(-1.8f, 3.0f, -1.5f));
-        m_object->SetAngleY(7, 120.0f*Math::PI/180.0f);
+        m_object->SetPartRotationY(7, 120.0f*Math::PI/180.0f);
 
         // Creates the left-back foot.
         rank = m_engine->CreateObject();
@@ -529,7 +529,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_object->SetObjectParent(8, 0);
         modelManager->AddModelReference("lem2f.mod", false, rank);
         m_object->SetPartPosition(8, Math::Vector(-1.8f, 3.0f, 1.5f));
-        m_object->SetAngleY(8, -120.0f*Math::PI/180.0f);
+        m_object->SetPartRotationY(8, -120.0f*Math::PI/180.0f);
     }
 
     if (type == OBJECT_MOBILEia ||
@@ -597,7 +597,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_object->SetObjectParent(1, 0);
         modelManager->AddModelReference("roller2t.mod", false, rank);
         m_object->SetPartPosition(1, Math::Vector(0.0f, 0.0f, 0.0f));
-        m_object->SetAngleZ(1, 0.0f);
+        m_object->SetPartRotationZ(1, 0.0f);
 
         // Creates the pestle.
         rank = m_engine->CreateObject();
@@ -606,7 +606,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_object->SetObjectParent(2, 0);
         modelManager->AddModelReference("roller3t.mod", false, rank);
         m_object->SetPartPosition(2, Math::Vector(9.0f, 4.0f, 0.0f));
-        m_object->SetAngleZ(2, 0.0f);
+        m_object->SetPartRotationZ(2, 0.0f);
     }
 
     if (type == OBJECT_MOBILErc)
@@ -618,7 +618,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_object->SetObjectParent(1, 0);
         modelManager->AddModelReference("roller2c.mod", false, rank);
         m_object->SetPartPosition(1, Math::Vector(3.0f, 4.6f, 0.0f));
-        m_object->SetAngleZ(1, Math::PI/8.0f);
+        m_object->SetPartRotationZ(1, Math::PI/8.0f);
 
         // Creates the cannon.
         rank = m_engine->CreateObject();
@@ -627,7 +627,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_object->SetObjectParent(2, 0);
         modelManager->AddModelReference("roller3p.mod", false, rank);
         m_object->SetPartPosition(2, Math::Vector(7.0f, 6.5f, 0.0f));
-        m_object->SetAngleZ(2, 0.0f);
+        m_object->SetPartRotationZ(2, 0.0f);
     }
 
     if (type == OBJECT_MOBILErr)
@@ -647,7 +647,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_object->SetObjectParent(2, 1);
         modelManager->AddModelReference("recover2.mod", false, rank);
         m_object->SetPartPosition(2, Math::Vector(0.1f, 0.0f, -5.0f));
-        m_object->SetAngleZ(2, 126.0f*Math::PI/180.0f);
+        m_object->SetPartRotationZ(2, 126.0f*Math::PI/180.0f);
 
         // Creates the right forearm.
         rank = m_engine->CreateObject();
@@ -656,7 +656,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_object->SetObjectParent(3, 2);
         modelManager->AddModelReference("recover3.mod", false, rank);
         m_object->SetPartPosition(3, Math::Vector(5.0f, 0.0f, -0.5f));
-        m_object->SetAngleZ(3, -144.0f*Math::PI/180.0f);
+        m_object->SetPartRotationZ(3, -144.0f*Math::PI/180.0f);
 
         // Creates the left arm.
         rank = m_engine->CreateObject();
@@ -665,7 +665,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_object->SetObjectParent(4, 1);
         modelManager->AddModelReference("recover2.mod", true, rank);
         m_object->SetPartPosition(4, Math::Vector(0.1f, 0.0f, 5.0f));
-        m_object->SetAngleZ(4, 126.0f*Math::PI/180.0f);
+        m_object->SetPartRotationZ(4, 126.0f*Math::PI/180.0f);
 
         // Creates the left forearm.
         rank = m_engine->CreateObject();
@@ -674,7 +674,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_object->SetObjectParent(5, 4);
         modelManager->AddModelReference("recover3.mod", true, rank);
         m_object->SetPartPosition(5, Math::Vector(5.0f, 0.0f, 0.5f));
-        m_object->SetAngleZ(5, -144.0f*Math::PI/180.0f);
+        m_object->SetPartRotationZ(5, -144.0f*Math::PI/180.0f);
     }
 
     if (type == OBJECT_MOBILErs)
@@ -686,7 +686,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_object->SetObjectParent(1, 0);
         modelManager->AddModelReference("roller2s.mod", false, rank);
         m_object->SetPartPosition(1, Math::Vector(0.0f, 0.0f, 0.0f));
-        m_object->SetAngleZ(1, 0.0f);
+        m_object->SetPartRotationZ(1, 0.0f);
 
         // Creates the intermediate piston.
         rank = m_engine->CreateObject();
@@ -695,7 +695,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_object->SetObjectParent(2, 1);
         modelManager->AddModelReference("roller3s.mod", false, rank);
         m_object->SetPartPosition(2, Math::Vector(7.0f, 4.5f, 0.0f));
-        m_object->SetAngleZ(2, 0.0f);
+        m_object->SetPartRotationZ(2, 0.0f);
 
         // Creates the piston with the sphere.
         rank = m_engine->CreateObject();
@@ -704,7 +704,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_object->SetObjectParent(3, 2);
         modelManager->AddModelReference("roller4s.mod", false, rank);
         m_object->SetPartPosition(3, Math::Vector(0.0f, 1.0f, 0.0f));
-        m_object->SetAngleZ(3, 0.0f);
+        m_object->SetPartRotationZ(3, 0.0f);
     }
 
     if (type == OBJECT_MOBILEsa)
@@ -754,7 +754,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
             modelManager->AddModelReference("drawer5.mod", false, rank);
             m_posKey = Math::Vector(3.0f, 5.7f, 0.0f);
             m_object->SetPartPosition(2, m_posKey);
-            m_object->SetAngleY(2, 90.0f*Math::PI/180.0f);
+            m_object->SetPartRotationY(2, 90.0f*Math::PI/180.0f);
         }
 
         // Creates pencils.
@@ -767,7 +767,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
             sprintf(name, "drawer%d.mod", 10+i);
             modelManager->AddModelReference(name, false, rank);
             m_object->SetPartPosition(10+i, Math::Vector(0.0f, 0.0f, 0.0f));
-            m_object->SetAngleY(10+i, 45.0f*Math::PI/180.0f*i);
+            m_object->SetPartRotationY(10+i, 45.0f*Math::PI/180.0f*i);
         }
     }
 
@@ -783,7 +783,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
             modelManager->AddModelReference("drawer5.mod", false, rank);
             m_posKey = Math::Vector(0.2f, 4.1f, 0.0f);
             m_object->SetPartPosition(2, m_posKey);
-            m_object->SetAngleY(2, 90.0f*Math::PI/180.0f);
+            m_object->SetPartRotationY(2, 90.0f*Math::PI/180.0f);
         }
     }
 
@@ -796,8 +796,8 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_object->SetObjectParent(1, 0);
         modelManager->AddModelReference("apolloj2.mod", false, rank);  // antenna
         m_object->SetPartPosition(1, Math::Vector(5.5f, 8.8f, 2.0f));
-        m_object->SetAngleY(1, -120.0f*Math::PI/180.0f);
-        m_object->SetAngleZ(1,   45.0f*Math::PI/180.0f);
+        m_object->SetPartRotationY(1, -120.0f*Math::PI/180.0f);
+        m_object->SetPartRotationZ(1,   45.0f*Math::PI/180.0f);
 
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
@@ -805,7 +805,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_object->SetObjectParent(2, 0);
         modelManager->AddModelReference("apolloj3.mod", false, rank);  // camera
         m_object->SetPartPosition(2, Math::Vector(5.5f, 2.8f, -2.0f));
-        m_object->SetAngleY(2, 30.0f*Math::PI/180.0f);
+        m_object->SetPartRotationY(2, 30.0f*Math::PI/180.0f);
 
         // Creates the wheels.
         rank = m_engine->CreateObject();
@@ -940,7 +940,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         assert(powerCell->Implements(ObjectInterfaceType::Transportable));
 
         powerCell->SetPosition(powerCellPos);
-        powerCell->SetAngle(0, Math::Vector(0.0f, powerCellAngle, 0.0f));
+        powerCell->SetRotation(Math::Vector(0.0f, powerCellAngle, 0.0f));
         dynamic_cast<CTransportableObject*>(powerCell)->SetTransporter(m_object);
         assert(m_object->Implements(ObjectInterfaceType::Powered));
         m_object->SetPower(powerCell);
@@ -1288,10 +1288,10 @@ bool CMotionVehicle::EventFrame(const Event &event)
         speedFR = -s+a;
         speedFL =  s+a;
 
-        m_object->SetAngleZ(6, m_object->GetAngleZ(6)+event.rTime*speedBR);  // turning the wheels
-        m_object->SetAngleZ(7, m_object->GetAngleZ(7)+event.rTime*speedBL);
-        m_object->SetAngleZ(8, m_object->GetAngleZ(8)+event.rTime*speedFR);
-        m_object->SetAngleZ(9, m_object->GetAngleZ(9)+event.rTime*speedFL);
+        m_object->SetPartRotationZ(6, m_object->GetPartRotationZ(6)+event.rTime*speedBR);  // turning the wheels
+        m_object->SetPartRotationZ(7, m_object->GetPartRotationZ(7)+event.rTime*speedBL);
+        m_object->SetPartRotationZ(8, m_object->GetPartRotationZ(8)+event.rTime*speedFR);
+        m_object->SetPartRotationZ(9, m_object->GetPartRotationZ(9)+event.rTime*speedFL);
 
         if ( s > 0.0f )
         {
@@ -1314,17 +1314,17 @@ bool CMotionVehicle::EventFrame(const Event &event)
             m_wheelTurn[2] = -fabs(a)*0.05f;
             m_wheelTurn[3] =  fabs(a)*0.05f+Math::PI;
         }
-        m_object->SetAngleY(6, m_object->GetAngleY(6)+(m_wheelTurn[0]-m_object->GetAngleY(6))*event.rTime*8.0f);
-        m_object->SetAngleY(7, m_object->GetAngleY(7)+(m_wheelTurn[1]-m_object->GetAngleY(7))*event.rTime*8.0f);
-        m_object->SetAngleY(8, m_object->GetAngleY(8)+(m_wheelTurn[2]-m_object->GetAngleY(8))*event.rTime*8.0f);
-        m_object->SetAngleY(9, m_object->GetAngleY(9)+(m_wheelTurn[3]-m_object->GetAngleY(9))*event.rTime*8.0f);
+        m_object->SetPartRotationY(6, m_object->GetPartRotationY(6)+(m_wheelTurn[0]-m_object->GetPartRotationY(6))*event.rTime*8.0f);
+        m_object->SetPartRotationY(7, m_object->GetPartRotationY(7)+(m_wheelTurn[1]-m_object->GetPartRotationY(7))*event.rTime*8.0f);
+        m_object->SetPartRotationY(8, m_object->GetPartRotationY(8)+(m_wheelTurn[2]-m_object->GetPartRotationY(8))*event.rTime*8.0f);
+        m_object->SetPartRotationY(9, m_object->GetPartRotationY(9)+(m_wheelTurn[3]-m_object->GetPartRotationY(9))*event.rTime*8.0f);
 
         if ( type == OBJECT_APOLLO2 )
         {
-            m_object->SetAngleY(10, m_object->GetAngleY(6)+(m_wheelTurn[0]-m_object->GetAngleY(6))*event.rTime*8.0f);
-            m_object->SetAngleY(11, m_object->GetAngleY(7)+(m_wheelTurn[1]-m_object->GetAngleY(7))*event.rTime*8.0f+Math::PI);
-            m_object->SetAngleY(12, m_object->GetAngleY(8)+(m_wheelTurn[2]-m_object->GetAngleY(8))*event.rTime*8.0f);
-            m_object->SetAngleY(13, m_object->GetAngleY(9)+(m_wheelTurn[3]-m_object->GetAngleY(9))*event.rTime*8.0f+Math::PI);
+            m_object->SetPartRotationY(10, m_object->GetPartRotationY(6)+(m_wheelTurn[0]-m_object->GetPartRotationY(6))*event.rTime*8.0f);
+            m_object->SetPartRotationY(11, m_object->GetPartRotationY(7)+(m_wheelTurn[1]-m_object->GetPartRotationY(7))*event.rTime*8.0f+Math::PI);
+            m_object->SetPartRotationY(12, m_object->GetPartRotationY(8)+(m_wheelTurn[2]-m_object->GetPartRotationY(8))*event.rTime*8.0f);
+            m_object->SetPartRotationY(13, m_object->GetPartRotationY(9)+(m_wheelTurn[3]-m_object->GetPartRotationY(9))*event.rTime*8.0f+Math::PI);
         }
 
         pos = m_object->GetPosition();
@@ -1511,7 +1511,7 @@ bool CMotionVehicle::EventFrame(const Event &event)
                 a = (a2-a1)/2.0f;
                 if ( a > limit[0] )  a = limit[0];
                 if ( a < limit[1] )  a = limit[1];
-                m_object->SetAngleZ(6, a);
+                m_object->SetPartRotationZ(6, a);
 
                 pos.x =  character->wheelFront;  // left front wheel
                 pos.z =  character->wheelLeft;
@@ -1528,12 +1528,12 @@ bool CMotionVehicle::EventFrame(const Event &event)
                 a = (a2-a1)/2.0f;
                 if ( a > limit[0] )  a = limit[0];
                 if ( a < limit[1] )  a = limit[1];
-                m_object->SetAngleZ(7, a);
+                m_object->SetPartRotationZ(7, a);
             }
             else
             {
-                m_object->SetAngleZ(6, 0.0f);
-                m_object->SetAngleZ(7, 0.0f);
+                m_object->SetPartRotationZ(6, 0.0f);
+                m_object->SetPartRotationZ(7, 0.0f);
             }
         }
     }
@@ -1551,7 +1551,7 @@ bool CMotionVehicle::EventFrame(const Event &event)
 
         s  = -fabs(m_physics->GetLinMotionX(MO_MOTSPEED)*0.1f);
         s += -fabs(m_physics->GetCirMotionY(MO_MOTSPEED)*1.5f);
-        m_object->SetAngleY(2, m_object->GetAngleY(2)+event.rTime*s);  // turns the key
+        m_object->SetPartRotationY(2, m_object->GetPartRotationY(2)+event.rTime*s);  // turns the key
     }
 
     if ( type == OBJECT_MOBILEfa ||
@@ -1630,12 +1630,12 @@ bool CMotionVehicle::EventFrameFly(const Event &event)
     m_bFlyFix = true;
     for ( i=0 ; i<3 ; i++ )
     {
-        actual = m_object->GetAngleZ(6+i);
+        actual = m_object->GetPartRotationZ(6+i);
         final = Math::Smooth(actual, hope[i], event.rTime*5.0f);
         if ( final != actual )
         {
             m_bFlyFix = false;  // it is moving
-            m_object->SetAngleZ(6+i, final);
+            m_object->SetPartRotationZ(6+i, final);
         }
     }
 
@@ -1746,27 +1746,27 @@ bool CMotionVehicle::EventFrameInsect(const Event &event)
 
         if ( i < 3 )  // right leg (1..3) ?
         {
-            m_object->SetAngleX(6+3*i+0, Math::Smooth(m_object->GetAngleX(6+3*i+0), Math::PropAngle(table[st+ 0], table[nd+ 0], prog), time));
-            m_object->SetAngleY(6+3*i+0, Math::Smooth(m_object->GetAngleY(6+3*i+0), Math::PropAngle(table[st+ 1], table[nd+ 1], prog), time));
-            m_object->SetAngleZ(6+3*i+0, Math::Smooth(m_object->GetAngleZ(6+3*i+0), Math::PropAngle(table[st+ 2], table[nd+ 2], prog), time));
-            m_object->SetAngleX(6+3*i+1, Math::Smooth(m_object->GetAngleX(6+3*i+1), Math::PropAngle(table[st+ 9], table[nd+ 9], prog), time));
-            m_object->SetAngleY(6+3*i+1, Math::Smooth(m_object->GetAngleY(6+3*i+1), Math::PropAngle(table[st+10], table[nd+10], prog), time));
-            m_object->SetAngleZ(6+3*i+1, Math::Smooth(m_object->GetAngleZ(6+3*i+1), Math::PropAngle(table[st+11], table[nd+11], prog), time));
-            m_object->SetAngleX(6+3*i+2, Math::Smooth(m_object->GetAngleX(6+3*i+2), Math::PropAngle(table[st+18], table[nd+18], prog), time));
-            m_object->SetAngleY(6+3*i+2, Math::Smooth(m_object->GetAngleY(6+3*i+2), Math::PropAngle(table[st+19], table[nd+19], prog), time));
-            m_object->SetAngleZ(6+3*i+2, Math::Smooth(m_object->GetAngleZ(6+3*i+2), Math::PropAngle(table[st+20], table[nd+20], prog), time));
+            m_object->SetPartRotationX(6+3*i+0, Math::Smooth(m_object->GetPartRotationX(6+3*i+0), Math::PropAngle(table[st+ 0], table[nd+ 0], prog), time));
+            m_object->SetPartRotationY(6+3*i+0, Math::Smooth(m_object->GetPartRotationY(6+3*i+0), Math::PropAngle(table[st+ 1], table[nd+ 1], prog), time));
+            m_object->SetPartRotationZ(6+3*i+0, Math::Smooth(m_object->GetPartRotationZ(6+3*i+0), Math::PropAngle(table[st+ 2], table[nd+ 2], prog), time));
+            m_object->SetPartRotationX(6+3*i+1, Math::Smooth(m_object->GetPartRotationX(6+3*i+1), Math::PropAngle(table[st+ 9], table[nd+ 9], prog), time));
+            m_object->SetPartRotationY(6+3*i+1, Math::Smooth(m_object->GetPartRotationY(6+3*i+1), Math::PropAngle(table[st+10], table[nd+10], prog), time));
+            m_object->SetPartRotationZ(6+3*i+1, Math::Smooth(m_object->GetPartRotationZ(6+3*i+1), Math::PropAngle(table[st+11], table[nd+11], prog), time));
+            m_object->SetPartRotationX(6+3*i+2, Math::Smooth(m_object->GetPartRotationX(6+3*i+2), Math::PropAngle(table[st+18], table[nd+18], prog), time));
+            m_object->SetPartRotationY(6+3*i+2, Math::Smooth(m_object->GetPartRotationY(6+3*i+2), Math::PropAngle(table[st+19], table[nd+19], prog), time));
+            m_object->SetPartRotationZ(6+3*i+2, Math::Smooth(m_object->GetPartRotationZ(6+3*i+2), Math::PropAngle(table[st+20], table[nd+20], prog), time));
         }
         else    // left leg (4..6) ?
         {
-            m_object->SetAngleX(6+3*i+0, Math::Smooth(m_object->GetAngleX(6+3*i+0), Math::PropAngle(-table[st+ 0], -table[nd+ 0], prog), time));
-            m_object->SetAngleY(6+3*i+0, Math::Smooth(m_object->GetAngleY(6+3*i+0), Math::PropAngle(-table[st+ 1], -table[nd+ 1], prog), time));
-            m_object->SetAngleZ(6+3*i+0, Math::Smooth(m_object->GetAngleZ(6+3*i+0), Math::PropAngle( table[st+ 2],  table[nd+ 2], prog), time));
-            m_object->SetAngleX(6+3*i+1, Math::Smooth(m_object->GetAngleX(6+3*i+1), Math::PropAngle(-table[st+ 9], -table[nd+ 9], prog), time));
-            m_object->SetAngleY(6+3*i+1, Math::Smooth(m_object->GetAngleY(6+3*i+1), Math::PropAngle(-table[st+10], -table[nd+10], prog), time));
-            m_object->SetAngleZ(6+3*i+1, Math::Smooth(m_object->GetAngleZ(6+3*i+1), Math::PropAngle( table[st+11],  table[nd+11], prog), time));
-            m_object->SetAngleX(6+3*i+2, Math::Smooth(m_object->GetAngleX(6+3*i+2), Math::PropAngle(-table[st+18], -table[nd+18], prog), time));
-            m_object->SetAngleY(6+3*i+2, Math::Smooth(m_object->GetAngleY(6+3*i+2), Math::PropAngle(-table[st+19], -table[nd+19], prog), time));
-            m_object->SetAngleZ(6+3*i+2, Math::Smooth(m_object->GetAngleZ(6+3*i+2), Math::PropAngle( table[st+20],  table[nd+20], prog), time));
+            m_object->SetPartRotationX(6+3*i+0, Math::Smooth(m_object->GetPartRotationX(6+3*i+0), Math::PropAngle(-table[st+ 0], -table[nd+ 0], prog), time));
+            m_object->SetPartRotationY(6+3*i+0, Math::Smooth(m_object->GetPartRotationY(6+3*i+0), Math::PropAngle(-table[st+ 1], -table[nd+ 1], prog), time));
+            m_object->SetPartRotationZ(6+3*i+0, Math::Smooth(m_object->GetPartRotationZ(6+3*i+0), Math::PropAngle( table[st+ 2],  table[nd+ 2], prog), time));
+            m_object->SetPartRotationX(6+3*i+1, Math::Smooth(m_object->GetPartRotationX(6+3*i+1), Math::PropAngle(-table[st+ 9], -table[nd+ 9], prog), time));
+            m_object->SetPartRotationY(6+3*i+1, Math::Smooth(m_object->GetPartRotationY(6+3*i+1), Math::PropAngle(-table[st+10], -table[nd+10], prog), time));
+            m_object->SetPartRotationZ(6+3*i+1, Math::Smooth(m_object->GetPartRotationZ(6+3*i+1), Math::PropAngle( table[st+11],  table[nd+11], prog), time));
+            m_object->SetPartRotationX(6+3*i+2, Math::Smooth(m_object->GetPartRotationX(6+3*i+2), Math::PropAngle(-table[st+18], -table[nd+18], prog), time));
+            m_object->SetPartRotationY(6+3*i+2, Math::Smooth(m_object->GetPartRotationY(6+3*i+2), Math::PropAngle(-table[st+19], -table[nd+19], prog), time));
+            m_object->SetPartRotationZ(6+3*i+2, Math::Smooth(m_object->GetPartRotationZ(6+3*i+2), Math::PropAngle( table[st+20],  table[nd+20], prog), time));
         }
     }
 
@@ -1822,19 +1822,19 @@ bool CMotionVehicle::EventFrameCanoni(const Event &event)
            sinf(m_canonTime*Math::PI*0.52f)*0.08f+
            sinf(m_canonTime*Math::PI*1.53f)*0.05f;
     zoom *= factor;
-    m_object->SetZoomY(2, zoom);
+    m_object->SetPartScaleY(2, zoom);
 
     zoom = 1.0f+
            sinf(m_canonTime*Math::PI*0.27f)*0.07f+
            sinf(m_canonTime*Math::PI*0.62f)*0.06f+
            sinf(m_canonTime*Math::PI*1.73f)*0.03f;
     zoom *= factor;
-    m_object->SetZoomZ(2, zoom);
+    m_object->SetPartScaleZ(2, zoom);
 
     angle = sinf(m_canonTime*1.0f)*0.10f+
             sinf(m_canonTime*1.3f)*0.15f+
             sinf(m_canonTime*2.7f)*0.05f;
-    m_object->SetAngleX(2, angle);
+    m_object->SetPartRotationX(2, angle);
 
 #if 0
     m_lastTimeCanon -= event.rTime;

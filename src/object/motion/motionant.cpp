@@ -83,7 +83,7 @@ void CMotionAnt::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetObjectRank(0, rank);
     modelManager->AddModelReference("ant1.mod", false, rank);
     m_object->SetPosition(pos);
-    m_object->SetAngleY(0, angle);
+    m_object->SetRotationY(angle);
 
     // A vehicle must have necessarily a collision
     //with a sphere of center (0, y, 0) (see GetCrashSphere).
@@ -551,27 +551,27 @@ bool CMotionAnt::EventFrame(const Event &event)
 
         if ( i < 3 )  // right leg (1..3) ?
         {
-            m_object->SetAngleX(3+3*i+0, Math::Smooth(m_object->GetAngleX(3+3*i+0), Math::PropAngle(tSt[0], tNd[0], prog), time));
-            m_object->SetAngleY(3+3*i+0, Math::Smooth(m_object->GetAngleY(3+3*i+0), Math::PropAngle(tSt[1], tNd[1], prog), time));
-            m_object->SetAngleZ(3+3*i+0, Math::Smooth(m_object->GetAngleZ(3+3*i+0), Math::PropAngle(tSt[2], tNd[2], prog), time));
-            m_object->SetAngleX(3+3*i+1, Math::Smooth(m_object->GetAngleX(3+3*i+1), Math::PropAngle(tSt[3], tNd[3], prog), time));
-            m_object->SetAngleY(3+3*i+1, Math::Smooth(m_object->GetAngleY(3+3*i+1), Math::PropAngle(tSt[4], tNd[4], prog), time));
-            m_object->SetAngleZ(3+3*i+1, Math::Smooth(m_object->GetAngleZ(3+3*i+1), Math::PropAngle(tSt[5], tNd[5], prog), time));
-            m_object->SetAngleX(3+3*i+2, Math::Smooth(m_object->GetAngleX(3+3*i+2), Math::PropAngle(tSt[6], tNd[6], prog), time));
-            m_object->SetAngleY(3+3*i+2, Math::Smooth(m_object->GetAngleY(3+3*i+2), Math::PropAngle(tSt[7], tNd[7], prog), time));
-            m_object->SetAngleZ(3+3*i+2, Math::Smooth(m_object->GetAngleZ(3+3*i+2), Math::PropAngle(tSt[8], tNd[8], prog), time));
+            m_object->SetPartRotationX(3+3*i+0, Math::Smooth(m_object->GetPartRotationX(3+3*i+0), Math::PropAngle(tSt[0], tNd[0], prog), time));
+            m_object->SetPartRotationY(3+3*i+0, Math::Smooth(m_object->GetPartRotationY(3+3*i+0), Math::PropAngle(tSt[1], tNd[1], prog), time));
+            m_object->SetPartRotationZ(3+3*i+0, Math::Smooth(m_object->GetPartRotationZ(3+3*i+0), Math::PropAngle(tSt[2], tNd[2], prog), time));
+            m_object->SetPartRotationX(3+3*i+1, Math::Smooth(m_object->GetPartRotationX(3+3*i+1), Math::PropAngle(tSt[3], tNd[3], prog), time));
+            m_object->SetPartRotationY(3+3*i+1, Math::Smooth(m_object->GetPartRotationY(3+3*i+1), Math::PropAngle(tSt[4], tNd[4], prog), time));
+            m_object->SetPartRotationZ(3+3*i+1, Math::Smooth(m_object->GetPartRotationZ(3+3*i+1), Math::PropAngle(tSt[5], tNd[5], prog), time));
+            m_object->SetPartRotationX(3+3*i+2, Math::Smooth(m_object->GetPartRotationX(3+3*i+2), Math::PropAngle(tSt[6], tNd[6], prog), time));
+            m_object->SetPartRotationY(3+3*i+2, Math::Smooth(m_object->GetPartRotationY(3+3*i+2), Math::PropAngle(tSt[7], tNd[7], prog), time));
+            m_object->SetPartRotationZ(3+3*i+2, Math::Smooth(m_object->GetPartRotationZ(3+3*i+2), Math::PropAngle(tSt[8], tNd[8], prog), time));
         }
         else    // left leg (4..6) ?
         {
-            m_object->SetAngleX(3+3*i+0, Math::Smooth(m_object->GetAngleX(3+3*i+0), Math::PropAngle(-tSt[0], -tNd[0], prog), time));
-            m_object->SetAngleY(3+3*i+0, Math::Smooth(m_object->GetAngleY(3+3*i+0), Math::PropAngle(-tSt[1], -tNd[1], prog), time));
-            m_object->SetAngleZ(3+3*i+0, Math::Smooth(m_object->GetAngleZ(3+3*i+0), Math::PropAngle( tSt[2],  tNd[2], prog), time));
-            m_object->SetAngleX(3+3*i+1, Math::Smooth(m_object->GetAngleX(3+3*i+1), Math::PropAngle(-tSt[3], -tNd[3], prog), time));
-            m_object->SetAngleY(3+3*i+1, Math::Smooth(m_object->GetAngleY(3+3*i+1), Math::PropAngle(-tSt[4], -tNd[4], prog), time));
-            m_object->SetAngleZ(3+3*i+1, Math::Smooth(m_object->GetAngleZ(3+3*i+1), Math::PropAngle( tSt[5],  tNd[5], prog), time));
-            m_object->SetAngleX(3+3*i+2, Math::Smooth(m_object->GetAngleX(3+3*i+2), Math::PropAngle(-tSt[6], -tNd[6], prog), time));
-            m_object->SetAngleY(3+3*i+2, Math::Smooth(m_object->GetAngleY(3+3*i+2), Math::PropAngle(-tSt[7], -tNd[7], prog), time));
-            m_object->SetAngleZ(3+3*i+2, Math::Smooth(m_object->GetAngleZ(3+3*i+2), Math::PropAngle( tSt[8],  tNd[8], prog), time));
+            m_object->SetPartRotationX(3+3*i+0, Math::Smooth(m_object->GetPartRotationX(3+3*i+0), Math::PropAngle(-tSt[0], -tNd[0], prog), time));
+            m_object->SetPartRotationY(3+3*i+0, Math::Smooth(m_object->GetPartRotationY(3+3*i+0), Math::PropAngle(-tSt[1], -tNd[1], prog), time));
+            m_object->SetPartRotationZ(3+3*i+0, Math::Smooth(m_object->GetPartRotationZ(3+3*i+0), Math::PropAngle( tSt[2],  tNd[2], prog), time));
+            m_object->SetPartRotationX(3+3*i+1, Math::Smooth(m_object->GetPartRotationX(3+3*i+1), Math::PropAngle(-tSt[3], -tNd[3], prog), time));
+            m_object->SetPartRotationY(3+3*i+1, Math::Smooth(m_object->GetPartRotationY(3+3*i+1), Math::PropAngle(-tSt[4], -tNd[4], prog), time));
+            m_object->SetPartRotationZ(3+3*i+1, Math::Smooth(m_object->GetPartRotationZ(3+3*i+1), Math::PropAngle( tSt[5],  tNd[5], prog), time));
+            m_object->SetPartRotationX(3+3*i+2, Math::Smooth(m_object->GetPartRotationX(3+3*i+2), Math::PropAngle(-tSt[6], -tNd[6], prog), time));
+            m_object->SetPartRotationY(3+3*i+2, Math::Smooth(m_object->GetPartRotationY(3+3*i+2), Math::PropAngle(-tSt[7], -tNd[7], prog), time));
+            m_object->SetPartRotationZ(3+3*i+2, Math::Smooth(m_object->GetPartRotationZ(3+3*i+2), Math::PropAngle( tSt[8],  tNd[8], prog), time));
         }
     }
 
@@ -592,16 +592,16 @@ bool CMotionAnt::EventFrame(const Event &event)
         dir.y = 0.0f;
         dir.z = Math::PropAngle(0, -50, prog);
         SetTilt(dir);
-        m_object->SetAngleZ(1, Math::PropAngle(0,  65, prog));  // head
-        m_object->SetAngleZ(2, Math::PropAngle(0, -95, prog));  // tail
+        m_object->SetPartRotationZ(1, Math::PropAngle(0,  65, prog));  // head
+        m_object->SetPartRotationZ(2, Math::PropAngle(0, -95, prog));  // tail
     }
     else if ( m_actionType == MAS_FIRE )  // shooting?
     {
         if ( m_progress < 0.75f )  a = m_progress/0.75f;
         else                       a = (1.0f-m_progress)/0.25f;
-        m_object->SetZoom(2, (a*0.5f)+1.0f);  // tail
-        m_object->SetAngleX(2, (Math::Rand()-0.5f)*0.3f*a);
-        m_object->SetAngleY(2, (Math::Rand()-0.5f)*0.3f*a);
+        m_object->SetPartScale(2, (a*0.5f)+1.0f);  // tail
+        m_object->SetPartRotationX(2, (Math::Rand()-0.5f)*0.3f*a);
+        m_object->SetPartRotationY(2, (Math::Rand()-0.5f)*0.3f*a);
 
         dir.x = (Math::Rand()-0.5f)*0.02f*a;
         dir.y = (Math::Rand()-0.5f)*0.05f*a;
@@ -616,8 +616,8 @@ bool CMotionAnt::EventFrame(const Event &event)
         dir.y = 0.0f;
         dir.z = Math::PropAngle(0, -50, prog);
         SetTilt(dir);
-        m_object->SetAngleZ(1, Math::PropAngle(0,  65, prog));  // head
-        m_object->SetAngleZ(2, Math::PropAngle(0, -95, prog));  // tail
+        m_object->SetPartRotationZ(1, Math::PropAngle(0,  65, prog));  // head
+        m_object->SetPartRotationZ(2, Math::PropAngle(0, -95, prog));  // tail
     }
     else if ( m_actionType == MAS_BURN )  // burning?
     {
@@ -629,8 +629,8 @@ bool CMotionAnt::EventFrame(const Event &event)
         SetTilt(dir);
 
         time = event.rTime*1.0f;
-        m_object->SetAngleZ(1, Math::Smooth(m_object->GetAngleZ(1), 0.0f, time));  // head
-        m_object->SetAngleZ(2, Math::Smooth(m_object->GetAngleZ(2), 0.0f, time));  // tail
+        m_object->SetPartRotationZ(1, Math::Smooth(m_object->GetPartRotationZ(1), 0.0f, time));  // head
+        m_object->SetPartRotationZ(2, Math::Smooth(m_object->GetPartRotationZ(2), 0.0f, time));  // tail
     }
     else if ( m_actionType == MAS_RUIN )  // destroyed?
     {
@@ -720,10 +720,10 @@ bool CMotionAnt::EventFrame(const Event &event)
         dir = Math::Vector(0.0f, 0.0f, 0.0f);
         SetTilt(dir);
 
-        m_object->SetAngleY(1, sinf(m_armTimeAbs*8.0f)*0.7f);  // head
-        m_object->SetAngleY(2, cosf(m_armTimeAbs*8.0f)*0.7f);  // tail
-        m_object->SetAngleZ(1, 0.0f);  // head
-        m_object->SetAngleZ(2, 0.0f);  // tail
+        m_object->SetPartRotationY(1, sinf(m_armTimeAbs*8.0f)*0.7f);  // head
+        m_object->SetPartRotationY(2, cosf(m_armTimeAbs*8.0f)*0.7f);  // tail
+        m_object->SetPartRotationZ(1, 0.0f);  // head
+        m_object->SetPartRotationZ(2, 0.0f);  // tail
 
         if ( m_progress >= 1.0f )
         {
@@ -775,13 +775,13 @@ bool CMotionAnt::EventFrame(const Event &event)
     }
     else
     {
-        m_object->SetZoom(2, 1.0f);  // tail
-        m_object->SetAngleX(2, 0.0f);
-        m_object->SetAngleY(2, 0.0f);
+        m_object->SetPartScale(2, 1.0f);  // tail
+        m_object->SetPartRotationX(2, 0.0f);
+        m_object->SetPartRotationY(2, 0.0f);
 
         if ( bStop )
         {
-            m_object->SetAngleZ(2, sinf(m_armTimeAbs*1.7f)*0.15f);  // tail
+            m_object->SetPartRotationZ(2, sinf(m_armTimeAbs*1.7f)*0.15f);  // tail
 
             dir = Math::Vector(0.0f, 0.0f, 0.0f);
             SetLinVibration(dir);
@@ -802,7 +802,7 @@ bool CMotionAnt::EventFrame(const Event &event)
             dir.y = 0.0f;
             SetTilt(dir);
 
-            m_object->SetAngleZ(2, -sinf(a)*0.3f);  // tail
+            m_object->SetPartRotationZ(2, -sinf(a)*0.3f);  // tail
 
             a = Math::Mod(m_armMember-0.1f, 1.0f);
             if ( a < 0.33f )
@@ -825,9 +825,9 @@ bool CMotionAnt::EventFrame(const Event &event)
         dir = Math::Vector(0.0f, 0.0f, 0.0f);
         SetCirVibration(dir);
 
-        m_object->SetAngleZ(1, sinf(m_armTimeAbs*1.4f)*0.20f);  // head
-        m_object->SetAngleX(1, sinf(m_armTimeAbs*1.9f)*0.10f);  // head
-        m_object->SetAngleY(1, sinf(m_armTimeAbs*2.1f)*0.50f);  // head
+        m_object->SetPartRotationZ(1, sinf(m_armTimeAbs*1.4f)*0.20f);  // head
+        m_object->SetPartRotationX(1, sinf(m_armTimeAbs*1.9f)*0.10f);  // head
+        m_object->SetPartRotationY(1, sinf(m_armTimeAbs*2.1f)*0.50f);  // head
     }
 
     return true;

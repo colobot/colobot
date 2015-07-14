@@ -73,7 +73,7 @@ void CAutoFlag::Init()
 
     wind = m_terrain->GetWind();
     angle = Math::RotateAngle(wind.x, -wind.z);
-    m_object->SetAngleY(0, angle);  // directs the flag in the wind
+    m_object->SetRotationY(angle);  // directs the flag in the wind
 
     m_strong = wind.Length();
 }
@@ -121,14 +121,14 @@ bool CAutoFlag::EventProcess(const Event &event)
         if ( m_progress < 1.0f )
         {
             angle = sinf(m_progress*Math::PI*8.0f)*0.3f*(1.0f-m_progress);
-            m_object->SetAngleX(0, angle);
+            m_object->SetRotationX(angle);
             angle = sinf(m_progress*Math::PI*4.0f)*0.3f*(1.0f-m_progress);
-            m_object->SetAngleZ(0, angle);
+            m_object->SetRotationZ(angle);
         }
         else
         {
-            m_object->SetAngleX(0, 0.0f);
-            m_object->SetAngleZ(0, 0.0f);
+            m_object->SetRotationX(0.0f);
+            m_object->SetRotationZ(0.0f);
             m_param = 0;
             m_progress = 0.0f;
         }
@@ -143,7 +143,7 @@ bool CAutoFlag::EventProcess(const Event &event)
 #else
         angle = sinf(m_time*6.0f+i*2.0f)*((i+2.0f)*0.1f);
 #endif
-        m_object->SetAngleY(1+i, angle);
+        m_object->SetPartRotationY(1+i, angle);
     }
 
 #if ADJUST_ANGLE

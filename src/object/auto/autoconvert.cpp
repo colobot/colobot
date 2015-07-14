@@ -111,12 +111,12 @@ bool CAutoConvert::EventProcess(const Event &event)
             m_timeVirus = 0.1f+Math::Rand()*0.3f;
 
             angle = (Math::Rand()-0.5f)*0.3f;
-            m_object->SetAngleY(1, angle);
-            m_object->SetAngleY(2, angle);
-            m_object->SetAngleY(3, angle+Math::PI);
+            m_object->SetPartRotationY(1, angle);
+            m_object->SetPartRotationY(2, angle);
+            m_object->SetPartRotationY(3, angle+Math::PI);
 
-            m_object->SetAngleX(2, -Math::PI*0.35f*(0.8f+Math::Rand()*0.2f));
-            m_object->SetAngleX(3, -Math::PI*0.35f*(0.8f+Math::Rand()*0.2f));
+            m_object->SetPartRotationX(2, -Math::PI*0.35f*(0.8f+Math::Rand()*0.2f));
+            m_object->SetPartRotationX(3, -Math::PI*0.35f*(0.8f+Math::Rand()*0.2f));
         }
         return true;
     }
@@ -164,13 +164,13 @@ bool CAutoConvert::EventProcess(const Event &event)
                 m_sound->Play(SOUND_CLOSE, m_object->GetPosition(), 1.0f, 0.8f);
             }
             angle = -Math::PI*0.35f*(1.0f-Math::Bounce(m_progress, 0.85f, 0.05f));
-            m_object->SetAngleX(2, angle);
-            m_object->SetAngleX(3, angle);
+            m_object->SetPartRotationX(2, angle);
+            m_object->SetPartRotationX(3, angle);
         }
         else
         {
-            m_object->SetAngleX(2, 0.0f);
-            m_object->SetAngleX(3, 0.0f);
+            m_object->SetPartRotationX(2, 0.0f);
+            m_object->SetPartRotationX(3, 0.0f);
 
             m_soundChannel = m_sound->Play(SOUND_CONVERT, m_object->GetPosition(), 0.0f, 0.25f, true);
             m_sound->AddEnvelope(m_soundChannel, 1.0f, 0.25f, 0.5f, SOPER_CONTINUE);
@@ -196,9 +196,9 @@ bool CAutoConvert::EventProcess(const Event &event)
             {
                 angle = -powf((2.0f-m_progress*2.0f)*5.0f, 2.0f);  // slows
             }
-            m_object->SetAngleY(1, angle);
-            m_object->SetAngleY(2, angle);
-            m_object->SetAngleY(3, angle+Math::PI);
+            m_object->SetPartRotationY(1, angle);
+            m_object->SetPartRotationY(2, angle);
+            m_object->SetPartRotationY(3, angle+Math::PI);
 
             if ( m_lastParticle+m_engine->ParticleAdapt(0.05f) <= m_time )
             {
@@ -221,9 +221,9 @@ bool CAutoConvert::EventProcess(const Event &event)
         }
         else
         {
-            m_object->SetAngleY(1, 0.0f);
-            m_object->SetAngleY(2, 0.0f);
-            m_object->SetAngleY(3, Math::PI);
+            m_object->SetPartRotationY(1, 0.0f);
+            m_object->SetPartRotationY(2, 0.0f);
+            m_object->SetPartRotationY(3, Math::PI);
 
             cargo = SearchStone(OBJECT_STONE);
             if ( cargo != nullptr )
@@ -245,8 +245,8 @@ bool CAutoConvert::EventProcess(const Event &event)
         if ( m_progress < 1.0f )
         {
             angle = -Math::PI*0.35f*Math::Bounce(m_progress, 0.7f, 0.2f);
-            m_object->SetAngleX(2, angle);
-            m_object->SetAngleX(3, angle);
+            m_object->SetPartRotationX(2, angle);
+            m_object->SetPartRotationX(3, angle);
 
             if ( m_progress < 0.9f &&
                  m_lastParticle+m_engine->ParticleAdapt(0.05f) <= m_time )
@@ -266,8 +266,8 @@ bool CAutoConvert::EventProcess(const Event &event)
         else
         {
             m_soundChannel = -1;
-            m_object->SetAngleX(2, -Math::PI*0.35f);
-            m_object->SetAngleX(3, -Math::PI*0.35f);
+            m_object->SetPartRotationX(2, -Math::PI*0.35f);
+            m_object->SetPartRotationX(3, -Math::PI*0.35f);
 
             SetBusy(false);
             UpdateInterface();
@@ -305,11 +305,11 @@ bool CAutoConvert::Abort()
         m_soundChannel = -1;
     }
 
-    m_object->SetAngleY(1, 0.0f);
-    m_object->SetAngleY(2, 0.0f);
-    m_object->SetAngleY(3, Math::PI);
-    m_object->SetAngleX(2, -Math::PI*0.35f);
-    m_object->SetAngleX(3, -Math::PI*0.35f);
+    m_object->SetPartRotationY(1, 0.0f);
+    m_object->SetPartRotationY(2, 0.0f);
+    m_object->SetPartRotationY(3, Math::PI);
+    m_object->SetPartRotationX(2, -Math::PI*0.35f);
+    m_object->SetPartRotationX(3, -Math::PI*0.35f);
 
     m_phase    = ACP_WAIT;
     m_progress = 0.0f;
@@ -471,7 +471,7 @@ bool CAutoConvert::SearchVehicle()
 void CAutoConvert::CreateMetal()
 {
     Math::Vector pos = m_object->GetPosition();
-    float angle = m_object->GetAngleY(0);
+    float angle = m_object->GetRotationY();
 
     CObjectManager::GetInstancePointer()->CreateObject(pos, angle, OBJECT_METAL);
 

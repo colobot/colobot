@@ -67,7 +67,7 @@ bool CTaskPen::EventProcess(const Event &event)
 
     if ( m_phase == TPP_UP )  // back the pencil
     {
-        i = AngleToRank(m_object->GetAngleY(1));
+        i = AngleToRank(m_object->GetPartRotationY(1));
         pos = m_object->GetPartPosition(10+i);
         pos.y = -3.2f*(1.0f-m_progress);
         m_object->SetPartPosition(10+i, pos);
@@ -90,7 +90,7 @@ bool CTaskPen::EventProcess(const Event &event)
             m_particle->CreateParticle(pos, speed, dim, Gfx::PARTISMOKE3, 4.0f);
         }
 
-        m_object->SetAngleY(1, m_oldAngle+(m_newAngle-m_oldAngle)*m_progress);
+        m_object->SetPartRotationY(1, m_oldAngle+(m_newAngle-m_oldAngle)*m_progress);
     }
 
     if ( m_phase == TPP_DOWN )  // down the pencil?
@@ -110,7 +110,7 @@ bool CTaskPen::EventProcess(const Event &event)
             m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIVAPOR, 4.0f);
         }
 
-        i = AngleToRank(m_object->GetAngleY(1));
+        i = AngleToRank(m_object->GetPartRotationY(1));
         pos = m_object->GetPartPosition(10+i);
         if ( m_timeDown == 0.0f )
         {
@@ -143,7 +143,7 @@ Error CTaskPen::Start(bool bDown, TraceColor color)
 
     m_bError = false;  // ok
 
-    m_oldAngle = m_object->GetAngleY(1);
+    m_oldAngle = m_object->GetPartRotationY(1);
     m_newAngle = ColorToAngle(color);
 
     i = AngleToRank(m_oldAngle);

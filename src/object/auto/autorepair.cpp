@@ -123,11 +123,11 @@ bool CAutoRepair::EventProcess(const Event &event)
         if ( m_progress < 1.0f )
         {
             angle = -m_progress*(Math::PI/2.0f)+Math::PI/2.0f;
-            m_object->SetAngleZ(1, angle);
+            m_object->SetPartRotationZ(1, angle);
         }
         else
         {
-            m_object->SetAngleZ(1, 0.0f);
+            m_object->SetPartRotationZ(1, 0.0f);
             m_sound->Play(SOUND_REPAIR, m_object->GetPosition());
 
             m_phase    = ARP_REPAIR;
@@ -182,11 +182,11 @@ bool CAutoRepair::EventProcess(const Event &event)
         if ( m_progress < 1.0f )
         {
             angle = -(1.0f-m_progress)*(Math::PI/2.0f)+Math::PI/2.0f;
-            m_object->SetAngleZ(1, angle);
+            m_object->SetPartRotationZ(1, angle);
         }
         else
         {
-            m_object->SetAngleZ(1, Math::PI/2.0f);
+            m_object->SetPartRotationZ(1, Math::PI/2.0f);
 
             m_phase    = ARP_WAIT;
             m_progress = 0.0f;

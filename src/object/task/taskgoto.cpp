@@ -105,7 +105,7 @@ bool CTaskGoto::EventProcess(const Event &event)
             rot.y /= dist;
         }
 
-        a = m_object->GetAngleY(0);
+        a = m_object->GetRotationY();
         g = Math::RotateAngle(rot.x, -rot.y);  // CW !
         a = Math::Direction(a, g)*1.0f;
         cirSpeed = a;
@@ -240,7 +240,7 @@ bool CTaskGoto::EventProcess(const Event &event)
         rot.x /= dist;
         rot.y /= dist;
 
-        a = m_object->GetAngleY(0);
+        a = m_object->GetRotationY();
         g = Math::RotateAngle(rot.x, -rot.y);  // CW !
         cirSpeed = Math::Direction(a, g)*2.0f;
         if ( cirSpeed >  1.0f )  cirSpeed =  1.0f;
@@ -332,7 +332,7 @@ bool CTaskGoto::EventProcess(const Event &event)
 
         rot.x = m_goal.x-pos.x;
         rot.y = m_goal.z-pos.z;
-        a = m_object->GetAngleY(0);
+        a = m_object->GetRotationY();
         g = Math::RotateAngle(rot.x, -rot.y);  // CW !
         cirSpeed = Math::Direction(a, g)*1.0f;
         if ( cirSpeed >  1.0f )  cirSpeed =  1.0f;
@@ -381,7 +381,7 @@ bool CTaskGoto::EventProcess(const Event &event)
 
 #if 0
         pos = m_object->GetPosition();
-        a = m_object->GetAngleY(0);
+        a = m_object->GetRotationY();
         g = Math::RotateAngle(m_goal.x-pos.x, pos.z-m_goal.z);  // CW !
         cirSpeed = Math::Direction(a, g)*1.0f;
         if ( cirSpeed >  1.0f )  cirSpeed =  1.0f;
@@ -408,7 +408,7 @@ bool CTaskGoto::EventProcess(const Event &event)
         rot.x += repulse.x*2.0f;
         rot.y += repulse.y*2.0f;
 
-        a = m_object->GetAngleY(0);
+        a = m_object->GetRotationY();
         g = Math::RotateAngle(rot.x, -rot.y);  // CW !
         cirSpeed = Math::Direction(a, g)*1.0f;
 //?     if ( m_physics->GetType() == TYPE_FLYING &&
@@ -444,7 +444,7 @@ bool CTaskGoto::EventProcess(const Event &event)
          m_phase == TGP_CRTURN ||  // turns after collision?
          m_phase == TGP_CLTURN )   // turns after collision?
     {
-        a = m_object->GetAngleY(0);
+        a = m_object->GetRotationY();
         g = m_angle;
         cirSpeed = Math::Direction(a, g)*1.0f;
         if ( cirSpeed >  1.0f )  cirSpeed =  1.0f;
@@ -913,7 +913,7 @@ Error CTaskGoto::IsEnded()
 
     if ( m_phase == TGP_TURN )  // turns to the object?
     {
-        angle = Math::NormAngle(m_object->GetAngleY(0));
+        angle = Math::NormAngle(m_object->GetRotationY());
         limit = 0.02f;
         if ( m_bApprox )  limit = 0.10f;
         if ( fabs(angle-m_angle) < limit )
@@ -943,7 +943,7 @@ Error CTaskGoto::IsEnded()
             if ( m_crashMode == TGC_RIGHTLEFT ||
                  m_crashMode == TGC_RIGHT     )  angle =  Math::PI/2.0f;  // 90 deegres to the right
             else                            angle = -Math::PI/2.0f;  // 90 deegres to the left
-            m_angle = Math::NormAngle(m_object->GetAngleY(0)+angle);
+            m_angle = Math::NormAngle(m_object->GetRotationY()+angle);
             m_phase = TGP_CRTURN;
 //?         m_phase = TGP_ADVANCE;
         }
@@ -951,7 +951,7 @@ Error CTaskGoto::IsEnded()
 
     if ( m_phase == TGP_CRTURN )  // turns after collision?
     {
-        angle = Math::NormAngle(m_object->GetAngleY(0));
+        angle = Math::NormAngle(m_object->GetRotationY());
         limit = 0.1f;
         if ( fabs(angle-m_angle) < limit )
         {
@@ -977,14 +977,14 @@ Error CTaskGoto::IsEnded()
             if ( m_crashMode == TGC_LEFTRIGHT )  angle =  Math::PI;
             if ( m_crashMode == TGC_RIGHT     )  angle =  Math::PI/2.0f;
             if ( m_crashMode == TGC_LEFT      )  angle = -Math::PI/2.0f;
-            m_angle = Math::NormAngle(m_object->GetAngleY(0)+angle);
+            m_angle = Math::NormAngle(m_object->GetRotationY()+angle);
             m_phase = TGP_CLTURN;
         }
     }
 
     if ( m_phase == TGP_CLTURN )  // turns after collision?
     {
-        angle = Math::NormAngle(m_object->GetAngleY(0));
+        angle = Math::NormAngle(m_object->GetRotationY());
         limit = 0.1f;
         if ( fabs(angle-m_angle) < limit )
         {

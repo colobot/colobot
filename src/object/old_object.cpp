@@ -1069,7 +1069,7 @@ int COldObject::SearchDescendant(int parent, int n)
 
 void COldObject::TransformCrashSphere(Math::Sphere& crashSphere)
 {
-    crashSphere.radius *= GetZoomX(0);
+    crashSphere.radius *= GetScaleX();
 
     // Returns to the sphere collisions,
     // which ignores the tilt of the vehicle.
@@ -1096,7 +1096,7 @@ void COldObject::TransformCrashSphere(Math::Sphere& crashSphere)
 void COldObject::TransformCameraCollisionSphere(Math::Sphere& collisionSphere)
 {
     collisionSphere.pos = Math::Transform(m_objectPart[0].matWorld, collisionSphere.pos);
-    collisionSphere.radius *= GetZoomX(0);
+    collisionSphere.radius *= GetScaleX();
 }
 
 
@@ -1164,14 +1164,14 @@ void COldObject::FloorAdjust()
     if ( m_terrain->GetNormal(n, pos) )
     {
 #if 0
-        SetAngleX(0,  sinf(n.z));
-        SetAngleZ(0, -sinf(n.x));
-        SetAngleY(0, 0.0f);
+        SetRotationX( sinf(n.z));
+        SetRotationZ(-sinf(n.x));
+        SetRotationY(0.0f);
 #else
-        a = GetAngleY(0);
+        a = GetRotationY();
         nn = Math::RotatePoint(-a, Math::Point(n.z, n.x));
-        SetAngleX(0,  sinf(nn.x));
-        SetAngleZ(0, -sinf(nn.y));
+        SetRotationX( sinf(nn.x));
+        SetRotationZ(-sinf(nn.y));
 #endif
     }
 }
@@ -1284,7 +1284,7 @@ Math::Vector COldObject::GetPartPosition(int part) const
 
 // Getes the rotation around three axis.
 
-void COldObject::SetAngle(int part, const Math::Vector &angle)
+void COldObject::SetPartRotation(int part, const Math::Vector &angle)
 {
     m_objectPart[part].angle = angle;
     m_objectPart[part].bRotate = true;  // it will recalculate the matrices
@@ -1295,14 +1295,14 @@ void COldObject::SetAngle(int part, const Math::Vector &angle)
     }
 }
 
-Math::Vector COldObject::GetAngle(int part) const
+Math::Vector COldObject::GetPartRotation(int part) const
 {
     return m_objectPart[part].angle;
 }
 
 // Getes the rotation about the axis Y.
 
-void COldObject::SetAngleY(int part, float angle)
+void COldObject::SetPartRotationY(int part, float angle)
 {
     m_objectPart[part].angle.y = angle;
     m_objectPart[part].bRotate = true;  // it will recalculate the matrices
@@ -1315,7 +1315,7 @@ void COldObject::SetAngleY(int part, float angle)
 
 // Getes the rotation about the axis X.
 
-void COldObject::SetAngleX(int part, float angle)
+void COldObject::SetPartRotationX(int part, float angle)
 {
     m_objectPart[part].angle.x = angle;
     m_objectPart[part].bRotate = true;  // it will recalculate the matrices
@@ -1323,23 +1323,23 @@ void COldObject::SetAngleX(int part, float angle)
 
 // Getes the rotation about the axis Z.
 
-void COldObject::SetAngleZ(int part, float angle)
+void COldObject::SetPartRotationZ(int part, float angle)
 {
     m_objectPart[part].angle.z = angle;
     m_objectPart[part].bRotate = true;  //it will recalculate the matrices
 }
 
-float COldObject::GetAngleY(int part)
+float COldObject::GetPartRotationY(int part)
 {
     return m_objectPart[part].angle.y;
 }
 
-float COldObject::GetAngleX(int part)
+float COldObject::GetPartRotationX(int part)
 {
     return m_objectPart[part].angle.x;
 }
 
-float COldObject::GetAngleZ(int part)
+float COldObject::GetPartRotationZ(int part)
 {
     return m_objectPart[part].angle.z;
 }
@@ -1347,7 +1347,7 @@ float COldObject::GetAngleZ(int part)
 
 // Getes the global zoom.
 
-void COldObject::SetZoom(int part, float zoom)
+void COldObject::SetPartScale(int part, float zoom)
 {
     m_objectPart[part].bTranslate = true;  // it will recalculate the matrices
     m_objectPart[part].zoom.x = zoom;
@@ -1359,7 +1359,7 @@ void COldObject::SetZoom(int part, float zoom)
                                  m_objectPart[part].zoom.z != 1.0f );
 }
 
-void COldObject::SetZoom(int part, Math::Vector zoom)
+void COldObject::SetPartScale(int part, Math::Vector zoom)
 {
     m_objectPart[part].bTranslate = true;  // it will recalculate the matrices
     m_objectPart[part].zoom = zoom;
@@ -1369,12 +1369,12 @@ void COldObject::SetZoom(int part, Math::Vector zoom)
                                  m_objectPart[part].zoom.z != 1.0f );
 }
 
-Math::Vector COldObject::GetZoom(int part) const
+Math::Vector COldObject::GetPartScale(int part) const
 {
     return m_objectPart[part].zoom;
 }
 
-void COldObject::SetZoomX(int part, float zoom)
+void COldObject::SetPartScaleX(int part, float zoom)
 {
     m_objectPart[part].bTranslate = true;  // it will recalculate the matrices
     m_objectPart[part].zoom.x = zoom;
@@ -1384,7 +1384,7 @@ void COldObject::SetZoomX(int part, float zoom)
                                  m_objectPart[part].zoom.z != 1.0f );
 }
 
-void COldObject::SetZoomY(int part, float zoom)
+void COldObject::SetPartScaleY(int part, float zoom)
 {
     m_objectPart[part].bTranslate = true;  // it will recalculate the matrices
     m_objectPart[part].zoom.y = zoom;
@@ -1394,7 +1394,7 @@ void COldObject::SetZoomY(int part, float zoom)
                                  m_objectPart[part].zoom.z != 1.0f );
 }
 
-void COldObject::SetZoomZ(int part, float zoom)
+void COldObject::SetPartScaleZ(int part, float zoom)
 {
     m_objectPart[part].bTranslate = true;  // it will recalculate the matrices
     m_objectPart[part].zoom.z = zoom;
@@ -1404,17 +1404,17 @@ void COldObject::SetZoomZ(int part, float zoom)
                                  m_objectPart[part].zoom.z != 1.0f );
 }
 
-float COldObject::GetZoomX(int part)
+float COldObject::GetPartScaleX(int part)
 {
     return m_objectPart[part].zoom.x;
 }
 
-float COldObject::GetZoomY(int part)
+float COldObject::GetPartScaleY(int part)
 {
     return m_objectPart[part].zoom.y;
 }
 
-float COldObject::GetZoomZ(int part)
+float COldObject::GetPartScaleZ(int part)
 {
     return m_objectPart[part].zoom.z;
 }
@@ -1659,7 +1659,7 @@ bool COldObject::CreateShadowCircle(float radius, float intensity,
 
     if ( intensity == 0.0f )  return true;
 
-    zoom = GetZoomX(0);
+    zoom = GetScaleX();
 
     m_engine->CreateShadow(m_objectPart[0].object);
 
@@ -1945,9 +1945,9 @@ bool COldObject::EventProcess(const Event &event)
                  event.param == 'N' ||
                  event.param == 'M' )
             {
-                SetAngleZ(1, debug_arm1);
-                SetAngleZ(2, debug_arm2);
-                SetAngleZ(3, debug_arm3);
+                SetPartRotationZ(1, debug_arm1);
+                SetPartRotationZ(2, debug_arm2);
+                SetPartRotationZ(3, debug_arm3);
                 char s[100];
                 sprintf(s, "a=%.2f b=%.2f c=%.2f", debug_arm1*180.0f/Math::PI, debug_arm2*180.0f/Math::PI, debug_arm3*180.0f/Math::PI);
                 m_engine->SetInfoText(5, s);
@@ -2129,9 +2129,9 @@ void COldObject::PartiFrame(float rTime)
             case 4:  factor = Math::Vector( 0.4f, 0.1f,-0.7f); break;
         }
 
-        angle = GetAngle(i);
+        angle = GetPartRotation(i);
         angle += rTime*Math::PI*factor;
-        SetAngle(i, angle);
+        SetPartRotation(i, angle);
     }
 }
 
@@ -2865,7 +2865,7 @@ void COldObject::SetGunGoalV(float gunGoal)
     {
         if ( gunGoal >  10.0f*Math::PI/180.0f )  gunGoal =  10.0f*Math::PI/180.0f;
         if ( gunGoal < -20.0f*Math::PI/180.0f )  gunGoal = -20.0f*Math::PI/180.0f;
-        SetAngleZ(1, gunGoal);
+        SetPartRotationZ(1, gunGoal);
     }
     else if ( m_type == OBJECT_MOBILEfi ||
               m_type == OBJECT_MOBILEti ||
@@ -2874,13 +2874,13 @@ void COldObject::SetGunGoalV(float gunGoal)
     {
         if ( gunGoal >  20.0f*Math::PI/180.0f )  gunGoal =  20.0f*Math::PI/180.0f;
         if ( gunGoal < -20.0f*Math::PI/180.0f )  gunGoal = -20.0f*Math::PI/180.0f;
-        SetAngleZ(1, gunGoal);
+        SetPartRotationZ(1, gunGoal);
     }
     else if ( m_type == OBJECT_MOBILErc )  // phazer?
     {
         if ( gunGoal >  45.0f*Math::PI/180.0f )  gunGoal =  45.0f*Math::PI/180.0f;
         if ( gunGoal < -20.0f*Math::PI/180.0f )  gunGoal = -20.0f*Math::PI/180.0f;
-        SetAngleZ(2, gunGoal);
+        SetPartRotationZ(2, gunGoal);
     }
     else
     {
@@ -2899,7 +2899,7 @@ void COldObject::SetGunGoalH(float gunGoal)
     {
         if ( gunGoal >  40.0f*Math::PI/180.0f )  gunGoal =  40.0f*Math::PI/180.0f;
         if ( gunGoal < -40.0f*Math::PI/180.0f )  gunGoal = -40.0f*Math::PI/180.0f;
-        SetAngleY(1, gunGoal);
+        SetPartRotationY(1, gunGoal);
     }
     else if ( m_type == OBJECT_MOBILEfi ||
               m_type == OBJECT_MOBILEti ||
@@ -2908,13 +2908,13 @@ void COldObject::SetGunGoalH(float gunGoal)
     {
         if ( gunGoal >  40.0f*Math::PI/180.0f )  gunGoal =  40.0f*Math::PI/180.0f;
         if ( gunGoal < -40.0f*Math::PI/180.0f )  gunGoal = -40.0f*Math::PI/180.0f;
-        SetAngleY(1, gunGoal);
+        SetPartRotationY(1, gunGoal);
     }
     else if ( m_type == OBJECT_MOBILErc )  // phazer?
     {
         if ( gunGoal >  40.0f*Math::PI/180.0f )  gunGoal =  40.0f*Math::PI/180.0f;
         if ( gunGoal < -40.0f*Math::PI/180.0f )  gunGoal = -40.0f*Math::PI/180.0f;
-        SetAngleY(2, gunGoal);
+        SetPartRotationY(2, gunGoal);
     }
     else
     {
@@ -3154,7 +3154,7 @@ void COldObject::UpdateSelectParticle()
         pos[3] = Math::Vector(-5.3f, 2.7f, -1.8f);
     }
 
-    angle = GetAngleY(0)/Math::PI;
+    angle = GetRotationY()/Math::PI;
 
     zoom[0] = 1.0f;
     zoom[1] = 1.0f;
@@ -3329,12 +3329,21 @@ void COldObject::SetPosition(const Math::Vector& pos)
 
 Math::Vector COldObject::GetRotation() const
 {
-    return GetAngle(0);
+    return GetPartRotation(0);
+}
+
+void COldObject::SetRotation(const Math::Vector& rotation)
+{
+    SetPartRotation(0, rotation);
 }
 
 Math::Vector COldObject::GetScale() const
 {
-    return GetZoom(0);
+    return GetPartScale(0);
 }
 
+void COldObject::SetScale(const Math::Vector& scale)
+{
+    SetPartScale(0, scale);
+}
 

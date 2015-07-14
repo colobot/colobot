@@ -89,24 +89,6 @@ public:
 
     virtual Math::Vector    GetTilt();
 
-    virtual void        SetAngle(int part, const Math::Vector &angle);
-    virtual Math::Vector    GetAngle(int part) const;
-    virtual void        SetAngleY(int part, float angle);
-    virtual void        SetAngleX(int part, float angle);
-    virtual void        SetAngleZ(int part, float angle);
-    virtual float       GetAngleY(int part);
-    virtual float       GetAngleX(int part);
-    virtual float       GetAngleZ(int part);
-    virtual void        SetZoom(int part, float zoom);
-    virtual void        SetZoom(int part, Math::Vector zoom);
-    virtual Math::Vector    GetZoom(int part) const;
-    virtual void        SetZoomX(int part, float zoom);
-    virtual float       GetZoomX(int part);
-    virtual void        SetZoomY(int part, float zoom);
-    virtual float       GetZoomY(int part);
-    virtual void        SetZoomZ(int part, float zoom);
-    virtual float       GetZoomZ(int part);
-
     virtual void        SetTrainer(bool bEnable);
     virtual bool        GetTrainer();
 

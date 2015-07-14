@@ -67,7 +67,7 @@ bool CTaskTake::EventProcess(const Event &event)
 
     if ( m_bTurn )  // preliminary rotation?
     {
-        a = m_object->GetAngleY(0);
+        a = m_object->GetRotationY();
         g = m_angle;
         cirSpeed = Math::Direction(a, g)*2.0f;
         if ( cirSpeed >  1.0f )  cirSpeed =  1.0f;
@@ -93,7 +93,7 @@ Error CTaskTake::Start()
     m_step     = 0;
     m_progress = 0.0f;
 
-    float iAngle = m_object->GetAngleY(0);
+    float iAngle = m_object->GetRotationY();
     iAngle = Math::NormAngle(iAngle);  // 0..2*Math::PI
     float oAngle = iAngle;
 
@@ -198,7 +198,7 @@ Error CTaskTake::IsEnded()
 
     if ( m_bTurn )  // preliminary rotation?
     {
-        float angle = m_object->GetAngleY(0);
+        float angle = m_object->GetRotationY();
         angle = Math::NormAngle(angle);  // 0..2*Math::PI
 
         if ( Math::TestAngle(angle, m_angle-Math::PI*0.01f, m_angle+Math::PI*0.01f) )
@@ -303,7 +303,7 @@ CObject* CTaskTake::SearchTakeObject(float &angle,
     float       min, iAngle, bAngle, a, distance;
 
     iPos   = m_object->GetPosition();
-    iAngle = m_object->GetAngleY(0);
+    iAngle = m_object->GetRotationY();
     iAngle = Math::NormAngle(iAngle);  // 0..2*Math::PI
 
     min = 1000000.0f;
@@ -329,7 +329,7 @@ CObject* CTaskTake::SearchTakeObject(float &angle,
 
         if (IsObjectBeingTransported(pObj))  continue;
         if ( pObj->GetLock() )  continue;
-        if ( pObj->GetZoomY(0) != 1.0f )  continue;
+        if ( pObj->GetScaleY() != 1.0f )  continue;
 
         oPos = pObj->GetPosition();
         distance = Math::Distance(oPos, iPos);
@@ -365,7 +365,7 @@ CObject* CTaskTake::SearchFriendObject(float &angle,
     Math::Vector iPos = crashSphere.sphere.pos;
     float iRad = crashSphere.sphere.radius;
 
-    float iAngle = m_object->GetAngleY(0);
+    float iAngle = m_object->GetRotationY();
     iAngle = Math::NormAngle(iAngle);  // 0..2*Math::PI
 
     for (CObject* pObj : CObjectManager::GetInstancePointer()->GetAllObjects())
@@ -411,7 +411,7 @@ CObject* CTaskTake::SearchFriendObject(float &angle,
         if (power != nullptr)
         {
             if ( power->GetLock() )  continue;
-            if ( power->GetZoomY(0) != 1.0f )  continue;
+            if ( power->GetScaleY() != 1.0f )  continue;
 
             ObjectType powerType = power->GetType();
             if ( powerType == OBJECT_NULL ||
@@ -457,9 +457,9 @@ bool CTaskTake::TransporterTakeObject()
 
 //?     cargo->SetPosition(Math::Vector(2.2f, -1.0f, 1.1f));
         cargo->SetPosition(Math::Vector(1.7f, -0.5f, 1.1f));
-        cargo->SetAngleY(0, 0.1f);
-        cargo->SetAngleX(0, 0.0f);
-        cargo->SetAngleZ(0, 0.8f);
+        cargo->SetRotationY(0.1f);
+        cargo->SetRotationX(0.0f);
+        cargo->SetRotationZ(0.8f);
 
         m_object->SetCargo(cargo);  // takes
     }
@@ -483,9 +483,9 @@ bool CTaskTake::TransporterTakeObject()
 
 //?     cargo->SetPosition(Math::Vector(2.2f, -1.0f, 1.1f));
         cargo->SetPosition(Math::Vector(1.7f, -0.5f, 1.1f));
-        cargo->SetAngleY(0, 0.1f);
-        cargo->SetAngleX(0, 0.0f);
-        cargo->SetAngleZ(0, 0.8f);
+        cargo->SetRotationY(0.1f);
+        cargo->SetRotationX(0.0f);
+        cargo->SetRotationZ(0.8f);
 
         m_object->SetCargo(cargo);  // takes
     }
@@ -509,9 +509,9 @@ bool CTaskTake::TransporterDeposeObject()
         Math::Vector pos = Transform(*mat, Math::Vector(-0.5f, 1.0f, 0.0f));
         m_terrain->AdjustToFloor(pos);
         cargo->SetPosition(pos);
-        cargo->SetAngleY(0, m_object->GetAngleY(0)+Math::PI/2.0f);
-        cargo->SetAngleX(0, 0.0f);
-        cargo->SetAngleZ(0, 0.0f);
+        cargo->SetRotationY(m_object->GetRotationY()+Math::PI/2.0f);
+        cargo->SetRotationX(0.0f);
+        cargo->SetRotationZ(0.0f);
         cargo->FloorAdjust();  // plate well on the ground
 
         dynamic_cast<CTransportableObject*>(cargo)->SetTransporter(nullptr);
@@ -538,9 +538,9 @@ bool CTaskTake::TransporterDeposeObject()
 
         Character* character = other->GetCharacter();
         cargo->SetPosition(character->posPower);
-        cargo->SetAngleY(0, 0.0f);
-        cargo->SetAngleX(0, 0.0f);
-        cargo->SetAngleZ(0, 0.0f);
+        cargo->SetRotationY(0.0f);
+        cargo->SetRotationX(0.0f);
+        cargo->SetRotationZ(0.0f);
         dynamic_cast<CTransportableObject*>(cargo)->SetTransporterPart(0);  // carried by the base
 
         m_object->SetCargo(nullptr);  // deposit

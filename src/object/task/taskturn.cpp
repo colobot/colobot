@@ -65,7 +65,7 @@ bool CTaskTurn::EventProcess(const Event &event)
 
 Error CTaskTurn::Start(float angle)
 {
-    m_startAngle = m_object->GetAngleY(0);
+    m_startAngle = m_object->GetRotationY();
     m_finalAngle = m_startAngle+angle;
 
     if ( angle < 0.0f )
@@ -100,7 +100,7 @@ Error CTaskTurn::IsEnded()
         return ERR_STOP;
     }
 
-    angle = m_object->GetAngleY(0);
+    angle = m_object->GetRotationY();
 
     if ( m_bLeft )
     {
@@ -110,7 +110,7 @@ Error CTaskTurn::IsEnded()
 //?         m_physics->SetCirMotionY(MO_MOTSPEED, 0.0f);
             m_physics->SetCirMotionY(MO_CURSPEED, 0.0f);
 //?         m_physics->SetCirMotionY(MO_REASPEED, 0.0f);
-            m_object->SetAngleY(0, m_finalAngle);
+            m_object->SetRotationY(m_finalAngle);
             return ERR_STOP;
         }
     }
@@ -122,7 +122,7 @@ Error CTaskTurn::IsEnded()
 //?         m_physics->SetCirMotionY(MO_MOTSPEED, 0.0f);
             m_physics->SetCirMotionY(MO_CURSPEED, 0.0f);
 //?         m_physics->SetCirMotionY(MO_REASPEED, 0.0f);
-            m_object->SetAngleY(0, m_finalAngle);
+            m_object->SetRotationY(m_finalAngle);
             return ERR_STOP;
         }
     }

@@ -244,16 +244,16 @@ bool CAutoFactory::EventProcess(const Event &event)
                 zoom = 0.30f+(m_progress-0.5f+i/16.0f)*2.0f*0.70f;
                 if ( zoom < 0.30f )  zoom = 0.30f;
                 if ( zoom > 1.00f )  zoom = 1.00f;
-                m_object->SetZoomZ( 1+i, zoom);
-                m_object->SetZoomZ(10+i, zoom);
+                m_object->SetPartScaleZ( 1+i, zoom);
+                m_object->SetPartScaleZ(10+i, zoom);
             }
         }
         else
         {
             for ( i=0 ; i<9 ; i++ )
             {
-                m_object->SetZoomZ( 1+i, 1.0f);
-                m_object->SetZoomZ(10+i, 1.0f);
+                m_object->SetPartScaleZ( 1+i, 1.0f);
+                m_object->SetPartScaleZ(10+i, 1.0f);
             }
 
             SoundManip(2.0f, 1.0f, 1.2f);
@@ -271,16 +271,16 @@ bool CAutoFactory::EventProcess(const Event &event)
             for ( i=0 ; i<9 ; i++ )
             {
                 angle = -m_progress*(Math::PI/2.0f)+Math::PI/2.0f;
-                m_object->SetAngleZ( 1+i,  angle);
-                m_object->SetAngleZ(10+i, -angle);
+                m_object->SetPartRotationZ( 1+i,  angle);
+                m_object->SetPartRotationZ(10+i, -angle);
             }
         }
         else
         {
             for ( i=0 ; i<9 ; i++ )
             {
-                m_object->SetAngleZ( 1+i, 0.0f);
-                m_object->SetAngleZ(10+i, 0.0f);
+                m_object->SetPartRotationZ( 1+i, 0.0f);
+                m_object->SetPartRotationZ(10+i, 0.0f);
             }
 
             m_channelSound = m_sound->Play(SOUND_FACTORY, m_object->GetPosition(), 0.0f, 1.0f, true);
@@ -334,19 +334,19 @@ bool CAutoFactory::EventProcess(const Event &event)
             {
                 prog = 1.0f-m_progress;
             }
-            angle = powf(prog*10.0f, 2.0f)+m_object->GetAngleY(0);
+            angle = powf(prog*10.0f, 2.0f)+m_object->GetRotationY();
 
             vehicle = SearchVehicle();
             if ( vehicle != 0 )
             {
-                vehicle->SetAngleY(0, angle+Math::PI);
-                vehicle->SetZoom(0, m_progress);
+                vehicle->SetRotationY(angle+Math::PI);
+                vehicle->SetScale(m_progress);
             }
 
             cargo = SearchCargo();  // transform metal?
             if ( cargo != 0 )
             {
-                cargo->SetZoom(0, 1.0f-m_progress);
+                cargo->SetScale(1.0f-m_progress);
             }
 
             if ( m_lastParticle+m_engine->ParticleAdapt(0.05f) <= m_time )
@@ -402,8 +402,8 @@ bool CAutoFactory::EventProcess(const Event &event)
 
                 vehicle->SetLock(false);  // vehicle useable
 //?             vehicle->GetPhysics()->GetBrain()->StartTaskAdvance(16.0f);
-                vehicle->SetAngleY(0, m_object->GetAngleY(0)+Math::PI);
-                vehicle->SetZoom(0, 1.0f);
+                vehicle->SetRotationY(m_object->GetRotationY()+Math::PI);
+                vehicle->SetScale(1.0f);
             }
 
             m_main->CreateShortcuts();
@@ -421,8 +421,8 @@ bool CAutoFactory::EventProcess(const Event &event)
             for ( i=0 ; i<9 ; i++ )
             {
                 angle = -(1.0f-m_progress)*(Math::PI/2.0f)+Math::PI/2.0f;
-                m_object->SetAngleZ( 1+i,  angle);
-                m_object->SetAngleZ(10+i, -angle);
+                m_object->SetPartRotationZ( 1+i,  angle);
+                m_object->SetPartRotationZ(10+i, -angle);
             }
 
             if ( m_lastParticle+m_engine->ParticleAdapt(0.1f) <= m_time )
@@ -443,8 +443,8 @@ bool CAutoFactory::EventProcess(const Event &event)
         {
             for ( i=0 ; i<9 ; i++ )
             {
-                m_object->SetAngleZ( 1+i,  Math::PI/2.0f);
-                m_object->SetAngleZ(10+i, -Math::PI/2.0f);
+                m_object->SetPartRotationZ( 1+i,  Math::PI/2.0f);
+                m_object->SetPartRotationZ(10+i, -Math::PI/2.0f);
             }
 
             SoundManip(3.0f, 1.0f, 0.5f);
@@ -464,8 +464,8 @@ bool CAutoFactory::EventProcess(const Event &event)
                 zoom = 0.30f+((1.0f-m_progress)-0.5f+i/16.0f)*2.0f*0.70f;
                 if ( zoom < 0.30f )  zoom = 0.30f;
                 if ( zoom > 1.00f )  zoom = 1.00f;
-                m_object->SetZoomZ( 1+i, zoom);
-                m_object->SetZoomZ(10+i, zoom);
+                m_object->SetPartScaleZ( 1+i, zoom);
+                m_object->SetPartScaleZ(10+i, zoom);
             }
 
             if ( m_lastParticle+m_engine->ParticleAdapt(0.1f) <= m_time )
@@ -486,8 +486,8 @@ bool CAutoFactory::EventProcess(const Event &event)
         {
             for ( i=0 ; i<9 ; i++ )
             {
-                m_object->SetZoomZ( 1+i, 0.30f);
-                m_object->SetZoomZ(10+i, 0.30f);
+                m_object->SetPartScaleZ( 1+i, 0.30f);
+                m_object->SetPartScaleZ(10+i, 0.30f);
             }
 
             if ( m_program != nullptr )
@@ -625,7 +625,7 @@ bool CAutoFactory::NearestVehicle()
 
 bool CAutoFactory::CreateVehicle()
 {
-    float angle = m_object->GetAngleY(0);
+    float angle = m_object->GetRotationY();
 
     Math::Vector pos;
     if ( m_type == OBJECT_MOBILErt ||

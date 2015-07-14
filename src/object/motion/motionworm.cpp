@@ -96,7 +96,7 @@ void CMotionWorm::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetObjectRank(0, rank);
     // This is an "empty" object, without triangles
     m_object->SetPosition(pos);
-    m_object->SetAngleY(0, angle);
+    m_object->SetRotationY(angle);
 
     // A vehicle must have a obligatory collision with a sphere of center (0, y, 0) (see GetCrashSphere).
     m_object->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 0.0f, 0.0f), 4.0f, SOUND_BOUM, 0.20f));
@@ -317,8 +317,8 @@ bool CMotionWorm::EventFrame(const Event &event)
         if ( zoom > 1.0f )  zoom = 2.0f-zoom;
         zoom *= 1.6f;
         if ( zoom < 1.0f )  zoom = 1.0f;
-        m_object->SetZoomY(i+1, 0.2f+zoom*0.8f);
-        m_object->SetZoomZ(i+1, zoom);
+        m_object->SetPartScaleY(i+1, 0.2f+zoom*0.8f);
+        m_object->SetPartScaleZ(i+1, zoom);
 
         if ( height[i] >= -1.0f && height[i] < -0.2f &&
              m_lastParticle+m_engine->ParticleAdapt(0.2f) <= m_armTimeMarch )
@@ -346,11 +346,11 @@ bool CMotionWorm::EventFrame(const Event &event)
         angle.z = -Math::RotateAngle(Math::Point(pos.x, pos.z).Length(), pos.y);
         angle.y = Math::PI-Math::RotateAngle(pos.x, pos.z);
         angle.x = 0.0f;
-        m_object->SetAngle(i+1, angle);
+        m_object->SetPartRotation(i+1, angle);
 
         if ( i == WORM_PART )
         {
-            m_object->SetAngle(i+2, angle);
+            m_object->SetPartRotation(i+2, angle);
         }
     }
 

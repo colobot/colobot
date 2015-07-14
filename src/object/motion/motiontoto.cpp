@@ -93,7 +93,7 @@ void CMotionToto::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetObjectRank(0, rank);
     modelManager->AddModelReference("toto1.mod", false, rank);
     m_object->SetPosition(pos);
-    m_object->SetAngleY(0, angle);
+    m_object->SetRotationY(angle);
 
     // Creates mouth.
     rank = m_engine->CreateObject();
@@ -110,7 +110,7 @@ void CMotionToto::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetObjectParent(2, 0);
     modelManager->AddModelReference("toto3.mod", true, rank);
     m_object->SetPartPosition(2, Math::Vector(0.85f, 1.04f, 0.25f));
-    m_object->SetAngleY(2, -20.0f*Math::PI/180.0f);
+    m_object->SetPartRotationY(2, -20.0f*Math::PI/180.0f);
 
     // Creates the right eye.
     rank = m_engine->CreateObject();
@@ -119,7 +119,7 @@ void CMotionToto::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetObjectParent(3, 0);
     modelManager->AddModelReference("toto3.mod", false, rank);
     m_object->SetPartPosition(3, Math::Vector(0.85f, 1.04f, -0.25f));
-    m_object->SetAngleY(3, 20.0f*Math::PI/180.0f);
+    m_object->SetPartRotationY(3, 20.0f*Math::PI/180.0f);
 
     // Creates left antenna.
     rank = m_engine->CreateObject();
@@ -128,7 +128,7 @@ void CMotionToto::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetObjectParent(4, 0);
     modelManager->AddModelReference("toto4.mod", false, rank);
     m_object->SetPartPosition(4, Math::Vector(0.0f, 1.9f, 0.3f));
-    m_object->SetAngleX(4, 30.0f*Math::PI/180.0f);
+    m_object->SetPartRotationX(4, 30.0f*Math::PI/180.0f);
 
     rank = m_engine->CreateObject();
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
@@ -136,7 +136,7 @@ void CMotionToto::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetObjectParent(5, 4);
     modelManager->AddModelReference("toto4.mod", false, rank);
     m_object->SetPartPosition(5, Math::Vector(0.0f, 0.67f, 0.0f));
-    m_object->SetAngleX(5, 30.0f*Math::PI/180.0f);
+    m_object->SetPartRotationX(5, 30.0f*Math::PI/180.0f);
 
     rank = m_engine->CreateObject();
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
@@ -144,7 +144,7 @@ void CMotionToto::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetObjectParent(6, 5);
     modelManager->AddModelReference("toto5.mod", false, rank);
     m_object->SetPartPosition(6, Math::Vector(0.0f, 0.70f, 0.0f));
-    m_object->SetAngleX(6, 30.0f*Math::PI/180.0f);
+    m_object->SetPartRotationX(6, 30.0f*Math::PI/180.0f);
 
     // Creates right antenna.
     rank = m_engine->CreateObject();
@@ -153,7 +153,7 @@ void CMotionToto::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetObjectParent(7, 0);
     modelManager->AddModelReference("toto4.mod", false, rank);
     m_object->SetPartPosition(7, Math::Vector(0.0f, 1.9f, -0.3f));
-    m_object->SetAngleX(7, -30.0f*Math::PI/180.0f);
+    m_object->SetPartRotationX(7, -30.0f*Math::PI/180.0f);
 
     rank = m_engine->CreateObject();
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
@@ -161,7 +161,7 @@ void CMotionToto::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetObjectParent(8, 7);
     modelManager->AddModelReference("toto4.mod", false, rank);
     m_object->SetPartPosition(8, Math::Vector(0.0f, 0.67f, 0.0f));
-    m_object->SetAngleX(8, -30.0f*Math::PI/180.0f);
+    m_object->SetPartRotationX(8, -30.0f*Math::PI/180.0f);
 
     rank = m_engine->CreateObject();
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
@@ -169,9 +169,9 @@ void CMotionToto::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetObjectParent(9, 8);
     modelManager->AddModelReference("toto5.mod", false, rank);
     m_object->SetPartPosition(9, Math::Vector(0.0f, 0.70f, 0.0f));
-    m_object->SetAngleX(9, -30.0f*Math::PI/180.0f);
+    m_object->SetPartRotationX(9, -30.0f*Math::PI/180.0f);
 
-    m_object->SetZoom(0, 0.5f);  // is little
+    m_object->SetScale(0.5f);  // is little
     m_object->SetFloorHeight(0.0f);
 
     pos = m_object->GetPosition();
@@ -193,7 +193,7 @@ return;
     m_actionTime = 0.0f;
     m_progress   = 0.0f;
 
-    m_object->SetAngleY(0, 0.0f);
+    m_object->SetRotationY(0.0f);
     m_mousePos = Math::Point(0.5f, 0.5f);
 }
 
@@ -454,7 +454,7 @@ bool CMotionToto::EventFrame(const Event &event)
     }
     level = Math::Min(linSpeed*0.1f, 1.0f);
     nAngle = nAngle*(1.0f-level) + mAngle*level;
-    aAngle = Math::NormAngle(m_object->GetAngleY(0));
+    aAngle = Math::NormAngle(m_object->GetRotationY());
 
     if ( nAngle < aAngle )
     {
@@ -573,7 +573,7 @@ bool CMotionToto::EventFrame(const Event &event)
         nPos.y -= vibLin.y;
     }
     m_object->SetPosition(nPos);
-    m_object->SetAngleY(0, nAngle);
+    m_object->SetRotationY(nAngle);
 
     SetLinVibration(vibLin);
     SetCirVibration(vibCir);
@@ -592,9 +592,9 @@ bool CMotionToto::EventFrame(const Event &event)
              sinf(m_time*Math::PI*2.83f)*(Math::PI/70.0f)+
              sinf(m_time*Math::PI*3.09f)*(Math::PI/90.0f);
 
-    m_object->SetAngle(4, pos);  // left antenna
-    m_object->SetAngle(5, pos);  // left antenna
-    m_object->SetAngle(6, pos);  // left antenna
+    m_object->SetPartRotation(4, pos);  // left antenna
+    m_object->SetPartRotation(5, pos);  // left antenna
+    m_object->SetPartRotation(6, pos);  // left antenna
 
     pos = aAntenna*0.40f;
     pos.x = -pos.x;
@@ -610,45 +610,45 @@ bool CMotionToto::EventFrame(const Event &event)
              sinf(m_time*Math::PI*2.38f)*(Math::PI/70.0f)+
              sinf(m_time*Math::PI*2.79f)*(Math::PI/90.0f);
 
-    m_object->SetAngle(7, pos);  // right antenna
-    m_object->SetAngle(8, pos);  // right antenna
-    m_object->SetAngle(9, pos);  // right antenna
+    m_object->SetPartRotation(7, pos);  // right antenna
+    m_object->SetPartRotation(8, pos);  // right antenna
+    m_object->SetPartRotation(9, pos);  // right antenna
 
     // Movement of the mouth.
     if ( m_actionType == MT_ERROR )  // no-no?
     {
-        m_object->SetAngleX(1, 0.0f);
-        m_object->SetAngleZ(1, 0.2f+sinf(m_time*10.0f)*0.2f);
-        m_object->SetZoomY(1, 2.0f+sinf(m_time*10.0f));
-        m_object->SetZoomZ(1, 1.0f);
+        m_object->SetPartRotationX(1, 0.0f);
+        m_object->SetPartRotationZ(1, 0.2f+sinf(m_time*10.0f)*0.2f);
+        m_object->SetPartScaleY(1, 2.0f+sinf(m_time*10.0f));
+        m_object->SetPartScaleZ(1, 1.0f);
     }
     else if ( m_actionType == MT_WARNING )  // warning?
     {
-        m_object->SetAngleX(1, 15.0f*Math::PI/180.0f);
-        m_object->SetAngleZ(1, 0.0f);
-        m_object->SetZoomY(1, 1.0f);
-        m_object->SetZoomZ(1, 1.0f);
+        m_object->SetPartRotationX(1, 15.0f*Math::PI/180.0f);
+        m_object->SetPartRotationZ(1, 0.0f);
+        m_object->SetPartScaleY(1, 1.0f);
+        m_object->SetPartScaleZ(1, 1.0f);
     }
     else if ( m_actionType == MT_INFO )  // yes-yes?
     {
-        m_object->SetAngleX(1, 0.0f);
-        m_object->SetAngleZ(1, 0.0f);
-        m_object->SetZoomY(1, 1.0f);
-        m_object->SetZoomZ(1, 0.7f+sinf(m_time*10.0f)*0.3f);
+        m_object->SetPartRotationX(1, 0.0f);
+        m_object->SetPartRotationZ(1, 0.0f);
+        m_object->SetPartScaleY(1, 1.0f);
+        m_object->SetPartScaleZ(1, 0.7f+sinf(m_time*10.0f)*0.3f);
     }
     else if ( m_actionType == MT_MESSAGE )  // message?
     {
-        m_object->SetAngleX(1, 0.0f);
-        m_object->SetAngleZ(1, 0.0f);
-        m_object->SetZoomY(1, 1.0f);
-        m_object->SetZoomZ(1, 0.8f+sinf(m_time*7.0f)*0.2f);
+        m_object->SetPartRotationX(1, 0.0f);
+        m_object->SetPartRotationZ(1, 0.0f);
+        m_object->SetPartScaleY(1, 1.0f);
+        m_object->SetPartScaleZ(1, 0.8f+sinf(m_time*7.0f)*0.2f);
     }
     else
     {
-        m_object->SetAngleX(1, 0.0f);
-        m_object->SetAngleZ(1, 0.0f);
-        m_object->SetZoomY(1, 1.0f);
-        m_object->SetZoomZ(1, 1.0f);
+        m_object->SetPartRotationX(1, 0.0f);
+        m_object->SetPartRotationZ(1, 0.0f);
+        m_object->SetPartScaleY(1, 1.0f);
+        m_object->SetPartScaleZ(1, 1.0f);
     }
 
     // Eye blinking management.
@@ -665,42 +665,42 @@ bool CMotionToto::EventFrame(const Event &event)
         {
             if ( m_blinkProgress < 0.5f )  zoom = m_blinkProgress/0.5f;
             else                           zoom = 2.0f-m_blinkProgress/0.5f;
-            m_object->SetZoomY(2, 1.0f-zoom*0.9f);
-            m_object->SetZoomY(3, 1.0f-zoom*0.9f);
+            m_object->SetPartScaleY(2, 1.0f-zoom*0.9f);
+            m_object->SetPartScaleY(3, 1.0f-zoom*0.9f);
         }
         else
         {
             m_blinkProgress = -1.0f;
             m_blinkTime = 0.1f+Math::Rand()*4.0f;
-            m_object->SetZoomY(2, 1.0f);
-            m_object->SetZoomY(3, 1.0f);
+            m_object->SetPartScaleY(2, 1.0f);
+            m_object->SetPartScaleY(3, 1.0f);
         }
     }
 
     if ( m_actionType == MT_ERROR )  // no-no?
     {
-        m_object->SetAngleX(2, -30.0f*Math::PI/180.0f);
-        m_object->SetAngleX(3,  30.0f*Math::PI/180.0f);
+        m_object->SetPartRotationX(2, -30.0f*Math::PI/180.0f);
+        m_object->SetPartRotationX(3,  30.0f*Math::PI/180.0f);
     }
     else if ( m_actionType == MT_WARNING )  // warning?
     {
-        m_object->SetAngleX(2, -15.0f*Math::PI/180.0f);
-        m_object->SetAngleX(3,  15.0f*Math::PI/180.0f);
+        m_object->SetPartRotationX(2, -15.0f*Math::PI/180.0f);
+        m_object->SetPartRotationX(3,  15.0f*Math::PI/180.0f);
     }
     else if ( m_actionType == MT_INFO )  // yes-yes?
     {
-        m_object->SetAngleX(2,  40.0f*Math::PI/180.0f);
-        m_object->SetAngleX(3, -40.0f*Math::PI/180.0f);
+        m_object->SetPartRotationX(2,  40.0f*Math::PI/180.0f);
+        m_object->SetPartRotationX(3, -40.0f*Math::PI/180.0f);
     }
     else if ( m_actionType == MT_MESSAGE )  // message?
     {
-        m_object->SetAngleX(2,  20.0f*Math::PI/180.0f);
-        m_object->SetAngleX(3, -20.0f*Math::PI/180.0f);
+        m_object->SetPartRotationX(2,  20.0f*Math::PI/180.0f);
+        m_object->SetPartRotationX(3, -20.0f*Math::PI/180.0f);
     }
     else
     {
-        m_object->SetAngleX(2, 0.0f);
-        m_object->SetAngleX(3, 0.0f);
+        m_object->SetPartRotationX(2, 0.0f);
+        m_object->SetPartRotationX(3, 0.0f);
     }
 
     mat = m_object->GetWorldMatrix(0);  // must be done every time!

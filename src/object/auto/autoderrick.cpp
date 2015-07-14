@@ -159,7 +159,7 @@ bool CAutoDerrick::EventProcess(const Event &event)
             pos.y = -2.0f*Math::Rand();
             m_object->SetPartPosition(1, pos);  // up / down the drill
 
-            m_object->SetAngleY(1, Math::Rand()*0.5f);  // rotates the drill
+            m_object->SetPartRotationY(1, Math::Rand()*0.5f);  // rotates the drill
         }
         return true;
     }
@@ -222,9 +222,9 @@ bool CAutoDerrick::EventProcess(const Event &event)
             pos.y = -m_progress*16.0f;
             m_object->SetPartPosition(1, pos);  // down the drill
 
-            angle = m_object->GetAngleY(1);
+            angle = m_object->GetPartRotationY(1);
             angle += event.rTime*8.0f;
-            m_object->SetAngleY(1, angle);  // rotates the drill
+            m_object->SetPartRotationY(1, angle);  // rotates the drill
         }
         else
         {
@@ -275,9 +275,9 @@ bool CAutoDerrick::EventProcess(const Event &event)
             pos.y = -(1.0f-m_progress)*16.0f;
             m_object->SetPartPosition(1, pos);  // back the drill
 
-            angle = m_object->GetAngleY(1);
+            angle = m_object->GetPartRotationY(1);
             angle -= event.rTime*2.0f;
-            m_object->SetAngleY(1, angle);  // rotates the drill
+            m_object->SetPartRotationY(1, angle);  // rotates the drill
         }
         else
         {
@@ -308,7 +308,7 @@ bool CAutoDerrick::EventProcess(const Event &event)
         {
             if ( SearchFree(m_cargoPos) )
             {
-                angle = m_object->GetAngleY(0);
+                angle = m_object->GetRotationY();
                 CreateCargo(m_cargoPos, angle, m_type, 16.0f);
             }
             else

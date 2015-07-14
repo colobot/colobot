@@ -1598,7 +1598,7 @@ bool CPhysics::EventFrame(const Event &event)
          newangle.y != angle.y ||
          newangle.z != angle.z )
     {
-        m_object->SetAngle(0, newangle);
+        m_object->SetRotation(newangle);
     }
 
     if ( newpos.x != pos.x ||
@@ -3028,7 +3028,7 @@ void CPhysics::PowerParticle(float factor, bool bBreak)
     {
         CObject* cargo = dynamic_cast<CCarrierObject*>(m_object)->GetCargo();
         if ( cargo != nullptr && cargo->GetType() == OBJECT_POWER &&
-            m_object->GetAngleZ(1) == ARM_STOCK_ANGLE1 )
+            m_object->GetPartRotationZ(1) == ARM_STOCK_ANGLE1 )
         {
             bCarryPower = true;  // carries a battery
         }
@@ -3371,7 +3371,7 @@ void CPhysics::MotorParticle(float aTime, float rTime)
             {
                 speed.y += m_linMotion.realSpeed.y*1.2f;
             }
-            a = m_object->GetAngleY(0);
+            a = m_object->GetRotationY();
             p.x = speed.x;
             p.y = speed.z;
             p = Math::RotatePoint(-a, p);
@@ -3494,7 +3494,7 @@ void CPhysics::MotorParticle(float aTime, float rTime)
             {
                 speed.y += m_linMotion.realSpeed.y*1.2f;
             }
-            a = m_object->GetAngleY(0);
+            a = m_object->GetRotationY();
             p.x = speed.x;
             p.y = speed.z;
             p = Math::RotatePoint(-a, p);
