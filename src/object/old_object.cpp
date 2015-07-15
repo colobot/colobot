@@ -709,6 +709,8 @@ bool COldObject::ExplodeObject(ExplosionType type, float force, float decay)
     }
     m_main->RemoveFromSelectionHistory(this);
 
+    SetTeam(0); // Back to neutral on destruction
+
     if ( m_botVar != 0 )
     {
         if ( m_type == OBJECT_STONE   ||
