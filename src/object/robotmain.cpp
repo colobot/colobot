@@ -219,6 +219,8 @@ CRobotMain::CRobotMain(CController* controller)
     m_endingLostRank  = 0;
     m_winTerminate   = false;
 
+    m_globalMagnifyDamage = 1.0f;
+
     m_exitAfterMission = false;
 
     m_autosave = true;
@@ -2909,6 +2911,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
         m_endTakeResearch = 0;
         m_endTakeWinDelay = 2.0f;
         m_endTakeLostDelay = 2.0f;
+        m_globalMagnifyDamage = 1.0f;
         m_obligatoryTotal = 0;
         m_prohibitedTotal = 0;
         m_mapShow = true;
@@ -3256,16 +3259,15 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 continue;
             }
 
-            if ((line->GetCommand() == "Global" || line->GetCommand() == "Level") && !resetObject)
+            if (line->GetCommand() == "Level" && !resetObject)
             {
-                if (line->GetCommand() == "Global")
-                    CLogger::GetInstancePointer()->Warn("Using Global is deprecated. Please use Level instead.\n");
-
                 g_unit = line->GetParam("unitScale")->AsFloat(4.0f);
                 m_engine->SetTracePrecision(line->GetParam("traceQuality")->AsFloat(1.0f));
                 m_shortCut = line->GetParam("shortcut")->AsBool(true);
 
                 m_missionType = line->GetParam("type")->AsMissionType(MISSION_NORMAL);
+                m_globalMagnifyDamage = line->GetParam("magnifyDamage")->AsFloat(1.0f);
+
                 continue;
             }
 
@@ -6298,3 +6300,7 @@ void CRobotMain::RemoveFromSelectionHistory(CObject* object)
     m_selectionHistory.erase(it, m_selectionHistory.end());
 }
 
+float CRobotMain::GetGlobalMagnifyDamage()
+{
+    return m_globalMagnifyDamage;
+}

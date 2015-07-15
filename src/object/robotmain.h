@@ -374,6 +374,9 @@ public:
 
     void        RemoveFromSelectionHistory(CObject* object);
 
+    //! Returns global magnifyDamage setting
+    float       GetGlobalMagnifyDamage();
+
 protected:
     bool        EventFrame(const Event &event);
     bool        EventObject(const Event &event);
@@ -511,6 +514,8 @@ protected:
     int             m_endingWinRank;
     int             m_endingLostRank;
     bool            m_winTerminate;
+
+    float           m_globalMagnifyDamage;
 
     bool            m_exitAfterMission;
 

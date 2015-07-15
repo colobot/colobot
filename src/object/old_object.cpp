@@ -559,6 +559,7 @@ bool COldObject::ExplodeObject(ExplosionType type, float force, float decay)
         loss = force;
     }
     loss *= m_magnifyDamage;
+    loss *= m_main->GetGlobalMagnifyDamage();
     loss *= decay;
 
     // Decreases the power of the shield.
@@ -3296,4 +3297,3 @@ void COldObject::SetScale(const Math::Vector& scale)
 {
     SetPartScale(0, scale);
 }
-
