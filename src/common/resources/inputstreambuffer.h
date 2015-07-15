@@ -19,15 +19,20 @@
 
 #pragma once
 
+#include <memory>
 #include <streambuf>
 #include <string>
+
 #include <physfs.h>
 
 class CInputStreamBuffer : public std::streambuf
 {
 public:
-    CInputStreamBuffer(size_t buffer_size = 512);
+    CInputStreamBuffer(size_t bufferSize = 512);
     virtual ~CInputStreamBuffer();
+
+    CInputStreamBuffer(const CInputStreamBuffer &) = delete;
+    CInputStreamBuffer &operator= (const CInputStreamBuffer &) = delete;
 
     void open(const std::string &filename);
     void close();
@@ -35,17 +40,12 @@ public:
     size_t size();
 
 private:
-    int_type underflow();
+    int_type underflow() override;
 
-    std::streampos seekpos(std::streampos sp, std::ios_base::openmode which);
-    std::streampos seekoff(std::streamoff off, std::ios_base::seekdir way, std::ios_base::openmode which);
+    std::streampos seekpos(std::streampos sp, std::ios_base::openmode which) override;
+    std::streampos seekoff(std::streamoff off, std::ios_base::seekdir way, std::ios_base::openmode which) override;
 
-    // copy ctor and assignment not implemented;
-    // copying not allowed
-    CInputStreamBuffer(const CInputStreamBuffer &);
-    CInputStreamBuffer &operator= (const CInputStreamBuffer &);
-
+    const size_t m_bufferSize;
     PHYSFS_File *m_file;
-    char *m_buffer;
-    size_t m_buffer_size;
+    std::unique_ptr<char[]> m_buffer;
 };

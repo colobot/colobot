@@ -24,18 +24,22 @@
 #include <stdexcept>
 #include <sstream>
 
-COutputStreamBuffer::COutputStreamBuffer(size_t buffer_size) : m_buffer_size(buffer_size)
+COutputStreamBuffer::COutputStreamBuffer(size_t bufferSize)
+    : m_file(nullptr)
 {
-    m_file = nullptr;
-    m_buffer = new char[buffer_size];
-    setp(m_buffer, m_buffer + buffer_size);
+    if (bufferSize <= 0)
+    {
+        throw std::runtime_error("File buffer must be larger then 0 bytes");
+    }
+
+    m_buffer = std::unique_ptr<char[]>(new char[bufferSize]);
+    setp(m_buffer.get(), m_buffer.get() + bufferSize);
 }
 
 
 COutputStreamBuffer::~COutputStreamBuffer()
 {
     close();
-    delete m_buffer;
 }
 
 
@@ -56,7 +60,7 @@ void COutputStreamBuffer::close()
 
 bool COutputStreamBuffer::is_open()
 {
-    return m_file;
+    return m_file != nullptr;
 }
 
 

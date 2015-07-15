@@ -24,22 +24,22 @@
 #include <stdexcept>
 #include <sstream>
 
-CInputStreamBuffer::CInputStreamBuffer(size_t buffer_size) : m_buffer_size(buffer_size)
+CInputStreamBuffer::CInputStreamBuffer(size_t bufferSize)
+  : m_bufferSize(bufferSize)
+  , m_file(nullptr)
 {
-    if (buffer_size <= 0)
+    if (bufferSize <= 0)
     {
         throw std::runtime_error("File buffer must be larger then 0 bytes");
     }
 
-    m_buffer = new char[buffer_size];
-    m_file = nullptr;
+    m_buffer = std::unique_ptr<char[]>(new char[bufferSize]);
 }
 
 
 CInputStreamBuffer::~CInputStreamBuffer()
 {
     close();
-    delete m_buffer;
 }
 
 
@@ -59,7 +59,7 @@ void CInputStreamBuffer::close()
 
 bool CInputStreamBuffer::is_open()
 {
-    return m_file;
+    return m_file != nullptr;
 }
 
 
@@ -77,11 +77,11 @@ std::streambuf::int_type CInputStreamBuffer::underflow()
     if (PHYSFS_eof(m_file))
         return traits_type::eof();
 
-    PHYSFS_sint64 read_count = PHYSFS_read(m_file, m_buffer, sizeof(char), m_buffer_size);
+    PHYSFS_sint64 read_count = PHYSFS_read(m_file, m_buffer.get(), sizeof(char), m_bufferSize);
     if (read_count <= 0)
         return traits_type::eof();
 
-    setg(m_buffer, m_buffer, m_buffer + read_count);
+    setg(m_buffer.get(), m_buffer.get(), m_buffer.get() + read_count);
 
     return traits_type::to_int_type(*gptr());
 }
@@ -96,7 +96,7 @@ std::streampos CInputStreamBuffer::seekpos(std::streampos sp, std::ios_base::ope
 std::streampos CInputStreamBuffer::seekoff(std::streamoff off, std::ios_base::seekdir way, std::ios_base::openmode which)
 {
     /* A bit of explanation:
-       We are reading file by m_buffer_size parts so our 3 internal pointers will be
+       We are reading file by m_bufferSize parts so our 3 internal pointers will be
        * eback (not used here) - start of block
        * gptr - position of read cursor in block
        * egtpr - end of block
@@ -125,7 +125,7 @@ std::streampos CInputStreamBuffer::seekoff(std::streamoff off, std::ios_base::se
 
     if (PHYSFS_seek(m_file, new_position))
     {
-        setg(m_buffer, m_buffer, m_buffer); // reset buffer
+        setg(m_buffer.get(), m_buffer.get(), m_buffer.get()); // reset buffer
 
         return pos_type(new_position);
     }

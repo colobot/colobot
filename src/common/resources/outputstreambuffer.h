@@ -19,28 +19,29 @@
 
 #pragma once
 
+#include <memory>
 #include <streambuf>
 #include <string>
+
 #include <physfs.h>
 
 class COutputStreamBuffer : public std::streambuf
 {
 public:
-    COutputStreamBuffer(size_t buffer_size = 512);
+    COutputStreamBuffer(size_t bufferSize = 512);
     virtual ~COutputStreamBuffer();
+
+    COutputStreamBuffer(const COutputStreamBuffer &) = delete;
+    COutputStreamBuffer &operator= (const COutputStreamBuffer &) = delete;
+
     void open(const std::string &filename);
     void close();
     bool is_open();
 
 private:
-    int_type overflow(int_type ch);
-    int sync();
+    int_type overflow(int_type ch) override;
+    int sync() override;
 
-    // copy ctor and assignment not implemented;
-    // copying not allowed
-    COutputStreamBuffer(const COutputStreamBuffer &);
-    COutputStreamBuffer &operator= (const COutputStreamBuffer &);
     PHYSFS_File *m_file;
-    char *m_buffer;
-    size_t m_buffer_size;
+    std::unique_ptr<char[]> m_buffer;
 };
