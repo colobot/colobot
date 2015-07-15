@@ -25,7 +25,7 @@
 
 #include "ui/edit.h"
 #include "ui/button.h"
-
+#include "ui/interface.h"
 
 
 
@@ -42,6 +42,8 @@ CEditValue::CEditValue() : CControl ()
     m_stepValue = 0.1f;  // 10%
     m_minValue = 0.0f;  // 0%
     m_maxValue = 1.0f;  // 100%
+
+    m_interface = nullptr;
 }
 
 // Object's destructor.
@@ -228,7 +230,7 @@ void CEditValue::HiliteValue(const Event &event)
     }
 
     m_edit->SetCursor(pos, 0);
-    m_edit->SetFocus(true);
+    m_interface->SetFocus(m_edit);
 
     Event newEvent = event;
     newEvent.type = EVENT_FOCUS;
@@ -368,6 +370,11 @@ void CEditValue::SetMaxValue(float value)
 float CEditValue::GetMaxValue()
 {
     return m_maxValue;
+}
+
+void CEditValue::SetInterface(CInterface* interface)
+{
+    m_interface = interface;
 }
 
 }

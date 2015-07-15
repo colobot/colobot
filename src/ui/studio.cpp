@@ -1168,7 +1168,7 @@ void CStudio::StartDialog(StudioDialog type)
         }
 
         pe->SetCursor(999, 0);  // selects all
-        pe->SetFocus(true);
+        m_interface->SetFocus(pe);
     }
 
     m_main->SetSatComLock(true);  // impossible to use the SatCom
@@ -1430,7 +1430,7 @@ void CStudio::UpdateChangeList()
     name = name.substr(0, name.find_first_of("\t"));
     SetFilenameField(pe, name);
     pe->SetCursor(999, 0);  // selects all
-    pe->SetFocus(true);
+    m_interface->SetFocus(pe);
 
     UpdateDialogAction();
 }

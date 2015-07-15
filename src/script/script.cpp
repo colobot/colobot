@@ -109,7 +109,7 @@ void CScript::PutScript(Ui::CEdit* edit, const char* name)
         edit->SetCursor(m_cursor2, m_cursor1);
         edit->ShowSelect();
     }
-    edit->SetFocus(true);
+    m_interface->SetFocus(edit);
 }
 
 // The script takes a paved text.
@@ -132,7 +132,7 @@ bool CScript::GetScript(Ui::CEdit* edit)
     {
         edit->SetCursor(m_cursor2, m_cursor1);
         edit->ShowSelect();
-        edit->SetFocus(true);
+        m_interface->SetFocus(edit);
         return false;
     }
 
@@ -140,7 +140,7 @@ bool CScript::GetScript(Ui::CEdit* edit)
     {
         edit->SetCursor(m_cursor2, m_cursor1);
         edit->ShowSelect();
-        edit->SetFocus(true);
+        m_interface->SetFocus(edit);
         return false;
     }
 
@@ -912,7 +912,7 @@ void CScript::New(Ui::CEdit* edit, const char* name)
 
     edit->SetCursor(cursor2, cursor1);
     edit->ShowSelect();
-    edit->SetFocus(true);
+    m_interface->SetFocus(edit);
 
     sf = m_main->GetScriptFile();
     if ( sf[0] != 0 )  // Load an empty program specific?
@@ -973,7 +973,7 @@ void CScript::New(Ui::CEdit* edit, const char* name)
             cursor2 = cursor1;
             edit->SetCursor(cursor2, cursor1);
             edit->ShowSelect();
-            edit->SetFocus(true);
+            m_interface->SetFocus(edit);
         }
     }
 

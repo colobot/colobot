@@ -711,7 +711,7 @@ bool CRobotMain::ProcessEvent(Event &event)
             Ui::CEdit* pe = static_cast<Ui::CEdit*>(m_interface->SearchControl(EVENT_CMD));
             if (pe == nullptr) return false;
             pe->SetState(Ui::STATE_VISIBLE);
-            pe->SetFocus(true);
+            m_interface->SetFocus(pe);
             if (m_phase == PHASE_SIMUL) ChangePause(PAUSE_CHEAT);
             m_cmdEdit = true;
         }
@@ -731,6 +731,9 @@ bool CRobotMain::ProcessEvent(Event &event)
         m_cmdEdit = false;
         return false;
     }
+
+    if (event.type == EVENT_KEY_DOWN && m_cmdEdit)
+        return false; // cheat console active, so ignore keys
 
     // Management of the speed change.
     if (event.type == EVENT_SPEED)

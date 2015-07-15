@@ -89,6 +89,8 @@ public:
 
     void        Draw();
 
+    void        SetFocus(CControl* control);
+
 protected:
     int GetNextFreeControl();
     template <typename T> inline T* CreateControl(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);

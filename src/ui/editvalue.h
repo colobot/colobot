@@ -72,10 +72,13 @@ public:
     void        SetMaxValue(float value);
     float       GetMaxValue();
 
+    void        SetInterface(Ui::CInterface* interface);
+
 protected:
     void        MoveAdjust();
     void        HiliteValue(const Event &event);
 
+    Ui::CInterface* m_interface;
     Ui::CEdit*      m_edit;
     Ui::CButton*    m_buttonUp;
     Ui::CButton*    m_buttonDown;

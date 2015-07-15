@@ -430,7 +430,7 @@ void CMainDialog::ChangePhase(Phase phase)
         }
         pe->SetText(name.c_str());
         pe->SetCursor(name.length(), 0);
-        pe->SetFocus(true);
+        m_interface->SetFocus(pe);
 
         pos.x = 380.0f/640.0f;
         pos.y = 320.0f/480.0f;
@@ -3624,7 +3624,7 @@ void CMainDialog::NameCreate()
         m_sound->Play(SOUND_TZOING);
         pe->SetText(name);
         pe->SetCursor(strlen(name), 0);
-        pe->SetFocus(true);
+        m_interface->SetFocus(pe);
         return;
     }
 
@@ -4011,7 +4011,7 @@ void CMainDialog::IOReadName()
 
     pe->SetText(name);
     pe->SetCursor(strlen(name), 0);
-    pe->SetFocus(true);
+    m_interface->SetFocus(pe);
 }
 
 // Updates the list of games recorded on disk.

@@ -384,7 +384,7 @@ void CDisplayInfo::StartDisplayInfo(std::string filename, int index, bool bSoluc
     edit->HyperHome(filename.c_str());
     edit->SetEditCap(false);  // just to see!
     edit->SetHighlightCap(false);
-    edit->SetFocus(true);
+    m_interface->SetFocus(edit);
 
     ViewDisplayInfo();
 

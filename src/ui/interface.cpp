@@ -181,7 +181,9 @@ CEdit* CInterface::CreateEdit(Math::Point pos, Math::Point dim, int icon, EventT
 
 CEditValue* CInterface::CreateEditValue(Math::Point pos, Math::Point dim, int icon, EventType eventMsg)
 {
-    return CreateControl<CEditValue>(pos, dim, icon, eventMsg);
+    CEditValue* ev = CreateControl<CEditValue>(pos, dim, icon, eventMsg);
+    ev->SetInterface(this);
+    return ev;
 }
 
 // Creates a new lift.
@@ -331,6 +333,19 @@ void CInterface::Draw()
             m_table[i]->Draw();
     }
 }
+
+void CInterface::SetFocus(CControl* control)
+{
+    for (int i = 0; i < MAXCONTROL; i++)
+    {
+        if (m_table[i] != nullptr)
+        {
+            bool focus = m_table[i] == control;
+            m_table[i]->SetFocus(focus);
+        }
+    }
+}
+
 
 } // namespace Ui
 
