@@ -27,14 +27,11 @@
 #include "sound/sound.h"
 #include "common/logger.h"
 
-#include "sound/oalsound/check.h"
-
 #include <string>
 #include <vector>
 #include <array>
 
 #include <al.h>
-#include <sndfile.h>
 
 class Buffer
 {

@@ -105,7 +105,8 @@ bool CResourceManager::SetSaveLocation(const std::string &location)
 
 std::string CResourceManager::GetSaveLocation()
 {
-    if(PHYSFS_isInit()) {
+    if (PHYSFS_isInit())
+    {
         return PHYSFS_getWriteDir();
     }
     return "";
@@ -145,15 +146,15 @@ SDL_RWops* CResourceManager::GetSDLFileHandler(const std::string &filename)
 }
 
 
-CSNDFile* CResourceManager::GetSNDFileHandler(const std::string &filename)
+std::unique_ptr<CSNDFile> CResourceManager::GetSNDFileHandler(const std::string &filename)
 {
-    return new CSNDFile(CleanPath(filename));
+    return std::unique_ptr<CSNDFile>(new CSNDFile(CleanPath(filename)));
 }
 
 
 bool CResourceManager::Exists(const std::string &filename)
 {
-    if(PHYSFS_isInit())
+    if (PHYSFS_isInit())
     {
         return PHYSFS_exists(CleanPath(filename).c_str());
     }
@@ -162,7 +163,7 @@ bool CResourceManager::Exists(const std::string &filename)
 
 bool CResourceManager::DirectoryExists(const std::string& directory)
 {
-    if(PHYSFS_isInit())
+    if (PHYSFS_isInit())
     {
         return PHYSFS_exists(CleanPath(directory).c_str()) && PHYSFS_isDirectory(CleanPath(directory).c_str());
     }
@@ -171,7 +172,7 @@ bool CResourceManager::DirectoryExists(const std::string& directory)
 
 bool CResourceManager::CreateDirectory(const std::string& directory)
 {
-    if(PHYSFS_isInit())
+    if (PHYSFS_isInit())
     {
         return PHYSFS_mkdir(CleanPath(directory).c_str());
     }
@@ -181,7 +182,7 @@ bool CResourceManager::CreateDirectory(const std::string& directory)
 //TODO: Don't use boost::filesystem here
 bool CResourceManager::RemoveDirectory(const std::string& directory)
 {
-    if(PHYSFS_isInit())
+    if (PHYSFS_isInit())
     {
         bool success = true;
         std::string writeDir = PHYSFS_getWriteDir();
@@ -206,8 +207,8 @@ bool CResourceManager::RemoveDirectory(const std::string& directory)
 std::vector<std::string> CResourceManager::ListFiles(const std::string &directory)
 {
     std::vector<std::string> result;
-    
-    if(PHYSFS_isInit())
+
+    if (PHYSFS_isInit())
     {
         char **files = PHYSFS_enumerateFiles(CleanPath(directory).c_str());
 
@@ -226,7 +227,7 @@ std::vector<std::string> CResourceManager::ListDirectories(const std::string &di
 {
     std::vector<std::string> result;
 
-    if(PHYSFS_isInit())
+    if (PHYSFS_isInit())
     {
         char **files = PHYSFS_enumerateFiles(CleanPath(directory).c_str());
 
@@ -247,7 +248,7 @@ std::vector<std::string> CResourceManager::ListDirectories(const std::string &di
 
 long long CResourceManager::GetFileSize(const std::string& filename)
 {
-    if(PHYSFS_isInit())
+    if (PHYSFS_isInit())
     {
         PHYSFS_File* file = PHYSFS_openRead(CleanPath(filename).c_str());
         if(file == nullptr) return -1;
@@ -260,7 +261,7 @@ long long CResourceManager::GetFileSize(const std::string& filename)
 
 long long CResourceManager::GetLastModificationTime(const std::string& filename)
 {
-    if(PHYSFS_isInit())
+    if (PHYSFS_isInit())
     {
         return PHYSFS_getLastModTime(CleanPath(filename).c_str());
     }
@@ -270,7 +271,7 @@ long long CResourceManager::GetLastModificationTime(const std::string& filename)
 //TODO: Don't use boost::filesystem. Why doesn't PHYSFS have this?
 bool CResourceManager::Move(const std::string& from, const std::string& to)
 {
-    if(PHYSFS_isInit())
+    if (PHYSFS_isInit())
     {
         bool success = true;
         std::string writeDir = PHYSFS_getWriteDir();
@@ -295,7 +296,7 @@ bool CResourceManager::Move(const std::string& from, const std::string& to)
 
 bool CResourceManager::Remove(const std::string& filename)
 {
-    if(PHYSFS_isInit())
+    if (PHYSFS_isInit())
     {
         return PHYSFS_delete(filename.c_str()) != 0;
     }

@@ -75,7 +75,6 @@ public:
     bool IsLoaded();
 
     bool SetBuffer(Buffer *);
-    bool FreeBuffer();
 
     bool HasEnvelope();
     SoundOper& GetEnvelope();

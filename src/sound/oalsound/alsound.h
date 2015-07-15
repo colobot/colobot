@@ -32,6 +32,7 @@
 #include "sound/oalsound/check.h"
 
 #include <map>
+#include <memory>
 #include <string>
 #include <list>
 
@@ -40,9 +41,19 @@
 
 struct OldMusic
 {
-    Channel* music;
-    float fadeTime;
-    float currentTime;
+    std::unique_ptr<Channel> music;
+    float fadeTime = 0.0f;
+    float currentTime = 0.0f;
+
+    inline friend bool operator<(const OldMusic & l, const OldMusic & r)
+    {
+        return l.currentTime < r.currentTime;
+    }
+
+    inline friend bool operator==(const OldMusic & l, const OldMusic & r)
+    {
+        return l.currentTime == r.currentTime;
+    }
 };
 
 class ALSound : public CSoundInterface
@@ -58,7 +69,6 @@ public:
     bool IsCachedMusic(const std::string &) override;
 
     bool GetEnable() override;
-
     void SetAudioVolume(int volume) override;
     int GetAudioVolume() override;
     void SetMusicVolume(int volume) override;
@@ -95,13 +105,13 @@ private:
     bool m_enabled;
     float m_audioVolume;
     float m_musicVolume;
-    unsigned int m_channels_limit;
+    unsigned int m_channelsLimit;
     ALCdevice* m_device;
     ALCcontext* m_context;
-    std::map<SoundType, Buffer*> m_sounds;
-    std::map<std::string, Buffer*> m_music;
-    std::map<int, Channel*> m_channels;
-    Channel *m_currentMusic;
+    std::map<SoundType, std::unique_ptr<Buffer>> m_sounds;
+    std::map<std::string, std::unique_ptr<Buffer>> m_music;
+    std::map<int, std::unique_ptr<Channel>> m_channels;
+    std::unique_ptr<Channel> m_currentMusic;
     std::list<OldMusic> m_oldMusic;
     OldMusic m_previousMusic;
     Math::Vector m_eye;

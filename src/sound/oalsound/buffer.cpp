@@ -20,16 +20,20 @@
 
 #include "sound/oalsound/buffer.h"
 
-#include <memory>
+#include "sound/oalsound/check.h"
 
 #include "common/resources/resourcemanager.h"
+#include "common/resources/sndfile.h"
+
+#include <memory>
 
 
 Buffer::Buffer()
-{
-    m_loaded = false;
-    m_duration = 0.0f;
-}
+    : m_buffer(),
+      m_sound(),
+      m_loaded(false),
+      m_duration(0.0f)
+{}
 
 
 Buffer::~Buffer()
@@ -48,7 +52,7 @@ bool Buffer::LoadFromFile(std::string filename, SoundType sound)
     m_sound = sound;
     GetLogger()->Debug("Loading audio file: %s\n", filename.c_str());
 
-    std::unique_ptr<CSNDFile> file = std::unique_ptr<CSNDFile>(CResourceManager::GetSNDFileHandler(filename));
+    std::unique_ptr<CSNDFile> file = CResourceManager::GetSNDFileHandler(filename);
 
     GetLogger()->Trace("  channels %d\n", file->GetFileInfo().channels);
     GetLogger()->Trace("  format %d\n", file->GetFileInfo().format);
@@ -81,7 +85,8 @@ bool Buffer::LoadFromFile(std::string filename, SoundType sound)
         data.insert(data.end(), buffer.begin(), buffer.begin() + read);
     }
 
-    alBufferData(m_buffer, file->GetFileInfo().channels == 1 ? AL_FORMAT_MONO16 : AL_FORMAT_STEREO16, &data.front(), data.size() * sizeof(uint16_t), file->GetFileInfo().samplerate);
+    ALenum format = file->GetFileInfo().channels == 1 ? AL_FORMAT_MONO16 : AL_FORMAT_STEREO16;
+    alBufferData(m_buffer, format, &data.front(), data.size() * sizeof(uint16_t), file->GetFileInfo().samplerate);
     m_duration = static_cast<float>(file->GetFileInfo().frames) / file->GetFileInfo().samplerate;
     m_loaded = true;
     return true;

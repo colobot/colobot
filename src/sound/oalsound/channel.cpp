@@ -21,6 +21,17 @@
 #include "sound/oalsound/channel.h"
 
 Channel::Channel()
+    : m_buffer(nullptr),
+      m_priority(0),
+      m_id(0),
+      m_startAmplitude(0.0f),
+      m_startFrequency(0.0f),
+      m_changeFrequency(0.0f),
+      m_initFrequency(0.0f),
+      m_volume(0.0f),
+      m_ready(false),
+      m_loop(false),
+      m_mute(false)
 {
     alGenSources(1, &m_source);
 
@@ -33,17 +44,6 @@ Channel::Channel()
     {
         m_ready = true;
     }
-
-    m_priority = 0;
-    m_buffer = nullptr;
-    m_loop = false;
-    m_mute = false;
-    m_initFrequency = 0.0f;
-    m_startAmplitude = 0.0f;
-    m_startFrequency = 0.0f;
-    m_changeFrequency = 0.0f;
-    m_volume = 0.0f;
-    m_id = 0;
 }
 
 
@@ -80,7 +80,7 @@ bool Channel::Play()
 
 bool Channel::Pause()
 {
-    if(!m_ready || !IsPlaying())
+    if (!m_ready || !IsPlaying())
     {
         return false;
     }
@@ -295,22 +295,6 @@ bool Channel::SetBuffer(Buffer *buffer)
     m_initFrequency = GetFrequency();
     return true;
 }
-
-
-bool Channel::FreeBuffer()
-{
-    if (!m_ready || !m_buffer)
-    {
-        return false;
-    }
-
-    alSourceStop(m_source);
-    alSourcei(m_source, AL_BUFFER, 0);
-    delete m_buffer;
-    m_buffer = nullptr;
-    return true;
-}
-
 
 bool Channel::IsPlaying()
 {

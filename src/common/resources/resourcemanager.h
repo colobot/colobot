@@ -19,18 +19,20 @@
 
 #pragma once
 
-#include <vector>
-#include <string>
-#include <SDL.h>
-
 #include "common/resources/sndfile.h"
+
+#include <memory>
+#include <string>
+#include <vector>
+
+#include <SDL.h>
 
 class CResourceManager
 {
 public:
     CResourceManager(const char *argv0);
     ~CResourceManager();
-    
+
     static std::string CleanPath(const std::string &path);
 
     static bool AddLocation(const std::string &location, bool prepend = true);
@@ -40,7 +42,7 @@ public:
     static std::string GetSaveLocation();
 
     static SDL_RWops* GetSDLFileHandler(const std::string &filename);
-    static CSNDFile* GetSNDFileHandler(const std::string &filename);
+    static std::unique_ptr<CSNDFile> GetSNDFileHandler(const std::string &filename);
 
     //! Check if file exists
     static bool Exists(const std::string &filename);
@@ -56,13 +58,13 @@ public:
     static std::vector<std::string> ListFiles(const std::string &directory);
     //! List directories contained in directory
     static std::vector<std::string> ListDirectories(const std::string &directory);
-    
-    
+
+
     //! Returns file size in bytes
     static long long GetFileSize(const std::string &filename);
     //! Returns last modification date as timestamp
     static long long GetLastModificationTime(const std::string &filename);
-    
+
     //! Move file/directory
     static bool Move(const std::string &from, const std::string &to);
     //! Remove file
