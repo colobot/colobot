@@ -282,7 +282,7 @@ bool ALSound::SearchFreeBuffer(SoundType sound, int &channel, bool &alreadyLoade
                 {
                     chn->SetPriority(priority);
                     chn->Reset();
-                    m_channels[++i] = std::move(chn); // TODO: is ++i here correct?
+                    m_channels[i] = std::move(chn);
                     channel = i;
                     alreadyLoaded = false;
                     return true;
