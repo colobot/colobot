@@ -89,7 +89,6 @@ CEngine::CEngine(CApplication *app)
     m_waterAddColor   = Color(0.0f, 0.0f, 0.0f, 0.0f);
 
     m_render            = true;
-    m_movieLock         = false;
     m_shadowVisible     = true;
     m_groundSpotVisible = true;
     m_dirty             = true;
@@ -488,17 +487,19 @@ void CEngine::FrameUpdate()
 bool CEngine::WriteScreenShot(const std::string& fileName, int width, int height)
 {
     void *pixels = m_device->GetFrameBufferPixels();
-    CImage img({width,height});
+    CImage img({width, height});
 
     img.SetDataPixels(pixels);
     img.flipVertically();
 
-    if ( img.SavePNG(fileName.c_str()) ){
-       GetLogger()->Info("Save SceenShot Saved Successfully!\n");
+    if ( img.SavePNG(fileName.c_str()) )
+    {
+       GetLogger()->Debug("Save screenshot saved successfully\n");
        return true;
     }
-    else{
-       GetLogger()->Error("%s!\n",img.GetError().c_str());
+    else
+    {
+       GetLogger()->Error("%s!\n", img.GetError().c_str());
        return false;
     }
 }
@@ -506,16 +507,6 @@ bool CEngine::WriteScreenShot(const std::string& fileName, int width, int height
 bool CEngine::GetPause()
 {
     return m_pause->GetPause();
-}
-
-void CEngine::SetMovieLock(bool lock)
-{
-    m_movieLock = lock;
-}
-
-bool CEngine::GetMovieLock()
-{
-    return m_movieLock;
 }
 
 void CEngine::SetShowStats(bool show)
@@ -5135,4 +5126,3 @@ void CEngine::SetStaticMeshTransparency(int meshHandle, float value)
 }
 
 } // namespace Gfx
-

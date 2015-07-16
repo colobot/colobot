@@ -283,8 +283,6 @@ void CRobotMain::Create(bool loadProfile)
 
     m_engine->SetTerrain(m_terrain);
 
-    m_engine->SetMovieLock(m_movieLock);
-
     m_app->SetMouseMode(MOUSE_ENGINE);
 
     m_movie->Flush();
@@ -472,7 +470,6 @@ void CRobotMain::ChangePhase(Phase phase)
     m_freePhoto   = false;
     m_resetCreate = false;
 
-    m_engine->SetMovieLock(m_movieLock);
     ChangePause(PAUSE_NONE);
     FlushDisplayInfo();
     m_engine->SetRankView(0);
@@ -5827,7 +5824,6 @@ bool CRobotMain::GetShowMap()
 void CRobotMain::SetMovieLock(bool lock)
 {
     m_movieLock = lock;
-    m_engine->SetMovieLock(m_movieLock);
 
     CreateShortcuts();
     m_map->ShowMap(!m_movieLock && m_mapShow);

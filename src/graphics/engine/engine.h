@@ -732,12 +732,6 @@ public:
     TEST_VIRTUAL bool GetPause();
 
     //@{
-    //! Management of lock for the duration of movie sequence
-    void            SetMovieLock(bool lock);
-    bool            GetMovieLock();
-    //@}
-
-    //@{
     //! Management of displaying statistic information
     void            SetShowStats(bool show);
     bool            GetShowStats();
@@ -1372,8 +1366,6 @@ protected:
     std::string     m_fpsText;
     //! Rendering enabled?
     bool            m_render;
-    //! Lock for duration of movie?
-    bool            m_movieLock;
 
     //! Projection matrix for 3D scene
     Math::Matrix    m_matProj;
@@ -1544,4 +1536,3 @@ protected:
 
 
 } // namespace Gfx
-

@@ -81,7 +81,7 @@ bool CLightning::EventProcess(const Event &event)
 bool CLightning::EventFrame(const Event &event)
 {
     if (m_engine->GetPause()) return true;
-    if (m_engine->GetMovieLock()) return true;
+    if (CRobotMain::GetInstancePointer()->GetMovieLock()) return true;
 
     m_progress += event.rTime*m_speed;
 
@@ -417,4 +417,3 @@ CObject* CLightning::SearchObject(Math::Vector pos)
 
 
 } // namespace Gfx
-
