@@ -73,7 +73,7 @@ bool CMainShort::CreateShortcuts()
     }
     m_shortcuts.clear();
 
-    // Display STOP / movie indicator
+    // Display pause / movie indicator
     dim.x = 28.0f/640.0f;
     dim.y = 28.0f/480.0f;
     pos.x =  4.0f/640.0f;
@@ -134,10 +134,10 @@ bool CMainShort::CreateShortcuts()
         int icon = GetShortcutIcon(pObj->GetType());
         if ( icon == -1 )  continue;
 
-        unsigned int team_index = std::find(teams.begin(), teams.end(), pObj->GetTeam()) - teams.begin();
+        unsigned int teamIndex = std::find(teams.begin(), teams.end(), pObj->GetTeam()) - teams.begin();
 
-        CShortcut* shortcut = m_interface->CreateShortcut(positions[team_index], dim, icon, static_cast<EventType>(EVENT_OBJECT_SHORTCUT+rank));
-        positions[team_index].x += dim.x;
+        CShortcut* shortcut = m_interface->CreateShortcut(positions[teamIndex], dim, icon, static_cast<EventType>(EVENT_OBJECT_SHORTCUT+rank));
+        positions[teamIndex].x += dim.x;
         m_shortcuts.push_back(pObj);
 
         std::string tooltipName;
@@ -258,26 +258,27 @@ void CMainShort::SelectNext()
 
     CObject* pPrev = m_main->DeselectAll();
 
-    unsigned int i = 0;
-    auto it = std::find(m_shortcuts.begin(), m_shortcuts.end(), pPrev);
-    if (it != m_shortcuts.end())
-    {
-        i = it-m_shortcuts.begin();
-        i++;
-        if (i >= m_shortcuts.size())
-        {
-            i = 0;
-        }
-    }
-
-    if(i < m_shortcuts.size())
-    {
-        m_main->SelectObject(m_shortcuts[i]);
-    }
-    else
+    if(m_shortcuts.size() == 0)
     {
         m_main->SelectHuman();
+        return;
     }
+
+    // Find the current object in the list
+    auto it = std::find(m_shortcuts.begin(), m_shortcuts.end(), pPrev);
+
+    // Get the next one
+    if (it != m_shortcuts.end())
+    {
+        ++it;
+    }
+    // If there is no more left, return to the first one
+    if (it == m_shortcuts.end())
+    {
+        it = m_shortcuts.begin();
+    }
+
+    m_main->SelectObject(*it);
 }
 
 

@@ -22,6 +22,8 @@
 
 #include "common/logger.h"
 
+#include <boost/lexical_cast.hpp>
+
 namespace
 {
 static EventType UNIQUE_EVENT_TYPE = EVENT_USER;
@@ -459,8 +461,6 @@ void InitializeEventTypeTexts()
     EVENT_TYPE_TEXT[EVENT_OBJECT_CAMERAnear] = "EVENT_OBJECT_CAMERAnear";
     EVENT_TYPE_TEXT[EVENT_OBJECT_CAMERAaway] = "EVENT_OBJECT_CAMERAaway";
     EVENT_TYPE_TEXT[EVENT_OBJECT_SHORTCUT_MODE] = "EVENT_OBJECT_SHORTCUT_MODE";
-    EVENT_TYPE_TEXT[EVENT_OBJECT_SHORTCUT]   = "EVENT_OBJECT_SHORTCUT";
-    EVENT_TYPE_TEXT[EVENT_OBJECT_SHORTCUT_MAX] = "EVENT_OBJECT_SHORTCUT_MAX";
     EVENT_TYPE_TEXT[EVENT_OBJECT_MOVIELOCK]  = "EVENT_OBJECT_MOVIELOCK";
     EVENT_TYPE_TEXT[EVENT_OBJECT_EDITLOCK]   = "EVENT_OBJECT_EDITLOCK";
     EVENT_TYPE_TEXT[EVENT_OBJECT_LIMIT]      = "EVENT_OBJECT_LIMIT";
@@ -509,6 +509,16 @@ std::string ParseEventType(EventType eventType)
 
     if (eventType < EVENT_STD_MAX)
     {
+        if(eventType >= EVENT_INTERFACE_KEY && eventType <= EVENT_INTERFACE_KEY_END)
+        {
+            return "EVENT_INTERFACE_KEY"+boost::lexical_cast<std::string>(eventType-EVENT_INTERFACE_KEY);
+        }
+
+        if(eventType >= EVENT_OBJECT_SHORTCUT && eventType <= EVENT_OBJECT_SHORTCUT_MAX)
+        {
+            return "EVENT_OBJECT_SHORTCUT"+boost::lexical_cast<std::string>(eventType-EVENT_OBJECT_SHORTCUT);
+        }
+
         const char* stdEvent = EVENT_TYPE_TEXT[eventType];
         if (stdEvent[0] == 0)
             return Other("STD_UNDEFINED");
@@ -516,13 +526,10 @@ std::string ParseEventType(EventType eventType)
         return stdEvent;
     }
 
-    if(eventType >= EVENT_INTERFACE_KEY && eventType <= EVENT_INTERFACE_KEY_END)
-    {
-        return Other("EVENT_INTERFACE_KEY - EVENT_INTERFACE_KEY_END ");
-    }
-
     if (eventType >= EVENT_USER)
+    {
         return Other("USER_EVENT");
+    }
 
     return Other("UNDEFINED");
 }
