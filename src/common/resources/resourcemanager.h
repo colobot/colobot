@@ -20,12 +20,11 @@
 #pragma once
 
 #include "common/resources/sndfile.h"
+#include "common/resources/sdl_file_wrapper.h"
 
 #include <memory>
 #include <string>
 #include <vector>
-
-#include <SDL.h>
 
 class CResourceManager
 {
@@ -41,7 +40,7 @@ public:
     static bool SetSaveLocation(const std::string &location);
     static std::string GetSaveLocation();
 
-    static SDL_RWops* GetSDLFileHandler(const std::string &filename);
+    static std::unique_ptr<CSDLFileWrapper> GetSDLFileHandler(const std::string &filename);
     static std::unique_ptr<CSNDFile> GetSNDFileHandler(const std::string &filename);
 
     //! Check if file exists
@@ -69,11 +68,4 @@ public:
     static bool Move(const std::string &from, const std::string &to);
     //! Remove file
     static bool Remove(const std::string& filename);
-
-private:
-    static int SDLSeek(SDL_RWops *context, int offset, int whence);
-    static int SDLRead(SDL_RWops *context, void *ptr, int size, int maxnum);
-    static int SDLWrite(SDL_RWops *context, const void *ptr, int size, int num);
-    static int SDLClose(SDL_RWops *context);
-    static bool CheckSDLContext(SDL_RWops *context);
 };

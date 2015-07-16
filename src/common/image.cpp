@@ -389,16 +389,16 @@ bool CImage::Load(const std::string& fileName)
 
     m_error = "";
 
-    SDL_RWops* pointer = CResourceManager::GetSDLFileHandler(fileName.c_str());
-    if (pointer == nullptr)
+    auto file = CResourceManager::GetSDLFileHandler(fileName.c_str());
+    if (!file->IsOpen())
     {
         delete m_data;
         m_data = nullptr;
-            
+
         m_error = "Unable to open file";
         return false;
     }
-    m_data->surface = IMG_Load_RW(pointer, 1);
+    m_data->surface = IMG_Load_RW(file->GetHandler(), 1);
     if (m_data->surface == nullptr)
     {
         delete m_data;
@@ -439,9 +439,9 @@ void CImage::SetDataPixels(void *pixels){
 
     Uint8* srcPixels = static_cast<Uint8*> (pixels);
     Uint8* resultPixels = static_cast<Uint8*> (m_data->surface->pixels);
- 
+
     Uint32 pitch = m_data->surface->pitch;
- 
+
     for(int line = 0; line < m_data->surface->h; ++line) {
         Uint32 pos = line * pitch;
         memcpy(&resultPixels[pos], &srcPixels[pos], pitch);
@@ -458,21 +458,21 @@ void CImage::flipVertically(){
                                                 m_data->surface->format->Gmask,
                                                 m_data->surface->format->Bmask,
                                                 m_data->surface->format->Amask);
-    
+
     assert(result != nullptr);
- 
+
     Uint8* srcPixels = static_cast<Uint8*> (m_data->surface->pixels);
     Uint8* resultPixels = static_cast<Uint8*> (result->pixels);
- 
+
     Uint32 pitch = m_data->surface->pitch;
     Uint32 pxLength = pitch*m_data->surface->h;
- 
+
     for(int line = 0; line < m_data->surface->h; ++line) {
         Uint32 pos = line * pitch;
         memcpy(&resultPixels[pos], &srcPixels[(pxLength-pos)-pitch], pitch);
     }
-    
+
     SDL_FreeSurface(m_data->surface);
 
-    m_data->surface = result;                                
+    m_data->surface = result;
 }

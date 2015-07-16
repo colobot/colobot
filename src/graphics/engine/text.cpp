@@ -350,7 +350,8 @@ float CText::GetStringWidth(std::string text, FontType font, float size)
 
 float CText::GetCharWidth(UTF8Char ch, FontType font, float size, float offset)
 {
-    if (font == FONT_BUTTON) {
+    if (font == FONT_BUTTON)
+    {
         Math::IntPoint windowSize = m_engine->GetWindowSize();
         float height = GetHeight(FONT_COLOBOT, size);
         float width = height*(static_cast<float>(windowSize.y)/windowSize.x);
@@ -970,16 +971,24 @@ CachedFont* CText::GetOrOpenFont(FontType font, float size)
         return m_lastCachedFont;
     }
 
-    m_lastCachedFont = new CachedFont();
-    SDL_RWops* file = CResourceManager::GetSDLFileHandler(mf->fileName);
-    if(file == nullptr)
+    auto file = CResourceManager::GetSDLFileHandler(mf->fileName);
+    if (!file->IsOpen())
     {
         m_error = std::string("Unable to open file");
         return nullptr;
     }
-    m_lastCachedFont->font = TTF_OpenFontRW(file, 1, pointSize);
+
+    SDL_RWops* handler = file->ReleaseHandler();
+
+    m_lastCachedFont = new CachedFont();
+    m_lastCachedFont->font = TTF_OpenFontRW(handler, 1, pointSize);
     if (m_lastCachedFont->font == nullptr)
+    {
+        SDL_RWclose(handler);
         m_error = std::string("TTF_OpenFont error ") + std::string(TTF_GetError());
+        delete m_lastCachedFont;
+        return nullptr;
+    }
 
     mf->fonts[pointSize] = m_lastCachedFont;
 

@@ -93,6 +93,7 @@ set(BASE_SOURCES
     common/resources/outputstream.cpp
     common/resources/outputstreambuffer.cpp
     common/resources/resourcemanager.cpp
+    common/resources/sdl_file_wrapper.cpp
     common/resources/sndfile.cpp
     common/restext.cpp
     common/stringutils.cpp
