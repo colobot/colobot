@@ -399,7 +399,7 @@ void InitializeRestext()
     stringsEvent[EVENT_OBJECT_CAMERAaway]   = TR("Camera awayest");
     stringsEvent[EVENT_OBJECT_HELP]         = TR("Help about selected object");
     stringsEvent[EVENT_OBJECT_SOLUCE]       = TR("Show the solution");
-    stringsEvent[EVENT_OBJECT_SHORTCUT00]   = TR("Switch bots <-> buildings");
+    stringsEvent[EVENT_OBJECT_SHORTCUT_MODE]= TR("Switch bots <-> buildings");
     stringsEvent[EVENT_OBJECT_LIMIT]        = TR("Show the range");
     stringsEvent[EVENT_OBJECT_PEN0]         = TR("\\Raise the pencil");
     stringsEvent[EVENT_OBJECT_PEN1]         = TR("\\Use the black pencil");

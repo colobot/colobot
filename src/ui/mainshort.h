@@ -23,9 +23,11 @@
 
 #include "common/event.h"
 
+#include "graphics/engine/engine.h"
+
 #include "math/point.h"
 
-#include "graphics/engine/engine.h"
+#include "object/object_type.h"
 
 #include "ui/interface.h"
 
@@ -39,7 +41,6 @@ public:
     ~CMainShort();
 
     void        SetMode(bool bBuilding);
-    void        FlushShortcuts();
     bool        CreateShortcuts();
     bool        UpdateShortcuts();
     void        SelectShortcut(EventType event);
@@ -48,6 +49,7 @@ public:
     void        SetHighlight(CObject* pObj);
 
 protected:
+    int         GetShortcutIcon(ObjectType type);
 
 protected:
     CEventQueue*      m_event;
@@ -55,9 +57,8 @@ protected:
     CInterface*     m_interface;
     CRobotMain*     m_main;
 
-    CObject*        m_shortcuts[20];
+    std::vector<CObject*> m_shortcuts;
     bool            m_bBuilding;
 };
 
 }
-

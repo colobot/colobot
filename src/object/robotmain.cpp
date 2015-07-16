@@ -321,7 +321,6 @@ void CRobotMain::Create(bool loadProfile)
         if (GetProfile().GetFloatProperty("Edit", "IODimY",   fValue)) m_IODim.y  = fValue;
     }
 
-    m_short->FlushShortcuts();
     InitEye();
 
     m_engine->SetTracePrecision(1.0f);
@@ -863,7 +862,7 @@ bool CRobotMain::ProcessEvent(Event &event)
                 }
                 if (event.key.slot == INPUT_SLOT_NEXT && ((event.kmodState & KEY_MOD(CTRL)) != 0))
                 {
-                    m_short->SelectShortcut(EVENT_OBJECT_SHORTCUT00); // switch bots <-> buildings
+                    m_short->SelectShortcut(EVENT_OBJECT_SHORTCUT_MODE); // switch bots <-> buildings
                     return false;
                 }
                 if (event.key.slot == INPUT_SLOT_NEXT)
@@ -1020,29 +1019,6 @@ bool CRobotMain::ProcessEvent(Event &event)
                 StopDisplayVisit();
                 break;
 
-            case EVENT_OBJECT_SHORTCUT00:
-            case EVENT_OBJECT_SHORTCUT01:
-            case EVENT_OBJECT_SHORTCUT02:
-            case EVENT_OBJECT_SHORTCUT03:
-            case EVENT_OBJECT_SHORTCUT04:
-            case EVENT_OBJECT_SHORTCUT05:
-            case EVENT_OBJECT_SHORTCUT06:
-            case EVENT_OBJECT_SHORTCUT07:
-            case EVENT_OBJECT_SHORTCUT08:
-            case EVENT_OBJECT_SHORTCUT09:
-            case EVENT_OBJECT_SHORTCUT10:
-            case EVENT_OBJECT_SHORTCUT11:
-            case EVENT_OBJECT_SHORTCUT12:
-            case EVENT_OBJECT_SHORTCUT13:
-            case EVENT_OBJECT_SHORTCUT14:
-            case EVENT_OBJECT_SHORTCUT15:
-            case EVENT_OBJECT_SHORTCUT16:
-            case EVENT_OBJECT_SHORTCUT17:
-            case EVENT_OBJECT_SHORTCUT18:
-            case EVENT_OBJECT_SHORTCUT19:
-                m_short->SelectShortcut(event.type);
-                break;
-
             case EVENT_OBJECT_MOVIELOCK:
                 AbortMovie();
                 break;
@@ -1059,6 +1035,11 @@ bool CRobotMain::ProcessEvent(Event &event)
 
             default:
                 break;
+        }
+
+        if (event.type >= EVENT_OBJECT_SHORTCUT_MODE && event.type <= EVENT_OBJECT_SHORTCUT_MAX)
+        {
+            m_short->SelectShortcut(event.type);
         }
 
         EventObject(event);

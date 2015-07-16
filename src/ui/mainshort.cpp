@@ -22,6 +22,8 @@
 
 #include "app/app.h"
 
+#include "common/logger.h"
+
 #include "object/object_manager.h"
 #include "object/object.h"
 
@@ -37,7 +39,7 @@ CMainShort::CMainShort()
     m_main      = CRobotMain::GetInstancePointer();
     m_interface = m_main->GetInterface();
 
-    FlushShortcuts();
+    m_shortcuts.clear();
 }
 
 // Destructor of the application card.
@@ -53,65 +55,25 @@ void CMainShort::SetMode(bool bBuilding)
     m_bBuilding = bBuilding;
 }
 
-
-
-// Reset all shortcuts.
-
-void CMainShort::FlushShortcuts()
-{
-    int     i;
-
-    for ( i=0 ; i<20 ; i++ )
-    {
-        m_shortcuts[i] = 0;
-    }
-}
-
-static EventType table_sc_em[20] =
-{
-    EVENT_OBJECT_SHORTCUT00,
-    EVENT_OBJECT_SHORTCUT01,
-    EVENT_OBJECT_SHORTCUT02,
-    EVENT_OBJECT_SHORTCUT03,
-    EVENT_OBJECT_SHORTCUT04,
-    EVENT_OBJECT_SHORTCUT05,
-    EVENT_OBJECT_SHORTCUT06,
-    EVENT_OBJECT_SHORTCUT07,
-    EVENT_OBJECT_SHORTCUT08,
-    EVENT_OBJECT_SHORTCUT09,
-    EVENT_OBJECT_SHORTCUT10,
-    EVENT_OBJECT_SHORTCUT11,
-    EVENT_OBJECT_SHORTCUT12,
-    EVENT_OBJECT_SHORTCUT13,
-    EVENT_OBJECT_SHORTCUT14,
-    EVENT_OBJECT_SHORTCUT15,
-    EVENT_OBJECT_SHORTCUT16,
-    EVENT_OBJECT_SHORTCUT17,
-    EVENT_OBJECT_SHORTCUT18,
-    EVENT_OBJECT_SHORTCUT19,
-};
-
 // Interface creates shortcuts to the units.
 
 bool CMainShort::CreateShortcuts()
 {
-    CControl*   pc;
-    ObjectType  type;
     Math::Point     pos, dim;
-    int         i, rank, icon;
 
     if ( m_main->GetFixScene() )  return false;
 
+    // Delete all old controls
     m_interface->DeleteControl(EVENT_OBJECT_MOVIELOCK);
     m_interface->DeleteControl(EVENT_OBJECT_EDITLOCK);
-    for ( i=0 ; i<20 ; i++ )
+    m_interface->DeleteControl(EVENT_OBJECT_SHORTCUT_MODE);
+    for (int i = EVENT_OBJECT_SHORTCUT; i <= EVENT_OBJECT_SHORTCUT_MAX; i++)
     {
-        if ( i != 0 && m_shortcuts[i] == nullptr )  continue;
-
-        m_interface->DeleteControl(table_sc_em[i]);
-        m_shortcuts[i] = 0;
+        m_interface->DeleteControl(static_cast<EventType>(i));
     }
+    m_shortcuts.clear();
 
+    // Display STOP / movie indicator
     dim.x = 28.0f/640.0f;
     dim.y = 28.0f/480.0f;
     pos.x =  4.0f/640.0f;
@@ -136,106 +98,129 @@ bool CMainShort::CreateShortcuts()
         return true;
     }
 
-    rank = 0;
+    // Create new shortcuts
 
-    m_interface->CreateShortcut(pos, dim, 2, table_sc_em[rank]);
+    m_interface->CreateShortcut(pos, dim, 2, EVENT_OBJECT_SHORTCUT_MODE);
     pos.x += dim.x*1.2f;
-    m_shortcuts[rank] = 0;
-    rank ++;
 
+    std::vector<int> teams;
+    for (CObject* object : CObjectManager::GetInstancePointer()->GetAllObjects())
+    {
+        if (!object->GetActive())
+            continue;
+
+        if(GetShortcutIcon(object->GetType()) == -1)
+            continue;
+
+        if(std::find(teams.begin(), teams.end(), object->GetTeam()) == teams.end())
+            teams.push_back(object->GetTeam());
+    }
+    std::sort(teams.begin(), teams.end());
+
+    std::vector<Math::Point> positions;
+    for(unsigned int i = 0; i < teams.size(); i++)
+    {
+        positions.push_back(pos);
+        pos.y -= dim.y;
+    }
+
+    int rank = 0;
     for (CObject* pObj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
         if ( !pObj->GetActive() )  continue;
         if ( !pObj->GetSelectable() )  continue;
         if ( pObj->GetProxyActivate() )  continue;
 
-        type = pObj->GetType();
-        icon = -1;
-        if ( m_bBuilding )
-        {
-            if ( type == OBJECT_FACTORY  )  icon = 32;
-            if ( type == OBJECT_DERRICK  )  icon = 33;
-            if ( type == OBJECT_CONVERT  )  icon = 34;
-            if ( type == OBJECT_RESEARCH )  icon = 35;
-            if ( type == OBJECT_STATION  )  icon = 36;
-            if ( type == OBJECT_TOWER    )  icon = 37;
-            if ( type == OBJECT_LABO     )  icon = 38;
-            if ( type == OBJECT_ENERGY   )  icon = 39;
-            if ( type == OBJECT_RADAR    )  icon = 40;
-            if ( type == OBJECT_INFO     )  icon = 44;
-            if ( type == OBJECT_REPAIR   )  icon = 41;
-            if ( type == OBJECT_DESTROYER)  icon = 41;
-            if ( type == OBJECT_NUCLEAR  )  icon = 42;
-            if ( type == OBJECT_PARA     )  icon = 46;
-            if ( type == OBJECT_SAFE     )  icon = 47;
-            if ( type == OBJECT_HUSTON   )  icon = 48;
-            if ( type == OBJECT_BASE     )  icon = 43;
-        }
-        else
-        {
-            if ( type == OBJECT_HUMAN    )  icon =  8;
-            if ( type == OBJECT_MOBILEfa )  icon = 11;
-            if ( type == OBJECT_MOBILEta )  icon = 10;
-            if ( type == OBJECT_MOBILEwa )  icon =  9;
-            if ( type == OBJECT_MOBILEia )  icon = 22;
-            if ( type == OBJECT_MOBILEfc )  icon = 17;
-            if ( type == OBJECT_MOBILEtc )  icon = 16;
-            if ( type == OBJECT_MOBILEwc )  icon = 15;
-            if ( type == OBJECT_MOBILEic )  icon = 23;
-            if ( type == OBJECT_MOBILEfi )  icon = 27;
-            if ( type == OBJECT_MOBILEti )  icon = 26;
-            if ( type == OBJECT_MOBILEwi )  icon = 25;
-            if ( type == OBJECT_MOBILEii )  icon = 28;
-            if ( type == OBJECT_MOBILEfs )  icon = 14;
-            if ( type == OBJECT_MOBILEts )  icon = 13;
-            if ( type == OBJECT_MOBILEws )  icon = 12;
-            if ( type == OBJECT_MOBILEis )  icon = 24;
-            if ( type == OBJECT_MOBILErt )  icon = 18;
-            if ( type == OBJECT_MOBILErc )  icon = 19;
-            if ( type == OBJECT_MOBILErr )  icon = 20;
-            if ( type == OBJECT_MOBILErs )  icon = 29;
-            if ( type == OBJECT_MOBILEsa )  icon = 21;
-            if ( type == OBJECT_MOBILEft )  icon = 30;
-            if ( type == OBJECT_MOBILEtt )  icon = 30;
-            if ( type == OBJECT_MOBILEwt )  icon = 30;
-            if ( type == OBJECT_MOBILEit )  icon = 30;
-            if ( type == OBJECT_MOBILEdr )  icon = 48;
-            if ( type == OBJECT_APOLLO2  )  icon = 49;
-        }
+        int icon = GetShortcutIcon(pObj->GetType());
         if ( icon == -1 )  continue;
 
-        m_interface->CreateShortcut(pos, dim, icon, table_sc_em[rank]);
-        pos.x += dim.x;
-        m_shortcuts[rank] = pObj;
+        unsigned int team_index = std::find(teams.begin(), teams.end(), pObj->GetTeam()) - teams.begin();
 
-        pc = m_interface->SearchControl(table_sc_em[rank]);
-        if ( pc != nullptr )
-        {
-            std::string tooltipName;
-            pObj->GetTooltipName(tooltipName);
-            pc->SetTooltip(tooltipName);
-        }
+        CShortcut* shortcut = m_interface->CreateShortcut(positions[team_index], dim, icon, static_cast<EventType>(EVENT_OBJECT_SHORTCUT+rank));
+        positions[team_index].x += dim.x;
+        m_shortcuts.push_back(pObj);
+
+        std::string tooltipName;
+        pObj->GetTooltipName(tooltipName);
+        shortcut->SetTooltip(tooltipName);
+
         rank ++;
 
-        if ( rank >= 20 )  break;
+        if (rank > EVENT_OBJECT_SHORTCUT_MAX-EVENT_OBJECT_SHORTCUT)
+        {
+            CLogger::GetInstancePointer()->Warn("Not enough shortcut slots!\n");
+            break;
+        }
     }
 
     UpdateShortcuts();
     return true;
 }
 
+int CMainShort::GetShortcutIcon(ObjectType type)
+{
+    int icon = -1;
+    if ( m_bBuilding )
+    {
+        if ( type == OBJECT_FACTORY  )  icon = 32;
+        if ( type == OBJECT_DERRICK  )  icon = 33;
+        if ( type == OBJECT_CONVERT  )  icon = 34;
+        if ( type == OBJECT_RESEARCH )  icon = 35;
+        if ( type == OBJECT_STATION  )  icon = 36;
+        if ( type == OBJECT_TOWER    )  icon = 37;
+        if ( type == OBJECT_LABO     )  icon = 38;
+        if ( type == OBJECT_ENERGY   )  icon = 39;
+        if ( type == OBJECT_RADAR    )  icon = 40;
+        if ( type == OBJECT_INFO     )  icon = 44;
+        if ( type == OBJECT_REPAIR   )  icon = 41;
+        if ( type == OBJECT_DESTROYER)  icon = 41;
+        if ( type == OBJECT_NUCLEAR  )  icon = 42;
+        if ( type == OBJECT_PARA     )  icon = 46;
+        if ( type == OBJECT_SAFE     )  icon = 47;
+        if ( type == OBJECT_HUSTON   )  icon = 48;
+        if ( type == OBJECT_BASE     )  icon = 43;
+    }
+    else
+    {
+        if ( type == OBJECT_HUMAN    )  icon =  8;
+        if ( type == OBJECT_MOBILEfa )  icon = 11;
+        if ( type == OBJECT_MOBILEta )  icon = 10;
+        if ( type == OBJECT_MOBILEwa )  icon =  9;
+        if ( type == OBJECT_MOBILEia )  icon = 22;
+        if ( type == OBJECT_MOBILEfc )  icon = 17;
+        if ( type == OBJECT_MOBILEtc )  icon = 16;
+        if ( type == OBJECT_MOBILEwc )  icon = 15;
+        if ( type == OBJECT_MOBILEic )  icon = 23;
+        if ( type == OBJECT_MOBILEfi )  icon = 27;
+        if ( type == OBJECT_MOBILEti )  icon = 26;
+        if ( type == OBJECT_MOBILEwi )  icon = 25;
+        if ( type == OBJECT_MOBILEii )  icon = 28;
+        if ( type == OBJECT_MOBILEfs )  icon = 14;
+        if ( type == OBJECT_MOBILEts )  icon = 13;
+        if ( type == OBJECT_MOBILEws )  icon = 12;
+        if ( type == OBJECT_MOBILEis )  icon = 24;
+        if ( type == OBJECT_MOBILErt )  icon = 18;
+        if ( type == OBJECT_MOBILErc )  icon = 19;
+        if ( type == OBJECT_MOBILErr )  icon = 20;
+        if ( type == OBJECT_MOBILErs )  icon = 29;
+        if ( type == OBJECT_MOBILEsa )  icon = 21;
+        if ( type == OBJECT_MOBILEft )  icon = 30;
+        if ( type == OBJECT_MOBILEtt )  icon = 30;
+        if ( type == OBJECT_MOBILEwt )  icon = 30;
+        if ( type == OBJECT_MOBILEit )  icon = 30;
+        if ( type == OBJECT_MOBILEdr )  icon = 48;
+        if ( type == OBJECT_APOLLO2  )  icon = 49;
+    }
+    return icon;
+}
+
 // Updates the interface shortcuts to the units.
 
 bool CMainShort::UpdateShortcuts()
 {
-    CControl*   pc;
-    int         i;
-
-    for ( i=0 ; i<20 ; i++ )
+    for(unsigned int i = 0; i < m_shortcuts.size(); i++)
     {
-        if ( m_shortcuts[i] == nullptr )  continue;
-
-        pc = m_interface->SearchControl(table_sc_em[i]);
+        CControl* pc = m_interface->SearchControl(static_cast<EventType>(EVENT_OBJECT_SHORTCUT+i));
         if ( pc != nullptr )
         {
             pc->SetState(STATE_CHECK, m_shortcuts[i]->GetSelect());
@@ -249,25 +234,16 @@ bool CMainShort::UpdateShortcuts()
 
 void CMainShort::SelectShortcut(EventType event)
 {
-    int     i;
-
-    for ( i=0 ; i<20 ; i++ )
+    if (event == EVENT_OBJECT_SHORTCUT_MODE)
     {
-        if ( event == table_sc_em[i] )
-        {
-            if ( i != 0 && m_shortcuts[i] == nullptr )  continue;
+        m_bBuilding = !m_bBuilding;
+        CreateShortcuts();
+    }
 
-            if ( i == 0 )  // buildings <-> vehicles?
-            {
-                m_bBuilding = !m_bBuilding;
-                CreateShortcuts();
-            }
-            else
-            {
-                m_main->SelectObject(m_shortcuts[i]);
-            }
-            return;
-        }
+    if(event >= EVENT_OBJECT_SHORTCUT && event <= EVENT_OBJECT_SHORTCUT_MAX)
+    {
+        unsigned int i = event-EVENT_OBJECT_SHORTCUT;
+        m_main->SelectObject(m_shortcuts[i]);
     }
 }
 
@@ -276,31 +252,31 @@ void CMainShort::SelectShortcut(EventType event)
 
 void CMainShort::SelectNext()
 {
-    CObject*    pPrev;
-    int         i;
-
     if ( m_main->GetMovieLock() ||
          m_main->GetEditLock()  ||
          m_engine->GetPause()   )  return;
 
-    pPrev = m_main->DeselectAll();
+    CObject* pPrev = m_main->DeselectAll();
 
-    for ( i=1 ; i<20 ; i++ )
+    unsigned int i = 0;
+    auto it = std::find(m_shortcuts.begin(), m_shortcuts.end(), pPrev);
+    if (it != m_shortcuts.end())
     {
-        if ( m_shortcuts[i] == pPrev )
+        i = it-m_shortcuts.begin();
+        i++;
+        if (i >= m_shortcuts.size())
         {
-            if ( m_shortcuts[++i] == nullptr )  i = 1;
-            break;
+            i = 0;
         }
     }
 
-    if ( i == 20 || m_shortcuts[i] == nullptr )
+    if(i < m_shortcuts.size())
     {
-        m_main->SelectHuman();
+        m_main->SelectObject(m_shortcuts[i]);
     }
     else
     {
-        m_main->SelectObject(m_shortcuts[i]);
+        m_main->SelectHuman();
     }
 }
 
@@ -309,19 +285,13 @@ void CMainShort::SelectNext()
 
 CObject* CMainShort::DetectShort(Math::Point pos)
 {
-    CControl*   pc;
-    Math::Point     cpos, cdim;
-    int         i;
-
-    for ( i=0 ; i<20 ; i++ )
+    for (unsigned int i = 0; i < m_shortcuts.size(); i++)
     {
-        if ( m_shortcuts[i] == nullptr )  continue;
-
-        pc = m_interface->SearchControl(table_sc_em[i]);
-        if ( pc != 0 )
+        CControl* pc = m_interface->SearchControl(static_cast<EventType>(EVENT_OBJECT_SHORTCUT+i));
+        if ( pc != nullptr )
         {
-            cpos = pc->GetPos();
-            cdim = pc->GetDim();
+            Math::Point cpos = pc->GetPos();
+            Math::Point cdim = pc->GetDim();
 
             if ( pos.x >= cpos.x        &&
                  pos.x <= cpos.x+cdim.x &&
@@ -339,14 +309,9 @@ CObject* CMainShort::DetectShort(Math::Point pos)
 
 void CMainShort::SetHighlight(CObject* pObj)
 {
-    CControl*   pc;
-    int         i;
-
-    for ( i=0 ; i<20 ; i++ )
+    for (unsigned int i = 0; i < m_shortcuts.size(); i++)
     {
-        if ( m_shortcuts[i] == nullptr )  continue;
-
-        pc = m_interface->SearchControl(table_sc_em[i]);
+        CControl* pc = m_interface->SearchControl(static_cast<EventType>(EVENT_OBJECT_SHORTCUT+i));
         if ( pc == nullptr )  continue;
 
         if ( m_shortcuts[i] == pObj )
