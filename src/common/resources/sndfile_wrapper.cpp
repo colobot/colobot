@@ -17,12 +17,12 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-#include "common/resources/sndfile.h"
+#include "common/resources/sndfile_wrapper.h"
 
 #include <cstring>
 
 
-CSNDFile::CSNDFile(const std::string& filename)
+CSNDFileWrapper::CSNDFileWrapper(const std::string& filename)
     : m_file_info{}
     , m_snd_file{nullptr}
     , m_file{nullptr}
@@ -52,7 +52,7 @@ CSNDFile::CSNDFile(const std::string& filename)
 }
 
 
-CSNDFile::~CSNDFile()
+CSNDFileWrapper::~CSNDFileWrapper()
 {
     if (m_file)
     {
@@ -65,43 +65,43 @@ CSNDFile::~CSNDFile()
 }
 
 
-bool CSNDFile::IsOpen()
+bool CSNDFileWrapper::IsOpen()
 {
     return m_file && m_snd_file;
 }
 
 
-SF_INFO &CSNDFile::GetFileInfo()
+SF_INFO &CSNDFileWrapper::GetFileInfo()
 {
     return m_file_info;
 }
 
 
-std::string& CSNDFile::GetLastError()
+std::string& CSNDFileWrapper::GetLastError()
 {
     return m_last_error;
 }
 
 
-sf_count_t CSNDFile::Read(short int *ptr, sf_count_t items)
+sf_count_t CSNDFileWrapper::Read(short int *ptr, sf_count_t items)
 {
     return sf_read_short(m_snd_file, ptr, items);
 }
 
 
-sf_count_t CSNDFile::SNDLength(void *data)
+sf_count_t CSNDFileWrapper::SNDLength(void *data)
 {
     return PHYSFS_fileLength(static_cast<PHYSFS_File *>(data));
 }
 
 
-sf_count_t CSNDFile::SNDRead(void *ptr, sf_count_t count, void *data)
+sf_count_t CSNDFileWrapper::SNDRead(void *ptr, sf_count_t count, void *data)
 {
     return PHYSFS_read(static_cast<PHYSFS_File *>(data), ptr, 1, count);
 }
 
 
-sf_count_t CSNDFile::SNDSeek(sf_count_t offset, int whence, void *data)
+sf_count_t CSNDFileWrapper::SNDSeek(sf_count_t offset, int whence, void *data)
 {
     PHYSFS_File *file = static_cast<PHYSFS_File *>(data);
     switch(whence)
@@ -121,13 +121,13 @@ sf_count_t CSNDFile::SNDSeek(sf_count_t offset, int whence, void *data)
 }
 
 
-sf_count_t CSNDFile::SNDTell(void *data)
+sf_count_t CSNDFileWrapper::SNDTell(void *data)
 {
     return PHYSFS_tell(static_cast<PHYSFS_File *>(data));
 }
 
 
-sf_count_t CSNDFile::SNDWrite(const void *ptr, sf_count_t count, void *data)
+sf_count_t CSNDFileWrapper::SNDWrite(const void *ptr, sf_count_t count, void *data)
 {
     return PHYSFS_write(static_cast<PHYSFS_File *>(data), ptr, 1, count);
 }

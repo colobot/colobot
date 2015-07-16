@@ -94,7 +94,7 @@ set(BASE_SOURCES
     common/resources/outputstreambuffer.cpp
     common/resources/resourcemanager.cpp
     common/resources/sdl_file_wrapper.cpp
-    common/resources/sndfile.cpp
+    common/resources/sndfile_wrapper.cpp
     common/restext.cpp
     common/stringutils.cpp
     graphics/core/color.cpp

@@ -19,7 +19,7 @@
 
 #pragma once
 
-#include "common/resources/sndfile.h"
+#include "common/resources/sndfile_wrapper.h"
 #include "common/resources/sdl_file_wrapper.h"
 
 #include <memory>
@@ -41,7 +41,7 @@ public:
     static std::string GetSaveLocation();
 
     static std::unique_ptr<CSDLFileWrapper> GetSDLFileHandler(const std::string &filename);
-    static std::unique_ptr<CSNDFile> GetSNDFileHandler(const std::string &filename);
+    static std::unique_ptr<CSNDFileWrapper> GetSNDFileHandler(const std::string &filename);
 
     //! Check if file exists
     static bool Exists(const std::string &filename);

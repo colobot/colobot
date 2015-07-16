@@ -23,7 +23,6 @@
 #include "sound/oalsound/check.h"
 
 #include "common/resources/resourcemanager.h"
-#include "common/resources/sndfile.h"
 
 #include <memory>
 
@@ -52,7 +51,7 @@ bool Buffer::LoadFromFile(std::string filename, SoundType sound)
     m_sound = sound;
     GetLogger()->Debug("Loading audio file: %s\n", filename.c_str());
 
-    std::unique_ptr<CSNDFile> file = CResourceManager::GetSNDFileHandler(filename);
+    auto file = CResourceManager::GetSNDFileHandler(filename);
 
     GetLogger()->Trace("  channels %d\n", file->GetFileInfo().channels);
     GetLogger()->Trace("  format %d\n", file->GetFileInfo().format);

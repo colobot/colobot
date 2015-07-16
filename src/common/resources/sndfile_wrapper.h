@@ -20,15 +20,19 @@
 #pragma once
 
 #include <string>
+
 #include <physfs.h>
 #include <sndfile.h>
 
 
-class CSNDFile
+class CSNDFileWrapper
 {
 public:
-    CSNDFile(const std::string &filename);
-    virtual ~CSNDFile();
+    CSNDFileWrapper(const std::string &filename);
+    virtual ~CSNDFileWrapper();
+
+    CSNDFileWrapper(const CSNDFileWrapper&) = delete;
+    CSNDFileWrapper& operator=(const CSNDFileWrapper&) = delete;
 
     SF_INFO &GetFileInfo();
     bool IsOpen();
