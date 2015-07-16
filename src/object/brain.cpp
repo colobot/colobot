@@ -3064,7 +3064,6 @@ bool CBrain::TraceRecordOper(TraceOper oper, float param)
 bool CBrain::TraceRecordPut(char *buffer, int max, TraceOper oper, float param)
 {
     char    line[100];
-    int     color;
 
     if ( oper == TO_ADVANCE )
     {
@@ -3084,22 +3083,16 @@ bool CBrain::TraceRecordPut(char *buffer, int max, TraceOper oper, float param)
     {
         param = -param*180.0f/Math::PI;
         sprintf(line, "\tturn(%d);\n", static_cast<int>(param));
-//?     sprintf(line, "\tturn(%.1f);\n", param);
         strncat(buffer, line, max-1);
     }
 
     if ( oper == TO_PEN )
     {
-        color = static_cast<int>(param);
-        if ( color == -1 )  strncat(buffer, "\tpenup();\n",         max-1);
-        if ( color ==  1 )  strncat(buffer, "\tpendown(Black);\n",  max-1);
-        if ( color ==  8 )  strncat(buffer, "\tpendown(Yellow);\n", max-1);
-        if ( color ==  7 )  strncat(buffer, "\tpendown(Orange);\n", max-1);
-        if ( color ==  4 )  strncat(buffer, "\tpendown(Red);\n",    max-1);
-        if ( color ==  6 )  strncat(buffer, "\tpendown(Purple);\n", max-1);
-        if ( color == 14 )  strncat(buffer, "\tpendown(Blue);\n",   max-1);
-        if ( color == 12 )  strncat(buffer, "\tpendown(Green);\n",  max-1);
-        if ( color == 10 )  strncat(buffer, "\tpendown(Brown);\n",  max-1);
+        TraceColor color = static_cast<TraceColor>(param);
+        if ( color == TraceColor::Default )
+            strncat(buffer, "\tpenup();\n", max-1);
+        else
+            strncat(buffer, ("\tpendown("+TraceColorName(color)+");\n").c_str(), max-1);
     }
 
     return true;
