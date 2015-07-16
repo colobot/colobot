@@ -130,6 +130,5 @@ private:
 //! Global function to get Logger instance
 inline CLogger* GetLogger()
 {
-    return CLogger::GetInstancePointer();
+    return GetLogger();
 }
-

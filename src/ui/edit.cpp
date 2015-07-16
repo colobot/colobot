@@ -1449,7 +1449,7 @@ bool CEdit::ReadText(std::string filename, int addSize)
 
     if (!stream.is_open())
     {
-        CLogger::GetInstancePointer()->Error("Failed to load text file %s\n", filename.c_str());
+        GetLogger()->Error("Failed to load text file %s\n", filename.c_str());
         return false;
     }
 
@@ -1627,7 +1627,7 @@ bool CEdit::ReadText(std::string filename, int addSize)
                 {
                     if (iIndex >= EDITIMAGEMAX)
                     {
-                        CLogger::GetInstancePointer()->Warn("Too many images, current limit is %d image lines. This limit will be removed in the future.\n", EDITIMAGEMAX);
+                        GetLogger()->Warn("Too many images, current limit is %d image lines. This limit will be removed in the future.\n", EDITIMAGEMAX);
                         break;
                     }
                     m_image[iIndex].name = iName;

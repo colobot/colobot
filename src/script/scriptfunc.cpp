@@ -758,7 +758,7 @@ bool CScriptFunctions::rFactory(CBotVar* thisclass, CBotVar* var, CBotVar* resul
     {
         exception = ERR_GENERIC;
         result->SetValInt(ERR_GENERIC);
-        CLogger::GetInstancePointer()->Error("in object.factory() - factory is nullptr");
+        GetLogger()->Error("in object.factory() - factory is nullptr");
         return false;
     }
 
@@ -776,7 +776,7 @@ bool CScriptFunctions::rFactory(CBotVar* thisclass, CBotVar* var, CBotVar* resul
         {
             exception = ERR_GENERIC;
             result->SetValInt(ERR_GENERIC);
-            CLogger::GetInstancePointer()->Error("in object.factory() - automat is nullptr");
+            GetLogger()->Error("in object.factory() - automat is nullptr");
             return false;
         }
 
@@ -3165,7 +3165,7 @@ void PrepareFilename(CBotString &filename)
     boost::filesystem::create_directories(CScriptFunctions::m_filesDir);
     #endif
     filename = CBotString(CScriptFunctions::m_filesDir.c_str()) + CBotString("/") + filename;
-    CLogger::GetInstancePointer()->Debug("CBot accessing file '%s'\n", static_cast<const char*>(filename));
+    GetLogger()->Debug("CBot accessing file '%s'\n", static_cast<const char*>(filename));
 }
 
 

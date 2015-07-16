@@ -46,7 +46,7 @@ void CPauseManager::SetPause(PauseType pause)
     {
         if (m_pause != pause)
         {
-            CLogger::GetInstancePointer()->Info("Game paused - %s\n", GetPauseName(pause).c_str());
+            GetLogger()->Info("Game paused - %s\n", GetPauseName(pause).c_str());
             CRobotMain::GetInstancePointer()->StartPauseMusic(pause);
         }
 
@@ -60,7 +60,7 @@ void CPauseManager::ClearPause()
 {
     if(m_pause != PAUSE_NONE)
     {
-        CLogger::GetInstancePointer()->Info("Game resumed\n");
+        GetLogger()->Info("Game resumed\n");
         m_sound->StopPauseMusic();
     }
 

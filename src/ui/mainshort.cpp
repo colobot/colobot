@@ -148,7 +148,7 @@ bool CMainShort::CreateShortcuts()
 
         if (rank > EVENT_OBJECT_SHORTCUT_MAX-EVENT_OBJECT_SHORTCUT)
         {
-            CLogger::GetInstancePointer()->Warn("Not enough shortcut slots!\n");
+            GetLogger()->Warn("Not enough shortcut slots!\n");
             break;
         }
     }

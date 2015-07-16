@@ -34,21 +34,21 @@ CSDLFileWrapper::CSDLFileWrapper(const std::string& filename)
 {
     if (!PHYSFS_isInit())
     {
-        CLogger::GetInstancePointer()->Error("PHYSFS not initialized!\n");
+        GetLogger()->Error("PHYSFS not initialized!\n");
         return;
     }
 
     PHYSFS_File *file = PHYSFS_openRead(filename.c_str());
     if (file == nullptr)
     {
-        CLogger::GetInstancePointer()->Error("Error opening file with PHYSFS: \"%s\"\n", filename.c_str());
+        GetLogger()->Error("Error opening file with PHYSFS: \"%s\"\n", filename.c_str());
         return;
     }
 
     m_rwops = SDL_AllocRW();
     if (m_rwops == nullptr)
     {
-        CLogger::GetInstancePointer()->Error("Unable to allocate SDL_RWops for \"%s\"\n", filename.c_str());
+        GetLogger()->Error("Unable to allocate SDL_RWops for \"%s\"\n", filename.c_str());
         return;
     }
 

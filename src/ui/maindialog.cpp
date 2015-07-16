@@ -347,7 +347,7 @@ void CMainDialog::ChangePhase(Phase phase)
             }
             catch (CLevelParserException& e)
             {
-                CLogger::GetInstancePointer()->Error("Failed loading userlevel button name: %s\n", e.what());
+                GetLogger()->Error("Failed loading userlevel button name: %s\n", e.what());
             }
         }
 
@@ -4002,7 +4002,7 @@ void CMainDialog::IOReadName()
     }
     catch (CLevelParserException& e)
     {
-        CLogger::GetInstancePointer()->Warn("%s\n", e.what());
+        GetLogger()->Warn("%s\n", e.what());
     }
 
     time(&now);
@@ -6033,7 +6033,7 @@ void CMainDialog::WriteGamerPerso(char *gamer)
     }
     catch (CLevelParserException& e)
     {
-        CLogger::GetInstancePointer()->Error("Unable to write personalized player apperance: %s\n", e.what());
+        GetLogger()->Error("Unable to write personalized player apperance: %s\n", e.what());
     }
 }
 
@@ -6064,7 +6064,7 @@ void CMainDialog::ReadGamerPerso(char *gamer)
     }
     catch (CLevelParserException& e)
     {
-        CLogger::GetInstancePointer()->Error("Unable to read personalized player apperance: %s\n", e.what());
+        GetLogger()->Error("Unable to read personalized player apperance: %s\n", e.what());
     }
 }
 
@@ -6142,7 +6142,7 @@ bool CMainDialog::ReadGamerInfo()
     file.open(GetSavegameDir()+"/"+m_main->GetGamerName()+"/"+m_sceneName+".gam");
     if (!file.is_open())
     {
-        CLogger::GetInstancePointer()->Error("Unable to read list of finished missions\n");
+        GetLogger()->Error("Unable to read list of finished missions\n");
         return false;
     }
 
@@ -6185,7 +6185,7 @@ bool CMainDialog::WriteGamerInfo()
     file.open(GetSavegameDir()+"/"+m_main->GetGamerName()+"/"+m_sceneName+".gam");
     if (!file.is_open())
     {
-        CLogger::GetInstancePointer()->Error("Unable to read list of finished missions\n");
+        GetLogger()->Error("Unable to read list of finished missions\n");
         return false;
     }
 

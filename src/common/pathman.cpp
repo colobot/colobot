@@ -79,7 +79,7 @@ void CPathManager::SetSavePath(std::string savePath)
 
 void CPathManager::AddMod(std::string modPath)
 {
-    CLogger::GetInstancePointer()->Info("Loading mod: '%s'\n", modPath.c_str());
+    GetLogger()->Info("Loading mod: '%s'\n", modPath.c_str());
     CResourceManager::AddLocation(modPath, true);
 }
 
@@ -107,7 +107,7 @@ std::string CPathManager::VerifyPaths()
     #endif
     if (! (boost::filesystem::exists(dataPath) && boost::filesystem::is_directory(dataPath)) )
     {
-        CLogger::GetInstancePointer()->Error("Data directory '%s' doesn't exist or is not a directory\n", m_dataPath.c_str());
+        GetLogger()->Error("Data directory '%s' doesn't exist or is not a directory\n", m_dataPath.c_str());
         return std::string("Could not read from data directory:\n") +
         std::string("'") + m_dataPath + std::string("'\n") +
         std::string("Please check your installation, or supply a valid data directory by -datadir option.");
@@ -120,7 +120,7 @@ std::string CPathManager::VerifyPaths()
     #endif
     if (! (boost::filesystem::exists(langPath) && boost::filesystem::is_directory(langPath)) )
     {
-        CLogger::GetInstancePointer()->Warn("Language path '%s' is invalid, assuming translation files not installed\n", m_langPath.c_str());
+        GetLogger()->Warn("Language path '%s' is invalid, assuming translation files not installed\n", m_langPath.c_str());
     }
 
     #if PLATFORM_WINDOWS
@@ -139,8 +139,8 @@ void CPathManager::InitPaths()
     LoadModsFromDir(m_dataPath+"/mods");
     LoadModsFromDir(m_savePath+"/mods");
 
-    CLogger::GetInstancePointer()->Info("Data path: %s\n", m_dataPath.c_str());
-    CLogger::GetInstancePointer()->Info("Save path: %s\n", m_savePath.c_str());
+    GetLogger()->Info("Data path: %s\n", m_dataPath.c_str());
+    GetLogger()->Info("Save path: %s\n", m_savePath.c_str());
     CResourceManager::AddLocation(m_dataPath, false);
     CResourceManager::SetSaveLocation(m_savePath);
     CResourceManager::AddLocation(m_savePath, true);
@@ -165,7 +165,7 @@ void CPathManager::LoadModsFromDir(const std::string &dir)
     }
     catch(std::exception &e)
     {
-        CLogger::GetInstancePointer()->Warn("Unable to load mods from directory '%s': %s\n", dir.c_str(), e.what());
+        GetLogger()->Warn("Unable to load mods from directory '%s': %s\n", dir.c_str(), e.what());
     }
 }
 

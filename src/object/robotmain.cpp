@@ -574,8 +574,8 @@ void CRobotMain::ChangePhase(Phase phase)
         }
         catch (const std::runtime_error& e)
         {
-            CLogger::GetInstancePointer()->Error("An error occured while trying to load a level\n");
-            CLogger::GetInstancePointer()->Error("%s\n", e.what());
+            GetLogger()->Error("An error occured while trying to load a level\n");
+            GetLogger()->Error("%s\n", e.what());
             ChangePhase(PHASE_INIT);
         }
     }
@@ -621,8 +621,8 @@ void CRobotMain::ChangePhase(Phase phase)
             }
             catch (const std::runtime_error& e)
             {
-                CLogger::GetInstancePointer()->Error("An error occured while trying to load win scene\n");
-                CLogger::GetInstancePointer()->Error("%s\n", e.what());
+                GetLogger()->Error("An error occured while trying to load win scene\n");
+                GetLogger()->Error("%s\n", e.what());
                 ChangePhase(PHASE_TERM);
             }
         }
@@ -654,8 +654,8 @@ void CRobotMain::ChangePhase(Phase phase)
             }
             catch (const std::runtime_error& e)
             {
-                CLogger::GetInstancePointer()->Error("An error occured while trying to load lost scene\n");
-                CLogger::GetInstancePointer()->Error("%s\n", e.what());
+                GetLogger()->Error("An error occured while trying to load lost scene\n");
+                GetLogger()->Error("%s\n", e.what());
                 ChangePhase(PHASE_TERM);
             }
         }
@@ -2837,8 +2837,8 @@ void CRobotMain::ScenePerso()
     }
     catch (const std::runtime_error& e)
     {
-        CLogger::GetInstancePointer()->Error("An error occured while trying to load apperance scene\n");
-        CLogger::GetInstancePointer()->Error("%s\n", e.what());
+        GetLogger()->Error("An error occured while trying to load apperance scene\n");
+        GetLogger()->Error("%s\n", e.what());
     }
 
     m_engine->SetDrawWorld(false);  // does not draw anything on the interface
@@ -3084,7 +3084,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                     if (line->GetParam("filename")->IsDefined())
                         throw CLevelParserException("You can't use track and filename at the same time");
 
-                    CLogger::GetInstancePointer()->Warn("Using track= is deprecated. Please replace this with filename=\n");
+                    GetLogger()->Warn("Using track= is deprecated. Please replace this with filename=\n");
                     int trackid = line->GetParam("track")->AsInt();
                     if (trackid != 0)
                     {
@@ -4545,7 +4545,7 @@ void CRobotMain::CompileScript(bool soluce)
                 std::string name = "ai/" + program->filename;
                 if (! brain->ReadProgram(program, const_cast<char*>(name.c_str())))
                 {
-                    CLogger::GetInstancePointer()->Error("Unable to read script from file \"%s\"\n", name.c_str());
+                    GetLogger()->Error("Unable to read script from file \"%s\"\n", name.c_str());
                 }
                 if (!brain->GetCompile(program)) nbError++;
             }
@@ -4987,7 +4987,7 @@ bool CRobotMain::IOWriteScene(const char *filename, const char *filecbot, char *
     }
     catch (CLevelParserException& e)
     {
-        CLogger::GetInstancePointer()->Error("Failed to save level state - %s\n", e.what());
+        GetLogger()->Error("Failed to save level state - %s\n", e.what());
         return false;
     }
 
@@ -5248,7 +5248,7 @@ void CRobotMain::WriteFreeParam()
     file.open(std::string(GetSavegameDir()) + "/" + m_gamerName + "/research.gam");
     if (!file.is_open())
     {
-        CLogger::GetInstancePointer()->Error("Unable to write free game unlock state\n");
+        GetLogger()->Error("Unable to write free game unlock state\n");
         return;
     }
 
@@ -5272,7 +5272,7 @@ void CRobotMain::ReadFreeParam()
     file.open(std::string(GetSavegameDir()) + "/" + m_gamerName + "/research.gam");
     if (!file.is_open())
     {
-        CLogger::GetInstancePointer()->Error("Unable to read free game unlock state\n");
+        GetLogger()->Error("Unable to read free game unlock state\n");
         return;
     }
 
@@ -5327,8 +5327,8 @@ void CRobotMain::ResetCreate()
     }
     catch (const std::runtime_error& e)
     {
-        CLogger::GetInstancePointer()->Error("An error occured while trying to reset scene\n");
-        CLogger::GetInstancePointer()->Error("%s\n", e.what());
+        GetLogger()->Error("An error occured while trying to reset scene\n");
+        GetLogger()->Error("%s\n", e.what());
         ChangePhase(PHASE_TERM);
     }
 }
@@ -5342,7 +5342,7 @@ void CRobotMain::UpdateAudio(bool frame)
 
         if (audioChange->Check())
         {
-            CLogger::GetInstancePointer()->Info("Changing music to \"%s\"\n", audioChange->music.c_str());
+            GetLogger()->Info("Changing music to \"%s\"\n", audioChange->music.c_str());
             m_sound->PlayMusic(audioChange->music, audioChange->repeat);
             audioChange->changed = true;
         }
@@ -5426,7 +5426,7 @@ Error CRobotMain::CheckEndMission(bool frame)
             m_missionResult = ERR_MISSION_NOTERM;
 
             if (teamCount == 0) {
-                CLogger::GetInstancePointer()->Info("All teams died, mission ended with failure\n");
+                GetLogger()->Info("All teams died, mission ended with failure\n");
                 m_missionResult = INFO_LOST;
             }
             else
@@ -5440,7 +5440,7 @@ Error CRobotMain::CheckEndMission(bool frame)
                     Error result = CheckEndMissionForGroup(it.second);
                     if (result == INFO_LOST || result == INFO_LOSTq)
                     {
-                        CLogger::GetInstancePointer()->Info("Team %d lost\n", team);
+                        GetLogger()->Info("Team %d lost\n", team);
                         m_displayText->DisplayText(("<<< Team "+boost::lexical_cast<std::string>(team)+" lost! >>>").c_str(), Math::Vector(0.0f,0.0f,0.0f), 15.0f, 60.0f, 10.0f, Ui::TT_ERROR);
 
                         m_displayText->SetEnable(false); // To prevent "bot destroyed" messages
@@ -5451,12 +5451,12 @@ Error CRobotMain::CheckEndMission(bool frame)
                     {
                         if (m_winDelay == 0.0f)
                         {
-                            CLogger::GetInstancePointer()->Info("Team %d won\n", team);
+                            GetLogger()->Info("Team %d won\n", team);
 
                             m_displayText->DisplayText(("<<< Team "+boost::lexical_cast<std::string>(team)+" won the game >>>").c_str(), Math::Vector(0.0f,0.0f,0.0f));
                             if (m_missionTimerEnabled && m_missionTimerStarted)
                             {
-                                CLogger::GetInstancePointer()->Info("Mission time: %s\n", TimeFormat(m_missionTimer).c_str());
+                                GetLogger()->Info("Mission time: %s\n", TimeFormat(m_missionTimer).c_str());
                                 m_displayText->DisplayText(("Time: " + TimeFormat(m_missionTimer)).c_str(), Math::Vector(0.0f,0.0f,0.0f));
                             }
                             m_missionTimerEnabled = m_missionTimerStarted = false;
@@ -5536,7 +5536,7 @@ Error CRobotMain::CheckEndMission(bool frame)
             m_displayText->DisplayError(INFO_WIN, Math::Vector(0.0f,0.0f,0.0f));
             if (m_missionTimerEnabled && m_missionTimerStarted)
             {
-                CLogger::GetInstancePointer()->Info("Mission time: %s\n", TimeFormat(m_missionTimer).c_str());
+                GetLogger()->Info("Mission time: %s\n", TimeFormat(m_missionTimer).c_str());
                 m_displayText->DisplayText(("Time: " + TimeFormat(m_missionTimer)).c_str(), Math::Vector(0.0f,0.0f,0.0f));
             }
             m_missionTimerEnabled = m_missionTimerStarted = false;
@@ -5921,7 +5921,7 @@ float CRobotMain::GetTracePrecision()
 //! Starts music with a mission
 void CRobotMain::StartMusic()
 {
-    CLogger::GetInstancePointer()->Debug("Starting music...\n");
+    GetLogger()->Debug("Starting music...\n");
     if (m_audioTrack != "")
     {
         m_sound->PlayMusic(m_audioTrack, m_audioRepeat, 0.0f);
@@ -5975,7 +5975,7 @@ void CRobotMain::StartMissionTimer()
 {
     if (m_missionTimerEnabled && !m_missionTimerStarted)
     {
-        CLogger::GetInstancePointer()->Info("Starting mission timer...\n");
+        GetLogger()->Info("Starting mission timer...\n");
         m_missionTimerStarted = true;
     }
 }
@@ -6016,7 +6016,7 @@ int CRobotMain::GetAutosaveSlots()
 
 int CRobotMain::AutosaveRotate(bool freeOne)
 {
-    CLogger::GetInstancePointer()->Debug("Rotate autosaves...\n");
+    GetLogger()->Debug("Rotate autosaves...\n");
     // Find autosave dirs
     auto saveDirs = CResourceManager::ListDirectories(std::string(GetSavegameDir()) + "/" + GetGamerName());
     std::map<int, std::string> autosaveDirs;
@@ -6033,7 +6033,7 @@ int CRobotMain::AutosaveRotate(bool freeOne)
         }
         catch (...)
         {
-            CLogger::GetInstancePointer()->Info("Bad autosave found: %s\n", dir.c_str());
+            GetLogger()->Info("Bad autosave found: %s\n", dir.c_str());
             // skip
         }
     }
@@ -6053,13 +6053,13 @@ int CRobotMain::AutosaveRotate(bool freeOne)
             count++;
             if (count > m_autosaveSlots-(freeOne ? 1 : 0) || !m_autosave)
             {
-                CLogger::GetInstancePointer()->Trace("Remove %s\n", autosaveDirs[i].c_str());
+                GetLogger()->Trace("Remove %s\n", autosaveDirs[i].c_str());
                 CResourceManager::RemoveDirectory(autosaveDirs[i]);
                 rotate = true;
             }
             else
             {
-                CLogger::GetInstancePointer()->Trace("Keep %s\n", autosaveDirs[i].c_str());
+                GetLogger()->Trace("Keep %s\n", autosaveDirs[i].c_str());
                 autosavesToKeep[new_last_id-count+1] = autosaveDirs[i];
             }
         }
@@ -6071,7 +6071,7 @@ int CRobotMain::AutosaveRotate(bool freeOne)
         for (auto& save : autosavesToKeep)
         {
             std::string newDir = std::string(GetSavegameDir()) + "/" + GetGamerName() + "/autosave" + boost::lexical_cast<std::string>(save.first);
-            CLogger::GetInstancePointer()->Trace("Rename %s -> %s\n", save.second.c_str(), newDir.c_str());
+            GetLogger()->Trace("Rename %s -> %s\n", save.second.c_str(), newDir.c_str());
             CResourceManager::Move(save.second, newDir);
         }
     }
@@ -6082,7 +6082,7 @@ int CRobotMain::AutosaveRotate(bool freeOne)
 void CRobotMain::Autosave()
 {
     int id = AutosaveRotate(true);
-    CLogger::GetInstancePointer()->Info("Autosave!\n");
+    GetLogger()->Info("Autosave!\n");
 
     std::string dir = std::string(GetSavegameDir()) + "/" + GetGamerName() + "/autosave" + boost::lexical_cast<std::string>(id);
 

@@ -161,7 +161,7 @@ bool CInput::GetMouseButtonState(int index) const
 
 void CInput::ResetKeyStates()
 {
-    CLogger::GetInstancePointer()->Trace("Reset key states\n");
+    GetLogger()->Trace("Reset key states\n");
     m_kmodState = 0;
     m_keyMotion = Math::Vector(0.0f, 0.0f, 0.0f);
     m_joyMotion = Math::Vector(0.0f, 0.0f, 0.0f);
