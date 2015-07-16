@@ -1,4 +1,0 @@
-class MaClass
-{
-	int t = 12;
-}

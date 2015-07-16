@@ -1,5 +1,0 @@
-extern public void TT()
-{
-	T1();
-	T2();
-}

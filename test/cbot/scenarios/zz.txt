@@ -1,6 +1,0 @@
-extern public void zz()
-{
-	MaClass TOTO ();
-
-	show (TOTO);
-}

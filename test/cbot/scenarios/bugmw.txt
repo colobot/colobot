@@ -1,9 +1,0 @@
-extern public void main()
-{
-  show(fact(30)) ;
-}
-
-public int fact(int n)
-{
-  return (fact(n-1)*n) ;
-}
