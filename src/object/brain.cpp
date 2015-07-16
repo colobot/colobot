@@ -251,17 +251,20 @@ bool CBrain::EventProcess(const Event &event)
 
         if(event.key.slot == INPUT_SLOT_ACTION && bControl)
         {
-            Event newEvent = event;
-            newEvent.type = (m_studio == nullptr ? EVENT_OBJECT_PROGEDIT : EVENT_STUDIO_OK);
-            queue->AddEvent(newEvent);
+            queue->AddEvent(Event(m_studio == nullptr ? EVENT_OBJECT_PROGEDIT : EVENT_STUDIO_OK));
             return false;
         }
 
         if(event.key.slot == INPUT_SLOT_ACTION && bAlt)
         {
-            Event newEvent = event;
-            newEvent.type = EVENT_OBJECT_PROGRUN;
-            queue->AddEvent(newEvent);
+            Ui::CButton* pb = static_cast< Ui::CButton* >(pw->SearchControl(EVENT_OBJECT_PROGRUN));
+            if(pb != nullptr)
+            {
+                if(pb->TestState(Ui::STATE_ENABLE))
+                {
+                    queue->AddEvent(Event(EVENT_OBJECT_PROGRUN));
+                }
+            }
             return false;
         }
 
