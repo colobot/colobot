@@ -19,6 +19,7 @@
 
 #include "object/subclass/exchange_post.h"
 
+#include "common/make_unique.h"
 #include "common/regex_utils.h"
 
 #include "graphics/engine/oldmodelmanager.h"
@@ -48,7 +49,7 @@ std::unique_ptr<CExchangePost> CExchangePost::Create(
     Gfx::COldModelManager* modelManager,
     Gfx::CEngine* engine)
 {
-    std::unique_ptr<CExchangePost> obj{new CExchangePost(params.id)};
+    auto obj = MakeUnique<CExchangePost>(params.id);
 
     int rank = engine->CreateObject();
     engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);  // it is a stationary object
@@ -95,7 +96,7 @@ std::unique_ptr<CExchangePost> CExchangePost::Create(
     pos.y += params.height;
     obj->SetPosition(pos);  // to display the shadows immediately
 
-    std::unique_ptr<CAutoInfo> objAuto{new CAutoInfo(obj.get())};
+    auto objAuto = MakeUnique<CAutoInfo>(obj.get());
     objAuto->Init();
     obj->SetAuto(std::move(objAuto));
 

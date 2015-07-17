@@ -19,6 +19,8 @@
 
 #include "object/subclass/static_object.h"
 
+#include "common/make_unique.h"
+
 #include "graphics/engine/terrain.h"
 #include "graphics/model/model.h"
 #include "graphics/model/model_io_exception.h"
@@ -135,7 +137,7 @@ CStaticObjectUPtr CStaticObject::Create(int id,
         if (model.GetMeshCount() != 1 || model.GetMesh("main") == nullptr)
             throw CObjectCreateException("Unexpected mesh configuration", type, modelFile);
 
-        return CStaticObjectUPtr{new CStaticObject(id, type, modelFile, adjustedPosition, angleY, model, engine)};
+        return MakeUnique<CStaticObject>(id, type, modelFile, adjustedPosition, angleY, model, engine);
     }
     catch (const Gfx::CModelIOException& e)
     {

@@ -26,6 +26,8 @@
 
 #include "object/object.h"
 
+#include "common/make_unique.h"
+
 #include "object/interface/carrier_object.h"
 #include "object/interface/interactive_object.h"
 #include "object/interface/jostleable_object.h"
@@ -67,9 +69,6 @@ class COldObject : public CObject,
     friend class CObjectManager;
 
 protected:
-
-    COldObject(int id);
-
     void        DeleteObject(bool bAll=false);
     void        SetPhysics(std::unique_ptr<CPhysics> physics);
     void        SetBrain(std::unique_ptr<CBrain> brain);
@@ -83,6 +82,7 @@ protected:
 
 
 public:
+    COldObject(int id); // should only be called by CObjectFactory
     ~COldObject();
 
     void        Simplify() override;

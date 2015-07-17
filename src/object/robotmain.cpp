@@ -31,6 +31,7 @@
 #include "common/event.h"
 #include "common/global.h"
 #include "common/logger.h"
+#include "common/make_unique.h"
 #include "common/misc.h"
 #include "common/profile.h"
 #include "common/restext.h"
@@ -133,7 +134,7 @@ CRobotMain::CRobotMain(CController* controller)
 
     m_engine     = nullptr;
     m_oldModelManager = nullptr;
-    m_modelManager = std::unique_ptr<Gfx::CModelManager>(new Gfx::CModelManager());
+    m_modelManager = MakeUnique<Gfx::CModelManager>();
     m_lightMan   = nullptr;
     m_particle   = nullptr;
     m_water      = nullptr;
@@ -912,13 +913,13 @@ bool CRobotMain::ProcessEvent(Event &event)
                     CObject* obj = GetSelect();
                     if (obj != nullptr)
                     {
-                        CLevelParserLine* line = new CLevelParserLine("CreateObject");
-                        line->AddParam("type", CLevelParserParamUPtr{new CLevelParserParam(obj->GetType())});
-                        line->AddParam("pos", CLevelParserParamUPtr{new CLevelParserParam(obj->GetPosition())});
-                        line->AddParam("dir", CLevelParserParamUPtr{new CLevelParserParam(obj->GetRotationZ()/(Math::PI/180.0f))});
+                        CLevelParserLine line("CreateObject");
+                        line.AddParam("type", CLevelParserParamUPtr{new CLevelParserParam(obj->GetType())});
+                        line.AddParam("pos", CLevelParserParamUPtr{new CLevelParserParam(obj->GetPosition())});
+                        line.AddParam("dir", CLevelParserParamUPtr{new CLevelParserParam(obj->GetRotationZ()/(Math::PI/180.0f))});
 
                         std::stringstream ss;
-                        ss << *line;
+                        ss << line;
                         widgetSetClipboardText(ss.str().c_str());
                     }
                 }
@@ -3070,7 +3071,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
             if (line->GetCommand() == "AudioChange" && !resetObject && m_controller == nullptr)
             {
-                auto audioChange = std::unique_ptr<CAudioChangeCondition>{new CAudioChangeCondition()};
+                auto audioChange = MakeUnique<CAudioChangeCondition>();
                 audioChange->Read(line.get());
                 m_sound->CacheMusic(audioChange->music);
                 m_audioChange.push_back(std::move(audioChange));
@@ -3823,7 +3824,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
             if (line->GetCommand() == "EndMissionTake" && !resetObject && m_controller == nullptr)
             {
-                auto endTake = std::unique_ptr<CSceneEndCondition>{new CSceneEndCondition()};
+                auto endTake = MakeUnique<CSceneEndCondition>();
                 endTake->Read(line.get());
                 m_endTake.push_back(std::move(endTake));
                 continue;

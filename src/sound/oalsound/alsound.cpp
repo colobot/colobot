@@ -20,6 +20,8 @@
 
 #include "sound/oalsound/alsound.h"
 
+#include "common/make_unique.h"
+
 #include <algorithm>
 #include <iomanip>
 
@@ -143,7 +145,7 @@ int ALSound::GetMusicVolume()
 
 bool ALSound::Cache(SoundType sound, const std::string &filename)
 {
-    std::unique_ptr<Buffer> buffer{new Buffer()};
+    auto buffer = MakeUnique<Buffer>();
     if (buffer->LoadFromFile(filename, sound))
     {
         m_sounds[sound] = std::move(buffer);
@@ -156,7 +158,7 @@ bool ALSound::CacheMusic(const std::string &filename)
 {
     if (m_music.find("music/"+filename) == m_music.end())
     {
-        std::unique_ptr<Buffer> buffer{new Buffer()};
+        auto buffer = MakeUnique<Buffer>();
         if (buffer->LoadFromFile("music/"+filename, static_cast<SoundType>(-1)))
         {
             m_music["music/"+filename] = std::move(buffer);
@@ -251,7 +253,7 @@ bool ALSound::SearchFreeBuffer(SoundType sound, int &channel, bool &alreadyLoade
     // just add a new channel if we dont have any
     if (m_channels.size() == 0)
     {
-        std::unique_ptr<Channel> chn{new Channel()};
+        auto chn = MakeUnique<Channel>();
         // check if we channel ready to play music, if not report error
         if (chn->IsReady())
         {
@@ -276,7 +278,7 @@ bool ALSound::SearchFreeBuffer(SoundType sound, int &channel, bool &alreadyLoade
         {
             if (m_channels.find(i) == m_channels.end())
             {
-                std::unique_ptr<Channel> chn{new Channel()};
+                auto chn = MakeUnique<Channel>();
                 // check if channel is ready to play music, if not destroy it and seek free one
                 if (chn->IsReady())
                 {
@@ -618,7 +620,7 @@ bool ALSound::PlayMusic(const std::string &filename, bool repeat, float fadeTime
             return false;
         } */
 
-        std::unique_ptr<Buffer> newBuffer{new Buffer()};
+        auto newBuffer = MakeUnique<Buffer>();
         buffer = newBuffer.get();
         if (!newBuffer->LoadFromFile("music/"+filename, static_cast<SoundType>(-1)))
         {
@@ -641,7 +643,7 @@ bool ALSound::PlayMusic(const std::string &filename, bool repeat, float fadeTime
         m_oldMusic.push_back(std::move(old));
     }
 
-    m_currentMusic.reset(new Channel());
+    m_currentMusic = MakeUnique<Channel>();
     m_currentMusic->SetBuffer(buffer);
     m_currentMusic->SetVolume(m_musicVolume);
     m_currentMusic->SetLoop(repeat);

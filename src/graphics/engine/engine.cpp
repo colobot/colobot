@@ -26,6 +26,7 @@
 #include "common/image.h"
 #include "common/key.h"
 #include "common/logger.h"
+#include "common/make_unique.h"
 
 #include "graphics/core/device.h"
 #include "graphics/engine/camera.h"
@@ -302,8 +303,8 @@ bool CEngine::Create()
     m_size = m_app->GetVideoConfig().size;
     m_mouseSize = Math::Point(0.04f, 0.04f * (m_size.x / m_size.y));
 
-    m_modelManager.reset(new COldModelManager(this));
-    m_pyroManager.reset(new CPyroManager());
+    m_modelManager = MakeUnique<COldModelManager>(this);
+    m_pyroManager = MakeUnique<CPyroManager>();
     m_lightMan   = new CLightManager(this);
     m_text       = new CText(this);
     m_particle   = new CParticle(this);

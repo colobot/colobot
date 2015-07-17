@@ -29,6 +29,7 @@
 #include "common/image.h"
 #include "common/key.h"
 #include "common/pathman.h"
+#include "common/make_unique.h"
 #include "common/stringutils.h"
 #include "common/resources/resourcemanager.h"
 
@@ -99,11 +100,11 @@ struct ApplicationPrivate
 
 
 CApplication::CApplication()
- : m_private(new ApplicationPrivate())
- , m_eventQueue(new CEventQueue())
- , m_profile(new CProfile())
- , m_input(new CInput())
- , m_pathManager(new CPathManager())
+ : m_private(MakeUnique<ApplicationPrivate>())
+ , m_eventQueue(MakeUnique<CEventQueue>())
+ , m_profile(MakeUnique<CProfile>())
+ , m_input(MakeUnique<CInput>())
+ , m_pathManager(MakeUnique<CPathManager>())
 {
     m_exitCode      = 0;
     m_active        = false;
@@ -407,11 +408,11 @@ bool CApplication::Create()
     #ifdef OPENAL_SOUND
     if (!m_headless)
     {
-        m_sound.reset(new ALSound());
+        m_sound = MakeUnique<ALSound>();
     }
     else
     {
-        m_sound.reset(new CSoundInterface());
+        m_sound = MakeUnique<CSoundInterface>();
     }
     #else
     GetLogger()->Info("No sound support.\n");
@@ -539,13 +540,13 @@ bool CApplication::Create()
 
         if (m_device == nullptr)
         {
-            m_device.reset(new Gfx::CNullDevice());
+            m_device = MakeUnique<Gfx::CNullDevice>();
             GetLogger()->Error("Unknown graphics device: %s\n", m_graphics.c_str());
         }
     }
     else
     {
-        m_device.reset(new Gfx::CNullDevice());
+        m_device = MakeUnique<Gfx::CNullDevice>();
     }
 
     if (! m_device->Create() )
@@ -556,7 +557,7 @@ bool CApplication::Create()
     }
 
     // Create the 3D engine
-    m_engine.reset(new Gfx::CEngine(this));
+    m_engine = MakeUnique<Gfx::CEngine>(this);
 
     m_engine->SetDevice(m_device.get());
 
@@ -568,7 +569,7 @@ bool CApplication::Create()
     }
 
     // Create the robot application.
-    m_controller.reset(new CController(this, !defaultValues));
+    m_controller = MakeUnique<CController>(this, !defaultValues);
 
     if (m_runSceneName.empty())
         m_controller->StartApp();

@@ -19,6 +19,8 @@
 
 #include "object/object_factory.h"
 
+#include "common/make_unique.h"
+
 #include "graphics/engine/engine.h"
 #include "graphics/engine/oldmodelmanager.h"
 #include "graphics/engine/terrain.h"
@@ -300,7 +302,7 @@ CObjectUPtr CObjectFactory::CreateBuilding(const ObjectCreateParams& params)
     ObjectType type = params.type;
     float power = params.power;
 
-    COldObjectUPtr obj{new COldObject(params.id)};
+    auto obj = MakeUnique<COldObject>(params.id);
 
     obj->SetType(type);
 
@@ -1088,7 +1090,7 @@ CObjectUPtr CObjectFactory::CreateResource(const ObjectCreateParams& params)
     ObjectType type = params.type;
     float power = params.power;
 
-    COldObjectUPtr obj{new COldObject(params.id)};
+    auto obj = MakeUnique<COldObject>(params.id);
 
     obj->SetType(type);
 
@@ -1207,7 +1209,7 @@ CObjectUPtr CObjectFactory::CreateFlag(const ObjectCreateParams& params)
     float angle = params.angle;
     ObjectType type = params.type;
 
-    COldObjectUPtr obj{new COldObject(params.id)};
+    auto obj = MakeUnique<COldObject>(params.id);
 
     obj->SetType(type);
 
@@ -1268,7 +1270,7 @@ CObjectUPtr CObjectFactory::CreateBarrier(const ObjectCreateParams& params)
     float height = params.height;
     ObjectType type = params.type;
 
-    COldObjectUPtr obj{new COldObject(params.id)};
+    auto obj = MakeUnique<COldObject>(params.id);
 
     obj->SetType(type);
 
@@ -1365,7 +1367,7 @@ CObjectUPtr CObjectFactory::CreatePlant(const ObjectCreateParams& params)
     float height = params.height;
     ObjectType type = params.type;
 
-    COldObjectUPtr obj{new COldObject(params.id)};
+    auto obj = MakeUnique<COldObject>(params.id);
 
     obj->SetType(type);
 
@@ -1589,7 +1591,7 @@ CObjectUPtr CObjectFactory::CreateMushroom(const ObjectCreateParams& params)
     float height = params.height;
     ObjectType type = params.type;
 
-    COldObjectUPtr obj{new COldObject(params.id)};
+    auto obj = MakeUnique<COldObject>(params.id);
 
     obj->SetType(type);
 
@@ -1647,7 +1649,7 @@ CObjectUPtr CObjectFactory::CreateQuartz(const ObjectCreateParams& params)
     float height = params.height;
     ObjectType type = params.type;
 
-    COldObjectUPtr obj{new COldObject(params.id)};
+    auto obj = MakeUnique<COldObject>(params.id);
 
     obj->SetType(type);
 
@@ -1753,7 +1755,7 @@ CObjectUPtr CObjectFactory::CreateRoot(const ObjectCreateParams& params)
     float height = params.height;
     ObjectType type = params.type;
 
-    COldObjectUPtr obj{new COldObject(params.id)};
+    auto obj = MakeUnique<COldObject>(params.id);
 
     obj->SetType(type);
 
@@ -1920,7 +1922,7 @@ CObjectUPtr CObjectFactory::CreateHome(const ObjectCreateParams& params)
     float height = params.height;
     ObjectType type = params.type;
 
-    COldObjectUPtr obj{new COldObject(params.id)};
+    auto obj = MakeUnique<COldObject>(params.id);
 
     obj->SetType(type);
 
@@ -1960,7 +1962,7 @@ CObjectUPtr CObjectFactory::CreateRuin(const ObjectCreateParams& params)
     float height = params.height;
     ObjectType type = params.type;
 
-    COldObjectUPtr obj{new COldObject(params.id)};
+    auto obj = MakeUnique<COldObject>(params.id);
 
     obj->SetType(type);
 
@@ -2375,7 +2377,7 @@ CObjectUPtr CObjectFactory::CreateApollo(const ObjectCreateParams& params)
     float angle = params.angle;
     ObjectType type = params.type;
 
-    COldObjectUPtr obj{new COldObject(params.id)};
+    auto obj = MakeUnique<COldObject>(params.id);
 
     obj->SetType(type);
 
@@ -2558,14 +2560,14 @@ CObjectUPtr CObjectFactory::CreateVehicle(const ObjectCreateParams& params)
     bool toy = params.toy;
     int option = params.option;
 
-    COldObjectUPtr obj{new COldObject(params.id)};
+    auto obj = MakeUnique<COldObject>(params.id);
 
     obj->SetType(type);
     obj->SetOption(option);
 
     if ( type == OBJECT_TOTO )
     {
-        std::unique_ptr<CMotion> motion{new CMotionToto(obj.get())};
+        auto motion = MakeUnique<CMotionToto>(obj.get());
         motion->Create(pos, angle, type, 1.0f, m_oldModelManager);
         obj->SetMotion(std::move(motion));
         return std::move(obj);
@@ -2614,22 +2616,22 @@ CObjectUPtr CObjectFactory::CreateVehicle(const ObjectCreateParams& params)
     }
     obj->SetShowLimitRadius(showLimitRadius);
 
-    std::unique_ptr<CPhysics> physics{new CPhysics(obj.get())};
-    std::unique_ptr<CBrain> brain{new CBrain(obj.get())};
-    std::unique_ptr<CMotion> motion;
+    auto physics = MakeUnique<CPhysics>(obj.get());
+    auto brain = MakeUnique<CBrain>(obj.get());
 
+    std::unique_ptr<CMotion> motion;
     if ( type == OBJECT_HUMAN ||
          type == OBJECT_TECH  )
     {
-        motion.reset(new CMotionHuman(obj.get()));
+        motion = MakeUnique<CMotionHuman>(obj.get());
     }
     else if ( type == OBJECT_CONTROLLER )
     {
-        motion.reset(new CMotionLevelController(obj.get())); //dummy object
+        motion = MakeUnique<CMotionLevelController>(obj.get()); //dummy object
     }
     else
     {
-        motion.reset(new CMotionVehicle(obj.get()));
+        motion = MakeUnique<CMotionVehicle>(obj.get());
     }
 
     brain->SetMotion(motion.get());
@@ -2656,33 +2658,33 @@ CObjectUPtr CObjectFactory::CreateInsect(const ObjectCreateParams& params)
     float angle = params.angle;
     ObjectType type = params.type;
 
-    COldObjectUPtr obj{new COldObject(params.id)};
+    auto obj = MakeUnique<COldObject>(params.id);
 
     obj->SetType(type);
 
-    std::unique_ptr<CPhysics> physics{new CPhysics(obj.get())};
-    std::unique_ptr<CBrain> brain{new CBrain(obj.get())};
+    auto physics = MakeUnique<CPhysics>(obj.get());
+    auto brain = MakeUnique<CBrain>(obj.get());
 
     std::unique_ptr<CMotion> motion;
     if ( type == OBJECT_MOTHER )
     {
-        motion.reset(new CMotionQueen(obj.get()));
+        motion = MakeUnique<CMotionQueen>(obj.get());
     }
     if ( type == OBJECT_ANT )
     {
-        motion.reset(new CMotionAnt(obj.get()));
+        motion = MakeUnique<CMotionAnt>(obj.get());
     }
     if ( type == OBJECT_SPIDER )
     {
-        motion.reset(new CMotionSpider(obj.get()));
+        motion = MakeUnique<CMotionSpider>(obj.get());
     }
     if ( type == OBJECT_BEE )
     {
-        motion.reset(new CMotionBee(obj.get()));
+        motion = MakeUnique<CMotionBee>(obj.get());
     }
     if ( type == OBJECT_WORM )
     {
-        motion.reset(new CMotionWorm(obj.get()));
+        motion = MakeUnique<CMotionWorm>(obj.get());
     }
     assert(motion != nullptr);
 
@@ -2712,87 +2714,87 @@ void CObjectFactory::AddObjectAuto(COldObject* obj)
 
     if ( type == OBJECT_BASE )
     {
-        objAuto.reset(new CAutoBase(obj));
+        objAuto = MakeUnique<CAutoBase>(obj);
     }
     if ( type == OBJECT_PORTICO )
     {
-        objAuto.reset(new CAutoPortico(obj));
+        objAuto = MakeUnique<CAutoPortico>(obj);
     }
     if ( type == OBJECT_DERRICK )
     {
-        objAuto.reset(new CAutoDerrick(obj));
+        objAuto = MakeUnique<CAutoDerrick>(obj);
     }
     if ( type == OBJECT_FACTORY )
     {
-        objAuto.reset(new CAutoFactory(obj));
+        objAuto = MakeUnique<CAutoFactory>(obj);
     }
     if ( type == OBJECT_REPAIR )
     {
-        objAuto.reset(new CAutoRepair(obj));
+        objAuto = MakeUnique<CAutoRepair>(obj);
     }
     if ( type == OBJECT_DESTROYER )
     {
-        objAuto.reset(new CAutoDestroyer(obj));
+        objAuto = MakeUnique<CAutoDestroyer>(obj);
     }
     if ( type == OBJECT_STATION )
     {
-        objAuto.reset(new CAutoPowerStation(obj));
+        objAuto = MakeUnique<CAutoPowerStation>(obj);
     }
     if ( type == OBJECT_CONVERT )
     {
-        objAuto.reset(new CAutoConvert(obj));
+        objAuto = MakeUnique<CAutoConvert>(obj);
     }
     if ( type == OBJECT_TOWER )
     {
-        objAuto.reset(new CAutoTower(obj));
+        objAuto = MakeUnique<CAutoTower>(obj);
     }
     if ( type == OBJECT_RESEARCH )
     {
-        objAuto.reset(new CAutoResearch(obj));
+        objAuto = MakeUnique<CAutoResearch>(obj);
     }
     if ( type == OBJECT_RADAR )
     {
-        objAuto.reset(new CAutoRadar(obj));
+        objAuto = MakeUnique<CAutoRadar>(obj);
     }
     if ( type == OBJECT_ENERGY )
     {
-        objAuto.reset(new CAutoPowerPlant(obj));
+        objAuto = MakeUnique<CAutoPowerPlant>(obj);
     }
     if ( type == OBJECT_LABO )
     {
-        objAuto.reset(new CAutoLabo(obj));
+        objAuto = MakeUnique<CAutoLabo>(obj);
     }
     if ( type == OBJECT_NUCLEAR )
     {
-        objAuto.reset(new CAutoNuclearPlant(obj));
+        objAuto = MakeUnique<CAutoNuclearPlant>(obj);
     }
     if ( type == OBJECT_PARA )
     {
-        objAuto.reset(new CAutoPowerCaptor(obj));
+        objAuto = MakeUnique<CAutoPowerCaptor>(obj);
     }
     if ( type == OBJECT_SAFE )
     {
-        objAuto.reset(new CAutoVault(obj));
+        objAuto = MakeUnique<CAutoVault>(obj);
     }
     if ( type == OBJECT_HUSTON )
     {
-        objAuto.reset(new CAutoHouston(obj));
+        objAuto = MakeUnique<CAutoHouston>(obj);
     }
     if ( type == OBJECT_EGG )
     {
-        objAuto.reset(new CAutoEgg(obj));
+        objAuto = MakeUnique<CAutoEgg>(obj);
     }
     if ( type == OBJECT_NEST )
     {
-        objAuto.reset(new CAutoNest(obj));
+        objAuto = MakeUnique<CAutoNest>(obj);
     }
     if ( type == OBJECT_ROOT5 )
     {
-        objAuto.reset(new CAutoRoot(obj));
+        objAuto = MakeUnique<CAutoRoot>(obj);
     }
     if ( type == OBJECT_MUSHROOM2 )
     {
-        objAuto.reset(new CAutoMush(obj));
+        objAuto = MakeUnique<CAutoMush>(obj);
     }
     if ( type == OBJECT_FLAGb ||
          type == OBJECT_FLAGr ||
@@ -2800,7 +2802,7 @@ void CObjectFactory::AddObjectAuto(COldObject* obj)
          type == OBJECT_FLAGy ||
          type == OBJECT_FLAGv )
     {
-        objAuto.reset(new CAutoFlag(obj));
+        objAuto = MakeUnique<CAutoFlag>(obj);
     }
 
     if (objAuto != nullptr)

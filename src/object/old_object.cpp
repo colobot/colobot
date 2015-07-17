@@ -25,6 +25,7 @@
 #include "app/app.h"
 
 #include "common/global.h"
+#include "common/make_unique.h"
 #include "common/restext.h"
 
 #include "graphics/engine/lightman.h"
@@ -2461,7 +2462,7 @@ bool COldObject::JostleObject(float force)
     {
         if ( m_auto != nullptr )  return false;
 
-        std::unique_ptr<CAutoJostle> autoJostle{new CAutoJostle(this)};
+        auto autoJostle = MakeUnique<CAutoJostle>(this);
         autoJostle->Start(0, force);
         m_auto = std::move(autoJostle);
     }

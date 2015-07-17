@@ -27,6 +27,7 @@
 
 #include "common/event.h"
 #include "common/global.h"
+#include "common/make_unique.h"
 
 #include "graphics/core/color.h"
 #include "graphics/engine/pyro_type.h"
@@ -81,13 +82,13 @@ class CPyro
 protected:
     friend class CPyroManager;
 
-    CPyro();
     //! Creates pyrotechnic effect
     bool        Create(PyroType type, CObject* obj, float force);
     //! Destroys the object
     void        DeleteObject();
 
 public:
+    CPyro(); // should only be called by CPyroManager
     ~CPyro();
 
     //! Indicates whether the pyrotechnic effect is complete

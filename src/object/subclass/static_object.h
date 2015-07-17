@@ -34,7 +34,7 @@ using CStaticObjectUPtr = std::unique_ptr<CStaticObject>;
 
 class CStaticObject : public CObject
 {
-protected:
+public:
     CStaticObject(int id,
                   ObjectType type,
                   const std::string& key,
@@ -43,7 +43,6 @@ protected:
                   const Gfx::CModel& model,
                   Gfx::CEngine* engine);
 
-public:
     virtual ~CStaticObject();
 
     void Read(CLevelParserLine* line) override;

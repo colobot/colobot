@@ -19,6 +19,8 @@
 
 #include "graphics/engine/pyro_manager.h"
 
+#include "common/make_unique.h"
+
 #include "graphics/engine/pyro.h"
 
 namespace Gfx {
@@ -32,7 +34,7 @@ CPyroManager::~CPyroManager()
 
 void Gfx::CPyroManager::Create(PyroType type, CObject* obj, float force)
 {
-    CPyroUPtr pyroUPtr{new CPyro()};
+    auto pyroUPtr = MakeUnique<CPyro>();
     pyroUPtr->Create(type, obj, force);
     m_pyros.insert(std::move(pyroUPtr));
 }

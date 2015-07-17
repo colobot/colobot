@@ -18,10 +18,14 @@
  */
 
 #include "graphics/opengl/glutil.h"
+
+#include "common/logger.h"
+#include "common/make_unique.h"
+
 #include "graphics/opengl/gldevice.h"
 #include "graphics/opengl/gl21device.h"
 #include "graphics/opengl/gl33device.h"
-#include "common/logger.h"
+
 #include <physfs.h>
 #include <cstring>
 
@@ -41,18 +45,18 @@ FramebufferSupport DetectFramebufferSupport()
 
 std::unique_ptr<CDevice> CreateDevice(const DeviceConfig &config, const std::string& name)
 {
-    if      (name == "default") return std::unique_ptr<CDevice>{new CGLDevice(config)};
-    else if (name == "opengl")  return std::unique_ptr<CDevice>{new CGLDevice(config)};
-    else if (name == "gl14")    return std::unique_ptr<CDevice>{new CGLDevice(config)};
-    else if (name == "gl21")    return std::unique_ptr<CDevice>{new CGL21Device(config)};
-    else if (name == "gl33")    return std::unique_ptr<CDevice>{new CGL33Device(config)};
+    if      (name == "default") return MakeUnique<CGLDevice>(config);
+    else if (name == "opengl")  return MakeUnique<CGLDevice>(config);
+    else if (name == "gl14")    return MakeUnique<CGLDevice>(config);
+    else if (name == "gl21")    return MakeUnique<CGL21Device>(config);
+    else if (name == "gl33")    return MakeUnique<CGL33Device>(config);
     else if (name == "auto")
     {
         int version = GetOpenGLVersion();
 
-             if (version >= 33) return std::unique_ptr<CDevice>{new CGL33Device(config)};
-        else if (version >= 21) return std::unique_ptr<CDevice>{new CGL21Device(config)};
-        else                    return std::unique_ptr<CDevice>{new CGLDevice(config)};
+             if (version >= 33) return MakeUnique<CGL33Device>(config);
+        else if (version >= 21) return MakeUnique<CGL21Device>(config);
+        else                    return MakeUnique<CGLDevice>(config);
     }
 
     return nullptr;
