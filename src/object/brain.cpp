@@ -3083,7 +3083,7 @@ bool CBrain::TraceRecordPut(std::stringstream& buffer, TraceOper oper, float par
 
     if ( oper == TO_PEN )
     {
-        TraceColor color = static_cast<TraceColor>(param);
+        TraceColor color = static_cast<TraceColor>(static_cast<int>(param));
         if ( color == TraceColor::Default )
             buffer << "\tpenup();\n";
         else
