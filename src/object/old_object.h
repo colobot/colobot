@@ -26,8 +26,6 @@
 
 #include "object/object.h"
 
-#include "common/make_unique.h"
-
 #include "object/interface/carrier_object.h"
 #include "object/interface/interactive_object.h"
 #include "object/interface/jostleable_object.h"

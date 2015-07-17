@@ -20,6 +20,8 @@
 
 #include "object/auto/autoderrick.h"
 
+#include "common/make_unique.h"
+
 #include "graphics/engine/terrain.h"
 
 #include "math/geometry.h"
@@ -428,11 +430,11 @@ bool CAutoDerrick::Write(CLevelParserLine* line)
 {
     if ( m_phase == ADP_WAIT )  return false;
 
-    line->AddParam("aExist", CLevelParserParamUPtr{new CLevelParserParam(true)});
+    line->AddParam("aExist", MakeUnique<CLevelParserParam>(true));
     CAuto::Write(line);
-    line->AddParam("aPhase", CLevelParserParamUPtr{new CLevelParserParam(static_cast<int>(m_phase))});
-    line->AddParam("aProgress", CLevelParserParamUPtr{new CLevelParserParam(m_progress)});
-    line->AddParam("aSpeed", CLevelParserParamUPtr{new CLevelParserParam(m_speed)});
+    line->AddParam("aPhase", MakeUnique<CLevelParserParam>(static_cast<int>(m_phase)));
+    line->AddParam("aProgress", MakeUnique<CLevelParserParam>(m_progress));
+    line->AddParam("aSpeed", MakeUnique<CLevelParserParam>(m_speed));
 
     return true;
 }

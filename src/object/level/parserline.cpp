@@ -19,8 +19,10 @@
 
 #include "object/level/parserline.h"
 
-#include "object/level/parser.h"
 #include "common/logger.h"
+#include "common/make_unique.h"
+
+#include "object/level/parser.h"
 
 CLevelParserLine::CLevelParserLine(std::string command)
 {
@@ -67,7 +69,7 @@ CLevelParserParam* CLevelParserLine::GetParam(std::string name)
         return it->second.get();
     }
 
-    CLevelParserParamUPtr paramUPtr(new CLevelParserParam(name, true));
+    auto paramUPtr = MakeUnique<CLevelParserParam>(name, true);
     paramUPtr->SetLine(this);
     CLevelParserParam* paramPtr = paramUPtr.get();
     m_params.insert(std::make_pair(name, std::move(paramUPtr)));

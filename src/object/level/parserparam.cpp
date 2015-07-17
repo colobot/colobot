@@ -22,6 +22,7 @@
 #include "app/app.h"
 
 #include "common/logger.h"
+#include "common/make_unique.h"
 #include "common/pathman.h"
 #include "common/resources/resourcemanager.h"
 
@@ -61,27 +62,27 @@ CLevelParserParam::CLevelParserParam(bool value)
 
 CLevelParserParam::CLevelParserParam(Gfx::Color value)
 {
-    m_array.push_back(CLevelParserParamUPtr{new CLevelParserParam(value.r)});
-    m_array.push_back(CLevelParserParamUPtr{new CLevelParserParam(value.g)});
-    m_array.push_back(CLevelParserParamUPtr{new CLevelParserParam(value.b)});
-    m_array.push_back(CLevelParserParamUPtr{new CLevelParserParam(value.a)});
+    m_array.push_back(MakeUnique<CLevelParserParam>(value.r));
+    m_array.push_back(MakeUnique<CLevelParserParam>(value.g));
+    m_array.push_back(MakeUnique<CLevelParserParam>(value.b));
+    m_array.push_back(MakeUnique<CLevelParserParam>(value.a));
 
     LoadArray();
 }
 
 CLevelParserParam::CLevelParserParam(Math::Point value)
 {
-    m_array.push_back(CLevelParserParamUPtr{new CLevelParserParam(value.x)});
-    m_array.push_back(CLevelParserParamUPtr{new CLevelParserParam(value.y)});
+    m_array.push_back(MakeUnique<CLevelParserParam>(value.x));
+    m_array.push_back(MakeUnique<CLevelParserParam>(value.y));
 
     LoadArray();
 }
 
 CLevelParserParam::CLevelParserParam(Math::Vector value)
 {
-    m_array.push_back(CLevelParserParamUPtr{new CLevelParserParam(value.x)});
-    m_array.push_back(CLevelParserParamUPtr{new CLevelParserParam(value.y)});
-    m_array.push_back(CLevelParserParamUPtr{new CLevelParserParam(value.z)});
+    m_array.push_back(MakeUnique<CLevelParserParam>(value.x));
+    m_array.push_back(MakeUnique<CLevelParserParam>(value.y));
+    m_array.push_back(MakeUnique<CLevelParserParam>(value.z));
 
     LoadArray();
 }
@@ -905,7 +906,7 @@ void CLevelParserParam::ParseArray()
     {
         boost::algorithm::trim(value);
         if (value.empty()) continue;
-        CLevelParserParamUPtr param{new CLevelParserParam(m_name + "[" + boost::lexical_cast<std::string>(i) + "]", value)};
+        auto param = MakeUnique<CLevelParserParam>(m_name + "[" + boost::lexical_cast<std::string>(i) + "]", value);
         param->SetLine(m_line);
         m_array.push_back(std::move(param));
         i++;

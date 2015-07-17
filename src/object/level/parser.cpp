@@ -22,6 +22,7 @@
 
 #include "app/app.h"
 
+#include "common/make_unique.h"
 #include "common/resources/resourcemanager.h"
 #include "common/resources/inputstream.h"
 #include "common/resources/outputstream.h"
@@ -168,7 +169,7 @@ void CLevelParser::Load()
         if (command.empty())
             continue;
 
-        CLevelParserLineUPtr parserLine{new CLevelParserLine(lineNumber, command)};
+        auto parserLine = MakeUnique<CLevelParserLine>(lineNumber, command);
 
         if (command.length() > 2 && command[command.length() - 2] == '.')
         {
@@ -239,7 +240,7 @@ void CLevelParser::Load()
             std::string paramValue = line.substr(0, pos + 1);
             boost::algorithm::trim(paramValue);
 
-            parserLine->AddParam(paramName, CLevelParserParamUPtr{new CLevelParserParam(paramName, paramValue)});
+            parserLine->AddParam(paramName, MakeUnique<CLevelParserParam>(paramName, paramValue));
 
             if (pos == std::string::npos)
                 break;

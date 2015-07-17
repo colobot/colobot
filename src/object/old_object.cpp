@@ -886,78 +886,78 @@ void COldObject::Write(CLevelParserLine* line)
 {
     Math::Vector    pos;
 
-    line->AddParam("camera", CLevelParserParamUPtr{new CLevelParserParam(GetCameraType())});
+    line->AddParam("camera", MakeUnique<CLevelParserParam>(GetCameraType()));
 
     if ( GetCameraLock() )
-        line->AddParam("cameraLock", CLevelParserParamUPtr{new CLevelParserParam(GetCameraLock())});
+        line->AddParam("cameraLock", MakeUnique<CLevelParserParam>(GetCameraLock()));
 
     if ( GetEnergy() != 0.0f )
-        line->AddParam("energy", CLevelParserParamUPtr{new CLevelParserParam(GetEnergy())});
+        line->AddParam("energy", MakeUnique<CLevelParserParam>(GetEnergy()));
 
     if ( GetCapacity() != 1.0f )
-        line->AddParam("capacity", CLevelParserParamUPtr{new CLevelParserParam(GetCapacity())});
+        line->AddParam("capacity", MakeUnique<CLevelParserParam>(GetCapacity()));
 
     if ( GetShield() != 1.0f )
-        line->AddParam("shield", CLevelParserParamUPtr{new CLevelParserParam(GetShield())});
+        line->AddParam("shield", MakeUnique<CLevelParserParam>(GetShield()));
 
     if ( GetRange() != 1.0f )
-        line->AddParam("range", CLevelParserParamUPtr{new CLevelParserParam(GetRange())});
+        line->AddParam("range", MakeUnique<CLevelParserParam>(GetRange()));
 
     if ( !GetSelectable() )
-        line->AddParam("selectable", CLevelParserParamUPtr{new CLevelParserParam(GetSelectable())});
+        line->AddParam("selectable", MakeUnique<CLevelParserParam>(GetSelectable()));
 
     if ( !GetEnable() )
-        line->AddParam("enable", CLevelParserParamUPtr{new CLevelParserParam(GetEnable())});
+        line->AddParam("enable", MakeUnique<CLevelParserParam>(GetEnable()));
 
     // TODO: doesn't seem to be used
     if ( GetFixed() )
-        line->AddParam("fixed", CLevelParserParamUPtr{new CLevelParserParam(GetFixed())});
+        line->AddParam("fixed", MakeUnique<CLevelParserParam>(GetFixed()));
 
     if ( !GetClip() )
-        line->AddParam("clip", CLevelParserParamUPtr{new CLevelParserParam(GetClip())});
+        line->AddParam("clip", MakeUnique<CLevelParserParam>(GetClip()));
 
     if ( GetLock() )
-        line->AddParam("lock", CLevelParserParamUPtr{new CLevelParserParam(GetLock())});
+        line->AddParam("lock", MakeUnique<CLevelParserParam>(GetLock()));
 
     if ( GetProxyActivate() )
     {
-        line->AddParam("proxyActivate", CLevelParserParamUPtr{new CLevelParserParam(GetProxyActivate())});
-        line->AddParam("proxyDistance", CLevelParserParamUPtr{new CLevelParserParam(GetProxyDistance()/g_unit)});
+        line->AddParam("proxyActivate", MakeUnique<CLevelParserParam>(GetProxyActivate()));
+        line->AddParam("proxyDistance", MakeUnique<CLevelParserParam>(GetProxyDistance()/g_unit));
     }
 
     if ( GetMagnifyDamage() != 1.0f )
-        line->AddParam("magnifyDamage", CLevelParserParamUPtr{new CLevelParserParam(GetMagnifyDamage())});
+        line->AddParam("magnifyDamage", MakeUnique<CLevelParserParam>(GetMagnifyDamage()));
 
     if ( GetTeam() != 0 )
-        line->AddParam("team", CLevelParserParamUPtr{new CLevelParserParam(GetTeam())});
+        line->AddParam("team", MakeUnique<CLevelParserParam>(GetTeam()));
 
     if ( GetGunGoalV() != 0.0f )
-        line->AddParam("aimV", CLevelParserParamUPtr{new CLevelParserParam(GetGunGoalV())});
+        line->AddParam("aimV", MakeUnique<CLevelParserParam>(GetGunGoalV()));
 
     if ( GetGunGoalH() != 0.0f )
-        line->AddParam("aimH", CLevelParserParamUPtr{new CLevelParserParam(GetGunGoalH())});
+        line->AddParam("aimH", MakeUnique<CLevelParserParam>(GetGunGoalH()));
 
     if ( GetAnimateOnReset() )
     {
-        line->AddParam("resetCap", CLevelParserParamUPtr{new CLevelParserParam(GetAnimateOnReset())});
+        line->AddParam("resetCap", MakeUnique<CLevelParserParam>(GetAnimateOnReset()));
     }
 
     if ( m_bVirusMode )
-        line->AddParam("virusMode", CLevelParserParamUPtr{new CLevelParserParam(m_bVirusMode)});
+        line->AddParam("virusMode", MakeUnique<CLevelParserParam>(m_bVirusMode));
 
     if ( m_virusTime != 0.0f )
-        line->AddParam("virusTime", CLevelParserParamUPtr{new CLevelParserParam(m_virusTime)});
+        line->AddParam("virusTime", MakeUnique<CLevelParserParam>(m_virusTime));
 
-    line->AddParam("ignoreBuildCheck", CLevelParserParamUPtr{new CLevelParserParam(GetIgnoreBuildCheck())});
+    line->AddParam("ignoreBuildCheck", MakeUnique<CLevelParserParam>(GetIgnoreBuildCheck()));
 
     // Sets the parameters of the command line.
     CLevelParserParamVec cmdline;
     for(float value : m_cmdLine)
     {
-        cmdline.push_back(CLevelParserParamUPtr{new CLevelParserParam(value)});
+        cmdline.push_back(MakeUnique<CLevelParserParam>(value));
     }
     if (cmdline.size() > 0)
-        line->AddParam("cmdline", CLevelParserParamUPtr{new CLevelParserParam(std::move(cmdline))});
+        line->AddParam("cmdline", MakeUnique<CLevelParserParam>(std::move(cmdline)));
 
     if ( m_motion != nullptr )
     {

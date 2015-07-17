@@ -22,6 +22,8 @@
 
 #include "app/app.h"
 
+#include "common/make_unique.h"
+
 #include "object/robotmain.h"
 #include "object/old_object.h"
 #include "object/level/parserline.h"
@@ -162,9 +164,9 @@ bool CMotion::Write(CLevelParserLine* line)
 {
     if ( m_actionType == -1 )  return false;
 
-    line->AddParam("mType", CLevelParserParamUPtr{new CLevelParserParam(m_actionType)});
-    line->AddParam("mTime", CLevelParserParamUPtr{new CLevelParserParam(m_actionTime)});
-    line->AddParam("mProgress", CLevelParserParamUPtr{new CLevelParserParam(m_progress)});
+    line->AddParam("mType", MakeUnique<CLevelParserParam>(m_actionType));
+    line->AddParam("mTime", MakeUnique<CLevelParserParam>(m_actionTime));
+    line->AddParam("mProgress", MakeUnique<CLevelParserParam>(m_progress));
 
     return false;
 }

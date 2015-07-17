@@ -914,9 +914,9 @@ bool CRobotMain::ProcessEvent(Event &event)
                     if (obj != nullptr)
                     {
                         CLevelParserLine line("CreateObject");
-                        line.AddParam("type", CLevelParserParamUPtr{new CLevelParserParam(obj->GetType())});
-                        line.AddParam("pos", CLevelParserParamUPtr{new CLevelParserParam(obj->GetPosition())});
-                        line.AddParam("dir", CLevelParserParamUPtr{new CLevelParserParam(obj->GetRotationZ()/(Math::PI/180.0f))});
+                        line.AddParam("type", MakeUnique<CLevelParserParam>(obj->GetType()));
+                        line.AddParam("pos", MakeUnique<CLevelParserParam>(obj->GetPosition()));
+                        line.AddParam("dir", MakeUnique<CLevelParserParam>(obj->GetRotationZ()/(Math::PI/180.0f)));
 
                         std::stringstream ss;
                         ss << line;
@@ -4824,11 +4824,11 @@ void CRobotMain::IOWriteObject(CLevelParserLine* line, CObject* obj)
 {
     if (obj->GetType() == OBJECT_FIX) return;
 
-    line->AddParam("type", CLevelParserParamUPtr{new CLevelParserParam(obj->GetType())});
-    line->AddParam("id", CLevelParserParamUPtr{new CLevelParserParam(obj->GetID())});
-    line->AddParam("pos", CLevelParserParamUPtr{new CLevelParserParam(obj->GetPosition()/g_unit)});
-    line->AddParam("angle", CLevelParserParamUPtr{new CLevelParserParam(obj->GetRotation() * Math::RAD_TO_DEG)});
-    line->AddParam("zoom", CLevelParserParamUPtr{new CLevelParserParam(obj->GetScale())});
+    line->AddParam("type", MakeUnique<CLevelParserParam>(obj->GetType()));
+    line->AddParam("id", MakeUnique<CLevelParserParam>(obj->GetID()));
+    line->AddParam("pos", MakeUnique<CLevelParserParam>(obj->GetPosition()/g_unit));
+    line->AddParam("angle", MakeUnique<CLevelParserParam>(obj->GetRotation() * Math::RAD_TO_DEG));
+    line->AddParam("zoom", MakeUnique<CLevelParserParam>(obj->GetScale()));
 
     if (obj->Implements(ObjectInterfaceType::Old))
     {
@@ -4842,34 +4842,34 @@ void CRobotMain::IOWriteObject(CLevelParserLine* line, CObject* obj)
             if (pos.x != 0.0f || pos.y != 0.0f || pos.z != 0.0f)
             {
                 pos /= g_unit;
-                line->AddParam("p" + boost::lexical_cast<std::string>(i), CLevelParserParamUPtr{new CLevelParserParam(pos)});
+                line->AddParam("p" + boost::lexical_cast<std::string>(i), MakeUnique<CLevelParserParam>(pos));
             }
 
             Math::Vector rot = oldObj->GetPartRotation(i);
             if (rot.x != 0.0f || rot.y != 0.0f || rot.z != 0.0f)
             {
                 rot /= (Math::PI/180.0f);
-                line->AddParam("a" + boost::lexical_cast<std::string>(i), CLevelParserParamUPtr{new CLevelParserParam(rot)});
+                line->AddParam("a" + boost::lexical_cast<std::string>(i), MakeUnique<CLevelParserParam>(rot));
             }
 
             Math::Vector scale = oldObj->GetPartScale(i);
             if (scale.x != 1.0f || scale.y != 1.0f || scale.z != 1.0f)
             {
-                line->AddParam("z" + boost::lexical_cast<std::string>(i), CLevelParserParamUPtr{new CLevelParserParam(scale)});
+                line->AddParam("z" + boost::lexical_cast<std::string>(i), MakeUnique<CLevelParserParam>(scale));
             }
         }
 
-        line->AddParam("trainer", CLevelParserParamUPtr{new CLevelParserParam(obj->GetTrainer())});
-        line->AddParam("option", CLevelParserParamUPtr{new CLevelParserParam(obj->GetOption())});
+        line->AddParam("trainer", MakeUnique<CLevelParserParam>(obj->GetTrainer()));
+        line->AddParam("option", MakeUnique<CLevelParserParam>(obj->GetOption()));
     }
 
     if (obj == m_infoObject)
-        line->AddParam("select", CLevelParserParamUPtr{new CLevelParserParam(1)});
+        line->AddParam("select", MakeUnique<CLevelParserParam>(1));
 
     obj->Write(line);
 
     if (obj->GetType() == OBJECT_BASE)
-        line->AddParam("run", CLevelParserParamUPtr{new CLevelParserParam(3)});  // stops and open (PARAM_FIXSCENE)
+        line->AddParam("run", MakeUnique<CLevelParserParam>(3));  // stops and open (PARAM_FIXSCENE)
 
     if (obj->Implements(ObjectInterfaceType::Programmable))
     {
@@ -4878,7 +4878,7 @@ void CRobotMain::IOWriteObject(CLevelParserLine* line, CObject* obj)
         int run = brain->GetProgram();
         if (run != -1)
         {
-            line->AddParam("run", CLevelParserParamUPtr{new CLevelParserParam(run+1)});
+            line->AddParam("run", MakeUnique<CLevelParserParam>(run+1));
         }
 
         auto& programs = brain->GetPrograms();
@@ -4886,7 +4886,7 @@ void CRobotMain::IOWriteObject(CLevelParserLine* line, CObject* obj)
         {
             if (programs[i]->readOnly)
             {
-                line->AddParam("scriptReadOnly" + boost::lexical_cast<std::string>(i+1), CLevelParserParamUPtr{new CLevelParserParam(true)});
+                line->AddParam("scriptReadOnly" + boost::lexical_cast<std::string>(i+1), MakeUnique<CLevelParserParam>(true));
             }
         }
     }
@@ -4898,48 +4898,48 @@ bool CRobotMain::IOWriteScene(const char *filename, const char *filecbot, char *
     CLevelParser levelParser(filename);
     CLevelParserLineUPtr line;
 
-    line.reset(new CLevelParserLine("Title"));
-    line->AddParam("text", CLevelParserParamUPtr{new CLevelParserParam(std::string(info))});
+    line = MakeUnique<CLevelParserLine>("Title");
+    line->AddParam("text", MakeUnique<CLevelParserParam>(std::string(info)));
     levelParser.AddLine(std::move(line));
 
 
     //TODO: Do we need that? It's not used anyway
-    line.reset(new CLevelParserLine("Version"));
-    line->AddParam("maj", CLevelParserParamUPtr{new CLevelParserParam(0)});
-    line->AddParam("min", CLevelParserParamUPtr{new CLevelParserParam(1)});
+    line = MakeUnique<CLevelParserLine>("Version");
+    line->AddParam("maj", MakeUnique<CLevelParserParam>(0));
+    line->AddParam("min", MakeUnique<CLevelParserParam>(1));
     levelParser.AddLine(std::move(line));
 
 
-    line.reset(new CLevelParserLine("Created"));
-    line->AddParam("date", CLevelParserParamUPtr{new CLevelParserParam(GetCurrentTimestamp())});
+    line = MakeUnique<CLevelParserLine>("Created");
+    line->AddParam("date", MakeUnique<CLevelParserParam>(GetCurrentTimestamp()));
     levelParser.AddLine(std::move(line));
 
     char* name = m_dialog->GetSceneName();
-    line.reset(new CLevelParserLine("Mission"));
-    line->AddParam("base", CLevelParserParamUPtr{new CLevelParserParam(std::string(name))});
-    line->AddParam("rank", CLevelParserParamUPtr{new CLevelParserParam(m_dialog->GetSceneRank())});
+    line = MakeUnique<CLevelParserLine>("Mission");
+    line->AddParam("base", MakeUnique<CLevelParserParam>(std::string(name)));
+    line->AddParam("rank", MakeUnique<CLevelParserParam>(m_dialog->GetSceneRank()));
     if (std::string(name) == "custom")
     {
-        line->AddParam("dir", CLevelParserParamUPtr{new CLevelParserParam(std::string(m_dialog->GetSceneDir()))});
+        line->AddParam("dir", MakeUnique<CLevelParserParam>(std::string(m_dialog->GetSceneDir())));
     }
     levelParser.AddLine(std::move(line));
 
-    line.reset(new CLevelParserLine("Map"));
-    line->AddParam("zoom", CLevelParserParamUPtr{new CLevelParserParam(m_map->GetZoomMap())});
+    line = MakeUnique<CLevelParserLine>("Map");
+    line->AddParam("zoom", MakeUnique<CLevelParserParam>(m_map->GetZoomMap()));
     levelParser.AddLine(std::move(line));
 
-    line.reset(new CLevelParserLine("DoneResearch"));
-    line->AddParam("bits", CLevelParserParamUPtr{new CLevelParserParam(static_cast<int>(m_researchDone[0]))});
+    line = MakeUnique<CLevelParserLine>("DoneResearch");
+    line->AddParam("bits", MakeUnique<CLevelParserParam>(static_cast<int>(m_researchDone[0])));
     levelParser.AddLine(std::move(line));
 
     float sleep, delay, magnetic, progress;
     if (m_lightning->GetStatus(sleep, delay, magnetic, progress))
     {
-        line.reset(new CLevelParserLine("BlitzMode"));
-        line->AddParam("sleep", CLevelParserParamUPtr{new CLevelParserParam(sleep)});
-        line->AddParam("delay", CLevelParserParamUPtr{new CLevelParserParam(delay)});
-        line->AddParam("magnetic", CLevelParserParamUPtr{new CLevelParserParam(magnetic/g_unit)});
-        line->AddParam("progress", CLevelParserParamUPtr{new CLevelParserParam(progress)});
+        line = MakeUnique<CLevelParserLine>("BlitzMode");
+        line->AddParam("sleep", MakeUnique<CLevelParserParam>(sleep));
+        line->AddParam("delay", MakeUnique<CLevelParserParam>(delay));
+        line->AddParam("magnetic", MakeUnique<CLevelParserParam>(magnetic/g_unit));
+        line->AddParam("progress", MakeUnique<CLevelParserParam>(progress));
         levelParser.AddLine(std::move(line));
     }
 
@@ -4959,7 +4959,7 @@ bool CRobotMain::IOWriteScene(const char *filename, const char *filecbot, char *
             CObject* cargo = dynamic_cast<CCarrierObject*>(obj)->GetCargo();
             if (cargo != nullptr)  // object transported?
             {
-                line.reset(new CLevelParserLine("CreateFret"));
+                line = MakeUnique<CLevelParserLine>("CreateFret");
                 IOWriteObject(line.get(), cargo);
                 levelParser.AddLine(std::move(line));
             }
@@ -4970,14 +4970,14 @@ bool CRobotMain::IOWriteScene(const char *filename, const char *filecbot, char *
             CObject* power = dynamic_cast<CPoweredObject*>(obj)->GetPower();
             if (power != nullptr) // battery transported?
             {
-                line.reset(new CLevelParserLine("CreatePower"));
+                line = MakeUnique<CLevelParserLine>("CreatePower");
                 IOWriteObject(line.get(), power);
                 levelParser.AddLine(std::move(line));
             }
         }
 
 
-        line.reset(new CLevelParserLine("CreateObject"));
+        line = MakeUnique<CLevelParserLine>("CreateObject");
         IOWriteObject(line.get(), obj);
         levelParser.AddLine(std::move(line));
 

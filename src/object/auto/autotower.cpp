@@ -20,6 +20,8 @@
 
 #include "object/auto/autotower.h"
 
+#include "common/make_unique.h"
+
 #include "math/geometry.h"
 
 #include "object/object_manager.h"
@@ -468,16 +470,16 @@ bool CAutoTower::Write(CLevelParserLine* line)
 {
     if ( m_phase == ATP_WAIT )  return false;
 
-    line->AddParam("aExist", CLevelParserParamUPtr{new CLevelParserParam(true)});
+    line->AddParam("aExist", MakeUnique<CLevelParserParam>(true));
     CAuto::Write(line);
-    line->AddParam("aPhase", CLevelParserParamUPtr{new CLevelParserParam(static_cast<int>(m_phase))});
-    line->AddParam("aProgress", CLevelParserParamUPtr{new CLevelParserParam(m_progress)});
-    line->AddParam("aSpeed", CLevelParserParamUPtr{new CLevelParserParam(m_speed)});
-    line->AddParam("aTargetPos", CLevelParserParamUPtr{new CLevelParserParam(m_targetPos)});
-    line->AddParam("aAngleYactual", CLevelParserParamUPtr{new CLevelParserParam(m_angleYactual)});
-    line->AddParam("aAngleZactual", CLevelParserParamUPtr{new CLevelParserParam(m_angleZactual)});
-    line->AddParam("aAngleYfinal", CLevelParserParamUPtr{new CLevelParserParam(m_angleYfinal)});
-    line->AddParam("aAngleZfinal", CLevelParserParamUPtr{new CLevelParserParam(m_angleZfinal)});
+    line->AddParam("aPhase", MakeUnique<CLevelParserParam>(static_cast<int>(m_phase)));
+    line->AddParam("aProgress", MakeUnique<CLevelParserParam>(m_progress));
+    line->AddParam("aSpeed", MakeUnique<CLevelParserParam>(m_speed));
+    line->AddParam("aTargetPos", MakeUnique<CLevelParserParam>(m_targetPos));
+    line->AddParam("aAngleYactual", MakeUnique<CLevelParserParam>(m_angleYactual));
+    line->AddParam("aAngleZactual", MakeUnique<CLevelParserParam>(m_angleZactual));
+    line->AddParam("aAngleYfinal", MakeUnique<CLevelParserParam>(m_angleYfinal));
+    line->AddParam("aAngleZfinal", MakeUnique<CLevelParserParam>(m_angleZfinal));
 
     return true;
 }

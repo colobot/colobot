@@ -27,7 +27,6 @@
 
 #include "common/event.h"
 #include "common/global.h"
-#include "common/make_unique.h"
 
 #include "graphics/core/color.h"
 #include "graphics/engine/pyro_type.h"

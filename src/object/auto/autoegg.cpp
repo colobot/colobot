@@ -20,6 +20,8 @@
 
 #include "object/auto/autoegg.h"
 
+#include "common/make_unique.h"
+
 #include "graphics/engine/pyro_manager.h"
 
 #include "math/geometry.h"
@@ -300,14 +302,14 @@ bool CAutoEgg::Write(CLevelParserLine* line)
 {
     if ( m_phase == AEP_NULL )  return false;
 
-    line->AddParam("aExist", CLevelParserParamUPtr{new CLevelParserParam(true)});
+    line->AddParam("aExist", MakeUnique<CLevelParserParam>(true));
     CAuto::Write(line);
-    line->AddParam("aPhase", CLevelParserParamUPtr{new CLevelParserParam(static_cast<int>(m_phase))});
-    line->AddParam("aProgress", CLevelParserParamUPtr{new CLevelParserParam(m_progress)});
-    line->AddParam("aSpeed", CLevelParserParamUPtr{new CLevelParserParam(m_speed)});
-    line->AddParam("aParamType", CLevelParserParamUPtr{new CLevelParserParam(m_type)});
-    line->AddParam("aParamValue1", CLevelParserParamUPtr{new CLevelParserParam(m_value)});
-    line->AddParam("aParamString", CLevelParserParamUPtr{new CLevelParserParam(m_alienProgramName)});
+    line->AddParam("aPhase", MakeUnique<CLevelParserParam>(static_cast<int>(m_phase)));
+    line->AddParam("aProgress", MakeUnique<CLevelParserParam>(m_progress));
+    line->AddParam("aSpeed", MakeUnique<CLevelParserParam>(m_speed));
+    line->AddParam("aParamType", MakeUnique<CLevelParserParam>(m_type));
+    line->AddParam("aParamValue1", MakeUnique<CLevelParserParam>(m_value));
+    line->AddParam("aParamString", MakeUnique<CLevelParserParam>(m_alienProgramName));
 
     return true;
 }

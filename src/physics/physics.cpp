@@ -24,6 +24,7 @@
 
 #include "common/event.h"
 #include "common/global.h"
+#include "common/make_unique.h"
 
 #include "graphics/engine/camera.h"
 #include "graphics/engine/engine.h"
@@ -173,12 +174,12 @@ PhysicsType CPhysics::GetType()
 
 bool CPhysics::Write(CLevelParserLine* line)
 {
-    line->AddParam("motor", CLevelParserParamUPtr{new CLevelParserParam(m_motorSpeed)});
+    line->AddParam("motor", MakeUnique<CLevelParserParam>(m_motorSpeed));
 
     if ( m_type == TYPE_FLYING )
     {
-        line->AddParam("reactorRange", CLevelParserParamUPtr{new CLevelParserParam(GetReactorRange())});
-        line->AddParam("land", CLevelParserParamUPtr{new CLevelParserParam(GetLand())});
+        line->AddParam("reactorRange", MakeUnique<CLevelParserParam>(GetReactorRange()));
+        line->AddParam("land", MakeUnique<CLevelParserParam>(GetLand()));
     }
 
     return true;

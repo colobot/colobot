@@ -167,11 +167,11 @@ void CBrain::SetMotion(CMotion* motion)
 
 bool CBrain::Write(CLevelParserLine* line)
 {
-    line->AddParam("bVirusActive", CLevelParserParamUPtr{new CLevelParserParam(m_bActiveVirus)});
+    line->AddParam("bVirusActive", MakeUnique<CLevelParserParam>(m_bActiveVirus));
 
     if ( m_object->GetType() == OBJECT_MOBILErs )
     {
-        line->AddParam("bShieldActive", CLevelParserParamUPtr{new CLevelParserParam(m_secondaryTask != nullptr)});
+        line->AddParam("bShieldActive", MakeUnique<CLevelParserParam>(m_secondaryTask != nullptr));
     }
 
     return true;

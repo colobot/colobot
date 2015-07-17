@@ -28,6 +28,7 @@
 #include "common/global.h"
 #include "common/event.h"
 #include "common/logger.h"
+#include "common/make_unique.h"
 #include "common/misc.h"
 #include "common/profile.h"
 #include "common/restext.h"
@@ -6018,15 +6019,15 @@ void CMainDialog::WriteGamerPerso(char *gamer)
         CLevelParser persoParser(GetSavegameDir()+"/"+gamer+"/face.gam");
         CLevelParserLineUPtr line;
 
-        line.reset(new CLevelParserLine("Head"));
-        line->AddParam("face", CLevelParserParamUPtr{new CLevelParserParam(m_perso.face)});
-        line->AddParam("glasses", CLevelParserParamUPtr{new CLevelParserParam(m_perso.glasses)});
-        line->AddParam("hair", CLevelParserParamUPtr{new CLevelParserParam(m_perso.colorHair)});
+        line = MakeUnique<CLevelParserLine>("Head");
+        line->AddParam("face", MakeUnique<CLevelParserParam>(m_perso.face));
+        line->AddParam("glasses", MakeUnique<CLevelParserParam>(m_perso.glasses));
+        line->AddParam("hair", MakeUnique<CLevelParserParam>(m_perso.colorHair));
         persoParser.AddLine(std::move(line));
 
-        line.reset(new CLevelParserLine("Body"));
-        line->AddParam("combi", CLevelParserParamUPtr{new CLevelParserParam(m_perso.colorCombi)});
-        line->AddParam("band", CLevelParserParamUPtr{new CLevelParserParam(m_perso.colorBand)});
+        line = MakeUnique<CLevelParserLine>("Body");
+        line->AddParam("combi", MakeUnique<CLevelParserParam>(m_perso.colorCombi));
+        line->AddParam("band", MakeUnique<CLevelParserParam>(m_perso.colorBand));
         persoParser.AddLine(std::move(line));
 
         persoParser.Save();
