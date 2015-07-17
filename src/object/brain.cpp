@@ -49,6 +49,9 @@
 #include "ui/window.h"
 
 
+#include <iomanip>
+
+
 
 const int MAXTRACERECORD = 1000;
 
@@ -2998,19 +3001,15 @@ void CBrain::TraceRecordStop()
 {
     TraceOper   lastOper, curOper;
     float       lastParam, curParam;
-    int         max, i;
-    char*       buffer;
 
     if ( m_traceRecordBuffer == nullptr )  return;
 
-    max = 10000;
-    buffer = new char[max];
-    *buffer = 0;
-    strncat(buffer, "extern void object::AutoDraw()\n{\n", max-1);
+    std::stringstream buffer;
+    buffer << "extern void object::AutoDraw()\n{\n";
 
     lastOper = TO_STOP;
     lastParam = 0.0f;
-    for ( i=0 ; i<m_traceRecordIndex ; i++ )
+    for ( int i=0 ; i<m_traceRecordIndex ; i++ )
     {
         curOper = m_traceRecordBuffer[i].oper;
         curParam = m_traceRecordBuffer[i].param;
@@ -3028,22 +3027,20 @@ void CBrain::TraceRecordStop()
         }
         else
         {
-            TraceRecordPut(buffer, max, lastOper, lastParam);
+            TraceRecordPut(buffer, lastOper, lastParam);
             lastOper = curOper;
             lastParam = curParam;
         }
     }
-    TraceRecordPut(buffer, max, lastOper, lastParam);
+    TraceRecordPut(buffer, lastOper, lastParam);
 
     delete[] m_traceRecordBuffer;
     m_traceRecordBuffer = nullptr;
 
-    strncat(buffer, "}\n", max-1);
-    buffer[max-1] = 0;
+    buffer << "}\n";
 
     Program* prog = AddProgram();
-    prog->script->SendScript(buffer);
-    delete[] buffer;
+    prog->script->SendScript(buffer.str().c_str());
 }
 
 // Saves an instruction CBOT.
@@ -3064,38 +3061,33 @@ bool CBrain::TraceRecordOper(TraceOper oper, float param)
 
 // Generates an instruction CBOT.
 
-bool CBrain::TraceRecordPut(char *buffer, int max, TraceOper oper, float param)
+bool CBrain::TraceRecordPut(std::stringstream& buffer, TraceOper oper, float param)
 {
-    char    line[100];
-
     if ( oper == TO_ADVANCE )
     {
         param /= g_unit;
-        sprintf(line, "\tmove(%.1f);\n", param);
-        strncat(buffer, line, max-1);
+        buffer << "\tmove(" << std::fixed << std::setprecision(1) << param << ");\n";
     }
 
     if ( oper == TO_RECEDE )
     {
         param /= g_unit;
-        sprintf(line, "\tmove(-%.1f);\n", param);
-        strncat(buffer, line, max-1);
+        buffer << "\tmove(-" << std::fixed << std::setprecision(1) << param << ");\n";
     }
 
     if ( oper == TO_TURN )
     {
         param = -param*180.0f/Math::PI;
-        sprintf(line, "\tturn(%d);\n", static_cast<int>(param));
-        strncat(buffer, line, max-1);
+        buffer << "\tturn(" << static_cast<int>(param) << ");\n";
     }
 
     if ( oper == TO_PEN )
     {
         TraceColor color = static_cast<TraceColor>(param);
         if ( color == TraceColor::Default )
-            strncat(buffer, "\tpenup();\n", max-1);
+            buffer << "\tpenup();\n";
         else
-            strncat(buffer, ("\tpendown("+TraceColorName(color)+");\n").c_str(), max-1);
+            buffer << "\tpendown(" << TraceColorName(color) << ");\n";
     }
 
     return true;

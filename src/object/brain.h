@@ -34,6 +34,7 @@
 #include "object/trace_color.h"
 
 #include <vector>
+#include <sstream>
 
 class COldObject;
 class CPhysics;
@@ -178,11 +179,16 @@ protected:
     void        DeadInterface(Ui::CWindow *pw, EventType event, bool bState);
     void        DefaultEnter(Ui::CWindow *pw, EventType event, bool bState=true);
 
+    //! Start recording trace
     void        TraceRecordStart();
+    //! Save current status to recording buffer
     void        TraceRecordFrame();
+    //! Stop recording trace and generate CBot program
     void        TraceRecordStop();
+    //! Save this operation to recording buffer
     bool        TraceRecordOper(TraceOper oper, float param);
-    bool        TraceRecordPut(char *buffer, int max, TraceOper oper, float param);
+    //! Convert this recording operation to CBot instruction
+    bool        TraceRecordPut(std::stringstream& buffer, TraceOper oper, float param);
 
 protected:
     Gfx::CEngine*       m_engine;
