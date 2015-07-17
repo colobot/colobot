@@ -4537,9 +4537,10 @@ void CRobotMain::CompileScript(bool soluce)
             if (! obj->Implements(ObjectInterfaceType::Programmable)) continue;
 
             CBrain* brain = dynamic_cast<CProgrammableObject*>(obj)->GetBrain();
-            for (Program* program : brain->GetPrograms())
+            for (std::unique_ptr<Program>& prog : brain->GetPrograms())
             {
-                //? if (brain->GetCompile(j)) continue;
+                Program* program = prog.get();
+
                 if (program->filename.empty()) continue;
 
                 std::string name = "ai/" + program->filename;
@@ -4677,7 +4678,7 @@ void CRobotMain::SaveOneScript(CObject *obj)
     char* name = m_dialog->GetSceneName();
     int rank = m_dialog->GetSceneRank();
 
-    auto programs = brain->GetPrograms();
+    auto& programs = brain->GetPrograms();
     // TODO: Find a better way to do that
     for (unsigned int i = 0; i <= 999; i++)
     {
@@ -4686,7 +4687,7 @@ void CRobotMain::SaveOneScript(CObject *obj)
                     GetSavegameDir(), m_gamerName.c_str(), name[0], rank, objRank, i);
         if (i < programs.size())
         {
-            brain->WriteProgram(programs[i], filename);
+            brain->WriteProgram(programs[i].get(), filename);
         }
         else
         {
@@ -4712,14 +4713,14 @@ void CRobotMain::SaveFileScript(CObject *obj, const char* filename, int objRank)
     dirname = dirname.substr(0, dirname.find_last_of("/"));
 
     char fn[MAX_FNAME]; //TODO: Refactor to std::string
-    auto programs = brain->GetPrograms();
+    auto& programs = brain->GetPrograms();
     // TODO: Find a better way to do that
     for (unsigned int i = 0; i <= 999; i++)
     {
         sprintf(fn, "%s/prog%.3d%.3d.txt", dirname.c_str(), objRank, i);
         if (i < programs.size())
         {
-            brain->WriteProgram(programs[i], fn);
+            brain->WriteProgram(programs[i].get(), fn);
         }
         else
         {
@@ -4879,7 +4880,7 @@ void CRobotMain::IOWriteObject(CLevelParserLine* line, CObject* obj)
             line->AddParam("run", CLevelParserParamUPtr{new CLevelParserParam(run+1)});
         }
 
-        auto programs = brain->GetPrograms();
+        auto& programs = brain->GetPrograms();
         for (unsigned int i = 0; i < programs.size(); i++)
         {
             if (programs[i]->readOnly)

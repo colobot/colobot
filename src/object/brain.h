@@ -35,6 +35,7 @@
 
 #include <vector>
 #include <sstream>
+#include <memory>
 
 class COldObject;
 class CPhysics;
@@ -78,7 +79,7 @@ struct TraceRecord
 
 struct Program
 {
-    CScript*    script;
+    std::unique_ptr<CScript> script;
     std::string filename;
     bool        readOnly;
     bool        runnable;
@@ -128,7 +129,7 @@ public:
     bool        WriteProgram(Program* program, const char* filename);
     bool        ReadStack(FILE *file);
     bool        WriteStack(FILE *file);
-    const std::vector<Program*>& GetPrograms();
+    std::vector<std::unique_ptr<Program>>& GetPrograms();
 
     Error       StartTaskTake();
     Error       StartTaskManip(TaskManipOrder order, TaskManipArm arm);
@@ -148,7 +149,7 @@ public:
     void        UpdateInterface();
 
     Program*    AddProgram();
-    bool        AddProgram(Program* program);
+    void        AddProgram(std::unique_ptr<Program> program);
     void        RemoveProgram(Program* program);
     Program*    CloneProgram(Program* program);
 
@@ -207,7 +208,7 @@ protected:
     CTaskManager*       m_primaryTask;
     CTaskManager*       m_secondaryTask;
 
-    std::vector<Program*> m_program;
+    std::vector<std::unique_ptr<Program>> m_program;
     Program*            m_currentProgram;
 
     unsigned int        m_selScript;        // rank of the selected script

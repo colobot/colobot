@@ -108,12 +108,6 @@ CBrain::CBrain(COldObject* object)
 
 CBrain::~CBrain()
 {
-    for(auto x : m_program)
-    {
-        delete x->script;
-        x->script = nullptr;
-        delete x;
-    }
     m_program.clear();
 
     delete m_primaryTask;
@@ -320,7 +314,7 @@ bool CBrain::EventProcess(const Event &event)
             {
                 if(m_selScript < m_program.size())
                 {
-                    RunProgram(m_program[m_selScript]);
+                    RunProgram(m_program[m_selScript].get());
                 }
             }
             else
@@ -333,7 +327,7 @@ bool CBrain::EventProcess(const Event &event)
             m_main->SaveOneScript(m_object);
             if(m_selScript < m_program.size())
             {
-                RunProgram(m_program[m_selScript]);
+                RunProgram(m_program[m_selScript].get());
             }
         }
         if ( action == EVENT_OBJECT_PROGSTOP )
@@ -353,7 +347,7 @@ bool CBrain::EventProcess(const Event &event)
         if( action == EVENT_STUDIO_CLONE )
         {
             StopEditScript(false);
-            Program* newProgram = CloneProgram(m_program[m_selScript]);
+            Program* newProgram = CloneProgram(m_program[m_selScript].get());
             m_selScript = m_program.size()-1;
             m_main->SaveOneScript(m_object);
 
@@ -445,7 +439,7 @@ bool CBrain::EventProcess(const Event &event)
         {
             if(m_selScript < m_program.size())
             {
-                StartEditScript(m_program[m_selScript], m_main->GetScriptName());
+                StartEditScript(m_program[m_selScript].get(), m_main->GetScriptName());
             }
         }
 
@@ -473,7 +467,7 @@ bool CBrain::EventProcess(const Event &event)
         {
             if(m_selScript < m_program.size())
             {
-                RemoveProgram(m_program[m_selScript]);
+                RemoveProgram(m_program[m_selScript].get());
                 if(m_selScript >= m_program.size())
                     m_selScript = m_program.size()-1;
                 m_main->SaveOneScript(m_object);
@@ -492,7 +486,7 @@ bool CBrain::EventProcess(const Event &event)
         {
             if(m_selScript < m_program.size())
             {
-                CloneProgram(m_program[m_selScript]);
+                CloneProgram(m_program[m_selScript].get());
                 m_selScript = m_program.size()-1;
                 m_main->SaveOneScript(m_object);
 
@@ -602,7 +596,7 @@ bool CBrain::EventProcess(const Event &event)
     {
         if(m_selScript < m_program.size())
         {
-            StartEditScript(m_program[m_selScript], m_main->GetScriptName());
+            StartEditScript(m_program[m_selScript].get(), m_main->GetScriptName());
         }
     }
 
@@ -611,7 +605,7 @@ bool CBrain::EventProcess(const Event &event)
         StopProgram();  // stops the current program
         if(m_selScript < m_program.size())
         {
-            RunProgram(m_program[m_selScript]);
+            RunProgram(m_program[m_selScript].get());
         }
         UpdateInterface();
     }
@@ -1056,7 +1050,7 @@ void CBrain::StartEditScript(Program* program, char* name)
     CreateInterface(false);  // removes the control buttons
 
     m_studio = new Ui::CStudio();
-    m_studio->StartEditScript(program->script, name, program);
+    m_studio->StartEditScript(program->script.get(), name, program);
 }
 
 // End of editing a program.
@@ -2778,7 +2772,7 @@ int CBrain::GetProgram()
 
     for(unsigned int i = 0; i < m_program.size(); i++)
     {
-        if(m_program[i] == m_currentProgram)
+        if(m_program[i].get() == m_currentProgram)
         {
             return i;
         }
@@ -2822,10 +2816,10 @@ bool CBrain::ReadSoluce(char* filename)
 
     for(unsigned int i = 0; i < m_program.size(); i++)
     {
-        if(m_program[i] == prog) continue;
+        if(m_program[i].get() == prog) continue;
 
         //TODO: This is bad. It's very sensitive to things like \n vs \r\n etc.
-        if ( m_program[i]->script->Compare(prog->script) )  // the same already?
+        if ( m_program[i]->script->Compare(prog->script.get()) )  // the same already?
         {
             m_program[i]->readOnly = true; // Mark is as read-only
             RemoveProgram(prog);
@@ -2910,7 +2904,7 @@ bool CBrain::WriteStack(FILE *file)
 }
 
 
-const std::vector<Program*>& CBrain::GetPrograms()
+std::vector<std::unique_ptr<Program>>& CBrain::GetPrograms()
 {
     return m_program;
 }
@@ -3096,19 +3090,16 @@ bool CBrain::TraceRecordPut(std::stringstream& buffer, TraceOper oper, float par
 Program* CBrain::AddProgram()
 {
     Program* program = new Program();
-    program->script = new CScript(m_object, &m_secondaryTask);
+    program->script.reset(new CScript(m_object, &m_secondaryTask));
     program->readOnly = false;
     program->runnable = true;
-    AddProgram(program);
+    AddProgram(std::move(std::unique_ptr<Program>{program}));
     return program;
 }
 
-bool CBrain::AddProgram(Program* program)
+void CBrain::AddProgram(std::unique_ptr<Program> program)
 {
-    if(std::find(m_program.begin(), m_program.end(), program) != m_program.end())
-        return false;
-
-    m_program.push_back(program);
+    m_program.push_back(std::move(program));
 
     if(m_object->GetSelect())
     {
@@ -3119,7 +3110,6 @@ bool CBrain::AddProgram(Program* program)
             UpdateScript(pw);
         }
     }
-    return true;
 }
 
 void CBrain::RemoveProgram(Program* program)
@@ -3128,10 +3118,10 @@ void CBrain::RemoveProgram(Program* program)
     {
         StopProgram();
     }
-    m_program.erase(std::remove(m_program.begin(), m_program.end(), program), m_program.end());
-    delete program->script;
-    program->script = nullptr;
-    delete program;
+    m_program.erase(
+        std::remove_if(m_program.begin(), m_program.end(),
+            [program](std::unique_ptr<Program>& prog) { return prog.get() == program; }),
+        m_program.end());
 
     if(m_object->GetSelect())
     {
@@ -3162,7 +3152,7 @@ int CBrain::GetProgramIndex(Program* program)
 {
     for(unsigned int i = 0; i < m_program.size(); i++)
     {
-        if(m_program[i] == program)
+        if(m_program[i].get() == program)
         {
             return i;
         }
@@ -3175,7 +3165,7 @@ Program* CBrain::GetProgram(int index)
     if(index < 0 || index >= static_cast<int>(m_program.size()))
         return nullptr;
 
-    return m_program[index];
+    return m_program[index].get();
 }
 
 Program* CBrain::GetOrAddProgram(int index)
@@ -3184,7 +3174,7 @@ Program* CBrain::GetOrAddProgram(int index)
         return nullptr;
 
     if(index < static_cast<int>(m_program.size()))
-        return m_program[index];
+        return m_program[index].get();
 
     for(int i = m_program.size(); i < index; i++)
     {
