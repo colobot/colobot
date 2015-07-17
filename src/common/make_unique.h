@@ -30,3 +30,13 @@ inline std::unique_ptr<T> MakeUnique(Args&&... args)
 {
     return std::unique_ptr<T>(new T(std::forward<Args>(args)...));
 }
+
+/**
+ * A template function to make std::unique_ptr of array type without naked new
+ * It can be replaced with std::make_unique once we use C++14
+ */
+template<typename T>
+inline std::unique_ptr<T[]> MakeUniqueArray(size_t size)
+{
+    return std::unique_ptr<T[]>(new T[size]);
+}

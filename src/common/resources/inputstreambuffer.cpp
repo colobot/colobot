@@ -19,6 +19,8 @@
 
 #include "common/resources/inputstreambuffer.h"
 
+#include "common/make_unique.h"
+
 #include "common/resources/resourcemanager.h"
 
 #include <stdexcept>
@@ -33,7 +35,7 @@ CInputStreamBuffer::CInputStreamBuffer(size_t bufferSize)
         throw std::runtime_error("File buffer must be larger then 0 bytes");
     }
 
-    m_buffer = std::unique_ptr<char[]>(new char[bufferSize]);
+    m_buffer = MakeUniqueArray<char>(bufferSize);
 }
 
 

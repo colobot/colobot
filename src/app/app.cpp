@@ -416,7 +416,7 @@ bool CApplication::Create()
     }
     #else
     GetLogger()->Info("No sound support.\n");
-    m_sound = new CSoundInterface();
+    m_sound = MakeUnique<CSoundInterface>();
     #endif
 
     m_sound->Create();
