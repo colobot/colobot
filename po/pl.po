@@ -516,7 +516,7 @@ msgid "Down (\\key gdown;)"
 msgstr "Dół (\\key gdown;)"
 
 msgid "Drawer bot"
-msgstr "Drawer bot"
+msgstr "Robot rysownik"
 
 msgid "Dust\\Dust and dirt on bots and buildings"
 msgstr "Kurz\\Kurz i bród na robotach i budynkach"
@@ -1187,7 +1187,7 @@ msgid "Read error"
 msgstr "Błąd odczytu"
 
 msgid "Recorder"
-msgstr "Recorder"
+msgstr "Nagrywanie"
 
 msgid "Recycle (\\key action;)"
 msgstr "Odzyskaj (\\key action;)"
@@ -1746,7 +1746,7 @@ msgid "\\No eyeglasses"
 msgstr "\\Bez okularów"
 
 msgid "\\Raise the pencil"
-msgstr "\\Relčve le crayon"
+msgstr "\\Podnieś kredkę"
 
 msgid "\\Red flags"
 msgstr "\\Czerwone flagi"
@@ -1758,10 +1758,10 @@ msgid "\\SatCom on standby"
 msgstr "\\Przełącz przekaźnik SatCom w stan gotowości"
 
 msgid "\\Start recording"
-msgstr "\\Démarre l'enregistrement"
+msgstr "\\Rozpocznij nagrywanie"
 
 msgid "\\Stop recording"
-msgstr "\\Stoppe l'enregistrement"
+msgstr "\\Zatrzymaj nagrywanie"
 
 msgid "\\Turn left"
 msgstr "\\Obróć w lewo"
@@ -1770,28 +1770,28 @@ msgid "\\Turn right"
 msgstr "\\Obróć w prawo"
 
 msgid "\\Use the black pencil"
-msgstr "\\Abaisse le crayon noir"
+msgstr "\\Użyj czarnej kredki"
 
 msgid "\\Use the blue pencil"
-msgstr "\\Abaisse le crayon bleu"
+msgstr "\\Użyj niebieskiej kredki"
 
 msgid "\\Use the brown pencil"
-msgstr "\\Abaisse le crayon brun"
+msgstr "\\Użyj brązowej kredki"
 
 msgid "\\Use the green pencil"
-msgstr "\\Abaisse le crayon vert"
+msgstr "\\Użyj zielonej kredki"
 
 msgid "\\Use the orange pencil"
-msgstr "\\Abaisse le crayon orange"
+msgstr "\\Użyj pomarańczowej kredki"
 
 msgid "\\Use the purple pencil"
-msgstr "\\Abaisse le crayon violet"
+msgstr "\\Użyj fioletowej kredki"
 
 msgid "\\Use the red pencil"
-msgstr "\\Abaisse le crayon rouge"
+msgstr "\\Użyj czerwonej kredki"
 
 msgid "\\Use the yellow pencil"
-msgstr "\\Abaisse le crayon jaune"
+msgstr "\\Użyj żółtej kredki"
 
 msgid "\\Violet flags"
 msgstr "\\Fioletowe flagi"

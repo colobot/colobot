@@ -1785,15 +1785,15 @@ bool CBrain::CreateInterface(bool bSelect)
         pos.x = ox+sx*9.65f;
         pos.y = oy+sy*0.25f;
         pc = pw->CreateColor(pos, ddim, -1, EVENT_OBJECT_PEN6);  // blue
-        pc->SetColor(Gfx::Color(0.0f, 0.4f, 1.0f, 0.0f));//0x000066ff));
+        pc->SetColor(Gfx::Color(0.0f, 0.4f, 1.0f, 0.0f));
         pos.x = ox+sx*9.40f;
         pos.y = oy+sy*0.75f;
         pc = pw->CreateColor(pos, ddim, -1, EVENT_OBJECT_PEN7);  // green
-        pc->SetColor(Gfx::Color(0.0f, 0.0f, 0.8f, 0.0f));//0x0000cc00));
+        pc->SetColor(Gfx::Color(0.0f, 0.0f, 0.8f, 0.0f));
         pos.x = ox+sx*9.65f;
         pos.y = oy+sy*1.25f;
         pc = pw->CreateColor(pos, ddim, -1, EVENT_OBJECT_PEN8);  // brown
-        pc->SetColor(Gfx::Color(0.53f, 0.27f, 0.0f, 0.0f));//0x00884400));
+        pc->SetColor(Gfx::Color(0.53f, 0.27f, 0.0f, 0.0f));
 
         pos.x = ox+sx*6.9f;
         pos.y = oy+sy*1.2f;
