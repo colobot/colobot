@@ -22,6 +22,7 @@
 
 #include "app/app.h"
 
+#include "common/make_unique.h"
 #include "common/misc.h"
 
 #include "graphics/core/color.h"
@@ -3089,12 +3090,14 @@ bool CBrain::TraceRecordPut(std::stringstream& buffer, TraceOper oper, float par
 
 Program* CBrain::AddProgram()
 {
-    Program* program = new Program();
-    program->script.reset(new CScript(m_object, &m_secondaryTask));
+    auto program = MakeUnique<Program>();
+    program->script = MakeUnique<CScript>(m_object, &m_secondaryTask);
     program->readOnly = false;
     program->runnable = true;
-    AddProgram(std::move(std::unique_ptr<Program>{program}));
-    return program;
+
+    Program* prog = program.get();
+    AddProgram(std::move(program));
+    return prog;
 }
 
 void CBrain::AddProgram(std::unique_ptr<Program> program)

@@ -4538,7 +4538,7 @@ void CRobotMain::CompileScript(bool soluce)
             if (! obj->Implements(ObjectInterfaceType::Programmable)) continue;
 
             CBrain* brain = dynamic_cast<CProgrammableObject*>(obj)->GetBrain();
-            for (std::unique_ptr<Program>& prog : brain->GetPrograms())
+            for (auto& prog : brain->GetPrograms())
             {
                 Program* program = prog.get();
 
