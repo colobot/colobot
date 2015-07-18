@@ -40,6 +40,7 @@
 
 #include "object/level/parser.h"
 
+#include "object/player_progress.h"
 #include "object/robotmain.h"
 
 #include "sound/sound.h"
@@ -150,9 +151,6 @@ CMainDialog::CMainDialog()
     m_category = LevelCategory::Exercises;
     m_maxList = 0;
 
-    memset(&m_perso, 0, sizeof(GamerPerso));
-    DefPerso();
-
     m_bTooltip       = true;
     m_bGlint         = true;
     m_bRain          = true;
@@ -228,7 +226,6 @@ void CMainDialog::ChangePhase(Phase phase)
     Math::Point         pos, dim, ddim;
     float           ox, oy, sx, sy;
     std::string     name;
-    char*           gamer;
     int             res, i, j;
 
     m_camera->SetType(Gfx::CAM_TYPE_DIALOG);
@@ -421,14 +418,13 @@ void CMainDialog::ChangePhase(Phase phase)
         ddim.y =  18.0f/480.0f;
         pe = pw->CreateEdit(pos, ddim, 0, EVENT_INTERFACE_NEDIT);
         pe->SetMaxChar(15);
-        gamer = m_main->GetGamerName();
-        if ( gamer[0] == 0 )
+        if(m_main->GetPlayerProgress() != nullptr)
         {
-            GetResource(RES_TEXT, RT_NAME_DEFAULT, name);
+            name = m_main->GetPlayerProgress()->GetName();
         }
         else
         {
-            name = gamer;
+            name = CPlayerProgress::GetLastName();
         }
         pe->SetText(name.c_str());
         pe->SetCursor(name.length(), 0);
@@ -475,7 +471,6 @@ void CMainDialog::ChangePhase(Phase phase)
         ReadNameList();
         UpdateNameList();
         UpdateNameControl();
-        UpdateNameFace();
 
         m_engine->SetBackground("interface/interface.png",
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
@@ -700,9 +695,9 @@ void CMainDialog::ChangePhase(Phase phase)
         pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_PDEF);
         pb->SetState(STATE_SHADOW);
 
-        m_persoCopy = m_perso;
-        m_persoTab = 0;
-        m_persoAngle = -0.6f;
+        m_apperanceTab = 0;
+        m_apperanceAngle = -0.6f;
+        m_main->GetPlayerProgress()->LoadApperance();
         UpdatePerso();
         m_main->ScenePerso();
         CameraPerso();
@@ -740,16 +735,8 @@ void CMainDialog::ChangePhase(Phase phase)
 
         if ( m_phase == PHASE_FREE )
         {
-            LevelCategory temp = m_category;
-
-            m_category = LevelCategory::Missions;
-            ReadGamerInfo();
-            m_accessChap = GetChapPassed();
-
-            m_category = temp;
+            m_accessChap = m_main->GetPlayerProgress()->GetChapPassed(LevelCategory::Missions);
         }
-
-        ReadGamerInfo();
 
         pos.x = 0.10f;
         pos.y = 0.10f;
@@ -795,6 +782,7 @@ void CMainDialog::ChangePhase(Phase phase)
         ddim.x = dim.x*6.5f;
         pli = pw->CreateList(pos, ddim, 0, EVENT_INTERFACE_CHAP);
         pli->SetState(STATE_SHADOW);
+        m_chap[m_category] = m_main->GetPlayerProgress()->GetSelectedChap(m_category)-1;
         UpdateSceneChap(m_chap[m_category]);
         if ( m_phase != PHASE_USER )  pli->SetState(STATE_EXTEND);
 
@@ -817,6 +805,7 @@ void CMainDialog::ChangePhase(Phase phase)
         ddim.x = dim.x*6.5f;
         pli = pw->CreateList(pos, ddim, 0, EVENT_INTERFACE_LIST);
         pli->SetState(STATE_SHADOW);
+        m_sel[m_category] = m_main->GetPlayerProgress()->GetSelectedRank(m_category)-1;
         UpdateSceneList(m_chap[m_category], m_sel[m_category]);
         if ( m_phase != PHASE_USER )  pli->SetState(STATE_EXTEND);
         pos = pli->GetPos();
@@ -2089,6 +2078,7 @@ bool CMainDialog::EventProcess(const Event &event)
 
     if ( m_phase == PHASE_PERSO )
     {
+        PlayerApperance& apperance = m_main->GetPlayerProgress()->GetApperance();
         switch( event.type )
         {
             case EVENT_KEY_DOWN:
@@ -2103,13 +2093,13 @@ bool CMainDialog::EventProcess(const Event &event)
                 break;
 
             case EVENT_INTERFACE_PHEAD:
-                m_persoTab = 0;
+                m_apperanceTab = 0;
                 UpdatePerso();
                 m_main->ScenePerso();
                 CameraPerso();
                 break;
             case EVENT_INTERFACE_PBODY:
-                m_persoTab = 1;
+                m_apperanceTab = 1;
                 UpdatePerso();
                 m_main->ScenePerso();
                 CameraPerso();
@@ -2119,8 +2109,7 @@ bool CMainDialog::EventProcess(const Event &event)
             case EVENT_INTERFACE_PFACE2:
             case EVENT_INTERFACE_PFACE3:
             case EVENT_INTERFACE_PFACE4:
-                m_perso.face = event.type-EVENT_INTERFACE_PFACE1;
-                WriteGamerPerso(m_main->GetGamerName());
+                apperance.face = event.type-EVENT_INTERFACE_PFACE1;
                 UpdatePerso();
                 m_main->ScenePerso();
                 break;
@@ -2135,8 +2124,7 @@ bool CMainDialog::EventProcess(const Event &event)
             case EVENT_INTERFACE_PGLASS7:
             case EVENT_INTERFACE_PGLASS8:
             case EVENT_INTERFACE_PGLASS9:
-                m_perso.glasses = event.type-EVENT_INTERFACE_PGLASS0;
-                WriteGamerPerso(m_main->GetGamerName());
+                apperance.glasses = event.type-EVENT_INTERFACE_PGLASS0;
                 UpdatePerso();
                 m_main->ScenePerso();
                 break;
@@ -2152,7 +2140,6 @@ bool CMainDialog::EventProcess(const Event &event)
             case EVENT_INTERFACE_PC8a:
             case EVENT_INTERFACE_PC9a:
                 FixPerso(event.type-EVENT_INTERFACE_PC0a, 0);
-                WriteGamerPerso(m_main->GetGamerName());
                 UpdatePerso();
                 m_main->ScenePerso();
                 break;
@@ -2168,7 +2155,6 @@ bool CMainDialog::EventProcess(const Event &event)
             case EVENT_INTERFACE_PC8b:
             case EVENT_INTERFACE_PC9b:
                 FixPerso(event.type-EVENT_INTERFACE_PC0b, 1);
-                WriteGamerPerso(m_main->GetGamerName());
                 UpdatePerso();
                 m_main->ScenePerso();
                 break;
@@ -2180,32 +2166,30 @@ bool CMainDialog::EventProcess(const Event &event)
             case EVENT_INTERFACE_PCGb:
             case EVENT_INTERFACE_PCBb:
                 ColorPerso();
-                WriteGamerPerso(m_main->GetGamerName());
                 UpdatePerso();
                 m_main->ScenePerso();
                 break;
 
             case EVENT_INTERFACE_PDEF:
-                DefPerso();
-                WriteGamerPerso(m_main->GetGamerName());
+                apperance.DefPerso();
                 UpdatePerso();
                 m_main->ScenePerso();
                 break;
 
             case EVENT_INTERFACE_PLROT:
-                m_persoAngle += 0.2f;
+                m_apperanceAngle += 0.2f;
                 break;
             case EVENT_INTERFACE_PRROT:
-                m_persoAngle -= 0.2f;
+                m_apperanceAngle -= 0.2f;
                 break;
 
             case EVENT_INTERFACE_POK:
+                m_main->GetPlayerProgress()->SaveApperance();
                 m_main->ChangePhase(PHASE_INIT);
                 break;
 
             case EVENT_INTERFACE_PCANCEL:
-                m_perso = m_persoCopy;
-                WriteGamerPerso(m_main->GetGamerName());
+                m_main->GetPlayerProgress()->LoadApperance(); // reload apperance from file
                 m_main->ChangePhase(PHASE_NAME);
                 break;
 
@@ -2245,6 +2229,7 @@ bool CMainDialog::EventProcess(const Event &event)
                 pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_CHAP));
                 if ( pl == 0 )  break;
                 m_chap[m_category] = pl->GetSelect();
+                m_main->GetPlayerProgress()->SetSelectedChap(m_category, m_chap[m_category]+1);
                 UpdateSceneList(m_chap[m_category], m_sel[m_category]);
                 UpdateSceneResume(m_chap[m_category]+1, m_sel[m_category]+1);
                 break;
@@ -2253,6 +2238,7 @@ bool CMainDialog::EventProcess(const Event &event)
                 pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_LIST));
                 if ( pl == 0 )  break;
                 m_sel[m_category] = pl->GetSelect();
+                m_main->GetPlayerProgress()->SetSelectedRank(m_category, m_sel[m_category]+1);
                 UpdateSceneResume(m_chap[m_category]+1, m_sel[m_category]+1);
                 break;
 
@@ -3394,7 +3380,6 @@ void CMainDialog::UpdateNameControl()
     CButton*    pb;
     CEdit*      pe;
     char        name[100];
-    char*       gamer;
     int         total, sel;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
@@ -3404,7 +3389,7 @@ void CMainDialog::UpdateNameControl()
     pe = static_cast<CEdit*>(pw->SearchControl(EVENT_INTERFACE_NEDIT));
     if ( pe == 0 )  return;
 
-    gamer = m_main->GetGamerName();
+    std::string gamer = m_main->GetPlayerProgress()->GetName();
     total = pl->GetTotal();
     sel   = pl->GetSelect();
     pe->GetText(name, 100);
@@ -3412,7 +3397,7 @@ void CMainDialog::UpdateNameControl()
     pb = static_cast<CButton*>(pw->SearchControl(EVENT_INTERFACE_NCANCEL));
     if ( pb != 0 )
     {
-        pb->SetState(STATE_ENABLE, gamer[0]!=0);
+        pb->SetState(STATE_ENABLE, !gamer.empty());
     }
 
     pb = static_cast<CButton*>(pw->SearchControl(EVENT_INTERFACE_NDELETE));
@@ -3501,27 +3486,6 @@ void CMainDialog::UpdateNameEdit()
     UpdateNameControl();
 }
 
-// Updates the representation of the player depending on the selected list.
-
-void CMainDialog::UpdateNameFace()
-{
-    CWindow*    pw;
-    CList*      pl;
-    char*       name;
-    int         sel;
-
-    pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
-    if ( pw == 0 )  return;
-    pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_NLIST));
-    if ( pl == 0 )  return;
-
-    sel = pl->GetSelect();
-    if ( sel == -1 )  return;
-    name = pl->GetItemName(sel);
-
-    ReadGamerPerso(name);
-}
-
 // Selects a player.
 
 void CMainDialog::NameSelect()
@@ -3548,18 +3512,15 @@ void CMainDialog::NameSelect()
     }
     else
     {
-        m_main->SetGamerName(pl->GetItemName(sel));
-        m_main->ChangePhase(PHASE_INIT);
+        m_main->SelectPlayer(pl->GetItemName(sel));
     }
 
-    GetGamerFace(m_main->GetGamerName());
-
-    GetProfile().SetStringProperty("Gamer", "LastName", m_main->GetGamerName());
+    m_main->ChangePhase(PHASE_INIT);
 }
 
 // Creates a new player.
 
-void CMainDialog::NameCreate()
+bool CMainDialog::NameCreate()
 {
     CWindow*    pw;
     CEdit*      pe;
@@ -3569,15 +3530,15 @@ void CMainDialog::NameCreate()
 
     GetLogger()->Info("Creating new player\n");
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
-    if ( pw == 0 )  return;
+    if ( pw == 0 )  return false;
     pe = static_cast<CEdit*>(pw->SearchControl(EVENT_INTERFACE_NEDIT));
-    if ( pe == 0 )  return;
+    if ( pe == 0 )  return false;
 
     pe->GetText(name, 100);
     if ( name[0] == 0 )
     {
         m_sound->Play(SOUND_TZOING);
-        return;
+        return false;
     }
 
     len = strlen(name);
@@ -3601,27 +3562,12 @@ void CMainDialog::NameCreate()
     if ( j == 0 )
     {
         m_sound->Play(SOUND_TZOING);
-        return;
+        return false;
     }
 
-    std::string userSaveDir = m_savegameDir + "/" + name;
-    if (!CResourceManager::DirectoryExists(userSaveDir))
-    {
-        CResourceManager::CreateDirectory(userSaveDir);
-    }
-    else
-    {
-        m_sound->Play(SOUND_TZOING);
-        pe->SetText(name);
-        pe->SetCursor(strlen(name), 0);
-        m_interface->SetFocus(pe);
-        return;
-    }
+    m_main->SelectPlayer(name);
 
-    SetGamerFace(name, 0);
-
-    m_main->SetGamerName(name);
-    m_main->ChangePhase(PHASE_INIT);
+    return true;
 }
 
 // Removes a player.
@@ -3642,14 +3588,13 @@ void CMainDialog::NameDelete()
 
     char* gamer = pl->GetItemName(sel);
 
-    std::string userSaveDir = m_savegameDir + "/" + gamer;
-    if (!CResourceManager::RemoveDirectory(userSaveDir))
+    m_main->SelectPlayer(gamer);
+    if (!m_main->GetPlayerProgress()->Delete())
     {
         m_sound->Play(SOUND_TZOING);
         return;
     }
 
-    m_main->SetGamerName("");
     pl->SetSelect(-1);
 
     ReadNameList();
@@ -3681,24 +3626,26 @@ void CMainDialog::UpdatePerso()
     std::string  name;
     int             i;
 
+    PlayerApperance& apperance = m_main->GetPlayerProgress()->GetApperance();
+
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
     if ( pw == 0 )  return;
 
     pb = static_cast<CButton*>(pw->SearchControl(EVENT_INTERFACE_PHEAD));
     if ( pb != 0 )
     {
-        pb->SetState(STATE_CHECK, m_persoTab==0);
+        pb->SetState(STATE_CHECK, m_apperanceTab==0);
     }
     pb = static_cast<CButton*>(pw->SearchControl(EVENT_INTERFACE_PBODY));
     if ( pb != 0 )
     {
-        pb->SetState(STATE_CHECK, m_persoTab==1);
+        pb->SetState(STATE_CHECK, m_apperanceTab==1);
     }
 
     pl = static_cast<CLabel*>(pw->SearchControl(EVENT_LABEL11));
     if ( pl != 0 )
     {
-        if ( m_persoTab == 0 )
+        if ( m_apperanceTab == 0 )
         {
             pl->SetState(STATE_VISIBLE);
             GetResource(RES_TEXT, RT_PERSO_FACE, name);
@@ -3713,7 +3660,7 @@ void CMainDialog::UpdatePerso()
     pl = static_cast<CLabel*>(pw->SearchControl(EVENT_LABEL12));
     if ( pl != 0 )
     {
-        if ( m_persoTab == 0 )
+        if ( m_apperanceTab == 0 )
         {
             pl->SetState(STATE_VISIBLE);
             GetResource(RES_TEXT, RT_PERSO_GLASSES, name);
@@ -3728,7 +3675,7 @@ void CMainDialog::UpdatePerso()
     pl = static_cast<CLabel*>(pw->SearchControl(EVENT_LABEL13));
     if ( pl != 0 )
     {
-        if ( m_persoTab == 0 )  GetResource(RES_TEXT, RT_PERSO_HAIR, name);
+        if ( m_apperanceTab == 0 )  GetResource(RES_TEXT, RT_PERSO_HAIR, name);
         else                    GetResource(RES_TEXT, RT_PERSO_BAND, name);
         pl->SetName(name);
     }
@@ -3736,7 +3683,7 @@ void CMainDialog::UpdatePerso()
     pl = static_cast<CLabel*>(pw->SearchControl(EVENT_LABEL14));
     if ( pl != 0 )
     {
-        if ( m_persoTab == 0 )
+        if ( m_apperanceTab == 0 )
         {
             pl->ClearState(STATE_VISIBLE);
         }
@@ -3752,23 +3699,23 @@ void CMainDialog::UpdatePerso()
     {
         pb = static_cast<CButton*>(pw->SearchControl(static_cast<EventType>(EVENT_INTERFACE_PFACE1+i)));
         if ( pb == 0 )  break;
-        pb->SetState(STATE_VISIBLE, m_persoTab==0);
-        pb->SetState(STATE_CHECK, i==m_perso.face);
+        pb->SetState(STATE_VISIBLE, m_apperanceTab==0);
+        pb->SetState(STATE_CHECK, i==apperance.face);
     }
 
     for ( i=0 ; i<10 ; i++ )
     {
         pb = static_cast<CButton*>(pw->SearchControl(static_cast<EventType>(EVENT_INTERFACE_PGLASS0+i)));
         if ( pb == 0 )  break;
-        pb->SetState(STATE_VISIBLE, m_persoTab==0);
-        pb->SetState(STATE_CHECK, i==m_perso.glasses);
+        pb->SetState(STATE_VISIBLE, m_apperanceTab==0);
+        pb->SetState(STATE_CHECK, i==apperance.glasses);
     }
 
     for ( i=0 ; i<3*3 ; i++ )
     {
         pc = static_cast<CColor*>(pw->SearchControl(static_cast<EventType>(EVENT_INTERFACE_PC0a+i)));
         if ( pc == 0 )  break;
-        if ( m_persoTab == 0 )
+        if ( m_apperanceTab == 0 )
         {
             pc->ClearState(STATE_VISIBLE);
         }
@@ -3780,29 +3727,29 @@ void CMainDialog::UpdatePerso()
             color.b = perso_color[3*10*1+3*i+2]/255.0f;
             color.a = 0.0f;
             pc->SetColor(color);
-            pc->SetState(STATE_CHECK, EqColor(color, m_perso.colorCombi));
+            pc->SetState(STATE_CHECK, EqColor(color, apperance.colorCombi));
         }
 
         pc = static_cast<CColor*>(pw->SearchControl(static_cast<EventType>(EVENT_INTERFACE_PC0b+i)));
         if ( pc == 0 )  break;
-        color.r = perso_color[3*10*2*m_persoTab+3*i+0]/255.0f;
-        color.g = perso_color[3*10*2*m_persoTab+3*i+1]/255.0f;
-        color.b = perso_color[3*10*2*m_persoTab+3*i+2]/255.0f;
+        color.r = perso_color[3*10*2*m_apperanceTab+3*i+0]/255.0f;
+        color.g = perso_color[3*10*2*m_apperanceTab+3*i+1]/255.0f;
+        color.b = perso_color[3*10*2*m_apperanceTab+3*i+2]/255.0f;
         color.a = 0.0f;
         pc->SetColor(color);
-        pc->SetState(STATE_CHECK, EqColor(color, m_persoTab?m_perso.colorBand:m_perso.colorHair));
+        pc->SetState(STATE_CHECK, EqColor(color, m_apperanceTab?apperance.colorBand:apperance.colorHair));
     }
 
     for ( i=0 ; i<3 ; i++ )
     {
         ps = static_cast<CSlider*>(pw->SearchControl(static_cast<EventType>(EVENT_INTERFACE_PCRa+i)));
         if ( ps == 0 )  break;
-        ps->SetState(STATE_VISIBLE, m_persoTab==1);
+        ps->SetState(STATE_VISIBLE, m_apperanceTab==1);
     }
 
-    if ( m_persoTab == 1 )
+    if ( m_apperanceTab == 1 )
     {
-        color = m_perso.colorCombi;
+        color = apperance.colorCombi;
         ps = static_cast<CSlider*>(pw->SearchControl(EVENT_INTERFACE_PCRa));
         if ( ps != 0 )  ps->SetVisibleValue(color.r*255.0f);
         ps = static_cast<CSlider*>(pw->SearchControl(EVENT_INTERFACE_PCGa));
@@ -3811,8 +3758,8 @@ void CMainDialog::UpdatePerso()
         if ( ps != 0 )  ps->SetVisibleValue(color.b*255.0f);
     }
 
-    if ( m_persoTab == 0 )  color = m_perso.colorHair;
-    else                    color = m_perso.colorBand;
+    if ( m_apperanceTab == 0 )  color = apperance.colorHair;
+    else                    color = apperance.colorBand;
     ps = static_cast<CSlider*>(pw->SearchControl(EVENT_INTERFACE_PCRb));
     if ( ps != 0 )  ps->SetVisibleValue(color.r*255.0f);
     ps = static_cast<CSlider*>(pw->SearchControl(EVENT_INTERFACE_PCGb));
@@ -3825,7 +3772,7 @@ void CMainDialog::UpdatePerso()
 
 void CMainDialog::CameraPerso()
 {
-    if ( m_persoTab == 0 )
+    if ( m_apperanceTab == 0 )
     {
 //?     m_camera->Init(Math::Vector(4.0f, 0.0f, 0.0f),
 //?                    Math::Vector(0.0f, 0.0f, 1.0f), 0.0f);
@@ -3846,28 +3793,29 @@ void CMainDialog::CameraPerso()
 
 void CMainDialog::FixPerso(int rank, int index)
 {
-    if ( m_persoTab == 0 )
+    PlayerApperance& apperance = m_main->GetPlayerProgress()->GetApperance();
+    if ( m_apperanceTab == 0 )
     {
         if ( index == 1 )
         {
-            m_perso.colorHair.r = perso_color[3*10*0+rank*3+0]/255.0f;
-            m_perso.colorHair.g = perso_color[3*10*0+rank*3+1]/255.0f;
-            m_perso.colorHair.b = perso_color[3*10*0+rank*3+2]/255.0f;
+            apperance.colorHair.r = perso_color[3*10*0+rank*3+0]/255.0f;
+            apperance.colorHair.g = perso_color[3*10*0+rank*3+1]/255.0f;
+            apperance.colorHair.b = perso_color[3*10*0+rank*3+2]/255.0f;
         }
     }
-    if ( m_persoTab == 1 )
+    if ( m_apperanceTab == 1 )
     {
         if ( index == 0 )
         {
-            m_perso.colorCombi.r = perso_color[3*10*1+rank*3+0]/255.0f;
-            m_perso.colorCombi.g = perso_color[3*10*1+rank*3+1]/255.0f;
-            m_perso.colorCombi.b = perso_color[3*10*1+rank*3+2]/255.0f;
+            apperance.colorCombi.r = perso_color[3*10*1+rank*3+0]/255.0f;
+            apperance.colorCombi.g = perso_color[3*10*1+rank*3+1]/255.0f;
+            apperance.colorCombi.b = perso_color[3*10*1+rank*3+2]/255.0f;
         }
         if ( index == 1 )
         {
-            m_perso.colorBand.r = perso_color[3*10*2+rank*3+0]/255.0f;
-            m_perso.colorBand.g = perso_color[3*10*2+rank*3+1]/255.0f;
-            m_perso.colorBand.b = perso_color[3*10*2+rank*3+2]/255.0f;
+            apperance.colorBand.r = perso_color[3*10*2+rank*3+0]/255.0f;
+            apperance.colorBand.g = perso_color[3*10*2+rank*3+1]/255.0f;
+            apperance.colorBand.b = perso_color[3*10*2+rank*3+2]/255.0f;
         }
     }
 }
@@ -3880,6 +3828,8 @@ void CMainDialog::ColorPerso()
     CSlider*        ps;
     Gfx::Color   color;
 
+    PlayerApperance& apperance = m_main->GetPlayerProgress()->GetApperance();
+
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
     if ( pw == 0 )  return;
 
@@ -3891,7 +3841,7 @@ void CMainDialog::ColorPerso()
     if ( ps != 0 )  color.g = ps->GetVisibleValue()/255.0f;
     ps = static_cast<CSlider*>(pw->SearchControl(EVENT_INTERFACE_PCBa));
     if ( ps != 0 )  color.b = ps->GetVisibleValue()/255.0f;
-    if ( m_persoTab == 1 )  m_perso.colorCombi = color;
+    if ( m_apperanceTab == 1 )  apperance.colorCombi = color;
 
     ps = static_cast<CSlider*>(pw->SearchControl(EVENT_INTERFACE_PCRb));
     if ( ps != 0 )  color.r = ps->GetVisibleValue()/255.0f;
@@ -3899,53 +3849,8 @@ void CMainDialog::ColorPerso()
     if ( ps != 0 )  color.g = ps->GetVisibleValue()/255.0f;
     ps = static_cast<CSlider*>(pw->SearchControl(EVENT_INTERFACE_PCBb));
     if ( ps != 0 )  color.b = ps->GetVisibleValue()/255.0f;
-    if ( m_persoTab == 0 )  m_perso.colorHair = color;
-    else                    m_perso.colorBand = color;
-}
-
-// Updates the default settings of the character.
-
-void CMainDialog::DefPerso()
-{
-    m_perso.colorCombi.r = 206.0f/256.0f;
-    m_perso.colorCombi.g = 206.0f/256.0f;
-    m_perso.colorCombi.b = 204.0f/256.0f;  // ~white
-    m_perso.colorBand.r  = 255.0f/256.0f;
-    m_perso.colorBand.g  = 132.0f/256.0f;
-    m_perso.colorBand.b  =   1.0f/256.0f;  // orange
-
-    if ( m_perso.face == 0 )  // normal ?
-    {
-        m_perso.glasses = 0;
-        m_perso.colorHair.r =  90.0f/256.0f;
-        m_perso.colorHair.g =  95.0f/256.0f;
-        m_perso.colorHair.b =  85.0f/256.0f;  // black
-    }
-    if ( m_perso.face == 1 )  // bald ?
-    {
-        m_perso.glasses = 0;
-        m_perso.colorHair.r =  83.0f/256.0f;
-        m_perso.colorHair.g =  64.0f/256.0f;
-        m_perso.colorHair.b =  51.0f/256.0f;  // brown
-    }
-    if ( m_perso.face == 2 )  // carlos ?
-    {
-        m_perso.glasses = 1;
-        m_perso.colorHair.r =  85.0f/256.0f;
-        m_perso.colorHair.g =  48.0f/256.0f;
-        m_perso.colorHair.b =   9.0f/256.0f;  // brown
-    }
-    if ( m_perso.face == 3 )  // blond ?
-    {
-        m_perso.glasses = 4;
-        m_perso.colorHair.r = 255.0f/256.0f;
-        m_perso.colorHair.g = 255.0f/256.0f;
-        m_perso.colorHair.b = 181.0f/256.0f;  // yellow
-    }
-
-    m_perso.colorHair.a  = 0.0f;
-    m_perso.colorCombi.a = 0.0f;
-    m_perso.colorBand.a  = 0.0f;
+    if ( m_apperanceTab == 0 )  apperance.colorHair = color;
+    else                        apperance.colorBand = color;
 }
 
 
@@ -3953,7 +3858,7 @@ void CMainDialog::DefPerso()
 
 bool CMainDialog::IsIOReadScene()
 {
-    std::string userSaveDir = m_savegameDir + "/" + m_main->GetGamerName();
+    std::string userSaveDir = m_savegameDir + "/" + m_main->GetPlayerProgress()->GetName();
     auto saveDirs = CResourceManager::ListDirectories(userSaveDir);
     for (auto dir : saveDirs)
     {
@@ -4017,7 +3922,7 @@ void CMainDialog::IOReadList()
 
     m_saveList.clear();
 
-    std::string userSaveDir = m_savegameDir + "/" + m_main->GetGamerName();
+    std::string userSaveDir = m_savegameDir + "/" + m_main->GetPlayerProgress()->GetName();
 
     auto saveDirs = CResourceManager::ListDirectories(userSaveDir);
     //std::sort(saveDirs.begin(), saveDirs.end());
@@ -4182,23 +4087,14 @@ bool CMainDialog::IOWriteScene()
     pe->GetText(info, 100);
     if (static_cast<unsigned int>(sel) >= m_saveList.size())
     {
-        dir = m_savegameDir + "/" + m_main->GetGamerName() + "/save" + clearName(info);
+        dir = m_savegameDir + "/" + m_main->GetPlayerProgress()->GetName() + "/save" + clearName(info);
     }
     else
     {
         dir = m_saveList.at(sel);
     }
 
-    if (!CResourceManager::DirectoryExists(dir))
-    {
-        CResourceManager::CreateDirectory(dir);
-    }
-
-    std::string savegameFileName = dir + "/data.sav";
-    std::string fileCBot = CResourceManager::GetSaveLocation() + "/" + dir + "/cbot.run";
-    m_main->IOWriteScene(savegameFileName.c_str(), fileCBot.c_str(), info);
-
-    MakeSaveScreenshot(dir + "/screen.png");
+    m_main->GetPlayerProgress()->SaveScene(dir, info);
 
     return true;
 }
@@ -4278,23 +4174,6 @@ bool CMainDialog::IOReadScene()
     return true;
 }
 
-
-// Returns the number of accessible chapters.
-
-int CMainDialog::GetChapPassed()
-{
-    if ( m_main->GetShowAll() )  return MAXSCENE;
-
-    for ( int j = 1; j <= MAXSCENE; j++ )
-    {
-        if ( !GetGamerInfoPassed(j, 0) )
-        {
-            return j;
-        }
-    }
-    return MAXSCENE;
-}
-
 // Updates the lists according to the cheat code.
 
 void CMainDialog::AllMissionUpdate()
@@ -4370,7 +4249,7 @@ void CMainDialog::UpdateSceneChap(int &chap)
                 sprintf(line, "%s", (std::string("[ERROR]: ")+e.what()).c_str());
             }
 
-            bPassed = GetGamerInfoPassed(j+1, 0);
+            bPassed = m_main->GetPlayerProgress()->GetLevelPassed(m_category, j+1, 0);
             pl->SetItemName(j, line);
             pl->SetCheck(j, bPassed);
             pl->SetEnable(j, true);
@@ -4441,7 +4320,7 @@ void CMainDialog::UpdateSceneList(int chap, int &sel)
             sprintf(line, "%s", (std::string("[ERROR]: ")+e.what()).c_str());
         }
 
-        bPassed = GetGamerInfoPassed(chap+1, j+1);
+        bPassed = m_main->GetPlayerProgress()->GetLevelPassed(m_category, chap+1, j+1);
         pl->SetItemName(j, line);
         pl->SetCheck(j, bPassed);
         pl->SetEnable(j, true);
@@ -4528,8 +4407,8 @@ void CMainDialog::UpdateSceneResume(int chap, int rank)
     }
     else
     {
-        numTry  = GetGamerInfoTry(chap, rank);
-        bPassed = GetGamerInfoPassed(chap, rank);
+        numTry  = m_main->GetPlayerProgress()->GetLevelTryCount(m_category, chap, rank);
+        bPassed = m_main->GetPlayerProgress()->GetLevelPassed(m_category, chap, rank);
         bVisible = ( numTry > 2 || bPassed || m_main->GetShowSoluce() );
         if ( !GetSoluce4() )  bVisible = false;
         pc->SetState(STATE_VISIBLE, bVisible);
@@ -5997,237 +5876,30 @@ bool CMainDialog::GetHimselfDamage()
     return m_bHimselfDamage;
 }
 
-
-
-// Saves the personalized player.
-
-void CMainDialog::WriteGamerPerso(char *gamer)
-{
-    try
-    {
-        CLevelParser persoParser(GetSavegameDir()+"/"+gamer+"/face.gam");
-        CLevelParserLineUPtr line;
-
-        line = MakeUnique<CLevelParserLine>("Head");
-        line->AddParam("face", MakeUnique<CLevelParserParam>(m_perso.face));
-        line->AddParam("glasses", MakeUnique<CLevelParserParam>(m_perso.glasses));
-        line->AddParam("hair", MakeUnique<CLevelParserParam>(m_perso.colorHair));
-        persoParser.AddLine(std::move(line));
-
-        line = MakeUnique<CLevelParserLine>("Body");
-        line->AddParam("combi", MakeUnique<CLevelParserParam>(m_perso.colorCombi));
-        line->AddParam("band", MakeUnique<CLevelParserParam>(m_perso.colorBand));
-        persoParser.AddLine(std::move(line));
-
-        persoParser.Save();
-    }
-    catch (CLevelParserException& e)
-    {
-        GetLogger()->Error("Unable to write personalized player apperance: %s\n", e.what());
-    }
-}
-
-// Reads the personalized player.
-
-void CMainDialog::ReadGamerPerso(char *gamer)
-{
-    m_perso.face = 0;
-    DefPerso();
-
-    if (!CResourceManager::Exists(GetSavegameDir()+"/"+gamer+"/face.gam"))
-        return;
-
-    try
-    {
-        CLevelParser persoParser(GetSavegameDir()+"/"+gamer+"/face.gam");
-        persoParser.Load();
-        CLevelParserLine* line;
-
-        line = persoParser.Get("Head");
-        m_perso.face = line->GetParam("face")->AsInt();
-        m_perso.glasses = line->GetParam("glasses")->AsInt();
-        m_perso.colorHair = line->GetParam("hair")->AsColor();
-
-        line = persoParser.Get("Body");
-        m_perso.colorCombi = line->GetParam("combi")->AsColor();
-        m_perso.colorBand = line->GetParam("band")->AsColor();
-    }
-    catch (CLevelParserException& e)
-    {
-        GetLogger()->Error("Unable to read personalized player apperance: %s\n", e.what());
-    }
-}
-
-// Specifies the face of the player.
-
-void CMainDialog::SetGamerFace(char *gamer, int face)
-{
-    m_perso.face = face;
-    WriteGamerPerso(gamer);
-}
-
-// Gives the face of the player.
-
-int CMainDialog::GetGamerFace(char *gamer)
-{
-    ReadGamerPerso(gamer);
-    return m_perso.face;
-}
-
-// Gives the face of the player.
-
-int CMainDialog::GetGamerFace()
-{
-    return m_perso.face;
-}
-
-int CMainDialog::GetGamerGlasses()
-{
-    return m_perso.glasses;
-}
-
 bool CMainDialog::GetGamerOnlyHead()
 {
-    return (m_phase == PHASE_PERSO && m_persoTab == 0);
+    return (m_phase == PHASE_PERSO && m_apperanceTab == 0);
 }
 
 float CMainDialog::GetPersoAngle()
 {
-    return m_persoAngle;
+    return m_apperanceAngle;
 }
 
-Gfx::Color CMainDialog::GetGamerColorHair()
+void CMainDialog::UpdateChapterPassed()
 {
-    return m_perso.colorHair;
-}
-
-Gfx::Color CMainDialog::GetGamerColorCombi()
-{
-    return m_perso.colorCombi;
-}
-
-Gfx::Color CMainDialog::GetGamerColorBand()
-{
-    return m_perso.colorBand;
-}
-
-
-// Reads the file of the player.
-
-bool CMainDialog::ReadGamerInfo()
-{
-    std::string line;
-
-    m_sceneInfo.clear();
-
-    if (!CResourceManager::Exists(GetSavegameDir()+"/"+m_main->GetGamerName()+"/"+GetLevelCategoryDir(m_category)+".gam"))
-        return false;
-
-    CInputStream file;
-    file.open(GetSavegameDir()+"/"+m_main->GetGamerName()+"/"+GetLevelCategoryDir(m_category)+".gam");
-    if (!file.is_open())
+    // TODO: CMainDialog is a bad place for this function
+    bool bAll = true;
+    for ( int i=0 ; i<m_maxList ; i++ )
     {
-        GetLogger()->Error("Unable to read list of finished missions\n");
-        return false;
-    }
-
-    std::getline(file, line);
-    int chap, rank;
-    sscanf(line.c_str(), "CurrentChapter=%d CurrentSel=%d\n", &chap, &rank);
-    m_chap[m_category] = chap-1;
-    m_sel[m_category]  = rank-1;
-
-    while (!file.eof())
-    {
-        std::getline(file, line);
-
-        if (line == "")
+        if (!m_main->GetPlayerProgress()->GetLevelPassed(m_category, m_chap[m_category]+1, i+1))
         {
+            bAll = false;
             break;
         }
-
-        int numTry, passed;
-        sscanf(line.c_str(), "Chapter %d: Scene %d: numTry=%d passed=%d\n",
-                &chap, &rank, &numTry, &passed);
-
-        if ( chap < 0 || chap > MAXSCENE ) continue;
-        if ( rank < 0 || rank > MAXSCENE ) continue;
-
-        m_sceneInfo[chap][rank].numTry  = numTry;
-        m_sceneInfo[chap][rank].bPassed = passed;
     }
-
-    file.close();
-    return true;
-}
-
-// Writes the file of the player.
-
-bool CMainDialog::WriteGamerInfo()
-{
-    COutputStream file;
-    file.open(GetSavegameDir()+"/"+m_main->GetGamerName()+"/"+GetLevelCategoryDir(m_category)+".gam");
-    if (!file.is_open())
-    {
-        GetLogger()->Error("Unable to read list of finished missions\n");
-        return false;
-    }
-
-    file << "CurrentChapter=" << m_chap[m_category]+1 << " CurrentSel=" << m_sel[m_category]+1 << "\n";
-
-    for ( int i=0 ; i<MAXSCENE ; i++ )
-    {
-        if (m_sceneInfo.find(i) == m_sceneInfo.end()) continue;
-        for ( int j=0 ; j<MAXSCENE ; j++ )
-        {
-            if (m_sceneInfo[i].find(j) == m_sceneInfo[i].end()) continue;
-            if ( m_sceneInfo[i][j].numTry == 0 && !m_sceneInfo[i][j].bPassed )  continue;
-
-            file << "Chapter " << i << ": Scene " << j << ": numTry=" << m_sceneInfo[i][j].numTry << " passed=" << (m_sceneInfo[i][j].bPassed ? "1" : "0") << "\n";
-        }
-    }
-
-    file.close();
-    return true;
-}
-
-void CMainDialog::SetGamerInfoTry(int chap, int rank, int numTry)
-{
-    if ( chap < 0 || chap > MAXSCENE )  return;
-    if ( rank < 0 || rank > MAXSCENE )  return;
-    m_sceneInfo[chap][rank].numTry = numTry;
-}
-
-int CMainDialog::GetGamerInfoTry(int chap, int rank)
-{
-    if ( chap < 0 || chap > MAXSCENE )  return 0;
-    if ( rank < 0 || rank > MAXSCENE )  return 0;
-    return m_sceneInfo[chap][rank].numTry;
-}
-
-void CMainDialog::SetGamerInfoPassed(int chap, int rank, bool bPassed)
-{
-    if ( chap < 0 || chap > MAXSCENE )  return;
-    if ( rank < 0 || rank > MAXSCENE )  return;
-    m_sceneInfo[chap][rank].bPassed = bPassed;
-
-    if ( bPassed )
-    {
-        bool bAll = true;
-        for ( int i=0 ; i<m_maxList ; i++ )
-        {
-            bAll &= m_sceneInfo[chap][i+1].bPassed;
-        }
-        m_sceneInfo[chap][0].numTry ++;
-        m_sceneInfo[chap][0].bPassed = bAll;
-    }
-}
-
-bool CMainDialog::GetGamerInfoPassed(int chap, int rank)
-{
-    if ( chap < 0 || chap > MAXSCENE )  return false;
-    if ( rank < 0 || rank > MAXSCENE )  return false;
-    return m_sceneInfo[chap][rank].bPassed;
+    m_main->GetPlayerProgress()->IncrementLevelTryCount(m_category, m_chap[m_category]+1, 0);
+    m_main->GetPlayerProgress()->SetLevelPassed(m_category, m_chap[m_category]+1, 0, bAll);
 }
 
 
@@ -6242,6 +5914,9 @@ bool CMainDialog::NextMission()
         m_chap[m_category] ++;  // next chapter
         m_sel[m_category] = 0;  // first mission
     }
+
+    m_main->GetPlayerProgress()->SetSelectedChap(m_category, m_chap[m_category]+1);
+    m_main->GetPlayerProgress()->SetSelectedRank(m_category, m_sel[m_category]+1);
 
     return true;
 }

@@ -45,26 +45,6 @@ class CWindow;
 class CControl;
 
 
-const int USERLISTMAX = 100;
-const int MAXSCENE = 999;
-
-
-struct SceneInfo
-{
-    int     numTry;
-    bool    bPassed;
-};
-
-struct GamerPerso
-{
-    int     face;           // face
-    int     glasses;        // glasses
-    Gfx::Color   colorHair;      // hair color
-    Gfx::Color   colorCombi;     // spacesuit volor
-    Gfx::Color   colorBand;      // strips color
-};
-
-
 
 class CMainDialog
 {
@@ -117,25 +97,11 @@ public:
     void    SetupMemorize();
     void    SetupRecall();
 
-    bool    ReadGamerInfo();
-    bool    WriteGamerInfo();
-    void    SetGamerInfoTry(int chap, int rank, int numTry);
-    int     GetGamerInfoTry(int chap, int rank);
-    void    SetGamerInfoPassed(int chap, int rank, bool bPassed);
-    bool    GetGamerInfoPassed(int chap, int rank);
+    void    UpdateChapterPassed();
     bool    NextMission();
 
-    void    WriteGamerPerso(char *gamer);
-    void    ReadGamerPerso(char *gamer);
-    void    SetGamerFace(char *gamer, int face);
-    int     GetGamerFace(char *gamer);
-    int     GetGamerFace();
-    int     GetGamerGlasses();
     bool    GetGamerOnlyHead();
     float   GetPersoAngle();
-    Gfx::Color GetGamerColorHair();
-    Gfx::Color GetGamerColorCombi();
-    Gfx::Color GetGamerColorBand();
 
     void    AllMissionUpdate();
     void    ShowSoluceUpdate();
@@ -152,15 +118,13 @@ protected:
     void    UpdateNameList();
     void    UpdateNameEdit();
     void    UpdateNameControl();
-    void    UpdateNameFace();
     void    NameSelect();
-    void    NameCreate();
+    bool    NameCreate();
     void    NameDelete();
     void    UpdatePerso();
     void    CameraPerso();
     void    FixPerso(int rank, int index);
     void    ColorPerso();
-    void    DefPerso();
     bool    IsIOReadScene();
     void    IOReadName();
     void    IOReadList();
@@ -197,10 +161,8 @@ protected:
     Phase           m_phaseTerm;            // phase trainer/scene/proto
     float           m_phaseTime;
 
-    GamerPerso      m_perso;            // perso: description
-    GamerPerso      m_persoCopy;            // perso: copy for cancellation
-    int             m_persoTab;         // perso: tab selected
-    float           m_persoAngle;           // perso: angle of presentation
+    int             m_apperanceTab;         // perso: tab selected
+    float           m_apperanceAngle;           // perso: angle of presentation
 
     std::string     m_savegameDir;  // savegame folder
     std::string     m_publicDir;    // program folder
@@ -262,8 +224,6 @@ protected:
     int                  m_partiPhase[10];
     float                m_partiTime[10];
     Math::Point          m_partiPos[10];
-
-    std::map<int, std::map<int, SceneInfo>> m_sceneInfo;
 
     std::vector<std::string> m_saveList;
 };

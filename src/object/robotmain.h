@@ -86,6 +86,7 @@ class CInput;
 class CObjectManager;
 class CSceneEndCondition;
 class CAudioChangeCondition;
+class CPlayerProgress;
 
 namespace Gfx {
 class CEngine;
@@ -120,6 +121,8 @@ struct NewScriptName
 const int MAXSHOWLIMIT      = 5;
 const int MAXSHOWPARTI      = 200;
 const float SHOWLIMITTIME   = 20.0f;
+
+const int MAXSCENE = 999;
 
 struct ShowLimit
 {
@@ -227,16 +230,16 @@ public:
     void        SetFontSize(float size);
     float       GetFontSize();
     void        SetWindowPos(Math::Point pos);
-    Math::Point     GetWindowPos();
+    Math::Point GetWindowPos();
     void        SetWindowDim(Math::Point dim);
-    Math::Point     GetWindowDim();
+    Math::Point GetWindowDim();
 
     void        SetIOPublic(bool mode);
     bool        GetIOPublic();
     void        SetIOPos(Math::Point pos);
-    Math::Point     GetIOPos();
+    Math::Point GetIOPos();
     void        SetIODim(Math::Point dim);
-    Math::Point     GetIODim();
+    Math::Point GetIODim();
 
     char*       GetTitle();
     char*       GetResume();
@@ -258,16 +261,16 @@ public:
     const char* GetFilesDir();
     MissionType GetMissionType();
 
-    void        SetGamerName(const char *name);
-    char*       GetGamerName();
     int         GetGamerFace();
     int         GetGamerGlasses();
     bool        GetGamerOnlyHead();
     float       GetPersoAngle();
-    
+
     LevelCategory GetLevelCategory();
     int         GetLevelChap();
     int         GetLevelRank();
+    void        UpdateChapterPassed();
+    void        MakeSaveScreenshot(const std::string& name);
 
     void        StartMusic();
     void        StartPauseMusic(PauseType pause);
@@ -299,8 +302,8 @@ public:
     bool        AddNewScriptName(ObjectType type, char *name);
     char*       GetNewScriptName(ObjectType type, int rank);
 
-    void        WriteFreeParam();
-    void        ReadFreeParam();
+    void        SelectPlayer(std::string playerName);
+    CPlayerProgress* GetPlayerProgress();
 
     bool        IsBusy();
     bool        IOWriteScene(const char *filename, const char *filecbot, char *info);
@@ -447,6 +450,9 @@ protected:
     CPauseManager*      m_pause;
     CInput*             m_input;
 
+    //! Progress of loaded player
+    std::unique_ptr<CPlayerProgress> m_playerProgress;
+
 
     //! Time since level start, including pause and intro movie
     float           m_time;
@@ -560,19 +566,12 @@ protected:
     int             m_prohibitedTotal;
     char            m_prohibitedToken[100][20];
 
-    std::string     m_gamerName;
-
     //! Enabled buildings
     int             m_build;
     //! Available researches
     long            m_researchEnable;
     //! Done researches for each team
     std::map<int, int>  m_researchDone;
-
-    //! Buildings unlocked for free game
-    int             m_freeBuild;
-    //! Researches unlocked for free game
-    int             m_freeResearch;
 
     Error           m_missionResult;
 

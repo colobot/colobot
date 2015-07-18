@@ -20,7 +20,7 @@
 
 #include <map>
 
-const std::map<LevelCategory, std::string> category_dir_map = {
+const std::map<LevelCategory, std::string> CATEGORY_DIR_MAP = {
     { LevelCategory::Missions,     "missions"     },
     { LevelCategory::FreeGame,     "freemissions" },
     { LevelCategory::Exercises,    "exercises"    },
@@ -34,12 +34,12 @@ const std::map<LevelCategory, std::string> category_dir_map = {
 
 std::string GetLevelCategoryDir(LevelCategory category)
 {
-    return category_dir_map.at(category);
+    return CATEGORY_DIR_MAP.at(category);
 }
 
 LevelCategory GetLevelCategoryFromDir(std::string dir)
 {
-    for(auto it = category_dir_map.begin(); it != category_dir_map.end(); ++it)
+    for(auto it = CATEGORY_DIR_MAP.begin(); it != CATEGORY_DIR_MAP.end(); ++it)
     {
         if(it->second == dir)
         {

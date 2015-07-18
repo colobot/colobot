@@ -170,6 +170,7 @@ set(BASE_SOURCES
     object/object_manager.cpp
     object/old_object.cpp
     object/old_object_interface.cpp
+    object/player_progress.cpp
     object/robotmain.cpp
     object/scene_conditions.cpp
     object/task/task.cpp

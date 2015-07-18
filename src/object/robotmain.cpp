@@ -67,6 +67,7 @@
 #include "object/object.h"
 #include "object/object_create_exception.h"
 #include "object/object_manager.h"
+#include "object/player_progress.h"
 #include "object/scene_conditions.h"
 #include "object/task/task.h"
 #include "object/task/taskbuild.h"
@@ -238,8 +239,6 @@ CRobotMain::CRobotMain(CController* controller)
     m_researchEnable = 0;
     g_unit = UNIT;
 
-    m_gamerName = "";
-
     for (int i = 0; i < MAXSHOWLIMIT; i++)
     {
         m_showLimit[i].used = false;
@@ -324,9 +323,7 @@ void CRobotMain::Create(bool loadProfile)
 
     m_engine->SetTracePrecision(1.0f);
 
-    if (loadProfile) GetProfile().GetStringProperty("Gamer", "LastName", m_gamerName);
-    SetGlobalGamerName(m_gamerName);
-    ReadFreeParam();
+    SelectPlayer(CPlayerProgress::GetLastName());
 
     CScriptFunctions::m_filesDir = CResourceManager::GetSaveLocation() + "/" + m_dialog->GetFilesDir(); //TODO: Refactor to PHYSFS while rewriting CBot engine
     CScriptFunctions::Init();
@@ -442,21 +439,20 @@ void CRobotMain::ChangePhase(Phase phase)
 
         if (m_gameTime > 10.0f)  // did you play at least 10 seconds?
         {
+            LevelCategory cat = m_dialog->GetLevelCategory();
             int chap = m_dialog->GetLevelChap();
             int rank = m_dialog->GetLevelRank();
-            int numTry = m_dialog->GetGamerInfoTry(chap, rank);
-            m_dialog->SetGamerInfoTry(chap, rank, numTry+1);
-            m_dialog->WriteGamerInfo();
+            m_playerProgress->IncrementLevelTryCount(cat, chap, rank);
         }
     }
 
     if (phase == PHASE_WIN)  // wins a simulation?
     {
+        LevelCategory cat = m_dialog->GetLevelCategory();
         int chap = m_dialog->GetLevelChap();
         int rank = m_dialog->GetLevelRank();
-        m_dialog->SetGamerInfoPassed(chap, rank, true);
+        m_playerProgress->SetLevelPassed(cat, chap, rank, true);
         m_dialog->NextMission();  // passes to the next mission
-        m_dialog->WriteGamerInfo();
     }
 
     m_app->SetLowCPU(true); // doesn't use much CPU in interface phases
@@ -3898,13 +3894,16 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             CompileScript(soluce);  // compiles all scripts
 
         if (category == LevelCategory::Missions && !resetObject)  // mission?
-            WriteFreeParam();
+        {
+            m_playerProgress->SetFreeGameResearchUnlock(m_playerProgress->GetFreeGameResearchUnlock() | m_researchDone[0]);
+            m_playerProgress->SetFreeGameBuildUnlock(m_playerProgress->GetFreeGameBuildUnlock() | m_build);
+        }
 
         if (category == LevelCategory::FreeGame && !resetObject)  // free play?
         {
-            m_researchDone[0] = m_freeResearch;
+            m_researchDone[0] = m_playerProgress->GetFreeGameResearchUnlock();
 
-            m_build = m_freeBuild;
+            m_build = m_playerProgress->GetFreeGameBuildUnlock();
             m_build &= ~BUILD_RESEARCH;
             m_build &= ~BUILD_LABO;
             m_build |= BUILD_FACTORY;
@@ -4035,11 +4034,11 @@ void CRobotMain::ChangeColor()
     colorRef1.r = 206.0f/256.0f;
     colorRef1.g = 206.0f/256.0f;
     colorRef1.b = 204.0f/256.0f;  // ~white
-    colorNew1 = m_dialog->GetGamerColorCombi();
+    colorNew1 = m_playerProgress->GetApperance().colorCombi;
     colorRef2.r = 255.0f/256.0f;
     colorRef2.g = 132.0f/256.0f;
     colorRef2.b =   1.0f/256.0f;  // orange
-    colorNew2 = m_dialog->GetGamerColorBand();
+    colorNew2 = m_playerProgress->GetApperance().colorBand;
 
     Math::Point exclu[6];
     exclu[0] = Math::Point(192.0f/256.0f,   0.0f/256.0f);
@@ -4081,7 +4080,7 @@ void CRobotMain::ChangeColor()
         colorRef1.b =   0.0f/256.0f;  // yellow
         tolerance = 0.20f;
     }
-    colorNew1 = m_dialog->GetGamerColorHair();
+    colorNew1 = m_playerProgress->GetApperance().colorHair;
     colorRef2.r = 0.0f;
     colorRef2.g = 0.0f;
     colorRef2.b = 0.0f;
@@ -4611,14 +4610,14 @@ void CRobotMain::LoadOneScript(CObject *obj, int &nbError)
     {
         //? if (brain->GetCompile(i)) continue;
 
-        char filename[MAX_FNAME];
-        sprintf(filename, "%s/%s/%c%.3d%.3d%.3d%.3d.txt",
-                    GetSavegameDir(), m_gamerName.c_str(), categoryChar, chap, rank, objRank, i);
+        char file[MAX_FNAME];
+        sprintf(file, "%c%.3d%.3d%.3d%.3d.txt", categoryChar, chap, rank, objRank, i);
+        std::string filename = m_playerProgress->GetSaveFile(file);
 
         if (CResourceManager::Exists(filename))
         {
             Program* program = brain->GetOrAddProgram(i);
-            brain->ReadProgram(program, filename);
+            brain->ReadProgram(program, filename.c_str());
             if (!brain->GetCompile(program)) nbError++;
         }
     }
@@ -4686,12 +4685,13 @@ void CRobotMain::SaveOneScript(CObject *obj)
     // TODO: Find a better way to do that
     for (unsigned int i = 0; i <= 999; i++)
     {
-        char filename[MAX_FNAME];
-        sprintf(filename, "%s/%s/%c%.3d%.3d%.3d%.3d.txt",
-                    GetSavegameDir(), m_gamerName.c_str(), categoryChar, chap, rank, objRank, i);
+        char file[MAX_FNAME];
+        sprintf(file, "%c%.3d%.3d%.3d%.3d.txt", categoryChar, chap, rank, objRank, i);
+        std::string filename = m_playerProgress->GetSaveFile(file);
+
         if (i < programs.size())
         {
-            brain->WriteProgram(programs[i].get(), filename);
+            brain->WriteProgram(programs[i].get(), filename.c_str());
         }
         else
         {
@@ -5240,52 +5240,18 @@ CObject* CRobotMain::IOReadScene(const char *filename, const char *filecbot)
 }
 
 
-//! Writes the global parameters for free play
-void CRobotMain::WriteFreeParam()
+//! Changes current player
+void CRobotMain::SelectPlayer(std::string playerName)
 {
-    m_freeResearch |= m_researchDone[0];
-    m_freeBuild    |= m_build;
+    assert(!playerName.empty());
 
-    if (m_gamerName == "") return;
-
-    COutputStream file;
-    file.open(std::string(GetSavegameDir()) + "/" + m_gamerName + "/research.gam");
-    if (!file.is_open())
-    {
-        GetLogger()->Error("Unable to write free game unlock state\n");
-        return;
-    }
-
-    file << "research=" << m_freeResearch << " build=" << m_freeBuild << "\n";
-
-    file.close();
+    m_playerProgress = MakeUnique<CPlayerProgress>(playerName);
+    SetGlobalGamerName(playerName);
 }
 
-//! Reads the global parameters for free play
-void CRobotMain::ReadFreeParam()
+CPlayerProgress* CRobotMain::GetPlayerProgress()
 {
-    m_freeResearch = 0;
-    m_freeBuild    = 0;
-
-    if (m_gamerName == "") return;
-
-    if (!CResourceManager::Exists(std::string(GetSavegameDir()) + "/" + m_gamerName + "/research.gam"))
-        return;
-
-    CInputStream file;
-    file.open(std::string(GetSavegameDir()) + "/" + m_gamerName + "/research.gam");
-    if (!file.is_open())
-    {
-        GetLogger()->Error("Unable to read free game unlock state\n");
-        return;
-    }
-
-    std::string line;
-    std::getline(file, line);
-
-    sscanf(line.c_str(), "research=%d build=%d\n", &m_freeResearch, &m_freeBuild);
-
-    file.close();
+    return m_playerProgress.get();
 }
 
 
@@ -5704,31 +5670,17 @@ MissionType CRobotMain::GetMissionType()
     return m_missionType;
 }
 
-//! Change the player's name
-void CRobotMain::SetGamerName(const char *name)
-{
-    m_gamerName = std::string(name);
-    SetGlobalGamerName(m_gamerName);
-    ReadFreeParam();
-}
-
-//! Gets the player's name
-char* CRobotMain::GetGamerName()
-{
-    return const_cast<char*>(m_gamerName.c_str());
-}
-
 
 //! Returns the representation to use for the player
 int CRobotMain::GetGamerFace()
 {
-    return m_dialog->GetGamerFace();
+    return m_playerProgress->GetApperance().face;
 }
 
 //! Returns the representation to use for the player
 int CRobotMain::GetGamerGlasses()
 {
-    return m_dialog->GetGamerGlasses();
+    return m_playerProgress->GetApperance().glasses;
 }
 
 //! Returns the mode with just the head
@@ -5756,6 +5708,16 @@ int CRobotMain::GetLevelChap()
 int CRobotMain::GetLevelRank()
 {
     return m_dialog->GetLevelRank();
+}
+
+void CRobotMain::UpdateChapterPassed()
+{
+    return m_dialog->UpdateChapterPassed();
+}
+
+void CRobotMain::MakeSaveScreenshot(const std::string& name)
+{
+    return m_dialog->MakeSaveScreenshot(name);
 }
 
 
@@ -6027,7 +5989,7 @@ int CRobotMain::AutosaveRotate(bool freeOne)
 {
     GetLogger()->Debug("Rotate autosaves...\n");
     // Find autosave dirs
-    auto saveDirs = CResourceManager::ListDirectories(std::string(GetSavegameDir()) + "/" + GetGamerName());
+    auto saveDirs = CResourceManager::ListDirectories(m_playerProgress->GetSaveDir());
     std::map<int, std::string> autosaveDirs;
     for (auto& dir : saveDirs)
     {
@@ -6037,7 +5999,7 @@ int CRobotMain::AutosaveRotate(bool freeOne)
             if (dir.substr(0, autosavePrefix.length()) == "autosave")
             {
                 int id = boost::lexical_cast<int>(dir.substr(autosavePrefix.length()));
-                autosaveDirs[id] = std::string(GetSavegameDir()) + "/" + GetGamerName() + "/" + dir;
+                autosaveDirs[id] = m_playerProgress->GetSaveFile(dir);
             }
         }
         catch (...)
@@ -6079,7 +6041,7 @@ int CRobotMain::AutosaveRotate(bool freeOne)
     {
         for (auto& save : autosavesToKeep)
         {
-            std::string newDir = std::string(GetSavegameDir()) + "/" + GetGamerName() + "/autosave" + boost::lexical_cast<std::string>(save.first);
+            std::string newDir = m_playerProgress->GetSaveFile("autosave" + boost::lexical_cast<std::string>(save.first));
             GetLogger()->Trace("Rename %s -> %s\n", save.second.c_str(), newDir.c_str());
             CResourceManager::Move(save.second, newDir);
         }
@@ -6093,20 +6055,13 @@ void CRobotMain::Autosave()
     int id = AutosaveRotate(true);
     GetLogger()->Info("Autosave!\n");
 
-    std::string dir = std::string(GetSavegameDir()) + "/" + GetGamerName() + "/autosave" + boost::lexical_cast<std::string>(id);
+    std::string dir = m_playerProgress->GetSaveFile("autosave" + boost::lexical_cast<std::string>(id));
 
-    if (!CResourceManager::DirectoryExists(dir))
-    {
-        CResourceManager::CreateDirectory(dir);
-    }
-
-    std::string savegameFileName = dir + "/data.sav";
-    std::string fileCBot = CResourceManager::GetSaveLocation() + "/" + dir + "/cbot.run";
     char timestr[100];
     TimeToAscii(time(NULL), timestr);
-    IOWriteScene(savegameFileName.c_str(), fileCBot.c_str(), const_cast<char*>((std::string("[AUTOSAVE] ")+timestr).c_str()));
+    std::string info = std::string("[AUTOSAVE] ")+timestr;
 
-    m_dialog->MakeSaveScreenshot(dir + "/screen.png");
+    m_playerProgress->SaveScene(dir, info);
 }
 
 void CRobotMain::SetExitAfterMission(bool exit)
@@ -6214,7 +6169,7 @@ void CRobotMain::MarkResearchDone(ResearchType type, int team)
 
     if(team == 0)
     {
-        WriteFreeParam();
+        m_playerProgress->SetFreeGameResearchUnlock(m_playerProgress->GetFreeGameResearchUnlock() | m_researchDone[0]);
     }
 }
 
