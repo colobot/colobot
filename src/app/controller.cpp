@@ -65,8 +65,7 @@ void CController::StartApp()
 
 void CController::StartGame(LevelCategory cat, int chap, int lvl)
 {
-    m_dialog->SetLevelCategory(cat);
-    m_dialog->SetLevelRank(chap*100+lvl);
+    m_dialog->SetLevel(cat, chap, lvl);
     m_main->ChangePhase(PHASE_LOADING);
 }
 

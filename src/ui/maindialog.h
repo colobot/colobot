@@ -16,9 +16,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see http://gnu.org/licenses
  */
-
-// maindialog.h
-
 #pragma once
 
 
@@ -49,7 +46,7 @@ class CControl;
 
 
 const int USERLISTMAX = 100;
-const int MAXSCENE = 1000;
+const int MAXSCENE = 999;
 
 
 struct SceneInfo
@@ -85,12 +82,12 @@ public:
     void          SetStackRead(const char* name);
     std::string & GetStackRead();
 
-    void          SetLevelCategory(LevelCategory category);
+    void          SetLevel(LevelCategory cat, int chap, int rank);
     LevelCategory GetLevelCategory();
-    void          SetLevelRank(int rank);
+    int           GetLevelChap();
     int           GetLevelRank();
+    std::string   GetCustomLevelDir();
 
-    const char*   GetCustomLevelDir();
     bool          GetSceneSoluce();
     std::string & GetSavegameDir();
     std::string & GetPublicDir();
@@ -102,7 +99,7 @@ public:
     bool    GetNiceReset();
     bool    GetHimselfDamage();
 
-    void          BuildResumeName(char *filename, std::string base, int rank);
+    void          BuildResumeName(char *filename, std::string base, int chap, int rank);
     std::string & GetFilesDir();
 
     void    StartAbort();
@@ -122,10 +119,10 @@ public:
 
     bool    ReadGamerInfo();
     bool    WriteGamerInfo();
-    void    SetGamerInfoTry(int rank, int numTry);
-    int     GetGamerInfoTry(int rank);
-    void    SetGamerInfoPassed(int rank, bool bPassed);
-    bool    GetGamerInfoPassed(int rank);
+    void    SetGamerInfoTry(int chap, int rank, int numTry);
+    int     GetGamerInfoTry(int chap, int rank);
+    void    SetGamerInfoPassed(int chap, int rank, bool bPassed);
+    bool    GetGamerInfoPassed(int chap, int rank);
     bool    NextMission();
 
     void    WriteGamerPerso(char *gamer);
@@ -174,7 +171,7 @@ protected:
     int     GetChapPassed();
     void    UpdateSceneChap(int &chap);
     void    UpdateSceneList(int chap, int &sel);
-    void    UpdateSceneResume(int rank);
+    void    UpdateSceneResume(int chap, int rank);
     void    UpdateDisplayMode();
     void    ChangeDisplay();
     void    UpdateApply();
@@ -216,7 +213,8 @@ protected:
     int             m_accessChap;
     std::string     m_sceneRead;       // name of the scene to read
     std::string     m_stackRead;       // name of the scene to read
-    int             m_sceneRank;        // rank of the scene to play
+    int             m_levelChap;       // chapter of the level to play
+    int             m_levelRank;       // rank of the level to play
     bool            m_bSceneSoluce;         // shows the solution
     bool            m_bSimulSetup;          // adjustment during the game
     bool            m_accessEnable;
@@ -224,9 +222,7 @@ protected:
     bool            m_accessUser;
     bool            m_bDeleteGamer;
 
-    int             m_userTotal;
-
-    std::vector<std::string> m_userList;
+    std::vector<std::string> m_customLevelList;
 
     int             m_shotDelay;        // number of frames before copy
     std::string     m_shotName;        // generate a file name
@@ -267,7 +263,7 @@ protected:
     float                m_partiTime[10];
     Math::Point          m_partiPos[10];
 
-    SceneInfo            m_sceneInfo[MAXSCENE];
+    std::map<int, std::map<int, SceneInfo>> m_sceneInfo;
 
     std::vector<std::string> m_saveList;
 };

@@ -264,7 +264,9 @@ public:
     int         GetGamerGlasses();
     bool        GetGamerOnlyHead();
     float       GetPersoAngle();
+    
     LevelCategory GetLevelCategory();
+    int         GetLevelChap();
     int         GetLevelRank();
 
     void        StartMusic();

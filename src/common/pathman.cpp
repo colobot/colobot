@@ -172,9 +172,9 @@ void CPathManager::LoadModsFromDir(const std::string &dir)
 std::string CPathManager::InjectLevelDir(std::string path, const std::string& defaultDir)
 {
     std::string newPath = path;
-    std::string lvlDir = CLevelParser::BuildScenePath(CRobotMain::GetInstancePointer()->GetLevelCategory(), CRobotMain::GetInstancePointer()->GetLevelRank()/100, CRobotMain::GetInstancePointer()->GetLevelRank()%100, false);
+    std::string lvlDir = CLevelParser::BuildScenePath(CRobotMain::GetInstancePointer()->GetLevelCategory(), CRobotMain::GetInstancePointer()->GetLevelChap(), CRobotMain::GetInstancePointer()->GetLevelRank(), false);
     boost::replace_all(newPath, "%lvl%", lvlDir);
-    std::string chapDir = CLevelParser::BuildScenePath(CRobotMain::GetInstancePointer()->GetLevelCategory(), CRobotMain::GetInstancePointer()->GetLevelRank()/100, 0, false);
+    std::string chapDir = CLevelParser::BuildScenePath(CRobotMain::GetInstancePointer()->GetLevelCategory(), CRobotMain::GetInstancePointer()->GetLevelChap(), 0, false);
     boost::replace_all(newPath, "%chap%", chapDir);
     std::string catDir = CLevelParser::BuildCategoryPath(CRobotMain::GetInstancePointer()->GetLevelCategory());
     boost::replace_all(newPath, "%cat%", catDir);

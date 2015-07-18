@@ -87,7 +87,7 @@ std::string CLevelParser::BuildScenePath(std::string category, int chapter, int 
     if (category == "custom")
     {
         outstream << CRobotMain::GetInstancePointer()->GetCustomLevelName(chapter);
-        if (rank == 000)
+        if (rank == 0)
         {
             if (sceneFile)
             {
@@ -105,11 +105,14 @@ std::string CLevelParser::BuildScenePath(std::string category, int chapter, int 
     }
     else if (category == "perso")
     {
+        assert(chapter == 0);
+        assert(rank == 0);
         outstream << "perso.txt";
     }
     else if (category == "win" || category == "lost")
     {
-        outstream << category << std::setfill('0') << std::setw(3) << chapter*100 + rank << ".txt";
+        assert(chapter == 0);
+        outstream << category << std::setfill('0') << std::setw(3) << rank << ".txt";
     }
     else
     {

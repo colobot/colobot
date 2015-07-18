@@ -442,17 +442,19 @@ void CRobotMain::ChangePhase(Phase phase)
 
         if (m_gameTime > 10.0f)  // did you play at least 10 seconds?
         {
+            int chap = m_dialog->GetLevelChap();
             int rank = m_dialog->GetLevelRank();
-            int numTry = m_dialog->GetGamerInfoTry(rank);
-            m_dialog->SetGamerInfoTry(rank, numTry+1);
+            int numTry = m_dialog->GetGamerInfoTry(chap, rank);
+            m_dialog->SetGamerInfoTry(chap, rank, numTry+1);
             m_dialog->WriteGamerInfo();
         }
     }
 
     if (phase == PHASE_WIN)  // wins a simulation?
     {
+        int chap = m_dialog->GetLevelChap();
         int rank = m_dialog->GetLevelRank();
-        m_dialog->SetGamerInfoPassed(rank, true);
+        m_dialog->SetGamerInfoPassed(chap, rank, true);
         m_dialog->NextMission();  // passes to the next mission
         m_dialog->WriteGamerInfo();
     }
@@ -591,8 +593,7 @@ void CRobotMain::ChangePhase(Phase phase)
         else
         {
             m_winTerminate = (m_endingWinRank == 904);
-            m_dialog->SetLevelCategory(LevelCategory::Win);
-            m_dialog->SetLevelRank(m_endingWinRank);
+            m_dialog->SetLevel(LevelCategory::Win, 0, m_endingWinRank);
             try
             {
                 CreateScene(false, true, false);  // sets scene
@@ -638,8 +639,7 @@ void CRobotMain::ChangePhase(Phase phase)
         else
         {
             m_winTerminate = false;
-            m_dialog->SetLevelCategory(LevelCategory::Lost);
-            m_dialog->SetLevelRank(m_endingLostRank);
+            m_dialog->SetLevel(LevelCategory::Lost, 0, m_endingLostRank);
             try
             {
                 CreateScene(false, true, false);  // sets scene
@@ -2831,8 +2831,7 @@ void CRobotMain::ScenePerso()
     ChangeColor();
 
 
-    m_dialog->SetLevelCategory(LevelCategory::Perso);
-    m_dialog->SetLevelRank(0);
+    m_dialog->SetLevel(LevelCategory::Perso, 0, 0);
     try
     {
         CreateScene(false, true, false);  // sets scene
@@ -2860,6 +2859,7 @@ void CRobotMain::ScenePerso()
 void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 {
     LevelCategory category = m_dialog->GetLevelCategory();
+    int         chap  = m_dialog->GetLevelChap();
     int         rank  = m_dialog->GetLevelRank();
     const char* read  = m_dialog->GetSceneRead().c_str();
     const char* stack = m_dialog->GetStackRead().c_str();
@@ -2938,8 +2938,8 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
         m_engine->SetSecondTexture("");
         m_engine->SetForegroundName("");
 
-        m_dialog->BuildResumeName(m_title, GetLevelCategoryDir(category), rank);
-        m_dialog->BuildResumeName(m_resume, GetLevelCategoryDir(category), rank);
+        m_dialog->BuildResumeName(m_title, GetLevelCategoryDir(category), chap, rank);
+        m_dialog->BuildResumeName(m_resume, GetLevelCategoryDir(category), chap, rank);
         std::string scriptNameStr;
         GetResource(RES_TEXT, RT_SCRIPT_NEW, scriptNameStr);
         strcpy(m_scriptName, scriptNameStr.c_str());
@@ -2961,7 +2961,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
     try
     {
-        CLevelParser levelParser(category, rank/100, rank%100);
+        CLevelParser levelParser(category, chap, rank);
         levelParser.Load();
 
         int rankObj = 0;
@@ -4604,6 +4604,7 @@ void CRobotMain::LoadOneScript(CObject *obj, int &nbError)
     if (objRank == -1) return;
 
     char categoryChar = GetLevelCategoryDir(m_dialog->GetLevelCategory())[0];
+    int chap = m_dialog->GetLevelChap();
     int rank = m_dialog->GetLevelRank();
 
     for (unsigned int i = 0; i <= 999; i++)
@@ -4611,8 +4612,8 @@ void CRobotMain::LoadOneScript(CObject *obj, int &nbError)
         //? if (brain->GetCompile(i)) continue;
 
         char filename[MAX_FNAME];
-        sprintf(filename, "%s/%s/%c%.3d%.3d%.3d.txt",
-                    GetSavegameDir(), m_gamerName.c_str(), categoryChar, rank, objRank, i);
+        sprintf(filename, "%s/%s/%c%.3d%.3d%.3d%.3d.txt",
+                    GetSavegameDir(), m_gamerName.c_str(), categoryChar, chap, rank, objRank, i);
 
         if (CResourceManager::Exists(filename))
         {
@@ -4678,6 +4679,7 @@ void CRobotMain::SaveOneScript(CObject *obj)
     if (objRank == -1) return;
 
     char categoryChar = GetLevelCategoryDir(m_dialog->GetLevelCategory())[0];
+    int chap = m_dialog->GetLevelChap();
     int rank = m_dialog->GetLevelRank();
 
     auto& programs = brain->GetPrograms();
@@ -4685,8 +4687,8 @@ void CRobotMain::SaveOneScript(CObject *obj)
     for (unsigned int i = 0; i <= 999; i++)
     {
         char filename[MAX_FNAME];
-        sprintf(filename, "%s/%s/%c%.3d%.3d%.3d.txt",
-                    GetSavegameDir(), m_gamerName.c_str(), categoryChar, rank, objRank, i);
+        sprintf(filename, "%s/%s/%c%.3d%.3d%.3d%.3d.txt",
+                    GetSavegameDir(), m_gamerName.c_str(), categoryChar, chap, rank, objRank, i);
         if (i < programs.size())
         {
             brain->WriteProgram(programs[i].get(), filename);
@@ -4915,14 +4917,13 @@ bool CRobotMain::IOWriteScene(const char *filename, const char *filecbot, char *
     line->AddParam("date", MakeUnique<CLevelParserParam>(GetCurrentTimestamp()));
     levelParser.AddLine(std::move(line));
 
-    char* name = m_dialog->GetSceneName();
     line = MakeUnique<CLevelParserLine>("Mission");
-    line->AddParam("base", MakeUnique<CLevelParserParam>(std::string(name)));
-    line->AddParam("rank", MakeUnique<CLevelParserParam>(m_dialog->GetSceneRank()));
-    if (std::string(name) == "custom")
-    {
-        line->AddParam("dir", MakeUnique<CLevelParserParam>(std::string(m_dialog->GetSceneDir())));
-    }
+    line->AddParam("base", MakeUnique<CLevelParserParam>(GetLevelCategoryDir(m_dialog->GetLevelCategory())));
+    if (m_dialog->GetLevelCategory() == LevelCategory::CustomLevels)
+        line->AddParam("dir", MakeUnique<CLevelParserParam>(m_dialog->GetCustomLevelDir()));
+    else
+        line->AddParam("chap", MakeUnique<CLevelParserParam>(m_dialog->GetLevelChap()));
+    line->AddParam("rank", MakeUnique<CLevelParserParam>(m_dialog->GetLevelRank()));
     levelParser.AddLine(std::move(line));
 
     line = MakeUnique<CLevelParserLine>("Map");
@@ -5745,6 +5746,11 @@ float CRobotMain::GetPersoAngle()
 LevelCategory CRobotMain::GetLevelCategory()
 {
     return m_dialog->GetLevelCategory();
+}
+
+int CRobotMain::GetLevelChap()
+{
+    return m_dialog->GetLevelChap();
 }
 
 int CRobotMain::GetLevelRank()

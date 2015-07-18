@@ -130,7 +130,8 @@ CMainDialog::CMainDialog()
     m_phaseTerm    = PHASE_TRAINER;
     m_sceneRead[0] = 0;
     m_stackRead[0] = 0;
-    m_sceneRank    = 0;
+    m_levelChap    = 0;
+    m_levelRank    = 0;
     m_bSceneSoluce = false;
     m_bSimulSetup  = false;
 
@@ -854,7 +855,7 @@ void CMainDialog::ChangePhase(Phase phase)
         }
         m_bSceneSoluce = false;
 
-        UpdateSceneResume((m_chap[m_category]+1)*100+(m_sel[m_category]+1));
+        UpdateSceneResume(m_chap[m_category]+1, m_sel[m_category]+1);
 
         if ( m_phase == PHASE_MISSION ||
                 m_phase == PHASE_FREE    ||
@@ -2245,14 +2246,14 @@ bool CMainDialog::EventProcess(const Event &event)
                 if ( pl == 0 )  break;
                 m_chap[m_category] = pl->GetSelect();
                 UpdateSceneList(m_chap[m_category], m_sel[m_category]);
-                UpdateSceneResume((m_chap[m_category]+1)*100+(m_sel[m_category]+1));
+                UpdateSceneResume(m_chap[m_category]+1, m_sel[m_category]+1);
                 break;
 
             case EVENT_INTERFACE_LIST:
                 pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_LIST));
                 if ( pl == 0 )  break;
                 m_sel[m_category] = pl->GetSelect();
-                UpdateSceneResume((m_chap[m_category]+1)*100+(m_sel[m_category]+1));
+                UpdateSceneResume(m_chap[m_category]+1, m_sel[m_category]+1);
                 break;
 
             case EVENT_INTERFACE_SOLUCE:
@@ -2263,7 +2264,8 @@ bool CMainDialog::EventProcess(const Event &event)
                 break;
 
             case EVENT_INTERFACE_PLAY:
-                m_sceneRank = (m_chap[m_category]+1)*100+(m_sel[m_category]+1);
+                m_levelChap = m_chap[m_category]+1;
+                m_levelRank = m_sel[m_category]+1;
                 m_phaseTerm = m_phase;
                 m_main->ChangePhase(PHASE_LOADING);
                 break;
@@ -3353,9 +3355,9 @@ void CMainDialog::NiceParticle(Math::Point mouse, bool bPress)
 
 // Built the default descriptive name of a mission.
 
-void CMainDialog::BuildResumeName(char *filename, std::string base, int rank)
+void CMainDialog::BuildResumeName(char *filename, std::string base, int chap, int rank)
 {
-    sprintf(filename, "Scene %s %d", base.c_str(), rank);
+    sprintf(filename, "%s %d.%d", base.c_str(), chap, rank);
 }
 
 // Returns the name of the file or save the files.
@@ -4213,7 +4215,7 @@ bool CMainDialog::IOReadScene()
 {
     CWindow*    pw;
     CList*      pl;
-    int         sel, i;
+    int         sel;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
     if ( pw == nullptr )  return false;
@@ -4234,29 +4236,42 @@ bool CMainDialog::IOReadScene()
 
     CLevelParserLine* line = levelParser.Get("Mission");
     m_category = GetLevelCategoryFromDir(line->GetParam("base")->AsString());
-    m_sceneRank = line->GetParam("rank")->AsInt();
 
+    m_levelRank = line->GetParam("rank")->AsInt();
     if (m_category == LevelCategory::CustomLevels)
     {
-        m_sceneRank = m_sceneRank%100;
-
+        m_levelChap = 0;
         std::string dir = line->GetParam("dir")->AsString();
-        for ( i=0 ; i<m_userTotal ; i++ )
+        for (unsigned int i = 0; i < m_customLevelList.size(); i++)
         {
-            if ( m_userList[i] == dir )
+            if (m_customLevelList[i] == dir)
             {
-                m_sceneRank += (i+1)*100;
+                m_levelChap = i+1;
                 break;
             }
         }
-        if ( m_sceneRank/100 == 0 )
+        if (m_levelChap == 0)
         {
             return false;
         }
     }
+    else
+    {
+        if(line->GetParam("chap")->IsDefined())
+        {
+            m_levelChap = line->GetParam("chap")->AsInt();
+        }
+        else
+        {
+            // Backwards combatibility
+            int rank = line->GetParam("rank")->AsInt();
+            m_levelChap = rank/100;
+            m_levelRank = rank%100;
+        }
+    }
 
-    m_chap[m_category] = (m_sceneRank / 100)-1;
-    m_sel[m_category]  = (m_sceneRank % 100)-1;
+    m_chap[m_category] = m_levelChap-1;
+    m_sel[m_category]  = m_levelRank-1;
 
     m_sceneRead = fileName;
     m_stackRead = fileCbot;
@@ -4268,18 +4283,16 @@ bool CMainDialog::IOReadScene()
 
 int CMainDialog::GetChapPassed()
 {
-    int         j;
+    if ( m_main->GetShowAll() )  return MAXSCENE;
 
-    if ( m_main->GetShowAll() )  return 9;
-
-    for ( j=0 ; j<9 ; j++ )
+    for ( int j = 1; j <= MAXSCENE; j++ )
     {
-        if ( !GetGamerInfoPassed((j+1)*100) )
+        if ( !GetGamerInfoPassed(j, 0) )
         {
             return j;
         }
     }
-    return 9;
+    return MAXSCENE;
 }
 
 // Updates the lists according to the cheat code.
@@ -4306,7 +4319,6 @@ void CMainDialog::UpdateSceneChap(int &chap)
 
     std::string fileName;
     char        line[500];
-    int         j;
     bool        bPassed;
 
     memset(line, 0, 500);
@@ -4318,15 +4330,14 @@ void CMainDialog::UpdateSceneChap(int &chap)
 
     pl->Flush();
 
+    unsigned int j;
     if ( m_phase == PHASE_USER )
     {
-        j = 0;
         auto userLevelDirs = CResourceManager::ListDirectories("levels/custom/");
         std::sort(userLevelDirs.begin(), userLevelDirs.end());
-        m_userList = userLevelDirs;
-        m_userTotal = m_userList.size();
+        m_customLevelList = userLevelDirs;
 
-        for ( j=0 ; j<m_userTotal ; j++ )
+        for ( j=0 ; j<m_customLevelList.size() ; j++ )
         {
             try
             {
@@ -4344,7 +4355,7 @@ void CMainDialog::UpdateSceneChap(int &chap)
     }
     else
     {
-        for ( j=0 ; j<9 ; j++ )
+        for ( j=0 ; j<MAXSCENE ; j++ )
         {
             CLevelParser levelParser(m_category, j+1, 0);
             if (!levelParser.Exists())
@@ -4359,7 +4370,7 @@ void CMainDialog::UpdateSceneChap(int &chap)
                 sprintf(line, "%s", (std::string("[ERROR]: ")+e.what()).c_str());
             }
 
-            bPassed = GetGamerInfoPassed((j+1)*100);
+            bPassed = GetGamerInfoPassed(j+1, 0);
             pl->SetItemName(j, line);
             pl->SetCheck(j, bPassed);
             pl->SetEnable(j, true);
@@ -4407,7 +4418,7 @@ void CMainDialog::UpdateSceneList(int chap, int &sel)
     if (chap < 0) return;
 
     bool readAll = true;
-    for ( j=0 ; j<99 ; j++ )
+    for ( j=0 ; j<MAXSCENE ; j++ )
     {
         CLevelParser levelParser(m_category, chap+1, j+1);
         if (!levelParser.Exists())
@@ -4430,7 +4441,7 @@ void CMainDialog::UpdateSceneList(int chap, int &sel)
             sprintf(line, "%s", (std::string("[ERROR]: ")+e.what()).c_str());
         }
 
-        bPassed = GetGamerInfoPassed((chap+1)*100+(j+1));
+        bPassed = GetGamerInfoPassed(chap+1, j+1);
         pl->SetItemName(j, line);
         pl->SetCheck(j, bPassed);
         pl->SetEnable(j, true);
@@ -4496,7 +4507,7 @@ void CMainDialog::ShowSoluceUpdate()
 
 // Updates a summary of exercise or mission.
 
-void CMainDialog::UpdateSceneResume(int rank)
+void CMainDialog::UpdateSceneResume(int chap, int rank)
 {
     CWindow*    pw;
     CEdit*      pe;
@@ -4517,8 +4528,8 @@ void CMainDialog::UpdateSceneResume(int rank)
     }
     else
     {
-        numTry  = GetGamerInfoTry(rank);
-        bPassed = GetGamerInfoPassed(rank);
+        numTry  = GetGamerInfoTry(chap, rank);
+        bPassed = GetGamerInfoPassed(chap, rank);
         bVisible = ( numTry > 2 || bPassed || m_main->GetShowSoluce() );
         if ( !GetSoluce4() )  bVisible = false;
         pc->SetState(STATE_VISIBLE, bVisible);
@@ -4529,11 +4540,11 @@ void CMainDialog::UpdateSceneResume(int rank)
         }
     }
 
-    if (rank<100) return;
+    if(chap == 0) return;
 
     try
     {
-        CLevelParser levelParser(m_category, rank/100, rank%100);
+        CLevelParser levelParser(m_category, chap, rank);
         levelParser.Load();
         pe->SetText(levelParser.Get("Resume")->GetParam("text")->AsString().c_str());
     }
@@ -5898,44 +5909,35 @@ std::string & CMainDialog::GetStackRead()
     return m_stackRead;
 }
 
-// Specifies the name of the chosen to play scene.
 
-void CMainDialog::SetLevelCategory(LevelCategory category)
+void CMainDialog::SetLevel(LevelCategory cat, int chap, int rank)
 {
-    m_category = category;
+    m_category = cat;
+    m_levelChap = chap;
+    m_levelRank = rank;
 }
-
-// Returns the name of the chosen to play scene.
 
 LevelCategory CMainDialog::GetLevelCategory()
 {
     return m_category;
 }
 
-// Specifies the rank of the chosen to play scene.
-
-void CMainDialog::SetLevelRank(int rank)
+int CMainDialog::GetLevelChap()
 {
-    m_sceneRank = rank;
+    return m_levelChap;
 }
-
-// Returns the rank of the chosen to play scene.
 
 int CMainDialog::GetLevelRank()
 {
-    return m_sceneRank;
+    return m_levelRank;
 }
 
 // Returns folder name of the scene that user selected to play.
 
-const char* CMainDialog::GetCustomLevelDir()
+std::string CMainDialog::GetCustomLevelDir()
 {
-    int     i;
-
-    i = (m_sceneRank/100)-1;
-
-    if ( i < 0 || i >= m_userTotal )  return 0;
-    return m_userList[i].c_str();
+    if (m_levelChap-1 < 0 || m_levelChap-1 >= m_customLevelList.size())  return "";
+    return m_customLevelList[m_levelChap-1];
 }
 
 // Whether to show the solution.
@@ -6115,13 +6117,8 @@ Gfx::Color CMainDialog::GetGamerColorBand()
 bool CMainDialog::ReadGamerInfo()
 {
     std::string line;
-    int chap, i, numTry, passed;
 
-    for ( i=0 ; i<MAXSCENE ; i++ )
-    {
-        m_sceneInfo[i].numTry = 0;
-        m_sceneInfo[i].bPassed = false;
-    }
+    m_sceneInfo.clear();
 
     if (!CResourceManager::Exists(GetSavegameDir()+"/"+m_main->GetGamerName()+"/"+GetLevelCategoryDir(m_category)+".gam"))
         return false;
@@ -6135,9 +6132,10 @@ bool CMainDialog::ReadGamerInfo()
     }
 
     std::getline(file, line);
-    sscanf(line.c_str(), "CurrentChapter=%d CurrentSel=%d\n", &chap, &i);
+    int chap, rank;
+    sscanf(line.c_str(), "CurrentChapter=%d CurrentSel=%d\n", &chap, &rank);
     m_chap[m_category] = chap-1;
-    m_sel[m_category]  = i-1;
+    m_sel[m_category]  = rank-1;
 
     while (!file.eof())
     {
@@ -6148,15 +6146,15 @@ bool CMainDialog::ReadGamerInfo()
             break;
         }
 
+        int numTry, passed;
         sscanf(line.c_str(), "Chapter %d: Scene %d: numTry=%d passed=%d\n",
-                &chap, &i, &numTry, &passed);
+                &chap, &rank, &numTry, &passed);
 
-        i += chap*100;
-        if ( i >= 0 && i < MAXSCENE )
-        {
-            m_sceneInfo[i].numTry  = numTry;
-            m_sceneInfo[i].bPassed = passed;
-        }
+        if ( chap < 0 || chap > MAXSCENE ) continue;
+        if ( rank < 0 || rank > MAXSCENE ) continue;
+
+        m_sceneInfo[chap][rank].numTry  = numTry;
+        m_sceneInfo[chap][rank].bPassed = passed;
     }
 
     file.close();
@@ -6167,8 +6165,6 @@ bool CMainDialog::ReadGamerInfo()
 
 bool CMainDialog::WriteGamerInfo()
 {
-    int     i;
-
     COutputStream file;
     file.open(GetSavegameDir()+"/"+m_main->GetGamerName()+"/"+GetLevelCategoryDir(m_category)+".gam");
     if (!file.is_open())
@@ -6179,55 +6175,59 @@ bool CMainDialog::WriteGamerInfo()
 
     file << "CurrentChapter=" << m_chap[m_category]+1 << " CurrentSel=" << m_sel[m_category]+1 << "\n";
 
-    for ( i=0 ; i<MAXSCENE ; i++ )
+    for ( int i=0 ; i<MAXSCENE ; i++ )
     {
-        if ( m_sceneInfo[i].numTry == 0 && !m_sceneInfo[i].bPassed )  continue;
+        if (m_sceneInfo.find(i) == m_sceneInfo.end()) continue;
+        for ( int j=0 ; j<MAXSCENE ; j++ )
+        {
+            if (m_sceneInfo[i].find(j) == m_sceneInfo[i].end()) continue;
+            if ( m_sceneInfo[i][j].numTry == 0 && !m_sceneInfo[i][j].bPassed )  continue;
 
-        file << "Chapter " << i/100 << ": Scene " << i%100 << ": numTry=" << m_sceneInfo[i].numTry << " passed=" << (m_sceneInfo[i].bPassed ? "1" : "0") << "\n";
+            file << "Chapter " << i << ": Scene " << j << ": numTry=" << m_sceneInfo[i][j].numTry << " passed=" << (m_sceneInfo[i][j].bPassed ? "1" : "0") << "\n";
+        }
     }
 
     file.close();
     return true;
 }
 
-void CMainDialog::SetGamerInfoTry(int rank, int numTry)
+void CMainDialog::SetGamerInfoTry(int chap, int rank, int numTry)
 {
-    if ( rank < 0 || rank >= MAXSCENE )  return;
-    if ( numTry > 100 )  numTry = 100;
-    m_sceneInfo[rank].numTry = numTry;
+    if ( chap < 0 || chap > MAXSCENE )  return;
+    if ( rank < 0 || rank > MAXSCENE )  return;
+    m_sceneInfo[chap][rank].numTry = numTry;
 }
 
-int CMainDialog::GetGamerInfoTry(int rank)
+int CMainDialog::GetGamerInfoTry(int chap, int rank)
 {
-    if ( rank < 0 || rank >= MAXSCENE )  return 0;
-    return m_sceneInfo[rank].numTry;
+    if ( chap < 0 || chap > MAXSCENE )  return 0;
+    if ( rank < 0 || rank > MAXSCENE )  return 0;
+    return m_sceneInfo[chap][rank].numTry;
 }
 
-void CMainDialog::SetGamerInfoPassed(int rank, bool bPassed)
+void CMainDialog::SetGamerInfoPassed(int chap, int rank, bool bPassed)
 {
-    int     chap, i;
-    bool    bAll;
-
-    if ( rank < 0 || rank >= MAXSCENE )  return;
-    m_sceneInfo[rank].bPassed = bPassed;
+    if ( chap < 0 || chap > MAXSCENE )  return;
+    if ( rank < 0 || rank > MAXSCENE )  return;
+    m_sceneInfo[chap][rank].bPassed = bPassed;
 
     if ( bPassed )
     {
-        bAll = true;
-        chap = rank/100;
-        for ( i=0 ; i<m_maxList ; i++ )
+        bool bAll = true;
+        for ( int i=0 ; i<m_maxList ; i++ )
         {
-            bAll &= m_sceneInfo[chap*100+i+1].bPassed;
+            bAll &= m_sceneInfo[chap][i+1].bPassed;
         }
-        m_sceneInfo[chap*100].numTry ++;
-        m_sceneInfo[chap*100].bPassed = bAll;
+        m_sceneInfo[chap][0].numTry ++;
+        m_sceneInfo[chap][0].bPassed = bAll;
     }
 }
 
-bool CMainDialog::GetGamerInfoPassed(int rank)
+bool CMainDialog::GetGamerInfoPassed(int chap, int rank)
 {
-    if ( rank < 0 || rank >= MAXSCENE )  return false;
-    return m_sceneInfo[rank].bPassed;
+    if ( chap < 0 || chap > MAXSCENE )  return false;
+    if ( rank < 0 || rank > MAXSCENE )  return false;
+    return m_sceneInfo[chap][rank].bPassed;
 }
 
 
@@ -6248,7 +6248,7 @@ bool CMainDialog::NextMission()
 
 std::string& CMainDialog::GetCustomLevelName(int id)
 {
-    return m_userList[id-1];
+    return m_customLevelList[id-1];
 }
 
 
