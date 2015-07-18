@@ -512,6 +512,7 @@ void CRobotMain::ChangePhase(Phase phase)
     Ui::CEdit* pe = static_cast<Ui::CEdit*>(m_interface->CreateEdit(pos, dim, 0, EVENT_CMD));
     if (pe == nullptr) return;
     pe->ClearState(Ui::STATE_VISIBLE);
+    pe->SetMaxChar(100);
     m_cmdEdit = false;  // hidden for now
 
     // Creates the speedometer.
