@@ -422,7 +422,9 @@ void CGL21Device::SetTransform(TransformType type, const Math::Matrix &matrix)
 
         // normal transform
         Math::Matrix normalMat = matrix;
-        normalMat = normalMat.Inverse();
+
+        if (abs(normalMat.Det()) > 1e-6)
+            normalMat = normalMat.Inverse();
 
         glUniformMatrix4fv(uni_NormalMatrix, 1, GL_TRUE, normalMat.Array());
     }
