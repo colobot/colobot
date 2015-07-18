@@ -540,8 +540,10 @@ bool CApplication::Create()
 
         if (m_device == nullptr)
         {
-            m_device = MakeUnique<Gfx::CNullDevice>();
             GetLogger()->Error("Unknown graphics device: %s\n", m_graphics.c_str());
+            GetLogger()->Info("Changing to default device\n");
+            GetSystemUtils()->SystemDialog(SDT_ERROR, "Graphics initialization error", "You have selected invalid graphics device with -graphics switch. Game will use default OpenGL device instead.");
+            m_device = Gfx::CreateDevice(m_deviceConfig, "opengl");
         }
     }
     else
