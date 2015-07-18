@@ -25,6 +25,7 @@
 #include "graphics/core/color.h"
 #include "graphics/engine/camera.h"
 
+#include "object/level_category.h"
 #include "object/robotmain.h"
 
 #include "app/pausemanager.h"
@@ -80,14 +81,16 @@ public:
     void    ChangePhase(Phase phase);
 
     void          SetSceneRead(const char* name);
-    void          SetStackRead(const char* name);
-    void          SetSceneName(const char* name);
-    void          SetSceneRank(int rank);
     std::string & GetSceneRead();
+    void          SetStackRead(const char* name);
     std::string & GetStackRead();
-    char*         GetSceneName();
-    int           GetSceneRank();
-    const char*   GetSceneDir();
+
+    void          SetLevelCategory(LevelCategory category);
+    LevelCategory GetLevelCategory();
+    void          SetLevelRank(int rank);
+    int           GetLevelRank();
+
+    const char*   GetCustomLevelDir();
     bool          GetSceneSoluce();
     std::string & GetSavegameDir();
     std::string & GetPublicDir();
@@ -99,8 +102,7 @@ public:
     bool    GetNiceReset();
     bool    GetHimselfDamage();
 
-    void          BuildScenePath(std::string &filename, char *base, int rank, bool sceneFile = true);
-    void          BuildResumeName(char *filename, char *base, int rank);
+    void          BuildResumeName(char *filename, std::string base, int rank);
     std::string & GetFilesDir();
 
     void    StartAbort();
@@ -141,7 +143,7 @@ public:
     void    AllMissionUpdate();
     void    ShowSoluceUpdate();
 
-    std::string& GetUserLevelName(int id);
+    std::string& GetCustomLevelName(int id);
 
     void    MakeSaveScreenshot(const std::string& name);
 
@@ -200,21 +202,20 @@ protected:
 
     GamerPerso      m_perso;            // perso: description
     GamerPerso      m_persoCopy;            // perso: copy for cancellation
-    int         m_persoTab;         // perso: tab selected
+    int             m_persoTab;         // perso: tab selected
     float           m_persoAngle;           // perso: angle of presentation
 
     std::string     m_savegameDir;  // savegame folder
     std::string     m_publicDir;    // program folder
     std::string     m_filesDir;     // case files
 
-    int             m_index;        // 0..4
-    int             m_chap[10];     // selected chapter (0..8)
-    int             m_sel[10];      // chosen mission (0..98)
+    LevelCategory   m_category;     // 0..4
+    std::map<LevelCategory, int> m_chap;     // selected chapter (0..8)
+    std::map<LevelCategory, int> m_sel;      // chosen mission (0..98)
     int             m_maxList;
     int             m_accessChap;
     std::string     m_sceneRead;       // name of the scene to read
     std::string     m_stackRead;       // name of the scene to read
-    char            m_sceneName[20];        // name of the scene to play
     int             m_sceneRank;        // rank of the scene to play
     bool            m_bSceneSoluce;         // shows the solution
     bool            m_bSimulSetup;          // adjustment during the game
@@ -272,4 +273,3 @@ protected:
 };
 
 } // namespace Ui
-

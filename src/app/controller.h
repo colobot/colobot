@@ -24,6 +24,8 @@
 
 #pragma once
 
+#include "object/level_category.h"
+
 #include <memory>
 #include <string>
 
@@ -57,7 +59,7 @@ public:
     //! Start the application
     void StartApp();
     //! Starts the simulation, loading the given scene
-    void StartGame(std::string cat, int chap, int lvl);
+    void StartGame(LevelCategory cat, int chap, int lvl);
 
 private:
     CApplication* m_app;

@@ -32,6 +32,8 @@
 #include "graphics/core/device.h"
 #include "graphics/engine/engine.h"
 
+#include "object/level_category.h"
+
 
 #include <string>
 #include <vector>
@@ -433,7 +435,7 @@ protected:
 
     //@{
     //! Scene to run on startup
-    std::string     m_runSceneName;
+    LevelCategory   m_runSceneCategory;
     int             m_runSceneRank;
     //@}
 
@@ -452,4 +454,3 @@ protected:
     //! Headles mode
     bool            m_headless;
 };
-

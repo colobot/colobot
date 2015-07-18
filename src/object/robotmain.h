@@ -30,6 +30,7 @@
 
 #include "graphics/engine/particle.h"
 
+#include "object/level_category.h"
 #include "object/object_type.h"
 #include "object/drive_type.h"
 #include "object/tool_type.h"
@@ -263,8 +264,8 @@ public:
     int         GetGamerGlasses();
     bool        GetGamerOnlyHead();
     float       GetPersoAngle();
-    char*       GetSceneName();
-    int         GetSceneRank();
+    LevelCategory GetLevelCategory();
+    int         GetLevelRank();
 
     void        StartMusic();
     void        StartPauseMusic(PauseType pause);
@@ -312,7 +313,7 @@ public:
     void        DisplayError(Error err, CObject* pObj, float time=10.0f);
     void        DisplayError(Error err, Math::Vector goal, float height=15.0f, float dist=60.0f, float time=10.0f);
 
-    std::string& GetUserLevelName(int id);
+    std::string& GetCustomLevelName(int id);
 
     void        StartMissionTimer();
 

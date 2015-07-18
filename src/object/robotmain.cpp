@@ -442,7 +442,7 @@ void CRobotMain::ChangePhase(Phase phase)
 
         if (m_gameTime > 10.0f)  // did you play at least 10 seconds?
         {
-            int rank = m_dialog->GetSceneRank();
+            int rank = m_dialog->GetLevelRank();
             int numTry = m_dialog->GetGamerInfoTry(rank);
             m_dialog->SetGamerInfoTry(rank, numTry+1);
             m_dialog->WriteGamerInfo();
@@ -451,7 +451,7 @@ void CRobotMain::ChangePhase(Phase phase)
 
     if (phase == PHASE_WIN)  // wins a simulation?
     {
-        int rank = m_dialog->GetSceneRank();
+        int rank = m_dialog->GetLevelRank();
         m_dialog->SetGamerInfoPassed(rank, true);
         m_dialog->NextMission();  // passes to the next mission
         m_dialog->WriteGamerInfo();
@@ -591,9 +591,8 @@ void CRobotMain::ChangePhase(Phase phase)
         else
         {
             m_winTerminate = (m_endingWinRank == 904);
-            m_dialog->SetSceneName("win");
-
-            m_dialog->SetSceneRank(m_endingWinRank);
+            m_dialog->SetLevelCategory(LevelCategory::Win);
+            m_dialog->SetLevelRank(m_endingWinRank);
             try
             {
                 CreateScene(false, true, false);  // sets scene
@@ -639,8 +638,8 @@ void CRobotMain::ChangePhase(Phase phase)
         else
         {
             m_winTerminate = false;
-            m_dialog->SetSceneName("lost");
-            m_dialog->SetSceneRank(m_endingLostRank);
+            m_dialog->SetLevelCategory(LevelCategory::Lost);
+            m_dialog->SetLevelRank(m_endingLostRank);
             try
             {
                 CreateScene(false, true, false);  // sets scene
@@ -2578,8 +2577,10 @@ bool CRobotMain::EventFrame(const Event &event)
 
     if (m_pause->GetPause() == PAUSE_NONE && m_autosave && m_gameTimeAbsolute >= m_autosaveLast+(m_autosaveInterval*60) && m_phase == PHASE_SIMUL)
     {
-        std::string base = m_dialog->GetSceneName();
-        if (base == "missions" || base == "freemissions" || base == "custom")
+        LevelCategory cat = m_dialog->GetLevelCategory();
+        if (cat == LevelCategory::Missions    ||
+            cat == LevelCategory::FreeGame    ||
+            cat == LevelCategory::CustomLevels )
         {
             m_autosaveLast = m_gameTimeAbsolute;
             Autosave();
@@ -2830,8 +2831,8 @@ void CRobotMain::ScenePerso()
     ChangeColor();
 
 
-    m_dialog->SetSceneName("perso");
-    m_dialog->SetSceneRank(0);
+    m_dialog->SetLevelCategory(LevelCategory::Perso);
+    m_dialog->SetLevelRank(0);
     try
     {
         CreateScene(false, true, false);  // sets scene
@@ -2858,8 +2859,8 @@ void CRobotMain::ScenePerso()
 //! Creates the whole scene
 void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 {
-    char*       base  = m_dialog->GetSceneName();
-    int         rank  = m_dialog->GetSceneRank();
+    LevelCategory category = m_dialog->GetLevelCategory();
+    int         rank  = m_dialog->GetLevelRank();
     const char* read  = m_dialog->GetSceneRead().c_str();
     const char* stack = m_dialog->GetStackRead().c_str();
 
@@ -2937,8 +2938,8 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
         m_engine->SetSecondTexture("");
         m_engine->SetForegroundName("");
 
-        m_dialog->BuildResumeName(m_title, base, rank);
-        m_dialog->BuildResumeName(m_resume, base, rank);
+        m_dialog->BuildResumeName(m_title, GetLevelCategoryDir(category), rank);
+        m_dialog->BuildResumeName(m_resume, GetLevelCategoryDir(category), rank);
         std::string scriptNameStr;
         GetResource(RES_TEXT, RT_SCRIPT_NEW, scriptNameStr);
         strcpy(m_scriptName, scriptNameStr.c_str());
@@ -2960,7 +2961,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
     try
     {
-        CLevelParser levelParser(base, rank/100, rank%100);
+        CLevelParser levelParser(category, rank/100, rank%100);
         levelParser.Load();
 
         int rankObj = 0;
@@ -3896,10 +3897,10 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
         if (read[0] == 0)
             CompileScript(soluce);  // compiles all scripts
 
-        if (strcmp(base, "missions") == 0 && !resetObject)  // mission?
+        if (category == LevelCategory::Missions && !resetObject)  // mission?
             WriteFreeParam();
 
-        if (strcmp(base, "freemissions") == 0 && !resetObject)  // free play?
+        if (category == LevelCategory::FreeGame && !resetObject)  // free play?
         {
             m_researchDone[0] = m_freeResearch;
 
@@ -4602,8 +4603,8 @@ void CRobotMain::LoadOneScript(CObject *obj, int &nbError)
     int objRank = obj->GetDefRank();
     if (objRank == -1) return;
 
-    char* name = m_dialog->GetSceneName();
-    int rank = m_dialog->GetSceneRank();
+    char categoryChar = GetLevelCategoryDir(m_dialog->GetLevelCategory())[0];
+    int rank = m_dialog->GetLevelRank();
 
     for (unsigned int i = 0; i <= 999; i++)
     {
@@ -4611,7 +4612,7 @@ void CRobotMain::LoadOneScript(CObject *obj, int &nbError)
 
         char filename[MAX_FNAME];
         sprintf(filename, "%s/%s/%c%.3d%.3d%.3d.txt",
-                    GetSavegameDir(), m_gamerName.c_str(), name[0], rank, objRank, i);
+                    GetSavegameDir(), m_gamerName.c_str(), categoryChar, rank, objRank, i);
 
         if (CResourceManager::Exists(filename))
         {
@@ -4676,8 +4677,8 @@ void CRobotMain::SaveOneScript(CObject *obj)
     int objRank = obj->GetDefRank();
     if (objRank == -1) return;
 
-    char* name = m_dialog->GetSceneName();
-    int rank = m_dialog->GetSceneRank();
+    char categoryChar = GetLevelCategoryDir(m_dialog->GetLevelCategory())[0];
+    int rank = m_dialog->GetLevelRank();
 
     auto& programs = brain->GetPrograms();
     // TODO: Find a better way to do that
@@ -4685,7 +4686,7 @@ void CRobotMain::SaveOneScript(CObject *obj)
     {
         char filename[MAX_FNAME];
         sprintf(filename, "%s/%s/%c%.3d%.3d%.3d.txt",
-                    GetSavegameDir(), m_gamerName.c_str(), name[0], rank, objRank, i);
+                    GetSavegameDir(), m_gamerName.c_str(), categoryChar, rank, objRank, i);
         if (i < programs.size())
         {
             brain->WriteProgram(programs[i].get(), filename);
@@ -5741,14 +5742,14 @@ float CRobotMain::GetPersoAngle()
     return m_dialog->GetPersoAngle();
 }
 
-char* CRobotMain::GetSceneName()
+LevelCategory CRobotMain::GetLevelCategory()
 {
-    return m_dialog->GetSceneName();
+    return m_dialog->GetLevelCategory();
 }
 
-int CRobotMain::GetSceneRank()
+int CRobotMain::GetLevelRank()
 {
-    return m_dialog->GetSceneRank();
+    return m_dialog->GetLevelRank();
 }
 
 
@@ -5968,9 +5969,9 @@ void CRobotMain::DisplayError(Error err, Math::Vector goal, float height, float 
     m_displayText->DisplayError(err, goal, height, dist, time);
 }
 
-std::string& CRobotMain::GetUserLevelName(int id)
+std::string& CRobotMain::GetCustomLevelName(int id)
 {
-    return m_dialog->GetUserLevelName(id);
+    return m_dialog->GetCustomLevelName(id);
 }
 
 void CRobotMain::StartMissionTimer()

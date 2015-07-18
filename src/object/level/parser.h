@@ -28,6 +28,8 @@
 #include "object/level/parserparam.h"
 #include "object/level/parserexceptions.h"
 
+#include "object/level_category.h"
+
 #include <string>
 #include <vector>
 #include <memory>
@@ -40,12 +42,21 @@ public:
     //! Load level from file
     CLevelParser(std::string filename);
     //! Load given level
+    //@{
+    CLevelParser(LevelCategory category, int chapter, int rank);
     CLevelParser(std::string category, int chapter, int rank);
+    //@}
 
     //! Build category path
+    //@{
+    static std::string BuildCategoryPath(LevelCategory category);
     static std::string BuildCategoryPath(std::string category);
+    //@}
     //! Build level filename
+    //@{
+    static std::string BuildScenePath(LevelCategory category, int chapter, int rank, bool sceneFile = true);
     static std::string BuildScenePath(std::string category, int chapter, int rank, bool sceneFile = true);
+    //@}
 
     //! Check if level file exists
     bool Exists();

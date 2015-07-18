@@ -63,10 +63,10 @@ void CController::StartApp()
     m_main->ChangePhase(PHASE_WELCOME1);
 }
 
-void CController::StartGame(std::string cat, int chap, int lvl)
+void CController::StartGame(LevelCategory cat, int chap, int lvl)
 {
-    m_dialog->SetSceneName(cat.c_str());
-    m_dialog->SetSceneRank(chap*100+lvl);
+    m_dialog->SetLevelCategory(cat);
+    m_dialog->SetLevelRank(chap*100+lvl);
     m_main->ChangePhase(PHASE_LOADING);
 }
 

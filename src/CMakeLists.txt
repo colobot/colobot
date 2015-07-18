@@ -153,6 +153,7 @@ set(BASE_SOURCES
     object/level/parserexceptions.cpp
     object/level/parserline.cpp
     object/level/parserparam.cpp
+    object/level_category.cpp
     object/mainmovie.cpp
     object/motion/motion.cpp
     object/motion/motionant.cpp

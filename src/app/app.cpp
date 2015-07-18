@@ -142,7 +142,7 @@ CApplication::CApplication()
 
     m_mouseMode = MOUSE_SYSTEM;
 
-    m_runSceneName = "";
+    m_runSceneCategory = LevelCategory::Max;
     m_runSceneRank = 0;
 
     m_sceneTest = false;
@@ -282,9 +282,18 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
             case OPT_RUNSCENE:
             {
                 std::string file = optarg;
-                m_runSceneName = file.substr(0, file.size()-3);
+                std::string cat = file.substr(0, file.size()-3);
+                m_runSceneCategory = GetLevelCategoryFromDir(cat);
                 m_runSceneRank = StrUtils::FromString<int>(file.substr(file.size()-3, 3));
-                GetLogger()->Info("Running scene '%s%d' on start\n", m_runSceneName.c_str(), m_runSceneRank);
+                if(m_runSceneCategory == LevelCategory::Max)
+                {
+                    GetLogger()->Info("Running scene '%s%d' on start\n", cat.c_str(), m_runSceneRank);
+                }
+                else
+                {
+                    GetLogger()->Error("Requested to run scene from unknown category '%s'\n", cat.c_str());
+                    return PARSE_ARGS_FAIL;
+                }
                 break;
             }
             case OPT_SCENETEST:
@@ -573,13 +582,13 @@ bool CApplication::Create()
     // Create the robot application.
     m_controller = MakeUnique<CController>(this, !defaultValues);
 
-    if (m_runSceneName.empty())
+    if (m_runSceneCategory == LevelCategory::Max)
         m_controller->StartApp();
     else
     {
         m_controller->GetRobotMain()->ChangePhase(PHASE_USER); // To load userlevel list - TODO: this is ugly
         m_controller->GetRobotMain()->SetExitAfterMission(true);
-        m_controller->StartGame(m_runSceneName, m_runSceneRank/100, m_runSceneRank%100);
+        m_controller->StartGame(m_runSceneCategory, m_runSceneRank/100, m_runSceneRank%100);
     }
 
     return true;

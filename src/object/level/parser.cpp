@@ -56,6 +56,10 @@ CLevelParser::CLevelParser(std::string category, int chapter, int rank)
     m_filename = BuildScenePath(category, chapter, rank);
 }
 
+CLevelParser::CLevelParser(LevelCategory category, int chapter, int rank)
+: CLevelParser(GetLevelCategoryDir(category), chapter, rank)
+{}
+
 std::string CLevelParser::BuildCategoryPath(std::string category)
 {
     std::ostringstream outstream;
@@ -71,13 +75,18 @@ std::string CLevelParser::BuildCategoryPath(std::string category)
     return outstream.str();
 }
 
+std::string CLevelParser::BuildCategoryPath(LevelCategory category)
+{
+    return BuildCategoryPath(GetLevelCategoryDir(category));
+}
+
 std::string CLevelParser::BuildScenePath(std::string category, int chapter, int rank, bool sceneFile)
 {
     std::ostringstream outstream;
     outstream << BuildCategoryPath(category);
     if (category == "custom")
     {
-        outstream << CRobotMain::GetInstancePointer()->GetUserLevelName(chapter);
+        outstream << CRobotMain::GetInstancePointer()->GetCustomLevelName(chapter);
         if (rank == 000)
         {
             if (sceneFile)
@@ -122,6 +131,11 @@ std::string CLevelParser::BuildScenePath(std::string category, int chapter, int 
         }
     }
     return outstream.str();
+}
+
+std::string CLevelParser::BuildScenePath(LevelCategory category, int chapter, int rank, bool sceneFile)
+{
+    return BuildScenePath(GetLevelCategoryDir(category), chapter, rank, sceneFile);
 }
 
 bool CLevelParser::Exists()
