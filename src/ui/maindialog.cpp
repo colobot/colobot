@@ -4904,6 +4904,7 @@ void CMainDialog::SetupMemorize()
     GetProfile().SetIntProperty("Setup", "Anisotropy", m_engine->GetTextureAnisotropyLevel());
     GetProfile().SetFloatProperty("Setup", "ShadowColor", m_engine->GetShadowColor());
     GetProfile().SetFloatProperty("Setup", "ShadowRange", m_engine->GetShadowRange());
+    GetProfile().SetIntProperty("Setup", "MSAA", m_engine->GetMultiSample());
 
     /* screen setup */
     GetProfile().SetIntProperty("Setup", "Fullscreen", m_setupFull ? 1 : 0);
@@ -5202,6 +5203,11 @@ void CMainDialog::SetupRecall()
     if (GetProfile().GetFloatProperty("Setup", "ShadowRange", fValue))
     {
         m_engine->SetShadowRange(fValue);
+    }
+
+    if (GetProfile().GetIntProperty("Setup", "MSAA", iValue))
+    {
+        m_engine->SetMultiSample(iValue);
     }
 }
 

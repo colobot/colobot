@@ -1147,19 +1147,19 @@ public:
     //@{
     //! Management of shadow color
     void            SetShadowColor(float value);
-    bool            GetShadowColor();
+    float           GetShadowColor();
     //@}
 
     //@{
     //! Management of shadow range
     void            SetShadowRange(float value);
-    bool            GetShadowRange();
+    float           GetShadowRange();
     //@}
 
     //@{
     //! Management of shadow range
     void            SetMultiSample(int value);
-    bool            GetMultiSample();
+    int             GetMultiSample();
     //@}
 
     //@{

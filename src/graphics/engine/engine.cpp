@@ -188,12 +188,6 @@ CEngine::CEngine(CApplication *app)
         m_qualityShadows = (value > 2);
     }
 
-    int samples;
-    if (GetProfile().GetIntProperty("Setup", "MSAA", samples))
-    {
-        m_multisample = samples;
-    }
-
     m_shadowColor = 0.5f;
 
     m_defaultTexParams.format = TEX_IMG_AUTO;
@@ -352,6 +346,16 @@ void CEngine::Destroy()
 {
     m_text->Destroy();
 
+    if (m_shadowMap.id != 0)
+    {
+        if (m_offscreenShadowRendering)
+            m_device->DeleteFramebuffer("shadow");
+        else
+            m_device->DestroyTexture(m_shadowMap);
+
+        m_shadowMap = Texture();
+    }
+
     delete m_pause;
     m_pause = nullptr;
 
@@ -381,6 +385,16 @@ void CEngine::ResetAfterDeviceChanged()
 {
     m_size = m_app->GetVideoConfig().size;
     m_mouseSize = Math::Point(0.04f, 0.04f * (m_size.x / m_size.y));
+
+    if (m_shadowMap.id != 0)
+    {
+        if (m_offscreenShadowRendering)
+            m_device->DeleteFramebuffer("shadow");
+        else
+            m_device->DestroyTexture(m_shadowMap);
+
+        m_shadowMap = Texture();
+    }
 
     m_text->FlushCache();
 
@@ -2566,7 +2580,7 @@ void CEngine::SetShadowColor(float value)
     m_shadowColor = value;
 }
 
-bool CEngine::GetShadowColor()
+float CEngine::GetShadowColor()
 {
     return m_shadowColor;
 }
@@ -2576,7 +2590,7 @@ void CEngine::SetShadowRange(float value)
     m_shadowRange = value;
 }
 
-bool CEngine::GetShadowRange()
+float CEngine::GetShadowRange()
 {
     return m_shadowRange;
 }
@@ -2586,7 +2600,7 @@ void CEngine::SetMultiSample(int value)
     m_multisample = value;
 }
 
-bool CEngine::GetMultiSample()
+int CEngine::GetMultiSample()
 {
     return m_multisample;
 }
@@ -3370,8 +3384,7 @@ void CEngine::RenderShadowMap()
     if (m_shadowMap.id == 0)
     {
         int width = 256, height = 256;
-
-        int depth = m_app->GetInstance().GetVideoConfig().depthSize;
+        int depth;
 
         if (m_offscreenShadowRendering)
         {
@@ -3388,7 +3401,7 @@ void CEngine::RenderShadowMap()
 
             FramebufferParams params;
             params.width = params.height = width;
-            params.depth = depth;
+            params.depth = depth = 32;
             params.depthTexture = true;
 
             CFramebuffer *framebuffer = m_device->CreateFramebuffer("shadow", params);
@@ -3415,6 +3428,8 @@ void CEngine::RenderShadowMap()
                 width = height = 1 << i;
             }
 
+            depth = m_app->GetInstance().GetVideoConfig().depthSize;
+
             m_shadowMap = m_device->CreateDepthTexture(width, height, depth);
         }
 
@@ -3440,7 +3455,7 @@ void CEngine::RenderShadowMap()
     m_device->SetRenderState(RENDER_STATE_DEPTH_BIAS, false);
     m_device->SetAlphaTestFunc(COMP_FUNC_GREATER, 0.5f);
     m_device->SetRenderState(RENDER_STATE_DEPTH_BIAS, true);
-    m_device->SetDepthBias(1.5f, 16.0f);
+    m_device->SetDepthBias(1.5f, 8.0f);
 
     m_device->SetViewport(0, 0, m_shadowMap.size.x, m_shadowMap.size.y);
 
@@ -3452,7 +3467,7 @@ void CEngine::RenderShadowMap()
     dir.Normalize();
 
     float dist = m_shadowRange;
-    float depth = 400.0f;
+    float depth = 200.0f;
 
     if (dist < 0.5f)
     {
@@ -3548,6 +3563,7 @@ void CEngine::RenderShadowMap()
 void CEngine::UseShadowMapping(bool enable)
 {
     if (!m_shadowMapping) return;
+    if (m_shadowMap.id == 0) return;
 
     if (enable) // Enable shadow mapping
     {
