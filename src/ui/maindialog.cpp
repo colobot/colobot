@@ -3858,11 +3858,10 @@ void CMainDialog::ColorPerso()
 
 bool CMainDialog::IsIOReadScene()
 {
-    std::string userSaveDir = m_savegameDir + "/" + m_main->GetPlayerProfile()->GetName();
-    auto saveDirs = CResourceManager::ListDirectories(userSaveDir);
+    auto saveDirs = CResourceManager::ListDirectories(m_main->GetPlayerProfile()->GetSaveDir());
     for (auto dir : saveDirs)
     {
-        if (CResourceManager::Exists(userSaveDir + "/" + dir + "/" + "data.sav"))
+        if (CResourceManager::Exists(m_main->GetPlayerProfile()->GetSaveFile(dir + "/data.sav")))
         {
             return true;
         }
@@ -3922,9 +3921,7 @@ void CMainDialog::IOReadList()
 
     m_saveList.clear();
 
-    std::string userSaveDir = m_savegameDir + "/" + m_main->GetPlayerProfile()->GetName();
-
-    auto saveDirs = CResourceManager::ListDirectories(userSaveDir);
+    auto saveDirs = CResourceManager::ListDirectories(m_main->GetPlayerProfile()->GetSaveDir());
     //std::sort(saveDirs.begin(), saveDirs.end());
 
     std::map<int, std::string> sortedSaveDirs;
@@ -3932,13 +3929,13 @@ void CMainDialog::IOReadList()
 
     for (auto dir : saveDirs)
     {
-        std::string savegameFile = userSaveDir + "/" + dir + "/" + "data.sav";
+        std::string savegameFile = m_main->GetPlayerProfile()->GetSaveFile(dir+"/data.sav");
         if (CResourceManager::Exists(savegameFile))
         {
             CLevelParser levelParser(savegameFile);
             levelParser.Load();
             int time = levelParser.Get("Created")->GetParam("date")->AsInt();
-            sortedSaveDirs[time] = userSaveDir + "/" + dir;
+            sortedSaveDirs[time] = m_main->GetPlayerProfile()->GetSaveFile(dir);
             names[time] = levelParser.Get("Title")->GetParam("text")->AsString();
         }
     }
@@ -4087,7 +4084,7 @@ bool CMainDialog::IOWriteScene()
     pe->GetText(info, 100);
     if (static_cast<unsigned int>(sel) >= m_saveList.size())
     {
-        dir = m_savegameDir + "/" + m_main->GetPlayerProfile()->GetName() + "/save" + clearName(info);
+        dir = m_main->GetPlayerProfile()->GetSaveFile("save"+clearName(info));
     }
     else
     {
