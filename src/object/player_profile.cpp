@@ -76,6 +76,7 @@ CPlayerProfile::CPlayerProfile(std::string playerName)
 {
     m_playerName = playerName;
     GetConfigFile().SetStringProperty("Gamer", "LastName", m_playerName);
+    GetConfigFile().Save();
 
     if (!CResourceManager::DirectoryExists(GetSaveDir()))
     {

@@ -56,6 +56,11 @@ public:
      */
     bool Init();
 
+    /** Saves colobot.ini
+     * \return return true on success
+     */
+    bool Save();
+
     /** Sets string value in section under specified key
      * \param section
      * \param key
@@ -105,13 +110,8 @@ public:
     bool GetFloatProperty(std::string section, std::string key, float &value);
 
 private:
-    /** Saves colobot.ini
-     * \return return true on success
-     */
-    bool Save();
-
-private:
     boost::property_tree::ptree m_propertyTree;
+    bool m_needsSave;
     bool m_useCurrentDirectory;
     bool m_loaded;
 };

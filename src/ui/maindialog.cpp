@@ -4911,6 +4911,8 @@ void CMainDialog::SetupMemorize()
     CInput::GetInstancePointer()->SaveKeyBindings();
 
     GetConfigFile().SetIntProperty("Setup", "DeleteGamer", m_bDeleteGamer);
+    
+    GetConfigFile().Save();
 }
 
 // Remember all the settings.

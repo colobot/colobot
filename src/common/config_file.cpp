@@ -38,7 +38,8 @@ template<> CConfigFile* CSingleton<CConfigFile>::m_instance = nullptr;
 namespace bp = boost::property_tree;
 
 CConfigFile::CConfigFile()
-   : m_useCurrentDirectory(false)
+   : m_needsSave(false)
+   , m_useCurrentDirectory(false)
    , m_loaded(false)
 {
 }
@@ -46,6 +47,11 @@ CConfigFile::CConfigFile()
 
 CConfigFile::~CConfigFile()
 {
+    if (m_needsSave)
+    {
+        GetLogger()->Warn("Config file was not properly saved! Saving now...\n");
+        Save();
+    }
 }
 
 void CConfigFile::SetUseCurrentDirectory(bool useCurrentDirectory)
@@ -79,13 +85,13 @@ bool CConfigFile::Init()
         }
         else
         {
-            GetLogger()->Error("Error on parsing profile: failed to open file\n");
+            GetLogger()->Error("Error on parsing config file: failed to open file\n");
             return false;
         }
     }
     catch (std::exception & e)
     {
-        GetLogger()->Error("Error on parsing profile: %s\n", e.what());
+        GetLogger()->Error("Error on parsing config file: %s\n", e.what());
         return false;
     }
     return true;
@@ -93,37 +99,41 @@ bool CConfigFile::Init()
 
 bool CConfigFile::Save()
 {
-    try
+    if (m_needsSave)
     {
-        std::unique_ptr<std::ostream> stream;
-        bool good;
-        if (m_useCurrentDirectory)
+        try
         {
-            std::ofstream* outputStream = new std::ofstream("./colobot.ini");
-            stream = std::unique_ptr<std::ostream>(outputStream);
-            good = outputStream->good();
-        }
-        else
-        {
-            COutputStream* outputStream = new COutputStream("colobot.ini");
-            stream = std::unique_ptr<std::ostream>(outputStream);
-            good = outputStream->is_open();
-        }
+            std::unique_ptr<std::ostream> stream;
+            bool good;
+            if (m_useCurrentDirectory)
+            {
+                std::ofstream* outputStream = new std::ofstream("./colobot.ini");
+                stream = std::unique_ptr<std::ostream>(outputStream);
+                good = outputStream->good();
+            }
+            else
+            {
+                COutputStream* outputStream = new COutputStream("colobot.ini");
+                stream = std::unique_ptr<std::ostream>(outputStream);
+                good = outputStream->is_open();
+            }
 
-        if (good)
-        {
-            bp::ini_parser::write_ini(*stream, m_propertyTree);
+            if (good)
+            {
+                bp::ini_parser::write_ini(*stream, m_propertyTree);
+                m_needsSave = false;
+            }
+            else
+            {
+                GetLogger()->Error("Error on storing config file: failed to open file\n");
+                return false;
+            }
         }
-        else
+        catch (std::exception & e)
         {
-            GetLogger()->Error("Error on storing profile: failed to open file\n");
+            GetLogger()->Error("Error on storing config file: %s\n", e.what());
             return false;
         }
-    }
-    catch (std::exception & e)
-    {
-        GetLogger()->Error("Error on storing profile: %s\n", e.what());
-        return false;
     }
     return true;
 }
@@ -133,11 +143,11 @@ bool CConfigFile::SetStringProperty(std::string section, std::string key, std::s
     try
     {
         m_propertyTree.put(section + "." + key, value);
-        Save();
+        m_needsSave = true;
     }
     catch (std::exception & e)
     {
-        GetLogger()->Info("Error on editing config file: %s\n", e.what());
+        GetLogger()->Error("Error on editing config file: %s\n", e.what());
         return false;
     }
     return true;
@@ -171,11 +181,11 @@ bool CConfigFile::SetIntProperty(std::string section, std::string key, int value
     try
     {
         m_propertyTree.put(section + "." + key, value);
-        Save();
+        m_needsSave = true;
     }
     catch (std::exception & e)
     {
-        GetLogger()->Info("Error on editing config file: %s\n", e.what());
+        GetLogger()->Error("Error on editing config file: %s\n", e.what());
         return false;
     }
     return true;
@@ -209,11 +219,11 @@ bool CConfigFile::SetFloatProperty(std::string section, std::string key, float v
     try
     {
         m_propertyTree.put(section + "." + key, value);
-        Save();
+        m_needsSave = true;
     }
     catch (std::exception & e)
     {
-        GetLogger()->Info("Error on editing config file: %s\n", e.what());
+        GetLogger()->Error("Error on editing config file: %s\n", e.what());
         return false;
     }
     return true;
