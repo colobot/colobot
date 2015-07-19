@@ -18,7 +18,7 @@
  */
 
 /**
- * \file common/profile.h
+ * \file common/config_file.h
  * \brief Class for loading profile (currently for loading ini config file)
  */
 
@@ -37,29 +37,24 @@ namespace fs = boost::filesystem;
 
 
 /**
-* \class CProfile
+* \class CConfigFile
 *
-* \brief Class for loading profile (currently for loading ini config file)
+* \brief Class for loading config file
 *
 */
-class CProfile : public CSingleton<CProfile>
+class CConfigFile : public CSingleton<CConfigFile>
 {
 public:
-    CProfile();
-    virtual ~CProfile();
+    CConfigFile();
+    virtual ~CConfigFile();
 
     /** Set flag to force using ini file from current directory */
     void SetUseCurrentDirectory(bool useCurrentDirectory);
 
-    /** Loads colobot.ini from current directory
+    /** Loads colobot.ini
      * \return return true on success
      */
     bool Init();
-
-    /** Saves colobot.ini to current directory
-     * \return return true on success
-     */
-    bool Save();
 
     /** Sets string value in section under specified key
      * \param section
@@ -109,22 +104,20 @@ public:
      */
     bool GetFloatProperty(std::string section, std::string key, float &value);
 
-    /** Gets all values in section under specified key
-     * \param section
-     * \param key
-     * \return vector of values
+private:
+    /** Saves colobot.ini
+     * \return return true on success
      */
-    std::vector< std::string > GetSection(std::string section, std::string key);
+    bool Save();
 
 private:
     boost::property_tree::ptree m_propertyTree;
-    bool m_profileNeedSave;
     bool m_useCurrentDirectory;
+    bool m_loaded;
 };
 
 //! Global function to get profile instance
-inline CProfile & GetProfile()
+inline CConfigFile & GetConfigFile()
 {
-    return *CProfile::GetInstancePointer();
+    return *CConfigFile::GetInstancePointer();
 }
-

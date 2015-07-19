@@ -25,7 +25,7 @@
 #include "common/config.h"
 #include "common/image.h"
 #include "common/logger.h"
-#include "common/profile.h"
+#include "common/config_file.h"
 
 #include "math/geometry.h"
 
@@ -238,7 +238,7 @@ bool CGL21Device::Create()
     m_textureStageParams = std::vector<TextureStageParams>(maxTextures, TextureStageParams());
 
     int value;
-    if (CProfile::GetInstance().GetIntProperty("Setup", "PerPixelLighting", value))
+    if (CConfigFile::GetInstance().GetIntProperty("Setup", "PerPixelLighting", value))
     {
         m_perPixelLighting = value > 0;
     }

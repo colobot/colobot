@@ -9,7 +9,7 @@ endif()
 set(UT_SOURCES
     main.cpp
     app/app_test.cpp
-    common/profile_test.cpp
+    common/config_file_test.cpp
     graphics/engine/lightman_test.cpp
     math/func_test.cpp
     math/geometry_test.cpp

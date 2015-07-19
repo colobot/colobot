@@ -21,7 +21,7 @@
 
 
 #include "common/logger.h"
-#include "common/profile.h"
+#include "common/config_file.h"
 #include "common/restext.h"
 
 #include "graphics/engine/engine.h"
@@ -314,17 +314,17 @@ void CInput::SaveKeyBindings()
         key.str("");
         key << b.primary << " " << b.secondary;
 
-        CProfile::GetInstancePointer()->SetStringProperty("Keybindings", keyTable[static_cast<InputSlot>(i)], key.str());
+        CConfigFile::GetInstancePointer()->SetStringProperty("Keybindings", keyTable[static_cast<InputSlot>(i)], key.str());
     }
 
     for (int i = 0; i < JOY_AXIS_SLOT_MAX; i++)
     {
         JoyAxisBinding b = GetJoyAxisBinding(static_cast<JoyAxisSlot>(i));
 
-        CProfile::GetInstancePointer()->SetIntProperty("Setup", "JoystickAxisBinding"+boost::lexical_cast<std::string>(i), b.axis);
-        CProfile::GetInstancePointer()->SetIntProperty("Setup", "JoystickAxisInvert"+boost::lexical_cast<std::string>(i), b.invert);
+        CConfigFile::GetInstancePointer()->SetIntProperty("Setup", "JoystickAxisBinding"+boost::lexical_cast<std::string>(i), b.axis);
+        CConfigFile::GetInstancePointer()->SetIntProperty("Setup", "JoystickAxisInvert"+boost::lexical_cast<std::string>(i), b.invert);
     }
-    CProfile::GetInstancePointer()->SetFloatProperty("Setup", "JoystickDeadzone", GetJoystickDeadzone());
+    CConfigFile::GetInstancePointer()->SetFloatProperty("Setup", "JoystickDeadzone", GetJoystickDeadzone());
 }
 
 void CInput::LoadKeyBindings()
@@ -335,7 +335,7 @@ void CInput::LoadKeyBindings()
     {
         InputBinding b;
 
-        if (!CProfile::GetInstancePointer()->GetStringProperty("Keybindings", keyTable[static_cast<InputSlot>(i)], keys))
+        if (!CConfigFile::GetInstancePointer()->GetStringProperty("Keybindings", keyTable[static_cast<InputSlot>(i)], keys))
             continue;
         skey.clear();
         skey.str(keys);
@@ -350,17 +350,17 @@ void CInput::LoadKeyBindings()
     {
         JoyAxisBinding b;
 
-        if (!CProfile::GetInstancePointer()->GetIntProperty("Setup", "JoystickAxisBinding"+boost::lexical_cast<std::string>(i), b.axis))
+        if (!CConfigFile::GetInstancePointer()->GetIntProperty("Setup", "JoystickAxisBinding"+boost::lexical_cast<std::string>(i), b.axis))
             continue;
 
         int x = 0;
-        CProfile::GetInstancePointer()->GetIntProperty("Setup", "JoystickAxisInvert"+boost::lexical_cast<std::string>(i), x); // If doesn't exist, use default (0)
+        CConfigFile::GetInstancePointer()->GetIntProperty("Setup", "JoystickAxisInvert"+boost::lexical_cast<std::string>(i), x); // If doesn't exist, use default (0)
         b.invert = (x != 0);
 
         SetJoyAxisBinding(static_cast<JoyAxisSlot>(i), b);
     }
     float deadzone;
-    if (CProfile::GetInstancePointer()->GetFloatProperty("Setup", "JoystickDeadzone", deadzone))
+    if (CConfigFile::GetInstancePointer()->GetFloatProperty("Setup", "JoystickDeadzone", deadzone))
         SetJoystickDeadzone(deadzone);
 }
 

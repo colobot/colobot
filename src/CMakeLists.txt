@@ -86,7 +86,7 @@ set(BASE_SOURCES
     common/logger.cpp
     common/misc.cpp
     common/pathman.cpp
-    common/profile.cpp
+    common/config_file.cpp
     common/regex_utils.cpp
     common/resources/inputstream.cpp
     common/resources/inputstreambuffer.cpp

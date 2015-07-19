@@ -102,7 +102,7 @@ struct ApplicationPrivate
 CApplication::CApplication()
  : m_private(MakeUnique<ApplicationPrivate>())
  , m_eventQueue(MakeUnique<CEventQueue>())
- , m_profile(MakeUnique<CProfile>())
+ , m_configFile(MakeUnique<CConfigFile>())
  , m_input(MakeUnique<CInput>())
  , m_pathManager(MakeUnique<CPathManager>())
 {
@@ -395,13 +395,13 @@ bool CApplication::Create()
     }
     m_pathManager->InitPaths();
 
-    if (!GetProfile().Init())
+    if (!GetConfigFile().Init())
     {
         GetLogger()->Warn("Config not found. Default values will be used!\n");
         defaultValues = true;
     }
 
-    if (GetProfile().GetStringProperty("Language", "Lang", path)) {
+    if (GetConfigFile().GetStringProperty("Language", "Lang", path)) {
         Language language;
         if (ParseLanguage(path, language)) {
             m_language = language;
@@ -478,7 +478,7 @@ bool CApplication::Create()
         std::vector<Math::IntPoint> modes;
         GetVideoResolutionList(modes, true, true);
 
-        if ( GetProfile().GetStringProperty("Setup", "Resolution", sValue) && !m_resolutionOverride )
+        if ( GetConfigFile().GetStringProperty("Setup", "Resolution", sValue) && !m_resolutionOverride )
         {
             std::istringstream resolution(sValue);
             std::string ws, hs;
@@ -499,7 +499,7 @@ bool CApplication::Create()
             }
         }
 
-        if ( GetProfile().GetIntProperty("Setup", "Fullscreen", iValue) && !m_resolutionOverride )
+        if ( GetConfigFile().GetIntProperty("Setup", "Fullscreen", iValue) && !m_resolutionOverride )
         {
             m_deviceConfig.fullScreen = (iValue == 1);
         }

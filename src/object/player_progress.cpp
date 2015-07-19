@@ -20,7 +20,7 @@
 
 #include "common/logger.h"
 #include "common/make_unique.h"
-#include "common/profile.h"
+#include "common/config_file.h"
 #include "common/resources/resourcemanager.h"
 #include "common/resources/inputstream.h"
 #include "common/resources/outputstream.h"
@@ -75,7 +75,7 @@ void PlayerApperance::DefPerso()
 CPlayerProgress::CPlayerProgress(std::string playerName)
 {
     m_playerName = playerName;
-    GetProfile().SetStringProperty("Gamer", "LastName", m_playerName);
+    GetConfigFile().SetStringProperty("Gamer", "LastName", m_playerName);
 
     if (!CResourceManager::DirectoryExists(GetSaveDir()))
     {
@@ -96,7 +96,7 @@ std::string CPlayerProgress::GetLastName()
 {
     std::string name;
 
-    if(!GetProfile().GetStringProperty("Gamer", "LastName", name))
+    if(!GetConfigFile().GetStringProperty("Gamer", "LastName", name))
         GetResource(RES_TEXT, RT_NAME_DEFAULT, name);
 
     return name;

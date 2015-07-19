@@ -18,7 +18,7 @@
  */
 
 
-#include "common/profile.h"
+#include "common/config_file.h"
 
 #include "common/resources/inputstream.h"
 #include "common/resources/outputstream.h"
@@ -33,28 +33,27 @@
 #include <boost/regex.hpp>
 
 
-template<> CProfile* CSingleton<CProfile>::m_instance = nullptr;
+template<> CConfigFile* CSingleton<CConfigFile>::m_instance = nullptr;
 
 namespace bp = boost::property_tree;
 
-CProfile::CProfile()
-   : m_profileNeedSave(false)
-   , m_useCurrentDirectory(false)
+CConfigFile::CConfigFile()
+   : m_useCurrentDirectory(false)
+   , m_loaded(false)
 {
 }
 
 
-CProfile::~CProfile()
+CConfigFile::~CConfigFile()
 {
-    Save();
 }
 
-void CProfile::SetUseCurrentDirectory(bool useCurrentDirectory)
+void CConfigFile::SetUseCurrentDirectory(bool useCurrentDirectory)
 {
     m_useCurrentDirectory = useCurrentDirectory;
 }
 
-bool CProfile::Init()
+bool CConfigFile::Init()
 {
     try
     {
@@ -76,6 +75,7 @@ bool CProfile::Init()
         if (good)
         {
             bp::ini_parser::read_ini(*stream, m_propertyTree);
+            m_loaded = true;
         }
         else
         {
@@ -91,63 +91,60 @@ bool CProfile::Init()
     return true;
 }
 
-bool CProfile::Save()
+bool CConfigFile::Save()
 {
-    if (m_profileNeedSave)
+    try
     {
-        try
+        std::unique_ptr<std::ostream> stream;
+        bool good;
+        if (m_useCurrentDirectory)
         {
-            std::unique_ptr<std::ostream> stream;
-            bool good;
-            if (m_useCurrentDirectory)
-            {
-                std::ofstream* outputStream = new std::ofstream("./colobot.ini");
-                stream = std::unique_ptr<std::ostream>(outputStream);
-                good = outputStream->good();
-            }
-            else
-            {
-                COutputStream* outputStream = new COutputStream("colobot.ini");
-                stream = std::unique_ptr<std::ostream>(outputStream);
-                good = outputStream->is_open();
-            }
-
-            if (good)
-            {
-                bp::ini_parser::write_ini(*stream, m_propertyTree);
-            }
-            else
-            {
-                GetLogger()->Error("Error on storing profile: failed to open file\n");
-                return false;
-            }
+            std::ofstream* outputStream = new std::ofstream("./colobot.ini");
+            stream = std::unique_ptr<std::ostream>(outputStream);
+            good = outputStream->good();
         }
-        catch (std::exception & e)
+        else
         {
-            GetLogger()->Error("Error on storing profile: %s\n", e.what());
+            COutputStream* outputStream = new COutputStream("colobot.ini");
+            stream = std::unique_ptr<std::ostream>(outputStream);
+            good = outputStream->is_open();
+        }
+
+        if (good)
+        {
+            bp::ini_parser::write_ini(*stream, m_propertyTree);
+        }
+        else
+        {
+            GetLogger()->Error("Error on storing profile: failed to open file\n");
             return false;
         }
+    }
+    catch (std::exception & e)
+    {
+        GetLogger()->Error("Error on storing profile: %s\n", e.what());
+        return false;
     }
     return true;
 }
 
-bool CProfile::SetStringProperty(std::string section, std::string key, std::string value)
+bool CConfigFile::SetStringProperty(std::string section, std::string key, std::string value)
 {
     try
     {
         m_propertyTree.put(section + "." + key, value);
-        m_profileNeedSave = true;
+        Save();
     }
     catch (std::exception & e)
     {
-        GetLogger()->Info("Error on parsing profile: %s\n", e.what());
+        GetLogger()->Info("Error on editing config file: %s\n", e.what());
         return false;
     }
     return true;
 }
 
 
-bool CProfile::GetStringProperty(std::string section, std::string key, std::string &buffer)
+bool CConfigFile::GetStringProperty(std::string section, std::string key, std::string &buffer)
 {
     try
     {
@@ -155,30 +152,37 @@ bool CProfile::GetStringProperty(std::string section, std::string key, std::stri
     }
     catch (std::exception & e)
     {
-        GetLogger()->Info("Error on parsing profile: %s\n", e.what());
+        if (m_loaded)
+        {
+            GetLogger()->Info("Error on parsing config file: %s\n", e.what());
+        }
+        else
+        {
+            GetLogger()->Trace("Error on parsing config file: %s\n", e.what());
+        }
         return false;
     }
     return true;
 }
 
 
-bool CProfile::SetIntProperty(std::string section, std::string key, int value)
+bool CConfigFile::SetIntProperty(std::string section, std::string key, int value)
 {
     try
     {
         m_propertyTree.put(section + "." + key, value);
-        m_profileNeedSave = true;
+        Save();
     }
     catch (std::exception & e)
     {
-        GetLogger()->Info("Error on parsing profile: %s\n", e.what());
+        GetLogger()->Info("Error on editing config file: %s\n", e.what());
         return false;
     }
     return true;
 }
 
 
-bool CProfile::GetIntProperty(std::string section, std::string key, int &value)
+bool CConfigFile::GetIntProperty(std::string section, std::string key, int &value)
 {
     try
     {
@@ -186,30 +190,37 @@ bool CProfile::GetIntProperty(std::string section, std::string key, int &value)
     }
     catch (std::exception & e)
     {
-        GetLogger()->Info("Error on parsing profile: %s\n", e.what());
+        if (m_loaded)
+        {
+            GetLogger()->Info("Error on parsing config file: %s\n", e.what());
+        }
+        else
+        {
+            GetLogger()->Trace("Error on parsing config file: %s\n", e.what());
+        }
         return false;
     }
     return true;
 }
 
 
-bool CProfile::SetFloatProperty(std::string section, std::string key, float value)
+bool CConfigFile::SetFloatProperty(std::string section, std::string key, float value)
 {
     try
     {
         m_propertyTree.put(section + "." + key, value);
-        m_profileNeedSave = true;
+        Save();
     }
     catch (std::exception & e)
     {
-        GetLogger()->Info("Error on parsing profile: %s\n", e.what());
+        GetLogger()->Info("Error on editing config file: %s\n", e.what());
         return false;
     }
     return true;
 }
 
 
-bool CProfile::GetFloatProperty(std::string section, std::string key, float &value)
+bool CConfigFile::GetFloatProperty(std::string section, std::string key, float &value)
 {
     try
     {
@@ -217,33 +228,15 @@ bool CProfile::GetFloatProperty(std::string section, std::string key, float &val
     }
     catch (std::exception & e)
     {
-        GetLogger()->Info("Error on parsing profile: %s\n", e.what());
+        if (m_loaded)
+        {
+            GetLogger()->Info("Error on parsing config file: %s\n", e.what());
+        }
+        else
+        {
+            GetLogger()->Trace("Error on parsing config file: %s\n", e.what());
+        }
         return false;
     }
     return true;
 }
-
-
-std::vector< std::string > CProfile::GetSection(std::string section, std::string key)
-{
-    std::vector< std::string > ret_list;
-    boost::regex re(key + "[0-9]*"); //we want to match all key followed by any number
-
-    try
-    {
-        for(bp::ptree::value_type const & v : m_propertyTree.get_child(section))
-        {
-            if (boost::regex_search(v.first, re))
-            {
-                ret_list.push_back(v.second.get_value<std::string>());
-            }
-        }
-    }
-    catch (std::exception & e)
-    {
-        GetLogger()->Info("Error on parsing profile: %s\n", e.what());
-    }
-
-    return ret_list;
-}
-

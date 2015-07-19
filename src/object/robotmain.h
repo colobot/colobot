@@ -150,16 +150,15 @@ class CRobotMain : public CSingleton<CRobotMain>
 public:
     CRobotMain(CController* controller);
     virtual ~CRobotMain();
-
-    void Create(bool loadProfile = true);
+    void        Create();
 
     Gfx::CCamera* GetCamera();
     Gfx::CTerrain* GetTerrain();
     Ui::CInterface* GetInterface();
     Ui::CDisplayText* GetDisplayText();
 
-    void        CreateIni();
-    void        LoadIni();
+    void        CreateConfigFile();
+    void        LoadConfigFile();
 
     void        ResetAfterDeviceChanged();
 

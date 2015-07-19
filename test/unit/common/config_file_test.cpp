@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see http://gnu.org/licenses
  */
-#include "common/profile.h"
+#include "common/config_file.h"
 #include "common/logger.h"
 #include "app/system.h"
 
@@ -26,31 +26,27 @@
 #include <gtest/gtest.h>
 
 
-class CProfileTest : public testing::Test
+class CConfigFileTest : public testing::Test
 {
 protected:
-    CProfile m_profile;
+    CConfigFile m_configFile;
 };
 
-TEST_F(CProfileTest, ReadTest)
+TEST_F(CConfigFileTest, ReadTest)
 {
-    m_profile.SetUseCurrentDirectory(true);
+    m_configFile.SetUseCurrentDirectory(true);
 
-    ASSERT_TRUE(m_profile.Init()); // load colobot.ini file
+    ASSERT_TRUE(m_configFile.Init()); // load colobot.ini file
 
     std::string result;
-    ASSERT_TRUE(m_profile.GetStringProperty("test_string", "string_value", result));
+    ASSERT_TRUE(m_configFile.GetStringProperty("test_string", "string_value", result));
     ASSERT_STREQ("Hello world", result.c_str());
 
     int int_value;
-    ASSERT_TRUE(m_profile.GetIntProperty("test_int", "int_value", int_value));
+    ASSERT_TRUE(m_configFile.GetIntProperty("test_int", "int_value", int_value));
     ASSERT_EQ(42, int_value);
 
     float float_value;
-    ASSERT_TRUE(m_profile.GetFloatProperty("test_float", "float_value", float_value));
+    ASSERT_TRUE(m_configFile.GetFloatProperty("test_float", "float_value", float_value));
     ASSERT_FLOAT_EQ(1.5, float_value);
-
-    std::vector<std::string> list;
-    list = m_profile.GetSection("test_multi", "entry");
-    ASSERT_EQ(5u, list.size());
 }

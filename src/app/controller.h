@@ -43,7 +43,7 @@ class CMainDialog;
 class CController
 {
 public:
-    CController(CApplication* app, bool loadProfile = true);
+    CController(CApplication* app, bool configLoaded = true);
     ~CController();
 
     //! Return CApplication instance

@@ -27,7 +27,7 @@
 #include "common/event.h"
 #include "common/global.h"
 #include "common/singleton.h"
-#include "common/profile.h"
+#include "common/config_file.h"
 
 #include "graphics/core/device.h"
 #include "graphics/engine/engine.h"
@@ -368,7 +368,7 @@ protected:
     //! Game controller - game engine and UI
     std::unique_ptr<CController> m_controller;
     //! Profile (INI) reader/writer
-    std::unique_ptr<CProfile> m_profile;
+    std::unique_ptr<CConfigFile> m_configFile;
     //! Input manager
     std::unique_ptr<CInput> m_input;
     //! Path manager

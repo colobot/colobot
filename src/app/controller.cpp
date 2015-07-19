@@ -26,17 +26,17 @@
 
 
 
-CController::CController(CApplication* app, bool loadProfile)
+CController::CController(CApplication* app, bool configLoaded)
  : m_app(app)
  , m_main(new CRobotMain(this))
  , m_dialog(new Ui::CMainDialog())
 {
-    m_main->Create(loadProfile);
+    m_main->Create();
     m_dialog->Create();
-    if (!loadProfile)
-        m_main->CreateIni();
+    if (configLoaded)
+        m_main->LoadConfigFile();
     else
-        m_main->LoadIni();
+        m_main->CreateConfigFile();
 }
 
 CController::~CController()

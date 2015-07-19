@@ -174,14 +174,14 @@ CEngine::CEngine(CApplication *app)
     bool mipmaps = false;
 
     int value;
-    if (CProfile::GetInstance().GetIntProperty("Setup", "FilterMode", value))
+    if (GetConfigFile().GetIntProperty("Setup", "FilterMode", value))
     {
         if (value == 1) filter = TEX_FILTER_NEAREST;
         else if (value == 2) filter = TEX_FILTER_BILINEAR;
         else if (value == 3) filter = TEX_FILTER_TRILINEAR, mipmaps = true;
     }
 
-    if (CProfile::GetInstance().GetIntProperty("Setup", "ShadowMapping", value))
+    if (GetConfigFile().GetIntProperty("Setup", "ShadowMapping", value))
     {
         m_shadowMapping = (value > 0);
         m_offscreenShadowRendering = (value > 1);
@@ -3390,7 +3390,7 @@ void CEngine::RenderShadowMap()
         {
             int size;
 
-            if (CProfile::GetInstance().GetIntProperty("Setup", "OffscreenBuffer", size))
+            if (CConfigFile::GetInstance().GetIntProperty("Setup", "OffscreenBuffer", size))
             {
                 width = height = size;
             }
