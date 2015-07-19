@@ -614,20 +614,9 @@ bool CScriptFunctions::rBusy(CBotVar* thisclass, CBotVar* var, CBotVar* result, 
 
     exception = 0;
 
-    CBotVar* classVars = thisclass->GetItemList();  // "category"
-    classVars = classVars->GetNext();  // "position"
-    classVars = classVars->GetNext();  // "orientation"
-    classVars = classVars->GetNext();  // "pitch"
-    classVars = classVars->GetNext();  // "roll"
-    classVars = classVars->GetNext();  // "energyLevel"
-    classVars = classVars->GetNext();  // "shieldLevel"
-    classVars = classVars->GetNext();  // "temperature"
-    classVars = classVars->GetNext();  // "altitude"
-    classVars = classVars->GetNext();  // "lifeTime"
-    classVars = classVars->GetNext();  // "energyCell"
-    classVars = classVars->GetNext();  // "load"
-    classVars = classVars->GetNext();  // "id"
-    int rank = classVars->GetValInt();
+    CBotVar* idVar = thisclass->GetItem("id");
+    assert(idVar != nullptr);
+    int rank = idVar->GetValInt();
     CObject* obj = CObjectManager::GetInstancePointer()->GetObjectById(rank);
     CAuto* automat = obj->GetAuto();
 
@@ -654,21 +643,9 @@ bool CScriptFunctions::rDestroy(CBotVar* thisclass, CBotVar* var, CBotVar* resul
     exception = 0;
     Error err;
 
-    CBotVar* classVars = thisclass->GetItemList();  // "category"
-    ObjectType thisType = static_cast<ObjectType>(classVars->GetValInt());
-    classVars = classVars->GetNext();  // "position"
-    classVars = classVars->GetNext();  // "orientation"
-    classVars = classVars->GetNext();  // "pitch"
-    classVars = classVars->GetNext();  // "roll"
-    classVars = classVars->GetNext();  // "energyLevel"
-    classVars = classVars->GetNext();  // "shieldLevel"
-    classVars = classVars->GetNext();  // "temperature"
-    classVars = classVars->GetNext();  // "altitude"
-    classVars = classVars->GetNext();  // "lifeTime"
-    classVars = classVars->GetNext();  // "energyCell"
-    classVars = classVars->GetNext();  // "load"
-    classVars = classVars->GetNext();  // "id"
-    int rank = classVars->GetValInt();
+    CBotVar* idVar = thisclass->GetItem("id");
+    assert(idVar != nullptr);
+    int rank = idVar->GetValInt();
     CObject* obj = CObjectManager::GetInstancePointer()->GetObjectById(rank);
     CAuto* automat = obj->GetAuto();
 
@@ -679,7 +656,7 @@ bool CScriptFunctions::rDestroy(CBotVar* thisclass, CBotVar* var, CBotVar* resul
         return false;
     }
 
-    if ( thisType == OBJECT_DESTROYER )
+    if ( obj->GetType() == OBJECT_DESTROYER )
         err = automat->StartAction(0);
     else
         err = ERR_WRONG_OBJ;
@@ -738,21 +715,9 @@ bool CScriptFunctions::rFactory(CBotVar* thisclass, CBotVar* var, CBotVar* resul
     else
         program = "";
 
-    CBotVar* classVars = thisclass->GetItemList();  // "category"
-    ObjectType thisType = static_cast<ObjectType>(classVars->GetValInt());
-    classVars = classVars->GetNext();  // "position"
-    classVars = classVars->GetNext();  // "orientation"
-    classVars = classVars->GetNext();  // "pitch"
-    classVars = classVars->GetNext();  // "roll"
-    classVars = classVars->GetNext();  // "energyLevel"
-    classVars = classVars->GetNext();  // "shieldLevel"
-    classVars = classVars->GetNext();  // "temperature"
-    classVars = classVars->GetNext();  // "altitude"
-    classVars = classVars->GetNext();  // "lifeTime"
-    classVars = classVars->GetNext();  // "energyCell"
-    classVars = classVars->GetNext();  // "load"
-    classVars = classVars->GetNext();  // "id"
-    int rank = classVars->GetValInt();
+    CBotVar* idVar = thisclass->GetItem("id");
+    assert(idVar != nullptr);
+    int rank = idVar->GetValInt();
     CObject* factory = CObjectManager::GetInstancePointer()->GetObjectById(rank);
     if (factory == nullptr)
     {
@@ -769,7 +734,7 @@ bool CScriptFunctions::rFactory(CBotVar* thisclass, CBotVar* var, CBotVar* resul
         return false;
     }
 
-    if ( thisType == OBJECT_FACTORY )
+    if ( factory->GetType() == OBJECT_FACTORY )
     {
         CAutoFactory* automat = static_cast<CAutoFactory*>(factory->GetAuto());
         if (automat == nullptr)
@@ -823,21 +788,9 @@ bool CScriptFunctions::rResearch(CBotVar* thisclass, CBotVar* var, CBotVar* resu
 
     ResearchType type = static_cast<ResearchType>(var->GetValInt());
 
-    CBotVar* classVars = thisclass->GetItemList();  // "category"
-    ObjectType thisType = static_cast<ObjectType>(classVars->GetValInt());
-    classVars = classVars->GetNext();  // "position"
-    classVars = classVars->GetNext();  // "orientation"
-    classVars = classVars->GetNext();  // "pitch"
-    classVars = classVars->GetNext();  // "roll"
-    classVars = classVars->GetNext();  // "energyLevel"
-    classVars = classVars->GetNext();  // "shieldLevel"
-    classVars = classVars->GetNext();  // "temperature"
-    classVars = classVars->GetNext();  // "altitude"
-    classVars = classVars->GetNext();  // "lifeTime"
-    classVars = classVars->GetNext();  // "energyCell"
-    classVars = classVars->GetNext();  // "load"
-    classVars = classVars->GetNext();  // "id"
-    int rank = classVars->GetValInt();
+    CBotVar* idVar = thisclass->GetItem("id");
+    assert(idVar != nullptr);
+    int rank = idVar->GetValInt();
     CObject* center = CObjectManager::GetInstancePointer()->GetObjectById(rank);
     CAuto* automat = center->GetAuto();
 
@@ -848,21 +801,21 @@ bool CScriptFunctions::rResearch(CBotVar* thisclass, CBotVar* var, CBotVar* resu
         return false;
     }
 
-    if ( thisType == OBJECT_RESEARCH ||
-         thisType == OBJECT_LABO      )
+    if ( center->GetType() == OBJECT_RESEARCH ||
+         center->GetType() == OBJECT_LABO      )
     {
         bool ok = false;
         if ( type == RESEARCH_iPAW       ||
              type == RESEARCH_iGUN        )
         {
-            if ( thisType != OBJECT_LABO )
+            if ( center->GetType() != OBJECT_LABO )
                 err = ERR_WRONG_OBJ;
             else
                 ok = true;
         }
         else
         {
-            if ( thisType != OBJECT_RESEARCH )
+            if ( center->GetType() != OBJECT_RESEARCH )
                 err = ERR_WRONG_OBJ;
             else
                 ok = true;
@@ -911,32 +864,20 @@ bool CScriptFunctions::rTakeOff(CBotVar* thisclass, CBotVar* var, CBotVar* resul
 
     exception = 0;
 
-    CBotVar* classVars = thisclass->GetItemList();  // "category"
-    ObjectType thisType = static_cast<ObjectType>(classVars->GetValInt());
-    classVars = classVars->GetNext();  // "position"
-    classVars = classVars->GetNext();  // "orientation"
-    classVars = classVars->GetNext();  // "pitch"
-    classVars = classVars->GetNext();  // "roll"
-    classVars = classVars->GetNext();  // "energyLevel"
-    classVars = classVars->GetNext();  // "shieldLevel"
-    classVars = classVars->GetNext();  // "temperature"
-    classVars = classVars->GetNext();  // "altitude"
-    classVars = classVars->GetNext();  // "lifeTime"
-    classVars = classVars->GetNext();  // "energyCell"
-    classVars = classVars->GetNext();  // "load"
-    classVars = classVars->GetNext();  // "id"
-    int rank = classVars->GetValInt();
-    CObject* center = CObjectManager::GetInstancePointer()->GetObjectById(rank);
-    CAuto* automat = center->GetAuto();
+    CBotVar* idVar = thisclass->GetItem("id");
+    assert(idVar != nullptr);
+    int rank = idVar->GetValInt();
+    CObject* base = CObjectManager::GetInstancePointer()->GetObjectById(rank);
+    CAuto* automat = base->GetAuto();
 
-    if ( pThis->GetTeam() != center->GetTeam() && center->GetTeam() != 0 )
+    if ( pThis->GetTeam() != base->GetTeam() && base->GetTeam() != 0 )
     {
         exception = ERR_ENEMY_OBJECT;
         result->SetValInt(ERR_ENEMY_OBJECT);
         return false;
     }
 
-    if ( thisType == OBJECT_BASE )
+    if ( base->GetType() == OBJECT_BASE )
         err = (static_cast<CAutoBase*>(automat))->TakeOff(false);
     else
         err = ERR_WRONG_OBJ;
@@ -3110,20 +3051,9 @@ bool CScriptFunctions::rCameraFocus(CBotVar* var, CBotVar* result, int& exceptio
 {
     CScript* script = (static_cast<CObject *>(user))->GetRunScript();
 
-    CBotVar* classVars = var->GetItemList();  // "category"
-    classVars = classVars->GetNext();  // "position"
-    classVars = classVars->GetNext();  // "orientation"
-    classVars = classVars->GetNext();  // "pitch"
-    classVars = classVars->GetNext();  // "roll"
-    classVars = classVars->GetNext();  // "energyLevel"
-    classVars = classVars->GetNext();  // "shieldLevel"
-    classVars = classVars->GetNext();  // "temperature"
-    classVars = classVars->GetNext();  // "altitude"
-    classVars = classVars->GetNext();  // "lifeTime"
-    classVars = classVars->GetNext();  // "energyCell"
-    classVars = classVars->GetNext();  // "load"
-    classVars = classVars->GetNext();  // "id"
-    int rank = classVars->GetValInt();
+    CBotVar* idVar = var->GetItem("id");
+    assert(idVar != nullptr);
+    int rank = idVar->GetValInt();
     CObject* object = CObjectManager::GetInstancePointer()->GetObjectById(rank);
 
     script->m_main->SelectObject(object, false);
