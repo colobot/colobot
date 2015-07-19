@@ -24,8 +24,10 @@
 
 #include "common/config.h"
 #include "common/logger.h"
+#include "common/make_unique.h"
 #include "common/pathman.h"
 #include "common/resources/inputstream.h"
+#include "common/resources/outputstream.h"
 #include "common/resources/resourcemanager.h"
 
 #include "graphics/engine/terrain.h"
@@ -2807,50 +2809,6 @@ bool CScriptFunctions::rAbsTime(CBotVar* var, CBotVar* result, int& exception, v
     return true;
 }
 
-
-// Prepares a file name.
-
-void PrepareFilename(CBotString &filename, const char *dir)
-{
-    int         pos;
-
-    pos = filename.ReverseFind('\\');
-    if ( pos > 0 )
-    {
-        filename = filename.Mid(pos+1);  // removes folders
-    }
-
-    pos = filename.ReverseFind('/');
-    if ( pos > 0 )
-    {
-        filename = filename.Mid(pos+1);  // also those with /
-    }
-
-    pos = filename.ReverseFind(':');
-    if ( pos > 0 )
-    {
-        filename = filename.Mid(pos+1);  // also removes the drive letter C:
-    }
-
-    filename = CBotString(dir) + CBotString("\\") + filename;
-}
-
-// Instruction "deletefile(filename)".
-
-bool CScriptFunctions::rDeleteFile(CBotVar* var, CBotVar* result, int& exception, void* user)
-{
-    CBotString  cbs;
-    const char* filename;
-    const char* dir;
-
-    cbs = var->GetValString();
-    dir = CScriptFunctions::m_filesDir.c_str();
-    PrepareFilename(cbs, dir);
-    filename = cbs;
-    //std function that removes file.
-    return (!remove(filename));
-}
-
 // Compilation of the instruction "pendown(color, width)".
 
 CBotTypResult CScriptFunctions::cPenDown(CBotVar* &var, void* user)
@@ -3066,8 +3024,7 @@ bool CScriptFunctions::rCameraFocus(CBotVar* var, CBotVar* result, int& exceptio
 // Static variables
 
 int                                 CScriptFunctions::m_numberOfOpenFiles = 0;
-std::string                         CScriptFunctions::m_filesDir;
-std::unordered_map<int, FILE*>      CScriptFunctions::m_files;
+std::unordered_map<int, std::unique_ptr<std::ios>> CScriptFunctions::m_files;
 int                                 CScriptFunctions::m_nextFile = 1;
 
 
@@ -3076,38 +3033,15 @@ int                                 CScriptFunctions::m_nextFile = 1;
 
 void PrepareFilename(CBotString &filename)
 {
-    int pos = filename.ReverseFind('/');
-    if ( pos > 0 )
-    {
-        filename = filename.Mid(pos+1);  // Remove files with /
-    }
-
-    pos = filename.ReverseFind(':');
-    if ( pos > 0 )
-    {
-        filename = filename.Mid(pos+1);  // also removes the drive letter C:
-    }
-
-    #if PLATFORM_WINDOWS
-    boost::filesystem::create_directories(CSystemUtilsWindows::UTF8_Decode(CScriptFunctions::m_filesDir));
-    #else
-    boost::filesystem::create_directories(CScriptFunctions::m_filesDir);
-    #endif
-    filename = CBotString(CScriptFunctions::m_filesDir.c_str()) + CBotString("/") + filename;
+    CResourceManager::CreateDirectory("files");
+    filename = CBotString("files/") + filename;
     GetLogger()->Debug("CBot accessing file '%s'\n", static_cast<const char*>(filename));
 }
 
 
-// constructor of the class
-// get the filename as a parameter
-
-// execution
-bool CScriptFunctions::rfconstruct (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception, void* user)
+bool CScriptFunctions::FileClassOpenFile(CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception)
 {
     CBotString  mode;
-
-    // accepts no parameters
-    if ( pVar == NULL ) return true;
 
     // must be a character string
     if ( pVar->GetType() != CBotTypString ) { Exception = CBotErrBadString; return false; }
@@ -3131,24 +3065,53 @@ bool CScriptFunctions::rfconstruct (CBotVar* pThis, CBotVar* pVar, CBotVar* pRes
     pVar = pThis->GetItem("filename");
     pVar->SetValString(filename);
 
+    // retrieve the item "handle"
+    pVar = pThis->GetItem("handle");
+    // which must not be initialized
+    if ( pVar->IsDefined()) { Exception = CBotErrFileOpen; return false; }
+
     if ( ! mode.IsEmpty() )
     {
         // opens the requested file
-        FILE*   pFile = fopen( filename, mode );
-        if ( pFile == NULL ) { Exception = CBotErrFileOpen; return false; }
+        bool ok = false;
+        std::unique_ptr<std::ios> file;
+        if (mode == "r")
+        {
+            auto is = MakeUnique<CInputStream>(static_cast<const char*>(filename));
+            ok = is->is_open();
+            file = std::move(is);
+        }
+        else if (mode == "w")
+        {
+            auto os = MakeUnique<COutputStream>(static_cast<const char*>(filename));
+            ok = os->is_open();
+            file = std::move(os);
+        }
+        if (!ok) { Exception = CBotErrFileOpen; return false; }
 
         m_numberOfOpenFiles ++;
 
         int fileHandle = m_nextFile++;
 
-        m_files[fileHandle] = pFile;
+        m_files[fileHandle] = std::move(file);
 
         // save the file handle
         pVar = pThis->GetItem("handle");
         pVar->SetValInt(fileHandle);
     }
-
     return true;
+}
+
+// constructor of the class
+// get the filename as a parameter
+
+// execution
+bool CScriptFunctions::rfconstruct (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception, void* user)
+{
+    // accepts no parameters
+    if ( pVar == NULL ) return true;
+
+    return FileClassOpenFile(pThis, pVar, pResult, Exception);
 }
 
 // compilation
@@ -3190,8 +3153,12 @@ bool CScriptFunctions::rfdestruct (CBotVar* pThis, CBotVar* pVar, CBotVar* pResu
 
     int fileHandle = pVar->GetValInt();
 
-    FILE* pFile = m_files[fileHandle];
-    fclose(pFile);
+    std::ios* file = m_files[fileHandle].get();
+    CInputStream* is = dynamic_cast<CInputStream*>(file);
+    if(is != nullptr) is->close();
+    COutputStream* os = dynamic_cast<COutputStream*>(file);
+    if(os != nullptr) os->close();
+
     m_numberOfOpenFiles--;
 
     pVar->SetInit(CBotVar::InitType::IS_NAN);
@@ -3211,62 +3178,9 @@ bool CScriptFunctions::rfopen (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, 
     // there must be a parameter
     if ( pVar == NULL ) { Exception = CBotErrLowParam; return false; }
 
-    // which must be a character string
-    if ( pVar->GetType() != CBotTypString ) { Exception = CBotErrBadString; return false; }
-
-    // There may be a second parameter
-    if ( pVar->GetNext() != NULL )
-    {
-        // if the first parameter is the file name
-        CBotString  filename = pVar->GetValString();
-        PrepareFilename(filename);
-
-        // saves the file name
-        CBotVar* pVar2 = pThis->GetItem("filename");
-        pVar2->SetValString(filename);
-
-        // next parameter is the mode
-        pVar = pVar -> GetNext();
-    }
-
-    CBotString  mode = pVar->GetValString();
-    if ( mode != "r" && mode != "w" ) { Exception = CBotErrBadParam; return false; }
-
-    // no third parameter
-    if ( pVar->GetNext() != NULL ) { Exception = CBotErrOverParam; return false; }
-
-    // retrieve the item "handle"
-    pVar = pThis->GetItem("handle");
-
-    // which must not be initialized
-    if ( pVar->IsDefined()) { Exception = CBotErrFileOpen; return false; }
-
-    // file contains the name
-    pVar = pThis->GetItem("filename");
-    CBotString  filename = pVar->GetValString();
-
-    PrepareFilename(filename);  // if the name was h.filename attribute = "...";
-
-    // opens the requested file
-    FILE*   pFile = fopen( filename, mode );
-    if ( pFile == NULL )
-    {
-        pResult->SetValInt(false);
-        return true;
-    }
-
-    m_numberOfOpenFiles ++;
-
-    // save file handle
-    int fileHandle = m_nextFile++;
-
-    m_files[fileHandle] = pFile;
-
-    pVar = pThis->GetItem("handle");
-    pVar->SetValInt(fileHandle);
-
-    pResult->SetValInt(true);
-    return true;
+    bool result = FileClassOpenFile(pThis, pVar, pResult, Exception);
+    pResult->SetValInt(result);
+    return result;
 }
 
 // compilation
@@ -3319,7 +3233,13 @@ bool CScriptFunctions::rfclose (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult,
     }
 
     assert(handleIter->second);
-    fclose(handleIter->second);
+
+    std::ios* file = handleIter->second.get();
+    CInputStream* is = dynamic_cast<CInputStream*>(file);
+    if(is != nullptr) is->close();
+    COutputStream* os = dynamic_cast<COutputStream*>(file);
+    if(os != nullptr) os->close();
+
     m_numberOfOpenFiles--;
 
     pVar->SetInit(CBotVar::InitType::IS_NAN);
@@ -3366,10 +3286,13 @@ bool CScriptFunctions::rfwrite (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult,
         return false;
     }
 
-    int res = fputs(param+CBotString("\n"), handleIter->second);
+    COutputStream* os = dynamic_cast<COutputStream*>(handleIter->second.get());
+    if (os == nullptr) { Exception = CBotErrWrite; return false; }
+
+    *os << param << "\n";
 
     // if an error occurs generate an exception
-    if ( res < 0 ) { Exception = CBotErrWrite; return false; }
+    if ( os->bad() ) { Exception = CBotErrWrite; return false; }
 
     return true;
 }
@@ -3412,19 +3335,16 @@ bool CScriptFunctions::rfread(CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, i
         return false;
     }
 
-    char    chaine[2000];
-    int     i;
-    for (i = 0; i < 2000; i++) chaine[i] = 0;
+    CInputStream* is = dynamic_cast<CInputStream*>(handleIter->second.get());
+    if (is == nullptr) { Exception = CBotErrRead; return false; }
 
-    if (fgets(chaine, 1999, handleIter->second) != nullptr)
-    {
-        for (i = 0; i < 2000; i++) if (chaine[i] == '\n') chaine[i] = 0;
-    }
+    std::string line;
+    std::getline(*is, line);
 
     // if an error occurs generate an exception
-    if ( ferror(handleIter->second) ) { Exception = CBotErrRead; return false; }
+    if ( is->bad() ) { Exception = CBotErrRead; return false; }
 
-    pResult->SetValString( chaine );
+    pResult->SetValString( line.c_str() );
 
     return true;
 }
@@ -3461,7 +3381,7 @@ bool CScriptFunctions::rfeof (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, i
         return false;
     }
 
-    pResult->SetValInt( feof(handleIter->second) );
+    pResult->SetValInt( handleIter->second->eof() );
 
     return true;
 }
@@ -3474,6 +3394,18 @@ CBotTypResult CScriptFunctions::cfeof (CBotVar* pThis, CBotVar* &pVar)
 
     // the function returns a boolean result
     return CBotTypResult( CBotTypBoolean );
+}
+
+// Instruction "deletefile(filename)".
+
+bool CScriptFunctions::rDeleteFile(CBotVar* var, CBotVar* result, int& exception, void* user)
+{
+    CBotString  cbs;
+
+    cbs = var->GetValString();
+    PrepareFilename(cbs);
+    std::string filename = static_cast<const char*>(cbs);
+    return CResourceManager::Remove(filename);
 }
 
 // Compilation of class "point".

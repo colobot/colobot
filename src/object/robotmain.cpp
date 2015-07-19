@@ -319,7 +319,6 @@ void CRobotMain::Create()
 
     SelectPlayer(CPlayerProfile::GetLastName());
 
-    CScriptFunctions::m_filesDir = CResourceManager::GetSaveLocation() + "/files"; //TODO: Refactor to PHYSFS while rewriting CBot engine
     CScriptFunctions::Init();
 }
 

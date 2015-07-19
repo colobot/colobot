@@ -30,6 +30,7 @@
 
 #include <string>
 #include <unordered_map>
+#include <memory>
 
 class CObject;
 class CScript;
@@ -178,13 +179,14 @@ private:
 
 public:
     static int m_numberOfOpenFiles;
-    static std::string m_filesDir;
 
 private:
     static bool     Process(CScript* script, CBotVar* result, int &exception);
     static bool     ShouldProcessStop(Error err, int errMode);
     static CExchangePost* FindExchangePost(CObject* object, float power);
 
-    static std::unordered_map<int, FILE*> m_files;
+    static bool     FileClassOpenFile(CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception);
+
+    static std::unordered_map<int, std::unique_ptr<std::ios>> m_files;
     static int m_nextFile;
 };
