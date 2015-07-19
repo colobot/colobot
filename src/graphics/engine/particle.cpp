@@ -3615,7 +3615,7 @@ void CParticle::DrawParticle(int sheet)
             {
                 DrawParticleSphere(i);
             }
-            else if ( m_particle[i].type >= PARTIPLOUF0 )  // cylinder?
+            else if ( m_particle[i].type == PARTIPLOUF0 )  // cylinder?
             {
                 DrawParticleCylinder(i);
             }
