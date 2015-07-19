@@ -577,7 +577,7 @@ void CRobotMain::ChangePhase(Phase phase)
         m_sound->StopAll();
         if (m_endingWinRank == -1)
         {
-            ChangePhase(PHASE_TERM);
+            ChangePhase(PHASE_LEVEL_LIST);
         }
         else
         {
@@ -613,7 +613,7 @@ void CRobotMain::ChangePhase(Phase phase)
             {
                 GetLogger()->Error("An error occured while trying to load win scene\n");
                 GetLogger()->Error("%s\n", e.what());
-                ChangePhase(PHASE_TERM);
+                ChangePhase(PHASE_LEVEL_LIST);
             }
         }
     }
@@ -623,7 +623,7 @@ void CRobotMain::ChangePhase(Phase phase)
         m_sound->StopAll();
         if (m_endingLostRank == -1)
         {
-            ChangePhase(PHASE_TERM);
+            ChangePhase(PHASE_LEVEL_LIST);
         }
         else
         {
@@ -645,7 +645,7 @@ void CRobotMain::ChangePhase(Phase phase)
             {
                 GetLogger()->Error("An error occured while trying to load lost scene\n");
                 GetLogger()->Error("%s\n", e.what());
-                ChangePhase(PHASE_TERM);
+                ChangePhase(PHASE_LEVEL_LIST);
             }
         }
     }
@@ -1049,7 +1049,7 @@ bool CRobotMain::ProcessEvent(Event &event)
                     if (m_winTerminate)
                         ChangePhase(PHASE_INIT);
                     else
-                        ChangePhase(PHASE_TERM);
+                        ChangePhase(PHASE_LEVEL_LIST);
                 }
                 break;
 
@@ -1057,7 +1057,7 @@ bool CRobotMain::ProcessEvent(Event &event)
                 if (m_winTerminate)
                     ChangePhase(PHASE_INIT);
                 else
-                    ChangePhase(PHASE_TERM);
+                    ChangePhase(PHASE_LEVEL_LIST);
 
                 break;
 
@@ -5300,7 +5300,7 @@ void CRobotMain::ResetCreate()
     {
         GetLogger()->Error("An error occured while trying to reset scene\n");
         GetLogger()->Error("%s\n", e.what());
-        ChangePhase(PHASE_TERM);
+        ChangePhase(PHASE_LEVEL_LIST);
     }
 }
 
@@ -5920,7 +5920,7 @@ void CRobotMain::DisplayError(Error err, Math::Vector goal, float height, float 
     m_displayText->DisplayError(err, goal, height, dist, time);
 }
 
-std::string& CRobotMain::GetCustomLevelName(int id)
+std::string CRobotMain::GetCustomLevelName(int id)
 {
     return m_dialog->GetCustomLevelName(id);
 }

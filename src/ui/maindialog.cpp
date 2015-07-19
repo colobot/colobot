@@ -128,7 +128,6 @@ CMainDialog::CMainDialog()
 
     m_phase        = PHASE_NAME;
     m_phaseSetup   = PHASE_SETUPg;
-    m_phaseTerm    = PHASE_TRAINER;
     m_sceneRead[0] = 0;
     m_stackRead[0] = 0;
     m_levelChap    = 0;
@@ -228,10 +227,6 @@ void CMainDialog::ChangePhase(Phase phase)
     m_engine->SetOverFront(false);
     m_engine->SetOverColor(Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f), Gfx::ENG_RSTATE_TCOLOR_BLACK); // TODO: color ok?
 
-    if ( phase == PHASE_TERM )
-    {
-        phase = m_phaseTerm;
-    }
     m_phase = phase;  // copy the info to CRobotMain
     m_phaseTime = 0.0f;
 
@@ -717,19 +712,9 @@ void CMainDialog::ChangePhase(Phase phase)
         }
     }
 
-    if ( m_phase == PHASE_TRAINER ||
-            m_phase == PHASE_DEFI    ||
-            m_phase == PHASE_MISSION ||
-            m_phase == PHASE_FREE    ||
-            m_phase == PHASE_USER    )
+    if ( m_phase == PHASE_LEVEL_LIST )
     {
-        if ( m_phase == PHASE_TRAINER )  m_category = LevelCategory::Exercises;
-        if ( m_phase == PHASE_DEFI    )  m_category = LevelCategory::Challenges;
-        if ( m_phase == PHASE_MISSION )  m_category = LevelCategory::Missions;
-        if ( m_phase == PHASE_FREE    )  m_category = LevelCategory::FreeGame;
-        if ( m_phase == PHASE_USER    )  m_category = LevelCategory::CustomLevels;
-
-        if ( m_phase == PHASE_FREE )
+        if ( m_category == LevelCategory::FreeGame )
         {
             m_accessChap = m_main->GetPlayerProfile()->GetChapPassed(LevelCategory::Missions);
         }
@@ -740,11 +725,11 @@ void CMainDialog::ChangePhase(Phase phase)
         ddim.y = 0.80f;
         pw = m_interface->CreateWindows(pos, ddim, 12, EVENT_WINDOW5);
         pw->SetClosable(true);
-        if ( m_phase == PHASE_TRAINER )  res = RT_TITLE_TRAINER;
-        if ( m_phase == PHASE_DEFI    )  res = RT_TITLE_DEFI;
-        if ( m_phase == PHASE_MISSION )  res = RT_TITLE_MISSION;
-        if ( m_phase == PHASE_FREE    )  res = RT_TITLE_FREE;
-        if ( m_phase == PHASE_USER    )  res = RT_TITLE_USER;
+        if ( m_category == LevelCategory::Exercises    )  res = RT_TITLE_TRAINER;
+        if ( m_category == LevelCategory::Challenges   )  res = RT_TITLE_DEFI;
+        if ( m_category == LevelCategory::Missions     )  res = RT_TITLE_MISSION;
+        if ( m_category == LevelCategory::FreeGame     )  res = RT_TITLE_FREE;
+        if ( m_category == LevelCategory::CustomLevels )  res = RT_TITLE_USER;
         GetResource(RES_TEXT, res, name);
         pw->SetName(name);
 
@@ -764,11 +749,11 @@ void CMainDialog::ChangePhase(Phase phase)
         pos.y = oy+sy*10.5f;
         ddim.x = dim.x*7.5f;
         ddim.y = dim.y*0.6f;
-        if ( m_phase == PHASE_TRAINER )  res = RT_PLAY_CHAPt;
-        if ( m_phase == PHASE_DEFI    )  res = RT_PLAY_CHAPd;
-        if ( m_phase == PHASE_MISSION )  res = RT_PLAY_CHAPm;
-        if ( m_phase == PHASE_FREE    )  res = RT_PLAY_CHAPf;
-        if ( m_phase == PHASE_USER    )  res = RT_PLAY_CHAPu;
+        if ( m_category == LevelCategory::Exercises    )  res = RT_PLAY_CHAPt;
+        if ( m_category == LevelCategory::Challenges   )  res = RT_PLAY_CHAPd;
+        if ( m_category == LevelCategory::Missions     )  res = RT_PLAY_CHAPm;
+        if ( m_category == LevelCategory::FreeGame     )  res = RT_PLAY_CHAPf;
+        if ( m_category == LevelCategory::CustomLevels )  res = RT_PLAY_CHAPu;
         GetResource(RES_TEXT, res, name);
         pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL11, name);
         pl->SetTextAlign(Gfx::TEXT_ALIGN_LEFT);
@@ -780,18 +765,18 @@ void CMainDialog::ChangePhase(Phase phase)
         pli->SetState(STATE_SHADOW);
         m_chap[m_category] = m_main->GetPlayerProfile()->GetSelectedChap(m_category)-1;
         UpdateSceneChap(m_chap[m_category]);
-        if ( m_phase != PHASE_USER )  pli->SetState(STATE_EXTEND);
+        if ( m_category != LevelCategory::CustomLevels )  pli->SetState(STATE_EXTEND);
 
         // Displays a list of missions:
         pos.x = ox+sx*9.5f;
         pos.y = oy+sy*10.5f;
         ddim.x = dim.x*7.5f;
         ddim.y = dim.y*0.6f;
-        if ( m_phase == PHASE_TRAINER )  res = RT_PLAY_LISTt;
-        if ( m_phase == PHASE_DEFI    )  res = RT_PLAY_LISTd;
-        if ( m_phase == PHASE_MISSION )  res = RT_PLAY_LISTm;
-        if ( m_phase == PHASE_FREE    )  res = RT_PLAY_LISTf;
-        if ( m_phase == PHASE_USER    )  res = RT_PLAY_LISTu;
+        if ( m_category == LevelCategory::Exercises    )  res = RT_PLAY_LISTt;
+        if ( m_category == LevelCategory::Challenges   )  res = RT_PLAY_LISTd;
+        if ( m_category == LevelCategory::Missions     )  res = RT_PLAY_LISTm;
+        if ( m_category == LevelCategory::FreeGame     )  res = RT_PLAY_LISTf;
+        if ( m_category == LevelCategory::CustomLevels )  res = RT_PLAY_LISTu;
         GetResource(RES_TEXT, res, name);
         pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL12, name);
         pl->SetTextAlign(Gfx::TEXT_ALIGN_LEFT);
@@ -803,7 +788,7 @@ void CMainDialog::ChangePhase(Phase phase)
         pli->SetState(STATE_SHADOW);
         m_sel[m_category] = m_main->GetPlayerProfile()->GetSelectedRank(m_category)-1;
         UpdateSceneList(m_chap[m_category], m_sel[m_category]);
-        if ( m_phase != PHASE_USER )  pli->SetState(STATE_EXTEND);
+        if ( m_category != LevelCategory::CustomLevels )  pli->SetState(STATE_EXTEND);
         pos = pli->GetPos();
         ddim = pli->GetDim();
 
@@ -827,8 +812,8 @@ void CMainDialog::ChangePhase(Phase phase)
         pe->SetHighlightCap(false);
 
         // Button displays the "soluce":
-        if ( m_phase != PHASE_TRAINER &&
-                m_phase != PHASE_FREE    )
+        if ( m_category != LevelCategory::Exercises &&
+             m_category != LevelCategory::FreeGame   )
         {
             pos.x = ox+sx*9.5f;
             pos.y = oy+sy*5.8f;
@@ -842,9 +827,9 @@ void CMainDialog::ChangePhase(Phase phase)
 
         UpdateSceneResume(m_chap[m_category]+1, m_sel[m_category]+1);
 
-        if ( m_phase == PHASE_MISSION ||
-                m_phase == PHASE_FREE    ||
-                m_phase == PHASE_USER    )
+        if ( m_category == LevelCategory::Missions    ||
+             m_category == LevelCategory::FreeGame    ||
+             m_category == LevelCategory::CustomLevels )
         {
             pos.x = ox+sx*9.5f;
             pos.y = oy+sy*2;
@@ -1725,11 +1710,7 @@ void CMainDialog::ChangePhase(Phase phase)
 
     if ( m_phase == PHASE_INIT    ||
             m_phase == PHASE_NAME    ||
-            m_phase == PHASE_TRAINER ||
-            m_phase == PHASE_DEFI    ||
-            m_phase == PHASE_MISSION ||
-            m_phase == PHASE_FREE    ||
-            m_phase == PHASE_USER    ||
+            m_phase == PHASE_LEVEL_LIST ||
             m_phase == PHASE_SETUPd  ||
             m_phase == PHASE_SETUPg  ||
             m_phase == PHASE_SETUPp  ||
@@ -1910,7 +1891,7 @@ bool CMainDialog::EventProcess(const Event &event)
                 }
                 else
                 {
-                    m_main->ChangePhase(PHASE_TERM);
+                    m_main->ChangePhase(PHASE_LEVEL_LIST);
                 }
             }
         }
@@ -1981,23 +1962,28 @@ bool CMainDialog::EventProcess(const Event &event)
                 break;
 
             case EVENT_INTERFACE_TRAINER:
-                m_main->ChangePhase(PHASE_TRAINER);
+                m_category = LevelCategory::Exercises;
+                m_main->ChangePhase(PHASE_LEVEL_LIST);
                 break;
 
             case EVENT_INTERFACE_DEFI:
-                m_main->ChangePhase(PHASE_DEFI);
+                m_category = LevelCategory::Challenges;
+                m_main->ChangePhase(PHASE_LEVEL_LIST);
                 break;
 
             case EVENT_INTERFACE_MISSION:
-                m_main->ChangePhase(PHASE_MISSION);
+                m_category = LevelCategory::Missions;
+                m_main->ChangePhase(PHASE_LEVEL_LIST);
                 break;
 
             case EVENT_INTERFACE_FREE:
-                m_main->ChangePhase(PHASE_FREE);
+                m_category = LevelCategory::FreeGame;
+                m_main->ChangePhase(PHASE_LEVEL_LIST);
                 break;
 
             case EVENT_INTERFACE_USER:
-                m_main->ChangePhase(PHASE_USER);
+                m_category = LevelCategory::CustomLevels;
+                m_main->ChangePhase(PHASE_LEVEL_LIST);
                 break;
 
             case EVENT_INTERFACE_SETUP:
@@ -2195,11 +2181,7 @@ bool CMainDialog::EventProcess(const Event &event)
         return false;
     }
 
-    if ( m_phase == PHASE_TRAINER ||
-            m_phase == PHASE_DEFI    ||
-            m_phase == PHASE_MISSION ||
-            m_phase == PHASE_FREE    ||
-            m_phase == PHASE_USER    )
+    if ( m_phase == PHASE_LEVEL_LIST    )
     {
         pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
         if ( pw == 0 )  return false;
@@ -2211,14 +2193,7 @@ bool CMainDialog::EventProcess(const Event &event)
             m_main->ChangePhase(PHASE_INIT);
             return false;
         }
-    }
 
-    if ( m_phase == PHASE_TRAINER ||
-            m_phase == PHASE_DEFI    ||
-            m_phase == PHASE_MISSION ||
-            m_phase == PHASE_FREE    ||
-            m_phase == PHASE_USER    )
-    {
         switch( event.type )
         {
             case EVENT_INTERFACE_CHAP:
@@ -2248,12 +2223,10 @@ bool CMainDialog::EventProcess(const Event &event)
             case EVENT_INTERFACE_PLAY:
                 m_levelChap = m_chap[m_category]+1;
                 m_levelRank = m_sel[m_category]+1;
-                m_phaseTerm = m_phase;
                 m_main->ChangePhase(PHASE_LOADING);
                 break;
 
             case EVENT_INTERFACE_READ:
-                m_phaseTerm = m_phase;
                 m_main->ChangePhase(PHASE_READ);
                 break;
 
@@ -2689,7 +2662,7 @@ bool CMainDialog::EventProcess(const Event &event)
                 event.type == EVENT_INTERFACE_BACK   ||
                 (event.type == EVENT_KEY_DOWN && event.key.key == KEY(ESCAPE)) )
         {
-            ChangePhase(m_phaseTerm);
+            ChangePhase(PHASE_LEVEL_LIST);
             return false;
         }
 
@@ -2867,11 +2840,8 @@ void CMainDialog::GlintMove()
         }
     }
 
-    if ( m_phase == PHASE_NAME    ||
-            m_phase == PHASE_TRAINER ||
-            m_phase == PHASE_MISSION ||
-            m_phase == PHASE_FREE    ||
-            m_phase == PHASE_USER    )
+    if ( m_phase == PHASE_NAME       ||
+         m_phase == PHASE_LEVEL_LIST  )
     {
         pg = static_cast<CGroup*>(pw->SearchControl(EVENT_INTERFACE_GLINTl));
         if ( pg != 0 )
@@ -3091,11 +3061,7 @@ void CMainDialog::FrameParticle(float rTime)
         pGlint = glintPosInit;
     }
     else if ( m_phase == PHASE_NAME    ||
-            m_phase == PHASE_TRAINER ||
-            m_phase == PHASE_DEFI    ||
-            m_phase == PHASE_MISSION ||
-            m_phase == PHASE_FREE    ||
-            m_phase == PHASE_USER    ||
+            m_phase == PHASE_LEVEL_LIST ||
             m_phase == PHASE_SETUPd  ||
             m_phase == PHASE_SETUPg  ||
             m_phase == PHASE_SETUPp  ||
@@ -3298,8 +3264,7 @@ void CMainDialog::NiceParticle(Math::Point mouse, bool bPress)
     if ( !m_bRain )  return;
     if ( (m_phase == PHASE_SIMUL ||
                 m_phase == PHASE_WIN   ||
-                m_phase == PHASE_LOST  ||
-                m_phase == PHASE_MODEL ) &&
+                m_phase == PHASE_LOST  ) &&
             !m_bDialog             )  return;
 
     if ( bPress )
@@ -4124,6 +4089,7 @@ bool CMainDialog::IOReadScene()
     {
         m_levelChap = 0;
         std::string dir = line->GetParam("dir")->AsString();
+        UpdateCustomLevelList();
         for (unsigned int i = 0; i < m_customLevelList.size(); i++)
         {
             if (m_customLevelList[i] == dir)
@@ -4164,11 +4130,7 @@ bool CMainDialog::IOReadScene()
 
 void CMainDialog::AllMissionUpdate()
 {
-    if ( m_phase == PHASE_TRAINER ||
-         m_phase == PHASE_DEFI    ||
-         m_phase == PHASE_MISSION ||
-         m_phase == PHASE_FREE    ||
-         m_phase == PHASE_USER    )
+    if ( m_phase == PHASE_LEVEL_LIST )
     {
         UpdateSceneChap(m_chap[m_category]);
         UpdateSceneList(m_chap[m_category], m_sel[m_category]);
@@ -4196,11 +4158,9 @@ void CMainDialog::UpdateSceneChap(int &chap)
     pl->Flush();
 
     unsigned int j;
-    if ( m_phase == PHASE_USER )
+    if ( m_category == LevelCategory::CustomLevels )
     {
-        auto userLevelDirs = CResourceManager::ListDirectories("levels/custom/");
-        std::sort(userLevelDirs.begin(), userLevelDirs.end());
-        m_customLevelList = userLevelDirs;
+        UpdateCustomLevelList();
 
         for ( j=0 ; j<m_customLevelList.size() ; j++ )
         {
@@ -4240,13 +4200,13 @@ void CMainDialog::UpdateSceneChap(int &chap)
             pl->SetCheck(j, bPassed);
             pl->SetEnable(j, true);
 
-            if ( m_phase == PHASE_MISSION && !m_main->GetShowAll() && !bPassed )
+            if ( m_category == LevelCategory::Missions && !m_main->GetShowAll() && !bPassed )
             {
                 j ++;
                 break;
             }
 
-            if ( m_phase == PHASE_FREE && j == m_accessChap )
+            if ( m_category == LevelCategory::FreeGame && j == m_accessChap )
             {
                 j ++;
                 break;
@@ -4280,8 +4240,6 @@ void CMainDialog::UpdateSceneList(int chap, int &sel)
 
     pl->Flush();
 
-    if (chap < 0) return;
-
     bool readAll = true;
     for ( j=0 ; j<MAXSCENE ; j++ )
     {
@@ -4311,7 +4269,7 @@ void CMainDialog::UpdateSceneList(int chap, int &sel)
         pl->SetCheck(j, bPassed);
         pl->SetEnable(j, true);
 
-        if ( m_phase == PHASE_MISSION && !m_main->GetShowAll() && !bPassed )
+        if ( m_category == LevelCategory::Missions && !m_main->GetShowAll() && !bPassed )
         {
             readAll = false;
         }
@@ -4340,11 +4298,7 @@ void CMainDialog::ShowSoluceUpdate()
     CEdit*      pe;
     CCheck*     pc;
 
-    if ( m_phase == PHASE_TRAINER ||
-         m_phase == PHASE_DEFI    ||
-         m_phase == PHASE_MISSION ||
-         m_phase == PHASE_FREE    ||
-         m_phase == PHASE_USER    )
+    if ( m_phase == PHASE_LEVEL_LIST )
     {
         m_bSceneSoluce = false;
 
@@ -4405,7 +4359,7 @@ void CMainDialog::UpdateSceneResume(int chap, int rank)
         }
     }
 
-    if(chap == 0) return;
+    if(chap == 0 || rank == 0) return;
 
     try
     {
@@ -4911,7 +4865,7 @@ void CMainDialog::SetupMemorize()
     CInput::GetInstancePointer()->SaveKeyBindings();
 
     GetConfigFile().SetIntProperty("Setup", "DeleteGamer", m_bDeleteGamer);
-    
+
     GetConfigFile().Save();
 }
 
@@ -5882,8 +5836,17 @@ bool CMainDialog::NextMission()
     return true;
 }
 
-std::string& CMainDialog::GetCustomLevelName(int id)
+//TODO: Userlevel management should be probably moved out of CMainDialog, along with the listing of normal missions
+void CMainDialog::UpdateCustomLevelList()
 {
+    auto userLevelDirs = CResourceManager::ListDirectories("levels/custom/");
+    std::sort(userLevelDirs.begin(), userLevelDirs.end());
+    m_customLevelList = userLevelDirs;
+}
+
+std::string CMainDialog::GetCustomLevelName(int id)
+{
+    if(id < 1 || id > m_customLevelList.size()) return "";
     return m_customLevelList[id-1];
 }
 

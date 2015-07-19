@@ -44,17 +44,11 @@
 enum Phase
 {
     PHASE_INIT,
-    PHASE_TERM,
     PHASE_NAME,
     PHASE_PERSO,
-    PHASE_TRAINER,
-    PHASE_DEFI,
-    PHASE_MISSION,
-    PHASE_FREE,
-    PHASE_USER,
+    PHASE_LEVEL_LIST,
     PHASE_LOADING,
     PHASE_SIMUL,
-    PHASE_MODEL,
     PHASE_SETUPd,
     PHASE_SETUPg,
     PHASE_SETUPp,
@@ -314,7 +308,7 @@ public:
     void        DisplayError(Error err, CObject* pObj, float time=10.0f);
     void        DisplayError(Error err, Math::Vector goal, float height=15.0f, float dist=60.0f, float time=10.0f);
 
-    std::string& GetCustomLevelName(int id);
+    std::string GetCustomLevelName(int id);
 
     void        StartMissionTimer();
 

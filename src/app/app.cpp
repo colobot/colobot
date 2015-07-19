@@ -43,6 +43,8 @@
     #include "sound/oalsound/alsound.h"
 #endif
 
+#include "ui/maindialog.h"
+
 #include <boost/filesystem.hpp>
 #include <boost/tokenizer.hpp>
 
@@ -586,7 +588,7 @@ bool CApplication::Create()
         m_controller->StartApp();
     else
     {
-        m_controller->GetRobotMain()->ChangePhase(PHASE_USER); // To load userlevel list - TODO: this is ugly
+        m_controller->GetMainDialog()->UpdateCustomLevelList(); //TODO: This should be moved out of CMainDialog
         m_controller->GetRobotMain()->SetExitAfterMission(true);
         m_controller->StartGame(m_runSceneCategory, m_runSceneRank/100, m_runSceneRank%100);
     }

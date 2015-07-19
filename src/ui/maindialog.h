@@ -103,7 +103,8 @@ public:
     void    AllMissionUpdate();
     void    ShowSoluceUpdate();
 
-    std::string& GetCustomLevelName(int id);
+    void    UpdateCustomLevelList();
+    std::string GetCustomLevelName(int id);
 
     void    MakeSaveScreenshot(const std::string& name);
 
@@ -155,7 +156,6 @@ protected:
 
     Phase           m_phase;            // copy of CRobotMain
     Phase           m_phaseSetup;           // tab selected
-    Phase           m_phaseTerm;            // phase trainer/scene/proto
     float           m_phaseTime;
 
     int             m_apperanceTab;         // perso: tab selected
