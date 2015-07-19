@@ -202,6 +202,10 @@ option(GLEW_STATIC "Link statically with GLEW" OFF)
 # Sometimes helpful if there is a different version of gtest installed on system vs bundled
 option(FORCE_BUNDLED_GTEST "Force the use of bundled gtest" OFF)
 
+# This is for use with colobot-lint tool
+option(COLOBOT_LINT_BUILD "Generate some additional CMake targets for use with colobot-lint" OFF)
+
+
 # Default build type if not given is debug
 if(NOT DEFINED CMAKE_BUILD_TYPE)
     message(STATUS "Build type not specified - assuming debug")
@@ -267,11 +271,11 @@ include("${colobot_SOURCE_DIR}/cmake/mxe.cmake")
 ##
 include("${colobot_SOURCE_DIR}/cmake/msys.cmake")
 
-
 ##
-# Additional settings for colobot-lint
+# Additional functions for colobot-lint
 ##
 include("${colobot_SOURCE_DIR}/cmake/colobot-lint.cmake")
+
 
 ##
 # MSVC specific settings

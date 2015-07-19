@@ -306,3 +306,7 @@ install(TARGETS colobot RUNTIME DESTINATION ${COLOBOT_INSTALL_BIN_DIR})
 if(NOT CBOT_STATIC)
     set_target_properties(colobot PROPERTIES INSTALL_RPATH ${COLOBOT_INSTALL_LIB_DIR})
 endif()
+
+if(COLOBOT_LINT_BUILD)
+    add_fake_header_sources("src")
+endif()
