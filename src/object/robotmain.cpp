@@ -163,7 +163,7 @@ CRobotMain::CRobotMain(CController* controller)
     m_missionTimerStarted = false;
     m_missionTimer = 0.0f;
 
-    m_phase       = PHASE_NAME;
+    m_phase       = PHASE_PLAYER_SELECT;
     m_cameraRank  = -1;
     m_visitLast   = EVENT_NULL;
     m_visitObject = 0;
@@ -527,14 +527,14 @@ void CRobotMain::ChangePhase(Phase phase)
     float sx = (32.0f+2.0f)/640.0f;
     float sy = (32.0f+2.0f)/480.0f;
 
-    if (m_phase != PHASE_PERSO)
+    if (m_phase != PHASE_APPERANCE)
     {
         m_engine->SetDrawWorld(true);
         m_engine->SetDrawFront(false);
         m_fixScene = false;
     }
 
-    if (m_phase == PHASE_INIT)
+    if (m_phase == PHASE_MAIN_MENU)
     {
         m_engine->DeleteTexture("generic.png");
     }
@@ -568,7 +568,7 @@ void CRobotMain::ChangePhase(Phase phase)
         {
             GetLogger()->Error("An error occured while trying to load a level\n");
             GetLogger()->Error("%s\n", e.what());
-            ChangePhase(PHASE_INIT);
+            ChangePhase(PHASE_MAIN_MENU);
         }
     }
 
@@ -689,7 +689,7 @@ bool CRobotMain::ProcessEvent(Event &event)
     if (event.type == EVENT_KEY_DOWN &&
         event.key.key == KEY(BACKQUOTE))  // Pause ?
     {
-        if (m_phase != PHASE_NAME &&
+        if (m_phase != PHASE_PLAYER_SELECT &&
            !m_movie->IsExist()   &&
            !m_movieLock && !m_editLock)
         {
@@ -1032,7 +1032,7 @@ bool CRobotMain::ProcessEvent(Event &event)
         return false;
     }
 
-    if (m_phase == PHASE_PERSO)
+    if (m_phase == PHASE_APPERANCE)
         EventObject(event);
 
     if (m_phase == PHASE_WIN  ||
@@ -1047,7 +1047,7 @@ bool CRobotMain::ProcessEvent(Event &event)
                     event.key.key == KEY(RETURN))
                 {
                     if (m_winTerminate)
-                        ChangePhase(PHASE_INIT);
+                        ChangePhase(PHASE_MAIN_MENU);
                     else
                         ChangePhase(PHASE_LEVEL_LIST);
                 }
@@ -1055,7 +1055,7 @@ bool CRobotMain::ProcessEvent(Event &event)
 
             case EVENT_BUTTON_OK:
                 if (m_winTerminate)
-                    ChangePhase(PHASE_INIT);
+                    ChangePhase(PHASE_MAIN_MENU);
                 else
                     ChangePhase(PHASE_LEVEL_LIST);
 
@@ -2226,7 +2226,7 @@ void CRobotMain::HiliteClear()
 //! Highlights the object with the mouse hovers over
 void CRobotMain::HiliteObject(Math::Point pos)
 {
-    if (m_fixScene && m_phase != PHASE_PERSO) return;
+    if (m_fixScene && m_phase != PHASE_APPERANCE) return;
     if (m_movieLock) return;
     if (m_movie->IsExist()) return;
     if (m_app->GetMouseMode() == MOUSE_NONE) return;
@@ -2285,7 +2285,7 @@ void CRobotMain::HiliteObject(Math::Point pos)
 //! Highlights the object with the mouse hovers over
 void CRobotMain::HiliteFrame(float rTime)
 {
-    if (m_fixScene && m_phase != PHASE_PERSO) return;
+    if (m_fixScene && m_phase != PHASE_APPERANCE) return;
     if (m_movieLock) return;
     if (m_movie->IsExist()) return;
 
@@ -2638,7 +2638,7 @@ bool CRobotMain::EventFrame(const Event &event)
         if (m_engine->GetFog())
             m_camera->SetOverBaseColor(m_particle->GetFogColor(m_engine->GetEyePt()));
     }
-    if (m_phase == PHASE_PERSO ||
+    if (m_phase == PHASE_APPERANCE ||
         m_phase == PHASE_WIN   ||
         m_phase == PHASE_LOST)
     {
