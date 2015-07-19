@@ -5110,6 +5110,8 @@ CObject* CRobotMain::IOReadScene(const char *filename, const char *filecbot)
 
     m_base = nullptr;
 
+    CObject* cargo   = nullptr;
+    CObject* power  = nullptr;
     CObject* sel    = nullptr;
     int objRank = 0;
     for (auto& line : levelParser.GetLines())
@@ -5129,11 +5131,9 @@ CObject* CRobotMain::IOReadScene(const char *filename, const char *filecbot)
             m_lightning->SetStatus(sleep, delay, magnetic, progress);
         }
 
-        CObject* cargo = nullptr;
         if (line->GetCommand() == "CreateFret")
             cargo = IOReadObject(line.get(), filename, -1);
 
-        CObject* power = nullptr;
         if (line->GetCommand() == "CreatePower")
             power = IOReadObject(line.get(), filename, -1);
 
@@ -5161,6 +5161,8 @@ CObject* CRobotMain::IOReadScene(const char *filename, const char *filecbot)
                 assert(power->Implements(ObjectInterfaceType::Transportable));
                 dynamic_cast<CTransportableObject*>(power)->SetTransporter(obj);
             }
+            cargo  = nullptr;
+            power = nullptr;
         }
     }
 
