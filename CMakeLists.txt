@@ -269,6 +269,11 @@ include("${colobot_SOURCE_DIR}/cmake/msys.cmake")
 
 
 ##
+# Additional settings for colobot-lint
+##
+include("${colobot_SOURCE_DIR}/cmake/colobot-lint.cmake")
+
+##
 # MSVC specific settings
 ##
 set(WINGETOPT 0)
