@@ -42,12 +42,12 @@ struct PlayerApperance
     void DefPerso();
 };
 
-class CPlayerProgress
+class CPlayerProfile
 {
 public:
-    CPlayerProgress(std::string playerName);
+    CPlayerProfile(std::string playerName);
     static std::string GetLastName();
-    ~CPlayerProgress();
+    ~CPlayerProfile();
 
     bool Delete();
 

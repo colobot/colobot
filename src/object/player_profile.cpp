@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see http://gnu.org/licenses
  */
-#include "object/player_progress.h"
+#include "object/player_profile.h"
 
 #include "common/logger.h"
 #include "common/make_unique.h"
@@ -72,7 +72,7 @@ void PlayerApperance::DefPerso()
     this->colorBand.a  = 0.0f;
 }
 
-CPlayerProgress::CPlayerProgress(std::string playerName)
+CPlayerProfile::CPlayerProfile(std::string playerName)
 {
     m_playerName = playerName;
     GetConfigFile().SetStringProperty("Gamer", "LastName", m_playerName);
@@ -92,7 +92,7 @@ CPlayerProgress::CPlayerProgress(std::string playerName)
     LoadApperance();
 }
 
-std::string CPlayerProgress::GetLastName()
+std::string CPlayerProfile::GetLastName()
 {
     std::string name;
 
@@ -102,47 +102,47 @@ std::string CPlayerProgress::GetLastName()
     return name;
 }
 
-CPlayerProgress::~CPlayerProgress()
+CPlayerProfile::~CPlayerProfile()
 {
 
 }
 
-bool CPlayerProgress::Delete()
+bool CPlayerProfile::Delete()
 {
     return CResourceManager::RemoveDirectory(GetSaveDir());
 }
 
-std::string CPlayerProgress::GetName()
+std::string CPlayerProfile::GetName()
 {
     return m_playerName;
 }
 
-std::string CPlayerProgress::GetSaveDir()
+std::string CPlayerProfile::GetSaveDir()
 {
     return std::string(CRobotMain::GetInstancePointer()->GetSavegameDir()) + "/" + m_playerName;
 }
 
-std::string CPlayerProgress::GetSaveFile(std::string filename)
+std::string CPlayerProfile::GetSaveFile(std::string filename)
 {
     return GetSaveDir() + "/" + filename;
 }
 
 // FINISHED LEVELS
 
-void CPlayerProgress::IncrementLevelTryCount(LevelCategory cat, int chap, int rank)
+void CPlayerProfile::IncrementLevelTryCount(LevelCategory cat, int chap, int rank)
 {
     m_levelInfo[cat][chap][rank].numTry ++;
     SaveFinishedLevels(cat);
 }
 
-int CPlayerProgress::GetLevelTryCount(LevelCategory cat, int chap, int rank)
+int CPlayerProfile::GetLevelTryCount(LevelCategory cat, int chap, int rank)
 {
     if(!m_levelInfoLoaded[cat])
         LoadFinishedLevels(cat);
     return m_levelInfo[cat][chap][rank].numTry;
 }
 
-void CPlayerProgress::SetLevelPassed(LevelCategory cat, int chap, int rank, bool bPassed)
+void CPlayerProfile::SetLevelPassed(LevelCategory cat, int chap, int rank, bool bPassed)
 {
     m_levelInfo[cat][chap][rank].bPassed = bPassed;
     SaveFinishedLevels(cat);
@@ -154,14 +154,14 @@ void CPlayerProgress::SetLevelPassed(LevelCategory cat, int chap, int rank, bool
     }
 }
 
-bool CPlayerProgress::GetLevelPassed(LevelCategory cat, int chap, int rank)
+bool CPlayerProfile::GetLevelPassed(LevelCategory cat, int chap, int rank)
 {
     if(!m_levelInfoLoaded[cat])
         LoadFinishedLevels(cat);
     return m_levelInfo[cat][chap][rank].bPassed;
 }
 
-int CPlayerProgress::GetChapPassed(LevelCategory cat)
+int CPlayerProfile::GetChapPassed(LevelCategory cat)
 {
     if ( CRobotMain::GetInstancePointer()->GetShowAll() )  return MAXSCENE;
 
@@ -175,13 +175,13 @@ int CPlayerProgress::GetChapPassed(LevelCategory cat)
     return MAXSCENE;
 }
 
-void CPlayerProgress::SetSelectedChap(LevelCategory category, int chap)
+void CPlayerProfile::SetSelectedChap(LevelCategory category, int chap)
 {
     m_selectChap[category] = chap;
     SaveFinishedLevels(category);
 }
 
-int CPlayerProgress::GetSelectedChap(LevelCategory category)
+int CPlayerProfile::GetSelectedChap(LevelCategory category)
 {
     if(!m_levelInfoLoaded[category])
         LoadFinishedLevels(category);
@@ -189,13 +189,13 @@ int CPlayerProgress::GetSelectedChap(LevelCategory category)
     return m_selectChap[category];
 }
 
-void CPlayerProgress::SetSelectedRank(LevelCategory category, int rank)
+void CPlayerProfile::SetSelectedRank(LevelCategory category, int rank)
 {
     m_selectRank[category] = rank;
     SaveFinishedLevels(category);
 }
 
-int CPlayerProgress::GetSelectedRank(LevelCategory category)
+int CPlayerProfile::GetSelectedRank(LevelCategory category)
 {
     if(!m_levelInfoLoaded[category])
         LoadFinishedLevels(category);
@@ -203,7 +203,7 @@ int CPlayerProgress::GetSelectedRank(LevelCategory category)
     return m_selectRank[category];
 }
 
-void CPlayerProgress::LoadFinishedLevels(LevelCategory category)
+void CPlayerProfile::LoadFinishedLevels(LevelCategory category)
 {
     m_levelInfo[category].clear();
     std::string filename = GetSaveFile(GetLevelCategoryDir(category)+".gam");
@@ -246,7 +246,7 @@ void CPlayerProgress::LoadFinishedLevels(LevelCategory category)
     m_levelInfoLoaded[category] = true;
 }
 
-void CPlayerProgress::SaveFinishedLevels(LevelCategory category)
+void CPlayerProfile::SaveFinishedLevels(LevelCategory category)
 {
     std::string filename = GetSaveFile(GetLevelCategoryDir(category)+".gam");
     COutputStream file;
@@ -276,7 +276,7 @@ void CPlayerProgress::SaveFinishedLevels(LevelCategory category)
 
 // FREE GAME UNLOCK
 
-int CPlayerProgress::GetFreeGameBuildUnlock()
+int CPlayerProfile::GetFreeGameBuildUnlock()
 {
     if(!m_freegameLoaded)
         LoadFreeGameUnlock();
@@ -284,26 +284,26 @@ int CPlayerProgress::GetFreeGameBuildUnlock()
     return m_freegameBuild;
 }
 
-void CPlayerProgress::SetFreeGameBuildUnlock(int freeBuild)
+void CPlayerProfile::SetFreeGameBuildUnlock(int freeBuild)
 {
     m_freegameBuild = freeBuild;
     SaveFreeGameUnlock();
 }
 
-int CPlayerProgress::GetFreeGameResearchUnlock()
+int CPlayerProfile::GetFreeGameResearchUnlock()
 {
     if(!m_freegameLoaded)
         LoadFreeGameUnlock();
     return m_freegameResearch;
 }
 
-void CPlayerProgress::SetFreeGameResearchUnlock(int freeResearch)
+void CPlayerProfile::SetFreeGameResearchUnlock(int freeResearch)
 {
     m_freegameResearch = freeResearch;
     SaveFreeGameUnlock();
 }
 
-void CPlayerProgress::LoadFreeGameUnlock()
+void CPlayerProfile::LoadFreeGameUnlock()
 {
     m_freegameResearch = 0;
     m_freegameBuild    = 0;
@@ -330,7 +330,7 @@ void CPlayerProgress::LoadFreeGameUnlock()
     m_freegameLoaded = false;
 }
 
-void CPlayerProgress::SaveFreeGameUnlock()
+void CPlayerProfile::SaveFreeGameUnlock()
 {
     std::string filename = GetSaveFile("research.gam");
     COutputStream file;
@@ -348,12 +348,12 @@ void CPlayerProgress::SaveFreeGameUnlock()
 
 // APPERANCE
 
-PlayerApperance& CPlayerProgress::GetApperance()
+PlayerApperance& CPlayerProfile::GetApperance()
 {
     return m_apperance;
 }
 
-void CPlayerProgress::LoadApperance()
+void CPlayerProfile::LoadApperance()
 {
     m_apperance.face = 0;
     m_apperance.DefPerso();
@@ -383,7 +383,7 @@ void CPlayerProgress::LoadApperance()
     }
 }
 
-void CPlayerProgress::SaveApperance()
+void CPlayerProfile::SaveApperance()
 {
     try
     {
@@ -411,7 +411,7 @@ void CPlayerProgress::SaveApperance()
 
 // SAVE / LOAD SCENE
 
-void CPlayerProgress::SaveScene(std::string dir, std::string info)
+void CPlayerProfile::SaveScene(std::string dir, std::string info)
 {
     if (!CResourceManager::DirectoryExists(dir))
     {

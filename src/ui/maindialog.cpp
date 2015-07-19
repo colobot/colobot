@@ -40,7 +40,7 @@
 
 #include "object/level/parser.h"
 
-#include "object/player_progress.h"
+#include "object/player_profile.h"
 #include "object/robotmain.h"
 
 #include "sound/sound.h"
@@ -418,13 +418,13 @@ void CMainDialog::ChangePhase(Phase phase)
         ddim.y =  18.0f/480.0f;
         pe = pw->CreateEdit(pos, ddim, 0, EVENT_INTERFACE_NEDIT);
         pe->SetMaxChar(15);
-        if(m_main->GetPlayerProgress() != nullptr)
+        if(m_main->GetPlayerProfile() != nullptr)
         {
-            name = m_main->GetPlayerProgress()->GetName();
+            name = m_main->GetPlayerProfile()->GetName();
         }
         else
         {
-            name = CPlayerProgress::GetLastName();
+            name = CPlayerProfile::GetLastName();
         }
         pe->SetText(name.c_str());
         pe->SetCursor(name.length(), 0);
@@ -697,7 +697,7 @@ void CMainDialog::ChangePhase(Phase phase)
 
         m_apperanceTab = 0;
         m_apperanceAngle = -0.6f;
-        m_main->GetPlayerProgress()->LoadApperance();
+        m_main->GetPlayerProfile()->LoadApperance();
         UpdatePerso();
         m_main->ScenePerso();
         CameraPerso();
@@ -735,7 +735,7 @@ void CMainDialog::ChangePhase(Phase phase)
 
         if ( m_phase == PHASE_FREE )
         {
-            m_accessChap = m_main->GetPlayerProgress()->GetChapPassed(LevelCategory::Missions);
+            m_accessChap = m_main->GetPlayerProfile()->GetChapPassed(LevelCategory::Missions);
         }
 
         pos.x = 0.10f;
@@ -782,7 +782,7 @@ void CMainDialog::ChangePhase(Phase phase)
         ddim.x = dim.x*6.5f;
         pli = pw->CreateList(pos, ddim, 0, EVENT_INTERFACE_CHAP);
         pli->SetState(STATE_SHADOW);
-        m_chap[m_category] = m_main->GetPlayerProgress()->GetSelectedChap(m_category)-1;
+        m_chap[m_category] = m_main->GetPlayerProfile()->GetSelectedChap(m_category)-1;
         UpdateSceneChap(m_chap[m_category]);
         if ( m_phase != PHASE_USER )  pli->SetState(STATE_EXTEND);
 
@@ -805,7 +805,7 @@ void CMainDialog::ChangePhase(Phase phase)
         ddim.x = dim.x*6.5f;
         pli = pw->CreateList(pos, ddim, 0, EVENT_INTERFACE_LIST);
         pli->SetState(STATE_SHADOW);
-        m_sel[m_category] = m_main->GetPlayerProgress()->GetSelectedRank(m_category)-1;
+        m_sel[m_category] = m_main->GetPlayerProfile()->GetSelectedRank(m_category)-1;
         UpdateSceneList(m_chap[m_category], m_sel[m_category]);
         if ( m_phase != PHASE_USER )  pli->SetState(STATE_EXTEND);
         pos = pli->GetPos();
@@ -2078,7 +2078,7 @@ bool CMainDialog::EventProcess(const Event &event)
 
     if ( m_phase == PHASE_PERSO )
     {
-        PlayerApperance& apperance = m_main->GetPlayerProgress()->GetApperance();
+        PlayerApperance& apperance = m_main->GetPlayerProfile()->GetApperance();
         switch( event.type )
         {
             case EVENT_KEY_DOWN:
@@ -2184,12 +2184,12 @@ bool CMainDialog::EventProcess(const Event &event)
                 break;
 
             case EVENT_INTERFACE_POK:
-                m_main->GetPlayerProgress()->SaveApperance();
+                m_main->GetPlayerProfile()->SaveApperance();
                 m_main->ChangePhase(PHASE_INIT);
                 break;
 
             case EVENT_INTERFACE_PCANCEL:
-                m_main->GetPlayerProgress()->LoadApperance(); // reload apperance from file
+                m_main->GetPlayerProfile()->LoadApperance(); // reload apperance from file
                 m_main->ChangePhase(PHASE_NAME);
                 break;
 
@@ -2229,7 +2229,7 @@ bool CMainDialog::EventProcess(const Event &event)
                 pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_CHAP));
                 if ( pl == 0 )  break;
                 m_chap[m_category] = pl->GetSelect();
-                m_main->GetPlayerProgress()->SetSelectedChap(m_category, m_chap[m_category]+1);
+                m_main->GetPlayerProfile()->SetSelectedChap(m_category, m_chap[m_category]+1);
                 UpdateSceneList(m_chap[m_category], m_sel[m_category]);
                 UpdateSceneResume(m_chap[m_category]+1, m_sel[m_category]+1);
                 break;
@@ -2238,7 +2238,7 @@ bool CMainDialog::EventProcess(const Event &event)
                 pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_LIST));
                 if ( pl == 0 )  break;
                 m_sel[m_category] = pl->GetSelect();
-                m_main->GetPlayerProgress()->SetSelectedRank(m_category, m_sel[m_category]+1);
+                m_main->GetPlayerProfile()->SetSelectedRank(m_category, m_sel[m_category]+1);
                 UpdateSceneResume(m_chap[m_category]+1, m_sel[m_category]+1);
                 break;
 
@@ -3389,7 +3389,7 @@ void CMainDialog::UpdateNameControl()
     pe = static_cast<CEdit*>(pw->SearchControl(EVENT_INTERFACE_NEDIT));
     if ( pe == 0 )  return;
 
-    std::string gamer = m_main->GetPlayerProgress()->GetName();
+    std::string gamer = m_main->GetPlayerProfile()->GetName();
     total = pl->GetTotal();
     sel   = pl->GetSelect();
     pe->GetText(name, 100);
@@ -3589,7 +3589,7 @@ void CMainDialog::NameDelete()
     char* gamer = pl->GetItemName(sel);
 
     m_main->SelectPlayer(gamer);
-    if (!m_main->GetPlayerProgress()->Delete())
+    if (!m_main->GetPlayerProfile()->Delete())
     {
         m_sound->Play(SOUND_TZOING);
         return;
@@ -3626,7 +3626,7 @@ void CMainDialog::UpdatePerso()
     std::string  name;
     int             i;
 
-    PlayerApperance& apperance = m_main->GetPlayerProgress()->GetApperance();
+    PlayerApperance& apperance = m_main->GetPlayerProfile()->GetApperance();
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
     if ( pw == 0 )  return;
@@ -3793,7 +3793,7 @@ void CMainDialog::CameraPerso()
 
 void CMainDialog::FixPerso(int rank, int index)
 {
-    PlayerApperance& apperance = m_main->GetPlayerProgress()->GetApperance();
+    PlayerApperance& apperance = m_main->GetPlayerProfile()->GetApperance();
     if ( m_apperanceTab == 0 )
     {
         if ( index == 1 )
@@ -3828,7 +3828,7 @@ void CMainDialog::ColorPerso()
     CSlider*        ps;
     Gfx::Color   color;
 
-    PlayerApperance& apperance = m_main->GetPlayerProgress()->GetApperance();
+    PlayerApperance& apperance = m_main->GetPlayerProfile()->GetApperance();
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
     if ( pw == 0 )  return;
@@ -3858,7 +3858,7 @@ void CMainDialog::ColorPerso()
 
 bool CMainDialog::IsIOReadScene()
 {
-    std::string userSaveDir = m_savegameDir + "/" + m_main->GetPlayerProgress()->GetName();
+    std::string userSaveDir = m_savegameDir + "/" + m_main->GetPlayerProfile()->GetName();
     auto saveDirs = CResourceManager::ListDirectories(userSaveDir);
     for (auto dir : saveDirs)
     {
@@ -3922,7 +3922,7 @@ void CMainDialog::IOReadList()
 
     m_saveList.clear();
 
-    std::string userSaveDir = m_savegameDir + "/" + m_main->GetPlayerProgress()->GetName();
+    std::string userSaveDir = m_savegameDir + "/" + m_main->GetPlayerProfile()->GetName();
 
     auto saveDirs = CResourceManager::ListDirectories(userSaveDir);
     //std::sort(saveDirs.begin(), saveDirs.end());
@@ -4087,14 +4087,14 @@ bool CMainDialog::IOWriteScene()
     pe->GetText(info, 100);
     if (static_cast<unsigned int>(sel) >= m_saveList.size())
     {
-        dir = m_savegameDir + "/" + m_main->GetPlayerProgress()->GetName() + "/save" + clearName(info);
+        dir = m_savegameDir + "/" + m_main->GetPlayerProfile()->GetName() + "/save" + clearName(info);
     }
     else
     {
         dir = m_saveList.at(sel);
     }
 
-    m_main->GetPlayerProgress()->SaveScene(dir, info);
+    m_main->GetPlayerProfile()->SaveScene(dir, info);
 
     return true;
 }
@@ -4249,7 +4249,7 @@ void CMainDialog::UpdateSceneChap(int &chap)
                 sprintf(line, "%s", (std::string("[ERROR]: ")+e.what()).c_str());
             }
 
-            bPassed = m_main->GetPlayerProgress()->GetLevelPassed(m_category, j+1, 0);
+            bPassed = m_main->GetPlayerProfile()->GetLevelPassed(m_category, j+1, 0);
             pl->SetItemName(j, line);
             pl->SetCheck(j, bPassed);
             pl->SetEnable(j, true);
@@ -4320,7 +4320,7 @@ void CMainDialog::UpdateSceneList(int chap, int &sel)
             sprintf(line, "%s", (std::string("[ERROR]: ")+e.what()).c_str());
         }
 
-        bPassed = m_main->GetPlayerProgress()->GetLevelPassed(m_category, chap+1, j+1);
+        bPassed = m_main->GetPlayerProfile()->GetLevelPassed(m_category, chap+1, j+1);
         pl->SetItemName(j, line);
         pl->SetCheck(j, bPassed);
         pl->SetEnable(j, true);
@@ -4407,8 +4407,8 @@ void CMainDialog::UpdateSceneResume(int chap, int rank)
     }
     else
     {
-        numTry  = m_main->GetPlayerProgress()->GetLevelTryCount(m_category, chap, rank);
-        bPassed = m_main->GetPlayerProgress()->GetLevelPassed(m_category, chap, rank);
+        numTry  = m_main->GetPlayerProfile()->GetLevelTryCount(m_category, chap, rank);
+        bPassed = m_main->GetPlayerProfile()->GetLevelPassed(m_category, chap, rank);
         bVisible = ( numTry > 2 || bPassed || m_main->GetShowSoluce() );
         if ( !GetSoluce4() )  bVisible = false;
         pc->SetState(STATE_VISIBLE, bVisible);
@@ -5898,14 +5898,14 @@ void CMainDialog::UpdateChapterPassed()
     bool bAll = true;
     for ( int i=0 ; i<m_maxList ; i++ )
     {
-        if (!m_main->GetPlayerProgress()->GetLevelPassed(m_category, m_chap[m_category]+1, i+1))
+        if (!m_main->GetPlayerProfile()->GetLevelPassed(m_category, m_chap[m_category]+1, i+1))
         {
             bAll = false;
             break;
         }
     }
-    m_main->GetPlayerProgress()->IncrementLevelTryCount(m_category, m_chap[m_category]+1, 0);
-    m_main->GetPlayerProgress()->SetLevelPassed(m_category, m_chap[m_category]+1, 0, bAll);
+    m_main->GetPlayerProfile()->IncrementLevelTryCount(m_category, m_chap[m_category]+1, 0);
+    m_main->GetPlayerProfile()->SetLevelPassed(m_category, m_chap[m_category]+1, 0, bAll);
 }
 
 
@@ -5921,8 +5921,8 @@ bool CMainDialog::NextMission()
         m_sel[m_category] = 0;  // first mission
     }
 
-    m_main->GetPlayerProgress()->SetSelectedChap(m_category, m_chap[m_category]+1);
-    m_main->GetPlayerProgress()->SetSelectedRank(m_category, m_sel[m_category]+1);
+    m_main->GetPlayerProfile()->SetSelectedChap(m_category, m_chap[m_category]+1);
+    m_main->GetPlayerProfile()->SetSelectedRank(m_category, m_sel[m_category]+1);
 
     return true;
 }

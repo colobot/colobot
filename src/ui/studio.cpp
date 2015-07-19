@@ -35,7 +35,7 @@
 
 #include "object/brain.h"
 #include "object/object.h"
-#include "object/player_progress.h"
+#include "object/player_profile.h"
 
 #include "script/cbottoken.h"
 #include "script/script.h"
@@ -1583,7 +1583,7 @@ std::string CStudio::SearchDirectory(bool bCreate)
     }
     else
     {
-        dir = m_main->GetPlayerProgress()->GetSaveFile("program/");
+        dir = m_main->GetPlayerProfile()->GetSaveFile("program/");
     }
 
     if ( bCreate )

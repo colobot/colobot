@@ -86,7 +86,7 @@ class CInput;
 class CObjectManager;
 class CSceneEndCondition;
 class CAudioChangeCondition;
-class CPlayerProgress;
+class CPlayerProfile;
 
 namespace Gfx {
 class CEngine;
@@ -302,7 +302,7 @@ public:
     char*       GetNewScriptName(ObjectType type, int rank);
 
     void        SelectPlayer(std::string playerName);
-    CPlayerProgress* GetPlayerProgress();
+    CPlayerProfile* GetPlayerProfile();
 
     bool        IsBusy();
     bool        IOWriteScene(const char *filename, const char *filecbot, char *info);
@@ -450,7 +450,7 @@ protected:
     CInput*             m_input;
 
     //! Progress of loaded player
-    std::unique_ptr<CPlayerProgress> m_playerProgress;
+    std::unique_ptr<CPlayerProfile> m_playerProfile;
 
 
     //! Time since level start, including pause and intro movie
