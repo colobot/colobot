@@ -2898,13 +2898,12 @@ void PrepareFilename(CBotString &filename, const char *dir)
 
 bool CScriptFunctions::rDeleteFile(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-    CScript*    script = (static_cast<CObject *>(user))->GetRunScript();
     CBotString  cbs;
     const char* filename;
     const char* dir;
 
     cbs = var->GetValString();
-    dir = script->m_main->GetFilesDir();
+    dir = CScriptFunctions::m_filesDir.c_str();
     PrepareFilename(cbs, dir);
     filename = cbs;
     //std function that removes file.

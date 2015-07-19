@@ -255,9 +255,6 @@ public:
     bool        GetSceneSoluce();
     bool        GetShowAll();
     bool        GetRadar();
-    const char* GetSavegameDir();
-    const char* GetPublicDir();
-    const char* GetFilesDir();
     MissionType GetMissionType();
 
     int         GetGamerFace();

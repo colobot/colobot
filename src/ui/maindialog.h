@@ -69,8 +69,6 @@ public:
     std::string   GetCustomLevelDir();
 
     bool          GetSceneSoluce();
-    std::string & GetSavegameDir();
-    std::string & GetPublicDir();
 
     bool    GetTooltip();
     bool    GetGlint();
@@ -79,8 +77,7 @@ public:
     bool    GetNiceReset();
     bool    GetHimselfDamage();
 
-    void          BuildResumeName(char *filename, std::string base, int chap, int rank);
-    std::string & GetFilesDir();
+    void    BuildResumeName(char *filename, std::string base, int chap, int rank);
 
     void    StartAbort();
     void    StartDeleteObject();
@@ -163,10 +160,6 @@ protected:
 
     int             m_apperanceTab;         // perso: tab selected
     float           m_apperanceAngle;           // perso: angle of presentation
-
-    std::string     m_savegameDir;  // savegame folder
-    std::string     m_publicDir;    // program folder
-    std::string     m_filesDir;     // case files
 
     LevelCategory   m_category;     // 0..4
     std::map<LevelCategory, int> m_chap;     // selected chapter (0..8)

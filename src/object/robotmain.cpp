@@ -319,7 +319,7 @@ void CRobotMain::Create()
 
     SelectPlayer(CPlayerProfile::GetLastName());
 
-    CScriptFunctions::m_filesDir = CResourceManager::GetSaveLocation() + "/" + m_dialog->GetFilesDir(); //TODO: Refactor to PHYSFS while rewriting CBot engine
+    CScriptFunctions::m_filesDir = CResourceManager::GetSaveLocation() + "/files"; //TODO: Refactor to PHYSFS while rewriting CBot engine
     CScriptFunctions::Init();
 }
 
@@ -5641,21 +5641,6 @@ bool CRobotMain::GetRadar()
             return true;
     }
     return false;
-}
-
-const char* CRobotMain::GetSavegameDir()
-{
-    return m_dialog->GetSavegameDir().c_str();
-}
-
-const char* CRobotMain::GetPublicDir()
-{
-    return m_dialog->GetPublicDir().c_str();
-}
-
-const char* CRobotMain::GetFilesDir()
-{
-    return m_dialog->GetFilesDir().c_str();
 }
 
 MissionType CRobotMain::GetMissionType()

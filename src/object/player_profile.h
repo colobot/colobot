@@ -24,6 +24,7 @@
 
 #include <string>
 #include <map>
+#include <vector>
 
 struct LevelInfo
 {
@@ -46,8 +47,9 @@ class CPlayerProfile
 {
 public:
     CPlayerProfile(std::string playerName);
-    static std::string GetLastName();
     ~CPlayerProfile();
+    static std::string GetLastName();
+    static std::vector<std::string> GetPlayerList();
 
     bool Delete();
 

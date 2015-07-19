@@ -1579,11 +1579,11 @@ std::string CStudio::SearchDirectory(bool bCreate)
     std::string dir;
     if ( m_main->GetIOPublic() )
     {
-        dir = std::string(m_main->GetPublicDir()) + "/";
+        dir = "public";
     }
     else
     {
-        dir = m_main->GetPlayerProfile()->GetSaveFile("program/");
+        dir = m_main->GetPlayerProfile()->GetSaveFile("program");
     }
 
     if ( bCreate )
@@ -1591,7 +1591,7 @@ std::string CStudio::SearchDirectory(bool bCreate)
         if (!CResourceManager::DirectoryExists(dir))
             CResourceManager::CreateDirectory(dir);
     }
-    return dir;
+    return dir+"/";
 }
 
 // Reads a new program.

@@ -176,10 +176,6 @@ CMainDialog::CMainDialog()
         m_partiTime[i]  = 0.0f;
     }
 
-    m_savegameDir = "savegame";
-    m_publicDir = "program";
-    m_filesDir = "files";
-
     m_setupFull = false;
 
     m_bDialog = false;
@@ -3346,13 +3342,6 @@ void CMainDialog::BuildResumeName(char *filename, std::string base, int chap, in
     sprintf(filename, "%s %d.%d", base.c_str(), chap, rank);
 }
 
-// Returns the name of the file or save the files.
-
-std::string & CMainDialog::GetFilesDir()
-{
-    return m_filesDir;
-}
-
 
 // Updates the list of players after checking the files on disk.
 
@@ -3364,10 +3353,10 @@ void CMainDialog::ReadNameList()
     if (pl == nullptr) return;
     pl->Flush();
 
-    auto userSaveDirs = CResourceManager::ListDirectories(m_savegameDir);
-    for (int i = 0; i < static_cast<int>(userSaveDirs.size()); ++i)
+    auto players = CPlayerProfile::GetPlayerList();
+    for (int i = 0; i < static_cast<int>(players.size()); ++i)
     {
-        pl->SetItemName(i, userSaveDirs.at(i).c_str());
+        pl->SetItemName(i, players.at(i).c_str());
     }
 }
 
@@ -4858,9 +4847,6 @@ void CMainDialog::ChangeSetupButtons()
 
 void CMainDialog::SetupMemorize()
 {
-    GetConfigFile().SetStringProperty("Directory", "savegame", m_savegameDir);
-    GetConfigFile().SetStringProperty("Directory", "public",   m_publicDir);
-    GetConfigFile().SetStringProperty("Directory", "files",    m_filesDir);
     GetConfigFile().SetIntProperty("Setup", "Tooltips", m_bTooltip);
     GetConfigFile().SetIntProperty("Setup", "InterfaceGlint", m_bGlint);
     GetConfigFile().SetIntProperty("Setup", "InterfaceGlint", m_bRain);
@@ -4934,22 +4920,6 @@ void CMainDialog::SetupRecall()
     float       fValue;
     int         iValue;
     std::string key;
-
-    if ( GetConfigFile().GetStringProperty("Directory", "savegame", key) )
-    {
-        m_savegameDir = key;
-    }
-
-    if ( GetConfigFile().GetStringProperty("Directory", "public", key) )
-    {
-        m_publicDir = key;
-    }
-
-    if ( GetConfigFile().GetStringProperty("Directory", "files", key) )
-    {
-        m_filesDir = key;
-    }
-
 
     if ( GetConfigFile().GetIntProperty("Setup", "TotoMode", iValue) )
     {
@@ -5827,20 +5797,6 @@ std::string CMainDialog::GetCustomLevelDir()
 bool CMainDialog::GetSceneSoluce()
 {
     return m_bSceneSoluce;
-}
-
-// Returns the name of the folder to save.
-
-std::string & CMainDialog::GetSavegameDir()
-{
-    return m_savegameDir;
-}
-
-// Returns the name of public folder.
-
-std::string & CMainDialog::GetPublicDir()
-{
-    return m_publicDir;
 }
 
 

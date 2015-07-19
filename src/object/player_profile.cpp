@@ -92,6 +92,10 @@ CPlayerProfile::CPlayerProfile(std::string playerName)
     LoadApperance();
 }
 
+CPlayerProfile::~CPlayerProfile()
+{
+}
+
 std::string CPlayerProfile::GetLastName()
 {
     std::string name;
@@ -102,9 +106,9 @@ std::string CPlayerProfile::GetLastName()
     return name;
 }
 
-CPlayerProfile::~CPlayerProfile()
+std::vector<std::string> CPlayerProfile::GetPlayerList()
 {
-
+    return CResourceManager::ListDirectories("savegame");
 }
 
 bool CPlayerProfile::Delete()
@@ -119,7 +123,7 @@ std::string CPlayerProfile::GetName()
 
 std::string CPlayerProfile::GetSaveDir()
 {
-    return std::string(CRobotMain::GetInstancePointer()->GetSavegameDir()) + "/" + m_playerName;
+    return "savegame/" + m_playerName;
 }
 
 std::string CPlayerProfile::GetSaveFile(std::string filename)
