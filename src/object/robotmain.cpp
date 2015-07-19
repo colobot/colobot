@@ -5344,13 +5344,10 @@ Error CRobotMain::CheckEndMissionForGroup(std::vector<CSceneEndCondition*>& endT
         if (result != ERR_OK)
         {
             finalResult = result;
-            if (finalResult == INFO_LOST || finalResult == INFO_LOSTq)
-            {
-                break;
-            }
+            break;
         }
     }
-    if (finalResult == ERR_OK && !hasWinningConditions) finalResult = ERR_MISSION_NOTERM;
+    if (finalResult == ERR_OK && !hasWinningConditions) finalResult = ERR_MISSION_NOTERM; // Never end mission without ending conditions
     return finalResult;
 }
 
