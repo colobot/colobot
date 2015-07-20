@@ -2822,10 +2822,6 @@ void CRobotMain::ScenePerso()
     m_lightMan->FlushLights();
     m_particle->FlushParticle();
 
-
-    ChangeColor();
-
-
     m_dialog->SetLevel(LevelCategory::Perso, 0, 0);
     try
     {
@@ -3910,7 +3906,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             m_build |= BUILD_FLAG;
         }
 
-        if (!resetObject && !fixScene)
+        if (!resetObject)
         {
             ChangeColor();  // changes the colors of texture
             m_short->SetMode(false);  // vehicles?
@@ -4022,6 +4018,16 @@ int CRobotMain::CreateSpot(Math::Vector pos, Gfx::Color color)
 //! Change the colors and textures
 void CRobotMain::ChangeColor()
 {
+    if (m_phase != PHASE_SIMUL    &&
+        m_phase != PHASE_SETUPds  &&
+        m_phase != PHASE_SETUPgs  &&
+        m_phase != PHASE_SETUPps  &&
+        m_phase != PHASE_SETUPcs  &&
+        m_phase != PHASE_SETUPss  &&
+        m_phase != PHASE_WIN      &&
+        m_phase != PHASE_LOST     &&
+        m_phase != PHASE_APPERANCE ) return;
+
     Math::Point ts = Math::Point(0.0f, 0.0f);
     Math::Point ti = Math::Point(1.0f, 1.0f);  // the entire image
 

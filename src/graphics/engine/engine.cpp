@@ -2246,6 +2246,9 @@ bool CEngine::LoadAllTextures()
 
     m_planet->LoadTexture();
 
+    m_firstGroundSpot = true;
+    UpdateGroundSpotTextures();
+
     bool ok = true;
 
     for (int objRank = 0; objRank < static_cast<int>( m_objects.size() ); objRank++)
@@ -2443,6 +2446,9 @@ bool CEngine::ChangeTextureColor(const std::string& texName,
 
     m_texNameMap[texName] = tex;
     m_revTexNameMap[tex] = texName;
+
+    // This updates the texture to updated Texture struct on the objects
+    LoadAllTextures();
 
     return true;
 }
@@ -2824,14 +2830,12 @@ float CEngine::GetGadgetQuantity()
 
 void CEngine::SetTextureFilterMode(TexFilter value)
 {
-    bool changed = m_defaultTexParams.filter != value || m_terrainTexParams.filter != value;
+    if(m_defaultTexParams.filter == value && m_terrainTexParams.filter == value) return;
+
     m_defaultTexParams.filter = m_terrainTexParams.filter = value;
     m_defaultTexParams.mipmap = m_terrainTexParams.mipmap = (value == TEX_FILTER_TRILINEAR);
-    if(changed)
-    {
-        FlushTextureCache();
-        LoadAllTextures();
-    }
+    ResetAfterDeviceChanged();
+    CRobotMain::GetInstancePointer()->ChangeColor();
 }
 
 TexFilter CEngine::GetTextureFilterMode()
@@ -2843,14 +2847,11 @@ void CEngine::SetTextureMipmapLevel(int value)
 {
     if (value < 1) value = 1;
     if (value > 16) value = 16;
+    if(m_textureMipmapLevel == value) return;
 
-    bool changed = m_textureMipmapLevel != value;
     m_textureMipmapLevel = value;
-    if(changed)
-    {
-        FlushTextureCache();
-        LoadAllTextures();
-    }
+    ResetAfterDeviceChanged();
+    CRobotMain::GetInstancePointer()->ChangeColor();
 }
 
 int CEngine::GetTextureMipmapLevel()
@@ -2863,13 +2864,11 @@ void CEngine::SetTextureAnisotropyLevel(int value)
     if (value < 1) value = 1;
     if (value > 16) value = 16;
 
-    bool changed = m_textureAnisotropy != value;
+    if(m_textureAnisotropy == value) return;
+
     m_textureAnisotropy = value;
-    if(changed)
-    {
-        FlushTextureCache();
-        LoadAllTextures();
-    }
+    ResetAfterDeviceChanged();
+    CRobotMain::GetInstancePointer()->ChangeColor();
 }
 
 int CEngine::GetTextureAnisotropyLevel()
