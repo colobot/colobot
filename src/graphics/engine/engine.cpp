@@ -2832,7 +2832,7 @@ void CEngine::SetTextureFilterMode(TexFilter value)
     m_defaultTexParams.filter = m_terrainTexParams.filter = value;
     m_defaultTexParams.mipmap = m_terrainTexParams.mipmap = (value == TEX_FILTER_TRILINEAR);
     ResetAfterDeviceChanged();
-    CRobotMain::GetInstancePointer()->ChangeColor();
+    CRobotMain::GetInstancePointer()->ResetAfterDeviceChanged();
 }
 
 TexFilter CEngine::GetTextureFilterMode()
@@ -2848,7 +2848,7 @@ void CEngine::SetTextureMipmapLevel(int value)
 
     m_textureMipmapLevel = value;
     ResetAfterDeviceChanged();
-    CRobotMain::GetInstancePointer()->ChangeColor();
+    CRobotMain::GetInstancePointer()->ResetAfterDeviceChanged();
 }
 
 int CEngine::GetTextureMipmapLevel()
@@ -2865,7 +2865,7 @@ void CEngine::SetTextureAnisotropyLevel(int value)
 
     m_textureAnisotropy = value;
     ResetAfterDeviceChanged();
-    CRobotMain::GetInstancePointer()->ChangeColor();
+    CRobotMain::GetInstancePointer()->ResetAfterDeviceChanged();
 }
 
 int CEngine::GetTextureAnisotropyLevel()
