@@ -214,6 +214,7 @@ void CMainDialog::ChangePhase(Phase phase)
     CCheck*         pc;
     CScroll*        ps;
     CSlider*        psl;
+    CEnumSlider*    pes;
     CButton*        pb;
     CColor*         pco;
     CGroup*         pg;
@@ -1090,6 +1091,25 @@ void CMainDialog::ChangePhase(Phase phase)
             pc->SetState(STATE_SHADOW);
         }
 
+        pos.x = ox+sx*3;
+        pos.y = 0.245f;
+        ddim.x = dim.x*2.2f;
+        ddim.y = 18.0f/480.0f;
+        pes = pw->CreateEnumSlider(pos, ddim, 0, EVENT_INTERFACE_MSAA);
+        pes->SetState(STATE_SHADOW);
+        std::vector<float> msaaOptions;
+        for(int i = 1; i <= m_engine->GetDevice()->GetMaxSamples(); i *= 2)
+            msaaOptions.push_back(i);
+        pes->SetPossibleValues(msaaOptions);
+        if(m_engine->GetDevice()->GetMaxSamples() < 2)
+            pes->ClearState(STATE_ENABLE);
+        pos.y += ddim.y/2;
+        pos.x += 0.005f;
+        ddim.x = 0.40f;
+        GetResource(RES_EVENT, EVENT_INTERFACE_MSAA, name);
+        pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL12, name);
+        pl->SetTextAlign(Gfx::TEXT_ALIGN_LEFT);
+
         pos.x = ox+sx*8.5f;
         pos.y = 0.65f;
         ddim.x = dim.x*2.2f;
@@ -1152,8 +1172,6 @@ void CMainDialog::ChangePhase(Phase phase)
             pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL13, name);
             pl->SetTextAlign(Gfx::TEXT_ALIGN_LEFT);
         }
-
-        CEnumSlider* pes;
 
         pos.x = ox+sx*8.5f;
         pos.y = 0.385f;
@@ -2465,6 +2483,7 @@ bool CMainDialog::EventProcess(const Event &event)
             case EVENT_INTERFACE_TEXTURE_FILTER:
             case EVENT_INTERFACE_TEXTURE_MIPMAP:
             case EVENT_INTERFACE_TEXTURE_ANISOTROPY:
+            case EVENT_INTERFACE_MSAA:
                 ChangeSetupButtons();
                 UpdateSetupButtons();
                 break;
@@ -4668,6 +4687,12 @@ void CMainDialog::UpdateSetupButtons()
         pes->SetVisibleValue(m_engine->GetTextureAnisotropyLevel());
     }
 
+    pes = static_cast<CEnumSlider*>(pw->SearchControl(EVENT_INTERFACE_MSAA));
+    if ( pes != 0 )
+    {
+        pes->SetVisibleValue(m_engine->GetMultiSample());
+    }
+
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_SHADOW));
     if ( pc != 0 )
     {
@@ -4854,6 +4879,13 @@ void CMainDialog::ChangeSetupButtons()
     {
         value = pes->GetVisibleValue();
         m_engine->SetTextureAnisotropyLevel(static_cast<int>(value));
+    }
+
+    pes = static_cast<CEnumSlider*>(pw->SearchControl(EVENT_INTERFACE_MSAA));
+    if ( pes != 0 )
+    {
+        value = pes->GetVisibleValue();
+        m_engine->SetMultiSample(static_cast<int>(value));
     }
 }
 

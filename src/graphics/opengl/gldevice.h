@@ -169,6 +169,8 @@ public:
     virtual bool IsAnisotropySupported() override;
     virtual int GetMaxAnisotropyLevel() override;
 
+    virtual int GetMaxSamples() override;
+
 private:
     //! Updates internal modelview matrix
     void UpdateModelviewMatrix();
@@ -245,6 +247,8 @@ private:
     bool m_anisotropyAvailable;
     //! Maximum anisotropy level
     int m_maxAnisotropy;
+    //! Maximum samples
+    int m_maxSamples;
     //! Framebuffer support
     FramebufferSupport m_framebufferSupport;
     //! Which vertex buffer type to use

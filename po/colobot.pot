@@ -420,6 +420,18 @@ msgstr ""
 msgid "Autosave slots\\How many autosave slots you'll have"
 msgstr ""
 
+msgid "Texture filtering\\Texture filtering"
+msgstr ""
+
+msgid "Mipmap level\\Mipmap level"
+msgstr ""
+
+msgid "Anisotropy level\\Anisotropy level"
+msgstr ""
+
+msgid "MSAA\\Multisample anti-aliasing"
+msgstr ""
+
 msgid "Standard controls\\Standard key functions"
 msgstr ""
 

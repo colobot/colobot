@@ -46,6 +46,7 @@ CGL21Device::CGL21Device(const DeviceConfig &config)
     m_lastVboId = 0;
     m_anisotropyAvailable = false;
     m_maxAnisotropy = 1;
+    m_maxSamples = 1;
     m_glMajor = 1;
     m_glMinor = 1;
 
@@ -210,6 +211,17 @@ bool CGL21Device::Create()
         else
         {
             GetLogger()->Info("Anisotropic filtering not available\n");
+        }
+
+        // Read maximum sample count for MSAA
+        if(glewIsSupported("GL_ARB_multisample"))
+        {
+            glGetIntegerv(GL_MAX_SAMPLES_EXT, &m_maxSamples);
+            GetLogger()->Info("Multisampling supported, max samples: %d\n", m_maxSamples);
+        }
+        else
+        {
+            GetLogger()->Info("Multisampling not supported\n");
         }
     }
 
@@ -1769,6 +1781,11 @@ bool CGL21Device::IsAnisotropySupported()
 int CGL21Device::GetMaxAnisotropyLevel()
 {
     return m_maxAnisotropy;
+}
+
+int CGL21Device::GetMaxSamples()
+{
+    return m_maxSamples;
 }
 
 } // namespace Gfx

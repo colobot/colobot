@@ -392,4 +392,9 @@ int CNullDevice::GetMaxAnisotropyLevel()
     return 1;
 }
 
+int CNullDevice::GetMaxSamples()
+{
+    return 1;
+}
+
 } // namespace Gfx

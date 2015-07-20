@@ -128,6 +128,9 @@ msgstr "Analyse terminée"
 msgid "Analyzes only organic matter"
 msgstr "N'analyse que la matière organique"
 
+msgid "Anisotropy level\\Anisotropy level"
+msgstr ""
+
 msgid "Ant"
 msgstr "Fourmi"
 
@@ -825,6 +828,9 @@ msgstr "Mini\\Qualité minimale (+ rapide)"
 msgid "Lunar Roving Vehicle"
 msgstr "Lunar Roving Vehicle"
 
+msgid "MSAA\\Multisample anti-aliasing"
+msgstr ""
+
 msgid "Marks on the ground\\Marks on the ground"
 msgstr "Marques sur le sol\\Marques dessinées sur le sol"
 
@@ -833,6 +839,9 @@ msgstr "Taille maximale"
 
 msgid "Minimize"
 msgstr "Taille réduite"
+
+msgid "Mipmap level\\Mipmap level"
+msgstr ""
 
 msgid "Mission name"
 msgstr "Nom de la mission"
@@ -1459,6 +1468,9 @@ msgstr "Cible"
 
 msgid "Target bot"
 msgstr "Cible d'entraînement"
+
+msgid "Texture filtering\\Texture filtering"
+msgstr ""
 
 msgid "The expression must return a boolean value"
 msgstr "L'expression doit ętre un boolean"

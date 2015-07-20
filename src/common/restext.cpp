@@ -216,6 +216,7 @@ void InitializeRestext()
     stringsEvent[EVENT_INTERFACE_TEXTURE_FILTER]    = TR("Texture filtering\\Texture filtering");
     stringsEvent[EVENT_INTERFACE_TEXTURE_MIPMAP]    = TR("Mipmap level\\Mipmap level");
     stringsEvent[EVENT_INTERFACE_TEXTURE_ANISOTROPY]= TR("Anisotropy level\\Anisotropy level");
+    stringsEvent[EVENT_INTERFACE_MSAA]              = TR("MSAA\\Multisample anti-aliasing");
 
     stringsEvent[EVENT_INTERFACE_KDEF]      = TR("Standard controls\\Standard key functions");
     assert(INPUT_SLOT_MAX < EVENT_INTERFACE_KEY_END-EVENT_INTERFACE_KEY);

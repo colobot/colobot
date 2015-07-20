@@ -47,6 +47,7 @@ CGLDevice::CGLDevice(const DeviceConfig &config)
     m_vertexBufferType = VBT_DISPLAY_LIST;
     m_anisotropyAvailable = false;
     m_maxAnisotropy = 1;
+    m_maxSamples = 1;
     m_glMajor = 1;
     m_glMinor = 1;
     m_shadowMappingSupport = SMS_NONE;
@@ -229,6 +230,17 @@ bool CGLDevice::Create()
         else
         {
             GetLogger()->Info("Anisotropic filtering not available\n");
+        }
+
+        // Read maximum sample count for MSAA
+        if(glewIsSupported("GL_ARB_multisample"))
+        {
+            glGetIntegerv(GL_MAX_SAMPLES_EXT, &m_maxSamples);
+            GetLogger()->Info("Multisampling supported, max samples: %d\n", m_maxSamples);
+        }
+        else
+        {
+            GetLogger()->Info("Multisampling not supported\n");
         }
 
         GetLogger()->Info("Auto-detecting VBO support\n");
@@ -1901,6 +1913,11 @@ bool CGLDevice::IsAnisotropySupported()
 int CGLDevice::GetMaxAnisotropyLevel()
 {
     return m_maxAnisotropy;
+}
+
+int CGLDevice::GetMaxSamples()
+{
+    return m_maxSamples;
 }
 
 } // namespace Gfx

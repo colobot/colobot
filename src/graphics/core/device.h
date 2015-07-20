@@ -441,6 +441,9 @@ public:
 
     //! Returns max anisotropy level supported
     virtual int GetMaxAnisotropyLevel() = 0;
+
+    //! Returns max samples supported
+    virtual int GetMaxSamples() = 0;
 };
 
 

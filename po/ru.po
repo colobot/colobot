@@ -128,6 +128,9 @@ msgstr "Анализ выполнен"
 msgid "Analyzes only organic matter"
 msgstr "Анализирую только органические вещества"
 
+msgid "Anisotropy level\\Anisotropy level"
+msgstr ""
+
 msgid "Ant"
 msgstr "Муравей"
 
@@ -824,6 +827,9 @@ msgstr "Низкое\\Минимальное качество графики (б
 msgid "Lunar Roving Vehicle"
 msgstr "Луноход"
 
+msgid "MSAA\\Multisample anti-aliasing"
+msgstr ""
+
 msgid "Marks on the ground\\Marks on the ground"
 msgstr "Метки на земле\\Метки на земле"
 
@@ -832,6 +838,9 @@ msgstr "Развернуть"
 
 msgid "Minimize"
 msgstr "Свернуть"
+
+msgid "Mipmap level\\Mipmap level"
+msgstr ""
 
 msgid "Mission name"
 msgstr "Название миссии"
@@ -1455,6 +1464,9 @@ msgstr "Цель"
 
 msgid "Target bot"
 msgstr "Целевой бот"
+
+msgid "Texture filtering\\Texture filtering"
+msgstr ""
 
 msgid "The expression must return a boolean value"
 msgstr "Выражение должно возвращать логическое значение"

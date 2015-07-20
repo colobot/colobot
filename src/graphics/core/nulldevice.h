@@ -155,6 +155,8 @@ public:
     virtual bool IsAnisotropySupported();
     virtual int GetMaxAnisotropyLevel();
 
+    virtual int GetMaxSamples();
+
 private:
     Math::Matrix m_matrix;
     Material     m_material;

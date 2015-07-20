@@ -149,6 +149,8 @@ public:
     virtual bool IsAnisotropySupported() override;
     virtual int GetMaxAnisotropyLevel() override;
 
+    virtual int GetMaxSamples() override;
+
 private:
     //! Updates position for given light based on transformation matrices
     void UpdateLightPosition(int index);
@@ -221,6 +223,8 @@ private:
     bool m_anisotropyAvailable;
     //! Maximum anisotropy level
     int m_maxAnisotropy;
+    //! Maximum samples
+    int m_maxSamples;
     //! Map of saved VBO objects
     std::map<unsigned int, VertexBufferInfo> m_vboObjects;
     //! Last ID of VBO object

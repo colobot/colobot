@@ -2584,7 +2584,12 @@ float CEngine::GetShadowRange()
 
 void CEngine::SetMultiSample(int value)
 {
+    bool changed = m_multisample != value;
     m_multisample = value;
+    if(changed)
+    {
+        m_device->DeleteFramebuffer("multisample");
+    }
 }
 
 int CEngine::GetMultiSample()

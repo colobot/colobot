@@ -133,6 +133,9 @@ msgstr "Analiza wykonana"
 msgid "Analyzes only organic matter"
 msgstr "Analizuje jedynie materię organiczną"
 
+msgid "Anisotropy level\\Anisotropy level"
+msgstr ""
+
 msgid "Ant"
 msgstr "Mrówka"
 
@@ -833,6 +836,9 @@ msgstr ""
 msgid "Lunar Roving Vehicle"
 msgstr "Pojazd Księżycowy"
 
+msgid "MSAA\\Multisample anti-aliasing"
+msgstr ""
+
 msgid "Marks on the ground\\Marks on the ground"
 msgstr "Znaki na ziemi\\Znaki na ziemi"
 
@@ -841,6 +847,9 @@ msgstr "Powiększ"
 
 msgid "Minimize"
 msgstr "Pomniejsz"
+
+msgid "Mipmap level\\Mipmap level"
+msgstr ""
 
 msgid "Mission name"
 msgstr "Nazwa misji"
@@ -1460,6 +1469,9 @@ msgstr "Cel"
 
 msgid "Target bot"
 msgstr "Robot cel"
+
+msgid "Texture filtering\\Texture filtering"
+msgstr ""
 
 msgid "The expression must return a boolean value"
 msgstr "Wyrażenie musi zwrócić wartość logiczną"
