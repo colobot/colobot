@@ -195,7 +195,7 @@ bool CGLDevice::Create()
             GetLogger()->Warn("GLEW reports multitexturing not supported - graphics quality will be degraded!\n");
 
         // Detect Shadow mapping support
-        if (m_glMajor >= 2 || m_glMinor >= 4)     // Core depth texture+shadow, OpenGL 1.4+
+        if (m_glMajor > 1 || m_glMinor >= 4)     // Core depth texture+shadow, OpenGL 1.4+
         {
             m_shadowMappingSupport = SMS_CORE;
             GetLogger()->Info("Shadow mapping available (core)\n");
@@ -1918,6 +1918,23 @@ int CGLDevice::GetMaxAnisotropyLevel()
 int CGLDevice::GetMaxSamples()
 {
     return m_maxSamples;
+}
+
+bool CGLDevice::IsShadowMappingSupported()
+{
+    return m_shadowMappingSupport != SMS_NONE;
+}
+
+int CGLDevice::GetMaxTextureSize()
+{
+    int value;
+    glGetIntegerv(GL_MAX_TEXTURE_SIZE, &value);
+    return value;
+}
+
+bool CGLDevice::IsFramebufferSupported()
+{
+    return m_framebufferSupport != FBS_NONE;
 }
 
 } // namespace Gfx

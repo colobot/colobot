@@ -1246,11 +1246,21 @@ void CMainDialog::ChangePhase(Phase phase)
         pes->SetState(STATE_SHADOW);
         std::map<float, std::string> shadowOptions = {
             { -1, "Disabled" },
-            //{ 0, "Screen buffer" }, //TODO: Is this needed? Maybe enable only if offscreen rendering not available?
         };
-        for(int i = 128; i <= 4096; i *= 2)
-            shadowOptions[i] = StrUtils::ToString<int>(i)+"x"+StrUtils::ToString<int>(i);
+        if (m_engine->GetDevice()->IsFramebufferSupported())
+        {
+            for(int i = 128; i <= m_engine->GetDevice()->GetMaxTextureSize(); i *= 2)
+                shadowOptions[i] = StrUtils::ToString<int>(i)+"x"+StrUtils::ToString<int>(i);
+        }
+        else
+        {
+            shadowOptions[0] = "Screen buffer"; // TODO: Is this the proper name for this?
+        }
         pes->SetPossibleValues(shadowOptions);
+        if (!m_engine->GetDevice()->IsShadowMappingSupported())
+        {
+            pes->ClearState(STATE_ENABLE);
+        }
         pos.y += ddim.y/2;
         pos.x += 0.005f;
         ddim.x = 0.40f;

@@ -444,6 +444,15 @@ public:
 
     //! Returns max samples supported
     virtual int GetMaxSamples() = 0;
+
+    //! Checks if shadow mapping is supported
+    virtual bool IsShadowMappingSupported() = 0;
+
+    //! Returns max texture size supported
+    virtual int GetMaxTextureSize() = 0;
+
+    //! Checks if framebuffers are supported
+    virtual bool IsFramebufferSupported() = 0;
 };
 
 

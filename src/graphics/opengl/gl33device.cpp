@@ -1981,4 +1981,21 @@ int CGL33Device::GetMaxSamples()
     return m_maxSamples;
 }
 
+bool CGL33Device::IsShadowMappingSupported()
+{
+    return true;
+}
+
+int CGL33Device::GetMaxTextureSize()
+{
+    int value;
+    glGetIntegerv(GL_MAX_TEXTURE_SIZE, &value);
+    return value;
+}
+
+bool CGL33Device::IsFramebufferSupported()
+{
+    return true;
+}
+
 } // namespace Gfx

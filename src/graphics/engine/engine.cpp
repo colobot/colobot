@@ -2875,6 +2875,7 @@ int CEngine::GetTextureAnisotropyLevel()
 
 void CEngine::SetShadowMapping(bool value)
 {
+    if(!m_device->IsShadowMappingSupported()) value = false;
     if(value == m_shadowMapping) return;
     m_shadowMapping = value;
     if(!value)
@@ -2892,6 +2893,7 @@ bool CEngine::GetShadowMapping()
 
 void CEngine::SetShadowMappingOffscreen(bool value)
 {
+    if(!m_device->IsFramebufferSupported()) value = false;
     if(value == m_offscreenShadowRendering) return;
     m_offscreenShadowRendering = value;
     if(value)
@@ -2913,6 +2915,7 @@ bool CEngine::GetShadowMappingOffscreen()
 
 void CEngine::SetShadowMappingOffscreenResolution(int resolution)
 {
+    resolution = Math::Min(resolution, m_device->GetMaxTextureSize());
     if(resolution == m_offscreenShadowRenderingResolution) return;
     m_offscreenShadowRenderingResolution = resolution;
     m_device->DeleteFramebuffer("shadow");
@@ -3402,6 +3405,10 @@ void CEngine::Draw3DScene()
 void CEngine::RenderShadowMap()
 {
     if (!m_shadowMapping) return;
+
+    m_shadowMapping = m_shadowMapping && m_device->IsShadowMappingSupported();
+    m_offscreenShadowRendering = m_offscreenShadowRendering && m_device->IsFramebufferSupported();
+    m_offscreenShadowRenderingResolution = Math::Min(m_offscreenShadowRenderingResolution, m_device->GetMaxTextureSize());
 
     if (m_device->GetMaxTextureStageCount() < 3)
     {

@@ -1788,4 +1788,21 @@ int CGL21Device::GetMaxSamples()
     return m_maxSamples;
 }
 
+bool CGL21Device::IsShadowMappingSupported()
+{
+    return true;
+}
+
+int CGL21Device::GetMaxTextureSize()
+{
+    int value;
+    glGetIntegerv(GL_MAX_TEXTURE_SIZE, &value);
+    return value;
+}
+
+bool CGL21Device::IsFramebufferSupported()
+{
+    return m_framebufferSupport != FBS_NONE;
+}
+
 } // namespace Gfx

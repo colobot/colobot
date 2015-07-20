@@ -397,4 +397,19 @@ int CNullDevice::GetMaxSamples()
     return 1;
 }
 
+bool CNullDevice::IsShadowMappingSupported()
+{
+    return false;
+}
+
+int CNullDevice::GetMaxTextureSize()
+{
+    return 0;
+}
+
+bool CNullDevice::IsFramebufferSupported()
+{
+    return false;
+}
+
 } // namespace Gfx

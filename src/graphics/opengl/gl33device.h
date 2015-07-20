@@ -151,6 +151,12 @@ public:
 
     virtual int GetMaxSamples() override;
 
+    virtual bool IsShadowMappingSupported() override;
+
+    virtual int GetMaxTextureSize() override;
+
+    virtual bool IsFramebufferSupported() override;
+
 private:
     //! Updates position for given light based on transformation matrices
     void UpdateLightPosition(int index);

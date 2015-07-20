@@ -157,6 +157,12 @@ public:
 
     virtual int GetMaxSamples();
 
+    virtual bool IsShadowMappingSupported();
+
+    virtual int GetMaxTextureSize();
+
+    virtual bool IsFramebufferSupported();
+
 private:
     Math::Matrix m_matrix;
     Material     m_material;
