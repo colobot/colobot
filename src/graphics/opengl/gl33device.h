@@ -146,6 +146,9 @@ public:
 
     virtual void DeleteFramebuffer(std::string name) override;
 
+    virtual bool IsAnisotropySupported() override;
+    virtual int GetMaxAnisotropyLevel() override;
+
 private:
     //! Updates position for given light based on transformation matrices
     void UpdateLightPosition(int index);
@@ -290,7 +293,7 @@ private:
     GLint uni_DiffuseColor;
     //! Specular color
     GLint uni_SpecularColor;
-    
+
     struct
     {
         //! true enables light

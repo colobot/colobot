@@ -147,6 +147,9 @@ public:
 
     virtual void DeleteFramebuffer(std::string name) override;
 
+    virtual bool IsAnisotropySupported() override;
+    virtual int GetMaxAnisotropyLevel() override;
+
 private:
     //! Updates position for given light based on transformation matrices
     void UpdateLightPosition(int index);
@@ -254,7 +257,7 @@ private:
 
     //! true enables texture
     GLint uni_TextureEnabled[3];
-    
+
     // Alpha test parameters
     //! true enables alpha test
     GLint uni_AlphaTestEnabled;

@@ -435,8 +435,13 @@ public:
 
     //! Deletes framebuffer
     virtual void DeleteFramebuffer(std::string name) = 0;
+
+    //! Checks if anisotropy is supported
+    virtual bool IsAnisotropySupported() = 0;
+
+    //! Returns max anisotropy level supported
+    virtual int GetMaxAnisotropyLevel() = 0;
 };
 
 
 } // namespace Gfx
-

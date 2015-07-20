@@ -209,7 +209,7 @@ bool CGL33Device::Create()
             float level;
             glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &level);
             m_maxAnisotropy = static_cast<int>(level);
-            
+
             GetLogger()->Info("Anisotropic filtering available\n");
             GetLogger()->Info("Maximum anisotropy: %d\n", m_maxAnisotropy);
         }
@@ -295,7 +295,7 @@ bool CGL33Device::Create()
     uni_PrimaryTextureEnabled = glGetUniformLocation(m_shaderProgram, "uni_PrimaryTextureEnabled");
     uni_SecondaryTextureEnabled = glGetUniformLocation(m_shaderProgram, "uni_SecondaryTextureEnabled");
     uni_ShadowTextureEnabled = glGetUniformLocation(m_shaderProgram, "uni_ShadowTextureEnabled");
-    
+
     uni_FogEnabled = glGetUniformLocation(m_shaderProgram, "uni_FogEnabled");
     uni_FogRange = glGetUniformLocation(m_shaderProgram, "uni_FogRange");
     uni_FogColor = glGetUniformLocation(m_shaderProgram, "uni_FogColor");
@@ -600,7 +600,7 @@ Texture CGL33Device::CreateTexture(ImageData *data, const TextureCreateParams &p
 
     result.size.x = data->surface->w;
     result.size.y = data->surface->h;
-    
+
     result.originalSize = result.size;
 
     glActiveTexture(GL_TEXTURE0);
@@ -1140,7 +1140,7 @@ void CGL33Device::SetTextureStageWrap(int index, TexWrapMode wrapS, TexWrapMode 
         return;
 
     glActiveTexture(GL_TEXTURE0 + index);
-    
+
     if      (wrapS == TEX_WRAP_CLAMP)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     else if (wrapS == TEX_WRAP_CLAMP_TO_BORDER)
@@ -1306,7 +1306,7 @@ void CGL33Device::DrawPrimitive(PrimitiveType type, const VertexCol *vertices, i
 unsigned int CGL33Device::CreateStaticBuffer(PrimitiveType primitiveType, const Vertex* vertices, int vertexCount)
 {
     unsigned int id = 0;
-    
+
     id = ++m_lastVboId;
 
     VertexBufferInfo info;
@@ -1952,6 +1952,16 @@ inline void CGL33Device::BindVAO(GLuint vao)
 
     glBindVertexArray(vao);
     m_currentVAO = vao;
+}
+
+bool CGL33Device::IsAnisotropySupported()
+{
+    return m_anisotropyAvailable;
+}
+
+int CGL33Device::GetMaxAnisotropyLevel()
+{
+    return m_maxAnisotropy;
 }
 
 } // namespace Gfx

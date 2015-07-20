@@ -40,58 +40,58 @@ class CNullDevice : public CDevice
 public:
     CNullDevice();
     virtual ~CNullDevice();
-    
+
     virtual void DebugHook();
     virtual void DebugLights();
-    
+
     virtual bool Create();
     virtual void Destroy();
 
     virtual void ConfigChanged(const DeviceConfig &newConfig);
-    
+
     virtual void BeginScene();
     virtual void EndScene();
-    
+
     virtual void Clear();
-    
+
     virtual void SetTransform(TransformType type, const Math::Matrix &matrix);
     virtual const Math::Matrix& GetTransform(TransformType type);
     virtual void MultiplyTransform(TransformType type, const Math::Matrix &matrix);
-    
+
     virtual void SetMaterial(const Material &material);
     virtual const Material& GetMaterial();
-    
+
     virtual int GetMaxLightCount();
     virtual void SetLight(int index, const Light &light);
     virtual const Light& GetLight(int index);
     virtual void SetLightEnabled(int index, bool enabled);
     virtual bool GetLightEnabled(int index);
-    
+
     virtual Texture CreateTexture(CImage *image, const TextureCreateParams &params);
     virtual Texture CreateTexture(ImageData *data, const TextureCreateParams &params);
     virtual Texture CreateDepthTexture(int width, int height, int depth);
     virtual void DestroyTexture(const Texture &texture);
     virtual void DestroyAllTextures();
-    
+
     virtual int GetMaxTextureStageCount();
     virtual void SetTexture(int index, const Texture &texture);
     virtual void SetTexture(int index, unsigned int textureId);
     virtual Texture GetTexture(int index);
     virtual void SetTextureEnabled(int index, bool enabled);
     virtual bool GetTextureEnabled(int index);
-    
+
     virtual void SetTextureStageParams(int index, const TextureStageParams &params);
     virtual TextureStageParams GetTextureStageParams(int index);
-    
+
     virtual void SetTextureStageWrap(int index, Gfx::TexWrapMode wrapS, Gfx::TexWrapMode wrapT);
     virtual void SetTextureCoordGeneration(int index, TextureGenerationParams &params);
-    
+
     virtual void DrawPrimitive(PrimitiveType type, const Vertex *vertices    , int vertexCount,
                                Color color = Color(1.0f, 1.0f, 1.0f, 1.0f));
     virtual void DrawPrimitive(PrimitiveType type, const VertexTex2 *vertices, int vertexCount,
                                Color color = Color(1.0f, 1.0f, 1.0f, 1.0f));
     virtual void DrawPrimitive(PrimitiveType type, const VertexCol *vertices , int vertexCount);
-    
+
     virtual unsigned int CreateStaticBuffer(PrimitiveType primitiveType, const Vertex* vertices, int vertexCount);
     virtual unsigned int CreateStaticBuffer(PrimitiveType primitiveType, const VertexTex2* vertices, int vertexCount);
     virtual unsigned int CreateStaticBuffer(PrimitiveType primitiveType, const VertexCol* vertices, int vertexCount);
@@ -100,50 +100,50 @@ public:
     virtual void UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primitiveType, const VertexCol* vertices, int vertexCount);
     virtual void DrawStaticBuffer(unsigned int bufferId);
     virtual void DestroyStaticBuffer(unsigned int bufferId);
-    
+
     virtual int ComputeSphereVisibility(const Math::Vector &center, float radius);
 
     virtual void SetViewport(int x, int y, int width, int height);
-    
+
     virtual void SetRenderState(RenderState state, bool enabled);
     virtual bool GetRenderState(RenderState state);
 
     virtual void SetColorMask(bool red, bool green, bool blue, bool alpha);
-    
+
     virtual void SetDepthTestFunc(CompFunc func);
     virtual CompFunc GetDepthTestFunc();
-    
+
     virtual void SetDepthBias(float factor, float units);
     virtual float GetDepthBias();
-    
+
     virtual void SetAlphaTestFunc(CompFunc func, float refValue);
     virtual void GetAlphaTestFunc(CompFunc &func, float &refValue);
-    
+
     virtual void SetBlendFunc(BlendFunc srcBlend, BlendFunc dstBlend);
     virtual void GetBlendFunc(BlendFunc &srcBlend, BlendFunc &dstBlend);
-    
+
     virtual void SetClearColor(const Color &color);
     virtual Color GetClearColor();
-    
+
     virtual void SetGlobalAmbient(const Color &color);
     virtual Color GetGlobalAmbient();
-    
+
     virtual void SetFogParams(FogMode mode, const Color &color, float start, float end, float density);
     virtual void GetFogParams(FogMode &mode, Color &color, float &start, float &end, float &density);
-    
+
     virtual void SetCullMode(CullMode mode);
     virtual CullMode GetCullMode();
-    
+
     virtual void SetShadeModel(ShadeModel model);
     virtual ShadeModel GetShadeModel();
 
     virtual void SetShadowColor(float value);
-    
+
     virtual void SetFillMode(FillMode mode) ;
     virtual FillMode GetFillMode();
 
     virtual void CopyFramebufferToTexture(Texture& texture, int xOffset, int yOffset, int x, int y, int width, int height);
-    
+
     virtual void* GetFrameBufferPixels() const;
 
     virtual CFramebuffer* GetFramebuffer(std::string name);
@@ -151,7 +151,10 @@ public:
     virtual CFramebuffer* CreateFramebuffer(std::string name, const FramebufferParams& params);
 
     virtual void DeleteFramebuffer(std::string name);
-    
+
+    virtual bool IsAnisotropySupported();
+    virtual int GetMaxAnisotropyLevel();
+
 private:
     Math::Matrix m_matrix;
     Material     m_material;
@@ -160,4 +163,3 @@ private:
 
 
 } // namespace Gfx
-

@@ -169,17 +169,7 @@ CEngine::CEngine(CApplication *app)
     m_lastFrameTime = GetSystemUtils()->CreateTimeStamp();
     m_currentFrameTime = GetSystemUtils()->CreateTimeStamp();
 
-    TexFilter filter = TEX_FILTER_BILINEAR;
-    bool mipmaps = false;
-
     int value;
-    if (GetConfigFile().GetIntProperty("Setup", "FilterMode", value))
-    {
-        if (value == 1) filter = TEX_FILTER_NEAREST;
-        else if (value == 2) filter = TEX_FILTER_BILINEAR;
-        else if (value == 3) filter = TEX_FILTER_TRILINEAR, mipmaps = true;
-    }
-
     if (GetConfigFile().GetIntProperty("Setup", "ShadowMapping", value))
     {
         m_shadowMapping = (value > 0);
@@ -190,12 +180,10 @@ CEngine::CEngine(CApplication *app)
     m_shadowColor = 0.5f;
 
     m_defaultTexParams.format = TEX_IMG_AUTO;
-    m_defaultTexParams.mipmap = mipmaps;
-    m_defaultTexParams.filter = filter;
+    m_defaultTexParams.filter = TEX_FILTER_BILINEAR;
 
     m_terrainTexParams.format = TEX_IMG_AUTO;
-    m_terrainTexParams.mipmap = mipmaps;
-    m_terrainTexParams.filter = filter;
+    m_terrainTexParams.filter = TEX_FILTER_BILINEAR;
 
     // Compute bias matrix for shadow mapping
     Math::Matrix temp1, temp2;
@@ -2838,8 +2826,14 @@ float CEngine::GetGadgetQuantity()
 
 void CEngine::SetTextureFilterMode(TexFilter value)
 {
-    m_defaultTexParams.filter = value;
-    m_terrainTexParams.filter = value;
+    bool changed = m_defaultTexParams.filter != value || m_terrainTexParams.filter != value;
+    m_defaultTexParams.filter = m_terrainTexParams.filter = value;
+    m_defaultTexParams.mipmap = m_terrainTexParams.mipmap = (value == TEX_FILTER_TRILINEAR);
+    if(changed)
+    {
+        FlushTextureCache();
+        LoadAllTextures();
+    }
 }
 
 TexFilter CEngine::GetTextureFilterMode()
@@ -2852,7 +2846,13 @@ void CEngine::SetTextureMipmapLevel(int value)
     if (value < 1) value = 1;
     if (value > 16) value = 16;
 
+    bool changed = m_textureMipmapLevel != value;
     m_textureMipmapLevel = value;
+    if(changed)
+    {
+        FlushTextureCache();
+        LoadAllTextures();
+    }
 }
 
 int CEngine::GetTextureMipmapLevel()
@@ -2865,7 +2865,13 @@ void CEngine::SetTextureAnisotropyLevel(int value)
     if (value < 1) value = 1;
     if (value > 16) value = 16;
 
+    bool changed = m_textureAnisotropy != value;
     m_textureAnisotropy = value;
+    if(changed)
+    {
+        FlushTextureCache();
+        LoadAllTextures();
+    }
 }
 
 int CEngine::GetTextureAnisotropyLevel()

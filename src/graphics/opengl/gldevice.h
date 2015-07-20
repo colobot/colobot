@@ -166,6 +166,9 @@ public:
 
     virtual void DeleteFramebuffer(std::string name) override;
 
+    virtual bool IsAnisotropySupported() override;
+    virtual int GetMaxAnisotropyLevel() override;
+
 private:
     //! Updates internal modelview matrix
     void UpdateModelviewMatrix();
@@ -254,4 +257,3 @@ private:
 
 
 } // namespace Gfx
-

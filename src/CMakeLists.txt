@@ -213,6 +213,7 @@ set(BASE_SOURCES
     ui/displaytext.cpp
     ui/edit.cpp
     ui/editvalue.cpp
+    ui/enumslider.cpp
     ui/gauge.cpp
     ui/group.cpp
     ui/image.cpp

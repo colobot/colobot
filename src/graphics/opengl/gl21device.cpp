@@ -203,7 +203,7 @@ bool CGL21Device::Create()
             float level;
             glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &level);
             m_maxAnisotropy = static_cast<int>(level);
-            
+
             GetLogger()->Info("Anisotropic filtering available\n");
             GetLogger()->Info("Maximum anisotropy: %d\n", m_maxAnisotropy);
         }
@@ -345,7 +345,7 @@ bool CGL21Device::Create()
 
     // create default framebuffer object
     FramebufferParams framebufferParams;
-    
+
     framebufferParams.width = m_config.size.x;
     framebufferParams.height = m_config.size.y;
     framebufferParams.depth = m_config.depthSize;
@@ -355,7 +355,7 @@ bool CGL21Device::Create()
     m_framebufferSupport = DetectFramebufferSupport();
     if (m_framebufferSupport != FBS_NONE)
         GetLogger()->Debug("Framebuffer supported\n");
-    
+
     GetLogger()->Info("CDevice created successfully\n");
 
     return true;
@@ -571,7 +571,7 @@ Texture CGL21Device::CreateTexture(ImageData *data, const TextureCreateParams &p
 
     if (!Math::IsPowerOfTwo(result.size.x) || !Math::IsPowerOfTwo(result.size.y))
         GetLogger()->Warn("Creating non-power-of-2 texture (%dx%d)!\n", result.size.x, result.size.y);
-    
+
     result.originalSize = result.size;
 
     glActiveTexture(GL_TEXTURE0);
@@ -748,7 +748,7 @@ Texture CGL21Device::CreateTexture(ImageData *data, const TextureCreateParams &p
 Texture CGL21Device::CreateDepthTexture(int width, int height, int depth)
 {
     Texture result;
-    
+
     result.alpha = false;
     result.size.x = width;
     result.size.y = height;
@@ -1141,7 +1141,7 @@ void CGL21Device::SetTextureStageWrap(int index, TexWrapMode wrapS, TexWrapMode 
         return;
 
     glActiveTexture(GL_TEXTURE0 + index);
-    
+
     if      (wrapS == TEX_WRAP_CLAMP)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     else if (wrapS == TEX_WRAP_CLAMP_TO_BORDER)
@@ -1207,7 +1207,7 @@ void CGL21Device::DrawPrimitive(PrimitiveType type, const VertexTex2 *vertices, 
     glClientActiveTexture(GL_TEXTURE1);
     glEnableClientState(GL_TEXTURE_COORD_ARRAY);
     glTexCoordPointer(2, GL_FLOAT, sizeof(VertexTex2), reinterpret_cast<GLfloat*>(&vs[0].texCoord2));
-    
+
     glColor4fv(color.Array());
 
     glDrawArrays(TranslateGfxPrimitive(type), 0, vertexCount);
@@ -1759,6 +1759,16 @@ void CGL21Device::DeleteFramebuffer(std::string name)
 
         m_framebuffers.erase(position);
     }
+}
+
+bool CGL21Device::IsAnisotropySupported()
+{
+    return m_anisotropyAvailable;
+}
+
+int CGL21Device::GetMaxAnisotropyLevel()
+{
+    return m_maxAnisotropy;
 }
 
 } // namespace Gfx

@@ -382,6 +382,14 @@ void CNullDevice::DeleteFramebuffer(std::string name)
 {
 }
 
+bool CNullDevice::IsAnisotropySupported()
+{
+    return false;
+}
+
+int CNullDevice::GetMaxAnisotropyLevel()
+{
+    return 1;
+}
+
 } // namespace Gfx
-
-

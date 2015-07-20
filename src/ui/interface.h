@@ -39,6 +39,7 @@
 #include "ui/label.h"
 #include "ui/edit.h"
 #include "ui/editvalue.h"
+#include "ui/enumslider.h"
 #include "ui/scroll.h"
 #include "ui/slider.h"
 #include "ui/list.h"
@@ -75,6 +76,7 @@ public:
     CEditValue* CreateEditValue(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
     CScroll*    CreateScroll(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
     CSlider*    CreateSlider(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
+    CEnumSlider* CreateEnumSlider(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
     CShortcut*  CreateShortcut(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
     CCompass*   CreateCompass(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
     CTarget*    CreateTarget(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
@@ -104,4 +106,3 @@ protected:
 
 
 }
-

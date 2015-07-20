@@ -200,6 +200,11 @@ CSlider* CInterface::CreateSlider(Math::Point pos, Math::Point dim, int icon, Ev
     return CreateControl<CSlider>(pos, dim, icon, eventMsg);
 }
 
+CEnumSlider* CInterface::CreateEnumSlider(Math::Point pos, Math::Point dim, int icon, EventType eventMsg)
+{
+    return CreateControl<CEnumSlider>(pos, dim, icon, eventMsg);
+}
+
 // Creates a new list.
 // if expand is less then zero, then the list would try to use expand's absolute value,
 // and try to scale items to some size, so that dim of the list would not change after
@@ -348,4 +353,3 @@ void CInterface::SetFocus(CControl* control)
 
 
 } // namespace Ui
-

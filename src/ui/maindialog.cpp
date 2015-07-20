@@ -1067,8 +1067,6 @@ void CMainDialog::ChangePhase(Phase phase)
         {
             pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_GROUND);
             pc->SetState(STATE_SHADOW);
-            // TODO: video 8 MB?
-            //if ( m_engine->IsVideo8MB() )  pc->ClearState(STATE_ENABLE);
         }
         pos.y -= 0.048f;
         pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_DIRTY);
@@ -1076,8 +1074,6 @@ void CMainDialog::ChangePhase(Phase phase)
         pos.y -= 0.048f;
         pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_SKY);
         pc->SetState(STATE_SHADOW);
-        // TODO: video 8 MB?
-        //if ( m_engine->IsVideo8MB() )  pc->ClearState(STATE_ENABLE);
         pos.y -= 0.048f;
         pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_LENS);
         pc->SetState(STATE_SHADOW);
@@ -1156,6 +1152,59 @@ void CMainDialog::ChangePhase(Phase phase)
             pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL13, name);
             pl->SetTextAlign(Gfx::TEXT_ALIGN_LEFT);
         }
+
+        CEnumSlider* pes;
+
+        pos.x = ox+sx*8.5f;
+        pos.y = 0.385f;
+        ddim.x = dim.x*2.2f;
+        ddim.y = 18.0f/480.0f;
+        pes = pw->CreateEnumSlider(pos, ddim, 0, EVENT_INTERFACE_TEXTURE_FILTER);
+        pes->SetState(STATE_SHADOW);
+        pes->SetPossibleValues({
+            { Gfx::TEX_FILTER_NEAREST,   "Nearest"   },
+            { Gfx::TEX_FILTER_BILINEAR,  "Bilinear"  },
+            { Gfx::TEX_FILTER_TRILINEAR, "Trilinear" }
+        });
+        pos.y += ddim.y/2;
+        pos.x += 0.005f;
+        ddim.x = 0.40f;
+        GetResource(RES_EVENT, EVENT_INTERFACE_TEXTURE_FILTER, name);
+        pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL12, name);
+        pl->SetTextAlign(Gfx::TEXT_ALIGN_LEFT);
+
+        pos.x = ox+sx*8.5f;
+        pos.y = 0.315f;
+        ddim.x = dim.x*2.2f;
+        ddim.y = 18.0f/480.0f;
+        pes = pw->CreateEnumSlider(pos, ddim, 0, EVENT_INTERFACE_TEXTURE_MIPMAP);
+        pes->SetState(STATE_SHADOW);
+        pes->SetPossibleValues({1, 4, 8, 16});
+        pos.y += ddim.y/2;
+        pos.x += 0.005f;
+        ddim.x = 0.40f;
+        GetResource(RES_EVENT, EVENT_INTERFACE_TEXTURE_MIPMAP, name);
+        pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL12, name);
+        pl->SetTextAlign(Gfx::TEXT_ALIGN_LEFT);
+
+        pos.x = ox+sx*8.5f;
+        pos.y = 0.245f;
+        ddim.x = dim.x*2.2f;
+        ddim.y = 18.0f/480.0f;
+        pes = pw->CreateEnumSlider(pos, ddim, 0, EVENT_INTERFACE_TEXTURE_ANISOTROPY);
+        pes->SetState(STATE_SHADOW);
+        std::vector<float> anisotropyOptions;
+        for(int i = 1; i <= m_engine->GetDevice()->GetMaxAnisotropyLevel(); i *= 2)
+            anisotropyOptions.push_back(i);
+        pes->SetPossibleValues(anisotropyOptions);
+        if(!m_engine->GetDevice()->IsAnisotropySupported())
+            pes->ClearState(STATE_ENABLE);
+        pos.y += ddim.y/2;
+        pos.x += 0.005f;
+        ddim.x = 0.40f;
+        GetResource(RES_EVENT, EVENT_INTERFACE_TEXTURE_ANISOTROPY, name);
+        pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL12, name);
+        pl->SetTextAlign(Gfx::TEXT_ALIGN_LEFT);
 
         ddim.x = dim.x*2;
         ddim.y = dim.y*1;
@@ -2411,6 +2460,13 @@ bool CMainDialog::EventProcess(const Event &event)
             case EVENT_INTERFACE_DETAIL:
             case EVENT_INTERFACE_GADGET:
                 ChangeSetupButtons();
+                break;
+
+            case EVENT_INTERFACE_TEXTURE_FILTER:
+            case EVENT_INTERFACE_TEXTURE_MIPMAP:
+            case EVENT_INTERFACE_TEXTURE_ANISOTROPY:
+                ChangeSetupButtons();
+                UpdateSetupButtons();
                 break;
 
             case EVENT_INTERFACE_MIN:
@@ -4470,6 +4526,7 @@ void CMainDialog::UpdateSetupButtons()
     CCheck*     pc;
     CEditValue* pv;
     CSlider*    ps;
+    CEnumSlider* pes;
     float       value;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
@@ -4592,6 +4649,25 @@ void CMainDialog::UpdateSetupButtons()
         ps->SetVisibleValue(m_main->GetAutosaveSlots());
     }
 
+    pes = static_cast<CEnumSlider*>(pw->SearchControl(EVENT_INTERFACE_TEXTURE_FILTER));
+    if ( pes != 0 )
+    {
+        pes->SetVisibleValue(m_engine->GetTextureFilterMode());
+    }
+
+    pes = static_cast<CEnumSlider*>(pw->SearchControl(EVENT_INTERFACE_TEXTURE_MIPMAP));
+    if ( pes != 0 )
+    {
+        pes->SetState(STATE_ENABLE, m_engine->GetTextureFilterMode() == Gfx::TEX_FILTER_TRILINEAR);
+        pes->SetVisibleValue(m_engine->GetTextureMipmapLevel());
+    }
+
+    pes = static_cast<CEnumSlider*>(pw->SearchControl(EVENT_INTERFACE_TEXTURE_ANISOTROPY));
+    if ( pes != 0 )
+    {
+        pes->SetVisibleValue(m_engine->GetTextureAnisotropyLevel());
+    }
+
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_SHADOW));
     if ( pc != 0 )
     {
@@ -4697,6 +4773,7 @@ void CMainDialog::ChangeSetupButtons()
     CWindow*    pw;
     CEditValue* pv;
     CSlider*    ps;
+    CEnumSlider* pes;
     float       value;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
@@ -4757,6 +4834,27 @@ void CMainDialog::ChangeSetupButtons()
         value = ps->GetVisibleValue();
         m_main->SetAutosaveSlots(static_cast<int>(value));
     }
+
+    pes = static_cast<CEnumSlider*>(pw->SearchControl(EVENT_INTERFACE_TEXTURE_FILTER));
+    if ( pes != 0 )
+    {
+        value = pes->GetVisibleValue();
+        m_engine->SetTextureFilterMode(static_cast<Gfx::TexFilter>(value));
+    }
+
+    pes = static_cast<CEnumSlider*>(pw->SearchControl(EVENT_INTERFACE_TEXTURE_MIPMAP));
+    if ( pes != 0 )
+    {
+        value = pes->GetVisibleValue();
+        m_engine->SetTextureMipmapLevel(static_cast<int>(value));
+    }
+
+    pes = static_cast<CEnumSlider*>(pw->SearchControl(EVENT_INTERFACE_TEXTURE_ANISOTROPY));
+    if ( pes != 0 )
+    {
+        value = pes->GetVisibleValue();
+        m_engine->SetTextureAnisotropyLevel(static_cast<int>(value));
+    }
 }
 
 
@@ -4804,6 +4902,7 @@ void CMainDialog::SetupMemorize()
     GetConfigFile().SetFloatProperty("Setup", "ShadowColor", m_engine->GetShadowColor());
     GetConfigFile().SetFloatProperty("Setup", "ShadowRange", m_engine->GetShadowRange());
     GetConfigFile().SetIntProperty("Setup", "MSAA", m_engine->GetMultiSample());
+    GetConfigFile().SetIntProperty("Setup", "FilterMode", m_engine->GetTextureFilterMode());
 
     /* screen setup */
     GetConfigFile().SetIntProperty("Setup", "Fullscreen", m_setupFull ? 1 : 0);
@@ -5088,6 +5187,11 @@ void CMainDialog::SetupRecall()
     if (GetConfigFile().GetIntProperty("Setup", "MSAA", iValue))
     {
         m_engine->SetMultiSample(iValue);
+    }
+
+    if (GetConfigFile().GetIntProperty("Setup", "FilterMode", iValue))
+    {
+        m_engine->SetTextureFilterMode(static_cast<Gfx::TexFilter>(iValue));
     }
 }
 

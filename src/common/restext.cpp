@@ -213,6 +213,9 @@ void InitializeRestext()
     stringsEvent[EVENT_INTERFACE_AUTOSAVE_ENABLE]   = TR("Autosave\\Enables autosave");
     stringsEvent[EVENT_INTERFACE_AUTOSAVE_INTERVAL] = TR("Autosave interval\\How often your game will autosave");
     stringsEvent[EVENT_INTERFACE_AUTOSAVE_SLOTS]    = TR("Autosave slots\\How many autosave slots you'll have");
+    stringsEvent[EVENT_INTERFACE_TEXTURE_FILTER]    = TR("Texture filtering\\Texture filtering");
+    stringsEvent[EVENT_INTERFACE_TEXTURE_MIPMAP]    = TR("Mipmap level\\Mipmap level");
+    stringsEvent[EVENT_INTERFACE_TEXTURE_ANISOTROPY]= TR("Anisotropy level\\Anisotropy level");
 
     stringsEvent[EVENT_INTERFACE_KDEF]      = TR("Standard controls\\Standard key functions");
     assert(INPUT_SLOT_MAX < EVENT_INTERFACE_KEY_END-EVENT_INTERFACE_KEY);

@@ -342,6 +342,26 @@ CSlider* CWindow::CreateSlider(Math::Point pos, Math::Point dim, int icon, Event
     return 0;
 }
 
+CEnumSlider* CWindow::CreateEnumSlider(Math::Point pos, Math::Point dim, int icon, EventType eventMsg)
+{
+    CEnumSlider*    pc;
+    int         i;
+
+    if ( eventMsg == EVENT_NULL )  eventMsg = GetUniqueEventType();
+
+    for ( i=0 ; i<MAXWINDOW ; i++ )
+    {
+        if ( m_table[i] == 0 )
+        {
+            m_table[i] = new CEnumSlider();
+            pc = static_cast<CEnumSlider*>(m_table[i]);
+            pc->Create(pos, dim, icon, eventMsg);
+            return pc;
+        }
+    }
+    return 0;
+}
+
 // Creates a new list.
 // if expand is less then zero, then the list would try to use expand's absolute value,
 // and try to scale items to some size, so that dim of the list would not change after
@@ -1555,4 +1575,3 @@ void CWindow::DrawHach(Math::Point pos, Math::Point dim)
 }
 
 }
-

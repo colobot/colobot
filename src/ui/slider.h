@@ -25,6 +25,8 @@
 #include "ui/control.h"
 #include "common/event.h"
 
+#include <string>
+
 namespace Ui {
 
 class CButton;
@@ -59,6 +61,7 @@ protected:
     void        MoveAdjust();
     void        AdjustGlint();
     void        DrawVertex(Math::Point pos, Math::Point dim, int icon);
+    virtual std::string GetLabel();
 
 protected:
     CButton*    m_buttonLeft;
@@ -82,4 +85,3 @@ protected:
 
 
 }
-

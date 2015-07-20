@@ -222,7 +222,7 @@ bool CGLDevice::Create()
             float level;
             glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &level);
             m_maxAnisotropy = static_cast<int>(level);
-            
+
             GetLogger()->Info("Anisotropic filtering available\n");
             GetLogger()->Info("Maximum anisotropy: %d\n", m_maxAnisotropy);
         }
@@ -230,7 +230,7 @@ bool CGLDevice::Create()
         {
             GetLogger()->Info("Anisotropic filtering not available\n");
         }
-        
+
         GetLogger()->Info("Auto-detecting VBO support\n");
 
         // detecting VBO ARB extension
@@ -541,7 +541,7 @@ Texture CGLDevice::CreateTexture(ImageData *data, const TextureCreateParams &par
 
     if (!Math::IsPowerOfTwo(result.size.x) || !Math::IsPowerOfTwo(result.size.y))
         GetLogger()->Warn("Creating non-power-of-2 texture (%dx%d)!\n", result.size.x, result.size.y);
-    
+
     result.originalSize = result.size;
 
     // Use & enable 1st texture stage
@@ -728,7 +728,7 @@ Texture CGLDevice::CreateDepthTexture(int width, int height, int depth)
         result.id = 0;
         return result;
     }
-    
+
     result.alpha = false;
     result.size.x = width;
     result.size.y = height;
@@ -1151,7 +1151,7 @@ void CGLDevice::SetTextureStageWrap(int index, TexWrapMode wrapS, TexWrapMode wr
 
     if (m_multitextureAvailable)
         glActiveTexture(GL_TEXTURE0 + index);
-    
+
     if      (wrapS == TEX_WRAP_CLAMP)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     else if (wrapS == TEX_WRAP_CLAMP_TO_BORDER)
@@ -1349,7 +1349,7 @@ unsigned int CGLDevice::CreateStaticBuffer(PrimitiveType primitiveType, const Ve
         info.vertexType = VERTEX_TYPE_COL;
         info.vertexCount = vertexCount;
         info.bufferId = 0;
-        
+
         if(m_vertexBufferType == VBT_VBO_CORE)
         {
             glGenBuffers(1, &info.bufferId);
@@ -1498,7 +1498,7 @@ void CGLDevice::DrawStaticBuffer(unsigned int bufferId)
             return;
 
         glEnable(GL_VERTEX_ARRAY);
-        
+
         if(m_vertexBufferType == VBT_VBO_CORE)
             glBindBuffer(GL_ARRAY_BUFFER, (*it).second.bufferId);
         else
@@ -1578,7 +1578,7 @@ void CGLDevice::DrawStaticBuffer(unsigned int bufferId)
             glBindBuffer(GL_ARRAY_BUFFER, 0);
         else
             glBindBufferARB(GL_ARRAY_BUFFER_ARB, 0);
-        
+
         glDisable(GL_VERTEX_ARRAY);
     }
     else
@@ -1893,5 +1893,14 @@ void CGLDevice::DeleteFramebuffer(std::string name)
     }
 }
 
-} // namespace Gfx
+bool CGLDevice::IsAnisotropySupported()
+{
+    return m_anisotropyAvailable;
+}
 
+int CGLDevice::GetMaxAnisotropyLevel()
+{
+    return m_maxAnisotropy;
+}
+
+} // namespace Gfx
