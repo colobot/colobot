@@ -23,6 +23,8 @@
 #include "common/event.h"
 #include "common/misc.h"
 
+#include "object/robotmain.h"
+
 #include "ui/edit.h"
 #include "ui/button.h"
 #include "ui/interface.h"
@@ -43,7 +45,7 @@ CEditValue::CEditValue() : CControl ()
     m_minValue = 0.0f;  // 0%
     m_maxValue = 1.0f;  // 100%
 
-    m_interface = nullptr;
+    m_interface = CRobotMain::GetInstancePointer()->GetInterface();
 }
 
 // Object's destructor.
@@ -378,4 +380,3 @@ void CEditValue::SetInterface(CInterface* interface)
 }
 
 }
-
