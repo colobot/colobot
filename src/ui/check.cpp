@@ -150,8 +150,6 @@ void CCheck::Draw()
 
     m_dim = iDim;
 
-    if ( m_state & STATE_DEAD )  return;
-
     // Draw the name.
     pos.x = m_pos.x + m_dim.y / 0.9f;
     pos.y = m_pos.y + m_dim.y * 0.50f;
@@ -160,4 +158,3 @@ void CCheck::Draw()
 }
 
 }
-

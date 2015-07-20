@@ -1074,10 +1074,11 @@ void CMainDialog::ChangePhase(Phase phase)
         pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_SHADOW);
         pc->SetState(STATE_SHADOW);
         pos.y -= 0.048f;
-        if ( !m_bSimulSetup )
+        pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_GROUND);
+        pc->SetState(STATE_SHADOW);
+        if ( m_bSimulSetup )
         {
-            pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_GROUND);
-            pc->SetState(STATE_SHADOW);
+            pc->SetState(STATE_DEAD);
         }
         pos.y -= 0.048f;
         pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_DIRTY);
@@ -1095,10 +1096,11 @@ void CMainDialog::ChangePhase(Phase phase)
         pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_FOG);
         pc->SetState(STATE_SHADOW);
         pos.y -= 0.048f;
-        if ( !m_bSimulSetup )
+        pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_LIGHT);
+        pc->SetState(STATE_SHADOW);
+        if ( m_bSimulSetup )
         {
-            pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_LIGHT);
-            pc->SetState(STATE_SHADOW);
+            pc->SetState(STATE_DEAD);
         }
 
         pos.x = ox+sx*3;
@@ -1165,23 +1167,24 @@ void CMainDialog::ChangePhase(Phase phase)
         pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL12, name);
         pl->SetTextAlign(Gfx::TEXT_ALIGN_LEFT);
 
-        if ( !m_bSimulSetup )
+        pos.x = ox+sx*8.5f;
+        pos.y = 0.47f;
+        ddim.x = dim.x*2.2f;
+        ddim.y = 18.0f/480.0f;
+        pv = pw->CreateEditValue(pos, ddim, 0, EVENT_INTERFACE_GADGET);
+        pv->SetState(STATE_SHADOW);
+        if ( m_bSimulSetup )
         {
-            pos.x = ox+sx*8.5f;
-            pos.y = 0.47f;
-            ddim.x = dim.x*2.2f;
-            ddim.y = 18.0f/480.0f;
-            pv = pw->CreateEditValue(pos, ddim, 0, EVENT_INTERFACE_GADGET);
-            pv->SetState(STATE_SHADOW);
-            pv->SetMinValue(0.0f);
-            pv->SetMaxValue(1.0f);
-            pos.x += 0.13f;
-            pos.y -= 0.015f;
-            ddim.x = 0.40f;
-            GetResource(RES_EVENT, EVENT_INTERFACE_GADGET, name);
-            pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL13, name);
-            pl->SetTextAlign(Gfx::TEXT_ALIGN_LEFT);
+            pv->SetState(STATE_DEAD);
         }
+        pv->SetMinValue(0.0f);
+        pv->SetMaxValue(1.0f);
+        pos.x += 0.13f;
+        pos.y -= 0.015f;
+        ddim.x = 0.40f;
+        GetResource(RES_EVENT, EVENT_INTERFACE_GADGET, name);
+        pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL13, name);
+        pl->SetTextAlign(Gfx::TEXT_ALIGN_LEFT);
 
         pos.x = ox+sx*8.5f;
         pos.y = 0.385f;
@@ -1332,10 +1335,11 @@ void CMainDialog::ChangePhase(Phase phase)
         pc->SetState(STATE_SHADOW);
         pos.y -= 0.048f;
         pos.y -= 0.048f;
-        if ( !m_bSimulSetup )
+        pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_EDITMODE);
+        pc->SetState(STATE_SHADOW);
+        if ( m_bSimulSetup )
         {
-            pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_EDITMODE);
-            pc->SetState(STATE_SHADOW);
+            pc->SetState(STATE_DEAD);
         }
         pos.y -= 0.048f;
         pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_EDITVALUE);

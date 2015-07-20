@@ -148,6 +148,7 @@ bool CEditValue::EventProcess(const Event &event)
 
     if ( (m_state & STATE_VISIBLE) == 0 )  return true;
     if ( (m_state & STATE_ENABLE) == 0 )  return true;
+    if ( m_state & STATE_DEAD )  return true;
 
     if ( m_edit != 0 )
     {
@@ -258,10 +259,12 @@ void CEditValue::Draw()
     }
     if ( m_buttonUp != 0 )
     {
+        m_buttonUp->SetState(STATE_DEAD, TestState(STATE_DEAD));
         m_buttonUp->Draw();
     }
     if ( m_buttonDown != 0 )
     {
+        m_buttonDown->SetState(STATE_DEAD, TestState(STATE_DEAD));
         m_buttonDown->Draw();
     }
 }
