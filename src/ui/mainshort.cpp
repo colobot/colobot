@@ -73,9 +73,13 @@ bool CMainShort::CreateShortcuts()
     }
     m_shortcuts.clear();
 
+
+    Math::IntPoint size = m_engine->GetWindowSize();
+    float ratio = static_cast<float>(size.y) / static_cast<float>(size.x);
+
     // Display pause / movie indicator
-    dim.x = 28.0f/640.0f;
     dim.y = 28.0f/480.0f;
+    dim.x = dim.y*ratio;
     pos.x =  4.0f/640.0f;
     pos.y = (480.0f-32.0f)/480.0f;
 
