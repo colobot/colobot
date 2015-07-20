@@ -1460,9 +1460,6 @@ msgstr "Cible"
 msgid "Target bot"
 msgstr "Cible d'entraînement"
 
-msgid "Textures\\Quality of textures "
-msgstr "Qualité des textures\\Qualité des images"
-
 msgid "The expression must return a boolean value"
 msgstr "L'expression doit ętre un boolean"
 
@@ -1848,6 +1845,9 @@ msgstr "www.epsitec.com"
 
 #~ msgid "Speed 3.0x\\Three times faster"
 #~ msgstr "Vitesse 3.0x\\Trois fois plus rapide"
+
+#~ msgid "Textures\\Quality of textures "
+#~ msgstr "Qualité des textures\\Qualité des images"
 
 #~ msgid "\\Return to COLOBOT"
 #~ msgstr "\\Retourner dans COLOBOT"

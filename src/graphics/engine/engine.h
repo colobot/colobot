@@ -1115,12 +1115,6 @@ public:
     //@}
 
     //@{
-    //! Management the quality of textures
-    void            SetTextureQuality(int value);
-    int             GetTextureQuality();
-    //@}
-
-    //@{
     //! Management the texture filter mode
     void            SetTextureFilterMode(TexFilter value);
     TexFilter       GetTextureFilterMode();
@@ -1449,7 +1443,6 @@ protected:
     float           m_objectDetail;
     float           m_terrainVision;
     float           m_gadgetQuantity;
-    int             m_textureQuality;
     bool            m_totoMode;
     bool            m_lensMode;
     bool            m_waterMode;

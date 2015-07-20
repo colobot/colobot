@@ -1157,28 +1157,6 @@ void CMainDialog::ChangePhase(Phase phase)
             pl->SetTextAlign(Gfx::TEXT_ALIGN_LEFT);
         }
 
-#if 0
-        if ( !m_bSimulSetup )
-        {
-            pos.x = ox+sx*8.5f;
-            pos.y = 0.41f;
-            ddim.x = dim.x*2.2f;
-            ddim.y = 18.0f/480.0f;
-            pv = pw->CreateEditValue(pos, ddim, 0, EVENT_INTERFACE_TEXTURE);
-            pv->SetState(STATE_SHADOW);
-            pv->SetType(EVT_INT);
-            pv->SetMinValue(0.0f);
-            pv->SetMaxValue(2.0f);
-            pv->SetStepValue(1.0f);
-            pos.x += 0.13f;
-            pos.y -= 0.015f;
-            ddim.x = 0.40f;
-            GetResource(RES_EVENT, EVENT_INTERFACE_TEXTURE, name);
-            pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL14, name);
-            pl->SetTextAlign(Gfx::TEXT_ALIGN_LEFT);
-        }
-#endif
-
         ddim.x = dim.x*2;
         ddim.y = dim.y*1;
         pos.x = ox+sx*10;
@@ -2432,7 +2410,6 @@ bool CMainDialog::EventProcess(const Event &event)
             case EVENT_INTERFACE_CLIP:
             case EVENT_INTERFACE_DETAIL:
             case EVENT_INTERFACE_GADGET:
-            case EVENT_INTERFACE_TEXTURE:
                 ChangeSetupButtons();
                 break;
 
@@ -4698,13 +4675,6 @@ void CMainDialog::UpdateSetupButtons()
         pv->SetValue(value);
     }
 
-    pv = static_cast<CEditValue*>(pw->SearchControl(EVENT_INTERFACE_TEXTURE));
-    if ( pv != 0 )
-    {
-        value = static_cast<float>(m_engine->GetTextureQuality());
-        pv->SetValue(value);
-    }
-
     ps = static_cast<CSlider*>(pw->SearchControl(EVENT_INTERFACE_VOLSOUND));
     if ( ps != 0 )
     {
@@ -4758,13 +4728,6 @@ void CMainDialog::ChangeSetupButtons()
     {
         value = pv->GetValue();
         m_engine->SetGadgetQuantity(value);
-    }
-
-    pv = static_cast<CEditValue*>(pw->SearchControl(EVENT_INTERFACE_TEXTURE));
-    if ( pv != 0 )
-    {
-        value = pv->GetValue();
-        m_engine->SetTextureQuality(static_cast<int>(value));
     }
 
     ps = static_cast<CSlider*>(pw->SearchControl(EVENT_INTERFACE_VOLSOUND));
@@ -4829,7 +4792,6 @@ void CMainDialog::SetupMemorize()
     GetConfigFile().SetFloatProperty("Setup", "ClippingDistance", m_engine->GetClippingDistance());
     GetConfigFile().SetFloatProperty("Setup", "ObjectDetail", m_engine->GetObjectDetail());
     GetConfigFile().SetFloatProperty("Setup", "GadgetQuantity", m_engine->GetGadgetQuantity());
-    GetConfigFile().SetIntProperty("Setup", "TextureQuality", m_engine->GetTextureQuality());
     GetConfigFile().SetIntProperty("Setup", "TotoMode", m_engine->GetTotoMode());
     GetConfigFile().SetIntProperty("Setup", "AudioVolume", m_sound->GetAudioVolume());
     GetConfigFile().SetIntProperty("Setup", "MusicVolume", m_sound->GetMusicVolume());
@@ -5046,11 +5008,6 @@ void CMainDialog::SetupRecall()
         m_engine->SetGadgetQuantity(fValue);
     }
 
-    if ( GetConfigFile().GetIntProperty("Setup", "TextureQuality", iValue) )
-    {
-        m_engine->SetTextureQuality(iValue);
-    }
-
     if ( GetConfigFile().GetIntProperty("Setup", "AudioVolume", iValue) )
     {
         m_sound->SetAudioVolume(iValue);
@@ -5173,11 +5130,6 @@ void CMainDialog::ChangeSetupQuality(int quality)
     if ( quality == 0 )  value = 1.0f;
     if ( quality >  0 )  value = 1.0f;
     m_engine->SetGadgetQuantity(value);
-
-    if ( quality <  0 )  iValue = 0;
-    if ( quality == 0 )  iValue = 1;
-    if ( quality >  0 )  iValue = 2;
-    m_engine->SetTextureQuality(iValue);
 
     // TODO: first execute adapt?
     //m_engine->FirstExecuteAdapt(false);

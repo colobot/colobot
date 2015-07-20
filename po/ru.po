@@ -1456,9 +1456,6 @@ msgstr "Цель"
 msgid "Target bot"
 msgstr "Целевой бот"
 
-msgid "Textures\\Quality of textures "
-msgstr "Текстуры\\Качество текстур "
-
 msgid "The expression must return a boolean value"
 msgstr "Выражение должно возвращать логическое значение"
 
@@ -1844,6 +1841,9 @@ msgstr "www.epsitec.com"
 
 #~ msgid "Speed 3.0x\\Three times faster"
 #~ msgstr "Скорость 3.0х\\В три раза быстрее"
+
+#~ msgid "Textures\\Quality of textures "
+#~ msgstr "Текстуры\\Качество текстур "
 
 #~ msgid "\\Return to COLOBOT"
 #~ msgstr "\\Вернуться в COLOBOT"

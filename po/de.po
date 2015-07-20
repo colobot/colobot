@@ -1464,9 +1464,6 @@ msgstr "Zielscheibe"
 msgid "Target bot"
 msgstr "Mobile Zielscheibe"
 
-msgid "Textures\\Quality of textures "
-msgstr "Qualität der Texturen\\Qualität der Anzeige"
-
 msgid "The expression must return a boolean value"
 msgstr "Der Ausdruck muss einen boolschen Wert ergeben"
 
@@ -1852,6 +1849,9 @@ msgstr "www.epsitec.com"
 
 #~ msgid "Speed 3.0x\\Three times faster"
 #~ msgstr "Geschwindigkeit 3.0x\\Spielgeschwindigkeit drei Mal schneller"
+
+#~ msgid "Textures\\Quality of textures "
+#~ msgstr "Qualität der Texturen\\Qualität der Anzeige"
 
 #~ msgid "\\Return to COLOBOT"
 #~ msgstr "\\Zurück zu COLOBOT"

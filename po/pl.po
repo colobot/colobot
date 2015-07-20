@@ -1461,9 +1461,6 @@ msgstr "Cel"
 msgid "Target bot"
 msgstr "Robot cel"
 
-msgid "Textures\\Quality of textures "
-msgstr "Tekstury\\Jakość tekstur "
-
 msgid "The expression must return a boolean value"
 msgstr "Wyrażenie musi zwrócić wartość logiczną"
 
@@ -1835,3 +1832,6 @@ msgstr "www.epsitec.com"
 
 #~ msgid "Mouse shadow\\Gives the mouse a shadow"
 #~ msgstr "Cień kursora myszy\\Dodaje cień kursorowi myszy"
+
+#~ msgid "Textures\\Quality of textures "
+#~ msgstr "Tekstury\\Jakość tekstur "

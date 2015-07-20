@@ -117,7 +117,6 @@ CEngine::CEngine(CApplication *app)
     m_objectDetail = 1.0f;
     m_terrainVision = 1000.0f;
     m_gadgetQuantity = 1.0f;
-    m_textureQuality = 1;
     m_textureMipmapLevel = 1;
     m_textureAnisotropy = 1;
     m_shadowMapping = false;
@@ -2835,23 +2834,6 @@ void CEngine::SetGadgetQuantity(float value)
 float CEngine::GetGadgetQuantity()
 {
     return m_gadgetQuantity;
-}
-
-void CEngine::SetTextureQuality(int value)
-{
-    if (value < 0) value = 0;
-    if (value > 2) value = 2;
-
-    if (value != m_textureQuality)
-    {
-        m_textureQuality = value;
-        LoadAllTextures();
-    }
-}
-
-int CEngine::GetTextureQuality()
-{
-    return m_textureQuality;
 }
 
 void CEngine::SetTextureFilterMode(TexFilter value)
