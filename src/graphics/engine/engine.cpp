@@ -3242,14 +3242,14 @@ void CEngine::Draw3DScene()
     if (!m_qualityShadows)
         UseShadowMapping(false);
 
-        // Draws the shadows , if shadows enabled
-    if (m_shadowVisible)
+    // Draws the shadows, if shadows enabled and shadow mapping disabled
+    if (m_shadowVisible && !m_shadowMapping)
         DrawShadow();
 
 
     m_app->StopPerformanceCounter(PCNT_RENDER_TERRAIN);
 
-    // Draw other objects (and if shadows disabled, also terrain)
+    // Draw other objects
 
     m_app->StartPerformanceCounter(PCNT_RENDER_OBJECTS);
 

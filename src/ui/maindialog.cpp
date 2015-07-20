@@ -4768,7 +4768,8 @@ void CMainDialog::UpdateSetupButtons()
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_SHADOW));
     if ( pc != 0 )
     {
-        pc->SetState(STATE_CHECK, m_engine->GetShadow());
+        pc->SetState(STATE_ENABLE, !m_engine->GetShadowMapping());
+        pc->SetState(STATE_CHECK, !m_engine->GetShadowMapping() && m_engine->GetShadow());
     }
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_GROUND));
