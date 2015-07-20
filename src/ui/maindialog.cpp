@@ -1237,6 +1237,34 @@ void CMainDialog::ChangePhase(Phase phase)
         pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL12, name);
         pl->SetTextAlign(Gfx::TEXT_ALIGN_LEFT);
 
+
+        pos.x = ox+sx*12.5;
+        pos.y = 0.385f;
+        ddim.x = dim.x*2.2f;
+        ddim.y = 18.0f/480.0f;
+        pes = pw->CreateEnumSlider(pos, ddim, 0, EVENT_INTERFACE_SHADOW_MAPPING);
+        pes->SetState(STATE_SHADOW);
+        std::map<float, std::string> shadowOptions = {
+            { -1, "Disabled" },
+            //{ 0, "Screen buffer" }, //TODO: Is this needed? Maybe enable only if offscreen rendering not available?
+        };
+        for(int i = 128; i <= 4096; i *= 2)
+            shadowOptions[i] = StrUtils::ToString<int>(i)+"x"+StrUtils::ToString<int>(i);
+        pes->SetPossibleValues(shadowOptions);
+        pos.y += ddim.y/2;
+        pos.x += 0.005f;
+        ddim.x = 0.40f;
+        GetResource(RES_EVENT, EVENT_INTERFACE_SHADOW_MAPPING, name);
+        pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL12, name);
+        pl->SetTextAlign(Gfx::TEXT_ALIGN_LEFT);
+
+        pos.x = ox+sx*12.5;
+        pos.y = 0.315f;
+        ddim.x = dim.x*6;
+        ddim.y = dim.y*0.5f;
+        pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_SHADOW_MAPPING_QUALITY);
+        pc->SetState(STATE_SHADOW);
+
         ddim.x = dim.x*2;
         ddim.y = dim.y*1;
         pos.x = ox+sx*10;
@@ -2498,7 +2526,13 @@ bool CMainDialog::EventProcess(const Event &event)
             case EVENT_INTERFACE_TEXTURE_MIPMAP:
             case EVENT_INTERFACE_TEXTURE_ANISOTROPY:
             case EVENT_INTERFACE_MSAA:
+            case EVENT_INTERFACE_SHADOW_MAPPING:
                 ChangeSetupButtons();
+                UpdateSetupButtons();
+                break;
+
+            case EVENT_INTERFACE_SHADOW_MAPPING_QUALITY:
+                m_engine->SetShadowMappingQuality(!m_engine->GetShadowMappingQuality());
                 UpdateSetupButtons();
                 break;
 
@@ -4707,6 +4741,30 @@ void CMainDialog::UpdateSetupButtons()
         pes->SetVisibleValue(m_engine->GetMultiSample());
     }
 
+    pes = static_cast<CEnumSlider*>(pw->SearchControl(EVENT_INTERFACE_SHADOW_MAPPING));
+    if ( pes != 0 )
+    {
+        if (!m_engine->GetShadowMapping())
+        {
+            pes->SetVisibleValue(-1);
+        }
+        else if (!m_engine->GetShadowMappingOffscreen())
+        {
+            pes->SetVisibleValue(0);
+        }
+        else
+        {
+            pes->SetVisibleValue(m_engine->GetShadowMappingOffscreenResolution());
+        }
+    }
+
+    pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_SHADOW_MAPPING_QUALITY));
+    if ( pc != 0 )
+    {
+        pc->SetState(STATE_ENABLE, m_engine->GetShadowMapping());
+        pc->SetState(STATE_CHECK, m_engine->GetShadowMapping() && m_engine->GetShadowMappingQuality());
+    }
+
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_SHADOW));
     if ( pc != 0 )
     {
@@ -4901,6 +4959,27 @@ void CMainDialog::ChangeSetupButtons()
         value = pes->GetVisibleValue();
         m_engine->SetMultiSample(static_cast<int>(value));
     }
+
+    pes = static_cast<CEnumSlider*>(pw->SearchControl(EVENT_INTERFACE_SHADOW_MAPPING));
+    if ( pes != 0 )
+    {
+        value = pes->GetVisibleValue();
+        if(value == -1)
+        {
+            m_engine->SetShadowMapping(false);
+        }
+        else if(value == 0)
+        {
+            m_engine->SetShadowMapping(true);
+            m_engine->SetShadowMappingOffscreen(false);
+        }
+        else
+        {
+            m_engine->SetShadowMapping(true);
+            m_engine->SetShadowMappingOffscreen(true);
+            m_engine->SetShadowMappingOffscreenResolution(value);
+        }
+    }
 }
 
 
@@ -4949,6 +5028,9 @@ void CMainDialog::SetupMemorize()
     GetConfigFile().SetFloatProperty("Setup", "ShadowRange", m_engine->GetShadowRange());
     GetConfigFile().SetIntProperty("Setup", "MSAA", m_engine->GetMultiSample());
     GetConfigFile().SetIntProperty("Setup", "FilterMode", m_engine->GetTextureFilterMode());
+    GetConfigFile().SetIntProperty("Setup", "ShadowMapping", m_engine->GetShadowMapping());
+    GetConfigFile().SetIntProperty("Setup", "ShadowMappingQuality", m_engine->GetShadowMappingQuality());
+    GetConfigFile().SetIntProperty("Setup", "ShadowMappingResolution", m_engine->GetShadowMappingOffscreen() ? m_engine->GetShadowMappingOffscreenResolution() : 0);
 
     /* screen setup */
     GetConfigFile().SetIntProperty("Setup", "Fullscreen", m_setupFull ? 1 : 0);
@@ -5218,6 +5300,29 @@ void CMainDialog::SetupRecall()
     if (GetConfigFile().GetIntProperty("Setup", "Anisotropy", iValue))
     {
         m_engine->SetTextureAnisotropyLevel(iValue);
+    }
+
+    if (GetConfigFile().GetIntProperty("Setup", "ShadowMapping", iValue))
+    {
+        m_engine->SetShadowMapping(iValue);
+    }
+
+    if (GetConfigFile().GetIntProperty("Setup", "ShadowMappingQuality", iValue))
+    {
+        m_engine->SetShadowMappingQuality(iValue);
+    }
+
+    if (GetConfigFile().GetIntProperty("Setup", "ShadowMappingResolution", iValue))
+    {
+        if(iValue == 0)
+        {
+            m_engine->SetShadowMappingOffscreen(false);
+        }
+        else
+        {
+            m_engine->SetShadowMappingOffscreen(true);
+            m_engine->SetShadowMappingOffscreenResolution(iValue);
+        }
     }
 
     if (GetConfigFile().GetFloatProperty("Setup", "ShadowColor", fValue))

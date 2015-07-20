@@ -119,9 +119,10 @@ CEngine::CEngine(CApplication *app)
     m_gadgetQuantity = 1.0f;
     m_textureMipmapLevel = 1;
     m_textureAnisotropy = 1;
-    m_shadowMapping = false;
-    m_offscreenShadowRendering = false;
-    m_qualityShadows = false;
+    m_shadowMapping = true;
+    m_offscreenShadowRendering = true;
+    m_offscreenShadowRenderingResolution = 1024;
+    m_qualityShadows = true;
     m_shadowRange = 0.0f;
     m_multisample = 1;
 
@@ -168,14 +169,6 @@ CEngine::CEngine(CApplication *app)
     m_fpsCounter = 0;
     m_lastFrameTime = GetSystemUtils()->CreateTimeStamp();
     m_currentFrameTime = GetSystemUtils()->CreateTimeStamp();
-
-    int value;
-    if (GetConfigFile().GetIntProperty("Setup", "ShadowMapping", value))
-    {
-        m_shadowMapping = (value > 0);
-        m_offscreenShadowRendering = (value > 1);
-        m_qualityShadows = (value > 2);
-    }
 
     m_shadowColor = 0.5f;
 
@@ -2886,12 +2879,63 @@ int CEngine::GetTextureAnisotropyLevel()
 
 void CEngine::SetShadowMapping(bool value)
 {
+    if(value == m_shadowMapping) return;
     m_shadowMapping = value;
+    if(!value)
+    {
+        m_device->DeleteFramebuffer("shadow");
+        m_device->DestroyTexture(m_shadowMap);
+        m_shadowMap.id = 0;
+    }
 }
 
 bool CEngine::GetShadowMapping()
 {
     return m_shadowMapping;
+}
+
+void CEngine::SetShadowMappingOffscreen(bool value)
+{
+    if(value == m_offscreenShadowRendering) return;
+    m_offscreenShadowRendering = value;
+    if(value)
+    {
+        m_device->DestroyTexture(m_shadowMap);
+        m_shadowMap.id = 0;
+    }
+    else
+    {
+        m_device->DeleteFramebuffer("shadow");
+        m_shadowMap.id = 0;
+    }
+}
+
+bool CEngine::GetShadowMappingOffscreen()
+{
+    return m_offscreenShadowRendering;
+}
+
+void CEngine::SetShadowMappingOffscreenResolution(int resolution)
+{
+    if(resolution == m_offscreenShadowRenderingResolution) return;
+    m_offscreenShadowRenderingResolution = resolution;
+    m_device->DeleteFramebuffer("shadow");
+    m_shadowMap.id = 0;
+}
+
+int CEngine::GetShadowMappingOffscreenResolution()
+{
+    return m_offscreenShadowRenderingResolution;
+}
+
+void CEngine::SetShadowMappingQuality(bool value)
+{
+    m_qualityShadows = value;
+}
+
+bool CEngine::GetShadowMappingQuality()
+{
+    return m_qualityShadows;
 }
 
 void CEngine::SetTotoMode(bool present)
@@ -3381,16 +3425,7 @@ void CEngine::RenderShadowMap()
 
         if (m_offscreenShadowRendering)
         {
-            int size;
-
-            if (CConfigFile::GetInstance().GetIntProperty("Setup", "OffscreenBuffer", size))
-            {
-                width = height = size;
-            }
-            else
-            {
-                width = height = 1024;
-            }
+            width = height = m_offscreenShadowRenderingResolution;
 
             FramebufferParams params;
             params.width = params.height = width;

@@ -1136,6 +1136,12 @@ public:
     //! Management of shadow mapping
     void            SetShadowMapping(bool value);
     bool            GetShadowMapping();
+    void            SetShadowMappingOffscreen(bool value);
+    bool            GetShadowMappingOffscreen();
+    void            SetShadowMappingOffscreenResolution(int resolution);
+    int             GetShadowMappingOffscreenResolution();
+    void            SetShadowMappingQuality(bool value);
+    bool            GetShadowMappingQuality();
     //@}
 
     //@{
@@ -1480,6 +1486,8 @@ protected:
     bool m_shadowMapping;
     //! true enables offscreen shadow rendering
     bool m_offscreenShadowRendering;
+    //! Offscreen shadow rendering resolution
+    int m_offscreenShadowRenderingResolution;
     //! true enables higher quality shadows
     bool m_qualityShadows;
     //! Shadow color

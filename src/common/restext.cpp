@@ -217,6 +217,8 @@ void InitializeRestext()
     stringsEvent[EVENT_INTERFACE_TEXTURE_MIPMAP]    = TR("Mipmap level\\Mipmap level");
     stringsEvent[EVENT_INTERFACE_TEXTURE_ANISOTROPY]= TR("Anisotropy level\\Anisotropy level");
     stringsEvent[EVENT_INTERFACE_MSAA]              = TR("MSAA\\Multisample anti-aliasing");
+    stringsEvent[EVENT_INTERFACE_SHADOW_MAPPING]    = TR("Shadow mapping\\Shadow buffer resolution, higher is bigger range but slower");
+    stringsEvent[EVENT_INTERFACE_SHADOW_MAPPING_QUALITY]= TR("Better shadow maps\\Shadow transparency and self shadowing");
 
     stringsEvent[EVENT_INTERFACE_KDEF]      = TR("Standard controls\\Standard key functions");
     assert(INPUT_SLOT_MAX < EVENT_INTERFACE_KEY_END-EVENT_INTERFACE_KEY);

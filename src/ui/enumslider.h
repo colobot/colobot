@@ -35,14 +35,14 @@ public:
 
     void SetVisibleValue(float value);
     float GetVisibleValue();
-    int GetVisibleValueIndex();
+    unsigned int GetVisibleValueIndex();
 
 protected:
     std::string GetLabel();
 
 protected:
     std::vector<float> m_values;
-    std::map<float, std::string> m_labels;
+    std::vector<std::string> m_labels;
 };
 
 }

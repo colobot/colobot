@@ -34,24 +34,25 @@ void CEnumSlider::SetPossibleValues(const std::vector<float>& values)
 void CEnumSlider::SetPossibleValues(const std::map<float, std::string>& values)
 {
     m_values.clear();
-    for(auto it = values.begin(); it != values.end(); ++it) {
+    m_labels.clear();
+    for (auto it = values.begin(); it != values.end(); ++it) {
         m_values.push_back(it->first);
+        m_labels.push_back(it->second);
     }
-    m_labels = values;
 }
 
 void CEnumSlider::SetVisibleValue(float value)
 {
-    for(unsigned int i = 0; i < m_values.size(); i++)
+    for (unsigned int i = 0; i < m_values.size(); i++)
     {
-        if(value == m_values[i])
+        if (value == m_values[i])
         {
             m_visibleValue = static_cast<float>(i) / (m_values.size()-1);
         }
     }
 }
 
-int CEnumSlider::GetVisibleValueIndex()
+unsigned int CEnumSlider::GetVisibleValueIndex()
 {
     return round(m_visibleValue * (m_values.size()-1));
 }
@@ -63,8 +64,8 @@ float CEnumSlider::GetVisibleValue()
 
 std::string CEnumSlider::GetLabel()
 {
-    float value = GetVisibleValueIndex();
-    if(m_labels.find(value) != m_labels.end())
+    unsigned int value = GetVisibleValueIndex();
+    if (value < m_labels.size())
     {
         return m_labels.at(value);
     }
