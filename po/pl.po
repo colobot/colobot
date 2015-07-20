@@ -188,6 +188,9 @@ msgstr "Wstecz\\Porusza do tyłu"
 msgid "Bad argument for \"new\""
 msgstr "Zły argument dla funkcji \"new\""
 
+msgid "Better shadow maps\\Shadow transparency and self shadowing"
+msgstr ""
+
 msgid "Big indent\\Indent 2 or 4 spaces per level defined by braces"
 msgstr ""
 "Duże wcięcie\\2 lub 4 spacje wcięcia na każdy poziom zdefiniowany przez "
@@ -1320,8 +1323,9 @@ msgstr "Zaznacz astronautę\\Zaznacza astronautę"
 msgid "Semicolon terminator missing"
 msgstr "Brak średnika na końcu wiersza"
 
-msgid "Shadows\\Shadows on the ground"
-msgstr "Cienie\\Cienie na ziemi"
+msgid ""
+"Shadow mapping\\Shadow buffer resolution, higher is bigger range but slower"
+msgstr ""
 
 msgid "Shield level"
 msgstr "Poziom osłony"
@@ -1349,6 +1353,9 @@ msgstr "Pokaż rozwiązanie"
 
 msgid "Sign \" : \" missing"
 msgstr "Brak znaku \" :\""
+
+msgid "Simple shadows\\Shadows on the ground"
+msgstr "Proste cienie\\Cienie na ziemi"
 
 msgid "Size 1"
 msgstr "Wielkość 1"

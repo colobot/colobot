@@ -330,7 +330,7 @@ msgstr ""
 msgid "Robbie\\Your assistant"
 msgstr ""
 
-msgid "Shadows\\Shadows on the ground"
+msgid "Simple shadows\\Shadows on the ground"
 msgstr ""
 
 msgid "Marks on the ground\\Marks on the ground"
@@ -430,6 +430,13 @@ msgid "Anisotropy level\\Anisotropy level"
 msgstr ""
 
 msgid "MSAA\\Multisample anti-aliasing"
+msgstr ""
+
+msgid ""
+"Shadow mapping\\Shadow buffer resolution, higher is bigger range but slower"
+msgstr ""
+
+msgid "Better shadow maps\\Shadow transparency and self shadowing"
 msgstr ""
 
 msgid "Standard controls\\Standard key functions"

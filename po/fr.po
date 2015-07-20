@@ -180,6 +180,9 @@ msgstr "Reculer\\Moteur en arrière"
 msgid "Bad argument for \"new\""
 msgstr "Mauvais argument pour \"new\""
 
+msgid "Better shadow maps\\Shadow transparency and self shadowing"
+msgstr ""
+
 msgid "Big indent\\Indent 2 or 4 spaces per level defined by braces"
 msgstr "Grande indentation\\Indente avec 2 ou 4 espaces"
 
@@ -1317,8 +1320,9 @@ msgstr "Sélectionner le cosmonaute\\Sélectionner le cosmonaute"
 msgid "Semicolon terminator missing"
 msgstr "Terminateur point-virgule non trouvé"
 
-msgid "Shadows\\Shadows on the ground"
-msgstr "Ombres\\Ombres projetées au sol"
+msgid ""
+"Shadow mapping\\Shadow buffer resolution, higher is bigger range but slower"
+msgstr ""
 
 msgid "Shield level"
 msgstr "Niveau du bouclier"
@@ -1346,6 +1350,10 @@ msgstr "Donne la solution"
 
 msgid "Sign \" : \" missing"
 msgstr "Séparateur \" : \" attendu"
+
+#, fuzzy
+msgid "Simple shadows\\Shadows on the ground"
+msgstr "Ombres\\Ombres projetées au sol"
 
 msgid "Size 1"
 msgstr "Taille 1"

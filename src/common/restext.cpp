@@ -183,7 +183,7 @@ void InitializeRestext()
     stringsEvent[EVENT_INTERFACE_APPLY]     = TR("Apply changes\\Activates the changed settings");
 
     stringsEvent[EVENT_INTERFACE_TOTO]      = TR("Robbie\\Your assistant");
-    stringsEvent[EVENT_INTERFACE_SHADOW]    = TR("Shadows\\Shadows on the ground");
+    stringsEvent[EVENT_INTERFACE_SHADOW]    = TR("Simple shadows\\Shadows on the ground");
     stringsEvent[EVENT_INTERFACE_GROUND]    = TR("Marks on the ground\\Marks on the ground");
     stringsEvent[EVENT_INTERFACE_DIRTY]     = TR("Dust\\Dust and dirt on bots and buildings");
     stringsEvent[EVENT_INTERFACE_FOG]       = TR("Fog\\Fog");

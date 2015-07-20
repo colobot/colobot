@@ -180,6 +180,9 @@ msgstr "Назад\\Двигаться назад"
 msgid "Bad argument for \"new\""
 msgstr "Неверный аргумент для \"new\""
 
+msgid "Better shadow maps\\Shadow transparency and self shadowing"
+msgstr ""
+
 msgid "Big indent\\Indent 2 or 4 spaces per level defined by braces"
 msgstr "Большой отступ\\Отступать на 2 или 4 пробела, в зависимости от скобок"
 
@@ -1315,8 +1318,9 @@ msgstr "Выбор астронавта\\Выбор астронавта"
 msgid "Semicolon terminator missing"
 msgstr "Отсутствует точка с запятой"
 
-msgid "Shadows\\Shadows on the ground"
-msgstr "Тени\\Тени на земле"
+msgid ""
+"Shadow mapping\\Shadow buffer resolution, higher is bigger range but slower"
+msgstr ""
 
 msgid "Shield level"
 msgstr "Уровень брони"
@@ -1344,6 +1348,10 @@ msgstr "Показать решение"
 
 msgid "Sign \" : \" missing"
 msgstr "Знак \" : \" отсутствует"
+
+#, fuzzy
+msgid "Simple shadows\\Shadows on the ground"
+msgstr "Тени\\Тени на земле"
 
 msgid "Size 1"
 msgstr "Размер 1"

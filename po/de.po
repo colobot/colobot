@@ -185,6 +185,9 @@ msgstr "Rückwärts\\Bewegung nach hinten"
 msgid "Bad argument for \"new\""
 msgstr "Falsche Argumente für \"new\""
 
+msgid "Better shadow maps\\Shadow transparency and self shadowing"
+msgstr ""
+
 msgid "Big indent\\Indent 2 or 4 spaces per level defined by braces"
 msgstr "Einrücken mit 4 Leerstellen\\Einrücken mit 2 oder 4 Leerstellen"
 
@@ -1321,8 +1324,9 @@ msgstr "Astronauten auswählen\\Astronauten auswählen"
 msgid "Semicolon terminator missing"
 msgstr "Es fehlt ein Strichpunkt \";\" am Ende der Anweisung"
 
-msgid "Shadows\\Shadows on the ground"
-msgstr "Schatten\\Schlagschatten auf dem Boden"
+msgid ""
+"Shadow mapping\\Shadow buffer resolution, higher is bigger range but slower"
+msgstr ""
 
 msgid "Shield level"
 msgstr "Schäden"
@@ -1350,6 +1354,10 @@ msgstr "Zeigt die Lösung"
 
 msgid "Sign \" : \" missing"
 msgstr "Es fehlt ein Doppelpunkt \" : \""
+
+#, fuzzy
+msgid "Simple shadows\\Shadows on the ground"
+msgstr "Schatten\\Schlagschatten auf dem Boden"
 
 msgid "Size 1"
 msgstr "Größe 1"
