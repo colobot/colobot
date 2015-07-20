@@ -5355,7 +5355,7 @@ void CMainDialog::ChangeSetupQuality(int quality)
     bool    bEnable;
     float   value;
 
-    bEnable = (quality >= 0);
+    bEnable = true; //(quality >= 0);
     m_engine->SetShadow(bEnable);
     m_engine->SetGroundSpot(bEnable);
     m_engine->SetDirty(bEnable);
@@ -5385,6 +5385,19 @@ void CMainDialog::ChangeSetupQuality(int quality)
     if ( quality == 0 )  value = 1.0f;
     if ( quality >  0 )  value = 1.0f;
     m_engine->SetGadgetQuantity(value);
+
+    if ( quality <  0 ) m_engine->SetMultiSample(1);
+    if ( quality == 0 ) m_engine->SetMultiSample(2);
+    if ( quality >  0 ) m_engine->SetMultiSample(4);
+
+    if ( quality <  0 ) { m_engine->SetTextureFilterMode(Gfx::TEX_FILTER_BILINEAR); }
+    if ( quality == 0 ) { m_engine->SetTextureFilterMode(Gfx::TEX_FILTER_TRILINEAR); m_engine->SetTextureMipmapLevel(4); m_engine->SetTextureAnisotropyLevel(4); }
+    if ( quality >  0 ) { m_engine->SetTextureFilterMode(Gfx::TEX_FILTER_TRILINEAR); m_engine->SetTextureMipmapLevel(8); m_engine->SetTextureAnisotropyLevel(8); }
+
+    if ( quality <  0 ) { m_engine->SetShadowMapping(false); m_engine->SetShadowMappingQuality(false); }
+    else { m_engine->SetShadowMapping(true); m_engine->SetShadowMappingQuality(true); m_engine->SetShadowMappingOffscreen(true); }
+    if ( quality == 0 ) m_engine->SetShadowMappingOffscreenResolution(1024);
+    if ( quality >  0 ) m_engine->SetShadowMappingOffscreenResolution(2048);
 
     // TODO: first execute adapt?
     //m_engine->FirstExecuteAdapt(false);

@@ -124,7 +124,7 @@ CEngine::CEngine(CApplication *app)
     m_offscreenShadowRenderingResolution = 1024;
     m_qualityShadows = true;
     m_shadowRange = 0.0f;
-    m_multisample = 1;
+    m_multisample = 2;
 
     m_totoMode = true;
     m_lensMode = true;
@@ -2583,12 +2583,9 @@ float CEngine::GetShadowRange()
 
 void CEngine::SetMultiSample(int value)
 {
-    bool changed = m_multisample != value;
+    if(value == m_multisample) return;
     m_multisample = value;
-    if(changed)
-    {
-        m_device->DeleteFramebuffer("multisample");
-    }
+    m_device->DeleteFramebuffer("multisample");
 }
 
 int CEngine::GetMultiSample()
@@ -3751,6 +3748,7 @@ void CEngine::UseShadowMapping(bool enable)
 
 void CEngine::UseMSAA(bool enable)
 {
+    m_multisample = Math::Min(m_device->GetMaxSamples(), m_multisample);
     if (m_multisample < 2) return;
 
     if (enable)
