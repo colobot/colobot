@@ -161,7 +161,8 @@ protected:
     int             m_apperanceTab;         // perso: tab selected
     float           m_apperanceAngle;           // perso: angle of presentation
 
-    LevelCategory   m_category;     // 0..4
+    LevelCategory   m_category;
+    LevelCategory   m_listCategory;
     std::map<LevelCategory, int> m_chap;     // selected chapter (0..8)
     std::map<LevelCategory, int> m_sel;      // chosen mission (0..98)
     int             m_maxList;

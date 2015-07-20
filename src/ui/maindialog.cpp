@@ -148,6 +148,7 @@ CMainDialog::CMainDialog()
     }
 
     m_category = LevelCategory::Exercises;
+    m_listCategory = m_category;
     m_maxList = 0;
 
     m_bTooltip       = true;
@@ -715,6 +716,15 @@ void CMainDialog::ChangePhase(Phase phase)
 
     if ( m_phase == PHASE_LEVEL_LIST )
     {
+        if ( static_cast<int>(m_category) >= static_cast<int>(LevelCategory::Max) )
+        {
+            m_category = m_listCategory;
+        }
+        else
+        {
+            m_listCategory = m_category;
+        }
+
         if ( m_category == LevelCategory::FreeGame )
         {
             m_accessChap = m_main->GetPlayerProfile()->GetChapPassed(LevelCategory::Missions);
@@ -5234,7 +5244,6 @@ void CMainDialog::ChangeSetupQuality(int quality)
 {
     bool    bEnable;
     float   value;
-    int     iValue;
 
     bEnable = (quality >= 0);
     m_engine->SetShadow(bEnable);
