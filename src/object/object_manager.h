@@ -29,6 +29,7 @@
 #include "math/const.h"
 #include "math/vector.h"
 
+#include "object/object_create_params.h"
 #include "object/object_type.h"
 
 #include <map>
@@ -133,6 +134,8 @@ public:
     virtual ~CObjectManager();
 
     //! Creates an object
+    //@{
+    CObject*  CreateObject(ObjectCreateParams params);
     CObject*  CreateObject(Math::Vector pos,
                            float angle,
                            ObjectType type,
@@ -142,7 +145,9 @@ public:
                            bool trainer = false,
                            bool toy = false,
                            int option = 0,
+                           int team = 0,
                            int id = -1);
+    //@}
 
     //! Deletes the object
     bool      DeleteObject(CObject* instance);

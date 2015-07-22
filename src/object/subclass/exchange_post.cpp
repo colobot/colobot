@@ -51,6 +51,8 @@ std::unique_ptr<CExchangePost> CExchangePost::Create(
 {
     auto obj = MakeUnique<CExchangePost>(params.id);
 
+    obj->SetTeam(params.team);
+
     int rank = engine->CreateObject();
     engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);  // it is a stationary object
     obj->SetObjectRank(0, rank);

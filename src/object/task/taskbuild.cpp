@@ -81,10 +81,14 @@ CTaskBuild::~CTaskBuild()
 
 bool CTaskBuild::CreateBuilding(Math::Vector pos, float angle)
 {
-    float power = 0.0f;
-    m_building = CObjectManager::GetInstancePointer()->CreateObject(pos, angle, m_type, power);
+    ObjectCreateParams params;
+    params.pos = pos;
+    params.angle = angle;
+    params.type = m_type;
+    params.power = 0.0f;
+    params.team = m_object->GetTeam();
+    m_building = CObjectManager::GetInstancePointer()->CreateObject(params);
     m_building->SetLock(true);  // not yet usable
-    m_building->SetTeam(m_object->GetTeam());
 
     if ( m_type == OBJECT_DERRICK  )  m_buildingHeight = 35.0f;
     if ( m_type == OBJECT_FACTORY  )  m_buildingHeight = 28.0f;
@@ -810,4 +814,3 @@ void CTaskBuild::DeleteMark(Math::Vector pos, float radius)
         CObjectManager::GetInstancePointer()->DeleteObject(obj);
     }
 }
-

@@ -27,6 +27,7 @@
 
 #include "object/brain.h"
 #include "object/old_object.h"
+#include "object/object_create_params.h"
 #include "object/object_manager.h"
 #include "object/robotmain.h"
 #include "object/level/parserline.h"
@@ -643,11 +644,15 @@ bool CAutoFactory::CreateVehicle()
     Math::Matrix* mat = m_object->GetWorldMatrix(0);
     pos = Transform(*mat, pos);
 
-    CObject* vehicle = CObjectManager::GetInstancePointer()->CreateObject(pos, angle, m_type);
+    ObjectCreateParams params;
+    params.pos = pos;
+    params.angle = angle;
+    params.type = m_type;
+    params.team = m_object->GetTeam();
+    CObject* vehicle = CObjectManager::GetInstancePointer()->CreateObject(params);
 
     vehicle->SetLock(true);  // not usable
     vehicle->SetRange(30.0f);
-    vehicle->SetTeam(m_object->GetTeam());
 
     CPhysics* physics = vehicle->GetPhysics();
     if ( physics != nullptr )

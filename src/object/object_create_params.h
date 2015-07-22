@@ -34,5 +34,21 @@ struct ObjectCreateParams
     bool trainer;
     bool toy;
     int option;
+    int team;
     int id;
+
+    ObjectCreateParams()
+    {
+        pos = Math::Vector(0.0f, 0.0f, 0.0f);
+        angle = 0.0f;
+        type = OBJECT_NULL;
+        power = -1.0f;
+        zoom = 1.0f;
+        height = 0.0f;
+        trainer = false;
+        toy = false;
+        option = 0;
+        team = 0;
+        id = -1;
+    }
 };

@@ -959,6 +959,15 @@ public:
     bool            LoadAllTextures();
 
     //! Changes colors in a texture
+    //@{
+    bool            ChangeTextureColor(const std::string& texName,
+                                       const std::string& srcName,
+                                       Color colorRef1, Color colorNew1,
+                                       Color colorRef2, Color colorNew2,
+                                       float tolerance1, float tolerance2,
+                                       Math::Point ts, Math::Point ti,
+                                       Math::Point *exclude = nullptr,
+                                       float shift = 0.0f, bool hsv = false);
     bool            ChangeTextureColor(const std::string& texName,
                                        Color colorRef1, Color colorNew1,
                                        Color colorRef2, Color colorNew2,
@@ -966,6 +975,7 @@ public:
                                        Math::Point ts, Math::Point ti,
                                        Math::Point *exclude = nullptr,
                                        float shift = 0.0f, bool hsv = false);
+    //@}
 
     //! Sets texture for given stage; if not present in cache, the texture is loaded
     /** If loading fails, returns false. */

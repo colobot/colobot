@@ -328,6 +328,9 @@ public:
     //! Returns team name for the given team id
     const std::string& GetTeamName(int id);
 
+    //! Returns true if team-specific colored texture is available
+    bool        IsTeamColorDefined(int id);
+
     //! Get/set enabled buildings
     //@{
     int         GetEnableBuild();
@@ -568,7 +571,7 @@ protected:
     ShowLimit       m_showLimit[MAXSHOWLIMIT];
 
     Gfx::Color      m_colorRefBot;
-    Gfx::Color      m_colorNewBot;
+    std::map<int, Gfx::Color> m_colorNewBot;
     Gfx::Color      m_colorRefAlien;
     Gfx::Color      m_colorNewAlien;
     Gfx::Color      m_colorRefGreen;

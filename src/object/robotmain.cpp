@@ -35,6 +35,7 @@
 #include "common/misc.h"
 #include "common/config_file.h"
 #include "common/restext.h"
+#include "common/stringutils.h"
 
 #include "common/resources/resourcemanager.h"
 #include "common/resources/inputstream.h"
@@ -2898,7 +2899,8 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
         m_colorRefBot.g = 166.0f/256.0f;
         m_colorRefBot.b = 254.0f/256.0f;  // blue
         m_colorRefBot.a = 0.0f;
-        m_colorNewBot = m_colorRefBot;
+        m_colorNewBot.clear();
+        m_colorNewBot[0] = m_colorRefBot;
 
         m_colorRefAlien.r = 135.0f/256.0f;
         m_colorRefAlien.g = 170.0f/256.0f;
@@ -3148,7 +3150,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
             if (line->GetCommand() == "VehicleColor" && !resetObject)
             {
-                m_colorNewBot = line->GetParam("color")->AsColor(Gfx::Color(0.533f, 0.533f, 0.533f, 0.533f));
+                m_colorNewBot[line->GetParam("team")->AsInt(0)] = line->GetParam("color")->AsColor(Gfx::Color(0.533f, 0.533f, 0.533f, 0.533f));
                 continue;
             }
 
@@ -3436,6 +3438,9 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 InitEye();
                 SetMovieLock(false);
 
+                if(!resetObject)
+                    ChangeColor();  // changes the colors of texture
+
                 if (read[0] != 0)  // loading file ?
                     sel = IOReadScene(read, stack);
 
@@ -3493,7 +3498,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 CObject* obj = nullptr;
                 try
                 {
-                        obj = m_objMan->CreateObject(
+                    obj = m_objMan->CreateObject(
                         pos, dirAngle,
                         type,
                         line->GetParam("power")->AsFloat(1.0f),
@@ -3501,7 +3506,8 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                         line->GetParam("h")->AsFloat(0.0f),
                         trainer = line->GetParam("trainer")->AsBool(false),
                         line->GetParam("toy")->AsBool(false),
-                        line->GetParam("option")->AsInt(0)
+                        line->GetParam("option")->AsInt(0),
+                        line->GetParam("team")->AsInt(0)
                     );
                 }
                 catch (const CObjectCreateException& e)
@@ -3578,7 +3584,6 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                     oldObj->SetRange(line->GetParam("range")->AsFloat(30.0f));
                     oldObj->SetShield(line->GetParam("shield")->AsFloat(1.0f));
                     oldObj->SetMagnifyDamage(line->GetParam("magnifyDamage")->AsFloat(1.0f));
-                    oldObj->SetTeam(line->GetParam("team")->AsInt(0));
                     oldObj->SetClip(line->GetParam("clip")->AsBool(true));
                     oldObj->SetCheckToken(!line->GetParam("checkToken")->IsDefined() ? trainer || !selectable : line->GetParam("checkToken")->AsBool(true));
                     // SetManual will affect bot speed
@@ -3908,7 +3913,6 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
         if (!resetObject)
         {
-            ChangeColor();  // changes the colors of texture
             m_short->SetMode(false);  // vehicles?
         }
 
@@ -4028,6 +4032,8 @@ void CRobotMain::ChangeColor()
         m_phase != PHASE_LOST     &&
         m_phase != PHASE_APPERANCE ) return;
 
+    // Player texture
+
     Math::Point ts = Math::Point(0.0f, 0.0f);
     Math::Point ti = Math::Point(1.0f, 1.0f);  // the entire image
 
@@ -4108,27 +4114,39 @@ void CRobotMain::ChangeColor()
     colorNew2.g = 0.0f;
     colorNew2.b = 0.0f;
 
-    m_engine->ChangeTextureColor("textures/objects/base1.png",   m_colorRefBot, m_colorNewBot, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, 0, 0, true);
-    m_engine->ChangeTextureColor("textures/objects/convert.png", m_colorRefBot, m_colorNewBot, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, 0, 0, true);
-    m_engine->ChangeTextureColor("textures/objects/derrick.png", m_colorRefBot, m_colorNewBot, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, 0, 0, true);
-    m_engine->ChangeTextureColor("textures/objects/factory.png", m_colorRefBot, m_colorNewBot, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, 0, 0, true);
-    m_engine->ChangeTextureColor("textures/objects/lemt.png",    m_colorRefBot, m_colorNewBot, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, 0, 0, true);
-    m_engine->ChangeTextureColor("textures/objects/roller.png",  m_colorRefBot, m_colorNewBot, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, 0, 0, true);
-    m_engine->ChangeTextureColor("textures/objects/search.png",  m_colorRefBot, m_colorNewBot, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, 0, 0, true);
+    // VehicleColor
 
-    exclu[0] = Math::Point(  0.0f/256.0f, 160.0f/256.0f);
-    exclu[1] = Math::Point(256.0f/256.0f, 256.0f/256.0f);  // pencils
-    exclu[2] = Math::Point(0.0f, 0.0f);
-    exclu[3] = Math::Point(0.0f, 0.0f);  // terminator
-    m_engine->ChangeTextureColor("textures/objects/drawer.png",  m_colorRefBot, m_colorNewBot, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, exclu, 0, true);
+    for(auto it : m_colorNewBot)
+    {
+        int team = it.first;
+        Gfx::Color newColor = it.second;
+        std::string teamStr = StrUtils::ToString<int>(team);
+        if(team == 0) teamStr = "";
 
-    exclu[0] = Math::Point(237.0f/256.0f, 176.0f/256.0f);
-    exclu[1] = Math::Point(256.0f/256.0f, 220.0f/256.0f);  // blue canister
-    exclu[2] = Math::Point(106.0f/256.0f, 150.0f/256.0f);
-    exclu[3] = Math::Point(130.0f/256.0f, 214.0f/256.0f);  // safe location
-    exclu[4] = Math::Point(0.0f, 0.0f);
-    exclu[5] = Math::Point(0.0f, 0.0f);  // terminator
-    m_engine->ChangeTextureColor("textures/objects/subm.png",    m_colorRefBot, m_colorNewBot, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, exclu, 0, true);
+        m_engine->ChangeTextureColor("textures/objects/base1.png"+teamStr,   "textures/objects/base1.png",   m_colorRefBot, newColor, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, 0, 0, true);
+        m_engine->ChangeTextureColor("textures/objects/convert.png"+teamStr, "textures/objects/convert.png", m_colorRefBot, newColor, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, 0, 0, true);
+        m_engine->ChangeTextureColor("textures/objects/derrick.png"+teamStr, "textures/objects/derrick.png", m_colorRefBot, newColor, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, 0, 0, true);
+        m_engine->ChangeTextureColor("textures/objects/factory.png"+teamStr, "textures/objects/factory.png", m_colorRefBot, newColor, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, 0, 0, true);
+        m_engine->ChangeTextureColor("textures/objects/lemt.png"+teamStr,    "textures/objects/lemt.png",    m_colorRefBot, newColor, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, 0, 0, true);
+        m_engine->ChangeTextureColor("textures/objects/roller.png"+teamStr,  "textures/objects/roller.png",  m_colorRefBot, newColor, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, 0, 0, true);
+        m_engine->ChangeTextureColor("textures/objects/search.png"+teamStr,  "textures/objects/search.png",  m_colorRefBot, newColor, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, 0, 0, true);
+
+        exclu[0] = Math::Point(  0.0f/256.0f, 160.0f/256.0f);
+        exclu[1] = Math::Point(256.0f/256.0f, 256.0f/256.0f);  // pencils
+        exclu[2] = Math::Point(0.0f, 0.0f);
+        exclu[3] = Math::Point(0.0f, 0.0f);  // terminator
+        m_engine->ChangeTextureColor("textures/objects/drawer.png"+teamStr, "textures/objects/drawer.png",  m_colorRefBot, newColor, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, exclu, 0, true);
+
+        exclu[0] = Math::Point(237.0f/256.0f, 176.0f/256.0f);
+        exclu[1] = Math::Point(256.0f/256.0f, 220.0f/256.0f);  // blue canister
+        exclu[2] = Math::Point(106.0f/256.0f, 150.0f/256.0f);
+        exclu[3] = Math::Point(130.0f/256.0f, 214.0f/256.0f);  // safe location
+        exclu[4] = Math::Point(0.0f, 0.0f);
+        exclu[5] = Math::Point(0.0f, 0.0f);  // terminator
+        m_engine->ChangeTextureColor("textures/objects/subm.png"+teamStr,   "textures/objects/subm.png",    m_colorRefBot, newColor, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, exclu, 0, true);
+    }
+
+    // AlienColor
 
     exclu[0] = Math::Point(128.0f/256.0f, 160.0f/256.0f);
     exclu[1] = Math::Point(256.0f/256.0f, 256.0f/256.0f);  // SatCom
@@ -4137,7 +4155,10 @@ void CRobotMain::ChangeColor()
     m_engine->ChangeTextureColor("textures/objects/ant.png",     m_colorRefAlien, m_colorNewAlien, colorRef2, colorNew2, 0.50f, -1.0f, ts, ti, exclu);
     m_engine->ChangeTextureColor("textures/objects/mother.png",  m_colorRefAlien, m_colorNewAlien, colorRef2, colorNew2, 0.50f, -1.0f, ts, ti);
 
+    // GreeneryColor
     m_engine->ChangeTextureColor("textures/objects/plant.png",   m_colorRefGreen, m_colorNewGreen, colorRef2, colorNew2, 0.50f, -1.0f, ts, ti);
+
+    // water color
 
     // PARTIPLOUF0 and PARTIDROP :
     ts = Math::Point(0.500f, 0.500f);
@@ -4148,6 +4169,9 @@ void CRobotMain::ChangeColor()
     ts = Math::Point(0.00f, 0.75f);
     ti = Math::Point(0.25f, 1.00f);
     m_engine->ChangeTextureColor("textures/effect02.png", m_colorRefWater, m_colorNewWater, colorRef2, colorNew2, 0.20f, -1.0f, ts, ti, 0, m_colorShiftWater, true);
+
+    // This loads the newly recolored textures to objects
+    m_engine->LoadAllTextures();
 }
 
 //! Updates the number of unnecessary objects
@@ -6071,6 +6095,13 @@ const std::string& CRobotMain::GetTeamName(int id)
 {
     if(m_teamNames.count(id) == 0) return NO_TEAM_NAME;
     return m_teamNames[id];
+}
+
+bool CRobotMain::IsTeamColorDefined(int id)
+{
+    if(id == 0) return false; // Always use default for team 0
+
+    return m_colorNewBot.find(id) != m_colorNewBot.end();
 }
 
 

@@ -112,14 +112,14 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         type == OBJECT_MOBILEfi ||
         type == OBJECT_MOBILEfs)
     {
-        modelManager->AddModelReference("lem1f.mod", false, rank);
+        modelManager->AddModelReference("lem1f.mod", false, rank, m_object->GetTeam());
     }
     else if (type == OBJECT_MOBILEta ||
              type == OBJECT_MOBILEtc ||
              type == OBJECT_MOBILEti ||
              type == OBJECT_MOBILEts)
     {
-        modelManager->AddModelReference("lem1t.mod", false, rank);
+        modelManager->AddModelReference("lem1t.mod", false, rank, m_object->GetTeam());
     }
     else if (type == OBJECT_MOBILEwa ||
              type == OBJECT_MOBILEwc ||
@@ -128,11 +128,11 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
     {
         if (m_object->GetTrainer())
         {
-            modelManager->AddModelReference("lem1wt.mod", false, rank);
+            modelManager->AddModelReference("lem1wt.mod", false, rank, m_object->GetTeam());
         }
         else
         {
-            modelManager->AddModelReference("lem1w.mod", false, rank);
+            modelManager->AddModelReference("lem1w.mod", false, rank, m_object->GetTeam());
         }
     }
     else if (type == OBJECT_MOBILEia ||
@@ -140,46 +140,46 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
              type == OBJECT_MOBILEii ||
              type == OBJECT_MOBILEis)
     {
-        modelManager->AddModelReference("lem1i.mod", false, rank);
+        modelManager->AddModelReference("lem1i.mod", false, rank, m_object->GetTeam());
     }
     else if (type == OBJECT_MOBILErt ||
              type == OBJECT_MOBILErc ||
              type == OBJECT_MOBILErr ||
              type == OBJECT_MOBILErs)
     {
-        modelManager->AddModelReference("roller1.mod", false, rank);
+        modelManager->AddModelReference("roller1.mod", false, rank, m_object->GetTeam());
     }
     else if (type == OBJECT_MOBILEsa)
     {
-        modelManager->AddModelReference("subm1.mod", false, rank);
+        modelManager->AddModelReference("subm1.mod", false, rank, m_object->GetTeam());
     }
     else if (type == OBJECT_MOBILEtg)
     {
-        modelManager->AddModelReference("target.mod", false, rank);
+        modelManager->AddModelReference("target.mod", false, rank, m_object->GetTeam());
     }
     else if (type == OBJECT_MOBILEwt)
     {
-        modelManager->AddModelReference("trainerw.mod", false, rank);
+        modelManager->AddModelReference("trainerw.mod", false, rank, m_object->GetTeam());
     }
     else if (type == OBJECT_MOBILEft)
     {
-        modelManager->AddModelReference("trainerf.mod", false, rank);
+        modelManager->AddModelReference("trainerf.mod", false, rank, m_object->GetTeam());
     }
     else if (type == OBJECT_MOBILEtt)
     {
-        modelManager->AddModelReference("trainert.mod", false, rank);
+        modelManager->AddModelReference("trainert.mod", false, rank, m_object->GetTeam());
     }
     else if (type == OBJECT_MOBILEit)
     {
-        modelManager->AddModelReference("traineri.mod", false, rank);
+        modelManager->AddModelReference("traineri.mod", false, rank, m_object->GetTeam());
     }
     else if (type == OBJECT_MOBILEdr)
     {
-        modelManager->AddModelReference("drawer1.mod", false, rank);
+        modelManager->AddModelReference("drawer1.mod", false, rank, m_object->GetTeam());
     }
     else if (type == OBJECT_APOLLO2)
     {
-        modelManager->AddModelReference("apolloj1.mod", false, rank);
+        modelManager->AddModelReference("apolloj1.mod", false, rank, m_object->GetTeam());
     }
 
     m_object->SetPosition(pos);
@@ -225,7 +225,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(1, rank);
         m_object->SetObjectParent(1, 0);
-        modelManager->AddModelReference("lem2.mod", false, rank);
+        modelManager->AddModelReference("lem2.mod", false, rank, m_object->GetTeam());
         m_object->SetPartPosition(1, Math::Vector(0.0f, 5.3f, 0.0f));
         m_object->SetPartRotationZ(1, ARM_NEUTRAL_ANGLE1);
 
@@ -234,7 +234,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(2, rank);
         m_object->SetObjectParent(2, 1);
-        modelManager->AddModelReference("lem3.mod", false, rank);
+        modelManager->AddModelReference("lem3.mod", false, rank, m_object->GetTeam());
         m_object->SetPartPosition(2, Math::Vector(5.0f, 0.0f, 0.0f));
         m_object->SetPartRotationZ(2, ARM_NEUTRAL_ANGLE2);
 
@@ -243,7 +243,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(3, rank);
         m_object->SetObjectParent(3, 2);
-        modelManager->AddModelReference("lem4.mod", false, rank);
+        modelManager->AddModelReference("lem4.mod", false, rank, m_object->GetTeam());
         m_object->SetPartPosition(3, Math::Vector(3.5f, 0.0f, 0.0f));
         m_object->SetPartRotationZ(3, ARM_NEUTRAL_ANGLE3);
         m_object->SetPartRotationX(3, Math::PI/2.0f);
@@ -253,7 +253,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(4, rank);
         m_object->SetObjectParent(4, 3);
-        modelManager->AddModelReference("lem5.mod", false, rank);
+        modelManager->AddModelReference("lem5.mod", false, rank, m_object->GetTeam());
         m_object->SetPartPosition(4, Math::Vector(1.5f, 0.0f, 0.0f));
         m_object->SetPartRotationZ(4, -Math::PI*0.10f);
 
@@ -262,7 +262,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(5, rank);
         m_object->SetObjectParent(5, 3);
-        modelManager->AddModelReference("lem6.mod", false, rank);
+        modelManager->AddModelReference("lem6.mod", false, rank, m_object->GetTeam());
         m_object->SetPartPosition(5, Math::Vector(1.5f, 0.0f, 0.0f));
         m_object->SetPartRotationZ(5, Math::PI*0.10f);
     }
@@ -277,7 +277,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(1, rank);
         m_object->SetObjectParent(1, 0);
-        modelManager->AddModelReference("lem2.mod", false, rank);
+        modelManager->AddModelReference("lem2.mod", false, rank, m_object->GetTeam());
         m_object->SetPartPosition(1, Math::Vector(0.0f, 5.3f, 0.0f));
         m_object->SetPartRotationZ(1, 110.0f*Math::PI/180.0f);
 
@@ -286,7 +286,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(2, rank);
         m_object->SetObjectParent(2, 1);
-        modelManager->AddModelReference("lem3.mod", false, rank);
+        modelManager->AddModelReference("lem3.mod", false, rank, m_object->GetTeam());
         m_object->SetPartPosition(2, Math::Vector(5.0f, 0.0f, 0.0f));
         m_object->SetPartRotationZ(2, -110.0f*Math::PI/180.0f);
 
@@ -295,7 +295,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(3, rank);
         m_object->SetObjectParent(3, 2);
-        modelManager->AddModelReference("lem4s.mod", false, rank);
+        modelManager->AddModelReference("lem4s.mod", false, rank, m_object->GetTeam());
         m_object->SetPartPosition(3, Math::Vector(3.5f, 0.0f, 0.0f));
         m_object->SetPartRotationZ(3, -65.0f*Math::PI/180.0f);
     }
@@ -310,7 +310,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(1, rank);
         m_object->SetObjectParent(1, 0);
-        modelManager->AddModelReference("canon.mod", false, rank);
+        modelManager->AddModelReference("canon.mod", false, rank, m_object->GetTeam());
 //?     m_object->SetPartPosition(1, Math::Vector(0.0f, 5.3f, 0.0f));
         m_object->SetPartPosition(1, Math::Vector(0.0f, 5.3f, 0.0f));
         m_object->SetPartRotationZ(1, 0.0f);
@@ -326,7 +326,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(1, rank);
         m_object->SetObjectParent(1, 0);
-        modelManager->AddModelReference("canoni1.mod", false, rank);
+        modelManager->AddModelReference("canoni1.mod", false, rank, m_object->GetTeam());
         m_object->SetPartPosition(1, Math::Vector(0.0f, 5.3f, 0.0f));
         m_object->SetPartRotationZ(1, 0.0f);
 
@@ -334,7 +334,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(2, rank);
         m_object->SetObjectParent(2, 1);
-        modelManager->AddModelReference("canoni2.mod", false, rank);
+        modelManager->AddModelReference("canoni2.mod", false, rank, m_object->GetTeam());
         m_object->SetPartPosition(2, Math::Vector(0.0f, 2.5f, 0.0f));
         m_object->SetPartRotationZ(2, 0.0f);
     }
@@ -350,7 +350,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(6, rank);
         m_object->SetObjectParent(6, 0);
-        modelManager->AddModelReference("lem2w.mod", false, rank);
+        modelManager->AddModelReference("lem2w.mod", false, rank, m_object->GetTeam());
         m_object->SetPartPosition(6, Math::Vector(-3.0f, 1.0f, -3.0f));
 
         // Creates the left-back wheel.
@@ -358,7 +358,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(7, rank);
         m_object->SetObjectParent(7, 0);
-        modelManager->AddModelReference("lem2w.mod", false, rank);
+        modelManager->AddModelReference("lem2w.mod", false, rank, m_object->GetTeam());
         m_object->SetPartPosition(7, Math::Vector(-3.0f, 1.0f, 3.0f));
         m_object->SetPartRotationY(7, Math::PI);
 
@@ -367,7 +367,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(8, rank);
         m_object->SetObjectParent(8, 0);
-        modelManager->AddModelReference("lem2w.mod", false, rank);
+        modelManager->AddModelReference("lem2w.mod", false, rank, m_object->GetTeam());
         m_object->SetPartPosition(8, Math::Vector(2.0f, 1.0f, -3.0f));
 
         // Creates the left-front wheel.
@@ -375,7 +375,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(9, rank);
         m_object->SetObjectParent(9, 0);
-        modelManager->AddModelReference("lem2w.mod", false, rank);
+        modelManager->AddModelReference("lem2w.mod", false, rank, m_object->GetTeam());
         m_object->SetPartPosition(9, Math::Vector(2.0f, 1.0f, 3.0f));
         m_object->SetPartRotationY(9, Math::PI);
     }
@@ -387,7 +387,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(6, rank);
         m_object->SetObjectParent(6, 0);
-        modelManager->AddModelReference("lem2w.mod", false, rank);
+        modelManager->AddModelReference("lem2w.mod", false, rank, m_object->GetTeam());
         m_object->SetPartPosition(6, Math::Vector(-2.0f, 1.0f, -3.0f));
 
         // Creates the left-back wheel.
@@ -395,7 +395,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(7, rank);
         m_object->SetObjectParent(7, 0);
-        modelManager->AddModelReference("lem2w.mod", false, rank);
+        modelManager->AddModelReference("lem2w.mod", false, rank, m_object->GetTeam());
         m_object->SetPartPosition(7, Math::Vector(-2.0f, 1.0f, 3.0f));
         m_object->SetPartRotationY(7, Math::PI);
 
@@ -404,7 +404,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(8, rank);
         m_object->SetObjectParent(8, 0);
-        modelManager->AddModelReference("lem2w.mod", false, rank);
+        modelManager->AddModelReference("lem2w.mod", false, rank, m_object->GetTeam());
         m_object->SetPartPosition(8, Math::Vector(3.0f, 1.0f, -3.0f));
 
         // Creates the left-front wheel.
@@ -412,7 +412,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(9, rank);
         m_object->SetObjectParent(9, 0);
-        modelManager->AddModelReference("lem2w.mod", false, rank);
+        modelManager->AddModelReference("lem2w.mod", false, rank, m_object->GetTeam());
         m_object->SetPartPosition(9, Math::Vector(3.0f, 1.0f, 3.0f));
         m_object->SetPartRotationY(9, Math::PI);
     }
@@ -427,7 +427,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(6, rank);
         m_object->SetObjectParent(6, 0);
-        modelManager->AddModelCopy("lem2t.mod", false, rank);
+        modelManager->AddModelCopy("lem2t.mod", false, rank, m_object->GetTeam());
         m_object->SetPartPosition(6, Math::Vector(0.0f, 2.0f, -3.0f));
 
         // Creates the left caterpillar.
@@ -435,7 +435,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(7, rank);
         m_object->SetObjectParent(7, 0);
-        modelManager->AddModelCopy("lem3t.mod", false, rank);
+        modelManager->AddModelCopy("lem3t.mod", false, rank, m_object->GetTeam());
         m_object->SetPartPosition(7, Math::Vector(0.0f, 2.0f, 3.0f));
     }
 
@@ -449,7 +449,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(6, rank);
         m_object->SetObjectParent(6, 0);
-        modelManager->AddModelCopy("roller2.mod", false, rank);
+        modelManager->AddModelCopy("roller2.mod", false, rank, m_object->GetTeam());
         m_object->SetPartPosition(6, Math::Vector(0.0f, 2.0f, -3.0f));
 
         // Creates the left caterpillar.
@@ -457,7 +457,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(7, rank);
         m_object->SetObjectParent(7, 0);
-        modelManager->AddModelCopy("roller3.mod", false, rank);
+        modelManager->AddModelCopy("roller3.mod", false, rank, m_object->GetTeam());
         m_object->SetPartPosition(7, Math::Vector(0.0f, 2.0f, 3.0f));
     }
 
@@ -468,7 +468,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(6, rank);
         m_object->SetObjectParent(6, 0);
-        modelManager->AddModelCopy("subm4.mod", false, rank);
+        modelManager->AddModelCopy("subm4.mod", false, rank, m_object->GetTeam());
         m_object->SetPartPosition(6, Math::Vector(0.0f, 1.0f, -3.0f));
 
         // Creates the left caterpillar.
@@ -476,7 +476,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(7, rank);
         m_object->SetObjectParent(7, 0);
-        modelManager->AddModelCopy("subm5.mod", false, rank);
+        modelManager->AddModelCopy("subm5.mod", false, rank, m_object->GetTeam());
         m_object->SetPartPosition(7, Math::Vector(0.0f, 1.0f, 3.0f));
     }
 
@@ -487,7 +487,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(6, rank);
         m_object->SetObjectParent(6, 0);
-        modelManager->AddModelCopy("drawer2.mod", false, rank);
+        modelManager->AddModelCopy("drawer2.mod", false, rank, m_object->GetTeam());
         m_object->SetPartPosition(6, Math::Vector(0.0f, 1.0f, -3.0f));
 
         // Creates the left caterpillar.
@@ -495,7 +495,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(7, rank);
         m_object->SetObjectParent(7, 0);
-        modelManager->AddModelCopy("drawer3.mod", false, rank);
+        modelManager->AddModelCopy("drawer3.mod", false, rank, m_object->GetTeam());
         m_object->SetPartPosition(7, Math::Vector(0.0f, 1.0f, 3.0f));
     }
 
@@ -510,7 +510,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(6, rank);
         m_object->SetObjectParent(6, 0);
-        modelManager->AddModelReference("lem2f.mod", false, rank);
+        modelManager->AddModelReference("lem2f.mod", false, rank, m_object->GetTeam());
         m_object->SetPartPosition(6, Math::Vector(1.7f, 3.0f, 0.0f));
 
         // Creates the right-back foot.
@@ -518,7 +518,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(7, rank);
         m_object->SetObjectParent(7, 0);
-        modelManager->AddModelReference("lem2f.mod", false, rank);
+        modelManager->AddModelReference("lem2f.mod", false, rank, m_object->GetTeam());
         m_object->SetPartPosition(7, Math::Vector(-1.8f, 3.0f, -1.5f));
         m_object->SetPartRotationY(7, 120.0f*Math::PI/180.0f);
 
@@ -527,7 +527,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(8, rank);
         m_object->SetObjectParent(8, 0);
-        modelManager->AddModelReference("lem2f.mod", false, rank);
+        modelManager->AddModelReference("lem2f.mod", false, rank, m_object->GetTeam());
         m_object->SetPartPosition(8, Math::Vector(-1.8f, 3.0f, 1.5f));
         m_object->SetPartRotationY(8, -120.0f*Math::PI/180.0f);
     }
@@ -566,7 +566,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
                 if ( j == 0 )  parent = 0;
                 else           parent = 6+i*3+j-1;
                 m_object->SetObjectParent(6+i*3+j, parent);
-                modelManager->AddModelReference(name, false, rank);
+                modelManager->AddModelReference(name, false, rank, m_object->GetTeam());
                 pos.x = table[i*9+j*3+0];
                 pos.y = table[i*9+j*3+1];
                 pos.z = table[i*9+j*3+2];
@@ -579,7 +579,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
                 if ( j == 0 )  parent = 0;
                 else           parent = 15+i*3+j-1;
                 m_object->SetObjectParent(15+i*3+j, parent);
-                modelManager->AddModelReference(name, true, rank);
+                modelManager->AddModelReference(name, true, rank, m_object->GetTeam());
                 pos.x =  table[i*9+j*3+0];
                 pos.y =  table[i*9+j*3+1];
                 pos.z = -table[i*9+j*3+2];
@@ -595,7 +595,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(1, rank);
         m_object->SetObjectParent(1, 0);
-        modelManager->AddModelReference("roller2t.mod", false, rank);
+        modelManager->AddModelReference("roller2t.mod", false, rank, m_object->GetTeam());
         m_object->SetPartPosition(1, Math::Vector(0.0f, 0.0f, 0.0f));
         m_object->SetPartRotationZ(1, 0.0f);
 
@@ -604,7 +604,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(2, rank);
         m_object->SetObjectParent(2, 0);
-        modelManager->AddModelReference("roller3t.mod", false, rank);
+        modelManager->AddModelReference("roller3t.mod", false, rank, m_object->GetTeam());
         m_object->SetPartPosition(2, Math::Vector(9.0f, 4.0f, 0.0f));
         m_object->SetPartRotationZ(2, 0.0f);
     }
@@ -616,7 +616,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(1, rank);
         m_object->SetObjectParent(1, 0);
-        modelManager->AddModelReference("roller2c.mod", false, rank);
+        modelManager->AddModelReference("roller2c.mod", false, rank, m_object->GetTeam());
         m_object->SetPartPosition(1, Math::Vector(3.0f, 4.6f, 0.0f));
         m_object->SetPartRotationZ(1, Math::PI/8.0f);
 
@@ -625,7 +625,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(2, rank);
         m_object->SetObjectParent(2, 0);
-        modelManager->AddModelReference("roller3p.mod", false, rank);
+        modelManager->AddModelReference("roller3p.mod", false, rank, m_object->GetTeam());
         m_object->SetPartPosition(2, Math::Vector(7.0f, 6.5f, 0.0f));
         m_object->SetPartRotationZ(2, 0.0f);
     }
@@ -637,7 +637,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(1, rank);
         m_object->SetObjectParent(1, 0);
-        modelManager->AddModelReference("recover1.mod", false, rank);
+        modelManager->AddModelReference("recover1.mod", false, rank, m_object->GetTeam());
         m_object->SetPartPosition(1, Math::Vector(2.0f, 5.0f, 0.0f));
 
         // Creates the right arm.
@@ -645,7 +645,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(2, rank);
         m_object->SetObjectParent(2, 1);
-        modelManager->AddModelReference("recover2.mod", false, rank);
+        modelManager->AddModelReference("recover2.mod", false, rank, m_object->GetTeam());
         m_object->SetPartPosition(2, Math::Vector(0.1f, 0.0f, -5.0f));
         m_object->SetPartRotationZ(2, 126.0f*Math::PI/180.0f);
 
@@ -654,7 +654,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(3, rank);
         m_object->SetObjectParent(3, 2);
-        modelManager->AddModelReference("recover3.mod", false, rank);
+        modelManager->AddModelReference("recover3.mod", false, rank, m_object->GetTeam());
         m_object->SetPartPosition(3, Math::Vector(5.0f, 0.0f, -0.5f));
         m_object->SetPartRotationZ(3, -144.0f*Math::PI/180.0f);
 
@@ -663,7 +663,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(4, rank);
         m_object->SetObjectParent(4, 1);
-        modelManager->AddModelReference("recover2.mod", true, rank);
+        modelManager->AddModelReference("recover2.mod", true, rank, m_object->GetTeam());
         m_object->SetPartPosition(4, Math::Vector(0.1f, 0.0f, 5.0f));
         m_object->SetPartRotationZ(4, 126.0f*Math::PI/180.0f);
 
@@ -672,7 +672,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(5, rank);
         m_object->SetObjectParent(5, 4);
-        modelManager->AddModelReference("recover3.mod", true, rank);
+        modelManager->AddModelReference("recover3.mod", true, rank, m_object->GetTeam());
         m_object->SetPartPosition(5, Math::Vector(5.0f, 0.0f, 0.5f));
         m_object->SetPartRotationZ(5, -144.0f*Math::PI/180.0f);
     }
@@ -684,7 +684,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(1, rank);
         m_object->SetObjectParent(1, 0);
-        modelManager->AddModelReference("roller2s.mod", false, rank);
+        modelManager->AddModelReference("roller2s.mod", false, rank, m_object->GetTeam());
         m_object->SetPartPosition(1, Math::Vector(0.0f, 0.0f, 0.0f));
         m_object->SetPartRotationZ(1, 0.0f);
 
@@ -693,7 +693,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(2, rank);
         m_object->SetObjectParent(2, 1);
-        modelManager->AddModelReference("roller3s.mod", false, rank);
+        modelManager->AddModelReference("roller3s.mod", false, rank, m_object->GetTeam());
         m_object->SetPartPosition(2, Math::Vector(7.0f, 4.5f, 0.0f));
         m_object->SetPartRotationZ(2, 0.0f);
 
@@ -702,7 +702,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(3, rank);
         m_object->SetObjectParent(3, 2);
-        modelManager->AddModelReference("roller4s.mod", false, rank);
+        modelManager->AddModelReference("roller4s.mod", false, rank, m_object->GetTeam());
         m_object->SetPartPosition(3, Math::Vector(0.0f, 1.0f, 0.0f));
         m_object->SetPartRotationZ(3, 0.0f);
     }
@@ -714,7 +714,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(1, rank);
         m_object->SetObjectParent(1, 0);
-        modelManager->AddModelReference("subm2.mod", false, rank);
+        modelManager->AddModelReference("subm2.mod", false, rank, m_object->GetTeam());
         m_object->SetPartPosition(1, Math::Vector(4.2f, 3.0f, 0.0f));
 
         // Creates the right tong.
@@ -722,7 +722,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(2, rank);
         m_object->SetObjectParent(2, 1);
-        modelManager->AddModelReference("subm3.mod", false, rank);
+        modelManager->AddModelReference("subm3.mod", false, rank, m_object->GetTeam());
         m_object->SetPartPosition(2, Math::Vector(0.5f, 0.0f, -1.5f));
 
         // Creates the left tong.
@@ -730,7 +730,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(3, rank);
         m_object->SetObjectParent(3, 1);
-        modelManager->AddModelReference("subm3.mod", true, rank);
+        modelManager->AddModelReference("subm3.mod", true, rank, m_object->GetTeam());
         m_object->SetPartPosition(3, Math::Vector(0.5f, 0.0f, 1.5f));
     }
 
@@ -741,7 +741,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(1, rank);
         m_object->SetObjectParent(1, 0);
-        modelManager->AddModelReference("drawer4.mod", false, rank);
+        modelManager->AddModelReference("drawer4.mod", false, rank, m_object->GetTeam());
         m_object->SetPartPosition(1, Math::Vector(-3.0f, 3.0f, 0.0f));
 
         // Creates the key.
@@ -751,7 +751,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
             m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
             m_object->SetObjectRank(2, rank);
             m_object->SetObjectParent(2, 0);
-            modelManager->AddModelReference("drawer5.mod", false, rank);
+            modelManager->AddModelReference("drawer5.mod", false, rank, m_object->GetTeam());
             m_posKey = Math::Vector(3.0f, 5.7f, 0.0f);
             m_object->SetPartPosition(2, m_posKey);
             m_object->SetPartRotationY(2, 90.0f*Math::PI/180.0f);
@@ -765,7 +765,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
             m_object->SetObjectRank(10+i, rank);
             m_object->SetObjectParent(10+i, 1);
             sprintf(name, "drawer%d.mod", 10+i);
-            modelManager->AddModelReference(name, false, rank);
+            modelManager->AddModelReference(name, false, rank, m_object->GetTeam());
             m_object->SetPartPosition(10+i, Math::Vector(0.0f, 0.0f, 0.0f));
             m_object->SetPartRotationY(10+i, 45.0f*Math::PI/180.0f*i);
         }
@@ -780,7 +780,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
             m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
             m_object->SetObjectRank(2, rank);
             m_object->SetObjectParent(2, 0);
-            modelManager->AddModelReference("drawer5.mod", false, rank);
+            modelManager->AddModelReference("drawer5.mod", false, rank, m_object->GetTeam());
             m_posKey = Math::Vector(0.2f, 4.1f, 0.0f);
             m_object->SetPartPosition(2, m_posKey);
             m_object->SetPartRotationY(2, 90.0f*Math::PI/180.0f);
@@ -794,7 +794,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(1, rank);
         m_object->SetObjectParent(1, 0);
-        modelManager->AddModelReference("apolloj2.mod", false, rank);  // antenna
+        modelManager->AddModelReference("apolloj2.mod", false, rank, m_object->GetTeam());  // antenna
         m_object->SetPartPosition(1, Math::Vector(5.5f, 8.8f, 2.0f));
         m_object->SetPartRotationY(1, -120.0f*Math::PI/180.0f);
         m_object->SetPartRotationZ(1,   45.0f*Math::PI/180.0f);
@@ -803,7 +803,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(2, rank);
         m_object->SetObjectParent(2, 0);
-        modelManager->AddModelReference("apolloj3.mod", false, rank);  // camera
+        modelManager->AddModelReference("apolloj3.mod", false, rank, m_object->GetTeam());  // camera
         m_object->SetPartPosition(2, Math::Vector(5.5f, 2.8f, -2.0f));
         m_object->SetPartRotationY(2, 30.0f*Math::PI/180.0f);
 
@@ -812,28 +812,28 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(6, rank);
         m_object->SetObjectParent(6, 0);
-        modelManager->AddModelReference("apolloj4.mod", false, rank);  // wheel
+        modelManager->AddModelReference("apolloj4.mod", false, rank, m_object->GetTeam());  // wheel
         m_object->SetPartPosition(6, Math::Vector(-5.75f, 1.65f, -5.0f));
 
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(7, rank);
         m_object->SetObjectParent(7, 0);
-        modelManager->AddModelReference("apolloj4.mod", false, rank);  // wheel
+        modelManager->AddModelReference("apolloj4.mod", false, rank, m_object->GetTeam());  // wheel
         m_object->SetPartPosition(7, Math::Vector(-5.75f, 1.65f, 5.0f));
 
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(8, rank);
         m_object->SetObjectParent(8, 0);
-        modelManager->AddModelReference("apolloj4.mod", false, rank);  // wheel
+        modelManager->AddModelReference("apolloj4.mod", false, rank, m_object->GetTeam());  // wheel
         m_object->SetPartPosition(8, Math::Vector(5.75f, 1.65f, -5.0f));
 
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(9, rank);
         m_object->SetObjectParent(9, 0);
-        modelManager->AddModelReference("apolloj4.mod", false, rank);  // wheel
+        modelManager->AddModelReference("apolloj4.mod", false, rank, m_object->GetTeam());  // wheel
         m_object->SetPartPosition(9, Math::Vector(5.75f, 1.65f, 5.00f));
 
         // Creates mud guards.
@@ -841,28 +841,28 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(10, rank);
         m_object->SetObjectParent(10, 0);
-        modelManager->AddModelReference("apolloj6.mod", false, rank);  // wheel
+        modelManager->AddModelReference("apolloj6.mod", false, rank, m_object->GetTeam());  // wheel
         m_object->SetPartPosition(10, Math::Vector(-5.75f, 1.65f, -5.0f));
 
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(11, rank);
         m_object->SetObjectParent(11, 0);
-        modelManager->AddModelReference("apolloj6.mod", false, rank);  // wheel
+        modelManager->AddModelReference("apolloj6.mod", false, rank, m_object->GetTeam());  // wheel
         m_object->SetPartPosition(11, Math::Vector(-5.75f, 1.65f, 5.0f));
 
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(12, rank);
         m_object->SetObjectParent(12, 0);
-        modelManager->AddModelReference("apolloj5.mod", false, rank);  // wheel
+        modelManager->AddModelReference("apolloj5.mod", false, rank, m_object->GetTeam());  // wheel
         m_object->SetPartPosition(12, Math::Vector(5.75f, 1.65f, -5.0f));
 
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(13, rank);
         m_object->SetObjectParent(13, 0);
-        modelManager->AddModelReference("apolloj5.mod", false, rank);  // wheel
+        modelManager->AddModelReference("apolloj5.mod", false, rank, m_object->GetTeam());  // wheel
         m_object->SetPartPosition(13, Math::Vector(5.75f, 1.65f, 5.00f));
     }
 

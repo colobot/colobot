@@ -380,6 +380,8 @@ void CEngine::ResetAfterDeviceChanged()
 
     FlushTextureCache();
 
+    CRobotMain::GetInstancePointer()->ResetAfterDeviceChanged();
+
     LoadAllTextures();
 }
 
@@ -2321,6 +2323,7 @@ bool IsExcludeColor(Math::Point *exclude, int x, int y)
 
 
 bool CEngine::ChangeTextureColor(const std::string& texName,
+                                 const std::string& srcName,
                                  Color colorRef1, Color colorNew1,
                                  Color colorRef2, Color colorNew2,
                                  float tolerance1, float tolerance2,
@@ -2330,11 +2333,11 @@ bool CEngine::ChangeTextureColor(const std::string& texName,
     DeleteTexture(texName);
 
     CImage img;
-    if (!img.Load(texName))
+    if (!img.Load(srcName))
     {
         std::string error = img.GetError();
-        GetLogger()->Error("Couldn't load texture '%s': %s, blacklisting\n", texName.c_str(), error.c_str());
-        m_texBlacklist.insert(texName);
+        GetLogger()->Error("Couldn't load texture '%s': %s, blacklisting\n", srcName.c_str(), error.c_str());
+        m_texBlacklist.insert(srcName);
         return false;
     }
 
@@ -2447,10 +2450,17 @@ bool CEngine::ChangeTextureColor(const std::string& texName,
     m_texNameMap[texName] = tex;
     m_revTexNameMap[tex] = texName;
 
-    // This updates the texture to updated Texture struct on the objects
-    LoadAllTextures();
-
     return true;
+}
+
+bool CEngine::ChangeTextureColor(const std::string& texName,
+                                 Color colorRef1, Color colorNew1,
+                                 Color colorRef2, Color colorNew2,
+                                 float tolerance1, float tolerance2,
+                                 Math::Point ts, Math::Point ti,
+                                 Math::Point *exclude, float shift, bool hsv)
+{
+    return ChangeTextureColor(texName, texName, colorRef1, colorNew1, colorRef2, colorNew2, tolerance1, tolerance2, ts, ti, exclude, shift, hsv);
 }
 
 void CEngine::DeleteTexture(const std::string& texName)
@@ -2832,7 +2842,6 @@ void CEngine::SetTextureFilterMode(TexFilter value)
     m_defaultTexParams.filter = m_terrainTexParams.filter = value;
     m_defaultTexParams.mipmap = m_terrainTexParams.mipmap = (value == TEX_FILTER_TRILINEAR);
     ResetAfterDeviceChanged();
-    CRobotMain::GetInstancePointer()->ResetAfterDeviceChanged();
 }
 
 TexFilter CEngine::GetTextureFilterMode()
@@ -2848,7 +2857,6 @@ void CEngine::SetTextureMipmapLevel(int value)
 
     m_textureMipmapLevel = value;
     ResetAfterDeviceChanged();
-    CRobotMain::GetInstancePointer()->ResetAfterDeviceChanged();
 }
 
 int CEngine::GetTextureMipmapLevel()
@@ -2865,7 +2873,6 @@ void CEngine::SetTextureAnisotropyLevel(int value)
 
     m_textureAnisotropy = value;
     ResetAfterDeviceChanged();
-    CRobotMain::GetInstancePointer()->ResetAfterDeviceChanged();
 }
 
 int CEngine::GetTextureAnisotropyLevel()

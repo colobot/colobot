@@ -58,31 +58,33 @@ public:
     ~COldModelManager();
 
     //! Loads a model from given file
-    bool LoadModel(const std::string& fileName, bool mirrored);
+    bool LoadModel(const std::string& fileName, bool mirrored, int variant = 0);
 
     //! Adds an instance of model to the given object rank as a reference to base object
-    bool AddModelReference(const std::string& fileName, bool mirrored, int objRank);
+    bool AddModelReference(const std::string& fileName, bool mirrored, int objRank, int variant = 0);
 
     //! Adds an instance of model to the given object rank as a copy (copied base object)
-    bool AddModelCopy(const std::string& fileName, bool mirrored, int objRank);
+    bool AddModelCopy(const std::string& fileName, bool mirrored, int objRank, int variant = 0);
 
     //! Returns true if given model is loaded
-    bool IsModelLoaded(const std::string& fileName, bool mirrored);
+    bool IsModelLoaded(const std::string& fileName, bool mirrored, int variant = 0);
 
     //! Returns the rank of base engine object of given loaded model
-    int GetModelBaseObjRank(const std::string& fileName, bool mirrored);
+    int GetModelBaseObjRank(const std::string& fileName, bool mirrored, int variant = 0);
 
     //! Deletes all copied objects
     void DeleteAllModelCopies();
 
     //! Unloads the given model
-    void UnloadModel(const std::string& fileName, bool mirrored);
+    void UnloadModel(const std::string& fileName, bool mirrored, int variant = 0);
     //! Unloads all models
     void UnloadAllModels();
 
 protected:
     //! Mirrors the model along the Z axis
     void Mirror(std::vector<ModelTriangle>& triangles);
+    //! Changes variant
+    void ChangeVariant(std::vector<ModelTriangle>& triangles, int variant);
 
 private:
     struct ModelInfo
@@ -94,10 +96,12 @@ private:
     {
         std::string fileName;
         bool mirrored;
+        int variant;
 
-        inline FileInfo(const std::string& _fileName, bool _mirrored)
+        inline FileInfo(const std::string& _fileName, bool _mirrored, int _variant = 0)
          : fileName(_fileName)
          , mirrored(_mirrored)
+         , variant(_variant)
         {}
 
         inline bool operator<(const FileInfo& other) const
@@ -108,6 +112,9 @@ private:
             if (compare > 0)
                 return false;
 
+            if (variant < other.variant)
+                return true;
+
             return !mirrored && mirrored != other.mirrored;
         }
     };
@@ -117,4 +124,3 @@ private:
 };
 
 } // namespace Gfx
-

@@ -23,6 +23,7 @@
 
 #include "common/logger.h"
 #include "common/resources/inputstream.h"
+#include "common/stringutils.h"
 
 #include "graphics/engine/engine.h"
 
@@ -42,7 +43,7 @@ COldModelManager::~COldModelManager()
 {
 }
 
-bool COldModelManager::LoadModel(const std::string& fileName, bool mirrored)
+bool COldModelManager::LoadModel(const std::string& fileName, bool mirrored, int variant)
 {
     GetLogger()->Debug("Loading model '%s'\n", fileName.c_str());
 
@@ -72,7 +73,10 @@ bool COldModelManager::LoadModel(const std::string& fileName, bool mirrored)
     if (mirrored)
         Mirror(modelInfo.triangles);
 
-    FileInfo fileInfo(fileName, mirrored);
+    if (variant != 0)
+        ChangeVariant(modelInfo.triangles, variant);
+
+    FileInfo fileInfo(fileName, mirrored, variant);
     m_models[fileInfo] = modelInfo;
 
     m_engine->AddBaseObjTriangles(modelInfo.baseObjRank, modelInfo.triangles);
@@ -80,15 +84,15 @@ bool COldModelManager::LoadModel(const std::string& fileName, bool mirrored)
     return true;
 }
 
-bool COldModelManager::AddModelReference(const std::string& fileName, bool mirrored, int objRank)
+bool COldModelManager::AddModelReference(const std::string& fileName, bool mirrored, int objRank, int variant)
 {
-    auto it = m_models.find(FileInfo(fileName, mirrored));
+    auto it = m_models.find(FileInfo(fileName, mirrored, variant));
     if (it == m_models.end())
     {
-        if (!LoadModel(fileName, mirrored))
+        if (!LoadModel(fileName, mirrored, variant))
             return false;
 
-        it = m_models.find(FileInfo(fileName, mirrored));
+        it = m_models.find(FileInfo(fileName, mirrored, variant));
     }
 
     m_engine->SetObjectBaseRank(objRank, (*it).second.baseObjRank);
@@ -96,15 +100,15 @@ bool COldModelManager::AddModelReference(const std::string& fileName, bool mirro
     return true;
 }
 
-bool COldModelManager::AddModelCopy(const std::string& fileName, bool mirrored, int objRank)
+bool COldModelManager::AddModelCopy(const std::string& fileName, bool mirrored, int objRank, int variant)
 {
-    auto it = m_models.find(FileInfo(fileName, mirrored));
+    auto it = m_models.find(FileInfo(fileName, mirrored, variant));
     if (it == m_models.end())
     {
-        if (!LoadModel(fileName, mirrored))
+        if (!LoadModel(fileName, mirrored, variant))
             return false;
 
-        it = m_models.find(FileInfo(fileName, mirrored));
+        it = m_models.find(FileInfo(fileName, mirrored, variant));
     }
 
     int copyBaseObjRank = m_engine->CreateBaseObject();
@@ -116,14 +120,14 @@ bool COldModelManager::AddModelCopy(const std::string& fileName, bool mirrored, 
     return true;
 }
 
-bool COldModelManager::IsModelLoaded(const std::string& fileName, bool mirrored)
+bool COldModelManager::IsModelLoaded(const std::string& fileName, bool mirrored, int variant)
 {
-    return m_models.count(FileInfo(fileName, mirrored)) > 0;
+    return m_models.count(FileInfo(fileName, mirrored, variant)) > 0;
 }
 
-int COldModelManager::GetModelBaseObjRank(const std::string& fileName, bool mirrored)
+int COldModelManager::GetModelBaseObjRank(const std::string& fileName, bool mirrored, int variant)
 {
-    auto it = m_models.find(FileInfo(fileName, mirrored));
+    auto it = m_models.find(FileInfo(fileName, mirrored, variant));
     if (it == m_models.end())
         return -1;
 
@@ -140,9 +144,9 @@ void COldModelManager::DeleteAllModelCopies()
     m_copiesBaseRanks.clear();
 }
 
-void COldModelManager::UnloadModel(const std::string& fileName, bool mirrored)
+void COldModelManager::UnloadModel(const std::string& fileName, bool mirrored, int variant)
 {
-    auto it = m_models.find(FileInfo(fileName, mirrored));
+    auto it = m_models.find(FileInfo(fileName, mirrored, variant));
     if (it == m_models.end())
         return;
 
@@ -177,5 +181,23 @@ void COldModelManager::Mirror(std::vector<ModelTriangle>& triangles)
     }
 }
 
+void COldModelManager::ChangeVariant(std::vector<ModelTriangle>& triangles, int variant)
+{
+    for (int i = 0; i < static_cast<int>( triangles.size() ); i++)
+    {
+        if (triangles[i].tex1Name == "base1.png"   ||
+            triangles[i].tex1Name == "convert.png" ||
+            triangles[i].tex1Name == "derrick.png" ||
+            triangles[i].tex1Name == "factory.png" ||
+            triangles[i].tex1Name == "lemt.png"    ||
+            triangles[i].tex1Name == "roller.png"  ||
+            triangles[i].tex1Name == "search.png"  ||
+            triangles[i].tex1Name == "drawer.png"  ||
+            triangles[i].tex1Name == "subm.png"     )
+        {
+            triangles[i].tex1Name += StrUtils::ToString<int>(variant);
+        }
+    }
 }
 
+}

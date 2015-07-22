@@ -116,6 +116,28 @@ CObject* CObjectManager::GetObjectByRank(unsigned int id)
     return it->second.get();
 }
 
+CObject* CObjectManager::CreateObject(ObjectCreateParams params)
+{
+    if (params.id < 0)
+    {
+        params.id = m_nextId;
+        m_nextId++;
+    }
+
+    assert(m_objects.find(params.id) == m_objects.end());
+
+    auto objectUPtr = m_objectFactory->CreateObject(params);
+
+    if (objectUPtr == nullptr)
+        throw CObjectCreateException("Something went wrong in CObjectFactory", params.type);
+
+    CObject* objectPtr = objectUPtr.get();
+
+    m_objects[params.id] = std::move(objectUPtr);
+
+    return objectPtr;
+}
+
 CObject* CObjectManager::CreateObject(Math::Vector pos,
                                       float angle,
                                       ObjectType type,
@@ -125,16 +147,9 @@ CObject* CObjectManager::CreateObject(Math::Vector pos,
                                       bool trainer,
                                       bool toy,
                                       int option,
+                                      int team,
                                       int id)
 {
-    if (id < 0)
-    {
-        id = m_nextId;
-        m_nextId++;
-    }
-
-    assert(m_objects.find(id) == m_objects.end());
-
     ObjectCreateParams params;
     params.pos = pos;
     params.angle = angle;
@@ -145,18 +160,10 @@ CObject* CObjectManager::CreateObject(Math::Vector pos,
     params.trainer = trainer;
     params.toy = toy;
     params.option = option;
+    params.team = team;
     params.id = id;
 
-    auto objectUPtr = m_objectFactory->CreateObject(params);
-
-    if (objectUPtr == nullptr)
-        throw CObjectCreateException("Something went wrong in CObjectFactory", type);
-
-    CObject* objectPtr = objectUPtr.get();
-
-    m_objects[id] = std::move(objectUPtr);
-
-    return objectPtr;
+    return CreateObject(params);
 }
 
 std::vector<CObject*> CObjectManager::GetObjectsOfTeam(int team)

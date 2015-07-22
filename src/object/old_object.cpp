@@ -27,6 +27,7 @@
 #include "common/global.h"
 #include "common/make_unique.h"
 #include "common/restext.h"
+#include "common/stringutils.h"
 
 #include "graphics/engine/lightman.h"
 #include "graphics/engine/lightning.h"
@@ -710,7 +711,7 @@ bool COldObject::ExplodeObject(ExplosionType type, float force, float decay)
     }
     m_main->RemoveFromSelectionHistory(this);
 
-    SetTeam(0); // Back to neutral on destruction
+    m_team = 0; // Back to neutral on destruction
 
     if ( m_botVar != 0 )
     {
@@ -2435,6 +2436,7 @@ bool COldObject::GetClip()
 
 void COldObject::SetTeam(int team)
 {
+    // NOTE: This shouldn't be called after the object is already created
     m_team = team;
 }
 
