@@ -3847,6 +3847,32 @@ void CScriptFunctions::uObject(CBotVar* botThis, void* user)
     pVar = pVar->GetNext();  // "team"
     value = object->GetTeam();
     pVar->SetValInt(value);
+
+    // Updates the velocity of the object.
+    pVar = pVar->GetNext();  // "velocity"
+    if (IsObjectBeingTransported(object))
+    {
+        pSub = pVar->GetItemList();  // "x"
+        pSub->SetInit(CBotVar::InitType::IS_NAN);
+        pSub = pSub->GetNext();  // "y"
+        pSub->SetInit(CBotVar::InitType::IS_NAN);
+        pSub = pSub->GetNext();  // "z"
+        pSub->SetInit(CBotVar::InitType::IS_NAN);
+    }
+    else
+    {
+        Math::Matrix matRotate;
+        Math::LoadRotationZXYMatrix(matRotate, object->GetRotation());
+        pos = physics->GetLinMotion(MO_CURSPEED);
+        pos = Transform(matRotate, pos);
+
+        pSub = pVar->GetItemList();  // "x"
+        pSub->SetValFloat(pos.x/g_unit);
+        pSub = pSub->GetNext();  // "y"
+        pSub->SetValFloat(pos.z/g_unit);
+        pSub = pSub->GetNext();  // "z"
+        pSub->SetValFloat(pos.y/g_unit);
+    }
 }
 
 CBotVar* CScriptFunctions::CreateObjectVar(CObject* obj)
