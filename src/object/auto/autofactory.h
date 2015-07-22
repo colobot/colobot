@@ -51,7 +51,7 @@ public:
     bool        EventProcess(const Event &event);
 
     Error       StartAction(int param);
-    void        SetProgram(const char* program);
+    void        SetProgram(const std::string& program);
 
     bool        CreateInterface(bool bSelect);
 
@@ -77,7 +77,5 @@ protected:
     Math::Vector        m_cargoPos;
     int                 m_channelSound;
 
-    CObject*            m_vehicle;
-    char*               m_program;
+    std::string         m_program;
 };
-

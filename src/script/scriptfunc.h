@@ -103,7 +103,6 @@ private:
     static bool rSetResearchDone(CBotVar* var, CBotVar* result, int& exception, void* user);
     static bool rGetObjectById(CBotVar* var, CBotVar* result, int& exception, void* user);
     static bool rGetObject(CBotVar* var, CBotVar* result, int& exception, void* user);
-    static bool rProgFunc(CBotVar* var, CBotVar* result, int& exception, void* user);
     static bool rDelete(CBotVar* var, CBotVar* result, int& exception, void* user);
     static bool rSearch(CBotVar* var, CBotVar* result, int& exception, void* user);
     static bool rRadar(CBotVar* var, CBotVar* result, int& exception, void* user);

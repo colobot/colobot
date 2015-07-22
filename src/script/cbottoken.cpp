@@ -268,7 +268,6 @@ std::string GetHelpFilename(const char *token)
     if ( strcmp(token, "getresearchdone"   ) == 0 )  helpfile = "cbot/getresdo";
     if ( strcmp(token, "retobject"     ) == 0 )  helpfile = "cbot/retobj";
     if ( strcmp(token, "errmode"       ) == 0 )  helpfile = "cbot/errmode";
-    if ( strcmp(token, "progfunc"      ) == 0 )  helpfile = "cbot/factory";
     if ( strcmp(token, "busy"          ) == 0 )  helpfile = "cbot/busy";
     if ( strcmp(token, "takeoff"       ) == 0 )  helpfile = "cbot/takeoff";
     if ( strcmp(token, "research"      ) == 0 )  helpfile = "cbot/research";
@@ -406,7 +405,6 @@ bool IsFunction(const char *token)
     if ( strcmp(token, "getresearchdone"   ) == 0 )  return true;
     if ( strcmp(token, "retobjectbyid") == 0 )  return true;
     if ( strcmp(token, "retobject"    ) == 0 )  return true;
-    if ( strcmp(token, "progfunc"     ) == 0 )  return true;
     if ( strcmp(token, "busy"         ) == 0 )  return true;
     if ( strcmp(token, "factory"      ) == 0 )  return true;
     if ( strcmp(token, "research"     ) == 0 )  return true;
@@ -568,4 +566,3 @@ const char* GetHelpText(const char *token)
     if ( strcmp(token, "camerafocus") == 0 )  return "camerafocus ( object );";
     return "";
 }
-
