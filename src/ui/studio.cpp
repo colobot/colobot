@@ -1579,7 +1579,7 @@ std::string CStudio::SearchDirectory(bool bCreate)
     std::string dir;
     if ( m_main->GetIOPublic() )
     {
-        dir = "public";
+        dir = "program";
     }
     else
     {
