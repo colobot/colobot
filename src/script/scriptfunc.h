@@ -50,6 +50,8 @@ private:
     static CBotTypResult cTwoFloat(CBotVar* &var, void* user);
     static CBotTypResult cString(CBotVar* &var, void* user);
     static CBotTypResult cStringString(CBotVar* &var, void* user);
+    static CBotTypResult cOneInt(CBotVar* &var, void* user);
+    static CBotTypResult cOneIntReturnBool(CBotVar* &var, void* user);
     static CBotTypResult cEndMission(CBotVar* &var, void* user);
     static CBotTypResult cPlayMusic(CBotVar* &var, void* user);
     static CBotTypResult cGetObject(CBotVar* &var, void* user);
@@ -58,7 +60,6 @@ private:
     static CBotTypResult cRadar(CBotVar* &var, void* user);
     static CBotTypResult cDetect(CBotVar* &var, void* user);
     static CBotTypResult cDirection(CBotVar* &var, void* user);
-    static CBotTypResult cCanBuild(CBotVar* &var, void* user);
     static CBotTypResult cProduce(CBotVar* &var, void* user);
     static CBotTypResult cDistance(CBotVar* &var, void* user);
     static CBotTypResult cSpace(CBotVar* &var, void* user);
@@ -109,6 +110,9 @@ private:
     static bool rDetect(CBotVar* var, CBotVar* result, int& exception, void* user);
     static bool rDirection(CBotVar* var, CBotVar* result, int& exception, void* user);
     static bool rCanBuild(CBotVar* var, CBotVar* result, int& exception, void* user);
+    static bool rCanResearch(CBotVar* var, CBotVar* result, int& exception, void* user);
+    static bool rResearched(CBotVar* var, CBotVar* result, int& exception, void* user);
+    static bool rBuildingEnabled(CBotVar* var, CBotVar* result, int& exception, void* user);
     static bool rBuild(CBotVar* var, CBotVar* result, int& exception, void* user);
     static bool rProduce(CBotVar* var, CBotVar* result, int& exception, void* user);
     static bool rDistance(CBotVar* var, CBotVar* result, int& exception, void* user);

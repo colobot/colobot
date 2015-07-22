@@ -174,6 +174,28 @@ CBotTypResult CScriptFunctions::cStringString(CBotVar* &var, void* user)
     return CBotTypResult(CBotTypString);
 }
 
+// compilation of instruction with one int returning int
+
+CBotTypResult CScriptFunctions::cOneInt(CBotVar* &var, void* user)
+{
+    if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
+    if ( var->GetType() != CBotTypInt )  return CBotTypResult(CBotErrBadNum);
+    var = var->GetNext();
+    if ( var != 0 )  return CBotTypResult(CBotErrOverParam);
+    return CBotTypResult(CBotTypInt);
+}
+
+// compilation of instruction with one int returning boolean
+
+CBotTypResult CScriptFunctions::cOneIntReturnBool(CBotVar* &var, void* user)
+{
+    if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
+    if ( var->GetType() != CBotTypInt )  return CBotTypResult(CBotErrBadNum);
+    var = var->GetNext();
+    if ( var != 0 )  return CBotTypResult(CBotErrOverParam);
+    return CBotTypResult(CBotTypBoolean);
+}
+
 
 // Seeking value in an array of integers.
 
@@ -1342,27 +1364,44 @@ bool CScriptFunctions::rDirection(CBotVar* var, CBotVar* result, int& exception,
     return true;
 }
 
-// compilation of instruction "canbuild ( category );"
-
-CBotTypResult CScriptFunctions::cCanBuild(CBotVar* &var, void* user)
-{
-    if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
-    if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
-    var = var->GetNext();
-    if ( var != 0 )  return CBotTypResult(CBotErrOverParam);
-    return CBotTypResult(CBotTypBoolean);
-}
-
 // Instruction "canbuild ( category );"
 // returns true if this building can be built
 
 bool CScriptFunctions::rCanBuild(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
     CObject* pThis = static_cast<CObject *>(user);
-    ObjectType category  = static_cast<ObjectType>(var->GetValInt()); //get category parameter
+    ObjectType category = static_cast<ObjectType>(var->GetValInt());
     exception = 0;
 
     result->SetValInt(CRobotMain::GetInstancePointer()->CanBuild(category, pThis->GetTeam()));
+    return true;
+}
+
+bool CScriptFunctions::rCanResearch(CBotVar* var, CBotVar* result, int& exception, void* user)
+{
+    ResearchType research = static_cast<ResearchType>(var->GetValInt());
+    exception = 0;
+
+    result->SetValInt(CRobotMain::GetInstancePointer()->IsResearchEnabled(research));
+    return true;
+}
+
+bool CScriptFunctions::rResearched(CBotVar* var, CBotVar* result, int& exception, void* user)
+{
+    CObject* pThis = static_cast<CObject *>(user);
+    ResearchType research = static_cast<ResearchType>(var->GetValInt());
+    exception = 0;
+
+    result->SetValInt(CRobotMain::GetInstancePointer()->IsResearchDone(research, pThis->GetTeam()));
+    return true;
+}
+
+bool CScriptFunctions::rBuildingEnabled(CBotVar* var, CBotVar* result, int& exception, void* user)
+{
+    ObjectType category = static_cast<ObjectType>(var->GetValInt());
+    exception = 0;
+
+    result->SetValInt(CRobotMain::GetInstancePointer()->IsBuildingEnabled(category));
     return true;
 }
 
@@ -3648,9 +3687,16 @@ void CScriptFunctions::Init()
     CBotProgram::AddFunction("getbuild",          rGetBuild,          CScriptFunctions::cNull);
     CBotProgram::AddFunction("getresearchenable", rGetResearchEnable, CScriptFunctions::cNull);
     CBotProgram::AddFunction("getresearchdone",   rGetResearchDone,   CScriptFunctions::cNull);
-    CBotProgram::AddFunction("setbuild",          rSetBuild,          CScriptFunctions::cOneFloat);
-    CBotProgram::AddFunction("setresearchenable", rSetResearchEnable, CScriptFunctions::cOneFloat);
-    CBotProgram::AddFunction("setresearchdone",   rSetResearchDone,   CScriptFunctions::cOneFloat);
+    CBotProgram::AddFunction("setbuild",          rSetBuild,          CScriptFunctions::cOneInt);
+    CBotProgram::AddFunction("setresearchenable", rSetResearchEnable, CScriptFunctions::cOneInt);
+    CBotProgram::AddFunction("setresearchdone",   rSetResearchDone,   CScriptFunctions::cOneInt);
+
+    CBotProgram::AddFunction("canbuild",        rCanBuild,        CScriptFunctions::cOneIntReturnBool);
+    CBotProgram::AddFunction("canresearch",     rCanResearch,     CScriptFunctions::cOneIntReturnBool);
+    CBotProgram::AddFunction("researched",      rResearched,      CScriptFunctions::cOneIntReturnBool);
+    CBotProgram::AddFunction("buildingenabled", rBuildingEnabled, CScriptFunctions::cOneIntReturnBool);
+
+    CBotProgram::AddFunction("build",           rBuild,           CScriptFunctions::cOneInt);
 
     CBotProgram::AddFunction("retobject", rGetObject, CScriptFunctions::cGetObject);
     CBotProgram::AddFunction("retobjectbyid", rGetObjectById, CScriptFunctions::cGetObject);
@@ -3696,9 +3742,6 @@ void CScriptFunctions::Init()
     CBotProgram::AddFunction("penwidth",  rPenWidth,  CScriptFunctions::cOneFloat);
 
     CBotProgram::AddFunction("camerafocus", rCameraFocus, CScriptFunctions::cOneObject);
-
-    CBotProgram::AddFunction("canbuild", rCanBuild, CScriptFunctions::cCanBuild);
-    CBotProgram::AddFunction("build", rBuild, CScriptFunctions::cOneFloat);
 }
 
 
