@@ -1759,6 +1759,86 @@ bool CScriptFunctions::rSpace(CBotVar* var, CBotVar* result, int& exception, voi
     return true;
 }
 
+CBotTypResult CScriptFunctions::cFlatSpace(CBotVar* &var, void* user)
+{
+    CBotTypResult   ret;
+
+    if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
+    ret = cPoint(var, user);
+    if ( ret.GetType() != 0 )  return ret;
+
+    if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
+    if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
+    var = var->GetNext();
+
+    if ( var == 0 )  return CBotTypResult(CBotTypIntrinsic, "point");
+    if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
+    var = var->GetNext();
+
+    if ( var == 0 )  return CBotTypResult(CBotTypIntrinsic, "point");
+    if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
+    var = var->GetNext();
+
+    if ( var == 0 )  return CBotTypResult(CBotTypIntrinsic, "point");
+    if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
+    var = var->GetNext();
+
+    if ( var != 0 )  return CBotTypResult(CBotErrOverParam);
+    return CBotTypResult(CBotTypIntrinsic, "point");
+}
+
+bool CScriptFunctions::rFlatSpace(CBotVar* var, CBotVar* result, int& exception, void* user)
+{
+    CScript*    script = (static_cast<CObject *>(user))->GetRunScript();
+    CObject*    pThis = static_cast<CObject *>(user);
+    CBotVar*    pSub;
+    Math::Vector    center;
+    float       flatMin, rMin, rMax, dist;
+
+    rMin = 10.0f*g_unit;
+    rMax = 50.0f*g_unit;
+    dist =  4.0f*g_unit;
+
+
+    if ( !GetPoint(var, exception, center) )  return true;
+
+    flatMin = var->GetValFloat()*g_unit;
+    var = var->GetNext();
+
+    if ( var != 0 )
+    {
+        rMin = var->GetValFloat()*g_unit;
+        var = var->GetNext();
+
+        if ( var != 0 )
+        {
+            rMax = var->GetValFloat()*g_unit;
+            var = var->GetNext();
+
+            if ( var != 0 )
+            {
+                dist = var->GetValFloat()*g_unit;
+                var = var->GetNext();
+            }
+        }
+    }
+    script->m_main->FlatFreeSpace(center, flatMin, rMin, rMax, dist, pThis);
+
+    if ( result != 0 )
+    {
+        pSub = result->GetItemList();
+        if ( pSub != 0 )
+        {
+            pSub->SetValFloat(center.x/g_unit);
+            pSub = pSub->GetNext();  // "y"
+            pSub->SetValFloat(center.z/g_unit);
+            pSub = pSub->GetNext();  // "z"
+            pSub->SetValFloat(center.y/g_unit);
+        }
+    }
+    return true;
+}
+
 
 // Compilation of the instruction "flatground(center, rMax)".
 
@@ -3709,6 +3789,7 @@ void CScriptFunctions::Init()
     CBotProgram::AddFunction("distance",  rDistance,  CScriptFunctions::cDistance);
     CBotProgram::AddFunction("distance2d",rDistance2d,CScriptFunctions::cDistance);
     CBotProgram::AddFunction("space",     rSpace,     CScriptFunctions::cSpace);
+    CBotProgram::AddFunction("flatspace", rFlatSpace, CScriptFunctions::cFlatSpace);
     CBotProgram::AddFunction("flatground",rFlatGround,CScriptFunctions::cFlatGround);
     CBotProgram::AddFunction("wait",      rWait,      CScriptFunctions::cOneFloat);
     CBotProgram::AddFunction("move",      rMove,      CScriptFunctions::cOneFloat);

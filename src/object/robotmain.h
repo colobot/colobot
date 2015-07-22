@@ -269,6 +269,7 @@ public:
 
     float       SearchNearestObject(Math::Vector center, CObject *exclu);
     bool        FreeSpace(Math::Vector &center, float minRadius, float maxRadius, float space, CObject *exclu);
+    bool        FlatFreeSpace(Math::Vector &center, float minFlat, float minRadius, float maxRadius, float space, CObject *exclu);
     float       GetFlatZoneRadius(Math::Vector center, float maxRadius, CObject *exclu);
     void        HideDropZone(CObject* metal);
     void        ShowDropZone(CObject* metal, CObject* transporter);
