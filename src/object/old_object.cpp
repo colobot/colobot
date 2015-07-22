@@ -1763,8 +1763,10 @@ void COldObject::UpdateEnergyMapping()
     float au = (s-i)/(b-a);
     float bu = s-b*(s-i)/(b-a);
 
+    std::string teamStr = StrUtils::ToString<int>(GetTeam());
+    if(GetTeam() == 0) teamStr = "";
     m_engine->ChangeTextureMapping(m_objectPart[0].object,
-                                   mat, Gfx::ENG_RSTATE_PART3, "objects/lemt.png", "",
+                                   mat, Gfx::ENG_RSTATE_PART3, "objects/lemt.png"+teamStr, "",
                                    Gfx::ENG_TEX_MAPPING_1Y,
                                    au, bu, 1.0f, 0.0f);
 }

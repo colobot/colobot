@@ -21,6 +21,8 @@
 #include "object/auto/autoportico.h"
 
 
+#include "common/stringutils.h"
+
 #include "object/robotmain.h"
 #include "object/old_object.h"
 
@@ -406,12 +408,14 @@ void CAutoPortico::UpdateTrackMapping(float left, float right)
 
     int rank = m_object->GetObjectRank(0);
 
-    m_engine->TrackTextureMapping(rank, mat, Gfx::ENG_RSTATE_PART1, "objects/lemt.png", "",
+    std::string teamStr = StrUtils::ToString<int>(m_object->GetTeam());
+    if(m_object->GetTeam() == 0) teamStr = "";
+
+    m_engine->TrackTextureMapping(rank, mat, Gfx::ENG_RSTATE_PART1, "objects/lemt.png"+teamStr, "",
                                   Gfx::ENG_TEX_MAPPING_X,
                                   right, 8.0f, 8.0f, 192.0f, 256.0f);
 
-    m_engine->TrackTextureMapping(rank, mat, Gfx::ENG_RSTATE_PART2, "objects/lemt.png", "",
+    m_engine->TrackTextureMapping(rank, mat, Gfx::ENG_RSTATE_PART2, "objects/lemt.png"+teamStr, "",
                                   Gfx::ENG_TEX_MAPPING_X,
                                   left, 8.0f, 8.0f, 192.0f, 256.0f);
 }
-

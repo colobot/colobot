@@ -22,6 +22,8 @@
 
 #include "app/app.h"
 
+#include "common/stringutils.h"
+
 #include "graphics/engine/oldmodelmanager.h"
 #include "graphics/engine/particle.h"
 #include "graphics/engine/terrain.h"
@@ -1872,23 +1874,26 @@ void CMotionVehicle::UpdateTrackMapping(float left, float right, ObjectType type
     int rRank = m_object->GetObjectRank(6);
     int lRank = m_object->GetObjectRank(7);
 
+    std::string teamStr = StrUtils::ToString<int>(m_object->GetTeam());
+    if(m_object->GetTeam() == 0) teamStr = "";
+
     if (type == OBJECT_MOBILEdr)
     {
-        m_engine->TrackTextureMapping(rRank, mat, Gfx::ENG_RSTATE_PART1, "objects/drawer.png", "",
+        m_engine->TrackTextureMapping(rRank, mat, Gfx::ENG_RSTATE_PART1, "objects/drawer.png"+teamStr, "",
                                       Gfx::ENG_TEX_MAPPING_X,
                                       right, 1.0f, 8.0f, 192.0f, 256.0f);
 
-        m_engine->TrackTextureMapping(lRank, mat, Gfx::ENG_RSTATE_PART2, "objects/drawer.png", "",
+        m_engine->TrackTextureMapping(lRank, mat, Gfx::ENG_RSTATE_PART2, "objects/drawer.png"+teamStr, "",
                                       Gfx::ENG_TEX_MAPPING_X,
                                       left, 1.0f, 8.0f, 192.0f, 256.0f);
     }
     else
     {
-        m_engine->TrackTextureMapping(rRank, mat, Gfx::ENG_RSTATE_PART1, "objects/lemt.png", "",
+        m_engine->TrackTextureMapping(rRank, mat, Gfx::ENG_RSTATE_PART1, "objects/lemt.png"+teamStr, "",
                                       Gfx::ENG_TEX_MAPPING_X,
                                       right, 1.0f, 8.0f, 192.0f, 256.0f);
 
-        m_engine->TrackTextureMapping(lRank, mat, Gfx::ENG_RSTATE_PART2, "objects/lemt.png", "",
+        m_engine->TrackTextureMapping(lRank, mat, Gfx::ENG_RSTATE_PART2, "objects/lemt.png"+teamStr, "",
                                       Gfx::ENG_TEX_MAPPING_X,
                                       left, 1.0f, 8.0f, 192.0f, 256.0f);
     }
