@@ -5065,8 +5065,9 @@ CObject* CRobotMain::IOReadObject(CLevelParserLine *line, const char* filename, 
     bool trainer = line->GetParam("trainer")->AsBool(false);
     bool toy = line->GetParam("toy")->AsBool(false);
     int option = line->GetParam("option")->AsInt(0);
+    int team = line->GetParam("team")->AsInt(0);
 
-    CObject* obj = m_objMan->CreateObject(pos, dir.y, type, 0.0f, 1.0f, 0.0f, trainer, toy, option, id);
+    CObject* obj = m_objMan->CreateObject(pos, dir.y, type, 0.0f, 1.0f, 0.0f, trainer, toy, option, team, id);
 
     if (obj->Implements(ObjectInterfaceType::Old))
     {

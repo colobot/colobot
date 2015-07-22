@@ -1006,7 +1006,6 @@ void COldObject::Read(CLevelParserLine* line)
     SetProxyDistance(line->GetParam("proxyDistance")->AsFloat(15.0f)*g_unit);
     SetRange(line->GetParam("range")->AsFloat(30.0f));
     SetMagnifyDamage(line->GetParam("magnifyDamage")->AsFloat(1.0f));
-    SetTeam(line->GetParam("team")->AsInt(0));
     SetGunGoalV(line->GetParam("aimV")->AsFloat(0.0f));
     SetGunGoalH(line->GetParam("aimH")->AsFloat(0.0f));
 
