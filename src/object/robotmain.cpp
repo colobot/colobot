@@ -4646,6 +4646,7 @@ void CRobotMain::LoadOneScript(CObject *obj, int &nbError)
         if (CResourceManager::Exists(filename))
         {
             Program* program = brain->GetOrAddProgram(i);
+            if(brain->GetCompile(program)) continue; // If already loaded (e.g. from level file), skip
             brain->ReadProgram(program, filename.c_str());
             if (!brain->GetCompile(program)) nbError++;
         }
