@@ -957,26 +957,30 @@ void CStudio::UpdateFlux()
 {
     if ( m_bRunning )
     {
-#if 1
         if ( m_bRealTime )  // run?
         {
-            m_pause->ClearPause();
-            m_sound->MuteAll(false);
+            if(m_pause->GetPauseType() == PAUSE_EDITOR)
+            {
+                m_pause->ClearPause();
+                m_sound->MuteAll(false);
+            }
         }
         else    // step by step?
+        {
+            if(!m_pause->GetPause())
+            {
+                m_pause->SetPause(PAUSE_EDITOR);
+                m_sound->MuteAll(true);
+            }
+        }
+    }
+    else    // stop?
+    {
+        if(!m_pause->GetPause())
         {
             m_pause->SetPause(PAUSE_EDITOR);
             m_sound->MuteAll(true);
         }
-#else
-        m_pause->ClearPause();
-        m_sound->MuteAll(false);
-#endif
-    }
-    else    // stop?
-    {
-        m_pause->SetPause(PAUSE_EDITOR);
-        m_sound->MuteAll(true);
     }
 }
 

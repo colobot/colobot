@@ -95,6 +95,7 @@ std::string CPauseManager::GetPauseName(PauseType pause)
         case PAUSE_VISIT:       return "Visit";
         case PAUSE_CHEAT:       return "Cheat console";
         case PAUSE_PHOTO:       return "Photo mode";
+        case PAUSE_CODE_BATTLE_LOCK: return "Code battle lock";
         default: assert(false); // Should never happen
     }
     return "?";

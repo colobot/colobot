@@ -38,7 +38,8 @@ enum PauseType {
     PAUSE_EDITOR,
     PAUSE_VISIT,
     PAUSE_CHEAT,
-    PAUSE_PHOTO
+    PAUSE_PHOTO,
+    PAUSE_CODE_BATTLE_LOCK
 };
 
 class CPauseManager : public CSingleton<CPauseManager>
@@ -46,19 +47,18 @@ class CPauseManager : public CSingleton<CPauseManager>
 public:
     CPauseManager();
     ~CPauseManager();
-    
+
     void SetPause(PauseType pause);
     void ClearPause();
     bool GetPause();
     bool GetPause(PauseType pause);
     PauseType GetPauseType();
-    
+
 private:
     std::string GetPauseName(PauseType pause);
-    
+
 private:
     CSoundInterface* m_sound;
-    
+
     PauseType m_pause;
 };
-

@@ -831,7 +831,7 @@ bool CRobotMain::ProcessEvent(Event &event)
                         m_camera->GetType() != Gfx::CAM_TYPE_VISIT &&
                         !m_movie->IsExist())
                     {
-                        ChangePause(m_pause->GetPause(PAUSE_USER) ? PAUSE_NONE : PAUSE_USER);
+                        ChangePause(m_pause->GetPause(PAUSE_USER) || m_pause->GetPause(PAUSE_CODE_BATTLE_LOCK) ? PAUSE_NONE : PAUSE_USER);
                     }
                 }
                 if (event.key.slot == INPUT_SLOT_CAMERA)
@@ -2764,7 +2764,8 @@ bool CRobotMain::EventFrame(const Event &event)
         {
             // NOTE: It's important to do this AFTER the first update event finished processing
             //       because otherwise all robot parts are misplaced
-            ChangePause(PAUSE_USER);
+            ChangePause(PAUSE_CODE_BATTLE_LOCK);
+            m_sound->MuteAll(false); // Allow sound
             m_codeBattleInit = true; // Will start on resume
         }
 
@@ -6086,7 +6087,8 @@ void CRobotMain::SetExitAfterMission(bool exit)
 
 bool CRobotMain::CanPlayerInteract()
 {
-    if(GetMissionType() == MISSION_CODE_BATTLE) {
+    if(GetMissionType() == MISSION_CODE_BATTLE)
+    {
         return !m_codeBattleStarted;
     }
     return true;

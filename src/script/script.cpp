@@ -480,7 +480,10 @@ bool CScript::Step(const Event &event)
 
     if ( m_bContinue )  // instuction "move", "goto", etc. ?
     {
-        m_pause->ClearPause();  // removes the pause
+        if (m_pause->GetPauseType() == PAUSE_EDITOR)
+        {
+            m_pause->ClearPause();  // removes the pause
+        }
     }
     return false;
 }
@@ -1098,4 +1101,3 @@ char* CScript::GetFilename()
 {
     return m_filename;
 }
-
