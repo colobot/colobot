@@ -41,6 +41,8 @@ class CScriptFunctions
 {
 public:
     static void Init();
+    static CBotVar* CreateObjectVar(CObject* obj);
+    static void DestroyObjectVar(CBotVar* botVar, bool permanent);
 
 private:
     static CBotTypResult cNull(CBotVar* &var, void* user);
@@ -176,6 +178,8 @@ private:
 
     static CBotTypResult cPointConstructor(CBotVar* pThis, CBotVar* &var);
     static bool rPointConstructor(CBotVar* pThis, CBotVar* var, CBotVar* pResult, int& Exception, void* user);
+
+    static void uObject(CBotVar* botThis, void* user);
 
 public:
     static int m_numberOfOpenFiles;

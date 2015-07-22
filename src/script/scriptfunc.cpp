@@ -3611,6 +3611,7 @@ void CScriptFunctions::Init()
     bc->AddItem("load",        CBotTypResult(CBotTypPointer, "object"), PR_READ);
     bc->AddItem("id",          CBotTypResult(CBotTypInt), PR_READ);
     bc->AddItem("team",        CBotTypResult(CBotTypInt), PR_READ);
+    bc->AddItem("velocity",    CBotTypResult(CBotTypClass, "point"), PR_READ);
     bc->AddFunction("busy",     CScriptFunctions::rBusy,     CScriptFunctions::cBusy);
     bc->AddFunction("factory",  CScriptFunctions::rFactory,  CScriptFunctions::cFactory);
     bc->AddFunction("research", CScriptFunctions::rResearch, CScriptFunctions::cClassOneFloat);
@@ -3723,4 +3724,150 @@ void CScriptFunctions::Init()
 
     CBotProgram::AddFunction("canbuild", rCanBuild, CScriptFunctions::cCanBuild);
     CBotProgram::AddFunction("build", rBuild, CScriptFunctions::cOneFloat);
+}
+
+
+// Updates the class Object.
+
+void CScriptFunctions::uObject(CBotVar* botThis, void* user)
+{
+    CPhysics*   physics;
+    CBotVar     *pVar, *pSub;
+    ObjectType  type;
+    Math::Vector    pos;
+    float       value;
+
+    if ( user == nullptr )  return;
+
+    assert(static_cast<CObject*>(user)->Implements(ObjectInterfaceType::Old));
+    COldObject* object = static_cast<COldObject*>(user);
+
+    physics = object->GetPhysics();
+
+    // Updates the object's type.
+    pVar = botThis->GetItemList();  // "category"
+    type = object->GetType();
+    pVar->SetValInt(type, object->GetName());
+
+    // Updates the position of the object.
+    pVar = pVar->GetNext();  // "position"
+    if (IsObjectBeingTransported(object))
+    {
+        pSub = pVar->GetItemList();  // "x"
+        pSub->SetInit(CBotVar::InitType::IS_NAN);
+        pSub = pSub->GetNext();  // "y"
+        pSub->SetInit(CBotVar::InitType::IS_NAN);
+        pSub = pSub->GetNext();  // "z"
+        pSub->SetInit(CBotVar::InitType::IS_NAN);
+    }
+    else
+    {
+        pos = object->GetPosition();
+        float waterLevel = Gfx::CEngine::GetInstancePointer()->GetWater()->GetLevel();
+        pos.y -= waterLevel;  // relative to sea level!
+        pSub = pVar->GetItemList();  // "x"
+        pSub->SetValFloat(pos.x/g_unit);
+        pSub = pSub->GetNext();  // "y"
+        pSub->SetValFloat(pos.z/g_unit);
+        pSub = pSub->GetNext();  // "z"
+        pSub->SetValFloat(pos.y/g_unit);
+    }
+
+    // Updates the angle.
+    pos = object->GetRotation();
+    pos += object->GetTilt();
+    pVar = pVar->GetNext();  // "orientation"
+    pVar->SetValFloat(360.0f-Math::Mod(pos.y*180.0f/Math::PI, 360.0f));
+    pVar = pVar->GetNext();  // "pitch"
+    pVar->SetValFloat(pos.z*180.0f/Math::PI);
+    pVar = pVar->GetNext();  // "roll"
+    pVar->SetValFloat(pos.x*180.0f/Math::PI);
+
+    // Updates the energy level of the object.
+    pVar = pVar->GetNext();  // "energyLevel"
+    value = object->GetEnergy();
+    pVar->SetValFloat(value);
+
+    // Updates the shield level of the object.
+    pVar = pVar->GetNext();  // "shieldLevel"
+    value = object->GetShield();
+    pVar->SetValFloat(value);
+
+    // Updates the temperature of the reactor.
+    pVar = pVar->GetNext();  // "temperature"
+    if ( physics == 0 )  value = 0.0f;
+    else                 value = 1.0f-physics->GetReactorRange();
+    pVar->SetValFloat(value);
+
+    // Updates the height above the ground.
+    pVar = pVar->GetNext();  // "altitude"
+    if ( physics == 0 )  value = 0.0f;
+    else                 value = physics->GetFloorHeight();
+    pVar->SetValFloat(value/g_unit);
+
+    // Updates the lifetime of the object.
+    pVar = pVar->GetNext();  // "lifeTime"
+    value = object->GetAbsTime();
+    pVar->SetValFloat(value);
+
+    // Updates the type of battery.
+    pVar = pVar->GetNext();  // "energyCell"
+    if (object->Implements(ObjectInterfaceType::Powered))
+    {
+        CObject* power = dynamic_cast<CPoweredObject*>(object)->GetPower();
+        if (power == nullptr)
+        {
+            pVar->SetPointer(nullptr);
+        }
+        else if (power->Implements(ObjectInterfaceType::Old))
+        {
+            pVar->SetPointer(dynamic_cast<COldObject*>(power)->GetBotVar());
+        }
+    }
+
+    // Updates the transported object's type.
+    pVar = pVar->GetNext();  // "load"
+    if (object->Implements(ObjectInterfaceType::Carrier))
+    {
+        CObject* cargo = dynamic_cast<CCarrierObject*>(object)->GetCargo();
+        if (cargo == nullptr)
+        {
+            pVar->SetPointer(nullptr);
+        }
+        else if (cargo->Implements(ObjectInterfaceType::Old))
+        {
+            pVar->SetPointer(dynamic_cast<COldObject*>(cargo)->GetBotVar());
+        }
+    }
+
+    pVar = pVar->GetNext();  // "id"
+    value = object->GetID();
+    pVar->SetValInt(value);
+
+    pVar = pVar->GetNext();  // "team"
+    value = object->GetTeam();
+    pVar->SetValInt(value);
+}
+
+CBotVar* CScriptFunctions::CreateObjectVar(CObject* obj)
+{
+    CBotClass* bc = CBotClass::Find("object");
+    if ( bc != 0 )
+    {
+        bc->AddUpdateFunc(CScriptFunctions::uObject);
+    }
+
+    CBotVar* botVar = CBotVar::Create("", CBotTypResult(CBotTypClass, "object"));
+    botVar->SetUserPtr(obj);
+    botVar->SetIdent(obj->GetID());
+    return botVar;
+}
+
+void CScriptFunctions::DestroyObjectVar(CBotVar* botVar, bool permanent)
+{
+    if ( botVar == nullptr ) return;
+
+    botVar->SetUserPtr(OBJECTDELETED);
+    if(permanent)
+        delete botVar;
 }
