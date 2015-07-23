@@ -1,60 +1,36 @@
 # Compile and install instructions on MacOSX
 
-To compile Colobot on MacOS X, you need to first get all tools, all
-building dependencies (including the recompilation of some of them), and
-finally compile colobot.
+To compile Colobot on MacOS X, you need to first get Developer Command Line Tools for OS X, which you can get for example from [Apple Developer website](https://developer.apple.com/xcode/downloads/).
 
-* Install git from [git-osx-installer on Google Code](https://code.google.com/p/git-osx-installer/)
-* Install Xcode through the Mac AppStore
-* Accept the Xcode license
+After installing Developer Command Line Tools, you should have basic tools like clang and git installed. After that, you can grab other required packages with Homebrew. So as in instructions on [the project page](http://brew.sh/):
+```bash
+  ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+```
+And then:
+```bash
+  brew install cmake sdl sdl_image sdl_ttf boost glew physfs flac libsndfile libvorbis vorbis-tools gettext po4a
+```
+Gettext is installed in separate directory without adding the files to system path, so in order to get it working normally, you should call also:
+```bash
+  brew link gettext --force
+```
+When installing po4a, you might get into trouble over dependency of SGML module for perl. The best way is to install it manually, which requires some changes in SGML's package Makefile. Appropriate instructions can be found [here](http://github.com/oster/PLM/wiki/Po4a-installation-guide-on-OSX/).
 
-        xcodebuild -license
+If you've installed everything correctly, the simple way of compiling Colobot with CMake should work:
+```bash
+  git clone --recursive https://github.com/colobot/colobot.git
+  mkdir colobot/build
+  cd colobot/build
+  cmake ../
+  make
+```
 
-* Download and install Apple's Command Line Developer Tools from within Xcode (Preferences, Download, Components)
-* Download and install [Mac Ports](http://www.macports.org/install.php#requirements)
-* Install GCC 4.8 through MacPorts
-
-        sudo port install gcc48
-
-* Install all colobot build depends
-
-        sudo port install cmake libsdl libsdl_image libsdl_ttf boost libsndfile glew libicns librsvg
-
-  > [po4a](http://po4a.alioth.debian.org/) should also be installed for the translation of levels, but the [MacPorts' Portfiles have not been accepted yet](http://trac.macports.org/ticket/41227).
-
-* Rebuild libtiff locally
-
-  This is needed because of the following error:
-
-  > libtiff.5.dylib (for architecture x86_64) because larger updated load
-  > commands do not fit (the program must be relinked, and you may need to
-  > use -headerpad or -headerpad_max_install_names)
-
-  MacPorts changed the default linker flag, a simple local rebuild suffices:
-
-        sudo port -ns upgrade --force tiff
-
-* Rebuild boost with the same gcc that we want to use
-
-  This is needed because boost is compiled against Mac's system libstdc++
-  which is older than the one used by gcc-4.8
-
-        sudo port -ns upgrade --force boost configure.compiler=macports-gcc-4.8
-
-* Build colobot with gcc-4.8
-
-        mkdir -p build
-        cd build
-        CC=/opt/local/bin/gcc-mp-4.8 CXX=/opt/local/bin/g++-mp-4.8 cmake ..
-        make
-
-* Build a Colobot drag-n-drop package
-
-        make package
-
-* Open the package
-
-        open colobot-*.dmg
-
-* Once opened, drag the Colobot application and drop it in the
-  Application directory. Then just launch it as any other application.
+You can then build a Colobot drag-n-drop package
+```
+  make package
+```
+And open the package:
+```
+  open colobot-*.dmg
+```
+Once opened, drag the Colobot application and drop it in the Application directory. Then just launch it as any other application.
