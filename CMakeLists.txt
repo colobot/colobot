@@ -207,9 +207,9 @@ option(COLOBOT_LINT_BUILD "Generate some additional CMake targets for use with c
 
 
 # Default build type if not given is debug
-if(NOT DEFINED CMAKE_BUILD_TYPE)
+if(NOT CMAKE_BUILD_TYPE)
     message(STATUS "Build type not specified - assuming debug")
-    set(CMAKE_BUILD_TYPE debug)
+    set(CMAKE_BUILD_TYPE Debug CACHE STRING "Choose the type of build, options are: Debug Release RelWithDebInfo MinSizeRel." FORCE)
 endif()
 
 # Warn about development build
