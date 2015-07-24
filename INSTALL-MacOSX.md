@@ -8,13 +8,12 @@ After installing Developer Command Line Tools, you should have basic tools like 
 ```
 And then:
 ```bash
-  brew install cmake sdl sdl_image sdl_ttf boost glew physfs flac libsndfile libvorbis vorbis-tools gettext libicns librsvg po4a
+  brew install cmake sdl sdl_image sdl_ttf boost glew physfs flac libsndfile libvorbis vorbis-tools gettext libicns librsvg
 ```
 Gettext is installed in separate directory without adding the files to system path, so in order to get it working normally, you should call also:
 ```bash
   brew link gettext --force
 ```
-When installing po4a, you might get into trouble over dependency of SGML module for perl. The best way is to install it manually, which requires some changes in SGML's package Makefile. Appropriate instructions can be found [here](http://github.com/oster/PLM/wiki/Po4a-installation-guide-on-OSX/).
 
 If you've installed everything correctly, the simple way of compiling Colobot with CMake should work:
 ```bash
@@ -26,11 +25,11 @@ If you've installed everything correctly, the simple way of compiling Colobot wi
 ```
 
 You can then build a Colobot drag-n-drop package
-```
-  make package
+```bash
+  sudo make package
 ```
 And open the package:
-```
+```bash
   open colobot-*.dmg
 ```
 Once opened, drag the Colobot application and drop it in the Application directory. Then just launch it as any other application.
