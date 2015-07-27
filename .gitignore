@@ -30,3 +30,7 @@ Makefile
 
 # Ignore gedit temp files
 *~
+
+# Ignore QtCreator temp files
+CMakeLists.txt.user
+CMakeLists.txt.user.*
