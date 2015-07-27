@@ -514,7 +514,7 @@ const char* GetHelpText(const char *token)
     if ( strcmp(token, "direction" ) == 0 )  return "direction ( position );";
     if ( strcmp(token, "distance2d") == 0 )  return "distance2d ( p1, p2 );";
     if ( strcmp(token, "distance"  ) == 0 )  return "distance ( p1, p2 );";
-    if ( strcmp(token, "flatspace" ) == 0 )  return "space ( center, flatmin, rmin, rmax, dist );";
+    if ( strcmp(token, "flatspace" ) == 0 )  return "flatspace ( center, flatmin, rmin, rmax, dist );";
     if ( strcmp(token, "space"     ) == 0 )  return "space ( center, rmin, rmax, dist );";
     if ( strcmp(token, "flatground") == 0 )  return "flatground ( center, rmax );";
     if ( strcmp(token, "canbuild"       ) == 0 )  return "canbuild ( category );";
