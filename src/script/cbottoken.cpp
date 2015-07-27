@@ -509,7 +509,7 @@ const char* GetHelpText(const char *token)
     if ( strcmp(token, "takeoff"   ) == 0 )  return "object.takeoff ( );";
     if ( strcmp(token, "destroy"   ) == 0 )  return "object.destroy ( );";
     if ( strcmp(token, "search"    ) == 0 )  return "search ( cat, pos );";
-    if ( strcmp(token, "radar"     ) == 0 )  return "radar ( cat, angle, focus, min, max, sens );";
+    if ( strcmp(token, "radar"     ) == 0 )  return "radar ( cat, angle, focus, min, max, sens, filter );";
     if ( strcmp(token, "detect"    ) == 0 )  return "detect ( cat );";
     if ( strcmp(token, "direction" ) == 0 )  return "direction ( position );";
     if ( strcmp(token, "distance2d") == 0 )  return "distance2d ( p1, p2 );";
