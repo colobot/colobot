@@ -39,8 +39,8 @@ enum class TraceColor : int {
     LightGreen = 13,
     Blue = 14,
     LightBlue = 15,
-    RedArrow = 16,
-    BlackArrow = 17,
+    BlackArrow = 16,
+    RedArrow = 17,
     Max,
 };
 
