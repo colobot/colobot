@@ -3411,11 +3411,11 @@ void CEngine::Draw3DScene()
 
 void CEngine::RenderShadowMap()
 {
-    if (!m_shadowMapping) return;
-
     m_shadowMapping = m_shadowMapping && m_device->IsShadowMappingSupported();
     m_offscreenShadowRendering = m_offscreenShadowRendering && m_device->IsFramebufferSupported();
     m_offscreenShadowRenderingResolution = Math::Min(m_offscreenShadowRenderingResolution, m_device->GetMaxTextureSize());
+
+    if (!m_shadowMapping) return;
 
     if (m_device->GetMaxTextureStageCount() < 3)
     {
