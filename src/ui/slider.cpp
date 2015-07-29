@@ -496,7 +496,7 @@ void CSlider::Draw()
 
 std::string CSlider::GetLabel()
 {
-    return StrUtils::ToString<int>(static_cast<int>(m_min+(m_visibleValue*(m_max-m_min))));
+    return StrUtils::ToString<int>(static_cast<int>(round(m_min+(m_visibleValue*(m_max-m_min)))));
 }
 
 // Draws a rectangle.
