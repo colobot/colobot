@@ -3630,6 +3630,7 @@ bool CMainDialog::NameCreate()
     }
 
     m_main->SelectPlayer(name);
+    m_main->GetPlayerProfile()->Create();
 
     return true;
 }

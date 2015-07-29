@@ -78,11 +78,6 @@ CPlayerProfile::CPlayerProfile(std::string playerName)
     GetConfigFile().SetStringProperty("Gamer", "LastName", m_playerName);
     GetConfigFile().Save();
 
-    if (!CResourceManager::DirectoryExists(GetSaveDir()))
-    {
-        CResourceManager::CreateDirectory(GetSaveDir());
-    }
-
     m_freegameLoaded = false;
 
     for(int i = 0; i < static_cast<int>(LevelCategory::Max); i++)
@@ -110,6 +105,15 @@ std::string CPlayerProfile::GetLastName()
 std::vector<std::string> CPlayerProfile::GetPlayerList()
 {
     return CResourceManager::ListDirectories("savegame");
+}
+
+bool CPlayerProfile::Create()
+{
+    if (!CResourceManager::DirectoryExists(GetSaveDir()))
+    {
+        return CResourceManager::CreateDirectory(GetSaveDir());
+    }
+    return true;
 }
 
 bool CPlayerProfile::Delete()

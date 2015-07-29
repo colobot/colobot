@@ -46,45 +46,76 @@ struct PlayerApperance
 class CPlayerProfile
 {
 public:
+    // Creates CPlayerProfile instance and loads player save data
     CPlayerProfile(std::string playerName);
     ~CPlayerProfile();
+    // Returns last used player name, or "Player" if none found
     static std::string GetLastName();
+    // Returnslist of possible player names
     static std::vector<std::string> GetPlayerList();
 
+    // Creates player save directory (if needed)
+    bool Create();
+    // Removes player save directory
     bool Delete();
 
+    //! Returns player name
     std::string GetName();
 
+    //! Returns player's save directory path
     std::string GetSaveDir();
+    //! Returns path to file inside player's save directory
     std::string GetSaveFile(std::string filename);
 
+    //! Increments level try count
     void IncrementLevelTryCount(LevelCategory cat, int chap, int rank);
+    //! Returns try count for given level
     int GetLevelTryCount(LevelCategory cat, int chap, int rank);
+    //! Changes level passed status (also updates chapter passed status)
     void SetLevelPassed(LevelCategory cat, int chap, int rank, bool bPassed);
+    //! Chenks if the level (or chapter, if rank=0) is passed
     bool GetLevelPassed(LevelCategory cat, int chap, int rank);
+    //! Returns the highest chapter accessible in the given category
     int GetChapPassed(LevelCategory cat);
 
+    //! Sets selected chapter for save file
     void SetSelectedChap(LevelCategory category, int chap);
+    //! Returns selected chapter from save file
     int GetSelectedChap(LevelCategory category);
+    //! Sets selected level for save file
     void SetSelectedRank(LevelCategory category, int rank);
+    //! Returns selected level from save file
     int GetSelectedRank(LevelCategory category);
 
+    //! Returns unlocked EnableBuild for free game
     int GetFreeGameBuildUnlock();
+    //! Saves unlocked EnableBuild for free game
     void SetFreeGameBuildUnlock(int freeBuild);
+    //! Returns unlocked DoneResearch for free game
     int GetFreeGameResearchUnlock();
+    //! Saves unlocked DoneResearch for free game
     void SetFreeGameResearchUnlock(int freeResearch);
 
+    //! Returns a reference to PlayerApperance structure
     PlayerApperance& GetApperance();
+    //! Loads PlayerApperance structure
     void LoadApperance();
+    //! Saves PlayerApperance structure
     void SaveApperance();
 
+    //! Saves current scene status
     void SaveScene(std::string dir, std::string info);
+    //TODO: Move saved scenes load and list here
 
 protected:
+    //! Loads LevelInfo data for given category
     void LoadFinishedLevels(LevelCategory category);
+    //! Saves LevelInfo data for given category
     void SaveFinishedLevels(LevelCategory category);
 
+    //! Loads free game unlock state
     void LoadFreeGameUnlock();
+    //! Saves free game unlock state
     void SaveFreeGameUnlock();
 
 protected:
