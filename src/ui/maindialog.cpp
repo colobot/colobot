@@ -4933,14 +4933,14 @@ void CMainDialog::ChangeSetupButtons()
     if ( ps != 0 )
     {
         value = ps->GetVisibleValue();
-        m_main->SetAutosaveInterval(static_cast<int>(value));
+        m_main->SetAutosaveInterval(static_cast<int>(round(value)));
     }
 
     ps = static_cast<CSlider*>(pw->SearchControl(EVENT_INTERFACE_AUTOSAVE_SLOTS));
     if ( ps != 0 )
     {
         value = ps->GetVisibleValue();
-        m_main->SetAutosaveSlots(static_cast<int>(value));
+        m_main->SetAutosaveSlots(static_cast<int>(round(value)));
     }
 
     pes = static_cast<CEnumSlider*>(pw->SearchControl(EVENT_INTERFACE_TEXTURE_FILTER));
