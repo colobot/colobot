@@ -705,7 +705,7 @@ void CScript::ColorizeScript(Ui::CEdit* edit)
         {
             color = Gfx::FONT_HIGHLIGHT_CONST;
         }
-        if ( type == TokenTypVar )
+        if ( type == TokenTypVar || ( type >= TokenKeyWord && type < TokenKeyWord+100 ) )
         {
             if ( IsType(token) )
             {

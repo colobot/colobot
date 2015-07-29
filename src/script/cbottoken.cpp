@@ -377,7 +377,6 @@ bool IsType(const char *token)
     if ( strcmp(token, "point"  ) == 0 )  return true;
     if ( strcmp(token, "object" ) == 0 )  return true;
     if ( strcmp(token, "file"   ) == 0 )  return true;
-    if ( strcmp(token, "this"   ) == 0 )  return true;
     return false;
 }
 
