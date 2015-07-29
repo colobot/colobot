@@ -174,7 +174,7 @@ int CPlayerProfile::GetChapPassed(LevelCategory cat)
     {
         if ( !GetLevelPassed(cat, j, 0) )
         {
-            return j;
+            return j-1;
         }
     }
     return MAXSCENE;
