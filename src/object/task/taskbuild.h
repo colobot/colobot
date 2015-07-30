@@ -37,6 +37,7 @@ const int TBMAXLIGHT    = 4;
 
 enum TaskBuildPhase
 {
+    TBP_STOP    = 0,    // cancels task
     TBP_TURN    = 1,    // turns
     TBP_MOVE    = 2,    // forward/backward
     TBP_TAKE    = 3,    // takes gun

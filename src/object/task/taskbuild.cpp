@@ -208,6 +208,22 @@ bool CTaskBuild::EventProcess(const Event &event)
 
     m_progress += event.rTime*m_speed;  // other advance
 
+    // Cancel if the player try to move
+    float axeX = event.motionInput.x;
+    float axeY = event.motionInput.y;
+    float axeZ = event.motionInput.z;
+    if ( m_object->GetType() == OBJECT_HUMAN &&
+         (axeX != 0.0f || axeY != 0.0f || axeZ != 0.0f) &&
+         (m_phase == TBP_TURN || m_phase == TBP_MOVE || m_phase == TBP_TAKE || m_phase == TBP_PREP) )
+    {
+        m_phase = TBP_STOP;
+    }
+
+    if ( m_phase == TBP_STOP )  // stops?
+    {
+        return true;
+    }
+
     if ( m_phase == TBP_TURN )  // preliminary rotation?
     {
         a = m_object->GetRotationY();
@@ -552,6 +568,31 @@ Error CTaskBuild::IsEnded()
         if ( m_progress < 1.0f )  return ERR_CONTINUE;
 
         m_physics->SetMotorSpeedX(0.0f);
+    }
+
+    if ( m_phase == TBP_STOP ) // canceled?
+    {
+        if ( m_progress < 1.0f && m_motion->GetAction() == MHS_GUN )  return ERR_CONTINUE;
+
+        if ( m_motion->GetAction() == MHS_FIRE )
+        {
+            m_motion->SetAction(MHS_GUN);
+            m_speed = 1.0f/1.0f;
+            m_progress = 0.0f;
+            return ERR_CONTINUE;
+        }
+
+        m_motion->SetAction(-1);
+
+        // Place gun back
+        m_object->SetObjectParent(14, 0);
+        m_object->SetPartPosition(14, Math::Vector(-1.5f, 0.3f, -1.35f));
+        m_object->SetPartRotationZ(14, Math::PI);
+
+        m_physics->SetMotorSpeedX(0.0f);
+        m_physics->SetMotorSpeedZ(0.0f);
+
+        m_metal->SetLock(false); // make titanium usable
     }
 
     Abort();
