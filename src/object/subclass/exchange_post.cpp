@@ -195,7 +195,7 @@ void CExchangePost::Write(CLevelParserLine* line)
     for (const auto& info : m_infoList)
     {
         ++i;
-        if (info.name.empty())
+        if (!info.name.empty())
         {
             auto key = "info" + boost::lexical_cast<std::string>(i);
             auto paramValue = info.name + "=" + boost::lexical_cast<std::string>(info.value);
