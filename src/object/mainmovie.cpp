@@ -24,12 +24,13 @@
 
 #include "math/geometry.h"
 
-#include "object/motion/motionhuman.h"
 #include "object/object.h"
 #include "object/robotmain.h"
 
+#include "object/motion/motionhuman.h"
 
-#include <stdio.h>
+
+#include <cstdio>
 
 
 // Constructor of the application card.

@@ -22,18 +22,22 @@
  * \brief Entry point of application - main() function
  */
 
+#include "common/config.h"
+
 #include "app/app.h"
 #include "app/system.h"
+#if PLATFORM_WINDOWS
+    #include "app/system_windows.h"
+#endif
 
-#include "common/config.h"
 #include "common/logger.h"
 #include "common/misc.h"
 #include "common/restext.h"
+
 #include "common/resources/resourcemanager.h"
 
 #if PLATFORM_WINDOWS
     #include <windows.h>
-    #include "app/system_windows.h"
 #endif
 
 

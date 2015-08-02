@@ -19,9 +19,8 @@
 
 #include "app/input.h"
 
-
-#include "common/logger.h"
 #include "common/config_file.h"
+#include "common/logger.h"
 #include "common/restext.h"
 
 #include "graphics/engine/engine.h"

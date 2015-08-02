@@ -21,20 +21,19 @@
 
 #pragma once
 
-
 #include "ui/control.h"
 
 #include "common/event.h"
 
-#include "graphics/engine/terrain.h"
-#include "graphics/engine/water.h"
-#include "graphics/engine/engine.h"
-#include "graphics/core/device.h"
-#include "graphics/core/vertex.h"
+#include "object/object_type.h"
 
-#include "math/geometry.h"
+class CObject;
 
-#include "object/robotmain.h"
+namespace Gfx
+{
+class CWater;
+class CTerrain;
+}
 
 
 namespace Ui

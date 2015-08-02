@@ -21,10 +21,9 @@
 
 #include "common/ioutils.h"
 
+#include "graphics/model/model.h"
 #include "graphics/model/model_io_exception.h"
 #include "graphics/model/model_io_structs.h"
-
-#include "graphics/model/model.h"
 
 #include <fstream>
 

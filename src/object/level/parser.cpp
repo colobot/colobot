@@ -19,17 +19,17 @@
 
 #include "object/level/parser.h"
 
-
 #include "app/app.h"
 
 #include "common/make_unique.h"
-#include "common/resources/resourcemanager.h"
+
 #include "common/resources/inputstream.h"
 #include "common/resources/outputstream.h"
-
-#include "object/level/parserexceptions.h"
+#include "common/resources/resourcemanager.h"
 
 #include "object/robotmain.h"
+
+#include "object/level/parserexceptions.h"
 
 #include <string>
 #include <exception>

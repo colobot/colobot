@@ -20,45 +20,46 @@
 
 #include "ui/maindialog.h"
 
+#include "common/config.h"
+
 #include "app/app.h"
 #include "app/input.h"
 #include "app/system.h"
 
-#include "common/config.h"
-#include "common/global.h"
+#include "common/config_file.h"
 #include "common/event.h"
+#include "common/global.h"
 #include "common/logger.h"
 #include "common/make_unique.h"
 #include "common/misc.h"
-#include "common/config_file.h"
 #include "common/restext.h"
 #include "common/stringutils.h"
 
-#include "common/resources/resourcemanager.h"
 #include "common/resources/inputstream.h"
 #include "common/resources/outputstream.h"
-
-#include "object/level/parser.h"
+#include "common/resources/resourcemanager.h"
 
 #include "object/player_profile.h"
 #include "object/robotmain.h"
 
+#include "object/level/parser.h"
+
 #include "sound/sound.h"
 
-#include "ui/interface.h"
 #include "ui/button.h"
-#include "ui/color.h"
 #include "ui/check.h"
-#include "ui/key.h"
-#include "ui/group.h"
-#include "ui/image.h"
-#include "ui/scroll.h"
-#include "ui/slider.h"
-#include "ui/list.h"
-#include "ui/label.h"
-#include "ui/window.h"
+#include "ui/color.h"
 #include "ui/edit.h"
 #include "ui/editvalue.h"
+#include "ui/group.h"
+#include "ui/image.h"
+#include "ui/interface.h"
+#include "ui/key.h"
+#include "ui/label.h"
+#include "ui/list.h"
+#include "ui/scroll.h"
+#include "ui/slider.h"
+#include "ui/window.h"
 
 #include <stdio.h>
 #include <string.h>

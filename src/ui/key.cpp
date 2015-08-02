@@ -23,6 +23,10 @@
 #include "common/global.h"
 #include "common/stringutils.h"
 
+#include "graphics/engine/engine.h"
+
+#include "sound/sound.h"
+
 #include <cstring>
 
 namespace Ui

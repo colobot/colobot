@@ -21,10 +21,11 @@
 #include "object/task/taskturn.h"
 
 #include "graphics/engine/terrain.h"
-#include "physics/physics.h"
 
 #include "object/old_object.h"
 #include "object/robotmain.h"
+
+#include "physics/physics.h"
 
 
 // Object's constructor.

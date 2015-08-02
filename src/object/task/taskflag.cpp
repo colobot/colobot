@@ -17,19 +17,20 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-
 #include "object/task/taskflag.h"
-
-#include "math/geometry.h"
 
 #include "graphics/engine/particle.h"
 #include "graphics/engine/pyro_manager.h"
 #include "graphics/engine/water.h"
 
-#include "object/old_object.h"
+#include "math/geometry.h"
+
 #include "object/object_manager.h"
-#include "object/motion/motionhuman.h"
+#include "object/old_object.h"
+
 #include "object/interface/carrier_object.h"
+
+#include "object/motion/motionhuman.h"
 
 #include "physics/physics.h"
 

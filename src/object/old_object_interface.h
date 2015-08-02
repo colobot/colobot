@@ -24,9 +24,8 @@
 
 #pragma once
 
-
-#include "graphics/engine/engine.h"
 #include "graphics/engine/camera.h"
+#include "graphics/engine/engine.h"
 
 #include "object/object_type.h"
 

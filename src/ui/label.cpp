@@ -20,6 +20,8 @@
 
 #include "ui/label.h"
 
+#include "graphics/engine/engine.h"
+
 namespace Ui
 {
 

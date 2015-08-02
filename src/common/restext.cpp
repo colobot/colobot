@@ -20,16 +20,16 @@
 
 #include "common/restext.h"
 
-#include "app/input.h"
-
 #include "common/config.h"
 
-#include "common/global.h"
+#include "CBot/resource.h"
+
+#include "app/input.h"
+
 #include "common/event.h"
+#include "common/global.h"
 #include "common/logger.h"
 #include "common/stringutils.h"
-
-#include "CBot/resource.h"
 
 #include "object/object_type.h"
 #include "object/robotmain.h"

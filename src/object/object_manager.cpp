@@ -23,10 +23,11 @@
 #include "math/all.h"
 
 #include "object/object.h"
-#include "object/object_create_params.h"
 #include "object/object_create_exception.h"
+#include "object/object_create_params.h"
 #include "object/object_factory.h"
 #include "object/old_object.h"
+
 #include "object/auto/auto.h"
 
 #include "physics/physics.h"

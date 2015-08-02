@@ -23,8 +23,9 @@
 #include "graphics/engine/engine.h"
 #include "graphics/engine/pyro_manager.h"
 
-#include "object/motion/motionspider.h"
 #include "object/old_object.h"
+
+#include "object/motion/motionspider.h"
 
 #include "physics/physics.h"
 

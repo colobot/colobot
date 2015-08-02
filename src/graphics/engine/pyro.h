@@ -29,6 +29,7 @@
 #include "common/global.h"
 
 #include "graphics/core/color.h"
+
 #include "graphics/engine/pyro_type.h"
 
 #include "math/sphere.h"

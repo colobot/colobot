@@ -23,8 +23,8 @@
 
 
 #include "object/task/task.h"
-#include "math/vector.h"
 
+#include "math/vector.h"
 
 
 enum TaskFireAnt

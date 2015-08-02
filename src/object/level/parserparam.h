@@ -25,16 +25,17 @@
 #pragma once
 
 #include "graphics/core/color.h"
+
 #include "graphics/engine/camera.h"
-#include "graphics/engine/water.h"
 #include "graphics/engine/pyro_type.h"
+#include "graphics/engine/water.h"
 
 #include "math/point.h"
 
 #include "object/drive_type.h"
+#include "object/mission_type.h"
 #include "object/object_type.h"
 #include "object/tool_type.h"
-#include "object/mission_type.h"
 
 #include <string>
 #include <vector>

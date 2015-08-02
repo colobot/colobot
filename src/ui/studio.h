@@ -20,29 +20,18 @@
 // studio.h
 
 #pragma once
+
+#include "app/pausemanager.h"
+
 #include "common/event.h"
 
 #include "graphics/engine/camera.h"
 
-#include "app/pausemanager.h"
-
-#include <boost/filesystem.hpp>
-
-namespace fs = boost::filesystem;
-
 #include <string>
 
 class CEventQueue;
-class CRobotMain;
 class CScript;
 class CSoundInterface;
-
-namespace Gfx
-{
-class CEngine;
-class CCamera;
-}
-
 struct Program;
 
 namespace Ui

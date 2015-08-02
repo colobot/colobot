@@ -19,8 +19,8 @@
 #include "common/logger.h"
 
 #include "graphics/model/model_input.h"
-#include "graphics/model/model_output.h"
 #include "graphics/model/model_io_exception.h"
+#include "graphics/model/model_output.h"
 
 #include <iostream>
 #include <fstream>

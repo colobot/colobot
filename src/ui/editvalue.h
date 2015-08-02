@@ -42,6 +42,7 @@ enum EditValueType
 
 class CEdit;
 class CButton;
+class CInterface;
 
 
 

@@ -25,6 +25,7 @@
 #include "common/logger.h"
 
 #include "graphics/core/device.h"
+
 #include "graphics/engine/camera.h"
 #include "graphics/engine/terrain.h"
 
@@ -33,9 +34,10 @@
 #include "object/object.h"
 #include "object/object_manager.h"
 #include "object/robotmain.h"
-#include "object/interface/transportable_object.h"
 
 #include "object/auto/autopowercaptor.h"
+
+#include "object/interface/transportable_object.h"
 
 
 // Graphics module namespace

@@ -25,10 +25,10 @@
 #include "graphics/engine/oldmodelmanager.h"
 
 #include "object/object_create_params.h"
+
+#include "object/level/parserexceptions.h"
 #include "object/level/parserline.h"
 #include "object/level/parserparam.h"
-#include "object/level/parserexceptions.h"
-
 
 #include "ui/interface.h"
 #include "ui/list.h"

@@ -28,9 +28,9 @@
 
 #include "math/vector.h"
 
+#include "object/drive_type.h"
 #include "object/object_type.h"
 #include "object/tool_type.h"
-#include "object/drive_type.h"
 
 class CLevelParserLine;
 

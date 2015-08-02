@@ -19,9 +19,9 @@
 
 #pragma once
 
-#include "math/vector.h"
-
 #include "graphics/model/model_triangle.h"
+
+#include "math/vector.h"
 
 #include <vector>
 

@@ -25,8 +25,8 @@
 
 #include "object/robotmain.h"
 
-#include "ui/edit.h"
 #include "ui/button.h"
+#include "ui/edit.h"
 #include "ui/interface.h"
 
 

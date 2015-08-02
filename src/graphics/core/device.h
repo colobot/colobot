@@ -24,13 +24,12 @@
 
 #pragma once
 
-
 #include "graphics/core/color.h"
+#include "graphics/core/framebuffer.h"
 #include "graphics/core/light.h"
 #include "graphics/core/material.h"
 #include "graphics/core/texture.h"
 #include "graphics/core/vertex.h"
-#include "graphics/core/framebuffer.h"
 
 #include "math/intpoint.h"
 #include "math/matrix.h"

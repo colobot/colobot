@@ -20,6 +20,7 @@
 #include "graphics/model/model_manager.h"
 
 #include "common/logger.h"
+
 #include "common/resources/inputstream.h"
 
 #include "graphics/model/model_input.h"

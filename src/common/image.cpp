@@ -20,8 +20,9 @@
 
 #include "common/image.h"
 
-#include "math/func.h"
 #include "common/resources/resourcemanager.h"
+
+#include "math/func.h"
 
 #include <stdlib.h>
 #include <stdio.h>

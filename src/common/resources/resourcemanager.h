@@ -19,8 +19,8 @@
 
 #pragma once
 
-#include "common/resources/sndfile_wrapper.h"
 #include "common/resources/sdl_file_wrapper.h"
+#include "common/resources/sndfile_wrapper.h"
 
 #include <memory>
 #include <string>

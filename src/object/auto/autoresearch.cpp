@@ -25,14 +25,16 @@
 
 #include "math/geometry.h"
 
-#include "object/robotmain.h"
 #include "object/old_object.h"
-#include "object/level/parserline.h"
-#include "object/level/parserparam.h"
+#include "object/robotmain.h"
+
 #include "object/interface/powered_object.h"
 
-#include "ui/interface.h"
+#include "object/level/parserline.h"
+#include "object/level/parserparam.h"
+
 #include "ui/gauge.h"
+#include "ui/interface.h"
 #include "ui/window.h"
 
 

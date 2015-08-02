@@ -29,8 +29,8 @@
 #include "app/input.h"
 
 #include "common/event.h"
-#include "common/restext.h"
 #include "common/key.h"
+#include "common/restext.h"
 
 
 namespace Ui

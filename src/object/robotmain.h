@@ -24,20 +24,19 @@
 
 #pragma once
 
+#include "app/pausemanager.h"
 
 #include "common/global.h"
 #include "common/singleton.h"
 
 #include "graphics/engine/particle.h"
 
-#include "object/level_category.h"
-#include "object/object_type.h"
 #include "object/drive_type.h"
-#include "object/tool_type.h"
+#include "object/level_category.h"
 #include "object/mainmovie.h"
 #include "object/mission_type.h"
-
-#include "app/pausemanager.h"
+#include "object/object_type.h"
+#include "object/tool_type.h"
 
 #include <deque>
 

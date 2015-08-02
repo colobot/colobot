@@ -20,12 +20,16 @@
 
 #include "common/pathman.h"
 
+#include "common/config.h"
 
 #include "app/app.h"
 #include "app/system.h"
+#ifdef PLATFORM_WINDOWS
+    #include "app/system_windows.h"
+#endif
 
-#include "common/config.h"
 #include "common/logger.h"
+
 #include "common/resources/resourcemanager.h"
 
 #include "object/robotmain.h"
@@ -34,10 +38,6 @@
 
 #include <boost/algorithm/string.hpp>
 #include <boost/filesystem.hpp>
-
-#ifdef PLATFORM_WINDOWS
-    #include "app/system_windows.h"
-#endif
 
 template<> CPathManager* CSingleton<CPathManager>::m_instance = nullptr;
 

@@ -23,6 +23,7 @@
 #include "graphics/engine/particle.h"
 
 #include "object/object_manager.h"
+
 #include "object/subclass/exchange_post.h"
 
 #include <string.h>

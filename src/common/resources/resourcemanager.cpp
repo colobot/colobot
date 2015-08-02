@@ -21,6 +21,11 @@
 #include "common/resources/resourcemanager.h"
 
 #include "common/config.h"
+
+#if PLATFORM_WINDOWS
+    #include "app/system_windows.h"
+#endif
+
 #include "common/logger.h"
 #include "common/make_unique.h"
 
@@ -28,10 +33,6 @@
 
 #include <boost/filesystem.hpp>
 #include <boost/regex.hpp>
-
-#if PLATFORM_WINDOWS
-    #include "app/system_windows.h"
-#endif
 
 namespace fs = boost::filesystem;
 

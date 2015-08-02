@@ -24,11 +24,11 @@
 
 #pragma once
 
+#include "object/level_category.h"
+
+#include "object/level/parserexceptions.h"
 #include "object/level/parserline.h"
 #include "object/level/parserparam.h"
-#include "object/level/parserexceptions.h"
-
-#include "object/level_category.h"
 
 #include <string>
 #include <vector>

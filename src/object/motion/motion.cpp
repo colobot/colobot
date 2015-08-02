@@ -24,15 +24,16 @@
 
 #include "common/make_unique.h"
 
-#include "object/robotmain.h"
 #include "object/old_object.h"
+#include "object/robotmain.h"
+
 #include "object/level/parserline.h"
 #include "object/level/parserparam.h"
 
 
 
-#include <stdio.h>
-#include <string.h>
+#include <cstdio>
+#include <cstring>
 
 
 // Object's constructor.

@@ -17,7 +17,6 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-
 #include "object/robotmain.h"
 
 #include "CBot/CBotDll.h"
@@ -26,20 +25,18 @@
 #include "app/controller.h"
 #include "app/input.h"
 
-#include "clipboard/clipboard.h"
-
+#include "common/config_file.h"
 #include "common/event.h"
 #include "common/global.h"
 #include "common/logger.h"
 #include "common/make_unique.h"
 #include "common/misc.h"
-#include "common/config_file.h"
 #include "common/restext.h"
 #include "common/stringutils.h"
 
-#include "common/resources/resourcemanager.h"
 #include "common/resources/inputstream.h"
 #include "common/resources/outputstream.h"
+#include "common/resources/resourcemanager.h"
 
 #include "graphics/engine/camera.h"
 #include "graphics/engine/cloud.h"
@@ -53,28 +50,34 @@
 #include "graphics/engine/terrain.h"
 #include "graphics/engine/text.h"
 #include "graphics/engine/water.h"
+
 #include "graphics/model/model_manager.h"
 
 #include "math/const.h"
 #include "math/geometry.h"
 
-#include "object/auto/auto.h"
-#include "object/auto/autobase.h"
 #include "object/brain.h"
 #include "object/mainmovie.h"
-#include "object/motion/motion.h"
-#include "object/motion/motionhuman.h"
-#include "object/motion/motiontoto.h"
 #include "object/object.h"
 #include "object/object_create_exception.h"
 #include "object/object_manager.h"
 #include "object/player_profile.h"
 #include "object/scene_conditions.h"
+
+#include "object/auto/auto.h"
+#include "object/auto/autobase.h"
+
+#include "object/level/parser.h"
+
+#include "object/motion/motion.h"
+#include "object/motion/motionhuman.h"
+#include "object/motion/motiontoto.h"
+
+#include "object/subclass/exchange_post.h"
+
 #include "object/task/task.h"
 #include "object/task/taskbuild.h"
 #include "object/task/taskmanip.h"
-#include "object/level/parser.h"
-#include "object/subclass/exchange_post.h"
 
 #include "physics/physics.h"
 
@@ -100,6 +103,7 @@
 
 #include <iomanip>
 
+#include <clipboard/clipboard.h>
 #include <boost/lexical_cast.hpp>
 
 

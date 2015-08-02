@@ -22,21 +22,24 @@
 #include "common/make_unique.h"
 
 #include "graphics/engine/engine.h"
+#include "graphics/engine/lightning.h"
 #include "graphics/engine/oldmodelmanager.h"
 #include "graphics/engine/terrain.h"
-#include "graphics/engine/lightning.h"
+
 #include "graphics/model/model_manager.h"
 
-#include "object/old_object.h"
+#include "math/geometry.h"
+
 #include "object/brain.h"
 #include "object/object_create_params.h"
+#include "object/old_object.h"
 #include "object/robotmain.h"
+
 #include "object/auto/autobase.h"
 #include "object/auto/autoconvert.h"
 #include "object/auto/autoderrick.h"
 #include "object/auto/autodestroyer.h"
 #include "object/auto/autoegg.h"
-#include "object/auto/autopowerplant.h"
 #include "object/auto/autofactory.h"
 #include "object/auto/autoflag.h"
 #include "object/auto/autohouston.h"
@@ -45,28 +48,29 @@
 #include "object/auto/automush.h"
 #include "object/auto/autonest.h"
 #include "object/auto/autonuclearplant.h"
-#include "object/auto/autopowercaptor.h"
 #include "object/auto/autoportico.h"
+#include "object/auto/autopowercaptor.h"
+#include "object/auto/autopowerplant.h"
+#include "object/auto/autopowerstation.h"
 #include "object/auto/autoradar.h"
 #include "object/auto/autorepair.h"
 #include "object/auto/autoresearch.h"
 #include "object/auto/autoroot.h"
-#include "object/auto/autovault.h"
-#include "object/auto/autopowerstation.h"
 #include "object/auto/autotower.h"
+#include "object/auto/autovault.h"
+
 #include "object/motion/motionant.h"
 #include "object/motion/motionbee.h"
-#include "object/motion/motionlevelcontroller.h"
 #include "object/motion/motionhuman.h"
+#include "object/motion/motionlevelcontroller.h"
 #include "object/motion/motionqueen.h"
 #include "object/motion/motionspider.h"
 #include "object/motion/motiontoto.h"
 #include "object/motion/motionvehicle.h"
 #include "object/motion/motionworm.h"
+
 #include "object/subclass/exchange_post.h"
 #include "object/subclass/static_object.h"
-
-#include "math/geometry.h"
 
 #include "physics/physics.h"
 

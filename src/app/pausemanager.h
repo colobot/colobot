@@ -24,6 +24,7 @@
 #pragma once
 
 #include "common/singleton.h"
+
 #include "sound/sound.h"
 
 #include <string>

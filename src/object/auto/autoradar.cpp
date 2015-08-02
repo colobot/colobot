@@ -25,9 +25,9 @@
 #include "object/object_manager.h"
 #include "object/old_object.h"
 
+#include "ui/gauge.h"
 #include "ui/interface.h"
 #include "ui/window.h"
-#include "ui/gauge.h"
 
 
 

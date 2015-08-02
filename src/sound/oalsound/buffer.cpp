@@ -20,9 +20,9 @@
 
 #include "sound/oalsound/buffer.h"
 
-#include "sound/oalsound/check.h"
-
 #include "common/resources/resourcemanager.h"
+
+#include "sound/oalsound/check.h"
 
 #include <memory>
 

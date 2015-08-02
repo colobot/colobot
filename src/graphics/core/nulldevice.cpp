@@ -20,11 +20,6 @@
 
 #include "graphics/core/nulldevice.h"
 
-#include "common/config.h"
-#include "common/logger.h"
-
-#include "math/geometry.h"
-
 
 // Graphics module namespace
 namespace Gfx

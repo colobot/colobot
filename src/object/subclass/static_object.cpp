@@ -22,13 +22,14 @@
 #include "common/make_unique.h"
 
 #include "graphics/engine/terrain.h"
+
 #include "graphics/model/model.h"
 #include "graphics/model/model_io_exception.h"
 #include "graphics/model/model_manager.h"
 
-#include "object/object_create_exception.h"
-
 #include "math/geometry.h"
+
+#include "object/object_create_exception.h"
 
 
 const std::unordered_map<ObjectType, std::string, ObjectTypeHash> CStaticObject::m_staticModelNames =

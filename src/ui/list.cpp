@@ -20,7 +20,10 @@
 
 #include "ui/list.h"
 
-#include <string.h>
+#include "graphics/engine/engine.h"
+
+#include <cassert>
+#include <cstring>
 
 namespace Ui
 {

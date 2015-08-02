@@ -29,6 +29,7 @@
 #include "common/make_unique.h"
 
 #include "graphics/core/device.h"
+
 #include "graphics/engine/camera.h"
 #include "graphics/engine/cloud.h"
 #include "graphics/engine/lightman.h"

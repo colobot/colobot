@@ -24,8 +24,8 @@
 
 #include "common/logger.h"
 
-#include "object/object_manager.h"
 #include "object/object.h"
+#include "object/object_manager.h"
 
 
 namespace Ui

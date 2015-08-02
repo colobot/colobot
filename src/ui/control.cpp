@@ -22,6 +22,11 @@
 
 #include "app/app.h"
 
+#include "common/restext.h"
+
+#include "object/robotmain.h"
+
+
 
 namespace Ui
 {

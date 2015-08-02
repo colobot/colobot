@@ -21,11 +21,7 @@
 
 #pragma once
 
-
 #include "ui/control.h"
-#include "common/event.h"
-
-#include <string>
 
 namespace Ui
 {

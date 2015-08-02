@@ -24,6 +24,7 @@
 
 #include "object/object_manager.h"
 #include "object/old_object.h"
+
 #include "object/level/parserline.h"
 #include "object/level/parserparam.h"
 

@@ -26,15 +26,17 @@
 
 #include "object/object_manager.h"
 #include "object/old_object.h"
+
+#include "object/interface/powered_object.h"
+
 #include "object/level/parserline.h"
 #include "object/level/parserparam.h"
-#include "object/interface/powered_object.h"
 
 #include "physics/physics.h"
 
+#include "ui/gauge.h"
 #include "ui/interface.h"
 #include "ui/window.h"
-#include "ui/gauge.h"
 
 
 const float TOWER_SCOPE     = 200.0f;   // range of beam

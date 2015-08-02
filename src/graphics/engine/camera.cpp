@@ -33,6 +33,7 @@
 #include "object/object.h"
 #include "object/object_manager.h"
 #include "object/robotmain.h"
+
 #include "object/interface/carrier_object.h"
 #include "object/interface/powered_object.h"
 #include "object/interface/transportable_object.h"

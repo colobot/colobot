@@ -25,6 +25,7 @@
 #include "common/image.h"
 #include "common/logger.h"
 #include "common/stringutils.h"
+
 #include "common/resources/resourcemanager.h"
 
 #include "math/func.h"

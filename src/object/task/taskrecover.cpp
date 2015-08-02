@@ -24,12 +24,13 @@
 
 #include "math/geometry.h"
 
-#include "physics/physics.h"
-
-#include "object/old_object.h"
 #include "object/object_manager.h"
+#include "object/old_object.h"
 #include "object/robotmain.h"
+
 #include "object/interface/powered_object.h"
+
+#include "physics/physics.h"
 
 
 const float ENERGY_RECOVER  = 0.25f;        // energy consumed by recovery

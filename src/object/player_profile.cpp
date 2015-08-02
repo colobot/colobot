@@ -16,18 +16,22 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see http://gnu.org/licenses
  */
+
 #include "object/player_profile.h"
 
+#include "common/config_file.h"
 #include "common/logger.h"
 #include "common/make_unique.h"
-#include "common/config_file.h"
-#include "common/resources/resourcemanager.h"
-#include "common/resources/inputstream.h"
-#include "common/resources/outputstream.h"
 #include "common/restext.h"
 
-#include "object/level/parser.h"
+#include "common/resources/inputstream.h"
+#include "common/resources/outputstream.h"
+#include "common/resources/resourcemanager.h"
+
 #include "object/robotmain.h"
+
+#include "object/level/parser.h"
+
 
 void PlayerApperance::DefPerso()
 {

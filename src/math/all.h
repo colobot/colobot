@@ -27,8 +27,8 @@
 
 #include "math/const.h"
 #include "math/func.h"
+#include "math/geometry.h"
+#include "math/matrix.h"
 #include "math/point.h"
 #include "math/vector.h"
-#include "math/matrix.h"
-#include "math/geometry.h"
 

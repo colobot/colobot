@@ -30,9 +30,10 @@
 
 #include "math/geometry.h"
 
-#include "object/old_object.h"
 #include "object/object_manager.h"
+#include "object/old_object.h"
 #include "object/robotmain.h"
+
 #include "object/motion/motionhuman.h"
 
 

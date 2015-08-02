@@ -27,11 +27,12 @@
 
 #include "object/object_manager.h"
 #include "object/old_object.h"
+
 #include "object/interface/carrier_object.h"
 #include "object/interface/powered_object.h"
 
-#include "ui/interface.h"
 #include "ui/gauge.h"
+#include "ui/interface.h"
 #include "ui/window.h"
 
 

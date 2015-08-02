@@ -24,7 +24,6 @@
 
 #pragma once
 
-#include "common/logger.h"
 #include "sound/sound.h"
 
 #include "sound/oalsound/buffer.h"

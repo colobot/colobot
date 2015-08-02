@@ -18,6 +18,7 @@
  */
 
 #include "common/resources/outputstream.h"
+
 #include "common/resources/outputstreambuffer.h"
 
 

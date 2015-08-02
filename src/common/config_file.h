@@ -27,13 +27,8 @@
 #include "common/singleton.h"
 
 #include <boost/property_tree/ptree.hpp>
-#include <boost/filesystem.hpp>
-#include <boost/algorithm/string/replace.hpp>
 
 #include <string>
-#include <vector>
-
-namespace fs = boost::filesystem;
 
 
 /**

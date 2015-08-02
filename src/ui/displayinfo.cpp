@@ -27,6 +27,7 @@
 #include "common/stringutils.h"
 
 #include "graphics/core/light.h"
+
 #include "graphics/engine/engine.h"
 #include "graphics/engine/lightman.h"
 #include "graphics/engine/particle.h"
@@ -34,16 +35,17 @@
 #include "object/object.h"
 #include "object/object_manager.h"
 #include "object/robotmain.h"
+
 #include "object/motion/motion.h"
 #include "object/motion/motiontoto.h"
 
 #include "script/cbottoken.h"
 
-#include "ui/interface.h"
 #include "ui/button.h"
-#include "ui/slider.h"
 #include "ui/edit.h"
 #include "ui/group.h"
+#include "ui/interface.h"
+#include "ui/slider.h"
 #include "ui/window.h"
 
 #include <string.h>

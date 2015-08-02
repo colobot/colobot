@@ -22,9 +22,9 @@
 #include "common/logger.h"
 #include "common/make_unique.h"
 
-#include "graphics/opengl/gldevice.h"
 #include "graphics/opengl/gl21device.h"
 #include "graphics/opengl/gl33device.h"
+#include "graphics/opengl/gldevice.h"
 
 #include <physfs.h>
 #include <cstring>

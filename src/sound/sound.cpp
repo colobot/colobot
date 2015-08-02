@@ -19,9 +19,9 @@
 
 #include "sound/sound.h"
 
-#include "math/vector.h"
-
 #include "common/logger.h"
+
+#include "math/vector.h"
 
 #include <iostream>
 #include <iomanip>

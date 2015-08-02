@@ -19,13 +19,16 @@
 
 
 #include "graphics/opengl/gl21device.h"
-#include "graphics/opengl/glframebuffer.h"
-#include "graphics/engine/engine.h"
 
 #include "common/config.h"
+
+#include "common/config_file.h"
 #include "common/image.h"
 #include "common/logger.h"
-#include "common/config_file.h"
+
+#include "graphics/engine/engine.h"
+
+#include "graphics/opengl/glframebuffer.h"
 
 #include "math/geometry.h"
 

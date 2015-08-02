@@ -20,6 +20,7 @@
 #pragma once
 
 #include "graphics/core/material.h"
+
 #include "graphics/model/model_triangle.h"
 
 #include <cstring>

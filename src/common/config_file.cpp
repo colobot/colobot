@@ -20,11 +20,12 @@
 
 #include "common/config_file.h"
 
-#include "common/resources/inputstream.h"
-#include "common/resources/outputstream.h"
 #include "app/system.h"
 
 #include "common/logger.h"
+
+#include "common/resources/inputstream.h"
+#include "common/resources/outputstream.h"
 
 #include <memory>
 #include <utility>

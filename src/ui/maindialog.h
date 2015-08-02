@@ -18,14 +18,14 @@
  */
 #pragma once
 
+#include "app/pausemanager.h"
 
 #include "graphics/core/color.h"
+
 #include "graphics/engine/camera.h"
 
 #include "object/level_category.h"
 #include "object/robotmain.h"
-
-#include "app/pausemanager.h"
 
 #include <vector>
 

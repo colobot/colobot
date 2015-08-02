@@ -20,8 +20,9 @@
 
 #include "script/cbottoken.h"
 
-#include "object/object_type.h"
 #include "app/app.h"
+
+#include "object/object_type.h"
 
 #include <string.h>
 

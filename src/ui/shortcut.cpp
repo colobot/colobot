@@ -23,10 +23,11 @@
 #include "common/event.h"
 #include "common/misc.h"
 
-#include "graphics/engine/engine.h"
 #include "graphics/core/device.h"
 
-#include <math.h>
+#include "graphics/engine/engine.h"
+
+#include <cmath>
 
 namespace Ui
 {

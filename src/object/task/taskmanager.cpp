@@ -20,23 +20,23 @@
 
 #include "object/task/taskmanager.h"
 
-#include "object/task/taskwait.h"
+#include "object/old_object.h"
+
 #include "object/task/taskadvance.h"
-#include "object/task/taskturn.h"
-#include "object/task/tasktake.h"
 #include "object/task/taskbuild.h"
-#include "object/task/tasksearch.h"
 #include "object/task/taskdeletemark.h"
-#include "object/task/taskterraform.h"
-#include "object/task/taskpen.h"
-#include "object/task/taskrecover.h"
-#include "object/task/taskinfo.h"
 #include "object/task/taskfire.h"
 #include "object/task/taskfireant.h"
 #include "object/task/taskgungoal.h"
+#include "object/task/taskinfo.h"
+#include "object/task/taskpen.h"
+#include "object/task/taskrecover.h"
+#include "object/task/tasksearch.h"
 #include "object/task/taskspiderexplo.h"
-
-#include "object/old_object.h"
+#include "object/task/tasktake.h"
+#include "object/task/taskterraform.h"
+#include "object/task/taskturn.h"
+#include "object/task/taskwait.h"
 
 
 // Object's constructor.

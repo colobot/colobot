@@ -24,12 +24,11 @@
 
 #pragma once
 
+#include "CBot/CBotDll.h"
 
 #include "common/event.h"
-
 #include "common/global.h"
 
-#include "CBot/CBotDll.h"
 
 
 class COldObject;

@@ -21,21 +21,20 @@
 
 #pragma once
 
-#include <string>
-
 #include "common/event.h"
-#include "common/misc.h"
-#include "common/restext.h"
 
-#include "graphics/core/device.h"
-#include "graphics/engine/engine.h"
-#include "graphics/engine/particle.h"
 #include "graphics/engine/text.h"
 
-#include "object/robotmain.h"
+#include <string>
 
-#include "sound/sound.h"
+class CRobotMain;
+class CSoundInterface;
 
+namespace Gfx
+{
+class CEngine;
+class CParticle;
+}
 
 
 namespace Ui

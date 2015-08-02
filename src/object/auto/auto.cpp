@@ -25,12 +25,13 @@
 #include "common/event.h"
 #include "common/make_unique.h"
 
-#include "object/level/parserline.h"
-#include "object/level/parserparam.h"
 #include "object/old_object.h"
 
-#include "ui/interface.h"
+#include "object/level/parserline.h"
+#include "object/level/parserparam.h"
+
 #include "ui/gauge.h"
+#include "ui/interface.h"
 #include "ui/window.h"
 
 

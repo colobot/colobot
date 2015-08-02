@@ -29,14 +29,15 @@
 
 #include "object/object.h"
 #include "object/object_manager.h"
+
 #include "object/motion/motion.h"
 #include "object/motion/motiontoto.h"
 
-#include "ui/interface.h"
 #include "ui/button.h"
+#include "ui/group.h"
+#include "ui/interface.h"
 #include "ui/label.h"
 #include "ui/window.h"
-#include "ui/group.h"
 
 
 

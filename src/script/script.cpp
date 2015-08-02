@@ -20,28 +20,29 @@
 
 #include "script/script.h"
 
-
 #include "app/pausemanager.h"
 
-#include "common/resources/resourcemanager.h"
-#include "common/resources/inputstream.h"
-#include "common/resources/outputstream.h"
 #include "common/restext.h"
 #include "common/stringutils.h"
+
+#include "common/resources/inputstream.h"
+#include "common/resources/outputstream.h"
+#include "common/resources/resourcemanager.h"
 
 #include "graphics/engine/engine.h"
 #include "graphics/engine/text.h"
 
 #include "object/old_object.h"
-#include "object/task/taskmanager.h"
 #include "object/robotmain.h"
+
+#include "object/task/taskmanager.h"
 
 #include "script/cbottoken.h"
 
-#include "ui/interface.h"
-#include "ui/edit.h"
-#include "ui/list.h"
 #include "ui/displaytext.h"
+#include "ui/edit.h"
+#include "ui/interface.h"
+#include "ui/list.h"
 
 
 

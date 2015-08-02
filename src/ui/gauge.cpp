@@ -20,6 +20,8 @@
 
 #include "ui/gauge.h"
 
+#include "graphics/engine/engine.h"
+
 
 namespace Ui
 {

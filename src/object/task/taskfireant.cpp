@@ -24,8 +24,9 @@
 
 #include "math/geometry.h"
 
-#include "object/motion/motionant.h"
 #include "object/old_object.h"
+
+#include "object/motion/motionant.h"
 
 #include "physics/physics.h"
 

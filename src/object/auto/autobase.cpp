@@ -19,18 +19,19 @@
 
 
 #include "object/auto/autobase.h"
-#include "object/interface/transportable_object.h"
 
-#include "graphics/engine/terrain.h"
 #include "graphics/engine/cloud.h"
-#include "graphics/engine/planet.h"
 #include "graphics/engine/lightning.h"
+#include "graphics/engine/planet.h"
+#include "graphics/engine/terrain.h"
 
 #include "math/geometry.h"
 
 #include "object/object_manager.h"
 #include "object/old_object.h"
 #include "object/robotmain.h"
+
+#include "object/interface/transportable_object.h"
 
 #include "physics/physics.h"
 

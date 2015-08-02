@@ -19,12 +19,15 @@
 
 
 #include "graphics/opengl/gldevice.h"
-#include "graphics/opengl/glframebuffer.h"
-#include "graphics/engine/engine.h"
 
 #include "common/config.h"
+
 #include "common/image.h"
 #include "common/logger.h"
+
+#include "graphics/engine/engine.h"
+
+#include "graphics/opengl/glframebuffer.h"
 
 #include "math/geometry.h"
 

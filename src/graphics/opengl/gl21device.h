@@ -25,6 +25,7 @@
 #pragma once
 
 #include "graphics/core/device.h"
+
 #include "graphics/opengl/glutil.h"
 
 #include <string>

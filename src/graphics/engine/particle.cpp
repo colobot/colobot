@@ -25,6 +25,7 @@
 #include "common/logger.h"
 
 #include "graphics/core/device.h"
+
 #include "graphics/engine/engine.h"
 #include "graphics/engine/terrain.h"
 #include "graphics/engine/water.h"

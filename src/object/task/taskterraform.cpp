@@ -19,20 +19,22 @@
 
 #include "object/task/taskterraform.h"
 
-#include "graphics/engine/pyro_manager.h"
 #include "graphics/engine/particle.h"
+#include "graphics/engine/pyro_manager.h"
 #include "graphics/engine/terrain.h"
 
 #include "math/geometry.h"
 
-#include "object/old_object.h"
 #include "object/brain.h"
 #include "object/object_manager.h"
+#include "object/old_object.h"
 #include "object/robotmain.h"
-#include "object/motion/motionant.h"
-#include "object/motion/motionspider.h"
+
 #include "object/interface/powered_object.h"
 #include "object/interface/programmable_object.h"
+
+#include "object/motion/motionant.h"
+#include "object/motion/motionspider.h"
 
 #include "physics/physics.h"
 

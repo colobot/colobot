@@ -20,15 +20,14 @@
 
 #include "object/task/taskdeletemark.h"
 
-
 #include "graphics/engine/particle.h"
 #include "graphics/engine/terrain.h"
 
-#include "object/old_object.h"
-#include "object/object_manager.h"
-#include "object/robotmain.h"
-
 #include "math/geometry.h"
+
+#include "object/object_manager.h"
+#include "object/old_object.h"
+#include "object/robotmain.h"
 
 #include "physics/physics.h"
 

@@ -21,13 +21,13 @@
 
 #pragma once
 
-#include <string>
+#include "app/pausemanager.h"
 
 #include "common/event.h"
 
 #include "graphics/engine/camera.h"
 
-#include "app/pausemanager.h"
+#include <string>
 
 class CRobotMain;
 class CObject;

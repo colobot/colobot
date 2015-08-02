@@ -25,7 +25,6 @@
 #pragma once
 
 #include "sound/sound.h"
-#include "common/logger.h"
 
 #include <string>
 #include <vector>

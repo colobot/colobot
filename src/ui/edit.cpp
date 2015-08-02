@@ -20,21 +20,27 @@
 
 #include "ui/edit.h"
 
+#include "common/config.h"
+
 #include "app/app.h"
 #include "app/input.h"
 
-#include "clipboard/clipboard.h"
-
-#include "common/config.h"
 #include "common/logger.h"
+#include "common/misc.h"
 #include "common/pathman.h"
+
 #include "common/resources/inputstream.h"
 #include "common/resources/outputstream.h"
 
 #include "object/robotmain.h"
 
-#include <string.h>
+#include "ui/scroll.h"
+
+#include <clipboard/clipboard.h>
+
 #include <boost/algorithm/string.hpp>
+
+#include <cstring>
 
 namespace Ui
 {

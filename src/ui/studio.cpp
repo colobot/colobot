@@ -24,11 +24,11 @@
 
 #include "app/app.h"
 
-#include "common/logger.h"
-#include "common/resources/resourcemanager.h"
-
 #include "common/event.h"
+#include "common/logger.h"
 #include "common/misc.h"
+
+#include "common/resources/resourcemanager.h"
 
 #include "graphics/engine/camera.h"
 #include "graphics/engine/engine.h"
@@ -43,9 +43,9 @@
 #include "sound/sound.h"
 
 #include "ui/check.h"
-#include "ui/control.h"
 #include "ui/color.h"
 #include "ui/compass.h"
+#include "ui/control.h"
 #include "ui/edit.h"
 #include "ui/group.h"
 #include "ui/image.h"

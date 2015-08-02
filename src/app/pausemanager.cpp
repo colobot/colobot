@@ -17,8 +17,9 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-#include "app/app.h"
 #include "app/pausemanager.h"
+
+#include "app/app.h"
 
 #include "common/logger.h"
 

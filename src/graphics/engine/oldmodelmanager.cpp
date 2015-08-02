@@ -22,8 +22,9 @@
 #include "app/app.h"
 
 #include "common/logger.h"
-#include "common/resources/inputstream.h"
 #include "common/stringutils.h"
+
+#include "common/resources/inputstream.h"
 
 #include "graphics/engine/engine.h"
 

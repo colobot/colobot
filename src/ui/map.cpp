@@ -22,9 +22,18 @@
 
 #include "common/image.h"
 
+#include "graphics/core/device.h"
+
+#include "graphics/engine/terrain.h"
+#include "graphics/engine/water.h"
+
+#include "math/geometry.h"
+
+#include "object/robotmain.h"
+
 #include "object/interface/transportable_object.h"
 
-#include <string.h>
+#include <cstring>
 
 
 namespace Ui

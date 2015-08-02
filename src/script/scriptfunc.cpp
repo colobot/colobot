@@ -19,13 +19,14 @@
 
 #include "script/scriptfunc.h"
 
+#include "common/config.h"
 
 #include "app/app.h"
 
-#include "common/config.h"
 #include "common/logger.h"
 #include "common/make_unique.h"
 #include "common/pathman.h"
+
 #include "common/resources/inputstream.h"
 #include "common/resources/outputstream.h"
 #include "common/resources/resourcemanager.h"
@@ -38,16 +39,18 @@
 #include "object/brain.h"
 #include "object/object.h"
 #include "object/object_manager.h"
-#include "object/trace_color.h"
 #include "object/robotmain.h"
-#include "object/task/taskmanager.h"
-#include "object/subclass/exchange_post.h"
+#include "object/trace_color.h"
 
 #include "object/auto/auto.h"
-#include "object/auto/autofactory.h"
 #include "object/auto/autobase.h"
+#include "object/auto/autofactory.h"
 
 #include "object/motion/motionvehicle.h"
+
+#include "object/subclass/exchange_post.h"
+
+#include "object/task/taskmanager.h"
 
 #include "physics/physics.h"
 

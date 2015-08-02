@@ -24,9 +24,9 @@
 
 #pragma once
 
-#include "common/global.h"
-
 #include "CBot/CBotDll.h"
+
+#include "common/global.h"
 
 #include <string>
 #include <unordered_map>

@@ -17,17 +17,19 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-#include "object/level/parserline.h"
+#include "object/level/parserparam.h"
 
 #include "app/app.h"
 
 #include "common/logger.h"
 #include "common/make_unique.h"
 #include "common/pathman.h"
+
 #include "common/resources/resourcemanager.h"
 
-#include "object/level/parser.h"
 #include "object/robotmain.h"
+
+#include "object/level/parser.h"
 
 #include <boost/lexical_cast.hpp>
 #include <boost/algorithm/string.hpp>

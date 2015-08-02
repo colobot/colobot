@@ -19,10 +19,10 @@
 
 #pragma once
 
-#include "graphics/core/device.h"
-
-// config.h must be included before glew.h
+// config.h must be included first
 #include "common/config.h"
+
+#include "graphics/core/device.h"
 
 #include <GL/glew.h>
 

@@ -19,9 +19,9 @@
 
 #pragma once
 
-#include "object/object_interface_type.h"
-
 #include "math/sphere.h"
+
+#include "object/object_interface_type.h"
 
 struct Event;
 

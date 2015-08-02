@@ -37,16 +37,19 @@
 
 #include "math/geometry.h"
 
+#include "object/brain.h"
+#include "object/object_manager.h"
+#include "object/robotmain.h"
+
 #include "object/auto/auto.h"
 #include "object/auto/autojostle.h"
-#include "object/brain.h"
-#include "object/motion/motion.h"
-#include "object/motion/motionvehicle.h"
-#include "object/robotmain.h"
-#include "object/object_manager.h"
+
+#include "object/level/parserexceptions.h"
 #include "object/level/parserline.h"
 #include "object/level/parserparam.h"
-#include "object/level/parserexceptions.h"
+
+#include "object/motion/motion.h"
+#include "object/motion/motionvehicle.h"
 
 #include "physics/physics.h"
 

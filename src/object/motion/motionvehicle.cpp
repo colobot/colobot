@@ -33,6 +33,7 @@
 #include "object/brain.h"
 #include "object/object_manager.h"
 #include "object/old_object.h"
+
 #include "object/interface/powered_object.h"
 #include "object/interface/transportable_object.h"
 

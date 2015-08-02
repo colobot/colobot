@@ -26,11 +26,13 @@
 
 #include "object/object_manager.h"
 #include "object/old_object.h"
-#include "object/level/parserline.h"
-#include "object/level/parserparam.h"
+
 #include "object/interface/carrier_object.h"
 #include "object/interface/powered_object.h"
 #include "object/interface/transportable_object.h"
+
+#include "object/level/parserline.h"
+#include "object/level/parserparam.h"
 
 #include "ui/interface.h"
 #include "ui/window.h"

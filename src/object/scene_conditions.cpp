@@ -17,16 +17,18 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-
 #include "object/scene_conditions.h"
 
 #include "math/geometry.h"
 
-#include "object/level/parserline.h"
-#include "object/object_manager.h"
 #include "object/object.h"
+#include "object/object_manager.h"
+
 #include "object/interface/powered_object.h"
 #include "object/interface/transportable_object.h"
+
+#include "object/level/parserline.h"
+
 
 void CSceneCondition::Read(CLevelParserLine* line)
 {

@@ -21,6 +21,7 @@
 #pragma once
 
 #include "object/old_object.h"
+
 #include "object/auto/auto.h"
 
 #include <string>

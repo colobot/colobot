@@ -21,13 +21,13 @@
 
 #pragma once
 
+#include "object/trace_color.h"
 
 #include "object/task/task.h"
-#include "object/task/taskmanip.h"
-#include "object/task/taskgoto.h"
-#include "object/task/taskshield.h"
 #include "object/task/taskflag.h"
-#include "object/trace_color.h"
+#include "object/task/taskgoto.h"
+#include "object/task/taskmanip.h"
+#include "object/task/taskshield.h"
 
 
 

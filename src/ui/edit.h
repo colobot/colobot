@@ -25,30 +25,13 @@
 
 #pragma once
 
-
 #include "ui/control.h"
-#include "ui/scroll.h"
-
-#include "graphics/engine/engine.h"
-#include "graphics/engine/text.h"
-
-#include "common/event.h"
-#include "common/misc.h"
-#include "common/restext.h"
-
-#include <set>
-#include <string>
-#include <cstdlib>
-
-#include <boost/filesystem.hpp>
-#include <boost/algorithm/string.hpp>
-
-namespace fs = boost::filesystem;
 
 
 namespace Ui
 {
 
+class CScroll;
 
 
 //! maximum number of characters in CBOT edit

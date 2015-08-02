@@ -21,15 +21,17 @@
 #include "object/task/taskshield.h"
 
 #include "graphics/core/light.h"
-#include "graphics/engine/particle.h"
+
 #include "graphics/engine/lightman.h"
+#include "graphics/engine/particle.h"
 
 #include "math/geometry.h"
 
 #include "object/brain.h"
-#include "object/old_object.h"
 #include "object/object_manager.h"
+#include "object/old_object.h"
 #include "object/robotmain.h"
+
 #include "object/interface/powered_object.h"
 
 #include "physics/physics.h"

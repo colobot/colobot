@@ -21,6 +21,7 @@
 
 
 #include "object/motion/motion.h"
+
 #include "object/trace_color.h"
 
 

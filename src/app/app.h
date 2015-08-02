@@ -24,12 +24,13 @@
 
 #pragma once
 
+#include "common/config_file.h"
 #include "common/event.h"
 #include "common/global.h"
 #include "common/singleton.h"
-#include "common/config_file.h"
 
 #include "graphics/core/device.h"
+
 #include "graphics/engine/engine.h"
 
 #include "object/level_category.h"

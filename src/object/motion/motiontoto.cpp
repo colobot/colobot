@@ -22,11 +22,11 @@
 
 #include "app/app.h"
 
-#include "math/geometry.h"
-
 #include "graphics/engine/oldmodelmanager.h"
 #include "graphics/engine/terrain.h"
 #include "graphics/engine/water.h"
+
+#include "math/geometry.h"
 
 #include "object/old_object.h"
 #include "object/robotmain.h"
