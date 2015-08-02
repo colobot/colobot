@@ -143,7 +143,7 @@ void CColor::Draw()
     m_engine->SetTexture("textures/interface/button1.png");
     m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
     CControl::Draw();
-    
+
     p1.x = m_pos.x + (3.0f / 640.0f);
     p1.y = m_pos.y + (3.0f / 480.0f);
     p2.x = m_pos.x + m_dim.x - (3.0f / 640.0f);

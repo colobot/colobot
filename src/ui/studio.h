@@ -70,7 +70,7 @@ public:
 
     void        StartEditScript(CScript *script, std::string name, Program* program);
     bool        StopEditScript(bool bCancel);
-    
+
     void        SetInfoText(std::string text, bool bClickable);
 
 protected:
@@ -94,7 +94,7 @@ protected:
     std::string  SearchDirectory(bool bCreate);
     bool        ReadProgram();
     bool        WriteProgram();
-    
+
     void        SetFilenameField(CEdit* edit, const std::string& filename);
 
 protected:

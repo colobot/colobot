@@ -113,9 +113,9 @@ public:
     std::string GetError();
 
     //! Flips the image vertically
-    void flipVertically();
-    
-    //! sets/replaces the pixels from the surface 
+    void FlipVertically();
+
+    //! sets/replaces the pixels from the surface
     void SetDataPixels(void *pixels);
 
 private:

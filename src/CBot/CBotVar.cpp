@@ -899,7 +899,7 @@ CBotString CBotVarInt::GetValString()
         res.LoadString(TX_UNDEF);
         return res;
     }
- 
+
     if ( m_binit == CBotVar::InitType::IS_NAN )
     {
         res.LoadString(TX_NAN);

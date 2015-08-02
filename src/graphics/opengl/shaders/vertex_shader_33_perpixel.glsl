@@ -50,7 +50,7 @@ void main()
     gl_Position = uni_ProjectionMatrix * eyeSpace;
 
     vec3 normal = normalize((uni_NormalMatrix * vec4(in_Normal, 0.0f)).xyz);
-    
+
     data.Color = in_Color;
     data.Normal = normal;
     data.TexCoord0 = in_TexCoord0;

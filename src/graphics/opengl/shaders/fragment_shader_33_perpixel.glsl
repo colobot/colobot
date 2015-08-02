@@ -73,22 +73,22 @@ out vec4 out_FragColor;
 void main()
 {
     vec4 color = data.Color;
-    
+
     if (uni_LightingEnabled)
     {
         vec4 ambient = vec4(0.0f);
         vec4 diffuse = vec4(0.0f);
         vec4 specular = vec4(0.0f);
-        
+
         for(int i=0; i<8; i++)
         {
             if(uni_Light[i].Enabled)
             {
                 vec3 normal = (gl_FrontFacing ? data.Normal : -data.Normal);
-                
+
                 vec3 lightDirection = vec3(0.0f);
                 float atten;
-                
+
                 // Directional light
                 if(uni_Light[i].Position[3] == 0.0f)
                 {
@@ -100,55 +100,55 @@ void main()
                 {
                     vec3 lightDirection = normalize(uni_Light[i].Position.xyz - data.Position.xyz);
                     float dist = distance(uni_Light[i].Position.xyz, data.Position.xyz);
-                    
+
                     atten = 1.0f / (uni_Light[i].Attenuation.x
                             + uni_Light[i].Attenuation.y * dist
                             + uni_Light[i].Attenuation.z * dist * dist);
                 }
-                
+
                 vec3 reflectDirection = -reflect(lightDirection, normal);
-                
+
                 ambient += uni_Light[i].Ambient;
                 diffuse += atten * clamp(dot(normal, lightDirection), 0.0f, 1.0f) * uni_Light[i].Diffuse;
                 specular += atten * clamp(pow(dot(normal, lightDirection + reflectDirection), 10.0f), 0.0f, 1.0f) * uni_Light[i].Specular;
             }
         }
-        
+
         vec4 result = uni_AmbientColor * ambient
                 + uni_DiffuseColor * diffuse
                 + uni_SpecularColor * specular;
-        
+
         color.rgb = min(vec3(1.0f), result.rgb);
         color.a = 1.0f; //min(1.0f, 1.0f);
     }
-    
+
     if (uni_PrimaryTextureEnabled)
     {
         color = color * texture(uni_PrimaryTexture, data.TexCoord0);
     }
-    
+
     if (uni_SecondaryTextureEnabled)
     {
         color = color * texture(uni_SecondaryTexture, data.TexCoord1);
     }
-    
+
     if (uni_ShadowTextureEnabled)
     {
         color = color * mix(uni_ShadowColor, 1.0f, texture(uni_ShadowTexture, data.ShadowCoord.xyz));
     }
-    
+
     if (uni_FogEnabled)
     {
         float interpolate = (data.Distance - uni_FogRange.x) / (uni_FogRange.y - uni_FogRange.x);
-        
+
         color = mix(color, uni_FogColor, clamp(interpolate, 0.0f, 1.0f));
     }
-    
+
     if (uni_AlphaTestEnabled)
     {
         if(color.a < uni_AlphaReference)
             discard;
     }
-    
+
     out_FragColor = color;
 }

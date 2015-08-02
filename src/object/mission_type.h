@@ -19,7 +19,8 @@
 
 #pragma once
 
-enum MissionType {
+enum MissionType
+{
     MISSION_NORMAL = 0,
     MISSION_RETRO,
     MISSION_CODE_BATTLE

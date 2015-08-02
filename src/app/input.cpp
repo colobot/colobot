@@ -40,10 +40,10 @@ CInput::CInput()
     m_kmodState = 0;
     m_mousePos = Math::Point();
     m_mouseButtonsState = 0;
-    
+
     for(int i=0; i<INPUT_SLOT_MAX; i++)
         m_keyPresses[i] = false;
-    
+
     m_joystickDeadzone = 0.2f;
     SetDefaultInputBindings();
 }
@@ -56,7 +56,7 @@ void CInput::EventProcess(Event& event)
         // Use the occasion to update kmods
         m_kmodState = event.kmodState;
     }
-    
+
     // Use the occasion to update mouse button state
     if (event.type == EVENT_MOUSE_BUTTON_DOWN)
     {
@@ -66,29 +66,29 @@ void CInput::EventProcess(Event& event)
     {
         m_mouseButtonsState &= ~event.mouseButton.button;
     }
-    
-    
+
+
     if(event.type == EVENT_KEY_DOWN ||
        event.type == EVENT_KEY_UP)
     {
         event.key.slot = FindBinding(event.key.key);
     }
-    
+
     event.kmodState = m_kmodState;
     event.mousePos = m_mousePos;
     event.mouseButtonsState = m_mouseButtonsState;
-    
-    
+
+
     if (event.type == EVENT_KEY_DOWN ||
         event.type == EVENT_KEY_UP)
     {
         m_keyPresses[event.key.slot] = (event.type == EVENT_KEY_DOWN);
     }
-    
-    
-    
+
+
+
     /* Motion vector management */
-    
+
     if (event.type == EVENT_KEY_DOWN && !(event.kmodState & KEY_MOD(ALT) ) )
     {
         if (event.key.slot == INPUT_SLOT_UP   ) m_keyMotion.y =  1.0f;
@@ -115,14 +115,14 @@ void CInput::EventProcess(Event& event)
             if (GetJoyAxisBinding(JOY_AXIS_SLOT_X).invert)
                 m_joyMotion.x *= -1.0f;
         }
-        
+
         if (event.joyAxis.axis == GetJoyAxisBinding(JOY_AXIS_SLOT_Y).axis)
         {
             m_joyMotion.y = Math::Neutral(event.joyAxis.value / 32768.0f, m_joystickDeadzone);
             if (GetJoyAxisBinding(JOY_AXIS_SLOT_Y).invert)
                 m_joyMotion.y *= -1.0f;
         }
-        
+
         if (event.joyAxis.axis == GetJoyAxisBinding(JOY_AXIS_SLOT_Z).axis)
         {
             m_joyMotion.z = Math::Neutral(event.joyAxis.value / 32768.0f, m_joystickDeadzone);
@@ -130,7 +130,7 @@ void CInput::EventProcess(Event& event)
                 m_joyMotion.z *= -1.0f;
         }
     }
-    
+
     event.motionInput = Math::Clamp(m_joyMotion + m_keyMotion, Math::Vector(-1.0f, -1.0f, -1.0f), Math::Vector(1.0f, 1.0f, 1.0f));
 }
 
@@ -180,13 +180,13 @@ void CInput::SetDefaultInputBindings()
     {
         m_inputBindings[i].primary = m_inputBindings[i].secondary = KEY_INVALID;
     }
-    
+
     for (int i = 0; i < JOY_AXIS_SLOT_MAX; i++)
     {
         m_joyAxisBindings[i].axis = AXIS_INVALID;
         m_joyAxisBindings[i].invert = false;
     }
-    
+
     m_inputBindings[INPUT_SLOT_LEFT   ].primary   = KEY(LEFT);
     m_inputBindings[INPUT_SLOT_RIGHT  ].primary   = KEY(RIGHT);
     m_inputBindings[INPUT_SLOT_UP     ].primary   = KEY(UP);
@@ -220,7 +220,7 @@ void CInput::SetDefaultInputBindings()
     m_inputBindings[INPUT_SLOT_CAMERA_DOWN].primary = KEY(PAGEDOWN);
     m_inputBindings[INPUT_SLOT_PAUSE].primary       = KEY(PAUSE);
     m_inputBindings[INPUT_SLOT_PAUSE].secondary     = KEY(p);
-    
+
     m_joyAxisBindings[JOY_AXIS_SLOT_X].axis = 0;
     m_joyAxisBindings[JOY_AXIS_SLOT_Y].axis = 1;
     m_joyAxisBindings[JOY_AXIS_SLOT_Z].axis = 2;
@@ -309,7 +309,7 @@ void CInput::SaveKeyBindings()
     for (int i = 0; i < INPUT_SLOT_MAX; i++)
     {
         InputBinding b = GetInputBinding(static_cast<InputSlot>(i));
- 
+
         key.clear();
         key.str("");
         key << b.primary << " " << b.secondary;
@@ -385,14 +385,14 @@ std::string CInput::GetKeysString(InputBinding b)
         if ( GetResource(RES_KEY, b.primary, iNameStr) )
         {
             ss << iNameStr;
-            
+
             if ( b.secondary != KEY_INVALID )
             {
                 if ( GetResource(RES_KEY, b.secondary, iNameStr) )
                 {
                     std::string textStr;
                     GetResource(RES_TEXT, RT_KEY_OR, textStr);
-                    
+
                     ss << textStr << iNameStr;
                 }
             }

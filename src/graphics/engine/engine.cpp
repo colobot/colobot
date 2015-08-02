@@ -487,7 +487,7 @@ bool CEngine::WriteScreenShot(const std::string& fileName, int width, int height
     CImage img({width, height});
 
     img.SetDataPixels(pixels);
-    img.flipVertically();
+    img.FlipVertically();
 
     if ( img.SavePNG(fileName.c_str()) )
     {

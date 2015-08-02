@@ -41,7 +41,7 @@ struct InputBinding
     //! Primary and secondary bindings
     //! Can be regular key, virtual key or virtual joystick button
     unsigned int primary, secondary;
-    
+
     InputBinding(unsigned int p = KEY_INVALID, unsigned int s = KEY_INVALID)
     : primary(p), secondary(s) {}
 };
@@ -70,91 +70,91 @@ class CInput : public CSingleton<CInput>
 public:
     //! Constructor
     CInput();
-    
+
     //! Process an incoming event, also sets .kmodState, .mousePos, .mouseButtonsState and .key.slot
     void EventProcess(Event &event);
-    
+
     //! Called by CApplication on SDL MOUSE_MOTION event
     void MouseMove(Math::IntPoint pos);
-    
-    
+
+
     //! Returns the current key modifiers
     int         GetKmods() const;
-    
+
     //! Returns whether the given kmod is active
     bool        GetKmodState(int kmod) const;
-    
+
     //! Returns whether the key is pressed
     bool        GetKeyState(InputSlot key) const;
-    
+
     //! Returns whether the mouse button is pressed
     bool        GetMouseButtonState(int index) const;
-    
+
     //! Resets tracked key states and modifiers
     void        ResetKeyStates();
-    
+
     //! Returns the position of mouse cursor (in interface coords)
     Math::Point GetMousePos() const;
-    
-    
+
+
     //! Sets the default input bindings (keys and joystick axes)
     void        SetDefaultInputBindings();
-    
+
     //! Management of input bindings
     //@{
     void        SetInputBinding(InputSlot slot, InputBinding binding);
     const InputBinding& GetInputBinding(InputSlot slot);
     //@}
-    
+
     //! Management of joystick axis bindings
     //@{
     void        SetJoyAxisBinding(JoyAxisSlot slot, JoyAxisBinding binding);
     const JoyAxisBinding& GetJoyAxisBinding(JoyAxisSlot slot);
     //@}
-    
+
     //! Management of joystick deadzone
     //@{
     void        SetJoystickDeadzone(float zone);
     float       GetJoystickDeadzone();
     //@}
-    
+
     //! Get binding slot for given key
     InputSlot   FindBinding(unsigned int key);
-    
+
     //! Saving/loading key bindings to colobot.ini
     //@{
     void        SaveKeyBindings();
     void        LoadKeyBindings();
     //@}
-    
+
     //! Seeks a InputSlot by id. Returns INPUT_SLOT_MAX if not found
     InputSlot   SearchKeyById(std::string name);
-    
+
     //! Returns string describing keys to be pressed
     //@{
     std::string GetKeysString(InputBinding binding);
     std::string GetKeysString(InputSlot slot);
     //@}
-    
+
 private:
     //! Current state of key modifiers (bitmask of SDLMod)
     unsigned int    m_kmodState;
     //! Current state of keys
     bool            m_keyPresses[INPUT_SLOT_MAX];
-    
-    
+
+
     //! Current position of mouse cursor
     Math::Point     m_mousePos;
     //! Current state of mouse buttons (bitmask of MouseButton enum values)
     unsigned int    m_mouseButtonsState;
-    
-    
+
+
     //! Motion vector set by keyboard or joystick buttons
     Math::Vector    m_keyMotion;
     //! Motion vector set by joystick axes
     Math::Vector    m_joyMotion;
-    
-    
+
+
     //! Bindings for user inputs
     InputBinding    m_inputBindings[INPUT_SLOT_MAX];
     JoyAxisBinding  m_joyAxisBindings[JOY_AXIS_SLOT_MAX];

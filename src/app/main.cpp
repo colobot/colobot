@@ -111,12 +111,12 @@ int SDL_MAIN_FUNC(int argc, char *argv[])
     InitializeEventTypeTexts();
 
     logger.Info("%s starting\n", COLOBOT_FULLNAME);
-    
+
     int code = 0;
     while(true) {
         CSystemUtils* systemUtils = CSystemUtils::Create(); // platform-specific utils
         systemUtils->Init();
-        
+
         CApplication* app = new CApplication(); // single instance of the application
 
         ParseArgsStatus status = app->ParseArguments(argc, argv);

@@ -41,6 +41,3 @@ boost::smatch RegexUtils::AssertRegexMatch(const std::string& text, const std::s
 
     return matches;
 }
-
-        /*
-            boost::cmatch matches;*/

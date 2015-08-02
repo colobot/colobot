@@ -448,8 +448,8 @@ void CImage::SetDataPixels(void *pixels){
     }
 }
 
-void CImage::flipVertically(){
-
+void CImage::FlipVertically()
+{
     SDL_Surface* result = SDL_CreateRGBSurface( m_data->surface->flags,
                                                 m_data->surface->w,
                                                 m_data->surface->h,
@@ -467,7 +467,8 @@ void CImage::flipVertically(){
     Uint32 pitch = m_data->surface->pitch;
     Uint32 pxLength = pitch*m_data->surface->h;
 
-    for(int line = 0; line < m_data->surface->h; ++line) {
+    for (int line = 0; line < m_data->surface->h; ++line)
+    {
         Uint32 pos = line * pitch;
         memcpy(&resultPixels[pos], &srcPixels[(pxLength-pos)-pitch], pitch);
     }

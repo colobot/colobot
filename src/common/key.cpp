@@ -31,7 +31,7 @@ unsigned int GetVirtualKey(unsigned int key)
         return VIRTUAL_KMOD(META);
 
     if(key == KEY(KP_ENTER))
-    	return KEY(RETURN);
+        return KEY(RETURN);
 
     return key;
 }

@@ -27,7 +27,7 @@ namespace Gfx {
 /**
  * \class CGLFramebuffer
  * \brief Implementation of CFramebuffer interface in OpenGL 3.0+
- * 
+ *
  * Provides the concrete implementation of core framebuffers.
  * Can be used in OpenGL 3.0+ and with ARB_framebuffer_object supported.
 */

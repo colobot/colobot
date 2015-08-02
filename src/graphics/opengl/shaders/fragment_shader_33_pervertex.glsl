@@ -52,34 +52,34 @@ out vec4 out_FragColor;
 void main()
 {
     vec4 color = data.Color;
-    
+
     if (uni_PrimaryTextureEnabled)
     {
         color = color * texture(uni_PrimaryTexture, data.TexCoord0);
     }
-    
+
     if (uni_SecondaryTextureEnabled)
     {
         color = color * texture(uni_SecondaryTexture, data.TexCoord1);
     }
-    
+
     if (uni_ShadowTextureEnabled)
     {
         color = color * mix(uni_ShadowColor, 1.0f, texture(uni_ShadowTexture, data.ShadowCoord.xyz));
     }
-    
+
     if (uni_FogEnabled)
     {
         float interpolate = (data.Distance - uni_FogRange.x) / (uni_FogRange.y - uni_FogRange.x);
-        
+
         color = mix(color, uni_FogColor, clamp(interpolate, 0.0f, 1.0f));
     }
-    
+
     if (uni_AlphaTestEnabled)
     {
         if(color.a < uni_AlphaReference)
             discard;
     }
-    
+
     out_FragColor = color;
 }
