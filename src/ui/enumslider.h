@@ -23,7 +23,8 @@
 #include <vector>
 #include <map>
 
-namespace Ui {
+namespace Ui
+{
 
 class CEnumSlider : public CSlider
 {

@@ -29,7 +29,8 @@
 
 #include <cstring>
 
-namespace IOUtils {
+namespace IOUtils
+{
 
 //! Writes a binary number to output stream
 /**
@@ -148,5 +149,5 @@ std::string ReadBinaryString(std::istream &istr)
     return str;
 }
 
-}; // namespace IOUtils
+} // namespace IOUtils
 

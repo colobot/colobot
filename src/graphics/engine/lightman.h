@@ -33,7 +33,8 @@
 
 
 // Graphics module namespace
-namespace Gfx {
+namespace Gfx
+{
 
 /**
  * \struct LightProgression
@@ -236,5 +237,5 @@ protected:
     std::vector<int>  m_lightMap;
 };
 
-}; // namespace Gfx
+} // namespace Gfx
 

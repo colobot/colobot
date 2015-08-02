@@ -30,7 +30,8 @@
 #include <cstring>
 
 // Graphics module namespace
-namespace Gfx {
+namespace Gfx
+{
 
 GLuint textureCoordinates[] = { GL_S, GL_T, GL_R, GL_Q };
 GLuint textureCoordGen[] = { GL_TEXTURE_GEN_S, GL_TEXTURE_GEN_T, GL_TEXTURE_GEN_R, GL_TEXTURE_GEN_Q };

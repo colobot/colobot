@@ -23,7 +23,8 @@
 
 #include "graphics/engine/pyro.h"
 
-namespace Gfx {
+namespace Gfx
+{
 
 
 Gfx::CPyroManager::CPyroManager()

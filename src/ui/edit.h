@@ -46,7 +46,8 @@
 namespace fs = boost::filesystem;
 
 
-namespace Ui {
+namespace Ui
+{
 
 
 

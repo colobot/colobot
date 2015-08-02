@@ -24,12 +24,14 @@
 #include "ui/control.h"
 
 
-namespace Gfx{
+namespace Gfx
+{
 class CEngine;
 struct Color;
 }
 
-namespace Ui {
+namespace Ui
+{
 
 class CColor : public CControl
 {

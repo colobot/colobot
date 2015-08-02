@@ -33,7 +33,8 @@
 class CRobotMain;
 class CSoundInterface;
 
-namespace Gfx {
+namespace Gfx
+{
 class CCamera;
 class CEngine;
 }

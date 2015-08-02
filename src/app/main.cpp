@@ -113,7 +113,8 @@ int SDL_MAIN_FUNC(int argc, char *argv[])
     logger.Info("%s starting\n", COLOBOT_FULLNAME);
 
     int code = 0;
-    while(true) {
+    while (true)
+    {
         CSystemUtils* systemUtils = CSystemUtils::Create(); // platform-specific utils
         systemUtils->Init();
 

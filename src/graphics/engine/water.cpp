@@ -37,7 +37,8 @@
 
 
 // Graphics module namespace
-namespace Gfx {
+namespace Gfx
+{
 
 
 const int WATERLINE_PREALLOCATE_COUNT = 500;

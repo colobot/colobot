@@ -37,7 +37,8 @@
 
 
 // Math module namespace
-namespace Math {
+namespace Math
+{
 
 
 //! Returns py up on the line \a a - \a b

@@ -29,7 +29,8 @@
 #include <string.h>
 
 
-namespace Ui {
+namespace Ui
+{
 
 const float DELAY1 = 0.4f;
 const float DELAY2 = 0.1f;

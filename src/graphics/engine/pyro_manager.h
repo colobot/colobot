@@ -32,7 +32,8 @@
 struct Event;
 class CObject;
 
-namespace Gfx {
+namespace Gfx
+{
 
 class CPyro;
 using CPyroUPtr = std::unique_ptr<CPyro>;

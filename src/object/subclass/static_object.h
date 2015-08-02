@@ -23,7 +23,8 @@
 
 #include <unordered_map>
 
-namespace Gfx {
+namespace Gfx
+{
 class CModelManager;
 class CEngine;
 class CModel;

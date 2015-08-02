@@ -24,7 +24,8 @@
 
 
 // Graphics module namespace
-namespace Gfx {
+namespace Gfx
+{
 
 
 ColorHSV RGB2HSV(Color color)

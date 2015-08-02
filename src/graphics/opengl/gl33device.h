@@ -35,7 +35,8 @@
 
 
 // Graphics module namespace
-namespace Gfx {
+namespace Gfx
+{
 
 /**
   \class CGL33Device
@@ -304,7 +305,7 @@ private:
     //! Specular color
     GLint uni_SpecularColor;
 
-    struct
+    struct LightUniforms
     {
         //! true enables light
         GLint Enabled;
@@ -320,7 +321,9 @@ private:
         GLint Specular;
         //! Attenuation
         GLint Attenuation;
-    } uni_Light[8];
+    };
+
+    LightUniforms uni_Light[8];
 };
 
 } // namespace Gfx

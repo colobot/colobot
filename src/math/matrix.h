@@ -35,7 +35,8 @@
 
 
 // Math module namespace
-namespace Math {
+namespace Math
+{
 
 /**
  * \struct Matrix math/matrix.h

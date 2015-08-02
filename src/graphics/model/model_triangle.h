@@ -22,7 +22,8 @@
 #include "graphics/core/color.h"
 #include "graphics/core/vertex.h"
 
-namespace Gfx {
+namespace Gfx
+{
 
 /**
  * \enum ModelSpecialMark

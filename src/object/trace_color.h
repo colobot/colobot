@@ -20,7 +20,8 @@
 
 #include <string>
 
-enum class TraceColor : int {
+enum class TraceColor : int
+{
     Default = -1,
 
     White = 0,

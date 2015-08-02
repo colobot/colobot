@@ -29,7 +29,8 @@
 
 
 
-namespace Ui {
+namespace Ui
+{
 
 // Object's constructor.
 

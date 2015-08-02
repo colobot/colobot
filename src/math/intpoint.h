@@ -27,7 +27,8 @@
 #include <cmath>
 
 // Math module namespace
-namespace Math {
+namespace Math
+{
 
 /**
  * \struct IntPoint

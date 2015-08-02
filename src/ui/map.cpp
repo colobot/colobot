@@ -27,7 +27,8 @@
 #include <string.h>
 
 
-namespace Ui {
+namespace Ui
+{
 
 // Object's constructor.
 
@@ -325,7 +326,8 @@ void CMap::Draw()
     if ( m_fixImage[0] == 0 && m_map[MAPMAXOBJECT - 1].bUsed )
         m_offset = AdjustOffset(m_map[MAPMAXOBJECT - 1].pos);
 
-    if ( m_fixImage[0] == 0 ) { // drawing of the relief?
+    if ( m_fixImage[0] == 0 ) // drawing of the relief?
+    {
         m_engine->SetTexture("textures/interface/map.png");
         m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
         uv1.x = 0.5f + (m_offset.x - (m_half / m_zoom)) / (m_half * 2.0f);

@@ -56,7 +56,8 @@ struct Event;
 
 
 // Graphics module namespace
-namespace Gfx {
+namespace Gfx
+{
 
 
 class CDevice;

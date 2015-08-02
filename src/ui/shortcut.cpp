@@ -28,7 +28,8 @@
 
 #include <math.h>
 
-namespace Ui {
+namespace Ui
+{
 
 // Object's constructor.
 

@@ -38,7 +38,8 @@
 
 
 
-namespace Ui {
+namespace Ui
+{
 
 enum ControlState
 {

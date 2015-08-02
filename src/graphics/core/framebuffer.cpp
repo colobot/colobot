@@ -24,7 +24,8 @@
 
 #include "graphics/core/framebuffer.h"
 
-namespace Gfx {
+namespace Gfx
+{
 
 CDefaultFramebuffer::CDefaultFramebuffer(const FramebufferParams& params)
     : m_width(params.width), m_height(params.height), m_depth(params.depth)

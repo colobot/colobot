@@ -25,7 +25,8 @@
 
 #include <cstring>
 
-namespace Ui {
+namespace Ui
+{
 
 
 CKey::CKey() : CControl()

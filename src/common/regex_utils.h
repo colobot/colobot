@@ -23,7 +23,8 @@
 
 #include <boost/regex.hpp>
 
-namespace RegexUtils {
+namespace RegexUtils
+{
 
 class AssertRegexMatchError : public std::runtime_error
 {

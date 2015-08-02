@@ -28,7 +28,8 @@
 #include <string>
 #include <sstream>
 
-namespace StrUtils {
+namespace StrUtils
+{
 
 //! Converts a value to string
 /** If given, \a ok is set to true/false on success/failure.
@@ -83,5 +84,5 @@ int Utf8CharSizeAt(const std::string &str, unsigned int pos);
 //! Returns the length in characters of UTF-8 string \a str
 size_t Utf8StringLength(const std::string &str);
 
-}; // namespace StrUtil
+} // namespace StrUtil
 

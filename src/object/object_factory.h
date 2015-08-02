@@ -30,7 +30,8 @@
 
 #include <memory>
 
-namespace Gfx {
+namespace Gfx
+{
 class CEngine;
 class COldModelManager;
 class CModelManager;

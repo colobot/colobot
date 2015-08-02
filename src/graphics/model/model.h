@@ -30,7 +30,8 @@
 #include <vector>
 #include <boost/optional.hpp>
 
-namespace Gfx {
+namespace Gfx
+{
 
 /**
  * \class CModel

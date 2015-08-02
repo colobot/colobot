@@ -32,7 +32,8 @@
 class CApplication;
 class CRobotMain;
 struct Event;
-namespace Ui {
+namespace Ui
+{
 class CMainDialog;
 }
 

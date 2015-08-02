@@ -24,7 +24,8 @@
 
 #include <cstring>
 
-namespace Gfx {
+namespace Gfx
+{
 
 /*******************************************************
                       Deprecated enums/magic values

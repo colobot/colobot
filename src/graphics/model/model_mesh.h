@@ -25,7 +25,8 @@
 
 #include <vector>
 
-namespace Gfx {
+namespace Gfx
+{
 
 struct ModelTriangle;
 

@@ -36,7 +36,8 @@
 
 
 // Graphics module namespace
-namespace Gfx {
+namespace Gfx
+{
 
 CGL33Device::CGL33Device(const DeviceConfig &config)
 {
@@ -736,7 +737,8 @@ Texture CGL33Device::CreateTexture(ImageData *data, const TextureCreateParams &p
                 convert = true;
             }
         }
-        else {
+        else
+        {
             GetLogger()->Error("Unknown data surface format");
             assert(false);
         }

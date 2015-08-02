@@ -36,7 +36,8 @@ class CRobotMain;
 class CSoundInterface;
 
 
-namespace Gfx {
+namespace Gfx
+{
 class CEngine;
 class CLightManager;
 class CParticle;

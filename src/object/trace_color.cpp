@@ -20,7 +20,8 @@
 
 std::string TraceColorName(TraceColor color)
 {
-    switch(color) {
+    switch(color)
+    {
         case TraceColor::White:      return "White";      break;
         case TraceColor::Black:      return "Black";      break;
         case TraceColor::Gray:       return "Gray";       break;

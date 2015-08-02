@@ -31,7 +31,8 @@
 
 
 // Graphics module namespace
-namespace Gfx {
+namespace Gfx
+{
 
 
 /**
@@ -252,11 +253,12 @@ enum TexGenMode
 */
 struct TextureGenerationParams
 {
-    struct
+    struct Coord
     {
         TexGenMode mode;
         float plane[4];
-    } coords[4];
+    };
+    Coord coords[4];
 
     TextureGenerationParams()
     {

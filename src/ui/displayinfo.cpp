@@ -49,7 +49,8 @@
 #include <string.h>
 
 
-namespace Ui {
+namespace Ui
+{
 // Object's constructor.
 
 CDisplayInfo::CDisplayInfo()

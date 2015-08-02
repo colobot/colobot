@@ -28,7 +28,8 @@
 #include "graphics/core/device.h"
 
 // Graphics module namespace
-namespace Gfx {
+namespace Gfx
+{
 
 /**
  * \class CNullDevice

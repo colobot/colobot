@@ -69,7 +69,8 @@
 
 //TODO Get rid of all sprintf's
 
-namespace Ui {
+namespace Ui
+{
 
 const int KEY_VISIBLE = 6;      // number of visible keys redefinable
 
@@ -4486,9 +4487,11 @@ void CMainDialog::UpdateSceneResume(int chap, int rank)
 
 // Updates the list of modes.
 
-int GCD(int a, int b) {
+int GCD(int a, int b)
+{
     return (b == 0) ? a : GCD(b, a%b);
 }
+
 Math::IntPoint AspectRatio(Math::IntPoint resolution)
 {
     int gcd = GCD(resolution.x, resolution.y);

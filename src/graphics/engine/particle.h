@@ -36,7 +36,8 @@ class CSoundInterface;
 
 
 // Graphics module namespace
-namespace Gfx {
+namespace Gfx
+{
 
 const short MAXPARTICULE = 500;
 const short MAXPARTITYPE = 5;

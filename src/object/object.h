@@ -30,7 +30,8 @@
 
 #include <vector>
 
-namespace Gfx {
+namespace Gfx
+{
 struct ModelCrashSphere;
 } // namespace Gfx
 

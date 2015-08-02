@@ -28,7 +28,8 @@
 
 #include "math/geometry.h"
 
-namespace Ui {
+namespace Ui
+{
 // Object's constructor.
 
 CCompass::CCompass() : CControl()

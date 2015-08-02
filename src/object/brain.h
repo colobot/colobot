@@ -46,13 +46,15 @@ class CRobotMain;
 class CSoundInterface;
 class CLevelParserLine;
 
-namespace Ui {
+namespace Ui
+{
 class CStudio;
 class CInterface;
 class CWindow;
 }
 
-namespace Gfx {
+namespace Gfx
+{
 class CEngine;
 class CTerrain;
 class CWater;

@@ -148,7 +148,8 @@ void CPathManager::InitPaths()
 
 void CPathManager::LoadModsFromDir(const std::string &dir)
 {
-    try {
+    try
+    {
         #if PLATFORM_WINDOWS
         boost::filesystem::directory_iterator iterator(CSystemUtilsWindows::UTF8_Decode(dir));
         #else

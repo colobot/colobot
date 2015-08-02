@@ -22,7 +22,8 @@
 #include "graphics/core/framebuffer.h"
 #include "graphics/opengl/glutil.h"
 
-namespace Gfx {
+namespace Gfx
+{
 
 /**
  * \class CGLFramebuffer

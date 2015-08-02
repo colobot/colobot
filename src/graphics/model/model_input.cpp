@@ -32,7 +32,8 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/lexical_cast.hpp>
 
-namespace Gfx {
+namespace Gfx
+{
 
 // Private functions
 namespace ModelInput

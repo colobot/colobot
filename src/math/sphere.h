@@ -2,7 +2,8 @@
 
 #include "math/vector.h"
 
-namespace Math {
+namespace Math
+{
 
 struct Sphere
 {

@@ -36,7 +36,8 @@
 #include <vector>
 #include <memory>
 
-namespace Gfx {
+namespace Gfx
+{
 class CEngine;
 class CModelManager;
 class COldModelManager;
@@ -75,7 +76,8 @@ public:
         do
         {
             ++m_currentIt;
-        } while (m_currentIt != m_endIt && m_currentIt->second == nullptr);
+        }
+        while (m_currentIt != m_endIt && m_currentIt->second == nullptr);
     }
 
     inline bool operator!=(const CObjectIteratorProxy& other)

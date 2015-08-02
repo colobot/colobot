@@ -24,7 +24,8 @@
 #include "object/object_manager.h"
 
 
-namespace Ui {
+namespace Ui
+{
 // Object's constructor.
 
 CTarget::CTarget() : CControl()

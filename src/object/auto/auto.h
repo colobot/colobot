@@ -33,12 +33,14 @@ class CSoundInterface;
 class CLevelParserLine;
 class COldObject;
 
-namespace Ui {
+namespace Ui
+{
 class CInterface;
 class CWindow;
 } /* Ui */
 
-namespace Gfx {
+namespace Gfx
+{
 
 class CEngine;
 class CParticle;

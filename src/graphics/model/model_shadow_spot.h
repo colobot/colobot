@@ -19,7 +19,8 @@
 
 #pragma once
 
-namespace Gfx {
+namespace Gfx
+{
 
 /**
  * \struct ModelShadowSpot

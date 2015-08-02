@@ -43,7 +43,8 @@ struct ImageData;
 
 
 // Graphics module namespace
-namespace Gfx {
+namespace Gfx
+{
 
 /**
  * \struct DeviceConfig

@@ -2556,7 +2556,8 @@ void CRobotMain::InitEye()
 bool CRobotMain::EventFrame(const Event &event)
 {
     m_time += event.rTime;
-    if (!m_movieLock && m_pause->GetPause() == PAUSE_NONE) {
+    if (!m_movieLock && m_pause->GetPause() == PAUSE_NONE)
+    {
         m_gameTime += event.rTime;
         m_gameTimeAbsolute += m_app->GetRealRelTime() / 1e9f;
     }
@@ -5499,7 +5500,8 @@ Error CRobotMain::CheckEndMission(bool frame)
             // Special handling for teams
             m_missionResult = ERR_MISSION_NOTERM;
 
-            if (teamCount == 0) {
+            if (teamCount == 0)
+            {
                 GetLogger()->Info("All teams died, mission ended with failure\n");
                 m_missionResult = INFO_LOST;
             }

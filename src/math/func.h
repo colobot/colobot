@@ -33,7 +33,8 @@
 
 
 // Math module namespace
-namespace Math {
+namespace Math
+{
 
 
 //! Compares \a a and \a b within \a tolerance

@@ -36,7 +36,8 @@
 #include <string.h>
 #include <boost/algorithm/string.hpp>
 
-namespace Ui {
+namespace Ui
+{
 
 const float MARGX           = (5.0f/640.0f);
 const float MARGY           = (5.0f/480.0f);

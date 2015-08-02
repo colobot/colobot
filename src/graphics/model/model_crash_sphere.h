@@ -21,7 +21,8 @@
 
 #include "math/vector.h"
 
-namespace Gfx {
+namespace Gfx
+{
 
 /**
  * \struct ModelCrashSphere

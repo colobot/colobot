@@ -21,7 +21,8 @@
 
 #include <stdexcept>
 
-namespace Gfx {
+namespace Gfx
+{
 
 class CModelIOException : public std::runtime_error
 {

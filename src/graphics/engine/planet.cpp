@@ -25,7 +25,8 @@
 
 
 // Graphics module namespace
-namespace Gfx {
+namespace Gfx
+{
 
 
 const int PLANET_PREALLOCATE_COUNT = 10;

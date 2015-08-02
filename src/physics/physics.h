@@ -42,7 +42,8 @@ class CLevelParserLine;
 class CJostleableObject;
 struct Event;
 
-namespace Gfx {
+namespace Gfx
+{
 class CCamera;
 class CEngine;
 class CLight;

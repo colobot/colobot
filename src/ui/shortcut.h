@@ -25,7 +25,8 @@
 
 #include "common/event.h"
 
-namespace Ui {
+namespace Ui
+{
 
 class CShortcut : public CControl
 {

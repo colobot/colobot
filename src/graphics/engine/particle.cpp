@@ -39,7 +39,8 @@
 
 
 // Graphics module namespace
-namespace Gfx {
+namespace Gfx
+{
 
 
 const float FOG_HSUP    = 10.0f;

@@ -37,7 +37,8 @@
 #include "object/robotmain.h"
 
 
-namespace Ui {
+namespace Ui
+{
 
 const int MAPMAXOBJECT = 100;
 

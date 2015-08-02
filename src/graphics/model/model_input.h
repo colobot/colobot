@@ -24,7 +24,8 @@
 
 #include <istream>
 
-namespace Gfx {
+namespace Gfx
+{
 
 /**
  * \namespace ModelInput

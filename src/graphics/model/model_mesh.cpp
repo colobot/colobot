@@ -19,7 +19,8 @@
 
 #include "graphics/model/model_mesh.h"
 
-namespace Gfx {
+namespace Gfx
+{
 
 void CModelMesh::AddTriangle(const ModelTriangle& triangle)
 {

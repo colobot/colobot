@@ -22,7 +22,8 @@
 
 #include "app/app.h"
 
-namespace Ui {
+namespace Ui
+{
 
 
 CInterface::CInterface()

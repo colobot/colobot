@@ -32,7 +32,8 @@
 
 #include <cstdio>
 
-namespace Gfx {
+namespace Gfx
+{
 
 COldModelManager::COldModelManager(CEngine* engine)
 {

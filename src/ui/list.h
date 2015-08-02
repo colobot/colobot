@@ -32,7 +32,8 @@
 #include "graphics/engine/text.h"
 
 
-namespace Ui {
+namespace Ui
+{
 
 const int LISTMAXDISPLAY = 20;  // maximum number of visible lines
 const int LISTMAXTOTAL   = 100; // maximum total number of lines

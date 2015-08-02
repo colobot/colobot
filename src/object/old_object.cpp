@@ -3127,7 +3127,8 @@ int  COldObject::GetDefRank()
 bool COldObject::GetTooltipName(std::string& name)
 {
     GetResource(RES_OBJECT, m_type, name);
-    if(GetTeam() != 0) {
+    if (GetTeam() != 0)
+    {
         name += " ["+CRobotMain::GetInstancePointer()->GetTeamName(GetTeam())+" ("+boost::lexical_cast<std::string>(GetTeam())+")]";
     }
     return !name.empty();

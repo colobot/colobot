@@ -36,7 +36,8 @@
 
 
 // Graphics module namespace
-namespace Gfx {
+namespace Gfx
+{
 
 
 CTerrain::CTerrain()

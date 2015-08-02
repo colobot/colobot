@@ -28,7 +28,8 @@
 
 #include <fstream>
 
-namespace Gfx {
+namespace Gfx
+{
 
 // Private functions
 namespace ModelOutput

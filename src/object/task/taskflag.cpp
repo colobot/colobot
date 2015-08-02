@@ -141,7 +141,9 @@ CObject* CTaskFlag::SearchNearest(Math::Vector pos, ObjectType type)
     if(type == OBJECT_NULL)
     {
         types = {OBJECT_FLAGb, OBJECT_FLAGr, OBJECT_FLAGg, OBJECT_FLAGy, OBJECT_FLAGv};
-    } else {
+    }
+    else
+    {
         types = {type};
     }
     return CObjectManager::GetInstancePointer()->FindNearest(nullptr, pos, types);

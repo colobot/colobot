@@ -41,7 +41,8 @@
 
 
 // Graphics module namespace
-namespace Gfx {
+namespace Gfx
+{
 
 
 //! Changes the level of transparency of an object and objects transported (battery & cargo)
@@ -170,7 +171,8 @@ void CCamera::SetBlood(bool enable)
     m_blood = enable;
 }
 
-bool CCamera::GetBlood() {
+bool CCamera::GetBlood()
+{
     return m_blood;
 }
 

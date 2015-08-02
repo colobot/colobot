@@ -37,7 +37,8 @@
 
 
 // Graphics module namespace
-namespace Gfx {
+namespace Gfx
+{
 
 CGL21Device::CGL21Device(const DeviceConfig &config)
 {
@@ -710,7 +711,8 @@ Texture CGL21Device::CreateTexture(ImageData *data, const TextureCreateParams &p
                 convert = true;
             }
         }
-        else {
+        else
+        {
             GetLogger()->Error("Unknown data surface format");
             assert(false);
         }
@@ -1710,8 +1712,8 @@ void CGL21Device::CopyFramebufferToTexture(Texture& texture, int xOffset, int yO
     glBindTexture(GL_TEXTURE_2D, m_currentTextures[0].id);
 }
 
-void* CGL21Device::GetFrameBufferPixels()const{
-
+void* CGL21Device::GetFrameBufferPixels()const
+{
     GLubyte* pixels = new GLubyte[4 * m_config.size.x * m_config.size.y];
 
     glReadPixels(0, 0, m_config.size.x, m_config.size.y, GL_RGBA, GL_UNSIGNED_BYTE, pixels);

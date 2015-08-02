@@ -24,7 +24,8 @@
 #include "ui/control.h"
 
 
-namespace Ui {
+namespace Ui
+{
 
 
 class CButton : public CControl

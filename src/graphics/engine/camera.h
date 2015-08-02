@@ -36,7 +36,8 @@ class CInput;
 
 
 // Graphics module namespace
-namespace Gfx {
+namespace Gfx
+{
 
 
 /**
@@ -130,7 +131,8 @@ enum CameraOverEffect
   \brief Camera moving in 3D scene
 
   ... */
-class CCamera {
+class CCamera
+{
 public:
     CCamera();
     ~CCamera();

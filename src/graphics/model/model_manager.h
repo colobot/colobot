@@ -24,7 +24,8 @@
 #include <string>
 #include <unordered_map>
 
-namespace Gfx {
+namespace Gfx
+{
 
 /**
  * \class CModelManager

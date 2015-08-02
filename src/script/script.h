@@ -38,13 +38,15 @@ class CRobotMain;
 class CPauseManager;
 class CScriptFunctions;
 
-namespace Ui{
+namespace Ui
+{
 class CEdit;
 class CInterface;
 class CList;
 } /* Ui */
 
-namespace Gfx {
+namespace Gfx
+{
 class CEngine;
 class CTerrain;
 class CWater;

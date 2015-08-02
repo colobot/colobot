@@ -27,7 +27,8 @@
 #include "common/event.h"
 #include "common/misc.h"
 
-namespace Ui {
+namespace Ui
+{
 
 class CLabel : public CControl
 {

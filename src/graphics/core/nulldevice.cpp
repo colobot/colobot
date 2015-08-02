@@ -27,7 +27,8 @@
 
 
 // Graphics module namespace
-namespace Gfx {
+namespace Gfx
+{
 
 CNullDevice::CNullDevice()
 {

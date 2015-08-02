@@ -27,7 +27,8 @@
 
 #include <string>
 
-namespace Ui {
+namespace Ui
+{
 
 class CButton;
 

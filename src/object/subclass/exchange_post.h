@@ -36,7 +36,8 @@ struct ExchangePostInfo
 
 struct ObjectCreateParams;
 
-namespace Gfx {
+namespace Gfx
+{
 class COldModelManager;
 class CEngine;
 }

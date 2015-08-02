@@ -21,7 +21,8 @@
 #include "ui/gauge.h"
 
 
-namespace Ui {
+namespace Ui
+{
 // Object's constructor.
 
 CGauge::CGauge() : CControl()

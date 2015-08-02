@@ -46,7 +46,8 @@ class CInput;
 class CObjectManager;
 class CPathManager;
 
-namespace Gfx {
+namespace Gfx
+{
 class CModelManager;
 }
 

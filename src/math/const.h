@@ -29,7 +29,8 @@
 
 
 // Math module namespace
-namespace Math {
+namespace Math
+{
 
 
 //! Tolerance level -- minimum accepted float value

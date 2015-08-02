@@ -20,7 +20,8 @@
 
 #include "ui/label.h"
 
-namespace Ui {
+namespace Ui
+{
 
 
 // Object's constructor.

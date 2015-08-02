@@ -24,7 +24,8 @@
 #include <ostream>
 #include <string>
 
-namespace Gfx {
+namespace Gfx
+{
 
 class CModel;
 

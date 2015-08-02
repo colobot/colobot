@@ -61,7 +61,8 @@
 #include <stdio.h>
 
 
-namespace Ui {
+namespace Ui
+{
 
 
 // Object's constructor.

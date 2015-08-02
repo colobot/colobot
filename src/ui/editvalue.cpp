@@ -31,7 +31,8 @@
 
 
 
-namespace Ui {
+namespace Ui
+{
 // Object's constructor.
 
 CEditValue::CEditValue() : CControl ()

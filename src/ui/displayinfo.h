@@ -35,13 +35,15 @@ class CEventQueue;
 
 struct Event;
 
-namespace Gfx {
+namespace Gfx
+{
 class CEngine;
 class CParticle;
 class CLightManager;
 }
 
-namespace Ui {
+namespace Ui
+{
 
 class CInterface;
 

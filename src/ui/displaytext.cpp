@@ -40,7 +40,8 @@
 
 
 
-namespace Ui {
+namespace Ui
+{
 const float FONTSIZE = 12.0f;
 
 

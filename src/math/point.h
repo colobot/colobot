@@ -34,7 +34,8 @@
 
 
 // Math module namespace
-namespace Math {
+namespace Math
+{
 
 
 /**

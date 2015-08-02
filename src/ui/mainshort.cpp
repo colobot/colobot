@@ -28,7 +28,8 @@
 #include "object/object.h"
 
 
-namespace Ui {
+namespace Ui
+{
 
 // Constructor of the application card.
 

@@ -159,7 +159,8 @@ bool CAutoDestroyer::EventProcess(const Event &event)
                 if ( pw != 0 ) EnableInterface(pw, EVENT_OBJECT_BDESTROY, (scrap != 0));
             }
         }
-    } else if ( pw != 0 ) EnableInterface(pw, EVENT_OBJECT_BDESTROY, false);
+    }
+    else if ( pw != 0 ) EnableInterface(pw, EVENT_OBJECT_BDESTROY, false);
 
     if ( m_phase == ADEP_DOWN )
     {

@@ -37,14 +37,16 @@ class CRobotMain;
 class CScript;
 class CSoundInterface;
 
-namespace Gfx {
+namespace Gfx
+{
 class CEngine;
 class CCamera;
-};
+}
 
 struct Program;
 
-namespace Ui {
+namespace Ui
+{
 
 class CEdit;
 class CInterface;

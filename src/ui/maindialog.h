@@ -33,12 +33,14 @@
 class CEventQueue;
 class CSoundInterface;
 
-namespace Gfx {
+namespace Gfx
+{
 class CEngine;
 class CParticle;
 }
 
-namespace Ui {
+namespace Ui
+{
 
 class CInterface;
 class CWindow;

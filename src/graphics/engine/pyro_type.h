@@ -24,7 +24,8 @@
 
 #pragma once
 
-namespace Gfx {
+namespace Gfx
+{
 
 /**
  * \enum PyroType

@@ -22,7 +22,8 @@
 
 #include <string.h>
 
-namespace Ui {
+namespace Ui
+{
 
 const float MARGING = 4.0f;
 

@@ -22,7 +22,8 @@
 
 
 
-namespace Ui {
+namespace Ui
+{
 // Object's constructor.
 
 CWindow::CWindow() : CControl()

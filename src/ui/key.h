@@ -33,7 +33,8 @@
 #include "common/key.h"
 
 
-namespace Ui {
+namespace Ui
+{
 
 class CKey : public CControl
 {

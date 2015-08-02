@@ -27,7 +27,8 @@
 
 #include "object/object_type.h"
 
-namespace Gfx {
+namespace Gfx
+{
 class CEngine;
 class CParticle;
 class CTerrain;

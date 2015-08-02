@@ -32,7 +32,8 @@
 
 
 // Graphics module namespace
-namespace Gfx {
+namespace Gfx
+{
 
 
 void LightProgression::Init(float value)

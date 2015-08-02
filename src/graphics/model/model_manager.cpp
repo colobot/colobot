@@ -25,7 +25,8 @@
 #include "graphics/model/model_input.h"
 #include "graphics/model/model_io_exception.h"
 
-namespace Gfx {
+namespace Gfx
+{
 
 CModel& CModelManager::GetModel(const std::string& modelName)
 {

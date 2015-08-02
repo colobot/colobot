@@ -55,7 +55,8 @@
 template<> Gfx::CEngine* CSingleton<Gfx::CEngine>::m_instance = nullptr;
 
 // Graphics module namespace
-namespace Gfx {
+namespace Gfx
+{
 
 CEngine::CEngine(CApplication *app)
 {
@@ -4514,7 +4515,8 @@ void CEngine::DrawBackgroundImage()
         Math::Point scale;
         scale.x = static_cast<float>(m_size.x) / static_cast<float>(m_backgroundTex.originalSize.x);
         scale.y = static_cast<float>(m_size.y) / static_cast<float>(m_backgroundTex.originalSize.y);
-        if (scale.x > scale.y) {
+        if (scale.x > scale.y)
+        {
             scale.y /= scale.x;
             scale.x = 1;
         }

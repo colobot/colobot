@@ -29,7 +29,8 @@
 #include <string>
 
 
-enum PauseType {
+enum PauseType
+{
     PAUSE_NONE = 0,
     PAUSE_USER,
     PAUSE_SATCOM,

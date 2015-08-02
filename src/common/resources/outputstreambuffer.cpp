@@ -81,7 +81,8 @@ std::streambuf::int_type COutputStreamBuffer::overflow(std::streambuf::int_type 
 
     pbump(-bytes_written);
     // write final char
-    if (ch != traits_type::eof()) {
+    if (ch != traits_type::eof())
+    {
         bytes_written = PHYSFS_write(m_file, &ch, 1, 1);
         if (bytes_written <= 0)
             return traits_type::eof();

@@ -22,7 +22,8 @@
 #include "common/logger.h"
 
 
-namespace Gfx {
+namespace Gfx
+{
 
 int CModel::GetMeshCount() const
 {

@@ -51,7 +51,8 @@
 
 #include <string>
 
-namespace Ui {
+namespace Ui
+{
 
 const int MAXCONTROL = 100;
 

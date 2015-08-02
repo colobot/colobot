@@ -49,7 +49,8 @@
 
 #include <string>
 
-namespace Ui {
+namespace Ui
+{
 
 const int MAXWINDOW = 100;
 

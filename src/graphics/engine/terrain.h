@@ -29,7 +29,8 @@
 
 
 // Graphics module namespace
-namespace Gfx {
+namespace Gfx
+{
 
 class CEngine;
 class CWater;

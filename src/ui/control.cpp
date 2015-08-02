@@ -23,7 +23,8 @@
 #include "app/app.h"
 
 
-namespace Ui {
+namespace Ui
+{
 // Object's constructor.
 CControl::CControl()
 {

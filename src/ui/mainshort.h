@@ -31,7 +31,8 @@
 
 #include "ui/interface.h"
 
-namespace Ui {
+namespace Ui
+{
 
 
 class CMainShort

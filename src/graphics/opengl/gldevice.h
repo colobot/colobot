@@ -35,7 +35,8 @@
 
 
 // Graphics module namespace
-namespace Gfx {
+namespace Gfx
+{
 
 /**
  \enum VertexBufferType

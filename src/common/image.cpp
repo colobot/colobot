@@ -435,14 +435,15 @@ bool CImage::SavePNG(const std::string& fileName)
     return true;
 }
 
-void CImage::SetDataPixels(void *pixels){
-
+void CImage::SetDataPixels(void *pixels)
+{
     Uint8* srcPixels = static_cast<Uint8*> (pixels);
     Uint8* resultPixels = static_cast<Uint8*> (m_data->surface->pixels);
 
     Uint32 pitch = m_data->surface->pitch;
 
-    for(int line = 0; line < m_data->surface->h; ++line) {
+    for (int line = 0; line < m_data->surface->h; ++line)
+    {
         Uint32 pos = line * pitch;
         memcpy(&resultPixels[pos], &srcPixels[pos], pitch);
     }

@@ -82,7 +82,8 @@ class CSceneEndCondition;
 class CAudioChangeCondition;
 class CPlayerProfile;
 
-namespace Gfx {
+namespace Gfx
+{
 class CEngine;
 class CLightManager;
 class CWater;
@@ -93,7 +94,8 @@ class CTerrain;
 class CModelManager;
 }
 
-namespace Ui {
+namespace Ui
+{
 class CMainDialog;
 class CMainShort;
 class CMainMap;

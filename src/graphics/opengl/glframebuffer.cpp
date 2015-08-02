@@ -21,7 +21,8 @@
 
 #include "common/logger.h"
 
-namespace Gfx {
+namespace Gfx
+{
 
 // CGLFramebuffer
 

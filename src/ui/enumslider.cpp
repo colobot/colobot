@@ -20,7 +20,8 @@
 
 #include "common/stringutils.h"
 
-namespace Ui {
+namespace Ui
+{
 
 CEnumSlider::CEnumSlider() : CSlider()
 {
@@ -35,7 +36,8 @@ void CEnumSlider::SetPossibleValues(const std::map<float, std::string>& values)
 {
     m_values.clear();
     m_labels.clear();
-    for (auto it = values.begin(); it != values.end(); ++it) {
+    for (auto it = values.begin(); it != values.end(); ++it)
+    {
         m_values.push_back(it->first);
         m_labels.push_back(it->second);
     }

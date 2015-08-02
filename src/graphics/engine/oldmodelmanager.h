@@ -27,7 +27,8 @@
 #include <vector>
 #include <map>
 
-namespace Gfx {
+namespace Gfx
+{
 
 class CEngine;
 class CModelFile;

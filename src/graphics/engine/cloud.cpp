@@ -30,7 +30,8 @@
 
 
 // Graphics module namespace
-namespace Gfx {
+namespace Gfx
+{
 
 
 const int CLOUD_LINE_PREALLOCATE_COUNT = 100;

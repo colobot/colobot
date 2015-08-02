@@ -23,7 +23,8 @@
 #include "app/app.h"
 
 
-namespace Ui {
+namespace Ui
+{
 
 
 const float ZOOM_MIN = 1.0f;

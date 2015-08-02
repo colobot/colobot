@@ -403,12 +403,16 @@ bool CApplication::Create()
         defaultValues = true;
     }
 
-    if (GetConfigFile().GetStringProperty("Language", "Lang", path)) {
+    if (GetConfigFile().GetStringProperty("Language", "Lang", path))
+    {
         Language language;
-        if (ParseLanguage(path, language)) {
+        if (ParseLanguage(path, language))
+        {
             m_language = language;
             GetLogger()->Info("Setting language '%s' from ini file\n", path.c_str());
-        } else {
+        }
+        else
+        {
             GetLogger()->Error("Invalid language '%s' in ini file\n", path.c_str());
         }
     }
@@ -487,14 +491,17 @@ bool CApplication::Create()
             std::getline(resolution, ws, 'x');
             std::getline(resolution, hs, 'x');
             int w = 800, h = 600;
-            if (!ws.empty() && !hs.empty()) {
+            if (!ws.empty() && !hs.empty())
+            {
                 w = atoi(ws.c_str());
                 h = atoi(hs.c_str());
             }
 
             // Why not just set m_deviceConfig.size to w,h? Because this way if the resolution is no longer supported (e.g. changimg monitor) defaults will be used instead
-            for(auto it = modes.begin(); it != modes.end(); ++it) {
-                if (it->x == w && it->y == h) {
+            for (auto it = modes.begin(); it != modes.end(); ++it)
+            {
+                if (it->x == w && it->y == h)
+                {
                     m_deviceConfig.size = *it;
                     break;
                 }

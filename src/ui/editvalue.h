@@ -25,11 +25,13 @@
 #include "ui/control.h"
 
 
-namespace Gfx{
+namespace Gfx
+{
 class CEngine;
 }
 
-namespace Ui {
+namespace Ui
+{
 
 enum EditValueType
 {

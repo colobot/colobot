@@ -32,11 +32,13 @@
 class CObject;
 class CSound;
 
-namespace Gfx {
+namespace Gfx
+{
 class CEngine;
 }
 
-namespace Ui {
+namespace Ui
+{
 
 class CInterface;
 
