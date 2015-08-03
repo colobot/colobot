@@ -130,8 +130,12 @@ void CImage::Draw()
 
     if ( m_filename[0] != 0 )  // displays an image?
     {
-        m_engine->LoadTexture(m_filename);
-        m_engine->SetTexture(m_filename);
+        Gfx::TextureCreateParams params;
+        params.format = Gfx::TEX_IMG_AUTO;
+        params.filter = Gfx::TEX_FILTER_BILINEAR;
+        params.padToNearestPowerOfTwo = true;
+        Gfx::Texture tex = m_engine->LoadTexture(m_filename, params);
+        m_engine->SetTexture(tex);
         m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
         pos = m_pos;
         dim = m_dim;
@@ -141,8 +145,8 @@ void CImage::Draw()
         dim.y -= 10.0f / 480.0f;
         uv1.x = 0.0f;
         uv1.y = 0.0f;
-        uv2.x = 1.0f;
-        uv2.y = 1.0f;
+        uv2.x = static_cast<float>(tex.originalSize.x) / static_cast<float>(tex.size.x);
+        uv2.y = static_cast<float>(tex.originalSize.y) / static_cast<float>(tex.size.y);
         DrawIcon(pos, dim, uv1, uv2);
     }
 }
