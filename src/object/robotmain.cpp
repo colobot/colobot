@@ -179,7 +179,6 @@ CRobotMain::CRobotMain(CController* controller)
     m_satcomRepeat = true;
     m_editorTrack  = "";
     m_editorRepeat = true;
-    m_delayWriteMessage = 0;
     m_selectObject = 0;
     m_infoUsed     = 0;
 
@@ -2754,15 +2753,6 @@ bool CRobotMain::EventFrame(const Event &event)
         }
     }
 
-    if (m_delayWriteMessage > 0)
-    {
-        m_delayWriteMessage --;
-        if (m_delayWriteMessage == 0)
-        {
-            m_displayText->DisplayError(INFO_WRITEOK, Math::Vector(0.0f,0.0f,0.0f));
-        }
-    }
-
     if (GetMissionType() == MISSION_CODE_BATTLE)
     {
         if (!m_codeBattleInit)
@@ -5128,8 +5118,13 @@ bool CRobotMain::IOWriteScene(const char *filename, const char *filecbot, char *
     CBotClass::SaveStaticState(file);
     fClose(file);
 
-    m_delayWriteMessage = 4;  // displays message in 3 frames
     return true;
+}
+
+//! Notifies the user that scene write is finished
+void CRobotMain::IOWriteSceneFinished()
+{
+    m_displayText->DisplayError(INFO_WRITEOK, Math::Vector(0.0f,0.0f,0.0f));
 }
 
 //! Resumes the game

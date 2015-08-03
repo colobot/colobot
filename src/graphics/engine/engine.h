@@ -1348,6 +1348,8 @@ protected:
 
     int GetEngineState(const ModelTriangle& triangle);
 
+    static int WriteScreenShotThread(void* data_ptr);
+
 protected:
     CApplication*     m_app;
     CSoundInterface*  m_sound;

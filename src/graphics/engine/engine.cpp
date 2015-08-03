@@ -52,6 +52,7 @@
 #include "ui/interface.h"
 
 #include <iomanip>
+#include <SDL_thread.h>
 
 template<> Gfx::CEngine* CSingleton<Gfx::CEngine>::m_instance = nullptr;
 
@@ -483,24 +484,42 @@ void CEngine::FrameUpdate()
     }
 }
 
+struct WriteScreenShotData
+{
+    std::unique_ptr<CImage> img;
+    std::string fileName;
+};
+
 bool CEngine::WriteScreenShot(const std::string& fileName, int width, int height)
 {
-    void *pixels = m_device->GetFrameBufferPixels();
-    CImage img({width, height});
+    WriteScreenShotData* data = new WriteScreenShotData();
+    data->img = MakeUnique<CImage>(Math::IntPoint(width, height));
 
-    img.SetDataPixels(pixels);
-    img.FlipVertically();
+    data->img->SetDataPixels(m_device->GetFrameBufferPixels());
+    data->img->FlipVertically();
 
-    if ( img.SavePNG(fileName.c_str()) )
+    data->fileName = fileName;
+    SDL_CreateThread(CEngine::WriteScreenShotThread, data);
+    return true;
+}
+
+int CEngine::WriteScreenShotThread(void* data_ptr)
+{
+    WriteScreenShotData* data = static_cast<WriteScreenShotData*>(data_ptr);
+
+    if ( data->img->SavePNG(data->fileName.c_str()) )
     {
        GetLogger()->Debug("Save screenshot saved successfully\n");
-       return true;
     }
     else
     {
-       GetLogger()->Error("%s!\n", img.GetError().c_str());
-       return false;
+       GetLogger()->Error("%s!\n", data->img->GetError().c_str());
     }
+
+    delete data;
+
+    CRobotMain::GetInstancePointer()->IOWriteSceneFinished();
+    return 0;
 }
 
 bool CEngine::GetPause()

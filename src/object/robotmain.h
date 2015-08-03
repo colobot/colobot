@@ -299,6 +299,7 @@ public:
 
     bool        IsBusy();
     bool        IOWriteScene(const char *filename, const char *filecbot, char *info);
+    void        IOWriteSceneFinished();
     CObject*    IOReadScene(const char *filename, const char *filecbot);
     void        IOWriteObject(CLevelParserLine *line, CObject* obj);
     CObject*    IOReadObject(CLevelParserLine *line, const char* filename, int objRank);
@@ -479,7 +480,6 @@ protected:
     bool            m_satcomRepeat;
     std::string     m_editorTrack;
     bool            m_editorRepeat;
-    int             m_delayWriteMessage;
     int             m_movieInfoIndex;
 
     CObject*        m_controller;
