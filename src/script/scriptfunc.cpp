@@ -3651,6 +3651,7 @@ void CScriptFunctions::Init()
     CBotProgram::DefineNum("ResultLostQuick", INFO_LOSTq);
     CBotProgram::DefineNum("ResultWin",       ERR_OK);
 
+    // NOTE: The Build___ constants are for use only with getbuild() and setbuild() for MissionController, not for normal players
     CBotProgram::DefineNum("BuildBotFactory",       BUILD_FACTORY);
     CBotProgram::DefineNum("BuildDerrick",          BUILD_DERRICK);
     CBotProgram::DefineNum("BuildConverter",        BUILD_CONVERT);
