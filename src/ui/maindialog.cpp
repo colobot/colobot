@@ -362,7 +362,7 @@ void CMainDialog::ChangePhase(Phase phase)
         pl->SetFontType(Gfx::FONT_COURIER);
         pl->SetFontSize(Gfx::FONT_SIZE_SMALL);
 
-        m_engine->SetBackground("interface/interface.png",
+        m_engine->SetBackground("textures/interface/interface.png",
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
@@ -467,7 +467,7 @@ void CMainDialog::ChangePhase(Phase phase)
         UpdateNameList();
         UpdateNameControl();
 
-        m_engine->SetBackground("interface/interface.png",
+        m_engine->SetBackground("textures/interface/interface.png",
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
@@ -883,7 +883,7 @@ void CMainDialog::ChangePhase(Phase phase)
         pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_BACK);
         pb->SetState(STATE_SHADOW);
 
-        m_engine->SetBackground("interface/interface.png",
+        m_engine->SetBackground("textures/interface/interface.png",
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
@@ -1011,7 +1011,7 @@ void CMainDialog::ChangePhase(Phase phase)
 
         if ( !m_bSimulSetup )
         {
-            m_engine->SetBackground("interface/interface.png",
+            m_engine->SetBackground("textures/interface/interface.png",
                     Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                     Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                     Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
@@ -1625,7 +1625,7 @@ void CMainDialog::ChangePhase(Phase phase)
 
         if ( m_phase == PHASE_READ )
         {
-            m_engine->SetBackground("interface/interface.png",
+            m_engine->SetBackground("textures/interface/interface.png",
                     Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                     Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                     Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
@@ -1672,7 +1672,7 @@ void CMainDialog::ChangePhase(Phase phase)
         pl->SetFontSize(12.0f);
         pl->SetTextAlign(Gfx::TEXT_ALIGN_CENTER);
 
-        m_engine->SetBackground("interface/interface.png",
+        m_engine->SetBackground("textures/interface/interface.png",
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
@@ -1694,7 +1694,7 @@ void CMainDialog::ChangePhase(Phase phase)
         m_engine->SetOverColor(Gfx::Color(1.0f, 1.0f, 1.0f, 1.0f), Gfx::ENG_RSTATE_TCOLOR_BLACK); // TODO: color ok?
         m_engine->SetOverFront(true);
 
-        m_engine->SetBackground("interface/intro1.png",
+        m_engine->SetBackground("textures/interface/intro1.png",
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
@@ -1713,7 +1713,7 @@ void CMainDialog::ChangePhase(Phase phase)
         m_engine->SetOverColor(Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f), Gfx::ENG_RSTATE_TCOLOR_WHITE); // TODO: color ok?
         m_engine->SetOverFront(true);
 
-        m_engine->SetBackground("interface/intro2.png",
+        m_engine->SetBackground("textures/interface/intro2.png",
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
@@ -1732,7 +1732,7 @@ void CMainDialog::ChangePhase(Phase phase)
         m_engine->SetOverColor(Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f), Gfx::ENG_RSTATE_TCOLOR_WHITE); // TODO: color ok?
         m_engine->SetOverFront(true);
 
-        m_engine->SetBackground("interface/intro3.png",
+        m_engine->SetBackground("textures/interface/intro3.png",
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
@@ -1798,7 +1798,7 @@ void CMainDialog::ChangePhase(Phase phase)
         pb = pw->CreateButton(pos, ddim, 49, EVENT_INTERFACE_ABORT);
         pb->SetState(STATE_SHADOW);
 
-        m_engine->SetBackground("interface/generico.png",
+        m_engine->SetBackground("textures/interface/generico.png",
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
@@ -4057,7 +4057,7 @@ void CMainDialog::IOUpdateList()
     if (m_saveList.size() <= static_cast<unsigned int>(sel))
         return;
 
-    std::string filename = "../"+m_saveList.at(sel) + "/screen.png";
+    std::string filename = m_saveList.at(sel) + "/screen.png";
     if ( m_phase == PHASE_WRITE  || m_phase == PHASE_WRITEs )
     {
         if ( sel < max-1 )

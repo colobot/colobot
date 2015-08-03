@@ -1320,15 +1320,15 @@ void CAutoBase::BeginTransit()
 {
     if ( m_param == PARAM_TRANSIT2 )
     {
-        m_bgBack = "back01.png";  // clouds orange / blue
+        m_bgBack = "textures/back01.png";  // clouds orange / blue
     }
     else if ( m_param == PARAM_TRANSIT3 )
     {
-        m_bgBack = "back22.png";  // blueberries clouds
+        m_bgBack = "textures/back22.png";  // blueberries clouds
     }
     else
     {
-        m_bgBack = "back46.png";  // paintings
+        m_bgBack = "textures/back46.png";  // paintings
     }
 
     m_engine->SetFogStart(0.9f);  // hardly any fog
@@ -1418,4 +1418,3 @@ Error CAutoBase::TakeOff(bool printMsg)
     m_speed    = 1.0f/BASE_DOOR_TIME2;
     return ERR_OK;
 }
-

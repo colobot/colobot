@@ -1119,10 +1119,10 @@ void CEngine::ChangeSecondTexture(int objRank, const std::string& tex2Name)
         newP2.next.insert(newP2.next.end(), p1.next[l2].next.begin(), p1.next[l2].next.end());
         p1.next[l2].next.clear();
 
-        if (!newP2.tex1.Valid())
+        if (!newP2.tex1.Valid() && !newP2.tex1Name.empty())
             newP2.tex1 = LoadTexture("textures/"+newP2.tex1Name);
 
-        if (!newP2.tex2.Valid())
+        if (!newP2.tex2.Valid() && !newP2.tex2Name.empty())
             newP2.tex2 = LoadTexture("textures/"+newP2.tex2Name);
     }
 }
@@ -2238,13 +2238,13 @@ bool CEngine::LoadAllTextures()
     {
         TextureCreateParams params = m_defaultTexParams;
         params.padToNearestPowerOfTwo = true;
-        m_backgroundTex = LoadTexture("textures/"+m_backgroundName, params);
+        m_backgroundTex = LoadTexture(m_backgroundName, params);
     }
     else
         m_backgroundTex.SetInvalid();
 
     if (! m_foregroundName.empty())
-        m_foregroundTex = LoadTexture("textures/"+m_foregroundName);
+        m_foregroundTex = LoadTexture(m_foregroundName);
     else
         m_foregroundTex.SetInvalid();
 
@@ -2738,7 +2738,7 @@ void CEngine::SetBackground(const std::string& name, Color up, Color down,
     {
         TextureCreateParams params = m_defaultTexParams;
         params.padToNearestPowerOfTwo = true;
-        m_backgroundTex = LoadTexture("textures/"+m_backgroundName, params);
+        m_backgroundTex = LoadTexture(m_backgroundName, params);
     }
 }
 
@@ -2765,7 +2765,7 @@ void CEngine::SetForegroundName(const std::string& name)
     m_foregroundName = name;
 
     if (! m_foregroundName.empty())
-        m_foregroundTex = LoadTexture("textures/"+m_foregroundName);
+        m_foregroundTex = LoadTexture(m_foregroundName);
 }
 
 void CEngine::SetOverFront(bool front)

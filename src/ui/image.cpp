@@ -130,10 +130,8 @@ void CImage::Draw()
 
     if ( m_filename[0] != 0 )  // displays an image?
     {
-        std::string texFilename = m_filename;
-        texFilename = "textures/"+texFilename;
-        m_engine->LoadTexture(texFilename.c_str());
-        m_engine->SetTexture(texFilename);
+        m_engine->LoadTexture(m_filename);
+        m_engine->SetTexture(m_filename);
         m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
         pos = m_pos;
         dim = m_dim;
@@ -151,4 +149,3 @@ void CImage::Draw()
 
 
 }
-

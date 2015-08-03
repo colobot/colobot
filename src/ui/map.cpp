@@ -347,10 +347,8 @@ void CMap::Draw()
     }
     else // still image?
     {
-        std::string texFilename = m_fixImage;
-        texFilename = "textures/"+texFilename;
-        m_engine->LoadTexture(texFilename.c_str());
-        m_engine->SetTexture(texFilename.c_str());
+        m_engine->LoadTexture(m_fixImage);
+        m_engine->SetTexture(m_fixImage);
         m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
         uv1.x = 0.0f;
         uv1.y = 0.0f;
@@ -1314,4 +1312,3 @@ void CMap::UpdateObject(CObject* pObj)
 }
 
 }
-

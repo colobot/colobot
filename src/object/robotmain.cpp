@@ -3205,7 +3205,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             {
                 std::string path = "";
                 if (line->GetParam("image")->IsDefined())
-                    path = "../" + line->GetParam("image")->AsPath("textures");
+                    path = line->GetParam("image")->AsPath("textures");
                 m_engine->SetBackground(path.c_str(),
                                         line->GetParam("up")->AsColor(Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f)),
                                         line->GetParam("down")->AsColor(Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f)),
@@ -3227,7 +3227,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                                 line->GetParam("dim")->AsFloat(0.2f),
                                 line->GetParam("speed")->AsFloat(0.0f),
                                 line->GetParam("dir")->AsFloat(0.0f),
-                                "../" + line->GetParam("image")->AsPath("textures"),
+                                line->GetParam("image")->AsPath("textures"),
                                 Math::Point(uv1.x, uv1.z),
                                 Math::Point(uv2.x, uv2.z),
                                 line->GetParam("image")->AsPath("textures").find("planet") != std::string::npos // TODO: add transparent op or modify textures
@@ -3237,7 +3237,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
             if (line->GetCommand() == "ForegroundName" && !resetObject)
             {
-                m_engine->SetForegroundName("../" + line->GetParam("image")->AsPath("textures"));
+                m_engine->SetForegroundName(line->GetParam("image")->AsPath("textures"));
                 continue;
             }
 
@@ -3299,7 +3299,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 pos.z = pos.x;
                 m_water->Create(line->GetParam("air")->AsWaterType(Gfx::WATER_TT),
                                 line->GetParam("water")->AsWaterType(Gfx::WATER_TT),
-                                "../" + line->GetParam("image")->AsPath("textures"),
+                                line->GetParam("image")->AsPath("textures"),
                                 line->GetParam("diffuse")->AsColor(Gfx::Color(1.0f, 1.0f, 1.0f, 1.0f)),
                                 line->GetParam("ambient")->AsColor(Gfx::Color(1.0f, 1.0f, 1.0f, 1.0f)),
                                 line->GetParam("level")->AsFloat(100.0f)*g_unit,
@@ -3320,7 +3320,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             {
                 std::string path = "";
                 if (line->GetParam("image")->IsDefined())
-                    path = "../" + line->GetParam("image")->AsPath("textures");
+                    path = line->GetParam("image")->AsPath("textures");
                 m_cloud->Create(path,
                                 line->GetParam("diffuse")->AsColor(Gfx::Color(1.0f, 1.0f, 1.0f, 1.0f)),
                                 line->GetParam("ambient")->AsColor(Gfx::Color(1.0f, 1.0f, 1.0f, 1.0f)),
@@ -3779,7 +3779,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 if (m_mapImage)
                 {
                     Math::Vector offset;
-                    strcpy(m_mapFilename, ("../" + line->GetParam("filename")->AsPath("textures")).c_str());
+                    strcpy(m_mapFilename, line->GetParam("filename")->AsPath("textures").c_str());
                     offset = line->GetParam("offset")->AsPoint(Math::Vector(0.0f, 0.0f, 0.0f));
                     m_map->SetFixParam(line->GetParam("zoom")->AsFloat(1.0f),
                                     offset.x, offset.z,

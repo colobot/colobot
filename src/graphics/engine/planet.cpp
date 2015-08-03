@@ -90,7 +90,7 @@ void CPlanet::LoadTexture()
     {
         for (int i = 0; i < static_cast<int>( m_planet[j].size() ); i++)
         {
-            m_engine->LoadTexture("textures/"+m_planet[j][i].name);
+            m_engine->LoadTexture(m_planet[j][i].name);
         }
     }
 }
@@ -106,7 +106,7 @@ void CPlanet::Draw()
 
     for (int i = 0; i < static_cast<int>( m_planet[m_mode].size() ); i++)
     {
-        m_engine->SetTexture("textures/"+m_planet[m_mode][i].name);
+        m_engine->SetTexture(m_planet[m_mode][i].name);
 
         if (m_planet[m_mode][i].transparent)
             m_engine->SetState(ENG_RSTATE_WRAP | ENG_RSTATE_ALPHA);
@@ -189,4 +189,3 @@ int CPlanet::GetMode()
 
 
 } // namespace Gfx
-

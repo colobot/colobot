@@ -3532,7 +3532,7 @@ void CParticle::DrawParticle(int sheet)
             if (m_particle[i].sheet != sheet)  continue;
             if (m_particle[i].type == PARTIPART)  continue;
 
-            m_engine->SetTexture("textures/"+m_triangle[i].tex1Name);
+            m_engine->SetTexture(!m_triangle[i].tex1Name.empty() ? "textures/"+m_triangle[i].tex1Name : "");
             m_engine->SetMaterial(m_triangle[i].material);
             m_engine->SetState(m_triangle[i].state);
             DrawParticleTriangle(i);
