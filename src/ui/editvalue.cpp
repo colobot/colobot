@@ -29,6 +29,8 @@
 #include "ui/edit.h"
 #include "ui/interface.h"
 
+#include <cstdio>
+
 
 
 namespace Ui
