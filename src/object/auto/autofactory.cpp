@@ -141,6 +141,7 @@ Error CAutoFactory::StartAction(int param)
             return ERR_FACTORY_NEAR;
         }
 
+        m_program = "";
         SetBusy(true);
         InitProgressTotal(3.0f+2.0f+15.0f+2.0f+3.0f);
         UpdateInterface();
