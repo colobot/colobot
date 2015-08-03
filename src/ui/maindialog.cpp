@@ -5005,7 +5005,7 @@ void CMainDialog::SetupMemorize()
 {
     GetConfigFile().SetIntProperty("Setup", "Tooltips", m_bTooltip);
     GetConfigFile().SetIntProperty("Setup", "InterfaceGlint", m_bGlint);
-    GetConfigFile().SetIntProperty("Setup", "InterfaceGlint", m_bRain);
+    GetConfigFile().SetIntProperty("Setup", "InterfaceRain", m_bRain);
     GetConfigFile().SetIntProperty("Setup", "Soluce4", m_bSoluce4);
     GetConfigFile().SetIntProperty("Setup", "Movies", m_bMovies);
     GetConfigFile().SetIntProperty("Setup", "NiceReset", m_bNiceReset);
@@ -5097,7 +5097,7 @@ void CMainDialog::SetupRecall()
         m_bGlint = iValue;
     }
 
-    if ( GetConfigFile().GetIntProperty("Setup", "InterfaceGlint", iValue) )
+    if ( GetConfigFile().GetIntProperty("Setup", "InterfaceRain", iValue) )
     {
         m_bRain = iValue;
     }
