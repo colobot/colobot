@@ -706,13 +706,13 @@ void CScript::ColorizeScript(Ui::CEdit* edit)
         {
             color = Gfx::FONT_HIGHLIGHT_CONST;
         }
-        if ( type == TokenTypVar || ( type >= TokenKeyWord && type < TokenKeyWord+100 ) )
+        if ( type == TokenTypVar || ( type >= TokenKeyWord && type < TokenKeyWord+100 ) || strcmp(token, "this") == 0 )
         {
             if ( IsType(token) )
             {
                 color = Gfx::FONT_HIGHLIGHT_TYPE;
             }
-            else if ( IsFunction(token) )
+            else if ( IsFunction(token) || strcmp(token, "this") == 0 )
             {
                 color = Gfx::FONT_HIGHLIGHT_TOKEN;
             }

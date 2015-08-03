@@ -29,7 +29,6 @@
 //Map is filled with id-string pars that are needed for CBot language parsing
 const std::map<EID,const char *> CBotString::s_keywordString =
 {
-    {ID_THIS,       "this"},
     {ID_IF,         "if"},
     {ID_ELSE,       "else"},
     {ID_WHILE,      "while"},
@@ -710,4 +709,3 @@ CBotString& CBotStringArray::ElementAt(int nIndex)
 {
     return m_pData[nIndex];
 }
-

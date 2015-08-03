@@ -57,7 +57,6 @@ enum EID
     ID_STRING,
     ID_VOID,
     ID_BOOL,
-    ID_THIS,
 
     ID_TRUE = 2200,
     ID_FALSE,
@@ -180,4 +179,3 @@ enum EID
 #define TX_ERRWRITE                     6015
 
 #define TX_MAX                          6016
-
