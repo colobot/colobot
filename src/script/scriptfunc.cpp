@@ -3880,11 +3880,11 @@ void CScriptFunctions::uObject(CBotVar* botThis, void* user)
     pos = object->GetRotation();
     pos += object->GetTilt();
     pVar = pVar->GetNext();  // "orientation"
-    pVar->SetValFloat(360.0f-Math::Mod(pos.y*180.0f/Math::PI, 360.0f));
+    pVar->SetValFloat(Math::NormAngle(2*Math::PI - pos.y)*180.0f/Math::PI);
     pVar = pVar->GetNext();  // "pitch"
-    pVar->SetValFloat(pos.z*180.0f/Math::PI);
+    pVar->SetValFloat(Math::NormAngle(pos.z)*180.0f/Math::PI);
     pVar = pVar->GetNext();  // "roll"
-    pVar->SetValFloat(pos.x*180.0f/Math::PI);
+    pVar->SetValFloat(Math::NormAngle(pos.x)*180.0f/Math::PI);
 
     // Updates the energy level of the object.
     pVar = pVar->GetNext();  // "energyLevel"
