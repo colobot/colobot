@@ -83,7 +83,8 @@ CLevelParserParam::CLevelParserParam(Math::Point value)
 CLevelParserParam::CLevelParserParam(Math::Vector value)
 {
     m_array.push_back(MakeUnique<CLevelParserParam>(value.x));
-    m_array.push_back(MakeUnique<CLevelParserParam>(value.y));
+    if(value.y != 0.0f)
+        m_array.push_back(MakeUnique<CLevelParserParam>(value.y));
     m_array.push_back(MakeUnique<CLevelParserParam>(value.z));
 
     LoadArray();
