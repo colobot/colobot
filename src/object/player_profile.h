@@ -43,6 +43,18 @@ struct PlayerApperance
     void DefPerso();
 };
 
+struct SavedScene
+{
+    std::string path;
+    std::string name;
+
+    SavedScene(std::string _path = "", std::string _name = "")
+    {
+        path = _path;
+        name = _name;
+    }
+};
+
 class CPlayerProfile
 {
 public:
@@ -103,9 +115,16 @@ public:
     //! Saves PlayerApperance structure
     void SaveApperance();
 
+    //! Returns true if player has at least one saved scene
+    bool HasAnySavedScene();
+    //! Returns list of all saved scenes
+    std::vector<SavedScene> GetSavedSceneList();
     //! Saves current scene status
     void SaveScene(std::string dir, std::string info);
-    //TODO: Move saved scenes load and list here
+    //! Loads scene
+    void LoadScene(std::string dir);
+    //! Delete saved scene
+    bool DeleteScene(std::string dir);
 
 protected:
     //! Loads LevelInfo data for given category

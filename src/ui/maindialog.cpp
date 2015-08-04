@@ -859,7 +859,7 @@ void CMainDialog::ChangePhase(Phase phase)
             ddim.x = dim.x*2.5f;
             pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_READ);
             pb->SetState(STATE_SHADOW);
-            if ( !IsIOReadScene() )  // no file to read?
+            if ( !m_main->GetPlayerProfile()->HasAnySavedScene() )  // no file to read?
             {
                 pb->ClearState(STATE_ENABLE);
             }
@@ -2791,10 +2791,7 @@ bool CMainDialog::EventProcess(const Event &event)
         }
         if ( event.type == EVENT_INTERFACE_IOREAD )
         {
-            if ( IOReadScene() )
-            {
-                m_main->ChangePhase(PHASE_LOADING);
-            }
+            IOReadScene();
             return false;
         }
 
@@ -2830,21 +2827,19 @@ bool CMainDialog::EventProcess(const Event &event)
         }
         if ( event.type == EVENT_INTERFACE_IOWRITE )
         {
-            IOWriteScene();
-            m_interface->DeleteControl(EVENT_WINDOW5);
             ChangePhase(PHASE_SIMUL);
             StopSuspend();
+
+            IOWriteScene();
+            m_interface->DeleteControl(EVENT_WINDOW5);
             return false;
         }
         if ( event.type == EVENT_INTERFACE_IOREAD )
         {
-            if ( IOReadScene() )
-            {
-                m_interface->DeleteControl(EVENT_WINDOW5);
-                ChangePhase(PHASE_SIMUL);
-                StopSuspend();
-                m_main->ChangePhase(PHASE_LOADING);
-            }
+            ChangePhase(PHASE_SIMUL);
+            StopSuspend();
+
+            IOReadScene();
             return false;
         }
 
@@ -3920,23 +3915,6 @@ void CMainDialog::ColorPerso()
     else                        apperance.colorBand = color;
 }
 
-
-// Indicates if there is at least one backup.
-
-bool CMainDialog::IsIOReadScene()
-{
-    auto saveDirs = CResourceManager::ListDirectories(m_main->GetPlayerProfile()->GetSaveDir());
-    for (auto dir : saveDirs)
-    {
-        if (CResourceManager::Exists(m_main->GetPlayerProfile()->GetSaveFile(dir + "/data.sav")))
-        {
-            return true;
-        }
-    }
-
-    return false;
-}
-
 // Builds the file name by default.
 
 void CMainDialog::IOReadName()
@@ -3987,30 +3965,10 @@ void CMainDialog::IOReadList()
     pl->Flush();
 
     m_saveList.clear();
-
-    auto saveDirs = CResourceManager::ListDirectories(m_main->GetPlayerProfile()->GetSaveDir());
-    //std::sort(saveDirs.begin(), saveDirs.end());
-
-    std::map<int, std::string> sortedSaveDirs;
-    std::map<int, std::string> names;
-
-    for (auto dir : saveDirs)
+    for(const SavedScene& save : m_main->GetPlayerProfile()->GetSavedSceneList())
     {
-        std::string savegameFile = m_main->GetPlayerProfile()->GetSaveFile(dir+"/data.sav");
-        if (CResourceManager::Exists(savegameFile))
-        {
-            CLevelParser levelParser(savegameFile);
-            levelParser.Load();
-            int time = levelParser.Get("Created")->GetParam("date")->AsInt();
-            sortedSaveDirs[time] = m_main->GetPlayerProfile()->GetSaveFile(dir);
-            names[time] = levelParser.Get("Title")->GetParam("text")->AsString();
-        }
-    }
-
-    for (auto dir : sortedSaveDirs)
-    {
-        pl->SetItemName(m_saveList.size(), names[dir.first].c_str());
-        m_saveList.push_back(dir.second);
+        pl->SetItemName(m_saveList.size(), save.name.c_str());
+        m_saveList.push_back(save.path);
     }
 
     // invalid index
@@ -4024,13 +3982,9 @@ void CMainDialog::IOReadList()
     pl->SetSelect(m_saveList.size());
     pl->ShowSelect(false);  // shows the selected columns
 
-    unsigned int i;
-    std::string  screenName;
-
-    for ( i=0; i < m_saveList.size(); i++ )
+    for (unsigned int i = 0; i < m_saveList.size(); i++)
     {
-        screenName = "textures/../" + m_saveList.at(i) + "/screen.png";
-        m_engine->DeleteTexture(screenName);
+        m_engine->DeleteTexture(m_saveList.at(i) + "/screen.png");
     }
 }
 
@@ -4087,23 +4041,19 @@ void CMainDialog::IODeleteScene()
 {
     CWindow* pw;
     CList*   pl;
-    int      sel;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
     if ( pw == 0 )  return;
     pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_IOLIST));
     if ( pl == 0 )  return;
 
-    sel = pl->GetSelect();
-    if ( sel == -1 || m_saveList.size() <= static_cast<unsigned int>(sel))
+    int sel = pl->GetSelect();
+    if (sel < 0 || sel >= static_cast<int>(m_saveList.size())) return;
+
+    if (!m_main->GetPlayerProfile()->DeleteScene(m_saveList.at(sel)))
     {
         m_sound->Play(SOUND_TZOING);
         return;
-    }
-
-    if (CResourceManager::DirectoryExists(m_saveList.at(sel)))
-    {
-        CResourceManager::RemoveDirectory(m_saveList.at(sel));
     }
 
     IOReadList();
@@ -4126,26 +4076,22 @@ std::string clearName(char *name)
 
 
 // Writes the scene.
-bool CMainDialog::IOWriteScene()
+void CMainDialog::IOWriteScene()
 {
     CWindow*    pw;
     CList*      pl;
     CEdit*      pe;
     char        info[100];
-    int         sel;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
-    if ( pw == nullptr )  return false;
+    if ( pw == nullptr )  return;
     pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_IOLIST));
-    if ( pl == nullptr )  return false;
+    if ( pl == nullptr )  return;
     pe = static_cast<CEdit*>(pw->SearchControl(EVENT_INTERFACE_IONAME));
-    if ( pe == nullptr )  return false;
+    if ( pe == nullptr )  return;
 
-    sel = pl->GetSelect();
-    if ( sel == -1 )
-    {
-        return false;
-    }
+    int sel = pl->GetSelect();
+    if ( sel == -1 ) return;
 
     std::string dir;
     pe->GetText(info, 100);
@@ -4159,8 +4105,6 @@ bool CMainDialog::IOWriteScene()
     }
 
     m_main->GetPlayerProfile()->SaveScene(dir, info);
-
-    return true;
 }
 
 void CMainDialog::MakeSaveScreenshot(const std::string& name)
@@ -4171,72 +4115,23 @@ void CMainDialog::MakeSaveScreenshot(const std::string& name)
 
 // Reads the scene.
 
-bool CMainDialog::IOReadScene()
+void CMainDialog::IOReadScene()
 {
     CWindow*    pw;
     CList*      pl;
-    int         sel;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
-    if ( pw == nullptr )  return false;
+    if ( pw == nullptr )  return;
     pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_IOLIST));
-    if ( pl == nullptr )  return false;
+    if ( pl == nullptr )  return;
 
-    sel = pl->GetSelect();
-    if ( sel == -1 || m_saveList.size() <= static_cast<unsigned int>(sel) )
-    {
-        return false;
-    }
+    int sel = pl->GetSelect();
+    if (sel < 0 || sel >= static_cast<int>(m_saveList.size())) return;
 
-    std::string fileName = m_saveList.at(sel) + "/" + "data.sav";
-    std::string fileCbot = CResourceManager::GetSaveLocation()+"/"+m_saveList.at(sel) + "/" + "cbot.run";
-
-    CLevelParser levelParser(fileName);
-    levelParser.Load();
-
-    CLevelParserLine* line = levelParser.Get("Mission");
-    m_category = GetLevelCategoryFromDir(line->GetParam("base")->AsString());
-
-    m_levelRank = line->GetParam("rank")->AsInt();
-    if (m_category == LevelCategory::CustomLevels)
-    {
-        m_levelChap = 0;
-        std::string dir = line->GetParam("dir")->AsString();
-        UpdateCustomLevelList();
-        for (unsigned int i = 0; i < m_customLevelList.size(); i++)
-        {
-            if (m_customLevelList[i] == dir)
-            {
-                m_levelChap = i+1;
-                break;
-            }
-        }
-        if (m_levelChap == 0)
-        {
-            return false;
-        }
-    }
-    else
-    {
-        if(line->GetParam("chap")->IsDefined())
-        {
-            m_levelChap = line->GetParam("chap")->AsInt();
-        }
-        else
-        {
-            // Backwards combatibility
-            int rank = line->GetParam("rank")->AsInt();
-            m_levelChap = rank/100;
-            m_levelRank = rank%100;
-        }
-    }
+    m_main->GetPlayerProfile()->LoadScene(m_saveList.at(sel));
 
     m_chap[m_category] = m_levelChap-1;
     m_sel[m_category]  = m_levelRank-1;
-
-    m_sceneRead = fileName;
-    m_stackRead = fileCbot;
-    return true;
 }
 
 // Updates the lists according to the cheat code.
@@ -5525,7 +5420,7 @@ void CMainDialog::StartAbort()
         pos.y = 0.53f;
         pb = pw->CreateButton(pos, dim, -1, EVENT_INTERFACE_READ);
         pb->SetState(STATE_SHADOW);
-        if ( !IsIOReadScene() )  // no file to read?
+        if ( !m_main->GetPlayerProfile()->HasAnySavedScene() )  // no file to read?
         {
             pb->ClearState(STATE_ENABLE);
         }
@@ -6083,6 +5978,11 @@ std::string CMainDialog::GetCustomLevelName(int id)
 {
     if(id < 1 || id > m_customLevelList.size()) return "";
     return m_customLevelList[id-1];
+}
+
+const std::vector<std::string>& CMainDialog::GetCustomLevelList()
+{
+    return m_customLevelList;
 }
 
 

@@ -257,6 +257,7 @@ public:
     bool        GetGamerOnlyHead();
     float       GetPersoAngle();
 
+    void        SetLevel(LevelCategory cat, int chap, int rank);
     LevelCategory GetLevelCategory();
     int         GetLevelChap();
     int         GetLevelRank();
@@ -300,7 +301,8 @@ public:
     bool        IsBusy();
     bool        IOWriteScene(const char *filename, const char *filecbot, char *info);
     void        IOWriteSceneFinished();
-    CObject*    IOReadScene(const char *filename, const char *filecbot);
+    void        IOReadScene(const char *filename, const char *filecbot);
+    CObject*    IOReadSceneObjects(const char *filename, const char *filecbot);
     void        IOWriteObject(CLevelParserLine *line, CObject* obj);
     CObject*    IOReadObject(CLevelParserLine *line, const char* filename, int objRank);
 
@@ -311,7 +313,9 @@ public:
     void        DisplayError(Error err, CObject* pObj, float time=10.0f);
     void        DisplayError(Error err, Math::Vector goal, float height=15.0f, float dist=60.0f, float time=10.0f);
 
+    void        UpdateCustomLevelList();
     std::string GetCustomLevelName(int id);
+    const std::vector<std::string>& GetCustomLevelList();
 
     void        StartMissionTimer();
 

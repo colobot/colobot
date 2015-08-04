@@ -107,6 +107,7 @@ public:
 
     void    UpdateCustomLevelList();
     std::string GetCustomLevelName(int id);
+    const std::vector<std::string>& GetCustomLevelList();
 
     void    MakeSaveScreenshot(const std::string& name);
 
@@ -125,13 +126,12 @@ protected:
     void    CameraPerso();
     void    FixPerso(int rank, int index);
     void    ColorPerso();
-    bool    IsIOReadScene();
     void    IOReadName();
     void    IOReadList();
     void    IOUpdateList();
     void    IODeleteScene();
-    bool    IOWriteScene();
-    bool    IOReadScene();
+    void    IOWriteScene();
+    void    IOReadScene();
     int     GetChapPassed();
     void    UpdateSceneChap(int &chap);
     void    UpdateSceneList(int chap, int &sel);

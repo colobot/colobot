@@ -424,6 +424,44 @@ void CPlayerProfile::SaveApperance()
 
 // SAVE / LOAD SCENE
 
+bool CPlayerProfile::HasAnySavedScene()
+{
+    auto saveDirs = CResourceManager::ListDirectories(GetSaveDir());
+    for (auto dir : saveDirs)
+    {
+        if (CResourceManager::Exists(GetSaveFile(dir + "/data.sav")))
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+std::vector<SavedScene> CPlayerProfile::GetSavedSceneList()
+{
+    auto saveDirs = CResourceManager::ListDirectories(GetSaveDir());
+    std::map<int, SavedScene> sortedSaveDirs;
+
+    for (auto dir : saveDirs)
+    {
+        std::string savegameFile = GetSaveFile(dir+"/data.sav");
+        if (CResourceManager::Exists(savegameFile))
+        {
+            CLevelParser levelParser(savegameFile);
+            levelParser.Load();
+            int time = levelParser.Get("Created")->GetParam("date")->AsInt();
+            sortedSaveDirs[time] = SavedScene(GetSaveFile(dir), levelParser.Get("Title")->GetParam("text")->AsString());
+        }
+    }
+
+    std::vector<SavedScene> result;
+    for (auto dir : sortedSaveDirs)
+    {
+        result.push_back(dir.second);
+    }
+    return result;
+}
+
 void CPlayerProfile::SaveScene(std::string dir, std::string info)
 {
     if (!CResourceManager::DirectoryExists(dir))
@@ -435,4 +473,63 @@ void CPlayerProfile::SaveScene(std::string dir, std::string info)
     std::string fileCBot = CResourceManager::GetSaveLocation() + "/" + dir + "/cbot.run";
     CRobotMain::GetInstancePointer()->IOWriteScene(savegameFileName.c_str(), fileCBot.c_str(), const_cast<char*>(info.c_str()));
     CRobotMain::GetInstancePointer()->MakeSaveScreenshot(dir + "/screen.png");
+}
+
+void CPlayerProfile::LoadScene(std::string dir)
+{
+    std::string savegameFileName = dir + "/data.sav";
+    std::string fileCbot = CResourceManager::GetSaveLocation() + "/" + dir + "/cbot.run";
+
+    CLevelParser levelParser(savegameFileName);
+    levelParser.Load();
+
+    LevelCategory cat;
+    int chap;
+    int rank;
+
+    CLevelParserLine* line = levelParser.Get("Mission");
+    cat = GetLevelCategoryFromDir(line->GetParam("base")->AsString());
+
+    rank = line->GetParam("rank")->AsInt();
+    if (cat == LevelCategory::CustomLevels)
+    {
+        chap = 0;
+        std::string dir = line->GetParam("dir")->AsString();
+        CRobotMain::GetInstancePointer()->UpdateCustomLevelList();
+        auto customLevelList = CRobotMain::GetInstancePointer()->GetCustomLevelList();
+        for (unsigned int i = 0; i < customLevelList.size(); i++)
+        {
+            if (customLevelList[i] == dir)
+            {
+                chap = i+1;
+                break;
+            }
+        }
+        if (chap == 0) return; //TODO: Exception
+    }
+    else
+    {
+        if(line->GetParam("chap")->IsDefined())
+        {
+            chap = line->GetParam("chap")->AsInt();
+        }
+        else
+        {
+            // Backwards combatibility
+            chap = rank/100;
+            rank = rank%100;
+        }
+    }
+
+    CRobotMain::GetInstancePointer()->SetLevel(cat, chap, rank);
+    CRobotMain::GetInstancePointer()->IOReadScene(savegameFileName.c_str(), fileCbot.c_str());
+}
+
+bool CPlayerProfile::DeleteScene(std::string dir)
+{
+    if (CResourceManager::DirectoryExists(dir))
+    {
+        return CResourceManager::RemoveDirectory(dir);
+    }
+    return false;
 }

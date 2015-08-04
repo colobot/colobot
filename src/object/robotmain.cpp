@@ -3440,7 +3440,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                     ChangeColor();  // changes the colors of texture
 
                 if (read[0] != 0)  // loading file ?
-                    sel = IOReadScene(read, stack);
+                    sel = IOReadSceneObjects(read, stack);
 
                 continue;
             }
@@ -5216,8 +5216,15 @@ CObject* CRobotMain::IOReadObject(CLevelParserLine *line, const char* filename, 
     return obj;
 }
 
+void CRobotMain::IOReadScene(const char *filename, const char *filecbot)
+{
+    m_dialog->SetSceneRead(filename);
+    m_dialog->SetStackRead(filecbot);
+    ChangePhase(PHASE_LOADING);
+}
+
 //! Resumes some part of the game
-CObject* CRobotMain::IOReadScene(const char *filename, const char *filecbot)
+CObject* CRobotMain::IOReadSceneObjects(const char *filename, const char *filecbot)
 {
     CLevelParser levelParser(filename);
     levelParser.Load();
@@ -5787,6 +5794,11 @@ float CRobotMain::GetPersoAngle()
     return m_dialog->GetPersoAngle();
 }
 
+void CRobotMain::SetLevel(LevelCategory cat, int chap, int rank)
+{
+    m_dialog->SetLevel(cat, chap, rank);
+}
+
 LevelCategory CRobotMain::GetLevelCategory()
 {
     return m_dialog->GetLevelCategory();
@@ -6029,9 +6041,19 @@ void CRobotMain::DisplayError(Error err, Math::Vector goal, float height, float 
     m_displayText->DisplayError(err, goal, height, dist, time);
 }
 
+void CRobotMain::UpdateCustomLevelList()
+{
+    m_dialog->UpdateCustomLevelList();
+}
+
 std::string CRobotMain::GetCustomLevelName(int id)
 {
     return m_dialog->GetCustomLevelName(id);
+}
+
+const std::vector<std::string>& CRobotMain::GetCustomLevelList()
+{
+    return m_dialog->GetCustomLevelList();
 }
 
 void CRobotMain::StartMissionTimer()
