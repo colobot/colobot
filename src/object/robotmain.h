@@ -261,6 +261,8 @@ public:
     LevelCategory GetLevelCategory();
     int         GetLevelChap();
     int         GetLevelRank();
+    std::string GetCustomLevelDir();
+    void        SetReadScene(std::string path);
     void        UpdateChapterPassed();
     void        MakeSaveScreenshot(const std::string& name);
 
@@ -299,10 +301,9 @@ public:
     CPlayerProfile* GetPlayerProfile();
 
     bool        IsBusy();
-    bool        IOWriteScene(const char *filename, const char *filecbot, char *info);
+    bool        IOWriteScene(std::string filename, std::string filecbot, char *info);
     void        IOWriteSceneFinished();
-    void        IOReadScene(const char *filename, const char *filecbot);
-    CObject*    IOReadSceneObjects(const char *filename, const char *filecbot);
+    CObject*    IOReadScene(std::string filename, std::string filecbot);
     void        IOWriteObject(CLevelParserLine *line, CObject* obj);
     CObject*    IOReadObject(CLevelParserLine *line, const char* filename, int objRank);
 
@@ -460,6 +461,11 @@ protected:
     float           m_gameTime;
     //! Playing time since level start, not dependent on simulation speed
     float           m_gameTimeAbsolute;
+
+    LevelCategory   m_levelCategory;
+    int             m_levelChap;
+    int             m_levelRank;
+    std::string     m_sceneReadPath;
 
     float           m_winDelay;
     float           m_lostDelay;

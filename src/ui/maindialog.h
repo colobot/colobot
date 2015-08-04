@@ -59,18 +59,7 @@ public:
     bool    EventProcess(const Event &event);
     void    ChangePhase(Phase phase);
 
-    void          SetSceneRead(const char* name);
-    std::string & GetSceneRead();
-    void          SetStackRead(const char* name);
-    std::string & GetStackRead();
-
-    void          SetLevel(LevelCategory cat, int chap, int rank);
-    LevelCategory GetLevelCategory();
-    int           GetLevelChap();
-    int           GetLevelRank();
-    std::string   GetCustomLevelDir();
-
-    bool          GetSceneSoluce();
+    bool    GetSceneSoluce();
 
     bool    GetTooltip();
     bool    GetGlint();
@@ -78,8 +67,6 @@ public:
     bool    GetMovies();
     bool    GetNiceReset();
     bool    GetHimselfDamage();
-
-    void    BuildResumeName(char *filename, std::string base, int chap, int rank);
 
     void    StartAbort();
     void    StartDeleteObject();
@@ -169,10 +156,6 @@ protected:
     std::map<LevelCategory, int> m_sel;      // chosen mission (0..98)
     int             m_maxList;
     int             m_accessChap;
-    std::string     m_sceneRead;       // name of the scene to read
-    std::string     m_stackRead;       // name of the scene to read
-    int             m_levelChap;       // chapter of the level to play
-    int             m_levelRank;       // rank of the level to play
     bool            m_bSceneSoluce;         // shows the solution
     bool            m_bSimulSetup;          // adjustment during the game
     bool            m_accessEnable;

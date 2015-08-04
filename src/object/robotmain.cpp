@@ -164,6 +164,11 @@ CRobotMain::CRobotMain(CController* controller)
     m_gameTime = 0.0f;
     m_gameTimeAbsolute = 0.0f;
 
+    m_levelCategory = LevelCategory::Exercises;
+    m_levelChap = 0;
+    m_levelRank = 0;
+    m_sceneReadPath = "";
+
     m_missionTimerEnabled = false;
     m_missionTimerStarted = false;
     m_missionTimer = 0.0f;
@@ -435,19 +440,13 @@ void CRobotMain::ChangePhase(Phase phase)
 
         if (m_gameTime > 10.0f)  // did you play at least 10 seconds?
         {
-            LevelCategory cat = m_dialog->GetLevelCategory();
-            int chap = m_dialog->GetLevelChap();
-            int rank = m_dialog->GetLevelRank();
-            m_playerProfile->IncrementLevelTryCount(cat, chap, rank);
+            m_playerProfile->IncrementLevelTryCount(m_levelCategory, m_levelChap, m_levelRank);
         }
     }
 
     if (phase == PHASE_WIN)  // wins a simulation?
     {
-        LevelCategory cat = m_dialog->GetLevelCategory();
-        int chap = m_dialog->GetLevelChap();
-        int rank = m_dialog->GetLevelRank();
-        m_playerProfile->SetLevelPassed(cat, chap, rank, true);
+        m_playerProfile->SetLevelPassed(m_levelCategory, m_levelChap, m_levelRank, true);
         m_dialog->NextMission();  // passes to the next mission
     }
 
@@ -549,7 +548,7 @@ void CRobotMain::ChangePhase(Phase phase)
 
         m_app->SetLowCPU(false); // high CPU for simulation
 
-        bool loading = (m_dialog->GetSceneRead()[0] != 0);
+        bool loading = !m_sceneReadPath.empty();
 
         m_map->CreateMap();
 
@@ -586,7 +585,7 @@ void CRobotMain::ChangePhase(Phase phase)
         else
         {
             m_winTerminate = (m_endingWinRank == 904);
-            m_dialog->SetLevel(LevelCategory::Win, 0, m_endingWinRank);
+            SetLevel(LevelCategory::Win, 0, m_endingWinRank);
             try
             {
                 CreateScene(false, true, false);  // sets scene
@@ -632,7 +631,7 @@ void CRobotMain::ChangePhase(Phase phase)
         else
         {
             m_winTerminate = false;
-            m_dialog->SetLevel(LevelCategory::Lost, 0, m_endingLostRank);
+            SetLevel(LevelCategory::Lost, 0, m_endingLostRank);
             try
             {
                 CreateScene(false, true, false);  // sets scene
@@ -2579,10 +2578,9 @@ bool CRobotMain::EventFrame(const Event &event)
 
     if (m_pause->GetPause() == PAUSE_NONE && m_autosave && m_gameTimeAbsolute >= m_autosaveLast+(m_autosaveInterval*60) && m_phase == PHASE_SIMUL)
     {
-        LevelCategory cat = m_dialog->GetLevelCategory();
-        if (cat == LevelCategory::Missions    ||
-            cat == LevelCategory::FreeGame    ||
-            cat == LevelCategory::CustomLevels )
+        if (m_levelCategory == LevelCategory::Missions    ||
+            m_levelCategory == LevelCategory::FreeGame    ||
+            m_levelCategory == LevelCategory::CustomLevels )
         {
             m_autosaveLast = m_gameTimeAbsolute;
             Autosave();
@@ -2821,7 +2819,7 @@ void CRobotMain::ScenePerso()
     m_lightMan->FlushLights();
     m_particle->FlushParticle();
 
-    m_dialog->SetLevel(LevelCategory::Perso, 0, 0);
+    SetLevel(LevelCategory::Perso, 0, 0);
     try
     {
         CreateScene(false, true, false);  // sets scene
@@ -2848,12 +2846,6 @@ void CRobotMain::ScenePerso()
 //! Creates the whole scene
 void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 {
-    LevelCategory category = m_dialog->GetLevelCategory();
-    int         chap  = m_dialog->GetLevelChap();
-    int         rank  = m_dialog->GetLevelRank();
-    const char* read  = m_dialog->GetSceneRead().c_str();
-    const char* stack = m_dialog->GetStackRead().c_str();
-
     m_fixScene = fixScene;
 
     m_base = nullptr;
@@ -2929,8 +2921,8 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
         m_engine->SetSecondTexture("");
         m_engine->SetForegroundName("");
 
-        m_dialog->BuildResumeName(m_title, GetLevelCategoryDir(category), chap, rank);
-        m_dialog->BuildResumeName(m_resume, GetLevelCategoryDir(category), chap, rank);
+        sprintf(m_title,  "%s %d.%d", GetLevelCategoryDir(m_levelCategory).c_str(), m_levelChap, m_levelRank);
+        sprintf(m_resume, "%s %d.%d", GetLevelCategoryDir(m_levelCategory).c_str(), m_levelChap, m_levelRank);
         std::string scriptNameStr;
         GetResource(RES_TEXT, RT_SCRIPT_NEW, scriptNameStr);
         strcpy(m_scriptName, scriptNameStr.c_str());
@@ -2952,7 +2944,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
     try
     {
-        CLevelParser levelParser(category, chap, rank);
+        CLevelParser levelParser(m_levelCategory, m_levelChap, m_levelRank);
         levelParser.Load();
 
         int rankObj = 0;
@@ -3439,13 +3431,13 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 if(!resetObject)
                     ChangeColor();  // changes the colors of texture
 
-                if (read[0] != 0)  // loading file ?
-                    sel = IOReadSceneObjects(read, stack);
+                if (!m_sceneReadPath.empty())  // loading file ?
+                    sel = IOReadScene(m_sceneReadPath + "/data.sav", m_sceneReadPath + "/cbot.run");
 
                 continue;
             }
 
-            if (line->GetCommand() == "LevelController" && read[0] == 0)
+            if (line->GetCommand() == "LevelController" && m_sceneReadPath.empty())
             {
                 m_controller = m_objMan->CreateObject(Math::Vector(0.0f, 0.0f, 0.0f), 0.0f, OBJECT_CONTROLLER, 100.0f);
                 m_controller->SetMagnifyDamage(100.0f);
@@ -3464,7 +3456,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 continue;
             }
 
-            if (line->GetCommand() == "CreateObject" && read[0] == 0)
+            if (line->GetCommand() == "CreateObject" && m_sceneReadPath.empty())
             {
                 ObjectType type = line->GetParam("type")->AsObjectType();
 
@@ -3741,7 +3733,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
             if (line->GetCommand() == "GroundSpot" && !resetObject)
             {
-                rank = m_engine->CreateGroundSpot();
+                int rank = m_engine->CreateGroundSpot();
                 if (rank != -1)
                 {
                     m_engine->SetObjectGroundSpotPos(rank, line->GetParam("pos")->AsPoint(Math::Vector(0.0f, 0.0f, 0.0f))*g_unit);
@@ -3870,7 +3862,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 continue;
             }
 
-            if (line->GetCommand() == "DoneResearch" && read[0] == 0 && !resetObject) // not loading file?
+            if (line->GetCommand() == "DoneResearch" && m_sceneReadPath.empty() && !resetObject) // not loading file?
             {
                 m_researchDone[0] |= line->GetParam("type")->AsResearchFlag();
                 continue;
@@ -3882,22 +3874,22 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 continue;
             }
 
-            if (read[0] != 0) continue; // ignore errors when loading saved game (TODO: don't report ones that are just not loaded when loading saved game)
+            if (!m_sceneReadPath.empty()) continue; // ignore errors when loading saved game (TODO: don't report ones that are just not loaded when loading saved game)
             if (resetObject) continue; // ignore when reseting just objects (TODO: see above)
 
             throw CLevelParserException("Unknown command: '" + line->GetCommand() + "' in " + line->GetLevel()->GetFilename() + ":" + boost::lexical_cast<std::string>(line->GetLineNumber()));
         }
 
-        if (read[0] == 0)
+        if (m_sceneReadPath.empty())
             CompileScript(soluce);  // compiles all scripts
 
-        if (category == LevelCategory::Missions && !resetObject)  // mission?
+        if (m_levelCategory == LevelCategory::Missions && !resetObject)  // mission?
         {
             m_playerProfile->SetFreeGameResearchUnlock(m_playerProfile->GetFreeGameResearchUnlock() | m_researchDone[0]);
             m_playerProfile->SetFreeGameBuildUnlock(m_playerProfile->GetFreeGameBuildUnlock() | m_build);
         }
 
-        if (category == LevelCategory::FreeGame && !resetObject)  // free play?
+        if (m_levelCategory == LevelCategory::FreeGame && !resetObject)  // free play?
         {
             m_researchDone[0] = m_playerProfile->GetFreeGameResearchUnlock();
 
@@ -3946,7 +3938,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
         if (m_fixScene)
             m_camera->SetType(Gfx::CAM_TYPE_SCRIPT);
 
-        if (read[0] != 0 && sel != 0)  // loading file?
+        if (!m_sceneReadPath.empty() && sel != 0)  // loading file?
         {
             Math::Vector pos = sel->GetPosition();
             m_camera->Init(pos, pos, 0.0f);
@@ -3960,12 +3952,10 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
     }
     catch (...)
     {
-        m_dialog->SetSceneRead("");
-        m_dialog->SetStackRead("");
+        m_sceneReadPath = "";
         throw;
     }
-    m_dialog->SetSceneRead("");
-    m_dialog->SetStackRead("");
+    m_sceneReadPath = "";
 
     if (m_app->GetSceneTestMode())
         m_eventQueue->AddEvent(Event(EVENT_QUIT));
@@ -4702,16 +4692,13 @@ void CRobotMain::LoadOneScript(CObject *obj, int &nbError)
     int objRank = obj->GetDefRank();
     if (objRank == -1) return;
 
-    char categoryChar = GetLevelCategoryDir(m_dialog->GetLevelCategory())[0];
-    int chap = m_dialog->GetLevelChap();
-    int rank = m_dialog->GetLevelRank();
-
+    char categoryChar = GetLevelCategoryDir(m_levelCategory)[0];
     for (unsigned int i = 0; i <= 999; i++)
     {
         //? if (brain->GetCompile(i)) continue;
 
         char file[MAX_FNAME];
-        sprintf(file, "%c%.3d%.3d%.3d%.3d.txt", categoryChar, chap, rank, objRank, i);
+        sprintf(file, "%c%.3d%.3d%.3d%.3d.txt", categoryChar, m_levelChap, m_levelRank, objRank, i);
         std::string filename = m_playerProfile->GetSaveFile(file);
 
         if (CResourceManager::Exists(filename))
@@ -4778,16 +4765,13 @@ void CRobotMain::SaveOneScript(CObject *obj)
     int objRank = obj->GetDefRank();
     if (objRank == -1) return;
 
-    char categoryChar = GetLevelCategoryDir(m_dialog->GetLevelCategory())[0];
-    int chap = m_dialog->GetLevelChap();
-    int rank = m_dialog->GetLevelRank();
-
+    char categoryChar = GetLevelCategoryDir(m_levelCategory)[0];
     auto& programs = brain->GetPrograms();
     // TODO: Find a better way to do that
     for (unsigned int i = 0; i <= 999; i++)
     {
         char file[MAX_FNAME];
-        sprintf(file, "%c%.3d%.3d%.3d%.3d.txt", categoryChar, chap, rank, objRank, i);
+        sprintf(file, "%c%.3d%.3d%.3d%.3d.txt", categoryChar, m_levelChap, m_levelRank, objRank, i);
         std::string filename = m_playerProfile->GetSaveFile(file);
 
         if (i < programs.size())
@@ -4997,7 +4981,7 @@ void CRobotMain::IOWriteObject(CLevelParserLine* line, CObject* obj)
 }
 
 //! Saves the current game
-bool CRobotMain::IOWriteScene(const char *filename, const char *filecbot, char *info)
+bool CRobotMain::IOWriteScene(std::string filename, std::string filecbot, char *info)
 {
     CLevelParser levelParser(filename);
     CLevelParserLineUPtr line;
@@ -5019,12 +5003,12 @@ bool CRobotMain::IOWriteScene(const char *filename, const char *filecbot, char *
     levelParser.AddLine(std::move(line));
 
     line = MakeUnique<CLevelParserLine>("Mission");
-    line->AddParam("base", MakeUnique<CLevelParserParam>(GetLevelCategoryDir(m_dialog->GetLevelCategory())));
-    if (m_dialog->GetLevelCategory() == LevelCategory::CustomLevels)
-        line->AddParam("dir", MakeUnique<CLevelParserParam>(m_dialog->GetCustomLevelDir()));
+    line->AddParam("base", MakeUnique<CLevelParserParam>(GetLevelCategoryDir(m_levelCategory)));
+    if (m_levelCategory == LevelCategory::CustomLevels)
+        line->AddParam("dir", MakeUnique<CLevelParserParam>(GetCustomLevelDir()));
     else
-        line->AddParam("chap", MakeUnique<CLevelParserParam>(m_dialog->GetLevelChap()));
-    line->AddParam("rank", MakeUnique<CLevelParserParam>(m_dialog->GetLevelRank()));
+        line->AddParam("chap", MakeUnique<CLevelParserParam>(m_levelChap));
+    line->AddParam("rank", MakeUnique<CLevelParserParam>(m_levelRank));
     levelParser.AddLine(std::move(line));
 
     line = MakeUnique<CLevelParserLine>("Map");
@@ -5084,7 +5068,7 @@ bool CRobotMain::IOWriteScene(const char *filename, const char *filecbot, char *
         IOWriteObject(line.get(), obj);
         levelParser.AddLine(std::move(line));
 
-        SaveFileScript(obj, filename, objRank++);
+        SaveFileScript(obj, filename.c_str(), objRank++);
     }
     try
     {
@@ -5097,7 +5081,7 @@ bool CRobotMain::IOWriteScene(const char *filename, const char *filecbot, char *
     }
 
     // Writes the file of stacks of execution.
-    FILE* file = fOpen(filecbot, "wb");
+    FILE* file = fOpen((CResourceManager::GetSaveLocation() + "/" + filecbot).c_str(), "wb");
     if (file == NULL) return false;
 
     long version = 1;
@@ -5216,15 +5200,8 @@ CObject* CRobotMain::IOReadObject(CLevelParserLine *line, const char* filename, 
     return obj;
 }
 
-void CRobotMain::IOReadScene(const char *filename, const char *filecbot)
-{
-    m_dialog->SetSceneRead(filename);
-    m_dialog->SetStackRead(filecbot);
-    ChangePhase(PHASE_LOADING);
-}
-
 //! Resumes some part of the game
-CObject* CRobotMain::IOReadSceneObjects(const char *filename, const char *filecbot)
+CObject* CRobotMain::IOReadScene(std::string filename, std::string filecbot)
 {
     CLevelParser levelParser(filename);
     levelParser.Load();
@@ -5253,14 +5230,14 @@ CObject* CRobotMain::IOReadSceneObjects(const char *filename, const char *filecb
         }
 
         if (line->GetCommand() == "CreateFret")
-            cargo = IOReadObject(line.get(), filename, -1);
+            cargo = IOReadObject(line.get(), filename.c_str(), -1);
 
         if (line->GetCommand() == "CreatePower")
-            power = IOReadObject(line.get(), filename, -1);
+            power = IOReadObject(line.get(), filename.c_str(), -1);
 
         if (line->GetCommand() == "CreateObject")
         {
-            CObject* obj = IOReadObject(line.get(), filename, objRank++);
+            CObject* obj = IOReadObject(line.get(), filename.c_str(), objRank++);
 
             if (line->GetParam("select")->AsBool(false))
                 sel = obj;
@@ -5303,7 +5280,7 @@ CObject* CRobotMain::IOReadSceneObjects(const char *filename, const char *filecb
                 objRank = obj->GetDefRank();
                 if (objRank == -1) continue;
 
-                LoadFileScript(obj, filename, objRank, nbError);
+                LoadFileScript(obj, filename.c_str(), objRank, nbError);
             }
         }
     }
@@ -5325,7 +5302,7 @@ CObject* CRobotMain::IOReadSceneObjects(const char *filename, const char *filecb
     }
 
     // Reads the file of stacks of execution.
-    FILE* file = fOpen(filecbot, "rb");
+    FILE* file = fOpen((CResourceManager::GetSaveLocation() + "/" + filecbot).c_str(), "rb");
     if (file != NULL)
     {
         long version;
@@ -5796,22 +5773,36 @@ float CRobotMain::GetPersoAngle()
 
 void CRobotMain::SetLevel(LevelCategory cat, int chap, int rank)
 {
-    m_dialog->SetLevel(cat, chap, rank);
+    m_levelCategory = cat;
+    m_levelChap = chap;
+    m_levelRank = rank;
 }
 
 LevelCategory CRobotMain::GetLevelCategory()
 {
-    return m_dialog->GetLevelCategory();
+    return m_levelCategory;
 }
 
 int CRobotMain::GetLevelChap()
 {
-    return m_dialog->GetLevelChap();
+    return m_levelChap;
 }
 
 int CRobotMain::GetLevelRank()
 {
-    return m_dialog->GetLevelRank();
+    return m_levelRank;
+}
+
+//! Returns folder name of the scene that user selected to play.
+std::string CRobotMain::GetCustomLevelDir()
+{
+    assert(m_levelCategory == LevelCategory::CustomLevels);
+    return m_dialog->GetCustomLevelName(m_levelChap);
+}
+
+void CRobotMain::SetReadScene(std::string path)
+{
+    m_sceneReadPath = path;
 }
 
 void CRobotMain::UpdateChapterPassed()

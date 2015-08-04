@@ -130,10 +130,6 @@ CMainDialog::CMainDialog()
 
     m_phase        = PHASE_PLAYER_SELECT;
     m_phaseSetup   = PHASE_SETUPg;
-    m_sceneRead[0] = 0;
-    m_stackRead[0] = 0;
-    m_levelChap    = 0;
-    m_levelRank    = 0;
     m_bSceneSoluce = false;
     m_bSimulSetup  = false;
 
@@ -718,6 +714,7 @@ void CMainDialog::ChangePhase(Phase phase)
 
     if ( m_phase == PHASE_LEVEL_LIST )
     {
+        m_category = m_main->GetLevelCategory();
         if ( static_cast<int>(m_category) >= static_cast<int>(LevelCategory::Max) )
         {
             m_category = m_listCategory;
@@ -2061,27 +2058,27 @@ bool CMainDialog::EventProcess(const Event &event)
                 break;
 
             case EVENT_INTERFACE_TRAINER:
-                m_category = LevelCategory::Exercises;
+                m_main->SetLevel(LevelCategory::Exercises, 0, 0);
                 m_main->ChangePhase(PHASE_LEVEL_LIST);
                 break;
 
             case EVENT_INTERFACE_DEFI:
-                m_category = LevelCategory::Challenges;
+                m_main->SetLevel(LevelCategory::Challenges, 0, 0);
                 m_main->ChangePhase(PHASE_LEVEL_LIST);
                 break;
 
             case EVENT_INTERFACE_MISSION:
-                m_category = LevelCategory::Missions;
+                m_main->SetLevel(LevelCategory::Missions, 0, 0);
                 m_main->ChangePhase(PHASE_LEVEL_LIST);
                 break;
 
             case EVENT_INTERFACE_FREE:
-                m_category = LevelCategory::FreeGame;
+                m_main->SetLevel(LevelCategory::FreeGame, 0, 0);
                 m_main->ChangePhase(PHASE_LEVEL_LIST);
                 break;
 
             case EVENT_INTERFACE_USER:
-                m_category = LevelCategory::CustomLevels;
+                m_main->SetLevel(LevelCategory::CustomLevels, 0, 0);
                 m_main->ChangePhase(PHASE_LEVEL_LIST);
                 break;
 
@@ -2320,8 +2317,7 @@ bool CMainDialog::EventProcess(const Event &event)
                 break;
 
             case EVENT_INTERFACE_PLAY:
-                m_levelChap = m_chap[m_category]+1;
-                m_levelRank = m_sel[m_category]+1;
+                m_main->SetLevel(m_category, m_chap[m_category]+1, m_sel[m_category]+1);
                 m_main->ChangePhase(PHASE_LOADING);
                 break;
 
@@ -3406,15 +3402,6 @@ void CMainDialog::NiceParticle(Math::Point mouse, bool bPress)
 }
 
 
-
-// Built the default descriptive name of a mission.
-
-void CMainDialog::BuildResumeName(char *filename, std::string base, int chap, int rank)
-{
-    sprintf(filename, "%s %d.%d", base.c_str(), chap, rank);
-}
-
-
 // Updates the list of players after checking the files on disk.
 
 void CMainDialog::ReadNameList()
@@ -4130,8 +4117,8 @@ void CMainDialog::IOReadScene()
 
     m_main->GetPlayerProfile()->LoadScene(m_saveList.at(sel));
 
-    m_chap[m_category] = m_levelChap-1;
-    m_sel[m_category]  = m_levelRank-1;
+    m_chap[m_category] = m_main->GetLevelChap()-1;
+    m_sel[m_category]  = m_main->GetLevelRank()-1;
 }
 
 // Updates the lists according to the cheat code.
@@ -5816,67 +5803,6 @@ bool CMainDialog::IsDialog()
     return m_bDialog;
 }
 
-
-
-
-// Specifies the name of the scene to read.
-
-void CMainDialog::SetSceneRead(const char* name)
-{
-    m_sceneRead = name;
-}
-
-// Returns the name of the scene to read.
-
-std::string & CMainDialog::GetSceneRead()
-{
-    return m_sceneRead;
-}
-
-// Specifies the name of the scene to read.
-
-void CMainDialog::SetStackRead(const char* name)
-{
-    m_stackRead = name;
-}
-
-// Returns the name of the scene to read.
-
-std::string & CMainDialog::GetStackRead()
-{
-    return m_stackRead;
-}
-
-
-void CMainDialog::SetLevel(LevelCategory cat, int chap, int rank)
-{
-    m_category = cat;
-    m_levelChap = chap;
-    m_levelRank = rank;
-}
-
-LevelCategory CMainDialog::GetLevelCategory()
-{
-    return m_category;
-}
-
-int CMainDialog::GetLevelChap()
-{
-    return m_levelChap;
-}
-
-int CMainDialog::GetLevelRank()
-{
-    return m_levelRank;
-}
-
-// Returns folder name of the scene that user selected to play.
-
-std::string CMainDialog::GetCustomLevelDir()
-{
-    if (m_levelChap-1 < 0 || m_levelChap-1 >= m_customLevelList.size())  return "";
-    return m_customLevelList[m_levelChap-1];
-}
 
 // Whether to show the solution.
 

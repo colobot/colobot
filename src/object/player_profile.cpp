@@ -469,18 +469,13 @@ void CPlayerProfile::SaveScene(std::string dir, std::string info)
         CResourceManager::CreateDirectory(dir);
     }
 
-    std::string savegameFileName = dir + "/data.sav";
-    std::string fileCBot = CResourceManager::GetSaveLocation() + "/" + dir + "/cbot.run";
-    CRobotMain::GetInstancePointer()->IOWriteScene(savegameFileName.c_str(), fileCBot.c_str(), const_cast<char*>(info.c_str()));
+    CRobotMain::GetInstancePointer()->IOWriteScene(dir + "/data.sav", dir + "/cbot.run", const_cast<char*>(info.c_str()));
     CRobotMain::GetInstancePointer()->MakeSaveScreenshot(dir + "/screen.png");
 }
 
 void CPlayerProfile::LoadScene(std::string dir)
 {
-    std::string savegameFileName = dir + "/data.sav";
-    std::string fileCbot = CResourceManager::GetSaveLocation() + "/" + dir + "/cbot.run";
-
-    CLevelParser levelParser(savegameFileName);
+    CLevelParser levelParser(dir + "/data.sav");
     levelParser.Load();
 
     LevelCategory cat;
@@ -522,7 +517,8 @@ void CPlayerProfile::LoadScene(std::string dir)
     }
 
     CRobotMain::GetInstancePointer()->SetLevel(cat, chap, rank);
-    CRobotMain::GetInstancePointer()->IOReadScene(savegameFileName.c_str(), fileCbot.c_str());
+    CRobotMain::GetInstancePointer()->SetReadScene(dir);
+    CRobotMain::GetInstancePointer()->ChangePhase(PHASE_LOADING);
 }
 
 bool CPlayerProfile::DeleteScene(std::string dir)
