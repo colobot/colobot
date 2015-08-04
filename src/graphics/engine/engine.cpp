@@ -496,7 +496,7 @@ void CEngine::WriteScreenShot(const std::string& fileName, int width, int height
 
     data->fileName = fileName;
 
-    ResourceOwningThread<WriteScreenShotData> thread(CEngine::WriteScreenShotThread, std::move(data));
+    CResourceOwningThread<WriteScreenShotData> thread(CEngine::WriteScreenShotThread, std::move(data));
     thread.Start();
 }
 

@@ -2,20 +2,24 @@
 
 #include <SDL_thread.h>
 
-class SDLMutexWrapper
+/**
+ * \class CSDLMutexWrapper
+ * \brief Wrapper for safe creation/deletion of SDL_mutex
+ */
+class CSDLMutexWrapper
 {
 public:
-    SDLMutexWrapper()
+    CSDLMutexWrapper()
         : m_mutex(SDL_CreateMutex())
     {}
 
-    ~SDLMutexWrapper()
+    ~CSDLMutexWrapper()
     {
         SDL_DestroyMutex(m_mutex);
     }
 
-    SDLMutexWrapper(const SDLMutexWrapper&) = delete;
-    SDLMutexWrapper& operator=(const SDLMutexWrapper&) = delete;
+    CSDLMutexWrapper(const CSDLMutexWrapper&) = delete;
+    CSDLMutexWrapper& operator=(const CSDLMutexWrapper&) = delete;
 
     SDL_mutex* operator*()
     {

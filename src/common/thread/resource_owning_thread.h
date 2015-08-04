@@ -8,7 +8,7 @@
 #include <memory>
 
 /**
- * \class ResourceOwningThread
+ * \class CResourceOwningThread
  * \brief Wrapper around SDL thread allowing passing of resources in safe manner
  *
  * This class is a workaround for passing ownership of resources in a safe
@@ -27,21 +27,21 @@
  * way of doing this.
  */
 template<typename Resource>
-class ResourceOwningThread
+class CResourceOwningThread
 {
 public:
     using ResourceUPtr = std::unique_ptr<Resource>;
     using ThreadFunctionPtr = void(*)(ResourceUPtr);
 
-    ResourceOwningThread(ThreadFunctionPtr threadFunction, ResourceUPtr resource)
+    CResourceOwningThread(ThreadFunctionPtr threadFunction, ResourceUPtr resource)
         : m_threadFunction(threadFunction),
           m_resource(std::move(resource))
     {}
 
     void Start()
     {
-        SDLMutexWrapper mutex;
-        SDLCondWrapper cond;
+        CSDLMutexWrapper mutex;
+        CSDLCondWrapper cond;
         bool condition = false;
 
         ThreadData data;
@@ -87,8 +87,8 @@ private:
     struct ThreadData
     {
         ResourceUPtr resource;
-        SDLMutexWrapper* mutex = nullptr;
-        SDLCondWrapper* cond = nullptr;
+        CSDLMutexWrapper* mutex = nullptr;
+        CSDLCondWrapper* cond = nullptr;
         bool* condition = nullptr;
         ThreadFunctionPtr threadFunction = nullptr;
     };

@@ -2,20 +2,24 @@
 
 #include <SDL_thread.h>
 
-class SDLCondWrapper
+/**
+ * \class CSDLCondWrapper
+ * \brief Wrapper for safe creation/deletion of SDL_cond
+ */
+class CSDLCondWrapper
 {
 public:
-    SDLCondWrapper()
+    CSDLCondWrapper()
         : m_cond(SDL_CreateCond())
     {}
 
-    ~SDLCondWrapper()
+    ~CSDLCondWrapper()
     {
         SDL_DestroyCond(m_cond);
     }
 
-    SDLCondWrapper(const SDLCondWrapper&) = delete;
-    SDLCondWrapper& operator=(const SDLCondWrapper&) = delete;
+    CSDLCondWrapper(const CSDLCondWrapper&) = delete;
+    CSDLCondWrapper& operator=(const CSDLCondWrapper&) = delete;
 
     SDL_cond* operator*()
     {

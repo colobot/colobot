@@ -760,7 +760,7 @@ public:
     bool    GetEvent(Event &event);
 
 protected:
-    SDLMutexWrapper m_mutex;
+    CSDLMutexWrapper m_mutex;
     Event        m_fifo[MAX_EVENT_QUEUE];
     int          m_head;
     int          m_tail;
