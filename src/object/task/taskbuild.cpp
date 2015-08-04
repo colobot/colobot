@@ -212,11 +212,11 @@ bool CTaskBuild::EventProcess(const Event &event)
 
     m_progress += event.rTime*m_speed;  // other advance
 
-    // Cancel if the player try to move
+    // Cancel if the player tries to move
     float axeX = event.motionInput.x;
     float axeY = event.motionInput.y;
     float axeZ = event.motionInput.z;
-    if ( m_object->GetType() == OBJECT_HUMAN &&
+    if ( m_object->GetType() == OBJECT_HUMAN && m_object->GetSelect() &&
          (axeX != 0.0f || axeY != 0.0f || axeZ != 0.0f) &&
          (m_phase == TBP_TURN || m_phase == TBP_MOVE || m_phase == TBP_TAKE || m_phase == TBP_PREP) )
     {
