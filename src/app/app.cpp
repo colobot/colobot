@@ -105,7 +105,6 @@ struct ApplicationPrivate
 
 CApplication::CApplication()
  : m_private(MakeUnique<ApplicationPrivate>())
- , m_eventQueue(MakeUnique<CEventQueue>())
  , m_configFile(MakeUnique<CConfigFile>())
  , m_input(MakeUnique<CInput>())
  , m_pathManager(MakeUnique<CPathManager>())
@@ -589,6 +588,8 @@ bool CApplication::Create()
         m_exitCode = 6;
         return false;
     }
+
+    m_eventQueue = MakeUnique<CEventQueue>();
 
     // Create the robot application.
     m_controller = MakeUnique<CController>(this, !defaultValues);

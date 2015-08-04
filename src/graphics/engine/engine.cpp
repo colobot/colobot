@@ -28,6 +28,8 @@
 #include "common/logger.h"
 #include "common/make_unique.h"
 
+#include "common/thread/resource_owning_thread.h"
+
 #include "graphics/core/device.h"
 
 #include "graphics/engine/camera.h"
@@ -484,29 +486,22 @@ void CEngine::FrameUpdate()
     }
 }
 
-struct WriteScreenShotData
+void CEngine::WriteScreenShot(const std::string& fileName, int width, int height)
 {
-    std::unique_ptr<CImage> img;
-    std::string fileName;
-};
-
-bool CEngine::WriteScreenShot(const std::string& fileName, int width, int height)
-{
-    WriteScreenShotData* data = new WriteScreenShotData();
+    auto data = MakeUnique<WriteScreenShotData>();
     data->img = MakeUnique<CImage>(Math::IntPoint(width, height));
 
     data->img->SetDataPixels(m_device->GetFrameBufferPixels());
     data->img->FlipVertically();
 
     data->fileName = fileName;
-    SDL_CreateThread(CEngine::WriteScreenShotThread, data);
-    return true;
+
+    ResourceOwningThread<WriteScreenShotData> thread(CEngine::WriteScreenShotThread, std::move(data));
+    thread.Start();
 }
 
-int CEngine::WriteScreenShotThread(void* data_ptr)
+void CEngine::WriteScreenShotThread(std::unique_ptr<WriteScreenShotData> data)
 {
-    WriteScreenShotData* data = static_cast<WriteScreenShotData*>(data_ptr);
-
     if ( data->img->SavePNG(data->fileName.c_str()) )
     {
        GetLogger()->Debug("Save screenshot saved successfully\n");
@@ -516,10 +511,8 @@ int CEngine::WriteScreenShotThread(void* data_ptr)
        GetLogger()->Error("%s!\n", data->img->GetError().c_str());
     }
 
-    delete data;
-
-    CRobotMain::GetInstancePointer()->IOWriteSceneFinished();
-    return 0;
+    Event event(EVENT_WRITE_SCENE_FINISHED);
+    CApplication::GetInstancePointer()->GetEventQueue()->AddEvent(event);
 }
 
 bool CEngine::GetPause()

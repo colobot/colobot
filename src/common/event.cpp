@@ -505,6 +505,8 @@ void InitializeEventTypeTexts()
     EVENT_TYPE_TEXT[EVENT_STUDIO_RUN]        = "EVENT_STUDIO_RUN";
     EVENT_TYPE_TEXT[EVENT_STUDIO_REALTIME]   = "EVENT_STUDIO_REALTIME";
     EVENT_TYPE_TEXT[EVENT_STUDIO_STEP]       = "EVENT_STUDIO_STEP";
+
+    EVENT_TYPE_TEXT[EVENT_WRITE_SCENE_FINISHED] = "EVENT_WRITE_SCENE_FINISHED";
 }
 
 std::string ParseEventType(EventType eventType)
@@ -546,47 +548,72 @@ std::string ParseEventType(EventType eventType)
 
 
 CEventQueue::CEventQueue()
-{
-    Flush();
-}
+    : m_mutex{},
+      m_fifo{},
+      m_head{0},
+      m_tail{0},
+      m_total{0}
+{}
 
 CEventQueue::~CEventQueue()
-{
-}
-
-void CEventQueue::Flush()
-{
-    m_head = 0;
-    m_tail = 0;
-    m_total = 0;
-}
+{}
 
 /** If the maximum size of queue has been reached, returns \c false.
     Else, adds the event to the queue and returns \c true. */
 bool CEventQueue::AddEvent(const Event &event)
 {
-    if ( m_total >= MAX_EVENT_QUEUE )
+    bool result{};
+
+    SDL_LockMutex(*m_mutex);
+
+    if (m_total >= MAX_EVENT_QUEUE)
     {
         GetLogger()->Warn("Event queue flood!\n");
-        return false;
+
+        result = false;
+    }
+    else
+    {
+        m_fifo[m_head++] = event;
+
+        if (m_head >= MAX_EVENT_QUEUE)
+            m_head = 0;
+
+        m_total++;
+
+        result = true;
     }
 
-    m_fifo[m_head++] = event;
-    if ( m_head >= MAX_EVENT_QUEUE )  m_head = 0;
-    m_total ++;
+    SDL_UnlockMutex(*m_mutex);
 
-    return true;
+    return result;
 }
 
 /** If the queue is empty, returns \c false.
     Else, gets the event from the front, puts it into \a event and returns \c true. */
 bool CEventQueue::GetEvent(Event &event)
 {
-    if ( m_head == m_tail )  return false;
+    bool result{};
 
-    event = m_fifo[m_tail++];
-    if ( m_tail >= MAX_EVENT_QUEUE )  m_tail = 0;
-    m_total --;
+    SDL_LockMutex(*m_mutex);
 
-    return true;
+    if (m_head == m_tail)
+    {
+        result = false;
+    }
+    else
+    {
+        event = m_fifo[m_tail++];
+
+        if (m_tail >= MAX_EVENT_QUEUE)
+            m_tail = 0;
+
+        m_total--;
+
+        result = true;
+    }
+
+    SDL_UnlockMutex(*m_mutex);
+
+    return result;
 }

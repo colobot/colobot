@@ -726,7 +726,7 @@ public:
 
 
     //! Writes a screenshot containing the current frame
-    bool            WriteScreenShot(const std::string& fileName, int width, int height);
+    void            WriteScreenShot(const std::string& fileName, int width, int height);
 
 
     //! Get pause mode
@@ -1348,7 +1348,12 @@ protected:
 
     int GetEngineState(const ModelTriangle& triangle);
 
-    static int WriteScreenShotThread(void* data_ptr);
+    struct WriteScreenShotData
+    {
+        std::unique_ptr<CImage> img;
+        std::string fileName;
+    };
+    static void WriteScreenShotThread(std::unique_ptr<WriteScreenShotData> data);
 
 protected:
     CApplication*     m_app;

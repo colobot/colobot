@@ -27,9 +27,10 @@
 
 #include "common/key.h"
 
+#include "common/thread/sdl_mutex_wrapper.h"
+
 #include "math/point.h"
 #include "math/vector.h"
-
 
 /**
   \enum EventType
@@ -533,6 +534,8 @@ enum EventType
     EVENT_STUDIO_REALTIME   = 2052,
     EVENT_STUDIO_STEP       = 2053,
 
+    EVENT_WRITE_SCENE_FINISHED = 2100, //!< indicates end of writing scene (writing screenshot image)
+
     //! Maximum value of standard events
     EVENT_STD_MAX,
 
@@ -736,6 +739,8 @@ std::string ParseEventType(EventType eventType);
  *
  * Provides an interface to a global FIFO queue with events (both system- and user-generated).
  * The queue has a fixed maximum size but it should not be a problem.
+ *
+ * This class is thread-safe
  */
 class CEventQueue
 {
@@ -749,14 +754,13 @@ public:
     //! Object's destructor
     ~CEventQueue();
 
-    //! Empties the FIFO of events
-    void    Flush();
     //! Adds an event to the queue
     bool    AddEvent(const Event &event);
     //! Removes and returns an event from queue front
     bool    GetEvent(Event &event);
 
 protected:
+    SDLMutexWrapper m_mutex;
     Event        m_fifo[MAX_EVENT_QUEUE];
     int          m_head;
     int          m_tail;

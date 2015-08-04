@@ -660,6 +660,12 @@ bool CRobotMain::ProcessEvent(Event &event)
         return EventFrame(event);
     }
 
+    if (event.type == EVENT_WRITE_SCENE_FINISHED)
+    {
+        IOWriteSceneFinished();
+        return false;
+    }
+
     // Management of the console.
     if (event.type == EVENT_KEY_DOWN &&
         event.key.key == KEY(BACKQUOTE))  // Pause ?
