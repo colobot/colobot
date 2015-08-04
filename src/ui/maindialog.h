@@ -20,9 +20,9 @@
 
 #include "app/pausemanager.h"
 
-#include "graphics/core/color.h"
+#include "common/singleton.h"
 
-#include "graphics/engine/camera.h"
+#include "graphics/core/color.h"
 
 #include "object/level_category.h"
 #include "object/robotmain.h"
@@ -47,9 +47,11 @@ class CInterface;
 class CWindow;
 class CControl;
 
+class CScreen;
 
 
-class CMainDialog
+
+class CMainDialog : public CSingleton<CMainDialog>
 {
 public:
     CMainDialog();
@@ -71,11 +73,8 @@ public:
     void    StopDialog();
     bool    IsDialog();
 
-    void    StartSuspend();
-    void    StopSuspend();
-
     void    UpdateChapterPassed();
-    bool    NextMission();
+    void    NextMission();
 
     bool    GetGamerOnlyHead();
     float   GetPersoAngle();
@@ -93,35 +92,7 @@ protected:
     void    GlintMove();
     void    FrameParticle(float rTime);
     void    NiceParticle(Math::Point mouse, bool bPress);
-    void    ReadNameList();
-    void    UpdateNameList();
-    void    UpdateNameEdit();
-    void    UpdateNameControl();
-    void    NameSelect();
-    bool    NameCreate();
-    void    NameDelete();
-    void    UpdatePerso();
-    void    CameraPerso();
-    void    FixPerso(int rank, int index);
-    void    ColorPerso();
-    void    IOReadName();
-    void    IOReadList();
-    void    IOUpdateList();
-    void    IODeleteScene();
-    void    IOWriteScene();
-    void    IOReadScene();
     int     GetChapPassed();
-    void    UpdateSceneChap(int &chap);
-    void    UpdateSceneList(int chap, int &sel);
-    void    UpdateSceneResume(int chap, int rank);
-    void    UpdateDisplayMode();
-    void    ChangeDisplay();
-    void    UpdateApply();
-    void    UpdateSetupButtons();
-    void    ChangeSetupButtons();
-    void    ChangeSetupQuality(int quality);
-    void    UpdateKey();
-    void    ChangeKey(EventType event);
 
 protected:
     CApplication*     m_app;
@@ -135,34 +106,15 @@ protected:
     CPauseManager*    m_pause;
     CSettings*        m_settings;
 
+    std::unique_ptr<CScreen> m_screen;
+
     Phase           m_phase;            // copy of CRobotMain
-    Phase           m_phaseSetup;           // tab selected
-    float           m_phaseTime;
-
-    int             m_apperanceTab;         // perso: tab selected
-    float           m_apperanceAngle;           // perso: angle of presentation
-
-    LevelCategory   m_category;
-    LevelCategory   m_listCategory;
-    std::map<LevelCategory, int> m_chap;     // selected chapter (0..8)
-    std::map<LevelCategory, int> m_sel;      // chosen mission (0..98)
-    int             m_maxList;
-    int             m_accessChap;
-    bool            m_bSceneSoluce;         // shows the solution
-    bool            m_bSimulSetup;          // adjustment during the game
-
-    std::vector<std::string> m_customLevelList;
 
     int             m_shotDelay;        // number of frames before copy
     std::string     m_shotName;        // generate a file name
 
-    int             m_setupSelMode;
-    bool            m_setupFull;
-
     Math::Point          m_glintMouse;
     float                m_glintTime;
-
-    int                  m_loadingCounter;
 
     bool                 m_bDialog;          // this dialogue?
     bool                 m_bDialogFire;          // setting on fire?
@@ -171,14 +123,10 @@ protected:
     Math::Point          m_dialogDim;
     float                m_dialogParti;
     float                m_dialogTime;
-    PauseType            m_bInitPause;
-    Gfx::CameraType      m_initCamera;
 
     int                  m_partiPhase[10];
     float                m_partiTime[10];
     Math::Point          m_partiPos[10];
-
-    std::vector<std::string> m_saveList;
 };
 
 } // namespace Ui

@@ -205,6 +205,18 @@ set(BASE_SOURCES
     script/scriptfunc.cpp
     sound/sound.cpp
     sound/sound_type.cpp
+    ui/screen/screen.cpp
+    ui/screen/screen_apperance.cpp
+    ui/screen/screen_io.cpp
+    ui/screen/screen_io_read.cpp
+    ui/screen/screen_io_write.cpp
+    ui/screen/screen_level_list.cpp
+    ui/screen/screen_loading.cpp
+    ui/screen/screen_main_menu.cpp
+    ui/screen/screen_player_select.cpp
+    ui/screen/screen_setup.cpp
+    ui/screen/screen_quit.cpp
+    ui/screen/screen_welcome.cpp
     ui/button.cpp
     ui/check.cpp
     ui/color.cpp

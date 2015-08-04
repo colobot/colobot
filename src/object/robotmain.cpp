@@ -398,9 +398,33 @@ void CRobotMain::LoadConfigFile()
     m_settings->LoadSettings();
 }
 
+bool IsInSimulationConfigPhase(Phase phase)
+{
+    return (phase >= PHASE_SETUPds && phase <= PHASE_SETUPss) || phase == PHASE_READs || phase == PHASE_WRITEs;
+}
+
+bool IsPhaseWithWorld(Phase phase)
+{
+    if (phase == PHASE_SIMUL    ) return true;
+    if (phase == PHASE_WIN      ) return true;
+    if (phase == PHASE_LOST     ) return true;
+    if (phase == PHASE_APPERANCE) return true;
+    if (phase == PHASE_LOADING  ) return true;
+    if (IsInSimulationConfigPhase(phase)) return true;
+    return false;
+}
+
 //! Changes phase
 void CRobotMain::ChangePhase(Phase phase)
 {
+    if (!IsPhaseWithWorld(m_phase) || IsInSimulationConfigPhase(m_phase) || IsInSimulationConfigPhase(phase))
+    {
+        m_phase = phase;
+        m_dialog->ChangePhase(m_phase);
+        return;
+    }
+    GetLogger()->Info("Resseting world on scene change...\n");
+
     m_missionTimerEnabled = m_missionTimerStarted = false;
     m_missionTimer = 0.0f;
 
@@ -435,6 +459,7 @@ void CRobotMain::ChangePhase(Phase phase)
     m_editLock    = false;
     m_freePhoto   = false;
     m_resetCreate = false;
+    m_infoObject  = nullptr;
 
     ChangePause(PAUSE_NONE);
     FlushDisplayInfo();
@@ -1501,9 +1526,19 @@ void CRobotMain::SetDisplayInfoPosition(int index, int pos)
 //! Beginning of a dialogue during the game
 void CRobotMain::StartSuspend()
 {
+    m_sound->MuteAll(true);
+    ClearInterface();
+    m_suspendInitPause = m_pause->GetPauseType();
+    m_pause->SetPause(PAUSE_DIALOG);
+    m_engine->SetOverFront(false);  // over flat behind
+    CreateShortcuts();
+
     m_map->ShowMap(false);
     m_infoObject = DeselectAll();  // removes the control buttons
     m_displayText->HideText(true);
+
+    m_suspendInitCamera = m_camera->GetType();
+    m_camera->SetType(Gfx::CAM_TYPE_DIALOG);
 
     m_suspend = true;
 }
@@ -1511,9 +1546,18 @@ void CRobotMain::StartSuspend()
 //! End of dialogue during the game
 void CRobotMain::StopSuspend()
 {
-    SelectObject(m_infoObject, false);  // gives the command buttons
+    m_sound->MuteAll(false);
+    ClearInterface();
+    m_pause->SetPause(m_suspendInitPause);
+    m_engine->SetOverFront(true);  // over flat front
+    CreateShortcuts();
+
+    if(m_infoObject != nullptr)
+        SelectObject(m_infoObject, false);  // gives the command buttons
     m_map->ShowMap(m_mapShow);
     m_displayText->HideText(false);
+
+    m_camera->SetType(m_suspendInitCamera);
 
     m_suspend = false;
 }

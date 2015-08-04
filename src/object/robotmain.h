@@ -29,6 +29,7 @@
 #include "common/global.h"
 #include "common/singleton.h"
 
+#include "graphics/engine/camera.h"
 #include "graphics/engine/particle.h"
 
 #include "object/drive_type.h"
@@ -61,14 +62,15 @@ enum Phase
     PHASE_SETUPps,
     PHASE_SETUPcs,
     PHASE_SETUPss,
-    PHASE_WRITE,
-    PHASE_READ,
     PHASE_WRITEs,
+    PHASE_READ,
     PHASE_READs,
     PHASE_WIN,
     PHASE_LOST,
     PHASE_QUIT_SCREEN,
 };
+bool IsInSimulationConfigPhase(Phase phase);
+bool IsPhaseWithWorld(Phase phase);
 
 
 class CController;
@@ -492,12 +494,15 @@ protected:
     bool            m_editFull;        // edition in full screen?
     bool            m_hilite;
     bool            m_trainerPilot;    // remote trainer?
-    bool            m_suspend;
     bool            m_friendAim;
     bool            m_resetCreate;
     bool            m_mapShow;
     bool            m_mapImage;
     char            m_mapFilename[100];
+
+    bool            m_suspend;
+    PauseType       m_suspendInitPause;
+    Gfx::CameraType m_suspendInitCamera;
 
     Math::Point     m_tooltipPos;
     std::string     m_tooltipName;
