@@ -423,7 +423,7 @@ void CRobotMain::ChangePhase(Phase phase)
         m_dialog->ChangePhase(m_phase);
         return;
     }
-    GetLogger()->Info("Resseting world on scene change...\n");
+    GetLogger()->Info("Reseting world on phase change...\n");
 
     m_missionTimerEnabled = m_missionTimerStarted = false;
     m_missionTimer = 0.0f;
