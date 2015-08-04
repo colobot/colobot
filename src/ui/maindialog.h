@@ -92,7 +92,6 @@ protected:
     void    GlintMove();
     void    FrameParticle(float rTime);
     void    NiceParticle(Math::Point mouse, bool bPress);
-    int     GetChapPassed();
 
 protected:
     CApplication*     m_app;
