@@ -32,6 +32,7 @@
 class CEventQueue;
 class CScript;
 class CSoundInterface;
+class CSettings;
 struct Program;
 
 namespace Ui
@@ -97,6 +98,7 @@ protected:
     CInterface*      m_interface;
     CApplication*    m_app;
     CPauseManager*   m_pause;
+    CSettings*       m_settings;
 
     Program*    m_program;
     CScript*    m_script;
@@ -122,4 +124,3 @@ protected:
 
 
 } // namespace Ui
-

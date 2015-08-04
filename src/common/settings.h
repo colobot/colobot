@@ -20,9 +20,11 @@
 
 #include "common/singleton.h"
 
+#include "math/point.h"
+
 namespace Gfx
 {
-    struct DeviceConfig;
+struct DeviceConfig;
 }
 
 class CSettings : public CSingleton<CSettings>
@@ -32,6 +34,7 @@ public:
     void SaveResolutionSettings(const Gfx::DeviceConfig& config);
     void SaveSettings();
     void LoadSettings();
+
 
     void SetTooltips(bool tooltips);
     bool GetTooltips();
@@ -54,6 +57,34 @@ public:
     void SetHimselfDamage(bool himselfDamage);
     bool GetHimselfDamage();
 
+
+    //! Managing the size of the default fonts
+    //@{
+    void        SetFontSize(float size);
+    float       GetFontSize();
+    //@}
+
+    //! Managing the size of the default window
+    //@{
+    void        SetWindowPos(Math::Point pos);
+    Math::Point GetWindowPos();
+
+    void        SetWindowDim(Math::Point dim);
+    Math::Point GetWindowDim();
+    //@}
+
+    //! Managing windows open/save
+    //@{
+    void        SetIOPublic(bool mode);
+    bool        GetIOPublic();
+
+    void        SetIOPos(Math::Point pos);
+    Math::Point GetIOPos();
+
+    void        SetIODim(Math::Point dim);
+    Math::Point GetIODim();
+    //@}
+
 protected:
     bool m_tooltips;
     bool m_interfaceGlint;
@@ -62,4 +93,12 @@ protected:
     bool m_movies;
     bool m_niceReset;
     bool m_himselfDamage;
+
+    float           m_fontSize;
+    Math::Point     m_windowPos;
+    Math::Point     m_windowDim;
+
+    bool            m_IOPublic;
+    Math::Point     m_IOPos;
+    Math::Point     m_IODim;
 };

@@ -222,20 +222,6 @@ public:
 
     float       GetGameTime();
 
-    void        SetFontSize(float size);
-    float       GetFontSize();
-    void        SetWindowPos(Math::Point pos);
-    Math::Point GetWindowPos();
-    void        SetWindowDim(Math::Point dim);
-    Math::Point GetWindowDim();
-
-    void        SetIOPublic(bool mode);
-    bool        GetIOPublic();
-    void        SetIOPos(Math::Point pos);
-    Math::Point GetIOPos();
-    void        SetIODim(Math::Point dim);
-    Math::Point GetIODim();
-
     char*       GetTitle();
     char*       GetResume();
     char*       GetScriptName();
@@ -539,14 +525,6 @@ protected:
     bool            m_codeBattleStarted;
 
     std::map<int, std::string> m_teamNames;
-
-    float           m_fontSize;
-    Math::Point     m_windowPos;
-    Math::Point     m_windowDim;
-
-    bool            m_IOPublic;
-    Math::Point     m_IOPos;
-    Math::Point     m_IODim;
 
     NewScriptName   m_newScriptName[MAXNEWSCRIPTNAME];
 

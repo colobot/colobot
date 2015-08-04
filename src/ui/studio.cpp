@@ -27,6 +27,7 @@
 #include "common/event.h"
 #include "common/logger.h"
 #include "common/misc.h"
+#include "common/settings.h"
 
 #include "common/resources/resourcemanager.h"
 
@@ -77,6 +78,7 @@ CStudio::CStudio()
     m_interface = m_main->GetInterface();
     m_camera    = m_main->GetCamera();
     m_pause     = CPauseManager::GetInstancePointer();
+    m_settings  = CSettings::GetInstancePointer();
 
     m_bEditMaximized = false;
     m_bEditMinimized = false;
@@ -172,7 +174,7 @@ bool CStudio::EventProcess(const Event &event)
     {
         slider = static_cast< CSlider* >(pw->SearchControl(EVENT_STUDIO_SIZE));
         if ( slider == nullptr )  return false;
-        m_main->SetFontSize(9.0f+slider->GetVisibleValue()*15.0f);
+        m_settings->SetFontSize(9.0f+slider->GetVisibleValue()*15.0f);
         ViewEditScript();
     }
 
@@ -247,16 +249,16 @@ bool CStudio::EventProcess(const Event &event)
     {
         m_editActualPos = m_editFinalPos = pw->GetPos();
         m_editActualDim = m_editFinalDim = pw->GetDim();
-        m_main->SetWindowPos(m_editActualPos);
-        m_main->SetWindowDim(m_editActualDim);
+        m_settings->SetWindowPos(m_editActualPos);
+        m_settings->SetWindowDim(m_editActualDim);
         AdjustEditScript();
     }
     if ( event.type == pw->GetEventTypeReduce() )
     {
         if ( m_bEditMinimized )
         {
-            m_editFinalPos = m_main->GetWindowPos();
-            m_editFinalDim = m_main->GetWindowDim();
+            m_editFinalPos = m_settings->GetWindowPos();
+            m_editFinalDim = m_settings->GetWindowDim();
             m_bEditMinimized = false;
             m_bEditMaximized = false;
         }
@@ -281,8 +283,8 @@ bool CStudio::EventProcess(const Event &event)
     {
         if ( m_bEditMaximized )
         {
-            m_editFinalPos = m_main->GetWindowPos();
-            m_editFinalDim = m_main->GetWindowDim();
+            m_editFinalPos = m_settings->GetWindowPos();
+            m_editFinalDim = m_settings->GetWindowDim();
             m_bEditMinimized = false;
             m_bEditMaximized = false;
         }
@@ -566,8 +568,8 @@ void CStudio::StartEditScript(CScript *script, std::string name, Program* progra
     m_bRealTime = m_bRunning;
     m_script->SetStepMode(!m_bRealTime);
 
-    pos = m_editFinalPos = m_editActualPos = m_main->GetWindowPos();
-    dim = m_editFinalDim = m_editActualDim = m_main->GetWindowDim();
+    pos = m_editFinalPos = m_editActualPos = m_settings->GetWindowPos();
+    dim = m_editFinalDim = m_editActualDim = m_settings->GetWindowDim();
     pw = m_interface->CreateWindows(pos, dim, 8, EVENT_WINDOW3);
     if (pw == nullptr)
         return;
@@ -627,7 +629,7 @@ void CStudio::StartEditScript(CScript *script, std::string name, Program* progra
     button->SetState(STATE_SHADOW);
     slider = pw->CreateSlider(pos, dim, 0, EVENT_STUDIO_SIZE);
     slider->SetState(STATE_SHADOW);
-    slider->SetVisibleValue((m_main->GetFontSize()-9.0f)/15.0f);
+    slider->SetVisibleValue((m_settings->GetFontSize()-9.0f)/15.0f);
     pw->CreateGroup(pos, dim, 19, EVENT_LABEL1);  // SatCom logo
     button = pw->CreateButton(pos, dim, 128+57, EVENT_STUDIO_TOOL);
     button->SetState(STATE_SHADOW);
@@ -948,7 +950,7 @@ void CStudio::ViewEditScript()
     if ( edit == 0 )  return;
 
     dim = m_engine->GetWindowSize();
-    edit->SetFontSize(m_main->GetFontSize()/(dim.x/640.0f));
+    edit->SetFontSize(m_settings->GetFontSize()/(dim.x/640.0f));
 }
 
 
@@ -1104,8 +1106,8 @@ void CStudio::StartDialog(StudioDialog type)
     if ( m_dialog == SD_OPEN ||
          m_dialog == SD_SAVE )
     {
-        pos = m_main->GetIOPos();
-        dim = m_main->GetIODim();
+        pos = m_settings->GetIOPos();
+        dim = m_settings->GetIODim();
     }
 //? pw = m_interface->CreateWindows(pos, dim, 8, EVENT_WINDOW9);
     pw = m_interface->CreateWindows(pos, dim, m_dialog==SD_OPEN?14:13, EVENT_WINDOW9);
@@ -1359,8 +1361,8 @@ bool CStudio::EventDialog(const Event &event)
     {
         wpos = pw->GetPos();
         wdim = pw->GetDim();
-        m_main->SetIOPos(wpos);
-        m_main->SetIODim(wdim);
+        m_settings->SetIOPos(wpos);
+        m_settings->SetIODim(wdim);
         AdjustDialog();
     }
 
@@ -1378,13 +1380,13 @@ bool CStudio::EventDialog(const Event &event)
 
         if ( event.type == EVENT_DIALOG_CHECK1 )  // private?
         {
-            m_main->SetIOPublic(false);
+            m_settings->SetIOPublic(false);
             UpdateDialogPublic();
             UpdateDialogList();
         }
         if ( event.type == EVENT_DIALOG_CHECK2 )  // public?
         {
-            m_main->SetIOPublic(true);
+            m_settings->SetIOPublic(true);
             UpdateDialogPublic();
             UpdateDialogList();
         }
@@ -1532,13 +1534,13 @@ void CStudio::UpdateDialogPublic()
     pc = static_cast< CCheck* >(pw->SearchControl(EVENT_DIALOG_CHECK1));
     if ( pc != 0 )
     {
-        pc->SetState(STATE_CHECK, !m_main->GetIOPublic());
+        pc->SetState(STATE_CHECK, !m_settings->GetIOPublic());
     }
 
     pc = static_cast< CCheck* >(pw->SearchControl(EVENT_DIALOG_CHECK2));
     if ( pc != 0 )
     {
-        pc->SetState(STATE_CHECK, m_main->GetIOPublic());
+        pc->SetState(STATE_CHECK, m_settings->GetIOPublic());
     }
 
     pl = static_cast< CLabel* >(pw->SearchControl(EVENT_DIALOG_LABEL1));
@@ -1582,7 +1584,7 @@ void CStudio::UpdateDialogList()
 std::string CStudio::SearchDirectory(bool bCreate)
 {
     std::string dir;
-    if ( m_main->GetIOPublic() )
+    if ( m_settings->GetIOPublic() )
     {
         dir = "program";
     }

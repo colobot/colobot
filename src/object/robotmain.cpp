@@ -300,30 +300,6 @@ void CRobotMain::Create()
 
     FlushDisplayInfo();
 
-    m_fontSize  = 19.0f;
-    m_windowPos = Math::Point(0.15f, 0.17f);
-    m_windowDim = Math::Point(0.70f, 0.66f);
-
-    float fValue;
-    int iValue;
-
-    if (GetConfigFile().GetFloatProperty("Edit", "FontSize",    fValue)) m_fontSize    = fValue;
-    if (GetConfigFile().GetFloatProperty("Edit", "WindowPosX",  fValue)) m_windowPos.x = fValue;
-    if (GetConfigFile().GetFloatProperty("Edit", "WindowPosY",  fValue)) m_windowPos.y = fValue;
-    if (GetConfigFile().GetFloatProperty("Edit", "WindowDimX",  fValue)) m_windowDim.x = fValue;
-    if (GetConfigFile().GetFloatProperty("Edit", "WindowDimY",  fValue)) m_windowDim.y = fValue;
-
-    m_IOPublic = false;
-    m_IODim = Math::Point(320.0f/640.0f, (121.0f+18.0f*8)/480.0f);
-    m_IOPos.x = (1.0f-m_IODim.x)/2.0f;  // in the middle
-    m_IOPos.y = (1.0f-m_IODim.y)/2.0f;
-
-    if (GetConfigFile().GetIntProperty  ("Edit", "IOPublic", iValue)) m_IOPublic = iValue;
-    if (GetConfigFile().GetFloatProperty("Edit", "IOPosX",   fValue)) m_IOPos.x  = fValue;
-    if (GetConfigFile().GetFloatProperty("Edit", "IOPosY",   fValue)) m_IOPos.y  = fValue;
-    if (GetConfigFile().GetFloatProperty("Edit", "IODimX",   fValue)) m_IODim.x  = fValue;
-    if (GetConfigFile().GetFloatProperty("Edit", "IODimY",   fValue)) m_IODim.y  = fValue;
-
     InitEye();
 
     m_engine->SetTracePrecision(1.0f);
@@ -414,16 +390,6 @@ void CRobotMain::CreateConfigFile()
     m_settings->SaveSettings();
     m_settings->SaveResolutionSettings(m_app->GetVideoConfig());
 
-    GetConfigFile().SetFloatProperty("Edit", "FontSize", m_fontSize);
-    GetConfigFile().SetFloatProperty("Edit", "WindowPosX", m_windowPos.x);
-    GetConfigFile().SetFloatProperty("Edit", "WindowPosY", m_windowPos.y);
-    GetConfigFile().SetFloatProperty("Edit", "WindowDimX", m_windowDim.x);
-    GetConfigFile().SetFloatProperty("Edit", "WindowDimY", m_windowDim.y);
-    GetConfigFile().SetIntProperty("Edit", "IOPublic", m_IOPublic);
-    GetConfigFile().SetFloatProperty("Edit", "IOPosX", m_IOPos.x);
-    GetConfigFile().SetFloatProperty("Edit", "IOPosY", m_IOPos.y);
-    GetConfigFile().SetFloatProperty("Edit", "IODimX", m_IODim.x);
-    GetConfigFile().SetFloatProperty("Edit", "IODimY", m_IODim.y);
     GetConfigFile().Save();
 }
 
@@ -1552,89 +1518,6 @@ float CRobotMain::GetGameTime()
 {
     return m_gameTime;
 }
-
-
-
-//! Managing the size of the default fonts
-void CRobotMain::SetFontSize(float size)
-{
-    m_fontSize = size;
-    GetConfigFile().SetFloatProperty("Edit", "FontSize", m_fontSize);
-    GetConfigFile().Save();
-}
-
-float CRobotMain::GetFontSize()
-{
-    return m_fontSize;
-}
-
-//! Managing the size of the default window
-void CRobotMain::SetWindowPos(Math::Point pos)
-{
-    m_windowPos = pos;
-    GetConfigFile().SetFloatProperty("Edit", "WindowPosX", m_windowPos.x);
-    GetConfigFile().SetFloatProperty("Edit", "WindowPosY", m_windowPos.y);
-    GetConfigFile().Save();
-}
-
-Math::Point CRobotMain::GetWindowPos()
-{
-    return m_windowPos;
-}
-
-void CRobotMain::SetWindowDim(Math::Point dim)
-{
-    m_windowDim = dim;
-    GetConfigFile().SetFloatProperty("Edit", "WindowDimX", m_windowDim.x);
-    GetConfigFile().SetFloatProperty("Edit", "WindowDimY", m_windowDim.y);
-    GetConfigFile().Save();
-}
-
-Math::Point CRobotMain::GetWindowDim()
-{
-    return m_windowDim;
-}
-
-
-//! Managing windows open/save
-void CRobotMain::SetIOPublic(bool mode)
-{
-    m_IOPublic = mode;
-    GetConfigFile().SetIntProperty("Edit", "IOPublic", m_IOPublic);
-    GetConfigFile().Save();
-}
-
-bool CRobotMain::GetIOPublic()
-{
-    return m_IOPublic;
-}
-
-void CRobotMain::SetIOPos(Math::Point pos)
-{
-    m_IOPos = pos;
-    GetConfigFile().SetFloatProperty("Edit", "IOPosX", m_IOPos.x);
-    GetConfigFile().SetFloatProperty("Edit", "IOPosY", m_IOPos.y);
-    GetConfigFile().Save();
-}
-
-Math::Point CRobotMain::GetIOPos()
-{
-    return m_IOPos;
-}
-
-void CRobotMain::SetIODim(Math::Point dim)
-{
-    m_IODim = dim;
-    GetConfigFile().SetFloatProperty("Edit", "IODimX", m_IODim.x);
-    GetConfigFile().SetFloatProperty("Edit", "IODimY", m_IODim.y);
-    GetConfigFile().Save();
-}
-
-Math::Point CRobotMain::GetIODim()
-{
-    return m_IODim;
-}
-
 
 
 //! Start of the visit instead of an error
