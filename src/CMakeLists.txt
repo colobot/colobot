@@ -80,13 +80,13 @@ set(BASE_SOURCES
     app/system.cpp
     app/${SYSTEM_CPP_MODULE}
     app/system_other.cpp
+    common/config_file.cpp
     common/event.cpp
     common/image.cpp
     common/key.cpp
     common/logger.cpp
     common/misc.cpp
     common/pathman.cpp
-    common/config_file.cpp
     common/regex_utils.cpp
     common/resources/inputstream.cpp
     common/resources/inputstreambuffer.cpp
@@ -96,6 +96,7 @@ set(BASE_SOURCES
     common/resources/sdl_file_wrapper.cpp
     common/resources/sndfile_wrapper.cpp
     common/restext.cpp
+    common/settings.cpp
     common/stringutils.cpp
     graphics/core/color.cpp
     graphics/core/framebuffer.cpp

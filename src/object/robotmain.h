@@ -80,6 +80,7 @@ class CObjectManager;
 class CSceneEndCondition;
 class CAudioChangeCondition;
 class CPlayerProfile;
+class CSettings;
 
 namespace Gfx
 {
@@ -241,7 +242,7 @@ public:
     char*       GetScriptFile();
     bool        GetTrainerPilot();
     bool        GetFixScene();
-    bool        GetGlint();
+    bool        GetInterfaceGlint();
     bool        GetSoluce4();
     bool        GetMovies();
     bool        GetNiceReset();
@@ -450,6 +451,7 @@ protected:
     CSoundInterface*    m_sound;
     CPauseManager*      m_pause;
     CInput*             m_input;
+    CSettings*          m_settings;
 
     //! Progress of loaded player
     std::unique_ptr<CPlayerProfile> m_playerProfile;

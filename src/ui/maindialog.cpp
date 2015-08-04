@@ -33,6 +33,7 @@
 #include "common/make_unique.h"
 #include "common/misc.h"
 #include "common/restext.h"
+#include "common/settings.h"
 #include "common/stringutils.h"
 
 #include "common/resources/inputstream.h"
@@ -137,8 +138,6 @@ CMainDialog::CMainDialog()
     m_accessMission= true;
     m_accessUser   = true;
 
-    m_bDeleteGamer = true;
-
     for(int i = 0; i < static_cast<int>(LevelCategory::Max); i++)
     {
         m_chap[static_cast<LevelCategory>(i)] = 0;
@@ -149,20 +148,6 @@ CMainDialog::CMainDialog()
     m_listCategory = m_category;
     m_maxList = 0;
 
-    m_bTooltip       = true;
-    m_bGlint         = true;
-    m_bRain          = true;
-    m_bSoluce4       = true;
-    m_bMovies        = true;
-    m_bNiceReset     = true;
-    m_bHimselfDamage = true;
-    m_bCameraScroll  = true;
-
-    m_bCameraInvertX = false;
-    m_bCameraInvertY = false;
-    m_bEffect        = true;
-    m_bBlood         = true;
-    m_bAutosave      = true;
     m_shotDelay      = 0;
 
     m_glintMouse = Math::Point(0.0f, 0.0f);
@@ -190,7 +175,18 @@ void CMainDialog::Create()
     m_engine     = Gfx::CEngine::GetInstancePointer();
     m_particle   = m_engine->GetParticle();
     m_pause      = CPauseManager::GetInstancePointer();
+    m_settings   = CSettings::GetInstancePointer();
 
+    std::vector<Math::IntPoint> modes;
+    m_app->GetVideoResolutionList(modes, true, true);
+    for (auto it = modes.begin(); it != modes.end(); ++it)
+    {
+        if (it->x == m_app->GetVideoConfig().size.x && it->y == m_app->GetVideoConfig().size.y)
+        {
+            m_setupSelMode = it - modes.begin();
+            break;
+        }
+    }
     m_setupFull = m_app->GetVideoConfig().fullScreen;
 }
 
@@ -442,15 +438,12 @@ void CMainDialog::ChangePhase(Phase phase)
         pli = pw->CreateList(pos, ddim, 0, EVENT_INTERFACE_NLIST);
         pli->SetState(STATE_SHADOW);
 
-        if ( m_bDeleteGamer )
-        {
-            pos.x = 200.0f/640.0f;
-            pos.y = 100.0f/480.0f;
-            ddim.x = 160.0f/640.0f;
-            ddim.y =  32.0f/480.0f;
-            pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_NDELETE);
-            pb->SetState(STATE_SHADOW);
-        }
+        pos.x = 200.0f/640.0f;
+        pos.y = 100.0f/480.0f;
+        ddim.x = 160.0f/640.0f;
+        ddim.y =  32.0f/480.0f;
+        pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_NDELETE);
+        pb->SetState(STATE_SHADOW);
 
         pos.x = 380.0f/640.0f;
         pos.y = 100.0f/480.0f;
@@ -2344,7 +2337,7 @@ bool CMainDialog::EventProcess(const Event &event)
                 event.type == EVENT_INTERFACE_BACK   ||
                 (event.type == EVENT_KEY_DOWN && event.key.key == KEY(ESCAPE)) )
         {
-            SetupMemorize();
+            m_settings->SaveSettings();
             m_engine->ApplyChange();
             m_main->ChangePhase(PHASE_MAIN_MENU);
             return false;
@@ -2390,7 +2383,7 @@ bool CMainDialog::EventProcess(const Event &event)
                 event.type == EVENT_INTERFACE_BACK   ||
                 (event.type == EVENT_KEY_DOWN && event.key.key == KEY(ESCAPE)) )
         {
-            SetupMemorize();
+            m_settings->SaveSettings();
             m_engine->ApplyChange();
             m_interface->DeleteControl(EVENT_WINDOW5);
             ChangePhase(PHASE_SIMUL);
@@ -2575,19 +2568,19 @@ bool CMainDialog::EventProcess(const Event &event)
                 break;
 
             case EVENT_INTERFACE_TOOLTIP:
-                m_bTooltip = !m_bTooltip;
+                m_settings->SetTooltips(!m_settings->GetTooltips());
                 ChangeSetupButtons();
                 UpdateSetupButtons();
                 break;
 
             case EVENT_INTERFACE_GLINT:
-                m_bGlint = !m_bGlint;
+                m_settings->SetInterfaceGlint(!m_settings->GetInterfaceGlint());
                 ChangeSetupButtons();
                 UpdateSetupButtons();
                 break;
 
             case EVENT_INTERFACE_RAIN:
-                m_bRain = !m_bRain;
+                m_settings->SetInterfaceRain(!m_settings->GetInterfaceRain());
                 ChangeSetupButtons();
                 UpdateSetupButtons();
                 break;
@@ -2622,67 +2615,61 @@ bool CMainDialog::EventProcess(const Event &event)
                 break;
 
             case EVENT_INTERFACE_SOLUCE4:
-                m_bSoluce4 = !m_bSoluce4;
+                m_settings->SetSoluce4(!m_settings->GetSoluce4());
                 ChangeSetupButtons();
                 UpdateSetupButtons();
                 break;
 
             case EVENT_INTERFACE_MOVIES:
-                m_bMovies = !m_bMovies;
+                m_settings->SetMovies(!m_settings->GetMovies());
                 ChangeSetupButtons();
                 UpdateSetupButtons();
                 break;
 
             case EVENT_INTERFACE_NICERST:
-                m_bNiceReset = !m_bNiceReset;
+                m_settings->SetNiceReset(!m_settings->GetNiceReset());
                 ChangeSetupButtons();
                 UpdateSetupButtons();
                 break;
 
             case EVENT_INTERFACE_HIMSELF:
-                m_bHimselfDamage = !m_bHimselfDamage;
+                m_settings->SetHimselfDamage(!m_settings->GetHimselfDamage());
                 ChangeSetupButtons();
                 UpdateSetupButtons();
                 break;
 
             case EVENT_INTERFACE_SCROLL:
-                m_bCameraScroll = !m_bCameraScroll;
-                m_camera->SetCameraScroll(m_bCameraScroll);
+                m_camera->SetCameraScroll(!m_camera->GetCameraScroll());
                 ChangeSetupButtons();
                 UpdateSetupButtons();
                 break;
 
             case EVENT_INTERFACE_INVERTX:
-                m_bCameraInvertX = !m_bCameraInvertX;
-                m_camera->SetCameraInvertX(m_bCameraInvertX);
+                m_camera->SetCameraInvertX(!m_camera->GetCameraInvertX());
                 ChangeSetupButtons();
                 UpdateSetupButtons();
                 break;
 
             case EVENT_INTERFACE_INVERTY:
-                m_bCameraInvertY = !m_bCameraInvertY;
-                m_camera->SetCameraInvertY(m_bCameraInvertY);
+                m_camera->SetCameraInvertY(!m_camera->GetCameraInvertY());
                 ChangeSetupButtons();
                 UpdateSetupButtons();
                 break;
 
             case EVENT_INTERFACE_EFFECT:
-                m_bEffect = !m_bEffect;
-                m_camera->SetEffect(m_bEffect);
+                m_camera->SetEffect(!m_camera->GetEffect());
                 ChangeSetupButtons();
                 UpdateSetupButtons();
                 break;
 
             case EVENT_INTERFACE_BLOOD:
-                m_bBlood = !m_bBlood;
-                m_camera->SetBlood(m_bBlood);
+                m_camera->SetBlood(!m_camera->GetBlood());
                 ChangeSetupButtons();
                 UpdateSetupButtons();
                 break;
 
             case EVENT_INTERFACE_AUTOSAVE_ENABLE:
-                m_bAutosave = !m_bAutosave;
-                m_main->SetAutosave(m_bAutosave);
+                m_main->SetAutosave(!m_main->GetAutosave());
                 ChangeSetupButtons();
                 UpdateSetupButtons();
                 break;
@@ -3156,7 +3143,7 @@ void CMainDialog::FrameParticle(float rTime)
         279.0f,  18.0f,
     };
 
-    if ( m_bDialog || !m_bRain )  return;
+    if ( m_bDialog || !m_settings->GetInterfaceRain() )  return;
 
     if ( m_phase == PHASE_MAIN_MENU )
     {
@@ -3364,7 +3351,7 @@ void CMainDialog::NiceParticle(Math::Point mouse, bool bPress)
     Math::Vector    pos, speed;
     Math::Point     dim;
 
-    if ( !m_bRain )  return;
+    if ( !m_settings->GetInterfaceRain() )  return;
     if ( (m_phase == PHASE_SIMUL ||
                 m_phase == PHASE_WIN   ||
                 m_phase == PHASE_LOST  ) &&
@@ -4345,7 +4332,7 @@ void CMainDialog::UpdateSceneResume(int chap, int rank)
         numTry  = m_main->GetPlayerProfile()->GetLevelTryCount(m_category, chap, rank);
         bPassed = m_main->GetPlayerProfile()->GetLevelPassed(m_category, chap, rank);
         bVisible = ( numTry > 2 || bPassed || m_main->GetShowSoluce() );
-        if ( !GetSoluce4() )  bVisible = false;
+        if ( !m_settings->GetSoluce4() )  bVisible = false;
         pc->SetState(STATE_VISIBLE, bVisible);
         if ( !bVisible )
         {
@@ -4429,19 +4416,20 @@ void CMainDialog::ChangeDisplay()
     bFull = pc->TestState(STATE_CHECK);
     m_setupFull = bFull;
 
-    SetupMemorize();
-
-    #if !PLATFORM_LINUX
-    // Windows causes problems, so we'll restart the game
-    // Mac OS was not tested so let's restart just to be sure
-    m_app->Restart();
-    #else
     std::vector<Math::IntPoint> modes;
     m_app->GetVideoResolutionList(modes, true, true);
 
     Gfx::DeviceConfig config = m_app->GetVideoConfig();
     config.size = modes[m_setupSelMode];
     config.fullScreen = bFull;
+
+    m_settings->SaveResolutionSettings(config);
+
+    #if !PLATFORM_LINUX
+    // Windows causes problems, so we'll restart the game
+    // Mac OS was not tested so let's restart just to be sure
+    m_app->Restart();
+    #else
     m_app->ChangeVideoConfig(config);
     #endif
 }
@@ -4505,19 +4493,19 @@ void CMainDialog::UpdateSetupButtons()
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_TOOLTIP));
     if ( pc != 0 )
     {
-        pc->SetState(STATE_CHECK, m_bTooltip);
+        pc->SetState(STATE_CHECK, m_settings->GetTooltips());
     }
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_GLINT));
     if ( pc != 0 )
     {
-        pc->SetState(STATE_CHECK, m_bGlint);
+        pc->SetState(STATE_CHECK, m_settings->GetInterfaceGlint());
     }
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_RAIN));
     if ( pc != 0 )
     {
-        pc->SetState(STATE_CHECK, m_bRain);
+        pc->SetState(STATE_CHECK, m_settings->GetInterfaceRain());
     }
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_MOUSE));
@@ -4541,67 +4529,67 @@ void CMainDialog::UpdateSetupButtons()
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_SOLUCE4));
     if ( pc != 0 )
     {
-        pc->SetState(STATE_CHECK, m_bSoluce4);
+        pc->SetState(STATE_CHECK, m_settings->GetSoluce4());
     }
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_MOVIES));
     if ( pc != 0 )
     {
-        pc->SetState(STATE_CHECK, m_bMovies);
+        pc->SetState(STATE_CHECK, m_settings->GetMovies());
     }
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_NICERST));
     if ( pc != 0 )
     {
-        pc->SetState(STATE_CHECK, m_bNiceReset);
+        pc->SetState(STATE_CHECK, m_settings->GetNiceReset());
     }
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_HIMSELF));
     if ( pc != 0 )
     {
-        pc->SetState(STATE_CHECK, m_bHimselfDamage);
+        pc->SetState(STATE_CHECK, m_settings->GetHimselfDamage());
     }
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_SCROLL));
     if ( pc != 0 )
     {
-        pc->SetState(STATE_CHECK, m_bCameraScroll);
+        pc->SetState(STATE_CHECK, m_camera->GetCameraScroll());
     }
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_INVERTX));
     if ( pc != 0 )
     {
-        pc->SetState(STATE_CHECK, m_bCameraInvertX);
+        pc->SetState(STATE_CHECK, m_camera->GetCameraInvertX());
     }
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_INVERTY));
     if ( pc != 0 )
     {
-        pc->SetState(STATE_CHECK, m_bCameraInvertY);
+        pc->SetState(STATE_CHECK, m_camera->GetCameraInvertY());
     }
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_EFFECT));
     if ( pc != 0 )
     {
-        pc->SetState(STATE_CHECK, m_bEffect);
+        pc->SetState(STATE_CHECK, m_camera->GetEffect());
     }
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_BLOOD));
     if ( pc != 0 )
     {
-        pc->SetState(STATE_CHECK, m_bBlood);
+        pc->SetState(STATE_CHECK, m_camera->GetBlood());
     }
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_AUTOSAVE_ENABLE));
     if ( pc != 0 )
     {
-        pc->SetState(STATE_CHECK, m_bAutosave);
+        pc->SetState(STATE_CHECK, m_main->GetAutosave());
     }
 
     ps = static_cast<CSlider*>(pw->SearchControl(EVENT_INTERFACE_AUTOSAVE_INTERVAL));
     if ( ps != 0 )
     {
-        ps->SetState(STATE_ENABLE, m_bAutosave);
+        ps->SetState(STATE_ENABLE, m_main->GetAutosave());
         ps->SetVisibleValue(m_main->GetAutosaveInterval());
 
     }
@@ -4609,7 +4597,7 @@ void CMainDialog::UpdateSetupButtons()
     ps = static_cast<CSlider*>(pw->SearchControl(EVENT_INTERFACE_AUTOSAVE_SLOTS));
     if ( ps != 0 )
     {
-        ps->SetState(STATE_ENABLE, m_bAutosave);
+        ps->SetState(STATE_ENABLE, m_main->GetAutosave());
         ps->SetVisibleValue(m_main->GetAutosaveSlots());
     }
 
@@ -4877,370 +4865,6 @@ void CMainDialog::ChangeSetupButtons()
             m_engine->SetShadowMappingOffscreen(true);
             m_engine->SetShadowMappingOffscreenResolution(value);
         }
-    }
-}
-
-
-// Memorizes all the settings.
-
-void CMainDialog::SetupMemorize()
-{
-    GetConfigFile().SetIntProperty("Setup", "Tooltips", m_bTooltip);
-    GetConfigFile().SetIntProperty("Setup", "InterfaceGlint", m_bGlint);
-    GetConfigFile().SetIntProperty("Setup", "InterfaceRain", m_bRain);
-    GetConfigFile().SetIntProperty("Setup", "Soluce4", m_bSoluce4);
-    GetConfigFile().SetIntProperty("Setup", "Movies", m_bMovies);
-    GetConfigFile().SetIntProperty("Setup", "NiceReset", m_bNiceReset);
-    GetConfigFile().SetIntProperty("Setup", "HimselfDamage", m_bHimselfDamage);
-    GetConfigFile().SetIntProperty("Setup", "CameraScroll", m_bCameraScroll);
-    GetConfigFile().SetIntProperty("Setup", "CameraInvertX", m_bCameraInvertX);
-    GetConfigFile().SetIntProperty("Setup", "CameraInvertY", m_bCameraInvertY);
-    GetConfigFile().SetIntProperty("Setup", "InterfaceEffect", m_bEffect);
-    GetConfigFile().SetIntProperty("Setup", "Blood", m_bBlood);
-    GetConfigFile().SetIntProperty("Setup", "Autosave", m_bAutosave);
-    GetConfigFile().SetIntProperty("Setup", "AutosaveInterval", m_main->GetAutosaveInterval());
-    GetConfigFile().SetIntProperty("Setup", "AutosaveSlots", m_main->GetAutosaveSlots());
-    GetConfigFile().SetIntProperty("Setup", "GroundShadow", m_engine->GetShadow());
-    GetConfigFile().SetIntProperty("Setup", "GroundSpot", m_engine->GetGroundSpot());
-    GetConfigFile().SetIntProperty("Setup", "ObjectDirty", m_engine->GetDirty());
-    GetConfigFile().SetIntProperty("Setup", "FogMode", m_engine->GetFog());
-    GetConfigFile().SetIntProperty("Setup", "LensMode", m_engine->GetLensMode());
-    GetConfigFile().SetIntProperty("Setup", "SkyMode", m_engine->GetSkyMode());
-    GetConfigFile().SetIntProperty("Setup", "PlanetMode", m_engine->GetPlanetMode());
-    GetConfigFile().SetIntProperty("Setup", "LightMode", m_engine->GetLightMode());
-    GetConfigFile().SetIntProperty("Setup", "UseJoystick", m_app->GetJoystickEnabled() ? m_app->GetJoystick().index : -1);
-    GetConfigFile().SetFloatProperty("Setup", "ParticleDensity", m_engine->GetParticleDensity());
-    GetConfigFile().SetFloatProperty("Setup", "ClippingDistance", m_engine->GetClippingDistance());
-    GetConfigFile().SetFloatProperty("Setup", "ObjectDetail", m_engine->GetObjectDetail());
-    GetConfigFile().SetFloatProperty("Setup", "GadgetQuantity", m_engine->GetGadgetQuantity());
-    GetConfigFile().SetIntProperty("Setup", "TotoMode", m_engine->GetTotoMode());
-    GetConfigFile().SetIntProperty("Setup", "AudioVolume", m_sound->GetAudioVolume());
-    GetConfigFile().SetIntProperty("Setup", "MusicVolume", m_sound->GetMusicVolume());
-    GetConfigFile().SetIntProperty("Setup", "EditIndentMode", m_engine->GetEditIndentMode());
-    GetConfigFile().SetIntProperty("Setup", "EditIndentValue", m_engine->GetEditIndentValue());
-    GetConfigFile().SetIntProperty("Setup", "SystemMouse", m_app->GetMouseMode() == MOUSE_SYSTEM);
-
-    GetConfigFile().SetIntProperty("Setup", "MipmapLevel", m_engine->GetTextureMipmapLevel());
-    GetConfigFile().SetIntProperty("Setup", "Anisotropy", m_engine->GetTextureAnisotropyLevel());
-    GetConfigFile().SetFloatProperty("Setup", "ShadowColor", m_engine->GetShadowColor());
-    GetConfigFile().SetFloatProperty("Setup", "ShadowRange", m_engine->GetShadowRange());
-    GetConfigFile().SetIntProperty("Setup", "MSAA", m_engine->GetMultiSample());
-    GetConfigFile().SetIntProperty("Setup", "FilterMode", m_engine->GetTextureFilterMode());
-    GetConfigFile().SetIntProperty("Setup", "ShadowMapping", m_engine->GetShadowMapping());
-    GetConfigFile().SetIntProperty("Setup", "ShadowMappingQuality", m_engine->GetShadowMappingQuality());
-    GetConfigFile().SetIntProperty("Setup", "ShadowMappingResolution", m_engine->GetShadowMappingOffscreen() ? m_engine->GetShadowMappingOffscreenResolution() : 0);
-
-    /* screen setup */
-    GetConfigFile().SetIntProperty("Setup", "Fullscreen", m_setupFull ? 1 : 0);
-
-    CList *pl;
-    CWindow *pw;
-    pw = static_cast<CWindow *>(m_interface->SearchControl(EVENT_WINDOW5));
-    if ( pw != 0 )
-    {
-        pl = static_cast<CList *>(pw->SearchControl(EVENT_LIST2));
-        if ( pl != 0 )
-        {
-            std::vector<Math::IntPoint> modes;
-            m_app->GetVideoResolutionList(modes, true, true);
-            std::ostringstream ss;
-            ss << modes[m_setupSelMode].x << "x" << modes[m_setupSelMode].y;
-            GetConfigFile().SetStringProperty("Setup", "Resolution", ss.str());
-        }
-    }
-
-    CInput::GetInstancePointer()->SaveKeyBindings();
-
-    GetConfigFile().SetIntProperty("Setup", "DeleteGamer", m_bDeleteGamer);
-
-    GetConfigFile().Save();
-}
-
-// Remember all the settings.
-
-void CMainDialog::SetupRecall()
-{
-    float       fValue;
-    int         iValue;
-    std::string key;
-
-    if ( GetConfigFile().GetIntProperty("Setup", "TotoMode", iValue) )
-    {
-        m_engine->SetTotoMode(iValue);
-    }
-
-    if ( GetConfigFile().GetIntProperty("Setup", "Tooltips", iValue) )
-    {
-        m_bTooltip = iValue;
-    }
-
-    if ( GetConfigFile().GetIntProperty("Setup", "InterfaceGlint", iValue) )
-    {
-        m_bGlint = iValue;
-    }
-
-    if ( GetConfigFile().GetIntProperty("Setup", "InterfaceRain", iValue) )
-    {
-        m_bRain = iValue;
-    }
-
-    if ( GetConfigFile().GetIntProperty("Setup", "SystemMouse", iValue) )
-    {
-        m_app->SetMouseMode(iValue ? MOUSE_SYSTEM : MOUSE_ENGINE);
-    }
-
-    if ( GetConfigFile().GetIntProperty("Setup", "Soluce4", iValue) )
-    {
-        m_bSoluce4 = iValue;
-    }
-
-    if ( GetConfigFile().GetIntProperty("Setup", "Movies", iValue) )
-    {
-        m_bMovies = iValue;
-    }
-
-    if ( GetConfigFile().GetIntProperty("Setup", "NiceReset", iValue) )
-    {
-        m_bNiceReset = iValue;
-    }
-
-    if ( GetConfigFile().GetIntProperty("Setup", "HimselfDamage", iValue) )
-    {
-        m_bHimselfDamage = iValue;
-    }
-
-    if ( GetConfigFile().GetIntProperty("Setup", "CameraScroll", iValue) )
-    {
-        m_bCameraScroll = iValue;
-        m_camera->SetCameraScroll(m_bCameraScroll);
-    }
-
-    if ( GetConfigFile().GetIntProperty("Setup", "CameraInvertX", iValue) )
-    {
-        m_bCameraInvertX = iValue;
-        m_camera->SetCameraInvertX(m_bCameraInvertX);
-    }
-
-    if ( GetConfigFile().GetIntProperty("Setup", "CameraInvertY", iValue) )
-    {
-        m_bCameraInvertY = iValue;
-        m_camera->SetCameraInvertY(m_bCameraInvertY);
-    }
-
-    if ( GetConfigFile().GetIntProperty("Setup", "InterfaceEffect", iValue) )
-    {
-        m_bEffect = iValue;
-    }
-
-    if ( GetConfigFile().GetIntProperty("Setup", "Blood", iValue) )
-    {
-        m_bBlood = iValue;
-    }
-
-    if ( GetConfigFile().GetIntProperty("Setup", "Autosave", iValue) )
-    {
-        m_bAutosave = iValue;
-    }
-
-    if ( GetConfigFile().GetIntProperty("Setup", "AutosaveInterval", iValue) )
-    {
-        m_main->SetAutosaveInterval(iValue);
-    }
-
-    if ( GetConfigFile().GetIntProperty("Setup", "AutosaveSlots", iValue) )
-    {
-        m_main->SetAutosaveSlots(iValue);
-    }
-
-    if ( GetConfigFile().GetIntProperty("Setup", "GroundShadow", iValue) )
-    {
-        m_engine->SetShadow(iValue);
-    }
-
-    if ( GetConfigFile().GetIntProperty("Setup", "GroundSpot", iValue) )
-    {
-        m_engine->SetGroundSpot(iValue);
-    }
-
-    if ( GetConfigFile().GetIntProperty("Setup", "ObjectDirty", iValue) )
-    {
-        m_engine->SetDirty(iValue);
-    }
-
-    if ( GetConfigFile().GetIntProperty("Setup", "FogMode", iValue) )
-    {
-        m_engine->SetFog(iValue);
-        m_camera->SetOverBaseColor(Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f)); // TODO: color ok?
-    }
-
-    if ( GetConfigFile().GetIntProperty("Setup", "LensMode", iValue) )
-    {
-        m_engine->SetLensMode(iValue);
-    }
-
-    if ( GetConfigFile().GetIntProperty("Setup", "SkyMode", iValue) )
-    {
-        m_engine->SetSkyMode(iValue);
-    }
-
-    if ( GetConfigFile().GetIntProperty("Setup", "PlanetMode", iValue) )
-    {
-        m_engine->SetPlanetMode(iValue);
-    }
-
-    if ( GetConfigFile().GetIntProperty("Setup", "LightMode", iValue) )
-    {
-        m_engine->SetLightMode(iValue);
-    }
-
-    if ( GetConfigFile().GetIntProperty("Setup", "UseJoystick", iValue) )
-    {
-        if(iValue >= 0)
-        {
-            auto joysticks = m_app->GetJoystickList();
-            for(const auto& joystick : joysticks)
-            {
-                if (joystick.index == iValue)
-                {
-                    m_app->ChangeJoystick(joystick);
-                    m_app->SetJoystickEnabled(true);
-                }
-            }
-        }
-        else
-        {
-            m_app->SetJoystickEnabled(false);
-        }
-    }
-
-    if ( GetConfigFile().GetFloatProperty("Setup", "ParticleDensity", fValue) )
-    {
-        m_engine->SetParticleDensity(fValue);
-    }
-
-    if ( GetConfigFile().GetFloatProperty("Setup", "ClippingDistance", fValue) )
-    {
-        m_engine->SetClippingDistance(fValue);
-    }
-
-    if ( GetConfigFile().GetFloatProperty("Setup", "ObjectDetail", fValue) )
-    {
-        m_engine->SetObjectDetail(fValue);
-    }
-
-    if ( GetConfigFile().GetFloatProperty("Setup", "GadgetQuantity", fValue) )
-    {
-        m_engine->SetGadgetQuantity(fValue);
-    }
-
-    if ( GetConfigFile().GetIntProperty("Setup", "AudioVolume", iValue) )
-    {
-        m_sound->SetAudioVolume(iValue);
-    }
-
-    if ( GetConfigFile().GetIntProperty("Setup", "MusicVolume", iValue) )
-    {
-        m_sound->SetMusicVolume(iValue);
-    }
-
-    if ( GetConfigFile().GetIntProperty("Setup", "EditIndentMode", iValue) )
-    {
-        m_engine->SetEditIndentMode(iValue);
-    }
-
-    if ( GetConfigFile().GetIntProperty("Setup", "EditIndentValue", iValue) )
-    {
-        m_engine->SetEditIndentValue(iValue);
-    }
-
-    CInput::GetInstancePointer()->LoadKeyBindings();
-
-    if ( GetConfigFile().GetIntProperty("Setup", "DeleteGamer", iValue) )
-    {
-        m_bDeleteGamer = iValue;
-    }
-
-    if ( GetConfigFile().GetStringProperty("Setup", "Resolution", key) )
-    {
-        std::istringstream resolution(key);
-        std::string ws, hs;
-        std::getline(resolution, ws, 'x');
-        std::getline(resolution, hs, 'x');
-        int w = 800, h = 600;
-        if (!ws.empty() && !hs.empty())
-        {
-            w = atoi(ws.c_str());
-            h = atoi(hs.c_str());
-        }
-
-        std::vector<Math::IntPoint> modes;
-        m_app->GetVideoResolutionList(modes, true, true);
-        for (auto it = modes.begin(); it != modes.end(); ++it)
-        {
-            if (it->x == w && it->y == h)
-            {
-                m_setupSelMode = it - modes.begin();
-                break;
-            }
-        }
-    }
-
-    if ( GetConfigFile().GetIntProperty("Setup", "Fullscreen", iValue) )
-    {
-        m_setupFull = (iValue == 1);
-    }
-
-    if ( GetConfigFile().GetIntProperty("Setup", "MipmapLevel", iValue))
-    {
-        m_engine->SetTextureMipmapLevel(iValue);
-    }
-
-    if (GetConfigFile().GetIntProperty("Setup", "Anisotropy", iValue))
-    {
-        m_engine->SetTextureAnisotropyLevel(iValue);
-    }
-
-    if (GetConfigFile().GetIntProperty("Setup", "ShadowMapping", iValue))
-    {
-        m_engine->SetShadowMapping(iValue);
-    }
-
-    if (GetConfigFile().GetIntProperty("Setup", "ShadowMappingQuality", iValue))
-    {
-        m_engine->SetShadowMappingQuality(iValue);
-    }
-
-    if (GetConfigFile().GetIntProperty("Setup", "ShadowMappingResolution", iValue))
-    {
-        if(iValue == 0)
-        {
-            m_engine->SetShadowMappingOffscreen(false);
-        }
-        else
-        {
-            m_engine->SetShadowMappingOffscreen(true);
-            m_engine->SetShadowMappingOffscreenResolution(iValue);
-        }
-    }
-
-    if (GetConfigFile().GetFloatProperty("Setup", "ShadowColor", fValue))
-    {
-        m_engine->SetShadowColor(fValue);
-    }
-
-    if (GetConfigFile().GetFloatProperty("Setup", "ShadowRange", fValue))
-    {
-        m_engine->SetShadowRange(fValue);
-    }
-
-    if (GetConfigFile().GetIntProperty("Setup", "MSAA", iValue))
-    {
-        m_engine->SetMultiSample(iValue);
-    }
-
-    if (GetConfigFile().GetIntProperty("Setup", "FilterMode", iValue))
-    {
-        m_engine->SetTextureFilterMode(static_cast<Gfx::TexFilter>(iValue));
     }
 }
 
@@ -5660,7 +5284,7 @@ void CMainDialog::FrameDialog(float rTime)
         }
     }
 
-    if ( !m_bGlint )  return;
+    if ( !m_settings->GetInterfaceGlint() )  return;
 
     m_dialogParti += rTime;
     if ( m_dialogParti < m_engine->ParticleAdapt(0.05f) )  return;
@@ -5789,13 +5413,6 @@ void CMainDialog::StopSuspend()
 }
 
 
-// Whether to use tooltips.
-
-bool CMainDialog::GetTooltip()
-{
-    return m_bTooltip;
-}
-
 // Specifies whether a dialog is displayed.
 
 bool CMainDialog::IsDialog()
@@ -5809,42 +5426,6 @@ bool CMainDialog::IsDialog()
 bool CMainDialog::GetSceneSoluce()
 {
     return m_bSceneSoluce;
-}
-
-
-// Indicates if there are reflections on the buttons.
-
-bool CMainDialog::GetGlint()
-{
-    return m_bGlint;
-}
-
-// Whether to show 4:solutions.
-
-bool CMainDialog::GetSoluce4()
-{
-    return m_bSoluce4;
-}
-
-// Whether to show the cinematics.
-
-bool CMainDialog::GetMovies()
-{
-    return m_bMovies;
-}
-
-// Whether to make an animation on reset.
-
-bool CMainDialog::GetNiceReset()
-{
-    return m_bNiceReset;
-}
-
-// Indicates whether the fire causes damage to its own units.
-
-bool CMainDialog::GetHimselfDamage()
-{
-    return m_bHimselfDamage;
 }
 
 bool CMainDialog::GetGamerOnlyHead()

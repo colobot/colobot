@@ -415,7 +415,7 @@ void CControl::GlintFrame(const Event &event)
          (m_state & STATE_ENABLE ) == 0 ||
          (m_state & STATE_VISIBLE) == 0 )  return;
 
-    if ( !m_main->GetGlint() )  return;
+    if ( !m_main->GetInterfaceGlint() )  return;
 
     m_glintProgress += event.rTime;
 

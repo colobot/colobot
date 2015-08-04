@@ -32,6 +32,7 @@
 #include "common/make_unique.h"
 #include "common/misc.h"
 #include "common/restext.h"
+#include "common/settings.h"
 #include "common/stringutils.h"
 
 #include "common/resources/inputstream.h"
@@ -273,6 +274,7 @@ void CRobotMain::Create()
     m_planet     = m_engine->GetPlanet();
     m_pause      = CPauseManager::GetInstancePointer();
     m_input      = CInput::GetInstancePointer();
+    m_settings   = new CSettings();
 
     m_interface   = new Ui::CInterface();
     m_terrain     = new Gfx::CTerrain();
@@ -334,6 +336,9 @@ void CRobotMain::Create()
 //! Destructor of robot application
 CRobotMain::~CRobotMain()
 {
+    delete m_settings;
+    m_settings = nullptr;
+
     delete m_displayText;
     m_displayText = nullptr;
 
@@ -406,7 +411,8 @@ void CRobotMain::ResetAfterDeviceChanged()
 //! Creates the file colobot.ini at the first time
 void CRobotMain::CreateConfigFile()
 {
-    m_dialog->SetupMemorize();
+    m_settings->SaveSettings();
+    m_settings->SaveResolutionSettings(m_app->GetVideoConfig());
 
     GetConfigFile().SetFloatProperty("Edit", "FontSize", m_fontSize);
     GetConfigFile().SetFloatProperty("Edit", "WindowPosX", m_windowPos.x);
@@ -423,7 +429,7 @@ void CRobotMain::CreateConfigFile()
 
 void CRobotMain::LoadConfigFile()
 {
-    m_dialog->SetupRecall();
+    m_settings->LoadSettings();
 }
 
 //! Changes phase
@@ -2241,7 +2247,7 @@ void CRobotMain::HiliteObject(Math::Point pos)
     CObject* obj = m_short->DetectShort(pos);
 
     std::string interfaceTooltipName;
-    if (m_dialog->GetTooltip() && m_interface->GetTooltip(pos, interfaceTooltipName))
+    if (m_settings->GetTooltips() && m_interface->GetTooltip(pos, interfaceTooltipName))
     {
         m_tooltipPos = pos;
         m_tooltipName = interfaceTooltipName;
@@ -2270,7 +2276,7 @@ void CRobotMain::HiliteObject(Math::Point pos)
     if (obj != nullptr)
     {
         std::string objectTooltipName;
-        if (m_dialog->GetTooltip() && obj->GetTooltipName(objectTooltipName))
+        if (m_settings->GetTooltips() && obj->GetTooltipName(objectTooltipName))
         {
             m_tooltipPos = pos;
             m_tooltipName = objectTooltipName;
@@ -3649,7 +3655,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                         if (i != -1)
                         {
                             if (i != PARAM_FIXSCENE &&
-                                !m_dialog->GetMovies()) i = 0;
+                                !m_settings->GetMovies()) i = 0;
                             automat->Start(i);  // starts the film
                         }
                     }
@@ -5686,29 +5692,29 @@ char* CRobotMain::GetScriptFile()
 }
 
 
-bool CRobotMain::GetGlint()
+bool CRobotMain::GetInterfaceGlint()
 {
-    return m_dialog->GetGlint();
+    return m_settings->GetInterfaceGlint();
 }
 
 bool CRobotMain::GetSoluce4()
 {
-    return m_dialog->GetSoluce4();
+    return m_settings->GetSoluce4();
 }
 
 bool CRobotMain::GetMovies()
 {
-    return m_dialog->GetMovies();
+    return m_settings->GetMovies();
 }
 
 bool CRobotMain::GetNiceReset()
 {
-    return m_dialog->GetNiceReset();
+    return m_settings->GetNiceReset();
 }
 
 bool CRobotMain::GetHimselfDamage()
 {
-    return m_dialog->GetHimselfDamage();
+    return m_settings->GetHimselfDamage();
 }
 
 bool CRobotMain::GetShowSoluce()

@@ -31,6 +31,7 @@
 
 
 class CEventQueue;
+class CSettings;
 class CSoundInterface;
 
 namespace Gfx
@@ -61,13 +62,6 @@ public:
 
     bool    GetSceneSoluce();
 
-    bool    GetTooltip();
-    bool    GetGlint();
-    bool    GetSoluce4();
-    bool    GetMovies();
-    bool    GetNiceReset();
-    bool    GetHimselfDamage();
-
     void    StartAbort();
     void    StartDeleteObject();
     void    StartDeleteGame(char *gamer);
@@ -79,9 +73,6 @@ public:
 
     void    StartSuspend();
     void    StopSuspend();
-
-    void    SetupMemorize();
-    void    SetupRecall();
 
     void    UpdateChapterPassed();
     bool    NextMission();
@@ -142,6 +133,7 @@ protected:
     Gfx::CCamera*     m_camera;
     CSoundInterface*  m_sound;
     CPauseManager*    m_pause;
+    CSettings*        m_settings;
 
     Phase           m_phase;            // copy of CRobotMain
     Phase           m_phaseSetup;           // tab selected
@@ -158,10 +150,10 @@ protected:
     int             m_accessChap;
     bool            m_bSceneSoluce;         // shows the solution
     bool            m_bSimulSetup;          // adjustment during the game
+
     bool            m_accessEnable;
     bool            m_accessMission;
     bool            m_accessUser;
-    bool            m_bDeleteGamer;
 
     std::vector<std::string> m_customLevelList;
 
@@ -170,20 +162,6 @@ protected:
 
     int             m_setupSelMode;
     bool            m_setupFull;
-
-    bool            m_bTooltip;         // tooltips to be displayed?
-    bool            m_bGlint;           // reflections on buttons?
-    bool            m_bRain;            // rain in the interface?
-    bool            m_bSoluce4;         // solutions in program 4?
-    bool            m_bMovies;          // cinematics?
-    bool            m_bNiceReset;           // for reset animation
-    bool            m_bHimselfDamage;       // for shots
-    bool            m_bCameraScroll;        // for CCamera
-    bool            m_bCameraInvertX;       // for CCamera
-    bool            m_bCameraInvertY;       // for CCamera
-    bool            m_bEffect;          // for CCamera
-    bool            m_bBlood;          // for CCamera
-    bool            m_bAutosave;
 
     Math::Point          m_glintMouse;
     float                m_glintTime;

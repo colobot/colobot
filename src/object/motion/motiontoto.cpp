@@ -779,7 +779,7 @@ bool CMotionToto::EventFrame(const Event &event)
             m_particle->CreateParticle(pos, speed, dim, type, 0.5f+Math::Rand()*0.5f, 0.0f, 1.0f, Gfx::SH_INTERFACE);
         }
 
-//?     if ( m_bDisplayInfo && m_main->GetGlint() )
+//?     if ( m_bDisplayInfo && m_main->GetInterfaceGlint() )
         if ( false )
         {
             pos.x = (Math::Rand()-0.5f)*1.4f;

@@ -167,6 +167,11 @@ void CCamera::SetEffect(bool enable)
     m_effect = enable;
 }
 
+bool CCamera::GetEffect()
+{
+    return m_effect;
+}
+
 void CCamera::SetBlood(bool enable)
 {
     m_blood = enable;
@@ -182,14 +187,29 @@ void CCamera::SetCameraScroll(bool scroll)
     m_cameraScroll = scroll;
 }
 
+bool CCamera::GetCameraScroll()
+{
+    return m_cameraScroll;
+}
+
 void CCamera::SetCameraInvertX(bool invert)
 {
     m_cameraInvertX = invert;
 }
 
+bool CCamera::GetCameraInvertX()
+{
+    return m_cameraInvertX;
+}
+
 void CCamera::SetCameraInvertY(bool invert)
 {
     m_cameraInvertY = invert;
+}
+
+bool CCamera::GetCameraInvertY()
+{
+    return m_cameraInvertY;
 }
 
 float CCamera::GetMotorTurn()
@@ -1684,4 +1704,3 @@ Math::Vector CCamera::ExcludeObject(Math::Vector eye, Math::Vector lookat,
 
 
 }
-

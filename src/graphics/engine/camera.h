@@ -203,11 +203,15 @@ public:
     void        SetScriptLookat(Math::Vector lookat);
 
     void        SetEffect(bool enable);
+    bool        GetEffect();
     void        SetBlood(bool enable);
     bool        GetBlood();
     void        SetCameraScroll(bool scroll);
+    bool        GetCameraScroll();
     void        SetCameraInvertX(bool invert);
+    bool        GetCameraInvertX();
     void        SetCameraInvertY(bool invert);
+    bool        GetCameraInvertY();
 
     //! Returns an additional force to turn
     float       GetMotorTurn();
@@ -400,4 +404,3 @@ protected:
 
 
 } // namespace Gfx
-
