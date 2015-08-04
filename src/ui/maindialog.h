@@ -151,10 +151,6 @@ protected:
     bool            m_bSceneSoluce;         // shows the solution
     bool            m_bSimulSetup;          // adjustment during the game
 
-    bool            m_accessEnable;
-    bool            m_accessMission;
-    bool            m_accessUser;
-
     std::vector<std::string> m_customLevelList;
 
     int             m_shotDelay;        // number of frames before copy

@@ -134,10 +134,6 @@ CMainDialog::CMainDialog()
     m_bSceneSoluce = false;
     m_bSimulSetup  = false;
 
-    m_accessEnable = true;
-    m_accessMission= true;
-    m_accessUser   = true;
-
     for(int i = 0; i < static_cast<int>(LevelCategory::Max); i++)
     {
         m_chap[static_cast<LevelCategory>(i)] = 0;
@@ -258,12 +254,9 @@ void CMainDialog::ChangePhase(Phase phase)
         ddim.x = 0.20f;
         ddim.y = dim.y*2.4f;
         pos.x = 0.40f;
-        if ( m_accessEnable && m_accessMission )
-        {
-            pos.y = oy+sy*9.1f;
-            pg = pw->CreateGroup(pos, ddim, 23, EVENT_LABEL1);  // yellow
-            pg->SetState(STATE_SHADOW);
-        }
+        pos.y = oy+sy*9.1f;
+        pg = pw->CreateGroup(pos, ddim, 23, EVENT_LABEL1);  // yellow
+        pg->SetState(STATE_SHADOW);
         pos.y = oy+sy*6.8f;
         pg = pw->CreateGroup(pos, ddim, 24, EVENT_LABEL1);  // orange
         pg->SetState(STATE_SHADOW);
@@ -279,16 +272,13 @@ void CMainDialog::ChangePhase(Phase phase)
         ddim.y = dim.y*1;
         pos.x = 0.41f;
 
-        if ( m_accessEnable && m_accessMission )
-        {
-            pos.y = oy+sy*10.3f;
-            pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_MISSION);
-            pb->SetState(STATE_SHADOW);
+        pos.y = oy+sy*10.3f;
+        pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_MISSION);
+        pb->SetState(STATE_SHADOW);
 
-            pos.y = oy+sy*9.2f;
-            pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_FREE);
-            pb->SetState(STATE_SHADOW);
-        }
+        pos.y = oy+sy*9.2f;
+        pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_FREE);
+        pb->SetState(STATE_SHADOW);
 
         pos.y = oy+sy*8.0f;
         pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_TRAINER);
@@ -310,31 +300,28 @@ void CMainDialog::ChangePhase(Phase phase)
         pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_QUIT);
         pb->SetState(STATE_SHADOW);
 
-        if ( m_accessEnable && m_accessUser )
-        {
-            pos.x  = 447.0f/640.0f;
-            pos.y  = 313.0f/480.0f;
-            ddim.x = 0.09f;
-            pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_USER);
-            pb->SetState(STATE_SHADOW);
+        pos.x  = 447.0f/640.0f;
+        pos.y  = 313.0f/480.0f;
+        ddim.x = 0.09f;
+        pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_USER);
+        pb->SetState(STATE_SHADOW);
 
-            try
+        try
+        {
+            CLevelParser levelParser("levels/custom/config.txt");
+            if (levelParser.Exists())
             {
-                CLevelParser levelParser("levels/custom/config.txt");
-                if (levelParser.Exists())
-                {
-                    levelParser.Load();
-                    CLevelParserLine* line = levelParser.Get("Button");
-                    if (line->GetParam("name")->IsDefined())
-                        pb->SetName(line->GetParam("name")->AsString());
-                    if (line->GetParam("tooltip")->IsDefined())
-                        pb->SetTooltip(line->GetParam("tooltip")->AsString());
-                }
+                levelParser.Load();
+                CLevelParserLine* line = levelParser.Get("Button");
+                if (line->GetParam("name")->IsDefined())
+                    pb->SetName(line->GetParam("name")->AsString());
+                if (line->GetParam("tooltip")->IsDefined())
+                    pb->SetTooltip(line->GetParam("tooltip")->AsString());
             }
-            catch (CLevelParserException& e)
-            {
-                GetLogger()->Error("Failed loading userlevel button name: %s\n", e.what());
-            }
+        }
+        catch (CLevelParserException& e)
+        {
+            GetLogger()->Error("Failed loading userlevel button name: %s\n", e.what());
         }
 
         /*pos.x  = 139.0f/640.0f;
