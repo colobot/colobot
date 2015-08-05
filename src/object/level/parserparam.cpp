@@ -23,7 +23,6 @@
 
 #include "common/logger.h"
 #include "common/make_unique.h"
-#include "common/pathman.h"
 
 #include "common/resources/resourcemanager.h"
 
@@ -227,7 +226,7 @@ std::string CLevelParserParam::ToPath(std::string path, const std::string defaul
     if (defaultDir == "" && path.find("%lvl%") != std::string::npos)
         throw CLevelParserException("TODO: Param "+m_name+" does not yet support %lvl%! :(");
 
-    return CPathManager::InjectLevelDir(path, defaultDir);
+    return GetLine()->GetLevel()->InjectLevelPaths(path, defaultDir);
 }
 
 std::string CLevelParserParam::AsPath(const std::string defaultDir)
@@ -241,7 +240,7 @@ std::string CLevelParserParam::AsPath(const std::string defaultDir)
 std::string CLevelParserParam::AsPath(const std::string defaultDir, std::string def)
 {
     if (m_empty)
-        return CPathManager::InjectLevelDir(def, defaultDir);
+        return GetLine()->GetLevel()->InjectLevelPaths(def, defaultDir);
 
     return ToPath(AsString(def), defaultDir);
 }

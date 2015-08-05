@@ -22,6 +22,7 @@
 #include "app/app.h"
 
 #include "common/make_unique.h"
+#include "common/stringutils.h"
 
 #include "common/resources/inputstream.h"
 #include "common/resources/outputstream.h"
@@ -44,16 +45,28 @@
 CLevelParser::CLevelParser()
 {
     m_filename = "";
+
+    m_pathCat  = "";
+    m_pathChap = "";
+    m_pathLvl  = "";
 }
 
 CLevelParser::CLevelParser(std::string filename)
 {
     m_filename = filename;
+
+    m_pathCat  = "";
+    m_pathChap = "";
+    m_pathLvl  = "";
 }
 
 CLevelParser::CLevelParser(std::string category, int chapter, int rank)
 {
     m_filename = BuildScenePath(category, chapter, rank);
+
+    m_pathCat  = BuildCategoryPath(category);
+    m_pathChap = BuildScenePath(category, chapter, 0, false);
+    m_pathLvl  = BuildScenePath(category, chapter, rank, false);
 }
 
 CLevelParser::CLevelParser(LevelCategory category, int chapter, int rank)
@@ -187,6 +200,7 @@ void CLevelParser::Load()
             continue;
 
         auto parserLine = MakeUnique<CLevelParserLine>(lineNumber, command);
+        parserLine->SetLevel(this);
 
         if (command.length() > 2 && command[command.length() - 2] == '.')
         {
@@ -265,7 +279,27 @@ void CLevelParser::Load()
             boost::algorithm::trim(line);
         }
 
-        AddLine(std::move(parserLine));
+        if (parserLine->GetCommand().length() > 1 && parserLine->GetCommand()[0] == '#')
+        {
+            std::string cmd = parserLine->GetCommand().substr(1, std::string::npos);
+            if(cmd == "Include")
+            {
+                std::unique_ptr<CLevelParser> includeParser = MakeUnique<CLevelParser>(parserLine->GetParam("file")->AsPath(""));
+                includeParser->Load();
+                for(CLevelParserLineUPtr& line : includeParser->m_lines)
+                {
+                    AddLine(std::move(line));
+                }
+            }
+            else
+            {
+                throw CLevelParserException("Unknown preprocessor command '#" + cmd + "' (in " + m_filename + ":" + StrUtils::ToString<int>(lineNumber) + ")");
+            }
+        }
+        else
+        {
+            AddLine(std::move(parserLine));
+        }
     }
 
     file.close();
@@ -284,6 +318,31 @@ void CLevelParser::Save()
     }
 
     file.close();
+}
+
+std::string CLevelParser::InjectLevelPaths(const std::string& path, const std::string& defaultDir)
+{
+    std::string newPath = path;
+    if(!m_pathLvl.empty() ) boost::replace_all(newPath, "%lvl%",  m_pathLvl);
+    if(!m_pathChap.empty()) boost::replace_all(newPath, "%chap%", m_pathChap);
+    if(!m_pathCat.empty() ) boost::replace_all(newPath, "%cat%",  m_pathCat);
+    if(newPath == path && !path.empty())
+    {
+        newPath = defaultDir + (!defaultDir.empty() ? "/" : "") + newPath;
+    }
+
+    std::string langPath = newPath;
+    std::string langStr(1, CApplication::GetInstancePointer()->GetLanguageChar());
+    boost::replace_all(langPath, "%lng%", langStr);
+    if(CResourceManager::Exists(langPath))
+        return langPath;
+
+    // Fallback to English if file doesn't exist
+    boost::replace_all(newPath, "%lng%", "E");
+    if(CResourceManager::Exists(newPath))
+        return newPath;
+
+    return langPath; // Return current language file if none of the files exist
 }
 
 const std::string& CLevelParser::GetFilename()

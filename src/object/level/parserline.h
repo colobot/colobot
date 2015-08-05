@@ -48,6 +48,8 @@ public:
     //! Set CLevelParser this line is part of
     void SetLevel(CLevelParser* level);
 
+    const std::string& GetLevelFilename();
+
     std::string GetCommand();
     void SetCommand(std::string command);
 
@@ -58,6 +60,7 @@ public:
 
 private:
     CLevelParser* m_level;
+    std::string m_levelFilename;
     int m_lineNumber;
     std::string m_command;
     std::map<std::string, CLevelParserParamUPtr> m_params;

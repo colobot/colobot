@@ -26,6 +26,10 @@
 
 #include "object/level_category.h"
 
+#include "common/make_unique.h"
+
+#include "object/robotmain.h"
+
 #include "object/level/parserexceptions.h"
 #include "object/level/parserline.h"
 #include "object/level/parserparam.h"
@@ -65,6 +69,9 @@ public:
     //! Save file
     void Save();
 
+    //! Inject %something% paths
+    std::string InjectLevelPaths(const std::string& path, const std::string& defaultDir = "");
+
     //! Get filename
     const std::string& GetFilename();
 
@@ -83,4 +90,15 @@ public:
 private:
     std::string m_filename;
     std::vector<CLevelParserLineUPtr> m_lines;
+
+    std::string m_pathCat;
+    std::string m_pathChap;
+    std::string m_pathLvl;
 };
+
+inline std::string InjectLevelPathsForCurrentLevel(const std::string& path, const std::string& defaultDir = "")
+{
+    CRobotMain* main = CRobotMain::GetInstancePointer();
+    auto levelParser = MakeUnique<CLevelParser>(main->GetLevelCategory(), main->GetLevelChap(), main->GetLevelRank());
+    return levelParser->InjectLevelPaths(path, "ai");
+}

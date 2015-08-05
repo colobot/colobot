@@ -169,31 +169,3 @@ void CPathManager::LoadModsFromDir(const std::string &dir)
         GetLogger()->Warn("Unable to load mods from directory '%s': %s\n", dir.c_str(), e.what());
     }
 }
-
-std::string CPathManager::InjectLevelDir(std::string path, const std::string& defaultDir)
-{
-    std::string newPath = path;
-    std::string lvlDir = CLevelParser::BuildScenePath(CRobotMain::GetInstancePointer()->GetLevelCategory(), CRobotMain::GetInstancePointer()->GetLevelChap(), CRobotMain::GetInstancePointer()->GetLevelRank(), false);
-    boost::replace_all(newPath, "%lvl%", lvlDir);
-    std::string chapDir = CLevelParser::BuildScenePath(CRobotMain::GetInstancePointer()->GetLevelCategory(), CRobotMain::GetInstancePointer()->GetLevelChap(), 0, false);
-    boost::replace_all(newPath, "%chap%", chapDir);
-    std::string catDir = CLevelParser::BuildCategoryPath(CRobotMain::GetInstancePointer()->GetLevelCategory());
-    boost::replace_all(newPath, "%cat%", catDir);
-    if(newPath == path && !path.empty())
-    {
-        newPath = defaultDir + (!defaultDir.empty() ? "/" : "") + newPath;
-    }
-
-    std::string langPath = newPath;
-    std::string langStr(1, CApplication::GetInstancePointer()->GetLanguageChar());
-    boost::replace_all(langPath, "%lng%", langStr);
-    if(CResourceManager::Exists(langPath))
-        return langPath;
-
-    // Fallback to English if file doesn't exist
-    boost::replace_all(newPath, "%lng%", "E");
-    if(CResourceManager::Exists(newPath))
-        return newPath;
-
-    return langPath; // Return current language file if none of the files exist
-}

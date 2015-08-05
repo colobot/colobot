@@ -27,12 +27,14 @@
 CLevelParserLine::CLevelParserLine(std::string command)
 {
     m_command = command;
+    m_levelFilename = "";
     m_lineNumber = 0;
 }
 
 CLevelParserLine::CLevelParserLine(int lineNumber, std::string command)
 {
     m_command = command;
+    m_levelFilename = "";
     m_lineNumber = lineNumber;
 }
 
@@ -49,6 +51,17 @@ CLevelParser* CLevelParserLine::GetLevel()
 void CLevelParserLine::SetLevel(CLevelParser* level)
 {
     m_level = level;
+
+    // Only on the first call - this makes sure the level name doesn't change if the file is loaded using #Include
+    if (m_levelFilename.empty())
+    {
+        m_levelFilename = m_level->GetFilename();
+    }
+}
+
+const std::string& CLevelParserLine::GetLevelFilename()
+{
+    return m_levelFilename;
 }
 
 std::string CLevelParserLine::GetCommand()

@@ -28,7 +28,7 @@ std::string FormatMissingParamError(CLevelParserParam* thisParam) NOEXCEPT
 {
     auto paramName = thisParam->GetName();
     auto lineNumber = boost::lexical_cast<std::string>(thisParam->GetLine()->GetLineNumber());
-    auto fileName = thisParam->GetLine()->GetLevel()->GetFilename();
+    auto fileName = thisParam->GetLine()->GetLevelFilename();
     return "Missing required param '" + paramName + "' (in " + fileName + ":" + lineNumber + ")";
 }
 
@@ -42,7 +42,7 @@ std::string FormatBadParamError(CLevelParserParam* thisParam, std::string reques
     auto paramName = thisParam->GetName();
     auto paramValue = thisParam->GetValue();
     auto lineNumber = boost::lexical_cast<std::string>(thisParam->GetLine()->GetLineNumber());
-    auto fileName = thisParam->GetLine()->GetLevel()->GetFilename();
+    auto fileName = thisParam->GetLine()->GetLevelFilename();
     return "Unable to parse '" + paramValue + "' as " + requestedType + " (param '" + paramName + "' in " + fileName + ":" + lineNumber + ")";
 }
 

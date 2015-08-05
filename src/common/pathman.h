@@ -52,9 +52,6 @@ public:
     //! Loads configured paths
     void InitPaths();
 
-    //! Does the %lvl%, %chap%, %cat% and %lng% replacements (with fallback to English when translations are not available)
-    static std::string InjectLevelDir(std::string path, const std::string& defaultDir = "");
-
 private:
     //! Loads all mods from given directory
     void LoadModsFromDir(const std::string &dir);

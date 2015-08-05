@@ -27,10 +27,11 @@
 
 #include "common/logger.h"
 #include "common/misc.h"
-#include "common/pathman.h"
 
 #include "common/resources/inputstream.h"
 #include "common/resources/outputstream.h"
+
+#include "object/level/parser.h"
 
 #include "object/robotmain.h"
 
@@ -788,7 +789,7 @@ void CEdit::HyperJump(std::string name, std::string marker)
     sMarker = marker;
 
     filename = name + std::string(".txt");
-    filename = CPathManager::InjectLevelDir(filename, "help/%lng%");
+    filename = InjectLevelPathsForCurrentLevel(filename, "help/%lng%");
     boost::replace_all(filename, "\\", "/"); //TODO: Fix this in files
 
     if ( ReadText(filename) )
@@ -1144,7 +1145,7 @@ void CEdit::DrawImage(Math::Point pos, std::string name, float width,
     std::string filename;
 
     filename = name + ".png";
-    filename = CPathManager::InjectLevelDir(filename, "icons");
+    filename = InjectLevelPathsForCurrentLevel(filename, "icons");
     boost::replace_all(filename, "\\", "/"); //TODO: Fix this in files
 
     m_engine->SetTexture(filename);
@@ -1434,7 +1435,7 @@ void CEdit::LoadImage(std::string name)
 {
     std::string filename;
     filename = name + ".png";
-    filename = CPathManager::InjectLevelDir(filename, "icons");
+    filename = InjectLevelPathsForCurrentLevel(filename, "icons");
     boost::replace_all(filename, "\\", "/"); //TODO: Fix this in files
     m_engine->LoadTexture(filename);
 }
@@ -3221,4 +3222,3 @@ void CEdit::UpdateScroll()
 }
 
 }
-

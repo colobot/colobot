@@ -25,7 +25,6 @@
 
 #include "common/logger.h"
 #include "common/make_unique.h"
-#include "common/pathman.h"
 
 #include "common/resources/inputstream.h"
 #include "common/resources/outputstream.h"
@@ -45,6 +44,8 @@
 #include "object/auto/auto.h"
 #include "object/auto/autobase.h"
 #include "object/auto/autofactory.h"
+
+#include "object/level/parser.h"
 
 #include "object/motion/motionvehicle.h"
 
@@ -1614,7 +1615,7 @@ bool CScriptFunctions::rProduce(CBotVar* var, CBotVar* result, int& exception, v
 
     if (name[0] != 0)
     {
-        std::string name2 = CPathManager::InjectLevelDir(name, "ai");
+        std::string name2 = InjectLevelPathsForCurrentLevel(name, "ai");
         if (object->Implements(ObjectInterfaceType::Programmable))
         {
             CBrain* brain = dynamic_cast<CProgrammableObject*>(object)->GetBrain();

@@ -3816,7 +3816,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             if (!m_sceneReadPath.empty()) continue; // ignore errors when loading saved game (TODO: don't report ones that are just not loaded when loading saved game)
             if (resetObject) continue; // ignore when reseting just objects (TODO: see above)
 
-            throw CLevelParserException("Unknown command: '" + line->GetCommand() + "' in " + line->GetLevel()->GetFilename() + ":" + boost::lexical_cast<std::string>(line->GetLineNumber()));
+            throw CLevelParserException("Unknown command: '" + line->GetCommand() + "' in " + line->GetLevelFilename() + ":" + boost::lexical_cast<std::string>(line->GetLineNumber()));
         }
 
         if (m_sceneReadPath.empty())
