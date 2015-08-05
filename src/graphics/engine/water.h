@@ -37,53 +37,8 @@ class CSoundInterface;
 namespace Gfx
 {
 
-
 class CEngine;
 class CTerrain;
-
-/**
- * \struct WaterLine
- * \brief Water strip
- */
-struct WaterLine
-{
-    //@{
-    //! Beginning of line (terrain coordinates)
-    short       x, y;
-    //@}
-    //! Length in X direction (terrain coordinates)
-    short       len;
-    //! X (1, 2) and Z coordinates (world coordinates)
-    float       px1, px2, pz;
-
-    WaterLine()
-    {
-        x = y = 0;
-        len = 0;
-        px1 = px2 = pz = 0.0f;
-    }
-};
-
-/**
- * \struct WaterVapor
- * \brief Water particle effect
- */
-struct WaterVapor
-{
-    bool              used;
-    ParticleType type;
-    Math::Vector      pos;
-    float             delay;
-    float             time;
-    float             last;
-
-    WaterVapor()
-    {
-        used = false;
-        type = PARTIWATER;
-        delay = time = last = 0.0f;
-    }
-};
 
 /**
  * \enum WaterType
@@ -170,39 +125,68 @@ protected:
     void        VaporFrame(int i, float rTime);
 
 protected:
-    CEngine*          m_engine;
-    CDevice*          m_device;
-    CTerrain*         m_terrain;
-    CParticle*        m_particle;
-    CSoundInterface*  m_sound;
+    CEngine*          m_engine = nullptr;
+    CDevice*          m_device = nullptr;
+    CTerrain*         m_terrain = nullptr;
+    CParticle*        m_particle = nullptr;
+    CSoundInterface*  m_sound = nullptr;
 
-    WaterType       m_type[2];
+    WaterType       m_type[2] = {WATER_NULL, WATER_NULL};
     std::string     m_fileName;
     //! Overall level
-    float           m_level;
+    float           m_level = 0.0f;
     //! Amplitude of reflections
-    float           m_glint;
+    float           m_glint = 0.0f;
     //! Amplitude of swirls
     Math::Vector    m_eddy;
     //! Diffuse color
     Color           m_diffuse;
     //! Ambient color
     Color           m_ambient;
-    float           m_time;
-    float           m_lastLava;
-    int             m_subdiv;
+    float           m_time = 0.0f;
+    float           m_lastLava = 0.0f;
+    int             m_subdiv = 4;
 
     //! Number of brick*mosaics
-    int             m_brickCount;
+    int             m_brickCount = 0;
     //! Size of a item in an brick
-    float           m_brickSize;
+    float           m_brickSize = 0;
 
+    /**
+     * \struct WaterLine
+     * \brief Water strip
+     */
+    struct WaterLine
+    {
+        //@{
+        //! Beginning of line (terrain coordinates)
+        short       x = 0, y = 0;
+        //@}
+        //! Length in X direction (terrain coordinates)
+        short       len = 0;
+        //! X (1, 2) and Z coordinates (world coordinates)
+        float       px1 = 0, px2 = 0, pz = 0;
+    };
     std::vector<WaterLine>  m_lines;
+
+    /**
+     * \struct WaterVapor
+     * \brief Water particle effect
+     */
+    struct WaterVapor
+    {
+        bool              used = false;
+        ParticleType type = PARTIWATER;
+        Math::Vector      pos;
+        float             delay = 0.0f;
+        float             time = 0.0f;
+        float             last = 0.0f;
+    };
     std::vector<WaterVapor> m_vapors;
 
-    bool            m_draw;
-    bool            m_lava;
-    Color           m_color;
+    bool            m_draw = true;
+    bool            m_lava = false;
+    Color           m_color = Color(1.0f, 1.0f, 1.0f, 1.0f);
 };
 
 

@@ -58,6 +58,11 @@ CTerrain::CTerrain()
     m_defaultHardness = 0.5f;
     m_useMaterials    = false;
 
+    m_flyingMaxHeight = 0.0f;
+    m_maxMaterialID = 0;
+    m_materialAutoID = 0;
+    m_materialPointCount = 0;
+
     FlushBuildingLevel();
     FlushFlyingLimit();
     FlushMaterials();
@@ -731,7 +736,7 @@ bool CTerrain::CreateMosaic(int ox, int oy, int step, int objRank,
     return true;
 }
 
-TerrainMaterial* CTerrain::FindMaterial(int id)
+CTerrain::TerrainMaterial* CTerrain::FindMaterial(int id)
 {
     for (int i = 0; i < static_cast<int>( m_materials.size() ); i++)
     {

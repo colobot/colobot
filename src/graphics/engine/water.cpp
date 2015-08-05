@@ -41,40 +41,24 @@ namespace Gfx
 {
 
 
+namespace
+{
 const int WATERLINE_PREALLOCATE_COUNT = 500;
-
 // TODO: remove the limit?
 const int VAPOR_SIZE = 10;
+} // anonymous namespace
 
 
 CWater::CWater(CEngine* engine)
+    : m_engine(engine),
+      m_vapors(VAPOR_SIZE, WaterVapor())
 {
-    m_engine = engine;
-    m_terrain = nullptr;
-    m_particle = nullptr;
-    m_sound = nullptr;
-
-    m_type[0] = WATER_NULL;
-    m_type[1] = WATER_NULL;
-    m_level = 0.0f;
-    m_draw = true;
-    m_lava = false;
-    m_color = Color(1.0f, 1.0f, 1.0f, 1.0f);
-    m_subdiv = 4;
-
     m_lines.reserve(WATERLINE_PREALLOCATE_COUNT);
-
-    std::vector<WaterVapor>(VAPOR_SIZE).swap(m_vapors);
 }
 
 CWater::~CWater()
 {
-    m_engine = nullptr;
-    m_terrain = nullptr;
-    m_particle = nullptr;
-    m_sound = nullptr;
 }
-
 
 bool CWater::EventProcess(const Event &event)
 {

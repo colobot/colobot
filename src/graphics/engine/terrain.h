@@ -24,8 +24,15 @@
 
 #pragma once
 
+#include "graphics/core/material.h"
+#include "graphics/core/vertex.h"
 
-#include "graphics/engine/engine.h"
+#include "math/const.h"
+#include "math/point.h"
+#include "math/vector.h"
+
+#include <string>
+#include <vector>
 
 
 // Graphics module namespace
@@ -62,91 +69,6 @@ enum TerrainRes
     TR_KEY_D     = 7
     //@}
 };
-
-/**
- * \struct BuildingLevel
- * \brief Flat level for building
- */
-struct BuildingLevel
-{
-    Math::Vector center;
-    float        factor;
-    float        min;
-    float        max;
-    float        level;
-    float        height;
-    float        bboxMinX;
-    float        bboxMaxX;
-    float        bboxMinZ;
-    float        bboxMaxZ;
-
-    BuildingLevel()
-    {
-        factor = min = max = level = height = 0.0f;
-        bboxMinX = bboxMaxX = bboxMinZ = bboxMaxZ = 0.0f;
-    }
-};
-
-/**
- * \struct TerrainMaterial
- * \brief Material for ground surface
- */
-struct TerrainMaterial
-{
-    //! Unique ID
-    short       id;
-    //! Texture
-    std::string texName;
-    //! UV texture coordinates
-    Math::Point uv;
-    //! Terrain hardness (defines e.g. sound of walking)
-    float       hardness;
-    //! IDs of neighbor materials: up, right, down, left
-    char        mat[4];
-
-    TerrainMaterial()
-    {
-        id = 0;
-        hardness = 0.0f;
-        mat[0] = mat[1] = mat[2] = mat[3] = 0;
-    }
-};
-
-/**
- * \struct TerrainMaterialPoint
- * \brief Material used for terrain point
- */
-struct TerrainMaterialPoint
-{
-    //! ID of material
-    short       id;
-    //! IDs of neighbor materials: up, right, down, left
-    char        mat[4];
-
-    TerrainMaterialPoint()
-    {
-        id = 0;
-        mat[0] = mat[1] = mat[2] = mat[3] = 0;
-    }
-};
-
-/**
- * \struct FlyingLimit
- * \brief Spherical limit of flight
- */
-struct FlyingLimit
-{
-    Math::Vector center;
-    float        extRadius;
-    float        intRadius;
-    float        maxHeight;
-
-    FlyingLimit()
-    {
-        extRadius = intRadius = maxHeight = 0.0f;
-    }
-};
-
 
 /**
  * \class CTerrain
@@ -336,6 +258,7 @@ protected:
     //! Creates all objects in a mesh square ground
     bool        CreateSquare(int x, int y);
 
+    struct TerrainMaterial;
     //! Seeks a material based on its ID
     TerrainMaterial* FindMaterial(int id);
     //! Seeks a material based on neighbor values
@@ -398,18 +321,66 @@ protected:
     std::string     m_texBaseExt;
     //! Default hardness for level material
     float           m_defaultHardness;
+    /**
+     * \struct TerrainMaterial
+     * \brief Material for ground surface
+     */
+    struct TerrainMaterial
+    {
+        //! Unique ID
+        short       id = 0;
+        //! Texture
+        std::string texName;
+        //! UV texture coordinates
+        Math::Point uv;
+        //! Terrain hardness (defines e.g. sound of walking)
+        float       hardness = 0.0f;
+        //! IDs of neighbor materials: up, right, down, left
+        char        mat[4] = {0};
+    };
+    //! Terrain materials
+    std::vector<TerrainMaterial> m_materials;
+
+    /**
+     * \struct TerrainMaterialPoint
+     * \brief Material used for terrain point
+     */
+    struct TerrainMaterialPoint
+    {
+        //! ID of material
+        short       id = 0;
+        //! IDs of neighbor materials: up, right, down, left
+        char        mat[4] = {0};
+    };
+
+
+    //! Material for terrain points
+    std::vector<TerrainMaterialPoint>  m_materialPoints;
 
     //! True if using terrain material mapping
     bool m_useMaterials;
-    //! Terrain materials
-    std::vector<TerrainMaterial> m_materials;
-    //! Material for terrain points
-    std::vector<TerrainMaterialPoint>  m_materialPoints;
     //! Maximum level ID (no ID is >= to this)
     int             m_maxMaterialID;
     //! Internal counter for auto generation of material IDs
     int             m_materialAutoID;
 
+    /**
+     * \struct BuildingLevel
+     * \brief Flat level for building
+     */
+    struct BuildingLevel
+    {
+        Math::Vector center;
+        float        factor = 0.0f;
+        float        min = 0.0f;
+        float        max = 0.0f;
+        float        level = 0.0f;
+        float        height = 0.0f;
+        float        bboxMinX = 0.0f;
+        float        bboxMaxX = 0.0f;
+        float        bboxMinZ = 0.0f;
+        float        bboxMaxZ = 0.0f;
+    };
     std::vector<BuildingLevel> m_buildingLevels;
 
     //! Wind speed
@@ -417,6 +388,18 @@ protected:
 
     //! Global flying height limit
     float           m_flyingMaxHeight;
+
+    /**
+     * \struct FlyingLimit
+     * \brief Spherical limit of flight
+     */
+    struct FlyingLimit
+    {
+        Math::Vector center;
+        float        extRadius = 0.0f;
+        float        intRadius = 0.0f;
+        float        maxHeight = 0.0f;
+    };
     //! List of local flight limits
     std::vector<FlyingLimit> m_flyingLimits;
 };

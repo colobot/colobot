@@ -34,30 +34,23 @@
 namespace Gfx
 {
 
-
+namespace
+{
 const int CLOUD_LINE_PREALLOCATE_COUNT = 100;
 
 //! Extension of the bricks dimensions
 const int CLOUD_SIZE_EXPAND = 4;
+} // anonymous namespace
 
 
 CCloud::CCloud(CEngine* engine)
+    : m_engine(engine)
 {
-    m_engine = engine;
-    m_terrain = nullptr;
-
-    m_level = 0.0f;
-    m_wind  = Math::Vector(0.0f, 0.0f, 0.0f);
-    m_subdiv = 8;
-    m_enabled = true;
-
     m_lines.reserve(CLOUD_LINE_PREALLOCATE_COUNT);
 }
 
 CCloud::~CCloud()
 {
-    m_engine = nullptr;
-    m_terrain = nullptr;
 }
 
 bool CCloud::EventProcess(const Event &event)

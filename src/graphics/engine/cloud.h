@@ -24,9 +24,6 @@
 
 #pragma once
 
-
-#include "common/event.h"
-
 #include "graphics/core/color.h"
 
 #include "math/point.h"
@@ -36,36 +33,14 @@
 #include <string>
 
 
+struct Event;
+
 // Graphics module namespace
 namespace Gfx
 {
 
 class CEngine;
 class CTerrain;
-
-/**
- * \struct CloudLine
- * \brief Cloud strip
- */
-struct CloudLine
-{
-    //@{
-    //! Beginning (terrain coordinates)
-    short       x, y;
-    //@}
-    //! Length in X direction (terrain coordinates)
-    short       len;
-    //! X (1, 2) and Z coordinates (world coordinates)
-    float       px1, px2, pz;
-
-    CloudLine()
-    {
-        x = y = 0;
-        len = 0;
-        px1 = px2 = pz = 0;
-    }
-};
-
 
 /**
  * \class CCloud
@@ -113,12 +88,12 @@ protected:
     void        CreateLine(int x, int y, int len);
 
 protected:
-    CEngine*        m_engine;
-    CTerrain*       m_terrain;
+    CEngine*        m_engine = nullptr;
+    CTerrain*       m_terrain = nullptr;
 
-    bool            m_enabled;
+    bool            m_enabled = true;
     //! Overall level
-    float           m_level;
+    float           m_level = 0.0f;
     //! Texture
     std::string     m_fileName;
     //! Feedrate (wind)
@@ -127,17 +102,32 @@ protected:
     Color           m_diffuse;
     //! Ambient color
     Color           m_ambient;
-    float           m_time;
-    float           m_lastTest;
-    int             m_subdiv;
+    float           m_time = 0.0f;
+    float           m_lastTest = 0.0f;
+    int             m_subdiv = 8;
 
     //! Wind speed
     Math::Vector    m_wind;
     //! Brick mosaic
-    int             m_brickCount;
+    int             m_brickCount = 0;
     //! Size of a brick element
-    float           m_brickSize;
+    float           m_brickSize = 0;
 
+    /**
+     * \struct CloudLine
+     * \brief Cloud strip
+     */
+    struct CloudLine
+    {
+        //@{
+        //! Beginning (terrain coordinates)
+        short       x = 0, y = 0;
+        //@}
+        //! Length in X direction (terrain coordinates)
+        short       len = 0;
+        //! X (1, 2) and Z coordinates (world coordinates)
+        float       px1 = 0, px2 = 0, pz = 0;
+    };
     std::vector<CloudLine> m_lines;
 };
 
