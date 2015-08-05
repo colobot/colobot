@@ -27,6 +27,8 @@
     #include "app/system_other.h"
 #endif
 
+#include "common/make_unique.h"
+
 #include <functional>
 #include <memory>
 
@@ -47,6 +49,17 @@ struct FakeSystemTimeStamp : public SystemTimeStamp
 class CApplicationWrapper : public CApplication
 {
 public:
+    CApplicationWrapper()
+    {
+        SDL_Init(0);
+        m_eventQueue = MakeUnique<CEventQueue>();
+    }
+
+    ~CApplicationWrapper()
+    {
+        SDL_Quit();
+    }
+
     Event CreateUpdateEvent() override
     {
         return CApplication::CreateUpdateEvent();
