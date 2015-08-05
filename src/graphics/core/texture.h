@@ -155,26 +155,18 @@ enum TexMixArgument
 struct TextureCreateParams
 {
     //! Whether to generate mipmaps
-    bool mipmap;
+    bool mipmap = false;
     //! Format of source image data
-    TexImgFormat format;
+    TexImgFormat format = TEX_IMG_RGB;
     //! General texture filtering mode
-    TexFilter filter;
+    TexFilter filter = TEX_FILTER_NEAREST;
     //! Pad the image to nearest power of 2 dimensions
-    bool padToNearestPowerOfTwo;
-
-    //! Constructor; calls LoadDefault()
-    TextureCreateParams()
-        { LoadDefault(); }
+    bool padToNearestPowerOfTwo = false;
 
     //! Loads the default values
-    inline void LoadDefault()
+    void LoadDefault()
     {
-        format = TEX_IMG_RGB;
-        mipmap = false;
-        padToNearestPowerOfTwo = false;
-
-        filter = TEX_FILTER_NEAREST;
+        *this = TextureCreateParams();
     }
 };
 
@@ -188,40 +180,28 @@ struct TextureCreateParams
 struct TextureStageParams
 {
     //! Mixing operation done on color values
-    TexMixOperation colorOperation;
+    TexMixOperation colorOperation = TEX_MIX_OPER_DEFAULT;
     //! 1st argument of color operations
-    TexMixArgument colorArg1;
+    TexMixArgument colorArg1 = TEX_MIX_ARG_COMPUTED_COLOR;
     //! 2nd argument of color operations
-    TexMixArgument colorArg2;
+    TexMixArgument colorArg2 = TEX_MIX_ARG_TEXTURE;
     //! Mixing operation done on alpha values
-    TexMixOperation alphaOperation;
+    TexMixOperation alphaOperation = TEX_MIX_OPER_DEFAULT;
     //! 1st argument of alpha operations
-    TexMixArgument alphaArg1;
+    TexMixArgument alphaArg1 = TEX_MIX_ARG_COMPUTED_COLOR;
     //! 2nd argument of alpha operations
-    TexMixArgument alphaArg2;
+    TexMixArgument alphaArg2 = TEX_MIX_ARG_TEXTURE;
     //! Wrap mode for 1st tex coord
-    TexWrapMode    wrapS;
+    TexWrapMode    wrapS = TEX_WRAP_REPEAT;
     //! Wrap mode for 2nd tex coord
-    TexWrapMode    wrapT;
+    TexWrapMode    wrapT = TEX_WRAP_REPEAT;
     //! Constant color factor (for TEX_MIX_ARG_FACTOR)
     Color          factor;
 
-    //! Constructor; calls LoadDefault()
-    TextureStageParams()
-        { LoadDefault(); }
-
     //! Loads the default values
-    inline void LoadDefault()
+    void LoadDefault()
     {
-        colorOperation = TEX_MIX_OPER_DEFAULT;
-        colorArg1 = TEX_MIX_ARG_COMPUTED_COLOR;
-        colorArg2 = TEX_MIX_ARG_TEXTURE;
-
-        alphaOperation = TEX_MIX_OPER_DEFAULT;
-        alphaArg1 = TEX_MIX_ARG_COMPUTED_COLOR;
-        alphaArg2 = TEX_MIX_ARG_TEXTURE;
-
-        wrapS = wrapT = TEX_WRAP_REPEAT;
+        *this = TextureStageParams();
     }
 };
 
@@ -255,22 +235,14 @@ struct TextureGenerationParams
 {
     struct Coord
     {
-        TexGenMode mode;
-        float plane[4];
+        TexGenMode mode = TEX_GEN_NONE;
+        float plane[4] = {};
     };
     Coord coords[4];
 
-    TextureGenerationParams()
+    void LoadDefault()
     {
-        LoadDefault();
-    }
-
-    inline void LoadDefault()
-    {
-        for (int i = 0; i < 4; i++)
-        {
-            coords[i].mode = TEX_GEN_NONE;
-        }
+        *this = TextureGenerationParams();
     }
 };
 
@@ -284,19 +256,13 @@ struct TextureGenerationParams
 struct Texture
 {
     //! ID of the texture in graphics engine; 0 = invalid texture
-    unsigned int id;
+    unsigned int id = 0;
     //! Size of texture
     Math::IntPoint size;
     //! Original size of texture (as loaded from image)
     Math::IntPoint originalSize;
     //! Whether the texture has alpha channel
-    bool alpha;
-
-    Texture()
-    {
-        id = 0;
-        alpha = false;
-    }
+    bool alpha = false;
 
     //! Returns whether the texture is valid (ID != 0)
     bool Valid() const
@@ -311,7 +277,7 @@ struct Texture
     }
 
     //! Comparator for use in texture maps and sets
-    inline bool operator<(const Texture &other) const
+    bool operator<(const Texture &other) const
     {
         // Invalid textures are always "less than" every other texture
 
@@ -328,7 +294,7 @@ struct Texture
     }
 
     //! Comparator
-    inline bool operator==(const Texture &other) const
+    bool operator==(const Texture &other) const
     {
         if (Valid() != other.Valid())
             return false;

@@ -34,34 +34,22 @@ namespace Gfx
 struct FramebufferParams
 {
     //! Requested width of buffers
-    int width;
+    int width = 1024;
     //! Requested height of buffers
-    int height;
+    int height = 1024;
     //! Requested depth buffer
-    int depth;
+    int depth = 16;
     //! Requested number of samples for multisampling
-    int samples;
+    int samples = 1;
     //! true requests color texture
-    bool colorTexture;
+    bool colorTexture = false;
     //! true requests depth texture
-    bool depthTexture;
-
-
-    //! Initializes
-    FramebufferParams()
-    {
-        LoadDefault();
-    }
+    bool depthTexture = false;
 
     //! Loads default values
     void LoadDefault()
     {
-        width = 1024;
-        height = 1024;
-        depth = 16;
-        samples = 1;
-        colorTexture = false;
-        depthTexture = false;
+        *this = FramebufferParams();
     }
 };
 

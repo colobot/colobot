@@ -23,8 +23,6 @@
 
 #include "graphics/model/model_triangle.h"
 
-#include <cstring>
-
 namespace Gfx
 {
 
@@ -166,18 +164,13 @@ struct ModelTriangleV3 : ModelTriangle {};
 struct OldModelHeader
 {
     //! Revision number
-    int revision;
+    int revision = 0;
     //! Version number
-    int version;
+    int version = 0;
     //! Total number of triangles
-    int totalTriangles;
+    int totalTriangles = 0;
     //! Reserved area
-    int reserved[10];
-
-    OldModelHeader()
-    {
-        memset(this, 0, sizeof(*this));
-    }
+    int reserved[10] = {0};
 };
 
 
@@ -189,20 +182,15 @@ struct OldModelHeader
  */
 struct OldModelTriangleV1
 {
-    char used;
-    char selected;
+    char used = 0;
+    char selected = 0;
     Vertex p1;
     Vertex p2;
     Vertex p3;
     Material material;
-    char texName[20];
-    float min;
-    float max;
-
-    OldModelTriangleV1()
-    {
-        memset(this, 0, sizeof(*this));
-    }
+    char texName[20] = {0};
+    float min = 0;
+    float max = 0;
 };
 
 /**
@@ -213,25 +201,20 @@ struct OldModelTriangleV1
  */
 struct OldModelTriangleV2
 {
-    char used;
-    char selected;
+    char used = 0;
+    char selected = 0;
     Vertex p1;
     Vertex p2;
     Vertex p3;
     Material material;
-    char texName[20];
-    float min;
-    float max;
-    long state;
-    short reserved1;
-    short reserved2;
-    short reserved3;
-    short reserved4;
-
-    OldModelTriangleV2()
-    {
-        memset(this, 0, sizeof(*this));
-    }
+    char texName[20] = {0};
+    float min = 0.0f;
+    float max = 0.0f;
+    long state = 0;
+    short reserved1 = 0;
+    short reserved2 = 0;
+    short reserved3 = 0;
+    short reserved4 = 0;
 };
 
 /**
@@ -242,25 +225,20 @@ struct OldModelTriangleV2
  */
 struct OldModelTriangleV3
 {
-    char used;
-    char selected;
+    char used = 0;
+    char selected = 0;
     VertexTex2 p1;
     VertexTex2 p2;
     VertexTex2 p3;
     Material   material;
-    char texName[20];
-    float min;
-    float max;
-    long state;
-    short texNum2;
-    short reserved2;
-    short reserved3;
-    short reserved4;
-
-    OldModelTriangleV3()
-    {
-        memset(this, 0, sizeof(*this));
-    }
+    char texName[20] = {0};
+    float min = 0.0f;
+    float max = 0.0f;
+    long state = 0;
+    short texNum2 = 0;
+    short reserved2 = 0;
+    short reserved3 = 0;
+    short reserved4 = 0;
 };
 
 } // namespace Gfx

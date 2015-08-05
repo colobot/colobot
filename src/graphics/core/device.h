@@ -54,55 +54,38 @@ namespace Gfx
 struct DeviceConfig
 {
     //! Screen size
-    Math::IntPoint size;
+    Math::IntPoint size = Math::IntPoint(800, 600);
     //! Bits per pixel
-    int bpp;
+    int bpp = 32;
     //! Full screen
-    bool fullScreen;
+    bool fullScreen = false;
     //! Resizeable window
-    bool resizeable;
+    bool resizeable = true;
     //! Double buffering
-    bool doubleBuf;
+    bool doubleBuf = true;
     //! No window frame (also set with full screen)
-    bool noFrame;
+    bool noFrame = false;
 
     //! Size of red channel in bits
-    int redSize;
+    int redSize = 8;
     //! Size of green channel in bits
-    int greenSize;
+    int greenSize = 8;
     //! Size of blue channel in bits
-    int blueSize;
+    int blueSize = 8;
     //! Size of alpha channel in bits
-    int alphaSize;
+    int alphaSize = 8;
     //! Color depth in bits
-    int depthSize;
+    int depthSize = 24;
     //! Stencil depth in bits
-    int stencilSize;
+    int stencilSize = 8;
 
     //! Force hardware acceleration (video mode set will fail on lack of hw accel)
-    bool hardwareAccel;
-
-    //! Constructor calls LoadDefault()
-    DeviceConfig() { LoadDefault(); }
+    bool hardwareAccel = true;
 
     //! Loads the default values
-    inline void LoadDefault()
+    void LoadDefault()
     {
-        size = Math::IntPoint(800, 600);
-        bpp = 32;
-        fullScreen = false;
-        resizeable = true;
-        doubleBuf = true;
-        noFrame = false;
-
-        hardwareAccel = true;
-
-        redSize = 8;
-        blueSize = 8;
-        greenSize = 8;
-        alphaSize = 8;
-        depthSize = 24;
-        stencilSize = 8;
+        *this = DeviceConfig();
     }
 };
 

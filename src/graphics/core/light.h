@@ -54,48 +54,32 @@ enum LightType
 struct Light
 {
     //! Type of light source
-    LightType  type;
+    LightType  type = LIGHT_POINT;
     //! Color of ambient light
-    Color      ambient;
+    Color      ambient = Color(0.4f, 0.4f, 0.4f);
     //! Color of diffuse light
-    Color      diffuse;
+    Color      diffuse = Color(0.8f, 0.8f, 0.8f);
     //! Color of specular light
-    Color      specular;
+    Color      specular = Color(1.0f, 1.0f, 1.0f);
     //! Position in world space (for point & spot lights)
-    Math::Vector    position;
+    Math::Vector    position = Math::Vector(0.0f, 0.0f, 0.0f);
     //! Direction in world space (for directional & spot lights)
-    Math::Vector    direction;
+    Math::Vector    direction = Math::Vector(0.0f, 0.0f, 1.0f);
     //! Constant attenuation factor
-    float           attenuation0;
+    float           attenuation0 = 1.0f;
     //! Linear attenuation factor
-    float           attenuation1;
+    float           attenuation1 = 0.0f;
     //! Quadratic attenuation factor
-    float           attenuation2;
+    float           attenuation2 = 0.0f;
     //! Angle of spotlight cone (0-PI/2 radians)
-    float           spotAngle;
-
+    float           spotAngle = Math::PI/2.0f;
     //! Intensity of spotlight (0 = uniform; 128 = most intense)
-    float           spotIntensity;
-
-    //! Constructor; calls LoadDefault()
-    Light()
-    {
-        LoadDefault();
-    }
+    float           spotIntensity = 0.0f;
 
     //! Loads default values
     void LoadDefault()
     {
-        type = LIGHT_POINT;
-        ambient = Color(0.4f, 0.4f, 0.4f);
-        diffuse = Color(0.8f, 0.8f, 0.8f);
-        specular = Color(1.0f, 1.0f, 1.0f);
-        position = Math::Vector(0.0f, 0.0f, 0.0f);
-        direction = Math::Vector(0.0f, 0.0f, 1.0f);
-        attenuation0 = 1.0f;
-        attenuation1 = attenuation2 = 0.0f;
-        spotAngle = Math::PI/2.0f;
-        spotIntensity = 0.0f;
+        *this = Light();
     }
 };
 
