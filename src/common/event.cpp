@@ -549,7 +549,7 @@ std::string ParseEventType(EventType eventType)
 
 CEventQueue::CEventQueue()
     : m_mutex{},
-      m_fifo{},
+      m_fifo(),
       m_head{0},
       m_tail{0},
       m_total{0}
