@@ -825,11 +825,12 @@ void CGLDevice::DestroyTexture(const Texture &texture)
             SetTexture(index, Texture()); // set to invalid texture
     }
 
-    glDeleteTextures(1, &texture.id);
-
     auto it = m_allTextures.find(texture);
     if (it != m_allTextures.end())
+    {
+        glDeleteTextures(1, &texture.id);
         m_allTextures.erase(it);
+    }
 }
 
 void CGLDevice::DestroyAllTextures()
