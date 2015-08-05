@@ -24,13 +24,11 @@
 
 #pragma once
 
-
 #include "common/event.h"
 
 #include "math/point.h"
 
 #include <vector>
-
 
 
 // Graphics module namespace
@@ -40,37 +38,14 @@ namespace Gfx
 class CEngine;
 
 /**
- * \struct Planet
- * \brief Planet texture definition
+ * \enum PlanetType
+ * \brief Type of planet which determines when it is displayed
  */
-struct Planet
+enum PlanetType
 {
-    //! Initial position in degrees
-    Math::Point     start;
-    //! Current position in degrees
-    Math::Point     angle;
-    //! Dimensions (0..1)
-    float           dim;
-    //! Speed
-    float           speed;
-    //! Direction in the sky
-    float           dir;
-    //! Name of the texture
-    std::string     name;
-    //! Texture mapping
-    Math::Point     uv1, uv2;
-
-    // TODO: make all textures transparent?
-    //! Transparent texture
-    bool            transparent;
-
-    Planet()
-    {
-        dim = speed = dir = 0.0f;
-        transparent = false;
-    }
+    Sky,       //!< normal planets, orbiting in the sky
+    OuterSpace //!< only visible during spaceship flight
 };
-
 
 /**
  * \class CPlanet
@@ -100,23 +75,47 @@ public:
     void        LoadTexture();
     //! Draws all the planets
     void        Draw();
-    //@{
-    //! Choice of mode
-    void        SetMode(int mode);
-    int         GetMode();
-    //@}
+
+    //! Set which planet types to display
+    void        SetVisiblePlanetType(PlanetType type);
 
 protected:
     //! Makes the planets evolve
     bool        EventFrame(const Event &event);
 
 protected:
-    CEngine*     m_engine;
+    CEngine* m_engine = nullptr;
+    float m_time = 0.0f;
+    PlanetType m_visibleType = PlanetType::Sky;
 
-    float                    m_time;
-    int                      m_mode;
-    std::vector<Planet> m_planet[2];
-    bool                     m_planetExist;
+    /**
+    * \struct Planet
+    * \brief Planet texture definition
+    */
+    struct Planet
+    {
+        //! Type of planet
+        PlanetType      type = PlanetType::Sky;
+        //! Initial position in degrees
+        Math::Point     start;
+        //! Current position in degrees
+        Math::Point     angle;
+        //! Dimensions (0..1)
+        float           dim = 0.0f;
+        //! Speed
+        float           speed = 0.0f;
+        //! Direction in the sky
+        float           dir = 0.0f;
+        //! Name of the texture
+        std::string     name;
+        //! Texture mapping
+        Math::Point     uv1, uv2;
+
+        // TODO: make all textures transparent?
+        //! Transparent texture
+        bool            transparent = false;
+    };
+    std::vector<Planet> m_planets;
 };
 
 

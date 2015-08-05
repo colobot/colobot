@@ -29,17 +29,16 @@
 namespace Gfx
 {
 
-
+namespace
+{
 const int PLANET_PREALLOCATE_COUNT = 10;
+} // anonymous namespace
 
 
 CPlanet::CPlanet(CEngine* engine)
+    : m_engine(engine)
 {
-    m_planet[0].reserve(PLANET_PREALLOCATE_COUNT);
-    m_planet[1].reserve(PLANET_PREALLOCATE_COUNT);
-
-    m_engine = engine;
-    Flush();
+    m_planets.reserve(PLANET_PREALLOCATE_COUNT);
 
 }
 
@@ -49,11 +48,8 @@ CPlanet::~CPlanet()
 
 void CPlanet::Flush()
 {
-    for (int j = 0; j < 2; j++)
-        m_planet[j].clear();
-
-    m_planetExist = false;
-    m_mode = 0;
+    m_planets.clear();
+    m_visibleType = PlanetType::Sky;
     m_time = 0.0f;
 }
 
@@ -71,14 +67,17 @@ bool CPlanet::EventFrame(const Event &event)
 
     m_time += event.rTime;
 
-    for (int i = 0; i < static_cast<int>( m_planet[m_mode].size() ); i++)
+    for (auto& planet : m_planets)
     {
-        float a = m_time*m_planet[m_mode][i].speed;
+        if (planet.type != m_visibleType)
+            continue;
+
+        float a = m_time * planet.speed;
         if (a < 0.0f)
             a += Math::PI*1000.0f;
 
-        m_planet[m_mode][i].angle.x = a+m_planet[m_mode][i].start.x;
-        m_planet[m_mode][i].angle.y = sinf(a)*sinf(m_planet[m_mode][i].dir)+m_planet[m_mode][i].start.y;
+        planet.angle.x = a + planet.start.x;
+        planet.angle.y = sinf(a) * sinf(planet.dir) + planet.start.y;
     }
 
     return true;
@@ -86,12 +85,9 @@ bool CPlanet::EventFrame(const Event &event)
 
 void CPlanet::LoadTexture()
 {
-    for (int j = 0; j < 2; j++)
+    for (const auto& planet : m_planets)
     {
-        for (int i = 0; i < static_cast<int>( m_planet[j].size() ); i++)
-        {
-            m_engine->LoadTexture(m_planet[j][i].name);
-        }
+        m_engine->LoadTexture(planet.name);
     }
 }
 
@@ -104,32 +100,35 @@ void CPlanet::Draw()
     Math::Vector n = Math::Vector(0.0f, 0.0f, -1.0f);  // normal
     float dp = 0.5f/256.0f;
 
-    for (int i = 0; i < static_cast<int>( m_planet[m_mode].size() ); i++)
+    for (const auto& planet : m_planets)
     {
-        m_engine->SetTexture(m_planet[m_mode][i].name);
+        if (planet.type != m_visibleType)
+            continue;
 
-        if (m_planet[m_mode][i].transparent)
+        m_engine->SetTexture(planet.name);
+
+        if (planet.transparent)
             m_engine->SetState(ENG_RSTATE_WRAP | ENG_RSTATE_ALPHA);
         else
             m_engine->SetState(ENG_RSTATE_WRAP | ENG_RSTATE_TTEXTURE_BLACK);
 
         Math::Point p1, p2;
 
-        float a = eyeDirH + m_planet[m_mode][i].angle.x;
+        float a = eyeDirH + planet.angle.x;
         p1.x = Math::Mod(a, Math::PI*2.0f)-0.5f;
 
-        a = eyeDirV + m_planet[m_mode][i].angle.y;
+        a = eyeDirV + planet.angle.y;
         p1.y = 0.4f+(Math::Mod(a+Math::PI, Math::PI*2.0f)-Math::PI)*(2.0f/Math::PI);
 
-        p1.x -= m_planet[m_mode][i].dim/2.0f*0.75f;
-        p1.y -= m_planet[m_mode][i].dim/2.0f;
-        p2.x = p1.x+m_planet[m_mode][i].dim*0.75f;
-        p2.y = p1.y+m_planet[m_mode][i].dim;
+        p1.x -= planet.dim/2.0f*0.75f;
+        p1.y -= planet.dim/2.0f;
+        p2.x = p1.x+planet.dim*0.75f;
+        p2.y = p1.y+planet.dim;
 
-        float u1 = m_planet[m_mode][i].uv1.x + dp;
-        float v1 = m_planet[m_mode][i].uv1.y + dp;
-        float u2 = m_planet[m_mode][i].uv2.x - dp;
-        float v2 = m_planet[m_mode][i].uv2.y - dp;
+        float u1 = planet.uv1.x + dp;
+        float v1 = planet.uv1.y + dp;
+        float u2 = planet.uv2.x - dp;
+        float v2 = planet.uv2.y - dp;
 
         Vertex quad[4] =
         {
@@ -153,6 +152,8 @@ void CPlanet::Create(int mode, Math::Point start, float dim, float speed,
 
     Planet planet;
 
+    // TODO: refactor mode to planet type in interface
+    planet.type = (mode == 0) ? PlanetType::Sky : PlanetType::OuterSpace;
     planet.start = start;
     planet.angle = start;
     planet.dim   = dim;
@@ -165,27 +166,17 @@ void CPlanet::Create(int mode, Math::Point start, float dim, float speed,
 
     planet.transparent = transparent;
 
-    m_planet[mode].push_back(planet);
-
-    m_planetExist = true;
+    m_planets.push_back(planet);
 }
 
 bool CPlanet::PlanetExist()
 {
-    return m_planetExist;
+    return !m_planets.empty();
 }
 
-void CPlanet::SetMode(int mode)
+void CPlanet::SetVisiblePlanetType(PlanetType type)
 {
-    if (mode < 0) mode = 0;
-    if (mode > 1) mode = 1;
-    m_mode = mode;
+    m_visibleType = type;
 }
-
-int CPlanet::GetMode()
-{
-    return m_mode;
-}
-
 
 } // namespace Gfx

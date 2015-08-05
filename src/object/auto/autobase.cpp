@@ -1226,13 +1226,9 @@ bool CAutoBase::CreateInterface(bool bSelect)
 
 void CAutoBase::UpdateInterface()
 {
-//    Ui::CWindow*    pw;
-
     if ( !m_object->GetSelect() )  return;
 
     CAuto::UpdateInterface();
-
-//    pw = static_cast< Ui::CWindow* >( m_interface->SearchControl(EVENT_WINDOW0));
 }
 
 
@@ -1345,7 +1341,7 @@ void CAutoBase::BeginTransit()
             Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f));
 
     m_cloud->SetEnabled(false);  // cache clouds
-    m_planet->SetMode(1);
+    m_planet->SetVisiblePlanetType(Gfx::PlanetType::OuterSpace);
 }
 
 // End of a transit.
@@ -1361,29 +1357,26 @@ void CAutoBase::EndTransit()
     m_engine->SetBackground(m_bgName, m_bgUp, m_bgDown, m_bgCloudUp, m_bgCloudDown);
 
     m_cloud->SetEnabled(true);  // gives the clouds
-    m_planet->SetMode(0);
+    m_planet->SetVisiblePlanetType(Gfx::PlanetType::Sky);
 
     m_main->StartMusic();
 }
 
 Error CAutoBase::TakeOff(bool printMsg)
 {
-
-    Event           newEvent;
-    Math::Vector    pos;
-    Error           err;
-
-    err = CheckCloseDoor();
-    if ( err != ERR_OK )
+    Error err = CheckCloseDoor();
+    if (err != ERR_OK)
     {
-        if(printMsg) m_main->DisplayError(err, m_object);
+        if (printMsg)
+            m_main->DisplayError(err, m_object);
         return err;
     }
 
     err = m_main->CheckEndMission(false);
-    if ( err != ERR_OK )
+    if (err != ERR_OK)
     {
-        if(printMsg) m_main->DisplayError(err, m_object);
+        if (printMsg)
+            m_main->DisplayError(err, m_object);
         return err;
     }
 
@@ -1391,12 +1384,13 @@ Error CAutoBase::TakeOff(bool printMsg)
     m_main->SetMovieLock(true);  // blocks everything until the end
     m_main->DeselectAll();
 
+    Event newEvent;
     newEvent.type = EVENT_UPDINTERFACE;
     m_eventQueue->AddEvent(newEvent);
 
     m_camera->SetType(Gfx::CAM_TYPE_SCRIPT);
 
-    pos = m_pos;
+    Math::Vector pos = m_pos;
     pos.x -= 110.0f;
     m_terrain->AdjustToFloor(pos);
     pos.y += 10.0f;
