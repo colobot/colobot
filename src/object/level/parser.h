@@ -100,5 +100,5 @@ inline std::string InjectLevelPathsForCurrentLevel(const std::string& path, cons
 {
     CRobotMain* main = CRobotMain::GetInstancePointer();
     auto levelParser = MakeUnique<CLevelParser>(main->GetLevelCategory(), main->GetLevelChap(), main->GetLevelRank());
-    return levelParser->InjectLevelPaths(path, "ai");
+    return levelParser->InjectLevelPaths(path, defaultDir);
 }
