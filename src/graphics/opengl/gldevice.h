@@ -204,7 +204,7 @@ private:
     Material m_material;
 
     //! Whether lighting is enabled
-    bool m_lighting;
+    bool m_lighting = false;
     //! Current lights
     std::vector<Light> m_lights;
     //! Current lights enable status
@@ -234,37 +234,37 @@ private:
     //! Info about static VBO buffers
     struct VboObjectInfo
     {
-        PrimitiveType primitiveType;
-        unsigned int bufferId;
-        VertexType vertexType;
-        int vertexCount;
+        PrimitiveType primitiveType = {};
+        unsigned int bufferId = 0;
+        VertexType vertexType = {};
+        int vertexCount = 0;
     };
 
     //! Detected capabilities
     //! OpenGL version
-    int m_glMajor, m_glMinor;
+    int m_glMajor = 1, m_glMinor = 1;
     //! Depth texture support
-    ShadowMappingSupport m_shadowMappingSupport;
+    ShadowMappingSupport m_shadowMappingSupport = SMS_NONE;
     //! Shadow ambient support
-    bool m_shadowAmbientSupported;
+    bool m_shadowAmbientSupported = false;
     //! Whether to use multitexturing
-    bool m_multitextureAvailable;
+    bool m_multitextureAvailable = false;
     //! Whether to use VBOs or display lists
-    bool m_vboAvailable;
+    bool m_vboAvailable = false;
     //! Whether anisotropic filtering is available
-    bool m_anisotropyAvailable;
+    bool m_anisotropyAvailable = false;
     //! Maximum anisotropy level
-    int m_maxAnisotropy;
+    int m_maxAnisotropy = 1;
     //! Maximum samples
-    int m_maxSamples;
+    int m_maxSamples = 1;
     //! Framebuffer support
-    FramebufferSupport m_framebufferSupport;
+    FramebufferSupport m_framebufferSupport = FBS_NONE;
     //! Which vertex buffer type to use
-    VertexBufferType m_vertexBufferType;
+    VertexBufferType m_vertexBufferType = VBT_DISPLAY_LIST;
     //! Map of saved VBO objects
     std::map<unsigned int, VboObjectInfo> m_vboObjects;
     //! Last ID of VBO object
-    unsigned int m_lastVboId;
+    unsigned int m_lastVboId = 0;
 };
 
 

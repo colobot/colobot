@@ -43,18 +43,8 @@ namespace Gfx
 {
 
 CGL33Device::CGL33Device(const DeviceConfig &config)
-{
-    m_config = config;
-    m_lighting = false;
-    m_lastVboId = 0;
-    m_anisotropyAvailable = false;
-    m_maxAnisotropy = 1;
-    m_maxSamples = 1;
-    m_glMajor = 1;
-    m_glMinor = 1;
-
-    m_perPixelLighting = false;
-}
+    : m_config(config)
+{}
 
 
 CGL33Device::~CGL33Device()

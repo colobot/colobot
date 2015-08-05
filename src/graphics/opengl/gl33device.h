@@ -189,7 +189,7 @@ private:
     Material m_material;
 
     //! Whether lighting is enabled
-    bool m_lighting;
+    bool m_lighting = false;
     //! Current lights
     std::vector<Light> m_lights;
     //! Current lights enable status
@@ -216,112 +216,112 @@ private:
     //! Info about static VBO buffers
     struct VertexBufferInfo
     {
-        PrimitiveType primitiveType;
-        GLuint vbo;
-        GLuint vao;
-        VertexType vertexType;
-        int vertexCount;
-        unsigned int size;
+        PrimitiveType primitiveType = {};
+        GLuint vbo = 0;
+        GLuint vao = 0;
+        VertexType vertexType = {};
+        int vertexCount = 0;
+        unsigned int size = 0;
     };
 
     //! Detected capabilities
     //! OpenGL version
-    int m_glMajor, m_glMinor;
+    int m_glMajor = 1, m_glMinor = 1;
     //! Whether anisotropic filtering is available
-    bool m_anisotropyAvailable;
+    bool m_anisotropyAvailable = false;
     //! Maximum anisotropy level
-    int m_maxAnisotropy;
+    int m_maxAnisotropy = 1;
     //! Maximum samples
-    int m_maxSamples;
+    int m_maxSamples = 1;
     //! Map of saved VBO objects
     std::map<unsigned int, VertexBufferInfo> m_vboObjects;
     //! Last ID of VBO object
-    unsigned int m_lastVboId;
+    unsigned int m_lastVboId = 0;
     //! Currently bound VBO
-    GLuint m_currentVBO;
+    GLuint m_currentVBO = 0;
     //! Currently bound VAO
-    GLuint m_currentVAO;
+    GLuint m_currentVAO = 0;
 
     //! Map of framebuffers
     std::map<std::string, CFramebuffer*> m_framebuffers;
 
     //! Shader program
-    GLuint m_shaderProgram;
+    GLuint m_shaderProgram = 0;
     //! true enables per-pixel lighting
-    bool m_perPixelLighting;
+    bool m_perPixelLighting = false;
 
     //! Auxilliary vertex buffers for general rendering
-    unsigned int m_vertex;
-    unsigned int m_vertexTex2;
-    unsigned int m_vertexCol;
+    unsigned int m_vertex = 0;
+    unsigned int m_vertexTex2 = 0;
+    unsigned int m_vertexCol = 0;
 
     // Uniforms
     //! Projection matrix
-    GLint uni_ProjectionMatrix;
+    GLint uni_ProjectionMatrix = 0;
     //! View matrix
-    GLint uni_ViewMatrix;
+    GLint uni_ViewMatrix = 0;
     //! Model matrix
-    GLint uni_ModelMatrix;
+    GLint uni_ModelMatrix = 0;
     //! Shadow matrix
-    GLint uni_ShadowMatrix;
+    GLint uni_ShadowMatrix = 0;
     //! Normal matrix
-    GLint uni_NormalMatrix;
+    GLint uni_NormalMatrix = 0;
 
     //! Primary texture sampler
-    GLint uni_PrimaryTexture;
+    GLint uni_PrimaryTexture = 0;
     //! Secondary texture sampler
-    GLint uni_SecondaryTexture;
+    GLint uni_SecondaryTexture = 0;
     //! Shadow texture sampler
-    GLint uni_ShadowTexture;
+    GLint uni_ShadowTexture = 0;
 
-    GLint uni_PrimaryTextureEnabled;
-    GLint uni_SecondaryTextureEnabled;
-    GLint uni_ShadowTextureEnabled;
+    GLint uni_PrimaryTextureEnabled = 0;
+    GLint uni_SecondaryTextureEnabled = 0;
+    GLint uni_ShadowTextureEnabled = 0;
 
     // Fog parameters
     //! true enables fog
-    GLint uni_FogEnabled;
+    GLint uni_FogEnabled = 0;
     //! Fog range
-    GLint uni_FogRange;
+    GLint uni_FogRange = 0;
     //! Fog color
-    GLint uni_FogColor;
+    GLint uni_FogColor = 0;
 
     // Alpha test parameters
     //! true enables alpha test
-    GLint uni_AlphaTestEnabled;
+    GLint uni_AlphaTestEnabled = 0;
     //! Alpha test reference value
-    GLint uni_AlphaReference;
+    GLint uni_AlphaReference = 0;
 
     //! Shadow color
-    GLint uni_ShadowColor;
+    GLint uni_ShadowColor = 0;
 
     // Lighting parameters
-    GLint uni_SmoothShading;
+    GLint uni_SmoothShading = 0;
     //! true enables lighting
-    GLint uni_LightingEnabled;
+    GLint uni_LightingEnabled = 0;
     //! Ambient color
-    GLint uni_AmbientColor;
+    GLint uni_AmbientColor = 0;
     //! Diffuse color
-    GLint uni_DiffuseColor;
+    GLint uni_DiffuseColor = 0;
     //! Specular color
-    GLint uni_SpecularColor;
+    GLint uni_SpecularColor = 0;
 
     struct LightUniforms
     {
         //! true enables light
-        GLint Enabled;
+        GLint Enabled = 0;
         //! Light type
-        GLint Type;
+        GLint Type = 0;
         //! Position or direction vector
-        GLint Position;
+        GLint Position = 0;
         //! Ambient color
-        GLint Ambient;
+        GLint Ambient = 0;
         //! Diffuse color
-        GLint Diffuse;
+        GLint Diffuse = 0;
         //! Specular color
-        GLint Specular;
+        GLint Specular = 0;
         //! Attenuation
-        GLint Attenuation;
+        GLint Attenuation = 0;
     };
 
     LightUniforms uni_Light[8];

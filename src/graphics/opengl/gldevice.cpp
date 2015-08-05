@@ -42,22 +42,8 @@ namespace Gfx
 {
 
 CGLDevice::CGLDevice(const DeviceConfig &config)
-{
-    m_config = config;
-    m_lighting = false;
-    m_lastVboId = 0;
-    m_multitextureAvailable = false;
-    m_vboAvailable = false;
-    m_vertexBufferType = VBT_DISPLAY_LIST;
-    m_anisotropyAvailable = false;
-    m_maxAnisotropy = 1;
-    m_maxSamples = 1;
-    m_glMajor = 1;
-    m_glMinor = 1;
-    m_shadowMappingSupport = SMS_NONE;
-    m_shadowAmbientSupported = false;
-}
-
+    : m_config(config)
+{}
 
 CGLDevice::~CGLDevice()
 {
