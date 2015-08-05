@@ -27,7 +27,7 @@
 
 #include "graphics/engine/engine.h"
 
-#include "sound/sound.h"
+#include "sound/sound_type.h"
 
 
 class CRobotMain;
@@ -187,54 +187,54 @@ enum ParticlePhase
 
 struct Particle
 {
-    char            used;      // TRUE -> particle used
-    char            ray;       // TRUE -> ray with goal
-    unsigned short  uniqueStamp;    // unique mark
-    short           sheet;      // sheet (0..n)
-    ParticleType    type;       // type PARTI*
-    ParticlePhase   phase;      // phase PARPH*
-    float           mass;       // mass of the particle (in rebounding)
-    float           weight;     // weight of the particle (for noise)
-    float           duration;   // length of life
+    char            used = false;      // TRUE -> particle used
+    char            ray = false;       // TRUE -> ray with goal
+    unsigned short  uniqueStamp = 0;    // unique mark
+    short           sheet = 0;      // sheet (0..n)
+    ParticleType    type = {};       // type PARTI*
+    ParticlePhase   phase = {};      // phase PARPH*
+    float           mass = 0.0f;       // mass of the particle (in rebounding)
+    float           weight = 0.0f;     // weight of the particle (for noise)
+    float           duration = 0.0f;   // length of life
     Math::Vector    pos;        // absolute position (relative if object links)
     Math::Vector    goal;       // goal position (if ray)
     Math::Vector    speed;      // speed of displacement
-    float           windSensitivity;
-    short           bounce;     // number of rebounds
+    float           windSensitivity = 0.0f;
+    short           bounce = 0;     // number of rebounds
     Math::Point     dim;        // dimensions of the rectangle
-    float           zoom;       // zoom (0..1)
-    float           angle;      // angle of rotation
-    float           intensity;  // intensity
+    float           zoom = 0.0f;       // zoom (0..1)
+    float           angle = 0.0f;      // angle of rotation
+    float           intensity = 0.0f;  // intensity
     Math::Point     texSup;     // coordinated upper texture
     Math::Point     texInf;     // coordinated lower texture
-    float           time;       // age of the particle (0..n)
-    float           phaseTime;  // age at the beginning of phase
-    float           testTime;   // time since last test
-    CObject*        objLink;    // father object (for example reactor)
-    CObject*        objFather;  // father object (for example reactor)
-    short           objRank;    // rank of the object, or -1
-    short           trackRank;  // rank of the drag
+    float           time = 0.0f;       // age of the particle (0..n)
+    float           phaseTime = 0.0f;  // age at the beginning of phase
+    float           testTime = 0.0f;   // time since last test
+    CObject*        objLink = nullptr;    // father object (for example reactor)
+    CObject*        objFather = nullptr;  // father object (for example reactor)
+    short           objRank = 0;    // rank of the object, or -1
+    short           trackRank = 0;  // rank of the drag
 };
 
 struct Track
 {
-    char            used;      // TRUE -> drag used
-    char            drawParticle;
-    float           step;       // duration of not
-    float           last;       // increase last not memorized
-    float           intensity;  // intensity at starting (0..1)
-    float           width;      // tail width
-    int             posUsed;    // number of positions in "pos"
-    int             head;       // head to write index
+    char            used = 0;      // TRUE -> drag used
+    char            drawParticle = 0;
+    float           step = 0.0f;       // duration of not
+    float           last = 0.0f;       // increase last not memorized
+    float           intensity = 0.0f;  // intensity at starting (0..1)
+    float           width = 0.0f;      // tail width
+    int             posUsed = 0.0f;    // number of positions in "pos"
+    int             head = 0;       // head to write index
     Math::Vector    pos[MAXTRACKLEN];
-    float           len[MAXTRACKLEN];
+    float           len[MAXTRACKLEN] = {0.0f};
 };
 
 struct WheelTrace
 {
-    ParticleType    type;       // type PARTI*
+    ParticleType    type = {};       // type PARTI*
     Math::Vector    pos[4];     // rectangle positions
-    float           startTime;  // beginning of life
+    float           startTime = 0.0f;  // beginning of life
 };
 
 
@@ -351,27 +351,27 @@ protected:
     void        TrackDraw(int i, ParticleType type);
 
 protected:
-    CEngine*     m_engine;
-    CDevice*     m_device;
-    CTerrain*    m_terrain;
-    CWater*      m_water;
-    CRobotMain*       m_main;
-    CSoundInterface*  m_sound;
+    CEngine*     m_engine = nullptr;
+    CDevice*     m_device = nullptr;
+    CTerrain*    m_terrain = nullptr;
+    CWater*      m_water = nullptr;
+    CRobotMain*       m_main = nullptr;
+    CSoundInterface*  m_sound = nullptr;
 
     Particle       m_particle[MAXPARTICULE*MAXPARTITYPE];
     EngineTriangle m_triangle[MAXPARTICULE];  // triangle if PartiType == 0
     Track          m_track[MAXTRACK];
-    int           m_wheelTraceTotal;
-    int           m_wheelTraceIndex;
+    int           m_wheelTraceTotal = 0;
+    int           m_wheelTraceIndex = 0;
     WheelTrace    m_wheelTrace[MAXWHEELTRACE];
-    int           m_totalInterface[MAXPARTITYPE][SH_MAX];
-    bool          m_frameUpdate[SH_MAX];
-    int           m_fogTotal;
-    int           m_fog[MAXPARTIFOG];
-    int           m_uniqueStamp;
-    int           m_exploGunCounter;
-    float         m_lastTimeGunDel;
-    float         m_absTime;
+    int           m_totalInterface[MAXPARTITYPE][SH_MAX] = {};
+    bool          m_frameUpdate[SH_MAX] = {false};
+    int           m_fogTotal = 0;
+    int           m_fog[MAXPARTIFOG] = {};
+    int           m_uniqueStamp = 0;
+    int           m_exploGunCounter = 0;
+    float         m_lastTimeGunDel = 0.0f;
+    float         m_absTime = 0.0f;
 };
 
 

@@ -91,7 +91,7 @@ private:
     struct ModelInfo
     {
         std::vector<ModelTriangle> triangles;
-        int baseObjRank;
+        int baseObjRank = -1;
     };
     struct FileInfo
     {

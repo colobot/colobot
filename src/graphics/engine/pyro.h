@@ -54,24 +54,6 @@ class CParticle;
 class CLight;
 class CLightManager;
 
-
-struct PyroBurnPart
-{
-    int             part;
-    Math::Vector    initialPos;
-    Math::Vector    finalPos;
-    Math::Vector    initialAngle;
-    Math::Vector    finalAngle;
-};
-
-struct PyroLightOper
-{
-    float      progress;
-    float      intensity;
-    Color      color;
-};
-
-
 /**
  * \class CPyro
  * \brief Fire effect renderer
@@ -147,46 +129,61 @@ protected:
     void        LightOperFrame(float rTime);
 
 protected:
-    CEngine*          m_engine;
-    CTerrain*         m_terrain;
-    CCamera*          m_camera;
-    CParticle*        m_particle;
-    CLightManager*    m_lightMan;
-    CObject*          m_object;
-    CRobotMain*       m_main;
-    CSoundInterface*  m_sound;
+    CEngine*          m_engine = nullptr;
+    CTerrain*         m_terrain = nullptr;
+    CCamera*          m_camera = nullptr;
+    CParticle*        m_particle = nullptr;
+    CLightManager*    m_lightMan = nullptr;
+    CObject*          m_object = nullptr;
+    CRobotMain*       m_main = nullptr;
+    CSoundInterface*  m_sound = nullptr;
 
     Math::Vector    m_pos;          // center of the effect
     Math::Vector    m_posPower;     // center of the battery
-    bool            m_power;       // battery exists?
-    PyroType        m_type;
-    float           m_force;
-    float           m_size;
-    float           m_progress;
-    float           m_speed;
-    float           m_time;
-    float           m_lastParticle;
-    float           m_lastParticleSmoke;
-    int             m_soundChannel;
+    bool            m_power = false;       // battery exists?
+    PyroType        m_type = PT_NULL;
+    float           m_force = 0.0f;
+    float           m_size = 0.0f;
+    float           m_progress = 0.0f;
+    float           m_speed = 0.0f;
+    float           m_time = 0.0f;
+    float           m_lastParticle = 0.0f;
+    float           m_lastParticleSmoke = 0.0f;
+    int             m_soundChannel = -1;
 
-    int             m_lightRank;
-    int             m_lightOperTotal;
-    PyroLightOper   m_lightOper[10];
-    float           m_lightHeight;
+    int             m_lightRank = -1;
+    float           m_lightHeight = 0.0f;
 
-    ObjectType      m_burnType;
-    int             m_burnPartTotal;
+    struct PyroLightOper
+    {
+        float      progress = 0.0f;
+        float      intensity = 0.0f;
+        Color      color;
+    };
+    std::vector<PyroLightOper> m_lightOper;
+
+    ObjectType      m_burnType = OBJECT_NULL;
+    int             m_burnPartTotal = 0;
+
+    struct PyroBurnPart
+    {
+        int             part = 0;
+        Math::Vector    initialPos;
+        Math::Vector    finalPos;
+        Math::Vector    initialAngle;
+        Math::Vector    finalAngle;
+    };
     PyroBurnPart    m_burnPart[10];
-    int             m_burnKeepPart[10];
-    float           m_burnFall;
+    int             m_burnKeepPart[10] = {0};
+    float           m_burnFall = 0.0f;
 
-    float           m_fallFloor;
-    float           m_fallSpeed;
-    float           m_fallBulletTime;
-    bool            m_fallEnding;
+    float           m_fallFloor = 0.0f;
+    float           m_fallSpeed = 0.0f;
+    float           m_fallBulletTime = 0.0f;
+    bool            m_fallEnding = false;
 
     std::vector<Math::Sphere> m_crashSpheres;
-    float           m_resetAngle;
+    float           m_resetAngle = 0.0f;
 };
 
 

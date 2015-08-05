@@ -17,7 +17,6 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-
 #include "graphics/engine/lightning.h"
 
 #include "app/app.h"
@@ -44,16 +43,16 @@
 namespace Gfx
 {
 
+namespace
+{
+const int LIGHTNING_SEGMENTS_COUNT = 50;
+} // anonymous namespace
+
 
 CLightning::CLightning(CEngine* engine)
-{
-    m_engine = engine;
-    m_terrain = nullptr;
-    m_camera = nullptr;
-    m_sound = nullptr;
-
-    Flush();
-}
+    : m_engine(engine),
+      m_segments(LIGHTNING_SEGMENTS_COUNT, LightningSegment())
+{}
 
 CLightning::~CLightning()
 {
@@ -62,15 +61,11 @@ CLightning::~CLightning()
 void CLightning::Flush()
 {
     m_lightningExists = false;
-    m_phase = LP_WAIT;
+    m_phase = LightningPhase::Wait;
     m_speed = 0.0f;
     m_progress = 0.0f;
 
-    for (int i = 0; i < FLASH_SEGMENTS; i++)
-    {
-        m_shift[i] = Math::Point(0.0f, 0.0f);
-        m_width[i] = 1.0f;
-    }
+    std::fill(m_segments.begin(), m_segments.end(), LightningSegment());
 }
 
 bool CLightning::EventProcess(const Event &event)
@@ -88,7 +83,7 @@ bool CLightning::EventFrame(const Event &event)
 
     m_progress += event.rTime*m_speed;
 
-    if (m_phase == LP_WAIT)
+    if (m_phase == LightningPhase::Wait)
     {
         if (m_progress >= 1.0f)
         {
@@ -137,41 +132,41 @@ bool CLightning::EventFrame(const Event &event)
 
                 m_camera->StartOver(CAM_OVER_EFFECT_LIGHTNING, m_pos, 1.0f);
 
-                m_phase    = LP_FLASH;
+                m_phase    = LightningPhase::Flash;
                 m_progress = 0.0f;
                 m_speed    = 1.0f;
             }
         }
     }
 
-    if (m_phase == LP_FLASH)
+    if (m_phase == LightningPhase::Flash)
     {
         if (m_progress < 1.0f)
         {
             float max = 5.0f;
-            for (int i = 0; i < FLASH_SEGMENTS; i++)
+            for (std::size_t i = 0; i < m_segments.size(); i++)
             {
                 max += 0.4f;
 
-                m_shift[i].x += (Math::Rand()-0.5f)*max*2.0f;
-                if ( m_shift[i].x < -max )  m_shift[i].x = -max;
-                if ( m_shift[i].x >  max )  m_shift[i].x =  max;
+                m_segments[i].shift.x += (Math::Rand()-0.5f)*max*2.0f;
+                if ( m_segments[i].shift.x < -max )  m_segments[i].shift.x = -max;
+                if ( m_segments[i].shift.x >  max )  m_segments[i].shift.x =  max;
 
-                m_shift[i].y += (Math::Rand()-0.5f)*max*2.0f;
-                if ( m_shift[i].y < -max )  m_shift[i].y = -max;
-                if ( m_shift[i].y >  max )  m_shift[i].y =  max;
+                m_segments[i].shift.y += (Math::Rand()-0.5f)*max*2.0f;
+                if ( m_segments[i].shift.y < -max )  m_segments[i].shift.y = -max;
+                if ( m_segments[i].shift.y >  max )  m_segments[i].shift.y =  max;
 
-                m_width[i] += (Math::Rand()-0.5f)*2.0f;
-                if ( m_width[i] < 1.0f )  m_width[i] = 1.0f;
-                if ( m_width[i] > 6.0f )  m_width[i] = 6.0f;
+                m_segments[i].width += (Math::Rand()-0.5f)*2.0f;
+                if ( m_segments[i].width < 1.0f )  m_segments[i].width = 1.0f;
+                if ( m_segments[i].width > 6.0f )  m_segments[i].width = 6.0f;
             }
-            m_shift[0].x = 0.0f;
-            m_shift[0].y = 0.0f;
-            m_width[0]   = 0.0f;
+            m_segments[0].shift.x = 0.0f;
+            m_segments[0].shift.y = 0.0f;
+            m_segments[0].width   = 0.0f;
         }
         else
         {
-            m_phase    = LP_WAIT;
+            m_phase    = LightningPhase::Wait;
             m_progress = 0.0f;
             m_speed    = 1.0f / (1.0f+Math::Rand()*m_delay);
         }
@@ -188,7 +183,7 @@ bool CLightning::Create(float sleep, float delay, float magnetic)
     m_delay = delay;
     m_magnetic = magnetic;
 
-    m_phase    = LP_WAIT;
+    m_phase    = LightningPhase::Wait;
     m_progress = 0.0f;
     m_speed    = 1.0f / m_sleep;
 
@@ -224,7 +219,7 @@ bool CLightning::SetStatus(float sleep, float delay, float magnetic, float progr
     m_delay = delay;
     m_magnetic = magnetic;
     m_progress = progress;
-    m_phase = LP_WAIT;
+    m_phase = LightningPhase::Wait;
     m_speed = 1.0f/m_sleep;
 
     return true;
@@ -233,7 +228,7 @@ bool CLightning::SetStatus(float sleep, float delay, float magnetic, float progr
 void CLightning::Draw()
 {
     if (!m_lightningExists) return;
-    if (m_phase != LP_FLASH) return;
+    if (m_phase != LightningPhase::Flash) return;
 
     CDevice* device = m_engine->GetDevice();
 
@@ -259,7 +254,7 @@ void CLightning::Draw()
     Math::Vector corner[4];
     Vertex vertex[4];
 
-    for (int i = 0; i < FLASH_SEGMENTS-1; i++)
+    for (std::size_t i = 0; i < m_segments.size() - 1; i++)
     {
         Math::Vector p2 = p1;
         p2.y += 8.0f+0.2f*i;
@@ -267,26 +262,26 @@ void CLightning::Draw()
         Math::Point rot;
 
         Math::Vector p = p1;
-        p.x += m_width[i];
+        p.x += m_segments[i].width;
         rot = Math::RotatePoint(Math::Point(p1.x, p1.z), a+Math::PI/2.0f, Math::Point(p.x, p.z));
-        corner[0].x = rot.x+m_shift[i].x;
+        corner[0].x = rot.x+m_segments[i].shift.x;
         corner[0].y = p1.y;
-        corner[0].z = rot.y+m_shift[i].y;
+        corner[0].z = rot.y+m_segments[i].shift.y;
         rot = Math::RotatePoint(Math::Point(p1.x, p1.z), a-Math::PI/2.0f, Math::Point(p.x, p.z));
-        corner[1].x = rot.x+m_shift[i].x;
+        corner[1].x = rot.x+m_segments[i].shift.x;
         corner[1].y = p1.y;
-        corner[1].z = rot.y+m_shift[i].y;
+        corner[1].z = rot.y+m_segments[i].shift.y;
 
         p = p2;
-        p.x += m_width[i+1];
+        p.x += m_segments[i+1].width;
         rot = Math::RotatePoint(Math::Point(p2.x, p2.z), a+Math::PI/2.0f, Math::Point(p.x, p.z));
-        corner[2].x = rot.x+m_shift[i+1].x;
+        corner[2].x = rot.x+m_segments[i+1].shift.x;
         corner[2].y = p2.y;
-        corner[2].z = rot.y+m_shift[i+1].y;
+        corner[2].z = rot.y+m_segments[i+1].shift.y;
         rot = Math::RotatePoint(Math::Point(p2.x, p2.z), a-Math::PI/2.0f, Math::Point(p.x, p.z));
-        corner[3].x = rot.x+m_shift[i+1].x;
+        corner[3].x = rot.x+m_segments[i+1].shift.x;
         corner[3].y = p2.y;
-        corner[3].z = rot.y+m_shift[i+1].y;
+        corner[3].z = rot.y+m_segments[i+1].shift.y;
 
         if (p2.y < p1.y)
         {

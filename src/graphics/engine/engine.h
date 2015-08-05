@@ -155,16 +155,11 @@ struct EngineTriangle
     //! Material
     Material       material;
     //! Render state
-    int            state;
+    int            state = ENG_RSTATE_NORMAL;
     //! 1st texture
     std::string    tex1Name;
     //! 2nd texture
     std::string    tex2Name;
-
-    inline EngineTriangle()
-    {
-        state = ENG_RSTATE_NORMAL;
-    }
 };
 
 /**
@@ -202,12 +197,12 @@ struct EngineBaseObjDataTier
     unsigned int            staticBufferId;
     bool                    updateStaticBuffer;
 
-    inline EngineBaseObjDataTier(EngineTriangleType _type = ENG_TRIANGLE_TYPE_TRIANGLES,
-                                 const Material& _material = Material(),
-                                 int _state = ENG_RSTATE_NORMAL)
-     : type(_type)
-     , material(_material)
-     , state(_state)
+    inline EngineBaseObjDataTier(EngineTriangleType type = ENG_TRIANGLE_TYPE_TRIANGLES,
+                                 const Material& material = Material(),
+                                 int state = ENG_RSTATE_NORMAL)
+     : type(type)
+     , material(material)
+     , state(state)
      , staticBufferId(0)
      , updateStaticBuffer(false)
     {}
@@ -225,9 +220,10 @@ struct EngineBaseObjTexTier
     Texture                            tex2;
     std::vector<EngineBaseObjDataTier>  next;
 
-    inline EngineBaseObjTexTier(const std::string& _tex1Name = "", const std::string& _tex2Name = "")
-     : tex1Name(_tex1Name)
-     , tex2Name(_tex2Name)
+    inline EngineBaseObjTexTier(const std::string& tex1Name = "",
+                                const std::string& tex2Name = "")
+     : tex1Name(tex1Name)
+     , tex2Name(tex2Name)
     {}
 };
 
@@ -240,30 +236,21 @@ struct EngineBaseObjTexTier
 struct EngineBaseObject
 {
     //! If true, base object is valid in objects vector
-    bool used;
+    bool used = false;
     //! Number of triangles
-    int                    totalTriangles;
+    int                    totalTriangles = 0;
     //! Bounding box min (origin 0,0,0 always included)
     Math::Vector           bboxMin;
     //! bounding box max (origin 0,0,0 always included)
     Math::Vector           bboxMax;
     //! Radius of the sphere at the origin
-    float                  radius;
+    float                  radius = 0.0f;
     //! Next tier (Tex)
     std::vector<EngineBaseObjTexTier> next;
 
-    inline EngineBaseObject()
-    {
-        LoadDefault();
-    }
-
     inline void LoadDefault()
     {
-        used = false;
-        totalTriangles = 0;
-        bboxMax.LoadZero();
-        bboxMin.LoadZero();
-        radius = 0.0f;
+        *this = EngineBaseObject();
     }
 };
 
@@ -274,45 +261,30 @@ struct EngineBaseObject
 struct EngineObject
 {
     //! If true, object is valid in objects vector
-    bool                   used;
+    bool                   used = false;
     //! Rank of associated base engine object
-    int                    baseObjRank;
+    int                    baseObjRank = -1;
     //! If true, the object is drawn
-    bool                   visible;
+    bool                   visible = false;
     //! If true, object is behind the 2D interface
-    bool                   drawWorld;
+    bool                   drawWorld = false;
     //! If true, the shape is before the 2D interface
-    bool                   drawFront;
+    bool                   drawFront = false;
     //! Type of object
-    EngineObjectType       type;
+    EngineObjectType       type = ENG_OBJTYPE_NULL;
     //! Transformation matrix
     Math::Matrix           transform;
     //! Distance to object from eye point
-    float                  distance;
+    float                  distance = 0.0f;
     //! Rank of the associated shadow
-    int                    shadowRank;
+    int                    shadowRank = -1;
     //! Transparency of the object [0, 1]
-    float                  transparency;
-
-    //! Calls LoadDefault()
-    inline EngineObject()
-    {
-        LoadDefault();
-    }
+    float                  transparency = 0.0f;
 
     //! Loads default values
     inline void LoadDefault()
     {
-        used = false;
-        baseObjRank = -1;
-        visible = false;
-        drawWorld = false;
-        drawFront = false;
-        type = ENG_OBJTYPE_NULL;
-        transform.LoadIdentity();
-        distance = 0.0f;
-        shadowRank = -1;
-        transparency = 0.0f;
+        *this = EngineObject();
     }
 };
 
@@ -335,40 +307,29 @@ enum EngineShadowType
 struct EngineShadow
 {
     //! If true, shadow is valid
-    bool                used;
+    bool                used = false;
     //! If true, shadow is invisible (object being carried for example)
-    bool                hide;
+    bool                hide = false;
     //! Rank of the associated object
-    int                 objRank;
+    int                 objRank = -1;
     //! Type of shadow
-    EngineShadowType type;
+    EngineShadowType type = ENG_SHADOW_NORM;
     //! Position of the shadow
     Math::Vector        pos;
     //! Normal to the terrain
     Math::Vector        normal;
     //! Angle of the shadow
-    float               angle;
+    float               angle = 0.0f;
     //! Radius of the shadow
-    float               radius;
+    float               radius = 0.0f;
     //! Intensity of the shadow
-    float               intensity;
+    float               intensity = 0.0f;
     //! Height from the ground
-    float               height;
+    float               height = 0.0f;
 
-    inline EngineShadow()
+    void LoadDefault()
     {
-        LoadDefault();
-    }
-
-    inline void LoadDefault()
-    {
-        used = false;
-        hide = false;
-        objRank = 0;
-        type = ENG_SHADOW_NORM;
-        pos.LoadZero();
-        normal.LoadZero();
-        angle = radius = intensity = height = 0.0f;
+        *this = EngineShadow();
     }
 };
 
@@ -379,36 +340,27 @@ struct EngineShadow
 struct EngineGroundSpot
 {
     //! If true, ground spot is valid
-    bool            used;
+    bool            used = false;
     //! Color of the shadow
     Color      color;
     //! Min altitude
-    float           min;
+    float           min = 0.0f;
     //! Max altitude
-    float           max;
+    float           max = 0.0f;
     //! Transition area
-    float           smooth;
+    float           smooth = 0.0f;
     //! Position for the shadow
     Math::Vector    pos;
     //! Radius of the shadow
-    float           radius;
+    float           radius = 0.0f;
     //! Position of the shadow drawn
     Math::Vector    drawPos;
     //! Radius of the shadow drawn
-    float           drawRadius;
+    float           drawRadius = 0.0f;
 
-    inline EngineGroundSpot()
+    void LoadDefault()
     {
-        LoadDefault();
-    }
-
-    inline void LoadDefault()
-    {
-        used = false;
-        color = Color();
-        pos.LoadZero();
-        drawPos.LoadZero();
-        min = max = smooth = radius = drawRadius = 0.0f;
+        *this = EngineGroundSpot();
     }
 };
 
@@ -435,47 +387,35 @@ enum EngineGroundMarkPhase
 struct EngineGroundMark
 {
     //! If true, draw mark
-    bool                        draw;
+    bool                        draw = false;
     //! Phase of life
-    EngineGroundMarkPhase  phase;
+    EngineGroundMarkPhase  phase = ENG_GR_MARK_PHASE_NULL;
     //! Times for 3 life phases
-    float                       delay[3];
+    float                       delay[3] = { 0.0f };
     //! Fixed time
-    float                       fix;
+    float                       fix = 0.0f;
     //! Position for marks
     Math::Vector                pos;
     //! Radius of marks
-    float                       radius;
+    float                       radius = 0.0f;
     //! Color intensity
-    float                       intensity;
+    float                       intensity = 0.0f;
     //! Draw position for marks
     Math::Vector                drawPos;
     //! Radius for  marks
-    float                       drawRadius;
+    float                       drawRadius = 0.0f;
     //! Draw intensity for marks
-    float                       drawIntensity;
+    float                       drawIntensity = 0.0f;
     //! X dimension of table
-    int                         dx;
+    int                         dx = 0;
     //! Y dimension of table
-    int                         dy;
+    int                         dy = 0;
     //! Pointer to the table
-    char*                       table;
+    char*                       table = nullptr;
 
-    inline EngineGroundMark()
+    void LoadDefault()
     {
-        LoadDefault();
-    }
-
-    inline void LoadDefault()
-    {
-        draw = false;
-        phase = ENG_GR_MARK_PHASE_NULL;
-        pos = Math::Vector();
-        drawPos = Math::Vector();
-        delay[0] = delay[1] = delay[2] = 0.0f;
-        fix = radius = intensity = drawRadius = drawIntensity = 0.0f;
-        dx = dy = 0;
-        table = nullptr;
+        *this = EngineGroundMark();
     }
 };
 
@@ -558,16 +498,18 @@ struct EngineMouse
     //! Hot point
     Math::Point hotPoint;
 
-    inline EngineMouse(int _icon1 = -1, int _icon2 = -1, int _iconShadow = -1,
-                       EngineRenderState _mode1 = ENG_RSTATE_NORMAL,
-                       EngineRenderState _mode2 = ENG_RSTATE_NORMAL,
-                       Math::Point _hotPoint = Math::Point())
-     : icon1(_icon1)
-     , icon2(_icon2)
-     , iconShadow(_iconShadow)
-     , mode1(_mode1)
-     , mode2(_mode2)
-     , hotPoint(_hotPoint)
+    EngineMouse(int icon1 = -1,
+                int icon2 = -1,
+                int iconShadow = -1,
+                EngineRenderState mode1 = ENG_RSTATE_NORMAL,
+                EngineRenderState mode2 = ENG_RSTATE_NORMAL,
+                Math::Point hotPoint = Math::Point())
+     : icon1(icon1)
+     , icon2(icon2)
+     , iconShadow(iconShadow)
+     , mode1(mode1)
+     , mode2(mode2)
+     , hotPoint(hotPoint)
     {}
 };
 
@@ -1439,7 +1381,6 @@ protected:
     Math::Vector    m_statisticPos;
     bool            m_updateGeometry;
     bool            m_updateStaticBuffers;
-    int             m_alphaMode;
     bool            m_groundSpotVisible;
     bool            m_shadowVisible;
     bool            m_dirty;

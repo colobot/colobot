@@ -24,14 +24,14 @@
 
 #pragma once
 
-
-#include "common/event.h"
-
+#include "math/point.h"
 #include "math/vector.h"
 
+#include <vector>
 
 class CObject;
 class CSoundInterface;
+struct Event;
 
 
 // Graphics module namespace
@@ -82,30 +82,33 @@ protected:
     CObject*    SearchObject(Math::Vector pos);
 
 protected:
-    CEngine*          m_engine;
-    CTerrain*         m_terrain;
-    CCamera*          m_camera;
-    CSoundInterface*  m_sound;
+    CEngine*          m_engine = nullptr;
+    CTerrain*         m_terrain = nullptr;
+    CCamera*          m_camera = nullptr;
+    CSoundInterface*  m_sound = nullptr;
 
-    bool            m_lightningExists;
-    float           m_sleep;
-    float           m_delay;
-    float           m_magnetic;
+    bool            m_lightningExists = false;
+    float           m_sleep = 0.0f;
+    float           m_delay = 0.0f;
+    float           m_magnetic = 0.0f;
 
-    float           m_speed;
-    float           m_progress;
+    float           m_speed = 0.0f;
+    float           m_progress = 0.0f;
     Math::Vector    m_pos;
 
-    enum LightningPhase
+    enum class LightningPhase
     {
-        LP_WAIT,
-        LP_FLASH,
+        Wait,
+        Flash,
     };
-    LightningPhase  m_phase;
+    LightningPhase  m_phase = LightningPhase::Wait;
 
-    static const short FLASH_SEGMENTS = 50;
-    Math::Point     m_shift[FLASH_SEGMENTS];
-    float           m_width[FLASH_SEGMENTS];
+    struct LightningSegment
+    {
+        Math::Point shift;
+        float width = 0.0f;
+    };
+    std::vector<LightningSegment> m_segments;
 };
 
 

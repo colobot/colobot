@@ -48,8 +48,6 @@ const float FOG_HSUP    = 10.0f;
 const float FOG_HINF    = 100.0f;
 
 
-
-
 //! Check if an object can be destroyed, but is not an enemy
 bool IsSoft(ObjectType type)
 {
@@ -120,22 +118,9 @@ float GetDecay(ObjectType type)
     return 1.0f;
 }
 
-
-
 CParticle::CParticle(CEngine* engine)
+    : m_engine(engine)
 {
-    m_device = nullptr;
-    m_engine = engine;
-    m_main = nullptr;
-    m_terrain = nullptr;
-    m_water = nullptr;
-    m_sound = nullptr;
-    m_uniqueStamp = 0;
-    m_exploGunCounter = 0;
-    m_lastTimeGunDel = 0.0f;
-    m_absTime = 0.0f;
-
-    FlushParticle();
 }
 
 CParticle::~CParticle()

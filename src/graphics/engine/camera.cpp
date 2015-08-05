@@ -148,6 +148,13 @@ CCamera::CCamera()
     m_effectProgress = 0.0f;
     m_effectOffset   = Math::Vector(0.0f, 0.0f, 0.0f);
 
+    m_overType = CAM_OVER_EFFECT_NULL;
+    m_overForce = 0.0f;
+    m_overTime = 0.0f;
+    m_overMode = 0.0f;
+    m_overFadeIn = 0.0f;
+    m_overFadeOut = 0.0f;
+
     m_scriptEye    = Math::Vector(0.0f, 0.0f, 0.0f);
     m_scriptLookat = Math::Vector(0.0f, 0.0f, 0.0f);
 

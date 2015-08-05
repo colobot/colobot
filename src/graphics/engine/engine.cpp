@@ -63,6 +63,12 @@ namespace Gfx
 {
 
 CEngine::CEngine(CApplication *app)
+    : m_ambientColor(),
+      m_fogColor(),
+      m_deepView(),
+      m_fogStart(),
+      m_highlightRank(),
+      m_mice()
 {
     m_app    = app;
     m_device = nullptr;
@@ -108,17 +114,20 @@ CEngine::CEngine(CApplication *app)
     m_backgroundCloudUp   = Color();
     m_backgroundCloudDown = Color();
     m_backgroundFull = false;
+    m_backgroundScale = false;
     m_overFront = true;
     m_overColor = Color();
     m_overMode  = ENG_RSTATE_TCOLOR_BLACK;
-    m_highlightRank[0] = -1;  // empty list
+    m_highlight = false;
+    std::fill_n(m_highlightRank, 100, -1);
     m_highlightTime = 0.0f;
     m_eyePt    = Math::Vector(0.0f, 0.0f, 0.0f);
     m_lookatPt = Math::Vector(0.0f, 0.0f, 1.0f);
     m_drawWorld = true;
     m_drawFront = false;
     m_particleDensity = 1.0f;
-    m_lastClippingDistance = m_clippingDistance = 1.0f;
+    m_lastClippingDistance = 1.0f;
+    m_clippingDistance = 1.0f;
     m_objectDetail = 1.0f;
     m_terrainVision = 1000.0f;
     m_gadgetQuantity = 1.0f;
@@ -189,6 +198,11 @@ CEngine::CEngine(CApplication *app)
     Math::LoadTranslationMatrix(temp2, Math::Vector(1.0f, 1.0f, 1.0f));
     //m_shadowBias = Math::MultiplyMatrices(m_shadowBias, temporary);
     m_shadowBias = Math::MultiplyMatrices(temp1, temp2);
+
+    m_lastState = -1;
+    m_statisticTriangle = 0;
+    m_fps = 0.0f;
+    m_firstGroundSpot = false;
 }
 
 CEngine::~CEngine()

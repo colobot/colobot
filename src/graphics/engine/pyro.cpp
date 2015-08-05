@@ -51,15 +51,6 @@ CPyro::CPyro()
     m_particle    = m_engine->GetParticle();
     m_lightMan    = m_engine->GetLightManager();
     m_sound       = CApplication::GetInstancePointer()->GetSound();
-    m_object      = nullptr;
-
-    m_progress = 0.0f;
-    m_speed = 0.0f;
-    m_lightRank = -1;
-    m_soundChannel = -1;
-    LightOperFlush();
-
-    m_resetAngle = 0.0f;
 }
 
 CPyro::~CPyro()
@@ -2375,29 +2366,28 @@ Error CPyro::FallIsEnded()
 
 void CPyro::LightOperFlush()
 {
-    m_lightOperTotal = 0;
+    m_lightOper.clear();
 }
 
 void CPyro::LightOperAdd(float progress, float intensity, float r, float g, float b)
 {
-    int i = m_lightOperTotal;
+    PyroLightOper lightOper;
 
-    m_lightOper[i].progress  = progress;
-    m_lightOper[i].intensity = intensity;
-    m_lightOper[i].color.r   = r;
-    m_lightOper[i].color.g   = g;
-    m_lightOper[i].color.b   = b;
+    lightOper.progress  = progress;
+    lightOper.intensity = intensity;
+    lightOper.color.r   = r;
+    lightOper.color.g   = g;
+    lightOper.color.b   = b;
 
-    m_lightOperTotal++;
+    m_lightOper.push_back(lightOper);
 }
 
 void CPyro::LightOperFrame(float rTime)
 {
-    for (int i = 0; i < m_lightOperTotal; i++)
+    for (std::size_t i = 1; i < m_lightOper.size(); i++)
     {
         if ( m_progress < m_lightOper[i].progress )
         {
-            assert(i > 0); // TODO: if assert fails, fix the code
             float progress = (m_progress-m_lightOper[i-1].progress) / (m_lightOper[i].progress-m_lightOper[i-1].progress);
 
             float intensity = m_lightOper[i-1].intensity + (m_lightOper[i].intensity-m_lightOper[i-1].intensity)*progress;

@@ -28,6 +28,7 @@
 
 #include "physics/physics.h"
 
+#include "sound/sound.h"
 
 
 const float ENERGY_FIRE     = (0.25f/2.5f); // energy consumed/shot

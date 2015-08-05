@@ -28,6 +28,7 @@
 #include "object/level/parserline.h"
 #include "object/level/parserparam.h"
 
+#include "sound/sound.h"
 
 
 // Object's constructor.

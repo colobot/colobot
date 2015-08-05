@@ -17,7 +17,6 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-
 #include "object/task/taskpen.h"
 
 #include "graphics/engine/particle.h"
@@ -26,6 +25,7 @@
 
 #include "object/old_object.h"
 
+#include "sound/sound.h"
 
 
 // Object's constructor.
