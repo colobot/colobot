@@ -39,6 +39,8 @@ class CScreen
 {
 public:
     CScreen();
+    virtual ~CScreen();
+
     virtual void CreateInterface() = 0;
     virtual bool EventProcess(const Event &event) = 0;
 
