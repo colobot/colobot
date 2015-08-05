@@ -417,82 +417,88 @@ bool IsPhaseWithWorld(Phase phase)
 //! Changes phase
 void CRobotMain::ChangePhase(Phase phase)
 {
-    if (!IsPhaseWithWorld(m_phase) || IsInSimulationConfigPhase(m_phase) || IsInSimulationConfigPhase(phase))
+    bool resetWorld = false;
+    if ((IsPhaseWithWorld(m_phase) || IsPhaseWithWorld(phase)) && !IsInSimulationConfigPhase(m_phase) && !IsInSimulationConfigPhase(phase))
     {
-        m_phase = phase;
-        m_dialog->ChangePhase(m_phase);
-        return;
+        GetLogger()->Info("Reseting world on phase change...\n");
+        resetWorld = true;
     }
-    GetLogger()->Info("Reseting world on phase change...\n");
 
-    m_missionTimerEnabled = m_missionTimerStarted = false;
-    m_missionTimer = 0.0f;
-
-    if (m_phase == PHASE_SIMUL)  // ends a simulation?
+    if (resetWorld)
     {
-        SaveAllScript();
-        m_sound->StopMusic(0.0f);
-        m_camera->SetControllingObject(0);
+        m_missionTimerEnabled = m_missionTimerStarted = false;
+        m_missionTimer = 0.0f;
 
-        if (m_gameTime > 10.0f)  // did you play at least 10 seconds?
+        if (m_phase == PHASE_SIMUL)  // ends a simulation?
         {
-            m_playerProfile->IncrementLevelTryCount(m_levelCategory, m_levelChap, m_levelRank);
+            SaveAllScript();
+            m_sound->StopMusic(0.0f);
+            m_camera->SetControllingObject(0);
+
+            if (m_gameTime > 10.0f)  // did you play at least 10 seconds?
+            {
+                m_playerProfile->IncrementLevelTryCount(m_levelCategory, m_levelChap, m_levelRank);
+            }
         }
+
+        if (phase == PHASE_WIN)  // wins a simulation?
+        {
+            m_playerProfile->SetLevelPassed(m_levelCategory, m_levelChap, m_levelRank, true);
+            m_dialog->NextMission();  // passes to the next mission
+        }
+
+        m_app->SetLowCPU(true); // doesn't use much CPU in interface phases
+
+        DeleteAllObjects();  // removes all the current 3D Scene
     }
 
-    if (phase == PHASE_WIN)  // wins a simulation?
+    m_phase = phase;
+
+    if (resetWorld)
     {
-        m_playerProfile->SetLevelPassed(m_levelCategory, m_levelChap, m_levelRank, true);
-        m_dialog->NextMission();  // passes to the next mission
+        m_winDelay     = 0.0f;
+        m_lostDelay    = 0.0f;
+        m_beginSatCom = false;
+        m_movieLock   = false;
+        m_satComLock  = false;
+        m_editLock    = false;
+        m_freePhoto   = false;
+        m_resetCreate = false;
+        m_infoObject  = nullptr;
+
+        ChangePause(PAUSE_NONE);
+        FlushDisplayInfo();
+        m_engine->SetRankView(0);
+        m_terrain->FlushRelief();
+        m_engine->DeleteAllObjects();
+        m_oldModelManager->DeleteAllModelCopies();
+        m_engine->SetWaterAddColor(Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f));
+        m_engine->SetBackground("");
+        m_engine->SetBackForce(false);
+        m_engine->SetForegroundName("");
+        m_engine->SetOverColor();
+        m_engine->DeleteGroundMark(0);
+        SetSpeed(1.0f);
+        m_terrain->SetWind(Math::Vector(0.0f, 0.0f, 0.0f));
+        m_terrain->FlushBuildingLevel();
+        m_terrain->FlushFlyingLimit();
+        m_lightMan->FlushLights();
+        m_particle->FlushParticle();
+        m_water->Flush();
+        m_cloud->Flush();
+        m_lightning->Flush();
+        m_planet->Flush();
+        m_interface->Flush();
+        ClearInterface();
+        FlushNewScriptName();
+        m_sound->SetListener(Math::Vector(0.0f, 0.0f, 0.0f), Math::Vector(0.0f, 0.0f, 1.0f));
+        m_camera->SetType(Gfx::CAM_TYPE_DIALOG);
+        m_movie->Flush();
+        m_movieInfoIndex = -1;
+        m_cameraPan  = 0.0f;
+        m_cameraZoom = 0.0f;
+        m_shortCut = true;
     }
-
-    m_app->SetLowCPU(true); // doesn't use much CPU in interface phases
-
-    DeleteAllObjects();  // removes all the current 3D Scene
-
-    m_phase        = phase;
-    m_winDelay     = 0.0f;
-    m_lostDelay    = 0.0f;
-    m_beginSatCom = false;
-    m_movieLock   = false;
-    m_satComLock  = false;
-    m_editLock    = false;
-    m_freePhoto   = false;
-    m_resetCreate = false;
-    m_infoObject  = nullptr;
-
-    ChangePause(PAUSE_NONE);
-    FlushDisplayInfo();
-    m_engine->SetRankView(0);
-    m_terrain->FlushRelief();
-    m_engine->DeleteAllObjects();
-    m_oldModelManager->DeleteAllModelCopies();
-    m_engine->SetWaterAddColor(Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f));
-    m_engine->SetBackground("");
-    m_engine->SetBackForce(false);
-    m_engine->SetForegroundName("");
-    m_engine->SetOverColor();
-    m_engine->DeleteGroundMark(0);
-    SetSpeed(1.0f);
-    m_terrain->SetWind(Math::Vector(0.0f, 0.0f, 0.0f));
-    m_terrain->FlushBuildingLevel();
-    m_terrain->FlushFlyingLimit();
-    m_lightMan->FlushLights();
-    m_particle->FlushParticle();
-    m_water->Flush();
-    m_cloud->Flush();
-    m_lightning->Flush();
-    m_planet->Flush();
-    m_interface->Flush();
-    ClearInterface();
-    FlushNewScriptName();
-    m_sound->SetListener(Math::Vector(0.0f, 0.0f, 0.0f), Math::Vector(0.0f, 0.0f, 1.0f));
-    m_camera->SetType(Gfx::CAM_TYPE_DIALOG);
-    m_movie->Flush();
-    m_movieInfoIndex = -1;
-    m_cameraPan  = 0.0f;
-    m_cameraZoom = 0.0f;
-    m_shortCut = true;
 
     Math::Point dim, pos;
 
@@ -519,6 +525,7 @@ void CRobotMain::ChangePhase(Phase phase)
     pb->ClearState(Ui::STATE_VISIBLE);
 
     m_dialog->ChangePhase(m_phase);
+    if (!resetWorld) return;
 
     dim.x = 32.0f/640.0f;
     dim.y = 32.0f/480.0f;

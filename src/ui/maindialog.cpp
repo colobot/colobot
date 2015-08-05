@@ -294,8 +294,6 @@ bool CMainDialog::EventProcess(const Event &event)
 
     if ( m_bDialog )  // this dialogue?
     {
-        m_interface->EventProcess(event);
-
         if ( event.type == EVENT_DIALOG_OK ||
                 (event.type == EVENT_KEY_DOWN && event.key.key == KEY(RETURN) ) )
         {
