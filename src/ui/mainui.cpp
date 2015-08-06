@@ -91,8 +91,6 @@ CMainUserInterface::CMainUserInterface()
 
     m_phase         = PHASE_PLAYER_SELECT;
 
-    m_shotDelay  = 0;
-
     m_glintMouse = Math::Point(0.0f, 0.0f);
     m_glintTime  = 1000.0f;
 
@@ -245,15 +243,6 @@ bool CMainUserInterface::EventProcess(const Event &event)
             if (!m_sound->IsPlayingMusic() && m_sound->IsCachedMusic("Intro2.ogg"))
             {
                 m_sound->PlayMusic("Intro2.ogg", true);
-            }
-        }
-
-        if ( m_shotDelay > 0 && !m_dialog->IsDialog() )
-        {
-            m_shotDelay --;
-            if ( m_shotDelay == 0 )
-            {
-                m_engine->WriteScreenShot(m_shotName);
             }
         }
 
@@ -782,12 +771,6 @@ void CMainUserInterface::AllMissionUpdate()
     {
         m_screenLevelList->AllMissionUpdate();
     }
-}
-
-void CMainUserInterface::MakeSaveScreenshot(const std::string& name)
-{
-    m_shotDelay = 3;
-    m_shotName = CResourceManager::GetSaveLocation() + "/" + name; //TODO: Use PHYSFS?
 }
 
 // Updates the button "solution" according to cheat code.

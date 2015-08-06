@@ -67,6 +67,7 @@ bool CMainShort::CreateShortcuts()
     // Delete all old controls
     m_interface->DeleteControl(EVENT_OBJECT_MOVIELOCK);
     m_interface->DeleteControl(EVENT_OBJECT_EDITLOCK);
+    m_interface->DeleteControl(EVENT_OBJECT_SAVING);
     m_interface->DeleteControl(EVENT_OBJECT_SHORTCUT_MODE);
     for (int i = EVENT_OBJECT_SHORTCUT; i <= EVENT_OBJECT_SHORTCUT_MAX; i++)
     {
@@ -84,17 +85,19 @@ bool CMainShort::CreateShortcuts()
     pos.x =  4.0f/640.0f;
     pos.y = (480.0f-32.0f)/480.0f;
 
+    m_interface->CreateShortcut(pos, dim, 58, EVENT_OBJECT_SAVING);
+
     if ( m_main->GetMovieLock() &&
         !m_main->GetEditLock()  )  // hangs during film?
     {
-        m_interface->CreateShortcut(pos, dim, 7, EVENT_OBJECT_MOVIELOCK);
+        m_interface->CreateShortcut(pos, dim, 128+7, EVENT_OBJECT_MOVIELOCK);
         return true;
     }
     if ( !m_main->GetFreePhoto() &&
          (m_main->GetEditLock() ||
           m_engine->GetPause()) )  // hangs during edition?
     {
-        m_interface->CreateShortcut(pos, dim, 6, EVENT_OBJECT_EDITLOCK);
+        m_interface->CreateShortcut(pos, dim, 128+6, EVENT_OBJECT_EDITLOCK);
         if(!m_engine->GetPause() || CPauseManager::GetInstancePointer()->GetPauseType() == PAUSE_DIALOG)
             return true;
     }
@@ -105,7 +108,7 @@ bool CMainShort::CreateShortcuts()
 
     // Create new shortcuts
 
-    m_interface->CreateShortcut(pos, dim, 2, EVENT_OBJECT_SHORTCUT_MODE);
+    m_interface->CreateShortcut(pos, dim, 128+2, EVENT_OBJECT_SHORTCUT_MODE);
     pos.x += dim.x*1.2f;
 
     std::vector<int> teams;
@@ -216,7 +219,8 @@ int CMainShort::GetShortcutIcon(ObjectType type)
         if ( type == OBJECT_MOBILEdr )  icon = 48;
         if ( type == OBJECT_APOLLO2  )  icon = 49;
     }
-    return icon;
+    if ( icon == -1 ) return -1;
+    return 128+icon;
 }
 
 // Updates the interface shortcuts to the units.

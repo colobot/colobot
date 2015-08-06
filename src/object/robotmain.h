@@ -253,7 +253,6 @@ public:
     std::string GetCustomLevelDir();
     void        SetReadScene(std::string path);
     void        UpdateChapterPassed();
-    void        MakeSaveScreenshot(const std::string& name);
 
     void        StartMusic();
     void        StartPauseMusic(PauseType pause);
@@ -290,7 +289,7 @@ public:
     CPlayerProfile* GetPlayerProfile();
 
     bool        IsBusy();
-    bool        IOWriteScene(std::string filename, std::string filecbot, char *info);
+    bool        IOWriteScene(std::string filename, std::string filecbot, std::string filescreenshot, char *info);
     void        IOWriteSceneFinished();
     CObject*    IOReadScene(std::string filename, std::string filecbot);
     void        IOWriteObject(CLevelParserLine *line, CObject* obj);
@@ -587,6 +586,10 @@ protected:
     int             m_autosaveInterval;
     int             m_autosaveSlots;
     float           m_autosaveLast;
+
+    unsigned int    m_shotDelay;
+    std::string     m_shotName;
+    unsigned int    m_shotSaving;
 
     std::deque<CObject*> m_selectionHistory;
 };

@@ -110,7 +110,7 @@ void CShortcut::Draw()
         zoom = 1.0f;
         mode = Gfx::ENG_RSTATE_NORMAL;
     }
-    if ( m_icon == 6 || m_icon == 7 )  // pause or film?
+    if ( m_icon == 128+6 || m_icon == 128+7 || m_icon == 58 )  // pause or film?
     {
         icon = -1;  // no bottom
         zoom = 1.0f;
@@ -124,8 +124,35 @@ void CShortcut::Draw()
         DrawVertex(icon, 0.95f);
     }
 
-    m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_BLACK);
-    DrawVertex(m_icon, zoom);
+    icon = m_icon;
+    if ( icon >= 192 )
+    {
+        icon -= 192;
+        m_engine->SetTexture("textures/interface/text.png");
+    }
+    else if ( icon >= 128 )
+    {
+        icon -= 128;
+        m_engine->SetTexture("textures/interface/button3.png");
+    }
+    else if ( icon >= 64 )
+    {
+        icon -= 64;
+        m_engine->SetTexture("textures/interface/button2.png");
+    }
+    else
+    {
+        m_engine->SetTexture("textures/interface/button1.png");
+    }
+    if (m_icon == 58)
+    {
+        m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_WHITE);
+    }
+    else
+    {
+        m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_BLACK);
+    }
+    DrawVertex(icon, zoom);
 
     if ( m_state & STATE_FRAME )
     {
@@ -239,4 +266,3 @@ void CShortcut::DrawVertex(int icon, float zoom)
 }
 
 }
-

@@ -82,8 +82,6 @@ public:
     std::string GetCustomLevelName(int id);
     const std::vector<std::string>& GetCustomLevelList();
 
-    void    MakeSaveScreenshot(const std::string& name);
-
 protected:
     void    GlintMove();
     void    FrameParticle(float rTime);
