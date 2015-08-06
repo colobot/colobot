@@ -26,7 +26,7 @@
 #include <stdexcept>
 #include <sstream>
 
-COutputStreamBuffer::COutputStreamBuffer(size_t bufferSize)
+COutputStreamBuffer::COutputStreamBuffer(std::size_t bufferSize)
     : m_file(nullptr)
 {
     if (bufferSize <= 0)

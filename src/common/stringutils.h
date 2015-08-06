@@ -24,7 +24,7 @@
 
 #pragma once
 
-
+#include <cstddef>
 #include <string>
 #include <sstream>
 
@@ -82,7 +82,7 @@ std::wstring Utf8StringToUnicode(const std::string &str);
 int Utf8CharSizeAt(const std::string &str, unsigned int pos);
 
 //! Returns the length in characters of UTF-8 string \a str
-size_t Utf8StringLength(const std::string &str);
+std::size_t Utf8StringLength(const std::string &str);
 
 } // namespace StrUtil
 

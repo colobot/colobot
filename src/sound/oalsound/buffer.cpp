@@ -24,6 +24,7 @@
 
 #include "sound/oalsound/check.h"
 
+#include <cstddef>
 #include <memory>
 
 
@@ -78,7 +79,7 @@ bool Buffer::LoadFromFile(std::string filename, SoundType sound)
     std::vector<uint16_t> data;
     std::array<int16_t, 4096> buffer;
     data.reserve(file->GetFileInfo().frames);
-    size_t read = 0;
+    std::size_t read = 0;
     while ((read = file->Read(buffer.data(), buffer.size())) != 0)
     {
         data.insert(data.end(), buffer.begin(), buffer.begin() + read);

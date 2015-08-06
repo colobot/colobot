@@ -19,6 +19,7 @@
 
 #pragma once
 
+#include <cstddef>
 #include <istream>
 #include <string>
 
@@ -33,5 +34,5 @@ public:
     void open(const std::string& filename);
     void close();
     bool is_open();
-    size_t size();
+    std::size_t size();
 };

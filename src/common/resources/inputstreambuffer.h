@@ -19,6 +19,7 @@
 
 #pragma once
 
+#include <cstddef>
 #include <memory>
 #include <streambuf>
 #include <string>
@@ -28,7 +29,7 @@
 class CInputStreamBuffer : public std::streambuf
 {
 public:
-    CInputStreamBuffer(size_t bufferSize = 512);
+    CInputStreamBuffer(std::size_t bufferSize = 512);
     virtual ~CInputStreamBuffer();
 
     CInputStreamBuffer(const CInputStreamBuffer &) = delete;
@@ -37,7 +38,7 @@ public:
     void open(const std::string &filename);
     void close();
     bool is_open();
-    size_t size();
+    std::size_t size();
 
 private:
     int_type underflow() override;
@@ -45,7 +46,7 @@ private:
     std::streampos seekpos(std::streampos sp, std::ios_base::openmode which) override;
     std::streampos seekoff(std::streamoff off, std::ios_base::seekdir way, std::ios_base::openmode which) override;
 
-    const size_t m_bufferSize;
+    const std::size_t m_bufferSize;
     PHYSFS_File *m_file;
     std::unique_ptr<char[]> m_buffer;
 };

@@ -19,6 +19,7 @@
 
 #pragma once
 
+#include <cstddef>
 #include <memory>
 #include <streambuf>
 #include <string>
@@ -28,7 +29,7 @@
 class COutputStreamBuffer : public std::streambuf
 {
 public:
-    COutputStreamBuffer(size_t bufferSize = 512);
+    COutputStreamBuffer(std::size_t bufferSize = 512);
     virtual ~COutputStreamBuffer();
 
     COutputStreamBuffer(const COutputStreamBuffer &) = delete;

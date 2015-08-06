@@ -56,7 +56,7 @@ bool CInputStream::is_open()
 }
 
 
-size_t CInputStream::size()
+std::size_t CInputStream::size()
 {
     return static_cast<CInputStreamBuffer *>(rdbuf())->size();
 }

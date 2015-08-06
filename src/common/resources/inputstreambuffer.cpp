@@ -26,13 +26,13 @@
 #include <stdexcept>
 #include <sstream>
 
-CInputStreamBuffer::CInputStreamBuffer(size_t bufferSize)
+CInputStreamBuffer::CInputStreamBuffer(std::size_t bufferSize)
   : m_bufferSize(bufferSize)
   , m_file(nullptr)
 {
     if (bufferSize <= 0)
     {
-        throw std::runtime_error("File buffer must be larger then 0 bytes");
+        throw std::runtime_error("File buffer must be larger than 0 bytes");
     }
 
     m_buffer = MakeUniqueArray<char>(bufferSize);
@@ -65,7 +65,7 @@ bool CInputStreamBuffer::is_open()
 }
 
 
-size_t CInputStreamBuffer::size()
+std::size_t CInputStreamBuffer::size()
 {
     return PHYSFS_fileLength(m_file);
 }

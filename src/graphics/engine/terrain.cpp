@@ -129,7 +129,7 @@ bool CTerrain::InitTextures(const std::string& baseName, int* table, int dx, int
     m_useMaterials = false;
 
     m_texBaseName = baseName;
-    size_t pos = baseName.rfind('.');
+    auto pos = baseName.rfind('.');
     if(pos < baseName.find_last_of('/')) pos = std::string::npos; // If last . is not a part of filename (some directory, possibly . or ..)
 
     if (pos == std::string::npos)

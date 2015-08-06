@@ -24,6 +24,7 @@
 
 #pragma once
 
+#include <cstddef>
 #include <array>
 
 /**
@@ -42,4 +43,4 @@ enum class ObjectInterfaceType
     Max //!< maximum value (for getting number of items in enum)
 };
 
-using ObjectInterfaceTypes = std::array<bool, static_cast<size_t>(ObjectInterfaceType::Max)>;
+using ObjectInterfaceTypes = std::array<bool, static_cast<std::size_t>(ObjectInterfaceType::Max)>;

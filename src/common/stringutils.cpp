@@ -30,7 +30,7 @@ namespace
 
 std::string VFormat(const char *fmt, va_list ap)
 {
-    size_t size = 1024;
+    std::size_t size = 1024;
     char stackbuf[1024];
     std::vector<char> dynamicbuf;
     char *buf = &stackbuf[0];
@@ -41,7 +41,7 @@ std::string VFormat(const char *fmt, va_list ap)
 
         if (needed <= static_cast<int>(size) && needed >= 0)
         {
-            return std::string(buf, static_cast<size_t>(needed));
+            return std::string(buf, static_cast<std::size_t>(needed));
         }
 
         size = (needed > 0) ? (needed+1) : (size*2);
@@ -64,7 +64,7 @@ std::string StrUtils::Format(const char *fmt, ...)
 std::string StrUtils::Replace(const std::string &str, const std::string &oldStr, const std::string &newStr)
 {
   std::string result = str;
-  size_t pos = 0;
+  std::size_t pos = 0;
   while ((pos = str.find(oldStr, pos)) != std::string::npos)
   {
     result.replace(pos, oldStr.length(), newStr);
@@ -174,9 +174,9 @@ int StrUtils::Utf8CharSizeAt(const std::string &str, unsigned int pos)
   return 0;
 }
 
-size_t StrUtils::Utf8StringLength(const std::string &str)
+std::size_t StrUtils::Utf8StringLength(const std::string &str)
 {
-  size_t result = 0;
+  std::size_t result = 0;
   unsigned int i = 0;
   while (i < str.size())
   {

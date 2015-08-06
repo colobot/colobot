@@ -19,6 +19,7 @@
 
 #pragma once
 
+#include <cstddef>
 #include <memory>
 
 /**
@@ -36,7 +37,7 @@ inline std::unique_ptr<T> MakeUnique(Args&&... args)
  * It can be replaced with std::make_unique once we use C++14
  */
 template<typename T>
-inline std::unique_ptr<T[]> MakeUniqueArray(size_t size)
+inline std::unique_ptr<T[]> MakeUniqueArray(std::size_t size)
 {
     return std::unique_ptr<T[]>(new T[size]);
 }
