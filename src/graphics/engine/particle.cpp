@@ -189,7 +189,7 @@ void NameParticle(std::string &name, int num)
          if (num == 1)  name = "effect00.png";
     else if (num == 2)  name = "effect01.png";
     else if (num == 3)  name = "effect02.png";
-    else if (num == 4)  name = "interface/text.png";
+    else if (num == 4)  name = "effect03.png";
     else                name = "";
 }
 
@@ -3537,7 +3537,7 @@ void CParticle::DrawParticle(int sheet)
     // Draw tire marks.
     if (m_wheelTraceTotal > 0 && sheet == SH_WORLD)
     {
-        m_engine->SetTexture("textures/interface/text.png");
+        m_engine->SetTexture("textures/effect03.png");
         m_engine->SetState(ENG_RSTATE_ALPHA);
         Math::Matrix matrix;
         matrix.LoadIdentity();

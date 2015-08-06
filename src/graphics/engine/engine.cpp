@@ -2250,7 +2250,7 @@ Texture CEngine::LoadTexture(const std::string& name, const TextureCreateParams&
 
 bool CEngine::LoadAllTextures()
 {
-    LoadTexture("textures/interface/text.png");
+    LoadTexture("textures/effect03.png");
     m_miceTexture = LoadTexture("textures/interface/mouse.png");
     LoadTexture("textures/interface/button1.png");
     LoadTexture("textures/interface/button2.png");
@@ -4245,7 +4245,7 @@ void CEngine::DrawShadow()
     SetMaterial(material);
 
     // TODO: create a separate texture
-    SetTexture("textures/interface/text.png");
+    SetTexture("textures/effect03.png");
 
     Math::Point ts, ti;
 

@@ -128,7 +128,7 @@ void CShortcut::Draw()
     if ( icon >= 192 )
     {
         icon -= 192;
-        m_engine->SetTexture("textures/interface/text.png");
+        m_engine->SetTexture("textures/effect03.png");
     }
     else if ( icon >= 128 )
     {

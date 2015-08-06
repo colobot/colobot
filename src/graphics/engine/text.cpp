@@ -842,7 +842,7 @@ void CText::DrawCharAndAdjustPos(UTF8Char ch, FontType font, float size, Math::P
         if ( icon >= 192 )
         {
             icon -= 192;
-            m_engine->SetTexture("textures/interface/text.png");
+            m_engine->SetTexture("textures/effect03.png");
             m_engine->SetState(ENG_RSTATE_TTEXTURE_WHITE);
         }
         else if ( icon >= 128 )
@@ -1051,4 +1051,3 @@ CharTexture CText::CreateCharTexture(UTF8Char ch, CachedFont* font)
 
 
 } // namespace Gfx
-
