@@ -98,7 +98,6 @@ void CSettings::SaveSettings()
     GetConfigFile().SetIntProperty("Setup", "UseJoystick", app->GetJoystickEnabled() ? app->GetJoystick().index : -1);
     GetConfigFile().SetFloatProperty("Setup", "ParticleDensity", engine->GetParticleDensity());
     GetConfigFile().SetFloatProperty("Setup", "ClippingDistance", engine->GetClippingDistance());
-    GetConfigFile().SetFloatProperty("Setup", "ObjectDetail", engine->GetObjectDetail());
     GetConfigFile().SetFloatProperty("Setup", "GadgetQuantity", engine->GetGadgetQuantity());
     GetConfigFile().SetIntProperty("Setup", "AudioVolume", sound->GetAudioVolume());
     GetConfigFile().SetIntProperty("Setup", "MusicVolume", sound->GetMusicVolume());
@@ -248,9 +247,6 @@ void CSettings::LoadSettings()
 
     if (GetConfigFile().GetFloatProperty("Setup", "ClippingDistance", fValue))
         engine->SetClippingDistance(fValue);
-
-    if (GetConfigFile().GetFloatProperty("Setup", "ObjectDetail", fValue))
-        engine->SetObjectDetail(fValue);
 
     if (GetConfigFile().GetFloatProperty("Setup", "GadgetQuantity", fValue))
         engine->SetGadgetQuantity(fValue);

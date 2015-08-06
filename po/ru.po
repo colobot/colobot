@@ -479,9 +479,6 @@ msgstr "Уничтожить здание"
 msgid "Destroyer"
 msgstr "Уничтожитель"
 
-msgid "Details\\Visual quality of 3D objects"
-msgstr "Детали\\Визуальное качество 3D-объектов"
-
 msgid "Device\\Driver and resolution settings"
 msgstr "Устройство\\Драйвер и настройки разрешения"
 
@@ -1845,6 +1842,9 @@ msgstr "www.epsitec.com"
 
 #~ msgid "Delete"
 #~ msgstr "Удалить"
+
+#~ msgid "Details\\Visual quality of 3D objects"
+#~ msgstr "Детали\\Визуальное качество 3D-объектов"
 
 #~ msgid "Developed by :"
 #~ msgstr "Разработка :"

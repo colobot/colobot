@@ -152,21 +152,6 @@ void CScreenSetupGraphics::CreateInterface()
     pos.y = 0.53f;
     ddim.x = dim.x*2.2f;
     ddim.y = 18.0f/480.0f;
-    pv = pw->CreateEditValue(pos, ddim, 0, EVENT_INTERFACE_DETAIL);
-    pv->SetState(STATE_SHADOW);
-    pv->SetMinValue(0.0f);
-    pv->SetMaxValue(2.0f);
-    pos.x += 0.13f;
-    pos.y -= 0.015f;
-    ddim.x = 0.40f;
-    GetResource(RES_EVENT, EVENT_INTERFACE_DETAIL, name);
-    pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL12, name);
-    pl->SetTextAlign(Gfx::TEXT_ALIGN_LEFT);
-
-    pos.x = ox+sx*8.5f;
-    pos.y = 0.47f;
-    ddim.x = dim.x*2.2f;
-    ddim.y = 18.0f/480.0f;
     pv = pw->CreateEditValue(pos, ddim, 0, EVENT_INTERFACE_GADGET);
     pv->SetState(STATE_SHADOW);
     if ( m_simulationSetup )
@@ -349,7 +334,6 @@ bool CScreenSetupGraphics::EventProcess(const Event &event)
 
         case EVENT_INTERFACE_PARTI:
         case EVENT_INTERFACE_CLIP:
-        case EVENT_INTERFACE_DETAIL:
         case EVENT_INTERFACE_GADGET:
             ChangeSetupButtons();
             break;
@@ -512,13 +496,6 @@ void CScreenSetupGraphics::UpdateSetupButtons()
         pv->SetValue(value);
     }
 
-    pv = static_cast<CEditValue*>(pw->SearchControl(EVENT_INTERFACE_DETAIL));
-    if ( pv != 0 )
-    {
-        value = m_engine->GetObjectDetail();
-        pv->SetValue(value);
-    }
-
     pv = static_cast<CEditValue*>(pw->SearchControl(EVENT_INTERFACE_GADGET));
     if ( pv != 0 )
     {
@@ -551,13 +528,6 @@ void CScreenSetupGraphics::ChangeSetupButtons()
     {
         value = pv->GetValue();
         m_engine->SetClippingDistance(value);
-    }
-
-    pv = static_cast<CEditValue*>(pw->SearchControl(EVENT_INTERFACE_DETAIL));
-    if ( pv != 0 )
-    {
-        value = pv->GetValue();
-        m_engine->SetObjectDetail(value);
     }
 
     pv = static_cast<CEditValue*>(pw->SearchControl(EVENT_INTERFACE_GADGET));
@@ -645,11 +615,6 @@ void CScreenSetupGraphics::ChangeSetupQuality(int quality)
     if ( quality == 0 )  value = 1.0f;
     if ( quality >  0 )  value = 2.0f;
     m_engine->SetClippingDistance(value);
-
-    if ( quality <  0 )  value = 0.0f;
-    if ( quality == 0 )  value = 1.0f;
-    if ( quality >  0 )  value = 2.0f;
-    m_engine->SetObjectDetail(value);
 
     if ( quality <  0 )  value = 0.5f;
     if ( quality == 0 )  value = 1.0f;

@@ -354,9 +354,6 @@ msgstr ""
 msgid "Render distance\\Maximum visibility"
 msgstr ""
 
-msgid "Details\\Visual quality of 3D objects"
-msgstr ""
-
 msgid "Num of decorative objects\\Number of purely ornamental objects"
 msgstr ""
 

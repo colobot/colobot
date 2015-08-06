@@ -480,9 +480,6 @@ msgstr "Démolit le bâtiment"
 msgid "Destroyer"
 msgstr "Destructeur"
 
-msgid "Details\\Visual quality of 3D objects"
-msgstr "Détails des objets\\Qualité des objets en 3D"
-
 msgid "Device\\Driver and resolution settings"
 msgstr "Affichage\\Pilote et résolution d'affichage"
 
@@ -1849,6 +1846,9 @@ msgstr "www.epsitec.com"
 
 #~ msgid "Delete"
 #~ msgstr "Détruire"
+
+#~ msgid "Details\\Visual quality of 3D objects"
+#~ msgstr "Détails des objets\\Qualité des objets en 3D"
 
 #~ msgid "Developed by :"
 #~ msgstr "Développé par :"

@@ -1056,12 +1056,6 @@ public:
     //@}
 
     //@{
-    //! Management of objects detals.
-    void            SetObjectDetail(float value);
-    float           GetObjectDetail();
-    //@}
-
-    //@{
     //! The amount of management objects gadgets
     void            SetGadgetQuantity(float value);
     float           GetGadgetQuantity();
@@ -1407,7 +1401,6 @@ protected:
     float           m_particleDensity;
     float           m_clippingDistance;
     float           m_lastClippingDistance;
-    float           m_objectDetail;
     float           m_terrainVision;
     float           m_gadgetQuantity;
     bool            m_totoMode;

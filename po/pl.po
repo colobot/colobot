@@ -487,9 +487,6 @@ msgstr "Zniszcz budynek"
 msgid "Destroyer"
 msgstr "Destroyer"
 
-msgid "Details\\Visual quality of 3D objects"
-msgstr "Szczegóły\\Jakość wizualna obiektów 3D"
-
 msgid "Device\\Driver and resolution settings"
 msgstr "Urządzenie\\Ustawienia sterownika i rozdzielczości"
 
@@ -1844,6 +1841,9 @@ msgstr "www.epsitec.com"
 
 #~ msgid "Delete"
 #~ msgstr "Usuń"
+
+#~ msgid "Details\\Visual quality of 3D objects"
+#~ msgstr "Szczegóły\\Jakość wizualna obiektów 3D"
 
 #~ msgid "Do you want to quit Colobot: Gold Edition?"
 #~ msgstr "Czy na pewno chcesz opuścić grę Colobot: Gold Edition?"

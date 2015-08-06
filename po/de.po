@@ -485,9 +485,6 @@ msgstr "Gebäude sprengen"
 msgid "Destroyer"
 msgstr "Einstampfer"
 
-msgid "Details\\Visual quality of 3D objects"
-msgstr "Details\\Detailliertheit der Objekte in 3D"
-
 msgid "Device\\Driver and resolution settings"
 msgstr "Bildschirm\\Driver und Bildschirmauflösung"
 
@@ -1853,6 +1850,9 @@ msgstr "www.epsitec.com"
 
 #~ msgid "Delete"
 #~ msgstr "Zerstören"
+
+#~ msgid "Details\\Visual quality of 3D objects"
+#~ msgstr "Details\\Detailliertheit der Objekte in 3D"
 
 #~ msgid "Developed by :"
 #~ msgstr "Entwickelt von:"

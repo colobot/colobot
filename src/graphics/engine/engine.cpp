@@ -128,7 +128,6 @@ CEngine::CEngine(CApplication *app)
     m_particleDensity = 1.0f;
     m_lastClippingDistance = 1.0f;
     m_clippingDistance = 1.0f;
-    m_objectDetail = 1.0f;
     m_terrainVision = 1000.0f;
     m_gadgetQuantity = 1.0f;
     m_textureMipmapLevel = 1;
@@ -2836,18 +2835,6 @@ void CEngine::SetClippingDistance(float value)
 float CEngine::GetClippingDistance()
 {
     return m_clippingDistance;
-}
-
-void CEngine::SetObjectDetail(float value)
-{
-    if ( value < 0.0f )  value = 0.0f;
-    if ( value > 2.0f )  value = 2.0f;
-    m_objectDetail = value;
-}
-
-float CEngine::GetObjectDetail()
-{
-    return m_objectDetail;
 }
 
 void CEngine::SetGadgetQuantity(float value)
