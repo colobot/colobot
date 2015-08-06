@@ -121,6 +121,7 @@ float GetDecay(ObjectType type)
 CParticle::CParticle(CEngine* engine)
     : m_engine(engine)
 {
+    std::fill_n(m_frameUpdate, SH_MAX, true);
 }
 
 CParticle::~CParticle()
