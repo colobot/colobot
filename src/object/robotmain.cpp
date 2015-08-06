@@ -3152,7 +3152,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 ppos  = line->GetParam("pos")->AsPoint();
                 uv1   = line->GetParam("uv1")->AsPoint();
                 uv2   = line->GetParam("uv2")->AsPoint();
-                m_planet->Create(line->GetParam("mode")->AsInt(0),
+                m_planet->Create(line->GetParam("mode")->AsPlanetType(),
                                 Math::Point(ppos.x, ppos.z),
                                 line->GetParam("dim")->AsFloat(0.2f),
                                 line->GetParam("speed")->AsFloat(0.0f),

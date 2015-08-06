@@ -24,28 +24,19 @@
 
 #pragma once
 
-#include "common/event.h"
+#include "graphics/engine/planet_type.h"
 
 #include "math/point.h"
 
 #include <vector>
 
+struct Event;
 
 // Graphics module namespace
 namespace Gfx
 {
 
 class CEngine;
-
-/**
- * \enum PlanetType
- * \brief Type of planet which determines when it is displayed
- */
-enum PlanetType
-{
-    Sky,       //!< normal planets, orbiting in the sky
-    OuterSpace //!< only visible during spaceship flight
-};
 
 /**
  * \class CPlanet
@@ -66,7 +57,7 @@ public:
     //! Management of an event
     bool        EventProcess(const Event &event);
     //! Creates a new planet
-    void        Create(int mode, Math::Point start, float dim, float speed, float dir,
+    void        Create(PlanetType type, Math::Point start, float dim, float speed, float dir,
                        const std::string& name, Math::Point uv1, Math::Point uv2,
                        bool transparent);
     //! Indicates if there is at least one planet

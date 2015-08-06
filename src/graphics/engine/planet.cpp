@@ -20,6 +20,8 @@
 
 #include "graphics/engine/planet.h"
 
+#include "common/event.h"
+
 #include "graphics/core/device.h"
 
 #include "graphics/engine/engine.h"
@@ -31,7 +33,7 @@ namespace Gfx
 
 namespace
 {
-const int PLANET_PREALLOCATE_COUNT = 10;
+const int PLANET_PREALLOCATE_COUNT = 20;
 } // anonymous namespace
 
 
@@ -39,7 +41,6 @@ CPlanet::CPlanet(CEngine* engine)
     : m_engine(engine)
 {
     m_planets.reserve(PLANET_PREALLOCATE_COUNT);
-
 }
 
 CPlanet::~CPlanet()
@@ -143,17 +144,13 @@ void CPlanet::Draw()
     }
 }
 
-void CPlanet::Create(int mode, Math::Point start, float dim, float speed,
+void CPlanet::Create(PlanetType type, Math::Point start, float dim, float speed,
                      float dir, const std::string& name, Math::Point uv1, Math::Point uv2,
                      bool transparent)
 {
-    if (mode < 0) mode = 0;
-    if (mode > 1) mode = 1;
-
     Planet planet;
 
-    // TODO: refactor mode to planet type in interface
-    planet.type = (mode == 0) ? PlanetType::Sky : PlanetType::OuterSpace;
+    planet.type = type;
     planet.start = start;
     planet.angle = start;
     planet.dim   = dim;

@@ -27,6 +27,7 @@
 #include "graphics/core/color.h"
 
 #include "graphics/engine/camera.h"
+#include "graphics/engine/planet_type.h"
 #include "graphics/engine/pyro_type.h"
 #include "graphics/engine/water.h"
 
@@ -88,6 +89,7 @@ public:
     Gfx::CameraType AsCameraType();
     MissionType AsMissionType();
     const CLevelParserParamVec& AsArray();
+    Gfx::PlanetType AsPlanetType();
     //@}
 
     //! Get value (returns default if not found, throws exception if unable to process)

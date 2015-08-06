@@ -17,22 +17,19 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-#include "sound/oalsound/check.h"
+#pragma once
 
-namespace
+namespace Gfx
 {
-ALenum g_errorCode = AL_NO_ERROR;
-} // anonymous namespace
 
-bool CheckOpenALError()
+/**
+ * \enum PlanetType
+ * \brief Type of planet which determines when it is displayed
+ */
+enum PlanetType
 {
-    g_errorCode = alGetError();
-    return g_errorCode != AL_NO_ERROR;
-}
+    Sky,       //!< normal planets, orbiting in the sky
+    OuterSpace //!< only visible during spaceship flight
+};
 
-ALenum GetOpenALErrorCode()
-{
-    ALenum ret = g_errorCode;
-    g_errorCode = AL_NO_ERROR;
-    return ret;
-}
+} // namespace Gfx

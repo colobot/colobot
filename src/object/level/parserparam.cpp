@@ -895,6 +895,17 @@ MissionType CLevelParserParam::AsMissionType(MissionType def)
     return AsMissionType();
 }
 
+Gfx::PlanetType CLevelParserParam::AsPlanetType()
+{
+    Gfx::PlanetType planetType{};
+
+    if (m_value == "0")
+        planetType = Gfx::PlanetType::Sky;
+    else if (m_value == "1")
+        planetType = Gfx::PlanetType::OuterSpace;
+
+    return planetType;
+}
 
 void CLevelParserParam::ParseArray()
 {
