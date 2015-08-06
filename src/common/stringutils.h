@@ -37,11 +37,11 @@ namespace StrUtils
 template<class T>
 std::string ToString(T value, bool *ok = nullptr)
 {
-  std::ostringstream s;
-  s << value;
-  if (ok != nullptr)
-    *ok = !s.fail();
-  return s.str();
+    std::ostringstream s;
+    s << value;
+    if (ok != nullptr)
+        *ok = !s.fail();
+    return s.str();
 }
 
 //! Converts a value to string
@@ -50,13 +50,13 @@ std::string ToString(T value, bool *ok = nullptr)
 template<class T>
 T FromString(const std::string &str, bool *ok = nullptr)
 {
-  std::istringstream s;
-  s.str(str);
-  T value;
-  s >> value;
-  if (ok != nullptr)
-    *ok = !s.fail();
-  return value;
+    std::istringstream s;
+    s.str(str);
+    T value;
+    s >> value;
+    if (ok != nullptr)
+        *ok = !s.fail();
+    return value;
 }
 
 //! Replacement for sprintf()
