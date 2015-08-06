@@ -1087,12 +1087,14 @@ public:
 
     //@{
     //! Management of shadow mapping
+    bool            IsShadowMappingSupported();
     void            SetShadowMapping(bool value);
     bool            GetShadowMapping();
     void            SetShadowMappingOffscreen(bool value);
     bool            GetShadowMappingOffscreen();
     void            SetShadowMappingOffscreenResolution(int resolution);
     int             GetShadowMappingOffscreenResolution();
+    bool            IsShadowMappingQualitySupported();
     void            SetShadowMappingQuality(bool value);
     bool            GetShadowMappingQuality();
     //@}

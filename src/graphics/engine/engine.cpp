@@ -2908,9 +2908,14 @@ int CEngine::GetTextureAnisotropyLevel()
     return m_textureAnisotropy;
 }
 
+bool CEngine::IsShadowMappingSupported()
+{
+    return m_device->IsShadowMappingSupported() && m_device->GetMaxTextureStageCount() >= 3;
+}
+
 void CEngine::SetShadowMapping(bool value)
 {
-    if(!m_device->IsShadowMappingSupported()) value = false;
+    if(!IsShadowMappingSupported()) value = false;
     if(value == m_shadowMapping) return;
     m_shadowMapping = value;
     if(!value)
@@ -2962,8 +2967,14 @@ int CEngine::GetShadowMappingOffscreenResolution()
     return m_offscreenShadowRenderingResolution;
 }
 
+bool CEngine::IsShadowMappingQualitySupported()
+{
+    return IsShadowMappingSupported() && m_device->GetMaxTextureStageCount() >= 6;
+}
+
 void CEngine::SetShadowMappingQuality(bool value)
 {
+    if(!IsShadowMappingQualitySupported()) value = false;
     m_qualityShadows = value;
 }
 
@@ -3445,14 +3456,6 @@ void CEngine::RenderShadowMap()
 
     if (!m_shadowMapping) return;
 
-    if (m_device->GetMaxTextureStageCount() < 3)
-    {
-        m_shadowMapping = false;
-        GetLogger()->Error("Cannot use shadow maps, not enough texture units\n");
-        GetLogger()->Error("Disabling shadow mapping\n");
-        return;
-    }
-
     m_app->StartPerformanceCounter(PCNT_RENDER_SHADOW_MAP);
 
     // If no shadow map texture exists, create it
@@ -3637,94 +3640,85 @@ void CEngine::UseShadowMapping(bool enable)
 
         if (m_qualityShadows)
         {
-            if (m_device->GetMaxTextureStageCount() < 6)
+            // Texture Unit 2
+            m_device->SetTextureEnabled(2, true);
+            m_device->SetTexture(2, m_shadowMap);
+            m_device->SetTransform(TRANSFORM_SHADOW, m_shadowTextureMat);
+
+            Math::Matrix identity;
+            identity.LoadIdentity();
+            m_device->SetTransform(TRANSFORM_WORLD, identity);
+
+            float shadowBias = 0.6f;
+            float shadowUnbias = 1.0f - shadowBias;
+
+            TextureStageParams params;
+            params.colorOperation = TEX_MIX_OPER_MODULATE;
+            params.colorArg1 = TEX_MIX_ARG_TEXTURE;
+            params.colorArg2 = TEX_MIX_ARG_FACTOR;
+            params.colorOperation = TEX_MIX_OPER_DEFAULT;
+            params.factor = Color(shadowBias, shadowBias, shadowBias, 1.0f);
+            params.wrapS = TEX_WRAP_CLAMP_TO_BORDER;
+            params.wrapT = TEX_WRAP_CLAMP_TO_BORDER;
+
+            m_device->SetTextureStageParams(2, params);
+
+            TextureGenerationParams genParams;
+
+            for (int i = 0; i < 4; i++)
             {
-                m_qualityShadows = false;
-                GetLogger()->Error("Cannot use quality shadow maps, not enough texture units\n");
-                GetLogger()->Error("Attempting to use lower quality shadow maps\n");
-            }
-            else
-            {
-                // Texture Unit 2
-                m_device->SetTextureEnabled(2, true);
-                m_device->SetTexture(2, m_shadowMap);
-                m_device->SetTransform(TRANSFORM_SHADOW, m_shadowTextureMat);
+                genParams.coords[i].mode = TEX_GEN_EYE_LINEAR;
 
-                Math::Matrix identity;
-                identity.LoadIdentity();
-                m_device->SetTransform(TRANSFORM_WORLD, identity);
-
-                float shadowBias = 0.6f;
-                float shadowUnbias = 1.0f - shadowBias;
-
-                TextureStageParams params;
-                params.colorOperation = TEX_MIX_OPER_MODULATE;
-                params.colorArg1 = TEX_MIX_ARG_TEXTURE;
-                params.colorArg2 = TEX_MIX_ARG_FACTOR;
-                params.colorOperation = TEX_MIX_OPER_DEFAULT;
-                params.factor = Color(shadowBias, shadowBias, shadowBias, 1.0f);
-                params.wrapS = TEX_WRAP_CLAMP_TO_BORDER;
-                params.wrapT = TEX_WRAP_CLAMP_TO_BORDER;
-
-                m_device->SetTextureStageParams(2, params);
-
-                TextureGenerationParams genParams;
-
-                for (int i = 0; i < 4; i++)
+                for (int j = 0; j < 4; j++)
                 {
-                    genParams.coords[i].mode = TEX_GEN_EYE_LINEAR;
-
-                    for (int j = 0; j < 4; j++)
-                    {
-                        genParams.coords[i].plane[j] = (i == j ? 1.0f : 0.0f);
-                    }
+                    genParams.coords[i].plane[j] = (i == j ? 1.0f : 0.0f);
                 }
-
-                m_device->SetTextureCoordGeneration(2, genParams);
-
-                // Texture Unit 3
-                m_device->SetTextureEnabled(3, true);
-                m_device->SetTexture(3, m_shadowMap);
-
-                params.LoadDefault();
-                params.colorOperation = TEX_MIX_OPER_ADD;
-                params.colorArg1 = TEX_MIX_ARG_COMPUTED_COLOR;
-                params.colorArg2 = TEX_MIX_ARG_FACTOR;
-                params.alphaOperation = TEX_MIX_OPER_DEFAULT;
-                params.factor = Color(shadowUnbias, shadowUnbias, shadowUnbias, 0.0f);
-                params.wrapS = TEX_WRAP_CLAMP_TO_BORDER;
-                params.wrapT = TEX_WRAP_CLAMP_TO_BORDER;
-
-                m_device->SetTextureStageParams(3, params);
-
-                // Texture Unit 4
-                m_device->SetTextureEnabled(4, true);
-                m_device->SetTexture(4, m_shadowMap);
-
-                params.LoadDefault();
-                params.colorOperation = TEX_MIX_OPER_MODULATE;
-                params.colorArg1 = TEX_MIX_ARG_COMPUTED_COLOR;
-                params.colorArg2 = TEX_MIX_ARG_SRC_COLOR;
-                params.alphaOperation = TEX_MIX_OPER_DEFAULT;
-                params.wrapS = TEX_WRAP_CLAMP_TO_BORDER;
-                params.wrapT = TEX_WRAP_CLAMP_TO_BORDER;
-
-                m_device->SetTextureStageParams(4, params);
-
-                // Texture Unit 5
-                m_device->SetTextureEnabled(5, true);
-                m_device->SetTexture(5, m_shadowMap);
-
-                params.LoadDefault();
-                params.colorOperation = TEX_MIX_OPER_MODULATE;
-                params.colorArg1 = TEX_MIX_ARG_COMPUTED_COLOR;
-                params.colorArg2 = TEX_MIX_ARG_TEXTURE_0;
-                params.alphaOperation = TEX_MIX_OPER_DEFAULT;
-                params.wrapS = TEX_WRAP_CLAMP_TO_BORDER;
-                params.wrapT = TEX_WRAP_CLAMP_TO_BORDER;
-
-                m_device->SetTextureStageParams(5, params);
             }
+
+            m_device->SetTextureCoordGeneration(2, genParams);
+
+            // Texture Unit 3
+            m_device->SetTextureEnabled(3, true);
+            m_device->SetTexture(3, m_shadowMap);
+
+            params.LoadDefault();
+            params.colorOperation = TEX_MIX_OPER_ADD;
+            params.colorArg1 = TEX_MIX_ARG_COMPUTED_COLOR;
+            params.colorArg2 = TEX_MIX_ARG_FACTOR;
+            params.alphaOperation = TEX_MIX_OPER_DEFAULT;
+            params.factor = Color(shadowUnbias, shadowUnbias, shadowUnbias, 0.0f);
+            params.wrapS = TEX_WRAP_CLAMP_TO_BORDER;
+            params.wrapT = TEX_WRAP_CLAMP_TO_BORDER;
+
+            m_device->SetTextureStageParams(3, params);
+
+            // Texture Unit 4
+            m_device->SetTextureEnabled(4, true);
+            m_device->SetTexture(4, m_shadowMap);
+
+            params.LoadDefault();
+            params.colorOperation = TEX_MIX_OPER_MODULATE;
+            params.colorArg1 = TEX_MIX_ARG_COMPUTED_COLOR;
+            params.colorArg2 = TEX_MIX_ARG_SRC_COLOR;
+            params.alphaOperation = TEX_MIX_OPER_DEFAULT;
+            params.wrapS = TEX_WRAP_CLAMP_TO_BORDER;
+            params.wrapT = TEX_WRAP_CLAMP_TO_BORDER;
+
+            m_device->SetTextureStageParams(4, params);
+
+            // Texture Unit 5
+            m_device->SetTextureEnabled(5, true);
+            m_device->SetTexture(5, m_shadowMap);
+
+            params.LoadDefault();
+            params.colorOperation = TEX_MIX_OPER_MODULATE;
+            params.colorArg1 = TEX_MIX_ARG_COMPUTED_COLOR;
+            params.colorArg2 = TEX_MIX_ARG_TEXTURE_0;
+            params.alphaOperation = TEX_MIX_OPER_DEFAULT;
+            params.wrapS = TEX_WRAP_CLAMP_TO_BORDER;
+            params.wrapT = TEX_WRAP_CLAMP_TO_BORDER;
+
+            m_device->SetTextureStageParams(5, params);
         }
         else        // Simpler shadows
         {

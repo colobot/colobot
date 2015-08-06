@@ -253,7 +253,7 @@ void CScreenSetupGraphics::CreateInterface()
         shadowOptions[0] = "Screen buffer"; // TODO: Is this the proper name for this?
     }
     pes->SetPossibleValues(shadowOptions);
-    if (!m_engine->GetDevice()->IsShadowMappingSupported())
+    if (!m_engine->IsShadowMappingSupported())
     {
         pes->ClearState(STATE_ENABLE);
     }
@@ -270,6 +270,10 @@ void CScreenSetupGraphics::CreateInterface()
     ddim.y = dim.y*0.5f;
     pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_SHADOW_MAPPING_QUALITY);
     pc->SetState(STATE_SHADOW);
+    if (!m_engine->IsShadowMappingQualitySupported())
+    {
+        pes->ClearState(STATE_ENABLE);
+    }
 
     ddim.x = dim.x*2;
     ddim.y = dim.y*1;
