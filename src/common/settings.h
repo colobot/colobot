@@ -57,6 +57,9 @@ public:
     void SetHimselfDamage(bool himselfDamage);
     bool GetHimselfDamage();
 
+    void SetSystemMouse(bool systemMouse);
+    bool GetSystemMouse();
+
 
     //! Managing the size of the default fonts
     //@{
@@ -93,6 +96,7 @@ protected:
     bool m_movies;
     bool m_niceReset;
     bool m_himselfDamage;
+    bool m_systemMouse;
 
     float           m_fontSize;
     Math::Point     m_windowPos;

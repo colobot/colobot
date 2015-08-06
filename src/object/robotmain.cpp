@@ -468,6 +468,15 @@ void CRobotMain::ChangePhase(Phase phase)
     }
     ClearInterface();
 
+    if (m_phase == PHASE_LOADING)
+    {
+        m_app->SetMouseMode(MOUSE_NONE);
+    }
+    else
+    {
+        m_app->SetMouseMode(m_settings->GetSystemMouse() ? MOUSE_SYSTEM : MOUSE_ENGINE);
+    }
+
     Math::Point dim, pos;
 
     // Creates and hide the command console.

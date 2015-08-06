@@ -181,10 +181,8 @@ bool CScreenSetupGame::EventProcess(const Event &event)
             break;
 
         case EVENT_INTERFACE_MOUSE:
-            if (m_app->GetMouseMode() == MOUSE_SYSTEM)
-                m_app->SetMouseMode(MOUSE_ENGINE);
-            else
-                m_app->SetMouseMode(MOUSE_SYSTEM);
+            m_settings->SetSystemMouse(!m_settings->GetSystemMouse());
+            m_app->SetMouseMode(m_settings->GetSystemMouse() ? MOUSE_SYSTEM : MOUSE_ENGINE);
 
             ChangeSetupButtons();
             UpdateSetupButtons();
@@ -323,7 +321,7 @@ void CScreenSetupGame::UpdateSetupButtons()
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_MOUSE));
     if ( pc != 0 )
     {
-        pc->SetState(STATE_CHECK, m_app->GetMouseMode() == MOUSE_SYSTEM);
+        pc->SetState(STATE_CHECK, m_settings->GetSystemMouse());
     }
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_EDITMODE));
