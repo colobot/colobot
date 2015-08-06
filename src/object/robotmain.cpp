@@ -457,7 +457,6 @@ void CRobotMain::ChangePhase(Phase phase)
         m_lightning->Flush();
         m_planet->Flush();
         m_interface->Flush();
-        ClearInterface();
         FlushNewScriptName();
         m_sound->SetListener(Math::Vector(0.0f, 0.0f, 0.0f), Math::Vector(0.0f, 0.0f, 1.0f));
         m_camera->SetType(Gfx::CAM_TYPE_DIALOG);
@@ -467,6 +466,7 @@ void CRobotMain::ChangePhase(Phase phase)
         m_cameraZoom = 0.0f;
         m_shortCut = true;
     }
+    ClearInterface();
 
     Math::Point dim, pos;
 
