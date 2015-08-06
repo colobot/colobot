@@ -18,8 +18,6 @@
  */
 #pragma once
 
-#include "common/singleton.h"
-
 #include "object/robotmain.h"
 
 #include <vector>
@@ -57,8 +55,7 @@ class CScreenSetupSound;
 class CScreenWelcome;
 
 
-
-class CMainUserInterface : public CSingleton<CMainUserInterface>
+class CMainUserInterface
 {
 public:
     CMainUserInterface();
@@ -66,7 +63,6 @@ public:
     void    Create();
 
     CMainDialog* GetDialog();
-
 
     bool    EventProcess(const Event &event);
     void    ChangePhase(Phase phase);
@@ -81,8 +77,6 @@ public:
 
     void    AllMissionUpdate();
     void    ShowSoluceUpdate();
-
-    void    NameDelete();
 
     void    UpdateCustomLevelList();
     std::string GetCustomLevelName(int id);

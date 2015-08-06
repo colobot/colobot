@@ -99,18 +99,13 @@ enum ResTextType
     RT_PERSO_COMBI          = 93,
     RT_PERSO_BAND           = 94,
 
-    RT_DIALOG_TITLE         = 100,
-    RT_DIALOG_ABORT         = 101,
-    RT_DIALOG_QUIT          = 102,
-    RT_DIALOG_YES           = 103,
-    RT_DIALOG_NO            = 104,
+    RT_DIALOG_ABORT         = 103,
+    RT_DIALOG_CONTINUE      = 104,
     RT_DIALOG_DELOBJ        = 105,
     RT_DIALOG_DELGAME       = 106,
-    RT_DIALOG_YESDEL        = 107,
-    RT_DIALOG_NODEL         = 108,
+    RT_DIALOG_YES           = 107,
+    RT_DIALOG_NO            = 108,
     RT_DIALOG_LOADING       = 109,
-    RT_DIALOG_YESQUIT       = 110,
-    RT_DIALOG_NOQUIT        = 111,
 
     RT_STUDIO_LISTTT        = 120,
     RT_STUDIO_COMPOK        = 121,
@@ -158,4 +153,3 @@ void     InitializeRestext();
 
 void     SetGlobalGamerName(std::string name);
 bool     GetResource(ResType type, unsigned int num, std::string& text);
-

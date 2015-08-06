@@ -439,9 +439,6 @@ msgstr "Kontynuuj"
 msgid "Continue\\Continue the current mission"
 msgstr "Kontynuuj\\Kontynuuje bieżącą misję"
 
-msgid "Continue\\Continue the game"
-msgstr "Kontynuuj\\Kontynuuje grę"
-
 msgid "Controls\\Keyboard, joystick and mouse settings"
 msgstr "Sterowanie\\Ustawienia klawiatury, joysticka i myszy"
 
@@ -465,9 +462,6 @@ msgstr "Wytnij (Ctrl+X)"
 
 msgid "Defense tower"
 msgstr "Wieża obronna"
-
-msgid "Delete"
-msgstr "Usuń"
 
 msgid "Delete mark"
 msgstr "Usuń znacznik"
@@ -511,9 +505,6 @@ msgstr "Czy na pewno chcesz zniszczyć zaznaczony budynek?"
 #, c-format
 msgid "Do you want to delete %s's saved games? "
 msgstr "Czy na pewno chcesz skasować zapisane gry gracza %s? "
-
-msgid "Do you want to quit Colobot: Gold Edition?"
-msgstr "Czy na pewno chcesz opuścić grę Colobot: Gold Edition?"
 
 msgid "Doors blocked by a robot or another object "
 msgstr "Drzwi zablokowane przez robota lub inny obiekt "
@@ -902,6 +893,9 @@ msgstr "Następny"
 msgid "Next object\\Selects the next object"
 msgstr "Następny obiekt\\Zaznacza następny obiekt"
 
+msgid "No"
+msgstr "Nie"
+
 msgid "No energy in the subsoil"
 msgstr "Brak energii w ziemi"
 
@@ -1182,9 +1176,6 @@ msgstr "Publiczny\\Folder ogólnodostępny"
 
 msgid "Quake at explosions\\The screen shakes at explosions"
 msgstr "Wstrząsy przy wybuchach\\Ekran trzęsie się podczas wybuchów"
-
-msgid "Quit the mission?"
-msgstr "Opuścić misję?"
 
 msgid "Quit\\Quit Colobot: Gold Edition"
 msgstr "Wyjdź\\Kończy grę Colobot: Gold Edition"
@@ -1704,6 +1695,9 @@ msgstr "Zły typ dla przypisania"
 msgid "Yellow flag"
 msgstr "Żółta flaga"
 
+msgid "Yes"
+msgstr "Tak"
+
 msgid "You can fly with the keys (\\key gup;) and (\\key gdown;)"
 msgstr "Możesz latać używając klawiszy (\\key gup;) oraz (\\key gdown;)"
 
@@ -1845,12 +1839,24 @@ msgstr "www.epsitec.com"
 #~ msgid "3D sound\\3D positioning of the sound"
 #~ msgstr "Dźwięk 3D\\Przestrzenne pozycjonowanie dźwięków"
 
+#~ msgid "Continue\\Continue the game"
+#~ msgstr "Kontynuuj\\Kontynuuje grę"
+
+#~ msgid "Delete"
+#~ msgstr "Usuń"
+
+#~ msgid "Do you want to quit Colobot: Gold Edition?"
+#~ msgstr "Czy na pewno chcesz opuścić grę Colobot: Gold Edition?"
+
 #~ msgid "Key word help\\More detailed help about key words"
 #~ msgstr ""
 #~ "Pomoc dot. słów kluczowych\\Dokładniejsza pomoc na temat słów kluczowych"
 
 #~ msgid "Mouse shadow\\Gives the mouse a shadow"
 #~ msgstr "Cień kursora myszy\\Dodaje cień kursorowi myszy"
+
+#~ msgid "Quit the mission?"
+#~ msgstr "Opuścić misję?"
 
 #~ msgid "Textures\\Quality of textures "
 #~ msgstr "Tekstury\\Jakość tekstur "

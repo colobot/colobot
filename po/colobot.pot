@@ -137,22 +137,10 @@ msgstr ""
 msgid "Strip color:"
 msgstr ""
 
-msgid "Do you want to quit Colobot: Gold Edition?"
-msgstr ""
-
-msgid "Quit\\Quit Colobot: Gold Edition"
-msgstr ""
-
-msgid "Quit the mission?"
-msgstr ""
-
 msgid "Abort\\Abort the current mission"
 msgstr ""
 
 msgid "Continue\\Continue the current mission"
-msgstr ""
-
-msgid "Continue\\Continue the game"
 msgstr ""
 
 msgid "Do you really want to destroy the selected building?"
@@ -162,10 +150,10 @@ msgstr ""
 msgid "Do you want to delete %s's saved games? "
 msgstr ""
 
-msgid "Delete"
+msgid "Yes"
 msgstr ""
 
-msgid "Cancel"
+msgid "No"
 msgstr ""
 
 msgid "LOADING"
@@ -255,6 +243,9 @@ msgstr ""
 msgid "OK"
 msgstr ""
 
+msgid "Cancel"
+msgstr ""
+
 msgid "Next"
 msgstr ""
 
@@ -292,6 +283,9 @@ msgid "Load\\Load a saved mission"
 msgstr ""
 
 msgid "\\Return to Colobot: Gold Edition"
+msgstr ""
+
+msgid "Quit\\Quit Colobot: Gold Edition"
 msgstr ""
 
 msgid "<<  Back  \\Back to the previous screen"

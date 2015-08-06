@@ -22,6 +22,7 @@
 #include "app/app.h"
 
 #include "common/logger.h"
+#include "common/stringutils.h"
 
 #include "object/player_profile.h"
 
@@ -37,7 +38,7 @@ namespace Ui
 {
 
 CScreenPlayerSelect::CScreenPlayerSelect(CMainDialog* mainDialog)
-    : m_mainDialog(mainDialog)
+    : m_dialog(mainDialog)
 {
 }
 
@@ -151,6 +152,8 @@ bool CScreenPlayerSelect::EventProcess(const Event &event)
     CWindow* pw;
     CButton* pb;
     CList*   pl;
+    std::string name;
+    char* gamer;
 
     switch( event.type )
     {
@@ -199,7 +202,12 @@ bool CScreenPlayerSelect::EventProcess(const Event &event)
             if ( pw == 0 )  break;
             pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_NLIST));
             if ( pl == 0 )  break;
-            m_mainDialog->StartDeleteGame(pl->GetItemName(pl->GetSelect()));
+
+            GetResource(RES_TEXT, RT_DIALOG_DELGAME, name);
+            gamer = pl->GetItemName(pl->GetSelect());
+            m_dialog->StartQuestion(StrUtils::Format(name.c_str(), gamer), true, false, [&]() {
+                NameDelete();
+            });
             break;
 
         default:

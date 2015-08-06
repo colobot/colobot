@@ -19,6 +19,7 @@
 #pragma once
 
 #include "common/event.h"
+#include "common/restext.h"
 
 #include "object/robotmain.h"
 
@@ -39,25 +40,6 @@ namespace Ui
 
 class CInterface;
 
-class CScreen;
-class CScreenApperance;
-class CScreenIORead;
-class CScreenIOWrite;
-class CScreenLevelList;
-class CScreenLoading;
-class CScreenMainMenu;
-class CScreenPlayerSelect;
-class CScreenQuit;
-class CScreenSetup;
-class CScreenSetupControls;
-class CScreenSetupDisplay;
-class CScreenSetupGame;
-class CScreenSetupGraphics;
-class CScreenSetupSound;
-class CScreenWelcome;
-
-
-
 class CMainDialog
 {
 public:
@@ -67,14 +49,21 @@ public:
     bool    EventProcess(const Event &event);
     void    ChangePhase(Phase phase);
 
-    void    StartAbort();
-    void    StartDeleteObject();
-    void    StartDeleteGame(char *gamer);
-    void    StartQuit();
-    void    StartDialog(Math::Point dim, bool bFire, bool bOK, bool bCancel);
-    void    FrameDialog(float rTime);
+
+    typedef std::function<void()> DialogCallback;
+    void    StartQuestion(const std::string& text,
+                          bool warningYes, bool warningNo,
+                          DialogCallback yes = nullptr, DialogCallback no = nullptr);
+    void    StartQuestion(ResTextType text,
+                          bool warningYes, bool warningNo,
+                          DialogCallback yes = nullptr, DialogCallback no = nullptr);
+    void    StartPauseMenu();
     void    StopDialog();
     bool    IsDialog();
+
+protected:
+    void    StartDialog(Math::Point dim, bool fireParticles);
+    void    FrameDialog(float rTime);
 
 protected:
     CRobotMain*       m_main;
@@ -86,13 +75,21 @@ protected:
 
     Phase                m_phase;            // copy of CRobotMain
 
-    bool                 m_bDialog;          // this dialogue?
-    bool                 m_bDialogFire;          // setting on fire?
-    bool                 m_bDialogDelete;
+    enum class DialogType {
+        Question,
+        PauseMenu
+    };
+
+    bool                 m_dialogOpen;
+    DialogType           m_dialogType;
+    bool                 m_dialogFireParticles;
     Math::Point          m_dialogPos;
     Math::Point          m_dialogDim;
-    float                m_dialogParti;
     float                m_dialogTime;
+    float                m_dialogParti;
+
+    DialogCallback       m_callbackYes;
+    DialogCallback       m_callbackNo;
 };
 
 } // namespace Ui

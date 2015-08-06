@@ -45,7 +45,7 @@ protected:
     bool NameCreate();
 
 private:
-    CMainDialog* m_mainDialog;
+    CMainDialog* m_dialog;
 };
 
 } // namespace Ui

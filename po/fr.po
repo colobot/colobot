@@ -431,9 +431,6 @@ msgstr "Continuer"
 msgid "Continue\\Continue the current mission"
 msgstr "Continuer\\Continuer la mission en cours"
 
-msgid "Continue\\Continue the game"
-msgstr "Continuer\\Continuer de jouer"
-
 msgid "Controls\\Keyboard, joystick and mouse settings"
 msgstr "Commandes\\Touches du clavier"
 
@@ -457,9 +454,6 @@ msgstr "Couper (Ctrl+x)"
 
 msgid "Defense tower"
 msgstr "Tour de défense"
-
-msgid "Delete"
-msgstr "Détruire"
 
 #, fuzzy
 msgid "Delete mark"
@@ -504,10 +498,6 @@ msgstr "Voulez-vous vraiment détruire le bâtiment sélectionné ?"
 #, c-format
 msgid "Do you want to delete %s's saved games? "
 msgstr "Voulez-vous détruire les sauvegardes de %s ?"
-
-#, fuzzy
-msgid "Do you want to quit Colobot: Gold Edition?"
-msgstr "Voulez-vous quitter COLOBOT ?"
 
 msgid "Doors blocked by a robot or another object "
 msgstr "Portes bloquées par un robot ou un objet"
@@ -898,6 +888,9 @@ msgstr "Suivant"
 msgid "Next object\\Selects the next object"
 msgstr "Sélectionner l'objet suivant\\Sélectionner l'objet suivant"
 
+msgid "No"
+msgstr ""
+
 msgid "No energy in the subsoil"
 msgstr "Pas d'énergie en sous-sol"
 
@@ -1177,9 +1170,6 @@ msgstr "Public\\Dossier commun à tous les joueurs"
 
 msgid "Quake at explosions\\The screen shakes at explosions"
 msgstr "Secousses lors d'explosions\\L'écran vibre lors d'une explosion"
-
-msgid "Quit the mission?"
-msgstr "Quitter la mission ?"
 
 msgid "Quit\\Quit Colobot: Gold Edition"
 msgstr ""
@@ -1703,6 +1693,9 @@ msgstr "Mauvais type de résultat pour l'assignation"
 msgid "Yellow flag"
 msgstr "Drapeau jaune"
 
+msgid "Yes"
+msgstr ""
+
 msgid "You can fly with the keys (\\key gup;) and (\\key gdown;)"
 msgstr ""
 "Il est possible de voler avec les touches (\\key gup;) et (\\key gdown;)"
@@ -1851,14 +1844,27 @@ msgstr "www.epsitec.com"
 #~ msgid "COLOBOT"
 #~ msgstr "COLOBOT"
 
+#~ msgid "Continue\\Continue the game"
+#~ msgstr "Continuer\\Continuer de jouer"
+
+#~ msgid "Delete"
+#~ msgstr "Détruire"
+
 #~ msgid "Developed by :"
 #~ msgstr "Développé par :"
+
+#, fuzzy
+#~ msgid "Do you want to quit Colobot: Gold Edition?"
+#~ msgstr "Voulez-vous quitter COLOBOT ?"
 
 #~ msgid "Key word help\\More detailed help about key words"
 #~ msgstr "Instructions mot-clé\\Explication sur le mot-clé"
 
 #~ msgid "Mouse shadow\\Gives the mouse a shadow"
 #~ msgstr "Souris ombrée\\Jolie souris avec une ombre"
+
+#~ msgid "Quit the mission?"
+#~ msgstr "Quitter la mission ?"
 
 #~ msgid "Quit\\Quit COLOBOT"
 #~ msgstr "Quitter\\Quitter COLOBOT"

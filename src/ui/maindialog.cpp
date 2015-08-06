@@ -28,7 +28,6 @@
 #include "common/logger.h"
 #include "common/make_unique.h"
 #include "common/settings.h"
-#include "common/stringutils.h"
 
 #include "object/player_profile.h"
 #include "object/robotmain.h"
@@ -37,7 +36,6 @@
 
 #include "ui/controls/button.h"
 #include "ui/controls/interface.h"
-#include "ui/mainui.h"
 #include "ui/controls/window.h"
 
 #include "ui/screen/screen_setup.h"
@@ -58,7 +56,7 @@ CMainDialog::CMainDialog()
 
     m_phase = PHASE_PLAYER_SELECT;
 
-    m_bDialog = false;
+    m_dialogOpen = false;
 }
 
 // Destructor of robot application.
@@ -77,7 +75,7 @@ void CMainDialog::ChangePhase(Phase phase)
 
 bool CMainDialog::EventProcess(const Event &event)
 {
-    if ( m_bDialog )  // this dialogue?
+    if ( m_dialogOpen )  // this dialogue?
     {
         if ( event.type == EVENT_FRAME )
         {
@@ -85,61 +83,84 @@ bool CMainDialog::EventProcess(const Event &event)
             return true;
         }
 
-        if ( event.type == EVENT_DIALOG_OK ||
-                (event.type == EVENT_KEY_DOWN && event.key.key == KEY(RETURN) ) )
+        EventType pressedButton = event.type;
+        if (event.type == EVENT_KEY_DOWN && event.key.key == KEY(RETURN) )
         {
-            StopDialog();
-            if ( m_phase == PHASE_PLAYER_SELECT )
+            pressedButton = EVENT_DIALOG_OK;
+        }
+        if (event.type == EVENT_KEY_DOWN && event.key.key == KEY(ESCAPE) )
+        {
+            pressedButton = EVENT_DIALOG_CANCEL;
+        }
+
+        if ( m_dialogType == DialogType::PauseMenu )
+        {
+            if ( pressedButton == EVENT_DIALOG_CANCEL )
             {
-                CMainUserInterface::GetInstancePointer()->NameDelete(); // TODO: Clean this up
+                StopDialog();
             }
-            if ( m_phase == PHASE_SIMUL )
+
+            if ( pressedButton == EVENT_INTERFACE_SETUP )
             {
-                if ( m_bDialogDelete )
-                {
-                    m_main->DeleteObject();
-                }
-                else
-                {
-                    m_main->ChangePhase(PHASE_LEVEL_LIST);
-                }
+                StopDialog();
+                m_main->StartSuspend();
+                #if PLATFORM_LINUX
+                if ( CScreenSetup::GetTab() == PHASE_SETUPd )  m_main->ChangePhase(PHASE_SETUPds);
+                #else
+                if ( CScreenSetup::GetTab() == PHASE_SETUPd )  m_main->ChangePhase(PHASE_SETUPgs);
+                #endif
+                if ( CScreenSetup::GetTab() == PHASE_SETUPg )  m_main->ChangePhase(PHASE_SETUPgs);
+                if ( CScreenSetup::GetTab() == PHASE_SETUPp )  m_main->ChangePhase(PHASE_SETUPps);
+                if ( CScreenSetup::GetTab() == PHASE_SETUPc )  m_main->ChangePhase(PHASE_SETUPcs);
+                if ( CScreenSetup::GetTab() == PHASE_SETUPs )  m_main->ChangePhase(PHASE_SETUPss);
+            }
+
+            if ( pressedButton == EVENT_INTERFACE_WRITE )
+            {
+                StopDialog();
+                m_main->StartSuspend();
+                m_main->ChangePhase(PHASE_WRITEs);
+            }
+
+            if ( pressedButton == EVENT_INTERFACE_READ )
+            {
+                StopDialog();
+                m_main->StartSuspend();
+                m_main->ChangePhase(PHASE_READs);
+            }
+
+            if ( pressedButton == EVENT_INTERFACE_AGAIN )
+            {
+                StopDialog();
+                m_main->ChangePhase(PHASE_LOADING);
+            }
+
+            if ( pressedButton == EVENT_DIALOG_OK )
+            {
+                StopDialog();
+                m_main->ChangePhase(PHASE_LEVEL_LIST);
             }
         }
-        if ( event.type == EVENT_DIALOG_CANCEL ||
-                (event.type == EVENT_KEY_DOWN && event.key.key == KEY(ESCAPE) ) )
+
+        if ( m_dialogType == DialogType::Question )
         {
-            StopDialog();
-        }
-        if ( event.type == EVENT_INTERFACE_SETUP )
-        {
-            StopDialog();
-            m_main->StartSuspend();
-            #if PLATFORM_LINUX
-            if ( CScreenSetup::GetTab() == PHASE_SETUPd )  m_main->ChangePhase(PHASE_SETUPds);
-            #else
-            if ( CScreenSetup::GetTab() == PHASE_SETUPd )  m_main->ChangePhase(PHASE_SETUPgs);
-            #endif
-            if ( CScreenSetup::GetTab() == PHASE_SETUPg )  m_main->ChangePhase(PHASE_SETUPgs);
-            if ( CScreenSetup::GetTab() == PHASE_SETUPp )  m_main->ChangePhase(PHASE_SETUPps);
-            if ( CScreenSetup::GetTab() == PHASE_SETUPc )  m_main->ChangePhase(PHASE_SETUPcs);
-            if ( CScreenSetup::GetTab() == PHASE_SETUPs )  m_main->ChangePhase(PHASE_SETUPss);
-        }
-        if ( event.type == EVENT_INTERFACE_AGAIN )
-        {
-            StopDialog();
-            m_main->ChangePhase(PHASE_LOADING);
-        }
-        if ( event.type == EVENT_INTERFACE_WRITE )
-        {
-            StopDialog();
-            m_main->StartSuspend();
-            m_main->ChangePhase(PHASE_WRITEs);
-        }
-        if ( event.type == EVENT_INTERFACE_READ )
-        {
-            StopDialog();
-            m_main->StartSuspend();
-            m_main->ChangePhase(PHASE_READs);
+            if ( pressedButton == EVENT_DIALOG_OK )
+            {
+                StopDialog();
+                if (m_callbackYes != nullptr)
+                {
+                    m_callbackYes();
+                }
+            }
+
+            if ( pressedButton == EVENT_DIALOG_CANCEL )
+            {
+                StopDialog();
+                if (m_callbackNo != nullptr)
+                {
+                    m_callbackNo();
+                }
+            }
         }
 
         return false;
@@ -150,15 +171,15 @@ bool CMainDialog::EventProcess(const Event &event)
 
 // Do you want to quit the current mission?
 
-void CMainDialog::StartAbort()
+void CMainDialog::StartPauseMenu()
 {
     CWindow*    pw;
     CButton*    pb;
     Math::Point     pos, dim;
     std::string name;
 
-    StartDialog(Math::Point(0.3f, 0.8f), true, false, false);
-    m_bDialogDelete = false;
+    StartDialog(Math::Point(0.3f, 0.8f), true);
+    m_dialogType = DialogType::PauseMenu;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW9));
     if ( pw == 0 )  return;
@@ -181,7 +202,7 @@ void CMainDialog::StartAbort()
     pos.y = 0.74f;
     pb = pw->CreateButton(pos, dim, -1, EVENT_DIALOG_CANCEL);
     pb->SetState(STATE_SHADOW);
-    GetResource(RES_TEXT, RT_DIALOG_NO, name);
+    GetResource(RES_TEXT, RT_DIALOG_CONTINUE, name);
     pb->SetName(name);
 
     if ( m_main->GetLevelCategory() == LevelCategory::Missions     ||  // missions ?
@@ -219,123 +240,74 @@ void CMainDialog::StartAbort()
     pb = pw->CreateButton(pos, dim, -1, EVENT_DIALOG_OK);
     pb->SetState(STATE_SHADOW);
     pb->SetState(STATE_WARNING);
-    GetResource(RES_TEXT, RT_DIALOG_YES, name);
+    GetResource(RES_TEXT, RT_DIALOG_ABORT, name);
     pb->SetName(name);
 }
 
-// Do you want to destroy the building?
-
-void CMainDialog::StartDeleteObject()
+void CMainDialog::StartQuestion(const std::string& text, bool warningYes, bool warningNo, DialogCallback yes, DialogCallback no)
 {
     CWindow*    pw;
     CButton*    pb;
-    Math::Point     pos, dim;
+    Math::Point pos, dim, ddim;
     std::string name;
 
-    StartDialog(Math::Point(0.7f, 0.3f), false, true, true);
-    m_bDialogDelete = true;
+    dim.x = 0.7f;
+    dim.y = 0.3f;
+
+    StartDialog(dim, false);
+    m_dialogType = DialogType::Question;
+    m_callbackYes = yes;
+    m_callbackNo = no;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW9));
     if ( pw == 0 )  return;
 
     pos.x = 0.00f;
     pos.y = 0.50f;
-    dim.x = 1.00f;
-    dim.y = 0.05f;
-    GetResource(RES_TEXT, RT_DIALOG_DELOBJ, name);
-    pw->CreateLabel(pos, dim, -1, EVENT_DIALOG_LABEL, name);
+    ddim.x = 1.00f;
+    ddim.y = 0.05f;
+    pw->CreateLabel(pos, ddim, -1, EVENT_DIALOG_LABEL, text);
 
-    pb = static_cast<CButton*>(pw->SearchControl(EVENT_DIALOG_OK));
-    if ( pb == 0 )  return;
-    GetResource(RES_TEXT, RT_DIALOG_YESDEL, name);
+    pos.x  = 0.50f-0.15f-0.02f;
+    pos.y  = 0.50f-dim.y/2.0f+0.03f;
+    ddim.x = 0.15f;
+    ddim.y = 0.06f;
+    pb = pw->CreateButton(pos, ddim, -1, EVENT_DIALOG_OK);
+    pb->SetState(STATE_SHADOW);
+    GetResource(RES_TEXT, RT_DIALOG_YES, name);
     pb->SetName(name);
-    pb->SetState(STATE_WARNING);
+    if (warningYes)
+    {
+        pb->SetState(STATE_WARNING);
+    }
 
-    pb = static_cast<CButton*>(pw->SearchControl(EVENT_DIALOG_CANCEL));
-    if ( pb == 0 )  return;
-    GetResource(RES_TEXT, RT_DIALOG_NODEL, name);
+    pos.x  = 0.50f+0.02f;
+    pos.y  = 0.50f-dim.y/2.0f+0.03f;
+    ddim.x = 0.15f;
+    ddim.y = 0.06f;
+    pb = pw->CreateButton(pos, ddim, -1, EVENT_DIALOG_CANCEL);
+    pb->SetState(STATE_SHADOW);
+    GetResource(RES_TEXT, RT_DIALOG_NO, name);
     pb->SetName(name);
+    if (warningNo)
+    {
+        pb->SetState(STATE_WARNING);
+    }
 }
 
-// Do you want to delete the player?
-
-void CMainDialog::StartDeleteGame(char *gamer)
+void CMainDialog::StartQuestion(ResTextType text, bool warningYes, bool warningNo, DialogCallback yes, DialogCallback no)
 {
-    CWindow*    pw;
-    CButton*    pb;
-    Math::Point     pos, dim;
-
-    StartDialog(Math::Point(0.7f, 0.3f), false, true, true);
-    m_bDialogDelete = true;
-
-    pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW9));
-    if (pw == nullptr)
-        return;
-
     std::string name;
-
-    pos.x = 0.00f;
-    pos.y = 0.50f;
-    dim.x = 1.00f;
-    dim.y = 0.05f;
-    GetResource(RES_TEXT, RT_DIALOG_DELGAME, name);
-    std::string text = StrUtils::Format(name.c_str(), gamer);
-    pw->CreateLabel(pos, dim, -1, EVENT_DIALOG_LABEL, text);
-
-    pb = static_cast<CButton*>(pw->SearchControl(EVENT_DIALOG_OK));
-    if ( pb == 0 )  return;
-    GetResource(RES_TEXT, RT_DIALOG_YESDEL, name);
-    pb->SetName(name);
-    pb->SetState(STATE_WARNING);
-
-    pb = static_cast<CButton*>(pw->SearchControl(EVENT_DIALOG_CANCEL));
-    if ( pb == 0 )  return;
-    GetResource(RES_TEXT, RT_DIALOG_NODEL, name);
-    pb->SetName(name);
-}
-
-// Would you quit the game?
-
-void CMainDialog::StartQuit()
-{
-    CWindow*    pw;
-    CButton*    pb;
-    Math::Point     pos, dim;
-
-    StartDialog(Math::Point(0.6f, 0.3f), false, true, true);
-
-    pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW9));
-    if (pw == nullptr)
-        return;
-
-    std::string name;
-
-    pos.x = 0.00f;
-    pos.y = 0.50f;
-    dim.x = 1.00f;
-    dim.y = 0.05f;
-    GetResource(RES_TEXT, RT_DIALOG_QUIT, name);
-    pw->CreateLabel(pos, dim, -1, EVENT_DIALOG_LABEL, name);
-
-    pb = static_cast<CButton*>(pw->SearchControl(EVENT_DIALOG_OK));
-    if ( pb == 0 )  return;
-    GetResource(RES_TEXT, RT_DIALOG_YESQUIT, name);
-    pb->SetName(name);
-    pb->SetState(STATE_WARNING);
-
-    pb = static_cast<CButton*>(pw->SearchControl(EVENT_DIALOG_CANCEL));
-    if ( pb == 0 )  return;
-    GetResource(RES_TEXT, RT_DIALOG_NOQUIT, name);
-    pb->SetName(name);
+    GetResource(RES_TEXT, text, name);
+    StartQuestion(name, warningYes, warningNo, yes, no);
 }
 
 // Beginning of displaying a dialog.
 
-void CMainDialog::StartDialog(Math::Point dim, bool bFire, bool bOK, bool bCancel)
+void CMainDialog::StartDialog(Math::Point dim, bool fireParticles)
 {
     CWindow*    pw;
-    CButton*    pb;
-    Math::Point     pos, ddim;
+    Math::Point pos, ddim;
 
     m_main->StartSuspend();
 
@@ -366,14 +338,13 @@ void CMainDialog::StartDialog(Math::Point dim, bool bFire, bool bOK, bool bCance
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW8));
     if ( pw != 0 )  pw->ClearState(STATE_ENABLE);
 
-    m_bDialogFire = bFire;
-
-    std::string name;
+    m_dialogFireParticles = fireParticles;
 
     pos.x = (1.0f-dim.x)/2.0f;
     pos.y = (1.0f-dim.y)/2.0f;
-    pw = m_interface->CreateWindows(pos, dim, bFire?12:8, EVENT_WINDOW9);
+    pw = m_interface->CreateWindows(pos, dim, m_dialogFireParticles ? 12 : 8, EVENT_WINDOW9);
     pw->SetState(STATE_SHADOW);
+    std::string name;
     GetResource(RES_TEXT, RT_TITLE_BASE, name);
     pw->SetName(name);
 
@@ -382,32 +353,8 @@ void CMainDialog::StartDialog(Math::Point dim, bool bFire, bool bOK, bool bCance
     m_dialogTime = 0.0f;
     m_dialogParti = 999.0f;
 
-    if ( bOK )
-    {
-        pos.x  = 0.50f-0.15f-0.02f;
-        pos.y  = 0.50f-dim.y/2.0f+0.03f;
-        ddim.x = 0.15f;
-        ddim.y = 0.06f;
-        pb = pw->CreateButton(pos, ddim, -1, EVENT_DIALOG_OK);
-        pb->SetState(STATE_SHADOW);
-        GetResource(RES_EVENT, EVENT_DIALOG_OK, name);
-        pb->SetName(name);
-    }
-
-    if ( bCancel )
-    {
-        pos.x  = 0.50f+0.02f;
-        pos.y  = 0.50f-dim.y/2.0f+0.03f;
-        ddim.x = 0.15f;
-        ddim.y = 0.06f;
-        pb = pw->CreateButton(pos, ddim, -1, EVENT_DIALOG_CANCEL);
-        pb->SetState(STATE_SHADOW);
-        GetResource(RES_EVENT, EVENT_DIALOG_CANCEL, name);
-        pb->SetName(name);
-    }
-
     m_sound->Play(SOUND_TZOING);
-    m_bDialog = true;
+    m_dialogOpen = true;
 }
 
 // Animation of a dialog.
@@ -458,7 +405,7 @@ void CMainDialog::FrameDialog(float rTime)
     if ( m_dialogParti < m_engine->ParticleAdapt(0.05f) )  return;
     m_dialogParti = 0.0f;
 
-    if ( !m_bDialogFire )  return;
+    if ( !m_dialogFireParticles )  return;
 
     dpos = m_dialogPos;
     ddim = m_dialogDim;
@@ -549,7 +496,7 @@ void CMainDialog::StopDialog()
 
     m_main->StopSuspend();
     m_interface->DeleteControl(EVENT_WINDOW9);
-    m_bDialog = false;
+    m_dialogOpen = false;
 }
 
 
@@ -557,7 +504,7 @@ void CMainDialog::StopDialog()
 
 bool CMainDialog::IsDialog()
 {
-    return m_bDialog;
+    return m_dialogOpen;
 }
 
 } // namespace Ui

@@ -805,7 +805,7 @@ bool CRobotMain::ProcessEvent(Event &event)
                     else if (m_lostDelay > 0.0f)
                         ChangePhase(PHASE_LOST);
                     else if (!m_cmdEdit)
-                        m_ui->GetDialog()->StartAbort();  // do you want to leave?
+                        m_ui->GetDialog()->StartPauseMenu();  // do you want to leave?
                 }
                 if (event.key.slot == INPUT_SLOT_PAUSE)
                 {
@@ -963,7 +963,9 @@ bool CRobotMain::ProcessEvent(Event &event)
                 break;
 
             case EVENT_OBJECT_DELETE:
-                m_ui->GetDialog()->StartDeleteObject();  // do you want to destroy it?
+                m_ui->GetDialog()->StartQuestion(RT_DIALOG_DELOBJ, true, false, [&]() {
+                    DeleteObject();
+                });
                 break;
 
             case EVENT_OBJECT_BHELP:

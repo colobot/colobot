@@ -103,17 +103,12 @@ void InitializeRestext()
     stringsText[RT_PERSO_COMBI]      = TR("Suit color:");
     stringsText[RT_PERSO_BAND]       = TR("Strip color:");
 
-    stringsText[RT_DIALOG_QUIT]      = TR("Do you want to quit Colobot: Gold Edition?");
-    stringsText[RT_DIALOG_TITLE]     = TR("Colobot: Gold Edition");
-    stringsText[RT_DIALOG_YESQUIT]   = TR("Quit\\Quit Colobot: Gold Edition");
-    stringsText[RT_DIALOG_ABORT]     = TR("Quit the mission?");
-    stringsText[RT_DIALOG_YES]       = TR("Abort\\Abort the current mission");
-    stringsText[RT_DIALOG_NO]        = TR("Continue\\Continue the current mission");
-    stringsText[RT_DIALOG_NOQUIT]    = TR("Continue\\Continue the game");
+    stringsText[RT_DIALOG_ABORT]     = TR("Abort\\Abort the current mission");
+    stringsText[RT_DIALOG_CONTINUE]  = TR("Continue\\Continue the current mission");
     stringsText[RT_DIALOG_DELOBJ]    = TR("Do you really want to destroy the selected building?");
     stringsText[RT_DIALOG_DELGAME]   = TR("Do you want to delete %s's saved games? ");
-    stringsText[RT_DIALOG_YESDEL]    = TR("Delete");
-    stringsText[RT_DIALOG_NODEL]     = TR("Cancel");
+    stringsText[RT_DIALOG_YES]       = TR("Yes");
+    stringsText[RT_DIALOG_NO]        = TR("No");
     stringsText[RT_DIALOG_LOADING]   = TR("LOADING");
 
     stringsText[RT_STUDIO_LISTTT]    = TR("Keyword help(\\key cbot;)");

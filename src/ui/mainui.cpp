@@ -56,8 +56,6 @@
 #include "ui/maindialog.h"
 #include "ui/controls/window.h"
 
-template<> Ui::CMainUserInterface* CSingleton<Ui::CMainUserInterface>::m_instance = nullptr;
-
 namespace Ui
 {
 
@@ -800,15 +798,6 @@ void CMainUserInterface::ShowSoluceUpdate()
     if ( m_phase == PHASE_LEVEL_LIST )
     {
         m_screenLevelList->ShowSoluceUpdate();
-    }
-}
-
-// TODO: Clean this up
-void CMainUserInterface::NameDelete()
-{
-    if ( m_phase == PHASE_PLAYER_SELECT )
-    {
-        m_screenPlayerSelect->NameDelete();
     }
 }
 
