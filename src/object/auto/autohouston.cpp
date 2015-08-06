@@ -22,8 +22,8 @@
 
 #include "object/old_object.h"
 
-#include "ui/interface.h"
-#include "ui/window.h"
+#include "ui/controls/interface.h"
+#include "ui/controls/window.h"
 
 
 // Object's constructor.

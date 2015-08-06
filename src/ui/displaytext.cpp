@@ -33,11 +33,11 @@
 #include "object/motion/motion.h"
 #include "object/motion/motiontoto.h"
 
-#include "ui/button.h"
-#include "ui/group.h"
-#include "ui/interface.h"
-#include "ui/label.h"
-#include "ui/window.h"
+#include "ui/controls/button.h"
+#include "ui/controls/group.h"
+#include "ui/controls/interface.h"
+#include "ui/controls/label.h"
+#include "ui/controls/window.h"
 
 
 

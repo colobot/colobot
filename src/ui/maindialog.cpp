@@ -35,10 +35,10 @@
 
 #include "sound/sound.h"
 
-#include "ui/button.h"
-#include "ui/interface.h"
+#include "ui/controls/button.h"
+#include "ui/controls/interface.h"
 #include "ui/mainui.h"
-#include "ui/window.h"
+#include "ui/controls/window.h"
 
 #include "ui/screen/screen_setup.h"
 

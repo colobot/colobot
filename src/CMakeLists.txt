@@ -223,34 +223,34 @@ set(BASE_SOURCES
     ui/screen/screen_setup_graphics.cpp
     ui/screen/screen_setup_sound.cpp
     ui/screen/screen_welcome.cpp
-    ui/button.cpp
-    ui/check.cpp
-    ui/color.cpp
-    ui/compass.cpp
-    ui/control.cpp
     ui/displayinfo.cpp
     ui/displaytext.cpp
-    ui/edit.cpp
-    ui/editvalue.cpp
-    ui/enumslider.cpp
-    ui/gauge.cpp
-    ui/group.cpp
-    ui/image.cpp
-    ui/interface.cpp
-    ui/key.cpp
-    ui/label.cpp
-    ui/list.cpp
     ui/maindialog.cpp
     ui/mainmap.cpp
     ui/mainshort.cpp
     ui/mainui.cpp
-    ui/map.cpp
-    ui/scroll.cpp
-    ui/shortcut.cpp
-    ui/slider.cpp
     ui/studio.cpp
-    ui/target.cpp
-    ui/window.cpp
+    ui/controls/button.cpp
+    ui/controls/check.cpp
+    ui/controls/color.cpp
+    ui/controls/compass.cpp
+    ui/controls/control.cpp
+    ui/controls/edit.cpp
+    ui/controls/editvalue.cpp
+    ui/controls/enumslider.cpp
+    ui/controls/gauge.cpp
+    ui/controls/group.cpp
+    ui/controls/image.cpp
+    ui/controls/interface.cpp
+    ui/controls/key.cpp
+    ui/controls/label.cpp
+    ui/controls/list.cpp
+    ui/controls/map.cpp
+    ui/controls/scroll.cpp
+    ui/controls/shortcut.cpp
+    ui/controls/slider.cpp
+    ui/controls/target.cpp
+    ui/controls/window.cpp
     ${OPENAL_SRC}
 )
 

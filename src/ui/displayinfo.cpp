@@ -42,12 +42,12 @@
 
 #include "script/cbottoken.h"
 
-#include "ui/button.h"
-#include "ui/edit.h"
-#include "ui/group.h"
-#include "ui/interface.h"
-#include "ui/slider.h"
-#include "ui/window.h"
+#include "ui/controls/button.h"
+#include "ui/controls/edit.h"
+#include "ui/controls/group.h"
+#include "ui/controls/interface.h"
+#include "ui/controls/slider.h"
+#include "ui/controls/window.h"
 
 #include <string.h>
 

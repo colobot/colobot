@@ -28,13 +28,13 @@
 
 #include "graphics/engine/camera.h"
 
-#include "ui/button.h"
-#include "ui/group.h"
-#include "ui/interface.h"
-#include "ui/key.h"
-#include "ui/label.h"
-#include "ui/scroll.h"
-#include "ui/window.h"
+#include "ui/controls/button.h"
+#include "ui/controls/group.h"
+#include "ui/controls/interface.h"
+#include "ui/controls/key.h"
+#include "ui/controls/label.h"
+#include "ui/controls/scroll.h"
+#include "ui/controls/window.h"
 
 namespace Ui
 {

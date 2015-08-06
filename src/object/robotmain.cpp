@@ -87,20 +87,20 @@
 
 #include "sound/sound.h"
 
-#include "ui/button.h"
+#include "ui/controls/button.h"
 #include "ui/displayinfo.h"
 #include "ui/displaytext.h"
-#include "ui/edit.h"
-#include "ui/interface.h"
-#include "ui/label.h"
+#include "ui/controls/edit.h"
+#include "ui/controls/interface.h"
+#include "ui/controls/label.h"
 #include "ui/maindialog.h"
 #include "ui/mainmap.h"
 #include "ui/mainshort.h"
 #include "ui/mainui.h"
-#include "ui/map.h"
-#include "ui/shortcut.h"
-#include "ui/slider.h"
-#include "ui/window.h"
+#include "ui/controls/map.h"
+#include "ui/controls/shortcut.h"
+#include "ui/controls/slider.h"
+#include "ui/controls/window.h"
 
 #include <iomanip>
 

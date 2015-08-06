@@ -41,8 +41,8 @@
 
 #include "script/script.h"
 
-#include "ui/interface.h"
-#include "ui/window.h"
+#include "ui/controls/interface.h"
+#include "ui/controls/window.h"
 
 
 #include <boost/regex.hpp>

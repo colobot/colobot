@@ -51,7 +51,7 @@
 
 #include "sound/sound.h"
 
-#include "ui/interface.h"
+#include "ui/controls/interface.h"
 
 #include <iomanip>
 #include <SDL_thread.h>

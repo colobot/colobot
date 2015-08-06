@@ -21,11 +21,11 @@
 
 #include "app/app.h"
 
-#include "ui/button.h"
-#include "ui/interface.h"
-#include "ui/image.h"
-#include "ui/list.h"
-#include "ui/window.h"
+#include "ui/controls/button.h"
+#include "ui/controls/interface.h"
+#include "ui/controls/image.h"
+#include "ui/controls/list.h"
+#include "ui/controls/window.h"
 
 namespace Ui
 {

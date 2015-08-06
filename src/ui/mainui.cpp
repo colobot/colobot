@@ -51,10 +51,10 @@
 #include "ui/screen/screen_quit.h"
 #include "ui/screen/screen_welcome.h"
 
-#include "ui/interface.h"
-#include "ui/label.h"
+#include "ui/controls/interface.h"
+#include "ui/controls/label.h"
 #include "ui/maindialog.h"
-#include "ui/window.h"
+#include "ui/controls/window.h"
 
 namespace Ui
 {

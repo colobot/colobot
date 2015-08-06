@@ -33,9 +33,9 @@
 #include "object/level/parserline.h"
 #include "object/level/parserparam.h"
 
-#include "ui/gauge.h"
-#include "ui/interface.h"
-#include "ui/window.h"
+#include "ui/controls/gauge.h"
+#include "ui/controls/interface.h"
+#include "ui/controls/window.h"
 
 
 const float SEARCH_TIME = 30.0f;        // duration of a research

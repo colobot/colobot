@@ -29,7 +29,7 @@
 
 #include "object/object_type.h"
 
-#include "ui/interface.h"
+#include "ui/controls/interface.h"
 
 namespace Ui
 {

@@ -35,8 +35,8 @@
 
 #include "physics/physics.h"
 
-#include "ui/interface.h"
-#include "ui/window.h"
+#include "ui/controls/interface.h"
+#include "ui/controls/window.h"
 
 
 

@@ -40,9 +40,9 @@
 #include "script/cbottoken.h"
 
 #include "ui/displaytext.h"
-#include "ui/edit.h"
-#include "ui/interface.h"
-#include "ui/list.h"
+#include "ui/controls/edit.h"
+#include "ui/controls/interface.h"
+#include "ui/controls/list.h"
 
 
 

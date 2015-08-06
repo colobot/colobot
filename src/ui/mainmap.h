@@ -27,7 +27,7 @@
 
 #include "math/point.h"
 
-#include "ui/interface.h"
+#include "ui/controls/interface.h"
 
 
 namespace Ui
@@ -69,4 +69,3 @@ protected:
 };
 
 }
-

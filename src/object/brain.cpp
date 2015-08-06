@@ -51,10 +51,10 @@
 
 #include "sound/sound.h"
 
-#include "ui/interface.h"
-#include "ui/slider.h"
+#include "ui/controls/interface.h"
+#include "ui/controls/slider.h"
 #include "ui/studio.h"
-#include "ui/window.h"
+#include "ui/controls/window.h"
 
 
 #include <iomanip>

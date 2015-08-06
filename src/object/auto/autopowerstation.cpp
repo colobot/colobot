@@ -31,9 +31,9 @@
 #include "object/interface/carrier_object.h"
 #include "object/interface/powered_object.h"
 
-#include "ui/gauge.h"
-#include "ui/interface.h"
-#include "ui/window.h"
+#include "ui/controls/gauge.h"
+#include "ui/controls/interface.h"
+#include "ui/controls/window.h"
 
 
 

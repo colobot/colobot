@@ -25,13 +25,13 @@
 
 #include "object/player_profile.h"
 
-#include "ui/button.h"
-#include "ui/edit.h"
-#include "ui/interface.h"
-#include "ui/label.h"
-#include "ui/list.h"
+#include "ui/controls/button.h"
+#include "ui/controls/edit.h"
+#include "ui/controls/interface.h"
+#include "ui/controls/label.h"
+#include "ui/controls/list.h"
 #include "ui/maindialog.h"
-#include "ui/window.h"
+#include "ui/controls/window.h"
 
 namespace Ui
 {
