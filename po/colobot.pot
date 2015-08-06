@@ -162,6 +162,12 @@ msgstr ""
 msgid "OK"
 msgstr ""
 
+msgid "No userlevels installed!"
+msgstr ""
+
+msgid "This menu is for userlevels from mods, but you didn't install any"
+msgstr ""
+
 msgid "Keyword help(\\key cbot;)"
 msgstr ""
 

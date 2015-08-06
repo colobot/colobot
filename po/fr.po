@@ -933,6 +933,9 @@ msgstr "Pas de titanium à transformer"
 msgid "No uranium to transform"
 msgstr "Pas d'uranium à transformer"
 
+msgid "No userlevels installed!"
+msgstr ""
+
 msgid "Normal size"
 msgstr "Taille normale"
 
@@ -1502,6 +1505,9 @@ msgstr "Cet élément n'existe pas dans cette classe"
 
 msgid "This label does not exist"
 msgstr "Cette étiquette n'existe pas"
+
+msgid "This menu is for userlevels from mods, but you didn't install any"
+msgstr ""
 
 msgid "This object is not a member of a class"
 msgstr "L'objet n'est pas une instance d'une classe"

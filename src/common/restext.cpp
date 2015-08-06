@@ -111,6 +111,8 @@ void InitializeRestext()
     stringsText[RT_DIALOG_NO]        = TR("No");
     stringsText[RT_DIALOG_LOADING]   = TR("LOADING");
     stringsText[RT_DIALOG_OK]        = TR("OK");
+    stringsText[RT_DIALOG_NOUSRLVL_TITLE] = TR("No userlevels installed!");
+    stringsText[RT_DIALOG_NOUSRLVL_TEXT]  = TR("This menu is for userlevels from mods, but you didn't install any");
 
     stringsText[RT_STUDIO_LISTTT]    = TR("Keyword help(\\key cbot;)");
     stringsText[RT_STUDIO_COMPOK]    = TR("Compilation ok (0 errors)");

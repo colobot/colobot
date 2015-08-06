@@ -28,11 +28,12 @@
 
 namespace Ui
 {
+class CMainDialog;
 
 class CScreenLevelList : public CScreen
 {
 public:
-    CScreenLevelList();
+    CScreenLevelList(Ui::CMainDialog* mainDialog);
 
     void SetLevelCategory(LevelCategory category);
 
@@ -59,6 +60,8 @@ protected:
     void UpdateSceneResume(int chap, int rank);
 
 protected:
+    Ui::CMainDialog* m_dialog;
+
     LevelCategory m_category;
     LevelCategory m_listCategory;
 

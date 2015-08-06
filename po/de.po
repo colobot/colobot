@@ -937,6 +937,9 @@ msgstr "Kein konvertierbares Titanerz vorhanden"
 msgid "No uranium to transform"
 msgstr "Kein konvertierbares Platin"
 
+msgid "No userlevels installed!"
+msgstr ""
+
 msgid "Normal size"
 msgstr "Normale Größe"
 
@@ -1507,6 +1510,9 @@ msgstr "Dieses Element gibt es nicht in dieser Klasse"
 
 msgid "This label does not exist"
 msgstr "Dieses Label existiert nicht"
+
+msgid "This menu is for userlevels from mods, but you didn't install any"
+msgstr ""
 
 msgid "This object is not a member of a class"
 msgstr "Das Objekt ist nicht eine Instanz einer Klasse"

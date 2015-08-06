@@ -29,6 +29,8 @@
 
 #include "object/level/parser.h"
 
+#include "ui/maindialog.h"
+
 #include "ui/controls/button.h"
 #include "ui/controls/check.h"
 #include "ui/controls/edit.h"
@@ -40,8 +42,9 @@
 namespace Ui
 {
 
-CScreenLevelList::CScreenLevelList()
-    : m_category{},
+CScreenLevelList::CScreenLevelList(CMainDialog* mainDialog)
+    : m_dialog(mainDialog),
+      m_category{},
       m_listCategory{},
       m_sceneSoluce{false},
       m_maxList{0},
@@ -232,6 +235,18 @@ void CScreenLevelList::CreateInterface()
     pb->SetState(STATE_SHADOW);
 
     SetBackground("textures/interface/interface.png");
+
+    if (m_category == LevelCategory::CustomLevels)
+    {
+        if(m_customLevelList.size() == 0)
+        {
+            m_main->ChangePhase(PHASE_MAIN_MENU);
+            std::string title, text;
+            GetResource(RES_TEXT, RT_DIALOG_NOUSRLVL_TITLE, title);
+            GetResource(RES_TEXT, RT_DIALOG_NOUSRLVL_TEXT, text);
+            m_dialog->StartInformation(title, title, text);
+        }
+    }
 }
 
 bool CScreenLevelList::EventProcess(const Event &event)

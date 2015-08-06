@@ -312,7 +312,9 @@ void CMainDialog::StartInformation(const std::string& title, const std::string& 
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW9));
     if ( pw == 0 )  return;
-    pw->SetName(title);
+
+    if(!title.empty())
+        pw->SetName(title);
 
     pos.x = 0.00f;
     pos.y = 0.50f;

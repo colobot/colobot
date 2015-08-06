@@ -73,7 +73,7 @@ CMainUserInterface::CMainUserInterface()
     m_dialog     = MakeUnique<CMainDialog>();
 
     m_screenAppearance = MakeUnique<CScreenApperance>();
-    m_screenLevelList = MakeUnique<CScreenLevelList>();
+    m_screenLevelList = MakeUnique<CScreenLevelList>(m_dialog.get());
     m_screenIORead = MakeUnique<CScreenIORead>(m_screenLevelList.get());
     m_screenIOWrite = MakeUnique<CScreenIOWrite>(m_screenLevelList.get());
     m_screenLoading = MakeUnique<CScreenLoading>();

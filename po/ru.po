@@ -930,6 +930,9 @@ msgstr ""
 msgid "No uranium to transform"
 msgstr "Нет урана для преобразования"
 
+msgid "No userlevels installed!"
+msgstr ""
+
 msgid "Normal size"
 msgstr "Нормальный размер"
 
@@ -1499,6 +1502,9 @@ msgstr "Это не член этого класса"
 
 msgid "This label does not exist"
 msgstr "Эта метка не существует"
+
+msgid "This menu is for userlevels from mods, but you didn't install any"
+msgstr ""
 
 msgid "This object is not a member of a class"
 msgstr "Этот объект не член класса"
