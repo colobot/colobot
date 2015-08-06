@@ -24,20 +24,6 @@
 #include "common/logger.h"
 
 #include <al.h>
-#include <alc.h>
 
-static ALenum CODE = AL_NO_ERROR;
-
-inline bool alCheck()
-{
-    CODE = alGetError();
-    return CODE != AL_NO_ERROR;
-}
-
-inline ALenum alGetCode()
-{
-    ALenum ret = CODE;
-    CODE = AL_NO_ERROR;
-    return ret;
-}
-
+bool CheckOpenALError();
+ALenum GetOpenALErrorCode();

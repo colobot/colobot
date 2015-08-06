@@ -62,6 +62,7 @@ if(OPENAL_SOUND)
         sound/oalsound/alsound.cpp
         sound/oalsound/buffer.cpp
         sound/oalsound/channel.cpp
+        sound/oalsound/check.cpp
     )
 endif()
 

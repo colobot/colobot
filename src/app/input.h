@@ -30,7 +30,7 @@
 
 #include "math/intpoint.h"
 
-
+#include <map>
 
 /**
  * \struct InputBinding
@@ -159,4 +159,6 @@ private:
     InputBinding    m_inputBindings[INPUT_SLOT_MAX];
     JoyAxisBinding  m_joyAxisBindings[JOY_AXIS_SLOT_MAX];
     float           m_joystickDeadzone;
+
+    std::map<InputSlot, std::string> m_keyTable;
 };

@@ -25,7 +25,10 @@
 #include <vector>
 
 
-static std::string VFormat(const char *fmt, va_list ap)
+namespace
+{
+
+std::string VFormat(const char *fmt, va_list ap)
 {
     size_t size = 1024;
     char stackbuf[1024];
@@ -46,6 +49,8 @@ static std::string VFormat(const char *fmt, va_list ap)
         buf = &dynamicbuf[0];
     }
 }
+
+} // anonymous namespace
 
 std::string StrUtils::Format(const char *fmt, ...)
 {

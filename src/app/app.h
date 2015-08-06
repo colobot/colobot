@@ -455,4 +455,7 @@ protected:
 
     //! Headles mode
     bool            m_headless;
+
+    //! Static buffer for putenv locale
+    static char m_languageLocale[50];
 };

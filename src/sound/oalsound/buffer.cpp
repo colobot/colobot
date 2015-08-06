@@ -40,8 +40,8 @@ Buffer::~Buffer()
     if (m_loaded)
     {
         alDeleteBuffers(1, &m_buffer);
-        if (alCheck())
-            GetLogger()->Debug("Failed to unload buffer. Code %d\n", alGetCode());
+        if (CheckOpenALError())
+            GetLogger()->Debug("Failed to unload buffer. Code %d\n", GetOpenALErrorCode());
     }
 }
 

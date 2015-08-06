@@ -36,12 +36,41 @@ template<> CInput* CSingleton<CInput>::m_instance = nullptr;
 
 CInput::CInput()
 {
+    m_keyTable =
+    {
+        { INPUT_SLOT_LEFT,     "left"    },
+        { INPUT_SLOT_RIGHT,    "right"   },
+        { INPUT_SLOT_UP,       "up"      },
+        { INPUT_SLOT_DOWN,     "down"    },
+        { INPUT_SLOT_GUP,      "gup"     },
+        { INPUT_SLOT_GDOWN,    "gdown"   },
+        { INPUT_SLOT_CAMERA,   "camera"  },
+        { INPUT_SLOT_DESEL,    "desel"   },
+        { INPUT_SLOT_ACTION,   "action"  },
+        { INPUT_SLOT_NEAR,     "near"    },
+        { INPUT_SLOT_AWAY,     "away"    },
+        { INPUT_SLOT_NEXT,     "next"    },
+        { INPUT_SLOT_HUMAN,    "human"   },
+        { INPUT_SLOT_QUIT,     "quit"    },
+        { INPUT_SLOT_HELP,     "help"    },
+        { INPUT_SLOT_PROG,     "prog"    },
+        { INPUT_SLOT_VISIT,    "visit"   },
+        { INPUT_SLOT_SPEED05,  "speed05" },
+        { INPUT_SLOT_SPEED10,  "speed10" },
+        { INPUT_SLOT_SPEED15,  "speed15" },
+        { INPUT_SLOT_SPEED20,  "speed20" },
+        { INPUT_SLOT_SPEED30,  "speed30" },
+        { INPUT_SLOT_SPEED40,  "speed40" },
+        { INPUT_SLOT_SPEED60,  "speed60" },
+        { INPUT_SLOT_CAMERA_UP,   "camup"   },
+        { INPUT_SLOT_CAMERA_DOWN, "camdown" },
+        { INPUT_SLOT_PAUSE,    "pause" },
+    };
+
     m_kmodState = 0;
     m_mousePos = Math::Point();
     m_mouseButtonsState = 0;
-
-    for(int i=0; i<INPUT_SLOT_MAX; i++)
-        m_keyPresses[i] = false;
+    std::fill_n(m_keyPresses, INPUT_SLOT_MAX, false);
 
     m_joystickDeadzone = 0.2f;
     SetDefaultInputBindings();
@@ -271,37 +300,6 @@ InputSlot CInput::FindBinding(unsigned int key)
     return INPUT_SLOT_MAX;
 }
 
-static std::map<InputSlot, std::string> keyTable =
-{
-    { INPUT_SLOT_LEFT,     "left"    },
-    { INPUT_SLOT_RIGHT,    "right"   },
-    { INPUT_SLOT_UP,       "up"      },
-    { INPUT_SLOT_DOWN,     "down"    },
-    { INPUT_SLOT_GUP,      "gup"     },
-    { INPUT_SLOT_GDOWN,    "gdown"   },
-    { INPUT_SLOT_CAMERA,   "camera"  },
-    { INPUT_SLOT_DESEL,    "desel"   },
-    { INPUT_SLOT_ACTION,   "action"  },
-    { INPUT_SLOT_NEAR,     "near"    },
-    { INPUT_SLOT_AWAY,     "away"    },
-    { INPUT_SLOT_NEXT,     "next"    },
-    { INPUT_SLOT_HUMAN,    "human"   },
-    { INPUT_SLOT_QUIT,     "quit"    },
-    { INPUT_SLOT_HELP,     "help"    },
-    { INPUT_SLOT_PROG,     "prog"    },
-    { INPUT_SLOT_VISIT,    "visit"   },
-    { INPUT_SLOT_SPEED05,  "speed05" },
-    { INPUT_SLOT_SPEED10,  "speed10" },
-    { INPUT_SLOT_SPEED15,  "speed15" },
-    { INPUT_SLOT_SPEED20,  "speed20" },
-    { INPUT_SLOT_SPEED30,  "speed30" },
-    { INPUT_SLOT_SPEED40,  "speed40" },
-    { INPUT_SLOT_SPEED60,  "speed60" },
-    { INPUT_SLOT_CAMERA_UP,   "camup"   },
-    { INPUT_SLOT_CAMERA_DOWN, "camdown" },
-    { INPUT_SLOT_PAUSE,    "pause" },
-};
-
 void CInput::SaveKeyBindings()
 {
     std::stringstream key;
@@ -313,7 +311,7 @@ void CInput::SaveKeyBindings()
         key.str("");
         key << b.primary << " " << b.secondary;
 
-        CConfigFile::GetInstancePointer()->SetStringProperty("Keybindings", keyTable[static_cast<InputSlot>(i)], key.str());
+        CConfigFile::GetInstancePointer()->SetStringProperty("Keybindings", m_keyTable[static_cast<InputSlot>(i)], key.str());
     }
 
     for (int i = 0; i < JOY_AXIS_SLOT_MAX; i++)
@@ -334,7 +332,7 @@ void CInput::LoadKeyBindings()
     {
         InputBinding b;
 
-        if (!CConfigFile::GetInstancePointer()->GetStringProperty("Keybindings", keyTable[static_cast<InputSlot>(i)], keys))
+        if (!CConfigFile::GetInstancePointer()->GetStringProperty("Keybindings", m_keyTable[static_cast<InputSlot>(i)], keys))
             continue;
         skey.clear();
         skey.str(keys);
@@ -365,7 +363,7 @@ void CInput::LoadKeyBindings()
 
 InputSlot CInput::SearchKeyById(std::string id)
 {
-    for(auto& key : keyTable)
+    for(auto& key : m_keyTable)
     {
         if ( id == key.second )
         {

@@ -761,8 +761,10 @@ void InitializeRestext()
 }
 
 
-
-static char         g_gamerName[100];
+namespace
+{
+char g_gamerName[100];
+} // anonymous namespace
 
 void SetGlobalGamerName(std::string name)
 {
@@ -771,7 +773,10 @@ void SetGlobalGamerName(std::string name)
 
 // Replaces the commands "\key name;" in a text.
 
-static void PutKeyName(std::string& dst, const char* src)
+namespace
+{
+
+void PutKeyName(std::string& dst, const char* src)
 {
     dst.clear();
 
@@ -801,7 +806,7 @@ static void PutKeyName(std::string& dst, const char* src)
 
 // Returns the translated text of a resource that needs key substitution
 
-static const char* GetResourceBase(ResType type, unsigned int num)
+const char* GetResourceBase(ResType type, unsigned int num)
 {
     const char *str = NULL;
 
@@ -845,6 +850,8 @@ static const char* GetResourceBase(ResType type, unsigned int num)
 
     return gettext(str);
 }
+
+} // anonymous namespace
 
 // Returns the text of a resource.
 

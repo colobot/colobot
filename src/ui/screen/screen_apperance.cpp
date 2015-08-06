@@ -36,7 +36,7 @@
 namespace Ui
 {
 
-static int PERSO_COLOR[3*10*3] =
+const int PERSO_COLOR[3*10*3] =
 {
     // hair:
     193, 221, 226,  // white

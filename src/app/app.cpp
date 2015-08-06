@@ -61,8 +61,7 @@
 
 template<> CApplication* CSingleton<CApplication>::m_instance = nullptr;
 
-//! Static buffer for putenv locale
-static char S_LANGUAGE[50] = { 0 };
+char CApplication::m_languageLocale[] = { 0 };
 
 
 //! Interval of timer called to update joystick state
@@ -1699,8 +1698,8 @@ void CApplication::SetLanguage(Language language)
     {
         std::string langStr = "LANGUAGE=";
         langStr += locale;
-        strcpy(S_LANGUAGE, langStr.c_str());
-        putenv(S_LANGUAGE);
+        strcpy(m_languageLocale, langStr.c_str());
+        putenv(m_languageLocale);
         GetLogger()->Trace("SetLanguage: Set LANGUAGE=%s in environment\n", locale.c_str());
     }
 

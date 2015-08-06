@@ -26,15 +26,15 @@
 
 namespace
 {
-static EventType UNIQUE_EVENT_TYPE = EVENT_USER;
 const char* EVENT_TYPE_TEXT[EVENT_STD_MAX];
 }
 
 EventType GetUniqueEventType()
 {
-    int i = static_cast<int>(UNIQUE_EVENT_TYPE+1);
-    UNIQUE_EVENT_TYPE = static_cast<EventType>(i);
-    return UNIQUE_EVENT_TYPE;
+    static EventType uniqueEventType = EVENT_USER;
+    int nextUniqueEventType = static_cast<int>(uniqueEventType+1);
+    uniqueEventType = static_cast<EventType>(nextUniqueEventType);
+    return uniqueEventType;
 }
 
 void InitializeEventTypeTexts()
