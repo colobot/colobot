@@ -179,7 +179,6 @@ void InitializeRestext()
     stringsEvent[EVENT_INTERFACE_APPLY]     = TR("Apply changes\\Activates the changed settings");
 
     stringsEvent[EVENT_INTERFACE_TOTO]      = TR("Robbie\\Your assistant");
-    stringsEvent[EVENT_INTERFACE_SHADOW]    = TR("Simple shadows\\Shadows on the ground");
     stringsEvent[EVENT_INTERFACE_GROUND]    = TR("Marks on the ground\\Marks on the ground");
     stringsEvent[EVENT_INTERFACE_DIRTY]     = TR("Dust\\Dust and dirt on bots and buildings");
     stringsEvent[EVENT_INTERFACE_FOG]       = TR("Fog\\Fog");
@@ -212,8 +211,10 @@ void InitializeRestext()
     stringsEvent[EVENT_INTERFACE_TEXTURE_MIPMAP]    = TR("Mipmap level\\Mipmap level");
     stringsEvent[EVENT_INTERFACE_TEXTURE_ANISOTROPY]= TR("Anisotropy level\\Anisotropy level");
     stringsEvent[EVENT_INTERFACE_MSAA]              = TR("MSAA\\Multisample anti-aliasing");
-    stringsEvent[EVENT_INTERFACE_SHADOW_MAPPING]    = TR("Shadow mapping\\Shadow buffer resolution, higher is bigger range but slower");
+    stringsEvent[EVENT_INTERFACE_SHADOW]            = TR("Simple shadows\\Shadows on the ground");
+    stringsEvent[EVENT_INTERFACE_SHADOW_MAPPING]    = TR("Shadow mapping\\Beautiful shadows!");
     stringsEvent[EVENT_INTERFACE_SHADOW_MAPPING_QUALITY]= TR("Better shadow maps\\Shadow transparency and self shadowing");
+    stringsEvent[EVENT_INTERFACE_SHADOW_MAPPING_BUFFER] = TR("Shadow resolution\\Higher means better range and quality, but slower");
 
     stringsEvent[EVENT_INTERFACE_KDEF]      = TR("Standard controls\\Standard key functions");
     assert(INPUT_SLOT_MAX < EVENT_INTERFACE_KEY_END-EVENT_INTERFACE_KEY);

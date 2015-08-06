@@ -1305,8 +1305,10 @@ msgstr "Выбор астронавта\\Выбор астронавта"
 msgid "Semicolon terminator missing"
 msgstr "Отсутствует точка с запятой"
 
-msgid ""
-"Shadow mapping\\Shadow buffer resolution, higher is bigger range but slower"
+msgid "Shadow mapping\\Beautiful shadows!"
+msgstr ""
+
+msgid "Shadow resolution\\Higher means better range and quality, but slower"
 msgstr ""
 
 msgid "Shield level"

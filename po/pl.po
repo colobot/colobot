@@ -1311,8 +1311,10 @@ msgstr "Zaznacz astronautę\\Zaznacza astronautę"
 msgid "Semicolon terminator missing"
 msgstr "Brak średnika na końcu wiersza"
 
-msgid ""
-"Shadow mapping\\Shadow buffer resolution, higher is bigger range but slower"
+msgid "Shadow mapping\\Beautiful shadows!"
+msgstr ""
+
+msgid "Shadow resolution\\Higher means better range and quality, but slower"
 msgstr ""
 
 msgid "Shield level"

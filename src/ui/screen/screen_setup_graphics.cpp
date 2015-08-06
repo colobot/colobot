@@ -67,9 +67,6 @@ void CScreenSetupGraphics::CreateInterface()
     ddim.y = dim.y*0.5f;
     pos.x = ox+sx*3;
     pos.y = 0.65f;
-    pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_SHADOW);
-    pc->SetState(STATE_SHADOW);
-    pos.y -= 0.048f;
     pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_GROUND);
     pc->SetState(STATE_SHADOW);
     if ( m_simulationSetup )
@@ -98,25 +95,6 @@ void CScreenSetupGraphics::CreateInterface()
     {
         pc->SetState(STATE_DEAD);
     }
-
-    pos.x = ox+sx*3;
-    pos.y = 0.245f;
-    ddim.x = dim.x*2.2f;
-    ddim.y = 18.0f/480.0f;
-    pes = pw->CreateEnumSlider(pos, ddim, 0, EVENT_INTERFACE_MSAA);
-    pes->SetState(STATE_SHADOW);
-    std::vector<float> msaaOptions;
-    for(int i = 1; i <= m_engine->GetDevice()->GetMaxSamples(); i *= 2)
-        msaaOptions.push_back(i);
-    pes->SetPossibleValues(msaaOptions);
-    if(m_engine->GetDevice()->GetMaxSamples() < 2)
-        pes->ClearState(STATE_ENABLE);
-    pos.y += ddim.y/2;
-    pos.x += 0.005f;
-    ddim.x = 0.40f;
-    GetResource(RES_EVENT, EVENT_INTERFACE_MSAA, name);
-    pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL12, name);
-    pl->SetTextAlign(Gfx::TEXT_ALIGN_LEFT);
 
     pos.x = ox+sx*8.5f;
     pos.y = 0.65f;
@@ -167,7 +145,70 @@ void CScreenSetupGraphics::CreateInterface()
     pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL13, name);
     pl->SetTextAlign(Gfx::TEXT_ALIGN_LEFT);
 
+
     pos.x = ox+sx*8.5f;
+    pos.y = 0.475f;
+    ddim.x = dim.x*3;
+    ddim.y = dim.y*0.5f;
+    pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_SHADOW);
+    pc->SetState(STATE_SHADOW);
+    pos.y -= 0.048f;
+    pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_SHADOW_MAPPING);
+    pc->SetState(STATE_SHADOW);
+    pos.y -= 0.048f;
+    pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_SHADOW_MAPPING_QUALITY);
+    pc->SetState(STATE_SHADOW);
+    if (!m_engine->IsShadowMappingQualitySupported())
+    {
+        pc->ClearState(STATE_ENABLE);
+    }
+    pos.y -= 0.048f*1.5f;
+
+    ddim.x = dim.x*2.2f;
+    ddim.y = 18.0f/480.0f;
+    pes = pw->CreateEnumSlider(pos, ddim, 0, EVENT_INTERFACE_SHADOW_MAPPING_BUFFER);
+    pes->SetState(STATE_SHADOW);
+    std::map<float, std::string> shadowOptions = {
+        {0, "Screen buffer"}
+    };
+    if (m_engine->GetDevice()->IsFramebufferSupported())
+    {
+        for(int i = 128; i <= m_engine->GetDevice()->GetMaxTextureSize(); i *= 2)
+            shadowOptions[i] = StrUtils::ToString<int>(i)+"x"+StrUtils::ToString<int>(i);
+        pes->SetPossibleValues(shadowOptions);
+    }
+    else
+    {
+        pes->ClearState(STATE_ENABLE);
+    }
+    pos.y += ddim.y/2;
+    pos.x += 0.005f;
+    ddim.x = 0.40f;
+    GetResource(RES_EVENT, EVENT_INTERFACE_SHADOW_MAPPING_BUFFER, name);
+    pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL12, name);
+    pl->SetTextAlign(Gfx::TEXT_ALIGN_LEFT);
+
+
+    pos.x = ox+sx*12.5f;
+    pos.y = 0.455f;
+    ddim.x = dim.x*2.2f;
+    ddim.y = 18.0f/480.0f;
+    pes = pw->CreateEnumSlider(pos, ddim, 0, EVENT_INTERFACE_MSAA);
+    pes->SetState(STATE_SHADOW);
+    std::vector<float> msaaOptions;
+    for(int i = 1; i <= m_engine->GetDevice()->GetMaxSamples(); i *= 2)
+        msaaOptions.push_back(i);
+    pes->SetPossibleValues(msaaOptions);
+    if(m_engine->GetDevice()->GetMaxSamples() < 2)
+        pes->ClearState(STATE_ENABLE);
+    pos.y += ddim.y/2;
+    pos.x += 0.005f;
+    ddim.x = 0.40f;
+    GetResource(RES_EVENT, EVENT_INTERFACE_MSAA, name);
+    pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL12, name);
+    pl->SetTextAlign(Gfx::TEXT_ALIGN_LEFT);
+
+    pos.x = ox+sx*12.5f;
     pos.y = 0.385f;
     ddim.x = dim.x*2.2f;
     ddim.y = 18.0f/480.0f;
@@ -185,7 +226,7 @@ void CScreenSetupGraphics::CreateInterface()
     pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL12, name);
     pl->SetTextAlign(Gfx::TEXT_ALIGN_LEFT);
 
-    pos.x = ox+sx*8.5f;
+    pos.x = ox+sx*12.5f;
     pos.y = 0.315f;
     ddim.x = dim.x*2.2f;
     ddim.y = 18.0f/480.0f;
@@ -199,7 +240,7 @@ void CScreenSetupGraphics::CreateInterface()
     pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL12, name);
     pl->SetTextAlign(Gfx::TEXT_ALIGN_LEFT);
 
-    pos.x = ox+sx*8.5f;
+    pos.x = ox+sx*12.5f;
     pos.y = 0.245f;
     ddim.x = dim.x*2.2f;
     ddim.y = 18.0f/480.0f;
@@ -218,47 +259,6 @@ void CScreenSetupGraphics::CreateInterface()
     pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL12, name);
     pl->SetTextAlign(Gfx::TEXT_ALIGN_LEFT);
 
-
-    pos.x = ox+sx*12.5;
-    pos.y = 0.385f;
-    ddim.x = dim.x*2.2f;
-    ddim.y = 18.0f/480.0f;
-    pes = pw->CreateEnumSlider(pos, ddim, 0, EVENT_INTERFACE_SHADOW_MAPPING);
-    pes->SetState(STATE_SHADOW);
-    std::map<float, std::string> shadowOptions = {
-        { -1, "Disabled" },
-    };
-    if (m_engine->GetDevice()->IsFramebufferSupported())
-    {
-        for(int i = 128; i <= m_engine->GetDevice()->GetMaxTextureSize(); i *= 2)
-            shadowOptions[i] = StrUtils::ToString<int>(i)+"x"+StrUtils::ToString<int>(i);
-    }
-    else
-    {
-        shadowOptions[0] = "Screen buffer"; // TODO: Is this the proper name for this?
-    }
-    pes->SetPossibleValues(shadowOptions);
-    if (!m_engine->IsShadowMappingSupported())
-    {
-        pes->ClearState(STATE_ENABLE);
-    }
-    pos.y += ddim.y/2;
-    pos.x += 0.005f;
-    ddim.x = 0.40f;
-    GetResource(RES_EVENT, EVENT_INTERFACE_SHADOW_MAPPING, name);
-    pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL12, name);
-    pl->SetTextAlign(Gfx::TEXT_ALIGN_LEFT);
-
-    pos.x = ox+sx*12.5;
-    pos.y = 0.315f;
-    ddim.x = dim.x*6;
-    ddim.y = dim.y*0.5f;
-    pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_SHADOW_MAPPING_QUALITY);
-    pc->SetState(STATE_SHADOW);
-    if (!m_engine->IsShadowMappingQualitySupported())
-    {
-        pes->ClearState(STATE_ENABLE);
-    }
 
     ddim.x = dim.x*2;
     ddim.y = dim.y*1;
@@ -338,17 +338,22 @@ bool CScreenSetupGraphics::EventProcess(const Event &event)
             ChangeSetupButtons();
             break;
 
-        case EVENT_INTERFACE_TEXTURE_FILTER:
-        case EVENT_INTERFACE_TEXTURE_MIPMAP:
-        case EVENT_INTERFACE_TEXTURE_ANISOTROPY:
-        case EVENT_INTERFACE_MSAA:
         case EVENT_INTERFACE_SHADOW_MAPPING:
-            ChangeSetupButtons();
+            m_engine->SetShadowMapping(!m_engine->GetShadowMapping());
             UpdateSetupButtons();
             break;
 
         case EVENT_INTERFACE_SHADOW_MAPPING_QUALITY:
             m_engine->SetShadowMappingQuality(!m_engine->GetShadowMappingQuality());
+            UpdateSetupButtons();
+            break;
+
+        case EVENT_INTERFACE_SHADOW_MAPPING_BUFFER:
+        case EVENT_INTERFACE_TEXTURE_FILTER:
+        case EVENT_INTERFACE_TEXTURE_MIPMAP:
+        case EVENT_INTERFACE_TEXTURE_ANISOTROPY:
+        case EVENT_INTERFACE_MSAA:
+            ChangeSetupButtons();
             UpdateSetupButtons();
             break;
 
@@ -409,21 +414,10 @@ void CScreenSetupGraphics::UpdateSetupButtons()
         pes->SetVisibleValue(m_engine->GetMultiSample());
     }
 
-    pes = static_cast<CEnumSlider*>(pw->SearchControl(EVENT_INTERFACE_SHADOW_MAPPING));
-    if ( pes != 0 )
+    pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_SHADOW_MAPPING));
+    if ( pc != 0 )
     {
-        if (!m_engine->GetShadowMapping())
-        {
-            pes->SetVisibleValue(-1);
-        }
-        else if (!m_engine->GetShadowMappingOffscreen())
-        {
-            pes->SetVisibleValue(0);
-        }
-        else
-        {
-            pes->SetVisibleValue(m_engine->GetShadowMappingOffscreenResolution());
-        }
+        pc->SetState(STATE_CHECK, m_engine->GetShadowMapping());
     }
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_SHADOW_MAPPING_QUALITY));
@@ -431,6 +425,20 @@ void CScreenSetupGraphics::UpdateSetupButtons()
     {
         pc->SetState(STATE_ENABLE, m_engine->GetShadowMapping());
         pc->SetState(STATE_CHECK, m_engine->GetShadowMapping() && m_engine->GetShadowMappingQuality());
+    }
+
+    pes = static_cast<CEnumSlider*>(pw->SearchControl(EVENT_INTERFACE_SHADOW_MAPPING_BUFFER));
+    if ( pes != 0 )
+    {
+        pes->SetState(STATE_ENABLE, m_engine->GetShadowMapping() && m_engine->GetDevice()->IsFramebufferSupported());
+        if (!m_engine->GetShadowMappingOffscreen())
+        {
+            pes->SetVisibleValue(0);
+        }
+        else
+        {
+            pes->SetVisibleValue(m_engine->GetShadowMappingOffscreenResolution());
+        }
     }
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_SHADOW));
@@ -565,22 +573,16 @@ void CScreenSetupGraphics::ChangeSetupButtons()
         m_engine->SetMultiSample(static_cast<int>(value));
     }
 
-    pes = static_cast<CEnumSlider*>(pw->SearchControl(EVENT_INTERFACE_SHADOW_MAPPING));
+    pes = static_cast<CEnumSlider*>(pw->SearchControl(EVENT_INTERFACE_SHADOW_MAPPING_BUFFER));
     if ( pes != 0 )
     {
         value = pes->GetVisibleValue();
-        if(value == -1)
+        if(value == 0)
         {
-            m_engine->SetShadowMapping(false);
-        }
-        else if(value == 0)
-        {
-            m_engine->SetShadowMapping(true);
             m_engine->SetShadowMappingOffscreen(false);
         }
         else
         {
-            m_engine->SetShadowMapping(true);
             m_engine->SetShadowMappingOffscreen(true);
             m_engine->SetShadowMappingOffscreenResolution(value);
         }

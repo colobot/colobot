@@ -1307,8 +1307,10 @@ msgstr "Sélectionner le cosmonaute\\Sélectionner le cosmonaute"
 msgid "Semicolon terminator missing"
 msgstr "Terminateur point-virgule non trouvé"
 
-msgid ""
-"Shadow mapping\\Shadow buffer resolution, higher is bigger range but slower"
+msgid "Shadow mapping\\Beautiful shadows!"
+msgstr ""
+
+msgid "Shadow resolution\\Higher means better range and quality, but slower"
 msgstr ""
 
 msgid "Shield level"
