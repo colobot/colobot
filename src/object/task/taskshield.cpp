@@ -525,7 +525,6 @@ bool CTaskShield::CreateLight(Math::Vector pos)
 
     if ( !m_engine->GetLightMode() )  return true;
 
-    memset(&light, 0, sizeof(light));
     light.type       = Gfx::LIGHT_SPOT;
     light.ambient    = Gfx::Color(0.0f, 0.0f, 0.0f);
     light.diffuse    = Gfx::Color(0.0f, 1.0f, 2.0f);

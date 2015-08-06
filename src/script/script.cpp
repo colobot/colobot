@@ -358,8 +358,7 @@ bool CScript::Run()
 
     if ( m_bStepMode )  // step by step mode?
     {
-        Event   newEvent;
-        memset(&newEvent, 0, sizeof(Event));
+        Event newEvent;
         Step(newEvent);
     }
 

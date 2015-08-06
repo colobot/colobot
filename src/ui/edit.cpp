@@ -101,7 +101,7 @@ CEdit::CEdit () : CControl ()
     m_text = std::vector<char>(m_maxChar+1, '\0');
     m_len = 0;
 
-    memset(m_lineOffset, 0, sizeof(int) * EDITLINEMAX);
+    std::fill_n(m_lineOffset, EDITLINEMAX, 0);
 
     m_fontType = Gfx::FONT_COURIER;
     m_scroll        = 0;

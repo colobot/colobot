@@ -48,11 +48,11 @@ struct Program;
 
 struct Character
 {
-    float        wheelFront;     // position X of the front wheels
-    float        wheelBack;      // position X of the back wheels
-    float        wheelLeft;      // position Z of the left wheels
-    float        wheelRight;     // position Z of the right wheels
-    float        height;         // normal height on top of ground
+    float        wheelFront = 0.0f;     // position X of the front wheels
+    float        wheelBack = 0.0f;      // position X of the back wheels
+    float        wheelLeft = 0.0f;      // position Z of the left wheels
+    float        wheelRight = 0.0f;     // position Z of the right wheels
+    float        height = 0.0f;         // normal height on top of ground
     Math::Vector posPower;       // position of the battery
 };
 

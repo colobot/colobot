@@ -321,10 +321,8 @@ void CScreenLevelList::UpdateSceneChap(int &chap)
     CList*      pl;
 
     std::string fileName;
-    char        line[500];
+    char        line[500] = {0};
     bool        bPassed;
-
-    memset(line, 0, 500);
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
     if ( pw == 0 )  return;
@@ -403,11 +401,9 @@ void CScreenLevelList::UpdateSceneList(int chap, int &sel)
     CWindow*    pw;
     CList*      pl;
     std::string fileName;
-    char        line[500];
+    char        line[500] = {0};
     int         j;
     bool        bPassed;
-
-    memset(line, 0, 500);
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
     if ( pw == 0 )  return;

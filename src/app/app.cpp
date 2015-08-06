@@ -93,8 +93,8 @@ struct ApplicationPrivate
 
     ApplicationPrivate()
     {
-        memset(&currentEvent, 0, sizeof(SDL_Event));
-        memset(&lastMouseMotionEvent, 0, sizeof(SDL_Event));
+        SDL_memset(&currentEvent, 0, sizeof(SDL_Event));
+        SDL_memset(&lastMouseMotionEvent, 0, sizeof(SDL_Event));
         surface = nullptr;
         joystick = nullptr;
         joystickTimer = 0;

@@ -317,7 +317,7 @@ int CParticle::CreateParticle(Math::Vector pos, Math::Vector speed, Math::Point 
 
         if (! m_particle[i].used)
         {
-            memset(&m_particle[i], 0, sizeof(Particle));
+            m_particle[i] = Particle();
             m_particle[i].used      = true;
             m_particle[i].ray       = false;
             m_particle[i].uniqueStamp = m_uniqueStamp++;
@@ -387,7 +387,7 @@ int CParticle::CreateFrag(Math::Vector pos, Math::Vector speed,
 
         if (!m_particle[i].used)
         {
-            memset(&m_particle[i], 0, sizeof(Particle));
+            m_particle[i] = Particle();
             m_particle[i].used      = true;
             m_particle[i].ray       = false;
             m_particle[i].uniqueStamp = m_uniqueStamp++;
@@ -491,7 +491,7 @@ int CParticle::CreatePart(Math::Vector pos, Math::Vector speed,
 
         if (!m_particle[i].used)
         {
-            memset(&m_particle[i], 0, sizeof(Particle));
+            m_particle[i] = Particle();
             m_particle[i].used      = true;
             m_particle[i].ray       = false;
             m_particle[i].uniqueStamp = m_uniqueStamp++;
@@ -547,7 +547,7 @@ int CParticle::CreateRay(Math::Vector pos, Math::Vector goal,
 
         if (!m_particle[i].used)
         {
-            memset(&m_particle[i], 0, sizeof(Particle));
+            m_particle[i] = Particle();
             m_particle[i].used      = true;
             m_particle[i].ray       = true;
             m_particle[i].uniqueStamp = m_uniqueStamp++;

@@ -94,8 +94,15 @@ inline bool ReadBinaryBool(std::istream &istr)
  */
 inline void WriteBinaryFloat(float value, std::ostream &ostr)
 {
-    union { float fValue; unsigned int iValue; } u;
-    memset(&u, 0, sizeof(u));
+    union FloatCast
+    {
+        float fValue;
+        unsigned int iValue;
+    };
+    FloatCast u;
+    u.fValue = 0.0f;
+    u.iValue = 0;
+
     u.fValue = value;
     IOUtils::WriteBinary<4, unsigned int>(u.iValue, ostr);
 }
@@ -107,8 +114,15 @@ inline void WriteBinaryFloat(float value, std::ostream &ostr)
  */
 inline float ReadBinaryFloat(std::istream &istr)
 {
-    union { float fValue; unsigned int iValue; } u;
-    memset(&u, 0, sizeof(u));
+    union FloatCast
+    {
+        float fValue;
+        unsigned int iValue;
+    };
+    FloatCast u;
+    u.fValue = 0.0f;
+    u.iValue = 0;
+
     u.iValue = IOUtils::ReadBinary<4, unsigned int>(istr);
     return u.fValue;
 }

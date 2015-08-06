@@ -161,7 +161,7 @@ COldObject::COldObject(int id)
     m_infoReturn = NAN;
     m_team = 0;
 
-    memset(&m_character, 0, sizeof(m_character));
+    m_character = Character();
     m_character.wheelFront = 1.0f;
     m_character.wheelBack  = 1.0f;
     m_character.wheelLeft  = 1.0f;
