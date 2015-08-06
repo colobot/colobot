@@ -2250,7 +2250,6 @@ Texture CEngine::LoadTexture(const std::string& name, const TextureCreateParams&
 
 bool CEngine::LoadAllTextures()
 {
-    LoadTexture("textures/effect03.png");
     m_miceTexture = LoadTexture("textures/interface/mouse.png");
     LoadTexture("textures/interface/button1.png");
     LoadTexture("textures/interface/button2.png");
@@ -2258,7 +2257,7 @@ bool CEngine::LoadAllTextures()
     LoadTexture("textures/effect00.png");
     LoadTexture("textures/effect01.png");
     LoadTexture("textures/effect02.png");
-    LoadTexture("textures/interface/map.png");
+    LoadTexture("textures/effect03.png");
 
     if (! m_backgroundName.empty())
     {
