@@ -264,8 +264,6 @@ bool CMainUserInterface::EventProcess(const Event &event)
         GlintMove();  // moves reflections
 
         FrameParticle(event.rTime);
-
-        return true;
     }
 
     if ( event.type == EVENT_MOUSE_MOVE )
