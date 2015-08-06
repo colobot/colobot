@@ -543,7 +543,7 @@ void CRobotMain::ChangePhase(Phase phase)
         }
         catch (const std::runtime_error& e)
         {
-            LevelLoadingError("An error occured while trying to load a level scene", e);
+            LevelLoadingError("An error occured while trying to load a level", e);
         }
     }
 
