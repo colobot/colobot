@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see http://gnu.org/licenses
  */
+
 #include "ui/screen/screen_welcome.h"
 
 #include "app/app.h"
@@ -27,14 +28,21 @@
 #include "ui/interface.h"
 #include "ui/window.h"
 
-namespace Ui {
+namespace Ui
+{
 
 const float WELCOME_LENGTH = 3.0f;
 
-CScreenWelcome::CScreenWelcome(int imageIndex)
-: m_imageIndex(imageIndex)
-, m_time(0.0f)
+CScreenWelcome::CScreenWelcome()
+    : m_imageIndex(0),
+      m_time(0.0f)
 {
+}
+
+void CScreenWelcome::SetImageIndex(int imageIndex)
+{
+    m_imageIndex = imageIndex;
+    m_time = 0.0f;
 }
 
 void CScreenWelcome::CreateInterface()

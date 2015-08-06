@@ -16,9 +16,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see http://gnu.org/licenses
  */
+
 #pragma once
 
-#include "common/event.h"
+#include "math/point.h"
 
 #include <string>
 
@@ -26,12 +27,15 @@ class CRobotMain;
 class CApplication;
 class CEventQueue;
 class CSoundInterface;
+struct Event;
+
 namespace Gfx
 {
 class CEngine;
 }
 
-namespace Ui {
+namespace Ui
+{
 
 class CInterface;
 
@@ -48,7 +52,7 @@ protected:
     void SetBackground(const std::string& filename, bool scaled = false);
 
 protected:
-    static CRobotMain* m_main;
+    CRobotMain* m_main;
     CInterface* m_interface;
     CApplication* m_app;
     CEventQueue* m_eventQueue;

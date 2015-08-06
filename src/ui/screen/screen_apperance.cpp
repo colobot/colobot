@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see http://gnu.org/licenses
  */
+
 #include "ui/screen/screen_apperance.h"
 
 #include "app/app.h"
@@ -32,9 +33,10 @@
 #include "ui/slider.h"
 #include "ui/window.h"
 
-namespace Ui {
+namespace Ui
+{
 
-static int perso_color[3*10*3] =
+static int PERSO_COLOR[3*10*3] =
 {
     // hair:
     193, 221, 226,  // white
@@ -72,6 +74,8 @@ static int perso_color[3*10*3] =
 };
 
 CScreenApperance::CScreenApperance()
+    : m_apperanceTab(0),
+      m_apperanceAngle(0.0f)
 {
 }
 
@@ -556,9 +560,9 @@ void CScreenApperance::UpdatePerso()
         else
         {
             pc->SetState(STATE_VISIBLE);
-            color.r = perso_color[3*10*1+3*i+0]/255.0f;
-            color.g = perso_color[3*10*1+3*i+1]/255.0f;
-            color.b = perso_color[3*10*1+3*i+2]/255.0f;
+            color.r = PERSO_COLOR[3*10*1+3*i+0]/255.0f;
+            color.g = PERSO_COLOR[3*10*1+3*i+1]/255.0f;
+            color.b = PERSO_COLOR[3*10*1+3*i+2]/255.0f;
             color.a = 0.0f;
             pc->SetColor(color);
             pc->SetState(STATE_CHECK, EqColor(color, apperance.colorCombi));
@@ -566,9 +570,9 @@ void CScreenApperance::UpdatePerso()
 
         pc = static_cast<CColor*>(pw->SearchControl(static_cast<EventType>(EVENT_INTERFACE_PC0b+i)));
         if ( pc == 0 )  break;
-        color.r = perso_color[3*10*2*m_apperanceTab+3*i+0]/255.0f;
-        color.g = perso_color[3*10*2*m_apperanceTab+3*i+1]/255.0f;
-        color.b = perso_color[3*10*2*m_apperanceTab+3*i+2]/255.0f;
+        color.r = PERSO_COLOR[3*10*2*m_apperanceTab+3*i+0]/255.0f;
+        color.g = PERSO_COLOR[3*10*2*m_apperanceTab+3*i+1]/255.0f;
+        color.b = PERSO_COLOR[3*10*2*m_apperanceTab+3*i+2]/255.0f;
         color.a = 0.0f;
         pc->SetColor(color);
         pc->SetState(STATE_CHECK, EqColor(color, m_apperanceTab?apperance.colorBand:apperance.colorHair));
@@ -634,24 +638,24 @@ void CScreenApperance::FixPerso(int rank, int index)
     {
         if ( index == 1 )
         {
-            apperance.colorHair.r = perso_color[3*10*0+rank*3+0]/255.0f;
-            apperance.colorHair.g = perso_color[3*10*0+rank*3+1]/255.0f;
-            apperance.colorHair.b = perso_color[3*10*0+rank*3+2]/255.0f;
+            apperance.colorHair.r = PERSO_COLOR[3*10*0+rank*3+0]/255.0f;
+            apperance.colorHair.g = PERSO_COLOR[3*10*0+rank*3+1]/255.0f;
+            apperance.colorHair.b = PERSO_COLOR[3*10*0+rank*3+2]/255.0f;
         }
     }
     if ( m_apperanceTab == 1 )
     {
         if ( index == 0 )
         {
-            apperance.colorCombi.r = perso_color[3*10*1+rank*3+0]/255.0f;
-            apperance.colorCombi.g = perso_color[3*10*1+rank*3+1]/255.0f;
-            apperance.colorCombi.b = perso_color[3*10*1+rank*3+2]/255.0f;
+            apperance.colorCombi.r = PERSO_COLOR[3*10*1+rank*3+0]/255.0f;
+            apperance.colorCombi.g = PERSO_COLOR[3*10*1+rank*3+1]/255.0f;
+            apperance.colorCombi.b = PERSO_COLOR[3*10*1+rank*3+2]/255.0f;
         }
         if ( index == 1 )
         {
-            apperance.colorBand.r = perso_color[3*10*2+rank*3+0]/255.0f;
-            apperance.colorBand.g = perso_color[3*10*2+rank*3+1]/255.0f;
-            apperance.colorBand.b = perso_color[3*10*2+rank*3+2]/255.0f;
+            apperance.colorBand.r = PERSO_COLOR[3*10*2+rank*3+0]/255.0f;
+            apperance.colorBand.g = PERSO_COLOR[3*10*2+rank*3+1]/255.0f;
+            apperance.colorBand.b = PERSO_COLOR[3*10*2+rank*3+2]/255.0f;
         }
     }
 }

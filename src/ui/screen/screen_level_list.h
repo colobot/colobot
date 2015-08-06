@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see http://gnu.org/licenses
  */
+
 #pragma once
 
 #include "ui/screen/screen.h"
@@ -25,28 +26,32 @@
 #include <map>
 #include <vector>
 
-namespace Ui {
+namespace Ui
+{
 
 class CScreenLevelList : public CScreen
 {
 public:
-    CScreenLevelList(LevelCategory category);
-    void CreateInterface();
-    bool EventProcess(const Event &event);
+    CScreenLevelList();
 
-    static void SetSelection(LevelCategory category, int chap, int rank);
+    void SetLevelCategory(LevelCategory category);
 
-    static bool GetSceneSoluce();
+    void CreateInterface() override;
+    bool EventProcess(const Event &event) override;
+
+    void SetSelection(LevelCategory category, int chap, int rank);
+
+    bool GetSceneSoluce();
 
     void AllMissionUpdate();
     void ShowSoluceUpdate();
 
-    static void UpdateChapterPassed();
-    static void NextMission();
+    void UpdateChapterPassed();
+    void NextMission();
 
-    static void UpdateCustomLevelList();
-    static std::string GetCustomLevelName(int id);
-    static const std::vector<std::string>& GetCustomLevelList();
+    void UpdateCustomLevelList();
+    std::string GetCustomLevelName(int id);
+    const std::vector<std::string>& GetCustomLevelList();
 
 protected:
     void UpdateSceneChap(int &chap);
@@ -54,16 +59,16 @@ protected:
     void UpdateSceneResume(int chap, int rank);
 
 protected:
-    static LevelCategory m_category;
-    static LevelCategory m_listCategory;
+    LevelCategory m_category;
+    LevelCategory m_listCategory;
 
-    static bool m_bSceneSoluce;
+    bool m_sceneSoluce;
 
-    static std::map<LevelCategory, int> m_chap;     // selected chapter (0..8)
-    static std::map<LevelCategory, int> m_sel;      // chosen mission (0..98)
-    static int m_maxList;
+    std::map<LevelCategory, int> m_chap;     // selected chapter (0..8)
+    std::map<LevelCategory, int> m_sel;      // chosen mission (0..98)
+    int m_maxList;
 
-    static std::vector<std::string> m_customLevelList;
+    std::vector<std::string> m_customLevelList;
 
     int m_accessChap;
 };

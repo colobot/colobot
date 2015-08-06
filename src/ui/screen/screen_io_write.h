@@ -16,18 +16,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see http://gnu.org/licenses
  */
+
 #pragma once
 
 #include "ui/screen/screen_io.h"
 
-namespace Ui {
+namespace Ui
+{
 
 class CScreenIOWrite : public CScreenIO
 {
 public:
-    CScreenIOWrite();
-    void CreateInterface();
-    bool EventProcess(const Event &event);
+    CScreenIOWrite(CScreenLevelList* screenLevelList);
+
+    void CreateInterface() override;
+    bool EventProcess(const Event &event) override;
 };
 
 } // namespace Ui

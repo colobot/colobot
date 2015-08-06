@@ -20,8 +20,6 @@
 
 #include "app/pausemanager.h"
 
-#include "common/singleton.h"
-
 #include "graphics/core/color.h"
 
 #include "object/level_category.h"
@@ -48,10 +46,20 @@ class CWindow;
 class CControl;
 
 class CScreen;
+class CScreenApperance;
+class CScreenIORead;
+class CScreenIOWrite;
+class CScreenLevelList;
+class CScreenLoading;
+class CScreenMainMenu;
+class CScreenPlayerSelect;
+class CScreenQuit;
+class CScreenSetup;
+class CScreenWelcome;
 
 
 
-class CMainDialog : public CSingleton<CMainDialog>
+class CMainDialog
 {
 public:
     CMainDialog();
@@ -105,7 +113,17 @@ protected:
     CPauseManager*    m_pause;
     CSettings*        m_settings;
 
-    std::unique_ptr<CScreen> m_screen;
+    CScreen* m_currentScreen;
+    std::unique_ptr<CScreenApperance> m_screenAppearance;
+    std::unique_ptr<CScreenIORead> m_screenIORead;
+    std::unique_ptr<CScreenIOWrite> m_screenIOWrite;
+    std::unique_ptr<CScreenLevelList> m_screenLevelList;
+    std::unique_ptr<CScreenLoading> m_screenLoading;
+    std::unique_ptr<CScreenMainMenu> m_screenMainMenu;
+    std::unique_ptr<CScreenPlayerSelect> m_screenPlayerSelect;
+    std::unique_ptr<CScreenQuit> m_screenQuit;
+    std::unique_ptr<CScreenSetup> m_screenSetup;
+    std::unique_ptr<CScreenWelcome> m_screenWelcome;
 
     Phase           m_phase;            // copy of CRobotMain
 

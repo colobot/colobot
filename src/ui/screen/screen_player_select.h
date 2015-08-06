@@ -16,18 +16,23 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see http://gnu.org/licenses
  */
+
 #pragma once
 
 #include "ui/screen/screen.h"
 
-namespace Ui {
+namespace Ui
+{
+
+class CMainDialog;
 
 class CScreenPlayerSelect : public CScreen
 {
 public:
-    CScreenPlayerSelect();
-    void CreateInterface();
-    bool EventProcess(const Event &event);
+    CScreenPlayerSelect(CMainDialog* mainDialog);
+
+    void CreateInterface() override;
+    bool EventProcess(const Event &event) override;
 
     void NameDelete(); // called by CMainDialog
 
@@ -38,6 +43,9 @@ protected:
     void UpdateNameControl();
     void NameSelect();
     bool NameCreate();
+
+private:
+    CMainDialog* m_mainDialog;
 };
 
 } // namespace Ui

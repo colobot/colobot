@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see http://gnu.org/licenses
  */
+
 #include "ui/screen/screen_io_write.h"
 
 #include "app/app.h"
@@ -28,9 +29,11 @@
 #include "ui/list.h"
 #include "ui/window.h"
 
-namespace Ui {
+namespace Ui
+{
 
-CScreenIOWrite::CScreenIOWrite()
+CScreenIOWrite::CScreenIOWrite(CScreenLevelList* screenLevelList)
+    : CScreenIO(screenLevelList)
 {
 }
 

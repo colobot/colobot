@@ -16,18 +16,23 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see http://gnu.org/licenses
  */
+
 #pragma once
 
 #include "ui/screen/screen_io.h"
 
-namespace Ui {
+namespace Ui
+{
 
 class CScreenIORead : public CScreenIO
 {
 public:
-    CScreenIORead(bool inSimulation);
-    void CreateInterface();
-    bool EventProcess(const Event &event);
+    CScreenIORead(CScreenLevelList* screenLevelList);
+
+    void SetInSimulation(bool inSimulation);
+
+    void CreateInterface() override;
+    bool EventProcess(const Event &event) override;
 
 protected:
     bool m_inSimulation;

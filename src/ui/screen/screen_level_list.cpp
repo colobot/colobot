@@ -16,17 +16,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see http://gnu.org/licenses
  */
+
 #include "ui/screen/screen_level_list.h"
 
 #include "app/app.h"
 
-#include "common/resources/resourcemanager.h"
-
 #include "common/settings.h"
 
-#include "object/level/parser.h"
+#include "common/resources/resourcemanager.h"
 
 #include "object/player_profile.h"
+
+#include "object/level/parser.h"
 
 #include "ui/button.h"
 #include "ui/check.h"
@@ -36,17 +37,19 @@
 #include "ui/list.h"
 #include "ui/window.h"
 
-namespace Ui {
+namespace Ui
+{
 
-LevelCategory CScreenLevelList::m_category;
-LevelCategory CScreenLevelList::m_listCategory = LevelCategory::Missions;
-std::map<LevelCategory, int> CScreenLevelList::m_chap;
-std::map<LevelCategory, int> CScreenLevelList::m_sel;
-int CScreenLevelList::m_maxList = 0;
-bool CScreenLevelList::m_bSceneSoluce = 0;
-std::vector<std::string> CScreenLevelList::m_customLevelList;
+CScreenLevelList::CScreenLevelList()
+    : m_category{},
+      m_listCategory{},
+      m_sceneSoluce{false},
+      m_maxList{0},
+      m_accessChap{0}
+{
+}
 
-CScreenLevelList::CScreenLevelList(LevelCategory category)
+void CScreenLevelList::SetLevelCategory(LevelCategory category)
 {
     m_category = category;
 
@@ -181,7 +184,7 @@ void CScreenLevelList::CreateInterface()
         pc->SetState(STATE_SHADOW);
         pc->ClearState(STATE_CHECK);
     }
-    m_bSceneSoluce = false;
+    m_sceneSoluce = false;
 
     UpdateSceneResume(m_chap[m_category]+1, m_sel[m_category]+1);
 
@@ -270,8 +273,8 @@ bool CScreenLevelList::EventProcess(const Event &event)
         case EVENT_INTERFACE_SOLUCE:
             pb = static_cast<CButton*>(pw->SearchControl(EVENT_INTERFACE_SOLUCE));
             if ( pb == 0 )  break;
-            m_bSceneSoluce = !m_bSceneSoluce;
-            pb->SetState(STATE_CHECK, m_bSceneSoluce);
+            m_sceneSoluce = !m_sceneSoluce;
+            pb->SetState(STATE_CHECK, m_sceneSoluce);
             break;
 
         case EVENT_INTERFACE_PLAY:
@@ -307,7 +310,7 @@ void CScreenLevelList::AllMissionUpdate()
 
 bool CScreenLevelList::GetSceneSoluce()
 {
-    return m_bSceneSoluce;
+    return m_sceneSoluce;
 }
 
 // Updates the chapters of exercises or missions.
@@ -471,7 +474,7 @@ void CScreenLevelList::ShowSoluceUpdate()
     CEdit*      pe;
     CCheck*     pc;
 
-    m_bSceneSoluce = false;
+    m_sceneSoluce = false;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
     if ( pw == 0 )  return;
@@ -484,13 +487,13 @@ void CScreenLevelList::ShowSoluceUpdate()
     {
         pc->SetState(STATE_VISIBLE);
         pc->SetState(STATE_CHECK);
-        m_bSceneSoluce = true;
+        m_sceneSoluce = true;
     }
     else
     {
         pc->ClearState(STATE_VISIBLE);
         pc->ClearState(STATE_CHECK);
-        m_bSceneSoluce = false;
+        m_sceneSoluce = false;
     }
 }
 
@@ -513,7 +516,7 @@ void CScreenLevelList::UpdateSceneResume(int chap, int rank)
 
     if ( pc == 0 )
     {
-        m_bSceneSoluce = false;
+        m_sceneSoluce = false;
     }
     else
     {
@@ -525,7 +528,7 @@ void CScreenLevelList::UpdateSceneResume(int chap, int rank)
         if ( !bVisible )
         {
             pc->ClearState(STATE_CHECK);
-            m_bSceneSoluce = false;
+            m_sceneSoluce = false;
         }
     }
 

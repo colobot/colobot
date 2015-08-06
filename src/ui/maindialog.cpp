@@ -86,8 +86,6 @@
 namespace Ui
 {
 
-template<> CMainDialog* CSingleton<CMainDialog>::m_instance = nullptr;
-
 // Constructor of robot application.
 
 CMainDialog::CMainDialog()
@@ -101,6 +99,8 @@ CMainDialog::CMainDialog()
     m_engine     = nullptr;
     m_particle   = nullptr;
     m_pause      = nullptr;
+
+    m_currentScreen = nullptr;
 
     m_phase        = PHASE_PLAYER_SELECT;
 
@@ -130,6 +130,17 @@ void CMainDialog::Create()
     m_particle   = m_engine->GetParticle();
     m_pause      = CPauseManager::GetInstancePointer();
     m_settings   = CSettings::GetInstancePointer();
+
+    m_screenAppearance = MakeUnique<CScreenApperance>();
+    m_screenLevelList = MakeUnique<CScreenLevelList>();
+    m_screenIORead = MakeUnique<CScreenIORead>(m_screenLevelList.get());
+    m_screenIOWrite = MakeUnique<CScreenIOWrite>(m_screenLevelList.get());
+    m_screenLoading = MakeUnique<CScreenLoading>();
+    m_screenSetup = MakeUnique<CScreenSetup>();
+    m_screenMainMenu = MakeUnique<CScreenMainMenu>(m_screenSetup.get());
+    m_screenPlayerSelect = MakeUnique<CScreenPlayerSelect>(this);
+    m_screenQuit = MakeUnique<CScreenQuit>();
+    m_screenWelcome = MakeUnique<CScreenWelcome>();
 }
 
 // Destructor of robot application.
@@ -149,55 +160,61 @@ void CMainDialog::ChangePhase(Phase phase)
 
     m_phase = phase;  // copy the info to CRobotMain
 
-    m_screen.reset();
+    m_currentScreen = nullptr;
+
     if (m_phase == PHASE_QUIT_SCREEN)
     {
-        m_screen = MakeUnique<CScreenQuit>();
+        m_currentScreen = m_screenQuit.get();
     }
     if (m_phase >= PHASE_WELCOME1 && m_phase <= PHASE_WELCOME3)
     {
-        m_screen = MakeUnique<CScreenWelcome>(m_phase-PHASE_WELCOME1);
+        m_screenWelcome->SetImageIndex(m_phase - PHASE_WELCOME1);
+        m_currentScreen = m_screenWelcome.get();
     }
     if (m_phase == PHASE_PLAYER_SELECT)
     {
-        m_screen = MakeUnique<CScreenPlayerSelect>();
+        m_currentScreen = m_screenPlayerSelect.get();
     }
     if (m_phase == PHASE_APPERANCE)
     {
-        m_screen = MakeUnique<CScreenApperance>();
+        m_currentScreen = m_screenAppearance.get();
     }
     if (m_phase == PHASE_MAIN_MENU)
     {
-        m_screen = MakeUnique<CScreenMainMenu>();
+        m_currentScreen = m_screenMainMenu.get();
     }
     if (m_phase == PHASE_LEVEL_LIST)
     {
-        m_screen = MakeUnique<CScreenLevelList>(m_main->GetLevelCategory());
+        m_screenLevelList->SetLevelCategory(m_main->GetLevelCategory());
+        m_currentScreen = m_screenLevelList.get();
     }
     if (m_phase == PHASE_LOADING)
     {
-        m_screen = MakeUnique<CScreenLoading>();
+        m_currentScreen = m_screenLoading.get();
     }
     if (m_phase >= PHASE_SETUPd && m_phase <= PHASE_SETUPs)
     {
-        m_screen = MakeUnique<CScreenSetup>(m_phase, false);
+        m_screenSetup->SetTab(m_phase, false);
+        m_currentScreen = m_screenSetup.get();
     }
     if (m_phase >= PHASE_SETUPds && m_phase <= PHASE_SETUPss)
     {
-        m_screen = MakeUnique<CScreenSetup>(static_cast<Phase>(m_phase-PHASE_SETUPds+PHASE_SETUPd), true);
+        m_screenSetup->SetTab(static_cast<Phase>(m_phase - PHASE_SETUPds + PHASE_SETUPd), true);
+        m_currentScreen = m_screenSetup.get();
     }
     if (m_phase == PHASE_WRITEs)
     {
-        m_screen = MakeUnique<CScreenIOWrite>();
+        m_currentScreen = m_screenIOWrite.get();
     }
     if (m_phase == PHASE_READ || m_phase == PHASE_READs)
     {
-        m_screen = MakeUnique<CScreenIORead>(m_phase == PHASE_READs);
+        m_currentScreen = m_screenIORead.get();
+        m_screenIORead->SetInSimulation(m_phase == PHASE_READs);
     }
 
-    if (m_screen.get() != nullptr)
+    if (m_currentScreen != nullptr)
     {
-        m_screen->CreateInterface();
+        m_currentScreen->CreateInterface();
     }
 
     if ( !IsPhaseWithWorld(m_phase) )
@@ -250,7 +267,7 @@ bool CMainDialog::EventProcess(const Event &event)
         return false;
     }
 
-    if (m_screen.get() != nullptr && !m_screen->EventProcess(event)) return false;
+    if (m_currentScreen != nullptr && !m_currentScreen->EventProcess(event)) return false;
 
     if ( event.type == EVENT_FRAME )
     {
@@ -300,7 +317,7 @@ bool CMainDialog::EventProcess(const Event &event)
             StopDialog();
             if ( m_phase == PHASE_PLAYER_SELECT )
             {
-                static_cast<CScreenPlayerSelect*>(m_screen.get())->NameDelete();
+                m_screenPlayerSelect->NameDelete();
             }
             if ( m_phase == PHASE_SIMUL )
             {
@@ -324,14 +341,14 @@ bool CMainDialog::EventProcess(const Event &event)
             StopDialog();
             m_main->StartSuspend();
             #if PLATFORM_LINUX
-            if ( CScreenSetup::GetSetupTab() == PHASE_SETUPd )  m_main->ChangePhase(PHASE_SETUPds);
+            if ( m_screenSetup->GetSetupTab() == PHASE_SETUPd )  m_main->ChangePhase(PHASE_SETUPds);
             #else
-            if ( CScreenSetup::GetSetupTab() == PHASE_SETUPd )  m_main->ChangePhase(PHASE_SETUPgs);
+            if ( m_screenSetup->GetSetupTab() == PHASE_SETUPd )  m_main->ChangePhase(PHASE_SETUPgs);
             #endif
-            if ( CScreenSetup::GetSetupTab() == PHASE_SETUPg )  m_main->ChangePhase(PHASE_SETUPgs);
-            if ( CScreenSetup::GetSetupTab() == PHASE_SETUPp )  m_main->ChangePhase(PHASE_SETUPps);
-            if ( CScreenSetup::GetSetupTab() == PHASE_SETUPc )  m_main->ChangePhase(PHASE_SETUPcs);
-            if ( CScreenSetup::GetSetupTab() == PHASE_SETUPs )  m_main->ChangePhase(PHASE_SETUPss);
+            if ( m_screenSetup->GetSetupTab() == PHASE_SETUPg )  m_main->ChangePhase(PHASE_SETUPgs);
+            if ( m_screenSetup->GetSetupTab() == PHASE_SETUPp )  m_main->ChangePhase(PHASE_SETUPps);
+            if ( m_screenSetup->GetSetupTab() == PHASE_SETUPc )  m_main->ChangePhase(PHASE_SETUPcs);
+            if ( m_screenSetup->GetSetupTab() == PHASE_SETUPs )  m_main->ChangePhase(PHASE_SETUPss);
         }
         if ( event.type == EVENT_INTERFACE_AGAIN )
         {
@@ -864,7 +881,7 @@ void CMainDialog::AllMissionUpdate()
 {
     if ( m_phase == PHASE_LEVEL_LIST )
     {
-        static_cast<CScreenLevelList*>(m_screen.get())->AllMissionUpdate();
+        m_screenLevelList->AllMissionUpdate();
     }
 }
 
@@ -880,7 +897,7 @@ void CMainDialog::ShowSoluceUpdate()
 {
     if ( m_phase == PHASE_LEVEL_LIST )
     {
-        static_cast<CScreenLevelList*>(m_screen.get())->ShowSoluceUpdate();
+        m_screenLevelList->ShowSoluceUpdate();
     }
 }
 
@@ -1301,46 +1318,48 @@ bool CMainDialog::IsDialog()
 
 bool CMainDialog::GetSceneSoluce()
 {
-    return CScreenLevelList::GetSceneSoluce();
+    return m_screenLevelList->GetSceneSoluce();
 }
 
 bool CMainDialog::GetGamerOnlyHead()
 {
     if (m_phase == PHASE_APPERANCE)
-        return static_cast<CScreenApperance*>(m_screen.get())->GetGamerOnlyHead();
+        return m_screenAppearance->GetGamerOnlyHead();
+
     return false;
 }
 
 float CMainDialog::GetPersoAngle()
 {
     if (m_phase == PHASE_APPERANCE)
-        return static_cast<CScreenApperance*>(m_screen.get())->GetPersoAngle();
+        return m_screenAppearance->GetPersoAngle();
+
     return 0.0f;
 }
 
 void CMainDialog::UpdateChapterPassed()
 {
-    CScreenLevelList::UpdateChapterPassed();
+    m_screenLevelList->UpdateChapterPassed();
 }
 
 void CMainDialog::NextMission()
 {
-    CScreenLevelList::NextMission();
+    m_screenLevelList->NextMission();
 }
 
 void CMainDialog::UpdateCustomLevelList()
 {
-    CScreenLevelList::UpdateCustomLevelList();
+    m_screenLevelList->UpdateCustomLevelList();
 }
 
 std::string CMainDialog::GetCustomLevelName(int id)
 {
-    return CScreenLevelList::GetCustomLevelName(id);
+    return m_screenLevelList->GetCustomLevelName(id);
 }
 
 const std::vector<std::string>& CMainDialog::GetCustomLevelList()
 {
-    return CScreenLevelList::GetCustomLevelList();
+    return m_screenLevelList->GetCustomLevelList();
 }
 
 

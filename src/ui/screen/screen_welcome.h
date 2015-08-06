@@ -16,18 +16,23 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see http://gnu.org/licenses
  */
+
 #pragma once
 
 #include "ui/screen/screen.h"
 
-namespace Ui {
+namespace Ui
+{
 
 class CScreenWelcome : public CScreen
 {
 public:
-    CScreenWelcome(int imageIndex);
-    void CreateInterface();
-    bool EventProcess(const Event &event);
+    CScreenWelcome();
+
+    void SetImageIndex(int imageIndex);
+
+    void CreateInterface() override;
+    bool EventProcess(const Event &event) override;
 
 protected:
     int m_imageIndex;

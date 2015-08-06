@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see http://gnu.org/licenses
  */
+
 #include "ui/screen/screen_io_read.h"
 
 #include "app/app.h"
@@ -26,11 +27,18 @@
 #include "ui/list.h"
 #include "ui/window.h"
 
-namespace Ui {
-
-CScreenIORead::CScreenIORead(bool inSimulation)
-: m_inSimulation(inSimulation)
+namespace Ui
 {
+
+CScreenIORead::CScreenIORead(CScreenLevelList* screenLevelList)
+    : CScreenIO(screenLevelList),
+      m_inSimulation(false)
+{
+}
+
+void CScreenIORead::SetInSimulation(bool inSimulation)
+{
+    m_inSimulation = inSimulation;
 }
 
 void CScreenIORead::CreateInterface()

@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see http://gnu.org/licenses
  */
+
 #include "ui/screen/screen.h"
 
 #include "app/app.h"
@@ -24,9 +25,8 @@
 
 #include "object/robotmain.h"
 
-namespace Ui {
-
-CRobotMain* CScreen::m_main = nullptr;
+namespace Ui
+{
 
 CScreen::CScreen()
 {

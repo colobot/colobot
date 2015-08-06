@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see http://gnu.org/licenses
  */
+
 #pragma once
 
 #include "ui/screen/screen.h"
@@ -29,16 +30,20 @@ namespace Gfx
 class CCamera;
 }
 
-namespace Ui {
+namespace Ui
+{
 
 class CScreenSetup : public CScreen
 {
 public:
-    CScreenSetup(Phase tab, bool simulationSetup);
-    void CreateInterface();
-    bool EventProcess(const Event &event);
+    CScreenSetup();
 
-    static Phase GetSetupTab();
+    void SetTab(Phase tab, bool simulationSetup);
+
+    void CreateInterface() override;
+    bool EventProcess(const Event &event) override;
+
+    Phase GetSetupTab();
 
 protected:
     void UpdateDisplayMode();
@@ -54,7 +59,7 @@ protected:
     CSettings* m_settings;
     Gfx::CCamera* m_camera;
 
-    static Phase m_tab;
+    Phase m_tab;
     bool m_simulationSetup;
 
     int m_setupSelMode;

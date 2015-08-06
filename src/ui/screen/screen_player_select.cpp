@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see http://gnu.org/licenses
  */
+
 #include "ui/screen/screen_player_select.h"
 
 #include "app/app.h"
@@ -32,9 +33,11 @@
 #include "ui/maindialog.h"
 #include "ui/window.h"
 
-namespace Ui {
+namespace Ui
+{
 
-CScreenPlayerSelect::CScreenPlayerSelect()
+CScreenPlayerSelect::CScreenPlayerSelect(CMainDialog* mainDialog)
+    : m_mainDialog(mainDialog)
 {
 }
 
@@ -196,7 +199,7 @@ bool CScreenPlayerSelect::EventProcess(const Event &event)
             if ( pw == 0 )  break;
             pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_NLIST));
             if ( pl == 0 )  break;
-            CMainDialog::GetInstancePointer()->StartDeleteGame(pl->GetItemName(pl->GetSelect()));
+            m_mainDialog->StartDeleteGame(pl->GetItemName(pl->GetSelect()));
             break;
 
         default:

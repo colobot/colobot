@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see http://gnu.org/licenses
  */
+
 #include "ui/screen/screen_io.h"
 
 #include "common/logger.h"
@@ -37,7 +38,13 @@
 #include <ctime>
 #include <cstring>
 
-namespace Ui {
+namespace Ui
+{
+
+CScreenIO::CScreenIO(CScreenLevelList* screenLevelList)
+    : m_screenLevelList(screenLevelList)
+{}
+
 
 // Builds the file name by default.
 
@@ -246,7 +253,7 @@ void CScreenIO::IOReadScene()
 
     m_main->GetPlayerProfile()->LoadScene(m_saveList.at(sel));
 
-    CScreenLevelList::SetSelection(m_main->GetLevelCategory(), m_main->GetLevelChap()-1, m_main->GetLevelRank()-1);
+    m_screenLevelList->SetSelection(m_main->GetLevelCategory(), m_main->GetLevelChap()-1, m_main->GetLevelRank()-1);
 }
 
 } // namespace Ui

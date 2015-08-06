@@ -16,18 +16,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see http://gnu.org/licenses
  */
+
 #pragma once
 
 #include "ui/screen/screen.h"
 
-namespace Ui {
+namespace Ui
+{
 
 class CScreenLoading : public CScreen
 {
 public:
     CScreenLoading();
-    void CreateInterface();
-    bool EventProcess(const Event &event);
+
+    void CreateInterface() override;
+    bool EventProcess(const Event &event) override;
 
 protected:
     int m_loadingCounter;

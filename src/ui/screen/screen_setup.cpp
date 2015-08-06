@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see http://gnu.org/licenses
  */
+
 #include "ui/screen/screen_setup.h"
 
 #include "common/config.h"
@@ -40,17 +41,23 @@
 #include "ui/slider.h"
 #include "ui/window.h"
 
-namespace Ui {
+namespace Ui
+{
 
 const int KEY_VISIBLE = 6;      // number of visible keys redefinable
 
-Phase CScreenSetup::m_tab = PHASE_SETUPg;
-
-CScreenSetup::CScreenSetup(Phase tab, bool simulationSetup)
+CScreenSetup::CScreenSetup()
+    : m_tab{PHASE_SETUPg},
+      m_simulationSetup{false},
+      m_setupSelMode{0},
+      m_setupFull{false}
 {
     m_settings = CSettings::GetInstancePointer();
     m_camera = m_main->GetCamera();
+}
 
+void CScreenSetup::SetTab(Phase tab, bool simulationSetup)
+{
     m_tab = tab;
     m_simulationSetup = simulationSetup;
 

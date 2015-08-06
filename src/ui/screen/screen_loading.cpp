@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see http://gnu.org/licenses
  */
+
 #include "ui/screen/screen_loading.h"
 
 #include "app/app.h"
@@ -26,9 +27,11 @@
 #include "ui/label.h"
 #include "ui/window.h"
 
-namespace Ui {
+namespace Ui
+{
 
 CScreenLoading::CScreenLoading()
+    : m_loadingCounter(0)
 {
 }
 

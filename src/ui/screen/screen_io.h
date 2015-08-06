@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see http://gnu.org/licenses
  */
+
 #pragma once
 
 #include "ui/screen/screen.h"
@@ -23,11 +24,16 @@
 #include <string>
 #include <vector>
 
-namespace Ui {
+namespace Ui
+{
+
+class CScreenLevelList;
 
 class CScreenIO : public CScreen
 {
 protected:
+    CScreenIO(CScreenLevelList* screenLevelList);
+
     void IOReadName();
     void IOReadList(bool isWrite);
     void IOUpdateList(bool isWrite);
@@ -36,6 +42,7 @@ protected:
     void IOReadScene();
 
 protected:
+    CScreenLevelList* m_screenLevelList;
     std::vector<std::string> m_saveList;
 };
 

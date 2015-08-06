@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see http://gnu.org/licenses
  */
+
 #include "ui/screen/screen_main_menu.h"
 
 #include "app/app.h"
@@ -24,17 +25,19 @@
 
 #include "object/level/parser.h"
 
-#include "ui/screen/screen_setup.h"
-
 #include "ui/button.h"
 #include "ui/group.h"
 #include "ui/interface.h"
 #include "ui/label.h"
 #include "ui/window.h"
 
-namespace Ui {
+#include "ui/screen/screen_setup.h"
 
-CScreenMainMenu::CScreenMainMenu()
+namespace Ui
+{
+
+CScreenMainMenu::CScreenMainMenu(CScreenSetup* screenSetup)
+    : m_screenSetup(screenSetup)
 {
 }
 
@@ -162,7 +165,7 @@ void CScreenMainMenu::CreateInterface()
 
 bool CScreenMainMenu::EventProcess(const Event &event)
 {
-    switch( event.type )
+    switch (event.type)
     {
         case EVENT_KEY_DOWN:
             if ( event.key.key == KEY(ESCAPE) )
@@ -205,7 +208,7 @@ bool CScreenMainMenu::EventProcess(const Event &event)
             break;
 
         case EVENT_INTERFACE_SETUP:
-            m_main->ChangePhase(CScreenSetup::GetSetupTab());
+            m_main->ChangePhase(m_screenSetup->GetSetupTab());
             break;
 
         case EVENT_INTERFACE_NAME:
