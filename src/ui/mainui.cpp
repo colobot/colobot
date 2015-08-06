@@ -746,7 +746,7 @@ void CMainUserInterface::NiceParticle(Math::Point mouse, bool bPress)
     if ( (m_phase == PHASE_SIMUL ||
           m_phase == PHASE_WIN   ||
           m_phase == PHASE_LOST  ) &&
-         m_dialog->IsDialog()       )  return;
+         !m_dialog->IsDialog()      )  return;
 
     if ( bPress )
     {
