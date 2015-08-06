@@ -38,32 +38,19 @@ class CScreenSetup : public CScreen
 public:
     CScreenSetup();
 
-    void SetTab(Phase tab, bool simulationSetup);
+    void SetInSimulation(bool simulationSetup);
+    virtual void SetActive() = 0;
+    static Phase GetTab();
 
     void CreateInterface() override;
     bool EventProcess(const Event &event) override;
-
-    Phase GetSetupTab();
-
-protected:
-    void UpdateDisplayMode();
-    void ChangeDisplay();
-    void UpdateApply();
-    void UpdateSetupButtons();
-    void ChangeSetupButtons();
-    void ChangeSetupQuality(int quality);
-    void UpdateKey();
-    void ChangeKey(EventType event);
 
 protected:
     CSettings* m_settings;
     Gfx::CCamera* m_camera;
 
-    Phase m_tab;
+    static Phase m_tab;
     bool m_simulationSetup;
-
-    int m_setupSelMode;
-    bool m_setupFull;
 };
 
 } // namespace Ui

@@ -55,6 +55,11 @@ class CScreenMainMenu;
 class CScreenPlayerSelect;
 class CScreenQuit;
 class CScreenSetup;
+class CScreenSetupControls;
+class CScreenSetupDisplay;
+class CScreenSetupGame;
+class CScreenSetupGraphics;
+class CScreenSetupSound;
 class CScreenWelcome;
 
 
@@ -101,6 +106,8 @@ protected:
     void    FrameParticle(float rTime);
     void    NiceParticle(Math::Point mouse, bool bPress);
 
+    CScreenSetup* GetSetupScreen(Phase phase);
+
 protected:
     CApplication*     m_app;
     CRobotMain*       m_main;
@@ -122,7 +129,11 @@ protected:
     std::unique_ptr<CScreenMainMenu> m_screenMainMenu;
     std::unique_ptr<CScreenPlayerSelect> m_screenPlayerSelect;
     std::unique_ptr<CScreenQuit> m_screenQuit;
-    std::unique_ptr<CScreenSetup> m_screenSetup;
+    std::unique_ptr<CScreenSetupControls> m_screenSetupControls;
+    std::unique_ptr<CScreenSetupDisplay> m_screenSetupDisplay;
+    std::unique_ptr<CScreenSetupGame> m_screenSetupGame;
+    std::unique_ptr<CScreenSetupGraphics> m_screenSetupGraphics;
+    std::unique_ptr<CScreenSetupSound> m_screenSetupSound;
     std::unique_ptr<CScreenWelcome> m_screenWelcome;
 
     Phase           m_phase;            // copy of CRobotMain

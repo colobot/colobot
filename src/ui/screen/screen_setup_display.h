@@ -19,20 +19,35 @@
 
 #pragma once
 
-#include "ui/screen/screen.h"
+#include "ui/screen/screen_setup.h"
+
+class CSettings;
+
+namespace Gfx
+{
+class CCamera;
+}
 
 namespace Ui
 {
 
-class CScreenSetup;
-
-class CScreenMainMenu : public CScreen
+class CScreenSetupDisplay : public CScreenSetup
 {
 public:
-    CScreenMainMenu();
+    CScreenSetupDisplay();
+    void SetActive() override;
 
     void CreateInterface() override;
     bool EventProcess(const Event &event) override;
+
+protected:
+    void UpdateDisplayMode();
+    void ChangeDisplay();
+    void UpdateApply();
+
+protected:
+    int m_setupSelMode;
+    bool m_setupFull;
 };
 
 } // namespace Ui

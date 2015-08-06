@@ -55,7 +55,11 @@
 #include "ui/screen/screen_loading.h"
 #include "ui/screen/screen_main_menu.h"
 #include "ui/screen/screen_player_select.h"
-#include "ui/screen/screen_setup.h"
+#include "ui/screen/screen_setup_controls.h"
+#include "ui/screen/screen_setup_display.h"
+#include "ui/screen/screen_setup_game.h"
+#include "ui/screen/screen_setup_graphics.h"
+#include "ui/screen/screen_setup_sound.h"
 #include "ui/screen/screen_quit.h"
 #include "ui/screen/screen_welcome.h"
 
@@ -136,8 +140,12 @@ void CMainDialog::Create()
     m_screenIORead = MakeUnique<CScreenIORead>(m_screenLevelList.get());
     m_screenIOWrite = MakeUnique<CScreenIOWrite>(m_screenLevelList.get());
     m_screenLoading = MakeUnique<CScreenLoading>();
-    m_screenSetup = MakeUnique<CScreenSetup>();
-    m_screenMainMenu = MakeUnique<CScreenMainMenu>(m_screenSetup.get());
+    m_screenSetupControls = MakeUnique<CScreenSetupControls>();
+    m_screenSetupDisplay = MakeUnique<CScreenSetupDisplay>();
+    m_screenSetupGame = MakeUnique<CScreenSetupGame>();
+    m_screenSetupGraphics = MakeUnique<CScreenSetupGraphics>();
+    m_screenSetupSound = MakeUnique<CScreenSetupSound>();
+    m_screenMainMenu = MakeUnique<CScreenMainMenu>();
     m_screenPlayerSelect = MakeUnique<CScreenPlayerSelect>(this);
     m_screenQuit = MakeUnique<CScreenQuit>();
     m_screenWelcome = MakeUnique<CScreenWelcome>();
@@ -151,6 +159,17 @@ CMainDialog::~CMainDialog()
 
 
 // Changes phase.
+
+CScreenSetup* CMainDialog::GetSetupScreen(Phase phase)
+{
+    if(phase == PHASE_SETUPd) return m_screenSetupDisplay.get();
+    if(phase == PHASE_SETUPg) return m_screenSetupGraphics.get();
+    if(phase == PHASE_SETUPp) return m_screenSetupGame.get();
+    if(phase == PHASE_SETUPc) return m_screenSetupControls.get();
+    if(phase == PHASE_SETUPs) return m_screenSetupSound.get();
+    assert(false);
+    return nullptr;
+}
 
 void CMainDialog::ChangePhase(Phase phase)
 {
@@ -194,13 +213,17 @@ void CMainDialog::ChangePhase(Phase phase)
     }
     if (m_phase >= PHASE_SETUPd && m_phase <= PHASE_SETUPs)
     {
-        m_screenSetup->SetTab(m_phase, false);
-        m_currentScreen = m_screenSetup.get();
+        CScreenSetup* screenSetup = GetSetupScreen(m_phase);
+        screenSetup->SetInSimulation(false);
+        screenSetup->SetActive();
+        m_currentScreen = screenSetup;
     }
     if (m_phase >= PHASE_SETUPds && m_phase <= PHASE_SETUPss)
     {
-        m_screenSetup->SetTab(static_cast<Phase>(m_phase - PHASE_SETUPds + PHASE_SETUPd), true);
-        m_currentScreen = m_screenSetup.get();
+        CScreenSetup* screenSetup = GetSetupScreen(static_cast<Phase>(m_phase - PHASE_SETUPds + PHASE_SETUPd));
+        screenSetup->SetInSimulation(true);
+        screenSetup->SetActive();
+        m_currentScreen = screenSetup;
     }
     if (m_phase == PHASE_WRITEs)
     {
@@ -341,14 +364,14 @@ bool CMainDialog::EventProcess(const Event &event)
             StopDialog();
             m_main->StartSuspend();
             #if PLATFORM_LINUX
-            if ( m_screenSetup->GetSetupTab() == PHASE_SETUPd )  m_main->ChangePhase(PHASE_SETUPds);
+            if ( CScreenSetup::GetTab() == PHASE_SETUPd )  m_main->ChangePhase(PHASE_SETUPds);
             #else
-            if ( m_screenSetup->GetSetupTab() == PHASE_SETUPd )  m_main->ChangePhase(PHASE_SETUPgs);
+            if ( CScreenSetup::GetTab() == PHASE_SETUPd )  m_main->ChangePhase(PHASE_SETUPgs);
             #endif
-            if ( m_screenSetup->GetSetupTab() == PHASE_SETUPg )  m_main->ChangePhase(PHASE_SETUPgs);
-            if ( m_screenSetup->GetSetupTab() == PHASE_SETUPp )  m_main->ChangePhase(PHASE_SETUPps);
-            if ( m_screenSetup->GetSetupTab() == PHASE_SETUPc )  m_main->ChangePhase(PHASE_SETUPcs);
-            if ( m_screenSetup->GetSetupTab() == PHASE_SETUPs )  m_main->ChangePhase(PHASE_SETUPss);
+            if ( CScreenSetup::GetTab() == PHASE_SETUPg )  m_main->ChangePhase(PHASE_SETUPgs);
+            if ( CScreenSetup::GetTab() == PHASE_SETUPp )  m_main->ChangePhase(PHASE_SETUPps);
+            if ( CScreenSetup::GetTab() == PHASE_SETUPc )  m_main->ChangePhase(PHASE_SETUPcs);
+            if ( CScreenSetup::GetTab() == PHASE_SETUPs )  m_main->ChangePhase(PHASE_SETUPss);
         }
         if ( event.type == EVENT_INTERFACE_AGAIN )
         {

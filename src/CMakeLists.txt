@@ -215,8 +215,13 @@ set(BASE_SOURCES
     ui/screen/screen_loading.cpp
     ui/screen/screen_main_menu.cpp
     ui/screen/screen_player_select.cpp
-    ui/screen/screen_setup.cpp
     ui/screen/screen_quit.cpp
+    ui/screen/screen_setup.cpp
+    ui/screen/screen_setup_controls.cpp
+    ui/screen/screen_setup_display.cpp
+    ui/screen/screen_setup_game.cpp
+    ui/screen/screen_setup_graphics.cpp
+    ui/screen/screen_setup_sound.cpp
     ui/screen/screen_welcome.cpp
     ui/button.cpp
     ui/check.cpp

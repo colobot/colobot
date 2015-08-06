@@ -36,8 +36,7 @@
 namespace Ui
 {
 
-CScreenMainMenu::CScreenMainMenu(CScreenSetup* screenSetup)
-    : m_screenSetup(screenSetup)
+CScreenMainMenu::CScreenMainMenu()
 {
 }
 
@@ -208,7 +207,7 @@ bool CScreenMainMenu::EventProcess(const Event &event)
             break;
 
         case EVENT_INTERFACE_SETUP:
-            m_main->ChangePhase(m_screenSetup->GetSetupTab());
+            m_main->ChangePhase(CScreenSetup::GetTab());
             break;
 
         case EVENT_INTERFACE_NAME:
