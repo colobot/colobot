@@ -272,7 +272,7 @@ msgid "Build a research center"
 msgstr "Zbuduj centrum badawcze"
 
 msgid "Build a shielder"
-msgstr "Zbuduj robota osłaniajacza"
+msgstr "Zbuduj robota osłaniacza"
 
 msgid "Build a subber"
 msgstr "Zbuduj robota nurka"
