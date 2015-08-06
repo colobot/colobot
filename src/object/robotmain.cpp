@@ -666,11 +666,11 @@ bool CRobotMain::ProcessEvent(Event &event)
 
     // Management of the console.
     if (event.type == EVENT_KEY_DOWN &&
-        event.key.key == KEY(BACKQUOTE))  // Pause ?
+        event.GetData<KeyEventData>()->key == KEY(BACKQUOTE))  // Pause ?
     {
         if (m_phase != PHASE_PLAYER_SELECT &&
-           !m_movie->IsExist()   &&
-           !m_movieLock && !m_editLock)
+            !m_movie->IsExist()   &&
+            !m_movieLock && !m_editLock)
         {
             Ui::CEdit* pe = static_cast<Ui::CEdit*>(m_interface->SearchControl(EVENT_CMD));
             if (pe == nullptr) return false;
@@ -681,8 +681,9 @@ bool CRobotMain::ProcessEvent(Event &event)
         }
         return false;
     }
+
     if (event.type == EVENT_KEY_DOWN &&
-        event.key.key == KEY(RETURN) && m_cmdEdit)
+        event.GetData<KeyEventData>()->key == KEY(RETURN) && m_cmdEdit)
     {
         char cmd[50];
         Ui::CEdit* pe = static_cast<Ui::CEdit*>(m_interface->SearchControl(EVENT_CMD));
@@ -724,9 +725,11 @@ bool CRobotMain::ProcessEvent(Event &event)
 
         if (event.type == EVENT_KEY_DOWN)
         {
-            if (event.key.slot == INPUT_SLOT_HELP ||
-                event.key.slot == INPUT_SLOT_PROG ||
-                event.key.key == KEY(ESCAPE))
+            auto data = event.GetData<KeyEventData>();
+
+            if (data->slot == INPUT_SLOT_HELP ||
+                data->slot == INPUT_SLOT_PROG ||
+                data->key == KEY(ESCAPE))
             {
                 StopDisplayInfo();
             }
@@ -749,21 +752,24 @@ bool CRobotMain::ProcessEvent(Event &event)
         switch (event.type)
         {
             case EVENT_KEY_DOWN:
-                KeyCamera(event.type, event.key.slot);
+            {
+                auto data = event.GetData<KeyEventData>();
+
+                KeyCamera(event.type, data->slot);
                 HiliteClear();
-                if (event.key.key == KEY(F11))
+                if (data->key == KEY(F11))
                 {
                     m_particle->WriteWheelTrace("Savegame/t.png", 256, 256, Math::Vector(16.0f, 0.0f, -368.0f), Math::Vector(140.0f, 0.0f, -248.0f));
                     return false;
                 }
                 if (m_editLock)  // current edition?
                 {
-                    if (event.key.slot == INPUT_SLOT_HELP)
+                    if (data->slot == INPUT_SLOT_HELP)
                     {
                         StartDisplayInfo(SATCOM_HUSTON, false);
                         return false;
                     }
-                    if (event.key.slot == INPUT_SLOT_PROG)
+                    if (data->slot == INPUT_SLOT_PROG)
                     {
                         StartDisplayInfo(SATCOM_PROG, false);
                         return false;
@@ -772,8 +778,8 @@ bool CRobotMain::ProcessEvent(Event &event)
                 }
                 if (m_movieLock)  // current movie?
                 {
-                    if (event.key.slot == INPUT_SLOT_QUIT ||
-                        event.key.key == KEY(ESCAPE))
+                    if (data->slot == INPUT_SLOT_QUIT ||
+                        data->key == KEY(ESCAPE))
                     {
                         AbortMovie();
                     }
@@ -781,18 +787,18 @@ bool CRobotMain::ProcessEvent(Event &event)
                 }
                 if (m_camera->GetType() == Gfx::CAM_TYPE_VISIT)
                 {
-                    if (event.key.slot == INPUT_SLOT_VISIT)
+                    if (data->slot == INPUT_SLOT_VISIT)
                     {
                         StartDisplayVisit(EVENT_NULL);
                     }
-                    if (event.key.slot == INPUT_SLOT_QUIT ||
-                        event.key.key == KEY(ESCAPE))
+                    if (data->slot == INPUT_SLOT_QUIT ||
+                        data->key == KEY(ESCAPE))
                     {
                         StopDisplayVisit();
                     }
                     return false;
                 }
-                if (event.key.slot == INPUT_SLOT_QUIT)
+                if (data->slot == INPUT_SLOT_QUIT)
                 {
                     if (m_movie->IsExist())
                         StartDisplayInfo(SATCOM_HUSTON, false);
@@ -803,7 +809,7 @@ bool CRobotMain::ProcessEvent(Event &event)
                     else if (!m_cmdEdit)
                         m_ui->GetDialog()->StartPauseMenu();  // do you want to leave?
                 }
-                if (event.key.slot == INPUT_SLOT_PAUSE)
+                if (data->slot == INPUT_SLOT_PAUSE)
                 {
                     if (!m_movieLock && !m_editLock && !m_cmdEdit &&
                         m_camera->GetType() != Gfx::CAM_TYPE_VISIT &&
@@ -812,70 +818,70 @@ bool CRobotMain::ProcessEvent(Event &event)
                         ChangePause(m_pause->GetPause(PAUSE_USER) || m_pause->GetPause(PAUSE_CODE_BATTLE_LOCK) ? PAUSE_NONE : PAUSE_USER);
                     }
                 }
-                if (event.key.slot == INPUT_SLOT_CAMERA)
+                if (data->slot == INPUT_SLOT_CAMERA)
                 {
                     ChangeCamera();
                 }
-                if (event.key.slot == INPUT_SLOT_DESEL)
+                if (data->slot == INPUT_SLOT_DESEL)
                 {
                     if (m_shortCut)
                         DeselectObject();
                 }
-                if (event.key.slot == INPUT_SLOT_HUMAN)
+                if (data->slot == INPUT_SLOT_HUMAN)
                 {
                     SelectHuman();
                 }
-                if (event.key.slot == INPUT_SLOT_NEXT && ((event.kmodState & KEY_MOD(CTRL)) != 0))
+                if (data->slot == INPUT_SLOT_NEXT && ((event.kmodState & KEY_MOD(CTRL)) != 0))
                 {
                     m_short->SelectShortcut(EVENT_OBJECT_SHORTCUT_MODE); // switch bots <-> buildings
                     return false;
                 }
-                if (event.key.slot == INPUT_SLOT_NEXT)
+                if (data->slot == INPUT_SLOT_NEXT)
                 {
                     if (m_shortCut)
                         m_short->SelectNext();
                 }
-                if (event.key.slot == INPUT_SLOT_HELP)
+                if (data->slot == INPUT_SLOT_HELP)
                 {
                     StartDisplayInfo(SATCOM_HUSTON, true);
                 }
-                if (event.key.slot == INPUT_SLOT_PROG)
+                if (data->slot == INPUT_SLOT_PROG)
                 {
                     StartDisplayInfo(SATCOM_PROG, true);
                 }
-                if (event.key.slot == INPUT_SLOT_VISIT)
+                if (data->slot == INPUT_SLOT_VISIT)
                 {
                     StartDisplayVisit(EVENT_NULL);
                 }
-                if (event.key.slot == INPUT_SLOT_SPEED05)
+                if (data->slot == INPUT_SLOT_SPEED05)
                 {
                     SetSpeed(0.5f);
                 }
-                if (event.key.slot == INPUT_SLOT_SPEED10)
+                if (data->slot == INPUT_SLOT_SPEED10)
                 {
                     SetSpeed(1.0f);
                 }
-                if (event.key.slot == INPUT_SLOT_SPEED15)
+                if (data->slot == INPUT_SLOT_SPEED15)
                 {
                     SetSpeed(1.5f);
                 }
-                if (event.key.slot == INPUT_SLOT_SPEED20)
+                if (data->slot == INPUT_SLOT_SPEED20)
                 {
                     SetSpeed(2.0f);
                 }
-                if (event.key.slot == INPUT_SLOT_SPEED30)
+                if (data->slot == INPUT_SLOT_SPEED30)
                 {
                     SetSpeed(3.0f);
                 }
-                if (event.key.slot == INPUT_SLOT_SPEED40)
+                if (data->slot == INPUT_SLOT_SPEED40)
                 {
                     SetSpeed(4.0f);
                 }
-                if (event.key.slot == INPUT_SLOT_SPEED60)
+                if (data->slot == INPUT_SLOT_SPEED60)
                 {
                     SetSpeed(6.0f);
                 }
-                if (event.key.key == KEY(c) && ((event.kmodState & KEY_MOD(CTRL)) != 0) && m_engine->GetShowStats())
+                if (data->key == KEY(c) && ((event.kmodState & KEY_MOD(CTRL)) != 0) && m_engine->GetShowStats())
                 {
                     CObject* obj = GetSelect();
                     if (obj != nullptr)
@@ -893,13 +899,18 @@ bool CRobotMain::ProcessEvent(Event &event)
                     }
                 }
                 break;
+            }
 
             case EVENT_KEY_UP:
-                KeyCamera(event.type, event.key.slot);
+            {
+                auto data = event.GetData<KeyEventData>();
+                KeyCamera(event.type, data->slot);
                 break;
+            }
 
             case EVENT_MOUSE_BUTTON_DOWN:
-                if (event.mouseButton.button != MOUSE_BUTTON_LEFT) // only left mouse button
+            {
+                if (event.GetData<MouseButtonEventData>()->button != MOUSE_BUTTON_LEFT) // only left mouse button
                     break;
 
                 obj = DetectObject(event.mousePos);
@@ -917,11 +928,14 @@ bool CRobotMain::ProcessEvent(Event &event)
                     }
                 }
                 else
+                {
                     SelectObject(obj);
+                }
                 break;
+            }
 
             case EVENT_MOUSE_BUTTON_UP:
-                if (event.mouseButton.button != MOUSE_BUTTON_LEFT) // only left mouse button
+                if (event.GetData<MouseButtonEventData>()->button != MOUSE_BUTTON_LEFT) // only left mouse button
                     break;
 
                 m_cameraPan  = 0.0f;
@@ -1026,8 +1040,11 @@ bool CRobotMain::ProcessEvent(Event &event)
         switch (event.type)
         {
             case EVENT_KEY_DOWN:
-                if (event.key.key == KEY(ESCAPE) ||
-                    event.key.key == KEY(RETURN))
+            {
+                auto data = event.GetData<KeyEventData>();
+
+                if (data->key == KEY(ESCAPE) ||
+                    data->key == KEY(RETURN))
                 {
                     if (m_winTerminate)
                         ChangePhase(PHASE_MAIN_MENU);
@@ -1035,6 +1052,7 @@ bool CRobotMain::ProcessEvent(Event &event)
                         ChangePhase(PHASE_LEVEL_LIST);
                 }
                 break;
+            }
 
             case EVENT_BUTTON_OK:
                 if (m_winTerminate)

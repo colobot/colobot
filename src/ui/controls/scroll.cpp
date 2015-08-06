@@ -218,9 +218,7 @@ bool CScroll::EventProcess(const Event &event)
         if ( m_visibleValue < 0.0f )  m_visibleValue = 0.0f;
         AdjustGlint();
 
-        Event newEvent = event;
-        newEvent.type = m_eventType;
-        m_event->AddEvent(newEvent);
+        m_event->AddEvent(Event(m_eventType));
     }
 
     if ( event.type == m_eventDown && m_step > 0.0f )
@@ -229,17 +227,15 @@ bool CScroll::EventProcess(const Event &event)
         if ( m_visibleValue > 1.0f )  m_visibleValue = 1.0f;
         AdjustGlint();
 
-        Event newEvent = event;
-        newEvent.type = m_eventType;
-        m_event->AddEvent(newEvent);
+        m_event->AddEvent(Event(m_eventType));
     }
 
     hButton = m_buttonUp?m_dim.x/0.75f:0.0f;
 
-    if ( event.type == EVENT_MOUSE_BUTTON_DOWN &&
-            event.mouseButton.button == MOUSE_BUTTON_LEFT &&
-         (m_state & STATE_VISIBLE)        &&
-         (m_state & STATE_ENABLE)         )
+    if (event.type == EVENT_MOUSE_BUTTON_DOWN &&
+        event.GetData<MouseButtonEventData>()->button == MOUSE_BUTTON_LEFT &&
+        (m_state & STATE_VISIBLE)        &&
+        (m_state & STATE_ENABLE)         )
     {
         if ( CControl::Detect(event.mousePos) )
         {
@@ -257,9 +253,7 @@ bool CScroll::EventProcess(const Event &event)
                 m_visibleValue = value;
                 AdjustGlint();
 
-                Event newEvent = event;
-                newEvent.type = m_eventType;
-                m_event->AddEvent(newEvent);
+                m_event->AddEvent(Event(m_eventType));
             }
             m_bCapture = true;
             m_pressPos = event.mousePos;
@@ -281,37 +275,31 @@ bool CScroll::EventProcess(const Event &event)
                 m_visibleValue = value;
                 AdjustGlint();
 
-                Event newEvent = event;
-                newEvent.type = m_eventType;
-                m_event->AddEvent(newEvent);
+                m_event->AddEvent(Event(m_eventType));
             }
         }
     }
 
-    if ( event.type == EVENT_MOUSE_BUTTON_UP &&
-            event.mouseButton.button == MOUSE_BUTTON_LEFT &&
-            m_bCapture )
+    if (event.type == EVENT_MOUSE_BUTTON_UP &&
+        event.GetData<MouseButtonEventData>()->button == MOUSE_BUTTON_LEFT &&
+        m_bCapture)
     {
         m_bCapture = false;
     }
 
     if (event.type == EVENT_MOUSE_WHEEL &&
-        event.mouseWheel.dir == WHEEL_UP &&
+        event.GetData<MouseWheelEventData>()->dir == WHEEL_UP &&
         Detect(event.mousePos) &&
-        m_buttonUp != 0)
+        m_buttonUp != nullptr)
     {
-        Event newEvent = event;
-        newEvent.type = m_buttonUp->GetEventType();
-        m_event->AddEvent(newEvent);
+        m_event->AddEvent(Event(m_buttonUp->GetEventType()));
     }
     if (event.type == EVENT_MOUSE_WHEEL &&
-        event.mouseWheel.dir == WHEEL_DOWN &&
+        event.GetData<MouseWheelEventData>()->dir == WHEEL_DOWN &&
         Detect(event.mousePos) &&
-        m_buttonDown != 0)
+        m_buttonDown != nullptr)
     {
-        Event newEvent = event;
-        newEvent.type = m_buttonDown->GetEventType();
-        m_event->AddEvent(newEvent);
+        m_event->AddEvent(Event(m_buttonDown->GetEventType()));
     }
 
     return true;

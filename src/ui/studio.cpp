@@ -124,9 +124,7 @@ bool CStudio::EventProcess(const Event &event)
 
     if ( event.type == pw->GetEventTypeClose() )
     {
-        Event newEvent = event;
-        newEvent.type = EVENT_STUDIO_OK;
-        m_event->AddEvent(newEvent);
+        m_event->AddEvent(Event(EVENT_STUDIO_OK));
     }
 
     if ( event.type == EVENT_STUDIO_EDIT )  // text modifief?
@@ -209,9 +207,7 @@ bool CStudio::EventProcess(const Event &event)
     {
         if ( m_script->IsRunning() )
         {
-            Event newEvent = event;
-            newEvent.type = EVENT_OBJECT_PROGSTOP;
-            m_event->AddEvent(newEvent);  // stop
+            m_event->AddEvent(Event(EVENT_OBJECT_PROGSTOP));
         }
         else
         {
@@ -219,9 +215,7 @@ bool CStudio::EventProcess(const Event &event)
             {
                 SetInfoText("", false);
 
-                Event newEvent = event;
-                newEvent.type = EVENT_OBJECT_PROGSTART;
-                m_event->AddEvent(newEvent);  // start
+                m_event->AddEvent(Event(EVENT_OBJECT_PROGSTART));
             }
             else
             {
@@ -361,9 +355,7 @@ bool CStudio::EventFrame(const Event &event)
         GetResource(RES_TEXT, RT_STUDIO_PROGSTOP, res);
         SetInfoText(res, false);
 
-        Event newEvent = event;
-        newEvent.type = EVENT_OBJECT_PROGSTOP;
-        m_event->AddEvent(newEvent);  // stop
+        m_event->AddEvent(Event(EVENT_OBJECT_PROGSTOP));
     }
 
     if ( m_script->IsRunning() && !m_bRunning )  // starting?
@@ -1393,7 +1385,7 @@ bool CStudio::EventDialog(const Event &event)
     }
 
     if ( event.type == EVENT_DIALOG_OK ||
-         (event.type == EVENT_KEY_DOWN && event.key.key == KEY(RETURN)) )
+         (event.type == EVENT_KEY_DOWN && event.GetData<KeyEventData>()->key == KEY(RETURN)) )
     {
         if ( m_dialog == SD_OPEN )
         {
@@ -1409,7 +1401,7 @@ bool CStudio::EventDialog(const Event &event)
     }
 
     if ( event.type == EVENT_DIALOG_CANCEL ||
-         (event.type == EVENT_KEY_DOWN && event.key.key == KEY(ESCAPE)) ||
+         (event.type == EVENT_KEY_DOWN && event.GetData<KeyEventData>()->key == KEY(ESCAPE)) ||
          event.type == pw->GetEventTypeClose() )
     {
         StopDialog();

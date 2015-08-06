@@ -558,9 +558,14 @@ CEventQueue::CEventQueue()
 CEventQueue::~CEventQueue()
 {}
 
+bool CEventQueue::IsEmpty()
+{
+    return m_head == m_tail;
+}
+
 /** If the maximum size of queue has been reached, returns \c false.
     Else, adds the event to the queue and returns \c true. */
-bool CEventQueue::AddEvent(const Event &event)
+bool CEventQueue::AddEvent(Event&& event)
 {
     bool result{};
 
@@ -574,7 +579,7 @@ bool CEventQueue::AddEvent(const Event &event)
     }
     else
     {
-        m_fifo[m_head++] = event;
+        m_fifo[m_head++] = std::move(event);
 
         if (m_head >= MAX_EVENT_QUEUE)
             m_head = 0;
@@ -589,31 +594,28 @@ bool CEventQueue::AddEvent(const Event &event)
     return result;
 }
 
-/** If the queue is empty, returns \c false.
-    Else, gets the event from the front, puts it into \a event and returns \c true. */
-bool CEventQueue::GetEvent(Event &event)
+Event CEventQueue::GetEvent()
 {
-    bool result{};
+    Event event;
 
     SDL_LockMutex(*m_mutex);
 
     if (m_head == m_tail)
     {
-        result = false;
+        event.type = EVENT_NULL;
     }
     else
     {
-        event = m_fifo[m_tail++];
+        event = std::move(m_fifo[m_tail++]);
 
         if (m_tail >= MAX_EVENT_QUEUE)
             m_tail = 0;
 
         m_total--;
 
-        result = true;
     }
 
     SDL_UnlockMutex(*m_mutex);
 
-    return result;
+    return event;
 }

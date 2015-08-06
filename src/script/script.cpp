@@ -373,7 +373,7 @@ bool CScript::Continue(const Event &event)
     if( m_botProg == 0 )  return true;
     if ( !m_bRun )  return true;
 
-    m_event = event;
+    m_event = event.Clone();
 
     if ( m_bStepMode )  // step by step mode?
     {
@@ -452,7 +452,7 @@ bool CScript::Step(const Event &event)
     // TODO: m_app StepSimulation??? m_engine->StepSimulation(0.01f);  // advance of 10ms
     // ??? m_engine->SetPause(true);
 
-    m_event = event;
+    m_event = event.Clone();
 
     if ( m_botProg->Run(m_object, 0) )  // step mode
     {

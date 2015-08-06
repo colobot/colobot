@@ -89,16 +89,14 @@ bool CButton::EventProcess(const Event &event)
             {
                 m_repeat = DELAY2;
 
-                Event newEvent = event;
-                newEvent.type = m_eventType;
-                m_event->AddEvent(newEvent);
+                m_event->AddEvent(Event(m_eventType));
                 return false;
             }
         }
     }
 
     if ( event.type == EVENT_MOUSE_BUTTON_DOWN  &&
-         event.mouseButton.button == MOUSE_BUTTON_LEFT &&
+         event.GetData<MouseButtonEventData>()->button == MOUSE_BUTTON_LEFT &&
          (m_state & STATE_VISIBLE)        &&
          (m_state & STATE_ENABLE)         )
     {
@@ -109,9 +107,7 @@ bool CButton::EventProcess(const Event &event)
 
             if ( m_bImmediat || m_bRepeat )
             {
-                Event newEvent = event;
-                newEvent.type = m_eventType;
-                m_event->AddEvent(newEvent);
+                m_event->AddEvent(Event(m_eventType));
             }
             return false;
         }
@@ -122,16 +118,14 @@ bool CButton::EventProcess(const Event &event)
     }
 
     if ( event.type == EVENT_MOUSE_BUTTON_UP && //left
-         event.mouseButton.button == MOUSE_BUTTON_LEFT    &&
+         event.GetData<MouseButtonEventData>()->button == MOUSE_BUTTON_LEFT    &&
          m_bCapture )
     {
         if ( CControl::Detect(event.mousePos) )
         {
             if ( !m_bImmediat && !m_bRepeat )
             {
-                Event newEvent = event;
-                newEvent.type = m_eventType;
-                m_event->AddEvent(newEvent);
+                m_event->AddEvent(Event(m_eventType));
             }
         }
 

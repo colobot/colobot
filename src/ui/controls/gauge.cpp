@@ -60,9 +60,7 @@ bool CGauge::EventProcess(const Event &event)
     {
         if ( CControl::Detect(event.mousePos) )
         {
-            Event newEvent = event;
-            newEvent.type = m_eventType;
-            m_event->AddEvent(newEvent);
+            m_event->AddEvent(Event(m_eventType));
             return false;
         }
     }

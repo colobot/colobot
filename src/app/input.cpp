@@ -78,8 +78,8 @@ CInput::CInput()
 
 void CInput::EventProcess(Event& event)
 {
-    if(event.type == EVENT_KEY_DOWN ||
-       event.type == EVENT_KEY_UP)
+    if (event.type == EVENT_KEY_DOWN ||
+        event.type == EVENT_KEY_UP)
     {
         // Use the occasion to update kmods
         m_kmodState = event.kmodState;
@@ -88,18 +88,21 @@ void CInput::EventProcess(Event& event)
     // Use the occasion to update mouse button state
     if (event.type == EVENT_MOUSE_BUTTON_DOWN)
     {
-        m_mouseButtonsState |= event.mouseButton.button;
+        auto data = event.GetData<MouseButtonEventData>();
+        m_mouseButtonsState |= data->button;
     }
-    if(event.type == EVENT_MOUSE_BUTTON_UP)
+    if (event.type == EVENT_MOUSE_BUTTON_UP)
     {
-        m_mouseButtonsState &= ~event.mouseButton.button;
+        auto data = event.GetData<MouseButtonEventData>();
+        m_mouseButtonsState &= ~data->button;
     }
 
 
-    if(event.type == EVENT_KEY_DOWN ||
-       event.type == EVENT_KEY_UP)
+    if (event.type == EVENT_KEY_DOWN ||
+        event.type == EVENT_KEY_UP)
     {
-        event.key.slot = FindBinding(event.key.key);
+        auto data = event.GetData<KeyEventData>();
+        data->slot = FindBinding(data->key);
     }
 
     event.kmodState = m_kmodState;
@@ -110,7 +113,8 @@ void CInput::EventProcess(Event& event)
     if (event.type == EVENT_KEY_DOWN ||
         event.type == EVENT_KEY_UP)
     {
-        m_keyPresses[event.key.slot] = (event.type == EVENT_KEY_DOWN);
+        auto data = event.GetData<KeyEventData>();
+        m_keyPresses[data->slot] = (event.type == EVENT_KEY_DOWN);
     }
 
 
@@ -119,41 +123,47 @@ void CInput::EventProcess(Event& event)
 
     if (event.type == EVENT_KEY_DOWN && !(event.kmodState & KEY_MOD(ALT) ) )
     {
-        if (event.key.slot == INPUT_SLOT_UP   ) m_keyMotion.y =  1.0f;
-        if (event.key.slot == INPUT_SLOT_DOWN ) m_keyMotion.y = -1.0f;
-        if (event.key.slot == INPUT_SLOT_LEFT ) m_keyMotion.x = -1.0f;
-        if (event.key.slot == INPUT_SLOT_RIGHT) m_keyMotion.x =  1.0f;
-        if (event.key.slot == INPUT_SLOT_GUP  ) m_keyMotion.z =  1.0f;
-        if (event.key.slot == INPUT_SLOT_GDOWN) m_keyMotion.z = -1.0f;
+        auto data = event.GetData<KeyEventData>();
+
+        if (data->slot == INPUT_SLOT_UP   ) m_keyMotion.y =  1.0f;
+        if (data->slot == INPUT_SLOT_DOWN ) m_keyMotion.y = -1.0f;
+        if (data->slot == INPUT_SLOT_LEFT ) m_keyMotion.x = -1.0f;
+        if (data->slot == INPUT_SLOT_RIGHT) m_keyMotion.x =  1.0f;
+        if (data->slot == INPUT_SLOT_GUP  ) m_keyMotion.z =  1.0f;
+        if (data->slot == INPUT_SLOT_GDOWN) m_keyMotion.z = -1.0f;
     }
     else if (event.type == EVENT_KEY_UP)
     {
-        if (event.key.slot == INPUT_SLOT_UP   ) m_keyMotion.y = 0.0f;
-        if (event.key.slot == INPUT_SLOT_DOWN ) m_keyMotion.y = 0.0f;
-        if (event.key.slot == INPUT_SLOT_LEFT ) m_keyMotion.x = 0.0f;
-        if (event.key.slot == INPUT_SLOT_RIGHT) m_keyMotion.x = 0.0f;
-        if (event.key.slot == INPUT_SLOT_GUP  ) m_keyMotion.z = 0.0f;
-        if (event.key.slot == INPUT_SLOT_GDOWN) m_keyMotion.z = 0.0f;
+        auto data = event.GetData<KeyEventData>();
+
+        if (data->slot == INPUT_SLOT_UP   ) m_keyMotion.y = 0.0f;
+        if (data->slot == INPUT_SLOT_DOWN ) m_keyMotion.y = 0.0f;
+        if (data->slot == INPUT_SLOT_LEFT ) m_keyMotion.x = 0.0f;
+        if (data->slot == INPUT_SLOT_RIGHT) m_keyMotion.x = 0.0f;
+        if (data->slot == INPUT_SLOT_GUP  ) m_keyMotion.z = 0.0f;
+        if (data->slot == INPUT_SLOT_GDOWN) m_keyMotion.z = 0.0f;
     }
     else if (event.type == EVENT_JOY_AXIS)
     {
-        if (event.joyAxis.axis == GetJoyAxisBinding(JOY_AXIS_SLOT_X).axis)
+        auto data = event.GetData<JoyAxisEventData>();
+
+        if (data->axis == GetJoyAxisBinding(JOY_AXIS_SLOT_X).axis)
         {
-            m_joyMotion.x = Math::Neutral(event.joyAxis.value / 32768.0f, m_joystickDeadzone);
+            m_joyMotion.x = Math::Neutral(data->value / 32768.0f, m_joystickDeadzone);
             if (GetJoyAxisBinding(JOY_AXIS_SLOT_X).invert)
                 m_joyMotion.x *= -1.0f;
         }
 
-        if (event.joyAxis.axis == GetJoyAxisBinding(JOY_AXIS_SLOT_Y).axis)
+        if (data->axis == GetJoyAxisBinding(JOY_AXIS_SLOT_Y).axis)
         {
-            m_joyMotion.y = Math::Neutral(event.joyAxis.value / 32768.0f, m_joystickDeadzone);
+            m_joyMotion.y = Math::Neutral(data->value / 32768.0f, m_joystickDeadzone);
             if (GetJoyAxisBinding(JOY_AXIS_SLOT_Y).invert)
                 m_joyMotion.y *= -1.0f;
         }
 
-        if (event.joyAxis.axis == GetJoyAxisBinding(JOY_AXIS_SLOT_Z).axis)
+        if (data->axis == GetJoyAxisBinding(JOY_AXIS_SLOT_Z).axis)
         {
-            m_joyMotion.z = Math::Neutral(event.joyAxis.value / 32768.0f, m_joystickDeadzone);
+            m_joyMotion.z = Math::Neutral(data->value / 32768.0f, m_joystickDeadzone);
             if (GetJoyAxisBinding(JOY_AXIS_SLOT_Z).invert)
                 m_joyMotion.z *= -1.0f;
         }

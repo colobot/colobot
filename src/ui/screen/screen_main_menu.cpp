@@ -167,7 +167,7 @@ bool CScreenMainMenu::EventProcess(const Event &event)
     switch (event.type)
     {
         case EVENT_KEY_DOWN:
-            if ( event.key.key == KEY(ESCAPE) )
+            if ( event.GetData<KeyEventData>()->key == KEY(ESCAPE) )
             {
                 m_sound->Play(SOUND_TZOING);
                 m_main->ChangePhase(PHASE_QUIT_SCREEN);

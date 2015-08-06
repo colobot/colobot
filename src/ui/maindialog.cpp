@@ -77,11 +77,11 @@ bool CMainDialog::EventProcess(const Event &event)
         }
 
         EventType pressedButton = event.type;
-        if (event.type == EVENT_KEY_DOWN && event.key.key == KEY(RETURN) )
+        if (event.type == EVENT_KEY_DOWN && event.GetData<KeyEventData>()->key == KEY(RETURN) )
         {
             pressedButton = EVENT_DIALOG_OK;
         }
-        if (event.type == EVENT_KEY_DOWN && event.key.key == KEY(ESCAPE) )
+        if (event.type == EVENT_KEY_DOWN && event.GetData<KeyEventData>()->key == KEY(ESCAPE) )
         {
             pressedButton = EVENT_DIALOG_CANCEL;
         }

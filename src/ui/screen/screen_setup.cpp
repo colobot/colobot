@@ -151,7 +151,7 @@ bool CScreenSetup::EventProcess(const Event &event)
 
         if ( event.type == pw->GetEventTypeClose() ||
                 event.type == EVENT_INTERFACE_BACK   ||
-                (event.type == EVENT_KEY_DOWN && event.key.key == KEY(ESCAPE)) )
+                (event.type == EVENT_KEY_DOWN && event.GetData<KeyEventData>()->key == KEY(ESCAPE)) )
         {
             m_settings->SaveSettings();
             m_engine->ApplyChange();
@@ -192,7 +192,7 @@ bool CScreenSetup::EventProcess(const Event &event)
 
         if ( event.type == pw->GetEventTypeClose() ||
                 event.type == EVENT_INTERFACE_BACK   ||
-                (event.type == EVENT_KEY_DOWN && event.key.key == KEY(ESCAPE)) )
+                (event.type == EVENT_KEY_DOWN && event.GetData<KeyEventData>()->key == KEY(ESCAPE)) )
         {
             m_settings->SaveSettings();
             m_engine->ApplyChange();

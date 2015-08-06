@@ -68,14 +68,14 @@ bool CKey::EventProcess(const Event &event)
 
     if (event.type == EVENT_MOUSE_BUTTON_DOWN)
     {
-        if (event.mouseButton.button == MOUSE_BUTTON_LEFT) // left
+        if (event.GetData<MouseButtonEventData>()->button == MOUSE_BUTTON_LEFT) // left
             m_catch = Detect(event.mousePos);
     }
 
     if (event.type == EVENT_KEY_DOWN && m_catch)
     {
         m_catch = false;
-        unsigned int key = GetVirtualKey(event.key.key);
+        unsigned int key = GetVirtualKey(event.GetData<KeyEventData>()->key);
 
         if (TestKey(key)) // impossible ?
         {
@@ -95,9 +95,7 @@ bool CKey::EventProcess(const Event &event)
             }
             m_sound->Play(SOUND_CLICK);
 
-            Event newEvent = event;
-            newEvent.type = m_eventType;
-            m_event->AddEvent(newEvent);
+            m_event->AddEvent(Event(m_eventType));
         }
         return false;
     }

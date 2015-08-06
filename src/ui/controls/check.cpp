@@ -70,15 +70,13 @@ bool CCheck::EventProcess(const Event &event)
     CControl::EventProcess(event);
 
     if ( event.type == EVENT_MOUSE_BUTTON_DOWN &&
-         event.mouseButton.button == MOUSE_BUTTON_LEFT &&
+         event.GetData<MouseButtonEventData>()->button == MOUSE_BUTTON_LEFT &&
          (m_state & STATE_VISIBLE)             &&
          (m_state & STATE_ENABLE)         )
     {
         if ( CControl::Detect(event.mousePos) )
         {
-            Event newEvent = event;
-            newEvent.type = m_eventType;
-            m_event->AddEvent(newEvent);
+            m_event->AddEvent(Event(m_eventType));
             return false;
         }
     }

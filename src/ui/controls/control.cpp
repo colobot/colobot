@@ -329,7 +329,8 @@ bool CControl::EventProcess(const Event &event)
         }
     }
 
-    if ( event.type == EVENT_MOUSE_BUTTON_DOWN && event.mouseButton.button == MOUSE_BUTTON_LEFT)
+    if (event.type == EVENT_MOUSE_BUTTON_DOWN &&
+        event.GetData<MouseButtonEventData>()->button == MOUSE_BUTTON_LEFT)
     {
         if ( Detect(event.mousePos) )
         {
@@ -350,7 +351,9 @@ bool CControl::EventProcess(const Event &event)
         }
     }
 
-    if ( event.type == EVENT_MOUSE_BUTTON_UP && m_bCapture && event.mouseButton.button == MOUSE_BUTTON_LEFT)
+    if (event.type == EVENT_MOUSE_BUTTON_UP &&
+        m_bCapture &&
+        event.GetData<MouseButtonEventData>()->button == MOUSE_BUTTON_LEFT)
     {
         m_bCapture = false;
         ClearState(STATE_PRESS);

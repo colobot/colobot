@@ -157,7 +157,7 @@ bool CEditValue::EventProcess(const Event &event)
     {
         if ( m_edit->GetFocus()           &&
              event.type == EVENT_KEY_DOWN &&
-             event.key.key == KEY(RETURN)     )
+             event.GetData<KeyEventData>()->key == KEY(RETURN)     )
         {
             value = GetValue();
             if ( value > m_maxValue )  value = m_maxValue;
@@ -169,8 +169,7 @@ bool CEditValue::EventProcess(const Event &event)
 
         if ( event.type == m_edit->GetEventType() )
         {
-            Event       newEvent(m_eventType);
-            m_event->AddEvent(newEvent);
+            m_event->AddEvent(Event(m_eventType));
         }
     }
 
@@ -199,7 +198,7 @@ bool CEditValue::EventProcess(const Event &event)
     }
 
     if (event.type == EVENT_MOUSE_WHEEL &&
-        event.mouseWheel.dir == WHEEL_UP &&
+        event.GetData<MouseWheelEventData>()->dir == WHEEL_UP &&
         Detect(event.mousePos))
     {
         value = GetValue()+m_stepValue;
@@ -207,8 +206,8 @@ bool CEditValue::EventProcess(const Event &event)
         SetValue(value, true);
         HiliteValue(event);
     }
-    if ( event.type == EVENT_KEY_DOWN &&
-         event.mouseWheel.dir == WHEEL_DOWN &&
+    if ( event.type == EVENT_MOUSE_WHEEL &&
+         event.GetData<MouseWheelEventData>()->dir == WHEEL_DOWN &&
          Detect(event.mousePos))
     {
         value = GetValue()-m_stepValue;
@@ -238,10 +237,10 @@ void CEditValue::HiliteValue(const Event &event)
     m_edit->SetCursor(pos, 0);
     m_interface->SetFocus(m_edit);
 
-    Event newEvent = event;
+    Event newEvent = event.Clone();
     newEvent.type = EVENT_FOCUS;
     newEvent.customParam = m_edit->GetEventType();
-    m_event->AddEvent(newEvent);  // defocus the other objects
+    m_event->AddEvent(std::move(newEvent));  // defocus the other objects
 }
 
 
@@ -315,8 +314,7 @@ void CEditValue::SetValue(float value, bool bSendMessage)
 
     if ( bSendMessage )
     {
-        Event       newEvent(m_eventType);
-        m_event->AddEvent(newEvent);
+        m_event->AddEvent(Event(m_eventType));
     }
 }
 

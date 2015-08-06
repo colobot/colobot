@@ -120,7 +120,6 @@ void CAutoBase::Start(int param)
 bool CAutoBase::EventProcess(const Event &event)
 {
     Math::Matrix*   mat;
-    Event       newEvent;
     CObject*    pObj;
     Math::Vector    pos, speed, vibCir, iPos;
     Math::Point     dim, p;
@@ -804,8 +803,7 @@ begin:
         else
         {
             m_soundChannel = -1;
-            newEvent.type = EVENT_WIN;
-            m_eventQueue->AddEvent(newEvent);
+            m_eventQueue->AddEvent(Event(EVENT_WIN));
 
             m_phase    = ABP_WAIT;
             m_progress = 0.0f;
@@ -1054,7 +1052,6 @@ begin:
 
 bool CAutoBase::Abort()
 {
-    Event       newEvent;
     CObject*    pObj;
     int         i;
 
@@ -1137,8 +1134,7 @@ bool CAutoBase::Abort()
              m_phase == ABP_TOWAIT  ||
              m_phase == ABP_TAKEOFF )  // off?
         {
-            newEvent.type = EVENT_WIN;
-            m_eventQueue->AddEvent(newEvent);
+            m_eventQueue->AddEvent(Event(EVENT_WIN));
         }
     }
 
@@ -1384,9 +1380,7 @@ Error CAutoBase::TakeOff(bool printMsg)
     m_main->SetMovieLock(true);  // blocks everything until the end
     m_main->DeselectAll();
 
-    Event newEvent;
-    newEvent.type = EVENT_UPDINTERFACE;
-    m_eventQueue->AddEvent(newEvent);
+    m_eventQueue->AddEvent(Event(EVENT_UPDINTERFACE));
 
     m_camera->SetType(Gfx::CAM_TYPE_SCRIPT);
 

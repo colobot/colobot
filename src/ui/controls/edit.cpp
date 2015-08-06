@@ -239,17 +239,17 @@ bool CEdit::EventProcess(const Event &event)
     if ( (m_state & STATE_VISIBLE) == 0 )  return true;
 
     if (event.type == EVENT_MOUSE_WHEEL &&
-        event.mouseWheel.dir == WHEEL_UP &&
-         Detect(event.mousePos)            )
+        Detect(event.mousePos))
     {
-        Scroll(m_lineFirst-3, true);
-        return true;
-    }
-    if (event.type == EVENT_MOUSE_WHEEL  &&
-        event.mouseWheel.dir == WHEEL_DOWN  &&
-        Detect(event.mousePos)            )
-    {
-        Scroll(m_lineFirst+3, true);
+        auto data = event.GetData<MouseWheelEventData>();
+        if (data->dir == WHEEL_UP)
+        {
+            Scroll(m_lineFirst - 3, true);
+        }
+        else
+        {
+            Scroll(m_lineFirst + 3, true);
+        }
         return true;
     }
 
@@ -307,95 +307,95 @@ bool CEdit::EventProcess(const Event &event)
 
     if ( event.type == EVENT_KEY_DOWN && m_bFocus )
     {
-        if ( (event.key.key == KEY(x)      && !bShift &&  bControl) ||
-             (event.key.key == KEY(DELETE) &&  bShift && !bControl) )
+        auto data = event.GetData<KeyEventData>();
+
+        if ( (data->key == KEY(x)      && !bShift &&  bControl) ||
+             (data->key == KEY(DELETE) &&  bShift && !bControl) )
         {
             Cut();
             return true;
         }
-        if ( (event.key.key == KEY(c)      && !bShift &&  bControl) ||
-             (event.key.key == KEY(INSERT) && !bShift &&  bControl) )
+        if ( (data->key == KEY(c)      && !bShift &&  bControl) ||
+             (data->key == KEY(INSERT) && !bShift &&  bControl) )
         {
             Copy();
             return true;
         }
-        if ( (event.key.key == KEY(v)      && !bShift &&  bControl) ||
-             (event.key.key == KEY(INSERT) &&  bShift && !bControl) )
+        if ( (data->key == KEY(v)      && !bShift &&  bControl) ||
+             (data->key == KEY(INSERT) &&  bShift && !bControl) )
         {
             Paste();
             return true;
         }
 
-        if ( event.key.key == KEY(a) && !bShift && bControl )
+        if ( data->key == KEY(a) && !bShift && bControl )
         {
             SetCursor(999999, 0);
             return true;
         }
 
-        if ( event.key.key == KEY(o) && !bShift && bControl )
+        if ( data->key == KEY(o) && !bShift && bControl )
         {
-            Event   newEvent(EVENT_STUDIO_OPEN);
-            m_event->AddEvent(newEvent);
+            m_event->AddEvent(Event(EVENT_STUDIO_OPEN));
         }
-        if ( event.key.key == KEY(s) && !bShift && bControl )
+        if ( data->key == KEY(s) && !bShift && bControl )
         {
-            Event   newEvent( EVENT_STUDIO_SAVE );
-            m_event->AddEvent(newEvent);
+            m_event->AddEvent(Event(EVENT_STUDIO_SAVE));
         }
 
-        if ( event.key.key == KEY(z) && !bShift && bControl )
+        if ( data->key == KEY(z) && !bShift && bControl )
         {
             Undo();
             return true;
         }
 
-        if ( event.key.key == KEY(u) && !bShift && bControl )
+        if ( data->key == KEY(u) && !bShift && bControl )
         {
             if ( MinMaj(false) )  return true;
         }
-        if ( event.key.key == KEY(u) && bShift && bControl )
+        if ( data->key == KEY(u) && bShift && bControl )
         {
             if ( MinMaj(true) )  return true;
         }
 
-        if ( event.key.key == KEY(TAB) && !bShift && !bControl && !m_bAutoIndent )
+        if ( data->key == KEY(TAB) && !bShift && !bControl && !m_bAutoIndent )
         {
             if ( Shift(false) )  return true;
         }
-        if ( event.key.key == KEY(TAB) && bShift && !bControl && !m_bAutoIndent )
+        if ( data->key == KEY(TAB) && bShift && !bControl && !m_bAutoIndent )
         {
             if ( Shift(true) )  return true;
         }
 
         if ( m_bEdit )
         {
-            if ( event.key.key == KEY(LEFT) )
+            if ( data->key == KEY(LEFT) )
             {
                 MoveChar(-1, bControl, bShift);
                 return true;
             }
-            if ( event.key.key == KEY(RIGHT) )
+            if ( data->key == KEY(RIGHT) )
             {
                 MoveChar(1, bControl, bShift);
                 return true;
             }
-            if ( event.key.key == KEY(UP) && m_bMulti )
+            if ( data->key == KEY(UP) && m_bMulti )
             {
                 MoveLine(-1, bControl, bShift);
                 return true;
             }
-            if ( event.key.key == KEY(DOWN) && m_bMulti )
+            if ( data->key == KEY(DOWN) && m_bMulti )
             {
                 MoveLine(1, bControl, bShift);
                 return true;
             }
 
-            if ( event.key.key == KEY(PAGEUP) && m_bMulti )  // PageUp ?
+            if ( data->key == KEY(PAGEUP) && m_bMulti )  // PageUp ?
             {
                 MoveLine(-(m_lineVisible-1), bControl, bShift);
                 return true;
             }
-            if ( event.key.key == KEY(PAGEDOWN) && m_bMulti )  // PageDown ?
+            if ( data->key == KEY(PAGEDOWN) && m_bMulti )  // PageDown ?
             {
                 MoveLine(m_lineVisible-1, bControl, bShift);
                 return true;
@@ -403,62 +403,62 @@ bool CEdit::EventProcess(const Event &event)
         }
         else
         {
-            if ( event.key.key == KEY(LEFT) ||
-                 event.key.key == KEY(UP)   )
+            if ( data->key == KEY(LEFT) ||
+                 data->key == KEY(UP)   )
             {
                 Scroll(m_lineFirst-1, true);
                 return true;
             }
-            if ( event.key.key == KEY(RIGHT) ||
-                 event.key.key == KEY(DOWN)  )
+            if ( data->key == KEY(RIGHT) ||
+                 data->key == KEY(DOWN)  )
             {
                 Scroll(m_lineFirst+1, true);
                 return true;
             }
 
-            if ( event.key.key == KEY(PAGEUP) )  // PageUp ?
+            if ( data->key == KEY(PAGEUP) )  // PageUp ?
             {
                 Scroll(m_lineFirst-(m_lineVisible-1), true);
                 return true;
             }
-            if ( event.key.key == KEY(PAGEDOWN) )  // PageDown ?
+            if ( data->key == KEY(PAGEDOWN) )  // PageDown ?
             {
                 Scroll(m_lineFirst+(m_lineVisible-1), true);
                 return true;
             }
         }
 
-        if ( event.key.key == KEY(HOME) )
+        if ( data->key == KEY(HOME) )
         {
             MoveHome(bControl, bShift);
             return true;
         }
-        if ( event.key.key == KEY(END) )
+        if ( data->key == KEY(END) )
         {
             MoveEnd(bControl, bShift);
             return true;
         }
 
-        if ( event.key.key == KEY(BACKSPACE) && !bControl )  // backspace ( <- ) ?
+        if ( data->key == KEY(BACKSPACE) && !bControl )  // backspace ( <- ) ?
         {
             Delete(-1);
             SendModifEvent();
             return true;
         }
-        if ( event.key.key == KEY(DELETE) && !bControl )
+        if ( data->key == KEY(DELETE) && !bControl )
         {
             Delete(1);
             SendModifEvent();
             return true;
         }
 
-        if ( event.key.key == KEY(RETURN) && !bControl )
+        if ( data->key == KEY(RETURN) && !bControl )
         {
             Insert('\n');
             SendModifEvent();
             return true;
         }
-        if ( event.key.key == KEY(TAB) && !bControl )
+        if ( data->key == KEY(TAB) && !bControl )
         {
             Insert('\t');
             SendModifEvent();
@@ -468,9 +468,10 @@ bool CEdit::EventProcess(const Event &event)
 
     if ( event.type == EVENT_KEY_DOWN && !bControl && m_bFocus )
     {
-        if (event.key.unicode >= ' ')
+        auto data = event.GetData<KeyEventData>();
+        if (data->unicode >= ' ')
         {
-            Insert(static_cast<char>(event.key.unicode)); // TODO: insert utf-8 char
+            Insert(static_cast<char>(data->unicode)); // TODO: insert utf-8 char
             SendModifEvent();
             return true;
         }
@@ -488,8 +489,8 @@ bool CEdit::EventProcess(const Event &event)
         }
     }
 
-    if ( event.type == EVENT_MOUSE_BUTTON_DOWN &&
-            event.mouseButton.button == MOUSE_BUTTON_LEFT)
+    if (event.type == EVENT_MOUSE_BUTTON_DOWN &&
+        event.GetData<MouseButtonEventData>()->button == MOUSE_BUTTON_LEFT)
     {
         m_mouseFirstPos = event.mousePos;
         m_mouseLastPos  = event.mousePos;
@@ -519,8 +520,8 @@ bool CEdit::EventProcess(const Event &event)
         MouseMove(m_mouseLastPos);
     }
 
-    if ( event.type == EVENT_MOUSE_BUTTON_UP &&
-            event.mouseButton.button == MOUSE_BUTTON_LEFT)
+    if (event.type == EVENT_MOUSE_BUTTON_UP &&
+        event.GetData<MouseButtonEventData>()->button == MOUSE_BUTTON_LEFT)
     {
         if ( Detect(event.mousePos) )
         {
@@ -548,10 +549,7 @@ bool CEdit::EventProcess(const Event &event)
 
 void CEdit::SendModifEvent()
 {
-    Event   newEvent (m_eventType);
-
-//    m_event->MakeEvent(newEvent, m_eventType);
-    m_event->AddEvent(newEvent);
+    m_event->AddEvent(Event(m_eventType));
 }
 
 

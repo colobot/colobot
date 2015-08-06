@@ -74,7 +74,7 @@ bool CTarget::EventProcess(const Event &event)
     }
 
     if ( event.type == EVENT_MOUSE_BUTTON_DOWN &&
-            event.mouseButton.button == MOUSE_BUTTON_LEFT &&
+         event.GetData<MouseButtonEventData>()->button == MOUSE_BUTTON_LEFT &&
          (m_state & STATE_VISIBLE)        &&
          (m_state & STATE_ENABLE)         )
     {
@@ -107,9 +107,7 @@ bool CTarget::EventProcess(const Event &event)
             {
                 m_engine->SetMouseType(Gfx::ENG_MOUSE_TARGET);
 
-                Event newEvent = event;
-                newEvent.type = m_eventType;
-                m_event->AddEvent(newEvent);
+                m_event->AddEvent(Event(m_eventType));
                 return false;
             }
             else
@@ -120,18 +118,16 @@ bool CTarget::EventProcess(const Event &event)
         }
     }
 
-    if ( event.type == EVENT_MOUSE_BUTTON_DOWN &&
-          event.mouseButton.button == MOUSE_BUTTON_LEFT   &&
-         (m_state & STATE_VISIBLE)        &&
-         (m_state & STATE_ENABLE)         )
+    if (event.type == EVENT_MOUSE_BUTTON_DOWN &&
+        event.GetData<MouseButtonEventData>()->button == MOUSE_BUTTON_LEFT &&
+        (m_state & STATE_VISIBLE) &&
+        (m_state & STATE_ENABLE))
     {
         if ( CControl::Detect(event.mousePos) )
         {
             if ( !m_main->GetFriendAim() )
             {
-                Event newEvent = event;
-                newEvent.type = EVENT_OBJECT_FIRE;
-                m_event->AddEvent(newEvent);
+                m_event->AddEvent(Event(EVENT_OBJECT_FIRE));
                 return false;
             }
         }

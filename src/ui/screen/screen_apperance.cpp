@@ -315,15 +315,19 @@ bool CScreenApperance::EventProcess(const Event &event)
     switch( event.type )
     {
         case EVENT_KEY_DOWN:
-            if ( event.key.key == KEY(RETURN) )
+        {
+            auto data = event.GetData<KeyEventData>();
+
+            if (data->key == KEY(RETURN))
             {
                 m_main->ChangePhase(PHASE_MAIN_MENU);
             }
-            if ( event.key.key == KEY(ESCAPE) )
+            if (data->key == KEY(ESCAPE))
             {
                 m_main->ChangePhase(PHASE_PLAYER_SELECT);
             }
             break;
+        }
 
         case EVENT_INTERFACE_PHEAD:
             m_apperanceTab = 0;

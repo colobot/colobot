@@ -941,12 +941,13 @@ int CApplication::Run()
                 if (event.type == EVENT_SYS_QUIT)
                     goto end; // exit the loop
 
-                if (event.type != EVENT_NULL)
-                    m_eventQueue->AddEvent(event);
-
                 Event virtualEvent = CreateVirtualEvent(event);
+
+                if (event.type != EVENT_NULL)
+                    m_eventQueue->AddEvent(std::move(event));
+
                 if (virtualEvent.type != EVENT_NULL)
-                    m_eventQueue->AddEvent(virtualEvent);
+                    m_eventQueue->AddEvent(std::move(virtualEvent));
             }
         }
 
@@ -961,15 +962,16 @@ int CApplication::Run()
                 goto end; // exit the loop
 
             if (event.type != EVENT_NULL)
-                m_eventQueue->AddEvent(event);
+                m_eventQueue->AddEvent(std::move(event));
         }
 
         // Enter game update & frame rendering only if active
         if (m_active)
         {
-            Event event;
-            while (m_eventQueue->GetEvent(event))
+            while (! m_eventQueue->IsEmpty())
             {
+                Event event = m_eventQueue->GetEvent();
+
                 if (event.type == EVENT_SYS_QUIT || event.type == EVENT_QUIT)
                     goto end; // exit both loops
 
@@ -988,7 +990,7 @@ int CApplication::Run()
             StartPerformanceCounter(PCNT_UPDATE_ALL);
 
             // Prepare and process step simulation event
-            event = CreateUpdateEvent();
+            Event event = CreateUpdateEvent();
             if (event.type != EVENT_NULL && m_controller != nullptr)
             {
                 LogEvent(event);
@@ -1067,22 +1069,26 @@ Event CApplication::ProcessSystemEvent()
         else
             event.type = EVENT_KEY_UP;
 
-        event.key.virt = false;
-        event.key.key = m_private->currentEvent.key.keysym.sym;
-        event.key.unicode = m_private->currentEvent.key.keysym.unicode;
+        auto data = MakeUnique<KeyEventData>();
+
+        data->virt = false;
+        data->key = m_private->currentEvent.key.keysym.sym;
+        data->unicode = m_private->currentEvent.key.keysym.unicode;
         event.kmodState = m_private->currentEvent.key.keysym.mod;
 
         // Some keyboards return numerical enter keycode instead of normal enter
         // See issue #427 for details
-        if (event.key.key == KEY(KP_ENTER))
-            event.key.key = KEY(RETURN);
+        if (data->key == KEY(KP_ENTER))
+            data->key = KEY(RETURN);
 
-        if (event.key.key == KEY(TAB) && ((event.kmodState & KEY_MOD(ALT)) != 0))
+        if (data->key == KEY(TAB) && ((event.kmodState & KEY_MOD(ALT)) != 0))
         {
             GetLogger()->Debug("Minimize to taskbar\n");
             SDL_WM_IconifyWindow();
             event.type = EVENT_NULL;
         }
+
+        event.data = std::move(data);
     }
     else if ( (m_private->currentEvent.type == SDL_MOUSEBUTTONDOWN) ||
          (m_private->currentEvent.type == SDL_MOUSEBUTTONUP) )
@@ -1090,23 +1096,34 @@ Event CApplication::ProcessSystemEvent()
         if ((m_private->currentEvent.button.button == SDL_BUTTON_WHEELUP) ||
             (m_private->currentEvent.button.button == SDL_BUTTON_WHEELDOWN))
         {
+
             if (m_private->currentEvent.type == SDL_MOUSEBUTTONDOWN) // ignore the following up event
             {
                 event.type = EVENT_MOUSE_WHEEL;
+
+                auto data = MakeUnique<MouseWheelEventData>();
+
                 if (m_private->currentEvent.button.button == SDL_BUTTON_WHEELDOWN)
-                    event.mouseWheel.dir = WHEEL_DOWN;
+                    data->dir = WHEEL_DOWN;
                 else
-                    event.mouseWheel.dir = WHEEL_UP;
+                    data->dir = WHEEL_UP;
+
+                event.data = std::move(data);
             }
+
         }
         else
         {
+            auto data = MakeUnique<MouseButtonEventData>();
+
             if (m_private->currentEvent.type == SDL_MOUSEBUTTONDOWN)
                 event.type = EVENT_MOUSE_BUTTON_DOWN;
             else
                 event.type = EVENT_MOUSE_BUTTON_UP;
 
-            event.mouseButton.button = static_cast<MouseButton>(1 << m_private->currentEvent.button.button);
+            data->button = static_cast<MouseButton>(1 << m_private->currentEvent.button.button);
+
+            event.data = std::move(data);
         }
     }
     else if (m_private->currentEvent.type == SDL_MOUSEMOTION)
@@ -1119,8 +1136,10 @@ Event CApplication::ProcessSystemEvent()
     {
         event.type = EVENT_JOY_AXIS;
 
-        event.joyAxis.axis = m_private->currentEvent.jaxis.axis;
-        event.joyAxis.value = m_private->currentEvent.jaxis.value;
+        auto data = MakeUnique<JoyAxisEventData>();
+        data->axis = m_private->currentEvent.jaxis.axis;
+        data->value = m_private->currentEvent.jaxis.value;
+        event.data = std::move(data);
     }
     else if ( (m_private->currentEvent.type == SDL_JOYBUTTONDOWN) ||
               (m_private->currentEvent.type == SDL_JOYBUTTONUP) )
@@ -1130,20 +1149,26 @@ Event CApplication::ProcessSystemEvent()
         else
             event.type = EVENT_JOY_BUTTON_UP;
 
-        event.joyButton.button = m_private->currentEvent.jbutton.button;
+        auto data = MakeUnique<JoyButtonEventData>();
+        data->button = m_private->currentEvent.jbutton.button;
+        event.data = std::move(data);
     }
     else if (m_private->currentEvent.type == SDL_ACTIVEEVENT)
     {
         event.type = EVENT_ACTIVE;
 
-        if (m_private->currentEvent.active.type & SDL_APPINPUTFOCUS)
-            event.active.flags |= ACTIVE_INPUT;
-        if (m_private->currentEvent.active.type & SDL_APPMOUSEFOCUS)
-            event.active.flags |= ACTIVE_MOUSE;
-        if (m_private->currentEvent.active.type & SDL_APPACTIVE)
-            event.active.flags |= ACTIVE_APP;
+        auto data = MakeUnique<ActiveEventData>();
 
-        event.active.gain = m_private->currentEvent.active.gain == 1;
+        if (m_private->currentEvent.active.type & SDL_APPINPUTFOCUS)
+            data->flags |= ACTIVE_INPUT;
+        if (m_private->currentEvent.active.type & SDL_APPMOUSEFOCUS)
+            data->flags |= ACTIVE_MOUSE;
+        if (m_private->currentEvent.active.type & SDL_APPACTIVE)
+            data->flags |= ACTIVE_APP;
+
+        data->gain = m_private->currentEvent.active.gain == 1;
+
+        event.data = std::move(data);
     }
 
     m_input->EventProcess(event);
@@ -1176,29 +1201,47 @@ void CApplication::LogEvent(const Event &event)
             {
                 case EVENT_KEY_DOWN:
                 case EVENT_KEY_UP:
-                    l->Trace(" virt    = %s\n", (event.key.virt) ? "true" : "false");
-                    l->Trace(" key     = %d\n", event.key.key);
-                    l->Trace(" unicode = 0x%04x\n", event.key.unicode);
+                {
+                    auto data = event.GetData<KeyEventData>();
+                    l->Trace(" virt    = %s\n", data->virt ? "true" : "false");
+                    l->Trace(" key     = %d\n", data->key);
+                    l->Trace(" unicode = 0x%04x\n", data->unicode);
                     break;
+                }
                 case EVENT_MOUSE_BUTTON_DOWN:
                 case EVENT_MOUSE_BUTTON_UP:
-                    l->Trace(" button = %d\n", event.mouseButton.button);
+                {
+                    auto data = event.GetData<MouseButtonEventData>();
+                    l->Trace(" button = %d\n", data->button);
                     break;
+                }
                 case EVENT_MOUSE_WHEEL:
-                    l->Trace(" dir = %s\n", (event.mouseWheel.dir == WHEEL_DOWN) ? "WHEEL_DOWN" : "WHEEL_UP");
-                break;
-                case EVENT_JOY_AXIS:
-                    l->Trace(" axis  = %d\n", event.joyAxis.axis);
-                    l->Trace(" value = %d\n", event.joyAxis.value);
+                {
+                    auto data = event.GetData<MouseWheelEventData>();
+                    l->Trace(" dir = %s\n", (data->dir == WHEEL_DOWN) ? "WHEEL_DOWN" : "WHEEL_UP");
                     break;
+                }
+                case EVENT_JOY_AXIS:
+                {
+                    auto data = event.GetData<JoyAxisEventData>();
+                    l->Trace(" axis  = %d\n", data->axis);
+                    l->Trace(" value = %d\n", data->value);
+                    break;
+                }
                 case EVENT_JOY_BUTTON_DOWN:
                 case EVENT_JOY_BUTTON_UP:
-                    l->Trace(" button = %d\n", event.joyButton.button);
+                {
+                    auto data = event.GetData<JoyButtonEventData>();
+                    l->Trace(" button = %d\n", data->button);
                     break;
+                }
                 case EVENT_ACTIVE:
-                    l->Trace(" flags = 0x%x\n", event.active.flags);
-                    l->Trace(" gain  = %s\n", event.active.gain ? "true" : "false");
+                {
+                    auto data = event.GetData<ActiveEventData>();
+                    l->Trace(" flags = 0x%x\n", data->flags);
+                    l->Trace(" gain  = %s\n", data->gain ? "true" : "false");
                     break;
+                }
                 default:
                     break;
             }
@@ -1221,13 +1264,23 @@ Event CApplication::CreateVirtualEvent(const Event& sourceEvent)
 
     if ((sourceEvent.type == EVENT_KEY_DOWN) || (sourceEvent.type == EVENT_KEY_UP))
     {
-        virtualEvent.type = sourceEvent.type;
-        virtualEvent.key = sourceEvent.key;
-        virtualEvent.key.key = GetVirtualKey(sourceEvent.key.key);
-        virtualEvent.key.virt = true;
+        auto sourceData = sourceEvent.GetData<KeyEventData>();
+        auto virtualKey = GetVirtualKey(sourceData->key);
 
-        if (virtualEvent.key.key == sourceEvent.key.key)
+        if (virtualKey == sourceData->key)
+        {
             virtualEvent.type = EVENT_NULL;
+        }
+        else
+        {
+            virtualEvent.type = sourceEvent.type;
+
+            auto data = sourceData->Clone();
+            auto keyData = static_cast<KeyEventData*>(data.get());
+            keyData->key = virtualKey;
+            keyData->virt = true;
+            virtualEvent.data = std::move(data);
+        }
     }
     else if ((sourceEvent.type == EVENT_JOY_BUTTON_DOWN) || (sourceEvent.type == EVENT_JOY_BUTTON_UP))
     {
@@ -1236,9 +1289,13 @@ Event CApplication::CreateVirtualEvent(const Event& sourceEvent)
         else
             virtualEvent.type = EVENT_KEY_UP;
 
-        virtualEvent.key.virt = true;
-        virtualEvent.key.key = VIRTUAL_JOY(sourceEvent.joyButton.button);
-        virtualEvent.key.unicode = 0;
+        auto sourceData = sourceEvent.GetData<JoyButtonEventData>();
+
+        auto data = MakeUnique<KeyEventData>();
+        data->virt = true;
+        data->key = VIRTUAL_JOY(sourceData->button);
+        data->unicode = 0;
+        virtualEvent.data = std::move(data);
     }
     else
     {

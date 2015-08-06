@@ -93,16 +93,14 @@ bool CColor::EventProcess(const Event &event)
             {
                 m_repeat = DELAY2;
 
-                Event newEvent = event;
-                newEvent.type = m_eventType;
-                m_event->AddEvent(newEvent);
+                m_event->AddEvent(Event(m_eventType));
                 return false;
             }
         }
     }
 
     if ( event.type == EVENT_MOUSE_BUTTON_DOWN &&
-         event.mouseButton.button == MOUSE_BUTTON_LEFT &&
+         event.GetData<MouseButtonEventData>()->button == MOUSE_BUTTON_LEFT &&
          (m_state & STATE_VISIBLE)        &&
          (m_state & STATE_ENABLE)         )
     {
@@ -110,14 +108,13 @@ bool CColor::EventProcess(const Event &event)
         {
             m_repeat = DELAY1;
 
-            Event newEvent = event;
-            newEvent.type = m_eventType;
-            m_event->AddEvent(newEvent);
+            m_event->AddEvent(Event(m_eventType));
             return false;
         }
     }
 
-    if ( event.type == EVENT_MOUSE_BUTTON_UP && event.mouseButton.button == MOUSE_BUTTON_LEFT)
+    if (event.type == EVENT_MOUSE_BUTTON_UP &&
+        event.GetData<MouseButtonEventData>()->button == MOUSE_BUTTON_LEFT)
     {
         m_repeat = 0.0f;
     }

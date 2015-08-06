@@ -1055,7 +1055,7 @@ bool CCamera::EventProcess(const Event &event)
             break;
 
         case EVENT_MOUSE_WHEEL:
-            EventMouseWheel(event.mouseWheel.dir);
+            EventMouseWheel(event.GetData<MouseWheelEventData>()->dir);
             break;
 
         default:

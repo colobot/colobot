@@ -126,7 +126,7 @@ bool CScreenIORead::EventProcess(const Event &event)
 
         if ( event.type == pw->GetEventTypeClose() ||
                 event.type == EVENT_INTERFACE_BACK   ||
-                (event.type == EVENT_KEY_DOWN && event.key.key == KEY(ESCAPE)) )
+                (event.type == EVENT_KEY_DOWN && event.GetData<KeyEventData>()->key == KEY(ESCAPE)) )
         {
             m_main->ChangePhase(PHASE_LEVEL_LIST);
             return false;
@@ -139,7 +139,7 @@ bool CScreenIORead::EventProcess(const Event &event)
 
         if ( event.type == pw->GetEventTypeClose() ||
                 event.type == EVENT_INTERFACE_BACK   ||
-                (event.type == EVENT_KEY_DOWN && event.key.key == KEY(ESCAPE)) )
+                (event.type == EVENT_KEY_DOWN && event.GetData<KeyEventData>()->key == KEY(ESCAPE)) )
         {
             m_interface->DeleteControl(EVENT_WINDOW5);
             m_main->ChangePhase(PHASE_SIMUL);

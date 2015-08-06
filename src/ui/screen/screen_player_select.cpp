@@ -158,11 +158,13 @@ bool CScreenPlayerSelect::EventProcess(const Event &event)
     switch( event.type )
     {
         case EVENT_KEY_DOWN:
-            if ( event.key.key == KEY(RETURN) )
+        {
+            auto data = event.GetData<KeyEventData>();
+            if (data->key == KEY(RETURN))
             {
                 NameSelect();
             }
-            if ( event.key.key == KEY(ESCAPE) )
+            if (data->key == KEY(ESCAPE))
             {
                 pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
                 if ( pw == 0 )  break;
@@ -174,6 +176,7 @@ bool CScreenPlayerSelect::EventProcess(const Event &event)
                 }
             }
             break;
+        }
 
         case EVENT_INTERFACE_NEDIT:
             UpdateNameList();

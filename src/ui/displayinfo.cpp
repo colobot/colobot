@@ -116,9 +116,7 @@ bool CDisplayInfo::EventProcess(const Event &event)
     {
         if ( event.type == pw->GetEventTypeClose() )
         {
-            Event newEvent = event;
-            newEvent.type = EVENT_OBJECT_INFOOK;
-            m_event->AddEvent(newEvent);
+            m_event->AddEvent(Event(EVENT_OBJECT_INFOOK));
         }
 
         if ( event.type == EVENT_SATCOM_HUSTON )
@@ -204,8 +202,8 @@ bool CDisplayInfo::EventProcess(const Event &event)
             }
         }
 
-        if ( ( event.type == EVENT_MOUSE_BUTTON_DOWN && event.mouseButton.button == MOUSE_BUTTON_LEFT )||
-             ( event.type == EVENT_MOUSE_BUTTON_UP && event.mouseButton.button == MOUSE_BUTTON_LEFT ))
+        if ((event.type == EVENT_MOUSE_BUTTON_DOWN || event.type == EVENT_MOUSE_BUTTON_UP) &&
+             event.GetData<MouseButtonEventData>()->button == MOUSE_BUTTON_LEFT)
         {
             UpdateCopyButton();
         }

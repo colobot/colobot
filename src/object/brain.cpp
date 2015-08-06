@@ -226,9 +226,14 @@ bool CBrain::EventProcess(const Event &event)
 
     action = EVENT_NULL;
 
-    if ( event.type == EVENT_KEY_DOWN &&
-         event.key.slot == INPUT_SLOT_ACTION &&
-         !m_main->GetEditLock() )
+    bool isActionSlot = false;
+    if (event.type == EVENT_KEY_DOWN && !m_main->GetEditLock())
+    {
+        auto data = event.GetData<KeyEventData>();
+        isActionSlot = data->slot == INPUT_SLOT_ACTION;
+    }
+
+    if (isActionSlot)
     {
         pw = static_cast< Ui::CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
         if ( pw != 0 )
@@ -248,19 +253,21 @@ bool CBrain::EventProcess(const Event &event)
         action = event.type;
     }
 
-    if(event.type == EVENT_KEY_DOWN && m_object->GetSelect())
+    if (event.type == EVENT_KEY_DOWN && m_object->GetSelect())
     {
-        bool bControl = (event.kmodState & KEY_MOD(CTRL)) != 0;
-        bool bAlt = (event.kmodState & KEY_MOD(ALT)) != 0;
+        auto data = event.GetData<KeyEventData>();
+
+        bool control = (event.kmodState & KEY_MOD(CTRL)) != 0;
+        bool alt = (event.kmodState & KEY_MOD(ALT)) != 0;
         CEventQueue* queue = CApplication::GetInstancePointer()->GetEventQueue();
 
-        if(event.key.slot == INPUT_SLOT_ACTION && bControl)
+        if (data->slot == INPUT_SLOT_ACTION && control)
         {
             queue->AddEvent(Event(m_studio == nullptr ? EVENT_OBJECT_PROGEDIT : EVENT_STUDIO_OK));
             return false;
         }
 
-        if(event.key.slot == INPUT_SLOT_ACTION && bAlt)
+        if (data->slot == INPUT_SLOT_ACTION && alt)
         {
             pw = static_cast< Ui::CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
             if ( pw != 0 )
@@ -277,16 +284,16 @@ bool CBrain::EventProcess(const Event &event)
             return false;
         }
 
-        if(bAlt)
+        if (alt)
         {
             int index = GetSelScript();
-            if(event.key.slot == INPUT_SLOT_UP)
+            if(data->slot == INPUT_SLOT_UP)
                 index--;
-            else if(event.key.slot == INPUT_SLOT_DOWN)
+            else if(data->slot == INPUT_SLOT_DOWN)
                 index++;
-            else if(event.key.key >= KEY(1) && event.key.key <= KEY(9))
-                index = event.key.key-KEY(1);
-            else if(event.key.key == KEY(0))
+            else if(data->key >= KEY(1) && data->key <= KEY(9))
+                index = data->key-KEY(1);
+            else if(data->key == KEY(0))
                 index = 9;
             if(index < 0) index = m_program.size()-1;
             if(index > static_cast<int>(m_program.size())-1) index = 0;
@@ -295,9 +302,7 @@ bool CBrain::EventProcess(const Event &event)
             {
                 SetSelScript(index);
 
-                Event newEvent = event;
-                newEvent.type = EVENT_OBJECT_PROGLIST;
-                queue->AddEvent(newEvent);
+                queue->AddEvent(Event(EVENT_OBJECT_PROGLIST));
                 return false;
             }
         }

@@ -191,8 +191,6 @@ bool CMap::GetFixImage()
 
 bool CMap::EventProcess(const Event &event)
 {
-    bool bInMap;
-
     if ( (m_state & STATE_VISIBLE) == 0 )
         return true;
 
@@ -204,11 +202,13 @@ bool CMap::EventProcess(const Event &event)
     if ( event.type == EVENT_MOUSE_MOVE && Detect(event.mousePos) )
     {
         m_engine->SetMouseType(Gfx::ENG_MOUSE_NORM);
-        if ( DetectObject(event.mousePos, bInMap) != 0 )
+        bool inMap = false;
+        if (DetectObject(event.mousePos, inMap) != nullptr)
             m_engine->SetMouseType(Gfx::ENG_MOUSE_HAND);
     }
 
-    if ( event.type == EVENT_MOUSE_BUTTON_DOWN && event.mouseButton.button == MOUSE_BUTTON_LEFT )
+    if (event.type == EVENT_MOUSE_BUTTON_DOWN &&
+        event.GetData<MouseButtonEventData>()->button == MOUSE_BUTTON_LEFT)
     {
         if ( CControl::Detect(event.mousePos) )
         {

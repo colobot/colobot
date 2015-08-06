@@ -998,8 +998,9 @@ bool CWindow::EventProcess(const Event &event)
         }
     }
 
-    if ( m_bTrashEvent && event.type == EVENT_MOUSE_BUTTON_DOWN  &&
-            event.mouseButton.button == MOUSE_BUTTON_LEFT)
+    if (m_bTrashEvent &&
+        event.type == EVENT_MOUSE_BUTTON_DOWN &&
+        event.GetData<MouseButtonEventData>()->button == MOUSE_BUTTON_LEFT)
     {
         if ( Detect(event.mousePos) )
         {
@@ -1064,12 +1065,12 @@ bool CWindow::EventProcess(const Event &event)
         m_pressPos = pos;
         AdjustButtons();
 
-        Event newEvent = event;
-        newEvent.type = m_eventType;
-        m_event->AddEvent(newEvent);
+        m_event->AddEvent(Event(m_eventType));
     }
 
-    if ( event.type == EVENT_MOUSE_BUTTON_UP && event.mouseButton.button == MOUSE_BUTTON_LEFT && m_bCapture )
+    if (event.type == EVENT_MOUSE_BUTTON_UP &&
+        event.GetData<MouseButtonEventData>()->button == MOUSE_BUTTON_LEFT &&
+        m_bCapture )
     {
         m_bCapture = false;
     }

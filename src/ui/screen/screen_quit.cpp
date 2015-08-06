@@ -111,7 +111,7 @@ bool CScreenQuit::EventProcess(const Event &event)
 
     if ( event.type == EVENT_KEY_DOWN )
     {
-        if ( event.key.key == KEY(ESCAPE) )
+        if ( event.GetData<KeyEventData>()->key == KEY(ESCAPE) )
         {
             m_main->ChangePhase(PHASE_MAIN_MENU);
             return false;

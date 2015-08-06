@@ -270,10 +270,9 @@ bool CList::ClearState(int state)
 
 bool CList::EventProcess(const Event &event)
 {
-    int i;
     if (m_bBlink && event.type == EVENT_FRAME)
     {
-        i = m_selectLine-m_firstLine;
+        int i = m_selectLine-m_firstLine;
 
         if (i >= 0 && i < 4  && m_button[i] != nullptr)
         {
@@ -296,19 +295,20 @@ bool CList::EventProcess(const Event &event)
     if ((m_state & STATE_ENABLE) == 0)
         return true;
 
-    if (event.type == EVENT_MOUSE_WHEEL && event.mouseWheel.dir == WHEEL_UP && Detect(event.mousePos))
+    if (event.type == EVENT_MOUSE_WHEEL && Detect(event.mousePos))
     {
-        if (m_firstLine > 0)
-            m_firstLine--;
-        UpdateScroll();
-        UpdateButton();
-        return true;
-    }
+        auto data = event.GetData<MouseWheelEventData>();
+        if (data->dir == WHEEL_UP)
+        {
+            if (m_firstLine > 0)
+                m_firstLine--;
+        }
+        else
+        {
+            if (m_firstLine < m_totalLine - m_displayLine)
+                m_firstLine++;
+        }
 
-    if (event.type == EVENT_MOUSE_WHEEL && event.mouseWheel.dir == WHEEL_DOWN && Detect(event.mousePos))
-    {
-        if (m_firstLine < m_totalLine - m_displayLine)
-            m_firstLine++;
         UpdateScroll();
         UpdateButton();
         return true;
@@ -319,7 +319,7 @@ bool CList::EventProcess(const Event &event)
     if (event.type == EVENT_MOUSE_MOVE && Detect(event.mousePos))
     {
         m_engine->SetMouseType(Gfx::ENG_MOUSE_NORM);
-        for (i = 0; i < m_displayLine; i++)
+        for (int i = 0; i < m_displayLine; i++)
         {
             if (i + m_firstLine >= m_totalLine)
                 break;
@@ -330,7 +330,7 @@ bool CList::EventProcess(const Event &event)
 
     if (m_bSelectCap)
     {
-        for (i = 0; i < m_displayLine; i++)
+        for (int i = 0; i < m_displayLine; i++)
         {
             if (i + m_firstLine >= m_totalLine)
                 break;
@@ -344,9 +344,7 @@ bool CList::EventProcess(const Event &event)
                 {
                     SetSelect(m_firstLine + i);
 
-                    Event newEvent = event;
-                    newEvent.type = m_eventType;
-                    m_event->AddEvent(newEvent);  // selected line changes
+                    m_event->AddEvent(Event(m_eventType));  // selected line changes
                 }
             }
         }

@@ -407,19 +407,21 @@ bool CEngine::ProcessEvent(const Event &event)
 {
     if (event.type == EVENT_KEY_DOWN)
     {
-        if (event.key.key == KEY(F12))
+        auto data = event.GetData<KeyEventData>();
+
+        if (data->key == KEY(F12))
         {
             m_showStats = !m_showStats;
             return false;
         }
 
-        if (event.key.key == KEY(F11))
+        if (data->key == KEY(F11))
         {
             m_debugLights = !m_debugLights;
             return false;
         }
 
-        if (event.key.key == KEY(F10))
+        if (data->key == KEY(F10))
         {
             m_debugDumpLights = true;
             return false;
@@ -524,8 +526,7 @@ void CEngine::WriteScreenShotThread(std::unique_ptr<WriteScreenShotData> data)
        GetLogger()->Error("%s!\n", data->img->GetError().c_str());
     }
 
-    Event event(EVENT_WRITE_SCENE_FINISHED);
-    CApplication::GetInstancePointer()->GetEventQueue()->AddEvent(event);
+    CApplication::GetInstancePointer()->GetEventQueue()->AddEvent(Event(EVENT_WRITE_SCENE_FINISHED));
 }
 
 bool CEngine::GetPause()
