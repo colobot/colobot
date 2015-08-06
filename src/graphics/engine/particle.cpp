@@ -3538,7 +3538,7 @@ void CParticle::DrawParticle(int sheet)
     if (m_wheelTraceTotal > 0 && sheet == SH_WORLD)
     {
         m_engine->SetTexture("textures/interface/text.png");
-        m_engine->SetState(ENG_RSTATE_NORMAL);
+        m_engine->SetState(ENG_RSTATE_ALPHA);
         Math::Matrix matrix;
         matrix.LoadIdentity();
         m_device->SetTransform(TRANSFORM_WORLD, matrix);
