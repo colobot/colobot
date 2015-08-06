@@ -56,10 +56,10 @@
 #include "ui/maindialog.h"
 #include "ui/controls/window.h"
 
+template<> Ui::CMainUserInterface* CSingleton<Ui::CMainUserInterface>::m_instance = nullptr;
+
 namespace Ui
 {
-
-template<> CMainUserInterface* CSingleton<CMainUserInterface>::m_instance = nullptr;
 
 // Constructor of robot application.
 
