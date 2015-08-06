@@ -54,8 +54,6 @@ CMainDialog::CMainDialog()
     m_sound      = CApplication::GetInstancePointer()->GetSound();
     m_settings   = CSettings::GetInstancePointer();
 
-    m_phase = PHASE_PLAYER_SELECT;
-
     m_dialogOpen = false;
 }
 
@@ -63,11 +61,6 @@ CMainDialog::CMainDialog()
 
 CMainDialog::~CMainDialog()
 {
-}
-
-void CMainDialog::ChangePhase(Phase phase)
-{
-    m_phase = phase;  // copy the info to CRobotMain
 }
 
 // Processing an event.

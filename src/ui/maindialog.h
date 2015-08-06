@@ -21,13 +21,13 @@
 #include "common/event.h"
 #include "common/restext.h"
 
-#include "object/robotmain.h"
-
 #include <vector>
+#include <functional>
 
 
 class CSettings;
 class CSoundInterface;
+class CRobotMain;
 
 namespace Gfx
 {
@@ -47,7 +47,6 @@ public:
     ~CMainDialog();
 
     bool    EventProcess(const Event &event);
-    void    ChangePhase(Phase phase);
 
 
     typedef std::function<void()> DialogCallback;
@@ -72,8 +71,6 @@ protected:
     CInterface*       m_interface;
     CSoundInterface*  m_sound;
     CSettings*        m_settings;
-
-    Phase                m_phase;            // copy of CRobotMain
 
     enum class DialogType {
         Question,
