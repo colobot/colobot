@@ -1024,11 +1024,11 @@ void CBrain::StopSecondaryTask()
 
 bool CBrain::IntroduceVirus()
 {
-    int     i, j;
+    if(m_program.size() == 0) return false;
 
-    for ( i=0 ; i<50 ; i++ )
+    for ( int i=0 ; i<50 ; i++ )
     {
-        j = rand()%m_program.size();
+        int j = rand()%m_program.size();
         if ( m_program[j]->script->IntroduceVirus() )  // tries to introduce
         {
             m_bActiveVirus = true;  // active virus
