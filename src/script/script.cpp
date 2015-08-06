@@ -790,9 +790,7 @@ void InsertToken(char* script, int pos, const char* token)
 
 bool CScript::IntroduceVirus()
 {
-    int     i, start, iFound;
-    int     found[11*2];
-    char*   newScript;
+    if (m_script == nullptr) return false;
 
     const char*   names[11*2] =
     {
@@ -809,10 +807,11 @@ bool CScript::IntroduceVirus()
         "EnergyCell",   "InFront",
     };
 
-    iFound = 0;
-    for ( i=0 ; i<11 ; i++ )
+    int iFound = 0;
+    int     found[11*2];
+    for ( int i=0 ; i<11 ; i++ )
     {
-        start = SearchToken(m_script, names[i*2]);
+        int start = SearchToken(m_script, names[i*2]);
         if ( start != -1 )
         {
             found[iFound++] = i*2;
@@ -821,11 +820,11 @@ bool CScript::IntroduceVirus()
     }
     if ( iFound == 0 )  return false;
 
-    i = (rand()%(iFound/2))*2;
-    start = found[i+1];
+    int i = (rand()%(iFound/2))*2;
+    int start = found[i+1];
     i     = found[i+0];
 
-    newScript = new char[m_len+strlen(names[i+1])+1];
+    char* newScript = new char[m_len+strlen(names[i+1])+1];
     strcpy(newScript, m_script);
     delete[] m_script;
     m_script = newScript;
