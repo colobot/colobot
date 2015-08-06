@@ -24,12 +24,11 @@
 
 #pragma once
 
-
 #include "graphics/core/color.h"
 
 #include "math/intpoint.h"
 
-#include <stddef.h>
+#include <memory>
 #include <string>
 
 
@@ -42,9 +41,7 @@ struct SDL_Surface;
 struct ImageData
 {
     //! SDL surface with image data
-    SDL_Surface* surface;
-
-    ImageData() { surface = NULL; }
+    SDL_Surface* surface = nullptr;
 };
 
 /**
@@ -56,12 +53,6 @@ struct ImageData
   */
 class CImage
 {
-private:
-    //! Blocked!
-    CImage(const CImage &other) {}
-    //! Blocked!
-    void operator=(const CImage &other) {}
-
 public:
     //! Constructs empty image (with NULL data)
     CImage();
@@ -69,6 +60,9 @@ public:
     CImage(Math::IntPoint size);
     //! Destroys image, calling Free()
     virtual ~CImage();
+
+    CImage(const CImage &other) = delete;
+    void operator=(const CImage &other) = delete;
 
     //! Frees the allocated image data
     void Free();
@@ -125,6 +119,6 @@ private:
     //! Last encountered error
     std::string m_error;
     //! Image data
-    ImageData* m_data;
+    std::unique_ptr<ImageData> m_data;
 };
 

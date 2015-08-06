@@ -20,14 +20,16 @@
 
 #include "common/image.h"
 
+#include "common/make_unique.h"
+
 #include "common/resources/resourcemanager.h"
 
 #include "math/func.h"
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-#include <assert.h>
+#include <cstdlib>
+#include <cstdio>
+#include <cstring>
+#include <cassert>
 
 #include <SDL.h>
 #include <SDL_image.h>
@@ -65,7 +67,10 @@
    you can find other examples on http://marsnomercy.org
 */
 
+namespace
+{
 std::string PNG_ERROR = "";
+}
 
 void PNGUserError(png_structp ctx, png_const_charp str)
 {
@@ -86,16 +91,10 @@ int PNGColortypeFromSurface(SDL_Surface *surface)
 
 bool PNGSaveSurface(const char *filename, SDL_Surface *surf)
 {
-    FILE *fp;
-    png_structp png_ptr;
-    png_infop info_ptr;
-    int i, colortype;
-    png_bytep *row_pointers;
-
     PNG_ERROR = "";
 
     /* Opening output file */
-    fp = fopen(filename, "wb");
+    FILE *fp = fopen(filename, "wb");
     if (fp == nullptr)
     {
         PNG_ERROR = std::string("Could not open file '") + std::string(filename) + std::string("' for saving");
@@ -103,48 +102,46 @@ bool PNGSaveSurface(const char *filename, SDL_Surface *surf)
     }
 
     /* Initializing png structures and callbacks */
-    png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, nullptr, PNGUserError, nullptr);
-    if (png_ptr == nullptr)
+    png_structp pngPtr = png_create_write_struct(PNG_LIBPNG_VER_STRING, nullptr, PNGUserError, nullptr);
+    if (pngPtr == nullptr)
     {
         fclose(fp);
         return false;
     }
 
-    info_ptr = png_create_info_struct(png_ptr);
-    if (info_ptr == nullptr)
+    png_infop infoPtr = png_create_info_struct(pngPtr);
+    if (infoPtr == nullptr)
     {
-        png_destroy_write_struct(&png_ptr, static_cast<png_infopp>(nullptr));
+        png_destroy_write_struct(&pngPtr, static_cast<png_infopp>(nullptr));
         PNG_ERROR = "png_create_info_struct() error!";
         fclose(fp);
         return false;
     }
 
-    if (setjmp(png_jmpbuf(png_ptr)))
+    if (setjmp(png_jmpbuf(pngPtr)))
     {
-        png_destroy_write_struct(&png_ptr, &info_ptr);
+        png_destroy_write_struct(&pngPtr, &infoPtr);
         fclose(fp);
         return false;
     }
 
-    png_init_io(png_ptr, fp);
+    png_init_io(pngPtr, fp);
 
-    colortype = PNGColortypeFromSurface(surf);
-    png_set_IHDR(png_ptr, info_ptr, surf->w, surf->h, 8, colortype, PNG_INTERLACE_NONE,
+    int colortype = PNGColortypeFromSurface(surf);
+    png_set_IHDR(pngPtr, infoPtr, surf->w, surf->h, 8, colortype, PNG_INTERLACE_NONE,
                  PNG_COMPRESSION_TYPE_DEFAULT, PNG_FILTER_TYPE_DEFAULT);
 
     /* Writing the image */
-    png_write_info(png_ptr, info_ptr);
-    png_set_packing(png_ptr);
+    png_write_info(pngPtr, infoPtr);
+    png_set_packing(pngPtr);
 
-    row_pointers = new png_bytep[surf->h];
-    for (i = 0; i < surf->h; i++)
-        row_pointers[i] = static_cast<png_bytep>( static_cast<Uint8 *>(surf->pixels) ) + i*surf->pitch;
-    png_write_image(png_ptr, row_pointers);
-    png_write_end(png_ptr, info_ptr);
+    auto rowPointers = MakeUniqueArray<png_bytep>(surf->h);
+    for (int i = 0; i < surf->h; i++)
+        rowPointers[i] = static_cast<png_bytep>( static_cast<Uint8 *>(surf->pixels) ) + i*surf->pitch;
+    png_write_image(pngPtr, rowPointers.get());
+    png_write_end(pngPtr, infoPtr);
 
-    /* Cleaning out... */
-    delete[] row_pointers;
-    png_destroy_write_struct(&png_ptr, &info_ptr);
+    png_destroy_write_struct(&pngPtr, &infoPtr);
     fclose(fp);
 
     return true;
@@ -160,7 +157,7 @@ CImage::CImage()
 
 CImage::CImage(Math::IntPoint size)
 {
-    m_data = new ImageData();
+    m_data = MakeUnique<ImageData>();
     m_data->surface = SDL_CreateRGBSurface(0, size.x, size.y, 32,
                                            0x00FF0000, 0x0000FF00, 0x000000FF, 0xFF000000);
 }
@@ -184,14 +181,13 @@ void CImage::Free()
             SDL_FreeSurface(m_data->surface);
             m_data->surface = nullptr;
         }
-        delete m_data;
-        m_data = nullptr;
+        m_data.reset();
     }
 }
 
 ImageData* CImage::GetData()
 {
-    return m_data;
+    return m_data.get();
 }
 
 Math::IntPoint CImage::GetSize() const
@@ -331,7 +327,7 @@ void CImage::SetPixelInt(Math::IntPoint pixel, Gfx::IntColor color)
 
     Uint32 u = SDL_MapRGBA(m_data->surface->format, color.r, color.g, color.b, color.a);
 
-    switch(bpp)
+    switch (bpp)
     {
         case 1:
             *p = u;
@@ -386,15 +382,14 @@ bool CImage::Load(const std::string& fileName)
     if (! IsEmpty() )
         Free();
 
-    m_data = new ImageData();
+    m_data = MakeUnique<ImageData>();
 
     m_error = "";
 
     auto file = CResourceManager::GetSDLFileHandler(fileName.c_str());
     if (!file->IsOpen())
     {
-        delete m_data;
-        m_data = nullptr;
+        m_data.reset();
 
         m_error = "Unable to open file";
         return false;
@@ -402,8 +397,7 @@ bool CImage::Load(const std::string& fileName)
     m_data->surface = IMG_Load_RW(file->GetHandler(), 1);
     if (m_data->surface == nullptr)
     {
-        delete m_data;
-        m_data = nullptr;
+        m_data.reset();
 
         m_error = std::string(IMG_GetError());
         return false;
