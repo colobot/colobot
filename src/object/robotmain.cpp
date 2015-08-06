@@ -5976,6 +5976,8 @@ void CRobotMain::StartMissionTimer()
 
 void CRobotMain::SetAutosave(bool enable)
 {
+    if (m_autosave == enable) return;
+
     m_autosave = enable;
     m_autosaveLast = m_gameTimeAbsolute;
     AutosaveRotate(false);
@@ -5988,6 +5990,8 @@ bool CRobotMain::GetAutosave()
 
 void CRobotMain::SetAutosaveInterval(int interval)
 {
+    if (m_autosaveInterval == interval) return;
+
     m_autosaveInterval = interval;
     m_autosaveLast = m_gameTimeAbsolute;
 }
@@ -5999,6 +6003,8 @@ int CRobotMain::GetAutosaveInterval()
 
 void CRobotMain::SetAutosaveSlots(int slots)
 {
+    if (m_autosaveSlots == slots) return;
+
     m_autosaveSlots = slots;
     AutosaveRotate(false);
 }
