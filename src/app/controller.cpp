@@ -20,19 +20,16 @@
 #include "app/controller.h"
 
 
-#include "object/robotmain.h"
+#include "common/make_unique.h"
 
-#include "ui/maindialog.h"
+#include "object/robotmain.h"
 
 
 
 CController::CController(CApplication* app, bool configLoaded)
  : m_app(app)
- , m_main(new CRobotMain(this))
- , m_dialog(new Ui::CMainDialog())
 {
-    m_main->Create();
-    m_dialog->Create();
+    m_main = MakeUnique<CRobotMain>();
     if (configLoaded)
         m_main->LoadConfigFile();
     else
@@ -53,11 +50,6 @@ CRobotMain* CController::GetRobotMain()
     return m_main.get();
 }
 
-Ui::CMainDialog* CController::GetMainDialog()
-{
-    return m_dialog.get();
-}
-
 void CController::StartApp()
 {
     m_main->ChangePhase(PHASE_WELCOME1);
@@ -71,7 +63,5 @@ void CController::StartGame(LevelCategory cat, int chap, int lvl)
 
 void CController::ProcessEvent(Event& event)
 {
-    bool passOn = m_dialog->EventProcess(event);
-    if (passOn)
-        m_main->ProcessEvent(event);
+    m_main->ProcessEvent(event);
 }

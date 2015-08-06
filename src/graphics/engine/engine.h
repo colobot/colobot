@@ -668,7 +668,7 @@ public:
 
 
     //! Writes a screenshot containing the current frame
-    void            WriteScreenShot(const std::string& fileName, int width, int height);
+    void            WriteScreenShot(const std::string& fileName);
 
 
     //! Get pause mode

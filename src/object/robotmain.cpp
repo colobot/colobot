@@ -22,7 +22,6 @@
 #include "CBot/CBotDll.h"
 
 #include "app/app.h"
-#include "app/controller.h"
 #include "app/input.h"
 
 #include "common/config_file.h"
@@ -97,6 +96,7 @@
 #include "ui/maindialog.h"
 #include "ui/mainmap.h"
 #include "ui/mainshort.h"
+#include "ui/mainui.h"
 #include "ui/map.h"
 #include "ui/shortcut.h"
 #include "ui/slider.h"
@@ -129,37 +129,41 @@ float   g_unit;             // conversion factor
 
 
 //! Constructor of robot application
-CRobotMain::CRobotMain(CController* controller)
+CRobotMain::CRobotMain()
 {
-    m_ctrl       = controller;
-    m_app        = nullptr;
+    m_app        = CApplication::GetInstancePointer();
 
-    m_objMan     = nullptr;
+    m_eventQueue = m_app->GetEventQueue();
+    m_sound      = m_app->GetSound();
 
-    m_eventQueue = nullptr;
-    m_sound      = nullptr;
-
-    m_engine     = nullptr;
-    m_oldModelManager = nullptr;
+    m_engine     = Gfx::CEngine::GetInstancePointer();
+    m_oldModelManager = m_engine->GetModelManager();
     m_modelManager = MakeUnique<Gfx::CModelManager>();
-    m_lightMan   = nullptr;
-    m_particle   = nullptr;
-    m_water      = nullptr;
-    m_cloud      = nullptr;
-    m_lightning  = nullptr;
-    m_planet     = nullptr;
-    m_pause      = nullptr;
-    m_input      = nullptr;
+    m_lightMan   = m_engine->GetLightManager();
+    m_particle   = m_engine->GetParticle();
+    m_water      = m_engine->GetWater();
+    m_cloud      = m_engine->GetCloud();
+    m_lightning  = m_engine->GetLightning();
+    m_planet     = m_engine->GetPlanet();
+    m_pause      = CPauseManager::GetInstancePointer();
+    m_input      = CInput::GetInstancePointer();
+    m_settings   = new CSettings();
 
-    m_interface   = nullptr;
-    m_terrain     = nullptr;
-    m_camera      = nullptr;
-    m_displayText = nullptr;
-    m_movie       = nullptr;
-    m_dialog      = nullptr;
-    m_short       = nullptr;
-    m_map         = nullptr;
+    m_interface   = new Ui::CInterface();
+    m_terrain     = new Gfx::CTerrain();
+    m_camera      = new Gfx::CCamera();
+    m_displayText = new Ui::CDisplayText();
+    m_movie       = new CMainMovie();
+    m_ui          = MakeUnique<Ui::CMainUserInterface>();
+    m_short       = new Ui::CMainShort();
+    m_map         = new Ui::CMainMap();
     m_displayInfo = nullptr;
+
+    m_objMan = new CObjectManager(m_engine,
+                                  m_terrain,
+                                  m_oldModelManager,
+                                  m_modelManager.get(),
+                                  m_particle);
 
     m_time = 0.0f;
     m_gameTime = 0.0f;
@@ -255,42 +259,6 @@ CRobotMain::CRobotMain(CController* controller)
         m_showLimit[i].total = 0;
         m_showLimit[i].link = 0;
     }
-}
-
-void CRobotMain::Create()
-{
-    m_app        = m_ctrl->GetApplication();
-
-    m_eventQueue = m_app->GetEventQueue();
-    m_sound      = m_app->GetSound();
-
-    m_engine     = Gfx::CEngine::GetInstancePointer();
-    m_oldModelManager = m_engine->GetModelManager();
-    m_lightMan   = m_engine->GetLightManager();
-    m_particle   = m_engine->GetParticle();
-    m_water      = m_engine->GetWater();
-    m_cloud      = m_engine->GetCloud();
-    m_lightning  = m_engine->GetLightning();
-    m_planet     = m_engine->GetPlanet();
-    m_pause      = CPauseManager::GetInstancePointer();
-    m_input      = CInput::GetInstancePointer();
-    m_settings   = new CSettings();
-
-    m_interface   = new Ui::CInterface();
-    m_terrain     = new Gfx::CTerrain();
-    m_camera      = new Gfx::CCamera();
-    m_displayText = new Ui::CDisplayText();
-    m_movie       = new CMainMovie();
-    m_dialog      = m_ctrl->GetMainDialog();
-    m_short       = new Ui::CMainShort();
-    m_map         = new Ui::CMainMap();
-    m_displayInfo = nullptr;
-
-    m_objMan = new CObjectManager(m_engine,
-                                  m_terrain,
-                                  m_oldModelManager,
-                                  m_modelManager.get(),
-                                  m_particle);
 
     m_engine->SetTerrain(m_terrain);
 
@@ -341,12 +309,6 @@ CRobotMain::~CRobotMain()
 
     delete m_objMan;
     m_objMan = nullptr;
-
-    m_dialog = nullptr;
-    m_input = nullptr;
-    m_pause = nullptr;
-    m_app = nullptr;
-    m_ctrl = nullptr;
 }
 
 Gfx::CCamera* CRobotMain::GetCamera()
@@ -444,7 +406,7 @@ void CRobotMain::ChangePhase(Phase phase)
         if (phase == PHASE_WIN)  // wins a simulation?
         {
             m_playerProfile->SetLevelPassed(m_levelCategory, m_levelChap, m_levelRank, true);
-            m_dialog->NextMission();  // passes to the next mission
+            m_ui->NextMission();  // passes to the next mission
         }
 
         m_app->SetLowCPU(true); // doesn't use much CPU in interface phases
@@ -524,7 +486,7 @@ void CRobotMain::ChangePhase(Phase phase)
     pb->SetState(Ui::STATE_SIMPLY);
     pb->ClearState(Ui::STATE_VISIBLE);
 
-    m_dialog->ChangePhase(m_phase);
+    m_ui->ChangePhase(m_phase);
     if (!resetWorld) return;
 
     dim.x = 32.0f/640.0f;
@@ -558,7 +520,7 @@ void CRobotMain::ChangePhase(Phase phase)
 
         try
         {
-            CreateScene(m_dialog->GetSceneSoluce(), false, false);  // interactive scene
+            CreateScene(m_ui->GetSceneSoluce(), false, false);  // interactive scene
             if (m_mapImage)
                 m_map->SetFixImage(m_mapFilename);
 
@@ -663,6 +625,8 @@ void CRobotMain::ChangePhase(Phase phase)
 //! Processes an event
 bool CRobotMain::ProcessEvent(Event &event)
 {
+    if (!m_ui->EventProcess(event)) return false;
+
     if (event.type == EVENT_FRAME)
     {
         if (!m_movie->EventProcess(event))  // end of the movie?
@@ -835,7 +799,7 @@ bool CRobotMain::ProcessEvent(Event &event)
                     else if (m_lostDelay > 0.0f)
                         ChangePhase(PHASE_LOST);
                     else if (!m_cmdEdit)
-                        m_dialog->StartAbort();  // do you want to leave?
+                        m_ui->GetDialog()->StartAbort();  // do you want to leave?
                 }
                 if (event.key.slot == INPUT_SLOT_PAUSE)
                 {
@@ -993,7 +957,7 @@ bool CRobotMain::ProcessEvent(Event &event)
                 break;
 
             case EVENT_OBJECT_DELETE:
-                m_dialog->StartDeleteObject();  // do you want to destroy it?
+                m_ui->GetDialog()->StartDeleteObject();  // do you want to destroy it?
                 break;
 
             case EVENT_OBJECT_BHELP:
@@ -1373,14 +1337,14 @@ void CRobotMain::ExecuteCmd(char *cmd)
     if (strcmp(cmd, "showsoluce") == 0)
     {
         m_showSoluce = !m_showSoluce;
-        m_dialog->ShowSoluceUpdate();
+        m_ui->ShowSoluceUpdate();
         return;
     }
 
     if (strcmp(cmd, "allmission") == 0)
     {
         m_showAll = !m_showAll;
-        m_dialog->AllMissionUpdate();
+        m_ui->AllMissionUpdate();
         return;
     }
 
@@ -1472,7 +1436,7 @@ void CRobotMain::StartDisplayInfo(const char *filename, int index)
         m_sound->MuteAll(true);
     }
 
-    bool soluce = m_dialog->GetSceneSoluce();
+    bool soluce = m_ui->GetSceneSoluce();
 
     m_displayInfo = new Ui::CDisplayInfo();
     m_displayInfo->StartDisplayInfo(filename, index, soluce);
@@ -5322,7 +5286,7 @@ void CRobotMain::ResetCreate()
 
     try
     {
-        CreateScene(m_dialog->GetSceneSoluce(), false, true);
+        CreateScene(m_ui->GetSceneSoluce(), false, true);
 
         if (!GetNiceReset()) return;
 
@@ -5665,7 +5629,7 @@ bool CRobotMain::GetShowSoluce()
 bool CRobotMain::GetSceneSoluce()
 {
     if (m_infoFilename[SATCOM_SOLUCE][0] == 0) return false;
-    return m_dialog->GetSceneSoluce();
+    return m_ui->GetSceneSoluce();
 }
 
 bool CRobotMain::GetShowAll()
@@ -5708,13 +5672,13 @@ int CRobotMain::GetGamerGlasses()
 //! Returns the mode with just the head
 bool CRobotMain::GetGamerOnlyHead()
 {
-    return m_dialog->GetGamerOnlyHead();
+    return m_ui->GetGamerOnlyHead();
 }
 
 //! Returns the angle of presentation
 float CRobotMain::GetPersoAngle()
 {
-    return m_dialog->GetPersoAngle();
+    return m_ui->GetPersoAngle();
 }
 
 void CRobotMain::SetLevel(LevelCategory cat, int chap, int rank)
@@ -5743,7 +5707,7 @@ int CRobotMain::GetLevelRank()
 std::string CRobotMain::GetCustomLevelDir()
 {
     assert(m_levelCategory == LevelCategory::CustomLevels);
-    return m_dialog->GetCustomLevelName(m_levelChap);
+    return m_ui->GetCustomLevelName(m_levelChap);
 }
 
 void CRobotMain::SetReadScene(std::string path)
@@ -5753,12 +5717,12 @@ void CRobotMain::SetReadScene(std::string path)
 
 void CRobotMain::UpdateChapterPassed()
 {
-    return m_dialog->UpdateChapterPassed();
+    return m_ui->UpdateChapterPassed();
 }
 
 void CRobotMain::MakeSaveScreenshot(const std::string& name)
 {
-    return m_dialog->MakeSaveScreenshot(name);
+    return m_ui->MakeSaveScreenshot(name);
 }
 
 
@@ -5980,17 +5944,17 @@ void CRobotMain::DisplayError(Error err, Math::Vector goal, float height, float 
 
 void CRobotMain::UpdateCustomLevelList()
 {
-    m_dialog->UpdateCustomLevelList();
+    m_ui->UpdateCustomLevelList();
 }
 
 std::string CRobotMain::GetCustomLevelName(int id)
 {
-    return m_dialog->GetCustomLevelName(id);
+    return m_ui->GetCustomLevelName(id);
 }
 
 const std::vector<std::string>& CRobotMain::GetCustomLevelList()
 {
-    return m_dialog->GetCustomLevelList();
+    return m_ui->GetCustomLevelList();
 }
 
 void CRobotMain::StartMissionTimer()

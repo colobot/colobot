@@ -500,10 +500,10 @@ void CEngine::FrameUpdate()
     }
 }
 
-void CEngine::WriteScreenShot(const std::string& fileName, int width, int height)
+void CEngine::WriteScreenShot(const std::string& fileName)
 {
     auto data = MakeUnique<WriteScreenShotData>();
-    data->img = MakeUnique<CImage>(Math::IntPoint(width, height));
+    data->img = MakeUnique<CImage>(Math::IntPoint(m_size.x, m_size.y));
 
     data->img->SetDataPixels(m_device->GetFrameBufferPixels());
     data->img->FlipVertically();

@@ -243,6 +243,7 @@ set(BASE_SOURCES
     ui/maindialog.cpp
     ui/mainmap.cpp
     ui/mainshort.cpp
+    ui/mainui.cpp
     ui/map.cpp
     ui/scroll.cpp
     ui/shortcut.cpp

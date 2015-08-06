@@ -98,7 +98,7 @@ class CModelManager;
 
 namespace Ui
 {
-class CMainDialog;
+class CMainUserInterface;
 class CMainShort;
 class CMainMap;
 class CInterface;
@@ -146,9 +146,8 @@ const int SATCOM_MAX        = 6;
 class CRobotMain : public CSingleton<CRobotMain>
 {
 public:
-    CRobotMain(CController* controller);
+    CRobotMain();
     virtual ~CRobotMain();
-    void        Create();
 
     Gfx::CCamera* GetCamera();
     Gfx::CTerrain* GetTerrain();
@@ -430,7 +429,7 @@ protected:
     Gfx::CLightManager* m_lightMan;
     Gfx::CTerrain*      m_terrain;
     Gfx::CCamera*       m_camera;
-    Ui::CMainDialog*    m_dialog;
+    std::unique_ptr<Ui::CMainUserInterface> m_ui;
     Ui::CMainShort*     m_short;
     Ui::CMainMap*       m_map;
     Ui::CInterface*     m_interface;

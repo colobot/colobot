@@ -32,14 +32,10 @@
 class CApplication;
 class CRobotMain;
 struct Event;
-namespace Ui
-{
-class CMainDialog;
-}
 
 /**
  * \class CController
- * \brief Entry point into CRobotMain and CMainDialog
+ * \brief Entry point into CRobotMain
  */
 class CController
 {
@@ -51,8 +47,6 @@ public:
     CApplication*    GetApplication();
     //! Return CRobotMain instance
     CRobotMain*      GetRobotMain();
-    //! Return CMainDialog instance
-    Ui::CMainDialog* GetMainDialog();
 
     //! Event processing
     void ProcessEvent(Event &event);
@@ -65,5 +59,4 @@ public:
 private:
     CApplication* m_app;
     std::unique_ptr<CRobotMain> m_main;
-    std::unique_ptr<Ui::CMainDialog> m_dialog;
 };
