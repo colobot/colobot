@@ -4861,8 +4861,8 @@ void CRobotMain::IOWriteObject(CLevelParserLine* line, CObject* obj)
         line->AddParam("option", MakeUnique<CLevelParserParam>(obj->GetOption()));
     }
 
-    if (obj == m_infoObject)
-        line->AddParam("select", MakeUnique<CLevelParserParam>(1));
+    if (obj->GetSelect())
+        line->AddParam("select", MakeUnique<CLevelParserParam>(true));
 
     obj->Write(line);
 
