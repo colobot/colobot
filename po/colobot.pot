@@ -159,6 +159,9 @@ msgstr ""
 msgid "LOADING"
 msgstr ""
 
+msgid "OK"
+msgstr ""
+
 msgid "Keyword help(\\key cbot;)"
 msgstr ""
 
@@ -238,9 +241,6 @@ msgid "www.colobot.info"
 msgstr ""
 
 msgid "Recorder"
-msgstr ""
-
-msgid "OK"
 msgstr ""
 
 msgid "Cancel"

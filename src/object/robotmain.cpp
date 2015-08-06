@@ -509,15 +509,8 @@ void CRobotMain::ChangePhase(Phase phase)
         m_fixScene = false;
     }
 
-    if (m_phase == PHASE_MAIN_MENU)
-    {
-        m_engine->DeleteTexture("generic.png");
-    }
-
     if (m_phase == PHASE_SIMUL)
     {
-        m_engine->DeleteTexture("interface.png");
-
         m_app->SetLowCPU(false); // high CPU for simulation
 
         bool loading = !m_sceneReadPath.empty();
@@ -541,9 +534,7 @@ void CRobotMain::ChangePhase(Phase phase)
         }
         catch (const std::runtime_error& e)
         {
-            GetLogger()->Error("An error occured while trying to load a level\n");
-            GetLogger()->Error("%s\n", e.what());
-            ChangePhase(PHASE_MAIN_MENU);
+            LevelLoadingError("An error occured while trying to load a level scene", e);
         }
     }
 
@@ -586,9 +577,7 @@ void CRobotMain::ChangePhase(Phase phase)
             }
             catch (const std::runtime_error& e)
             {
-                GetLogger()->Error("An error occured while trying to load win scene\n");
-                GetLogger()->Error("%s\n", e.what());
-                ChangePhase(PHASE_LEVEL_LIST);
+                LevelLoadingError("An error occured while trying to load win scene", e);
             }
         }
     }
@@ -618,9 +607,7 @@ void CRobotMain::ChangePhase(Phase phase)
             }
             catch (const std::runtime_error& e)
             {
-                GetLogger()->Error("An error occured while trying to load lost scene\n");
-                GetLogger()->Error("%s\n", e.what());
-                ChangePhase(PHASE_LEVEL_LIST);
+                LevelLoadingError("An error occured while trying to load lost scene", e);
             }
         }
     }
@@ -963,7 +950,7 @@ bool CRobotMain::ProcessEvent(Event &event)
                 break;
 
             case EVENT_OBJECT_DELETE:
-                m_ui->GetDialog()->StartQuestion(RT_DIALOG_DELOBJ, true, false, [&]() {
+                m_ui->GetDialog()->StartQuestion(RT_DIALOG_DELOBJ, true, false, false, [&]() {
                     DeleteObject();
                 });
                 break;
@@ -2744,8 +2731,7 @@ void CRobotMain::ScenePerso()
     }
     catch (const std::runtime_error& e)
     {
-        GetLogger()->Error("An error occured while trying to load apperance scene\n");
-        GetLogger()->Error("%s\n", e.what());
+        LevelLoadingError("An error occured while trying to load apperance scene", e, PHASE_PLAYER_SELECT);
     }
 
     m_engine->SetDrawWorld(false);  // does not draw anything on the interface
@@ -3877,6 +3863,14 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
     if (m_app->GetSceneTestMode())
         m_eventQueue->AddEvent(Event(EVENT_QUIT));
+}
+
+void CRobotMain::LevelLoadingError(const std::string& error, const std::runtime_error& exception, Phase exitPhase)
+{
+    GetLogger()->Error("%s\n", error.c_str());
+    GetLogger()->Error("%s\n", exception.what());
+    ChangePhase(exitPhase);
+    m_ui->GetDialog()->StartInformation("Loading error", error, exception.what(), true, false);
 }
 
 //! Creates a directional light
@@ -5308,9 +5302,7 @@ void CRobotMain::ResetCreate()
     }
     catch (const std::runtime_error& e)
     {
-        GetLogger()->Error("An error occured while trying to reset scene\n");
-        GetLogger()->Error("%s\n", e.what());
-        ChangePhase(PHASE_LEVEL_LIST);
+        LevelLoadingError("An error occured while trying to reset scene", e);
     }
 }
 

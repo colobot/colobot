@@ -51,11 +51,19 @@ public:
 
     typedef std::function<void()> DialogCallback;
     void    StartQuestion(const std::string& text,
-                          bool warningYes, bool warningNo,
+                          bool warningYes = false, bool warningNo = false,
+                          bool fireParticles = false,
                           DialogCallback yes = nullptr, DialogCallback no = nullptr);
     void    StartQuestion(ResTextType text,
-                          bool warningYes, bool warningNo,
+                          bool warningYes = false, bool warningNo = false,
+                          bool fireParticles = false,
                           DialogCallback yes = nullptr, DialogCallback no = nullptr);
+    void    StartInformation(const std::string& title,
+                             const std::string& text,
+                             const std::string& details,
+                             bool warning = false,
+                             bool fireParticles = false,
+                             DialogCallback ok = nullptr);
     void    StartPauseMenu();
     void    StopDialog();
     bool    IsDialog();

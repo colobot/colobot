@@ -205,7 +205,7 @@ bool CScreenPlayerSelect::EventProcess(const Event &event)
 
             GetResource(RES_TEXT, RT_DIALOG_DELGAME, name);
             gamer = pl->GetItemName(pl->GetSelect());
-            m_dialog->StartQuestion(StrUtils::Format(name.c_str(), gamer), true, false, [&]() {
+            m_dialog->StartQuestion(StrUtils::Format(name.c_str(), gamer), true, false, false, [&]() {
                 NameDelete();
             });
             break;

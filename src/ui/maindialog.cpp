@@ -237,7 +237,7 @@ void CMainDialog::StartPauseMenu()
     pb->SetName(name);
 }
 
-void CMainDialog::StartQuestion(const std::string& text, bool warningYes, bool warningNo, DialogCallback yes, DialogCallback no)
+void CMainDialog::StartQuestion(const std::string& text, bool warningYes, bool warningNo, bool fireParticles, DialogCallback yes, DialogCallback no)
 {
     CWindow*    pw;
     CButton*    pb;
@@ -247,7 +247,7 @@ void CMainDialog::StartQuestion(const std::string& text, bool warningYes, bool w
     dim.x = 0.7f;
     dim.y = 0.3f;
 
-    StartDialog(dim, false);
+    StartDialog(dim, fireParticles);
     m_dialogType = DialogType::Question;
     m_callbackYes = yes;
     m_callbackNo = no;
@@ -288,11 +288,55 @@ void CMainDialog::StartQuestion(const std::string& text, bool warningYes, bool w
     }
 }
 
-void CMainDialog::StartQuestion(ResTextType text, bool warningYes, bool warningNo, DialogCallback yes, DialogCallback no)
+void CMainDialog::StartQuestion(ResTextType text, bool warningYes, bool warningNo, bool fireParticles, DialogCallback yes, DialogCallback no)
 {
     std::string name;
     GetResource(RES_TEXT, text, name);
-    StartQuestion(name, warningYes, warningNo, yes, no);
+    StartQuestion(name, warningYes, warningNo, fireParticles, yes, no);
+}
+
+void CMainDialog::StartInformation(const std::string& title, const std::string& text, const std::string& details, bool warning, bool fireParticles, DialogCallback ok)
+{
+    CWindow*    pw;
+    CButton*    pb;
+    CLabel*     pl;
+    Math::Point pos, dim, ddim;
+    std::string name;
+
+    dim.x = 0.7f;
+    dim.y = 0.3f;
+
+    StartDialog(dim, fireParticles);
+    m_dialogType = DialogType::Question;
+    m_callbackYes = ok;
+
+    pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW9));
+    if ( pw == 0 )  return;
+    pw->SetName(title);
+
+    pos.x = 0.00f;
+    pos.y = 0.50f;
+    ddim.x = 1.00f;
+    ddim.y = 0.05f;
+    pl = pw->CreateLabel(pos, ddim, -1, EVENT_DIALOG_LABEL, text);
+    pl->SetFontType(Gfx::FONT_COLOBOT_BOLD);
+    //TODO: Add \n support in CLabel
+    pos.y -= ddim.y;
+    pl = pw->CreateLabel(pos, ddim, -1, EVENT_DIALOG_LABEL1, details);
+    pl->SetFontSize(10.0f);
+
+    pos.x  = 0.50f-0.075f;
+    pos.y  = 0.50f-dim.y/2.0f+0.03f;
+    ddim.x = 0.15f;
+    ddim.y = 0.06f;
+    pb = pw->CreateButton(pos, ddim, -1, EVENT_DIALOG_OK);
+    pb->SetState(STATE_SHADOW);
+    GetResource(RES_TEXT, RT_DIALOG_OK, name);
+    pb->SetName(name);
+    if (warning)
+    {
+        pb->SetState(STATE_WARNING);
+    }
 }
 
 // Beginning of displaying a dialog.
@@ -364,10 +408,10 @@ void CMainDialog::FrameDialog(float rTime)
     ddim = m_dialogDim;
 
     m_dialogTime += rTime;
-    if ( m_dialogTime < 1.0f )
+    pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW9));
+    if ( pw != 0 )
     {
-        pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW9));
-        if ( pw != 0 )
+        if ( m_dialogTime < 1.0f )
         {
             if ( m_dialogTime < 0.50f )
             {
@@ -386,10 +430,9 @@ void CMainDialog::FrameDialog(float rTime)
 
             dpos.x -= ddim.x/2.0f;
             dpos.y -= ddim.y/2.0f;
-
-            pw->SetPos(dpos);
-            pw->SetDim(ddim);
         }
+        pw->SetPos(dpos);
+        pw->SetDim(ddim);
     }
 
     if ( !m_settings->GetInterfaceGlint() )  return;

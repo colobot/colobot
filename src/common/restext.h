@@ -106,6 +106,7 @@ enum ResTextType
     RT_DIALOG_YES           = 107,
     RT_DIALOG_NO            = 108,
     RT_DIALOG_LOADING       = 109,
+    RT_DIALOG_OK            = 110,
 
     RT_STUDIO_LISTTT        = 120,
     RT_STUDIO_COMPOK        = 121,

@@ -110,6 +110,7 @@ void InitializeRestext()
     stringsText[RT_DIALOG_YES]       = TR("Yes");
     stringsText[RT_DIALOG_NO]        = TR("No");
     stringsText[RT_DIALOG_LOADING]   = TR("LOADING");
+    stringsText[RT_DIALOG_OK]        = TR("OK");
 
     stringsText[RT_STUDIO_LISTTT]    = TR("Keyword help(\\key cbot;)");
     stringsText[RT_STUDIO_COMPOK]    = TR("Compilation ok (0 errors)");

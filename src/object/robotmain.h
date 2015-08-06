@@ -381,6 +381,8 @@ protected:
     void        CreateScene(bool soluce, bool fixScene, bool resetObject);
     void        ResetCreate();
 
+    void        LevelLoadingError(const std::string& error, const std::runtime_error& exception, Phase exitPhase = PHASE_LEVEL_LIST);
+
     Math::Vector LookatPoint(Math::Vector eye, float angleH, float angleV, float length);
     int         CreateLight(Math::Vector direction, Gfx::Color color);
     void        HiliteClear();
