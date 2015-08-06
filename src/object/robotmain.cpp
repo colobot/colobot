@@ -376,6 +376,12 @@ bool IsPhaseWithWorld(Phase phase)
     return false;
 }
 
+bool IsMainMenuPhase(Phase phase)
+{
+    if (phase == PHASE_LOADING) return true;
+    return !IsPhaseWithWorld(phase);
+}
+
 //! Changes phase
 void CRobotMain::ChangePhase(Phase phase)
 {

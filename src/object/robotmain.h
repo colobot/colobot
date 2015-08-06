@@ -71,6 +71,7 @@ enum Phase
 };
 bool IsInSimulationConfigPhase(Phase phase);
 bool IsPhaseWithWorld(Phase phase);
+bool IsMainMenuPhase(Phase phase);
 
 
 class CController;

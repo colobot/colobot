@@ -200,7 +200,7 @@ void CMainUserInterface::ChangePhase(Phase phase)
         m_currentScreen->CreateInterface();
     }
 
-    if ( !IsPhaseWithWorld(m_phase) )
+    if ( IsMainMenuPhase(m_phase) )
     {
         if (!m_sound->IsPlayingMusic() && m_sound->IsCachedMusic("Intro1.ogg"))
         {
@@ -208,7 +208,7 @@ void CMainUserInterface::ChangePhase(Phase phase)
         }
     }
 
-    if ( !IsPhaseWithWorld(m_phase) )
+    if ( IsMainMenuPhase(m_phase) )
     {
         CWindow* pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
         if (pw != nullptr)
@@ -243,7 +243,7 @@ bool CMainUserInterface::EventProcess(const Event &event)
 
     if ( event.type == EVENT_FRAME )
     {
-        if ( !IsPhaseWithWorld(m_phase) )
+        if ( IsMainMenuPhase(m_phase) )
         {
             if (!m_sound->IsPlayingMusic() && m_sound->IsCachedMusic("Intro2.ogg"))
             {
