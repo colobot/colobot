@@ -324,7 +324,7 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
                 std::string cat = file.substr(0, file.size()-3);
                 m_runSceneCategory = GetLevelCategoryFromDir(cat);
                 m_runSceneRank = StrUtils::FromString<int>(file.substr(file.size()-3, 3));
-                if(m_runSceneCategory == LevelCategory::Max)
+                if(m_runSceneCategory != LevelCategory::Max)
                 {
                     GetLogger()->Info("Running scene '%s%d' on start\n", cat.c_str(), m_runSceneRank);
                 }
