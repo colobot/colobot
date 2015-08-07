@@ -899,7 +899,10 @@ void CText::DrawCharAndAdjustPos(UTF8Char ch, FontType font, float size, Math::P
         if (ch.c1 > 0 && ch.c1 < 32)
         {
             if (ch.c1 == '\t')
+            {
+                color = Color(1.0f, 0.0f, 0.0f, 1.0f);
                 width = m_tabSize;
+            }
 
             ch = TranslateSpecialChar(ch.c1);
         }
