@@ -150,10 +150,10 @@ bool CScreenIOWrite::EventProcess(const Event &event)
 
     if ( event.type == EVENT_INTERFACE_IOWRITE )
     {
-        IOWriteScene();
-        m_interface->DeleteControl(EVENT_WINDOW5);
         m_main->ChangePhase(PHASE_SIMUL);
         m_main->StopSuspend();
+        IOWriteScene();
+        m_interface->DeleteControl(EVENT_WINDOW5);
         return false;
     }
 
