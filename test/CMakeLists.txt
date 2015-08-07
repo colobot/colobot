@@ -9,9 +9,6 @@ add_subdirectory(cbot)
 # Unit tests
 add_subdirectory(unit)
 
-# Test environments
-add_subdirectory(envs)
-
 
 if(COLOBOT_LINT_BUILD)
     add_fake_header_sources("test")
