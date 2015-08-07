@@ -203,7 +203,10 @@ void CMainUserInterface::ChangePhase(Phase phase)
         }
     }
 
-    if ( IsMainMenuPhase(m_phase) )
+    if ( IsMainMenuPhase(m_phase) &&
+         m_phase != PHASE_WELCOME1 &&
+         m_phase != PHASE_WELCOME2 &&
+         m_phase != PHASE_WELCOME3 )
     {
         CWindow* pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
         if (pw != nullptr)
