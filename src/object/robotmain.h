@@ -377,6 +377,8 @@ protected:
     bool        EventObject(const Event &event);
     void        InitEye();
 
+    void        ShowSaveIndicator(bool show);
+
     void        CreateScene(bool soluce, bool fixScene, bool resetObject);
     void        ResetCreate();
 
@@ -587,9 +589,7 @@ protected:
     int             m_autosaveSlots;
     float           m_autosaveLast;
 
-    unsigned int    m_shotDelay;
-    std::string     m_shotName;
-    unsigned int    m_shotSaving;
+    int             m_shotSaving;
 
     std::deque<CObject*> m_selectionHistory;
 };

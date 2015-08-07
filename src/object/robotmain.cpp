@@ -244,7 +244,6 @@ CRobotMain::CRobotMain()
     m_autosaveSlots = 3;
     m_autosaveLast = 0.0f;
 
-    m_shotDelay = 0;
     m_shotSaving = 0;
 
     m_cameraPan  = 0.0f;
@@ -2521,15 +2520,6 @@ bool CRobotMain::EventFrame(const Event &event)
         }
     }
 
-    if ( m_shotDelay > 0 && !m_ui->GetDialog()->IsDialog() )
-    {
-        m_shotDelay --;
-        if ( m_shotDelay == 0 )
-        {
-            m_engine->WriteScreenShot(m_shotName);
-        }
-    }
-
     m_water->EventProcess(event);
     m_cloud->EventProcess(event);
     m_lightning->EventProcess(event);
@@ -2661,7 +2651,7 @@ bool CRobotMain::EventFrame(const Event &event)
     {
         Math::Point pos, dim;
 
-        if (m_shotSaving == 0)
+        if (m_shotSaving <= 0)
         {
             dim.x = 10.0f/640.0f;
             dim.y = 10.0f/480.0f;
@@ -2744,6 +2734,35 @@ bool CRobotMain::EventFrame(const Event &event)
     }
 
     return true;
+}
+
+void CRobotMain::ShowSaveIndicator(bool show)
+{
+    Ui::CControl* pc = m_interface->SearchControl(EVENT_OBJECT_SAVING);
+    if (pc != nullptr)
+    {
+        Math::Point pos, dim;
+
+        if (!show)
+        {
+            dim.x = 10.0f/640.0f;
+            dim.y = 10.0f/480.0f;
+            pos.x = -20.0f/640.0f;
+            pos.y = -20.0f/480.0f;  // invisible!
+        }
+        else
+        {
+            dim.x = 32.0f/640.0f;
+            dim.y = 32.0f/480.0f;
+            pos.x = (640.0f-24.0f)/640.0f;
+            pos.y = (480.0f-24.0f)/480.0f;
+
+            pos.x -= dim.x/2.0f;
+            pos.y -= dim.y/2.0f;
+        }
+        pc->SetPos(pos);
+        pc->SetDim(dim);
+    }
 }
 
 //! Makes the event for all robots
@@ -4962,6 +4981,10 @@ void CRobotMain::IOWriteObject(CLevelParserLine* line, CObject* obj)
 //! Saves the current game
 bool CRobotMain::IOWriteScene(std::string filename, std::string filecbot, std::string filescreenshot, char *info)
 {
+    // Render the indicator to show that we are working
+    ShowSaveIndicator(true);
+    m_app->Render(); // update
+
     CLevelParser levelParser(filename);
     CLevelParserLineUPtr line;
 
@@ -5083,9 +5106,19 @@ bool CRobotMain::IOWriteScene(std::string filename, std::string filecbot, std::s
     CBotClass::SaveStaticState(file);
     fClose(file);
 
-    m_shotDelay = 3;
-    m_shotName = CResourceManager::GetSaveLocation() + "/" + filescreenshot; //TODO: Use PHYSFS?
+    ShowSaveIndicator(false); // force hide for screenshot
+    MouseMode oldMouseMode = m_app->GetMouseMode();
+    m_app->SetMouseMode(MOUSE_NONE); // disable the mouse
+    m_displayText->HideText(true); // hide
+    m_engine->SetScreenshotMode(true);
+
+    m_engine->Render(); // update (but don't show, we're not swapping buffers here!)
+    m_engine->WriteScreenShot(CResourceManager::GetSaveLocation() + "/" + filescreenshot); //TODO: Use PHYSFS?
     m_shotSaving++;
+
+    m_engine->SetScreenshotMode(false);
+    m_displayText->HideText(false);
+    m_app->SetMouseMode(oldMouseMode);
 
     return true;
 }

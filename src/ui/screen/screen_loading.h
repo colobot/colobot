@@ -31,9 +31,6 @@ public:
 
     void CreateInterface() override;
     bool EventProcess(const Event &event) override;
-
-protected:
-    int m_loadingCounter;
 };
 
 } // namespace Ui

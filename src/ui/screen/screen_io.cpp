@@ -222,8 +222,11 @@ void CScreenIO::IOWriteScene()
     int sel = pl->GetSelect();
     if ( sel == -1 ) return;
 
-    std::string dir;
     pe->GetText(info, 100);
+    
+    m_interface->DeleteControl(EVENT_WINDOW5);
+
+    std::string dir;
     if (static_cast<unsigned int>(sel) >= m_saveList.size())
     {
         dir = m_main->GetPlayerProfile()->GetSaveFile("save"+clearName(info));

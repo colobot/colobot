@@ -153,7 +153,6 @@ bool CScreenIOWrite::EventProcess(const Event &event)
         m_main->ChangePhase(PHASE_SIMUL);
         m_main->StopSuspend();
         IOWriteScene();
-        m_interface->DeleteControl(EVENT_WINDOW5);
         return false;
     }
 

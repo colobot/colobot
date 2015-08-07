@@ -31,7 +31,6 @@ namespace Ui
 {
 
 CScreenLoading::CScreenLoading()
-    : m_loadingCounter(0)
 {
 }
 
@@ -79,18 +78,14 @@ void CScreenLoading::CreateInterface()
     pl->SetTextAlign(Gfx::TEXT_ALIGN_CENTER);
 
     SetBackground("textures/interface/interface.png");
-
-    m_loadingCounter = 1;  // enough time to display!
 }
 
 bool CScreenLoading::EventProcess(const Event &event)
 {
-    if ( m_loadingCounter == 0 )
-    {
-        m_main->ChangePhase(PHASE_SIMUL);
-    }
-    m_loadingCounter --;
-    return true;
+    m_app->Render(); // render the frame once before we start loading
+    m_main->ChangePhase(PHASE_SIMUL);
+
+    return false;
 }
 
 } // namespace Ui

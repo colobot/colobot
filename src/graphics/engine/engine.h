@@ -684,6 +684,12 @@ public:
 
     //! Enables/disables rendering
     void            SetRenderEnable(bool enable);
+    
+    //! Management of "screenshot mode" (disables interface particle rendering)
+    //@{
+    void            SetScreenshotMode(bool screenshotMode);
+    bool            GetScreenshotMode();
+    //@}
 
     //! Returns current size of viewport window
     Math::IntPoint   GetWindowSize();
@@ -1325,6 +1331,9 @@ protected:
     std::string     m_fpsText;
     //! Rendering enabled?
     bool            m_render;
+
+    //! Screenshot mode?
+    bool            m_screenshotMode;
 
     //! Projection matrix for 3D scene
     Math::Matrix    m_matProj;

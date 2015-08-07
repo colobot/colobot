@@ -103,6 +103,7 @@ CEngine::CEngine(CApplication *app, CSystemUtils* systemUtils)
     m_waterAddColor   = Color(0.0f, 0.0f, 0.0f, 0.0f);
 
     m_render            = true;
+    m_screenshotMode    = false;
     m_shadowVisible     = true;
     m_groundSpotVisible = true;
     m_dirty             = true;
@@ -549,6 +550,16 @@ bool CEngine::GetShowStats()
 void CEngine::SetRenderEnable(bool enable)
 {
     m_render = enable;
+}
+
+void CEngine::SetScreenshotMode(bool screenshotMode)
+{
+    m_screenshotMode = screenshotMode;
+}
+
+bool CEngine::GetScreenshotMode()
+{
+    return m_screenshotMode;
 }
 
 Math::IntPoint CEngine::GetWindowSize()
@@ -3895,7 +3906,10 @@ void CEngine::DrawInterface()
     m_lastState = -1;
     SetState(Gfx::ENG_RSTATE_NORMAL);
 
-    m_particle->DrawParticle(SH_INTERFACE);  // draws the particles of the interface
+    if (!m_screenshotMode)
+    {
+        m_particle->DrawParticle(SH_INTERFACE);  // draws the particles of the interface
+    }
 
     // 3D objects drawn in front of interface
     if (m_drawFront)

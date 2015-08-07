@@ -323,6 +323,9 @@ public:
     //@}
 
     bool        GetSceneTestMode();
+    
+    //! Renders the image in window
+    void        Render();
 
 protected:
     //! Creates the window's SDL_Surface
@@ -336,8 +339,6 @@ protected:
     TEST_VIRTUAL Event CreateUpdateEvent();
     //! Logs debug data for event
     void        LogEvent(const Event& event);
-    //! Renders the image in window
-    void        Render();
 
     //! Opens the joystick device
     bool OpenJoystick();
