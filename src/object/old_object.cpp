@@ -1918,11 +1918,6 @@ void COldObject::UpdateMapping()
 
 void COldObject::VirusFrame(float rTime)
 {
-    Gfx::ParticleType   type;
-    Math::Vector        pos, speed;
-    Math::Point         dim;
-    int                 r;
-
     if ( !m_bVirusMode )  return;  // healthy object?
 
     m_virusTime += rTime;
@@ -1935,28 +1930,18 @@ void COldObject::VirusFrame(float rTime)
     {
         m_lastVirusParticle = m_aTime;
 
-        r = rand()%10;
-        if ( r == 0 )  type = Gfx::PARTIVIRUS1;
-        if ( r == 1 )  type = Gfx::PARTIVIRUS2;
-        if ( r == 2 )  type = Gfx::PARTIVIRUS3;
-        if ( r == 3 )  type = Gfx::PARTIVIRUS4;
-        if ( r == 4 )  type = Gfx::PARTIVIRUS5;
-        if ( r == 5 )  type = Gfx::PARTIVIRUS6;
-        if ( r == 6 )  type = Gfx::PARTIVIRUS7;
-        if ( r == 7 )  type = Gfx::PARTIVIRUS8;
-        if ( r == 8 )  type = Gfx::PARTIVIRUS9;
-        if ( r == 9 )  type = Gfx::PARTIVIRUS10;
-
-        pos = GetPosition();
+        Math::Vector pos = GetPosition();
         pos.x += (Math::Rand()-0.5f)*10.0f;
         pos.z += (Math::Rand()-0.5f)*10.0f;
+        Math::Vector speed;
         speed.x = (Math::Rand()-0.5f)*2.0f;
         speed.z = (Math::Rand()-0.5f)*2.0f;
         speed.y = Math::Rand()*4.0f+4.0f;
+        Math::Point dim;
         dim.x = Math::Rand()*0.3f+0.3f;
         dim.y = dim.x;
 
-        m_particle->CreateParticle(pos, speed, dim, type, 3.0f);
+        m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIVIRUS, 3.0f);
     }
 }
 

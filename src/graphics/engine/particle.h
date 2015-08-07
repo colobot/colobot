@@ -86,16 +86,7 @@ enum ParticleType
     PARTIBLOOD      = 30,       //! < human blood
     PARTIBLOODM     = 31,       //! < blood laying
     PARTIVAPOR      = 32,       //! < steam
-    PARTIVIRUS1     = 33,       //! < virus 1
-    PARTIVIRUS2     = 34,       //! < virus 2
-    PARTIVIRUS3     = 35,       //! < virus 3
-    PARTIVIRUS4     = 36,       //! < virus 4
-    PARTIVIRUS5     = 37,       //! < virus 5
-    PARTIVIRUS6     = 38,       //! < virus 6
-    PARTIVIRUS7     = 39,       //! < virus 7
-    PARTIVIRUS8     = 40,       //! < virus 8
-    PARTIVIRUS9     = 41,       //! < virus 9
-    PARTIVIRUS10    = 42,       //! < virus 10
+    PARTIVIRUS      = 33,       //! < virus (random letter)
     PARTIRAY1       = 43,       //! < ray 1 (turn)
     PARTIRAY2       = 44,       //! < ray 2 (electric arc)
     PARTIRAY3       = 45,       //! < ray 3 (ExchangePost)

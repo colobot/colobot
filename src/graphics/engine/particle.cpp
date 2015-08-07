@@ -194,6 +194,34 @@ void NameParticle(std::string &name, int num)
     else                name = "";
 }
 
+//! Returns random letter for use as virus particle
+char RandomLetter()
+{
+    static std::vector<char> chars;
+    if (chars.empty())
+    {
+        // Add each special character once
+        chars.push_back('{');
+        chars.push_back('}');
+        chars.push_back('(');
+        chars.push_back(')');
+        chars.push_back('<');
+        chars.push_back('>');
+        chars.push_back('+');
+        chars.push_back('-');
+        chars.push_back('=');
+        chars.push_back('!');
+
+        // Add each letter once
+        for(char c = 'A'; c <= 'Z'; c++) chars.push_back(c);
+
+        // Add each number 4 times
+        for(char c = '0'; c <= '9'; c++) for(int i = 0; i < 4; i++) chars.push_back(c);
+    }
+
+    return chars[rand()%chars.size()];
+}
+
 /** Returns the channel of the particle created or -1 on error. */
 int CParticle::CreateParticle(Math::Vector pos, Math::Vector speed, Math::Point dim,
                               ParticleType type,
@@ -300,16 +328,7 @@ int CParticle::CreateParticle(Math::Vector pos, Math::Vector speed, Math::Point 
     {
         t = 4;  // effect03 (ENG_RSTATE_TTEXTURE_WHITE)
     }
-    if ( type == PARTIVIRUS1  ||
-         type == PARTIVIRUS2  ||
-         type == PARTIVIRUS3  ||
-         type == PARTIVIRUS4  ||
-         type == PARTIVIRUS5  ||
-         type == PARTIVIRUS6  ||
-         type == PARTIVIRUS7  ||
-         type == PARTIVIRUS8  ||
-         type == PARTIVIRUS9  ||
-         type == PARTIVIRUS10 )
+    if ( type == PARTIVIRUS )
     {
         t = 5; // text render
     }
@@ -362,6 +381,11 @@ int CParticle::CreateParticle(Math::Vector pos, Math::Vector speed, Math::Point 
                  type == PARTIGUN4 )
             {
                 m_particle[i].testTime = 1.0f;  // impact immediately
+            }
+
+            if ( type == PARTIVIRUS )
+            {
+                m_particle[i].text = RandomLetter();
             }
 
             if ( type >= PARTIFOG0 &&
@@ -1777,16 +1801,7 @@ void CParticle::FrameParticle(float rTime)
             ti.y = ts.y+0.125f;
         }
 
-        if ( m_particle[i].type == PARTIVIRUS1  ||
-             m_particle[i].type == PARTIVIRUS2  ||
-             m_particle[i].type == PARTIVIRUS3  ||
-             m_particle[i].type == PARTIVIRUS4  ||
-             m_particle[i].type == PARTIVIRUS5  ||
-             m_particle[i].type == PARTIVIRUS6  ||
-             m_particle[i].type == PARTIVIRUS7  ||
-             m_particle[i].type == PARTIVIRUS8  ||
-             m_particle[i].type == PARTIVIRUS9  ||
-             m_particle[i].type == PARTIVIRUS10 )
+        if ( m_particle[i].type == PARTIVIRUS )
         {
             if (progress >= 1.0f)
             {
@@ -1800,47 +1815,6 @@ void CParticle::FrameParticle(float rTime)
                 m_particle[i].intensity = 1.0f-(progress-0.25f)/0.75f;
 
             m_particle[i].angle += rTime*Math::PI*1.0f;
-
-            if (m_particle[i].type == PARTIVIRUS1)  // A ?
-            {
-                m_particle[i].text = 'A';
-            }
-            if (m_particle[i].type == PARTIVIRUS2)  // C ?
-            {
-                m_particle[i].text = 'C';
-            }
-            if (m_particle[i].type == PARTIVIRUS3)  // E ?
-            {
-                m_particle[i].text = 'E';
-            }
-            if (m_particle[i].type == PARTIVIRUS4)  // N ?
-            {
-                m_particle[i].text = 'N';
-            }
-            if (m_particle[i].type == PARTIVIRUS5)  // R ?
-            {
-                m_particle[i].text = 'R';
-            }
-            if (m_particle[i].type == PARTIVIRUS6)  // T ?
-            {
-                m_particle[i].text = 'T';
-            }
-            if (m_particle[i].type == PARTIVIRUS7)  // 0 ?
-            {
-                m_particle[i].text = '0';
-            }
-            if (m_particle[i].type == PARTIVIRUS8)  // 2 ?
-            {
-                m_particle[i].text = '2';
-            }
-            if (m_particle[i].type == PARTIVIRUS9)  // 5 ?
-            {
-                m_particle[i].text = '5';
-            }
-            if (m_particle[i].type == PARTIVIRUS10)  // 9 ?
-            {
-                m_particle[i].text = '9';
-            }
         }
 
         if (m_particle[i].type == PARTIBLUE)
@@ -3363,7 +3337,7 @@ void CParticle::DrawParticleCylinder(int i)
 
 void CParticle::DrawParticleText(int i)
 {
-    CharTexture tex = m_engine->GetText()->GetCharTexture(static_cast<UTF8Char>(m_particle[i].text), FONT_COLOBOT, FONT_SIZE_BIG*2.0f);
+    CharTexture tex = m_engine->GetText()->GetCharTexture(static_cast<UTF8Char>(m_particle[i].text), FONT_COURIER, FONT_SIZE_BIG*2.0f);
     if (tex.id == 0) return;
     m_device->SetTexture(0, tex.id);
     m_engine->SetState(ENG_RSTATE_TTEXTURE_ALPHA, IntensityToColor(m_particle[i].intensity));
@@ -3617,8 +3591,7 @@ void CParticle::DrawParticle(int sheet)
             {
                 DrawParticleCylinder(i);
             }
-            else if ( m_particle[i].type >= PARTIVIRUS1  &&
-                      m_particle[i].type <= PARTIVIRUS10 )
+            else if ( m_particle[i].type == PARTIVIRUS )
             {
                 DrawParticleText(i);
             }
