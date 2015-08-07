@@ -22,6 +22,7 @@
 
 #include "app/app.h"
 #include "app/input.h"
+#include "app/system.h"
 
 #include "common/image.h"
 #include "common/key.h"
@@ -62,15 +63,16 @@ template<> Gfx::CEngine* CSingleton<Gfx::CEngine>::m_instance = nullptr;
 namespace Gfx
 {
 
-CEngine::CEngine(CApplication *app)
-    : m_ambientColor(),
+CEngine::CEngine(CApplication *app, CSystemUtils* systemUtils)
+    : m_app(app),
+      m_systemUtils(systemUtils),
+      m_ambientColor(),
       m_fogColor(),
       m_deepView(),
       m_fogStart(),
       m_highlightRank(),
       m_mice()
 {
-    m_app    = app;
     m_device = nullptr;
 
     m_lightMan   = nullptr;
@@ -180,8 +182,8 @@ CEngine::CEngine(CApplication *app)
     m_mouseType    = ENG_MOUSE_NORM;
 
     m_fpsCounter = 0;
-    m_lastFrameTime = GetSystemUtils()->CreateTimeStamp();
-    m_currentFrameTime = GetSystemUtils()->CreateTimeStamp();
+    m_lastFrameTime = m_systemUtils->CreateTimeStamp();
+    m_currentFrameTime = m_systemUtils->CreateTimeStamp();
 
     m_shadowColor = 0.5f;
 
@@ -219,9 +221,9 @@ CEngine::~CEngine()
     m_terrain   = nullptr;
     m_pause     = nullptr;
 
-    GetSystemUtils()->DestroyTimeStamp(m_lastFrameTime);
+    m_systemUtils->DestroyTimeStamp(m_lastFrameTime);
     m_lastFrameTime = nullptr;
-    GetSystemUtils()->DestroyTimeStamp(m_currentFrameTime);
+    m_systemUtils->DestroyTimeStamp(m_currentFrameTime);
     m_currentFrameTime = nullptr;
 }
 
@@ -334,8 +336,8 @@ bool CEngine::Create()
     params.mipmap = false;
     m_miceTexture = LoadTexture("textures/interface/mouse.png", params);
 
-    GetSystemUtils()->GetCurrentTimeStamp(m_currentFrameTime);
-    GetSystemUtils()->GetCurrentTimeStamp(m_lastFrameTime);
+    m_systemUtils->GetCurrentTimeStamp(m_currentFrameTime);
+    m_systemUtils->GetCurrentTimeStamp(m_lastFrameTime);
 
     return true;
 }
@@ -436,11 +438,11 @@ void CEngine::FrameUpdate()
 {
     m_fpsCounter++;
 
-    GetSystemUtils()->GetCurrentTimeStamp(m_currentFrameTime);
-    float diff = GetSystemUtils()->TimeStampDiff(m_lastFrameTime, m_currentFrameTime, STU_SEC);
+    m_systemUtils->GetCurrentTimeStamp(m_currentFrameTime);
+    float diff = m_systemUtils->TimeStampDiff(m_lastFrameTime, m_currentFrameTime, STU_SEC);
     if (diff > 1.0f)
     {
-        GetSystemUtils()->CopyTimeStamp(m_lastFrameTime, m_currentFrameTime);
+        m_systemUtils->CopyTimeStamp(m_lastFrameTime, m_currentFrameTime);
 
         m_fps = m_fpsCounter / diff;
         m_fpsCounter = 0;

@@ -29,12 +29,7 @@
 
 struct SystemTimeStamp
 {
-    timespec clockTime;
-
-    SystemTimeStamp()
-    {
-        clockTime.tv_sec = clockTime.tv_nsec = 0;
-    }
+    timespec clockTime = {0, 0};
 };
 
 class CSystemUtilsLinux : public CSystemUtils
@@ -52,6 +47,6 @@ public:
     virtual void Usleep(int usec) override;
 
 private:
-    bool m_zenityAvailable;
+    bool m_zenityAvailable = false;
 };
 

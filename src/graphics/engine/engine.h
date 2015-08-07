@@ -24,8 +24,6 @@
 
 #pragma once
 
-#include "app/system.h"
-
 #include "common/singleton.h"
 
 #include "graphics/core/color.h"
@@ -52,6 +50,8 @@ class CObject;
 class CSoundInterface;
 class CImage;
 class CPauseManager;
+class CSystemUtils;
+struct SystemTimeStamp;
 struct Event;
 
 
@@ -616,7 +616,7 @@ struct EngineMouse
 class CEngine : public CSingleton<CEngine>
 {
 public:
-    CEngine(CApplication* app);
+    CEngine(CApplication* app, CSystemUtils* systemUtils);
     ~CEngine();
 
     //! Sets the device to be used
@@ -1295,6 +1295,7 @@ protected:
 
 protected:
     CApplication*     m_app;
+    CSystemUtils*     m_systemUtils;
     CSoundInterface*  m_sound;
     CDevice*          m_device;
     std::unique_ptr<COldModelManager> m_modelManager;

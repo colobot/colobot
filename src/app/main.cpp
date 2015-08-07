@@ -31,7 +31,7 @@
 #endif
 
 #include "common/logger.h"
-#include "common/misc.h"
+#include "common/make_unique.h"
 #include "common/restext.h"
 
 #include "common/resources/resourcemanager.h"
@@ -40,6 +40,8 @@
     #include <windows.h>
 #endif
 
+#include <memory>
+#include <vector>
 
 /* Doxygen main page */
 
@@ -91,20 +93,30 @@ int SDL_MAIN_FUNC(int argc, char *argv[])
 
     // Workaround for character encoding in argv on Windows
     #if PLATFORM_WINDOWS
-    int wargc;
+    int wargc = 0;
     wchar_t** wargv = CommandLineToArgvW(GetCommandLineW(), &wargc);
-    if(wargv == nullptr)
+    if (wargv == nullptr)
     {
         logger.Error("CommandLineToArgvW failed\n");
         return 1;
     }
-    argv = new char*[wargc];
-    for(int i = 0; i < wargc; i++) {
+
+    std::vector<std::vector<char>> windowsArgs;
+    for (int i = 0; i < wargc; i++)
+    {
         std::wstring warg = wargv[i];
         std::string arg = CSystemUtilsWindows::UTF8_Encode(warg);
-        argv[i] = new char[arg.length()+1];
-        strcpy(argv[i], arg.c_str());
+        std::vector<char> argVec(arg.begin(), arg.end());
+        argVec.push_back('\0');
+        windowsArgs.push_back(std::move(argVec));
     }
+
+    auto windowsArgvPtrs = MakeUniqueArray<char*>(wargc);
+    for (int i = 0; i < wargc; i++)
+        windowsArgvPtrs[i] = windowsArgs[i].data();
+
+    argv = windowsArgvPtrs.get();
+
     LocalFree(wargv);
     #endif
 
@@ -119,49 +131,43 @@ int SDL_MAIN_FUNC(int argc, char *argv[])
     int code = 0;
     while (true)
     {
-        CSystemUtils* systemUtils = CSystemUtils::Create(); // platform-specific utils
+        auto systemUtils = CSystemUtils::Create(); // platform-specific utils
         systemUtils->Init();
 
-        CApplication* app = new CApplication(); // single instance of the application
+        CApplication app(systemUtils.get()); // single instance of the application
 
-        ParseArgsStatus status = app->ParseArguments(argc, argv);
+        ParseArgsStatus status = app.ParseArguments(argc, argv);
         if (status == PARSE_ARGS_FAIL)
         {
             systemUtils->SystemDialog(SDT_ERROR, "COLOBOT - Fatal Error", "Invalid commandline arguments!\n");
-            return app->GetExitCode();
+            return app.GetExitCode();
         }
         else if (status == PARSE_ARGS_HELP)
         {
-            return app->GetExitCode();
+            return app.GetExitCode();
         }
 
 
-        if (! app->Create())
+        if (! app.Create())
         {
-            app->Destroy(); // ensure a clean exit
-            code = app->GetExitCode();
-            if ( code != 0 && !app->GetErrorMessage().empty() )
+            code = app.GetExitCode();
+            if (code != 0 && !app.GetErrorMessage().empty())
             {
-                systemUtils->SystemDialog(SDT_ERROR, "COLOBOT - Fatal Error", app->GetErrorMessage());
+                systemUtils->SystemDialog(SDT_ERROR, "COLOBOT - Fatal Error", app.GetErrorMessage());
             }
             logger.Info("Didn't run main loop. Exiting with code %d\n", code);
             return code;
         }
 
-        code = app->Run();
-        bool restarting = app->IsRestarting();
+        code = app.Run();
 
-        delete app;
-        delete systemUtils;
-        if(!restarting) break;
+        bool restarting = app.IsRestarting();
+
+        if (!restarting)
+            break;
     }
 
     logger.Info("Exiting with code %d\n", code);
-
-    #if PLATFORM_WINDOWS
-    // See the workaround above
-    delete[] argv;
-    #endif
 
     return code;
 }

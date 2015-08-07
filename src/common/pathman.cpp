@@ -41,19 +41,20 @@
 
 template<> CPathManager* CSingleton<CPathManager>::m_instance = nullptr;
 
-CPathManager::CPathManager()
+CPathManager::CPathManager(CSystemUtils* systemUtils)
+    : m_systemUtils(systemUtils)
 {
     #ifdef PORTABLE
         m_dataPath = "./data";
         m_langPath = "./lang";
         m_savePath = "./saves";
     #else
-        m_dataPath = GetSystemUtils()->GetDataPath();
-        m_langPath = GetSystemUtils()->GetLangPath();
+        m_dataPath = m_systemUtils->GetDataPath();
+        m_langPath = m_systemUtils->GetLangPath();
         #ifdef DEV_BUILD
             m_savePath = "./saves";
         #else
-            m_savePath = GetSystemUtils()->GetSaveDir();
+            m_savePath = m_systemUtils->GetSaveDir();
         #endif
     #endif
 }
@@ -164,7 +165,7 @@ void CPathManager::LoadModsFromDir(const std::string &dir)
             #endif
         }
     }
-    catch(std::exception &e)
+    catch (std::exception &e)
     {
         GetLogger()->Warn("Unable to load mods from directory '%s': %s\n", dir.c_str(), e.what());
     }

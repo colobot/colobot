@@ -16,7 +16,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see http://gnu.org/licenses
  */
+
 #include "graphics/engine/lightman.h"
+
+#include "common/make_unique.h"
 
 #include "graphics/core/device.h"
 
@@ -34,7 +37,6 @@ class LightManagerUT : public testing::Test
 {
 protected:
     LightManagerUT() :
-        m_systemUtils(nullptr),
         m_engine(nullptr),
         m_device(nullptr)
     {}
@@ -42,7 +44,6 @@ protected:
     {}
 
     void SetUp() override;
-    void TearDown() override;
 
     void PrepareLightTesting(int maxLights, Math::Vector eyePos);
     void CheckLightSorting(EngineObjectType objectType, const std::vector<int>& expectedLights);
@@ -53,7 +54,6 @@ protected:
 
     std::unique_ptr<CLightManager> m_lightManager;
     MockRepository m_mocks;
-    CSystemUtils* m_systemUtils;
     CEngine* m_engine;
     CDevice* m_device;
 
@@ -65,17 +65,10 @@ private:
 
 void LightManagerUT::SetUp()
 {
-    m_systemUtils = m_mocks.Mock<CSystemUtils>();
-    CSystemUtils::ReplaceInstance(m_systemUtils);
     m_engine = m_mocks.Mock<CEngine>();
     m_device = m_mocks.Mock<CDevice>();
 
-    m_lightManager.reset(new CLightManager(m_engine));
-}
-
-void LightManagerUT::TearDown()
-{
-    CSystemUtils::ReplaceInstance(nullptr);
+    m_lightManager = MakeUnique<CLightManager>(m_engine);
 }
 
 void LightManagerUT::PrepareLightTesting(int maxLights, Math::Vector eyePos)

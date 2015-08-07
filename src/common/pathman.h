@@ -28,6 +28,8 @@
 
 #include <string>
 
+class CSystemUtils;
+
 /**
  *  \class CPathManager
  *  \brief Class for managing data/lang/save paths, and %something% replacements
@@ -35,7 +37,7 @@
 class CPathManager : public CSingleton<CPathManager>
 {
 public:
-    CPathManager();
+    CPathManager(CSystemUtils* systemUtils);
     ~CPathManager();
 
     void SetDataPath(std::string dataPath);
@@ -57,6 +59,7 @@ private:
     void LoadModsFromDir(const std::string &dir);
 
 private:
+    CSystemUtils* m_systemUtils;
     //! Data path
     std::string m_dataPath;
     //! Lang path

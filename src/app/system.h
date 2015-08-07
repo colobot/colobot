@@ -24,9 +24,9 @@
 
 #pragma once
 
-#include "common/singleton.h"
-
+#include <memory>
 #include <string>
+#include <vector>
 
 /**
  * \enum SystemDialogType
@@ -88,11 +88,13 @@ struct SystemTimeStamp;
  * This class provides system-specific utilities like displaying user dialogs and
  * querying system timers for exact timestamps.
  */
-class CSystemUtils : public CSingleton<CSystemUtils>
+class CSystemUtils
 {
 public:
+    virtual ~CSystemUtils();
+
     //! Creates system utils for specific platform
-    static CSystemUtils* Create();
+    static std::unique_ptr<CSystemUtils> Create();
 
     //! Performs platform-specific initialization
     virtual void Init() = 0;
@@ -134,11 +136,7 @@ public:
 
     //! Sleep for given amount of microseconds
     virtual void Usleep(int usecs) = 0;
+
+private:
+    std::vector<std::unique_ptr<SystemTimeStamp>> m_timeStamps;
 };
-
-//! Global function to get CSystemUtils instance
-inline CSystemUtils* GetSystemUtils()
-{
-    return CSystemUtils::GetInstancePointer();
-}
-

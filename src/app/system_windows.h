@@ -27,12 +27,7 @@
 
 struct SystemTimeStamp
 {
-    long long counterValue;
-
-    SystemTimeStamp()
-    {
-        counterValue = 0;
-    }
+    long long counterValue = 0;
 };
 
 class CSystemUtilsWindows : public CSystemUtils
@@ -54,6 +49,6 @@ public:
     static std::wstring UTF8_Decode(const std::string &str);
 
 protected:
-    long long m_counterFrequency;
+    long long m_counterFrequency = 0;
 };
 

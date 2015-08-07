@@ -100,11 +100,14 @@ struct ApplicationPrivate
 
 
 
-CApplication::CApplication()
- : m_private(MakeUnique<ApplicationPrivate>())
- , m_configFile(MakeUnique<CConfigFile>())
- , m_input(MakeUnique<CInput>())
- , m_pathManager(MakeUnique<CPathManager>())
+CApplication::CApplication(CSystemUtils* systemUtils)
+    : m_systemUtils(systemUtils),
+      m_private(MakeUnique<ApplicationPrivate>()),
+      m_configFile(MakeUnique<CConfigFile>()),
+      m_input(MakeUnique<CInput>()),
+      m_pathManager(MakeUnique<CPathManager>(systemUtils)),
+      m_performanceCounters(),
+      m_performanceCountersData()
 {
     m_exitCode      = 0;
     m_active        = false;
@@ -128,14 +131,14 @@ CApplication::CApplication()
     m_absTime = 0.0f;
     m_relTime = 0.0f;
 
-    m_baseTimeStamp = GetSystemUtils()->CreateTimeStamp();
-    m_curTimeStamp = GetSystemUtils()->CreateTimeStamp();
-    m_lastTimeStamp = GetSystemUtils()->CreateTimeStamp();
+    m_baseTimeStamp = m_systemUtils->CreateTimeStamp();
+    m_curTimeStamp = m_systemUtils->CreateTimeStamp();
+    m_lastTimeStamp = m_systemUtils->CreateTimeStamp();
 
     for (int i = 0; i < PCNT_MAX; ++i)
     {
-        m_performanceCounters[i][0] = GetSystemUtils()->CreateTimeStamp();
-        m_performanceCounters[i][1] = GetSystemUtils()->CreateTimeStamp();
+        m_performanceCounters[i][0] = m_systemUtils->CreateTimeStamp();
+        m_performanceCounters[i][1] = m_systemUtils->CreateTimeStamp();
     }
 
     m_joystickEnabled = false;
@@ -158,15 +161,51 @@ CApplication::CApplication()
 
 CApplication::~CApplication()
 {
-    GetSystemUtils()->DestroyTimeStamp(m_baseTimeStamp);
-    GetSystemUtils()->DestroyTimeStamp(m_curTimeStamp);
-    GetSystemUtils()->DestroyTimeStamp(m_lastTimeStamp);
+    m_systemUtils->DestroyTimeStamp(m_baseTimeStamp);
+    m_systemUtils->DestroyTimeStamp(m_curTimeStamp);
+    m_systemUtils->DestroyTimeStamp(m_lastTimeStamp);
 
     for (int i = 0; i < PCNT_MAX; ++i)
     {
-        GetSystemUtils()->DestroyTimeStamp(m_performanceCounters[i][0]);
-        GetSystemUtils()->DestroyTimeStamp(m_performanceCounters[i][1]);
+        m_systemUtils->DestroyTimeStamp(m_performanceCounters[i][0]);
+        m_systemUtils->DestroyTimeStamp(m_performanceCounters[i][1]);
     }
+
+    m_joystickEnabled = false;
+
+    m_controller.reset();
+    m_sound.reset();
+
+    if (m_engine != nullptr)
+    {
+        m_engine->Destroy();
+
+        m_engine.reset();
+    }
+
+    if (m_device != nullptr)
+    {
+        m_device->Destroy();
+
+        m_device.reset();
+    }
+
+    if (m_private->joystick != nullptr)
+    {
+        SDL_JoystickClose(m_private->joystick);
+        m_private->joystick = nullptr;
+    }
+
+    if (m_private->surface != nullptr)
+    {
+        SDL_FreeSurface(m_private->surface);
+        m_private->surface = nullptr;
+    }
+
+    IMG_Quit();
+
+    if (SDL_WasInit(0))
+        SDL_Quit();
 }
 
 CEventQueue* CApplication::GetEventQueue()
@@ -558,7 +597,7 @@ bool CApplication::Create()
         {
             GetLogger()->Error("Unknown graphics device: %s\n", m_graphics.c_str());
             GetLogger()->Info("Changing to default device\n");
-            GetSystemUtils()->SystemDialog(SDT_ERROR, "Graphics initialization error", "You have selected invalid graphics device with -graphics switch. Game will use default OpenGL device instead.");
+            m_systemUtils->SystemDialog(SDT_ERROR, "Graphics initialization error", "You have selected invalid graphics device with -graphics switch. Game will use default OpenGL device instead.");
             m_device = Gfx::CreateDevice(m_deviceConfig, "opengl");
         }
     }
@@ -575,7 +614,7 @@ bool CApplication::Create()
     }
 
     // Create the 3D engine
-    m_engine = MakeUnique<Gfx::CEngine>(this);
+    m_engine = MakeUnique<Gfx::CEngine>(this, m_systemUtils);
 
     m_engine->SetDevice(m_device.get());
 
@@ -654,44 +693,6 @@ bool CApplication::CreateVideoSurface()
     return true;
 }
 
-void CApplication::Destroy()
-{
-    m_joystickEnabled = false;
-
-    m_controller.reset();
-    m_sound.reset();
-
-    if (m_engine != nullptr)
-    {
-        m_engine->Destroy();
-
-        m_engine.reset();
-    }
-
-    if (m_device != nullptr)
-    {
-        m_device->Destroy();
-
-        m_device.reset();
-    }
-
-    if (m_private->joystick != nullptr)
-    {
-        SDL_JoystickClose(m_private->joystick);
-        m_private->joystick = nullptr;
-    }
-
-    if (m_private->surface != nullptr)
-    {
-        SDL_FreeSurface(m_private->surface);
-        m_private->surface = nullptr;
-    }
-
-    IMG_Quit();
-
-    SDL_Quit();
-}
-
 void CApplication::Restart()
 {
     m_restart = true;
@@ -728,7 +729,7 @@ bool CApplication::ChangeVideoConfig(const Gfx::DeviceConfig &newConfig)
                           std::string(SDL_GetError()) + std::string("\n") +
                           std::string("Previous mode will be restored");
             GetLogger()->Error(error.c_str());
-            GetSystemUtils()->SystemDialog( SDT_ERROR, "COLOBOT - Error", error);
+            m_systemUtils->SystemDialog( SDT_ERROR, "COLOBOT - Error", error);
 
             restore = true;
             ChangeVideoConfig(m_lastDeviceConfig);
@@ -741,7 +742,7 @@ bool CApplication::ChangeVideoConfig(const Gfx::DeviceConfig &newConfig)
             std::string error = std::string("SDL error while restoring previous video mode:\n") +
                           std::string(SDL_GetError());
             GetLogger()->Error(error.c_str());
-            GetSystemUtils()->SystemDialog( SDT_ERROR, "COLOBOT - Fatal Error", error);
+            m_systemUtils->SystemDialog( SDT_ERROR, "COLOBOT - Fatal Error", error);
 
 
             // Fatal error, so post the quit event
@@ -885,9 +886,9 @@ int CApplication::Run()
 {
     m_active = true;
 
-    GetSystemUtils()->GetCurrentTimeStamp(m_baseTimeStamp);
-    GetSystemUtils()->GetCurrentTimeStamp(m_lastTimeStamp);
-    GetSystemUtils()->GetCurrentTimeStamp(m_curTimeStamp);
+    m_systemUtils->GetCurrentTimeStamp(m_baseTimeStamp);
+    m_systemUtils->GetCurrentTimeStamp(m_lastTimeStamp);
+    m_systemUtils->GetCurrentTimeStamp(m_curTimeStamp);
 
     MoveMouse(Math::Point(0.5f, 0.5f)); // center mouse on start
 
@@ -1022,14 +1023,12 @@ int CApplication::Run()
 
             if (m_lowCPU)
             {
-                GetSystemUtils()->Usleep(20000); // should still give plenty of fps
+                m_systemUtils->Usleep(20000); // should still give plenty of fps
             }
         }
     }
 
 end:
-    Destroy();
-
     return m_exitCode;
 }
 
@@ -1339,8 +1338,8 @@ void CApplication::ResetTimeAfterLoading()
 
 void CApplication::InternalResumeSimulation()
 {
-    GetSystemUtils()->GetCurrentTimeStamp(m_baseTimeStamp);
-    GetSystemUtils()->CopyTimeStamp(m_curTimeStamp, m_baseTimeStamp);
+    m_systemUtils->GetCurrentTimeStamp(m_baseTimeStamp);
+    m_systemUtils->CopyTimeStamp(m_curTimeStamp, m_baseTimeStamp);
     m_realAbsTimeBase = m_realAbsTime;
     m_absTimeBase = m_exactAbsTime;
 }
@@ -1354,7 +1353,7 @@ void CApplication::SetSimulationSpeed(float speed)
 {
     m_simulationSpeed = speed;
 
-    GetSystemUtils()->GetCurrentTimeStamp(m_baseTimeStamp);
+    m_systemUtils->GetCurrentTimeStamp(m_baseTimeStamp);
     m_realAbsTimeBase = m_realAbsTime;
     m_absTimeBase = m_exactAbsTime;
 
@@ -1366,12 +1365,12 @@ Event CApplication::CreateUpdateEvent()
     if (m_simulationSuspended)
         return Event(EVENT_NULL);
 
-    GetSystemUtils()->CopyTimeStamp(m_lastTimeStamp, m_curTimeStamp);
-    GetSystemUtils()->GetCurrentTimeStamp(m_curTimeStamp);
+    m_systemUtils->CopyTimeStamp(m_lastTimeStamp, m_curTimeStamp);
+    m_systemUtils->GetCurrentTimeStamp(m_curTimeStamp);
 
-    long long absDiff = GetSystemUtils()->TimeStampExactDiff(m_baseTimeStamp, m_curTimeStamp);
+    long long absDiff = m_systemUtils->TimeStampExactDiff(m_baseTimeStamp, m_curTimeStamp);
     long long newRealAbsTime = m_realAbsTimeBase + absDiff;
-    long long newRealRelTime = GetSystemUtils()->TimeStampExactDiff(m_lastTimeStamp, m_curTimeStamp);
+    long long newRealRelTime = m_systemUtils->TimeStampExactDiff(m_lastTimeStamp, m_curTimeStamp);
 
     if (newRealAbsTime < m_realAbsTime || newRealRelTime < 0)
     {
@@ -1804,12 +1803,12 @@ bool CApplication::GetLowCPU() const
 
 void CApplication::StartPerformanceCounter(PerformanceCounter counter)
 {
-    GetSystemUtils()->GetCurrentTimeStamp(m_performanceCounters[counter][0]);
+    m_systemUtils->GetCurrentTimeStamp(m_performanceCounters[counter][0]);
 }
 
 void CApplication::StopPerformanceCounter(PerformanceCounter counter)
 {
-    GetSystemUtils()->GetCurrentTimeStamp(m_performanceCounters[counter][1]);
+    m_systemUtils->GetCurrentTimeStamp(m_performanceCounters[counter][1]);
 }
 
 float CApplication::GetPerformanceCounterData(PerformanceCounter counter) const
@@ -1828,13 +1827,13 @@ void CApplication::ResetPerformanceCounters()
 
 void CApplication::UpdatePerformanceCountersData()
 {
-    long long sum = GetSystemUtils()->TimeStampExactDiff(m_performanceCounters[PCNT_ALL][0],
-                                                         m_performanceCounters[PCNT_ALL][1]);
+    long long sum = m_systemUtils->TimeStampExactDiff(m_performanceCounters[PCNT_ALL][0],
+                                                      m_performanceCounters[PCNT_ALL][1]);
 
     for (int i = 0; i < PCNT_MAX; ++i)
     {
-        long long diff = GetSystemUtils()->TimeStampExactDiff(m_performanceCounters[i][0],
-                                                              m_performanceCounters[i][1]);
+        long long diff = m_systemUtils->TimeStampExactDiff(m_performanceCounters[i][0],
+                                                           m_performanceCounters[i][1]);
 
         m_performanceCountersData[static_cast<PerformanceCounter>(i)] =
             static_cast<float>(diff) / static_cast<float>(sum);

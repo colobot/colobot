@@ -19,13 +19,7 @@
 
 #include "app/app.h"
 
-#if defined(PLATFORM_WINDOWS)
-    #include "app/system_windows.h"
-#elif defined(PLATFORM_LINUX)
-    #include "app/system_linux.h"
-#else
-    #include "app/system_other.h"
-#endif
+#include "app/system_other.h"
 
 #include "common/make_unique.h"
 
@@ -49,7 +43,8 @@ struct FakeSystemTimeStamp : public SystemTimeStamp
 class CApplicationWrapper : public CApplication
 {
 public:
-    CApplicationWrapper()
+    CApplicationWrapper(CSystemUtils* systemUtils)
+        : CApplication(systemUtils)
     {
         SDL_Init(0);
         m_eventQueue = MakeUnique<CEventQueue>();
@@ -97,6 +92,7 @@ protected:
     std::unique_ptr<CApplicationWrapper> m_app;
     MockRepository m_mocks;
     CSystemUtils* m_systemUtils;
+    std::vector<std::unique_ptr<FakeSystemTimeStamp>> m_timeStamps;
 
 private:
     int m_stampUid;
@@ -106,7 +102,6 @@ private:
 void ApplicationUT::SetUp()
 {
     m_systemUtils = m_mocks.Mock<CSystemUtils>();
-    CSystemUtils::ReplaceInstance(m_systemUtils);
 
     m_mocks.OnCall(m_systemUtils, CSystemUtils::GetDataPath).Return("");
     m_mocks.OnCall(m_systemUtils, CSystemUtils::GetLangPath).Return("");
@@ -118,23 +113,24 @@ void ApplicationUT::SetUp()
     m_mocks.OnCall(m_systemUtils, CSystemUtils::GetCurrentTimeStamp).Do(std::bind(&ApplicationUT::GetCurrentTimeStamp, this, ph::_1));
     m_mocks.OnCall(m_systemUtils, CSystemUtils::TimeStampExactDiff).Do(std::bind(&ApplicationUT::TimeStampExactDiff, this, ph::_1, ph::_2));
 
-    m_app.reset(new CApplicationWrapper());
+    m_app = MakeUnique<CApplicationWrapper>(m_systemUtils);
 }
 
 void ApplicationUT::TearDown()
 {
     m_app.reset();
-    CSystemUtils::ReplaceInstance(nullptr);
 }
 
 SystemTimeStamp* ApplicationUT::CreateTimeStamp()
 {
-    return new FakeSystemTimeStamp(++m_stampUid);
+    auto stamp = MakeUnique<FakeSystemTimeStamp>(++m_stampUid);
+    auto stampPtr = stamp.get();
+    m_timeStamps.push_back(std::move(stamp));
+    return stampPtr;
 }
 
 void ApplicationUT::DestroyTimeStamp(SystemTimeStamp *stamp)
 {
-    delete static_cast<FakeSystemTimeStamp*>(stamp);
 }
 
 void ApplicationUT::CopyTimeStamp(SystemTimeStamp *dst, SystemTimeStamp *src)

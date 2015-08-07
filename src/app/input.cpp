@@ -35,6 +35,7 @@
 template<> CInput* CSingleton<CInput>::m_instance = nullptr;
 
 CInput::CInput()
+    : m_keyPresses()
 {
     m_keyTable =
     {

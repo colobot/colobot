@@ -22,6 +22,8 @@
 
 #include "app/app.h"
 
+#include "graphics/engine/engine.h"
+
 #include "common/image.h"
 #include "common/logger.h"
 #include "common/stringutils.h"

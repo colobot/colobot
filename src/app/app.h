@@ -31,8 +31,6 @@
 
 #include "graphics/core/device.h"
 
-#include "graphics/engine/engine.h"
-
 #include "object/level_category.h"
 
 
@@ -44,12 +42,13 @@ class CEventQueue;
 class CController;
 class CSoundInterface;
 class CInput;
-class CObjectManager;
 class CPathManager;
+class CSystemUtils;
+struct SystemTimeStamp;
 
 namespace Gfx
 {
-class CModelManager;
+class CEngine;
 }
 
 /**
@@ -190,7 +189,7 @@ class CApplication : public CSingleton<CApplication>
 {
 public:
     //! Constructor (can only be called once!)
-    CApplication();
+    CApplication(CSystemUtils* systemUtils);
     //! Destructor
     ~CApplication();
 
@@ -211,9 +210,6 @@ public:
 
     //! Returns the message of error (set to something if exit code is not 0)
     const std::string& GetErrorMessage() const;
-
-    //! Cleans up before exit
-    void        Destroy();
 
     //! Restart
     void        Restart();
@@ -357,6 +353,8 @@ protected:
     void UpdatePerformanceCountersData();
 
 protected:
+    //! System utils instance
+    CSystemUtils* m_systemUtils;
     //! Private (SDL-dependent data)
     std::unique_ptr<ApplicationPrivate> m_private;
     //! Global event queue

@@ -53,9 +53,9 @@ struct InputBinding
 struct JoyAxisBinding
 {
     //! Axis index or AXIS_INVALID
-    int axis;
+    int axis = 0;
     //! True to invert axis value
-    bool invert;
+    bool invert = false;
 };
 
 //! Invalid value for axis binding (no axis assigned)

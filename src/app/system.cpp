@@ -22,6 +22,8 @@
 
 #include "common/config.h"
 
+#include "common/make_unique.h"
+
 
 #if defined(PLATFORM_WINDOWS)
     #include "app/system_windows.h"
@@ -37,24 +39,23 @@
 #include <iostream>
 
 
-template<>
-CSystemUtils* CSingleton<CSystemUtils>::m_instance = nullptr;
-
-
-CSystemUtils* CSystemUtils::Create()
+std::unique_ptr<CSystemUtils> CSystemUtils::Create()
 {
-    assert(m_instance == nullptr);
+    std::unique_ptr<CSystemUtils> instance;
 #if defined(PLATFORM_WINDOWS)
-    m_instance = new CSystemUtilsWindows();
+    instance = MakeUnique<CSystemUtilsWindows>();
 #elif defined(PLATFORM_LINUX)
-    m_instance = new CSystemUtilsLinux();
+    instance = MakeUnique<CSystemUtilsLinux>();
 #elif defined(PLATFORM_MACOSX)
-    m_instance = new CSystemUtilsMacOSX();
+    instance = MakeUnique<CSystemUtilsMacOSX>();
 #else
-    m_instance = new CSystemUtilsOther();
+    instance = MakeUnique<CSystemUtilsOther>();
 #endif
-    return m_instance;
+    return instance;
 }
+
+CSystemUtils::~CSystemUtils()
+{}
 
 SystemDialogResult CSystemUtils::ConsoleSystemDialog(SystemDialogType type, const std::string& title, const std::string& message)
 {
@@ -144,12 +145,19 @@ SystemDialogResult CSystemUtils::ConsoleSystemDialog(SystemDialogType type, cons
 
 SystemTimeStamp* CSystemUtils::CreateTimeStamp()
 {
-    return new SystemTimeStamp();
+    auto timeStamp = MakeUnique<SystemTimeStamp>();
+    SystemTimeStamp* timeStampPtr = timeStamp.get();
+    m_timeStamps.push_back(std::move(timeStamp));
+    return timeStampPtr;
 }
 
 void CSystemUtils::DestroyTimeStamp(SystemTimeStamp *stamp)
 {
-    delete stamp;
+    for (auto& timeStamp : m_timeStamps)
+    {
+        if (timeStamp.get() == stamp)
+            timeStamp.reset();
+    }
 }
 
 void CSystemUtils::CopyTimeStamp(SystemTimeStamp *dst, SystemTimeStamp *src)
