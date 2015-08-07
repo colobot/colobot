@@ -128,7 +128,9 @@ enum EngineRenderState
     //! Only opaque texture, no blending, etc.
     ENG_RSTATE_OPAQUE_TEXTURE   = (1<<19),
     //! Only opaque color, no texture, blending, etc.
-    ENG_RSTATE_OPAQUE_COLOR     = (1<<20)
+    ENG_RSTATE_OPAQUE_COLOR     = (1<<20),
+    //! Texture using alpha channel
+    ENG_RSTATE_TTEXTURE_ALPHA   = (1<<21)
 };
 
 

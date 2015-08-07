@@ -28,6 +28,7 @@
 
 #include "graphics/engine/engine.h"
 #include "graphics/engine/terrain.h"
+#include "graphics/engine/text.h"
 #include "graphics/engine/water.h"
 
 #include "math/geometry.h"
@@ -295,8 +296,11 @@ int CParticle::CreateParticle(Math::Vector pos, Math::Vector speed, Math::Point 
          type == PARTISMOKE2  ||
          type == PARTISMOKE3  ||
          type == PARTIBLOOD   ||
-         type == PARTIBLOODM  ||
-         type == PARTIVIRUS1  ||
+         type == PARTIBLOODM  )
+    {
+        t = 4;  // effect03 (ENG_RSTATE_TTEXTURE_WHITE)
+    }
+    if ( type == PARTIVIRUS1  ||
          type == PARTIVIRUS2  ||
          type == PARTIVIRUS3  ||
          type == PARTIVIRUS4  ||
@@ -307,7 +311,7 @@ int CParticle::CreateParticle(Math::Vector pos, Math::Vector speed, Math::Point 
          type == PARTIVIRUS9  ||
          type == PARTIVIRUS10 )
     {
-        t = 4;  // text (D3DSTATETTw)
+        t = 5; // text render
     }
     if (t >= MAXPARTITYPE) return -1;
     if (t == -1) return -1;
@@ -1799,53 +1803,43 @@ void CParticle::FrameParticle(float rTime)
 
             if (m_particle[i].type == PARTIVIRUS1)  // A ?
             {
-                ts.x =   0.0f/256.0f;  ts.y =  19.0f/256.0f;
-                ti.x =  10.0f/256.0f;  ti.y =  30.0f/256.0f;
+                m_particle[i].text = 'A';
             }
             if (m_particle[i].type == PARTIVIRUS2)  // C ?
             {
-                ts.x =  19.0f/256.0f;  ts.y =  19.0f/256.0f;
-                ti.x =  28.0f/256.0f;  ti.y =  30.0f/256.0f;
+                m_particle[i].text = 'C';
             }
             if (m_particle[i].type == PARTIVIRUS3)  // E ?
             {
-                ts.x =  36.0f/256.0f;  ts.y =  19.0f/256.0f;
-                ti.x =  45.0f/256.0f;  ti.y =  30.0f/256.0f;
+                m_particle[i].text = 'E';
             }
             if (m_particle[i].type == PARTIVIRUS4)  // N ?
             {
-                ts.x = 110.0f/256.0f;  ts.y =  19.0f/256.0f;
-                ti.x = 120.0f/256.0f;  ti.y =  30.0f/256.0f;
+                m_particle[i].text = 'N';
             }
             if (m_particle[i].type == PARTIVIRUS5)  // R ?
             {
-                ts.x = 148.0f/256.0f;  ts.y =  19.0f/256.0f;
-                ti.x = 158.0f/256.0f;  ti.y =  30.0f/256.0f;
+                m_particle[i].text = 'R';
             }
             if (m_particle[i].type == PARTIVIRUS6)  // T ?
             {
-                ts.x = 166.0f/256.0f;  ts.y =  19.0f/256.0f;
-                ti.x = 175.0f/256.0f;  ti.y =  30.0f/256.0f;
+                m_particle[i].text = 'T';
             }
             if (m_particle[i].type == PARTIVIRUS7)  // 0 ?
             {
-                ts.x =  90.0f/256.0f;  ts.y =   2.0f/256.0f;
-                ti.x =  98.0f/256.0f;  ti.y =  13.0f/256.0f;
+                m_particle[i].text = '0';
             }
             if (m_particle[i].type == PARTIVIRUS8)  // 2 ?
             {
-                ts.x = 103.0f/256.0f;  ts.y =   2.0f/256.0f;
-                ti.x = 111.0f/256.0f;  ti.y =  13.0f/256.0f;
+                m_particle[i].text = '2';
             }
             if (m_particle[i].type == PARTIVIRUS9)  // 5 ?
             {
-                ts.x = 125.0f/256.0f;  ts.y =   2.0f/256.0f;
-                ti.x = 132.0f/256.0f;  ti.y =  13.0f/256.0f;
+                m_particle[i].text = '5';
             }
             if (m_particle[i].type == PARTIVIRUS10)  // 9 ?
             {
-                ts.x = 153.0f/256.0f;  ts.y =   2.0f/256.0f;
-                ti.x = 161.0f/256.0f;  ti.y =  13.0f/256.0f;
+                m_particle[i].text = '9';
             }
         }
 
@@ -2861,7 +2855,7 @@ void CParticle::DrawParticleNorm(int i)
         vertex[2] = Vertex(corner[3], n, Math::Point(m_particle[i].texSup.x, m_particle[i].texInf.y));
         vertex[3] = Vertex(corner[2], n, Math::Point(m_particle[i].texInf.x, m_particle[i].texInf.y));
 
-        m_device->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, vertex, 4);
+        m_device->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, vertex, 4, m_particle[i].color);
         m_engine->AddStatisticTriangle(2);
     }
 }
@@ -3367,6 +3361,22 @@ void CParticle::DrawParticleCylinder(int i)
     m_engine->SetState(ENG_RSTATE_TTEXTURE_BLACK, IntensityToColor(m_particle[i].intensity));
 }
 
+void CParticle::DrawParticleText(int i)
+{
+    CharTexture tex = m_engine->GetText()->GetCharTexture(static_cast<UTF8Char>(m_particle[i].text), FONT_COLOBOT, FONT_SIZE_BIG*2.0f);
+    if (tex.id == 0) return;
+    m_device->SetTexture(0, tex.id);
+    m_engine->SetState(ENG_RSTATE_TTEXTURE_ALPHA, IntensityToColor(m_particle[i].intensity));
+
+    m_particle[i].texSup.x = 0.0f;
+    m_particle[i].texSup.y = 0.0f;
+    m_particle[i].texInf.x = static_cast<float>(tex.charSize.x) / static_cast<float>(tex.texSize.x);
+    m_particle[i].texInf.y = static_cast<float>(tex.charSize.y) / static_cast<float>(tex.texSize.y);
+    m_particle[i].color = Color(0.0f, 0.0f, 0.0f);
+
+    DrawParticleNorm(i);
+}
+
 void CParticle::DrawParticleWheel(int i)
 {
     float dist = Math::DistanceProjected(m_engine->GetEyePt(), m_wheelTrace[i].pos[0]);
@@ -3554,7 +3564,7 @@ void CParticle::DrawParticle(int sheet)
         bool loadTexture = false;
 
         int state;
-        if (t == 4) state = ENG_RSTATE_TTEXTURE_WHITE;  // text.png
+        if (t == 4) state = ENG_RSTATE_TTEXTURE_WHITE;  // effect03.png
         else        state = ENG_RSTATE_TTEXTURE_BLACK;  // effect[00..02].png
         m_engine->SetState(state);
 
@@ -3564,7 +3574,7 @@ void CParticle::DrawParticle(int sheet)
             if (!m_particle[i].used)  continue;
             if (m_particle[i].sheet != sheet)  continue;
 
-            if (!loadTexture)
+            if (!loadTexture && t != 5)
             {
                 std::string name;
                 NameParticle(name, t);
@@ -3606,6 +3616,11 @@ void CParticle::DrawParticle(int sheet)
             else if ( m_particle[i].type == PARTIPLOUF0 )  // cylinder?
             {
                 DrawParticleCylinder(i);
+            }
+            else if ( m_particle[i].type >= PARTIVIRUS1  &&
+                      m_particle[i].type <= PARTIVIRUS10 )
+            {
+                DrawParticleText(i);
             }
             else    // normal?
             {

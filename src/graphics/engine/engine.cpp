@@ -2083,6 +2083,29 @@ void CEngine::SetState(int state, const Color& color)
         m_device->SetTextureEnabled(0, true);
         m_device->SetTextureStageParams(0, params);
     }
+    else if (state & ENG_RSTATE_TTEXTURE_ALPHA)  // texture with alpha channel?
+    {
+        m_device->SetRenderState(RENDER_STATE_FOG,         false);
+        m_device->SetRenderState(RENDER_STATE_DEPTH_WRITE, false);
+
+        m_device->SetRenderState(RENDER_STATE_ALPHA_TEST,  true);
+        m_device->SetAlphaTestFunc(COMP_FUNC_GREATER, 0.0f);
+
+        m_device->SetRenderState(RENDER_STATE_BLENDING,    true);
+        m_device->SetBlendFunc(BLEND_DST_COLOR, BLEND_INV_SRC_ALPHA);
+
+        TextureStageParams params;
+        params.colorOperation = TEX_MIX_OPER_MODULATE;
+        params.colorArg1 = TEX_MIX_ARG_SRC_COLOR;
+        params.colorArg2 = TEX_MIX_ARG_TEXTURE;
+        params.alphaOperation = TEX_MIX_OPER_MODULATE;
+        params.alphaArg1 = TEX_MIX_ARG_TEXTURE;
+        params.alphaArg2 = TEX_MIX_ARG_FACTOR;
+        params.factor = color;
+
+        m_device->SetTextureEnabled(0, true);
+        m_device->SetTextureStageParams(0, params);
+    }
     else    // normal ?
     {
         m_device->SetRenderState(RENDER_STATE_ALPHA_TEST,  false);

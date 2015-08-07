@@ -40,7 +40,7 @@ namespace Gfx
 {
 
 const short MAXPARTICULE = 500;
-const short MAXPARTITYPE = 5;
+const short MAXPARTITYPE = 6;
 const short MAXTRACK = 100;
 const short MAXTRACKLEN = 10;
 const short MAXPARTIFOG = 100;
@@ -214,6 +214,8 @@ struct Particle
     CObject*        objFather = nullptr;  // father object (for example reactor)
     short           objRank = 0;    // rank of the object, or -1
     short           trackRank = 0;  // rank of the drag
+    char            text = 0;
+    Color           color = Color(1.0f, 1.0f, 1.0f, 1.0f);
 };
 
 struct Track
@@ -337,6 +339,8 @@ protected:
     void        DrawParticleSphere(int i);
     //! Draws a cylindrical particle
     void        DrawParticleCylinder(int i);
+    //! Draws a text particle
+    void        DrawParticleText(int i);
     //! Draws a tire mark
     void        DrawParticleWheel(int i);
     //! Seeks if an object collided with a bullet

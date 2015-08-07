@@ -315,6 +315,8 @@ public:
 
     UTF8Char    TranslateSpecialChar(int specialChar);
 
+    CharTexture GetCharTexture(UTF8Char ch, FontType font, float size);
+
 protected:
     CachedFont* GetOrOpenFont(FontType type, float size);
     CharTexture CreateCharTexture(UTF8Char ch, CachedFont* font);
@@ -346,4 +348,3 @@ protected:
 
 
 } // namespace Gfx
-

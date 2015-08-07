@@ -895,11 +895,6 @@ void CText::DrawCharAndAdjustPos(UTF8Char ch, FontType font, float size, Math::P
     }
     else
     {
-        CachedFont* cf = GetOrOpenFont(font, size);
-
-        if (cf == nullptr)
-            return;
-
         int width = 1;
         if (ch.c1 > 0 && ch.c1 < 32)
         {
@@ -909,21 +904,7 @@ void CText::DrawCharAndAdjustPos(UTF8Char ch, FontType font, float size, Math::P
             ch = TranslateSpecialChar(ch.c1);
         }
 
-        auto it = cf->cache.find(ch);
-        CharTexture tex;
-        if (it != cf->cache.end())
-        {
-            tex = (*it).second;
-        }
-        else
-        {
-            tex = CreateCharTexture(ch, cf);
-
-            if (tex.id == 0) // invalid
-                return;
-
-            cf->cache[ch] = tex;
-        }
+        CharTexture tex = GetCharTexture(ch, font, size);
 
         Math::Point p1(pos.x, pos.y + tex.charSize.y - tex.texSize.y);
         Math::Point p2(pos.x + tex.texSize.x, pos.y + tex.charSize.y);
@@ -1049,6 +1030,31 @@ CharTexture CText::CreateCharTexture(UTF8Char ch, CachedFont* font)
     SDL_FreeSurface(textureSurface);
 
     return texture;
+}
+
+CharTexture CText::GetCharTexture(UTF8Char ch, FontType font, float size)
+{
+    CachedFont* cf = GetOrOpenFont(font, size);
+
+    if (cf == nullptr)
+        return CharTexture();
+
+    auto it = cf->cache.find(ch);
+    CharTexture tex;
+    if (it != cf->cache.end())
+    {
+        tex = (*it).second;
+    }
+    else
+    {
+        tex = CreateCharTexture(ch, cf);
+
+        if (tex.id == 0) // invalid
+            return CharTexture();
+
+        cf->cache[ch] = tex;
+    }
+    return tex;
 }
 
 
