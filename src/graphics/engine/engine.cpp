@@ -401,6 +401,9 @@ void CEngine::ResetAfterDeviceChanged()
 
     FlushTextureCache();
 
+    // This prevents the "unable to open file shadow[00..15].png" messages
+    UpdateGroundSpotTextures();
+
     CRobotMain::GetInstancePointer()->ResetAfterDeviceChanged();
 
     LoadAllTextures();
