@@ -821,7 +821,7 @@ msgid "Load\\Loads the selected mission"
 msgstr "Wczytaj\\Wczytuje zaznaczoną misję"
 
 msgid "Loading basic level settings"
-msgstr "Wczytywanie podstawowych ustawień poziomu"
+msgstr "Wczytywanie ustawień poziomu"
 
 msgid "Loading finished!"
 msgstr "Wczytywanie zakończone!"
@@ -1262,10 +1262,10 @@ msgid "Restart\\Restart the mission from the beginning"
 msgstr "Uruchom ponownie\\Uruchamia ponownie misję od początku"
 
 msgid "Restoring CBot execution state"
-msgstr "Przywracanie stanu wykonywania CBot"
+msgstr "Przywracanie stanu CBot"
 
 msgid "Restoring saved objects"
-msgstr "Przywracanie zapisanych obiektów"
+msgstr "Przywracanie obiektów"
 
 msgid "Return to start"
 msgstr "Powrót do początku"
