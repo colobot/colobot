@@ -643,6 +643,9 @@ msgstr "Игра\\Настройки игры"
 msgid "Gantry crane"
 msgstr "Козловой кран"
 
+msgid "Generating"
+msgstr ""
+
 msgid "Gold Edition development by:"
 msgstr "\"Золотое издание\" было разработано:"
 
@@ -1256,6 +1259,9 @@ msgstr "Резервное ключевое слово языка CBOT"
 msgid "Resolution"
 msgstr "Разрешение"
 
+msgid "Resources"
+msgstr ""
+
 msgid "Restart\\Restart the mission from the beginning"
 msgstr "Заново\\Начать данную миссию с начала"
 
@@ -1498,7 +1504,13 @@ msgstr "Цель"
 msgid "Target bot"
 msgstr "Целевой бот"
 
+msgid "Terrain relief"
+msgstr ""
+
 msgid "Texture filtering\\Texture filtering"
+msgstr ""
+
+msgid "Textures"
 msgstr ""
 
 msgid "The expression must return a boolean value"

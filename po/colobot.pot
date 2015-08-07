@@ -279,6 +279,18 @@ msgstr ""
 msgid "Loading finished!"
 msgstr ""
 
+msgid "Terrain relief"
+msgstr ""
+
+msgid "Resources"
+msgstr ""
+
+msgid "Textures"
+msgstr ""
+
+msgid "Generating"
+msgstr ""
+
 msgid "Cancel"
 msgstr ""
 

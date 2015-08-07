@@ -39,9 +39,14 @@ public:
 
     void SetProgress(float progress, const std::string& text, const std::string& details = "");
     void SetProgress(float progress, ResTextType text, const std::string& details = "");
+    void SetProgress(float progress, ResTextType text, ResTextType details);
 
 protected:
     bool m_visible;
+
+    float       m_lastProgress;
+    std::string m_lastText;
+    std::string m_lastDetails;
 };
 
 } // namespace Ui

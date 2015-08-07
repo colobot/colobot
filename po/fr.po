@@ -644,6 +644,9 @@ msgstr "Jeu\\Options de jouabilité"
 msgid "Gantry crane"
 msgstr "Portique"
 
+msgid "Generating"
+msgstr ""
+
 msgid "Gold Edition development by:"
 msgstr "Edition d'Or développé par :"
 
@@ -1256,6 +1259,9 @@ msgstr "Ce mot est réservé"
 msgid "Resolution"
 msgstr "Résolution"
 
+msgid "Resources"
+msgstr ""
+
 msgid "Restart\\Restart the mission from the beginning"
 msgstr "Recommencer\\Recommencer la mission au début"
 
@@ -1502,7 +1508,13 @@ msgstr "Cible"
 msgid "Target bot"
 msgstr "Cible d'entraînement"
 
+msgid "Terrain relief"
+msgstr ""
+
 msgid "Texture filtering\\Texture filtering"
+msgstr ""
+
+msgid "Textures"
 msgstr ""
 
 msgid "The expression must return a boolean value"

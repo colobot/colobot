@@ -3267,6 +3267,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
             if (line->GetCommand() == "TerrainRelief" && !resetObject)
             {
+                m_ui->GetLoadingScreen()->SetProgress(0.2f+(1.f/5.f)*0.05f, RT_LOADING_TERRAIN, RT_LOADING_TERRAIN_RELIEF);
                 m_terrain->LoadRelief(
                     line->GetParam("image")->AsPath("textures"),
                     line->GetParam("factor")->AsFloat(1.0f),
@@ -3276,12 +3277,14 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
             if (line->GetCommand() == "TerrainRandomRelief" && !resetObject)
             {
+                m_ui->GetLoadingScreen()->SetProgress(0.2f+(1.f/5.f)*0.05f, RT_LOADING_TERRAIN, RT_LOADING_TERRAIN_RELIEF);
                 m_terrain->RandomizeRelief();
                 continue;
             }
 
             if (line->GetCommand() == "TerrainResource" && !resetObject)
             {
+                m_ui->GetLoadingScreen()->SetProgress(0.2f+(2.f/5.f)*0.05f, RT_LOADING_TERRAIN, RT_LOADING_TERRAIN_RES);
                 m_terrain->LoadResources(line->GetParam("image")->AsPath("textures"));
                 continue;
             }
@@ -3333,6 +3336,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
             if (line->GetCommand() == "TerrainInitTextures" && !resetObject)
             {
+                m_ui->GetLoadingScreen()->SetProgress(0.2f+(3.f/5.f)*0.05f, RT_LOADING_TERRAIN, RT_LOADING_TERRAIN_TEX);
                 std::string name = "../" + line->GetParam("image")->AsPath("textures");
                 if (name.find(".") == std::string::npos)
                     name += ".png";
@@ -3400,6 +3404,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
             if (line->GetCommand() == "TerrainLevel" && !resetObject)
             {
+                m_ui->GetLoadingScreen()->SetProgress(0.2f+(3.f/5.f)*0.05f, RT_LOADING_TERRAIN, RT_LOADING_TERRAIN_TEX);
                 int id[50]; //TODO: I have no idea how TerrainLevel works, but maybe we should remove the limit to 50?
                 if (line->GetParam("id")->IsDefined())
                 {
@@ -3430,6 +3435,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
             if (line->GetCommand() == "TerrainCreate" && !resetObject)
             {
+                m_ui->GetLoadingScreen()->SetProgress(0.2f+(4.f/5.f)*0.05f, RT_LOADING_TERRAIN, RT_LOADING_TERRAIN_GEN);
                 m_terrain->CreateObjects();
                 continue;
             }

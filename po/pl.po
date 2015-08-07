@@ -651,6 +651,9 @@ msgstr "Gra\\Ustawienia gry"
 msgid "Gantry crane"
 msgstr "Żuraw przesuwalny"
 
+msgid "Generating"
+msgstr "Generowanie"
+
 msgid "Gold Edition development by:"
 msgstr "Twórcy Złotej Edycji:"
 
@@ -1258,6 +1261,9 @@ msgstr "Słowo zarezerwowane języka CBOT"
 msgid "Resolution"
 msgstr "Rozdzielczość"
 
+msgid "Resources"
+msgstr "Zasoby"
+
 msgid "Restart\\Restart the mission from the beginning"
 msgstr "Uruchom ponownie\\Uruchamia ponownie misję od początku"
 
@@ -1500,8 +1506,14 @@ msgstr "Cel"
 msgid "Target bot"
 msgstr "Robot cel"
 
+msgid "Terrain relief"
+msgstr "Rzeźba terenu"
+
 msgid "Texture filtering\\Texture filtering"
 msgstr ""
+
+msgid "Textures"
+msgstr "Tekstury"
 
 msgid "The expression must return a boolean value"
 msgstr "Wyrażenie musi zwrócić wartość logiczną"

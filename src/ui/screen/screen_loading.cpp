@@ -146,9 +146,18 @@ void CScreenLoading::SetProgress(float progress, const std::string& text, const 
         pg->SetLevel(progress);
     }
 
-    SetBackground("textures/interface/interface.png");
-    m_engine->SetBackForce(true);
-    m_app->Render();
+    if (progress != m_lastProgress ||
+        text     != m_lastText     ||
+        details  != m_lastDetails   )
+    {
+        SetBackground("textures/interface/interface.png");
+        m_engine->SetBackForce(true);
+        m_app->Render();
+    }
+
+    m_lastProgress = progress;
+    m_lastText = text;
+    m_lastDetails = details;
 }
 
 void CScreenLoading::SetProgress(float progress, ResTextType text, const std::string& details)
@@ -156,6 +165,13 @@ void CScreenLoading::SetProgress(float progress, ResTextType text, const std::st
     std::string name;
     GetResource(RES_TEXT, text, name);
     SetProgress(progress, name, details);
+}
+
+void CScreenLoading::SetProgress(float progress, ResTextType text, ResTextType details)
+{
+    std::string name;
+    GetResource(RES_TEXT, details, name);
+    SetProgress(progress, text, name);
 }
 
 } // namespace Ui
