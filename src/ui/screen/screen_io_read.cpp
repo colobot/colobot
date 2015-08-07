@@ -167,7 +167,7 @@ bool CScreenIORead::EventProcess(const Event &event)
         if(m_inSimulation)
         {
             m_main->StopSuspend();
-            m_main->ChangePhase(PHASE_LOADING);
+            m_main->ChangePhase(PHASE_SIMUL);
         }
         return false;
     }

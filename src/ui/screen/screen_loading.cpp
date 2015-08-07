@@ -19,10 +19,13 @@
 
 #include "ui/screen/screen_loading.h"
 
+#include "common/config.h"
+
 #include "app/app.h"
 
 #include "ui/controls/button.h"
 #include "ui/controls/edit.h"
+#include "ui/controls/gauge.h"
 #include "ui/controls/interface.h"
 #include "ui/controls/label.h"
 #include "ui/controls/window.h"
@@ -31,6 +34,7 @@ namespace Ui
 {
 
 CScreenLoading::CScreenLoading()
+: m_visible(false)
 {
 }
 
@@ -68,24 +72,90 @@ void CScreenLoading::CreateInterface()
     pg = pw->CreateGroup(pos, ddim, 22, EVENT_NULL);
     pg->SetState(STATE_SHADOW);
 
-    pos.x  = 220.0f/640.0f;
+    pos.x  = 257.5f/640.0f;
     pos.y  = 210.0f/480.0f;
-    ddim.x = 200.0f/640.0f;
+    ddim.x = 125.0f/640.0f;
     ddim.y =  20.0f/480.0f;
     GetResource(RES_TEXT, RT_DIALOG_LOADING, name);
     pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL1, name);
-    pl->SetFontSize(12.0f);
     pl->SetTextAlign(Gfx::TEXT_ALIGN_CENTER);
 
+    pos.y -= ddim.y*1.75f;
+    pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL2, "");
+    pl->SetTextAlign(Gfx::TEXT_ALIGN_CENTER);
+
+    pos.y -= ddim.y*1.0f;
+    pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL3, "");
+    pl->SetTextAlign(Gfx::TEXT_ALIGN_CENTER);
+    pl->SetFontSize(Gfx::FONT_SIZE_SMALL*0.75f);
+
+    pos.y -= ddim.y*2.0f;
+    pw->CreateGauge(pos, ddim, 0, EVENT_LOADING);
+
     SetBackground("textures/interface/interface.png");
+
+    m_engine->SetDrawWorld(false);
+    m_app->Render();
+
+    m_visible = true;
+}
+
+void CScreenLoading::DestroyInterface()
+{
+    if (!m_visible) return;
+    m_visible = false;
+
+    m_engine->SetBackForce(false);
+    m_engine->SetDrawWorld(true);
+
+    m_interface->DeleteControl(EVENT_WINDOW5);
 }
 
 bool CScreenLoading::EventProcess(const Event &event)
 {
-    m_app->Render(); // render the frame once before we start loading
-    m_main->ChangePhase(PHASE_SIMUL);
+    return false; // Stop all events!
+}
 
-    return false;
+bool CScreenLoading::IsVisible()
+{
+    return m_visible;
+}
+
+void CScreenLoading::SetProgress(float progress, const std::string& text, const std::string& details)
+{
+    if (!m_visible) return;
+
+    CWindow* pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
+    if (pw == nullptr) return;
+
+    CLabel* pl = static_cast<CLabel*>(pw->SearchControl(EVENT_LABEL2));
+    if (pl != nullptr)
+    {
+        pl->SetName(text);
+    }
+
+    pl = static_cast<CLabel*>(pw->SearchControl(EVENT_LABEL3));
+    if (pl != nullptr)
+    {
+        pl->SetName(details);
+    }
+
+    CGauge* pg = static_cast<CGauge*>(pw->SearchControl(EVENT_LOADING));
+    if (pg != nullptr)
+    {
+        pg->SetLevel(progress);
+    }
+
+    SetBackground("textures/interface/interface.png");
+    m_engine->SetBackForce(true);
+    m_app->Render();
+}
+
+void CScreenLoading::SetProgress(float progress, ResTextType text, const std::string& details)
+{
+    std::string name;
+    GetResource(RES_TEXT, text, name);
+    SetProgress(progress, name, details);
 }
 
 } // namespace Ui

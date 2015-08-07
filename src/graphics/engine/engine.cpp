@@ -3214,6 +3214,7 @@ void CEngine::Render()
 
     UseMSAA(true);
 
+    DrawBackground();                // draws the background
     if (m_drawWorld)
         Draw3DScene();
 
@@ -3234,7 +3235,6 @@ void CEngine::Draw3DScene()
     if (m_groundSpotVisible)
         UpdateGroundSpotTextures();
 
-    DrawBackground();                // draws the background
     if (m_planetMode) DrawPlanet();  // draws the planets
     if (m_skyMode) m_cloud->Draw();  // draws the clouds
 

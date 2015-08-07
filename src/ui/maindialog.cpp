@@ -125,7 +125,7 @@ bool CMainDialog::EventProcess(const Event &event)
             if ( pressedButton == EVENT_INTERFACE_AGAIN )
             {
                 StopDialog();
-                m_main->ChangePhase(PHASE_LOADING);
+                m_main->ChangePhase(PHASE_SIMUL);
             }
 
             if ( pressedButton == EVENT_DIALOG_OK )

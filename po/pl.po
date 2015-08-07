@@ -820,6 +820,24 @@ msgstr "Wczytaj\\Wczytuje zapisaną misję"
 msgid "Load\\Loads the selected mission"
 msgstr "Wczytaj\\Wczytuje zaznaczoną misję"
 
+msgid "Loading basic level settings"
+msgstr "Wczytywanie podstawowych ustawień poziomu"
+
+msgid "Loading finished!"
+msgstr "Wczytywanie zakończone!"
+
+msgid "Loading music"
+msgstr "Wczytywanie muzyki"
+
+msgid "Loading objects"
+msgstr "Wczytywanie obiektów"
+
+msgid "Loading programs"
+msgstr "Wczytywanie programów"
+
+msgid "Loading terrain"
+msgstr "Wczytywanie terenu"
+
 msgid "Lowest\\Minimum graphic quality (highest frame rate)"
 msgstr ""
 "Najniższa\\Minimalna jakość grafiki (najwyższa częstotliwość odświeżania)"
@@ -1141,6 +1159,9 @@ msgstr "Element prywatny"
 msgid "Private\\Private folder"
 msgstr "Prywatny\\Folder prywatny"
 
+msgid "Processing level file"
+msgstr "Przetwarzanie pliku poziomu"
+
 msgid "Program cloned"
 msgstr "Program skopiowany"
 
@@ -1239,6 +1260,12 @@ msgstr "Rozdzielczość"
 
 msgid "Restart\\Restart the mission from the beginning"
 msgstr "Uruchom ponownie\\Uruchamia ponownie misję od początku"
+
+msgid "Restoring CBot execution state"
+msgstr "Przywracanie stanu wykonywania CBot"
+
+msgid "Restoring saved objects"
+msgstr "Przywracanie zapisanych obiektów"
 
 msgid "Return to start"
 msgstr "Powrót do początku"
@@ -1430,6 +1457,9 @@ msgstr "Standardowe\\Standardowe ustawienia wyglądu"
 
 msgid "Start"
 msgstr "Początek"
+
+msgid "Starting..."
+msgstr "Rozpoczynanie..."
 
 msgid "Still working ..."
 msgstr "Wciąż pracuje..."

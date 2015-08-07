@@ -812,6 +812,26 @@ msgstr "Charger\\Charger une mission enregistrée"
 msgid "Load\\Loads the selected mission"
 msgstr "Charger\\Charger la mission sélectionnée"
 
+msgid "Loading basic level settings"
+msgstr ""
+
+#, fuzzy
+msgid "Loading finished!"
+msgstr "Programme terminé"
+
+msgid "Loading music"
+msgstr ""
+
+#, fuzzy
+msgid "Loading objects"
+msgstr "Liste des objets"
+
+msgid "Loading programs"
+msgstr ""
+
+msgid "Loading terrain"
+msgstr ""
+
 msgid "Lowest\\Minimum graphic quality (highest frame rate)"
 msgstr "Mini\\Qualité minimale (+ rapide)"
 
@@ -1134,6 +1154,9 @@ msgstr "Elément protégé"
 msgid "Private\\Private folder"
 msgstr "Privé\\Dossier privé"
 
+msgid "Processing level file"
+msgstr ""
+
 #, fuzzy
 msgid "Program cloned"
 msgstr "Programme terminé"
@@ -1235,6 +1258,12 @@ msgstr "Résolution"
 
 msgid "Restart\\Restart the mission from the beginning"
 msgstr "Recommencer\\Recommencer la mission au début"
+
+msgid "Restoring CBot execution state"
+msgstr ""
+
+msgid "Restoring saved objects"
+msgstr ""
 
 msgid "Return to start"
 msgstr "Remet au départ"
@@ -1428,6 +1457,10 @@ msgid "Standard\\Standard appearance settings"
 msgstr "Standard\\Remet les couleurs standards"
 
 msgid "Start"
+msgstr "Départ"
+
+#, fuzzy
+msgid "Starting..."
 msgstr "Départ"
 
 msgid "Still working ..."

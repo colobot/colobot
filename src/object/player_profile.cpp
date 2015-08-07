@@ -517,7 +517,7 @@ void CPlayerProfile::LoadScene(std::string dir)
 
     CRobotMain::GetInstancePointer()->SetLevel(cat, chap, rank);
     CRobotMain::GetInstancePointer()->SetReadScene(dir);
-    CRobotMain::GetInstancePointer()->ChangePhase(PHASE_LOADING);
+    CRobotMain::GetInstancePointer()->ChangePhase(PHASE_SIMUL);
 }
 
 bool CPlayerProfile::DeleteScene(std::string dir)

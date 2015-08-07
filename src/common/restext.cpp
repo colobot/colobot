@@ -146,6 +146,17 @@ void InitializeRestext()
 
     stringsText[RT_INTERFACE_REC]    = TR("Recorder");
 
+    stringsText[RT_LOADING_INIT]           = TR("Starting...");
+    stringsText[RT_LOADING_PROCESSING]     = TR("Processing level file");
+    stringsText[RT_LOADING_LEVEL_SETTINGS] = TR("Loading basic level settings");
+    stringsText[RT_LOADING_MUSIC]          = TR("Loading music");
+    stringsText[RT_LOADING_TERRAIN]        = TR("Loading terrain");
+    stringsText[RT_LOADING_OBJECTS]        = TR("Loading objects");
+    stringsText[RT_LOADING_OBJECTS_SAVED]  = TR("Restoring saved objects");
+    stringsText[RT_LOADING_PROGRAMS]       = TR("Loading programs");
+    stringsText[RT_LOADING_CBOT_SAVE]      = TR("Restoring CBot execution state");
+    stringsText[RT_LOADING_FINISHED]       = TR("Loading finished!");
+
 
 
     stringsEvent[EVENT_BUTTON_OK]           = TR("OK");

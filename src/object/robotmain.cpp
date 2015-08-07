@@ -87,20 +87,23 @@
 
 #include "sound/sound.h"
 
-#include "ui/controls/button.h"
 #include "ui/displayinfo.h"
 #include "ui/displaytext.h"
-#include "ui/controls/edit.h"
-#include "ui/controls/interface.h"
-#include "ui/controls/label.h"
 #include "ui/maindialog.h"
 #include "ui/mainmap.h"
 #include "ui/mainshort.h"
 #include "ui/mainui.h"
+
+#include "ui/controls/button.h"
+#include "ui/controls/edit.h"
+#include "ui/controls/interface.h"
+#include "ui/controls/label.h"
 #include "ui/controls/map.h"
 #include "ui/controls/shortcut.h"
 #include "ui/controls/slider.h"
 #include "ui/controls/window.h"
+
+#include "ui/screen/screen_loading.h"
 
 #include <iomanip>
 
@@ -373,14 +376,12 @@ bool IsPhaseWithWorld(Phase phase)
     if (phase == PHASE_WIN      ) return true;
     if (phase == PHASE_LOST     ) return true;
     if (phase == PHASE_APPERANCE) return true;
-    if (phase == PHASE_LOADING  ) return true;
     if (IsInSimulationConfigPhase(phase)) return true;
     return false;
 }
 
 bool IsMainMenuPhase(Phase phase)
 {
-    if (phase == PHASE_LOADING) return true;
     return !IsPhaseWithWorld(phase);
 }
 
@@ -470,15 +471,6 @@ void CRobotMain::ChangePhase(Phase phase)
     }
     ClearInterface();
 
-    if (m_phase == PHASE_LOADING)
-    {
-        m_app->SetMouseMode(MOUSE_NONE);
-    }
-    else
-    {
-        m_app->SetMouseMode(m_settings->GetSystemMouse() ? MOUSE_SYSTEM : MOUSE_ENGINE);
-    }
-
     Math::Point dim, pos;
 
     // Creates and hide the command console.
@@ -525,7 +517,11 @@ void CRobotMain::ChangePhase(Phase phase)
 
         bool loading = !m_sceneReadPath.empty();
 
+        m_ui->ShowLoadingScreen(true);
+        m_ui->GetLoadingScreen()->SetProgress(0.0f, RT_LOADING_INIT);
+
         m_map->CreateMap();
+        m_map->ShowMap(false);
 
         try
         {
@@ -2492,18 +2488,19 @@ void CRobotMain::InitEye()
 //! Advances the entire scene
 bool CRobotMain::EventFrame(const Event &event)
 {
+    // TODO: For some reason we're getting one big event with event.rTime > 0.1f after loading before the movie starts?
+    if (!m_immediatSatCom && !m_beginSatCom && !m_movieLock &&
+         m_gameTime > 0.1f && m_phase == PHASE_SIMUL)
+    {
+        m_displayText->DisplayError(INFO_BEGINSATCOM, Math::Vector(0.0f,0.0f,0.0f));
+        m_beginSatCom = true;  // message appears
+    }
+
     m_time += event.rTime;
     if (!m_movieLock && m_pause->GetPause() == PAUSE_NONE)
     {
         m_gameTime += event.rTime;
         m_gameTimeAbsolute += m_app->GetRealRelTime() / 1e9f;
-    }
-
-    if (!m_immediatSatCom && !m_beginSatCom &&
-         m_gameTime > 0.1f && m_phase == PHASE_SIMUL)
-    {
-        m_displayText->DisplayError(INFO_BEGINSATCOM, Math::Vector(0.0f,0.0f,0.0f));
-        m_beginSatCom = true;  // message appears
     }
 
     if (!m_movieLock && m_pause->GetPause() == PAUSE_NONE && m_missionTimerStarted)
@@ -2932,10 +2929,20 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
     m_missionTimerStarted = false;
     m_missionTimer = 0.0f;
 
+    std::string backgroundPath = "";
+    Gfx::Color backgroundUp = Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f);
+    Gfx::Color backgroundDown = Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f);
+    Gfx::Color backgroundCloudUp = Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f);
+    Gfx::Color backgroundCloudDown = Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f);
+    bool backgroundFull = false;
+
     try
     {
+        m_ui->GetLoadingScreen()->SetProgress(0.05f, RT_LOADING_PROCESSING);
         CLevelParser levelParser(m_levelCategory, m_levelChap, m_levelRank);
         levelParser.Load();
+        int numObjects = levelParser.CountLines("CreateObject");
+        m_ui->GetLoadingScreen()->SetProgress(0.1f, RT_LOADING_LEVEL_SETTINGS);
 
         int rankObj = 0;
         int rankGadget = 0;
@@ -3039,7 +3046,9 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
             if (line->GetCommand() == "CacheAudio" && !resetObject)
             {
-                m_sound->CacheMusic(std::string("../")+line->GetParam("filename")->AsPath("music"));
+                std::string filename = line->GetParam("filename")->AsPath("music");
+                m_ui->GetLoadingScreen()->SetProgress(0.15f, RT_LOADING_MUSIC, filename);
+                m_sound->CacheMusic(std::string("../")+filename);
                 continue;
             }
 
@@ -3047,6 +3056,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             {
                 auto audioChange = MakeUnique<CAudioChangeCondition>();
                 audioChange->Read(line.get());
+                m_ui->GetLoadingScreen()->SetProgress(0.15f, RT_LOADING_MUSIC, CResourceManager::CleanPath("music/"+audioChange->music));
                 m_sound->CacheMusic(audioChange->music);
                 m_audioChange.push_back(std::move(audioChange));
                 continue;
@@ -3076,7 +3086,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 {
                     if (line->GetParam("filename")->IsDefined())
                     {
-                        m_audioTrack = std::string("../")+line->GetParam("filename")->AsPath("music");
+                        m_audioTrack = "../"+line->GetParam("filename")->AsPath("music");
                     }
                     else
                     {
@@ -3090,7 +3100,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
                 if (line->GetParam("satcom")->IsDefined())
                 {
-                    m_satcomTrack = std::string("../")+line->GetParam("satcom")->AsPath("music");
+                    m_satcomTrack = "../"+line->GetParam("satcom")->AsPath("music");
                     m_satcomRepeat = line->GetParam("satcomRepeat")->AsBool(true);
                 }
                 else
@@ -3100,7 +3110,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
                 if (line->GetParam("editor")->IsDefined())
                 {
-                    m_editorTrack = std::string("../")+line->GetParam("editor")->AsPath("music");
+                    m_editorTrack = "../"+line->GetParam("editor")->AsPath("music");
                     m_editorRepeat = line->GetParam("editorRepeat")->AsBool(true);
                 }
                 else
@@ -3108,9 +3118,21 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                     m_editorTrack = "";
                 }
 
-                if (!m_audioTrack.empty()) m_sound->CacheMusic(m_audioTrack);
-                if (!m_satcomTrack.empty()) m_sound->CacheMusic(m_satcomTrack);
-                if (!m_editorTrack.empty()) m_sound->CacheMusic(m_editorTrack);
+                if (!m_audioTrack.empty())
+                {
+                    m_ui->GetLoadingScreen()->SetProgress(0.15f, RT_LOADING_MUSIC, CResourceManager::CleanPath("music/"+m_audioTrack));
+                    m_sound->CacheMusic(m_audioTrack);
+                }
+                if (!m_satcomTrack.empty())
+                {
+                    m_sound->CacheMusic(m_satcomTrack);
+                    m_ui->GetLoadingScreen()->SetProgress(0.15f, RT_LOADING_MUSIC, CResourceManager::CleanPath("music/"+m_satcomTrack));
+                }
+                if (!m_editorTrack.empty())
+                {
+                    m_sound->CacheMusic(m_editorTrack);
+                    m_ui->GetLoadingScreen()->SetProgress(0.15f, RT_LOADING_MUSIC, CResourceManager::CleanPath("music/"+m_editorTrack));
+                }
                 continue;
             }
 
@@ -3177,15 +3199,13 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
             if (line->GetCommand() == "Background" && !resetObject)
             {
-                std::string path = "";
                 if (line->GetParam("image")->IsDefined())
-                    path = line->GetParam("image")->AsPath("textures");
-                m_engine->SetBackground(path.c_str(),
-                                        line->GetParam("up")->AsColor(Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f)),
-                                        line->GetParam("down")->AsColor(Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f)),
-                                        line->GetParam("cloudUp")->AsColor(Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f)),
-                                        line->GetParam("cloudDown")->AsColor(Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f)),
-                                        line->GetParam("full")->AsBool(false));
+                    backgroundPath = line->GetParam("image")->AsPath("textures");
+                backgroundUp = line->GetParam("up")->AsColor(backgroundUp);
+                backgroundDown = line->GetParam("down")->AsColor(backgroundDown);
+                backgroundCloudUp = line->GetParam("cloudUp")->AsColor(backgroundCloudUp);
+                backgroundCloudDown = line->GetParam("cloudDown")->AsColor(backgroundCloudDown);
+                backgroundFull = line->GetParam("full")->AsBool(backgroundFull);
                 continue;
             }
 
@@ -3229,6 +3249,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
             if (line->GetCommand() == "TerrainGenerate" && !resetObject)
             {
+                m_ui->GetLoadingScreen()->SetProgress(0.2f, RT_LOADING_TERRAIN);
                 m_terrain->Generate(line->GetParam("mosaic")->AsInt(20),
                                     line->GetParam("brick")->AsInt(3),
                                     line->GetParam("size")->AsFloat(20.0f),
@@ -3422,7 +3443,14 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                     ChangeColor();  // changes the colors of texture
 
                 if (!m_sceneReadPath.empty())  // loading file ?
+                {
+                    m_ui->GetLoadingScreen()->SetProgress(0.25f, RT_LOADING_OBJECTS_SAVED);
                     sel = IOReadScene(m_sceneReadPath + "/data.sav", m_sceneReadPath + "/cbot.run");
+                }
+                else
+                {
+                    m_ui->GetLoadingScreen()->SetProgress(0.25f, RT_LOADING_OBJECTS);
+                }
 
                 continue;
             }
@@ -3471,6 +3499,15 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 {
                     if (!TestGadgetQuantity(rankGadget++)) continue;
                 }
+
+
+                float objectProgress = static_cast<float>(rankObj) / static_cast<float>(numObjects);
+                std::string details = StrUtils::ToString<int>(rankObj+1)+" / "+StrUtils::ToString<int>(numObjects);
+                #if DEV_BUILD
+                // Object categories may spoil the level a bit, so hide them in release builds
+                details += ": "+CLevelParserParam::FromObjectType(type);
+                #endif
+                m_ui->GetLoadingScreen()->SetProgress(0.25f+objectProgress*0.5f, RT_LOADING_OBJECTS, details);
 
                 Math::Vector pos = line->GetParam("pos")->AsPoint()*g_unit;
                 float dirAngle = line->GetParam("dir")->AsFloat(0.0f)*Math::PI;
@@ -3747,7 +3784,6 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 m_map->FloorColorMap(line->GetParam("floor")->AsColor(Gfx::Color(0.533f, 0.533f, 0.533f, 0.533f)),
                                     line->GetParam("water")->AsColor(Gfx::Color(0.533f, 0.533f, 0.533f, 0.533f)));
                 m_mapShow = line->GetParam("show")->AsBool(true);
-                m_map->ShowMap(m_mapShow);
                 m_map->SetToy(line->GetParam("toyIcon")->AsBool(false));
                 m_mapImage = line->GetParam("image")->AsBool(false);
                 if (m_mapImage)
@@ -3873,6 +3909,18 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
         if (m_sceneReadPath.empty())
             CompileScript(soluce);  // compiles all scripts
 
+        m_ui->GetLoadingScreen()->SetProgress(1.0f, RT_LOADING_FINISHED);
+
+        if (!resetObject)
+        {
+            m_engine->SetBackground(backgroundPath,
+                                    backgroundUp,
+                                    backgroundDown,
+                                    backgroundCloudUp,
+                                    backgroundCloudDown,
+                                    backgroundFull);
+        }
+
         if (m_levelCategory == LevelCategory::Missions && !resetObject)  // mission?
         {
             m_playerProfile->SetFreeGameResearchUnlock(m_playerProfile->GetFreeGameResearchUnlock() | m_researchDone[0]);
@@ -3896,7 +3944,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             m_short->SetMode(false);  // vehicles?
         }
 
-        CreateShortcuts();
+        m_map->ShowMap(m_mapShow);
         m_map->UpdateMap();
         // TODO: m_engine->TimeInit(); ??
         m_input->ResetKeyStates();
@@ -3949,6 +3997,9 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
     if (m_app->GetSceneTestMode())
         m_eventQueue->AddEvent(Event(EVENT_QUIT));
+
+    m_ui->ShowLoadingScreen(false);
+    CreateShortcuts();
 }
 
 void CRobotMain::LevelLoadingError(const std::string& error, const std::runtime_error& exception, Phase exitPhase)
@@ -4614,51 +4665,44 @@ void CRobotMain::FrameShowLimit(float rTime)
 //! Compiles all scripts of robots
 void CRobotMain::CompileScript(bool soluce)
 {
-    int nbError = 0;
-    int lastError = 0;
+    m_ui->GetLoadingScreen()->SetProgress(0.75f, RT_LOADING_PROGRAMS);
 
-    do
+    int numObjects = m_objMan->CountObjectsImplementing(ObjectInterfaceType::Programmable);
+    int objCounter = 0;
+
+    for (CObject* obj : m_objMan->GetAllObjects())
     {
-        lastError = nbError;
-        nbError = 0;
-        for (CObject* obj : m_objMan->GetAllObjects())
-        {
-            if (! obj->Implements(ObjectInterfaceType::Programmable)) continue;
+        if (! obj->Implements(ObjectInterfaceType::Programmable)) continue;
 
-            CBrain* brain = dynamic_cast<CProgrammableObject*>(obj)->GetBrain();
-            for (auto& prog : brain->GetPrograms())
+        float objectProgress = static_cast<float>(objCounter) / static_cast<float>(numObjects);
+        m_ui->GetLoadingScreen()->SetProgress(0.75f+objectProgress*0.25f, RT_LOADING_PROGRAMS, "for object "+StrUtils::ToString<int>(objCounter+1)+" / "+StrUtils::ToString<int>(numObjects));
+        objCounter++;
+
+        CBrain* brain = dynamic_cast<CProgrammableObject*>(obj)->GetBrain();
+        for (auto& prog : brain->GetPrograms())
+        {
+            Program* program = prog.get();
+
+            if (program->filename.empty()) continue;
+
+            std::string name = "ai/" + program->filename;
+            if (! brain->ReadProgram(program, const_cast<char*>(name.c_str())))
             {
-                Program* program = prog.get();
-
-                if (program->filename.empty()) continue;
-
-                std::string name = "ai/" + program->filename;
-                if (! brain->ReadProgram(program, const_cast<char*>(name.c_str())))
-                {
-                    GetLogger()->Error("Unable to read script from file \"%s\"\n", name.c_str());
-                }
-                if (!brain->GetCompile(program)) nbError++;
+                GetLogger()->Error("Unable to read script from file \"%s\"\n", name.c_str());
             }
-
-            LoadOneScript(obj, nbError);
+            //? if (!brain->GetCompile(program)) nbError++;
         }
-    }
-    while (nbError > 0 && nbError != lastError);
 
-    // Load all solutions.
-    if (soluce)
-    {
-        for (CObject* obj : m_objMan->GetAllObjects())
+        if (soluce)
         {
-            if (! obj->Implements(ObjectInterfaceType::Programmable)) continue;
-
-            CBrain* brain = dynamic_cast<CProgrammableObject*>(obj)->GetBrain();
             char* name = brain->GetSoluceName();
             if (name[0] != 0)
             {
                 brain->ReadSoluce(name);  // load solution
             }
         }
+
+        LoadOneScript(obj);
     }
 
     // Start all programs according to the command "run".
@@ -4676,7 +4720,7 @@ void CRobotMain::CompileScript(bool soluce)
 }
 
 //! Load all programs of the robot
-void CRobotMain::LoadOneScript(CObject *obj, int &nbError)
+void CRobotMain::LoadOneScript(CObject *obj)
 {
     if (! obj->Implements(ObjectInterfaceType::Programmable)) return;
 
@@ -4693,8 +4737,6 @@ void CRobotMain::LoadOneScript(CObject *obj, int &nbError)
     char categoryChar = GetLevelCategoryDir(m_levelCategory)[0];
     for (unsigned int i = 0; i <= 999; i++)
     {
-        //? if (brain->GetCompile(i)) continue;
-
         char file[MAX_FNAME];
         sprintf(file, "%c%.3d%.3d%.3d%.3d.txt", categoryChar, m_levelChap, m_levelRank, objRank, i);
         std::string filename = m_playerProfile->GetSaveFile(file);
@@ -4704,14 +4746,13 @@ void CRobotMain::LoadOneScript(CObject *obj, int &nbError)
             Program* program = brain->GetOrAddProgram(i);
             if(brain->GetCompile(program)) continue; // If already loaded (e.g. from level file), skip
             brain->ReadProgram(program, filename.c_str());
-            if (!brain->GetCompile(program)) nbError++;
+            //? if (!brain->GetCompile(program)) nbError++;
         }
     }
 }
 
 //! Load all programs of the robot
-void CRobotMain::LoadFileScript(CObject *obj, const char* filename, int objRank,
-                                int &nbError)
+void CRobotMain::LoadFileScript(CObject *obj, const char* filename, int objRank)
 {
     if (objRank == -1) return;
 
@@ -4733,7 +4774,7 @@ void CRobotMain::LoadFileScript(CObject *obj, const char* filename, int objRank,
         {
             Program* program = brain->GetOrAddProgram(i);
             brain->ReadProgram(program, fn);
-            if (!brain->GetCompile(program)) nbError++;
+            //? if (!brain->GetCompile(program)) nbError++;
         }
     }
 }
@@ -5131,7 +5172,7 @@ void CRobotMain::IOWriteSceneFinished()
 }
 
 //! Resumes the game
-CObject* CRobotMain::IOReadObject(CLevelParserLine *line, const char* filename, int objRank)
+CObject* CRobotMain::IOReadObject(CLevelParserLine *line, const char* filename, const std::string& objCounterText, float objectProgress, int objRank)
 {
     Math::Vector pos  = line->GetParam("pos")->AsPoint()*g_unit;
     Math::Vector dir  = line->GetParam("angle")->AsPoint()*(Math::PI/180.0f);
@@ -5139,6 +5180,13 @@ CObject* CRobotMain::IOReadObject(CLevelParserLine *line, const char* filename, 
 
     ObjectType type = line->GetParam("type")->AsObjectType();
     int id = line->GetParam("id")->AsInt();
+
+    std::string details = objCounterText;
+    #if DEV_BUILD
+    // Object categories may spoil the level a bit, so hide them in release builds
+    details += ": "+CLevelParserParam::FromObjectType(type);
+    #endif
+    m_ui->GetLoadingScreen()->SetProgress(0.25f+objectProgress*0.5f, RT_LOADING_OBJECTS_SAVED, details);
 
     bool trainer = line->GetParam("trainer")->AsBool(false);
     bool toy = line->GetParam("toy")->AsBool(false);
@@ -5222,6 +5270,7 @@ CObject* CRobotMain::IOReadScene(std::string filename, std::string filecbot)
 {
     CLevelParser levelParser(filename);
     levelParser.Load();
+    int numObjects = levelParser.CountLines("CreateObject") + levelParser.CountLines("CreatePower") + levelParser.CountLines("CreateFret");
 
     m_base = nullptr;
 
@@ -5229,6 +5278,7 @@ CObject* CRobotMain::IOReadScene(std::string filename, std::string filecbot)
     CObject* power  = nullptr;
     CObject* sel    = nullptr;
     int objRank = 0;
+    int objCounter = 0;
     for (auto& line : levelParser.GetLines())
     {
         if (line->GetCommand() == "Map")
@@ -5247,14 +5297,20 @@ CObject* CRobotMain::IOReadScene(std::string filename, std::string filecbot)
         }
 
         if (line->GetCommand() == "CreateFret")
-            cargo = IOReadObject(line.get(), filename.c_str(), -1);
+        {
+            cargo = IOReadObject(line.get(), filename.c_str(), StrUtils::ToString<int>(objCounter+1)+" / "+StrUtils::ToString<int>(numObjects), static_cast<float>(objCounter) / static_cast<float>(numObjects), -1);
+            objCounter++;
+        }
 
         if (line->GetCommand() == "CreatePower")
-            power = IOReadObject(line.get(), filename.c_str(), -1);
+        {
+            power = IOReadObject(line.get(), filename.c_str(), StrUtils::ToString<int>(objCounter+1)+" / "+StrUtils::ToString<int>(numObjects), static_cast<float>(objCounter) / static_cast<float>(numObjects), -1);
+            objCounter++;
+        }
 
         if (line->GetCommand() == "CreateObject")
         {
-            CObject* obj = IOReadObject(line.get(), filename.c_str(), objRank++);
+            CObject* obj = IOReadObject(line.get(), filename.c_str(), StrUtils::ToString<int>(objCounter+1)+" / "+StrUtils::ToString<int>(numObjects), static_cast<float>(objCounter) / static_cast<float>(numObjects), objRank++);
 
             if (line->GetParam("select")->AsBool(false))
                 sel = obj;
@@ -5276,32 +5332,33 @@ CObject* CRobotMain::IOReadScene(std::string filename, std::string filecbot)
                 assert(power->Implements(ObjectInterfaceType::Transportable));
                 dynamic_cast<CTransportableObject*>(power)->SetTransporter(obj);
             }
-            cargo  = nullptr;
+            cargo = nullptr;
             power = nullptr;
+
+            objCounter++;
         }
     }
 
     // Compiles scripts.
-    int nbError = 0;
-    int lastError = 0;
-    do
+    m_ui->GetLoadingScreen()->SetProgress(0.75f, RT_LOADING_PROGRAMS);
+    numObjects = m_objMan->CountObjectsImplementing(ObjectInterfaceType::Programmable);
+    objCounter = 0;
+
+    for (CObject* obj : m_objMan->GetAllObjects())
     {
-        lastError = nbError;
-        nbError = 0;
-        for (CObject* obj : m_objMan->GetAllObjects())
-        {
-            if (IsObjectBeingTransported(obj)) continue;
+        if (! obj->Implements(ObjectInterfaceType::Programmable)) continue;
 
-            if (obj->Implements(ObjectInterfaceType::Programmable))
-            {
-                objRank = obj->GetDefRank();
-                if (objRank == -1) continue;
+        float objectProgress = static_cast<float>(objCounter) / static_cast<float>(numObjects);
+        m_ui->GetLoadingScreen()->SetProgress(0.75f+objectProgress*0.2f, RT_LOADING_PROGRAMS, "for object "+StrUtils::ToString<int>(objCounter+1)+" / "+StrUtils::ToString<int>(numObjects));
+        objCounter++;
 
-                LoadFileScript(obj, filename.c_str(), objRank, nbError);
-            }
-        }
+        if (IsObjectBeingTransported(obj)) continue; // TODO: WTF, programmable transportable objects?
+
+        objRank = obj->GetDefRank();
+        if (objRank == -1) continue;
+
+        LoadFileScript(obj, filename.c_str(), objRank);
     }
-    while (nbError > 0 && nbError != lastError);
 
     // Starts scripts
     for (CObject* obj : m_objMan->GetAllObjects())
@@ -5317,6 +5374,8 @@ CObject* CRobotMain::IOReadScene(std::string filename, std::string filecbot)
             brain->RunProgram(program);  // starts the program
         }
     }
+
+    m_ui->GetLoadingScreen()->SetProgress(0.95f, RT_LOADING_CBOT_SAVE);
 
     // Reads the file of stacks of execution.
     FILE* file = fOpen((CResourceManager::GetSaveLocation() + "/" + filecbot).c_str(), "rb");
@@ -5345,6 +5404,8 @@ CObject* CRobotMain::IOReadScene(std::string filename, std::string filecbot)
         CBotClass::RestoreStaticState(file);
         fClose(file);
     }
+
+    m_ui->GetLoadingScreen()->SetProgress(1.0f, RT_LOADING_FINISHED);
 
     return sel;
 }
@@ -5879,6 +5940,7 @@ void CRobotMain::UpdateSpeedLabel()
 bool CRobotMain::CreateShortcuts()
 {
     if (m_phase != PHASE_SIMUL) return false;
+    if (m_ui->GetLoadingScreen()->IsVisible()) return false;
     if (!m_shortCut) return false;
     return m_short->CreateShortcuts();
 }
@@ -5892,7 +5954,7 @@ void CRobotMain::UpdateMap()
 //! Indicates whether the mini-map is visible
 bool CRobotMain::GetShowMap()
 {
-    return m_map->GetShowMap() && m_mapShow;
+    return m_mapShow;
 }
 
 
@@ -5902,7 +5964,7 @@ void CRobotMain::SetMovieLock(bool lock)
     m_movieLock = lock;
 
     CreateShortcuts();
-    m_map->ShowMap(!m_movieLock && m_mapShow);
+    m_map->ShowMap(!m_movieLock && m_mapShow && !m_ui->GetLoadingScreen()->IsVisible());
     if (m_movieLock) HiliteClear();
 }
 

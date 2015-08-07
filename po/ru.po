@@ -811,6 +811,26 @@ msgstr "Загрузить\\Загрузить сохраненную мисси
 msgid "Load\\Loads the selected mission"
 msgstr "Загрузить\\Загрузить выбранную миссию"
 
+msgid "Loading basic level settings"
+msgstr ""
+
+#, fuzzy
+msgid "Loading finished!"
+msgstr "Программа выполнена"
+
+msgid "Loading music"
+msgstr ""
+
+#, fuzzy
+msgid "Loading objects"
+msgstr "Список объектов"
+
+msgid "Loading programs"
+msgstr ""
+
+msgid "Loading terrain"
+msgstr ""
+
 msgid "Lowest\\Minimum graphic quality (highest frame rate)"
 msgstr "Низкое\\Минимальное качество графики (быстро)"
 
@@ -1133,6 +1153,9 @@ msgstr "Частный элемент"
 msgid "Private\\Private folder"
 msgstr "Личное\\Личная папка"
 
+msgid "Processing level file"
+msgstr ""
+
 #, fuzzy
 msgid "Program cloned"
 msgstr "Программа выполнена"
@@ -1235,6 +1258,12 @@ msgstr "Разрешение"
 
 msgid "Restart\\Restart the mission from the beginning"
 msgstr "Заново\\Начать данную миссию с начала"
+
+msgid "Restoring CBot execution state"
+msgstr ""
+
+msgid "Restoring saved objects"
+msgstr ""
 
 msgid "Return to start"
 msgstr "Вернуться в начало"
@@ -1424,6 +1453,10 @@ msgid "Standard\\Standard appearance settings"
 msgstr "По умолчанию\\Настройки внешнего вида по умолчанию"
 
 msgid "Start"
+msgstr "Начало"
+
+#, fuzzy
+msgid "Starting..."
 msgstr "Начало"
 
 msgid "Still working ..."

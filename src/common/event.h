@@ -172,6 +172,8 @@ enum EventType
     EVENT_LIST8             = 118,
     EVENT_LIST9             = 119,
 
+    EVENT_LOADING           = 120,
+
     EVENT_TOOLTIP           = 200,
 
     EVENT_DIALOG_OK         = 300,

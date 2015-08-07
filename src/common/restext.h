@@ -145,6 +145,17 @@ enum ResTextType
     RT_MESSAGE_WIN          = 200,
     RT_MESSAGE_LOST         = 201,
 
+    RT_LOADING_INIT           = 210,
+    RT_LOADING_PROCESSING     = 211,
+    RT_LOADING_LEVEL_SETTINGS = 212,
+    RT_LOADING_MUSIC          = 213,
+    RT_LOADING_TERRAIN        = 214,
+    RT_LOADING_OBJECTS        = 215,
+    RT_LOADING_OBJECTS_SAVED  = 216,
+    RT_LOADING_PROGRAMS       = 217,
+    RT_LOADING_CBOT_SAVE      = 218,
+    RT_LOADING_FINISHED       = 219,
+
 
     RT_MAX //! < number of values
 };

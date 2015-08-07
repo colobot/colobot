@@ -23,6 +23,7 @@
 #include <vector>
 
 
+class CApplication;
 class CSettings;
 class CSoundInterface;
 
@@ -64,6 +65,9 @@ public:
 
     CMainDialog* GetDialog();
 
+    void    ShowLoadingScreen(bool show);
+    CScreenLoading* GetLoadingScreen();
+
     bool    EventProcess(const Event &event);
     void    ChangePhase(Phase phase);
 
@@ -90,6 +94,7 @@ protected:
     CScreenSetup* GetSetupScreen(Phase phase);
 
 protected:
+    CApplication*     m_app;
     CRobotMain*       m_main;
     Gfx::CEngine*     m_engine;
     Gfx::CParticle*   m_particle;

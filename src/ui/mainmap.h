@@ -49,7 +49,6 @@ public:
     void        ZoomMap(float zoom);
     void        ZoomMap();
     void        MapEnable(bool bEnable);
-    bool        GetShowMap();
     bool        GetFixImage();
     CObject*    DetectMap(Math::Point pos, bool &bInMap);
     void        SetHighlight(CObject* pObj);
@@ -64,7 +63,6 @@ protected:
     Gfx::CEngine*   m_engine;
     CInterface*     m_interface;
 
-    int             m_mapMode;
     bool            m_bFixImage;
 };
 

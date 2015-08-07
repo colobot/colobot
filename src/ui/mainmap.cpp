@@ -39,7 +39,6 @@ CMainMap::CMainMap()
     m_event     = CApplication::GetInstancePointer()->GetEventQueue();
     m_engine    = Gfx::CEngine::GetInstancePointer();
 
-    m_mapMode = 1;
     m_bFixImage = false;
 }
 
@@ -129,19 +128,18 @@ void CMainMap::ShowMap(bool bShow)
     if (pw == nullptr)
         return;
 
+
+    pm = static_cast<CMap*>(pw->SearchControl(EVENT_OBJECT_MAP));
+    if (pm != nullptr)
+        pm->SetState(STATE_VISIBLE, bShow);
+
+    ps = static_cast<CSlider*>(pw->SearchControl(EVENT_OBJECT_MAPZOOM));
+    if (ps != nullptr)
+        ps->SetState(STATE_VISIBLE, bShow);
+
     if (bShow)
     {
         DimMap();
-    }
-    else
-    {
-        pm = static_cast<CMap*>(pw->SearchControl(EVENT_OBJECT_MAP));
-        if (pm != nullptr)
-            pm->ClearState(STATE_VISIBLE);
-
-        ps = static_cast<CSlider*>(pw->SearchControl(EVENT_OBJECT_MAPZOOM));
-        if (ps != nullptr)
-            ps->ClearState(STATE_VISIBLE);
     }
 }
 
@@ -162,8 +160,6 @@ void CMainMap::DimMap()
     if (pm == nullptr)
         return;
 
-    pm->SetState(STATE_VISIBLE, (m_mapMode != 0));
-
     dim.x = 100.0f/640.0f;
     dim.y = 100.0f/480.0f;
     pos.x = 540.0f/640.0f;
@@ -174,8 +170,6 @@ void CMainMap::DimMap()
     ps = static_cast<CSlider*>(pw->SearchControl(EVENT_OBJECT_MAPZOOM));
     if (ps != nullptr)
     {
-        ps->SetState(STATE_VISIBLE, (m_mapMode != 0));
-
         dim.x = SCROLL_WIDTH;
         dim.y =  66.0f / 480.0f;
         pos.x = 523.0f / 640.0f;
@@ -349,13 +343,6 @@ void CMainMap::UpdateMap()
         pm->UpdateTerrain();
 }
 
-// Indicates if the mini-map is visible.
-
-bool CMainMap::GetShowMap()
-{
-    return ( m_mapMode != 0 );
-}
-
 // Indicates whether the mini-map displays a still image.
 
 bool CMainMap::GetFixImage()
@@ -401,4 +388,3 @@ void CMainMap::SetHighlight(CObject* pObj)
 
 
 }
-

@@ -249,6 +249,36 @@ msgstr ""
 msgid "Recorder"
 msgstr ""
 
+msgid "Starting..."
+msgstr ""
+
+msgid "Processing level file"
+msgstr ""
+
+msgid "Loading basic level settings"
+msgstr ""
+
+msgid "Loading music"
+msgstr ""
+
+msgid "Loading terrain"
+msgstr ""
+
+msgid "Loading objects"
+msgstr ""
+
+msgid "Restoring saved objects"
+msgstr ""
+
+msgid "Loading programs"
+msgstr ""
+
+msgid "Restoring CBot execution state"
+msgstr ""
+
+msgid "Loading finished!"
+msgstr ""
+
 msgid "Cancel"
 msgstr ""
 

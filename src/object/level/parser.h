@@ -85,7 +85,10 @@ public:
     void AddLine(CLevelParserLineUPtr line);
 
     //! Find first line with given command
-    CLevelParserLine* Get(std::string command);
+    CLevelParserLine* Get(const std::string& command);
+
+    //! Count lines with given command
+    int CountLines(const std::string& command);
 
 private:
     std::string m_filename;

@@ -462,7 +462,7 @@ ObjectType CLevelParserParam::ToObjectType(std::string value)
     if (value == "Me"                ) return OBJECT_HUMAN;
     if (value == "Tech"              ) return OBJECT_TECH;
     if (value == "MissionController" ) return OBJECT_CONTROLLER;
-    return static_cast<ObjectType>(Cast<int>(value, "object"));
+    return static_cast<ObjectType>(boost::lexical_cast<int>(value));
 }
 
 const std::string CLevelParserParam::FromObjectType(ObjectType value)

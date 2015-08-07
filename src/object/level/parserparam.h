@@ -122,6 +122,9 @@ public:
     std::string GetValue();
     bool IsDefined();
 
+    static const std::string FromObjectType(ObjectType value);
+    static ObjectType ToObjectType(std::string value);
+
 private:
     void ParseArray();
     void LoadArray();
@@ -130,7 +133,6 @@ private:
     template<typename T> T Cast(std::string requestedType);
 
     std::string ToPath(std::string path, const std::string defaultDir);
-    ObjectType ToObjectType(std::string value);
     DriveType ToDriveType(std::string value);
     ToolType ToToolType(std::string value);
     Gfx::WaterType ToWaterType(std::string value);
@@ -141,7 +143,6 @@ private:
     Gfx::CameraType ToCameraType(std::string value);
     MissionType ToMissionType(std::string value);
 
-    const std::string FromObjectType(ObjectType value);
     const std::string FromCameraType(Gfx::CameraType value);
 
 private:
@@ -151,4 +152,3 @@ private:
     std::string m_value;
     CLevelParserParamVec m_array;
 };
-

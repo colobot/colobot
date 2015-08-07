@@ -58,7 +58,7 @@ void CController::StartApp()
 void CController::StartGame(LevelCategory cat, int chap, int lvl)
 {
     m_main->SetLevel(cat, chap, lvl);
-    m_main->ChangePhase(PHASE_LOADING);
+    m_main->ChangePhase(PHASE_SIMUL);
 }
 
 void CController::ProcessEvent(Event& event)

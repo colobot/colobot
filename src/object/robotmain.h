@@ -50,7 +50,6 @@ enum Phase
     PHASE_APPERANCE,
     PHASE_MAIN_MENU,
     PHASE_LEVEL_LIST,
-    PHASE_LOADING,
     PHASE_SIMUL,
     PHASE_SETUPd,
     PHASE_SETUPg,
@@ -273,8 +272,8 @@ public:
     void        FrameShowLimit(float rTime);
 
     void        CompileScript(bool soluce);
-    void        LoadOneScript(CObject *pObj, int &nerror);
-    void        LoadFileScript(CObject *pObj, const char* filename, int objRank, int &nerror);
+    void        LoadOneScript(CObject *pObj);
+    void        LoadFileScript(CObject *pObj, const char* filename, int objRank);
     void        SaveAllScript();
     void        SaveOneScript(CObject *pObj);
     void        SaveFileScript(CObject *pObj, const char* filename, int objRank);
@@ -293,7 +292,7 @@ public:
     void        IOWriteSceneFinished();
     CObject*    IOReadScene(std::string filename, std::string filecbot);
     void        IOWriteObject(CLevelParserLine *line, CObject* obj);
-    CObject*    IOReadObject(CLevelParserLine *line, const char* filename, int objRank);
+    CObject*    IOReadObject(CLevelParserLine *line, const char* filename, const std::string& objCounterText, float objectProgress, int objRank);
 
     int         CreateSpot(Math::Vector pos, Gfx::Color color);
 

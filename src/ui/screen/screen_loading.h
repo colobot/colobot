@@ -21,6 +21,8 @@
 
 #include "ui/screen/screen.h"
 
+#include "common/restext.h"
+
 namespace Ui
 {
 
@@ -30,7 +32,16 @@ public:
     CScreenLoading();
 
     void CreateInterface() override;
+    void DestroyInterface();
     bool EventProcess(const Event &event) override;
+
+    bool IsVisible();
+
+    void SetProgress(float progress, const std::string& text, const std::string& details = "");
+    void SetProgress(float progress, ResTextType text, const std::string& details = "");
+
+protected:
+    bool m_visible;
 };
 
 } // namespace Ui

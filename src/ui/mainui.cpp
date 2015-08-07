@@ -63,11 +63,12 @@ namespace Ui
 
 CMainUserInterface::CMainUserInterface()
 {
+    m_app        = CApplication::GetInstancePointer();
     m_main       = CRobotMain::GetInstancePointer();
     m_engine     = Gfx::CEngine::GetInstancePointer();
     m_particle   = m_engine->GetParticle();
     m_interface  = m_main->GetInterface();
-    m_sound      = CApplication::GetInstancePointer()->GetSound();
+    m_sound      = m_app->GetSound();
     m_settings   = CSettings::GetInstancePointer();
 
     m_dialog     = MakeUnique<CMainDialog>();
@@ -110,6 +111,27 @@ CMainUserInterface::~CMainUserInterface()
 CMainDialog* CMainUserInterface::GetDialog()
 {
     return m_dialog.get();
+}
+
+void CMainUserInterface::ShowLoadingScreen(bool show)
+{
+    if (show)
+    {
+        m_app->SetMouseMode(MOUSE_NONE);
+        m_currentScreen = m_screenLoading.get();
+        m_screenLoading->CreateInterface();
+    }
+    else
+    {
+        m_screenLoading->DestroyInterface();
+        m_currentScreen = nullptr;
+        m_app->SetMouseMode(m_settings->GetSystemMouse() ? MOUSE_SYSTEM : MOUSE_ENGINE);
+    }
+}
+
+CScreenLoading* CMainUserInterface::GetLoadingScreen()
+{
+    return m_screenLoading.get();
 }
 
 
@@ -161,10 +183,6 @@ void CMainUserInterface::ChangePhase(Phase phase)
     {
         m_screenLevelList->SetLevelCategory(m_main->GetLevelCategory());
         m_currentScreen = m_screenLevelList.get();
-    }
-    if (m_phase == PHASE_LOADING)
-    {
-        m_currentScreen = m_screenLoading.get();
     }
     if (m_phase >= PHASE_SETUPd && m_phase <= PHASE_SETUPs)
     {

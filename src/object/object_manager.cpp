@@ -206,6 +206,17 @@ void CObjectManager::DestroyTeam(int team)
     }
 }
 
+int CObjectManager::CountObjectsImplementing(ObjectInterfaceType interface)
+{
+    int count = 0;
+    for (CObject* object : GetAllObjects())
+    {
+        if (object->Implements(interface))
+            count++;
+    }
+    return count;
+}
+
 CObject* CObjectManager::Radar(CObject* pThis, ObjectType type, float angle, float focus, float minDist, float maxDist, bool furthest, RadarFilter filter, bool cbotTypes)
 {
     std::vector<ObjectType> types;

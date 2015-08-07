@@ -356,7 +356,7 @@ void CLevelParser::AddLine(CLevelParserLineUPtr line)
     m_lines.push_back(std::move(line));
 }
 
-CLevelParserLine* CLevelParser::Get(std::string command)
+CLevelParserLine* CLevelParser::Get(const std::string& command)
 {
     for (auto& line : m_lines)
     {
@@ -364,4 +364,15 @@ CLevelParserLine* CLevelParser::Get(std::string command)
             return line.get();
     }
     throw CLevelParserException("Command not found: " + command);
+}
+
+int CLevelParser::CountLines(const std::string& command)
+{
+    int count = 0;
+    for (auto& line : m_lines)
+    {
+        if (line->GetCommand() == command)
+            count++;
+    }
+    return count;
 }

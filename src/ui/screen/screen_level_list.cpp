@@ -294,7 +294,7 @@ bool CScreenLevelList::EventProcess(const Event &event)
 
         case EVENT_INTERFACE_PLAY:
             m_main->SetLevel(m_category, m_chap[m_category]+1, m_sel[m_category]+1);
-            m_main->ChangePhase(PHASE_LOADING);
+            m_main->ChangePhase(PHASE_SIMUL);
             break;
 
         case EVENT_INTERFACE_READ:

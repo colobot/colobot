@@ -30,6 +30,7 @@
 #include "math/vector.h"
 
 #include "object/object_create_params.h"
+#include "object/object_interface_type.h"
 #include "object/object_type.h"
 
 #include <map>
@@ -171,6 +172,9 @@ public:
     //! Destroy all objects of team
     // TODO: This should be probably moved to separate class
     void DestroyTeam(int team);
+
+    //! Counts all objects implementing given interface
+    int CountObjectsImplementing(ObjectInterfaceType interface);
 
     //! Returns all objects
     inline CObjectContainerProxy GetAllObjects()
