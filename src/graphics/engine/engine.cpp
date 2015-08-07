@@ -2311,9 +2311,6 @@ bool CEngine::LoadAllTextures()
 
     m_planet->LoadTexture();
 
-    m_firstGroundSpot = true;
-    UpdateGroundSpotTextures();
-
     bool ok = true;
 
     for (int objRank = 0; objRank < static_cast<int>( m_objects.size() ); objRank++)
@@ -2562,6 +2559,8 @@ void CEngine::FlushTextureCache()
     m_texNameMap.clear();
     m_revTexNameMap.clear();
     m_texBlacklist.clear();
+
+    m_firstGroundSpot = true;
 }
 
 bool CEngine::SetTexture(const std::string& name, int stage)
