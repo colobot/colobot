@@ -8,7 +8,7 @@ After installing Developer Command Line Tools, you should have basic tools like 
 ```
 And then:
 ```bash
-  brew install cmake sdl sdl_image sdl_ttf boost glew physfs flac libsndfile libvorbis vorbis-tools gettext libicns librsvg
+  brew install cmake sdl sdl_image sdl_ttf boost glew physfs flac libsndfile libvorbis vorbis-tools gettext libicns librsvg wget
 ```
 Gettext is installed in separate directory without adding the files to system path, so in order to get it working normally, you should call also:
 ```bash
