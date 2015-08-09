@@ -93,6 +93,7 @@ void CScreenLoading::CreateInterface()
     pw->CreateGauge(pos, ddim, 0, EVENT_LOADING);
 
     SetBackground("textures/interface/interface.png");
+    CreateVersionDisplay();
 
     m_engine->SetDrawWorld(false);
     m_app->Render();

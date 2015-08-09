@@ -19,11 +19,17 @@
 
 #include "ui/screen/screen.h"
 
+#include "common/config.h"
+
 #include "app/app.h"
 
 #include "graphics/engine/engine.h"
 
 #include "object/robotmain.h"
+
+#include "ui/controls/interface.h"
+#include "ui/controls/label.h"
+#include "ui/controls/window.h"
 
 namespace Ui
 {
@@ -51,6 +57,23 @@ void CScreen::SetBackground(const std::string& filename, bool scaled)
             Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
             true, scaled);
     m_engine->SetBackForce(true);
+}
+
+void CScreen::CreateVersionDisplay()
+{
+    CWindow* pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
+    if (pw != nullptr)
+    {
+        Math::Point pos, ddim;
+
+        pos.x  = 540.0f/640.0f;
+        pos.y  =   9.0f/480.0f;
+        ddim.x =  90.0f/640.0f;
+        ddim.y =  10.0f/480.0f;
+        CLabel* pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL1, COLOBOT_VERSION_DISPLAY);
+        pl->SetFontType(Gfx::FONT_COURIER);
+        pl->SetFontSize(9.0f);
+    }
 }
 
 } // namespace Ui

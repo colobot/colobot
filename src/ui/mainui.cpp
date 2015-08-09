@@ -20,8 +20,6 @@
 
 #include "ui/mainui.h"
 
-#include "common/config.h"
-
 #include "app/app.h"
 
 #include "common/event.h"
@@ -34,6 +32,8 @@
 #include "object/robotmain.h"
 
 #include "sound/sound.h"
+
+#include "ui/maindialog.h"
 
 #include "ui/screen/screen.h"
 #include "ui/screen/screen_apperance.h"
@@ -53,7 +53,6 @@
 
 #include "ui/controls/interface.h"
 #include "ui/controls/label.h"
-#include "ui/maindialog.h"
 #include "ui/controls/window.h"
 
 namespace Ui
@@ -221,26 +220,6 @@ void CMainUserInterface::ChangePhase(Phase phase)
         if (!m_sound->IsPlayingMusic() && m_sound->IsCachedMusic("Intro1.ogg"))
         {
             m_sound->PlayMusic("Intro1.ogg", false);
-        }
-    }
-
-    if ( IsMainMenuPhase(m_phase) &&
-         m_phase != PHASE_WELCOME1 &&
-         m_phase != PHASE_WELCOME2 &&
-         m_phase != PHASE_WELCOME3 )
-    {
-        CWindow* pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
-        if (pw != nullptr)
-        {
-            Math::Point pos, ddim;
-
-            pos.x  = 540.0f/640.0f;
-            pos.y  =   9.0f/480.0f;
-            ddim.x =  90.0f/640.0f;
-            ddim.y =  10.0f/480.0f;
-            CLabel* pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL1, COLOBOT_VERSION_DISPLAY);
-            pl->SetFontType(Gfx::FONT_COURIER);
-            pl->SetFontSize(9.0f);
         }
     }
 

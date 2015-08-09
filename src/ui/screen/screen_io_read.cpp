@@ -114,6 +114,7 @@ void CScreenIORead::CreateInterface()
     if ( !m_inSimulation )
     {
         SetBackground("textures/interface/interface.png");
+        CreateVersionDisplay();
     }
 }
 

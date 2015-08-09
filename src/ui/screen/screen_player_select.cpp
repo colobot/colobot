@@ -140,11 +140,12 @@ void CScreenPlayerSelect::CreateInterface()
     pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_NCANCEL);
     pb->SetState(STATE_SHADOW);
 
+    SetBackground("textures/interface/interface.png");
+    CreateVersionDisplay();
+
     ReadNameList();
     UpdateNameList();
     UpdateNameControl();
-
-    SetBackground("textures/interface/interface.png");
 }
 
 bool CScreenPlayerSelect::EventProcess(const Event &event)

@@ -139,6 +139,7 @@ void CScreenSetup::CreateInterface()
     if ( !m_simulationSetup )
     {
         SetBackground("textures/interface/interface.png");
+        CreateVersionDisplay();
     }
 }
 

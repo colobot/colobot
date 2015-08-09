@@ -49,6 +49,7 @@ public:
     virtual bool EventProcess(const Event &event) = 0;
 
 protected:
+    void CreateVersionDisplay();
     void SetBackground(const std::string& filename, bool scaled = false);
 
 protected:

@@ -160,6 +160,7 @@ void CScreenMainMenu::CreateInterface()
     pl->SetFontSize(Gfx::FONT_SIZE_SMALL);
 
     SetBackground("textures/interface/interface.png");
+    CreateVersionDisplay();
 }
 
 bool CScreenMainMenu::EventProcess(const Event &event)

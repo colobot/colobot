@@ -235,6 +235,7 @@ void CScreenLevelList::CreateInterface()
     pb->SetState(STATE_SHADOW);
 
     SetBackground("textures/interface/interface.png");
+    CreateVersionDisplay();
 
     if (m_category == LevelCategory::CustomLevels)
     {
