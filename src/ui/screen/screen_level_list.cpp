@@ -347,12 +347,12 @@ void CScreenLevelList::UpdateSceneChap(int &chap)
 
     pl->Flush();
 
-    unsigned int j;
+    int j;
     if ( m_category == LevelCategory::CustomLevels )
     {
         UpdateCustomLevelList();
 
-        for ( j=0 ; j<m_customLevelList.size() ; j++ )
+        for ( j=0 ; j < static_cast<int>(m_customLevelList.size()) ; j++ )
         {
             try
             {
@@ -601,7 +601,7 @@ void CScreenLevelList::UpdateCustomLevelList()
 
 std::string CScreenLevelList::GetCustomLevelName(int id)
 {
-    if(id < 1 || id > m_customLevelList.size()) return "";
+    if(id < 1 || id > static_cast<int>(m_customLevelList.size())) return "";
     return m_customLevelList[id-1];
 }
 
