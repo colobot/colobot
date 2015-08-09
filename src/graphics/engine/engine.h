@@ -130,7 +130,9 @@ enum EngineRenderState
     //! Only opaque color, no texture, blending, etc.
     ENG_RSTATE_OPAQUE_COLOR     = (1<<20),
     //! Texture using alpha channel
-    ENG_RSTATE_TTEXTURE_ALPHA   = (1<<21)
+    ENG_RSTATE_TTEXTURE_ALPHA   = (1<<21),
+    //! Color with transparency
+    ENG_RSTATE_TCOLOR_ALPHA     = (1<<22)
 };
 
 
@@ -684,7 +686,7 @@ public:
 
     //! Enables/disables rendering
     void            SetRenderEnable(bool enable);
-    
+
     //! Management of "screenshot mode" (disables interface particle rendering)
     //@{
     void            SetScreenshotMode(bool screenshotMode);
@@ -1328,7 +1330,6 @@ protected:
 
     //! Whether to show stats (FPS, etc)
     bool            m_showStats;
-    std::string     m_fpsText;
     //! Rendering enabled?
     bool            m_render;
 

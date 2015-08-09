@@ -126,6 +126,8 @@ enum PerformanceCounter
     PCNT_RENDER_INTERFACE,      //! < rendering 2D interface
     PCNT_RENDER_SHADOW_MAP,     //! < rendering shadow map
 
+    PCNT_SWAP_BUFFERS,          //! < swapping buffers and vsync
+
     PCNT_ALL,                   //! < all counters together
 
     PCNT_MAX
@@ -323,7 +325,7 @@ public:
     //@}
 
     bool        GetSceneTestMode();
-    
+
     //! Renders the image in window
     void        Render();
 

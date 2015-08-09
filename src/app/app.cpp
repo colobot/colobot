@@ -1013,9 +1013,7 @@ int CApplication::Run()
              * because mouse events are usually way behind */
             UpdateMouse();
 
-            StartPerformanceCounter(PCNT_RENDER_ALL);
             Render();
-            StopPerformanceCounter(PCNT_RENDER_ALL);
 
             StopPerformanceCounter(PCNT_ALL);
 
@@ -1309,10 +1307,14 @@ Event CApplication::CreateVirtualEvent(const Event& sourceEvent)
 /** Renders the frame and swaps buffers as necessary */
 void CApplication::Render()
 {
+    StartPerformanceCounter(PCNT_RENDER_ALL);
     m_engine->Render();
+    StopPerformanceCounter(PCNT_RENDER_ALL);
 
+    StartPerformanceCounter(PCNT_SWAP_BUFFERS);
     if (m_deviceConfig.doubleBuf)
         SDL_GL_SwapBuffers();
+    StopPerformanceCounter(PCNT_SWAP_BUFFERS);
 }
 
 void CApplication::SuspendSimulation()

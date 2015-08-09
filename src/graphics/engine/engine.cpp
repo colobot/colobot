@@ -28,6 +28,7 @@
 #include "common/key.h"
 #include "common/logger.h"
 #include "common/make_unique.h"
+#include "common/stringutils.h"
 
 #include "common/thread/resource_owning_thread.h"
 
@@ -198,7 +199,6 @@ CEngine::CEngine(CApplication *app, CSystemUtils* systemUtils)
     Math::Matrix temp1, temp2;
     Math::LoadScaleMatrix(temp1, Math::Vector(0.5f, 0.5f, 0.5f));
     Math::LoadTranslationMatrix(temp2, Math::Vector(1.0f, 1.0f, 1.0f));
-    //m_shadowBias = Math::MultiplyMatrices(m_shadowBias, temporary);
     m_shadowBias = Math::MultiplyMatrices(temp1, temp2);
 
     m_lastState = -1;
@@ -440,28 +440,6 @@ bool CEngine::ProcessEvent(const Event &event)
 
 void CEngine::FrameUpdate()
 {
-    m_fpsCounter++;
-
-    m_systemUtils->GetCurrentTimeStamp(m_currentFrameTime);
-    float diff = m_systemUtils->TimeStampDiff(m_lastFrameTime, m_currentFrameTime, STU_SEC);
-    if (diff > 1.0f)
-    {
-        m_systemUtils->CopyTimeStamp(m_lastFrameTime, m_currentFrameTime);
-
-        m_fps = m_fpsCounter / diff;
-        m_fpsCounter = 0;
-
-        if (m_showStats)
-        {
-            std::stringstream str;
-            str << "FPS: ";
-            str.precision(2);
-            str.setf(std::ios_base::fixed);
-            str << m_fps;
-            m_fpsText = str.str();
-        }
-    }
-
     float rTime = m_app->GetRelTime();
 
     m_lightMan->UpdateProgression(rTime);
@@ -2110,8 +2088,8 @@ void CEngine::SetState(int state, const Color& color)
 
         TextureStageParams params;
         params.colorOperation = TEX_MIX_OPER_MODULATE;
-        params.colorArg1 = TEX_MIX_ARG_SRC_COLOR;
-        params.colorArg2 = TEX_MIX_ARG_TEXTURE;
+        params.colorArg1 = TEX_MIX_ARG_TEXTURE;
+        params.colorArg2 = TEX_MIX_ARG_SRC_COLOR;
         params.alphaOperation = TEX_MIX_OPER_MODULATE;
         params.alphaArg1 = TEX_MIX_ARG_TEXTURE;
         params.alphaArg2 = TEX_MIX_ARG_FACTOR;
@@ -2119,6 +2097,17 @@ void CEngine::SetState(int state, const Color& color)
 
         m_device->SetTextureEnabled(0, true);
         m_device->SetTextureStageParams(0, params);
+    }
+    else if (state & ENG_RSTATE_TCOLOR_ALPHA)
+    {
+        m_device->SetRenderState(RENDER_STATE_FOG,         false);
+        m_device->SetRenderState(RENDER_STATE_DEPTH_WRITE, false);
+        m_device->SetRenderState(RENDER_STATE_ALPHA_TEST,  false);
+
+        m_device->SetRenderState(RENDER_STATE_BLENDING,    true);
+        m_device->SetBlendFunc(BLEND_DST_COLOR, BLEND_INV_SRC_ALPHA);
+
+        m_device->SetTextureEnabled(0, false);
     }
     else    // normal ?
     {
@@ -3187,6 +3176,18 @@ void CEngine::ApplyChange()
   viewport, and renders the scene. */
 void CEngine::Render()
 {
+    m_fpsCounter++;
+
+    m_systemUtils->GetCurrentTimeStamp(m_currentFrameTime);
+    float diff = m_systemUtils->TimeStampDiff(m_lastFrameTime, m_currentFrameTime, STU_SEC);
+    if (diff > 1.0f)
+    {
+        m_systemUtils->CopyTimeStamp(m_lastFrameTime, m_currentFrameTime);
+
+        m_fps = m_fpsCounter / diff;
+        m_fpsCounter = 0;
+    }
+
     if (! m_render)
         return;
 
@@ -3995,10 +3996,10 @@ void CEngine::DrawInterface()
         DrawOverColor();
 
     // At the end to not overlap
-    DrawMouse();
     DrawHighlight();
-    DrawStats();
     DrawTimer();
+    DrawStats();
+    DrawMouse();
 }
 
 void CEngine::UpdateGroundSpotTextures()
@@ -4853,19 +4854,22 @@ void CEngine::DrawStats()
 
     float height = m_text->GetAscent(FONT_COLOBOT, 13.0f);
     float width = 0.25f;
+    const int TOTAL_LINES = 20;
 
-    Math::Point pos(0.04f, 0.04f + 20 * height);
+    Math::Point pos(0.05f * m_size.x/m_size.y, 0.05f + TOTAL_LINES * height);
 
-    SetState(ENG_RSTATE_OPAQUE_COLOR);
+    SetState(ENG_RSTATE_TCOLOR_ALPHA);
 
-    Gfx::Color black(0.0f, 0.0f, 0.0f, 0.0f);
+    Gfx::Color black(0.0f, 0.0f, 0.0f, 0.75f);
+
+    Math::Point margin = Math::Point(5.f / m_size.x, 5.f / m_size.y);
 
     VertexCol vertex[4] =
     {
-        VertexCol(Math::Vector(pos.x        , pos.y - 21 * height, 0.0f), black),
-        VertexCol(Math::Vector(pos.x        , pos.y + height, 0.0f), black),
-        VertexCol(Math::Vector(pos.x + width, pos.y - 21 * height, 0.0f), black),
-        VertexCol(Math::Vector(pos.x + width, pos.y + height, 0.0f), black)
+        VertexCol(Math::Vector(pos.x         - margin.x, pos.y - (TOTAL_LINES + 1) * height - margin.y, 0.0f), black),
+        VertexCol(Math::Vector(pos.x         - margin.x, pos.y + height                     + margin.y, 0.0f), black),
+        VertexCol(Math::Vector(pos.x + width + margin.x, pos.y - (TOTAL_LINES + 1) * height - margin.y, 0.0f), black),
+        VertexCol(Math::Vector(pos.x + width + margin.x, pos.y + height                     + margin.y, 0.0f), black)
     };
 
     m_device->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, vertex, 4);
@@ -4874,92 +4878,37 @@ void CEngine::DrawStats()
 
     std::stringstream str;
 
-    str.str("");
-    str << "Event processing: " << std::fixed << std::setprecision(2) << m_app->GetPerformanceCounterData(PCNT_EVENT_PROCESSING);
-    m_text->DrawText(str.str(), FONT_COLOBOT, 12.0f, pos, 1.0f, TEXT_ALIGN_LEFT, 0, Color(1.0f, 1.0f, 1.0f, 1.0f));
+    auto drawStatsLine = [&](const std::string& name = "", const std::string& value = "")
+    {
+        if (!name.empty())
+        {
+            str.str("");
+            str << name << ": " << value;
+            m_text->DrawText(str.str(), FONT_COLOBOT, 12.0f, pos, 1.0f, TEXT_ALIGN_LEFT, 0, Color(1.0f, 1.0f, 1.0f, 1.0f));
+        }
+        pos.y -= height;
+    };
 
-    pos.y -= height;
-    pos.y -= height;
+    auto drawStatsValue = [&](const std::string& name, float value)
+    {
+        str.str("");
+        str << std::fixed << std::setprecision(2) << value;
+        drawStatsLine(name, str.str());
+    };
 
-
-    str.str("");
-    str << "Frame update: " << std::fixed << std::setprecision(2) << m_app->GetPerformanceCounterData(PCNT_UPDATE_ALL);
-    m_text->DrawText(str.str(), FONT_COLOBOT, 12.0f, pos, 1.0f, TEXT_ALIGN_LEFT, 0, Color(1.0f, 1.0f, 1.0f, 1.0f));
-
-    pos.y -= height;
-
-    str.str("");
-    str << "Engine update: " << std::fixed << std::setprecision(2) << m_app->GetPerformanceCounterData(PCNT_UPDATE_ENGINE);
-    m_text->DrawText(str.str(), FONT_COLOBOT, 12.0f, pos, 1.0f, TEXT_ALIGN_LEFT, 0, Color(1.0f, 1.0f, 1.0f, 1.0f));
-
-    pos.y -= height;
-
-    str.str("");
-    str << "Particle update: " << std::fixed << std::setprecision(2) << m_app->GetPerformanceCounterData(PCNT_UPDATE_PARTICLE);
-    m_text->DrawText(str.str(), FONT_COLOBOT, 12.0f, pos, 1.0f, TEXT_ALIGN_LEFT, 0, Color(1.0f, 1.0f, 1.0f, 1.0f));
-
-    pos.y -= height;
-
-    str.str("");
-    str << "Game update: " << std::fixed << std::setprecision(2) << m_app->GetPerformanceCounterData(PCNT_UPDATE_GAME);
-    m_text->DrawText(str.str(), FONT_COLOBOT, 12.0f, pos, 1.0f, TEXT_ALIGN_LEFT, 0, Color(1.0f, 1.0f, 1.0f, 1.0f));
-
-    pos.y -= height;
-
-    float otherUpdate = Math::Max(0.0f, m_app->GetPerformanceCounterData(PCNT_UPDATE_ALL) -
-                                       m_app->GetPerformanceCounterData(PCNT_UPDATE_ENGINE) -
-                                       m_app->GetPerformanceCounterData(PCNT_UPDATE_PARTICLE) -
-                                       m_app->GetPerformanceCounterData(PCNT_UPDATE_GAME));
-
-    str.str("");
-    str << "Other update: " << std::fixed << std::setprecision(2) << otherUpdate;
-    m_text->DrawText(str.str(), FONT_COLOBOT, 12.0f, pos, 1.0f, TEXT_ALIGN_LEFT, 0, Color(1.0f, 1.0f, 1.0f, 1.0f));
-
-    pos.y -= height;
-    pos.y -= height;
+    auto drawStatsCounter = [&](const std::string& name, PerformanceCounter counter)
+    {
+        drawStatsValue(name, m_app->GetPerformanceCounterData(counter));
+    };
 
 
-    str.str("");
-    str << "Frame render: " << std::fixed << std::setprecision(2) << m_app->GetPerformanceCounterData(PCNT_RENDER_ALL);
-    m_text->DrawText(str.str(), FONT_COLOBOT, 12.0f, pos, 1.0f, TEXT_ALIGN_LEFT, 0, Color(1.0f, 1.0f, 1.0f, 1.0f));
+    float engineUpdate = m_app->GetPerformanceCounterData(PCNT_UPDATE_ENGINE) -
+                         m_app->GetPerformanceCounterData(PCNT_UPDATE_PARTICLE);
 
-    pos.y -= height;
-
-    str.str("");
-    str << "Particle render: " << std::fixed << std::setprecision(2) << m_app->GetPerformanceCounterData(PCNT_RENDER_PARTICLE);
-    m_text->DrawText(str.str(), FONT_COLOBOT, 12.0f, pos, 1.0f, TEXT_ALIGN_LEFT, 0, Color(1.0f, 1.0f, 1.0f, 1.0f));
-
-    pos.y -= height;
-
-    str.str("");
-    str << "Water render: " << std::fixed << std::setprecision(2) << m_app->GetPerformanceCounterData(PCNT_RENDER_WATER);
-    m_text->DrawText(str.str(), FONT_COLOBOT, 12.0f, pos, 1.0f, TEXT_ALIGN_LEFT, 0, Color(1.0f, 1.0f, 1.0f, 1.0f));
-
-    pos.y -= height;
-
-    str.str("");
-    str << "Terrain render: " << std::fixed << std::setprecision(2) << m_app->GetPerformanceCounterData(PCNT_RENDER_TERRAIN);
-    m_text->DrawText(str.str(), FONT_COLOBOT, 12.0f, pos, 1.0f, TEXT_ALIGN_LEFT, 0, Color(1.0f, 1.0f, 1.0f, 1.0f));
-
-    pos.y -= height;
-
-    str.str("");
-    str << "Objects render: " << std::fixed << std::setprecision(2) << m_app->GetPerformanceCounterData(PCNT_RENDER_OBJECTS);
-    m_text->DrawText(str.str(), FONT_COLOBOT, 12.0f, pos, 1.0f, TEXT_ALIGN_LEFT, 0, Color(1.0f, 1.0f, 1.0f, 1.0f));
-
-    pos.y -= height;
-
-    str.str("");
-    str << "UI render: " << std::fixed << std::setprecision(2) << m_app->GetPerformanceCounterData(PCNT_RENDER_INTERFACE);
-    m_text->DrawText(str.str(), FONT_COLOBOT, 12.0f, pos, 1.0f, TEXT_ALIGN_LEFT, 0, Color(1.0f, 1.0f, 1.0f, 1.0f));
-
-    pos.y -= height;
-
-    str.str("");
-    str << "Shadow map render: " << std::fixed << std::setprecision(2) << m_app->GetPerformanceCounterData(PCNT_RENDER_SHADOW_MAP);
-    m_text->DrawText(str.str(), FONT_COLOBOT, 12.0f, pos, 1.0f, TEXT_ALIGN_LEFT, 0, Color(1.0f, 1.0f, 1.0f, 1.0f));
-
-    pos.y -= height;
+    float otherUpdate = m_app->GetPerformanceCounterData(PCNT_UPDATE_ALL) -
+                        engineUpdate -
+                        m_app->GetPerformanceCounterData(PCNT_UPDATE_PARTICLE) -
+                        m_app->GetPerformanceCounterData(PCNT_UPDATE_GAME);
 
     float otherRender = m_app->GetPerformanceCounterData(PCNT_RENDER_ALL) -
                         m_app->GetPerformanceCounterData(PCNT_RENDER_PARTICLE) -
@@ -4969,35 +4918,30 @@ void CEngine::DrawStats()
                         m_app->GetPerformanceCounterData(PCNT_RENDER_INTERFACE) -
                         m_app->GetPerformanceCounterData(PCNT_RENDER_SHADOW_MAP);
 
+    drawStatsCounter("Event processing", PCNT_EVENT_PROCESSING);
+    drawStatsLine();
+    drawStatsCounter("Frame update",      PCNT_UPDATE_ALL);
+    drawStatsValue  ("    Engine update",     engineUpdate);
+    drawStatsCounter("    Particle update",   PCNT_UPDATE_PARTICLE);
+    drawStatsCounter("    Game update",       PCNT_UPDATE_GAME);
+    drawStatsValue(  "    Other update",      otherUpdate);
+    drawStatsLine();
+    drawStatsCounter("Frame render",      PCNT_RENDER_ALL);
+    drawStatsCounter("    Particle render",   PCNT_RENDER_PARTICLE);
+    drawStatsCounter("    Water render",      PCNT_RENDER_WATER);
+    drawStatsCounter("    Terrain render",    PCNT_RENDER_TERRAIN);
+    drawStatsCounter("    Objects render",    PCNT_RENDER_OBJECTS);
+    drawStatsCounter("    UI render",         PCNT_RENDER_INTERFACE);
+    drawStatsCounter("    Shadow map render", PCNT_RENDER_SHADOW_MAP);
+    drawStatsValue(  "    Other render",      otherRender);
+    drawStatsCounter("Swap buffers & VSync",  PCNT_SWAP_BUFFERS);
+    drawStatsLine();
+    drawStatsLine(   "Triangles",         StrUtils::ToString<int>(m_statisticTriangle));
+    drawStatsValue(  "FPS",               m_fps);
+    drawStatsLine();
     str.str("");
-    str << "Other render: " << std::fixed << std::setprecision(2) << otherRender;
-    m_text->DrawText(str.str(), FONT_COLOBOT, 12.0f, pos, 1.0f, TEXT_ALIGN_LEFT, 0, Color(1.0f, 1.0f, 1.0f, 1.0f));
-
-    pos.y -= height;
-    pos.y -= height;
-
-
-    str.str("");
-    str << "Triangles: " << m_statisticTriangle;
-    m_text->DrawText(str.str(), FONT_COLOBOT, 12.0f, pos, 1.0f, TEXT_ALIGN_LEFT, 0, Color(1.0f, 1.0f, 1.0f, 1.0f));
-
-    pos.y -= height;
-
-    m_text->DrawText(m_fpsText, FONT_COLOBOT, 12.0f, pos, 1.0f, TEXT_ALIGN_LEFT, 0, Color(1.0f, 1.0f, 1.0f, 1.0f));
-
-
-    pos.y -= height;
-    pos.y -= height;
-
-    str.str("");
-    str << "Position x: " << std::fixed << std::setprecision(2) << m_statisticPos.x/g_unit;
-    m_text->DrawText(str.str(), FONT_COLOBOT, 12.0f, pos, 1.0f, TEXT_ALIGN_LEFT, 0, Color(1.0f, 1.0f, 1.0f, 1.0f));
-
-    pos.y -= height;
-
-    str.str("");
-    str << "Position y: " << std::fixed << std::setprecision(2) << m_statisticPos.z/g_unit;
-    m_text->DrawText(str.str(), FONT_COLOBOT, 12.0f, pos, 1.0f, TEXT_ALIGN_LEFT, 0, Color(1.0f, 1.0f, 1.0f, 1.0f));
+    str << std::fixed << std::setprecision(2) << m_statisticPos.x/g_unit << "; " << m_statisticPos.z/g_unit;
+    drawStatsLine(   "Position",          str.str());
 }
 
 void CEngine::DrawTimer()
