@@ -21,30 +21,39 @@
 
 #include <SDL_thread.h>
 
+#include <functional>
+
 /**
- * \class CSDLCondWrapper
- * \brief Wrapper for safe creation/deletion of SDL_cond
+ * \class CSDLThreadWrapper
+ * \brief Wrapper around SDL_thread allowing passing of capture lambdas as thread function
  */
-class CSDLCondWrapper
+class CSDLThreadWrapper
 {
 public:
-    CSDLCondWrapper()
-        : m_cond(SDL_CreateCond())
+    using ThreadFunctionPtr = std::function<void()>;
+
+    CSDLThreadWrapper(ThreadFunctionPtr threadFunction)
+        : m_threadFunction(threadFunction)
     {}
 
-    ~CSDLCondWrapper()
+    ~CSDLThreadWrapper()
+    {}
+
+    void Start()
     {
-        SDL_DestroyCond(m_cond);
+        m_thread = SDL_CreateThread([](void* data) -> int {
+            ThreadFunctionPtr func = *(static_cast<ThreadFunctionPtr*>(data));
+            func();
+            return 0;
+        }, &m_threadFunction);
     }
 
-    CSDLCondWrapper(const CSDLCondWrapper&) = delete;
-    CSDLCondWrapper& operator=(const CSDLCondWrapper&) = delete;
-
-    SDL_cond* operator*()
+    SDL_Thread* operator*()
     {
-        return m_cond;
+        return m_thread;
     }
 
 private:
-    SDL_cond* m_cond;
+    ThreadFunctionPtr m_threadFunction;
+    SDL_Thread* m_thread;
 };
