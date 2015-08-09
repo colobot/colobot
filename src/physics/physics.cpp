@@ -3767,7 +3767,11 @@ void CPhysics::WheelParticle(TraceColor color, float width)
     {
         parti = static_cast<Gfx::ParticleType>(Gfx::PARTITRACE0+static_cast<int>(color));
         step = 2.0f;
-        if ( static_cast<int>(color) >= static_cast<int>(TraceColor::RedArrow) )  step = 4.0f;  // arrow?
+        if ( color == TraceColor::BlackArrow ||
+             color == TraceColor::RedArrow   )
+        {
+            step = 4.0f;  // arrow?
+        }
         step /= m_engine->GetTracePrecision();
 
         goal1.x = step/2.0f;
