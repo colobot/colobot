@@ -978,6 +978,8 @@ int CApplication::Run()
 
                 LogEvent(event);
 
+                m_input->EventProcess(event);
+
                 bool passOn = true;
                 if (m_engine != nullptr)
                     passOn = m_engine->ProcessEvent(event);
@@ -1168,8 +1170,6 @@ Event CApplication::ProcessSystemEvent()
         event.data = std::move(data);
     }
 
-    m_input->EventProcess(event);
-
     return event;
 }
 
@@ -1299,8 +1299,6 @@ Event CApplication::CreateVirtualEvent(const Event& sourceEvent)
         virtualEvent.type = EVENT_NULL;
     }
 
-    m_input->EventProcess(virtualEvent);
-
     return virtualEvent;
 }
 
@@ -1394,8 +1392,8 @@ Event CApplication::CreateUpdateEvent()
     }
 
     Event frameEvent(EVENT_FRAME);
-    m_input->EventProcess(frameEvent);
     frameEvent.rTime = m_relTime;
+    m_input->EventProcess(frameEvent);
 
     return frameEvent;
 }
