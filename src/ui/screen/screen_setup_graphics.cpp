@@ -627,6 +627,10 @@ void CScreenSetupGraphics::ChangeSetupQuality(int quality)
     if ( quality == 0 ) m_engine->SetMultiSample(2);
     if ( quality >  0 ) m_engine->SetMultiSample(4);
 
+    if ( quality <  0 ) m_engine->SetTextureAnisotropyLevel(1);
+    if ( quality == 0 ) m_engine->SetTextureAnisotropyLevel(2);
+    if ( quality >  0 ) m_engine->SetTextureAnisotropyLevel(8);
+
     if ( quality <  0 ) { m_engine->SetTextureFilterMode(Gfx::TEX_FILTER_BILINEAR); }
     if ( quality == 0 ) { m_engine->SetTextureFilterMode(Gfx::TEX_FILTER_TRILINEAR); m_engine->SetTextureMipmapLevel(4); m_engine->SetTextureAnisotropyLevel(4); }
     if ( quality >  0 ) { m_engine->SetTextureFilterMode(Gfx::TEX_FILTER_TRILINEAR); m_engine->SetTextureMipmapLevel(8); m_engine->SetTextureAnisotropyLevel(8); }
