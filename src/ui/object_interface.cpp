@@ -1762,7 +1762,7 @@ void CObjectInterface::UpdateInterface()
 
     bEnable = ( !m_taskExecutor->IsForegroundTask() && !m_brain->IsProgram() ) && m_main->CanPlayerInteract();
 
-    EnableInterface(pw, EVENT_OBJECT_PROGEDIT,    (!m_taskExecutor->IsForegroundTask() && !m_brain->IsTraceRecord()) && m_selScript < m_brain->GetProgramCount() && m_main->CanPlayerInteract());
+    EnableInterface(pw, EVENT_OBJECT_PROGEDIT,    !m_brain->IsTraceRecord() && m_selScript < m_brain->GetProgramCount() && m_main->CanPlayerInteract());
     EnableInterface(pw, EVENT_OBJECT_PROGLIST,    bEnable && !m_brain->IsTraceRecord());
     EnableInterface(pw, EVENT_OBJECT_PROGADD,     !m_brain->IsProgram() && m_main->CanPlayerInteract());
     EnableInterface(pw, EVENT_OBJECT_PROGREMOVE,  !m_brain->IsProgram() && m_selScript < m_brain->GetProgramCount() && !m_brain->GetProgram(m_selScript)->readOnly && m_main->CanPlayerInteract());
