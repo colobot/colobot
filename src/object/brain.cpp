@@ -35,6 +35,8 @@
 #include "object/motion/motion.h"
 #include "object/motion/motionvehicle.h"
 
+#include "object/task/taskmanager.h"
+
 #include "physics/physics.h"
 
 #include "script/script.h"
@@ -188,6 +190,12 @@ bool CBrain::EventProcess(const Event &event)
     }
 
     if ( !m_object->GetSelect() ) return true;  // robot not selected?
+
+    if ( m_taskExecutor->IsForegroundTask() ||  // current task?
+         m_currentProgram != nullptr )
+    {
+        if ( !m_taskExecutor->IsForegroundTask() || !m_taskExecutor->GetForegroundTask()->IsPilot() )  return true;
+    }
 
     if ( event.type == EVENT_OBJECT_LEFT    ||
          event.type == EVENT_OBJECT_RIGHT   ||

@@ -288,10 +288,7 @@ bool CObjectInterface::EventProcess(const Event &event)
         return true;
     }
 
-    if ( !m_object->GetSelect() )  // robot not selected?
-    {
-        return true;
-    }
+    if ( !m_object->GetSelect() ) return true;  // robot not selected?
 
     if ( m_taskExecutor->IsBackgroundTask() )  // current task?
     {
