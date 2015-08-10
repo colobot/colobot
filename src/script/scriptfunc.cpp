@@ -35,7 +35,6 @@
 
 #include "math/all.h"
 
-#include "object/brain.h"
 #include "object/object.h"
 #include "object/object_manager.h"
 #include "object/robotmain.h"
@@ -45,6 +44,7 @@
 #include "object/auto/autobase.h"
 #include "object/auto/autofactory.h"
 
+#include "object/interface/programmable_object.h"
 #include "object/interface/task_executor_object.h"
 
 #include "object/level/parser.h"
@@ -1611,10 +1611,10 @@ bool CScriptFunctions::rProduce(CBotVar* var, CBotVar* result, int& exception, v
         std::string name2 = InjectLevelPathsForCurrentLevel(name, "ai");
         if (object->Implements(ObjectInterfaceType::Programmable))
         {
-            CBrain* brain = dynamic_cast<CProgrammableObject*>(object)->GetBrain();
-            Program* program = brain->AddProgram();
-            brain->ReadProgram(program, name2.c_str());
-            brain->RunProgram(program);
+            CProgrammableObject* programmable = dynamic_cast<CProgrammableObject*>(object);
+            Program* program = programmable->AddProgram();
+            programmable->ReadProgram(program, name2.c_str());
+            programmable->RunProgram(program);
         }
     }
 

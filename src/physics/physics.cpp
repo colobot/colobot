@@ -35,7 +35,6 @@
 
 #include "math/geometry.h"
 
-#include "object/brain.h"
 #include "object/object_manager.h"
 #include "object/old_object.h"
 #include "object/robotmain.h"
@@ -3829,7 +3828,7 @@ Error CPhysics::GetError()
 
     if (m_object->Implements(ObjectInterfaceType::Programmable))
     {
-        if ( dynamic_cast<CProgrammableObject*>(m_object)->GetBrain()->GetActiveVirus() )
+        if ( dynamic_cast<CProgrammableObject*>(m_object)->GetActiveVirus() )
         {
             return ERR_VEH_VIRUS;
         }

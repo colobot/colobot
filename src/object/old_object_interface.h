@@ -33,17 +33,11 @@
 
 #include <string>
 
-class CApplication;
 class CPhysics;
-class CBrain;
 class CMotion;
 class CAuto;
-class CDisplayText;
-class CRobotMain;
 class CBotVar;
 class CScript;
-class CLevelParserLine;
-struct Program;
 
 
 struct Character
@@ -175,8 +169,6 @@ public:
     virtual bool        StartShowLimit();
     virtual void        StopShowLimit();
 
-    virtual bool        IsProgram();
-
     virtual CScript*    GetRunScript();
     virtual CBotVar*    GetBotVar();
     virtual CPhysics*   GetPhysics();
@@ -192,4 +184,3 @@ public:
 
     virtual float GetInfoReturn();
 };
-

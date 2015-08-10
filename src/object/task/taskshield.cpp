@@ -27,7 +27,6 @@
 
 #include "math/geometry.h"
 
-#include "object/brain.h"
 #include "object/object_manager.h"
 #include "object/old_object.h"
 #include "object/robotmain.h"
@@ -578,4 +577,3 @@ float CTaskShield::GetRadius()
 {
     return RADIUS_SHIELD_MIN + (RADIUS_SHIELD_MAX-RADIUS_SHIELD_MIN)*m_object->GetParam();
 }
-

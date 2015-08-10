@@ -397,11 +397,6 @@ void COldObjectInterface::StopShowLimit()
 }
 
 
-bool COldObjectInterface::IsProgram()
-{
-    throw std::logic_error("IsProgram: not implemented!");
-}
-
 CScript* COldObjectInterface::GetRunScript()
 {
     throw std::logic_error("GetRunScript: not implemented!");

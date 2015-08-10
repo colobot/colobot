@@ -28,10 +28,10 @@
 #include "math/const.h"
 
 
-class CBrain;
 class CPhysics;
 class CMotion;
 class COldObject;
+class CProgrammableObject;
 class CRobotMain;
 class CSoundInterface;
 
@@ -80,11 +80,11 @@ protected:
     Gfx::CTerrain*      m_terrain;
     Gfx::CWater*        m_water;
     Gfx::CCamera*       m_camera;
-    CMotion*            m_motion;
-    CBrain*             m_brain;
-    CPhysics*           m_physics;
-    COldObject*         m_object;
     CRobotMain*         m_main;
     CSoundInterface*    m_sound;
-};
 
+    COldObject*         m_object;
+    CProgrammableObject* m_programmable;
+    CMotion*            m_motion;
+    CPhysics*           m_physics;
+};

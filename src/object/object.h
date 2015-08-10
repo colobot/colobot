@@ -35,6 +35,8 @@ namespace Gfx
 struct ModelCrashSphere;
 } // namespace Gfx
 
+class CLevelParserLine;
+
 /**
  * \class CObject
  * \brief Base class for all 3D in-game objects

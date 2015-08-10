@@ -25,7 +25,6 @@
 
 #include "math/geometry.h"
 
-#include "object/brain.h"
 #include "object/object_create_params.h"
 #include "object/object_manager.h"
 #include "object/old_object.h"
@@ -408,7 +407,6 @@ bool CAutoFactory::EventProcess(const Event &event)
                 }
 
                 vehicle->SetLock(false);  // vehicle useable
-//?             vehicle->GetPhysics()->GetBrain()->StartTaskAdvance(16.0f);
                 vehicle->SetRotationY(m_object->GetRotationY()+Math::PI);
                 vehicle->SetScale(1.0f);
 
@@ -416,8 +414,8 @@ bool CAutoFactory::EventProcess(const Event &event)
                 {
                     if (vehicle->Implements(ObjectInterfaceType::Programmable))
                     {
-                        CBrain* brain = dynamic_cast<CProgrammableObject*>(vehicle)->GetBrain();
-                        Program* program = brain->AddProgram();
+                        CProgrammableObject* programmable = dynamic_cast<CProgrammableObject*>(vehicle);
+                        Program* program = programmable->AddProgram();
 
                         if (boost::regex_search(m_program, boost::regex("^[A-Za-z0-9_]+$"))) // Public function name?
                         {
@@ -433,7 +431,7 @@ bool CAutoFactory::EventProcess(const Event &event)
                             program->script->SendScript(m_program.c_str());
                         }
 
-                        brain->RunProgram(program);
+                        programmable->RunProgram(program);
                     }
                 }
             }
@@ -680,13 +678,13 @@ bool CAutoFactory::CreateVehicle()
 
     if (vehicle->Implements(ObjectInterfaceType::Programmable))
     {
-        CBrain* brain = dynamic_cast<CProgrammableObject*>(vehicle)->GetBrain();
+        CProgrammableObject* programmable = dynamic_cast<CProgrammableObject*>(vehicle);
         for ( int i=0 ; ; i++ )
         {
             char* name = m_main->GetNewScriptName(m_type, i);
             if ( name == nullptr )  break;
-            Program* prog = brain->GetOrAddProgram(i);
-            brain->ReadProgram(prog, name);
+            Program* prog = programmable->GetOrAddProgram(i);
+            programmable->ReadProgram(prog, name);
             prog->readOnly = true;
         }
     }

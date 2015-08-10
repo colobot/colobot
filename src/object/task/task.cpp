@@ -43,10 +43,10 @@ CTask::CTask(COldObject* object)
 
     m_object      = object;
     m_physics     = m_object->GetPhysics();
-    m_brain       = nullptr;
+    m_programmable       = nullptr;
     if (object->Implements(ObjectInterfaceType::Programmable))
     {
-        m_brain = dynamic_cast<CProgrammableObject*>(m_object)->GetBrain();
+        m_programmable = dynamic_cast<CProgrammableObject*>(m_object);
     }
     m_motion      = m_object->GetMotion();
 }
@@ -88,4 +88,3 @@ bool CTask::Abort()
 {
     return true;
 }
-

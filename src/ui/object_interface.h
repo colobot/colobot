@@ -23,12 +23,12 @@
 
 class COldObject;
 class CTaskExecutorObject;
+class CProgrammableObject;
 class CPhysics;
 class CMotion;
 class CRobotMain;
 class CSoundInterface;
 class CLevelParserLine;
-class CBrain;
 struct Program;
 
 namespace Gfx
@@ -87,12 +87,12 @@ protected:
     Gfx::CCamera*       m_camera;
     Gfx::CParticle*     m_particle;
     CRobotMain*         m_main;
-    Ui::CInterface*     m_interface;
+    CInterface*         m_interface;
     CSoundInterface*    m_sound;
 
     COldObject*         m_object;
     CTaskExecutorObject* m_taskExecutor;
-    CBrain*             m_brain;
+    CProgrammableObject* m_programmable;
     CPhysics*           m_physics;
     CMotion*            m_motion;
 

@@ -35,7 +35,6 @@
 
 class CObject;
 class COldObject;
-class CBrain;
 class CMotion;
 class CSoundInterface;
 class CLevelParserLine;
@@ -111,7 +110,6 @@ public:
 
     bool        EventProcess(const Event &event);
 
-    void        SetBrain(CBrain* brain);
     void        SetMotion(CMotion* motion);
 
     void        SetType(PhysicsType type);
@@ -216,10 +214,10 @@ protected:
     Gfx::CTerrain*      m_terrain;
     Gfx::CWater*        m_water;
     Gfx::CCamera*       m_camera;
-    COldObject*         m_object;
-    CBrain*             m_brain;
-    CMotion*            m_motion;
     CSoundInterface*    m_sound;
+
+    COldObject*         m_object;
+    CMotion*            m_motion;
 
     PhysicsType m_type;         // TYPE_*
     float       m_gravity;      // force of gravity

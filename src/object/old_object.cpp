@@ -37,7 +37,6 @@
 
 #include "math/geometry.h"
 
-#include "object/brain.h"
 #include "object/object_manager.h"
 #include "object/robotmain.h"
 
@@ -56,11 +55,16 @@
 #include "physics/physics.h"
 
 #include "script/cbottoken.h"
+#include "script/script.h"
 #include "script/scriptfunc.h"
 
 #include "ui/object_interface.h"
+#include "ui/studio.h"
+
+#include "ui/controls/edit.h"
 
 #include <boost/lexical_cast.hpp>
+#include <iomanip>
 
 
 
@@ -83,6 +87,8 @@ static float debug_arm2 = 0.0f;
 static float debug_arm3 = 0.0f;
 #endif
 
+const int MAXTRACERECORD = 1000;
+
 
 // Object's constructor.
 
@@ -96,7 +102,7 @@ COldObject::COldObject(int id)
     , CCarrierObject(m_implementedInterfaces)
     , CPoweredObject(m_implementedInterfaces)
 {
-    // A bit of a hack since CBrain is set externally in SetBrain()
+    // A bit of a hack since we don't have subclasses yet, set externally in SetProgrammable()
     m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Programmable)] = false;
     // Another hack
     m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Jostleable)] = false;
@@ -190,6 +196,18 @@ COldObject::COldObject(int id)
     m_cmdLine.clear();
 
     m_activity = true;
+
+    m_currentProgram = nullptr;
+    m_bActiveVirus = false;
+    m_time = 0.0f;
+    m_burnTime = 0.0f;
+
+    m_buttonAxe    = EVENT_NULL;
+
+    m_scriptRun = nullptr;
+    m_soluceName[0] = 0;
+
+    m_traceRecord = false;
 
     DeleteAllCrashSpheres();
 
@@ -331,17 +349,17 @@ void COldObject::DeleteObject(bool bAll)
     if ( !bAll )  m_main->CreateShortcuts();
 }
 
-// Simplifies a object (he was the brain, among others).
+// Simplifies a object (he was the programmable, among others).
 
 void COldObject::Simplify()
 {
-    m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Programmable)] = false;
-
-    if ( m_brain != nullptr )
+    if ( Implements(ObjectInterfaceType::Programmable) )
     {
-        m_brain->StopProgram();
+        StopProgram();
     }
     m_main->SaveOneScript(this);
+
+    m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Programmable)] = false;
 
     if ( m_physics != nullptr )
     {
@@ -353,11 +371,6 @@ void COldObject::Simplify()
     {
         m_objectInterface->DeleteObject();
         m_objectInterface.reset();
-    }
-
-    if ( m_brain != nullptr )
-    {
-        m_brain.reset();
     }
 
     if ( m_motion != nullptr )
@@ -568,9 +581,9 @@ bool COldObject::ExplodeObject(ExplosionType type, float force, float decay)
 
     if ( shield == 0.0f )  // dead?
     {
-        if ( m_brain != nullptr )
+        if ( Implements(ObjectInterfaceType::Programmable) )
         {
-            m_brain->StopProgram();
+            StopProgram();
         }
         m_main->SaveOneScript(this);
     }
@@ -839,9 +852,14 @@ void COldObject::Write(CLevelParserLine* line)
         m_motion->Write(line);
     }
 
-    if ( m_brain != nullptr )
+    if ( Implements(ObjectInterfaceType::Programmable) )
     {
-        m_brain->Write(line);
+        line->AddParam("bVirusActive", MakeUnique<CLevelParserParam>(m_bActiveVirus));
+
+        if ( m_type == OBJECT_MOBILErs )
+        {
+            line->AddParam("bShieldActive", MakeUnique<CLevelParserParam>(IsBackgroundTask()));
+        }
     }
 
     if ( m_physics != nullptr )
@@ -905,9 +923,16 @@ void COldObject::Read(CLevelParserLine* line)
         m_motion->Read(line);
     }
 
-    if ( m_brain != nullptr )
+    if ( Implements(ObjectInterfaceType::Programmable) )
     {
-        m_brain->Read(line);
+        m_bActiveVirus = line->GetParam("bVirusActive")->AsBool(false);
+        if ( m_type == OBJECT_MOBILErs )
+        {
+            if( line->GetParam("bShieldActive")->AsBool(false) )
+            {
+                StartTaskShield(TSM_START);
+            }
+        }
     }
     if ( m_physics != nullptr )
     {
@@ -1857,9 +1882,103 @@ bool COldObject::EventProcess(const Event &event)
         }
     }
 
-    if ( m_brain != nullptr )
+    if ( Implements(ObjectInterfaceType::Programmable) )
     {
-        m_brain->EventProcess(event);
+        if ( GetRuin() && m_currentProgram != nullptr )
+        {
+            StopProgram();
+        }
+
+        if ( !GetSelect() &&  // robot pas sélectionné  ?
+             m_currentProgram == nullptr &&
+             !IsForegroundTask() )
+        {
+            float axeX = 0.0f;
+            float axeY = 0.0f;
+            float axeZ = 0.0f;
+            if ( m_bBurn )  // Gifted?
+            {
+                axeZ = -1.0f;  // tomb
+
+                if ( !GetFixed() &&
+                     (m_type == OBJECT_ANT    ||
+                      m_type == OBJECT_SPIDER ||
+                      m_type == OBJECT_WORM   ) )
+                {
+                    axeY = 2.0f;  // zigzag disorganized fast
+                    if ( m_type == OBJECT_WORM )  axeY = 5.0f;
+                    axeX = 0.5f+sinf(m_time* 1.0f)*0.5f+
+                                sinf(m_time* 6.0f)*2.0f+
+                                sinf(m_time*21.0f)*0.2f;
+                    float factor = 1.0f-m_burnTime/15.0f;  // slow motion
+                    if ( factor < 0.0f )  factor = 0.0f;
+                    axeY *= factor;
+                    axeX *= factor;
+                }
+            }
+            m_physics->SetMotorSpeedX(axeY);  // move forward/move back
+            m_physics->SetMotorSpeedY(axeZ);  // up / down
+            m_physics->SetMotorSpeedZ(axeX);  // rotate
+        }
+        else if (GetSelect())
+        {
+            if ( (IsForegroundTask() && GetForegroundTask()->IsPilot()) || m_currentProgram == nullptr )
+            {
+                if ( event.type == EVENT_OBJECT_LEFT    ||
+                     event.type == EVENT_OBJECT_RIGHT   ||
+                     event.type == EVENT_OBJECT_UP      ||
+                     event.type == EVENT_OBJECT_DOWN    ||
+                     event.type == EVENT_OBJECT_GASUP   ||
+                     event.type == EVENT_OBJECT_GASDOWN )
+                {
+                    m_buttonAxe = event.type;
+                }
+                if ( event.type == EVENT_MOUSE_BUTTON_UP )
+                {
+                    m_buttonAxe = EVENT_NULL;
+                }
+
+                float axeX = event.motionInput.x;
+                float axeY = event.motionInput.y;
+                float axeZ = event.motionInput.z;
+
+                if ( (!m_main->GetTrainerPilot() &&
+                      GetTrainer()) ||
+                     !m_main->CanPlayerInteract() )  // drive vehicle?
+                {
+                    axeX = 0.0f;
+                    axeY = 0.0f;
+                    axeZ = 0.0f;  // Remote control impossible!
+                }
+
+                if ( m_buttonAxe == EVENT_OBJECT_LEFT    )  axeX = -1.0f;
+                if ( m_buttonAxe == EVENT_OBJECT_RIGHT   )  axeX =  1.0f;
+                if ( m_buttonAxe == EVENT_OBJECT_UP      )  axeY =  1.0f;
+                if ( m_buttonAxe == EVENT_OBJECT_DOWN    )  axeY = -1.0f;
+                if ( m_buttonAxe == EVENT_OBJECT_GASUP   )  axeZ =  1.0f;
+                if ( m_buttonAxe == EVENT_OBJECT_GASDOWN )  axeZ = -1.0f;
+
+                if ( m_type == OBJECT_MOBILEdr && GetManual() )  // scribbler in manual mode?
+                {
+                    if ( axeX != 0.0f )  axeY = 0.0f;  // if running -> not moving!
+                    axeX *= 0.5f;
+                    axeY *= 0.5f;
+                }
+
+                if ( !m_main->IsResearchDone(RESEARCH_FLY, GetTeam()) )
+                {
+                    axeZ = -1.0f;  // tomb
+                }
+
+                axeX += m_camera->GetMotorTurn();  // additional power according to camera
+                if ( axeX >  1.0f )  axeX =  1.0f;
+                if ( axeX < -1.0f )  axeX = -1.0f;
+
+                m_physics->SetMotorSpeedX(axeY);  // move forward/move back
+                m_physics->SetMotorSpeedY(axeZ);  // up/down
+                m_physics->SetMotorSpeedZ(axeX);  // rotate
+            }
+        }
     }
 
     if ( m_objectInterface != nullptr )
@@ -1903,7 +2022,11 @@ bool COldObject::EventFrame(const Event &event)
         return true;
     }
 
+    m_time += event.rTime;
+
     if ( m_engine->GetPause() && m_type != OBJECT_SHOW )  return true;
+
+    if ( m_bBurn )  m_burnTime += event.rTime;
 
     m_aTime += event.rTime;
     m_shotTime += event.rTime;
@@ -1926,6 +2049,25 @@ bool COldObject::EventFrame(const Event &event)
             m_sound->Play(SOUND_FINDING);
             m_engine->GetPyroManager()->Create(Gfx::PT_FINDING, this, 0.0f);
             m_main->DisplayError(INFO_FINDING, this);
+        }
+    }
+
+    if (Implements(ObjectInterfaceType::Programmable))
+    {
+        if ( GetActivity() )
+        {
+            if ( m_currentProgram != nullptr )  // current program?
+            {
+                if ( m_currentProgram->script->Continue() )
+                {
+                    StopProgram();
+                }
+            }
+
+            if ( m_traceRecord )  // registration of the design in progress?
+            {
+                TraceRecordFrame();
+            }
         }
     }
 
@@ -2404,9 +2546,9 @@ void COldObject::SetVirusMode(bool bEnable)
     m_bVirusMode = bEnable;
     m_virusTime = 0.0f;
 
-    if ( m_bVirusMode && m_brain != nullptr )
+    if ( m_bVirusMode && Implements(ObjectInterfaceType::Programmable) )
     {
-        if ( !m_brain->IntroduceVirus() )  // tries to infect
+        if ( !IntroduceVirus() )  // tries to infect
         {
             m_bVirusMode = false;  // program was not contaminated!
         }
@@ -2679,6 +2821,7 @@ bool COldObject::IsExploding()
 void COldObject::SetBurn(bool bBurn)
 {
     m_bBurn = bBurn;
+    m_burnTime = 0.0f;
 
 //? if ( m_botVar != 0 )
 //? {
@@ -2696,9 +2839,9 @@ void COldObject::SetDead(bool bDead)
 {
     m_bDead = bDead;
 
-    if ( bDead && m_brain != nullptr )
+    if ( bDead && Implements(ObjectInterfaceType::Programmable) )
     {
-        m_brain->StopProgram();  // stops the current task
+        StopProgram();  // stops the current task
     }
 
 //? if ( m_botVar != 0 )
@@ -2825,14 +2968,6 @@ void COldObject::StopShowLimit()
 void COldObject::SetShowLimitRadius(float radius)
 {
     m_showLimitRadius = radius;
-}
-
-// Indicates whether a program is under execution.
-
-bool COldObject::IsProgram()
-{
-    if ( m_brain == nullptr )  return false;
-    return m_brain->IsProgram();
 }
 
 
@@ -3082,17 +3217,10 @@ void COldObject::SetPhysics(std::unique_ptr<CPhysics> physics)
     m_physics = std::move(physics);
 }
 
-// Returns the brain associated to the object.
-
-CBrain* COldObject::GetBrain()
+// TODO: Temporary hack until we'll have subclasses for objects
+void COldObject::SetProgrammable(bool programmable)
 {
-    return m_brain.get();
-}
-
-void COldObject::SetBrain(std::unique_ptr<CBrain> brain)
-{
-    m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Programmable)] = true;
-    m_brain = std::move(brain);
+    m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Programmable)] = programmable;
 }
 
 // Returns the movement associated to the object.
@@ -3496,4 +3624,513 @@ void COldObject::UpdateInterface()
     {
         m_objectInterface->UpdateInterface();
     }
+}
+
+
+
+// Stops the running program.
+
+void COldObject::StopProgram()
+{
+    StopForegroundTask();
+
+    if ( m_type == OBJECT_HUMAN ||
+         m_type == OBJECT_TECH  )  return;
+
+    if ( m_currentProgram != nullptr )
+    {
+        m_currentProgram->script->Stop();
+    }
+
+    m_currentProgram = nullptr;
+
+    m_physics->SetMotorSpeedX(0.0f);
+    m_physics->SetMotorSpeedY(0.0f);
+    m_physics->SetMotorSpeedZ(0.0f);
+
+    m_motion->SetAction(-1);
+
+    UpdateInterface();
+    m_main->UpdateShortcuts();
+    CreateSelectParticle();
+}
+
+
+// Introduces a virus into a program.
+// Returns true if it was inserted.
+
+bool COldObject::IntroduceVirus()
+{
+    if(m_program.size() == 0) return false;
+
+    for ( int i=0 ; i<50 ; i++ )
+    {
+        int j = rand()%m_program.size();
+        if ( m_program[j]->script->IntroduceVirus() )  // tries to introduce
+        {
+            m_bActiveVirus = true;  // active virus
+            return true;
+        }
+    }
+    return false;
+}
+
+// Active Virus indicates that the object is contaminated. Unlike ch'tites (??? - Programerus)
+// letters which automatically disappear after a while,
+// ActiveVirus does not disappear after you edit the program
+// (Even if the virus is not fixed).
+
+
+void COldObject::SetActiveVirus(bool bActive)
+{
+    m_bActiveVirus = bActive;
+
+    if ( !m_bActiveVirus )  // virus disabled?
+    {
+        SetVirusMode(false);  // chtites (??? - Programerus) letters also
+    }
+}
+
+bool COldObject::GetActiveVirus()
+{
+    return m_bActiveVirus;
+}
+
+// Indicates whether a program is running.
+
+bool COldObject::IsProgram()
+{
+    return m_currentProgram != nullptr;
+}
+
+// Starts a program.
+
+void COldObject::RunProgram(Program* program)
+{
+    if ( program->script->Run() )
+    {
+        m_currentProgram = program;  // start new program
+        UpdateInterface();
+        CreateSelectParticle();
+        m_main->UpdateShortcuts();
+        if(GetTrainer())
+            m_main->StartMissionTimer();
+    }
+}
+
+
+// Returns the current program.
+
+int COldObject::GetProgram()
+{
+    if(m_currentProgram == nullptr)
+        return -1;
+
+    for(unsigned int i = 0; i < m_program.size(); i++)
+    {
+        if(m_program[i].get() == m_currentProgram)
+        {
+            return i;
+        }
+    }
+    return -1;
+}
+
+
+// Name management scripts to load.
+
+void COldObject::SetScriptRun(Program* program)
+{
+    m_scriptRun = program;
+}
+
+Program* COldObject::GetScriptRun()
+{
+    return m_scriptRun;
+}
+
+void COldObject::SetSoluceName(char *name)
+{
+    strcpy(m_soluceName, name);
+}
+
+char* COldObject::GetSoluceName()
+{
+    return m_soluceName;
+}
+
+
+// Load a script solution, in the first free script.
+// If there is already an identical script, nothing is loaded.
+
+bool COldObject::ReadSoluce(char* filename)
+{
+    Program* prog = AddProgram();
+
+    if ( !ReadProgram(prog, filename) )  return false;  // load solution
+    prog->readOnly = true;
+
+    for(unsigned int i = 0; i < m_program.size(); i++)
+    {
+        if(m_program[i].get() == prog) continue;
+
+        //TODO: This is bad. It's very sensitive to things like \n vs \r\n etc.
+        if ( m_program[i]->script->Compare(prog->script.get()) )  // the same already?
+        {
+            m_program[i]->readOnly = true; // Mark is as read-only
+            RemoveProgram(prog);
+            return false;
+        }
+    }
+
+    return true;
+}
+
+// Load a script with a text file.
+
+bool COldObject::ReadProgram(Program* program, const char* filename)
+{
+    if ( program->script->ReadScript(filename) )  return true;
+
+    return false;
+}
+
+// Indicates whether a program is compiled correctly.
+
+bool COldObject::GetCompile(Program* program)
+{
+    return program->script->GetCompile();
+}
+
+// Saves a script in a text file.
+
+bool COldObject::WriteProgram(Program* program, const char* filename)
+{
+    if ( program->script->WriteScript(filename) )  return true;
+
+    return false;
+}
+
+
+// Load a stack of script implementation from a file.
+
+bool COldObject::ReadStack(FILE *file)
+{
+    short       op;
+
+    fRead(&op, sizeof(short), 1, file);
+    if ( op == 1 )  // run ?
+    {
+        fRead(&op, sizeof(short), 1, file);  // program rank
+        if ( op >= 0 )
+        {
+            assert(op < static_cast<int>(m_program.size())); //TODO: is it good?
+
+            //TODO: m_selScript = op;
+
+            if ( !m_program[op]->script->ReadStack(file) )  return false;
+        }
+    }
+
+    return true;
+}
+
+// Save the script implementation stack of a file.
+
+bool COldObject::WriteStack(FILE *file)
+{
+    short       op;
+
+    if ( m_currentProgram != nullptr &&  // current program?
+         m_currentProgram->script->IsRunning() )
+    {
+        op = 1;  // run
+        fWrite(&op, sizeof(short), 1, file);
+
+        op = GetProgram();
+        fWrite(&op, sizeof(short), 1, file);
+
+        return m_currentProgram->script->WriteStack(file);
+    }
+
+    op = 0;  // stop
+    fWrite(&op, sizeof(short), 1, file);
+    return true;
+}
+
+
+
+// Start of registration of the design.
+
+void COldObject::TraceRecordStart()
+{
+    if (m_traceRecord)
+    {
+        TraceRecordStop();
+    }
+
+    CMotionVehicle* motionVehicle = dynamic_cast<CMotionVehicle*>(m_motion.get());
+    assert(motionVehicle != nullptr);
+
+    m_traceRecord = true;
+
+    m_traceOper = TO_STOP;
+
+    m_tracePos = GetPosition();
+    m_traceAngle = GetRotationY();
+
+    if ( motionVehicle->GetTraceDown() )  // pencil down?
+    {
+        m_traceColor = motionVehicle->GetTraceColor();
+    }
+    else    // pen up?
+    {
+        m_traceColor = TraceColor::Default;
+    }
+
+    m_traceRecordBuffer = MakeUniqueArray<TraceRecord>(MAXTRACERECORD);
+    m_traceRecordIndex = 0;
+}
+
+// Saving the current drawing.
+
+void COldObject::TraceRecordFrame()
+{
+    TraceOper   oper = TO_STOP;
+    Math::Vector    pos;
+    float       angle, len, speed;
+
+    CMotionVehicle* motionVehicle = dynamic_cast<CMotionVehicle*>(m_motion.get());
+    assert(motionVehicle != nullptr);
+
+    speed = m_physics->GetLinMotionX(MO_REASPEED);
+    if ( speed > 0.0f )  oper = TO_ADVANCE;
+    if ( speed < 0.0f )  oper = TO_RECEDE;
+
+    speed = m_physics->GetCirMotionY(MO_REASPEED);
+    if ( speed != 0.0f )  oper = TO_TURN;
+
+    TraceColor color = TraceColor::Default;
+    if ( motionVehicle->GetTraceDown() )  // pencil down?
+    {
+        color = motionVehicle->GetTraceColor();
+    }
+
+    if ( oper != m_traceOper ||
+         color != m_traceColor )
+    {
+        if ( m_traceOper == TO_ADVANCE ||
+             m_traceOper == TO_RECEDE  )
+        {
+            pos = GetPosition();
+            len = Math::DistanceProjected(pos, m_tracePos);
+            TraceRecordOper(m_traceOper, len);
+        }
+        if ( m_traceOper == TO_TURN )
+        {
+            angle = GetRotationY()-m_traceAngle;
+            TraceRecordOper(m_traceOper, angle);
+        }
+
+        if ( color != m_traceColor )
+        {
+            TraceRecordOper(TO_PEN, static_cast<float>(color));
+        }
+
+        m_traceOper = oper;
+        m_tracePos = GetPosition();
+        m_traceAngle = GetRotationY();
+        m_traceColor = color;
+    }
+}
+
+// End of the registration of the design. Program generates the CBOT.
+
+void COldObject::TraceRecordStop()
+{
+    TraceOper   lastOper, curOper;
+    float       lastParam, curParam;
+
+    m_traceRecord = false;
+
+    std::stringstream buffer;
+    buffer << "extern void object::AutoDraw()\n{\n";
+
+    lastOper = TO_STOP;
+    lastParam = 0.0f;
+    for ( int i=0 ; i<m_traceRecordIndex ; i++ )
+    {
+        curOper = m_traceRecordBuffer[i].oper;
+        curParam = m_traceRecordBuffer[i].param;
+
+        if ( curOper == lastOper )
+        {
+            if ( curOper == TO_PEN )
+            {
+                lastParam = curParam;
+            }
+            else
+            {
+                lastParam += curParam;
+            }
+        }
+        else
+        {
+            TraceRecordPut(buffer, lastOper, lastParam);
+            lastOper = curOper;
+            lastParam = curParam;
+        }
+    }
+    TraceRecordPut(buffer, lastOper, lastParam);
+
+    m_traceRecordBuffer.reset();
+
+    buffer << "}\n";
+
+    Program* prog = AddProgram();
+    prog->script->SendScript(buffer.str().c_str());
+}
+
+// Saves an instruction CBOT.
+
+bool COldObject::TraceRecordOper(TraceOper oper, float param)
+{
+    int     i;
+
+    i = m_traceRecordIndex;
+    if ( i >= MAXTRACERECORD )  return false;
+
+    m_traceRecordBuffer[i].oper = oper;
+    m_traceRecordBuffer[i].param = param;
+
+    m_traceRecordIndex = i+1;
+    return true;
+}
+
+// Generates an instruction CBOT.
+
+bool COldObject::TraceRecordPut(std::stringstream& buffer, TraceOper oper, float param)
+{
+    if ( oper == TO_ADVANCE )
+    {
+        param /= g_unit;
+        buffer << "\tmove(" << std::fixed << std::setprecision(1) << param << ");\n";
+    }
+
+    if ( oper == TO_RECEDE )
+    {
+        param /= g_unit;
+        buffer << "\tmove(-" << std::fixed << std::setprecision(1) << param << ");\n";
+    }
+
+    if ( oper == TO_TURN )
+    {
+        param = -param*180.0f/Math::PI;
+        buffer << "\tturn(" << static_cast<int>(param) << ");\n";
+    }
+
+    if ( oper == TO_PEN )
+    {
+        TraceColor color = static_cast<TraceColor>(static_cast<int>(param));
+        if ( color == TraceColor::Default )
+            buffer << "\tpenup();\n";
+        else
+            buffer << "\tpendown(" << TraceColorName(color) << ");\n";
+    }
+
+    return true;
+}
+
+bool COldObject::IsTraceRecord()
+{
+    return m_traceRecord;
+}
+
+Program* COldObject::AddProgram()
+{
+    auto program = MakeUnique<Program>();
+    program->script = MakeUnique<CScript>(this);
+    program->readOnly = false;
+    program->runnable = true;
+
+    Program* prog = program.get();
+    AddProgram(std::move(program));
+    return prog;
+}
+
+void COldObject::AddProgram(std::unique_ptr<Program> program)
+{
+    m_program.push_back(std::move(program));
+    UpdateInterface();
+}
+
+void COldObject::RemoveProgram(Program* program)
+{
+    if(m_currentProgram == program)
+    {
+        StopProgram();
+    }
+    m_program.erase(
+        std::remove_if(m_program.begin(), m_program.end(),
+            [program](std::unique_ptr<Program>& prog) { return prog.get() == program; }),
+        m_program.end());
+}
+
+Program* COldObject::CloneProgram(Program* program)
+{
+    Program* newprog = AddProgram();
+
+    // TODO: Is there any reason CScript doesn't have a function to get the program code directly?
+    Ui::CEdit* edit = new Ui::CEdit();
+    edit->SetMaxChar(Ui::EDITSTUDIOMAX);
+    program->script->PutScript(edit, "");
+    newprog->script->GetScript(edit);
+    delete edit;
+
+    return newprog;
+}
+
+std::vector<std::unique_ptr<Program>>& COldObject::GetPrograms()
+{
+    return m_program;
+}
+
+int COldObject::GetProgramCount()
+{
+    return static_cast<int>(m_program.size());
+}
+
+int COldObject::GetProgramIndex(Program* program)
+{
+    for(unsigned int i = 0; i < m_program.size(); i++)
+    {
+        if(m_program[i].get() == program)
+        {
+            return i;
+        }
+    }
+    return -1;
+}
+
+Program* COldObject::GetProgram(int index)
+{
+    if(index < 0 || index >= static_cast<int>(m_program.size()))
+        return nullptr;
+
+    return m_program[index].get();
+}
+
+Program* COldObject::GetOrAddProgram(int index)
+{
+    if(index < 0)
+        return nullptr;
+
+    if(index < static_cast<int>(m_program.size()))
+        return m_program[index].get();
+
+    for(int i = m_program.size(); i < index; i++)
+    {
+        AddProgram();
+    }
+    return AddProgram();
 }

@@ -28,7 +28,6 @@
 
 #include "math/geometry.h"
 
-#include "object/brain.h"
 #include "object/old_object.h"
 
 #include "object/interface/carrier_object.h"
@@ -63,7 +62,7 @@ CObjectInterface::CObjectInterface(COldObject* object)
     assert(object->Implements(ObjectInterfaceType::TaskExecutor));
     m_taskExecutor = dynamic_cast<CTaskExecutorObject*>(m_object);
     assert(object->Implements(ObjectInterfaceType::Programmable));
-    m_brain = dynamic_cast<CProgrammableObject*>(m_object)->GetBrain();
+    m_programmable = dynamic_cast<CProgrammableObject*>(m_object);
 
     m_physics     = m_object->GetPhysics();
     m_motion      = m_object->GetMotion();
@@ -194,8 +193,8 @@ bool CObjectInterface::EventProcess(const Event &event)
                 index = data->key-KEY(1);
             else if(data->key == KEY(0))
                 index = 9;
-            if(index < 0) index = m_brain->GetProgramCount()-1;
-            if(index > static_cast<int>(m_brain->GetProgramCount())-1) index = 0;
+            if(index < 0) index = m_programmable->GetProgramCount()-1;
+            if(index > static_cast<int>(m_programmable->GetProgramCount())-1) index = 0;
 
             if(GetSelScript() != index)
             {
@@ -226,29 +225,29 @@ bool CObjectInterface::EventProcess(const Event &event)
 
         if ( action == EVENT_OBJECT_PROGRUN )
         {
-            if ( !m_brain->IsProgram() )
+            if ( !m_programmable->IsProgram() )
             {
-                if(m_selScript < m_brain->GetProgramCount())
+                if(m_selScript < m_programmable->GetProgramCount())
                 {
-                    m_brain->RunProgram(m_brain->GetProgram(m_selScript));
+                    m_programmable->RunProgram(m_programmable->GetProgram(m_selScript));
                 }
             }
             else
             {
-                m_brain->StopProgram();
+                m_programmable->StopProgram();
             }
         }
         if ( action == EVENT_OBJECT_PROGSTART )
         {
             m_main->SaveOneScript(m_object);
-            if(m_selScript < m_brain->GetProgramCount())
+            if(m_selScript < m_programmable->GetProgramCount())
             {
-                m_brain->RunProgram(m_brain->GetProgram(m_selScript));
+                m_programmable->RunProgram(m_programmable->GetProgram(m_selScript));
             }
         }
         if ( action == EVENT_OBJECT_PROGSTOP )
         {
-            m_brain->StopProgram();
+            m_programmable->StopProgram();
         }
         if ( action == EVENT_STUDIO_OK )
         {
@@ -263,8 +262,8 @@ bool CObjectInterface::EventProcess(const Event &event)
         if( action == EVENT_STUDIO_CLONE )
         {
             StopEditScript(false);
-            Program* newProgram = m_brain->CloneProgram(m_brain->GetProgram(m_selScript));
-            m_selScript = m_brain->GetProgramIndex(newProgram);
+            Program* newProgram = m_programmable->CloneProgram(m_programmable->GetProgram(m_selScript));
+            m_selScript = m_programmable->GetProgramIndex(newProgram);
             m_main->SaveOneScript(m_object);
 
             UpdateInterface();
@@ -296,29 +295,29 @@ bool CObjectInterface::EventProcess(const Event &event)
         }
     }
     if ( m_taskExecutor->IsForegroundTask() ||  // current task?
-         m_brain->IsProgram() )
+         m_programmable->IsProgram() )
     {
         if ( action == EVENT_OBJECT_PROGRUN )
         {
-            m_brain->StopProgram();
+            m_programmable->StopProgram();
         }
         if ( action == EVENT_OBJECT_PROGEDIT )
         {
-            if(m_selScript < m_brain->GetProgramCount())
+            if(m_selScript < m_programmable->GetProgramCount())
             {
-                StartEditScript(m_brain->GetProgram(m_selScript), m_main->GetScriptName());
+                StartEditScript(m_programmable->GetProgram(m_selScript), m_main->GetScriptName());
             }
         }
 
         if ( !m_taskExecutor->IsForegroundTask() || !m_taskExecutor->GetForegroundTask()->IsPilot() )  return true;
     }
 
-    if ( !m_brain->IsProgram() )
+    if ( !m_programmable->IsProgram() )
     {
         if( action == EVENT_OBJECT_PROGADD )
         {
-            Program* program = m_brain->AddProgram();
-            m_selScript = m_brain->GetProgramIndex(program);
+            Program* program = m_programmable->AddProgram();
+            m_selScript = m_programmable->GetProgramIndex(program);
             m_main->SaveOneScript(m_object);
 
             UpdateInterface();
@@ -332,11 +331,11 @@ bool CObjectInterface::EventProcess(const Event &event)
 
         if( action == EVENT_OBJECT_PROGREMOVE )
         {
-            if(m_selScript < m_brain->GetProgramCount())
+            if(m_selScript < m_programmable->GetProgramCount())
             {
-                m_brain->RemoveProgram(m_brain->GetProgram(m_selScript));
-                if(m_selScript >= m_brain->GetProgramCount())
-                    m_selScript = m_brain->GetProgramCount()-1;
+                m_programmable->RemoveProgram(m_programmable->GetProgram(m_selScript));
+                if(m_selScript >= m_programmable->GetProgramCount())
+                    m_selScript = m_programmable->GetProgramCount()-1;
                 m_main->SaveOneScript(m_object);
 
                 UpdateInterface();
@@ -351,10 +350,10 @@ bool CObjectInterface::EventProcess(const Event &event)
 
         if( action == EVENT_OBJECT_PROGCLONE )
         {
-            if(m_selScript < m_brain->GetProgramCount())
+            if(m_selScript < m_programmable->GetProgramCount())
             {
-                m_brain->CloneProgram(m_brain->GetProgram(m_selScript));
-                m_selScript = m_brain->GetProgramCount()-1;
+                m_programmable->CloneProgram(m_programmable->GetProgram(m_selScript));
+                m_selScript = m_programmable->GetProgramCount()-1;
                 m_main->SaveOneScript(m_object);
 
                 UpdateInterface();
@@ -370,7 +369,7 @@ bool CObjectInterface::EventProcess(const Event &event)
 
         if( action == EVENT_OBJECT_PROGMOVEUP )
         {
-            std::iter_swap(m_brain->GetPrograms().begin() + m_selScript, m_brain->GetPrograms().begin() + m_selScript - 1);
+            std::iter_swap(m_programmable->GetPrograms().begin() + m_selScript, m_programmable->GetPrograms().begin() + m_selScript - 1);
             m_selScript--;
             m_main->SaveOneScript(m_object);
 
@@ -385,7 +384,7 @@ bool CObjectInterface::EventProcess(const Event &event)
 
         if( action == EVENT_OBJECT_PROGMOVEDOWN )
         {
-            std::iter_swap(m_brain->GetPrograms().begin() + m_selScript, m_brain->GetPrograms().begin() + m_selScript + 1);
+            std::iter_swap(m_programmable->GetPrograms().begin() + m_selScript, m_programmable->GetPrograms().begin() + m_selScript + 1);
             m_selScript++;
             m_main->SaveOneScript(m_object);
 
@@ -407,25 +406,25 @@ bool CObjectInterface::EventProcess(const Event &event)
 
     if ( action == EVENT_OBJECT_PROGEDIT )
     {
-        if(m_selScript < m_brain->GetProgramCount())
+        if(m_selScript < m_programmable->GetProgramCount())
         {
-            StartEditScript(m_brain->GetProgram(m_selScript), m_main->GetScriptName());
+            StartEditScript(m_programmable->GetProgram(m_selScript), m_main->GetScriptName());
         }
     }
 
     if ( action == EVENT_OBJECT_PROGRUN )
     {
-        m_brain->StopProgram();  // stops the current program
-        if(m_selScript < m_brain->GetProgramCount())
+        m_programmable->StopProgram();  // stops the current program
+        if(m_selScript < m_programmable->GetProgramCount())
         {
-            m_brain->RunProgram(m_brain->GetProgram(m_selScript));
+            m_programmable->RunProgram(m_programmable->GetProgram(m_selScript));
         }
         UpdateInterface();
     }
 
     err = ERR_OK;
 
-    if ( !m_brain->IsProgram() )
+    if ( !m_programmable->IsProgram() )
     {
         if ( action == EVENT_OBJECT_HTAKE )
         {
@@ -644,13 +643,13 @@ bool CObjectInterface::EventProcess(const Event &event)
 
         if ( action == EVENT_OBJECT_REC )  // registered?
         {
-            if ( m_brain->IsTraceRecord() )
+            if ( m_programmable->IsTraceRecord() )
             {
-                m_brain->TraceRecordStop();
+                m_programmable->TraceRecordStop();
             }
             else
             {
-                m_brain->TraceRecordStart();
+                m_programmable->TraceRecordStart();
             }
             UpdateInterface();
             pw = static_cast< CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
@@ -661,9 +660,9 @@ bool CObjectInterface::EventProcess(const Event &event)
         }
         if ( action == EVENT_OBJECT_STOP )  // stops?
         {
-            if ( m_brain->IsTraceRecord() )
+            if ( m_programmable->IsTraceRecord() )
             {
-                m_brain->TraceRecordStop();
+                m_programmable->TraceRecordStop();
             }
             UpdateInterface();
             pw = static_cast< CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
@@ -756,7 +755,7 @@ void CObjectInterface::StopEditScript(bool bCancel)
     if ( !m_studio->StopEditScript(bCancel) )  return;
     m_studio.reset();
 
-    if ( !bCancel )  m_brain->SetActiveVirus(false);
+    if ( !bCancel )  m_programmable->SetActiveVirus(false);
 
     CreateInterface(true);  // puts the control buttons
 }
@@ -1657,7 +1656,7 @@ void CObjectInterface::UpdateInterface(float rTime)
     pb = static_cast<CButton*>(pw->SearchControl(EVENT_OBJECT_REC));
     if ( pb != 0 )
     {
-        if ( m_brain->IsTraceRecord() && Math::Mod(m_time, 0.4f) >= 0.2f )
+        if ( m_programmable->IsTraceRecord() && Math::Mod(m_time, 0.4f) >= 0.2f )
         {
             pb->SetState(STATE_CHECK);
         }
@@ -1756,15 +1755,15 @@ void CObjectInterface::UpdateInterface()
 
     type = m_object->GetType();
 
-    bEnable = ( !m_taskExecutor->IsForegroundTask() && !m_brain->IsProgram() ) && m_main->CanPlayerInteract();
+    bEnable = ( !m_taskExecutor->IsForegroundTask() && !m_programmable->IsProgram() ) && m_main->CanPlayerInteract();
 
-    EnableInterface(pw, EVENT_OBJECT_PROGEDIT,    !m_brain->IsTraceRecord() && m_selScript < m_brain->GetProgramCount() && m_main->CanPlayerInteract());
-    EnableInterface(pw, EVENT_OBJECT_PROGLIST,    bEnable && !m_brain->IsTraceRecord());
-    EnableInterface(pw, EVENT_OBJECT_PROGADD,     !m_brain->IsProgram() && m_main->CanPlayerInteract());
-    EnableInterface(pw, EVENT_OBJECT_PROGREMOVE,  !m_brain->IsProgram() && m_selScript < m_brain->GetProgramCount() && !m_brain->GetProgram(m_selScript)->readOnly && m_main->CanPlayerInteract());
-    EnableInterface(pw, EVENT_OBJECT_PROGCLONE,   !m_brain->IsProgram() && m_selScript < m_brain->GetProgramCount() && m_brain->GetProgram(m_selScript)->runnable && m_main->CanPlayerInteract());
-    EnableInterface(pw, EVENT_OBJECT_PROGMOVEUP,  !m_brain->IsProgram() && m_brain->GetProgramCount() >= 2 && m_selScript > 0 && m_main->CanPlayerInteract());
-    EnableInterface(pw, EVENT_OBJECT_PROGMOVEDOWN,!m_brain->IsProgram() && m_brain->GetProgramCount() >= 2 && m_selScript < m_brain->GetProgramCount()-1 && m_main->CanPlayerInteract());
+    EnableInterface(pw, EVENT_OBJECT_PROGEDIT,    !m_programmable->IsTraceRecord() && m_selScript < m_programmable->GetProgramCount() && m_main->CanPlayerInteract());
+    EnableInterface(pw, EVENT_OBJECT_PROGLIST,    bEnable && !m_programmable->IsTraceRecord());
+    EnableInterface(pw, EVENT_OBJECT_PROGADD,     !m_programmable->IsProgram() && m_main->CanPlayerInteract());
+    EnableInterface(pw, EVENT_OBJECT_PROGREMOVE,  !m_programmable->IsProgram() && m_selScript < m_programmable->GetProgramCount() && !m_programmable->GetProgram(m_selScript)->readOnly && m_main->CanPlayerInteract());
+    EnableInterface(pw, EVENT_OBJECT_PROGCLONE,   !m_programmable->IsProgram() && m_selScript < m_programmable->GetProgramCount() && m_programmable->GetProgram(m_selScript)->runnable && m_main->CanPlayerInteract());
+    EnableInterface(pw, EVENT_OBJECT_PROGMOVEUP,  !m_programmable->IsProgram() && m_programmable->GetProgramCount() >= 2 && m_selScript > 0 && m_main->CanPlayerInteract());
+    EnableInterface(pw, EVENT_OBJECT_PROGMOVEDOWN,!m_programmable->IsProgram() && m_programmable->GetProgramCount() >= 2 && m_selScript < m_programmable->GetProgramCount()-1 && m_main->CanPlayerInteract());
     EnableInterface(pw, EVENT_OBJECT_LEFT,        bEnable);
     EnableInterface(pw, EVENT_OBJECT_RIGHT,       bEnable);
     EnableInterface(pw, EVENT_OBJECT_UP,          bEnable);
@@ -1832,7 +1831,7 @@ void CObjectInterface::UpdateInterface()
 
     if ( type == OBJECT_MOBILErs )  // shield?
     {
-        if ( (!m_taskExecutor->IsBackgroundTask() || !m_taskExecutor->GetBackgroundTask()->IsBusy()) && !m_brain->IsProgram() )
+        if ( (!m_taskExecutor->IsBackgroundTask() || !m_taskExecutor->GetBackgroundTask()->IsBusy()) && !m_programmable->IsProgram() )
         {
             EnableInterface(pw, EVENT_OBJECT_BEGSHIELD, !m_taskExecutor->IsBackgroundTask() && m_main->CanPlayerInteract());
             EnableInterface(pw, EVENT_OBJECT_ENDSHIELD,  m_taskExecutor->IsBackgroundTask() && m_main->CanPlayerInteract());
@@ -1910,11 +1909,11 @@ void CObjectInterface::UpdateInterface()
          type == OBJECT_CONTROLLER)  // vehicle?
     {
         bRun = false;
-        if ( m_selScript < m_brain->GetProgramCount() )
+        if ( m_selScript < m_programmable->GetProgramCount() )
         {
-            if(m_brain->GetProgram(m_selScript)->runnable)
+            if(m_programmable->GetProgram(m_selScript)->runnable)
             {
-                m_brain->GetProgram(m_selScript)->script->GetTitle(title);
+                m_programmable->GetProgram(m_selScript)->script->GetTitle(title);
                 if ( title[0] != 0 )
                 {
                     bRun = true;
@@ -1925,23 +1924,23 @@ void CObjectInterface::UpdateInterface()
                 bRun = false;
             }
         }
-        if ( !bEnable && !m_brain->IsProgram() )  bRun = false;
-        if ( m_brain->IsTraceRecord() )  bRun = false;
+        if ( !bEnable && !m_programmable->IsProgram() )  bRun = false;
+        if ( m_programmable->IsTraceRecord() )  bRun = false;
         EnableInterface(pw, EVENT_OBJECT_PROGRUN, bRun && m_main->CanPlayerInteract());
 
         pb = static_cast< CButton* >(pw->SearchControl(EVENT_OBJECT_PROGRUN));
         if ( pb != 0 )
         {
-            pb->SetIcon(!m_brain->IsProgram() ? 21 : 8);  // run/stop
+            pb->SetIcon(!m_programmable->IsProgram() ? 21 : 8);  // run/stop
         }
 
 //?     pb = (CButton*)pw->SearchControl(EVENT_OBJECT_PROGEDIT);
 //?     if ( pb != 0 )
 //?     {
-//?         pb->SetIcon(!m_brain->IsProgram() ? 22 : 40);  // edit/debug
+//?         pb->SetIcon(!m_programmable->IsProgram() ? 22 : 40);  // edit/debug
 //?     }
 
-        BlinkScript(m_brain->IsProgram());  // blinks if script execution
+        BlinkScript(m_programmable->IsProgram());  // blinks if script execution
     }
 
     if ( type == OBJECT_MOBILEfa ||
@@ -2068,14 +2067,14 @@ void CObjectInterface::UpdateScript(CWindow *pw)
     if ( pl == 0 )  return;
 
     pl->Flush();
-    for ( int i = 0 ; i < m_brain->GetProgramCount() ; i++ )
+    for ( int i = 0 ; i < m_programmable->GetProgramCount() ; i++ )
     {
         sprintf(name, "%d", i+1);
 
-        m_brain->GetProgram(i)->script->GetTitle(title);
+        m_programmable->GetProgram(i)->script->GetTitle(title);
         if ( title[0] != 0 )
         {
-            if(!m_brain->GetProgram(i)->readOnly)
+            if(!m_programmable->GetProgram(i)->readOnly)
             {
                 sprintf(name, "%d: %s", i+1, title);
             }

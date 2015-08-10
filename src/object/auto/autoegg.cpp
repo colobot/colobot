@@ -26,7 +26,6 @@
 
 #include "math/geometry.h"
 
-#include "object/brain.h"
 #include "object/object_manager.h"
 #include "object/old_object.h"
 
@@ -185,11 +184,11 @@ bool CAutoEgg::EventProcess(const Event &event)
 
         if (alien->Implements(ObjectInterfaceType::Programmable))
         {
-            CBrain* brain = dynamic_cast<CProgrammableObject*>(alien)->GetBrain();
+            CProgrammableObject* programmable = dynamic_cast<CProgrammableObject*>(alien);
 
-            Program* program = brain->AddProgram();
-            brain->ReadProgram(program, m_alienProgramName.c_str());
-            brain->RunProgram(program);
+            Program* program = programmable->AddProgram();
+            programmable->ReadProgram(program, m_alienProgramName.c_str());
+            programmable->RunProgram(program);
         }
         Init();
     }
@@ -332,4 +331,3 @@ bool CAutoEgg::Read(CLevelParserLine* line)
 
     return true;
 }
-

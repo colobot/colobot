@@ -27,6 +27,8 @@
 #include "object/object.h"
 #include "object/object_manager.h"
 
+#include "object/interface/programmable_object.h"
+
 
 namespace Ui
 {
@@ -233,7 +235,7 @@ bool CMainShort::UpdateShortcuts()
         if ( pc != nullptr )
         {
             pc->SetState(STATE_CHECK, m_shortcuts[i]->GetSelect());
-            pc->SetState(STATE_RUN, m_shortcuts[i]->IsProgram());
+            pc->SetState(STATE_RUN, m_shortcuts[i]->Implements(ObjectInterfaceType::Programmable) && dynamic_cast<CProgrammableObject*>(m_shortcuts[i])->IsProgram());
         }
     }
     return true;

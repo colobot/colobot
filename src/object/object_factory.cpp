@@ -30,7 +30,6 @@
 
 #include "math/geometry.h"
 
-#include "object/brain.h"
 #include "object/object_create_params.h"
 #include "object/old_object.h"
 #include "object/robotmain.h"
@@ -2632,7 +2631,6 @@ CObjectUPtr CObjectFactory::CreateVehicle(const ObjectCreateParams& params)
     obj->SetShowLimitRadius(showLimitRadius);
 
     auto physics = MakeUnique<CPhysics>(obj.get());
-    auto brain = MakeUnique<CBrain>(obj.get());
 
     std::unique_ptr<CMotion> motion;
     if ( type == OBJECT_HUMAN ||
@@ -2649,14 +2647,12 @@ CObjectUPtr CObjectFactory::CreateVehicle(const ObjectCreateParams& params)
         motion = MakeUnique<CMotionVehicle>(obj.get());
     }
 
-    brain->SetMotion(motion.get());
-    brain->SetPhysics(physics.get());
     motion->SetPhysics(physics.get());
     physics->SetMotion(motion.get());
 
     motion->Create(pos, angle, type, power, m_oldModelManager);
 
-    obj->SetBrain(std::move(brain));
+    obj->SetProgrammable(true);
     obj->SetMotion(std::move(motion));
     obj->SetPhysics(std::move(physics));
 
@@ -2677,7 +2673,6 @@ CObjectUPtr CObjectFactory::CreateInsect(const ObjectCreateParams& params)
     obj->SetTeam(params.team);
 
     auto physics = MakeUnique<CPhysics>(obj.get());
-    auto brain = MakeUnique<CBrain>(obj.get());
 
     std::unique_ptr<CMotion> motion;
     if ( type == OBJECT_MOTHER )
@@ -2703,15 +2698,13 @@ CObjectUPtr CObjectFactory::CreateInsect(const ObjectCreateParams& params)
     assert(motion != nullptr);
 
     physics->SetMotion(motion.get());
-    brain->SetMotion(motion.get());
-    brain->SetPhysics(physics.get());
     motion->SetPhysics(physics.get());
 
     motion->Create(pos, angle, type, 0.0f, m_oldModelManager);
 
     obj->SetMotion(std::move(motion));
     obj->SetPhysics(std::move(physics));
-    obj->SetBrain(std::move(brain));
+    obj->SetProgrammable(true);
 
     return std::move(obj);
 }

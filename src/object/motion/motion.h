@@ -38,7 +38,6 @@ class COldModelManager;
 }
 
 class CApplication;
-class CBrain;
 class CPhysics;
 class COldObject;
 class CRobotMain;

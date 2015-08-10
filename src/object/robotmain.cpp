@@ -56,7 +56,6 @@
 #include "math/const.h"
 #include "math/geometry.h"
 
-#include "object/brain.h"
 #include "object/mainmovie.h"
 #include "object/object.h"
 #include "object/object_create_exception.h"
@@ -3468,13 +3467,13 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 m_controller->SetIgnoreBuildCheck(true);
                 if (m_controller->Implements(ObjectInterfaceType::Programmable))
                 {
-                    CBrain* brain = dynamic_cast<CProgrammableObject*>(m_controller)->GetBrain();
+                    CProgrammableObject* programmable = dynamic_cast<CProgrammableObject*>(m_controller);
                     if (line->GetParam("script")->IsDefined())
                     {
-                        Program* program = brain->AddProgram();
+                        Program* program = programmable->AddProgram();
                         program->filename = "../" + line->GetParam("script")->AsPath("ai");
                         program->readOnly = true;
-                        brain->SetScriptRun(program);
+                        programmable->SetScriptRun(program);
                     }
                 }
                 continue;
@@ -3637,7 +3636,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                     std::map<int, Program*> loadedPrograms;
                     if (oldObj->Implements(ObjectInterfaceType::Programmable))
                     {
-                        CBrain* brain = dynamic_cast<CProgrammableObject*>(oldObj)->GetBrain();
+                        CProgrammableObject* programmable = dynamic_cast<CProgrammableObject*>(oldObj);
 
                         bool allFilled = true;
                         for (int i = 0; i < 10 || allFilled; i++)
@@ -3647,7 +3646,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                             std::string opRunnable = "scriptRunnable" + boost::lexical_cast<std::string>(i+1); // scriptRunnable1..scriptRunnable10
                             if (line->GetParam(op)->IsDefined())
                             {
-                                Program* program = brain->AddProgram();
+                                Program* program = programmable->AddProgram();
                                 program->filename = "../" + line->GetParam(op)->AsPath("ai");
                                 program->readOnly = line->GetParam(opReadOnly)->AsBool(true);
                                 program->runnable = line->GetParam(opRunnable)->AsBool(true);
@@ -3663,7 +3662,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                         if (i != 0)
                         {
                             run = i-1;
-                            brain->SetScriptRun(loadedPrograms[run]);
+                            programmable->SetScriptRun(loadedPrograms[run]);
                         }
                     }
                     CAuto* automat = oldObj->GetAuto();
@@ -3688,7 +3687,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                     }
 
                     if (soluce && oldObj->Implements(ObjectInterfaceType::Programmable) && line->GetParam("soluce")->IsDefined())
-                        dynamic_cast<CProgrammableObject*>(oldObj)->GetBrain()
+                        dynamic_cast<CProgrammableObject*>(oldObj)
                             ->SetSoluceName(const_cast<char*>(line->GetParam("soluce")->AsPath("ai").c_str()));
 
                     if (line->GetParam("reset")->AsBool(false))
@@ -4684,27 +4683,27 @@ void CRobotMain::CompileScript(bool soluce)
         m_ui->GetLoadingScreen()->SetProgress(0.75f+objectProgress*0.25f, RT_LOADING_PROGRAMS, "for object "+StrUtils::ToString<int>(objCounter+1)+" / "+StrUtils::ToString<int>(numObjects));
         objCounter++;
 
-        CBrain* brain = dynamic_cast<CProgrammableObject*>(obj)->GetBrain();
-        for (auto& prog : brain->GetPrograms())
+        CProgrammableObject* programmable = dynamic_cast<CProgrammableObject*>(obj);
+        for (auto& prog : programmable->GetPrograms())
         {
             Program* program = prog.get();
 
             if (program->filename.empty()) continue;
 
             std::string name = "ai/" + program->filename;
-            if (! brain->ReadProgram(program, const_cast<char*>(name.c_str())))
+            if (! programmable->ReadProgram(program, const_cast<char*>(name.c_str())))
             {
                 GetLogger()->Error("Unable to read script from file \"%s\"\n", name.c_str());
             }
-            //? if (!brain->GetCompile(program)) nbError++;
+            //? if (!programmable->GetCompile(program)) nbError++;
         }
 
         if (soluce)
         {
-            char* name = brain->GetSoluceName();
+            char* name = programmable->GetSoluceName();
             if (name[0] != 0)
             {
-                brain->ReadSoluce(name);  // load solution
+                programmable->ReadSoluce(name);  // load solution
             }
         }
 
@@ -4716,11 +4715,11 @@ void CRobotMain::CompileScript(bool soluce)
     {
         if (! obj->Implements(ObjectInterfaceType::Programmable)) continue;
 
-        CBrain* brain = dynamic_cast<CProgrammableObject*>(obj)->GetBrain();
-        Program* program = brain->GetScriptRun();
+        CProgrammableObject* programmable = dynamic_cast<CProgrammableObject*>(obj);
+        Program* program = programmable->GetScriptRun();
         if (program != nullptr)
         {
-            brain->RunProgram(program);  // starts the program
+            programmable->RunProgram(program);  // starts the program
         }
     }
 }
@@ -4730,7 +4729,7 @@ void CRobotMain::LoadOneScript(CObject *obj)
 {
     if (! obj->Implements(ObjectInterfaceType::Programmable)) return;
 
-    CBrain* brain = dynamic_cast<CProgrammableObject*>(obj)->GetBrain();
+    CProgrammableObject* programmable = dynamic_cast<CProgrammableObject*>(obj);
 
     if (!IsSelectable(obj)) return;
 
@@ -4749,10 +4748,10 @@ void CRobotMain::LoadOneScript(CObject *obj)
 
         if (CResourceManager::Exists(filename))
         {
-            Program* program = brain->GetOrAddProgram(i);
-            if(brain->GetCompile(program)) continue; // If already loaded (e.g. from level file), skip
-            brain->ReadProgram(program, filename.c_str());
-            //? if (!brain->GetCompile(program)) nbError++;
+            Program* program = programmable->GetOrAddProgram(i);
+            if(programmable->GetCompile(program)) continue; // If already loaded (e.g. from level file), skip
+            programmable->ReadProgram(program, filename.c_str());
+            //? if (!programmable->GetCompile(program)) nbError++;
         }
     }
 }
@@ -4764,7 +4763,7 @@ void CRobotMain::LoadFileScript(CObject *obj, const char* filename, int objRank)
 
     if (! obj->Implements(ObjectInterfaceType::Programmable)) return;
 
-    CBrain* brain = dynamic_cast<CProgrammableObject*>(obj)->GetBrain();
+    CProgrammableObject* programmable = dynamic_cast<CProgrammableObject*>(obj);
 
     ObjectType type = obj->GetType();
     if (type == OBJECT_HUMAN) return;
@@ -4778,9 +4777,9 @@ void CRobotMain::LoadFileScript(CObject *obj, const char* filename, int objRank)
         sprintf(fn, "%s/prog%.3d%.3d.txt", dirname.c_str(), objRank, i);
         if (CResourceManager::Exists(fn))
         {
-            Program* program = brain->GetOrAddProgram(i);
-            brain->ReadProgram(program, fn);
-            //? if (!brain->GetCompile(program)) nbError++;
+            Program* program = programmable->GetOrAddProgram(i);
+            programmable->ReadProgram(program, fn);
+            //? if (!programmable->GetCompile(program)) nbError++;
         }
     }
 }
@@ -4800,7 +4799,7 @@ void CRobotMain::SaveOneScript(CObject *obj)
 {
     if (! obj->Implements(ObjectInterfaceType::Programmable)) return;
 
-    CBrain* brain = dynamic_cast<CProgrammableObject*>(obj)->GetBrain();
+    CProgrammableObject* programmable = dynamic_cast<CProgrammableObject*>(obj);
 
     if (!IsSelectable(obj)) return;
 
@@ -4811,7 +4810,7 @@ void CRobotMain::SaveOneScript(CObject *obj)
     if (objRank == -1) return;
 
     char categoryChar = GetLevelCategoryDir(m_levelCategory)[0];
-    auto& programs = brain->GetPrograms();
+    auto& programs = programmable->GetPrograms();
     // TODO: Find a better way to do that
     for (unsigned int i = 0; i <= 999; i++)
     {
@@ -4821,7 +4820,7 @@ void CRobotMain::SaveOneScript(CObject *obj)
 
         if (i < programs.size())
         {
-            brain->WriteProgram(programs[i].get(), filename.c_str());
+            programmable->WriteProgram(programs[i].get(), filename.c_str());
         }
         else
         {
@@ -4838,7 +4837,7 @@ void CRobotMain::SaveFileScript(CObject *obj, const char* filename, int objRank)
 
     if (! obj->Implements(ObjectInterfaceType::Programmable)) return;
 
-    CBrain* brain = dynamic_cast<CProgrammableObject*>(obj)->GetBrain();
+    CProgrammableObject* programmable = dynamic_cast<CProgrammableObject*>(obj);
 
     ObjectType type = obj->GetType();
     if (type == OBJECT_HUMAN) return;
@@ -4847,14 +4846,14 @@ void CRobotMain::SaveFileScript(CObject *obj, const char* filename, int objRank)
     dirname = dirname.substr(0, dirname.find_last_of("/"));
 
     char fn[MAX_FNAME]; //TODO: Refactor to std::string
-    auto& programs = brain->GetPrograms();
+    auto& programs = programmable->GetPrograms();
     // TODO: Find a better way to do that
     for (unsigned int i = 0; i <= 999; i++)
     {
         sprintf(fn, "%s/prog%.3d%.3d.txt", dirname.c_str(), objRank, i);
         if (i < programs.size())
         {
-            brain->WriteProgram(programs[i].get(), fn);
+            programmable->WriteProgram(programs[i].get(), fn);
         }
         else
         {
@@ -4870,12 +4869,12 @@ bool CRobotMain::SaveFileStack(CObject *obj, FILE *file, int objRank)
 
     if (! obj->Implements(ObjectInterfaceType::Programmable)) return true;
 
-    CBrain* brain = dynamic_cast<CProgrammableObject*>(obj)->GetBrain();
+    CProgrammableObject* programmable = dynamic_cast<CProgrammableObject*>(obj);
 
     ObjectType type = obj->GetType();
     if (type == OBJECT_HUMAN) return true;
 
-    return brain->WriteStack(file);
+    return programmable->WriteStack(file);
 }
 
 //! Resumes the execution stack of the program in a robot
@@ -4885,12 +4884,12 @@ bool CRobotMain::ReadFileStack(CObject *obj, FILE *file, int objRank)
 
     if (! obj->Implements(ObjectInterfaceType::Programmable)) return true;
 
-    CBrain* brain = dynamic_cast<CProgrammableObject*>(obj)->GetBrain();
+    CProgrammableObject* programmable = dynamic_cast<CProgrammableObject*>(obj);
 
     ObjectType type = obj->GetType();
     if (type == OBJECT_HUMAN) return true;
 
-    return brain->ReadStack(file);
+    return programmable->ReadStack(file);
 }
 
 
@@ -5005,15 +5004,15 @@ void CRobotMain::IOWriteObject(CLevelParserLine* line, CObject* obj)
 
     if (obj->Implements(ObjectInterfaceType::Programmable))
     {
-        CBrain* brain = dynamic_cast<CProgrammableObject*>(obj)->GetBrain();
+        CProgrammableObject* programmable = dynamic_cast<CProgrammableObject*>(obj);
 
-        int run = brain->GetProgram();
+        int run = programmable->GetProgram();
         if (run != -1)
         {
             line->AddParam("run", MakeUnique<CLevelParserParam>(run+1));
         }
 
-        auto& programs = brain->GetPrograms();
+        auto& programs = programmable->GetPrograms();
         for (unsigned int i = 0; i < programs.size(); i++)
         {
             if (programs[i]->readOnly)
@@ -5249,19 +5248,19 @@ CObject* CRobotMain::IOReadObject(CLevelParserLine *line, const char* filename, 
 
     if (obj->Implements(ObjectInterfaceType::Programmable))
     {
-        CBrain* brain = dynamic_cast<CProgrammableObject*>(obj)->GetBrain();
+        CProgrammableObject* programmable = dynamic_cast<CProgrammableObject*>(obj);
 
         if (run != -1)
         {
-            Program* program = brain->GetOrAddProgram(run-1);
-            brain->SetScriptRun(program);  // marks the program to be started
+            Program* program = programmable->GetOrAddProgram(run-1);
+            programmable->SetScriptRun(program);  // marks the program to be started
         }
 
         for (unsigned int i = 0; i <= 999; i++)
         {
             if (line->GetParam("scriptReadOnly" + boost::lexical_cast<std::string>(i+1))->AsBool(false))
             {
-                Program* prog = brain->GetOrAddProgram(i);
+                Program* prog = programmable->GetOrAddProgram(i);
                 prog->readOnly = true;
             }
         }
@@ -5371,12 +5370,12 @@ CObject* CRobotMain::IOReadScene(std::string filename, std::string filecbot)
         if (! obj->Implements(ObjectInterfaceType::Programmable)) continue;
         if (obj->GetDefRank() == -1) continue;
 
-        CBrain* brain = dynamic_cast<CProgrammableObject*>(obj)->GetBrain();
+        CProgrammableObject* programmable = dynamic_cast<CProgrammableObject*>(obj);
 
-        Program* program = brain->GetScriptRun();
+        Program* program = programmable->GetScriptRun();
         if (program != nullptr)
         {
-            brain->RunProgram(program);  // starts the program
+            programmable->RunProgram(program);  // starts the program
         }
     }
 

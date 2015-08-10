@@ -21,7 +21,15 @@
 
 #include "object/object_interface_type.h"
 
-class CBrain;
+class CScript;
+
+struct Program
+{
+    std::unique_ptr<CScript> script;
+    std::string filename;
+    bool        readOnly;
+    bool        runnable;
+};
 
 /**
  * \class CProgrammableObject
@@ -39,11 +47,42 @@ public:
     virtual ~CProgrammableObject()
     {}
 
-    //! Returns CBrain
-    /** If only the object implements ObjectInterfaceType::Programmable,
-     *  returned object will always be non-null*/
-    virtual CBrain* GetBrain() = 0;
+    virtual bool IsProgram() = 0;
+    virtual void RunProgram(Program* program) = 0;
+    virtual int GetProgram() = 0;
+    virtual void StopProgram() = 0;
 
+    virtual bool IntroduceVirus() = 0;
+    virtual void SetActiveVirus(bool bActive) = 0;
+    virtual bool GetActiveVirus() = 0;
 
-    // TODO: CBrain interface can actually be moved here
+    virtual void SetScriptRun(Program* rank) = 0;
+    virtual Program* GetScriptRun() = 0;
+    virtual void SetSoluceName(char *name) = 0;
+    virtual char* GetSoluceName() = 0;
+
+    virtual bool ReadSoluce(char* filename) = 0;
+    virtual bool ReadProgram(Program* program, const char* filename) = 0;
+    virtual bool GetCompile(Program* program) = 0;
+    virtual bool WriteProgram(Program* program, const char* filename) = 0;
+    virtual bool ReadStack(FILE *file) = 0;
+    virtual bool WriteStack(FILE *file) = 0;
+
+    virtual Program* AddProgram() = 0;
+    virtual void AddProgram(std::unique_ptr<Program> program) = 0;
+    virtual void RemoveProgram(Program* program) = 0;
+    virtual Program* CloneProgram(Program* program) = 0;
+
+    virtual std::vector<std::unique_ptr<Program>>& GetPrograms() = 0;
+    virtual int GetProgramCount() = 0;
+    virtual Program* GetProgram(int index) = 0;
+    virtual Program* GetOrAddProgram(int index) = 0;
+    virtual int GetProgramIndex(Program* program) = 0;
+
+    //! Start recording trace
+    virtual void TraceRecordStart() = 0;
+    //! Stop recording trace and generate CBot program
+    virtual void TraceRecordStop() = 0;
+    //! Returns true if trace recording is in progress
+    virtual bool IsTraceRecord() = 0;
 };

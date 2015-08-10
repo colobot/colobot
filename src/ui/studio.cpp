@@ -34,9 +34,10 @@
 #include "graphics/engine/camera.h"
 #include "graphics/engine/engine.h"
 
-#include "object/brain.h"
 #include "object/object.h"
 #include "object/player_profile.h"
+
+#include "object/interface/programmable_object.h"
 
 #include "script/cbottoken.h"
 #include "script/script.h"

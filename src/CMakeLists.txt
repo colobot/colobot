@@ -149,7 +149,6 @@ set(BASE_SOURCES
     object/auto/autovault.cpp
     object/auto/autopowerstation.cpp
     object/auto/autotower.cpp
-    object/brain.cpp
     object/drive_type.cpp
     object/level/parser.cpp
     object/level/parserexceptions.cpp

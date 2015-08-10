@@ -55,6 +55,21 @@ struct ObjectPart
     Math::Matrix matWorld;
 };
 
+enum TraceOper
+{
+    TO_STOP         = 0,    // stop
+    TO_ADVANCE      = 1,    // advance
+    TO_RECEDE       = 2,    // back
+    TO_TURN         = 3,    // rotate
+    TO_PEN          = 4,    // color change
+};
+
+struct TraceRecord
+{
+    TraceOper   oper;
+    float       param;
+};
+
 namespace Ui
 {
 class CObjectInterface;
@@ -76,7 +91,7 @@ class COldObject : public CObject,
 protected:
     void        DeleteObject(bool bAll=false);
     void        SetPhysics(std::unique_ptr<CPhysics> physics);
-    void        SetBrain(std::unique_ptr<CBrain> brain);
+    void        SetProgrammable(bool programmable);
     void        SetMotion(std::unique_ptr<CMotion> motion);
     void        SetAuto(std::unique_ptr<CAuto> automat);
     void        SetShowLimitRadius(float radius);
@@ -227,8 +242,8 @@ public:
 
     //! Management of object "activity" (temporairly stops program execution, right now used only by Aliens in eggs)
     //@{
-    void        SetActivity(bool activity);
-    bool        GetActivity();
+    void        SetActivity(bool activity) override;
+    bool        GetActivity() override;
     //@}
 
     void        SetVisible(bool bVisible);
@@ -270,14 +285,12 @@ public:
     bool        StartShowLimit() override;
     void        StopShowLimit() override;
 
-    bool        IsProgram() override;
     void        CreateSelectParticle();
 
     void        SetRunScript(CScript* script);
     CScript*    GetRunScript() override;
     CBotVar*    GetBotVar() override;
     CPhysics*   GetPhysics() override;
-    CBrain*     GetBrain() override;
     CMotion*    GetMotion() override;
     CAuto*      GetAuto() override;
 
@@ -336,6 +349,45 @@ public:
 
     void        UpdateInterface();
 
+    bool        IsProgram() override;
+    void        RunProgram(Program* program) override;
+    int         GetProgram() override;
+    void        StopProgram() override;
+
+    bool        IntroduceVirus() override;
+    void        SetActiveVirus(bool bActive) override;
+    bool        GetActiveVirus() override;
+
+    void        SetScriptRun(Program* rank) override;
+    Program*    GetScriptRun() override;
+    void        SetSoluceName(char *name) override;
+    char*       GetSoluceName() override;
+
+    bool        ReadSoluce(char* filename) override;
+    bool        ReadProgram(Program* program, const char* filename) override;
+    bool        GetCompile(Program* program) override;
+    bool        WriteProgram(Program* program, const char* filename) override;
+    bool        ReadStack(FILE *file) override;
+    bool        WriteStack(FILE *file) override;
+
+    Program*    AddProgram() override;
+    void        AddProgram(std::unique_ptr<Program> program) override;
+    void        RemoveProgram(Program* program) override;
+    Program*    CloneProgram(Program* program) override;
+
+    std::vector<std::unique_ptr<Program>>& GetPrograms() override;
+    int         GetProgramCount() override;
+    Program*    GetProgram(int index) override;
+    Program*    GetOrAddProgram(int index) override;
+    int         GetProgramIndex(Program* program) override;
+
+    //! Start recording trace
+    void        TraceRecordStart() override;
+    //! Stop recording trace and generate CBot program
+    void        TraceRecordStop() override;
+    //! Returns true if trace recording is in progress
+    bool        IsTraceRecord() override;
+
 protected:
     bool        EventFrame(const Event &event);
     void        VirusFrame(float rTime);
@@ -352,6 +404,13 @@ protected:
 
     Error       EndedTask();
 
+    //! Save current status to recording buffer
+    void        TraceRecordFrame();
+    //! Save this operation to recording buffer
+    bool        TraceRecordOper(TraceOper oper, float param);
+    //! Convert this recording operation to CBot instruction
+    bool        TraceRecordPut(std::stringstream& buffer, TraceOper oper, float param);
+
 protected:
     Gfx::CEngine*       m_engine;
     Gfx::CLightManager* m_lightMan;
@@ -362,7 +421,6 @@ protected:
     CSoundInterface*    m_sound;
 
     std::unique_ptr<CPhysics> m_physics;
-    std::unique_ptr<CBrain> m_brain;
     std::unique_ptr<CMotion> m_motion;
     std::unique_ptr<CAuto> m_auto;
     std::unique_ptr<Ui::CObjectInterface> m_objectInterface;
@@ -441,4 +499,25 @@ protected:
     bool m_activity;
     std::unique_ptr<CTaskManager>  m_foregroundTask;
     std::unique_ptr<CTaskManager>  m_backgroundTask;
+
+    std::vector<std::unique_ptr<Program>> m_program;
+    Program*            m_currentProgram;
+
+    bool                m_bActiveVirus;
+
+    Program*            m_scriptRun;
+    char                m_soluceName[50];
+
+    EventType           m_buttonAxe;
+
+    float               m_time;
+    float               m_burnTime;
+
+    bool                m_traceRecord;
+    TraceOper           m_traceOper;
+    Math::Vector        m_tracePos;
+    float               m_traceAngle;
+    TraceColor          m_traceColor;
+    int                 m_traceRecordIndex;
+    std::unique_ptr<TraceRecord[]> m_traceRecordBuffer;
 };
