@@ -22,35 +22,34 @@
 #include "common/resources/outputstreambuffer.h"
 
 
-COutputStream::COutputStream() : std::ostream(new COutputStreamBuffer())
+COutputStream::COutputStream()
+    : COutputStreamBufferContainer(),
+      std::ostream(&m_buffer)
 {
 }
 
-COutputStream::COutputStream(const std::string& filename) : std::ostream(new COutputStreamBuffer())
+COutputStream::COutputStream(const std::string& filename)
+    : COutputStreamBufferContainer(),
+      std::ostream(&m_buffer)
 {
     open(filename);
 }
 
-
 COutputStream::~COutputStream()
 {
-    delete rdbuf();
 }
-
 
 void COutputStream::open(const std::string& filename)
 {
-    static_cast<COutputStreamBuffer *>(rdbuf())->open(filename);
+    m_buffer.open(filename);
 }
-
 
 void COutputStream::close()
 {
-    static_cast<COutputStreamBuffer *>(rdbuf())->close();
+    m_buffer.close();
 }
-
 
 bool COutputStream::is_open()
 {
-    return static_cast<COutputStreamBuffer *>(rdbuf())->is_open();
+    return m_buffer.is_open();
 }

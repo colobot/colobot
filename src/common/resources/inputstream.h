@@ -19,12 +19,21 @@
 
 #pragma once
 
+#include "common/resources/inputstreambuffer.h"
+
 #include <cstddef>
 #include <istream>
 #include <string>
 
 
-class CInputStream : public std::istream
+class CInputStreamBufferContainer
+{
+protected:
+    CInputStreamBuffer m_buffer;
+};
+
+
+class CInputStream : public CInputStreamBufferContainer, public std::istream
 {
 public:
     CInputStream();

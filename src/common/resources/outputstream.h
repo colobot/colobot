@@ -19,11 +19,19 @@
 
 #pragma once
 
+#include "common/resources/outputstreambuffer.h"
+
 #include <ostream>
 #include <string>
 
 
-class COutputStream : public std::ostream
+class COutputStreamBufferContainer
+{
+protected:
+    COutputStreamBuffer m_buffer;
+};
+
+class COutputStream : public COutputStreamBufferContainer, public std::ostream
 {
 public:
     COutputStream();

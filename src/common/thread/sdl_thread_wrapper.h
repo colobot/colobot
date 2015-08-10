@@ -33,7 +33,8 @@ public:
     using ThreadFunctionPtr = std::function<void()>;
 
     CSDLThreadWrapper(ThreadFunctionPtr threadFunction)
-        : m_threadFunction(threadFunction)
+        : m_threadFunction(threadFunction),
+          m_thread(nullptr)
     {}
 
     ~CSDLThreadWrapper()

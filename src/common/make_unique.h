@@ -22,6 +22,7 @@
 #include <cstddef>
 #include <memory>
 
+
 /**
  * A template function to make std::unique_ptr without naked new
  * It can be replaced with std::make_unique once we use C++14
@@ -29,7 +30,9 @@
 template<typename T, typename... Args>
 inline std::unique_ptr<T> MakeUnique(Args&&... args)
 {
+    //@colobot-lint-exclude NakedNewRule
     return std::unique_ptr<T>(new T(std::forward<Args>(args)...));
+    //@end-colobot-lint-exclude
 }
 
 /**
@@ -39,5 +42,7 @@ inline std::unique_ptr<T> MakeUnique(Args&&... args)
 template<typename T>
 inline std::unique_ptr<T[]> MakeUniqueArray(std::size_t size)
 {
+    //@colobot-lint-exclude NakedNewRule
     return std::unique_ptr<T[]>(new T[size]);
+    //@end-colobot-lint-exclude
 }

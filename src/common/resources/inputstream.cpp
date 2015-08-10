@@ -22,41 +22,39 @@
 #include "common/resources/inputstreambuffer.h"
 
 
-CInputStream::CInputStream() : std::istream(new CInputStreamBuffer())
+CInputStream::CInputStream()
+    : CInputStreamBufferContainer(),
+      std::istream(&m_buffer)
 {
 }
 
-CInputStream::CInputStream(const std::string& filename) : std::istream(new CInputStreamBuffer())
+CInputStream::CInputStream(const std::string& filename)
+    : CInputStreamBufferContainer(),
+      std::istream(&m_buffer)
 {
     open(filename);
 }
 
-
 CInputStream::~CInputStream()
 {
-    delete rdbuf();
 }
-
 
 void CInputStream::open(const std::string& filename)
 {
-    static_cast<CInputStreamBuffer *>(rdbuf())->open(filename);
+    m_buffer.open(filename);
 }
-
 
 void CInputStream::close()
 {
-    static_cast<CInputStreamBuffer *>(rdbuf())->close();
+    m_buffer.close();
 }
-
 
 bool CInputStream::is_open()
 {
-    return static_cast<CInputStreamBuffer *>(rdbuf())->is_open();
+    return m_buffer.is_open();
 }
-
 
 std::size_t CInputStream::size()
 {
-    return static_cast<CInputStreamBuffer *>(rdbuf())->size();
+    return m_buffer.size();
 }
