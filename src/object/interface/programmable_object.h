@@ -21,6 +21,9 @@
 
 #include "object/object_interface_type.h"
 
+#include <memory>
+#include <vector>
+
 class CScript;
 
 struct Program
