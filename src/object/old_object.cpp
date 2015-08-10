@@ -58,6 +58,8 @@
 #include "script/cbottoken.h"
 #include "script/scriptfunc.h"
 
+#include "ui/object_interface.h"
+
 #include <boost/lexical_cast.hpp>
 
 
@@ -290,9 +292,9 @@ void COldObject::DeleteObject(bool bAll)
         m_physics->DeleteObject(bAll);
     }
 
-    if ( m_brain != nullptr )
+    if ( m_objectInterface != nullptr )
     {
-        m_brain->DeleteObject(bAll);
+        m_objectInterface->DeleteObject(bAll);
     }
 
     if ( m_motion != nullptr )
@@ -347,9 +349,14 @@ void COldObject::Simplify()
         m_physics.reset();
     }
 
+    if ( m_objectInterface != nullptr )
+    {
+        m_objectInterface->DeleteObject();
+        m_objectInterface.reset();
+    }
+
     if ( m_brain != nullptr )
     {
-        m_brain->DeleteObject();
         m_brain.reset();
     }
 
@@ -1850,9 +1857,14 @@ bool COldObject::EventProcess(const Event &event)
         }
     }
 
-    if ( m_brain.get() != nullptr )
+    if ( m_brain != nullptr )
     {
         m_brain->EventProcess(event);
+    }
+
+    if ( m_objectInterface != nullptr )
+    {
+        m_objectInterface->EventProcess(event);
     }
 
     if ( m_auto != nullptr )
@@ -2472,9 +2484,15 @@ void COldObject::SetSelect(bool bMode, bool bDisplayError)
 
     m_bSelect = bMode;
 
-    if ( m_brain != nullptr )
+    // NOTE: Right now, Ui::CObjectInterface is only for programmable objects. Right now all selectable objects are programmable anyway.
+    // TODO: All UI-related stuff should be moved out of CObject classes
+    if (Implements(ObjectInterfaceType::Programmable))
     {
-        m_brain->CreateInterface(m_bSelect);
+        if ( m_objectInterface == nullptr )
+        {
+            m_objectInterface = MakeUnique<Ui::CObjectInterface>(this);
+        }
+        m_objectInterface->CreateInterface(m_bSelect);
     }
 
     if ( m_auto != nullptr )
@@ -3163,7 +3181,7 @@ Error COldObject::StartTaskTake()
 
     m_foregroundTask = MakeUnique<CTaskManager>(this);
     Error err = m_foregroundTask->StartTaskTake();
-    m_brain->UpdateInterface();
+    UpdateInterface();
     return err;
 }
 
@@ -3175,7 +3193,7 @@ Error COldObject::StartTaskManip(TaskManipOrder order, TaskManipArm arm)
 
     m_foregroundTask = MakeUnique<CTaskManager>(this);
     Error err = m_foregroundTask->StartTaskManip(order, arm);
-    m_brain->UpdateInterface();
+    UpdateInterface();
     return err;
 }
 
@@ -3187,7 +3205,7 @@ Error COldObject::StartTaskFlag(TaskFlagOrder order, int rank)
 
     m_foregroundTask = MakeUnique<CTaskManager>(this);
     Error err = m_foregroundTask->StartTaskFlag(order, rank);
-    m_brain->UpdateInterface();
+    UpdateInterface();
     return err;
 }
 
@@ -3199,7 +3217,7 @@ Error COldObject::StartTaskBuild(ObjectType type)
 
     m_foregroundTask = MakeUnique<CTaskManager>(this);
     Error err = m_foregroundTask->StartTaskBuild(type);
-    m_brain->UpdateInterface();
+    UpdateInterface();
     return err;
 }
 
@@ -3211,7 +3229,7 @@ Error COldObject::StartTaskSearch()
 
     m_foregroundTask = MakeUnique<CTaskManager>(this);
     Error err = m_foregroundTask->StartTaskSearch();
-    m_brain->UpdateInterface();
+    UpdateInterface();
     return err;
 }
 
@@ -3223,7 +3241,7 @@ Error COldObject::StartTaskDeleteMark()
 
     m_foregroundTask = MakeUnique<CTaskManager>(this);
     Error err = m_foregroundTask->StartTaskDeleteMark();
-    m_brain->UpdateInterface();
+    UpdateInterface();
     return err;
 }
 
@@ -3236,7 +3254,7 @@ Error COldObject::StartTaskTerraform()
 
     m_foregroundTask = MakeUnique<CTaskManager>(this);
     Error err = m_foregroundTask->StartTaskTerraform();
-    m_brain->UpdateInterface();
+    UpdateInterface();
     return err;
 }
 
@@ -3261,7 +3279,7 @@ Error COldObject::StartTaskPen(bool down, TraceColor color)
 
     m_foregroundTask = MakeUnique<CTaskManager>(this);
     Error err = m_foregroundTask->StartTaskPen(down, color);
-    m_brain->UpdateInterface();
+    UpdateInterface();
     return err;
 }
 
@@ -3273,7 +3291,7 @@ Error COldObject::StartTaskRecover()
 
     m_foregroundTask = MakeUnique<CTaskManager>(this);
     Error err = m_foregroundTask->StartTaskRecover();
-    m_brain->UpdateInterface();
+    UpdateInterface();
     return err;
 }
 
@@ -3285,7 +3303,7 @@ Error COldObject::StartTaskFire(float delay)
 
     m_foregroundTask = MakeUnique<CTaskManager>(this);
     Error err = m_foregroundTask->StartTaskFire(delay);
-    m_brain->UpdateInterface();
+    UpdateInterface();
     return err;
 }
 
@@ -3297,7 +3315,7 @@ Error COldObject::StartTaskSpiderExplo()
 
     m_foregroundTask = MakeUnique<CTaskManager>(this);
     Error err = m_foregroundTask->StartTaskSpiderExplo();
-    m_brain->UpdateInterface();
+    UpdateInterface();
     return err;
 }
 
@@ -3309,7 +3327,7 @@ Error COldObject::StartTaskFireAnt(Math::Vector impact)
 
     m_foregroundTask = MakeUnique<CTaskManager>(this);
     Error err = m_foregroundTask->StartTaskFireAnt(impact);
-    m_brain->UpdateInterface();
+    UpdateInterface();
     return err;
 }
 
@@ -3319,7 +3337,7 @@ Error COldObject::StartTaskWait(float time)
 
     m_foregroundTask = MakeUnique<CTaskManager>(this);
     Error err = m_foregroundTask->StartTaskWait(time);
-    m_brain->UpdateInterface();
+    UpdateInterface();
     return err;
 }
 
@@ -3329,7 +3347,7 @@ Error COldObject::StartTaskAdvance(float length)
 
     m_foregroundTask = MakeUnique<CTaskManager>(this);
     Error err = m_foregroundTask->StartTaskAdvance(length);
-    m_brain->UpdateInterface();
+    UpdateInterface();
     return err;
 }
 
@@ -3339,7 +3357,7 @@ Error COldObject::StartTaskTurn(float angle)
 
     m_foregroundTask = MakeUnique<CTaskManager>(this);
     Error err = m_foregroundTask->StartTaskTurn(angle);
-    m_brain->UpdateInterface();
+    UpdateInterface();
     return err;
 }
 
@@ -3349,7 +3367,7 @@ Error COldObject::StartTaskGoto(Math::Vector pos, float altitude, TaskGotoGoal g
 
     m_foregroundTask = MakeUnique<CTaskManager>(this);
     Error err = m_foregroundTask->StartTaskGoto(pos, altitude, goalMode, crashMode);
-    m_brain->UpdateInterface();
+    UpdateInterface();
     return err;
 }
 
@@ -3359,7 +3377,7 @@ Error COldObject::StartTaskInfo(const char *name, float value, float power, bool
 
     m_foregroundTask = MakeUnique<CTaskManager>(this);
     Error err = m_foregroundTask->StartTaskInfo(name, value, power, bSend);
-    m_brain->UpdateInterface();
+    UpdateInterface();
     return err;
 }
 
@@ -3372,7 +3390,7 @@ Error COldObject::StartTaskShield(TaskShieldMode mode, float delay)
         m_backgroundTask = MakeUnique<CTaskManager>(this);
     }
     Error err = m_backgroundTask->StartTaskShield(mode, delay);
-    m_brain->UpdateInterface();
+    UpdateInterface();
     return err;
 }
 
@@ -3384,7 +3402,7 @@ Error COldObject::StartTaskGunGoal(float dirV, float dirH)
 
     m_backgroundTask = MakeUnique<CTaskManager>(this);
     Error err = m_backgroundTask->StartTaskGunGoal(dirV, dirH);
-    m_brain->UpdateInterface();
+    UpdateInterface();
     return err;
 }
 
@@ -3442,7 +3460,7 @@ Error COldObject::EndedTask()
         if ( err != ERR_CONTINUE )  // job ended?
         {
             m_backgroundTask.reset();
-            m_brain->UpdateInterface();
+            UpdateInterface();
         }
     }
 
@@ -3452,7 +3470,7 @@ Error COldObject::EndedTask()
         if ( err != ERR_CONTINUE )  // job ended?
         {
             m_foregroundTask.reset();
-            m_brain->UpdateInterface();
+            UpdateInterface();
         }
         return err;
     }
@@ -3470,4 +3488,12 @@ void COldObject::SetActivity(bool activity)
 bool COldObject::GetActivity()
 {
     return m_activity;
+}
+
+void COldObject::UpdateInterface()
+{
+    if (m_objectInterface != nullptr && GetSelect())
+    {
+        m_objectInterface->UpdateInterface();
+    }
 }

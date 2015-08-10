@@ -55,6 +55,11 @@ struct ObjectPart
     Math::Matrix matWorld;
 };
 
+namespace Ui
+{
+class CObjectInterface;
+}
+
 
 class COldObject : public CObject,
                    public CInteractiveObject,
@@ -329,6 +334,8 @@ public:
     void        StopForegroundTask() override;
     void        StopBackgroundTask() override;
 
+    void        UpdateInterface();
+
 protected:
     bool        EventFrame(const Event &event);
     void        VirusFrame(float rTime);
@@ -351,12 +358,15 @@ protected:
     Gfx::CTerrain*      m_terrain;
     Gfx::CCamera*       m_camera;
     Gfx::CParticle*     m_particle;
+    CRobotMain*         m_main;
+    CSoundInterface*    m_sound;
+
     std::unique_ptr<CPhysics> m_physics;
     std::unique_ptr<CBrain> m_brain;
     std::unique_ptr<CMotion> m_motion;
     std::unique_ptr<CAuto> m_auto;
-    CRobotMain*         m_main;
-    CSoundInterface*    m_sound;
+    std::unique_ptr<Ui::CObjectInterface> m_objectInterface;
+
     CBotVar*            m_botVar;
     CScript*            m_runScript;
 

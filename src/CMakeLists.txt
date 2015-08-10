@@ -206,25 +206,9 @@ set(BASE_SOURCES
     script/scriptfunc.cpp
     sound/sound.cpp
     sound/sound_type.cpp
-    ui/screen/screen.cpp
-    ui/screen/screen_apperance.cpp
-    ui/screen/screen_io.cpp
-    ui/screen/screen_io_read.cpp
-    ui/screen/screen_io_write.cpp
-    ui/screen/screen_level_list.cpp
-    ui/screen/screen_loading.cpp
-    ui/screen/screen_main_menu.cpp
-    ui/screen/screen_player_select.cpp
-    ui/screen/screen_quit.cpp
-    ui/screen/screen_setup.cpp
-    ui/screen/screen_setup_controls.cpp
-    ui/screen/screen_setup_display.cpp
-    ui/screen/screen_setup_game.cpp
-    ui/screen/screen_setup_graphics.cpp
-    ui/screen/screen_setup_sound.cpp
-    ui/screen/screen_welcome.cpp
     ui/displayinfo.cpp
     ui/displaytext.cpp
+    ui/object_interface.cpp
     ui/maindialog.cpp
     ui/mainmap.cpp
     ui/mainshort.cpp
@@ -251,6 +235,23 @@ set(BASE_SOURCES
     ui/controls/slider.cpp
     ui/controls/target.cpp
     ui/controls/window.cpp
+    ui/screen/screen.cpp
+    ui/screen/screen_apperance.cpp
+    ui/screen/screen_io.cpp
+    ui/screen/screen_io_read.cpp
+    ui/screen/screen_io_write.cpp
+    ui/screen/screen_level_list.cpp
+    ui/screen/screen_loading.cpp
+    ui/screen/screen_main_menu.cpp
+    ui/screen/screen_player_select.cpp
+    ui/screen/screen_quit.cpp
+    ui/screen/screen_setup.cpp
+    ui/screen/screen_setup_controls.cpp
+    ui/screen/screen_setup_display.cpp
+    ui/screen/screen_setup_game.cpp
+    ui/screen/screen_setup_graphics.cpp
+    ui/screen/screen_setup_sound.cpp
+    ui/screen/screen_welcome.cpp
     ${OPENAL_SRC}
 )
 

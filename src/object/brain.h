@@ -25,13 +25,8 @@
 #pragma once
 
 #include "common/event.h"
-#include "common/misc.h"
 
 #include "object/trace_color.h"
-
-#include "object/task/taskflag.h"
-#include "object/task/taskmanip.h"
-#include "object/task/taskshield.h"
 
 #include <vector>
 #include <sstream>
@@ -41,26 +36,14 @@ class COldObject;
 class CTaskExecutorObject;
 class CPhysics;
 class CMotion;
-class CTaskManager;
 class CScript;
 class CRobotMain;
-class CSoundInterface;
 class CLevelParserLine;
-
-namespace Ui
-{
-class CStudio;
-class CInterface;
-class CWindow;
-}
 
 namespace Gfx
 {
 class CEngine;
-class CTerrain;
-class CWater;
 class CCamera;
-class CParticle;
 } /* Gfx */
 
 
@@ -96,13 +79,10 @@ public:
     CBrain(COldObject* object);
     ~CBrain();
 
-    void        DeleteObject(bool bAll=false);
-
     void        SetPhysics(CPhysics* physics);
     void        SetMotion(CMotion* motion);
 
     bool        EventProcess(const Event &event);
-    bool        CreateInterface(bool bSelect);
 
     bool        Write(CLevelParserLine* line);
     bool        Read(CLevelParserLine* line);
@@ -127,69 +107,47 @@ public:
     bool        WriteProgram(Program* program, const char* filename);
     bool        ReadStack(FILE *file);
     bool        WriteStack(FILE *file);
-    std::vector<std::unique_ptr<Program>>& GetPrograms();
-
-    void        UpdateInterface(float rTime);
-    void        UpdateInterface();
 
     Program*    AddProgram();
     void        AddProgram(std::unique_ptr<Program> program);
     void        RemoveProgram(Program* program);
     Program*    CloneProgram(Program* program);
 
+    std::vector<std::unique_ptr<Program>>& GetPrograms();
+    int         GetProgramCount();
     Program*    GetProgram(int index);
     Program*    GetOrAddProgram(int index);
     int         GetProgramIndex(Program* program);
 
+    //! Start recording trace
+    void        TraceRecordStart();
+    //! Stop recording trace and generate CBot program
+    void        TraceRecordStop();
+    //! Returns true if trace recording is in progress
+    bool        IsTraceRecord();
+
 protected:
     bool        EventFrame(const Event &event);
 
-    void        StartEditScript(Program* program, char* name);
-    void        StopEditScript(bool bCancel);
-
-    void        GroundFlat();
-    void        ColorFlag(int color);
-
-    void        UpdateScript(Ui::CWindow *pw);
-    int         GetSelScript();
-    void        SetSelScript(int index);
-    void        BlinkScript(bool bEnable);
-
-    void        CheckInterface(Ui::CWindow *pw, EventType event, bool bState);
-    void        EnableInterface(Ui::CWindow *pw, EventType event, bool bState);
-    void        DeadInterface(Ui::CWindow *pw, EventType event, bool bState);
-    void        DefaultEnter(Ui::CWindow *pw, EventType event, bool bState=true);
-
-    //! Start recording trace
-    void        TraceRecordStart();
     //! Save current status to recording buffer
     void        TraceRecordFrame();
-    //! Stop recording trace and generate CBot program
-    void        TraceRecordStop();
     //! Save this operation to recording buffer
     bool        TraceRecordOper(TraceOper oper, float param);
     //! Convert this recording operation to CBot instruction
     bool        TraceRecordPut(std::stringstream& buffer, TraceOper oper, float param);
 
 protected:
+    CRobotMain*         m_main;
     Gfx::CEngine*       m_engine;
-    Gfx::CTerrain*      m_terrain;
-    Gfx::CWater*        m_water;
     Gfx::CCamera*       m_camera;
-    Gfx::CParticle*     m_particle;
+
     COldObject*         m_object;
     CTaskExecutorObject* m_taskExecutor;
     CPhysics*           m_physics;
     CMotion*            m_motion;
-    Ui::CInterface*     m_interface;
-    CRobotMain*         m_main;
-    Ui::CStudio*        m_studio;
-    CSoundInterface*    m_sound;
 
     std::vector<std::unique_ptr<Program>> m_program;
     Program*            m_currentProgram;
-
-    unsigned int        m_selScript;        // rank of the selected script
 
     bool                m_bBurn;
     bool                m_bActiveVirus;
@@ -198,15 +156,9 @@ protected:
     char                m_soluceName[50];
 
     EventType           m_buttonAxe;
-    EventType           m_manipStyle;
-    EventType           m_defaultEnter;
 
     float               m_time;
     float               m_burnTime;
-    float               m_lastUpdateTime;
-    float               m_lastAlarmTime;
-    int                 m_soundChannelAlarm;
-    int                 m_flagColor;
 
     bool                m_bTraceRecord;
     TraceOper           m_traceOper;

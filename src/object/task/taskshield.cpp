@@ -246,7 +246,7 @@ Error CTaskShield::Start(TaskShieldMode mode, float delay)
     {
         if ( m_object->GetSelect() )
         {
-            m_brain->UpdateInterface();
+            m_object->UpdateInterface();
         }
         return ERR_OK;
     }
@@ -282,7 +282,7 @@ Error CTaskShield::Start(TaskShieldMode mode, float delay)
 
         if ( m_object->GetSelect() )
         {
-            m_brain->UpdateInterface();
+            m_object->UpdateInterface();
         }
         return ERR_OK;
     }
@@ -319,7 +319,7 @@ Error CTaskShield::Start(TaskShieldMode mode, float delay)
 
     if ( m_object->GetSelect() )
     {
-        m_brain->UpdateInterface();
+        m_object->UpdateInterface();
     }
 //? m_camera->StartCentering(m_object, Math::PI*0.85f, -Math::PI*0.15f, GetRadius()+40.0f, 3.0f);
     return ERR_OK;
@@ -358,7 +358,7 @@ Error CTaskShield::Stop()
 
         if ( m_object->GetSelect() )
         {
-            m_brain->UpdateInterface();
+            m_object->UpdateInterface();
         }
         return ERR_CONTINUE;
     }
@@ -436,7 +436,7 @@ Error CTaskShield::IsEnded()
 
         if ( m_object->GetSelect() )
         {
-            m_brain->UpdateInterface();
+            m_object->UpdateInterface();
         }
         return ERR_CONTINUE;
     }

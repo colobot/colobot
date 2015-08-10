@@ -2642,7 +2642,7 @@ CObjectUPtr CObjectFactory::CreateVehicle(const ObjectCreateParams& params)
     }
     else if ( type == OBJECT_CONTROLLER )
     {
-        motion = MakeUnique<CMotionLevelController>(obj.get()); //dummy object
+        motion = MakeUnique<CMotionLevelController>(obj.get());
     }
     else
     {
