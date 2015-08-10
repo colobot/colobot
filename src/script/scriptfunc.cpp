@@ -1589,7 +1589,7 @@ bool CScriptFunctions::rProduce(CBotVar* var, CBotVar* result, int& exception, v
         type == OBJECT_BEE    ||
         type == OBJECT_WORM   )
     {
-        CObject* object = CObjectManager::GetInstancePointer()->CreateObject(pos, angle, type);
+        object = CObjectManager::GetInstancePointer()->CreateObject(pos, angle, type);
         CObjectManager::GetInstancePointer()->CreateObject(pos, angle, OBJECT_EGG, 0.0f);
         object->SetActivity(false);
     }
