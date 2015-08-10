@@ -71,7 +71,7 @@ CInput::CInput()
     m_kmodState = 0;
     m_mousePos = Math::Point();
     m_mouseButtonsState = 0;
-    std::fill_n(m_keyPresses, INPUT_SLOT_MAX, false);
+    std::fill_n(m_keyPresses, static_cast<std::size_t>(INPUT_SLOT_MAX), false);
 
     m_joystickDeadzone = 0.2f;
     SetDefaultInputBindings();
