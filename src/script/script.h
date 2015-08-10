@@ -26,7 +26,6 @@
 
 #include "CBot/CBotDll.h"
 
-#include "common/event.h"
 #include "common/global.h"
 
 
@@ -127,6 +126,5 @@ protected:
     int     m_error;        // error (0=ok)
     int     m_cursor1;
     int     m_cursor2;
-    Event   m_event;
     float   m_returnValue;
 };
