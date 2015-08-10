@@ -38,6 +38,7 @@
 #include <memory>
 
 class COldObject;
+class CTaskExecutorObject;
 class CPhysics;
 class CMotion;
 class CTaskManager;
@@ -106,15 +107,10 @@ public:
     bool        Write(CLevelParserLine* line);
     bool        Read(CLevelParserLine* line);
 
-    bool        IsBusy();
-    void        SetActivity(bool bMode);
-    bool        GetActivity();
     bool        IsProgram();
     void        RunProgram(Program* program);
     int         GetProgram();
     void        StopProgram();
-    void        StopTask();
-    void        StopSecondaryTask();
 
     bool        IntroduceVirus();
     void        SetActiveVirus(bool bActive);
@@ -133,20 +129,6 @@ public:
     bool        WriteStack(FILE *file);
     std::vector<std::unique_ptr<Program>>& GetPrograms();
 
-    Error       StartTaskTake();
-    Error       StartTaskManip(TaskManipOrder order, TaskManipArm arm);
-    Error       StartTaskFlag(TaskFlagOrder order, int rank);
-    Error       StartTaskBuild(ObjectType type);
-    Error       StartTaskSearch();
-    Error       StartTaskDeleteMark();
-    Error       StartTaskTerraform();
-    Error       StartTaskRecover();
-    Error       StartTaskShield(TaskShieldMode mode);
-    Error       StartTaskFire(float delay);
-    Error       StartTaskFireAnt(Math::Vector impact);
-    Error       StartTaskSpiderExplo();
-    Error       StartTaskGunGoal(float dirV, float dirH);
-
     void        UpdateInterface(float rTime);
     void        UpdateInterface();
 
@@ -160,14 +142,10 @@ public:
     int         GetProgramIndex(Program* program);
 
 protected:
-    Error       StartTaskPen(bool down, TraceColor color = TraceColor::Default);
-
     bool        EventFrame(const Event &event);
 
     void        StartEditScript(Program* program, char* name);
     void        StopEditScript(bool bCancel);
-
-    Error       EndedTask();
 
     void        GroundFlat();
     void        ColorFlag(int color);
@@ -200,6 +178,7 @@ protected:
     Gfx::CCamera*       m_camera;
     Gfx::CParticle*     m_particle;
     COldObject*         m_object;
+    CTaskExecutorObject* m_taskExecutor;
     CPhysics*           m_physics;
     CMotion*            m_motion;
     Ui::CInterface*     m_interface;
@@ -207,15 +186,11 @@ protected:
     Ui::CStudio*        m_studio;
     CSoundInterface*    m_sound;
 
-    CTaskManager*       m_primaryTask;
-    CTaskManager*       m_secondaryTask;
-
     std::vector<std::unique_ptr<Program>> m_program;
     Program*            m_currentProgram;
 
     unsigned int        m_selScript;        // rank of the selected script
 
-    bool                m_bActivity;
     bool                m_bBurn;
     bool                m_bActiveVirus;
 

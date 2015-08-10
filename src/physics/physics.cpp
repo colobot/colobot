@@ -75,7 +75,6 @@ CPhysics::CPhysics(COldObject* object)
     m_terrain   = CRobotMain::GetInstancePointer()->GetTerrain();
     m_camera    = CRobotMain::GetInstancePointer()->GetCamera();
     m_sound     = CApplication::GetInstancePointer()->GetSound();
-    m_brain     = nullptr;
     m_motion    = nullptr;
 
     m_type = TYPE_ROLLING;
@@ -150,10 +149,6 @@ void CPhysics::DeleteObject(bool bAll)
 
 
 
-void CPhysics::SetBrain(CBrain* brain)
-{
-    m_brain = brain;
-}
 
 void CPhysics::SetMotion(CMotion* motion)
 {
@@ -766,11 +761,6 @@ float CPhysics::GetLinLength(float dist)
 bool CPhysics::EventProcess(const Event &event)
 {
     if ( !m_object->GetEnable() )  return true;
-
-    if ( m_brain != 0 )
-    {
-        m_brain->EventProcess(event);
-    }
 
     if ( event.type == EVENT_FRAME )
     {
@@ -3822,17 +3812,6 @@ void CPhysics::WheelParticle(TraceColor color, float width)
 }
 
 
-// Creates the interface.
-
-void CPhysics::CreateInterface(bool bSelect)
-{
-    if ( m_brain != 0 )
-    {
-        m_brain->CreateInterface(bSelect);
-    }
-}
-
-
 // Returns an error related to the general state.
 
 Error CPhysics::GetError()
@@ -3848,9 +3827,12 @@ Error CPhysics::GetError()
          type == OBJECT_APOLLO2  ||
          type == OBJECT_MOBILEdr )  return ERR_OK;
 
-    if ( m_brain != 0 && m_brain->GetActiveVirus() )
+    if (m_object->Implements(ObjectInterfaceType::Programmable))
     {
-        return ERR_VEH_VIRUS;
+        if ( dynamic_cast<CProgrammableObject*>(m_object)->GetBrain()->GetActiveVirus() )
+        {
+            return ERR_VEH_VIRUS;
+        }
     }
 
     if (m_object->Implements(ObjectInterfaceType::Powered))

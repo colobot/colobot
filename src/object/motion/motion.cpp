@@ -51,7 +51,6 @@ CMotion::CMotion(COldObject* object)
 
     m_object    = object;
     m_physics   = 0;
-    m_brain     = 0;
 
     m_actionType = -1;
     m_actionTime = 0.0f;
@@ -71,11 +70,6 @@ CMotion::~CMotion()
 void CMotion::SetPhysics(CPhysics* physics)
 {
     m_physics = physics;
-}
-
-void CMotion::SetBrain(CBrain* brain)
-{
-    m_brain = brain;
 }
 
 // Management of an event.
@@ -219,4 +213,3 @@ Math::Vector CMotion::GetTilt()
 {
     return m_inclinaison;
 }
-

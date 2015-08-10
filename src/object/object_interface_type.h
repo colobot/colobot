@@ -36,6 +36,7 @@ enum class ObjectInterfaceType
     Interactive, //!< interactive objects can process events from event loop
     Transportable, //!< objects that can be carried by robots or astronaut
     Programmable, //!< objects that can be programmed in CBOT
+    TaskExecutor, //!< objects that can execute tasks (CTask classes)
     Jostleable, //!< object that can be jostled
     Carrier, //!< object that can carry other objects
     Powered, //!< object powered with power cell

@@ -35,11 +35,10 @@
 #include "object/old_object.h"
 #include "object/robotmain.h"
 
-#include "object/task/taskmanager.h"
-
 #include "script/cbottoken.h"
 
 #include "ui/displaytext.h"
+
 #include "ui/controls/edit.h"
 #include "ui/controls/interface.h"
 #include "ui/controls/list.h"
@@ -51,19 +50,20 @@ const int CBOT_IPF = 100;       // CBOT: default number of instructions / frame
 
 // Object's constructor.
 
-CScript::CScript(COldObject* object, CTaskManager** secondaryTask)
+CScript::CScript(COldObject* object)
 {
+    m_object        = object;
+    assert(m_object->Implements(ObjectInterfaceType::TaskExecutor));
+    m_taskExecutor  = dynamic_cast<CTaskExecutorObject*>(m_object);
+
     m_engine        = Gfx::CEngine::GetInstancePointer();
     m_main          = CRobotMain::GetInstancePointer();
     m_terrain       = m_main->GetTerrain();
     m_water         = m_engine->GetWater();
-    m_botProg       = nullptr;
-    m_object        = object;
-    m_primaryTask   = nullptr;
-    m_secondaryTask = secondaryTask;
+    m_interface     = m_main->GetInterface();
+    m_pause         = CPauseManager::GetInstancePointer();
 
-    m_interface = m_main->GetInterface();
-    m_pause = CPauseManager::GetInstancePointer();
+    m_botProg       = nullptr;
 
     m_ipf = CBOT_IPF;
     m_errMode = ERM_STOP;
@@ -85,9 +85,6 @@ CScript::~CScript()
 {
     delete m_botProg;
     m_botProg = nullptr;
-
-    delete m_primaryTask;
-    m_primaryTask = nullptr;
 
     delete[] m_script;
     m_script = nullptr;
@@ -358,8 +355,7 @@ bool CScript::Run()
 
     if ( m_bStepMode )  // step by step mode?
     {
-        Event newEvent;
-        Step(newEvent);
+        Step();
     }
 
     return true;
@@ -368,12 +364,10 @@ bool CScript::Run()
 // Continues the execution of current program.
 // Returns true when execution is finished.
 
-bool CScript::Continue(const Event &event)
+bool CScript::Continue()
 {
     if( m_botProg == 0 )  return true;
     if ( !m_bRun )  return true;
-
-    m_event = event.Clone();
 
     if ( m_bStepMode )  // step by step mode?
     {
@@ -442,7 +436,7 @@ bool CScript::Continue(const Event &event)
 // Continues the execution of current program.
 // Returns true when execution is finished.
 
-bool CScript::Step(const Event &event)
+bool CScript::Step()
 {
     if( m_botProg == 0 )  return true;
     if ( !m_bRun )  return true;
@@ -451,8 +445,6 @@ bool CScript::Step(const Event &event)
     // ??? m_engine->SetPause(false);
     // TODO: m_app StepSimulation??? m_engine->StepSimulation(0.01f);  // advance of 10ms
     // ??? m_engine->SetPause(true);
-
-    m_event = event.Clone();
 
     if ( m_botProg->Run(m_object, 0) )  // step mode
     {
@@ -497,13 +489,6 @@ void CScript::Stop()
     if( m_botProg != 0 )
     {
         m_botProg->Stop();
-    }
-
-    if ( m_primaryTask != 0 )
-    {
-        m_primaryTask->Abort();
-        delete m_primaryTask;
-        m_primaryTask = 0;
     }
 
     m_bRun = false;

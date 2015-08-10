@@ -171,7 +171,6 @@ public:
     float       GetMotorSpeedY();
     float       GetMotorSpeedZ();
 
-    void        CreateInterface(bool bSelect);
     Error       GetError();
 
     float       GetFallingHeight();

@@ -2651,9 +2651,7 @@ CObjectUPtr CObjectFactory::CreateVehicle(const ObjectCreateParams& params)
 
     brain->SetMotion(motion.get());
     brain->SetPhysics(physics.get());
-    motion->SetBrain(brain.get());
     motion->SetPhysics(physics.get());
-    physics->SetBrain(brain.get());
     physics->SetMotion(motion.get());
 
     motion->Create(pos, angle, type, power, m_oldModelManager);
@@ -2704,11 +2702,9 @@ CObjectUPtr CObjectFactory::CreateInsect(const ObjectCreateParams& params)
     }
     assert(motion != nullptr);
 
-    physics->SetBrain(brain.get());
     physics->SetMotion(motion.get());
     brain->SetMotion(motion.get());
     brain->SetPhysics(physics.get());
-    motion->SetBrain(brain.get());
     motion->SetPhysics(physics.get());
 
     motion->Create(pos, angle, type, 0.0f, m_oldModelManager);

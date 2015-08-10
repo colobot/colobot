@@ -45,6 +45,8 @@
 #include "object/auto/autobase.h"
 #include "object/auto/autofactory.h"
 
+#include "object/interface/task_executor_object.h"
+
 #include "object/level/parser.h"
 
 #include "object/motion/motionvehicle.h"
@@ -1201,11 +1203,10 @@ bool CScriptFunctions::Process(CScript* script, CBotVar* result, int &exception)
 {
     Error       err;
 
-    err = script->m_primaryTask->IsEnded();
+    err = script->m_taskExecutor->GetForegroundTask()->IsEnded();
     if ( err != ERR_CONTINUE )  // task terminated?
     {
-        delete script->m_primaryTask;
-        script->m_primaryTask = 0;
+        script->m_taskExecutor->StopForegroundTask();
 
         script->m_bContinue = false;
 
@@ -1219,7 +1220,6 @@ bool CScriptFunctions::Process(CScript* script, CBotVar* result, int &exception)
         return true;  // it's all over
     }
 
-    script->m_primaryTask->EventProcess(script->m_event);
     script->m_bContinue = true;
     return false;  // not done
 }
@@ -1265,7 +1265,7 @@ bool CScriptFunctions::rDetect(CBotVar* var, CBotVar* result, int& exception, vo
 
     exception = 0;
 
-    if ( script->m_primaryTask == 0 )  // no task in progress?
+    if ( !script->m_taskExecutor->IsForegroundTask() )  // no task in progress?
     {
         type    = OBJECT_NULL;
         array   = 0;
@@ -1314,12 +1314,10 @@ bool CScriptFunctions::rDetect(CBotVar* var, CBotVar* result, int& exception, vo
             script->m_returnValue = 1.0f;
         }
 
-        script->m_primaryTask = new CTaskManager(script->m_object);
-        err = script->m_primaryTask->StartTaskWait(0.3f);
+        err = script->m_taskExecutor->StartTaskWait(0.3f);
         if ( err != ERR_OK )
         {
-            delete script->m_primaryTask;
-            script->m_primaryTask = 0;
+            script->m_taskExecutor->StopForegroundTask();
             result->SetValInt(err);  // shows the error
             if ( script->m_errMode == ERM_STOP )
             {
@@ -1441,20 +1439,15 @@ bool CScriptFunctions::rBuild(CBotVar* var, CBotVar* result, int& exception, voi
         if (pThis->GetIgnoreBuildCheck())
             err = ERR_OK;
 
-        if (err == ERR_OK && script->m_primaryTask == 0) // if we can build and no task is present
+        if (err == ERR_OK && !script->m_taskExecutor->IsForegroundTask()) // if we can build
         {
-            script->m_primaryTask = new CTaskManager(script->m_object);
-            err = script->m_primaryTask->StartTaskBuild(category);
+            err = script->m_taskExecutor->StartTaskBuild(category);
 
             if (err != ERR_OK)
             {
-                delete script->m_primaryTask;
-                script->m_primaryTask = 0;
+                script->m_taskExecutor->StopForegroundTask();
             }
         }
-        // When script is waiting for finishing this task, it sets ERR_OK, and continues executing Process
-        // without creating new task. I think, there was a problem with previous version in release configuration
-        // It did not init error variable in this situation, and code tried to use variable with trash inside
     }
 
     if ( err != ERR_OK )
@@ -1893,15 +1886,13 @@ bool CScriptFunctions::rWait(CBotVar* var, CBotVar* result, int& exception, void
 
     exception = 0;
 
-    if ( script->m_primaryTask == 0 )  // no task in progress?
+    if ( !script->m_taskExecutor->IsForegroundTask() )  // no task in progress?
     {
-        script->m_primaryTask = new CTaskManager(script->m_object);
         value = var->GetValFloat();
-        err = script->m_primaryTask->StartTaskWait(value);
+        err = script->m_taskExecutor->StartTaskWait(value);
         if ( err != ERR_OK )
         {
-            delete script->m_primaryTask;
-            script->m_primaryTask = 0;
+            script->m_taskExecutor->StopForegroundTask();
             result->SetValInt(err);  // shows the error
             if ( script->m_errMode == ERM_STOP )
             {
@@ -1924,15 +1915,13 @@ bool CScriptFunctions::rMove(CBotVar* var, CBotVar* result, int& exception, void
 
     exception = 0;
 
-    if ( script->m_primaryTask == 0 )  // no task in progress?
+    if ( !script->m_taskExecutor->IsForegroundTask() )  // no task in progress?
     {
-        script->m_primaryTask = new CTaskManager(script->m_object);
         value = var->GetValFloat();
-        err = script->m_primaryTask->StartTaskAdvance(value*g_unit);
+        err = script->m_taskExecutor->StartTaskAdvance(value*g_unit);
         if ( err != ERR_OK )
         {
-            delete script->m_primaryTask;
-            script->m_primaryTask = 0;
+            script->m_taskExecutor->StopForegroundTask();
             result->SetValInt(err);  // shows the error
             if ( script->m_errMode == ERM_STOP )
             {
@@ -1955,15 +1944,13 @@ bool CScriptFunctions::rTurn(CBotVar* var, CBotVar* result, int& exception, void
 
     exception = 0;
 
-    if ( script->m_primaryTask == 0 )  // no task in progress?
+    if ( !script->m_taskExecutor->IsForegroundTask() )  // no task in progress?
     {
-        script->m_primaryTask = new CTaskManager(script->m_object);
         value = var->GetValFloat();
-        err = script->m_primaryTask->StartTaskTurn(-value*Math::PI/180.0f);
+        err = script->m_taskExecutor->StartTaskTurn(-value*Math::PI/180.0f);
         if ( err != ERR_OK )
         {
-            delete script->m_primaryTask;
-            script->m_primaryTask = 0;
+            script->m_taskExecutor->StopForegroundTask();
             result->SetValInt(err);  // shows the error
             if ( script->m_errMode == ERM_STOP )
             {
@@ -2015,9 +2002,8 @@ bool CScriptFunctions::rGoto(CBotVar* var, CBotVar* result, int& exception, void
 
     exception = 0;
 
-    if ( script->m_primaryTask == 0 )  // no task in progress?
+    if ( !script->m_taskExecutor->IsForegroundTask() )  // no task in progress?
     {
-        script->m_primaryTask = new CTaskManager(script->m_object);
         if ( !GetPoint(var, exception, pos) )  return true;
 
         goal  = TGG_DEFAULT;
@@ -2041,11 +2027,10 @@ bool CScriptFunctions::rGoto(CBotVar* var, CBotVar* result, int& exception, void
             }
         }
 
-        err = script->m_primaryTask->StartTaskGoto(pos, altitude, goal, crash);
+        err = script->m_taskExecutor->StartTaskGoto(pos, altitude, goal, crash);
         if ( err != ERR_OK )
         {
-            delete script->m_primaryTask;
-            script->m_primaryTask = 0;
+            script->m_taskExecutor->StopForegroundTask();
             result->SetValInt(err);  // shows the error
             if ( script->m_errMode == ERM_STOP )
             {
@@ -2081,9 +2066,8 @@ bool CScriptFunctions::rGrab(CBotVar* var, CBotVar* result, int& exception, void
 
     exception = 0;
 
-    if ( script->m_primaryTask == 0 )  // no task in progress?
+    if ( !script->m_taskExecutor->IsForegroundTask() )  // no task in progress?
     {
-        script->m_primaryTask = new CTaskManager(script->m_object);
         if ( var == 0 )
         {
             type = TMA_FFRONT;
@@ -2097,17 +2081,16 @@ bool CScriptFunctions::rGrab(CBotVar* var, CBotVar* result, int& exception, void
         if ( oType == OBJECT_HUMAN ||
             oType == OBJECT_TECH  )
         {
-            err = script->m_primaryTask->StartTaskTake();
+            err = script->m_taskExecutor->StartTaskTake();
         }
         else
         {
-            err = script->m_primaryTask->StartTaskManip(TMO_GRAB, type);
+            err = script->m_taskExecutor->StartTaskManip(TMO_GRAB, type);
         }
 
         if ( err != ERR_OK )
         {
-            delete script->m_primaryTask;
-            script->m_primaryTask = 0;
+            script->m_taskExecutor->StopForegroundTask();
             result->SetValInt(err);  // shows the error
             if ( script->m_errMode == ERM_STOP )
             {
@@ -2132,9 +2115,8 @@ bool CScriptFunctions::rDrop(CBotVar* var, CBotVar* result, int& exception, void
 
     exception = 0;
 
-    if ( script->m_primaryTask == 0 )  // no task in progress?
+    if ( !script->m_taskExecutor->IsForegroundTask() )  // no task in progress?
     {
-        script->m_primaryTask = new CTaskManager(script->m_object);
         if ( var == 0 )  type = TMA_FFRONT;
         else             type = static_cast<TaskManipArm>(var->GetValInt());
 
@@ -2142,17 +2124,16 @@ bool CScriptFunctions::rDrop(CBotVar* var, CBotVar* result, int& exception, void
         if ( oType == OBJECT_HUMAN ||
             oType == OBJECT_TECH  )
         {
-            err = script->m_primaryTask->StartTaskTake();
+            err = script->m_taskExecutor->StartTaskTake();
         }
         else
         {
-            err = script->m_primaryTask->StartTaskManip(TMO_DROP, type);
+            err = script->m_taskExecutor->StartTaskManip(TMO_DROP, type);
         }
 
         if ( err != ERR_OK )
         {
-            delete script->m_primaryTask;
-            script->m_primaryTask = 0;
+            script->m_taskExecutor->StopForegroundTask();
             result->SetValInt(err);  // shows the error
             if ( script->m_errMode == ERM_STOP )
             {
@@ -2174,14 +2155,12 @@ bool CScriptFunctions::rSniff(CBotVar* var, CBotVar* result, int& exception, voi
 
     exception = 0;
 
-    if ( script->m_primaryTask == 0 )  // no task in progress?
+    if ( !script->m_taskExecutor->IsForegroundTask() )  // no task in progress?
     {
-        script->m_primaryTask = new CTaskManager(script->m_object);
-        err = script->m_primaryTask->StartTaskSearch();
+        err = script->m_taskExecutor->StartTaskSearch();
         if ( err != ERR_OK )
         {
-            delete script->m_primaryTask;
-            script->m_primaryTask = 0;
+            script->m_taskExecutor->StopForegroundTask();
             result->SetValInt(err);  // shows the error
             if ( script->m_errMode == ERM_STOP )
             {
@@ -2223,10 +2202,8 @@ bool CScriptFunctions::rReceive(CBotVar* var, CBotVar* result, int& exception, v
 
     exception = 0;
 
-    if ( script->m_primaryTask == 0 )  // no task in progress?
+    if ( !script->m_taskExecutor->IsForegroundTask() )  // no task in progress?
     {
-        script->m_primaryTask = new CTaskManager(script->m_object);
-
         cbs = var->GetValString();
         p = cbs;
         var = var->GetNext();
@@ -2238,11 +2215,10 @@ bool CScriptFunctions::rReceive(CBotVar* var, CBotVar* result, int& exception, v
             var = var->GetNext();
         }
 
-        err = script->m_primaryTask->StartTaskInfo(static_cast<const char*>(p), 0.0f, power, false);
+        err = script->m_taskExecutor->StartTaskInfo(static_cast<const char*>(p), 0.0f, power, false);
         if ( err != ERR_OK )
         {
-            delete script->m_primaryTask;
-            script->m_primaryTask = 0;
+            script->m_taskExecutor->StopForegroundTask();
             result->SetInit(CBotVar::InitType::IS_NAN);
             return true;
         }
@@ -2293,10 +2269,8 @@ bool CScriptFunctions::rSend(CBotVar* var, CBotVar* result, int& exception, void
 
     exception = 0;
 
-    if ( script->m_primaryTask == 0 )  // no task in progress?
+    if ( !script->m_taskExecutor->IsForegroundTask() )  // no task in progress?
     {
-        script->m_primaryTask = new CTaskManager(script->m_object);
-
         cbs = var->GetValString();
         p = cbs;
         var = var->GetNext();
@@ -2311,11 +2285,10 @@ bool CScriptFunctions::rSend(CBotVar* var, CBotVar* result, int& exception, void
             var = var->GetNext();
         }
 
-        err = script->m_primaryTask->StartTaskInfo(static_cast<const char*>(p), value, power, true);
+        err = script->m_taskExecutor->StartTaskInfo(static_cast<const char*>(p), value, power, true);
         if ( err != ERR_OK )
         {
-            delete script->m_primaryTask;
-            script->m_primaryTask = 0;
+            script->m_taskExecutor->StopForegroundTask();
             result->SetValInt(err);  // shows the error
             if ( script->m_errMode == ERM_STOP )
             {
@@ -2440,14 +2413,12 @@ bool CScriptFunctions::rThump(CBotVar* var, CBotVar* result, int& exception, voi
 
     exception = 0;
 
-    if ( script->m_primaryTask == 0 )  // no task in progress?
+    if ( !script->m_taskExecutor->IsForegroundTask() )  // no task in progress?
     {
-        script->m_primaryTask = new CTaskManager(script->m_object);
-        err = script->m_primaryTask->StartTaskTerraform();
+        err = script->m_taskExecutor->StartTaskTerraform();
         if ( err != ERR_OK )
         {
-            delete script->m_primaryTask;
-            script->m_primaryTask = 0;
+            script->m_taskExecutor->StopForegroundTask();
             result->SetValInt(err);  // shows the error
             if ( script->m_errMode == ERM_STOP )
             {
@@ -2469,14 +2440,12 @@ bool CScriptFunctions::rRecycle(CBotVar* var, CBotVar* result, int& exception, v
 
     exception = 0;
 
-    if ( script->m_primaryTask == 0 )  // no task in progress?
+    if ( !script->m_taskExecutor->IsForegroundTask() )  // no task in progress?
     {
-        script->m_primaryTask = new CTaskManager(script->m_object);
-        err = script->m_primaryTask->StartTaskRecover();
+        err = script->m_taskExecutor->StartTaskRecover();
         if ( err != ERR_OK )
         {
-            delete script->m_primaryTask;
-            script->m_primaryTask = 0;
+            script->m_taskExecutor->StopForegroundTask();
             result->SetValInt(err);  // shows the error
             if ( script->m_errMode == ERM_STOP )
             {
@@ -2535,7 +2504,7 @@ bool CScriptFunctions::rShield(CBotVar* var, CBotVar* result, int& exception, vo
     if ( radius > 25.0f )  radius = 25.0f;
     radius = (radius-10.0f)/15.0f;
 
-    if ( *script->m_secondaryTask == 0 )  // shield folds?
+    if ( !script->m_taskExecutor->IsBackgroundTask() )  // shield folds?
     {
         if ( oper == 0.0f )  // down?
         {
@@ -2544,12 +2513,10 @@ bool CScriptFunctions::rShield(CBotVar* var, CBotVar* result, int& exception, vo
         else    // up ?
         {
             pThis->SetParam(radius);
-            *script->m_secondaryTask = new CTaskManager(script->m_object);
-            err = (*script->m_secondaryTask)->StartTaskShield(TSM_UP, 1000.0f);
+            err = script->m_taskExecutor->StartTaskShield(TSM_UP, 1000.0f);
             if ( err != ERR_OK )
             {
-                delete *script->m_secondaryTask;
-                *script->m_secondaryTask = 0;
+                script->m_taskExecutor->StopBackgroundTask();
                 result->SetValInt(err);  // shows the error
             }
         }
@@ -2558,13 +2525,13 @@ bool CScriptFunctions::rShield(CBotVar* var, CBotVar* result, int& exception, vo
     {
         if ( oper == 0.0f )  // down?
         {
-            (*script->m_secondaryTask)->StartTaskShield(TSM_DOWN, 0.0f);
+            script->m_taskExecutor->StartTaskShield(TSM_DOWN, 0.0f);
         }
         else    // up?
         {
             //?         result->SetValInt(1);  // shows the error
             pThis->SetParam(radius);
-            (*script->m_secondaryTask)->StartTaskShield(TSM_UPDATE, 0.0f);
+            script->m_taskExecutor->StartTaskShield(TSM_UPDATE, 0.0f);
         }
     }
 
@@ -2616,10 +2583,8 @@ bool CScriptFunctions::rFire(CBotVar* var, CBotVar* result, int& exception, void
 
     exception = 0;
 
-    if ( script->m_primaryTask == 0 )  // no task in progress?
+    if ( !script->m_taskExecutor->IsForegroundTask() )  // no task in progress?
     {
-        script->m_primaryTask = new CTaskManager(script->m_object);
-
         type = pThis->GetType();
 
         if ( type == OBJECT_ANT )
@@ -2627,24 +2592,23 @@ bool CScriptFunctions::rFire(CBotVar* var, CBotVar* result, int& exception, void
             if ( !GetPoint(var, exception, impact) )  return true;
             float waterLevel = Gfx::CEngine::GetInstancePointer()->GetWater()->GetLevel();
             impact.y += waterLevel;
-            err = script->m_primaryTask->StartTaskFireAnt(impact);
+            err = script->m_taskExecutor->StartTaskFireAnt(impact);
         }
         else if ( type == OBJECT_SPIDER )
         {
-            err = script->m_primaryTask->StartTaskSpiderExplo();
+            err = script->m_taskExecutor->StartTaskSpiderExplo();
         }
         else
         {
             if ( var == 0 )  delay = 0.0f;
             else             delay = var->GetValFloat();
             if ( delay < 0.0f ) delay = -delay;
-            err = script->m_primaryTask->StartTaskFire(delay);
+            err = script->m_taskExecutor->StartTaskFire(delay);
         }
 
         if ( err != ERR_OK )
         {
-            delete script->m_primaryTask;
-            script->m_primaryTask = 0;
+            script->m_taskExecutor->StopForegroundTask();
             result->SetValInt(err);  // shows the error
             return true;
         }
@@ -2679,21 +2643,19 @@ bool CScriptFunctions::rAim(CBotVar* var, CBotVar* result, int& exception, void*
 
     exception = 0;
 
-    if ( script->m_primaryTask == 0 )  // no task in progress?
+    if ( !script->m_taskExecutor->IsForegroundTask() )  // no task in progress?
     {
-        script->m_primaryTask = new CTaskManager(script->m_object);
         x = var->GetValFloat();
         var = var->GetNext();
         var == 0 ? y=0.0f : y=var->GetValFloat();
-        err = script->m_primaryTask->StartTaskGunGoal(x*Math::PI/180.0f, y*Math::PI/180.0f);
+        err = script->m_taskExecutor->StartTaskGunGoal(x*Math::PI/180.0f, y*Math::PI/180.0f);
         if ( err == ERR_AIM_IMPOSSIBLE )
         {
             result->SetValInt(err);  // shows the error
         }
         else if ( err != ERR_OK )
         {
-            delete script->m_primaryTask;
-            script->m_primaryTask = 0;
+            script->m_taskExecutor->StopForegroundTask();
             result->SetValInt(err);  // shows the error
             return true;
         }
@@ -2959,14 +2921,12 @@ bool CScriptFunctions::rPenDown(CBotVar* var, CBotVar* result, int& exception, v
 
     if ( pThis->GetType() == OBJECT_MOBILEdr )
     {
-        if ( script->m_primaryTask == 0 )  // no task in progress?
+        if ( !script->m_taskExecutor->IsForegroundTask() )  // no task in progress?
         {
-            script->m_primaryTask = new CTaskManager(script->m_object);
-            err = script->m_primaryTask->StartTaskPen(motionVehicle->GetTraceDown(), motionVehicle->GetTraceColor());
+            err = script->m_taskExecutor->StartTaskPen(motionVehicle->GetTraceDown(), motionVehicle->GetTraceColor());
             if ( err != ERR_OK )
             {
-                delete script->m_primaryTask;
-                script->m_primaryTask = 0;
+                script->m_taskExecutor->StopForegroundTask();
                 result->SetValInt(err);  // shows the error
                 if ( script->m_errMode == ERM_STOP )
                 {
@@ -3001,16 +2961,14 @@ bool CScriptFunctions::rPenUp(CBotVar* var, CBotVar* result, int& exception, voi
 
     if ( pThis->GetType() == OBJECT_MOBILEdr )
     {
-        if ( script->m_primaryTask == 0 )  // no task in progress?
+        if ( !script->m_taskExecutor->IsForegroundTask() )  // no task in progress?
         {
             motionVehicle->SetTraceDown(false);
 
-            script->m_primaryTask = new CTaskManager(script->m_object);
-            err = script->m_primaryTask->StartTaskPen(motionVehicle->GetTraceDown(), motionVehicle->GetTraceColor());
+            err = script->m_taskExecutor->StartTaskPen(motionVehicle->GetTraceDown(), motionVehicle->GetTraceColor());
             if ( err != ERR_OK )
             {
-                delete script->m_primaryTask;
-                script->m_primaryTask = 0;
+                script->m_taskExecutor->StopForegroundTask();
                 result->SetValInt(err);  // shows the error
                 if ( script->m_errMode == ERM_STOP )
                 {
@@ -3049,14 +3007,12 @@ bool CScriptFunctions::rPenColor(CBotVar* var, CBotVar* result, int& exception, 
 
     if ( pThis->GetType() == OBJECT_MOBILEdr )
     {
-        if ( script->m_primaryTask == 0 )  // no task in progress?
+        if ( !script->m_taskExecutor->IsForegroundTask() )  // no task in progress?
         {
-            script->m_primaryTask = new CTaskManager(script->m_object);
-            err = script->m_primaryTask->StartTaskPen(motionVehicle->GetTraceDown(), motionVehicle->GetTraceColor());
+            err = script->m_taskExecutor->StartTaskPen(motionVehicle->GetTraceDown(), motionVehicle->GetTraceColor());
             if ( err != ERR_OK )
             {
-                delete script->m_primaryTask;
-                script->m_primaryTask = 0;
+                script->m_taskExecutor->StopForegroundTask();
                 result->SetValInt(err);  // shows the error
                 if ( script->m_errMode == ERM_STOP )
                 {

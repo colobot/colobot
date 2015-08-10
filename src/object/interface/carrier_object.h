@@ -22,8 +22,6 @@
 #include "object/object.h"
 #include "object/object_interface_type.h"
 
-struct Event;
-
 /**
  * \class CCarrierObject
  * \brief Interface for carrier objects

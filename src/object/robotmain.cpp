@@ -4944,10 +4944,9 @@ bool CRobotMain::IsBusy()
 
     for (CObject* obj : m_objMan->GetAllObjects())
     {
-        if (! obj->Implements(ObjectInterfaceType::Programmable)) continue;
+        if (! obj->Implements(ObjectInterfaceType::TaskExecutor)) continue;
 
-        CBrain* brain = dynamic_cast<CProgrammableObject*>(obj)->GetBrain();
-        if (brain->IsBusy()) return true;
+        if (dynamic_cast<CTaskExecutorObject*>(obj)->IsForegroundTask()) return true;
     }
     return false;
 }

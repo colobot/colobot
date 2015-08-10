@@ -32,7 +32,7 @@
 
 
 class COldObject;
-class CTaskManager;
+class CTaskExecutorObject;
 class CRobotMain;
 class CPauseManager;
 class CScriptFunctions;
@@ -60,7 +60,7 @@ class CScript
 {
 friend class CScriptFunctions;
 public:
-    CScript(COldObject* object, CTaskManager** secondaryTask);
+    CScript(COldObject* object);
     ~CScript();
 
     void        PutScript(Ui::CEdit* edit, const char* name);
@@ -71,8 +71,8 @@ public:
 
     void        SetStepMode(bool bStep);
     bool        Run();
-    bool        Continue(const Event &event);
-    bool        Step(const Event &event);
+    bool        Continue();
+    bool        Step();
     void        Stop();
     bool        IsRunning();
     bool        IsContinue();
@@ -101,15 +101,15 @@ protected:
     bool        Compile();
 
 protected:
+    COldObject*         m_object;
+    CTaskExecutorObject* m_taskExecutor;
+
     Gfx::CEngine*       m_engine;
-    Ui::CInterface*         m_interface;
+    Ui::CInterface*     m_interface;
     CBotProgram*        m_botProg;
     CRobotMain*         m_main;
     Gfx::CTerrain*      m_terrain;
     Gfx::CWater*        m_water;
-    CTaskManager*       m_primaryTask;
-    CTaskManager**      m_secondaryTask;
-    COldObject*            m_object;
     CPauseManager*      m_pause;
 
     int     m_ipf;          // number of instructions/second
@@ -130,4 +130,3 @@ protected:
     Event   m_event;
     float   m_returnValue;
 };
-

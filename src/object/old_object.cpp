@@ -51,6 +51,8 @@
 #include "object/motion/motion.h"
 #include "object/motion/motionvehicle.h"
 
+#include "object/task/taskmanager.h"
+
 #include "physics/physics.h"
 
 #include "script/cbottoken.h"
@@ -86,6 +88,7 @@ COldObject::COldObject(int id)
     : CObject(id, OBJECT_NULL)
     , CInteractiveObject(m_implementedInterfaces)
     , CTransportableObject(m_implementedInterfaces)
+    , CTaskExecutorObject(m_implementedInterfaces)
     , CProgrammableObject(m_implementedInterfaces)
     , CJostleableObject(m_implementedInterfaces)
     , CCarrierObject(m_implementedInterfaces)
@@ -183,6 +186,8 @@ COldObject::COldObject(int id)
     }
 
     m_cmdLine.clear();
+
+    m_activity = true;
 
     DeleteAllCrashSpheres();
 
@@ -1819,6 +1824,16 @@ bool COldObject::EventProcess(const Event &event)
 #endif
     }
 
+    if ( m_foregroundTask != nullptr )
+    {
+        m_foregroundTask->EventProcess(event);
+    }
+
+    if ( m_backgroundTask != nullptr )
+    {
+        m_backgroundTask->EventProcess(event);
+    }
+
     if ( m_physics != nullptr )
     {
         if ( !m_physics->EventProcess(event) )  // object destroyed?
@@ -1833,6 +1848,11 @@ bool COldObject::EventProcess(const Event &event)
             }
             return false;
         }
+    }
+
+    if ( m_brain.get() != nullptr )
+    {
+        m_brain->EventProcess(event);
     }
 
     if ( m_auto != nullptr )
@@ -1871,7 +1891,7 @@ bool COldObject::EventFrame(const Event &event)
         return true;
     }
 
-    if ( m_type != OBJECT_SHOW && m_engine->GetPause() )  return true;
+    if ( m_engine->GetPause() && m_type != OBJECT_SHOW )  return true;
 
     m_aTime += event.rTime;
     m_shotTime += event.rTime;
@@ -1896,6 +1916,9 @@ bool COldObject::EventFrame(const Event &event)
             m_main->DisplayError(INFO_FINDING, this);
         }
     }
+
+    // NOTE: This MUST be called AFTER CScriptFunctions::Process, otherwise weird stuff may happen to scripts
+    EndedTask();
 
     return true;
 }
@@ -2449,9 +2472,9 @@ void COldObject::SetSelect(bool bMode, bool bDisplayError)
 
     m_bSelect = bMode;
 
-    if ( m_physics != nullptr )
+    if ( m_brain != nullptr )
     {
-        m_physics->CreateInterface(m_bSelect);
+        m_brain->CreateInterface(m_bSelect);
     }
 
     if ( m_auto != nullptr )
@@ -2503,26 +2526,6 @@ void COldObject::SetSelectable(bool bMode)
 bool COldObject::GetSelectable()
 {
     return m_bSelectable;
-}
-
-
-// Management of the activities of an object.
-
-void COldObject::SetActivity(bool bMode)
-{
-    if ( m_brain != nullptr )
-    {
-        m_brain->SetActivity(bMode);
-    }
-}
-
-bool COldObject::GetActivity()
-{
-    if ( m_brain != nullptr )
-    {
-        return m_brain->GetActivity();
-    }
-    return false;
 }
 
 
@@ -3150,4 +3153,321 @@ Math::Vector COldObject::GetScale() const
 void COldObject::SetScale(const Math::Vector& scale)
 {
     SetPartScale(0, scale);
+}
+
+// Move the manipulator arm.
+
+Error COldObject::StartTaskTake()
+{
+    StopForegroundTask();
+
+    m_foregroundTask = MakeUnique<CTaskManager>(this);
+    Error err = m_foregroundTask->StartTaskTake();
+    m_brain->UpdateInterface();
+    return err;
+}
+
+// Move the manipulator arm.
+
+Error COldObject::StartTaskManip(TaskManipOrder order, TaskManipArm arm)
+{
+    StopForegroundTask();
+
+    m_foregroundTask = MakeUnique<CTaskManager>(this);
+    Error err = m_foregroundTask->StartTaskManip(order, arm);
+    m_brain->UpdateInterface();
+    return err;
+}
+
+// Puts or removes a flag.
+
+Error COldObject::StartTaskFlag(TaskFlagOrder order, int rank)
+{
+    StopForegroundTask();
+
+    m_foregroundTask = MakeUnique<CTaskManager>(this);
+    Error err = m_foregroundTask->StartTaskFlag(order, rank);
+    m_brain->UpdateInterface();
+    return err;
+}
+
+// Built a building.
+
+Error COldObject::StartTaskBuild(ObjectType type)
+{
+    StopForegroundTask();
+
+    m_foregroundTask = MakeUnique<CTaskManager>(this);
+    Error err = m_foregroundTask->StartTaskBuild(type);
+    m_brain->UpdateInterface();
+    return err;
+}
+
+// Probe the ground.
+
+Error COldObject::StartTaskSearch()
+{
+    StopForegroundTask();
+
+    m_foregroundTask = MakeUnique<CTaskManager>(this);
+    Error err = m_foregroundTask->StartTaskSearch();
+    m_brain->UpdateInterface();
+    return err;
+}
+
+// Delete mark on ground
+
+Error COldObject::StartTaskDeleteMark()
+{
+    StopForegroundTask();
+
+    m_foregroundTask = MakeUnique<CTaskManager>(this);
+    Error err = m_foregroundTask->StartTaskDeleteMark();
+    m_brain->UpdateInterface();
+    return err;
+}
+
+
+// Terraformed the ground.
+
+Error COldObject::StartTaskTerraform()
+{
+    StopForegroundTask();
+
+    m_foregroundTask = MakeUnique<CTaskManager>(this);
+    Error err = m_foregroundTask->StartTaskTerraform();
+    m_brain->UpdateInterface();
+    return err;
+}
+
+// Change pencil.
+
+Error COldObject::StartTaskPen(bool down, TraceColor color)
+{
+    auto motionVehicle = dynamic_cast<CMotionVehicle*>(m_motion.get());
+    assert(motionVehicle != nullptr);
+
+    if (color == TraceColor::Default)
+        color = motionVehicle->GetTraceColor();
+
+    motionVehicle->SetTraceDown(down);
+    motionVehicle->SetTraceColor(color);
+
+    m_physics->SetMotorSpeedX(0.0f);
+    m_physics->SetMotorSpeedY(0.0f);
+    m_physics->SetMotorSpeedZ(0.0f);
+
+    StopForegroundTask();
+
+    m_foregroundTask = MakeUnique<CTaskManager>(this);
+    Error err = m_foregroundTask->StartTaskPen(down, color);
+    m_brain->UpdateInterface();
+    return err;
+}
+
+// Recovers a ruin.
+
+Error COldObject::StartTaskRecover()
+{
+    StopForegroundTask();
+
+    m_foregroundTask = MakeUnique<CTaskManager>(this);
+    Error err = m_foregroundTask->StartTaskRecover();
+    m_brain->UpdateInterface();
+    return err;
+}
+
+// Shoots.
+
+Error COldObject::StartTaskFire(float delay)
+{
+    StopForegroundTask();
+
+    m_foregroundTask = MakeUnique<CTaskManager>(this);
+    Error err = m_foregroundTask->StartTaskFire(delay);
+    m_brain->UpdateInterface();
+    return err;
+}
+
+// Explodes spider.
+
+Error COldObject::StartTaskSpiderExplo()
+{
+    StopForegroundTask();
+
+    m_foregroundTask = MakeUnique<CTaskManager>(this);
+    Error err = m_foregroundTask->StartTaskSpiderExplo();
+    m_brain->UpdateInterface();
+    return err;
+}
+
+// Shoots to the ant.
+
+Error COldObject::StartTaskFireAnt(Math::Vector impact)
+{
+    StopForegroundTask();
+
+    m_foregroundTask = MakeUnique<CTaskManager>(this);
+    Error err = m_foregroundTask->StartTaskFireAnt(impact);
+    m_brain->UpdateInterface();
+    return err;
+}
+
+Error COldObject::StartTaskWait(float time)
+{
+    StopForegroundTask();
+
+    m_foregroundTask = MakeUnique<CTaskManager>(this);
+    Error err = m_foregroundTask->StartTaskWait(time);
+    m_brain->UpdateInterface();
+    return err;
+}
+
+Error COldObject::StartTaskAdvance(float length)
+{
+    StopForegroundTask();
+
+    m_foregroundTask = MakeUnique<CTaskManager>(this);
+    Error err = m_foregroundTask->StartTaskAdvance(length);
+    m_brain->UpdateInterface();
+    return err;
+}
+
+Error COldObject::StartTaskTurn(float angle)
+{
+    StopForegroundTask();
+
+    m_foregroundTask = MakeUnique<CTaskManager>(this);
+    Error err = m_foregroundTask->StartTaskTurn(angle);
+    m_brain->UpdateInterface();
+    return err;
+}
+
+Error COldObject::StartTaskGoto(Math::Vector pos, float altitude, TaskGotoGoal goalMode, TaskGotoCrash crashMode)
+{
+    StopForegroundTask();
+
+    m_foregroundTask = MakeUnique<CTaskManager>(this);
+    Error err = m_foregroundTask->StartTaskGoto(pos, altitude, goalMode, crashMode);
+    m_brain->UpdateInterface();
+    return err;
+}
+
+Error COldObject::StartTaskInfo(const char *name, float value, float power, bool bSend)
+{
+    StopForegroundTask();
+
+    m_foregroundTask = MakeUnique<CTaskManager>(this);
+    Error err = m_foregroundTask->StartTaskInfo(name, value, power, bSend);
+    m_brain->UpdateInterface();
+    return err;
+}
+
+// Deploys the shield.
+
+Error COldObject::StartTaskShield(TaskShieldMode mode, float delay)
+{
+    if (m_backgroundTask == nullptr)
+    {
+        m_backgroundTask = MakeUnique<CTaskManager>(this);
+    }
+    Error err = m_backgroundTask->StartTaskShield(mode, delay);
+    m_brain->UpdateInterface();
+    return err;
+}
+
+// Adjusts upward.
+
+Error COldObject::StartTaskGunGoal(float dirV, float dirH)
+{
+    StopBackgroundTask();
+
+    m_backgroundTask = MakeUnique<CTaskManager>(this);
+    Error err = m_backgroundTask->StartTaskGunGoal(dirV, dirH);
+    m_brain->UpdateInterface();
+    return err;
+}
+
+// Indicates whether the object is busy with a task.
+
+bool COldObject::IsForegroundTask()
+{
+    return (m_foregroundTask.get() != nullptr);
+}
+
+bool COldObject::IsBackgroundTask()
+{
+    return (m_backgroundTask.get() != nullptr);
+}
+
+CTaskManager* COldObject::GetForegroundTask()
+{
+    return m_foregroundTask.get();
+}
+
+CTaskManager* COldObject::GetBackgroundTask()
+{
+    return m_backgroundTask.get();
+}
+
+// Stops the current task.
+
+void COldObject::StopForegroundTask()
+{
+    if (m_foregroundTask != nullptr)
+    {
+        m_foregroundTask->Abort();
+        m_foregroundTask.reset();
+    }
+}
+
+// Stops the current secondary task.
+
+void COldObject::StopBackgroundTask()
+{
+    if (m_backgroundTask != nullptr)
+    {
+        m_backgroundTask->Abort();
+        m_backgroundTask.reset();
+    }
+}
+
+// Completes the task when the time came.
+
+Error COldObject::EndedTask()
+{
+    if (m_backgroundTask.get() != nullptr)  // current task?
+    {
+        Error err = m_backgroundTask->IsEnded();
+        if ( err != ERR_CONTINUE )  // job ended?
+        {
+            m_backgroundTask.reset();
+            m_brain->UpdateInterface();
+        }
+    }
+
+    if (m_foregroundTask.get() != nullptr)  // current task?
+    {
+        Error err = m_foregroundTask->IsEnded();
+        if ( err != ERR_CONTINUE )  // job ended?
+        {
+            m_foregroundTask.reset();
+            m_brain->UpdateInterface();
+        }
+        return err;
+    }
+
+    return ERR_STOP;
+}
+
+// Management of the activity of an object.
+
+void COldObject::SetActivity(bool activity)
+{
+    m_activity = activity;
+}
+
+bool COldObject::GetActivity()
+{
+    return m_activity;
 }

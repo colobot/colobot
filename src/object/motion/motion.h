@@ -53,7 +53,6 @@ public:
     virtual ~CMotion();
 
     void    SetPhysics(CPhysics* physics);
-    void    SetBrain(CBrain* brain);
 
     virtual void            DeleteObject(bool bAll=false) = 0;
     virtual void            Create(Math::Vector pos, float angle, ObjectType type, float power, Gfx::COldModelManager* modelManager) = 0;
@@ -82,7 +81,6 @@ protected:
     Gfx::CWater*        m_water;
     Gfx::CCamera*       m_camera;
     COldObject*         m_object;
-    CBrain*             m_brain;
     CPhysics*           m_physics;
     CRobotMain*         m_main;
     CSoundInterface*    m_sound;
@@ -95,4 +93,3 @@ protected:
     Math::Vector        m_cirVibration;     // circular vibration
     Math::Vector        m_inclinaison;      // tilt
 };
-

@@ -376,16 +376,16 @@ bool CTaskTerraform::Terraform()
 
             if ( type == OBJECT_ANT )
             {
-                if (pObj->Implements(ObjectInterfaceType::Programmable))
-                    dynamic_cast<CProgrammableObject*>(pObj)->GetBrain()->StopTask();
+                assert(pObj->Implements(ObjectInterfaceType::TaskExecutor));
+                dynamic_cast<CTaskExecutorObject*>(pObj)->StopForegroundTask();
 
                 motion->SetAction(MAS_BACK1, 0.8f+Math::Rand()*0.3f);
                 pObj->SetFixed(true);  // not moving
             }
             if ( type == OBJECT_SPIDER )
             {
-                if (pObj->Implements(ObjectInterfaceType::Programmable))
-                    dynamic_cast<CProgrammableObject*>(pObj)->GetBrain()->StopTask();
+                assert(pObj->Implements(ObjectInterfaceType::TaskExecutor));
+                dynamic_cast<CTaskExecutorObject*>(pObj)->StopForegroundTask();
 
                 motion->SetAction(MSS_BACK1, 0.8f+Math::Rand()*0.3f);
                 pObj->SetFixed(true);  // not moving
@@ -395,4 +395,3 @@ bool CTaskTerraform::Terraform()
 
     return true;
 }
-

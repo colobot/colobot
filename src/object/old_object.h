@@ -31,6 +31,7 @@
 #include "object/interface/jostleable_object.h"
 #include "object/interface/powered_object.h"
 #include "object/interface/programmable_object.h"
+#include "object/interface/task_executor_object.h"
 #include "object/interface/transportable_object.h"
 
 // The father of all parts must always be the part number zero!
@@ -58,6 +59,7 @@ struct ObjectPart
 class COldObject : public CObject,
                    public CInteractiveObject,
                    public CTransportableObject,
+                   public CTaskExecutorObject,
                    public CProgrammableObject,
                    public CJostleableObject,
                    public CCarrierObject,
@@ -218,8 +220,11 @@ public:
     void        SetSelectable(bool bMode);
     bool        GetSelectable() override;
 
-    void        SetActivity(bool bMode) override;
-    bool        GetActivity() override;
+    //! Management of object "activity" (temporairly stops program execution, right now used only by Aliens in eggs)
+    //@{
+    void        SetActivity(bool activity);
+    bool        GetActivity();
+    //@}
 
     void        SetVisible(bool bVisible);
 
@@ -295,6 +300,35 @@ public:
     void SetScale(const Math::Vector& scale) override;
     Math::Vector GetScale() const override;
 
+    Error       StartTaskTake() override;
+    Error       StartTaskManip(TaskManipOrder order, TaskManipArm arm) override;
+    Error       StartTaskFlag(TaskFlagOrder order, int rank) override;
+    Error       StartTaskBuild(ObjectType type) override;
+    Error       StartTaskSearch() override;
+    Error       StartTaskDeleteMark() override;
+    Error       StartTaskTerraform() override;
+    Error       StartTaskRecover() override;
+    Error       StartTaskFire(float delay) override;
+    Error       StartTaskFireAnt(Math::Vector impact) override;
+    Error       StartTaskSpiderExplo() override;
+    Error       StartTaskPen(bool down, TraceColor color = TraceColor::Default) override;
+
+    Error       StartTaskWait(float time) override;
+    Error       StartTaskAdvance(float length) override;
+    Error       StartTaskTurn(float angle) override;
+    Error       StartTaskGoto(Math::Vector pos, float altitude, TaskGotoGoal goalMode, TaskGotoCrash crashMode) override;
+    Error       StartTaskInfo(const char *name, float value, float power, bool bSend) override;
+
+    Error       StartTaskShield(TaskShieldMode mode, float delay = 1000.0f) override;
+    Error       StartTaskGunGoal(float dirV, float dirH) override;
+
+    bool        IsForegroundTask() override;
+    bool        IsBackgroundTask() override;
+    CTaskManager* GetForegroundTask() override;
+    CTaskManager* GetBackgroundTask() override;
+    void        StopForegroundTask() override;
+    void        StopBackgroundTask() override;
+
 protected:
     bool        EventFrame(const Event &event);
     void        VirusFrame(float rTime);
@@ -308,6 +342,8 @@ protected:
     void        UpdateSelectParticle();
     void        TransformCrashSphere(Math::Sphere &crashSphere) override;
     void TransformCameraCollisionSphere(Math::Sphere& collisionSphere) override;
+
+    Error       EndedTask();
 
 protected:
     Gfx::CEngine*       m_engine;
@@ -391,4 +427,8 @@ protected:
     float m_infoReturn;
 
     std::vector<float> m_cmdLine;
+
+    bool m_activity;
+    std::unique_ptr<CTaskManager>  m_foregroundTask;
+    std::unique_ptr<CTaskManager>  m_backgroundTask;
 };

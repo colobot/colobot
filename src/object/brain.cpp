@@ -70,6 +70,9 @@ const int MAXTRACERECORD = 1000;
 CBrain::CBrain(COldObject* object)
 {
     m_object      = object;
+    assert(object->Implements(ObjectInterfaceType::TaskExecutor));
+    m_taskExecutor = dynamic_cast<CTaskExecutorObject*>(m_object);
+
     m_engine      = Gfx::CEngine::GetInstancePointer();
     m_water       = m_engine->GetWater();
     m_particle    = m_engine->GetParticle();
@@ -80,13 +83,10 @@ CBrain::CBrain(COldObject* object)
     m_sound       = CApplication::GetInstancePointer()->GetSound();
     m_physics     = nullptr;
     m_motion      = nullptr;
-    m_primaryTask = nullptr;
-    m_secondaryTask = nullptr;
     m_studio      = nullptr;
 
     m_program.clear();
     m_currentProgram = nullptr;
-    m_bActivity = true;
     m_bBurn = false;
     m_bActiveVirus = false;
     m_time = 0.0f;
@@ -113,12 +113,6 @@ CBrain::CBrain(COldObject* object)
 CBrain::~CBrain()
 {
     m_program.clear();
-
-    delete m_primaryTask;
-    m_primaryTask = nullptr;
-
-    delete m_secondaryTask;
-    m_secondaryTask = nullptr;
 
     delete m_studio;
     m_studio = nullptr;
@@ -165,7 +159,7 @@ bool CBrain::Write(CLevelParserLine* line)
 
     if ( m_object->GetType() == OBJECT_MOBILErs )
     {
-        line->AddParam("bShieldActive", MakeUnique<CLevelParserParam>(m_secondaryTask != nullptr));
+        line->AddParam("bShieldActive", MakeUnique<CLevelParserParam>(m_taskExecutor->IsBackgroundTask()));
     }
 
     return true;
@@ -180,7 +174,7 @@ bool CBrain::Read(CLevelParserLine* line)
     {
         if( line->GetParam("bShieldActive")->AsBool(false) )
         {
-            StartTaskShield(TSM_START);
+            m_taskExecutor->StartTaskShield(TSM_START);
         }
     }
     return true;
@@ -200,16 +194,6 @@ bool CBrain::EventProcess(const Event &event)
     float           axeX, axeY, axeZ, factor;
 
     type = m_object->GetType();
-
-    if ( m_primaryTask != 0 )  // current task?
-    {
-        m_primaryTask->EventProcess(event);
-    }
-
-    if ( m_secondaryTask != 0 )  // current task?
-    {
-        m_secondaryTask->EventProcess(event);
-    }
 
     action = EVENT_NULL;
 
@@ -376,7 +360,7 @@ bool CBrain::EventProcess(const Event &event)
 
     if ( !m_object->GetSelect() &&  // robot pas sélectionné  ?
          m_currentProgram == nullptr &&
-         m_primaryTask == 0     )
+         !m_taskExecutor->IsForegroundTask() )
     {
         axeX = 0.0f;
         axeY = 0.0f;
@@ -425,14 +409,14 @@ bool CBrain::EventProcess(const Event &event)
         return true;
     }
 
-    if ( m_secondaryTask != 0 )  // current task?
+    if ( m_taskExecutor->IsBackgroundTask() )  // current task?
     {
         if ( action == EVENT_OBJECT_ENDSHIELD )
         {
-            m_secondaryTask->StartTaskShield(TSM_DOWN, 0.0f);
+            m_taskExecutor->StartTaskShield(TSM_DOWN, 0.0f);
         }
     }
-    if ( m_primaryTask != 0 ||  // current task?
+    if ( m_taskExecutor->IsForegroundTask() ||  // current task?
          m_currentProgram != nullptr )
     {
         if ( action == EVENT_OBJECT_PROGRUN )
@@ -447,7 +431,7 @@ bool CBrain::EventProcess(const Event &event)
             }
         }
 
-        if ( m_primaryTask == 0 || !m_primaryTask->IsPilot() )  return true;
+        if ( !m_taskExecutor->IsForegroundTask() || !m_taskExecutor->GetForegroundTask()->IsPilot() )  return true;
     }
 
     if ( m_currentProgram == nullptr )
@@ -620,7 +604,7 @@ bool CBrain::EventProcess(const Event &event)
     {
         if ( action == EVENT_OBJECT_HTAKE )
         {
-            err = StartTaskTake();
+            err = m_taskExecutor->StartTaskTake();
         }
 
         if ( action == EVENT_OBJECT_MFRONT ||
@@ -635,11 +619,11 @@ bool CBrain::EventProcess(const Event &event)
         {
             if ( m_manipStyle == EVENT_OBJECT_MFRONT )
             {
-                err = StartTaskManip(TMO_AUTO, TMA_FFRONT);
+                err = m_taskExecutor->StartTaskManip(TMO_AUTO, TMA_FFRONT);
             }
             if ( m_manipStyle == EVENT_OBJECT_MBACK )
             {
-                err = StartTaskManip(TMO_AUTO, TMA_FBACK);
+                err = m_taskExecutor->StartTaskManip(TMO_AUTO, TMA_FBACK);
                 if ( err == ERR_OK )
                 {
                     m_manipStyle = EVENT_OBJECT_MFRONT;
@@ -648,7 +632,7 @@ bool CBrain::EventProcess(const Event &event)
             }
             if ( m_manipStyle == EVENT_OBJECT_MPOWER )
             {
-                err = StartTaskManip(TMO_AUTO, TMA_POWER);
+                err = m_taskExecutor->StartTaskManip(TMO_AUTO, TMA_POWER);
                 if ( err == ERR_OK )
                 {
                     m_manipStyle = EVENT_OBJECT_MFRONT;
@@ -659,59 +643,59 @@ bool CBrain::EventProcess(const Event &event)
 
         if ( action == EVENT_OBJECT_BDERRICK )
         {
-            err = StartTaskBuild(OBJECT_DERRICK);
+            err = m_taskExecutor->StartTaskBuild(OBJECT_DERRICK);
         }
         if ( action == EVENT_OBJECT_BSTATION )
         {
-            err = StartTaskBuild(OBJECT_STATION);
+            err = m_taskExecutor->StartTaskBuild(OBJECT_STATION);
         }
         if ( action == EVENT_OBJECT_BFACTORY )
         {
-            err = StartTaskBuild(OBJECT_FACTORY);
+            err = m_taskExecutor->StartTaskBuild(OBJECT_FACTORY);
         }
         if ( action == EVENT_OBJECT_BREPAIR )
         {
-            err = StartTaskBuild(OBJECT_REPAIR);
+            err = m_taskExecutor->StartTaskBuild(OBJECT_REPAIR);
         }
         if ( action == EVENT_OBJECT_BCONVERT )
         {
-            err = StartTaskBuild(OBJECT_CONVERT);
+            err = m_taskExecutor->StartTaskBuild(OBJECT_CONVERT);
         }
         if ( action == EVENT_OBJECT_BTOWER )
         {
-            err = StartTaskBuild(OBJECT_TOWER);
+            err = m_taskExecutor->StartTaskBuild(OBJECT_TOWER);
         }
         if ( action == EVENT_OBJECT_BRESEARCH )
         {
-            err = StartTaskBuild(OBJECT_RESEARCH);
+            err = m_taskExecutor->StartTaskBuild(OBJECT_RESEARCH);
         }
         if ( action == EVENT_OBJECT_BRADAR )
         {
-            err = StartTaskBuild(OBJECT_RADAR);
+            err = m_taskExecutor->StartTaskBuild(OBJECT_RADAR);
         }
         if ( action == EVENT_OBJECT_BENERGY )
         {
-            err = StartTaskBuild(OBJECT_ENERGY);
+            err = m_taskExecutor->StartTaskBuild(OBJECT_ENERGY);
         }
         if ( action == EVENT_OBJECT_BLABO )
         {
-            err = StartTaskBuild(OBJECT_LABO);
+            err = m_taskExecutor->StartTaskBuild(OBJECT_LABO);
         }
         if ( action == EVENT_OBJECT_BNUCLEAR )
         {
-            err = StartTaskBuild(OBJECT_NUCLEAR);
+            err = m_taskExecutor->StartTaskBuild(OBJECT_NUCLEAR);
         }
         if ( action == EVENT_OBJECT_BPARA )
         {
-            err = StartTaskBuild(OBJECT_PARA);
+            err = m_taskExecutor->StartTaskBuild(OBJECT_PARA);
         }
         if ( action == EVENT_OBJECT_BINFO )
         {
-            err = StartTaskBuild(OBJECT_INFO);
+            err = m_taskExecutor->StartTaskBuild(OBJECT_INFO);
         }
         if ( action == EVENT_OBJECT_BDESTROYER )
         {
-            err = StartTaskBuild(OBJECT_DESTROYER);
+            err = m_taskExecutor->StartTaskBuild(OBJECT_DESTROYER);
         }
 
         if ( action == EVENT_OBJECT_GFLAT )
@@ -720,11 +704,11 @@ bool CBrain::EventProcess(const Event &event)
         }
         if ( action == EVENT_OBJECT_FCREATE )
         {
-            err = StartTaskFlag(TFL_CREATE, m_flagColor);
+            err = m_taskExecutor->StartTaskFlag(TFL_CREATE, m_flagColor);
         }
         if ( action == EVENT_OBJECT_FDELETE )
         {
-            err = StartTaskFlag(TFL_DELETE, m_flagColor);
+            err = m_taskExecutor->StartTaskFlag(TFL_DELETE, m_flagColor);
         }
         if ( action == EVENT_OBJECT_FCOLORb ||
              action == EVENT_OBJECT_FCOLORr ||
@@ -737,27 +721,27 @@ bool CBrain::EventProcess(const Event &event)
 
         if ( action == EVENT_OBJECT_SEARCH )
         {
-            err = StartTaskSearch();
+            err = m_taskExecutor->StartTaskSearch();
         }
 
         if ( action == EVENT_OBJECT_DELSEARCH )
         {
-            err = StartTaskDeleteMark();
+            err = m_taskExecutor->StartTaskDeleteMark();
         }
 
         if ( action == EVENT_OBJECT_TERRAFORM )
         {
-            err = StartTaskTerraform();
+            err = m_taskExecutor->StartTaskTerraform();
         }
 
         if ( action == EVENT_OBJECT_RECOVER )
         {
-            err = StartTaskRecover();
+            err = m_taskExecutor->StartTaskRecover();
         }
 
         if ( action == EVENT_OBJECT_BEGSHIELD )
         {
-            err = StartTaskShield(TSM_UP);
+            err = m_taskExecutor->StartTaskShield(TSM_UP);
         }
 
         if ( action == EVENT_OBJECT_DIMSHIELD )
@@ -773,64 +757,64 @@ bool CBrain::EventProcess(const Event &event)
             }
         }
 
-        if ( action == EVENT_OBJECT_FIRE && m_primaryTask == 0 && !m_object->GetTrainer())
+        if ( action == EVENT_OBJECT_FIRE && !m_taskExecutor->IsForegroundTask() && !m_object->GetTrainer())
         {
             if ( m_camera->GetType() != Gfx::CAM_TYPE_ONBOARD )
             {
                 m_camera->SetType(Gfx::CAM_TYPE_ONBOARD);
             }
-            err = StartTaskFire(0.0f);
+            err = m_taskExecutor->StartTaskFire(0.0f);
         }
         if ( action == EVENT_OBJECT_TARGET && !m_object->GetTrainer() )
         {
-            err = StartTaskGunGoal((event.mousePos.y-0.50f)*1.3f, (event.mousePos.x-0.50f)*2.0f);
+            err = m_taskExecutor->StartTaskGunGoal((event.mousePos.y-0.50f)*1.3f, (event.mousePos.x-0.50f)*2.0f);
         }
 
         if ( action == EVENT_OBJECT_FIREANT )
         {
-//?         err = StartTaskFireAnt();
+//?         err = m_taskExecutor->StartTaskFireAnt();
         }
 
-        if ( action == EVENT_OBJECT_SPIDEREXPLO && m_primaryTask == 0 )
+        if ( action == EVENT_OBJECT_SPIDEREXPLO && !m_taskExecutor->IsForegroundTask() )
         {
-            err = StartTaskSpiderExplo();
+            err = m_taskExecutor->StartTaskSpiderExplo();
         }
 
         if ( action == EVENT_OBJECT_PEN0 )  // up
         {
-            err = StartTaskPen(false);
+            err = m_taskExecutor->StartTaskPen(false);
         }
         if ( action == EVENT_OBJECT_PEN1 )  // black
         {
-            err = StartTaskPen(true, TraceColor::Black);
+            err = m_taskExecutor->StartTaskPen(true, TraceColor::Black);
         }
         if ( action == EVENT_OBJECT_PEN2 )  // yellow
         {
-            err = StartTaskPen(true, TraceColor::Yellow);
+            err = m_taskExecutor->StartTaskPen(true, TraceColor::Yellow);
         }
         if ( action == EVENT_OBJECT_PEN3 )  // orange
         {
-            err = StartTaskPen(true, TraceColor::Orange);
+            err = m_taskExecutor->StartTaskPen(true, TraceColor::Orange);
         }
         if ( action == EVENT_OBJECT_PEN4 )  // red
         {
-            err = StartTaskPen(true, TraceColor::Red);
+            err = m_taskExecutor->StartTaskPen(true, TraceColor::Red);
         }
         if ( action == EVENT_OBJECT_PEN5 )  // violet
         {
-            err = StartTaskPen(true, TraceColor::Purple);
+            err = m_taskExecutor->StartTaskPen(true, TraceColor::Purple);
         }
         if ( action == EVENT_OBJECT_PEN6 )  // blue
         {
-            err = StartTaskPen(true, TraceColor::Blue);
+            err = m_taskExecutor->StartTaskPen(true, TraceColor::Blue);
         }
         if ( action == EVENT_OBJECT_PEN7 )  // green
         {
-            err = StartTaskPen(true, TraceColor::Green);
+            err = m_taskExecutor->StartTaskPen(true, TraceColor::Green);
         }
         if ( action == EVENT_OBJECT_PEN8 )  // brown
         {
-            err = StartTaskPen(true, TraceColor::Brown);
+            err = m_taskExecutor->StartTaskPen(true, TraceColor::Brown);
         }
 
         if ( action == EVENT_OBJECT_REC )  // registered?
@@ -932,12 +916,11 @@ bool CBrain::EventFrame(const Event &event)
     UpdateInterface(event.rTime);
 
     if ( m_engine->GetPause() )  return true;
-    if ( !m_bActivity )  return true;  // expected if idle
-    if ( EndedTask() == ERR_CONTINUE )  return true;  // expected if not finished ...
+    if ( !m_object->GetActivity() ) return true;
 
     if ( m_currentProgram != nullptr )  // current program?
     {
-        if ( m_currentProgram->script->Continue(event) )
+        if ( m_currentProgram->script->Continue() )
         {
             StopProgram();
         }
@@ -956,7 +939,7 @@ bool CBrain::EventFrame(const Event &event)
 
 void CBrain::StopProgram()
 {
-    StopTask();
+    m_taskExecutor->StopForegroundTask();
 
     if ( m_object->GetType() == OBJECT_HUMAN ||
          m_object->GetType() == OBJECT_TECH  )  return;
@@ -979,30 +962,6 @@ void CBrain::StopProgram()
     UpdateInterface();
     m_main->UpdateShortcuts();
     m_object->CreateSelectParticle();
-}
-
-// Stops the current task.
-
-void CBrain::StopTask()
-{
-    if (m_primaryTask != nullptr)
-    {
-        m_primaryTask->Abort();
-        delete m_primaryTask;  // stops the current task
-        m_primaryTask = nullptr;
-    }
-}
-
-// Stops the current secondary task.
-
-void CBrain::StopSecondaryTask()
-{
-    if (m_secondaryTask != nullptr)
-    {
-        m_secondaryTask->Abort();
-        delete m_secondaryTask;  // stops the current secondary task
-        m_secondaryTask = nullptr;
-    }
 }
 
 
@@ -1046,7 +1005,6 @@ bool CBrain::GetActiveVirus()
     return m_bActiveVirus;
 }
 
-
 // Start editing a program.
 
 void CBrain::StartEditScript(Program* program, char* name)
@@ -1070,221 +1028,6 @@ void CBrain::StopEditScript(bool bCancel)
 
     CreateInterface(true);  // puts the control buttons
 }
-
-
-
-// Move the manipulator arm.
-
-Error CBrain::StartTaskTake()
-{
-    StopTask();
-
-    m_primaryTask = new CTaskManager(m_object);
-    Error err = m_primaryTask->StartTaskTake();
-    UpdateInterface();
-    return err;
-}
-
-// Move the manipulator arm.
-
-Error CBrain::StartTaskManip(TaskManipOrder order, TaskManipArm arm)
-{
-    StopTask();
-
-    m_primaryTask = new CTaskManager(m_object);
-    Error err = m_primaryTask->StartTaskManip(order, arm);
-    UpdateInterface();
-    return err;
-}
-
-// Puts or removes a flag.
-
-Error CBrain::StartTaskFlag(TaskFlagOrder order, int rank)
-{
-    StopTask();
-
-    m_primaryTask = new CTaskManager(m_object);
-    Error err = m_primaryTask->StartTaskFlag(order, rank);
-    UpdateInterface();
-    return err;
-}
-
-// Built a building.
-
-Error CBrain::StartTaskBuild(ObjectType type)
-{
-    StopTask();
-
-    m_primaryTask = new CTaskManager(m_object);
-    Error err = m_primaryTask->StartTaskBuild(type);
-    UpdateInterface();
-    return err;
-}
-
-// Probe the ground.
-
-Error CBrain::StartTaskSearch()
-{
-    StopTask();
-
-    m_primaryTask = new CTaskManager(m_object);
-    Error err = m_primaryTask->StartTaskSearch();
-    UpdateInterface();
-    return err;
-}
-
-// Delete mark on ground
-
-Error CBrain::StartTaskDeleteMark()
-{
-    StopTask();
-
-    m_primaryTask = new CTaskManager(m_object);
-    Error err = m_primaryTask->StartTaskDeleteMark();
-    UpdateInterface();
-    return err;
-}
-
-
-// Terraformed the ground.
-
-Error CBrain::StartTaskTerraform()
-{
-    StopTask();
-
-    m_primaryTask = new CTaskManager(m_object);
-    Error err = m_primaryTask->StartTaskTerraform();
-    UpdateInterface();
-    return err;
-}
-
-// Change pencil.
-
-Error CBrain::StartTaskPen(bool down, TraceColor color)
-{
-    auto motionVehicle = dynamic_cast<CMotionVehicle*>(m_motion);
-    assert(motionVehicle != nullptr);
-
-    if (color == TraceColor::Default)
-        color = motionVehicle->GetTraceColor();
-
-    motionVehicle->SetTraceDown(down);
-    motionVehicle->SetTraceColor(color);
-
-    m_physics->SetMotorSpeedX(0.0f);
-    m_physics->SetMotorSpeedY(0.0f);
-    m_physics->SetMotorSpeedZ(0.0f);
-
-    StopTask();
-
-    m_primaryTask = new CTaskManager(m_object);
-    Error err = m_primaryTask->StartTaskPen(down, color);
-    UpdateInterface();
-    return err;
-}
-
-// Recovers a ruin.
-
-Error CBrain::StartTaskRecover()
-{
-    StopTask();
-
-    m_primaryTask = new CTaskManager(m_object);
-    Error err = m_primaryTask->StartTaskRecover();
-    UpdateInterface();
-    return err;
-}
-
-// Deploys the shield.
-
-Error CBrain::StartTaskShield(TaskShieldMode mode)
-{
-    StopSecondaryTask();
-
-    m_secondaryTask = new CTaskManager(m_object);
-    Error err = m_secondaryTask->StartTaskShield(mode, 1000.0f);
-    UpdateInterface();
-    return err;
-}
-
-// Shoots.
-
-Error CBrain::StartTaskFire(float delay)
-{
-    StopTask();
-
-    m_primaryTask = new CTaskManager(m_object);
-    Error err = m_primaryTask->StartTaskFire(delay);
-    UpdateInterface();
-    return err;
-}
-
-// Explodes spider.
-
-Error CBrain::StartTaskSpiderExplo()
-{
-    StopTask();
-
-    m_primaryTask = new CTaskManager(m_object);
-    Error err = m_primaryTask->StartTaskSpiderExplo();
-    UpdateInterface();
-    return err;
-}
-
-// Shoots to the ant.
-
-Error CBrain::StartTaskFireAnt(Math::Vector impact)
-{
-    StopTask();
-
-    m_primaryTask = new CTaskManager(m_object);
-    Error err = m_primaryTask->StartTaskFireAnt(impact);
-    UpdateInterface();
-    return err;
-}
-
-// Adjusts upward.
-
-Error CBrain::StartTaskGunGoal(float dirV, float dirH)
-{
-    StopSecondaryTask();
-
-    m_secondaryTask = new CTaskManager(m_object);
-    Error err = m_secondaryTask->StartTaskGunGoal(dirV, dirH);
-    UpdateInterface();
-    return err;
-}
-
-// Completes the task when the time came.
-
-Error CBrain::EndedTask()
-{
-    if (m_secondaryTask != nullptr)  // current task?
-    {
-        Error err = m_secondaryTask->IsEnded();
-        if ( err != ERR_CONTINUE )  // job ended?
-        {
-            delete m_secondaryTask;
-            m_secondaryTask = nullptr;
-            UpdateInterface();
-        }
-    }
-
-    if (m_primaryTask != nullptr)  // current task?
-    {
-        Error err = m_primaryTask->IsEnded();
-        if ( err != ERR_CONTINUE )  // job ended?
-        {
-            delete m_primaryTask;
-            m_primaryTask = nullptr;
-            UpdateInterface();
-        }
-        return err;
-    }
-
-    return ERR_STOP;
-}
-
 
 
 // Shows flat areas in the field.
@@ -2281,9 +2024,9 @@ void CBrain::UpdateInterface()
 
     type = m_object->GetType();
 
-    bEnable = ( m_primaryTask == 0 && m_currentProgram == nullptr ) && m_main->CanPlayerInteract();
+    bEnable = ( !m_taskExecutor->IsForegroundTask() && m_currentProgram == nullptr ) && m_main->CanPlayerInteract();
 
-    EnableInterface(pw, EVENT_OBJECT_PROGEDIT,    (m_primaryTask == 0 && !m_bTraceRecord) && m_selScript < m_program.size() && m_main->CanPlayerInteract());
+    EnableInterface(pw, EVENT_OBJECT_PROGEDIT,    (!m_taskExecutor->IsForegroundTask() && !m_bTraceRecord) && m_selScript < m_program.size() && m_main->CanPlayerInteract());
     EnableInterface(pw, EVENT_OBJECT_PROGLIST,    bEnable && !m_bTraceRecord);
     EnableInterface(pw, EVENT_OBJECT_PROGADD,     m_currentProgram == nullptr && m_main->CanPlayerInteract());
     EnableInterface(pw, EVENT_OBJECT_PROGREMOVE,  m_currentProgram == nullptr && m_selScript < m_program.size() && !m_program[m_selScript]->readOnly && m_main->CanPlayerInteract());
@@ -2357,12 +2100,12 @@ void CBrain::UpdateInterface()
 
     if ( type == OBJECT_MOBILErs )  // shield?
     {
-        if ( (m_secondaryTask == 0 || !m_secondaryTask->IsBusy()) && m_currentProgram == nullptr )
+        if ( (!m_taskExecutor->IsBackgroundTask() || !m_taskExecutor->GetBackgroundTask()->IsBusy()) && m_currentProgram == nullptr )
         {
-            EnableInterface(pw, EVENT_OBJECT_BEGSHIELD, (m_secondaryTask == 0) && m_main->CanPlayerInteract());
-            EnableInterface(pw, EVENT_OBJECT_ENDSHIELD, (m_secondaryTask != 0) && m_main->CanPlayerInteract());
-            DefaultEnter   (pw, EVENT_OBJECT_BEGSHIELD, (m_secondaryTask == 0));
-            DefaultEnter   (pw, EVENT_OBJECT_ENDSHIELD, (m_secondaryTask != 0));
+            EnableInterface(pw, EVENT_OBJECT_BEGSHIELD, !m_taskExecutor->IsBackgroundTask() && m_main->CanPlayerInteract());
+            EnableInterface(pw, EVENT_OBJECT_ENDSHIELD,  m_taskExecutor->IsBackgroundTask() && m_main->CanPlayerInteract());
+            DefaultEnter   (pw, EVENT_OBJECT_BEGSHIELD, !m_taskExecutor->IsBackgroundTask());
+            DefaultEnter   (pw, EVENT_OBJECT_ENDSHIELD,  m_taskExecutor->IsBackgroundTask());
         }
         else
         {
@@ -2724,26 +2467,6 @@ void CBrain::DefaultEnter(Ui::CWindow *pw, EventType event, bool bState)
     }
 }
 
-
-// Indicates whether the object is busy with a task.
-
-bool CBrain::IsBusy()
-{
-    return (m_primaryTask != 0);
-}
-
-// Management of the activity of an object.
-
-void CBrain::SetActivity(bool bMode)
-{
-    m_bActivity = bMode;
-}
-
-bool CBrain::GetActivity()
-{
-    return m_bActivity;
-}
-
 // Indicates whether a program is running.
 
 bool CBrain::IsProgram()
@@ -3094,7 +2817,7 @@ bool CBrain::TraceRecordPut(std::stringstream& buffer, TraceOper oper, float par
 Program* CBrain::AddProgram()
 {
     auto program = MakeUnique<Program>();
-    program->script = MakeUnique<CScript>(m_object, &m_secondaryTask);
+    program->script = MakeUnique<CScript>(m_object);
     program->readOnly = false;
     program->runnable = true;
 

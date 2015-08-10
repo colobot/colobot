@@ -236,7 +236,7 @@ bool CStudio::EventProcess(const Event &event)
 
     if ( event.type == EVENT_STUDIO_STEP )  // step?
     {
-        m_script->Step(event);
+        m_script->Step();
     }
 
     if ( event.type == EVENT_WINDOW3 )  // window is moved?

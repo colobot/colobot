@@ -23,8 +23,6 @@
 
 #include "object/object_interface_type.h"
 
-struct Event;
-
 /**
  * \class CJostleableObject
  * \brief Interface for objects that can be jostled
