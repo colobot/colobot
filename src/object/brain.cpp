@@ -79,18 +79,13 @@ CBrain::CBrain(COldObject* object)
     m_scriptRun = nullptr;
     m_soluceName[0] = 0;
 
-    m_bTraceRecord = false;
-    m_traceRecordBuffer = nullptr;
+    m_traceRecord = false;
 }
 
 // Object's destructor.
 
 CBrain::~CBrain()
 {
-    m_program.clear();
-
-    delete[] m_traceRecordBuffer;
-    m_traceRecordBuffer = nullptr;
 }
 
 void CBrain::SetPhysics(CPhysics* physics)
@@ -273,7 +268,7 @@ bool CBrain::EventFrame(const Event &event)
         }
     }
 
-    if ( m_bTraceRecord )  // registration of the design in progress?
+    if ( m_traceRecord )  // registration of the design in progress?
     {
         TraceRecordFrame();
     }
@@ -518,10 +513,15 @@ bool CBrain::WriteStack(FILE *file)
 
 void CBrain::TraceRecordStart()
 {
+    if (m_traceRecord)
+    {
+        TraceRecordStop();
+    }
+
     CMotionVehicle* motionVehicle = dynamic_cast<CMotionVehicle*>(m_motion);
     assert(motionVehicle != nullptr);
 
-    m_bTraceRecord = true;
+    m_traceRecord = true;
 
     m_traceOper = TO_STOP;
 
@@ -537,8 +537,7 @@ void CBrain::TraceRecordStart()
         m_traceColor = TraceColor::Default;
     }
 
-    delete[] m_traceRecordBuffer;
-    m_traceRecordBuffer = new TraceRecord[MAXTRACERECORD];
+    m_traceRecordBuffer = MakeUniqueArray<TraceRecord>(MAXTRACERECORD);
     m_traceRecordIndex = 0;
 }
 
@@ -601,7 +600,7 @@ void CBrain::TraceRecordStop()
     TraceOper   lastOper, curOper;
     float       lastParam, curParam;
 
-    m_bTraceRecord = false;
+    m_traceRecord = false;
 
     std::stringstream buffer;
     buffer << "extern void object::AutoDraw()\n{\n";
@@ -633,8 +632,7 @@ void CBrain::TraceRecordStop()
     }
     TraceRecordPut(buffer, lastOper, lastParam);
 
-    delete[] m_traceRecordBuffer;
-    m_traceRecordBuffer = nullptr;
+    m_traceRecordBuffer.reset();
 
     buffer << "}\n";
 
@@ -694,7 +692,7 @@ bool CBrain::TraceRecordPut(std::stringstream& buffer, TraceOper oper, float par
 
 bool CBrain::IsTraceRecord()
 {
-    return m_bTraceRecord;
+    return m_traceRecord;
 }
 
 Program* CBrain::AddProgram()

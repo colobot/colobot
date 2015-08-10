@@ -70,7 +70,7 @@ protected:
     void        GroundFlat();
     void        ColorFlag(int color);
 
-    void        UpdateScript(Ui::CWindow *pw);
+    void        UpdateScript(CWindow *pw);
     int         GetSelScript();
     void        SetSelScript(int index);
     void        BlinkScript(bool bEnable);
@@ -86,15 +86,17 @@ protected:
     Gfx::CWater*        m_water;
     Gfx::CCamera*       m_camera;
     Gfx::CParticle*     m_particle;
+    CRobotMain*         m_main;
+    Ui::CInterface*     m_interface;
+    CSoundInterface*    m_sound;
+
     COldObject*         m_object;
     CTaskExecutorObject* m_taskExecutor;
     CBrain*             m_brain;
     CPhysics*           m_physics;
     CMotion*            m_motion;
-    Ui::CInterface*     m_interface;
-    CRobotMain*         m_main;
-    Ui::CStudio*        m_studio;
-    CSoundInterface*    m_sound;
+
+    std::unique_ptr<CStudio> m_studio;
 
     int                 m_selScript;        // rank of the selected script
 

@@ -65,6 +65,9 @@ CObjectInterface::CObjectInterface(COldObject* object)
     assert(object->Implements(ObjectInterfaceType::Programmable));
     m_brain = dynamic_cast<CProgrammableObject*>(m_object)->GetBrain();
 
+    m_physics     = m_object->GetPhysics();
+    m_motion      = m_object->GetMotion();
+
     m_engine      = Gfx::CEngine::GetInstancePointer();
     m_water       = m_engine->GetWater();
     m_particle    = m_engine->GetParticle();
@@ -73,9 +76,6 @@ CObjectInterface::CObjectInterface(COldObject* object)
     m_camera      = m_main->GetCamera();
     m_interface   = m_main->GetInterface();
     m_sound       = CApplication::GetInstancePointer()->GetSound();
-    m_physics     = m_object->GetPhysics();
-    m_motion      = m_object->GetMotion();
-    m_studio      = nullptr;
 
     m_time = 0.0f;
     m_lastUpdateTime = 0.0f;
@@ -93,8 +93,6 @@ CObjectInterface::CObjectInterface(COldObject* object)
 
 CObjectInterface::~CObjectInterface()
 {
-    delete m_studio;
-    m_studio = nullptr;
 }
 
 
@@ -109,7 +107,7 @@ void CObjectInterface::DeleteObject(bool all)
         m_soundChannelAlarm = -1;
     }
 
-    if ( m_studio != 0 )  // current edition?
+    if ( m_studio != nullptr )  // current edition?
     {
         StopEditScript(true);
     }
@@ -222,7 +220,7 @@ bool CObjectInterface::EventProcess(const Event &event)
     }
 
     if ( m_object->GetSelect() &&  // robot selected?
-         m_studio != 0          )   // current issue?
+         m_studio != nullptr    )   // current issue?
     {
         m_studio->EventProcess(event);
 
@@ -731,7 +729,7 @@ bool CObjectInterface::EventFrame(const Event &event)
         m_sound->Position(m_soundChannelAlarm, m_object->GetPosition());
     }
 
-    if ( m_studio != 0 )  // current edition?
+    if ( m_studio != nullptr )  // current edition?
     {
         m_studio->EventProcess(event);
     }
@@ -747,7 +745,7 @@ void CObjectInterface::StartEditScript(Program* program, char* name)
 {
     CreateInterface(false);  // removes the control buttons
 
-    m_studio = new CStudio();
+    m_studio = MakeUnique<CStudio>();
     m_studio->StartEditScript(program->script.get(), name, program);
 }
 
@@ -755,12 +753,10 @@ void CObjectInterface::StartEditScript(Program* program, char* name)
 
 void CObjectInterface::StopEditScript(bool bCancel)
 {
-    if ( !bCancel )  m_brain->SetActiveVirus(false);
-
     if ( !m_studio->StopEditScript(bCancel) )  return;
+    m_studio.reset();
 
-    delete m_studio;
-    m_studio = 0;
+    if ( !bCancel )  m_brain->SetActiveVirus(false);
 
     CreateInterface(true);  // puts the control buttons
 }

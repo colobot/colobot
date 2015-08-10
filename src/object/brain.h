@@ -160,11 +160,11 @@ protected:
     float               m_time;
     float               m_burnTime;
 
-    bool                m_bTraceRecord;
+    bool                m_traceRecord;
     TraceOper           m_traceOper;
     Math::Vector        m_tracePos;
     float               m_traceAngle;
     TraceColor          m_traceColor;
     int                 m_traceRecordIndex;
-    TraceRecord*        m_traceRecordBuffer;
+    std::unique_ptr<TraceRecord[]> m_traceRecordBuffer;
 };
