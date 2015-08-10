@@ -71,7 +71,10 @@ void CAutoEgg::DeleteObject(bool all)
             if ( alien->GetScaleY() == 1.0f )
             {
                 alien->SetLock(false);
-                alien->SetActivity(true);  // the insect is active
+                if (alien->Implements(ObjectInterfaceType::Programmable))
+                {
+                    dynamic_cast<CProgrammableObject*>(alien)->SetActivity(true);  // the insect is active
+                }
             }
             else
             {
@@ -117,7 +120,10 @@ void CAutoEgg::Init()
     }
     alien->SetLock(true);
 
-    alien->SetActivity(false);
+    if (alien->Implements(ObjectInterfaceType::Programmable))
+    {
+        dynamic_cast<CProgrammableObject*>(alien)->SetActivity(false);
+    }
 }
 
 
@@ -180,11 +186,11 @@ bool CAutoEgg::EventProcess(const Event &event)
         float angle = m_object->GetRotationY();
         CObject* alien = CObjectManager::GetInstancePointer()->CreateObject(pos, angle, m_type);
 
-        alien->SetActivity(false);
-
         if (alien->Implements(ObjectInterfaceType::Programmable))
         {
             CProgrammableObject* programmable = dynamic_cast<CProgrammableObject*>(alien);
+
+            programmable->SetActivity(false);
 
             Program* program = programmable->AddProgram();
             programmable->ReadProgram(program, m_alienProgramName.c_str());
@@ -195,7 +201,10 @@ bool CAutoEgg::EventProcess(const Event &event)
 
     CObject* alien = SearchAlien();
     if ( alien == nullptr )  return true;
-    alien->SetActivity(false);
+    if (alien->Implements(ObjectInterfaceType::Programmable))
+    {
+        dynamic_cast<CProgrammableObject*>(alien)->SetActivity(false);
+    }
 
     m_progress += event.rTime*m_speed;
 
@@ -253,7 +262,10 @@ Error CAutoEgg::IsEnded()
         if ( m_progress < 1.0f )  return ERR_CONTINUE;
 
         alien->SetLock(false);
-        alien->SetActivity(true);  // the insect is active
+        if(alien->Implements(ObjectInterfaceType::Programmable))
+        {
+            dynamic_cast<CProgrammableObject*>(alien)->SetActivity(true);  // the insect is active
+        }
     }
 
     return ERR_STOP;

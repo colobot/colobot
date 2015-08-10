@@ -27,8 +27,10 @@
 #include "object/object.h"
 
 #include "object/interface/carrier_object.h"
+#include "object/interface/controllable_object.h"
 #include "object/interface/interactive_object.h"
 #include "object/interface/jostleable_object.h"
+#include "object/interface/movable_object.h"
 #include "object/interface/powered_object.h"
 #include "object/interface/programmable_object.h"
 #include "object/interface/task_executor_object.h"
@@ -83,7 +85,9 @@ class COldObject : public CObject,
                    public CProgrammableObject,
                    public CJostleableObject,
                    public CCarrierObject,
-                   public CPoweredObject
+                   public CPoweredObject,
+                   public CMovableObject,
+                   public CControllableObject
 {
     friend class CObjectFactory;
     friend class CObjectManager;
@@ -229,22 +233,19 @@ public:
     Gfx::CameraType  GetCameraType() override;
     void        SetCameraDist(float dist) override;
     float       GetCameraDist() override;
-    void        SetCameraLock(bool bLock) override;
+    void        SetCameraLock(bool lock) override;
     bool        GetCameraLock() override;
 
     void        SetHighlight(bool mode) override;
 
-    void        SetSelect(bool bMode, bool bDisplayError=true) override;
-    bool        GetSelect(bool bReal=false) override;
+    void        SetSelect(bool select, bool bDisplayError = true) override;
+    bool        GetSelect() override;
 
     void        SetSelectable(bool bMode);
     bool        GetSelectable() override;
 
-    //! Management of object "activity" (temporairly stops program execution, right now used only by Aliens in eggs)
-    //@{
     void        SetActivity(bool activity) override;
     bool        GetActivity() override;
-    //@}
 
     void        SetVisible(bool bVisible);
 
@@ -263,8 +264,6 @@ public:
 
     void        SetParam(float value) override;
     float       GetParam() override;
-    void        SetIgnoreBuildCheck(bool bIgnoreBuildCheck) override;
-    bool        GetIgnoreBuildCheck() override;
 
     void        SetExploding(bool bExplo) override;
     bool        IsExploding() override;
@@ -468,7 +467,6 @@ protected:
     bool        m_bTrainer;         // drive vehicle (without remote)
     bool        m_bToy;             // toy key
     bool        m_bManual;          // manual control (Scribbler)
-    bool        m_bIgnoreBuildCheck;
     bool        m_bFixed;
     bool        m_bClip;
     bool        m_bShowLimit;

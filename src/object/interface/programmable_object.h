@@ -88,4 +88,13 @@ public:
     virtual void TraceRecordStop() = 0;
     //! Returns true if trace recording is in progress
     virtual bool IsTraceRecord() = 0;
+
+    //! Management of object "activity" (temporairly stops program execution, right now used only by Aliens in eggs)
+    //@{
+    virtual void SetActivity(bool bMode) = 0;
+    virtual bool GetActivity() = 0;
+    //@}
+
+    //! Returns program cmdline values for an object
+    virtual float GetCmdLine(unsigned int rank) = 0;
 };

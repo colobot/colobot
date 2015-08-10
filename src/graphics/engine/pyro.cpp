@@ -250,7 +250,8 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
         {
             m_sound->Play(SOUND_DEADw, m_pos);
         }
-        if ( type == PT_SHOTH && m_object->GetSelect() )
+        assert(m_object->Implements(ObjectInterfaceType::Controllable));
+        if ( type == PT_SHOTH && dynamic_cast<CControllableObject*>(m_object)->GetSelect() )
         {
             m_sound->Play(SOUND_AIE, m_pos);
             m_sound->Play(SOUND_AIE, m_engine->GetEyePt());
@@ -301,7 +302,8 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
     }
     if ( m_type == PT_SHOTH )
     {
-        if ( m_camera->GetBlood() && m_object->GetSelect() )
+        assert(m_object->Implements(ObjectInterfaceType::Controllable));
+        if ( m_camera->GetBlood() && dynamic_cast<CControllableObject*>(m_object)->GetSelect() )
         {
             m_camera->StartOver(CAM_OVER_EFFECT_BLOOD, m_pos, force);
         }
@@ -1539,9 +1541,9 @@ void CPyro::ExploStart()
     m_object->SetExploding(true);  // being destroyed
     m_object->FlatParent();
 
-    if ( m_object->GetSelect() )
+    if ( m_object->Implements(ObjectInterfaceType::Controllable) && dynamic_cast<CControllableObject*>(m_object)->GetSelect() )
     {
-        m_object->SetSelect(false);  // deselects the object
+        dynamic_cast<CControllableObject*>(m_object)->SetSelect(false);  // deselects the object
         m_camera->SetType(CAM_TYPE_EXPLO);
         m_main->DeselectAll();
     }
@@ -1612,9 +1614,9 @@ void CPyro::BurnStart()
     m_object->Simplify();
     m_object->SetLock(true);  // ruin not usable yet
 
-    if ( m_object->GetSelect() )
+    if ( m_object->Implements(ObjectInterfaceType::Controllable) && dynamic_cast<CControllableObject*>(m_object)->GetSelect() )
     {
-        m_object->SetSelect(false);  // deselects the object
+        dynamic_cast<CControllableObject*>(m_object)->SetSelect(false);  // deselects the object
         m_camera->SetType(CAM_TYPE_EXPLO);
         m_main->DeselectAll();
     }
@@ -2405,4 +2407,3 @@ void CPyro::LightOperFrame(float rTime)
 
 
 } // namespace Gfx
-

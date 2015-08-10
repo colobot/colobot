@@ -189,7 +189,7 @@ CObject* CTarget::DetectFriendObject(Math::Point pos)
     {
         if ( !obj->GetActive() )  continue;
         if ( obj->GetProxyActivate() )  continue;
-        if ( obj->GetSelect() )  continue;
+        if ( obj->Implements(ObjectInterfaceType::Controllable) && dynamic_cast<CControllableObject*>(obj)->GetSelect() )  continue;
 
         CObject* target = nullptr;
         ObjectType type = obj->GetType();

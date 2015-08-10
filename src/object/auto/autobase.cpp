@@ -159,14 +159,15 @@ begin:
             pObj = m_main->GetSelectObject();
             m_main->SelectObject(pObj);
             m_camera->SetControllingObject(pObj);
-            if ( pObj == 0 )
+            if ( pObj == nullptr )
             {
                 m_camera->SetType(Gfx::CAM_TYPE_BACK);
             }
             else
             {
-                m_camera->SetType(pObj->GetCameraType());
-                m_camera->SetDist(pObj->GetCameraDist());
+                assert(pObj->Implements(ObjectInterfaceType::Controllable));
+                m_camera->SetType(dynamic_cast<CControllableObject*>(pObj)->GetCameraType());
+                m_camera->SetDist(dynamic_cast<CControllableObject*>(pObj)->GetCameraDist());
             }
 
             m_main->StartMusic();
@@ -586,14 +587,15 @@ begin:
                 pObj = m_main->GetSelectObject();
                 m_main->SelectObject(pObj);
                 m_camera->SetControllingObject(pObj);
-                if ( pObj == 0 )
+                if ( pObj == nullptr )
                 {
                     m_camera->SetType(Gfx::CAM_TYPE_BACK);
                 }
                 else
                 {
-                    m_camera->SetType(pObj->GetCameraType());
-                    m_camera->SetDist(pObj->GetCameraDist());
+                    assert(pObj->Implements(ObjectInterfaceType::Controllable));
+                    m_camera->SetType(dynamic_cast<CControllableObject*>(pObj)->GetCameraType());
+                    m_camera->SetDist(dynamic_cast<CControllableObject*>(pObj)->GetCameraDist());
                 }
                 m_sound->Play(SOUND_BOUM, m_object->GetPosition());
                 m_soundChannel = -1;
@@ -1116,14 +1118,15 @@ bool CAutoBase::Abort()
             pObj = m_main->GetSelectObject();
             m_main->SelectObject(pObj);
             m_camera->SetControllingObject(pObj);
-            if ( pObj == 0 )
+            if ( pObj == nullptr )
             {
                 m_camera->SetType(Gfx::CAM_TYPE_BACK);
             }
             else
             {
-                m_camera->SetType(pObj->GetCameraType());
-                m_camera->SetDist(pObj->GetCameraDist());
+                assert(pObj->Implements(ObjectInterfaceType::Controllable));
+                m_camera->SetType(dynamic_cast<CControllableObject*>(pObj)->GetCameraType());
+                m_camera->SetDist(dynamic_cast<CControllableObject*>(pObj)->GetCameraDist());
             }
 
             m_engine->SetFogStart(m_fogStart);

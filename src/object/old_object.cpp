@@ -101,6 +101,8 @@ COldObject::COldObject(int id)
     , CJostleableObject(m_implementedInterfaces)
     , CCarrierObject(m_implementedInterfaces)
     , CPoweredObject(m_implementedInterfaces)
+    , CMovableObject(m_implementedInterfaces)
+    , CControllableObject(m_implementedInterfaces)
 {
     // A bit of a hack since we don't have subclasses yet, set externally in SetProgrammable()
     m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Programmable)] = false;
@@ -156,7 +158,6 @@ COldObject::COldObject(int id)
     m_virusTime = 0.0f;
     m_lastVirusParticle = 0.0f;
     m_bLock  = false;
-    m_bIgnoreBuildCheck = false;
     m_bExplo = false;
     m_bCargo = false;
     m_bBurn  = false;
@@ -836,8 +837,6 @@ void COldObject::Write(CLevelParserLine* line)
     if ( m_virusTime != 0.0f )
         line->AddParam("virusTime", MakeUnique<CLevelParserParam>(m_virusTime));
 
-    line->AddParam("ignoreBuildCheck", MakeUnique<CLevelParserParam>(GetIgnoreBuildCheck()));
-
     // Sets the parameters of the command line.
     CLevelParserParamVec cmdline;
     for(float value : m_cmdLine)
@@ -855,7 +854,10 @@ void COldObject::Write(CLevelParserLine* line)
     if ( Implements(ObjectInterfaceType::Programmable) )
     {
         line->AddParam("bVirusActive", MakeUnique<CLevelParserParam>(m_bActiveVirus));
+    }
 
+    if ( Implements(ObjectInterfaceType::TaskExecutor) )
+    {
         if ( m_type == OBJECT_MOBILErs )
         {
             line->AddParam("bShieldActive", MakeUnique<CLevelParserParam>(IsBackgroundTask()));
@@ -905,7 +907,6 @@ void COldObject::Read(CLevelParserLine* line)
     m_bBurn = line->GetParam("burnMode")->AsBool(false);
     m_bVirusMode = line->GetParam("virusMode")->AsBool(false);
     m_virusTime = line->GetParam("virusTime")->AsFloat(0.0f);
-    SetIgnoreBuildCheck(line->GetParam("ignoreBuildCheck")->AsBool(false));
 
     // Sets the parameters of the command line.
     if (line->GetParam("cmdline")->IsDefined())
@@ -923,9 +924,13 @@ void COldObject::Read(CLevelParserLine* line)
         m_motion->Read(line);
     }
 
-    if ( Implements(ObjectInterfaceType::Programmable) )
+    if (Implements(ObjectInterfaceType::Programmable))
     {
         m_bActiveVirus = line->GetParam("bVirusActive")->AsBool(false);
+    }
+
+    if (Implements(ObjectInterfaceType::TaskExecutor))
+    {
         if ( m_type == OBJECT_MOBILErs )
         {
             if( line->GetParam("bShieldActive")->AsBool(false) )
@@ -934,6 +939,7 @@ void COldObject::Read(CLevelParserLine* line)
             }
         }
     }
+
     if ( m_physics != nullptr )
     {
         m_physics->Read(line);
@@ -1882,16 +1888,27 @@ bool COldObject::EventProcess(const Event &event)
         }
     }
 
-    if ( Implements(ObjectInterfaceType::Programmable) )
+    if (Implements(ObjectInterfaceType::Programmable))
     {
         if ( GetRuin() && m_currentProgram != nullptr )
         {
             StopProgram();
         }
+    }
 
-        if ( !GetSelect() &&  // robot pas sélectionné  ?
-             m_currentProgram == nullptr &&
-             !IsForegroundTask() )
+    if (Implements(ObjectInterfaceType::Movable) && m_physics != nullptr)
+    {
+        bool deselectedStop = !GetSelect();
+        if (Implements(ObjectInterfaceType::Programmable))
+        {
+            deselectedStop = deselectedStop && !IsProgram();
+        }
+        if (Implements(ObjectInterfaceType::TaskExecutor))
+        {
+            deselectedStop = deselectedStop && !IsForegroundTask();
+        }
+
+        if ( deselectedStop )
         {
             float axeX = 0.0f;
             float axeY = 0.0f;
@@ -1922,7 +1939,17 @@ bool COldObject::EventProcess(const Event &event)
         }
         else if (GetSelect())
         {
-            if ( (IsForegroundTask() && GetForegroundTask()->IsPilot()) || m_currentProgram == nullptr )
+            bool canMove = true;
+            if (Implements(ObjectInterfaceType::Programmable))
+            {
+                canMove = canMove && !IsProgram();
+            }
+            if (Implements(ObjectInterfaceType::TaskExecutor))
+            {
+                canMove = canMove || (IsForegroundTask() && GetForegroundTask()->IsPilot());
+            }
+
+            if ( canMove )
             {
                 if ( event.type == EVENT_OBJECT_LEFT    ||
                      event.type == EVENT_OBJECT_RIGHT   ||
@@ -2583,9 +2610,9 @@ float COldObject::GetCameraDist()
     return m_cameraDist;
 }
 
-void COldObject::SetCameraLock(bool bLock)
+void COldObject::SetCameraLock(bool lock)
 {
-    m_bCameraLock = bLock;
+    m_bCameraLock = lock;
 }
 
 bool COldObject::GetCameraLock()
@@ -2620,11 +2647,9 @@ void COldObject::SetHighlight(bool mode)
 
 // Indicates whether the object is selected or not.
 
-void COldObject::SetSelect(bool bMode, bool bDisplayError)
+void COldObject::SetSelect(bool select, bool bDisplayError)
 {
-    Error       err;
-
-    m_bSelect = bMode;
+    m_bSelect = select;
 
     // NOTE: Right now, Ui::CObjectInterface is only for programmable objects. Right now all selectable objects are programmable anyway.
     // TODO: All UI-related stuff should be moved out of CObject classes
@@ -2645,12 +2670,9 @@ void COldObject::SetSelect(bool bMode, bool bDisplayError)
     CreateSelectParticle();  // creates / removes particles
 
     if ( !m_bSelect )
-    {
-        //SetGunGoalH(0.0f);  // puts the cannon right
-        return;  // selects if not finished
-    }
+        return;  // if not selected, we're done
 
-    err = ERR_OK;
+    Error err = ERR_OK;
     if ( m_physics != nullptr )
     {
         err = m_physics->GetError();
@@ -2667,9 +2689,8 @@ void COldObject::SetSelect(bool bMode, bool bDisplayError)
 
 // Indicates whether the object is selected or not.
 
-bool COldObject::GetSelect(bool bReal)
+bool COldObject::GetSelect()
 {
-    if ( !bReal && m_main->GetFixScene() )  return false;
     return m_bSelect;
 }
 
@@ -2789,18 +2810,6 @@ void COldObject::SetLock(bool bLock)
 bool COldObject::GetLock()
 {
     return m_bLock;
-}
-
-// Ignore checks in build() function
-
-void COldObject::SetIgnoreBuildCheck(bool bIgnoreBuildCheck)
-{
-    m_bIgnoreBuildCheck = bIgnoreBuildCheck;
-}
-
-bool COldObject::GetIgnoreBuildCheck()
-{
-    return m_bIgnoreBuildCheck;
 }
 
 // Management of the mode "current explosion" of an object.

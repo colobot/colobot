@@ -1436,9 +1436,6 @@ bool CScriptFunctions::rBuild(CBotVar* var, CBotVar* result, int& exception, voi
         category = static_cast<ObjectType>(var->GetValInt()); // get category parameter
         err = CRobotMain::GetInstancePointer()->CanBuildError(category, pThis->GetTeam());
 
-        if (pThis->GetIgnoreBuildCheck())
-            err = ERR_OK;
-
         if (err == ERR_OK && !script->m_taskExecutor->IsForegroundTask()) // if we can build
         {
             err = script->m_taskExecutor->StartTaskBuild(category);
@@ -1584,7 +1581,10 @@ bool CScriptFunctions::rProduce(CBotVar* var, CBotVar* result, int& exception, v
     {
         object = CObjectManager::GetInstancePointer()->CreateObject(pos, angle, type);
         CObjectManager::GetInstancePointer()->CreateObject(pos, angle, OBJECT_EGG, 0.0f);
-        object->SetActivity(false);
+        if (object->Implements(ObjectInterfaceType::Programmable))
+        {
+            dynamic_cast<CProgrammableObject*>(object)->SetActivity(false);
+        }
     }
     else
     {
@@ -2808,8 +2808,10 @@ bool CScriptFunctions::rCmdline(CBotVar* var, CBotVar* result, int& exception, v
     float       value;
     int         rank;
 
+    assert(pThis->Implements(ObjectInterfaceType::Programmable));
+
     rank = var->GetValInt();
-    value = pThis->GetCmdLine(rank);
+    value = dynamic_cast<CProgrammableObject*>(pThis)->GetCmdLine(rank);
     result->SetValFloat(value);
 
     return true;

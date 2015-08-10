@@ -27,6 +27,7 @@
 #include "object/object.h"
 #include "object/object_manager.h"
 
+#include "object/interface/controllable_object.h"
 #include "object/interface/programmable_object.h"
 
 
@@ -138,7 +139,7 @@ bool CMainShort::CreateShortcuts()
     for (CObject* pObj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
         if ( !pObj->GetActive() )  continue;
-        if ( !pObj->GetSelectable() )  continue;
+        if ( pObj->Implements(ObjectInterfaceType::Controllable) && !dynamic_cast<CControllableObject*>(pObj)->GetSelectable() )  continue;
         if ( pObj->GetProxyActivate() )  continue;
 
         int icon = GetShortcutIcon(pObj->GetType());
@@ -234,7 +235,8 @@ bool CMainShort::UpdateShortcuts()
         CControl* pc = m_interface->SearchControl(static_cast<EventType>(EVENT_OBJECT_SHORTCUT+i));
         if ( pc != nullptr )
         {
-            pc->SetState(STATE_CHECK, m_shortcuts[i]->GetSelect());
+            assert(m_shortcuts[i]->Implements(ObjectInterfaceType::Controllable));
+            pc->SetState(STATE_CHECK, dynamic_cast<CControllableObject*>(m_shortcuts[i])->GetSelect());
             pc->SetState(STATE_RUN, m_shortcuts[i]->Implements(ObjectInterfaceType::Programmable) && dynamic_cast<CProgrammableObject*>(m_shortcuts[i])->IsProgram());
         }
     }

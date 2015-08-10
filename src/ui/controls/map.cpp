@@ -31,6 +31,7 @@
 
 #include "object/robotmain.h"
 
+#include "object/interface/controllable_object.h"
 #include "object/interface/transportable_object.h"
 
 #include <cstring>
@@ -1154,7 +1155,7 @@ void CMap::UpdateObject(CObject* pObj)
     if ( m_totalFix >= m_totalMove )  return;  // full table?
 
     if ( !pObj->GetActive() )  return;
-    if ( !pObj->GetSelectable() )  return;
+    if ( pObj->Implements(ObjectInterfaceType::Controllable) && !dynamic_cast<CControllableObject*>(pObj)->GetSelectable() )  return;
     if ( pObj->GetProxyActivate() )  return;
     if (IsObjectBeingTransported(pObj))  return;
 
@@ -1273,7 +1274,7 @@ void CMap::UpdateObject(CObject* pObj)
         if ( color != MAPCOLOR_MOVE )  return;
     }
 
-    if ( pObj->GetSelect() )
+    if ( pObj->Implements(ObjectInterfaceType::Controllable) && dynamic_cast<CControllableObject*>(pObj)->GetSelect() )
     {
         m_map[MAPMAXOBJECT-1].type   = type;
         m_map[MAPMAXOBJECT-1].object = pObj;

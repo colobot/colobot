@@ -73,7 +73,6 @@ public:
 
     virtual void        SetDrawFront(bool bDraw);
 
-    virtual float       GetShieldRadius();
 
     virtual void        FloorAdjust();
 
@@ -82,12 +81,7 @@ public:
 
     virtual Math::Vector    GetTilt();
 
-    virtual void        SetTrainer(bool bEnable);
-    virtual bool        GetTrainer();
-
     virtual void        SetMasterParticle(int part, int parti);
-
-    virtual float       GetCmdLine(unsigned int rank);
 
     virtual Math::Matrix*   GetWorldMatrix(int part);
 
@@ -120,21 +114,7 @@ public:
     virtual void        SetVirusMode(bool bEnable);
     virtual bool        GetVirusMode();
 
-    virtual void        SetCameraType(Gfx::CameraType type);
-    virtual Gfx::CameraType  GetCameraType();
-    virtual void        SetCameraDist(float dist);
-    virtual float       GetCameraDist();
-    virtual void        SetCameraLock(bool bLock);
-    virtual bool        GetCameraLock();
-
     virtual void        SetHighlight(bool mode);
-
-    virtual void        SetSelect(bool bMode, bool bDisplayError=true);
-    virtual bool        GetSelect(bool bReal=false);
-    virtual bool        GetSelectable();
-
-    virtual void        SetActivity(bool bMode);
-    virtual bool        GetActivity();
 
     virtual void        SetEnable(bool bEnable);
     virtual bool        GetEnable();
@@ -145,10 +125,13 @@ public:
     virtual void        SetMagnifyDamage(float factor);
     virtual float       GetMagnifyDamage();
 
+    //! Shielder radius (only while active) [0 or RADIUS_SHIELD_MIN..RADIUS_SHIELD_MAX]
+    virtual float       GetShieldRadius();
+    //! Shielder radius [0..1]
+    //@{
     virtual void        SetParam(float value);
     virtual float       GetParam();
-    virtual void        SetIgnoreBuildCheck(bool bIgnoreBuildCheck);
-    virtual bool        GetIgnoreBuildCheck();
+    //@}
 
     virtual void        SetExploding(bool bExplo);
     virtual bool        IsExploding();

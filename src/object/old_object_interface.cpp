@@ -82,24 +82,9 @@ Math::Vector COldObjectInterface::GetTilt()
     throw std::logic_error("GetTilt: not implemented!");
 }
 
-void COldObjectInterface::SetTrainer(bool bEnable)
-{
-    throw std::logic_error("SetTrainer: not implemented!");
-}
-
-bool COldObjectInterface::GetTrainer()
-{
-    throw std::logic_error("GetTrainer: not implemented!");
-}
-
 void COldObjectInterface::SetMasterParticle(int part, int parti)
 {
     throw std::logic_error("SetMasterParticle: not implemented!");
-}
-
-float COldObjectInterface::GetCmdLine(unsigned int rank)
-{
-    throw std::logic_error("GetCmdLine: not implemented!");
 }
 
 Math::Matrix* COldObjectInterface::GetWorldMatrix(int part)
@@ -201,71 +186,12 @@ bool COldObjectInterface::GetVirusMode()
     throw std::logic_error("GetVirusMode: not implemented!");
 }
 
-void COldObjectInterface::SetCameraType(Gfx::CameraType type)
-{
-    throw std::logic_error("SetCameraType: not implemented!");
-}
-
-Gfx::CameraType COldObjectInterface::GetCameraType()
-{
-    throw std::logic_error("GetCameraType: not implemented!");
-}
-
-void COldObjectInterface::SetCameraDist(float dist)
-{
-    throw std::logic_error("SetCameraDist: not implemented!");
-}
-
-float COldObjectInterface::GetCameraDist()
-{
-    throw std::logic_error("GetCameraDist: not implemented!");
-}
-
-void COldObjectInterface::SetCameraLock(bool bLock)
-{
-    throw std::logic_error("SetCameraLock: not implemented!");
-}
-
-bool COldObjectInterface::GetCameraLock()
-{
-    throw std::logic_error("GetCameraLock: not implemented!");
-}
-
 
 void COldObjectInterface::SetHighlight(bool mode)
 {
     // TODO: temporary hack
     return;
     //throw std::logic_error("SetHighlight: not implemented!");
-}
-
-
-void COldObjectInterface::SetSelect(bool bMode, bool bDisplayError)
-{
-    // TODO: temporary hack
-    //throw std::logic_error("SetSelect: not implemented!");
-}
-
-bool COldObjectInterface::GetSelect(bool bReal)
-{
-    // TODO: temporary hack
-    return false;
-    //throw std::logic_error("GetSelect: not implemented!");
-}
-
-bool COldObjectInterface::GetSelectable()
-{
-    throw std::logic_error("GetSelectable: not implemented!");
-}
-
-void COldObjectInterface::SetActivity(bool bMode)
-{
-    throw std::logic_error("SetActivity: not implemented!");
-}
-
-bool COldObjectInterface::GetActivity()
-{
-    throw std::logic_error("GetActivity: not implemented!");
 }
 
 
@@ -312,15 +238,6 @@ void COldObjectInterface::SetParam(float value)
 float COldObjectInterface::GetParam()
 {
     throw std::logic_error("GetParam: not implemented!");
-}
-void COldObjectInterface::SetIgnoreBuildCheck(bool bIgnoreBuildCheck)
-{
-    throw std::logic_error("SetIgnoreBuildCheck: not implemented!");
-}
-
-bool COldObjectInterface::GetIgnoreBuildCheck()
-{
-    throw std::logic_error("GetIgnoreBuildCheck: not implemented!");
 }
 
 

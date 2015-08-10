@@ -1728,8 +1728,10 @@ CObject* CRobotMain::DeselectAll()
     CObject* prev = nullptr;
     for (CObject* obj : m_objMan->GetAllObjects())
     {
-        if (obj->GetSelect()) prev = obj;
-        obj->SetSelect(false);
+        if (!obj->Implements(ObjectInterfaceType::Controllable)) continue;
+        auto controllableObj = dynamic_cast<CControllableObject*>(obj);
+        if (controllableObj->GetSelect()) prev = obj;
+        controllableObj->SetSelect(false);
     }
     return prev;
 }
@@ -1737,7 +1739,8 @@ CObject* CRobotMain::DeselectAll()
 //! Selects an object, without attending to deselect the rest
 void CRobotMain::SelectOneObject(CObject* obj, bool displayError)
 {
-    obj->SetSelect(true, displayError);
+    assert(obj->Implements(ObjectInterfaceType::Controllable));
+    dynamic_cast<CControllableObject*>(obj)->SetSelect(true, displayError);
     m_camera->SetControllingObject(obj);
 
     ObjectType type = obj->GetType();
@@ -1770,8 +1773,8 @@ void CRobotMain::SelectOneObject(CObject* obj, bool displayError)
          type == OBJECT_MOBILEdr ||
          type == OBJECT_APOLLO2  )
     {
-        m_camera->SetType(obj->GetCameraType());
-        m_camera->SetDist(obj->GetCameraDist());
+        m_camera->SetType(dynamic_cast<CControllableObject*>(obj)->GetCameraType());
+        m_camera->SetDist(dynamic_cast<CControllableObject*>(obj)->GetCameraDist());
     }
     else
     {
@@ -1890,7 +1893,8 @@ CObject* CRobotMain::GetSelect()
 {
     for (CObject* obj : m_objMan->GetAllObjects())
     {
-        if (obj->GetSelect())
+        if (!obj->Implements(ObjectInterfaceType::Controllable)) continue;
+        if (dynamic_cast<CControllableObject*>(obj)->GetSelect())
             return obj;
     }
     return nullptr;
@@ -2048,7 +2052,8 @@ CObject* CRobotMain::DetectObject(Math::Point pos)
 //! Indicates whether an object is selectable
 bool CRobotMain::IsSelectable(CObject* obj)
 {
-    if (!obj->GetSelectable()) return false;
+    if (!obj->Implements(ObjectInterfaceType::Controllable)) return false;
+    if (!dynamic_cast<CControllableObject*>(obj)->GetSelectable()) return false;
 
     ObjectType type = obj->GetType();
     if ( type == OBJECT_HUMAN    ||
@@ -2123,10 +2128,11 @@ bool CRobotMain::DeleteObject()
 {
     CObject* obj = GetSelect();
     if (obj == nullptr) return false;
+    assert(obj->Implements(ObjectInterfaceType::Controllable));
 
     m_engine->GetPyroManager()->Create(Gfx::PT_FRAGT, obj);
 
-    obj->SetSelect(false);  // deselects the object
+    dynamic_cast<CControllableObject*>(obj)->SetSelect(false);  // deselects the object
     m_camera->SetType(Gfx::CAM_TYPE_EXPLO);
     DeselectAll();
     RemoveFromSelectionHistory(obj);
@@ -2304,66 +2310,65 @@ void CRobotMain::HelpObject()
 //! Change the mode of the camera
 void CRobotMain::ChangeCamera()
 {
-    for (CObject* obj : m_objMan->GetAllObjects())
+    CObject* obj = GetSelect();
+    if (obj == nullptr) return;
+    assert(obj->Implements(ObjectInterfaceType::Controllable));
+    auto controllableObj = dynamic_cast<CControllableObject*>(obj);
+
+    if (controllableObj->GetCameraLock()) return;
+
+    ObjectType oType = obj->GetType();
+    Gfx::CameraType type = controllableObj->GetCameraType();
+
+    if ( oType != OBJECT_MOBILEfa &&
+         oType != OBJECT_MOBILEta &&
+         oType != OBJECT_MOBILEwa &&
+         oType != OBJECT_MOBILEia &&
+         oType != OBJECT_MOBILEfc &&
+         oType != OBJECT_MOBILEtc &&
+         oType != OBJECT_MOBILEwc &&
+         oType != OBJECT_MOBILEic &&
+         oType != OBJECT_MOBILEfi &&
+         oType != OBJECT_MOBILEti &&
+         oType != OBJECT_MOBILEwi &&
+         oType != OBJECT_MOBILEii &&
+         oType != OBJECT_MOBILEfs &&
+         oType != OBJECT_MOBILEts &&
+         oType != OBJECT_MOBILEws &&
+         oType != OBJECT_MOBILEis &&
+         oType != OBJECT_MOBILErt &&
+         oType != OBJECT_MOBILErc &&
+         oType != OBJECT_MOBILErr &&
+         oType != OBJECT_MOBILErs &&
+         oType != OBJECT_MOBILEsa &&
+         oType != OBJECT_MOBILEtg &&
+         oType != OBJECT_MOBILEft &&
+         oType != OBJECT_MOBILEtt &&
+         oType != OBJECT_MOBILEwt &&
+         oType != OBJECT_MOBILEit &&
+         oType != OBJECT_MOBILEdr &&
+         oType != OBJECT_APOLLO2  )  return;
+
+    if (oType == OBJECT_MOBILEdr)  // designer?
     {
-        if (obj->GetSelect())
-        {
-            if (obj->GetCameraLock()) return;
-
-            ObjectType oType = obj->GetType();
-            Gfx::CameraType type = obj->GetCameraType();
-
-            if ( oType != OBJECT_MOBILEfa &&
-                 oType != OBJECT_MOBILEta &&
-                 oType != OBJECT_MOBILEwa &&
-                 oType != OBJECT_MOBILEia &&
-                 oType != OBJECT_MOBILEfc &&
-                 oType != OBJECT_MOBILEtc &&
-                 oType != OBJECT_MOBILEwc &&
-                 oType != OBJECT_MOBILEic &&
-                 oType != OBJECT_MOBILEfi &&
-                 oType != OBJECT_MOBILEti &&
-                 oType != OBJECT_MOBILEwi &&
-                 oType != OBJECT_MOBILEii &&
-                 oType != OBJECT_MOBILEfs &&
-                 oType != OBJECT_MOBILEts &&
-                 oType != OBJECT_MOBILEws &&
-                 oType != OBJECT_MOBILEis &&
-                 oType != OBJECT_MOBILErt &&
-                 oType != OBJECT_MOBILErc &&
-                 oType != OBJECT_MOBILErr &&
-                 oType != OBJECT_MOBILErs &&
-                 oType != OBJECT_MOBILEsa &&
-                 oType != OBJECT_MOBILEtg &&
-                 oType != OBJECT_MOBILEft &&
-                 oType != OBJECT_MOBILEtt &&
-                 oType != OBJECT_MOBILEwt &&
-                 oType != OBJECT_MOBILEit &&
-                 oType != OBJECT_MOBILEdr &&
-                 oType != OBJECT_APOLLO2  )  return;
-
-            if (oType == OBJECT_MOBILEdr)  // designer?
-            {
-                     if (type == Gfx::CAM_TYPE_PLANE  )  type = Gfx::CAM_TYPE_BACK;
-                else if (type == Gfx::CAM_TYPE_BACK   )  type = Gfx::CAM_TYPE_PLANE;
-            }
-            else if (obj->GetTrainer())  // trainer?
-            {
-                     if (type == Gfx::CAM_TYPE_ONBOARD)  type = Gfx::CAM_TYPE_FIX;
-                else if (type == Gfx::CAM_TYPE_FIX    )  type = Gfx::CAM_TYPE_PLANE;
-                else if (type == Gfx::CAM_TYPE_PLANE  )  type = Gfx::CAM_TYPE_BACK;
-                else if (type == Gfx::CAM_TYPE_BACK   )  type = Gfx::CAM_TYPE_ONBOARD;
-            }
-            else
-            {
-                     if (type == Gfx::CAM_TYPE_ONBOARD)  type = Gfx::CAM_TYPE_BACK;
-                else if (type == Gfx::CAM_TYPE_BACK   )  type = Gfx::CAM_TYPE_ONBOARD;
-            }
-
-            obj->SetCameraType(type);
-            m_camera->SetType(type);
-        }
+             if (type == Gfx::CAM_TYPE_PLANE  )  type = Gfx::CAM_TYPE_BACK;
+        else if (type == Gfx::CAM_TYPE_BACK   )  type = Gfx::CAM_TYPE_PLANE;
     }
+    else if (controllableObj->GetTrainer())  // trainer?
+    {
+             if (type == Gfx::CAM_TYPE_ONBOARD)  type = Gfx::CAM_TYPE_FIX;
+        else if (type == Gfx::CAM_TYPE_FIX    )  type = Gfx::CAM_TYPE_PLANE;
+        else if (type == Gfx::CAM_TYPE_PLANE  )  type = Gfx::CAM_TYPE_BACK;
+        else if (type == Gfx::CAM_TYPE_BACK   )  type = Gfx::CAM_TYPE_ONBOARD;
+    }
+    else
+    {
+             if (type == Gfx::CAM_TYPE_ONBOARD)  type = Gfx::CAM_TYPE_BACK;
+        else if (type == Gfx::CAM_TYPE_BACK   )  type = Gfx::CAM_TYPE_ONBOARD;
+    }
+
+    controllableObj->SetCameraType(type);
+    m_camera->SetType(type);
 }
 
 //! Remote control the camera using the arrow keys
@@ -2398,7 +2403,8 @@ void CRobotMain::KeyCamera(EventType type, InputSlot key)
 
     CObject* obj = GetSelect();
     if (obj == nullptr) return;
-    if (!obj->GetTrainer()) return;
+    assert(obj->Implements(ObjectInterfaceType::Controllable));
+    if (!dynamic_cast<CControllableObject*>(obj)->GetTrainer()) return;
 
     if (type == EVENT_KEY_DOWN)
     {
@@ -3464,7 +3470,6 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             {
                 m_controller = m_objMan->CreateObject(Math::Vector(0.0f, 0.0f, 0.0f), 0.0f, OBJECT_CONTROLLER, 100.0f);
                 m_controller->SetMagnifyDamage(100.0f);
-                m_controller->SetIgnoreBuildCheck(true);
                 if (m_controller->Implements(ObjectInterfaceType::Programmable))
                 {
                     CProgrammableObject* programmable = dynamic_cast<CProgrammableObject*>(m_controller);
@@ -3599,7 +3604,6 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
                     bool selectable = line->GetParam("selectable")->AsBool(true);
                     oldObj->SetSelectable(selectable);
-                    oldObj->SetIgnoreBuildCheck(line->GetParam("ignoreBuildCheck")->AsBool(false));
                     oldObj->SetEnable(line->GetParam("enable")->AsBool(true));
                     oldObj->SetProxyActivate(line->GetParam("proxyActivate")->AsBool(false));
                     oldObj->SetProxyDistance(line->GetParam("proxyDistance")->AsFloat(15.0f)*g_unit);
@@ -3972,9 +3976,10 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
             if (obj != nullptr)
             {
+                assert(obj->Implements(ObjectInterfaceType::Controllable));
                 SelectObject(obj);
                 m_camera->SetControllingObject(obj);
-                m_camera->SetType(obj->GetCameraType());
+                m_camera->SetType(dynamic_cast<CControllableObject*>(obj)->GetCameraType());
             }
         }
 
@@ -4990,12 +4995,16 @@ void CRobotMain::IOWriteObject(CLevelParserLine* line, CObject* obj)
             }
         }
 
-        line->AddParam("trainer", MakeUnique<CLevelParserParam>(obj->GetTrainer()));
         line->AddParam("option", MakeUnique<CLevelParserParam>(obj->GetOption()));
     }
 
-    if (obj->GetSelect())
-        line->AddParam("select", MakeUnique<CLevelParserParam>(true));
+    if (obj->Implements(ObjectInterfaceType::Controllable))
+    {
+        auto controllableObj = dynamic_cast<CControllableObject*>(obj);
+        line->AddParam("trainer", MakeUnique<CLevelParserParam>(controllableObj->GetTrainer()));
+        if (controllableObj->GetSelect())
+            line->AddParam("select", MakeUnique<CLevelParserParam>(true));
+    }
 
     obj->Write(line);
 
@@ -5670,7 +5679,15 @@ Error CRobotMain::CheckEndMission(bool frame)
             return ERR_OK;  // mission ended
         }
 
-        if (frame && m_base != nullptr && m_base->GetSelectable() && !isImmediat) return ERR_MISSION_NOTERM;
+        if (frame)
+        {
+            if(m_base != nullptr && !isImmediat)
+            {
+                assert(m_base->Implements(ObjectInterfaceType::Controllable));
+                if(dynamic_cast<CControllableObject*>(m_base)->GetSelectable())
+                    return ERR_MISSION_NOTERM;
+            }
+        }
 
         if (m_winDelay == 0.0f)
         {
