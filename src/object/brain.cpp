@@ -92,10 +92,6 @@ CBrain::CBrain(COldObject* object)
     m_time = 0.0f;
     m_burnTime = 0.0f;
     m_lastUpdateTime = 0.0f;
-    m_lastHumanTime = 0.0f;
-    m_lastWormTime = 0.0f;
-    m_antTarget = 0;
-    m_beeBullet = 0;
     m_lastAlarmTime = 0.0f;
     m_soundChannelAlarm = -1;
     m_flagColor = 0;
@@ -141,15 +137,6 @@ void CBrain::DeleteObject(bool all)
         m_sound->FlushEnvelope(m_soundChannelAlarm);
         m_sound->AddEnvelope(m_soundChannelAlarm, 0.0f, 0.5f, 0.5f, SOPER_STOP);
         m_soundChannelAlarm = -1;
-    }
-
-    if ( !all )
-    {
-        if ( m_beeBullet != nullptr )
-        {
-            CObjectManager::GetInstancePointer()->DeleteObject(m_beeBullet);
-            m_beeBullet = nullptr;
-        }
     }
 
     if ( m_studio != 0 )  // current edition?

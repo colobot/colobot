@@ -225,19 +225,10 @@ protected:
     EventType           m_buttonAxe;
     EventType           m_manipStyle;
     EventType           m_defaultEnter;
-    EventType           m_interfaceEvent[100];
 
-    CObject*            m_antTarget;
-    CObject*            m_beeBullet;
-    float               m_beeBulletSpeed;
-    Math::Vector        m_startPos;
     float               m_time;
     float               m_burnTime;
     float               m_lastUpdateTime;
-    float               m_lastHumanTime;
-    float               m_lastSpiderTime;
-    float               m_lastWormTime;
-    float               m_lastBulletTime;
     float               m_lastAlarmTime;
     int                 m_soundChannelAlarm;
     int                 m_flagColor;
