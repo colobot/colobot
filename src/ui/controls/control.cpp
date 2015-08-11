@@ -45,7 +45,8 @@ CControl::CControl()
     m_textAlign   = Gfx::TEXT_ALIGN_CENTER; //instead m_justify
     m_bFocus      = false;
     m_bCapture    = false;
-
+    m_icon = 0;
+    m_fontStretch = false;
     m_bGlint        = false;
     m_glintCorner1  = Math::Point(0.0f, 0.0f);
     m_glintCorner2  = Math::Point(0.0f, 0.0f);

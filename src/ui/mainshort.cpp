@@ -44,6 +44,8 @@ CMainShort::CMainShort()
     m_interface = m_main->GetInterface();
 
     m_shortcuts.clear();
+
+    m_bBuilding = false;
 }
 
 // Destructor of the application card.

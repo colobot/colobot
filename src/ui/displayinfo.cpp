@@ -75,6 +75,11 @@ CDisplayInfo::CDisplayInfo()
 
     m_lightSuppl = -1;
     m_toto = 0;
+    m_bSoluce = false;
+    m_initPause = PAUSE_NONE;
+    m_bEditLock = false;
+    m_infoCamera = Gfx::CAM_TYPE_NULL;
+    m_index = -1;
 }
 
 // Object's destructor.
@@ -358,7 +363,7 @@ void CDisplayInfo::StartDisplayInfo(std::string filename, int index, bool bSoluc
 
     m_main->SetEditLock(true, false);
     m_main->SetEditFull(false);
-    m_bInitPause = m_pause->GetPauseType();
+    m_initPause = m_pause->GetPauseType();
     m_pause->SetPause(PAUSE_SATCOM);
     m_infoCamera = m_camera->GetType();
     m_camera->SetType(Gfx::CAM_TYPE_INFO);
@@ -834,7 +839,7 @@ void CDisplayInfo::StopDisplayInfo()
     }
     else
     {
-        m_pause->SetPause(m_bInitPause);
+        m_pause->SetPause(m_initPause);
         m_main->SetEditLock(false, false);
     }
     m_camera->SetType(m_infoCamera);

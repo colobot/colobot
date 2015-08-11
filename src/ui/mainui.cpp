@@ -93,12 +93,7 @@ CMainUserInterface::CMainUserInterface()
 
     m_glintMouse = Math::Point(0.0f, 0.0f);
     m_glintTime  = 1000.0f;
-
-    for (int i = 0; i < 10; i++)
-    {
-        m_partiPhase[i] = 0;
-        m_partiTime[i]  = 0.0f;
-    }
+    m_shotDelay = 0;
 }
 
 // Destructor of robot application.
@@ -552,27 +547,27 @@ void CMainUserInterface::FrameParticle(float rTime)
 
     for ( i=0 ; i<10 ; i++ )
     {
-        if ( m_partiPhase[i] == 0 )  // waiting?
+        if ( m_particles[i].phase == 0 )  // waiting?
         {
-            m_partiTime[i] -= rTime;
-            if ( m_partiTime[i] <= 0.0f )
+            m_particles[i].time -= rTime;
+            if ( m_particles[i].time <= 0.0f )
             {
                 r = rand()%3;
 
                 if ( r == 0 )
                 {
                     ii = rand()%nParti;
-                    m_partiPos[i].x = pParti[ii*5+0]/640.0f;
-                    m_partiPos[i].y = (480.0f-pParti[ii*5+1])/480.0f;
-                    m_partiTime[i] = pParti[ii*5+2]+Math::Rand()*pParti[ii*5+3];
-                    m_partiPhase[i] = static_cast<int>(pParti[ii*5+4]);
-                    if ( m_partiPhase[i] == 3 )
+                    m_particles[i].pos.x = pParti[ii*5+0]/640.0f;
+                    m_particles[i].pos.y = (480.0f-pParti[ii*5+1])/480.0f;
+                    m_particles[i].time = pParti[ii*5+2]+Math::Rand()*pParti[ii*5+3];
+                    m_particles[i].phase = static_cast<int>(pParti[ii*5+4]);
+                    if ( m_particles[i].phase == 3 )
                     {
-                        m_sound->Play(SOUND_PSHHH, SoundPos(m_partiPos[i]), 0.3f+Math::Rand()*0.3f);
+                        m_sound->Play(SOUND_PSHHH, SoundPos(m_particles[i].pos), 0.3f+Math::Rand()*0.3f);
                     }
                     else
                     {
-                        m_sound->Play(SOUND_GGG, SoundPos(m_partiPos[i]), 0.1f+Math::Rand()*0.4f);
+                        m_sound->Play(SOUND_GGG, SoundPos(m_particles[i].pos), 0.1f+Math::Rand()*0.4f);
                     }
                 }
 
@@ -591,7 +586,7 @@ void CMainUserInterface::FrameParticle(float rTime)
                             rand()%2?Gfx::PARTIGLINT:Gfx::PARTICONTROL,
                             Math::Rand()*0.4f+0.4f, 0.0f, 0.0f,
                             Gfx::SH_INTERFACE);
-                    m_partiTime[i] = 0.5f+Math::Rand()*0.5f;
+                    m_particles[i].time = 0.5f+Math::Rand()*0.5f;
                 }
 
                 if ( r == 2 )
@@ -600,51 +595,51 @@ void CMainUserInterface::FrameParticle(float rTime)
                     if ( ii == 0 )
                     {
                         m_sound->Play(SOUND_ENERGY, SoundRand(), 0.2f+Math::Rand()*0.2f);
-                        m_partiTime[i] = 1.0f+Math::Rand()*1.0f;
+                        m_particles[i].time = 1.0f+Math::Rand()*1.0f;
                     }
                     if ( ii == 1 )
                     {
                         m_sound->Play(SOUND_STATION, SoundRand(), 0.2f+Math::Rand()*0.2f);
-                        m_partiTime[i] = 1.0f+Math::Rand()*2.0f;
+                        m_particles[i].time = 1.0f+Math::Rand()*2.0f;
                     }
                     if ( ii == 2 )
                     {
                         m_sound->Play(SOUND_ALARM, SoundRand(), 0.1f+Math::Rand()*0.1f);
-                        m_partiTime[i] = 2.0f+Math::Rand()*4.0f;
+                        m_particles[i].time = 2.0f+Math::Rand()*4.0f;
                     }
                     if ( ii == 3 )
                     {
                         m_sound->Play(SOUND_INFO, SoundRand(), 0.1f+Math::Rand()*0.1f);
-                        m_partiTime[i] = 2.0f+Math::Rand()*4.0f;
+                        m_particles[i].time = 2.0f+Math::Rand()*4.0f;
                     }
                     if ( ii == 4 )
                     {
                         m_sound->Play(SOUND_RADAR, SoundRand(), 0.2f+Math::Rand()*0.2f);
-                        m_partiTime[i] = 0.5f+Math::Rand()*1.0f;
+                        m_particles[i].time = 0.5f+Math::Rand()*1.0f;
                     }
                     if ( ii == 5 )
                     {
                         m_sound->Play(SOUND_GFLAT, SoundRand(), 0.3f+Math::Rand()*0.3f);
-                        m_partiTime[i] = 2.0f+Math::Rand()*4.0f;
+                        m_particles[i].time = 2.0f+Math::Rand()*4.0f;
                     }
                     if ( ii == 6 )
                     {
                         m_sound->Play(SOUND_ALARMt, SoundRand(), 0.1f+Math::Rand()*0.1f);
-                        m_partiTime[i] = 2.0f+Math::Rand()*4.0f;
+                        m_particles[i].time = 2.0f+Math::Rand()*4.0f;
                     }
                 }
             }
         }
 
-        if ( m_partiPhase[i] != 0 )  // generates?
+        if ( m_particles[i].phase != 0 )  // generates?
         {
-            m_partiTime[i] -= rTime;
-            if ( m_partiTime[i] > 0.0f )
+            m_particles[i].time -= rTime;
+            if ( m_particles[i].time > 0.0f )
             {
-                if ( m_partiPhase[i] == 1 )  // sparks?
+                if ( m_particles[i].phase == 1 )  // sparks?
                 {
-                    pos.x = m_partiPos[i].x;
-                    pos.y = m_partiPos[i].y;
+                    pos.x = m_particles[i].pos.x;
+                    pos.y = m_particles[i].pos.y;
                     pos.z = 0.0f;
                     pos.x += (Math::Rand()-0.5f)*0.01f;
                     pos.y += (Math::Rand()-0.5f)*0.01f;
@@ -656,8 +651,8 @@ void CMainUserInterface::FrameParticle(float rTime)
                     m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIBLITZ,
                             Math::Rand()*0.2f+0.2f, 0.0f, 0.0f,
                             Gfx::SH_INTERFACE);
-                    pos.x = m_partiPos[i].x;
-                    pos.y = m_partiPos[i].y;
+                    pos.x = m_particles[i].pos.x;
+                    pos.y = m_particles[i].pos.y;
                     pos.z = 0.0f;
                     speed.x = (Math::Rand()-0.5f)*0.5f;
                     speed.y = (0.3f+Math::Rand()*0.3f);
@@ -669,10 +664,10 @@ void CMainUserInterface::FrameParticle(float rTime)
                             Math::Rand()*0.5f+0.5f, 2.0f, 0.0f,
                             Gfx::SH_INTERFACE);
                 }
-                if ( m_partiPhase[i] == 2 )  // sparks?
+                if ( m_particles[i].phase == 2 )  // sparks?
                 {
-                    pos.x = m_partiPos[i].x;
-                    pos.y = m_partiPos[i].y;
+                    pos.x = m_particles[i].pos.x;
+                    pos.y = m_particles[i].pos.y;
                     pos.z = 0.0f;
                     pos.x += (Math::Rand()-0.5f)*0.01f;
                     pos.y += (Math::Rand()-0.5f)*0.01f;
@@ -684,8 +679,8 @@ void CMainUserInterface::FrameParticle(float rTime)
                     m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIBLITZ,
                             Math::Rand()*0.2f+0.2f, 0.0f, 0.0f,
                             Gfx::SH_INTERFACE);
-                    pos.x = m_partiPos[i].x;
-                    pos.y = m_partiPos[i].y;
+                    pos.x = m_particles[i].pos.x;
+                    pos.y = m_particles[i].pos.y;
                     pos.z = 0.0f;
                     speed.x = (Math::Rand()-0.5f)*0.5f;
                     speed.y = (0.3f+Math::Rand()*0.3f);
@@ -696,10 +691,10 @@ void CMainUserInterface::FrameParticle(float rTime)
                             Math::Rand()*0.5f+0.5f, 2.0f, 0.0f,
                             Gfx::SH_INTERFACE);
                 }
-                if ( m_partiPhase[i] == 3 )  // smoke?
+                if ( m_particles[i].phase == 3 )  // smoke?
                 {
-                    pos.x = m_partiPos[i].x;
-                    pos.y = m_partiPos[i].y;
+                    pos.x = m_particles[i].pos.x;
+                    pos.y = m_particles[i].pos.y;
                     pos.z = 0.0f;
                     pos.x += (Math::Rand()-0.5f)*0.03f;
                     pos.y += (Math::Rand()-0.5f)*0.03f;
@@ -715,8 +710,8 @@ void CMainUserInterface::FrameParticle(float rTime)
             }
             else
             {
-                m_partiPhase[i] = 0;
-                m_partiTime[i] = 2.0f+Math::Rand()*4.0f;
+                m_particles[i].phase = 0;
+                m_particles[i].time = 2.0f+Math::Rand()*4.0f;
             }
         }
     }

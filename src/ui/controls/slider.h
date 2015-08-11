@@ -23,6 +23,8 @@
 
 #include "ui/controls/control.h"
 
+#include <memory>
+
 namespace Ui
 {
 
@@ -61,8 +63,8 @@ protected:
     virtual std::string GetLabel();
 
 protected:
-    CButton*    m_buttonLeft;
-    CButton*    m_buttonRight;
+    std::unique_ptr<CButton> m_buttonLeft;
+    std::unique_ptr<CButton> m_buttonRight;
 
     float       m_min;
     float       m_max;
@@ -75,9 +77,6 @@ protected:
     bool        m_bCapture;
     Math::Point     m_pressPos;
     float       m_pressValue;
-
-    EventType    m_eventUp;
-    EventType    m_eventDown;
 };
 
 

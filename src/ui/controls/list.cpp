@@ -20,6 +20,8 @@
 
 #include "ui/controls/list.h"
 
+#include "common/make_unique.h"
+
 #include "graphics/engine/engine.h"
 
 #include <cassert>
@@ -33,25 +35,18 @@ const float MARGING = 4.0f;
 
 // Object's constructor.
 
-CList::CList() : CControl()
+CList::CList()
+    : CControl(),
+      m_tabs(),
+      m_justifs()
 {
-    for (int i = 0; i < LISTMAXDISPLAY; i++)
-        m_button[i] = nullptr;
-
-    m_scroll = nullptr;
-    for (int i = 0; i < LISTMAXTOTAL; i++)
-    {
-        m_text[i][0] = 0;
-        m_check[i] = false;
-        m_enable[i] = true;
-    }
-
     for (int i = 0; i < 10; i++)
     {
         m_tabs[i] = 0.0f;
         m_justifs[i] = Gfx::TEXT_ALIGN_LEFT;
     }
 
+    m_expand = 0.0f;
     m_totalLine = 0;
     m_displayLine = 0;
     m_selectLine = -1;
@@ -65,12 +60,6 @@ CList::CList() : CControl()
 
 CList::~CList()
 {
-    for (int i = 0; i < LISTMAXDISPLAY; i++)
-    {
-        delete m_button[i];
-    }
-
-    delete m_scroll;
 }
 
 
@@ -88,9 +77,8 @@ bool CList::Create(Math::Point pos, Math::Point dim, int icon, EventType eventMs
 
     CControl::Create(pos, dim, icon, eventMsg);
 
-    m_scroll = new CScroll();
+    m_scroll = MakeUnique<CScroll>();
     m_scroll->Create(pos, dim, 0, EVENT_NULL);
-    m_eventScroll = m_scroll->GetEventType();
 
     return MoveAdjust();
 }
@@ -110,14 +98,8 @@ bool CList::MoveAdjust()
     Math::Point ipos, idim, ppos, ddim;
     float marging, h;
 
-    for (int i = 0; i < LISTMAXDISPLAY; i++)
-    {
-        if (m_button[i] != nullptr)
-        {
-            delete m_button[i];
-            m_button[i] = nullptr;
-        }
-    }
+    for (auto& button : m_buttons)
+        button.reset();
 
     if (m_icon == 0)
         marging = MARGING;
@@ -153,18 +135,18 @@ bool CList::MoveAdjust()
     ddim.y = h;
     for (int i = 0; i < m_displayLine; i++)
     {
-        m_button[i] = new CButton();
-        m_button[i]->Create(ppos, ddim, -1, EVENT_NULL);
-        m_button[i]->SetTextAlign(Gfx::TEXT_ALIGN_LEFT);
-        m_button[i]->SetState(STATE_SIMPLY);
-        m_button[i]->SetFontType(m_fontType);
-        m_button[i]->SetFontSize(m_fontSize);
+        auto button = MakeUnique<CButton>();
+        button->Create(ppos, ddim, -1, EVENT_NULL);
+        button->SetTextAlign(Gfx::TEXT_ALIGN_LEFT);
+        button->SetState(STATE_SIMPLY);
+        button->SetFontType(m_fontType);
+        button->SetFontSize(m_fontSize);
         ppos.y -= h;
 
-        m_eventButton[i] = m_button[i]->GetEventType();
+        m_buttons[i] = std::move(button);
     }
 
-    if ( m_scroll != nullptr )
+    if (m_scroll != nullptr)
     {
         ppos.x = ipos.x + idim.x - SCROLL_WIDTH;
         ppos.y = ipos.y;
@@ -186,9 +168,9 @@ EventType CList::GetEventMsgButton(int i)
 {
     if (i < 0 || i >= m_displayLine)
         return EVENT_NULL;
-    if (m_button[i] == nullptr)
+    if (m_buttons[i] == nullptr)
         return EVENT_NULL;
-    return m_button[i]->GetEventType();
+    return m_buttons[i]->GetEventType();
 }
 
 // Returns the message from the elevator.
@@ -221,8 +203,8 @@ bool CList::SetState(int state, bool bState)
     {
         for (int i = 0; i < m_displayLine; i++)
         {
-            if (m_button[i] != nullptr)
-                m_button[i]->SetState(state, bState);
+            if (m_buttons[i] != nullptr)
+                m_buttons[i]->SetState(state, bState);
         }
         if (m_scroll != nullptr)
             m_scroll->SetState(state, bState);
@@ -238,8 +220,8 @@ bool CList::SetState(int state)
     {
         for (int i = 0; i < m_displayLine; i++)
         {
-            if (m_button[i] != nullptr)
-                m_button[i]->SetState(state);
+            if (m_buttons[i] != nullptr)
+                m_buttons[i]->SetState(state);
         }
         if (m_scroll != nullptr)
             m_scroll->SetState(state);
@@ -255,8 +237,8 @@ bool CList::ClearState(int state)
     {
         for (int i = 0; i < m_displayLine; i++)
         {
-            if (m_button[i] != nullptr)
-                m_button[i]->ClearState(state);
+            if (m_buttons[i] != nullptr)
+                m_buttons[i]->ClearState(state);
         }
         if (m_scroll != nullptr)
             m_scroll->ClearState(state);
@@ -274,18 +256,18 @@ bool CList::EventProcess(const Event &event)
     {
         int i = m_selectLine-m_firstLine;
 
-        if (i >= 0 && i < 4  && m_button[i] != nullptr)
+        if (i >= 0 && i < 4  && m_buttons[i] != nullptr)
         {
             m_blinkTime += event.rTime;
             if (Math::Mod(m_blinkTime, 0.7f) < 0.3f)
             {
-                m_button[i]->ClearState(STATE_ENABLE);
-                m_button[i]->ClearState(STATE_CHECK);
+                m_buttons[i]->ClearState(STATE_ENABLE);
+                m_buttons[i]->ClearState(STATE_CHECK);
             }
             else
             {
-                m_button[i]->SetState(STATE_ENABLE);
-                m_button[i]->SetState(STATE_CHECK);
+                m_buttons[i]->SetState(STATE_ENABLE);
+                m_buttons[i]->SetState(STATE_CHECK);
             }
         }
     }
@@ -323,8 +305,8 @@ bool CList::EventProcess(const Event &event)
         {
             if (i + m_firstLine >= m_totalLine)
                 break;
-            if (m_button[i] != nullptr)
-                m_button[i]->EventProcess(event);
+            if (m_buttons[i] != nullptr)
+                m_buttons[i]->EventProcess(event);
         }
     }
 
@@ -335,12 +317,12 @@ bool CList::EventProcess(const Event &event)
             if (i + m_firstLine >= m_totalLine)
                 break;
 
-            if (m_button[i] != nullptr)
+            if (m_buttons[i] != nullptr)
             {
-                if (!m_button[i]->EventProcess(event))
+                if (!m_buttons[i]->EventProcess(event))
                     return false;
 
-                if (event.type == m_eventButton[i])
+                if (event.type == m_buttons[i]->GetEventType())
                 {
                     SetSelect(m_firstLine + i);
 
@@ -355,7 +337,7 @@ bool CList::EventProcess(const Event &event)
         if (!m_scroll->EventProcess(event))
             return false;
 
-        if (event.type == m_eventScroll)
+        if (event.type == m_scroll->GetEventType())
         {
             MoveScroll();
             UpdateButton();
@@ -408,9 +390,9 @@ void CList::Draw()
             uv2.x = 156.0f / 256.0f;
             uv2.y =  92.0f / 256.0f;
 
-            if (m_button[0] != nullptr)
+            if (m_buttons[0] != nullptr)
             {
-                dim = m_button[0]->GetDim();
+                dim = m_buttons[0]->GetDim();
                 dim.y *= m_displayLine;  // background sounds spot behind
             }
         }
@@ -428,10 +410,10 @@ void CList::Draw()
     if ( m_totalLine < m_displayLine ) // no buttons to the bottom?
     {
         i = m_totalLine;
-        if ( m_button[i] != 0 )
+        if (m_buttons[i] != nullptr)
         {
-            pos = m_button[i]->GetPos();
-            dim = m_button[i]->GetDim();
+            pos = m_buttons[i]->GetPos();
+            dim = m_buttons[i]->GetDim();
             pos.y += dim.y * 1.1f;
             dim.y *= 0.4f;
             pos.y -= dim.y;
@@ -455,30 +437,30 @@ void CList::Draw()
         if ( i + m_firstLine >= m_totalLine )
             break;
 
-        if ( m_button[i] != nullptr )
+        if ( m_buttons[i] != nullptr )
         {
             if ( !m_bBlink && i + m_firstLine < m_totalLine )
-                m_button[i]->SetState(STATE_ENABLE, m_enable[i+m_firstLine] && (m_state & STATE_ENABLE) );
+                m_buttons[i]->SetState(STATE_ENABLE, m_items[i+m_firstLine].enable && (m_state & STATE_ENABLE) );
 
-            m_button[i]->Draw();  // draws a box without text
+            m_buttons[i]->Draw();  // draws a box without text
 
             // draws text in the box
-            pos = m_button[i]->GetPos();
-            dim = m_button[i]->GetDim();
+            pos = m_buttons[i]->GetPos();
+            dim = m_buttons[i]->GetDim();
             if ( m_tabs[0] == 0.0f )
             {
                 ppos.x = pos.x + dim.y * 0.5f;
                 ppos.y = pos.y + dim.y * 0.5f;
                 ppos.y -= m_engine->GetText()->GetHeight(m_fontType, m_fontSize) / 2.0f;
                 ddim.x = dim.x-dim.y;
-                DrawCase(m_text[i + m_firstLine], ppos, ddim.x, Gfx::TEXT_ALIGN_LEFT);
+                DrawCase(m_items[i + m_firstLine].text, ppos, ddim.x, Gfx::TEXT_ALIGN_LEFT);
             }
             else
             {
                 ppos.x = pos.x + dim.y * 0.5f;
                 ppos.y = pos.y + dim.y * 0.5f;
                 ppos.y -= m_engine->GetText()->GetHeight(m_fontType, m_fontSize) / 2.0f;
-                pb = m_text[i + m_firstLine];
+                pb = m_items[i + m_firstLine].text;
                 for (int j = 0; j < 10; j++)
                 {
                     pe = strchr(pb, '\t');
@@ -500,8 +482,8 @@ void CList::Draw()
 
             if ( (m_state & STATE_EXTEND) && i < m_totalLine)
             {
-                pos = m_button[i]->GetPos();
-                dim = m_button[i]->GetDim();
+                pos = m_buttons[i]->GetPos();
+                dim = m_buttons[i]->GetDim();
                 pos.x += dim.x - dim.y * 0.75f;
                 dim.x = dim.y * 0.75f;
                 pos.x += 2.0f / 640.0f;
@@ -509,7 +491,7 @@ void CList::Draw()
                 dim.x -= 4.0f / 640.0f;
                 dim.y -= 4.0f / 480.0f;
 
-                if ( m_check[i + m_firstLine] )
+                if (m_items[i + m_firstLine].check)
                 {
                     m_engine->SetTexture("textures/interface/button1.png");
                     m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
@@ -562,7 +544,7 @@ void CList::Draw()
         }
     }
 
-    if ( m_scroll != 0 )
+    if (m_scroll != nullptr)
         m_scroll->Draw();  // draws the lift
 }
 
@@ -648,19 +630,17 @@ bool CList::GetSelectCap()
 
 void CList::SetBlink(bool bEnable)
 {
-    int i;
-
     m_bBlink = bEnable;
     m_blinkTime = 0.0f;
 
-    i = m_selectLine-m_firstLine;
+    int i = m_selectLine - m_firstLine;
 
-    if (i >= 0 && i < 4  &&  m_button[i] != nullptr)
+    if (i >= 0 && i < 4 && m_buttons[i] != nullptr)
     {
         if ( !bEnable )
         {
-            m_button[i]->SetState(STATE_CHECK);
-            m_button[i]->ClearState(STATE_ENABLE);
+            m_buttons[i]->SetState(STATE_CHECK);
+            m_buttons[i]->ClearState(STATE_ENABLE);
         }
     }
 }
@@ -682,9 +662,9 @@ void CList::SetItemName(int i, const char* name)
         m_totalLine = i+1;  // expands the list
 
     if ( name[0] == 0 )
-        strcpy(m_text[i], " ");
+        strcpy(m_items[i].text, " ");
     else
-        strcpy(m_text[i], name);
+        strcpy(m_items[i].text, name);
 
     UpdateButton();
     UpdateScroll();
@@ -697,7 +677,7 @@ char* CList::GetItemName(int i)
     if ( i < 0 || i >= m_totalLine )
         return 0;
 
-    return m_text[i];
+    return m_items[i].text;
 }
 
 
@@ -708,7 +688,7 @@ void CList::SetCheck(int i, bool bMode)
     if ( i < 0 || i >= m_totalLine )
         return;
 
-    m_check[i] = bMode;
+    m_items[i].check = bMode;
 }
 
 // Returns the bit "check" for a box.
@@ -718,7 +698,7 @@ bool CList::GetCheck(int i)
     if ( i < 0 || i >= m_totalLine )
         return false;
 
-    return m_check[i];
+    return m_items[i].check;
 }
 
 
@@ -729,7 +709,7 @@ void CList::SetEnable(int i, bool bMode)
     if ( i < 0 || i >= m_totalLine )
         return;
 
-    m_enable[i] = bMode;
+    m_items[i].enable = bMode;
 }
 
 // Returns the bit "enable" for a box.
@@ -739,7 +719,7 @@ bool CList::GetEnable(int i)
     if ( i < 0 || i >= m_totalLine )
         return false;
 
-    return m_enable[i];
+    return m_items[i].enable;
 }
 
 
@@ -800,21 +780,21 @@ void CList::UpdateButton()
     j = m_firstLine;
     for (i = 0; i < m_displayLine; i++)
     {
-        if (m_button[i] == nullptr)
+        if (m_buttons[i] == nullptr)
             continue;
 
-        m_button[i]->SetState(STATE_CHECK, (j == m_selectLine));
+        m_buttons[i]->SetState(STATE_CHECK, (j == m_selectLine));
 
         if ( j < m_totalLine )
         {
-//?         m_button[i]->SetName(m_text[j]);
-            m_button[i]->SetName(" ");  // blank button
-            m_button[i]->SetState(STATE_ENABLE, (state & STATE_ENABLE));
+//?         m_buttons[i]->SetName(m_text[j]);
+            m_buttons[i]->SetName(" ");  // blank button
+            m_buttons[i]->SetState(STATE_ENABLE, (state & STATE_ENABLE));
         }
         else
         {
-            m_button[i]->SetName(" ");  // blank button
-            m_button[i]->ClearState(STATE_ENABLE);
+            m_buttons[i]->SetName(" ");  // blank button
+            m_buttons[i]->ClearState(STATE_ENABLE);
         }
         j ++;
     }
@@ -860,14 +840,11 @@ void CList::UpdateScroll()
 
 void CList::MoveScroll()
 {
-    float pos;
-    int n;
-
-    if ( m_scroll == 0 )
+    if (m_scroll == nullptr)
         return;
 
-    n = m_totalLine - m_displayLine;
-    pos = m_scroll->GetVisibleValue();
+    int n = m_totalLine - m_displayLine;
+    float pos = m_scroll->GetVisibleValue();
     pos += m_scroll->GetArrowStep() / 2.0f;  // it's magic!
     m_firstLine = static_cast<int>(pos * n);
     if ( m_firstLine < 0 )

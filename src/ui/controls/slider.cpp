@@ -45,9 +45,6 @@ const float HOLE_WIDTH      = (5.0f/480.0f);
 
 CSlider::CSlider() : CControl()
 {
-    m_buttonLeft  = 0;
-    m_buttonRight = 0;
-
     m_min          = 0.0f;
     m_max          = 1.0f;
     m_visibleValue = 0.0f;
@@ -56,18 +53,14 @@ CSlider::CSlider() : CControl()
     m_marginButton = 0.0f;
     m_bHoriz       = false;
 
-    m_eventUp   = EVENT_NULL;
-    m_eventDown = EVENT_NULL;
-
     m_bCapture = false;
+    m_pressValue = 0.0f;
 }
 
 // Object's destructor.
 
 CSlider::~CSlider()
 {
-    delete m_buttonLeft;
-    delete m_buttonRight;
 }
 
 
@@ -104,40 +97,32 @@ void CSlider::MoveAdjust()
     if ( ( m_bHoriz && m_dim.x < m_dim.y*4.0f) ||
          (!m_bHoriz && m_dim.y < m_dim.x*4.0f) )  // very short slider?
     {
-        delete m_buttonLeft;
-        m_buttonLeft = 0;
-
-        delete m_buttonRight;
-        m_buttonRight = 0;
-
+        m_buttonLeft.reset();
+        m_buttonRight.reset();
         m_marginButton = 0.0f;
     }
     else
     {
-#if 1
-        if ( m_buttonLeft == 0 )
+        if (m_buttonLeft == nullptr)
         {
-            m_buttonLeft = new CButton();
+            m_buttonLeft = MakeUnique<CButton>();
             m_buttonLeft->Create(Math::Point(0.0f, 0.0f), Math::Point(0.0f, 0.0f), m_bHoriz?55:49, EVENT_NULL);  // </^
             m_buttonLeft->SetRepeat(true);
             if ( m_state & STATE_SHADOW )  m_buttonLeft->SetState(STATE_SHADOW);
-            m_eventUp = m_buttonLeft->GetEventType();
         }
 
-        if ( m_buttonRight == 0 )
+        if (m_buttonRight == nullptr)
         {
-            m_buttonRight = new CButton();
+            m_buttonRight = MakeUnique<CButton>();
             m_buttonRight->Create(Math::Point(0.0f, 0.0f), Math::Point(0.0f, 0.0f), m_bHoriz?48:50, EVENT_NULL);  // >/v
             m_buttonRight->SetRepeat(true);
             if ( m_state & STATE_SHADOW )  m_buttonRight->SetState(STATE_SHADOW);
-            m_eventDown = m_buttonRight->GetEventType();
         }
 
         m_marginButton = m_bHoriz?(m_dim.y*0.75f):(m_dim.x/0.75f);
-#endif
     }
 
-    if ( m_buttonLeft != 0 )
+    if (m_buttonLeft != nullptr)
     {
         if ( m_bHoriz )
         {
@@ -157,7 +142,7 @@ void CSlider::MoveAdjust()
         m_buttonLeft->SetDim(dim);
     }
 
-    if ( m_buttonRight != 0 )
+    if (m_buttonRight != nullptr)
     {
         if ( m_bHoriz )
         {
@@ -211,8 +196,8 @@ bool CSlider::SetState(int state, bool bState)
     if ( (state & STATE_ENABLE) ||
          (state & STATE_SHADOW) )
     {
-        if ( m_buttonLeft  != 0 )  m_buttonLeft->SetState(state, bState);
-        if ( m_buttonRight != 0 )  m_buttonRight->SetState(state, bState);
+        if (m_buttonLeft  != nullptr)  m_buttonLeft->SetState(state, bState);
+        if (m_buttonRight != nullptr)  m_buttonRight->SetState(state, bState);
     }
 
     return CControl::SetState(state, bState);
@@ -223,8 +208,8 @@ bool CSlider::SetState(int state)
     if ( (state & STATE_ENABLE) ||
          (state & STATE_SHADOW) )
     {
-        if ( m_buttonLeft  != 0 )  m_buttonLeft->SetState(state);
-        if ( m_buttonRight != 0 )  m_buttonRight->SetState(state);
+        if (m_buttonLeft  != nullptr)  m_buttonLeft->SetState(state);
+        if (m_buttonRight != nullptr)  m_buttonRight->SetState(state);
     }
 
     return CControl::SetState(state);
@@ -235,8 +220,8 @@ bool CSlider::ClearState(int state)
     if ( (state & STATE_ENABLE) ||
          (state & STATE_SHADOW) )
     {
-        if ( m_buttonLeft  != 0 )  m_buttonLeft->ClearState(state);
-        if ( m_buttonRight != 0 )  m_buttonRight->ClearState(state);
+        if (m_buttonLeft  != nullptr) m_buttonLeft->ClearState(state);
+        if (m_buttonRight != nullptr) m_buttonRight->ClearState(state);
     }
 
     return CControl::ClearState(state);
@@ -254,16 +239,16 @@ bool CSlider::EventProcess(const Event &event)
 
     CControl::EventProcess(event);
 
-    if ( m_buttonLeft != 0 && !m_bCapture )
+    if (m_buttonLeft != nullptr && !m_bCapture)
     {
         if ( !m_buttonLeft->EventProcess(event) )  return false;
     }
-    if ( m_buttonRight != 0 && !m_bCapture )
+    if (m_buttonRight != nullptr && !m_bCapture)
     {
         if ( !m_buttonRight->EventProcess(event) )  return false;
     }
 
-    if ( event.type == m_eventUp && m_step > 0.0f )
+    if (m_buttonLeft != nullptr && event.type == m_buttonLeft->GetEventType() && m_step > 0.0f )
     {
         m_visibleValue -= m_bHoriz?m_step:-m_step;
         if ( m_visibleValue < 0.0f )  m_visibleValue = 0.0f;
@@ -273,7 +258,7 @@ bool CSlider::EventProcess(const Event &event)
         m_event->AddEvent(Event(m_eventType));
     }
 
-    if ( event.type == m_eventDown && m_step > 0.0f )
+    if (m_buttonRight != nullptr && event.type == m_buttonRight->GetEventType() && m_step > 0.0f )
     {
         m_visibleValue += m_bHoriz?m_step:-m_step;
         if ( m_visibleValue < 0.0f )  m_visibleValue = 0.0f;
@@ -382,7 +367,7 @@ void CSlider::Draw()
 
     if ( (m_state & STATE_VISIBLE) == 0 )  return;
 
-    if ( m_buttonLeft != 0 )
+    if (m_buttonLeft != nullptr)
     {
         m_buttonLeft->Draw();
     }
@@ -451,7 +436,7 @@ void CSlider::Draw()
         DrawVertex(ppos, ddim, 2);
     }
 
-    if ( m_buttonRight != 0 )
+    if (m_buttonRight != nullptr)
     {
         m_buttonRight->Draw();
     }

@@ -21,16 +21,13 @@
 
 #pragma once
 
-
 #include "common/event.h"
 #include "common/global.h"
 
-#include "sound/sound.h"
-
-
+#include <array>
 
 class CObject;
-class CSound;
+class CSoundInterface;
 
 namespace Gfx
 {
@@ -92,11 +89,15 @@ protected:
     Ui::CInterface*     m_interface;
     CSoundInterface*         m_sound;
 
-    bool            m_bExist[MAXDTLINE];
-    float           m_time[MAXDTLINE];
-    Math::Vector        m_visitGoal[MAXDTLINE];
-    float           m_visitDist[MAXDTLINE];
-    float           m_visitHeight[MAXDTLINE];
+    struct TextLine
+    {
+        bool exist = false;
+        float time = 0.0f;
+        Math::Vector visitGoal;
+        float visitDist = 0.0f;
+        float visitHeight = 0.0f;
+    };
+    std::array<TextLine, MAXDTLINE> m_textLines;
 
     bool            m_bHide;
     bool            m_bEnable;

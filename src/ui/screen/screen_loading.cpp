@@ -34,7 +34,8 @@ namespace Ui
 {
 
 CScreenLoading::CScreenLoading()
-: m_visible(false)
+    : m_visible(false),
+      m_lastProgress(0.0f)
 {
 }
 

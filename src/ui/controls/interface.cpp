@@ -22,6 +22,9 @@
 
 #include "app/app.h"
 
+#include <boost/range/adaptor/reversed.hpp>
+
+
 namespace Ui
 {
 
@@ -31,18 +34,12 @@ CInterface::CInterface()
     m_event  = CApplication::GetInstancePointer()->GetEventQueue();
     m_engine = Gfx::CEngine::GetInstancePointer();
     m_camera = nullptr;
-
-    for (int i = 0; i < MAXCONTROL; i++)
-    {
-        m_table[i] = nullptr;
-    }
 }
 
 // Object's destructor.
 
 CInterface::~CInterface()
 {
-    Flush();
 }
 
 
@@ -50,26 +47,24 @@ CInterface::~CInterface()
 
 void CInterface::Flush()
 {
-    for (int i = 0; i < MAXCONTROL; i++)
+    for (auto& control : m_controls)
     {
-        delete m_table[i];
-        m_table[i] = nullptr;
+        control.reset();
     }
 }
 
-
 int CInterface::GetNextFreeControl()
 {
-    for (int i = 10; i < MAXCONTROL-1; i++)
+    for (int i = 10; i < static_cast<int>(m_controls.size()) - 1; i++)
     {
-        if (m_table[i] == nullptr)
+        if (m_controls[i] == nullptr)
             return i;
     }
     return -1;
 }
 
-
-template <typename T> inline T* CInterface::CreateControl(Math::Point pos, Math::Point dim, int icon, EventType eventMsg)
+template <typename ControlClass>
+ControlClass* CInterface::CreateControl(Math::Point pos, Math::Point dim, int icon, EventType eventMsg)
 {
     if (eventMsg == EVENT_NULL)
         eventMsg = GetUniqueEventType();
@@ -78,10 +73,11 @@ template <typename T> inline T* CInterface::CreateControl(Math::Point pos, Math:
     if (index < 0)
         return nullptr;
 
-    m_table[index] = new T();
-    T* pc = static_cast<T *>(m_table[index]);
-    pc->Create(pos, dim, icon, eventMsg);
-    return pc;
+    auto control = MakeUnique<ControlClass>();
+    control->Create(pos, dim, icon, eventMsg);
+    auto* controlPtr = control.get();
+    m_controls[index] = std::move(control);
+    return controlPtr;
 }
 
 
@@ -105,18 +101,18 @@ CWindow* CInterface::CreateWindows(Math::Point pos, Math::Point dim, int icon, E
         case EVENT_WINDOW7: index = 7; break;
         case EVENT_WINDOW8: index = 8; break;
         case EVENT_WINDOW9: index = 9; break;
-        case EVENT_TOOLTIP: index = MAXCONTROL-1; break;
+        case EVENT_TOOLTIP: index = m_controls.size() - 1; break;
         default: index = GetNextFreeControl(); break;
     }
 
     if (index < 0)
         return nullptr;
 
-    delete m_table[index];
-    m_table[index] = new CWindow();
-    CWindow* pc = static_cast<CWindow *>(m_table[index]);
-    pc->Create(pos, dim, icon, eventMsg);
-    return pc;
+    auto window = MakeUnique<CWindow>();
+    window->Create(pos, dim, icon, eventMsg);
+    auto* windowPtr = window.get();
+    m_controls[index] = std::move(window);
+    return windowPtr;
 }
 
 // Creates a new button.
@@ -220,10 +216,11 @@ CList* CInterface::CreateList(Math::Point pos, Math::Point dim, int icon, EventT
     if (index < 0)
         return nullptr;
 
-    m_table[index] = new CList();
-    CList* pc = static_cast<CList *>(m_table[index]);
-    pc->Create(pos, dim, icon, eventMsg, expand);
-    return pc;
+    auto list = MakeUnique<CList>();
+    list->Create(pos, dim, icon, eventMsg, expand);
+    auto* listPtr = list.get();
+    m_controls[index] = std::move(list);
+    return listPtr;
 }
 
 // Creates a new shortcut.
@@ -258,16 +255,13 @@ CMap* CInterface::CreateMap(Math::Point pos, Math::Point dim, int icon, EventTyp
 
 bool CInterface::DeleteControl(EventType eventMsg)
 {
-    for (int i = 0; i < MAXCONTROL; i++)
+    for (auto& control : m_controls)
     {
-        if ( m_table[i] != nullptr )
+        if (control != nullptr &&
+            eventMsg == control->GetEventType())
         {
-            if (eventMsg == m_table[i]->GetEventType())
-            {
-                delete m_table[i];
-                m_table[i] = nullptr;
-                return true;
-            }
+            control.reset();
+            return true;
         }
     }
     return false;
@@ -277,12 +271,12 @@ bool CInterface::DeleteControl(EventType eventMsg)
 
 CControl* CInterface::SearchControl(EventType eventMsg)
 {
-    for (int i = 0; i < MAXCONTROL; i++)
+    for (auto& control : m_controls)
     {
-        if (m_table[i] != nullptr)
+        if (control != nullptr &&
+            eventMsg == control->GetEventType())
         {
-            if (eventMsg == m_table[i]->GetEventType())
-                return m_table[i];
+            return control.get();
         }
     }
     return nullptr;
@@ -300,11 +294,11 @@ bool CInterface::EventProcess(const Event &event)
         m_engine->SetMouseType(m_camera->GetMouseDef(event.mousePos));
     }
 
-    for (int i = MAXCONTROL-1; i >= 0; i--)
+    for (auto& control : boost::adaptors::reverse(m_controls))
     {
-        if (m_table[i] != nullptr &&  m_table[i]->TestState(STATE_ENABLE))
+        if (control != nullptr && control->TestState(STATE_ENABLE))
         {
-            if ( !m_table[i]->EventProcess(event) )
+            if (! control->EventProcess(event))
                 return false;
         }
     }
@@ -317,11 +311,11 @@ bool CInterface::EventProcess(const Event &event)
 
 bool CInterface::GetTooltip(Math::Point pos, std::string &name)
 {
-    for (int i = MAXCONTROL-1; i >= 0; i--)
+    for (auto& control : boost::adaptors::reverse(m_controls))
     {
-        if (m_table[i] != nullptr)
+        if (control != nullptr)
         {
-            if (m_table[i]->GetTooltip(pos, name))
+            if (control->GetTooltip(pos, name))
                 return true;
         }
     }
@@ -333,21 +327,21 @@ bool CInterface::GetTooltip(Math::Point pos, std::string &name)
 
 void CInterface::Draw()
 {
-    for (int i = 0; i < MAXCONTROL; i++)
+    for (auto& control : m_controls)
     {
-        if ( m_table[i] != nullptr )
-            m_table[i]->Draw();
+        if (control != nullptr)
+            control->Draw();
     }
 }
 
-void CInterface::SetFocus(CControl* control)
+void CInterface::SetFocus(CControl* focusControl)
 {
-    for (int i = 0; i < MAXCONTROL; i++)
+    for (auto& control : m_controls)
     {
-        if (m_table[i] != nullptr)
+        if (control != nullptr)
         {
-            bool focus = m_table[i] == control;
-            m_table[i]->SetFocus(focus);
+            bool focus = control.get() == focusControl;
+            control->SetFocus(focus);
         }
     }
 }

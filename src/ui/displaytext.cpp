@@ -43,7 +43,11 @@
 
 namespace Ui
 {
+
+namespace
+{
 const float FONTSIZE = 12.0f;
+} // anonymous namespace
 
 
 
@@ -54,15 +58,6 @@ CDisplayText::CDisplayText()
     m_engine    = Gfx::CEngine::GetInstancePointer();
     m_interface = CRobotMain::GetInstancePointer()->GetInterface();
     m_sound     = CApplication::GetInstancePointer()->GetSound();
-
-    for (int i=0 ; i<MAXDTLINE ; i++ )
-    {
-        m_bExist[i] = false;
-        m_visitGoal[i] = Math::Vector(0.0f, 0.0f, 0.0f);
-        m_visitDist[i] = 0.0f;
-        m_visitHeight[i] = 0.0f;
-        m_time[i] = 0.0f;  // nothing displayed
-    }
 
     m_bHide = false;
     m_bEnable = true;
@@ -88,22 +83,26 @@ void CDisplayText::DeleteObject()
 
 bool CDisplayText::EventProcess(const Event &event)
 {
-    int     i;
+    if (m_engine->GetPause())  return true;
 
-    if ( m_engine->GetPause() )  return true;
-
-    if ( event.type == EVENT_FRAME )
+    if (event.type == EVENT_FRAME)
     {
-        for ( i=0 ; i<MAXDTLINE ; i++ )
+        for (auto& line : m_textLines)
         {
-            if ( !m_bExist[i] )  break;
-            m_time[i] -= event.rTime;
+            if (! line.exist) break;
+            line.time -= event.rTime;
         }
-        while ( true )
+
+        while (true)
         {
-            if ( !m_bExist[0] ||
-                 m_time[0] > 0.0f )  break;
-            if ( !ClearLastText() )  break;
+            if (!m_textLines.front().exist ||
+                m_textLines.front().time > 0.0f)
+            {
+                break;
+            }
+
+            if (!ClearLastText())
+                break;
         }
     }
 
@@ -115,14 +114,12 @@ bool CDisplayText::EventProcess(const Event &event)
 
 void CDisplayText::DisplayError(Error err, CObject* pObj, float time)
 {
-    Math::Vector    pos;
-    float       h, d;
+    if (pObj == nullptr)
+        return;
 
-    if ( pObj == 0 )  return;
-
-    pos = pObj->GetPosition();
-    h = GetIdealHeight(pObj);
-    d = GetIdealDist(pObj);
+    Math::Vector pos = pObj->GetPosition();
+    float h = GetIdealHeight(pObj);
+    float d = GetIdealDist(pObj);
     DisplayError(err, pos, h, d, time);
 }
 
@@ -175,14 +172,11 @@ void CDisplayText::DisplayError(Error err, Math::Vector goal, float height,
 void CDisplayText::DisplayText(const char *text, CObject* pObj,
                                float time, TextType type)
 {
-    Math::Vector    pos;
-    float       h, d;
+    if (pObj == nullptr)  return;
 
-    if ( pObj == 0 )  return;
-
-    pos = pObj->GetPosition();
-    h = GetIdealHeight(pObj);
-    d = GetIdealDist(pObj);
+    Math::Vector pos = pObj->GetPosition();
+    float h = GetIdealHeight(pObj);
+    float d = GetIdealDist(pObj);
     DisplayText(text, pos, h, d, time, type);
 }
 
@@ -264,11 +258,13 @@ void CDisplayText::DisplayText(const char *text, Math::Vector goal, float height
         button->ClearState(STATE_ENABLE);
     }
 
-    m_bExist[nLine] = true;
-    m_visitGoal[nLine] = goal;
-    m_visitDist[nLine] = dist;
-    m_visitHeight[nLine] = height;
-    m_time[nLine] = time*m_delayFactor;
+    TextLine line;
+    line.exist = true;
+    line.visitGoal = goal;
+    line.visitDist = dist;
+    line.visitHeight = height;
+    line.time = time*m_delayFactor;
+    m_textLines[nLine] = line;
 
     toto = SearchToto();
     if ( toto != 0 )
@@ -318,24 +314,18 @@ void CDisplayText::DisplayText(const char *text, Math::Vector goal, float height
 
 void CDisplayText::ClearText()
 {
-    Ui::CWindow*    pw;
-    int         i;
+    Ui::CWindow* pw = static_cast<Ui::CWindow*>(m_interface->SearchControl(EVENT_WINDOW2));
 
-    pw = static_cast<Ui::CWindow*>(m_interface->SearchControl(EVENT_WINDOW2));
-
-    for ( i=0 ; i<MAXDTLINE ; i++ )
+    for (int i = 0; i < MAXDTLINE; i++)
     {
-        if ( pw != 0 )
+        if (pw != nullptr)
         {
             pw->DeleteControl(EventType(EVENT_DT_GROUP0+i));
             pw->DeleteControl(EventType(EVENT_DT_LABEL0+i));
             pw->DeleteControl(EventType(EVENT_DT_VISIT0+i));
         }
-        m_bExist[i] = false;
-        m_visitGoal[i] = Math::Vector(0.0f, 0.0f, 0.0f);
-        m_visitDist[i] = 0.0f;
-        m_visitHeight[i] = 0.0f;
-        m_time[i] = 0.0f;
+
+        m_textLines[i] = TextLine();
     }
 }
 
@@ -415,16 +405,13 @@ bool CDisplayText::ClearLastText()
         pg1->SetIcon(pg2->GetIcon());
         pl1->SetName(pl2->GetName());
 
-        m_time[i]        = m_time[i+1];
-        m_visitGoal[i]   = m_visitGoal[i+1];
-        m_visitDist[i]   = m_visitDist[i+1];
-        m_visitHeight[i] = m_visitHeight[i+1];  // shift
+        m_textLines[i] = m_textLines[i+1];
     }
 
     pw->DeleteControl(EventType(EVENT_DT_VISIT0+i));
     pw->DeleteControl(EventType(EVENT_DT_GROUP0+i));
     pw->DeleteControl(EventType(EVENT_DT_LABEL0+i));
-    m_bExist[i] = false;
+    m_textLines[i].exist = false;
     return true;
 }
 
@@ -449,33 +436,27 @@ void CDisplayText::SetEnable(bool bEnable)
 
 Math::Vector CDisplayText::GetVisitGoal(EventType event)
 {
-    int     i;
-
-    i = event-EVENT_DT_VISIT0;
-    if ( i < 0 || i >= MAXDTLINE )  return Math::Vector(0.0f, 0.0f, 0.0f);
-    return m_visitGoal[i];
+    int i = event - EVENT_DT_VISIT0;
+    if (i < 0 || i >= MAXDTLINE)  return Math::Vector(0.0f, 0.0f, 0.0f);
+    return m_textLines[i].visitGoal;
 }
 
 // Returns the distance during a visit.
 
 float CDisplayText::GetVisitDist(EventType event)
 {
-    int     i;
-
-    i = event-EVENT_DT_VISIT0;
-    if ( i < 0 || i >= MAXDTLINE )  return 0.0f;
-    return m_visitDist[i];
+    int i = event-EVENT_DT_VISIT0;
+    if (i < 0 || i >= MAXDTLINE)  return 0.0f;
+    return m_textLines[i].visitDist;
 }
 
 // Returns the height on a visit.
 
 float CDisplayText::GetVisitHeight(EventType event)
 {
-    int     i;
-
-    i = event-EVENT_DT_VISIT0;
-    if ( i < 0 || i >= MAXDTLINE )  return 0.0f;
-    return m_visitHeight[i];
+    int i = event-EVENT_DT_VISIT0;
+    if (i < 0 || i >= MAXDTLINE)  return 0.0f;
+    return m_textLines[i].visitHeight;
 }
 
 
@@ -590,5 +571,5 @@ CObject* CDisplayText::SearchToto()
     return CObjectManager::GetInstancePointer()->FindNearest(nullptr, OBJECT_TOTO);
 }
 
-}
+} // namespace Ui
 

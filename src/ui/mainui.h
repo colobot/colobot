@@ -128,9 +128,13 @@ protected:
     Math::Point          m_glintMouse;
     float                m_glintTime;
 
-    int                  m_partiPhase[10];
-    float                m_partiTime[10];
-    Math::Point          m_partiPos[10];
+    struct Particle
+    {
+        int phase = 0;
+        float time = 0.0f;
+        Math::Point pos;
+    };
+    std::array<Particle, 10> m_particles;
 };
 
 } // namespace Ui

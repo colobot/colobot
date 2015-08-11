@@ -213,7 +213,7 @@ public:
 
     void        FlushDisplayInfo();
     void        StartDisplayInfo(int index, bool movie);
-    void        StartDisplayInfo(const char *filename, int index);
+    void        StartDisplayInfo(const std::string& filename, int index);
     void        StopDisplayInfo();
     char*       GetDisplayInfoName(int index);
     int         GetDisplayInfoPosition(int index);

@@ -43,13 +43,12 @@
 #include "ui/controls/slider.h"
 #include "ui/controls/target.h"
 
+#include <memory>
 #include <string>
+#include <vector>
 
 namespace Ui
 {
-
-const int MAXWINDOW = 100;
-
 
 class CWindow : public CControl
 {
@@ -125,9 +124,11 @@ protected:
     void        MoveAdjust();
     void        DrawVertex(Math::Point pos, Math::Point dim, int icon);
     void        DrawHach(Math::Point pos, Math::Point dim);
+    template<typename ControlClass>
+    ControlClass* CreateControl(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
 
 protected:
-    CControl*   m_table[MAXWINDOW];
+    std::vector<std::unique_ptr<CControl>> m_controls;
 
     bool        m_bTrashEvent;
     bool        m_bMaximized;
@@ -137,9 +138,9 @@ protected:
     Math::Point     m_minDim;
     Math::Point     m_maxDim;
 
-    CButton*    m_buttonReduce;
-    CButton*    m_buttonFull;
-    CButton*    m_buttonClose;
+    std::unique_ptr<CButton> m_buttonReduce;
+    std::unique_ptr<CButton> m_buttonFull;
+    std::unique_ptr<CButton> m_buttonClose;
 
     bool        m_bMovable;
     bool        m_bRedim;

@@ -80,7 +80,8 @@ protected:
     CSoundInterface*  m_sound;
     CSettings*        m_settings;
 
-    enum class DialogType {
+    enum class DialogType
+    {
         Question,
         PauseMenu
     };

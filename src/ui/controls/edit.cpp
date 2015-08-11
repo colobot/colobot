@@ -26,6 +26,7 @@
 #include "app/input.h"
 
 #include "common/logger.h"
+#include "common/make_unique.h"
 #include "common/misc.h"
 
 #include "common/resources/inputstream.h"
@@ -93,18 +94,16 @@ bool IsSep(int character)
 
 
 //! Object's constructor.
-CEdit::CEdit () : CControl ()
+CEdit::CEdit()
+    : CControl(),
+      m_lineOffset(),
+      m_lineIndent()
 {
-    Math::Point pos;
-
     m_maxChar = 100;
     m_text = std::vector<char>(m_maxChar+1, '\0');
     m_len = 0;
 
-    std::fill_n(m_lineOffset, EDITLINEMAX, 0);
-
     m_fontType = Gfx::FONT_COURIER;
-    m_scroll        = 0;
     m_bEdit         = true;
     m_bHilite       = true;
     m_bInsideScroll = true;
@@ -118,6 +117,22 @@ CEdit::CEdit () : CControl ()
     m_column        = 0;
     m_imageTotal    = 0;
 
+    m_timeLastScroll = 0.0f;
+    m_timeBlink = 0.0f;
+    m_time = 0.0f;
+    m_historyCurrent = 0;
+    m_markerTotal = 0;
+    m_bMulti = false;
+    m_lineDescent = 0.0f;
+    m_timeLastClick = 0.0f;
+    m_bMultiFont = false;
+    m_lineAscent = 0.0f;
+    m_historyTotal = 0;
+    m_lineTotal = 0;
+    m_lineHeight = 0.0f;
+    m_lineVisible = 0;
+    m_lineFirst = 0;
+
     HyperFlush();
 
     m_bUndoForce = true;
@@ -129,9 +144,6 @@ CEdit::CEdit () : CControl ()
 CEdit::~CEdit()
 {
     FreeImage();
-
-    delete m_scroll;
-    m_scroll = nullptr;
 }
 
 
@@ -139,9 +151,6 @@ CEdit::~CEdit()
 
 bool CEdit::Create(Math::Point pos, Math::Point dim, int icon, EventType eventType)
 {
-    CScroll*    pc;
-    Math::Point     start, end;
-
     if ( eventType == EVENT_NULL )  eventType = GetUniqueEventType();
     CControl::Create(pos, dim, icon, eventType);
 
@@ -162,9 +171,8 @@ bool CEdit::Create(Math::Point pos, Math::Point dim, int icon, EventType eventTy
     {
         m_bMulti = true;
         MoveAdjust();  // readjusts multi-line mode
-        m_scroll = new Ui::CScroll();
-        pc = static_cast<CScroll*>(m_scroll);
-        pc->Create(pos, dim, -1, EVENT_NULL);
+        m_scroll = MakeUnique<Ui::CScroll>();
+        m_scroll->Create(pos, dim, -1, EVENT_NULL);
         MoveAdjust();
     }
 
@@ -196,7 +204,7 @@ void CEdit::MoveAdjust()
     height = m_dim.y-(m_bMulti?MARGY*2.0f:MARGY1);
     m_lineVisible = static_cast<int>((height/m_lineHeight));
 
-    if ( m_scroll != 0 )
+    if (m_scroll != nullptr)
     {
         if ( m_bInsideScroll )
         {
@@ -284,11 +292,11 @@ bool CEdit::EventProcess(const Event &event)
         }
     }
 
-    if ( m_scroll != nullptr && !m_bGeneric )
+    if (m_scroll != nullptr && !m_bGeneric)
     {
         m_scroll->EventProcess(event);
 
-        if ( event.type == m_scroll->GetEventType() )
+        if (event.type == m_scroll->GetEventType())
         {
             Scroll();
             return true;
@@ -1127,7 +1135,7 @@ void CEdit::Draw()
         DrawPart(pos, dim, 0);  // red
     }
 
-    if ( m_scroll != 0 && !m_bGeneric )
+    if (m_scroll != nullptr && !m_bGeneric)
     {
         m_scroll->Draw();
     }
@@ -2139,11 +2147,9 @@ void CEdit::SetFontSize(float size)
 
 void CEdit::Scroll()
 {
-    float   value;
-
-    if ( m_scroll != nullptr )
+    if (m_scroll != nullptr)
     {
-        value = m_scroll->GetVisibleValue();
+        float value = m_scroll->GetVisibleValue();
         value *= m_lineTotal - m_lineVisible;
         Scroll(static_cast<int>(value + 0.5f), true);
     }
@@ -3195,9 +3201,7 @@ bool CEdit::SetFormat(int cursor1, int cursor2, int format)
 
 void CEdit::UpdateScroll()
 {
-    float value;
-
-    if ( m_scroll != nullptr )
+    if (m_scroll != nullptr)
     {
         if ( m_lineTotal <= m_lineVisible )
         {
@@ -3207,7 +3211,7 @@ void CEdit::UpdateScroll()
         }
         else
         {
-            value = static_cast<float>(m_lineVisible) / m_lineTotal;
+            float value = static_cast<float>(m_lineVisible) / m_lineTotal;
             m_scroll->SetVisibleRatio(value);
 
             value = static_cast<float>(m_lineFirst) / (m_lineTotal - m_lineVisible);

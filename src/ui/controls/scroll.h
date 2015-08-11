@@ -26,6 +26,8 @@
 
 #include "ui/controls/control.h"
 
+#include <memory>
+
 namespace Ui
 {
 
@@ -68,8 +70,8 @@ protected:
     void        DrawVertex(Math::Point pos, Math::Point dim, int icon);
 
 protected:
-    CButton*    m_buttonUp;
-    CButton*    m_buttonDown;
+    std::unique_ptr<CButton> m_buttonUp;
+    std::unique_ptr<CButton> m_buttonDown;
 
     float       m_visibleValue;
     float       m_visibleRatio;
@@ -78,11 +80,8 @@ protected:
     bool        m_bCapture;
     Math::Point     m_pressPos;
     float       m_pressValue;
-
-    EventType    m_eventUp;
-    EventType    m_eventDown;
 };
 
 
-}
+} // namespace Ui
 

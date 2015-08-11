@@ -49,13 +49,14 @@
 #include "ui/controls/target.h"
 #include "ui/controls/window.h"
 
+#include <memory>
 #include <string>
+#include <vector>
 
 namespace Ui
 {
 
 const int MAXCONTROL = 100;
-
 
 class CInterface
 {
@@ -92,18 +93,19 @@ public:
 
     void        Draw();
 
-    void        SetFocus(CControl* control);
+    void        SetFocus(CControl* focusControl);
 
 protected:
     int GetNextFreeControl();
-    template <typename T> inline T* CreateControl(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
+
+    template <typename ControlClass>
+    ControlClass* CreateControl(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
 
     CEventQueue* m_event;
     Gfx::CEngine* m_engine;
     Gfx::CCamera* m_camera;
-
-    CControl* m_table[MAXCONTROL];
+    std::array<std::unique_ptr<CControl>, MAXCONTROL> m_controls;
 };
 
 
-}
+} // namespace Ui

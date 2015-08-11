@@ -24,6 +24,7 @@
 
 #include "ui/controls/control.h"
 
+#include <memory>
 
 namespace Gfx
 {
@@ -82,9 +83,9 @@ protected:
     void        HiliteValue(const Event &event);
 
     Ui::CInterface* m_interface;
-    Ui::CEdit*      m_edit;
-    Ui::CButton*    m_buttonUp;
-    Ui::CButton*    m_buttonDown;
+    std::unique_ptr<Ui::CEdit> m_edit;
+    std::unique_ptr<Ui::CButton> m_buttonUp;
+    std::unique_ptr<Ui::CButton> m_buttonDown;
     EditValueType   m_type;
     float           m_stepValue;
     float           m_minValue;

@@ -27,6 +27,7 @@
 
 #include "ui/controls/control.h"
 
+#include <memory>
 
 namespace Ui
 {
@@ -53,13 +54,13 @@ struct EditUndo
     //! original text
     std::vector<char> text;
     //! length of the text
-    int     len;
+    int     len = 0;
     //! offset cursor
-    int     cursor1;
+    int     cursor1 = 0;
     //! offset cursor
-    int     cursor2;
+    int     cursor2 = 0;
     //! the first line displayed.
-    int     lineFirst;
+    int     lineFirst = 0;
 
 };
 
@@ -78,11 +79,11 @@ struct ImageLine
     //! name of the image (without icons/)
     std::string    name;
     //! vertical offset (v texture)
-    float   offset;
+    float   offset = 0.0f;
     //! height of the part (dv texture)
-    float   height;
+    float   height = 0.0f;
     //! width
-    float   width;
+    float   width = 0.0f;
 };
 
 struct HyperLink
@@ -98,7 +99,7 @@ struct HyperMarker
     //! name of the marker
     std::string    name;
     //! position in the text
-    int pos;
+    int pos = 0;
 };
 
 struct HyperHistory
@@ -106,7 +107,7 @@ struct HyperHistory
     //! full file name text
     std::string    filename;
     //! rank of the first displayed line
-    int firstLine;
+    int firstLine = 0;
 };
 
 
@@ -229,7 +230,7 @@ protected:
     void        UpdateScroll();
 
 protected:
-    CScroll*    m_scroll;           // vertical scrollbar on the right
+    std::unique_ptr<CScroll> m_scroll;           // vertical scrollbar on the right
 
     int     m_maxChar;          // max length of the buffer m_text
     std::vector<char> m_text;             // text (without zero terminator)

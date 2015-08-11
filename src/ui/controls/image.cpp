@@ -27,24 +27,19 @@
 #include "graphics/engine/engine.h"
 
 
-#include <string.h>
-#include <stdio.h>
-
-
 namespace Ui
 {
 // Object's constructor.
 
 CImage::CImage() : CControl()
 {
-    m_filename[0] = 0;
 }
 
 // Object's destructor.
 
 CImage::~CImage()
 {
-    if ( m_filename[0] != 0 )
+    if (!m_filename.empty())
     {
         m_engine->DeleteTexture(m_filename);
     }
@@ -71,19 +66,14 @@ bool CImage::Create(Math::Point pos, Math::Point dim, int icon, EventType eventT
 
 // Specifies the name of the image display.
 
-void CImage::SetFilenameImage(const char *name)
+void CImage::SetFilenameImage(const std::string& name)
 {
-    if ( m_filename[0] != 0 )
+    if (!m_filename.empty())
     {
         m_engine->DeleteTexture(m_filename);
     }
 
-    strcpy(m_filename, name);
-}
-
-char* CImage::GetFilenameImage()
-{
-    return m_filename;
+    m_filename = name;
 }
 
 

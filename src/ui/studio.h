@@ -116,7 +116,7 @@ protected:
     float        m_fixInfoTextTime;
     bool         m_bRunning;
     bool         m_bRealTime;
-    PauseType    m_bInitPause;
+    PauseType    m_initPause;
     std::string  m_helpFilename;
 
     StudioDialog m_dialog;

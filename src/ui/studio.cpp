@@ -81,6 +81,9 @@ CStudio::CStudio()
     m_pause     = CPauseManager::GetInstancePointer();
     m_settings  = CSettings::GetInstancePointer();
 
+    m_program = nullptr;
+    m_script = nullptr;
+
     m_bEditMaximized = false;
     m_bEditMinimized = false;
 
@@ -88,8 +91,9 @@ CStudio::CStudio()
     m_bRealTime = true;
     m_bRunning  = false;
     m_fixInfoTextTime = 0.0f;
-    m_helpFilename[0] = 0;
+    m_initPause = PAUSE_NONE;
     m_dialog = SD_NULL;
+    m_editCamera = Gfx::CAM_TYPE_NULL;
 }
 
 // Object's destructor.
@@ -135,7 +139,7 @@ bool CStudio::EventProcess(const Event &event)
 
     if ( event.type == EVENT_STUDIO_LIST )  // list clicked?
     {
-        m_main->StartDisplayInfo(const_cast<char *>(m_helpFilename.c_str()), -1); // TODO change to std::string when RobotMain changes
+        m_main->StartDisplayInfo(m_helpFilename, -1);
     }
 
     if ( event.type == EVENT_STUDIO_NEW )  // new?
@@ -451,7 +455,7 @@ void CStudio::SearchToken(CEdit* edit)
             }
             if ( level > 0 )
             {
-                m_helpFilename[0] = 0;
+                m_helpFilename = "";
                 SetInfoText("", true);
                 return;
             }
@@ -552,7 +556,7 @@ void CStudio::StartEditScript(CScript *script, std::string name, Program* progra
 
     m_main->SetEditLock(true, true);
     m_main->SetEditFull(false);
-    m_bInitPause = m_pause->GetPauseType();
+    m_initPause = m_pause->GetPauseType();
     m_main->SetSpeed(1.0f);
     m_editCamera = m_camera->GetType();
     m_camera->SetType(Gfx::CAM_TYPE_EDIT);
@@ -884,7 +888,7 @@ bool CStudio::StopEditScript(bool bCancel)
 
     m_interface->DeleteControl(EVENT_WINDOW3);
 
-    m_pause->SetPause(m_bInitPause);
+    m_pause->SetPause(m_initPause);
     m_sound->MuteAll(false);
     m_main->SetEditLock(false, true);
     m_camera->SetType(m_editCamera);

@@ -66,9 +66,12 @@ CMap::CMap() : CControl()
     m_half = m_terrain->GetMosaicCount() * m_terrain->GetBrickCount() * m_terrain->GetBrickSize() / 2.0f;
 
     m_highlightRank = -1;
+    m_totalFix  = 0;
+    m_totalMove = 0;
+    m_bRadar = false;
+
     FlushObject();
 
-    m_fixImage[0] = 0;
     m_mode = 0;
     m_bToy = false;
     m_bDebug = false;
@@ -175,16 +178,16 @@ void CMap::SetWaterColor(Gfx::Color color)
 
 // Specifies a fixed image in place of the drawing of the relief.
 
-void CMap::SetFixImage(const char *filename)
+void CMap::SetFixImage(const std::string& filename)
 {
-    strcpy(m_fixImage, filename);
+    m_fixImage = filename;
 }
 
 // Whether to use a still image.
 
 bool CMap::GetFixImage()
 {
-    return (m_fixImage[0] != 0);
+    return ! m_fixImage.empty();
 }
 
 
@@ -241,7 +244,7 @@ Math::Point CMap::AdjustOffset(Math::Point offset)
 void CMap::SetHighlight(CObject* pObj)
 {
     m_highlightRank = -1;
-    if ( m_bToy || m_fixImage[0] != 0 )
+    if ( m_bToy || !m_fixImage.empty())
         return;  // card with still image?
     if ( pObj == nullptr )
         return;
@@ -333,10 +336,10 @@ void CMap::Draw()
     if ( !m_bEnable )
         return;
 
-    if ( m_fixImage[0] == 0 && m_map[MAPMAXOBJECT - 1].bUsed )
+    if (m_fixImage.empty() && m_map[MAPMAXOBJECT - 1].bUsed)
         m_offset = AdjustOffset(m_map[MAPMAXOBJECT - 1].pos);
 
-    if ( m_fixImage[0] == 0 ) // drawing of the relief?
+    if (m_fixImage.empty()) // drawing of the relief?
     {
         m_engine->SetTexture("textures/interface/map.png");
         m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
@@ -443,7 +446,7 @@ void CMap::DrawFocus(Math::Point pos, float dir, ObjectType type, MapColor color
     bool    bEnding;
     int     quart;
 
-    if ( m_bToy || m_fixImage[0] != 0 )  return;  // map with still image?
+    if (m_bToy || !m_fixImage.empty())  return;  // map with still image?
     if ( color != MAPCOLOR_MOVE )  return;
 
     pos.x = (pos.x-m_offset.x)*(m_zoom*0.5f)/m_half+0.5f;
@@ -886,7 +889,7 @@ void CMap::DrawHighlight(Math::Point pos)
 {
     Math::Point dim, uv1, uv2;
 
-    if ( m_bToy || m_fixImage[0] != 0 )  return;  // map with still image?
+    if (m_bToy || !m_fixImage.empty())  return;  // map with still image?
 
     pos.x = (pos.x-m_offset.x)*(m_zoom*0.5f)/m_half+0.5f;
     pos.y = (pos.y-m_offset.y)*(m_zoom*0.5f)/m_half+0.5f;
@@ -1004,7 +1007,7 @@ void CMap::DrawVertex(Math::Point uv1, Math::Point uv2, float zoom)
 
 void CMap::UpdateTerrain()
 {
-    if (m_fixImage[0] != 0) return;  // still image?
+    if (! m_fixImage.empty()) return;  // still image?
 
     CImage img(Math::IntPoint(256, 256));
 
@@ -1069,7 +1072,7 @@ void CMap::UpdateTerrain(int bx, int by, int ex, int ey)
     float           scale, water, level, intensity;
     int             x, y;
 
-    if ( m_fixImage[0] != 0  )  return;  // still image?
+    if (! m_fixImage.empty())  return;  // still image?
 
     // TODO: map texture manipulation
     return;
@@ -1129,13 +1132,11 @@ void CMap::UpdateTerrain(int bx, int by, int ex, int ey)
 
 void CMap::FlushObject()
 {
-    int     i;
-
     m_totalFix  = 0;  // object index fixed
     m_totalMove = MAPMAXOBJECT-2;  // moving vehicles index
     m_bRadar = m_main->GetRadar();
 
-    for ( i=0 ; i<MAPMAXOBJECT ; i++ )
+    for (int i = 0; i < MAPMAXOBJECT; i++)
     {
         m_map[i].bUsed = false;
     }
@@ -1269,7 +1270,7 @@ void CMap::UpdateObject(CObject* pObj)
 
     if ( color == MAPCOLOR_NULL )  return;
 
-    if ( m_fixImage[0] != 0 && !m_bDebug )  // map with still image?
+    if (!m_fixImage.empty() && !m_bDebug)  // map with still image?
     {
         if ( color != MAPCOLOR_MOVE )  return;
     }

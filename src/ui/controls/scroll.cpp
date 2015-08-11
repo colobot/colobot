@@ -21,6 +21,7 @@
 #include "ui/controls/scroll.h"
 
 #include "common/event.h"
+#include "common/make_unique.h"
 #include "common/misc.h"
 
 #include "graphics/engine/engine.h"
@@ -36,25 +37,18 @@ namespace Ui
 
 CScroll::CScroll() : CControl()
 {
-    m_buttonUp   = 0;
-    m_buttonDown = 0;
-
     m_visibleValue = 0.0f;
     m_visibleRatio = 1.0f;
     m_step         = 0.0f;
 
-    m_eventUp   = EVENT_NULL;
-    m_eventDown = EVENT_NULL;
-
     m_bCapture = false;
+    m_pressValue = 0.0f;
 }
 
 // Object's destructor.
 
 CScroll::~CScroll()
 {
-    delete m_buttonUp;
-    delete m_buttonDown;
 }
 
 
@@ -86,39 +80,31 @@ void CScroll::SetDim(Math::Point dim)
 
 void CScroll::MoveAdjust()
 {
-    CButton*    pc;
     Math::Point     pos, dim;
 
     if ( m_dim.y < m_dim.x*2.0f )  // very short lift?
     {
-        delete m_buttonUp;
-        m_buttonUp = 0;
-
-        delete m_buttonDown;
-        m_buttonDown = 0;
+        m_buttonUp.reset();
+        m_buttonDown.reset();
     }
     else
     {
-        if ( m_buttonUp == 0 )
+        if (m_buttonUp == nullptr)
         {
-            m_buttonUp = new CButton();
-            pc = m_buttonUp;
-            pc->Create(Math::Point(0.0f, 0.0f), Math::Point(0.0f, 0.0f), 49, EVENT_NULL);
-            pc->SetRepeat(true);
-            m_eventUp = pc->GetEventType();
+            m_buttonUp = MakeUnique<CButton>();
+            m_buttonUp->Create(Math::Point(0.0f, 0.0f), Math::Point(0.0f, 0.0f), 49, EVENT_NULL);
+            m_buttonUp->SetRepeat(true);
         }
 
-        if ( m_buttonDown == 0 )
+        if (m_buttonDown == nullptr)
         {
-            m_buttonDown = new CButton();
-            pc = m_buttonDown;
-            pc->Create(Math::Point(0.0f, 0.0f), Math::Point(0.0f, 0.0f), 50, EVENT_NULL);
-            pc->SetRepeat(true);
-            m_eventDown = pc->GetEventType();
+            m_buttonDown = MakeUnique<CButton>();
+            m_buttonDown->Create(Math::Point(0.0f, 0.0f), Math::Point(0.0f, 0.0f), 50, EVENT_NULL);
+            m_buttonDown->SetRepeat(true);
         }
     }
 
-    if ( m_buttonUp != 0 )
+    if (m_buttonUp != nullptr)
     {
         pos.x = m_pos.x;
         pos.y = m_pos.y+m_dim.y-m_dim.x/0.75f;
@@ -128,7 +114,7 @@ void CScroll::MoveAdjust()
         m_buttonUp->SetDim(dim);
     }
 
-    if ( m_buttonDown != 0 )
+    if (m_buttonDown != nullptr)
     {
         pos.x = m_pos.x;
         pos.y = m_pos.y;
@@ -198,21 +184,18 @@ bool CScroll::ClearState(int state)
 
 bool CScroll::EventProcess(const Event &event)
 {
-    Math::Point pos, dim;
-    float   hButton, h, value;
-
     CControl::EventProcess(event);
 
-    if ( m_buttonUp != 0 && !m_bCapture )
+    if (m_buttonUp != nullptr && !m_bCapture)
     {
         if ( !m_buttonUp->EventProcess(event) )  return false;
     }
-    if ( m_buttonDown != 0 && !m_bCapture )
+    if (m_buttonDown != nullptr && !m_bCapture)
     {
         if ( !m_buttonDown->EventProcess(event) )  return false;
     }
 
-    if ( event.type == m_eventUp && m_step > 0.0f )
+    if (m_buttonUp != nullptr && event.type == m_buttonUp->GetEventType() && m_step > 0.0f )
     {
         m_visibleValue -= m_step;
         if ( m_visibleValue < 0.0f )  m_visibleValue = 0.0f;
@@ -221,7 +204,7 @@ bool CScroll::EventProcess(const Event &event)
         m_event->AddEvent(Event(m_eventType));
     }
 
-    if ( event.type == m_eventDown && m_step > 0.0f )
+    if (m_buttonDown != nullptr && event.type == m_buttonDown->GetEventType() && m_step > 0.0f )
     {
         m_visibleValue += m_step;
         if ( m_visibleValue > 1.0f )  m_visibleValue = 1.0f;
@@ -230,7 +213,7 @@ bool CScroll::EventProcess(const Event &event)
         m_event->AddEvent(Event(m_eventType));
     }
 
-    hButton = m_buttonUp?m_dim.x/0.75f:0.0f;
+    float hButton = (m_buttonUp != nullptr) ? (m_dim.x/0.75f) : 0.0f;
 
     if (event.type == EVENT_MOUSE_BUTTON_DOWN &&
         event.GetData<MouseButtonEventData>()->button == MOUSE_BUTTON_LEFT &&
@@ -239,6 +222,8 @@ bool CScroll::EventProcess(const Event &event)
     {
         if ( CControl::Detect(event.mousePos) )
         {
+            Math::Point pos, dim;
+
             pos.y = m_pos.y+hButton;
             dim.y = m_dim.y-hButton*2.0f;
             pos.y += dim.y*(1.0f-m_visibleRatio)*(1.0f-m_visibleValue);
@@ -246,8 +231,8 @@ bool CScroll::EventProcess(const Event &event)
             if ( event.mousePos.y < pos.y       ||
                  event.mousePos.y > pos.y+dim.y )  // click outside cabin?
             {
-                h = (m_dim.y-hButton*2.0f)*(1.0f-m_visibleRatio);
-                value = 1.0f-(event.mousePos.y-(m_pos.y+hButton+dim.y*0.5f))/h;
+                float h = (m_dim.y-hButton*2.0f)*(1.0f-m_visibleRatio);
+                float value = 1.0f-(event.mousePos.y-(m_pos.y+hButton+dim.y*0.5f))/h;
                 if ( value < 0.0f )  value = 0.0f;
                 if ( value > 1.0f )  value = 1.0f;
                 m_visibleValue = value;
@@ -263,10 +248,10 @@ bool CScroll::EventProcess(const Event &event)
 
     if ( event.type == EVENT_MOUSE_MOVE && m_bCapture )
     {
-        h = (m_dim.y-hButton*2.0f)*(1.0f-m_visibleRatio);
+        float h = (m_dim.y-hButton*2.0f)*(1.0f-m_visibleRatio);
         if ( h != 0 )
         {
-            value = m_pressValue - (event.mousePos.y-m_pressPos.y)/h;
+            float value = m_pressValue - (event.mousePos.y-m_pressPos.y)/h;
             if ( value < 0.0f )  value = 0.0f;
             if ( value > 1.0f )  value = 1.0f;
 
@@ -351,11 +336,11 @@ void CScroll::Draw()
         }
     }
 
-    if ( m_buttonUp != 0 )
+    if (m_buttonUp != nullptr)
     {
         m_buttonUp->Draw();
     }
-    if ( m_buttonDown != 0 )
+    if (m_buttonDown != nullptr)
     {
         m_buttonDown->Draw();
     }
@@ -457,5 +442,5 @@ float CScroll::GetArrowStep()
     return m_step;
 }
 
-}
+} // namespace Ui
 

@@ -32,6 +32,8 @@
 #include "ui/controls/button.h"
 #include "ui/controls/scroll.h"
 
+#include <array>
+#include <memory>
 
 namespace Ui
 {
@@ -43,85 +45,86 @@ const int LISTMAXTOTAL   = 100; // maximum total number of lines
 
 class CList : public CControl
 {
-    public:
-        CList();
-        ~CList();
+public:
+    CList();
+    ~CList();
 
-        bool        Create(Math::Point pos, Math::Point dim, int icon, EventType eventMsg, float expand);
+    bool        Create(Math::Point pos, Math::Point dim, int icon, EventType eventMsg, float expand);
 
-        void        SetPos(Math::Point pos) override;
-        void        SetDim(Math::Point dim) override;
+    void        SetPos(Math::Point pos) override;
+    void        SetDim(Math::Point dim) override;
 
-        bool        SetState(int state, bool bState) override;
-        bool        SetState(int state) override;
-        bool        ClearState(int state) override;
+    bool        SetState(int state, bool bState) override;
+    bool        SetState(int state) override;
+    bool        ClearState(int state) override;
 
-        bool        EventProcess(const Event &event) override;
-        void        Draw() override;
+    bool        EventProcess(const Event &event) override;
+    void        Draw() override;
 
-        void        Flush();
+    void        Flush();
 
-        void        SetTotal(int i);
-        int         GetTotal();
+    void        SetTotal(int i);
+    int         GetTotal();
 
-        void        SetSelect(int i);
-        int         GetSelect();
+    void        SetSelect(int i);
+    int         GetSelect();
 
-        void        SetSelectCap(bool bEnable);
-        bool        GetSelectCap();
+    void        SetSelectCap(bool bEnable);
+    bool        GetSelectCap();
 
-        void        SetBlink(bool bEnable);
-        bool        GetBlink();
+    void        SetBlink(bool bEnable);
+    bool        GetBlink();
 
-        void        SetItemName(int i, const char* name);
-        char*       GetItemName(int i);
+    void        SetItemName(int i, const char* name);
+    char*       GetItemName(int i);
 
-        void        SetCheck(int i, bool bMode);
-        bool        GetCheck(int i);
+    void        SetCheck(int i, bool bMode);
+    bool        GetCheck(int i);
 
-        void        SetEnable(int i, bool bEnable);
-        bool        GetEnable(int i);
+    void        SetEnable(int i, bool bEnable);
+    bool        GetEnable(int i);
 
-        void        SetTabs(int i, float pos, Gfx::TextAlign justif=Gfx::TEXT_ALIGN_LEFT);
-        float       GetTabs(int i);
+    void        SetTabs(int i, float pos, Gfx::TextAlign justif=Gfx::TEXT_ALIGN_LEFT);
+    float       GetTabs(int i);
 
-        void        ShowSelect(bool bFixed);
+    void        ShowSelect(bool bFixed);
 
-        EventType    GetEventMsgButton(int i);
-        EventType    GetEventMsgScroll();
+    EventType    GetEventMsgButton(int i);
+    EventType    GetEventMsgScroll();
 
-    protected:
-        bool        MoveAdjust();
-        void        UpdateButton();
-        void        UpdateScroll();
-        void        MoveScroll();
-        void        DrawCase(char *text, Math::Point pos, float width, Gfx::TextAlign justif);
+protected:
+    bool        MoveAdjust();
+    void        UpdateButton();
+    void        UpdateScroll();
+    void        MoveScroll();
+    void        DrawCase(char *text, Math::Point pos, float width, Gfx::TextAlign justif);
 
-    private:
-        // Overridden to avoid warning about hiding the virtual function
-        virtual bool Create(Math::Point pos, Math::Point dim, int icon, EventType eventType) override;
+private:
+    // Overridden to avoid warning about hiding the virtual function
+    virtual bool Create(Math::Point pos, Math::Point dim, int icon, EventType eventType) override;
 
-    protected:
-        CButton*    m_button[LISTMAXDISPLAY];
-        CScroll*    m_scroll;
+protected:
+    std::array<std::unique_ptr<CButton>, LISTMAXDISPLAY> m_buttons;
+    std::unique_ptr<CScroll> m_scroll;
 
-        EventType    m_eventButton[LISTMAXDISPLAY];
-        EventType    m_eventScroll;
+    float       m_expand;
+    int         m_totalLine;    // total number of lines
+    int         m_displayLine;  // number of visible lines
+    int         m_selectLine;   // selected line
+    int         m_firstLine;    // first visible line
+    bool        m_bBlink;
+    bool        m_bSelectCap;
+    float       m_blinkTime;
+    float       m_tabs[10];
+    Gfx::TextAlign m_justifs[10];
 
-        float       m_expand;
-        int         m_totalLine;    // total number of lines
-        int         m_displayLine;  // number of visible lines
-        int         m_selectLine;   // selected line
-        int         m_firstLine;    // first visible line
-        bool        m_bBlink;
-        bool        m_bSelectCap;
-        float       m_blinkTime;
-        float       m_tabs[10];
-        Gfx::TextAlign m_justifs[10];
-
-        char        m_text[LISTMAXTOTAL][100];
-        char        m_check[LISTMAXTOTAL];
-        char        m_enable[LISTMAXTOTAL];
+    struct Item
+    {
+        char text[100] = {0};
+        bool check = false;
+        bool enable = true;
+    };
+    std::array<Item, LISTMAXTOTAL> m_items;
 };
 
 

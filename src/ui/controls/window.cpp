@@ -20,6 +20,7 @@
 
 #include "ui/controls/window.h"
 
+#include <algorithm>
 
 
 namespace Ui
@@ -28,13 +29,6 @@ namespace Ui
 
 CWindow::CWindow() : CControl()
 {
-    int     i;
-
-    for ( i=0 ; i<MAXWINDOW ; i++ )
-    {
-        m_table[i] = 0;
-    }
-
     m_bTrashEvent = true;
     m_bMaximized  = false;
     m_bMinimized  = false;
@@ -43,14 +37,12 @@ CWindow::CWindow() : CControl()
     m_minDim = Math::Point(0.0f, 0.0f);
     m_maxDim = Math::Point(1.0f, 1.0f);
 
-    m_buttonReduce = 0;
-    m_buttonFull   = 0;
-    m_buttonClose  = 0;
-
     m_bMovable  = false;
     m_bRedim    = false;
     m_bClosable = false;
     m_bCapture  = false;
+    m_pressFlags = 0;
+    m_pressMouse = Gfx::ENG_MOUSE_NORM;
 
 //    m_fontStretch = NORMSTRETCH*1.2f;
 }
@@ -59,7 +51,6 @@ CWindow::CWindow() : CControl()
 
 CWindow::~CWindow()
 {
-    Flush();
 }
 
 
@@ -67,20 +58,11 @@ CWindow::~CWindow()
 
 void CWindow::Flush()
 {
-    for (int i = 0 ; i < MAXWINDOW; i++)
-    {
-        delete m_table[i];
-        m_table[i] = nullptr;
-    }
+    m_controls.clear();
 
-    delete m_buttonReduce;
-    m_buttonReduce = nullptr;
-
-    delete m_buttonFull;
-    m_buttonFull = nullptr;
-
-    delete m_buttonClose;
-    m_buttonClose = nullptr;
+    m_buttonReduce.reset();
+    m_buttonFull.reset();
+    m_buttonClose.reset();
 }
 
 
@@ -94,273 +76,114 @@ bool CWindow::Create(Math::Point pos, Math::Point dim, int icon, EventType event
     return true;
 }
 
+template<typename ControlClass>
+ControlClass* CWindow::CreateControl(Math::Point pos, Math::Point dim, int icon, EventType eventMsg)
+{
+    auto control = MakeUnique<ControlClass>();
+    control->Create(pos, dim, icon, eventMsg);
+    auto* controlPtr = control.get();
+    m_controls.push_back(std::move(control));
+    return controlPtr;
+}
+
 
 // Creates a new button.
 
 CButton* CWindow::CreateButton(Math::Point pos, Math::Point dim, int icon, EventType eventMsg)
 {
-    CButton*    pc;
-    int         i;
-
-    if ( eventMsg == EVENT_NULL )  eventMsg = GetUniqueEventType();
-
-    for ( i=0 ; i<MAXWINDOW ; i++ )
-    {
-        if ( m_table[i] == 0 )
-        {
-            m_table[i] = new CButton();
-            pc = static_cast<CButton*>(m_table[i]);
-            pc->Create(pos, dim, icon, eventMsg);
-            return pc;
-        }
-    }
-    return 0;
+    return CreateControl<CButton>(pos, dim, icon, eventMsg);
 }
 
 // Creates a new button.
 
 CColor* CWindow::CreateColor(Math::Point pos, Math::Point dim, int icon, EventType eventMsg)
 {
-    CColor*     pc;
-    int         i;
-
-    if ( eventMsg == EVENT_NULL )  eventMsg = GetUniqueEventType();
-
-    for ( i=0 ; i<MAXWINDOW ; i++ )
-    {
-        if ( m_table[i] == 0 )
-        {
-            m_table[i] = new CColor();
-            pc = static_cast<CColor*>(m_table[i]);
-            pc->Create(pos, dim, icon, eventMsg);
-            return pc;
-        }
-    }
-    return 0;
+    return CreateControl<CColor>(pos, dim, icon, eventMsg);
 }
 
 // Creates a new button.
 
 CCheck* CWindow::CreateCheck(Math::Point pos, Math::Point dim, int icon, EventType eventMsg)
 {
-    CCheck*     pc;
-    int         i;
-
-    if ( eventMsg == EVENT_NULL )  eventMsg = GetUniqueEventType();
-
-    for ( i=0 ; i<MAXWINDOW ; i++ )
-    {
-        if ( m_table[i] == 0 )
-        {
-            m_table[i] = new CCheck();
-            pc = static_cast<CCheck*>(m_table[i]);
-            pc->Create(pos, dim, icon, eventMsg);
-            return pc;
-        }
-    }
-    return 0;
+    return CreateControl<CCheck>(pos, dim, icon, eventMsg);
 }
 
 // Creates a new button.
 
 CKey* CWindow::CreateKey(Math::Point pos, Math::Point dim, int icon, EventType eventMsg)
 {
-    CKey*       pc;
-    int         i;
-
-    if ( eventMsg == EVENT_NULL )  eventMsg = GetUniqueEventType();
-
-    for ( i=0 ; i<MAXWINDOW ; i++ )
-    {
-        if ( m_table[i] == 0 )
-        {
-            m_table[i] = new CKey();
-            pc = static_cast<CKey*>(m_table[i]);
-            pc->Create(pos, dim, icon, eventMsg);
-            return pc;
-        }
-    }
-    return 0;
+    return CreateControl<CKey>(pos, dim, icon, eventMsg);
 }
 
 // Creates a new button.
 
 CGroup* CWindow::CreateGroup(Math::Point pos, Math::Point dim, int icon, EventType eventMsg)
 {
-    CGroup*     pc;
-    int         i;
-
-    if ( eventMsg == EVENT_NULL )  eventMsg = GetUniqueEventType();
-
-    for ( i=0 ; i<MAXWINDOW ; i++ )
-    {
-        if ( m_table[i] == 0 )
-        {
-            m_table[i] = new CGroup();
-            pc = static_cast<CGroup*>(m_table[i]);
-            pc->Create(pos, dim, icon, eventMsg);
-            return pc;
-        }
-    }
-    return 0;
+    return CreateControl<CGroup>(pos, dim, icon, eventMsg);
 }
 
 // Creates a new button.
 
 CImage* CWindow::CreateImage(Math::Point pos, Math::Point dim, int icon, EventType eventMsg)
 {
-    CImage*     pc;
-    int         i;
-
-    if ( eventMsg == EVENT_NULL )  eventMsg = GetUniqueEventType();
-
-    for ( i=0 ; i<MAXWINDOW ; i++ )
-    {
-        if ( m_table[i] == 0 )
-        {
-            m_table[i] = new CImage();
-            pc = static_cast<CImage*>(m_table[i]);
-            pc->Create(pos, dim, icon, eventMsg);
-            return pc;
-        }
-    }
-    return 0;
+    return CreateControl<CImage>(pos, dim, icon, eventMsg);
 }
 
 // Creates a new label.
 
 CLabel* CWindow::CreateLabel(Math::Point pos, Math::Point dim, int icon, EventType eventMsg, std::string name)
 {
-    CLabel*     pc;
-    int         i;
+    CLabel* label = CreateControl<CLabel>(pos, dim, icon, eventMsg);
 
-    if ( eventMsg == EVENT_NULL )  eventMsg = GetUniqueEventType();
+    auto p = name.find("\\");
+    if (p == std::string::npos)
+        label->SetName(name);
+    else
+        label->SetName(name.substr(0, p));
 
-    for ( i=0 ; i<MAXWINDOW ; i++ )
-    {
-        if ( m_table[i] == 0 )
-        {
-            m_table[i] = new CLabel();
-            pc = static_cast<CLabel*>(m_table[i]);
-            pc->Create(pos, dim, icon, eventMsg);
-
-            auto p = name.find("\\");
-            if ( p == std::string::npos )
-                pc->SetName(name);
-            else
-                pc->SetName(name.substr(0, p));
-            return pc;
-        }
-    }
-    return 0;
+    return label;
 }
 
 // Creates a new editable pave.
 
 CEdit* CWindow::CreateEdit(Math::Point pos, Math::Point dim, int icon, EventType eventMsg)
 {
-    CEdit*      pc;
-    int         i;
-
-    if ( eventMsg == EVENT_NULL )  eventMsg = GetUniqueEventType();
-
-    for ( i=0 ; i<MAXWINDOW ; i++ )
-    {
-        if ( m_table[i] == 0 )
-        {
-            m_table[i] = new CEdit();
-            pc = static_cast<CEdit*>(m_table[i]);
-            pc->Create(pos, dim, icon, eventMsg);
-            return pc;
-        }
-    }
-    return 0;
+    return CreateControl<CEdit>(pos, dim, icon, eventMsg);
 }
 
 // Creates a new editable pave.
 
 CEditValue* CWindow::CreateEditValue(Math::Point pos, Math::Point dim, int icon, EventType eventMsg)
 {
-    CEditValue* pc;
-    int         i;
-
-    if ( eventMsg == EVENT_NULL )  eventMsg = GetUniqueEventType();
-
-    for ( i=0 ; i<MAXWINDOW ; i++ )
-    {
-        if ( m_table[i] == 0 )
-        {
-            m_table[i] = new CEditValue();
-            pc = static_cast<CEditValue*>(m_table[i]);
-            pc->Create(pos, dim, icon, eventMsg);
-            return pc;
-        }
-    }
-    return 0;
+    return CreateControl<CEditValue>(pos, dim, icon, eventMsg);
 }
 
 // Creates a new elevator.
 
 CScroll* CWindow::CreateScroll(Math::Point pos, Math::Point dim, int icon, EventType eventMsg)
 {
-    CScroll*    pc;
-    int         i;
+    if (eventMsg == EVENT_NULL)
+        eventMsg = GetUniqueEventType();
 
-    if ( eventMsg == EVENT_NULL )  eventMsg = GetUniqueEventType();
-
-    for ( i=0 ; i<MAXWINDOW ; i++ )
-    {
-        if ( m_table[i] == 0 )
-        {
-            m_table[i] = new CScroll();
-            pc = static_cast<CScroll*>(m_table[i]);
-            pc->Create(pos, dim, icon, eventMsg);
-            return pc;
-        }
-    }
-    return 0;
+    return CreateControl<CScroll>(pos, dim, icon, eventMsg);
 }
 
 // Creates a new cursor.
 
 CSlider* CWindow::CreateSlider(Math::Point pos, Math::Point dim, int icon, EventType eventMsg)
 {
-    CSlider*    pc;
-    int         i;
+    if (eventMsg == EVENT_NULL)
+        eventMsg = GetUniqueEventType();
 
-    if ( eventMsg == EVENT_NULL )  eventMsg = GetUniqueEventType();
-
-    for ( i=0 ; i<MAXWINDOW ; i++ )
-    {
-        if ( m_table[i] == 0 )
-        {
-            m_table[i] = new CSlider();
-            pc = static_cast<CSlider*>(m_table[i]);
-            pc->Create(pos, dim, icon, eventMsg);
-            return pc;
-        }
-    }
-    return 0;
+    return CreateControl<CSlider>(pos, dim, icon, eventMsg);
 }
 
 CEnumSlider* CWindow::CreateEnumSlider(Math::Point pos, Math::Point dim, int icon, EventType eventMsg)
 {
-    CEnumSlider*    pc;
-    int         i;
+    if (eventMsg == EVENT_NULL)
+        eventMsg = GetUniqueEventType();
 
-    if ( eventMsg == EVENT_NULL )  eventMsg = GetUniqueEventType();
-
-    for ( i=0 ; i<MAXWINDOW ; i++ )
-    {
-        if ( m_table[i] == 0 )
-        {
-            m_table[i] = new CEnumSlider();
-            pc = static_cast<CEnumSlider*>(m_table[i]);
-            pc->Create(pos, dim, icon, eventMsg);
-            return pc;
-        }
-    }
-    return 0;
+    return CreateControl<CEnumSlider>(pos, dim, icon, eventMsg);
 }
 
 // Creates a new list.
@@ -368,175 +191,99 @@ CEnumSlider* CWindow::CreateEnumSlider(Math::Point pos, Math::Point dim, int ico
 // and try to scale items to some size, so that dim of the list would not change after
 // adjusting
 
-CList* CWindow::CreateList(Math::Point pos, Math::Point dim, int icon, EventType eventMsg,
-                         float expand)
+CList* CWindow::CreateList(Math::Point pos, Math::Point dim, int icon, EventType eventMsg, float expand)
 {
-    CList*      pc;
-    int         i;
+    if (eventMsg == EVENT_NULL)
+        eventMsg = GetUniqueEventType();
 
-    if ( eventMsg == EVENT_NULL )  eventMsg = GetUniqueEventType();
-
-    for ( i=0 ; i<MAXWINDOW ; i++ )
-    {
-        if ( m_table[i] == 0 )
-        {
-            m_table[i] = new CList();
-            pc = static_cast<CList*>(m_table[i]);
-            pc->Create(pos, dim, icon, eventMsg, expand);
-            return pc;
-        }
-    }
-    return 0;
+    auto list = MakeUnique<CList>();
+    list->Create(pos, dim, icon, eventMsg, expand);
+    auto* listPtr = list.get();
+    m_controls.push_back(std::move(list));
+    return listPtr;
 }
 
 // Creates a new shortcut.
 
 CShortcut* CWindow::CreateShortcut(Math::Point pos, Math::Point dim, int icon, EventType eventMsg)
 {
-    CShortcut*  ps;
-    int         i;
+    if (eventMsg == EVENT_NULL)
+        eventMsg = GetUniqueEventType();
 
-    if ( eventMsg == EVENT_NULL )  eventMsg = GetUniqueEventType();
-
-    for ( i=0 ; i<MAXWINDOW ; i++ )
-    {
-        if ( m_table[i] == 0 )
-        {
-            m_table[i] = new CShortcut();
-            ps = static_cast<CShortcut*>(m_table[i]);
-            ps->Create(pos, dim, icon, eventMsg);
-            return ps;
-        }
-    }
-    return 0;
+    return CreateControl<CShortcut>(pos, dim, icon, eventMsg);
 }
 
 // Creates a new card.
 
 CMap* CWindow::CreateMap(Math::Point pos, Math::Point dim, int icon, EventType eventMsg)
 {
-    CMap*       pm;
-    int         i;
+    if (eventMsg == EVENT_NULL)
+        eventMsg = GetUniqueEventType();
 
-    if ( eventMsg == EVENT_NULL )  eventMsg = GetUniqueEventType();
-
-    for ( i=0 ; i<MAXWINDOW ; i++ )
-    {
-        if ( m_table[i] == 0 )
-        {
-            m_table[i] = new CMap();
-            pm = static_cast<CMap*>(m_table[i]);
-            pm->Create(pos, dim, icon, eventMsg);
-            return pm;
-        }
-    }
-    return 0;
+    return CreateControl<CMap>(pos, dim, icon, eventMsg);
 }
 
 // Creates a new gauge.
 
 CGauge* CWindow::CreateGauge(Math::Point pos, Math::Point dim, int icon, EventType eventMsg)
 {
-    CGauge*     pc;
-    int         i;
+    if (eventMsg == EVENT_NULL)
+        eventMsg = GetUniqueEventType();
 
-    if ( eventMsg == EVENT_NULL )  eventMsg = GetUniqueEventType();
-
-    for ( i=0 ; i<MAXWINDOW ; i++ )
-    {
-        if ( m_table[i] == 0 )
-        {
-            m_table[i] = new CGauge();
-            pc = static_cast<CGauge*>(m_table[i]);
-            pc->Create(pos, dim, icon, eventMsg);
-            return pc;
-        }
-    }
-    return 0;
+    return CreateControl<CGauge>(pos, dim, icon, eventMsg);
 }
 
 // Creates a new compass.
 
 CCompass* CWindow::CreateCompass(Math::Point pos, Math::Point dim, int icon, EventType eventMsg)
 {
-    CCompass*   pc;
-    int         i;
+    if (eventMsg == EVENT_NULL)
+        eventMsg = GetUniqueEventType();
 
-    if ( eventMsg == EVENT_NULL )  eventMsg = GetUniqueEventType();
-
-    for ( i=0 ; i<MAXWINDOW ; i++ )
-    {
-        if ( m_table[i] == 0 )
-        {
-            m_table[i] = new CCompass();
-            pc = static_cast<CCompass*>(m_table[i]);
-            pc->Create(pos, dim, icon, eventMsg);
-            return pc;
-        }
-    }
-    return 0;
+    return CreateControl<CCompass>(pos, dim, icon, eventMsg);
 }
 
 // Creates a new target.
 
 CTarget* CWindow::CreateTarget(Math::Point pos, Math::Point dim, int icon, EventType eventMsg)
 {
-    CTarget*    pc;
-    int         i;
+    if (eventMsg == EVENT_NULL)
+        eventMsg = GetUniqueEventType();
 
-    if ( eventMsg == EVENT_NULL )  eventMsg = GetUniqueEventType();
-
-    for ( i=0 ; i<MAXWINDOW ; i++ )
-    {
-        if ( m_table[i] == 0 )
-        {
-            m_table[i] = new CTarget();
-            pc = static_cast<CTarget*>(m_table[i]);
-            pc->Create(pos, dim, icon, eventMsg);
-            return pc;
-        }
-    }
-    return 0;
+    return CreateControl<CTarget>(pos, dim, icon, eventMsg);
 }
 
 // Removes a control.
 
 bool CWindow::DeleteControl(EventType eventMsg)
 {
-    int     i;
+    auto controlIt = std::find_if(m_controls.begin(), m_controls.end(),
+                                  [eventMsg](const std::unique_ptr<CControl>& control)
+                                  {
+                                      return control->GetEventType() == eventMsg;
+                                  });
 
-    for ( i=0 ; i<MAXWINDOW ; i++ )
-    {
-        if ( m_table[i] != 0 )
-        {
-            if ( eventMsg == m_table[i]->GetEventType() )
-            {
-                delete m_table[i];
-                m_table[i] = 0;
-                return true;
-            }
-        }
-    }
-    return false;
+    if (controlIt == m_controls.end())
+        return false;
+
+    m_controls.erase(controlIt);
+    return true;
 }
 
 // Gives a control.
 
 CControl* CWindow::SearchControl(EventType eventMsg)
 {
-    int     i;
+    auto controlIt = std::find_if(m_controls.begin(), m_controls.end(),
+                                  [eventMsg](const std::unique_ptr<CControl>& control)
+                                  {
+                                      return control->GetEventType() == eventMsg;
+                                  });
 
-    for ( i=0 ; i<MAXWINDOW ; i++ )
-    {
-        if ( m_table[i] != 0 )
-        {
-            if ( eventMsg == m_table[i]->GetEventType() )
-            {
-                return m_table[i];
-            }
-        }
-    }
-    return 0;
+    if (controlIt == m_controls.end())
+        return nullptr;
+
+    return controlIt->get();
 }
 
 
@@ -544,31 +291,24 @@ CControl* CWindow::SearchControl(EventType eventMsg)
 
 bool CWindow::GetTooltip(Math::Point pos, std::string &name)
 {
-    int     i;
-
-    for ( i=MAXWINDOW-1 ; i>=0 ; i-- )
+    for (auto& control : m_controls)
     {
-        if ( m_table[i] != 0 )
-        {
-            if ( m_table[i]->GetTooltip(pos, name) )
-            {
-                return true;
-            }
-        }
+        if (control->GetTooltip(pos, name))
+            return true;
     }
 
-    if ( m_buttonClose != 0 &&
-         m_buttonClose->GetTooltip(pos, name) )
+    if (m_buttonClose != nullptr &&
+        m_buttonClose->GetTooltip(pos, name))
     {
         return true;
     }
-    if ( m_buttonFull != 0 &&
-         m_buttonFull->GetTooltip(pos, name) )
+    if (m_buttonFull != nullptr &&
+        m_buttonFull->GetTooltip(pos, name))
     {
         return true;
     }
-    if ( m_buttonReduce != 0 &&
-         m_buttonReduce->GetTooltip(pos, name) )
+    if (m_buttonReduce != nullptr &&
+        m_buttonReduce->GetTooltip(pos, name))
     {
         return true;
     }
@@ -587,40 +327,29 @@ bool CWindow::GetTooltip(Math::Point pos, std::string &name)
 
 void CWindow::SetName(std::string name, bool tooltip)
 {
-    CButton*    pc;
-    bool        bAdjust;
-
     CControl::SetName(name, tooltip);
 
-    delete m_buttonReduce;
-    m_buttonReduce = nullptr;
+    m_buttonReduce.reset();
+    m_buttonFull.reset();
+    m_buttonClose.reset();
 
-    delete m_buttonFull;
-    m_buttonFull = nullptr;
-
-    delete m_buttonClose;
-    m_buttonClose = nullptr;
-
-    bAdjust = false;
+    bool bAdjust = false;
 
     if ( m_name.length() > 0 && m_bRedim )  // title bar exists?
     {
-        m_buttonReduce = new CButton();
-        pc = m_buttonReduce;
-        pc->Create(m_pos, m_dim, 0, EVENT_NULL);
+        m_buttonReduce = MakeUnique<CButton>();
+        m_buttonReduce->Create(m_pos, m_dim, 0, EVENT_NULL);
 
-        m_buttonFull = new CButton();
-        pc = m_buttonFull;
-        pc->Create(m_pos, m_dim, 0, EVENT_NULL);
+        m_buttonFull = MakeUnique<CButton>();
+        m_buttonFull->Create(m_pos, m_dim, 0, EVENT_NULL);
 
         bAdjust = true;
     }
 
     if ( m_name.length() > 0 && m_bClosable )  // title bar exists?
     {
-        m_buttonClose = new CButton();
-        pc = m_buttonClose;
-        pc->Create(m_pos, m_dim, 0, EVENT_NULL);
+        m_buttonClose = MakeUnique<CButton>();
+        m_buttonClose->Create(m_pos, m_dim, 0, EVENT_NULL);
 
         bAdjust = true;
     }
@@ -653,15 +382,15 @@ void CWindow::SetDim(Math::Point dim)
 
 void CWindow::MoveAdjust()
 {
-    Math::Point     pos, dim;
-    float       h, offset;
-
-    h = m_engine->GetText()->GetHeight(m_fontType, m_fontSize);
+    float h = m_engine->GetText()->GetHeight(m_fontType, m_fontSize);
+    Math::Point dim;
     dim.y = h*1.2f;
     dim.x = dim.y*0.75f;
 
-    if ( m_buttonClose != 0 )
+    float offset = 0.0f;
+    if (m_buttonClose != nullptr)
     {
+        Math::Point pos;
         pos.x = m_pos.x+m_dim.x-0.01f-dim.x;
         pos.y = m_pos.y+m_dim.y-0.01f-h*1.2f;
         m_buttonClose->SetPos(pos);
@@ -673,16 +402,18 @@ void CWindow::MoveAdjust()
         offset = 0.0f;
     }
 
-    if ( m_buttonFull != 0 )
+    if (m_buttonFull != nullptr)
     {
+        Math::Point pos;
         pos.x = m_pos.x+m_dim.x-0.01f-dim.x-offset;
         pos.y = m_pos.y+m_dim.y-0.01f-h*1.2f;
         m_buttonFull->SetPos(pos);
         m_buttonFull->SetDim(dim);
     }
 
-    if ( m_buttonReduce != 0 )
+    if (m_buttonReduce != nullptr)
     {
+        Math::Point pos;
         pos.x = m_pos.x+m_dim.x-0.01f-dim.x*2.0f-offset;
         pos.y = m_pos.y+m_dim.y-0.01f-h*1.2f;
         m_buttonReduce->SetPos(pos);
@@ -790,7 +521,7 @@ void CWindow::AdjustButtons()
 {
     std::string res;
 
-    if ( m_buttonFull != 0 )
+    if (m_buttonFull != nullptr)
     {
         if ( m_bMaximized )
         {
@@ -806,7 +537,7 @@ void CWindow::AdjustButtons()
         }
     }
 
-    if ( m_buttonReduce != 0 )
+    if (m_buttonReduce != nullptr)
     {
         if ( m_bMinimized )
         {
@@ -822,7 +553,7 @@ void CWindow::AdjustButtons()
         }
     }
 
-    if ( m_buttonClose != 0 )
+    if (m_buttonClose != nullptr)
     {
         m_buttonClose->SetIcon(11);  // x
         GetResource(RES_TEXT, RT_WINDOW_CLOSE, res);
@@ -846,7 +577,7 @@ bool CWindow::GetTrashEvent()
 
 EventType CWindow::GetEventTypeReduce()
 {
-    if ( m_buttonReduce == 0 )  return EVENT_NULL;
+    if (m_buttonReduce == nullptr)  return EVENT_NULL;
     return m_buttonReduce->GetEventType();
 }
 
@@ -854,7 +585,7 @@ EventType CWindow::GetEventTypeReduce()
 
 EventType CWindow::GetEventTypeFull()
 {
-    if ( m_buttonFull == 0 )  return EVENT_NULL;
+    if (m_buttonFull == nullptr)  return EVENT_NULL;
     return m_buttonFull->GetEventType();
 }
 
@@ -862,7 +593,7 @@ EventType CWindow::GetEventTypeFull()
 
 EventType CWindow::GetEventTypeClose()
 {
-    if ( m_buttonClose == 0 )  return EVENT_NULL;
+    if (m_buttonClose == nullptr)  return EVENT_NULL;
     return m_buttonClose->GetEventType();
 }
 
@@ -923,9 +654,6 @@ int CWindow::BorderDetect(Math::Point pos)
 
 bool CWindow::EventProcess(const Event &event)
 {
-    Math::Point     pos;
-    int         i, flags;
-
     if ( event.type == EVENT_MOUSE_MOVE )
     {
         if ( m_bCapture )
@@ -939,7 +667,7 @@ bool CWindow::EventProcess(const Event &event)
             if ( m_name.length() > 0 && m_bMovable &&  // title bar?
                  Detect(event.mousePos) )
             {
-                flags = BorderDetect(event.mousePos);
+                int flags = BorderDetect(event.mousePos);
                 if ( flags == -1 )
                 {
                     m_pressMouse = Gfx::ENG_MOUSE_MOVE;  // +
@@ -973,26 +701,21 @@ bool CWindow::EventProcess(const Event &event)
 
     if ( !m_bCapture )
     {
-        for ( i=MAXWINDOW-1 ; i>=0 ; i-- )
+        for (auto& control : m_controls)
         {
-            if ( m_table[i] != 0 )
-            {
-                if ( !m_table[i]->EventProcess(event) )
-                {
-                    return false;
-                }
-            }
+            if (! control->EventProcess(event))
+                return false;
         }
 
-        if ( m_buttonReduce != 0 )
+        if (m_buttonReduce != nullptr)
         {
             m_buttonReduce->EventProcess(event);
         }
-        if ( m_buttonFull != 0 )
+        if (m_buttonFull != nullptr)
         {
             m_buttonFull->EventProcess(event);
         }
-        if ( m_buttonClose != 0 )
+        if (m_buttonClose != nullptr)
         {
             m_buttonClose->EventProcess(event);
         }
@@ -1019,7 +742,7 @@ bool CWindow::EventProcess(const Event &event)
 
     if ( event.type == EVENT_MOUSE_MOVE && m_bCapture )
     {
-        pos = event.mousePos;
+        Math::Point pos = event.mousePos;
         if ( m_pressFlags == -1 )  // all moves?
         {
             m_pos.x += pos.x-m_pressPos.x;
@@ -1070,7 +793,7 @@ bool CWindow::EventProcess(const Event &event)
 
     if (event.type == EVENT_MOUSE_BUTTON_UP &&
         event.GetData<MouseButtonEventData>()->button == MOUSE_BUTTON_LEFT &&
-        m_bCapture )
+        m_bCapture)
     {
         m_bCapture = false;
     }
@@ -1083,10 +806,6 @@ bool CWindow::EventProcess(const Event &event)
 
 void CWindow::Draw()
 {
-    Math::Point     pos, dim;
-    float       width, h, sw;
-    int         i;
-
     if ( (m_state & STATE_VISIBLE) == 0 )  return;
 
     if ( m_state & STATE_SHADOW )
@@ -1098,8 +817,9 @@ void CWindow::Draw()
 
     if ( m_name.length() > 0 )  // title bar?
     {
-        h = m_engine->GetText()->GetHeight(m_fontType, m_fontSize);
+        float h = m_engine->GetText()->GetHeight(m_fontType, m_fontSize);
 
+        Math::Point pos, dim;
         // Draws the shadow under the title bar.
         {
             Math::Point sPos, sDim;
@@ -1111,7 +831,7 @@ void CWindow::Draw()
             DrawShadow(pos, dim);
         }
 
-        width = m_dim.x;
+        float width = m_dim.x;
         if ( m_bRedim    )  width -= h*1.2f*0.75f*2.0f;
         if ( m_bClosable )  width -= h*1.2f*0.75f;
 
@@ -1121,7 +841,7 @@ void CWindow::Draw()
         dim.y = h*1.2f;
         DrawVertex(pos, dim, (m_state&STATE_ENABLE)?2:9);
 
-        sw = m_engine->GetText()->GetStringWidth(m_name, m_fontType, m_fontSize);
+        float sw = m_engine->GetText()->GetStringWidth(m_name, m_fontType, m_fontSize);
 
         if ( m_state&STATE_ENABLE )
         {
@@ -1138,28 +858,25 @@ void CWindow::Draw()
         pos.y = m_pos.y+m_dim.y-0.01f-h*1.10f;
         m_engine->GetText()->DrawText(m_name, m_fontType, m_fontSize, pos, width, Gfx::TEXT_ALIGN_CENTER, 0);
 
-        if ( m_buttonReduce != 0 )
+        if (m_buttonReduce != nullptr)
         {
             m_buttonReduce->Draw();
         }
 
-        if ( m_buttonFull != 0 )
+        if (m_buttonFull != nullptr)
         {
             m_buttonFull->Draw();
         }
 
-        if ( m_buttonClose != 0 )
+        if (m_buttonClose != nullptr)
         {
             m_buttonClose->Draw();
         }
     }
 
-    for ( i=0 ; i<MAXWINDOW ; i++ )
+    for (auto& control : m_controls)
     {
-        if ( m_table[i] != 0 )
-        {
-            m_table[i]->Draw();
-        }
+        control->Draw();
     }
 }
 

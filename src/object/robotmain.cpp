@@ -1440,7 +1440,7 @@ void CRobotMain::StartDisplayInfo(int index, bool movie)
 }
 
 //! Beginning of the displaying of instructions
-void CRobotMain::StartDisplayInfo(const char *filename, int index)
+void CRobotMain::StartDisplayInfo(const std::string& filename, int index)
 {
     if (m_cmdEdit) return;
 

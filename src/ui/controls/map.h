@@ -58,12 +58,12 @@ enum MapColor
 
 struct MapObject
 {
-    char        bUsed;
-    CObject*    object;
-    MapColor    color;
-    ObjectType  type;
-    Math::Point     pos;
-    float       dir;
+    bool        bUsed = false;
+    CObject*    object = nullptr;
+    MapColor    color = MAPCOLOR_NULL;
+    ObjectType  type = OBJECT_NULL;
+    Math::Point pos;
+    float       dir = 0.0f;
 };
 
 
@@ -81,7 +81,7 @@ public:
     void        UpdateTerrain();
     void        UpdateTerrain(int bx, int by, int ex, int ey);
 
-    void        SetFixImage(const char *filename);
+    void        SetFixImage(const std::string& filename);
     bool        GetFixImage();
 
     void        SetOffset(float ox, float oy);
@@ -137,7 +137,7 @@ protected:
     Math::Point     m_mapPos;
     Math::Point     m_mapDim;
     bool            m_bRadar;
-    char            m_fixImage[100];
+    std::string     m_fixImage;
     int             m_mode;
     bool            m_bToy;
     bool            m_bDebug;

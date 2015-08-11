@@ -45,13 +45,10 @@ public:
 
     void    Draw();
 
-    void    SetFilenameImage(const char *name);
-    char*   GetFilenameImage();
+    void    SetFilenameImage(const std::string& name);
 
 protected:
-
-protected:
-    char    m_filename[100];
+    std::string m_filename;
 };
 
 

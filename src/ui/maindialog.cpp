@@ -55,6 +55,10 @@ CMainDialog::CMainDialog()
     m_settings   = CSettings::GetInstancePointer();
 
     m_dialogOpen = false;
+    m_dialogType = {};
+    m_dialogFireParticles = false;
+    m_dialogTime = 0.0f;
+    m_dialogParti = 0.0f;
 }
 
 // Destructor of robot application.

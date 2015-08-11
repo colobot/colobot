@@ -94,7 +94,7 @@ protected:
     Math::Point     m_infoFinalDim;
     int         m_lightSuppl;
     bool        m_bEditLock;
-    PauseType   m_bInitPause;
+    PauseType   m_initPause;
     bool        m_bSoluce;
     CObject*    m_toto;
 };
