@@ -22,6 +22,7 @@
 
 Channel::Channel()
     : m_buffer(nullptr),
+      m_source(0),
       m_priority(0),
       m_id(0),
       m_startAmplitude(0.0f),

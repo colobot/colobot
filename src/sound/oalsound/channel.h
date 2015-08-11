@@ -38,11 +38,11 @@
 
 struct SoundOper
 {
-    float finalAmplitude;
-    float finalFrequency;
-    float totalTime;
-    float currentTime;
-    SoundNext nextOper;
+    float finalAmplitude = 0.0f;
+    float finalFrequency = 0.0f;
+    float totalTime = 0.0f;
+    float currentTime = 0.0f;
+    SoundNext nextOper = {};
 };
 
 
