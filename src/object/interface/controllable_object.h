@@ -19,6 +19,8 @@
 
 #pragma once
 
+#include "graphics/engine/camera.h"
+
 #include "object/object_interface_type.h"
 
 /**
