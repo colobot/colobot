@@ -83,6 +83,7 @@ class CSceneEndCondition;
 class CAudioChangeCondition;
 class CPlayerProfile;
 class CSettings;
+class COldObject;
 
 namespace Gfx
 {
@@ -369,6 +370,8 @@ public:
 
     //! Returns global magnifyDamage setting
     float       GetGlobalMagnifyDamage();
+
+    void        StartDetectEffect(COldObject* object, CObject* target);
 
 protected:
     bool        EventFrame(const Event &event);

@@ -107,9 +107,6 @@ public:
     virtual void        SetFixed(bool bFixed);
     virtual bool        GetFixed();
 
-    // This either goes to CProgrammableObject or gets removed entirely (detect() was used in Ceebot-Teen only, unless we want to restore it)
-    virtual void        StartDetectEffect(CObject *target, bool bFound);
-
     // Not sure. Maybe a separate interface, or maybe CControllableObject (buildings can have viruses too)
     virtual void        SetVirusMode(bool bEnable);
     virtual bool        GetVirusMode();

@@ -6468,3 +6468,43 @@ float CRobotMain::GetGlobalMagnifyDamage()
 {
     return m_globalMagnifyDamage;
 }
+
+// Beginning of the effect when the instruction "detect" is used.
+
+void CRobotMain::StartDetectEffect(COldObject* object, CObject* target)
+{
+    Math::Matrix*   mat;
+    Math::Vector    pos, goal;
+    Math::Point     dim;
+
+    mat = object->GetWorldMatrix(0);
+    pos = Math::Transform(*mat, Math::Vector(2.0f, 3.0f, 0.0f));
+
+    if ( target == 0 )
+    {
+        goal = Math::Transform(*mat, Math::Vector(50.0f, 3.0f, 0.0f));
+    }
+    else
+    {
+        goal = target->GetPosition();
+        goal.y += 3.0f;
+        goal = Math::SegmentPoint(pos, goal, Math::Distance(pos, goal)-3.0f);
+    }
+
+    dim.x = 3.0f;
+    dim.y = dim.x;
+    m_particle->CreateRay(pos, goal, Gfx::PARTIRAY2, dim, 0.2f);
+
+    if ( target != nullptr )
+    {
+        goal = target->GetPosition();
+        goal.y += 3.0f;
+        goal = Math::SegmentPoint(pos, goal, Math::Distance(pos, goal)-1.0f);
+        dim.x = 6.0f;
+        dim.y = dim.x;
+        m_particle->CreateParticle(goal, Math::Vector(0.0f, 0.0f, 0.0f), dim,
+                                     target != nullptr ? Gfx::PARTIGLINT : Gfx::PARTIGLINTr, 0.5f);
+    }
+
+    m_sound->Play(target != nullptr ? SOUND_BUILD : SOUND_RECOVER);
+}

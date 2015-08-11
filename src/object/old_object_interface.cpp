@@ -136,11 +136,6 @@ bool COldObjectInterface::GetFixed()
 }
 
 
-void COldObjectInterface::StartDetectEffect(CObject *target, bool bFound)
-{
-    throw std::logic_error("StartDetectEffect: not implemented!");
-}
-
 void COldObjectInterface::SetVirusMode(bool bEnable)
 {
     throw std::logic_error("SetVirusMode: not implemented!");

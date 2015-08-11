@@ -1288,7 +1288,10 @@ bool CScriptFunctions::rDetect(CBotVar* var, CBotVar* result, int& exception, vo
 
         pBest = CObjectManager::GetInstancePointer()->Radar(pThis, type_v, 0.0f, 45.0f*Math::PI/180.0f, 0.0f, 20.0f, false, FILTER_NONE, true);
 
-        pThis->StartDetectEffect(pBest, pBest != nullptr);
+        if (pThis->Implements(ObjectInterfaceType::Old))
+        {
+            script->m_main->StartDetectEffect(dynamic_cast<COldObject*>(pThis), pBest);
+        }
 
         if ( pBest == 0 )
         {

@@ -2446,46 +2446,6 @@ bool COldObject::JostleObject(float force)
 }
 
 
-// Beginning of the effect when the instruction "detect" is used.
-
-void COldObject::StartDetectEffect(CObject *target, bool bFound)
-{
-    Math::Matrix*   mat;
-    Math::Vector    pos, goal;
-    Math::Point     dim;
-
-    mat = GetWorldMatrix(0);
-    pos = Math::Transform(*mat, Math::Vector(2.0f, 3.0f, 0.0f));
-
-    if ( target == 0 )
-    {
-        goal = Math::Transform(*mat, Math::Vector(50.0f, 3.0f, 0.0f));
-    }
-    else
-    {
-        goal = target->GetPosition();
-        goal.y += 3.0f;
-        goal = Math::SegmentPoint(pos, goal, Math::Distance(pos, goal)-3.0f);
-    }
-
-    dim.x = 3.0f;
-    dim.y = dim.x;
-    m_particle->CreateRay(pos, goal, Gfx::PARTIRAY2, dim, 0.2f);
-
-    if ( target != 0 )
-    {
-        goal = target->GetPosition();
-        goal.y += 3.0f;
-        goal = Math::SegmentPoint(pos, goal, Math::Distance(pos, goal)-1.0f);
-        dim.x = 6.0f;
-        dim.y = dim.x;
-        m_particle->CreateParticle(goal, Math::Vector(0.0f, 0.0f, 0.0f), dim,
-                                     bFound?Gfx::PARTIGLINT:Gfx::PARTIGLINTr, 0.5f);
-    }
-
-    m_sound->Play(bFound?SOUND_BUILD:SOUND_RECOVER);
-}
-
 
 // Management of time from which a virus is active.
 

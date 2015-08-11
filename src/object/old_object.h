@@ -220,8 +220,6 @@ public:
     Math::Sphere GetJostlingSphere() const override;
     bool        JostleObject(float force) override;
 
-    void        StartDetectEffect(CObject *target, bool bFound) override;
-
     void        SetVirusMode(bool bEnable) override;
     bool        GetVirusMode() override;
 
