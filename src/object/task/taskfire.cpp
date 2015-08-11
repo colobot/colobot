@@ -78,14 +78,15 @@ bool CTaskFire::EventProcess(const Event &event)
     m_lastSound -= event.rTime;
     m_progress += event.rTime*m_speed;
 
-    CObject* power = m_object->GetPower();
-    if (power != nullptr)
+    CPowerContainerObject* power = nullptr;
+    if (m_object->GetPower() != nullptr && m_object->GetPower()->Implements(ObjectInterfaceType::PowerContainer))
     {
+        power = dynamic_cast<CPowerContainerObject*>(m_object->GetPower());
         energy = power->GetEnergy();
              if ( m_bOrganic )  fire = ENERGY_FIREi;
         else if ( m_bRay     )  fire = ENERGY_FIREr;
         else                    fire = ENERGY_FIRE;
-        energy -= event.rTime*fire/power->GetCapacity();
+        energy -= event.rTime*fire;
         power->SetEnergy(energy);
     }
 
@@ -314,13 +315,13 @@ Error CTaskFire::Start(float delay)
 
     assert(m_object->Implements(ObjectInterfaceType::Powered));
     CObject* power = dynamic_cast<CPoweredObject*>(m_object)->GetPower();
-    if (power == nullptr)  return ERR_FIRE_ENERGY;
+    if (power == nullptr || !power->Implements(ObjectInterfaceType::PowerContainer))  return ERR_FIRE_ENERGY;
 
-    energy = power->GetEnergy();
+    energy = dynamic_cast<CPowerContainerObject*>(power)->GetEnergy();
          if ( m_bOrganic )  fire = m_delay*ENERGY_FIREi;
     else if ( m_bRay     )  fire = m_delay*ENERGY_FIREr;
     else                    fire = m_delay*ENERGY_FIRE;
-    if ( energy < fire/power->GetCapacity()+0.05f )  return ERR_FIRE_ENERGY;
+    if ( energy < fire+0.05f )  return ERR_FIRE_ENERGY;
 
     m_speed = 1.0f/m_delay;
     m_progress = 0.0f;
@@ -386,4 +387,3 @@ bool CTaskFire::Abort()
 //? m_camera->StopCentering(m_object, 1.0f);
     return true;
 }
-

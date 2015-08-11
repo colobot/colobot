@@ -104,22 +104,6 @@ Character* COldObjectInterface::GetCharacter()
     throw std::logic_error("GetCharacter: not implemented!");
 }
 
-void COldObjectInterface::SetEnergy(float level)
-{
-    throw std::logic_error("SetEnergy: not implemented!");
-}
-
-float COldObjectInterface::GetEnergy()
-{
-    throw std::logic_error("GetEnergy: not implemented!");
-}
-
-
-float COldObjectInterface::GetCapacity()
-{
-    throw std::logic_error("GetCapacity: not implemented!");
-}
-
 void COldObjectInterface::SetShield(float level)
 {
     throw std::logic_error("SetShield: not implemented!");

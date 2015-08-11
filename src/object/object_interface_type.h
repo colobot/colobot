@@ -42,6 +42,7 @@ enum class ObjectInterfaceType
     Powered, //!< object powered with power cell
     Movable, //!< objects that can move
     Controllable, //!< objects that can be selected and controlled by the player
+    PowerContainer, //!< objects that hold power
     Old, //!< old objects, TODO: remove once no longer necessary
     Max //!< maximum value (for getting number of items in enum)
 };

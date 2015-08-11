@@ -594,7 +594,7 @@ CObjectUPtr CObjectFactory::CreateBuilding(const ObjectCreateParams& params)
         obj->SetCameraCollisionSphere(Math::Sphere(Math::Vector(-7.0f, 5.0f, 0.0f), 5.0f));
 
         obj->GetCharacter()->posPower = Math::Vector(0.0f, 3.0f, 0.0f);
-        obj->SetEnergy(power);  // initializes the energy level
+        obj->SetEnergyLevel(power);  // initializes the energy level
 
         obj->CreateShadowCircle(6.0f, 0.5f);
     }
@@ -777,7 +777,7 @@ CObjectUPtr CObjectFactory::CreateBuilding(const ObjectCreateParams& params)
         obj->AddCrashSphere(CrashSphere(Math::Vector(-15.0f, 6.0f, 0.0f), 4.0f, SOUND_BOUMm, 0.45f));
         obj->SetCameraCollisionSphere(Math::Sphere(Math::Vector(-15.0f, 5.0f, 0.0f), 6.0f));
 
-        obj->SetEnergy(power);
+        obj->SetEnergyLevel(power);
     }
 
     if ( type == OBJECT_CONVERT )
@@ -1068,8 +1068,8 @@ CObjectUPtr CObjectFactory::CreateBuilding(const ObjectCreateParams& params)
         pPower->SetTransporter(obj.get());
         SetPower(pPower);
 
-        if ( power <= 1.0f )  pPower->obj->SetEnergy(power);
-        else                  pPower->obj->SetEnergy(power/100.0f);
+        if ( power <= 1.0f )  pPower->obj->SetEnergyLevel(power);
+        else                  pPower->obj->SetEnergyLevel(power/100.0f);
     }
 #endif
 
@@ -1102,7 +1102,7 @@ CObjectUPtr CObjectFactory::CreateResource(const ObjectCreateParams& params)
     int rank = m_engine->CreateObject();
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);  // it is a stationary object
     obj->SetObjectRank(0, rank);
-    obj->SetEnergy(power);
+    obj->SetEnergyLevel(power);
 
     std::string name;
     if ( type == OBJECT_STONE       )  name = "stone.mod";

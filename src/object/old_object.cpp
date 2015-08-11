@@ -103,6 +103,7 @@ COldObject::COldObject(int id)
     , CPoweredObject(m_implementedInterfaces)
     , CMovableObject(m_implementedInterfaces)
     , CControllableObject(m_implementedInterfaces)
+    , CPowerContainerObject(m_implementedInterfaces)
 {
     // A bit of a hack since we don't have subclasses yet, set externally in SetProgrammable()
     m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Programmable)] = false;
@@ -764,8 +765,8 @@ void COldObject::Write(CLevelParserLine* line)
     if ( GetCameraLock() )
         line->AddParam("cameraLock", MakeUnique<CLevelParserParam>(GetCameraLock()));
 
-    if ( GetEnergy() != 0.0f )
-        line->AddParam("energy", MakeUnique<CLevelParserParam>(GetEnergy()));
+    if ( GetEnergyLevel() != 0.0f )
+        line->AddParam("energy", MakeUnique<CLevelParserParam>(GetEnergyLevel()));
 
     if ( GetCapacity() != 1.0f )
         line->AddParam("capacity", MakeUnique<CLevelParserParam>(GetCapacity()));
@@ -872,7 +873,7 @@ void COldObject::Read(CLevelParserLine* line)
 
     SetCameraDist(line->GetParam("cameraDist")->AsFloat(50.0f));
     SetCameraLock(line->GetParam("cameraLock")->AsBool(false));
-    SetEnergy(line->GetParam("energy")->AsFloat(0.0f));
+    SetEnergyLevel(line->GetParam("energy")->AsFloat(0.0f));
     SetCapacity(line->GetParam("capacity")->AsFloat(1.0f));
     SetShield(line->GetParam("shield")->AsFloat(1.0f));
     SetRange(line->GetParam("range")->AsFloat(1.0f));
@@ -2315,14 +2316,14 @@ float COldObject::GetAbsTime()
 // Management of energy contained in a battery.
 // Single subject possesses the battery energy, but not the vehicle that carries the battery!
 
-void COldObject::SetEnergy(float level)
+void COldObject::SetEnergyLevel(float level)
 {
     if ( level < 0.0f )  level = 0.0f;
     if ( level > 1.0f )  level = 1.0f;
     m_energy = level;
 }
 
-float COldObject::GetEnergy()
+float COldObject::GetEnergyLevel()
 {
     if ( m_type != OBJECT_POWER   &&
          m_type != OBJECT_ATOMIC  &&
@@ -2344,6 +2345,11 @@ void COldObject::SetCapacity(float capacity)
 float COldObject::GetCapacity()
 {
     return m_capacity;
+}
+
+bool COldObject::IsRechargeable()
+{
+    return m_type == OBJECT_POWER;
 }
 
 

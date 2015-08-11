@@ -774,7 +774,7 @@ bool CPhysics::EventProcess(const Event &event)
 void CPhysics::MotorUpdate(float aTime, float rTime)
 {
     ObjectType  type;
-    CObject*    power = nullptr;
+    CPowerContainerObject* power = nullptr;
     Math::Vector    pos, motorSpeed;
     float       energy, speed, factor, h;
 
@@ -801,7 +801,7 @@ void CPhysics::MotorUpdate(float aTime, float rTime)
               type == OBJECT_TECH  )
     {
         power = nullptr;
-        if (IsObjectCarryingCargo(m_object)&&  // carries something?
+        if (IsObjectCarryingCargo(m_object) &&  // carries something?
              !m_bFreeze )
         {
             motorSpeed.x *= 0.7f;  // forward more slowly
@@ -835,8 +835,8 @@ void CPhysics::MotorUpdate(float aTime, float rTime)
     {
         if (m_object->Implements(ObjectInterfaceType::Powered))
         {
-            power = dynamic_cast<CPoweredObject*>(m_object)->GetPower();  // searches for the object battery uses
-            if ( power == nullptr || power->GetEnergy() == 0.0f )  // no battery or flat?
+            power = dynamic_cast<CPowerContainerObject*>(dynamic_cast<CPoweredObject*>(m_object)->GetPower());  // searches for the object battery uses
+            if ( GetObjectEnergy(m_object) == 0.0f )  // no battery or flat?
             {
                 motorSpeed.x =  0.0f;
                 motorSpeed.z =  0.0f;
@@ -1019,8 +1019,6 @@ void CPhysics::MotorUpdate(float aTime, float rTime)
              type == OBJECT_MOBILEis ||
              type == OBJECT_MOBILEic ||
              type == OBJECT_MOBILEii )  factor = 0.5f;
-
-        factor /= power->GetCapacity();
 
         energy = power->GetEnergy();
         energy -= fabs(motorSpeed.x)*rTime*factor*0.005f;
@@ -3837,13 +3835,13 @@ Error CPhysics::GetError()
     if (m_object->Implements(ObjectInterfaceType::Powered))
     {
         CObject* power = dynamic_cast<CPoweredObject*>(m_object)->GetPower();  // searches for the object battery used
-        if (power == nullptr)
+        if (power == nullptr || !power->Implements(ObjectInterfaceType::PowerContainer))
         {
             return ERR_VEH_POWER;
         }
         else
         {
-            if ( power->GetEnergy() == 0.0f )  return ERR_VEH_ENERGY;
+            if ( dynamic_cast<CPowerContainerObject*>(power)->GetEnergy() == 0.0f )  return ERR_VEH_ENERGY;
         }
     }
 

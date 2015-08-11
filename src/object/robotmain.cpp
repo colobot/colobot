@@ -1235,8 +1235,8 @@ void CRobotMain::ExecuteCmd(char *cmd)
                 if (object->Implements(ObjectInterfaceType::Powered))
                 {
                     CObject* power = dynamic_cast<CPoweredObject*>(object)->GetPower();
-                    if (power != nullptr)
-                        power->SetEnergy(1.0f);
+                    if (power != nullptr && power->Implements(ObjectInterfaceType::PowerContainer))
+                        dynamic_cast<CPowerContainerObject*>(power)->SetEnergyLevel(1.0f);
                 }
 
                 object->SetShield(1.0f);
@@ -1257,8 +1257,8 @@ void CRobotMain::ExecuteCmd(char *cmd)
                 if (object->Implements(ObjectInterfaceType::Powered))
                 {
                     CObject* power = dynamic_cast<CPoweredObject*>(object)->GetPower();
-                    if (power != nullptr)
-                        power->SetEnergy(1.0f);
+                    if (power != nullptr && power->Implements(ObjectInterfaceType::PowerContainer))
+                        dynamic_cast<CPowerContainerObject*>(power)->SetEnergyLevel(1.0f);
                 }
             }
             return;

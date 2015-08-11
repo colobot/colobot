@@ -111,11 +111,11 @@ Error CAutoResearch::StartAction(int param)
         return ERR_RESEARCH_ALREADY;
     }
 
-    CObject* power = m_object->GetPower();
-    if (power == nullptr)
+    if (m_object->GetPower() == nullptr || !m_object->GetPower()->Implements(ObjectInterfaceType::PowerContainer))
     {
         return ERR_RESEARCH_POWER;
     }
+    CPowerContainerObject* power = dynamic_cast<CPowerContainerObject*>(m_object->GetPower());
     if ( power->GetCapacity() > 1.0f )
     {
         return ERR_RESEARCH_TYPE;
@@ -150,7 +150,7 @@ Error CAutoResearch::StartAction(int param)
 
 bool CAutoResearch::EventProcess(const Event &event)
 {
-    CObject*    power;
+    CPowerContainerObject*    power;
     Math::Vector    pos, speed;
     Error       message;
     Math::Point     dim;
@@ -218,8 +218,7 @@ bool CAutoResearch::EventProcess(const Event &event)
         FireStopUpdate(m_progress, true);  // flashes
         if ( m_progress < 1.0f )
         {
-            power = m_object->GetPower();
-            if ( power == 0 )  // more battery?
+            if ( m_object->GetPower() == nullptr || !m_object->GetPower()->Implements(ObjectInterfaceType::PowerContainer) )  // more battery?
             {
                 SetBusy(false);
                 UpdateInterface();
@@ -229,7 +228,8 @@ bool CAutoResearch::EventProcess(const Event &event)
                 m_speed    = 1.0f/1.0f;
                 return true;
             }
-            power->SetEnergy(1.0f-m_progress);
+            power = dynamic_cast<CPowerContainerObject*>(m_object->GetPower());
+            power->SetEnergyLevel(1.0f-m_progress);
 
             if ( m_lastParticle+m_engine->ParticleAdapt(0.05f) <= m_time )
             {
@@ -297,16 +297,16 @@ Error CAutoResearch::GetError()
         return ERR_BAT_VIRUS;
     }
 
-    CObject* power = m_object->GetPower();
-    if ( power == 0 )
+    if (m_object->GetPower() == nullptr || !m_object->GetPower()->Implements(ObjectInterfaceType::PowerContainer))
     {
         return ERR_RESEARCH_POWER;
     }
-    if ( power != 0 && power->GetCapacity() > 1.0f )
+    CPowerContainerObject* power = dynamic_cast<CPowerContainerObject*>(m_object->GetPower());
+    if ( power->GetCapacity() > 1.0f )
     {
         return ERR_RESEARCH_TYPE;
     }
-    if ( power != 0 && power->GetEnergy() < 1.0f )
+    if ( power->GetEnergy() < 1.0f )
     {
         return ERR_RESEARCH_ENERGY;
     }

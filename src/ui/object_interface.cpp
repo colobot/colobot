@@ -1579,10 +1579,11 @@ void CObjectInterface::UpdateInterface(float rTime)
         if (m_object->Implements(ObjectInterfaceType::Powered))
         {
             CObject* power = dynamic_cast<CPoweredObject*>(m_object)->GetPower();
-            if (power != nullptr)
+            if (power != nullptr && power->Implements(ObjectInterfaceType::PowerContainer))
             {
-                energy = power->GetEnergy();
-                limit = energy*power->GetCapacity();
+                CPowerContainerObject* powerContainer = dynamic_cast<CPowerContainerObject*>(power);
+                energy = powerContainer->GetEnergyLevel();
+                limit = powerContainer->GetEnergy();
             }
         }
         icon = 0;  // red/green

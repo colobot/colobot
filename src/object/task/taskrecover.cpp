@@ -104,11 +104,12 @@ bool CTaskRecover::EventProcess(const Event &event)
     if ( m_phase == TRP_OPER )
     {
         assert(m_object->Implements(ObjectInterfaceType::Powered));
-        CObject* power = dynamic_cast<CPoweredObject*>(m_object)->GetPower();
-        if (power != nullptr)
+        CObject* powerObj = dynamic_cast<CPoweredObject*>(m_object)->GetPower();
+        if (powerObj != nullptr && powerObj->Implements(ObjectInterfaceType::PowerContainer))
         {
+            CPowerContainerObject* power = dynamic_cast<CPowerContainerObject*>(powerObj);
             energy = power->GetEnergy();
-            energy -= event.rTime * ENERGY_RECOVER / power->GetCapacity() * m_speed;
+            energy -= event.rTime * ENERGY_RECOVER * m_speed;
             power->SetEnergy(energy);
         }
 
@@ -186,10 +187,10 @@ Error CTaskRecover::Start()
 
     assert(m_object->Implements(ObjectInterfaceType::Powered));
     CObject* power = dynamic_cast<CPoweredObject*>(m_object)->GetPower();
-    if (power == nullptr)  return ERR_RECOVER_ENERGY;
+    if (power == nullptr || !power->Implements(ObjectInterfaceType::PowerContainer))  return ERR_RECOVER_ENERGY;
 
-    float energy = power->GetEnergy();
-    if ( energy < ENERGY_RECOVER/power->GetCapacity()+0.05f )  return ERR_RECOVER_ENERGY;
+    float energy = dynamic_cast<CPowerContainerObject*>(power)->GetEnergy();
+    if ( energy < ENERGY_RECOVER+0.05f )  return ERR_RECOVER_ENERGY;
 
     Math::Matrix* mat = m_object->GetWorldMatrix(0);
     Math::Vector pos = Math::Vector(RECOVER_DIST, 3.3f, 0.0f);
@@ -372,4 +373,3 @@ CObject* CTaskRecover::SearchRuin()
 {
     return CObjectManager::GetInstancePointer()->FindNearest(nullptr, m_recoverPos, {OBJECT_RUINmobilew1, OBJECT_RUINmobilew2, OBJECT_RUINmobilet1, OBJECT_RUINmobilet2, OBJECT_RUINmobiler1, OBJECT_RUINmobiler2}, 40.0f/g_unit);
 }
-

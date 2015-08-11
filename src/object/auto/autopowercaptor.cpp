@@ -253,35 +253,47 @@ void CAutoPowerCaptor::ChargeObject(float rTime)
         float dist = Math::Distance(oPos, sPos);
         if ( dist > 20.0f )  continue;
 
-        if (! IsObjectBeingTransported(obj) && obj->GetType() == OBJECT_POWER )
+        if (! IsObjectBeingTransported(obj) && obj->Implements(ObjectInterfaceType::PowerContainer) )
         {
-            float energy = obj->GetEnergy();
-            energy += rTime/2.0f;
-            if ( energy > 1.0f )  energy = 1.0f;
-            obj->SetEnergy(energy);
+            CPowerContainerObject* powerContainer = dynamic_cast<CPowerContainerObject*>(obj);
+            if (powerContainer->IsRechargeable())
+            {
+                float energy = powerContainer->GetEnergy();
+                energy += rTime/2.0f;
+                if ( energy > 1.0f )  energy = 1.0f;
+                powerContainer->SetEnergy(energy);
+            }
         }
 
         if (obj->Implements(ObjectInterfaceType::Powered))
         {
             CObject* power = dynamic_cast<CPoweredObject*>(obj)->GetPower();
-            if ( power != nullptr && power->GetType() == OBJECT_POWER )
+            if ( power != nullptr && power->Implements(ObjectInterfaceType::PowerContainer) )
             {
-                float energy = power->GetEnergy();
-                energy += rTime/2.0f;
-                if ( energy > 1.0f )  energy = 1.0f;
-                power->SetEnergy(energy);
+                CPowerContainerObject* powerContainer = dynamic_cast<CPowerContainerObject*>(obj);
+                if (powerContainer->IsRechargeable())
+                {
+                    float energy = powerContainer->GetEnergy();
+                    energy += rTime/2.0f;
+                    if ( energy > 1.0f )  energy = 1.0f;
+                    powerContainer->SetEnergy(energy);
+                }
             }
         }
 
         if (obj->Implements(ObjectInterfaceType::Carrier))
         {
             CObject* power = dynamic_cast<CCarrierObject*>(obj)->GetCargo();
-            if ( power != nullptr && power->GetType() == OBJECT_POWER )
+            if ( power != nullptr && power->Implements(ObjectInterfaceType::PowerContainer) )
             {
-                float energy = power->GetEnergy();
-                energy += rTime/2.0f;
-                if ( energy > 1.0f )  energy = 1.0f;
-                power->SetEnergy(energy);
+                CPowerContainerObject* powerContainer = dynamic_cast<CPowerContainerObject*>(obj);
+                if (powerContainer->IsRechargeable())
+                {
+                    float energy = powerContainer->GetEnergy();
+                    energy += rTime/2.0f;
+                    if ( energy > 1.0f )  energy = 1.0f;
+                    powerContainer->SetEnergy(energy);
+                }
             }
         }
     }
@@ -318,4 +330,3 @@ bool CAutoPowerCaptor::Read(CLevelParserLine* line)
 
     return true;
 }
-

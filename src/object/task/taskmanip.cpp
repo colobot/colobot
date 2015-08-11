@@ -363,9 +363,9 @@ Error CTaskManip::Start(TaskManipOrder order, TaskManipArm arm)
 
     m_energy = 0.0f;
     power = m_object->GetPower();
-    if ( power != 0 )
+    if ( power != nullptr && power->Implements(ObjectInterfaceType::PowerContainer) )
     {
-        m_energy = power->GetEnergy();
+        m_energy = dynamic_cast<CPowerContainerObject*>(power)->GetEnergy();
     }
 
     if ( !m_physics->GetLand() )  return ERR_MANIP_FLY;
@@ -1368,4 +1368,3 @@ void CTaskManip::SoundManip(float time, float amplitude, float frequency)
     m_sound->AddEnvelope(i, 0.5f*amplitude, 1.0f*frequency, time-0.1f, SOPER_CONTINUE);
     m_sound->AddEnvelope(i, 0.0f, 0.3f*frequency, 0.1f, SOPER_STOP);
 }
-

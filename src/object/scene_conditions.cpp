@@ -98,22 +98,24 @@ int CSceneCondition::CountObjects()
             continue;
 
         float energyLevel = -1;
-        CObject* power = nullptr;
-        if (obj->Implements(ObjectInterfaceType::Powered))
-            power = dynamic_cast<CPoweredObject*>(obj)->GetPower();
+        CPowerContainerObject* power = nullptr;
+        if (obj->Implements(ObjectInterfaceType::PowerContainer))
+        {
+            power = dynamic_cast<CPowerContainerObject*>(obj);
+        }
+        else if (obj->Implements(ObjectInterfaceType::Powered))
+        {
+            CObject* powerObj = dynamic_cast<CPoweredObject*>(obj)->GetPower();
+            if(powerObj != nullptr && powerObj->Implements(ObjectInterfaceType::PowerContainer))
+            {
+                power = dynamic_cast<CPowerContainerObject*>(powerObj);
+            }
+        }
 
         if (power != nullptr)
         {
             energyLevel = power->GetEnergy();
-            if (power->GetType() == OBJECT_ATOMIC) energyLevel *= 100;
-        }
-        else
-        {
-            if (obj->GetType() == OBJECT_POWER || obj->GetType() == OBJECT_ATOMIC)
-            {
-                energyLevel = obj->GetEnergy();
-                if (obj->GetType() == OBJECT_ATOMIC) energyLevel *= 100;
-            }
+            if (power->GetCapacity() > 1.0f) energyLevel *= 10; // TODO: Who designed it like that ?!?!
         }
         if (energyLevel < this->powermin || energyLevel > this->powermax) continue;
 

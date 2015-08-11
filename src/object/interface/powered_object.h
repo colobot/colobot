@@ -22,6 +22,8 @@
 #include "object/object.h"
 #include "object/object_interface_type.h"
 
+#include "object/interface/power_container_object.h"
+
 class CObject;
 
 /**
@@ -55,9 +57,9 @@ inline float GetObjectEnergy(CObject* object)
     if (object->Implements(ObjectInterfaceType::Powered))
     {
         CObject* power = dynamic_cast<CPoweredObject*>(object)->GetPower();
-        if (power != nullptr)
+        if (power != nullptr && power->Implements(ObjectInterfaceType::PowerContainer))
         {
-            energy = power->GetEnergy();
+            energy = dynamic_cast<CPowerContainerObject*>(power)->GetEnergy();
         }
     }
 

@@ -93,11 +93,6 @@ public:
 
     virtual void        FlatParent();
 
-    // This goes to CPowerContainerObject [implemented by: PowerCell, NuclearCell, PowerStation, PowerPlant]
-    virtual void        SetEnergy(float level);
-    virtual float       GetEnergy();
-    virtual float       GetCapacity();
-
     // This goes to CShieldedObject (probably will inherit from CDestroyableObject)
     virtual void        SetShield(float level);
     virtual float       GetShield();

@@ -97,10 +97,14 @@ bool CTaskTerraform::EventProcess(const Event &event)
         {
             power->SetScale(1.0f+m_progress*1.0f);
 
-            energy = power->GetEnergy();
-            energy -= event.rTime*ENERGY_TERRA/power->GetCapacity()/4.0f;
-            if ( energy < 0.0f )  energy = 0.0f;
-            power->SetEnergy(energy);
+            if (power->Implements(ObjectInterfaceType::PowerContainer))
+            {
+                CPowerContainerObject* powerContainer = dynamic_cast<CPowerContainerObject*>(power);
+                energy = powerContainer->GetEnergy();
+                energy -= event.rTime*ENERGY_TERRA/4.0f;
+                if ( energy < 0.0f )  energy = 0.0f;
+                powerContainer->SetEnergy(energy);
+            }
         }
     }
 
@@ -205,9 +209,9 @@ Error CTaskTerraform::Start()
     if ( type != OBJECT_MOBILErt )  return ERR_TERRA_VEH;
 
     power = m_object->GetPower();
-    if ( power == 0 )  return ERR_TERRA_ENERGY;
-    energy = power->GetEnergy();
-    if ( energy < ENERGY_TERRA/power->GetCapacity()+0.05f )  return ERR_TERRA_ENERGY;
+    if ( power == nullptr || !power->Implements(ObjectInterfaceType::PowerContainer) )  return ERR_TERRA_ENERGY;
+    energy = dynamic_cast<CPowerContainerObject*>(power)->GetEnergy();
+    if ( energy < ENERGY_TERRA+0.05f )  return ERR_TERRA_ENERGY;
 
     speed = m_physics->GetMotorSpeed();
     if ( speed.x != 0.0f ||

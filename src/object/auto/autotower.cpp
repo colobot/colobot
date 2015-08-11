@@ -95,10 +95,9 @@ void CAutoTower::Init()
 
 bool CAutoTower::EventProcess(const Event &event)
 {
-    CObject*    power;
     CObject*    target;
     Math::Vector    pos;
-    float       angle, energy, quick;
+    float       angle, quick;
 
     CAuto::EventProcess(event);
 
@@ -122,6 +121,14 @@ bool CAutoTower::EventProcess(const Event &event)
         return true;
     }
 
+    CPowerContainerObject* power = nullptr;
+    float energy = 0.0f;
+    if ( m_object->GetPower() != nullptr && m_object->GetPower()->Implements(ObjectInterfaceType::PowerContainer) )
+    {
+        power = dynamic_cast<CPowerContainerObject*>(m_object->GetPower());
+        energy = power->GetEnergy();
+    }
+
     UpdateInterface(event.rTime);
 
     if ( m_phase == ATP_WAIT )  return true;
@@ -133,12 +140,6 @@ bool CAutoTower::EventProcess(const Event &event)
         FireStopUpdate(m_progress, true);  // blinks
         if ( m_progress < 1.0f )
         {
-            energy = 0.0f;
-            power = m_object->GetPower();
-            if ( power != 0 )
-            {
-                energy = power->GetEnergy()*power->GetCapacity();
-            }
             if ( energy >= ENERGY_FIRE )
             {
                 m_phase    = ATP_SEARCH;
@@ -173,13 +174,6 @@ bool CAutoTower::EventProcess(const Event &event)
         }
         else
         {
-            energy = 0.0f;
-            power = m_object->GetPower();
-            if ( power != 0 )
-            {
-                energy = power->GetEnergy()*power->GetCapacity();
-            }
-
             target = SearchTarget(m_targetPos);
             if ( energy < ENERGY_FIRE )
             {
@@ -227,11 +221,10 @@ bool CAutoTower::EventProcess(const Event &event)
             m_object->SetPartRotationY(1, m_angleYfinal);
             m_object->SetPartRotationZ(2, m_angleZfinal);
 
-            power = m_object->GetPower();
-            if ( power != 0 )
+            if ( power != nullptr )
             {
                 energy = power->GetEnergy();
-                energy -= ENERGY_FIRE/power->GetCapacity();
+                energy -= ENERGY_FIRE;
                 power->SetEnergy(energy);
             }
 
@@ -321,18 +314,16 @@ Error CAutoTower::GetError()
         return ERR_BAT_VIRUS;
     }
 
-    CObject* power = m_object->GetPower();
-    if ( power == nullptr )
+    if ( m_object->GetPower() == nullptr || !m_object->GetPower()->Implements(ObjectInterfaceType::PowerContainer) )
     {
         return ERR_TOWER_POWER;  // no battery
     }
-    else
+
+    if ( dynamic_cast<CPowerContainerObject*>(m_object->GetPower())->GetEnergy() < ENERGY_FIRE )
     {
-        if ( power->GetEnergy()*power->GetCapacity() < ENERGY_FIRE )
-        {
-            return ERR_TOWER_ENERGY;  // not enough energy
-        }
+        return ERR_TOWER_ENERGY;  // not enough energy
     }
+
     return ERR_OK;
 }
 
@@ -457,7 +448,7 @@ void CAutoTower::UpdateInterface(float rTime)
     Ui::CWindow* pw = static_cast< Ui::CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
     if ( pw == 0 )  return;
 
-    Ui::CGauge*pg = static_cast< Ui::CGauge* >(pw->SearchControl(EVENT_OBJECT_GENERGY));
+    Ui::CGauge* pg = static_cast< Ui::CGauge* >(pw->SearchControl(EVENT_OBJECT_GENERGY));
     if ( pg != 0 )
     {
         float energy = GetObjectEnergy(m_object);
@@ -506,4 +497,3 @@ bool CAutoTower::Read(CLevelParserLine* line)
 
     return true;
 }
-

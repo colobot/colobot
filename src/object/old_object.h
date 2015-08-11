@@ -31,6 +31,7 @@
 #include "object/interface/interactive_object.h"
 #include "object/interface/jostleable_object.h"
 #include "object/interface/movable_object.h"
+#include "object/interface/power_container_object.h"
 #include "object/interface/powered_object.h"
 #include "object/interface/programmable_object.h"
 #include "object/interface/task_executor_object.h"
@@ -87,7 +88,8 @@ class COldObject : public CObject,
                    public CCarrierObject,
                    public CPoweredObject,
                    public CMovableObject,
-                   public CControllableObject
+                   public CControllableObject,
+                   public CPowerContainerObject
 {
     friend class CObjectFactory;
     friend class CObjectManager;
@@ -198,10 +200,12 @@ public:
 
     float       GetAbsTime();
 
-    void        SetEnergy(float level) override;
-    float       GetEnergy() override;
+    void        SetEnergyLevel(float level) override;
+    float       GetEnergyLevel() override;
 
     float       GetCapacity() override;
+
+    bool        IsRechargeable() override;
 
     void        SetShield(float level) override;
     float       GetShield() override;
