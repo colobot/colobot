@@ -13,17 +13,19 @@ macro(add_fake_header_sources subdir)
 
     file(GLOB_RECURSE all_header_files RELATIVE ${colobot_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/*.h)
 
-    foreach(header_file ${all_header_files})
-        string(REGEX REPLACE "\\.h$" ".cpp" fake_header_src_file "${fake_headers_src_dir}/${header_file}")
+    if(all_header_files)
+        foreach(header_file ${all_header_files})
+            string(REGEX REPLACE "\\.h$" ".cpp" fake_header_src_file "${fake_headers_src_dir}/${header_file}")
 
-        get_filename_component(fake_header_src_dir ${fake_header_src_file} PATH)
-        file(MAKE_DIRECTORY ${fake_header_src_dir})
+            get_filename_component(fake_header_src_dir ${fake_header_src_file} PATH)
+            file(MAKE_DIRECTORY ${fake_header_src_dir})
 
-        file(WRITE ${fake_header_src_file} "#include \"${header_file}\"\n\n")
+            file(WRITE ${fake_header_src_file} "#include \"${header_file}\"\n\n")
 
-        list(APPEND all_fake_header_src_files ${fake_header_src_file})
-    endforeach()
+            list(APPEND all_fake_header_src_files ${fake_header_src_file})
+        endforeach()
 
-    include_directories(${colobot_SOURCE_DIR})
-    add_library(colobot_${subdir}_fake_header_srcs STATIC ${all_fake_header_src_files})
+        include_directories(${colobot_SOURCE_DIR})
+        add_library(colobot_${subdir}_fake_header_srcs STATIC ${all_fake_header_src_files})
+    endif()
 endmacro()
