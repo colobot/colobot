@@ -181,6 +181,12 @@ public:
     //! Returns CBot "object" variable associated with this object
     CBotVar* GetBotVar();
 
+    //! Returns tooltip text for an object
+    std::string GetTooltipText();
+
+    void SetLock(bool lock);
+    bool GetLock();
+
 protected:
     //! Transform crash sphere by object's world matrix
     virtual void TransformCrashSphere(Math::Sphere& crashSphere) = 0;
@@ -202,4 +208,5 @@ protected:
     bool m_proxyActivate;
     float m_proxyDistance;
     CBotVar* m_botVar;
+    bool m_lock;
 };

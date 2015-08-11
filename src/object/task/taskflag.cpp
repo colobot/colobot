@@ -157,8 +157,6 @@ int CTaskFlag::CountObject(ObjectType type)
     int count = 0;
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        if ( !obj->GetEnable() )  continue;
-
         ObjectType  oType = obj->GetType();
         if ( type == OBJECT_NULL )
         {
@@ -257,4 +255,3 @@ Error CTaskFlag::DeleteFlag()
 
     return ERR_OK;
 }
-

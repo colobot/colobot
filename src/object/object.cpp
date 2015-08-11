@@ -19,6 +19,11 @@
 
 #include "object/object.h"
 
+#include "common/restext.h"
+#include "common/stringutils.h"
+
+#include "object/robotmain.h"
+
 #include "graphics/model/model_crash_sphere.h"
 
 #include "script/scriptfunc.h"
@@ -35,6 +40,7 @@ CObject::CObject(int id, ObjectType type)
     , m_team(0)
     , m_proxyActivate(false)
     , m_proxyDistance(60.0f)
+    , m_lock(false)
 {
     m_implementedInterfaces.fill(false);
     m_botVar = CScriptFunctions::CreateObjectVar(this);
@@ -268,4 +274,29 @@ float CObject::GetProxyDistance()
 CBotVar* CObject::GetBotVar()
 {
     return m_botVar;
+}
+
+std::string CObject::GetTooltipText()
+{
+    std::string name;
+    GetResource(RES_OBJECT, m_type, name);
+    if (GetTeam() != 0)
+    {
+        name += " ["+CRobotMain::GetInstancePointer()->GetTeamName(GetTeam())+" ("+StrUtils::ToString<int>(GetTeam())+")]";
+    }
+    return name;
+}
+
+// Management of the mode "blocked" of an object.
+// For example, a cube of titanium is blocked while it is used to make something,
+// or a vehicle is blocked as its construction is not finished.
+
+void CObject::SetLock(bool lock)
+{
+    m_lock = lock;
+}
+
+bool CObject::GetLock()
+{
+    return m_lock;
 }

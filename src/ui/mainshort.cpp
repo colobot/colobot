@@ -153,9 +153,7 @@ bool CMainShort::CreateShortcuts()
         positions[teamIndex].x += dim.x;
         m_shortcuts.push_back(pObj);
 
-        std::string tooltipName;
-        pObj->GetTooltipName(tooltipName);
-        shortcut->SetTooltip(tooltipName);
+        shortcut->SetTooltip(pObj->GetTooltipText());
 
         rank ++;
 

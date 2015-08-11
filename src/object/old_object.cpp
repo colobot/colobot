@@ -26,7 +26,6 @@
 
 #include "common/global.h"
 #include "common/make_unique.h"
-#include "common/restext.h"
 #include "common/stringutils.h"
 
 #include "graphics/engine/lightman.h"
@@ -142,7 +141,6 @@ COldObject::COldObject(int id)
     m_bSelectable = true;
     m_bCheckToken = true;
     m_bVisible = true;
-    m_bEnable = true;
     m_bTrainer = false;
     m_bToy = false;
     m_bManual = false;
@@ -153,7 +151,6 @@ COldObject::COldObject(int id)
     m_bVirusMode = false;
     m_virusTime = 0.0f;
     m_lastVirusParticle = 0.0f;
-    m_bLock  = false;
     m_bExplo = false;
     m_bCargo = false;
     m_bBurn  = false;
@@ -767,9 +764,6 @@ void COldObject::Write(CLevelParserLine* line)
     if ( !GetSelectable() )
         line->AddParam("selectable", MakeUnique<CLevelParserParam>(GetSelectable()));
 
-    if ( !GetEnable() )
-        line->AddParam("enable", MakeUnique<CLevelParserParam>(GetEnable()));
-
     // TODO: doesn't seem to be used
     // But it is, this is used by aliens after Thumper ~krzys_h
     if ( GetFixed() )
@@ -864,7 +858,6 @@ void COldObject::Read(CLevelParserLine* line)
     SetShield(line->GetParam("shield")->AsFloat(1.0f));
     SetRange(line->GetParam("range")->AsFloat(1.0f));
     SetSelectable(line->GetParam("selectable")->AsBool(true));
-    SetEnable(line->GetParam("enable")->AsBool(true));
     SetFixed(line->GetParam("fixed")->AsBool(false));
     SetCollisions(line->GetParam("clip")->AsBool(true));
     SetLock(line->GetParam("lock")->AsBool(false));
@@ -1994,7 +1987,7 @@ bool COldObject::EventProcess(const Event &event)
 
     if ( m_motion != nullptr )
     {
-        m_motion->EventProcess(event);
+        if (!m_motion->EventProcess(event)) return false;
     }
 
     if ( event.type == EVENT_FRAME )
@@ -2616,23 +2609,6 @@ void COldObject::SetVisible(bool bVisible)
 }
 
 
-// Management mode of operation of an object.
-// An inactive object is an object destroyed, nonexistent.
-// This mode is used for objects "resetables"
-// during training to simulate destruction.
-
-void COldObject::SetEnable(bool bEnable)
-{
-    m_bEnable = bEnable;
-}
-
-bool COldObject::GetEnable()
-{
-    return m_bEnable;
-}
-
-
-
 // Management of the method of increasing damage.
 
 void COldObject::SetMagnifyDamage(float factor)
@@ -2657,19 +2633,7 @@ float COldObject::GetParam()
 {
     return m_param;
 }
-// Management of the mode "blocked" of an object.
-// For example, a cube of titanium is blocked while it is used to make something,
-// or a vehicle is blocked as its construction is not finished.
 
-void COldObject::SetLock(bool bLock)
-{
-    m_bLock = bLock;
-}
-
-bool COldObject::GetLock()
-{
-    return m_bLock;
-}
 
 // Management of the mode "current explosion" of an object.
 // An object in this mode is not saving.
@@ -2719,7 +2683,7 @@ bool COldObject::GetRuin()
 
 bool COldObject::GetActive()
 {
-    return !m_bLock && !m_bBurn && !m_bFlat && m_bVisible && m_bEnable;
+    return !GetLock() && !m_bBurn && !m_bFlat && m_bVisible;
 }
 
 
@@ -3081,18 +3045,6 @@ void COldObject::SetDefRank(int rank)
 int  COldObject::GetDefRank()
 {
     return m_defRank;
-}
-
-// Getes the object name for the tooltip.
-
-bool COldObject::GetTooltipName(std::string& name)
-{
-    GetResource(RES_OBJECT, m_type, name);
-    if (GetTeam() != 0)
-    {
-        name += " ["+CRobotMain::GetInstancePointer()->GetTeamName(GetTeam())+" ("+boost::lexical_cast<std::string>(GetTeam())+")]";
-    }
-    return !name.empty();
 }
 
 Math::Vector COldObject::GetPosition() const

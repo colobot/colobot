@@ -833,14 +833,12 @@ bool CObjectInterface::CreateInterface(bool bSelect)
     pw = static_cast< CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
     if ( pw == 0 )  return false;
 
-    std::string tooltipLabel;
-    m_object->GetTooltipName(tooltipLabel);
     pos.x = 0.0f;
     pos.y = 64.0f/480.0f;
     ddim.x = 540.0f/640.0f;
     if ( !m_main->GetShowMap() )  ddim.x = 640.0f/640.0f;
     ddim.y = 16.0f/480.0f;
-    pw->CreateLabel(pos, ddim, 0, EVENT_LABEL0, tooltipLabel);
+    pw->CreateLabel(pos, ddim, 0, EVENT_LABEL0, m_object->GetTooltipText());
 
     dim.x = 33.0f/640.0f;
     dim.y = 33.0f/480.0f;

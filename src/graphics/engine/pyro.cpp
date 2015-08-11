@@ -324,7 +324,7 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
     if ( m_type == PT_WPCHECK )
     {
         m_speed = 1.0f/8.0f;
-        m_object->SetEnable(false);  // object more functional
+        m_object->SetLock(true);  // object more functional
     }
     if ( m_type == PT_FLCREATE )
     {
@@ -333,7 +333,7 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
     if ( m_type == PT_FLDELETE )
     {
         m_speed = 1.0f/2.0f;
-        m_object->SetEnable(false);  // object more functional
+        m_object->SetLock(true);  // object more functional
     }
     if ( m_type == PT_RESET )
     {

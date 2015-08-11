@@ -28,6 +28,7 @@
 
 #include "math/geometry.h"
 
+#include "object/object_manager.h"
 #include "object/old_object.h"
 #include "object/robotmain.h"
 
@@ -1382,7 +1383,8 @@ bool CMotionHuman::EventFrame(const Event &event)
     {
         if ( m_progress >= 1.0f )
         {
-            m_object->SetEnable(false);
+            CObjectManager::GetInstancePointer()->DeleteObject(m_object);
+            return false;
         }
 
         time = 100.0f;
@@ -1426,7 +1428,11 @@ bool CMotionHuman::EventFrame(const Event &event)
         if ( prog >= 1.0f )
         {
             prog = 1.0f;
-            if ( pos.y >= level )  m_object->SetEnable(false);
+            if ( pos.y >= level )
+            {
+                CObjectManager::GetInstancePointer()->DeleteObject(m_object);
+                return false;
+            }
         }
 
         prog *= 2.0f;
@@ -1736,4 +1742,3 @@ void CMotionHuman::StopDisplayPerso()
 {
     m_bDisplayPerso = false;
 }
-

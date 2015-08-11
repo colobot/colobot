@@ -60,7 +60,6 @@ int CSceneCondition::CountObjects()
         // should be regarded as existing here!
         if (obj->GetLock()) continue;
         if (obj->GetRuin()) continue;
-        if (!obj->GetEnable()) continue;
 
         if (!this->countTransported)
         {

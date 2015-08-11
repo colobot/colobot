@@ -2204,12 +2204,15 @@ void CRobotMain::HiliteObject(Math::Point pos)
 
     if (obj != nullptr)
     {
-        std::string objectTooltipName;
-        if (m_settings->GetTooltips() && obj->GetTooltipName(objectTooltipName))
+        if (m_settings->GetTooltips())
         {
-            m_tooltipPos = pos;
-            m_tooltipName = objectTooltipName;
-            m_tooltipTime = 0.0f;
+            std::string objectTooltipName = obj->GetTooltipText();
+            if (!objectTooltipName.empty())
+            {
+                m_tooltipPos = pos;
+                m_tooltipName = objectTooltipName;
+                m_tooltipTime = 0.0f;
+            }
         }
 
         if (IsSelectable(obj))
@@ -3620,7 +3623,6 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
                     bool selectable = line->GetParam("selectable")->AsBool(true);
                     oldObj->SetSelectable(selectable);
-                    oldObj->SetEnable(line->GetParam("enable")->AsBool(true));
                     oldObj->SetProxyActivate(line->GetParam("proxyActivate")->AsBool(false));
                     oldObj->SetProxyDistance(line->GetParam("proxyDistance")->AsFloat(15.0f)*g_unit);
                     oldObj->SetRange(line->GetParam("range")->AsFloat(30.0f));

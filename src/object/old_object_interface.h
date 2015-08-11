@@ -111,10 +111,6 @@ public:
     virtual void        SetVirusMode(bool bEnable);
     virtual bool        GetVirusMode();
 
-    // Main CObject class?
-    virtual void        SetEnable(bool bEnable);
-    virtual bool        GetEnable();
-
     // These go to Shielder subclass
     //! Shielder radius (only while active) [0 or RADIUS_SHIELD_MIN..RADIUS_SHIELD_MAX]
     virtual float       GetShieldRadius();
@@ -134,10 +130,6 @@ public:
     virtual bool        GetRuin();
     virtual bool        GetActive();
 
-    // probably main CObject?
-    virtual void        SetLock(bool bLock);
-    virtual bool        GetLock();
-
     // Not sure. CRangedObject?
     virtual float       GetShowLimitRadius();
 
@@ -150,9 +142,6 @@ public:
     // TODO: We'll see if this is still needed after I refactor program storage later
     virtual void        SetDefRank(int rank);
     virtual int         GetDefRank();
-
-    // main CObject? not sure
-    virtual bool        GetTooltipName(std::string& name);
 
     // CProgrammableObject or refactor
     virtual float GetInfoReturn();

@@ -243,9 +243,6 @@ public:
 
     void        SetVisible(bool bVisible);
 
-    void        SetEnable(bool bEnable) override;
-    bool        GetEnable() override;
-
     void        SetCheckToken(bool bMode);
     bool        GetCheckToken();
 
@@ -257,8 +254,6 @@ public:
 
     void        SetExploding(bool bExplo) override;
     bool        IsExploding() override;
-    void        SetLock(bool bLock) override;
-    bool        GetLock() override;
     void        SetBurn(bool bBurn) override;
     bool        GetBurn() override;
     void        SetDead(bool bDead) override;
@@ -281,8 +276,6 @@ public:
 
     void        SetDefRank(int rank) override;
     int         GetDefRank() override;
-
-    bool        GetTooltipName(std::string& name) override;
 
     bool        CreateShadowCircle(float radius, float intensity, Gfx::EngineShadowType type = Gfx::ENG_SHADOW_NORM);
     bool        CreateShadowLight(float height, Gfx::Color color);
@@ -438,8 +431,6 @@ protected:
     bool        m_bSelectable;          // selectable object
     bool        m_bCheckToken;          // object with audited tokens
     bool        m_bVisible;         // object active but undetectable
-    bool        m_bEnable;          // dead object
-    bool        m_bLock;
     bool        m_bExplo;
     bool        m_bCargo;
     bool        m_bBurn;

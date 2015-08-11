@@ -147,19 +147,6 @@ bool COldObjectInterface::GetVirusMode()
 }
 
 
-void COldObjectInterface::SetEnable(bool bEnable)
-{
-    throw std::logic_error("SetEnable: not implemented!");
-}
-
-bool COldObjectInterface::GetEnable()
-{
-    // TODO: temporary hack
-    return true;
-    //throw std::logic_error("GetEnable: not implemented!");
-}
-
-
 void COldObjectInterface::SetMagnifyDamage(float factor)
 {
     throw std::logic_error("SetMagnifyDamage: not implemented!");
@@ -194,17 +181,6 @@ bool COldObjectInterface::IsExploding()
     //throw std::logic_error("IsExploding: not implemented!");
 }
 
-void COldObjectInterface::SetLock(bool bLock)
-{
-    throw std::logic_error("SetLock: not implemented!");
-}
-
-bool COldObjectInterface::GetLock()
-{
-    // TODO: temporary hack
-    return false;
-    //throw std::logic_error("GetLock: not implemented!");
-}
 
 void COldObjectInterface::SetBurn(bool bBurn)
 {
@@ -276,11 +252,6 @@ int COldObjectInterface::GetDefRank()
     throw std::logic_error("GetDefRank: not implemented!");
 }
 
-
-bool COldObjectInterface::GetTooltipName(std::string& name)
-{
-    throw std::logic_error("GetTooltipName: not implemented!");
-}
 
 void COldObjectInterface::FlatParent()
 {

@@ -759,8 +759,6 @@ float CPhysics::GetLinLength(float dist)
 
 bool CPhysics::EventProcess(const Event &event)
 {
-    if ( !m_object->GetEnable() )  return true;
-
     if ( event.type == EVENT_FRAME )
     {
         return EventFrame(event);
@@ -2511,7 +2509,6 @@ int CPhysics::ObjectAdapt(const Math::Vector &pos, const Math::Vector &angle)
     {
         if ( pObj == m_object )  continue;  // yourself?
         if (IsObjectBeingTransported(pObj))  continue;
-        if ( !pObj->GetEnable() )  continue;  // inactive?
         if ( pObj->GetRuin() )  continue;  // is burning or exploding?
         if ( pObj->GetDead() )  continue;  // dead man?
 
@@ -2556,7 +2553,7 @@ int CPhysics::ObjectAdapt(const Math::Vector &pos, const Math::Vector &angle)
         }
 
         if ( oType == OBJECT_WAYPOINT &&
-             pObj->GetEnable()        &&
+             !pObj->GetLock()         &&
              m_object->GetTrainer()   )  // driving vehicle?
         {
             Math::Vector oPos = pObj->GetPosition();
@@ -2724,8 +2721,6 @@ bool CPhysics::JostleObject(CObject* pObj, float force)
 bool CPhysics::ExploOther(ObjectType iType,
                           CObject *pObj, ObjectType oType, float force)
 {
-    if ( !pObj->GetEnable() )  return true;
-
     JostleObject(pObj, 1.0f);  // shakes the object
 
     if ( force > 50.0f &&
