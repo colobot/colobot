@@ -2505,9 +2505,9 @@ bool COldObject::GetCameraLock()
 
 // Management of the demonstration of the object.
 
-void COldObject::SetHighlight(bool mode)
+void COldObject::SetHighlight(bool highlight)
 {
-    if (mode)
+    if (highlight)
     {
         int list[OBJECTMAXPART+1];
 

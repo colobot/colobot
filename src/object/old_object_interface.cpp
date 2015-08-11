@@ -147,14 +147,6 @@ bool COldObjectInterface::GetVirusMode()
 }
 
 
-void COldObjectInterface::SetHighlight(bool mode)
-{
-    // TODO: temporary hack
-    return;
-    //throw std::logic_error("SetHighlight: not implemented!");
-}
-
-
 void COldObjectInterface::SetEnable(bool bEnable)
 {
     throw std::logic_error("SetEnable: not implemented!");

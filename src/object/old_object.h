@@ -230,7 +230,7 @@ public:
     void        SetCameraLock(bool lock) override;
     bool        GetCameraLock() override;
 
-    void        SetHighlight(bool mode) override;
+    void        SetHighlight(bool highlight) override;
 
     void        SetSelect(bool select, bool bDisplayError = true) override;
     bool        GetSelect() override;

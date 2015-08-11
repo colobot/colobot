@@ -111,9 +111,6 @@ public:
     virtual void        SetVirusMode(bool bEnable);
     virtual bool        GetVirusMode();
 
-    // This sets highlight on mouse over object, goes to CControllableObject
-    virtual void        SetHighlight(bool mode);
-
     // Main CObject class?
     virtual void        SetEnable(bool bEnable);
     virtual bool        GetEnable();

@@ -2154,10 +2154,11 @@ void CRobotMain::HiliteClear()
 
     for (CObject* obj : m_objMan->GetAllObjects())
     {
-        obj->SetHighlight(false);
-        m_map->SetHighlight(0);
-        m_short->SetHighlight(0);
+        if (!obj->Implements(ObjectInterfaceType::Controllable)) continue;
+        dynamic_cast<CControllableObject*>(obj)->SetHighlight(false);
     }
+    m_map->SetHighlight(0);
+    m_short->SetHighlight(0);
 
     m_hilite = false;
 }
@@ -2213,7 +2214,8 @@ void CRobotMain::HiliteObject(Math::Point pos)
 
         if (IsSelectable(obj))
         {
-            obj->SetHighlight(true);
+            assert(obj->Implements(ObjectInterfaceType::Controllable));
+            dynamic_cast<CControllableObject*>(obj)->SetHighlight(true);
             m_map->SetHighlight(obj);
             m_short->SetHighlight(obj);
             m_hilite = true;

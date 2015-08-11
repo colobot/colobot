@@ -44,6 +44,8 @@ public:
     virtual bool GetSelect() = 0;
     virtual bool GetSelectable() = 0;
 
+    virtual void SetHighlight(bool highlight) = 0;
+
     virtual void SetCameraType(Gfx::CameraType type) = 0;
     virtual Gfx::CameraType GetCameraType() = 0;
     virtual void SetCameraDist(float dist) = 0;
