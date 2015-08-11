@@ -101,7 +101,6 @@ protected:
     void        SetMotion(std::unique_ptr<CMotion> motion);
     void        SetAuto(std::unique_ptr<CAuto> automat);
     void        SetShowLimitRadius(float radius);
-    void        SetCapacity(float capacity);
     void        SetOption(int option);
     void        SetJostlingSphere(const Math::Sphere& sphere);
 
@@ -429,7 +428,6 @@ protected:
     int     m_transporterLink;            // part
     float       m_energy;           // energy contained (if battery)
     float       m_lastEnergy;
-    float       m_capacity;         // capacity (if battery)
     float       m_shield;           // shield
     float       m_range;            // flight range
     float       m_transparency;         // transparency (0..1)

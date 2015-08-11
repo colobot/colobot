@@ -134,7 +134,6 @@ COldObject::COldObject(int id)
     m_transporter = 0;
     m_transporterLink = 0;
     m_energy   = 1.0f;
-    m_capacity = 1.0f;
     m_shield   = 1.0f;
     m_range    = 0.0f;
     m_transparency = 0.0f;
@@ -713,15 +712,6 @@ void COldObject::SetType(ObjectType type)
         m_param = 1.0f;  // shield up to default
     }
 
-    if ( m_type == OBJECT_ATOMIC )
-    {
-        m_capacity = 10.0f;
-    }
-    else
-    {
-        m_capacity = 1.0f;
-    }
-
     if ( m_type == OBJECT_MOBILEwc ||
          m_type == OBJECT_MOBILEtc ||
          m_type == OBJECT_MOBILEfc ||
@@ -767,9 +757,6 @@ void COldObject::Write(CLevelParserLine* line)
 
     if ( GetEnergyLevel() != 0.0f )
         line->AddParam("energy", MakeUnique<CLevelParserParam>(GetEnergyLevel()));
-
-    if ( GetCapacity() != 1.0f )
-        line->AddParam("capacity", MakeUnique<CLevelParserParam>(GetCapacity()));
 
     if ( GetShield() != 1.0f )
         line->AddParam("shield", MakeUnique<CLevelParserParam>(GetShield()));
@@ -874,7 +861,6 @@ void COldObject::Read(CLevelParserLine* line)
     SetCameraDist(line->GetParam("cameraDist")->AsFloat(50.0f));
     SetCameraLock(line->GetParam("cameraLock")->AsBool(false));
     SetEnergyLevel(line->GetParam("energy")->AsFloat(0.0f));
-    SetCapacity(line->GetParam("capacity")->AsFloat(1.0f));
     SetShield(line->GetParam("shield")->AsFloat(1.0f));
     SetRange(line->GetParam("range")->AsFloat(1.0f));
     SetSelectable(line->GetParam("selectable")->AsBool(true));
@@ -2332,19 +2318,9 @@ float COldObject::GetEnergyLevel()
     return m_energy;
 }
 
-
-// Management of the capacity of a battery.
-// Single subject possesses a battery capacity,
-// but not the vehicle that carries the battery!
-
-void COldObject::SetCapacity(float capacity)
-{
-    m_capacity = capacity;
-}
-
 float COldObject::GetCapacity()
 {
-    return m_capacity;
+    return m_type == OBJECT_ATOMIC ? 10.0f : 1.0f;
 }
 
 bool COldObject::IsRechargeable()
