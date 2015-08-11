@@ -91,40 +91,42 @@ public:
 
     virtual Character*  GetCharacter();
 
+    virtual void        FlatParent();
+
+    // This goes to CPowerContainerObject [implemented by: PowerCell, NuclearCell, PowerStation, PowerPlant]
     virtual void        SetEnergy(float level);
     virtual float       GetEnergy();
     virtual float       GetCapacity();
 
+    // This goes to CShieldedObject (probably will inherit from CDestroyableObject)
     virtual void        SetShield(float level);
     virtual float       GetShield();
-
-    virtual void        SetRange(float delay);
-    virtual float       GetRange();
-
-    virtual void        SetFixed(bool bFixed);
-    virtual bool        GetFixed();
-
-    virtual void        SetClip(bool bClip);
-    virtual bool        GetClip();
-    virtual void        SetTeam(int team);
-    virtual int         GetTeam();
-
-    virtual void        StartDetectEffect(CObject *target, bool bFound);
-
-    virtual void        SetVirusMode(bool bEnable);
-    virtual bool        GetVirusMode();
-
-    virtual void        SetHighlight(bool mode);
-
-    virtual void        SetEnable(bool bEnable);
-    virtual bool        GetEnable();
-
-    virtual void        SetProxyActivate(bool bActivate);
-    virtual bool        GetProxyActivate();
-
     virtual void        SetMagnifyDamage(float factor);
     virtual float       GetMagnifyDamage();
 
+    // This goes to CFlyingObject (child of CMovableObject)
+    virtual void        SetRange(float delay);
+    virtual float       GetRange();
+
+    // This goes to CBaseAlien or something like that
+    virtual void        SetFixed(bool bFixed);
+    virtual bool        GetFixed();
+
+    // This either goes to CProgrammableObject or gets removed entirely (detect() was used in Ceebot-Teen only, unless we want to restore it)
+    virtual void        StartDetectEffect(CObject *target, bool bFound);
+
+    // Not sure. Maybe a separate interface, or maybe CControllableObject (buildings can have viruses too)
+    virtual void        SetVirusMode(bool bEnable);
+    virtual bool        GetVirusMode();
+
+    // This sets highlight on mouse over object, goes to CControllableObject
+    virtual void        SetHighlight(bool mode);
+
+    // Main CObject class?
+    virtual void        SetEnable(bool bEnable);
+    virtual bool        GetEnable();
+
+    // These go to Shielder subclass
     //! Shielder radius (only while active) [0 or RADIUS_SHIELD_MIN..RADIUS_SHIELD_MAX]
     virtual float       GetShieldRadius();
     //! Shielder radius [0..1]
@@ -133,37 +135,36 @@ public:
     virtual float       GetParam();
     //@}
 
+    // TODO: What to do with these?
     virtual void        SetExploding(bool bExplo);
     virtual bool        IsExploding();
+    virtual void        SetBurn(bool bBurn);
+    virtual bool        GetBurn();
+    virtual void        SetDead(bool bDead);
+    virtual bool        GetDead();
+    virtual bool        GetRuin();
+    virtual bool        GetActive();
 
+    // probably main CObject?
     virtual void        SetLock(bool bLock);
     virtual bool        GetLock();
 
-    virtual void        SetBurn(bool bBurn);
-    virtual bool        GetBurn();
+    // Not sure. CRangedObject?
+    virtual float       GetShowLimitRadius();
 
-    virtual void        SetDead(bool bDead);
-    virtual bool        GetDead();
-
-    virtual bool        GetRuin();
-
-    virtual bool        GetActive();
-
-    virtual bool        StartShowLimit();
-    virtual void        StopShowLimit();
-
-    virtual CScript*    GetRunScript();
-    virtual CBotVar*    GetBotVar();
     virtual CPhysics*   GetPhysics();
     virtual CMotion*    GetMotion();
+
+    // This will be eventually removed after refactoring to subclasses
     virtual CAuto*      GetAuto();
 
+    // TODO: We'll see if this is still needed after I refactor program storage later
     virtual void        SetDefRank(int rank);
     virtual int         GetDefRank();
 
+    // main CObject? not sure
     virtual bool        GetTooltipName(std::string& name);
 
-    virtual void        FlatParent();
-
+    // CProgrammableObject or refactor
     virtual float GetInfoReturn();
 };

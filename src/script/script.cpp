@@ -52,6 +52,8 @@ const int CBOT_IPF = 100;       // CBOT: default number of instructions / frame
 
 CScript::CScript(COldObject* object)
 {
+    assert(object->Implements(ObjectInterfaceType::Programmable));
+
     m_object        = object;
     assert(m_object->Implements(ObjectInterfaceType::TaskExecutor));
     m_taskExecutor  = dynamic_cast<CTaskExecutorObject*>(m_object);
@@ -347,7 +349,6 @@ bool CScript::Run()
 
     if ( !m_botProg->Start(m_mainFunction) )  return false;
 
-    m_object->SetRunScript(this);
     m_bRun = true;
     m_bContinue = false;
     m_ipf = CBOT_IPF;
@@ -373,7 +374,7 @@ bool CScript::Continue()
     {
         if ( m_bContinue )  // instuction "move", "goto", etc. ?
         {
-            if ( m_botProg->Run(m_object, 0) )
+            if ( m_botProg->Run(this, 0) )
             {
                 m_botProg->GetError(m_error, m_cursor1, m_cursor2);
                 if ( m_cursor1 < 0 || m_cursor1 > m_len ||
@@ -406,7 +407,7 @@ bool CScript::Continue()
         return false;
     }
 
-    if ( m_botProg->Run(m_object, m_ipf) )
+    if ( m_botProg->Run(this, m_ipf) )
     {
         m_botProg->GetError(m_error, m_cursor1, m_cursor2);
         if ( m_cursor1 < 0 || m_cursor1 > m_len ||
@@ -446,7 +447,7 @@ bool CScript::Step()
     // TODO: m_app StepSimulation??? m_engine->StepSimulation(0.01f);  // advance of 10ms
     // ??? m_engine->SetPause(true);
 
-    if ( m_botProg->Run(m_object, 0) )  // step mode
+    if ( m_botProg->Run(this, 0) )  // step mode
     {
         m_botProg->GetError(m_error, m_cursor1, m_cursor2);
         if ( m_cursor1 < 0 || m_cursor1 > m_len ||
@@ -1043,7 +1044,6 @@ bool CScript::ReadStack(FILE *file)
     if ( m_botProg == 0 )  return false;
     if ( !m_botProg->RestoreState(file) )  return false;
 
-    m_object->SetRunScript(this);
     m_bRun = true;
     m_bContinue = false;
     return true;

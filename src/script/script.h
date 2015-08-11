@@ -100,7 +100,7 @@ protected:
     bool        Compile();
 
 protected:
-    COldObject*         m_object;
+    COldObject*          m_object;
     CTaskExecutorObject* m_taskExecutor;
 
     Gfx::CEngine*       m_engine;

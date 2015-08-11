@@ -2495,7 +2495,7 @@ int CPhysics::ObjectAdapt(const Math::Vector &pos, const Math::Vector &angle)
     ObjectType      iType, oType;
 
     if ( m_object->GetRuin() )  return 0;  // is burning or exploding?
-    if ( !m_object->GetClip() )  return 0;
+    if ( !m_object->GetCollisions() )  return 0;
 
     // iiPos = sphere center is the old position.
     // iPos  = sphere center has the new position.

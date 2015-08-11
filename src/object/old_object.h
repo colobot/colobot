@@ -100,7 +100,6 @@ protected:
     void        SetAuto(std::unique_ptr<CAuto> automat);
     void        SetShowLimitRadius(float radius);
     void        SetCapacity(float capacity);
-    float       GetProxyDistance();
     void        SetOption(int option);
     void        SetJostlingSphere(const Math::Sphere& sphere);
 
@@ -215,12 +214,6 @@ public:
     void        SetFixed(bool bFixed) override;
     bool        GetFixed() override;
 
-    void        SetClip(bool bClip) override;
-    bool        GetClip() override;
-
-    void        SetTeam(int team) override;
-    int         GetTeam() override;
-
     Math::Sphere GetJostlingSphere() const override;
     bool        JostleObject(float force) override;
 
@@ -255,10 +248,6 @@ public:
     void        SetCheckToken(bool bMode);
     bool        GetCheckToken();
 
-    void        SetProxyActivate(bool bActivate) override;
-    bool        GetProxyActivate() override;
-    void        SetProxyDistance(float distance);
-
     void        SetMagnifyDamage(float factor) override;
     float       GetMagnifyDamage() override;
 
@@ -281,14 +270,10 @@ public:
     float       GetGunGoalV();
     float       GetGunGoalH();
 
-    bool        StartShowLimit() override;
-    void        StopShowLimit() override;
+    float       GetShowLimitRadius() override;
 
     void        CreateSelectParticle();
 
-    void        SetRunScript(CScript* script);
-    CScript*    GetRunScript() override;
-    CBotVar*    GetBotVar() override;
     CPhysics*   GetPhysics() override;
     CMotion*    GetMotion() override;
     CAuto*      GetAuto() override;
@@ -424,9 +409,6 @@ protected:
     std::unique_ptr<CAuto> m_auto;
     std::unique_ptr<Ui::CObjectInterface> m_objectInterface;
 
-    CBotVar*            m_botVar;
-    CScript*            m_runScript;
-
     std::string  m_name;         // name of the object
     Character   m_character;            // characteristic
     int     m_option;           // option
@@ -457,7 +439,6 @@ protected:
     bool        m_bCheckToken;          // object with audited tokens
     bool        m_bVisible;         // object active but undetectable
     bool        m_bEnable;          // dead object
-    bool        m_bProxyActivate;       // active object so close
     bool        m_bLock;
     bool        m_bExplo;
     bool        m_bCargo;
@@ -469,7 +450,6 @@ protected:
     bool        m_bManual;          // manual control (Scribbler)
     bool        m_bFixed;
     bool        m_bClip;
-    bool        m_bShowLimit;
     float       m_showLimitRadius;
     float       m_gunGoalV;
     float       m_gunGoalH;
@@ -478,7 +458,6 @@ protected:
     bool        m_bCameraLock;
     int         m_defRank;
     float       m_magnifyDamage;
-    float       m_proxyDistance;
     float       m_param;
     int         m_team;
 

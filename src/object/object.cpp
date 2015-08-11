@@ -1,6 +1,27 @@
+/*
+ * This file is part of the Colobot: Gold Edition source code
+ * Copyright (C) 2001-2015, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * http://epsiteс.ch; http://colobot.info; http://github.com/colobot
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see http://gnu.org/licenses
+ */
+
 #include "object/object.h"
 
 #include "graphics/model/model_crash_sphere.h"
+
+#include "script/scriptfunc.h"
 
 
 CObject::CObject(int id, ObjectType type)
@@ -10,12 +31,18 @@ CObject::CObject(int id, ObjectType type)
     , m_rotation(0.0f, 0.0f, 0.0f)
     , m_scale(1.0f, 1.0f, 1.0f)
     , m_animateOnReset(false)
+    , m_collisions(true)
+    , m_team(0)
+    , m_proxyActivate(false)
+    , m_proxyDistance(60.0f)
 {
     m_implementedInterfaces.fill(false);
+    m_botVar = CScriptFunctions::CreateObjectVar(this);
 }
 
 CObject::~CObject()
 {
+    CScriptFunctions::DestroyObjectVar(m_botVar, true);
 }
 
 void CObject::SetCrashSpheres(const std::vector<Gfx::ModelCrashSphere>& crashSpheres)
@@ -64,6 +91,7 @@ Math::Vector CObject::GetPosition() const
 void CObject::SetPosition(const Math::Vector& pos)
 {
     // TODO: provide default implementation...
+    throw std::logic_error("CObject::SetPosition() - not implemented!");
 }
 
 Math::Vector CObject::GetRotation() const
@@ -74,6 +102,7 @@ Math::Vector CObject::GetRotation() const
 void CObject::SetRotation(const Math::Vector& rotation)
 {
     // TODO: provide default implementation...
+    throw std::logic_error("CObject::SetRotation() - not implemented!");
 }
 
 void CObject::SetRotationX(float angle)
@@ -120,6 +149,7 @@ Math::Vector CObject::GetScale() const
 void CObject::SetScale(const Math::Vector& scale)
 {
     // TODO: provide default implementation...
+    throw std::logic_error("CObject::SetScale() - not implemented!");
 }
 
 void CObject::SetScale(float scale)
@@ -195,4 +225,47 @@ void CObject::SetAnimateOnReset(bool animateOnReset)
     m_animateOnReset = animateOnReset;
 }
 
+void CObject::SetCollisions(bool collisions)
+{
+    m_collisions = collisions;
+}
 
+bool CObject::GetCollisions()
+{
+    return m_collisions;
+}
+
+void CObject::SetTeam(int team)
+{
+    m_team = team;
+}
+
+int CObject::GetTeam()
+{
+    return m_team;
+}
+
+void CObject::SetProxyActivate(bool activate)
+{
+    m_proxyActivate = activate;
+}
+
+bool CObject::GetProxyActivate()
+{
+    return m_proxyActivate;
+}
+
+void CObject::SetProxyDistance(float distance)
+{
+    m_proxyDistance = distance;
+}
+
+float CObject::GetProxyDistance()
+{
+    return m_proxyDistance;
+}
+
+CBotVar* CObject::GetBotVar()
+{
+    return m_botVar;
+}

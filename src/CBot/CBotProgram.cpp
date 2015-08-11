@@ -81,9 +81,6 @@ bool CBotProgram::Compile( const char* program, CBotStringArray& ListFonctions, 
     ListFonctions.SetSize(0);
     m_ErrorCode = 0;
 
-    if (m_pInstance != NULL && m_pInstance->m_pUserPtr != NULL)
-        pUser = m_pInstance->m_pUserPtr;
-
     // transforms the program in Tokens
     CBotToken*  pBaseToken = CBotToken::CompileTokens(program, error);
     if ( pBaseToken == NULL ) return false;
@@ -220,8 +217,6 @@ bool CBotProgram::Run(void* pUser, int timer)
     if (m_pStack == NULL || m_pRun == NULL) goto error;
 
     m_ErrorCode = 0;
-    if (m_pInstance != NULL && m_pInstance->m_pUserPtr != NULL)
-        pUser = m_pInstance->m_pUserPtr;
 
     m_pStack->Reset(pUser);                         // empty the possible previous error, and resets the timer
     if ( timer >= 0 ) m_pStack->SetTimer(timer);

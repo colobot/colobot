@@ -267,7 +267,6 @@ public:
     void        FlushShowLimit(int i);
     void        SetShowLimit(int i, Gfx::ParticleType parti, CObject *pObj, Math::Vector pos,
                              float radius, float duration=SHOWLIMITTIME);
-    void        AdjustShowLimit(int i, Math::Vector pos);
     void        StartShowLimit();
     void        FrameShowLimit(float rTime);
 

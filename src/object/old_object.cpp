@@ -118,7 +118,6 @@ COldObject::COldObject(int id)
     m_main        = CRobotMain::GetInstancePointer();
     m_terrain     = m_main->GetTerrain();
     m_camera      = m_main->GetCamera();
-    m_runScript   = nullptr;
 
     m_type = OBJECT_FIX;
     m_option = 0;
@@ -144,13 +143,10 @@ COldObject::COldObject(int id)
     m_bCheckToken = true;
     m_bVisible = true;
     m_bEnable = true;
-    m_bProxyActivate = false;
     m_bTrainer = false;
     m_bToy = false;
     m_bManual = false;
     m_bFixed = false;
-    m_bClip = true;
-    m_bShowLimit = false;
     m_showLimitRadius = 0.0f;
     m_aTime = 0.0f;
     m_shotTime = 0.0f;
@@ -168,10 +164,8 @@ COldObject::COldObject(int id)
     m_shieldRadius = 0.0f;
     m_defRank = -1;
     m_magnifyDamage = 1.0f;
-    m_proxyDistance = 60.0f;
     m_param = 0.0f;
     m_infoReturn = NAN;
-    m_team = 0;
 
     m_character = Character();
     m_character.wheelFront = 1.0f;
@@ -211,16 +205,12 @@ COldObject::COldObject(int id)
     m_traceRecord = false;
 
     DeleteAllCrashSpheres();
-
-    m_botVar = CScriptFunctions::CreateObjectVar(this);
 }
 
 // Object's destructor.
 
 COldObject::~COldObject()
 {
-    CScriptFunctions::DestroyObjectVar(m_botVar, true);
-    m_botVar = nullptr;
 }
 
 
@@ -339,12 +329,6 @@ void COldObject::DeleteObject(bool bAll)
                 m_objectPart[i].masterParti = -1;
             }
         }
-    }
-
-    if ( m_bShowLimit )
-    {
-        m_main->FlushShowLimit(0);
-        m_bShowLimit = false;
     }
 
     if ( !bAll )  m_main->CreateShortcuts();
@@ -601,7 +585,7 @@ bool COldObject::ExplodeObject(ExplosionType type, float force, float decay)
 
     m_team = 0; // Back to neutral on destruction
 
-    if ( m_botVar != 0 )
+    if ( m_botVar != nullptr )
     {
         if ( m_type == OBJECT_STONE   ||
              m_type == OBJECT_URANIUM ||
@@ -799,11 +783,12 @@ void COldObject::Write(CLevelParserLine* line)
         line->AddParam("enable", MakeUnique<CLevelParserParam>(GetEnable()));
 
     // TODO: doesn't seem to be used
+    // But it is, this is used by aliens after Thumper ~krzys_h
     if ( GetFixed() )
         line->AddParam("fixed", MakeUnique<CLevelParserParam>(GetFixed()));
 
-    if ( !GetClip() )
-        line->AddParam("clip", MakeUnique<CLevelParserParam>(GetClip()));
+    if ( !GetCollisions() )
+        line->AddParam("clip", MakeUnique<CLevelParserParam>(GetCollisions()));
 
     if ( GetLock() )
         line->AddParam("lock", MakeUnique<CLevelParserParam>(GetLock()));
@@ -894,7 +879,7 @@ void COldObject::Read(CLevelParserLine* line)
     SetSelectable(line->GetParam("selectable")->AsBool(true));
     SetEnable(line->GetParam("enable")->AsBool(true));
     SetFixed(line->GetParam("fixed")->AsBool(false));
-    SetClip(line->GetParam("clip")->AsBool(true));
+    SetCollisions(line->GetParam("clip")->AsBool(true));
     SetLock(line->GetParam("lock")->AsBool(false));
     SetProxyActivate(line->GetParam("proxyActivate")->AsBool(false));
     SetProxyDistance(line->GetParam("proxyDistance")->AsFloat(15.0f)*g_unit);
@@ -1172,11 +1157,6 @@ void COldObject::SetPartPosition(int part, const Math::Vector &pos)
             Math::Vector lightPos = pos;
             lightPos.y += m_effectHeight;
             m_lightMan->SetLightPos(m_effectLight, lightPos);
-        }
-
-        if ( m_bShowLimit )
-        {
-            m_main->AdjustShowLimit(0, pos);
         }
     }
 }
@@ -2065,20 +2045,6 @@ bool COldObject::EventFrame(const Event &event)
     UpdateTransformObject();
     UpdateSelectParticle();
 
-    if ( m_bProxyActivate )  // active if it is near?
-    {
-        Math::Vector eye = m_engine->GetLookatPt();
-        float dist = Math::Distance(eye, GetPosition());
-        if ( dist < m_proxyDistance )
-        {
-            m_bProxyActivate = false;
-            m_main->CreateShortcuts();
-            m_sound->Play(SOUND_FINDING);
-            m_engine->GetPyroManager()->Create(Gfx::PT_FINDING, this, 0.0f);
-            m_main->DisplayError(INFO_FINDING, this);
-        }
-    }
-
     if (Implements(ObjectInterfaceType::Programmable))
     {
         if ( GetActivity() )
@@ -2471,33 +2437,6 @@ bool COldObject::GetFixed()
 }
 
 
-// Indicates whether an object is subjected to clipping (obstacles).
-
-void COldObject::SetClip(bool bClip)
-{
-    m_bClip = bClip;
-}
-
-bool COldObject::GetClip()
-{
-    return m_bClip;
-}
-
-
-// Controls object team
-
-void COldObject::SetTeam(int team)
-{
-    // NOTE: This shouldn't be called after the object is already created
-    m_team = team;
-}
-
-int COldObject::GetTeam()
-{
-    return m_team;
-}
-
-
 // Pushes an object.
 
 bool COldObject::JostleObject(float force)
@@ -2751,28 +2690,6 @@ bool COldObject::GetEnable()
 }
 
 
-// Management mode or an object is only active when you're close.
-
-void COldObject::SetProxyActivate(bool bActivate)
-{
-    m_bProxyActivate = bActivate;
-}
-
-bool COldObject::GetProxyActivate()
-{
-    return m_bProxyActivate;
-}
-
-void COldObject::SetProxyDistance(float distance)
-{
-    m_proxyDistance = distance;
-}
-
-float COldObject::GetProxyDistance()
-{
-    return m_proxyDistance;
-}
-
 
 // Management of the method of increasing damage.
 
@@ -2831,12 +2748,6 @@ void COldObject::SetBurn(bool bBurn)
 {
     m_bBurn = bBurn;
     m_burnTime = 0.0f;
-
-//? if ( m_botVar != 0 )
-//? {
-//?     if ( m_bBurn )  m_botVar->SetUserPtr(OBJECTDELETED);
-//?     else            m_botVar->SetUserPtr(this);
-//? }
 }
 
 bool COldObject::GetBurn()
@@ -2852,12 +2763,6 @@ void COldObject::SetDead(bool bDead)
     {
         StopProgram();  // stops the current task
     }
-
-//? if ( m_botVar != 0 )
-//? {
-//?     if ( m_bDead )  m_botVar->SetUserPtr(OBJECTDELETED);
-//?     else            m_botVar->SetUserPtr(this);
-//? }
 }
 
 bool COldObject::GetDead()
@@ -2956,27 +2861,14 @@ float COldObject::GetGunGoalH()
     return m_gunGoalH;
 }
 
-
-
-// Shows the limits of the object.
-
-bool COldObject::StartShowLimit()
-{
-    if ( m_showLimitRadius == 0.0f )  return false;
-
-    m_main->SetShowLimit(0, Gfx::PARTILIMIT1, this, GetPosition(), m_showLimitRadius);
-    m_bShowLimit = true;
-    return true;
-}
-
-void COldObject::StopShowLimit()
-{
-    m_bShowLimit = false;
-}
-
 void COldObject::SetShowLimitRadius(float radius)
 {
     m_showLimitRadius = radius;
+}
+
+float COldObject::GetShowLimitRadius()
+{
+    return m_showLimitRadius;
 }
 
 
@@ -3194,25 +3086,6 @@ void COldObject::UpdateSelectParticle()
     }
 }
 
-
-// Getes the pointer to the current script execution.
-
-void COldObject::SetRunScript(CScript* script)
-{
-    m_runScript = script;
-}
-
-CScript* COldObject::GetRunScript()
-{
-    return m_runScript;
-}
-
-// Returns the variables of "this" for CBOT.
-
-CBotVar* COldObject::GetBotVar()
-{
-    return m_botVar;
-}
 
 // Returns the physics associated to the object.
 

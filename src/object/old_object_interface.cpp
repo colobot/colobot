@@ -152,25 +152,6 @@ bool COldObjectInterface::GetFixed()
 }
 
 
-void COldObjectInterface::SetClip(bool bClip)
-{
-    throw std::logic_error("SetClip: not implemented!");
-}
-
-bool COldObjectInterface::GetClip()
-{
-    throw std::logic_error("GetClip: not implemented!");
-}
-void COldObjectInterface::SetTeam(int team)
-{
-    throw std::logic_error("SetTeam: not implemented!");
-}
-
-int COldObjectInterface::GetTeam()
-{
-    throw std::logic_error("GetTeam: not implemented!");
-}
-
 void COldObjectInterface::StartDetectEffect(CObject *target, bool bFound)
 {
     throw std::logic_error("StartDetectEffect: not implemented!");
@@ -205,17 +186,6 @@ bool COldObjectInterface::GetEnable()
     // TODO: temporary hack
     return true;
     //throw std::logic_error("GetEnable: not implemented!");
-}
-
-
-void COldObjectInterface::SetProxyActivate(bool bActivate)
-{
-    throw std::logic_error("SetProxyActivate: not implemented!");
-}
-
-bool COldObjectInterface::GetProxyActivate()
-{
-    throw std::logic_error("GetProxyActivate: not implemented!");
 }
 
 
@@ -303,26 +273,12 @@ bool COldObjectInterface::GetActive()
     //throw std::logic_error("GetActive: not implemented!");
 }
 
-bool COldObjectInterface::StartShowLimit()
+float COldObjectInterface::GetShowLimitRadius()
 {
-    throw std::logic_error("StartShowLimit: not implemented!");
-}
-
-void COldObjectInterface::StopShowLimit()
-{
-    throw std::logic_error("StopShowLimit: not implemented!");
+    throw std::logic_error("GetShowLimitRadius: not implemented!");
 }
 
 
-CScript* COldObjectInterface::GetRunScript()
-{
-    throw std::logic_error("GetRunScript: not implemented!");
-}
-
-CBotVar* COldObjectInterface::GetBotVar()
-{
-    throw std::logic_error("GetBotVar: not implemented!");
-}
 CPhysics* COldObjectInterface::GetPhysics()
 {
     throw std::logic_error("GetPhysics: not implemented!");

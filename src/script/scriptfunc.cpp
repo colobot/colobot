@@ -517,7 +517,7 @@ bool CScriptFunctions::rGetResearchEnable(CBotVar* var, CBotVar* result, int& ex
 
 bool CScriptFunctions::rGetResearchDone(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-    CObject* pThis = static_cast<CObject*>(user);
+    CObject* pThis = static_cast<CScript*>(user)->m_object;
     result->SetValInt(CRobotMain::GetInstancePointer()->GetDoneResearch(pThis->GetTeam()));
     return true;
 }
@@ -544,7 +544,7 @@ bool CScriptFunctions::rSetResearchEnable(CBotVar* var, CBotVar* result, int& ex
 
 bool CScriptFunctions::rSetResearchDone(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-    CObject* pThis = static_cast<CObject*>(user);
+    CObject* pThis = static_cast<CScript*>(user)->m_object;
     CRobotMain::GetInstancePointer()->SetDoneResearch(var->GetValInt(), pThis->GetTeam());
     CApplication::GetInstancePointer()->GetEventQueue()->AddEvent(Event(EVENT_UPDINTERFACE));
     return true;
@@ -616,14 +616,11 @@ CBotTypResult CScriptFunctions::cBusy(CBotVar* thisclass, CBotVar* &var)
 
 bool CScriptFunctions::rBusy(CBotVar* thisclass, CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-    CObject*    pThis = static_cast<CObject *>(user);
+    CObject*    pThis = static_cast<CScript*>(user)->m_object;
 
     exception = 0;
 
-    CBotVar* idVar = thisclass->GetItem("id");
-    assert(idVar != nullptr);
-    int rank = idVar->GetValInt();
-    CObject* obj = CObjectManager::GetInstancePointer()->GetObjectById(rank);
+    CObject* obj = static_cast<CObject*>(thisclass->GetUserPtr());
     CAuto* automat = obj->GetAuto();
 
     if ( pThis->GetTeam() != obj->GetTeam() && obj->GetTeam() != 0 )
@@ -643,16 +640,13 @@ bool CScriptFunctions::rBusy(CBotVar* thisclass, CBotVar* var, CBotVar* result, 
 
 bool CScriptFunctions::rDestroy(CBotVar* thisclass, CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-    CObject*    pThis = static_cast<CObject *>(user);
-    CScript*    script = pThis->GetRunScript();
+    CScript*    script = static_cast<CScript*>(user);
+    CObject*    pThis = script->m_object;
 
     exception = 0;
     Error err;
 
-    CBotVar* idVar = thisclass->GetItem("id");
-    assert(idVar != nullptr);
-    int rank = idVar->GetValInt();
-    CObject* obj = CObjectManager::GetInstancePointer()->GetObjectById(rank);
+    CObject* obj = static_cast<CObject*>(thisclass->GetUserPtr());
     CAuto* automat = obj->GetAuto();
 
     if ( pThis->GetTeam() != obj->GetTeam() && obj->GetTeam() != 0 )
@@ -702,8 +696,8 @@ CBotTypResult CScriptFunctions::cFactory(CBotVar* thisclass, CBotVar* &var)
 
 bool CScriptFunctions::rFactory(CBotVar* thisclass, CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-    CObject*    pThis = static_cast<CObject *>(user);
-    CScript*    script = pThis->GetRunScript();
+    CScript*    script = static_cast<CScript*>(user);
+    CObject*    pThis = script->m_object;
 
     Error       err;
 
@@ -721,10 +715,7 @@ bool CScriptFunctions::rFactory(CBotVar* thisclass, CBotVar* var, CBotVar* resul
     else
         program = "";
 
-    CBotVar* idVar = thisclass->GetItem("id");
-    assert(idVar != nullptr);
-    int rank = idVar->GetValInt();
-    CObject* factory = CObjectManager::GetInstancePointer()->GetObjectById(rank);
+    CObject* factory = static_cast<CObject*>(thisclass->GetUserPtr());
     if (factory == nullptr)
     {
         exception = ERR_GENERIC;
@@ -785,8 +776,8 @@ bool CScriptFunctions::rFactory(CBotVar* thisclass, CBotVar* var, CBotVar* resul
 
 bool CScriptFunctions::rResearch(CBotVar* thisclass, CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-    CObject*    pThis = static_cast<CObject *>(user);
-    CScript*    script = pThis->GetRunScript();
+    CScript*    script = static_cast<CScript*>(user);
+    CObject*    pThis = script->m_object;
 
     Error       err;
 
@@ -794,10 +785,7 @@ bool CScriptFunctions::rResearch(CBotVar* thisclass, CBotVar* var, CBotVar* resu
 
     ResearchType type = static_cast<ResearchType>(var->GetValInt());
 
-    CBotVar* idVar = thisclass->GetItem("id");
-    assert(idVar != nullptr);
-    int rank = idVar->GetValInt();
-    CObject* center = CObjectManager::GetInstancePointer()->GetObjectById(rank);
+    CObject* center = static_cast<CObject*>(thisclass->GetUserPtr());
     CAuto* automat = center->GetAuto();
 
     if ( pThis->GetTeam() != center->GetTeam() && center->GetTeam() != 0 )
@@ -863,17 +851,14 @@ bool CScriptFunctions::rResearch(CBotVar* thisclass, CBotVar* var, CBotVar* resu
 
 bool CScriptFunctions::rTakeOff(CBotVar* thisclass, CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-    CObject*    pThis = static_cast<CObject *>(user);
-    CScript*    script = pThis->GetRunScript();
+    CScript*    script = static_cast<CScript*>(user);
+    CObject*    pThis = script->m_object;
 
     Error       err;
 
     exception = 0;
 
-    CBotVar* idVar = thisclass->GetItem("id");
-    assert(idVar != nullptr);
-    int rank = idVar->GetValInt();
-    CObject* base = CObjectManager::GetInstancePointer()->GetObjectById(rank);
+    CObject* base = static_cast<CObject*>(thisclass->GetUserPtr());
     CAuto* automat = base->GetAuto();
 
     if ( pThis->GetTeam() != base->GetTeam() && base->GetTeam() != 0 )
@@ -933,7 +918,7 @@ CBotTypResult CScriptFunctions::cDelete(CBotVar* &var, void* user)
 bool CScriptFunctions::rDelete(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
     int         exploType = 0;
-    float       force = std::numeric_limits<float>::infinity();
+    float       force = 1.0f;
 
     int rank = var->GetValInt();
     var->GetNext();
@@ -998,7 +983,7 @@ CBotTypResult CScriptFunctions::cSearch(CBotVar* &var, void* user)
 
 bool CScriptFunctions::rSearch(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-    CObject*    pThis = static_cast<CObject *>(user);
+    CObject*    pThis = static_cast<CScript*>(user)->m_object;
     CObject     *pBest;
     CBotVar*    array;
     Math::Vector    pos, oPos;
@@ -1098,7 +1083,7 @@ CBotTypResult CScriptFunctions::cRadar(CBotVar* &var, void* user)
 
 bool CScriptFunctions::rRadar(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-    CObject*    pThis = static_cast<CObject *>(user);
+    CObject*    pThis = static_cast<CScript*>(user)->m_object;
     CObject     *pBest;
     CBotVar*    array;
     Math::Vector    oPos;
@@ -1255,8 +1240,8 @@ CBotTypResult CScriptFunctions::cDetect(CBotVar* &var, void* user)
 
 bool CScriptFunctions::rDetect(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-    CScript*    script = (static_cast<CObject *>(user))->GetRunScript();
-    CObject*    pThis = static_cast<CObject *>(user);
+    CScript*    script = static_cast<CScript*>(user);
+    CObject*    pThis = script->m_object;
     CObject     *pBest;
     CBotVar*    array;
     int         type;
@@ -1351,7 +1336,7 @@ CBotTypResult CScriptFunctions::cDirection(CBotVar* &var, void* user)
 
 bool CScriptFunctions::rDirection(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-    CObject*        pThis = static_cast<CObject *>(user);
+    CObject*        pThis = static_cast<CScript*>(user)->m_object;
     Math::Vector    iPos, oPos;
     float           a, g;
 
@@ -1371,7 +1356,7 @@ bool CScriptFunctions::rDirection(CBotVar* var, CBotVar* result, int& exception,
 
 bool CScriptFunctions::rCanBuild(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-    CObject* pThis = static_cast<CObject *>(user);
+    CObject* pThis = static_cast<CScript*>(user)->m_object;
     ObjectType category = static_cast<ObjectType>(var->GetValInt());
     exception = 0;
 
@@ -1390,7 +1375,7 @@ bool CScriptFunctions::rCanResearch(CBotVar* var, CBotVar* result, int& exceptio
 
 bool CScriptFunctions::rResearched(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-    CObject* pThis = static_cast<CObject *>(user);
+    CObject* pThis = static_cast<CScript*>(user)->m_object;
     ResearchType research = static_cast<ResearchType>(var->GetValInt());
     exception = 0;
 
@@ -1412,8 +1397,8 @@ bool CScriptFunctions::rBuildingEnabled(CBotVar* var, CBotVar* result, int& exce
 
 bool CScriptFunctions::rBuild(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-    CObject*    pThis = static_cast<CObject *>(user);
-    CScript*    script = pThis->GetRunScript();
+    CScript*    script = static_cast<CScript*>(user);
+    CObject*    pThis = script->m_object;
     ObjectType  oType;
     ObjectType  category;
     Error       err;
@@ -1516,8 +1501,8 @@ CBotTypResult CScriptFunctions::cProduce(CBotVar* &var, void* user)
 
 bool CScriptFunctions::rProduce(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-    CScript*    script = (static_cast<CObject *>(user))->GetRunScript();
-    CObject*    me = (static_cast<CObject *>(user));
+    CScript*    script = static_cast<CScript*>(user);
+    CObject*    me = script->m_object;
     const char* name = "";
     Math::Vector pos;
     float       angle = 0.0f;
@@ -1703,8 +1688,8 @@ CBotTypResult CScriptFunctions::cSpace(CBotVar* &var, void* user)
 
 bool CScriptFunctions::rSpace(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-    CScript*    script = (static_cast<CObject *>(user))->GetRunScript();
-    CObject*    pThis = static_cast<CObject *>(user);
+    CScript*    script = static_cast<CScript*>(user);
+    CObject*    pThis = script->m_object;
     CBotVar*    pSub;
     Math::Vector    center;
     float       rMin, rMax, dist;
@@ -1786,8 +1771,8 @@ CBotTypResult CScriptFunctions::cFlatSpace(CBotVar* &var, void* user)
 
 bool CScriptFunctions::rFlatSpace(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-    CScript*    script = (static_cast<CObject *>(user))->GetRunScript();
-    CObject*    pThis = static_cast<CObject *>(user);
+    CScript*    script = static_cast<CScript*>(user);
+    CObject*    pThis = script->m_object;
     CBotVar*    pSub;
     Math::Vector    center;
     float       flatMin, rMin, rMax, dist;
@@ -1860,8 +1845,8 @@ CBotTypResult CScriptFunctions::cFlatGround(CBotVar* &var, void* user)
 
 bool CScriptFunctions::rFlatGround(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-    CScript*    script = (static_cast<CObject *>(user))->GetRunScript();
-    CObject*    pThis = static_cast<CObject *>(user);
+    CScript*    script = static_cast<CScript*>(user);
+    CObject*    pThis = script->m_object;
     Math::Vector    center;
     float       rMax, dist;
 
@@ -1880,7 +1865,7 @@ bool CScriptFunctions::rFlatGround(CBotVar* var, CBotVar* result, int& exception
 
 bool CScriptFunctions::rWait(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-    CScript*    script = (static_cast<CObject *>(user))->GetRunScript();
+    CScript*    script = static_cast<CScript*>(user);
     float       value;
     Error       err;
 
@@ -1909,7 +1894,7 @@ bool CScriptFunctions::rWait(CBotVar* var, CBotVar* result, int& exception, void
 
 bool CScriptFunctions::rMove(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-    CScript*    script = (static_cast<CObject *>(user))->GetRunScript();
+    CScript*    script = static_cast<CScript*>(user);
     float       value;
     Error       err;
 
@@ -1938,7 +1923,7 @@ bool CScriptFunctions::rMove(CBotVar* var, CBotVar* result, int& exception, void
 
 bool CScriptFunctions::rTurn(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-    CScript*    script = (static_cast<CObject *>(user))->GetRunScript();
+    CScript*    script = static_cast<CScript*>(user);
     float       value;
     Error       err;
 
@@ -1993,7 +1978,7 @@ CBotTypResult CScriptFunctions::cGoto(CBotVar* &var, void* user)
 
 bool CScriptFunctions::rGoto(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-    CScript*        script = (static_cast<CObject *>(user))->GetRunScript();
+    CScript*        script = static_cast<CScript*>(user);
     Math::Vector        pos;
     TaskGotoGoal    goal;
     TaskGotoCrash   crash;
@@ -2058,8 +2043,8 @@ CBotTypResult CScriptFunctions::cGrabDrop(CBotVar* &var, void* user)
 
 bool CScriptFunctions::rGrab(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-    CScript*    script = (static_cast<CObject *>(user))->GetRunScript();
-    CObject*    pThis = static_cast<CObject *>(user);
+    CScript*    script = static_cast<CScript*>(user);
+    CObject*    pThis = script->m_object;
     ObjectType  oType;
     TaskManipArm type;
     Error       err;
@@ -2107,8 +2092,8 @@ bool CScriptFunctions::rGrab(CBotVar* var, CBotVar* result, int& exception, void
 
 bool CScriptFunctions::rDrop(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-    CScript*    script = (static_cast<CObject *>(user))->GetRunScript();
-    CObject*    pThis = static_cast<CObject *>(user);
+    CScript*    script = static_cast<CScript*>(user);
+    CObject*    pThis = script->m_object;
     ObjectType  oType;
     TaskManipArm type;
     Error       err;
@@ -2150,7 +2135,7 @@ bool CScriptFunctions::rDrop(CBotVar* var, CBotVar* result, int& exception, void
 
 bool CScriptFunctions::rSniff(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-    CScript*    script = (static_cast<CObject *>(user))->GetRunScript();
+    CScript*    script = static_cast<CScript*>(user);
     Error       err;
 
     exception = 0;
@@ -2193,8 +2178,8 @@ CBotTypResult CScriptFunctions::cReceive(CBotVar* &var, void* user)
 
 bool CScriptFunctions::rReceive(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-    CScript*    script = (static_cast<CObject *>(user))->GetRunScript();
-    CObject*    pThis = static_cast<CObject *>(user);
+    CScript*    script = static_cast<CScript*>(user);
+    CObject*    pThis = script->m_object;
     CBotString  cbs;
     Error       err;
     const char* p;
@@ -2261,7 +2246,7 @@ CBotTypResult CScriptFunctions::cSend(CBotVar* &var, void* user)
 
 bool CScriptFunctions::rSend(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-    CScript*    script = (static_cast<CObject *>(user))->GetRunScript();
+    CScript*    script = static_cast<CScript*>(user);
     CBotString  cbs;
     Error       err;
     const char* p;
@@ -2329,7 +2314,7 @@ CBotTypResult CScriptFunctions::cDeleteInfo(CBotVar* &var, void* user)
 
 bool CScriptFunctions::rDeleteInfo(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-    CObject* pThis = static_cast<CObject *>(user);
+    CObject* pThis = static_cast<CScript*>(user)->m_object;
 
     exception = 0;
 
@@ -2377,7 +2362,7 @@ CBotTypResult CScriptFunctions::cTestInfo(CBotVar* &var, void* user)
 
 bool CScriptFunctions::rTestInfo(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-    CObject* pThis = static_cast<CObject *>(user);
+    CObject* pThis = static_cast<CScript*>(user)->m_object;
 
     exception = 0;
 
@@ -2408,7 +2393,7 @@ bool CScriptFunctions::rTestInfo(CBotVar* var, CBotVar* result, int& exception, 
 
 bool CScriptFunctions::rThump(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-    CScript*    script = (static_cast<CObject *>(user))->GetRunScript();
+    CScript*    script = static_cast<CScript*>(user);
     Error       err;
 
     exception = 0;
@@ -2435,7 +2420,7 @@ bool CScriptFunctions::rThump(CBotVar* var, CBotVar* result, int& exception, voi
 
 bool CScriptFunctions::rRecycle(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-    CScript*    script = (static_cast<CObject *>(user))->GetRunScript();
+    CScript*    script = static_cast<CScript*>(user);
     Error       err;
 
     exception = 0;
@@ -2479,8 +2464,8 @@ CBotTypResult CScriptFunctions::cShield(CBotVar* &var, void* user)
 
 bool CScriptFunctions::rShield(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-    CScript*    script = (static_cast<CObject *>(user))->GetRunScript();
-    CObject*    pThis = static_cast<CObject *>(user);
+    CScript*    script = static_cast<CScript*>(user);
+    CObject*    pThis = script->m_object;
     float       oper, radius;
     Error       err;
 
@@ -2542,7 +2527,7 @@ bool CScriptFunctions::rShield(CBotVar* var, CBotVar* result, int& exception, vo
 
 CBotTypResult CScriptFunctions::cFire(CBotVar* &var, void* user)
 {
-    CObject*    pThis = static_cast<CObject *>(user);
+    CObject*    pThis = static_cast<CScript*>(user)->m_object;
     ObjectType  type;
 
     type = pThis->GetType();
@@ -2574,8 +2559,8 @@ CBotTypResult CScriptFunctions::cFire(CBotVar* &var, void* user)
 
 bool CScriptFunctions::rFire(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-    CScript*    script = (static_cast<CObject *>(user))->GetRunScript();
-    CObject*    pThis = static_cast<CObject *>(user);
+    CScript*    script = static_cast<CScript*>(user);
+    CObject*    pThis = script->m_object;
     float       delay;
     Math::Vector    impact;
     Error       err;
@@ -2637,7 +2622,7 @@ CBotTypResult CScriptFunctions::cAim(CBotVar* &var, void* user)
 
 bool CScriptFunctions::rAim(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-    CScript*    script = (static_cast<CObject *>(user))->GetRunScript();
+    CScript*    script = static_cast<CScript*>(user);
     float       x, y;
     Error       err;
 
@@ -2684,8 +2669,8 @@ CBotTypResult CScriptFunctions::cMotor(CBotVar* &var, void* user)
 
 bool CScriptFunctions::rMotor(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-    CObject*    pThis = static_cast<CObject *>(user);
-    CPhysics*   physics = (static_cast<CObject *>(user))->GetPhysics();
+    CObject*    pThis = static_cast<CScript*>(user)->m_object;
+    CPhysics*   physics = (static_cast<CScript*>(user)->m_object)->GetPhysics();
     float       left, right, speed, turn;
 
     left = var->GetValFloat();
@@ -2716,7 +2701,7 @@ bool CScriptFunctions::rMotor(CBotVar* var, CBotVar* result, int& exception, voi
 
 bool CScriptFunctions::rJet(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-    CPhysics*   physics = (static_cast<CObject *>(user))->GetPhysics();
+    CPhysics*   physics = (static_cast<CScript*>(user)->m_object)->GetPhysics();
     float       value;
 
     value = var->GetValFloat();
@@ -2745,7 +2730,7 @@ CBotTypResult CScriptFunctions::cTopo(CBotVar* &var, void* user)
 
 bool CScriptFunctions::rTopo(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-    CScript*    script = (static_cast<CObject *>(user))->GetRunScript();
+    CScript*    script = static_cast<CScript*>(user);
     Math::Vector    pos;
     float       level;
 
@@ -2780,7 +2765,7 @@ CBotTypResult CScriptFunctions::cMessage(CBotVar* &var, void* user)
 
 bool CScriptFunctions::rMessage(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-    CScript*    script = (static_cast<CObject *>(user))->GetRunScript();
+    CScript*    script = static_cast<CScript*>(user);
     CBotString  cbs;
     const char* p;
     Ui::TextType    type;
@@ -2804,7 +2789,7 @@ bool CScriptFunctions::rMessage(CBotVar* var, CBotVar* result, int& exception, v
 
 bool CScriptFunctions::rCmdline(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-    CObject*    pThis = static_cast<CObject *>(user);
+    CObject*    pThis = static_cast<CScript*>(user)->m_object;
     float       value;
     int         rank;
 
@@ -2821,7 +2806,7 @@ bool CScriptFunctions::rCmdline(CBotVar* var, CBotVar* result, int& exception, v
 
 bool CScriptFunctions::rIsMovie(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-    CScript*    script = (static_cast<CObject *>(user))->GetRunScript();
+    CScript*    script = static_cast<CScript*>(user);
     float       value;
 
     value = script->m_main->GetMovieLock()?1.0f:0.0f;
@@ -2834,7 +2819,7 @@ bool CScriptFunctions::rIsMovie(CBotVar* var, CBotVar* result, int& exception, v
 
 bool CScriptFunctions::rErrMode(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-    CScript*    script = (static_cast<CObject *>(user))->GetRunScript();
+    CScript*    script = static_cast<CScript*>(user);
     int         value;
 
     value = var->GetValInt();
@@ -2849,7 +2834,7 @@ bool CScriptFunctions::rErrMode(CBotVar* var, CBotVar* result, int& exception, v
 
 bool CScriptFunctions::rIPF(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-    CScript*    script = (static_cast<CObject *>(user))->GetRunScript();
+    CScript*    script = static_cast<CScript*>(user);
     int         value;
 
     value = var->GetValInt();
@@ -2864,7 +2849,7 @@ bool CScriptFunctions::rIPF(CBotVar* var, CBotVar* result, int& exception, void*
 
 bool CScriptFunctions::rAbsTime(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-    CScript*    script = (static_cast<CObject *>(user))->GetRunScript();
+    CScript*    script = static_cast<CScript*>(user);
     float       value;
 
     value = script->m_main->GetGameTime();
@@ -2892,8 +2877,8 @@ CBotTypResult CScriptFunctions::cPenDown(CBotVar* &var, void* user)
 
 bool CScriptFunctions::rPenDown(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-    CScript*    script = (static_cast<CObject *>(user))->GetRunScript();
-    CObject*    pThis = static_cast<CObject *>(user);
+    CScript*    script = static_cast<CScript*>(user);
+    CObject*    pThis = script->m_object;
     int         color;
     float       width;
     Error       err;
@@ -2950,8 +2935,8 @@ bool CScriptFunctions::rPenDown(CBotVar* var, CBotVar* result, int& exception, v
 
 bool CScriptFunctions::rPenUp(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-    CScript*    script = (static_cast<CObject *>(user))->GetRunScript();
-    CObject*    pThis = static_cast<CObject *>(user);
+    CScript*    script = static_cast<CScript*>(user);
+    CObject*    pThis = script->m_object;
     Error       err;
 
     CMotionVehicle* motionVehicle = dynamic_cast<CMotionVehicle*>(pThis->GetMotion());
@@ -2992,8 +2977,8 @@ bool CScriptFunctions::rPenUp(CBotVar* var, CBotVar* result, int& exception, voi
 
 bool CScriptFunctions::rPenColor(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-    CScript*    script = (static_cast<CObject *>(user))->GetRunScript();
-    CObject*    pThis = static_cast<CObject *>(user);
+    CScript*    script = static_cast<CScript*>(user);
+    CObject*    pThis = script->m_object;
     int         color;
     Error       err;
 
@@ -3036,7 +3021,7 @@ bool CScriptFunctions::rPenColor(CBotVar* var, CBotVar* result, int& exception, 
 
 bool CScriptFunctions::rPenWidth(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-    CObject*    pThis = static_cast<CObject *>(user);
+    CObject*    pThis = static_cast<CScript*>(user)->m_object;
     float       width;
 
     CMotionVehicle* motionVehicle = dynamic_cast<CMotionVehicle*>(pThis->GetMotion());
@@ -3064,12 +3049,9 @@ CBotTypResult CScriptFunctions::cOneObject(CBotVar* &var, void* user)
 
 bool CScriptFunctions::rCameraFocus(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-    CScript* script = (static_cast<CObject *>(user))->GetRunScript();
+    CScript* script = static_cast<CScript*>(user);
 
-    CBotVar* idVar = var->GetItem("id");
-    assert(idVar != nullptr);
-    int rank = idVar->GetValInt();
-    CObject* object = CObjectManager::GetInstancePointer()->GetObjectById(rank);
+    CObject* object = static_cast<CObject*>(var->GetUserPtr());
 
     script->m_main->SelectObject(object, false);
 
@@ -3801,8 +3783,9 @@ void CScriptFunctions::uObject(CBotVar* botThis, void* user)
 
     if ( user == nullptr )  return;
 
-    assert(static_cast<CObject*>(user)->Implements(ObjectInterfaceType::Old));
-    COldObject* object = static_cast<COldObject*>(user);
+    CObject* obj = static_cast<CObject*>(user);
+    assert(obj->Implements(ObjectInterfaceType::Old));
+    COldObject* object = static_cast<COldObject*>(obj);
 
     physics = object->GetPhysics();
 

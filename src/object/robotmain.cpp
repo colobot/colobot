@@ -1185,7 +1185,7 @@ void CRobotMain::ExecuteCmd(char *cmd)
         {
             CObject* object = GetSelect();
             if (object != nullptr)
-                object->SetClip(false);
+                object->SetCollisions(false);
             return;
         }
 
@@ -1193,7 +1193,7 @@ void CRobotMain::ExecuteCmd(char *cmd)
         {
             CObject* object = GetSelect();
             if (object != nullptr)
-                object->SetClip(true);
+                object->SetCollisions(true);
             return;
         }
 
@@ -2555,6 +2555,20 @@ bool CRobotMain::EventFrame(const Event &event)
                 toto = obj;
             else if (obj->Implements(ObjectInterfaceType::Interactive))
                 dynamic_cast<CInteractiveObject*>(obj)->EventProcess(event);
+
+            if ( obj->GetProxyActivate() )  // active if it is near?
+            {
+                Math::Vector eye = m_engine->GetLookatPt();
+                float dist = Math::Distance(eye, obj->GetPosition());
+                if ( dist < obj->GetProxyActivate() )
+                {
+                    obj->SetProxyActivate(false);
+                    CreateShortcuts();
+                    m_sound->Play(SOUND_FINDING);
+                    m_engine->GetPyroManager()->Create(Gfx::PT_FINDING, obj, 0.0f);
+                    DisplayError(INFO_FINDING, obj);
+                }
+            }
         }
         // Advances all objects transported by robots.
         for (CObject* obj : m_objMan->GetAllObjects())
@@ -3610,7 +3624,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                     oldObj->SetRange(line->GetParam("range")->AsFloat(30.0f));
                     oldObj->SetShield(line->GetParam("shield")->AsFloat(1.0f));
                     oldObj->SetMagnifyDamage(line->GetParam("magnifyDamage")->AsFloat(1.0f));
-                    oldObj->SetClip(line->GetParam("clip")->AsBool(true));
+                    oldObj->SetCollisions(line->GetParam("clip")->AsBool(true));
                     oldObj->SetCheckToken(!line->GetParam("checkToken")->IsDefined() ? trainer || !selectable : line->GetParam("checkToken")->AsBool(true));
                     // SetManual will affect bot speed
                     if (type == OBJECT_MOBILEdr)
@@ -4547,11 +4561,6 @@ void CRobotMain::ShowDropZone(CObject* metal, CObject* transporter)
 //! Erases the boundaries shown
 void CRobotMain::FlushShowLimit(int i)
 {
-    if (m_showLimit[i].link != 0)
-    {
-        m_showLimit[i].link->StopShowLimit();
-    }
-
     for (int j = 0; j < m_showLimit[i].total; j++)
     {
         if (m_showLimit[i].parti[j] == 0) continue;
@@ -4601,19 +4610,13 @@ void CRobotMain::SetShowLimit(int i, Gfx::ParticleType parti, CObject *obj,
     }
 }
 
-//! Adjusts the boundaries to show
-void CRobotMain::AdjustShowLimit(int i, Math::Vector pos)
-{
-    m_showLimit[i].pos = pos;
-}
-
 //! Mount the boundaries of the selected object
 void CRobotMain::StartShowLimit()
 {
     CObject* obj = GetSelect();
     if (obj == nullptr) return;
-
-    obj->StartShowLimit();
+    if (obj->GetShowLimitRadius() == 0.0f) return;
+    SetShowLimit(0, Gfx::PARTILIMIT1, obj, obj->GetPosition(), obj->GetShowLimitRadius());
 }
 
 //! Advances the boundaries shown
@@ -4644,6 +4647,11 @@ void CRobotMain::FrameShowLimit(float rTime)
         float speed = 0.4f-m_showLimit[i].radius*0.001f;
         if (speed < 0.1f) speed = 0.1f;
         float angle = m_showLimit[i].time*speed;
+
+        if (m_showLimit[i].link != nullptr)
+        {
+            m_showLimit[i].pos = m_showLimit[i].link->GetPosition();
+        }
 
         for (int j = 0; j < m_showLimit[i].total; j++)
         {

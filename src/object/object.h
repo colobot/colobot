@@ -36,6 +36,7 @@ struct ModelCrashSphere;
 } // namespace Gfx
 
 class CLevelParserLine;
+class CBotVar;
 
 /**
  * \class CObject
@@ -157,6 +158,29 @@ public:
     //! Returns flag controlling animation effect on level reset
     bool GetAnimateOnReset();
 
+    //! Turns object collisions on/off
+    void SetCollisions(bool collisions);
+    //! Returns true if collisions are enabled
+    bool GetCollisions();
+
+    //! Sets object team (shouldn't be called after creation because the model won't update!)
+    void SetTeam(int team);
+    //! Returns object team
+    int GetTeam();
+
+    //! Enable object activation only after you come close
+    void SetProxyActivate(bool activate);
+    //! Returns close activation mode
+    bool GetProxyActivate();
+
+    //! Sets distance for close activation
+    void SetProxyDistance(float distance);
+    //! Returns distance for close activation
+    float GetProxyDistance();
+
+    //! Returns CBot "object" variable associated with this object
+    CBotVar* GetBotVar();
+
 protected:
     //! Transform crash sphere by object's world matrix
     virtual void TransformCrashSphere(Math::Sphere& crashSphere) = 0;
@@ -173,4 +197,9 @@ protected:
     std::vector<CrashSphere> m_crashSpheres; //!< crash spheres
     Math::Sphere m_cameraCollisionSphere;
     bool m_animateOnReset;
+    bool m_collisions;
+    int m_team;
+    bool m_proxyActivate;
+    float m_proxyDistance;
+    CBotVar* m_botVar;
 };

@@ -172,7 +172,7 @@ bool CAutoDestroyer::EventProcess(const Event &event)
             if ( scrap != nullptr )
             {
                 //m_engine->GetPyroManager()->Create(Gfx::PT_FRAGT, scrap);
-                scrap->ExplodeObject(ExplosionType::Bang, std::numeric_limits<float>::infinity());
+                scrap->ExplodeObject(ExplosionType::Bang, 1.0f);
             }
             m_bExplo = true;
         }
@@ -393,4 +393,3 @@ void CAutoDestroyer::EnableInterface(Ui::CWindow *pw, EventType event, bool bSta
 
     control->SetState(Ui::STATE_ENABLE, bState);
 }
-
