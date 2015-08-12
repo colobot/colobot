@@ -265,8 +265,6 @@ void CMotionSpider::CreatePhysics()
         -5,0,0,     -5,0,0,     -5,0,0,     -5,0,0,     // s5: fingers 1..4
     };
 
-    m_physics->SetType(TYPE_ROLLING);
-
     character = m_object->GetCharacter();
     character->wheelFront = 4.0f;
     character->wheelBack  = 4.0f;

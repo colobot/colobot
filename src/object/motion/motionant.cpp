@@ -330,8 +330,6 @@ void CMotionAnt::CreatePhysics()
         -35,35,0,   -25,40,0,   -40,65,0,   // s7: feet 1..3
     };
 
-    m_physics->SetType(TYPE_ROLLING);
-
     character = m_object->GetCharacter();
     character->wheelFront = 3.0f;
     character->wheelBack  = 3.0f;

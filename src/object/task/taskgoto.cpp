@@ -194,7 +194,7 @@ bool CTaskGoto::EventProcess(const Event &event)
 
         pos = m_object->GetPosition();
 
-        if ( m_physics->GetType() == TYPE_FLYING && m_altitude == 0.0f )
+        if ( m_object->Implements(ObjectInterfaceType::Flying) && m_altitude == 0.0f )
         {
             if ( m_physics->GetLand() )
             {
@@ -206,7 +206,7 @@ bool CTaskGoto::EventProcess(const Event &event)
             }
         }
 
-        if ( m_physics->GetType() == TYPE_FLYING && m_altitude > 0.0f )
+        if ( m_object->Implements(ObjectInterfaceType::Flying) && m_altitude > 0.0f )
         {
             goal = m_bmPoints[m_bmIndex];
             goal.y = pos.y;
@@ -345,7 +345,7 @@ bool CTaskGoto::EventProcess(const Event &event)
     }
 
     if ( m_phase != TGP_TURN                 &&
-         m_physics->GetType() == TYPE_FLYING &&
+         m_object->Implements(ObjectInterfaceType::Flying) &&
          m_altitude > 0.0f                   )
     {
         pos = m_object->GetPosition();
@@ -395,7 +395,7 @@ bool CTaskGoto::EventProcess(const Event &event)
         a = m_object->GetRotationY();
         g = Math::RotateAngle(rot.x, -rot.y);  // CW !
         cirSpeed = Math::Direction(a, g)*1.0f;
-//?     if ( m_physics->GetType() == TYPE_FLYING &&
+//?     if ( m_object->Implements(ObjectInterfaceType::Flying) &&
 //?          m_physics->GetLand()                )  // flying on the ground?
 //?     {
 //?         cirSpeed *= 4.0f;  // more fishing
@@ -405,7 +405,7 @@ bool CTaskGoto::EventProcess(const Event &event)
 
         dist = Math::DistanceProjected(m_goal, pos);
         linSpeed = dist/(m_physics->GetLinStopLength()*1.5f);
-//?     if ( m_physics->GetType() == TYPE_FLYING &&
+//?     if ( m_object->Implements(ObjectInterfaceType::Flying) &&
 //?          m_physics->GetLand()                )  // flying on the ground?
 //?     {
 //?         linSpeed *= 8.0f;  // more fishing
@@ -708,7 +708,7 @@ Error CTaskGoto::Start(Math::Vector goal, float altitude,
             m_bTake = true;  // object was taken on arrival (final rotation)
         }
 
-        if ( m_physics->GetType() == TYPE_FLYING && m_altitude == 0.0f )
+        if ( m_object->Implements(ObjectInterfaceType::Flying) && m_altitude == 0.0f )
         {
             pos = m_object->GetPosition();
             dist = Math::DistanceProjected(pos, m_goal);
@@ -773,7 +773,7 @@ Error CTaskGoto::IsEnded()
 
     if ( m_phase == TGP_BEAMUP )  // off?
     {
-        if ( m_physics->GetType() == TYPE_FLYING && m_altitude > 0.0f )
+        if ( m_object->Implements(ObjectInterfaceType::Flying) && m_altitude > 0.0f )
         {
             level = m_terrain->GetFloorLevel(pos, true, true);
             h = level+m_altitude-20.0f;
@@ -826,7 +826,7 @@ Error CTaskGoto::IsEnded()
 
     if ( m_phase == TGP_BEAMDOWN )  // landed?
     {
-        if ( m_physics->GetType() == TYPE_FLYING && m_altitude > 0.0f )
+        if ( m_object->Implements(ObjectInterfaceType::Flying) && m_altitude > 0.0f )
         {
             if ( !m_physics->GetLand() )  return ERR_CONTINUE;
             m_physics->SetMotorSpeedY(0.0f);  // stops the descent
@@ -877,7 +877,7 @@ Error CTaskGoto::IsEnded()
 
     if ( m_phase == TGP_LAND )  // landed?
     {
-        if ( m_physics->GetType() == TYPE_FLYING && m_altitude > 0.0f )
+        if ( m_object->Implements(ObjectInterfaceType::Flying) && m_altitude > 0.0f )
         {
             if ( !m_physics->GetLand() )  return ERR_CONTINUE;
             m_physics->SetMotorSpeedY(0.0f);
@@ -1259,7 +1259,7 @@ bool CTaskGoto::GetHotPoint(CObject *pObj, Math::Vector &pos,
         return true;
     }
 
-    if ( type == OBJECT_PARA && m_physics->GetType() == TYPE_FLYING )
+    if ( type == OBJECT_PARA && m_object->Implements(ObjectInterfaceType::Flying) )
     {
         mat = pObj->GetWorldMatrix(0);
         if ( bTake && distance != 0.0f )  suppl = 20.0f;
@@ -1818,7 +1818,7 @@ void CTaskGoto::BitmapObject()
         if (IsObjectBeingTransported(pObj))  continue;
 
         float h = m_terrain->GetFloorLevel(pObj->GetPosition(), false);
-        if ( m_physics->GetType() == TYPE_FLYING && m_altitude > 0.0f )
+        if ( m_object->Implements(ObjectInterfaceType::Flying) && m_altitude > 0.0f )
         {
             h += m_altitude;
         }
@@ -1828,7 +1828,7 @@ void CTaskGoto::BitmapObject()
             Math::Vector oPos = crashSphere.sphere.pos;
             float oRadius = crashSphere.sphere.radius;
 
-            if ( m_physics->GetType() == TYPE_FLYING && m_altitude > 0.0f )  // flying?
+            if ( m_object->Implements(ObjectInterfaceType::Flying) && m_altitude > 0.0f )  // flying?
             {
                 if ( oPos.y-oRadius > h+8.0f ||
                      oPos.y+oRadius < h-8.0f )  continue;

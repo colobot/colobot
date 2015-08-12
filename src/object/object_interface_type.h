@@ -41,6 +41,8 @@ enum class ObjectInterfaceType
     Carrier, //!< object that can carry other objects
     Powered, //!< object powered with power cell
     Movable, //!< objects that can move
+    Flying, //!< objects that can fly
+    JetFlying, //!< objects that can fly using a jet engine
     Controllable, //!< objects that can be selected and controlled by the player
     PowerContainer, //!< objects that hold power
     Ranged, //!< objects that have a operation range to be displayed after pressing button in the UI

@@ -76,7 +76,6 @@ CPhysics::CPhysics(COldObject* object)
     m_sound     = CApplication::GetInstancePointer()->GetSound();
     m_motion    = nullptr;
 
-    m_type = TYPE_ROLLING;
     m_gravity = 9.81f;  // default gravity
     m_time = 0.0f;
     m_timeUnderWater = 0.0f;
@@ -154,19 +153,6 @@ void CPhysics::SetMotion(CMotion* motion)
     m_motion = motion;
 }
 
-// Management of the type.
-
-void CPhysics::SetType(PhysicsType type)
-{
-    m_type = type;
-}
-
-PhysicsType CPhysics::GetType()
-{
-    return m_type;
-}
-
-
 
 // Saves all parameters of the object.
 
@@ -174,9 +160,12 @@ bool CPhysics::Write(CLevelParserLine* line)
 {
     line->AddParam("motor", MakeUnique<CLevelParserParam>(m_motorSpeed));
 
-    if ( m_type == TYPE_FLYING )
+    if ( m_object->Implements(ObjectInterfaceType::Flying) )
     {
-        line->AddParam("reactorRange", MakeUnique<CLevelParserParam>(GetReactorRange()));
+        if ( m_object->Implements(ObjectInterfaceType::JetFlying) )
+        {
+            line->AddParam("reactorRange", MakeUnique<CLevelParserParam>(GetReactorRange()));
+        }
         line->AddParam("land", MakeUnique<CLevelParserParam>(GetLand()));
     }
 
@@ -189,9 +178,12 @@ bool CPhysics::Read(CLevelParserLine* line)
 {
     m_motorSpeed = line->GetParam("motor")->AsPoint();
 
-    if ( m_type == TYPE_FLYING )
+    if ( m_object->Implements(ObjectInterfaceType::Flying) )
     {
-        SetReactorRange(line->GetParam("reactorRange")->AsFloat());
+        if ( m_object->Implements(ObjectInterfaceType::JetFlying) )
+        {
+            SetReactorRange(line->GetParam("reactorRange")->AsFloat());
+        }
         SetLand(line->GetParam("land")->AsBool());
     }
 
@@ -662,7 +654,7 @@ float CPhysics::GetLinStopLength(PhysicsMode sMode, PhysicsMode aMode)
     speed = GetLinMotionX(sMode);  // MO_ADVSPEED/MO_RECSPEED
     accel = GetLinMotionX(aMode);  // MO_ADVACCEL/MO_RECACCEL/MO_STOACCEL
 
-    if ( m_type == TYPE_FLYING && m_bLand )  // flying on the ground?
+    if ( m_object->Implements(ObjectInterfaceType::Flying) && m_bLand )  // flying on the ground?
     {
         speed /= LANDING_SPEED;
         accel *= LANDING_ACCEL;
@@ -688,7 +680,7 @@ float CPhysics::GetLinMaxLength(float dir)
     if ( dir > 0.0f )  dist = m_linMotion.advanceSpeed.x;
     else               dist = m_linMotion.recedeSpeed.x;
 
-    if ( m_type == TYPE_FLYING )
+    if ( m_object->Implements(ObjectInterfaceType::Flying) )
     {
         dist /= 5.0f;
     }
@@ -784,21 +776,9 @@ void CPhysics::MotorUpdate(float aTime, float rTime)
 
     motorSpeed = m_motorSpeed;
 
-    if ( type == OBJECT_MOTHER   ||
-         type == OBJECT_ANT      ||
-         type == OBJECT_SPIDER   ||
-         type == OBJECT_BEE      ||
-         type == OBJECT_WORM     ||
-         type == OBJECT_APOLLO2  ||
-         type == OBJECT_MOBILEdr ||
-         type == OBJECT_CONTROLLER)
+    if ( type == OBJECT_HUMAN ||
+         type == OBJECT_TECH  )
     {
-        power = nullptr;
-    }
-    else if ( type == OBJECT_HUMAN ||
-              type == OBJECT_TECH  )
-    {
-        power = nullptr;
         if (IsObjectCarryingCargo(m_object) &&  // carries something?
              !m_bFreeze )
         {
@@ -829,26 +809,24 @@ void CPhysics::MotorUpdate(float aTime, float rTime)
             }
         }
     }
-    else
+
+    if (m_object->Implements(ObjectInterfaceType::Powered))
     {
-        if (m_object->Implements(ObjectInterfaceType::Powered))
+        power = dynamic_cast<CPowerContainerObject*>(dynamic_cast<CPoweredObject*>(m_object)->GetPower());  // searches for the object battery uses
+        if ( GetObjectEnergy(m_object) == 0.0f )  // no battery or flat?
         {
-            power = dynamic_cast<CPowerContainerObject*>(dynamic_cast<CPoweredObject*>(m_object)->GetPower());  // searches for the object battery uses
-            if ( GetObjectEnergy(m_object) == 0.0f )  // no battery or flat?
+            motorSpeed.x =  0.0f;
+            motorSpeed.z =  0.0f;
+            if ( m_bFreeze || m_bLand )
             {
-                motorSpeed.x =  0.0f;
-                motorSpeed.z =  0.0f;
-                if ( m_bFreeze || m_bLand )
-                {
-                    motorSpeed.y = 0.0f;  // immobile
-                }
-                else
-                {
-                    motorSpeed.y = -1.0f;  // grave
-                    SetFalling();
-                }
-                SetMotor(false);
+                motorSpeed.y = 0.0f;  // immobile
             }
+            else
+            {
+                motorSpeed.y = -1.0f;  // grave
+                SetFalling();
+            }
+            SetMotor(false);
         }
     }
 
@@ -867,7 +845,7 @@ void CPhysics::MotorUpdate(float aTime, float rTime)
         SetMotor(false);
     }
 
-    if ( m_type == TYPE_FLYING && !m_bLand && motorSpeed.y > 0.0f )
+    if ( m_object->Implements(ObjectInterfaceType::Flying) && !m_bLand && motorSpeed.y > 0.0f )
     {
         pos = m_object->GetPosition();
         h = m_terrain->GetFlyingLimit(pos, type==OBJECT_BEE);
@@ -881,8 +859,8 @@ void CPhysics::MotorUpdate(float aTime, float rTime)
         }
     }
 
-    if ( type != OBJECT_BEE &&
-         m_object->GetRange() > 0.0f )  // limited flight range?
+    if ( m_object->Implements(ObjectInterfaceType::JetFlying) &&
+         dynamic_cast<CJetFlyingObject*>(m_object)->GetRange() > 0.0f )  // limited flight range?
     {
         if ( m_bLand || m_bSwim || m_bObstacle )  // on the ground or in the water?
         {
@@ -903,7 +881,7 @@ void CPhysics::MotorUpdate(float aTime, float rTime)
         }
         else    // in flight?
         {
-            m_reactorRange -= rTime*(1.0f/m_object->GetRange());
+            m_reactorRange -= rTime*(1.0f/dynamic_cast<CJetFlyingObject*>(m_object)->GetRange());
             if ( m_reactorRange < 0.0f )  m_reactorRange = 0.0f;
             if ( m_reactorRange < 0.5f )  m_bLowLevel = true;
         }
@@ -971,7 +949,7 @@ void CPhysics::MotorUpdate(float aTime, float rTime)
         m_cirMotion.motorSpeed.y = 0.0f;
     }
 
-    if ( m_type == TYPE_FLYING && m_bLand )  // flying on the ground?
+    if ( m_object->Implements(ObjectInterfaceType::Flying) && m_bLand )  // flying on the ground?
     {
         if ( type == OBJECT_HUMAN ||
              type == OBJECT_TECH  )
@@ -997,7 +975,7 @@ void CPhysics::MotorUpdate(float aTime, float rTime)
         }
     }
 
-    if ( m_type == TYPE_ROLLING )
+    if ( !m_object->Implements(ObjectInterfaceType::Flying) )
     {
         if ( motorSpeed.x == 0.0f &&
              motorSpeed.z == 0.0f )
@@ -1022,7 +1000,7 @@ void CPhysics::MotorUpdate(float aTime, float rTime)
         energy -= fabs(motorSpeed.x)*rTime*factor*0.005f;
         energy -= fabs(motorSpeed.z)*rTime*factor*0.005f;
 
-        if ( m_type == TYPE_FLYING && motorSpeed.y > 0.0f )
+        if ( m_object->Implements(ObjectInterfaceType::Flying) && motorSpeed.y > 0.0f )
         {
             energy -= motorSpeed.y*rTime*factor*0.01f;
         }
@@ -1550,7 +1528,7 @@ bool CPhysics::EventFrame(const Event &event)
 
     m_terrain->AdjustToStandardBounds(newpos);
 
-    if ( m_type == TYPE_FLYING && !m_bLand )
+    if ( m_object->Implements(ObjectInterfaceType::Flying) && !m_bLand )
     {
         h = m_terrain->GetFlyingLimit(newpos, type==OBJECT_BEE);
         h += m_object->GetCharacter()->height;
@@ -1715,7 +1693,7 @@ void CPhysics::SoundMotor(float rTime)
     }
     else    // vehicle?
     {
-        if ( m_type == TYPE_ROLLING )
+        if ( !m_object->Implements(ObjectInterfaceType::Flying) )
         {
             if ( m_bMotor && m_object->GetActive() )
             {
@@ -1737,7 +1715,7 @@ void CPhysics::SoundMotor(float rTime)
             }
         }
 
-        if ( m_type == TYPE_FLYING )
+        if ( m_object->Implements(ObjectInterfaceType::Flying) )
         {
             if ( m_bMotor && !m_bSwim &&
                  m_object->GetActive() && !m_object->GetDead() )
@@ -2295,14 +2273,14 @@ void CPhysics::FloorAdapt(float aTime, float rTime,
                    fabs(m_linMotion.realSpeed.x),
                    fabs(m_cirMotion.realSpeed.y*15.0f));
 
-    if ( m_type == TYPE_ROLLING )
+    if ( !m_object->Implements(ObjectInterfaceType::Flying) )
     {
         pos.y -= h;  // plate to the ground immediately
         pos.y += character->height;
         m_floorHeight = 0.0f;
     }
 
-    if ( m_type == TYPE_FLYING )
+    if ( m_object->Implements(ObjectInterfaceType::Flying) )
     {
         bSlopingTerrain = false;  // ground as possible to land
 
@@ -2423,7 +2401,7 @@ void CPhysics::FloorAdapt(float aTime, float rTime,
 
     FloorAngle(pos, angle);  // adjusts the angle at the ground
 
-    if ( m_type == TYPE_FLYING && !m_bLand )  // flying in the air?
+    if ( m_object->Implements(ObjectInterfaceType::Flying) && !m_bLand )  // flying in the air?
     {
         f = h/1.0f;
         if ( f < 0.0f )  f = 0.0f;
@@ -2633,7 +2611,7 @@ int CPhysics::ObjectAdapt(const Math::Vector &pos, const Math::Vector &angle)
                     m_linMotion.currentSpeed = Normalize(iPos-oPos)*force;
                     Math::LoadRotationXZYMatrix(matRotate, -angle);
                     m_linMotion.currentSpeed = Transform(matRotate, m_linMotion.currentSpeed);
-                    if ( m_type == TYPE_ROLLING )
+                    if ( !m_object->Implements(ObjectInterfaceType::Flying) )
                     {
                         m_linMotion.currentSpeed.y = 0.0f;
                     }
@@ -2645,7 +2623,7 @@ int CPhysics::ObjectAdapt(const Math::Vector &pos, const Math::Vector &angle)
                         oSpeed = Normalize(oPos-iPos)*force;
                         Math::LoadRotationXZYMatrix(matRotate, -oAngle);
                         oSpeed = Transform(matRotate, oSpeed);
-                        if ( ph->GetType() == TYPE_ROLLING )
+                        if ( !pObj->Implements(ObjectInterfaceType::Flying) )
                         {
                             oSpeed.y = 0.0f;
                         }
@@ -3376,7 +3354,7 @@ void CPhysics::MotorParticle(float aTime, float rTime)
         m_reactorTemperature = 0.0f;  // reactor cold
     }
 
-    if ( m_type == TYPE_FLYING &&
+    if ( m_object->Implements(ObjectInterfaceType::Flying) &&
          type != OBJECT_HUMAN &&
          type != OBJECT_TECH  &&
          !m_bSwim )
@@ -3547,10 +3525,11 @@ void CPhysics::MotorParticle(float aTime, float rTime)
         }
     }
 
-    if ( m_type == TYPE_ROLLING )
+    if ( !m_object->Implements(ObjectInterfaceType::Flying) )
     {
         if ( type == OBJECT_APOLLO2 )  return;  // electric motors!
 
+        // Create engine smoke
         if ( type == OBJECT_MOBILErt ||
              type == OBJECT_MOBILErc ||
              type == OBJECT_MOBILErr ||

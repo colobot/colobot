@@ -968,8 +968,6 @@ void CMotionVehicle::CreatePhysics(ObjectType type)
          type == OBJECT_MOBILEws ||
          type == OBJECT_MOBILEwt )  // wheels?
     {
-        m_physics->SetType(TYPE_ROLLING);
-
         character->wheelFront = 3.0f;
         character->wheelBack  = 4.0f;
         character->wheelLeft  = 4.0f;
@@ -996,8 +994,6 @@ void CMotionVehicle::CreatePhysics(ObjectType type)
 
     if ( type == OBJECT_MOBILEtg )
     {
-        m_physics->SetType(TYPE_ROLLING);
-
         character->wheelFront = 4.0f;
         character->wheelBack  = 3.0f;
         character->wheelLeft  = 4.0f;
@@ -1027,8 +1023,6 @@ void CMotionVehicle::CreatePhysics(ObjectType type)
          type == OBJECT_MOBILEti ||
          type == OBJECT_MOBILEts )  // caterpillars?
     {
-        m_physics->SetType(TYPE_ROLLING);
-
         character->wheelFront = 4.0f;
         character->wheelBack  = 4.0f;
         character->wheelLeft  = 4.8f;
@@ -1058,8 +1052,6 @@ void CMotionVehicle::CreatePhysics(ObjectType type)
          type == OBJECT_MOBILEii ||
          type == OBJECT_MOBILEis )  // legs?
     {
-        m_physics->SetType(TYPE_ROLLING);
-
         character->wheelFront = 4.0f;
         character->wheelBack  = 4.0f;
         character->wheelLeft  = 5.0f;
@@ -1091,8 +1083,6 @@ void CMotionVehicle::CreatePhysics(ObjectType type)
          type == OBJECT_MOBILEfs ||
          type == OBJECT_MOBILEft )  // flying?
     {
-        m_physics->SetType(TYPE_FLYING);
-
         character->wheelFront = 5.0f;
         character->wheelBack  = 4.0f;
         character->wheelLeft  = 4.5f;
@@ -1127,8 +1117,6 @@ void CMotionVehicle::CreatePhysics(ObjectType type)
          type == OBJECT_MOBILErr ||
          type == OBJECT_MOBILErs )  // large caterpillars?
     {
-        m_physics->SetType(TYPE_ROLLING);
-
         character->wheelFront = 5.0f;
         character->wheelBack  = 5.0f;
         character->wheelLeft  = 6.0f;
@@ -1155,8 +1143,6 @@ void CMotionVehicle::CreatePhysics(ObjectType type)
 
     if ( type == OBJECT_MOBILEsa )
     {
-        m_physics->SetType(TYPE_ROLLING);
-
         character->wheelFront = 4.0f;
         character->wheelBack  = 4.0f;
         character->wheelLeft  = 4.0f;
@@ -1183,8 +1169,6 @@ void CMotionVehicle::CreatePhysics(ObjectType type)
 
     if ( type == OBJECT_MOBILEdr )
     {
-        m_physics->SetType(TYPE_ROLLING);
-
         character->wheelFront = 4.0f;
         character->wheelBack  = 4.0f;
         character->wheelLeft  = 4.0f;
@@ -1211,8 +1195,6 @@ void CMotionVehicle::CreatePhysics(ObjectType type)
 
     if ( type == OBJECT_APOLLO2 )  // jeep?
     {
-        m_physics->SetType(TYPE_ROLLING);
-
         character->wheelFront = 6.0f;
         character->wheelBack  = 6.0f;
         character->wheelLeft  = 5.0f;

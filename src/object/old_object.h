@@ -28,7 +28,9 @@
 
 #include "object/interface/carrier_object.h"
 #include "object/interface/controllable_object.h"
+#include "object/interface/flying_object.h"
 #include "object/interface/interactive_object.h"
+#include "object/interface/jet_flying_object.h"
 #include "object/interface/jostleable_object.h"
 #include "object/interface/movable_object.h"
 #include "object/interface/power_container_object.h"
@@ -77,7 +79,7 @@ class COldObject : public CObject,
                    public CJostleableObject,
                    public CCarrierObject,
                    public CPoweredObject,
-                   public CMovableObject,
+                   public CJetFlyingObject,
                    public CControllableObject,
                    public CPowerContainerObjectImpl,
                    public CRangedObject

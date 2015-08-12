@@ -310,8 +310,6 @@ void CMotionBee::CreatePhysics()
         -110,75,-15,    -130,80,-25,    -125,40,0,  // s2: feet 1..3
     };
 
-    m_physics->SetType(TYPE_FLYING);
-
     character = m_object->GetCharacter();
     character->wheelFront = 3.0f;
     character->wheelBack  = 3.0f;

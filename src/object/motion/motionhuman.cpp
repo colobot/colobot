@@ -501,8 +501,6 @@ void CMotionHuman::CreatePhysics(ObjectType type)
         0,20,0,     -10,5,5,    0,0,0,      // s15: hands/feet/-
     };
 
-    m_physics->SetType(TYPE_FLYING);
-
     character = m_object->GetCharacter();
     character->wheelFront = 4.0f;
     character->wheelBack  = 4.0f;

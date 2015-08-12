@@ -59,8 +59,6 @@ void CMotionLevelController::Create(Math::Vector pos, float angle, ObjectType ty
     m_object->SetObjectRank(0, rank);
 
     // Movement
-    m_physics->SetType(TYPE_FLYING);
-
     m_physics->SetLinMotionX(MO_ADVSPEED, 50.0f);
     m_physics->SetLinMotionX(MO_RECSPEED, 50.0f);
     m_physics->SetLinMotionX(MO_ADVACCEL, 20.0f);
@@ -83,4 +81,3 @@ void CMotionLevelController::Create(Math::Vector pos, float angle, ObjectType ty
     m_physics->SetCirMotionY(MO_RECACCEL,  2.0f);
     m_physics->SetCirMotionY(MO_STOACCEL,  2.0f);
 }
-

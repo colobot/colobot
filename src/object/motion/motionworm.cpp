@@ -150,8 +150,6 @@ void CMotionWorm::CreatePhysics()
 {
     Character*  character;
 
-    m_physics->SetType(TYPE_ROLLING);
-
     character = m_object->GetCharacter();
     character->wheelFront = 10.0f;
     character->wheelBack  = 10.0f;
@@ -356,4 +354,3 @@ bool CMotionWorm::EventFrame(const Event &event)
 
     return true;
 }
-

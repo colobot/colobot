@@ -99,10 +99,6 @@ public:
     virtual void        SetMagnifyDamage(float factor);
     virtual float       GetMagnifyDamage();
 
-    // This goes to CFlyingObject (child of CMovableObject)
-    virtual void        SetRange(float delay);
-    virtual float       GetRange();
-
     // This goes to CBaseAlien or something like that
     virtual void        SetFixed(bool bFixed);
     virtual bool        GetFixed();

@@ -655,7 +655,6 @@ bool CAutoFactory::CreateVehicle()
     CObject* vehicle = CObjectManager::GetInstancePointer()->CreateObject(params);
 
     vehicle->SetLock(true);  // not usable
-    vehicle->SetRange(30.0f);
 
     CPhysics* physics = vehicle->GetPhysics();
     if ( physics != nullptr )

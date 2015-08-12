@@ -270,8 +270,6 @@ void CMotionQueen::CreatePhysics()
         0,0,0,          0,0,0,          0,0,0,          // t2: unused
     };
 
-    m_physics->SetType(TYPE_ROLLING);
-
     character = m_object->GetCharacter();
     character->wheelFront = 10.0f;
     character->wheelBack  = 10.0f;

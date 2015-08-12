@@ -53,12 +53,6 @@ class CLightManager;
 }
 
 
-enum PhysicsType
-{
-    TYPE_ROLLING    = 1,
-    TYPE_FLYING     = 2,
-};
-
 enum PhysicsMode
 {
     MO_ADVACCEL     = 0,
@@ -111,9 +105,6 @@ public:
     bool        EventProcess(const Event &event);
 
     void        SetMotion(CMotion* motion);
-
-    void        SetType(PhysicsType type);
-    PhysicsType GetType();
 
     bool        Write(CLevelParserLine* line);
     bool        Read(CLevelParserLine* line);
@@ -219,7 +210,6 @@ protected:
     COldObject*         m_object;
     CMotion*            m_motion;
 
-    PhysicsType m_type;         // TYPE_*
     float       m_gravity;      // force of gravity
     float       m_time;         // absolute time
     Math::Vector    m_motorSpeed;       // motor speed (-1..1)

@@ -52,8 +52,7 @@ CProgrammableObjectImpl::CProgrammableObjectImpl(ObjectInterfaceTypes& types, CO
     , m_soluceName("")
     , m_traceRecord(false)
 {
-    assert(m_object != nullptr);
-    assert(m_object->Implements(ObjectInterfaceType::TaskExecutor));
+    //assert(m_object->Implements(ObjectInterfaceType::TaskExecutor));
 }
 
 CProgrammableObjectImpl::~CProgrammableObjectImpl()

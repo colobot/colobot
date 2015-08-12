@@ -82,7 +82,7 @@ COldObject::COldObject(int id)
     , CJostleableObject(m_implementedInterfaces)
     , CCarrierObject(m_implementedInterfaces)
     , CPoweredObject(m_implementedInterfaces)
-    , CMovableObject(m_implementedInterfaces)
+    , CJetFlyingObject(m_implementedInterfaces)
     , CControllableObject(m_implementedInterfaces)
     , CPowerContainerObjectImpl(m_implementedInterfaces, this)
     , CRangedObject(m_implementedInterfaces)
@@ -116,7 +116,7 @@ COldObject::COldObject(int id)
     m_transporter = 0;
     m_transporterLink = 0;
     m_shield   = 1.0f;
-    m_range    = 0.0f;
+    m_range    = 30.0f;
     m_transparency = 0.0f;
     m_lastEnergy = 999.9f;
     m_bSelect = false;
@@ -658,6 +658,48 @@ void COldObject::SetType(ObjectType type)
         m_param = 1.0f;  // shield up to default
     }
 
+    // TODO: Temporary hack
+    if ( m_type == OBJECT_MOBILEfa || // WingedGrabber
+         m_type == OBJECT_MOBILEfs || // WingedSniffer
+         m_type == OBJECT_MOBILEfc || // WingedShooter
+         m_type == OBJECT_MOBILEfi || // WingedOrgaShooter
+         m_type == OBJECT_MOBILEft || // winged PracticeBot (unused)
+         m_type == OBJECT_HUMAN    || // Me
+         m_type == OBJECT_TECH      ) // Tech
+    {
+        m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Flying)] = true;
+        m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::JetFlying)] = true;
+    }
+    else if ( m_type == OBJECT_BEE )
+    {
+        m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Flying)] = true;
+        m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::JetFlying)] = false;
+    }
+    else
+    {
+        m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Flying)] = false;
+        m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::JetFlying)] = false;
+    }
+
+    // TODO: Another temporary hack
+    if ( m_type == OBJECT_MOTHER   ||
+         m_type == OBJECT_ANT      ||
+         m_type == OBJECT_SPIDER   ||
+         m_type == OBJECT_BEE      ||
+         m_type == OBJECT_WORM     ||
+         m_type == OBJECT_APOLLO2  ||
+         m_type == OBJECT_MOBILEdr ||
+         m_type == OBJECT_CONTROLLER ||
+         m_type == OBJECT_HUMAN    ||
+         m_type == OBJECT_TECH      )
+    {
+        m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Powered)] = false;
+    }
+    else
+    {
+        m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Powered)] = true;
+    }
+
     if ( m_type == OBJECT_MOBILEwc ||
          m_type == OBJECT_MOBILEtc ||
          m_type == OBJECT_MOBILEfc ||
@@ -805,7 +847,6 @@ void COldObject::Read(CLevelParserLine* line)
     SetCameraLock(line->GetParam("cameraLock")->AsBool(false));
     SetEnergyLevel(line->GetParam("energy")->AsFloat(0.0f));
     SetShield(line->GetParam("shield")->AsFloat(1.0f));
-    SetRange(line->GetParam("range")->AsFloat(1.0f));
     SetSelectable(line->GetParam("selectable")->AsBool(true));
     SetFixed(line->GetParam("fixed")->AsBool(false));
     SetCollisions(line->GetParam("clip")->AsBool(true));
@@ -1060,7 +1101,7 @@ void COldObject::SetPartPosition(int part, const Math::Vector &pos)
         m_engine->SetObjectShadowPos(rank, shPos);
 
         float height = 0.0f;
-        if ( m_physics != nullptr && m_physics->GetType() == TYPE_FLYING )
+        if ( Implements(ObjectInterfaceType::Flying) )
         {
             height = pos.y-shPos.y;
         }

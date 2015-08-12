@@ -1208,8 +1208,8 @@ void CRobotMain::ExecuteCmd(char *cmd)
         if (strcmp(cmd, "addfreezer") == 0)
         {
             CObject* object = GetSelect();
-            if (object != nullptr)
-                object->SetRange(object->GetRange()*10.0f);
+            if (object != nullptr && object->Implements(ObjectInterfaceType::JetFlying))
+                dynamic_cast<CJetFlyingObject*>(object)->SetRange(dynamic_cast<CJetFlyingObject*>(object)->GetRange()*10.0f);
             return;
         }
 

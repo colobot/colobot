@@ -115,16 +115,6 @@ float COldObjectInterface::GetShield()
 }
 
 
-void COldObjectInterface::SetRange(float delay)
-{
-    throw std::logic_error("SetRange: not implemented!");
-}
-
-float COldObjectInterface::GetRange()
-{
-    throw std::logic_error("GetRange: not implemented!");
-}
-
 void COldObjectInterface::SetFixed(bool bFixed)
 {
     throw std::logic_error("SetFixed: not implemented!");

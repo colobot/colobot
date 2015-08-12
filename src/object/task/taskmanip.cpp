@@ -88,7 +88,7 @@ bool CTaskManip::EventProcess(const Event &event)
         a = m_object->GetRotationY();
         g = m_angle;
         cirSpeed = Math::Direction(a, g)*1.0f;
-        if ( m_physics->GetType() == TYPE_FLYING )  // flying on the ground?
+        if ( m_object->Implements(ObjectInterfaceType::Flying) )  // flying on the ground?
         {
             cirSpeed *= 4.0f;  // more fishing
         }
