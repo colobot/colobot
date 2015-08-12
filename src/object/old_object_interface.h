@@ -130,9 +130,6 @@ public:
     virtual bool        GetRuin();
     virtual bool        GetActive();
 
-    // Not sure. CRangedObject?
-    virtual float       GetShowLimitRadius();
-
     virtual CPhysics*   GetPhysics();
     virtual CMotion*    GetMotion();
 

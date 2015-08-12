@@ -220,11 +220,6 @@ bool COldObjectInterface::GetActive()
     //throw std::logic_error("GetActive: not implemented!");
 }
 
-float COldObjectInterface::GetShowLimitRadius()
-{
-    throw std::logic_error("GetShowLimitRadius: not implemented!");
-}
-
 
 CPhysics* COldObjectInterface::GetPhysics()
 {

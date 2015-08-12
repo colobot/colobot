@@ -43,6 +43,7 @@ enum class ObjectInterfaceType
     Movable, //!< objects that can move
     Controllable, //!< objects that can be selected and controlled by the player
     PowerContainer, //!< objects that hold power
+    Ranged, //!< objects that have a operation range to be displayed after pressing button in the UI
     Old, //!< old objects, TODO: remove once no longer necessary
     Max //!< maximum value (for getting number of items in enum)
 };

@@ -4619,8 +4619,10 @@ void CRobotMain::StartShowLimit()
 {
     CObject* obj = GetSelect();
     if (obj == nullptr) return;
-    if (obj->GetShowLimitRadius() == 0.0f) return;
-    SetShowLimit(0, Gfx::PARTILIMIT1, obj, obj->GetPosition(), obj->GetShowLimitRadius());
+    if (!obj->Implements(ObjectInterfaceType::Ranged)) return;
+    float range = dynamic_cast<CRangedObject*>(obj)->GetShowLimitRadius();
+    if (range == 0.0f) return;
+    SetShowLimit(0, Gfx::PARTILIMIT1, obj, obj->GetPosition(), range);
 }
 
 //! Advances the boundaries shown

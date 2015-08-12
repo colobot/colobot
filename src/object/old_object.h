@@ -34,6 +34,7 @@
 #include "object/interface/power_container_object.h"
 #include "object/interface/powered_object.h"
 #include "object/interface/programmable_object.h"
+#include "object/interface/ranged_object.h"
 #include "object/interface/task_executor_object.h"
 #include "object/interface/transportable_object.h"
 
@@ -78,7 +79,8 @@ class COldObject : public CObject,
                    public CPoweredObject,
                    public CMovableObject,
                    public CControllableObject,
-                   public CPowerContainerObjectImpl
+                   public CPowerContainerObjectImpl,
+                   public CRangedObject
 {
     friend class CObjectFactory;
     friend class CObjectManager;

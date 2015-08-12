@@ -85,6 +85,7 @@ COldObject::COldObject(int id)
     , CMovableObject(m_implementedInterfaces)
     , CControllableObject(m_implementedInterfaces)
     , CPowerContainerObjectImpl(m_implementedInterfaces, this)
+    , CRangedObject(m_implementedInterfaces)
 {
     // A bit of a hack since we don't have subclasses yet, set externally in SetProgrammable()
     m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Programmable)] = false;
