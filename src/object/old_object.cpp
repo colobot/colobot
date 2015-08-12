@@ -126,7 +126,6 @@ COldObject::COldObject(int id)
     m_bToy = false;
     m_bManual = false;
     m_bFixed = false;
-    m_showLimitRadius = 0.0f;
     m_aTime = 0.0f;
     m_shotTime = 0.0f;
     m_bVirusMode = false;
@@ -2585,14 +2584,13 @@ float COldObject::GetGunGoalH()
     return m_gunGoalH;
 }
 
-void COldObject::SetShowLimitRadius(float radius)
-{
-    m_showLimitRadius = radius;
-}
-
 float COldObject::GetShowLimitRadius()
 {
-    return m_showLimitRadius;
+    if ( m_type == OBJECT_BASE     ) return 200.0f; // SpaceShip
+    if ( m_type == OBJECT_MOBILErt ) return 400.0f; // Thumper
+    if ( m_type == OBJECT_TOWER    ) return Gfx::LTNG_PROTECTION_RADIUS; // DefenseTower
+    if ( m_type == OBJECT_PARA     ) return Gfx::LTNG_PROTECTION_RADIUS; // PowerCaptor
+    return 0.0f;
 }
 
 

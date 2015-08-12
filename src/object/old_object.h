@@ -89,7 +89,6 @@ protected:
     void        SetProgrammable(bool programmable);
     void        SetMotion(std::unique_ptr<CMotion> motion);
     void        SetAuto(std::unique_ptr<CAuto> automat);
-    void        SetShowLimitRadius(float radius);
     void        SetOption(int option);
     void        SetJostlingSphere(const Math::Sphere& sphere);
 
@@ -368,8 +367,6 @@ protected:
     bool        m_bToy;             // toy key
     bool        m_bManual;          // manual control (Scribbler)
     bool        m_bFixed;
-    bool        m_bClip;
-    float       m_showLimitRadius;
     float       m_gunGoalV;
     float       m_gunGoalH;
     Gfx::CameraType  m_cameraType;
@@ -378,7 +375,6 @@ protected:
     int         m_defRank;
     float       m_magnifyDamage;
     float       m_param;
-    int         m_team;
 
     Math::Sphere m_jostlingSphere;
     float       m_shieldRadius;
@@ -388,10 +384,10 @@ protected:
 
     int         m_partiSel[4];
 
-    float m_infoReturn;
+    float       m_infoReturn;
 
-    EventType           m_buttonAxe;
+    EventType   m_buttonAxe;
 
-    float               m_time;
-    float               m_burnTime;
+    float       m_time;
+    float       m_burnTime;
 };

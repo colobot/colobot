@@ -485,7 +485,6 @@ CObjectUPtr CObjectFactory::CreateBuilding(const ObjectCreateParams& params)
         obj->SetCameraCollisionSphere(Math::Sphere(Math::Vector(0.0f, 45.0f, 0.0f), 10.0f));
 
         obj->CreateShadowCircle(60.0f, 1.0f);
-        obj->SetShowLimitRadius(200.0f);
 
         m_terrain->AddBuildingLevel(pos, 28.6f, 73.4f, 30.0f, 0.4f);
     }
@@ -852,7 +851,6 @@ CObjectUPtr CObjectFactory::CreateBuilding(const ObjectCreateParams& params)
         obj->GetCharacter()->posPower = Math::Vector(5.0f, 3.0f, 0.0f);
 
         obj->CreateShadowCircle(6.0f, 1.0f);
-        obj->SetShowLimitRadius(Gfx::LTNG_PROTECTION_RADIUS);
     }
 
     if ( type == OBJECT_NUCLEAR )
@@ -902,7 +900,6 @@ CObjectUPtr CObjectFactory::CreateBuilding(const ObjectCreateParams& params)
         obj->SetCameraCollisionSphere(Math::Sphere(Math::Vector(0.0f, 10.0f, 0.0f), 20.0f));
 
         obj->CreateShadowCircle(21.0f, 1.0f);
-        obj->SetShowLimitRadius(Gfx::LTNG_PROTECTION_RADIUS);
     }
 
     if ( type == OBJECT_SAFE )
@@ -2571,13 +2568,6 @@ CObjectUPtr CObjectFactory::CreateVehicle(const ObjectCreateParams& params)
     }
 
     obj->SetToy(toy);
-
-    float showLimitRadius = 0.0f;
-    if ( type == OBJECT_MOBILErt )  // robot thumper?
-    {
-        showLimitRadius = 400.0f;
-    }
-    obj->SetShowLimitRadius(showLimitRadius);
 
     auto physics = MakeUnique<CPhysics>(obj.get());
 
